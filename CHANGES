@@ -1,3 +1,10 @@
+Release Version 3.0.2 [22 AUG 2003]
+-----------------------------------
+	- fixed bug with messing up custom element properties in 3.0.0 levels
+	- fixed bug with choosing wrong engine version when playing tapes
+	- fixed bug with creating inaccessible elements at player position
+	- fixed bug with not finding current level artwork directory
+
 Release Version 3.0.1 [18 AUG 2003]
 -----------------------------------
 	- fixed bug that caused a crash at startup under Solaris
