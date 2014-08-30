@@ -760,7 +760,22 @@
 				 (e) <= EL_DC_STEELWALL_2_SINGLE)
 
 #if 1
+
+#if 1
 #define GFX_ELEMENT(e)		(element_info[e].gfx_element)
+#else
+#define GFX_ELEMENT(e)		(element_info[e].gfx_element ==		\
+				 (element_info[e].use_gfx_element ?	\
+				  element_info[e].gfx_element : e)  ?	\
+				 element_info[e].gfx_element :		\
+				 element_info[e].gfx_element +		\
+				 0 * printf("::: %d: %d <-> %d\n",	\
+					    e,				\
+					    element_info[e].gfx_element,      \
+					    element_info[e].use_gfx_element ? \
+					    element_info[e].gfx_element : e))
+#endif
+
 #else
 #define GFX_ELEMENT(e)		(element_info[e].use_gfx_element ?	\
 				 element_info[e].gfx_element : e)
@@ -1992,7 +2007,7 @@
 #define PROGRAM_VERSION_MAJOR		3
 #define PROGRAM_VERSION_MINOR		2
 #define PROGRAM_VERSION_PATCH		6
-#define PROGRAM_VERSION_BUILD		0
+#define PROGRAM_VERSION_BUILD		1
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
