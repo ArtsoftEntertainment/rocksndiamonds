@@ -1118,6 +1118,7 @@ static struct ValueTextInfo options_change_direct_action[] =
   { CE_ENTERED_BY_PLAYER,	"entered by player ..."		},
   { CE_LEFT_BY_PLAYER,		"left by player ..."		},
   { CE_DROPPED_BY_PLAYER,	"dropped by player"		},
+  { CE_SWITCHED,		"switched ..."			},
   { CE_COLLISION,		"collision ..."			},
   { CE_IMPACT,			"impact"			},
   { CE_SMASHED,			"smashed"			},
@@ -1135,6 +1136,7 @@ static struct ValueTextInfo options_change_other_action[] =
   { CE_OTHER_GETS_COLLECTED,	"player collects"		},
   { CE_OTHER_GETS_DROPPED,	"player drops"			},
   { CE_OTHER_IS_TOUCHING,	"touching ..."			},
+  { CE_OTHER_IS_SWITCHING,	"switch of ..."			},
   { CE_OTHER_IS_CHANGING,	"change of"			},
   { CE_OTHER_IS_EXPLODING,	"explosion of"			},
   { -1,				NULL				}
@@ -4593,6 +4595,7 @@ static void CopyCustomElementPropertiesToEditor(int element)
      HAS_CHANGE_EVENT(element, CE_ENTERED_BY_PLAYER) ? CE_ENTERED_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_LEFT_BY_PLAYER) ? CE_LEFT_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_DROPPED_BY_PLAYER) ? CE_DROPPED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_SWITCHED) ? CE_SWITCHED :
      HAS_CHANGE_EVENT(element, CE_COLLISION) ? CE_COLLISION :
      HAS_CHANGE_EVENT(element, CE_IMPACT) ? CE_IMPACT :
      HAS_CHANGE_EVENT(element, CE_SMASHED) ? CE_SMASHED :
@@ -4609,6 +4612,7 @@ static void CopyCustomElementPropertiesToEditor(int element)
      HAS_CHANGE_EVENT(element, CE_OTHER_GETS_COLLECTED) ? CE_OTHER_GETS_COLLECTED :
      HAS_CHANGE_EVENT(element, CE_OTHER_GETS_DROPPED) ? CE_OTHER_GETS_DROPPED :
      HAS_CHANGE_EVENT(element, CE_OTHER_IS_TOUCHING) ? CE_OTHER_IS_TOUCHING :
+     HAS_CHANGE_EVENT(element, CE_OTHER_IS_SWITCHING) ? CE_OTHER_IS_SWITCHING :
      HAS_CHANGE_EVENT(element, CE_OTHER_IS_CHANGING) ? CE_OTHER_IS_CHANGING :
      HAS_CHANGE_EVENT(element, CE_OTHER_IS_EXPLODING) ? CE_OTHER_IS_EXPLODING :
      custom_element_change.other_action);
@@ -4709,6 +4713,7 @@ static void CopyCustomElementPropertiesToGame(int element)
   custom_element_change_events[CE_ENTERED_BY_PLAYER] = FALSE;
   custom_element_change_events[CE_LEFT_BY_PLAYER] = FALSE;
   custom_element_change_events[CE_DROPPED_BY_PLAYER] = FALSE;
+  custom_element_change_events[CE_SWITCHED] = FALSE;
   custom_element_change_events[CE_COLLISION] = FALSE;
   custom_element_change_events[CE_IMPACT] = FALSE;
   custom_element_change_events[CE_SMASHED] = FALSE;
@@ -4725,6 +4730,7 @@ static void CopyCustomElementPropertiesToGame(int element)
   custom_element_change_events[CE_OTHER_GETS_COLLECTED] = FALSE;
   custom_element_change_events[CE_OTHER_GETS_DROPPED] = FALSE;
   custom_element_change_events[CE_OTHER_IS_TOUCHING] = FALSE;
+  custom_element_change_events[CE_OTHER_IS_SWITCHING] = FALSE;
   custom_element_change_events[CE_OTHER_IS_CHANGING] = FALSE;
   custom_element_change_events[CE_OTHER_IS_EXPLODING] = FALSE;
   custom_element_change_events[custom_element_change.other_action] =

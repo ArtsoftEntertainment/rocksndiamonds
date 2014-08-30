@@ -179,11 +179,10 @@
 #define CE_LEFT_BY_PLAYER	22
 #define CE_OTHER_GETS_ENTERED	23
 #define CE_OTHER_GETS_LEFT	24
+#define CE_SWITCHED		25
+#define CE_OTHER_IS_SWITCHING	26
 
-/* values for derived change events (determined from properties above) */
-#define CE_TOUCHING_SOME_SIDE	25	/* summarized left/right/up/down/any */
-
-#define NUM_CHANGE_EVENTS	26
+#define NUM_CHANGE_EVENTS	27
 
 #define CE_BITMASK_DEFAULT	0
 
@@ -359,6 +358,9 @@
 				 IS_INDESTRUCTIBLE(Feld[x][y]))
 #define PLAYER_PROTECTED(x,y)	(SHIELD_ON(PLAYERINFO(x, y)) ||		\
 				 PROTECTED_FIELD(x, y))
+
+#define PLAYER_SWITCHING(p,x,y)	((p)->Switching &&			\
+				 (p)->switch_x == (x) && (p)->switch_y == (y))
 
 #define PLAYER_NR_GFX(g,i)	((g) + i * (IMG_PLAYER_2 - IMG_PLAYER_1))
 
@@ -1024,9 +1026,9 @@
 
 #define PROGRAM_VERSION_MAJOR	3
 #define PROGRAM_VERSION_MINOR	0
-#define PROGRAM_VERSION_PATCH	5
+#define PROGRAM_VERSION_PATCH	6
 #define PROGRAM_VERSION_RELEASE	0
-#define PROGRAM_VERSION_STRING	"3.0.5"
+#define PROGRAM_VERSION_STRING	"3.0.6"
 
 #define PROGRAM_TITLE_STRING	"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING	"Holger Schemel"
@@ -1138,6 +1140,8 @@ struct PlayerInfo
   boolean Switching;
   boolean LevelSolved, GameOver;
   boolean snapped;
+
+  int switch_x, switch_y;
 
   int last_move_dir;
   boolean is_moving;

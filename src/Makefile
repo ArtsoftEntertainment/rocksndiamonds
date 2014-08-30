@@ -76,7 +76,11 @@ endif
 
 ifeq ($(TARGET),sdl)
 SYS_CFLAGS  = -DTARGET_SDL $(shell sdl-config --cflags)
+ifeq ($(PLATFORM),macosx)
+SYS_LDFLAGS = -lSDL_image -lSDL_mixer -lsmpeg $(shell sdl-config --libs)
+else
 SYS_LDFLAGS = -lSDL_image -lSDL_mixer $(shell sdl-config --libs)
+endif
 endif
 
 ifeq ($(TARGET),allegro)
