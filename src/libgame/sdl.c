@@ -26,9 +26,9 @@
 /* functions from SGE library */
 inline void sge_Line(SDL_Surface *, Sint16, Sint16, Sint16, Sint16, Uint32);
 
-#ifdef PLATFORM_WIN32
+/* #ifdef PLATFORM_WIN32 */
 #define FULLSCREEN_BUG
-#endif
+/* #endif */
 
 /* stuff needed to work around SDL/Windows fullscreen drawing bug */
 static int fullscreen_width;
@@ -40,6 +40,8 @@ static int video_yoffset;
 
 inline void SDLInitVideoDisplay(void)
 {
+  putenv("SDL_VIDEO_CENTERED=1");
+
   /* initialize SDL video */
   if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
     Error(ERR_EXIT, "SDL_InitSubSystem() failed: %s", SDL_GetError());
@@ -170,10 +172,38 @@ inline boolean SDLSetVideoMode(DrawBuffer **backbuffer, boolean fullscreen)
   return success;
 }
 
+inline void SDLCreateBitmapContent(Bitmap *new_bitmap,
+				   int width, int height, int depth)
+{
+  SDL_Surface *surface_tmp, *surface_native;
+
+  if ((surface_tmp = SDL_CreateRGBSurface(SURFACE_FLAGS, width, height, depth,
+					  0, 0, 0, 0))
+      == NULL)
+    Error(ERR_EXIT, "SDL_CreateRGBSurface() failed: %s", SDL_GetError());
+
+  if ((surface_native = SDL_DisplayFormat(surface_tmp)) == NULL)
+    Error(ERR_EXIT, "SDL_DisplayFormat() failed: %s", SDL_GetError());
+
+  SDL_FreeSurface(surface_tmp);
+
+  new_bitmap->surface = surface_native;
+}
+
+inline void SDLFreeBitmapPointers(Bitmap *bitmap)
+{
+  if (bitmap->surface)
+    SDL_FreeSurface(bitmap->surface);
+  if (bitmap->surface_masked)
+    SDL_FreeSurface(bitmap->surface_masked);
+  bitmap->surface = NULL;
+  bitmap->surface_masked = NULL;
+}
+
 inline void SDLCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 			int src_x, int src_y,
 			int width, int height,
-			int dst_x, int dst_y, int copy_mode)
+			int dst_x, int dst_y, int mask_mode)
 {
   Bitmap *real_dst_bitmap = (dst_bitmap == window ? backbuffer : dst_bitmap);
   SDL_Rect src_rect, dst_rect;
@@ -205,7 +235,7 @@ inline void SDLCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
   dst_rect.h = height;
 
   if (src_bitmap != backbuffer || dst_bitmap != window)
-    SDL_BlitSurface((copy_mode == SDLCOPYAREA_MASKED ?
+    SDL_BlitSurface((mask_mode == BLIT_MASKED ?
 		     src_bitmap->surface_masked : src_bitmap->surface),
 		    &src_rect, real_dst_bitmap->surface, &dst_rect);
 
@@ -214,13 +244,15 @@ inline void SDLCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 }
 
 inline void SDLFillRectangle(Bitmap *dst_bitmap, int x, int y,
-			     int width, int height, unsigned int color)
+			     int width, int height, Uint32 color)
 {
   Bitmap *real_dst_bitmap = (dst_bitmap == window ? backbuffer : dst_bitmap);
   SDL_Rect rect;
-  unsigned int color_r = (color >> 16) && 0xff;
-  unsigned int color_g = (color >>  8) && 0xff;
-  unsigned int color_b = (color >>  0) && 0xff;
+#if 0
+  unsigned int color_r = (color >> 16) & 0xff;
+  unsigned int color_g = (color >>  8) & 0xff;
+  unsigned int color_b = (color >>  0) & 0xff;
+#endif
 
 #ifdef FULLSCREEN_BUG
   if (dst_bitmap == backbuffer || dst_bitmap == window)
@@ -235,22 +267,28 @@ inline void SDLFillRectangle(Bitmap *dst_bitmap, int x, int y,
   rect.w = width;
   rect.h = height;
 
+#if 1
+  SDL_FillRect(real_dst_bitmap->surface, &rect, color);
+#else
   SDL_FillRect(real_dst_bitmap->surface, &rect,
 	       SDL_MapRGB(real_dst_bitmap->surface->format,
 			  color_r, color_g, color_b));
+#endif
 
   if (dst_bitmap == window)
     SDL_UpdateRect(backbuffer->surface, x, y, width, height);
 }
 
 inline void SDLDrawSimpleLine(Bitmap *dst_bitmap, int from_x, int from_y,
-			      int to_x, int to_y, unsigned int color)
+			      int to_x, int to_y, Uint32 color)
 {
   SDL_Surface *surface = dst_bitmap->surface;
   SDL_Rect rect;
+#if 0
   unsigned int color_r = (color >> 16) & 0xff;
   unsigned int color_g = (color >>  8) & 0xff;
   unsigned int color_b = (color >>  0) & 0xff;
+#endif
 
   if (from_x > to_x)
     swap_numbers(&from_x, &to_x);
@@ -271,8 +309,12 @@ inline void SDLDrawSimpleLine(Bitmap *dst_bitmap, int from_x, int from_y,
   }
 #endif
 
+#if 1
+  SDL_FillRect(surface, &rect, color);
+#else
   SDL_FillRect(surface, &rect,
                SDL_MapRGB(surface->format, color_r, color_g, color_b));
+#endif
 }
 
 inline void SDLDrawLine(Bitmap *dst_bitmap, int from_x, int from_y,
@@ -321,12 +363,12 @@ inline void SDLDrawLines(SDL_Surface *surface, struct XY *points,
 }
 #endif
 
-inline Pixel SDLGetPixel(Bitmap *dst_bitmap, int x, int y)
+inline Pixel SDLGetPixel(Bitmap *src_bitmap, int x, int y)
 {
-  SDL_Surface *surface = dst_bitmap->surface;
+  SDL_Surface *surface = src_bitmap->surface;
 
 #ifdef FULLSCREEN_BUG
-  if (dst_bitmap == backbuffer || dst_bitmap == window)
+  if (src_bitmap == backbuffer || src_bitmap == window)
   {
     x += video_xoffset;
     y += video_yoffset;
@@ -377,7 +419,7 @@ inline Pixel SDLGetPixel(Bitmap *dst_bitmap, int x, int y)
 
 
 /* ========================================================================= */
-/* The following functions have been taken from the SGE library              */
+/* The following functions were taken from the SGE library                   */
 /* (SDL Graphics Extension Library) by Anders Lindström                      */
 /* http://www.etek.chalmers.se/~e8cal1/sge/index.html                        */
 /* ========================================================================= */
@@ -506,9 +548,9 @@ void sge_PutPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
 }
 
 void sge_PutPixelRGB(SDL_Surface *surface, Sint16 x, Sint16 y,
-		  Uint8 R, Uint8 G, Uint8 B)
+		  Uint8 r, Uint8 g, Uint8 b)
 {
-  sge_PutPixel(surface, x, y, SDL_MapRGB(surface->format, R, G, B));
+  sge_PutPixel(surface, x, y, SDL_MapRGB(surface->format, r, g, b));
 }
 
 Sint32 sge_CalcYPitch(SDL_Surface *dest, Sint16 y)
@@ -822,6 +864,367 @@ void sge_LineRGB(SDL_Surface *Surface, Sint16 x1, Sint16 y1, Sint16 x2,
   sge_Line(Surface, x1, y1, x2, y2, SDL_MapRGB(Surface->format, R, G, B));
 }
 
+inline void SDLPutPixel(Bitmap *dst_bitmap, int x, int y, Pixel pixel)
+{
+#ifdef FULLSCREEN_BUG
+  if (dst_bitmap == backbuffer || dst_bitmap == window)
+  {
+    x += video_xoffset;
+    y += video_yoffset;
+  }
+#endif
+
+  sge_PutPixel(dst_bitmap->surface, x, y, pixel);
+}
+
+
+/*
+  -----------------------------------------------------------------------------
+  quick (no, it's slow) and dirty hack to "invert" rectangle inside SDL surface
+  -----------------------------------------------------------------------------
+*/
+
+inline void SDLInvertArea(Bitmap *bitmap, int src_x, int src_y,
+			  int width, int height, Uint32 color)
+{
+  int x, y;
+
+  for (y=src_y; y < src_y + height; y++)
+  {
+    for (x=src_x; x < src_x + width; x++)
+    {
+      Uint32 pixel = SDLGetPixel(bitmap, x, y);
+
+      SDLPutPixel(bitmap, x, y, pixel == BLACK_PIXEL ? color : BLACK_PIXEL);
+    }
+  }
+}
+
+inline void SDLCopyInverseMasked(Bitmap *src_bitmap, Bitmap *dst_bitmap,
+				 int src_x, int src_y, int width, int height,
+				 int dst_x, int dst_y)
+{
+  int x, y;
+
+  for (y=0; y < height; y++)
+  {
+    for (x=0; x < width; x++)
+    {
+      Uint32 pixel = SDLGetPixel(src_bitmap, src_x + x, src_y + y);
+
+      if (pixel != BLACK_PIXEL)
+	SDLPutPixel(dst_bitmap, dst_x + x, dst_y + y, BLACK_PIXEL);
+    }
+  }
+}
+
+
+/* ========================================================================= */
+/* The following functions were taken from the SDL_gfx library version 2.0.3 */
+/* (Rotozoomer) by Andreas Schiffler                                         */
+/* http://www.ferzkopp.net/Software/SDL_gfx-2.0/index.html                   */
+/* ========================================================================= */
+
+/*
+  -----------------------------------------------------------------------------
+  32 bit zoomer
+
+  zoomes 32bit RGBA/ABGR 'src' surface to 'dst' surface.
+  -----------------------------------------------------------------------------
+*/
+
+typedef struct
+{
+  Uint8 r;
+  Uint8 g;
+  Uint8 b;
+  Uint8 a;
+} tColorRGBA;
+
+int zoomSurfaceRGBA(SDL_Surface *src, SDL_Surface *dst)
+{
+  int x, y, sx, sy, *sax, *say, *csax, *csay, csx, csy;
+  tColorRGBA *sp, *csp, *dp;
+  int sgap, dgap;
+
+  /* variable setup */
+  sx = (int) (65536.0 * (float) src->w / (float) dst->w);
+  sy = (int) (65536.0 * (float) src->h / (float) dst->h);
+
+  /* allocate memory for row increments */
+  sax = (int *)checked_malloc((dst->w + 1) * sizeof(Uint32));
+  say = (int *)checked_malloc((dst->h + 1) * sizeof(Uint32));
+
+  /* precalculate row increments */
+  csx = 0;
+  csax = sax;
+  for (x = 0; x <= dst->w; x++)
+  {
+    *csax = csx;
+    csax++;
+    csx &= 0xffff;
+    csx += sx;
+  }
+
+  csy = 0;
+  csay = say;
+  for (y = 0; y <= dst->h; y++)
+  {
+    *csay = csy;
+    csay++;
+    csy &= 0xffff;
+    csy += sy;
+  }
+
+  /* pointer setup */
+  sp = csp = (tColorRGBA *) src->pixels;
+  dp = (tColorRGBA *) dst->pixels;
+  sgap = src->pitch - src->w * 4;
+  dgap = dst->pitch - dst->w * 4;
+
+  csay = say;
+  for (y = 0; y < dst->h; y++)
+  {
+    sp = csp;
+    csax = sax;
+
+    for (x = 0; x < dst->w; x++)
+    {
+      /* draw */
+      *dp = *sp;
+
+      /* advance source pointers */
+      csax++;
+      sp += (*csax >> 16);
+
+      /* advance destination pointer */
+      dp++;
+    }
+
+    /* advance source pointer */
+    csay++;
+    csp = (tColorRGBA *) ((Uint8 *) csp + (*csay >> 16) * src->pitch);
+
+    /* advance destination pointers */
+    dp = (tColorRGBA *) ((Uint8 *) dp + dgap);
+  }
+
+  free(sax);
+  free(say);
+
+  return 0;
+}
+
+/*
+  -----------------------------------------------------------------------------
+  8 bit zoomer
+
+  zoomes 8 bit palette/Y 'src' surface to 'dst' surface
+  -----------------------------------------------------------------------------
+*/
+
+int zoomSurfaceY(SDL_Surface * src, SDL_Surface * dst)
+{
+  Uint32 x, y, sx, sy, *sax, *say, *csax, *csay, csx, csy;
+  Uint8 *sp, *dp, *csp;
+  int dgap;
+
+  /* variable setup */
+  sx = (Uint32) (65536.0 * (float) src->w / (float) dst->w);
+  sy = (Uint32) (65536.0 * (float) src->h / (float) dst->h);
+
+  /* allocate memory for row increments */
+  sax = (Uint32 *)checked_malloc(dst->w * sizeof(Uint32));
+  say = (Uint32 *)checked_malloc(dst->h * sizeof(Uint32));
+
+  /* precalculate row increments */
+  csx = 0;
+  csax = sax;
+  for (x = 0; x < dst->w; x++)
+  {
+    csx += sx;
+    *csax = (csx >> 16);
+    csx &= 0xffff;
+    csax++;
+  }
+
+  csy = 0;
+  csay = say;
+  for (y = 0; y < dst->h; y++)
+  {
+    csy += sy;
+    *csay = (csy >> 16);
+    csy &= 0xffff;
+    csay++;
+  }
+
+  csx = 0;
+  csax = sax;
+  for (x = 0; x < dst->w; x++)
+  {
+    csx += (*csax);
+    csax++;
+  }
+
+  csy = 0;
+  csay = say;
+  for (y = 0; y < dst->h; y++)
+  {
+    csy += (*csay);
+    csay++;
+  }
+
+  /* pointer setup */
+  sp = csp = (Uint8 *) src->pixels;
+  dp = (Uint8 *) dst->pixels;
+  dgap = dst->pitch - dst->w;
+
+  /* draw */
+  csay = say;
+  for (y = 0; y < dst->h; y++)
+  {
+    csax = sax;
+    sp = csp;
+    for (x = 0; x < dst->w; x++)
+    {
+      /* draw */
+      *dp = *sp;
+
+      /* advance source pointers */
+      sp += (*csax);
+      csax++;
+
+      /* advance destination pointer */
+      dp++;
+    }
+
+    /* advance source pointer (for row) */
+    csp += ((*csay) * src->pitch);
+    csay++;
+
+    /* advance destination pointers */
+    dp += dgap;
+  }
+
+  free(sax);
+  free(say);
+
+  return 0;
+}
+
+/*
+  -----------------------------------------------------------------------------
+  zoomSurface()
+
+  Zoomes a 32bit or 8bit 'src' surface to newly created 'dst' surface.
+  'zoomx' and 'zoomy' are scaling factors for width and height.
+  If 'smooth' is 1 then the destination 32bit surface is anti-aliased.
+  If the surface is not 8bit or 32bit RGBA/ABGR it will be converted
+  into a 32bit RGBA format on the fly.
+  -----------------------------------------------------------------------------
+*/
+
+SDL_Surface *zoomSurface(SDL_Surface *src, int dst_width, int dst_height)
+{
+  SDL_Surface *zoom_src = NULL;
+  SDL_Surface *zoom_dst = NULL;
+  boolean is_converted = FALSE;
+  boolean is_32bit;
+  int i;
+
+  if (src == NULL)
+    return NULL;
+
+  /* determine if source surface is 32 bit or 8 bit */
+  is_32bit = (src->format->BitsPerPixel == 32);
+
+  if (is_32bit || src->format->BitsPerPixel == 8)
+  {
+    /* use source surface 'as is' */
+    zoom_src = src;
+  }
+  else
+  {
+    /* new source surface is 32 bit with a defined RGB ordering */
+    zoom_src = SDL_CreateRGBSurface(SDL_SWSURFACE, src->w, src->h, 32,
+				    0x000000ff, 0x0000ff00, 0x00ff0000, 0);
+    SDL_BlitSurface(src, NULL, zoom_src, NULL);
+    is_32bit = TRUE;
+    is_converted = TRUE;
+  }
+
+  /* allocate surface to completely contain the zoomed surface */
+  if (is_32bit)
+  {
+    /* target surface is 32 bit with source RGBA/ABGR ordering */
+    zoom_dst = SDL_CreateRGBSurface(SDL_SWSURFACE, dst_width, dst_height, 32,
+				    zoom_src->format->Rmask,
+				    zoom_src->format->Gmask,
+				    zoom_src->format->Bmask, 0);
+  }
+  else
+  {
+    /* target surface is 8 bit */
+    zoom_dst = SDL_CreateRGBSurface(SDL_SWSURFACE, dst_width, dst_height, 8,
+				    0, 0, 0, 0);
+  }
+
+  /* lock source surface */
+  SDL_LockSurface(zoom_src);
+
+  /* check which kind of surface we have */
+  if (is_32bit)
+  {
+    /* call the 32 bit transformation routine to do the zooming */
+    zoomSurfaceRGBA(zoom_src, zoom_dst);
+  }
+  else
+  {
+    /* copy palette */
+    for (i=0; i < zoom_src->format->palette->ncolors; i++)
+      zoom_dst->format->palette->colors[i] =
+	zoom_src->format->palette->colors[i];
+    zoom_dst->format->palette->ncolors = zoom_src->format->palette->ncolors;
+
+    /* call the 8 bit transformation routine to do the zooming */
+    zoomSurfaceY(zoom_src, zoom_dst);
+  }
+
+  /* unlock source surface */
+  SDL_UnlockSurface(zoom_src);
+
+  /* free temporary surface */
+  if (is_converted)
+    SDL_FreeSurface(zoom_src);
+
+  /* return destination surface */
+  return zoom_dst;
+}
+
+void SDLZoomBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap)
+{
+  SDL_Surface *sdl_surface_tmp;
+  int dst_width = dst_bitmap->width;
+  int dst_height = dst_bitmap->height;
+
+  /* throw away old destination surface */
+  SDL_FreeSurface(dst_bitmap->surface);
+
+  /* create zoomed temporary surface from source surface */
+  sdl_surface_tmp = zoomSurface(src_bitmap->surface, dst_width, dst_height);
+
+  /* create native format destination surface from zoomed temporary surface */
+  dst_bitmap->surface = SDL_DisplayFormat(sdl_surface_tmp);
+
+  /* free temporary surface */
+  SDL_FreeSurface(sdl_surface_tmp);
+}
+
+
+/* ========================================================================= */
+/* load image to bitmap                                                      */
+/* ========================================================================= */
+
 Bitmap *SDLLoadImage(char *filename)
 {
   Bitmap *new_bitmap = CreateBitmapStruct();
@@ -860,12 +1263,45 @@ Bitmap *SDLLoadImage(char *filename)
 }
 
 
+/* ------------------------------------------------------------------------- */
+/* custom cursor fuctions                                                    */
+/* ------------------------------------------------------------------------- */
+
+static SDL_Cursor *create_cursor(struct MouseCursorInfo *cursor_info)
+{
+  return SDL_CreateCursor(cursor_info->data, cursor_info->mask,
+			  cursor_info->width, cursor_info->height,
+			  cursor_info->hot_x, cursor_info->hot_y);
+}
+
+void SDLSetMouseCursor(struct MouseCursorInfo *cursor_info)
+{
+  static struct MouseCursorInfo *last_cursor_info = NULL;
+  static SDL_Cursor *cursor_default = NULL;
+  static SDL_Cursor *cursor_current = NULL;
+
+  if (cursor_default == NULL)
+    cursor_default = SDL_GetCursor();
+
+  if (cursor_info != NULL && cursor_info != last_cursor_info)
+  {
+    cursor_current = create_cursor(cursor_info);
+    last_cursor_info = cursor_info;
+  }
+
+  SDL_SetCursor(cursor_info ? cursor_current : cursor_default);
+}
+
+
 /* ========================================================================= */
 /* audio functions                                                           */
 /* ========================================================================= */
 
 inline void SDLOpenAudio(void)
 {
+  if (strcmp(setup.system.sdl_audiodriver, ARG_DEFAULT) != 0)
+    putenv(getStringCat2("SDL_AUDIODRIVER=", setup.system.sdl_audiodriver));
+
   if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
   {
     Error(ERR_WARN, "SDL_InitSubSystem() failed: %s", SDL_GetError());
@@ -874,7 +1310,7 @@ inline void SDLOpenAudio(void)
 
   if (Mix_OpenAudio(DEFAULT_AUDIO_SAMPLE_RATE, MIX_DEFAULT_FORMAT,
 		    AUDIO_NUM_CHANNELS_STEREO,
-		    DEFAULT_AUDIO_FRAGMENT_SIZE) < 0)
+		    setup.system.audio_fragment_size) < 0)
   {
     Error(ERR_WARN, "Mix_OpenAudio() failed: %s", SDL_GetError());
     return;
@@ -926,14 +1362,14 @@ inline void SDLNextEvent(Event *event)
   }
   else if (event->type == EVENT_MOTIONNOTIFY)
   {
-    if (((ButtonEvent *)event)->x > video_xoffset)
-      ((ButtonEvent *)event)->x -= video_xoffset;
+    if (((MotionEvent *)event)->x > video_xoffset)
+      ((MotionEvent *)event)->x -= video_xoffset;
     else
-      ((ButtonEvent *)event)->x = 0;
-    if (((ButtonEvent *)event)->y > video_yoffset)
-      ((ButtonEvent *)event)->y -= video_yoffset;
+      ((MotionEvent *)event)->x = 0;
+    if (((MotionEvent *)event)->y > video_yoffset)
+      ((MotionEvent *)event)->y -= video_yoffset;
     else
-      ((ButtonEvent *)event)->y = 0;
+      ((MotionEvent *)event)->y = 0;
   }
 #endif
 }

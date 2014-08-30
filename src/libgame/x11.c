@@ -198,8 +198,9 @@ static DrawWindow *X11InitWindow()
   /* Select event types wanted */
   window_event_mask =
     ExposureMask | StructureNotifyMask | FocusChangeMask |
-    ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
-    PointerMotionHintMask | KeyPressMask | KeyReleaseMask;
+    ButtonPressMask | ButtonReleaseMask |
+    PointerMotionMask | PointerMotionHintMask |
+    KeyPressMask | KeyReleaseMask;
 
   XSelectInput(display, new_window->drawable, window_event_mask);
 #endif
@@ -232,6 +233,20 @@ static DrawWindow *X11InitWindow()
   return new_window;
 }
 
+void X11ZoomBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap)
+{
+#if defined(TARGET_ALLEGRO)
+  AllegroZoomBitmap(src_bitmap->drawable, dst_bitmap->drawable,
+		    src_bitmap->width, src_bitmap->height,
+		    dst_bitmap->width, dst_bitmap->height);
+#else
+  ZoomPixmap(display, src_bitmap->gc,
+	     src_bitmap->drawable, dst_bitmap->drawable,
+	     src_bitmap->width, src_bitmap->height,
+	     dst_bitmap->width, dst_bitmap->height);
+#endif
+}
+
 static void SetImageDimensions(Bitmap *bitmap)
 {
 #if defined(TARGET_ALLEGRO)
@@ -254,6 +269,8 @@ Bitmap *X11LoadImage(char *filename)
   Bitmap *new_bitmap = CreateBitmapStruct();
   char *error = "Read_PCX_to_Pixmap(): %s '%s'";
   int pcx_err;
+  XGCValues clip_gc_values;
+  unsigned long clip_gc_valuemask;
 
   pcx_err = Read_PCX_to_Pixmap(display, window->drawable, window->gc, filename,
 			       &new_bitmap->drawable, &new_bitmap->clip_mask);
@@ -296,6 +313,12 @@ Bitmap *X11LoadImage(char *filename)
     return NULL;
   }
 
+  clip_gc_values.graphics_exposures = False;
+  clip_gc_values.clip_mask = new_bitmap->clip_mask;
+  clip_gc_valuemask = GCGraphicsExposures | GCClipMask;
+  new_bitmap->stored_clip_gc = XCreateGC(display, window->drawable,
+					 clip_gc_valuemask, &clip_gc_values);
+
   /* set GraphicContext inheritated from Window */
   new_bitmap->gc = window->gc;
 
@@ -304,5 +327,150 @@ Bitmap *X11LoadImage(char *filename)
 
   return new_bitmap;
 }
+
+inline void X11CreateBitmapContent(Bitmap *new_bitmap,
+				   int width, int height, int depth)
+{
+  Pixmap pixmap;
+
+  if ((pixmap = XCreatePixmap(display, window->drawable, width, height, depth))
+      == None)
+    Error(ERR_EXIT, "cannot create pixmap");
+
+  new_bitmap->drawable = pixmap;
+
+  if (window == NULL)
+    Error(ERR_EXIT, "Window GC needed for Bitmap -- create Window first");
+
+  new_bitmap->gc = window->gc;
+
+  new_bitmap->line_gc[0] = window->line_gc[0];
+  new_bitmap->line_gc[1] = window->line_gc[1];
+}
+
+inline void X11FreeBitmapPointers(Bitmap *bitmap)
+{
+  /* The X11 version seems to have a memory leak here -- although
+     "XFreePixmap()" is called, the corresponding memory seems not
+     to be freed (according to "ps"). The SDL version apparently
+     does not have this problem. */
+
+  if (bitmap->drawable)
+    XFreePixmap(display, bitmap->drawable);
+  if (bitmap->clip_mask)
+    XFreePixmap(display, bitmap->clip_mask);
+  if (bitmap->stored_clip_gc)
+    XFreeGC(display, bitmap->stored_clip_gc);
+  /* the other GCs are only pointers to GCs used elsewhere */
+  bitmap->drawable = None;
+  bitmap->clip_mask = None;
+  bitmap->stored_clip_gc = None;
+}
+
+inline void X11CopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
+			int src_x, int src_y, int width, int height,
+			int dst_x, int dst_y, int mask_mode)
+{
+  XCopyArea(display, src_bitmap->drawable, dst_bitmap->drawable,
+	    (mask_mode == BLIT_MASKED ? src_bitmap->clip_gc : dst_bitmap->gc),
+	    src_x, src_y, width, height, dst_x, dst_y);
+}
+
+inline void X11FillRectangle(Bitmap *bitmap, int x, int y,
+			     int width, int height, Pixel color)
+{
+  XSetForeground(display, bitmap->gc, color);
+  XFillRectangle(display, bitmap->drawable, bitmap->gc, x, y, width, height);
+}
+
+inline void X11DrawSimpleLine(Bitmap *bitmap, int from_x, int from_y,
+			      int to_x, int to_y, Pixel color)
+{
+  XSetForeground(display, bitmap->gc, color);
+  XDrawLine(display, bitmap->drawable, bitmap->gc, from_x, from_y, to_x, to_y);
+}
+
+inline Pixel X11GetPixel(Bitmap *bitmap, int x, int y)
+{
+  XImage *pixel_image;
+  Pixel pixel_value;
+
+  pixel_image = XGetImage(display, bitmap->drawable, x, y, 1, 1,
+			  AllPlanes, ZPixmap);
+  pixel_value = XGetPixel(pixel_image, 0, 0);
+
+  XDestroyImage(pixel_image);
+
+  return pixel_value;
+}
+
+#if defined(TARGET_X11_NATIVE)
+inline Pixel X11GetPixelFromRGB(unsigned int color_r, unsigned int color_g,
+				unsigned int color_b)
+{
+  XColor xcolor;
+  Pixel pixel;
+
+  xcolor.flags = DoRed | DoGreen | DoBlue;
+  xcolor.red = (color_r << 8);
+  xcolor.green = (color_g << 8);
+  xcolor.blue = (color_b << 8);
+
+  XAllocColor(display, cmap, &xcolor);
+  pixel = xcolor.pixel;
+
+  return pixel;
+}
+#endif	/* TARGET_X11_NATIVE */
+
+
+/* ------------------------------------------------------------------------- */
+/* mouse pointer functions                                                   */
+/* ------------------------------------------------------------------------- */
+
+#if defined(TARGET_X11_NATIVE)
+
+static Cursor create_cursor(struct MouseCursorInfo *cursor_info)
+{
+  Pixmap pixmap_data, pixmap_mask;
+  XColor color_fg, color_bg;
+  Cursor cursor;
+
+  /* shape and mask are single plane pixmaps */
+  pixmap_data =
+    XCreatePixmapFromBitmapData(display, window->drawable, cursor_info->data,
+				cursor_info->width, cursor_info->height,
+				1, 0, 1);
+  pixmap_mask =
+    XCreatePixmapFromBitmapData(display, window->drawable, cursor_info->mask,
+				cursor_info->width, cursor_info->height,
+				1, 0, 1);
+
+  XParseColor(display, cmap, "black", &color_fg);
+  XParseColor(display, cmap, "white", &color_bg);
+
+  cursor = XCreatePixmapCursor(display, pixmap_data, pixmap_mask,
+			       &color_fg, &color_bg,
+			       cursor_info->hot_x, cursor_info->hot_y);
+
+  return cursor;
+}
+
+void X11SetMouseCursor(struct MouseCursorInfo *cursor_info)
+{
+  static struct MouseCursorInfo *last_cursor_info = NULL;
+  static Cursor cursor_default = None;
+  static Cursor cursor_current = None;
+
+  if (cursor_info != NULL && cursor_info != last_cursor_info)
+  {
+    cursor_current = create_cursor(cursor_info);
+    last_cursor_info = cursor_info;
+  }
+
+  XDefineCursor(display, window->drawable,
+		cursor_info ? cursor_current : cursor_default);
+}
+#endif	/* TARGET_X11_NATIVE */
 
 #endif /* TARGET_X11 */

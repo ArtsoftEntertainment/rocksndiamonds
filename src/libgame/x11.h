@@ -34,7 +34,19 @@
 #define TARGET_STRING		"X11"
 #endif
 
+#if defined(PLATFORM_UNIX)
+/* This triggers some stuff that is needed because X11 (XSetClipOrigin(),
+   to be precise) is often very slow when preparing a masked XCopyArea()
+   for big Pixmaps.
+   To prevent this, small (tile-sized) mask Pixmaps are created which will
+   then be set much faster with XSetClipOrigin() and speed things up a lot. */
+#define TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND
+#endif
+
 #define FULLSCREEN_STATUS	FULLSCREEN_NOT_AVAILABLE
+
+#define CURSOR_MAX_WIDTH	32
+#define CURSOR_MAX_HEIGHT	32
 
 
 /* X11 type definitions */
@@ -42,9 +54,11 @@
 typedef struct X11DrawableInfo	Bitmap;
 typedef struct X11DrawableInfo	DrawWindow;
 typedef struct X11DrawableInfo	DrawBuffer;
-/* "Pixel" is already defined in X11/Intrinsic.h */
+/* "Pixel" is already defined */
+/* "Cursor" is already defined */
 
 typedef KeySym			Key;
+typedef unsigned int		KeyMod;
 
 typedef XEvent			Event;
 typedef XButtonEvent		ButtonEvent;
@@ -70,6 +84,15 @@ struct X11DrawableInfo
   GC clip_gc;		/* can be 'stored_clip_gc' or one-tile-only clip GC  */
 };
 
+struct MouseCursorInfo
+{
+  int width, height;
+  int hot_x, hot_y;
+
+  char data[CURSOR_MAX_WIDTH * CURSOR_MAX_HEIGHT / 8];
+  char mask[CURSOR_MAX_WIDTH * CURSOR_MAX_HEIGHT / 8];
+};
+
 struct XY
 {
   short x, y;
@@ -77,6 +100,9 @@ struct XY
 
 
 /* X11 symbol definitions */
+
+#define BLACK_PIXEL		BlackPixel(display, screen)
+#define WHITE_PIXEL		WhitePixel(display, screen)
 
 #define EVENT_BUTTONPRESS	ButtonPress
 #define EVENT_BUTTONRELEASE	ButtonRelease
@@ -290,11 +316,40 @@ struct XY
 #define KSYM_FKEY_LAST		KSYM_F24
 #define KSYM_NUM_FKEYS		(KSYM_FKEY_LAST - KSYM_FKEY_FIRST + 1)
 
+#define KMOD_None		None
+#define KMOD_Shift_L		0x0001
+#define KMOD_Shift_R		0x0002
+#define KMOD_Control_L		0x0040
+#define KMOD_Control_R		0x0080
+#define KMOD_Meta_L		0x0400
+#define KMOD_Meta_R		0x0800
+#define KMOD_Alt_L		0x0100
+#define KMOD_Alt_R		0x0200
+
+#define KMOD_Shift		(KMOD_Shift_L   | KMOD_Shift_R)
+#define KMOD_Control		(KMOD_Control_L | KMOD_Control_R)
+#define KMOD_Meta		(KMOD_Meta_L    | KMOD_Meta_R)
+#define KMOD_Alt		(KMOD_Alt_L     | KMOD_Alt_R)
+
 
 /* X11 function definitions */
 
 inline void X11InitVideoDisplay(void);
 inline void X11InitVideoBuffer(DrawBuffer **, DrawWindow **);
+
+void X11ZoomBitmap(Bitmap *, Bitmap *);
 Bitmap *X11LoadImage(char *);
+
+inline void X11CreateBitmapContent(Bitmap *, int, int, int);
+inline void X11FreeBitmapPointers(Bitmap *);
+inline void X11CopyArea(Bitmap *, Bitmap *, int, int, int, int, int, int, int);
+inline void X11FillRectangle(Bitmap *, int, int, int, int, Pixel);
+inline void X11DrawSimpleLine(Bitmap *, int, int, int, int, Pixel);
+inline Pixel X11GetPixel(Bitmap *, int, int);
+inline Pixel X11GetPixelFromRGB(unsigned int, unsigned int, unsigned int);
+
+#if defined(TARGET_X11_NATIVE)
+void X11SetMouseCursor(struct MouseCursorInfo *);
+#endif
 
 #endif /* X11_H */

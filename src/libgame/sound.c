@@ -52,12 +52,6 @@
 #define SOUND_FADING_VOLUME_THRESHOLD	(SOUND_FADING_VOLUME_STEP * 2)
 #endif
 
-#if !defined(PLATFORM_HPUX)
-#define SND_BLOCKSIZE			4096
-#else
-#define SND_BLOCKSIZE			32768
-#endif
-
 #define SND_TYPE_NONE			0
 #define SND_TYPE_WAV			1
 
@@ -124,6 +118,7 @@ struct SampleInfo
   int format;
   void *data_ptr;		/* pointer to first sample (8 or 16 bit) */
   long data_len;		/* number of samples, NOT number of bytes */
+  int num_channels;		/* mono: 1 channel, stereo: 2 channels */
 };
 typedef struct SampleInfo SoundInfo;
 typedef struct SampleInfo MusicInfo;
@@ -145,6 +140,7 @@ struct SoundControl
   int format;
   void *data_ptr;		/* pointer to first sample (8 or 16 bit) */
   long data_len;		/* number of samples, NOT number of bytes */
+  int num_channels;		/* mono: 1 channel, stereo: 2 channels */
 
 #if defined(TARGET_ALLEGRO)
   int voice;
@@ -152,26 +148,15 @@ struct SoundControl
 };
 typedef struct SoundControl SoundControl;
 
-struct ListNode
-{
-  char *key;
-  void *content;
-  struct ListNode *next;
-};
-typedef struct ListNode ListNode;
-
-static ListNode *newListNode(void);
-static void addNodeToList(ListNode **, char *, void *);
-static void deleteNodeFromList(ListNode **, char *, void (*function)(void *));
-static ListNode *getNodeFromKey(ListNode *, char *);
-static int getNumNodes(ListNode *);
-
-
-static struct SoundEffectInfo *sound_effect;
-static ListNode *SoundFileList = NULL;
+static struct ArtworkListInfo *sound_info = NULL;
+#if 0
 static SoundInfo **Sound = NULL;
+#endif
 static MusicInfo **Music = NULL;
-static int num_sounds = 0, num_music = 0;
+#if 0
+static int num_sounds = 0;
+#endif
+static int num_music = 0;
 static int stereo_volume[SOUND_MAX_LEFT2RIGHT + 1];
 
 
@@ -194,6 +179,8 @@ static int ulaw_to_linear(unsigned char);
 static void ReloadCustomSounds();
 static void ReloadCustomMusic();
 static void FreeSound(void *);
+
+static SoundInfo *getSoundInfoEntryFromSoundID(int);
 
 
 /* ------------------------------------------------------------------------- */
@@ -273,7 +260,15 @@ static boolean ForkAudioProcess(void)
     return FALSE;
   }
 
-  if (IS_CHILD_PROCESS(audio.mixer_pid))
+  if (audio.mixer_pid == 0)		/* we are the child process */
+    audio.mixer_pid = getpid();
+
+#if 0
+  printf("PID: %d [%s]\n", getpid(),(IS_CHILD_PROCESS() ? "child" : "parent"));
+  Delay(10000 * 0);
+#endif
+
+  if (IS_CHILD_PROCESS())
     Mixer_Main();			/* this function never returns */
   else
     close(audio.mixer_pipe[0]);		/* no reading from pipe needed */
@@ -304,7 +299,7 @@ void UnixCloseAudio(void)
   if (audio.device_fd)
     close(audio.device_fd);
 
-  if (IS_PARENT_PROCESS(audio.mixer_pid))
+  if (IS_PARENT_PROCESS() && HAS_CHILD_PROCESS())
     kill(audio.mixer_pid, SIGTERM);
 }
 
@@ -471,7 +466,7 @@ static void InitAudioDevice(struct AudioFormatInfo *afmt)
 
 static void SendSoundControlToMixerProcess(SoundControl *snd_ctrl)
 {
-  if (IS_CHILD_PROCESS(audio.mixer_pid))
+  if (IS_CHILD_PROCESS())
     return;
 
   if (write(audio.mixer_pipe[1], snd_ctrl, sizeof(SoundControl)) < 0)
@@ -484,7 +479,7 @@ static void SendSoundControlToMixerProcess(SoundControl *snd_ctrl)
 
 static void ReadSoundControlFromMainProcess(SoundControl *snd_ctrl)
 {
-  if (IS_PARENT_PROCESS(audio.mixer_pid))
+  if (IS_PARENT_PROCESS())
     return;
 
   if (read(audio.mixer_pipe[0], snd_ctrl, sizeof(SoundControl))
@@ -492,19 +487,21 @@ static void ReadSoundControlFromMainProcess(SoundControl *snd_ctrl)
     Error(ERR_EXIT_SOUND_SERVER, "broken pipe -- no sounds");
 }
 
-static void WriteReloadInfoToPipe(char *set_name, int type)
+static void WriteReloadInfoToPipe(char *set_identifier, int type)
 {
   SoundControl snd_ctrl;
   TreeInfo *ti = (type == SND_CTRL_RELOAD_SOUNDS ? artwork.snd_current :
 		  artwork.mus_current);
   unsigned long str_size1 = strlen(leveldir_current->fullpath) + 1;
-  unsigned long str_size2 = strlen(ti->basepath) + 1;
-  unsigned long str_size3 = strlen(ti->fullpath) + 1;
+  unsigned long str_size2 = strlen(leveldir_current->sounds_path) + 1;
+  unsigned long str_size3 = strlen(leveldir_current->music_path) + 1;
+  unsigned long str_size4 = strlen(ti->basepath) + 1;
+  unsigned long str_size5 = strlen(ti->fullpath) + 1;
   boolean override_level_artwork = (type == SND_CTRL_RELOAD_SOUNDS ?
 				    setup.override_level_sounds :
 				    setup.override_level_music);
 
-  if (IS_CHILD_PROCESS(audio.mixer_pid))
+  if (IS_CHILD_PROCESS())
     return;
 
   if (leveldir_current == NULL)		/* should never happen */
@@ -512,11 +509,11 @@ static void WriteReloadInfoToPipe(char *set_name, int type)
 
   snd_ctrl.active = FALSE;
   snd_ctrl.state = type;
-  snd_ctrl.data_len = strlen(set_name) + 1;
+  snd_ctrl.data_len = strlen(set_identifier) + 1;
 
   if (write(audio.mixer_pipe[1], &snd_ctrl,
 	    sizeof(snd_ctrl)) < 0 ||
-      write(audio.mixer_pipe[1], set_name,
+      write(audio.mixer_pipe[1], set_identifier,
 	    snd_ctrl.data_len) < 0 ||
       write(audio.mixer_pipe[1], &override_level_artwork,
 	    sizeof(boolean)) < 0 ||
@@ -530,12 +527,20 @@ static void WriteReloadInfoToPipe(char *set_name, int type)
 	    sizeof(unsigned long)) < 0 ||
       write(audio.mixer_pipe[1], &str_size3,
 	    sizeof(unsigned long)) < 0 ||
+      write(audio.mixer_pipe[1], &str_size4,
+	    sizeof(unsigned long)) < 0 ||
+      write(audio.mixer_pipe[1], &str_size5,
+	    sizeof(unsigned long)) < 0 ||
       write(audio.mixer_pipe[1], leveldir_current->fullpath,
 	    str_size1) < 0 ||
-      write(audio.mixer_pipe[1], ti->basepath,
+      write(audio.mixer_pipe[1], leveldir_current->sounds_path,
 	    str_size2) < 0 ||
+      write(audio.mixer_pipe[1], leveldir_current->music_path,
+	    str_size3) < 0 ||
+      write(audio.mixer_pipe[1], ti->basepath,
+	    str_size4) < 0 ||
       write(audio.mixer_pipe[1], ti->fullpath,
-	    str_size3) < 0)
+	    str_size5) < 0)
   {
     Error(ERR_WARN, "cannot pipe to child process -- no sounds");
     audio.sound_available = audio.sound_enabled = FALSE;
@@ -548,29 +553,34 @@ static void ReadReloadInfoFromPipe(SoundControl *snd_ctrl)
   TreeInfo **ti_ptr = ((snd_ctrl->state & SND_CTRL_RELOAD_SOUNDS) ?
 		       &artwork.snd_current : &artwork.mus_current);
   TreeInfo *ti = *ti_ptr;
-  unsigned long str_size1, str_size2, str_size3;
-  static char *set_name = NULL;
+  unsigned long str_size1, str_size2, str_size3, str_size4, str_size5;
+  static char *set_identifier = NULL;
   boolean *override_level_artwork = (snd_ctrl->state & SND_CTRL_RELOAD_SOUNDS ?
 				     &setup.override_level_sounds :
 				     &setup.override_level_music);
 
-  if (set_name)
-    free(set_name);
+  if (set_identifier)
+    free(set_identifier);
 
-  set_name = checked_malloc(snd_ctrl->data_len);
+  set_identifier = checked_malloc(snd_ctrl->data_len);
 
   if (leveldir_current == NULL)
     leveldir_current = checked_calloc(sizeof(TreeInfo));
+
   if (ti == NULL)
     ti = *ti_ptr = checked_calloc(sizeof(TreeInfo));
   if (leveldir_current->fullpath != NULL)
     free(leveldir_current->fullpath);
+  if (leveldir_current->sounds_path != NULL)
+    free(leveldir_current->sounds_path);
+  if (leveldir_current->music_path != NULL)
+    free(leveldir_current->music_path);
   if (ti->basepath != NULL)
     free(ti->basepath);
   if (ti->fullpath != NULL)
     free(ti->fullpath);
 
-  if (read(audio.mixer_pipe[0], set_name,
+  if (read(audio.mixer_pipe[0], set_identifier,
 	   snd_ctrl->data_len) != snd_ctrl->data_len ||
       read(audio.mixer_pipe[0], override_level_artwork,
 	   sizeof(boolean)) != sizeof(boolean) ||
@@ -583,25 +593,35 @@ static void ReadReloadInfoFromPipe(SoundControl *snd_ctrl)
       read(audio.mixer_pipe[0], &str_size2,
 	   sizeof(unsigned long)) != sizeof(unsigned long) ||
       read(audio.mixer_pipe[0], &str_size3,
+	   sizeof(unsigned long)) != sizeof(unsigned long) ||
+      read(audio.mixer_pipe[0], &str_size4,
+	   sizeof(unsigned long)) != sizeof(unsigned long) ||
+      read(audio.mixer_pipe[0], &str_size5,
 	   sizeof(unsigned long)) != sizeof(unsigned long))
     Error(ERR_EXIT_SOUND_SERVER, "broken pipe -- no sounds");
 
   leveldir_current->fullpath = checked_calloc(str_size1);
-  ti->basepath = checked_calloc(str_size2);
-  ti->fullpath = checked_calloc(str_size3);
+  leveldir_current->sounds_path = checked_calloc(str_size2);
+  leveldir_current->music_path = checked_calloc(str_size3);
+  ti->basepath = checked_calloc(str_size4);
+  ti->fullpath = checked_calloc(str_size5);
 
   if (read(audio.mixer_pipe[0], leveldir_current->fullpath,
 	   str_size1) != str_size1 ||
-      read(audio.mixer_pipe[0], ti->basepath,
+      read(audio.mixer_pipe[0], leveldir_current->sounds_path,
 	   str_size2) != str_size2 ||
+      read(audio.mixer_pipe[0], leveldir_current->music_path,
+	   str_size3) != str_size3 ||
+      read(audio.mixer_pipe[0], ti->basepath,
+	   str_size4) != str_size4 ||
       read(audio.mixer_pipe[0], ti->fullpath,
-	   str_size3) != str_size3)
+	   str_size5) != str_size5)
     Error(ERR_EXIT_SOUND_SERVER, "broken pipe -- no sounds");
 
   if (snd_ctrl->state & SND_CTRL_RELOAD_SOUNDS)
-    artwork.sounds_set_current_name = set_name;
+    artwork.snd_current_identifier = set_identifier;
   else
-    artwork.music_set_current_name = set_name;
+    artwork.mus_current_identifier = set_identifier;
 }
 
 #endif /* AUDIO_UNIX_NATIVE */
@@ -803,6 +823,7 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
 {
   SoundInfo *snd_info;
   int i, k;
+  int num_sounds = getSoundListSize();
 
 #if 0
   printf("NEW SOUND %d ARRIVED [%d] [%d ACTIVE CHANNELS]\n",
@@ -819,15 +840,22 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
   else if (snd_ctrl.nr >= num_sounds)
     return;
 
+#if 0
   snd_info = (IS_MUSIC(snd_ctrl) ? Music[snd_ctrl.nr] : Sound[snd_ctrl.nr]);
+#else
+  snd_info = (IS_MUSIC(snd_ctrl) ? Music[snd_ctrl.nr] :
+	      getSoundInfoEntryFromSoundID(snd_ctrl.nr));
+#endif
+
   if (snd_info == NULL)
     return;
 
   /* copy sound sample and format information */
-  snd_ctrl.type     = snd_info->type;
-  snd_ctrl.format   = snd_info->format;
-  snd_ctrl.data_ptr = snd_info->data_ptr;
-  snd_ctrl.data_len = snd_info->data_len;
+  snd_ctrl.type         = snd_info->type;
+  snd_ctrl.format       = snd_info->format;
+  snd_ctrl.data_ptr     = snd_info->data_ptr;
+  snd_ctrl.data_len     = snd_info->data_len;
+  snd_ctrl.num_channels = snd_info->num_channels;
 
   /* play music samples on a dedicated music channel */
   if (IS_MUSIC(snd_ctrl))
@@ -941,11 +969,16 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
     unsigned long playing_current = Counter();
     int longest = 0, longest_nr = audio.first_sound_channel;
 
+#if 0
+#if DEBUG
+    /* print some debugging information about audio channel usage */
     for (i=audio.first_sound_channel; i<audio.num_channels; i++)
     {
       Error(ERR_RETURN, "Mixer_InsertSound: %d [%d]: %ld (%ld)",
 	    i, mixer[i].active, mixer[i].data_len, (long)mixer[i].data_ptr);
     }
+#endif
+#endif
 
     for (i=audio.first_sound_channel; i<audio.num_channels; i++)
     {
@@ -995,7 +1028,7 @@ static void HandleSoundRequest(SoundControl snd_ctrl)
   int i;
 
 #if defined(AUDIO_UNIX_NATIVE)
-  if (IS_PARENT_PROCESS(audio.mixer_pid))
+  if (IS_PARENT_PROCESS())
   {
     SendSoundControlToMixerProcess(&snd_ctrl);
     return;
@@ -1095,33 +1128,54 @@ void StartMixer(void)
 
 static void CopySampleToMixingBuffer(SoundControl *snd_ctrl,
 				     int sample_pos, int sample_size,
-				     short *buffer_ptr)
+				     short *buffer_base_ptr, int buffer_pos,
+				     int num_output_channels)
 {
-  void *sample_ptr = snd_ctrl->data_ptr;
-  int i;
+  short *buffer_ptr = buffer_base_ptr + num_output_channels * buffer_pos;
+  int num_channels = snd_ctrl->num_channels;
+  int stepsize = num_channels;
+  int output_stepsize = num_output_channels;
+  int i, j;
 
   if (snd_ctrl->format == AUDIO_FORMAT_U8)
-    for (i=0; i<sample_size; i++)
-      *buffer_ptr++ =
-	((short)(((byte *)sample_ptr)[sample_pos + i] ^ 0x80)) << 8;
+  {
+    byte *sample_ptr = (byte *)snd_ctrl->data_ptr + num_channels * sample_pos;
+
+    for (i=0; i<num_output_channels; i++)
+    {
+      int offset = (snd_ctrl->num_channels == 1 ? 0 : i);
+
+      for (j=0; j<sample_size; j++)
+	buffer_ptr[output_stepsize * j + i] =
+	  ((short)(sample_ptr[stepsize * j + offset] ^ 0x80)) << 8;
+    }
+  }
   else	/* AUDIO_FORMAT_S16 */
-    for (i=0; i<sample_size; i++)
-      *buffer_ptr++ =
-	((short *)sample_ptr)[sample_pos + i];
+  {
+    short *sample_ptr= (short *)snd_ctrl->data_ptr + num_channels * sample_pos;
+
+    for (i=0; i<num_output_channels; i++)
+    {
+      int offset = (snd_ctrl->num_channels == 1 ? 0 : i);
+
+      for (j=0; j<sample_size; j++)
+	buffer_ptr[output_stepsize * j + i] =
+	  sample_ptr[stepsize * j + offset];
+    }
+  }
 }
 
 #if defined(AUDIO_STREAMING_DSP)
 static void Mixer_Main_DSP()
 {
-  static short premix_first_buffer[SND_BLOCKSIZE];
-  static short premix_left_buffer[SND_BLOCKSIZE];
-  static short premix_right_buffer[SND_BLOCKSIZE];
-  static long premix_last_buffer[SND_BLOCKSIZE];
-  static byte playing_buffer[SND_BLOCKSIZE];
+  static short premix_first_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
+  static long premix_last_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
+  static byte playing_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
   boolean stereo;
   int fragment_size;
   int sample_bytes;
   int max_sample_size;
+  int num_output_channels;
   int i, j;
 
   if (!mixer_active_channels)
@@ -1138,11 +1192,12 @@ static void Mixer_Main_DSP()
   stereo = afmt.stereo;
   fragment_size = afmt.fragment_size;
   sample_bytes = (afmt.format & AUDIO_FORMAT_U8 ? 1 : 2);
-  max_sample_size = fragment_size / ((stereo ? 2 : 1) * sample_bytes);
+  num_output_channels = (stereo ? 2 : 1);
+  max_sample_size = fragment_size / (num_output_channels * sample_bytes);
 
   /* first clear the last premixing buffer */
   memset(premix_last_buffer, 0,
-	 max_sample_size * (stereo ? 2 : 1) * sizeof(long));
+	 max_sample_size * num_output_channels * sizeof(long));
 
   for(i=0; i<audio.num_channels; i++)
   {
@@ -1169,7 +1224,7 @@ static void Mixer_Main_DSP()
 
     /* copy original sample to first mixing buffer */
     CopySampleToMixingBuffer(&mixer[i], sample_pos, sample_size,
-			     premix_first_buffer);
+			     premix_first_buffer, 0, num_output_channels);
 
     /* are we about to restart a looping sound? */
     if (IS_LOOP(mixer[i]) && sample_size < max_sample_size)
@@ -1179,14 +1234,9 @@ static void Mixer_Main_DSP()
 	int restarted_sample_size =
 	  MIN(max_sample_size - sample_size, sample_len);
 
-	if (mixer[i].format == AUDIO_FORMAT_U8)
-	  for (j=0; j<restarted_sample_size; j++)
-	    premix_first_buffer[sample_size + j] =
-	      ((short)(((byte *)sample_ptr)[j] ^ 0x80)) << 8;
-	else
-	  for (j=0; j<restarted_sample_size; j++)
-	    premix_first_buffer[sample_size + j] =
-	      ((short *)sample_ptr)[j];
+	CopySampleToMixingBuffer(&mixer[i], 0, restarted_sample_size,
+				 premix_first_buffer, sample_size,
+				 num_output_channels);
 
 	mixer[i].playing_pos = restarted_sample_size;
 	sample_size += restarted_sample_size;
@@ -1200,11 +1250,11 @@ static void Mixer_Main_DSP()
 
     /* adjust volume of actual sound sample */
     if (mixer[i].volume != SOUND_MAX_VOLUME)
-      for(j=0; j<sample_size; j++)
+      for(j=0; j<sample_size * num_output_channels; j++)
 	premix_first_buffer[j] =
 	  mixer[i].volume * (long)premix_first_buffer[j] / SOUND_MAX_VOLUME;
 
-    /* fill the last mixing buffer with stereo or mono sound */
+    /* adjust left and right channel volume due to stereo sound position */
     if (stereo)
     {
       int left_volume  = SOUND_VOLUME_LEFT(mixer[i].stereo_position);
@@ -1212,20 +1262,16 @@ static void Mixer_Main_DSP()
 
       for(j=0; j<sample_size; j++)
       {
-	premix_left_buffer[j] =
-	  left_volume  * premix_first_buffer[j] / SOUND_MAX_LEFT2RIGHT;
-	premix_right_buffer[j] =
-	  right_volume * premix_first_buffer[j] / SOUND_MAX_LEFT2RIGHT;
-
-	premix_last_buffer[2 * j + 0] += premix_left_buffer[j];
-	premix_last_buffer[2 * j + 1] += premix_right_buffer[j];
+	premix_first_buffer[2 * j + 0] =
+	  left_volume  * premix_first_buffer[2 * j + 0] / SOUND_MAX_LEFT2RIGHT;
+	premix_first_buffer[2 * j + 1] =
+	  right_volume * premix_first_buffer[2 * j + 1] / SOUND_MAX_LEFT2RIGHT;
       }
     }
-    else
-    {
-      for(j=0; j<sample_size; j++)
-	premix_last_buffer[j] += premix_first_buffer[j];
-    }
+
+    /* fill the last mixing buffer with stereo or mono sound */
+    for(j=0; j<sample_size * num_output_channels; j++)
+      premix_last_buffer[j] += premix_first_buffer[j];
 
     /* delete completed sound entries from the mixer */
     if (mixer[i].playing_pos >= mixer[i].data_len)
@@ -1240,7 +1286,7 @@ static void Mixer_Main_DSP()
   }
 
   /* prepare final playing buffer according to system audio format */
-  for(i=0; i<max_sample_size * (stereo ? 2 : 1); i++)
+  for(i=0; i<max_sample_size * num_output_channels; i++)
   {
     /* cut off at 17 bit value */
     if (premix_last_buffer[i] < -65535)
@@ -1278,9 +1324,10 @@ static void Mixer_Main_DSP()
 
 static int Mixer_Main_SimpleAudio(SoundControl snd_ctrl)
 {
-  static short premix_first_buffer[SND_BLOCKSIZE];
-  static byte playing_buffer[SND_BLOCKSIZE];
-  int max_sample_size = SND_BLOCKSIZE;
+  static short premix_first_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
+  static byte playing_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
+  int max_sample_size = DEFAULT_AUDIO_FRAGMENT_SIZE;
+  int num_output_channels = 1;
   void *sample_ptr;
   int sample_len;
   int sample_pos;
@@ -1298,7 +1345,7 @@ static int Mixer_Main_SimpleAudio(SoundControl snd_ctrl)
 
   /* copy original sample to first mixing buffer */
   CopySampleToMixingBuffer(&mixer[i], sample_pos, sample_size,
-			   premix_first_buffer);
+			   premix_first_buffer, 0, num_output_channels);
 
   /* adjust volume of actual sound sample */
   if (mixer[i].volume != SOUND_MAX_VOLUME)
@@ -1519,7 +1566,7 @@ static int ulaw_to_linear(unsigned char ulawbyte)
 #define CHUNK_ID_LEN            4       /* IFF style chunk id length */
 #define WAV_HEADER_SIZE		16	/* size of WAV file header */
 
-static SoundInfo *Load_WAV(char *filename)
+static void *Load_WAV(char *filename)
 {
   SoundInfo *snd_info;
 #if defined(AUDIO_UNIX_NATIVE)
@@ -1530,6 +1577,7 @@ static SoundInfo *Load_WAV(char *filename)
 #endif
   char chunk_name[CHUNK_ID_LEN + 1];
   int chunk_size;
+  int data_byte_len;
   FILE *file;
 #endif
 
@@ -1624,7 +1672,8 @@ static SoundInfo *Load_WAV(char *filename)
 	return NULL;
       }
 
-      if (header.num_channels != 1)
+      if (header.num_channels != 1 &&
+	  header.num_channels != 2)
       {
 	Error(ERR_WARN, "sound file '%s': number of %d channels not supported",
 	      filename, header.num_channels);
@@ -1633,7 +1682,8 @@ static SoundInfo *Load_WAV(char *filename)
 	return NULL;
       }
 
-      if (header.bits_per_sample != 8 && header.bits_per_sample != 16)
+      if (header.bits_per_sample != 8 &&
+	  header.bits_per_sample != 16)
       {
 	Error(ERR_WARN, "sound file '%s': %d bits per sample not supported",
 	      filename, header.bits_per_sample);
@@ -1659,7 +1709,9 @@ static SoundInfo *Load_WAV(char *filename)
     }
     else if (strcmp(chunk_name, "data") == 0)
     {
-      snd_info->data_len = chunk_size;
+      data_byte_len = chunk_size;
+
+      snd_info->data_len = data_byte_len;
       snd_info->data_ptr = checked_malloc(snd_info->data_len);
 
       /* read sound data */
@@ -1673,8 +1725,8 @@ static SoundInfo *Load_WAV(char *filename)
 	return NULL;
       }
 
-      /* check for odd number of sample bytes (data chunk is word aligned) */
-      if ((chunk_size % 2) == 1)
+      /* check for odd number of data bytes (data chunk is word aligned) */
+      if ((data_byte_len % 2) == 1)
 	ReadUnusedBytesFromFile(file, 1);
     }
     else	/* unknown chunk -- ignore */
@@ -1698,6 +1750,29 @@ static SoundInfo *Load_WAV(char *filename)
     snd_info->data_len /= 2;		/* correct number of samples */
   }
 
+  snd_info->num_channels = header.num_channels;
+  if (header.num_channels == 2)
+    snd_info->data_len /= 2;		/* correct number of samples */
+
+#if 0
+  if (header.num_channels == 1)		/* convert mono sound to stereo */
+  {
+    void *buffer_ptr = checked_malloc(data_byte_len * 2);
+    void *sample_ptr = snd_info->data_ptr;
+    int sample_size = snd_info->data_len;
+    int i;
+
+    if (snd_ctrl->format == AUDIO_FORMAT_U8)
+      for (i=0; i<sample_size; i++)
+	*buffer_ptr++ =
+	  ((short)(((byte *)sample_ptr)[i] ^ 0x80)) << 8;
+    else	/* AUDIO_FORMAT_S16 */
+      for (i=0; i<sample_size; i++)
+	*buffer_ptr++ =
+	  ((short *)sample_ptr)[i];
+  }
+#endif
+
 #endif	/* AUDIO_UNIX_NATIVE */
 
   snd_info->type = SND_TYPE_WAV;
@@ -1706,117 +1781,119 @@ static SoundInfo *Load_WAV(char *filename)
   return snd_info;
 }
 
-static void deleteSoundEntry(SoundInfo **snd_info)
+int getSoundListSize()
 {
-  if (*snd_info)
-  {
-    char *filename = (*snd_info)->source_filename;
-
-#if 0
-    printf("[decrementing reference counter of sound '%s']\n", filename);
-#endif
-
-    if (--(*snd_info)->num_references <= 0)
-    {
-#if 0
-      printf("[deleting sound '%s']\n", filename);
-#endif
-
-      /*
-      FreeSound(*snd_info);
-      */
-      deleteNodeFromList(&SoundFileList, filename, FreeSound);
-    }
-
-    *snd_info = NULL;
-  }
+  return (sound_info->num_file_list_entries +
+	  sound_info->num_dynamic_file_list_entries);
 }
 
-static void replaceSoundEntry(SoundInfo **snd_info, char *filename)
+struct FileInfo *getSoundListEntry(int pos)
 {
-  ListNode *node;
+  int num_list_entries = sound_info->num_file_list_entries;
+  int list_pos = (pos < num_list_entries ? pos : pos - num_list_entries);
 
-  /* check if the old and the new sound file are the same */
-  if (*snd_info && strcmp((*snd_info)->source_filename, filename) == 0)
-  {
-    /* The old and new sound are the same (have the same filename and path).
-       This usually means that this sound does not exist in this sound set
-       and a fallback to the existing sound is done. */
-
-#if 0
-    printf("[sound '%s' already exists (same list entry)]\n", filename);
-#endif
-
-    return;
-  }
-
-  /* delete existing sound file entry */
-  deleteSoundEntry(snd_info);
-
-  /* check if the new sound file already exists in the list of sounds */
-  if ((node = getNodeFromKey(SoundFileList, filename)) != NULL)
-  {
-#if 0
-      printf("[sound '%s' already exists (other list entry)]\n", filename);
-#endif
-
-      *snd_info = (SoundInfo *)node->content;
-      (*snd_info)->num_references++;
-  }
-  else if ((*snd_info = Load_WAV(filename)) != NULL)	/* load new sound */
-  {
-    (*snd_info)->num_references = 1;
-    addNodeToList(&SoundFileList, (*snd_info)->source_filename, *snd_info);
-  }
+  return (pos < num_list_entries ? &sound_info->file_list[list_pos] :
+	  &sound_info->dynamic_file_list[list_pos]);
 }
 
-static void LoadCustomSound(SoundInfo **snd_info, char *basename)
+static SoundInfo *getSoundInfoEntryFromSoundID(int pos)
 {
-  char *filename = getCustomSoundFilename(basename);
+  int num_list_entries = sound_info->num_file_list_entries;
+  int list_pos = (pos < num_list_entries ? pos : pos - num_list_entries);
+  SoundInfo **snd_info =
+    (SoundInfo **)(pos < num_list_entries ? sound_info->artwork_list :
+		   sound_info->dynamic_artwork_list);
 
-#if 0
-  printf("GOT CUSTOM SOUND FILE '%s'\n", filename);
-#endif
-
-  if (strcmp(basename, SND_FILE_UNDEFINED) == 0)
-  {
-    deleteSoundEntry(snd_info);
-    return;
-  }
-
-  if (filename == NULL)
-  {
-    Error(ERR_WARN, "cannot find sound file '%s'", basename);
-    return;
-  }
-
-  replaceSoundEntry(snd_info, filename);
+  return snd_info[list_pos];
 }
 
-void InitSoundList(struct SoundEffectInfo *sounds_list, int num_list_entries)
+int getSoundListPropertyMappingSize()
 {
-  if (Sound == NULL)
-    Sound = checked_calloc(num_list_entries * sizeof(SoundInfo *));
-
-  sound_effect = sounds_list;
-  num_sounds = num_list_entries;
+  return sound_info->num_property_mapping_entries;
 }
 
-void LoadSoundToList(char *basename, int list_pos)
+struct PropertyMapping *getSoundListPropertyMapping()
 {
-  if (Sound == NULL || list_pos >= num_sounds)
-    return;
+  return sound_info->property_mapping;
+}
+
+void InitSoundList(struct ConfigInfo *config_list, int num_file_list_entries,
+		   struct ConfigInfo *config_suffix_list,
+		   char **base_prefixes, char **ext1_suffixes,
+		   char **ext2_suffixes, char **ext3_suffixes,
+		   char **ignore_tokens)
+{
+  int i;
+
+  sound_info = checked_calloc(sizeof(struct ArtworkListInfo));
+  sound_info->type = ARTWORK_TYPE_SOUNDS;
+
+  /* ---------- initialize file list and suffix lists ---------- */
+
+  sound_info->num_file_list_entries = num_file_list_entries;
+  sound_info->num_dynamic_file_list_entries = 0;
+
+  sound_info->file_list =
+    getFileListFromConfigList(config_list, config_suffix_list, ignore_tokens,
+			      num_file_list_entries);
+  sound_info->dynamic_file_list = NULL;
+
+  sound_info->num_suffix_list_entries = 0;
+  for (i=0; config_suffix_list[i].token != NULL; i++)
+    sound_info->num_suffix_list_entries++;
+
+  sound_info->suffix_list = config_suffix_list;
+
+  /* ---------- initialize base prefix and suffixes lists ---------- */
+
+  sound_info->num_base_prefixes = 0;
+  for (i=0; base_prefixes[i] != NULL; i++)
+    sound_info->num_base_prefixes++;
+
+  sound_info->num_ext1_suffixes = 0;
+  for (i=0; ext1_suffixes[i] != NULL; i++)
+    sound_info->num_ext1_suffixes++;
+
+  sound_info->num_ext2_suffixes = 0;
+  for (i=0; ext2_suffixes[i] != NULL; i++)
+    sound_info->num_ext2_suffixes++;
+
+  sound_info->num_ext3_suffixes = 0;
+  for (i=0; ext3_suffixes[i] != NULL; i++)
+    sound_info->num_ext3_suffixes++;
+
+  sound_info->num_ignore_tokens = 0;
+  for (i=0; ignore_tokens[i] != NULL; i++)
+    sound_info->num_ignore_tokens++;
+
+  sound_info->base_prefixes = base_prefixes;
+  sound_info->ext1_suffixes = ext1_suffixes;
+  sound_info->ext2_suffixes = ext2_suffixes;
+  sound_info->ext3_suffixes = ext3_suffixes;
+  sound_info->ignore_tokens = ignore_tokens;
+
+  sound_info->num_property_mapping_entries = 0;
+
+  sound_info->property_mapping = NULL;
+
+  /* ---------- initialize artwork reference and content lists ---------- */
+
+  sound_info->sizeof_artwork_list_entry = sizeof(SoundInfo *);
+
+  sound_info->artwork_list =
+    checked_calloc(num_file_list_entries * sizeof(SoundInfo *));
+  sound_info->dynamic_artwork_list = NULL;
+
+  sound_info->content_list = NULL;
+
+  /* ---------- initialize artwork loading/freeing functions ---------- */
+
+  sound_info->load_artwork = Load_WAV;
+  sound_info->free_artwork = FreeSound;
 
 #if 0
-  printf("loading sound '%s' ...  [%d]\n",
-	 basename, getNumNodes(SoundFileList));
-#endif
-
-  LoadCustomSound(&Sound[list_pos], basename);
-
-#if 0
-  printf("loading sound '%s' done [%d]\n",
-	 basename, getNumNodes(SoundFileList));
+  num_sounds = sound_info->num_file_list_entries;
+  Sound = (SoundInfo **)sound_info->artwork_list;
 #endif
 }
 
@@ -1861,7 +1938,9 @@ void LoadCustomMusic(void)
       strcmp(last_music_directory, music_directory) == 0)
     return;	/* old and new music directory are the same */
 
-  last_music_directory = music_directory;
+  if (last_music_directory != NULL)
+    free(last_music_directory);
+  last_music_directory = getStringCopy(music_directory);
 
   FreeAllMusic();
 
@@ -1881,6 +1960,10 @@ void LoadCustomMusic(void)
     char *filename = getPath2(music_directory, basename);
     MusicInfo *mus_info = NULL;
 
+#if 0
+    printf("DEBUG: loading music '%s' ...\n", basename);
+#endif
+
     if (draw_init_text)
       DrawInitText(basename, 150, FC_YELLOW);
 
@@ -1895,7 +1978,7 @@ void LoadCustomMusic(void)
     {
       num_music++;
       Music = checked_realloc(Music, num_music * sizeof(MusicInfo *));
-      Music[num_music -1] = mus_info;
+      Music[num_music - 1] = mus_info;
     }
   }
 
@@ -2016,192 +2099,49 @@ void StopSoundExt(int nr, int state)
   HandleSoundRequest(snd_ctrl);
 }
 
-ListNode *newListNode()
-{
-  return checked_calloc(sizeof(ListNode));
-}
-
-void addNodeToList(ListNode **node_first, char *key, void *content)
-{
-  ListNode *node_new = newListNode();
-
-#if 0
-  printf("LIST: adding node with key '%s'\n", key);
-#endif
-
-  node_new->key = getStringCopy(key);
-  node_new->content = content;
-  node_new->next = *node_first;
-  *node_first = node_new;
-}
-
-void deleteNodeFromList(ListNode **node_first, char *key,
-			void (*destructor_function)(void *))
-{
-  if (node_first == NULL || *node_first == NULL)
-    return;
-
-#if 0
-  printf("[CHECKING LIST KEY '%s' == '%s']\n",
-	 (*node_first)->key, key);
-#endif
-
-  if (strcmp((*node_first)->key, key) == 0)
-  {
-#if 0
-    printf("[DELETING LIST ENTRY]\n");
-#endif
-
-    free((*node_first)->key);
-    if (destructor_function)
-      destructor_function((*node_first)->content);
-    *node_first = (*node_first)->next;
-  }
-  else
-    deleteNodeFromList(&(*node_first)->next, key, destructor_function);
-}
-
-ListNode *getNodeFromKey(ListNode *node_first, char *key)
-{
-  if (node_first == NULL)
-    return NULL;
-
-  if (strcmp(node_first->key, key) == 0)
-    return node_first;
-  else
-    return getNodeFromKey(node_first->next, key);
-}
-
-int getNumNodes(ListNode *node_first)
-{
-  return (node_first ? 1 + getNumNodes(node_first->next) : 0);
-}
-
-void dumpList(ListNode *node_first)
-{
-  ListNode *node = node_first;
-
-  while (node)
-  {
-    printf("['%s' (%d)]\n", node->key,
-	   ((SoundInfo *)node->content)->num_references);
-    node = node->next;
-  }
-
-  printf("[%d nodes]\n", getNumNodes(node_first));
-}
-
-static void LoadSoundsInfo()
-{
-  char *filename = getCustomSoundConfigFilename();
-  struct SetupFileList *setup_file_list;
-  int i;
-
-#if 0
-  printf("GOT CUSTOM SOUND CONFIG FILE '%s'\n", filename);
-#endif
-
-  /* always start with reliable default values */
-  for (i=0; i<num_sounds; i++)
-    sound_effect[i].filename = NULL;
-
-  if (filename == NULL)
-    return;
-
-  if ((setup_file_list = loadSetupFileList(filename)))
-  {
-    for (i=0; i<num_sounds; i++)
-      sound_effect[i].filename =
-	getStringCopy(getTokenValue(setup_file_list, sound_effect[i].text));
-
-    freeSetupFileList(setup_file_list);
-
-#if 0
-    for (i=0; i<num_sounds; i++)
-    {
-      printf("'%s' ", sound_effect[i].text);
-      if (sound_effect[i].filename)
-	printf("-> '%s'\n", sound_effect[i].filename);
-      else
-	printf("-> UNDEFINED [-> '%s']\n", sound_effect[i].default_filename);
-    }
-#endif
-  }
-}
-
 static void ReloadCustomSounds()
 {
-  static boolean draw_init_text = TRUE;		/* only draw at startup */
-  int i;
-
 #if 0
-  printf("DEBUG: reloading sounds '%s' ...\n",artwork.sounds_set_current_name);
+  printf("DEBUG: reloading sounds '%s' ...\n", artwork.snd_current_identifier);
 #endif
 
-  LoadSoundsInfo();
-
-  if (draw_init_text)
-    DrawInitText("Loading sounds:", 120, FC_GREEN);
+  LoadArtworkConfig(sound_info);
+  ReloadCustomArtworkList(sound_info);
 
 #if 0
-  printf("DEBUG: reloading %d sounds ...\n", num_sounds);
-#endif
-
-  for(i=0; i<num_sounds; i++)
-  {
-    if (draw_init_text)
-      DrawInitText(sound_effect[i].text, 150, FC_YELLOW);
-
-    if (sound_effect[i].filename)
-      LoadSoundToList(sound_effect[i].filename, i);
-    else
-      LoadSoundToList(sound_effect[i].default_filename, i);
-  }
-
-  draw_init_text = FALSE;
-
-  /*
-  printf("list size == %d\n", getNumNodes(SoundFileList));
-  */
-
-#if 0
-  dumpList(SoundFileList);
+  num_sounds = getSoundListSize();
 #endif
 }
 
 static void ReloadCustomMusic()
 {
 #if 0
-  printf("DEBUG: reloading music '%s' ...\n", artwork.music_set_current_name);
-#endif
-
-#if 0
-  /* this is done directly in LoadCustomMusic() now */
-  FreeAllMusic();
+  printf("DEBUG: reloading music '%s' ...\n", artwork.mus_current_identifier);
 #endif
 
   LoadCustomMusic();
 }
 
-void InitReloadSounds(char *set_name)
+void InitReloadCustomSounds(char *set_identifier)
 {
   if (!audio.sound_available)
     return;
 
 #if defined(AUDIO_UNIX_NATIVE)
-  WriteReloadInfoToPipe(set_name, SND_CTRL_RELOAD_SOUNDS);
+  LoadArtworkConfig(sound_info);	/* also load config on sound client */
+  WriteReloadInfoToPipe(set_identifier, SND_CTRL_RELOAD_SOUNDS);
 #else
   ReloadCustomSounds();
 #endif
 }
 
-void InitReloadMusic(char *set_name)
+void InitReloadCustomMusic(char *set_identifier)
 {
   if (!audio.music_available)
     return;
 
 #if defined(AUDIO_UNIX_NATIVE)
-  WriteReloadInfoToPipe(set_name, SND_CTRL_RELOAD_MUSIC);
+  WriteReloadInfoToPipe(set_identifier, SND_CTRL_RELOAD_MUSIC);
 #else
   ReloadCustomMusic();
 #endif
@@ -2255,31 +2195,7 @@ void FreeMusic(MusicInfo *music)
 
 void FreeAllSounds()
 {
-  int i;
-
-  if (Sound == NULL)
-    return;
-
-#if 0
-  printf("%s: FREEING SOUNDS ...\n",
-	 IS_CHILD_PROCESS(audio.mixer_pid) ? "CHILD" : "PARENT");
-#endif
-
-  for(i=0; i<num_sounds; i++)
-    deleteSoundEntry(&Sound[i]);
-  /*
-    FreeSound(Sound[i]);
-  */
-
-#if 0
-  printf("%s: FREEING SOUNDS -- DONE\n",
-	 IS_CHILD_PROCESS(audio.mixer_pid) ? "CHILD" : "PARENT");
-#endif
-
-  free(Sound);
-
-  Sound = NULL;
-  num_sounds = 0;
+  FreeCustomArtworkLists(sound_info);
 }
 
 void FreeAllMusic()

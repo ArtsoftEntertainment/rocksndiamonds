@@ -297,7 +297,7 @@ Display *XOpenDisplay(char *display_name)
   Screen *screen;
   Display *display;
   BITMAP *mouse_bitmap = NULL;
-  char *mouse_filename =getCustomImageFilename(program.msdos_pointer_filename);
+  char *mouse_filename = getCustomImageFilename(program.msdos_cursor_filename);
 
   if ((mouse_bitmap = Read_PCX_to_AllegroBitmap(mouse_filename)) == NULL)
     return NULL;
@@ -915,6 +915,14 @@ void AllegroDrawLine(Drawable d, int from_x, int from_y, int to_x, int to_y,
 Pixel AllegroGetPixel(Drawable d, int x, int y)
 {
   return getpixel((BITMAP *)d, x, y);
+}
+
+void AllegroZoomBitmap(Drawable src, Drawable dst,
+		       int src_width, int src_height,
+		       int dst_width, int dst_height)
+{
+  stretch_blit((BITMAP *)src, (BITMAP *)dst,
+	       0, 0, src_width, src_height, 0, 0, dst_width, dst_height);
 }
 
 void MSDOSOpenAudio(void)

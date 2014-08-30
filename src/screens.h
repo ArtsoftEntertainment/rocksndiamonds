@@ -16,6 +16,11 @@
 
 #include "main.h"
 
+/* (randomly chosen) values for HandleChooseTree() */
+#define SCROLL_LINE	(1 * SCR_FIELDY)
+#define SCROLL_PAGE	(2 * SCR_FIELDY)
+
+
 void DrawHeadline(void);
 
 void DrawMainMenu(void);
@@ -42,6 +47,7 @@ void HandleSetupScreen(int, int, int, int, int);
 void HandleGameActions(void);
 
 void CreateScreenGadgets();
+void FreeScreenGadgets();
 void MapChooseTreeGadgets(TreeInfo *);
 void UnmapChooseTreeGadgets();
 

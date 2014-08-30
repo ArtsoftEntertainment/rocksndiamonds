@@ -25,9 +25,11 @@ extern int editor_element[];
 extern int elements_in_list;
 
 void CreateLevelEditorGadgets();
+void FreeLevelEditorGadgets();
 void UnmapLevelEditorGadgets();
 void DrawLevelEd(void);
 void HandleLevelEditorKeyInput(Key);
+void HandleLevelEditorIdle();
 void HandleEditorGadgetInfoText(void *ptr);
 void RequestExitLevelEditor(boolean);
 

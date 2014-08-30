@@ -67,8 +67,27 @@ typedef struct
 Image *newImage(unsigned int, unsigned int, unsigned int);
 void freeImage(Image *);
 void freeXImage(Image *, XImageInfo *);
+
+void ZoomPixmap(Display *, GC, Pixmap, Pixmap, int, int, int, int);
+
 int Read_PCX_to_Pixmap(Display *, Window, GC, char *, Pixmap *, Pixmap *);
 
 #endif /* TARGET_X11 */
+
+int getImageListSize();
+struct FileInfo *getImageListEntry(int);
+Bitmap *getBitmapFromImageID(int);
+char *getTokenFromImageID(int);
+int getImageIDFromToken(char *);
+char *getImageConfigFilename();
+int getImageListPropertyMappingSize();
+struct PropertyMapping *getImageListPropertyMapping();
+void InitImageList(struct ConfigInfo *, int, struct ConfigInfo *,
+		   char **, char **, char **, char **, char **);
+
+void ReloadCustomImages();
+void CreateImageWithSmallImages(int);
+
+void FreeAllImages();
 
 #endif	/* IMAGE_H */

@@ -14,7 +14,12 @@
 #include "image.h"
 #include "pcx.h"
 #include "misc.h"
+#include "setup.h"
 
+
+/* ========================================================================= */
+/* PLATFORM SPECIFIC IMAGE FUNCTIONS                                         */
+/* ========================================================================= */
 
 #if defined(TARGET_X11)
 
@@ -33,8 +38,8 @@ Image *newImage(unsigned int width, unsigned int height, unsigned int depth)
   depth = 8;
 #endif
 
-  image = checked_malloc(sizeof(Image));
-  image->data = checked_malloc(width * height * bytes_per_pixel);
+  image = checked_calloc(sizeof(Image));
+  image->data = checked_calloc(width * height * bytes_per_pixel);
   image->width = width;
   image->height = height;
   image->depth = depth;
@@ -438,8 +443,8 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
   display_bits_per_pixel = bitsPerPixelAtDepth(display, screen, depth);
   display_bytes_per_pixel = (display_bits_per_pixel + 7) / 8;
 
-  ximage = XCreateImage(display, visual, depth, ZPixmap, 0,
-			NULL, image->width, image->height,
+  ximage = XCreateImage(display, visual, depth, ZPixmap,
+			0, NULL, image->width, image->height,
 			8, image->width * display_bytes_per_pixel);
   ximage->data =
     checked_malloc(image->width * image->height * display_bytes_per_pixel);
@@ -560,6 +565,66 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
   return ximageinfo;
 }
 
+/*
+  -----------------------------------------------------------------------------
+  ZoomPixmap
+
+  Important note: The scaling code currently only supports scaling down the
+  image by a power of 2 -- scaling up is currently not supported at all!
+  -----------------------------------------------------------------------------
+*/
+
+void ZoomPixmap(Display *display, GC gc, Pixmap src_pixmap, Pixmap dst_pixmap,
+		int src_width, int src_height,
+		int dst_width, int dst_height)
+{
+  XImage *src_ximage, *dst_ximage;
+  byte *src_ptr, *dst_ptr;
+  int bits_per_pixel;
+  int bytes_per_pixel;
+  int x, y, i;
+  int zoom_factor = src_width / dst_width;	/* currently very limited! */
+  int row_skip, col_skip;
+
+  /* adjust source image size to integer multiple of destination image size */
+  src_width  = dst_width  * zoom_factor;
+  src_height = dst_height * zoom_factor;
+
+  /* copy source pixmap to temporary image */
+  src_ximage = XGetImage(display, src_pixmap, 0, 0, src_width, src_height,
+			 AllPlanes, ZPixmap);
+
+  bits_per_pixel = src_ximage->bits_per_pixel;
+  bytes_per_pixel = (bits_per_pixel + 7) / 8;
+
+  dst_ximage = XCreateImage(display, visual, src_ximage->depth, ZPixmap,
+			    0, NULL, dst_width, dst_height,
+			    8, dst_width * bytes_per_pixel);
+  dst_ximage->data =
+    checked_malloc(dst_width * dst_height * bytes_per_pixel);
+  dst_ximage->byte_order = src_ximage->byte_order;
+
+  src_ptr = (byte *)src_ximage->data;
+  dst_ptr = (byte *)dst_ximage->data;
+
+  col_skip = (zoom_factor - 1) * bytes_per_pixel;
+  row_skip = col_skip * src_width;
+
+  /* scale image down by scaling factor 'zoom_factor' */
+  for (y=0; y < src_height; y += zoom_factor, src_ptr += row_skip)
+    for (x=0; x < src_width; x += zoom_factor, src_ptr += col_skip)
+      for (i=0; i < bytes_per_pixel; i++)
+	*dst_ptr++ = *src_ptr++;
+
+  /* copy scaled image to destination pixmap */
+  XPutImage(display, dst_pixmap, gc, dst_ximage, 0, 0, 0, 0,
+	    dst_width, dst_height);
+
+  /* free temporary images */
+  XDestroyImage(src_ximage);
+  XDestroyImage(dst_ximage);
+}
+
 void freeXImage(Image *image, XImageInfo *ximageinfo)
 {
   if (ximageinfo->index != NULL && ximageinfo->no > 0)
@@ -635,3 +700,252 @@ int Read_PCX_to_Pixmap(Display *display, Window window, GC gc, char *filename,
 
 #endif	/* PLATFORM_UNIX */
 #endif	/* TARGET_X11 */
+
+
+/* ========================================================================= */
+/* PLATFORM INDEPENDENT IMAGE FUNCTIONS                                      */
+/* ========================================================================= */
+
+struct ImageInfo
+{
+  char *source_filename;
+  int num_references;
+
+  Bitmap *bitmap;
+  boolean contains_small_images;
+};
+typedef struct ImageInfo ImageInfo;
+
+static struct ArtworkListInfo *image_info = NULL;
+
+static void *Load_PCX(char *filename)
+{
+  ImageInfo *img_info;
+
+#if 0
+  printf("loading PCX file '%s'\n", filename);
+#endif
+
+  img_info = checked_calloc(sizeof(ImageInfo));
+
+  if ((img_info->bitmap = LoadImage(filename)) == NULL)
+  {
+    Error(ERR_WARN, "cannot read image file '%s': LoadImage() failed: %s",
+	  filename, GetError());
+    free(img_info);
+    return NULL;
+  }
+
+  img_info->source_filename = getStringCopy(filename);
+
+  img_info->contains_small_images = FALSE;
+
+  return img_info;
+}
+
+static void FreeImage(void *ptr)
+{
+  ImageInfo *image = (ImageInfo *)ptr;
+
+  if (image == NULL)
+    return;
+
+  if (image->bitmap)
+    FreeBitmap(image->bitmap);
+
+  if (image->source_filename)
+    free(image->source_filename);
+
+  free(image);
+}
+
+int getImageListSize()
+{
+  return (image_info->num_file_list_entries +
+	  image_info->num_dynamic_file_list_entries);
+}
+
+struct FileInfo *getImageListEntry(int pos)
+{
+  int num_list_entries = image_info->num_file_list_entries;
+  int list_pos = (pos < num_list_entries ? pos : pos - num_list_entries);
+
+  return (pos < num_list_entries ? &image_info->file_list[list_pos] :
+	  &image_info->dynamic_file_list[list_pos]);
+}
+
+static ImageInfo *getImageInfoEntryFromImageID(int pos)
+{
+  int num_list_entries = image_info->num_file_list_entries;
+  int list_pos = (pos < num_list_entries ? pos : pos - num_list_entries);
+  ImageInfo **img_info =
+    (ImageInfo **)(pos < num_list_entries ? image_info->artwork_list :
+		   image_info->dynamic_artwork_list);
+
+  return img_info[list_pos];
+}
+
+Bitmap *getBitmapFromImageID(int pos)
+{
+#if 0
+  int num_list_entries = image_info->num_file_list_entries;
+  int list_pos = (pos < num_list_entries ? pos : pos - num_list_entries);
+  ImageInfo **img_info =
+    (ImageInfo **)(pos < num_list_entries ? image_info->artwork_list :
+		   image_info->dynamic_artwork_list);
+
+  return (img_info[list_pos] != NULL ? img_info[list_pos]->bitmap : NULL);
+#else
+  ImageInfo *img_info = getImageInfoEntryFromImageID(pos);
+
+  return (img_info != NULL ? img_info->bitmap : NULL);
+#endif
+}
+
+char *getTokenFromImageID(int graphic)
+{
+#if 0
+  /* !!! this does not work for dynamic artwork (crash!) !!! */
+  struct FileInfo *file_list = (struct FileInfo *)image_info->file_list;
+
+  return file_list[graphic].token;
+#else
+  struct FileInfo *file_list = getImageListEntry(graphic);
+
+  return (file_list != NULL ? file_list->token : NULL);
+#endif
+}
+
+int getImageIDFromToken(char *token)
+{
+  struct FileInfo *file_list = image_info->file_list;
+  int num_list_entries = image_info->num_file_list_entries;
+  int i;
+
+  for (i=0; i < num_list_entries; i++)
+    if (strcmp(file_list[i].token, token) == 0)
+      return i;
+
+  return -1;
+}
+
+char *getImageConfigFilename()
+{
+  return getCustomArtworkConfigFilename(image_info->type);
+}
+
+int getImageListPropertyMappingSize()
+{
+  return image_info->num_property_mapping_entries;
+}
+
+struct PropertyMapping *getImageListPropertyMapping()
+{
+  return image_info->property_mapping;
+}
+
+void InitImageList(struct ConfigInfo *config_list, int num_file_list_entries,
+		   struct ConfigInfo *config_suffix_list,
+		   char **base_prefixes, char **ext1_suffixes,
+		   char **ext2_suffixes, char **ext3_suffixes,
+		   char **ignore_tokens)
+{
+  int i;
+
+  image_info = checked_calloc(sizeof(struct ArtworkListInfo));
+  image_info->type = ARTWORK_TYPE_GRAPHICS;
+
+  /* ---------- initialize file list and suffix lists ---------- */
+
+  image_info->num_file_list_entries = num_file_list_entries;
+  image_info->num_dynamic_file_list_entries = 0;
+
+  image_info->file_list =
+    getFileListFromConfigList(config_list, config_suffix_list, ignore_tokens,
+			      num_file_list_entries);
+  image_info->dynamic_file_list = NULL;
+
+  image_info->num_suffix_list_entries = 0;
+  for (i=0; config_suffix_list[i].token != NULL; i++)
+    image_info->num_suffix_list_entries++;
+
+  image_info->suffix_list = config_suffix_list;
+
+  /* ---------- initialize base prefix and suffixes lists ---------- */
+
+  image_info->num_base_prefixes = 0;
+  for (i=0; base_prefixes[i] != NULL; i++)
+    image_info->num_base_prefixes++;
+
+  image_info->num_ext1_suffixes = 0;
+  for (i=0; ext1_suffixes[i] != NULL; i++)
+    image_info->num_ext1_suffixes++;
+
+  image_info->num_ext2_suffixes = 0;
+  for (i=0; ext2_suffixes[i] != NULL; i++)
+    image_info->num_ext2_suffixes++;
+
+  image_info->num_ext3_suffixes = 0;
+  for (i=0; ext3_suffixes[i] != NULL; i++)
+    image_info->num_ext3_suffixes++;
+
+  image_info->num_ignore_tokens = 0;
+  for (i=0; ignore_tokens[i] != NULL; i++)
+    image_info->num_ignore_tokens++;
+
+  image_info->base_prefixes = base_prefixes;
+  image_info->ext1_suffixes = ext1_suffixes;
+  image_info->ext2_suffixes = ext2_suffixes;
+  image_info->ext3_suffixes = ext3_suffixes;
+  image_info->ignore_tokens = ignore_tokens;
+
+  image_info->num_property_mapping_entries = 0;
+
+  image_info->property_mapping = NULL;
+
+  /* ---------- initialize artwork reference and content lists ---------- */
+
+  image_info->sizeof_artwork_list_entry = sizeof(ImageInfo *);
+
+  image_info->artwork_list =
+    checked_calloc(num_file_list_entries * sizeof(ImageInfo *));
+  image_info->dynamic_artwork_list = NULL;
+
+  image_info->content_list = NULL;
+
+  /* ---------- initialize artwork loading/freeing functions ---------- */
+
+  image_info->load_artwork = Load_PCX;
+  image_info->free_artwork = FreeImage;
+}
+
+void ReloadCustomImages()
+{
+#if 0
+  printf("DEBUG: reloading images '%s' ...\n", artwork.gfx_current_identifier);
+#endif
+
+  LoadArtworkConfig(image_info);
+  ReloadCustomArtworkList(image_info);
+}
+
+void CreateImageWithSmallImages(int pos)
+{
+  ImageInfo *img_info = getImageInfoEntryFromImageID(pos);
+
+  if (img_info == NULL || img_info->contains_small_images)
+    return;
+
+  CreateBitmapWithSmallBitmaps(img_info->bitmap);
+
+  img_info->contains_small_images = TRUE;
+
+#if 0
+  printf("CreateImageWithSmallImages: '%s' done\n", img_info->source_filename);
+#endif
+}
+
+void FreeAllImages()
+{
+  FreeCustomArtworkLists(image_info);
+}

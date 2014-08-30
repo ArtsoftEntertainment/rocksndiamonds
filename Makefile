@@ -49,8 +49,11 @@ CROSS_PATH_WIN32=/usr/local/cross-tools/i386-mingw32msvc
 SRC_DIR = src
 MAKE_CMD = $(MAKE) -C $(SRC_DIR)
 
+# DEFAULT_TARGET = x11
+DEFAULT_TARGET = sdl
+
 all:
-	@$(MAKE_CMD) TARGET=x11
+	@$(MAKE_CMD) TARGET=$(DEFAULT_TARGET)
 
 x11:
 	@$(MAKE_CMD) TARGET=x11
@@ -84,8 +87,20 @@ clean:
 # development only stuff                                                      #
 #-----------------------------------------------------------------------------#
 
+auto-conf:
+	@$(MAKE_CMD) auto-conf
+
 run:
-	@$(MAKE_CMD) TARGET=x11 && ./rocksndiamonds --verbose
+	@$(MAKE_CMD) TARGET=$(DEFAULT_TARGET) && ./rocksndiamonds --verbose
+
+gdb:
+	@$(MAKE_CMD) TARGET=$(DEFAULT_TARGET) && gdb ./rocksndiamonds
+
+enginetest:
+	./Scripts/make_enginetest.sh
+
+enginetestfast:
+	./Scripts/make_enginetest.sh fast
 
 backup:
 	./Scripts/make_backup.sh src
@@ -108,16 +123,39 @@ dist-win32:
 dist-macosx:
 	./Scripts/make_dist.sh mac . $(MAKE)
 
+upload-unix:
+	./Scripts/make_dist.sh unix . upload
+
+upload-msdos:
+	./Scripts/make_dist.sh dos . upload
+
+upload-win32:
+	./Scripts/make_dist.sh win . upload
+
+upload-macosx:
+	./Scripts/make_dist.sh mac . upload
+
 dist-clean:
 	@$(MAKE_CMD) dist-clean
 
+dist-build-unix:
+	@BUILD_DIST=TRUE $(MAKE) x11
+
+dist-build-win32:
+	@BUILD_DIST=TRUE $(MAKE) cross-win32
+
+dist-build-msdos:
+	@BUILD_DIST=TRUE $(MAKE) cross-msdos
+
 dist-build-all:
 	$(MAKE) clean
-	@BUILD_DIST=TRUE $(MAKE) x11		; $(MAKE) dist-clean
-	@BUILD_DIST=TRUE $(MAKE) cross-win32	; $(MAKE) dist-clean
-	@BUILD_DIST=TRUE $(MAKE) cross-msdos	; $(MAKE) dist-clean
+	$(MAKE) dist-build-unix		; $(MAKE) dist-clean
+	$(MAKE) dist-build-win32	; $(MAKE) dist-clean
+	$(MAKE) dist-build-msdos	; $(MAKE) dist-clean
 
 dist-all: dist-build-all dist-unix dist-msdos dist-win32 dist-macosx
+
+upload-all: upload-unix upload-msdos upload-win32 upload-macosx
 
 depend dep:
 	$(MAKE_CMD) depend

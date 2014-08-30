@@ -17,57 +17,52 @@
 #include "system.h"
 
 
-/* font types */
-#define FS_SMALL		0
-#define FS_BIG			1
-#define FS_MEDIUM		2
+/* default fonts */
+#define FONT_INITIAL_1		0
+#define FONT_INITIAL_2		1
+#define FONT_INITIAL_3		2
+#define FONT_INITIAL_4		3
 
 /* font colors */
-#define FC_RED			0
-#define FC_BLUE			1
-#define FC_GREEN		2
-#define FC_YELLOW		3
-#define FC_SPECIAL1		4
-#define FC_SPECIAL2		5
-#define FC_SPECIAL3		6
-
-/* font graphics definitions */
-#define FONT1_XSIZE		32
-#define FONT1_YSIZE		32
-#define FONT2_XSIZE		14
-#define FONT2_YSIZE		14
-#define FONT3_XSIZE		11
-#define FONT3_YSIZE		14
-#define FONT4_XSIZE		16
-#define FONT4_YSIZE		16
-#define FONT5_XSIZE		10
-#define FONT5_YSIZE		14
-#define FONT6_XSIZE		16
-#define FONT6_YSIZE		32
-
-#define FONT_CHARS_PER_LINE	16
-#define FONT_LINES_PER_FONT	4
+#define FC_RED			FONT_INITIAL_1
+#define FC_BLUE			FONT_INITIAL_2
+#define FC_GREEN		FONT_INITIAL_3
+#define FC_YELLOW		FONT_INITIAL_4
 
 /* text output definitions */
-#define MAX_OUTPUT_LINESIZE	256
+#define MAX_OUTPUT_LINESIZE	1024
+
+/* special character mapping for default fonts */
+#define FONT_ASCII_CURSOR	((char)160)
+#define MAP_FONT_ASCII(c)	((c) >= 'a' && (c) <= 'z' ? 'A' + (c) - 'a' : \
+				 (c) == '©'		  ? 96  :	      \
+				 (c) == 'ä' || (c) == 'Ä' ? 97  :	      \
+				 (c) == 'ö' || (c) == 'Ö' ? 98  :	      \
+				 (c) == 'ü' || (c) == 'Ü' ? 99  :	      \
+				 (c) == '°'		  ? 100 :	      \
+				 (c) == '®'		  ? 101 :	      \
+				 (c) == FONT_ASCII_CURSOR ? 102 :	      \
+				 (c))
+
+/* 64 regular ordered ASCII characters, 6 special characters, 1 cursor char. */
+#define MIN_NUM_CHARS_PER_FONT			64
+#define DEFAULT_NUM_CHARS_PER_FONT		(MIN_NUM_CHARS_PER_FONT + 6 +1)
+#define DEFAULT_NUM_CHARS_PER_LINE		16
+
 
 /* font structure definitions */
 
-struct FontInfo
-{
-  Bitmap *bitmap_big;
-  Bitmap *bitmap_medium;
-  Bitmap *bitmap_small;
-};
+void InitFontInfo(struct FontBitmapInfo *, int, int (*function)(int));
+void FreeFontInfo(struct FontBitmapInfo *);
 
+int getFontWidth(int);
+int getFontHeight(int);
+void getFontCharSource(int, char, Bitmap **, int *, int *);
 
-void InitFontInfo(Bitmap *, Bitmap *, Bitmap *);
-int getFontWidth(int, int);
-int getFontHeight(int, int);
 void DrawInitText(char *, int, int);
 void DrawTextF(int, int, int, char *, ...);
 void DrawTextFCentered(int, int, char *, ...);
-void DrawText(int, int, char *, int, int);
+void DrawText(int, int, char *, int);
 void DrawTextExt(DrawBuffer *, int, int, char *, int, int);
 
 #endif	/* TEXT_H */

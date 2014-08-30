@@ -14,7 +14,7 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-#include "platform.h"
+#include "system.h"
 
 
 #if defined(PLATFORM_UNIX) && !defined(TARGET_SDL)
@@ -37,6 +37,7 @@
 #define AUDIO_FRAGMENT_SIZE_1024	1024
 #define AUDIO_FRAGMENT_SIZE_2048	2048
 #define AUDIO_FRAGMENT_SIZE_4096	4096
+#define AUDIO_FRAGMENT_SIZE_32768	32768
 
 #define AUDIO_NUM_CHANNELS_MONO		1
 #define AUDIO_NUM_CHANNELS_STEREO	2
@@ -53,8 +54,10 @@
 #define DEFAULT_AUDIO_SAMPLE_RATE	AUDIO_SAMPLE_RATE_22050
 #endif
 
-#if defined(PLATFORM_WIN32)
-#define DEFAULT_AUDIO_FRAGMENT_SIZE	AUDIO_FRAGMENT_SIZE_2048
+#if defined(PLATFORM_HPUX)
+#define DEFAULT_AUDIO_FRAGMENT_SIZE	AUDIO_FRAGMENT_SIZE_32768
+#elif defined(PLATFORM_WIN32)
+#define DEFAULT_AUDIO_FRAGMENT_SIZE	AUDIO_FRAGMENT_SIZE_1024
 #else
 #define DEFAULT_AUDIO_FRAGMENT_SIZE	AUDIO_FRAGMENT_SIZE_512
 #endif
@@ -113,18 +116,6 @@
 #define SOUND_MAX_LEFT2RIGHT		255
 #define SOUND_MIDDLE			(SOUND_MAX_LEFT2RIGHT / 2)
 
-/* value for undefined sound effect filename */
-#define SND_FILE_UNDEFINED		"NONE"
-
-
-struct SoundEffectInfo
-{
-  char *text;
-  char *default_filename;
-
-  char *filename;
-};
-
 
 /* general sound functions */
 void UnixOpenAudio(void);
@@ -148,9 +139,15 @@ void StopMusic(void);
 void StopSound(int);
 void StopSounds(void);
 void StopSoundExt(int, int);
-void InitSoundList(struct SoundEffectInfo *, int);
-void InitReloadSounds(char *);
-void InitReloadMusic(char *);
+
+int getSoundListSize();
+struct FileInfo *getSoundListEntry(int);
+int getSoundListPropertyMappingSize();
+struct PropertyMapping *getSoundListPropertyMapping();
+void InitSoundList(struct ConfigInfo *, int, struct ConfigInfo *,
+		   char **, char **, char **, char **, char **);
+void InitReloadCustomSounds(char *);
+void InitReloadCustomMusic(char *);
 void FreeAllSounds(void);
 void FreeAllMusic(void);
 

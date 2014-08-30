@@ -63,26 +63,38 @@ void RedrawPlayfield(boolean, int, int, int, int);
 void BackToFront();
 void FadeToFront();
 void ClearWindow();
+void SetMainBackgroundImage(int);
+void SetDoorBackgroundImage(int);
+void DrawBackground(int, int, int, int);
 
 void MarkTileDirty(int, int);
 void SetBorderElement();
 
+void SetRandomAnimationValue(int, int);
+int getGraphicAnimationFrame(int, int);
+void DrawGraphicAnimationExt(DrawBuffer *, int, int, int, int, int);
+void DrawGraphicAnimation(int, int, int);
+void DrawLevelGraphicAnimation(int, int, int);
+void DrawLevelElementAnimation(int, int, int);
+void DrawLevelGraphicAnimationIfNeeded(int, int, int);
+void DrawLevelElementAnimationIfNeeded(int, int, int);
+
 void DrawAllPlayers(void);
 void DrawPlayerField(int, int);
 void DrawPlayer(struct PlayerInfo *);
-void DrawGraphicAnimationExt(int, int, int, int, int, int, int);
-void DrawGraphicAnimation(int, int, int, int, int, int);
-void DrawGraphicAnimationThruMask(int, int, int, int, int, int);
-void getGraphicSource(int, int *, int *, int *);
-void DrawGraphic(int, int, int);
-void DrawGraphicExt(DrawBuffer *, int, int, int);
-void DrawGraphicThruMask(int, int, int);
-void DrawGraphicThruMaskExt(DrawBuffer *, int, int, int);
+
+void getGraphicSource(int, int, Bitmap **, int *, int *);
+void DrawGraphic(int, int, int, int);
+void DrawGraphicExt(DrawBuffer *, int, int, int, int);
+void DrawGraphicThruMask(int, int, int, int);
+void DrawGraphicThruMaskExt(DrawBuffer *, int, int, int, int);
+
 void DrawMiniGraphic(int, int, int);
 void getMiniGraphicSource(int, Bitmap **, int *, int *);
 void DrawMiniGraphicExt(DrawBuffer *, int, int, int);
-void DrawGraphicShifted(int, int, int, int, int, int, int);
-void DrawGraphicShiftedThruMask(int, int, int, int, int, int);
+
+void DrawGraphicShifted(int, int, int, int, int, int, int, int);
+void DrawGraphicShiftedThruMask(int, int, int, int, int, int, int);
 void DrawScreenElementExt(int, int, int, int, int, int, int);
 void DrawLevelElementExt(int, int, int, int, int, int, int);
 void DrawScreenElementShifted(int, int, int, int, int, int);
@@ -90,30 +102,42 @@ void DrawLevelElementShifted(int, int, int, int, int, int);
 void DrawScreenElementThruMask(int, int, int);
 void DrawLevelElementThruMask(int, int, int);
 void DrawLevelFieldThruMask(int, int);
-void ErdreichAnbroeckeln(int, int);
+void DrawLevelFieldCrumbledSand(int, int);
+void DrawLevelFieldCrumbledSandDigging(int, int, int, int);
+void DrawLevelFieldCrumbledSandNeighbours(int, int);
 void DrawScreenElement(int, int, int);
 void DrawLevelElement(int, int, int);
 void DrawScreenField(int, int);
 void DrawLevelField(int, int);
+
 void DrawMiniElement(int, int, int);
 void DrawMiniElementOrWall(int, int, int, int);
+
+void getMicroGraphicSource(int, Bitmap **, int *, int *);
 void DrawMicroElement(int, int, int);
 void DrawLevel(void);
 void DrawMiniLevel(int, int, int, int);
 void DrawMicroLevel(int, int, boolean);
+
 boolean Request(char *, unsigned int);
 unsigned int OpenDoor(unsigned int);
 unsigned int CloseDoor(unsigned int);
 unsigned int GetDoorState(void);
 unsigned int SetDoorState(unsigned int);
 unsigned int MoveDoor(unsigned int);
+
 void DrawSpecialEditorDoor();
 void UndrawSpecialEditorDoor();
-int ReadPixel(DrawBuffer *, int, int);
 
 void CreateToolButtons();
+void FreeToolButtons();
 
 int get_next_element(int);
-int el2gfx(int);
+int el_act_dir2img(int, int, int);
+int el_act2img(int, int);
+int el_dir2img(int, int);
+int el2img(int);
+int el2edimg(int);
+int el2preimg(int);
 
 #endif	/* TOOLS_H */

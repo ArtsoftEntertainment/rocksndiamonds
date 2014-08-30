@@ -1,29 +1,24 @@
 /***********************************************************
-* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1994-2003 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
 *               Germany                                    *
 *               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-* init.h                                                   *
+* macosx.h                                                 *
 ***********************************************************/
 
-#ifndef INIT_H
-#define INIT_H
+#ifndef MACOSX_H
+#define MACOSX_H
 
-#include "main.h"
 
-void InitElementPropertiesStatic(void);
-void InitElementPropertiesEngine(int);
+/* some symbols are already defined on Mac OS X */
+#define Delay Delay_internal
+#define DrawLine DrawLine_internal
+#define DrawText DrawText_internal
+#define GetPixel GetPixel_internal
 
-void ReloadCustomArtwork(void);
-
-void KeyboardAutoRepeatOffUnlessAutoplay();
-
-void OpenAll(void);
-void CloseAllAndExit(int);
-
-#endif
+#endif /* MACOSX_H */

@@ -14,6 +14,7 @@
 #include "libgame/libgame.h"
 
 #include "tape.h"
+#include "init.h"
 #include "game.h"
 #include "tools.h"
 #include "files.h"
@@ -49,7 +50,7 @@ static struct GadgetInfo *tape_gadget[NUM_TAPE_BUTTONS];
 #define VIDEO_DATE_LABEL_YPOS	(VIDEO_DISPLAY1_YPOS)
 #define VIDEO_DATE_LABEL_XSIZE	(VIDEO_DISPLAY_XSIZE)
 #define VIDEO_DATE_LABEL_YSIZE	(VIDEO_DISPLAY_YSIZE)
-#define VIDEO_DATE_XPOS		(VIDEO_DISPLAY1_XPOS + 1)
+#define VIDEO_DATE_XPOS		(VIDEO_DISPLAY1_XPOS + 2)
 #define VIDEO_DATE_YPOS		(VIDEO_DISPLAY1_YPOS + 14)
 #define VIDEO_DATE_XSIZE	(VIDEO_DISPLAY_XSIZE)
 #define VIDEO_DATE_YSIZE	16
@@ -77,7 +78,7 @@ static struct GadgetInfo *tape_gadget[NUM_TAPE_BUTTONS];
 #define VIDEO_PAUSE_SYMBOL_YPOS	(VIDEO_DISPLAY2_YPOS)
 #define VIDEO_PAUSE_SYMBOL_XSIZE 17
 #define VIDEO_PAUSE_SYMBOL_YSIZE 13
-#define VIDEO_TIME_XPOS		(VIDEO_DISPLAY2_XPOS + 38)
+#define VIDEO_TIME_XPOS		(VIDEO_DISPLAY2_XPOS + 39)
 #define VIDEO_TIME_YPOS		(VIDEO_DISPLAY2_YPOS + 14)
 #define VIDEO_TIME_XSIZE	50
 #define VIDEO_TIME_YSIZE	16
@@ -167,7 +168,7 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
   {
     int cx = DOOR_GFX_PAGEX3, cy = DOOR_GFX_PAGEY2;
 
-    BlitBitmap(pix[PIX_DOOR], drawto,
+    BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 	       cx + VIDEO_REC_LABEL_XPOS,
 	       cy + VIDEO_REC_LABEL_YPOS,
 	       VIDEO_PBEND_LABEL_XSIZE,
@@ -188,7 +189,7 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
 	cx = DOOR_GFX_PAGEX3;	/* i gerade => STATE_OFF / PRESS_ON */
 
       if (video_pos[pos][part_label][0] && value != VIDEO_DISPLAY_SYMBOL_ONLY)
-	BlitBitmap(pix[PIX_DOOR], drawto,
+	BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 		   cx + video_pos[pos][part_label][xpos],
 		   cy + video_pos[pos][part_label][ypos],
 		   video_pos[pos][part_label][xsize],
@@ -196,7 +197,7 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
 		   VX + video_pos[pos][part_label][xpos],
 		   VY + video_pos[pos][part_label][ypos]);
       if (video_pos[pos][part_symbol][0] && value != VIDEO_DISPLAY_LABEL_ONLY)
-	BlitBitmap(pix[PIX_DOOR], drawto,
+	BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 		   cx + video_pos[pos][part_symbol][xpos],
 		   cy + video_pos[pos][part_symbol][ypos],
 		   video_pos[pos][part_symbol][xsize],
@@ -210,7 +211,7 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
   {
     int cx = DOOR_GFX_PAGEX4, cy = DOOR_GFX_PAGEY2;
 
-    BlitBitmap(pix[PIX_DOOR], drawto,
+    BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 	       cx + VIDEO_PLAY_SYMBOL_XPOS,
 	       cy + VIDEO_PLAY_SYMBOL_YPOS,
 	       VIDEO_PLAY_SYMBOL_XSIZE - 2,
@@ -223,7 +224,7 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
   {
     int cx = DOOR_GFX_PAGEX6, cy = DOOR_GFX_PAGEY1;
 
-    BlitBitmap(pix[PIX_DOOR], drawto,
+    BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 	       cx + VIDEO_PBEND_LABEL_XPOS,
 	       cy + VIDEO_PBEND_LABEL_YPOS,
 	       VIDEO_PBEND_LABEL_XSIZE,
@@ -238,12 +239,12 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
     int monat = (value/100) % 100;
     int jahr = (value/10000);
 
-    DrawText(VX+VIDEO_DATE_XPOS,VY+VIDEO_DATE_YPOS,
-	     int2str(tag,2),FS_SMALL,FC_SPECIAL1);
-    DrawText(VX+VIDEO_DATE_XPOS+27,VY+VIDEO_DATE_YPOS,
-	     monatsname[monat],FS_SMALL,FC_SPECIAL1);
-    DrawText(VX+VIDEO_DATE_XPOS+64,VY+VIDEO_DATE_YPOS,
-	     int2str(jahr,2),FS_SMALL,FC_SPECIAL1);
+    DrawText(VX + VIDEO_DATE_XPOS, VY + VIDEO_DATE_YPOS,
+	     int2str(tag, 2), FONT_TAPE_RECORDER);
+    DrawText(VX + VIDEO_DATE_XPOS + 27, VY + VIDEO_DATE_YPOS,
+	     monatsname[monat], FONT_TAPE_RECORDER);
+    DrawText(VX + VIDEO_DATE_XPOS + 64, VY + VIDEO_DATE_YPOS,
+	     int2str(jahr, 2), FONT_TAPE_RECORDER);
   }
 
   if (state & VIDEO_STATE_TIME_ON)
@@ -251,10 +252,10 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
     int min = value / 60;
     int sec = value % 60;
 
-    DrawText(VX+VIDEO_TIME_XPOS,VY+VIDEO_TIME_YPOS,
-	     int2str(min,2),FS_SMALL,FC_SPECIAL1);
-    DrawText(VX+VIDEO_TIME_XPOS+27,VY+VIDEO_TIME_YPOS,
-	     int2str(sec,2),FS_SMALL,FC_SPECIAL1);
+    DrawText(VX + VIDEO_TIME_XPOS, VY + VIDEO_TIME_YPOS,
+	     int2str(min, 2), FONT_TAPE_RECORDER);
+    DrawText(VX + VIDEO_TIME_XPOS + 27, VY + VIDEO_TIME_YPOS,
+	     int2str(sec, 2), FONT_TAPE_RECORDER);
   }
 
   if (state & VIDEO_STATE_DATE)
@@ -267,9 +268,10 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
 
 void DrawCompleteVideoDisplay()
 {
-  BlitBitmap(pix[PIX_DOOR], drawto, DOOR_GFX_PAGEX3, DOOR_GFX_PAGEY2,
+  BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
+	     DOOR_GFX_PAGEX3, DOOR_GFX_PAGEY2,
 	     gfx.vxsize, gfx.vysize, gfx.vx, gfx.vy);
-  BlitBitmap(pix[PIX_DOOR], drawto,
+  BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 	     DOOR_GFX_PAGEX4 + VIDEO_CONTROL_XPOS,
 	     DOOR_GFX_PAGEY2 + VIDEO_CONTROL_YPOS,
 	     VIDEO_CONTROL_XSIZE, VIDEO_CONTROL_YSIZE,
@@ -282,7 +284,7 @@ void DrawCompleteVideoDisplay()
     DrawVideoDisplay(VIDEO_STATE_TIME_ON, tape.length_seconds);
   }
 
-  BlitBitmap(drawto, pix[PIX_DB_DOOR], gfx.vx, gfx.vy, gfx.vxsize, gfx.vysize,
+  BlitBitmap(drawto, bitmap_db_door, gfx.vx, gfx.vy, gfx.vxsize, gfx.vysize,
 	     DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY2);
 }
 
@@ -300,6 +302,9 @@ void TapeErase()
   tape.length = 0;
   tape.counter = 0;
 
+  if (leveldir_current)
+    setString(&tape.level_identifier, leveldir_current->identifier);
+
   tape.level_nr = level_nr;
   tape.pos[tape.counter].delay = 0;
   tape.changed = TRUE;
@@ -310,6 +315,11 @@ void TapeErase()
   tape.file_version = FILE_VERSION_ACTUAL;
   tape.game_version = GAME_VERSION_ACTUAL;
   tape.engine_version = level.game_version;
+
+#if 0
+  printf("::: tape.engine_version = level.game_version = %d \n",
+	 level.game_version);
+#endif
 
   for(i=0; i<MAX_PLAYERS; i++)
     tape.player_participates[i] = FALSE;
@@ -324,6 +334,8 @@ static void TapeRewind()
   tape.playing = FALSE;
   tape.fast_forward = FALSE;
   tape.index_search = FALSE;
+  tape.auto_play = (global.autoplay_leveldir != NULL);
+  tape.auto_play_level_solved = FALSE;
   tape.quick_resume = FALSE;
   tape.single_step = FALSE;
 
@@ -359,7 +371,7 @@ static void TapeStartGameRecording()
   else
 #endif
   {
-    game_status = PLAYING;
+    game_status = GAME_MODE_PLAYING;
     StopAnimation();
     InitGame();
   }
@@ -504,7 +516,7 @@ static void TapeStartGamePlaying()
 {
   TapeStartPlaying();
 
-  game_status = PLAYING;
+  game_status = GAME_MODE_PLAYING;
   StopAnimation();
   InitGame();
 }
@@ -551,7 +563,7 @@ byte *TapePlayAction()
 
   if (tape.counter >= tape.length)	/* end of tape reached */
   {
-    if (tape.index_search)
+    if (tape.index_search && !tape.auto_play)
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
     else
       TapeStop();
@@ -583,6 +595,11 @@ void TapeStop()
     DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
     DrawVideoDisplay(VIDEO_STATE_TIME_ON, tape.length_seconds);
   }
+
+#if 0
+  if (tape.auto_play)
+    AutoPlayTape();	/* continue automatically playing next tape */
+#endif
 }
 
 unsigned int GetTapeLength()
@@ -607,7 +624,7 @@ static void TapeStartIndexSearch()
   {
     tape.pausing = FALSE;
 
-    SetDrawDeactivationMask(REDRAW_FIELD | REDRAW_DOOR_1);
+    SetDrawDeactivationMask(REDRAW_FIELD);
     audio.sound_deactivated = TRUE;
   }
 }
@@ -636,7 +653,7 @@ static void TapeSingleStep()
 
 void TapeQuickSave()
 {
-  if (game_status == PLAYING)
+  if (game_status == GAME_MODE_PLAYING)
   {
     if (tape.recording)
       TapeHaltRecording();	/* prepare tape for saving on-the-fly */
@@ -646,13 +663,13 @@ void TapeQuickSave()
     else
       SaveTape(tape.level_nr);
   }
-  else if (game_status == MAINMENU)
+  else if (game_status == GAME_MODE_MAIN)
     Request("No game that can be saved !", REQ_CONFIRM);
 }
 
 void TapeQuickLoad()
 {
-  if (game_status == PLAYING || game_status == MAINMENU)
+  if (game_status == GAME_MODE_PLAYING || game_status == GAME_MODE_MAIN)
   {
     TapeStop();
     TapeErase();
@@ -668,6 +685,125 @@ void TapeQuickLoad()
     else
       Request("No tape for this level !", REQ_CONFIRM);
   }
+}
+
+
+/* ------------------------------------------------------------------------- *
+ * tape autoplay functions
+ * ------------------------------------------------------------------------- */
+
+#define MAX_NUM_AUTOPLAY_LEVELS		1000
+
+void AutoPlayTape()
+{
+  static LevelDirTree *autoplay_leveldir = NULL;
+  static boolean autoplay_initialized = FALSE;
+  static int autoplay_level_nr = -1;
+  static int num_levels_played = 0;
+  static int num_levels_solved = 0;
+  static boolean levels_failed[MAX_NUM_AUTOPLAY_LEVELS];
+  int i;
+
+  if (autoplay_initialized)
+  {
+    /* just finished auto-playing tape */
+    printf("%s.\n", tape.auto_play_level_solved ? "solved" : "NOT SOLVED");
+
+    num_levels_played++;
+    if (tape.auto_play_level_solved)
+      num_levels_solved++;
+    else if (level_nr >= 0 && level_nr < MAX_NUM_AUTOPLAY_LEVELS)
+      levels_failed[level_nr] = TRUE;
+  }
+  else
+  {
+    DrawCompleteVideoDisplay();
+    audio.sound_enabled = FALSE;
+
+    autoplay_leveldir = getTreeInfoFromIdentifier(leveldir_first,
+						  global.autoplay_leveldir);
+
+    if (autoplay_leveldir == NULL)
+      Error(ERR_EXIT, "no such level identifier: '%s'",
+	    global.autoplay_leveldir);
+
+    leveldir_current = autoplay_leveldir;
+
+    if (global.autoplay_level_nr != -1)
+    {
+      autoplay_leveldir->first_level = global.autoplay_level_nr;
+      autoplay_leveldir->last_level  = global.autoplay_level_nr;
+    }
+
+    autoplay_level_nr = autoplay_leveldir->first_level;
+
+    printf_line("=", 79);
+    printf("Automatically playing level tapes\n");
+    printf_line("-", 79);
+    printf("Level series identifier: '%s'\n", autoplay_leveldir->identifier);
+    printf("Level series name:       '%s'\n", autoplay_leveldir->name);
+    printf("Level series author:     '%s'\n", autoplay_leveldir->author);
+    printf("Number of levels:        %d\n",   autoplay_leveldir->levels);
+    printf_line("=", 79);
+    printf("\n");
+
+    for (i=0; i<MAX_NUM_AUTOPLAY_LEVELS; i++)
+      levels_failed[i] = FALSE;
+
+    autoplay_initialized = TRUE;
+  }
+
+  while (autoplay_level_nr <= autoplay_leveldir->last_level)
+  {
+    level_nr = autoplay_level_nr++;
+
+    TapeErase();
+
+    printf("Level %03d: ", level_nr);
+
+    LoadLevel(level_nr);
+    if (level.no_level_file)
+    {
+      printf("(no level)\n");
+      continue;
+    }
+
+    LoadTape(level_nr);
+    if (TAPE_IS_EMPTY(tape))
+    {
+      printf("(no tape)\n");
+      continue;
+    }
+
+    printf("playing tape ... ");
+
+    TapeStartGamePlaying();
+    TapeStartIndexSearch();
+
+    return;
+  }
+
+  printf("\n");
+  printf_line("=", 79);
+  printf("Number of levels played: %d\n", num_levels_played);
+  printf("Number of levels solved: %d (%d%%)\n", num_levels_solved,
+	 (num_levels_played ? num_levels_solved * 100 / num_levels_played :0));
+  printf_line("-", 79);
+  printf("Summary (for automatic parsing by scripts):\n");
+  printf("LEVELDIR '%s', SOLVED %d/%d (%d%%)",
+	 autoplay_leveldir->identifier, num_levels_solved, num_levels_played,
+	 (num_levels_played ? num_levels_solved * 100 / num_levels_played :0));
+  if (num_levels_played != num_levels_solved)
+  {
+    printf(", FAILED:");
+    for (i=0; i<MAX_NUM_AUTOPLAY_LEVELS; i++)
+      if (levels_failed[i])
+	printf(" %03d", i);
+  }
+  printf("\n");
+  printf_line("=", 79);
+
+  CloseAllAndExit(0);
 }
 
 
@@ -731,7 +867,7 @@ void CreateTapeButtons()
 
   for (i=0; i<NUM_TAPE_BUTTONS; i++)
   {
-    Bitmap *gd_bitmap = pix[PIX_DOOR];
+    Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
     struct GadgetInfo *gi;
     int gd_xoffset, gd_yoffset;
     int gd_x1, gd_x2, gd_y;
@@ -770,6 +906,14 @@ void CreateTapeButtons()
   }
 }
 
+void FreeTapeButtons()
+{
+  int i;
+
+  for (i=0; i<NUM_TAPE_BUTTONS; i++)
+    FreeGadget(tape_gadget[i]);
+}
+
 void MapTapeEjectButton()
 {
   UnmapGadget(tape_gadget[TAPE_CTRL_ID_INDEX]);
@@ -806,7 +950,7 @@ static void HandleTapeButtons(struct GadgetInfo *gi)
 {
   int id = gi->custom_id;
 
-  if (game_status != MAINMENU && game_status != PLAYING)
+  if (game_status != GAME_MODE_MAIN && game_status != GAME_MODE_PLAYING)
     return;
 
   switch (id)

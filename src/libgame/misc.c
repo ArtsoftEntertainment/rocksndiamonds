@@ -29,7 +29,63 @@
 #include "misc.h"
 #include "setup.h"
 #include "random.h"
+#include "text.h"
+#include "image.h"
 
+
+/* ------------------------------------------------------------------------- */
+/* some generic helper functions                                             */
+/* ------------------------------------------------------------------------- */
+
+void fprintf_line(FILE *stream, char *line_string, int line_length)
+{
+  int i;
+
+  for (i=0; i<line_length; i++)
+    fprintf(stream, "%s", line_string);
+
+  fprintf(stream, "\n");
+}
+
+void printf_line(char *line_string, int line_length)
+{
+  fprintf_line(stdout, line_string, line_length);
+}
+
+/* int2str() returns a number converted to a string;
+   the used memory is static, but will be overwritten by later calls,
+   so if you want to save the result, copy it to a private string buffer;
+   there can be 10 local calls of int2str() without buffering the result --
+   the 11th call will then destroy the result from the first call and so on.
+*/
+
+char *int2str(int number, int size)
+{
+  static char shift_array[10][40];
+  static int shift_counter = 0;
+  char *s = shift_array[shift_counter];
+
+  shift_counter = (shift_counter + 1) % 10;
+
+  if (size > 20)
+    size = 20;
+
+  if (size)
+  {
+    sprintf(s, "                    %09d", number);
+    return &s[strlen(s) - size];
+  }
+  else
+  {
+    sprintf(s, "%d", number);
+    return s;
+  }
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* counter functions                                                         */
+/* ------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_MSDOS)
 volatile unsigned long counter = 0;
@@ -160,8 +216,8 @@ boolean FrameReached(unsigned long *frame_counter_var,
 {
   unsigned long actual_frame_counter = FrameCounter;
 
-  if (actual_frame_counter < *frame_counter_var + frame_delay &&
-      actual_frame_counter >= *frame_counter_var)
+  if (actual_frame_counter >= *frame_counter_var &&
+      actual_frame_counter < *frame_counter_var + frame_delay)
     return FALSE;
 
   *frame_counter_var = actual_frame_counter;
@@ -174,8 +230,8 @@ boolean DelayReached(unsigned long *counter_var,
 {
   unsigned long actual_counter = Counter();
 
-  if (actual_counter < *counter_var + delay &&
-      actual_counter >= *counter_var)
+  if (actual_counter >= *counter_var &&
+      actual_counter < *counter_var + delay)
     return FALSE;
 
   *counter_var = actual_counter;
@@ -191,8 +247,8 @@ void WaitUntilDelayReached(unsigned long *counter_var, unsigned long delay)
   {
     actual_counter = Counter();
 
-    if (actual_counter < *counter_var + delay &&
-	actual_counter >= *counter_var)
+    if (actual_counter >= *counter_var &&
+	actual_counter < *counter_var + delay)
       sleep_milliseconds((*counter_var + delay - actual_counter) / 2);
     else
       break;
@@ -201,113 +257,131 @@ void WaitUntilDelayReached(unsigned long *counter_var, unsigned long delay)
   *counter_var = actual_counter;
 }
 
-/* int2str() returns a number converted to a string;
-   the used memory is static, but will be overwritten by later calls,
-   so if you want to save the result, copy it to a private string buffer;
-   there can be 10 local calls of int2str() without buffering the result --
-   the 11th call will then destroy the result from the first call and so on.
-*/
 
-char *int2str(int number, int size)
-{
-  static char shift_array[10][40];
-  static int shift_counter = 0;
-  char *s = shift_array[shift_counter];
+/* ------------------------------------------------------------------------- */
+/* random generator functions                                                */
+/* ------------------------------------------------------------------------- */
 
-  shift_counter = (shift_counter + 1) % 10;
-
-  if (size > 20)
-    size = 20;
-
-  if (size)
-  {
-    sprintf(s, "                    %09d", number);
-    return &s[strlen(s) - size];
-  }
-  else
-  {
-    sprintf(s, "%d", number);
-    return s;
-  }
-}
-
+#if 0
 unsigned int SimpleRND(unsigned int max)
 {
-#if defined(TARGET_SDL)
-  static unsigned long root = 654321;
-  unsigned long current_ms;
-
-  current_ms = SDL_GetTicks();
-  root = root * 4253261 + current_ms;
-  return (root % max);
-#else
-  static unsigned long root = 654321;
-  struct timeval current_time;
-
-  gettimeofday(&current_time, NULL);
-  root = root * 4253261 + current_time.tv_sec + current_time.tv_usec;
-  return (root % max);
-#endif
+  return (random_linux_libc(RND_FREE) % max);
 }
 
-#ifdef DEBUG
-static unsigned int last_RND_value = 0;
-
-unsigned int last_RND()
+unsigned int InitSimpleRND(long seed)
 {
-  return last_RND_value;
+  if (seed == NEW_RANDOMIZE)
+  {
+    struct timeval current_time;
+
+    gettimeofday(&current_time, NULL);
+    seed = (long)current_time.tv_usec;
+  }
+
+  srandom_linux_libc(RND_FREE, (unsigned int) seed);
+
+  return (unsigned int) seed;
 }
-#endif
 
 unsigned int RND(unsigned int max)
 {
-#ifdef DEBUG
-  return (last_RND_value = random_linux_libc() % max);
-#else
-  return (random_linux_libc() % max);
-#endif
+  return (random_linux_libc(RND_GAME) % max);
 }
 
 unsigned int InitRND(long seed)
 {
-#if defined(TARGET_SDL)
-  unsigned long current_ms;
-
   if (seed == NEW_RANDOMIZE)
   {
-    current_ms = SDL_GetTicks();
-    srandom_linux_libc((unsigned int) current_ms);
-    return (unsigned int) current_ms;
-  }
-  else
-  {
-    srandom_linux_libc((unsigned int) seed);
-    return (unsigned int) seed;
-  }
-#else
-  struct timeval current_time;
+    struct timeval current_time;
 
-  if (seed == NEW_RANDOMIZE)
-  {
     gettimeofday(&current_time, NULL);
-    srandom_linux_libc((unsigned int) current_time.tv_usec);
-    return (unsigned int) current_time.tv_usec;
+    seed = (long)current_time.tv_usec;
   }
-  else
-  {
-    srandom_linux_libc((unsigned int) seed);
-    return (unsigned int) seed;
-  }
-#endif
+
+  srandom_linux_libc(RND_GAME, (unsigned int) seed);
+
+  return (unsigned int) seed;
 }
+#endif
+
+unsigned int init_random_number(int nr, long seed)
+{
+  if (seed == NEW_RANDOMIZE)
+  {
+#if defined(TARGET_SDL)
+    seed = (long)SDL_GetTicks();
+#else
+    struct timeval current_time;
+
+    gettimeofday(&current_time, NULL);
+    seed = (long)current_time.tv_usec;
+#endif
+  }
+
+  srandom_linux_libc(nr, (unsigned int) seed);
+
+  return (unsigned int) seed;
+}
+
+unsigned int get_random_number(int nr, unsigned int max)
+{
+  return (max > 0 ? random_linux_libc(nr) % max : 0);
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* system info functions                                                     */
+/* ------------------------------------------------------------------------- */
+
+#if !defined(PLATFORM_MSDOS)
+static char *get_corrected_real_name(char *real_name)
+{
+  char *real_name_new = checked_malloc(MAX_USERNAME_LEN + 1);
+  char *from_ptr = real_name;
+  char *to_ptr   = real_name_new;
+
+  if (strchr(real_name, 'ß') == NULL)	/* name does not contain 'ß' */
+  {
+    strncpy(real_name_new, real_name, MAX_USERNAME_LEN);
+    real_name_new[MAX_USERNAME_LEN] = '\0';
+
+    return real_name_new;
+  }
+
+  /* the user's real name may contain a 'ß' character (german sharp s),
+     which has no equivalent in upper case letters (which our fonts use) */
+  while (*from_ptr && (long)(to_ptr - real_name_new) < MAX_USERNAME_LEN - 1)
+  {
+    if (*from_ptr != 'ß')
+      *to_ptr++ = *from_ptr++;
+    else
+    {
+      from_ptr++;
+      *to_ptr++ = 's';
+      *to_ptr++ = 's';
+    }
+  }
+
+  *to_ptr = '\0';
+
+  return real_name_new;
+}
+#endif
 
 char *getLoginName()
 {
-#if defined(PLATFORM_WIN32)
-  return ANONYMOUS_NAME;
-#else
   static char *login_name = NULL;
 
+#if defined(PLATFORM_WIN32)
+  if (login_name == NULL)
+  {
+    unsigned long buffer_size = MAX_USERNAME_LEN + 1;
+    login_name = checked_malloc(buffer_size);
+
+    if (GetUserName(login_name, &buffer_size) == 0)
+      strcpy(login_name, ANONYMOUS_NAME);
+  }
+#else
   if (login_name == NULL)
   {
     struct passwd *pwd;
@@ -317,71 +391,79 @@ char *getLoginName()
     else
       login_name = getStringCopy(pwd->pw_name);
   }
+#endif
 
   return login_name;
-#endif
 }
 
 char *getRealName()
 {
-#if defined(PLATFORM_UNIX)
-  struct passwd *pwd;
+  static char *real_name = NULL;
 
-  if ((pwd = getpwuid(getuid())) == NULL || strlen(pwd->pw_gecos) == 0)
-    return ANONYMOUS_NAME;
-  else
+#if defined(PLATFORM_WIN32)
+  if (real_name == NULL)
   {
-    static char real_name[1024];
-    char *from_ptr = pwd->pw_gecos, *to_ptr = real_name;
+    static char buffer[MAX_USERNAME_LEN + 1];
+    unsigned long buffer_size = MAX_USERNAME_LEN + 1;
 
-    if (strchr(pwd->pw_gecos, 'ß') == NULL)
-      return pwd->pw_gecos;
-
-    /* the user's real name contains a 'ß' character (german sharp s),
-       which has no equivalent in upper case letters (which our fonts use) */
-    while (*from_ptr != '\0' && (long)(to_ptr - real_name) < 1024 - 2)
-    {
-      if (*from_ptr != 'ß')
-	*to_ptr++ = *from_ptr++;
-      else
-      {
-	from_ptr++;
-	*to_ptr++ = 's';
-	*to_ptr++ = 's';
-      }
-    }
-    *to_ptr = '\0';
-
-    return real_name;
+    if (GetUserName(buffer, &buffer_size) != 0)
+      real_name = get_corrected_real_name(buffer);
+    else
+      real_name = ANONYMOUS_NAME;
   }
-#else /* !PLATFORM_UNIX */
-  return ANONYMOUS_NAME;
+#elif defined(PLATFORM_UNIX)
+  if (real_name == NULL)
+  {
+    struct passwd *pwd;
+
+    if ((pwd = getpwuid(getuid())) != NULL && strlen(pwd->pw_gecos) != 0)
+      real_name = get_corrected_real_name(pwd->pw_gecos);
+    else
+      real_name = ANONYMOUS_NAME;
+  }
+#else
+  real_name = ANONYMOUS_NAME;
 #endif
+
+  return real_name;
 }
 
 char *getHomeDir()
 {
-#if defined(PLATFORM_UNIX)
-  static char *home_dir = NULL;
+  static char *dir = NULL;
 
-  if (home_dir == NULL)
+#if defined(PLATFORM_WIN32)
+  if (dir == NULL)
   {
-    if ((home_dir = getenv("HOME")) == NULL)
+    dir = checked_malloc(MAX_PATH + 1);
+
+    if (!SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, dir)))
+      strcpy(dir, ".");
+  }
+#elif defined(PLATFORM_UNIX)
+  if (dir == NULL)
+  {
+    if ((dir = getenv("HOME")) == NULL)
     {
       struct passwd *pwd;
 
-      if ((pwd = getpwuid(getuid())) == NULL)
-	home_dir = ".";
+      if ((pwd = getpwuid(getuid())) != NULL)
+	dir = getStringCopy(pwd->pw_dir);
       else
-	home_dir = getStringCopy(pwd->pw_dir);
+	dir = ".";
     }
   }
-
-  return home_dir;
 #else
-  return ".";
+  dir = ".";
 #endif
+
+  return dir;
 }
+
+
+/* ------------------------------------------------------------------------- */
+/* various string functions                                                  */
+/* ------------------------------------------------------------------------- */
 
 char *getPath2(char *path1, char *path2)
 {
@@ -389,6 +471,7 @@ char *getPath2(char *path1, char *path2)
 				       strlen(path2) + 1);
 
   sprintf(complete_path, "%s/%s", path1, path2);
+
   return complete_path;
 }
 
@@ -399,7 +482,17 @@ char *getPath3(char *path1, char *path2, char *path3)
 				       strlen(path3) + 1);
 
   sprintf(complete_path, "%s/%s/%s", path1, path2, path3);
+
   return complete_path;
+}
+
+char *getStringCat2(char *s1, char *s2)
+{
+  char *complete_string = checked_malloc(strlen(s1) + strlen(s2) + 1);
+
+  sprintf(complete_string, "%s%s", s1, s2);
+
+  return complete_string;
 }
 
 char *getStringCopy(char *s)
@@ -410,8 +503,8 @@ char *getStringCopy(char *s)
     return NULL;
 
   s_copy = checked_malloc(strlen(s) + 1);
-
   strcpy(s_copy, s);
+
   return s_copy;
 }
 
@@ -425,6 +518,48 @@ char *getStringToLower(char *s)
   *s_ptr = '\0';
 
   return s_copy;
+}
+
+void setString(char **old_value, char *new_value)
+{
+  if (*old_value != NULL)
+    free(*old_value);
+
+  *old_value = getStringCopy(new_value);
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* command line option handling functions                                    */
+/* ------------------------------------------------------------------------- */
+
+static void printUsage()
+{
+  printf("\n"
+	 "Usage: %s [OPTION]... [HOSTNAME [PORT]]\n"
+	 "\n"
+	 "Options:\n"
+	 "  -d, --display HOSTNAME[:SCREEN]  specify X server display\n"
+	 "  -b, --basepath DIRECTORY         alternative base DIRECTORY\n"
+	 "  -l, --level DIRECTORY            alternative level DIRECTORY\n"
+	 "  -g, --graphics DIRECTORY         alternative graphics DIRECTORY\n"
+	 "  -s, --sounds DIRECTORY           alternative sounds DIRECTORY\n"
+	 "  -m, --music DIRECTORY            alternative music DIRECTORY\n"
+	 "  -n, --network                    network multiplayer game\n"
+	 "      --serveronly                 only start network server\n"
+	 "  -v, --verbose                    verbose mode\n"
+	 "      --debug                      display debugging information\n"
+	 "  -e, --execute COMMAND            execute batch COMMAND:\n"
+	 "\n"
+	 "Valid commands for '--execute' option:\n"
+	 "  \"print graphicsinfo.conf\"        print default graphics config\n"
+	 "  \"print soundsinfo.conf\"          print default sounds config\n"
+	 "  \"print musicinfo.conf\"           print default music config\n"
+	 "  \"dump level FILE\"                dump level data from FILE\n"
+	 "  \"dump tape FILE\"                 dump tape data from FILE\n"
+	 "  \"autoplay LEVELDIR\"              play level tapes for LEVELDIR\n"
+	 "\n",
+	 program.command_basename);
 }
 
 void GetOptions(char *argv[])
@@ -441,11 +576,17 @@ void GetOptions(char *argv[])
   options.graphics_directory = RO_BASE_PATH "/" GRAPHICS_DIRECTORY;
   options.sounds_directory = RO_BASE_PATH "/" SOUNDS_DIRECTORY;
   options.music_directory = RO_BASE_PATH "/" MUSIC_DIRECTORY;
+  options.docs_directory = RO_BASE_PATH "/" DOCS_DIRECTORY;
+  options.execute_command = NULL;
   options.serveronly = FALSE;
   options.network = FALSE;
   options.verbose = FALSE;
   options.debug = FALSE;
-  options.debug_command = NULL;
+
+#if !defined(PLATFORM_UNIX)
+  if (*options_left == NULL)	/* no options given -- enable verbose mode */
+    options.verbose = TRUE;
+#endif
 
   while (*options_left)
   {
@@ -483,22 +624,7 @@ void GetOptions(char *argv[])
       Error(ERR_EXIT_HELP, "unrecognized option '%s'", option);
     else if (strncmp(option, "-help", option_len) == 0)
     {
-      printf("Usage: %s [options] [<server host> [<server port>]]\n"
-	     "Options:\n"
-	     "  -d, --display <host>[:<scr>]  X server display\n"
-	     "  -b, --basepath <directory>    alternative base directory\n"
-	     "  -l, --level <directory>       alternative level directory\n"
-	     "  -g, --graphics <directory>    alternative graphics directory\n"
-	     "  -s, --sounds <directory>      alternative sounds directory\n"
-	     "  -m, --music <directory>       alternative music directory\n"
-	     "  -n, --network                 network multiplayer game\n"
-	     "      --serveronly              only start network server\n"
-	     "  -v, --verbose                 verbose mode\n"
-	     "      --debug                   display debugging information\n",
-	     program.command_basename);
-
-      if (options.debug)
-	printf("      --debug-command <command> execute special command\n");
+      printUsage();
 
       exit(0);
     }
@@ -578,12 +704,12 @@ void GetOptions(char *argv[])
     {
       options.debug = TRUE;
     }
-    else if (strncmp(option, "-debug-command", option_len) == 0)
+    else if (strncmp(option, "-execute", option_len) == 0)
     {
       if (option_arg == NULL)
 	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
 
-      options.debug_command = option_arg;
+      options.execute_command = option_arg;
       if (option_arg == next_option)
 	options_left++;
     }
@@ -608,6 +734,11 @@ void GetOptions(char *argv[])
   }
 }
 
+
+/* ------------------------------------------------------------------------- */
+/* error handling functions                                                  */
+/* ------------------------------------------------------------------------- */
+
 /* used by SetError() and GetError() to store internal error messages */
 static char internal_error[1024];	/* this is bad */
 
@@ -627,6 +758,7 @@ char *GetError()
 
 void Error(int mode, char *format, ...)
 {
+  static boolean last_line_was_separator = FALSE;
   char *process_name = "";
   FILE *error = stderr;
   char *newline = "\n";
@@ -634,6 +766,18 @@ void Error(int mode, char *format, ...)
   /* display warnings only when running in verbose mode */
   if (mode & ERR_WARN && !options.verbose)
     return;
+
+  if (mode == ERR_RETURN_LINE)
+  {
+    if (!last_line_was_separator)
+      fprintf_line(error, format, 79);
+
+    last_line_was_separator = TRUE;
+
+    return;
+  }
+
+  last_line_was_separator = FALSE;
 
 #if defined(PLATFORM_MSDOS)
   newline = "\r\n";
@@ -688,6 +832,11 @@ void Error(int mode, char *format, ...)
   }
 }
 
+
+/* ------------------------------------------------------------------------- */
+/* memory allocation functions                                               */
+/* ------------------------------------------------------------------------- */
+
 void *checked_malloc(unsigned long size)
 {
   void *ptr;
@@ -721,6 +870,11 @@ void *checked_realloc(void *ptr, unsigned long size)
 
   return ptr;
 }
+
+
+/* ------------------------------------------------------------------------- */
+/* various helper functions                                                  */
+/* ------------------------------------------------------------------------- */
 
 inline void swap_numbers(int *i1, int *i2)
 {
@@ -830,26 +984,28 @@ void putFileChunk(FILE *file, char *chunk_name, int chunk_size,
 
 int getFileVersion(FILE *file)
 {
-  int version_major, version_minor, version_patch;
+  int version_major, version_minor, version_patch, version_release;
 
-  version_major = fgetc(file);
-  version_minor = fgetc(file);
-  version_patch = fgetc(file);
-  fgetc(file);		/* not used */
+  version_major   = fgetc(file);
+  version_minor   = fgetc(file);
+  version_patch   = fgetc(file);
+  version_release = fgetc(file);
 
-  return VERSION_IDENT(version_major, version_minor, version_patch);
+  return RELEASE_IDENT(version_major, version_minor, version_patch,
+		       version_release);
 }
 
 void putFileVersion(FILE *file, int version)
 {
-  int version_major = VERSION_MAJOR(version);
-  int version_minor = VERSION_MINOR(version);
-  int version_patch = VERSION_PATCH(version);
+  int version_major   = VERSION_MAJOR(version);
+  int version_minor   = VERSION_MINOR(version);
+  int version_patch   = VERSION_PATCH(version);
+  int version_release = VERSION_RELEASE(version);
 
-  fputc(version_major, file);
-  fputc(version_minor, file);
-  fputc(version_patch, file);
-  fputc(0, file);	/* not used */
+  fputc(version_major,   file);
+  fputc(version_minor,   file);
+  fputc(version_patch,   file);
+  fputc(version_release, file);
 }
 
 void ReadUnusedBytesFromFile(FILE *file, unsigned long bytes)
@@ -1212,9 +1368,155 @@ char getCharFromKey(Key key)
 }
 
 
-/* ========================================================================= */
-/* functions for checking filenames                                          */
-/* ========================================================================= */
+/* ------------------------------------------------------------------------- */
+/* functions to translate string identifiers to integer or boolean value     */
+/* ------------------------------------------------------------------------- */
+
+int get_integer_from_string(char *s)
+{
+  static char *number_text[][3] =
+  {
+    { "0", "zero", "null", },
+    { "1", "one", "first" },
+    { "2", "two", "second" },
+    { "3", "three", "third" },
+    { "4", "four", "fourth" },
+    { "5", "five", "fifth" },
+    { "6", "six", "sixth" },
+    { "7", "seven", "seventh" },
+    { "8", "eight", "eighth" },
+    { "9", "nine", "ninth" },
+    { "10", "ten", "tenth" },
+    { "11", "eleven", "eleventh" },
+    { "12", "twelve", "twelfth" },
+  };
+
+  int i, j;
+  char *s_lower = getStringToLower(s);
+  int result = -1;
+
+  for (i=0; i<13; i++)
+    for (j=0; j<3; j++)
+      if (strcmp(s_lower, number_text[i][j]) == 0)
+	result = i;
+
+  if (result == -1)
+    result = atoi(s);
+
+  free(s_lower);
+
+  return result;
+}
+
+boolean get_boolean_from_string(char *s)
+{
+  char *s_lower = getStringToLower(s);
+  boolean result = FALSE;
+
+  if (strcmp(s_lower, "true") == 0 ||
+      strcmp(s_lower, "yes") == 0 ||
+      strcmp(s_lower, "on") == 0 ||
+      get_integer_from_string(s) == 1)
+    result = TRUE;
+
+  free(s_lower);
+
+  return result;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* functions for generic lists                                               */
+/* ------------------------------------------------------------------------- */
+
+ListNode *newListNode()
+{
+  return checked_calloc(sizeof(ListNode));
+}
+
+void addNodeToList(ListNode **node_first, char *key, void *content)
+{
+  ListNode *node_new = newListNode();
+
+#if 0
+  printf("LIST: adding node with key '%s'\n", key);
+#endif
+
+  node_new->key = getStringCopy(key);
+  node_new->content = content;
+  node_new->next = *node_first;
+  *node_first = node_new;
+}
+
+void deleteNodeFromList(ListNode **node_first, char *key,
+			void (*destructor_function)(void *))
+{
+  if (node_first == NULL || *node_first == NULL)
+    return;
+
+#if 0
+  printf("[CHECKING LIST KEY '%s' == '%s']\n",
+	 (*node_first)->key, key);
+#endif
+
+  if (strcmp((*node_first)->key, key) == 0)
+  {
+#if 0
+    printf("[DELETING LIST ENTRY]\n");
+#endif
+
+    free((*node_first)->key);
+    if (destructor_function)
+      destructor_function((*node_first)->content);
+    *node_first = (*node_first)->next;
+  }
+  else
+    deleteNodeFromList(&(*node_first)->next, key, destructor_function);
+}
+
+ListNode *getNodeFromKey(ListNode *node_first, char *key)
+{
+  if (node_first == NULL)
+    return NULL;
+
+  if (strcmp(node_first->key, key) == 0)
+    return node_first;
+  else
+    return getNodeFromKey(node_first->next, key);
+}
+
+int getNumNodes(ListNode *node_first)
+{
+  return (node_first ? 1 + getNumNodes(node_first->next) : 0);
+}
+
+void dumpList(ListNode *node_first)
+{
+  ListNode *node = node_first;
+
+  while (node)
+  {
+    printf("['%s' (%d)]\n", node->key,
+	   ((struct ListNodeInfo *)node->content)->num_references);
+    node = node->next;
+  }
+
+  printf("[%d nodes]\n", getNumNodes(node_first));
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* functions for checking files and filenames                                */
+/* ------------------------------------------------------------------------- */
+
+boolean fileExists(char *filename)
+{
+#if 0
+  printf("checking file '%s'\n", filename);
+#endif
+
+  return (access(filename, F_OK) == 0);
+}
 
 boolean FileIsGraphic(char *filename)
 {
@@ -1263,11 +1565,978 @@ boolean FileIsArtworkType(char *basename, int type)
   return FALSE;
 }
 
+/* ------------------------------------------------------------------------- */
+/* functions for loading artwork configuration information                   */
+/* ------------------------------------------------------------------------- */
 
-/* ========================================================================= */
+/* This function checks if a string <s> of the format "string1, string2, ..."
+   exactly contains a string <s_contained>. */
+
+static boolean string_has_parameter(char *s, char *s_contained)
+{
+  char *substring;
+
+  if (s == NULL || s_contained == NULL)
+    return FALSE;
+
+  if (strlen(s_contained) > strlen(s))
+    return FALSE;
+
+  if (strncmp(s, s_contained, strlen(s_contained)) == 0)
+  {
+    char next_char = s[strlen(s_contained)];
+
+    /* check if next character is delimiter or whitespace */
+    return (next_char == ',' || next_char == '\0' ||
+	    next_char == ' ' || next_char == '\t' ? TRUE : FALSE);
+  }
+
+  /* check if string contains another parameter string after a comma */
+  substring = strchr(s, ',');
+  if (substring == NULL)	/* string does not contain a comma */
+    return FALSE;
+
+  /* advance string pointer to next character after the comma */
+  substring++;
+
+  /* skip potential whitespaces after the comma */
+  while (*substring == ' ' || *substring == '\t')
+    substring++;
+
+  return string_has_parameter(substring, s_contained);
+}
+
+int get_parameter_value(char *token, char *value_raw, int type)
+{
+  char *value = getStringToLower(value_raw);
+  int result = 0;	/* probably a save default value */
+
+  if (strcmp(token, ".direction") == 0)
+  {
+    result = (strcmp(value, "left")  == 0 ? MV_LEFT :
+	      strcmp(value, "right") == 0 ? MV_RIGHT :
+	      strcmp(value, "up")    == 0 ? MV_UP :
+	      strcmp(value, "down")  == 0 ? MV_DOWN : MV_NO_MOVING);
+  }
+  else if (strcmp(token, ".anim_mode") == 0)
+  {
+    result = (string_has_parameter(value, "loop")      ? ANIM_LOOP :
+	      string_has_parameter(value, "linear")    ? ANIM_LINEAR :
+	      string_has_parameter(value, "pingpong")  ? ANIM_PINGPONG :
+	      string_has_parameter(value, "pingpong2") ? ANIM_PINGPONG2 :
+	      string_has_parameter(value, "random")    ? ANIM_RANDOM :
+	      string_has_parameter(value, "none")      ? ANIM_NONE :
+	      ANIM_LOOP);
+
+    if (string_has_parameter(value, "reverse"))
+      result |= ANIM_REVERSE;
+  }
+  else		/* generic parameter of type integer or boolean */
+  {
+    result = (strcmp(value, ARG_UNDEFINED) == 0 ? ARG_UNDEFINED_VALUE :
+	      type == TYPE_INTEGER ? get_integer_from_string(value) :
+	      type == TYPE_BOOLEAN ? get_boolean_from_string(value) :
+	      ARG_UNDEFINED_VALUE);
+  }
+
+  free(value);
+
+  return result;
+}
+
+static void FreeCustomArtworkList(struct ArtworkListInfo *,
+				  struct ListNodeInfo ***, int *);
+
+struct FileInfo *getFileListFromConfigList(struct ConfigInfo *config_list,
+					   struct ConfigInfo *suffix_list,
+					   char **ignore_tokens,
+					   int num_file_list_entries)
+{
+  struct FileInfo *file_list;
+  int num_file_list_entries_found = 0;
+  int num_suffix_list_entries = 0;
+  int list_pos;
+  int i, j;
+
+  file_list = checked_calloc(num_file_list_entries * sizeof(struct FileInfo));
+
+  for (i=0; suffix_list[i].token != NULL; i++)
+    num_suffix_list_entries++;
+
+  /* always start with reliable default values */
+  for (i=0; i<num_file_list_entries; i++)
+  {
+    file_list[i].token = NULL;
+
+    file_list[i].default_filename = NULL;
+    file_list[i].filename = NULL;
+
+    if (num_suffix_list_entries > 0)
+    {
+      int parameter_array_size = num_suffix_list_entries * sizeof(char *);
+
+      file_list[i].default_parameter = checked_calloc(parameter_array_size);
+      file_list[i].parameter = checked_calloc(parameter_array_size);
+
+      for (j=0; j<num_suffix_list_entries; j++)
+      {
+	setString(&file_list[i].default_parameter[j], suffix_list[j].value);
+	setString(&file_list[i].parameter[j], suffix_list[j].value);
+      }
+    }
+  }
+
+  list_pos = 0;
+  for (i=0; config_list[i].token != NULL; i++)
+  {
+    int len_config_token = strlen(config_list[i].token);
+    int len_config_value = strlen(config_list[i].value);
+    boolean is_file_entry = TRUE;
+
+    for (j=0; suffix_list[j].token != NULL; j++)
+    {
+      int len_suffix = strlen(suffix_list[j].token);
+
+      if (len_suffix < len_config_token &&
+	  strcmp(&config_list[i].token[len_config_token - len_suffix],
+		 suffix_list[j].token) == 0)
+      {
+	setString(&file_list[list_pos].default_parameter[j],
+		  config_list[i].value);
+
+	is_file_entry = FALSE;
+	break;
+      }
+    }
+
+    /* the following tokens are no file definitions, but other config tokens */
+    for (j=0; ignore_tokens[j] != NULL; j++)
+      if (strcmp(config_list[i].token, ignore_tokens[j]) == 0)
+	is_file_entry = FALSE;
+
+    if (is_file_entry)
+    {
+      if (i > 0)
+	list_pos++;
+
+      if (list_pos >= num_file_list_entries)
+	break;
+
+      /* simple sanity check if this is really a file definition */
+      if (strcmp(&config_list[i].value[len_config_value - 4], ".pcx") != 0 &&
+	  strcmp(&config_list[i].value[len_config_value - 4], ".wav") != 0 &&
+	  strcmp(config_list[i].value, UNDEFINED_FILENAME) != 0)
+      {
+	Error(ERR_RETURN, "Configuration directive '%s' -> '%s':",
+	      config_list[i].token, config_list[i].value);
+	Error(ERR_EXIT, "This seems to be no valid definition -- please fix");
+      }
+
+      file_list[list_pos].token = config_list[i].token;
+      file_list[list_pos].default_filename = config_list[i].value;
+    }
+  }
+
+  num_file_list_entries_found = list_pos + 1;
+  if (num_file_list_entries_found != num_file_list_entries)
+  {
+    Error(ERR_RETURN_LINE, "-");
+    Error(ERR_RETURN, "inconsistant config list information:");
+    Error(ERR_RETURN, "- should be:   %d (according to 'src/conf_gfx.h')",
+	  num_file_list_entries);
+    Error(ERR_RETURN, "- found to be: %d (according to 'src/conf_gfx.c')",
+	  num_file_list_entries_found);
+    Error(ERR_EXIT,   "please fix");
+  }
+
+  return file_list;
+}
+
+static boolean token_suffix_match(char *token, char *suffix, int start_pos)
+{
+  int len_token = strlen(token);
+  int len_suffix = strlen(suffix);
+
+#if 0
+  if (IS_PARENT_PROCESS())
+    printf(":::::::::: check '%s' for '%s' ::::::::::\n", token, suffix);
+#endif
+
+  if (start_pos < 0)	/* compare suffix from end of string */
+    start_pos += len_token;
+
+  if (start_pos < 0 || start_pos + len_suffix > len_token)
+    return FALSE;
+
+  if (strncmp(&token[start_pos], suffix, len_suffix) != 0)
+    return FALSE;
+
+  if (token[start_pos + len_suffix] == '\0')
+    return TRUE;
+
+  if (token[start_pos + len_suffix] == '.')
+    return TRUE;
+
+  return FALSE;
+}
+
+#define KNOWN_TOKEN_VALUE	"[KNOWN_TOKEN]"
+
+static void read_token_parameters(SetupFileHash *setup_file_hash,
+				  struct ConfigInfo *suffix_list,
+				  struct FileInfo *file_list_entry)
+{
+  /* check for config token that is the base token without any suffixes */
+  char *filename = getHashEntry(setup_file_hash, file_list_entry->token);
+  char *known_token_value = KNOWN_TOKEN_VALUE;
+  int i;
+
+  if (filename != NULL)
+  {
+    setString(&file_list_entry->filename, filename);
+
+    /* when file definition found, set all parameters to default values */
+    for (i=0; suffix_list[i].token != NULL; i++)
+      setString(&file_list_entry->parameter[i], suffix_list[i].value);
+
+    file_list_entry->redefined = TRUE;
+
+    /* mark config file token as well known from default config */
+    setHashEntry(setup_file_hash, file_list_entry->token, known_token_value);
+  }
+#if 0
+  else
+  {
+    if (strcmp(file_list_entry->filename,
+	       file_list_entry->default_filename) != 0)
+      printf("___ resetting '%s' to default\n", file_list_entry->token);
+
+    setString(&file_list_entry->filename, file_list_entry->default_filename);
+  }
+#endif
+
+  /* check for config tokens that can be build by base token and suffixes */
+  for (i=0; suffix_list[i].token != NULL; i++)
+  {
+    char *token = getStringCat2(file_list_entry->token, suffix_list[i].token);
+    char *value = getHashEntry(setup_file_hash, token);
+
+    if (value != NULL)
+    {
+      setString(&file_list_entry->parameter[i], value);
+
+      /* mark config file token as well known from default config */
+      setHashEntry(setup_file_hash, token, known_token_value);
+    }
+
+    free(token);
+  }
+}
+
+static void add_dynamic_file_list_entry(struct FileInfo **list,
+					int *num_list_entries,
+					SetupFileHash *extra_file_hash,
+					struct ConfigInfo *suffix_list,
+					int num_suffix_list_entries,
+					char *token)
+{
+  struct FileInfo *new_list_entry;
+  int parameter_array_size = num_suffix_list_entries * sizeof(char *);
+
+#if 0
+  if (IS_PARENT_PROCESS())
+    printf("===> found dynamic definition '%s'\n", token);
+#endif
+
+  (*num_list_entries)++;
+  *list = checked_realloc(*list, *num_list_entries * sizeof(struct FileInfo));
+  new_list_entry = &(*list)[*num_list_entries - 1];
+
+  new_list_entry->token = getStringCopy(token);
+  new_list_entry->filename = NULL;
+  new_list_entry->parameter = checked_calloc(parameter_array_size);
+
+  read_token_parameters(extra_file_hash, suffix_list, new_list_entry);
+}
+
+static void add_property_mapping(struct PropertyMapping **list,
+				 int *num_list_entries,
+				 int base_index, int ext1_index,
+				 int ext2_index, int ext3_index,
+				 int artwork_index)
+{
+  struct PropertyMapping *new_list_entry;
+
+  (*num_list_entries)++;
+  *list = checked_realloc(*list,
+			  *num_list_entries * sizeof(struct PropertyMapping));
+  new_list_entry = &(*list)[*num_list_entries - 1];
+
+  new_list_entry->base_index = base_index;
+  new_list_entry->ext1_index = ext1_index;
+  new_list_entry->ext2_index = ext2_index;
+  new_list_entry->ext3_index = ext3_index;
+
+  new_list_entry->artwork_index = artwork_index;
+}
+
+static void LoadArtworkConfigFromFilename(struct ArtworkListInfo *artwork_info,
+					  char *filename)
+{
+  struct FileInfo *file_list = artwork_info->file_list;
+  struct ConfigInfo *suffix_list = artwork_info->suffix_list;
+  char **base_prefixes = artwork_info->base_prefixes;
+  char **ext1_suffixes = artwork_info->ext1_suffixes;
+  char **ext2_suffixes = artwork_info->ext2_suffixes;
+  char **ext3_suffixes = artwork_info->ext3_suffixes;
+  char **ignore_tokens = artwork_info->ignore_tokens;
+  int num_file_list_entries = artwork_info->num_file_list_entries;
+  int num_suffix_list_entries = artwork_info->num_suffix_list_entries;
+  int num_base_prefixes = artwork_info->num_base_prefixes;
+  int num_ext1_suffixes = artwork_info->num_ext1_suffixes;
+  int num_ext2_suffixes = artwork_info->num_ext2_suffixes;
+  int num_ext3_suffixes = artwork_info->num_ext3_suffixes;
+  int num_ignore_tokens = artwork_info->num_ignore_tokens;
+  SetupFileHash *setup_file_hash, *extra_file_hash;
+  char *known_token_value = KNOWN_TOKEN_VALUE;
+  int i, j, k, l;
+
+  if (filename == NULL)
+    return;
+
+#if 0
+  printf("::: LoadArtworkConfigFromFilename: '%s'\n", filename);
+#endif
+
+  if ((setup_file_hash = loadSetupFileHash(filename)) == NULL)
+    return;
+
+  /* read parameters for all known config file tokens */
+  for (i=0; i<num_file_list_entries; i++)
+    read_token_parameters(setup_file_hash, suffix_list, &file_list[i]);
+
+  /* set all tokens that can be ignored here to "known" keyword */
+  for (i=0; i < num_ignore_tokens; i++)
+    setHashEntry(setup_file_hash, ignore_tokens[i], known_token_value);
+
+  /* copy all unknown config file tokens to extra config list */
+  extra_file_hash = newSetupFileHash();
+  BEGIN_HASH_ITERATION(setup_file_hash, itr)
+  {
+    if (strcmp(HASH_ITERATION_VALUE(itr), known_token_value) != 0)
+      setHashEntry(extra_file_hash,
+		   HASH_ITERATION_TOKEN(itr), HASH_ITERATION_VALUE(itr));
+  }
+  END_HASH_ITERATION(setup_file_hash, itr)
+
+  /* at this point, we do not need the config file hash anymore -- free it */
+  freeSetupFileHash(setup_file_hash);
+
+  /* now try to determine valid, dynamically defined config tokens */
+
+  BEGIN_HASH_ITERATION(extra_file_hash, itr)
+  {
+    struct FileInfo **dynamic_file_list =
+      &artwork_info->dynamic_file_list;
+    int *num_dynamic_file_list_entries =
+      &artwork_info->num_dynamic_file_list_entries;
+    struct PropertyMapping **property_mapping =
+      &artwork_info->property_mapping;
+    int *num_property_mapping_entries =
+      &artwork_info->num_property_mapping_entries;
+    int current_summarized_file_list_entry =
+      artwork_info->num_file_list_entries +
+      artwork_info->num_dynamic_file_list_entries;
+    char *token = HASH_ITERATION_TOKEN(itr);
+    int len_token = strlen(token);
+    int start_pos;
+    boolean base_prefix_found = FALSE;
+    boolean parameter_suffix_found = FALSE;
+
+    /* skip all parameter definitions (handled by read_token_parameters()) */
+    for (i=0; i < num_suffix_list_entries && !parameter_suffix_found; i++)
+    {
+      int len_suffix = strlen(suffix_list[i].token);
+
+      if (token_suffix_match(token, suffix_list[i].token, -len_suffix))
+	parameter_suffix_found = TRUE;
+    }
+
+#if 0
+    if (IS_PARENT_PROCESS())
+    {
+      if (parameter_suffix_found)
+	printf("---> skipping token '%s' (parameter token)\n", token);
+      else
+	printf("---> examining token '%s': search prefix ...\n", token);
+    }
+#endif
+
+    if (parameter_suffix_found)
+      continue;
+
+    /* ---------- step 0: search for matching base prefix ---------- */
+
+    start_pos = 0;
+    for (i=0; i<num_base_prefixes && !base_prefix_found; i++)
+    {
+      char *base_prefix = base_prefixes[i];
+      int len_base_prefix = strlen(base_prefix);
+      boolean ext1_suffix_found = FALSE;
+      boolean ext2_suffix_found = FALSE;
+      boolean ext3_suffix_found = FALSE;
+      boolean exact_match = FALSE;
+      int base_index = -1;
+      int ext1_index = -1;
+      int ext2_index = -1;
+      int ext3_index = -1;
+
+      base_prefix_found = token_suffix_match(token, base_prefix, start_pos);
+
+      if (!base_prefix_found)
+	continue;
+
+      base_index = i;
+
+      if (start_pos + len_base_prefix == len_token)	/* exact match */
+      {
+	exact_match = TRUE;
+
+	add_dynamic_file_list_entry(dynamic_file_list,
+				    num_dynamic_file_list_entries,
+				    extra_file_hash,
+				    suffix_list,
+				    num_suffix_list_entries,
+				    token);
+	add_property_mapping(property_mapping,
+			     num_property_mapping_entries,
+			     base_index, -1, -1, -1,
+			     current_summarized_file_list_entry);
+	continue;
+      }
+
+#if 0
+      if (IS_PARENT_PROCESS())
+	printf("---> examining token '%s': search 1st suffix ...\n", token);
+#endif
+
+      /* ---------- step 1: search for matching first suffix ---------- */
+
+      start_pos += len_base_prefix;
+      for (j=0; j<num_ext1_suffixes && !ext1_suffix_found; j++)
+      {
+	char *ext1_suffix = ext1_suffixes[j];
+	int len_ext1_suffix = strlen(ext1_suffix);
+
+	ext1_suffix_found = token_suffix_match(token, ext1_suffix, start_pos);
+
+	if (!ext1_suffix_found)
+	  continue;
+
+	ext1_index = j;
+
+	if (start_pos + len_ext1_suffix == len_token)	/* exact match */
+	{
+	  exact_match = TRUE;
+
+	  add_dynamic_file_list_entry(dynamic_file_list,
+				      num_dynamic_file_list_entries,
+				      extra_file_hash,
+				      suffix_list,
+				      num_suffix_list_entries,
+				      token);
+	  add_property_mapping(property_mapping,
+			       num_property_mapping_entries,
+			       base_index, ext1_index, -1, -1,
+			       current_summarized_file_list_entry);
+	  continue;
+	}
+
+	start_pos += len_ext1_suffix;
+      }
+
+      if (exact_match)
+	break;
+
+#if 0
+      if (IS_PARENT_PROCESS())
+	printf("---> examining token '%s': search 2nd suffix ...\n", token);
+#endif
+
+      /* ---------- step 2: search for matching second suffix ---------- */
+
+      for (k=0; k<num_ext2_suffixes && !ext2_suffix_found; k++)
+      {
+	char *ext2_suffix = ext2_suffixes[k];
+	int len_ext2_suffix = strlen(ext2_suffix);
+
+	ext2_suffix_found = token_suffix_match(token, ext2_suffix,start_pos);
+
+	if (!ext2_suffix_found)
+	  continue;
+
+	ext2_index = k;
+
+	if (start_pos + len_ext2_suffix == len_token)	/* exact match */
+	{
+	  exact_match = TRUE;
+
+	  add_dynamic_file_list_entry(dynamic_file_list,
+				      num_dynamic_file_list_entries,
+				      extra_file_hash,
+				      suffix_list,
+				      num_suffix_list_entries,
+				      token);
+	  add_property_mapping(property_mapping,
+			       num_property_mapping_entries,
+			       base_index, ext1_index, ext2_index, -1,
+			       current_summarized_file_list_entry);
+	  continue;
+	}
+
+	start_pos += len_ext2_suffix;
+      }
+
+      if (exact_match)
+	break;
+
+#if 0
+      if (IS_PARENT_PROCESS())
+	printf("---> examining token '%s': search 3rd suffix ...\n",token);
+#endif
+
+      /* ---------- step 3: search for matching third suffix ---------- */
+
+      for (l=0; l<num_ext3_suffixes && !ext3_suffix_found; l++)
+      {
+	char *ext3_suffix = ext3_suffixes[l];
+	int len_ext3_suffix = strlen(ext3_suffix);
+
+	ext3_suffix_found =token_suffix_match(token,ext3_suffix,start_pos);
+
+	if (!ext3_suffix_found)
+	  continue;
+
+	ext3_index = l;
+
+	if (start_pos + len_ext3_suffix == len_token) /* exact match */
+	{
+	  exact_match = TRUE;
+
+	  add_dynamic_file_list_entry(dynamic_file_list,
+				      num_dynamic_file_list_entries,
+				      extra_file_hash,
+				      suffix_list,
+				      num_suffix_list_entries,
+				      token);
+	  add_property_mapping(property_mapping,
+			       num_property_mapping_entries,
+			       base_index, ext1_index, ext2_index, ext3_index,
+			       current_summarized_file_list_entry);
+	  continue;
+	}
+      }
+    }
+  }
+  END_HASH_ITERATION(extra_file_hash, itr)
+
+  if (artwork_info->num_dynamic_file_list_entries > 0)
+  {
+    artwork_info->dynamic_artwork_list =
+      checked_calloc(artwork_info->num_dynamic_file_list_entries *
+		     artwork_info->sizeof_artwork_list_entry);
+  }
+
+  if (extra_file_hash != NULL && options.verbose && IS_PARENT_PROCESS())
+  {
+    SetupFileList *setup_file_list, *list;
+    boolean dynamic_tokens_found = FALSE;
+    boolean unknown_tokens_found = FALSE;
+
+    if ((setup_file_list = loadSetupFileList(filename)) == NULL)
+      Error(ERR_EXIT, "loadSetupFileHash works, but loadSetupFileList fails");
+
+    BEGIN_HASH_ITERATION(extra_file_hash, itr)
+    {
+      if (strcmp(HASH_ITERATION_VALUE(itr), known_token_value) == 0)
+	dynamic_tokens_found = TRUE;
+      else
+	unknown_tokens_found = TRUE;
+    }
+    END_HASH_ITERATION(extra_file_hash, itr)
+
+#if DEBUG
+    if (dynamic_tokens_found)
+    {
+      Error(ERR_RETURN_LINE, "-");
+      Error(ERR_RETURN, "dynamic token(s) found in config file:");
+      Error(ERR_RETURN, "- config file: '%s'", filename);
+
+      for (list = setup_file_list; list != NULL; list = list->next)
+      {
+	char *value = getHashEntry(extra_file_hash, list->token);
+
+	if (value != NULL && strcmp(value, known_token_value) == 0)
+	  Error(ERR_RETURN, "- dynamic token: '%s'", list->token);
+      }
+
+      Error(ERR_RETURN_LINE, "-");
+    }
+#endif
+
+    if (unknown_tokens_found)
+    {
+      Error(ERR_RETURN_LINE, "-");
+      Error(ERR_RETURN, "warning: unknown token(s) found in config file:");
+      Error(ERR_RETURN, "- config file: '%s'", filename);
+
+      for (list = setup_file_list; list != NULL; list = list->next)
+      {
+	char *value = getHashEntry(extra_file_hash, list->token);
+
+	if (value != NULL && strcmp(value, known_token_value) != 0)
+	  Error(ERR_RETURN, "- dynamic token: '%s'", list->token);
+      }
+
+      Error(ERR_RETURN_LINE, "-");
+    }
+
+    freeSetupFileList(setup_file_list);
+  }
+
+  freeSetupFileHash(extra_file_hash);
+
+#if 0
+  for (i=0; i<num_file_list_entries; i++)
+  {
+    printf("'%s' ", file_list[i].token);
+    if (file_list[i].filename)
+      printf("-> '%s'\n", file_list[i].filename);
+    else
+      printf("-> UNDEFINED [-> '%s']\n", file_list[i].default_filename);
+  }
+#endif
+}
+
+void LoadArtworkConfig(struct ArtworkListInfo *artwork_info)
+{
+  struct FileInfo *file_list = artwork_info->file_list;
+  int num_file_list_entries = artwork_info->num_file_list_entries;
+  int num_suffix_list_entries = artwork_info->num_suffix_list_entries;
+  char *filename_base = UNDEFINED_FILENAME, *filename_local;
+  int i, j;
+
+#if 0
+  printf("GOT CUSTOM ARTWORK CONFIG FILE '%s'\n", filename);
+#endif
+
+  /* always start with reliable default values */
+  for (i=0; i<num_file_list_entries; i++)
+  {
+    setString(&file_list[i].filename, file_list[i].default_filename);
+
+    for (j=0; j<num_suffix_list_entries; j++)
+      setString(&file_list[i].parameter[j], file_list[i].default_parameter[j]);
+
+    file_list[i].redefined = FALSE;
+  }
+
+  /* free previous dynamic artwork file array */
+  if (artwork_info->dynamic_file_list != NULL)
+  {
+    for (i=0; i<artwork_info->num_dynamic_file_list_entries; i++)
+    {
+      free(artwork_info->dynamic_file_list[i].token);
+      free(artwork_info->dynamic_file_list[i].filename);
+      free(artwork_info->dynamic_file_list[i].parameter);
+    }
+
+    free(artwork_info->dynamic_file_list);
+    artwork_info->dynamic_file_list = NULL;
+
+    FreeCustomArtworkList(artwork_info, &artwork_info->dynamic_artwork_list,
+			  &artwork_info->num_dynamic_file_list_entries);
+  }
+
+  /* free previous property mapping */
+  if (artwork_info->property_mapping != NULL)
+  {
+    free(artwork_info->property_mapping);
+
+    artwork_info->property_mapping = NULL;
+    artwork_info->num_property_mapping_entries = 0;
+  }
+
+  if (!SETUP_OVERRIDE_ARTWORK(setup, artwork_info->type))
+  {
+    /* first look for special artwork configured in level series config */
+    filename_base = getCustomArtworkLevelConfigFilename(artwork_info->type);
+
+    if (fileExists(filename_base))
+      LoadArtworkConfigFromFilename(artwork_info, filename_base);
+  }
+
+  filename_local = getCustomArtworkConfigFilename(artwork_info->type);
+
+  if (filename_local != NULL && strcmp(filename_base, filename_local) != 0)
+    LoadArtworkConfigFromFilename(artwork_info, filename_local);
+}
+
+static void deleteArtworkListEntry(struct ArtworkListInfo *artwork_info,
+				   struct ListNodeInfo **listnode)
+{
+  if (*listnode)
+  {
+    char *filename = (*listnode)->source_filename;
+
+#if 0
+    printf("[decrementing reference counter of artwork '%s']\n", filename);
+#endif
+
+    if (--(*listnode)->num_references <= 0)
+    {
+#if 0
+      printf("[deleting artwork '%s']\n", filename);
+#endif
+
+      deleteNodeFromList(&artwork_info->content_list, filename,
+			 artwork_info->free_artwork);
+    }
+
+    *listnode = NULL;
+  }
+}
+
+static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
+				    struct ListNodeInfo **listnode,
+				    char *basename)
+{
+  char *init_text[] =
+  {
+    "Loading graphics:",
+    "Loading sounds:",
+    "Loading music:"
+  };
+
+  ListNode *node;
+  char *filename = getCustomArtworkFilename(basename, artwork_info->type);
+
+  if (filename == NULL)
+  {
+    int error_mode = ERR_WARN;
+
+#if 1
+    /* we can get away without sounds and music, but not without graphics */
+    if (*listnode == NULL && artwork_info->type == ARTWORK_TYPE_GRAPHICS)
+      error_mode = ERR_EXIT;
+#endif
+
+    Error(error_mode, "cannot find artwork file '%s'", basename);
+    return;
+  }
+
+  /* check if the old and the new artwork file are the same */
+  if (*listnode && strcmp((*listnode)->source_filename, filename) == 0)
+  {
+    /* The old and new artwork are the same (have the same filename and path).
+       This usually means that this artwork does not exist in this artwork set
+       and a fallback to the existing artwork is done. */
+
+#if 0
+    printf("[artwork '%s' already exists (same list entry)]\n", filename);
+#endif
+
+    return;
+  }
+
+  /* delete existing artwork file entry */
+  deleteArtworkListEntry(artwork_info, listnode);
+
+  /* check if the new artwork file already exists in the list of artworks */
+  if ((node = getNodeFromKey(artwork_info->content_list, filename)) != NULL)
+  {
+#if 0
+      printf("[artwork '%s' already exists (other list entry)]\n", filename);
+#endif
+
+      *listnode = (struct ListNodeInfo *)node->content;
+      (*listnode)->num_references++;
+
+      return;
+  }
+
+#if 0
+  printf("::: %s: '%s'\n", init_text[artwork_info->type], basename);
+#endif
+
+  DrawInitText(init_text[artwork_info->type], 120, FC_GREEN);
+  DrawInitText(basename, 150, FC_YELLOW);
+
+  if ((*listnode = artwork_info->load_artwork(filename)) != NULL)
+  {
+#if 0
+      printf("[adding new artwork '%s']\n", filename);
+#endif
+
+    (*listnode)->num_references = 1;
+    addNodeToList(&artwork_info->content_list, (*listnode)->source_filename,
+		  *listnode);
+  }
+  else
+  {
+    int error_mode = ERR_WARN;
+
+#if 1
+    /* we can get away without sounds and music, but not without graphics */
+    if (artwork_info->type == ARTWORK_TYPE_GRAPHICS)
+      error_mode = ERR_EXIT;
+#endif
+
+    Error(error_mode, "cannot load artwork file '%s'", basename);
+    return;
+  }
+}
+
+static void LoadCustomArtwork(struct ArtworkListInfo *artwork_info,
+			      struct ListNodeInfo **listnode,
+			      char *basename)
+{
+#if 0
+  printf("GOT CUSTOM ARTWORK FILE '%s'\n", filename);
+#endif
+
+  if (strcmp(basename, UNDEFINED_FILENAME) == 0)
+  {
+    deleteArtworkListEntry(artwork_info, listnode);
+    return;
+  }
+
+  replaceArtworkListEntry(artwork_info, listnode, basename);
+}
+
+static void LoadArtworkToList(struct ArtworkListInfo *artwork_info,
+			      struct ListNodeInfo **listnode,
+			      char *basename, int list_pos)
+{
+#if 0
+  if (artwork_info->artwork_list == NULL ||
+      list_pos >= artwork_info->num_file_list_entries)
+    return;
+#endif
+
+#if 0
+  printf("loading artwork '%s' ...  [%d]\n",
+	 basename, getNumNodes(artwork_info->content_list));
+#endif
+
+#if 1
+  LoadCustomArtwork(artwork_info, listnode, basename);
+#else
+  LoadCustomArtwork(artwork_info, &artwork_info->artwork_list[list_pos],
+		    basename);
+#endif
+
+#if 0
+  printf("loading artwork '%s' done [%d]\n",
+	 basename, getNumNodes(artwork_info->content_list));
+#endif
+}
+
+void ReloadCustomArtworkList(struct ArtworkListInfo *artwork_info)
+{
+  struct FileInfo *file_list = artwork_info->file_list;
+  struct FileInfo *dynamic_file_list = artwork_info->dynamic_file_list;
+  int num_file_list_entries = artwork_info->num_file_list_entries;
+  int num_dynamic_file_list_entries =
+    artwork_info->num_dynamic_file_list_entries;
+  int i;
+
+#if 0
+  printf("DEBUG: reloading %d static artwork files ...\n",
+	 num_file_list_entries);
+#endif
+
+  for(i=0; i<num_file_list_entries; i++)
+  {
+#if 0
+    if (strcmp(file_list[i].token, "background") == 0)
+      printf("::: '%s' -> '%s'\n", file_list[i].token, file_list[i].filename);
+#endif
+
+    LoadArtworkToList(artwork_info, &artwork_info->artwork_list[i],
+		      file_list[i].filename, i);
+
+#if 0
+    if (artwork_info->artwork_list[i] == NULL &&
+	strcmp(file_list[i].default_filename, file_list[i].filename) != 0)
+    {
+      Error(ERR_WARN, "trying default artwork file '%s'",
+	    file_list[i].default_filename);
+
+      LoadArtworkToList(artwork_info, &artwork_info->artwork_list[i],
+			file_list[i].default_filename, i);
+    }
+#endif
+  }
+
+#if 0
+  printf("DEBUG: reloading %d dynamic artwork files ...\n",
+	 num_dynamic_file_list_entries);
+#endif
+
+  for(i=0; i<num_dynamic_file_list_entries; i++)
+    LoadArtworkToList(artwork_info, &artwork_info->dynamic_artwork_list[i],
+		      dynamic_file_list[i].filename, i);
+
+#if 0
+  dumpList(artwork_info->content_list);
+#endif
+}
+
+static void FreeCustomArtworkList(struct ArtworkListInfo *artwork_info,
+				  struct ListNodeInfo ***list,
+				  int *num_list_entries)
+{
+  int i;
+
+  if (*list == NULL)
+    return;
+
+  for(i=0; i<*num_list_entries; i++)
+    deleteArtworkListEntry(artwork_info, &(*list)[i]);
+  free(*list);
+
+  *list = NULL;
+  *num_list_entries = 0;
+}
+
+void FreeCustomArtworkLists(struct ArtworkListInfo *artwork_info)
+{
+  if (artwork_info == NULL)
+    return;
+
+#if 0
+  printf("%s: FREEING ARTWORK ...\n",
+	 IS_CHILD_PROCESS() ? "CHILD" : "PARENT");
+#endif
+
+  FreeCustomArtworkList(artwork_info, &artwork_info->artwork_list,
+			&artwork_info->num_file_list_entries);
+
+  FreeCustomArtworkList(artwork_info, &artwork_info->dynamic_artwork_list,
+			&artwork_info->num_dynamic_file_list_entries);
+
+#if 0
+  printf("%s: FREEING ARTWORK -- DONE\n",
+	 IS_CHILD_PROCESS() ? "CHILD" : "PARENT");
+#endif
+}
+
+
+/* ------------------------------------------------------------------------- */
 /* functions only needed for non-Unix (non-command-line) systems             */
 /* (MS-DOS only; SDL/Windows creates files "stdout.txt" and "stderr.txt")    */
-/* ========================================================================= */
+/* ------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_MSDOS)
 
@@ -1298,9 +2567,9 @@ void dumpErrorFile()
 #endif
 
 
-/* ========================================================================= */
+/* ------------------------------------------------------------------------- */
 /* the following is only for debugging purpose and normally not used         */
-/* ========================================================================= */
+/* ------------------------------------------------------------------------- */
 
 #define DEBUG_NUM_TIMESTAMPS	3
 
@@ -1318,4 +2587,21 @@ void debug_print_timestamp(int counter_nr, char *message)
 	   (float)(counter[counter_nr][0] - counter[counter_nr][1]) / 1000);
 
   counter[counter_nr][1] = Counter();
+}
+
+void debug_print_parent_only(char *format, ...)
+{
+  if (!IS_PARENT_PROCESS())
+    return;
+
+  if (format)
+  {
+    va_list ap;
+
+    va_start(ap, format);
+    vprintf(format, ap);
+    va_end(ap);
+
+    printf("\n");
+  }
 }

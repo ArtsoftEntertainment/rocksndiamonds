@@ -15,6 +15,7 @@
 #define SETUP_H
 
 #include "system.h"
+#include "hash.h"
 
 
 /* values for setup file handling */
@@ -25,43 +26,37 @@
 #define TYPE_KEY_X11			(1 << 4)
 #define TYPE_INTEGER			(1 << 5)
 #define TYPE_STRING			(1 << 6)
+#define TYPE_TOKEN			(1 << 7)
 
 #define TYPE_BOOLEAN_STYLE		(TYPE_BOOLEAN | \
 					 TYPE_SWITCH  | \
 					 TYPE_YES_NO)
 
 /* additional values for setup screen */
-#define TYPE_ENTER_MENU			(1 << 7)
-#define TYPE_LEAVE_MENU			(1 << 8)
-#define TYPE_EMPTY			(1 << 9)
-#define TYPE_KEYTEXT			(1 << 10)
+#define TYPE_ENTER_MENU			(1 << 8)
+#define TYPE_LEAVE_MENU			(1 << 9)
+#define TYPE_EMPTY			(1 << 10)
+#define TYPE_KEYTEXT			(1 << 11)
 
-#define TYPE_GHOSTED			(1 << 11)
-#define TYPE_QUERY			(1 << 12)
+#define TYPE_GHOSTED			(1 << 12)
+#define TYPE_QUERY			(1 << 13)
 
-#define TYPE_VALUE			(TYPE_BOOLEAN_STYLE | \
-					 TYPE_KEY | \
-					 TYPE_KEY_X11 | \
-					 TYPE_INTEGER | \
+#define TYPE_VALUE			(TYPE_BOOLEAN_STYLE	| \
+					 TYPE_KEY		| \
+					 TYPE_KEY_X11		| \
+					 TYPE_INTEGER		| \
+					 TYPE_STRING		| \
+					 TYPE_TOKEN)
+
+#define TYPE_SKIP_ENTRY			(TYPE_EMPTY		| \
+					 TYPE_KEY		| \
 					 TYPE_STRING)
 
-#define TYPE_SKIP_ENTRY			(TYPE_EMPTY | \
-					 TYPE_KEY | \
-					 TYPE_STRING)
-
-#define TYPE_ENTER_OR_LEAVE_MENU	(TYPE_ENTER_MENU | \
+#define TYPE_ENTER_OR_LEAVE_MENU	(TYPE_ENTER_MENU	| \
 					 TYPE_LEAVE_MENU)
 
 /* cookie token for file identifier and version number */
 #define TOKEN_STR_FILE_IDENTIFIER	"file_identifier"
-
-/* structures for setup file handling */
-struct SetupFileList
-{
-  char *token;
-  char *value;
-  struct SetupFileList *next;
-};
 
 struct TokenInfo
 {
@@ -69,6 +64,25 @@ struct TokenInfo
   void *value;
   char *text;
 };
+
+/* some definitions for list and hash handling */
+typedef struct SetupFileList SetupFileList;
+typedef struct hashtable SetupFileHash;
+
+#define BEGIN_HASH_ITERATION(hash, itr)				\
+  if (hash != NULL && hashtable_count(hash) > 0)		\
+  {								\
+    struct hashtable_itr *itr = hashtable_iterator(hash);	\
+    do {							\
+
+#define HASH_ITERATION_TOKEN(itr)	((char *)hashtable_iterator_key(itr))
+#define HASH_ITERATION_VALUE(itr)	((char *)hashtable_iterator_value(itr))
+
+#define END_HASH_ITERATION(hash, itr)				\
+    } while (hashtable_iterator_advance(itr));			\
+    free(itr);							\
+  }								\
+
 
 /* sort priorities of level series (also used as level series classes) */
 #define LEVELCLASS_TUTORIAL_START	10
@@ -171,6 +185,7 @@ struct TokenInfo
 			 ARTWORKCLASS_UNDEFINED)
 
 
+void setLevelArtworkDir(TreeInfo *);
 char *getLevelFilename(int);
 char *getTapeFilename(int);
 char *getScoreFilename(int);
@@ -178,7 +193,9 @@ char *getSetupFilename(void);
 char *getImageFilename(char *);
 char *getCustomImageFilename(char *);
 char *getCustomSoundFilename(char *);
-char *getCustomSoundConfigFilename(void);
+char *getCustomArtworkFilename(char *, int);
+char *getCustomArtworkConfigFilename(int);
+char *getCustomArtworkLevelConfigFilename(int);
 char *getCustomMusicDirectory(void);
 
 void InitTapeDirectory(char *);
@@ -195,12 +212,13 @@ TreeInfo *getTreeInfoFirstGroupEntry(TreeInfo *);
 int numTreeInfoInGroup(TreeInfo *);
 int posTreeInfo(TreeInfo *);
 TreeInfo *getTreeInfoFromPos(TreeInfo *, int);
-TreeInfo *getTreeInfoFromFilename(TreeInfo *, char *);
+TreeInfo *getTreeInfoFromIdentifier(TreeInfo *, char *);
 void dumpTreeInfo(TreeInfo *, int);
 void sortTreeInfo(TreeInfo **,
 		  int (*compare_function)(const void *, const void *));
 
 char *getUserDataDir(void);
+char *getCommonDataDir(void);
 char *getSetupDir(void);
 void createDirectory(char *, char *, int);
 void InitUserDataDirectory(void);
@@ -211,10 +229,19 @@ int getFileVersionFromCookieString(const char *);
 boolean checkCookieString(const char *, const char *);
 
 char *getFormattedSetupEntry(char *, char *);
+
+struct SetupFileList *newSetupFileList(char *, char *);
 void freeSetupFileList(struct SetupFileList *);
-char *getTokenValue(struct SetupFileList *, char *);
-struct SetupFileList *loadSetupFileList(char *);
-void checkSetupFileListIdentifier(struct SetupFileList *, char *);
+char *getListEntry(struct SetupFileList *, char *);
+void setListEntry(struct SetupFileList *, char *, char *);
+SetupFileList *loadSetupFileList(char *);
+
+SetupFileHash *newSetupFileHash();
+void freeSetupFileHash(SetupFileHash *);
+char *getHashEntry(SetupFileHash *, char *);
+void setHashEntry(SetupFileHash *, char *, char *);
+SetupFileHash *loadSetupFileHash(char *);
+void checkSetupFileHashIdentifier(SetupFileHash *, char *);
 void setSetupInfo(struct TokenInfo *, int, char *);
 char *getSetupValue(int, void *);
 char *getSetupLine(struct TokenInfo *, char *, int);

@@ -23,23 +23,38 @@
 #include "tape.h"
 #include "network.h"
 
-/* values for key_status */
-#define KEY_NOT_PRESSED		FALSE
-#define KEY_RELEASED		FALSE
-#define KEY_PRESSED		TRUE
+
+static boolean cursor_inside_playfield = FALSE;
+static boolean playfield_cursor_set = FALSE;
+static unsigned long playfield_cursor_delay = 0;
 
 
 /* event filter especially needed for SDL event filtering due to
-   delay problems with lots of mouse motion events when mouse
-   button not pressed */
+   delay problems with lots of mouse motion events when mouse button
+   not pressed (X11 can handle this with 'PointerMotionHintMask') */
 
 int FilterMouseMotionEvents(const Event *event)
 {
+  MotionEvent *motion;
+
+  /* non-motion events are directly passed to event handler functions */
   if (event->type != EVENT_MOTIONNOTIFY)
     return 1;
 
-  /* get mouse motion events without pressed button only in level editor */
-  if (button_status == MB_RELEASED && game_status != LEVELED)
+  motion = (MotionEvent *)event;
+  cursor_inside_playfield = (motion->x >= SX && motion->x < SX + SXSIZE &&
+			     motion->y >= SY && motion->y < SY + SYSIZE);
+
+  if (game_status == GAME_MODE_PLAYING && playfield_cursor_set)
+  {
+    SetMouseCursor(CURSOR_DEFAULT);
+    playfield_cursor_set = FALSE;
+    DelayReached(&playfield_cursor_delay, 0);
+  }
+
+  /* skip mouse motion events without pressed button outside level editor */
+  if (button_status == MB_RELEASED && game_status != GAME_MODE_EDITOR &&
+      game_status != GAME_MODE_PLAYING)
     return 0;
   else
     return 1;
@@ -95,12 +110,30 @@ void EventLoop(void)
       }
     }
     else
+    {
+      /* when playing, display a special mouse pointer inside the playfield */
+      if (game_status == GAME_MODE_PLAYING)
+      {
+	if (!playfield_cursor_set && cursor_inside_playfield &&
+	    DelayReached(&playfield_cursor_delay, 1000))
+	{
+	  SetMouseCursor(CURSOR_PLAYFIELD);
+	  playfield_cursor_set = TRUE;
+	}
+      }
+      else if (playfield_cursor_set)
+      {
+	SetMouseCursor(CURSOR_DEFAULT);
+	playfield_cursor_set = FALSE;
+      }
+
       HandleNoEvent();
+    }
 
     /* don't use all CPU time when idle; the main loop while playing
        has its own synchronization and is CPU friendly, too */
 
-    if (game_status == PLAYING)
+    if (game_status == GAME_MODE_PLAYING)
       HandleGameActions();
     else
     {
@@ -112,7 +145,7 @@ void EventLoop(void)
     /* refresh window contents from drawing buffer, if needed */
     BackToFront();
 
-    if (game_status == EXITGAME)
+    if (game_status == GAME_MODE_QUIT)
       return;
   }
 }
@@ -126,7 +159,11 @@ void HandleOtherEvents(Event *event)
       break;
 
     case EVENT_UNMAPNOTIFY:
+#if 0
+      /* This causes the game to stop not only when iconified, but also
+	 when on another virtual desktop, which might be not desired. */
       SleepWhileUnmapped();
+#endif
       break;
 
     case EVENT_FOCUSIN:
@@ -225,8 +262,8 @@ void SleepWhileUnmapped()
     }
   }
 
-  if (game_status == PLAYING)
-    KeyboardAutoRepeatOff();
+  if (game_status == GAME_MODE_PLAYING)
+    KeyboardAutoRepeatOffUnlessAutoplay();
 }
 
 void HandleExposeEvent(ExposeEvent *event)
@@ -255,7 +292,7 @@ void HandleMotionEvent(MotionEvent *event)
     return;	/* window and pointer are on different screens */
 
 #if 1
-  if (button_status == MB_RELEASED && game_status != LEVELED)
+  if (button_status == MB_RELEASED && game_status != GAME_MODE_EDITOR)
     return;
 #endif
 
@@ -267,9 +304,11 @@ void HandleMotionEvent(MotionEvent *event)
 void HandleKeyEvent(KeyEvent *event)
 {
   int key_status = (event->type==EVENT_KEYPRESS ? KEY_PRESSED : KEY_RELEASED);
-  boolean with_modifiers = (game_status == PLAYING ? FALSE : TRUE);
+  boolean with_modifiers = (game_status == GAME_MODE_PLAYING ? FALSE : TRUE);
   Key key = GetEventKey(event, with_modifiers);
+  Key keymod = (with_modifiers ? GetEventKey(event, FALSE) : key);
 
+  HandleKeyModState(keymod, key_status);
   HandleKey(key, key_status);
 }
 
@@ -298,15 +337,15 @@ void HandleFocusEvent(FocusChangeEvent *event)
        because unfortunately this is a global setting and not (which
        would be far better) set for each X11 window individually.
        The effect would be keyboard auto repeat while playing the game
-       (game_status == PLAYING), which is not desired.
+       (game_status == GAME_MODE_PLAYING), which is not desired.
        To avoid this special case, we just wait 1/10 second before
        processing the 'FocusIn' event.
     */
 
-    if (game_status == PLAYING)
+    if (game_status == GAME_MODE_PLAYING)
     {
       Delay(100);
-      KeyboardAutoRepeatOff();
+      KeyboardAutoRepeatOffUnlessAutoplay();
     }
     if (old_joystick_status != -1)
       joystick.status = old_joystick_status;
@@ -339,34 +378,34 @@ void HandleButton(int mx, int my, int button)
 
   switch(game_status)
   {
-    case MAINMENU:
+    case GAME_MODE_MAIN:
       HandleMainMenu(mx,my, 0,0, button);
       break;
 
-    case TYPENAME:
+    case GAME_MODE_PSEUDO_TYPENAME:
       HandleTypeName(0, KSYM_Return);
       break;
 
-    case CHOOSELEVEL:
+    case GAME_MODE_LEVELS:
       HandleChooseLevel(mx,my, 0,0, button);
       break;
 
-    case HALLOFFAME:
+    case GAME_MODE_SCORES:
       HandleHallOfFame(0,0, 0,0, button);
       break;
 
-    case LEVELED:
+    case GAME_MODE_EDITOR:
       break;
 
-    case HELPSCREEN:
+    case GAME_MODE_INFO:
       HandleHelpScreen(button);
       break;
 
-    case SETUP:
+    case GAME_MODE_SETUP:
       HandleSetupScreen(mx,my, 0,0, button);
       break;
 
-    case PLAYING:
+    case GAME_MODE_PLAYING:
 #ifdef DEBUG
       if (button == MB_RELEASED)
       {
@@ -383,13 +422,17 @@ void HandleButton(int mx, int my, int button)
 	  if (!IN_LEV_FIELD(x, y))
 	    break;
 
-	  printf("      Feld[%d][%d] == %d\n", x,y, Feld[x][y]);
+	  printf("      Feld[%d][%d] == %d ('%s')\n", x,y, Feld[x][y],
+		 element_info[Feld[x][y]].token_name);
 	  printf("      Store[%d][%d] == %d\n", x,y, Store[x][y]);
 	  printf("      Store2[%d][%d] == %d\n", x,y, Store2[x][y]);
 	  printf("      StorePlayer[%d][%d] == %d\n", x,y, StorePlayer[x][y]);
 	  printf("      MovPos[%d][%d] == %d\n", x,y, MovPos[x][y]);
 	  printf("      MovDir[%d][%d] == %d\n", x,y, MovDir[x][y]);
 	  printf("      MovDelay[%d][%d] == %d\n", x,y, MovDelay[x][y]);
+	  printf("      ChangeDelay[%d][%d] == %d\n", x,y, ChangeDelay[x][y]);
+	  printf("      GfxElement[%d][%d] == %d\n", x,y, GfxElement[x][y]);
+	  printf("      GfxAction[%d][%d] == %d\n", x,y, GfxAction[x][y]);
 	  printf("\n");
 	}
       }
@@ -421,7 +464,7 @@ void HandleKey(Key key, int key_status)
     { &custom_key.bomb,  DEFAULT_KEY_BOMB,  JOY_BUTTON_2 }
   };
 
-  if (game_status == PLAYING)
+  if (game_status == GAME_MODE_PLAYING)
   {
     /* only needed for single-step tape recording mode */
     static boolean clear_button_2[MAX_PLAYERS] = { FALSE,FALSE,FALSE,FALSE };
@@ -503,36 +546,36 @@ void HandleKey(Key key, int key_status)
     HandleJoystick();
   }
 
-  if (game_status != PLAYING)
+  if (game_status != GAME_MODE_PLAYING)
     key_joystick_mapping = 0;
 
   if (key_status == KEY_RELEASED)
     return;
 
   if ((key == KSYM_Return || key == setup.shortcut.toggle_pause) &&
-      game_status == PLAYING && AllPlayersGone)
+      game_status == GAME_MODE_PLAYING && AllPlayersGone)
   {
     CloseDoor(DOOR_CLOSE_1);
-    game_status = MAINMENU;
+    game_status = GAME_MODE_MAIN;
     DrawMainMenu();
     return;
   }
 
   /* allow quick escape to the main menu with the Escape key */
   if (key == KSYM_Escape &&
-      game_status != MAINMENU &&
-      game_status != PLAYING &&
-      game_status != LEVELED &&
-      game_status != CHOOSELEVEL &&
-      game_status != SETUP)
+      game_status != GAME_MODE_MAIN &&
+      game_status != GAME_MODE_PLAYING &&
+      game_status != GAME_MODE_EDITOR &&
+      game_status != GAME_MODE_LEVELS &&
+      game_status != GAME_MODE_SETUP)
   {
-    game_status = MAINMENU;
+    game_status = GAME_MODE_MAIN;
     DrawMainMenu();
     return;
   }
 
   /* special key shortcuts */
-  if (game_status == MAINMENU || game_status == PLAYING)
+  if (game_status == GAME_MODE_MAIN || game_status == GAME_MODE_PLAYING)
   {
     if (key == setup.shortcut.save_game)
       TapeQuickSave();
@@ -542,57 +585,57 @@ void HandleKey(Key key, int key_status)
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
   }
 
-
+#if 0
 #ifndef DEBUG
 
-  if (game_status == PLAYING && (tape.playing || tape.pausing))
+  if (game_status == GAME_MODE_PLAYING && (tape.playing || tape.pausing))
     return;
 
 #endif
-
+#endif
 
 
   HandleGadgetsKeyInput(key);
 
   switch(game_status)
   {
-    case TYPENAME:
+    case GAME_MODE_PSEUDO_TYPENAME:
       HandleTypeName(0, key);
       break;
 
-    case MAINMENU:
-    case CHOOSELEVEL:
-    case SETUP:
+    case GAME_MODE_MAIN:
+    case GAME_MODE_LEVELS:
+    case GAME_MODE_SETUP:
       switch(key)
       {
 	case KSYM_Return:
-	  if (game_status == MAINMENU)
+	  if (game_status == GAME_MODE_MAIN)
 	    HandleMainMenu(0,0, 0,0, MB_MENU_CHOICE);
-          else if (game_status == CHOOSELEVEL)
+          else if (game_status == GAME_MODE_LEVELS)
             HandleChooseLevel(0,0, 0,0, MB_MENU_CHOICE);
-	  else if (game_status == SETUP)
+	  else if (game_status == GAME_MODE_SETUP)
 	    HandleSetupScreen(0,0, 0,0, MB_MENU_CHOICE);
 	  break;
 
 	case KSYM_Escape:
-          if (game_status == CHOOSELEVEL)
+          if (game_status == GAME_MODE_LEVELS)
             HandleChooseLevel(0,0, 0,0, MB_MENU_LEAVE);
-	  else if (game_status == SETUP)
+	  else if (game_status == GAME_MODE_SETUP)
 	    HandleSetupScreen(0,0, 0,0, MB_MENU_LEAVE);
 	  break;
 
         case KSYM_Page_Up:
-          if (game_status == CHOOSELEVEL)
-            HandleChooseLevel(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
-	  else if (game_status == SETUP)
-	    HandleSetupScreen(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
+          if (game_status == GAME_MODE_LEVELS)
+            HandleChooseLevel(0,0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
+	  else if (game_status == GAME_MODE_SETUP)
+	    HandleSetupScreen(0,0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  break;
 
         case KSYM_Page_Down:
-          if (game_status == CHOOSELEVEL)
-            HandleChooseLevel(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
-	  else if (game_status == SETUP)
-	    HandleSetupScreen(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
+          if (game_status == GAME_MODE_LEVELS)
+            HandleChooseLevel(0,0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
+	  else if (game_status == GAME_MODE_SETUP)
+	    HandleSetupScreen(0,0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  break;
 
 #ifdef DEBUG
@@ -606,25 +649,25 @@ void HandleKey(Key key, int key_status)
       }
       break;
 
-    case HELPSCREEN:
+    case GAME_MODE_INFO:
       HandleHelpScreen(MB_RELEASED);
       break;
 
-    case HALLOFFAME:
+    case GAME_MODE_SCORES:
       switch(key)
       {
 	case KSYM_Return:
-	  game_status = MAINMENU;
+	  game_status = GAME_MODE_MAIN;
 	  DrawMainMenu();
 	  BackToFront();
 	  break;
 
         case KSYM_Page_Up:
-	  HandleHallOfFame(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
+	  HandleHallOfFame(0,0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  break;
 
         case KSYM_Page_Down:
-	  HandleHallOfFame(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
+	  HandleHallOfFame(0,0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  break;
 
 	default:
@@ -632,12 +675,12 @@ void HandleKey(Key key, int key_status)
       }
       break;
 
-    case LEVELED:
+    case GAME_MODE_EDITOR:
       if (!anyTextGadgetActiveOrJustFinished || key == KSYM_Escape)
 	HandleLevelEditorKeyInput(key);
       break;
 
-    case PLAYING:
+    case GAME_MODE_PLAYING:
     {
       switch(key)
       {
@@ -788,7 +831,7 @@ void HandleKey(Key key, int key_status)
 
 void HandleNoEvent()
 {
-  if (button_status && game_status != PLAYING)
+  if (button_status && game_status != GAME_MODE_PLAYING)
   {
     HandleButton(0, 0, -button_status);
     return;
@@ -844,9 +887,9 @@ void HandleJoystick()
 
   switch(game_status)
   {
-    case MAINMENU:
-    case CHOOSELEVEL:
-    case SETUP:
+    case GAME_MODE_MAIN:
+    case GAME_MODE_LEVELS:
+    case GAME_MODE_SETUP:
     {
       static unsigned long joystickmove_delay = 0;
 
@@ -854,31 +897,35 @@ void HandleJoystick()
 	  !DelayReached(&joystickmove_delay, GADGET_FRAME_DELAY))
 	newbutton = dx = dy = 0;
 
-      if (game_status == MAINMENU)
+      if (game_status == GAME_MODE_MAIN)
 	HandleMainMenu(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
-      else if (game_status == CHOOSELEVEL)
+      else if (game_status == GAME_MODE_LEVELS)
         HandleChooseLevel(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
-      else if (game_status == SETUP)
+      else if (game_status == GAME_MODE_SETUP)
 	HandleSetupScreen(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       break;
     }
 
-    case HALLOFFAME:
+    case GAME_MODE_SCORES:
       HandleHallOfFame(0,0, dx,dy, !newbutton);
       break;
 
-    case HELPSCREEN:
+    case GAME_MODE_INFO:
       HandleHelpScreen(!newbutton);
       break;
 
-    case PLAYING:
+    case GAME_MODE_EDITOR:
+      HandleLevelEditorIdle();
+      break;
+
+    case GAME_MODE_PLAYING:
       if (tape.playing || keyboard)
 	newbutton = ((joy & JOY_BUTTON) != 0);
 
       if (AllPlayersGone && newbutton)
       {
 	CloseDoor(DOOR_CLOSE_1);
-	game_status = MAINMENU;
+	game_status = GAME_MODE_MAIN;
 	DrawMainMenu();
 	return;
       }

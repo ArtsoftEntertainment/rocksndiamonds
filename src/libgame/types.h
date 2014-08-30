@@ -20,7 +20,10 @@
 #include <sys/types.h>
 
 typedef unsigned char boolean;
+
+#if !defined(PLATFORM_WIN32)
 typedef unsigned char byte;
+#endif
 
 #ifndef FALSE
 #define FALSE		0
@@ -45,5 +48,14 @@ typedef unsigned char byte;
 
 #define SIZEOF_ARRAY(array, type)	(sizeof(array) / sizeof(type))
 #define SIZEOF_ARRAY_INT(array)		SIZEOF_ARRAY(array, int)
+
+
+struct ListNode
+{
+  char *key;
+  void *content;
+  struct ListNode *next;
+};
+typedef struct ListNode ListNode;
 
 #endif /* TYPES_H */

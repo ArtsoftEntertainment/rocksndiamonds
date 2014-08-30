@@ -23,13 +23,13 @@
 
 #define SURFACE_FLAGS		(SDL_SWSURFACE)
 
-#define SDLCOPYAREA_OPAQUE	0
-#define SDLCOPYAREA_MASKED	1
-
 /* system dependent definitions */
 
 #define TARGET_STRING		"SDL"
 #define FULLSCREEN_STATUS	FULLSCREEN_AVAILABLE
+
+#define CURSOR_MAX_WIDTH	32
+#define CURSOR_MAX_HEIGHT	32
 
 
 /* SDL type definitions */
@@ -38,8 +38,10 @@ typedef struct SDLSurfaceInfo	Bitmap;
 typedef struct SDLSurfaceInfo	DrawBuffer;
 typedef struct SDLSurfaceInfo	DrawWindow;
 typedef Uint32			Pixel;
+typedef SDL_Cursor	       *Cursor;
 
 typedef SDLKey			Key;
+typedef unsigned int		KeyMod;
 
 typedef SDL_Event		Event;
 typedef SDL_MouseButtonEvent	ButtonEvent;
@@ -69,6 +71,15 @@ struct SDLSurfaceInfo
   GC stored_clip_gc;
 };
 
+struct MouseCursorInfo
+{
+  int width, height;
+  int hot_x, hot_y;
+
+  char data[CURSOR_MAX_WIDTH * CURSOR_MAX_HEIGHT / 8];
+  char mask[CURSOR_MAX_WIDTH * CURSOR_MAX_HEIGHT / 8];
+};
+
 struct XY
 {
   short x, y;
@@ -78,6 +89,9 @@ struct XY
 /* SDL symbol definitions */
 
 #define None			0L
+
+#define BLACK_PIXEL		0x000000
+#define WHITE_PIXEL		0xffffff
 
 #define EVENT_BUTTONPRESS	SDL_MOUSEBUTTONDOWN
 #define EVENT_BUTTONRELEASE	SDL_MOUSEBUTTONUP
@@ -318,19 +332,45 @@ struct XY
 #define KSYM_FKEY_LAST		KSYM_F15
 #define KSYM_NUM_FKEYS		(KSYM_FKEY_LAST - KSYM_FKEY_FIRST + 1)
 
+#define KMOD_None		None
+#define KMOD_Shift_L		KMOD_LSHIFT
+#define KMOD_Shift_R		KMOD_RSHIFT
+#define KMOD_Control_L		KMOD_LCTRL
+#define KMOD_Control_R		KMOD_RCTRL
+#define KMOD_Meta_L		KMOD_LMETA
+#define KMOD_Meta_R		KMOD_RMETA
+#define KMOD_Alt_L		KMOD_LALT
+#define KMOD_Alt_R		KMOD_RALT
+
+#define KMOD_Shift		(KMOD_Shift_L   | KMOD_Shift_R)
+#define KMOD_Control		(KMOD_Control_L | KMOD_Control_R)
+#define KMOD_Meta		(KMOD_Meta_L    | KMOD_Meta_R)
+#define KMOD_Alt		(KMOD_Alt_L     | KMOD_Alt_R)
+
 
 /* SDL function definitions */
 
 inline void SDLInitVideoDisplay(void);
 inline void SDLInitVideoBuffer(DrawBuffer **, DrawWindow **, boolean);
 inline boolean SDLSetVideoMode(DrawBuffer **, boolean);
+inline void SDLCreateBitmapContent(Bitmap *, int, int, int);
+inline void SDLFreeBitmapPointers(Bitmap *);
 inline void SDLCopyArea(Bitmap *, Bitmap *, int, int, int, int, int, int, int);
-inline void SDLFillRectangle(Bitmap *, int, int, int, int, unsigned int);
-inline void SDLDrawSimpleLine(Bitmap *, int, int, int, int, unsigned int);
+inline void SDLFillRectangle(Bitmap *, int, int, int, int, Uint32);
+inline void SDLDrawSimpleLine(Bitmap *, int, int, int, int, Uint32);
 inline void SDLDrawLine(Bitmap *, int, int, int, int, Uint32);
 inline Pixel SDLGetPixel(Bitmap *, int, int);
+inline void SDLPutPixel(Bitmap *, int, int, Pixel);
+
+inline void SDLInvertArea(Bitmap *, int, int, int, int, Uint32);
+inline void SDLCopyInverseMasked(Bitmap *, Bitmap *, int, int, int, int,
+				 int, int);
+
+void SDLZoomBitmap(Bitmap *, Bitmap *);
 
 Bitmap *SDLLoadImage(char *);
+
+void SDLSetMouseCursor(struct MouseCursorInfo *);
 
 inline void SDLOpenAudio(void);
 inline void SDLCloseAudio(void);

@@ -66,10 +66,31 @@ int			FrameCounter = 0;
 /* init/close functions                                                      */
 /* ========================================================================= */
 
-void InitCommandName(char *argv0)
+void InitProgramInfo(char *argv0,
+		     char *userdata_directory, char *program_title,
+		     char *window_title, char *icon_title,
+		     char *x11_icon_filename, char *x11_iconmask_filename,
+		     char *msdos_cursor_filename,
+		     char *cookie_prefix, char *filename_prefix,
+		     int program_version)
 {
   program.command_basename =
     (strrchr(argv0, '/') ? strrchr(argv0, '/') + 1 : argv0);
+
+  program.userdata_directory = userdata_directory;
+  program.program_title = program_title;
+  program.window_title = window_title;
+  program.icon_title = icon_title;
+  program.x11_icon_filename = x11_icon_filename;
+  program.x11_iconmask_filename = x11_iconmask_filename;
+  program.msdos_cursor_filename = msdos_cursor_filename;
+
+  program.cookie_prefix = cookie_prefix;
+  program.filename_prefix = filename_prefix;
+
+  program.version_major = VERSION_MAJOR(program_version);
+  program.version_minor = VERSION_MINOR(program_version);
+  program.version_patch = VERSION_PATCH(program_version);
 }
 
 void InitExitFunction(void (*exit_function)(int))
@@ -86,17 +107,10 @@ void InitExitFunction(void (*exit_function)(int))
 #endif
 }
 
-void InitPlatformDependantStuff(void)
+void InitPlatformDependentStuff(void)
 {
 #if defined(PLATFORM_MSDOS)
   _fmode = O_BINARY;
-#endif
-
-#if !defined(PLATFORM_UNIX)
-  program.userdata_directory = "userdata";
-#endif
-
-#if defined(PLATFORM_MSDOS)
   initErrorFile();
 #endif
 
@@ -106,44 +120,17 @@ void InitPlatformDependantStuff(void)
 #endif
 }
 
-void ClosePlatformDependantStuff(void)
+void ClosePlatformDependentStuff(void)
 {
 #if defined(PLATFORM_MSDOS)
   dumpErrorFile();
 #endif
 }
 
-void InitProgramInfo(char *unix_userdata_directory, char *program_title,
-		     char *window_title, char *icon_title,
-		     char *x11_icon_filename, char *x11_iconmask_filename,
-		     char *msdos_pointer_filename,
-		     char *cookie_prefix, char *filename_prefix,
-		     int program_version)
-{
-#if defined(PLATFORM_UNIX)
-  program.userdata_directory = unix_userdata_directory;
-#else
-  program.userdata_directory = "userdata";
-#endif
-
-  program.program_title = program_title;
-  program.window_title = window_title;
-  program.icon_title = icon_title;
-  program.x11_icon_filename = x11_icon_filename;
-  program.x11_iconmask_filename = x11_iconmask_filename;
-  program.msdos_pointer_filename = msdos_pointer_filename;
-
-  program.cookie_prefix = cookie_prefix;
-  program.filename_prefix = filename_prefix;
-
-  program.version_major = VERSION_MAJOR(program_version);
-  program.version_minor = VERSION_MINOR(program_version);
-  program.version_patch = VERSION_PATCH(program_version);
-}
-
 void InitGfxFieldInfo(int sx, int sy, int sxsize, int sysize,
 		      int real_sx, int real_sy,
-		      int full_sxsize, int full_sysize)
+		      int full_sxsize, int full_sysize,
+		      Bitmap *field_save_buffer)
 {
   gfx.sx = sx;
   gfx.sy = sy;
@@ -154,7 +141,13 @@ void InitGfxFieldInfo(int sx, int sy, int sxsize, int sysize,
   gfx.full_sxsize = full_sxsize;
   gfx.full_sysize = full_sysize;
 
+  gfx.field_save_buffer = field_save_buffer;
+
+  gfx.background_bitmap = NULL;
+  gfx.background_bitmap_mask = REDRAW_NONE;
+
   SetDrawDeactivationMask(REDRAW_NONE);		/* do not deactivate drawing */
+  SetDrawBackgroundMask(REDRAW_NONE);		/* deactivate masked drawing */
 }
 
 void InitGfxDoor1Info(int dx, int dy, int dxsize, int dysize)
@@ -185,6 +178,90 @@ void SetDrawDeactivationMask(int draw_deactivation_mask)
   gfx.draw_deactivation_mask = draw_deactivation_mask;
 }
 
+void SetDrawBackgroundMask(int draw_background_mask)
+{
+  gfx.draw_background_mask = draw_background_mask;
+}
+
+static void DrawBitmapFromTile(Bitmap *bitmap, Bitmap *tile,
+			       int dest_x, int dest_y, int width, int height)
+{
+  int bitmap_xsize = width;
+  int bitmap_ysize = height;
+  int tile_xsize = tile->width;
+  int tile_ysize = tile->height;
+  int tile_xsteps = (bitmap_xsize + tile_xsize - 1) / tile_xsize;
+  int tile_ysteps = (bitmap_ysize + tile_ysize - 1) / tile_ysize;
+  int x, y;
+
+  for (y=0; y < tile_ysteps; y++)
+  {
+    for (x=0; x < tile_xsteps; x++)
+    {
+      int draw_x = dest_x + x * tile_xsize;
+      int draw_y = dest_y + y * tile_ysize;
+      int draw_xsize = MIN(tile_xsize, bitmap_xsize - x * tile_xsize);
+      int draw_ysize = MIN(tile_ysize, bitmap_ysize - y * tile_ysize);
+
+      BlitBitmap(tile, bitmap, 0, 0, draw_xsize, draw_ysize, draw_x, draw_y);
+    }
+  }
+}
+
+void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
+{
+  static Bitmap *main_bitmap_tile = NULL;
+  static Bitmap *door_bitmap_tile = NULL;
+
+  if (mask == REDRAW_FIELD)
+  {
+    if (background_bitmap_tile == main_bitmap_tile)
+      return;		/* main background tile has not changed */
+
+    main_bitmap_tile = background_bitmap_tile;
+  }
+  else if (mask == REDRAW_DOOR_1)
+  {
+    if (background_bitmap_tile == door_bitmap_tile)
+      return;	/* main background tile has not changed */
+
+    door_bitmap_tile = background_bitmap_tile;
+  }
+  else		/* should not happen */
+    return;
+
+  if (background_bitmap_tile)
+    gfx.background_bitmap_mask |= mask;
+  else
+    gfx.background_bitmap_mask &= ~mask;
+
+  if (gfx.background_bitmap == NULL)
+    gfx.background_bitmap = CreateBitmap(video.width, video.height,
+					 DEFAULT_DEPTH);
+
+  if (background_bitmap_tile == NULL)	/* empty background requested */
+    return;
+
+  if (mask == REDRAW_FIELD)
+    DrawBitmapFromTile(gfx.background_bitmap, background_bitmap_tile,
+		       gfx.real_sx, gfx.real_sy,
+		       gfx.full_sxsize, gfx.full_sysize);
+  else
+    DrawBitmapFromTile(gfx.background_bitmap, background_bitmap_tile,
+		       gfx.dx, gfx.dy,
+		       gfx.dxsize, gfx.dysize);
+}
+
+void SetMainBackgroundBitmap(Bitmap *background_bitmap_tile)
+{
+  SetBackgroundBitmap(background_bitmap_tile, REDRAW_FIELD);
+}
+
+void SetDoorBackgroundBitmap(Bitmap *background_bitmap_tile)
+{
+  SetBackgroundBitmap(background_bitmap_tile, REDRAW_DOOR_1);
+}
+
 
 /* ========================================================================= */
 /* video functions                                                           */
@@ -193,6 +270,29 @@ void SetDrawDeactivationMask(int draw_deactivation_mask)
 inline static int GetRealDepth(int depth)
 {
   return (depth == DEFAULT_DEPTH ? video.default_depth : depth);
+}
+
+inline static void sysFillRectangle(Bitmap *bitmap, int x, int y,
+			       int width, int height, Pixel color)
+{
+#if defined(TARGET_SDL)
+  SDLFillRectangle(bitmap, x, y, width, height, color);
+#else
+  X11FillRectangle(bitmap, x, y, width, height, color);
+#endif
+}
+
+inline static void sysCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
+			       int src_x, int src_y, int width, int height,
+			       int dst_x, int dst_y, int mask_mode)
+{
+#if defined(TARGET_SDL)
+  SDLCopyArea(src_bitmap, dst_bitmap, src_x, src_y, width, height,
+	      dst_x, dst_y, mask_mode);
+#else
+  X11CopyArea(src_bitmap, dst_bitmap, src_x, src_y, width, height,
+	      dst_x, dst_y, mask_mode);
+#endif
 }
 
 inline void InitVideoDisplay(void)
@@ -211,7 +311,6 @@ inline void CloseVideoDisplay(void)
 #if defined(TARGET_SDL)
   SDL_QuitSubSystem(SDL_INIT_VIDEO);
 #else
-
   if (display)
     XCloseDisplay(display);
 #endif
@@ -227,7 +326,7 @@ inline void InitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
   video.fullscreen_available = FULLSCREEN_STATUS;
   video.fullscreen_enabled = FALSE;
 
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   SDLInitVideoBuffer(backbuffer, window, fullscreen);
 #else
   X11InitVideoBuffer(backbuffer, window);
@@ -236,7 +335,7 @@ inline void InitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
 
 inline Bitmap *CreateBitmapStruct(void)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   return checked_calloc(sizeof(struct SDLSurfaceInfo));
 #else
   return checked_calloc(sizeof(struct X11DrawableInfo));
@@ -248,38 +347,14 @@ inline Bitmap *CreateBitmap(int width, int height, int depth)
   Bitmap *new_bitmap = CreateBitmapStruct();
   int real_depth = GetRealDepth(depth);
 
-#ifdef TARGET_SDL
-  SDL_Surface *surface_tmp, *surface_native;
-
-  if ((surface_tmp = SDL_CreateRGBSurface(SURFACE_FLAGS, width, height,
-					  real_depth, 0, 0, 0, 0))
-      == NULL)
-    Error(ERR_EXIT, "SDL_CreateRGBSurface() failed: %s", SDL_GetError());
-
-  if ((surface_native = SDL_DisplayFormat(surface_tmp)) == NULL)
-    Error(ERR_EXIT, "SDL_DisplayFormat() failed: %s", SDL_GetError());
-
-  SDL_FreeSurface(surface_tmp);
-
-  new_bitmap->surface = surface_native;
+#if defined(TARGET_SDL)
+  SDLCreateBitmapContent(new_bitmap, width, height, real_depth);
 #else
-  Pixmap pixmap;
-
-  if ((pixmap = XCreatePixmap(display, window->drawable,
-			      width, height, real_depth))
-      == None)
-    Error(ERR_EXIT, "cannot create pixmap");
-
-  new_bitmap->drawable = pixmap;
-
-  if (window == NULL)
-    Error(ERR_EXIT, "Window GC needed for Bitmap -- create Window first");
-
-  new_bitmap->gc = window->gc;
-
-  new_bitmap->line_gc[0] = window->line_gc[0];
-  new_bitmap->line_gc[1] = window->line_gc[1];
+  X11CreateBitmapContent(new_bitmap, width, height, real_depth);
 #endif
+
+  new_bitmap->width = width;
+  new_bitmap->height = height;
 
   return new_bitmap;
 }
@@ -289,29 +364,10 @@ inline static void FreeBitmapPointers(Bitmap *bitmap)
   if (bitmap == NULL)
     return;
 
-#ifdef TARGET_SDL
-  if (bitmap->surface)
-    SDL_FreeSurface(bitmap->surface);
-  if (bitmap->surface_masked)
-    SDL_FreeSurface(bitmap->surface_masked);
-  bitmap->surface = NULL;
-  bitmap->surface_masked = NULL;
+#if defined(TARGET_SDL)
+  SDLFreeBitmapPointers(bitmap);
 #else
-  /* The X11 version seems to have a memory leak here -- although
-     "XFreePixmap()" is called, the correspondig memory seems not
-     to be freed (according to "ps"). The SDL version apparently
-     does not have this problem. */
-
-  if (bitmap->drawable)
-    XFreePixmap(display, bitmap->drawable);
-  if (bitmap->clip_mask)
-    XFreePixmap(display, bitmap->clip_mask);
-  if (bitmap->stored_clip_gc)
-    XFreeGC(display, bitmap->stored_clip_gc);
-  /* the other GCs are only pointers to GCs used elsewhere */
-  bitmap->drawable = None;
-  bitmap->clip_mask = None;
-  bitmap->stored_clip_gc = None;
+  X11FreeBitmapPointers(bitmap);
 #endif
 
   if (bitmap->source_filename)
@@ -342,7 +398,7 @@ inline void FreeBitmap(Bitmap *bitmap)
 
 inline void CloseWindow(DrawWindow *window)
 {
-#ifdef TARGET_X11
+#if defined(TARGET_X11)
   if (window->drawable)
   {
     XUnmapWindow(display, window->drawable);
@@ -353,55 +409,70 @@ inline void CloseWindow(DrawWindow *window)
 #endif
 }
 
-inline boolean DrawingDeactivated(int x, int y, int width, int height)
+static inline boolean CheckDrawingArea(int x, int y, int width, int height,
+				       int draw_mask)
 {
-  if (gfx.draw_deactivation_mask != REDRAW_NONE)
-  {
-    if ((gfx.draw_deactivation_mask & REDRAW_FIELD) &&
-	x < gfx.sx + gfx.sxsize)
-      return TRUE;
-    else if ((gfx.draw_deactivation_mask & REDRAW_DOORS) &&
-	     x > gfx.dx)
-    {
-      if ((gfx.draw_deactivation_mask & REDRAW_DOOR_1) &&
-	  y < gfx.dy + gfx.dysize)
-	return TRUE;
-      else if ((gfx.draw_deactivation_mask & REDRAW_DOOR_2) &&
-	       y > gfx.vy)
-	return TRUE;
-    }
-  }
+  if (draw_mask == REDRAW_NONE)
+    return FALSE;
+
+  if (draw_mask & REDRAW_ALL)
+    return TRUE;
+
+  if ((draw_mask & REDRAW_FIELD) && x < gfx.real_sx + gfx.full_sxsize)
+    return TRUE;
+
+  if ((draw_mask & REDRAW_DOOR_1) && x >= gfx.dx && y < gfx.dy + gfx.dysize)
+    return TRUE;
+
+  if ((draw_mask & REDRAW_DOOR_2) && x >= gfx.dx && y >= gfx.vy)
+    return TRUE;
 
   return FALSE;
 }
 
+inline boolean DrawingDeactivated(int x, int y, int width, int height)
+{
+  return CheckDrawingArea(x, y, width, height, gfx.draw_deactivation_mask);
+}
+
+inline boolean DrawingOnBackground(int x, int y)
+{
+  return ((gfx.draw_background_mask & gfx.background_bitmap_mask) &&
+	  CheckDrawingArea(x, y, 1, 1, gfx.draw_background_mask));
+}
+
 inline void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
-		       int src_x, int src_y,
-		       int width, int height,
+		       int src_x, int src_y, int width, int height,
 		       int dst_x, int dst_y)
 {
   if (DrawingDeactivated(dst_x, dst_y, width, height))
     return;
 
-#ifdef TARGET_SDL
-  SDLCopyArea(src_bitmap, dst_bitmap,
-	      src_x, src_y, width, height, dst_x, dst_y, SDLCOPYAREA_OPAQUE);
-#else
-  XCopyArea(display, src_bitmap->drawable, dst_bitmap->drawable,
-	    dst_bitmap->gc, src_x, src_y, width, height, dst_x, dst_y);
-#endif
+  sysCopyArea(src_bitmap, dst_bitmap, src_x, src_y, width, height,
+	      dst_x, dst_y, BLIT_OPAQUE);
 }
 
-inline void ClearRectangle(Bitmap *bitmap, int x, int y, int width, int height)
+inline void FillRectangle(Bitmap *bitmap, int x, int y, int width, int height,
+			  Pixel color)
 {
   if (DrawingDeactivated(x, y, width, height))
     return;
 
-#ifdef TARGET_SDL
-  SDLFillRectangle(bitmap, x, y, width, height, 0x000000);
-#else
-  XFillRectangle(display, bitmap->drawable, bitmap->gc, x, y, width, height);
-#endif
+  sysFillRectangle(bitmap, x, y, width, height, color);
+}
+
+inline void ClearRectangle(Bitmap *bitmap, int x, int y, int width, int height)
+{
+  FillRectangle(bitmap, x, y, width, height, BLACK_PIXEL);
+}
+
+inline void ClearRectangleOnBackground(Bitmap *bitmap, int x, int y,
+				       int width, int height)
+{
+  if (DrawingOnBackground(x, y))
+    BlitBitmap(gfx.background_bitmap, bitmap, x, y, width, height, x, y);
+  else
+    ClearRectangle(bitmap, x, y, width, height);
 }
 
 #if 0
@@ -412,7 +483,7 @@ static GC last_clip_gc = 0;	/* needed for XCopyArea() through clip mask */
 
 inline void SetClipMask(Bitmap *bitmap, GC clip_gc, Pixmap clip_pixmap)
 {
-#ifdef TARGET_X11
+#if defined(TARGET_X11)
   if (clip_gc)
   {
     bitmap->clip_gc = clip_gc;
@@ -426,7 +497,7 @@ inline void SetClipMask(Bitmap *bitmap, GC clip_gc, Pixmap clip_pixmap)
 
 inline void SetClipOrigin(Bitmap *bitmap, GC clip_gc, int clip_x, int clip_y)
 {
-#ifdef TARGET_X11
+#if defined(TARGET_X11)
   if (clip_gc)
   {
     bitmap->clip_gc = clip_gc;
@@ -446,24 +517,39 @@ inline void BlitBitmapMasked(Bitmap *src_bitmap, Bitmap *dst_bitmap,
   if (DrawingDeactivated(dst_x, dst_y, width, height))
     return;
 
-#ifdef TARGET_SDL
-  SDLCopyArea(src_bitmap, dst_bitmap,
-	      src_x, src_y, width, height, dst_x, dst_y, SDLCOPYAREA_MASKED);
-#else
-  XCopyArea(display, src_bitmap->drawable, dst_bitmap->drawable,
-	    src_bitmap->clip_gc, src_x, src_y, width, height, dst_x, dst_y);
-#endif
+  sysCopyArea(src_bitmap, dst_bitmap, src_x, src_y, width, height,
+	      dst_x, dst_y, BLIT_MASKED);
+}
+
+inline void BlitBitmapOnBackground(Bitmap *src_bitmap, Bitmap *dst_bitmap,
+				   int src_x, int src_y,
+				   int width, int height,
+				   int dst_x, int dst_y)
+{
+  if (DrawingOnBackground(dst_x, dst_y))
+  {
+    /* draw background */
+    BlitBitmap(gfx.background_bitmap, dst_bitmap, dst_x, dst_y, width, height,
+	       dst_x, dst_y);
+
+    /* draw foreground */
+    SetClipOrigin(src_bitmap, src_bitmap->stored_clip_gc,
+		  dst_x - src_x, dst_y - src_y);
+    BlitBitmapMasked(src_bitmap, dst_bitmap, src_x, src_y, width, height,
+		     dst_x, dst_y);
+  }
+  else
+    BlitBitmap(src_bitmap, dst_bitmap, src_x, src_y, width, height,
+	       dst_x, dst_y);
 }
 
 inline void DrawSimpleWhiteLine(Bitmap *bitmap, int from_x, int from_y,
 				int to_x, int to_y)
 {
-#ifdef TARGET_SDL
-  SDLDrawSimpleLine(bitmap, from_x, from_y, to_x, to_y, 0xffffff);
+#if defined(TARGET_SDL)
+  SDLDrawSimpleLine(bitmap, from_x, from_y, to_x, to_y, WHITE_PIXEL);
 #else
-  XSetForeground(display, bitmap->gc, WhitePixel(display, screen));
-  XDrawLine(display, bitmap->drawable, bitmap->gc, from_x, from_y, to_x, to_y);
-  XSetForeground(display, bitmap->gc, BlackPixel(display, screen));
+  X11DrawSimpleLine(bitmap, from_x, from_y, to_x, to_y, WHITE_PIXEL);
 #endif
 }
 
@@ -516,53 +602,34 @@ inline void DrawLines(Bitmap *bitmap, struct XY *points, int num_points,
   XSetForeground(display, bitmap->line_gc[1], pixel);
   XDrawLines(display, bitmap->drawable, bitmap->line_gc[1],
 	     (XPoint *)points, num_points, CoordModeOrigin);
-  /*
-  XSetForeground(display, gc, BlackPixel(display, screen));
-  */
 #endif
 }
 
 inline Pixel GetPixel(Bitmap *bitmap, int x, int y)
 {
+  if (x < 0 || x >= bitmap->width ||
+      y < 0 || y >= bitmap->height)
+    return BLACK_PIXEL;
+
 #if defined(TARGET_SDL)
   return SDLGetPixel(bitmap, x, y);
 #elif defined(TARGET_ALLEGRO)
   return AllegroGetPixel(bitmap->drawable, x, y);
 #else
-  unsigned long pixel_value;
-  XImage *pixel_image;
-
-  pixel_image = XGetImage(display, bitmap->drawable, x, y, 1, 1,
-			  AllPlanes, ZPixmap);
-  pixel_value = XGetPixel(pixel_image, 0, 0);
-
-  XDestroyImage(pixel_image);
-
-  return pixel_value;
+  return X11GetPixel(bitmap, x, y);
 #endif
 }
 
 inline Pixel GetPixelFromRGB(Bitmap *bitmap, unsigned int color_r,
 			     unsigned int color_g, unsigned int color_b)
 {
-  Pixel pixel;
-
 #if defined(TARGET_SDL)
-  pixel = SDL_MapRGB(bitmap->surface->format, color_r, color_g, color_b);
+  return SDL_MapRGB(bitmap->surface->format, color_r, color_g, color_b);
 #elif defined(TARGET_ALLEGRO)
-  pixel = AllegroAllocColorCell(color_r << 8, color_g << 8, color_b << 8);
-#elif defined(TARGET_X11_NATIVE)
-  XColor xcolor;
-
-  xcolor.flags = DoRed | DoGreen | DoBlue;
-  xcolor.red = (color_r << 8);
-  xcolor.green = (color_g << 8);
-  xcolor.blue = (color_b << 8);
-  XAllocColor(display, cmap, &xcolor);
-  pixel = xcolor.pixel;
+  return AllegroAllocColorCell(color_r << 8, color_g << 8, color_b << 8);
+#else
+  return X11GetPixelFromRGB(color_r, color_g, color_b);
 #endif
-
-  return pixel;
 }
 
 inline Pixel GetPixelFromRGBcompact(Bitmap *bitmap, unsigned int color)
@@ -592,7 +659,7 @@ inline void SyncDisplay(void)
 
 inline void KeyboardAutoRepeatOn(void)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY / 2,
 		      SDL_DEFAULT_REPEAT_INTERVAL / 2);
   SDL_EnableUNICODE(1);
@@ -604,7 +671,7 @@ inline void KeyboardAutoRepeatOn(void)
 
 inline void KeyboardAutoRepeatOff(void)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   SDL_EnableKeyRepeat(0, SDL_DEFAULT_REPEAT_INTERVAL);
   SDL_EnableUNICODE(0);
 #else
@@ -615,7 +682,7 @@ inline void KeyboardAutoRepeatOff(void)
 
 inline boolean PointerInWindow(DrawWindow *window)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   return TRUE;
 #else
   Window root, child;
@@ -632,7 +699,7 @@ inline boolean PointerInWindow(DrawWindow *window)
 
 inline boolean SetVideoMode(boolean fullscreen)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   return SDLSetVideoMode(&backbuffer, fullscreen);
 #else
   boolean success = TRUE;
@@ -653,7 +720,7 @@ inline boolean SetVideoMode(boolean fullscreen)
 
 inline boolean ChangeVideoModeIfNeeded(boolean fullscreen)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   if ((fullscreen && !video.fullscreen_enabled && video.fullscreen_available)||
       (!fullscreen && video.fullscreen_enabled))
     fullscreen = SetVideoMode(fullscreen);
@@ -721,13 +788,177 @@ void ReloadCustomImage(Bitmap *bitmap, char *basename)
   if (bitmap->width != new_bitmap->width ||
       bitmap->height != new_bitmap->height)
   {
-    Error(ERR_WARN, "ReloadCustomImage: new image has wrong dimensions");
+    Error(ERR_WARN, "ReloadCustomImage: new image '%s' has wrong dimensions",
+	  filename);
     FreeBitmap(new_bitmap);
     return;
   }
 
   TransferBitmapPointers(new_bitmap, bitmap);
   free(new_bitmap);
+}
+
+Bitmap *ZoomBitmap(Bitmap *src_bitmap, int zoom_width, int zoom_height)
+{
+  Bitmap *dst_bitmap = CreateBitmap(zoom_width, zoom_height, DEFAULT_DEPTH);
+
+#if defined(TARGET_SDL)
+  SDLZoomBitmap(src_bitmap, dst_bitmap);
+#else
+  X11ZoomBitmap(src_bitmap, dst_bitmap);
+#endif
+
+  return dst_bitmap;
+}
+
+void CreateBitmapWithSmallBitmaps(Bitmap *src_bitmap)
+{
+  Bitmap *tmp_bitmap, *tmp_bitmap_2, *tmp_bitmap_8;
+  int src_width, src_height;
+  int tmp_width, tmp_height;
+
+  src_width  = src_bitmap->width;
+  src_height = src_bitmap->height;
+
+  tmp_width  = src_width;
+  tmp_height = src_height + (src_height + 1) / 2;     /* prevent odd height */
+
+  tmp_bitmap = CreateBitmap(tmp_width, tmp_height, DEFAULT_DEPTH);
+
+  tmp_bitmap_2 = ZoomBitmap(src_bitmap, src_width / 2, src_height / 2);
+  tmp_bitmap_8 = ZoomBitmap(src_bitmap, src_width / 8, src_height / 8);
+
+  BlitBitmap(src_bitmap, tmp_bitmap, 0, 0, src_width, src_height, 0, 0);
+  BlitBitmap(tmp_bitmap_2, tmp_bitmap, 0, 0, src_width / 2, src_height / 2,
+	     0, src_height);
+  BlitBitmap(tmp_bitmap_8, tmp_bitmap, 0, 0, src_width / 8, src_height / 8,
+	     3 * src_width / 4, src_height);
+
+  FreeBitmap(tmp_bitmap_2);
+  FreeBitmap(tmp_bitmap_8);
+
+#if defined(TARGET_SDL)
+  /* !!! what about the old src_bitmap->surface ??? FIX ME !!! */
+  src_bitmap->surface = tmp_bitmap->surface;
+  tmp_bitmap->surface = NULL;
+#else
+  /* !!! see above !!! */
+  src_bitmap->drawable = tmp_bitmap->drawable;
+  tmp_bitmap->drawable = None;
+#endif
+
+  src_bitmap->height = tmp_bitmap->height;
+
+  FreeBitmap(tmp_bitmap);
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* mouse pointer functions                                                   */
+/* ------------------------------------------------------------------------- */
+
+#if !defined(PLATFORM_MSDOS)
+/* XPM */
+static const char *cursor_image_playfield[] =
+{
+  /* width height num_colors chars_per_pixel */
+  "    16    16        3            1",
+
+  /* colors */
+  "X c #000000",
+  ". c #ffffff",
+  "  c None",
+
+  /* pixels */
+  " X              ",
+  "X.X             ",
+  " X              ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+
+  /* hot spot */
+  "1,1"
+};
+
+#if defined(TARGET_SDL)
+static const int cursor_bit_order = BIT_ORDER_MSB;
+#elif defined(TARGET_X11_NATIVE)
+static const int cursor_bit_order = BIT_ORDER_LSB;
+#endif
+
+static struct MouseCursorInfo *get_cursor_from_image(const char **image)
+{
+  struct MouseCursorInfo *cursor;
+  boolean bit_order_msb = (cursor_bit_order == BIT_ORDER_MSB);
+  int header_lines = 4;
+  int x, y, i;
+
+  cursor = checked_calloc(sizeof(struct MouseCursorInfo));
+
+  sscanf(image[0], " %d %d ", &cursor->width, &cursor->height);
+
+  i = -1;
+  for (y=0; y < cursor->width; y++)
+  {
+    for (x=0; x < cursor->height; x++)
+    {
+      int bit_nr = x % 8;
+      int bit_mask = 0x01 << (bit_order_msb ? 7 - bit_nr : bit_nr );
+
+      if (bit_nr == 0)
+      {
+        i++;
+        cursor->data[i] = cursor->mask[i] = 0;
+      }
+
+      switch (image[header_lines + y][x])
+      {
+        case 'X':
+	  cursor->data[i] |= bit_mask;
+	  cursor->mask[i] |= bit_mask;
+	  break;
+
+        case '.':
+	  cursor->mask[i] |= bit_mask;
+	  break;
+
+        case ' ':
+	  break;
+      }
+    }
+  }
+
+  sscanf(image[header_lines + y], "%d,%d", &cursor->hot_x, &cursor->hot_y);
+
+  return cursor;
+}
+#endif	/* !PLATFORM_MSDOS */
+
+void SetMouseCursor(int mode)
+{
+#if !defined(PLATFORM_MSDOS)
+  static struct MouseCursorInfo *cursor_playfield = NULL;
+
+  if (cursor_playfield == NULL)
+    cursor_playfield = get_cursor_from_image(cursor_image_playfield);
+
+#if defined(TARGET_SDL)
+  SDLSetMouseCursor(mode == CURSOR_PLAYFIELD ? cursor_playfield : NULL);
+#elif defined(TARGET_X11_NATIVE)
+  X11SetMouseCursor(mode == CURSOR_PLAYFIELD ? cursor_playfield : NULL);
+#endif
+#endif
 }
 
 
@@ -746,7 +977,7 @@ inline void OpenAudio(void)
   audio.sound_deactivated = FALSE;
 
   audio.mixer_pipe[0] = audio.mixer_pipe[1] = 0;
-  audio.mixer_pid = -1;
+  audio.mixer_pid = 0;
   audio.device_name = NULL;
   audio.device_fd = -1;
 
@@ -791,7 +1022,7 @@ inline void SetAudioMode(boolean enabled)
 
 inline void InitEventFilter(EventFilter filter_function)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   /* set event filter to filter out certain events */
   SDL_SetEventFilter(filter_function);
 #endif
@@ -799,7 +1030,7 @@ inline void InitEventFilter(EventFilter filter_function)
 
 inline boolean PendingEvent(void)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   return (SDL_PollEvent(NULL) ? TRUE : FALSE);
 #else
   return (XPending(display) ? TRUE : FALSE);
@@ -808,7 +1039,7 @@ inline boolean PendingEvent(void)
 
 inline void NextEvent(Event *event)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
   SDLNextEvent(event);
 #else
   XNextEvent(display, event);
@@ -817,7 +1048,7 @@ inline void NextEvent(Event *event)
 
 inline Key GetEventKey(KeyEvent *event, boolean with_modifiers)
 {
-#ifdef TARGET_SDL
+#if defined(TARGET_SDL)
 #if 0
   printf("unicode == '%d', sym == '%d', mod == '0x%04x'\n",
 	 (int)event->keysym.unicode,
@@ -842,6 +1073,64 @@ inline Key GetEventKey(KeyEvent *event, boolean with_modifiers)
     return XLookupKeysym(event, event->state);
   else
     return XLookupKeysym(event, 0);
+#endif
+}
+
+inline KeyMod HandleKeyModState(Key key, int key_status)
+{
+  static KeyMod current_modifiers = KMOD_None;
+
+#if !defined(TARGET_SDL)
+  if (key != KSYM_UNDEFINED)	/* new key => check for modifier key change */
+  {
+    KeyMod new_modifier = KMOD_None;
+
+    switch(key)
+    {
+      case KSYM_Shift_L:
+	new_modifier = KMOD_Shift_L;
+	break;
+      case KSYM_Shift_R:
+	new_modifier = KMOD_Shift_R;
+	break;
+      case KSYM_Control_L:
+	new_modifier = KMOD_Control_L;
+	break;
+      case KSYM_Control_R:
+	new_modifier = KMOD_Control_R;
+	break;
+      case KSYM_Meta_L:
+	new_modifier = KMOD_Meta_L;
+	break;
+      case KSYM_Meta_R:
+	new_modifier = KMOD_Meta_R;
+	break;
+      case KSYM_Alt_L:
+	new_modifier = KMOD_Alt_L;
+	break;
+      case KSYM_Alt_R:
+	new_modifier = KMOD_Alt_R;
+	break;
+      default:
+	break;
+    }
+
+    if (key_status == KEY_PRESSED)
+      current_modifiers |= new_modifier;
+    else
+      current_modifiers &= ~new_modifier;
+  }
+#endif
+
+  return current_modifiers;
+}
+
+inline KeyMod GetKeyModState()
+{
+#if defined(TARGET_SDL)
+  return (KeyMod)SDL_GetModState();
+#else
+  return HandleKeyModState(KSYM_UNDEFINED, 0);
 #endif
 }
 
@@ -870,7 +1159,7 @@ inline void InitJoysticks()
 {
   int i;
 
-#ifdef NO_JOYSTICK
+#if defined(NO_JOYSTICK)
   return;	/* joysticks generally deactivated by compile-time directive */
 #endif
 

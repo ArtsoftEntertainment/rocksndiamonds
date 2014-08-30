@@ -64,6 +64,7 @@ TARGET = allegro
 endif
 
 ifeq ($(PLATFORM),cross-win32)
+EXTRA_LDFLAGS = -lshfolder
 PROGNAME = ../$(PROGBASE).exe
 TARGET = sdl
 endif
@@ -106,7 +107,8 @@ CONFIG = $(CONFIG_GAME_DIR) $(CONFIG_SCORE_ENTRIES) $(JOYSTICK)
 # PROFILING = $(PROFILING_FLAGS)
 
 # OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
-OPTIONS = $(DEBUG) -O3 -Wall			# only for debugging purposes
+# OPTIONS = $(DEBUG) -O3 -Wall			# only for debugging purposes
+OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
 # OPTIONS = $(DEBUG) -Wall -ansi -pedantic	# only for debugging purposes
 # OPTIONS = -O3 -Wall -ansi -pedantic
 # OPTIONS = -O3 -Wall
@@ -122,6 +124,8 @@ LDFLAGS = $(SYS_LDFLAGS) $(EXTRA_LDFLAGS) -lm
 
 
 SRCS =	main.c		\
+	conf_gfx.c	\
+	conf_snd.c	\
 	init.c		\
 	config.c	\
 	events.c	\
@@ -136,6 +140,8 @@ SRCS =	main.c		\
 	netserv.c
 
 OBJS =	main.o		\
+	conf_gfx.o	\
+	conf_snd.o	\
 	init.o		\
 	config.o	\
 	events.o	\
@@ -148,6 +154,19 @@ OBJS =	main.o		\
 	cartoons.o	\
 	network.o	\
 	netserv.o
+
+CNFS =	conf_gfx.h	\
+	conf_snd.h	\
+	conf_chr.c	\
+	conf_chr.h	\
+	conf_cus.c	\
+	conf_cus.h	\
+	conf_e2g.c	\
+	conf_esg.c	\
+	conf_e2s.c	\
+	conf_fnt.c
+
+CNFS_CMD = ../Scripts/create_element_defs.pl
 
 TIMESTAMP_FILE = conftime.h
 
@@ -170,6 +189,18 @@ libgame_dir:
 	@$(MAKE) -C $(LIBDIR)
 $(LIBGAME):
 	@$(MAKE) -C $(LIBDIR)
+
+auto-conf:
+	@for i in $(CNFS); do			\
+		echo "$(CNFS_CMD) $$i > $$i";	\
+		$(CNFS_CMD) $$i > $$i;		\
+	done
+
+conf_gfx.h: conf_gfx.c
+	@$(MAKE) auto-conf
+
+conf_snd.h: conf_snd.c
+	@$(MAKE) auto-conf
 
 $(TIMESTAMP_FILE): $(SRCS) $(LIBGAME)
 	@date '+"[%Y-%m-%d %H:%M]"' \

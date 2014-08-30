@@ -19,7 +19,7 @@
 #include "misc.h"
 
 
-#define PCX_DEBUG		FALSE
+#define PCX_DEBUG		0
 
 #define PCX_MAGIC		0x0a	/* first byte in a PCX image file    */
 #define PCX_SUPPORTED_VERSION	5	/* last acceptable version number    */
@@ -112,7 +112,7 @@ static boolean PCX_ReadBitmap(FILE *file, struct PCX_Header *pcx, Image *image)
   for (y = 0; y < height; y++)
   {
     /* decode a scan line into a temporary buffer first */
-    byte *dst_ptr = (pcx_depth == 8) ? bitmap_ptr : row_buffer;
+    byte *dst_ptr = (pcx_depth == 8 ? bitmap_ptr : row_buffer);
     byte value = 0, count = 0;
     int value_int;
     int i;
@@ -122,14 +122,23 @@ static boolean PCX_ReadBitmap(FILE *file, struct PCX_Header *pcx, Image *image)
       if (count == 0)
       {
 	if ((value_int = fgetc(file)) == EOF)
+	{
+	  free(row_buffer);
 	  return FALSE;
+	}
+
 	value = (byte)value_int;
 
 	if ((value & 0xc0) == 0xc0)	/* this is a repeat count byte */
 	{
 	  count = value & 0x3f;		/* extract repeat count from byte */
+
 	  if ((value_int = fgetc(file)) == EOF)
+	  {
+	    free(row_buffer);
 	    return FALSE;
+	  }
+
 	  value = (byte)value_int;
 	}
 	else
@@ -152,13 +161,16 @@ static boolean PCX_ReadBitmap(FILE *file, struct PCX_Header *pcx, Image *image)
       {
 	int i, j, x = 0;
 
-	for(i = 0; i < pcx->bytes_per_line; i++)
+	for (i = 0; i < pcx->bytes_per_line; i++)
 	{
 	  byte value = *src_ptr++;
 
-	  for(j = 7; j >= 0; j--)
+	  for (j = 7; j >= 0; j--)
 	  {
 	    byte bit = (value >> j) & 1;
+
+	    if (i * 8 + j >= width)	/* skip padding bits */
+	      continue;
 
 	    bitmap_ptr[x++] |= bit << plane;
 	  }
@@ -170,12 +182,12 @@ static boolean PCX_ReadBitmap(FILE *file, struct PCX_Header *pcx, Image *image)
       byte *src_ptr = row_buffer;
       int plane;
 
-      for(plane = 0; plane < pcx->color_planes; plane++)
+      for (plane = 0; plane < pcx->color_planes; plane++)
       {
 	int x;
 
 	dst_ptr = bitmap_ptr + plane;
-	for(x = 0; x < width; x++)
+	for (x = 0; x < width; x++)
 	{
 	  *dst_ptr = *src_ptr++;
 	  dst_ptr += pcx->color_planes;
@@ -185,6 +197,8 @@ static boolean PCX_ReadBitmap(FILE *file, struct PCX_Header *pcx, Image *image)
 
     bitmap_ptr += image->bytes_per_row;
   }
+
+  free(row_buffer);
 
   return TRUE;
 }
@@ -321,6 +335,7 @@ Image *Read_PCX_to_Image(char *filename)
 #if PCX_DEBUG
   if (options.verbose)
   {
+    printf("\n");
     printf("%s is a %dx%d PC Paintbrush image\n", filename, width, height);
     printf("depth: %d\n", depth);
     printf("bits_per_pixel: %d\n", pcx.bits_per_pixel);
@@ -360,7 +375,6 @@ Image *Read_PCX_to_Image(char *filename)
   if (pcx_depth == 8)
   {
     /* determine number of used colormap entries for 8-bit PCX images */
-    image->rgb.used = 0;
     for (i=0; i<PCX_MAXCOLORS; i++)
       if (image->rgb.color_used[i])
 	image->rgb.used++;
@@ -368,7 +382,7 @@ Image *Read_PCX_to_Image(char *filename)
 
 #if PCX_DEBUG
   if (options.verbose)
-    printf("Read_PCX_to_Image: %d colors found\n", image->rgb.used);
+    printf("Read_PCX_to_Image: %d colors in colormap\n", image->rgb.used);
 #endif
 
   return image;
