@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2000 Artsoft Entertainment                      *
+* (c) 1994-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -291,6 +291,7 @@ inline void SetClipOrigin(Bitmap *, GC, int, int);
 inline void BlitBitmapMasked(Bitmap *, Bitmap *, int, int, int, int, int, int);
 inline void DrawSimpleWhiteLine(Bitmap *, int, int, int, int);
 inline void DrawLines(Bitmap *, struct XY *, int, Pixel);
+inline Pixel GetPixel(Bitmap *, int, int);
 inline Pixel GetPixelFromRGB(Bitmap *, unsigned int,unsigned int,unsigned int);
 inline Pixel GetPixelFromRGBcompact(Bitmap *, unsigned int);
 

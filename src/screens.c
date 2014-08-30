@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2000 Artsoft Entertainment                      *
+* (c) 1995-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -1172,15 +1172,19 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
 	node_cursor->cl_first = leveldir_current->cl_first;
 	node_cursor->cl_cursor = leveldir_current->cl_cursor;
 	leveldir_current = node_cursor->node_group;
+
 	DrawChooseLevel();
       }
       else if (node_cursor->parent_link)
       {
 	leveldir_current = node_cursor->node_parent;
+
 	DrawChooseLevel();
       }
       else
       {
+	node_cursor->cl_first = leveldir_current->cl_first;
+	node_cursor->cl_cursor = leveldir_current->cl_cursor;
 	leveldir_current = node_cursor;
 
 	LoadLevelSetup_SeriesInfo();
@@ -1204,6 +1208,7 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
 void DrawHallOfFame(int highlight_position)
 {
   UnmapAllGadgets();
+  FadeSounds();
   CloseDoor(DOOR_CLOSE_2);
 
   if (highlight_position < 0) 

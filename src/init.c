@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2000 Artsoft Entertainment                      *
+* (c) 1995-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -573,6 +573,8 @@ void InitElementProperties()
     EL_AMOEBE_BD,
     EL_MORAST_VOLL,
     EL_MORAST_LEER,
+    EL_QUICKSAND_FILLING,
+    EL_QUICKSAND_EMPTYING,
     EL_MAGIC_WALL_OFF,
     EL_MAGIC_WALL_EMPTY,
     EL_MAGIC_WALL_FULL,
@@ -1096,8 +1098,7 @@ void InitElementProperties()
     EL_EDELSTEIN_GELB,
     EL_EDELSTEIN_ROT,
     EL_EDELSTEIN_LILA,
-    EL_DIAMANT,
-    EL_SP_INFOTRON
+    EL_DIAMANT
   };
   static int ep_gem_num = sizeof(ep_gem)/sizeof(int);
 

@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2000 Artsoft Entertainment                      *
+* (c) 1994-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -375,7 +375,7 @@ inline void DrawSimpleWhiteLine(Bitmap *bitmap, int from_x, int from_y,
 				int to_x, int to_y)
 {
 #ifdef TARGET_SDL
-  SDLDrawSimpleLine(bitmap->surface, from_x, from_y, to_x, to_y, 0xffffff);
+  SDLDrawSimpleLine(bitmap, from_x, from_y, to_x, to_y, 0xffffff);
 #else
   XSetForeground(display, bitmap->gc, WhitePixel(display, screen));
   XDrawLine(display, bitmap->drawable, bitmap->gc, from_x, from_y, to_x, to_y);
@@ -403,8 +403,8 @@ inline void DrawLine(Bitmap *bitmap, int from_x, int from_y,
 	continue;
 
 #if defined(TARGET_SDL)
-      sge_Line(bitmap->surface,
-	       from_x + dx, from_y + dy, to_x + dx, to_y + dy, pixel);
+      SDLDrawLine(bitmap,
+		  from_x + dx, from_y + dy, to_x + dx, to_y + dy, pixel);
 #elif defined(TARGET_ALLEGRO)
       AllegroDrawLine(bitmap->drawable, from_x + dx, from_y + dy,
 		      to_x + dx, to_y + dy, pixel);
@@ -435,6 +435,26 @@ inline void DrawLines(Bitmap *bitmap, struct XY *points, int num_points,
   /*
   XSetForeground(display, gc, BlackPixel(display, screen));
   */
+#endif
+}
+
+inline Pixel GetPixel(Bitmap *bitmap, int x, int y)
+{
+#if defined(TARGET_SDL)
+  return SDLGetPixel(bitmap, x, y);
+#elif defined(TARGET_ALLEGRO)
+  return AllegroGetPixel(bitmap->drawable, x, y);
+#else
+  unsigned long pixel_value;
+  XImage *pixel_image;
+
+  pixel_image = XGetImage(display, bitmap->drawable, x, y, 1, 1,
+			  AllPlanes, ZPixmap);
+  pixel_value = XGetPixel(pixel_image, 0, 0);
+
+  XDestroyImage(pixel_image);
+
+  return pixel_value;
 #endif
 }
 
@@ -653,7 +673,7 @@ inline boolean PendingEvent(void)
 inline void NextEvent(Event *event)
 {
 #ifdef TARGET_SDL
-  SDL_WaitEvent(event);
+  SDLNextEvent(event);
 #else
   XNextEvent(display, event);
 #endif

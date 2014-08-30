@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2000 Artsoft Entertainment                      *
+* (c) 1995-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -22,28 +22,24 @@
 #include "tape.h"
 #include "joystick.h"
 
-#define MAX_FILENAME_LEN	256	/* maximal filename length */
-#define MAX_LINE_LEN		1000	/* maximal input line length */
-#define CHUNK_ID_LEN		4	/* IFF style chunk id length */
-#define LEVEL_HEADER_SIZE	80	/* size of level file header */
-#define LEVEL_HEADER_UNUSED	15	/* unused level header bytes */
-#define TAPE_HEADER_SIZE	20	/* size of tape file header */
-#define TAPE_HEADER_UNUSED	7	/* unused tape header bytes */
-#define FILE_VERSION_1_0	10	/* 1.0 file version (old) */
-#define FILE_VERSION_1_2	12	/* 1.2 file version (still in use) */
-#define FILE_VERSION_1_4	14	/* 1.4 file version (new) */
+#define CHUNK_ID_LEN		4	/* IFF style chunk id length  */
+#define CHUNK_SIZE_UNDEFINED	0	/* undefined chunk size == 0  */
+#define CHUNK_SIZE_NONE		-1	/* do not write chunk size    */
+#define FILE_VERS_CHUNK_SIZE	8	/* size of file version chunk */
+#define LEVEL_HEADER_SIZE	80	/* size of level file header  */
+#define LEVEL_HEADER_UNUSED	15	/* unused level header bytes  */
+#define LEVEL_CHUNK_CNT2_SIZE	160	/* size of level CNT2 chunk   */
+#define LEVEL_CHUNK_CNT2_UNUSED	11	/* unused CNT2 chunk bytes    */
+#define TAPE_HEADER_SIZE	20	/* size of tape file header   */
+#define TAPE_HEADER_UNUSED	7	/* unused tape header bytes   */
 
 /* file identifier strings */
-#define LEVEL_COOKIE		"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_1.4"
+#define LEVEL_COOKIE_TMPL	"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_x.x"
+#define TAPE_COOKIE_TMPL	"ROCKSNDIAMONDS_TAPE_FILE_VERSION_x.x"
 #define SCORE_COOKIE		"ROCKSNDIAMONDS_SCORE_FILE_VERSION_1.2"
-#define TAPE_COOKIE		"ROCKSNDIAMONDS_TAPE_FILE_VERSION_1.2"
 #define SETUP_COOKIE		"ROCKSNDIAMONDS_SETUP_FILE_VERSION_1.2"
 #define LEVELSETUP_COOKIE	"ROCKSNDIAMONDS_LEVELSETUP_FILE_VERSION_1.2"
 #define LEVELINFO_COOKIE	"ROCKSNDIAMONDS_LEVELINFO_FILE_VERSION_1.2"
-/* old file identifiers for backward compatibility */
-#define LEVEL_COOKIE_10		"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_1.0"
-#define LEVEL_COOKIE_12		"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_1.2"
-#define TAPE_COOKIE_10		"ROCKSNDIAMONDS_LEVELREC_FILE_VERSION_1.0"
 
 /* file names and filename extensions */
 #if !defined(PLATFORM_MSDOS)
@@ -63,36 +59,6 @@
 #define TAPEFILE_EXTENSION	"tap"
 #define SCOREFILE_EXTENSION	"sco"
 #endif
-
-#if defined(PLATFORM_WIN32)
-#ifndef S_IRGRP
-#define S_IRGRP S_IRUSR
-#endif
-#ifndef S_IROTH
-#define S_IROTH S_IRUSR
-#endif
-#ifndef S_IWGRP
-#define S_IWGRP S_IWUSR
-#endif
-#ifndef S_IWOTH
-#define S_IWOTH S_IWUSR
-#endif
-#ifndef S_IXGRP
-#define S_IXGRP S_IXUSR
-#endif
-#ifndef S_IXOTH
-#define S_IXOTH S_IXUSR
-#endif
-#endif	/* PLATFORM_WIN32 */
-
-/* file permissions for newly written files */
-#define MODE_R_ALL		(S_IRUSR | S_IRGRP | S_IROTH)
-#define MODE_W_ALL		(S_IWUSR | S_IWGRP | S_IWOTH)
-#define MODE_X_ALL		(S_IXUSR | S_IXGRP | S_IXOTH)
-#define LEVEL_PERMS		(MODE_R_ALL | MODE_W_ALL)
-#define SCORE_PERMS		LEVEL_PERMS
-#define TAPE_PERMS		LEVEL_PERMS
-#define SETUP_PERMS		LEVEL_PERMS
 
 /* sort priorities of level series (also used as level series classes) */
 #define LEVELCLASS_TUTORIAL_START	10
@@ -203,11 +169,6 @@ char *getLevelClassDescription(struct LevelDirInfo *ldi)
 
 static void SaveUserLevelInfo();		/* for 'InitUserLevelDir()' */
 static char *getSetupLine(char *, int);		/* for 'SaveUserLevelInfo()' */
-
-static char *getSetupDir()
-{
-  return getUserDataDir();
-}
 
 static char *getUserLevelDir(char *level_subdir)
 {
@@ -325,24 +286,24 @@ static char *getScoreFilename(int nr)
 
 static void InitTapeDirectory(char *level_subdir)
 {
-  createDirectory(getUserDataDir(), "user data");
-  createDirectory(getTapeDir(""), "main tape");
-  createDirectory(getTapeDir(level_subdir), "level tape");
+  createDirectory(getUserDataDir(), "user data", PERMS_PRIVATE);
+  createDirectory(getTapeDir(""), "main tape", PERMS_PRIVATE);
+  createDirectory(getTapeDir(level_subdir), "level tape", PERMS_PRIVATE);
 }
 
 static void InitScoreDirectory(char *level_subdir)
 {
-  createDirectory(getScoreDir(""), "main score");
-  createDirectory(getScoreDir(level_subdir), "level score");
+  createDirectory(getScoreDir(""), "main score", PERMS_PUBLIC);
+  createDirectory(getScoreDir(level_subdir), "level score", PERMS_PUBLIC);
 }
 
 static void InitUserLevelDirectory(char *level_subdir)
 {
   if (access(getUserLevelDir(level_subdir), F_OK) != 0)
   {
-    createDirectory(getUserDataDir(), "user data");
-    createDirectory(getUserLevelDir(""), "main user level");
-    createDirectory(getUserLevelDir(level_subdir), "user level");
+    createDirectory(getUserDataDir(), "user data", PERMS_PRIVATE);
+    createDirectory(getUserLevelDir(""), "main user level", PERMS_PRIVATE);
+    createDirectory(getUserLevelDir(level_subdir), "user level",PERMS_PRIVATE);
 
     SaveUserLevelInfo();
   }
@@ -350,14 +311,65 @@ static void InitUserLevelDirectory(char *level_subdir)
 
 static void InitLevelSetupDirectory(char *level_subdir)
 {
-  createDirectory(getUserDataDir(), "user data");
-  createDirectory(getLevelSetupDir(""), "main level setup");
-  createDirectory(getLevelSetupDir(level_subdir), "level setup");
+  createDirectory(getUserDataDir(), "user data", PERMS_PRIVATE);
+  createDirectory(getLevelSetupDir(""), "main level setup", PERMS_PRIVATE);
+  createDirectory(getLevelSetupDir(level_subdir), "level setup",PERMS_PRIVATE);
+}
+
+static void ReadChunk_VERS(FILE *file, int *file_version, int *game_version)
+{
+  int file_version_major, file_version_minor, file_version_patch;
+  int game_version_major, game_version_minor, game_version_patch;
+
+  file_version_major = fgetc(file);
+  file_version_minor = fgetc(file);
+  file_version_patch = fgetc(file);
+  fgetc(file);		/* not used */
+
+  game_version_major = fgetc(file);
+  game_version_minor = fgetc(file);
+  game_version_patch = fgetc(file);
+  fgetc(file);		/* not used */
+
+  *file_version = VERSION_IDENT(file_version_major,
+				file_version_minor,
+				file_version_patch);
+
+  *game_version = VERSION_IDENT(game_version_major,
+				game_version_minor,
+				game_version_patch);
+}
+
+static void WriteChunk_VERS(FILE *file, int file_version, int game_version)
+{
+  int file_version_major = VERSION_MAJOR(file_version);
+  int file_version_minor = VERSION_MINOR(file_version);
+  int file_version_patch = VERSION_PATCH(file_version);
+  int game_version_major = VERSION_MAJOR(game_version);
+  int game_version_minor = VERSION_MINOR(game_version);
+  int game_version_patch = VERSION_PATCH(game_version);
+
+  fputc(file_version_major, file);
+  fputc(file_version_minor, file);
+  fputc(file_version_patch, file);
+  fputc(0, file);	/* not used */
+
+  fputc(game_version_major, file);
+  fputc(game_version_minor, file);
+  fputc(game_version_patch, file);
+  fputc(0, file);	/* not used */
 }
 
 static void setLevelInfoToDefaults()
 {
   int i, x, y;
+
+  level.file_version = FILE_VERSION_ACTUAL;
+  level.game_version = GAME_VERSION_ACTUAL;
+
+  level.encoding_16bit_field = FALSE;	/* default: only 8-bit elements */
+  level.encoding_16bit_yamyam = FALSE;	/* default: only 8-bit elements */
+  level.encoding_16bit_amoeba = FALSE;	/* default: only 8-bit elements */
 
   lev_fieldx = level.fieldx = STD_LEV_FIELDX;
   lev_fieldy = level.fieldy = STD_LEV_FIELDY;
@@ -392,7 +404,8 @@ static void setLevelInfoToDefaults()
   for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
     for(x=0; x<3; x++)
       for(y=0; y<3; y++)
-	level.yam_content[i][x][y] = EL_FELSBROCKEN;
+	level.yam_content[i][x][y] =
+	  (i < STD_ELEMENT_CONTENTS ? EL_FELSBROCKEN : EL_LEERRAUM);
 
   Feld[0][0] = Ur[0][0] = EL_SPIELFIGUR;
   Feld[STD_LEV_FIELDX-1][STD_LEV_FIELDY-1] =
@@ -442,15 +455,180 @@ static int checkLevelElement(int element)
   return element;
 }
 
-void LoadLevel(int level_nr)
+static int LoadLevel_VERS(FILE *file, int chunk_size, struct LevelInfo *level)
+{
+  ReadChunk_VERS(file, &(level->file_version), &(level->game_version));
+
+  return chunk_size;
+}
+
+static int LoadLevel_HEAD(FILE *file, int chunk_size, struct LevelInfo *level)
 {
   int i, x, y;
+
+  lev_fieldx = level->fieldx = fgetc(file);
+  lev_fieldy = level->fieldy = fgetc(file);
+
+  level->time		= getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+  level->gems_needed	= getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+
+  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
+    level->name[i] = fgetc(file);
+  level->name[MAX_LEVEL_NAME_LEN] = 0;
+
+  for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
+    level->score[i] = fgetc(file);
+
+  level->num_yam_contents = STD_ELEMENT_CONTENTS;
+  for(i=0; i<STD_ELEMENT_CONTENTS; i++)
+    for(y=0; y<3; y++)
+      for(x=0; x<3; x++)
+	level->yam_content[i][x][y] = checkLevelElement(fgetc(file));
+
+  level->amoeba_speed		= fgetc(file);
+  level->time_magic_wall	= fgetc(file);
+  level->time_wheel		= fgetc(file);
+  level->amoeba_content		= checkLevelElement(fgetc(file));
+  level->double_speed		= (fgetc(file) == 1 ? TRUE : FALSE);
+  level->gravity		= (fgetc(file) == 1 ? TRUE : FALSE);
+
+  level->encoding_16bit_field	= (fgetc(file) == 1 ? TRUE : FALSE);
+
+  ReadUnusedBytesFromFile(file, LEVEL_HEADER_UNUSED);
+
+  return chunk_size;
+}
+
+static int LoadLevel_AUTH(FILE *file, int chunk_size, struct LevelInfo *level)
+{
+  int i;
+
+  for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
+    level->author[i] = fgetc(file);
+  level->author[MAX_LEVEL_NAME_LEN] = 0;
+
+  return chunk_size;
+}
+
+static int LoadLevel_CONT(FILE *file, int chunk_size, struct LevelInfo *level)
+{
+  int i, x, y;
+  int header_size = 4;
+  int content_size = MAX_ELEMENT_CONTENTS * 3 * 3;
+  int chunk_size_expected = header_size + content_size;
+
+  /* Note: "chunk_size" was wrong before version 2.0 when elements are
+     stored with 16-bit encoding (and should be twice as big then).
+     Even worse, playfield data was stored 16-bit when only yamyam content
+     contained 16-bit elements and vice versa. */
+
+  if (level->encoding_16bit_field && level->file_version >= FILE_VERSION_2_0)
+    chunk_size_expected += content_size;
+
+  if (chunk_size_expected != chunk_size)
+  {
+    ReadUnusedBytesFromFile(file, chunk_size);
+    return chunk_size_expected;
+  }
+
+  fgetc(file);
+  level->num_yam_contents = fgetc(file);
+  fgetc(file);
+  fgetc(file);
+
+  /* correct invalid number of content fields -- should never happen */
+  if (level->num_yam_contents < 1 ||
+      level->num_yam_contents > MAX_ELEMENT_CONTENTS)
+    level->num_yam_contents = STD_ELEMENT_CONTENTS;
+
+  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+    for(y=0; y<3; y++)
+      for(x=0; x<3; x++)
+	level->yam_content[i][x][y] =
+	  checkLevelElement(level->encoding_16bit_field ?
+			    getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN) :
+			    fgetc(file));
+  return chunk_size;
+}
+
+static int LoadLevel_BODY(FILE *file, int chunk_size, struct LevelInfo *level)
+{
+  int x, y;
+  int chunk_size_expected = level->fieldx * level->fieldy;
+
+  /* Note: "chunk_size" was wrong before version 2.0 when elements are
+     stored with 16-bit encoding (and should be twice as big then).
+     Even worse, playfield data was stored 16-bit when only yamyam content
+     contained 16-bit elements and vice versa. */
+
+  if (level->encoding_16bit_field && level->file_version >= FILE_VERSION_2_0)
+    chunk_size_expected *= 2;
+
+  if (chunk_size_expected != chunk_size)
+  {
+    ReadUnusedBytesFromFile(file, chunk_size);
+    return chunk_size_expected;
+  }
+
+  for(y=0; y<level->fieldy; y++)
+    for(x=0; x<level->fieldx; x++)
+      Feld[x][y] = Ur[x][y] =
+	checkLevelElement(level->encoding_16bit_field ?
+			  getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN) :
+			  fgetc(file));
+  return chunk_size;
+}
+
+static int LoadLevel_CNT2(FILE *file, int chunk_size, struct LevelInfo *level)
+{
+  int i, x, y;
+  int element;
+  int num_contents, content_xsize, content_ysize;
+  int content_array[MAX_ELEMENT_CONTENTS][3][3];
+
+  element = checkLevelElement(getFile16BitInteger(file,BYTE_ORDER_BIG_ENDIAN));
+  num_contents = fgetc(file);
+  content_xsize = fgetc(file);
+  content_ysize = fgetc(file);
+  ReadUnusedBytesFromFile(file, LEVEL_CHUNK_CNT2_UNUSED);
+
+  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+    for(y=0; y<3; y++)
+      for(x=0; x<3; x++)
+	content_array[i][x][y] =
+	  checkLevelElement(getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN));
+
+  /* correct invalid number of content fields -- should never happen */
+  if (num_contents < 1 || num_contents > MAX_ELEMENT_CONTENTS)
+    num_contents = STD_ELEMENT_CONTENTS;
+
+  if (element == EL_MAMPFER)
+  {
+    level->num_yam_contents = num_contents;
+
+    for(i=0; i<num_contents; i++)
+      for(y=0; y<3; y++)
+	for(x=0; x<3; x++)
+	  level->yam_content[i][x][y] = content_array[i][x][y];
+  }
+  else if (element == EL_AMOEBE_BD)
+  {
+    level->amoeba_content = content_array[0][0][0];
+  }
+  else
+  {
+    Error(ERR_WARN, "cannot load content for element '%d'", element);
+  }
+
+  return chunk_size;
+}
+
+void LoadLevel(int level_nr)
+{
   char *filename = getLevelFilename(level_nr);
   char cookie[MAX_LINE_LEN];
-  char chunk[CHUNK_ID_LEN + 1];
-  boolean encoding_16bit = FALSE;	/* default: maximal 256 elements */
-  int file_version = FILE_VERSION_1_4;	/* last version of level files */
-  int chunk_length;
+  char chunk_name[CHUNK_ID_LEN + 1];
+  int chunk_size;
   FILE *file;
 
   /* always start with reliable default values */
@@ -462,162 +640,266 @@ void LoadLevel(int level_nr)
     return;
   }
 
-  /* check file identifier */
-  fgets(cookie, MAX_LINE_LEN, file);
-  if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
-    cookie[strlen(cookie) - 1] = '\0';
-
-  if (strcmp(cookie, LEVEL_COOKIE_10) == 0)	/* old 1.0 level format */
-    file_version = FILE_VERSION_1_0;
-  else if (strcmp(cookie, LEVEL_COOKIE_12) == 0)/* 1.2 (8 bit) level format */
-    file_version = FILE_VERSION_1_2;
-  else if (strcmp(cookie, LEVEL_COOKIE) != 0)	/* unknown level format */
+  getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
+  if (strcmp(chunk_name, "RND1") == 0)
   {
-    Error(ERR_WARN, "wrong file identifier of level file '%s'", filename);
-    fclose(file);
-    return;
-  }
+    getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);	/* not used */
 
-  /* read chunk "HEAD" */
-  if (file_version >= FILE_VERSION_1_2)
-  {
-    getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
-    if (strcmp(chunk, "HEAD") || chunk_length != LEVEL_HEADER_SIZE)
+    getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
+    if (strcmp(chunk_name, "CAVE") != 0)
     {
-      Error(ERR_WARN, "wrong 'HEAD' chunk of level file '%s'", filename);
+      Error(ERR_WARN, "unknown format of level file '%s'", filename);
+      fclose(file);
+      return;
+    }
+  }
+  else	/* check for pre-2.0 file format with cookie string */
+  {
+    strcpy(cookie, chunk_name);
+    fgets(&cookie[4], MAX_LINE_LEN - 4, file);
+    if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
+      cookie[strlen(cookie) - 1] = '\0';
+
+    if (!checkCookieString(cookie, LEVEL_COOKIE_TMPL))
+    {
+      Error(ERR_WARN, "unknown format of level file '%s'", filename);
+      fclose(file);
+      return;
+    }
+
+    if ((level.file_version = getFileVersionFromCookieString(cookie)) == -1)
+    {
+      Error(ERR_WARN, "unsupported version of level file '%s'", filename);
       fclose(file);
       return;
     }
   }
 
-  lev_fieldx = level.fieldx = fgetc(file);
-  lev_fieldy = level.fieldy = fgetc(file);
-
-  level.time        = getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
-  level.gems_needed = getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
-
-  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
-    level.name[i] = fgetc(file);
-  level.name[MAX_LEVEL_NAME_LEN] = 0;
-
-  for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
-    level.score[i] = fgetc(file);
-
-  level.num_yam_contents = STD_ELEMENT_CONTENTS;
-  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+  if (level.file_version < FILE_VERSION_1_2)
   {
-    for(y=0; y<3; y++)
+    /* level files from versions before 1.2.0 without chunk structure */
+    LoadLevel_HEAD(file, LEVEL_HEADER_SIZE,           &level);
+    LoadLevel_BODY(file, level.fieldx * level.fieldy, &level);
+  }
+  else
+  {
+    static struct
     {
-      for(x=0; x<3; x++)
+      char *name;
+      int size;
+      int (*loader)(FILE *, int, struct LevelInfo *);
+    }
+    chunk_info[] =
+    {
+      { "VERS", FILE_VERS_CHUNK_SIZE,	LoadLevel_VERS },
+      { "HEAD", LEVEL_HEADER_SIZE,	LoadLevel_HEAD },
+      { "AUTH", MAX_LEVEL_AUTHOR_LEN,	LoadLevel_AUTH },
+      { "CONT", -1,			LoadLevel_CONT },
+      { "BODY", -1,			LoadLevel_BODY },
+      { "CNT2", LEVEL_CHUNK_CNT2_SIZE,	LoadLevel_CNT2 },
+      {  NULL,  0,			NULL }
+    };
+
+    while (getFileChunk(file, chunk_name, &chunk_size, BYTE_ORDER_BIG_ENDIAN))
+    {
+      int i = 0;
+
+      while (chunk_info[i].name != NULL &&
+	     strcmp(chunk_name, chunk_info[i].name) != 0)
+	i++;
+
+      if (chunk_info[i].name == NULL)
       {
-	if (i < STD_ELEMENT_CONTENTS)
-	  level.yam_content[i][x][y] = checkLevelElement(fgetc(file));
-	else
-	  level.yam_content[i][x][y] = EL_LEERRAUM;
+	Error(ERR_WARN, "unknown chunk '%s' in level file '%s'",
+	      chunk_name, filename);
+	ReadUnusedBytesFromFile(file, chunk_size);
+      }
+      else if (chunk_info[i].size != -1 &&
+	       chunk_info[i].size != chunk_size)
+      {
+	Error(ERR_WARN, "wrong size (%d) of chunk '%s' in level file '%s'",
+	      chunk_size, chunk_name, filename);
+	ReadUnusedBytesFromFile(file, chunk_size);
+      }
+      else
+      {
+	/* call function to load this level chunk */
+	int chunk_size_expected =
+	  (chunk_info[i].loader)(file, chunk_size, &level);
+
+	/* the size of some chunks cannot be checked before reading other
+	   chunks first (like "HEAD" and "BODY") that contain some header
+	   information, so check them here */
+	if (chunk_size_expected != chunk_size)
+	{
+	  Error(ERR_WARN, "wrong size (%d) of chunk '%s' in level file '%s'",
+		chunk_size, chunk_name, filename);
+	}
       }
     }
   }
-
-  level.amoeba_speed	= fgetc(file);
-  level.time_magic_wall	= fgetc(file);
-  level.time_wheel	= fgetc(file);
-  level.amoeba_content	= checkLevelElement(fgetc(file));
-  level.double_speed	= (fgetc(file) == 1 ? TRUE : FALSE);
-  level.gravity		= (fgetc(file) == 1 ? TRUE : FALSE);
-
-  encoding_16bit	= (fgetc(file) == 1 ? TRUE : FALSE);
-
-  for(i=0; i<LEVEL_HEADER_UNUSED; i++)	/* skip unused header bytes */
-    fgetc(file);
-
-  if (file_version >= FILE_VERSION_1_2)
-  {
-    getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
-
-    /* look for optional author chunk */
-    if (strcmp(chunk, "AUTH") == 0 && chunk_length == MAX_LEVEL_AUTHOR_LEN)
-    {
-      for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
-	level.author[i]	= fgetc(file);
-      level.author[MAX_LEVEL_NAME_LEN] = 0;
-
-      getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
-    }
-
-    /* look for optional content chunk */
-    if (strcmp(chunk, "CONT") == 0 &&
-	chunk_length == 4 + MAX_ELEMENT_CONTENTS * 3 * 3)
-    {
-      fgetc(file);
-      level.num_yam_contents = fgetc(file);
-      fgetc(file);
-      fgetc(file);
-
-      if (level.num_yam_contents < 1 ||
-	  level.num_yam_contents > MAX_ELEMENT_CONTENTS)
-      {
-#if DEBUG
-	printf("WARNING: num_yam_contents == %d (corrected)\n",
-	       level.num_yam_contents);
-#endif
-	level.num_yam_contents = STD_ELEMENT_CONTENTS;
-      }
-
-      for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-	for(y=0; y<3; y++)
-	  for(x=0; x<3; x++)
-	    level.yam_content[i][x][y] =
-	      checkLevelElement(encoding_16bit ?
-				getFile16BitInteger(file,
-						    BYTE_ORDER_BIG_ENDIAN) :
-				fgetc(file));
-
-      getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
-    }
-
-    /* next check body chunk identifier and chunk length */
-    if (strcmp(chunk, "BODY") || chunk_length != lev_fieldx * lev_fieldy)
-    {
-      Error(ERR_WARN, "wrong 'BODY' chunk of level file '%s'", filename);
-      fclose(file);
-      return;
-    }
-  }
-
-  /* clear all other level fields (needed if resized in level editor later) */
-  for(x=0; x<MAX_LEV_FIELDX; x++)
-    for(y=0; y<MAX_LEV_FIELDY; y++)
-      Feld[x][y] = Ur[x][y] = EL_LEERRAUM;
-
-  /* now read in the valid level fields from level file */
-  for(y=0; y<lev_fieldy; y++)
-    for(x=0; x<lev_fieldx; x++)
-      Feld[x][y] = Ur[x][y] =
-	checkLevelElement(encoding_16bit ?
-			  getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN) :
-			  fgetc(file));
 
   fclose(file);
 
-  /* player was faster than monsters in pre-1.0 levels */
-  if (file_version == FILE_VERSION_1_0 &&
-      IS_LEVELCLASS_CONTRIBUTION(leveldir_current))
+  if (IS_LEVELCLASS_CONTRIBUTION(leveldir_current) ||
+      IS_LEVELCLASS_USER(leveldir_current))
   {
-    Error(ERR_WARN, "level file '%s' has version number 1.0", filename);
-    Error(ERR_WARN, "using high speed movement for player");
-    level.double_speed = TRUE;
+    /* for user contributed and private levels, use the version of
+       the game engine the levels were created for */
+    level.game_version = level.file_version;
+
+    /* player was faster than monsters in pre-1.0 levels */
+    if (level.file_version == FILE_VERSION_1_0)
+    {
+      Error(ERR_WARN, "level file '%s' has version number 1.0", filename);
+      Error(ERR_WARN, "using high speed movement for player");
+      level.double_speed = TRUE;
+    }
+  }
+  else
+  {
+    /* always use the latest version of the game engine for all but
+       user contributed and private levels */
+    level.game_version = GAME_VERSION_ACTUAL;
   }
 
   /* determine border element for this level */
   SetBorderElement();
 }
 
+static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
+{
+  int i, x, y;
+
+  fputc(level->fieldx, file);
+  fputc(level->fieldy, file);
+
+  putFile16BitInteger(file, level->time,        BYTE_ORDER_BIG_ENDIAN);
+  putFile16BitInteger(file, level->gems_needed, BYTE_ORDER_BIG_ENDIAN);
+
+  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
+    fputc(level->name[i], file);
+
+  for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
+    fputc(level->score[i], file);
+
+  for(i=0; i<STD_ELEMENT_CONTENTS; i++)
+    for(y=0; y<3; y++)
+      for(x=0; x<3; x++)
+	fputc((level->encoding_16bit_yamyam ? EL_LEERRAUM :
+	       level->yam_content[i][x][y]),
+	      file);
+  fputc(level->amoeba_speed, file);
+  fputc(level->time_magic_wall, file);
+  fputc(level->time_wheel, file);
+  fputc((level->encoding_16bit_amoeba ? EL_LEERRAUM : level->amoeba_content),
+	file);
+  fputc((level->double_speed ? 1 : 0), file);
+  fputc((level->gravity ? 1 : 0), file);
+
+  fputc((level->encoding_16bit_field ? 1 : 0), file);
+
+  WriteUnusedBytesToFile(file, LEVEL_HEADER_UNUSED);
+}
+
+static void SaveLevel_AUTH(FILE *file, struct LevelInfo *level)
+{
+  int i;
+
+  for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
+    fputc(level->author[i], file);
+}
+
+#if 0
+static void SaveLevel_CONT(FILE *file, struct LevelInfo *level)
+{
+  int i, x, y;
+
+  fputc(EL_MAMPFER, file);
+  fputc(level->num_yam_contents, file);
+  fputc(0, file);
+  fputc(0, file);
+
+  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+    for(y=0; y<3; y++)
+      for(x=0; x<3; x++)
+	if (level->encoding_16bit_field)
+	  putFile16BitInteger(file, level->yam_content[i][x][y],
+			      BYTE_ORDER_BIG_ENDIAN);
+	else
+	  fputc(level->yam_content[i][x][y], file);
+}
+#endif
+
+static void SaveLevel_BODY(FILE *file, struct LevelInfo *level)
+{
+  int x, y;
+
+  for(y=0; y<level->fieldy; y++) 
+    for(x=0; x<level->fieldx; x++) 
+      if (level->encoding_16bit_field)
+	putFile16BitInteger(file, Ur[x][y], BYTE_ORDER_BIG_ENDIAN);
+      else
+	fputc(Ur[x][y], file);
+}
+
+static void SaveLevel_CNT2(FILE *file, struct LevelInfo *level, int element)
+{
+  int i, x, y;
+  int num_contents, content_xsize, content_ysize;
+  int content_array[MAX_ELEMENT_CONTENTS][3][3];
+
+  if (element == EL_MAMPFER)
+  {
+    num_contents = level->num_yam_contents;
+    content_xsize = 3;
+    content_ysize = 3;
+
+    for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+      for(y=0; y<3; y++)
+	for(x=0; x<3; x++)
+	  content_array[i][x][y] = level->yam_content[i][x][y];
+  }
+  else if (element == EL_AMOEBE_BD)
+  {
+    num_contents = 1;
+    content_xsize = 1;
+    content_ysize = 1;
+
+    for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+      for(y=0; y<3; y++)
+	for(x=0; x<3; x++)
+	  content_array[i][x][y] = EL_LEERRAUM;
+    content_array[0][0][0] = level->amoeba_content;
+  }
+  else
+  {
+    /* chunk header already written -- write empty chunk data */
+    WriteUnusedBytesToFile(file, LEVEL_CHUNK_CNT2_SIZE);
+
+    Error(ERR_WARN, "cannot save content for element '%d'", element);
+    return;
+  }
+
+  putFile16BitInteger(file, element, BYTE_ORDER_BIG_ENDIAN);
+  fputc(num_contents, file);
+  fputc(content_xsize, file);
+  fputc(content_ysize, file);
+
+  WriteUnusedBytesToFile(file, LEVEL_CHUNK_CNT2_UNUSED);
+
+  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+    for(y=0; y<3; y++)
+      for(x=0; x<3; x++)
+	putFile16BitInteger(file, content_array[i][x][y],
+			    BYTE_ORDER_BIG_ENDIAN);
+}
+
 void SaveLevel(int level_nr)
 {
   int i, x, y;
   char *filename = getLevelFilename(level_nr);
-  boolean encoding_16bit = FALSE;	/* default: maximal 256 elements */
-  char *oldest_possible_cookie;
+  int body_chunk_size;
   FILE *file;
 
   if (!(file = fopen(filename, MODE_WRITE)))
@@ -626,100 +908,70 @@ void SaveLevel(int level_nr)
     return;
   }
 
-  /* check yam content for 16-bit elements */
-  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+
+  /* check level field for 16-bit elements */
+  level.encoding_16bit_field = FALSE;
+  for(y=0; y<level.fieldy; y++) 
+    for(x=0; x<level.fieldx; x++) 
+      if (Ur[x][y] > 255)
+	level.encoding_16bit_field = TRUE;
+
+  /* check yamyam content for 16-bit elements */
+  level.encoding_16bit_yamyam = FALSE;
+  for(i=0; i<level.num_yam_contents; i++)
     for(y=0; y<3; y++)
       for(x=0; x<3; x++)
 	if (level.yam_content[i][x][y] > 255)
-	  encoding_16bit = TRUE;
+	  level.encoding_16bit_yamyam = TRUE;
 
-  /* check level field for 16-bit elements */
-  for(y=0; y<lev_fieldy; y++) 
-    for(x=0; x<lev_fieldx; x++) 
-      if (Ur[x][y] > 255)
-	encoding_16bit = TRUE;
+  /* check amoeba content for 16-bit elements */
+  level.encoding_16bit_amoeba = FALSE;
+  if (level.amoeba_content > 255)
+    level.encoding_16bit_amoeba = TRUE;
 
-  oldest_possible_cookie = (encoding_16bit ? LEVEL_COOKIE : LEVEL_COOKIE_12);
+  body_chunk_size =
+    level.fieldx * level.fieldy * (level.encoding_16bit_field ? 2 : 1);
 
-  fputs(oldest_possible_cookie, file);		/* file identifier */
-  fputc('\n', file);
+  putFileChunk(file, "RND1", CHUNK_SIZE_UNDEFINED, BYTE_ORDER_BIG_ENDIAN);
+  putFileChunk(file, "CAVE", CHUNK_SIZE_NONE,      BYTE_ORDER_BIG_ENDIAN);
+
+  putFileChunk(file, "VERS", FILE_VERS_CHUNK_SIZE, BYTE_ORDER_BIG_ENDIAN);
+  WriteChunk_VERS(file, FILE_VERSION_ACTUAL, GAME_VERSION_ACTUAL);
 
   putFileChunk(file, "HEAD", LEVEL_HEADER_SIZE, BYTE_ORDER_BIG_ENDIAN);
-
-  fputc(level.fieldx, file);
-  fputc(level.fieldy, file);
-
-  putFile16BitInteger(file, level.time, BYTE_ORDER_BIG_ENDIAN);
-  putFile16BitInteger(file, level.gems_needed, BYTE_ORDER_BIG_ENDIAN);
-
-  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
-    fputc(level.name[i], file);
-  for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
-    fputc(level.score[i], file);
-  for(i=0; i<STD_ELEMENT_CONTENTS; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
-	fputc(encoding_16bit ? EL_LEERRAUM : level.yam_content[i][x][y], file);
-  fputc(level.amoeba_speed, file);
-  fputc(level.time_magic_wall, file);
-  fputc(level.time_wheel, file);
-  fputc(level.amoeba_content, file);
-  fputc((level.double_speed ? 1 : 0), file);
-  fputc((level.gravity ? 1 : 0), file);
-
-  fputc((encoding_16bit ? 1 : 0), file);
-
-  for(i=0; i<LEVEL_HEADER_UNUSED; i++)	/* set unused header bytes to zero */
-    fputc(0, file);
+  SaveLevel_HEAD(file, &level);
 
   putFileChunk(file, "AUTH", MAX_LEVEL_AUTHOR_LEN, BYTE_ORDER_BIG_ENDIAN);
+  SaveLevel_AUTH(file, &level);
 
-  for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
-    fputc(level.author[i], file);
+  putFileChunk(file, "BODY", body_chunk_size, BYTE_ORDER_BIG_ENDIAN);
+  SaveLevel_BODY(file, &level);
 
-  putFileChunk(file, "CONT", 4 + MAX_ELEMENT_CONTENTS * 3 * 3,
-	       BYTE_ORDER_BIG_ENDIAN);
+  if (level.encoding_16bit_yamyam ||
+      level.num_yam_contents != STD_ELEMENT_CONTENTS)
+  {
+    putFileChunk(file, "CNT2", LEVEL_CHUNK_CNT2_SIZE, BYTE_ORDER_BIG_ENDIAN);
+    SaveLevel_CNT2(file, &level, EL_MAMPFER);
+  }
 
-  fputc(EL_MAMPFER, file);
-  fputc(level.num_yam_contents, file);
-  fputc(0, file);
-  fputc(0, file);
-
-  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
-	if (encoding_16bit)
-	  putFile16BitInteger(file, level.yam_content[i][x][y],
-			      BYTE_ORDER_BIG_ENDIAN);
-	else
-	  fputc(level.yam_content[i][x][y], file);
-
-  putFileChunk(file, "BODY", lev_fieldx * lev_fieldy, BYTE_ORDER_BIG_ENDIAN);
-
-  for(y=0; y<lev_fieldy; y++) 
-    for(x=0; x<lev_fieldx; x++) 
-      if (encoding_16bit)
-	putFile16BitInteger(file, Ur[x][y], BYTE_ORDER_BIG_ENDIAN);
-      else
-	fputc(Ur[x][y], file);
+  if (level.encoding_16bit_amoeba)
+  {
+    putFileChunk(file, "CNT2", LEVEL_CHUNK_CNT2_SIZE, BYTE_ORDER_BIG_ENDIAN);
+    SaveLevel_CNT2(file, &level, EL_AMOEBE_BD);
+  }
 
   fclose(file);
 
-  chmod(filename, LEVEL_PERMS);
+  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
-void LoadTape(int level_nr)
+static void setTapeInfoToDefaults()
 {
-  int i, j;
-  char *filename = getTapeFilename(level_nr);
-  char cookie[MAX_LINE_LEN];
-  char chunk[CHUNK_ID_LEN + 1];
-  FILE *file;
-  int num_participating_players;
-  int file_version = FILE_VERSION_1_2;	/* last version of tape files */
-  int chunk_length;
+  int i;
 
   /* always start with reliable default values (empty tape) */
+  tape.file_version = FILE_VERSION_ACTUAL;
+  tape.game_version = GAME_VERSION_ACTUAL;
   TapeErase();
 
   /* default values (also for pre-1.2 tapes) with only the first player */
@@ -728,62 +980,7 @@ void LoadTape(int level_nr)
     tape.player_participates[i] = FALSE;
 
   /* at least one (default: the first) player participates in every tape */
-  num_participating_players = 1;
-
-  if (!(file = fopen(filename, MODE_READ)))
-    return;
-
-  /* check file identifier */
-  fgets(cookie, MAX_LINE_LEN, file);
-  if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
-    cookie[strlen(cookie) - 1] = '\0';
-
-  if (strcmp(cookie, TAPE_COOKIE_10) == 0)	/* old 1.0 tape format */
-    file_version = FILE_VERSION_1_0;
-  else if (strcmp(cookie, TAPE_COOKIE) != 0)	/* unknown tape format */
-  {
-    Error(ERR_WARN, "wrong file identifier of tape file '%s'", filename);
-    fclose(file);
-    return;
-  }
-
-  /* read chunk "HEAD" */
-  if (file_version >= FILE_VERSION_1_2)
-  {
-    getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
-    if (strcmp(chunk, "HEAD") || chunk_length != TAPE_HEADER_SIZE)
-    {
-      Error(ERR_WARN, "wrong 'HEAD' chunk of tape file '%s'", filename);
-      fclose(file);
-      return;
-    }
-  }
-
-  tape.random_seed = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
-  tape.date        = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
-  tape.length      = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
-
-  /* read header fields that are new since version 1.2 */
-  if (file_version >= FILE_VERSION_1_2)
-  {
-    byte store_participating_players = fgetc(file);
-
-    for(i=0; i<TAPE_HEADER_UNUSED; i++)		/* skip unused header bytes */
-      fgetc(file);
-
-    /* since version 1.2, tapes store which players participate in the tape */
-    num_participating_players = 0;
-    for(i=0; i<MAX_PLAYERS; i++)
-    {
-      tape.player_participates[i] = FALSE;
-
-      if (store_participating_players & (1 << i))
-      {
-	tape.player_participates[i] = TRUE;
-	num_participating_players++;
-      }
-    }
-  }
+  tape.num_participating_players = 1;
 
   tape.level_nr = level_nr;
   tape.counter = 0;
@@ -792,51 +989,90 @@ void LoadTape(int level_nr)
   tape.recording = FALSE;
   tape.playing = FALSE;
   tape.pausing = FALSE;
+}
 
-  /* read chunk "BODY" */
-  if (file_version >= FILE_VERSION_1_2)
+static int LoadTape_VERS(FILE *file, int chunk_size, struct TapeInfo *tape)
+{
+  ReadChunk_VERS(file, &(tape->file_version), &(tape->game_version));
+
+  return chunk_size;
+}
+
+static int LoadTape_HEAD(FILE *file, int chunk_size, struct TapeInfo *tape)
+{
+  int i;
+
+  tape->random_seed = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+  tape->date        = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+  tape->length      = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+
+  /* read header fields that are new since version 1.2 */
+  if (tape->file_version >= FILE_VERSION_1_2)
   {
-    getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
-    if (strcmp(chunk, "BODY") ||
-	chunk_length != (num_participating_players + 1) * tape.length)
+    byte store_participating_players = fgetc(file);
+
+    ReadUnusedBytesFromFile(file, TAPE_HEADER_UNUSED);
+
+    /* since version 1.2, tapes store which players participate in the tape */
+    tape->num_participating_players = 0;
+    for(i=0; i<MAX_PLAYERS; i++)
     {
-      Error(ERR_WARN, "wrong 'BODY' chunk of tape file '%s'", filename);
-      fclose(file);
-      return;
+      tape->player_participates[i] = FALSE;
+
+      if (store_participating_players & (1 << i))
+      {
+	tape->player_participates[i] = TRUE;
+	tape->num_participating_players++;
+      }
     }
   }
 
-  for(i=0; i<tape.length; i++)
+  return chunk_size;
+}
+
+static int LoadTape_BODY(FILE *file, int chunk_size, struct TapeInfo *tape)
+{
+  int i, j;
+  int chunk_size_expected =
+    (tape->num_participating_players + 1) * tape->length;
+
+  if (chunk_size_expected != chunk_size)
+  {
+    ReadUnusedBytesFromFile(file, chunk_size);
+    return chunk_size_expected;
+  }
+
+  for(i=0; i<tape->length; i++)
   {
     if (i >= MAX_TAPELEN)
       break;
 
     for(j=0; j<MAX_PLAYERS; j++)
     {
-      tape.pos[i].action[j] = MV_NO_MOVING;
+      tape->pos[i].action[j] = MV_NO_MOVING;
 
-      if (tape.player_participates[j])
-	tape.pos[i].action[j] = fgetc(file);
+      if (tape->player_participates[j])
+	tape->pos[i].action[j] = fgetc(file);
     }
 
-    tape.pos[i].delay = fgetc(file);
+    tape->pos[i].delay = fgetc(file);
 
-    if (file_version == FILE_VERSION_1_0)
+    if (tape->file_version == FILE_VERSION_1_0)
     {
       /* eliminate possible diagonal moves in old tapes */
       /* this is only for backward compatibility */
 
       byte joy_dir[4] = { JOY_LEFT, JOY_RIGHT, JOY_UP, JOY_DOWN };
-      byte action = tape.pos[i].action[0];
+      byte action = tape->pos[i].action[0];
       int k, num_moves = 0;
 
       for (k=0; k<4; k++)
       {
 	if (action & joy_dir[k])
 	{
-	  tape.pos[i + num_moves].action[0] = joy_dir[k];
+	  tape->pos[i + num_moves].action[0] = joy_dir[k];
 	  if (num_moves > 0)
-	    tape.pos[i + num_moves].delay = 0;
+	    tape->pos[i + num_moves].delay = 0;
 	  num_moves++;
 	}
       }
@@ -845,7 +1081,24 @@ void LoadTape(int level_nr)
       {
 	num_moves--;
 	i += num_moves;
-	tape.length += num_moves;
+	tape->length += num_moves;
+      }
+    }
+    else if (tape->file_version < FILE_VERSION_2_0)
+    {
+      if (tape->pos[i].delay > 1)
+      {
+	/* action part */
+	tape->pos[i + 1] = tape->pos[i];
+	tape->pos[i + 1].delay = 1;
+
+	/* delay part */
+	for(j=0; j<MAX_PLAYERS; j++)
+	  tape->pos[i].action[j] = MV_NO_MOVING;
+	tape->pos[i].delay--;
+
+	i++;
+	tape->length++;
       }
     }
 
@@ -853,12 +1106,160 @@ void LoadTape(int level_nr)
       break;
   }
 
+  if (i != tape->length)
+    chunk_size = (tape->num_participating_players + 1) * i;
+
+  return chunk_size;
+}
+
+void LoadTape(int level_nr)
+{
+  char *filename = getTapeFilename(level_nr);
+  char cookie[MAX_LINE_LEN];
+  char chunk_name[CHUNK_ID_LEN + 1];
+  FILE *file;
+  int chunk_size;
+
+  /* always start with reliable default values */
+  setTapeInfoToDefaults();
+
+  if (!(file = fopen(filename, MODE_READ)))
+    return;
+
+  getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
+  if (strcmp(chunk_name, "RND1") == 0)
+  {
+    getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);	/* not used */
+
+    getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
+    if (strcmp(chunk_name, "TAPE") != 0)
+    {
+      Error(ERR_WARN, "unknown format of tape file '%s'", filename);
+      fclose(file);
+      return;
+    }
+  }
+  else	/* check for pre-2.0 file format with cookie string */
+  {
+    strcpy(cookie, chunk_name);
+    fgets(&cookie[4], MAX_LINE_LEN - 4, file);
+    if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
+      cookie[strlen(cookie) - 1] = '\0';
+
+    if (!checkCookieString(cookie, TAPE_COOKIE_TMPL))
+    {
+      Error(ERR_WARN, "unknown format of tape file '%s'", filename);
+      fclose(file);
+      return;
+    }
+
+    if ((tape.file_version = getFileVersionFromCookieString(cookie)) == -1)
+    {
+      Error(ERR_WARN, "unsupported version of tape file '%s'", filename);
+      fclose(file);
+      return;
+    }
+  }
+
+  tape.game_version = tape.file_version;
+
+  if (tape.file_version < FILE_VERSION_1_2)
+  {
+    /* tape files from versions before 1.2.0 without chunk structure */
+    LoadTape_HEAD(file, TAPE_HEADER_SIZE, &tape);
+    LoadTape_BODY(file, 2 * tape.length,  &tape);
+  }
+  else
+  {
+    static struct
+    {
+      char *name;
+      int size;
+      int (*loader)(FILE *, int, struct TapeInfo *);
+    }
+    chunk_info[] =
+    {
+      { "VERS", FILE_VERS_CHUNK_SIZE,	LoadTape_VERS },
+      { "HEAD", TAPE_HEADER_SIZE,	LoadTape_HEAD },
+      { "BODY", -1,			LoadTape_BODY },
+      {  NULL,  0,			NULL }
+    };
+
+    while (getFileChunk(file, chunk_name, &chunk_size, BYTE_ORDER_BIG_ENDIAN))
+    {
+      int i = 0;
+
+      while (chunk_info[i].name != NULL &&
+	     strcmp(chunk_name, chunk_info[i].name) != 0)
+	i++;
+
+      if (chunk_info[i].name == NULL)
+      {
+	Error(ERR_WARN, "unknown chunk '%s' in tape file '%s'",
+	      chunk_name, filename);
+	ReadUnusedBytesFromFile(file, chunk_size);
+      }
+      else if (chunk_info[i].size != -1 &&
+	       chunk_info[i].size != chunk_size)
+      {
+	Error(ERR_WARN, "wrong size (%d) of chunk '%s' in tape file '%s'",
+	      chunk_size, chunk_name, filename);
+	ReadUnusedBytesFromFile(file, chunk_size);
+      }
+      else
+      {
+	/* call function to load this tape chunk */
+	int chunk_size_expected =
+	  (chunk_info[i].loader)(file, chunk_size, &tape);
+
+	/* the size of some chunks cannot be checked before reading other
+	   chunks first (like "HEAD" and "BODY") that contain some header
+	   information, so check them here */
+	if (chunk_size_expected != chunk_size)
+	{
+	  Error(ERR_WARN, "wrong size (%d) of chunk '%s' in tape file '%s'",
+		chunk_size, chunk_name, filename);
+	}
+      }
+    }
+  }
+
   fclose(file);
 
-  if (i != tape.length)
-    Error(ERR_WARN, "level recording file '%s' corrupted", filename);
-
   tape.length_seconds = GetTapeLength();
+}
+
+static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
+{
+  int i;
+  byte store_participating_players = 0;
+
+  /* set bits for participating players for compact storage */
+  for(i=0; i<MAX_PLAYERS; i++)
+    if (tape->player_participates[i])
+      store_participating_players |= (1 << i);
+
+  putFile32BitInteger(file, tape->random_seed, BYTE_ORDER_BIG_ENDIAN);
+  putFile32BitInteger(file, tape->date, BYTE_ORDER_BIG_ENDIAN);
+  putFile32BitInteger(file, tape->length, BYTE_ORDER_BIG_ENDIAN);
+
+  fputc(store_participating_players, file);
+
+  WriteUnusedBytesToFile(file, TAPE_HEADER_UNUSED);
+}
+
+static void SaveTape_BODY(FILE *file, struct TapeInfo *tape)
+{
+  int i, j;
+
+  for(i=0; i<tape->length; i++)
+  {
+    for(j=0; j<MAX_PLAYERS; j++)
+      if (tape->player_participates[j])
+	fputc(tape->pos[i].action[j], file);
+
+    fputc(tape->pos[i].delay, file);
+  }
 }
 
 void SaveTape(int level_nr)
@@ -867,8 +1268,8 @@ void SaveTape(int level_nr)
   char *filename = getTapeFilename(level_nr);
   FILE *file;
   boolean new_tape = TRUE;
-  byte store_participating_players;
-  int num_participating_players;
+  int num_participating_players = 0;
+  int body_chunk_size;
 
   InitTapeDirectory(leveldir_current->filename);
 
@@ -880,60 +1281,83 @@ void SaveTape(int level_nr)
       return;
   }
 
-  /* count number of players and set corresponding bits for compact storage */
-  store_participating_players = 0;
-  num_participating_players = 0;
-  for(i=0; i<MAX_PLAYERS; i++)
-  {
-    if (tape.player_participates[i])
-    {
-      num_participating_players++;
-      store_participating_players |= (1 << i);
-    }
-  }
-
   if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot save level recording file '%s'", filename);
     return;
   }
 
-  fputs(TAPE_COOKIE, file);		/* file identifier */
-  fputc('\n', file);
+  /* count number of participating players  */
+  for(i=0; i<MAX_PLAYERS; i++)
+    if (tape.player_participates[i])
+      num_participating_players++;
+
+  body_chunk_size = (num_participating_players + 1) * tape.length;
+
+  putFileChunk(file, "RND1", CHUNK_SIZE_UNDEFINED, BYTE_ORDER_BIG_ENDIAN);
+  putFileChunk(file, "TAPE", CHUNK_SIZE_NONE,      BYTE_ORDER_BIG_ENDIAN);
+
+  putFileChunk(file, "VERS", FILE_VERS_CHUNK_SIZE, BYTE_ORDER_BIG_ENDIAN);
+  WriteChunk_VERS(file, FILE_VERSION_ACTUAL, GAME_VERSION_ACTUAL);
 
   putFileChunk(file, "HEAD", TAPE_HEADER_SIZE, BYTE_ORDER_BIG_ENDIAN);
+  SaveTape_HEAD(file, &tape);
 
-  putFile32BitInteger(file, tape.random_seed, BYTE_ORDER_BIG_ENDIAN);
-  putFile32BitInteger(file, tape.date, BYTE_ORDER_BIG_ENDIAN);
-  putFile32BitInteger(file, tape.length, BYTE_ORDER_BIG_ENDIAN);
-
-  fputc(store_participating_players, file);
-
-  for(i=0; i<TAPE_HEADER_UNUSED; i++)	/* set unused header bytes to zero */
-    fputc(0, file);
-
-  putFileChunk(file, "BODY", (num_participating_players + 1) * tape.length,
-	       BYTE_ORDER_BIG_ENDIAN);
-
-  for(i=0; i<tape.length; i++)
-  {
-    int j;
-
-    for(j=0; j<MAX_PLAYERS; j++)
-      if (tape.player_participates[j])
-	fputc(tape.pos[i].action[j], file);
-
-    fputc(tape.pos[i].delay, file);
-  }
+  putFileChunk(file, "BODY", body_chunk_size, BYTE_ORDER_BIG_ENDIAN);
+  SaveTape_BODY(file, &tape);
 
   fclose(file);
 
-  chmod(filename, TAPE_PERMS);
+  SetFilePermissions(filename, PERMS_PRIVATE);
 
   tape.changed = FALSE;
 
   if (new_tape)
     Request("tape saved !", REQ_CONFIRM);
+}
+
+void DumpTape(struct TapeInfo *tape)
+{
+  int i, j;
+
+  if (TAPE_IS_EMPTY(*tape))
+  {
+    Error(ERR_WARN, "no tape available for level %d", tape->level_nr);
+    return;
+  }
+
+  printf("\n");
+  printf("-------------------------------------------------------------------------------\n");
+  printf("Tape of Level %d (file version %06d, game version %06d\n",
+	 tape->level_nr, tape->file_version, tape->game_version);
+  printf("-------------------------------------------------------------------------------\n");
+
+  for(i=0; i<tape->length; i++)
+  {
+    if (i >= MAX_TAPELEN)
+      break;
+
+    for(j=0; j<MAX_PLAYERS; j++)
+    {
+      if (tape->player_participates[j])
+      {
+	int action = tape->pos[i].action[j];
+
+	printf("%d:%02x ", j, action);
+	printf("[%c%c%c%c|%c%c] - ",
+	       (action & JOY_LEFT ? '<' : ' '),
+	       (action & JOY_RIGHT ? '>' : ' '),
+	       (action & JOY_UP ? '^' : ' '),
+	       (action & JOY_DOWN ? 'v' : ' '),
+	       (action & JOY_BUTTON_1 ? '1' : ' '),
+	       (action & JOY_BUTTON_2 ? '2' : ' '));
+      }
+    }
+
+    printf("(%03d)\n", tape->pos[i].delay);
+  }
+
+  printf("-------------------------------------------------------------------------------\n");
 }
 
 void LoadScore(int level_nr)
@@ -960,9 +1384,9 @@ void LoadScore(int level_nr)
   if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
     cookie[strlen(cookie) - 1] = '\0';
 
-  if (strcmp(cookie, SCORE_COOKIE) != 0)
+  if (!checkCookieString(cookie, SCORE_COOKIE))
   {
-    Error(ERR_WARN, "wrong file identifier of score file '%s'", filename);
+    Error(ERR_WARN, "unknown format of score file '%s'", filename);
     fclose(file);
     return;
   }
@@ -1010,16 +1434,17 @@ void SaveScore(int level_nr)
 
   fclose(file);
 
-  chmod(filename, SCORE_PERMS);
+  SetFilePermissions(filename, PERMS_PUBLIC);
 }
 
-#define TOKEN_STR_FILE_IDENTIFIER	"file_identifier"
+/* ------------------------------------------------------------------------- */
+/* setup file stuff                                                          */
+/* ------------------------------------------------------------------------- */
+
 #define TOKEN_STR_LAST_LEVEL_SERIES	"last_level_series"
 #define TOKEN_STR_LAST_PLAYED_LEVEL	"last_played_level"
 #define TOKEN_STR_HANDICAP_LEVEL	"handicap_level"
 #define TOKEN_STR_PLAYER_PREFIX		"player_"
-
-#define TOKEN_VALUE_POSITION		30
 
 /* global setup */
 #define SETUP_TOKEN_PLAYER_NAME		0
@@ -1027,12 +1452,6 @@ void SaveScore(int level_nr)
 #define SETUP_TOKEN_SOUND_LOOPS		2
 #define SETUP_TOKEN_SOUND_MUSIC		3
 #define SETUP_TOKEN_SOUND_SIMPLE	4
-
-#if 0
-#define SETUP_TOKEN_TOONS		5
-#define SETUP_TOKEN_DOUBLE_BUFFERING	6
-#endif
-
 #define SETUP_TOKEN_SCROLL_DELAY	5
 #define SETUP_TOKEN_SOFT_SCROLLING	6
 #define SETUP_TOKEN_FADING		7
@@ -1082,21 +1501,10 @@ void SaveScore(int level_nr)
 #define FIRST_LEVELINFO_TOKEN		LEVELINFO_TOKEN_NAME
 #define LAST_LEVELINFO_TOKEN		LEVELINFO_TOKEN_READONLY
 
-#define TYPE_BOOLEAN			1
-#define TYPE_SWITCH			2
-#define TYPE_KEY			3
-#define TYPE_INTEGER			4
-#define TYPE_STRING			5
-
 static struct SetupInfo si;
 static struct SetupInputInfo sii;
 static struct LevelDirInfo ldi;
-static struct
-{
-  int type;
-  void *value;
-  char *text;
-} token_info[] =
+static struct TokenInfo token_info[] =
 {
   /* global setup */
   { TYPE_STRING,  &si.player_name,	"player_name"			},
@@ -1104,12 +1512,6 @@ static struct
   { TYPE_SWITCH,  &si.sound_loops,	"repeating_sound_loops"		},
   { TYPE_SWITCH,  &si.sound_music,	"background_music"		},
   { TYPE_SWITCH,  &si.sound_simple,	"simple_sound_effects"		},
-
-#if 0
-  { TYPE_SWITCH,  &si.toons,		"toons"				},
-  { TYPE_SWITCH,  &si.double_buffering,	"double_buffering"		},
-#endif
-
   { TYPE_SWITCH,  &si.scroll_delay,	"scroll_delay"			},
   { TYPE_SWITCH,  &si.soft_scrolling,	"soft_scrolling"		},
   { TYPE_SWITCH,  &si.fading,		"screen_fading"			},
@@ -1150,261 +1552,6 @@ static struct
   { TYPE_BOOLEAN, &ldi.level_group,	"level_group"			},
   { TYPE_BOOLEAN, &ldi.readonly,	"readonly"			}
 };
-
-static char *string_tolower(char *s)
-{
-  static char s_lower[100];
-  int i;
-
-  if (strlen(s) >= 100)
-    return s;
-
-  strcpy(s_lower, s);
-
-  for (i=0; i<strlen(s_lower); i++)
-    s_lower[i] = tolower(s_lower[i]);
-
-  return s_lower;
-}
-
-static int get_string_integer_value(char *s)
-{
-  static char *number_text[][3] =
-  {
-    { "0", "zero", "null", },
-    { "1", "one", "first" },
-    { "2", "two", "second" },
-    { "3", "three", "third" },
-    { "4", "four", "fourth" },
-    { "5", "five", "fifth" },
-    { "6", "six", "sixth" },
-    { "7", "seven", "seventh" },
-    { "8", "eight", "eighth" },
-    { "9", "nine", "ninth" },
-    { "10", "ten", "tenth" },
-    { "11", "eleven", "eleventh" },
-    { "12", "twelve", "twelfth" },
-  };
-
-  int i, j;
-
-  for (i=0; i<13; i++)
-    for (j=0; j<3; j++)
-      if (strcmp(string_tolower(s), number_text[i][j]) == 0)
-	return i;
-
-  return atoi(s);
-}
-
-static boolean get_string_boolean_value(char *s)
-{
-  if (strcmp(string_tolower(s), "true") == 0 ||
-      strcmp(string_tolower(s), "yes") == 0 ||
-      strcmp(string_tolower(s), "on") == 0 ||
-      get_string_integer_value(s) == 1)
-    return TRUE;
-  else
-    return FALSE;
-}
-
-static char *getFormattedSetupEntry(char *token, char *value)
-{
-  int i;
-  static char entry[MAX_LINE_LEN];
-
-  sprintf(entry, "%s:", token);
-  for (i=strlen(entry); i<TOKEN_VALUE_POSITION; i++)
-    entry[i] = ' ';
-  entry[i] = '\0';
-
-  strcat(entry, value);
-
-  return entry;
-}
-
-static void freeSetupFileList(struct SetupFileList *setup_file_list)
-{
-  if (!setup_file_list)
-    return;
-
-  if (setup_file_list->token)
-    free(setup_file_list->token);
-  if (setup_file_list->value)
-    free(setup_file_list->value);
-  if (setup_file_list->next)
-    freeSetupFileList(setup_file_list->next);
-  free(setup_file_list);
-}
-
-static struct SetupFileList *newSetupFileList(char *token, char *value)
-{
-  struct SetupFileList *new = checked_malloc(sizeof(struct SetupFileList));
-
-  new->token = checked_malloc(strlen(token) + 1);
-  strcpy(new->token, token);
-
-  new->value = checked_malloc(strlen(value) + 1);
-  strcpy(new->value, value);
-
-  new->next = NULL;
-
-  return new;
-}
-
-static char *getTokenValue(struct SetupFileList *setup_file_list,
-			   char *token)
-{
-  if (!setup_file_list)
-    return NULL;
-
-  if (strcmp(setup_file_list->token, token) == 0)
-    return setup_file_list->value;
-  else
-    return getTokenValue(setup_file_list->next, token);
-}
-
-static void setTokenValue(struct SetupFileList *setup_file_list,
-			  char *token, char *value)
-{
-  if (!setup_file_list)
-    return;
-
-  if (strcmp(setup_file_list->token, token) == 0)
-  {
-    free(setup_file_list->value);
-    setup_file_list->value = checked_malloc(strlen(value) + 1);
-    strcpy(setup_file_list->value, value);
-  }
-  else if (setup_file_list->next == NULL)
-    setup_file_list->next = newSetupFileList(token, value);
-  else
-    setTokenValue(setup_file_list->next, token, value);
-}
-
-#ifdef DEBUG
-static void printSetupFileList(struct SetupFileList *setup_file_list)
-{
-  if (!setup_file_list)
-    return;
-
-  printf("token: '%s'\n", setup_file_list->token);
-  printf("value: '%s'\n", setup_file_list->value);
-
-  printSetupFileList(setup_file_list->next);
-}
-#endif
-
-static struct SetupFileList *loadSetupFileList(char *filename)
-{
-  int line_len;
-  char line[MAX_LINE_LEN];
-  char *token, *value, *line_ptr;
-  struct SetupFileList *setup_file_list = newSetupFileList("", "");
-  struct SetupFileList *first_valid_list_entry;
-
-  FILE *file;
-
-  if (!(file = fopen(filename, MODE_READ)))
-  {
-    Error(ERR_WARN, "cannot open configuration file '%s'", filename);
-    return NULL;
-  }
-
-  while(!feof(file))
-  {
-    /* read next line of input file */
-    if (!fgets(line, MAX_LINE_LEN, file))
-      break;
-
-    /* cut trailing comment or whitespace from input line */
-    for (line_ptr = line; *line_ptr; line_ptr++)
-    {
-      if (*line_ptr == '#' || *line_ptr == '\n' || *line_ptr == '\r')
-      {
-	*line_ptr = '\0';
-	break;
-      }
-    }
-
-    /* cut trailing whitespaces from input line */
-    for (line_ptr = &line[strlen(line)]; line_ptr > line; line_ptr--)
-      if ((*line_ptr == ' ' || *line_ptr == '\t') && line_ptr[1] == '\0')
-	*line_ptr = '\0';
-
-    /* ignore empty lines */
-    if (*line == '\0')
-      continue;
-
-    line_len = strlen(line);
-
-    /* cut leading whitespaces from token */
-    for (token = line; *token; token++)
-      if (*token != ' ' && *token != '\t')
-	break;
-
-    /* find end of token */
-    for (line_ptr = token; *line_ptr; line_ptr++)
-    {
-      if (*line_ptr == ' ' || *line_ptr == '\t' || *line_ptr == ':')
-      {
-	*line_ptr = '\0';
-	break;
-      }
-    }
-
-    if (line_ptr < line + line_len)
-      value = line_ptr + 1;
-    else
-      value = "\0";
-
-    /* cut leading whitespaces from value */
-    for (; *value; value++)
-      if (*value != ' ' && *value != '\t')
-	break;
-
-    if (*token && *value)
-      setTokenValue(setup_file_list, token, value);
-  }
-
-  fclose(file);
-
-  first_valid_list_entry = setup_file_list->next;
-
-  /* free empty list header */
-  setup_file_list->next = NULL;
-  freeSetupFileList(setup_file_list);
-
-  if (first_valid_list_entry == NULL)
-    Error(ERR_WARN, "configuration file '%s' is empty", filename);
-
-  return first_valid_list_entry;
-}
-
-static void checkSetupFileListIdentifier(struct SetupFileList *setup_file_list,
-					 char *identifier)
-{
-  if (!setup_file_list)
-    return;
-
-  if (strcmp(setup_file_list->token, TOKEN_STR_FILE_IDENTIFIER) == 0)
-  {
-    if (strcmp(setup_file_list->value, identifier) != 0)
-    {
-      Error(ERR_WARN, "configuration file has wrong version");
-      return;
-    }
-    else
-      return;
-  }
-
-  if (setup_file_list->next)
-    checkSetupFileListIdentifier(setup_file_list->next, identifier);
-  else
-  {
-    Error(ERR_WARN, "configuration file has no version information");
-    return;
-  }
-}
 
 static void setLevelDirInfoToDefaults(struct LevelDirInfo *ldi)
 {
@@ -1811,7 +1958,7 @@ static void SaveUserLevelInfo()
   fclose(file);
   free(filename);
 
-  chmod(filename, SETUP_PERMS);
+  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
 void LoadSetup()
@@ -1964,7 +2111,7 @@ void SaveSetup()
   fclose(file);
   free(filename);
 
-  chmod(filename, SETUP_PERMS);
+  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
 void LoadLevelSetup_LastSeries()
@@ -1973,7 +2120,7 @@ void LoadLevelSetup_LastSeries()
   struct SetupFileList *level_setup_list = NULL;
 
   /* always start with reliable default values */
-  leveldir_current = leveldir_first;
+  leveldir_current = getFirstValidLevelSeries(leveldir_first);
 
   /* ----------------------------------------------------------------------- */
   /* ~/.rocksndiamonds/levelsetup.conf                                       */
@@ -2029,7 +2176,7 @@ void SaveLevelSetup_LastSeries()
   fclose(file);
   free(filename);
 
-  chmod(filename, SETUP_PERMS);
+  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
 static void checkSeriesInfo()
@@ -2176,7 +2323,5 @@ void SaveLevelSetup_SeriesInfo()
   fclose(file);
   free(filename);
 
-  chmod(filename, SETUP_PERMS);
+  SetFilePermissions(filename, PERMS_PRIVATE);
 }
-/*  LocalWords:  Rocks'n
- */

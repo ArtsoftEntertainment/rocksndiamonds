@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2000 Artsoft Entertainment                      *
+* (c) 1995-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -96,6 +96,7 @@
 #define EP_BIT_BELT		(1 << 0)
 #define EP_BIT_BELT_SWITCH	(1 << 1)
 #define EP_BIT_TUBE		(1 << 2)
+#define EP_BIT_SLIPPERY_GEMS	(1 << 3)
 
 #define IS_AMOEBALIVE(e)	(Elementeigenschaften1[e] & EP_BIT_AMOEBALIVE)
 #define IS_AMOEBOID(e)		(Elementeigenschaften1[e] & EP_BIT_AMOEBOID)
@@ -132,6 +133,7 @@
 #define IS_BELT(e)		(Elementeigenschaften2[e] & EP_BIT_BELT)
 #define IS_BELT_SWITCH(e)	(Elementeigenschaften2[e] & EP_BIT_BELT_SWITCH)
 #define IS_TUBE(e)		(Elementeigenschaften2[e] & EP_BIT_TUBE)
+#define IS_SLIPPERY_GEMS(e)	(Elementeigenschaften2[e] & EP_BIT_SLIPPERY_GEMS)
 
 #define IS_PLAYER(x,y)		(ELEM_IS_PLAYER(StorePlayer[x][y]))
 
@@ -260,13 +262,6 @@ struct SetupInfo
   struct SetupInputInfo input[MAX_PLAYERS];
 };
 
-struct SetupFileList
-{
-  char *token;
-  char *value;
-  struct SetupFileList *next;
-};
-
 struct PlayerInfo
 {
   boolean present;		/* player present in level playfield */
@@ -276,7 +271,7 @@ struct PlayerInfo
   int index_nr, client_nr, element_nr;
 
   byte action;			/* action from local input device */
-  byte effective_action;	/* action aknowledged from network server
+  byte effective_action;	/* action acknowledged from network server
 				   or summarized over all configured input
 				   devices when in single player mode */
   byte programmed_action;	/* action forced by game itself (like moving
@@ -297,6 +292,7 @@ struct PlayerInfo
   int move_delay_value;
 
   int last_move_dir;
+  int is_moving;
 
   unsigned long push_delay;
   unsigned long push_delay_value;
@@ -319,6 +315,12 @@ struct PlayerInfo
 
 struct LevelInfo
 {
+  int file_version;		/* version of file the level was stored with */
+  int game_version;		/* version of game engine to play this level */
+  boolean encoding_16bit_field;		/* level contains 16-bit elements */
+  boolean encoding_16bit_yamyam;	/* yamyam contains 16-bit elements */
+  boolean encoding_16bit_amoeba;	/* amoeba contains 16-bit elements */
+
   int fieldx;
   int fieldy;
   int time;
@@ -340,6 +342,9 @@ struct LevelInfo
 
 struct TapeInfo
 {
+  int file_version;	/* version of file this level tape was stored with */
+  int game_version;	/* version of game engine to play this tape´s level */
+  int version;
   int level_nr;
   unsigned long random_seed;
   unsigned long date;
@@ -352,6 +357,7 @@ struct TapeInfo
   boolean fast_forward;
   boolean changed;
   boolean player_participates[MAX_PLAYERS];
+  int num_participating_players;
   struct
   {
     byte action[MAX_PLAYERS];
@@ -361,6 +367,7 @@ struct TapeInfo
 
 struct GameInfo
 {
+  int version;
   int emulation;
   int yam_content_nr;
   boolean magic_wall_active;
@@ -371,6 +378,7 @@ struct GameInfo
   int belt_dir_nr[4];
   int switchgate_pos;
   int balloon_dir;
+  boolean explosions_delayed;
 };
 
 struct GlobalInfo
@@ -412,6 +420,7 @@ extern boolean		Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		JustStopped[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		AmoebaNr[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		AmoebaCnt[MAX_NUM_AMOEBA], AmoebaCnt2[MAX_NUM_AMOEBA];
+extern short		ExplodeField[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern unsigned long	Elementeigenschaften1[MAX_ELEMENTS];
 extern unsigned long	Elementeigenschaften2[MAX_ELEMENTS];
 
@@ -901,6 +910,10 @@ extern int		num_element_info;
 #define EL_TRAP_ACTIVE		522
 #define EL_SPRING_MOVING	523
 #define EL_SP_MURPHY_CLONE	524
+#define EL_QUICKSAND_EMPTYING	525
+#define EL_MAGIC_WALL_EMPTYING	526
+#define EL_MAGIC_WALL_BD_EMPTYING 527
+#define EL_AMOEBA_DRIPPING	528
 
 /* "unreal" (and therefore not drawable) runtime elements */
 #define EL_BLOCKED		600
@@ -913,6 +926,9 @@ extern int		num_element_info;
 #define EL_MAUERND		607
 #define EL_BURNING		608
 #define EL_PLAYER_IS_LEAVING	609
+#define EL_QUICKSAND_FILLING	610
+#define EL_MAGIC_WALL_FILLING	611
+#define EL_MAGIC_WALL_BD_FILLING 612
 
 /* game graphics:
 **	  0 -  255: graphics from "RocksScreen"
@@ -1510,10 +1526,14 @@ extern int		num_element_info;
 #define SETUPINPUT		9
 #define CALIBRATION		10
 
-#define PROGRAM_VERSION_STRING	"2.0.0"
+#define PROGRAM_VERSION_MAJOR	2
+#define PROGRAM_VERSION_MINOR	0
+#define PROGRAM_VERSION_PATCH	1
+#define PROGRAM_VERSION_STRING	"2.0.1"
+
 #define PROGRAM_TITLE_STRING	"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING	"Holger Schemel"
-#define PROGRAM_RIGHTS_STRING	"Copyright ^1995-2000 by"
+#define PROGRAM_RIGHTS_STRING	"Copyright ^1995-2001 by"
 #define PROGRAM_DOS_PORT_STRING	"DOS port done by Guido Schulz"
 #define PROGRAM_IDENT_STRING	PROGRAM_VERSION_STRING " " TARGET_STRING
 #define WINDOW_TITLE_STRING	PROGRAM_TITLE_STRING " " PROGRAM_IDENT_STRING
@@ -1524,6 +1544,32 @@ extern int		num_element_info;
 #define X11_ICON_FILENAME	"rocks_icon.xbm"
 #define X11_ICONMASK_FILENAME	"rocks_iconmask.xbm"
 #define MSDOS_POINTER_FILENAME	"mouse.pcx"
+
+/* file version numbers for resource files (levels, tapes, score, setup, etc.)
+** currently supported/known file version numbers:
+**	1.0 (old)
+**	1.2 (still in use)
+**	1.4 (still in use)
+**	2.0 (actual)
+*/
+#define FILE_VERSION_1_0	VERSION_IDENT(1,0,0)
+#define FILE_VERSION_1_2	VERSION_IDENT(1,2,0)
+#define FILE_VERSION_1_4	VERSION_IDENT(1,4,0)
+#define FILE_VERSION_2_0	VERSION_IDENT(2,0,0)
+
+/* file version does not change for every program version, but is changed
+   when new features are introduced that are incompatible with older file
+   versions, so that they can be treated accordingly */
+#define FILE_VERSION_ACTUAL	FILE_VERSION_2_0
+
+#define GAME_VERSION_1_0	FILE_VERSION_1_0
+#define GAME_VERSION_1_2	FILE_VERSION_1_2
+#define GAME_VERSION_1_4	FILE_VERSION_1_4
+#define GAME_VERSION_2_0	FILE_VERSION_2_0
+
+#define GAME_VERSION_ACTUAL	VERSION_IDENT(PROGRAM_VERSION_MAJOR, \
+					      PROGRAM_VERSION_MINOR, \
+					      PROGRAM_VERSION_PATCH)
 
 /* for DrawGraphicAnimation() [tools.c] and AnimateToon() [cartoons.c] */
 #define ANIM_NORMAL		0

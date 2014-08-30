@@ -1,3 +1,31 @@
+Release Version 2.0.1 [19 MAR 2002]
+-----------------------------------
+	- bug in explosion code fixed that broke level 24 of "Baby Ghost Mine"
+	- several Supaplex emulation bugs fixed (thanks to Mihail Milushev):
+	  + orange disk does not fall off from slippery elements
+	  + infotrons kill electrons and snik snaks and trigger orange disks
+	  + explosion chain reactions are now a bit slower than murphy
+	- behaviour of robots adjusted to make them less aggressive
+	  (needed for quite some Emerald Mine Club levels)
+	- icon for Windows executable added
+	- bug when selecting default level series fixed
+	- new IFF style file format for level and tape files
+	- bug in storing amoeba content fixed
+	- nasty tape bugs fixed (completely reworked tape stuff)
+	- fullscreen mode now works with Windows (workaround for bug in SDL)
+	- /dev/dsp support for NetBSD added (thanks to Krister Walfridsson)
+	- file permissions when saving files and creating directories changed
+	- some small sound bugs fixed
+	- added new contributed levels from the following players:
+	  + Arno Luppold
+	  + Barak Shacked
+	  + Ben Braithwaite
+	  + Dominik Seichter
+	  + Emilio Hemken
+	  + Glenn Alexander
+	  + Helge Hafting
+	  + Paul Sutton
+
 Release Version 2.0.0 [01 JAN 2001]
 -----------------------------------
 	- major code redesign to maintain generic game functions in a separate
@@ -5,9 +33,10 @@ Release Version 2.0.0 [01 JAN 2001]
 	- can be compiled with SDL library to build native Windows version
 	- DOS and Windows versions can be compiled with gcc cross-compiler
 	- trying to open already busy audio device does not block the game
-	- fixed network playing bug (patch from web site)
+	- bug in network playing code fixed (patch from web site)
 	- SDL version can load and play music modules
-	- fixed element description in level editor for EM doors and keys
+	- bug in level editor fixed for EM doors and keys element description
+	- sound sample frequency raised from 8 kHz to 22 kHz
 
 Release Version 1.4.0 [27 OCT 1999]
 -----------------------------------

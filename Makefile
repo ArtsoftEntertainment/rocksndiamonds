@@ -57,7 +57,10 @@ sdl:
 	@$(MAKE_CMD) TARGET=sdl
 
 solaris:
-	@$(MAKE_CMD) PLATFORM=solaris
+	@$(MAKE_CMD) PLATFORM=solaris TARGET=x11
+
+solaris-sdl:
+	@$(MAKE_CMD) PLATFORM=solaris TARGET=sdl
 
 msdos:
 	@$(MAKE_CMD) PLATFORM=msdos
@@ -94,7 +97,16 @@ dist-msdos:
 dist-win32:
 	./Scripts/make_dist.sh win .
 
-dist: dist-unix dist-msdos dist-win32
+dist-clean:
+	@$(MAKE_CMD) dist-clean
+
+dist-build-all:
+	$(MAKE) clean
+	@BUILD_DIST=TRUE $(MAKE) x11		; $(MAKE) dist-clean
+	@BUILD_DIST=TRUE $(MAKE) cross-win32	; $(MAKE) dist-clean
+	@BUILD_DIST=TRUE $(MAKE) cross-msdos	; $(MAKE) dist-clean
+
+dist-all: dist-build-all dist-unix dist-msdos dist-win32
 
 depend dep:
 	$(MAKE_CMD) depend

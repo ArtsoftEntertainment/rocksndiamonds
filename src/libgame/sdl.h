@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2000 Artsoft Entertainment                      *
+* (c) 1994-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -319,14 +319,15 @@ inline void SDLInitVideoBuffer(DrawBuffer **, DrawWindow **, boolean);
 inline boolean SDLSetVideoMode(DrawBuffer **, boolean);
 inline void SDLCopyArea(Bitmap *, Bitmap *, int, int, int, int, int, int, int);
 inline void SDLFillRectangle(Bitmap *, int, int, int, int, unsigned int);
-inline void SDLDrawSimpleLine(SDL_Surface *, int, int, int, int, unsigned int);
-inline void SDLDrawLine(SDL_Surface *, int, int, int, int, Uint32);
-/* functions from SGE library */
-void sge_Line(SDL_Surface *, Sint16, Sint16, Sint16, Sint16, Uint32);
+inline void SDLDrawSimpleLine(Bitmap *, int, int, int, int, unsigned int);
+inline void SDLDrawLine(Bitmap *, int, int, int, int, Uint32);
+inline Pixel SDLGetPixel(Bitmap *, int, int);
 
 Bitmap *SDLLoadImage(char *);
 
 inline void SDLOpenAudio(void);
 inline void SDLCloseAudio(void);
+
+inline void SDLNextEvent(Event *);
 
 #endif /* SDL_H */

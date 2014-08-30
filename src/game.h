@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2000 Artsoft Entertainment                      *
+* (c) 1995-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -74,13 +74,15 @@ boolean MoveFigure(struct PlayerInfo *, int, int);
 void ScrollFigure(struct PlayerInfo *, int);
 void ScrollScreen(struct PlayerInfo *, int);
 
-void TestIfGoodThingHitsBadThing(int, int);
-void TestIfBadThingHitsGoodThing(int, int);
-void TestIfHeroHitsBadThing(int, int);
-void TestIfBadThingHitsHero(int, int);
-void TestIfFriendHitsBadThing(int, int);
-void TestIfBadThingHitsFriend(int, int);
-void TestIfBadThingHitsOtherBadThing(int, int);
+void TestIfGoodThingHitsBadThing(int, int, int);
+void TestIfBadThingHitsGoodThing(int, int, int);
+void TestIfHeroTouchesBadThing(int, int);
+void TestIfHeroRunsIntoBadThing(int, int, int);
+void TestIfBadThingTouchesHero(int, int);
+void TestIfBadThingRunsIntoHero(int, int, int);
+void TestIfFriendTouchesBadThing(int, int);
+void TestIfBadThingTouchesFriend(int, int);
+void TestIfBadThingTouchesOtherBadThing(int, int);
 void KillHero(struct PlayerInfo *);
 void BuryHero(struct PlayerInfo *);
 void RemoveHero(struct PlayerInfo *);

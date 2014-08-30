@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2000 Artsoft Entertainment                      *
+* (c) 1994-2001 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -26,6 +26,9 @@
 #include <linux/soundcard.h>
 #elif defined(PLATFORM_FREEBSD)
 #include <machine/soundcard.h>
+#elif defined(PLATFORM_NETBSD)
+#include <sys/ioctl.h>
+#include <sys/audioio.h>
 #elif defined(PLATFORM_HPUX)
 #include <sys/audio.h>
 #endif
@@ -34,6 +37,10 @@
 
 
 #if defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD) || defined(VOXWARE)
+#define AUDIO_LINUX_IOCTL
+#endif
+
+#if defined(AUDIO_LINUX_IOCTL) || defined(PLATFORM_NETBSD)
 #define AUDIO_STREAMING_DSP
 #endif
 
@@ -51,7 +58,7 @@
 #if defined(TARGET_SDL)
 /* one second fading interval == 1000 ticks (milliseconds) */
 #define SOUND_FADING_INTERVAL			1000
-#define SOUND_MAX_VOLUME			(SDL_MIX_MAXVOLUME / 4)
+#define SOUND_MAX_VOLUME			SDL_MIX_MAXVOLUME
 #endif
 
 #if defined(AUDIO_STREAMING_DSP)
@@ -132,6 +139,7 @@
 #endif
 #endif
 
+#if 0
 struct SoundHeader_SUN
 {
   unsigned long magic;
@@ -148,6 +156,7 @@ struct SoundHeader_8SVX
   unsigned long chunk_size;
   char magic_8SVX[4];
 };
+#endif
 
 struct SampleInfo
 { 
