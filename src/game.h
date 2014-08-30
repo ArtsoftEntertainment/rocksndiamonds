@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -20,8 +20,21 @@
 #define MAX_NUM_KEYS		8
 
 
+struct GamePanelInfo
+{
+  struct XY level;
+  struct XY gems;
+  struct XY inventory;
+  struct XY keys;
+  struct XY score;
+  struct XY time;
+};
+
 struct GameInfo
 {
+  /* values for control panel */
+  struct GamePanelInfo panel;
+
   /* values for engine initialization */
   int default_push_delay_fixed;
   int default_push_delay_random;
@@ -54,13 +67,11 @@ struct GameInfo
   boolean explosions_delayed;
   boolean envelope_active;
 
-#if 1
   /* values for the new EMC elements */
   int lenses_time_left;
   int magnify_time_left;
   boolean ball_state;
   int ball_content_nr;
-#endif
 
   /* values for player idle animation (no effect on engine) */
   int player_boring_delay_fixed;
@@ -112,6 +123,10 @@ struct PlayerInfo
   boolean gravity;
 
   boolean LevelSolved, GameOver;
+
+  boolean LevelSolved_GameEnd;
+  boolean LevelSolved_SaveTape;
+  boolean LevelSolved_SaveScore;
 
   int last_move_dir;
 
@@ -168,6 +183,8 @@ struct PlayerInfo
   int step_counter;
 
   int score;
+  int score_final;
+
   int gems_still_needed;
   int sokobanfields_still_needed;
   int lights_still_needed;
@@ -197,10 +214,11 @@ void DrawGameValue_Time(int);
 void DrawGameDoorValues(void);
 
 void InitGameSound();
-void InitGame(void);
+void InitGame();
 
 void UpdateEngineValues(int, int);
 void GameWon(void);
+void GameEnd(void);
 
 void InitPlayerGfxAnimation(struct PlayerInfo *, int, int);
 void Moving2Blocked(int, int, int *, int *);

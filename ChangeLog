@@ -1,3 +1,93 @@
+2006-08-20
+	* version 3.2.1 released
+
+2006-08-20
+	* fixed nasty bugs with handling error message file on Mac OS X systems
+
+2006-08-19
+	* general code cleanup (removing many annoying "#if 0" blocks etc.)
+
+2006-08-18
+	* fixed bug that caused broken tapes when manually appending to tapes
+	  using the "pause before death" functionality, followed by recording
+	* added setup option to disable fading of screens for faster testing
+
+2006-08-16
+	* code cleanup of new fading functions
+
+2006-08-15
+	* changed behaviour after solved game -- do not immediately stop engine
+	* added some more smooth screen fadings (game start, hall of fame etc.)
+
+2006-08-14
+	* fixed bug with displaying pushed CE with value/score/delay anim_mode
+
+2006-08-12
+	* added configurable level preview position, tile size and dimensions
+	* added configurable game panel value positions (gems, time, score etc.)
+
+2006-08-10
+	* fixed small bug with time displayed incorrectly when collecting CEs
+
+2006-08-07
+	* fixed bug with bumpy scrolling with EM engine in double player mode
+
+2006-08-05
+	* added compatibility code to fix "Snake Bite" style levels that were
+	  broken due to a bugfix regarding EL_SOKOBAN_FIELD_PLAYER in 3.2.0
+
+2006-08-04
+	* fixed bug with scrollbars inside editor when using the Windows mouse
+	  enhancement tool "True X-Mouse" (which injects key events to the event
+	  queue to insert selected stuff into the Windows clipboard, which gets
+	  confused with the "Insert" key for jumping to the last editor cascade
+	  block in the element list)
+	* added Rocks'n'Diamonds icon for use as window icon to SDL version
+	* added key shortcut "Alt + Enter" to toggle fullscreen mode at any time
+
+2006-08-01
+	* added selection of preferred fullscreen mode to setup / graphics menu
+	  (useful if default mode 800 x 600 does not match screen aspect ratio)
+
+2006-07-30
+	* improved down-scaling of images for better level and preview graphics
+	* changed user data directory for Mac OS X from Unix style to new place
+
+2006-07-26
+	* improved level number selection in main menu and player selection in
+	  setup menu (input devices section) by using standard button gadgets
+	* added support for mouse scroll wheel (caused buggy behaviour before)
+	* added support for scrolling horizontal scrollbars with mouse wheel by
+	  holding "Shift" key pressed while scrolling the wheel
+	* added support for single step mouse wheel scrolling by holding "Alt"
+	  key pressed while scrolling the wheel (can be combined with "Shift")
+	* changed output file "stderr.txt" on Windows platform now always to be
+	  created in the R'n'D sub-directory of the personal documents directory
+	* added Windows message box to direct to "stderr.txt" after error aborts
+
+2006-07-25
+	* improved general scrollbar handling (when jump-scrolling scrollbars)
+
+2006-07-23
+	* changed scrollbars to always show last line as first after scrolling
+	  (that means jumping n - 1 screen lines instead of n screen lines)
+
+2006-07-22
+	* fixed level versions of EMC level loader (from V4 to V1, V2 and V3)
+	* fixed level time for EMC levels for V2 engine (V2 and V5 levels)
+	* fixed special handling of vertically stacked acid becoming fake acid
+
+2006-07-16
+	* fixed bug (very special case) with CE_SCORE_GETS_ZERO, which can
+	  affect multiple instances of the same CE, although this kind of
+	  change condition usually only affects one single custom element
+
+2006-07-16
+	* version number set to 3.2.1
+
+2006-07-16
+	* version 3.2.0 released
+
 2006-06-23
 	* reorganized level editor element list a bit to match engines better
 

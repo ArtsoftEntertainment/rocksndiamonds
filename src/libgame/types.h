@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -20,7 +20,7 @@
 #include <string.h>
 #include <sys/types.h>
 
-typedef unsigned char boolean;
+typedef int boolean;
 
 #if !defined(PLATFORM_WIN32)
 typedef unsigned char byte;

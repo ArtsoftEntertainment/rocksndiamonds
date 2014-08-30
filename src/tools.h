@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -68,13 +68,15 @@ void BackToFront();
 void FadeToFront();
 
 void FadeIn(int);
-void FadeOut(int, int);
+void FadeOut(int);
 void FadeCross(int);
+void FadeCrossSaveBackbuffer();
 
 void ClearWindow();
 void SetMainBackgroundImageIfDefined(int);
 void SetMainBackgroundImage(int);
 void SetDoorBackgroundImage(int);
+void SetPanelBackground();
 void DrawBackground(int, int, int, int);
 
 void MarkTileDirty(int, int);
@@ -124,11 +126,9 @@ void DrawMiniElementOrWall(int, int, int, int);
 
 void ShowEnvelope();
 
-void getMicroGraphicSource(int, Bitmap **, int *, int *);
-void DrawMicroElement(int, int, int);
 void DrawLevel(void);
 void DrawMiniLevel(int, int, int, int);
-void DrawMicroLevel(int, int, boolean);
+void DrawPreviewLevel(boolean);
 
 void WaitForEventToContinue();
 boolean Request(char *, unsigned int);
@@ -169,5 +169,7 @@ void PlayMenuSound();
 void PlayMenuSoundStereo(int, int);
 void PlayMenuSoundIfLoop();
 void PlayMenuMusic();
+
+void ToggleFullscreenIfNeeded();
 
 #endif	/* TOOLS_H */

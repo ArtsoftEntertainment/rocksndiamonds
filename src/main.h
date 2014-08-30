@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -41,6 +41,8 @@
 
 #define WIN_XSIZE			672
 #define WIN_YSIZE			560
+
+#define DEFAULT_FULLSCREEN_MODE		"800x600"
 
 #define SCR_FIELDX			17
 #define SCR_FIELDY			17
@@ -175,11 +177,7 @@
 #define EP_BITMASK_DEFAULT		0
 
 #define PROPERTY_BIT(p)			(1 << ((p) % 32))
-#if 1
 #define PROPERTY_VAR(e,p)		(element_info[e].properties[(p) / 32])
-#else
-#define PROPERTY_VAR(e,p)		(Properties[e][(p) / 32])
-#endif
 #define HAS_PROPERTY(e,p)	((PROPERTY_VAR(e, p) & PROPERTY_BIT(p)) != 0)
 #define SET_PROPERTY(e,p,v)	((v) ?					   \
 				 (PROPERTY_VAR(e,p) |=  PROPERTY_BIT(p)) : \
@@ -708,14 +706,13 @@
 #define SND_ELEMENT(e)		(e)
 #endif
 
-#if 1
 #define GROUP_NR(e)		((e) - EL_GROUP_START)
 #define IS_IN_GROUP(e, nr)	(element_info[e].in_group[nr] == TRUE)
 #define IS_IN_GROUP_EL(e, ge)	(IS_IN_GROUP(e, (ge) - EL_GROUP_START))
 
 #define IS_EQUAL_OR_IN_GROUP(e, ge)					\
-	(IS_GROUP_ELEMENT(ge) ? IS_IN_GROUP(e, GROUP_NR(ge)) : (e) == (ge))
-#endif
+	(ge == EL_ANY_ELEMENT ? TRUE :					\
+	 IS_GROUP_ELEMENT(ge) ? IS_IN_GROUP(e, GROUP_NR(ge)) : (e) == (ge))
 
 #define IS_PLAYER(x, y)		(ELEM_IS_PLAYER(StorePlayer[x][y]))
 
@@ -771,6 +768,9 @@
 #define ANIM_DELAY(g)		(graphic_info[g].anim_delay)
 #define ANIM_MODE(g)		(graphic_info[g].anim_mode)
 
+#define IS_ANIM_MODE_CE(g)	(graphic_info[g].anim_mode & (ANIM_CE_VALUE |  \
+							      ANIM_CE_SCORE |  \
+							      ANIM_CE_DELAY))
 #define IS_ANIMATED(g)		(ANIM_FRAMES(g) > 1)
 #define IS_NEW_DELAY(f, g)	((f) % ANIM_DELAY(g) == 0)
 #define IS_NEW_FRAME(f, g)	(IS_ANIMATED(g) && IS_NEW_DELAY(f, g))
@@ -803,12 +803,6 @@
 #define MAX_NUM_TITLE_SCREENS	5
 
 #define MAX_NUM_AMOEBA		100
-
-#if 0	/* game.h */
-#define MAX_INVENTORY_SIZE	1000
-#define STD_NUM_KEYS		4
-#define MAX_NUM_KEYS		8
-#endif
 
 #define NUM_BELTS		4
 #define NUM_BELT_PARTS		3
@@ -867,7 +861,7 @@
 #define MICROLEVEL_XSIZE	((STD_LEV_FIELDX + 2) * MICRO_TILEX)
 #define MICROLEVEL_YSIZE	((STD_LEV_FIELDY + 2) * MICRO_TILEY)
 #define MICROLEVEL_XPOS		(SX + (SXSIZE - MICROLEVEL_XSIZE) / 2)
-#define MICROLEVEL_YPOS		(SX + 12 * TILEY - MICRO_TILEY)
+#define MICROLEVEL_YPOS		(SY + 12 * TILEY - MICRO_TILEY)
 #define MICROLABEL1_YPOS	(MICROLEVEL_YPOS - 36)
 #define MICROLABEL2_YPOS	(MICROLEVEL_YPOS + MICROLEVEL_YSIZE + 7)
 
@@ -1309,7 +1303,26 @@
 
 #define EL_BD_EXPANDABLE_WALL		713
 
-#define NUM_FILE_ELEMENTS		714
+#define EL_LAST_CE_8			714
+#define EL_LAST_CE_7			715
+#define EL_LAST_CE_6			716
+#define EL_LAST_CE_5			717
+#define EL_LAST_CE_4			718
+#define EL_LAST_CE_3			719
+#define EL_LAST_CE_2			720
+#define EL_LAST_CE_1			721
+#define EL_SELF				722
+#define EL_NEXT_CE_1			723
+#define EL_NEXT_CE_2			724
+#define EL_NEXT_CE_3			725
+#define EL_NEXT_CE_4			726
+#define EL_NEXT_CE_5			727
+#define EL_NEXT_CE_6			728
+#define EL_NEXT_CE_7			729
+#define EL_NEXT_CE_8			730
+#define EL_ANY_ELEMENT			731
+
+#define NUM_FILE_ELEMENTS		732
 
 
 /* "real" (and therefore drawable) runtime elements */
@@ -1714,27 +1727,37 @@
 /* program information and versioning definitions */
 #define PROGRAM_VERSION_MAJOR		3
 #define PROGRAM_VERSION_MINOR		2
-#define PROGRAM_VERSION_PATCH		0
-#define PROGRAM_VERSION_BUILD		9
+#define PROGRAM_VERSION_PATCH		1
+#define PROGRAM_VERSION_BUILD		0
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
-#define PROGRAM_COPYRIGHT_STRING       "Copyright ©1995-2006 by Holger Schemel"
+#define PROGRAM_COPYRIGHT_STRING	"Copyright ©1995-2006 by Holger Schemel"
+#define PROGRAM_EMAIL_STRING		"info@artsoft.org"
+#define PROGRAM_WEBSITE_STRING		"http://www.artsoft.org/"
 
 #define ICON_TITLE_STRING		PROGRAM_TITLE_STRING
 #define COOKIE_PREFIX			"ROCKSNDIAMONDS"
 #define FILENAME_PREFIX			"Rocks"
 
-#if defined(PLATFORM_UNIX)
-#define USERDATA_DIRECTORY		".rocksndiamonds"
-#elif defined(PLATFORM_WIN32)
-#define USERDATA_DIRECTORY		PROGRAM_TITLE_STRING
+#define USERDATA_DIRECTORY_WIN32	PROGRAM_TITLE_STRING
+#define USERDATA_DIRECTORY_MACOSX	PROGRAM_TITLE_STRING
+#define USERDATA_DIRECTORY_UNIX		".rocksndiamonds"
+#define USERDATA_DIRECTORY_DOS		"userdata"
+
+#if defined(PLATFORM_WIN32)
+#define USERDATA_DIRECTORY		USERDATA_DIRECTORY_WIN32
+#elif defined(PLATFORM_MACOSX)
+#define USERDATA_DIRECTORY		USERDATA_DIRECTORY_MACOSX
+#elif defined(PLATFORM_UNIX)
+#define USERDATA_DIRECTORY		USERDATA_DIRECTORY_UNIX
 #else
-#define USERDATA_DIRECTORY		"userdata"
+#define USERDATA_DIRECTORY		USERDATA_DIRECTORY_DOS
 #endif
 
 #define X11_ICON_FILENAME		"rocks_icon.xbm"
 #define X11_ICONMASK_FILENAME		"rocks_iconmask.xbm"
+#define SDL_ICON_FILENAME		"rocks_icon_32x32.pcx"
 #define MSDOS_POINTER_FILENAME		"mouse.pcx"
 
 /* file version numbers for resource files (levels, tapes, score, setup, etc.)
@@ -1801,6 +1824,9 @@ struct MenuInfo
 
   int list_size[NUM_SPECIAL_GFX_ARGS];
 
+  int fade_delay;
+  int post_delay;
+
   int sound[NUM_SPECIAL_GFX_ARGS];
   int music[NUM_SPECIAL_GFX_ARGS];
 };
@@ -1812,6 +1838,15 @@ struct DoorInfo
   int step_offset;
   int step_delay;
   int anim_mode;
+};
+
+struct PreviewInfo
+{
+  int x, y;
+  int xsize, ysize;
+  int tile_size;
+  int step_offset;
+  int step_delay;
 };
 
 struct HiScore
@@ -1915,7 +1950,6 @@ struct LevelInfo
   int explosion_element[MAX_PLAYERS];
   boolean use_explosion_element[MAX_PLAYERS];
 
-#if 1
   /* values for the new EMC elements */
   int android_move_time;
   int android_clone_time;
@@ -1932,12 +1966,8 @@ struct LevelInfo
   struct Content ball_content[MAX_ELEMENT_CONTENTS];
   int num_ball_contents;
 
-#if 0
-  boolean android_array[16];
-#endif
   int num_android_clone_elements;
   int android_clone_element[MAX_ANDROID_ELEMENTS];
-#endif
 
   int can_move_into_acid_bits;	/* bitfield to store property for elements */
   int dont_collide_with_bits;	/* bitfield to store property for elements */
@@ -2183,20 +2213,28 @@ struct GraphicInfo
 
   int src_x, src_y;		/* start position of animation frames */
   int width, height;		/* width/height of each animation frame */
+
   int offset_x, offset_y;	/* x/y offset to next animation frame */
   int offset2_x, offset2_y;	/* x/y offset to second movement tile */
+
   boolean double_movement;	/* animation has second movement tile */
   int swap_double_tiles;	/* explicitely force or forbid tile swapping */
+
   int anim_frames;
   int anim_frames_per_line;
   int anim_start_frame;
   int anim_delay;		/* important: delay of 1 means "no delay"! */
   int anim_mode;
+
   boolean anim_global_sync;
+
   int crumbled_like;		/* element for cloning crumble graphics */
   int diggable_like;		/* element for cloning digging graphics */
+
   int border_size;		/* border size for "crumbled" graphics */
+
   int scale_up_factor;		/* optional factor for scaling image up */
+
   int clone_from;		/* graphic for cloning *all* settings */
 
   int anim_delay_fixed;		/* optional delay values for bored and   */
@@ -2286,8 +2324,9 @@ struct HelpAnimInfo
 };
 
 
-extern Bitmap		       *bitmap_db_title;
+extern Bitmap		       *bitmap_db_cross;
 extern Bitmap		       *bitmap_db_field;
+extern Bitmap		       *bitmap_db_panel;
 extern Bitmap		       *bitmap_db_door;
 extern Pixmap			tile_clipmask[];
 extern DrawBuffer	       *fieldbuffer;
@@ -2334,10 +2373,6 @@ extern short			ExplodeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			RunnerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			PlayerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
-#if 0
-extern unsigned long		Properties[MAX_NUM_ELEMENTS][NUM_EP_BITFIELDS];
-#endif
-
 extern int			GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -2376,6 +2411,7 @@ extern struct TapeInfo		tape;
 extern struct GlobalInfo	global;
 extern struct MenuInfo		menu;
 extern struct DoorInfo		door_1, door_2;
+extern struct PreviewInfo	preview;
 extern struct ElementInfo	element_info[];
 extern struct ElementNameInfo	element_name_info[];
 extern struct ElementActionInfo	element_action_info[];

@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -295,7 +295,7 @@ void InitFontGraphicInfo()
       if (graphic_info[graphic].anim_frames < MIN_NUM_CHARS_PER_FONT)
       {
 	graphic_info[graphic].anim_frames = DEFAULT_NUM_CHARS_PER_FONT;
-	graphic_info[graphic].anim_frames_per_line= DEFAULT_NUM_CHARS_PER_LINE;
+	graphic_info[graphic].anim_frames_per_line = DEFAULT_NUM_CHARS_PER_LINE;
       }
 
       /* copy font relevant information from graphics information */
@@ -1817,7 +1817,6 @@ boolean getBitfieldProperty(int *bitfield, int property_bit_nr, int element)
   return FALSE;
 }
 
-#if 1
 static void resolve_group_element(int group_element, int recursion_depth)
 {
   static int group_nr;
@@ -1864,7 +1863,6 @@ static void resolve_group_element(int group_element, int recursion_depth)
     }
   }
 }
-#endif
 
 void InitElementPropertiesStatic()
 {
@@ -3712,7 +3710,6 @@ void InitElementPropertiesEngine(int engine_version)
      property (which means that conditional property changes must be set to
      a reliable default value before) */
 
-#if 1
   /* ---------- recursively resolve group elements ------------------------- */
 
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
@@ -3721,7 +3718,6 @@ void InitElementPropertiesEngine(int engine_version)
 
   for (i = 0; i < NUM_GROUP_ELEMENTS; i++)
     resolve_group_element(EL_GROUP_START + i, 0);
-#endif
 
   /* set all special, combined or engine dependent element properties */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
@@ -3924,58 +3920,6 @@ void InitElementPropertiesEngine(int engine_version)
 		  engine_version > VERSION_IDENT(2,0,1,0)));
   }
 
-#if 0
-  /* set default push delay values (corrected since version 3.0.7-1) */
-  if (engine_version < VERSION_IDENT(3,0,7,1))
-  {
-    game.default_push_delay_fixed = 2;
-    game.default_push_delay_random = 8;
-  }
-  else
-  {
-    game.default_push_delay_fixed = 8;
-    game.default_push_delay_random = 8;
-  }
-#endif
-
-#if 0
-  /* set uninitialized push delay values of custom elements in older levels */
-  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
-  {
-    int element = EL_CUSTOM_START + i;
-
-    if (element_info[element].push_delay_fixed == -1)
-      element_info[element].push_delay_fixed = game.default_push_delay_fixed;
-    if (element_info[element].push_delay_random == -1)
-      element_info[element].push_delay_random = game.default_push_delay_random;
-  }
-#endif
-
-#if 0
-  /* set some other uninitialized values of custom elements in older levels */
-  if (engine_version < VERSION_IDENT(3,1,0,0))
-  {
-    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
-    {
-      int element = EL_CUSTOM_START + i;
-
-      element_info[element].access_direction = MV_ALL_DIRECTIONS;
-
-      element_info[element].explosion_delay = 17;
-      element_info[element].ignition_delay = 8;
-    }
-  }
-#endif
-
-#if 0
-  /* set element properties that were handled incorrectly in older levels */
-  if (engine_version < VERSION_IDENT(3,1,0,0))
-  {
-    SET_PROPERTY(EL_SP_SNIKSNAK, EP_DONT_COLLIDE_WITH, FALSE);
-    SET_PROPERTY(EL_SP_ELECTRON, EP_DONT_COLLIDE_WITH, FALSE);
-  }
-#endif
-
   /* this is needed because some graphics depend on element properties */
   if (game_status == GAME_MODE_PLAYING)
     InitElementGraphicInfo();
@@ -3985,34 +3929,6 @@ void InitElementPropertiesAfterLoading(int engine_version)
 {
   int i;
 
-#if 0
-  /* set default push delay values (corrected since version 3.0.7-1) */
-  if (engine_version < VERSION_IDENT(3,0,7,1))
-  {
-    game.default_push_delay_fixed = 2;
-    game.default_push_delay_random = 8;
-  }
-  else
-  {
-    game.default_push_delay_fixed = 8;
-    game.default_push_delay_random = 8;
-  }
-#endif
-
-#if 0
-  /* set uninitialized push delay values of custom elements in older levels */
-  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
-  {
-    int element = EL_CUSTOM_START + i;
-
-    if (element_info[element].push_delay_fixed == -1)
-      element_info[element].push_delay_fixed = game.default_push_delay_fixed;
-    if (element_info[element].push_delay_random == -1)
-      element_info[element].push_delay_random = game.default_push_delay_random;
-  }
-#endif
-
-#if 1
   /* set some other uninitialized values of custom elements in older levels */
   if (engine_version < VERSION_IDENT(3,1,0,0))
   {
@@ -4026,7 +3942,6 @@ void InitElementPropertiesAfterLoading(int engine_version)
       element_info[element].ignition_delay = 8;
     }
   }
-#endif
 }
 
 static void InitGlobal()
@@ -4221,6 +4136,45 @@ void Execute_Command(char *command)
       global.convert_level_nr = atoi(str_ptr);	/* get level_nr value */
     }
   }
+
+#if DEBUG
+#if defined(TARGET_SDL)
+  else if (strEqual(command, "SDL_ListModes"))
+  {
+    SDL_Rect **modes;
+    int i;
+
+    SDL_Init(SDL_INIT_VIDEO);
+
+    /* get available fullscreen/hardware modes */
+    modes = SDL_ListModes(NULL, SDL_FULLSCREEN | SDL_HWSURFACE);
+
+    /* check if there are any modes available */
+    if (modes == NULL)
+    {
+      printf("No modes available!\n");
+
+      exit(-1);
+    }
+
+    /* check if our resolution is restricted */
+    if (modes == (SDL_Rect **)-1)
+    {
+      printf("All resolutions available.\n");
+    }
+    else
+    {
+      printf("Available Modes:\n");
+
+      for(i = 0; modes[i]; i++)
+	printf("  %d x %d\n", modes[i]->w, modes[i]->h);
+    }
+
+    exit(0);
+  }
+#endif
+#endif
+
   else
   {
     Error(ERR_EXIT_HELP, "unrecognized command '%s'", command);
@@ -4416,6 +4370,7 @@ void InitGfx()
 {
   char *filename_font_initial = NULL;
   Bitmap *bitmap_font_initial = NULL;
+  int font_height;
   int i, j;
 
   /* determine settings for initial font (for displaying startup messages) */
@@ -4456,8 +4411,9 @@ void InitGfx()
     Error(ERR_EXIT, "cannot get filename for '%s'", CONFIG_TOKEN_FONT_INITIAL);
 
   /* create additional image buffers for double-buffering and cross-fading */
-  bitmap_db_title = CreateBitmap(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
+  bitmap_db_cross = CreateBitmap(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
   bitmap_db_field = CreateBitmap(FXSIZE, FYSIZE, DEFAULT_DEPTH);
+  bitmap_db_panel = CreateBitmap(DXSIZE, DYSIZE, DEFAULT_DEPTH);
   bitmap_db_door  = CreateBitmap(3 * DXSIZE, DYSIZE + VYSIZE, DEFAULT_DEPTH);
 
   /* initialize screen properties */
@@ -4475,8 +4431,11 @@ void InitGfx()
 
   InitFontGraphicInfo();
 
+  font_height = getFontHeight(FC_RED);
+
   DrawInitText(getProgramInitString(), 20, FC_YELLOW);
   DrawInitText(PROGRAM_COPYRIGHT_STRING, 50, FC_RED);
+  DrawInitText(PROGRAM_WEBSITE_STRING, WIN_YSIZE - 20 - font_height, FC_RED);
 
   DrawInitText("Loading graphics:", 120, FC_GREEN);
 }
@@ -4755,11 +4714,7 @@ void ReloadCustomArtwork(int force_reload)
 
   if (redraw_screen)
   {
-#if 1
     RedrawBackground();
-#else
-    InitGfxBackground();
-#endif
 
     /* force redraw of (open or closed) door graphics */
     SetDoorState(DOOR_OPEN_ALL);
@@ -4831,6 +4786,10 @@ void OpenAll()
 
   InitGfxBackground();
 
+#if 1
+  em_open_all();
+#endif
+
   if (global.autoplay_leveldir)
   {
     AutoPlayTape();
@@ -4843,10 +4802,6 @@ void OpenAll()
   }
 
   game_status = GAME_MODE_MAIN;
-
-#if 1
-  em_open_all();
-#endif
 
   DrawMainMenu();
 
@@ -4873,6 +4828,9 @@ void CloseAllAndExit(int exit_value)
 
   CloseVideoDisplay();
   ClosePlatformDependentStuff();
+
+  if (exit_value != 0)
+    NotifyUserAboutErrorFile();
 
   exit(exit_value);
 }

@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -69,22 +69,27 @@ int			FrameCounter = 0;
 /* ========================================================================= */
 
 void InitProgramInfo(char *argv0,
-		     char *userdata_directory, char *program_title,
-		     char *window_title, char *icon_title,
+		     char *userdata_subdir, char *userdata_subdir_unix,
+		     char *program_title, char *window_title, char *icon_title,
 		     char *x11_icon_filename, char *x11_iconmask_filename,
-		     char *msdos_cursor_filename,
+		     char *sdl_icon_filename, char *msdos_cursor_filename,
 		     char *cookie_prefix, char *filename_prefix,
 		     int program_version)
 {
   program.command_basepath = getBasePath(argv0);
   program.command_basename = getBaseName(argv0);
 
-  program.userdata_directory = userdata_directory;
+  program.userdata_subdir = userdata_subdir;
+  program.userdata_subdir_unix = userdata_subdir_unix;
+  program.userdata_path = getUserGameDataDir();
+
   program.program_title = program_title;
   program.window_title = window_title;
   program.icon_title = icon_title;
+
   program.x11_icon_filename = x11_icon_filename;
   program.x11_iconmask_filename = x11_iconmask_filename;
+  program.sdl_icon_filename = sdl_icon_filename;
   program.msdos_cursor_filename = msdos_cursor_filename;
 
   program.cookie_prefix = cookie_prefix;
@@ -93,6 +98,9 @@ void InitProgramInfo(char *argv0,
   program.version_major = VERSION_MAJOR(program_version);
   program.version_minor = VERSION_MINOR(program_version);
   program.version_patch = VERSION_PATCH(program_version);
+
+  program.error_filename = getErrorFilename(ERROR_BASENAME);
+  program.error_file = stderr;
 }
 
 void InitExitFunction(void (*exit_function)(int))
@@ -113,7 +121,14 @@ void InitPlatformDependentStuff(void)
 {
 #if defined(PLATFORM_MSDOS)
   _fmode = O_BINARY;
-  initErrorFile();
+#endif
+
+#if defined(PLATFORM_MACOSX)
+  updateUserGameDataDir();
+#endif
+
+#if !defined(PLATFORM_UNIX) || defined(PLATFORM_MACOSX)
+  openErrorFile();
 #endif
 
 #if defined(TARGET_SDL)
@@ -126,6 +141,10 @@ void InitPlatformDependentStuff(void)
 
 void ClosePlatformDependentStuff(void)
 {
+#if defined(PLATFORM_WIN32) || defined(PLATFORM_MSDOS)
+  closeErrorFile();
+#endif
+
 #if defined(PLATFORM_MSDOS)
   dumpErrorFile();
 #endif
@@ -308,8 +327,11 @@ void InitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
   video.width = width;
   video.height = height;
   video.depth = GetRealDepth(depth);
+
   video.fullscreen_available = FULLSCREEN_STATUS;
   video.fullscreen_enabled = FALSE;
+  video.fullscreen_modes = NULL;
+  video.fullscreen_mode_current = NULL;
 
 #if defined(TARGET_SDL)
   SDLInitVideoBuffer(backbuffer, window, fullscreen);
@@ -436,13 +458,15 @@ void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 	      dst_x, dst_y, BLIT_OPAQUE);
 }
 
-void FadeScreen(Bitmap *bitmap_cross, int fade_mode, int fade_delay,
-		int post_delay)
+void FadeRectangle(Bitmap *bitmap_cross, int x, int y, int width, int height,
+		   int fade_mode, int fade_delay, int post_delay)
 {
 #if defined(TARGET_SDL)
-  SDLFadeScreen(bitmap_cross, fade_mode, fade_delay, post_delay);
+  SDLFadeRectangle(bitmap_cross, x, y, width, height,
+		   fade_mode, fade_delay, post_delay);
 #else
-  X11FadeScreen(bitmap_cross, fade_mode, fade_delay, post_delay);
+  X11FadeRectangle(bitmap_cross, x, y, width, height,
+		   fade_mode, fade_delay, post_delay);
 #endif
 }
 
@@ -804,8 +828,8 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
 				boolean create_small_bitmaps)
 {
   Bitmap swap_bitmap;
-  Bitmap *new_bitmap, *tmp_bitmap_1, *tmp_bitmap_2, *tmp_bitmap_8;
-  int width_1, height_1, width_2, height_2, width_8, height_8;
+  Bitmap *new_bitmap, *tmp_bitmap_1, *tmp_bitmap_2, *tmp_bitmap_4,*tmp_bitmap_8;
+  int width_1, height_1, width_2, height_2, width_4, height_4, width_8,height_8;
   int new_width, new_height;
 
   /* calculate new image dimensions for normal sized image */
@@ -819,13 +843,15 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     tmp_bitmap_1 = old_bitmap;
 
   /* this is only needed to make compilers happy */
-  tmp_bitmap_2 = tmp_bitmap_8 = NULL;
+  tmp_bitmap_2 = tmp_bitmap_4 = tmp_bitmap_8 = NULL;
 
   if (create_small_bitmaps)
   {
     /* calculate new image dimensions for small images */
     width_2  = width_1  / 2;
     height_2 = height_1 / 2;
+    width_4  = width_1  / 4;
+    height_4 = height_1 / 4;
     width_8  = width_1  / 8;
     height_8 = height_1 / 8;
 
@@ -835,9 +861,15 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     else
       tmp_bitmap_2 = old_bitmap;
 
+    /* get image with 1/4 of normal size (for use in the level editor) */
+    if (zoom_factor != 4)
+      tmp_bitmap_4 = ZoomBitmap(tmp_bitmap_2, width_2 / 2, height_2 / 2);
+    else
+      tmp_bitmap_4 = old_bitmap;
+
     /* get image with 1/8 of normal size (for use on the preview screen) */
     if (zoom_factor != 8)
-      tmp_bitmap_8 = ZoomBitmap(tmp_bitmap_1, width_1 / 8, height_1 / 8);
+      tmp_bitmap_8 = ZoomBitmap(tmp_bitmap_4, width_4 / 2, height_4 / 2);
     else
       tmp_bitmap_8 = old_bitmap;
   }
@@ -877,6 +909,8 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     BlitBitmap(tmp_bitmap_1, new_bitmap, 0, 0, width_1, height_1, 0, 0);
     BlitBitmap(tmp_bitmap_2, new_bitmap, 0, 0, width_1 / 2, height_1 / 2,
 	       0, height_1);
+    BlitBitmap(tmp_bitmap_4, new_bitmap, 0, 0, width_1 / 4, height_1 / 4,
+	       width_1 / 2, height_1);
     BlitBitmap(tmp_bitmap_8, new_bitmap, 0, 0, width_1 / 8, height_1 / 8,
 	       3 * width_1 / 4, height_1);
   }
@@ -897,11 +931,14 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     if (zoom_factor != 2)
       FreeBitmap(tmp_bitmap_2);
 
+    if (zoom_factor != 4)
+      FreeBitmap(tmp_bitmap_4);
+
     if (zoom_factor != 8)
       FreeBitmap(tmp_bitmap_8);
   }
 
-  /* replace image with extended image (containing normal, 1/2 and 1/8 size) */
+  /* replace image with extended image (containing 1/1, 1/2, 1/4, 1/8 size) */
 #if defined(TARGET_SDL)
   swap_bitmap.surface = old_bitmap->surface;
   old_bitmap->surface = new_bitmap->surface;
@@ -1196,7 +1233,6 @@ KeyMod HandleKeyModState(Key key, int key_status)
 {
   static KeyMod current_modifiers = KMOD_None;
 
-#if !defined(TARGET_SDL)
   if (key != KSYM_UNDEFINED)	/* new key => check for modifier key change */
   {
     KeyMod new_modifier = KMOD_None;
@@ -1236,7 +1272,6 @@ KeyMod HandleKeyModState(Key key, int key_status)
     else
       current_modifiers &= ~new_modifier;
   }
-#endif
 
   return current_modifiers;
 }
@@ -1248,6 +1283,17 @@ KeyMod GetKeyModState()
 #else
   return HandleKeyModState(KSYM_UNDEFINED, 0);
 #endif
+}
+
+KeyMod GetKeyModStateFromEvents()
+{
+  /* always use key modifier state as tracked from key events (this is needed
+     if the modifier key event was injected into the event queue, but the key
+     was not really pressed on keyboard -- SDL_GetModState() seems to directly
+     query the keys as held pressed on the keyboard) -- this case is currently
+     only used to filter out clipboard insert events from "True X-Mouse" tool */
+
+  return HandleKeyModState(KSYM_UNDEFINED, 0);
 }
 
 boolean CheckCloseWindowEvent(ClientMessageEvent *event)

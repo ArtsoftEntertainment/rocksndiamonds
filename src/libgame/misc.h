@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -81,22 +81,15 @@ boolean FrameReached(unsigned long *, unsigned long);
 boolean DelayReached(unsigned long *, unsigned long);
 void WaitUntilDelayReached(unsigned long *, unsigned long);
 
-#if 0
-unsigned int SimpleRND(unsigned int);
-unsigned int InitSimpleRND(long);
-unsigned int RND(unsigned int);
-unsigned int InitRND(long);
-#endif
-
 unsigned int init_random_number(int, long);
 unsigned int get_random_number(int, int);
 
 char *getLoginName(void);
 char *getRealName(void);
-char *getHomeDir(void);
 
 char *getBasePath(char *);
 char *getBaseName(char *);
+char *getBaseNamePtr(char *);
 
 char *getPath2(char *, char *);
 char *getPath3(char *, char *, char*);
@@ -180,6 +173,9 @@ char *get_mapped_token(char *);
 int get_parameter_value(char *, char *, int);
 int get_auto_parameter_value(char *, char *);
 
+struct ScreenModeInfo *get_screen_mode_from_string(char *);
+void get_aspect_ratio_from_screen_mode(struct ScreenModeInfo *, int *x, int *y);
+
 struct FileInfo *getFileListFromConfigList(struct ConfigInfo *,
 					   struct ConfigTypeInfo *,
 					   char **, int);
@@ -187,11 +183,11 @@ void LoadArtworkConfig(struct ArtworkListInfo *);
 void ReloadCustomArtworkList(struct ArtworkListInfo *);
 void FreeCustomArtworkLists(struct ArtworkListInfo *);
 
-#if !defined(PLATFORM_UNIX)
-void initErrorFile();
-FILE *openErrorFile();
+char *getErrorFilename(char *);
+void openErrorFile();
+void closeErrorFile();
 void dumpErrorFile();
-#endif
+void NotifyUserAboutErrorFile();
 
 void debug_print_timestamp(int, char *);
 

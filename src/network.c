@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -431,18 +431,11 @@ static void Handle_OP_NUMBER_WANTED()
   }
   else if (old_client_nr == first_player.nr)	/* failed -- local player? */
   {
-#if 0
-    char *color[] = { "yellow", "red", "green", "blue" };
-#endif
     char request[100];
 
-#if 1
     sprintf(request, "Sorry ! Player %d already exists ! You are player %d !",
 	    index_nr_wanted + 1, new_index_nr + 1);
-#else
-    sprintf(request, "Sorry ! %s player still exists ! You are %s player !",
-	    color[index_nr_wanted], color[new_index_nr]);
-#endif
+
     Request(request, REQ_CONFIRM);
 
     Error(ERR_NETWORK_CLIENT, "cannot switch -- you keep client # %d",
@@ -541,20 +534,7 @@ static void Handle_OP_START_PLAYING()
   LoadTape(level_nr);
   LoadLevel(level_nr);
 
-#if 1
   StartGameActions(FALSE, setup.autorecord, new_random_seed);
-#else
-  if (setup.autorecord)
-    TapeStartRecording();
-
-  if (tape.recording)
-    tape.random_seed = new_random_seed;
-
-  InitRND(new_random_seed);
-
-  game_status = GAME_MODE_PLAYING;
-  InitGame();
-#endif
 }
 
 static void Handle_OP_PAUSE_PLAYING()
@@ -615,16 +595,11 @@ static void Handle_OP_MOVE_PLAYER(unsigned int len)
     Error(ERR_RETURN, "client and servers frame counters out of sync");
     Error(ERR_RETURN, "frame counter of client is %d", FrameCounter);
     Error(ERR_RETURN, "frame counter of server is %d", server_frame_counter);
-
-#if 1
     Error(ERR_RETURN, "this should not happen -- please debug");
 
     stop_network_game = TRUE;
 
     return;
-#else
-    Error(ERR_EXIT,   "this should not happen -- please debug");
-#endif
   }
 
   /* copy valid player actions */

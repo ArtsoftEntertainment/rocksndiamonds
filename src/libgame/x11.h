@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -91,11 +91,6 @@ struct MouseCursorInfo
 
   char data[CURSOR_MAX_WIDTH * CURSOR_MAX_HEIGHT / 8];
   char mask[CURSOR_MAX_WIDTH * CURSOR_MAX_HEIGHT / 8];
-};
-
-struct XY
-{
-  short x, y;
 };
 
 
@@ -344,7 +339,7 @@ void X11CreateBitmapContent(Bitmap *, int, int, int);
 void X11FreeBitmapPointers(Bitmap *);
 void X11CopyArea(Bitmap *, Bitmap *, int, int, int, int, int, int, int);
 void X11FillRectangle(Bitmap *, int, int, int, int, Pixel);
-void X11FadeScreen(Bitmap *, int, int, int);
+void X11FadeRectangle(Bitmap *, int, int, int, int, int, int, int);
 void X11DrawSimpleLine(Bitmap *, int, int, int, int, Pixel);
 Pixel X11GetPixel(Bitmap *, int, int);
 Pixel X11GetPixelFromRGB(unsigned int, unsigned int, unsigned int);

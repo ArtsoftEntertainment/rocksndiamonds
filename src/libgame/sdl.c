@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -15,6 +15,7 @@
 #include "sound.h"
 #include "joystick.h"
 #include "misc.h"
+#include "setup.h"
 
 
 #if defined(TARGET_SDL)
@@ -26,10 +27,6 @@
 /* functions from SGE library */
 void sge_Line(SDL_Surface *, Sint16, Sint16, Sint16, Sint16, Uint32);
 
-/* #ifdef PLATFORM_WIN32 */
-#define FULLSCREEN_BUG
-/* #endif */
-
 /* stuff needed to work around SDL/Windows fullscreen drawing bug */
 static int fullscreen_width;
 static int fullscreen_height;
@@ -37,6 +34,63 @@ static int fullscreen_xoffset;
 static int fullscreen_yoffset;
 static int video_xoffset;
 static int video_yoffset;
+
+static void setFullscreenParameters()
+{
+  struct ScreenModeInfo *fullscreen_mode;
+  int i;
+
+  fullscreen_mode = get_screen_mode_from_string(setup.fullscreen_mode);
+
+  if (fullscreen_mode == NULL)
+    return;
+
+  for (i = 0; video.fullscreen_modes[i].width != -1; i++)
+  {
+    if (fullscreen_mode->width  == video.fullscreen_modes[i].width &&
+	fullscreen_mode->height == video.fullscreen_modes[i].height)
+    {
+      fullscreen_width  = fullscreen_mode->width;
+      fullscreen_height = fullscreen_mode->height;
+
+      fullscreen_xoffset = (fullscreen_width  - video.width)  / 2;
+      fullscreen_yoffset = (fullscreen_height - video.height) / 2;
+
+      break;
+    }
+  }
+}
+
+static void SDLSetWindowIcon(char *basename)
+{
+  /* (setting the window icon on Mac OS X would replace the high-quality
+     dock icon with the currently smaller (and uglier) icon from file) */
+
+#if !defined(PLATFORM_MACOSX)
+  char *filename = getCustomImageFilename(basename);
+  SDL_Surface *surface;
+
+  if (filename == NULL)
+  {
+    Error(ERR_WARN, "SDLSetWindowIcon(): cannot find file '%s'", basename);
+
+    return;
+  }
+
+  if ((surface = IMG_Load(filename)) == NULL)
+  {
+    Error(ERR_WARN, "IMG_Load() failed: %s", SDL_GetError());
+
+    return;
+  }
+
+  /* set transparent color */
+  SDL_SetColorKey(surface, SDL_SRCCOLORKEY,
+		  SDL_MapRGB(surface->format, 0x00, 0x00, 0x00));
+
+  SDL_WM_SetIcon(surface, NULL);
+#endif
+}
 
 void SDLInitVideoDisplay(void)
 {
@@ -53,8 +107,6 @@ void SDLInitVideoDisplay(void)
 void SDLInitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
 			boolean fullscreen)
 {
-#ifdef FULLSCREEN_BUG
-  int i;
   static int screen_xy[][2] =
   {
     {  640, 480 },
@@ -62,7 +114,8 @@ void SDLInitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
     { 1024, 768 },
     {   -1,  -1 }
   };
-#endif
+  SDL_Rect **modes;
+  int i, j;
 
   /* default: normal game window size */
   fullscreen_width = video.width;
@@ -70,20 +123,86 @@ void SDLInitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
   fullscreen_xoffset = 0;
   fullscreen_yoffset = 0;
 
-#ifdef FULLSCREEN_BUG
   for (i = 0; screen_xy[i][0] != -1; i++)
   {
-    if (video.width <= screen_xy[i][0] && video.height <= screen_xy[i][1])
+    if (screen_xy[i][0] >= video.width && screen_xy[i][1] >= video.height)
     {
-      fullscreen_width = screen_xy[i][0];
+      fullscreen_width  = screen_xy[i][0];
       fullscreen_height = screen_xy[i][1];
+
       break;
     }
   }
 
-  fullscreen_xoffset = (fullscreen_width - video.width) / 2;
+  fullscreen_xoffset = (fullscreen_width  - video.width)  / 2;
   fullscreen_yoffset = (fullscreen_height - video.height) / 2;
-#endif
+
+  /* get available hardware supported fullscreen modes */
+  modes = SDL_ListModes(NULL, SDL_FULLSCREEN | SDL_HWSURFACE);
+
+  if (modes == NULL)
+  {
+    /* no screen modes available => no fullscreen mode support */
+    video.fullscreen_available = FALSE;
+  }
+  else if (modes == (SDL_Rect **)-1)
+  {
+    /* fullscreen resolution is not restricted -- all resolutions available */
+    video.fullscreen_modes = checked_calloc(2 * sizeof(struct ScreenModeInfo));
+
+    /* use native video buffer size for fullscreen mode */
+    video.fullscreen_modes[0].width  = video.width;
+    video.fullscreen_modes[0].height = video.height;
+
+    video.fullscreen_modes[1].width  = -1;
+    video.fullscreen_modes[1].height = -1;
+  }
+  else
+  {
+    /* in this case, a certain number of screen modes is available */
+    int num_modes = 0;
+
+    for(i = 0; modes[i] != NULL; i++)
+    {
+      boolean found_mode = FALSE;
+
+      /* screen mode is smaller than video buffer size -- skip it */
+      if (modes[i]->w < video.width || modes[i]->h < video.height)
+	continue;
+
+      if (video.fullscreen_modes != NULL)
+	for (j = 0; video.fullscreen_modes[j].width != -1; j++)
+	  if (modes[i]->w == video.fullscreen_modes[j].width &&
+	      modes[i]->h == video.fullscreen_modes[j].height)
+	    found_mode = TRUE;
+
+      if (found_mode)		/* screen mode already stored -- skip it */
+	continue;
+
+      /* new mode found; add it to list of available fullscreen modes */
+
+      num_modes++;
+
+      video.fullscreen_modes = checked_realloc(video.fullscreen_modes,
+					       (num_modes + 1) *
+					       sizeof(struct ScreenModeInfo));
+
+      video.fullscreen_modes[num_modes - 1].width  = modes[i]->w;
+      video.fullscreen_modes[num_modes - 1].height = modes[i]->h;
+
+      video.fullscreen_modes[num_modes].width  = -1;
+      video.fullscreen_modes[num_modes].height = -1;
+    }
+
+    if (num_modes == 0)
+    {
+      /* no appropriate screen modes available => no fullscreen mode support */
+      video.fullscreen_available = FALSE;
+    }
+  }
+
+  /* set window icon */
+  SDLSetWindowIcon(program.sdl_icon_filename);
 
   /* open SDL video output device (window or fullscreen mode) */
   if (!SDLSetVideoMode(backbuffer, fullscreen))
@@ -121,6 +240,8 @@ boolean SDLSetVideoMode(DrawBuffer **backbuffer, boolean fullscreen)
 
   if (fullscreen && !video.fullscreen_enabled && video.fullscreen_available)
   {
+    setFullscreenParameters();
+
     video_xoffset = fullscreen_xoffset;
     video_yoffset = fullscreen_yoffset;
 
@@ -207,26 +328,22 @@ void SDLCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
   Bitmap *real_dst_bitmap = (dst_bitmap == window ? backbuffer : dst_bitmap);
   SDL_Rect src_rect, dst_rect;
 
-#ifdef FULLSCREEN_BUG
   if (src_bitmap == backbuffer)
   {
     src_x += video_xoffset;
     src_y += video_yoffset;
   }
-#endif
 
   src_rect.x = src_x;
   src_rect.y = src_y;
   src_rect.w = width;
   src_rect.h = height;
 
-#ifdef FULLSCREEN_BUG
   if (dst_bitmap == backbuffer || dst_bitmap == window)
   {
     dst_x += video_xoffset;
     dst_y += video_yoffset;
   }
-#endif
 
   dst_rect.x = dst_x;
   dst_rect.y = dst_y;
@@ -242,19 +359,17 @@ void SDLCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
     SDL_UpdateRect(backbuffer->surface, dst_x, dst_y, width, height);
 }
 
-void SDLFillRectangle(Bitmap *dst_bitmap, int x, int y,
-		      int width, int height, Uint32 color)
+void SDLFillRectangle(Bitmap *dst_bitmap, int x, int y, int width, int height,
+		      Uint32 color)
 {
   Bitmap *real_dst_bitmap = (dst_bitmap == window ? backbuffer : dst_bitmap);
   SDL_Rect rect;
 
-#ifdef FULLSCREEN_BUG
   if (dst_bitmap == backbuffer || dst_bitmap == window)
   {
     x += video_xoffset;
     y += video_yoffset;
   }
-#endif
 
   rect.x = x;
   rect.y = y;
@@ -267,51 +382,34 @@ void SDLFillRectangle(Bitmap *dst_bitmap, int x, int y,
     SDL_UpdateRect(backbuffer->surface, x, y, width, height);
 }
 
-void SDLFadeScreen(Bitmap *bitmap_cross, int fade_mode, int fade_delay,
-		   int post_delay)
+void SDLFadeRectangle(Bitmap *bitmap_cross, int x, int y, int width, int height,
+		      int fade_mode, int fade_delay, int post_delay)
 {
   static boolean initialization_needed = TRUE;
-  static SDL_Surface *surface_screen_copy = NULL;
+  static SDL_Surface *surface_source = NULL;
+  static SDL_Surface *surface_target = NULL;
   static SDL_Surface *surface_black = NULL;
   SDL_Surface *surface_screen = backbuffer->surface;
-  SDL_Surface *surface_cross;		/* initialized later */
+  SDL_Surface *surface_cross = (bitmap_cross ? bitmap_cross->surface : NULL);
   SDL_Rect src_rect, dst_rect;
-  int src_x = 0, src_y = 0;
-  int dst_x = 0, dst_y = 0;
-  boolean fade_reverse = (fade_mode == FADE_MODE_FADE_IN ? TRUE : FALSE);
+  int src_x = x, src_y = y;
+  int dst_x = x, dst_y = y;
   unsigned int time_last, time_current;
   float alpha;
   int alpha_final;
 
   src_rect.x = src_x;
   src_rect.y = src_y;
-  src_rect.w = video.width;
-  src_rect.h = video.height;
+  src_rect.w = width;
+  src_rect.h = height;
 
-#ifdef FULLSCREEN_BUG
   dst_x += video_xoffset;
   dst_y += video_yoffset;
-#endif
 
   dst_rect.x = dst_x;
   dst_rect.y = dst_y;
-  dst_rect.w = video.width;
-  dst_rect.h = video.height;
-
-#if 0
-  if (!initialization_needed)
-  {
-    /* check if screen size has changed (can happen when toggling fullscreen) */
-    if (surface_screen_copy->w != surface_screen->w ||
-	surface_screen_copy->h != surface_screen->h)
-    {
-      SDL_FreeSurface(surface_screen_copy);
-      SDL_FreeSurface(surface_black);
-
-      initialization_needed = TRUE;
-    }
-  }
-#endif
+  dst_rect.w = width;
+  dst_rect.h = height;
 
   if (initialization_needed)
   {
@@ -323,39 +421,41 @@ void SDLFadeScreen(Bitmap *bitmap_cross, int fade_mode, int fade_delay,
     else
       flags |= SDL_SWSURFACE;
 
-    /* create surface for temporary copy of screen buffer */
-    if ((surface_screen_copy =
+    /* create surface for temporary copy of screen buffer (source) */
+    if ((surface_source =
 	 SDL_CreateRGBSurface(flags,
-#if 1
 			      video.width,
 			      video.height,
-#else
-			      surface_screen->w,
-			      surface_screen->h,
-#endif
 			      surface_screen->format->BitsPerPixel,
 			      surface_screen->format->Rmask,
 			      surface_screen->format->Gmask,
 			      surface_screen->format->Bmask,
 			      surface_screen->format->Amask)) == NULL)
-      Error(ERR_EXIT, "SDL_CreateRGBSurface(	) failed: %s", SDL_GetError());
+      Error(ERR_EXIT, "SDL_CreateRGBSurface() failed: %s", SDL_GetError());
+
+    /* create surface for cross-fading screen buffer (target) */
+    if ((surface_target =
+	 SDL_CreateRGBSurface(flags,
+			      video.width,
+			      video.height,
+			      surface_screen->format->BitsPerPixel,
+			      surface_screen->format->Rmask,
+			      surface_screen->format->Gmask,
+			      surface_screen->format->Bmask,
+			      surface_screen->format->Amask)) == NULL)
+      Error(ERR_EXIT, "SDL_CreateRGBSurface() failed: %s", SDL_GetError());
 
     /* create black surface for fading from/to black */
     if ((surface_black =
 	 SDL_CreateRGBSurface(flags,
-#if 1
 			      video.width,
 			      video.height,
-#else
-			      surface_screen->w,
-			      surface_screen->h,
-#endif
 			      surface_screen->format->BitsPerPixel,
 			      surface_screen->format->Rmask,
 			      surface_screen->format->Gmask,
 			      surface_screen->format->Bmask,
 			      surface_screen->format->Amask)) == NULL)
-      Error(ERR_EXIT, "SDL_CreateRGBSurface(	) failed: %s", SDL_GetError());
+      Error(ERR_EXIT, "SDL_CreateRGBSurface() failed: %s", SDL_GetError());
 
     /* completely fill the surface with black color pixels */
     SDL_FillRect(surface_black, NULL,
@@ -364,11 +464,22 @@ void SDLFadeScreen(Bitmap *bitmap_cross, int fade_mode, int fade_delay,
     initialization_needed = FALSE;
   }
 
-  /* copy the current screen backbuffer to the temporary screen copy buffer */
-  SDL_BlitSurface(surface_screen, &dst_rect, surface_screen_copy, &src_rect);
-
-  surface_cross = (fade_mode == FADE_MODE_CROSSFADE ? bitmap_cross->surface :
-		   surface_black);
+  /* copy source and target surfaces to temporary surfaces for fading */
+  if (fade_mode == FADE_MODE_CROSSFADE)
+  {
+    SDL_BlitSurface(surface_cross,  &src_rect, surface_source, &src_rect);
+    SDL_BlitSurface(surface_screen, &dst_rect, surface_target, &src_rect);
+  }
+  else if (fade_mode == FADE_MODE_FADE_IN)
+  {
+    SDL_BlitSurface(surface_black,  &src_rect, surface_source, &src_rect);
+    SDL_BlitSurface(surface_screen, &dst_rect, surface_target, &src_rect);
+  }
+  else		/* FADE_MODE_FADE_OUT */
+  {
+    SDL_BlitSurface(surface_screen, &dst_rect, surface_source, &src_rect);
+    SDL_BlitSurface(surface_black,  &src_rect, surface_target, &src_rect);
+  }
 
   time_current = SDL_GetTicks();
 
@@ -377,18 +488,21 @@ void SDLFadeScreen(Bitmap *bitmap_cross, int fade_mode, int fade_delay,
     time_last = time_current;
     time_current = SDL_GetTicks();
     alpha += 255 * ((float)(time_current - time_last) / fade_delay);
-    alpha_final = (int)(fade_reverse ? 255.0 - alpha : alpha);
-    alpha_final = MIN(MAX(0, alpha_final), 255);
+    alpha_final = MIN(MAX(0, alpha), 255);
 
-    /* draw existing image to screen buffer */
-    SDL_BlitSurface(surface_screen_copy, &src_rect, surface_screen, &dst_rect);
+    /* draw existing (source) image to screen buffer */
+    SDL_BlitSurface(surface_source, &src_rect, surface_screen, &dst_rect);
 
-    /* draw new image to screen buffer using alpha blending */
-    SDL_SetAlpha(surface_cross, SDL_SRCALPHA, alpha_final);
-    SDL_BlitSurface(surface_cross, &src_rect, surface_screen, &dst_rect);
+    /* draw new (target) image to screen buffer using alpha blending */
+    SDL_SetAlpha(surface_target, SDL_SRCALPHA, alpha_final);
+    SDL_BlitSurface(surface_target, &src_rect, surface_screen, &dst_rect);
 
-    /* draw screen buffer to visible display */
+#if 1
+    /* only update the region of the screen that is affected from fading */
+    SDL_UpdateRect(surface_screen, dst_x, dst_y, width, height);
+#else
     SDL_Flip(surface_screen);
+#endif
   }
 
   Delay(post_delay);
@@ -411,13 +525,11 @@ void SDLDrawSimpleLine(Bitmap *dst_bitmap, int from_x, int from_y,
   rect.w = (to_x - from_x + 1);
   rect.h = (to_y - from_y + 1);
 
-#ifdef FULLSCREEN_BUG
   if (dst_bitmap == backbuffer || dst_bitmap == window)
   {
     rect.x += video_xoffset;
     rect.y += video_yoffset;
   }
-#endif
 
   SDL_FillRect(surface, &rect, color);
 }
@@ -425,7 +537,6 @@ void SDLDrawSimpleLine(Bitmap *dst_bitmap, int from_x, int from_y,
 void SDLDrawLine(Bitmap *dst_bitmap, int from_x, int from_y,
 		 int to_x, int to_y, Uint32 color)
 {
-#ifdef FULLSCREEN_BUG
   if (dst_bitmap == backbuffer || dst_bitmap == window)
   {
     from_x += video_xoffset;
@@ -433,7 +544,6 @@ void SDLDrawLine(Bitmap *dst_bitmap, int from_x, int from_y,
     to_x += video_xoffset;
     to_y += video_yoffset;
   }
-#endif
 
   sge_Line(dst_bitmap->surface, from_x, from_y, to_x, to_y, color);
 }
@@ -472,13 +582,11 @@ Pixel SDLGetPixel(Bitmap *src_bitmap, int x, int y)
 {
   SDL_Surface *surface = src_bitmap->surface;
 
-#ifdef FULLSCREEN_BUG
   if (src_bitmap == backbuffer || src_bitmap == window)
   {
     x += video_xoffset;
     y += video_yoffset;
   }
-#endif
 
   switch (surface->format->BytesPerPixel)
   {
@@ -971,13 +1079,11 @@ void sge_LineRGB(SDL_Surface *Surface, Sint16 x1, Sint16 y1, Sint16 x2,
 
 void SDLPutPixel(Bitmap *dst_bitmap, int x, int y, Pixel pixel)
 {
-#ifdef FULLSCREEN_BUG
   if (dst_bitmap == backbuffer || dst_bitmap == window)
   {
     x += video_xoffset;
     y += video_yoffset;
   }
-#endif
 
   sge_PutPixel(dst_bitmap->surface, x, y, pixel);
 }
@@ -1046,11 +1152,68 @@ typedef struct
   Uint8 a;
 } tColorRGBA;
 
+int zoomSurfaceRGBA_scaleDownBy2(SDL_Surface *src, SDL_Surface *dst)
+{
+  int x, y;
+  tColorRGBA *sp, *csp, *dp;
+  int sgap, dgap;
+
+  /* pointer setup */
+  sp = csp = (tColorRGBA *) src->pixels;
+  dp = (tColorRGBA *) dst->pixels;
+  sgap = src->pitch - src->w * 4;
+  dgap = dst->pitch - dst->w * 4;
+
+  for (y = 0; y < dst->h; y++)
+  {
+    sp = csp;
+
+    for (x = 0; x < dst->w; x++)
+    {
+      tColorRGBA *sp0 = sp;
+      tColorRGBA *sp1 = (tColorRGBA *) ((Uint8 *) sp + src->pitch);
+      tColorRGBA *sp00 = &sp0[0];
+      tColorRGBA *sp01 = &sp0[1];
+      tColorRGBA *sp10 = &sp1[0];
+      tColorRGBA *sp11 = &sp1[1];
+      tColorRGBA new;
+
+      /* create new color pixel from all four source color pixels */
+      new.r = (sp00->r + sp01->r + sp10->r + sp11->r) / 4;
+      new.g = (sp00->g + sp01->g + sp10->g + sp11->g) / 4;
+      new.b = (sp00->b + sp01->b + sp10->b + sp11->b) / 4;
+      new.a = (sp00->a + sp01->a + sp10->a + sp11->a) / 4;
+
+      /* draw */
+      *dp = new;
+
+      /* advance source pointers */
+      sp += 2;
+
+      /* advance destination pointer */
+      dp++;
+    }
+
+    /* advance source pointer */
+    csp = (tColorRGBA *) ((Uint8 *) csp + 2 * src->pitch);
+
+    /* advance destination pointers */
+    dp = (tColorRGBA *) ((Uint8 *) dp + dgap);
+  }
+
+  return 0;
+}
+
 int zoomSurfaceRGBA(SDL_Surface *src, SDL_Surface *dst)
 {
   int x, y, sx, sy, *sax, *say, *csax, *csay, csx, csy;
   tColorRGBA *sp, *csp, *dp;
   int sgap, dgap;
+
+  /* use specialized zoom function when scaling down to exactly half size */
+  if (src->w == 2 * dst->w &&
+      src->h == 2 * dst->h)
+    return zoomSurfaceRGBA_scaleDownBy2(src, dst);
 
   /* variable setup */
   sx = (int) (65536.0 * (float) src->w / (float) dst->w);
@@ -1338,6 +1501,7 @@ Bitmap *SDLLoadImage(char *filename)
   if ((sdl_image_tmp = IMG_Load(filename)) == NULL)
   {
     SetError("IMG_Load(): %s", SDL_GetError());
+
     return NULL;
   }
 
@@ -1345,6 +1509,7 @@ Bitmap *SDLLoadImage(char *filename)
   if ((new_bitmap->surface = SDL_DisplayFormat(sdl_image_tmp)) == NULL)
   {
     SetError("SDL_DisplayFormat(): %s", SDL_GetError());
+
     return NULL;
   }
 
@@ -1354,6 +1519,7 @@ Bitmap *SDLLoadImage(char *filename)
   if ((new_bitmap->surface_masked = SDL_DisplayFormat(sdl_image_tmp)) == NULL)
   {
     SetError("SDL_DisplayFormat(): %s", SDL_GetError());
+
     return NULL;
   }
 
@@ -1458,7 +1624,6 @@ void SDLNextEvent(Event *event)
 {
   SDL_WaitEvent(event);
 
-#ifdef FULLSCREEN_BUG
   if (event->type == EVENT_BUTTONPRESS ||
       event->type == EVENT_BUTTONRELEASE)
   {
@@ -1482,7 +1647,6 @@ void SDLNextEvent(Event *event)
     else
       ((MotionEvent *)event)->y = 0;
   }
-#endif
 }
 
 

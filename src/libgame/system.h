@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -90,7 +90,17 @@
 #define MB_LEFTBUTTON			1
 #define MB_MIDDLEBUTTON			2
 #define MB_RIGHTBUTTON			3
-
+#define MB_WHEEL_UP			4
+#define MB_WHEEL_DOWN			5
+#define MB_WHEEL_LEFT			6
+#define MB_WHEEL_RIGHT			7
+#define IS_WHEEL_BUTTON_VERTICAL(b)	((b) >= MB_WHEEL_UP &&		\
+					 (b) <= MB_WHEEL_DOWN)
+#define IS_WHEEL_BUTTON_HORIZONTAL(b)	((b) >= MB_WHEEL_LEFT &&	\
+					 (b) <= MB_WHEEL_RIGHT)
+#define IS_WHEEL_BUTTON(b)		((b) >= MB_WHEEL_UP &&		\
+					 (b) <= MB_WHEEL_DOWN)
+#define DEFAULT_WHEEL_STEPS		3
 
 /* values for move directions */
 #define MV_BIT_LEFT			0
@@ -333,6 +343,27 @@
 #define SCOREFILE_EXTENSION	"sco"
 #endif
 
+#define ERROR_BASENAME		"stderr.txt"
+
+#define CHAR_PATH_SEPARATOR_UNIX	'/'
+#define CHAR_PATH_SEPARATOR_DOS		'\\'
+
+#define STRING_PATH_SEPARATOR_UNIX	"/"
+#define STRING_PATH_SEPARATOR_DOS	"\\"
+
+#define STRING_NEWLINE_UNIX		"\n"
+#define STRING_NEWLINE_DOS		"\r\n"
+
+#if defined(PLATFORM_WIN32) || defined(PLATFORM_MSDOS)
+#define CHAR_PATH_SEPARATOR	CHAR_PATH_SEPARATOR_DOS
+#define STRING_PATH_SEPARATOR	STRING_PATH_SEPARATOR_DOS
+#define STRING_NEWLINE		STRING_NEWLINE_DOS
+#else
+#define CHAR_PATH_SEPARATOR	CHAR_PATH_SEPARATOR_UNIX
+#define STRING_PATH_SEPARATOR	STRING_PATH_SEPARATOR_UNIX
+#define STRING_NEWLINE		STRING_NEWLINE_UNIX
+#endif
+
 
 /* areas in bitmap PIX_DOOR */
 /* meaning in PIX_DB_DOOR: (3 PAGEs)
@@ -395,6 +426,21 @@
 
 #define NUM_TREE_TYPES		4
 
+#define INFOTEXT_UNDEFINED	""
+#define INFOTEXT_GRAPHICS_DIR	"Custom Graphics"
+#define INFOTEXT_SOUNDS_DIR	"Custom Sounds"
+#define INFOTEXT_MUSIC_DIR	"Custom Music"
+#define INFOTEXT_LEVEL_DIR	"Level Sets"
+
+#define TREE_INFOTEXT(t)	((t) == TREE_TYPE_LEVEL_DIR ?		\
+				 INFOTEXT_LEVEL_DIR :			\
+				 (t) == TREE_TYPE_GRAPHICS_DIR ?	\
+				 INFOTEXT_GRAPHICS_DIR :		\
+				 (t) == TREE_TYPE_SOUNDS_DIR ?		\
+				 INFOTEXT_SOUNDS_DIR :			\
+				 (t) == TREE_TYPE_MUSIC_DIR ?		\
+				 INFOTEXT_MUSIC_DIR :			\
+				 INFOTEXT_UNDEFINED)
 
 /* values for artwork handling */
 #define LEVELDIR_ARTWORK_SET_PTR(leveldir, type)			\
@@ -495,7 +541,10 @@ struct ProgramInfo
 {
   char *command_basepath;	/* directory that contains the program */
   char *command_basename;	/* base filename of the program binary */
-  char *userdata_directory;	/* personal user data directory */
+
+  char *userdata_subdir;	/* personal user game data directory */
+  char *userdata_subdir_unix;	/* personal user game data directory (Unix) */
+  char *userdata_path;		/* resulting full path to game data directory */
 
   char *program_title;
   char *window_title;
@@ -503,10 +552,14 @@ struct ProgramInfo
 
   char *x11_icon_filename;
   char *x11_iconmask_filename;
+  char *sdl_icon_filename;
   char *msdos_cursor_filename;
 
   char *cookie_prefix;
   char *filename_prefix;	/* prefix to cut off from DOS filenames */
+
+  char *error_filename;		/* filename where to write error messages to */
+  FILE *error_file;		/* (used instead of 'stderr' on some systems) */
 
   int version_major;
   int version_minor;
@@ -536,12 +589,20 @@ struct OptionInfo
   boolean debug;
 };
 
+struct ScreenModeInfo
+{
+  int width, height;
+};
+
 struct VideoSystemInfo
 {
   int default_depth;
   int width, height, depth;
+
   boolean fullscreen_available;
   boolean fullscreen_enabled;
+  struct ScreenModeInfo *fullscreen_modes;
+  char *fullscreen_mode_current;
 };
 
 struct AudioSystemInfo
@@ -708,7 +769,7 @@ struct SetupInfo
   boolean direct_draw;		/* !double_buffering (redundant!) */
   boolean scroll_delay;
   boolean soft_scrolling;
-  boolean fading;
+  boolean fade_screens;
   boolean autorecord;
   boolean show_titlescreen;
   boolean quick_doors;
@@ -717,6 +778,7 @@ struct SetupInfo
   boolean skip_levels;
   boolean time_limit;
   boolean fullscreen;
+  char *fullscreen_mode;
   boolean ask_on_escape;
   boolean ask_on_escape_editor;
   boolean quick_switch;
@@ -792,6 +854,8 @@ struct TreeInfo
   int color;		/* color to use on selection screen for this level */
   char *class_desc;	/* description of level series class */
   int handicap_level;	/* number of the lowest unsolved level */
+
+  char *infotext;	/* optional text to describe the tree type (headline) */
 };
 
 typedef struct TreeInfo TreeInfo;
@@ -915,6 +979,11 @@ struct ArtworkListInfo
   void (*free_artwork)(void *);			/* destructor function */
 };
 
+struct XY
+{
+  int x, y;
+};
+
 
 /* ========================================================================= */
 /* exported variables                                                        */
@@ -956,7 +1025,7 @@ extern int			FrameCounter;
 /* function definitions */
 
 void InitProgramInfo(char *, char *, char *, char *, char *, char *, char *,
-		     char *, char *, char *, int);
+		     char *, char *, char *, char *, char *, int);
 
 void InitExitFunction(void (*exit_function)(int));
 void InitPlatformDependentStuff(void);
@@ -978,7 +1047,7 @@ Bitmap *CreateBitmapStruct(void);
 Bitmap *CreateBitmap(int, int, int);
 void FreeBitmap(Bitmap *);
 void BlitBitmap(Bitmap *, Bitmap *, int, int, int, int, int, int);
-void FadeScreen(Bitmap *bitmap, int, int, int);
+void FadeRectangle(Bitmap *bitmap, int, int, int, int, int, int, int);
 void FillRectangle(Bitmap *, int, int, int, int, Pixel);
 void ClearRectangle(Bitmap *, int, int, int, int);
 void ClearRectangleOnBackground(Bitmap *, int, int, int, int);
@@ -1023,6 +1092,7 @@ void PeekEvent(Event *event);
 Key GetEventKey(KeyEvent *, boolean);
 KeyMod HandleKeyModState(Key, int);
 KeyMod GetKeyModState();
+KeyMod GetKeyModStateFromEvents();
 boolean CheckCloseWindowEvent(ClientMessageEvent *);
 
 void InitJoysticks();

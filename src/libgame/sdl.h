@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -80,11 +80,6 @@ struct MouseCursorInfo
 
   char data[CURSOR_MAX_WIDTH * CURSOR_MAX_HEIGHT / 8];
   char mask[CURSOR_MAX_WIDTH * CURSOR_MAX_HEIGHT / 8];
-};
-
-struct XY
-{
-  short x, y;
 };
 
 
@@ -359,7 +354,7 @@ void SDLCreateBitmapContent(Bitmap *, int, int, int);
 void SDLFreeBitmapPointers(Bitmap *);
 void SDLCopyArea(Bitmap *, Bitmap *, int, int, int, int, int, int, int);
 void SDLFillRectangle(Bitmap *, int, int, int, int, Uint32);
-void SDLFadeScreen(Bitmap *, int, int, int);
+void SDLFadeRectangle(Bitmap *, int, int, int, int, int, int, int);
 void SDLDrawSimpleLine(Bitmap *, int, int, int, int, Uint32);
 void SDLDrawLine(Bitmap *, int, int, int, int, Uint32);
 Pixel SDLGetPixel(Bitmap *, int, int);

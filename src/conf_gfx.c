@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -3484,6 +3484,96 @@ struct ConfigInfo image_config[] =
   { "current_ce_score.ypos",			"12"			},
   { "current_ce_score.frames",			"1"			},
 
+  { "last_ce_1",				"RocksMore.pcx"		},
+  { "last_ce_1.xpos",				"0"			},
+  { "last_ce_1.ypos",				"7"			},
+  { "last_ce_1.frames",				"1"			},
+
+  { "last_ce_2",				"RocksMore.pcx"		},
+  { "last_ce_2.xpos",				"1"			},
+  { "last_ce_2.ypos",				"7"			},
+  { "last_ce_2.frames",				"1"			},
+
+  { "last_ce_3",				"RocksMore.pcx"		},
+  { "last_ce_3.xpos",				"2"			},
+  { "last_ce_3.ypos",				"7"			},
+  { "last_ce_3.frames",				"1"			},
+
+  { "last_ce_4",				"RocksMore.pcx"		},
+  { "last_ce_4.xpos",				"3"			},
+  { "last_ce_4.ypos",				"7"			},
+  { "last_ce_4.frames",				"1"			},
+
+  { "last_ce_5",				"RocksMore.pcx"		},
+  { "last_ce_5.xpos",				"4"			},
+  { "last_ce_5.ypos",				"7"			},
+  { "last_ce_5.frames",				"1"			},
+
+  { "last_ce_6",				"RocksMore.pcx"		},
+  { "last_ce_6.xpos",				"5"			},
+  { "last_ce_6.ypos",				"7"			},
+  { "last_ce_6.frames",				"1"			},
+
+  { "last_ce_7",				"RocksMore.pcx"		},
+  { "last_ce_7.xpos",				"6"			},
+  { "last_ce_7.ypos",				"7"			},
+  { "last_ce_7.frames",				"1"			},
+
+  { "last_ce_8",				"RocksMore.pcx"		},
+  { "last_ce_8.xpos",				"7"			},
+  { "last_ce_8.ypos",				"7"			},
+  { "last_ce_8.frames",				"1"			},
+
+  { "next_ce_1",				"RocksMore.pcx"		},
+  { "next_ce_1.xpos",				"0"			},
+  { "next_ce_1.ypos",				"8"			},
+  { "next_ce_1.frames",				"1"			},
+
+  { "next_ce_2",				"RocksMore.pcx"		},
+  { "next_ce_2.xpos",				"1"			},
+  { "next_ce_2.ypos",				"8"			},
+  { "next_ce_2.frames",				"1"			},
+
+  { "next_ce_3",				"RocksMore.pcx"		},
+  { "next_ce_3.xpos",				"2"			},
+  { "next_ce_3.ypos",				"8"			},
+  { "next_ce_3.frames",				"1"			},
+
+  { "next_ce_4",				"RocksMore.pcx"		},
+  { "next_ce_4.xpos",				"3"			},
+  { "next_ce_4.ypos",				"8"			},
+  { "next_ce_4.frames",				"1"			},
+
+  { "next_ce_5",				"RocksMore.pcx"		},
+  { "next_ce_5.xpos",				"4"			},
+  { "next_ce_5.ypos",				"8"			},
+  { "next_ce_5.frames",				"1"			},
+
+  { "next_ce_6",				"RocksMore.pcx"		},
+  { "next_ce_6.xpos",				"5"			},
+  { "next_ce_6.ypos",				"8"			},
+  { "next_ce_6.frames",				"1"			},
+
+  { "next_ce_7",				"RocksMore.pcx"		},
+  { "next_ce_7.xpos",				"6"			},
+  { "next_ce_7.ypos",				"8"			},
+  { "next_ce_7.frames",				"1"			},
+
+  { "next_ce_8",				"RocksMore.pcx"		},
+  { "next_ce_8.xpos",				"7"			},
+  { "next_ce_8.ypos",				"8"			},
+  { "next_ce_8.frames",				"1"			},
+
+  { "self",					"RocksMore.pcx"		},
+  { "self.xpos",				"8"			},
+  { "self.ypos",				"7"			},
+  { "self.frames",				"1"			},
+
+  { "any_element",				"RocksMore.pcx"		},
+  { "any_element.xpos",				"9"			},
+  { "any_element.ypos",				"7"			},
+  { "any_element.frames",			"1"			},
+
   { "emc_key_5",				"RocksEMC.pcx"		},
   { "emc_key_5.xpos",				"0"			},
   { "emc_key_5.ypos",				"5"			},
@@ -4445,6 +4535,9 @@ struct ConfigInfo image_config[] =
   { "menu.list_size.SCORES",			"-1"			},
   { "menu.list_size.INFO",			"-1"			},
 
+  { "menu.fade_delay",				"250"			},
+  { "menu.post_delay",				"125"			},
+
   { "door_1.width",				"-1"			},
   { "door_1.height",				"-1"			},
   { "door_1.step_offset",			"2"			},
@@ -4456,6 +4549,27 @@ struct ConfigInfo image_config[] =
   { "door_2.step_offset",			"2"			},
   { "door_2.step_delay",			"10"			},
   { "door_2.anim_mode",				"default"		},
+
+  { "preview.x",				"148"			},
+  { "preview.y",				"388"			},
+  { "preview.xsize",				"66"			},
+  { "preview.ysize",				"34"			},
+  { "preview.tile_size",			"4"			},
+  { "preview.step_offset",			"1"			},
+  { "preview.step_delay",			"50"			},
+
+  { "game.panel.level.x",			"37"			},
+  { "game.panel.level.y",			"20"			},
+  { "game.panel.gems.x",			"29"			},
+  { "game.panel.gems.y",			"54"			},
+  { "game.panel.inventory.x",			"29"			},
+  { "game.panel.inventory.y",			"89"			},
+  { "game.panel.keys.x",			"18"			},
+  { "game.panel.keys.y",			"123"			},
+  { "game.panel.score.x",			"15"			},
+  { "game.panel.score.y",			"159"			},
+  { "game.panel.time.x",			"29"			},
+  { "game.panel.time.y",			"194"			},
 
   { "[player].boring_delay_fixed",		"1000"			},
   { "[player].boring_delay_random",		"1000"			},

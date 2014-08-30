@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -22,6 +22,9 @@
 #include "files.h"
 #include "tape.h"
 #include "network.h"
+
+
+#define	DEBUG_EVENTS		0
 
 
 static boolean cursor_inside_playfield = FALSE;
@@ -315,6 +318,11 @@ void HandleExposeEvent(ExposeEvent *event)
 
 void HandleButtonEvent(ButtonEvent *event)
 {
+#if DEBUG_EVENTS
+  printf("::: BUTTON EVENT: button %d %s\n", event->button,
+	 event->type == EVENT_BUTTONPRESS ? "pressed" : "released");
+#endif
+
   motion_status = FALSE;
 
   if (event->type == EVENT_BUTTONPRESS)
@@ -322,7 +330,7 @@ void HandleButtonEvent(ButtonEvent *event)
   else
     button_status = MB_RELEASED;
 
-  HandleButton(event->x, event->y, button_status);
+  HandleButton(event->x, event->y, button_status, event->button);
 }
 
 void HandleMotionEvent(MotionEvent *event)
@@ -335,7 +343,7 @@ void HandleMotionEvent(MotionEvent *event)
 
   motion_status = TRUE;
 
-  HandleButton(event->x, event->y, button_status);
+  HandleButton(event->x, event->y, button_status, button_status);
 }
 
 void HandleKeyEvent(KeyEvent *event)
@@ -344,6 +352,11 @@ void HandleKeyEvent(KeyEvent *event)
   boolean with_modifiers = (game_status == GAME_MODE_PLAYING ? FALSE : TRUE);
   Key key = GetEventKey(event, with_modifiers);
   Key keymod = (with_modifiers ? GetEventKey(event, FALSE) : key);
+
+#if DEBUG_EVENTS
+  printf("::: KEY EVENT: %d %s\n", GetEventKey(event, TRUE),
+	 event->type == EVENT_KEYPRESS ? "pressed" : "released");
+#endif
 
   HandleKeyModState(keymod, key_status);
   HandleKey(key, key_status);
@@ -396,7 +409,7 @@ void HandleClientMessageEvent(ClientMessageEvent *event)
     CloseAllAndExit(0);
 }
 
-void HandleButton(int mx, int my, int button)
+void HandleButton(int mx, int my, int button, int button_nr)
 {
   static int old_mx = 0, old_my = 0;
 
@@ -418,14 +431,18 @@ void HandleButton(int mx, int my, int button)
     mx = my = -32;	/* force mouse event to be outside screen tiles */
   }
 
-  switch(game_status)
+  /* do not use scroll wheel button events for anything other than gadgets */
+  if (IS_WHEEL_BUTTON(button_nr))
+    return;
+
+  switch (game_status)
   {
     case GAME_MODE_TITLE:
-      HandleTitleScreen(mx,my, 0,0, button);
+      HandleTitleScreen(mx, my, 0, 0, button);
       break;
 
     case GAME_MODE_MAIN:
-      HandleMainMenu(mx,my, 0,0, button);
+      HandleMainMenu(mx, my, 0, 0, button);
       break;
 
     case GAME_MODE_PSEUDO_TYPENAME:
@@ -433,11 +450,11 @@ void HandleButton(int mx, int my, int button)
       break;
 
     case GAME_MODE_LEVELS:
-      HandleChooseLevel(mx,my, 0,0, button);
+      HandleChooseLevel(mx, my, 0, 0, button);
       break;
 
     case GAME_MODE_SCORES:
-      HandleHallOfFame(0,0, 0,0, button);
+      HandleHallOfFame(0, 0, 0, 0, button);
       break;
 
     case GAME_MODE_EDITOR:
@@ -445,11 +462,11 @@ void HandleButton(int mx, int my, int button)
       break;
 
     case GAME_MODE_INFO:
-      HandleInfoScreen(mx,my, 0,0, button);
+      HandleInfoScreen(mx, my, 0, 0, button);
       break;
 
     case GAME_MODE_SETUP:
-      HandleSetupScreen(mx,my, 0,0, button);
+      HandleSetupScreen(mx, my, 0, 0, button);
       break;
 
     case GAME_MODE_PLAYING:
@@ -498,7 +515,7 @@ static void HandleKeysSpecial(Key key)
   cheat_input[cheat_input_len++] = letter;
   cheat_input[cheat_input_len] = '\0';
 
-#if 0
+#if DEBUG_EVENTS
   printf("::: '%s' [%d]\n", cheat_input, cheat_input_len);
 #endif
 
@@ -673,12 +690,20 @@ void HandleKey(Key key, int key_status)
   if (key_status == KEY_RELEASED)
     return;
 
+  if ((key == KSYM_Return || key == KSYM_KP_Enter) &&
+      (GetKeyModState() & KMOD_Alt) && video.fullscreen_available)
+  {
+    setup.fullscreen = !setup.fullscreen;
+
+    ToggleFullscreenIfNeeded();
+
+    return;
+  }
+
   if (game_status == GAME_MODE_PLAYING && AllPlayersGone &&
       (key == KSYM_Return || key == setup.shortcut.toggle_pause))
   {
-    CloseDoor(DOOR_CLOSE_1);
-    game_status = GAME_MODE_MAIN;
-    DrawMainMenu();
+    GameEnd();
 
     return;
   }
@@ -744,54 +769,58 @@ void HandleKey(Key key, int key_status)
     case GAME_MODE_LEVELS:
     case GAME_MODE_SETUP:
     case GAME_MODE_INFO:
+    case GAME_MODE_SCORES:
       switch(key)
       {
-#if 1
 	case KSYM_space:
-#else
-	/* !!! only use "space" key to start game from main menu !!! */
-	case KSYM_space:
-#endif
 	case KSYM_Return:
 	  if (game_status == GAME_MODE_TITLE)
-	    HandleTitleScreen(0,0, 0,0, MB_MENU_CHOICE);
+	    HandleTitleScreen(0, 0, 0, 0, MB_MENU_CHOICE);
 	  else if (game_status == GAME_MODE_MAIN)
-	    HandleMainMenu(0,0, 0,0, MB_MENU_CHOICE);
+	    HandleMainMenu(0, 0, 0, 0, MB_MENU_CHOICE);
           else if (game_status == GAME_MODE_LEVELS)
-            HandleChooseLevel(0,0, 0,0, MB_MENU_CHOICE);
+            HandleChooseLevel(0, 0, 0, 0, MB_MENU_CHOICE);
 	  else if (game_status == GAME_MODE_SETUP)
-	    HandleSetupScreen(0,0, 0,0, MB_MENU_CHOICE);
+	    HandleSetupScreen(0, 0, 0, 0, MB_MENU_CHOICE);
 	  else if (game_status == GAME_MODE_INFO)
-	    HandleInfoScreen(0,0, 0,0, MB_MENU_CHOICE);
+	    HandleInfoScreen(0, 0, 0, 0, MB_MENU_CHOICE);
+	  else if (game_status == GAME_MODE_SCORES)
+	    HandleHallOfFame(0, 0, 0, 0, MB_MENU_CHOICE);
 	  break;
 
 	case KSYM_Escape:
 	  if (game_status == GAME_MODE_TITLE)
-	    HandleTitleScreen(0,0, 0,0, MB_MENU_LEAVE);
+	    HandleTitleScreen(0, 0, 0, 0, MB_MENU_LEAVE);
           else if (game_status == GAME_MODE_LEVELS)
-            HandleChooseLevel(0,0, 0,0, MB_MENU_LEAVE);
+            HandleChooseLevel(0, 0, 0, 0, MB_MENU_LEAVE);
 	  else if (game_status == GAME_MODE_SETUP)
-	    HandleSetupScreen(0,0, 0,0, MB_MENU_LEAVE);
+	    HandleSetupScreen(0, 0, 0, 0, MB_MENU_LEAVE);
 	  else if (game_status == GAME_MODE_INFO)
-	    HandleInfoScreen(0,0, 0,0, MB_MENU_LEAVE);
+	    HandleInfoScreen(0, 0, 0, 0, MB_MENU_LEAVE);
+	  else if (game_status == GAME_MODE_SCORES)
+	    HandleHallOfFame(0, 0, 0, 0, MB_MENU_LEAVE);
 	  break;
 
         case KSYM_Page_Up:
           if (game_status == GAME_MODE_LEVELS)
-            HandleChooseLevel(0,0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
+            HandleChooseLevel(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_SETUP)
-	    HandleSetupScreen(0,0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
+	    HandleSetupScreen(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_INFO)
-	    HandleInfoScreen(0,0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
+	    HandleInfoScreen(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
+	  else if (game_status == GAME_MODE_SCORES)
+	    HandleHallOfFame(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  break;
 
         case KSYM_Page_Down:
           if (game_status == GAME_MODE_LEVELS)
-            HandleChooseLevel(0,0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
+            HandleChooseLevel(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_SETUP)
-	    HandleSetupScreen(0,0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
+	    HandleSetupScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_INFO)
-	    HandleInfoScreen(0,0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
+	    HandleInfoScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
+	  else if (game_status == GAME_MODE_SCORES)
+	    HandleHallOfFame(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  break;
 
 #ifdef DEBUG
@@ -799,29 +828,6 @@ void HandleKey(Key key, int key_status)
 	  GameFrameDelay = (GameFrameDelay == 500 ? GAME_FRAME_DELAY : 500);
 	  break;
 #endif
-
-	default:
-	  break;
-      }
-      break;
-
-    case GAME_MODE_SCORES:
-      switch(key)
-      {
-	case KSYM_space:
-	case KSYM_Return:
-	case KSYM_Escape:
-	  game_status = GAME_MODE_MAIN;
-	  DrawMainMenu();
-	  break;
-
-        case KSYM_Page_Up:
-	  HandleHallOfFame(0,0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
-	  break;
-
-        case KSYM_Page_Down:
-	  HandleHallOfFame(0,0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
-	  break;
 
 	default:
 	  break;
@@ -947,7 +953,8 @@ void HandleNoEvent()
 {
   if (button_status && game_status != GAME_MODE_PLAYING)
   {
-    HandleButton(0, 0, -button_status);
+    HandleButton(0, 0, -button_status, button_status);
+
     return;
   }
 
@@ -1014,20 +1021,20 @@ void HandleJoystick()
 	newbutton = dx = dy = 0;
 
       if (game_status == GAME_MODE_TITLE)
-	HandleTitleScreen(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
+	HandleTitleScreen(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       else if (game_status == GAME_MODE_MAIN)
-	HandleMainMenu(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
+	HandleMainMenu(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       else if (game_status == GAME_MODE_LEVELS)
-        HandleChooseLevel(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
+        HandleChooseLevel(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       else if (game_status == GAME_MODE_SETUP)
-	HandleSetupScreen(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
+	HandleSetupScreen(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
-	HandleInfoScreen(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
+	HandleInfoScreen(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       break;
     }
 
     case GAME_MODE_SCORES:
-      HandleHallOfFame(0,0, dx,dy, !newbutton);
+      HandleHallOfFame(0, 0, dx, dy, !newbutton);
       break;
 
     case GAME_MODE_EDITOR:
@@ -1040,9 +1047,8 @@ void HandleJoystick()
 
       if (AllPlayersGone && newbutton)
       {
-	CloseDoor(DOOR_CLOSE_1);
-	game_status = GAME_MODE_MAIN;
-	DrawMainMenu();
+	GameEnd();
+
 	return;
       }
 

@@ -616,6 +616,8 @@ struct LEVEL
   short ball_array[8][8];	/* ball data */
   short android_array[TILE_MAX];/* android clone table */
   int num_ball_arrays;		/* number of ball data arrays used */
+
+  int exit_x, exit_y;		/* kludge for playing player exit sound */
 };
 
 struct PLAYER
@@ -710,6 +712,7 @@ extern unsigned int InitEngineRND_EM(long);
 extern void setLevelInfoToDefaults_EM();
 extern boolean LoadNativeLevel_EM(char *);
 
+extern void BackToFront_EM(void);
 extern void BlitScreenToBitmap_EM(Bitmap *);
 extern void RedrawPlayfield_EM(boolean);
 extern void DrawGameDoorValues_EM();

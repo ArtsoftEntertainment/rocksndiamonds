@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -17,7 +17,8 @@
 #include "system.h"
 
 
-#define GADGET_FRAME_DELAY	150	/* delay between gadget actions */
+#define GADGET_FRAME_DELAY_FIRST	250	/* delay after first click */
+#define GADGET_FRAME_DELAY		100	/* delay for pressed butten */
 
 /* gadget types */
 #define GD_TYPE_NORMAL_BUTTON		(1 << 0)
@@ -101,9 +102,13 @@
 #define GDI_SCROLLBAR_ITEMS_MAX		37
 #define GDI_SCROLLBAR_ITEMS_VISIBLE	38
 #define GDI_SCROLLBAR_ITEM_POSITION	39
-#define GDI_INFO_TEXT			40
-#define GDI_ACTIVE			41
-#define GDI_DIRECT_DRAW			42
+#define GDI_WHEEL_AREA_X		40
+#define GDI_WHEEL_AREA_Y		41
+#define GDI_WHEEL_AREA_WIDTH		42
+#define GDI_WHEEL_AREA_HEIGHT		43
+#define GDI_INFO_TEXT			44
+#define GDI_ACTIVE			45
+#define GDI_DIRECT_DRAW			46
 
 typedef void (*gadget_function)(void *);
 
@@ -205,6 +210,12 @@ struct GadgetScrollbar
   int correction;			/* scrollbar position correction */
 };
 
+struct GadgetWheelArea
+{
+  int x, y;				/* active area for wheel (start) */
+  int width, height;			/* active area for wheel (size) */ 
+};
+
 struct GadgetInfo
 {
   int id;				/* internal gadget identifier */
@@ -236,6 +247,7 @@ struct GadgetInfo
   struct GadgetTextArea textarea;	/* fields for text area gadget */
   struct GadgetSelectbox selectbox;	/* fields for selectbox gadget */
   struct GadgetScrollbar scrollbar;	/* fields for scrollbar gadget */
+  struct GadgetWheelArea wheelarea;	/* fields for scroll wheel area */
   struct GadgetInfo *next;		/* next list entry */
 };
 

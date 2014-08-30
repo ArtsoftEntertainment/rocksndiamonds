@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2002 Artsoft Entertainment                      *
+* (c) 1994-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -33,31 +33,60 @@
 #include "image.h"
 
 
-/* ------------------------------------------------------------------------- */
+/* ========================================================================= */
 /* some generic helper functions                                             */
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+/* platform independent wrappers for printf() et al. (newline aware)         */
 /* ------------------------------------------------------------------------- */
 
-void fprintf_line(FILE *stream, char *line_string, int line_length)
+static void vfprintf_newline(FILE *stream, char *format, va_list ap)
+{
+  char *newline = STRING_NEWLINE;
+
+  vfprintf(stream, format, ap);
+
+  fprintf(stream, "%s", newline);
+}
+
+static void fprintf_newline(FILE *stream, char *format, ...)
+{
+  if (format)
+  {
+    va_list ap;
+
+    va_start(ap, format);
+    vfprintf_newline(stream, format, ap);
+    va_end(ap);
+  }
+}
+
+void fprintf_line(FILE *stream, char *line_chars, int line_length)
 {
   int i;
 
   for (i = 0; i < line_length; i++)
-    fprintf(stream, "%s", line_string);
+    fprintf(stream, "%s", line_chars);
 
-  fprintf(stream, "\n");
+  fprintf_newline(stream, "");
 }
 
-void printf_line(char *line_string, int line_length)
+void printf_line(char *line_chars, int line_length)
 {
-  fprintf_line(stdout, line_string, line_length);
+  fprintf_line(stdout, line_chars, line_length);
 }
 
-void printf_line_with_prefix(char *prefix, char *line_string, int line_length)
+void printf_line_with_prefix(char *prefix, char *line_chars, int line_length)
 {
   fprintf(stdout, "%s", prefix);
-  fprintf_line(stdout, line_string, line_length);
+  fprintf_line(stdout, line_chars, line_length);
 }
 
+
+/* ------------------------------------------------------------------------- */
+/* string functions                                                          */
+/* ------------------------------------------------------------------------- */
 
 /* int2str() returns a number converted to a string;
    the used memory is static, but will be overwritten by later calls,
@@ -421,38 +450,6 @@ char *getRealName()
   return real_name;
 }
 
-char *getHomeDir()
-{
-  static char *dir = NULL;
-
-#if defined(PLATFORM_WIN32)
-  if (dir == NULL)
-  {
-    dir = checked_malloc(MAX_PATH + 1);
-
-    if (!SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, dir)))
-      strcpy(dir, ".");
-  }
-#elif defined(PLATFORM_UNIX)
-  if (dir == NULL)
-  {
-    if ((dir = getenv("HOME")) == NULL)
-    {
-      struct passwd *pwd;
-
-      if ((pwd = getpwuid(getuid())) != NULL)
-	dir = getStringCopy(pwd->pw_dir);
-      else
-	dir = ".";
-    }
-  }
-#else
-  dir = ".";
-#endif
-
-  return dir;
-}
-
 
 /* ------------------------------------------------------------------------- */
 /* path manipulation functions                                               */
@@ -460,17 +457,15 @@ char *getHomeDir()
 
 static char *getLastPathSeparatorPtr(char *filename)
 {
-  char *last_separator = strrchr(filename, '/');
+  char *last_separator = strrchr(filename, CHAR_PATH_SEPARATOR_UNIX);
 
-#if !defined(PLATFORM_UNIX)
   if (last_separator == NULL)	/* also try DOS/Windows variant */
-    last_separator = strrchr(filename, '\\');
-#endif
+    last_separator = strrchr(filename, CHAR_PATH_SEPARATOR_DOS);
 
   return last_separator;
 }
 
-static char *getBaseNamePtr(char *filename)
+char *getBaseNamePtr(char *filename)
 {
   char *last_separator = getLastPathSeparatorPtr(filename);
 
@@ -505,21 +500,23 @@ char *getBasePath(char *filename)
 
 char *getPath2(char *path1, char *path2)
 {
+  char *sep = STRING_PATH_SEPARATOR;
   char *complete_path = checked_malloc(strlen(path1) + 1 +
 				       strlen(path2) + 1);
 
-  sprintf(complete_path, "%s/%s", path1, path2);
+  sprintf(complete_path, "%s%s%s", path1, sep, path2);
 
   return complete_path;
 }
 
 char *getPath3(char *path1, char *path2, char *path3)
 {
+  char *sep = STRING_PATH_SEPARATOR;
   char *complete_path = checked_malloc(strlen(path1) + 1 +
 				       strlen(path2) + 1 +
 				       strlen(path3) + 1);
 
-  sprintf(complete_path, "%s/%s/%s", path1, path2, path3);
+  sprintf(complete_path, "%s%s%s%s%s", path1, sep, path2, sep, path3);
 
   return complete_path;
 }
@@ -797,8 +794,6 @@ void Error(int mode, char *format, ...)
 {
   static boolean last_line_was_separator = FALSE;
   char *process_name = "";
-  FILE *error = stderr;
-  char *newline = "\n";
 
   /* display warnings only when running in verbose mode */
   if (mode & ERR_WARN && !options.verbose)
@@ -807,7 +802,7 @@ void Error(int mode, char *format, ...)
   if (mode == ERR_RETURN_LINE)
   {
     if (!last_line_was_separator)
-      fprintf_line(error, format, 79);
+      fprintf_line(program.error_file, format, 79);
 
     last_line_was_separator = TRUE;
 
@@ -815,16 +810,6 @@ void Error(int mode, char *format, ...)
   }
 
   last_line_was_separator = FALSE;
-
-#if defined(PLATFORM_MSDOS)
-  newline = "\r\n";
-
-  if ((error = openErrorFile()) == NULL)
-  {
-    printf("Cannot write to error output file!%s", newline);
-    program.exit_function(1);
-  }
-#endif
 
   if (mode & ERR_SOUND_SERVER)
     process_name = " sound server";
@@ -837,28 +822,25 @@ void Error(int mode, char *format, ...)
   {
     va_list ap;
 
-    fprintf(error, "%s%s: ", program.command_basename, process_name);
+    fprintf(program.error_file, "%s%s: ", program.command_basename,
+	    process_name);
 
     if (mode & ERR_WARN)
-      fprintf(error, "warning: ");
+      fprintf(program.error_file, "warning: ");
 
     va_start(ap, format);
-    vfprintf(error, format, ap);
+    vfprintf_newline(program.error_file, format, ap);
     va_end(ap);
-  
-    fprintf(error, "%s", newline);
   }
   
   if (mode & ERR_HELP)
-    fprintf(error, "%s: Try option '--help' for more information.%s",
-	    program.command_basename, newline);
+    fprintf_newline(program.error_file,
+		    "%s: Try option '--help' for more information.",
+		    program.command_basename);
 
   if (mode & ERR_EXIT)
-    fprintf(error, "%s%s: aborting%s",
-	    program.command_basename, process_name, newline);
-
-  if (error != stderr)
-    fclose(error);
+    fprintf_newline(program.error_file, "%s%s: aborting",
+		    program.command_basename, process_name);
 
   if (mode & ERR_EXIT)
   {
@@ -1255,13 +1237,8 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
       sprintf(name_buffer, "%c", '0' + (char)(key - KSYM_0));
     else if (key >= KSYM_KP_0 && key <= KSYM_KP_9)
       sprintf(name_buffer, "keypad %c", '0' + (char)(key - KSYM_KP_0));
-#if 1
     else if (key >= KSYM_FKEY_FIRST && key <= KSYM_FKEY_LAST)
       sprintf(name_buffer, "F%d", (int)(key - KSYM_FKEY_FIRST + 1));
-#else
-    else if (key >= KSYM_FKEY_FIRST && key <= KSYM_FKEY_LAST)
-      sprintf(name_buffer, "function F%d", (int)(key - KSYM_FKEY_FIRST + 1));
-#endif
     else if (key == KSYM_UNDEFINED)
       strcpy(name_buffer, "(undefined)");
     else
@@ -1833,6 +1810,48 @@ int get_auto_parameter_value(char *token, char *value_raw)
     suffix = token;
 
   return get_parameter_value(value_raw, suffix, TYPE_INTEGER);
+}
+
+struct ScreenModeInfo *get_screen_mode_from_string(char *screen_mode_string)
+{
+  static struct ScreenModeInfo screen_mode;
+  char *screen_mode_string_x = strchr(screen_mode_string, 'x');
+  char *screen_mode_string_copy;
+  char *screen_mode_string_pos_w;
+  char *screen_mode_string_pos_h;
+
+  if (screen_mode_string_x == NULL)	/* invalid screen mode format */
+    return NULL;
+
+  screen_mode_string_copy = getStringCopy(screen_mode_string);
+
+  screen_mode_string_pos_w = screen_mode_string_copy;
+  screen_mode_string_pos_h = strchr(screen_mode_string_copy, 'x');
+  *screen_mode_string_pos_h++ = '\0';
+
+  screen_mode.width  = atoi(screen_mode_string_pos_w);
+  screen_mode.height = atoi(screen_mode_string_pos_h);
+
+  return &screen_mode;
+}
+
+void get_aspect_ratio_from_screen_mode(struct ScreenModeInfo *screen_mode,
+				       int *x, int *y)
+{
+  float aspect_ratio = (float)screen_mode->width / (float)screen_mode->height;
+  float aspect_ratio_new;
+  int i = 1;
+
+  do
+  {
+    *x = i * aspect_ratio + 0.000001;
+    *y = i;
+
+    aspect_ratio_new = (float)*x / (float)*y;
+
+    i++;
+  }
+  while (aspect_ratio_new != aspect_ratio && *y < screen_mode->height);
 }
 
 static void FreeCustomArtworkList(struct ArtworkListInfo *,
@@ -2697,25 +2716,32 @@ void FreeCustomArtworkLists(struct ArtworkListInfo *artwork_info)
 /* ------------------------------------------------------------------------- */
 /* functions only needed for non-Unix (non-command-line) systems             */
 /* (MS-DOS only; SDL/Windows creates files "stdout.txt" and "stderr.txt")    */
+/* (now also added for Windows, to create files in user data directory)      */
 /* ------------------------------------------------------------------------- */
 
-#if defined(PLATFORM_MSDOS)
-
-#define ERROR_FILENAME		"stderr.txt"
-
-void initErrorFile()
+char *getErrorFilename(char *basename)
 {
-  unlink(ERROR_FILENAME);
+  return getPath2(getUserGameDataDir(), basename);
 }
 
-FILE *openErrorFile()
+void openErrorFile()
 {
-  return fopen(ERROR_FILENAME, MODE_APPEND);
+  InitUserDataDirectory();
+
+  if ((program.error_file = fopen(program.error_filename, MODE_WRITE)) == NULL)
+    fprintf_newline(stderr, "ERROR: cannot open file '%s' for writing!",
+		    program.error_filename);
+}
+
+void closeErrorFile()
+{
+  if (program.error_file != stderr)	/* do not close stream 'stderr' */
+    fclose(program.error_file);
 }
 
 void dumpErrorFile()
 {
-  FILE *error_file = fopen(ERROR_FILENAME, MODE_READ);
+  FILE *error_file = fopen(program.error_filename, MODE_READ);
 
   if (error_file != NULL)
   {
@@ -2725,7 +2751,18 @@ void dumpErrorFile()
     fclose(error_file);
   }
 }
+
+void NotifyUserAboutErrorFile()
+{
+#if defined(PLATFORM_WIN32)
+  char *title_text = getStringCat2(program.program_title, " Error Message");
+  char *error_text = getStringCat2("The program was aborted due to an error; "
+				   "for details, see the following error file:"
+				   STRING_NEWLINE, program.error_filename);
+
+  MessageBox(NULL, error_text, title_text, MB_OK);
 #endif
+}
 
 
 /* ------------------------------------------------------------------------- */

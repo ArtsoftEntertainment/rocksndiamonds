@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -21,6 +21,8 @@
 #define SCROLL_PAGE	(2 * SCR_FIELDY)
 
 
+void DrawMainMenuExt(int, boolean);
+void DrawAndFadeInMainMenu(int);
 void DrawMainMenu(void);
 void DrawHallOfFame(int);
 

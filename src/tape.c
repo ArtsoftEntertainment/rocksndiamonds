@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -542,14 +542,14 @@ static void TapeStartGameRecording()
 
 #if defined(NETWORK_AVALIABLE)
   if (options.network)
-    SendToServer_StartPlaying();
-  else
-#endif
   {
-    game_status = GAME_MODE_PLAYING;
-    StopAnimation();
-    InitGame();
+    SendToServer_StartPlaying();
+
+    return;
   }
+#endif
+
+  InitGame();
 }
 
 static void TapeAppendRecording()
@@ -706,8 +706,6 @@ static void TapeStartGamePlaying()
 {
   TapeStartPlaying();
 
-  game_status = GAME_MODE_PLAYING;
-  StopAnimation();
   InitGame();
 }
 
@@ -835,11 +833,6 @@ void TapeStop()
     DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
     DrawVideoDisplay(VIDEO_STATE_TIME_ON, tape.length_seconds);
   }
-
-#if 0
-  if (tape.auto_play)
-    AutoPlayTape();	/* continue automatically playing next tape */
-#endif
 }
 
 unsigned int GetTapeLength()

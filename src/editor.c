@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -2402,6 +2402,8 @@ static struct
   int gd_x, gd_y;
   int x, y;
   int width, height;
+  int wheel_x, wheel_y;
+  int wheel_width, wheel_height;
   int type;
   int gadget_id;
   char *infotext;
@@ -2411,6 +2413,8 @@ static struct
     ED_SCROLLBAR_XPOS,			ED_SCROLLBAR_YPOS,
     SX + ED_SCROLL_HORIZONTAL_XPOS,	SY + ED_SCROLL_HORIZONTAL_YPOS,
     ED_SCROLL_HORIZONTAL_XSIZE,		ED_SCROLL_HORIZONTAL_YSIZE,
+    0,					0,
+    SX + SXSIZE + SX,			WIN_YSIZE,
     GD_TYPE_SCROLLBAR_HORIZONTAL,
     GADGET_ID_SCROLL_HORIZONTAL,
     "scroll level editing area horizontally"
@@ -2419,6 +2423,8 @@ static struct
     ED_SCROLLBAR_XPOS,			ED_SCROLLBAR_YPOS,
     SX + ED_SCROLL_VERTICAL_XPOS,	SY + ED_SCROLL_VERTICAL_YPOS,
     ED_SCROLL_VERTICAL_XSIZE,		ED_SCROLL_VERTICAL_YSIZE,
+    0,					0,
+    SX + SXSIZE + SX,			WIN_YSIZE,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_VERTICAL,
     "scroll level editing area vertically"
@@ -2427,6 +2433,8 @@ static struct
     ED_SCROLLBAR2_XPOS,			ED_SCROLLBAR2_YPOS,
     DX + ED_SCROLL2_VERTICAL_XPOS,	DY + ED_SCROLL2_VERTICAL_YPOS,
     ED_SCROLL2_VERTICAL_XSIZE,		ED_SCROLL2_VERTICAL_YSIZE,
+    SX + SXSIZE + SX,			0,
+    WIN_XSIZE - (SX + SXSIZE + SX),	WIN_YSIZE,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_LIST_VERTICAL,
     "scroll element list vertically"
@@ -3127,28 +3135,10 @@ static int editor_hl_boulderdash[] =
   EL_CHAR('B'),
   EL_CHAR('D'),
   EL_EMPTY,
-
-#if 0
-  EL_CHAR('B'),
-  EL_CHAR('O'),
-  EL_CHAR('U'),
-  EL_CHAR('L'),
-
-  EL_CHAR('-'),
-  EL_CHAR('D'),
-  EL_CHAR('E'),
-  EL_CHAR('R'),
-
-  EL_CHAR('D'),
-  EL_CHAR('A'),
-  EL_CHAR('S'),
-  EL_CHAR('H'),
-#endif
 };
 
 static int editor_el_boulderdash[] =
 {
-#if 1
   EL_EMPTY,
   EL_SAND,
   EL_BD_ROCK,
@@ -3173,34 +3163,6 @@ static int editor_el_boulderdash[] =
   EL_BD_BUTTERFLY_DOWN,
   EL_BD_FIREFLY_DOWN,
   EL_EXIT_OPEN,
-
-#else
-
-  EL_PLAYER_1,
-  EL_EMPTY,
-  EL_SAND,
-  EL_STEELWALL,
-
-  EL_BD_WALL,
-  EL_BD_MAGIC_WALL,
-  EL_EXIT_CLOSED,
-  EL_EXIT_OPEN,
-
-  EL_BD_DIAMOND,
-  EL_BD_BUTTERFLY_UP,
-  EL_BD_FIREFLY_UP,
-  EL_BD_ROCK,
-
-  EL_BD_BUTTERFLY_LEFT,
-  EL_BD_FIREFLY_LEFT,
-  EL_BD_BUTTERFLY_RIGHT,
-  EL_BD_FIREFLY_RIGHT,
-
-  EL_BD_AMOEBA,
-  EL_BD_BUTTERFLY_DOWN,
-  EL_BD_FIREFLY_DOWN,
-  EL_BD_EXPANDABLE_WALL,
-#endif
 };
 static int *editor_hl_boulderdash_ptr = editor_hl_boulderdash;
 static int *editor_el_boulderdash_ptr = editor_el_boulderdash;
@@ -3213,28 +3175,10 @@ static int editor_hl_emerald_mine[] =
   EL_CHAR('E'),
   EL_CHAR('M'),
   EL_EMPTY,
-
-#if 0
-  EL_CHAR('E'),
-  EL_CHAR('M'),
-  EL_CHAR('E'),
-  EL_CHAR('-'),
-
-  EL_CHAR('R'),
-  EL_CHAR('A'),
-  EL_CHAR('L'),
-  EL_CHAR('D'),
-
-  EL_CHAR('M'),
-  EL_CHAR('I'),
-  EL_CHAR('N'),
-  EL_CHAR('E'),
-#endif
 };
 
 static int editor_el_emerald_mine[] =
 {
-#if 1
   EL_SAND,
   EL_ROCK,
   EL_QUICKSAND_EMPTY,
@@ -3294,79 +3238,6 @@ static int editor_el_emerald_mine[] =
   EL_EM_GATE_2_GRAY,
   EL_EM_GATE_3_GRAY,
   EL_EM_GATE_4_GRAY,
-
-#else
-
-  EL_PLAYER_1,
-  EL_PLAYER_2,
-  EL_SAND,
-  EL_ROCK,
-
-  EL_STEELWALL,
-  EL_WALL,
-  EL_WALL_SLIPPERY,
-  EL_MAGIC_WALL,
-
-  EL_EMERALD,
-  EL_DIAMOND,
-  EL_NUT,
-  EL_BOMB,
-
-  EL_WALL_EMERALD,
-  EL_WALL_DIAMOND,
-  EL_QUICKSAND_EMPTY,
-  EL_QUICKSAND_FULL,
-
-  EL_DYNAMITE,
-  EL_DYNAMITE_ACTIVE,
-  EL_EXIT_CLOSED,
-  EL_EXIT_OPEN,
-
-  EL_YAMYAM,
-  EL_BUG_UP,
-  EL_SPACESHIP_UP,
-  EL_ROBOT,
-
-  EL_BUG_LEFT,
-  EL_SPACESHIP_LEFT,
-  EL_BUG_RIGHT,
-  EL_SPACESHIP_RIGHT,
-
-  EL_ROBOT_WHEEL,
-  EL_BUG_DOWN,
-  EL_SPACESHIP_DOWN,
-  EL_INVISIBLE_WALL,
-
-  EL_ACID_POOL_TOPLEFT,
-  EL_ACID,
-  EL_ACID_POOL_TOPRIGHT,
-  EL_EMPTY,
-
-  EL_ACID_POOL_BOTTOMLEFT,
-  EL_ACID_POOL_BOTTOM,
-  EL_ACID_POOL_BOTTOMRIGHT,
-  EL_EMPTY,
-
-  EL_AMOEBA_DROP,
-  EL_AMOEBA_DEAD,
-  EL_AMOEBA_WET,
-  EL_AMOEBA_DRY,
-
-  EL_EM_KEY_1,
-  EL_EM_KEY_2,
-  EL_EM_KEY_3,
-  EL_EM_KEY_4,
-
-  EL_EM_GATE_1,
-  EL_EM_GATE_2,
-  EL_EM_GATE_3,
-  EL_EM_GATE_4,
-
-  EL_EM_GATE_1_GRAY,
-  EL_EM_GATE_2_GRAY,
-  EL_EM_GATE_3_GRAY,
-  EL_EM_GATE_4_GRAY,
-#endif
 };
 static int *editor_hl_emerald_mine_ptr = editor_hl_emerald_mine;
 static int *editor_el_emerald_mine_ptr = editor_el_emerald_mine;
@@ -3379,33 +3250,10 @@ static int editor_hl_emerald_mine_club[] =
   EL_CHAR('E'),
   EL_CHAR('M'),
   EL_CHAR('C'),
-
-#if 0
-  EL_CHAR('E'),
-  EL_CHAR('M'),
-  EL_CHAR('E'),
-  EL_CHAR('-'),
-
-  EL_CHAR('R'),
-  EL_CHAR('A'),
-  EL_CHAR('L'),
-  EL_CHAR('D'),
-
-  EL_CHAR('M'),
-  EL_CHAR('I'),
-  EL_CHAR('N'),
-  EL_CHAR('E'),
-
-  EL_CHAR('C'),
-  EL_CHAR('L'),
-  EL_CHAR('U'),
-  EL_CHAR('B'),
-#endif
 };
 
 static int editor_el_emerald_mine_club[] =
 {
-#if 1
   EL_EMC_KEY_5,
   EL_EMC_KEY_6,
   EL_EMC_KEY_7,
@@ -3480,89 +3328,6 @@ static int editor_el_emerald_mine_club[] =
   EL_YAMYAM_DOWN,
   EL_BALLOON_SWITCH_DOWN,
   EL_BALLOON_SWITCH_NONE,
-
-#else
-
-  EL_EMC_KEY_5,
-  EL_EMC_KEY_6,
-  EL_EMC_KEY_7,
-  EL_EMC_KEY_8,
-
-  EL_EMC_GATE_5,
-  EL_EMC_GATE_6,
-  EL_EMC_GATE_7,
-  EL_EMC_GATE_8,
-
-  EL_EMC_GATE_5_GRAY,
-  EL_EMC_GATE_6_GRAY,
-  EL_EMC_GATE_7_GRAY,
-  EL_EMC_GATE_8_GRAY,
-
-  EL_EMC_STEELWALL_1,
-  EL_EMC_STEELWALL_2,
-  EL_EMC_STEELWALL_3,
-  EL_EMC_STEELWALL_4,
-
-  EL_EMC_WALL_13,
-  EL_EMC_WALL_14,
-  EL_EMC_WALL_15,
-  EL_EMC_WALL_16,
-
-  EL_EMC_WALL_SLIPPERY_1,
-  EL_EMC_WALL_SLIPPERY_2,
-  EL_EMC_WALL_SLIPPERY_3,
-  EL_EMC_WALL_SLIPPERY_4,
-
-  EL_EMC_WALL_1,
-  EL_EMC_WALL_2,
-  EL_EMC_WALL_3,
-  EL_EMC_WALL_4,
-
-  EL_EMC_WALL_5,
-  EL_EMC_WALL_6,
-  EL_EMC_WALL_7,
-  EL_EMC_WALL_8,
-
-  EL_EMC_WALL_9,
-  EL_EMC_WALL_10,
-  EL_EMC_WALL_11,
-  EL_EMC_WALL_12,
-
-  EL_EMC_ANDROID,
-  EL_BALLOON,
-  EL_BALLOON_SWITCH_ANY,
-  EL_BALLOON_SWITCH_NONE,
-
-  EL_BALLOON_SWITCH_LEFT,
-  EL_BALLOON_SWITCH_RIGHT,
-  EL_BALLOON_SWITCH_UP,
-  EL_BALLOON_SWITCH_DOWN,
-
-  EL_EMC_GRASS,
-  EL_EMC_PLANT,
-  EL_EMC_LENSES,
-  EL_EMC_MAGNIFIER,
-
-  EL_EMC_MAGIC_BALL,
-  EL_EMC_MAGIC_BALL_SWITCH,
-  EL_SPRING,
-  EL_EMC_SPRING_BUMPER,
-
-  EL_EMC_DRIPPER,
-  EL_EMC_FAKE_GRASS,
-  EL_EMPTY,
-  EL_EMPTY,
-
-  EL_EM_DYNAMITE,
-  EL_EM_DYNAMITE_ACTIVE,
-  EL_EMPTY,
-  EL_EMPTY,
-
-  EL_YAMYAM_LEFT,
-  EL_YAMYAM_RIGHT,
-  EL_YAMYAM_UP,
-  EL_YAMYAM_DOWN,
-#endif
 };
 static int *editor_hl_emerald_mine_club_ptr = editor_hl_emerald_mine_club;
 static int *editor_el_emerald_mine_club_ptr = editor_el_emerald_mine_club;
@@ -3575,18 +3340,10 @@ static int editor_hl_rnd[] =
   EL_CHAR('R'),
   EL_CHAR('N'),
   EL_CHAR('D'),
-
-#if 0
-  EL_CHAR('M'),
-  EL_CHAR('O'),
-  EL_CHAR('R'),
-  EL_CHAR('E'),
-#endif
 };
 
 static int editor_el_rnd[] =
 {
-#if 1
   EL_KEY_1,
   EL_KEY_2,
   EL_KEY_3,
@@ -3666,94 +3423,6 @@ static int editor_el_rnd[] =
   EL_EXPANDABLE_WALL_HORIZONTAL,
   EL_EXPANDABLE_WALL_VERTICAL,
   EL_EXPANDABLE_WALL_ANY,
-
-#else
-
-  EL_KEY_1,
-  EL_KEY_2,
-  EL_KEY_3,
-  EL_KEY_4,
-
-  EL_GATE_1,
-  EL_GATE_2,
-  EL_GATE_3,
-  EL_GATE_4,
-
-  EL_GATE_1_GRAY,
-  EL_GATE_2_GRAY,
-  EL_GATE_3_GRAY,
-  EL_GATE_4_GRAY,
-
-  EL_ARROW_LEFT,
-  EL_ARROW_RIGHT,
-  EL_ARROW_UP,
-  EL_ARROW_DOWN,
-
-  EL_AMOEBA_DEAD,
-  EL_AMOEBA_DRY,
-  EL_AMOEBA_FULL,
-  EL_EMPTY,
-
-  EL_EMPTY,
-  EL_EMERALD_YELLOW,
-  EL_EMERALD_RED,
-  EL_EMERALD_PURPLE,
-
-  EL_WALL_BD_DIAMOND,
-  EL_WALL_EMERALD_YELLOW,
-  EL_WALL_EMERALD_RED,
-  EL_WALL_EMERALD_PURPLE,
-
-  EL_GAME_OF_LIFE,
-  EL_PACMAN_UP,
-  EL_TIME_ORB_FULL,
-  EL_TIME_ORB_EMPTY,
-
-  EL_PACMAN_LEFT,
-  EL_DARK_YAMYAM,
-  EL_PACMAN_RIGHT,
-  EL_EXPANDABLE_WALL,
-
-  EL_BIOMAZE,
-  EL_PACMAN_DOWN,
-  EL_LAMP,
-  EL_LAMP_ACTIVE,
-
-  EL_DYNABOMB_INCREASE_NUMBER,
-  EL_DYNABOMB_INCREASE_SIZE,
-  EL_DYNABOMB_INCREASE_POWER,
-  EL_STONEBLOCK,
-
-  EL_MOLE,
-  EL_PENGUIN,
-  EL_PIG,
-  EL_DRAGON,
-
-  EL_BUG,
-  EL_MOLE_UP,
-  EL_BD_BUTTERFLY,
-  EL_BD_FIREFLY,
-
-  EL_MOLE_LEFT,
-  EL_EMPTY,
-  EL_MOLE_RIGHT,
-  EL_PACMAN,
-
-  EL_SPACESHIP,
-  EL_MOLE_DOWN,
-  EL_EMPTY,
-  EL_EMPTY,
-
-  EL_SATELLITE,
-  EL_EXPANDABLE_WALL_HORIZONTAL,
-  EL_EXPANDABLE_WALL_VERTICAL,
-  EL_EXPANDABLE_WALL_ANY,
-
-  EL_INVISIBLE_STEELWALL,
-  EL_INVISIBLE_WALL,
-  EL_SPEED_PILL,
-  EL_BLACK_ORB,
-#endif
 };
 static int *editor_hl_rnd_ptr = editor_hl_rnd;
 static int *editor_el_rnd_ptr = editor_el_rnd;
@@ -3766,18 +3435,6 @@ static int editor_hl_sokoban[] =
   EL_CHAR('S'),
   EL_CHAR('B'),
   EL_EMPTY,
-
-#if 0
-  EL_CHAR('S'),
-  EL_CHAR('O'),
-  EL_CHAR('K'),
-  EL_CHAR('O'),
-
-  EL_CHAR('-'),
-  EL_CHAR('B'),
-  EL_CHAR('A'),
-  EL_CHAR('N'),
-#endif
 };
 
 static int editor_el_sokoban[] =
@@ -3798,23 +3455,10 @@ static int editor_hl_supaplex[] =
   EL_CHAR('S'),
   EL_CHAR('P'),
   EL_EMPTY,
-
-#if 0
-  EL_CHAR('S'),
-  EL_CHAR('U'),
-  EL_CHAR('P'),
-  EL_CHAR('A'),
-
-  EL_CHAR('P'),
-  EL_CHAR('L'),
-  EL_CHAR('E'),
-  EL_CHAR('X'),
-#endif
 };
 
 static int editor_el_supaplex[] =
 {
-#if 1
   EL_SP_MURPHY,
   EL_EMPTY,
   EL_SP_BASE,
@@ -3864,63 +3508,6 @@ static int editor_el_supaplex[] =
   EL_SP_CHIP_LEFT,
   EL_SP_CHIP_RIGHT,
   EL_SP_CHIP_BOTTOM,
-
-#else
-
-#if 1
-  EL_EMPTY,
-#else
-  EL_SP_EMPTY,
-#endif
-  EL_SP_ZONK,
-  EL_SP_BASE,
-  EL_SP_MURPHY,
-
-  EL_SP_INFOTRON,
-  EL_SP_CHIP_SINGLE,
-  EL_SP_HARDWARE_GRAY,
-  EL_SP_EXIT_CLOSED,
-
-  EL_SP_DISK_ORANGE,
-  EL_SP_PORT_RIGHT,
-  EL_SP_PORT_DOWN,
-  EL_SP_PORT_LEFT,
-
-  EL_SP_PORT_UP,
-  EL_SP_GRAVITY_PORT_RIGHT,
-  EL_SP_GRAVITY_PORT_DOWN,
-  EL_SP_GRAVITY_PORT_LEFT,
-
-  EL_SP_GRAVITY_PORT_UP,
-  EL_SP_SNIKSNAK,
-  EL_SP_DISK_YELLOW,
-  EL_SP_TERMINAL,
-
-  EL_SP_DISK_RED,
-  EL_SP_PORT_VERTICAL,
-  EL_SP_PORT_HORIZONTAL,
-  EL_SP_PORT_ANY,
-
-  EL_SP_ELECTRON,
-  EL_SP_BUGGY_BASE,
-  EL_SP_CHIP_LEFT,
-  EL_SP_CHIP_RIGHT,
-
-  EL_SP_HARDWARE_BASE_1,
-  EL_SP_HARDWARE_GREEN,
-  EL_SP_HARDWARE_BLUE,
-  EL_SP_HARDWARE_RED,
-
-  EL_SP_HARDWARE_YELLOW,
-  EL_SP_HARDWARE_BASE_2,
-  EL_SP_HARDWARE_BASE_3,
-  EL_SP_HARDWARE_BASE_4,
-
-  EL_SP_HARDWARE_BASE_5,
-  EL_SP_HARDWARE_BASE_6,
-  EL_SP_CHIP_TOP,
-  EL_SP_CHIP_BOTTOM,
-#endif
 };
 static int *editor_hl_supaplex_ptr = editor_hl_supaplex;
 static int *editor_el_supaplex_ptr = editor_el_supaplex;
@@ -3933,33 +3520,10 @@ static int editor_hl_diamond_caves[] =
   EL_CHAR('D'),
   EL_CHAR('C'),
   EL_CHAR('2'),
-
-#if 0
-  EL_CHAR('D'),
-  EL_CHAR('I'),
-  EL_CHAR('A'),
-  EL_CHAR('-'),
-
-  EL_CHAR('M'),
-  EL_CHAR('O'),
-  EL_CHAR('N'),
-  EL_CHAR('D'),
-
-  EL_CHAR('C'),
-  EL_CHAR('A'),
-  EL_CHAR('V'),
-  EL_CHAR('E'),
-
-  EL_CHAR('S'),
-  EL_CHAR(' '),
-  EL_CHAR('I'),
-  EL_CHAR('I'),
-#endif
 };
 
 static int editor_el_diamond_caves[] =
 {
-#if 1
   EL_PEARL,
   EL_CRYSTAL,
   EL_WALL_PEARL,
@@ -4024,75 +3588,6 @@ static int editor_el_diamond_caves[] =
   EL_ENVELOPE_2,
   EL_ENVELOPE_3,
   EL_ENVELOPE_4,
-
-#else
-
-  EL_PEARL,
-  EL_CRYSTAL,
-  EL_WALL_PEARL,
-  EL_WALL_CRYSTAL,
-
-  EL_CONVEYOR_BELT_1_LEFT,
-  EL_CONVEYOR_BELT_1_MIDDLE,
-  EL_CONVEYOR_BELT_1_RIGHT,
-  EL_CONVEYOR_BELT_1_SWITCH_MIDDLE,
-
-  EL_CONVEYOR_BELT_2_LEFT,
-  EL_CONVEYOR_BELT_2_MIDDLE,
-  EL_CONVEYOR_BELT_2_RIGHT,
-  EL_CONVEYOR_BELT_2_SWITCH_MIDDLE,
-
-  EL_CONVEYOR_BELT_3_LEFT,
-  EL_CONVEYOR_BELT_3_MIDDLE,
-  EL_CONVEYOR_BELT_3_RIGHT,
-  EL_CONVEYOR_BELT_3_SWITCH_MIDDLE,
-
-  EL_CONVEYOR_BELT_4_LEFT,
-  EL_CONVEYOR_BELT_4_MIDDLE,
-  EL_CONVEYOR_BELT_4_RIGHT,
-  EL_CONVEYOR_BELT_4_SWITCH_MIDDLE,
-
-  EL_CONVEYOR_BELT_1_SWITCH_LEFT,
-  EL_CONVEYOR_BELT_2_SWITCH_LEFT,
-  EL_CONVEYOR_BELT_3_SWITCH_LEFT,
-  EL_CONVEYOR_BELT_4_SWITCH_LEFT,
-
-  EL_CONVEYOR_BELT_1_SWITCH_RIGHT,
-  EL_CONVEYOR_BELT_2_SWITCH_RIGHT,
-  EL_CONVEYOR_BELT_3_SWITCH_RIGHT,
-  EL_CONVEYOR_BELT_4_SWITCH_RIGHT,
-
-  EL_SWITCHGATE_OPEN,
-  EL_SWITCHGATE_CLOSED,
-  EL_SWITCHGATE_SWITCH_UP,
-  EL_SWITCHGATE_SWITCH_DOWN,
-
-  EL_ENVELOPE_1,
-  EL_ENVELOPE_2,
-  EL_ENVELOPE_3,
-  EL_ENVELOPE_4,
-
-  EL_TIMEGATE_CLOSED,
-  EL_TIMEGATE_OPEN,
-  EL_TIMEGATE_SWITCH,
-  EL_EMPTY,
-
-  EL_LANDMINE,
-  EL_INVISIBLE_SAND,
-  EL_STEELWALL_SLIPPERY,
-  EL_EMPTY,
-
-  EL_SIGN_EXCLAMATION,
-  EL_SIGN_STOP,
-  EL_LIGHT_SWITCH,
-  EL_LIGHT_SWITCH_ACTIVE,
-
-  EL_SHIELD_NORMAL,
-  EL_SHIELD_DEADLY,
-  EL_EXTRA_TIME,
-  EL_EMPTY,
-
-#endif
 };
 static int *editor_hl_diamond_caves_ptr = editor_hl_diamond_caves;
 static int *editor_el_diamond_caves_ptr = editor_el_diamond_caves;
@@ -4105,28 +3600,6 @@ static int editor_hl_dx_boulderdash[] =
   EL_CHAR('D'),
   EL_CHAR('X'),
   EL_EMPTY,
-
-#if 0
-  EL_CHAR('D'),
-  EL_CHAR('X'),
-  EL_CHAR('-'),
-  EL_CHAR(' '),
-
-  EL_CHAR('B'),
-  EL_CHAR('O'),
-  EL_CHAR('U'),
-  EL_CHAR('L'),
-
-  EL_CHAR('-'),
-  EL_CHAR('D'),
-  EL_CHAR('E'),
-  EL_CHAR('R'),
-
-  EL_CHAR('D'),
-  EL_CHAR('A'),
-  EL_CHAR('S'),
-  EL_CHAR('H'),
-#endif
 };
 
 static int editor_el_dx_boulderdash[] =
@@ -4162,13 +3635,6 @@ static int editor_hl_chars[] =
   EL_CHAR('T'),
   EL_CHAR('X'),
   EL_CHAR('T'),
-
-#if 0
-  EL_CHAR('T'),
-  EL_CHAR('E'),
-  EL_CHAR('X'),
-  EL_CHAR('T'),
-#endif
 };
 
 static int editor_el_chars[] =
@@ -4274,28 +3740,6 @@ static int editor_hl_custom[] =
   EL_CHAR('C'),
   EL_CHAR('E'),
   EL_EMPTY,
-
-#if 0
-  EL_CHAR('C'),
-  EL_CHAR('U'),
-  EL_CHAR('S'),
-  EL_CHAR('-'),
-
-  EL_CHAR('T'),
-  EL_CHAR('O'),
-  EL_CHAR('M'),
-  EL_CHAR(' '),
-
-  EL_CHAR('E'),
-  EL_CHAR('L'),
-  EL_CHAR('E'),
-  EL_CHAR('M'),
-
-  EL_CHAR('E'),
-  EL_CHAR('N'),
-  EL_CHAR('T'),
-  EL_CHAR('S'),
-#endif
 };
 
 static int editor_el_custom[] =
@@ -4625,59 +4069,12 @@ static int *editor_el_custom_ptr = editor_el_custom;
 static int num_editor_hl_custom = SIZEOF_ARRAY_INT(editor_hl_custom);
 static int num_editor_el_custom = SIZEOF_ARRAY_INT(editor_el_custom);
 
-static int editor_hl_reference[] =
-{
-  EL_INTERNAL_CASCADE_REF_ACTIVE,
-  EL_CHAR('R'),
-  EL_CHAR('E'),
-  EL_CHAR('F')
-};
-
-static int editor_el_reference[] =
-{
-  EL_TRIGGER_PLAYER,
-  EL_TRIGGER_ELEMENT,
-  EL_TRIGGER_CE_VALUE,
-  EL_TRIGGER_CE_SCORE,
-
-  EL_EMPTY,
-  EL_EMPTY,
-  EL_CURRENT_CE_VALUE,
-  EL_CURRENT_CE_SCORE
-};
-static int *editor_hl_reference_ptr = editor_hl_reference;
-static int *editor_el_reference_ptr = editor_el_reference;
-static int num_editor_hl_reference = SIZEOF_ARRAY_INT(editor_hl_reference);
-static int num_editor_el_reference = SIZEOF_ARRAY_INT(editor_el_reference);
-
 static int editor_hl_group[] =
 {
   EL_INTERNAL_CASCADE_GE_ACTIVE,
   EL_CHAR('G'),
   EL_CHAR('E'),
   EL_EMPTY,
-
-#if 0
-  EL_CHAR('G'),
-  EL_CHAR('R'),
-  EL_CHAR('O'),
-  EL_CHAR('U'),
-
-  EL_CHAR('P'),
-  EL_CHAR(' '),
-  EL_CHAR(' '),
-  EL_CHAR(' '),
-
-  EL_CHAR('E'),
-  EL_CHAR('L'),
-  EL_CHAR('E'),
-  EL_CHAR('M'),
-
-  EL_CHAR('E'),
-  EL_CHAR('N'),
-  EL_CHAR('T'),
-  EL_CHAR('S'),
-#endif
 };
 
 static int editor_el_group[] =
@@ -4727,29 +4124,57 @@ static int *editor_el_group_ptr = editor_el_group;
 static int num_editor_hl_group = SIZEOF_ARRAY_INT(editor_hl_group);
 static int num_editor_el_group = SIZEOF_ARRAY_INT(editor_el_group);
 
+static int editor_hl_reference[] =
+{
+  EL_INTERNAL_CASCADE_REF_ACTIVE,
+  EL_CHAR('R'),
+  EL_CHAR('E'),
+  EL_CHAR('F')
+};
+
+static int editor_el_reference[] =
+{
+  EL_TRIGGER_PLAYER,
+  EL_TRIGGER_ELEMENT,
+  EL_TRIGGER_CE_VALUE,
+  EL_TRIGGER_CE_SCORE,
+
+  EL_SELF,
+  EL_ANY_ELEMENT,
+  EL_CURRENT_CE_VALUE,
+  EL_CURRENT_CE_SCORE,
+
+  EL_LAST_CE_8,
+  EL_LAST_CE_7,
+  EL_LAST_CE_6,
+  EL_LAST_CE_5,
+
+  EL_LAST_CE_4,
+  EL_LAST_CE_3,
+  EL_LAST_CE_2,
+  EL_LAST_CE_1,
+
+  EL_NEXT_CE_1,
+  EL_NEXT_CE_2,
+  EL_NEXT_CE_3,
+  EL_NEXT_CE_4,
+
+  EL_NEXT_CE_5,
+  EL_NEXT_CE_6,
+  EL_NEXT_CE_7,
+  EL_NEXT_CE_8,
+};
+static int *editor_hl_reference_ptr = editor_hl_reference;
+static int *editor_el_reference_ptr = editor_el_reference;
+static int num_editor_hl_reference = SIZEOF_ARRAY_INT(editor_hl_reference);
+static int num_editor_el_reference = SIZEOF_ARRAY_INT(editor_el_reference);
+
 static int editor_hl_user_defined[] =
 {
   EL_INTERNAL_CASCADE_USER_ACTIVE,
   EL_CHAR('M'),
   EL_CHAR('Y'),
   EL_EMPTY,
-
-#if 0
-  EL_CHAR('U'),
-  EL_CHAR('S'),
-  EL_CHAR('E'),
-  EL_CHAR('R'),
-
-  EL_CHAR('D'),
-  EL_CHAR('E'),
-  EL_CHAR('F'),
-  EL_CHAR('I'),
-
-  EL_CHAR('-'),
-  EL_CHAR('N'),
-  EL_CHAR('E'),
-  EL_CHAR('D'),
-#endif
 };
 
 static int *editor_hl_user_defined_ptr = editor_hl_user_defined;
@@ -4873,15 +4298,15 @@ editor_elements_info[] =
   },
   {
     &setup.editor.el_custom,
-    &setup.editor_cascade.el_ref,
-    &editor_hl_reference_ptr,		&num_editor_hl_reference,
-    &editor_el_reference_ptr,		&num_editor_el_reference
-  },
-  {
-    &setup.editor.el_custom,
     &setup.editor_cascade.el_ge,
     &editor_hl_group_ptr,		&num_editor_hl_group,
     &editor_el_group_ptr,		&num_editor_el_group
+  },
+  {
+    &setup.editor.el_custom,
+    &setup.editor_cascade.el_ref,
+    &editor_hl_reference_ptr,		&num_editor_hl_reference,
+    &editor_el_reference_ptr,		&num_editor_el_reference
   },
   {
     &setup.editor.el_user_defined,
@@ -4946,11 +4371,7 @@ static char *getElementInfoText(int element)
 {
   char *info_text = NULL;
 
-#if 1
   if (element < MAX_NUM_ELEMENTS)
-#else
-  if (element < NUM_FILE_ELEMENTS)
-#endif
   {
     if (strlen(element_info[element].description) > 0)
       info_text = element_info[element].description;
@@ -6140,6 +5561,10 @@ static void CreateScrollbarGadgets()
 		      GDI_SCROLLBAR_ITEMS_MAX, items_max,
 		      GDI_SCROLLBAR_ITEMS_VISIBLE, items_visible,
 		      GDI_SCROLLBAR_ITEM_POSITION, item_position,
+		      GDI_WHEEL_AREA_X, scrollbar_info[i].wheel_x,
+		      GDI_WHEEL_AREA_Y, scrollbar_info[i].wheel_y,
+		      GDI_WHEEL_AREA_WIDTH, scrollbar_info[i].wheel_width,
+		      GDI_WHEEL_AREA_HEIGHT, scrollbar_info[i].wheel_height,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
 		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y1,
 		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y2,
@@ -6332,11 +5757,7 @@ static void MapCounterButtons(int id)
   int yoffset_above = MINI_TILEX + ED_GADGET_DISTANCE;
   int yoffset = ED_BORDER_SIZE;
   int x_left = gi_down->x - xoffset_left;
-#if 1
   int x_right;	/* set after gadget position was modified */
-#else
-  int x_right = gi_up->x + gi_up->width + xoffset_right;
-#endif
   int y_above = gi_down->y - yoffset_above;
   int x = gi_down->x;
   int y;	/* set after gadget position was modified */
@@ -6796,22 +6217,12 @@ static void setSelectboxSpecialActionVariablesIfNeeded()
       /* only change if corresponding selectbox has changed */
       if (selectbox_info[ED_SELECTBOX_ID_ACTION_MODE].options !=
 	  action_arg_modes[mode])
-#if 0
-	custom_element_change.action_mode =
-	  (action_arg_modes[mode])[0].value;
-#else
 	custom_element_change.action_mode = -1;
-#endif
 
       /* only change if corresponding selectbox has changed */
       if (selectbox_info[ED_SELECTBOX_ID_ACTION_ARG].options !=
 	  action_arg_options[i].options)
-#if 0
-	custom_element_change.action_arg =
-	  action_arg_options[i].options[0].value;
-#else
 	custom_element_change.action_arg = -1;
-#endif
 
       break;
     }
@@ -6843,8 +6254,6 @@ static void setSelectboxSpecialActionOptions()
   }
 }
 
-#if 1
-
 static void copy_custom_element_settings(int element_from, int element_to)
 {
   struct ElementInfo *ei_from = &element_info[element_from];
@@ -6852,85 +6261,6 @@ static void copy_custom_element_settings(int element_from, int element_to)
 
   copyElementInfo(ei_from, ei_to);
 }
-
-#else
-
-static void copy_custom_element_settings(int element_from, int element_to)
-{
-  struct ElementInfo *ei_from = &element_info[element_from];
-  struct ElementInfo *ei_to = &element_info[element_to];
-  int i, x, y;
-
-  /* ---------- copy element description ---------- */
-  for (i = 0; i < MAX_ELEMENT_NAME_LEN + 1; i++)
-    ei_to->description[i] = ei_from->description[i];
-
-  /* ---------- copy element base properties ---------- */
-#if 1
-  ei_to->properties[EP_BITFIELD_BASE_NR] =
-    ei_from->properties[EP_BITFIELD_BASE_NR];
-#else
-  Properties[element_to][EP_BITFIELD_BASE_NR] =
-    Properties[element_from][EP_BITFIELD_BASE_NR];
-#endif
-
-  /* ---------- copy custom property values ---------- */
-
-  ei_to->use_gfx_element = ei_from->use_gfx_element;
-  ei_to->gfx_element = ei_from->gfx_element;
-
-  ei_to->access_direction = ei_from->access_direction;
-
-  ei_to->collect_score_initial = ei_from->collect_score_initial;
-  ei_to->collect_count_initial = ei_from->collect_count_initial;
-
-  ei_to->ce_value_fixed_initial = ei_from->ce_value_fixed_initial;
-  ei_to->ce_value_random_initial = ei_from->ce_value_random_initial;
-  ei_to->use_last_ce_value = ei_from->use_last_ce_value;
-
-  ei_to->push_delay_fixed = ei_from->push_delay_fixed;
-  ei_to->push_delay_random = ei_from->push_delay_random;
-  ei_to->drop_delay_fixed = ei_from->drop_delay_fixed;
-  ei_to->drop_delay_random = ei_from->drop_delay_random;
-  ei_to->move_delay_fixed = ei_from->move_delay_fixed;
-  ei_to->move_delay_random = ei_from->move_delay_random;
-
-  ei_to->move_pattern = ei_from->move_pattern;
-  ei_to->move_direction_initial = ei_from->move_direction_initial;
-  ei_to->move_stepsize = ei_from->move_stepsize;
-
-  ei_to->move_enter_element = ei_from->move_enter_element;
-  ei_to->move_leave_element = ei_from->move_leave_element;
-  ei_to->move_leave_type = ei_from->move_leave_type;
-
-  ei_to->slippery_type = ei_from->slippery_type;
-
-  ei_to->explosion_type = ei_from->explosion_type;
-  ei_to->explosion_delay = ei_from->explosion_delay;
-  ei_to->ignition_delay = ei_from->ignition_delay;
-
-  for (y = 0; y < 3; y++)
-    for (x = 0; x < 3; x++)
-      ei_to->content.e[x][y] = ei_from->content.e[x][y];
-
-  /* ---------- reinitialize and copy change pages ---------- */
-
-  ei_to->num_change_pages = ei_from->num_change_pages;
-  ei_to->current_change_page = ei_from->current_change_page;
-
-  setElementChangePages(ei_to, ei_to->num_change_pages);
-
-  for (i = 0; i < ei_to->num_change_pages; i++)
-    ei_to->change_page[i] = ei_from->change_page[i];
-
-  /* ---------- copy group element info ---------- */
-  if (ei_from->group != NULL && ei_to->group != NULL)	/* group or internal */
-    *ei_to->group = *ei_from->group;
-
-  /* mark this custom element as modified */
-  ei_to->modified_settings = TRUE;
-}
-#endif
 
 static void replace_custom_element_in_settings(int element_from,
 					       int element_to)
@@ -8072,31 +7402,12 @@ static void DrawPropertiesInfo()
   int screen_line = 0;
   int i, x, y;
 
-#if 1
   if (setup.editor.show_element_token)
   {
     DrawTextF(pad_x, pad_y + screen_line++ * font2_height, FONT_TEXT_3,
 	      "[%s]", element_info[properties_element].token_name);
     screen_line++;
   }
-
-#else
-
-#if DEBUG
-  if (IS_CUSTOM_ELEMENT(properties_element))
-  {
-    DrawTextF(pad_x, pad_y + screen_line++ * font2_height, FONT_TEXT_3,
-	      "[Custom Element %d]", properties_element - EL_CUSTOM_START + 1);
-    screen_line++;
-  }
-  else if (IS_GROUP_ELEMENT(properties_element))
-  {
-    DrawTextF(pad_x, pad_y + screen_line++ * font2_height, FONT_TEXT_3,
-	      "[Group Element %d]", properties_element - EL_GROUP_START + 1);
-    screen_line++;
-  }
-#endif
-#endif
 
   /* ----- print number of elements / percentage of this element in level */
 
@@ -8238,7 +7549,6 @@ static struct
   { EL_BD_MAGIC_WALL,	&level.time_magic_wall,		TEXT_DURATION	},
   { EL_ROBOT_WHEEL,	&level.time_wheel,		TEXT_DURATION	},
 
-#if 1
   { EL_TIMEGATE_SWITCH,	&level.time_timegate,		TEXT_DURATION	},
   { EL_LIGHT_SWITCH,	&level.time_light,		TEXT_DURATION	},
   { EL_LIGHT_SWITCH_ACTIVE, &level.time_light,		TEXT_DURATION	},
@@ -8254,9 +7564,7 @@ static struct
   { EL_BIOMAZE,		&level.biomaze[1],		TEXT_GAME_OF_LIFE_2 },
   { EL_BIOMAZE,		&level.biomaze[2],		TEXT_GAME_OF_LIFE_3 },
   { EL_BIOMAZE,		&level.biomaze[3],		TEXT_GAME_OF_LIFE_4 },
-#endif
 
-#if 1
   { EL_EMC_ANDROID,	&level.android_move_time,	TEXT_MOVE_SPEED	},
   { EL_EMC_ANDROID,	&level.android_clone_time,	TEXT_CLONE_SPEED },
   { EL_EMC_MAGIC_BALL,	&level.ball_time,		TEXT_BALL_DELAY	},
@@ -8265,7 +7573,6 @@ static struct
   { EL_SPRING,		&level.slurp_score,		TEXT_SLURPING	},
   { EL_EMC_LENSES,	&level.lenses_time,		TEXT_DURATION	},
   { EL_EMC_MAGNIFIER,	&level.magnify_time,		TEXT_DURATION	},
-#endif
 
   { -1,			NULL,				NULL		}
 };
@@ -8440,11 +7747,6 @@ static void DrawPropertiesConfig()
 
   if (properties_element == EL_TIME_ORB_FULL)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG);
-
-#if 0
-  if (properties_element == EL_BALLOON)
-    MapSelectboxGadget(ED_SELECTBOX_ID_WIND_DIRECTION);
-#endif
 
   if (CAN_GROW(properties_element))
   {
@@ -8697,26 +7999,14 @@ static void DrawPropertiesWindow()
 	   "Element Settings", FONT_TITLE_1);
 #endif
 
-#if 1
   FrameCounter = 0;	/* restart animation frame counter */
-#endif
 
   DrawElementBorder(SX + xstart * MINI_TILEX,
 		    SY + ystart * MINI_TILEY + MINI_TILEY / 2,
 		    TILEX, TILEY, FALSE);
-#if 1
+
   DrawEditorElementAnimation(SX + xstart * MINI_TILEX,
 			     SY + ystart * MINI_TILEY + MINI_TILEY / 2);
-#else
-  DrawGraphicAnimationExt(drawto,
-			  SX + xstart * MINI_TILEX,
-			  SY + ystart * MINI_TILEY + MINI_TILEY / 2,
-			  el2img(properties_element), -1, NO_MASKING);
-#endif
-
-#if 0
-  FrameCounter = 0;	/* restart animation frame counter */
-#endif
 
   DrawEditorElementName((xstart + 3) * MINI_TILEX + 1,
 			(ystart + 1) * MINI_TILEY + 1,
@@ -9459,10 +8749,8 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
   if (!started_inside_drawing_area)
     return;
 
-#if 1
   if (!IS_VALID_BUTTON(button))
     return;
-#endif
 
   if (!button && !button_release_event)
     return;
@@ -9803,14 +9091,7 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
     {
       /* when changing action type, also check action mode and action arg */
       if (value_old != value_new)
-      {
-#if 1
 	setSelectboxSpecialActionVariablesIfNeeded();
-#else
-	custom_element_change.action_mode = -1;
-	custom_element_change.action_arg = -1;
-#endif
-      }
 
       DrawPropertiesChange();
     }
@@ -9982,14 +9263,6 @@ static void HandleControlButtons(struct GadgetInfo *gi)
   int step = BUTTON_STEPSIZE(button);
   int new_element = BUTTON_ELEMENT(button);
   int x, y;
-
-#if 0
-  /* MAKES PROBLEMS WITH ELEMENT LIST SCROLLBAR AND IS PROBABLY NOT NEEDED */
-  /* !!! CHECK WHAT HAPPENS WHEN MOUSE WHEEL IS USED OVER ELEMENT LIST !!! */
-
-  if (!IS_VALID_BUTTON(button))
-    return;
-#endif
 
   if (edit_mode == ED_MODE_DRAWING && drawing_function == GADGET_ID_TEXT)
     DrawLevelText(0, 0, 0, TEXT_END);
@@ -10455,8 +9728,12 @@ void HandleLevelEditorKeyInput(Key key)
 
       case KSYM_Insert:
       case KSYM_Delete:
-#if 1
-	/* IS_EDITOR_CASCADE */
+
+	/* this is needed to prevent interference with running "True X-Mouse" */
+	if (GetKeyModStateFromEvents() & KMOD_Control)
+	  break;
+
+	/* check for last or next editor cascade block in element list */
 	for (i = 0; i < num_editor_elements; i++)
 	{
 	  if ((key == KSYM_Insert && i == element_shift) ||
@@ -10480,36 +9757,6 @@ void HandleLevelEditorKeyInput(Key key)
 
 	ModifyEditorElementList();
 
-#else
-
-	for (i = 0; i < num_editor_elements; i++)
-	{
-	  int e = editor_elements[i];
-
-	  if ((key == KSYM_Insert &&
-	       (e == EL_INTERNAL_CASCADE_CE ||
-		e == EL_INTERNAL_CASCADE_CE_ACTIVE)) ||
-	      (key == KSYM_Delete &&
-	       (e == EL_INTERNAL_CASCADE_GE ||
-		e == EL_INTERNAL_CASCADE_GE_ACTIVE)))
-	    break;
-	}
-
-	if (i < num_editor_elements)
-	{
-	  element_shift = i;
-
-	  if (element_shift > num_editor_elements - ED_NUM_ELEMENTLIST_BUTTONS)
-	    element_shift = num_editor_elements - ED_NUM_ELEMENTLIST_BUTTONS;
-
-	  ModifyGadget(level_editor_gadget[GADGET_ID_SCROLL_LIST_VERTICAL],
-		       GDI_SCROLLBAR_ITEM_POSITION,
-		       element_shift / ED_ELEMENTLIST_BUTTONS_HORIZ, GDI_END);
-
-	  ModifyEditorElementList();
-	}
-#endif
-
 	break;
 
       case KSYM_Escape:
@@ -10530,6 +9777,7 @@ void HandleLevelEditorKeyInput(Key key)
 	  DrawDrawingWindow();
 	  edit_mode = ED_MODE_DRAWING;
 	}
+
         break;
 
       default:
@@ -10562,15 +9810,8 @@ void HandleLevelEditorIdle()
   if (!DelayReached(&action_delay, action_delay_value))
     return;
 
-#if 1
   DrawEditorElementAnimation(SX + xpos * TILEX,
 			     SY + ypos * TILEY + MINI_TILEY / 2);
-#else
-  DrawGraphicAnimationExt(drawto,
-			  SX + xpos * TILEX,
-			  SY + ypos * TILEY + MINI_TILEY / 2,
-			  el2img(properties_element), -1, NO_MASKING);
-#endif
 
   MarkTileDirty(xpos, ypos);
   MarkTileDirty(xpos, ypos + 1);
@@ -10622,11 +9863,6 @@ void PrintEditorGadgetInfoText(struct GadgetInfo *gi)
 void HandleEditorGadgetInfoText(void *ptr)
 {
   struct GadgetInfo *gi = (struct GadgetInfo *)ptr;
-#if 0
-  char infotext[MAX_OUTPUT_LINESIZE + 1];
-  char shortcut[MAX_OUTPUT_LINESIZE + 1];
-  int max_infotext_len = getMaxInfoTextLength();
-#endif
 
   if (game_status != GAME_MODE_EDITOR)
     return;
@@ -10640,38 +9876,7 @@ void HandleEditorGadgetInfoText(void *ptr)
   if (edit_mode == ED_MODE_DRAWING && draw_with_brush)
     DeleteBrushFromCursor();
 
-#if 1
   PrintEditorGadgetInfoText(gi);
-#else
-  if (gi == NULL || gi->info_text == NULL)
-    return;
-
-  strncpy(infotext, gi->info_text, max_infotext_len);
-  infotext[max_infotext_len] = '\0';
-
-  if (gi->custom_id < ED_NUM_CTRL_BUTTONS)
-  {
-    int key = control_info[gi->custom_id].shortcut;
-
-    if (key)
-    {
-      if (gi->custom_id == GADGET_ID_SINGLE_ITEMS)	/* special case 1 */
-	sprintf(shortcut, " ('.' or '%c')", key);
-      else if (gi->custom_id == GADGET_ID_PICK_ELEMENT)	/* special case 2 */
-	sprintf(shortcut, " ('%c' or 'Ctrl')", key);
-      else if (gi->custom_id == GADGET_ID_TEST)		/* special case 3 */
-	sprintf(shortcut, " ('Enter' or 'Shift-%c')", key);
-      else						/* normal case */
-	sprintf(shortcut, " ('%s%c')",
-		(key >= 'A' && key <= 'Z' ? "Shift-" : ""), key);
-
-      if (strlen(infotext) + strlen(shortcut) <= max_infotext_len)
-	strcat(infotext, shortcut);
-    }
-  }
-
-  DrawText(INFOTEXT_XPOS, INFOTEXT_YPOS, infotext, FONT_TEXT_2);
-#endif
 }
 
 static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
@@ -10835,12 +10040,8 @@ void RequestExitLevelEditor(boolean ask_if_level_has_changed)
       Request("Level has changed ! Exit without saving ?",
 	      REQ_ASK | REQ_STAY_OPEN))
   {
-#if 1
     CloseDoor(DOOR_CLOSE_1);
     SetDoorState(DOOR_CLOSE_2);
-#else
-    CloseDoor(DOOR_CLOSE_ALL);
-#endif
     game_status = GAME_MODE_MAIN;
     DrawMainMenu();
   }

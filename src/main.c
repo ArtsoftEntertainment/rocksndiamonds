@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2002 Artsoft Entertainment                      *
+* (c) 1995-2006 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -20,8 +20,9 @@
 #include "events.h"
 #include "config.h"
 
-Bitmap		       *bitmap_db_title;
+Bitmap		       *bitmap_db_cross;
 Bitmap		       *bitmap_db_field;
+Bitmap		       *bitmap_db_panel;
 Bitmap		       *bitmap_db_door;
 DrawBuffer	       *fieldbuffer;
 DrawBuffer	       *drawto_field;
@@ -67,10 +68,6 @@ short			ExplodeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			RunnerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			PlayerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
-#if 0
-unsigned long		Properties[MAX_NUM_ELEMENTS][NUM_EP_BITFIELDS];
-#endif
-
 int			GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -109,6 +106,7 @@ struct GameInfo		game;
 struct GlobalInfo	global;
 struct MenuInfo		menu;
 struct DoorInfo		door_1, door_2;
+struct PreviewInfo	preview;
 struct GraphicInfo     *graphic_info = NULL;
 struct SoundInfo       *sound_info = NULL;
 struct MusicInfo       *music_info = NULL;
@@ -3696,6 +3694,96 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "wall",
     "growing wall (horizontal, BD style)"
   },
+  {
+    "last_ce_8",
+    "last_ce",
+    "CE 8 positions earlier in list"
+  },
+  {
+    "last_ce_7",
+    "last_ce",
+    "CE 7 positions earlier in list"
+  },
+  {
+    "last_ce_6",
+    "last_ce",
+    "CE 6 positions earlier in list"
+  },
+  {
+    "last_ce_5",
+    "last_ce",
+    "CE 5 positions earlier in list"
+  },
+  {
+    "last_ce_4",
+    "last_ce",
+    "CE 4 positions earlier in list"
+  },
+  {
+    "last_ce_3",
+    "last_ce",
+    "CE 3 positions earlier in list"
+  },
+  {
+    "last_ce_2",
+    "last_ce",
+    "CE 2 positions earlier in list"
+  },
+  {
+    "last_ce_1",
+    "last_ce",
+    "CE 1 position earlier in list"
+  },
+  {
+    "self",
+    "self",
+    "the current custom element"
+  },
+  {
+    "next_ce_1",
+    "next_ce",
+    "CE 1 position later in list"
+  },
+  {
+    "next_ce_2",
+    "next_ce",
+    "CE 2 positions later in list"
+  },
+  {
+    "next_ce_3",
+    "next_ce",
+    "CE 3 positions later in list"
+  },
+  {
+    "next_ce_4",
+    "next_ce",
+    "CE 4 positions later in list"
+  },
+  {
+    "next_ce_5",
+    "next_ce",
+    "CE 5 positions later in list"
+  },
+  {
+    "next_ce_6",
+    "next_ce",
+    "CE 6 positions later in list"
+  },
+  {
+    "next_ce_7",
+    "next_ce",
+    "CE 7 positions later in list"
+  },
+  {
+    "next_ce_8",
+    "next_ce",
+    "CE 8 positions later in list"
+  },
+  {
+    "any_element",
+    "any_element",
+    "this element matches any element"
+  },
 
   /* ----------------------------------------------------------------------- */
   /* "real" (and therefore drawable) runtime elements                        */
@@ -4548,47 +4636,71 @@ struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1 + 1] =
 
 struct TokenIntPtrInfo image_config_vars[] =
 {
-  { "global.num_toons",		&global.num_toons			   },
+  { "global.num_toons",		&global.num_toons			    },
 
-  { "menu.draw_xoffset",	&menu.draw_xoffset[GFX_SPECIAL_ARG_DEFAULT]},
-  { "menu.draw_yoffset",	&menu.draw_yoffset[GFX_SPECIAL_ARG_DEFAULT]},
-  { "menu.draw_xoffset.MAIN",	&menu.draw_xoffset[GFX_SPECIAL_ARG_MAIN]   },
-  { "menu.draw_yoffset.MAIN",	&menu.draw_yoffset[GFX_SPECIAL_ARG_MAIN]   },
-  { "menu.draw_xoffset.LEVELS",	&menu.draw_xoffset[GFX_SPECIAL_ARG_LEVELS] },
-  { "menu.draw_yoffset.LEVELS",	&menu.draw_yoffset[GFX_SPECIAL_ARG_LEVELS] },
-  { "menu.draw_xoffset.SCORES",	&menu.draw_xoffset[GFX_SPECIAL_ARG_SCORES] },
-  { "menu.draw_yoffset.SCORES",	&menu.draw_yoffset[GFX_SPECIAL_ARG_SCORES] },
-  { "menu.draw_xoffset.EDITOR",	&menu.draw_xoffset[GFX_SPECIAL_ARG_EDITOR] },
-  { "menu.draw_yoffset.EDITOR",	&menu.draw_yoffset[GFX_SPECIAL_ARG_EDITOR] },
-  { "menu.draw_xoffset.INFO",	&menu.draw_xoffset[GFX_SPECIAL_ARG_INFO]   },
-  { "menu.draw_yoffset.INFO",	&menu.draw_yoffset[GFX_SPECIAL_ARG_INFO]   },
-  { "menu.draw_xoffset.SETUP",	&menu.draw_xoffset[GFX_SPECIAL_ARG_SETUP]  },
-  { "menu.draw_yoffset.SETUP",	&menu.draw_yoffset[GFX_SPECIAL_ARG_SETUP]  },
+  { "menu.draw_xoffset",	&menu.draw_xoffset[GFX_SPECIAL_ARG_DEFAULT] },
+  { "menu.draw_yoffset",	&menu.draw_yoffset[GFX_SPECIAL_ARG_DEFAULT] },
+  { "menu.draw_xoffset.MAIN",	&menu.draw_xoffset[GFX_SPECIAL_ARG_MAIN]    },
+  { "menu.draw_yoffset.MAIN",	&menu.draw_yoffset[GFX_SPECIAL_ARG_MAIN]    },
+  { "menu.draw_xoffset.LEVELS",	&menu.draw_xoffset[GFX_SPECIAL_ARG_LEVELS]  },
+  { "menu.draw_yoffset.LEVELS",	&menu.draw_yoffset[GFX_SPECIAL_ARG_LEVELS]  },
+  { "menu.draw_xoffset.SCORES",	&menu.draw_xoffset[GFX_SPECIAL_ARG_SCORES]  },
+  { "menu.draw_yoffset.SCORES",	&menu.draw_yoffset[GFX_SPECIAL_ARG_SCORES]  },
+  { "menu.draw_xoffset.EDITOR",	&menu.draw_xoffset[GFX_SPECIAL_ARG_EDITOR]  },
+  { "menu.draw_yoffset.EDITOR",	&menu.draw_yoffset[GFX_SPECIAL_ARG_EDITOR]  },
+  { "menu.draw_xoffset.INFO",	&menu.draw_xoffset[GFX_SPECIAL_ARG_INFO]    },
+  { "menu.draw_yoffset.INFO",	&menu.draw_yoffset[GFX_SPECIAL_ARG_INFO]    },
+  { "menu.draw_xoffset.SETUP",	&menu.draw_xoffset[GFX_SPECIAL_ARG_SETUP]   },
+  { "menu.draw_yoffset.SETUP",	&menu.draw_yoffset[GFX_SPECIAL_ARG_SETUP]   },
 
-  { "menu.scrollbar_xoffset",	&menu.scrollbar_xoffset			   },
+  { "menu.scrollbar_xoffset",	&menu.scrollbar_xoffset			    },
 
-  { "menu.list_size",		&menu.list_size[GFX_SPECIAL_ARG_DEFAULT]   },
-  { "menu.list_size.LEVELS",	&menu.list_size[GFX_SPECIAL_ARG_LEVELS]	   },
-  { "menu.list_size.SCORES",	&menu.list_size[GFX_SPECIAL_ARG_SCORES]	   },
-  { "menu.list_size.INFO",	&menu.list_size[GFX_SPECIAL_ARG_INFO]	   },
+  { "menu.list_size",		&menu.list_size[GFX_SPECIAL_ARG_DEFAULT]    },
+  { "menu.list_size.LEVELS",	&menu.list_size[GFX_SPECIAL_ARG_LEVELS]	    },
+  { "menu.list_size.SCORES",	&menu.list_size[GFX_SPECIAL_ARG_SCORES]	    },
+  { "menu.list_size.INFO",	&menu.list_size[GFX_SPECIAL_ARG_INFO]	    },
 
-  { "door_1.width",		&door_1.width				   },
-  { "door_1.height",		&door_1.height				   },
-  { "door_1.step_offset",	&door_1.step_offset			   },
-  { "door_1.step_delay",	&door_1.step_delay			   },
-  { "door_1.anim_mode",		&door_1.anim_mode			   },
-  { "door_2.width",		&door_2.width				   },
-  { "door_2.height",		&door_2.height				   },
-  { "door_2.step_offset",	&door_2.step_offset			   },
-  { "door_2.step_delay",	&door_2.step_delay			   },
-  { "door_2.anim_mode",		&door_2.anim_mode			   },
+  { "menu.fade_delay",		&menu.fade_delay			    },
+  { "menu.post_delay",		&menu.post_delay			    },
 
-  { "[player].boring_delay_fixed",	&game.player_boring_delay_fixed    },
-  { "[player].boring_delay_random",	&game.player_boring_delay_random   },
-  { "[player].sleeping_delay_fixed",	&game.player_sleeping_delay_fixed  },
-  { "[player].sleeping_delay_random",	&game.player_sleeping_delay_random },
+  { "door_1.width",		&door_1.width				    },
+  { "door_1.height",		&door_1.height				    },
+  { "door_1.step_offset",	&door_1.step_offset			    },
+  { "door_1.step_delay",	&door_1.step_delay			    },
+  { "door_1.anim_mode",		&door_1.anim_mode			    },
+  { "door_2.width",		&door_2.width				    },
+  { "door_2.height",		&door_2.height				    },
+  { "door_2.step_offset",	&door_2.step_offset			    },
+  { "door_2.step_delay",	&door_2.step_delay			    },
+  { "door_2.anim_mode",		&door_2.anim_mode			    },
 
-  { NULL,			NULL,					   }
+  { "preview.x",		&preview.x				    },
+  { "preview.y",		&preview.y				    },
+  { "preview.xsize",		&preview.xsize				    },
+  { "preview.ysize",		&preview.ysize				    },
+  { "preview.tile_size",	&preview.tile_size			    },
+  { "preview.step_offset",	&preview.step_offset			    },
+  { "preview.step_delay",	&preview.step_delay			    },
+
+  { "game.panel.level.x",	&game.panel.level.x			    },
+  { "game.panel.level.y",	&game.panel.level.y			    },
+  { "game.panel.gems.x",	&game.panel.gems.x			    },
+  { "game.panel.gems.y",	&game.panel.gems.y			    },
+  { "game.panel.inventory.x",	&game.panel.inventory.x			    },
+  { "game.panel.inventory.y",	&game.panel.inventory.y			    },
+  { "game.panel.keys.x",	&game.panel.keys.x			    },
+  { "game.panel.keys.y",	&game.panel.keys.y			    },
+  { "game.panel.score.x",	&game.panel.score.x			    },
+  { "game.panel.score.y",	&game.panel.score.y			    },
+  { "game.panel.time.x",	&game.panel.time.x			    },
+  { "game.panel.time.y",	&game.panel.time.y			    },
+
+  { "[player].boring_delay_fixed",	&game.player_boring_delay_fixed     },
+  { "[player].boring_delay_random",	&game.player_boring_delay_random    },
+  { "[player].sleeping_delay_fixed",	&game.player_sleeping_delay_fixed   },
+  { "[player].sleeping_delay_random",	&game.player_sleeping_delay_random  },
+
+  { NULL,			NULL,					    }
 };
 
 
@@ -4688,9 +4800,11 @@ static void print_usage()
 
 int main(int argc, char *argv[])
 {
-  InitProgramInfo(argv[0], USERDATA_DIRECTORY,
-		  PROGRAM_TITLE_STRING, getWindowTitleString(),
-		  ICON_TITLE_STRING, X11_ICON_FILENAME, X11_ICONMASK_FILENAME,
+  char * window_title_string = getWindowTitleString();
+
+  InitProgramInfo(argv[0], USERDATA_DIRECTORY, USERDATA_DIRECTORY_UNIX,
+		  PROGRAM_TITLE_STRING, window_title_string, ICON_TITLE_STRING,
+		  X11_ICON_FILENAME, X11_ICONMASK_FILENAME, SDL_ICON_FILENAME,
 		  MSDOS_POINTER_FILENAME,
 		  COOKIE_PREFIX, FILENAME_PREFIX, GAME_VERSION_ACTUAL);
 
