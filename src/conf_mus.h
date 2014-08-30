@@ -8,30 +8,24 @@
 *               Germany                                    *
 *               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-* editor.h                                                 *
+* conf_mus.h                                               *
 ***********************************************************/
 
-#ifndef EDITOR_H
-#define EDITOR_H
+/* ----- this file was automatically generated -- do not edit by hand ----- */
 
-#include "main.h"
+#ifndef CONF_MUS_H
+#define CONF_MUS_H
 
-/* number of element button columns and rows in the edit window */
-#define MAX_ELEM_X		4
-#define MAX_ELEM_Y		10
+/* values for music configuration */
 
-extern int element_shift;
-extern int editor_element[];
-extern int elements_in_list;
+#define MUS_BACKGROUND					0
+#define MUS_BACKGROUND_MAIN				1
+#define MUS_BACKGROUND_LEVELS				2
+#define MUS_BACKGROUND_SCORES				3
+#define MUS_BACKGROUND_EDITOR				4
+#define MUS_BACKGROUND_INFO				5
+#define MUS_BACKGROUND_SETUP				6
 
-void CreateLevelEditorGadgets();
-void FreeLevelEditorGadgets();
-void UnmapLevelEditorGadgets();
-void DrawLevelEd(void);
-void HandleLevelEditorKeyInput(Key);
-void HandleLevelEditorIdle();
-void HandleEditorGadgetInfoText(void *ptr);
-void RequestExitLevelEditor(boolean);
-void PrintEditorElementList();
+#define NUM_MUSIC_FILES					7
 
-#endif
+#endif	/* CONF_MUS_H */

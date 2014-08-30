@@ -110,72 +110,8 @@ element_to_graphic[] =
     IMG_BD_BUTTERFLY
   },
   {
-    EL_BD_BUTTERFLY_RIGHT,		-1, -1, FALSE,
-    IMG_BD_BUTTERFLY_RIGHT
-  },
-  {
-    EL_BD_BUTTERFLY,			-1, MV_BIT_RIGHT, FALSE,
-    IMG_BD_BUTTERFLY_RIGHT
-  },
-  {
-    EL_BD_BUTTERFLY_UP,			-1, -1, FALSE,
-    IMG_BD_BUTTERFLY_UP
-  },
-  {
-    EL_BD_BUTTERFLY,			-1, MV_BIT_UP, FALSE,
-    IMG_BD_BUTTERFLY_UP
-  },
-  {
-    EL_BD_BUTTERFLY_LEFT,		-1, -1, FALSE,
-    IMG_BD_BUTTERFLY_LEFT
-  },
-  {
-    EL_BD_BUTTERFLY,			-1, MV_BIT_LEFT, FALSE,
-    IMG_BD_BUTTERFLY_LEFT
-  },
-  {
-    EL_BD_BUTTERFLY_DOWN,		-1, -1, FALSE,
-    IMG_BD_BUTTERFLY_DOWN
-  },
-  {
-    EL_BD_BUTTERFLY,			-1, MV_BIT_DOWN, FALSE,
-    IMG_BD_BUTTERFLY_DOWN
-  },
-  {
     EL_BD_FIREFLY,			-1, -1, FALSE,
     IMG_BD_FIREFLY
-  },
-  {
-    EL_BD_FIREFLY_RIGHT,		-1, -1, FALSE,
-    IMG_BD_FIREFLY_RIGHT
-  },
-  {
-    EL_BD_FIREFLY,			-1, MV_BIT_RIGHT, FALSE,
-    IMG_BD_FIREFLY_RIGHT
-  },
-  {
-    EL_BD_FIREFLY_UP,			-1, -1, FALSE,
-    IMG_BD_FIREFLY_UP
-  },
-  {
-    EL_BD_FIREFLY,			-1, MV_BIT_UP, FALSE,
-    IMG_BD_FIREFLY_UP
-  },
-  {
-    EL_BD_FIREFLY_LEFT,			-1, -1, FALSE,
-    IMG_BD_FIREFLY_LEFT
-  },
-  {
-    EL_BD_FIREFLY,			-1, MV_BIT_LEFT, FALSE,
-    IMG_BD_FIREFLY_LEFT
-  },
-  {
-    EL_BD_FIREFLY_DOWN,			-1, -1, FALSE,
-    IMG_BD_FIREFLY_DOWN
-  },
-  {
-    EL_BD_FIREFLY,			-1, MV_BIT_DOWN, FALSE,
-    IMG_BD_FIREFLY_DOWN
   },
   {
     EL_SP_DEFAULT,			ACTION_EXPLODING, -1, FALSE,
@@ -950,7 +886,15 @@ element_to_graphic[] =
     IMG_AMOEBA_GROWING
   },
   {
+    EL_AMOEBA,				ACTION_GROWING, -1, FALSE,
+    IMG_AMOEBA_GROWING
+  },
+  {
     EL_AMOEBA_SHRINKING,		-1, -1, FALSE,
+    IMG_AMOEBA_SHRINKING
+  },
+  {
+    EL_AMOEBA,				ACTION_SHRINKING, -1, FALSE,
     IMG_AMOEBA_SHRINKING
   },
   {
@@ -959,6 +903,10 @@ element_to_graphic[] =
   },
   {
     EL_AMOEBA_DROPPING,			-1, -1, FALSE,
+    IMG_AMOEBA_DROPPING
+  },
+  {
+    EL_AMOEBA,				ACTION_DROPPING, -1, FALSE,
     IMG_AMOEBA_DROPPING
   },
   {
@@ -2100,6 +2048,10 @@ element_to_graphic[] =
   {
     EL_STONEBLOCK,			-1, -1, FALSE,
     IMG_STONEBLOCK
+  },
+  {
+    EL_MAZE_RUNNER,			-1, -1, FALSE,
+    IMG_MAZE_RUNNER
   },
   {
     EL_PLAYER_1,			-1, -1, FALSE,

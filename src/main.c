@@ -60,6 +60,8 @@ short			AmoebaCnt[MAX_NUM_AMOEBA];
 short			AmoebaCnt2[MAX_NUM_AMOEBA];
 short			ExplodePhase[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			ExplodeField[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+int			RunnerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+int			PlayerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
 unsigned long		Properties[MAX_NUM_ELEMENTS][NUM_EP_BITFIELDS];
 
@@ -91,6 +93,7 @@ int			TimeFrames, TimePlayed, TimeLeft;
 
 boolean			network_player_action_received = FALSE;
 
+struct LevelSetInfo	levelset;
 struct LevelInfo	level, level_template;
 struct PlayerInfo	stored_player[MAX_PLAYERS], *local_player = NULL;
 struct HiScore		highscore[MAX_SCORE_ENTRIES];
@@ -102,6 +105,10 @@ struct MenuInfo		menu;
 struct DoorInfo		door_1, door_2;
 struct GraphicInfo     *graphic_info = NULL;
 struct SoundInfo       *sound_info = NULL;
+struct MusicInfo       *music_info = NULL;
+struct MusicFileInfo   *music_file_info = NULL;
+struct HelpAnimInfo    *helpanim_info = NULL;
+SetupFileHash          *helptext_info = NULL;
 
 
 /* ------------------------------------------------------------------------- */
@@ -429,9 +436,9 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "invisible steel wall"
   },
   {
-    "unused_63",
-    "unused",
-    "(not used)"
+    "maze_runner",
+    "maze_runner",
+    "maze runner"
   },
   {
     "dynabomb_increase_number",
@@ -3473,12 +3480,12 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
-    "nut_breaking",
+    "nut.breaking",
     "-",
     "-"
   },
   {
-    "diamond_breaking",
+    "diamond.breaking",
     "-",
     "-"
   },
@@ -3493,12 +3500,12 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
-    "amoeba_growing",
+    "amoeba.growing",
     "-",
     "-"
   },
   {
-    "amoeba_shrinking",
+    "amoeba.shrinking",
     "-",
     "-"
   },
@@ -3638,6 +3645,11 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "amoeba",
+    "amoeba",
+    "-"
+  },
+  {
     "[default]",
     "default",
     "-"
@@ -3655,6 +3667,11 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   {
     "[sb_default]",
     "sb_default",
+    "-"
+  },
+  {
+    "dummy",
+    "dummy",
     "-"
   },
 
@@ -3699,6 +3716,22 @@ struct ElementActionInfo element_action_info[NUM_ACTIONS + 1 + 1] =
   { ".emptying",		ACTION_EMPTYING,		FALSE	},
   { ".changing",		ACTION_CHANGING,		FALSE	},
   { ".exploding",		ACTION_EXPLODING,		FALSE	},
+  { ".boring",			ACTION_BORING,			FALSE	},
+  { ".boring[1]",		ACTION_BORING_1,		FALSE	},
+  { ".boring[2]",		ACTION_BORING_2,		FALSE	},
+  { ".boring[3]",		ACTION_BORING_3,		FALSE	},
+  { ".boring[4]",		ACTION_BORING_4,		FALSE	},
+  { ".boring[5]",		ACTION_BORING_5,		FALSE	},
+  { ".boring[6]",		ACTION_BORING_6,		FALSE	},
+  { ".boring[7]",		ACTION_BORING_7,		FALSE	},
+  { ".boring[8]",		ACTION_BORING_8,		FALSE	},
+  { ".boring[9]",		ACTION_BORING_9,		FALSE	},
+  { ".boring[10]",		ACTION_BORING_10,		FALSE	},
+  { ".sleeping",		ACTION_SLEEPING,		FALSE	},
+  { ".sleeping[1]",		ACTION_SLEEPING_1,		FALSE	},
+  { ".sleeping[2]",		ACTION_SLEEPING_2,		FALSE	},
+  { ".sleeping[3]",		ACTION_SLEEPING_3,		FALSE	},
+  { ".awakening",		ACTION_AWAKENING,		FALSE	},
   { ".dying",			ACTION_DYING,			FALSE	},
   { ".turning",			ACTION_TURNING,			FALSE	},
   { ".turning_from_left",	ACTION_TURNING_FROM_LEFT,	FALSE	},
@@ -3723,8 +3756,9 @@ struct ElementDirectionInfo element_direction_info[NUM_DIRECTIONS + 1] =
   { NULL,		0				}
 };
 
-struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1] =
+struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1 + 1] =
 {
+  { ".[DEFAULT]",	GAME_MODE_DEFAULT,		},
   { ".MAIN",		GAME_MODE_MAIN,			},
   { ".LEVELS",		GAME_MODE_LEVELS		},
   { ".SCORES",		GAME_MODE_SCORES,		},
@@ -3735,6 +3769,9 @@ struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1] =
   { ".DOOR",		GAME_MODE_PSEUDO_DOOR,		},
   { ".PREVIEW",		GAME_MODE_PSEUDO_PREVIEW,	},
   { ".CRUMBLED",	GAME_MODE_PSEUDO_CRUMBLED,	},
+
+  /* empty suffix always matches -- check as last entry in InitMusicInfo() */
+  { "",			GAME_MODE_DEFAULT,		},
 
   { NULL,		0,				}
 };
@@ -3771,6 +3808,11 @@ struct TokenIntPtrInfo image_config_vars[] =
   { "door_2.step_offset",	&door_2.step_offset			   },
   { "door_2.step_delay",	&door_2.step_delay			   },
   { "door_2.anim_mode",		&door_2.anim_mode			   },
+
+  { "[player].boring_delay_fixed",	&game.player_boring_delay_fixed    },
+  { "[player].boring_delay_random",	&game.player_boring_delay_random   },
+  { "[player].sleeping_delay_fixed",	&game.player_sleeping_delay_fixed  },
+  { "[player].sleeping_delay_random",	&game.player_sleeping_delay_random },
 
   { NULL,			NULL,					   }
 };
@@ -3820,9 +3862,53 @@ struct FontInfo font_info[NUM_FONTS + 1] =
 };
 
 
+/* ------------------------------------------------------------------------- */
+/* music token prefix definitions                                            */
+/* ------------------------------------------------------------------------- */
+
+struct MusicPrefixInfo music_prefix_info[NUM_MUSIC_PREFIXES + 1] =
+{
+  { "background",		TRUE	},
+
+  { NULL,			0	}
+};
+
+
 /* ========================================================================= */
 /* main()                                                                    */
 /* ========================================================================= */
+
+static void print_usage()
+{
+  printf("\n"
+	 "Usage: %s [OPTION]... [HOSTNAME [PORT]]\n"
+	 "\n"
+	 "Options:\n"
+	 "  -d, --display HOSTNAME[:SCREEN]  specify X server display\n"
+	 "  -b, --basepath DIRECTORY         alternative base DIRECTORY\n"
+	 "  -l, --level DIRECTORY            alternative level DIRECTORY\n"
+	 "  -g, --graphics DIRECTORY         alternative graphics DIRECTORY\n"
+	 "  -s, --sounds DIRECTORY           alternative sounds DIRECTORY\n"
+	 "  -m, --music DIRECTORY            alternative music DIRECTORY\n"
+	 "  -n, --network                    network multiplayer game\n"
+	 "      --serveronly                 only start network server\n"
+	 "  -v, --verbose                    verbose mode\n"
+	 "      --debug                      display debugging information\n"
+	 "  -e, --execute COMMAND            execute batch COMMAND:\n"
+	 "\n"
+	 "Valid commands for '--execute' option:\n"
+	 "  \"print graphicsinfo.conf\"        print default graphics config\n"
+	 "  \"print soundsinfo.conf\"          print default sounds config\n"
+	 "  \"print musicinfo.conf\"           print default music config\n"
+	 "  \"print editorsetup.conf\"         print default editor config\n"
+	 "  \"print helpanim.conf\"            print default helpanim config\n"
+	 "  \"print helptext.conf\"            print default helptext config\n"
+	 "  \"dump level FILE\"                dump level data from FILE\n"
+	 "  \"dump tape FILE\"                 dump tape data from FILE\n"
+	 "  \"autoplay LEVELDIR\"              play level tapes for LEVELDIR\n"
+	 "\n",
+	 program.command_basename);
+}
 
 int main(int argc, char *argv[])
 {
@@ -3835,7 +3921,7 @@ int main(int argc, char *argv[])
   InitExitFunction(CloseAllAndExit);
   InitPlatformDependentStuff();
 
-  GetOptions(argv);
+  GetOptions(argv, print_usage);
   OpenAll();
 
   EventLoop();

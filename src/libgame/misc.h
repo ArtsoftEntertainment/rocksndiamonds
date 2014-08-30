@@ -70,6 +70,7 @@
 void fprintf_line(FILE *, char *, int);
 void printf_line(char *, int);
 char *int2str(int, int);
+char *i_to_a(unsigned int);
 
 void InitCounter(void);
 unsigned long Counter(void);
@@ -86,7 +87,7 @@ unsigned int InitRND(long);
 #endif
 
 unsigned int init_random_number(int, long);
-unsigned int get_random_number(int, unsigned int);
+unsigned int get_random_number(int, int);
 
 char *getLoginName(void);
 char *getRealName(void);
@@ -99,7 +100,7 @@ char *getStringCopy(char *);
 char *getStringToLower(char *);
 void setString(char **, char *);
 
-void GetOptions(char **);
+void GetOptions(char **, void (*print_usage_function)(void));
 
 void SetError(char *, ...);
 char *GetError(void);
@@ -108,6 +109,7 @@ void Error(int, char *, ...);
 void *checked_malloc(unsigned long);
 void *checked_calloc(unsigned long);
 void *checked_realloc(void *, unsigned long);
+void checked_free(void *);
 
 inline void swap_numbers(int *, int *);
 inline void swap_number_pairs(int *, int *, int *, int *);

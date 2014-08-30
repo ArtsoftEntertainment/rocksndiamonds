@@ -45,7 +45,18 @@
 #define SETUPINPUT_SCREEN_POS_EMPTY1	(SETUPINPUT_SCREEN_POS_START + 3)
 #define SETUPINPUT_SCREEN_POS_EMPTY2	(SETUPINPUT_SCREEN_POS_END - 1)
 
+/* screens on the info screen */
+#define INFO_MODE_MAIN			0
+#define INFO_MODE_ELEMENTS		1
+#define INFO_MODE_MUSIC			2
+#define INFO_MODE_CREDITS		3
+#define INFO_MODE_PROGRAM		4
+#define INFO_MODE_LEVELSET		5
+
+#define MAX_INFO_MODES			6
+
 /* for various menu stuff  */
+#define MAX_INFO_ELEMENTS_ON_SCREEN	10
 #define MAX_MENU_ENTRIES_ON_SCREEN	(SCR_FIELDY - 2)
 #define MENU_SCREEN_START_YPOS		2
 #define MENU_SCREEN_VALUE_XPOS		14
@@ -68,8 +79,23 @@ static void CalibrateJoystick(int);
 static void execSetupArtwork(void);
 static void HandleChooseTree(int, int, int, int, int, TreeInfo **);
 
+static void DrawChooseLevel(void);
+static void DrawInfoScreen(void);
+static void DrawSetupScreen(void);
+
+static void DrawInfoScreen_HelpAnim(int, int, boolean);
+static void DrawInfoScreen_HelpText(int, int, int, int);
+static void HandleInfoScreen_Main(int, int, int, int, int);
+static void HandleInfoScreen_Elements(int);
+static void HandleInfoScreen_Music(int);
+static void HandleInfoScreen_Credits(int);
+static void HandleInfoScreen_Program(int);
+
+static void MapChooseTreeGadgets(TreeInfo *);
+
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 static int setup_mode = SETUP_MODE_MAIN;
+static int info_mode = INFO_MODE_MAIN;
 
 #define mSX (SX + (game_status >= GAME_MODE_MAIN &&	\
 		   game_status <= GAME_MODE_SETUP ?	\
@@ -139,29 +165,44 @@ static void drawChooseTreeCursor(int ypos, int color)
   game_status = last_game_status;	/* restore current game status */
 }
 
-static void PlaySound_Menu_Start(int sound)
+static void PlayMenuSound()
 {
+  int sound = menu.sound[game_status];
+
+  if (sound == SND_UNDEFINED)
+    return;
+
   if (sound_info[sound].loop)
     PlaySoundLoop(sound);
   else
     PlaySound(sound);
 }
 
-static void PlaySound_Menu_Continue(int sound)
+static void PlayMenuSoundIfLoop()
 {
+  int sound = menu.sound[game_status];
+
+  if (sound == SND_UNDEFINED)
+    return;
+
   if (sound_info[sound].loop)
     PlaySoundLoop(sound);
 }
 
+static void PlayMenuMusic()
+{
+  int music = menu.music[game_status];
+
+  if (music == MUS_UNDEFINED)
+    return;
+
+  PlayMusic(music);
+}
+
 void DrawHeadline()
 {
-  int text1_width = getTextWidth(PROGRAM_TITLE_STRING,     FONT_TITLE_1);
-  int text2_width = getTextWidth(PROGRAM_COPYRIGHT_STRING, FONT_TITLE_2);
-  int x1 = SX + (SXSIZE - text1_width) / 2;
-  int x2 = SX + (SXSIZE - text2_width) / 2;
-
-  DrawText(x1, SY + 8,  PROGRAM_TITLE_STRING,     FONT_TITLE_1);
-  DrawText(x2, SY + 46, PROGRAM_COPYRIGHT_STRING, FONT_TITLE_2);
+  DrawTextSCentered(8,  FONT_TITLE_1, PROGRAM_TITLE_STRING);
+  DrawTextSCentered(46, FONT_TITLE_2, PROGRAM_COPYRIGHT_STRING);
 }
 
 static void ToggleFullscreenIfNeeded()
@@ -192,12 +233,11 @@ void DrawMainMenu()
 {
   static LevelDirTree *leveldir_last_valid = NULL;
   char *name_text = (!options.network && setup.team_mode ? "Team:" : "Name:");
-  int name_width  = getTextWidth("Name:",  FONT_MENU_1);
-  int level_width = getTextWidth("Level:", FONT_MENU_1);
+  int name_width, level_width;
   int i;
 
   UnmapAllGadgets();
-  FadeSounds();
+  FadeSoundsAndMusic();
 
   KeyboardAutoRepeatOn();
   ActivateJoystick();
@@ -260,6 +300,10 @@ void DrawMainMenu()
   DrawText(mSX + 32, mSY + 8*32, "Setup", FONT_MENU_1);
   DrawText(mSX + 32, mSY + 9*32, "Quit", FONT_MENU_1);
 
+  /* calculated after (possible) reload of custom artwork */
+  name_width = getTextWidth(name_text, FONT_MENU_1);
+  level_width = getTextWidth("Level:", FONT_MENU_1);
+
   DrawText(mSX + 32 + name_width, mSY + 2*32, setup.player_name, FONT_INPUT_1);
   DrawText(mSX + level_width + 5 * 32, mSY + 3*32, int2str(level_nr,3),
 	   FONT_VALUE_1);
@@ -271,34 +315,35 @@ void DrawMainMenu()
 
   if (leveldir_current->readonly)
   {
-    DrawTextF(mSX + level_width + 9 * 32 - 2,
+    DrawTextS(mSX + level_width + 9 * 32 - 2,
 	      mSY + 3 * 32 + 1 - 7, FONT_TEXT_3, "READ");
-    DrawTextF(mSX + level_width + 9 * 32 - 2,
+    DrawTextS(mSX + level_width + 9 * 32 - 2,
 	      mSY + 3 * 32 + 1 + 7, FONT_TEXT_3, "ONLY");
   }
 
-  for(i=0; i<8; i++)
-    initCursor(i, (i == 1 || i == 6 ? IMG_MENU_BUTTON_RIGHT :IMG_MENU_BUTTON));
+  for (i = 0; i < 8; i++)
+    initCursor(i, (i == 1 || i == 4 || i == 6 ? IMG_MENU_BUTTON_RIGHT :
+		   IMG_MENU_BUTTON));
 
   drawCursorXY(level_width/32 + 4, 1, IMG_MENU_BUTTON_LEFT);
   drawCursorXY(level_width/32 + 8, 1, IMG_MENU_BUTTON_RIGHT);
 
-  DrawText(SX + 56, SY + 326, "A Game by Artsoft Entertainment", FONT_TITLE_2);
+  DrawTextSCentered(326, FONT_TITLE_2, "A Game by Artsoft Entertainment");
 
   FadeToFront();
   InitAnimation();
-  HandleMainMenu(0,0, 0,0, MB_MENU_INITIALIZE);
+
+  HandleMainMenu(0, 0, 0, 0, MB_MENU_INITIALIZE);
 
   TapeStop();
   if (TAPE_IS_EMPTY(tape))
     LoadTape(level_nr);
   DrawCompleteVideoDisplay();
 
-  OpenDoor(DOOR_CLOSE_1 | DOOR_OPEN_2);
+  PlayMenuSound();
+  PlayMenuMusic();
 
-#if 0
-  ClearEventQueue();
-#endif
+  OpenDoor(DOOR_CLOSE_1 | DOOR_OPEN_2);
 }
 
 static void gotoTopLevelDir()
@@ -361,7 +406,8 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
   {
     static unsigned long level_delay = 0;
     int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
-    int new_level_nr, old_level_nr = level_nr;
+    int old_level_nr = level_nr;
+    int new_level_nr;
 
     new_level_nr = level_nr + (x == 10 ? -step : +step);
     if (new_level_nr < leveldir_current->first_level)
@@ -372,27 +418,29 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
     if (setup.handicap && new_level_nr > leveldir_current->handicap_level)
       new_level_nr = leveldir_current->handicap_level;
 
-    if (old_level_nr == new_level_nr ||
-	!DelayReached(&level_delay, GADGET_FRAME_DELAY))
-      goto out;
+    if (new_level_nr != old_level_nr &&
+	DelayReached(&level_delay, GADGET_FRAME_DELAY))
+    {
+      level_nr = new_level_nr;
 
-    level_nr = new_level_nr;
+      DrawText(mSX + 11 * 32, mSY + 3 * 32, int2str(level_nr, 3),
+	       FONT_VALUE_1);
 
-    DrawText(mSX + 11 * 32, mSY + 3 * 32, int2str(level_nr, 3), FONT_VALUE_1);
+      LoadLevel(level_nr);
+      DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, TRUE);
 
-    LoadLevel(level_nr);
-    DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, TRUE);
+      TapeErase();
+      LoadTape(level_nr);
+      DrawCompleteVideoDisplay();
 
-    TapeErase();
-    LoadTape(level_nr);
-    DrawCompleteVideoDisplay();
-
-    /* needed because DrawMicroLevel() takes some time */
-    BackToFront();
-    SyncDisplay();
-    DelayReached(&level_delay, 0);	/* reset delay counter */
+      /* needed because DrawMicroLevel() takes some time */
+      BackToFront();
+      SyncDisplay();
+      DelayReached(&level_delay, 0);	/* reset delay counter */
+    }
   }
-  else if (x == 0 && y >= 0 && y <= 7)
+  else if (IN_VIS_FIELD(x, y) &&
+	   y >= 0 && y <= 7 && (y != 1 || x < 10))
   {
     if (button)
     {
@@ -439,7 +487,8 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       else if (y == 4)
       {
 	game_status = GAME_MODE_INFO;
-	DrawHelpScreen();
+	info_mode = INFO_MODE_MAIN;
+	DrawInfoScreen();
       }
       else if (y == 5)
       {
@@ -473,670 +522,776 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
     }
   }
 
-  out:
-
   if (game_status == GAME_MODE_MAIN)
   {
     DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, FALSE);
     DoAnimation();
   }
-
-  BackToFront();
 }
 
 
-#define MAX_HELPSCREEN_ELS	10
-#define HA_NEXT			-999
-#define HA_END			-1000
+/* ========================================================================= */
+/* info screen functions                                                     */
+/* ========================================================================= */
 
-static long helpscreen_state;
-static int helpscreen_step[MAX_HELPSCREEN_ELS];
-static int helpscreen_frame[MAX_HELPSCREEN_ELS];
+static struct TokenInfo *info_info;
+static int num_info_info;
 
-static int helpscreen_action[] =
+static void execInfoElements()
 {
-  IMG_PLAYER_1_MOVING_DOWN,		16,
-  IMG_PLAYER_1_MOVING_UP,		16,
-  IMG_PLAYER_1_MOVING_LEFT,		16,
-  IMG_PLAYER_1_MOVING_RIGHT,		16,
-  IMG_PLAYER_1_PUSHING_LEFT,		16,
-  IMG_PLAYER_1_PUSHING_RIGHT,		16,			HA_NEXT,
+  info_mode = INFO_MODE_ELEMENTS;
+  DrawInfoScreen();
+}
 
-  IMG_SAND,				-1,			HA_NEXT,
+static void execInfoMusic()
+{
+  info_mode = INFO_MODE_MUSIC;
+  DrawInfoScreen();
+}
 
-  IMG_EMPTY_SPACE,			-1,			HA_NEXT,
+static void execInfoCredits()
+{
+  info_mode = INFO_MODE_CREDITS;
+  DrawInfoScreen();
+}
 
-  IMG_QUICKSAND_EMPTY,			-1,			HA_NEXT,
+static void execInfoProgram()
+{
+  info_mode = INFO_MODE_PROGRAM;
+  DrawInfoScreen();
+}
 
-  IMG_STEELWALL,			-1,			HA_NEXT,
+static void execInfoLevelSet()
+{
+  info_mode = INFO_MODE_LEVELSET;
+  DrawInfoScreen();
+}
 
-  IMG_WALL,				-1,			HA_NEXT,
+static void execExitInfo()
+{
+  game_status = GAME_MODE_MAIN;
+  DrawMainMenu();
+}
 
-  IMG_EXPANDABLE_WALL_GROWING_LEFT,	20,
-  IMG_WALL,				50,
-  IMG_EMPTY_SPACE,			20,
-  IMG_EXPANDABLE_WALL_GROWING_RIGHT,	20,
-  IMG_WALL,				50,
-  IMG_EMPTY_SPACE,			20,
-  IMG_EXPANDABLE_WALL_GROWING_UP,	20,
-  IMG_WALL,				50,
-  IMG_EMPTY_SPACE,			20,
-  IMG_EXPANDABLE_WALL_GROWING_DOWN,	20,
-  IMG_WALL,				50,
-  IMG_EMPTY_SPACE,			20,			HA_NEXT,
+static struct TokenInfo info_info_main[] =
+{
+  { TYPE_ENTER_SCREEN,	execInfoElements,	"Elements Info"		},
+  { TYPE_ENTER_SCREEN,	execInfoMusic,		"Music Info"		},
+  { TYPE_ENTER_SCREEN,	execInfoCredits,	"Credits"		},
+  { TYPE_ENTER_SCREEN,	execInfoProgram,	"Program Info"		},
+  { TYPE_ENTER_SCREEN,	execInfoLevelSet,	"Level Set Info"	},
+  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_LEAVE_MENU,	execExitInfo, 		"Exit"			},
 
-  IMG_INVISIBLE_WALL,			-1,			HA_NEXT,
-
-  IMG_WALL_SLIPPERY,			-1,			HA_NEXT,
-
-  IMG_FONT_GAME_INFO,			-1,			HA_NEXT,
-
-  IMG_EMERALD,				-1,			HA_NEXT,
-
-  IMG_DIAMOND,				-1,			HA_NEXT,
-
-  IMG_BD_DIAMOND,			-1,			HA_NEXT,
-
-  IMG_EMERALD_YELLOW,			50,
-  IMG_EMERALD_RED,			50,
-  IMG_EMERALD_PURPLE,			50,			HA_NEXT,
-
-  IMG_BD_ROCK,				-1,			HA_NEXT,
-
-  IMG_BOMB,				100,
-  IMG_EXPLOSION,			16,
-  IMG_EMPTY_SPACE,			10,			HA_NEXT,
-
-  IMG_NUT,				100,
-  IMG_NUT_BREAKING,			6,
-  IMG_EMERALD,				20,			HA_NEXT,
-
-  IMG_WALL_EMERALD, 			100,
-  IMG_EXPLOSION,			16,
-  IMG_EMERALD,				20,			HA_NEXT,
-
-  IMG_WALL_DIAMOND, 			100,
-  IMG_EXPLOSION,			16,
-  IMG_DIAMOND,				20,			HA_NEXT,
-
-  IMG_WALL_BD_DIAMOND, 			100,
-  IMG_EXPLOSION,			16,
-  IMG_BD_DIAMOND,			20,			HA_NEXT,
-
-  IMG_WALL_EMERALD_YELLOW,		100,
-  IMG_EXPLOSION,			16,
-  IMG_EMERALD_YELLOW,			20,
-  IMG_WALL_EMERALD_RED,			100,
-  IMG_EXPLOSION,			16,
-  IMG_EMERALD_RED,			20,
-  IMG_WALL_EMERALD_PURPLE,		100,
-  IMG_EXPLOSION,			16,
-  IMG_EMERALD_PURPLE,			20,			HA_NEXT,
-
-  IMG_ACID,				-1,			HA_NEXT,
-
-  IMG_KEY_1,				50,
-  IMG_KEY_2,				50,
-  IMG_KEY_3,				50,
-  IMG_KEY_4,				50,			HA_NEXT,
-
-  IMG_GATE_1,				50,
-  IMG_GATE_2,				50,
-  IMG_GATE_3,				50,
-  IMG_GATE_4,				50,			HA_NEXT,
-
-  IMG_GATE_1_GRAY,			50,
-  IMG_GATE_2_GRAY,			50,
-  IMG_GATE_3_GRAY,			50,
-  IMG_GATE_4_GRAY,			50,			HA_NEXT,
-
-  IMG_DYNAMITE,				-1,			HA_NEXT,
-
-  IMG_DYNAMITE_ACTIVE,			96,
-  IMG_EXPLOSION,			16,
-  IMG_EMPTY_SPACE,			20,			HA_NEXT,
-
-  IMG_DYNABOMB_ACTIVE,			100,
-  IMG_EXPLOSION,			16,
-  IMG_EMPTY_SPACE,			20,			HA_NEXT,
-
-  IMG_DYNABOMB_INCREASE_NUMBER,		-1,			HA_NEXT,
-
-  IMG_DYNABOMB_INCREASE_SIZE,		-1,			HA_NEXT,
-
-  IMG_DYNABOMB_INCREASE_POWER,		-1,			HA_NEXT,
-
-  IMG_SPACESHIP_RIGHT,			16,
-  IMG_SPACESHIP_UP,			16,
-  IMG_SPACESHIP_LEFT,			16,
-  IMG_SPACESHIP_DOWN,			16,			HA_NEXT,
-
-  IMG_BUG_RIGHT,			16,
-  IMG_BUG_UP,				16,
-  IMG_BUG_LEFT,				16,
-  IMG_BUG_DOWN,				16,			HA_NEXT,
-
-  IMG_BD_BUTTERFLY,			-1,			HA_NEXT,
-
-  IMG_BD_FIREFLY,			-1,			HA_NEXT,
-
-  IMG_PACMAN_RIGHT,			16,
-  IMG_PACMAN_UP,			16,
-  IMG_PACMAN_LEFT,			16,
-  IMG_PACMAN_DOWN,			16,			HA_NEXT,
-
-  IMG_YAMYAM,				-1,			HA_NEXT,
-
-  IMG_DARK_YAMYAM,			-1,			HA_NEXT,
-
-  IMG_ROBOT,				-1,			HA_NEXT,
-
-  IMG_MOLE_MOVING_RIGHT,		16,
-  IMG_MOLE_MOVING_UP,			16,
-  IMG_MOLE_MOVING_LEFT,			16,
-  IMG_MOLE_MOVING_DOWN,			16,			HA_NEXT,
-
-  IMG_PENGUIN_MOVING_RIGHT,		16,
-  IMG_PENGUIN_MOVING_UP,		16,
-  IMG_PENGUIN_MOVING_LEFT,		16,
-  IMG_PENGUIN_MOVING_DOWN,		16,			HA_NEXT,
-
-  IMG_PIG_MOVING_RIGHT,			16,
-  IMG_PIG_MOVING_UP,			16,
-  IMG_PIG_MOVING_LEFT,			16,
-  IMG_PIG_MOVING_DOWN,			16,			HA_NEXT,
-
-  IMG_DRAGON_MOVING_RIGHT,		16,
-  IMG_DRAGON_MOVING_UP,			16,
-  IMG_DRAGON_MOVING_LEFT,		16,
-  IMG_DRAGON_MOVING_DOWN,		16,			HA_NEXT,
-
-  IMG_SATELLITE,			-1,			HA_NEXT,
-
-  IMG_ROBOT_WHEEL,			50,
-  IMG_ROBOT_WHEEL_ACTIVE,		100,			HA_NEXT,
-
-  IMG_LAMP,				50,
-  IMG_LAMP_ACTIVE,			50,			HA_NEXT,
-
-  IMG_TIME_ORB_FULL,			50,
-  IMG_TIME_ORB_EMPTY,			50,			HA_NEXT,
-
-  IMG_AMOEBA_DROP,			50,
-  IMG_AMOEBA_GROWING,			6,
-  IMG_AMOEBA_WET,			20,			HA_NEXT,
-
-  IMG_AMOEBA_DEAD,			-1,			HA_NEXT,
-
-  IMG_AMOEBA_WET,			-1,			HA_NEXT,
-
-  IMG_AMOEBA_WET,			100,
-  IMG_AMOEBA_GROWING,			6,			HA_NEXT,
-
-  IMG_AMOEBA_FULL,			50,
-  IMG_AMOEBA_DEAD,			50,
-  IMG_EXPLOSION,			16,
-  IMG_DIAMOND,				20,			HA_NEXT,
-
-  IMG_GAME_OF_LIFE,			-1,			HA_NEXT,
-
-  IMG_BIOMAZE,				-1,			HA_NEXT,
-
-  IMG_MAGIC_WALL_ACTIVE,		-1,			HA_NEXT,
-
-  IMG_BD_MAGIC_WALL_ACTIVE,		-1,			HA_NEXT,
-
-  IMG_EXIT_CLOSED,			200,
-  IMG_EXIT_OPENING,			16,
-  IMG_EXIT_OPEN,			100,			HA_NEXT,
-
-  IMG_EXIT_OPEN,			-1,			HA_NEXT,
-
-  IMG_SOKOBAN_OBJECT,			-1,			HA_NEXT,
-
-  IMG_SOKOBAN_FIELD_EMPTY,		-1,			HA_NEXT,
-
-  IMG_SOKOBAN_FIELD_FULL,		-1,			HA_NEXT,
-
-  IMG_SPEED_PILL,			-1,			HA_NEXT,
-
-  HA_END
+  { 0,			NULL,			NULL			}
 };
-static char *helpscreen_eltext[][2] =
-{
- {"THE HERO:",				"(Is _this_ guy good old Rockford?)"},
- {"Normal sand:",			"You can dig through it"},
- {"Empty field:",			"You can walk through it"},
- {"Quicksand: You cannot pass it,",	"but rocks can fall through it"},
- {"Massive Wall:",			"Nothing can go through it"},
- {"Normal Wall: You can't go through",	"it, but you can bomb it away"},
- {"Growing Wall: Grows in several di-",	"rections if there is an empty field"},
- {"Invisible Wall: Behaves like normal","wall, but is invisible"},
- {"Old Wall: Like normal wall, but",	"some things can fall down from it"},
- {"Letter Wall: Looks like a letter,",	"behaves like a normal wall"},
- {"Emerald: You must collect enough of","them to finish a level"},
- {"Diamond: Counts as 3 emeralds, but",	"can be destroyed by rocks"},
- {"Diamond (BD style): Counts like one","emerald and behaves a bit different"},
- {"Colorful Gems:",			"Seem to behave like Emeralds"},
- {"Rock: Smashes several things;",	"Can be moved by the player"},
- {"Bomb: You can move it, but be",	"careful when dropping it"},
- {"Nut: Throw a rock on it to open it;","Each nut contains an emerald"},
- {"Wall with an emerald inside:",	"Bomb the wall away to get it"},
- {"Wall with a diamond inside:",	"Bomb the wall away to get it"},
- {"Wall with BD style diamond inside:",	"Bomb the wall away to get it"},
- {"Wall with colorful gem inside:",	"Bomb the wall away to get it"},
- {"Acid: Things that fall in are gone",	"forever (including our hero)"},
- {"Key: Opens the door that has the",	"same color (red/yellow/green/blue)"},
- {"Door: Can be opened by the key",	"with the same color"},
- {"Door: You have to find out the",	"right color of the key for it"},
- {"Dynamite: Collect it and use it to",	"destroy walls or kill enemies"},
- {"Dynamite: This one explodes after",	"a few seconds"},
- {"Dyna Bomb: Explodes in 4 directions","with variable explosion size"},
- {"Dyna Bomb: Increases the number of",	"dyna bombs available at a time"},
- {"Dyna Bomb: Increases the size of",	"explosion of dyna bombs"},
- {"Dyna Bomb: Increases the power of",	"explosion of dyna bombs"},
- {"Spaceship: Moves at the left side",	"of walls; don't touch it!"},
- {"Bug: Moves at the right side",	"of walls; don't touch it!"},
- {"Butterfly: Moves at the right side",	"of walls; don't touch it!"},
- {"Firefly: Moves at the left side",	"of walls; don't touch it!"},
- {"Pacman: Eats the amoeba and you,",	"if you're not careful"},
- {"Cruncher: Eats diamonds and you,",	"if you're not careful"},
- {"Cruncher (BD style):",		"Eats almost everything"},
- {"Robot: Tries to kill the player",	""},
- {"The mole: Eats the amoeba and turns","empty space into normal sand"},
- {"The penguin: Guide him to the exit,","but keep him away from monsters!"},
- {"The Pig: Harmless, but eats all",	"gems it can get"},
- {"The Dragon: Breathes fire,",		"especially to some monsters"},
- {"Sonde: Follows you everywhere;",	"harmless, but may block your way"},
- {"Magic Wheel: Touch it to get rid of","the robots for some seconds"},
- {"Light Bulb: All of them must be",	"switched on to finish a level"},
- {"Extra Time Orb: Adds some seconds",	"to the time available for the level"},
- {"Amoeba Drop: Grows to an amoeba on",	"the ground - don't touch it"},
- {"Dead Amoeba: Does not grow, but",	"can still kill bugs and spaceships"},
- {"Normal Amoeba: Grows through empty",	"fields, sand and quicksand"},
- {"Dropping Amoeba: This one makes",	"drops that grow to a new amoeba"},
- {"Living Amoeba (BD style): Contains",	"other element, when surrounded"},
- {"Game Of Life: Behaves like the well","known 'Game Of Life' (2333 style)"},
- {"Biomaze: A bit like the 'Game Of",	"Life', but builds crazy mazes"},
- {"Magic Wall: Changes rocks, emeralds","and diamonds when they pass it"},
- {"Magic Wall (BD style):",		"Changes rocks and BD style diamonds"},
- {"Exit door: Opens if you have enough","emeralds to finish the level"},
- {"Open exit door: Enter here to leave","the level and exit the actual game"},
- {"Sokoban element: Object which must", "be pushed to an empty field"},
- {"Sokoban element: Empty field where", "a Sokoban object can be placed on"},
- {"Sokoban element: Field with object", "which can be pushed away"},
- {"Speed pill: Lets the player run",    "twice as fast as normally"},
-};
-static int num_helpscreen_els = sizeof(helpscreen_eltext) / (2*sizeof(char *));
 
-static char *helpscreen_music[][3] =
-{
-  { "Alchemy",			"Ian Boddy",		"Drive" },
-  { "The Chase",		"Propaganda",		"A Secret Wish" },
-  { "Network 23",		"Tangerine Dream",	"Exit" },
-  { "Czardasz",			"Robert Pieculewicz",	"Czardasz" },
-  { "21st Century Common Man",	"Tangerine Dream",	"Tyger" },
-  { "Voyager",			"The Alan Parsons Project","Pyramid" },
-  { "Twilight Painter",		"Tangerine Dream",	"Heartbreakers" }
-};
-static int num_helpscreen_music = 7;
-static int helpscreen_musicpos;
-
-#if 0
-void OLD_DrawHelpScreenElAction(int start)
-{
-  int i = 0, j = 0;
-  int frame, graphic;
-  int xstart = SX+16, ystart = SY+64+2*32, ystep = TILEY+4;
-
-  while(helpscreen_action[j] != HA_END)
-  {
-    if (i>=start+MAX_HELPSCREEN_ELS || i>=num_helpscreen_els)
-      break;
-    else if (i<start || helpscreen_delay[i-start])
-    {
-      if (i>=start && helpscreen_delay[i-start])
-	helpscreen_delay[i-start]--;
-
-      while(helpscreen_action[j] != HA_NEXT)
-	j++;
-      j++;
-      i++;
-      continue;
-    }
-
-    j += 3*helpscreen_step[i-start];
-    graphic = helpscreen_action[j++];
-
-    if (helpscreen_frame[i-start])
-    {
-      frame = helpscreen_action[j++] - helpscreen_frame[i-start];
-      helpscreen_frame[i-start]--;
-    }
-    else
-    {
-      frame = 0;
-      helpscreen_frame[i-start] = helpscreen_action[j++]-1;
-    }
-
-    helpscreen_delay[i-start] = helpscreen_action[j++] - 1;
-
-    if (helpscreen_action[j] == HA_NEXT)
-    {
-      if (!helpscreen_frame[i-start])
-	helpscreen_step[i-start] = 0;
-    }
-    else
-    {
-      if (!helpscreen_frame[i-start])
-	helpscreen_step[i-start]++;
-      while(helpscreen_action[j] != HA_NEXT)
-	j++;
-    }
-    j++;
-
-    DrawOldGraphicExt(drawto, xstart, ystart+(i-start)*ystep, graphic+frame);
-    i++;
-  }
-
-  for(i=2;i<16;i++)
-  {
-    MarkTileDirty(0,i);
-    MarkTileDirty(1,i);
-  }
-}
-#endif
-
-void DrawHelpScreenElAction(int start)
-{
-  int i = 0, j = 0;
-  int xstart = mSX + 16;
-  int ystart = mSY + 64 + 2 * 32;
-  int ystep = TILEY + 4;
-  int graphic;
-  int frame_count;
-  int sync_frame;
-
-  while (helpscreen_action[j] != HA_END)
-  {
-    if (i >= start + MAX_HELPSCREEN_ELS || i >= num_helpscreen_els)
-      break;
-    else if (i < start)
-    {
-      while (helpscreen_action[j] != HA_NEXT)
-	j++;
-
-      j++;
-      i++;
-
-      continue;
-    }
-
-    j += 2 * helpscreen_step[i-start];
-    graphic = helpscreen_action[j++];
-    frame_count = helpscreen_action[j++];
-    if (frame_count == -1)
-      frame_count = 1000000;
-
-    if (helpscreen_frame[i-start] == 0)
-    {
-      sync_frame = 0;
-      helpscreen_frame[i-start] = frame_count - 1;
-    }
-    else
-    {
-      sync_frame = frame_count - helpscreen_frame[i-start];
-      helpscreen_frame[i-start]--;
-    }
-
-    if (helpscreen_action[j] == HA_NEXT)
-    {
-      if (!helpscreen_frame[i-start])
-	helpscreen_step[i-start] = 0;
-    }
-    else
-    {
-      if (!helpscreen_frame[i-start])
-	helpscreen_step[i-start]++;
-      while(helpscreen_action[j] != HA_NEXT)
-	j++;
-    }
-    j++;
-
-#if 1
-    ClearRectangleOnBackground(drawto, xstart, ystart + (i - start) * ystep,
-			       TILEX, TILEY);
-    DrawGraphicAnimationExt(drawto, xstart, ystart + (i - start) * ystep,
-			    graphic, sync_frame, USE_MASKING);
-#else
-    frame = getGraphicAnimationFrame(graphic, sync_frame);
-
-    DrawGraphicExt(drawto, xstart, ystart + (i-start) * ystep,
-		   graphic, frame);
-#endif
-
-    i++;
-  }
-
-#if 1
-  redraw_mask |= REDRAW_FIELD;
-#else
-  for(i=2; i<16; i++)
-  {
-    MarkTileDirty(0, i);
-    MarkTileDirty(1, i);
-  }
-#endif
-
-  FrameCounter++;
-}
-
-void DrawHelpScreenElText(int start)
-{
-  int i;
-  int xstart = mSX + 56, ystart = mSY + 65 + 2 * 32, ystep = TILEY + 4;
-  int ybottom = SYSIZE - 20;
-
-  SetMainBackgroundImage(IMG_BACKGROUND_INFO);
-  ClearWindow();
-  DrawHeadline();
-
-  DrawTextFCentered(100, FONT_TEXT_1, "The game elements:");
-
-  for(i=start; i < start + MAX_HELPSCREEN_ELS && i < num_helpscreen_els; i++)
-  {
-    DrawText(xstart,
-	     ystart + (i - start) * ystep + (*helpscreen_eltext[i][1] ? 0 : 8),
-	     helpscreen_eltext[i][0], FONT_TEXT_2);
-    DrawText(xstart, ystart + (i - start) * ystep + 16,
-	     helpscreen_eltext[i][1], FONT_TEXT_2);
-  }
-
-  DrawTextFCentered(ybottom, FONT_TEXT_4,
-		    "Press any key or button for next page");
-}
-
-void DrawHelpScreenMusicText(int num)
-{
-  int ystart = 150, ystep = 30;
-  int ybottom = SYSIZE - 20;
-
-  FadeSounds();
-  ClearWindow();
-  DrawHeadline();
-
-  DrawTextFCentered(100, FONT_TEXT_1, "The game background music loops:");
-
-  DrawTextFCentered(ystart + 0 * ystep, FONT_TEXT_2, "Excerpt from");
-  DrawTextFCentered(ystart + 1 * ystep, FONT_TEXT_3,
-		    "\"%s\"", helpscreen_music[num][0]);
-  DrawTextFCentered(ystart + 2 * ystep, FONT_TEXT_2, "by");
-  DrawTextFCentered(ystart + 3 * ystep, FONT_TEXT_3,
-		    "%s", helpscreen_music[num][1]);
-  DrawTextFCentered(ystart + 4 * ystep, FONT_TEXT_2, "from the album");
-  DrawTextFCentered(ystart + 5 * ystep, FONT_TEXT_3,
-		    "\"%s\"", helpscreen_music[num][2]);
-
-  DrawTextFCentered(ybottom, FONT_TEXT_4,
-		    "Press any key or button for next page");
-
-#if 0
-  PlaySoundLoop(background_loop[num]);
-#endif
-}
-
-void DrawHelpScreenCreditsText()
-{
-  int ystart = 150, ystep = 30;
-  int ybottom = SYSIZE - 20;
-
-  FadeSounds();
-  ClearWindow();
-  DrawHeadline();
-
-  DrawTextFCentered(100, FONT_TEXT_1, "Credits:");
-  DrawTextFCentered(ystart + 0 * ystep, FONT_TEXT_2, "DOS port of the game:");
-  DrawTextFCentered(ystart + 1 * ystep, FONT_TEXT_3, "Guido Schulz");
-  DrawTextFCentered(ystart + 2 * ystep, FONT_TEXT_2, "Additional toons:");
-  DrawTextFCentered(ystart + 3 * ystep, FONT_TEXT_3, "Karl Hörnell");
-  DrawTextFCentered(ystart + 5 * ystep, FONT_TEXT_2,
-		    "...and many thanks to all contributors");
-  DrawTextFCentered(ystart + 6 * ystep, FONT_TEXT_2, "of new levels!");
-
-  DrawTextFCentered(ybottom, FONT_TEXT_4,
-		    "Press any key or button for next page");
-}
-
-void DrawHelpScreenContactText()
-{
-  int ystart = 150, ystep = 30;
-  int ybottom = SYSIZE - 20;
-
-  ClearWindow();
-  DrawHeadline();
-
-  DrawTextFCentered(100, FONT_TEXT_1, "Program information:");
-
-  DrawTextFCentered(ystart + 0 * ystep, FONT_TEXT_2,
-		    "This game is Freeware!");
-  DrawTextFCentered(ystart + 1 * ystep, FONT_TEXT_2,
-		    "If you like it, send e-mail to:");
-  DrawTextFCentered(ystart + 2 * ystep, FONT_TEXT_3,
-		    "info@artsoft.org");
-  DrawTextFCentered(ystart + 3 * ystep, FONT_TEXT_2,
-		    "or SnailMail to:");
-  DrawTextFCentered(ystart + 4 * ystep + 0, FONT_TEXT_3,
-		    "Holger Schemel");
-  DrawTextFCentered(ystart + 4 * ystep + 20, FONT_TEXT_3,
-		    "Detmolder Strasse 189");
-  DrawTextFCentered(ystart + 4 * ystep + 40, FONT_TEXT_3,
-		    "33604 Bielefeld");
-  DrawTextFCentered(ystart + 4 * ystep + 60, FONT_TEXT_3,
-		    "Germany");
-
-  DrawTextFCentered(ystart + 7 * ystep, FONT_TEXT_2,
-		    "If you have created new levels,");
-  DrawTextFCentered(ystart + 8 * ystep, FONT_TEXT_2,
-		    "send them to me to include them!");
-  DrawTextFCentered(ystart + 9 * ystep, FONT_TEXT_2,
-		    ":-)");
-
-  DrawTextFCentered(ybottom, FONT_TEXT_4,
-		    "Press any key or button for main menu");
-}
-
-void DrawHelpScreen()
+static void DrawInfoScreen_Main()
 {
   int i;
 
   UnmapAllGadgets();
   CloseDoor(DOOR_CLOSE_2);
 
-  for(i=0;i<MAX_HELPSCREEN_ELS;i++)
-    helpscreen_step[i] = helpscreen_frame[i] = 0;
-  helpscreen_musicpos = 0;
-  helpscreen_state = 0;
+  ClearWindow();
 
-  DrawHelpScreenElText(0);
-  DrawHelpScreenElAction(0);
+  DrawText(mSX + 16, mSY + 16, "Info Screen", FONT_TITLE_1);
+
+  info_info = info_info_main;
+  num_info_info = 0;
+
+  for (i = 0; info_info[i].type != 0 && i < NUM_MENU_ENTRIES_ON_SCREEN; i++)
+  {
+    int ypos = MENU_SCREEN_START_YPOS + i;
+    int font_nr = FONT_MENU_1;
+
+    DrawText(mSX + 32, mSY + ypos * 32, info_info[i].text, font_nr);
+
+    if (info_info[i].type & TYPE_ENTER_MENU)
+      initCursor(i, IMG_MENU_BUTTON_RIGHT);
+    else if (info_info[i].type & TYPE_LEAVE_MENU)
+      initCursor(i, IMG_MENU_BUTTON_LEFT);
+    else if (info_info[i].type & ~TYPE_SKIP_ENTRY)
+      initCursor(i, IMG_MENU_BUTTON);
+
+    num_info_info++;
+  }
 
   FadeToFront();
   InitAnimation();
 
-#if 0
-  PlaySoundLoop(SND_BACKGROUND_INFO);
-#else
-  PlaySound_Menu_Start(SND_BACKGROUND_INFO);
-#endif
+  PlayMenuSound();
+  PlayMenuMusic();
+
+  HandleInfoScreen_Main(0, 0, 0, 0, MB_MENU_INITIALIZE);
 }
 
-void HandleHelpScreen(int button)
+void HandleInfoScreen_Main(int mx, int my, int dx, int dy, int button)
 {
-  static unsigned long hs_delay = 0;
-  int num_helpscreen_els_pages =
-    (num_helpscreen_els + MAX_HELPSCREEN_ELS-1) / MAX_HELPSCREEN_ELS;
-  int button_released = !button;
-  int i;
+  static int choice_store[MAX_INFO_MODES];
+  int choice = choice_store[info_mode];		/* always starts with 0 */
+  int x = 0;
+  int y = choice;
 
-  if (button_released)
+  if (button == MB_MENU_INITIALIZE)
   {
-    if (helpscreen_state < num_helpscreen_els_pages - 1)
-    {
-      for(i=0;i<MAX_HELPSCREEN_ELS;i++)
-	helpscreen_step[i] = helpscreen_frame[i] = 0;
-      helpscreen_state++;
+    /* advance to first valid menu entry */
+    while (choice < num_info_info &&
+	   info_info[choice].type & TYPE_SKIP_ENTRY)
+      choice++;
+    choice_store[info_mode] = choice;
 
-      FrameCounter = 0;
-      DrawHelpScreenElText(helpscreen_state * MAX_HELPSCREEN_ELS);
-      DrawHelpScreenElAction(helpscreen_state * MAX_HELPSCREEN_ELS);
-    }
-    else if (helpscreen_state <
-	     num_helpscreen_els_pages + num_helpscreen_music - 1)
+    drawCursor(choice, FC_RED);
+    return;
+  }
+  else if (button == MB_MENU_LEAVE)
+  {
+    for (y = 0; y < num_info_info; y++)
     {
-      helpscreen_state++;
-      DrawHelpScreenMusicText(helpscreen_state - num_helpscreen_els_pages);
+      if (info_info[y].type & TYPE_LEAVE_MENU)
+      {
+	void (*menu_callback_function)(void) = info_info[y].value;
+
+	menu_callback_function();
+	break;	/* absolutely needed because function changes 'info_info'! */
+      }
     }
-    else if (helpscreen_state ==
-	     num_helpscreen_els_pages + num_helpscreen_music - 1)
+
+    return;
+  }
+
+  if (mx || my)		/* mouse input */
+  {
+    x = (mx - mSX) / 32;
+    y = (my - mSY) / 32 - MENU_SCREEN_START_YPOS;
+  }
+  else if (dx || dy)	/* keyboard input */
+  {
+    if (dx)
     {
-      helpscreen_state++;
-      DrawHelpScreenCreditsText();
+      int menu_navigation_type = (dx < 0 ? TYPE_LEAVE_MENU : TYPE_ENTER_MENU);
+
+      if (info_info[choice].type & menu_navigation_type ||
+	  info_info[choice].type & TYPE_ENTER_SCREEN ||
+	  info_info[choice].type & TYPE_BOOLEAN_STYLE)
+	button = MB_MENU_CHOICE;
     }
-    else if (helpscreen_state ==
-	     num_helpscreen_els_pages + num_helpscreen_music)
+    else if (dy)
+      y = choice + dy;
+
+    /* jump to next non-empty menu entry (up or down) */
+    while (y > 0 && y < num_info_info - 1 &&
+	   info_info[y].type & TYPE_SKIP_ENTRY)
+      y += dy;
+  }
+
+  if (IN_VIS_FIELD(x, y) &&
+      y >= 0 && y < num_info_info && info_info[y].type & ~TYPE_SKIP_ENTRY)
+  {
+    if (button)
     {
-      helpscreen_state++;
-      DrawHelpScreenContactText();
+      if (y != choice)
+      {
+	drawCursor(y, FC_RED);
+	drawCursor(choice, FC_BLUE);
+	choice = choice_store[info_mode] = y;
+      }
+    }
+    else if (!(info_info[y].type & TYPE_GHOSTED))
+    {
+      if (info_info[y].type & TYPE_ENTER_OR_LEAVE_MENU)
+      {
+	void (*menu_callback_function)(void) = info_info[choice].value;
+
+	menu_callback_function();
+      }
+    }
+  }
+}
+
+void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
+{
+  static int infoscreen_step[MAX_INFO_ELEMENTS_ON_SCREEN];
+  static int infoscreen_frame[MAX_INFO_ELEMENTS_ON_SCREEN];
+  int xstart = mSX + 16;
+  int ystart = mSY + 64 + 2 * 32;
+  int ystep = TILEY + 4;
+  int element, action, direction;
+  int graphic;
+  int delay;
+  int sync_frame;
+  int i, j;
+
+  if (init)
+  {
+    for (i = 0; i < MAX_INFO_ELEMENTS_ON_SCREEN; i++)
+      infoscreen_step[i] = infoscreen_frame[i] = 0;
+
+    SetMainBackgroundImage(IMG_BACKGROUND_INFO);
+    ClearWindow();
+    DrawHeadline();
+
+    DrawTextSCentered(100, FONT_TEXT_1, "The Game Elements:");
+
+    DrawTextSCentered(SYSIZE - 20, FONT_TEXT_4,
+		      "Press any key or button for next page");
+
+    FrameCounter = 0;
+  }
+
+  i = j = 0;
+  while (helpanim_info[j].element != HELPANIM_LIST_END)
+  {
+    if (i >= start + MAX_INFO_ELEMENTS_ON_SCREEN ||
+	i >= max_anims)
+      break;
+    else if (i < start)
+    {
+      while (helpanim_info[j].element != HELPANIM_LIST_NEXT)
+	j++;
+
+      j++;
+      i++;
+
+      continue;
+    }
+
+    j += infoscreen_step[i - start];
+
+    element = helpanim_info[j].element;
+    action = helpanim_info[j].action;
+    direction = helpanim_info[j].direction;
+
+    if (action != -1 && direction != -1)
+      graphic = el_act_dir2img(element, action, direction);
+    else if (action != -1)
+      graphic = el_act2img(element, action);
+    else if (direction != -1)
+      graphic = el_act2img(element, direction);
+    else
+      graphic = el2img(element);
+
+    delay = helpanim_info[j++].delay;
+
+    if (delay == -1)
+      delay = 1000000;
+
+    if (infoscreen_frame[i - start] == 0)
+    {
+      sync_frame = 0;
+      infoscreen_frame[i - start] = delay - 1;
     }
     else
     {
-      FadeSounds();
-
-      game_status = GAME_MODE_MAIN;
-      DrawMainMenu();
+      sync_frame = delay - infoscreen_frame[i - start];
+      infoscreen_frame[i - start]--;
     }
+
+    if (helpanim_info[j].element == HELPANIM_LIST_NEXT)
+    {
+      if (!infoscreen_frame[i - start])
+	infoscreen_step[i - start] = 0;
+    }
+    else
+    {
+      if (!infoscreen_frame[i - start])
+	infoscreen_step[i - start]++;
+      while (helpanim_info[j].element != HELPANIM_LIST_NEXT)
+	j++;
+    }
+
+    j++;
+
+    ClearRectangleOnBackground(drawto, xstart, ystart + (i - start) * ystep,
+			       TILEX, TILEY);
+    DrawGraphicAnimationExt(drawto, xstart, ystart + (i - start) * ystep,
+			    graphic, sync_frame, USE_MASKING);
+
+    if (init)
+      DrawInfoScreen_HelpText(element, action, direction, i - start);
+
+    i++;
+  }
+
+  redraw_mask |= REDRAW_FIELD;
+
+  FrameCounter++;
+}
+
+static char *getHelpText(int element, int action, int direction)
+{
+  char token[MAX_LINE_LEN];
+
+  strcpy(token, element_info[element].token_name);
+
+  if (action != -1)
+    strcat(token, element_action_info[action].suffix);
+
+  if (direction != -1)
+    strcat(token, element_direction_info[MV_DIR_BIT(direction)].suffix);
+
+  return getHashEntry(helptext_info, token);
+}
+
+void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
+{
+#if 0
+  int font_nr = FONT_TEXT_2;
+#else
+  int font_nr = FONT_LEVEL_NUMBER;
+#endif
+  int font_width = getFontWidth(font_nr);
+  int sx = mSX + MINI_TILEX + TILEX + MINI_TILEX;
+  int sy = mSY + 65 + 2 * 32 + 1;
+  int ystep = TILEY + 4;
+  int pad_x = sx - SX;
+  int max_chars_per_line = (SXSIZE - pad_x - MINI_TILEX) / font_width;
+  int max_lines_per_text = 2;    
+  char *text = NULL;
+
+  if (action != -1 && direction != -1)		/* element.action.direction */
+    text = getHelpText(element, action, direction);
+
+  if (text == NULL && action != -1)		/* element.action */
+    text = getHelpText(element, action, -1);
+
+  if (text == NULL && direction != -1)		/* element.direction */
+    text = getHelpText(element, -1, direction);
+
+  if (text == NULL)				/* base element */
+    text = getHelpText(element, -1, -1);
+
+  if (text == NULL)				/* not found */
+    text = "No description available";
+
+  if (strlen(text) <= max_chars_per_line)	/* only one line of text */
+    sy += getFontHeight(font_nr) / 2;
+
+  DrawTextWrapped(sx, sy + ypos * ystep, text, font_nr,
+		  max_chars_per_line, max_lines_per_text);
+}
+
+void DrawInfoScreen_Elements()
+{
+  LoadHelpAnimInfo();
+  LoadHelpTextInfo();
+
+  HandleInfoScreen_Elements(MB_MENU_INITIALIZE);
+
+  FadeToFront();
+  InitAnimation();
+}
+
+void HandleInfoScreen_Elements(int button)
+{
+  static unsigned long info_delay = 0;
+  static int num_anims;
+  static int num_pages;
+  static int page;
+  int anims_per_page = MAX_INFO_ELEMENTS_ON_SCREEN;
+  int button_released = !button;
+  int i;
+
+  if (button == MB_MENU_INITIALIZE)
+  {
+    boolean new_element = TRUE;
+
+    num_anims = 0;
+    for (i = 0; helpanim_info[i].element != HELPANIM_LIST_END; i++)
+    {
+      if (helpanim_info[i].element == HELPANIM_LIST_NEXT)
+	new_element = TRUE;
+      else if (new_element)
+      {
+	num_anims++;
+	new_element = FALSE;
+      }
+    }
+
+    num_pages = (num_anims + anims_per_page - 1) / anims_per_page;
+    page = 0;
+  }
+  else if (button == MB_MENU_LEAVE)
+  {
+    info_mode = INFO_MODE_MAIN;
+    DrawInfoScreen();
+
+    return;
+  }
+
+  if (button_released || button == MB_MENU_INITIALIZE)
+  {
+    if (button != MB_MENU_INITIALIZE)
+      page++;
+
+    if (page >= num_pages)
+    {
+      FadeSoundsAndMusic();
+
+      info_mode = INFO_MODE_MAIN;
+      DrawInfoScreen();
+
+      return;
+    }
+
+    DrawInfoScreen_HelpAnim(page * anims_per_page, num_anims, TRUE);
   }
   else
   {
-    if (DelayReached(&hs_delay, GAME_FRAME_DELAY))
-    {
-      if (helpscreen_state < num_helpscreen_els_pages)
-	DrawHelpScreenElAction(helpscreen_state * MAX_HELPSCREEN_ELS);
-    }
+    if (DelayReached(&info_delay, GAME_FRAME_DELAY))
+      if (page < num_pages)
+	DrawInfoScreen_HelpAnim(page * anims_per_page, num_anims, FALSE);
 
-    /* !!! workaround for playing "music" that is really a sound loop (and
-       must therefore periodically be reactivated with the current sound
-       engine !!! */
-#if 0
-    PlaySoundLoop(SND_BACKGROUND_INFO);
-#else
-    PlaySound_Menu_Continue(SND_BACKGROUND_INFO);
-#endif
+    PlayMenuSoundIfLoop();
+  }
+}
+
+void DrawInfoScreen_Music()
+{
+  ClearWindow();
+  DrawHeadline();
+
+  LoadMusicInfo();
+
+  HandleInfoScreen_Music(MB_MENU_INITIALIZE);
+}
+
+void HandleInfoScreen_Music(int button)
+{
+  static struct MusicFileInfo *list = NULL;
+  int ystart = 150, dy = 30;
+  int ybottom = SYSIZE - 20;
+  int button_released = !button;
+
+  if (button == MB_MENU_INITIALIZE)
+  {
+    list = music_file_info;
+
+    if (list == NULL)
+    {
+      FadeSoundsAndMusic();
+
+      ClearWindow();
+      DrawHeadline();
+
+      DrawTextSCentered(100, FONT_TEXT_1, "No music info for this level set.");
+
+      DrawTextSCentered(ybottom, FONT_TEXT_4,
+			"Press any key or button for info menu");
+
+      return;
+    }
+  }
+  else if (button == MB_MENU_LEAVE)
+  {
+    info_mode = INFO_MODE_MAIN;
+    DrawInfoScreen();
+
+    return;
   }
 
-  DoAnimation();
-  BackToFront();
+  if (button_released || button == MB_MENU_INITIALIZE)
+  {
+    int y = 0;
+
+    if (button != MB_MENU_INITIALIZE)
+      if (list != NULL)
+	list = list->next;
+
+    if (list == NULL)
+    {
+      info_mode = INFO_MODE_MAIN;
+      DrawInfoScreen();
+
+      return;
+    }
+
+    FadeSoundsAndMusic();
+
+    ClearWindow();
+    DrawHeadline();
+
+    if (list->is_sound)
+    {
+      int sound = list->music;
+
+      if (sound_info[sound].loop)
+	PlaySoundLoop(sound);
+      else
+	PlaySound(sound);
+
+      DrawTextSCentered(100, FONT_TEXT_1, "The Game Background Sounds:");
+    }
+    else
+    {
+      PlayMusic(list->music);
+
+      DrawTextSCentered(100, FONT_TEXT_1, "The Game Background Music:");
+    }
+
+    if (strcmp(list->title, UNKNOWN_NAME) != 0)
+    {
+      if (strcmp(list->title_header, UNKNOWN_NAME) != 0)
+	DrawTextSCentered(ystart + y++ * dy, FONT_TEXT_2, list->title_header);
+
+      DrawTextFCentered(ystart + y++ * dy, FONT_TEXT_3, "\"%s\"", list->title);
+    }
+
+    if (strcmp(list->artist, UNKNOWN_NAME) != 0)
+    {
+      if (strcmp(list->artist_header, UNKNOWN_NAME) != 0)
+	DrawTextSCentered(ystart + y++ * dy, FONT_TEXT_2, list->artist_header);
+      else
+	DrawTextSCentered(ystart + y++ * dy, FONT_TEXT_2, "by");
+
+      DrawTextFCentered(ystart + y++ * dy, FONT_TEXT_3, "%s", list->artist);
+    }
+
+    if (strcmp(list->album, UNKNOWN_NAME) != 0)
+    {
+      if (strcmp(list->album_header, UNKNOWN_NAME) != 0)
+	DrawTextSCentered(ystart + y++ * dy, FONT_TEXT_2, list->album_header);
+      else
+	DrawTextSCentered(ystart + y++ * dy, FONT_TEXT_2, "from the album");
+
+      DrawTextFCentered(ystart + y++ * dy, FONT_TEXT_3, "\"%s\"", list->album);
+    }
+
+    if (strcmp(list->year, UNKNOWN_NAME) != 0)
+    {
+      if (strcmp(list->year_header, UNKNOWN_NAME) != 0)
+	DrawTextSCentered(ystart + y++ * dy, FONT_TEXT_2, list->year_header);
+      else
+	DrawTextSCentered(ystart + y++ * dy, FONT_TEXT_2, "from the year");
+
+      DrawTextFCentered(ystart + y++ * dy, FONT_TEXT_3, "%s", list->year);
+    }
+
+    DrawTextSCentered(ybottom, FONT_TEXT_4,
+		      "Press any key or button for next page");
+  }
+
+  if (list != NULL && list->is_sound && sound_info[list->music].loop)
+    PlaySoundLoop(list->music);
 }
+
+void DrawInfoScreen_Credits()
+{
+  int ystart = 150, ystep = 30;
+  int ybottom = SYSIZE - 20;
+
+  FadeSoundsAndMusic();
+
+  ClearWindow();
+  DrawHeadline();
+
+  DrawTextSCentered(100, FONT_TEXT_1, "Credits:");
+  DrawTextSCentered(ystart + 0 * ystep, FONT_TEXT_2, "DOS port of the game:");
+  DrawTextSCentered(ystart + 1 * ystep, FONT_TEXT_3, "Guido Schulz");
+  DrawTextSCentered(ystart + 2 * ystep, FONT_TEXT_2, "Additional toons:");
+  DrawTextSCentered(ystart + 3 * ystep, FONT_TEXT_3, "Karl Hörnell");
+  DrawTextSCentered(ystart + 5 * ystep, FONT_TEXT_2,
+		    "...and many thanks to all contributors");
+  DrawTextSCentered(ystart + 6 * ystep, FONT_TEXT_2, "of new levels!");
+
+  DrawTextSCentered(ybottom, FONT_TEXT_4,
+		    "Press any key or button for info menu");
+}
+
+void HandleInfoScreen_Credits(int button)
+{
+  int button_released = !button;
+
+  if (button == MB_MENU_LEAVE)
+  {
+    info_mode = INFO_MODE_MAIN;
+    DrawInfoScreen();
+
+    return;
+  }
+
+  if (button_released)
+  {
+    FadeSoundsAndMusic();
+
+    info_mode = INFO_MODE_MAIN;
+    DrawInfoScreen();
+  }
+  else
+  {
+    PlayMenuSoundIfLoop();
+  }
+}
+
+void DrawInfoScreen_Program()
+{
+  int ystart = 150, ystep = 30;
+  int ybottom = SYSIZE - 20;
+
+  ClearWindow();
+  DrawHeadline();
+
+  DrawTextSCentered(100, FONT_TEXT_1, "Program Information:");
+
+  DrawTextSCentered(ystart + 0 * ystep, FONT_TEXT_2,
+		    "This game is Freeware!");
+  DrawTextSCentered(ystart + 1 * ystep, FONT_TEXT_2,
+		    "If you like it, send e-mail to:");
+  DrawTextSCentered(ystart + 2 * ystep, FONT_TEXT_3,
+		    "info@artsoft.org");
+  DrawTextSCentered(ystart + 3 * ystep, FONT_TEXT_2,
+		    "or SnailMail to:");
+  DrawTextSCentered(ystart + 4 * ystep + 0, FONT_TEXT_3,
+		    "Holger Schemel");
+  DrawTextSCentered(ystart + 4 * ystep + 20, FONT_TEXT_3,
+		    "Detmolder Strasse 189");
+  DrawTextSCentered(ystart + 4 * ystep + 40, FONT_TEXT_3,
+		    "33604 Bielefeld");
+  DrawTextSCentered(ystart + 4 * ystep + 60, FONT_TEXT_3,
+		    "Germany");
+
+  DrawTextSCentered(ystart + 7 * ystep, FONT_TEXT_2,
+		    "If you have created new levels,");
+  DrawTextSCentered(ystart + 8 * ystep, FONT_TEXT_2,
+		    "send them to me to include them!");
+  DrawTextSCentered(ystart + 9 * ystep, FONT_TEXT_2,
+		    ":-)");
+
+  DrawTextSCentered(ybottom, FONT_TEXT_4,
+		    "Press any key or button for info menu");
+}
+
+void HandleInfoScreen_Program(int button)
+{
+  int button_released = !button;
+
+  if (button == MB_MENU_LEAVE)
+  {
+    info_mode = INFO_MODE_MAIN;
+    DrawInfoScreen();
+
+    return;
+  }
+
+  if (button_released)
+  {
+    FadeSoundsAndMusic();
+
+    info_mode = INFO_MODE_MAIN;
+    DrawInfoScreen();
+  }
+  else
+  {
+    PlayMenuSoundIfLoop();
+  }
+}
+
+void DrawInfoScreen_LevelSet()
+{
+  int ystart = 150;
+  int ybottom = SYSIZE - 20;
+  char *filename = getLevelSetInfoFilename();
+#if 0
+  int font_nr = FONT_TEXT_2;
+#else
+  int font_nr = FONT_LEVEL_NUMBER;
+#endif
+  int font_width = getFontWidth(font_nr);
+  int font_height = getFontHeight(font_nr);
+  int pad_x = 32;
+  int pad_y = ystart;
+  int sx = SX + pad_x;
+  int sy = SY + pad_y;
+  int max_chars_per_line = (SXSIZE - 2 * pad_x) / font_width;
+  int max_lines_per_screen = (SYSIZE - pad_y) / font_height - 1;
+
+  ClearWindow();
+  DrawHeadline();
+
+  DrawTextSCentered(100, FONT_TEXT_1, "Level Set Information:");
+
+  DrawTextSCentered(ybottom, FONT_TEXT_4,
+		    "Press any key or button for info menu");
+
+  if (filename != NULL)
+    DrawTextFromFile(sx, sy, filename, font_nr, max_chars_per_line,
+		     max_lines_per_screen);
+  else
+    DrawTextSCentered(ystart, FONT_TEXT_2,
+		      "No information for this level set.");
+}
+
+void HandleInfoScreen_LevelSet(int button)
+{
+  int button_released = !button;
+
+  if (button == MB_MENU_LEAVE)
+  {
+    info_mode = INFO_MODE_MAIN;
+    DrawInfoScreen();
+
+    return;
+  }
+
+  if (button_released)
+  {
+    FadeSoundsAndMusic();
+
+    info_mode = INFO_MODE_MAIN;
+    DrawInfoScreen();
+  }
+  else
+  {
+    PlayMenuSoundIfLoop();
+  }
+}
+
+void DrawInfoScreen()
+{
+  SetMainBackgroundImage(IMG_BACKGROUND_INFO);
+
+  if (info_mode == INFO_MODE_ELEMENTS)
+    DrawInfoScreen_Elements();
+  else if (info_mode == INFO_MODE_MUSIC)
+    DrawInfoScreen_Music();
+  else if (info_mode == INFO_MODE_CREDITS)
+    DrawInfoScreen_Credits();
+  else if (info_mode == INFO_MODE_PROGRAM)
+    DrawInfoScreen_Program();
+  else if (info_mode == INFO_MODE_LEVELSET)
+    DrawInfoScreen_LevelSet();
+  else
+    DrawInfoScreen_Main();
+
+  if (info_mode != INFO_MODE_MUSIC)
+  {
+    PlayMenuSound();
+    PlayMenuMusic();
+  }
+}
+
+void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
+{
+  if (info_mode == INFO_MODE_ELEMENTS)
+    HandleInfoScreen_Elements(button);
+  else if (info_mode == INFO_MODE_MUSIC)
+    HandleInfoScreen_Music(button);
+  else if (info_mode == INFO_MODE_CREDITS)
+    HandleInfoScreen_Credits(button);
+  else if (info_mode == INFO_MODE_PROGRAM)
+    HandleInfoScreen_Program(button);
+  else if (info_mode == INFO_MODE_LEVELSET)
+    HandleInfoScreen_LevelSet(button);
+  else
+    HandleInfoScreen_Main(mx, my, dx, dy, button);
+
+  DoAnimation();
+}
+
+
+/* ========================================================================= */
+/* type name functions                                                       */
+/* ========================================================================= */
 
 void HandleTypeName(int newxpos, Key key)
 {
@@ -1189,9 +1344,12 @@ void HandleTypeName(int newxpos, Key key)
     SaveSetup();
     game_status = GAME_MODE_MAIN;
   }
-
-  BackToFront();
 }
+
+
+/* ========================================================================= */
+/* tree menu functions                                                       */
+/* ========================================================================= */
 
 static void DrawChooseTree(TreeInfo **ti_ptr)
 {
@@ -1204,7 +1362,7 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
 
   ClearWindow();
 
-  HandleChooseTree(0,0, 0,0, MB_MENU_INITIALIZE, ti_ptr);
+  HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, ti_ptr);
   MapChooseTreeGadgets(*ti_ptr);
 
   FadeToFront();
@@ -1257,7 +1415,7 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
 		 SXSIZE - 32 + menu.scrollbar_xoffset,
 		 MAX_MENU_ENTRIES_ON_SCREEN * 32);
 
-  for(i=0; i<num_page_entries; i++)
+  for (i = 0; i < num_page_entries; i++)
   {
     TreeInfo *node, *node_first;
     int entry_pos = first_entry + i;
@@ -1309,7 +1467,7 @@ static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
 
   /* let BackToFront() redraw only what is needed */
   redraw_mask = last_redraw_mask | REDRAW_TILES;
-  for (x=0; x<SCR_FIELDX; x++)
+  for (x = 0; x < SCR_FIELDX; x++)
     MarkTileDirty(x, 1);
 }
 
@@ -1476,7 +1634,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     return;
   }
 
-  if (x == 0 && y >= 0 && y < num_page_entries)
+  if (IN_VIS_FIELD(x, y) &&
+      mx < screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x &&
+      y >= 0 && y < num_page_entries)
   {
     if (button)
     {
@@ -1535,13 +1695,6 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       }
     }
   }
-
-#if 0
-  if (game_status == GAME_MODE_LEVELS || game_status == GAME_MODE_SETUP)
-    DoAnimation();
-
-  BackToFront();
-#endif
 }
 
 void DrawChooseLevel()
@@ -1549,6 +1702,9 @@ void DrawChooseLevel()
   SetMainBackgroundImage(IMG_BACKGROUND_LEVELS);
 
   DrawChooseTree(&leveldir_current);
+
+  PlayMenuSound();
+  PlayMenuMusic();
 }
 
 void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
@@ -1556,13 +1712,12 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
   HandleChooseTree(mx, my, dx, dy, button, &leveldir_current);
 
   DoAnimation();
-  BackToFront();
 }
 
 void DrawHallOfFame(int highlight_position)
 {
   UnmapAllGadgets();
-  FadeSounds();
+  FadeSoundsAndMusic();
   CloseDoor(DOOR_CLOSE_2);
 
   if (highlight_position < 0) 
@@ -1571,13 +1726,10 @@ void DrawHallOfFame(int highlight_position)
   FadeToFront();
   InitAnimation();
 
-  HandleHallOfFame(highlight_position,0, 0,0, MB_MENU_INITIALIZE);
+  PlayMenuSound();
+  PlayMenuMusic();
 
-#if 0
-  PlaySound(SND_BACKGROUND_SCORES);
-#else
-  PlaySound_Menu_Start(SND_BACKGROUND_SCORES);
-#endif
+  HandleHallOfFame(highlight_position, 0, 0, 0, MB_MENU_INITIALIZE);
 }
 
 static void drawHallOfFameList(int first_entry, int highlight_position)
@@ -1590,7 +1742,7 @@ static void drawHallOfFameList(int first_entry, int highlight_position)
   DrawText(mSX + 80, mSY + 8, "Hall Of Fame", FONT_TITLE_1);
   DrawTextFCentered(46, FONT_TITLE_2, "HighScores of Level %d", level_nr);
 
-  for(i=0; i<NUM_MENU_ENTRIES_ON_SCREEN; i++)
+  for (i = 0; i < NUM_MENU_ENTRIES_ON_SCREEN; i++)
   {
     int entry = first_entry + i;
     boolean active = (entry == highlight_position);
@@ -1662,13 +1814,10 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
     DrawMainMenu();
   }
 
-#if 1
   if (game_status == GAME_MODE_SCORES)
-    PlaySound_Menu_Continue(SND_BACKGROUND_SCORES);
-#endif
+    PlayMenuSoundIfLoop();
 
   DoAnimation();
-  BackToFront();
 }
 
 
@@ -1785,6 +1934,7 @@ static struct TokenInfo setup_info_main[] =
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execExitSetup, 		"Exit"			},
   { TYPE_LEAVE_MENU,	execSaveAndExitSetup,	"Save and Exit"		},
+
   { 0,			NULL,			NULL			}
 };
 
@@ -1796,12 +1946,15 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_SWITCH,	&setup.autorecord,	"Auto-Record:"		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+
   { 0,			NULL,			NULL			}
 };
 
 static struct TokenInfo setup_info_editor[] =
 {
+#if 0
   { TYPE_STRING,	NULL,			"Offer Special Elements:"},
+#endif
   { TYPE_SWITCH,	&setup.editor.el_boulderdash,	"BoulderDash:"	},
   { TYPE_SWITCH,	&setup.editor.el_emerald_mine,	"Emerald Mine:"	},
   { TYPE_SWITCH,	&setup.editor.el_more,		"More:"		},
@@ -1813,8 +1966,10 @@ static struct TokenInfo setup_info_editor[] =
   { TYPE_SWITCH,	&setup.editor.el_custom,	"Custom:"	},
   { TYPE_SWITCH,	&setup.editor.el_custom_more,	"More Custom:"	},
   { TYPE_SWITCH,	&setup.editor.el_headlines,	"Headlines:"	},
+  { TYPE_SWITCH,	&setup.editor.el_user_defined,	"User defined:"	},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+
   { 0,			NULL,			NULL			}
 };
 
@@ -1831,6 +1986,7 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_SWITCH,	&setup.toons,		"Toons:"		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+
   { 0,			NULL,			NULL			}
 };
 
@@ -1841,6 +1997,7 @@ static struct TokenInfo setup_info_sound[] =
   { TYPE_SWITCH,	&setup.sound_music,	"Game Music:"		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+
   { 0,			NULL,			NULL			}
 };
 
@@ -1859,6 +2016,7 @@ static struct TokenInfo setup_info_artwork[] =
   { TYPE_YES_NO,	&setup.override_level_music,	"Music:"	},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+
   { 0,			NULL,			NULL			}
 };
 
@@ -1874,6 +2032,7 @@ static struct TokenInfo setup_info_shortcut[] =
   { TYPE_YES_NO,	&setup.ask_on_escape,	"Ask on Esc:"		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+
   { 0,			NULL,			NULL			}
 };
 
@@ -2038,7 +2197,7 @@ static void DrawSetupScreen_Generic()
   DrawText(mSX + 16, mSY + 16, title_string, FONT_TITLE_1);
 
   num_setup_info = 0;
-  for(i=0; setup_info[i].type != 0 && i < NUM_MENU_ENTRIES_ON_SCREEN; i++)
+  for (i = 0; setup_info[i].type != 0 && i < NUM_MENU_ENTRIES_ON_SCREEN; i++)
   {
     void *value_ptr = setup_info[i].value;
     int ypos = MENU_SCREEN_START_YPOS + i;
@@ -2051,8 +2210,14 @@ static void DrawSetupScreen_Generic()
 	(value_ptr == &setup.fullscreen   && !video.fullscreen_available))
       setup_info[i].type |= TYPE_GHOSTED;
 
+#if 0
+    if (setup_info[i].type & TYPE_STRING ||
+	(setup_info[i].type & TYPE_SWITCH && setup_mode == SETUP_MODE_EDITOR))
+      font_nr = FONT_MENU_2;
+#else
     if (setup_info[i].type & TYPE_STRING)
       font_nr = FONT_MENU_2;
+#endif
 
     DrawText(mSX + 32, mSY + ypos * 32, setup_info[i].text, font_nr);
 
@@ -2071,7 +2236,7 @@ static void DrawSetupScreen_Generic()
 
   FadeToFront();
   InitAnimation();
-  HandleSetupScreen_Generic(0,0,0,0,MB_MENU_INITIALIZE);
+  HandleSetupScreen_Generic(0, 0, 0, 0, MB_MENU_INITIALIZE);
 }
 
 void HandleSetupScreen_Generic(int mx, int my, int dx, int dy, int button)
@@ -2085,7 +2250,7 @@ void HandleSetupScreen_Generic(int mx, int my, int dx, int dy, int button)
   {
     /* advance to first valid menu entry */
     while (choice < num_setup_info &&
-	   (setup_info[choice].type & TYPE_SKIP_ENTRY))
+	   setup_info[choice].type & TYPE_SKIP_ENTRY)
       choice++;
     choice_store[setup_mode] = choice;
 
@@ -2094,7 +2259,7 @@ void HandleSetupScreen_Generic(int mx, int my, int dx, int dy, int button)
   }
   else if (button == MB_MENU_LEAVE)
   {
-    for (y=0; y<num_setup_info; y++)
+    for (y = 0; y < num_setup_info; y++)
     {
       if (setup_info[y].type & TYPE_LEAVE_MENU)
       {
@@ -2119,8 +2284,8 @@ void HandleSetupScreen_Generic(int mx, int my, int dx, int dy, int button)
     {
       int menu_navigation_type = (dx < 0 ? TYPE_LEAVE_MENU : TYPE_ENTER_MENU);
 
-      if ((setup_info[choice].type & menu_navigation_type) ||
-	  (setup_info[choice].type & TYPE_BOOLEAN_STYLE))
+      if (setup_info[choice].type & menu_navigation_type ||
+	  setup_info[choice].type & TYPE_BOOLEAN_STYLE)
 	button = MB_MENU_CHOICE;
     }
     else if (dy)
@@ -2128,12 +2293,12 @@ void HandleSetupScreen_Generic(int mx, int my, int dx, int dy, int button)
 
     /* jump to next non-empty menu entry (up or down) */
     while (y > 0 && y < num_setup_info - 1 &&
-	   (setup_info[y].type & TYPE_SKIP_ENTRY))
+	   setup_info[y].type & TYPE_SKIP_ENTRY)
       y += dy;
   }
 
-  if (x == 0 && y >= 0 && y < num_setup_info &&
-      (setup_info[y].type & ~TYPE_SKIP_ENTRY))
+  if (IN_VIS_FIELD(x, y) &&
+      y >= 0 && y < num_setup_info && setup_info[y].type & ~TYPE_SKIP_ENTRY)
   {
     if (button)
     {
@@ -2154,8 +2319,8 @@ void HandleSetupScreen_Generic(int mx, int my, int dx, int dy, int button)
       }
       else
       {
-	if ((setup_info[y].type & TYPE_KEYTEXT) &&
-	    (setup_info[y + 1].type & TYPE_KEY))
+	if (setup_info[y].type & TYPE_KEYTEXT &&
+	    setup_info[y + 1].type & TYPE_KEY)
 	  y++;
 
 	if (setup_info[y].type & TYPE_VALUE)
@@ -2163,13 +2328,6 @@ void HandleSetupScreen_Generic(int mx, int my, int dx, int dy, int button)
       }
     }
   }
-
-#if 0
-  BackToFront();
-
-  if (game_status == GAME_MODE_SETUP)
-    DoAnimation();
-#endif
 }
 
 void DrawSetupScreen_Input()
@@ -2192,11 +2350,11 @@ void DrawSetupScreen_Input()
 
 #if 0
   DeactivateJoystickForCalibration();
-  DrawTextFCentered(SYSIZE - 20, FONT_TEXT_4,
+  DrawTextSCentered(SYSIZE - 20, FONT_TEXT_4,
 		    "Joysticks deactivated on this screen");
 #endif
 
-  HandleSetupScreen_Input(0,0, 0,0, MB_MENU_INITIALIZE);
+  HandleSetupScreen_Input(0, 0, 0, 0, MB_MENU_INITIALIZE);
   FadeToFront();
   InitAnimation();
 }
@@ -2284,7 +2442,7 @@ static void drawPlayerSetupInputInfo(int player_nr)
   DrawText(mSX+32, mSY+10*32, "Snap Field:", FONT_VALUE_OLD);
   DrawText(mSX+32, mSY+12*32, "Place Bomb:", FONT_VALUE_OLD);
 
-  for (i=0; i<6; i++)
+  for (i = 0; i < 6; i++)
   {
     int ypos = 6 + i + (i > 3 ? i-3 : 0);
 
@@ -2312,6 +2470,7 @@ void HandleSetupScreen_Input(int mx, int my, int dx, int dy, int button)
   {
     drawPlayerSetupInputInfo(player_nr);
     drawCursor(choice, FC_RED);
+
     return;
   }
   else if (button == MB_MENU_LEAVE)
@@ -2319,6 +2478,8 @@ void HandleSetupScreen_Input(int mx, int my, int dx, int dy, int button)
     setup_mode = SETUP_MODE_MAIN;
     DrawSetupScreen();
     InitJoysticks();
+
+    return;
   }
 
   if (mx || my)		/* mouse input */
@@ -2341,22 +2502,20 @@ void HandleSetupScreen_Input(int mx, int my, int dx, int dy, int button)
       y = (dy > 0 ? pos_empty2 + 1 : pos_empty1 - 1);
   }
 
-  if (y == 0 && ((x == 0 && !button) || ((x == 10 || x == 12) && button)))
+  if (IN_VIS_FIELD(x, y) &&
+      y == 0 && ((x < 10 && !button) || ((x == 10 || x == 12) && button)))
   {
     static unsigned long delay = 0;
 
     if (!DelayReached(&delay, GADGET_FRAME_DELAY))
-#if 1
       return;
-#else
-      goto out;
-#endif
 
     player_nr = (player_nr + (x == 10 ? -1 : +1) + MAX_PLAYERS) % MAX_PLAYERS;
 
     drawPlayerSetupInputInfo(player_nr);
   }
-  else if (x == 0 && y >= pos_start && y <= pos_end &&
+  else if (IN_VIS_FIELD(x, y) &&
+	   y >= pos_start && y <= pos_end &&
 	   !(y >= pos_empty1 && y <= pos_empty2))
   {
     if (button)
@@ -2413,15 +2572,6 @@ void HandleSetupScreen_Input(int mx, int my, int dx, int dy, int button)
       }
     }
   }
-
-#if 0
-  BackToFront();
-
-  out:
-
-  if (game_status == GAME_MODE_SETUP)
-    DoAnimation();
-#endif
 }
 
 void CustomizeKeyboard(int player_nr)
@@ -2461,7 +2611,7 @@ void CustomizeKeyboard(int player_nr)
   DrawText(mSX + 4*32, mSY + (2+2*step_nr+1)*32,
 	   getKeyNameFromKey(*customize_step[step_nr].key), FONT_VALUE_OLD);
 
-  while(!finished)
+  while (!finished)
   {
     if (PendingEvent())		/* got event */
     {
@@ -2490,7 +2640,7 @@ void CustomizeKeyboard(int player_nr)
 	      key = *customize_step[step_nr].key;
 
 	    /* check if key already used */
-	    for (i=0; i<step_nr; i++)
+	    for (i = 0; i < step_nr; i++)
 	      if (*customize_step[i].key == key)
 		break;
 	    if (i < step_nr)
@@ -2577,9 +2727,9 @@ static boolean CalibrateJoystickMain(int player_nr)
 
   ClearWindow();
 
-  for(y=0; y < 3; y++)
+  for (y = 0; y < 3; y++)
   {
-    for(x=0; x < 3; x++)
+    for (x = 0; x < 3; x++)
     {
       DrawGraphic(xpos + x - 1, ypos + y - 1, IMG_MENU_CALIBRATE_BLUE, 0);
       check[x][y] = FALSE;
@@ -2608,10 +2758,10 @@ static boolean CalibrateJoystickMain(int player_nr)
   DrawGraphic(xpos + last_x, ypos + last_y, IMG_MENU_CALIBRATE_RED, 0);
   BackToFront();
 
-  while(Joystick(player_nr) & JOY_BUTTON);	/* wait for released button */
+  while (Joystick(player_nr) & JOY_BUTTON);	/* wait for released button */
   InitAnimation();
 
-  while(result < 0)
+  while (result < 0)
   {
     if (PendingEvent())		/* got event */
     {
@@ -2743,8 +2893,8 @@ void CalibrateJoystick(int player_nr)
   {
     ClearWindow();
 
-    DrawText(mSX + 16, mSY + 6*32, "  JOYSTICK NOT  ",  FONT_TITLE_1);
-    DrawText(mSX,      mSY + 7*32, "    AVAILABLE    ", FONT_TITLE_1);
+    DrawText(mSX + 16, mSY + 6 * 32, "  JOYSTICK NOT  ",  FONT_TITLE_1);
+    DrawText(mSX,      mSY + 7 * 32, "    AVAILABLE    ", FONT_TITLE_1);
     BackToFront();
     Delay(2000);	/* show error message for two seconds */
   }
@@ -2766,6 +2916,9 @@ void DrawSetupScreen()
     DrawChooseTree(&artwork.mus_current);
   else
     DrawSetupScreen_Generic();
+
+  PlayMenuSound();
+  PlayMenuMusic();
 }
 
 void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
@@ -2782,7 +2935,6 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
     HandleSetupScreen_Generic(mx, my, dx, dy, button);
 
   DoAnimation();
-  BackToFront();
 }
 
 void HandleGameActions()
@@ -2797,13 +2949,10 @@ void HandleGameActions()
     TapeStop();
 
   GameActions();
-
   BackToFront();
 
-#if 1
   if (tape.auto_play && !tape.playing)
     AutoPlayTape();	/* continue automatically playing next tape */
-#endif
 }
 
 /* ---------- new screen button stuff -------------------------------------- */
@@ -2882,7 +3031,7 @@ static void CreateScreenScrollbuttons()
   unsigned long event_mask;
   int i;
 
-  for (i=0; i<NUM_SCREEN_SCROLLBUTTONS; i++)
+  for (i = 0; i < NUM_SCREEN_SCROLLBUTTONS; i++)
   {
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
     int gfx_unpressed, gfx_pressed;
@@ -2937,7 +3086,7 @@ static void CreateScreenScrollbars()
 {
   int i;
 
-  for (i=0; i<NUM_SCREEN_SCROLLBARS; i++)
+  for (i = 0; i < NUM_SCREEN_SCROLLBARS; i++)
   {
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
 #if !defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
@@ -3017,7 +3166,7 @@ void CreateScreenGadgets()
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
   int i;
 
-  for (i=0; i < NUM_SCROLLBAR_BITMAPS; i++)
+  for (i = 0; i < NUM_SCROLLBAR_BITMAPS; i++)
   {
     scrollbar_bitmap[i] = CreateBitmap(TILEX, TILEY, DEFAULT_DEPTH);
 
@@ -3049,7 +3198,7 @@ void FreeScreenGadgets()
   int i;
 
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
-  for (i=0; i < NUM_SCROLLBAR_BITMAPS; i++)
+  for (i = 0; i < NUM_SCROLLBAR_BITMAPS; i++)
   {
     /* prevent freeing clip mask and GC twice */
     scrollbar_bitmap[i]->clip_mask = None;
@@ -3059,7 +3208,7 @@ void FreeScreenGadgets()
   }
 #endif
 
-  for (i=0; i<NUM_SCREEN_GADGETS; i++)
+  for (i = 0; i < NUM_SCREEN_GADGETS; i++)
     FreeGadget(screen_gadget[i]);
 }
 
@@ -3071,17 +3220,19 @@ void MapChooseTreeGadgets(TreeInfo *ti)
   if (num_entries <= NUM_MENU_ENTRIES_ON_SCREEN)
     return;
 
-  for (i=0; i<NUM_SCREEN_GADGETS; i++)
+  for (i = 0; i < NUM_SCREEN_GADGETS; i++)
     MapGadget(screen_gadget[i]);
 }
 
+#if 0
 void UnmapChooseTreeGadgets()
 {
   int i;
 
-  for (i=0; i<NUM_SCREEN_GADGETS; i++)
+  for (i = 0; i < NUM_SCREEN_GADGETS; i++)
     UnmapGadget(screen_gadget[i]);
 }
+#endif
 
 static void HandleScreenGadgets(struct GadgetInfo *gi)
 {

@@ -91,8 +91,8 @@ void RedrawPlayfield(boolean force_redraw, int x, int y, int width, int height)
       if (setup.direct_draw)
 	SetDrawtoField(DRAW_BACKBUFFER);
 
-      for(xx=BX1; xx<=BX2; xx++)
-	for(yy=BY1; yy<=BY2; yy++)
+      for (xx = BX1; xx <= BX2; xx++)
+	for (yy = BY1; yy <= BY2; yy++)
 	  if (xx >= x1 && xx <= x2 && yy >= y1 && yy <= y2)
 	    DrawScreenField(xx, yy);
       DrawAllPlayers();
@@ -263,8 +263,8 @@ void BackToFront()
 
   if (redraw_mask & REDRAW_TILES)
   {
-    for(x=0; x<SCR_FIELDX; x++)
-      for(y=0; y<SCR_FIELDY; y++)
+    for (x = 0; x < SCR_FIELDX; x++)
+      for (y =0 ; y < SCR_FIELDY; y++)
 	if (redraw[redraw_x1 + x][redraw_y1 + y])
 	  BlitBitmap(buffer, window,
 		     FX + x * TILEX, FX + y * TILEY, TILEX, TILEY,
@@ -286,8 +286,8 @@ void BackToFront()
 
   FlushDisplay();
 
-  for(x=0; x<MAX_BUF_XSIZE; x++)
-    for(y=0; y<MAX_BUF_YSIZE; y++)
+  for (x = 0; x < MAX_BUF_XSIZE; x++)
+    for (y = 0; y < MAX_BUF_YSIZE; y++)
       redraw[x][y] = 0;
   redraw_tiles = 0;
   redraw_mask = REDRAW_NONE;
@@ -308,9 +308,9 @@ void FadeToFront()
     ClearRectangle(window, REAL_SX,REAL_SY,FULL_SXSIZE,FULL_SYSIZE);
     FlushDisplay();
 
-    for(i=0;i<2*FULL_SYSIZE;i++)
+    for (i = 0; i < 2 * FULL_SYSIZE; i++)
     {
-      for(y=0;y<FULL_SYSIZE;y++)
+      for (y = 0; y < FULL_SYSIZE; y++)
       {
 	BlitBitmap(backbuffer, window,
 		   REAL_SX,REAL_SY+i, FULL_SXSIZE,1, REAL_SX,REAL_SY+i);
@@ -321,7 +321,7 @@ void FadeToFront()
 #endif
 
 #if 0
-    for(i=1;i<FULL_SYSIZE;i+=2)
+    for (i = 1; i < FULL_SYSIZE; i+=2)
       BlitBitmap(backbuffer, window,
 		 REAL_SX,REAL_SY+i, FULL_SXSIZE,1, REAL_SX,REAL_SY+i);
     FlushDisplay();
@@ -424,9 +424,9 @@ void SetBorderElement()
 
   BorderElement = EL_EMPTY;
 
-  for(y=0; y<lev_fieldy && BorderElement == EL_EMPTY; y++)
+  for (y = 0; y < lev_fieldy && BorderElement == EL_EMPTY; y++)
   {
-    for(x=0; x<lev_fieldx; x++)
+    for (x = 0; x < lev_fieldx; x++)
     {
       if (!IS_INDESTRUCTIBLE(Feld[x][y]))
 	BorderElement = EL_STEELWALL;
@@ -553,11 +553,24 @@ static int getPlayerGraphic(struct PlayerInfo *player, int move_dir)
     return el_act_dir2img(player->element_nr, player->GfxAction, move_dir);
 }
 
+static boolean equalGraphics(int graphic1, int graphic2)
+{
+  struct GraphicInfo *g1 = &graphic_info[graphic1];
+  struct GraphicInfo *g2 = &graphic_info[graphic2];
+
+  return (g1->bitmap      == g2->bitmap &&
+	  g1->src_x       == g2->src_x &&
+	  g1->src_y       == g2->src_y &&
+	  g1->anim_frames == g2->anim_frames &&
+	  g1->anim_delay  == g2->anim_delay &&
+	  g1->anim_mode   == g2->anim_mode);
+}
+
 void DrawAllPlayers()
 {
   int i;
 
-  for(i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
     if (stored_player[i].active)
       DrawPlayer(&stored_player[i]);
 }
@@ -615,15 +628,12 @@ void DrawPlayer(struct PlayerInfo *player)
   if (element == EL_EXPLOSION)
     return;
 
-  action = (player->is_pushing    ? ACTION_PUSHING    :
-	    player->is_digging    ? ACTION_DIGGING    :
-	    player->is_collecting ? ACTION_COLLECTING :
-	    player->is_moving     ? ACTION_MOVING     :
-	    player->is_snapping   ? ACTION_SNAPPING   : ACTION_DEFAULT);
-
-#if 0
-  printf("::: '%s'\n", element_action_info[action].suffix);
-#endif
+  action = (player->is_pushing    ? ACTION_PUSHING         :
+	    player->is_digging    ? ACTION_DIGGING         :
+	    player->is_collecting ? ACTION_COLLECTING      :
+	    player->is_moving     ? ACTION_MOVING          :
+	    player->is_snapping   ? ACTION_SNAPPING        :
+	    player->is_waiting    ? player->action_waiting : ACTION_DEFAULT);
 
   InitPlayerGfxAnimation(player, action, move_dir);
 
@@ -704,8 +714,7 @@ void DrawPlayer(struct PlayerInfo *player)
 
   /* in the case of changed player action or direction, prevent the current
      animation frame from being restarted for identical animations */
-  if (player->Frame == 0 &&
-      graphic_info[graphic].bitmap == graphic_info[last_player_graphic].bitmap)
+  if (player->Frame == 0 && equalGraphics(graphic, last_player_graphic))
     player->Frame = last_player_frame;
 
 #else
@@ -1222,7 +1231,7 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
 
     getGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
 
-    for(i=0; i<4; i++)
+    for (i = 0; i < 4; i++)
     {
       int xx = x + xy[i][0];
       int yy = y + xy[i][1];
@@ -1267,7 +1276,7 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
     getGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
 #endif
 
-    for(i=0; i<4; i++)
+    for (i = 0; i < 4; i++)
     {
       int xx = x + xy[i][0];
       int yy = y + xy[i][1];
@@ -1356,7 +1365,7 @@ void DrawLevelFieldCrumbledSandNeighbours(int x, int y)
   };
   int i;
 
-  for(i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int xx = x + xy[i][0];
     int yy = y + xy[i][1];
@@ -1604,7 +1613,7 @@ void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
   int ystep = (ystart < yend || xstep == 0 ? 1 : 0);
   int x, y;
 
-  for (x=xstart, y=ystart; x <= xend && y <= yend; x += xstep, y += ystep)
+  for (x = xstart, y = ystart; x <= xend && y <= yend; x += xstep, y += ystep)
   {
     int xsize = (action == ACTION_CLOSING ? xend - (x - xstart) : x) + 2;
     int ysize = (action == ACTION_CLOSING ? yend - (y - ystart) : y) + 2;
@@ -1618,7 +1627,7 @@ void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
 
     SetDrawtoField(DRAW_BACKBUFFER);
 
-    for (yy=0; yy < ysize; yy++) for (xx=0; xx < xsize; xx++)
+    for (yy = 0; yy < ysize; yy++) for (xx = 0; xx < xsize; xx++)
       DrawEnvelopeBackground(envelope_nr, sx,sy, xx,yy, xsize, ysize, font_nr);
 
     DrawTextToTextArea(SX + sx + font_width, SY + sy + font_height,
@@ -1705,8 +1714,8 @@ void DrawLevel()
   SetDrawBackgroundMask(REDRAW_NONE);
   ClearWindow();
 
-  for(x=BX1; x<=BX2; x++)
-    for(y=BY1; y<=BY2; y++)
+  for (x = BX1; x <= BX2; x++)
+    for (y = BY1; y <= BY2; y++)
       DrawScreenField(x, y);
 
   redraw_mask |= REDRAW_FIELD;
@@ -1716,8 +1725,8 @@ void DrawMiniLevel(int size_x, int size_y, int scroll_x, int scroll_y)
 {
   int x,y;
 
-  for(x=0; x<size_x; x++)
-    for(y=0; y<size_y; y++)
+  for (x = 0; x < size_x; x++)
+    for (y = 0; y < size_y; y++)
       DrawMiniElementOrWall(x, y, scroll_x, scroll_y);
 
   redraw_mask |= REDRAW_FIELD;
@@ -1737,9 +1746,9 @@ static void DrawMicroLevelExt(int xpos, int ypos, int from_x, int from_y)
   xpos += MICRO_TILEX;
   ypos += MICRO_TILEY;
 
-  for(x=-1; x<=STD_LEV_FIELDX; x++)
+  for (x = -1; x <= STD_LEV_FIELDX; x++)
   {
-    for(y=-1; y<=STD_LEV_FIELDY; y++)
+    for (y = -1; y <= STD_LEV_FIELDY; y++)
     {
       int lx = from_x + x, ly = from_y + y;
 
@@ -1951,13 +1960,31 @@ void WaitForEventToContinue()
 }
 
 #define MAX_REQUEST_LINES		13
-#define MAX_REQUEST_LINE_LEN		7
+#define MAX_REQUEST_LINE_FONT1_LEN	7
+#define MAX_REQUEST_LINE_FONT2_LEN	10
 
 boolean Request(char *text, unsigned int req_state)
 {
   int mx, my, ty, result = -1;
   unsigned int old_door_state;
   int last_game_status = game_status;	/* save current game status */
+  int max_request_line_len = MAX_REQUEST_LINE_FONT1_LEN;
+  int font_nr = FONT_TEXT_2;
+  int max_word_len = 0;
+  char *text_ptr;
+
+  for (text_ptr = text; *text_ptr; text_ptr++)
+  {
+    max_word_len = (*text_ptr != ' ' ? max_word_len + 1 : 0);
+
+    if (max_word_len > MAX_REQUEST_LINE_FONT1_LEN)
+    {
+      max_request_line_len = MAX_REQUEST_LINE_FONT2_LEN;
+      font_nr = FONT_LEVEL_NUMBER;
+
+      break;
+    }
+  }
 
 #if 1
   SetMouseCursor(CURSOR_DEFAULT);
@@ -1995,15 +2022,15 @@ boolean Request(char *text, unsigned int req_state)
   game_status = GAME_MODE_PSEUDO_DOOR;
 
   /* write text for request */
-  for(ty=0; ty < MAX_REQUEST_LINES; ty++)
+  for (ty = 0; ty < MAX_REQUEST_LINES; ty++)
   {
-    char text_line[MAX_REQUEST_LINE_LEN + 1];
-    int tx, tl, tc;
+    char text_line[max_request_line_len + 1];
+    int tx, tl, tc = 0;
 
     if (!*text)
       break;
 
-    for(tl=0,tx=0; tx < MAX_REQUEST_LINE_LEN; tl++,tx++)
+    for (tl = 0, tx = 0; tx < max_request_line_len; tl++, tx++)
     {
       tc = *(text + tx);
       if (!tc || tc == ' ')
@@ -2020,9 +2047,9 @@ boolean Request(char *text, unsigned int req_state)
     strncpy(text_line, text, tl);
     text_line[tl] = 0;
 
-    DrawText(DX + (DXSIZE - tl * getFontWidth(FONT_TEXT_2)) / 2,
-	     DY + 8 + ty * (getFontHeight(FONT_TEXT_2) + 2),
-	     text_line, FONT_TEXT_2);
+    DrawText(DX + (DXSIZE - tl * getFontWidth(font_nr)) / 2,
+	     DY + 8 + ty * (getFontHeight(font_nr) + 2),
+	     text_line, font_nr);
 
     text += tl + (tc == ' ' ? 1 : 0);
   }
@@ -2077,7 +2104,7 @@ boolean Request(char *text, unsigned int req_state)
   SetMouseCursor(CURSOR_DEFAULT);
 #endif
 
-  while(result < 0)
+  while (result < 0)
   {
     if (PendingEvent())
     {
@@ -2332,7 +2359,7 @@ unsigned int MoveDoor(unsigned int door_state)
 	PlaySoundStereo(SND_DOOR_CLOSING, SOUND_MIDDLE);
     }
 
-    for(x = start; x <= end && !(door_1_done && door_2_done); x += stepsize)
+    for (x = start; x <= end && !(door_1_done && door_2_done); x += stepsize)
     {
       Bitmap *bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
       GC gc = bitmap->stored_clip_gc;
@@ -2649,7 +2676,7 @@ void CreateToolButtons()
 {
   int i;
 
-  for (i=0; i<NUM_TOOL_BUTTONS; i++)
+  for (i = 0; i < NUM_TOOL_BUTTONS; i++)
   {
     Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
     Bitmap *deco_bitmap = None;
@@ -2707,7 +2734,7 @@ void FreeToolButtons()
 {
   int i;
 
-  for (i=0; i<NUM_TOOL_BUTTONS; i++)
+  for (i = 0; i < NUM_TOOL_BUTTONS; i++)
     FreeGadget(tool_gadget[i]);
 }
 
@@ -2715,7 +2742,7 @@ static void UnmapToolButtons()
 {
   int i;
 
-  for (i=0; i<NUM_TOOL_BUTTONS; i++)
+  for (i = 0; i < NUM_TOOL_BUTTONS; i++)
     UnmapGadget(tool_gadget[i]);
 }
 

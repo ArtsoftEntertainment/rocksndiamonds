@@ -13,6 +13,8 @@
 
 #include <ctype.h>
 #include <sys/stat.h>
+#include <dirent.h>
+#include <math.h>
 
 #include "libgame/libgame.h"
 
@@ -89,8 +91,8 @@ void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
   change->random = 100;
   change->power = CP_NON_DESTRUCTIVE;
 
-  for(x=0; x<3; x++)
-    for(y=0; y<3; y++)
+  for (x = 0; x < 3; x++)
+    for (y = 0; y < 3; y++)
       change->content[x][y] = EL_EMPTY_SPACE;
 
   change->direct_action = 0;
@@ -115,8 +117,8 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
   level->fieldx = STD_LEV_FIELDX;
   level->fieldy = STD_LEV_FIELDY;
 
-  for(x=0; x<MAX_LEV_FIELDX; x++)
-    for(y=0; y<MAX_LEV_FIELDY; y++)
+  for (x = 0; x < MAX_LEV_FIELDX; x++)
+    for (y = 0; y < MAX_LEV_FIELDY; y++)
       level->field[x][y] = EL_SAND;
 
   level->time = 100;
@@ -133,45 +135,45 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
 
   level->use_custom_template = FALSE;
 
-  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
+  for (i = 0; i < MAX_LEVEL_NAME_LEN; i++)
     level->name[i] = '\0';
-  for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
+  for (i = 0; i < MAX_LEVEL_AUTHOR_LEN; i++)
     level->author[i] = '\0';
 
   strcpy(level->name, NAMELESS_LEVEL_NAME);
   strcpy(level->author, ANONYMOUS_NAME);
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     level->envelope_text[i][0] = '\0';
     level->envelope_xsize[i] = MAX_ENVELOPE_XSIZE;
     level->envelope_ysize[i] = MAX_ENVELOPE_YSIZE;
   }
 
-  for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
+  for (i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
     level->score[i] = 10;
 
   level->num_yamyam_contents = STD_ELEMENT_CONTENTS;
-  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-    for(x=0; x<3; x++)
-      for(y=0; y<3; y++)
+  for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+    for (x = 0; x < 3; x++)
+      for (y = 0; y < 3; y++)
 	level->yamyam_content[i][x][y] =
 	  (i < STD_ELEMENT_CONTENTS ? EL_ROCK : EL_EMPTY);
 
   level->field[0][0] = EL_PLAYER_1;
   level->field[STD_LEV_FIELDX - 1][STD_LEV_FIELDY - 1] = EL_EXIT_CLOSED;
 
-  for (i=0; i < MAX_NUM_ELEMENTS; i++)
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
     setElementChangePages(&element_info[i], 1);
     setElementChangeInfoToDefaults(element_info[i].change);
   }
 
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
 
-    for(j=0; j < MAX_ELEMENT_NAME_LEN + 1; j++)
+    for (j = 0; j < MAX_ELEMENT_NAME_LEN + 1; j++)
       element_info[element].description[j] = '\0';
     if (element_info[element].custom_description != NULL)
       strncpy(element_info[element].description,
@@ -197,8 +199,8 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
 
     element_info[element].slippery_type = SLIPPERY_ANY_RANDOM;
 
-    for(x=0; x<3; x++)
-      for(y=0; y<3; y++)
+    for (x = 0; x < 3; x++)
+      for (y = 0; y < 3; y++)
 	element_info[element].content[x][y] = EL_EMPTY_SPACE;
 
     element_info[element].access_type = 0;
@@ -215,7 +217,7 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
     element_info[element].current_change_page = 0;
 
     /* start with no properties at all */
-    for (j=0; j < NUM_EP_BITFIELDS; j++)
+    for (j = 0; j < NUM_EP_BITFIELDS; j++)
       Properties[element][j] = EP_BITMASK_DEFAULT;
 
     element_info[element].modified_settings = FALSE;
@@ -354,17 +356,17 @@ static int LoadLevel_HEAD(FILE *file, int chunk_size, struct LevelInfo *level)
   level->time		= getFile16BitBE(file);
   level->gems_needed	= getFile16BitBE(file);
 
-  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
+  for (i = 0; i < MAX_LEVEL_NAME_LEN; i++)
     level->name[i] = getFile8Bit(file);
   level->name[MAX_LEVEL_NAME_LEN] = 0;
 
-  for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
+  for (i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
     level->score[i] = getFile8Bit(file);
 
   level->num_yamyam_contents = STD_ELEMENT_CONTENTS;
-  for(i=0; i<STD_ELEMENT_CONTENTS; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+  for (i = 0; i < STD_ELEMENT_CONTENTS; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	level->yamyam_content[i][x][y] = checkLevelElement(getFile8Bit(file));
 
   level->amoeba_speed		= getFile8Bit(file);
@@ -387,7 +389,7 @@ static int LoadLevel_AUTH(FILE *file, int chunk_size, struct LevelInfo *level)
 {
   int i;
 
-  for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
+  for (i = 0; i < MAX_LEVEL_AUTHOR_LEN; i++)
     level->author[i] = getFile8Bit(file);
   level->author[MAX_LEVEL_NAME_LEN] = 0;
 
@@ -413,8 +415,8 @@ static int LoadLevel_BODY(FILE *file, int chunk_size, struct LevelInfo *level)
     return chunk_size_expected;
   }
 
-  for(y=0; y<level->fieldy; y++)
-    for(x=0; x<level->fieldx; x++)
+  for (y = 0; y < level->fieldy; y++)
+    for (x = 0; x < level->fieldx; x++)
       level->field[x][y] =
 	checkLevelElement(level->encoding_16bit_field ? getFile16BitBE(file) :
 			  getFile8Bit(file));
@@ -452,9 +454,9 @@ static int LoadLevel_CONT(FILE *file, int chunk_size, struct LevelInfo *level)
       level->num_yamyam_contents > MAX_ELEMENT_CONTENTS)
     level->num_yamyam_contents = STD_ELEMENT_CONTENTS;
 
-  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+  for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	level->yamyam_content[i][x][y] =
 	  checkLevelElement(level->encoding_16bit_field ?
 			    getFile16BitBE(file) : getFile8Bit(file));
@@ -475,9 +477,9 @@ static int LoadLevel_CNT2(FILE *file, int chunk_size, struct LevelInfo *level)
 
   ReadUnusedBytesFromFile(file, LEVEL_CHUNK_CNT2_UNUSED);
 
-  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+  for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	content_array[i][x][y] = checkLevelElement(getFile16BitBE(file));
 
   /* correct invalid number of content fields -- should never happen */
@@ -488,9 +490,9 @@ static int LoadLevel_CNT2(FILE *file, int chunk_size, struct LevelInfo *level)
   {
     level->num_yamyam_contents = num_contents;
 
-    for(i=0; i<num_contents; i++)
-      for(y=0; y<3; y++)
-	for(x=0; x<3; x++)
+    for (i = 0; i < num_contents; i++)
+      for (y = 0; y < 3; y++)
+	for (x = 0; x < 3; x++)
 	  level->yamyam_content[i][x][y] = content_array[i][x][y];
   }
   else if (element == EL_BD_AMOEBA)
@@ -534,7 +536,7 @@ static int LoadLevel_CNT3(FILE *file, int chunk_size, struct LevelInfo *level)
     return chunk_size_expected;
   }
 
-  for(i=0; i < envelope_len; i++)
+  for (i = 0; i < envelope_len; i++)
     level->envelope_text[envelope_nr][i] = getFile8Bit(file);
 
   return chunk_size;
@@ -552,7 +554,7 @@ static int LoadLevel_CUS1(FILE *file, int chunk_size, struct LevelInfo *level)
     return chunk_size_expected;
   }
 
-  for (i=0; i < num_changed_custom_elements; i++)
+  for (i = 0; i < num_changed_custom_elements; i++)
   {
     int element = getFile16BitBE(file);
     int properties = getFile32BitBE(file);
@@ -578,7 +580,7 @@ static int LoadLevel_CUS2(FILE *file, int chunk_size, struct LevelInfo *level)
     return chunk_size_expected;
   }
 
-  for (i=0; i < num_changed_custom_elements; i++)
+  for (i = 0; i < num_changed_custom_elements; i++)
   {
     int element = getFile16BitBE(file);
     int custom_target_element = getFile16BitBE(file);
@@ -604,7 +606,7 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
     return chunk_size_expected;
   }
 
-  for (i=0; i < num_changed_custom_elements; i++)
+  for (i = 0; i < num_changed_custom_elements; i++)
   {
     int element = getFile16BitBE(file);
 
@@ -612,10 +614,10 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
     {
       Error(ERR_WARN, "invalid custom element number %d", element);
 
-      element = EL_DEFAULT;	/* dummy element used for artwork config */
+      element = EL_DUMMY;
     }
 
-    for(j=0; j<MAX_ELEMENT_NAME_LEN; j++)
+    for (j = 0; j < MAX_ELEMENT_NAME_LEN; j++)
       element_info[element].description[j] = getFile8Bit(file);
     element_info[element].description[MAX_ELEMENT_NAME_LEN] = 0;
 
@@ -640,8 +642,8 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
     element_info[element].move_direction_initial = getFile8Bit(file);
     element_info[element].move_stepsize = getFile8Bit(file);
 
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	element_info[element].content[x][y] =
 	  checkLevelElement(getFile16BitBE(file));
 
@@ -665,8 +667,8 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
     element_info[element].change->random = getFile8Bit(file);
     element_info[element].change->power = getFile8Bit(file);
 
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	element_info[element].change->content[x][y] =
 	  checkLevelElement(getFile16BitBE(file));
 
@@ -695,12 +697,12 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
   {
     Error(ERR_WARN, "invalid custom element number %d", element);
 
-    element = EL_DEFAULT;	/* dummy element used for artwork config */
+    element = EL_DUMMY;
   }
 
   ei = &element_info[element];
 
-  for(i=0; i < MAX_ELEMENT_NAME_LEN; i++)
+  for (i = 0; i < MAX_ELEMENT_NAME_LEN; i++)
     ei->description[i] = getFile8Bit(file);
   ei->description[MAX_ELEMENT_NAME_LEN] = 0;
 
@@ -738,8 +740,8 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
 
   ei->slippery_type = getFile8Bit(file);
 
-  for(y=0; y<3; y++)
-    for(x=0; x<3; x++)
+  for (y = 0; y < 3; y++)
+    for (x = 0; x < 3; x++)
       ei->content[x][y] = checkLevelElement(getFile16BitBE(file));
 
   /* some free bytes for future custom property values and padding */
@@ -749,7 +751,7 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
 
   setElementChangePages(ei, ei->num_change_pages);
 
-  for (i=0; i < ei->num_change_pages; i++)
+  for (i = 0; i < ei->num_change_pages; i++)
   {
     struct ElementChangeInfo *change = &ei->change_page[i];
 
@@ -774,8 +776,8 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
     change->random = getFile8Bit(file);
     change->power = getFile8Bit(file);
 
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	change->content[x][y] = checkLevelElement(getFile16BitBE(file));
 
     change->can_change = getFile8Bit(file);
@@ -1025,12 +1027,12 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
      (these following values were accidentally changed in version 3.0.1) */
   if (level->game_version <= VERSION_IDENT(3,0,0,0))
   {
-    for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
     {
       int element = EL_CUSTOM_START + i;
 
       /* order of checking and copying events to be mapped is important */
-      for (j=CE_BY_OTHER_ACTION; j >= CE_BY_PLAYER; j--)
+      for (j = CE_BY_OTHER_ACTION; j >= CE_BY_PLAYER_OBSOLETE; j--)
       {
 	if (HAS_CHANGE_EVENT(element, j - 2))
 	{
@@ -1040,7 +1042,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
       }
 
       /* order of checking and copying events to be mapped is important */
-      for (j=CE_OTHER_GETS_COLLECTED; j >= CE_COLLISION; j--)
+      for (j = CE_OTHER_GETS_COLLECTED; j >= CE_COLLISION_ACTIVE; j--)
       {
 	if (HAS_CHANGE_EVENT(element, j - 1))
 	{
@@ -1052,15 +1054,15 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
   }
 
   /* some custom element change events get mapped since version 3.0.3 */
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
 
-    if (HAS_CHANGE_EVENT(element, CE_BY_PLAYER) ||
-	HAS_CHANGE_EVENT(element, CE_BY_COLLISION))
+    if (HAS_CHANGE_EVENT(element, CE_BY_PLAYER_OBSOLETE) ||
+	HAS_CHANGE_EVENT(element, CE_BY_COLLISION_OBSOLETE))
     {
-      SET_CHANGE_EVENT(element, CE_BY_PLAYER, FALSE);
-      SET_CHANGE_EVENT(element, CE_BY_COLLISION, FALSE);
+      SET_CHANGE_EVENT(element, CE_BY_PLAYER_OBSOLETE, FALSE);
+      SET_CHANGE_EVENT(element, CE_BY_COLLISION_OBSOLETE, FALSE);
 
       SET_CHANGE_EVENT(element, CE_BY_DIRECT_ACTION, TRUE);
     }
@@ -1069,7 +1071,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
   /* initialize "can_change" field for old levels with only one change page */
   if (level->game_version <= VERSION_IDENT(3,0,2,0))
   {
-    for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
     {
       int element = EL_CUSTOM_START + i;
 
@@ -1092,7 +1094,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
   }
 
   /* set uninitialized push delay values of custom elements in older levels */
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
 
@@ -1112,9 +1114,9 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
   int x, y;
 
   /* map elements that have changed in newer versions */
-  for(y=0; y<level->fieldy; y++)
+  for (y = 0; y < level->fieldy; y++)
   {
-    for(x=0; x<level->fieldx; x++)
+    for (x = 0; x < level->fieldx; x++)
     {
       int element = level->field[x][y];
 
@@ -1142,8 +1144,8 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
   }
 
   /* copy elements to runtime playfield array */
-  for(x=0; x<MAX_LEV_FIELDX; x++)
-    for(y=0; y<MAX_LEV_FIELDY; y++)
+  for (x = 0; x < MAX_LEV_FIELDX; x++)
+    for (y = 0; y < MAX_LEV_FIELDY; y++)
       Feld[x][y] = level->field[x][y];
 
   /* initialize level size variables for faster access */
@@ -1200,15 +1202,15 @@ static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
   putFile16BitBE(file, level->time);
   putFile16BitBE(file, level->gems_needed);
 
-  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
+  for (i = 0; i < MAX_LEVEL_NAME_LEN; i++)
     putFile8Bit(file, level->name[i]);
 
-  for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
+  for (i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
     putFile8Bit(file, level->score[i]);
 
-  for(i=0; i<STD_ELEMENT_CONTENTS; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+  for (i = 0; i < STD_ELEMENT_CONTENTS; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	putFile8Bit(file, (level->encoding_16bit_yamyam ? EL_EMPTY :
 			   level->yamyam_content[i][x][y]));
   putFile8Bit(file, level->amoeba_speed);
@@ -1230,7 +1232,7 @@ static void SaveLevel_AUTH(FILE *file, struct LevelInfo *level)
 {
   int i;
 
-  for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
+  for (i = 0; i < MAX_LEVEL_AUTHOR_LEN; i++)
     putFile8Bit(file, level->author[i]);
 }
 
@@ -1238,8 +1240,8 @@ static void SaveLevel_BODY(FILE *file, struct LevelInfo *level)
 {
   int x, y;
 
-  for(y=0; y<level->fieldy; y++) 
-    for(x=0; x<level->fieldx; x++) 
+  for (y = 0; y < level->fieldy; y++) 
+    for (x = 0; x < level->fieldx; x++) 
       if (level->encoding_16bit_field)
 	putFile16BitBE(file, level->field[x][y]);
       else
@@ -1256,9 +1258,9 @@ static void SaveLevel_CONT(FILE *file, struct LevelInfo *level)
   putFile8Bit(file, 0);
   putFile8Bit(file, 0);
 
-  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+  for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	if (level->encoding_16bit_field)
 	  putFile16BitBE(file, level->yamyam_content[i][x][y]);
 	else
@@ -1278,9 +1280,9 @@ static void SaveLevel_CNT2(FILE *file, struct LevelInfo *level, int element)
     content_xsize = 3;
     content_ysize = 3;
 
-    for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-      for(y=0; y<3; y++)
-	for(x=0; x<3; x++)
+    for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+      for (y = 0; y < 3; y++)
+	for (x = 0; x < 3; x++)
 	  content_array[i][x][y] = level->yamyam_content[i][x][y];
   }
   else if (element == EL_BD_AMOEBA)
@@ -1289,9 +1291,9 @@ static void SaveLevel_CNT2(FILE *file, struct LevelInfo *level, int element)
     content_xsize = 1;
     content_ysize = 1;
 
-    for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-      for(y=0; y<3; y++)
-	for(x=0; x<3; x++)
+    for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+      for (y = 0; y < 3; y++)
+	for (x = 0; x < 3; x++)
 	  content_array[i][x][y] = EL_EMPTY;
     content_array[0][0][0] = level->amoeba_content;
   }
@@ -1311,9 +1313,9 @@ static void SaveLevel_CNT2(FILE *file, struct LevelInfo *level, int element)
 
   WriteUnusedBytesToFile(file, LEVEL_CHUNK_CNT2_UNUSED);
 
-  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+  for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	putFile16BitBE(file, content_array[i][x][y]);
 }
 
@@ -1330,7 +1332,7 @@ static void SaveLevel_CNT3(FILE *file, struct LevelInfo *level, int element)
 
   WriteUnusedBytesToFile(file, LEVEL_CHUNK_CNT3_UNUSED);
 
-  for(i=0; i < envelope_len; i++)
+  for (i = 0; i < envelope_len; i++)
     putFile8Bit(file, level->envelope_text[envelope_nr][i]);
 }
 
@@ -1342,7 +1344,7 @@ static void SaveLevel_CUS1(FILE *file, struct LevelInfo *level,
 
   putFile16BitBE(file, num_changed_custom_elements);
 
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
 
@@ -1371,7 +1373,7 @@ static void SaveLevel_CUS2(FILE *file, struct LevelInfo *level,
 
   putFile16BitBE(file, num_changed_custom_elements);
 
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
 
@@ -1400,7 +1402,7 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
 
   putFile16BitBE(file, num_changed_custom_elements);
 
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
 
@@ -1410,7 +1412,7 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
       {
 	putFile16BitBE(file, element);
 
-	for(j=0; j<MAX_ELEMENT_NAME_LEN; j++)
+	for (j = 0; j < MAX_ELEMENT_NAME_LEN; j++)
 	  putFile8Bit(file, element_info[element].description[j]);
 
 	putFile32BitBE(file, Properties[element][EP_BITFIELD_BASE]);
@@ -1433,8 +1435,8 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
 	putFile8Bit(file, element_info[element].move_direction_initial);
 	putFile8Bit(file, element_info[element].move_stepsize);
 
-	for(y=0; y<3; y++)
-	  for(x=0; x<3; x++)
+	for (y = 0; y < 3; y++)
+	  for (x = 0; x < 3; x++)
 	    putFile16BitBE(file, element_info[element].content[x][y]);
 
 	putFile32BitBE(file, element_info[element].change->events);
@@ -1455,8 +1457,8 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
 	putFile8Bit(file, element_info[element].change->random);
 	putFile8Bit(file, element_info[element].change->power);
 
-	for(y=0; y<3; y++)
-	  for(x=0; x<3; x++)
+	for (y = 0; y < 3; y++)
+	  for (x = 0; x < 3; x++)
 	    putFile16BitBE(file, element_info[element].change->content[x][y]);
 
 	putFile8Bit(file, element_info[element].slippery_type);
@@ -1481,7 +1483,7 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
 
   putFile16BitBE(file, element);
 
-  for(i=0; i < MAX_ELEMENT_NAME_LEN; i++)
+  for (i = 0; i < MAX_ELEMENT_NAME_LEN; i++)
     putFile8Bit(file, ei->description[i]);
 
   putFile32BitBE(file, Properties[element][EP_BITFIELD_BASE]);
@@ -1511,8 +1513,8 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
 
   putFile8Bit(file, ei->slippery_type);
 
-  for(y=0; y<3; y++)
-    for(x=0; x<3; x++)
+  for (y = 0; y < 3; y++)
+    for (x = 0; x < 3; x++)
       putFile16BitBE(file, ei->content[x][y]);
 
   /* some free bytes for future custom property values and padding */
@@ -1520,7 +1522,7 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
 
   /* write change property values */
 
-  for (i=0; i < ei->num_change_pages; i++)
+  for (i = 0; i < ei->num_change_pages; i++)
   {
     struct ElementChangeInfo *change = &ei->change_page[i];
 
@@ -1542,8 +1544,8 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
     putFile8Bit(file, change->random);
     putFile8Bit(file, change->power);
 
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	putFile16BitBE(file, change->content[x][y]);
 
     putFile8Bit(file, change->can_change);
@@ -1572,16 +1574,16 @@ static void SaveLevelFromFilename(struct LevelInfo *level, char *filename)
 
   /* check level field for 16-bit elements */
   level->encoding_16bit_field = FALSE;
-  for(y=0; y<level->fieldy; y++) 
-    for(x=0; x<level->fieldx; x++) 
+  for (y = 0; y < level->fieldy; y++) 
+    for (x = 0; x < level->fieldx; x++) 
       if (level->field[x][y] > 255)
 	level->encoding_16bit_field = TRUE;
 
   /* check yamyam content for 16-bit elements */
   level->encoding_16bit_yamyam = FALSE;
-  for(i=0; i<level->num_yamyam_contents; i++)
-    for(y=0; y<3; y++)
-      for(x=0; x<3; x++)
+  for (i = 0; i < level->num_yamyam_contents; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	if (level->yamyam_content[i][x][y] > 255)
 	  level->encoding_16bit_yamyam = TRUE;
 
@@ -1623,7 +1625,7 @@ static void SaveLevelFromFilename(struct LevelInfo *level, char *filename)
   }
 
   /* check for envelope content */
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     if (strlen(level->envelope_text[i]) > 0)
     {
@@ -1637,7 +1639,7 @@ static void SaveLevelFromFilename(struct LevelInfo *level, char *filename)
   /* check for non-default custom elements (unless using template level) */
   if (!level->use_custom_template)
   {
-    for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
     {
       int element = EL_CUSTOM_START + i;
 
@@ -1713,7 +1715,7 @@ static void setTapeInfoToDefaults()
 
   /* default values (also for pre-1.2 tapes) with only the first player */
   tape.player_participates[0] = TRUE;
-  for(i=1; i<MAX_PLAYERS; i++)
+  for (i = 1; i < MAX_PLAYERS; i++)
     tape.player_participates[i] = FALSE;
 
   /* at least one (default: the first) player participates in every tape */
@@ -1752,7 +1754,7 @@ static int LoadTape_HEAD(FILE *file, int chunk_size, struct TapeInfo *tape)
 
     /* since version 1.2, tapes store which players participate in the tape */
     tape->num_participating_players = 0;
-    for(i=0; i<MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_PLAYERS; i++)
     {
       tape->player_participates[i] = FALSE;
 
@@ -1785,7 +1787,7 @@ static int LoadTape_INFO(FILE *file, int chunk_size, struct TapeInfo *tape)
   tape->level_identifier =
     checked_realloc(tape->level_identifier, level_identifier_size);
 
-  for(i=0; i < level_identifier_size; i++)
+  for (i = 0; i < level_identifier_size; i++)
     tape->level_identifier[i] = getFile8Bit(file);
 
   tape->level_nr = getFile16BitBE(file);
@@ -1807,12 +1809,12 @@ static int LoadTape_BODY(FILE *file, int chunk_size, struct TapeInfo *tape)
     return chunk_size_expected;
   }
 
-  for(i=0; i<tape->length; i++)
+  for (i = 0; i < tape->length; i++)
   {
     if (i >= MAX_TAPELEN)
       break;
 
-    for(j=0; j<MAX_PLAYERS; j++)
+    for (j = 0; j < MAX_PLAYERS; j++)
     {
       tape->pos[i].action[j] = MV_NO_MOVING;
 
@@ -1831,7 +1833,7 @@ static int LoadTape_BODY(FILE *file, int chunk_size, struct TapeInfo *tape)
       byte action = tape->pos[i].action[0];
       int k, num_moves = 0;
 
-      for (k=0; k<4; k++)
+      for (k = 0; k<4; k++)
       {
 	if (action & joy_dir[k])
 	{
@@ -1860,7 +1862,7 @@ static int LoadTape_BODY(FILE *file, int chunk_size, struct TapeInfo *tape)
 	tape->pos[i + 1].delay = 1;
 
 	/* delay part */
-	for(j=0; j<MAX_PLAYERS; j++)
+	for (j = 0; j < MAX_PLAYERS; j++)
 	  tape->pos[i].action[j] = MV_NO_MOVING;
 	tape->pos[i].delay--;
 
@@ -2009,6 +2011,13 @@ void LoadTape(int level_nr)
   LoadTapeFromFilename(filename);
 }
 
+void LoadSolutionTape(int level_nr)
+{
+  char *filename = getSolutionTapeFilename(level_nr);
+
+  LoadTapeFromFilename(filename);
+}
+
 static void SaveTape_VERS(FILE *file, struct TapeInfo *tape)
 {
   putFileVersion(file, tape->file_version);
@@ -2021,7 +2030,7 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
   byte store_participating_players = 0;
 
   /* set bits for participating players for compact storage */
-  for(i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
     if (tape->player_participates[i])
       store_participating_players |= (1 << i);
 
@@ -2044,7 +2053,7 @@ static void SaveTape_INFO(FILE *file, struct TapeInfo *tape)
 
   putFile16BitBE(file, level_identifier_size);
 
-  for(i=0; i < level_identifier_size; i++)
+  for (i = 0; i < level_identifier_size; i++)
     putFile8Bit(file, tape->level_identifier[i]);
 
   putFile16BitBE(file, tape->level_nr);
@@ -2054,9 +2063,9 @@ static void SaveTape_BODY(FILE *file, struct TapeInfo *tape)
 {
   int i, j;
 
-  for(i=0; i<tape->length; i++)
+  for (i = 0; i < tape->length; i++)
   {
-    for(j=0; j<MAX_PLAYERS; j++)
+    for (j = 0; j < MAX_PLAYERS; j++)
       if (tape->player_participates[j])
 	putFile8Bit(file, tape->pos[i].action[j]);
 
@@ -2094,7 +2103,7 @@ void SaveTape(int level_nr)
   tape.game_version = GAME_VERSION_ACTUAL;
 
   /* count number of participating players  */
-  for(i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
     if (tape.player_participates[i])
       num_participating_players++;
 
@@ -2142,14 +2151,14 @@ void DumpTape(struct TapeInfo *tape)
   printf("Level series identifier: '%s'\n", tape->level_identifier);
   printf_line("-", 79);
 
-  for(i=0; i<tape->length; i++)
+  for (i = 0; i < tape->length; i++)
   {
     if (i >= MAX_TAPELEN)
       break;
 
     printf("%03d: ", i);
 
-    for(j=0; j<MAX_PLAYERS; j++)
+    for (j = 0; j < MAX_PLAYERS; j++)
     {
       if (tape->player_participates[j])
       {
@@ -2187,7 +2196,7 @@ void LoadScore(int level_nr)
   FILE *file;
 
   /* always start with reliable default values */
-  for(i=0; i<MAX_SCORE_ENTRIES; i++)
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
     strcpy(highscore[i].Name, EMPTY_PLAYER_NAME);
     highscore[i].Score = 0;
@@ -2208,7 +2217,7 @@ void LoadScore(int level_nr)
     return;
   }
 
-  for(i=0; i<MAX_SCORE_ENTRIES; i++)
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
     fscanf(file, "%d", &highscore[i].Score);
     fgets(line, MAX_LINE_LEN, file);
@@ -2246,7 +2255,7 @@ void SaveScore(int level_nr)
 
   fprintf(file, "%s\n\n", SCORE_COOKIE);
 
-  for(i=0; i<MAX_SCORE_ENTRIES; i++)
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
     fprintf(file, "%d %s\n", highscore[i].Score, highscore[i].Name);
 
   fclose(file);
@@ -2299,8 +2308,9 @@ void SaveScore(int level_nr)
 #define SETUP_TOKEN_EDITOR_EL_CUSTOM		8
 #define SETUP_TOKEN_EDITOR_EL_CUSTOM_MORE	9
 #define SETUP_TOKEN_EDITOR_EL_HEADLINES		10
+#define SETUP_TOKEN_EDITOR_EL_USER_DEFINED	11
 
-#define NUM_EDITOR_SETUP_TOKENS			11
+#define NUM_EDITOR_SETUP_TOKENS			12
 
 /* shortcut setup */
 #define SETUP_TOKEN_SHORTCUT_SAVE_GAME		0
@@ -2387,6 +2397,7 @@ static struct TokenInfo editor_setup_tokens[] =
   { TYPE_SWITCH, &sei.el_custom,	"editor.el_custom"		},
   { TYPE_SWITCH, &sei.el_custom_more,	"editor.el_custom_more"		},
   { TYPE_SWITCH, &sei.el_headlines,	"editor.el_headlines"		},
+  { TYPE_SWITCH, &sei.el_user_defined,	"editor.el_user_defined"	},
 };
 
 static struct TokenInfo shortcut_setup_tokens[] =
@@ -2485,12 +2496,13 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->editor.el_custom_more = FALSE;
 
   si->editor.el_headlines = TRUE;
+  si->editor.el_user_defined = FALSE;
 
   si->shortcut.save_game = DEFAULT_KEY_SAVE_GAME;
   si->shortcut.load_game = DEFAULT_KEY_LOAD_GAME;
   si->shortcut.toggle_pause = DEFAULT_KEY_TOGGLE_PAUSE;
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     si->input[i].use_joystick = FALSE;
     si->input[i].joy.device_name=getStringCopy(getDeviceNameFromJoystickNr(i));
@@ -2525,34 +2537,34 @@ static void decodeSetupFileHash(SetupFileHash *setup_file_hash)
 
   /* global setup */
   si = setup;
-  for (i=0; i<NUM_GLOBAL_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_GLOBAL_SETUP_TOKENS; i++)
     setSetupInfo(global_setup_tokens, i,
 		 getHashEntry(setup_file_hash, global_setup_tokens[i].text));
   setup = si;
 
   /* editor setup */
   sei = setup.editor;
-  for (i=0; i<NUM_EDITOR_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_EDITOR_SETUP_TOKENS; i++)
     setSetupInfo(editor_setup_tokens, i,
 		 getHashEntry(setup_file_hash,editor_setup_tokens[i].text));
   setup.editor = sei;
 
   /* shortcut setup */
   ssi = setup.shortcut;
-  for (i=0; i<NUM_SHORTCUT_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_SHORTCUT_SETUP_TOKENS; i++)
     setSetupInfo(shortcut_setup_tokens, i,
 		 getHashEntry(setup_file_hash,shortcut_setup_tokens[i].text));
   setup.shortcut = ssi;
 
   /* player setup */
-  for (pnr=0; pnr<MAX_PLAYERS; pnr++)
+  for (pnr = 0; pnr < MAX_PLAYERS; pnr++)
   {
     char prefix[30];
 
     sprintf(prefix, "%s%d", TOKEN_STR_PLAYER_PREFIX, pnr + 1);
 
     sii = setup.input[pnr];
-    for (i=0; i<NUM_PLAYER_SETUP_TOKENS; i++)
+    for (i = 0; i < NUM_PLAYER_SETUP_TOKENS; i++)
     {
       char full_token[100];
 
@@ -2565,14 +2577,14 @@ static void decodeSetupFileHash(SetupFileHash *setup_file_hash)
 
   /* system setup */
   syi = setup.system;
-  for (i=0; i<NUM_SYSTEM_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_SYSTEM_SETUP_TOKENS; i++)
     setSetupInfo(system_setup_tokens, i,
 		 getHashEntry(setup_file_hash, system_setup_tokens[i].text));
   setup.system = syi;
 
   /* options setup */
   soi = setup.options;
-  for (i=0; i<NUM_OPTIONS_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_OPTIONS_SETUP_TOKENS; i++)
     setSetupInfo(options_setup_tokens, i,
 		 getHashEntry(setup_file_hash, options_setup_tokens[i].text));
   setup.options = soi;
@@ -2628,7 +2640,7 @@ void SaveSetup()
 
   /* global setup */
   si = setup;
-  for (i=0; i<NUM_GLOBAL_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_GLOBAL_SETUP_TOKENS; i++)
   {
     /* just to make things nicer :) */
     if (i == SETUP_TOKEN_PLAYER_NAME + 1 ||
@@ -2641,17 +2653,17 @@ void SaveSetup()
   /* editor setup */
   sei = setup.editor;
   fprintf(file, "\n");
-  for (i=0; i<NUM_EDITOR_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_EDITOR_SETUP_TOKENS; i++)
     fprintf(file, "%s\n", getSetupLine(editor_setup_tokens, "", i));
 
   /* shortcut setup */
   ssi = setup.shortcut;
   fprintf(file, "\n");
-  for (i=0; i<NUM_SHORTCUT_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_SHORTCUT_SETUP_TOKENS; i++)
     fprintf(file, "%s\n", getSetupLine(shortcut_setup_tokens, "", i));
 
   /* player setup */
-  for (pnr=0; pnr<MAX_PLAYERS; pnr++)
+  for (pnr = 0; pnr < MAX_PLAYERS; pnr++)
   {
     char prefix[30];
 
@@ -2659,20 +2671,20 @@ void SaveSetup()
     fprintf(file, "\n");
 
     sii = setup.input[pnr];
-    for (i=0; i<NUM_PLAYER_SETUP_TOKENS; i++)
+    for (i = 0; i < NUM_PLAYER_SETUP_TOKENS; i++)
       fprintf(file, "%s\n", getSetupLine(player_setup_tokens, prefix, i));
   }
 
   /* system setup */
   syi = setup.system;
   fprintf(file, "\n");
-  for (i=0; i<NUM_SYSTEM_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_SYSTEM_SETUP_TOKENS; i++)
     fprintf(file, "%s\n", getSetupLine(system_setup_tokens, "", i));
 
   /* options setup */
   soi = setup.options;
   fprintf(file, "\n");
-  for (i=0; i<NUM_OPTIONS_SETUP_TOKENS; i++)
+  for (i = 0; i < NUM_OPTIONS_SETUP_TOKENS; i++)
     fprintf(file, "%s\n", getSetupLine(options_setup_tokens, "", i));
 
   fclose(file);
@@ -2686,7 +2698,7 @@ void LoadCustomElementDescriptions()
   SetupFileHash *setup_file_hash;
   int i;
 
-  for (i=0; i<NUM_FILE_ELEMENTS; i++)
+  for (i = 0; i < NUM_FILE_ELEMENTS; i++)
   {
     if (element_info[i].custom_description != NULL)
     {
@@ -2698,7 +2710,7 @@ void LoadCustomElementDescriptions()
   if ((setup_file_hash = loadSetupFileHash(filename)) == NULL)
     return;
 
-  for (i=0; i<NUM_FILE_ELEMENTS; i++)
+  for (i = 0; i < NUM_FILE_ELEMENTS; i++)
   {
     char *token = getStringCat2(element_info[i].token_name, ".name");
     char *value = getHashEntry(setup_file_hash, token);
@@ -2719,8 +2731,8 @@ void LoadSpecialMenuDesignSettings()
   int i, j;
 
   /* always start with reliable default values from default config */
-  for (i=0; image_config_vars[i].token != NULL; i++)
-    for (j=0; image_config[j].token != NULL; j++)
+  for (i = 0; image_config_vars[i].token != NULL; i++)
+    for (j = 0; image_config[j].token != NULL; j++)
       if (strcmp(image_config_vars[i].token, image_config[j].token) == 0)
 	*image_config_vars[i].value =
 	  get_auto_parameter_value(image_config_vars[i].token,
@@ -2730,7 +2742,7 @@ void LoadSpecialMenuDesignSettings()
     return;
 
   /* special case: initialize with default values that may be overwritten */
-  for (i=0; i < NUM_SPECIAL_GFX_ARGS; i++)
+  for (i = 0; i < NUM_SPECIAL_GFX_ARGS; i++)
   {
     char *value_x = getHashEntry(setup_file_hash, "menu.draw_xoffset");
     char *value_y = getHashEntry(setup_file_hash, "menu.draw_yoffset");
@@ -2745,7 +2757,7 @@ void LoadSpecialMenuDesignSettings()
   }
 
   /* read (and overwrite with) values that may be specified in config file */
-  for (i=0; image_config_vars[i].token != NULL; i++)
+  for (i = 0; image_config_vars[i].token != NULL; i++)
   {
     char *value = getHashEntry(setup_file_hash, image_config_vars[i].token);
 
@@ -2755,4 +2767,625 @@ void LoadSpecialMenuDesignSettings()
   }
 
   freeSetupFileHash(setup_file_hash);
+}
+
+void LoadUserDefinedEditorElementList(int **elements, int *num_elements)
+{
+  char *filename = getEditorSetupFilename();
+  SetupFileList *setup_file_list, *list;
+  SetupFileHash *element_hash;
+  int num_unknown_tokens = 0;
+  int i;
+
+  if ((setup_file_list = loadSetupFileList(filename)) == NULL)
+    return;
+
+  element_hash = newSetupFileHash();
+
+  for (i = 0; i < NUM_FILE_ELEMENTS; i++)
+    setHashEntry(element_hash, element_info[i].token_name, i_to_a(i));
+
+  /* determined size may be larger than needed (due to unknown elements) */
+  *num_elements = 0;
+  for (list = setup_file_list; list != NULL; list = list->next)
+    (*num_elements)++;
+
+  /* add space for up to 3 more elements for padding that may be needed */
+  *num_elements += 3;
+
+  *elements = checked_malloc(*num_elements * sizeof(int));
+
+  *num_elements = 0;
+  for (list = setup_file_list; list != NULL; list = list->next)
+  {
+    char *value = getHashEntry(element_hash, list->token);
+
+    if (value)
+    {
+      (*elements)[(*num_elements)++] = atoi(value);
+    }
+    else
+    {
+      if (num_unknown_tokens == 0)
+      {
+	Error(ERR_RETURN_LINE, "-");
+	Error(ERR_RETURN, "warning: unknown token(s) found in config file:");
+	Error(ERR_RETURN, "- config file: '%s'", filename);
+
+	num_unknown_tokens++;
+      }
+
+      Error(ERR_RETURN, "- token: '%s'", list->token);
+    }
+  }
+
+  if (num_unknown_tokens > 0)
+    Error(ERR_RETURN_LINE, "-");
+
+  while (*num_elements % 4)	/* pad with empty elements, if needed */
+    (*elements)[(*num_elements)++] = EL_EMPTY;
+
+  freeSetupFileList(setup_file_list);
+  freeSetupFileHash(element_hash);
+
+#if 0
+  /* TEST-ONLY */
+  for (i = 0; i < *num_elements; i++)
+    printf("editor: element '%s' [%d]\n",
+	   element_info[(*elements)[i]].token_name, (*elements)[i]);
+#endif
+}
+
+static struct MusicFileInfo *get_music_file_info_ext(char *basename, int music,
+						     boolean is_sound)
+{
+  SetupFileHash *setup_file_hash = NULL;
+  struct MusicFileInfo tmp_music_file_info, *new_music_file_info;
+  char *filename_music, *filename_prefix, *filename_info;
+  struct
+  {
+    char *token;
+    char **value_ptr;
+  }
+  token_to_value_ptr[] =
+  {
+    { "title_header",	&tmp_music_file_info.title_header	},
+    { "artist_header",	&tmp_music_file_info.artist_header	},
+    { "album_header",	&tmp_music_file_info.album_header	},
+    { "year_header",	&tmp_music_file_info.year_header	},
+
+    { "title",		&tmp_music_file_info.title		},
+    { "artist",		&tmp_music_file_info.artist		},
+    { "album",		&tmp_music_file_info.album		},
+    { "year",		&tmp_music_file_info.year		},
+
+    { NULL,		NULL					},
+  };
+  int i;
+
+  filename_music = (is_sound ? getCustomSoundFilename(basename) :
+		    getCustomMusicFilename(basename));
+
+  if (filename_music == NULL)
+    return NULL;
+
+  /* ---------- try to replace file extension ---------- */
+
+  filename_prefix = getStringCopy(filename_music);
+  if (strrchr(filename_prefix, '.') != NULL)
+    *strrchr(filename_prefix, '.') = '\0';
+  filename_info = getStringCat2(filename_prefix, ".txt");
+
+#if 0
+  printf("trying to load file '%s'...\n", filename_info);
+#endif
+
+  if (fileExists(filename_info))
+    setup_file_hash = loadSetupFileHash(filename_info);
+
+  free(filename_prefix);
+  free(filename_info);
+
+  if (setup_file_hash == NULL)
+  {
+    /* ---------- try to add file extension ---------- */
+
+    filename_prefix = getStringCopy(filename_music);
+    filename_info = getStringCat2(filename_prefix, ".txt");
+
+#if 0
+    printf("trying to load file '%s'...\n", filename_info);
+#endif
+
+    if (fileExists(filename_info))
+      setup_file_hash = loadSetupFileHash(filename_info);
+
+    free(filename_prefix);
+    free(filename_info);
+  }
+
+  if (setup_file_hash == NULL)
+    return NULL;
+
+  /* ---------- music file info found ---------- */
+
+  memset(&tmp_music_file_info, 0, sizeof(struct MusicFileInfo));
+
+  for (i = 0; token_to_value_ptr[i].token != NULL; i++)
+  {
+    char *value = getHashEntry(setup_file_hash, token_to_value_ptr[i].token);
+
+    *token_to_value_ptr[i].value_ptr =
+      getStringCopy(value != NULL && *value != '\0' ? value : UNKNOWN_NAME);
+  }
+
+  tmp_music_file_info.basename = getStringCopy(basename);
+  tmp_music_file_info.music = music;
+  tmp_music_file_info.is_sound = is_sound;
+
+  new_music_file_info = checked_malloc(sizeof(struct MusicFileInfo));
+  *new_music_file_info = tmp_music_file_info;
+
+  return new_music_file_info;
+}
+
+static struct MusicFileInfo *get_music_file_info(char *basename, int music)
+{
+  return get_music_file_info_ext(basename, music, FALSE);
+}
+
+static struct MusicFileInfo *get_sound_file_info(char *basename, int sound)
+{
+  return get_music_file_info_ext(basename, sound, TRUE);
+}
+
+static boolean music_info_listed_ext(struct MusicFileInfo *list,
+				     char *basename, boolean is_sound)
+{
+  for (; list != NULL; list = list->next)
+    if (list->is_sound == is_sound && strcmp(list->basename, basename) == 0)
+      return TRUE;
+
+  return FALSE;
+}
+
+static boolean music_info_listed(struct MusicFileInfo *list, char *basename)
+{
+  return music_info_listed_ext(list, basename, FALSE);
+}
+
+static boolean sound_info_listed(struct MusicFileInfo *list, char *basename)
+{
+  return music_info_listed_ext(list, basename, TRUE);
+}
+
+void LoadMusicInfo()
+{
+  char *music_directory = getCustomMusicDirectory();
+  int num_music = getMusicListSize();
+  int num_music_noconf = 0;
+  int num_sounds = getSoundListSize();
+  DIR *dir;
+  struct dirent *dir_entry;
+  struct FileInfo *music, *sound;
+  struct MusicFileInfo *next, **new;
+  int i;
+
+  while (music_file_info != NULL)
+  {
+    next = music_file_info->next;
+
+    checked_free(music_file_info->basename);
+
+    checked_free(music_file_info->title_header);
+    checked_free(music_file_info->artist_header);
+    checked_free(music_file_info->album_header);
+    checked_free(music_file_info->year_header);
+
+    checked_free(music_file_info->title);
+    checked_free(music_file_info->artist);
+    checked_free(music_file_info->album);
+    checked_free(music_file_info->year);
+
+    free(music_file_info);
+
+    music_file_info = next;
+  }
+
+  new = &music_file_info;
+
+#if 0
+  printf("::: num_music == %d\n", num_music);
+#endif
+
+  for (i = 0; i < num_music; i++)
+  {
+    music = getMusicListEntry(i);
+
+#if 0
+    printf("::: %d [%08x]\n", i, music->filename);
+#endif
+
+    if (music->filename == NULL)
+      continue;
+
+    if (strcmp(music->filename, UNDEFINED_FILENAME) == 0)
+      continue;
+
+    /* a configured file may be not recognized as music */
+    if (!FileIsMusic(music->filename))
+      continue;
+
+#if 0
+    printf("::: -> '%s' (configured)\n", music->filename);
+#endif
+
+    if (!music_info_listed(music_file_info, music->filename))
+    {
+      *new = get_music_file_info(music->filename, i);
+      if (*new != NULL)
+	new = &(*new)->next;
+    }
+  }
+
+  if ((dir = opendir(music_directory)) == NULL)
+  {
+    Error(ERR_WARN, "cannot read music directory '%s'", music_directory);
+    return;
+  }
+
+  while ((dir_entry = readdir(dir)) != NULL)	/* loop until last dir entry */
+  {
+    char *basename = dir_entry->d_name;
+    boolean music_already_used = FALSE;
+    int i;
+
+    for (i = 0; i < num_music; i++)
+    {
+      music = getMusicListEntry(i);
+
+      if (music->filename == NULL)
+	continue;
+
+      if (strcmp(basename, music->filename) == 0)
+      {
+	music_already_used = TRUE;
+	break;
+      }
+    }
+
+    if (music_already_used)
+      continue;
+
+    if (!FileIsMusic(basename))
+      continue;
+
+#if 0
+    printf("::: -> '%s' (found in directory)\n", basename);
+#endif
+
+    if (!music_info_listed(music_file_info, basename))
+    {
+      *new = get_music_file_info(basename, MAP_NOCONF_MUSIC(num_music_noconf));
+      if (*new != NULL)
+	new = &(*new)->next;
+    }
+
+    num_music_noconf++;
+  }
+
+  closedir(dir);
+
+  for (i = 0; i < num_sounds; i++)
+  {
+    sound = getSoundListEntry(i);
+
+    if (sound->filename == NULL)
+      continue;
+
+    if (strcmp(sound->filename, UNDEFINED_FILENAME) == 0)
+      continue;
+
+    /* a configured file may be not recognized as sound */
+    if (!FileIsSound(sound->filename))
+      continue;
+
+#if 0
+    printf("::: -> '%s' (configured)\n", sound->filename);
+#endif
+
+    if (!sound_info_listed(music_file_info, sound->filename))
+    {
+      *new = get_sound_file_info(sound->filename, i);
+      if (*new != NULL)
+	new = &(*new)->next;
+    }
+  }
+
+#if 0
+  /* TEST-ONLY */
+  for (next = music_file_info; next != NULL; next = next->next)
+    printf("::: title == '%s'\n", next->title);
+#endif
+}
+
+void add_helpanim_entry(int element, int action, int direction, int delay,
+			int *num_list_entries)
+{
+  struct HelpAnimInfo *new_list_entry;
+  (*num_list_entries)++;
+
+  helpanim_info =
+    checked_realloc(helpanim_info,
+		    *num_list_entries * sizeof(struct HelpAnimInfo));
+  new_list_entry = &helpanim_info[*num_list_entries - 1];
+
+  new_list_entry->element = element;
+  new_list_entry->action = action;
+  new_list_entry->direction = direction;
+  new_list_entry->delay = delay;
+}
+
+void print_unknown_token(char *filename, char *token, int token_nr)
+{
+  if (token_nr == 0)
+  {
+    Error(ERR_RETURN_LINE, "-");
+    Error(ERR_RETURN, "warning: unknown token(s) found in config file:");
+    Error(ERR_RETURN, "- config file: '%s'", filename);
+  }
+
+  Error(ERR_RETURN, "- token: '%s'", token);
+}
+
+void print_unknown_token_end(int token_nr)
+{
+  if (token_nr > 0)
+    Error(ERR_RETURN_LINE, "-");
+}
+
+void LoadHelpAnimInfo()
+{
+  char *filename = getHelpAnimFilename();
+  SetupFileList *setup_file_list = NULL, *list;
+  SetupFileHash *element_hash, *action_hash, *direction_hash;
+  int num_list_entries = 0;
+  int num_unknown_tokens = 0;
+  int i;
+
+  if (fileExists(filename))
+    setup_file_list = loadSetupFileList(filename);
+
+  if (setup_file_list == NULL)
+  {
+    /* use reliable default values from static configuration */
+    SetupFileList *insert_ptr;
+
+    insert_ptr = setup_file_list =
+      newSetupFileList(helpanim_config[0].token,
+		       helpanim_config[0].value);
+
+    for (i = 1; helpanim_config[i].token; i++)
+      insert_ptr = addListEntry(insert_ptr,
+				helpanim_config[i].token,
+				helpanim_config[i].value);
+  }
+
+  element_hash   = newSetupFileHash();
+  action_hash    = newSetupFileHash();
+  direction_hash = newSetupFileHash();
+
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+    setHashEntry(element_hash, element_info[i].token_name, i_to_a(i));
+
+  for (i = 0; i < NUM_ACTIONS; i++)
+    setHashEntry(action_hash, element_action_info[i].suffix,
+		 i_to_a(element_action_info[i].value));
+
+  /* do not store direction index (bit) here, but direction value! */
+  for (i = 0; i < NUM_DIRECTIONS; i++)
+    setHashEntry(direction_hash, element_direction_info[i].suffix,
+		 i_to_a(1 << element_direction_info[i].value));
+
+  for (list = setup_file_list; list != NULL; list = list->next)
+  {
+    char *element_token, *action_token, *direction_token;
+    char *element_value, *action_value, *direction_value;
+    int delay = atoi(list->value);
+
+    if (strcmp(list->token, "end") == 0)
+    {
+      add_helpanim_entry(HELPANIM_LIST_NEXT, -1, -1, -1, &num_list_entries);
+
+      continue;
+    }
+
+    /* first try to break element into element/action/direction parts;
+       if this does not work, also accept combined "element[.act][.dir]"
+       elements (like "dynamite.active"), which are unique elements */
+
+    if (strchr(list->token, '.') == NULL)	/* token contains no '.' */
+    {
+      element_value = getHashEntry(element_hash, list->token);
+      if (element_value != NULL)	/* element found */
+	add_helpanim_entry(atoi(element_value), -1, -1, delay,
+			   &num_list_entries);
+      else
+      {
+	/* no further suffixes found -- this is not an element */
+	print_unknown_token(filename, list->token, num_unknown_tokens++);
+      }
+
+      continue;
+    }
+
+    /* token has format "<prefix>.<something>" */
+
+    action_token = strchr(list->token, '.');	/* suffix may be action ... */
+    direction_token = action_token;		/* ... or direction */
+
+    element_token = getStringCopy(list->token);
+    *strchr(element_token, '.') = '\0';
+
+    element_value = getHashEntry(element_hash, element_token);
+
+    if (element_value == NULL)		/* this is no element */
+    {
+      element_value = getHashEntry(element_hash, list->token);
+      if (element_value != NULL)	/* combined element found */
+	add_helpanim_entry(atoi(element_value), -1, -1, delay,
+			   &num_list_entries);
+      else
+	print_unknown_token(filename, list->token, num_unknown_tokens++);
+
+      free(element_token);
+
+      continue;
+    }
+
+    action_value = getHashEntry(action_hash, action_token);
+
+    if (action_value != NULL)		/* action found */
+    {
+      add_helpanim_entry(atoi(element_value), atoi(action_value), -1, delay,
+		    &num_list_entries);
+
+      free(element_token);
+
+      continue;
+    }
+
+    direction_value = getHashEntry(direction_hash, direction_token);
+
+    if (direction_value != NULL)	/* direction found */
+    {
+      add_helpanim_entry(atoi(element_value), -1, atoi(direction_value), delay,
+			 &num_list_entries);
+
+      free(element_token);
+
+      continue;
+    }
+
+    if (strchr(action_token + 1, '.') == NULL)
+    {
+      /* no further suffixes found -- this is not an action nor direction */
+
+      element_value = getHashEntry(element_hash, list->token);
+      if (element_value != NULL)	/* combined element found */
+	add_helpanim_entry(atoi(element_value), -1, -1, delay,
+			   &num_list_entries);
+      else
+	print_unknown_token(filename, list->token, num_unknown_tokens++);
+
+      free(element_token);
+
+      continue;
+    }
+
+    /* token has format "<prefix>.<suffix>.<something>" */
+
+    direction_token = strchr(action_token + 1, '.');
+
+    action_token = getStringCopy(action_token);
+    *strchr(action_token + 1, '.') = '\0';
+
+    action_value = getHashEntry(action_hash, action_token);
+
+    if (action_value == NULL)		/* this is no action */
+    {
+      element_value = getHashEntry(element_hash, list->token);
+      if (element_value != NULL)	/* combined element found */
+	add_helpanim_entry(atoi(element_value), -1, -1, delay,
+			   &num_list_entries);
+      else
+	print_unknown_token(filename, list->token, num_unknown_tokens++);
+
+      free(element_token);
+      free(action_token);
+
+      continue;
+    }
+
+    direction_value = getHashEntry(direction_hash, direction_token);
+
+    if (direction_value != NULL)	/* direction found */
+    {
+      add_helpanim_entry(atoi(element_value), atoi(action_value),
+			 atoi(direction_value), delay, &num_list_entries);
+
+      free(element_token);
+      free(action_token);
+
+      continue;
+    }
+
+    /* this is no direction */
+
+    element_value = getHashEntry(element_hash, list->token);
+    if (element_value != NULL)		/* combined element found */
+      add_helpanim_entry(atoi(element_value), -1, -1, delay,
+			 &num_list_entries);
+    else
+      print_unknown_token(filename, list->token, num_unknown_tokens++);
+
+    free(element_token);
+    free(action_token);
+  }
+
+  print_unknown_token_end(num_unknown_tokens);
+
+  add_helpanim_entry(HELPANIM_LIST_NEXT, -1, -1, -1, &num_list_entries);
+  add_helpanim_entry(HELPANIM_LIST_END,  -1, -1, -1, &num_list_entries);
+
+  freeSetupFileList(setup_file_list);
+  freeSetupFileHash(element_hash);
+  freeSetupFileHash(action_hash);
+  freeSetupFileHash(direction_hash);
+
+#if 0
+  /* TEST ONLY */
+  for (i = 0; i < num_list_entries; i++)
+    printf("::: %d, %d, %d => %d\n",
+	   helpanim_info[i].element,
+	   helpanim_info[i].action,
+	   helpanim_info[i].direction,
+	   helpanim_info[i].delay);
+#endif
+}
+
+void LoadHelpTextInfo()
+{
+  char *filename = getHelpTextFilename();
+  int i;
+
+  if (helptext_info != NULL)
+  {
+    freeSetupFileHash(helptext_info);
+    helptext_info = NULL;
+  }
+
+  if (fileExists(filename))
+    helptext_info = loadSetupFileHash(filename);
+
+  if (helptext_info == NULL)
+  {
+    /* use reliable default values from static configuration */
+    helptext_info = newSetupFileHash();
+
+    for (i = 0; helptext_config[i].token; i++)
+      setHashEntry(helptext_info,
+		   helptext_config[i].token,
+		   helptext_config[i].value);
+  }
+
+#if 0
+  /* TEST ONLY */
+  BEGIN_HASH_ITERATION(helptext_info, itr)
+  {
+    printf("::: '%s' => '%s'\n",
+	   HASH_ITERATION_TOKEN(itr), HASH_ITERATION_VALUE(itr));
+  }
+  END_HASH_ITERATION(hash, itr)
+#endif
 }

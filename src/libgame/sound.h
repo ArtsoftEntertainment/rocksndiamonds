@@ -102,6 +102,10 @@
 						      SND_CTRL_RELOAD_MUSIC))
 #define ALL_SOUNDS(x)			((x).state & SND_CTRL_ALL_SOUNDS)
 
+#define MAP_NOCONF_MUSIC(x)		(-((x) + 1))
+#define UNMAP_NOCONF_MUSIC(x)		MAP_NOCONF_MUSIC(x)
+
+
 #define SOUND_MIN_VOLUME		0
 #if defined(TARGET_SDL)
 #define SOUND_MAX_VOLUME		SDL_MIX_MAXVOLUME
@@ -135,16 +139,23 @@ void PlaySoundExt(int, int, int, int);
 void FadeMusic(void);
 void FadeSound(int);
 void FadeSounds(void);
+void FadeSoundsAndMusic(void);
 void StopMusic(void);
 void StopSound(int);
 void StopSounds(void);
 void StopSoundExt(int, int);
 
 int getSoundListSize();
+int getMusicListSize();
 struct FileInfo *getSoundListEntry(int);
+struct FileInfo *getMusicListEntry(int);
 int getSoundListPropertyMappingSize();
+int getMusicListPropertyMappingSize();
 struct PropertyMapping *getSoundListPropertyMapping();
+struct PropertyMapping *getMusicListPropertyMapping();
 void InitSoundList(struct ConfigInfo *, int, struct ConfigInfo *,
+		   char **, char **, char **, char **, char **);
+void InitMusicList(struct ConfigInfo *, int, struct ConfigInfo *,
 		   char **, char **, char **, char **, char **);
 void InitReloadCustomSounds(char *);
 void InitReloadCustomMusic(char *);

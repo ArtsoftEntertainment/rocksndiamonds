@@ -97,8 +97,7 @@ static char *getUserLevelDir(char *level_subdir)
   char *data_dir = getUserDataDir();
   char *userlevel_subdir = LEVELS_DIRECTORY;
 
-  if (userlevel_dir)
-    free(userlevel_dir);
+  checked_free(userlevel_dir);
 
   if (level_subdir != NULL)
     userlevel_dir = getPath3(data_dir, userlevel_subdir, level_subdir);
@@ -108,31 +107,13 @@ static char *getUserLevelDir(char *level_subdir)
   return userlevel_dir;
 }
 
-static char *getTapeDir(char *level_subdir)
-{
-  static char *tape_dir = NULL;
-  char *data_dir = getUserDataDir();
-  char *tape_subdir = TAPES_DIRECTORY;
-
-  if (tape_dir)
-    free(tape_dir);
-
-  if (level_subdir != NULL)
-    tape_dir = getPath3(data_dir, tape_subdir, level_subdir);
-  else
-    tape_dir = getPath2(data_dir, tape_subdir);
-
-  return tape_dir;
-}
-
 static char *getScoreDir(char *level_subdir)
 {
   static char *score_dir = NULL;
   char *data_dir = getCommonDataDir();
   char *score_subdir = SCORES_DIRECTORY;
 
-  if (score_dir)
-    free(score_dir);
+  checked_free(score_dir);
 
   if (level_subdir != NULL)
     score_dir = getPath3(data_dir, score_subdir, level_subdir);
@@ -148,8 +129,7 @@ static char *getLevelSetupDir(char *level_subdir)
   char *data_dir = getUserDataDir();
   char *levelsetup_subdir = LEVELSETUP_DIRECTORY;
 
-  if (levelsetup_dir)
-    free(levelsetup_dir);
+  checked_free(levelsetup_dir);
 
   if (level_subdir != NULL)
     levelsetup_dir = getPath3(data_dir, levelsetup_subdir, level_subdir);
@@ -166,8 +146,7 @@ static char *getLevelDirFromTreeInfo(TreeInfo *node)
   if (node == NULL)
     return options.level_directory;
 
-  if (level_dir)
-    free(level_dir);
+  checked_free(level_dir);
 
   level_dir = getPath2((node->user_defined ? getUserLevelDir(NULL) :
 			options.level_directory), node->fullpath);
@@ -180,6 +159,35 @@ static char *getCurrentLevelDir()
   return getLevelDirFromTreeInfo(leveldir_current);
 }
 
+static char *getTapeDir(char *level_subdir)
+{
+  static char *tape_dir = NULL;
+  char *data_dir = getUserDataDir();
+  char *tape_subdir = TAPES_DIRECTORY;
+
+  checked_free(tape_dir);
+
+  if (level_subdir != NULL)
+    tape_dir = getPath3(data_dir, tape_subdir, level_subdir);
+  else
+    tape_dir = getPath2(data_dir, tape_subdir);
+
+  return tape_dir;
+}
+
+static char *getSolutionTapeDir()
+{
+  static char *tape_dir = NULL;
+  char *data_dir = getCurrentLevelDir();
+  char *tape_subdir = TAPES_DIRECTORY;
+
+  checked_free(tape_dir);
+
+  tape_dir = getPath2(data_dir, tape_subdir);
+
+  return tape_dir;
+}
+
 static char *getDefaultGraphicsDir(char *graphics_subdir)
 {
   static char *graphics_dir = NULL;
@@ -187,8 +195,7 @@ static char *getDefaultGraphicsDir(char *graphics_subdir)
   if (graphics_subdir == NULL)
     return options.graphics_directory;
 
-  if (graphics_dir)
-    free(graphics_dir);
+  checked_free(graphics_dir);
 
   graphics_dir = getPath2(options.graphics_directory, graphics_subdir);
 
@@ -202,8 +209,7 @@ static char *getDefaultSoundsDir(char *sounds_subdir)
   if (sounds_subdir == NULL)
     return options.sounds_directory;
 
-  if (sounds_dir)
-    free(sounds_dir);
+  checked_free(sounds_dir);
 
   sounds_dir = getPath2(options.sounds_directory, sounds_subdir);
 
@@ -217,8 +223,7 @@ static char *getDefaultMusicDir(char *music_subdir)
   if (music_subdir == NULL)
     return options.music_directory;
 
-  if (music_dir)
-    free(music_dir);
+  checked_free(music_dir);
 
   music_dir = getPath2(options.music_directory, music_subdir);
 
@@ -276,8 +281,7 @@ static char *getSetupArtworkDir(TreeInfo *ti)
 {
   static char *artwork_dir = NULL;
 
-  if (artwork_dir != NULL)
-    free(artwork_dir);
+  checked_free(artwork_dir);
 
   artwork_dir = getPath2(ti->basepath, ti->fullpath);
 
@@ -295,8 +299,7 @@ char *setLevelArtworkDir(TreeInfo *ti)
   artwork_path_ptr = &(LEVELDIR_ARTWORK_PATH(leveldir_current, ti->type));
   artwork_set_ptr  = &(LEVELDIR_ARTWORK_SET( leveldir_current, ti->type));
 
-  if (*artwork_path_ptr != NULL)
-    free(*artwork_path_ptr);
+  checked_free(*artwork_path_ptr);
 
   if ((level_artwork = getTreeInfoFromIdentifier(ti, *artwork_set_ptr)))
     *artwork_path_ptr = getStringCopy(getSetupArtworkDir(level_artwork));
@@ -311,8 +314,7 @@ char *setLevelArtworkDir(TreeInfo *ti)
 
     char *dir = getPath2(getCurrentLevelDir(), ARTWORK_DIRECTORY(ti->type));
 
-    if (*artwork_set_ptr != NULL)
-      free(*artwork_set_ptr);
+    checked_free(*artwork_set_ptr);
 
     if (fileExists(dir))
     {
@@ -352,8 +354,7 @@ char *getLevelFilename(int nr)
   static char *filename = NULL;
   char basename[MAX_FILENAME_LEN];
 
-  if (filename != NULL)
-    free(filename);
+  checked_free(filename);
 
   if (nr < 0)
     sprintf(basename, "template.%s", LEVELFILE_EXTENSION);
@@ -370,11 +371,23 @@ char *getTapeFilename(int nr)
   static char *filename = NULL;
   char basename[MAX_FILENAME_LEN];
 
-  if (filename != NULL)
-    free(filename);
+  checked_free(filename);
 
   sprintf(basename, "%03d.%s", nr, TAPEFILE_EXTENSION);
   filename = getPath2(getTapeDir(leveldir_current->filename), basename);
+
+  return filename;
+}
+
+char *getSolutionTapeFilename(int nr)
+{
+  static char *filename = NULL;
+  char basename[MAX_FILENAME_LEN];
+
+  checked_free(filename);
+
+  sprintf(basename, "%03d.%s", nr, TAPEFILE_EXTENSION);
+  filename = getPath2(getSolutionTapeDir(), basename);
 
   return filename;
 }
@@ -384,8 +397,7 @@ char *getScoreFilename(int nr)
   static char *filename = NULL;
   char basename[MAX_FILENAME_LEN];
 
-  if (filename != NULL)
-    free(filename);
+  checked_free(filename);
 
   sprintf(basename, "%03d.%s", nr, SCOREFILE_EXTENSION);
   filename = getPath2(getScoreDir(leveldir_current->filename), basename);
@@ -397,12 +409,73 @@ char *getSetupFilename()
 {
   static char *filename = NULL;
 
-  if (filename != NULL)
-    free(filename);
+  checked_free(filename);
 
   filename = getPath2(getSetupDir(), SETUP_FILENAME);
 
   return filename;
+}
+
+char *getEditorSetupFilename()
+{
+  static char *filename = NULL;
+
+  checked_free(filename);
+
+  filename = getPath2(getSetupDir(), EDITORSETUP_FILENAME);
+
+  return filename;
+}
+
+char *getHelpAnimFilename()
+{
+  static char *filename = NULL;
+
+  checked_free(filename);
+
+  filename = getPath2(getCurrentLevelDir(), HELPANIM_FILENAME);
+
+  return filename;
+}
+
+char *getHelpTextFilename()
+{
+  static char *filename = NULL;
+
+  checked_free(filename);
+
+  filename = getPath2(getCurrentLevelDir(), HELPTEXT_FILENAME);
+
+  return filename;
+}
+
+char *getLevelSetInfoFilename()
+{
+  static char *filename = NULL;
+  char *basenames[] =
+  {
+    "README",
+    "README.txt",
+    "README.TXT",
+    "Readme",
+    "Readme.txt",
+    "readme",
+    "readme.txt",
+
+    NULL
+  };
+  int i;
+
+  for (i = 0; basenames[i] != NULL; i++)
+  {
+    checked_free(filename);
+
+    filename = getPath2(getCurrentLevelDir(), basenames[i]);
+    if (fileExists(filename))
+      return filename;
+  }
+
+  return NULL;
 }
 
 static char *getCorrectedArtworkBasename(char *basename)
@@ -424,8 +497,7 @@ static char *getCorrectedArtworkBasename(char *basename)
     {
       static char *msdos_filename = NULL;
 
-      if (msdos_filename != NULL)
-	free(msdos_filename);
+      checked_free(msdos_filename);
 
       msdos_filename = getStringCopy(basename_corrected);
       strncpy(&msdos_filename[8], &basename[strlen(basename) - (1+3)], 1+3 +1);
@@ -443,8 +515,7 @@ char *getCustomImageFilename(char *basename)
   static char *filename = NULL;
   boolean skip_setup_artwork = FALSE;
 
-  if (filename != NULL)
-    free(filename);
+  checked_free(filename);
 
   basename = getCorrectedArtworkBasename(basename);
 
@@ -502,8 +573,7 @@ char *getCustomSoundFilename(char *basename)
   static char *filename = NULL;
   boolean skip_setup_artwork = FALSE;
 
-  if (filename != NULL)
-    free(filename);
+  checked_free(filename);
 
   basename = getCorrectedArtworkBasename(basename);
 
@@ -556,12 +626,72 @@ char *getCustomSoundFilename(char *basename)
   return NULL;		/* cannot find specified artwork file anywhere */
 }
 
+char *getCustomMusicFilename(char *basename)
+{
+  static char *filename = NULL;
+  boolean skip_setup_artwork = FALSE;
+
+  checked_free(filename);
+
+  basename = getCorrectedArtworkBasename(basename);
+
+  if (!setup.override_level_music)
+  {
+    /* 1st try: look for special artwork in current level series directory */
+    filename = getPath3(getCurrentLevelDir(), MUSIC_DIRECTORY, basename);
+    if (fileExists(filename))
+      return filename;
+
+    free(filename);
+
+    /* check if there is special artwork configured in level series config */
+    if (getLevelArtworkSet(ARTWORK_TYPE_MUSIC) != NULL)
+    {
+      /* 2nd try: look for special artwork configured in level series config */
+      filename = getPath2(getLevelArtworkDir(TREE_TYPE_MUSIC_DIR), basename);
+      if (fileExists(filename))
+	return filename;
+
+      free(filename);
+
+      /* take missing artwork configured in level set config from default */
+      skip_setup_artwork = TRUE;
+    }
+  }
+
+  if (!skip_setup_artwork)
+  {
+    /* 3rd try: look for special artwork in configured artwork directory */
+    filename = getPath2(getSetupArtworkDir(artwork.mus_current), basename);
+    if (fileExists(filename))
+      return filename;
+
+    free(filename);
+  }
+
+  /* 4th try: look for default artwork in new default artwork directory */
+  filename = getPath2(getDefaultMusicDir(MUS_CLASSIC_SUBDIR), basename);
+  if (fileExists(filename))
+    return filename;
+
+  free(filename);
+
+  /* 5th try: look for default artwork in old default artwork directory */
+  filename = getPath2(options.music_directory, basename);
+  if (fileExists(filename))
+    return filename;
+
+  return NULL;		/* cannot find specified artwork file anywhere */
+}
+
 char *getCustomArtworkFilename(char *basename, int type)
 {
   if (type == ARTWORK_TYPE_GRAPHICS)
     return getCustomImageFilename(basename);
   else if (type == ARTWORK_TYPE_SOUNDS)
     return getCustomSoundFilename(basename);
+  else if (type == ARTWORK_TYPE_MUSIC)
+    return getCustomMusicFilename(basename);
   else
     return UNDEFINED_FILENAME;
 }
@@ -575,8 +705,7 @@ char *getCustomArtworkLevelConfigFilename(int type)
 {
   static char *filename = NULL;
 
-  if (filename != NULL)
-    free(filename);
+  checked_free(filename);
 
   filename = getPath2(getLevelArtworkDir(type), ARTWORKINFO_FILENAME(type));
 
@@ -588,8 +717,7 @@ char *getCustomMusicDirectory(void)
   static char *directory = NULL;
   boolean skip_setup_artwork = FALSE;
 
-  if (directory != NULL)
-    free(directory);
+  checked_free(directory);
 
   if (!setup.override_level_music)
   {
@@ -813,7 +941,7 @@ void dumpTreeInfo(TreeInfo *node, int depth)
 
   while (node)
   {
-    for (i=0; i<(depth + 1) * 3; i++)
+    for (i = 0; i < (depth + 1) * 3; i++)
       printf(" ");
 
 #if 1
@@ -859,7 +987,7 @@ void sortTreeInfo(TreeInfo **node_first,
 	compare_function);
 
   /* update the linkage of list elements with the sorted node array */
-  for (i=0; i<num_nodes - 1; i++)
+  for (i = 0; i < num_nodes - 1; i++)
     sort_array[i]->next = sort_array[i + 1];
   sort_array[num_nodes - 1]->next = NULL;
 
@@ -1081,9 +1209,13 @@ char *getFormattedSetupEntry(char *token, char *value)
   int i;
   static char entry[MAX_LINE_LEN];
 
+  /* if value is an empty string, just return token without value */
+  if (*value == '\0')
+    return token;
+
   /* start with the token and some spaces to format output line */
   sprintf(entry, "%s:", token);
-  for (i=strlen(entry); i<TOKEN_VALUE_POSITION; i++)
+  for (i = strlen(entry); i < TOKEN_VALUE_POSITION; i++)
     strcat(entry, " ");
 
   /* continue with the token's value */
@@ -1109,12 +1241,12 @@ void freeSetupFileList(SetupFileList *list)
   if (list == NULL)
     return;
 
-  if (list->token)
-    free(list->token);
-  if (list->value)
-    free(list->value);
+  checked_free(list->token);
+  checked_free(list->value);
+
   if (list->next)
     freeSetupFileList(list->next);
+
   free(list);
 }
 
@@ -1136,8 +1268,7 @@ SetupFileList *setListEntry(SetupFileList *list, char *token, char *value)
 
   if (strcmp(list->token, token) == 0)
   {
-    if (list->value)
-      free(list->value);
+    checked_free(list->value);
 
     list->value = getStringCopy(value);
 
@@ -1147,6 +1278,17 @@ SetupFileList *setListEntry(SetupFileList *list, char *token, char *value)
     return (list->next = newSetupFileList(token, value));
   else
     return setListEntry(list->next, token, value);
+}
+
+SetupFileList *addListEntry(SetupFileList *list, char *token, char *value)
+{
+  if (list == NULL)
+    return NULL;
+
+  if (list->next == NULL)
+    return (list->next = newSetupFileList(token, value));
+  else
+    return addListEntry(list->next, token, value);
 }
 
 #ifdef DEBUG
@@ -1214,6 +1356,9 @@ SetupFileHash *newSetupFileHash()
   SetupFileHash *new_hash =
     create_hashtable(16, 0.75, get_hash_from_key, keys_are_equal);
 
+  if (new_hash == NULL)
+    Error(ERR_EXIT, "create_hashtable() failed -- out of memory");
+
   return new_hash;
 }
 
@@ -1248,6 +1393,14 @@ void setHashEntry(SetupFileHash *hash, char *token, char *value)
       Error(ERR_EXIT, "cannot insert into hash -- aborting");
 }
 
+char *removeHashEntry(SetupFileHash *hash, char *token)
+{
+  if (hash == NULL)
+    return NULL;
+
+  return remove_hash_entry(hash, token);
+}
+
 #if 0
 #ifdef DEBUG
 static void printSetupFileHash(SetupFileHash *hash)
@@ -1264,10 +1417,10 @@ static void printSetupFileHash(SetupFileHash *hash)
 
 static void *loadSetupFileData(char *filename, boolean use_hash)
 {
-  int line_len;
-  char line[MAX_LINE_LEN];
+  char line[MAX_LINE_LEN], previous_line[MAX_LINE_LEN];
   char *token, *value, *line_ptr;
   void *setup_file_data, *insert_ptr = NULL;
+  boolean read_continued_line = FALSE;
   FILE *file;
 
   if (use_hash)
@@ -1281,16 +1434,48 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
     return NULL;
   }
 
-  while(!feof(file))
+  while (!feof(file))
   {
     /* read next line of input file */
     if (!fgets(line, MAX_LINE_LEN, file))
       break;
 
-    /* cut trailing comment or whitespace from input line */
+    /* cut trailing newline or carriage return */
+    for (line_ptr = &line[strlen(line)]; line_ptr >= line; line_ptr--)
+      if ((*line_ptr == '\n' || *line_ptr == '\r') && *(line_ptr + 1) == '\0')
+	*line_ptr = '\0';
+
+    if (read_continued_line)
+    {
+      /* cut leading whitespaces from input line */
+      for (line_ptr = line; *line_ptr; line_ptr++)
+	if (*line_ptr != ' ' && *line_ptr != '\t')
+	  break;
+
+      /* append new line to existing line, if there is enough space */
+      if (strlen(previous_line) + strlen(line_ptr) < MAX_LINE_LEN)
+	strcat(previous_line, line_ptr);
+
+      strcpy(line, previous_line);	/* copy storage buffer to line */
+
+      read_continued_line = FALSE;
+    }
+
+    /* if the last character is '\', continue at next line */
+    if (strlen(line) > 0 && line[strlen(line) - 1] == '\\')
+    {
+      line[strlen(line) - 1] = '\0';	/* cut off trailing backslash */
+      strcpy(previous_line, line);	/* copy line to storage buffer */
+
+      read_continued_line = TRUE;
+
+      continue;
+    }
+
+    /* cut trailing comment from input line */
     for (line_ptr = line; *line_ptr; line_ptr++)
     {
-      if (*line_ptr == '#' || *line_ptr == '\n' || *line_ptr == '\r')
+      if (*line_ptr == '#')
       {
 	*line_ptr = '\0';
 	break;
@@ -1298,47 +1483,50 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
     }
 
     /* cut trailing whitespaces from input line */
-    for (line_ptr = &line[strlen(line)]; line_ptr > line; line_ptr--)
-      if ((*line_ptr == ' ' || *line_ptr == '\t') && line_ptr[1] == '\0')
+    for (line_ptr = &line[strlen(line)]; line_ptr >= line; line_ptr--)
+      if ((*line_ptr == ' ' || *line_ptr == '\t') && *(line_ptr + 1) == '\0')
 	*line_ptr = '\0';
 
     /* ignore empty lines */
     if (*line == '\0')
       continue;
 
-    line_len = strlen(line);
-
     /* cut leading whitespaces from token */
     for (token = line; *token; token++)
       if (*token != ' ' && *token != '\t')
 	break;
 
-    /* find end of token */
+    /* start with empty value as reliable default */
+    value = "";
+
+    /* find end of token to determine start of value */
     for (line_ptr = token; *line_ptr; line_ptr++)
     {
       if (*line_ptr == ' ' || *line_ptr == '\t' || *line_ptr == ':')
       {
-	*line_ptr = '\0';
+	*line_ptr = '\0';		/* terminate token string */
+	value = line_ptr + 1;		/* set beginning of value */
+
 	break;
       }
     }
-
-    if (line_ptr < line + line_len)
-      value = line_ptr + 1;
-    else
-      value = "\0";
 
     /* cut leading whitespaces from value */
     for (; *value; value++)
       if (*value != ' ' && *value != '\t')
 	break;
 
-    if (*token && *value)
+#if 0
+    if (*value == '\0')
+      value = "true";	/* treat tokens without value as "true" */
+#endif
+
+    if (*token)
     {
       if (use_hash)
 	setHashEntry((SetupFileHash *)setup_file_data, token, value);
       else
-	insert_ptr = setListEntry((SetupFileList *)insert_ptr, token, value);
+	insert_ptr = addListEntry((SetupFileList *)insert_ptr, token, value);
     }
   }
 
@@ -1589,40 +1777,26 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
 
 static void freeTreeInfo(TreeInfo *ldi)
 {
-  if (ldi->filename)
-    free(ldi->filename);
-  if (ldi->fullpath)
-    free(ldi->fullpath);
-  if (ldi->basepath)
-    free(ldi->basepath);
-  if (ldi->identifier)
-    free(ldi->identifier);
+  checked_free(ldi->filename);
+  checked_free(ldi->fullpath);
+  checked_free(ldi->basepath);
+  checked_free(ldi->identifier);
 
-  if (ldi->name)
-    free(ldi->name);
-  if (ldi->name_sorting)
-    free(ldi->name_sorting);
-  if (ldi->author)
-    free(ldi->author);
+  checked_free(ldi->name);
+  checked_free(ldi->name_sorting);
+  checked_free(ldi->author);
 
-  if (ldi->class_desc)
-    free(ldi->class_desc);
+  checked_free(ldi->class_desc);
 
   if (ldi->type == TREE_TYPE_LEVEL_DIR)
   {
-    if (ldi->graphics_set)
-      free(ldi->graphics_set);
-    if (ldi->sounds_set)
-      free(ldi->sounds_set);
-    if (ldi->music_set)
-      free(ldi->music_set);
+    checked_free(ldi->graphics_set);
+    checked_free(ldi->sounds_set);
+    checked_free(ldi->music_set);
 
-    if (ldi->graphics_path)
-      free(ldi->graphics_path);
-    if (ldi->sounds_path)
-      free(ldi->sounds_path);
-    if (ldi->music_path)
-      free(ldi->music_path);
+    checked_free(ldi->graphics_path);
+    checked_free(ldi->sounds_path);
+    checked_free(ldi->music_path);
   }
 }
 
@@ -1656,8 +1830,7 @@ void setSetupInfo(struct TokenInfo *token_info,
       break;
 
     case TYPE_STRING:
-      if (*(char **)setup_value != NULL)
-	free(*(char **)setup_value);
+      checked_free(*(char **)setup_value);
       *(char **)setup_value = getStringCopy(token_value);
       break;
 
@@ -1783,7 +1956,7 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
 
   /* set all structure fields according to the token/value pairs */
   ldi = *leveldir_new;
-  for (i=0; i<NUM_LEVELINFO_TOKENS; i++)
+  for (i = 0; i < NUM_LEVELINFO_TOKENS; i++)
     setSetupInfo(levelinfo_tokens, i,
 		 getHashEntry(setup_file_hash, levelinfo_tokens[i].text));
   *leveldir_new = ldi;
@@ -2013,7 +2186,7 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
 
     /* set all structure fields according to the token/value pairs */
     ldi = *artwork_new;
-    for (i=0; i<NUM_LEVELINFO_TOKENS; i++)
+    for (i = 0; i < NUM_LEVELINFO_TOKENS; i++)
       setSetupInfo(levelinfo_tokens, i,
 		   getHashEntry(setup_file_hash, levelinfo_tokens[i].text));
     *artwork_new = ldi;
@@ -2221,8 +2394,7 @@ static TreeInfo *getDummyArtworkInfo(int type)
   artwork_new->fullpath = getStringCopy(UNDEFINED_FILENAME);
   artwork_new->basepath = getStringCopy(UNDEFINED_FILENAME);
 
-  if (artwork_new->name != NULL)
-    free(artwork_new->name);
+  checked_free(artwork_new->name);
 
   artwork_new->identifier   = getStringCopy(UNDEFINED_FILENAME);
   artwork_new->name         = getStringCopy(UNDEFINED_FILENAME);
@@ -2458,7 +2630,7 @@ static void SaveUserLevelInfo()
 						 getCookie("LEVELINFO")));
 
   ldi = *level_info;
-  for (i=0; i<NUM_LEVELINFO_TOKENS; i++)
+  for (i = 0; i < NUM_LEVELINFO_TOKENS; i++)
     if (i != LEVELINFO_TOKEN_IDENTIFIER &&
 	i != LEVELINFO_TOKEN_NAME_SORTING &&
 	i != LEVELINFO_TOKEN_IMPORTED_FROM)
@@ -2544,7 +2716,7 @@ char *getSetupLine(struct TokenInfo *token_info, char *prefix, int token_nr)
     {
       /* add at least one whitespace */
       strcat(line, " ");
-      for (i=strlen(line); i<TOKEN_COMMENT_POSITION; i++)
+      for (i = strlen(line); i < TOKEN_COMMENT_POSITION; i++)
 	strcat(line, " ");
 
       strcat(line, "# ");
@@ -2557,17 +2729,15 @@ char *getSetupLine(struct TokenInfo *token_info, char *prefix, int token_nr)
 
 void LoadLevelSetup_LastSeries()
 {
-  char *filename;
-  SetupFileHash *level_setup_hash = NULL;
-
-  /* always start with reliable default values */
-  leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
-
   /* ----------------------------------------------------------------------- */
   /* ~/.<program>/levelsetup.conf                                            */
   /* ----------------------------------------------------------------------- */
 
-  filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
+  char *filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
+  SetupFileHash *level_setup_hash = NULL;
+
+  /* always start with reliable default values */
+  leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
 
   if ((level_setup_hash = loadSetupFileHash(filename)))
   {
@@ -2591,17 +2761,15 @@ void LoadLevelSetup_LastSeries()
 
 void SaveLevelSetup_LastSeries()
 {
-  char *filename;
-  char *level_subdir = leveldir_current->filename;
-  FILE *file;
-
   /* ----------------------------------------------------------------------- */
   /* ~/.<program>/levelsetup.conf                                            */
   /* ----------------------------------------------------------------------- */
 
-  InitUserDataDirectory();
+  char *filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
+  char *level_subdir = leveldir_current->filename;
+  FILE *file;
 
-  filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
+  InitUserDataDirectory();
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {

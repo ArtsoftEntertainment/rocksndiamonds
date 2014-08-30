@@ -29,6 +29,7 @@ void DumpLevel(struct LevelInfo *);
 
 void LoadTapeFromFilename(char *);
 void LoadTape(int);
+void LoadSolutionTape(int);
 void SaveTape(int);
 void DumpTape(struct TapeInfo *);
 
@@ -40,5 +41,9 @@ void SaveSetup();
 
 void LoadCustomElementDescriptions();
 void LoadSpecialMenuDesignSettings();
+void LoadUserDefinedEditorElementList(int **, int *);
+void LoadMusicInfo();
+void LoadHelpAnimInfo();
+void LoadHelpTextInfo();
 
 #endif	/* FILES_H */

@@ -157,6 +157,12 @@
 #define REDRAW_FPS		(1 << 11)
 #define REDRAWTILES_THRESHOLD	(SCR_FIELDX * SCR_FIELDY / 2)
 
+#define IN_GFX_SCREEN(x, y)	(x >= gfx.sx && x < gfx.sx + gfx.sxsize && \
+				 y >= gfx.sy && y < gfx.sy + gfx.sysize)
+#define IN_GFX_DOOR(x, y)	(x >= gfx.dx && x < gfx.dx + gfx.dxsize && \
+				 y >= gfx.dy && y < gfx.dy + gfx.dysize)
+#define IN_GFX_VIDEO(x, y)	(x >= gfx.vx && x < gfx.vx + gfx.vxsize && \
+				 y >= gfx.vy && y < gfx.vy + gfx.vysize)
 
 /* values for mouse cursor */
 #define CURSOR_DEFAULT		0
@@ -174,6 +180,9 @@
 
 /* default name for unknown player names */
 #define ANONYMOUS_NAME		"anonymous"
+
+/* default for other unknown names */
+#define UNKNOWN_NAME		"unknown"
 
 /* default name for new levels */
 #define NAMELESS_LEVEL_NAME	"nameless level"
@@ -227,6 +236,9 @@
 #define LEVELSETUP_DIRECTORY	"levelsetup"
 #define SETUP_FILENAME		"setup.conf"
 #define LEVELSETUP_FILENAME	"levelsetup.conf"
+#define EDITORSETUP_FILENAME	"editorsetup.conf"
+#define HELPANIM_FILENAME	"helpanim.conf"
+#define HELPTEXT_FILENAME	"helptext.conf"
 #define LEVELINFO_FILENAME	"levelinfo.conf"
 #define GRAPHICSINFO_FILENAME	"graphicsinfo.conf"
 #define SOUNDSINFO_FILENAME	"soundsinfo.conf"
@@ -238,6 +250,9 @@
 #define LEVELSETUP_DIRECTORY	"lvlsetup"
 #define SETUP_FILENAME		"setup.cnf"
 #define LEVELSETUP_FILENAME	"lvlsetup.cnf"
+#define EDITORSETUP_FILENAME	"edsetup.cnf"
+#define HELPANIM_FILENAME	"helpanim.conf"
+#define HELPTEXT_FILENAME	"helptext.conf"
 #define LEVELINFO_FILENAME	"lvlinfo.cnf"
 #define GRAPHICSINFO_FILENAME	"gfxinfo.cnf"
 #define SOUNDSINFO_FILENAME	"sndinfo.cnf"
@@ -539,6 +554,7 @@ struct SetupEditorInfo
   boolean el_chars;
   boolean el_custom;
   boolean el_custom_more;
+  boolean el_user_defined;
 
   boolean el_headlines;
 };

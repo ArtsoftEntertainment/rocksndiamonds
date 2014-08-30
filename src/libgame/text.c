@@ -50,7 +50,7 @@ static void InitFontClipmasks()
 			       clip_gc_valuemask, &clip_gc_values);
 
   /* create only those clipping Pixmaps we really need */
-  for (i=0; i < gfx.num_fonts; i++)
+  for (i = 0; i < gfx.num_fonts; i++)
   {
     if (gfx.font_bitmap_info[i].bitmap == NULL)
       continue;
@@ -58,7 +58,7 @@ static void InitFontClipmasks()
     gfx.font_bitmap_info[i].clip_mask =
       checked_calloc(gfx.font_bitmap_info[i].num_chars * sizeof(Pixmap));
 
-    for (j=0; j < gfx.font_bitmap_info[i].num_chars; j++)
+    for (j = 0; j < gfx.font_bitmap_info[i].num_chars; j++)
     {
       Bitmap *src_bitmap = gfx.font_bitmap_info[i].bitmap;
       Pixmap src_pixmap = src_bitmap->clip_mask;
@@ -87,11 +87,11 @@ static void FreeFontClipmasks()
   if (gfx.num_fonts == 0 || gfx.font_bitmap_info[0].bitmap == NULL)
     return;
 
-  for (i=0; i < gfx.num_fonts; i++)
+  for (i = 0; i < gfx.num_fonts; i++)
   {
     if (gfx.font_bitmap_info[i].clip_mask)
     {
-      for (j=0; j < gfx.font_bitmap_info[i].num_chars; j++)
+      for (j = 0; j < gfx.font_bitmap_info[i].num_chars; j++)
 	XFreePixmap(display, gfx.font_bitmap_info[i].clip_mask[j]);
       free(gfx.font_bitmap_info[i].clip_mask);
     }
@@ -191,6 +191,21 @@ void DrawInitText(char *text, int ypos, int font_nr)
   }
 }
 
+void DrawTextF(int x, int y, int font_nr, char *format, ...)
+{
+  char buffer[MAX_OUTPUT_LINESIZE + 1];
+  va_list ap;
+
+  va_start(ap, format);
+  vsprintf(buffer, format, ap);
+  va_end(ap);
+
+  if (strlen(buffer) > MAX_OUTPUT_LINESIZE)
+    Error(ERR_EXIT, "string too long in DrawTextF() -- aborting");
+
+  DrawText(gfx.sx + x, gfx.sy + y, buffer, font_nr);
+}
+
 void DrawTextFCentered(int y, int font_nr, char *format, ...)
 {
   char buffer[MAX_OUTPUT_LINESIZE + 1];
@@ -207,19 +222,15 @@ void DrawTextFCentered(int y, int font_nr, char *format, ...)
 	   gfx.sy + y, buffer, font_nr);
 }
 
-void DrawTextF(int x, int y, int font_nr, char *format, ...)
+void DrawTextS(int x, int y, int font_nr, char *text)
 {
-  char buffer[MAX_OUTPUT_LINESIZE + 1];
-  va_list ap;
+  DrawText(gfx.sx + x, gfx.sy + y, text, font_nr);
+}
 
-  va_start(ap, format);
-  vsprintf(buffer, format, ap);
-  va_end(ap);
-
-  if (strlen(buffer) > MAX_OUTPUT_LINESIZE)
-    Error(ERR_EXIT, "string too long in DrawTextF() -- aborting");
-
-  DrawText(gfx.sx + x, gfx.sy + y, buffer, font_nr);
+void DrawTextSCentered(int y, int font_nr, char *text)
+{
+  DrawText(gfx.sx + (gfx.sxsize - getTextWidth(text, font_nr)) / 2,
+	   gfx.sy + y, text, font_nr);
 }
 
 void DrawText(int x, int y, char *text, int font_nr)
@@ -340,7 +351,7 @@ void DrawTextToTextArea(int x, int y, char *text, int font_nr, int line_length,
     char buffer[MAX_OUTPUT_LINESIZE + 1];
     int i;
 
-    for (i=0; i < line_length && *text; i++)
+    for (i = 0; i < line_length && *text; i++)
       if ((buffer[i] = *text++) == '\n')
 	break;
     buffer[MIN(i, area_xsize)] = '\0';
@@ -352,4 +363,184 @@ void DrawTextToTextArea(int x, int y, char *text, int font_nr, int line_length,
   }
 
   redraw_mask |= REDRAW_FIELD;
+}
+
+boolean RenderLineToBuffer(char **src_buffer_ptr, char *dst_buffer,
+			   int *dst_buffer_len, boolean last_line_was_empty,
+			   int line_length)
+{
+  char *text_ptr = *src_buffer_ptr;
+  char *buffer = dst_buffer;
+  int buffer_len = *dst_buffer_len;
+  boolean buffer_filled = FALSE;
+
+  while (*text_ptr)
+  {
+    char *word_ptr;
+    int word_len;
+
+    /* skip leading whitespaces */
+    while (*text_ptr == ' ' || *text_ptr == '\t')
+      text_ptr++;
+
+    word_ptr = text_ptr;
+    word_len = 0;
+
+    /* look for end of next word */
+    while (*word_ptr != ' ' && *word_ptr != '\t' && *word_ptr != '\0')
+    {
+      word_ptr++;
+      word_len++;
+    }
+
+    if (word_len == 0)
+    {
+      continue;
+    }
+    else if (*text_ptr == '\n')		/* special case: force empty line */
+    {
+      if (buffer_len == 0)
+	text_ptr++;
+
+      /* prevent printing of multiple empty lines */
+      if (buffer_len > 0 || !last_line_was_empty)
+	buffer_filled = TRUE;
+    }
+    else if (word_len < line_length - buffer_len)
+    {
+      /* word fits into text buffer -- add word */
+
+      if (buffer_len > 0)
+	buffer[buffer_len++] = ' ';
+
+      strncpy(&buffer[buffer_len], text_ptr, word_len);
+      buffer_len += word_len;
+      buffer[buffer_len] = '\0';
+      text_ptr += word_len;
+    }
+    else if (buffer_len > 0)
+    {
+      /* not enough space left for word in text buffer -- print buffer */
+
+      buffer_filled = TRUE;
+    }
+    else
+    {
+      /* word does not fit at all into empty text buffer -- cut word */
+
+      strncpy(buffer, text_ptr, line_length);
+      buffer[line_length] = '\0';
+      text_ptr += line_length;
+      buffer_filled = TRUE;
+    }
+
+    if (buffer_filled)
+      break;
+  }
+
+  *src_buffer_ptr = text_ptr;
+  *dst_buffer_len = buffer_len;
+
+  return buffer_filled;
+}
+
+void DrawTextWrapped(int x, int y, char *text, int font_nr, int line_length,
+		     int max_lines)
+{
+  char *text_ptr = text;
+  char buffer[line_length + 1];
+  int buffer_len;
+  int current_line = 0;
+  int font_height = getFontHeight(font_nr);
+
+  while (*text_ptr && current_line < max_lines)
+  {
+    buffer[0] = '\0';
+    buffer_len = 0;
+
+    RenderLineToBuffer(&text_ptr, buffer, &buffer_len, TRUE, line_length);
+
+    DrawText(x, y + current_line * font_height, buffer, font_nr);
+    current_line++;
+  }
+}
+
+int DrawTextFromFile(int x, int y, char *filename, int font_nr,
+		     int line_length, int max_lines)
+{
+  int font_height = getFontHeight(font_nr);
+  char line[MAX_LINE_LEN];
+  char buffer[line_length + 1];
+  int buffer_len;
+  int current_line = 0;
+  FILE *file;
+
+  if (current_line >= max_lines)
+    return 0;
+
+  if (filename == NULL)
+    return 0;
+
+  if (!(file = fopen(filename, MODE_READ)))
+    return 0;
+
+  buffer[0] = '\0';
+  buffer_len = 0;
+
+  while (!feof(file) && current_line < max_lines)
+  {
+    char *line_ptr;
+    boolean last_line_was_empty = TRUE;
+
+    /* read next line of input file */
+    if (!fgets(line, MAX_LINE_LEN, file))
+      break;
+
+    /* skip comments (lines directly beginning with '#') */
+    if (line[0] == '#')
+      continue;
+
+    /* cut trailing newline from input line */
+    for (line_ptr = line; *line_ptr; line_ptr++)
+    {
+      if (*line_ptr == '\n' || *line_ptr == '\r')
+      {
+	*line_ptr = '\0';
+	break;
+      }
+    }
+
+    if (strlen(line) == 0)		/* special case: force empty line */
+      strcpy(line, "\n");
+
+    line_ptr = line;
+
+    while (*line_ptr && current_line < max_lines)
+    {
+      boolean buffer_filled = RenderLineToBuffer(&line_ptr,
+						 buffer, &buffer_len,
+						 last_line_was_empty,
+						 line_length);
+      if (buffer_filled)
+      {
+	DrawText(x, y + current_line * font_height, buffer, font_nr);
+	current_line++;
+
+	last_line_was_empty = (buffer_len == 0);
+
+	buffer[0] = '\0';
+	buffer_len = 0;
+      }
+    }
+  }
+
+  fclose(file);
+
+  if (buffer_len > 0 && current_line < max_lines)
+  {
+    DrawText(x, y + current_line * font_height, buffer, font_nr);
+    current_line++;
+  }
+
+  return current_line;
 }

@@ -144,6 +144,10 @@
 					Feld[x][y] == EL_EXIT_OPEN ||	\
 					Feld[x][y] == EL_ACID))
 
+#define MAZE_RUNNER_CAN_ENTER_FIELD(x, y)				\
+		(IN_LEV_FIELD(x, y) && (IS_FREE(x, y) ||		\
+					IS_FOOD_DARK_YAMYAM(Feld[x][y])))
+
 #define MOLE_CAN_ENTER_FIELD(x, y, condition)				\
 		(IN_LEV_FIELD(x, y) && (IS_FREE(x, y) || (condition)))
 
@@ -182,12 +186,14 @@ static boolean CheckTriggeredElementChange(int, int, int, int);
 static boolean CheckElementSideChange(int, int, int, int, int, int);
 static boolean CheckElementChange(int, int, int, int);
 
-static void PlaySoundLevel(int, int, int);
-static void PlaySoundLevelNearest(int, int, int);
-static void PlaySoundLevelAction(int, int, int);
-static void PlaySoundLevelElementAction(int, int, int, int);
-static void PlaySoundLevelActionIfLoop(int, int, int);
-static void StopSoundLevelActionIfLoop(int, int, int);
+static void PlayLevelSound(int, int, int);
+static void PlayLevelSoundNearest(int, int, int);
+static void PlayLevelSoundAction(int, int, int);
+static void PlayLevelSoundElementAction(int, int, int, int);
+static void PlayLevelSoundElementActionIfLoop(int, int, int, int);
+static void PlayLevelSoundActionIfLoop(int, int, int);
+static void StopLevelSoundActionIfLoop(int, int, int);
+static void PlayLevelMusic();
 
 static void MapGameButtons();
 static void HandleGameButtons(struct GadgetInfo *);
@@ -754,8 +760,8 @@ void DrawGameDoorValues()
 {
   int i, j;
 
-  for (i=0; i<MAX_PLAYERS; i++)
-    for (j=0; j<4; j++)
+  for (i = 0; i < MAX_PLAYERS; i++)
+    for (j = 0; j < 4; j++)
       if (stored_player[i].key[j])
 	DrawMiniGraphicExt(drawto, DX_KEYS + j * MINI_TILEX, DY_KEYS,
 			   el2edimg(EL_KEY_1 + j));
@@ -818,7 +824,7 @@ static void InitGameEngine()
   /* ---------- initialize changing elements ------------------------------- */
 
   /* initialize changing elements information */
-  for (i=0; i < MAX_NUM_ELEMENTS; i++)
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
     struct ElementInfo *ei = &element_info[i];
 
@@ -834,7 +840,7 @@ static void InitGameEngine()
     }
 
     ei->change_events = CE_BITMASK_DEFAULT;
-    for (j=0; j < NUM_CHANGE_EVENTS; j++)
+    for (j = 0; j < NUM_CHANGE_EVENTS; j++)
     {
       ei->event_page_nr[j] = 0;
       ei->event_page[j] = &ei->change_page[0];
@@ -842,7 +848,7 @@ static void InitGameEngine()
   }
 
   /* add changing elements from pre-defined list */
-  for (i=0; change_delay_list[i].element != EL_UNDEFINED; i++)
+  for (i = 0; change_delay_list[i].element != EL_UNDEFINED; i++)
   {
     struct ChangingElementInfo *ch_delay = &change_delay_list[i];
     struct ElementInfo *ei = &element_info[ch_delay->element];
@@ -859,16 +865,16 @@ static void InitGameEngine()
 
 #if 1
   /* add change events from custom element configuration */
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     struct ElementInfo *ei = &element_info[EL_CUSTOM_START + i];
 
-    for (j=0; j < ei->num_change_pages; j++)
+    for (j = 0; j < ei->num_change_pages; j++)
     {
       if (!ei->change_page[j].can_change)
 	continue;
 
-      for (k=0; k < NUM_CHANGE_EVENTS; k++)
+      for (k = 0; k < NUM_CHANGE_EVENTS; k++)
       {
 	/* only add event page for the first page found with this event */
 	if (ei->change_page[j].events & CH_EVENT_BIT(k) &&
@@ -885,7 +891,7 @@ static void InitGameEngine()
 #else
 
   /* add change events from custom element configuration */
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
 
@@ -898,16 +904,16 @@ static void InitGameEngine()
   /* ---------- initialize trigger events ---------------------------------- */
 
   /* initialize trigger events information */
-  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
     trigger_events[i] = EP_BITMASK_DEFAULT;
 
 #if 1
   /* add trigger events from element change event properties */
-  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
     struct ElementInfo *ei = &element_info[i];
 
-    for (j=0; j < ei->num_change_pages; j++)
+    for (j = 0; j < ei->num_change_pages; j++)
     {
       if (!ei->change_page[j].can_change)
 	continue;
@@ -922,7 +928,7 @@ static void InitGameEngine()
   }
 #else
   /* add trigger events from element change event properties */
-  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
     if (HAS_CHANGE_EVENT(i, CE_BY_OTHER_ACTION))
       trigger_events[element_info[i].change->trigger_element] |=
 	element_info[i].change->events;
@@ -931,7 +937,7 @@ static void InitGameEngine()
   /* ---------- initialize push delay -------------------------------------- */
 
   /* initialize push delay values to default */
-  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
     if (!IS_CUSTOM_ELEMENT(i))
     {
@@ -941,7 +947,7 @@ static void InitGameEngine()
   }
 
   /* set push delay value for certain elements from pre-defined list */
-  for (i=0; push_delay_list[i].element != EL_UNDEFINED; i++)
+  for (i = 0; push_delay_list[i].element != EL_UNDEFINED; i++)
   {
     int e = push_delay_list[i].element;
 
@@ -952,12 +958,12 @@ static void InitGameEngine()
   /* ---------- initialize move stepsize ----------------------------------- */
 
   /* initialize move stepsize values to default */
-  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
     if (!IS_CUSTOM_ELEMENT(i))
       element_info[i].move_stepsize = MOVE_STEPSIZE_NORMAL;
 
   /* set move stepsize value for certain elements from pre-defined list */
-  for (i=0; move_stepsize_list[i].element != EL_UNDEFINED; i++)
+  for (i = 0; move_stepsize_list[i].element != EL_UNDEFINED; i++)
   {
     int e = move_stepsize_list[i].element;
 
@@ -967,12 +973,12 @@ static void InitGameEngine()
   /* ---------- initialize gem count --------------------------------------- */
 
   /* initialize gem count values for each element */
-  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
     if (!IS_CUSTOM_ELEMENT(i))
       element_info[i].collect_count = 0;
 
   /* add gem count values for all elements from pre-defined list */
-  for (i=0; collect_count_list[i].element != EL_UNDEFINED; i++)
+  for (i = 0; collect_count_list[i].element != EL_UNDEFINED; i++)
     element_info[collect_count_list[i].element].collect_count =
       collect_count_list[i].count;
 }
@@ -991,7 +997,7 @@ void InitGame()
   boolean emulate_bd = TRUE;	/* unless non-BOULDERDASH elements found */
   boolean emulate_sb = TRUE;	/* unless non-SOKOBAN     elements found */
   boolean emulate_sp = TRUE;	/* unless non-SUPAPLEX    elements found */
-  int i, j, x, y;
+  int i, j, k, x, y;
 
   InitGameEngine();
 
@@ -1008,7 +1014,7 @@ void InitGame()
   /* don't play tapes over network */
   network_playing = (options.network && !tape.playing);
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     struct PlayerInfo *player = &stored_player[i];
 
@@ -1028,7 +1034,7 @@ void InitGame()
     player->lights_still_needed = 0;
     player->friends_still_needed = 0;
 
-    for (j=0; j<4; j++)
+    for (j = 0; j < 4; j++)
       player->key[j] = FALSE;
 
     player->dynabomb_count = 0;
@@ -1048,6 +1054,8 @@ void InitGame()
 
     player->actual_frame_counter = 0;
 
+    player->step_counter = 0;
+
     player->last_move_dir = MV_NO_MOVING;
 
     player->is_waiting = FALSE;
@@ -1057,6 +1065,53 @@ void InitGame()
     player->is_collecting = FALSE;
     player->is_pushing = FALSE;
     player->is_switching = FALSE;
+
+    player->is_bored = FALSE;
+    player->is_sleeping = FALSE;
+
+    player->frame_counter_bored = -1;
+    player->frame_counter_sleeping = -1;
+
+    player->anim_delay_counter = 0;
+    player->post_delay_counter = 0;
+
+    player->action_waiting = ACTION_DEFAULT;
+    player->last_action_waiting = ACTION_DEFAULT;
+    player->special_action_bored = ACTION_DEFAULT;
+    player->special_action_sleeping = ACTION_DEFAULT;
+
+    player->num_special_action_bored = 0;
+    player->num_special_action_sleeping = 0;
+
+    /* determine number of special actions for bored and sleeping animation */
+    for (j = ACTION_BORING_1; j <= ACTION_BORING_LAST; j++)
+    {
+      boolean found = FALSE;
+
+      for (k = 0; k < NUM_DIRECTIONS; k++)
+	if (el_act_dir2img(player->element_nr, j, k) !=
+	    el_act_dir2img(player->element_nr, ACTION_DEFAULT, k))
+	  found = TRUE;
+
+      if (found)
+	player->num_special_action_bored++;
+      else
+	break;
+    }
+    for (j = ACTION_SLEEPING_1; j <= ACTION_SLEEPING_LAST; j++)
+    {
+      boolean found = FALSE;
+
+      for (k = 0; k < NUM_DIRECTIONS; k++)
+	if (el_act_dir2img(player->element_nr, j, k) !=
+	    el_act_dir2img(player->element_nr, ACTION_DEFAULT, k))
+	  found = TRUE;
+
+      if (found)
+	player->num_special_action_sleeping++;
+      else
+	break;
+    }
 
     player->switch_x = -1;
     player->switch_y = -1;
@@ -1119,18 +1174,18 @@ void InitGame()
 
   game.envelope_active = FALSE;
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     game.belt_dir[i] = MV_NO_MOVING;
     game.belt_dir_nr[i] = 3;		/* not moving, next moving left */
   }
 
-  for (i=0; i<MAX_NUM_AMOEBA; i++)
+  for (i = 0; i < MAX_NUM_AMOEBA; i++)
     AmoebaCnt[i] = AmoebaCnt2[i] = 0;
 
-  for (x=0; x<lev_fieldx; x++)
+  for (x = 0; x < lev_fieldx; x++)
   {
-    for (y=0; y<lev_fieldy; y++)
+    for (y = 0; y < lev_fieldy; y++)
     {
       Feld[x][y] = level.field[x][y];
       MovPos[x][y] = MovDir[x][y] = MovDelay[x][y] = 0;
@@ -1149,6 +1204,9 @@ void InitGame()
       ExplodePhase[x][y] = 0;
       ExplodeField[x][y] = EX_NO_EXPLOSION;
 
+      RunnerVisit[x][y] = 0;
+      PlayerVisit[x][y] = 0;
+
       GfxFrame[x][y] = 0;
       GfxRandom[x][y] = INIT_GFX_RANDOM();
       GfxElement[x][y] = EL_UNDEFINED;
@@ -1157,9 +1215,9 @@ void InitGame()
     }
   }
 
-  for(y=0; y<lev_fieldy; y++)
+  for (y = 0; y < lev_fieldy; y++)
   {
-    for(x=0; x<lev_fieldx; x++)
+    for (x = 0; x < lev_fieldx; x++)
     {
       if (emulate_bd && !IS_BD_ELEMENT(Feld[x][y]))
 	emulate_bd = FALSE;
@@ -1179,18 +1237,18 @@ void InitGame()
 		    emulate_sp ? EMU_SUPAPLEX : EMU_NONE);
 
   /* correct non-moving belts to start moving left */
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
     if (game.belt_dir[i] == MV_NO_MOVING)
       game.belt_dir_nr[i] = 3;		/* not moving, next moving left */
 
   /* check if any connected player was not found in playfield */
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     struct PlayerInfo *player = &stored_player[i];
 
     if (player->connected && !player->present)
     {
-      for (j=0; j<MAX_PLAYERS; j++)
+      for (j = 0; j < MAX_PLAYERS; j++)
       {
 	struct PlayerInfo *some_player = &stored_player[j];
 	int jx = some_player->jx, jy = some_player->jy;
@@ -1216,7 +1274,7 @@ void InitGame()
   {
     /* when playing a tape, eliminate all players who do not participate */
 
-    for (i=0; i<MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_PLAYERS; i++)
     {
       if (stored_player[i].active && !tape.player_participates[i])
       {
@@ -1233,11 +1291,11 @@ void InitGame()
   {
     /* when in single player mode, eliminate all but the first active player */
 
-    for (i=0; i<MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_PLAYERS; i++)
     {
       if (stored_player[i].active)
       {
-	for (j=i+1; j<MAX_PLAYERS; j++)
+	for (j = i + 1; j < MAX_PLAYERS; j++)
 	{
 	  if (stored_player[j].active)
 	  {
@@ -1256,14 +1314,14 @@ void InitGame()
   /* when recording the game, store which players take part in the game */
   if (tape.recording)
   {
-    for (i=0; i<MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_PLAYERS; i++)
       if (stored_player[i].active)
 	tape.player_participates[i] = TRUE;
   }
 
   if (options.debug)
   {
-    for (i=0; i<MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_PLAYERS; i++)
     {
       struct PlayerInfo *player = &stored_player[i];
 
@@ -1306,7 +1364,7 @@ void InitGame()
     int found_rating = 0;
     int found_element = EL_UNDEFINED;
 
-    for(y=0; y < lev_fieldy; y++) for(x=0; x < lev_fieldx; x++)
+    for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
     {
       int element = Feld[x][y];
       int content;
@@ -1318,7 +1376,7 @@ void InitGame()
 
       if (CAN_CHANGE(element))
       {
-	for (i=0; i < element_info[element].num_change_pages; i++)
+	for (i = 0; i < element_info[element].num_change_pages; i++)
 	{
 	  content = element_info[element].change_page[i].target_element;
 	  is_player = ELEM_IS_PLAYER(content);
@@ -1334,7 +1392,7 @@ void InitGame()
 	}
       }
 
-      for(yy=0; yy < 3; yy++) for(xx=0; xx < 3; xx++)
+      for (yy = 0; yy < 3; yy++) for (xx = 0; xx < 3; xx++)
       {
 	content = element_info[element].content[xx][yy];
 	is_player = ELEM_IS_PLAYER(content);
@@ -1351,7 +1409,7 @@ void InitGame()
 	if (!CAN_CHANGE(element))
 	  continue;
 
-	for (i=0; i < element_info[element].num_change_pages; i++)
+	for (i = 0; i < element_info[element].num_change_pages; i++)
 	{
 	  content = element_info[element].change_page[i].content[xx][yy];
 	  is_player = ELEM_IS_PLAYER(content);
@@ -1449,17 +1507,22 @@ void InitGame()
   OpenDoor(DOOR_OPEN_ALL);
 
   PlaySoundStereo(SND_GAME_STARTING, SOUND_MIDDLE);
+
   if (setup.sound_music)
-    PlayMusic(level_nr);
+    PlayLevelMusic();
 
   KeyboardAutoRepeatOffUnlessAutoplay();
 
   if (options.debug)
   {
-    for (i=0; i<4; i++)
+    for (i = 0; i < 4; i++)
       printf("Player %d %sactive.\n",
 	     i + 1, (stored_player[i].active ? "" : "not "));
   }
+
+#if 0
+  printf("::: starting game [%d]\n", FrameCounter);
+#endif
 }
 
 void InitMovDir(int x, int y)
@@ -1555,7 +1618,7 @@ void InitMovDir(int x, int y)
 	else if (element_info[element].move_pattern == MV_ALONG_LEFT_SIDE ||
 		 element_info[element].move_pattern == MV_ALONG_RIGHT_SIDE)
 	{
-	  for (i=0; i<4; i++)
+	  for (i = 0; i < 4; i++)
 	  {
 	    int x1 = x + xy[i][0];
 	    int y1 = y + xy[i][1];
@@ -1582,7 +1645,7 @@ void InitMovDir(int x, int y)
 	    element != EL_BD_FIREFLY)
 	  break;
 
-	for (i=0; i<4; i++)
+	for (i = 0; i < 4; i++)
 	{
 	  int x1 = x + xy[i][0];
 	  int y1 = y + xy[i][1];
@@ -1616,7 +1679,7 @@ void InitAmoebaNr(int x, int y)
 
   if (group_nr == 0)
   {
-    for (i=1; i<MAX_NUM_AMOEBA; i++)
+    for (i = 1; i < MAX_NUM_AMOEBA; i++)
     {
       if (AmoebaCnt[i] == 0)
       {
@@ -1713,7 +1776,7 @@ void GameWon()
     Feld[ExitX][ExitY] = (element == EL_EXIT_OPEN ? EL_EXIT_CLOSING :
 			  EL_SP_EXIT_CLOSING);
 
-    PlaySoundLevelElementAction(ExitX, ExitY, element, ACTION_CLOSING);
+    PlayLevelSoundElementAction(ExitX, ExitY, element, ACTION_CLOSING);
   }
 
   /* Hero disappears */
@@ -1777,7 +1840,7 @@ int NewHiScore()
       local_player->score < highscore[MAX_SCORE_ENTRIES - 1].Score) 
     return -1;
 
-  for (k=0; k<MAX_SCORE_ENTRIES; k++) 
+  for (k = 0; k < MAX_SCORE_ENTRIES; k++) 
   {
     if (local_player->score > highscore[k].Score)
     {
@@ -1788,14 +1851,14 @@ int NewHiScore()
 	int m = MAX_SCORE_ENTRIES - 1;
 
 #ifdef ONE_PER_NAME
-	for (l=k; l<MAX_SCORE_ENTRIES; l++)
+	for (l = k; l < MAX_SCORE_ENTRIES; l++)
 	  if (!strcmp(setup.player_name, highscore[l].Name))
 	    m = l;
 	if (m == k)	/* player's new highscore overwrites his old one */
 	  goto put_into_list;
 #endif
 
-	for (l=m; l>k; l--)
+	for (l = m; l > k; l--)
 	{
 	  strcpy(highscore[l].Name, highscore[l - 1].Name);
 	  highscore[l].Score = highscore[l - 1].Score;
@@ -2050,14 +2113,14 @@ void CheckDynamite(int x, int y)
     if (MovDelay[x][y] != 0)
     {
       DrawDynamite(x, y);
-      PlaySoundLevelActionIfLoop(x, y, ACTION_ACTIVE);
+      PlayLevelSoundActionIfLoop(x, y, ACTION_ACTIVE);
 
       return;
     }
   }
 
 #if 1
-  StopSoundLevelActionIfLoop(x, y, ACTION_ACTIVE);
+  StopLevelSoundActionIfLoop(x, y, ACTION_ACTIVE);
 #else
   if (Feld[x][y] == EL_DYNAMITE_ACTIVE ||
       Feld[x][y] == EL_SP_DISK_RED_ACTIVE)
@@ -2170,7 +2233,7 @@ void Explode(int ex, int ey, int phase, int mode)
 #endif
 
     if (mode == EX_NORMAL || mode == EX_CENTER)
-      PlaySoundLevelAction(ex, ey, ACTION_EXPLODING);
+      PlayLevelSoundAction(ex, ey, ACTION_EXPLODING);
 
     /* remove things displayed in background while burning dynamite */
     if (Back[ex][ey] != EL_EMPTY && !IS_INDESTRUCTIBLE(Back[ex][ey]))
@@ -2184,7 +2247,7 @@ void Explode(int ex, int ey, int phase, int mode)
       Feld[ex][ey] = center_element;
     }
 
-    for (y = ey - 1; y <= ey + 1; y++) for(x = ex - 1; x <= ex + 1; x++)
+    for (y = ey - 1; y <= ey + 1; y++) for (x = ex - 1; x <= ex + 1; x++)
     {
       int xx = x - ex + 1;
       int yy = y - ey + 1;
@@ -2504,9 +2567,9 @@ void DynaExplode(int ex, int ey)
 
   Explode(ex, ey, EX_PHASE_START, EX_CENTER);
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
-    for (j=1; j<=dynabomb_size; j++)
+    for (j = 1; j <= dynabomb_size; j++)
     {
       int x = ex + j * xy[i % 4][0];
       int y = ey + j * xy[i % 4][1];
@@ -2555,12 +2618,12 @@ void Bang(int x, int y)
 
 #if 0
 #if 1
-  PlaySoundLevelAction(x, y, ACTION_EXPLODING);
+  PlayLevelSoundAction(x, y, ACTION_EXPLODING);
 #else
   if (game.emulation == EMU_SUPAPLEX)
-    PlaySoundLevel(x, y, SND_SP_ELEMENT_EXPLODING);
+    PlayLevelSound(x, y, SND_SP_ELEMENT_EXPLODING);
   else
-    PlaySoundLevel(x, y, SND_ELEMENT_EXPLODING);
+    PlayLevelSound(x, y, SND_ELEMENT_EXPLODING);
 #endif
 #endif
 
@@ -2618,7 +2681,7 @@ void SplashAcid(int x, int y)
   if (element != EL_ACID_SPLASH_LEFT &&
       element != EL_ACID_SPLASH_RIGHT)
   {
-    PlaySoundLevel(x, y, SND_ACID_SPLASHING);
+    PlayLevelSound(x, y, SND_ACID_SPLASHING);
 
     if (IN_LEV_FIELD(x-1, y) && IS_FREE(x-1, y) &&
 	(!IN_LEV_FIELD(x-1, y-1) ||
@@ -2652,11 +2715,11 @@ static void InitBeltMovement()
   int x, y, i, j;
 
   /* set frame order for belt animation graphic according to belt direction */
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int belt_nr = i;
 
-    for (j=0; j<3; j++)
+    for (j = 0; j < 3; j++)
     {
       int element = belt_base_active_element[belt_nr] + j;
       int graphic = el2img(element);
@@ -2668,13 +2731,13 @@ static void InitBeltMovement()
     }
   }
 
-  for(y=0; y<lev_fieldy; y++)
+  for (y = 0; y < lev_fieldy; y++)
   {
-    for(x=0; x<lev_fieldx; x++)
+    for (x = 0; x < lev_fieldx; x++)
     {
       int element = Feld[x][y];
 
-      for (i=0; i<4; i++)
+      for (i = 0; i < 4; i++)
       {
 	if (IS_BELT(element) && game.belt_dir[i] != MV_NO_MOVING)
 	{
@@ -2740,7 +2803,7 @@ static void ToggleBeltSwitch(int x, int y)
     belt_dir_nr = 1;
 
   /* set frame order for belt animation graphic according to belt direction */
-  for (i=0; i<3; i++)
+  for (i = 0; i < 3; i++)
   {
     int element = belt_base_active_element[belt_nr] + i;
     int graphic = el2img(element);
@@ -2751,9 +2814,9 @@ static void ToggleBeltSwitch(int x, int y)
       graphic_info[graphic].anim_mode |=  ANIM_REVERSE;
   }
 
-  for (yy=0; yy<lev_fieldy; yy++)
+  for (yy = 0; yy < lev_fieldy; yy++)
   {
-    for (xx=0; xx<lev_fieldx; xx++)
+    for (xx = 0; xx < lev_fieldx; xx++)
     {
       int element = Feld[xx][yy];
 
@@ -2801,9 +2864,9 @@ static void ToggleSwitchgateSwitch(int x, int y)
 
   game.switchgate_pos = !game.switchgate_pos;
 
-  for (yy=0; yy<lev_fieldy; yy++)
+  for (yy = 0; yy < lev_fieldy; yy++)
   {
-    for (xx=0; xx<lev_fieldx; xx++)
+    for (xx = 0; xx < lev_fieldx; xx++)
     {
       int element = Feld[xx][yy];
 
@@ -2818,9 +2881,9 @@ static void ToggleSwitchgateSwitch(int x, int y)
       {
 	Feld[xx][yy] = EL_SWITCHGATE_CLOSING;
 #if 1
-	PlaySoundLevelAction(xx, yy, ACTION_CLOSING);
+	PlayLevelSoundAction(xx, yy, ACTION_CLOSING);
 #else
-	PlaySoundLevel(xx, yy, SND_SWITCHGATE_CLOSING);
+	PlayLevelSound(xx, yy, SND_SWITCHGATE_CLOSING);
 #endif
       }
       else if (element == EL_SWITCHGATE_CLOSED ||
@@ -2828,9 +2891,9 @@ static void ToggleSwitchgateSwitch(int x, int y)
       {
 	Feld[xx][yy] = EL_SWITCHGATE_OPENING;
 #if 1
-	PlaySoundLevelAction(xx, yy, ACTION_OPENING);
+	PlayLevelSoundAction(xx, yy, ACTION_OPENING);
 #else
-	PlaySoundLevel(xx, yy, SND_SWITCHGATE_OPENING);
+	PlayLevelSound(xx, yy, SND_SWITCHGATE_OPENING);
 #endif
       }
     }
@@ -2857,9 +2920,9 @@ static void RedrawAllLightSwitchesAndInvisibleElements()
 {
   int x, y;
 
-  for (y=0; y<lev_fieldy; y++)
+  for (y = 0; y < lev_fieldy; y++)
   {
-    for (x=0; x<lev_fieldx; x++)
+    for (x = 0; x < lev_fieldx; x++)
     {
       int element = Feld[x][y];
 
@@ -2914,9 +2977,9 @@ static void ActivateTimegateSwitch(int x, int y)
 
   game.timegate_time_left = level.time_timegate * FRAMES_PER_SECOND;
 
-  for (yy=0; yy<lev_fieldy; yy++)
+  for (yy = 0; yy < lev_fieldy; yy++)
   {
-    for (xx=0; xx<lev_fieldx; xx++)
+    for (xx = 0; xx < lev_fieldx; xx++)
     {
       int element = Feld[xx][yy];
 
@@ -2924,7 +2987,7 @@ static void ActivateTimegateSwitch(int x, int y)
 	  element == EL_TIMEGATE_CLOSING)
       {
 	Feld[xx][yy] = EL_TIMEGATE_OPENING;
-	PlaySoundLevel(xx, yy, SND_TIMEGATE_OPENING);
+	PlayLevelSound(xx, yy, SND_TIMEGATE_OPENING);
       }
 
       /*
@@ -3014,12 +3077,12 @@ void Impact(int x, int y)
   else if (impact && element == EL_PEARL)
   {
     Feld[x][y] = EL_PEARL_BREAKING;
-    PlaySoundLevel(x, y, SND_PEARL_BREAKING);
+    PlayLevelSound(x, y, SND_PEARL_BREAKING);
     return;
   }
   else if (impact && CheckElementChange(x, y, element, CE_IMPACT))
   {
-    PlaySoundLevelElementAction(x, y, element, ACTION_IMPACT);
+    PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
 
     return;
   }
@@ -3052,15 +3115,15 @@ void Impact(int x, int y)
 	 EL_BD_MAGIC_WALL_ACTIVE);
 
       /* activate magic wall / mill */
-      for (yy=0; yy<lev_fieldy; yy++)
-	for (xx=0; xx<lev_fieldx; xx++)
+      for (yy = 0; yy < lev_fieldy; yy++)
+	for (xx = 0; xx < lev_fieldx; xx++)
 	  if (Feld[xx][yy] == smashed)
 	    Feld[xx][yy] = activated_magic_wall;
 
       game.magic_wall_time_left = level.time_magic_wall * FRAMES_PER_SECOND;
       game.magic_wall_active = TRUE;
 
-      PlaySoundLevel(x, y, (smashed == EL_MAGIC_WALL ?
+      PlayLevelSound(x, y, (smashed == EL_MAGIC_WALL ?
 			    SND_MAGIC_WALL_ACTIVATING :
 			    SND_BD_MAGIC_WALL_ACTIVATING));
     }
@@ -3124,20 +3187,20 @@ void Impact(int x, int y)
 	else if (smashed == EL_NUT)
 	{
 	  Feld[x][y + 1] = EL_NUT_BREAKING;
-	  PlaySoundLevel(x, y, SND_NUT_BREAKING);
+	  PlayLevelSound(x, y, SND_NUT_BREAKING);
 	  RaiseScoreElement(EL_NUT);
 	  return;
 	}
 	else if (smashed == EL_PEARL)
 	{
 	  Feld[x][y + 1] = EL_PEARL_BREAKING;
-	  PlaySoundLevel(x, y, SND_PEARL_BREAKING);
+	  PlayLevelSound(x, y, SND_PEARL_BREAKING);
 	  return;
 	}
 	else if (smashed == EL_DIAMOND)
 	{
 	  Feld[x][y + 1] = EL_DIAMOND_BREAKING;
-	  PlaySoundLevel(x, y, SND_DIAMOND_BREAKING);
+	  PlayLevelSound(x, y, SND_DIAMOND_BREAKING);
 	  return;
 	}
 	else if (IS_BELT_SWITCH(smashed))
@@ -3177,16 +3240,16 @@ void Impact(int x, int y)
        Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE))
   {
     if (Feld[x][y + 1] == EL_MAGIC_WALL_ACTIVE)
-      PlaySoundLevel(x, y, SND_MAGIC_WALL_FILLING);
+      PlayLevelSound(x, y, SND_MAGIC_WALL_FILLING);
     else if (Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)
-      PlaySoundLevel(x, y, SND_BD_MAGIC_WALL_FILLING);
+      PlayLevelSound(x, y, SND_BD_MAGIC_WALL_FILLING);
 
     return;
   }
 
   /* play sound of object that hits the ground */
   if (lastline || object_hit)
-    PlaySoundLevelElementAction(x, y, element, ACTION_IMPACT);
+    PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
 }
 
 inline static void TurnRoundExt(int x, int y)
@@ -3221,6 +3284,8 @@ inline static void TurnRoundExt(int x, int y)
   };
 
   int element = Feld[x][y];
+  int move_pattern = element_info[element].move_pattern;
+
   int old_move_dir = MovDir[x][y];
   int left_dir  = turn[old_move_dir].left;
   int right_dir = turn[old_move_dir].right;
@@ -3388,6 +3453,11 @@ inline static void TurnRoundExt(int x, int y)
     int rnd_value = 24;
     int rnd = RND(rnd_value);
 
+#if 0
+    if (FrameCounter < 1 && x == 0 && y == 29)
+      printf(":2: %d/%d: %d [%d]\n", x, y, MovDir[x][y], FrameCounter);
+#endif
+
     if (can_move_on && rnd > rnd_value / 8)
       MovDir[x][y] = old_move_dir;
     else if (can_turn_left && can_turn_right)
@@ -3402,8 +3472,25 @@ inline static void TurnRoundExt(int x, int y)
     xx = x + move_xy[MovDir[x][y]].x;
     yy = y + move_xy[MovDir[x][y]].y;
 
+#if 0
+    if (FrameCounter < 1 && x == 0 && y == 29)
+      printf(":3: %d/%d: %d (%d/%d: %d) [%d]\n", x, y, MovDir[x][y],
+	     xx, yy, Feld[xx][yy],
+	     FrameCounter);
+#endif
+
+#if 1
+    if (!IN_LEV_FIELD_AND_IS_FREE(xx, yy))
+      MovDir[x][y] = old_move_dir;
+#else
     if (!IS_FREE(xx, yy))
       MovDir[x][y] = old_move_dir;
+#endif
+
+#if 0
+    if (FrameCounter < 1 && x == 0 && y == 29)
+      printf(":4: %d/%d: %d [%d]\n", x, y, MovDir[x][y], FrameCounter);
+#endif
 
     MovDelay[x][y] = 0;
   }
@@ -3463,7 +3550,7 @@ inline static void TurnRoundExt(int x, int y)
     {
       int i;
 
-      for (i=0; i<MAX_PLAYERS; i++)
+      for (i = 0; i < MAX_PLAYERS; i++)
       {
 	struct PlayerInfo *player = &stored_player[i];
 	int jx = player->jx, jy = player->jy;
@@ -3497,7 +3584,7 @@ inline static void TurnRoundExt(int x, int y)
 	{ 0, +1 }
       };
 
-      for (i=0; i<4; i++)
+      for (i = 0; i < 4; i++)
       {
     	int ex = x + xy[i % 4][0];
     	int ey = y + xy[i % 4][1];
@@ -3593,16 +3680,16 @@ inline static void TurnRoundExt(int x, int y)
       }
     }
   }
-  else if (element_info[element].move_pattern == MV_ALL_DIRECTIONS ||
-	   element_info[element].move_pattern == MV_TURNING_LEFT ||
-	   element_info[element].move_pattern == MV_TURNING_RIGHT)
+  else if (move_pattern == MV_ALL_DIRECTIONS ||
+	   move_pattern == MV_TURNING_LEFT ||
+	   move_pattern == MV_TURNING_RIGHT)
   {
     boolean can_turn_left  = ELEMENT_CAN_ENTER_FIELD(element, left_x, left_y);
     boolean can_turn_right = ELEMENT_CAN_ENTER_FIELD(element, right_x,right_y);
 
-    if (element_info[element].move_pattern == MV_TURNING_LEFT)
+    if (move_pattern == MV_TURNING_LEFT)
       MovDir[x][y] = left_dir;
-    else if (element_info[element].move_pattern == MV_TURNING_RIGHT)
+    else if (move_pattern == MV_TURNING_RIGHT)
       MovDir[x][y] = right_dir;
     else if (can_turn_left && can_turn_right)
       MovDir[x][y] = (RND(3) ? (RND(2) ? left_dir : right_dir) : back_dir);
@@ -3615,24 +3702,24 @@ inline static void TurnRoundExt(int x, int y)
 
     MovDelay[x][y] = GET_NEW_MOVE_DELAY(element);
   }
-  else if (element_info[element].move_pattern == MV_HORIZONTAL ||
-	   element_info[element].move_pattern == MV_VERTICAL)
+  else if (move_pattern == MV_HORIZONTAL ||
+	   move_pattern == MV_VERTICAL)
   {
-    if (element_info[element].move_pattern & old_move_dir)
+    if (move_pattern & old_move_dir)
       MovDir[x][y] = back_dir;
-    else if (element_info[element].move_pattern == MV_HORIZONTAL)
+    else if (move_pattern == MV_HORIZONTAL)
       MovDir[x][y] = (RND(2) ? MV_LEFT : MV_RIGHT);
-    else if (element_info[element].move_pattern == MV_VERTICAL)
+    else if (move_pattern == MV_VERTICAL)
       MovDir[x][y] = (RND(2) ? MV_UP : MV_DOWN);
 
     MovDelay[x][y] = GET_NEW_MOVE_DELAY(element);
   }
-  else if (element_info[element].move_pattern & MV_ANY_DIRECTION)
+  else if (move_pattern & MV_ANY_DIRECTION)
   {
-    MovDir[x][y] = element_info[element].move_pattern;
+    MovDir[x][y] = move_pattern;
     MovDelay[x][y] = GET_NEW_MOVE_DELAY(element);
   }
-  else if (element_info[element].move_pattern == MV_ALONG_LEFT_SIDE)
+  else if (move_pattern == MV_ALONG_LEFT_SIDE)
   {
     if (ELEMENT_CAN_ENTER_FIELD(element, left_x, left_y))
       MovDir[x][y] = left_dir;
@@ -3642,7 +3729,7 @@ inline static void TurnRoundExt(int x, int y)
     if (MovDir[x][y] != old_move_dir)
       MovDelay[x][y] = GET_NEW_MOVE_DELAY(element);
   }
-  else if (element_info[element].move_pattern == MV_ALONG_RIGHT_SIDE)
+  else if (move_pattern == MV_ALONG_RIGHT_SIDE)
   {
     if (ELEMENT_CAN_ENTER_FIELD(element, right_x, right_y))
       MovDir[x][y] = right_dir;
@@ -3652,13 +3739,12 @@ inline static void TurnRoundExt(int x, int y)
     if (MovDir[x][y] != old_move_dir)
       MovDelay[x][y] = GET_NEW_MOVE_DELAY(element);
   }
-  else if (element_info[element].move_pattern == MV_TOWARDS_PLAYER ||
-	   element_info[element].move_pattern == MV_AWAY_FROM_PLAYER)
+  else if (move_pattern == MV_TOWARDS_PLAYER ||
+	   move_pattern == MV_AWAY_FROM_PLAYER)
   {
     int attr_x = -1, attr_y = -1;
     int newx, newy;
-    boolean move_away =
-      (element_info[element].move_pattern == MV_AWAY_FROM_PLAYER);
+    boolean move_away = (move_pattern == MV_AWAY_FROM_PLAYER);
 
     if (AllPlayersGone)
     {
@@ -3669,7 +3755,7 @@ inline static void TurnRoundExt(int x, int y)
     {
       int i;
 
-      for (i=0; i<MAX_PLAYERS; i++)
+      for (i = 0; i < MAX_PLAYERS; i++)
       {
 	struct PlayerInfo *player = &stored_player[i];
 	int jx = player->jx, jy = player->jy;
@@ -3720,12 +3806,83 @@ inline static void TurnRoundExt(int x, int y)
       MovDir[x][y] = old_move_dir;
     }
   }
-  else if (element_info[element].move_pattern == MV_WHEN_PUSHED)
+  else if (move_pattern == MV_WHEN_PUSHED)
   {
     if (!IN_LEV_FIELD_AND_IS_FREE(move_x, move_y))
       MovDir[x][y] = MV_NO_MOVING;
 
     MovDelay[x][y] = 0;
+  }
+  else if (move_pattern & MV_MAZE_RUNNER_STYLE ||
+	   element == EL_MAZE_RUNNER)
+  {
+    static int test_xy[7][2] =
+    {
+      { 0, -1 },
+      { -1, 0 },
+      { +1, 0 },
+      { 0, +1 },
+      { 0, -1 },
+      { -1, 0 },
+      { +1, 0 },
+    };
+    static int test_dir[7] =
+    {
+      MV_UP,
+      MV_LEFT,
+      MV_RIGHT,
+      MV_DOWN,
+      MV_UP,
+      MV_LEFT,
+      MV_RIGHT,
+    };
+    boolean hunter_mode = (move_pattern == MV_MAZE_HUNTER);
+    int move_preference = -1000000;	/* start with very low preference */
+    int new_move_dir = MV_NO_MOVING;
+    int start_test = RND(4);
+    int i;
+
+    for (i = 0; i < 4; i++)
+    {
+      int move_dir = test_dir[start_test + i];
+      int move_dir_preference;
+
+      xx = x + test_xy[start_test + i][0];
+      yy = y + test_xy[start_test + i][1];
+
+      if (hunter_mode && IN_LEV_FIELD(xx, yy) &&
+	  (IS_PLAYER(xx, yy) || Feld[xx][yy] == EL_PLAYER_IS_LEAVING))
+      {
+	new_move_dir = move_dir;
+
+	break;
+      }
+
+      if (!MAZE_RUNNER_CAN_ENTER_FIELD(xx, yy))
+	continue;
+
+      move_dir_preference = -1 * RunnerVisit[xx][yy];
+      if (hunter_mode && PlayerVisit[xx][yy] > 0)
+	move_dir_preference = PlayerVisit[xx][yy];
+
+      if (move_dir_preference > move_preference)
+      {
+	/* prefer field that has not been visited for the longest time */
+	move_preference = move_dir_preference;
+	new_move_dir = move_dir;
+      }
+      else if (move_dir_preference == move_preference &&
+	       move_dir == old_move_dir)
+      {
+	/* prefer last direction when all directions are preferred equally */
+	move_preference = move_dir_preference;
+	new_move_dir = move_dir;
+      }
+    }
+
+    MovDir[x][y] = new_move_dir;
+    if (old_move_dir != new_move_dir)
+      MovDelay[x][y] = 9;
   }
 }
 
@@ -3759,7 +3916,7 @@ static boolean JustBeingPushed(int x, int y)
 {
   int i;
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     struct PlayerInfo *player = &stored_player[i];
 
@@ -3811,9 +3968,9 @@ void StartMoving(int x, int y)
 	Feld[x][y] = EL_QUICKSAND_EMPTYING;
 	Store[x][y] = EL_ROCK;
 #if 1
-	PlaySoundLevelAction(x, y, ACTION_EMPTYING);
+	PlayLevelSoundAction(x, y, ACTION_EMPTYING);
 #else
-	PlaySoundLevel(x, y, SND_QUICKSAND_EMPTYING);
+	PlayLevelSound(x, y, SND_QUICKSAND_EMPTYING);
 #endif
       }
       else if (Feld[x][y + 1] == EL_QUICKSAND_EMPTY)
@@ -3833,9 +3990,9 @@ void StartMoving(int x, int y)
 	Store[x][y + 1] = Store[x][y];
 	Store[x][y] = 0;
 #if 1
-	PlaySoundLevelAction(x, y, ACTION_FILLING);
+	PlayLevelSoundAction(x, y, ACTION_FILLING);
 #else
-	PlaySoundLevel(x, y, SND_QUICKSAND_FILLING);
+	PlayLevelSound(x, y, SND_QUICKSAND_FILLING);
 #endif
       }
     }
@@ -3848,9 +4005,9 @@ void StartMoving(int x, int y)
       Feld[x][y] = EL_QUICKSAND_FILLING;
       Store[x][y] = element;
 #if 1
-      PlaySoundLevelAction(x, y, ACTION_FILLING);
+      PlayLevelSoundAction(x, y, ACTION_FILLING);
 #else
-      PlaySoundLevel(x, y, SND_QUICKSAND_FILLING);
+      PlayLevelSound(x, y, SND_QUICKSAND_FILLING);
 #endif
     }
     else if (element == EL_MAGIC_WALL_FULL)
@@ -4067,6 +4224,7 @@ void StartMoving(int x, int y)
   /* not "else if" because of elements that can fall and move (EL_SPRING) */
   if (CAN_MOVE(element) && !started_moving)
   {
+    int move_pattern = element_info[element].move_pattern;
     int newx, newy;
 
 #if 1
@@ -4094,6 +4252,11 @@ void StartMoving(int x, int y)
 #endif
 #endif
 
+#if 0
+    if (FrameCounter < 1 && x == 0 && y == 29)
+      printf(":1: %d/%d: %d [%d]\n", x, y, MovDir[x][y], FrameCounter);
+#endif
+
     if (!MovDelay[x][y])	/* start new movement phase */
     {
       /* all objects that can change their move direction after each step
@@ -4102,11 +4265,16 @@ void StartMoving(int x, int y)
       if (element != EL_YAMYAM &&
 	  element != EL_DARK_YAMYAM &&
 	  element != EL_PACMAN &&
-	  !(element_info[element].move_pattern & MV_ANY_DIRECTION) &&
-	  element_info[element].move_pattern != MV_TURNING_LEFT &&
-	  element_info[element].move_pattern != MV_TURNING_RIGHT)
+	  !(move_pattern & MV_ANY_DIRECTION) &&
+	  move_pattern != MV_TURNING_LEFT &&
+	  move_pattern != MV_TURNING_RIGHT)
       {
 	TurnRound(x, y);
+
+#if 0
+	if (FrameCounter < 1 && x == 0 && y == 29)
+	  printf(":9: %d: %d [%d]\n", y, MovDir[x][y], FrameCounter);
+#endif
 
 	if (MovDelay[x][y] && (element == EL_BUG ||
 			       element == EL_SPACESHIP ||
@@ -4157,7 +4325,7 @@ void StartMoving(int x, int y)
 #else
 	DrawLevelElementAnimationIfNeeded(x, y, element);
 #endif
-	PlaySoundLevelAction(x, y, ACTION_WAITING);
+	PlayLevelSoundAction(x, y, ACTION_WAITING);
       }
       else if (element == EL_SP_ELECTRON)
 	DrawLevelElementAnimationIfNeeded(x, y, element);
@@ -4184,9 +4352,9 @@ void StartMoving(int x, int y)
 	else
 	  DrawLevelField(x, y);
 
-	PlaySoundLevelActionIfLoop(x, y, ACTION_ATTACKING);
+	PlayLevelSoundActionIfLoop(x, y, ACTION_ATTACKING);
 
-	for (i=1; i <= 3; i++)
+	for (i = 1; i <= 3; i++)
 	{
 	  int xx = x + i * dx;
 	  int yy = y + i * dy;
@@ -4224,7 +4392,7 @@ void StartMoving(int x, int y)
 
       if (MovDelay[x][y])	/* element still has to wait some time */
       {
-	PlaySoundLevelAction(x, y, ACTION_WAITING);
+	PlayLevelSoundAction(x, y, ACTION_WAITING);
 
 	return;
       }
@@ -4274,7 +4442,7 @@ void StartMoving(int x, int y)
 	Feld[x][y] = EL_EMPTY;
 	DrawLevelField(x, y);
 
-	PlaySoundLevel(newx, newy, SND_PENGUIN_PASSING);
+	PlayLevelSound(newx, newy, SND_PENGUIN_PASSING);
 	if (IN_SCR_FIELD(SCREENX(newx), SCREENY(newy)))
 	  DrawGraphicThruMask(SCREENX(newx),SCREENY(newy), el2img(element), 0);
 
@@ -4315,7 +4483,7 @@ void StartMoving(int x, int y)
 	  DrawLevelField(newx, newy);
 	}
 
-	PlaySoundLevel(x, y, SND_PIG_DIGGING);
+	PlayLevelSound(x, y, SND_PIG_DIGGING);
       }
       else if (!IS_FREE(newx, newy))
       {
@@ -4325,6 +4493,35 @@ void StartMoving(int x, int y)
 	  DrawLevelField(x, y);
 	return;
       }
+    }
+    else if ((move_pattern & MV_MAZE_RUNNER_STYLE ||
+	      element == EL_MAZE_RUNNER) && IN_LEV_FIELD(newx, newy))
+    {
+      if (IS_FOOD_DARK_YAMYAM(Feld[newx][newy]))
+      {
+	if (IS_MOVING(newx, newy))
+	  RemoveMovingField(newx, newy);
+	else
+	{
+	  Feld[newx][newy] = EL_EMPTY;
+	  DrawLevelField(newx, newy);
+	}
+
+	PlayLevelSound(x, y, SND_DARK_YAMYAM_DIGGING);
+      }
+      else if (!IS_FREE(newx, newy))
+      {
+#if 0
+	if (IS_PLAYER(x, y))
+	  DrawPlayerField(x, y);
+	else
+	  DrawLevelField(x, y);
+#endif
+	return;
+      }
+
+      RunnerVisit[x][y] = FrameCounter;
+      PlayerVisit[x][y] /= 8;		/* expire player visit path */
     }
     else if (element == EL_DRAGON && IN_LEV_FIELD(newx, newy))
     {
@@ -4364,7 +4561,7 @@ void StartMoving(int x, int y)
 	  else
 	    DrawLevelField(x, y);
 
-	  PlaySoundLevel(x, y, SND_DRAGON_ATTACKING);
+	  PlayLevelSound(x, y, SND_DRAGON_ATTACKING);
 
 	  MovDelay[x][y] = 50;
 
@@ -4389,7 +4586,7 @@ void StartMoving(int x, int y)
 	DrawLevelField(newx, newy);
       }
 
-      PlaySoundLevel(x, y, SND_YAMYAM_DIGGING);
+      PlayLevelSound(x, y, SND_YAMYAM_DIGGING);
     }
     else if (element == EL_DARK_YAMYAM && IN_LEV_FIELD(newx, newy) &&
 	     IS_FOOD_DARK_YAMYAM(Feld[newx][newy]))
@@ -4410,7 +4607,7 @@ void StartMoving(int x, int y)
 	DrawLevelField(newx, newy);
       }
 
-      PlaySoundLevel(x, y, SND_DARK_YAMYAM_DIGGING);
+      PlayLevelSound(x, y, SND_DARK_YAMYAM_DIGGING);
     }
     else if ((element == EL_PACMAN || element == EL_MOLE)
 	     && IN_LEV_FIELD(newx, newy) && IS_AMOEBOID(Feld[newx][newy]))
@@ -4426,7 +4623,7 @@ void StartMoving(int x, int y)
       if (element == EL_MOLE)
       {
 	Feld[newx][newy] = EL_AMOEBA_SHRINKING;
-	PlaySoundLevel(x, y, SND_MOLE_DIGGING);
+	PlayLevelSound(x, y, SND_MOLE_DIGGING);
 
 	ResetGfxAnimation(x, y);
 	GfxAction[x][y] = ACTION_DIGGING;
@@ -4439,7 +4636,7 @@ void StartMoving(int x, int y)
       {
 	Feld[newx][newy] = EL_EMPTY;
 	DrawLevelField(newx, newy);
-	PlaySoundLevel(x, y, SND_PACMAN_DIGGING);
+	PlayLevelSound(x, y, SND_PACMAN_DIGGING);
       }
     }
     else if (element == EL_MOLE && IN_LEV_FIELD(newx, newy) &&
@@ -4478,7 +4675,7 @@ void StartMoving(int x, int y)
 	TestIfBadThingTouchesHero(x, y);
 
 #if 0
-      PlaySoundLevelAction(x, y, ACTION_WAITING);
+      PlayLevelSoundAction(x, y, ACTION_WAITING);
 #endif
 
       return;
@@ -4486,7 +4683,7 @@ void StartMoving(int x, int y)
 
     InitMovingField(x, y, MovDir[x][y]);
 
-    PlaySoundLevelAction(x, y, ACTION_MOVING);
+    PlayLevelSoundAction(x, y, ACTION_MOVING);
   }
 
   if (MovDir[x][y])
@@ -4678,8 +4875,81 @@ void ContinueMoving(int x, int y)
 #endif
 
   if (!IN_LEV_FIELD(nextx, nexty) || !IS_FREE(nextx, nexty))
-    CheckElementSideChange(newx, newy, Feld[newx][newy], direction,
-			   CE_COLLISION, -1);
+  {
+    /* !!! fix side (direction) orientation here and elsewhere !!! */
+    CheckElementSideChange(newx, newy, Feld[newx][newy],
+			   direction, CE_COLLISION_ACTIVE, -1);
+
+#if 0
+    if (IN_LEV_FIELD(nextx, nexty))
+    {
+      static int opposite_directions[] =
+      {
+	MV_RIGHT,
+	MV_LEFT,
+	MV_DOWN,
+	MV_UP
+      };
+      int move_dir_bit = MV_DIR_BIT(direction);
+      int opposite_direction = opposite_directions[move_dir_bit];
+      int hitting_side = direction;
+      int touched_side = opposite_direction;
+      int hitting_element = Feld[newx][newy];
+      int touched_element = MovingOrBlocked2Element(nextx, nexty);
+      boolean object_hit = (!IS_MOVING(nextx, nexty) ||
+			    MovDir[nextx][nexty] != direction ||
+			    ABS(MovPos[nextx][nexty]) <= TILEY / 2);
+
+      if (object_hit)
+      {
+	int i;
+
+	CheckElementSideChange(nextx, nexty, Feld[nextx][nexty],
+			       opposite_direction, CE_COLLISION_PASSIVE, -1);
+
+	if (IS_CUSTOM_ELEMENT(hitting_element) &&
+	    HAS_ANY_CHANGE_EVENT(hitting_element, CE_OTHER_IS_COLL_ACTIVE))
+	{
+	  for (i = 0; i < element_info[hitting_element].num_change_pages; i++)
+	  {
+	    struct ElementChangeInfo *change =
+	      &element_info[hitting_element].change_page[i];
+
+	    if (change->can_change &&
+		change->events & CH_EVENT_BIT(CE_OTHER_IS_COLL_ACTIVE) &&
+		change->sides & touched_side &&
+		change->trigger_element == touched_element)
+	    {
+	      CheckElementSideChange(newx, newy, hitting_element,
+				     CH_SIDE_ANY, CE_OTHER_IS_COLL_ACTIVE, i);
+	      break;
+	    }
+	  }
+	}
+
+	if (IS_CUSTOM_ELEMENT(touched_element) &&
+	    HAS_ANY_CHANGE_EVENT(touched_element, CE_OTHER_IS_COLL_PASSIVE))
+	{
+	  for (i = 0; i < element_info[touched_element].num_change_pages; i++)
+	  {
+	    struct ElementChangeInfo *change =
+	      &element_info[touched_element].change_page[i];
+
+	    if (change->can_change &&
+		change->events & CH_EVENT_BIT(CE_OTHER_IS_COLL_PASSIVE) &&
+		change->sides & hitting_side &&
+		change->trigger_element == hitting_element)
+	    {
+	      CheckElementSideChange(nextx, nexty, touched_element,
+				     CH_SIDE_ANY, CE_OTHER_IS_COLL_PASSIVE, i);
+	      break;
+	    }
+	  }
+	}
+      }
+    }
+#endif
+  }
 
   TestIfPlayerTouchesCustomElement(newx, newy);
   TestIfElementTouchesCustomElement(newx, newy);
@@ -4698,7 +4968,7 @@ int AmoebeNachbarNr(int ax, int ay)
     { 0, +1 }
   };
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int x = ax + xy[i][0];
     int y = ay + xy[i][1];
@@ -4728,7 +4998,7 @@ void AmoebenVereinigen(int ax, int ay)
   if (new_group_nr == 0)
     return;
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     x = ax + xy[i][0];
     y = ay + xy[i][1];
@@ -4751,9 +5021,9 @@ void AmoebenVereinigen(int ax, int ay)
       AmoebaCnt2[new_group_nr] += AmoebaCnt2[old_group_nr];
       AmoebaCnt2[old_group_nr] = 0;
 
-      for (yy=0; yy<lev_fieldy; yy++)
+      for (yy = 0; yy < lev_fieldy; yy++)
       {
-	for (xx=0; xx<lev_fieldx; xx++)
+	for (xx = 0; xx < lev_fieldx; xx++)
 	{
 	  if (AmoebaNr[xx][yy] == old_group_nr)
 	    AmoebaNr[xx][yy] = new_group_nr;
@@ -4780,9 +5050,9 @@ void AmoebeUmwandeln(int ax, int ay)
     }
 #endif
 
-    for (y=0; y<lev_fieldy; y++)
+    for (y = 0; y < lev_fieldy; y++)
     {
-      for (x=0; x<lev_fieldx; x++)
+      for (x = 0; x < lev_fieldx; x++)
       {
 	if (Feld[x][y] == EL_AMOEBA_DEAD && AmoebaNr[x][y] == group_nr)
 	{
@@ -4791,7 +5061,7 @@ void AmoebeUmwandeln(int ax, int ay)
 	}
       }
     }
-    PlaySoundLevel(ax, ay, (IS_GEM(level.amoeba_content) ?
+    PlayLevelSound(ax, ay, (IS_GEM(level.amoeba_content) ?
 			    SND_AMOEBA_TURNING_TO_GEM :
 			    SND_AMOEBA_TURNING_TO_ROCK));
     Bang(ax, ay);
@@ -4806,7 +5076,7 @@ void AmoebeUmwandeln(int ax, int ay)
       { 0, +1 }
     };
 
-    for (i=0; i<4; i++)
+    for (i = 0; i < 4; i++)
     {
       x = ax + xy[i][0];
       y = ay + xy[i][1];
@@ -4816,7 +5086,7 @@ void AmoebeUmwandeln(int ax, int ay)
 
       if (Feld[x][y] == EL_AMOEBA_TO_DIAMOND)
       {
-	PlaySoundLevel(x, y, (IS_GEM(level.amoeba_content) ?
+	PlayLevelSound(x, y, (IS_GEM(level.amoeba_content) ?
 			      SND_AMOEBA_TURNING_TO_GEM :
 			      SND_AMOEBA_TURNING_TO_ROCK));
 	Bang(x, y);
@@ -4840,9 +5110,9 @@ void AmoebeUmwandelnBD(int ax, int ay, int new_element)
   }
 #endif
 
-  for (y=0; y<lev_fieldy; y++)
+  for (y = 0; y < lev_fieldy; y++)
   {
-    for (x=0; x<lev_fieldx; x++)
+    for (x = 0; x < lev_fieldx; x++)
     {
       if (AmoebaNr[x][y] == group_nr &&
 	  (Feld[x][y] == EL_AMOEBA_DEAD ||
@@ -4859,7 +5129,7 @@ void AmoebeUmwandelnBD(int ax, int ay, int new_element)
   }
 
   if (done)
-    PlaySoundLevel(ax, ay, (new_element == EL_BD_ROCK ?
+    PlayLevelSound(ax, ay, (new_element == EL_BD_ROCK ?
 			    SND_BD_AMOEBA_TURNING_TO_ROCK :
 			    SND_BD_AMOEBA_TURNING_TO_GEM));
 }
@@ -4876,12 +5146,12 @@ void AmoebeWaechst(int x, int y)
     if (DelayReached(&sound_delay, sound_delay_value))
     {
 #if 1
-      PlaySoundLevelElementAction(x, y, Store[x][y], ACTION_GROWING);
+      PlayLevelSoundElementAction(x, y, Store[x][y], ACTION_GROWING);
 #else
       if (Store[x][y] == EL_BD_AMOEBA)
-	PlaySoundLevel(x, y, SND_BD_AMOEBA_GROWING);
+	PlayLevelSound(x, y, SND_BD_AMOEBA_GROWING);
       else
-	PlaySoundLevel(x, y, SND_AMOEBA_GROWING);
+	PlayLevelSound(x, y, SND_AMOEBA_GROWING);
 #endif
       sound_delay_value = 30;
     }
@@ -5002,7 +5272,7 @@ void AmoebeAbleger(int ax, int ay)
     int start = RND(4);
     boolean waiting_for_player = FALSE;
 
-    for (i=0; i<4; i++)
+    for (i = 0; i < 4; i++)
     {
       int j = (start + i) % 4;
       int x = ax + xy[j][0];
@@ -5081,9 +5351,9 @@ void AmoebeAbleger(int ax, int ay)
   {
     Feld[newax][neway] = EL_AMOEBA_DROP;	/* drop left/right of amoeba */
 #if 1
-    PlaySoundLevelAction(newax, neway, ACTION_GROWING);
+    PlayLevelSoundAction(newax, neway, ACTION_GROWING);
 #else
-    PlaySoundLevel(newax, neway, SND_AMOEBA_GROWING);
+    PlayLevelSound(newax, neway, SND_AMOEBA_GROWING);
 #endif
   }
   else
@@ -5123,7 +5393,7 @@ void Life(int ax, int ay)
       return;
   }
 
-  for (y1=-1; y1<2; y1++) for(x1=-1; x1<2; x1++)
+  for (y1 = -1; y1 < 2; y1++) for (x1 = -1; x1 < 2; x1++)
   {
     int xx = ax+x1, yy = ay+y1;
     int nachbarn = 0;
@@ -5131,7 +5401,7 @@ void Life(int ax, int ay)
     if (!IN_LEV_FIELD(xx, yy))
       continue;
 
-    for (y2=-1; y2<2; y2++) for (x2=-1; x2<2; x2++)
+    for (y2 = -1; y2 < 2; y2++) for (x2 = -1; x2 < 2; x2++)
     {
       int x = xx+x2, y = yy+y2;
 
@@ -5172,7 +5442,7 @@ void Life(int ax, int ay)
   }
 
   if (changed)
-    PlaySoundLevel(ax, ay, element == EL_BIOMAZE ? SND_BIOMAZE_GROWING :
+    PlayLevelSound(ax, ay, element == EL_BIOMAZE ? SND_BIOMAZE_GROWING :
 		   SND_GAME_OF_LIFE_GROWING);
 }
 
@@ -5183,7 +5453,7 @@ static void InitRobotWheel(int x, int y)
 
 static void RunRobotWheel(int x, int y)
 {
-  PlaySoundLevel(x, y, SND_ROBOT_WHEEL_ACTIVE);
+  PlayLevelSound(x, y, SND_ROBOT_WHEEL_ACTIVE);
 }
 
 static void StopRobotWheel(int x, int y)
@@ -5199,7 +5469,7 @@ static void InitTimegateWheel(int x, int y)
 
 static void RunTimegateWheel(int x, int y)
 {
-  PlaySoundLevel(x, y, SND_TIMEGATE_SWITCH_ACTIVE);
+  PlayLevelSound(x, y, SND_TIMEGATE_SWITCH_ACTIVE);
 }
 
 void CheckExit(int x, int y)
@@ -5222,7 +5492,7 @@ void CheckExit(int x, int y)
 
   Feld[x][y] = EL_EXIT_OPENING;
 
-  PlaySoundLevelNearest(x, y, SND_CLASS_EXIT_OPENING);
+  PlayLevelSoundNearest(x, y, SND_CLASS_EXIT_OPENING);
 }
 
 void CheckExitSP(int x, int y)
@@ -5243,16 +5513,16 @@ void CheckExitSP(int x, int y)
 
   Feld[x][y] = EL_SP_EXIT_OPENING;
 
-  PlaySoundLevelNearest(x, y, SND_CLASS_SP_EXIT_OPENING);
+  PlayLevelSoundNearest(x, y, SND_CLASS_SP_EXIT_OPENING);
 }
 
 static void CloseAllOpenTimegates()
 {
   int x, y;
 
-  for (y=0; y<lev_fieldy; y++)
+  for (y = 0; y < lev_fieldy; y++)
   {
-    for (x=0; x<lev_fieldx; x++)
+    for (x = 0; x < lev_fieldx; x++)
     {
       int element = Feld[x][y];
 
@@ -5260,9 +5530,9 @@ static void CloseAllOpenTimegates()
       {
 	Feld[x][y] = EL_TIMEGATE_CLOSING;
 #if 1
-	PlaySoundLevelAction(x, y, ACTION_CLOSING);
+	PlayLevelSoundAction(x, y, ACTION_CLOSING);
 #else
-	PlaySoundLevel(x, y, SND_TIMEGATE_CLOSING);
+	PlayLevelSound(x, y, SND_TIMEGATE_CLOSING);
 #endif
       }
     }
@@ -5466,9 +5736,9 @@ void MauerAbleger(int ax, int ay)
 
   if (new_wall)
 #if 1
-    PlaySoundLevelAction(ax, ay, ACTION_GROWING);
+    PlayLevelSoundAction(ax, ay, ACTION_GROWING);
 #else
-    PlaySoundLevel(ax, ay, SND_EXPANDABLE_WALL_GROWING);
+    PlayLevelSound(ax, ay, SND_EXPANDABLE_WALL_GROWING);
 #endif
 }
 
@@ -5484,9 +5754,9 @@ void CheckForDragon(int x, int y)
     { 0, +1 }
   };
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
-    for (j=0; j<4; j++)
+    for (j = 0; j < 4; j++)
     {
       int xx = x + j*xy[i][0], yy = y + j*xy[i][1];
 
@@ -5503,9 +5773,9 @@ void CheckForDragon(int x, int y)
 
   if (!dragon_found)
   {
-    for (i=0; i<4; i++)
+    for (i = 0; i < 4; i++)
     {
-      for (j=0; j<3; j++)
+      for (j = 0; j < 3; j++)
       {
   	int xx = x + j*xy[i][0], yy = y + j*xy[i][1];
   
@@ -5546,13 +5816,13 @@ static void WarnBuggyBase(int x, int y)
     { 0, +1 }
   };
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int xx = x + xy[i][0], yy = y + xy[i][1];
 
     if (IS_PLAYER(xx, yy))
     {
-      PlaySoundLevel(x, y, SND_SP_BUGGY_BASE_ACTIVE);
+      PlayLevelSound(x, y, SND_SP_BUGGY_BASE_ACTIVE);
 
       break;
     }
@@ -5566,7 +5836,7 @@ static void InitTrap(int x, int y)
 
 static void ActivateTrap(int x, int y)
 {
-  PlaySoundLevel(x, y, SND_TRAP_ACTIVATING);
+  PlayLevelSound(x, y, SND_TRAP_ACTIVATING);
 }
 
 static void ChangeActiveTrap(int x, int y)
@@ -5648,7 +5918,7 @@ static boolean ChangeElementNow(int x, int y, int element, int page)
     boolean can_change[3][3];
     int xx, yy;
 
-    for (yy = 0; yy < 3; yy++) for(xx = 0; xx < 3 ; xx++)
+    for (yy = 0; yy < 3; yy++) for (xx = 0; xx < 3 ; xx++)
     {
       boolean half_destructible;
       int ex = x + xx - 1;
@@ -5699,7 +5969,7 @@ static boolean ChangeElementNow(int x, int y, int element, int page)
 	  RND(100) < change->random)
 	return FALSE;
 
-      for (yy = 0; yy < 3; yy++) for(xx = 0; xx < 3 ; xx++)
+      for (yy = 0; yy < 3; yy++) for (xx = 0; xx < 3 ; xx++)
       {
 	int ex = x + xx - 1;
 	int ey = y + yy - 1;
@@ -5723,14 +5993,14 @@ static boolean ChangeElementNow(int x, int y, int element, int page)
       }
 
       if (something_has_changed)
-	PlaySoundLevelElementAction(x, y, element, ACTION_CHANGING);
+	PlayLevelSoundElementAction(x, y, element, ACTION_CHANGING);
     }
   }
   else
   {
     ChangeElementNowExt(x, y, change->target_element);
 
-    PlaySoundLevelElementAction(x, y, element, ACTION_CHANGING);
+    PlayLevelSoundElementAction(x, y, element, ACTION_CHANGING);
   }
 
   return TRUE;
@@ -5813,7 +6083,7 @@ static boolean CheckTriggeredElementSideChange(int lx, int ly,
   if (!(trigger_events[trigger_element] & CH_EVENT_BIT(trigger_event)))
     return FALSE;
 
-  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
 
@@ -5823,7 +6093,7 @@ static boolean CheckTriggeredElementSideChange(int lx, int ly,
     if (!CAN_CHANGE(element) || !HAS_ANY_CHANGE_EVENT(element, trigger_event))
       continue;
 
-    for (j=0; j < element_info[element].num_change_pages; j++)
+    for (j = 0; j < element_info[element].num_change_pages; j++)
     {
       struct ElementChangeInfo *change = &element_info[element].change_page[j];
 
@@ -5850,7 +6120,7 @@ static boolean CheckTriggeredElementSideChange(int lx, int ly,
     if (!change_element)
       continue;
 
-    for (y=0; y<lev_fieldy; y++) for (x=0; x<lev_fieldx; x++)
+    for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
     {
 #if 0
       if (x == lx && y == ly)	/* do not change trigger element itself */
@@ -5904,6 +6174,168 @@ static boolean CheckElementSideChange(int x, int y, int element, int side,
 static boolean CheckElementChange(int x, int y, int element, int trigger_event)
 {
   return CheckElementSideChange(x, y, element, CH_SIDE_ANY, trigger_event, -1);
+}
+
+static void PlayPlayerSound(struct PlayerInfo *player)
+{
+  int jx = player->jx, jy = player->jy;
+  int element = player->element_nr;
+  int last_action = player->last_action_waiting;
+  int action = player->action_waiting;
+
+  if (player->is_waiting)
+  {
+    if (action != last_action)
+      PlayLevelSoundElementAction(jx, jy, element, action);
+    else
+      PlayLevelSoundElementActionIfLoop(jx, jy, element, action);
+  }
+  else
+  {
+    if (action != last_action)
+      StopSound(element_info[element].sound[last_action]);
+
+    if (last_action == ACTION_SLEEPING)
+      PlayLevelSoundElementAction(jx, jy, element, ACTION_AWAKENING);
+  }
+}
+
+static void PlayAllPlayersSound()
+{
+  int i;
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+    if (stored_player[i].active)
+      PlayPlayerSound(&stored_player[i]);
+}
+
+static void SetPlayerWaiting(struct PlayerInfo *player, boolean is_waiting)
+{
+  boolean last_waiting = player->is_waiting;
+  int move_dir = player->MovDir;
+
+  player->last_action_waiting = player->action_waiting;
+
+  if (is_waiting)
+  {
+    if (!last_waiting)		/* not waiting -> waiting */
+    {
+      player->is_waiting = TRUE;
+
+      player->frame_counter_bored =
+	FrameCounter +
+	game.player_boring_delay_fixed +
+	SimpleRND(game.player_boring_delay_random);
+      player->frame_counter_sleeping =
+	FrameCounter +
+	game.player_sleeping_delay_fixed +
+	SimpleRND(game.player_sleeping_delay_random);
+
+      InitPlayerGfxAnimation(player, ACTION_WAITING, player->MovDir);
+    }
+
+    if (game.player_sleeping_delay_fixed +
+	game.player_sleeping_delay_random > 0 &&
+	player->anim_delay_counter == 0 &&
+	player->post_delay_counter == 0 &&
+	FrameCounter >= player->frame_counter_sleeping)
+      player->is_sleeping = TRUE;
+    else if (game.player_boring_delay_fixed +
+	     game.player_boring_delay_random > 0 &&
+	     FrameCounter >= player->frame_counter_bored)
+      player->is_bored = TRUE;
+
+    player->action_waiting = (player->is_sleeping ? ACTION_SLEEPING :
+			      player->is_bored ? ACTION_BORING :
+			      ACTION_WAITING);
+
+    if (player->is_sleeping)
+    {
+      if (player->num_special_action_sleeping > 0)
+      {
+	if (player->anim_delay_counter == 0 && player->post_delay_counter == 0)
+	{
+	  int last_special_action = player->special_action_sleeping;
+	  int num_special_action = player->num_special_action_sleeping;
+	  int special_action =
+	    (last_special_action == ACTION_DEFAULT ? ACTION_SLEEPING_1 :
+	     last_special_action == ACTION_SLEEPING ? ACTION_SLEEPING :
+	     last_special_action < ACTION_SLEEPING_1 + num_special_action - 1 ?
+	     last_special_action + 1 : ACTION_SLEEPING);
+	  int special_graphic =
+	    el_act_dir2img(player->element_nr, special_action, move_dir);
+
+	  player->anim_delay_counter =
+	    graphic_info[special_graphic].anim_delay_fixed +
+	    SimpleRND(graphic_info[special_graphic].anim_delay_random);
+	  player->post_delay_counter =
+	    graphic_info[special_graphic].post_delay_fixed +
+	    SimpleRND(graphic_info[special_graphic].post_delay_random);
+
+	  player->special_action_sleeping = special_action;
+	}
+
+	if (player->anim_delay_counter > 0)
+	{
+	  player->action_waiting = player->special_action_sleeping;
+	  player->anim_delay_counter--;
+	}
+	else if (player->post_delay_counter > 0)
+	{
+	  player->post_delay_counter--;
+	}
+      }
+    }
+    else if (player->is_bored)
+    {
+      if (player->num_special_action_bored > 0)
+      {
+	if (player->anim_delay_counter == 0 && player->post_delay_counter == 0)
+	{
+	  int special_action =
+	    ACTION_BORING_1 + SimpleRND(player->num_special_action_bored);
+	  int special_graphic =
+	    el_act_dir2img(player->element_nr, special_action, move_dir);
+
+	  player->anim_delay_counter =
+	    graphic_info[special_graphic].anim_delay_fixed +
+	    SimpleRND(graphic_info[special_graphic].anim_delay_random);
+	  player->post_delay_counter =
+	    graphic_info[special_graphic].post_delay_fixed +
+	    SimpleRND(graphic_info[special_graphic].post_delay_random);
+
+	  player->special_action_bored = special_action;
+	}
+
+	if (player->anim_delay_counter > 0)
+	{
+	  player->action_waiting = player->special_action_bored;
+	  player->anim_delay_counter--;
+	}
+	else if (player->post_delay_counter > 0)
+	{
+	  player->post_delay_counter--;
+	}
+      }
+    }
+  }
+  else if (last_waiting)	/* waiting -> not waiting */
+  {
+    player->is_waiting = FALSE;
+    player->is_bored = FALSE;
+    player->is_sleeping = FALSE;
+
+    player->frame_counter_bored = -1;
+    player->frame_counter_sleeping = -1;
+
+    player->anim_delay_counter = 0;
+    player->post_delay_counter = 0;
+
+    player->action_waiting = ACTION_DEFAULT;
+
+    player->special_action_bored = ACTION_DEFAULT;
+    player->special_action_sleeping = ACTION_DEFAULT;
+  }
 }
 
 #if 1
@@ -5960,6 +6392,8 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
       }
     }
 
+    SetPlayerWaiting(player, FALSE);
+
 #if 1
     return player_action;
 #else
@@ -5979,7 +6413,7 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
     CheckGravityMovement(player);
 
     if (player->MovPos == 0)
-      InitPlayerGfxAnimation(player, ACTION_DEFAULT, player->MovDir);
+      SetPlayerWaiting(player, TRUE);
 
     if (player->MovPos == 0)	/* needed for tape.playing */
       player->is_moving = FALSE;
@@ -6129,9 +6563,13 @@ void GameActions()
   if (tape.pausing)
     return;
 
+#if 0
+  printf("::: getting new tape action [%d]\n", FrameCounter);
+#endif
+
   recorded_player_action = (tape.playing ? TapePlayAction() : NULL);
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     summarized_player_action |= stored_player[i].action;
 
@@ -6147,7 +6585,7 @@ void GameActions()
   if (!options.network && !setup.team_mode)
     local_player->effective_action = summarized_player_action;
 
-  for (i=0; i < MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     int actual_player_action = stored_player[i].effective_action;
 
@@ -6158,6 +6596,9 @@ void GameActions()
       actual_player_action = recorded_player_action[i];
 
     tape_action[i] = PlayerActions(&stored_player[i], actual_player_action);
+
+    if (tape.recording && tape_action[i] && !tape.player_participates[i])
+      tape.player_participates[i] = TRUE;    /* player just appeared from CE */
 
     ScrollPlayer(&stored_player[i], SCROLL_GO_ON);
   }
@@ -6175,14 +6616,14 @@ void GameActions()
   FrameCounter++;
   TimeFrames++;
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
     stored_player[i].Frame++;
 #endif
 
 #if 1
   if (game.engine_version < VERSION_IDENT(2,2,0,7))
   {
-    for (i=0; i<MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_PLAYERS; i++)
     {
       struct PlayerInfo *player = &stored_player[i];
       int x = player->jx;
@@ -6203,7 +6644,7 @@ void GameActions()
   }
 #endif
 
-  for (y=0; y<lev_fieldy; y++) for (x=0; x<lev_fieldx; x++)
+  for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
   {
     Changed[x][y] = CE_BITMASK_DEFAULT;
     ChangeEvent[x][y] = CE_BITMASK_DEFAULT;
@@ -6253,7 +6694,7 @@ void GameActions()
 #endif
   }
 
-  for (y=0; y<lev_fieldy; y++) for (x=0; x<lev_fieldx; x++)
+  for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
   {
     element = Feld[x][y];
 #if 1
@@ -6281,7 +6722,7 @@ void GameActions()
     SetRandomAnimationValue(x, y);
 
 #if 1
-    PlaySoundLevelActionIfLoop(x, y, GfxAction[x][y]);
+    PlayLevelSoundActionIfLoop(x, y, GfxAction[x][y]);
 #endif
 
     if (IS_INACTIVE(element))
@@ -6411,7 +6852,7 @@ void GameActions()
 #endif
 
     if (IS_BELT_ACTIVE(element))
-      PlaySoundLevelAction(x, y, ACTION_ACTIVE);
+      PlayLevelSoundAction(x, y, ACTION_ACTIVE);
 
     if (game.magic_wall_active)
     {
@@ -6477,7 +6918,7 @@ void GameActions()
   {
     game.explosions_delayed = FALSE;
 
-    for (y=0; y<lev_fieldy; y++) for (x=0; x<lev_fieldx; x++)
+    for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
     {
       element = Feld[x][y];
 
@@ -6501,9 +6942,9 @@ void GameActions()
       if (element == EL_BD_MAGIC_WALL_FULL ||
 	  element == EL_BD_MAGIC_WALL_ACTIVE ||
 	  element == EL_BD_MAGIC_WALL_EMPTYING)
-	PlaySoundLevel(magic_wall_x, magic_wall_y, SND_BD_MAGIC_WALL_ACTIVE);
+	PlayLevelSound(magic_wall_x, magic_wall_y, SND_BD_MAGIC_WALL_ACTIVE);
       else
-	PlaySoundLevel(magic_wall_x, magic_wall_y, SND_MAGIC_WALL_ACTIVE);
+	PlayLevelSound(magic_wall_x, magic_wall_y, SND_MAGIC_WALL_ACTIVE);
     }
 
     if (game.magic_wall_time_left > 0)
@@ -6511,7 +6952,7 @@ void GameActions()
       game.magic_wall_time_left--;
       if (!game.magic_wall_time_left)
       {
-	for (y=0; y<lev_fieldy; y++) for (x=0; x<lev_fieldx; x++)
+	for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
 	{
 	  element = Feld[x][y];
 
@@ -6550,16 +6991,16 @@ void GameActions()
       CloseAllOpenTimegates();
   }
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     struct PlayerInfo *player = &stored_player[i];
 
     if (SHIELD_ON(player))
     {
       if (player->shield_deadly_time_left)
-	PlaySoundLevel(player->jx, player->jy, SND_SHIELD_DEADLY_ACTIVE);
+	PlayLevelSound(player->jx, player->jy, SND_SHIELD_DEADLY_ACTIVE);
       else if (player->shield_normal_time_left)
-	PlaySoundLevel(player->jx, player->jy, SND_SHIELD_NORMAL_ACTIVE);
+	PlayLevelSound(player->jx, player->jy, SND_SHIELD_NORMAL_ACTIVE);
     }
   }
 
@@ -6568,7 +7009,7 @@ void GameActions()
     TimeFrames = 0;
     TimePlayed++;
 
-    for (i=0; i<MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_PLAYERS; i++)
     {
       struct PlayerInfo *player = &stored_player[i];
 
@@ -6594,7 +7035,7 @@ void GameActions()
       DrawText(DX_TIME, DY_TIME, int2str(TimeLeft, 3), FONT_TEXT_2);
 
       if (!TimeLeft && setup.time_limit)
-	for (i=0; i<MAX_PLAYERS; i++)
+	for (i = 0; i < MAX_PLAYERS; i++)
 	  KillHero(&stored_player[i]);
     }
     else if (level.time == 0 && !AllPlayersGone) /* level without time limit */
@@ -6602,6 +7043,7 @@ void GameActions()
   }
 
   DrawAllPlayers();
+  PlayAllPlayersSound();
 
   if (options.debug)			/* calculate frames per second */
   {
@@ -6637,7 +7079,7 @@ void GameActions()
   FrameCounter++;
   TimeFrames++;
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     int move_frames =
       MOVE_DELAY_NORMAL_SPEED /  stored_player[i].move_delay_value;
@@ -6664,7 +7106,7 @@ static boolean AllPlayersInSight(struct PlayerInfo *player, int x, int y)
   int min_x = x, min_y = y, max_x = x, max_y = y;
   int i;
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     int jx = stored_player[i].jx, jy = stored_player[i].jy;
 
@@ -6684,7 +7126,7 @@ static boolean AllPlayersInVisibleScreen()
 {
   int i;
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
   {
     int jx = stored_player[i].jx, jy = stored_player[i].jy;
 
@@ -6714,14 +7156,14 @@ void ScrollLevel(int dx, int dy)
   if (dx)
   {
     x = (dx == 1 ? BX1 : BX2);
-    for (y=BY1; y <= BY2; y++)
+    for (y = BY1; y <= BY2; y++)
       DrawScreenField(x, y);
   }
 
   if (dy)
   {
     y = (dy == 1 ? BY1 : BY2);
-    for (x=BX1; x <= BX2; x++)
+    for (x = BX1; x <= BX2; x++)
       DrawScreenField(x, y);
   }
 
@@ -6842,6 +7284,10 @@ boolean MovePlayerOneStep(struct PlayerInfo *player,
 
   player->MovPos =
     (dx > 0 || dy > 0 ? -1 : 1) * (TILEX - TILEX / player->move_delay_value);
+
+  player->step_counter++;
+
+  PlayerVisit[jx][jy] = FrameCounter;
 
   ScrollPlayer(player, SCROLL_INIT);
 
@@ -7226,7 +7672,7 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
   int center_element = Feld[x][y];	/* should always be non-moving! */
   int i;
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int xx = x + xy[i][0];
     int yy = y + xy[i][1];
@@ -7284,7 +7730,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
   };
   static int change_sides[4][2] =
   {
-    /* center side       border side */
+    /* center side	border side */
     { CH_SIDE_TOP,	CH_SIDE_BOTTOM	},	/* check top    */
     { CH_SIDE_LEFT,	CH_SIDE_RIGHT	},	/* check left   */
     { CH_SIDE_RIGHT,	CH_SIDE_LEFT	},	/* check right  */
@@ -7302,7 +7748,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
   int center_element = Feld[x][y];	/* should always be non-moving! */
   int i, j;
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int xx = x + xy[i][0];
     int yy = y + xy[i][1];
@@ -7327,7 +7773,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
 	HAS_ANY_CHANGE_EVENT(center_element, CE_OTHER_IS_TOUCHING) &&
 	!change_center_element)
     {
-      for (j=0; j < element_info[center_element].num_change_pages; j++)
+      for (j = 0; j < element_info[center_element].num_change_pages; j++)
       {
 	struct ElementChangeInfo *change =
 	  &element_info[center_element].change_page[j];
@@ -7349,7 +7795,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
     if (IS_CUSTOM_ELEMENT(border_element) &&
 	HAS_ANY_CHANGE_EVENT(border_element, CE_OTHER_IS_TOUCHING))
     {
-      for (j=0; j < element_info[border_element].num_change_pages; j++)
+      for (j = 0; j < element_info[border_element].num_change_pages; j++)
       {
 	struct ElementChangeInfo *change =
 	  &element_info[border_element].change_page[j];
@@ -7390,7 +7836,7 @@ void TestIfGoodThingHitsBadThing(int good_x, int good_y, int good_move_dir)
     MV_DOWN
   };
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int test_x, test_y, test_move_dir, test_element;
 
@@ -7465,7 +7911,7 @@ void TestIfBadThingHitsGoodThing(int bad_x, int bad_y, int bad_move_dir)
   if (bad_element == EL_EXPLOSION)	/* skip just exploding bad things */
     return;
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int test_x, test_y, test_move_dir, test_element;
 
@@ -7569,7 +8015,7 @@ void TestIfBadThingTouchesOtherBadThing(int bad_x, int bad_y)
     { 0, +1 }
   };
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
   {
     int x, y, element;
 
@@ -7624,11 +8070,11 @@ void BuryHero(struct PlayerInfo *player)
     return;
 
 #if 1
-  PlaySoundLevelElementAction(jx, jy, player->element_nr, ACTION_DYING);
+  PlayLevelSoundElementAction(jx, jy, player->element_nr, ACTION_DYING);
 #else
-  PlaySoundLevel(jx, jy, SND_CLASS_PLAYER_DYING);
+  PlayLevelSound(jx, jy, SND_CLASS_PLAYER_DYING);
 #endif
-  PlaySoundLevel(jx, jy, SND_GAME_LOSING);
+  PlayLevelSound(jx, jy, SND_GAME_LOSING);
 
   player->GameOver = TRUE;
   RemoveHero(player);
@@ -7645,7 +8091,7 @@ void RemoveHero(struct PlayerInfo *player)
   if (!ExplodeField[jx][jy])
     StorePlayer[jx][jy] = 0;
 
-  for (i=0; i<MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_PLAYERS; i++)
     if (stored_player[i].active)
       found = TRUE;
 
@@ -7823,7 +8269,7 @@ int DigField(struct PlayerInfo *player,
       player->programmed_action = move_direction;
       DOUBLE_PLAYER_SPEED(player);
 
-      PlaySoundLevel(x, y, SND_CLASS_SP_PORT_PASSING);
+      PlayLevelSound(x, y, SND_CLASS_SP_PORT_PASSING);
       break;
 
     case EL_TUBE_ANY:
@@ -7865,7 +8311,7 @@ int DigField(struct PlayerInfo *player,
 	if (!(tube_enter_directions[i][1] & move_direction))
 	  return MF_NO_ACTION;	/* tube has no opening in this direction */
 
-	PlaySoundLevel(x, y, SND_CLASS_TUBE_WALKING);
+	PlayLevelSound(x, y, SND_CLASS_TUBE_WALKING);
       }
       break;
 
@@ -7898,9 +8344,9 @@ int DigField(struct PlayerInfo *player,
 
 	/* play sound from background or player, whatever is available */
 	if (element_info[element].sound[sound_action] != SND_UNDEFINED)
-	  PlaySoundLevelElementAction(x, y, element, sound_action);
+	  PlayLevelSoundElementAction(x, y, element, sound_action);
 	else
-	  PlaySoundLevelElementAction(x, y, player->element_nr, sound_action);
+	  PlayLevelSoundElementAction(x, y, player->element_nr, sound_action);
 
 	break;
       }
@@ -7929,7 +8375,7 @@ int DigField(struct PlayerInfo *player,
 	player->programmed_action = move_direction;
 	DOUBLE_PLAYER_SPEED(player);
 
-	PlaySoundLevelAction(x, y, ACTION_PASSING);
+	PlayLevelSoundAction(x, y, ACTION_PASSING);
 
 	break;
       }
@@ -7948,7 +8394,7 @@ int DigField(struct PlayerInfo *player,
 	  player->is_digging = TRUE;
 	}
 
-	PlaySoundLevelElementAction(x, y, element, ACTION_DIGGING);
+	PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
 
 	CheckTriggeredElementChange(x, y, element, CE_OTHER_GETS_DIGGED);
 
@@ -8027,7 +8473,7 @@ int DigField(struct PlayerInfo *player,
 	{
 	  int i;
 
-	  for (i=0; i < element_info[element].collect_count; i++)
+	  for (i = 0; i < element_info[element].collect_count; i++)
 	    if (player->inventory_size < MAX_INVENTORY_SIZE)
 	      player->inventory_element[player->inventory_size++] = element;
 
@@ -8046,7 +8492,7 @@ int DigField(struct PlayerInfo *player,
 	}
 
 	RaiseScoreElement(element);
-	PlaySoundLevelElementAction(x, y, element, ACTION_COLLECTING);
+	PlayLevelSoundElementAction(x, y, element, ACTION_COLLECTING);
 
 	CheckTriggeredElementChange(x, y, element, CE_OTHER_GETS_COLLECTED);
 
@@ -8170,23 +8616,23 @@ int DigField(struct PlayerInfo *player,
 	  Feld[x][y] = EL_SOKOBAN_OBJECT;
 
 	  if (Back[x][y] == Back[nextx][nexty])
-	    PlaySoundLevelAction(x, y, ACTION_PUSHING);
+	    PlayLevelSoundAction(x, y, ACTION_PUSHING);
 	  else if (Back[x][y] != 0)
-	    PlaySoundLevelElementAction(x, y, EL_SOKOBAN_FIELD_FULL,
+	    PlayLevelSoundElementAction(x, y, EL_SOKOBAN_FIELD_FULL,
 					ACTION_EMPTYING);
 	  else
-	    PlaySoundLevelElementAction(nextx, nexty, EL_SOKOBAN_FIELD_EMPTY,
+	    PlayLevelSoundElementAction(nextx, nexty, EL_SOKOBAN_FIELD_EMPTY,
 					ACTION_FILLING);
 
 	  if (local_player->sokobanfields_still_needed == 0 &&
 	      game.emulation == EMU_SOKOBAN)
 	  {
 	    player->LevelSolved = player->GameOver = TRUE;
-	    PlaySoundLevel(x, y, SND_GAME_SOKOBAN_SOLVING);
+	    PlayLevelSound(x, y, SND_GAME_SOKOBAN_SOLVING);
 	  }
 	}
 	else
-	  PlaySoundLevelElementAction(x, y, element, ACTION_PUSHING);
+	  PlayLevelSoundElementAction(x, y, element, ACTION_PUSHING);
 
 	InitMovingField(x, y, move_direction);
 	GfxAction[x][y] = ACTION_PUSHING;
@@ -8220,7 +8666,7 @@ int DigField(struct PlayerInfo *player,
 	player->switch_x = x;
 	player->switch_y = y;
 
-	PlaySoundLevelElementAction(x, y, element, ACTION_ACTIVATING);
+	PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVATING);
 
 	if (element == EL_ROBOT_WHEEL)
 	{
@@ -8234,7 +8680,7 @@ int DigField(struct PlayerInfo *player,
 	{
 	  int xx, yy;
 
-	  for (yy=0; yy < lev_fieldy; yy++) for (xx=0; xx < lev_fieldx; xx++)
+	  for (yy = 0; yy < lev_fieldy; yy++) for (xx=0; xx < lev_fieldx; xx++)
 	  {
 	    if (Feld[xx][yy] == EL_SP_DISK_YELLOW)
 	      Bang(xx, yy);
@@ -8257,7 +8703,7 @@ int DigField(struct PlayerInfo *player,
 	  ToggleLightSwitch(x, y);
 
 #if 0
-	  PlaySoundLevel(x, y, element == EL_LIGHT_SWITCH ?
+	  PlayLevelSound(x, y, element == EL_LIGHT_SWITCH ?
 			 SND_LIGHT_SWITCH_ACTIVATING :
 			 SND_LIGHT_SWITCH_DEACTIVATING);
 #endif
@@ -8438,7 +8884,7 @@ boolean DropElement(struct PlayerInfo *player)
     if (IN_SCR_FIELD(SCREENX(jx), SCREENY(jy)))
       DrawGraphicThruMask(SCREENX(jx), SCREENY(jy), el2img(Feld[jx][jy]), 0);
 
-    PlaySoundLevelAction(jx, jy, ACTION_DROPPING);
+    PlayLevelSoundAction(jx, jy, ACTION_DROPPING);
 
     CheckTriggeredElementChange(jx, jy, new_element, CE_OTHER_GETS_DROPPED);
     CheckElementChange(jx, jy, new_element, CE_DROPPED_BY_PLAYER);
@@ -8455,7 +8901,7 @@ boolean DropElement(struct PlayerInfo *player)
     if (IN_SCR_FIELD(SCREENX(jx), SCREENY(jy)))
       DrawGraphicThruMask(SCREENX(jx), SCREENY(jy), el2img(Feld[jx][jy]), 0);
 
-    PlaySoundLevelAction(jx, jy, ACTION_DROPPING);
+    PlayLevelSoundAction(jx, jy, ACTION_DROPPING);
   }
 
   return TRUE;
@@ -8468,21 +8914,18 @@ boolean DropElement(struct PlayerInfo *player)
 static int *loop_sound_frame = NULL;
 static int *loop_sound_volume = NULL;
 
-void InitPlaySoundLevel()
+void InitPlayLevelSound()
 {
   int num_sounds = getSoundListSize();
 
-  if (loop_sound_frame != NULL)
-    free(loop_sound_frame);
+  checked_free(loop_sound_frame);
+  checked_free(loop_sound_volume);
 
-  if (loop_sound_volume != NULL)
-    free(loop_sound_volume);
-
-  loop_sound_frame = checked_calloc(num_sounds * sizeof(int));
+  loop_sound_frame  = checked_calloc(num_sounds * sizeof(int));
   loop_sound_volume = checked_calloc(num_sounds * sizeof(int));
 }
 
-static void PlaySoundLevel(int x, int y, int nr)
+static void PlayLevelSound(int x, int y, int nr)
 {
   int sx = SCREENX(x), sy = SCREENY(y);
   int volume, stereo_position;
@@ -8527,42 +8970,59 @@ static void PlaySoundLevel(int x, int y, int nr)
   PlaySoundExt(nr, volume, stereo_position, type);
 }
 
-static void PlaySoundLevelNearest(int x, int y, int sound_action)
+static void PlayLevelSoundNearest(int x, int y, int sound_action)
 {
-  PlaySoundLevel(x < LEVELX(BX1) ? LEVELX(BX1) :
+  PlayLevelSound(x < LEVELX(BX1) ? LEVELX(BX1) :
 		 x > LEVELX(BX2) ? LEVELX(BX2) : x,
 		 y < LEVELY(BY1) ? LEVELY(BY1) :
 		 y > LEVELY(BY2) ? LEVELY(BY2) : y,
 		 sound_action);
 }
 
-static void PlaySoundLevelAction(int x, int y, int action)
+static void PlayLevelSoundAction(int x, int y, int action)
 {
-  PlaySoundLevelElementAction(x, y, Feld[x][y], action);
+  PlayLevelSoundElementAction(x, y, Feld[x][y], action);
 }
 
-static void PlaySoundLevelElementAction(int x, int y, int element, int action)
+static void PlayLevelSoundElementAction(int x, int y, int element, int action)
 {
   int sound_effect = element_info[element].sound[action];
 
   if (sound_effect != SND_UNDEFINED)
-    PlaySoundLevel(x, y, sound_effect);
+    PlayLevelSound(x, y, sound_effect);
 }
 
-static void PlaySoundLevelActionIfLoop(int x, int y, int action)
+static void PlayLevelSoundElementActionIfLoop(int x, int y, int element,
+					      int action)
+{
+  int sound_effect = element_info[element].sound[action];
+
+  if (sound_effect != SND_UNDEFINED && IS_LOOP_SOUND(sound_effect))
+    PlayLevelSound(x, y, sound_effect);
+}
+
+static void PlayLevelSoundActionIfLoop(int x, int y, int action)
 {
   int sound_effect = element_info[Feld[x][y]].sound[action];
 
   if (sound_effect != SND_UNDEFINED && IS_LOOP_SOUND(sound_effect))
-    PlaySoundLevel(x, y, sound_effect);
+    PlayLevelSound(x, y, sound_effect);
 }
 
-static void StopSoundLevelActionIfLoop(int x, int y, int action)
+static void StopLevelSoundActionIfLoop(int x, int y, int action)
 {
   int sound_effect = element_info[Feld[x][y]].sound[action];
 
   if (sound_effect != SND_UNDEFINED && IS_LOOP_SOUND(sound_effect))
-    StopSoundExt(sound_effect, SND_CTRL_STOP_SOUND);
+    StopSound(sound_effect);
+}
+
+static void PlayLevelMusic()
+{
+  if (levelset.music[level_nr] != MUS_UNDEFINED)
+    PlayMusic(levelset.music[level_nr]);	/* from config file */
+  else
+    PlayMusic(MAP_NOCONF_MUSIC(level_nr));	/* from music dir */
 }
 
 void RaiseScore(int value)
@@ -8726,7 +9186,7 @@ void CreateGameButtons()
 {
   int i;
 
-  for (i=0; i<NUM_GAME_BUTTONS; i++)
+  for (i = 0; i < NUM_GAME_BUTTONS; i++)
   {
     Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
     struct GadgetInfo *gi;
@@ -8792,7 +9252,7 @@ void FreeGameButtons()
 {
   int i;
 
-  for (i=0; i<NUM_GAME_BUTTONS; i++)
+  for (i = 0; i < NUM_GAME_BUTTONS; i++)
     FreeGadget(game_gadget[i]);
 }
 
@@ -8800,7 +9260,7 @@ static void MapGameButtons()
 {
   int i;
 
-  for (i=0; i<NUM_GAME_BUTTONS; i++)
+  for (i = 0; i < NUM_GAME_BUTTONS; i++)
     MapGadget(game_gadget[i]);
 }
 
@@ -8808,7 +9268,7 @@ void UnmapGameButtons()
 {
   int i;
 
-  for (i=0; i<NUM_GAME_BUTTONS; i++)
+  for (i = 0; i < NUM_GAME_BUTTONS; i++)
     UnmapGadget(game_gadget[i]);
 }
 
@@ -8865,7 +9325,8 @@ static void HandleGameButtons(struct GadgetInfo *gi)
 	setup.sound = setup.sound_music = TRUE;
 
 	SetAudioMode(setup.sound);
-	PlayMusic(level_nr);
+
+	PlayLevelMusic();
       }
       break;
 

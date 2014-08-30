@@ -135,6 +135,8 @@ LDFLAGS = $(SYS_LDFLAGS) $(EXTRA_LDFLAGS) -lm
 SRCS =	main.c		\
 	conf_gfx.c	\
 	conf_snd.c	\
+	conf_mus.c	\
+	conf_hlp.c	\
 	init.c		\
 	config.c	\
 	events.c	\
@@ -151,6 +153,8 @@ SRCS =	main.c		\
 OBJS =	main.o		\
 	conf_gfx.o	\
 	conf_snd.o	\
+	conf_mus.o	\
+	conf_hlp.o	\
 	init.o		\
 	config.o	\
 	events.o	\
@@ -166,6 +170,7 @@ OBJS =	main.o		\
 
 CNFS =	conf_gfx.h	\
 	conf_snd.h	\
+	conf_mus.h	\
 	conf_chr.c	\
 	conf_chr.h	\
 	conf_cus.c	\
@@ -173,7 +178,9 @@ CNFS =	conf_gfx.h	\
 	conf_e2g.c	\
 	conf_esg.c	\
 	conf_e2s.c	\
-	conf_fnt.c
+	conf_fnt.c	\
+	conf_g2s.c	\
+	conf_g2m.c
 
 CNFS_CMD = ../Scripts/create_element_defs.pl
 
@@ -213,6 +220,9 @@ conf_gfx.h: conf_gfx.c
 	@$(MAKE) auto-conf
 
 conf_snd.h: conf_snd.c
+	@$(MAKE) auto-conf
+
+conf_mus.h: conf_mus.c
 	@$(MAKE) auto-conf
 
 $(TIMESTAMP_FILE): $(SRCS) $(LIBGAME)
