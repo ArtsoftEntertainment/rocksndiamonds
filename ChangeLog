@@ -1,0 +1,831 @@
+2004-06-07
+	* fixed bug with crash when writing user levelinfo.conf the first time
+
+2004-06-06
+	* added option "convert LEVELDIR [NR]" to command line batch commands
+	* re-converted Supaplex levels to apply latest engine fixes
+	* changed "use graphic/sound of element" to "use graphic of element"
+	  due to compatibility problems with some levels ("bug machine" etc.)
+
+2004-05-23
+	* fixed bug with CE change replacing player with same or other player
+
+2004-05-16
+	* fixed bug with opaque font in envelope with background graphic when
+	  background graphic is not transparent itself
+
+2004-05-12
+	* added "gravity on" and "gravity off" ports for Supaplex compatibility
+	* corrected original Supaplex level loading code to use these new ports
+	* also corrected Supaplex loader to auto-count infotrons if set to zero
+
+2004-05-10
+	* fixed bug with missing initialization of "modified" flag for GEs
+
+2004-05-09
+	* fixed bug that caused endless recursion loop when relocating player
+	* fixed tape recorder bug in "step mode" when using "pause before end"
+	* fixed tape recorder bug when changing from "warp forward" mode
+
+2004-05-08
+	* fixed bug with "when touching" for pushed elements at last position
+
+2004-05-05
+	* fixed bug that caused two activated toolbox buttons in level editor
+	* fixed bug with exploding dynabomb under player due to other explosion
+
+2004-05-02
+	* fixed bug with creating walkable custom element under player (again)
+	* fixed bug with not copying explosion type when copying CEs in editor
+	* fixed graphical bug when drawing player in setup menu (input devices)
+	* fixed graphical bug when the player is pushing an accessible element
+	* fixed bug with classic switchable elements triggering CE changes
+	* fixed bug with entering/leaving walkable element in RelocatePlayer()
+	* fixed crash bug when CE leaves behind the trigger player element
+
+2004-04-30
+	* fixed bug with broken tubes after placing/exploding dynamite in them
+	* fixed bug with exploding dynamite under player due to other explosion
+	* fixed bug with not resetting push delay under certain circumstances
+
+2004-04-27
+	* added option "handicap" for "levelinfo.conf" (thanks to Niko Böhm)
+	* added network multiplayer code for Windows (thanks to Niko Böhm)
+
+2004-04-25
+	* added option "reachable despite gravity" for gravity movement
+	* changed gravity movement of most classic walkable and passable
+	  elements back to "not reachable" (for compatibility reasons)
+
+2004-04-24
+	* fixed (removed) "indestructible" / "can explode" dependency in editor
+	* fixed (removed) "accessible inside" / "protected" dependency
+	* fixed (removed) "step mode" / "shield time" dependency
+
+2004-04-23
+	* fixed dynabombs exploding now into anything diggable
+	* fixed Supaplex style gravity movement into buggy base now impossible
+	* added pressing key "space" as valid action to select menu options
+
+2004-04-20
+	* added "replace when walkable" to relocate player to walkable element
+	* added "enter"/"leave" event for elements affected by relocation
+	* fixed "direct"/"indirect" change order also for "when change" event
+	* fixed graphical bug when pushing things from elements walkable inside
+
+2004-04-18
+	* fixed graphic bug when player is snapping while moving in old levels
+	* fixed bug when a moving custom element leaves a player element behind
+	* fixed bug with mole not disappearing when moving into acid pool
+	* fixed bug with incomplete path setting when using "--basepath" option
+	* moving CE can now leave walkable elements behind under the player
+	* when relocating, player can be set on walkable element now
+	* fixed another gravity movement bug
+
+2004-04-12
+	* uploaded pre-release (test) version 3.1.0-2 binary and source code
+
+2004-04-10
+	* added "collectible" and "removable" to extended replacement types
+	  (where "removable" replaces "diggable" and "collectible" elements)
+	* added "collectible & throwable" (to throw element to the next field)
+	* fixed bug with CEs digging elements that are just about to explode
+	* changed mouse cursor now always being visible when game is paused
+
+2004-04-09
+	* added possibility to push/press accessible elements from a side that
+	  is not accessible
+	* fixed bug with not setting actual date when appending to tape
+
+2004-04-07
+	* fixed bug with incorrectly initialized custom element editor graphics
+
+2004-04-04
+	* corrected set "Contributions_1995-2000/rnd_kjell_kristiansson":
+	  - number of levels corrected from 18 to 17 in "levelinfo.conf"
+
+2004-03-31
+	* fixed bug with destroyed robot wheel still attracting robots forever
+	* fixed bug with time gate switch deactivating after robot wheel time
+	  (while the time gate itself is not affected by this misbehaviour)
+	* changed behaviour of BD style amoeba to always get blocked by player
+	  (before it was different when there were non-BD elements in level)
+	* fixed bug with player destroying indestructable elements with shield
+
+2004-03-26
+	* added option to make growing elements grow into anything diggable
+	  (for the various amoeba types, biomaze and "game of life")
+
+2004-03-24
+	* fixed bug with movable elements not moving after left behind by CEs
+	* changed gravity movement to anything diggable, not only sand/base
+	* optionally allowing passing to walkable element, not only empty space
+	* added option "can pass to walkable element" for players
+	* finally fixed gravity movement (hopefully)
+
+2004-03-23
+	* fixed bug with movable elements not moving anymore after falling down
+
+2004-03-22
+	* fixed another bug with custom elements digging and leaving elements
+	* fixed bug with "along left/right side" and automatic start direction
+	* trigger elements now also displayed when "more custom" deactivated
+	* fixed bug with clipboard element initialized when loading new level
+	* added option "drop delay" to set delay before dropping next element
+
+2004-03-21
+	* uploaded pre-release (test) version 3.1.0-1 binary and source code
+
+2004-03-20
+	* added copy and paste functions for custom change pages
+	* enhanced graphical display and functionality of tape recorder
+	* fixed bug with custom elements digging and leaving elements
+
+2004-03-19
+	* added move speed faster than "very fast" for custom elements
+	* fixed bug with 3+3 style explosions and missing border content
+	* fixed little bug when copying custom elements in the editor
+	* enhanced custom element changes by more side trigger actions
+
+2004-03-16
+	* added option "no scrolling when relocating" for instant teleporting
+	* uploaded pre-release (test) version 3.1.0-0 binary and source code
+
+2004-03-15
+	* added trigger element and trigger player to use as target elements
+	* added copy and paste functions for custom and group elements
+
+2004-03-14
+	* fixed graphical bug when displaying explosion animations
+	* fixed bug when appending to tapes, resulting in broken tapes
+	* re-recorded a few tapes broken by fixing gravity checking bug
+
+2004-03-13
+	* "can move into acid" property now for all elements independently
+	* "can fall into acid" property for player stored in same bitfield now
+	* added option for deadliness of Supaplex 'sniksnak' and 'electron'
+	* version number set to 3.1.0 (finally!)
+
+2004-03-09
+	* changed tape recording to only record input, not programmed actions
+
+2004-03-08
+	* fixed totally broken (every 8th frame skipped) step-by-step recording
+	* fixed bug with requester not displayed when quick-loading interrupted
+	* added option "can fall into acid (with gravity)" for players
+	* fixed bug with player not falling when snapping down with gravity
+
+2004-03-07
+	* fixed bug which messed up key config when using keypad number keys
+
+2004-03-03
+	* fixed bug which allowed moving upwards even when gravity was active
+	* fixed bug with missing error handling when dumping levels or tapes
+
+2004-03-02
+	* added different colored editor graphics for Supaplex gravity tubes
+
+2004-03-01
+	* fixed bug that allowed solvable tapes for unsolvable levels
+
+2004-02-28
+	* use unlimited number of droppable elements when "count" set to zero
+	* added option to use step limit instead of time limit for level
+
+2004-02-27
+	* added player and change page as trigger for custom element change
+
+2004-02-24
+	* fixed bug with exploding amoeba (explosion 3x3 instead of 1x1)
+
+2004-02-22
+	* fixed bug with dark yamyam changing to acid when moving over acid
+	* fixed handling of levels with more than 999 seconds level time
+	  (example: level 76 of "Denmine")
+
+2004-02-21
+	* "spring push bug" reintroduced as configurable element property
+	* fixed bug with missing properties for "mole"
+	* fixed bug that showed up when fixing the above "mole" properties bug
+	* added option "can move into acid" for all movable elements
+	* fixed graphical bug for elements moving into acid
+	* changed event handling to handle all pending events before going on
+
+2004-02-17
+	* fixed bug which caused all CE change pages to be ignored which had
+	  the same change event, but used a different element side
+	  (reported by Simon Forsberg)
+
+	* fixed bug which caused elements that can move and fall and that are
+	  transported by a conveyor belt to continue moving into that direction
+	  after leaving the conveyor belt, regardless of their own movement
+	  type; only elements which can not move are transported now
+	  (reported by Simon Forsberg)
+
+	* fixed bug which could cause an array overflow in RelocatePlayer()
+	  (reported by Niko Böhm)
+
+	* changed Emerald Mine style "passable / over" elements to "protected"
+	  (fixing unsolvable level 10 of "Bondmine 9" with bug beside gate)
+
+	* added new option to select from which side a "walkable/passable"
+	  element can be entered
+
+2004-02-16
+	* added explosion and ignition delay for elements that can explode
+
+2004-02-05
+	* fixed bug which caused player not being protected against enemies
+	  when a CE was "walkable / inside" and was not "indestructible"
+	* added "walkable/passable" fields to be "protected/unprotected"
+	  against enemies, even if not accessible "inside" but "over/under"
+
+2004-02-04
+	* corrected move pattern to 32 bit and initial move direction to 8 bit
+
+2004-02-03
+	* added second custom element base configuration page
+
+2004-02-02
+	* added some special EMC mappings to Emerald Mine level loader
+	  (also covering previously unknown element in level 0 of "Bondmine 8")
+
+2004-01-30
+	* added option to block last field when player is moving (for Supaplex)
+	* adjusted push delay of Supaplex elements
+	* removed delays for envelopes etc. when replaying with maximum speed
+	* fixed bug when dropping element on a field that just changed to empty
+
+2004-01-29
+	* fixed bug: infotrons can now smash yellow disks
+	* fixed bug: when gravity active, port above player can now be entered
+	* removed "one white dot" mouse pointer which irritated some people
+
+2004-01-26
+	* added "choice type" for group element selection
+
+2004-01-25
+	* fixed bug with initial invulnerability of non-yellow player
+
+2004-01-23
+	* added level loader for loading native Supaplex packed levels
+	  (including multi-part levels like the "splvls99" levels)
+
+2004-01-19
+	* fixed bug which allowed creating emeralds by escaping explosions
+
+2004-01-18
+	* custom elements can change (limited) or leave (unlimited) elements
+	* finally added multiple matches using group elements
+	* added shortcut to dump brush (type ":DB" in editor) for use in forum
+
+2004-01-17
+	* added new start movement type "previous" for continued CE movement
+	* added new start movement type "random" for random CE movement start
+
+2004-01-17
+	* added new element "sokoban_field_player" needed for Sokoban levels
+	  (thanks to Ed Booker for pointing this out!)
+
+2004-01-15
+	* added elements that can be digged or left behind by custom elements
+
+2004-01-12
+	* added group elements for multiple matches and random element creation
+
+2004-01-11
+	* fixed some graphical errors displayed in old levels
+
+2004-01-10
+	* fixed wrong double speed movement after passing closing gates
+
+2004-01-03
+	* added level loader for loading native Emerald Mine levels
+
+2004-01-02
+	* changes for "shooting" style CE movement
+
+2004-01-01
+	* Happy New Year! ;-)
+
+2003-12-27
+	* changed default snap/drop keys from left/right Shift to Control keys
+
+2003-12-27
+	* fixed bug with dead player getting reanimated from custom element
+
+2003-12-14
+	* fixed bug with wrong penguin graphics (when entering exit)
+
+2003-12-14
+	* fixed bug with wrong "Murphy" graphics (when digging etc.)
+
+2003-12-14
+	* version number set to 3.0.9
+
+2003-12-14
+	* version 3.0.8 released
+
+2003-12-13
+	* added function checked_free()
+
+2003-12-13
+	* fixed bug with double nut cracking sound
+	  (by eliminating "default element action sound" assignment in init.c)
+
+2003-12-10
+	* fixed crash when no music info files are available
+
+2003-12-07
+	* fixed boring and sleeping sounds
+
+2003-12-05
+	* added "maze runner" and "maze hunter" movement types
+	* added extended collision conditions for custom elements
+
+2003-12-03
+	* added warnings for undefined token values in artwork config files
+
+2003-12-02
+	* added menu entry for level set information to the info screen
+
+2003-12-02
+	* fixed bug with wrong default impact sound for colored emeralds
+
+2003-11-30
+	* added several sub-screens for the info screen
+	* menu text now also clickable (not only blue/red sphere left of it)
+
+2003-11-25
+	* added configurable "bored" and "sleeping" animations for the player
+	* added "awakening" sound for player when waking up after sleeping
+
+2003-11-22
+	* added "copy" and "exchange" functions for custom elements to editor
+
+2003-11-21
+	* added configurable element animations for info screen
+
+2003-11-20
+	* added configurable music credits for info screen
+
+2003-11-19
+	* finally fixed tape recording when player is created from CE change
+
+2003-11-18
+	* added "editorsetup.conf" for editor element list configuration
+
+2003-11-16
+	* added "musicinfo.conf" for menu and level music configuration
+
+2003-11-14
+	* fixed a very nasty bug in dragon turning code in TurnRoundExt()
+	  (that only showed up on Linux, but not on Windows systems)
+
+2003-11-13
+	* fixed turning movement of butterflies and fireflies (no frame reset)
+	* enhanced sniksnak turning movement (two steps instead of only one)
+
+2003-11-10
+	* version number set to 3.0.8
+
+2003-11-10
+	* version 3.0.7 released
+
+2003-11-09
+	* fixed reset of player animation frame when, for example,
+	  walking, digging or collecting share the same animation
+	* fixed CE with "deadly when touching" exploding when touching amoeba
+
+2003-11-08
+	* fixed tape recording when player is created from CE element change
+
+2003-11-04
+	* introduced "turning..." action graphic for elements with move delay
+	  (non-CE: bug, spaceship, sniksnak, mole, pacman, yamyam)
+	* added turning animations for bug, spaceship and sniksnak
+
+2003-11-03
+	* prevent "extended" changed elements from delay change in same frame
+
+2003-11-02
+	* fixed bug when pushing element that can move away to the side
+	  (like pushing falling elements, but now with moving elements)
+
+2003-11-01
+	* finally fixed serious bug in code for delayed element pushing (again)
+
+2003-10-19
+	* unavailable setup options now marked as "n/a" instead of "off"
+	* new boolean directive "latest_engine" for "levelinfo.conf": when set
+	  to "true", levels are always played with the latest game engine,
+	  which is desired for levels that are imported from other games; all
+	  other levels are played with the engine version stored in level file
+	  (which is normally the engine version the level was created with)
+
+2003-10-18
+	* fixed serious bug in code for delayed element pushing
+	* fixed little bug in animation frame selection for pushed elements
+	* speed-up of reading config file for verbose output
+
+2003-10-08
+	* added configuration option for opening and closing Supaplex exit
+	* added configuration option for moving up/down animation for Murphy
+	* fixed incorrectly displayed animation for attacking dragon
+	* fixed bug with not setting initial gravity for each new game
+	* fixed bug with teleportation of player by custom element change
+	* fixed bug with player not getting smashed by rock sometimes
+
+2003-10-06
+	* version number set to 3.0.7
+
+2003-10-06
+	* version 3.0.6 released
+
+2003-10-05
+	* added support for MP3 music for SDL version through SMPEG library
+
+2003-10-03
+	* fixed bug when initializing font graphic structure
+	* fixed bug with animation mode "pingpong" when using only 1 frame
+	* fixed bug with extended change target introduced in 3.0.5
+	* fixed bug where passing over moving element doubles player speed
+	* fixed bug with elements continuing to move into push direction
+	* fixed bug with duplicated player when dropping bomb with shield on
+	* added "switching" event for custom elements ("pressing" only once)
+	* fixed switching bug (resetting flag when not switching but not idle)
+
+2003-09-29
+	* fixed element tokens for certain file elements with ".active" etc.
+
+2003-09-29
+	* version number set to 3.0.6
+
+2003-09-29
+	* version 3.0.5 released
+
+2003-09-28
+	* now four envelope elements available
+	* font, background, animation and sound for envelope now configurable
+	* main menu doors opening/closing animation type now configurable
+
+2003-09-27
+	* active/inactive sides configurable for custom element changes
+	* new movement type "move when pushed" available for custom elements
+
+2003-09-20
+	* fixed bug in multiple config pages loader code that caused crashes
+
+2003-09-13
+	* enhanced (remaining low-resolution) Supaplex graphics
+
+2003-09-13
+	* version number set to 3.0.5
+
+2003-09-13
+	* version 3.0.4 released
+
+2003-09-12	src/tools.c
+	* fixed bug in custom definition of crumbled element graphics
+
+2003-09-11	src/files.c
+	* fixed bug in multiple config pages code that caused crashes
+
+2003-09-08
+	* version number set to 3.0.4
+
+2003-09-08
+	* version 3.0.3 released
+
+2003-09-07
+	* added music to Supaplex classic level set
+
+2003-09-07	src/libgame/misc.c
+	* added support for loading various music formats through SDL_mixer
+
+2003-09-06	(various source files)
+	* fixed several nasty bugs that may have caused crashes on some systems
+	* added envelope content which gets displayed when collecting envelope
+	* added multiple change event pages for custom elements
+
+2003-08-24	src/game.c
+	* fixed problem with player animation when snapping and moving
+
+2003-08-23	src/screens.c, src/cartoons.c, src/libgame/toons.c
+	* fixed problem with flickering when drawing toon animations
+
+2003-08-23	src/libgame/sdl.c
+	* fixed problem with setting mouse cursor in SDL version in fullscreen
+
+2003-08-23	src/game.c
+	* fixed bug (missing array boundary check) which could crash the game
+
+2003-08-23
+	* version number set to 3.0.3
+
+2003-08-22
+	* version 3.0.2 released
+
+2003-08-21	src/game.c
+	* fixed bug with creating inaccessible elements at player position
+
+2003-08-20	src/init.c
+	* fixed bug with not finding current level artwork directory
+
+2003-08-20	src/files.c
+	* fixed bug with choosing wrong engine version when playing tapes
+	* fixed bug with messing up custom element properties in 3.0.0 levels
+
+2003-08-18
+	* version number set to 3.0.2
+
+2003-08-18
+	* version 3.0.1 released
+
+2003-08-17	(no source files affected)
+	* changed all "classic" PCX image files with 16 colors or less to
+	  256 color (8 bit) storage format, because the Allegro game library
+	  cannot handle PCX files with less than 256 colors (contributed
+	  graphics are not affected and might look wrong in the DOS version)
+
+2003-08-16	src/init.c
+	* fixed bug which (for example) crashed the level editor when defining
+	  "dynamite.EDITOR:  [NONE]", because graphics may not be undefined
+	  (only set to default) -- invalid graphics now set to default graphic
+
+2003-08-16	src/init.c
+	* fixed graphical bug of player digging/collecting/snapping element
+	  when no corresponding graphic/animation is defined for this action,
+	  resulting in player being drawn as EL_EMPTY (which should only be
+	  done to elements being collected, but not to the player)
+
+2003-08-16	src/game.c
+	* fixed small graphical bug of player not totally moving into exit
+
+2003-08-16	src/libgame/setup.c
+	* fixed bug with wrong MS-DOS 8.3 filename conversion
+
+2003-08-16	src/tools.c
+	* fixed bug with invisible mouse cursor when pressing ESC while playing
+
+2003-08-16	(various source files)
+	* added another 128 custom elements (disabled in editor by default)
+
+2003-08-16	src/editor.c
+	* fixed NULL string bug causing Solaris to crash in sprintf()
+
+2003-08-16	src/screen.c
+	* fixed drawing over scrollbar on level selection with custom fonts
+
+2003-08-15	src/game.c
+	* cleanup of simple sounds / loop sounds / music settings
+
+2003-08-08	(various source files)
+	* added custom element property for dropping collected elements
+
+2003-08-08	src/conf_gfx.c
+	* fixed bug with missing graphic for active red disk bomb
+
+2003-08-07	src/files.c, src/editor.c src/game.c, src/main.h
+	* extended variable "level.gravity" to "level.initial_gravity" and
+	  "game.current_gravity" to prevent level setting from being changed
+	  by playing the level (keeping the runtime value after playing)
+
+	* fixed graphics bug when digging element that has 'crumbled' graphic
+	  definition, but not 'diggable' graphic definition
+
+2003-08-06
+	* version number set to 3.0.1
+
+2003-08-05
+	* version 3.0.0 released
+
+2003-08-05
+	* various bug fixes; among others:
+	  - fixed bug with pushing spring over empty space
+	  - fixed bug with leaving tube while placing dynamite
+	  - fixed bug with explosion of smashed penguins
+	  - allow Murphy player graphic in levels with non-Supaplex elements
+
+2003-04-07
+	* various changes
+	* I have forgotten to document changes for some time
+
+2002-12-31
+	* pre-release version 2.2.0rc1 released
+
+2002-08-25
+	* version number set to 2.1.2
+
+2002-08-13
+	* version 2.1.1 released
+
+2002-08-10
+	* version number set to 2.1.1
+
+2002-08-05
+	* version 2.1.0 released
+	
+2002-05-19
+	* version number set to 2.1.0
+
+2002-04-03 to 2002-05-19	(various source files)
+	* graphics, sounds and music now fully configurable
+	* bug fixed that prevented walking through tubes when gravity on
+
+2002-04-02	src/events.c, src/editor.c
+	* Make Escape key less aggressive when playing or when editing level.
+	  This can be configured as an option in the setup menu. (Default is
+	  "less aggressive" which means "ask user if something can be lost"
+	  when pressing the Escape key.)
+
+2002-04-02	src/screen.c
+	* Added "graphics setup" screen.
+
+2002-04-01	src/screen.c
+	* Changed "choose level" setup screen stuff to be more generic (to
+	  make it easier to add more "choose from generic tree" setup screens).
+
+2002-04-01	src/config.c, src/timestamp.h
+	* Added source files "src/config.[ch]" and "src/timestamp.h" (which
+	  automatically gets created by "src/Makefile" and contains an actual
+	  compile-time timestamp to identify development versions of the game).
+
+2002-03-31	src/tape.c, src/events.c
+	* Added quick game/tape save/load functions to tape stuff which can be
+	  invoked by a keyboard shortcut. Default: "F1" saves game/tape, "F2"
+	  loads previously recorded tape and directly goes into recording mode
+	  from the end of the tape (therefore appending to the tape).
+
+2002-03-31	src/tape.c
+	* Added "index mark" function to tape recorder. When playing or
+	  recording, "eject" button changes to "index" button. Setting index
+	  mark is not yet implemented, but pressing index button when playing
+	  allows very quick advancing to end of tape (when normal playing),
+	  very fast forward mode (when playing with normal fast forward) or
+	  very fast reaching of "pause before end of tape" (when playing with
+	  "pause before end" playing mode).
+
+2002-03-30	src/cartoons.c
+	* Moved some stuff from cartoons.c to the new "src/libgame/toons.c".
+
+2002-03-29	src/screen.c
+	* Changed setup screen stuff to be more generic (to make it easier
+	  to add more setup screens).
+
+2002-03-23	src/main.c, src/main.h
+	* Various changes due to the introduction of the new libgame files
+	  "setup.c" and "joystick.c".
+
+2002-03-23	src/files.c
+	* Generic parts of "src/files.c" (mainly setup and level directory
+	  stuff) moved to new libgame file "src/libgame/setup.c".
+
+2002-03-23	src/joystick.c
+	* File "src/joystick.c" moved to libgame source tree, with
+	  correspondig changes.
+
+2002-03-22	src/screens.c
+	* "HandleChooseLevel()": Another bug in level series navigation fixed.
+	  (Wrong level series information displayed when entering main group.)
+
+2002-03-22	src/editor.c
+	* Slight change to support new gadget event "GD_EVENT_INFO_LEAVING".
+
+2002-03-22	src/editor.c
+	* Changed behaviour of "Escape" key in level editor to be more
+	  intuitive: When in "Element Properties" or "Level Info" mode,
+	  return to "Drawing Mode" instead of leaving the level editor.
+
+2002-03-21	src/game.c, src/editor.c, src/files.c
+	* 2.0.1 introduced the corrected "Emerald Mine" style behaviour of
+	  gems (emeralds, diamonds, ...) slipping down from normal wall,
+	  steel wall and growing wall (as in E.M.C. style levels). Although
+	  the behaviour of contributed and private levels wasn't changed (due
+	  to the use of "level.game_version"; see previous entry), editing
+	  those levels will (of course) change the behaviour accordingly.
+
+	  This change seems a bit too hard after thinking about it, because
+	  the EM style behaviour is not the "expected" behaviour (gems would
+	  normally only slip down from "rounded" walls). Therefore this was
+	  now changed to an element property for gem style elements, with the
+	  default setting "off" (which means: no special EM style behaviour).
+	  To fix older converted levels, this flag is set to "on" for pre-2.0
+	  levels that are neither contributed nor private levels.
+
+2002-03-20	src/files.h
+	* Corrected settings for "level.game_version" depending of level type.
+	  (Contributed and private levels always get played with game engine
+	  version they were created with, while converted levels always get
+	  played with the most recent version of the game engine, to let new
+	  corrections of the emulation behaviour take effect.)
+
+2002-03-20	src/main.h
+	* Added "#include <time.h>". This seems to be needed by "tape.c" for
+	  compiling the SDL version on some systems.
+	  Thanks to the several people who pointed this out.
+
+2002-03-19
+	* Version number set to 2.0.2.
+
+2002-03-19
+	* Version 2.0.1 released.
+
+2002-03-18	src/screens.c
+	* "HandleChooseLevel()": Small bug in level series navigation fixed.
+
+2002-03-18	src/files.c [src/libgame/misc.c]
+	* Moved some common functions from src/files.c to src/libgame/misc.c.
+
+2002-03-18	src/files.c [src/libgame/misc.c]
+	* Changed permissions for new directories and saved files (especially
+	  score files) according to suggestions of Debian users and mantainers.
+	  Thanks to Drew Parsons <dparsons@emerall.com> for the patch.
+
+2002-03-17	src/files.c
+	* Changed "{Load|Save}{Level|Tape}()" to IFF style file format:
+	  Replaced "cookie" header string ("ROCKSNDIAMONDS_...\n") with
+	  real IFF style header "RND1....XXXX" (where "XXXX" is "CAVE"
+	  for levels and "TAPE" for tapes). Old "cookie" style format is
+	  still supported for reading. New level and tape files are written
+	  in new format.
+
+	* New IFF chunk "VERS" contains version numbers for file and game
+	  (where "game version" is the version of the program that wrote the
+	  file, and "file version" is a version number to distinguish files
+	  with different format, for example after adding new features).
+
+2002-03-15	src/screen.c
+	* "DrawHallOfFame()": "FadeSounds()" when entering the hall of fame.
+	  (Before, you heard a mixture of the in-game music and the
+	  hall-of-fame music.)
+
+2002-03-14	src/events.c
+	* Function "DumpTape()" (files.c) now available by pressing 't' from
+	  main menu (when in DEBUG mode).
+
+2002-03-14	src/game.c
+	* "GameWon()": When game was won playing a tape, now there is no delay
+	  raising the score and no corresponding sound is played.
+
+2002-03-14	src/files.c
+	* Changed "LoadTape()" for real chunk support and also adjusted
+	  "SaveTape()" accordingly.
+
+2002-03-14	src/game.c, src/tape.c, src/files.c
+	* Important changes to tape format: The old tape format stored all
+	  actions with a real effect with a corresponding delay between the
+	  stored actions. This had some major disadvantages (for example,
+	  push delays had to be ignored, pressing a button for some seconds
+	  mutated to several single button presses because of the non-action
+	  delays between two action frames etc.). The new tape format just
+	  stupidly records all device actions and replays them later. I really
+	  don't know why I haven't solved it that way before?! Old-style tapes
+	  (with tape file version less than 2.0) get converted to the new
+	  format on-the-fly when loading and can therefore still be played;
+	  only some minor parts of the old-style tape handling code was needed.
+	  (A perfect conversion is not possible, because there is information
+	  missing about the device actions between two action frames.)
+
+2002-03-14	src/files.c
+	* New function "DumpTape()" to dump the contents of the current tape
+	  in a human readable format.
+
+2002-03-14	src/game.c
+	* Small tape bug fixed: When automatically advancing to next level
+	  after a game was won, the tape from the previous level still was
+	  loaded as a tape for the new level.
+
+2002-03-14	src/tape.c
+	* Small graphical bug fixed: When pressing ""Record" or "Play" on
+	  tape, cartoons did not get completely removed because
+	  StopAnimation() was not called.
+
+2002-03-13	src/files.c
+	* Changed "LoadLevel()" and "SaveLevel()" to add new chunk "CNT2".
+	  Fixed bug of "CONT" and "BODY" (chunk size was set to 8-bit element
+	  size even when using 16-bit elements). Added new chunk "CNT2" for
+	  16-bit amoeba content (previously written in 8-bit field in "HEAD"
+	  chunk even when content was 16-bit element). "CNT2" should now be
+	  able to store content for arbitrary elements (up to eight blocks of
+	  3 x 3 element arrays). All "CNT2" elements will always be stored as
+	  16-bit elements. "CONT" (with 8/16-bit elements) now obsolete.
+
+2002-03-13	src/files.c
+	* Changed "LoadLevel()" for real chunk support.
+
+2002-03-12	src/game.c
+	* Fixed problem (introduced after 2.0.0 release) with penguins
+	  not getting killed by enemies
+
+2002-02-24	src/game.c, src/main.h
+	* Added "player->is_moving"; now "player->last_move_dir" does
+	  not contain any information if the player is just moving at
+	  the moment or not.
+	  Before, "player->last_move_dir" was misused for this purpose
+	  for  the robot stuff (robots don't kill players when they are
+	  moving). But setting "player->last_move_dir" to MV_NO_MOVING
+	  broke tapes when walking through pipes!
+	  ("IS_MOVING()" uses "MovPos[][]", but this fails when it is 0
+	  in a continuous movement. This fact is ignored for friends and
+	  enemies, though.)

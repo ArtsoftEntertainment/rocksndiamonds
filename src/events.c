@@ -85,7 +85,7 @@ void EventLoop(void)
     {
       Event event;
 
-      if (NextValidEvent(&event))
+      while (NextValidEvent(&event))
       {
   	switch(event.type)
   	{
@@ -112,7 +112,7 @@ void EventLoop(void)
     else
     {
       /* when playing, display a special mouse pointer inside the playfield */
-      if (game_status == GAME_MODE_PLAYING)
+      if (game_status == GAME_MODE_PLAYING && !tape.pausing)
       {
 	if (!playfield_cursor_set && cursor_inside_playfield &&
 	    DelayReached(&playfield_cursor_delay, 1000))
@@ -411,36 +411,8 @@ void HandleButton(int mx, int my, int button)
 
     case GAME_MODE_PLAYING:
 #ifdef DEBUG
-      if (button == MB_RELEASED)
-      {
-	if (IN_GFX_SCREEN(mx, my))
-	{
-	  int sx = (mx - SX) / TILEX;
-	  int sy = (my - SY) / TILEY;
-	  int x = LEVELX(sx);
-	  int y = LEVELY(sy);
-
-	  printf("INFO: SCREEN(%d, %d), LEVEL(%d, %d)\n", sx, sy, x, y);
-
-	  if (!IN_LEV_FIELD(x, y))
-	    break;
-
-	  printf("      Feld[%d][%d] == %d ('%s')\n", x,y, Feld[x][y],
-		 element_info[Feld[x][y]].token_name);
-	  printf("      Back[%d][%d] == %d\n", x,y, Back[x][y]);
-	  printf("      Store[%d][%d] == %d\n", x,y, Store[x][y]);
-	  printf("      Store2[%d][%d] == %d\n", x,y, Store2[x][y]);
-	  printf("      StorePlayer[%d][%d] == %d\n", x,y, StorePlayer[x][y]);
-	  printf("      MovPos[%d][%d] == %d\n", x,y, MovPos[x][y]);
-	  printf("      MovDir[%d][%d] == %d\n", x,y, MovDir[x][y]);
-	  printf("      MovDelay[%d][%d] == %d\n", x,y, MovDelay[x][y]);
-	  printf("      ChangeDelay[%d][%d] == %d\n", x,y, ChangeDelay[x][y]);
-	  printf("      GfxElement[%d][%d] == %d\n", x,y, GfxElement[x][y]);
-	  printf("      GfxAction[%d][%d] == %d\n", x,y, GfxAction[x][y]);
-	  printf("      GfxFrame[%d][%d] == %d\n", x,y, GfxFrame[x][y]);
-	  printf("\n");
-	}
-      }
+      if (button == MB_PRESSED && !motion_status && IN_GFX_SCREEN(mx, my))
+	DumpTile(LEVELX((mx - SX) / TILEX), LEVELY((my - SY) / TILEY));
 #endif
       break;
 
@@ -462,7 +434,7 @@ static boolean is_string_suffix(char *string, char *suffix)
 
 #define MAX_CHEAT_INPUT_LEN	32
 
-static void HandleKeysCheating(Key key)
+static void HandleKeysSpecial(Key key)
 {
   static char cheat_input[2 * MAX_CHEAT_INPUT_LEN + 1] = "";
   char letter = getCharFromKey(key);
@@ -487,23 +459,68 @@ static void HandleKeysCheating(Key key)
   printf("::: '%s' [%d]\n", cheat_input, cheat_input_len);
 #endif
 
-#if 1
-  if (is_string_suffix(cheat_input, ":insert solution tape"))
-    InsertSolutionTape();
-#else
-  if (is_string_suffix(cheat_input, ":ist"))
-    InsertSolutionTape();
-#endif
-
+  if (game_status == GAME_MODE_MAIN)
+  {
+    if (is_string_suffix(cheat_input, ":insert-solution-tape") ||
+	is_string_suffix(cheat_input, ":ist"))
+    {
+      InsertSolutionTape();
+    }
+    else if (is_string_suffix(cheat_input, ":reload-graphics") ||
+	     is_string_suffix(cheat_input, ":rg"))
+    {
+      ReloadCustomArtwork(1 << ARTWORK_TYPE_GRAPHICS);
+      DrawMainMenu();
+    }
+    else if (is_string_suffix(cheat_input, ":reload-sounds") ||
+	     is_string_suffix(cheat_input, ":rs"))
+    {
+      ReloadCustomArtwork(1 << ARTWORK_TYPE_SOUNDS);
+      DrawMainMenu();
+    }
+    else if (is_string_suffix(cheat_input, ":reload-music") ||
+	     is_string_suffix(cheat_input, ":rm"))
+    {
+      ReloadCustomArtwork(1 << ARTWORK_TYPE_MUSIC);
+      DrawMainMenu();
+    }
+    else if (is_string_suffix(cheat_input, ":reload-artwork") ||
+	     is_string_suffix(cheat_input, ":ra"))
+    {
+      ReloadCustomArtwork(1 << ARTWORK_TYPE_GRAPHICS |
+			  1 << ARTWORK_TYPE_SOUNDS |
+			  1 << ARTWORK_TYPE_MUSIC);
+      DrawMainMenu();
+    }
+    else if (is_string_suffix(cheat_input, ":dump-level") ||
+	     is_string_suffix(cheat_input, ":dl"))
+    {
+      DumpLevel(&level);
+    }
+    else if (is_string_suffix(cheat_input, ":dump-tape") ||
+	     is_string_suffix(cheat_input, ":dt"))
+    {
+      DumpTape(&tape);
+    }
+  }
+  else if (game_status == GAME_MODE_PLAYING)
+  {
 #ifdef DEBUG
-  else if (is_string_suffix(cheat_input, ":dump tape"))
-    DumpTape(&tape);
-  else if (is_string_suffix(cheat_input, ".q"))
-    for (i = 0; i < MAX_INVENTORY_SIZE; i++)
-      if (local_player->inventory_size < MAX_INVENTORY_SIZE)
-	local_player->inventory_element[local_player->inventory_size++] =
-	  EL_DYNAMITE;
+    if (is_string_suffix(cheat_input, ".q"))
+      for (i = 0; i < MAX_INVENTORY_SIZE; i++)
+	if (local_player->inventory_size < MAX_INVENTORY_SIZE)
+	  local_player->inventory_element[local_player->inventory_size++] =
+	    EL_DYNAMITE;
 #endif
+  }
+  else if (game_status == GAME_MODE_EDITOR)
+  {
+    if (is_string_suffix(cheat_input, ":dump-brush") ||
+	is_string_suffix(cheat_input, ":DB"))
+    {
+      DumpBrush();
+    }
+  }
 }
 
 void HandleKey(Key key, int key_status)
@@ -523,14 +540,14 @@ void HandleKey(Key key, int key_status)
     { &custom_key.up,    DEFAULT_KEY_UP,    JOY_UP       },
     { &custom_key.down,  DEFAULT_KEY_DOWN,  JOY_DOWN     },
     { &custom_key.snap,  DEFAULT_KEY_SNAP,  JOY_BUTTON_1 },
-    { &custom_key.bomb,  DEFAULT_KEY_BOMB,  JOY_BUTTON_2 }
+    { &custom_key.drop,  DEFAULT_KEY_DROP,  JOY_BUTTON_2 }
   };
 
   if (game_status == GAME_MODE_PLAYING)
   {
     /* only needed for single-step tape recording mode */
     static boolean clear_button_2[MAX_PLAYERS] = { FALSE,FALSE,FALSE,FALSE };
-    static boolean bomb_placed[MAX_PLAYERS] = { FALSE,FALSE,FALSE,FALSE };
+    static boolean element_dropped[MAX_PLAYERS] = { FALSE,FALSE,FALSE,FALSE };
     int pnr;
 
     for (pnr = 0; pnr < MAX_PLAYERS; pnr++)
@@ -568,13 +585,13 @@ void HandleKey(Key key, int key_status)
 	  if (key_action & KEY_MOTION)
 	  {
 	    if (stored_player[pnr].action & KEY_BUTTON_2)
-	      bomb_placed[pnr] = TRUE;
+	      element_dropped[pnr] = TRUE;
 	  }
 	}
 	else if (key_status == KEY_RELEASED &&
 		 (key_action & KEY_BUTTON_2))
 	{
-	  if (!bomb_placed[pnr])
+	  if (!element_dropped[pnr])
 	  {
 	    TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
 
@@ -582,7 +599,7 @@ void HandleKey(Key key, int key_status)
 	    clear_button_2[pnr] = TRUE;
 	  }
 
-	  bomb_placed[pnr] = FALSE;
+	  element_dropped[pnr] = FALSE;
 	}
       }
       else if (tape.recording && tape.pausing && (key_action & KEY_ACTION))
@@ -614,16 +631,35 @@ void HandleKey(Key key, int key_status)
   if (key_status == KEY_RELEASED)
     return;
 
-  if ((key == KSYM_Return || key == setup.shortcut.toggle_pause) &&
-      game_status == GAME_MODE_PLAYING && AllPlayersGone)
+  if (game_status == GAME_MODE_PLAYING && AllPlayersGone &&
+      (key == KSYM_Return || key == setup.shortcut.toggle_pause))
   {
     CloseDoor(DOOR_CLOSE_1);
     game_status = GAME_MODE_MAIN;
     DrawMainMenu();
+
     return;
   }
 
-  /* special key shortcuts */
+  if (game_status == GAME_MODE_MAIN && key == setup.shortcut.toggle_pause)
+  {
+    if (setup.autorecord)
+      TapeStartRecording();
+
+#if defined(NETWORK_AVALIABLE)
+    if (options.network)
+      SendToServer_StartPlaying();
+    else
+#endif
+    {
+      game_status = GAME_MODE_PLAYING;
+      StopAnimation();
+      InitGame();
+    }
+
+    return;
+  }
+
   if (game_status == GAME_MODE_MAIN || game_status == GAME_MODE_PLAYING)
   {
     if (key == setup.shortcut.save_game)
@@ -632,9 +668,9 @@ void HandleKey(Key key, int key_status)
       TapeQuickLoad();
     else if (key == setup.shortcut.toggle_pause)
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
-
-    HandleKeysCheating(key);
   }
+
+  HandleKeysSpecial(key);
 
   if (HandleGadgetsKeyInput(key))
   {
@@ -654,6 +690,7 @@ void HandleKey(Key key, int key_status)
     case GAME_MODE_INFO:
       switch(key)
       {
+	case KSYM_space:
 	case KSYM_Return:
 	  if (game_status == GAME_MODE_MAIN)
 	    HandleMainMenu(0,0, 0,0, MB_MENU_CHOICE);
@@ -700,6 +737,7 @@ void HandleKey(Key key, int key_status)
     case GAME_MODE_SCORES:
       switch(key)
       {
+	case KSYM_space:
 	case KSYM_Return:
 	case KSYM_Escape:
 	  game_status = GAME_MODE_MAIN;
@@ -881,7 +919,7 @@ void HandleNoEvent()
     return;
   }
 
-#if defined(PLATFORM_UNIX)
+#if defined(NETWORK_AVALIABLE)
   if (options.network)
     HandleNetworking();
 #endif

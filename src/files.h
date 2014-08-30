@@ -19,7 +19,8 @@
 void setElementChangePages(struct ElementInfo *, int);
 void setElementChangeInfoToDefaults(struct ElementChangeInfo *);
 
-boolean LevelFileExists(int);
+char *getDefaultLevelFilename(int);
+
 void LoadLevelFromFilename(struct LevelInfo *, char *);
 void LoadLevel(int);
 void LoadLevelTemplate(int);
@@ -45,5 +46,7 @@ void LoadUserDefinedEditorElementList(int **, int *);
 void LoadMusicInfo();
 void LoadHelpAnimInfo();
 void LoadHelpTextInfo();
+
+void ConvertLevels(void);
 
 #endif	/* FILES_H */

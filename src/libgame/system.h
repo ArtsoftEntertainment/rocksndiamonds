@@ -55,10 +55,10 @@
 #define DEFAULT_KEY_DOWN	KSYM_Down
 #if defined(PLATFORM_MACOSX)
 #define DEFAULT_KEY_SNAP	KSYM_Control_L
-#define DEFAULT_KEY_BOMB	KSYM_KP_Enter
+#define DEFAULT_KEY_DROP	KSYM_KP_Enter
 #else
-#define DEFAULT_KEY_SNAP	KSYM_Shift_L
-#define DEFAULT_KEY_BOMB	KSYM_Shift_R
+#define DEFAULT_KEY_SNAP	KSYM_Control_L
+#define DEFAULT_KEY_DROP	KSYM_Control_R
 #endif
 #define DEFAULT_KEY_OKAY	KSYM_Return
 #define DEFAULT_KEY_CANCEL	KSYM_Escape
@@ -115,6 +115,11 @@
 #define MV_DIR_BIT(x)		((x) == MV_LEFT  ? MV_BIT_LEFT  :	\
 				 (x) == MV_RIGHT ? MV_BIT_RIGHT :	\
 				 (x) == MV_UP    ? MV_BIT_UP    : MV_BIT_DOWN)
+
+#define MV_DIR_OPPOSITE(x)	((x) == MV_LEFT  ? MV_RIGHT :		\
+				 (x) == MV_RIGHT ? MV_LEFT  :		\
+				 (x) == MV_UP    ? MV_DOWN  :		\
+				 (x) == MV_DOWN  ? MV_UP    : MV_NO_MOVING)
 
 
 /* values for animation mode (frame order and direction) */
@@ -251,8 +256,8 @@
 #define SETUP_FILENAME		"setup.cnf"
 #define LEVELSETUP_FILENAME	"lvlsetup.cnf"
 #define EDITORSETUP_FILENAME	"edsetup.cnf"
-#define HELPANIM_FILENAME	"helpanim.conf"
-#define HELPTEXT_FILENAME	"helptext.conf"
+#define HELPANIM_FILENAME	"helpanim.cnf"
+#define HELPTEXT_FILENAME	"helptext.cnf"
 #define LEVELINFO_FILENAME	"lvlinfo.cnf"
 #define GRAPHICSINFO_FILENAME	"gfxinfo.cnf"
 #define SOUNDSINFO_FILENAME	"sndinfo.cnf"
@@ -270,7 +275,11 @@
    PAGEX3: buffer for animations
 */
 
-#define DOOR_GFX_PAGESIZE	(gfx.dxsize)
+/* these values are hard-coded to be able to use them in initialization */
+#define DOOR_GFX_PAGE_WIDTH	100	/* should be set to "gfx.dxsize" */
+#define DOOR_GFX_PAGE_HEIGHT	280	/* should be set to "gfx.dysize" */
+
+#define DOOR_GFX_PAGESIZE	(DOOR_GFX_PAGE_WIDTH)
 #define DOOR_GFX_PAGEX1		(0 * DOOR_GFX_PAGESIZE)
 #define DOOR_GFX_PAGEX2		(1 * DOOR_GFX_PAGESIZE)
 #define DOOR_GFX_PAGEX3		(2 * DOOR_GFX_PAGESIZE)
@@ -280,7 +289,7 @@
 #define DOOR_GFX_PAGEX7		(6 * DOOR_GFX_PAGESIZE)
 #define DOOR_GFX_PAGEX8		(7 * DOOR_GFX_PAGESIZE)
 #define DOOR_GFX_PAGEY1		(0)
-#define DOOR_GFX_PAGEY2		(gfx.dysize)
+#define DOOR_GFX_PAGEY2		(DOOR_GFX_PAGE_HEIGHT)
 
 
 /* macros for version handling */
@@ -521,18 +530,13 @@ struct SetupJoystickInfo
 
   int xleft, xmiddle, xright;
   int yupper, ymiddle, ylower;
-  int snap;
-  int bomb;
+  int snap, drop;
 };
 
 struct SetupKeyboardInfo
 {
-  Key left;
-  Key right;
-  Key up;
-  Key down;
-  Key snap;
-  Key bomb;
+  Key left, right, up, down;
+  Key snap, drop;
 };
 
 struct SetupInputInfo
@@ -622,7 +626,7 @@ struct TreeInfo
 
   /* fields for "type == TREE_TYPE_LEVEL_DIR" */
 
-  char *filename;	/* tree info sub-directory basename (may be ".") */
+  char *subdir;		/* tree info sub-directory basename (may be ".") */
   char *fullpath;	/* complete path relative to tree base directory */
   char *basepath;	/* absolute base path of tree base directory */
   char *identifier;	/* identifier string for configuration files */
@@ -638,6 +642,9 @@ struct TreeInfo
   char *sounds_path;	/* path to optional custom sounds set (level only) */
   char *music_path;	/* path to optional custom music set (level only) */
 
+  char *level_filename;	/* filename of level file (for packed level file) */
+  char *level_filetype;	/* type of levels in level directory or level file */
+
   int levels;		/* number of levels in level series */
   int first_level;	/* first level number (to allow start with 0 or 1) */
   int last_level;	/* last level number (automatically calculated) */
@@ -649,6 +656,7 @@ struct TreeInfo
   boolean parent_link;	/* entry links back to parent directory */
   boolean user_defined;	/* user defined levels are stored in home directory */
   boolean readonly;	/* readonly levels can not be changed with editor */
+  boolean handicap;	/* level set has no handicap when set to "false" */
 
   int color;		/* color to use on selection screen for this level */
   char *class_desc;	/* description of level series class */

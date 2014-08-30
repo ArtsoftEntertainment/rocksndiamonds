@@ -40,6 +40,57 @@ static int el_act2crm(int, int);
 static struct GadgetInfo *tool_gadget[NUM_TOOL_BUTTONS];
 static int request_gadget_id = -1;
 
+static char *print_if_not_empty(int element)
+{
+  static char *s = NULL;
+  char *token_name = element_info[element].token_name;
+
+  if (s != NULL)
+    free(s);
+
+  s = checked_malloc(strlen(token_name) + 10 + 1);
+
+  if (element != EL_EMPTY)
+    sprintf(s, "%d\t['%s']", element, token_name);
+  else
+    sprintf(s, "%d", element);
+
+  return s;
+}
+
+void DumpTile(int x, int y)
+{
+  int sx = SCREENX(x);
+  int sy = SCREENY(y);
+
+  printf_line("-", 79);
+  printf("Field Info: SCREEN(%d, %d), LEVEL(%d, %d)\n", sx, sy, x, y);
+  printf_line("-", 79);
+
+  if (!IN_LEV_FIELD(x, y))
+  {
+    printf("(not in level field)\n");
+    printf("\n");
+
+    return;
+  }
+
+  printf("  Feld:        %d\t['%s']\n", Feld[x][y],
+	 element_info[Feld[x][y]].token_name);
+  printf("  Back:        %s\n", print_if_not_empty(Back[x][y]));
+  printf("  Store:       %s\n", print_if_not_empty(Store[x][y]));
+  printf("  Store2:      %s\n", print_if_not_empty(Store2[x][y]));
+  printf("  StorePlayer: %s\n", print_if_not_empty(StorePlayer[x][y]));
+  printf("  MovPos:      %d\n", MovPos[x][y]);
+  printf("  MovDir:      %d\n", MovDir[x][y]);
+  printf("  MovDelay:    %d\n", MovDelay[x][y]);
+  printf("  ChangeDelay: %d\n", ChangeDelay[x][y]);
+  printf("  GfxElement:  %d\n", GfxElement[x][y]);
+  printf("  GfxAction:   %d\n", GfxAction[x][y]);
+  printf("  GfxFrame:    %d\n", GfxFrame[x][y]);
+  printf("\n");
+}
+
 void SetDrawtoField(int mode)
 {
   if (mode == DRAW_BUFFERED && setup.soft_scrolling)
@@ -223,28 +274,33 @@ void BackToFront()
   {
     if (redraw_mask & REDRAW_DOOR_1)
       BlitBitmap(backbuffer, window, DX, DY, DXSIZE, DYSIZE, DX, DY);
+
     if (redraw_mask & REDRAW_DOOR_2)
     {
+#if 0
       if ((redraw_mask & REDRAW_DOOR_2) == REDRAW_DOOR_2)
-	BlitBitmap(backbuffer, window, VX,VY, VXSIZE,VYSIZE, VX,VY);
+#endif
+	BlitBitmap(backbuffer, window, VX, VY, VXSIZE, VYSIZE, VX, VY);
+#if 0
       else
       {
 	if (redraw_mask & REDRAW_VIDEO_1)
 	  BlitBitmap(backbuffer, window,
-		     VX+VIDEO_DISPLAY1_XPOS,VY+VIDEO_DISPLAY1_YPOS,
-		     VIDEO_DISPLAY_XSIZE,VIDEO_DISPLAY_YSIZE,
-		     VX+VIDEO_DISPLAY1_XPOS,VY+VIDEO_DISPLAY1_YPOS);
+		     VX + VIDEO_DISPLAY1_XPOS, VY + VIDEO_DISPLAY1_YPOS,
+		     VIDEO_DISPLAY_XSIZE, VIDEO_DISPLAY_YSIZE,
+		     VX + VIDEO_DISPLAY1_XPOS, VY + VIDEO_DISPLAY1_YPOS);
 	if (redraw_mask & REDRAW_VIDEO_2)
 	  BlitBitmap(backbuffer, window,
-		     VX+VIDEO_DISPLAY2_XPOS,VY+VIDEO_DISPLAY2_YPOS,
-		     VIDEO_DISPLAY_XSIZE,VIDEO_DISPLAY_YSIZE,
-		     VX+VIDEO_DISPLAY2_XPOS,VY+VIDEO_DISPLAY2_YPOS);
+		     VX + VIDEO_DISPLAY2_XPOS, VY + VIDEO_DISPLAY2_YPOS,
+		     VIDEO_DISPLAY_XSIZE, VIDEO_DISPLAY_YSIZE,
+		     VX + VIDEO_DISPLAY2_XPOS, VY + VIDEO_DISPLAY2_YPOS);
 	if (redraw_mask & REDRAW_VIDEO_3)
 	  BlitBitmap(backbuffer, window,
-		     VX+VIDEO_CONTROL_XPOS,VY+VIDEO_CONTROL_YPOS,
-		     VIDEO_CONTROL_XSIZE,VIDEO_CONTROL_YSIZE,
-		     VX+VIDEO_CONTROL_XPOS,VY+VIDEO_CONTROL_YPOS);
+		     VX + VIDEO_CONTROL_XPOS, VY + VIDEO_CONTROL_YPOS,
+		     VIDEO_CONTROL_XSIZE, VIDEO_CONTROL_YSIZE,
+		     VX + VIDEO_CONTROL_XPOS, VY + VIDEO_CONTROL_YPOS);
       }
+#endif
     }
 
     if (redraw_mask & REDRAW_DOOR_3)
@@ -264,10 +320,10 @@ void BackToFront()
   if (redraw_mask & REDRAW_TILES)
   {
     for (x = 0; x < SCR_FIELDX; x++)
-      for (y =0 ; y < SCR_FIELDY; y++)
+      for (y = 0 ; y < SCR_FIELDY; y++)
 	if (redraw[redraw_x1 + x][redraw_y1 + y])
 	  BlitBitmap(buffer, window,
-		     FX + x * TILEX, FX + y * TILEY, TILEX, TILEY,
+		     FX + x * TILEX, FY + y * TILEY, TILEX, TILEY,
 		     SX + x * TILEX, SY + y * TILEY);
   }
 
@@ -633,6 +689,7 @@ void DrawPlayer(struct PlayerInfo *player)
 	    player->is_collecting ? ACTION_COLLECTING      :
 	    player->is_moving     ? ACTION_MOVING          :
 	    player->is_snapping   ? ACTION_SNAPPING        :
+	    player->is_dropping   ? ACTION_DROPPING        :
 	    player->is_waiting    ? player->action_waiting : ACTION_DEFAULT);
 
   InitPlayerGfxAnimation(player, action, move_dir);
@@ -833,17 +890,41 @@ void DrawPlayer(struct PlayerInfo *player)
   /* draw elements the player is just walking/passing through/under          */
   /* ----------------------------------------------------------------------- */
 
-  /* handle the field the player is leaving ... */
-  if (player_is_moving && IS_ACCESSIBLE_INSIDE(last_element))
-    DrawLevelField(last_jx, last_jy);
-  else if (player_is_moving && IS_ACCESSIBLE_UNDER(last_element))
-    DrawLevelFieldThruMask(last_jx, last_jy);
+  if (player_is_moving)
+  {
+    /* handle the field the player is leaving ... */
+    if (IS_ACCESSIBLE_INSIDE(last_element))
+      DrawLevelField(last_jx, last_jy);
+    else if (IS_ACCESSIBLE_UNDER(last_element))
+      DrawLevelFieldThruMask(last_jx, last_jy);
+  }
 
-  /* ... and the field the player is entering */
-  if (IS_ACCESSIBLE_INSIDE(element))
-    DrawLevelField(jx, jy);
-  else if (IS_ACCESSIBLE_UNDER(element))
-    DrawLevelFieldThruMask(jx, jy);
+#if 1
+  /* do not redraw accessible elements if the player is just pushing them */
+  if (!player_is_moving || !player->is_pushing)
+  {
+    /* ... and the field the player is entering */
+    if (IS_ACCESSIBLE_INSIDE(element))
+      DrawLevelField(jx, jy);
+    else if (IS_ACCESSIBLE_UNDER(element))
+      DrawLevelFieldThruMask(jx, jy);
+  }
+
+#else
+
+#if 0
+  /* !!! I have forgotton what this should be good for !!! */
+  /* !!! causes player being visible when pushing from within tubes !!! */
+  if (!player->is_pushing)
+#endif
+  {
+    /* ... and the field the player is entering */
+    if (IS_ACCESSIBLE_INSIDE(element))
+      DrawLevelField(jx, jy);
+    else if (IS_ACCESSIBLE_UNDER(element))
+      DrawLevelFieldThruMask(jx, jy);
+  }
+#endif
 
   if (setup.direct_draw)
   {
@@ -857,7 +938,7 @@ void DrawPlayer(struct PlayerInfo *player)
     SetDrawtoField(DRAW_DIRECT);
   }
 
-  MarkTileDirty(sx,sy);
+  MarkTileDirty(sx, sy);
 }
 
 void getGraphicSource(int graphic, int frame, Bitmap **bitmap, int *x, int *y)
@@ -981,7 +1062,7 @@ void DrawMiniGraphicExt(DrawBuffer *d, int x, int y, int graphic)
   BlitBitmap(src_bitmap, d, src_x, src_y, MINI_TILEX, MINI_TILEY, x, y);
 }
 
-void DrawGraphicShifted(int x,int y, int dx,int dy, int graphic, int frame,
+void DrawGraphicShifted(int x, int y, int dx, int dy, int graphic, int frame,
 			int cut_mode, int mask_mode)
 {
   Bitmap *src_bitmap;
@@ -1101,13 +1182,13 @@ void DrawGraphicShifted(int x,int y, int dx,int dy, int graphic, int frame,
     BlitBitmap(src_bitmap, drawto_field, src_x, src_y, width, height,
 	       dest_x, dest_y);
 
-  MarkTileDirty(x,y);
+  MarkTileDirty(x, y);
 }
 
 void DrawGraphicShiftedThruMask(int x, int y, int dx, int dy, int graphic,
 				int frame, int cut_mode)
 {
-  DrawGraphicShifted(x,y, dx,dy, graphic, frame, cut_mode, USE_MASKING);
+  DrawGraphicShifted(x, y, dx, dy, graphic, frame, cut_mode, USE_MASKING);
 }
 
 void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
@@ -1191,6 +1272,10 @@ void DrawLevelFieldThruMask(int x, int y)
   DrawLevelElementExt(x, y, 0, 0, Feld[x][y], NO_CUTTING, USE_MASKING);
 }
 
+#define TILE_GFX_ELEMENT(x, y)						    \
+	(GfxElement[x][y] != EL_UNDEFINED && Feld[x][y] != EL_EXPLOSION ?   \
+	 GfxElement[x][y] : Feld[x][y])
+
 static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
 {
   Bitmap *src_bitmap;
@@ -1220,8 +1305,7 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
   if (!IN_LEV_FIELD(x, y))
     return;
 
-  element = (GfxElement[x][y] != EL_UNDEFINED && Feld[x][y] != EL_EXPLOSION ?
-	     GfxElement[x][y] : Feld[x][y]);
+  element = TILE_GFX_ELEMENT(x, y);
 
   /* crumble field itself */
   if (GFX_CRUMBLED(element) && !IS_MOVING(x, y))
@@ -1236,7 +1320,12 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
       int xx = x + xy[i][0];
       int yy = y + xy[i][1];
 
+#if 1
+      element = (IN_LEV_FIELD(xx, yy) ? TILE_GFX_ELEMENT(xx, yy) :
+		 BorderElement);
+#else
       element = (IN_LEV_FIELD(xx, yy) ? Feld[xx][yy] : BorderElement);
+#endif
 
       /* check if neighbour field is of same type */
       if (GFX_CRUMBLED(element) && !IS_MOVING(xx, yy))
@@ -1283,11 +1372,23 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
       int sxx = sx + xy[i][0];
       int syy = sy + xy[i][1];
 
+#if 1
+      if (!IN_LEV_FIELD(xx, yy) ||
+	  !IN_SCR_FIELD(sxx, syy) ||
+	  IS_MOVING(xx, yy))
+	continue;
+
+      element = TILE_GFX_ELEMENT(xx, yy);
+
+      if (!GFX_CRUMBLED(element))
+	continue;
+#else
       if (!IN_LEV_FIELD(xx, yy) ||
 	  !IN_SCR_FIELD(sxx, syy) ||
 	  !GFX_CRUMBLED(Feld[xx][yy]) ||
 	  IS_MOVING(xx, yy))
 	continue;
+#endif
 
 #if 1
       graphic = el_act2crm(Feld[xx][yy], ACTION_DEFAULT);
@@ -1464,7 +1565,13 @@ void DrawScreenField(int x, int y)
       DrawScreenElementShifted(x, y, 0, MovPos[lx][ly], content, cut_mode);
 
     if (content == EL_ACID)
-      DrawLevelElementThruMask(lx, ly + 1, EL_ACID);
+    {
+      int dir = MovDir[lx][ly];
+      int newlx = lx + (dir == MV_LEFT ? -1 : dir == MV_RIGHT ? +1 : 0);
+      int newly = ly + (dir == MV_UP   ? -1 : dir == MV_DOWN  ? +1 : 0);
+
+      DrawLevelElementThruMask(newlx, newly, EL_ACID);
+    }
   }
   else if (IS_BLOCKED(lx, ly))
   {
@@ -1595,11 +1702,18 @@ void DrawEnvelopeBackground(int envelope_nr, int startx, int starty,
 void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
 {
   int graphic = IMG_BACKGROUND_ENVELOPE_1 + envelope_nr;
+#if 1
+  Bitmap *src_bitmap = graphic_info[graphic].bitmap;
+  int mask_mode = (src_bitmap != NULL ? BLIT_MASKED : BLIT_ON_BACKGROUND);
+#else
   boolean draw_masked = graphic_info[graphic].draw_masked;
   int mask_mode = (draw_masked ? BLIT_MASKED : BLIT_ON_BACKGROUND);
+#endif
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
+  boolean no_delay = (tape.warp_forward);
   unsigned long anim_delay = 0;
-  int anim_delay_value = (ffwd_delay ? FfwdFrameDelay : GameFrameDelay);
+  int frame_delay_value = (ffwd_delay ? FfwdFrameDelay : GameFrameDelay);
+  int anim_delay_value = (no_delay ? 0 : frame_delay_value);
   int font_nr = FONT_ENVELOPE_1 + envelope_nr;
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
@@ -1648,7 +1762,9 @@ void ShowEnvelope(int envelope_nr)
   int sound_opening = element_info[element].sound[ACTION_OPENING];
   int sound_closing = element_info[element].sound[ACTION_CLOSING];
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
-  int wait_delay_value = (ffwd_delay ? 500 : 1000);
+  boolean no_delay = (tape.warp_forward);
+  int normal_delay_value = ONE_SECOND_DELAY / (ffwd_delay ? 2 : 1);
+  int wait_delay_value = (no_delay ? 0 : normal_delay_value);
   int anim_mode = graphic_info[graphic].anim_mode;
   int main_anim_mode = (anim_mode == ANIM_NONE ? ANIM_VERTICAL|ANIM_HORIZONTAL:
 			anim_mode == ANIM_DEFAULT ? ANIM_VERTICAL : anim_mode);
@@ -1987,10 +2103,16 @@ boolean Request(char *text, unsigned int req_state)
   }
 
 #if 1
+  /* disable deactivated drawing when quick-loading level tape recording */
+  if (tape.playing && tape.deactivate_display)
+    TapeDeactivateDisplayOff(TRUE);
+#endif
+
+#if 1
   SetMouseCursor(CURSOR_DEFAULT);
 #endif
 
-#if defined(PLATFORM_UNIX)
+#if defined(NETWORK_AVALIABLE)
   /* pause network game while waiting for request to answer */
   if (options.network &&
       game_status == GAME_MODE_PLAYING &&
@@ -2231,8 +2353,8 @@ boolean Request(char *text, unsigned int req_state)
     if (!(req_state & REQ_STAY_CLOSED) && (old_door_state & DOOR_OPEN_1))
     {
       BlitBitmap(bitmap_db_door, bitmap_db_door,
-		 DOOR_GFX_PAGEX2,DOOR_GFX_PAGEY1, DXSIZE,DYSIZE,
-		 DOOR_GFX_PAGEX1,DOOR_GFX_PAGEY1);
+		 DOOR_GFX_PAGEX2, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE,
+		 DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
       OpenDoor(DOOR_OPEN_1);
     }
   }
@@ -2241,12 +2363,18 @@ boolean Request(char *text, unsigned int req_state)
 
   SetDrawBackgroundMask(REDRAW_FIELD);
 
-#if defined(PLATFORM_UNIX)
+#if defined(NETWORK_AVALIABLE)
   /* continue network game after request */
   if (options.network &&
       game_status == GAME_MODE_PLAYING &&
       req_state & REQUEST_WAIT_FOR)
     SendToServer_ContinuePlaying();
+#endif
+
+#if 1
+  /* restore deactivated drawing when quick-loading level tape recording */
+  if (tape.playing && tape.deactivate_display)
+    TapeDeactivateDisplayOn();
 #endif
 
   return result;
@@ -2331,8 +2459,10 @@ unsigned int MoveDoor(unsigned int door_state)
     stepsize = 20;		/* must be choosen to always draw last frame */
     door_delay_value = 0;
 
+#if 0
     StopSound(SND_DOOR_OPENING);
     StopSound(SND_DOOR_CLOSING);
+#endif
   }
 
   if (global.autoplay_leveldir)
@@ -2350,7 +2480,7 @@ unsigned int MoveDoor(unsigned int door_state)
 	       door_1.anim_mode == ANIM_VERTICAL ? DYSIZE : DXSIZE);
     int x;
 
-    if (!(door_state & DOOR_NO_DELAY))
+    if (!(door_state & DOOR_NO_DELAY) && !setup.quick_doors)
     {
       /* opening door sound has priority over simultaneously closing door */
       if (door_state & (DOOR_OPEN_1 | DOOR_OPEN_2))
@@ -2533,11 +2663,13 @@ unsigned int MoveDoor(unsigned int door_state)
     }
   }
 
+#if 0
   if (setup.quick_doors)
   {
     StopSound(SND_DOOR_OPENING);
     StopSound(SND_DOOR_CLOSING);
   }
+#endif
 
   if (door_state & DOOR_ACTION_1)
     door1 = door_state & DOOR_ACTION_1;
@@ -2770,7 +2902,7 @@ int get_next_element(int element)
 int el_act_dir2img(int element, int action, int direction)
 {
   element = GFX_ELEMENT(element);
-  direction = MV_DIR_BIT(direction);
+  direction = MV_DIR_BIT(direction);	/* default: MV_NO_MOVING => MV_DOWN */
 
   return element_info[element].direction_graphic[action][direction];
 }
@@ -2778,7 +2910,7 @@ int el_act_dir2img(int element, int action, int direction)
 static int el_act_dir2crm(int element, int action, int direction)
 {
   element = GFX_ELEMENT(element);
-  direction = MV_DIR_BIT(direction);
+  direction = MV_DIR_BIT(direction);	/* default: MV_NO_MOVING => MV_DOWN */
 
   return element_info[element].direction_crumbled[action][direction];
 }
@@ -2802,6 +2934,11 @@ int el_dir2img(int element, int direction)
   element = GFX_ELEMENT(element);
 
   return el_act_dir2img(element, ACTION_DEFAULT, direction);
+}
+
+int el2baseimg(int element)
+{
+  return element_info[element].graphic[ACTION_DEFAULT];
 }
 
 int el2img(int element)

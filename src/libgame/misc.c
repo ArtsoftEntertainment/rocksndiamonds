@@ -52,6 +52,7 @@ void printf_line(char *line_string, int line_length)
   fprintf_line(stdout, line_string, line_length);
 }
 
+
 /* int2str() returns a number converted to a string;
    the used memory is static, but will be overwritten by later calls,
    so if you want to save the result, copy it to a private string buffer;
@@ -82,6 +83,7 @@ char *int2str(int number, int size)
   }
 }
 
+
 /* something similar to "int2str()" above, but allocates its own memory
    and has a different interface; we cannot use "itoa()", because this
    seems to be already defined when cross-compiling to the win32 target */
@@ -100,6 +102,23 @@ char *i_to_a(unsigned int i)
   sprintf(a, "%d", i);
 
   return a;
+}
+
+
+/* calculate base-2 logarithm of argument (rounded down to integer;
+   this function returns the number of the highest bit set in argument) */
+
+int log_2(unsigned int x)
+{
+  int e = 0;
+
+  while ((1 << e) < x)
+  {
+    x -= (1 << e);	/* for rounding down (rounding up: remove this line) */
+    e++;
+  }
+
+  return e;
 }
 
 
@@ -596,9 +615,17 @@ void GetOptions(char *argv[], void (*print_usage_function)(void))
       if (option_arg == next_option)
 	options_left++;
 
-      /* adjust path for level directory accordingly */
+      /* adjust paths for sub-directories in base directory accordingly */
       options.level_directory =
 	getPath2(options.ro_base_directory, LEVELS_DIRECTORY);
+      options.graphics_directory =
+	getPath2(options.ro_base_directory, GRAPHICS_DIRECTORY);
+      options.sounds_directory =
+	getPath2(options.ro_base_directory, SOUNDS_DIRECTORY);
+      options.music_directory =
+	getPath2(options.ro_base_directory, MUSIC_DIRECTORY);
+      options.docs_directory =
+	getPath2(options.ro_base_directory, DOCS_DIRECTORY);
     }
     else if (strncmp(option, "-levels", option_len) == 0)
     {
@@ -660,6 +687,11 @@ void GetOptions(char *argv[], void (*print_usage_function)(void))
       options.execute_command = option_arg;
       if (option_arg == next_option)
 	options_left++;
+
+#if 1
+      /* when doing batch processing, always enable verbose mode (warnings) */
+      options.verbose = TRUE;
+#endif
     }
     else if (*option == '-')
     {
@@ -850,27 +882,27 @@ inline void swap_number_pairs(int *x1, int *y1, int *x2, int *y2)
   *y2 = help_y;
 }
 
-short getFile16BitInteger(FILE *file, int byte_order)
+int getFile16BitInteger(FILE *file, int byte_order)
 {
   if (byte_order == BYTE_ORDER_BIG_ENDIAN)
-    return ((fgetc(file) <<  8) |
-	    (fgetc(file) <<  0));
+    return ((fgetc(file) << 8) |
+	    (fgetc(file) << 0));
   else		 /* BYTE_ORDER_LITTLE_ENDIAN */
-    return ((fgetc(file) <<  0) |
-	    (fgetc(file) <<  8));
+    return ((fgetc(file) << 0) |
+	    (fgetc(file) << 8));
 }
 
-void putFile16BitInteger(FILE *file, short value, int byte_order)
+void putFile16BitInteger(FILE *file, int value, int byte_order)
 {
   if (byte_order == BYTE_ORDER_BIG_ENDIAN)
   {
-    fputc((value >>  8) & 0xff, file);
-    fputc((value >>  0) & 0xff, file);
+    fputc((value >> 8) & 0xff, file);
+    fputc((value >> 0) & 0xff, file);
   }
   else		 /* BYTE_ORDER_LITTLE_ENDIAN */
   {
-    fputc((value >>  0) & 0xff, file);
-    fputc((value >>  8) & 0xff, file);
+    fputc((value >> 0) & 0xff, file);
+    fputc((value >> 8) & 0xff, file);
   }
 }
 
@@ -1208,7 +1240,7 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
       char c = name_ptr[6];
 
       if (c >= '0' && c <= '9')
-	key = KSYM_0 + (Key)(c - '0');
+	key = KSYM_KP_0 + (Key)(c - '0');
     }
     else if (strncmp(name_ptr, "XK_F", 4) == 0 && strlen(name_ptr) <= 6)
     {
@@ -1880,6 +1912,7 @@ static void add_dynamic_file_list_entry(struct FileInfo **list,
   new_list_entry = &(*list)[*num_list_entries - 1];
 
   new_list_entry->token = getStringCopy(token);
+  new_list_entry->default_filename = NULL;
   new_list_entry->filename = NULL;
   new_list_entry->parameter = checked_calloc(parameter_array_size);
 
@@ -2549,8 +2582,16 @@ void ReloadCustomArtworkList(struct ArtworkListInfo *artwork_info)
 #endif
 
   for (i = 0; i < num_dynamic_file_list_entries; i++)
+  {
     LoadArtworkToList(artwork_info, &artwork_info->dynamic_artwork_list[i],
 		      dynamic_file_list[i].filename, i);
+
+#if 0
+    printf("::: '%s', '0x%08x'\n",
+	   dynamic_file_list[i].filename,
+	   dynamic_file_list[i].default_filename);
+#endif
+  }
 
 #if 0
   dumpList(artwork_info->content_list);

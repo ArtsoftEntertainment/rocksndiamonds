@@ -71,6 +71,7 @@ void fprintf_line(FILE *, char *, int);
 void printf_line(char *, int);
 char *int2str(int, int);
 char *i_to_a(unsigned int);
+int log_2(unsigned int);
 
 void InitCounter(void);
 unsigned long Counter(void);
@@ -114,8 +115,8 @@ void checked_free(void *);
 inline void swap_numbers(int *, int *);
 inline void swap_number_pairs(int *, int *, int *, int *);
 
-short getFile16BitInteger(FILE *, int);
-void putFile16BitInteger(FILE *, short, int);
+int getFile16BitInteger(FILE *, int);
+void putFile16BitInteger(FILE *, int, int);
 int getFile32BitInteger(FILE *, int);
 void putFile32BitInteger(FILE *, int, int);
 boolean getFileChunk(FILE *, char *, int *, int);

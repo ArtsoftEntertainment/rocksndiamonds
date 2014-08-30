@@ -22,7 +22,7 @@ ifdef X11_PATH			# path to X11 specified by top level Makefile
 XINC_PATH = $(X11_PATH)/include
 XLIB_PATH = $(X11_PATH)/lib
 X11_INCL = -I$(XINC_PATH)
-X11_LIBS = -L$(XLIB_PATH)
+X11_LIBS = -L$(XLIB_PATH) -lX11
 endif
 
 AR = ar
@@ -55,7 +55,16 @@ endif
 
 ifeq ($(PLATFORM),macosx)
 PLATFORM = unix
-TARGET=sdl
+TARGET = sdl
+endif
+
+ifeq ($(PLATFORM),os2)
+RANLIB = echo
+PROGNAME = ../$(PROGBASE).exe
+EXTRA_CFLAGS = -Zbin-files -D__ST_MT_ERRNO__ -Zmtd -fomit-frame-pointer
+EXTRA_LDFLAGS = -lsocket
+PLATFORM = unix
+TARGET = x11
 endif
 
 ifeq ($(PLATFORM),unix)
@@ -69,23 +78,20 @@ TARGET = allegro
 endif
 
 ifeq ($(PLATFORM),cross-win32)
-EXTRA_LDFLAGS = -lshfolder
+EXTRA_LDFLAGS = -lshfolder -lwsock32
 PROGNAME = ../$(PROGBASE).exe
 TARGET = sdl
 endif
 
 ifeq ($(TARGET),x11)
 SYS_CFLAGS  = -DTARGET_X11 $(X11_INCL)
-SYS_LDFLAGS = $(X11_LIBS) -lX11
+SYS_LDFLAGS = $(X11_LIBS)
 endif
 
 ifeq ($(TARGET),sdl)
 SYS_CFLAGS  = -DTARGET_SDL $(shell sdl-config --cflags)
-ifeq ($(PLATFORM),macosx)
-SYS_LDFLAGS = -lSDL_image -lSDL_mixer -lsmpeg $(shell sdl-config --libs)
-else
-SYS_LDFLAGS = -lSDL_image -lSDL_mixer $(shell sdl-config --libs)
-endif
+SDL_LIBS = -lSDL_image -lSDL_mixer -lSDL_net -lsmpeg
+SYS_LDFLAGS = $(SDL_LIBS) $(shell sdl-config --libs)
 endif
 
 ifeq ($(TARGET),allegro)
@@ -128,8 +134,8 @@ ifdef BUILD_DIST				# distribution build
 OPTIONS = -O3 -Wall
 endif
 
-CFLAGS = $(OPTIONS) $(SYS_CFLAGS) $(CONFIG)
-LDFLAGS = $(SYS_LDFLAGS) $(EXTRA_LDFLAGS) -lm
+CFLAGS = $(OPTIONS) $(SYS_CFLAGS)  $(EXTRA_CFLAGS) $(CONFIG)
+LDFLAGS =           $(SYS_LDFLAGS) $(EXTRA_LDFLAGS) -lm
 
 
 SRCS =	main.c		\
@@ -175,6 +181,8 @@ CNFS =	conf_gfx.h	\
 	conf_chr.h	\
 	conf_cus.c	\
 	conf_cus.h	\
+	conf_grp.c	\
+	conf_grp.h	\
 	conf_e2g.c	\
 	conf_esg.c	\
 	conf_e2s.c	\

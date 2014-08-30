@@ -79,6 +79,9 @@ mac:
 msdos:
 	@$(MAKE_CMD) PLATFORM=msdos
 
+os2:
+	@$(MAKE_CMD) PLATFORM=os2
+
 cross-msdos:
 	@PATH=$(CROSS_PATH_MSDOS)/bin:${PATH} $(MAKE_CMD) PLATFORM=cross-msdos
 
@@ -96,23 +99,26 @@ clean:
 auto-conf:
 	@$(MAKE_CMD) auto-conf
 
-run:
-	@$(MAKE_CMD) TARGET=$(DEFAULT_TARGET) && ./rocksndiamonds --verbose
+run: all
+	@./rocksndiamonds --verbose
 
-gdb:
-	@$(MAKE_CMD) TARGET=$(DEFAULT_TARGET) && gdb ./rocksndiamonds
+gdb: all
+	@gdb ./rocksndiamonds
 
-valgrind:
-	valgrind -v --leak-check=yes ./rocksndiamonds 2> valgrind.out
+valgrind: all
+	@valgrind -v --leak-check=yes ./rocksndiamonds 2> valgrind.out
 
-enginetest:
+enginetest: all
 	./Scripts/make_enginetest.sh
 
-enginetestcustom:
+enginetestcustom: all
 	./Scripts/make_enginetest.sh custom
 
-enginetestfast:
+enginetestfast: all
 	./Scripts/make_enginetest.sh fast
+
+enginetestnew: all
+	./Scripts/make_enginetest.sh new
 
 backup:
 	./Scripts/make_backup.sh src

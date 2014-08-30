@@ -326,6 +326,38 @@ element_to_graphic[] =
     IMG_SP_GRAVITY_PORT_UP
   },
   {
+    EL_SP_GRAVITY_ON_PORT_RIGHT,	-1, -1, FALSE,
+    IMG_SP_GRAVITY_ON_PORT_RIGHT
+  },
+  {
+    EL_SP_GRAVITY_ON_PORT_DOWN,		-1, -1, FALSE,
+    IMG_SP_GRAVITY_ON_PORT_DOWN
+  },
+  {
+    EL_SP_GRAVITY_ON_PORT_LEFT,		-1, -1, FALSE,
+    IMG_SP_GRAVITY_ON_PORT_LEFT
+  },
+  {
+    EL_SP_GRAVITY_ON_PORT_UP,		-1, -1, FALSE,
+    IMG_SP_GRAVITY_ON_PORT_UP
+  },
+  {
+    EL_SP_GRAVITY_OFF_PORT_RIGHT,	-1, -1, FALSE,
+    IMG_SP_GRAVITY_OFF_PORT_RIGHT
+  },
+  {
+    EL_SP_GRAVITY_OFF_PORT_DOWN,	-1, -1, FALSE,
+    IMG_SP_GRAVITY_OFF_PORT_DOWN
+  },
+  {
+    EL_SP_GRAVITY_OFF_PORT_LEFT,	-1, -1, FALSE,
+    IMG_SP_GRAVITY_OFF_PORT_LEFT
+  },
+  {
+    EL_SP_GRAVITY_OFF_PORT_UP,		-1, -1, FALSE,
+    IMG_SP_GRAVITY_OFF_PORT_UP
+  },
+  {
     EL_SP_SNIKSNAK,			-1, -1, FALSE,
     IMG_SP_SNIKSNAK
   },
@@ -452,6 +484,10 @@ element_to_graphic[] =
   {
     EL_SOKOBAN_FIELD_FULL,		-1, -1, FALSE,
     IMG_SOKOBAN_FIELD_FULL
+  },
+  {
+    EL_SOKOBAN_FIELD_PLAYER,		-1, -1, FALSE,
+    IMG_SOKOBAN_FIELD_PLAYER
   },
   {
     EL_EMPTY_SPACE,			-1, -1, FALSE,
@@ -2050,10 +2086,6 @@ element_to_graphic[] =
     IMG_STONEBLOCK
   },
   {
-    EL_MAZE_RUNNER,			-1, -1, FALSE,
-    IMG_MAZE_RUNNER
-  },
-  {
     EL_PLAYER_1,			-1, -1, FALSE,
     IMG_PLAYER_1
   },
@@ -2520,6 +2552,50 @@ element_to_graphic[] =
   {
     EL_ARROW_DOWN,			-1, -1, FALSE,
     IMG_ARROW_DOWN
+  },
+  {
+    EL_UNKNOWN,				-1, -1, FALSE,
+    IMG_UNKNOWN
+  },
+  {
+    EL_TRIGGER_ELEMENT,			-1, -1, FALSE,
+    IMG_TRIGGER_ELEMENT
+  },
+  {
+    EL_TRIGGER_PLAYER,			-1, -1, FALSE,
+    IMG_TRIGGER_PLAYER
+  },
+  {
+    EL_BD_BUTTERFLY_DOWN,		-1, -1, FALSE,
+    IMG_BD_BUTTERFLY
+  },
+  {
+    EL_BD_BUTTERFLY_LEFT,		-1, -1, FALSE,
+    IMG_BD_BUTTERFLY
+  },
+  {
+    EL_BD_BUTTERFLY_RIGHT,		-1, -1, FALSE,
+    IMG_BD_BUTTERFLY
+  },
+  {
+    EL_BD_BUTTERFLY_UP,			-1, -1, FALSE,
+    IMG_BD_BUTTERFLY
+  },
+  {
+    EL_BD_FIREFLY_DOWN,			-1, -1, FALSE,
+    IMG_BD_FIREFLY
+  },
+  {
+    EL_BD_FIREFLY_LEFT,			-1, -1, FALSE,
+    IMG_BD_FIREFLY
+  },
+  {
+    EL_BD_FIREFLY_RIGHT,		-1, -1, FALSE,
+    IMG_BD_FIREFLY
+  },
+  {
+    EL_BD_FIREFLY_UP,			-1, -1, FALSE,
+    IMG_BD_FIREFLY
   },
   {
     EL_DOOR_WHITE,			-1, -1, FALSE,
@@ -3888,6 +3964,134 @@ element_to_graphic[] =
   {
     EL_CUSTOM_256,			-1, -1, FALSE,
     IMG_CUSTOM_256
+  },
+  {
+    EL_GROUP_1,				-1, -1, FALSE,
+    IMG_GROUP_1
+  },
+  {
+    EL_GROUP_2,				-1, -1, FALSE,
+    IMG_GROUP_2
+  },
+  {
+    EL_GROUP_3,				-1, -1, FALSE,
+    IMG_GROUP_3
+  },
+  {
+    EL_GROUP_4,				-1, -1, FALSE,
+    IMG_GROUP_4
+  },
+  {
+    EL_GROUP_5,				-1, -1, FALSE,
+    IMG_GROUP_5
+  },
+  {
+    EL_GROUP_6,				-1, -1, FALSE,
+    IMG_GROUP_6
+  },
+  {
+    EL_GROUP_7,				-1, -1, FALSE,
+    IMG_GROUP_7
+  },
+  {
+    EL_GROUP_8,				-1, -1, FALSE,
+    IMG_GROUP_8
+  },
+  {
+    EL_GROUP_9,				-1, -1, FALSE,
+    IMG_GROUP_9
+  },
+  {
+    EL_GROUP_10,			-1, -1, FALSE,
+    IMG_GROUP_10
+  },
+  {
+    EL_GROUP_11,			-1, -1, FALSE,
+    IMG_GROUP_11
+  },
+  {
+    EL_GROUP_12,			-1, -1, FALSE,
+    IMG_GROUP_12
+  },
+  {
+    EL_GROUP_13,			-1, -1, FALSE,
+    IMG_GROUP_13
+  },
+  {
+    EL_GROUP_14,			-1, -1, FALSE,
+    IMG_GROUP_14
+  },
+  {
+    EL_GROUP_15,			-1, -1, FALSE,
+    IMG_GROUP_15
+  },
+  {
+    EL_GROUP_16,			-1, -1, FALSE,
+    IMG_GROUP_16
+  },
+  {
+    EL_GROUP_17,			-1, -1, FALSE,
+    IMG_GROUP_17
+  },
+  {
+    EL_GROUP_18,			-1, -1, FALSE,
+    IMG_GROUP_18
+  },
+  {
+    EL_GROUP_19,			-1, -1, FALSE,
+    IMG_GROUP_19
+  },
+  {
+    EL_GROUP_20,			-1, -1, FALSE,
+    IMG_GROUP_20
+  },
+  {
+    EL_GROUP_21,			-1, -1, FALSE,
+    IMG_GROUP_21
+  },
+  {
+    EL_GROUP_22,			-1, -1, FALSE,
+    IMG_GROUP_22
+  },
+  {
+    EL_GROUP_23,			-1, -1, FALSE,
+    IMG_GROUP_23
+  },
+  {
+    EL_GROUP_24,			-1, -1, FALSE,
+    IMG_GROUP_24
+  },
+  {
+    EL_GROUP_25,			-1, -1, FALSE,
+    IMG_GROUP_25
+  },
+  {
+    EL_GROUP_26,			-1, -1, FALSE,
+    IMG_GROUP_26
+  },
+  {
+    EL_GROUP_27,			-1, -1, FALSE,
+    IMG_GROUP_27
+  },
+  {
+    EL_GROUP_28,			-1, -1, FALSE,
+    IMG_GROUP_28
+  },
+  {
+    EL_GROUP_29,			-1, -1, FALSE,
+    IMG_GROUP_29
+  },
+  {
+    EL_GROUP_30,			-1, -1, FALSE,
+    IMG_GROUP_30
+  },
+  {
+    EL_GROUP_31,			-1, -1, FALSE,
+    IMG_GROUP_31
+  },
+  {
+    EL_GROUP_32,			-1, -1, FALSE,
+    IMG_GROUP_32
   },
   {
     -1,					-1, -1, FALSE,

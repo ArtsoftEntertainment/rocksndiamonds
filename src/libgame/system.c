@@ -117,6 +117,8 @@ void InitPlatformDependentStuff(void)
 #if defined(TARGET_SDL)
   if (SDL_Init(SDL_INIT_EVENTTHREAD | SDL_INIT_NOPARACHUTE) < 0)
     Error(ERR_EXIT, "SDL_Init() failed: %s", SDL_GetError());
+
+  SDLNet_Init();
 #endif
 }
 
@@ -868,6 +870,31 @@ static const char *cursor_image_playfield[] =
   ". c #ffffff",
   "  c None",
 
+#if 1
+  /* some people complained about a "white dot" on the screen and thought it
+     was a graphical error... OK, let's just remove the whole pointer :-) */
+
+  /* pixels */
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+  "                ",
+
+  /* hot spot */
+  "0,0"
+#else
   /* pixels */
   " X              ",
   "X.X             ",
@@ -888,6 +915,7 @@ static const char *cursor_image_playfield[] =
 
   /* hot spot */
   "1,1"
+#endif
 };
 
 #if defined(TARGET_SDL)

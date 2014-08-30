@@ -413,6 +413,9 @@ void InitElementGraphicInfo()
   int num_property_mappings = getImageListPropertyMappingSize();
   int i, act, dir;
 
+  if (graphic_info == NULL)		/* still at startup phase */
+    return;
+
   /* set values to -1 to identify later as "uninitialized" values */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
@@ -437,14 +440,15 @@ void InitElementGraphicInfo()
     int direction    = element_to_graphic[i].direction;
     boolean crumbled = element_to_graphic[i].crumbled;
     int graphic      = element_to_graphic[i].graphic;
+    int base_graphic = el2baseimg(element);
 
     if (graphic_info[graphic].bitmap == NULL)
       continue;
 
     if ((action > -1 || direction > -1 || crumbled == TRUE) &&
-	el2img(element) != -1)
+	base_graphic != -1)
     {
-      boolean base_redefined = getImageListEntry(el2img(element))->redefined;
+      boolean base_redefined = getImageListEntry(base_graphic)->redefined;
       boolean act_dir_redefined = getImageListEntry(graphic)->redefined;
 
       /* if the base graphic ("emerald", for example) has been redefined,
@@ -595,7 +599,7 @@ void InitElementGraphicInfo()
     int default_direction_crumbled[NUM_DIRECTIONS];
 
     if (default_graphic == -1)
-      default_graphic = IMG_CHAR_QUESTION;
+      default_graphic = IMG_UNKNOWN;
     if (default_crumbled == -1)
       default_crumbled = IMG_EMPTY;
 
@@ -614,9 +618,9 @@ void InitElementGraphicInfo()
 
     for (act = 0; act < NUM_ACTIONS; act++)
     {
-      boolean act_remove = (act == ACTION_DIGGING ||
-			    act == ACTION_SNAPPING ||
-			    act == ACTION_COLLECTING);
+      boolean act_remove = ((IS_DIGGABLE(i)    && act == ACTION_DIGGING)  ||
+			    (IS_SNAPPABLE(i)   && act == ACTION_SNAPPING) ||
+			    (IS_COLLECTIBLE(i) && act == ACTION_COLLECTING));
       boolean act_turning = (act == ACTION_TURNING_FROM_LEFT ||
 			     act == ACTION_TURNING_FROM_RIGHT ||
 			     act == ACTION_TURNING_FROM_UP ||
@@ -640,6 +644,15 @@ void InitElementGraphicInfo()
 	default_action_crumbled = element_info[EL_SP_DEFAULT].crumbled[act];
       if (IS_SB_ELEMENT(i) && element_info[EL_SB_DEFAULT].crumbled[act] != -1)
 	default_action_crumbled = element_info[EL_SB_DEFAULT].crumbled[act];
+
+#if 1
+      /* !!! make this better !!! */
+      if (i == EL_EMPTY_SPACE)
+      {
+	default_action_graphic = element_info[EL_DEFAULT].graphic[act];
+	default_action_crumbled = element_info[EL_DEFAULT].crumbled[act];
+      }
+#endif
 
       if (default_action_graphic == -1)
 	default_action_graphic = default_graphic;
@@ -720,8 +733,8 @@ void InitElementGraphicInfo()
   if (options.verbose)
   {
     for (i = 0; i < MAX_NUM_ELEMENTS; i++)
-      if (element_info[i].graphic[ACTION_DEFAULT] == IMG_CHAR_QUESTION &&
-	  i != EL_CHAR_QUESTION)
+      if (element_info[i].graphic[ACTION_DEFAULT] == IMG_UNKNOWN &&
+	  i != EL_UNKNOWN)
 	Error(ERR_RETURN, "warning: no graphic for element '%s' (%d)",
 	      element_info[i].token_name, i);
   }
@@ -747,7 +760,8 @@ void InitElementSpecialGraphicInfo()
     int element = element_to_special_graphic[i].element;
     int special = element_to_special_graphic[i].special;
     int graphic = element_to_special_graphic[i].graphic;
-    boolean base_redefined = getImageListEntry(el2img(element))->redefined;
+    int base_graphic = el2baseimg(element);
+    boolean base_redefined = getImageListEntry(base_graphic)->redefined;
     boolean special_redefined = getImageListEntry(graphic)->redefined;
 
     /* if the base graphic ("emerald", for example) has been redefined,
@@ -1557,6 +1571,158 @@ static void ReinitializeMusic()
   InitGameModeMusicInfo();	/* game mode music mapping */
 }
 
+static int get_special_property_bit(int element, int property_bit_nr)
+{
+  struct PropertyBitInfo
+  {
+    int element;
+    int bit_nr;
+  };
+
+  static struct PropertyBitInfo pb_can_move_into_acid[] =
+  {
+    /* the player may be able fall into acid when gravity is activated */
+    { EL_PLAYER_1,		0	},
+    { EL_PLAYER_2,		0	},
+    { EL_PLAYER_3,		0	},
+    { EL_PLAYER_4,		0	},
+    { EL_SP_MURPHY,		0	},
+    { EL_SOKOBAN_FIELD_PLAYER,	0	},
+
+    /* all element that can move may be able to also move into acid */
+    { EL_BUG,			1	},
+    { EL_BUG_LEFT,		1	},
+    { EL_BUG_RIGHT,		1	},
+    { EL_BUG_UP,		1	},
+    { EL_BUG_DOWN,		1	},
+    { EL_SPACESHIP,		2	},
+    { EL_SPACESHIP_LEFT,	2	},
+    { EL_SPACESHIP_RIGHT,	2	},
+    { EL_SPACESHIP_UP,		2	},
+    { EL_SPACESHIP_DOWN,	2	},
+    { EL_BD_BUTTERFLY,		3	},
+    { EL_BD_BUTTERFLY_LEFT,	3	},
+    { EL_BD_BUTTERFLY_RIGHT,	3	},
+    { EL_BD_BUTTERFLY_UP,	3	},
+    { EL_BD_BUTTERFLY_DOWN,	3	},
+    { EL_BD_FIREFLY,		4	},
+    { EL_BD_FIREFLY_LEFT,	4	},
+    { EL_BD_FIREFLY_RIGHT,	4	},
+    { EL_BD_FIREFLY_UP,		4	},
+    { EL_BD_FIREFLY_DOWN,	4	},
+    { EL_YAMYAM,		5	},
+    { EL_DARK_YAMYAM,		6	},
+    { EL_ROBOT,			7	},
+    { EL_PACMAN,		8	},
+    { EL_PACMAN_LEFT,		8	},
+    { EL_PACMAN_RIGHT,		8	},
+    { EL_PACMAN_UP,		8	},
+    { EL_PACMAN_DOWN,		8	},
+    { EL_MOLE,			9	},
+    { EL_MOLE_LEFT,		9	},
+    { EL_MOLE_RIGHT,		9	},
+    { EL_MOLE_UP,		9	},
+    { EL_MOLE_DOWN,		9	},
+    { EL_PENGUIN,		10	},
+    { EL_PIG,			11	},
+    { EL_DRAGON,		12	},
+    { EL_SATELLITE,		13	},
+    { EL_SP_SNIKSNAK,		14	},
+    { EL_SP_ELECTRON,		15	},
+    { EL_BALLOON,		16	},
+    { EL_SPRING,	        17	},
+
+    { -1,			-1	},
+  };
+
+  static struct PropertyBitInfo pb_dont_collide_with[] =
+  {
+    { EL_SP_SNIKSNAK,		0	},
+    { EL_SP_ELECTRON,		1	},
+
+    { -1,			-1	},
+  };
+
+  static struct
+  {
+    int bit_nr;
+    struct PropertyBitInfo *pb_info;
+  } pb_definition[] =
+  {
+    { EP_CAN_MOVE_INTO_ACID,	pb_can_move_into_acid	},
+    { EP_DONT_COLLIDE_WITH,	pb_dont_collide_with	},
+
+    { -1,			NULL			},
+  };
+
+  struct PropertyBitInfo *pb_info = NULL;
+  int i;
+
+  for (i = 0; pb_definition[i].bit_nr != -1; i++)
+    if (pb_definition[i].bit_nr == property_bit_nr)
+      pb_info = pb_definition[i].pb_info;
+
+  if (pb_info == NULL)
+    return -1;
+
+  for (i = 0; pb_info[i].element != -1; i++)
+    if (pb_info[i].element == element)
+      return pb_info[i].bit_nr;
+
+  return -1;
+}
+
+#if 1
+void setBitfieldProperty(int *bitfield, int property_bit_nr, int element,
+			 boolean property_value)
+{
+  int bit_nr = get_special_property_bit(element, property_bit_nr);
+
+  if (bit_nr > -1)
+  {
+    if (property_value)
+      *bitfield |=  (1 << bit_nr);
+    else
+      *bitfield &= ~(1 << bit_nr);
+  }
+}
+
+boolean getBitfieldProperty(int *bitfield, int property_bit_nr, int element)
+{
+  int bit_nr = get_special_property_bit(element, property_bit_nr);
+
+  if (bit_nr > -1)
+    return ((*bitfield & (1 << bit_nr)) != 0);
+
+  return FALSE;
+}
+
+#else
+
+void setMoveIntoAcidProperty(struct LevelInfo *level, int element, boolean set)
+{
+  int bit_nr = get_special_property_bit(element, EP_CAN_MOVE_INTO_ACID);
+
+  if (bit_nr > -1)
+  {
+    level->can_move_into_acid_bits &= ~(1 << bit_nr);
+
+    if (set)
+      level->can_move_into_acid_bits |= (1 << bit_nr);
+  }
+}
+
+boolean getMoveIntoAcidProperty(struct LevelInfo *level, int element)
+{
+  int bit_nr = get_special_property_bit(element, EP_CAN_MOVE_INTO_ACID);
+
+  if (bit_nr > -1)
+    return ((level->can_move_into_acid_bits & (1 << bit_nr)) != 0);
+
+  return FALSE;
+}
+#endif
+
 void InitElementPropertiesStatic()
 {
   static int ep_diggable[] =
@@ -1570,6 +1736,7 @@ void InitElementPropertiesStatic()
     EL_INVISIBLE_SAND_ACTIVE,
 
     /* !!! currently not diggable, but handled by 'ep_dont_run_into' !!! */
+    /* (if amoeba can grow into anything diggable, maybe keep these out) */
 #if 0
     EL_LANDMINE,
     EL_TRAP_ACTIVE,
@@ -1814,6 +1981,7 @@ void InitElementPropertiesStatic()
 
   static int ep_can_move[] =
   {
+    /* same elements as in 'pb_can_move_into_acid' */
     EL_BUG,
     EL_SPACESHIP,
     EL_BD_BUTTERFLY,
@@ -1831,7 +1999,6 @@ void InitElementPropertiesStatic()
     EL_SP_ELECTRON,
     EL_BALLOON,
     EL_SPRING,
-    EL_MAZE_RUNNER,
     -1
   };
 
@@ -1904,14 +2071,14 @@ void InitElementPropertiesStatic()
     -1
   };
 
-  static int ep_can_explode_by_fire[] =
+  static int ep_explodes_by_fire[] =
   {
-    /* same elements as in 'ep_can_explode_impact' */
+    /* same elements as in 'ep_explodes_impact' */
     EL_BOMB,
     EL_SP_DISK_ORANGE,
     EL_DX_SUPABOMB,
 
-    /* same elements as in 'ep_can_explode_smashed' */
+    /* same elements as in 'ep_explodes_smashed' */
     EL_SATELLITE,
     EL_PIG,
     EL_DRAGON,
@@ -1934,12 +2101,15 @@ void InitElementPropertiesStatic()
     EL_SP_DISK_YELLOW,
     EL_SP_SNIKSNAK,
     EL_SP_ELECTRON,
+#if 0
+    EL_BLACK_ORB,
+#endif
     -1
   };
 
-  static int ep_can_explode_smashed[] =
+  static int ep_explodes_smashed[] =
   {
-    /* same elements as in 'ep_can_explode_impact' */
+    /* same elements as in 'ep_explodes_impact' */
     EL_BOMB,
     EL_SP_DISK_ORANGE,
     EL_DX_SUPABOMB,
@@ -1952,7 +2122,7 @@ void InitElementPropertiesStatic()
     -1
   };
 
-  static int ep_can_explode_impact[] =
+  static int ep_explodes_impact[] =
   {
     EL_BOMB,
     EL_SP_DISK_ORANGE,
@@ -2031,6 +2201,14 @@ void InitElementPropertiesStatic()
     EL_SP_GRAVITY_PORT_RIGHT,
     EL_SP_GRAVITY_PORT_UP,
     EL_SP_GRAVITY_PORT_DOWN,
+    EL_SP_GRAVITY_ON_PORT_LEFT,
+    EL_SP_GRAVITY_ON_PORT_RIGHT,
+    EL_SP_GRAVITY_ON_PORT_UP,
+    EL_SP_GRAVITY_ON_PORT_DOWN,
+    EL_SP_GRAVITY_OFF_PORT_LEFT,
+    EL_SP_GRAVITY_OFF_PORT_RIGHT,
+    EL_SP_GRAVITY_OFF_PORT_UP,
+    EL_SP_GRAVITY_OFF_PORT_DOWN,
     -1
   };
 
@@ -2044,7 +2222,7 @@ void InitElementPropertiesStatic()
     -1
   };
 
-  static int ep_can_explode_1x1[] =
+  static int ep_explodes_1x1_old[] =
   {
     -1
   };
@@ -2068,6 +2246,131 @@ void InitElementPropertiesStatic()
     -1
   };
 
+  static int ep_explodes_cross_old[] =
+  {
+    -1
+  };
+
+  static int ep_protected[] =
+  {
+    /* same elements as in 'ep_walkable_inside' */
+    EL_TUBE_ANY,
+    EL_TUBE_VERTICAL,
+    EL_TUBE_HORIZONTAL,
+    EL_TUBE_VERTICAL_LEFT,
+    EL_TUBE_VERTICAL_RIGHT,
+    EL_TUBE_HORIZONTAL_UP,
+    EL_TUBE_HORIZONTAL_DOWN,
+    EL_TUBE_LEFT_UP,
+    EL_TUBE_LEFT_DOWN,
+    EL_TUBE_RIGHT_UP,
+    EL_TUBE_RIGHT_DOWN,
+
+    /* same elements as in 'ep_passable_over' */
+    EL_EM_GATE_1,
+    EL_EM_GATE_2,
+    EL_EM_GATE_3,
+    EL_EM_GATE_4,
+    EL_EM_GATE_1_GRAY,
+    EL_EM_GATE_2_GRAY,
+    EL_EM_GATE_3_GRAY,
+    EL_EM_GATE_4_GRAY,
+    EL_SWITCHGATE_OPEN,
+    EL_TIMEGATE_OPEN,
+
+    /* same elements as in 'ep_passable_inside' */
+    EL_SP_PORT_LEFT,
+    EL_SP_PORT_RIGHT,
+    EL_SP_PORT_UP,
+    EL_SP_PORT_DOWN,
+    EL_SP_PORT_HORIZONTAL,
+    EL_SP_PORT_VERTICAL,
+    EL_SP_PORT_ANY,
+    EL_SP_GRAVITY_PORT_LEFT,
+    EL_SP_GRAVITY_PORT_RIGHT,
+    EL_SP_GRAVITY_PORT_UP,
+    EL_SP_GRAVITY_PORT_DOWN,
+    EL_SP_GRAVITY_ON_PORT_LEFT,
+    EL_SP_GRAVITY_ON_PORT_RIGHT,
+    EL_SP_GRAVITY_ON_PORT_UP,
+    EL_SP_GRAVITY_ON_PORT_DOWN,
+    EL_SP_GRAVITY_OFF_PORT_LEFT,
+    EL_SP_GRAVITY_OFF_PORT_RIGHT,
+    EL_SP_GRAVITY_OFF_PORT_UP,
+    EL_SP_GRAVITY_OFF_PORT_DOWN,
+    -1
+  };
+
+  static int ep_throwable[] =
+  {
+    -1
+  };
+
+  static int ep_can_explode[] =
+  {
+    /* same elements as in 'ep_explodes_impact' */
+    EL_BOMB,
+    EL_SP_DISK_ORANGE,
+    EL_DX_SUPABOMB,
+
+    /* same elements as in 'ep_explodes_smashed' */
+    EL_SATELLITE,
+    EL_PIG,
+    EL_DRAGON,
+    EL_MOLE,
+
+    /* elements that can explode by explosion or by dragonfire */
+    EL_DYNAMITE_ACTIVE,
+    EL_DYNAMITE,
+    EL_DYNABOMB_PLAYER_1_ACTIVE,
+    EL_DYNABOMB_PLAYER_2_ACTIVE,
+    EL_DYNABOMB_PLAYER_3_ACTIVE,
+    EL_DYNABOMB_PLAYER_4_ACTIVE,
+    EL_DYNABOMB_INCREASE_NUMBER,
+    EL_DYNABOMB_INCREASE_SIZE,
+    EL_DYNABOMB_INCREASE_POWER,
+    EL_SP_DISK_RED_ACTIVE,
+    EL_BUG,
+    EL_PENGUIN,
+    EL_SP_DISK_RED,
+    EL_SP_DISK_YELLOW,
+    EL_SP_SNIKSNAK,
+    EL_SP_ELECTRON,
+
+    /* elements that can explode only by explosion */
+    EL_BLACK_ORB,
+    -1
+  };
+
+  static int ep_gravity_reachable[] =
+  {
+    EL_SAND,
+    EL_SP_BASE,
+    EL_TRAP,
+    EL_INVISIBLE_SAND,
+    EL_INVISIBLE_SAND_ACTIVE,
+    EL_SP_PORT_LEFT,
+    EL_SP_PORT_RIGHT,
+    EL_SP_PORT_UP,
+    EL_SP_PORT_DOWN,
+    EL_SP_PORT_HORIZONTAL,
+    EL_SP_PORT_VERTICAL,
+    EL_SP_PORT_ANY,
+    EL_SP_GRAVITY_PORT_LEFT,
+    EL_SP_GRAVITY_PORT_RIGHT,
+    EL_SP_GRAVITY_PORT_UP,
+    EL_SP_GRAVITY_PORT_DOWN,
+    EL_SP_GRAVITY_ON_PORT_LEFT,
+    EL_SP_GRAVITY_ON_PORT_RIGHT,
+    EL_SP_GRAVITY_ON_PORT_UP,
+    EL_SP_GRAVITY_ON_PORT_DOWN,
+    EL_SP_GRAVITY_OFF_PORT_LEFT,
+    EL_SP_GRAVITY_OFF_PORT_RIGHT,
+    EL_SP_GRAVITY_OFF_PORT_UP,
+    EL_SP_GRAVITY_OFF_PORT_DOWN,
+    -1
+  };
+
   static int ep_player[] =
   {
     EL_PLAYER_1,
@@ -2075,6 +2378,8 @@ void InitElementPropertiesStatic()
     EL_PLAYER_3,
     EL_PLAYER_4,
     EL_SP_MURPHY,
+    EL_SOKOBAN_FIELD_PLAYER,
+    EL_TRIGGER_PLAYER,
     -1
   };
 
@@ -2136,6 +2441,9 @@ void InitElementPropertiesStatic()
     EL_EXIT_OPEN,
     EL_STEELWALL,
     EL_PLAYER_1,
+    EL_PLAYER_2,
+    EL_PLAYER_3,
+    EL_PLAYER_4,
     EL_BD_FIREFLY,
     EL_BD_FIREFLY_1,
     EL_BD_FIREFLY_2,
@@ -2148,6 +2456,7 @@ void InitElementPropertiesStatic()
     EL_BD_BUTTERFLY_4,
     EL_BD_AMOEBA,
     EL_CHAR_QUESTION,
+    EL_UNKNOWN,
     -1
   };
 
@@ -2156,6 +2465,7 @@ void InitElementPropertiesStatic()
     /* should always be valid */
     EL_EMPTY,
 
+    /* standard classic Supaplex elements */
     EL_SP_EMPTY,
     EL_SP_ZONK,
     EL_SP_BASE,
@@ -2197,11 +2507,24 @@ void InitElementPropertiesStatic()
     EL_SP_HARDWARE_BASE_6,
     EL_SP_CHIP_TOP,
     EL_SP_CHIP_BOTTOM,
+
     /* additional elements that appeared in newer Supaplex levels */
     EL_INVISIBLE_WALL,
-    /* more than one murphy in a level results in an inactive clone */
+
+    /* additional gravity port elements (not switching, but setting gravity) */
+    EL_SP_GRAVITY_ON_PORT_LEFT,
+    EL_SP_GRAVITY_ON_PORT_RIGHT,
+    EL_SP_GRAVITY_ON_PORT_UP,
+    EL_SP_GRAVITY_ON_PORT_DOWN,
+    EL_SP_GRAVITY_OFF_PORT_LEFT,
+    EL_SP_GRAVITY_OFF_PORT_RIGHT,
+    EL_SP_GRAVITY_OFF_PORT_UP,
+    EL_SP_GRAVITY_OFF_PORT_DOWN,
+
+    /* more than one Murphy in a level results in an inactive clone */
     EL_SP_MURPHY_CLONE,
-    /* runtime elements*/
+
+    /* runtime Supaplex elements */
     EL_SP_DISK_RED_ACTIVE,
     EL_SP_TERMINAL_ACTIVE,
     EL_SP_BUGGY_BASE_ACTIVATING,
@@ -2218,7 +2541,11 @@ void InitElementPropertiesStatic()
     EL_SOKOBAN_OBJECT,
     EL_SOKOBAN_FIELD_EMPTY,
     EL_SOKOBAN_FIELD_FULL,
+    EL_SOKOBAN_FIELD_PLAYER,
     EL_PLAYER_1,
+    EL_PLAYER_2,
+    EL_PLAYER_3,
+    EL_PLAYER_4,
     EL_INVISIBLE_STEELWALL,
     -1
   };
@@ -2643,6 +2970,24 @@ void InitElementPropertiesStatic()
     -1
   };
 
+  static int ep_can_turn_each_move[] =
+  {
+    /* !!! do something with this one !!! */
+    -1
+  };
+
+  static int ep_can_grow[] =
+  {
+    EL_BD_AMOEBA,
+    EL_AMOEBA_DROP,
+    EL_AMOEBA_WET,
+    EL_AMOEBA_DRY,
+    EL_AMOEBA_FULL,
+    EL_GAME_OF_LIFE,
+    EL_BIOMAZE,
+    -1
+  };
+
   static int ep_active_bomb[] =
   {
     EL_DYNAMITE_ACTIVE,
@@ -2754,6 +3099,14 @@ void InitElementPropertiesStatic()
     EL_SP_HARDWARE_BASE_4,
     EL_SP_HARDWARE_BASE_5,
     EL_SP_HARDWARE_BASE_6,
+    EL_SP_GRAVITY_ON_PORT_LEFT,
+    EL_SP_GRAVITY_ON_PORT_RIGHT,
+    EL_SP_GRAVITY_ON_PORT_UP,
+    EL_SP_GRAVITY_ON_PORT_DOWN,
+    EL_SP_GRAVITY_OFF_PORT_LEFT,
+    EL_SP_GRAVITY_OFF_PORT_RIGHT,
+    EL_SP_GRAVITY_OFF_PORT_UP,
+    EL_SP_GRAVITY_OFF_PORT_DOWN,
     EL_CONVEYOR_BELT_1_SWITCH_LEFT,
     EL_CONVEYOR_BELT_1_SWITCH_MIDDLE,
     EL_CONVEYOR_BELT_1_SWITCH_RIGHT,
@@ -2827,9 +3180,9 @@ void InitElementPropertiesStatic()
     { ep_can_smash_player,	EP_CAN_SMASH_PLAYER	},
     { ep_can_smash_enemies,	EP_CAN_SMASH_ENEMIES	},
     { ep_can_smash_everything,	EP_CAN_SMASH_EVERYTHING	},
-    { ep_can_explode_by_fire,	EP_CAN_EXPLODE_BY_FIRE	},
-    { ep_can_explode_smashed,	EP_CAN_EXPLODE_SMASHED	},
-    { ep_can_explode_impact,	EP_CAN_EXPLODE_IMPACT	},
+    { ep_explodes_by_fire,	EP_EXPLODES_BY_FIRE	},
+    { ep_explodes_smashed,	EP_EXPLODES_SMASHED	},
+    { ep_explodes_impact,	EP_EXPLODES_IMPACT	},
     { ep_walkable_over,		EP_WALKABLE_OVER	},
     { ep_walkable_inside,	EP_WALKABLE_INSIDE	},
     { ep_walkable_under,	EP_WALKABLE_UNDER	},
@@ -2837,8 +3190,13 @@ void InitElementPropertiesStatic()
     { ep_passable_inside,	EP_PASSABLE_INSIDE	},
     { ep_passable_under,	EP_PASSABLE_UNDER	},
     { ep_droppable,		EP_DROPPABLE		},
-    { ep_can_explode_1x1,	EP_CAN_EXPLODE_1X1	},
+    { ep_explodes_1x1_old,	EP_EXPLODES_1X1_OLD	},
     { ep_pushable,		EP_PUSHABLE		},
+    { ep_explodes_cross_old,	EP_EXPLODES_CROSS_OLD	},
+    { ep_protected,		EP_PROTECTED		},
+    { ep_throwable,		EP_THROWABLE		},
+    { ep_can_explode,		EP_CAN_EXPLODE		},
+    { ep_gravity_reachable,	EP_GRAVITY_REACHABLE	},
 
     { ep_player,		EP_PLAYER		},
     { ep_can_pass_magic_wall,	EP_CAN_PASS_MAGIC_WALL	},
@@ -2861,6 +3219,8 @@ void InitElementPropertiesStatic()
     { ep_amoeboid,		EP_AMOEBOID		},
     { ep_amoebalive,		EP_AMOEBALIVE		},
     { ep_has_content,		EP_HAS_CONTENT		},
+    { ep_can_turn_each_move,	EP_CAN_TURN_EACH_MOVE	},
+    { ep_can_grow,		EP_CAN_GROW		},
     { ep_active_bomb,		EP_ACTIVE_BOMB		},
     { ep_inactive,		EP_INACTIVE		},
 
@@ -2897,6 +3257,11 @@ void InitElementPropertiesStatic()
       EL_PACMAN,
       EL_PACMAN_LEFT,		EL_PACMAN_RIGHT,
       EL_PACMAN_UP,		EL_PACMAN_DOWN
+    },
+    {
+      EL_MOLE,
+      EL_MOLE_LEFT,		EL_MOLE_RIGHT,
+      EL_MOLE_UP,		EL_MOLE_DOWN
     },
     {
       -1,
@@ -2942,7 +3307,7 @@ void InitElementPropertiesEngine(int engine_version)
     EP_DONT_TOUCH,
     EP_DONT_RUN_INTO,
     EP_GEM,
-    EP_CAN_EXPLODE_BY_FIRE,
+    EP_EXPLODES_BY_FIRE,
     EP_PUSHABLE,
     EP_PLAYER,
     EP_HAS_CONTENT,
@@ -2984,6 +3349,7 @@ void InitElementPropertiesEngine(int engine_version)
     EP_ACTIVE_BOMB,
 
     EP_ACCESSIBLE,
+
     -1
   };
 
@@ -2992,6 +3358,12 @@ void InitElementPropertiesEngine(int engine_version)
 #if 0
   InitElementPropertiesStatic();
 #endif
+
+  /* important: after initialization in InitElementPropertiesStatic(), the
+     elements are not again initialized to a default value; therefore all
+     changes have to make sure that they leave the element with a defined
+     property (which means that conditional property changes must be set to
+     a reliable default value before) */
 
   /* set all special, combined or engine dependent element properties */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
@@ -3002,8 +3374,7 @@ void InitElementPropertiesEngine(int engine_version)
 #endif
 
     /* ---------- INACTIVE ------------------------------------------------- */
-    if (i >= EL_CHAR_START && i <= EL_CHAR_END)
-      SET_PROPERTY(i, EP_INACTIVE, TRUE);
+    SET_PROPERTY(i, EP_INACTIVE, (i >= EL_CHAR_START && i <= EL_CHAR_END));
 
     /* ---------- WALKABLE, PASSABLE, ACCESSIBLE --------------------------- */
     SET_PROPERTY(i, EP_WALKABLE, (IS_WALKABLE_OVER(i) ||
@@ -3028,7 +3399,8 @@ void InitElementPropertiesEngine(int engine_version)
 
     /* ---------- COLLECTIBLE ---------------------------------------------- */
     SET_PROPERTY(i, EP_COLLECTIBLE, (IS_COLLECTIBLE_ONLY(i) ||
-				     IS_DROPPABLE(i)));
+				     IS_DROPPABLE(i) ||
+				     IS_THROWABLE(i)));
 
     /* ---------- SNAPPABLE ------------------------------------------------ */
     SET_PROPERTY(i, EP_SNAPPABLE, (IS_DIGGABLE(i) ||
@@ -3055,6 +3427,12 @@ void InitElementPropertiesEngine(int engine_version)
 					     !IS_DIGGABLE(i) &&
 					     !IS_COLLECTIBLE(i)));
 
+#if 0
+    /* ---------- PROTECTED ------------------------------------------------ */
+    if (IS_ACCESSIBLE_INSIDE(i))
+      SET_PROPERTY(i, EP_PROTECTED, TRUE);
+#endif
+
     /* ---------- DRAGONFIRE_PROOF ----------------------------------------- */
 
     if (IS_HISTORIC_SOLID(i) || i == EL_EXPLOSION)
@@ -3069,12 +3447,25 @@ void InitElementPropertiesEngine(int engine_version)
     else if (engine_version < VERSION_IDENT(2,2,0,0))
       SET_PROPERTY(i, EP_EXPLOSION_PROOF, IS_INDESTRUCTIBLE(i));
     else
+#if 1
+      SET_PROPERTY(i, EP_EXPLOSION_PROOF, (IS_INDESTRUCTIBLE(i) &&
+					   (!IS_WALKABLE(i) ||
+					    IS_PROTECTED(i))));
+#else
+#if 1
       SET_PROPERTY(i, EP_EXPLOSION_PROOF, (IS_INDESTRUCTIBLE(i) &&
 					   !IS_WALKABLE_OVER(i) &&
 					   !IS_WALKABLE_UNDER(i)));
+#else
+      SET_PROPERTY(i, EP_EXPLOSION_PROOF, (IS_INDESTRUCTIBLE(i) &&
+					   IS_PROTECTED(i)));
+#endif
+#endif
 
     if (IS_CUSTOM_ELEMENT(i))
     {
+      /* these are additional properties which are initially false when set */
+
       /* ---------- DONT_COLLIDE_WITH / DONT_RUN_INTO ---------------------- */
       if (DONT_TOUCH(i))
 	SET_PROPERTY(i, EP_DONT_COLLIDE_WITH, TRUE);
@@ -3093,14 +3484,66 @@ void InitElementPropertiesEngine(int engine_version)
 				   CAN_SMASH_ENEMIES(i) ||
 				   CAN_SMASH_EVERYTHING(i)));
 
+#if 0
     /* ---------- CAN_EXPLODE ---------------------------------------------- */
     SET_PROPERTY(i, EP_CAN_EXPLODE, (CAN_EXPLODE_BY_FIRE(i) ||
 				     CAN_EXPLODE_SMASHED(i) ||
 				     CAN_EXPLODE_IMPACT(i)));
+#endif
 
+#if 0
     /* ---------- CAN_EXPLODE_3X3 ------------------------------------------ */
+#if 0
+    SET_PROPERTY(i, EP_CAN_EXPLODE_3X3, (!CAN_EXPLODE_1X1(i) &&
+					 !CAN_EXPLODE_CROSS(i)));
+#else
     SET_PROPERTY(i, EP_CAN_EXPLODE_3X3, (CAN_EXPLODE(i) &&
-					 !CAN_EXPLODE_1X1(i)));
+					 !CAN_EXPLODE_1X1(i) &&
+					 !CAN_EXPLODE_CROSS(i)));
+#endif
+#endif
+
+    /* ---------- CAN_EXPLODE_BY_FIRE -------------------------------------- */
+    SET_PROPERTY(i, EP_CAN_EXPLODE_BY_FIRE, (CAN_EXPLODE(i) &&
+					     EXPLODES_BY_FIRE(i)));
+
+    /* ---------- CAN_EXPLODE_SMASHED -------------------------------------- */
+    SET_PROPERTY(i, EP_CAN_EXPLODE_SMASHED, (CAN_EXPLODE(i) &&
+					     EXPLODES_SMASHED(i)));
+
+    /* ---------- CAN_EXPLODE_IMPACT --------------------------------------- */
+    SET_PROPERTY(i, EP_CAN_EXPLODE_IMPACT, (CAN_EXPLODE(i) &&
+					    EXPLODES_IMPACT(i)));
+
+    /* ---------- CAN_EXPLODE_BY_DRAGONFIRE -------------------------------- */
+    SET_PROPERTY(i, EP_CAN_EXPLODE_BY_DRAGONFIRE, CAN_EXPLODE_BY_FIRE(i));
+
+    /* ---------- CAN_EXPLODE_BY_EXPLOSION --------------------------------- */
+    SET_PROPERTY(i, EP_CAN_EXPLODE_BY_EXPLOSION, (CAN_EXPLODE_BY_FIRE(i) ||
+						  i == EL_BLACK_ORB));
+
+    /* ---------- COULD_MOVE_INTO_ACID ------------------------------------- */
+    SET_PROPERTY(i, EP_COULD_MOVE_INTO_ACID, (ELEM_IS_PLAYER(i) ||
+					      CAN_MOVE(i) ||
+					      IS_CUSTOM_ELEMENT(i)));
+
+    /* ---------- MAYBE_DONT_COLLIDE_WITH ---------------------------------- */
+    SET_PROPERTY(i, EP_MAYBE_DONT_COLLIDE_WITH, (i == EL_SP_SNIKSNAK ||
+						 i == EL_SP_ELECTRON));
+
+    /* ---------- CAN_MOVE_INTO_ACID --------------------------------------- */
+    if (COULD_MOVE_INTO_ACID(i) && !IS_CUSTOM_ELEMENT(i))
+      SET_PROPERTY(i, EP_CAN_MOVE_INTO_ACID,
+		   getMoveIntoAcidProperty(&level, i));
+
+    /* ---------- DONT_COLLIDE_WITH ---------------------------------------- */
+    if (MAYBE_DONT_COLLIDE_WITH(i))
+      SET_PROPERTY(i, EP_DONT_COLLIDE_WITH,
+		   getDontCollideWithProperty(&level, i));
+
+    /* ---------- SP_PORT -------------------------------------------------- */
+    SET_PROPERTY(i, EP_SP_PORT, (IS_SP_ELEMENT(i) &&
+				 IS_PASSABLE_INSIDE(i)));
 
     /* ---------- CAN_CHANGE ----------------------------------------------- */
     SET_PROPERTY(i, EP_CAN_CHANGE, FALSE);	/* default: cannot change */
@@ -3179,12 +3622,41 @@ void InitElementPropertiesEngine(int engine_version)
     if (element_info[element].push_delay_random == -1)
       element_info[element].push_delay_random = game.default_push_delay_random;
   }
+
+  /* set some other uninitialized values of custom elements in older levels */
+  if (engine_version < VERSION_IDENT(3,1,0,0))
+  {
+    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+    {
+      int element = EL_CUSTOM_START + i;
+
+      element_info[element].access_direction = MV_ALL_DIRECTIONS;
+
+      element_info[element].explosion_delay = 17;
+      element_info[element].ignition_delay = 8;
+    }
+  }
+
+#if 0
+  /* set element properties that were handled incorrectly in older levels */
+  if (engine_version < VERSION_IDENT(3,1,0,0))
+  {
+    SET_PROPERTY(EL_SP_SNIKSNAK, EP_DONT_COLLIDE_WITH, FALSE);
+    SET_PROPERTY(EL_SP_ELECTRON, EP_DONT_COLLIDE_WITH, FALSE);
+  }
 #endif
+
+#endif
+
+  /* this is needed because some graphics depend on element properties */
+  if (game_status == GAME_MODE_PLAYING)
+    InitElementGraphicInfo();
 }
 
 static void InitGlobal()
 {
   global.autoplay_leveldir = NULL;
+  global.convert_leveldir = NULL;
 
   global.frames_per_second = 0;
   global.fps_slowdown = FALSE;
@@ -3318,6 +3790,20 @@ void Execute_Command(char *command)
     {
       *str_ptr++ = '\0';			/* terminate leveldir string */
       global.autoplay_level_nr = atoi(str_ptr);	/* get level_nr value */
+    }
+  }
+  else if (strncmp(command, "convert ", 8) == 0)
+  {
+    char *str_copy = getStringCopy(&command[8]);
+    char *str_ptr = strchr(str_copy, ' ');
+
+    global.convert_leveldir = str_copy;
+    global.convert_level_nr = -1;
+
+    if (str_ptr != NULL)
+    {
+      *str_ptr++ = '\0';			/* terminate leveldir string */
+      global.convert_level_nr = atoi(str_ptr);	/* get level_nr value */
     }
   }
   else
@@ -3661,14 +4147,14 @@ static void InitMusic(char *identifier)
 
 void InitNetworkServer()
 {
-#if defined(PLATFORM_UNIX)
+#if defined(NETWORK_AVALIABLE)
   int nr_wanted;
 #endif
 
   if (!options.network)
     return;
 
-#if defined(PLATFORM_UNIX)
+#if defined(NETWORK_AVALIABLE)
   nr_wanted = Request("Choose player", REQ_PLAYER | REQ_STAY_CLOSED);
 
   if (!ConnectToServer(options.server_host, options.server_port))
@@ -3795,14 +4281,17 @@ static char *getNewArtworkIdentifier(int type)
   return artwork_new_identifier;
 }
 
-void ReloadCustomArtwork()
+void ReloadCustomArtwork(int force_reload)
 {
   char *gfx_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_GRAPHICS);
   char *snd_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_SOUNDS);
   char *mus_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_MUSIC);
+  boolean force_reload_gfx = (force_reload & (1 << ARTWORK_TYPE_GRAPHICS));
+  boolean force_reload_snd = (force_reload & (1 << ARTWORK_TYPE_SOUNDS));
+  boolean force_reload_mus = (force_reload & (1 << ARTWORK_TYPE_MUSIC));
   boolean redraw_screen = FALSE;
 
-  if (gfx_new_identifier != NULL)
+  if (gfx_new_identifier != NULL || force_reload_gfx)
   {
 #if 0
     printf("RELOADING GRAPHICS '%s' -> '%s' ['%s', '%s']\n",
@@ -3827,7 +4316,7 @@ void ReloadCustomArtwork()
     redraw_screen = TRUE;
   }
 
-  if (snd_new_identifier != NULL)
+  if (snd_new_identifier != NULL || force_reload_snd)
   {
     ClearRectangle(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
@@ -3836,7 +4325,7 @@ void ReloadCustomArtwork()
     redraw_screen = TRUE;
   }
 
-  if (mus_new_identifier != NULL)
+  if (mus_new_identifier != NULL || force_reload_mus)
   {
     ClearRectangle(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
@@ -3922,6 +4411,11 @@ void OpenAll()
     AutoPlayTape();
     return;
   }
+  else if (global.convert_leveldir)
+  {
+    ConvertLevels();
+    return;
+  }
 
   game_status = GAME_MODE_MAIN;
 
@@ -3939,6 +4433,11 @@ void CloseAllAndExit(int exit_value)
 
   FreeAllImages();
   FreeTileClipmasks();
+
+#if defined(TARGET_SDL)
+  if (network_server)	/* terminate network server */
+    SDL_KillThread(server_thread);
+#endif
 
   CloseVideoDisplay();
   ClosePlatformDependentStuff();

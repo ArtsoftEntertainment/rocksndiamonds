@@ -29,16 +29,18 @@
 #define CHUNK_SIZE_NONE		-1	/* do not write chunk size    */
 #define FILE_VERS_CHUNK_SIZE	8	/* size of file version chunk */
 #define LEVEL_HEADER_SIZE	80	/* size of level file header  */
-#define LEVEL_HEADER_UNUSED	13	/* unused level header bytes  */
+#define LEVEL_HEADER_UNUSED	1	/* unused level header bytes  */
 #define LEVEL_CHUNK_CNT2_SIZE	160	/* size of level CNT2 chunk   */
 #define LEVEL_CHUNK_CNT2_UNUSED	11	/* unused CNT2 chunk bytes    */
 #define LEVEL_CHUNK_CNT3_HEADER	16	/* size of level CNT3 header  */
 #define LEVEL_CHUNK_CNT3_UNUSED	10	/* unused CNT3 chunk bytes    */
 #define LEVEL_CPART_CUS3_SIZE	134	/* size of CUS3 chunk part    */
 #define LEVEL_CPART_CUS3_UNUSED	15	/* unused CUS3 bytes / part   */
+#define LEVEL_CHUNK_GRP1_SIZE	74	/* size of level GRP1 chunk   */
 #define TAPE_HEADER_SIZE	20	/* size of tape file header   */
 #define TAPE_HEADER_UNUSED	3	/* unused tape header bytes   */
 
+#define LEVEL_CHUNK_CNT3_SIZE(x) (LEVEL_CHUNK_CNT3_HEADER + (x))
 #define LEVEL_CHUNK_CUS3_SIZE(x) (2 + (x) * LEVEL_CPART_CUS3_SIZE)
 #define LEVEL_CHUNK_CUS4_SIZE(x) (48 + 48 + (x) * 48)
 
@@ -46,6 +48,22 @@
 #define LEVEL_COOKIE_TMPL	"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_x.x"
 #define TAPE_COOKIE_TMPL	"ROCKSNDIAMONDS_TAPE_FILE_VERSION_x.x"
 #define SCORE_COOKIE		"ROCKSNDIAMONDS_SCORE_FILE_VERSION_1.2"
+
+/* values for level file type identifier */
+#define LEVEL_FILE_TYPE_UNKNOWN		0
+#define LEVEL_FILE_TYPE_RND		1
+#define LEVEL_FILE_TYPE_BD		2
+#define LEVEL_FILE_TYPE_EM		3
+#define LEVEL_FILE_TYPE_SP		4
+#define LEVEL_FILE_TYPE_DX		5
+#define LEVEL_FILE_TYPE_SB		6
+#define LEVEL_FILE_TYPE_DC		7
+
+#define LEVEL_FILE_TYPE_RND_PACKED	(10 + LEVEL_FILE_TYPE_RND)
+#define LEVEL_FILE_TYPE_EM_PACKED	(10 + LEVEL_FILE_TYPE_EM)
+
+#define IS_SINGLE_LEVEL_FILE(x)		(x < 10)
+#define IS_PACKED_LEVEL_FILE(x)		(x > 10)
 
 
 /* ========================================================================= */
@@ -74,7 +92,10 @@ void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
   change->can_change = FALSE;
 
   change->events = CE_BITMASK_DEFAULT;
-  change->sides = CH_SIDE_ANY;
+
+  change->trigger_player = CH_PLAYER_ANY;
+  change->trigger_side = CH_SIDE_ANY;
+  change->trigger_page = CH_PAGE_ANY;
 
   change->target_element = EL_EMPTY_SPACE;
 
@@ -85,15 +106,15 @@ void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
   change->trigger_element = EL_EMPTY_SPACE;
 
   change->explode = FALSE;
-  change->use_content = FALSE;
-  change->only_complete = FALSE;
-  change->use_random_change = FALSE;
-  change->random = 100;
-  change->power = CP_NON_DESTRUCTIVE;
+  change->use_target_content = FALSE;
+  change->only_if_complete = FALSE;
+  change->use_random_replace = FALSE;
+  change->random_percentage = 100;
+  change->replace_when = CP_WHEN_EMPTY;
 
   for (x = 0; x < 3; x++)
     for (y = 0; y < 3; y++)
-      change->content[x][y] = EL_EMPTY_SPACE;
+      change->target_content[x][y] = EL_EMPTY_SPACE;
 
   change->direct_action = 0;
   change->other_action = 0;
@@ -105,6 +126,8 @@ void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
 
 static void setLevelInfoToDefaults(struct LevelInfo *level)
 {
+  static boolean clipboard_elements_initialized = FALSE;
+
   int i, j, x, y;
 
   level->file_version = FILE_VERSION_ACTUAL;
@@ -123,15 +146,30 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
 
   level->time = 100;
   level->gems_needed = 0;
+
   level->amoeba_speed = 10;
+
   level->time_magic_wall = 10;
   level->time_wheel = 10;
   level->time_light = 10;
   level->time_timegate = 10;
+
   level->amoeba_content = EL_DIAMOND;
+
   level->double_speed = FALSE;
   level->initial_gravity = FALSE;
   level->em_slippery_gems = FALSE;
+  level->block_last_field = FALSE;
+  level->sp_block_last_field = TRUE;
+  level->instant_relocation = FALSE;
+  level->can_pass_to_walkable = FALSE;
+  level->grow_into_diggable = TRUE;
+
+  level->can_move_into_acid_bits = ~0;	/* everything can move into acid */
+  level->dont_collide_with_bits = ~0;	/* always deadly when colliding  */
+
+  level->use_spring_bug = FALSE;
+  level->use_step_counter = FALSE;
 
   level->use_custom_template = FALSE;
 
@@ -165,67 +203,112 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
 
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
-    setElementChangePages(&element_info[i], 1);
-    setElementChangeInfoToDefaults(element_info[i].change);
+    int element = i;
+
+    /* never initialize clipboard elements after the very first time */
+    if (IS_CLIPBOARD_ELEMENT(element) && clipboard_elements_initialized)
+      continue;
+
+    setElementChangePages(&element_info[element], 1);
+    setElementChangeInfoToDefaults(element_info[element].change);
+
+    if (IS_CUSTOM_ELEMENT(element) ||
+	IS_GROUP_ELEMENT(element) ||
+	IS_INTERNAL_ELEMENT(element))
+    {
+      for (j = 0; j < MAX_ELEMENT_NAME_LEN + 1; j++)
+	element_info[element].description[j] = '\0';
+
+      if (element_info[element].custom_description != NULL)
+	strncpy(element_info[element].description,
+		element_info[element].custom_description,MAX_ELEMENT_NAME_LEN);
+      else
+	strcpy(element_info[element].description,
+	       element_info[element].editor_description);
+
+      element_info[element].use_gfx_element = FALSE;
+      element_info[element].gfx_element = EL_EMPTY_SPACE;
+
+      element_info[element].modified_settings = FALSE;
+    }
+
+    if (IS_CUSTOM_ELEMENT(element) ||
+	IS_INTERNAL_ELEMENT(element))
+    {
+      element_info[element].access_direction = MV_ALL_DIRECTIONS;
+
+      element_info[element].collect_score = 10;		/* special default */
+      element_info[element].collect_count = 1;		/* special default */
+
+      element_info[element].push_delay_fixed = -1;	/* initialize later */
+      element_info[element].push_delay_random = -1;	/* initialize later */
+      element_info[element].drop_delay_fixed = 0;
+      element_info[element].drop_delay_random = 0;
+      element_info[element].move_delay_fixed = 0;
+      element_info[element].move_delay_random = 0;
+
+      element_info[element].move_pattern = MV_ALL_DIRECTIONS;
+      element_info[element].move_direction_initial = MV_START_AUTOMATIC;
+      element_info[element].move_stepsize = TILEX / 8;
+
+      element_info[element].move_enter_element = EL_EMPTY_SPACE;
+      element_info[element].move_leave_element = EL_EMPTY_SPACE;
+      element_info[element].move_leave_type = LEAVE_TYPE_UNLIMITED;
+
+      element_info[element].slippery_type = SLIPPERY_ANY_RANDOM;
+
+      element_info[element].explosion_type = EXPLODES_3X3;
+      element_info[element].explosion_delay = 16;
+      element_info[element].ignition_delay = 8;
+
+      for (x = 0; x < 3; x++)
+	for (y = 0; y < 3; y++)
+	  element_info[element].content[x][y] = EL_EMPTY_SPACE;
+
+      element_info[element].access_type = 0;
+      element_info[element].access_layer = 0;
+      element_info[element].access_protected = 0;
+      element_info[element].walk_to_action = 0;
+      element_info[element].smash_targets = 0;
+      element_info[element].deadliness = 0;
+
+      element_info[element].can_explode_by_fire = FALSE;
+      element_info[element].can_explode_smashed = FALSE;
+      element_info[element].can_explode_impact = FALSE;
+
+      element_info[element].current_change_page = 0;
+
+      /* start with no properties at all */
+      for (j = 0; j < NUM_EP_BITFIELDS; j++)
+	Properties[element][j] = EP_BITMASK_DEFAULT;
+
+      /* now set default properties */
+      SET_PROPERTY(element, EP_CAN_MOVE_INTO_ACID, TRUE);
+    }
+
+    if (IS_GROUP_ELEMENT(element) ||
+	IS_INTERNAL_ELEMENT(element))
+    {
+      /* initialize memory for list of elements in group */
+      if (element_info[element].group == NULL)
+	element_info[element].group =
+	  checked_malloc(sizeof(struct ElementGroupInfo));
+
+      for (j = 0; j < MAX_ELEMENTS_IN_GROUP; j++)
+	element_info[element].group->element[j] = EL_EMPTY_SPACE;
+
+      /* default: only one element in group */
+      element_info[element].group->num_elements = 1;
+
+      element_info[element].group->choice_mode = ANIM_RANDOM;
+    }
   }
 
-  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
-  {
-    int element = EL_CUSTOM_START + i;
-
-    for (j = 0; j < MAX_ELEMENT_NAME_LEN + 1; j++)
-      element_info[element].description[j] = '\0';
-    if (element_info[element].custom_description != NULL)
-      strncpy(element_info[element].description,
-	      element_info[element].custom_description, MAX_ELEMENT_NAME_LEN);
-    else
-      strcpy(element_info[element].description,
-	     element_info[element].editor_description);
-
-    element_info[element].use_gfx_element = FALSE;
-    element_info[element].gfx_element = EL_EMPTY_SPACE;
-
-    element_info[element].collect_score = 10;		/* special default */
-    element_info[element].collect_count = 1;		/* special default */
-
-    element_info[element].push_delay_fixed = -1;	/* initialize later */
-    element_info[element].push_delay_random = -1;	/* initialize later */
-    element_info[element].move_delay_fixed = 0;
-    element_info[element].move_delay_random = 0;
-
-    element_info[element].move_pattern = MV_ALL_DIRECTIONS;
-    element_info[element].move_direction_initial = MV_NO_MOVING;
-    element_info[element].move_stepsize = TILEX / 8;
-
-    element_info[element].slippery_type = SLIPPERY_ANY_RANDOM;
-
-    for (x = 0; x < 3; x++)
-      for (y = 0; y < 3; y++)
-	element_info[element].content[x][y] = EL_EMPTY_SPACE;
-
-    element_info[element].access_type = 0;
-    element_info[element].access_layer = 0;
-    element_info[element].walk_to_action = 0;
-    element_info[element].smash_targets = 0;
-    element_info[element].deadliness = 0;
-    element_info[element].consistency = 0;
-
-    element_info[element].can_explode_by_fire = FALSE;
-    element_info[element].can_explode_smashed = FALSE;
-    element_info[element].can_explode_impact = FALSE;
-
-    element_info[element].current_change_page = 0;
-
-    /* start with no properties at all */
-    for (j = 0; j < NUM_EP_BITFIELDS; j++)
-      Properties[element][j] = EP_BITMASK_DEFAULT;
-
-    element_info[element].modified_settings = FALSE;
-  }
+  clipboard_elements_initialized = TRUE;
 
   BorderElement = EL_STEELWALL;
 
-  level->no_level_file = FALSE;
+  level->no_valid_file = FALSE;
 
   if (leveldir_current == NULL)		/* only when dumping level */
     return;
@@ -261,6 +344,15 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
   }
 }
 
+static void setFileInfoToDefaults(struct LevelFileInfo *level_file_info)
+{
+  level_file_info->nr = 0;
+  level_file_info->type = LEVEL_FILE_TYPE_UNKNOWN;
+  level_file_info->packed = FALSE;
+  level_file_info->basename = NULL;
+  level_file_info->filename = NULL;
+}
+
 static void ActivateLevelTemplate()
 {
   /* Currently there is no special action needed to activate the template
@@ -268,16 +360,215 @@ static void ActivateLevelTemplate()
      level data, while all other variables do not change. */
 }
 
-boolean LevelFileExists(int level_nr)
+static char *getLevelFilenameFromBasename(char *basename)
 {
-  char *filename = getLevelFilename(level_nr);
+  static char *filename = NULL;
 
-  return (access(filename, F_OK) == 0);
+  checked_free(filename);
+
+  filename = getPath2(getCurrentLevelDir(), basename);
+
+  return filename;
 }
 
-static int checkLevelElement(int element)
+static int getFileTypeFromBasename(char *basename)
 {
-  /* map some (historic, now obsolete) elements */
+  static char *filename = NULL;
+  struct stat file_status;
+
+  /* ---------- try to determine file type from filename ---------- */
+
+  /* check for typical filename of a Supaplex level package file */
+  if (strlen(basename) == 10 && (strncmp(basename, "levels.d", 8) == 0 ||
+				 strncmp(basename, "LEVELS.D", 8) == 0))
+    return LEVEL_FILE_TYPE_SP;
+
+  /* ---------- try to determine file type from filesize ---------- */
+
+  checked_free(filename);
+  filename = getPath2(getCurrentLevelDir(), basename);
+
+  if (stat(filename, &file_status) == 0)
+  {
+    /* check for typical filesize of a Supaplex level package file */
+    if (file_status.st_size == 170496)
+      return LEVEL_FILE_TYPE_SP;
+  }
+
+  return LEVEL_FILE_TYPE_UNKNOWN;
+}
+
+static char *getSingleLevelBasename(int nr, int type)
+{
+  static char basename[MAX_FILENAME_LEN];
+  char *level_filename = getStringCopy(leveldir_current->level_filename);
+
+  if (level_filename == NULL)
+    level_filename = getStringCat2("%03d.", LEVELFILE_EXTENSION);
+
+  switch (type)
+  {
+    case LEVEL_FILE_TYPE_RND:
+      if (nr < 0)
+	sprintf(basename, "template.%s", LEVELFILE_EXTENSION);
+      else
+	sprintf(basename, "%03d.%s", nr, LEVELFILE_EXTENSION);
+      break;
+
+    case LEVEL_FILE_TYPE_EM:
+      sprintf(basename, "%d", nr);
+      break;
+
+    case LEVEL_FILE_TYPE_UNKNOWN:
+    default:
+      sprintf(basename, level_filename, nr);
+      break;
+  }
+
+  free(level_filename);
+
+  return basename;
+}
+
+static char *getPackedLevelBasename(int type)
+{
+  static char basename[MAX_FILENAME_LEN];
+  char *directory = getCurrentLevelDir();
+  DIR *dir;
+  struct dirent *dir_entry;
+
+  strcpy(basename, UNDEFINED_FILENAME);		/* default: undefined file */
+
+  if ((dir = opendir(directory)) == NULL)
+  {
+    Error(ERR_WARN, "cannot read current level directory '%s'", directory);
+
+    return basename;
+  }
+
+  while ((dir_entry = readdir(dir)) != NULL)	/* loop until last dir entry */
+  {
+    char *entry_basename = dir_entry->d_name;
+    int entry_type = getFileTypeFromBasename(entry_basename);
+
+    if (entry_type != LEVEL_FILE_TYPE_UNKNOWN)	/* found valid level package */
+    {
+      if (type == LEVEL_FILE_TYPE_UNKNOWN ||
+	  type == entry_type)
+      {
+	strcpy(basename, entry_basename);
+
+	break;
+      }
+    }
+  }
+
+  closedir(dir);
+
+  return basename;
+}
+
+static char *getSingleLevelFilename(int nr, int type)
+{
+  return getLevelFilenameFromBasename(getSingleLevelBasename(nr, type));
+}
+
+#if 0
+static char *getPackedLevelFilename(int type)
+{
+  return getLevelFilenameFromBasename(getPackedLevelBasename(type));
+}
+#endif
+
+char *getDefaultLevelFilename(int nr)
+{
+  return getSingleLevelFilename(nr, LEVEL_FILE_TYPE_RND);
+}
+
+static void setLevelFileInfo_SingleLevelFilename(struct LevelFileInfo *lfi,
+						 int type)
+{
+  lfi->type = type;
+  lfi->packed = FALSE;
+  lfi->basename = getSingleLevelBasename(lfi->nr, lfi->type);
+  lfi->filename = getLevelFilenameFromBasename(lfi->basename);
+}
+
+static void setLevelFileInfo_PackedLevelFilename(struct LevelFileInfo *lfi,
+						 int type)
+{
+  lfi->type = type;
+  lfi->packed = TRUE;
+  lfi->basename = getPackedLevelBasename(lfi->type);
+  lfi->filename = getLevelFilenameFromBasename(lfi->basename);
+}
+
+static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
+{
+  /* special case: level number is negative => check for level template file */
+  if (lfi->nr < 0)
+  {
+    setLevelFileInfo_SingleLevelFilename(lfi, LEVEL_FILE_TYPE_RND);
+
+    return;
+  }
+
+  if (leveldir_current->level_filename != NULL)
+  {
+    /* check for file name/pattern specified in "levelinfo.conf" */
+    setLevelFileInfo_SingleLevelFilename(lfi, LEVEL_FILE_TYPE_UNKNOWN);
+    if (fileExists(lfi->filename))
+      return;
+  }
+
+  /* check for native Rocks'n'Diamonds level file */
+  setLevelFileInfo_SingleLevelFilename(lfi, LEVEL_FILE_TYPE_RND);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* check for classic Emerald Mine level file */
+  setLevelFileInfo_SingleLevelFilename(lfi, LEVEL_FILE_TYPE_EM);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* check for various packed level file formats */
+  setLevelFileInfo_PackedLevelFilename(lfi, LEVEL_FILE_TYPE_UNKNOWN);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* no known level file found -- try to use default values */
+  setLevelFileInfo_SingleLevelFilename(lfi, LEVEL_FILE_TYPE_UNKNOWN);
+}
+
+static void determineLevelFileInfo_Filetype(struct LevelFileInfo *lfi)
+{
+  if (lfi->type == LEVEL_FILE_TYPE_UNKNOWN)
+    lfi->type = getFileTypeFromBasename(lfi->basename);
+}
+
+static struct LevelFileInfo *getLevelFileInfo(int nr)
+{
+  static struct LevelFileInfo level_file_info;
+
+  /* always start with reliable default values */
+  setFileInfoToDefaults(&level_file_info);
+
+  level_file_info.nr = nr;	/* set requested level number */
+
+  determineLevelFileInfo_Filename(&level_file_info);
+  determineLevelFileInfo_Filetype(&level_file_info);
+
+  return &level_file_info;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* functions for loading R'n'D level                                         */
+/* ------------------------------------------------------------------------- */
+
+int getMappedElement(int element)
+{
+  /* remap some (historic, now obsolete) elements */
 
 #if 1
   switch (element)
@@ -318,7 +609,7 @@ static int checkLevelElement(int element)
       {
 	Error(ERR_WARN, "invalid level element %d", element);
 
-	element = EL_CHAR_QUESTION;
+	element = EL_UNKNOWN;
       }
       break;
   }
@@ -327,13 +618,39 @@ static int checkLevelElement(int element)
   {
     Error(ERR_WARN, "invalid level element %d", element);
 
-    element = EL_CHAR_QUESTION;
+    element = EL_UNKNOWN;
   }
   else if (element == EL_PLAYER_OBSOLETE)
     element = EL_PLAYER_1;
   else if (element == EL_KEY_OBSOLETE)
     element = EL_KEY_1;
 #endif
+
+  return element;
+}
+
+int getMappedElementByVersion(int element, int game_version)
+{
+  /* remap some elements due to certain game version */
+
+  if (game_version <= VERSION_IDENT(2,2,0,0))
+  {
+    /* map game font elements */
+    element = (element == EL_CHAR('[')  ? EL_CHAR_AUMLAUT :
+	       element == EL_CHAR('\\') ? EL_CHAR_OUMLAUT :
+	       element == EL_CHAR(']')  ? EL_CHAR_UUMLAUT :
+	       element == EL_CHAR('^')  ? EL_CHAR_COPYRIGHT : element);
+  }
+
+  if (game_version < VERSION_IDENT(3,0,0,0))
+  {
+    /* map Supaplex gravity tube elements */
+    element = (element == EL_SP_GRAVITY_PORT_LEFT  ? EL_SP_PORT_LEFT  :
+	       element == EL_SP_GRAVITY_PORT_RIGHT ? EL_SP_PORT_RIGHT :
+	       element == EL_SP_GRAVITY_PORT_UP    ? EL_SP_PORT_UP    :
+	       element == EL_SP_GRAVITY_PORT_DOWN  ? EL_SP_PORT_DOWN  :
+	       element);
+  }
 
   return element;
 }
@@ -367,18 +684,30 @@ static int LoadLevel_HEAD(FILE *file, int chunk_size, struct LevelInfo *level)
   for (i = 0; i < STD_ELEMENT_CONTENTS; i++)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
-	level->yamyam_content[i][x][y] = checkLevelElement(getFile8Bit(file));
+	level->yamyam_content[i][x][y] = getMappedElement(getFile8Bit(file));
 
   level->amoeba_speed		= getFile8Bit(file);
   level->time_magic_wall	= getFile8Bit(file);
   level->time_wheel		= getFile8Bit(file);
-  level->amoeba_content		= checkLevelElement(getFile8Bit(file));
+  level->amoeba_content		= getMappedElement(getFile8Bit(file));
   level->double_speed		= (getFile8Bit(file) == 1 ? TRUE : FALSE);
   level->initial_gravity	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
   level->encoding_16bit_field	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
   level->em_slippery_gems	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
 
   level->use_custom_template	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+
+  level->block_last_field	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+  level->sp_block_last_field	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+  level->can_move_into_acid_bits = getFile32BitBE(file);
+  level->dont_collide_with_bits = getFile8Bit(file);
+
+  level->use_spring_bug		= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+  level->use_step_counter	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+
+  level->instant_relocation	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+  level->can_pass_to_walkable	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+  level->grow_into_diggable	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
 
   ReadUnusedBytesFromFile(file, LEVEL_HEADER_UNUSED);
 
@@ -418,8 +747,8 @@ static int LoadLevel_BODY(FILE *file, int chunk_size, struct LevelInfo *level)
   for (y = 0; y < level->fieldy; y++)
     for (x = 0; x < level->fieldx; x++)
       level->field[x][y] =
-	checkLevelElement(level->encoding_16bit_field ? getFile16BitBE(file) :
-			  getFile8Bit(file));
+	getMappedElement(level->encoding_16bit_field ? getFile16BitBE(file) :
+			 getFile8Bit(file));
   return chunk_size;
 }
 
@@ -458,8 +787,8 @@ static int LoadLevel_CONT(FILE *file, int chunk_size, struct LevelInfo *level)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
 	level->yamyam_content[i][x][y] =
-	  checkLevelElement(level->encoding_16bit_field ?
-			    getFile16BitBE(file) : getFile8Bit(file));
+	  getMappedElement(level->encoding_16bit_field ?
+			   getFile16BitBE(file) : getFile8Bit(file));
   return chunk_size;
 }
 
@@ -470,7 +799,7 @@ static int LoadLevel_CNT2(FILE *file, int chunk_size, struct LevelInfo *level)
   int num_contents, content_xsize, content_ysize;
   int content_array[MAX_ELEMENT_CONTENTS][3][3];
 
-  element = checkLevelElement(getFile16BitBE(file));
+  element = getMappedElement(getFile16BitBE(file));
   num_contents = getFile8Bit(file);
   content_xsize = getFile8Bit(file);
   content_ysize = getFile8Bit(file);
@@ -480,7 +809,7 @@ static int LoadLevel_CNT2(FILE *file, int chunk_size, struct LevelInfo *level)
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
-	content_array[i][x][y] = checkLevelElement(getFile16BitBE(file));
+	content_array[i][x][y] = getMappedElement(getFile16BitBE(file));
 
   /* correct invalid number of content fields -- should never happen */
   if (num_contents < 1 || num_contents > MAX_ELEMENT_CONTENTS)
@@ -515,7 +844,7 @@ static int LoadLevel_CNT3(FILE *file, int chunk_size, struct LevelInfo *level)
   int envelope_len;
   int chunk_size_expected;
 
-  element = checkLevelElement(getFile16BitBE(file));
+  element = getMappedElement(getFile16BitBE(file));
   if (!IS_ENVELOPE(element))
     element = EL_ENVELOPE_1;
 
@@ -528,8 +857,7 @@ static int LoadLevel_CNT3(FILE *file, int chunk_size, struct LevelInfo *level)
 
   ReadUnusedBytesFromFile(file, LEVEL_CHUNK_CNT3_UNUSED);
 
-  chunk_size_expected = LEVEL_CHUNK_CNT3_HEADER + envelope_len;
-
+  chunk_size_expected = LEVEL_CHUNK_CNT3_SIZE(envelope_len);
   if (chunk_size_expected != chunk_size)
   {
     ReadUnusedBytesFromFile(file, chunk_size - LEVEL_CHUNK_CNT3_HEADER);
@@ -614,7 +942,7 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
     {
       Error(ERR_WARN, "invalid custom element number %d", element);
 
-      element = EL_DUMMY;
+      element = EL_INTERNAL_DUMMY;
     }
 
     for (j = 0; j < MAX_ELEMENT_NAME_LEN; j++)
@@ -628,7 +956,7 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
 
     element_info[element].use_gfx_element = getFile8Bit(file);
     element_info[element].gfx_element =
-      checkLevelElement(getFile16BitBE(file));
+      getMappedElement(getFile16BitBE(file));
 
     element_info[element].collect_score = getFile8Bit(file);
     element_info[element].collect_count = getFile8Bit(file);
@@ -645,32 +973,32 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
 	element_info[element].content[x][y] =
-	  checkLevelElement(getFile16BitBE(file));
+	  getMappedElement(getFile16BitBE(file));
 
     element_info[element].change->events = getFile32BitBE(file);
 
     element_info[element].change->target_element =
-      checkLevelElement(getFile16BitBE(file));
+      getMappedElement(getFile16BitBE(file));
 
     element_info[element].change->delay_fixed = getFile16BitBE(file);
     element_info[element].change->delay_random = getFile16BitBE(file);
     element_info[element].change->delay_frames = getFile16BitBE(file);
 
     element_info[element].change->trigger_element =
-      checkLevelElement(getFile16BitBE(file));
+      getMappedElement(getFile16BitBE(file));
 
     element_info[element].change->explode = getFile8Bit(file);
-    element_info[element].change->use_content = getFile8Bit(file);
-    element_info[element].change->only_complete = getFile8Bit(file);
-    element_info[element].change->use_random_change = getFile8Bit(file);
+    element_info[element].change->use_target_content = getFile8Bit(file);
+    element_info[element].change->only_if_complete = getFile8Bit(file);
+    element_info[element].change->use_random_replace = getFile8Bit(file);
 
-    element_info[element].change->random = getFile8Bit(file);
-    element_info[element].change->power = getFile8Bit(file);
+    element_info[element].change->random_percentage = getFile8Bit(file);
+    element_info[element].change->replace_when = getFile8Bit(file);
 
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
-	element_info[element].change->content[x][y] =
-	  checkLevelElement(getFile16BitBE(file));
+	element_info[element].change->target_content[x][y] =
+	  getMappedElement(getFile16BitBE(file));
 
     element_info[element].slippery_type = getFile8Bit(file);
 
@@ -697,7 +1025,8 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
   {
     Error(ERR_WARN, "invalid custom element number %d", element);
 
-    element = EL_DUMMY;
+    ReadUnusedBytesFromFile(file, chunk_size - 2);
+    return chunk_size;
   }
 
   ei = &element_info[element];
@@ -724,16 +1053,19 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
   /* read custom property values */
 
   ei->use_gfx_element = getFile8Bit(file);
-  ei->gfx_element = checkLevelElement(getFile16BitBE(file));
+  ei->gfx_element = getMappedElement(getFile16BitBE(file));
 
   ei->collect_score = getFile8Bit(file);
   ei->collect_count = getFile8Bit(file);
 
-  ei->push_delay_fixed = getFile16BitBE(file);
-  ei->push_delay_random = getFile16BitBE(file);
+  ei->drop_delay_fixed = getFile8Bit(file);
+  ei->push_delay_fixed = getFile8Bit(file);
+  ei->drop_delay_random = getFile8Bit(file);
+  ei->push_delay_random = getFile8Bit(file);
   ei->move_delay_fixed = getFile16BitBE(file);
   ei->move_delay_random = getFile16BitBE(file);
 
+  /* bits 0 - 15 of "move_pattern" ... */
   ei->move_pattern = getFile16BitBE(file);
   ei->move_direction_initial = getFile8Bit(file);
   ei->move_stepsize = getFile8Bit(file);
@@ -742,10 +1074,23 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
 
   for (y = 0; y < 3; y++)
     for (x = 0; x < 3; x++)
-      ei->content[x][y] = checkLevelElement(getFile16BitBE(file));
+      ei->content[x][y] = getMappedElement(getFile16BitBE(file));
+
+  ei->move_enter_element = getMappedElement(getFile16BitBE(file));
+  ei->move_leave_element = getMappedElement(getFile16BitBE(file));
+  ei->move_leave_type = getFile8Bit(file);
+
+  /* ... bits 16 - 31 of "move_pattern" (not nice, but downward compatible) */
+  ei->move_pattern |= (getFile16BitBE(file) << 16);
+
+  ei->access_direction = getFile8Bit(file);
+
+  ei->explosion_delay = getFile8Bit(file);
+  ei->ignition_delay = getFile8Bit(file);
+  ei->explosion_type = getFile8Bit(file);
 
   /* some free bytes for future custom property values and padding */
-  ReadUnusedBytesFromFile(file, 12);
+  ReadUnusedBytesFromFile(file, 1);
 
   /* read change property values */
 
@@ -760,35 +1105,45 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
 
     change->events = getFile32BitBE(file);
 
-    change->target_element = checkLevelElement(getFile16BitBE(file));
+    change->target_element = getMappedElement(getFile16BitBE(file));
 
     change->delay_fixed = getFile16BitBE(file);
     change->delay_random = getFile16BitBE(file);
     change->delay_frames = getFile16BitBE(file);
 
-    change->trigger_element = checkLevelElement(getFile16BitBE(file));
+    change->trigger_element = getMappedElement(getFile16BitBE(file));
 
     change->explode = getFile8Bit(file);
-    change->use_content = getFile8Bit(file);
-    change->only_complete = getFile8Bit(file);
-    change->use_random_change = getFile8Bit(file);
+    change->use_target_content = getFile8Bit(file);
+    change->only_if_complete = getFile8Bit(file);
+    change->use_random_replace = getFile8Bit(file);
 
-    change->random = getFile8Bit(file);
-    change->power = getFile8Bit(file);
+    change->random_percentage = getFile8Bit(file);
+    change->replace_when = getFile8Bit(file);
 
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
-	change->content[x][y] = checkLevelElement(getFile16BitBE(file));
+	change->target_content[x][y] = getMappedElement(getFile16BitBE(file));
 
     change->can_change = getFile8Bit(file);
 
-    change->sides = getFile8Bit(file);
+    change->trigger_side = getFile8Bit(file);
 
-    if (change->sides == CH_SIDE_NONE)	/* correct empty sides field */
-      change->sides = CH_SIDE_ANY;
+#if 1
+    change->trigger_player = getFile8Bit(file);
+    change->trigger_page = getFile8Bit(file);
+
+    change->trigger_page = (change->trigger_page == CH_PAGE_ANY_FILE ?
+			    CH_PAGE_ANY : (1 << change->trigger_page));
+
+    /* some free bytes for future change property values and padding */
+    ReadUnusedBytesFromFile(file, 6);
+
+#else
 
     /* some free bytes for future change property values and padding */
     ReadUnusedBytesFromFile(file, 8);
+#endif
   }
 
   /* mark this custom element as modified */
@@ -797,22 +1152,65 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
   return chunk_size;
 }
 
-void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
+static int LoadLevel_GRP1(FILE *file, int chunk_size, struct LevelInfo *level)
 {
+  struct ElementInfo *ei;
+  struct ElementGroupInfo *group;
+  int element;
+  int i;
+
+  element = getFile16BitBE(file);
+
+  if (!IS_GROUP_ELEMENT(element))
+  {
+    Error(ERR_WARN, "invalid group element number %d", element);
+
+    ReadUnusedBytesFromFile(file, chunk_size - 2);
+    return chunk_size;
+  }
+
+  ei = &element_info[element];
+
+  for (i = 0; i < MAX_ELEMENT_NAME_LEN; i++)
+    ei->description[i] = getFile8Bit(file);
+  ei->description[MAX_ELEMENT_NAME_LEN] = 0;
+
+  group = element_info[element].group;
+
+  group->num_elements = getFile8Bit(file);
+
+  ei->use_gfx_element = getFile8Bit(file);
+  ei->gfx_element = getMappedElement(getFile16BitBE(file));
+
+  group->choice_mode = getFile8Bit(file);
+
+  /* some free bytes for future values and padding */
+  ReadUnusedBytesFromFile(file, 3);
+
+  for (i = 0; i < MAX_ELEMENTS_IN_GROUP; i++)
+    group->element[i] = getMappedElement(getFile16BitBE(file));
+
+  /* mark this group element as modified */
+  element_info[element].modified_settings = TRUE;
+
+  return chunk_size;
+}
+
+static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
+				      struct LevelFileInfo *level_file_info)
+{
+  char *filename = level_file_info->filename;
   char cookie[MAX_LINE_LEN];
   char chunk_name[CHUNK_ID_LEN + 1];
   int chunk_size;
   FILE *file;
 
-  /* always start with reliable default values */
-  setLevelInfoToDefaults(level);
-
   if (!(file = fopen(filename, MODE_READ)))
   {
-    level->no_level_file = TRUE;
+    level->no_valid_file = TRUE;
 
     if (level != &level_template)
-      Error(ERR_WARN, "cannot read level '%s' - creating new level", filename);
+      Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
 
     return;
   }
@@ -825,6 +1223,8 @@ void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
     getFileChunkBE(file, chunk_name, NULL);
     if (strcmp(chunk_name, "CAVE") != 0)
     {
+      level->no_valid_file = TRUE;
+
       Error(ERR_WARN, "unknown format of level file '%s'", filename);
       fclose(file);
       return;
@@ -839,6 +1239,8 @@ void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
 
     if (!checkCookieString(cookie, LEVEL_COOKIE_TMPL))
     {
+      level->no_valid_file = TRUE;
+
       Error(ERR_WARN, "unknown format of level file '%s'", filename);
       fclose(file);
       return;
@@ -846,6 +1248,8 @@ void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
 
     if ((level->file_version = getFileVersionFromCookieString(cookie)) == -1)
     {
+      level->no_valid_file = TRUE;
+
       Error(ERR_WARN, "unsupported version of level file '%s'", filename);
       fclose(file);
       return;
@@ -882,6 +1286,7 @@ void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
       { "CUS2", -1,			LoadLevel_CUS2 },
       { "CUS3", -1,			LoadLevel_CUS3 },
       { "CUS4", -1,			LoadLevel_CUS4 },
+      { "GRP1", -1,			LoadLevel_GRP1 },
       {  NULL,  0,			NULL }
     };
 
@@ -927,6 +1332,815 @@ void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
   fclose(file);
 }
 
+/* ------------------------------------------------------------------------- */
+/* functions for loading EM level                                            */
+/* ------------------------------------------------------------------------- */
+
+static int map_em_element_yam(int element)
+{
+  switch (element)
+  {
+    case 0x00:	return EL_EMPTY;
+    case 0x01:	return EL_EMERALD;
+    case 0x02:	return EL_DIAMOND;
+    case 0x03:	return EL_ROCK;
+    case 0x04:	return EL_ROBOT;
+    case 0x05:	return EL_SPACESHIP_UP;
+    case 0x06:	return EL_BOMB;
+    case 0x07:	return EL_BUG_UP;
+    case 0x08:	return EL_AMOEBA_DROP;
+    case 0x09:	return EL_NUT;
+    case 0x0a:	return EL_YAMYAM;
+    case 0x0b:	return EL_QUICKSAND_FULL;
+    case 0x0c:	return EL_SAND;
+    case 0x0d:	return EL_WALL_SLIPPERY;
+    case 0x0e:	return EL_STEELWALL;
+    case 0x0f:	return EL_WALL;
+    case 0x10:	return EL_EM_KEY_1;
+    case 0x11:	return EL_EM_KEY_2;
+    case 0x12:	return EL_EM_KEY_4;
+    case 0x13:	return EL_EM_KEY_3;
+    case 0x14:	return EL_MAGIC_WALL;
+    case 0x15:	return EL_ROBOT_WHEEL;
+    case 0x16:	return EL_DYNAMITE;
+
+    case 0x17:	return EL_EM_KEY_1;			/* EMC */
+    case 0x18:	return EL_BUG_UP;			/* EMC */
+    case 0x1a:	return EL_DIAMOND;			/* EMC */
+    case 0x1b:	return EL_EMERALD;			/* EMC */
+    case 0x25:	return EL_NUT;				/* EMC */
+    case 0x80:	return EL_EMPTY;			/* EMC */
+    case 0x85:	return EL_EM_KEY_1;			/* EMC */
+    case 0x86:	return EL_EM_KEY_2;			/* EMC */
+    case 0x87:	return EL_EM_KEY_4;			/* EMC */
+    case 0x88:	return EL_EM_KEY_3;			/* EMC */
+    case 0x94:	return EL_QUICKSAND_EMPTY;		/* EMC */
+    case 0x9a:	return EL_AMOEBA_WET;			/* EMC */
+    case 0xaf:	return EL_DYNAMITE;			/* EMC */
+    case 0xbd:	return EL_SAND;				/* EMC */
+
+    default:
+      Error(ERR_WARN, "invalid level element %d", element);
+      return EL_UNKNOWN;
+  }
+}
+
+static int map_em_element_field(int element)
+{
+  if (element >= 0xc8 && element <= 0xe1)
+    return EL_CHAR_A + (element - 0xc8);
+  else if (element >= 0xe2 && element <= 0xeb)
+    return EL_CHAR_0 + (element - 0xe2);
+
+  switch (element)
+  {
+    case 0x00:	return EL_ROCK;
+    case 0x01:	return EL_ROCK;				/* EMC */
+    case 0x02:	return EL_DIAMOND;
+    case 0x03:	return EL_DIAMOND;
+    case 0x04:	return EL_ROBOT;
+    case 0x05:	return EL_ROBOT;			/* EMC */
+    case 0x06:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x07:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x08:	return EL_SPACESHIP_UP;
+    case 0x09:	return EL_SPACESHIP_RIGHT;
+    case 0x0a:	return EL_SPACESHIP_DOWN;
+    case 0x0b:	return EL_SPACESHIP_LEFT;
+    case 0x0c:	return EL_SPACESHIP_UP;
+    case 0x0d:	return EL_SPACESHIP_RIGHT;
+    case 0x0e:	return EL_SPACESHIP_DOWN;
+    case 0x0f:	return EL_SPACESHIP_LEFT;
+
+    case 0x10:	return EL_BOMB;
+    case 0x11:	return EL_BOMB;				/* EMC */
+    case 0x12:	return EL_EMERALD;
+    case 0x13:	return EL_EMERALD;
+    case 0x14:	return EL_BUG_UP;
+    case 0x15:	return EL_BUG_RIGHT;
+    case 0x16:	return EL_BUG_DOWN;
+    case 0x17:	return EL_BUG_LEFT;
+    case 0x18:	return EL_BUG_UP;
+    case 0x19:	return EL_BUG_RIGHT;
+    case 0x1a:	return EL_BUG_DOWN;
+    case 0x1b:	return EL_BUG_LEFT;
+    case 0x1c:	return EL_AMOEBA_DROP;
+    case 0x1d:	return EL_AMOEBA_DROP;			/* EMC */
+    case 0x1e:	return EL_AMOEBA_DROP;			/* EMC */
+    case 0x1f:	return EL_AMOEBA_DROP;			/* EMC */
+
+    case 0x20:	return EL_ROCK;
+    case 0x21:	return EL_BOMB;				/* EMC */
+    case 0x22:	return EL_DIAMOND;			/* EMC */
+    case 0x23:	return EL_EMERALD;			/* EMC */
+    case 0x24:	return EL_MAGIC_WALL;
+    case 0x25:	return EL_NUT;
+    case 0x26:	return EL_NUT;				/* EMC */
+    case 0x27:	return EL_NUT;				/* EMC */
+
+      /* looks like magic wheel, but is _always_ activated */
+    case 0x28:	return EL_ROBOT_WHEEL;			/* EMC */
+
+    case 0x29:	return EL_YAMYAM;	/* up */
+    case 0x2a:	return EL_YAMYAM;	/* down */
+    case 0x2b:	return EL_YAMYAM;	/* left */	/* EMC */
+    case 0x2c:	return EL_YAMYAM;	/* right */	/* EMC */
+    case 0x2d:	return EL_QUICKSAND_FULL;
+    case 0x2e:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x2f:	return EL_EMPTY_SPACE;			/* EMC */
+
+    case 0x30:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x31:	return EL_SAND;				/* EMC */
+    case 0x32:	return EL_SAND;				/* EMC */
+    case 0x33:	return EL_SAND;				/* EMC */
+    case 0x34:	return EL_QUICKSAND_FULL;		/* EMC */
+    case 0x35:	return EL_QUICKSAND_FULL;		/* EMC */
+    case 0x36:	return EL_QUICKSAND_FULL;		/* EMC */
+    case 0x37:	return EL_SAND;				/* EMC */
+    case 0x38:	return EL_ROCK;				/* EMC */
+    case 0x39:	return EL_EXPANDABLE_WALL_HORIZONTAL;	/* EMC */
+    case 0x3a:	return EL_EXPANDABLE_WALL_VERTICAL;	/* EMC */
+    case 0x3b:	return EL_DYNAMITE_ACTIVE;	/* 1 */
+    case 0x3c:	return EL_DYNAMITE_ACTIVE;	/* 2 */
+    case 0x3d:	return EL_DYNAMITE_ACTIVE;	/* 3 */
+    case 0x3e:	return EL_DYNAMITE_ACTIVE;	/* 4 */
+    case 0x3f:	return EL_ACID_POOL_BOTTOM;
+
+    case 0x40:	return EL_EXIT_OPEN;	/* 1 */
+    case 0x41:	return EL_EXIT_OPEN;	/* 2 */
+    case 0x42:	return EL_EXIT_OPEN;	/* 3 */
+    case 0x43:	return EL_BALLOON;			/* EMC */
+    case 0x44:	return EL_UNKNOWN;			/* EMC ("plant") */
+    case 0x45:	return EL_SPRING;			/* EMC */
+    case 0x46:	return EL_SPRING;	/* falling */	/* EMC */
+    case 0x47:	return EL_SPRING;	/* left */	/* EMC */
+    case 0x48:	return EL_SPRING;	/* right */	/* EMC */
+    case 0x49:	return EL_UNKNOWN;			/* EMC ("ball 1") */
+    case 0x4a:	return EL_UNKNOWN;			/* EMC ("ball 2") */
+    case 0x4b:	return EL_UNKNOWN;			/* EMC ("android") */
+    case 0x4c:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x4d:	return EL_UNKNOWN;			/* EMC ("android") */
+    case 0x4e:	return EL_INVISIBLE_WALL;		/* EMC (? "android") */
+    case 0x4f:	return EL_UNKNOWN;			/* EMC ("android") */
+
+    case 0x50:	return EL_UNKNOWN;			/* EMC ("android") */
+    case 0x51:	return EL_UNKNOWN;			/* EMC ("android") */
+    case 0x52:	return EL_UNKNOWN;			/* EMC ("android") */
+    case 0x53:	return EL_UNKNOWN;			/* EMC ("android") */
+    case 0x54:	return EL_UNKNOWN;			/* EMC ("android") */
+    case 0x55:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x56:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x57:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x58:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x59:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x5a:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x5b:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x5c:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x5d:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x5e:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x5f:	return EL_EMPTY_SPACE;			/* EMC */
+
+    case 0x60:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x61:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x62:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x63:	return EL_SPRING;	/* left */	/* EMC */
+    case 0x64:	return EL_SPRING;	/* right */	/* EMC */
+    case 0x65:	return EL_ACID;		/* 1 */		/* EMC */
+    case 0x66:	return EL_ACID;		/* 2 */		/* EMC */
+    case 0x67:	return EL_ACID;		/* 3 */		/* EMC */
+    case 0x68:	return EL_ACID;		/* 4 */		/* EMC */
+    case 0x69:	return EL_ACID;		/* 5 */		/* EMC */
+    case 0x6a:	return EL_ACID;		/* 6 */		/* EMC */
+    case 0x6b:	return EL_ACID;		/* 7 */		/* EMC */
+    case 0x6c:	return EL_ACID;		/* 8 */		/* EMC */
+    case 0x6d:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x6e:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x6f:	return EL_EMPTY_SPACE;			/* EMC */
+
+    case 0x70:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x71:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x72:	return EL_NUT;		/* left */	/* EMC */
+    case 0x73:	return EL_SAND;				/* EMC (? "nut") */
+    case 0x74:	return EL_STEELWALL;
+    case 0x75:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x76:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x77:	return EL_BOMB;		/* left */	/* EMC */
+    case 0x78:	return EL_BOMB;		/* right */	/* EMC */
+    case 0x79:	return EL_ROCK;		/* left */	/* EMC */
+    case 0x7a:	return EL_ROCK;		/* right */	/* EMC */
+    case 0x7b:	return EL_ACID;				/* (? EMC "blank") */
+    case 0x7c:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x7d:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x7e:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0x7f:	return EL_EMPTY_SPACE;			/* EMC */
+
+    case 0x80:	return EL_EMPTY;
+    case 0x81:	return EL_WALL_SLIPPERY;
+    case 0x82:	return EL_SAND;
+    case 0x83:	return EL_STEELWALL;
+    case 0x84:	return EL_WALL;
+    case 0x85:	return EL_EM_KEY_1;
+    case 0x86:	return EL_EM_KEY_2;
+    case 0x87:	return EL_EM_KEY_4;
+    case 0x88:	return EL_EM_KEY_3;
+    case 0x89:	return EL_EM_GATE_1;
+    case 0x8a:	return EL_EM_GATE_2;
+    case 0x8b:	return EL_EM_GATE_4;
+    case 0x8c:	return EL_EM_GATE_3;
+    case 0x8d:	return EL_INVISIBLE_WALL;		/* EMC (? "dripper") */
+    case 0x8e:	return EL_EM_GATE_1_GRAY;
+    case 0x8f:	return EL_EM_GATE_2_GRAY;
+
+    case 0x90:	return EL_EM_GATE_4_GRAY;
+    case 0x91:	return EL_EM_GATE_3_GRAY;
+    case 0x92:	return EL_MAGIC_WALL;
+    case 0x93:	return EL_ROBOT_WHEEL;
+    case 0x94:	return EL_QUICKSAND_EMPTY;		/* (? EMC "sand") */
+    case 0x95:	return EL_ACID_POOL_TOPLEFT;
+    case 0x96:	return EL_ACID_POOL_TOPRIGHT;
+    case 0x97:	return EL_ACID_POOL_BOTTOMLEFT;
+    case 0x98:	return EL_ACID_POOL_BOTTOMRIGHT;
+    case 0x99:	return EL_ACID;			/* (? EMC "fake blank") */
+    case 0x9a:	return EL_AMOEBA_DEAD;		/* 1 */
+    case 0x9b:	return EL_AMOEBA_DEAD;		/* 2 */
+    case 0x9c:	return EL_AMOEBA_DEAD;		/* 3 */
+    case 0x9d:	return EL_AMOEBA_DEAD;		/* 4 */
+    case 0x9e:	return EL_EXIT_CLOSED;
+    case 0x9f:	return EL_CHAR_LESS;		/* arrow left */
+
+      /* looks like normal sand, but behaves like wall */
+    case 0xa0:	return EL_UNKNOWN;		/* EMC ("fake grass") */
+    case 0xa1:	return EL_UNKNOWN;		/* EMC ("lenses") */
+    case 0xa2:	return EL_UNKNOWN;		/* EMC ("magnify") */
+    case 0xa3:	return EL_UNKNOWN;		/* EMC ("fake blank") */
+    case 0xa4:	return EL_UNKNOWN;		/* EMC ("fake grass") */
+    case 0xa5:	return EL_UNKNOWN;		/* EMC ("switch") */
+    case 0xa6:	return EL_UNKNOWN;		/* EMC ("switch") */
+    case 0xa7:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0xa8:	return EL_EMC_WALL_1;			/* EMC ("decor 8") */
+    case 0xa9:	return EL_EMC_WALL_2;			/* EMC ("decor 9") */
+    case 0xaa:	return EL_EMC_WALL_3;			/* EMC ("decor 10") */
+    case 0xab:	return EL_EMC_WALL_7;			/* EMC ("decor 5") */
+    case 0xac:	return EL_CHAR_COMMA;			/* EMC */
+    case 0xad:	return EL_CHAR_QUOTEDBL;		/* EMC */
+    case 0xae:	return EL_CHAR_MINUS;			/* EMC */
+    case 0xaf:	return EL_DYNAMITE;
+
+    case 0xb0:	return EL_EMC_STEELWALL_1;		/* EMC ("steel 3") */
+    case 0xb1:	return EL_EMC_WALL_8;			/* EMC ("decor 6") */
+    case 0xb2:	return EL_UNKNOWN;			/* EMC ("decor 7") */
+    case 0xb3:	return EL_STEELWALL;		/* 2 */	/* EMC */
+    case 0xb4:	return EL_WALL_SLIPPERY;	/* 2 */	/* EMC */
+    case 0xb5:	return EL_EMC_WALL_6;			/* EMC ("decor 2") */
+    case 0xb6:	return EL_EMC_WALL_5;			/* EMC ("decor 4") */
+    case 0xb7:	return EL_EMC_WALL_4;			/* EMC ("decor 3") */
+    case 0xb8:	return EL_BALLOON_SWITCH_ANY;		/* EMC */
+    case 0xb9:	return EL_BALLOON_SWITCH_RIGHT;		/* EMC */
+    case 0xba:	return EL_BALLOON_SWITCH_DOWN;		/* EMC */
+    case 0xbb:	return EL_BALLOON_SWITCH_LEFT;		/* EMC */
+    case 0xbc:	return EL_BALLOON_SWITCH_UP;		/* EMC */
+    case 0xbd:	return EL_SAND;				/* EMC ("dirt") */
+    case 0xbe:	return EL_UNKNOWN;			/* EMC ("plant") */
+    case 0xbf:	return EL_UNKNOWN;			/* EMC ("key 5") */
+
+    case 0xc0:	return EL_UNKNOWN;			/* EMC ("key 6") */
+    case 0xc1:	return EL_UNKNOWN;			/* EMC ("key 7") */
+    case 0xc2:	return EL_UNKNOWN;			/* EMC ("key 8") */
+    case 0xc3:	return EL_UNKNOWN;			/* EMC ("door 5") */
+    case 0xc4:	return EL_UNKNOWN;			/* EMC ("door 6") */
+    case 0xc5:	return EL_UNKNOWN;			/* EMC ("door 7") */
+    case 0xc6:	return EL_UNKNOWN;			/* EMC ("door 8") */
+    case 0xc7:	return EL_UNKNOWN;			/* EMC ("bumper") */
+
+      /* characters: see above */
+
+    case 0xec:	return EL_CHAR_PERIOD;
+    case 0xed:	return EL_CHAR_EXCLAM;
+    case 0xee:	return EL_CHAR_COLON;
+    case 0xef:	return EL_CHAR_QUESTION;
+
+    case 0xf0:	return EL_CHAR_GREATER;			/* arrow right */
+    case 0xf1:	return EL_CHAR_COPYRIGHT;		/* EMC: "decor 1" */
+    case 0xf2:	return EL_UNKNOWN;		/* EMC ("fake door 5") */
+    case 0xf3:	return EL_UNKNOWN;		/* EMC ("fake door 6") */
+    case 0xf4:	return EL_UNKNOWN;		/* EMC ("fake door 7") */
+    case 0xf5:	return EL_UNKNOWN;		/* EMC ("fake door 8") */
+    case 0xf6:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0xf7:	return EL_EMPTY_SPACE;			/* EMC */
+
+    case 0xf8:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0xf9:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0xfa:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0xfb:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0xfc:	return EL_EMPTY_SPACE;			/* EMC */
+    case 0xfd:	return EL_EMPTY_SPACE;			/* EMC */
+
+    case 0xfe:	return EL_PLAYER_1;			/* EMC: "blank" */
+    case 0xff:	return EL_PLAYER_2;			/* EMC: "blank" */
+
+    default:
+      /* should never happen (all 8-bit value cases should be handled) */
+      Error(ERR_WARN, "invalid level element %d", element);
+      return EL_UNKNOWN;
+  }
+}
+
+#define EM_LEVEL_SIZE			2106
+#define EM_LEVEL_XSIZE			64
+#define EM_LEVEL_YSIZE			32
+
+static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info)
+{
+  char *filename = level_file_info->filename;
+  FILE *file;
+  unsigned char leveldata[EM_LEVEL_SIZE];
+  unsigned char *header = &leveldata[EM_LEVEL_XSIZE * EM_LEVEL_YSIZE];
+  unsigned char code0 = 0x65;
+  unsigned char code1 = 0x11;
+  boolean level_is_crypted = FALSE;
+  int nr = level_file_info->nr;
+  int i, x, y;
+
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+
+    return;
+  }
+
+  for(i = 0; i < EM_LEVEL_SIZE; i++)
+    leveldata[i] = fgetc(file);
+
+  fclose(file);
+
+  /* check if level data is crypted by testing against known starting bytes
+     of the few existing crypted level files (from Emerald Mine 1 + 2) */
+
+  if ((leveldata[0] == 0xf1 ||
+       leveldata[0] == 0xf5) && leveldata[2] == 0xe7 && leveldata[3] == 0xee)
+  {
+    level_is_crypted = TRUE;
+
+    if (leveldata[0] == 0xf5)	/* error in crypted Emerald Mine 2 levels */
+      leveldata[0] = 0xf1;
+  }
+
+  if (level_is_crypted)		/* decode crypted level data */
+  {
+    for(i = 0; i < EM_LEVEL_SIZE; i++)
+    {
+      leveldata[i] ^= code0;
+      leveldata[i] -= code1;
+
+      code0  = (code0 + 7) & 0xff;
+    }
+  }
+
+  level->fieldx	= EM_LEVEL_XSIZE;
+  level->fieldy	= EM_LEVEL_YSIZE;
+
+  level->time		= header[46] * 10;
+  level->gems_needed	= header[47];
+
+  /* The original Emerald Mine levels have their level number stored
+     at the second byte of the level file...
+     Do not trust this information at other level files, e.g. EMC,
+     but correct it anyway (normally the first row is completely
+     steel wall, so the correction does not hurt anyway). */
+
+  if (leveldata[1] == nr)
+    leveldata[1] = leveldata[2];	/* correct level number field */
+
+  sprintf(level->name, "Level %d", nr);		/* set level name */
+
+  level->score[SC_EMERALD]	= header[36];
+  level->score[SC_DIAMOND]	= header[37];
+  level->score[SC_ROBOT]	= header[38];
+  level->score[SC_SPACESHIP]	= header[39];
+  level->score[SC_BUG]		= header[40];
+  level->score[SC_YAMYAM]	= header[41];
+  level->score[SC_NUT]		= header[42];
+  level->score[SC_DYNAMITE]	= header[43];
+  level->score[SC_TIME_BONUS]	= header[44];
+
+  level->num_yamyam_contents = 4;
+
+  for(i = 0; i < level->num_yamyam_contents; i++)
+    for(y = 0; y < 3; y++)
+      for(x = 0; x < 3; x++)
+	level->yamyam_content[i][x][y] =
+	  map_em_element_yam(header[i * 9 + y * 3 + x]);
+
+  level->amoeba_speed		= (header[52] * 256 + header[53]) % 256;
+  level->time_magic_wall	= (header[54] * 256 + header[55]) * 16 / 100;
+  level->time_wheel		= (header[56] * 256 + header[57]) * 16 / 100;
+  level->amoeba_content		= EL_DIAMOND;
+
+  for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
+  {
+    int new_element = map_em_element_field(leveldata[y * EM_LEVEL_XSIZE + x]);
+
+    if (new_element == EL_AMOEBA_DEAD && level->amoeba_speed)
+      new_element = EL_AMOEBA_WET;
+
+    level->field[x][y] = new_element;
+  }
+
+  x = (header[48] * 256 + header[49]) % EM_LEVEL_XSIZE;
+  y = (header[48] * 256 + header[49]) / EM_LEVEL_XSIZE;
+  level->field[x][y] = EL_PLAYER_1;
+
+  x = (header[50] * 256 + header[51]) % EM_LEVEL_XSIZE;
+  y = (header[50] * 256 + header[51]) / EM_LEVEL_XSIZE;
+  level->field[x][y] = EL_PLAYER_2;
+}
+
+/* ------------------------------------------------------------------------- */
+/* functions for loading SP level                                            */
+/* ------------------------------------------------------------------------- */
+
+#define NUM_SUPAPLEX_LEVELS_PER_PACKAGE	111
+#define SP_LEVEL_SIZE			1536
+#define SP_LEVEL_XSIZE			60
+#define SP_LEVEL_YSIZE			24
+#define SP_LEVEL_NAME_LEN		23
+
+static void LoadLevelFromFileStream_SP(FILE *file, struct LevelInfo *level,
+				       int nr)
+{
+  int num_special_ports;
+  int i, x, y;
+
+  /* for details of the Supaplex level format, see Herman Perk's Supaplex
+     documentation file "SPFIX63.DOC" from his Supaplex "SpeedFix" package */
+
+  /* read level body (width * height == 60 * 24 tiles == 1440 bytes) */
+  for (y = 0; y < SP_LEVEL_YSIZE; y++)
+  {
+    for (x = 0; x < SP_LEVEL_XSIZE; x++)
+    {
+      int element_old = fgetc(file);
+      int element_new;
+
+      if (element_old <= 0x27)
+	element_new = getMappedElement(EL_SP_START + element_old);
+      else if (element_old == 0x28)
+	element_new = EL_INVISIBLE_WALL;
+      else
+      {
+	Error(ERR_WARN, "in level %d, at position %d, %d:", nr, x, y);
+	Error(ERR_WARN, "invalid level element %d", element_old);
+
+	element_new = EL_UNKNOWN;
+      }
+
+      level->field[x][y] = element_new;
+    }
+  }
+
+  ReadUnusedBytesFromFile(file, 4);	/* (not used by Supaplex engine) */
+
+  /* initial gravity: 1 == "on", anything else (0) == "off" */
+  level->initial_gravity = (fgetc(file) == 1 ? TRUE : FALSE);
+
+  ReadUnusedBytesFromFile(file, 1);	/* (not used by Supaplex engine) */
+
+  /* level title in uppercase letters, padded with dashes ("-") (23 bytes) */
+  for (i = 0; i < SP_LEVEL_NAME_LEN; i++)
+    level->name[i] = fgetc(file);
+  level->name[SP_LEVEL_NAME_LEN] = '\0';
+
+  /* initial "freeze zonks": 2 == "on", anything else (0, 1) == "off" */
+  ReadUnusedBytesFromFile(file, 1);	/* (not used by R'n'D engine) */
+
+  /* number of infotrons needed; 0 means that Supaplex will count the total
+     amount of infotrons in the level and use the low byte of that number
+     (a multiple of 256 infotrons will result in "0 infotrons needed"!) */
+  level->gems_needed = fgetc(file);
+
+  /* number of special ("gravity") port entries below (maximum 10 allowed) */
+  num_special_ports = fgetc(file);
+
+  /* database of properties of up to 10 special ports (6 bytes per port) */
+  for (i = 0; i < 10; i++)
+  {
+    int port_location, port_x, port_y, port_element;
+    int gravity;
+
+    /* high and low byte of the location of a special port; if (x, y) are the
+       coordinates of a port in the field and (0, 0) is the top-left corner,
+       the 16 bit value here calculates as 2 * (x + (y * 60)) (this is twice
+       of what may be expected: Supaplex works with a game field in memory
+       which is 2 bytes per tile) */
+    port_location = getFile16BitBE(file);
+
+    /* change gravity: 1 == "turn on", anything else (0) == "turn off" */
+    gravity = fgetc(file);
+
+    /* "freeze zonks": 2 == "turn on", anything else (0, 1) == "turn off" */
+    ReadUnusedBytesFromFile(file, 1);	/* (not used by R'n'D engine) */
+
+    /* "freeze enemies": 1 == "turn on", anything else (0) == "turn off" */
+    ReadUnusedBytesFromFile(file, 1);	/* (not used by R'n'D engine) */
+
+    ReadUnusedBytesFromFile(file, 1);	/* (not used by Supaplex engine) */
+
+    if (i >= num_special_ports)
+      continue;
+
+    port_x = (port_location / 2) % SP_LEVEL_XSIZE;
+    port_y = (port_location / 2) / SP_LEVEL_XSIZE;
+
+    if (port_x < 0 || port_x >= SP_LEVEL_XSIZE ||
+	port_y < 0 || port_y >= SP_LEVEL_YSIZE)
+    {
+      Error(ERR_WARN, "special port position (%d, %d) out of bounds",
+	    port_x, port_y);
+
+      continue;
+    }
+
+    port_element = level->field[port_x][port_y];
+
+    if (port_element < EL_SP_GRAVITY_PORT_RIGHT ||
+	port_element > EL_SP_GRAVITY_PORT_UP)
+    {
+      Error(ERR_WARN, "no special port at position (%d, %d)", port_x, port_y);
+
+      continue;
+    }
+
+    /* change previous (wrong) gravity inverting special port to either
+       gravity enabling special port or gravity disabling special port */
+    level->field[port_x][port_y] +=
+      (gravity == 1 ? EL_SP_GRAVITY_ON_PORT_RIGHT :
+       EL_SP_GRAVITY_OFF_PORT_RIGHT) - EL_SP_GRAVITY_PORT_RIGHT;
+  }
+
+  ReadUnusedBytesFromFile(file, 4);	/* (not used by Supaplex engine) */
+
+  /* change special gravity ports without database entries to normal ports */
+  for (y = 0; y < SP_LEVEL_YSIZE; y++)
+    for (x = 0; x < SP_LEVEL_XSIZE; x++)
+      if (level->field[x][y] >= EL_SP_GRAVITY_PORT_RIGHT &&
+	  level->field[x][y] <= EL_SP_GRAVITY_PORT_UP)
+	level->field[x][y] += EL_SP_PORT_RIGHT - EL_SP_GRAVITY_PORT_RIGHT;
+
+  /* auto-determine number of infotrons if it was stored as "0" -- see above */
+  if (level->gems_needed == 0)
+  {
+    for (y = 0; y < SP_LEVEL_YSIZE; y++)
+      for (x = 0; x < SP_LEVEL_XSIZE; x++)
+	if (level->field[x][y] == EL_SP_INFOTRON)
+	  level->gems_needed++;
+
+    level->gems_needed &= 0xff;		/* only use low byte -- see above */
+  }
+
+  level->fieldx = SP_LEVEL_XSIZE;
+  level->fieldy = SP_LEVEL_YSIZE;
+
+  level->time = 0;			/* no time limit */
+  level->amoeba_speed = 0;
+  level->time_magic_wall = 0;
+  level->time_wheel = 0;
+  level->amoeba_content = EL_EMPTY;
+
+  for(i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
+    level->score[i] = 0;		/* !!! CORRECT THIS !!! */
+
+  /* there are no yamyams in supaplex levels */
+  for(i = 0; i < level->num_yamyam_contents; i++)
+    for(y = 0; y < 3; y++)
+      for(x = 0; x < 3; x++)
+	level->yamyam_content[i][x][y] = EL_EMPTY;
+}
+
+static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info)
+{
+  char *filename = level_file_info->filename;
+  FILE *file;
+  int nr = level_file_info->nr - leveldir_current->first_level;
+  int i, l, x, y;
+  char name_first, name_last;
+  struct LevelInfo multipart_level;
+  int multipart_xpos, multipart_ypos;
+  boolean is_multipart_level;
+  boolean is_first_part;
+  boolean reading_multipart_level = FALSE;
+  boolean use_empty_level = FALSE;
+
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+
+    return;
+  }
+
+  /* position file stream to the requested level inside the level package */
+  if (fseek(file, nr * SP_LEVEL_SIZE, SEEK_SET) != 0)
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot fseek level '%s' -- using empty level", filename);
+
+    return;
+  }
+
+  /* there exist Supaplex level package files with multi-part levels which
+     can be detected as follows: instead of leading and trailing dashes ('-')
+     to pad the level name, they have leading and trailing numbers which are
+     the x and y coordinations of the current part of the multi-part level;
+     if there are '?' characters instead of numbers on the left or right side
+     of the level name, the multi-part level consists of only horizontal or
+     vertical parts */
+
+  for (l = nr; l < NUM_SUPAPLEX_LEVELS_PER_PACKAGE; l++)
+  {
+    LoadLevelFromFileStream_SP(file, level, l);
+
+    /* check if this level is a part of a bigger multi-part level */
+
+    name_first = level->name[0];
+    name_last  = level->name[SP_LEVEL_NAME_LEN - 1];
+
+    is_multipart_level =
+      ((name_first == '?' || (name_first >= '0' && name_first <= '9')) &&
+       (name_last  == '?' || (name_last  >= '0' && name_last  <= '9')));
+
+    is_first_part =
+      ((name_first == '?' || name_first == '1') &&
+       (name_last  == '?' || name_last  == '1'));
+
+    /* correct leading multipart level meta information in level name */
+    for (i = 0; i < SP_LEVEL_NAME_LEN && level->name[i] == name_first; i++)
+      level->name[i] = '-';
+
+    /* correct trailing multipart level meta information in level name */
+    for (i = SP_LEVEL_NAME_LEN - 1; i>=0 && level->name[i] == name_last; i--)
+      level->name[i] = '-';
+
+    /* ---------- check for normal single level ---------- */
+
+    if (!reading_multipart_level && !is_multipart_level)
+    {
+      /* the current level is simply a normal single-part level, and we are
+	 not reading a multi-part level yet, so return the level as it is */
+
+      break;
+    }
+
+    /* ---------- check for empty level (unused multi-part) ---------- */
+
+    if (!reading_multipart_level && is_multipart_level && !is_first_part)
+    {
+      /* this is a part of a multi-part level, but not the first part
+	 (and we are not already reading parts of a multi-part level);
+	 in this case, use an empty level instead of the single part */
+
+      use_empty_level = TRUE;
+
+      break;
+    }
+
+    /* ---------- check for finished multi-part level ---------- */
+
+    if (reading_multipart_level &&
+	(!is_multipart_level ||
+	 strcmp(level->name, multipart_level.name) != 0))
+    {
+      /* we are already reading parts of a multi-part level, but this level is
+	 either not a multi-part level, or a part of a different multi-part
+	 level; in both cases, the multi-part level seems to be complete */
+
+      break;
+    }
+
+    /* ---------- here we have one part of a multi-part level ---------- */
+
+    reading_multipart_level = TRUE;
+
+    if (is_first_part)	/* start with first part of new multi-part level */
+    {
+      /* copy level info structure from first part */
+      multipart_level = *level;
+
+      /* clear playfield of new multi-part level */
+      for (y = 0; y < MAX_LEV_FIELDY; y++)
+	for (x = 0; x < MAX_LEV_FIELDX; x++)
+	  multipart_level.field[x][y] = EL_EMPTY;
+    }
+
+    if (name_first == '?')
+      name_first = '1';
+    if (name_last == '?')
+      name_last = '1';
+
+    multipart_xpos = (int)(name_first - '0');
+    multipart_ypos = (int)(name_last  - '0');
+
+#if 0
+    printf("----------> part (%d/%d) of multi-part level '%s'\n",
+	   multipart_xpos, multipart_ypos, multipart_level.name);
+#endif
+
+    if (multipart_xpos * SP_LEVEL_XSIZE > MAX_LEV_FIELDX ||
+	multipart_ypos * SP_LEVEL_YSIZE > MAX_LEV_FIELDY)
+    {
+      Error(ERR_WARN, "multi-part level is too big -- ignoring part of it");
+
+      break;
+    }
+
+    multipart_level.fieldx = MAX(multipart_level.fieldx,
+				 multipart_xpos * SP_LEVEL_XSIZE);
+    multipart_level.fieldy = MAX(multipart_level.fieldy,
+				 multipart_ypos * SP_LEVEL_YSIZE);
+
+    /* copy level part at the right position of multi-part level */
+    for (y = 0; y < SP_LEVEL_YSIZE; y++)
+    {
+      for (x = 0; x < SP_LEVEL_XSIZE; x++)
+      {
+	int start_x = (multipart_xpos - 1) * SP_LEVEL_XSIZE;
+	int start_y = (multipart_ypos - 1) * SP_LEVEL_YSIZE;
+
+	multipart_level.field[start_x + x][start_y + y] = level->field[x][y];
+      }
+    }
+  }
+
+  fclose(file);
+
+  if (use_empty_level)
+  {
+    setLevelInfoToDefaults(level);
+
+    level->fieldx = SP_LEVEL_XSIZE;
+    level->fieldy = SP_LEVEL_YSIZE;
+
+    for (y = 0; y < SP_LEVEL_YSIZE; y++)
+      for (x = 0; x < SP_LEVEL_XSIZE; x++)
+	level->field[x][y] = EL_EMPTY;
+
+    strcpy(level->name, "-------- EMPTY --------");
+
+    Error(ERR_WARN, "single part of multi-part level -- using empty level");
+  }
+
+  if (reading_multipart_level)
+    *level = multipart_level;
+}
+
+/* ------------------------------------------------------------------------- */
+/* functions for loading generic level                                       */
+/* ------------------------------------------------------------------------- */
+
+void LoadLevelFromFileInfo(struct LevelInfo *level,
+			   struct LevelFileInfo *level_file_info)
+{
+  /* always start with reliable default values */
+  setLevelInfoToDefaults(level);
+
+  switch (level_file_info->type)
+  {
+    case LEVEL_FILE_TYPE_RND:
+      LoadLevelFromFileInfo_RND(level, level_file_info);
+      break;
+
+    case LEVEL_FILE_TYPE_EM:
+      LoadLevelFromFileInfo_EM(level, level_file_info);
+      break;
+
+    case LEVEL_FILE_TYPE_SP:
+      LoadLevelFromFileInfo_SP(level, level_file_info);
+      break;
+
+    default:
+      LoadLevelFromFileInfo_RND(level, level_file_info);
+      break;
+  }
+}
+
+void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
+{
+  static struct LevelFileInfo level_file_info;
+
+  /* always start with reliable default values */
+  setFileInfoToDefaults(&level_file_info);
+
+  level_file_info.nr = 0;			/* unknown level number */
+  level_file_info.type = LEVEL_FILE_TYPE_RND;	/* no others supported yet */
+  level_file_info.filename = filename;
+
+  LoadLevelFromFileInfo(level, &level_file_info);
+}
+
 static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
 {
   if (leveldir_current == NULL)		/* only when dumping level */
@@ -963,6 +2177,11 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
        pre-2.0 levels, where the game version is still taken from the
        file format version used to store the level -- see above). */
 
+#if 1
+    /* player was faster than enemies in 1.0.0 and before */
+    if (level->file_version == FILE_VERSION_1_0)
+      level->double_speed = TRUE;
+#else
     /* do some special adjustments to support older level versions */
     if (level->file_version == FILE_VERSION_1_0)
     {
@@ -972,10 +2191,44 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
       /* player was faster than monsters in (pre-)1.0 levels */
       level->double_speed = TRUE;
     }
+#endif
 
-    /* Default behaviour for EM style gems was "slippery" only in 2.0.1 */
+    /* default behaviour for EM style gems was "slippery" only in 2.0.1 */
     if (level->game_version == VERSION_IDENT(2,0,1,0))
       level->em_slippery_gems = TRUE;
+
+    if (level->game_version < VERSION_IDENT(2,2,0,0))
+      level->use_spring_bug = TRUE;
+
+    if (level->game_version < VERSION_IDENT(3,1,0,0))
+    {
+      int i, j;
+
+      level->can_move_into_acid_bits = 0; /* nothing can move into acid */
+      level->dont_collide_with_bits = 0; /* nothing is deadly when colliding */
+
+      setMoveIntoAcidProperty(level, EL_ROBOT,     TRUE);
+      setMoveIntoAcidProperty(level, EL_SATELLITE, TRUE);
+      setMoveIntoAcidProperty(level, EL_PENGUIN,   TRUE);
+      setMoveIntoAcidProperty(level, EL_BALLOON,   TRUE);
+
+      for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+	SET_PROPERTY(EL_CUSTOM_START + i, EP_CAN_MOVE_INTO_ACID, TRUE);
+
+      for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+      {
+	int element = EL_CUSTOM_START + i;
+	struct ElementInfo *ei = &element_info[element];
+
+	for (j = 0; j < ei->num_change_pages; j++)
+	{
+	  struct ElementChangeInfo *change = &ei->change_page[j];
+
+	  change->trigger_player = CH_PLAYER_ANY;
+	  change->trigger_page = CH_PAGE_ANY;
+	}
+      }
+    }
   }
   else
   {
@@ -1021,7 +2274,7 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
 
 static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
 {
-  int i, j;
+  int i, j, x, y;
 
   /* map custom element change events that have changed in newer versions
      (these following values were accidentally changed in version 3.0.1) */
@@ -1042,7 +2295,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
       }
 
       /* order of checking and copying events to be mapped is important */
-      for (j = CE_OTHER_GETS_COLLECTED; j >= CE_COLLISION_ACTIVE; j--)
+      for (j = CE_OTHER_GETS_COLLECTED; j >= CE_HITTING_SOMETHING; j--)
       {
 	if (HAS_CHANGE_EVENT(element, j - 1))
 	{
@@ -1080,6 +2333,40 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
     }
   }
 
+  /* correct custom element values (for old levels without these options) */
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    int element = EL_CUSTOM_START + i;
+    struct ElementInfo *ei = &element_info[element];
+
+    if (ei->access_direction == MV_NO_MOVING)
+      ei->access_direction = MV_ALL_DIRECTIONS;
+
+    for (j = 0; j < ei->num_change_pages; j++)
+    {
+      struct ElementChangeInfo *change = &ei->change_page[j];
+
+      if (change->trigger_side == CH_SIDE_NONE)
+	change->trigger_side = CH_SIDE_ANY;
+    }
+  }
+
+  /* initialize "can_explode" field for old levels which did not store this */
+  if (level->game_version <= VERSION_IDENT(3,1,0,0))
+  {
+    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+    {
+      int element = EL_CUSTOM_START + i;
+
+      if (EXPLODES_1X1_OLD(element))
+	element_info[element].explosion_type = EXPLODES_1X1;
+
+      SET_PROPERTY(element, EP_CAN_EXPLODE, (EXPLODES_BY_FIRE(element) ||
+					     EXPLODES_SMASHED(element) ||
+					     EXPLODES_IMPACT(element)));
+    }
+  }
+
 #if 0
   /* set default push delay values (corrected since version 3.0.7-1) */
   if (level->game_version < VERSION_IDENT(3,0,7,1))
@@ -1105,6 +2392,16 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
   }
 #endif
 
+  /* map elements that have changed in newer versions */
+  level->amoeba_content = getMappedElementByVersion(level->amoeba_content,
+						    level->game_version);
+  for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+    for (x = 0; x < 3; x++)
+      for (y = 0; y < 3; y++)
+	level->yamyam_content[i][x][y] =
+	  getMappedElementByVersion(level->yamyam_content[i][x][y],
+				    level->game_version);
+
   /* initialize element properties for level editor etc. */
   InitElementPropertiesEngine(level->game_version);
 }
@@ -1120,6 +2417,9 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
     {
       int element = level->field[x][y];
 
+#if 1
+      element = getMappedElementByVersion(element, level->game_version);
+#else
       if (level->game_version <= VERSION_IDENT(2,2,0,0))
       {
 	/* map game font elements */
@@ -1138,6 +2438,7 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
 		   element == EL_SP_GRAVITY_PORT_DOWN  ? EL_SP_PORT_DOWN  :
 		   element);
       }
+#endif
 
       level->field[x][y] = element;
     }
@@ -1156,11 +2457,18 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
   SetBorderElement();
 }
 
-void LoadLevelTemplate(int level_nr)
+void LoadLevelTemplate(int nr)
 {
-  char *filename = getLevelFilename(level_nr);
+#if 1
+  struct LevelFileInfo *level_file_info = getLevelFileInfo(nr);
+  char *filename = level_file_info->filename;
 
-  LoadLevelFromFilename(&level_template, filename);
+  LoadLevelFromFileInfo(&level_template, level_file_info);
+#else
+  char *filename = getDefaultLevelFilename(nr);
+
+  LoadLevelFromFilename_RND(&level_template, filename);
+#endif
 
   LoadLevel_InitVersion(&level, filename);
   LoadLevel_InitElements(&level, filename);
@@ -1168,11 +2476,18 @@ void LoadLevelTemplate(int level_nr)
   ActivateLevelTemplate();
 }
 
-void LoadLevel(int level_nr)
+void LoadLevel(int nr)
 {
-  char *filename = getLevelFilename(level_nr);
+#if 1
+  struct LevelFileInfo *level_file_info = getLevelFileInfo(nr);
+  char *filename = level_file_info->filename;
 
-  LoadLevelFromFilename(&level, filename);
+  LoadLevelFromFileInfo(&level, level_file_info);
+#else
+  char *filename = getLevelFilename(nr);
+
+  LoadLevelFromFilename_RND(&level, filename);
+#endif
 
   if (level.use_custom_template)
     LoadLevelTemplate(-1);
@@ -1224,6 +2539,18 @@ static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
   putFile8Bit(file, (level->em_slippery_gems ? 1 : 0));
 
   putFile8Bit(file, (level->use_custom_template ? 1 : 0));
+
+  putFile8Bit(file, (level->block_last_field ? 1 : 0));
+  putFile8Bit(file, (level->sp_block_last_field ? 1 : 0));
+  putFile32BitBE(file, level->can_move_into_acid_bits);
+  putFile8Bit(file, level->dont_collide_with_bits);
+
+  putFile8Bit(file, (level->use_spring_bug ? 1 : 0));
+  putFile8Bit(file, (level->use_step_counter ? 1 : 0));
+
+  putFile8Bit(file, (level->instant_relocation ? 1 : 0));
+  putFile8Bit(file, (level->can_pass_to_walkable ? 1 : 0));
+  putFile8Bit(file, (level->grow_into_diggable ? 1 : 0));
 
   WriteUnusedBytesToFile(file, LEVEL_HEADER_UNUSED);
 }
@@ -1450,12 +2777,12 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
 	putFile16BitBE(file, element_info[element].change->trigger_element);
 
 	putFile8Bit(file, element_info[element].change->explode);
-	putFile8Bit(file, element_info[element].change->use_content);
-	putFile8Bit(file, element_info[element].change->only_complete);
-	putFile8Bit(file, element_info[element].change->use_random_change);
+	putFile8Bit(file, element_info[element].change->use_target_content);
+	putFile8Bit(file, element_info[element].change->only_if_complete);
+	putFile8Bit(file, element_info[element].change->use_random_replace);
 
-	putFile8Bit(file, element_info[element].change->random);
-	putFile8Bit(file, element_info[element].change->power);
+	putFile8Bit(file, element_info[element].change->random_percentage);
+	putFile8Bit(file, element_info[element].change->replace_when);
 
 	for (y = 0; y < 3; y++)
 	  for (x = 0; x < 3; x++)
@@ -1502,12 +2829,15 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
   putFile8Bit(file, ei->collect_score);
   putFile8Bit(file, ei->collect_count);
 
-  putFile16BitBE(file, ei->push_delay_fixed);
-  putFile16BitBE(file, ei->push_delay_random);
+  putFile8Bit(file, ei->drop_delay_fixed);
+  putFile8Bit(file, ei->push_delay_fixed);
+  putFile8Bit(file, ei->drop_delay_random);
+  putFile8Bit(file, ei->push_delay_random);
   putFile16BitBE(file, ei->move_delay_fixed);
   putFile16BitBE(file, ei->move_delay_random);
 
-  putFile16BitBE(file, ei->move_pattern);
+  /* bits 0 - 15 of "move_pattern" ... */
+  putFile16BitBE(file, ei->move_pattern & 0xffff);
   putFile8Bit(file, ei->move_direction_initial);
   putFile8Bit(file, ei->move_stepsize);
 
@@ -1517,8 +2847,21 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
     for (x = 0; x < 3; x++)
       putFile16BitBE(file, ei->content[x][y]);
 
+  putFile16BitBE(file, ei->move_enter_element);
+  putFile16BitBE(file, ei->move_leave_element);
+  putFile8Bit(file, ei->move_leave_type);
+
+  /* ... bits 16 - 31 of "move_pattern" (not nice, but downward compatible) */
+  putFile16BitBE(file, (ei->move_pattern >> 16) & 0xffff);
+
+  putFile8Bit(file, ei->access_direction);
+
+  putFile8Bit(file, ei->explosion_delay);
+  putFile8Bit(file, ei->ignition_delay);
+  putFile8Bit(file, ei->explosion_type);
+
   /* some free bytes for future custom property values and padding */
-  WriteUnusedBytesToFile(file, 12);
+  WriteUnusedBytesToFile(file, 1);
 
   /* write change property values */
 
@@ -1537,24 +2880,60 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
     putFile16BitBE(file, change->trigger_element);
 
     putFile8Bit(file, change->explode);
-    putFile8Bit(file, change->use_content);
-    putFile8Bit(file, change->only_complete);
-    putFile8Bit(file, change->use_random_change);
+    putFile8Bit(file, change->use_target_content);
+    putFile8Bit(file, change->only_if_complete);
+    putFile8Bit(file, change->use_random_replace);
 
-    putFile8Bit(file, change->random);
-    putFile8Bit(file, change->power);
+    putFile8Bit(file, change->random_percentage);
+    putFile8Bit(file, change->replace_when);
 
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
-	putFile16BitBE(file, change->content[x][y]);
+	putFile16BitBE(file, change->target_content[x][y]);
 
     putFile8Bit(file, change->can_change);
 
-    putFile8Bit(file, change->sides);
+    putFile8Bit(file, change->trigger_side);
+
+#if 1
+    putFile8Bit(file, change->trigger_player);
+    putFile8Bit(file, (change->trigger_page == CH_PAGE_ANY ? CH_PAGE_ANY_FILE :
+		       log_2(change->trigger_page)));
+
+    /* some free bytes for future change property values and padding */
+    WriteUnusedBytesToFile(file, 6);
+
+#else
 
     /* some free bytes for future change property values and padding */
     WriteUnusedBytesToFile(file, 8);
+#endif
   }
+}
+
+static void SaveLevel_GRP1(FILE *file, struct LevelInfo *level, int element)
+{
+  struct ElementInfo *ei = &element_info[element];
+  struct ElementGroupInfo *group = ei->group;
+  int i;
+
+  putFile16BitBE(file, element);
+
+  for (i = 0; i < MAX_ELEMENT_NAME_LEN; i++)
+    putFile8Bit(file, ei->description[i]);
+
+  putFile8Bit(file, group->num_elements);
+
+  putFile8Bit(file, ei->use_gfx_element);
+  putFile16BitBE(file, ei->gfx_element);
+
+  putFile8Bit(file, group->choice_mode);
+
+  /* some free bytes for future values and padding */
+  WriteUnusedBytesToFile(file, 3);
+
+  for (i = 0; i < MAX_ELEMENTS_IN_GROUP; i++)
+    putFile16BitBE(file, group->element[i]);
 }
 
 static void SaveLevelFromFilename(struct LevelInfo *level, char *filename)
@@ -1631,7 +3010,7 @@ static void SaveLevelFromFilename(struct LevelInfo *level, char *filename)
     {
       int envelope_len = strlen(level->envelope_text[i]) + 1;
 
-      putFileChunkBE(file, "CNT3", LEVEL_CHUNK_CNT3_HEADER + envelope_len);
+      putFileChunkBE(file, "CNT3", LEVEL_CHUNK_CNT3_SIZE(envelope_len));
       SaveLevel_CNT3(file, level, EL_ENVELOPE_1 + i);
     }
   }
@@ -1653,50 +3032,76 @@ static void SaveLevelFromFilename(struct LevelInfo *level, char *filename)
     }
   }
 
+  /* check for non-default group elements (unless using template level) */
+  if (!level->use_custom_template)
+  {
+    for (i = 0; i < NUM_GROUP_ELEMENTS; i++)
+    {
+      int element = EL_GROUP_START + i;
+
+      if (element_info[element].modified_settings)
+      {
+	putFileChunkBE(file, "GRP1", LEVEL_CHUNK_GRP1_SIZE);
+	SaveLevel_GRP1(file, level, element);
+      }
+    }
+  }
+
   fclose(file);
 
   SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
-void SaveLevel(int level_nr)
+void SaveLevel(int nr)
 {
-  char *filename = getLevelFilename(level_nr);
+  char *filename = getDefaultLevelFilename(nr);
 
   SaveLevelFromFilename(&level, filename);
 }
 
 void SaveLevelTemplate()
 {
-  char *filename = getLevelFilename(-1);
+  char *filename = getDefaultLevelFilename(-1);
 
   SaveLevelFromFilename(&level, filename);
 }
 
 void DumpLevel(struct LevelInfo *level)
 {
+  if (level->no_valid_file)
+  {
+    Error(ERR_WARN, "cannot dump -- no valid level file found");
+
+    return;
+  }
+
   printf_line("-", 79);
   printf("Level xxx (file version %08d, game version %08d)\n",
 	 level->file_version, level->game_version);
   printf_line("-", 79);
 
-  printf("Level Author: '%s'\n", level->author);
-  printf("Level Title:  '%s'\n", level->name);
+  printf("Level author: '%s'\n", level->author);
+  printf("Level title:  '%s'\n", level->name);
   printf("\n");
-  printf("Playfield Size: %d x %d\n", level->fieldx, level->fieldy);
+  printf("Playfield size: %d x %d\n", level->fieldx, level->fieldy);
   printf("\n");
-  printf("Level Time:  %d seconds\n", level->time);
+  printf("Level time:  %d seconds\n", level->time);
   printf("Gems needed: %d\n", level->gems_needed);
   printf("\n");
-  printf("Time for Magic Wall: %d seconds\n", level->time_magic_wall);
-  printf("Time for Wheel:      %d seconds\n", level->time_wheel);
-  printf("Time for Light:      %d seconds\n", level->time_light);
-  printf("Time for Timegate:   %d seconds\n", level->time_timegate);
+  printf("Time for magic wall: %d seconds\n", level->time_magic_wall);
+  printf("Time for wheel:      %d seconds\n", level->time_wheel);
+  printf("Time for light:      %d seconds\n", level->time_light);
+  printf("Time for timegate:   %d seconds\n", level->time_timegate);
   printf("\n");
-  printf("Amoeba Speed: %d\n", level->amoeba_speed);
+  printf("Amoeba speed: %d\n", level->amoeba_speed);
   printf("\n");
-  printf("Gravity:                %s\n", (level->initial_gravity ? "yes" : "no"));
-  printf("Double Speed Movement:  %s\n", (level->double_speed ? "yes" : "no"));
-  printf("EM style slippery gems: %s\n", (level->em_slippery_gems ? "yes" : "no"));
+  printf("Initial gravity:             %s\n", (level->initial_gravity ? "yes" : "no"));
+  printf("Double speed movement:       %s\n", (level->double_speed ? "yes" : "no"));
+  printf("EM style slippery gems:      %s\n", (level->em_slippery_gems ? "yes" : "no"));
+  printf("Player blocks last field:    %s\n", (level->block_last_field ? "yes" : "no"));
+  printf("SP player blocks last field: %s\n", (level->sp_block_last_field ? "yes" : "no"));
+  printf("use spring bug: %s\n", (level->use_spring_bug ? "yes" : "no"));
+  printf("use step counter: %s\n", (level->use_step_counter ? "yes" : "no"));
 
   printf_line("-", 79);
 }
@@ -1728,6 +3133,8 @@ static void setTapeInfoToDefaults()
   tape.recording = FALSE;
   tape.playing = FALSE;
   tape.pausing = FALSE;
+
+  tape.no_valid_file = FALSE;
 }
 
 static int LoadTape_VERS(FILE *file, int chunk_size, struct TapeInfo *tape)
@@ -1892,7 +3299,15 @@ void LoadTapeFromFilename(char *filename)
   setTapeInfoToDefaults();
 
   if (!(file = fopen(filename, MODE_READ)))
+  {
+    tape.no_valid_file = TRUE;
+
+#if 0
+    Error(ERR_WARN, "cannot read tape '%s' -- using empty tape", filename);
+#endif
+
     return;
+  }
 
   getFileChunkBE(file, chunk_name, NULL);
   if (strcmp(chunk_name, "RND1") == 0)
@@ -1902,6 +3317,8 @@ void LoadTapeFromFilename(char *filename)
     getFileChunkBE(file, chunk_name, NULL);
     if (strcmp(chunk_name, "TAPE") != 0)
     {
+      tape.no_valid_file = TRUE;
+
       Error(ERR_WARN, "unknown format of tape file '%s'", filename);
       fclose(file);
       return;
@@ -1916,6 +3333,8 @@ void LoadTapeFromFilename(char *filename)
 
     if (!checkCookieString(cookie, TAPE_COOKIE_TMPL))
     {
+      tape.no_valid_file = TRUE;
+
       Error(ERR_WARN, "unknown format of tape file '%s'", filename);
       fclose(file);
       return;
@@ -1923,6 +3342,8 @@ void LoadTapeFromFilename(char *filename)
 
     if ((tape.file_version = getFileVersionFromCookieString(cookie)) == -1)
     {
+      tape.no_valid_file = TRUE;
+
       Error(ERR_WARN, "unsupported version of tape file '%s'", filename);
       fclose(file);
       return;
@@ -2004,16 +3425,16 @@ void LoadTapeFromFilename(char *filename)
 #endif
 }
 
-void LoadTape(int level_nr)
+void LoadTape(int nr)
 {
-  char *filename = getTapeFilename(level_nr);
+  char *filename = getTapeFilename(nr);
 
   LoadTapeFromFilename(filename);
 }
 
-void LoadSolutionTape(int level_nr)
+void LoadSolutionTape(int nr)
 {
-  char *filename = getSolutionTapeFilename(level_nr);
+  char *filename = getSolutionTapeFilename(nr);
 
   LoadTapeFromFilename(filename);
 }
@@ -2073,9 +3494,9 @@ static void SaveTape_BODY(FILE *file, struct TapeInfo *tape)
   }
 }
 
-void SaveTape(int level_nr)
+void SaveTape(int nr)
 {
-  char *filename = getTapeFilename(level_nr);
+  char *filename = getTapeFilename(nr);
   FILE *file;
   boolean new_tape = TRUE;
   int num_participating_players = 0;
@@ -2083,7 +3504,7 @@ void SaveTape(int level_nr)
   int body_chunk_size;
   int i;
 
-  InitTapeDirectory(leveldir_current->filename);
+  InitTapeDirectory(leveldir_current->subdir);
 
   /* if a tape still exists, ask to overwrite it */
   if (access(filename, F_OK) == 0)
@@ -2139,11 +3560,21 @@ void DumpTape(struct TapeInfo *tape)
 {
   int i, j;
 
+#if 1
+  if (tape->no_valid_file)
+  {
+    Error(ERR_WARN, "cannot dump -- no valid tape file found");
+
+    return;
+  }
+#else
   if (TAPE_IS_EMPTY(*tape))
   {
     Error(ERR_WARN, "no tape available for level %d", tape->level_nr);
+
     return;
   }
+#endif
 
   printf_line("-", 79);
   printf("Tape of Level %03d (file version %08d, game version %08d)\n",
@@ -2186,10 +3617,10 @@ void DumpTape(struct TapeInfo *tape)
 /* score file functions                                                      */
 /* ========================================================================= */
 
-void LoadScore(int level_nr)
+void LoadScore(int nr)
 {
   int i;
-  char *filename = getScoreFilename(level_nr);
+  char *filename = getScoreFilename(nr);
   char cookie[MAX_LINE_LEN];
   char line[MAX_LINE_LEN];
   char *line_ptr;
@@ -2239,17 +3670,17 @@ void LoadScore(int level_nr)
   fclose(file);
 }
 
-void SaveScore(int level_nr)
+void SaveScore(int nr)
 {
   int i;
-  char *filename = getScoreFilename(level_nr);
+  char *filename = getScoreFilename(nr);
   FILE *file;
 
-  InitScoreDirectory(leveldir_current->filename);
+  InitScoreDirectory(leveldir_current->subdir);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot save score for level %d", level_nr);
+    Error(ERR_WARN, "cannot save score for level %d", nr);
     return;
   }
 
@@ -2329,13 +3760,13 @@ void SaveScore(int level_nr)
 #define SETUP_TOKEN_PLAYER_JOY_YMIDDLE		6
 #define SETUP_TOKEN_PLAYER_JOY_YLOWER		7
 #define SETUP_TOKEN_PLAYER_JOY_SNAP		8
-#define SETUP_TOKEN_PLAYER_JOY_BOMB		9
+#define SETUP_TOKEN_PLAYER_JOY_DROP		9
 #define SETUP_TOKEN_PLAYER_KEY_LEFT		10
 #define SETUP_TOKEN_PLAYER_KEY_RIGHT		11
 #define SETUP_TOKEN_PLAYER_KEY_UP		12
 #define SETUP_TOKEN_PLAYER_KEY_DOWN		13
 #define SETUP_TOKEN_PLAYER_KEY_SNAP		14
-#define SETUP_TOKEN_PLAYER_KEY_BOMB		15
+#define SETUP_TOKEN_PLAYER_KEY_DROP		15
 
 #define NUM_PLAYER_SETUP_TOKENS			16
 
@@ -2418,13 +3849,13 @@ static struct TokenInfo player_setup_tokens[] =
   { TYPE_INTEGER, &sii.joy.ymiddle,	".joy.ymiddle"			},
   { TYPE_INTEGER, &sii.joy.ylower,	".joy.ylower"			},
   { TYPE_INTEGER, &sii.joy.snap,	".joy.snap_field"		},
-  { TYPE_INTEGER, &sii.joy.bomb,	".joy.place_bomb"		},
+  { TYPE_INTEGER, &sii.joy.drop,	".joy.place_bomb"		},
   { TYPE_KEY_X11, &sii.key.left,	".key.move_left"		},
   { TYPE_KEY_X11, &sii.key.right,	".key.move_right"		},
   { TYPE_KEY_X11, &sii.key.up,		".key.move_up"			},
   { TYPE_KEY_X11, &sii.key.down,	".key.move_down"		},
   { TYPE_KEY_X11, &sii.key.snap,	".key.snap_field"		},
-  { TYPE_KEY_X11, &sii.key.bomb,	".key.place_bomb"		}
+  { TYPE_KEY_X11, &sii.key.drop,	".key.place_bomb"		}
 };
 
 static struct TokenInfo system_setup_tokens[] =
@@ -2513,13 +3944,13 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
     si->input[i].joy.ymiddle = JOYSTICK_YMIDDLE;
     si->input[i].joy.ylower  = JOYSTICK_YLOWER;
     si->input[i].joy.snap  = (i == 0 ? JOY_BUTTON_1 : 0);
-    si->input[i].joy.bomb  = (i == 0 ? JOY_BUTTON_2 : 0);
+    si->input[i].joy.drop  = (i == 0 ? JOY_BUTTON_2 : 0);
     si->input[i].key.left  = (i == 0 ? DEFAULT_KEY_LEFT  : KSYM_UNDEFINED);
     si->input[i].key.right = (i == 0 ? DEFAULT_KEY_RIGHT : KSYM_UNDEFINED);
     si->input[i].key.up    = (i == 0 ? DEFAULT_KEY_UP    : KSYM_UNDEFINED);
     si->input[i].key.down  = (i == 0 ? DEFAULT_KEY_DOWN  : KSYM_UNDEFINED);
     si->input[i].key.snap  = (i == 0 ? DEFAULT_KEY_SNAP  : KSYM_UNDEFINED);
-    si->input[i].key.bomb  = (i == 0 ? DEFAULT_KEY_BOMB  : KSYM_UNDEFINED);
+    si->input[i].key.drop  = (i == 0 ? DEFAULT_KEY_DROP  : KSYM_UNDEFINED);
   }
 
   si->system.sdl_audiodriver = getStringCopy(ARG_DEFAULT);
@@ -3040,6 +4471,7 @@ void LoadMusicInfo()
     boolean music_already_used = FALSE;
     int i;
 
+    /* skip all music files that are configured in music config file */
     for (i = 0; i < num_music; i++)
     {
       music = getMusicListEntry(i);
@@ -3388,4 +4820,118 @@ void LoadHelpTextInfo()
   }
   END_HASH_ITERATION(hash, itr)
 #endif
+}
+
+
+/* ------------------------------------------------------------------------- *
+ * convert levels
+ * ------------------------------------------------------------------------- */
+
+#define MAX_NUM_CONVERT_LEVELS		1000
+
+void ConvertLevels()
+{
+  static LevelDirTree *convert_leveldir = NULL;
+  static int convert_level_nr = -1;
+  static int num_levels_handled = 0;
+  static int num_levels_converted = 0;
+  static boolean levels_failed[MAX_NUM_CONVERT_LEVELS];
+  int i;
+
+  convert_leveldir = getTreeInfoFromIdentifier(leveldir_first,
+					       global.convert_leveldir);
+
+  if (convert_leveldir == NULL)
+    Error(ERR_EXIT, "no such level identifier: '%s'",
+	  global.convert_leveldir);
+
+  leveldir_current = convert_leveldir;
+
+  if (global.convert_level_nr != -1)
+  {
+    convert_leveldir->first_level = global.convert_level_nr;
+    convert_leveldir->last_level  = global.convert_level_nr;
+  }
+
+  convert_level_nr = convert_leveldir->first_level;
+
+  printf_line("=", 79);
+  printf("Converting levels\n");
+  printf_line("-", 79);
+  printf("Level series identifier: '%s'\n", convert_leveldir->identifier);
+  printf("Level series name:       '%s'\n", convert_leveldir->name);
+  printf("Level series author:     '%s'\n", convert_leveldir->author);
+  printf("Number of levels:        %d\n",   convert_leveldir->levels);
+  printf_line("=", 79);
+  printf("\n");
+
+  for (i = 0; i < MAX_NUM_CONVERT_LEVELS; i++)
+    levels_failed[i] = FALSE;
+
+  while (convert_level_nr <= convert_leveldir->last_level)
+  {
+    char *level_filename;
+    boolean new_level;
+
+    level_nr = convert_level_nr++;
+
+    printf("Level %03d: ", level_nr);
+
+    LoadLevel(level_nr);
+    if (level.no_valid_file)
+    {
+      printf("(no level)\n");
+      continue;
+    }
+
+    printf("converting level ... ");
+
+    level_filename = getDefaultLevelFilename(level_nr);
+    new_level = !fileExists(level_filename);
+
+    if (new_level)
+    {
+      SaveLevel(level_nr);
+
+      num_levels_converted++;
+
+      printf("converted.\n");
+    }
+    else
+    {
+      if (level_nr >= 0 && level_nr < MAX_NUM_CONVERT_LEVELS)
+	levels_failed[level_nr] = TRUE;
+
+      printf("NOT CONVERTED -- LEVEL ALREADY EXISTS.\n");
+    }
+
+    num_levels_handled++;
+  }
+
+  printf("\n");
+  printf_line("=", 79);
+  printf("Number of levels handled: %d\n", num_levels_handled);
+  printf("Number of levels converted: %d (%d%%)\n", num_levels_converted,
+	 (num_levels_handled ?
+	  num_levels_converted * 100 / num_levels_handled : 0));
+  printf_line("-", 79);
+  printf("Summary (for automatic parsing by scripts):\n");
+  printf("LEVELDIR '%s', CONVERTED %d/%d (%d%%)",
+	 convert_leveldir->identifier, num_levels_converted,
+	 num_levels_handled,
+	 (num_levels_handled ?
+	  num_levels_converted * 100 / num_levels_handled : 0));
+
+  if (num_levels_handled != num_levels_converted)
+  {
+    printf(", FAILED:");
+    for (i = 0; i < MAX_NUM_CONVERT_LEVELS; i++)
+      if (levels_failed[i])
+	printf(" %03d", i);
+  }
+
+  printf("\n");
+  printf_line("=", 79);
+
+  CloseAllAndExit(0);
 }

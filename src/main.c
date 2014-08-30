@@ -34,6 +34,11 @@ int			game_status = -1;
 boolean			level_editor_test_game = FALSE;
 boolean			network_playing = FALSE;
 
+#if defined(TARGET_SDL)
+boolean			network_server = FALSE;
+SDL_Thread	       *server_thread;
+#endif
+
 int			key_joystick_mapping = 0;
 
 boolean			redraw[MAX_BUF_XSIZE][MAX_BUF_YSIZE];
@@ -55,11 +60,13 @@ unsigned long		Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 unsigned long		ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			WasJustMoving[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			WasJustFalling[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			CheckCollision[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			AmoebaNr[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			AmoebaCnt[MAX_NUM_AMOEBA];
 short			AmoebaCnt2[MAX_NUM_AMOEBA];
-short			ExplodePhase[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			ExplodeField[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			ExplodePhase[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			ExplodeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			RunnerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			PlayerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
@@ -89,7 +96,7 @@ int			ZX, ZY;
 int			ExitX, ExitY;
 int			AllPlayersGone;
 
-int			TimeFrames, TimePlayed, TimeLeft;
+int			TimeFrames, TimePlayed, TimeLeft, TapeTime;
 
 boolean			network_player_action_received = FALSE;
 
@@ -436,9 +443,9 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "invisible steel wall"
   },
   {
-    "maze_runner",
-    "maze_runner",
-    "maze runner"
+    "sokoban_field_player",
+    "sokoban",
+    "sokoban field with player"
   },
   {
     "dynabomb_increase_number",
@@ -657,7 +664,7 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   {
     "black_orb",
     "black_orb",
-    "bomb"
+    "black orb bomb"
   },
   {
     "amoeba_to_diamond",
@@ -3234,6 +3241,221 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "envelope",
     "mail envelope 4"
   },
+  {
+    "group_1",
+    "group",
+    "group element 1"
+  },
+  {
+    "group_2",
+    "group",
+    "group element 2"
+  },
+  {
+    "group_3",
+    "group",
+    "group element 3"
+  },
+  {
+    "group_4",
+    "group",
+    "group element 4"
+  },
+  {
+    "group_5",
+    "group",
+    "group element 5"
+  },
+  {
+    "group_6",
+    "group",
+    "group element 6"
+  },
+  {
+    "group_7",
+    "group",
+    "group element 7"
+  },
+  {
+    "group_8",
+    "group",
+    "group element 8"
+  },
+  {
+    "group_9",
+    "group",
+    "group element 9"
+  },
+  {
+    "group_10",
+    "group",
+    "group element 10"
+  },
+  {
+    "group_11",
+    "group",
+    "group element 11"
+  },
+  {
+    "group_12",
+    "group",
+    "group element 12"
+  },
+  {
+    "group_13",
+    "group",
+    "group element 13"
+  },
+  {
+    "group_14",
+    "group",
+    "group element 14"
+  },
+  {
+    "group_15",
+    "group",
+    "group element 15"
+  },
+  {
+    "group_16",
+    "group",
+    "group element 16"
+  },
+  {
+    "group_17",
+    "group",
+    "group element 17"
+  },
+  {
+    "group_18",
+    "group",
+    "group element 18"
+  },
+  {
+    "group_19",
+    "group",
+    "group element 19"
+  },
+  {
+    "group_20",
+    "group",
+    "group element 20"
+  },
+  {
+    "group_21",
+    "group",
+    "group element 21"
+  },
+  {
+    "group_22",
+    "group",
+    "group element 22"
+  },
+  {
+    "group_23",
+    "group",
+    "group element 23"
+  },
+  {
+    "group_24",
+    "group",
+    "group element 24"
+  },
+  {
+    "group_25",
+    "group",
+    "group element 25"
+  },
+  {
+    "group_26",
+    "group",
+    "group element 26"
+  },
+  {
+    "group_27",
+    "group",
+    "group element 27"
+  },
+  {
+    "group_28",
+    "group",
+    "group element 28"
+  },
+  {
+    "group_29",
+    "group",
+    "group element 29"
+  },
+  {
+    "group_30",
+    "group",
+    "group element 30"
+  },
+  {
+    "group_31",
+    "group",
+    "group element 31"
+  },
+  {
+    "group_32",
+    "group",
+    "group element 32"
+  },
+  {
+    "unknown",
+    "unknown",
+    "unknown element"
+  },
+  {
+    "trigger_element",
+    "trigger",
+    "element triggering change"
+  },
+  {
+    "trigger_player",
+    "trigger",
+    "player triggering change"
+  },
+  {
+    "sp_gravity_on_port_right",
+    "sp_port",
+    "gravity on port (leading right)"
+  },
+  {
+    "sp_gravity_on_port_down",
+    "sp_port",
+    "gravity on port (leading down)"
+  },
+  {
+    "sp_gravity_on_port_left",
+    "sp_port",
+    "gravity on port (leading left)"
+  },
+  {
+    "sp_gravity_on_port_up",
+    "sp_port",
+    "gravity on port (leading up)"
+  },
+  {
+    "sp_gravity_off_port_right",
+    "sp_port",
+    "gravity off port (leading right)"
+  },
+  {
+    "sp_gravity_off_port_down",
+    "sp_port",
+    "gravity off port (leading down)"
+  },
+  {
+    "sp_gravity_off_port_left",
+    "sp_port",
+    "gravity off port (leading left)"
+  },
+  {
+    "sp_gravity_off_port_up",
+    "sp_port",
+    "gravity off port (leading up)"
+  },
 
   /* ----------------------------------------------------------------------- */
   /* "real" (and therefore drawable) runtime elements                        */
@@ -3525,6 +3747,26 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "player_is_exploding_1",
+    "-",
+    "-"
+  },
+  {
+    "player_is_exploding_2",
+    "-",
+    "-"
+  },
+  {
+    "player_is_exploding_3",
+    "-",
+    "-"
+  },
+  {
+    "player_is_exploding_4",
+    "-",
+    "-"
+  },
+  {
     "quicksand.filling",
     "quicksand",
     "-"
@@ -3670,8 +3912,23 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
-    "dummy",
-    "dummy",
+    "internal_clipboard_custom",
+    "internal",
+    "empty custom element"
+  },
+  {
+    "internal_clipboard_change",
+    "internal",
+    "empty change page"
+  },
+  {
+    "internal_clipboard_group",
+    "internal",
+    "empty group element"
+  },
+  {
+    "internal_dummy",
+    "internal",
     "-"
   },
 
@@ -3894,7 +4151,7 @@ static void print_usage()
 	 "      --serveronly                 only start network server\n"
 	 "  -v, --verbose                    verbose mode\n"
 	 "      --debug                      display debugging information\n"
-	 "  -e, --execute COMMAND            execute batch COMMAND:\n"
+	 "  -e, --execute COMMAND            execute batch COMMAND\n"
 	 "\n"
 	 "Valid commands for '--execute' option:\n"
 	 "  \"print graphicsinfo.conf\"        print default graphics config\n"
@@ -3905,7 +4162,8 @@ static void print_usage()
 	 "  \"print helptext.conf\"            print default helptext config\n"
 	 "  \"dump level FILE\"                dump level data from FILE\n"
 	 "  \"dump tape FILE\"                 dump tape data from FILE\n"
-	 "  \"autoplay LEVELDIR\"              play level tapes for LEVELDIR\n"
+	 "  \"autoplay LEVELDIR [NR]\"         play level tapes for LEVELDIR\n"
+	 "  \"convert LEVELDIR [NR]\"          convert levels in LEVELDIR\n"
 	 "\n",
 	 program.command_basename);
 }

@@ -58,6 +58,8 @@
 
 #define REQUEST_WAIT_FOR	(REQ_ASK | REQ_CONFIRM | REQ_PLAYER)
 
+void DumpTile(int, int);
+
 void SetDrawtoField(int);
 void RedrawPlayfield(boolean, int, int, int, int);
 void BackToFront();
@@ -139,6 +141,7 @@ int get_next_element(int);
 int el_act_dir2img(int, int, int);
 int el_act2img(int, int);
 int el_dir2img(int, int);
+int el2baseimg(int);
 int el2img(int);
 int el2edimg(int);
 int el2preimg(int);
