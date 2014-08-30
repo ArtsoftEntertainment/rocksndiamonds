@@ -2042,6 +2042,18 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
 #endif
 
 #if 1
+  /* adjust some settings if user's private level directory was detected */
+  if (leveldir_new->sort_priority == LEVELCLASS_UNDEFINED &&
+      leveldir_new->in_user_dir &&
+      (strcmp(leveldir_new->subdir, getLoginName()) == 0 ||
+       strcmp(leveldir_new->name,   getLoginName()) == 0 ||
+       strcmp(leveldir_new->author, getRealName())  == 0))
+  {
+    leveldir_new->sort_priority = LEVELCLASS_PRIVATE_START;
+    leveldir_new->readonly = FALSE;
+  }
+
+#else
   /* adjust sort priority if user's private level directory was detected */
   if (leveldir_new->sort_priority == LEVELCLASS_UNDEFINED &&
       leveldir_new->in_user_dir &&
