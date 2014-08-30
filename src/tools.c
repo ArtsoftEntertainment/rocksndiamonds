@@ -257,8 +257,18 @@ void DrawMaskedBorder(int redraw_mask)
 
 void BackToFront()
 {
-  int x,y;
+  int x, y;
   DrawBuffer *buffer = (drawto_field == window ? backbuffer : drawto_field);
+
+#if 0
+  printf("::: TILES TO REFRESH: %d\n", redraw_tiles);
+  for (x = 0; x < SCR_FIELDX; x++)
+    for (y = 0 ; y < SCR_FIELDY; y++)
+      if (redraw[redraw_x1 + x][redraw_y1 + y])
+	printf("::: - %d, %d [%s]\n",
+	       LEVELX(x), LEVELY(y),
+	       EL_NAME(Feld[LEVELX(x)][LEVELY(y)]));
+#endif
 
   if (redraw_mask & REDRAW_TILES && redraw_tiles > REDRAWTILES_THRESHOLD)
     redraw_mask |= REDRAW_FIELD;
@@ -427,8 +437,12 @@ void BackToFront()
     if (!global.fps_slowdown)
       info1[0] = '\0';
 
-    sprintf(text, "%.1f fps%s", global.frames_per_second, info1);
+    sprintf(text, "%04.1f fps%s", global.frames_per_second, info1);
+#if 1
+    DrawTextExt(window, SX + SXSIZE + SX, 0, text, FONT_TEXT_2, BLIT_OPAQUE);
+#else
     DrawTextExt(window, SX, SY, text, FONT_TEXT_2, BLIT_OPAQUE);
+#endif
   }
 
   FlushDisplay();
@@ -1364,6 +1378,13 @@ void DrawLevelFieldThruMask(int x, int y)
   DrawLevelElementExt(x, y, 0, 0, Feld[x][y], NO_CUTTING, USE_MASKING);
 }
 
+/* !!! implementation of quicksand is totally broken !!! */
+#define IS_CRUMBLED_TILE(x, y, e)					\
+	(GFX_CRUMBLED(e) && (!IN_LEV_FIELD(x, y) ||			\
+			     !IS_MOVING(x, y) ||			\
+			     (e) == EL_QUICKSAND_EMPTYING ||		\
+			     (e) == EL_QUICKSAND_FAST_EMPTYING))
+
 static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
 {
   Bitmap *src_bitmap;
@@ -1386,7 +1407,11 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
   element = TILE_GFX_ELEMENT(x, y);
 
   /* crumble field itself */
+#if 1
+  if (IS_CRUMBLED_TILE(x, y, element))
+#else
   if (GFX_CRUMBLED(element) && !IS_MOVING(x, y))
+#endif
   {
     if (!IN_SCR_FIELD(sx, sy))
       return;
@@ -1402,8 +1427,13 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
 		 BorderElement);
 
       /* check if neighbour field is of same type */
+#if 1
+      if (IS_CRUMBLED_TILE(xx, yy, element))
+	continue;
+#else
       if (GFX_CRUMBLED(element) && !IS_MOVING(xx, yy))
 	continue;
+#endif
 
       if (i == 1 || i == 2)
       {
@@ -1435,18 +1465,29 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
       int sxx = sx + xy[i][0];
       int syy = sy + xy[i][1];
 
+#if 1
+      if (!IN_LEV_FIELD(xx, yy) ||
+	  !IN_SCR_FIELD(sxx, syy))
+	continue;
+#else
       if (!IN_LEV_FIELD(xx, yy) ||
 	  !IN_SCR_FIELD(sxx, syy) ||
 	  IS_MOVING(xx, yy))
 	continue;
+#endif
 
       if (Feld[xx][yy] == EL_ELEMENT_SNAPPING)
 	continue;
 
       element = TILE_GFX_ELEMENT(xx, yy);
 
+#if 1
+      if (!IS_CRUMBLED_TILE(xx, yy, element))
+	continue;
+#else
       if (!GFX_CRUMBLED(element))
 	continue;
+#endif
 
       graphic = el_act2crm(element, ACTION_DEFAULT);
       crumbled_border_size = graphic_info[graphic].border_size;
@@ -1600,6 +1641,7 @@ void DrawScreenField(int x, int y)
       element = getBorderElement(lx, ly);
 
     DrawScreenElement(x, y, element);
+
     return;
   }
 
@@ -1625,8 +1667,22 @@ void DrawScreenField(int x, int y)
 	     element == EL_DC_MAGIC_WALL_FILLING)
       cut_mode = CUT_BELOW;
 
+#if 0
+    if (lx == 9 && ly == 1)
+      printf("::: %s [%d] [%d, %d] [%d]\n",
+	     EL_NAME(TILE_GFX_ELEMENT(lx, ly)),
+	     el_act2crm(TILE_GFX_ELEMENT(lx, ly), ACTION_DEFAULT),
+	     element_info[EL_QUICKSAND_EMPTYING].graphic[ACTION_DEFAULT],
+	     element_info[EL_QUICKSAND_EMPTYING].crumbled[ACTION_DEFAULT],
+	     GFX_CRUMBLED(TILE_GFX_ELEMENT(lx, ly)));
+#endif
+
     if (cut_mode == CUT_ABOVE)
+#if 1
+      DrawScreenElement(x, y, element);
+#else
       DrawScreenElementShifted(x, y, 0, 0, element, NO_CUTTING);
+#endif
     else
       DrawScreenElement(x, y, EL_EMPTY);
 
@@ -1635,7 +1691,15 @@ void DrawScreenField(int x, int y)
     else if (cut_mode == NO_CUTTING)
       DrawScreenElementShifted(x, y, 0, MovPos[lx][ly], element, cut_mode);
     else
+    {
       DrawScreenElementShifted(x, y, 0, MovPos[lx][ly], content, cut_mode);
+
+#if 1
+      if (cut_mode == CUT_BELOW &&
+	  IN_LEV_FIELD(lx, ly + 1) && IN_SCR_FIELD(x, y + 1))
+	DrawLevelElement(lx, ly + 1, element);
+#endif
+    }
 
     if (content == EL_ACID)
     {
@@ -1891,7 +1955,13 @@ void DrawLevel()
 {
   int x,y;
 
+#if 1
+  SetMainBackgroundImage(IMG_BACKGROUND_PLAYING);
+  SetDrawBackgroundMask(REDRAW_FIELD);
+#else
   SetDrawBackgroundMask(REDRAW_NONE);
+#endif
+
   ClearField();
 
   for (x = BX1; x <= BX2; x++)
@@ -3147,6 +3217,11 @@ unsigned int MoveDoor(unsigned int door_state)
     door_state |= DOOR_NO_DELAY;
     door_state &= ~DOOR_CLOSE_ALL;
   }
+
+#if 1
+  if (game_status == GAME_MODE_EDITOR)
+    door_state |= DOOR_NO_DELAY;
+#endif
 
   if (door_state & DOOR_ACTION)
   {
@@ -4813,6 +4888,14 @@ em_object_mapping_list[] =
     Xsand_stonesand_4,			FALSE,	FALSE,
     EL_QUICKSAND_EMPTYING,		-1, -1
   },
+  {
+    Xsand_stonesand_quickout_1,		FALSE,	FALSE,
+    EL_QUICKSAND_EMPTYING,		-1, -1
+  },
+  {
+    Xsand_stonesand_quickout_2,		FALSE,	FALSE,
+    EL_QUICKSAND_EMPTYING,		-1, -1
+  },
 #else
   {
     Xsand_stonesand_1,			FALSE,	FALSE,
@@ -6024,7 +6107,10 @@ inline static boolean check_linear_animation_EM(int tile)
   switch (tile)
   {
     case Xsand_stonesand_1:
+    case Xsand_stonesand_quickout_1:
     case Xsand_sandstone_1:
+    case Xsand_stonein_1:
+    case Xsand_stoneout_1:
     case Xboom_1:
     case Xdynamite_1:
     case Ybug_w_n:
@@ -6117,10 +6203,29 @@ void SetGfxAnimation_EM(struct GraphicInfo_EM *g_em,
 			     action == ACTION_FILLING ||
 			     action == ACTION_EMPTYING);
 
+#if 0
+  if (tile == Xsand_stonesand_1 ||
+      tile == Xsand_stonesand_2 ||
+      tile == Xsand_stonesand_3 ||
+      tile == Xsand_stonesand_4)
+    printf("::: 1: quicksand frame %d [%d]\n", GfxFrame[x][y], tile);
+#endif
+
+#if 1
+  if ((action_removing || check_linear_animation_EM(tile)) && frame_em == 0)
+  {
+    GfxFrame[x][y] = 0;
+
+    // printf("::: resetting... [%d]\n", tile);
+  }
+#else
   if (action_removing || check_linear_animation_EM(tile))
   {
     GfxFrame[x][y] = frame_em;
+
+    // printf("::: resetting... [%d]\n", tile);
   }
+#endif
   else if (action_moving)
   {
     boolean is_backside = object_mapping[tile].is_backside;
@@ -6145,7 +6250,20 @@ void SetGfxAnimation_EM(struct GraphicInfo_EM *g_em,
   else
   {
     GfxFrame[x][y]++;
+
+    /* special case: animation for Xsand_stonesand_quickout_1/2 twice as fast */
+    if (tile == Xsand_stonesand_quickout_1 ||
+	tile == Xsand_stonesand_quickout_2)
+      GfxFrame[x][y]++;
   }
+
+#if 0
+  if (tile == Xsand_stonesand_1 ||
+      tile == Xsand_stonesand_2 ||
+      tile == Xsand_stonesand_3 ||
+      tile == Xsand_stonesand_4)
+    printf("::: 2: quicksand frame %d [%d]\n", GfxFrame[x][y], tile);
+#endif
 
 #if 1
   if (graphic_info[graphic].anim_global_sync)

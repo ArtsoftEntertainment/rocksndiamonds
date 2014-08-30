@@ -1949,8 +1949,8 @@
 /* program information and versioning definitions */
 #define PROGRAM_VERSION_MAJOR		3
 #define PROGRAM_VERSION_MINOR		2
-#define PROGRAM_VERSION_PATCH		4
-#define PROGRAM_VERSION_BUILD		3
+#define PROGRAM_VERSION_PATCH		5
+#define PROGRAM_VERSION_BUILD		0
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
@@ -1960,11 +1960,11 @@
 #define PROGRAM_GAME_BY_STRING		"A Game by Artsoft Entertainment"
 #define PROGRAM_UNIX_DATADIR_STRING	".rocksndiamonds"
 
-#if CREATE_SPECIAL_EDITION_RND_JUE
+#if defined(CREATE_SPECIAL_EDITION_RND_JUE)
 #undef  PROGRAM_TITLE_STRING
-#define PROGRAM_TITLE_STRING		"R'n'D - jue"
+#define PROGRAM_TITLE_STRING		"R'n'D jue"
 #undef  PROGRAM_UNIX_DATADIR_STRING
-#define PROGRAM_UNIX_DATADIR_STRING	".rocksndiamonds-jue"
+#define PROGRAM_UNIX_DATADIR_STRING	".rnd_jue"
 #endif
 
 #define ICON_TITLE_STRING		PROGRAM_TITLE_STRING

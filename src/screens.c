@@ -1141,7 +1141,10 @@ void DrawTitleScreenImage(int nr, boolean initial)
   ClearRectangleOnBackground(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
   if (DrawingOnBackground(dst_x, dst_y))
+  {
+    SetClipOrigin(bitmap, bitmap->stored_clip_gc, dst_x - src_x, dst_y - src_y);
     BlitBitmapMasked(bitmap, drawto, src_x, src_y, width, height, dst_x, dst_y);
+  }
   else
     BlitBitmap(bitmap, drawto, src_x, src_y, width, height, dst_x, dst_y);
 
@@ -1293,6 +1296,7 @@ void DrawMainMenuExt(int fade_mask, boolean do_fading)
     level_nr = leveldir_current->handicap_level;
 
   LoadLevel(level_nr);
+  LoadScore(level_nr);
 
   SetMainBackgroundImage(IMG_BACKGROUND_MAIN);
 
@@ -4202,6 +4206,7 @@ static struct TokenInfo setup_info_artwork[] =
   { TYPE_YES_NO, &setup.override_level_graphics,"Override Level Graphics:" },
   { TYPE_YES_NO, &setup.override_level_sounds,	"Override Level Sounds:"   },
   { TYPE_YES_NO, &setup.override_level_music,	"Override Level Music:"    },
+  { TYPE_YES_NO, &setup.auto_override_artwork,	"Auto-Override Non-CE Sets:" },
 #else
   { TYPE_STRING,	NULL,			"Override Level Artwork:"},
   { TYPE_YES_NO,	&setup.override_level_graphics,	"Graphics:"	},

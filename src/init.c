@@ -201,24 +201,41 @@ void DrawInitAnim()
   y = WIN_YSIZE / 2 - TILESIZE / 2;
 #endif
 
+  graphic_info = &anim_initial;		/* graphic == 0 => anim_initial */
+
 #if 0
   {
     static boolean done = FALSE;
 
-    if (!done)
-      printf("::: %d, %d, %d, %d => %d, %d\n",
+    // if (!done)
+      printf("::: %d, %d, %d, %d => %d, %d [%d, %d] [%d, %d]\n",
 	     init.busy.x, init.busy.y,
 	     init.busy.align, init.busy.valign,
-	     x, y);
+	     x, y,
+	     graphic_info[graphic].width,
+	     graphic_info[graphic].height,
+	     sync_frame, anim_initial.anim_delay);
 
     done = TRUE;
   }
 #endif
 
-  graphic_info = &anim_initial;		/* graphic == 0 => anim_initial */
-
   if (sync_frame % anim_initial.anim_delay == 0)
+  {
+#if 1
+    Bitmap *src_bitmap;
+    int src_x, src_y;
+    int width = graphic_info[graphic].width;
+    int height = graphic_info[graphic].height;
+    int frame = getGraphicAnimationFrame(graphic, sync_frame);
+
+    getGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
+    BlitBitmap(src_bitmap, window, src_x, src_y, width, height, x, y);
+#else
+    /* !!! this can only draw TILEX/TILEY size animations !!! */
     DrawGraphicAnimationExt(window, x, y, graphic, sync_frame, NO_MASKING);
+#endif
+  }
 
   graphic_info = graphic_info_last;
 
@@ -1237,9 +1254,10 @@ static int get_scaled_graphic_height(int graphic)
   return original_height * scale_up_factor;
 }
 
-static void set_graphic_parameters_ext(int graphic, struct GraphicInfo *g,
-				       int *parameter, Bitmap *src_bitmap)
+static void set_graphic_parameters_ext(int graphic, int *parameter,
+				       Bitmap *src_bitmap)
 {
+  struct GraphicInfo *g = &graphic_info[graphic];
   int anim_frames_per_row = 1, anim_frames_per_col = 1;
   int anim_frames_per_line = 1;
 
@@ -1322,6 +1340,13 @@ static void set_graphic_parameters_ext(int graphic, struct GraphicInfo *g,
     /* get final bitmap size (with scaling, but without small images) */
     int src_image_width  = get_scaled_graphic_width(graphic);
     int src_image_height = get_scaled_graphic_height(graphic);
+
+    if (src_image_width == 0 || src_image_height == 0)
+    {
+      /* only happens when loaded outside artwork system (like "global.busy") */
+      src_image_width  = src_bitmap->width;
+      src_image_height = src_bitmap->height;
+    }
 
     anim_frames_per_row = src_image_width  / g->width;
     anim_frames_per_col = src_image_height / g->height;
@@ -1485,8 +1510,7 @@ static void set_graphic_parameters(int graphic)
 					       image_config_suffix[i].token,
 					       image_config_suffix[i].type);
 
-  set_graphic_parameters_ext(graphic, &graphic_info[graphic],
-			     parameter, src_bitmap);
+  set_graphic_parameters_ext(graphic, parameter, src_bitmap);
 
 #else
 
@@ -5360,11 +5384,13 @@ static void InitArtworkConfig()
 static void InitMixer()
 {
   OpenAudio();
+
   StartMixer();
 }
 
 void InitGfx()
 {
+  struct GraphicInfo *graphic_info_last = graphic_info;
   char *filename_font_initial = NULL;
   char *filename_anim_initial = NULL;
   Bitmap *bitmap_font_initial = NULL;
@@ -5422,6 +5448,7 @@ void InitGfx()
   InitGfxDoor1Info(DX, DY, DXSIZE, DYSIZE);
   InitGfxDoor2Info(VX, VY, VXSIZE, VYSIZE);
   InitGfxScrollbufferInfo(FXSIZE, FYSIZE);
+  InitGfxCustomArtworkInfo();
 
   bitmap_font_initial = LoadCustomImage(filename_font_initial);
 
@@ -5497,12 +5524,37 @@ void InitGfx()
     }
   }
 
-  set_graphic_parameters_ext(0, &anim_initial, parameter, NULL);
+#if defined(CREATE_SPECIAL_EDITION_RND_JUE)
+  filename_anim_initial = "loading.pcx";
+
+  parameter[GFX_ARG_X] = 0;
+  parameter[GFX_ARG_Y] = 0;
+  parameter[GFX_ARG_WIDTH] = 128;
+  parameter[GFX_ARG_HEIGHT] = 40;
+  parameter[GFX_ARG_FRAMES] = 32;
+  parameter[GFX_ARG_DELAY] = 4;
+  parameter[GFX_ARG_FRAMES_PER_LINE] = ARG_UNDEFINED_VALUE;
+#endif
 
   if (filename_anim_initial == NULL)	/* should not happen */
     Error(ERR_EXIT, "cannot get filename for '%s'", CONFIG_TOKEN_GLOBAL_BUSY);
 
   anim_initial.bitmap = LoadCustomImage(filename_anim_initial);
+
+  graphic_info = &anim_initial;		/* graphic == 0 => anim_initial */
+
+  set_graphic_parameters_ext(0, parameter, anim_initial.bitmap);
+
+#if 0
+  printf("::: INIT_GFX: anim_frames_per_line == %d [%d / %d] [%d, %d]\n",
+	 graphic_info[0].anim_frames_per_line,
+	 get_scaled_graphic_width(0),
+	 graphic_info[0].width,
+	 getOriginalImageWidthFromImageID(0),
+	 graphic_info[0].scale_up_factor);
+#endif
+
+  graphic_info = graphic_info_last;
 
   init.busy.width  = anim_initial.width;
   init.busy.height = anim_initial.height;
@@ -5550,7 +5602,7 @@ static void InitLevelInfo()
   LoadLevelSetup_SeriesInfo();			/* last played level info */
 }
 
-void InitLevelArtworkInfo()
+static void InitLevelArtworkInfo()
 {
   LoadLevelArtworkInfo();
 }
@@ -5656,6 +5708,76 @@ void InitNetworkServer()
 #endif
 }
 
+static boolean CheckArtworkConfigForCustomElements(char *filename)
+{
+  SetupFileHash *setup_file_hash;
+  boolean redefined_ce_found = FALSE;
+
+  /* !!! CACHE THIS BY USING HASH 'filename' => 'true/false' !!! */
+
+  if ((setup_file_hash = loadSetupFileHash(filename)) != NULL)
+  {
+    BEGIN_HASH_ITERATION(setup_file_hash, itr)
+    {
+      char *token = HASH_ITERATION_TOKEN(itr);
+
+      if (strPrefix(token, "custom_"))
+      {
+	redefined_ce_found = TRUE;
+
+	break;
+      }
+    }
+    END_HASH_ITERATION(setup_file_hash, itr)
+
+    freeSetupFileHash(setup_file_hash);
+  }
+
+  return redefined_ce_found;
+}
+
+static void InitOverrideArtwork()
+{
+  boolean init_override_from_setup = TRUE;
+
+  gfx.override_level_graphics = FALSE;
+  gfx.override_level_sounds   = FALSE;
+  gfx.override_level_music    = FALSE;
+
+  if (setup.auto_override_artwork)
+  {
+    char *filename_base, *filename_local;
+    boolean redefined_ce_found = FALSE;
+
+    /* first look for special artwork configured in level series config */
+    filename_base = getCustomArtworkLevelConfigFilename(ARTWORK_TYPE_GRAPHICS);
+
+    if (fileExists(filename_base))
+      redefined_ce_found |= CheckArtworkConfigForCustomElements(filename_base);
+
+    filename_local = getCustomArtworkConfigFilename(ARTWORK_TYPE_GRAPHICS);
+
+    if (filename_local != NULL && !strEqual(filename_base, filename_local))
+      redefined_ce_found |= CheckArtworkConfigForCustomElements(filename_local);
+
+    if (!redefined_ce_found)
+    {
+      gfx.override_level_graphics = TRUE;
+      gfx.override_level_sounds   = TRUE;
+      gfx.override_level_music    = TRUE;
+
+      init_override_from_setup = FALSE;
+    }
+  }
+
+  if (init_override_from_setup)
+  {
+    gfx.override_level_graphics = setup.override_level_graphics;
+    gfx.override_level_sounds   = setup.override_level_sounds;
+    gfx.override_level_music    = setup.override_level_music;
+  }
+}
+
 static char *getNewArtworkIdentifier(int type)
 {
   static char *leveldir_current_identifier[3] = { NULL, NULL, NULL };
@@ -5663,7 +5785,11 @@ static char *getNewArtworkIdentifier(int type)
   static boolean last_has_level_artwork_set[3] = { FALSE, FALSE, FALSE };
   static boolean initialized[3] = { FALSE, FALSE, FALSE };
   TreeInfo *artwork_first_node = ARTWORK_FIRST_NODE(artwork, type);
+#if 1
+  boolean setup_override_artwork = GFX_OVERRIDE_ARTWORK(type);
+#else
   boolean setup_override_artwork = SETUP_OVERRIDE_ARTWORK(setup, type);
+#endif
   char *setup_artwork_set = SETUP_ARTWORK_SET(setup, type);
   char *leveldir_identifier = leveldir_current->identifier;
 #if 1
@@ -5779,6 +5905,8 @@ void ReloadCustomArtwork(int force_reload)
   boolean force_reload_snd = (force_reload & (1 << ARTWORK_TYPE_SOUNDS));
   boolean force_reload_mus = (force_reload & (1 << ARTWORK_TYPE_MUSIC));
   boolean reload_needed;
+
+  InitOverrideArtwork();
 
   force_reload_gfx |= AdjustGraphicsForEMC();
 
@@ -5951,6 +6079,9 @@ void OpenAll()
 
   InitLevelArtworkInfo();
   print_timestamp_time("InitLevelArtworkInfo");
+
+  InitOverrideArtwork();	/* needs to know current level directory */
+  print_timestamp_time("InitOverrideArtwork");
 
   InitImages();			/* needs to know current level directory */
   print_timestamp_time("InitImages");

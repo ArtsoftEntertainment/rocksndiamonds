@@ -664,6 +664,7 @@ void GetOptions(char *argv[], void (*print_usage_function)(void))
   options.network = FALSE;
   options.verbose = FALSE;
   options.debug = FALSE;
+  options.debug_x11_sync = FALSE;
 
 #if !defined(PLATFORM_UNIX)
   if (*options_left == NULL)	/* no options given -- enable verbose mode */
@@ -788,6 +789,10 @@ void GetOptions(char *argv[], void (*print_usage_function)(void))
     else if (strncmp(option, "-debug", option_len) == 0)
     {
       options.debug = TRUE;
+    }
+    else if (strncmp(option, "-debug-x11-sync", option_len) == 0)
+    {
+      options.debug_x11_sync = TRUE;
     }
     else if (strncmp(option, "-execute", option_len) == 0)
     {
@@ -2662,10 +2667,20 @@ void LoadArtworkConfig(struct ArtworkListInfo *artwork_info)
     artwork_info->num_property_mapping_entries = 0;
   }
 
+#if 1
+  if (!GFX_OVERRIDE_ARTWORK(artwork_info->type))
+#else
   if (!SETUP_OVERRIDE_ARTWORK(setup, artwork_info->type))
+#endif
   {
     /* first look for special artwork configured in level series config */
     filename_base = getCustomArtworkLevelConfigFilename(artwork_info->type);
+
+#if 0
+    printf("::: filename_base == '%s' [%s, %s]\n", filename_base,
+	   leveldir_current->graphics_set,
+	   leveldir_current->graphics_path);
+#endif
 
     if (fileExists(filename_base))
       LoadArtworkConfigFromFilename(artwork_info, filename_base);

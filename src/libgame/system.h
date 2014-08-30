@@ -48,9 +48,6 @@
 #define FULLSCREEN_NOT_AVAILABLE	FALSE
 #define FULLSCREEN_AVAILABLE		TRUE
 
-#define CREATE_SPECIAL_EDITION		FALSE
-#define CREATE_SPECIAL_EDITION_RND_JUE	FALSE
-
 /* default input keys */
 #define DEFAULT_KEY_LEFT		KSYM_Left
 #define DEFAULT_KEY_RIGHT		KSYM_Right
@@ -342,22 +339,26 @@
 #define CACHE_DIRECTORY		"cache"
 
 #if !defined(PLATFORM_MSDOS)
-#if CREATE_SPECIAL_EDITION_RND_JUE
-#define GFX_CLASSIC_SUBDIR	"jue0"
-#define SND_CLASSIC_SUBDIR	"jue0"
-#define MUS_CLASSIC_SUBDIR	"jue0"
-#else
 #define GFX_CLASSIC_SUBDIR	"gfx_classic"
 #define SND_CLASSIC_SUBDIR	"snd_classic"
 #define MUS_CLASSIC_SUBDIR	"mus_classic"
-#endif
 #else
 #define GFX_CLASSIC_SUBDIR	"gfx_orig"
 #define SND_CLASSIC_SUBDIR	"snd_orig"
 #define MUS_CLASSIC_SUBDIR	"mus_orig"
 #endif
 
-#if CREATE_SPECIAL_EDITION
+#if defined(CREATE_SPECIAL_EDITION_RND_JUE)
+#define GFX_DEFAULT_SUBDIR	"jue0"
+#define SND_DEFAULT_SUBDIR	"jue0"
+#define MUS_DEFAULT_SUBDIR	"jue0"
+#else
+#define GFX_DEFAULT_SUBDIR	GFX_CLASSIC_SUBDIR
+#define SND_DEFAULT_SUBDIR	SND_CLASSIC_SUBDIR
+#define MUS_DEFAULT_SUBDIR	MUS_CLASSIC_SUBDIR
+#endif
+
+#if defined(CREATE_SPECIAL_EDITION)
 #define GFX_FALLBACK_FILENAME	"fallback.pcx"
 #define SND_FALLBACK_FILENAME	"fallback.wav"
 #define MUS_FALLBACK_FILENAME	"fallback.wav"
@@ -540,6 +541,13 @@
 				 (setup).override_level_sounds :	\
 				 (setup).override_level_music)
 
+#define GFX_OVERRIDE_ARTWORK(type)					\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 gfx.override_level_graphics :		\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 gfx.override_level_sounds :		\
+				 gfx.override_level_music)
+
 #define ARTWORK_FIRST_NODE(artwork, type)				\
 				((type) == ARTWORK_TYPE_GRAPHICS ?	\
 				 (artwork).gfx_first :			\
@@ -648,6 +656,7 @@ struct OptionInfo
   boolean network;
   boolean verbose;
   boolean debug;
+  boolean debug_x11_sync;
 };
 
 struct ScreenModeInfo
@@ -724,6 +733,12 @@ struct GfxInfo
 
   Bitmap *background_bitmap;
   int background_bitmap_mask;
+
+  boolean override_level_graphics;
+  boolean override_level_sounds;
+  boolean override_level_music;
+
+  boolean draw_init_text;
 
   int num_fonts;
   struct FontBitmapInfo *font_bitmap_info;
@@ -858,6 +873,7 @@ struct SetupInfo
   boolean override_level_graphics;
   boolean override_level_sounds;
   boolean override_level_music;
+  boolean auto_override_artwork;
 
   struct SetupEditorInfo editor;
   struct SetupEditorCascadeInfo editor_cascade;
@@ -1131,6 +1147,7 @@ void InitGfxDoor1Info(int, int, int, int);
 void InitGfxDoor2Info(int, int, int, int);
 void InitGfxScrollbufferInfo(int, int);
 void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(void));
+void InitGfxCustomArtworkInfo();
 void SetDrawDeactivationMask(int);
 void SetDrawBackgroundMask(int);
 void SetWindowBackgroundBitmap(Bitmap *);
