@@ -691,6 +691,22 @@ struct GraphicInfo_EM
   int unique_identifier;	/* used to identify needed screen updates */
 };
 
+struct EngineSnapshotInfo_EM
+{
+  struct GameInfo_EM game_em;
+  unsigned long RandomEM;
+  struct LEVEL lev;
+  struct PLAYER ply[MAX_PLAYERS];
+  short Array[4][EM_MAX_CAVE_HEIGHT][EM_MAX_CAVE_WIDTH];
+  int screen_x;
+  int screen_y;
+  int frame;
+  short **Boom;
+  short **Cave;
+  short **Next;
+  short **Draw;
+};
+
 
 /* ------------------------------------------------------------------------- */
 /* exported functions                                                        */
@@ -700,6 +716,7 @@ extern struct GlobalInfo_EM global_em_info;
 extern struct LevelInfo_EM native_em_level;
 extern struct GraphicInfo_EM graphic_info_em_object[TILE_MAX][8];
 extern struct GraphicInfo_EM graphic_info_em_player[MAX_PLAYERS][SPR_MAX][8];
+extern struct EngineSnapshotInfo_EM engine_snapshot_em;
 
 extern void em_open_all();
 extern void em_close_all();
@@ -707,7 +724,7 @@ extern void em_close_all();
 extern void InitGameEngine_EM();
 extern void GameActions_EM(byte *, boolean);
 
-extern unsigned int InitEngineRND_EM(long);
+extern unsigned int InitEngineRandom_EM(long);
 
 extern void setLevelInfoToDefaults_EM();
 extern boolean LoadNativeLevel_EM(char *);
@@ -716,5 +733,8 @@ extern void BackToFront_EM(void);
 extern void BlitScreenToBitmap_EM(Bitmap *);
 extern void RedrawPlayfield_EM(boolean);
 extern void DrawGameDoorValues_EM();
+
+extern void LoadEngineSnapshotValues_EM();
+extern void SaveEngineSnapshotValues_EM();
 
 #endif	/* EXPORT_H */

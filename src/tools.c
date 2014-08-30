@@ -138,7 +138,6 @@ void RedrawPlayfield(boolean force_redraw, int x, int y, int width, int height)
       level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
     /* currently there is no partial redraw -- always redraw whole playfield */
-
     RedrawPlayfield_EM(TRUE);
 
     /* blit playfield from scroll buffer to normal back buffer for fading in */
@@ -182,6 +181,14 @@ void RedrawPlayfield(boolean force_redraw, int x, int y, int width, int height)
 
       BlitBitmap(fieldbuffer, backbuffer, fx,fy, SXSIZE,SYSIZE, SX,SY);
     }
+  }
+
+  if (force_redraw)
+  {
+    x = gfx.sx;
+    y = gfx.sy;
+    width = gfx.sxsize;
+    height = gfx.sysize;
   }
 
   BlitBitmap(drawto, window, x, y, width, height, x, y);
@@ -2225,6 +2232,10 @@ void WaitForEventToContinue()
     HandleGadgets(-1, -1, 0);
 
   button_status = MB_RELEASED;
+
+#if 1
+  ClearEventQueue();
+#endif
 
   while (still_wait)
   {
@@ -5306,9 +5317,9 @@ int getGameFrameDelay_EM(int native_em_game_frame_delay)
 unsigned int InitRND(long seed)
 {
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-    return InitEngineRND_EM(seed);
+    return InitEngineRandom_EM(seed);
   else
-    return InitEngineRND(seed);
+    return InitEngineRandom_RND(seed);
 }
 
 void InitGraphicInfo_EM(void)

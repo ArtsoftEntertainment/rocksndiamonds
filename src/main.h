@@ -1303,14 +1303,14 @@
 
 #define EL_BD_EXPANDABLE_WALL		713
 
-#define EL_LAST_CE_8			714
-#define EL_LAST_CE_7			715
-#define EL_LAST_CE_6			716
-#define EL_LAST_CE_5			717
-#define EL_LAST_CE_4			718
-#define EL_LAST_CE_3			719
-#define EL_LAST_CE_2			720
-#define EL_LAST_CE_1			721
+#define EL_PREV_CE_8			714
+#define EL_PREV_CE_7			715
+#define EL_PREV_CE_6			716
+#define EL_PREV_CE_5			717
+#define EL_PREV_CE_4			718
+#define EL_PREV_CE_3			719
+#define EL_PREV_CE_2			720
+#define EL_PREV_CE_1			721
 #define EL_SELF				722
 #define EL_NEXT_CE_1			723
 #define EL_NEXT_CE_2			724
@@ -1727,7 +1727,7 @@
 /* program information and versioning definitions */
 #define PROGRAM_VERSION_MAJOR		3
 #define PROGRAM_VERSION_MINOR		2
-#define PROGRAM_VERSION_PATCH		1
+#define PROGRAM_VERSION_PATCH		2
 #define PROGRAM_VERSION_BUILD		0
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
@@ -2397,8 +2397,6 @@ extern int			ExitX, ExitY;
 extern int			AllPlayersGone;
 
 extern int			TimeFrames, TimePlayed, TimeLeft, TapeTime;
-extern boolean			SiebAktiv;
-extern int			SiebCount;
 
 extern boolean			network_player_action_received;
 

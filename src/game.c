@@ -142,7 +142,7 @@
 #define GET_DX_FROM_DIR(d)	((d) == MV_LEFT ? -1 : (d) == MV_RIGHT ? 1 : 0)
 #define GET_DY_FROM_DIR(d)	((d) == MV_UP   ? -1 : (d) == MV_DOWN  ? 1 : 0)
 
-#define	INIT_GFX_RANDOM()	(SimpleRND(1000000))
+#define	INIT_GFX_RANDOM()	(GetSimpleRandom(1000000))
 
 #define GET_NEW_PUSH_DELAY(e)	(   (element_info[e].push_delay_fixed) + \
 				 RND(element_info[e].push_delay_random))
@@ -176,7 +176,7 @@
 	 (e) == EL_TRIGGER_CE_SCORE ? (ch)->actual_trigger_ce_score  :	\
 	 (e) == EL_CURRENT_CE_VALUE ? (cv) :				\
 	 (e) == EL_CURRENT_CE_SCORE ? (cs) :				\
-	 (e) >= EL_LAST_CE_8 && (e) <= EL_NEXT_CE_8 ?			\
+	 (e) >= EL_PREV_CE_8 && (e) <= EL_NEXT_CE_8 ?			\
 	 RESOLVED_REFERENCE_ELEMENT(be, e) :				\
 	 (e))
 
@@ -2671,18 +2671,24 @@ void GameWon()
   static int game_over_delay = 0;
   int game_over_delay_value = 50;
 
-  /* do not start end game actions before the player stops moving (to exit) */
-  if (local_player->MovPos)
-    return;
-
   if (!local_player->LevelSolved_GameEnd)
   {
+    int i;
+
+    /* do not start end game actions before the player stops moving (to exit) */
+    if (local_player->MovPos)
+      return;
+
     local_player->LevelSolved_GameEnd = TRUE;
     local_player->LevelSolved_SaveTape = tape.recording;
     local_player->LevelSolved_SaveScore = !tape.playing;
 
     if (tape.auto_play)		/* tape might already be stopped here */
       tape.auto_play_level_solved = TRUE;
+
+#if 1
+    TapeStop();
+#endif
 
     game_over_delay = game_over_delay_value;
 
@@ -2730,6 +2736,19 @@ void GameWon()
       DrawLevelField(ExitX, ExitY);
     }
 
+    for (i = 0; i < MAX_PLAYERS; i++)
+    {
+      struct PlayerInfo *player = &stored_player[i];
+
+      if (player->present)
+      {
+	RemovePlayer(player);
+
+	/* player disappears */
+	DrawLevelField(player->jx, player->jy);
+      }
+    }
+
     PlaySound(SND_GAME_WINNING);
   }
 
@@ -2770,7 +2789,9 @@ void GameEnd()
 
   if (local_player->LevelSolved_SaveTape)
   {
+#if 0
     TapeStop();
+#endif
 
     SaveTape(tape.level_nr);		/* ask to save tape */
   }
@@ -7207,7 +7228,7 @@ void EdelsteinFunkeln(int x, int y)
     return;
 
   if (MovDelay[x][y] == 0)	/* next animation frame */
-    MovDelay[x][y] = 11 * !SimpleRND(500);
+    MovDelay[x][y] = 11 * !GetSimpleRandom(500);
 
   if (MovDelay[x][y] != 0)	/* wait some time before next frame */
   {
@@ -8672,11 +8693,11 @@ static void SetPlayerWaiting(struct PlayerInfo *player, boolean is_waiting)
       player->frame_counter_bored =
 	FrameCounter +
 	game.player_boring_delay_fixed +
-	SimpleRND(game.player_boring_delay_random);
+	GetSimpleRandom(game.player_boring_delay_random);
       player->frame_counter_sleeping =
 	FrameCounter +
 	game.player_sleeping_delay_fixed +
-	SimpleRND(game.player_sleeping_delay_random);
+	GetSimpleRandom(game.player_sleeping_delay_random);
 
       InitPlayerGfxAnimation(player, ACTION_WAITING, move_dir);
     }
@@ -8732,10 +8753,10 @@ static void SetPlayerWaiting(struct PlayerInfo *player, boolean is_waiting)
 
 	  player->anim_delay_counter =
 	    graphic_info[special_graphic].anim_delay_fixed +
-	    SimpleRND(graphic_info[special_graphic].anim_delay_random);
+	    GetSimpleRandom(graphic_info[special_graphic].anim_delay_random);
 	  player->post_delay_counter =
 	    graphic_info[special_graphic].post_delay_fixed +
-	    SimpleRND(graphic_info[special_graphic].post_delay_random);
+	    GetSimpleRandom(graphic_info[special_graphic].post_delay_random);
 
 	  player->special_action_sleeping = special_action;
 	}
@@ -8758,16 +8779,16 @@ static void SetPlayerWaiting(struct PlayerInfo *player, boolean is_waiting)
 	if (player->anim_delay_counter == 0 && player->post_delay_counter == 0)
 	{
 	  int special_action =
-	    ACTION_BORING_1 + SimpleRND(player->num_special_action_bored);
+	    ACTION_BORING_1 + GetSimpleRandom(player->num_special_action_bored);
 	  int special_graphic =
 	    el_act_dir2img(player->artwork_element, special_action, move_dir);
 
 	  player->anim_delay_counter =
 	    graphic_info[special_graphic].anim_delay_fixed +
-	    SimpleRND(graphic_info[special_graphic].anim_delay_random);
+	    GetSimpleRandom(graphic_info[special_graphic].anim_delay_random);
 	  player->post_delay_counter =
 	    graphic_info[special_graphic].post_delay_fixed +
-	    SimpleRND(graphic_info[special_graphic].post_delay_random);
+	    GetSimpleRandom(graphic_info[special_graphic].post_delay_random);
 
 	  player->special_action_bored = special_action;
 	}
@@ -12409,6 +12430,312 @@ void RequestQuitGame(boolean ask_if_really_quit)
     if (tape.playing && tape.deactivate_display)
       TapeDeactivateDisplayOn();
   }
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* random generator functions                                                */
+/* ------------------------------------------------------------------------- */
+
+unsigned int InitEngineRandom_RND(long seed)
+{
+  game.num_random_calls = 0;
+
+#if 0
+  unsigned int rnd_seed = InitEngineRandom(seed);
+
+  printf("::: START RND: %d\n", rnd_seed);
+
+  return rnd_seed;
+#else
+
+  return InitEngineRandom(seed);
+
+#endif
+
+}
+
+unsigned int RND(int max)
+{
+  if (max > 0)
+  {
+    game.num_random_calls++;
+
+    return GetEngineRandom(max);
+  }
+
+  return 0;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* game engine snapshot handling functions                                   */
+/* ------------------------------------------------------------------------- */
+
+#define ARGS_ADDRESS_AND_SIZEOF(x)		(&(x)), (sizeof(x))
+
+struct EngineSnapshotInfo
+{
+  /* runtime values for custom element collect score */
+  int collect_score[NUM_CUSTOM_ELEMENTS];
+
+  /* runtime values for group element choice position */
+  int choice_pos[NUM_GROUP_ELEMENTS];
+
+  /* runtime values for belt position animations */
+  int belt_graphic[4 * NUM_BELT_PARTS];
+  int belt_anim_mode[4 * NUM_BELT_PARTS];
+};
+
+struct EngineSnapshotNodeInfo
+{
+  void *buffer_orig;
+  void *buffer_copy;
+  int size;
+};
+
+static struct EngineSnapshotInfo engine_snapshot_rnd;
+static ListNode *engine_snapshot_list = NULL;
+static char *snapshot_level_identifier = NULL;
+static int snapshot_level_nr = -1;
+
+void FreeEngineSnapshot()
+{
+  while (engine_snapshot_list != NULL)
+    deleteNodeFromList(&engine_snapshot_list, engine_snapshot_list->key,
+		       checked_free);
+
+  setString(&snapshot_level_identifier, NULL);
+  snapshot_level_nr = -1;
+}
+
+static void SaveEngineSnapshotValues_RND()
+{
+  static int belt_base_active_element[4] =
+  {
+    EL_CONVEYOR_BELT_1_LEFT_ACTIVE,
+    EL_CONVEYOR_BELT_2_LEFT_ACTIVE,
+    EL_CONVEYOR_BELT_3_LEFT_ACTIVE,
+    EL_CONVEYOR_BELT_4_LEFT_ACTIVE
+  };
+  int i, j;
+
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    int element = EL_CUSTOM_START + i;
+
+    engine_snapshot_rnd.collect_score[i] = element_info[element].collect_score;
+  }
+
+  for (i = 0; i < NUM_GROUP_ELEMENTS; i++)
+  {
+    int element = EL_GROUP_START + i;
+
+    engine_snapshot_rnd.choice_pos[i] = element_info[element].group->choice_pos;
+  }
+
+  for (i = 0; i < 4; i++)
+  {
+    for (j = 0; j < NUM_BELT_PARTS; j++)
+    {
+      int element = belt_base_active_element[i] + j;
+      int graphic = el2img(element);
+      int anim_mode = graphic_info[graphic].anim_mode;
+
+      engine_snapshot_rnd.belt_graphic[i * 4 + j] = graphic;
+      engine_snapshot_rnd.belt_anim_mode[i * 4 + j] = anim_mode;
+    }
+  }
+}
+
+static void LoadEngineSnapshotValues_RND()
+{
+  unsigned long num_random_calls = game.num_random_calls;
+  int i, j;
+
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    int element = EL_CUSTOM_START + i;
+
+    element_info[element].collect_score = engine_snapshot_rnd.collect_score[i];
+  }
+
+  for (i = 0; i < NUM_GROUP_ELEMENTS; i++)
+  {
+    int element = EL_GROUP_START + i;
+
+    element_info[element].group->choice_pos = engine_snapshot_rnd.choice_pos[i];
+  }
+
+  for (i = 0; i < 4; i++)
+  {
+    for (j = 0; j < NUM_BELT_PARTS; j++)
+    {
+      int graphic = engine_snapshot_rnd.belt_graphic[i * 4 + j];
+      int anim_mode = engine_snapshot_rnd.belt_anim_mode[i * 4 + j];
+
+      graphic_info[graphic].anim_mode = anim_mode;
+    }
+  }
+
+  if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
+  {
+    InitRND(tape.random_seed);
+    for (i = 0; i < num_random_calls; i++)
+      RND(1);
+  }
+
+  if (game.num_random_calls != num_random_calls)
+  {
+    Error(ERR_RETURN, "number of random calls out of sync");
+    Error(ERR_RETURN, "number of random calls should be %d", num_random_calls);
+    Error(ERR_RETURN, "number of random calls is %d", game.num_random_calls);
+    Error(ERR_EXIT, "this should not happen -- please debug");
+  }
+}
+
+static void SaveEngineSnapshotBuffer(void *buffer, int size)
+{
+  struct EngineSnapshotNodeInfo *bi =
+    checked_calloc(sizeof(struct EngineSnapshotNodeInfo));
+
+  bi->buffer_orig = buffer;
+  bi->buffer_copy = checked_malloc(size);
+  bi->size = size;
+
+  memcpy(bi->buffer_copy, buffer, size);
+
+  addNodeToList(&engine_snapshot_list, NULL, bi);
+}
+
+void SaveEngineSnapshot()
+{
+  FreeEngineSnapshot();		/* free previous snapshot, if needed */
+
+  /* copy some special values to a structure better suited for the snapshot */
+
+  SaveEngineSnapshotValues_RND();
+  SaveEngineSnapshotValues_EM();
+
+  /* save values stored in special snapshot structure */
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(engine_snapshot_rnd));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(engine_snapshot_em));
+
+  /* save further RND engine values */
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(stored_player));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(game));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(tape));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ZX));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ZY));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ExitX));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ExitY));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(FrameCounter));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(TimeFrames));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(TimePlayed));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(TimeLeft));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(TapeTime));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ScreenMovDir));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ScreenMovPos));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ScreenGfxPos));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ScrollStepSize));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(AllPlayersGone));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(AmoebaCnt));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(AmoebaCnt2));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(Feld));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(MovPos));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(MovDir));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(MovDelay));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ChangeDelay));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ChangePage));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(CustomValue));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(Store));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(Store2));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(StorePlayer));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(Back));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(AmoebaNr));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(WasJustMoving));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(WasJustFalling));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(CheckCollision));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(Stop));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(Pushed));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ChangeCount));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ChangeEvent));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ExplodePhase));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ExplodeDelay));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(ExplodeField));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(RunnerVisit));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(PlayerVisit));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(GfxFrame));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(GfxRandom));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(GfxElement));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(GfxAction));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(GfxDir));
+
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(scroll_x));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(scroll_y));
+
+  /* save level identification information */
+
+  setString(&snapshot_level_identifier, leveldir_current->identifier);
+  snapshot_level_nr = level_nr;
+
+#if 0
+  ListNode *node = engine_snapshot_list;
+  int num_bytes = 0;
+
+  while (node != NULL)
+  {
+    num_bytes += ((struct EngineSnapshotNodeInfo *)node->content)->size;
+
+    node = node->next;
+  }
+
+  printf("::: size of engine snapshot: %d bytes\n", num_bytes);
+#endif
+}
+
+static void LoadEngineSnapshotBuffer(struct EngineSnapshotNodeInfo *bi)
+{
+  memcpy(bi->buffer_orig, bi->buffer_copy, bi->size);
+}
+
+void LoadEngineSnapshot()
+{
+  ListNode *node = engine_snapshot_list;
+
+  if (engine_snapshot_list == NULL)
+    return;
+
+  while (node != NULL)
+  {
+    LoadEngineSnapshotBuffer((struct EngineSnapshotNodeInfo *)node->content);
+
+    node = node->next;
+  }
+
+  /* restore special values from snapshot structure */
+
+  LoadEngineSnapshotValues_RND();
+  LoadEngineSnapshotValues_EM();
+}
+
+boolean CheckEngineSnapshot()
+{
+  return (strEqual(snapshot_level_identifier, leveldir_current->identifier) &&
+	  snapshot_level_nr == level_nr);
 }
 
 

@@ -1,3 +1,18 @@
+2006-08-29
+	* fixed bug with redrawing screen in fullscreen mode after quick tape
+	  reloading when using the EMC game engine
+
+2006-08-28
+	* fixed bug in GameWon() when level contains no exit (like in Sokoban)
+
+2006-08-23
+	* added engine snapshot functionality for instant tape reloading (this
+	  only works for the last tape saved using "quick save", and does not
+	  work across program restarts, because it completely works in memory)
+
+2006-08-21
+	* version number set to 3.2.2
+
 2006-08-20
 	* version 3.2.1 released
 
@@ -50,7 +65,7 @@
 	  (useful if default mode 800 x 600 does not match screen aspect ratio)
 
 2006-07-30
-	* improved down-scaling of images for better level and preview graphics
+	* improved down-scaling of images for better editor and preview graphics
 	* changed user data directory for Mac OS X from Unix style to new place
 
 2006-07-26

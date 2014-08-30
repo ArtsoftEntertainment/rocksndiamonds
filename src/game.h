@@ -86,6 +86,9 @@ struct GameInfo
   int centered_player_nr;
   int centered_player_nr_next;
   boolean set_centered_player;
+
+  /* values for random number generator initialization after snapshot */
+  unsigned long num_random_calls;
 };
 
 struct PlayerInfo
@@ -199,9 +202,8 @@ struct PlayerInfo
   int inventory_size;
 };
 
-
 extern struct GameInfo		game;
-extern struct PlayerInfo	stored_player[], *local_player;
+extern struct PlayerInfo	stored_player[MAX_PLAYERS], *local_player;
 
 
 #ifdef DEBUG
@@ -239,6 +241,14 @@ void PlayLevelSound_EM(int, int, int, int);
 void RaiseScore(int);
 void RaiseScoreElement(int);
 void RequestQuitGame(boolean);
+
+unsigned int InitEngineRandom_RND(long);
+unsigned int RND(int);
+
+void FreeEngineSnapshot();
+void LoadEngineSnapshot();
+void SaveEngineSnapshot();
+boolean CheckEngineSnapshot();
 
 void CreateGameButtons();
 void FreeGameButtons();
