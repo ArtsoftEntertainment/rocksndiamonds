@@ -106,7 +106,7 @@ char *int2str(int number, int size)
   if (size > 20)
     size = 20;
 
-  if (size)
+  if (size > 0)
   {
     sprintf(s, "                    %09d", number);
     return &s[strlen(s) - size];
@@ -154,6 +154,11 @@ int log_2(unsigned int x)
   }
 
   return e;
+}
+
+boolean getTokenValueFromString(char *string, char **token, char **value)
+{
+  return getTokenValueFromSetupLine(string, token, value);
 }
 
 
@@ -552,6 +557,21 @@ char *getStringCopy(char *s)
   return s_copy;
 }
 
+char *getStringCopyN(char *s, int n)
+{
+  char *s_copy;
+  int s_len = MAX(0, n);
+
+  if (s == NULL)
+    return NULL;
+
+  s_copy = checked_malloc(s_len + 1);
+  strncpy(s_copy, s, s_len);
+  s_copy[s_len] = '\0';
+
+  return s_copy;
+}
+
 char *getStringToLower(char *s)
 {
   char *s_copy = checked_malloc(strlen(s) + 1);
@@ -577,6 +597,31 @@ boolean strEqual(char *s1, char *s2)
 	  s1 == NULL && s2 != NULL ? FALSE :
 	  s1 != NULL && s2 == NULL ? FALSE :
 	  strcmp(s1, s2) == 0);
+}
+
+boolean strEqualN(char *s1, char *s2, int n)
+{
+  return (s1 == NULL && s2 == NULL ? TRUE  :
+	  s1 == NULL && s2 != NULL ? FALSE :
+	  s1 != NULL && s2 == NULL ? FALSE :
+	  strncmp(s1, s2, n) == 0);
+}
+
+boolean strPrefix(char *s, char *prefix)
+{
+  return (s == NULL && prefix == NULL ? TRUE  :
+	  s == NULL && prefix != NULL ? FALSE :
+	  s != NULL && prefix == NULL ? FALSE :
+	  strncmp(s, prefix, strlen(prefix)) == 0);
+}
+
+boolean strSuffix(char *s, char *suffix)
+{
+  return (s == NULL && suffix == NULL ? TRUE  :
+	  s == NULL && suffix != NULL ? FALSE :
+	  s != NULL && suffix == NULL ? FALSE :
+	  strlen(s) < strlen(suffix)  ? FALSE :
+	  strncmp(&s[strlen(s) - strlen(suffix)], suffix, strlen(suffix)) == 0);
 }
 
 
@@ -808,7 +853,7 @@ void Error(int mode, char *format, ...)
   if (mode & ERR_WARN && !options.verbose)
     return;
 
-  if (mode == ERR_RETURN_LINE)
+  if (mode == ERR_INFO_LINE)
   {
     if (!last_line_was_separator)
       fprintf_line(program.error_file, format, 79);
@@ -903,6 +948,19 @@ void checked_free(void *ptr)
 {
   if (ptr != NULL)	/* this check should be done by free() anyway */
     free(ptr);
+}
+
+void clear_mem(void *ptr, unsigned long size)
+{
+#if defined(PLATFORM_WIN32)
+  /* for unknown reason, memset() sometimes crashes when compiled with MinGW */
+  char *cptr = (char *)ptr;
+
+  while (size--)
+    *cptr++ = 0;
+#else
+  memset(ptr, 0, size);
+#endif
 }
 
 
@@ -1219,6 +1277,7 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
     { KSYM_asciitilde,	"XK_asciitilde",	"~" },
 
     /* special (non-ASCII) keys */
+    { KSYM_degree,	"XK_degree",		"°" },
     { KSYM_Adiaeresis,	"XK_Adiaeresis",	"Ä" },
     { KSYM_Odiaeresis,	"XK_Odiaeresis",	"Ö" },
     { KSYM_Udiaeresis,	"XK_Udiaeresis",	"Ü" },
@@ -1447,16 +1506,23 @@ Key getKeyFromX11KeyName(char *x11name)
 char getCharFromKey(Key key)
 {
   char *keyname = getKeyNameFromKey(key);
-  char letter = 0;
+  char c = 0;
 
   if (strlen(keyname) == 1)
-    letter = keyname[0];
+    c = keyname[0];
   else if (strEqual(keyname, "space"))
-    letter = ' ';
-  else if (strEqual(keyname, "circumflex"))
-    letter = '^';
+    c = ' ';
 
-  return letter;
+  return c;
+}
+
+char getValidConfigValueChar(char c)
+{
+  if (c == '#' ||	/* used to mark comments */
+      c == '\\')	/* used to mark continued lines */
+    c = 0;
+
+  return c;
 }
 
 
@@ -1496,9 +1562,13 @@ int get_integer_from_string(char *s)
 
   if (result == -1)
   {
-    if (strEqual(s_lower, "false"))
+    if (strEqual(s_lower, "false") ||
+	strEqual(s_lower, "no") ||
+	strEqual(s_lower, "off"))
       result = 0;
-    else if (strEqual(s_lower, "true"))
+    else if (strEqual(s_lower, "true") ||
+	     strEqual(s_lower, "yes") ||
+	     strEqual(s_lower, "on"))
       result = 1;
     else
       result = atoi(s);
@@ -1774,7 +1844,15 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
   {
     result = (strEqual(value, "left")   ? ALIGN_LEFT :
 	      strEqual(value, "right")  ? ALIGN_RIGHT :
-	      strEqual(value, "center") ? ALIGN_CENTER : ALIGN_DEFAULT);
+	      strEqual(value, "center") ? ALIGN_CENTER :
+	      strEqual(value, "middle") ? ALIGN_CENTER : ALIGN_DEFAULT);
+  }
+  else if (strEqual(suffix, ".valign"))
+  {
+    result = (strEqual(value, "top")    ? VALIGN_TOP :
+	      strEqual(value, "bottom") ? VALIGN_BOTTOM :
+	      strEqual(value, "middle") ? VALIGN_MIDDLE :
+	      strEqual(value, "center") ? VALIGN_MIDDLE : VALIGN_DEFAULT);
   }
   else if (strEqual(suffix, ".anim_mode"))
   {
@@ -1790,8 +1868,6 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 	      string_has_parameter(value, "horizontal")	? ANIM_HORIZONTAL :
 	      string_has_parameter(value, "vertical")	? ANIM_VERTICAL :
 	      string_has_parameter(value, "centered")	? ANIM_CENTERED :
-	      string_has_parameter(value, "fade")	? ANIM_FADE :
-	      string_has_parameter(value, "crossfade")	? ANIM_CROSSFADE :
 	      ANIM_DEFAULT);
 
     if (string_has_parameter(value, "reverse"))
@@ -1802,6 +1878,22 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 
     if (string_has_parameter(value, "static_panel"))
       result |= ANIM_STATIC_PANEL;
+  }
+  else if (strEqual(suffix, ".fade_mode"))
+  {
+    result = (string_has_parameter(value, "none")	? FADE_MODE_NONE :
+	      string_has_parameter(value, "fade")	? FADE_MODE_FADE :
+	      string_has_parameter(value, "crossfade")	? FADE_MODE_CROSSFADE :
+	      string_has_parameter(value, "melt")	? FADE_MODE_MELT :
+	      FADE_MODE_DEFAULT);
+  }
+#if 1
+  else if (strPrefix(suffix, ".font"))		/* (may also be ".font_xyz") */
+#else
+  else if (strEqualN(suffix, ".font", 5))	/* (may also be ".font_xyz") */
+#endif
+  {
+    result = gfx.get_font_from_token_function(value);
   }
   else		/* generic parameter of type integer or boolean */
   {
@@ -1814,20 +1906,6 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
   free(value);
 
   return result;
-}
-
-int get_auto_parameter_value(char *token, char *value_raw)
-{
-  char *suffix;
-
-  if (token == NULL || value_raw == NULL)
-    return ARG_UNDEFINED_VALUE;
-
-  suffix = strrchr(token, '.');
-  if (suffix == NULL)
-    suffix = token;
-
-  return get_parameter_value(value_raw, suffix, TYPE_INTEGER);
 }
 
 struct ScreenModeInfo *get_screen_mode_from_string(char *screen_mode_string)
@@ -1914,6 +1992,7 @@ struct FileInfo *getFileListFromConfigList(struct ConfigInfo *config_list,
 
       file_list[i].redefined = FALSE;
       file_list[i].fallback_to_default = FALSE;
+      file_list[i].default_is_cloned = FALSE;
     }
   }
 
@@ -1958,27 +2037,38 @@ struct FileInfo *getFileListFromConfigList(struct ConfigInfo *config_list,
 	  !strEqual(&config_list[i].value[len_config_value - 4], ".wav") &&
 	  !strEqual(config_list[i].value, UNDEFINED_FILENAME))
       {
-	Error(ERR_RETURN, "Configuration directive '%s' -> '%s':",
+	Error(ERR_INFO, "Configuration directive '%s' -> '%s':",
 	      config_list[i].token, config_list[i].value);
 	Error(ERR_EXIT, "This seems to be no valid definition -- please fix");
       }
 
       file_list[list_pos].token = config_list[i].token;
       file_list[list_pos].default_filename = config_list[i].value;
+
+#if 0
+      printf("::: '%s' => '%s'\n", config_list[i].token, config_list[i].value);
+#endif
     }
+
+    if (strSuffix(config_list[i].token, ".clone_from"))
+      file_list[list_pos].default_is_cloned = TRUE;
   }
 
   num_file_list_entries_found = list_pos + 1;
   if (num_file_list_entries_found != num_file_list_entries)
   {
-    Error(ERR_RETURN_LINE, "-");
-    Error(ERR_RETURN, "inconsistant config list information:");
-    Error(ERR_RETURN, "- should be:   %d (according to 'src/conf_gfx.h')",
+    Error(ERR_INFO_LINE, "-");
+    Error(ERR_INFO, "inconsistant config list information:");
+    Error(ERR_INFO, "- should be:   %d (according to 'src/conf_xxx.h')",
 	  num_file_list_entries);
-    Error(ERR_RETURN, "- found to be: %d (according to 'src/conf_gfx.c')",
+    Error(ERR_INFO, "- found to be: %d (according to 'src/conf_xxx.c')",
 	  num_file_list_entries_found);
     Error(ERR_EXIT,   "please fix");
   }
+
+#if 0
+  printf("::: ---------- DONE ----------\n");
+#endif
 
   return file_list;
 }
@@ -2070,6 +2160,7 @@ static void add_dynamic_file_list_entry(struct FileInfo **list,
 
   new_list_entry->redefined = FALSE;
   new_list_entry->fallback_to_default = FALSE;
+  new_list_entry->default_is_cloned = FALSE;
 
   read_token_parameters(extra_file_hash, suffix_list, new_list_entry);
 }
@@ -2245,9 +2336,19 @@ static void LoadArtworkConfigFromFilename(struct ArtworkListInfo *artwork_info,
 
       base_index = i;
 
+#if 0
+      if (IS_PARENT_PROCESS())
+	printf("===> MATCH: '%s', '%s'\n", token, base_prefix);
+#endif
+
       if (start_pos + len_base_prefix == len_token)	/* exact match */
       {
 	exact_match = TRUE;
+
+#if 0
+	if (IS_PARENT_PROCESS())
+	  printf("===> EXACT MATCH: '%s', '%s'\n", token, base_prefix);
+#endif
 
 	add_dynamic_file_list_entry(dynamic_file_list,
 				    num_dynamic_file_list_entries,
@@ -2282,9 +2383,19 @@ static void LoadArtworkConfigFromFilename(struct ArtworkListInfo *artwork_info,
 
 	ext1_index = j;
 
+#if 0
+	if (IS_PARENT_PROCESS())
+	  printf("===> MATCH: '%s', '%s'\n", token, ext1_suffix);
+#endif
+
 	if (start_pos + len_ext1_suffix == len_token)	/* exact match */
 	{
 	  exact_match = TRUE;
+
+#if 0
+	if (IS_PARENT_PROCESS())
+	  printf("===> EXACT MATCH: '%s', '%s'\n", token, ext1_suffix);
+#endif
 
 	  add_dynamic_file_list_entry(dynamic_file_list,
 				      num_dynamic_file_list_entries,
@@ -2324,9 +2435,19 @@ static void LoadArtworkConfigFromFilename(struct ArtworkListInfo *artwork_info,
 
 	ext2_index = k;
 
+#if 0
+	if (IS_PARENT_PROCESS())
+	  printf("===> MATCH: '%s', '%s'\n", token, ext2_suffix);
+#endif
+
 	if (start_pos + len_ext2_suffix == len_token)	/* exact match */
 	{
 	  exact_match = TRUE;
+
+#if 0
+	  if (IS_PARENT_PROCESS())
+	    printf("===> EXACT MATCH: '%s', '%s'\n", token, ext2_suffix);
+#endif
 
 	  add_dynamic_file_list_entry(dynamic_file_list,
 				      num_dynamic_file_list_entries,
@@ -2366,9 +2487,19 @@ static void LoadArtworkConfigFromFilename(struct ArtworkListInfo *artwork_info,
 
 	ext3_index = l;
 
+#if 0
+	if (IS_PARENT_PROCESS())
+	  printf("===> MATCH: '%s', '%s'\n", token, ext3_suffix);
+#endif
+
 	if (start_pos + len_ext3_suffix == len_token) /* exact match */
 	{
 	  exact_match = TRUE;
+
+#if 0
+	  if (IS_PARENT_PROCESS())
+	    printf("===> EXACT MATCH: '%s', '%s'\n", token, ext3_suffix);
+#endif
 
 	  add_dynamic_file_list_entry(dynamic_file_list,
 				      num_dynamic_file_list_entries,
@@ -2415,53 +2546,53 @@ static void LoadArtworkConfigFromFilename(struct ArtworkListInfo *artwork_info,
 
     if (options.debug && dynamic_tokens_found)
     {
-      Error(ERR_RETURN_LINE, "-");
-      Error(ERR_RETURN, "dynamic token(s) found in config file:");
-      Error(ERR_RETURN, "- config file: '%s'", filename);
+      Error(ERR_INFO_LINE, "-");
+      Error(ERR_INFO, "dynamic token(s) found in config file:");
+      Error(ERR_INFO, "- config file: '%s'", filename);
 
       for (list = setup_file_list; list != NULL; list = list->next)
       {
 	char *value = getHashEntry(extra_file_hash, list->token);
 
 	if (value != NULL && strEqual(value, known_token_value))
-	  Error(ERR_RETURN, "- dynamic token: '%s'", list->token);
+	  Error(ERR_INFO, "- dynamic token: '%s'", list->token);
       }
 
-      Error(ERR_RETURN_LINE, "-");
+      Error(ERR_INFO_LINE, "-");
     }
 
     if (unknown_tokens_found)
     {
-      Error(ERR_RETURN_LINE, "-");
-      Error(ERR_RETURN, "warning: unknown token(s) found in config file:");
-      Error(ERR_RETURN, "- config file: '%s'", filename);
+      Error(ERR_INFO_LINE, "-");
+      Error(ERR_INFO, "warning: unknown token(s) found in config file:");
+      Error(ERR_INFO, "- config file: '%s'", filename);
 
       for (list = setup_file_list; list != NULL; list = list->next)
       {
 	char *value = getHashEntry(extra_file_hash, list->token);
 
 	if (value != NULL && !strEqual(value, known_token_value))
-	  Error(ERR_RETURN, "- dynamic token: '%s'", list->token);
+	  Error(ERR_INFO, "- dynamic token: '%s'", list->token);
       }
 
-      Error(ERR_RETURN_LINE, "-");
+      Error(ERR_INFO_LINE, "-");
     }
 
     if (undefined_values_found)
     {
-      Error(ERR_RETURN_LINE, "-");
-      Error(ERR_RETURN, "warning: undefined values found in config file:");
-      Error(ERR_RETURN, "- config file: '%s'", filename);
+      Error(ERR_INFO_LINE, "-");
+      Error(ERR_INFO, "warning: undefined values found in config file:");
+      Error(ERR_INFO, "- config file: '%s'", filename);
 
       for (list = setup_file_list; list != NULL; list = list->next)
       {
 	char *value = getHashEntry(empty_file_hash, list->token);
 
 	if (value != NULL)
-	  Error(ERR_RETURN, "- undefined value for token: '%s'", list->token);
+	  Error(ERR_INFO, "- undefined value for token: '%s'", list->token);
       }
 
-      Error(ERR_RETURN_LINE, "-");
+      Error(ERR_INFO_LINE, "-");
     }
 
     freeSetupFileList(setup_file_list);
@@ -2582,6 +2713,22 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
 
     basename = file_list_entry->default_filename;
 
+    /* fail for cloned default artwork that has no default filename defined */
+    if (file_list_entry->default_is_cloned &&
+	strEqual(basename, UNDEFINED_FILENAME))
+    {
+      int error_mode = ERR_WARN;
+
+      /* we can get away without sounds and music, but not without graphics */
+      if (*listnode == NULL && artwork_info->type == ARTWORK_TYPE_GRAPHICS)
+	error_mode = ERR_EXIT;
+
+      Error(error_mode, "token '%s' was cloned and has no default filename",
+	    file_list_entry->token);
+
+      return;
+    }
+
     /* dynamic artwork has no default filename / skip empty default artwork */
     if (basename == NULL || strEqual(basename, UNDEFINED_FILENAME))
       return;
@@ -2658,6 +2805,7 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
       error_mode = ERR_EXIT;
 
     Error(error_mode, "cannot load artwork file '%s'", basename);
+
     return;
   }
 }
@@ -2667,7 +2815,7 @@ static void LoadCustomArtwork(struct ArtworkListInfo *artwork_info,
 			      struct FileInfo *file_list_entry)
 {
 #if 0
-  printf("GOT CUSTOM ARTWORK FILE '%s'\n", filename);
+  printf("GOT CUSTOM ARTWORK FILE '%s'\n", file_list_entry->filename);
 #endif
 
   if (strEqual(file_list_entry->filename, UNDEFINED_FILENAME))
@@ -2789,22 +2937,77 @@ void NotifyUserAboutErrorFile()
 
 #if DEBUG
 
-#define DEBUG_NUM_TIMESTAMPS	3
+#define DEBUG_NUM_TIMESTAMPS		5
+#define DEBUG_TIME_IN_MICROSECONDS	0
+
+#if DEBUG_TIME_IN_MICROSECONDS
+static double Counter_Microseconds()
+{
+  static struct timeval base_time = { 0, 0 };
+  struct timeval current_time;
+  double counter;
+
+  gettimeofday(&current_time, NULL);
+
+  /* reset base time in case of wrap-around */
+  if (current_time.tv_sec < base_time.tv_sec)
+    base_time = current_time;
+
+  counter =
+    ((double)(current_time.tv_sec  - base_time.tv_sec)) * 1000000 +
+    ((double)(current_time.tv_usec - base_time.tv_usec));
+
+  return counter;		/* return microseconds since last init */
+}
+#endif
+
+char *debug_print_timestamp_get_padding(int padding_size)
+{
+  static char *padding = NULL;
+  int max_padding_size = 100;
+
+  if (padding == NULL)
+  {
+    padding = checked_calloc(max_padding_size + 1);
+    memset(padding, ' ', max_padding_size);
+  }
+
+  return &padding[MAX(0, max_padding_size - padding_size)];
+}
 
 void debug_print_timestamp(int counter_nr, char *message)
 {
-  static long counter[DEBUG_NUM_TIMESTAMPS][2];
+  int indent_size = 8;
+  int padding_size = 40;
+  float timestamp_interval;
 
-  if (counter_nr >= DEBUG_NUM_TIMESTAMPS)
+  if (counter_nr < 0)
+    Error(ERR_EXIT, "debugging: invalid negative counter");
+  else if (counter_nr >= DEBUG_NUM_TIMESTAMPS)
     Error(ERR_EXIT, "debugging: increase DEBUG_NUM_TIMESTAMPS in misc.c");
 
+#if DEBUG_TIME_IN_MICROSECONDS
+  static double counter[DEBUG_NUM_TIMESTAMPS][2];
+  char *unit = "ms";
+
+  counter[counter_nr][0] = Counter_Microseconds();
+#else
+  static long counter[DEBUG_NUM_TIMESTAMPS][2];
+  char *unit = "s";
+
   counter[counter_nr][0] = Counter();
+#endif
+
+  timestamp_interval = counter[counter_nr][0] - counter[counter_nr][1];
+  counter[counter_nr][1] = counter[counter_nr][0];
 
   if (message)
-    printf("%s %.3f seconds\n", message,
-	   (float)(counter[counter_nr][0] - counter[counter_nr][1]) / 1000);
-
-  counter[counter_nr][1] = counter[counter_nr][0];
+    printf("%s%s%s %.3f %s\n",
+	   debug_print_timestamp_get_padding(counter_nr * indent_size),
+	   message,
+	   debug_print_timestamp_get_padding(padding_size - strlen(message)),
+	   timestamp_interval / 1000,
+	   unit);
 }
 
 void debug_print_parent_only(char *format, ...)

@@ -483,7 +483,7 @@ static void WriteReloadInfoToPipe(char *set_identifier, int type)
   if (leveldir_current == NULL)		/* should never happen */
     Error(ERR_EXIT, "leveldir_current == NULL");
 
-  memset(&snd_ctrl, 0, sizeof(SoundControl));	/* to make valgrind happy */
+  clear_mem(&snd_ctrl, sizeof(SoundControl));	/* to make valgrind happy */
 
   snd_ctrl.active = FALSE;
   snd_ctrl.state = type;
@@ -913,8 +913,8 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
     {
       if (!mixer[i].active)
       {
-	Error(ERR_RETURN, "Mixer_InsertSound: Channel %d inactive", i);
-	Error(ERR_RETURN, "Mixer_InsertSound: This should never happen!");
+	Error(ERR_INFO, "Mixer_InsertSound: Channel %d inactive", i);
+	Error(ERR_INFO, "Mixer_InsertSound: This should never happen!");
 
 	mixer_active_channels--;
       }
@@ -933,7 +933,7 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
     /* print some debugging information about audio channel usage */
     for (i = audio.first_sound_channel; i < audio.num_channels; i++)
     {
-      Error(ERR_RETURN, "Mixer_InsertSound: %d [%d]: %ld (%ld)",
+      Error(ERR_INFO, "Mixer_InsertSound: %d [%d]: %ld (%ld)",
 	    i, mixer[i].active, mixer[i].data_len, (long)mixer[i].data_ptr);
     }
 #endif
@@ -1147,8 +1147,8 @@ static void Mixer_Main_DSP()
   max_sample_size = fragment_size / (num_output_channels * sample_bytes);
 
   /* first clear the last premixing buffer */
-  memset(premix_last_buffer, 0,
-	 max_sample_size * num_output_channels * sizeof(long));
+  clear_mem(premix_last_buffer,
+	    max_sample_size * num_output_channels * sizeof(long));
 
   for (i = 0; i < audio.num_channels; i++)
   {
@@ -1558,6 +1558,8 @@ static void *Load_WAV(char *filename)
   snd_info->data_len = ((SAMPLE *)snd_info->data_ptr)->len;
 
 #else /* AUDIO_UNIX_NATIVE */
+
+  clear_mem(&header, sizeof(struct SoundHeader_WAV));	/* to make gcc happy */
 
   if ((file = fopen(filename, MODE_READ)) == NULL)
   {
@@ -2110,7 +2112,7 @@ void PlaySoundExt(int nr, int volume, int stereo_position, int state)
   else if (stereo_position > SOUND_MAX_RIGHT)
     stereo_position = SOUND_MAX_RIGHT;
 
-  memset(&snd_ctrl, 0, sizeof(SoundControl));	/* to make valgrind happy */
+  clear_mem(&snd_ctrl, sizeof(SoundControl));	/* to make valgrind happy */
 
   snd_ctrl.active = TRUE;
   snd_ctrl.nr = nr;
@@ -2171,7 +2173,7 @@ void StopSoundExt(int nr, int state)
   if (!audio.sound_available)
     return;
 
-  memset(&snd_ctrl, 0, sizeof(SoundControl));	/* to make valgrind happy */
+  clear_mem(&snd_ctrl, sizeof(SoundControl));	/* to make valgrind happy */
 
   snd_ctrl.active = FALSE;
   snd_ctrl.nr = nr;

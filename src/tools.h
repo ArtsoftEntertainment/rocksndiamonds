@@ -18,7 +18,6 @@
 #include "game.h"
 
 /* for SetDrawtoField */
-#define DRAW_DIRECT		0
 #define DRAW_BUFFERED		1
 #define DRAW_BACKBUFFER		2
 
@@ -72,16 +71,24 @@ void DrawMaskedBorder(int);
 void SetDrawtoField(int);
 void RedrawPlayfield(boolean, int, int, int, int);
 void BackToFront();
-void FadeToFront();
 
 void FadeIn(int);
 void FadeOut(int);
-void FadeCross(int);
-void FadeCrossSaveBackbuffer();
+void FadeSetEnterMenu();
+void FadeSetLeaveMenu();
+void FadeSetEnterScreen();
+void FadeSetNextScreen();
+void FadeSetLeaveScreen();
+void FadeSetFromType(int);
+void FadeSetDisabled();
+void FadeSkipNextFadeIn();
+void FadeSkipNextFadeOut();
 
-void ClearWindow();
+void ClearField();
 void SetWindowBackgroundImageIfDefined(int);
 void SetMainBackgroundImageIfDefined(int);
+void SetDoorBackgroundImageIfDefined(int);
+void SetWindowBackgroundImage(int);
 void SetMainBackgroundImage(int);
 void SetDoorBackgroundImage(int);
 void SetPanelBackground();
@@ -91,6 +98,8 @@ void DrawBackgroundForGraphic(int, int, int, int, int);
 
 void MarkTileDirty(int, int);
 void SetBorderElement();
+void FloodFillLevel(int, int, int, short[MAX_LEV_FIELDX][MAX_LEV_FIELDY],
+		    int, int);
 
 void SetRandomAnimationValue(int, int);
 int getGraphicAnimationFrame(int, int);
@@ -105,6 +114,8 @@ void DrawAllPlayers(void);
 void DrawPlayerField(int, int);
 void DrawPlayer(struct PlayerInfo *);
 
+void getSizedGraphicSource(int, int, int, Bitmap **, int *, int *);
+void getMiniGraphicSource(int, Bitmap **, int *, int *);
 void getGraphicSourceExt(int, int, Bitmap **, int *, int *, boolean);
 void getGraphicSource(int, int, Bitmap **, int *, int *);
 void DrawGraphic(int, int, int, int);
@@ -112,8 +123,9 @@ void DrawGraphicExt(DrawBuffer *, int, int, int, int);
 void DrawGraphicThruMask(int, int, int, int);
 void DrawGraphicThruMaskExt(DrawBuffer *, int, int, int, int);
 
+void DrawSizedGraphic(int, int, int, int, int);
+void DrawSizedGraphicExt(DrawBuffer *, int, int, int, int, int);
 void DrawMiniGraphic(int, int, int);
-void getMiniGraphicSource(int, Bitmap **, int *, int *);
 void DrawMiniGraphicExt(DrawBuffer *, int, int, int);
 
 void DrawScreenElementExt(int, int, int, int, int, int, int);
@@ -170,14 +182,30 @@ int el2baseimg(int);
 int el2img(int);
 int el2edimg(int);
 int el2preimg(int);
+int el2panelimg(int);
 int font2baseimg(int);
+
+int getBeltNrFromBeltElement(int);
+int getBeltNrFromBeltActiveElement(int);
+int getBeltNrFromBeltSwitchElement(int);
+int getBeltDirNrFromBeltElement(int);
+int getBeltDirNrFromBeltSwitchElement(int);
+int getBeltDirFromBeltElement(int);
+int getBeltDirFromBeltSwitchElement(int);
+int getBeltElementFromBeltNrAndBeltDirNr(int, int);
+int getBeltElementFromBeltNrAndBeltDir(int, int);
+int getBeltSwitchElementFromBeltNrAndBeltDirNr(int, int);
+int getBeltSwitchElementFromBeltNrAndBeltDir(int, int);
 
 unsigned int InitRND(long);
 void InitGraphicInfo_EM(void);
 
+void PlayMenuSoundExt(int);
 void PlayMenuSound();
 void PlayMenuSoundStereo(int, int);
+void PlayMenuSoundIfLoopExt(int);
 void PlayMenuSoundIfLoop();
+void PlayMenuMusicExt(int);
 void PlayMenuMusic();
 void PlaySoundActivating();
 void PlaySoundSelecting();

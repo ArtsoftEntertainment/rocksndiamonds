@@ -107,11 +107,13 @@ static void FreeFontClipmasks()
 #endif /* TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND */
 
 void InitFontInfo(struct FontBitmapInfo *font_bitmap_info, int num_fonts,
-		  int (*select_font_function)(int))
+		  int (*select_font_function)(int),
+		  int (*get_font_from_token_function)(char *))
 {
   gfx.num_fonts = num_fonts;
   gfx.font_bitmap_info = font_bitmap_info;
   gfx.select_font_function = select_font_function;
+  gfx.get_font_from_token_function = get_font_from_token_function;
 
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
   InitFontClipmasks();
@@ -185,8 +187,21 @@ void getFontCharSource(int font_nr, char c, Bitmap **bitmap, int *x, int *y)
   *y = font->src_y + (font_pos / font->num_chars_per_line) * font->height;
 }
 
-void DrawInitText(char *text, int ypos, int font_nr)
+
+/* ========================================================================= */
+/* simple text drawing functions                                             */
+/* ========================================================================= */
+
+void DrawInitTextExt(char *text, int ypos, int font_nr, boolean force)
 {
+  static unsigned long progress_delay = 0;
+  unsigned long progress_delay_value = 100;	/* (in milliseconds) */
+
+  UPDATE_BUSY_STATE();
+
+  if (!force && !DelayReached(&progress_delay, progress_delay_value))
+    return;
+
   if (window != NULL &&
       gfx.num_fonts > 0 &&
       gfx.font_bitmap_info[font_nr].bitmap != NULL)
@@ -202,6 +217,16 @@ void DrawInitText(char *text, int ypos, int font_nr)
     /* this makes things significantly faster than directly drawing to window */
     BlitBitmap(drawto, window, 0, y, width, height, 0, y);
   }
+}
+
+void DrawInitText(char *text, int ypos, int font_nr)
+{
+  DrawInitTextExt(text, ypos, font_nr, TRUE);
+}
+
+void DrawInitTextIfNeeded(char *text, int ypos, int font_nr)
+{
+  DrawInitTextExt(text, ypos, font_nr, FALSE);
 }
 
 void DrawTextF(int x, int y, int font_nr, char *format, ...)
@@ -244,6 +269,11 @@ void DrawTextSCentered(int y, int font_nr, char *text)
 {
   DrawText(gfx.sx + (gfx.sxsize - getTextWidth(text, font_nr)) / 2,
 	   gfx.sy + y, text, font_nr);
+}
+
+void DrawTextCentered(int y, int font_nr, char *text)
+{
+  DrawText((gfx.sxsize - getTextWidth(text, font_nr)) / 2, y, text, font_nr);
 }
 
 void DrawTextSAligned(int x, int y, char *text, int font_nr, int align)
@@ -394,8 +424,49 @@ void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
   }
 }
 
-void DrawTextToTextArea(int x, int y, char *text, int font_nr, int line_length,
-			int area_xsize, int area_ysize, int mask_mode)
+
+/* ========================================================================= */
+/* text buffer drawing functions                                             */
+/* ========================================================================= */
+
+#define MAX_LINES_FROM_FILE		1024
+
+char *GetTextBufferFromFile(char *filename, int max_lines)
+{
+  FILE *file;
+  char *buffer;
+  int num_lines = 0;
+
+  if (filename == NULL)
+    return NULL;
+
+  if (!(file = fopen(filename, MODE_READ)))
+    return NULL;
+
+  buffer = checked_calloc(1);	/* start with valid, but empty text buffer */
+
+  while (!feof(file) && num_lines < max_lines)
+  {
+    char line[MAX_LINE_LEN];
+
+    /* read next line of input file */
+    if (!fgets(line, MAX_LINE_LEN, file))
+      break;
+
+    buffer = checked_realloc(buffer, strlen(buffer) + strlen(line) + 1);
+
+    strcat(buffer, line);
+
+    num_lines++;
+  }
+
+  fclose(file);
+
+  return buffer;
+}
+
+void DrawTextToTextArea_OLD(int x, int y, char *text, int font_nr, int line_length,
+			    int area_xsize, int area_ysize, int mask_mode)
 {
   int area_line = 0;
   int font_height = getFontHeight(font_nr);
@@ -422,9 +493,9 @@ void DrawTextToTextArea(int x, int y, char *text, int font_nr, int line_length,
   redraw_mask |= REDRAW_FIELD;
 }
 
-boolean RenderLineToBuffer(char **src_buffer_ptr, char *dst_buffer,
-			   int *dst_buffer_len, boolean last_line_was_empty,
-			   int line_length)
+static boolean RenderLineToBuffer(char **src_buffer_ptr, char *dst_buffer,
+				  int *dst_buffer_len, int line_length,
+				  boolean last_line_was_empty)
 {
   char *text_ptr = *src_buffer_ptr;
   char *buffer = dst_buffer;
@@ -501,29 +572,32 @@ boolean RenderLineToBuffer(char **src_buffer_ptr, char *dst_buffer,
   return buffer_filled;
 }
 
-void DrawTextWrapped(int x, int y, char *text, int font_nr, int line_length,
-		     int max_lines)
+#if 0
+void DrawTextWrapped_OLD(int x, int y, char *text, int font_nr, int line_length,
+			 int max_lines)
 {
   char *text_ptr = text;
-  char buffer[line_length + 1];
-  int buffer_len;
   int current_line = 0;
   int font_height = getFontHeight(font_nr);
 
   while (*text_ptr && current_line < max_lines)
   {
-    buffer[0] = '\0';
-    buffer_len = 0;
+    char buffer[line_length + 1];
+    int buffer_len = 0;
 
-    RenderLineToBuffer(&text_ptr, buffer, &buffer_len, TRUE, line_length);
+    buffer[0] = '\0';
+
+    RenderLineToBuffer(&text_ptr, buffer, &buffer_len, line_length, TRUE);
 
     DrawText(x, y + current_line * font_height, buffer, font_nr);
     current_line++;
   }
 }
+#endif
 
-int DrawTextFromFile(int x, int y, char *filename, int font_nr,
-		     int line_length, int max_lines, boolean rewrap)
+#if 0
+int DrawTextFromFile_OLD(int x, int y, char *filename, int font_nr,
+			 int line_length, int max_lines, boolean wrap_text)
 {
   int font_height = getFontHeight(font_nr);
   char line[MAX_LINE_LEN];
@@ -577,12 +651,10 @@ int DrawTextFromFile(int x, int y, char *filename, int font_nr,
 #if 1
       boolean buffer_filled;
 
-      if (rewrap)
+      if (wrap_text)
       {
-	buffer_filled = RenderLineToBuffer(&line_ptr,
-					   buffer, &buffer_len,
-					   last_line_was_empty,
-					   line_length);
+	buffer_filled = RenderLineToBuffer(&line_ptr, buffer, &buffer_len,
+					   line_length, last_line_was_empty);
       }
       else
       {
@@ -603,10 +675,8 @@ int DrawTextFromFile(int x, int y, char *filename, int font_nr,
 	buffer_filled = TRUE;
       }
 #else
-      boolean buffer_filled = RenderLineToBuffer(&line_ptr,
-						 buffer, &buffer_len,
-						 last_line_was_empty,
-						 line_length);
+      boolean buffer_filled = RenderLineToBuffer(&line_ptr, buffer, &buffer_len,
+						 line_length, last_line_was_empty);
 #endif
 
       if (buffer_filled)
@@ -632,3 +702,260 @@ int DrawTextFromFile(int x, int y, char *filename, int font_nr,
 
   return current_line;
 }
+#endif
+
+static boolean getCheckedTokenValueFromString(char *string, char **token,
+					      char **value)
+{
+  char *ptr;
+
+  if (!getTokenValueFromString(string, token, value))
+    return FALSE;
+
+  if (**token != '.')			/* token should begin with dot */
+    return FALSE;
+
+  for (ptr = *token; *ptr; ptr++)	/* token should contain no whitespace */
+    if (*ptr == ' ' || *ptr == '\t')
+      return FALSE;
+
+  for (ptr = *value; *ptr; ptr++)	/* value should contain no whitespace */
+    if (*ptr == ' ' || *ptr == '\t')
+      return FALSE;
+
+  return TRUE;
+}
+
+static void DrawTextBuffer_Flush(int x, int y, char *buffer, int font_nr,
+				 int line_length, int cut_length, int mask_mode,
+				 boolean centered, int current_line)
+{
+  int buffer_len = strlen(buffer);
+  int font_width = getFontWidth(font_nr);
+  int font_height = getFontHeight(font_nr);
+  int offset_chars = (centered ? (line_length - buffer_len) / 2 : 0);
+  int offset_xsize =
+    (centered ? font_width * (line_length - buffer_len) / 2 : 0);
+  int final_cut_length = MAX(0, cut_length - offset_chars);
+  int xx = x + offset_xsize;
+  int yy = y + current_line * font_height;
+
+  buffer[final_cut_length] = '\0';
+
+  if (mask_mode != -1)
+    DrawTextExt(drawto, xx, yy, buffer, font_nr, mask_mode);
+  else
+    DrawText(xx, yy, buffer, font_nr);
+}
+
+int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
+		   int line_length, int cut_length, int max_lines,
+		   int mask_mode, boolean autowrap, boolean centered,
+		   boolean parse_comments)
+{
+#if 0
+  int font_width = getFontWidth(font_nr);
+  int font_height = getFontHeight(font_nr);
+#endif
+  char buffer[line_length + 1];
+  int buffer_len;
+  int current_line = 0;
+
+  if (text_buffer == NULL || *text_buffer == '\0')
+    return 0;
+
+  if (current_line >= max_lines)
+    return 0;
+
+  if (cut_length == -1)
+    cut_length = line_length;
+
+  buffer[0] = '\0';
+  buffer_len = 0;
+
+  while (*text_buffer && current_line < max_lines)
+  {
+    char line[MAX_LINE_LEN + 1];
+    char *line_ptr;
+    boolean last_line_was_empty = TRUE;
+#if 1
+    int num_line_chars = MAX_LINE_LEN;
+#else
+    int num_line_chars = (autowrap ? MAX_LINE_LEN : line_length);
+#endif
+    int i;
+
+    /* copy next line from text buffer to line buffer (nearly fgets() style) */
+    for (i = 0; i < num_line_chars && *text_buffer; i++)
+      if ((line[i] = *text_buffer++) == '\n')
+	break;
+    line[i] = '\0';
+
+    /* prevent 'num_line_chars' sized lines to cause additional empty line */
+    if (i == num_line_chars && *text_buffer == '\n')
+      text_buffer++;
+
+    /* skip comments (lines directly beginning with '#') */
+    if (line[0] == '#' && parse_comments)
+    {
+      char *token, *value;
+
+      /* try to read generic token/value pair definition after comment sign */
+      if (getCheckedTokenValueFromString(line + 1, &token, &value))
+      {
+	/* if found, flush the current buffer, if non-empty */
+	if (buffer_len > 0 && current_line < max_lines)
+	{
+	  DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length, cut_length,
+			       mask_mode, centered, current_line);
+
+	  current_line++;
+
+	  buffer[0] = '\0';
+	  buffer_len = 0;
+	}
+
+	if (strEqual(token, ".font"))
+	  font_nr = gfx.get_font_from_token_function(value);
+	else if (strEqual(token, ".autowrap"))
+	  autowrap = get_boolean_from_string(value);
+	else if (strEqual(token, ".centered"))
+	  centered = get_boolean_from_string(value);
+	else if (strEqual(token, ".parse_comments"))
+	  parse_comments = get_boolean_from_string(value);
+      }
+
+      continue;
+    }
+
+    /* cut trailing newline and carriage return from input line */
+    for (line_ptr = line; *line_ptr; line_ptr++)
+    {
+      if (*line_ptr == '\n' || *line_ptr == '\r')
+      {
+	*line_ptr = '\0';
+	break;
+      }
+    }
+
+    if (strlen(line) == 0)		/* special case: force empty line */
+      strcpy(line, "\n");
+
+    line_ptr = line;
+
+    while (*line_ptr && current_line < max_lines)
+    {
+      boolean buffer_filled;
+
+      if (autowrap)
+      {
+	buffer_filled = RenderLineToBuffer(&line_ptr, buffer, &buffer_len,
+					   line_length, last_line_was_empty);
+      }
+      else
+      {
+	if (strlen(line_ptr) <= line_length)
+	{
+	  buffer_len = strlen(line_ptr);
+	  strcpy(buffer, line_ptr);
+	}
+	else
+	{
+	  buffer_len = line_length;
+	  strncpy(buffer, line_ptr, line_length);
+	}
+
+	buffer[buffer_len] = '\0';
+	line_ptr += buffer_len;
+
+	buffer_filled = TRUE;
+      }
+
+      if (buffer_filled)
+      {
+#if 1
+	DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length, cut_length,
+			     mask_mode, centered, current_line);
+#else
+	int offset_chars = (centered ? (line_length - buffer_len) / 2 : 0);
+	int offset_xsize =
+	  (centered ?  font_width * (line_length - buffer_len) / 2 : 0);
+	int final_cut_length = MAX(0, cut_length - offset_chars);
+	int xx = x + offset_xsize;
+
+	buffer[final_cut_length] = '\0';
+
+	if (mask_mode != -1)
+	  DrawTextExt(drawto, xx, y + current_line * font_height, buffer,
+		      font_nr, mask_mode);
+	else
+	  DrawText(xx, y + current_line * font_height, buffer, font_nr);
+#endif
+
+	current_line++;
+
+	last_line_was_empty = (buffer_len == 0);
+
+	buffer[0] = '\0';
+	buffer_len = 0;
+      }
+    }
+  }
+
+  if (buffer_len > 0 && current_line < max_lines)
+  {
+#if 1
+    DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length, cut_length,
+			 mask_mode, centered, current_line);
+#else
+    int offset_chars = (centered ? (line_length - buffer_len) / 2 : 0);
+	int offset_xsize =
+	  (centered ?  font_width * (line_length - buffer_len) / 2 : 0);
+    int final_cut_length = MAX(0, cut_length - offset_chars);
+    int xx = x + offset_xsize;
+
+    buffer[final_cut_length] = '\0';
+
+    if (mask_mode != -1)
+      DrawTextExt(drawto, xx, y + current_line * font_height, buffer,
+		  font_nr, mask_mode);
+    else
+      DrawText(xx, y + current_line * font_height, buffer, font_nr);
+#endif
+
+    current_line++;
+  }
+
+  return current_line;
+}
+
+int DrawTextFile(int x, int y, char *filename, int font_nr,
+		 int line_length, int cut_length, int max_lines,
+		 int mask_mode, boolean autowrap, boolean centered,
+		 boolean parse_comments)
+{
+  char *text_buffer = GetTextBufferFromFile(filename, MAX_LINES_FROM_FILE);
+  int num_lines_printed = DrawTextBuffer(x, y, text_buffer, font_nr,
+					 line_length, cut_length, max_lines,
+					 mask_mode, autowrap, centered,
+					 parse_comments);
+  checked_free(text_buffer);
+
+  return num_lines_printed;
+}
+
+#if 0
+void DrawTextWrapped(int x, int y, char *text, int font_nr, int line_length,
+		     int max_lines)
+{
+  DrawTextBuffer(x, y, text, font_nr, line_length, -1, max_lines, -1, TRUE,
+		 FALSE, FALSE);
+}
+
+void DrawTextToTextArea(int x, int y, char *text, int font_nr, int line_length,
+			int cut_length, int max_lines, int mask_mode)
+{
+  DrawTextBuffer(x, y, text, font_nr, line_length, cut_length, max_lines,
+		 mask_mode, FALSE, FALSE, FALSE);
+}
+#endif

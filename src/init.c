@@ -32,12 +32,18 @@
 #include "conf_fnt.c"	/* include auto-generated data structure definitions */
 #include "conf_g2s.c"	/* include auto-generated data structure definitions */
 #include "conf_g2m.c"	/* include auto-generated data structure definitions */
+#include "conf_act.c"	/* include auto-generated data structure definitions */
 
 
 #define CONFIG_TOKEN_FONT_INITIAL		"font.initial"
+#define CONFIG_TOKEN_GLOBAL_BUSY		"global.busy"
+
+#define DEBUG_PRINT_INIT_TIMESTAMPS		TRUE
+#define DEBUG_PRINT_INIT_TIMESTAMPS_DEPTH	1
 
 
 static struct FontBitmapInfo font_initial[NUM_INITIAL_FONTS];
+static struct GraphicInfo    anim_initial;
 
 static int copy_properties[][5] =
 {
@@ -82,6 +88,143 @@ static int copy_properties[][5] =
   }
 };
 
+
+static void print_timestamp_ext(char *message, char *mode)
+{
+#if DEBUG
+#if DEBUG_PRINT_INIT_TIMESTAMPS
+  static char *debug_message = NULL;
+  static char *last_message = NULL;
+  static int counter_nr = 0;
+  int max_depth = DEBUG_PRINT_INIT_TIMESTAMPS_DEPTH;
+
+  checked_free(debug_message);
+  debug_message = getStringCat3(mode, " ", message);
+
+  if (strEqual(mode, "INIT"))
+  {
+    debug_print_timestamp(counter_nr, NULL);
+
+    if (counter_nr + 1 < max_depth)
+      debug_print_timestamp(counter_nr, debug_message);
+
+    counter_nr++;
+
+    debug_print_timestamp(counter_nr, NULL);
+  }
+  else if (strEqual(mode, "DONE"))
+  {
+    counter_nr--;
+
+    if (counter_nr + 1 < max_depth ||
+	(counter_nr == 0 && max_depth == 1))
+    {
+      last_message = message;
+
+      if (counter_nr == 0 && max_depth == 1)
+      {
+	checked_free(debug_message);
+	debug_message = getStringCat3("TIME", " ", message);
+      }
+
+      debug_print_timestamp(counter_nr, debug_message);
+    }
+  }
+  else if (!strEqual(mode, "TIME") ||
+	   !strEqual(message, last_message))
+  {
+    if (counter_nr < max_depth)
+      debug_print_timestamp(counter_nr, debug_message);
+  }
+#endif
+#endif
+}
+
+static void print_timestamp_init(char *message)
+{
+  print_timestamp_ext(message, "INIT");
+}
+
+static void print_timestamp_time(char *message)
+{
+  print_timestamp_ext(message, "TIME");
+}
+
+static void print_timestamp_done(char *message)
+{
+  print_timestamp_ext(message, "DONE");
+}
+
+void DrawInitAnim()
+{
+  struct GraphicInfo *graphic_info_last = graphic_info;
+  int graphic = 0;
+  static unsigned long action_delay = 0;
+  unsigned long action_delay_value = GameFrameDelay;
+  int sync_frame = FrameCounter;
+  int x, y;
+
+  if (game_status != GAME_MODE_LOADING)
+    return;
+
+  if (anim_initial.bitmap == NULL || window == NULL)
+    return;
+
+  if (!DelayReached(&action_delay, action_delay_value))
+    return;
+
+#if 0
+  {
+    static unsigned long last_counter = -1;
+    unsigned long current_counter = Counter();
+    unsigned long delay = current_counter - last_counter;
+
+    if (last_counter != -1 && delay > action_delay_value + 5)
+      printf("::: DrawInitAnim: DELAY TOO LONG: %ld\n", delay);
+
+    last_counter = current_counter;
+  }
+#endif
+
+#if 0
+  anim_initial.anim_mode = ANIM_LOOP;
+  anim_initial.anim_start_frame = 0;
+  anim_initial.offset_x = anim_initial.width;
+  anim_initial.offset_y = 0;
+#endif
+
+#if 1
+  x = ALIGNED_TEXT_XPOS(&init.busy);
+  y = ALIGNED_TEXT_YPOS(&init.busy);
+#else
+  x = WIN_XSIZE / 2 - TILESIZE / 2;
+  y = WIN_YSIZE / 2 - TILESIZE / 2;
+#endif
+
+#if 0
+  {
+    static boolean done = FALSE;
+
+    if (!done)
+      printf("::: %d, %d, %d, %d => %d, %d\n",
+	     init.busy.x, init.busy.y,
+	     init.busy.align, init.busy.valign,
+	     x, y);
+
+    done = TRUE;
+  }
+#endif
+
+  graphic_info = &anim_initial;		/* graphic == 0 => anim_initial */
+
+  if (sync_frame % anim_initial.anim_delay == 0)
+    DrawGraphicAnimationExt(window, x, y, graphic, sync_frame, NO_MASKING);
+
+  graphic_info = graphic_info_last;
+
+  FrameCounter++;
+}
+
 void FreeGadgets()
 {
   FreeLevelEditorGadgets();
@@ -111,6 +254,12 @@ void InitGadgets()
 
 inline void InitElementSmallImagesScaledUp(int graphic)
 {
+#if 0
+  struct FileInfo *fi = getImageListEntryFromImageID(graphic);
+
+  printf("::: '%s' -> '%s'\n", fi->token, fi->filename);
+#endif
+
   CreateImageWithSmallImages(graphic, graphic_info[graphic].scale_up_factor);
 }
 
@@ -167,17 +316,41 @@ static int getFontBitmapID(int font_nr)
 {
   int special = -1;
 
-  if (game_status >= GAME_MODE_TITLE && game_status <= GAME_MODE_PSEUDO_PREVIEW)
+  /* (special case: do not use special font for GAME_MODE_LOADING) */
+  if (game_status >= GAME_MODE_TITLE_INITIAL &&
+      game_status <= GAME_MODE_PSEUDO_PREVIEW)
     special = game_status;
   else if (game_status == GAME_MODE_PSEUDO_TYPENAME)
     special = GFX_SPECIAL_ARG_MAIN;
+#if 0
   else if (game_status == GAME_MODE_PLAYING)
     special = GFX_SPECIAL_ARG_DOOR;
+#endif
 
   if (special != -1)
     return font_info[font_nr].special_bitmap_id[special];
   else
     return font_nr;
+}
+
+static int getFontFromToken(char *token)
+{
+#if 1
+  char *value = getHashEntry(font_token_hash, token);
+
+  if (value != NULL)
+    return atoi(value);
+#else
+  int i;
+
+  /* !!! OPTIMIZE THIS BY USING HASH !!! */
+  for (i = 0; i < NUM_FONTS; i++)
+    if (strEqual(token, font_info[i].token_name))
+      return i;
+#endif
+
+  /* if font not found, use reliable default value */
+  return FONT_INITIAL_1;
 }
 
 void InitFontGraphicInfo()
@@ -190,7 +363,8 @@ void InitFontGraphicInfo()
 
   if (graphic_info == NULL)		/* still at startup phase */
   {
-    InitFontInfo(font_initial, NUM_INITIAL_FONTS, getFontBitmapID);
+    InitFontInfo(font_initial, NUM_INITIAL_FONTS,
+		 getFontBitmapID, getFontFromToken);
 
     return;
   }
@@ -232,18 +406,21 @@ void InitFontGraphicInfo()
     int graphic      = font_to_graphic[i].graphic;
     int base_graphic = font2baseimg(font_nr);
 
-    if (special >= 0 && special < NUM_SPECIAL_GFX_ARGS)
+    if (IS_SPECIAL_GFX_ARG(special))
     {
       boolean base_redefined =
 	getImageListEntryFromImageID(base_graphic)->redefined;
       boolean special_redefined =
 	getImageListEntryFromImageID(graphic)->redefined;
+      boolean special_cloned = (graphic_info[graphic].clone_from != -1);
 
       /* if the base font ("font.title_1", for example) has been redefined,
       	 but not the special font ("font.title_1.LEVELS", for example), do not
 	 use an existing (in this case considered obsolete) special font
 	 anymore, but use the automatically determined default font */
-      if (base_redefined && !special_redefined)
+      /* special case: cloned special fonts must be explicitly redefined,
+	 but are not automatically redefined by redefining base font */
+      if (base_redefined && !special_redefined && !special_cloned)
 	continue;
 
       font_info[font_nr].special_graphic[special] = graphic;
@@ -262,11 +439,50 @@ void InitFontGraphicInfo()
     if (font_nr < 0)
       continue;
 
-    if (special >= 0 && special < NUM_SPECIAL_GFX_ARGS)
+    if (IS_SPECIAL_GFX_ARG(special))
     {
       font_info[font_nr].special_graphic[special] = graphic;
       font_info[font_nr].special_bitmap_id[special] = num_font_bitmaps;
       num_font_bitmaps++;
+    }
+  }
+
+  /* correct special font/graphic mapping for cloned fonts for downwards
+     compatibility of PREVIEW fonts -- this is only needed for implicit
+     redefinition of special font by redefined base font, and only if other
+     fonts are cloned from this special font (like in the "Zelda" level set) */
+  for (i = 0; font_to_graphic[i].font_nr > -1; i++)
+  {
+    int font_nr = font_to_graphic[i].font_nr;
+    int special = font_to_graphic[i].special;
+    int graphic = font_to_graphic[i].graphic;
+
+    if (IS_SPECIAL_GFX_ARG(special))
+    {
+      boolean special_redefined =
+	getImageListEntryFromImageID(graphic)->redefined;
+      boolean special_cloned = (graphic_info[graphic].clone_from != -1);
+
+      if (special_cloned && !special_redefined)
+      {
+	int j;
+
+	for (j = 0; font_to_graphic[j].font_nr > -1; j++)
+	{
+	  int font_nr2 = font_to_graphic[j].font_nr;
+	  int special2 = font_to_graphic[j].special;
+	  int graphic2 = font_to_graphic[j].graphic;
+
+	  if (IS_SPECIAL_GFX_ARG(special2) &&
+	      graphic2 == graphic_info[graphic].clone_from)
+	  {
+	    font_info[font_nr].special_graphic[special] =
+	      font_info[font_nr2].special_graphic[special2];
+	    font_info[font_nr].special_bitmap_id[special] =
+	      font_info[font_nr2].special_bitmap_id[special2];
+	  }
+	}
+      }
     }
   }
 
@@ -367,7 +583,8 @@ void InitFontGraphicInfo()
     }
   }
 
-  InitFontInfo(font_bitmap_info, num_font_bitmaps, getFontBitmapID);
+  InitFontInfo(font_bitmap_info, num_font_bitmaps,
+	       getFontBitmapID, getFontFromToken);
 }
 
 void InitElementGraphicInfo()
@@ -394,6 +611,8 @@ void InitElementGraphicInfo()
       }
     }
   }
+
+  UPDATE_BUSY_STATE();
 
   /* initialize normal element/graphic mapping from static configuration */
   for (i = 0; element_to_graphic[i].element > -1; i++)
@@ -452,6 +671,16 @@ void InitElementGraphicInfo()
     int special   = property_mapping[i].ext3_index;
     int graphic   = property_mapping[i].artwork_index;
     boolean crumbled = FALSE;
+
+#if 0
+    if ((element == EL_EM_DYNAMITE ||
+	 element == EL_EM_DYNAMITE_ACTIVE) &&
+	action == ACTION_ACTIVE &&
+	(special == GFX_SPECIAL_ARG_EDITOR ||
+	 special == GFX_SPECIAL_ARG_PANEL))
+      printf("::: DYNAMIC: %d, %d, %d -> %d\n",
+	     element, action, special, graphic);
+#endif
 
     if (special == GFX_SPECIAL_ARG_CRUMBLED)
     {
@@ -569,6 +798,8 @@ void InitElementGraphicInfo()
     }
   }
 
+  UPDATE_BUSY_STATE();
+
   /* adjust graphics with 2nd tile for movement according to direction
      (do this before correcting '-1' values to minimize calculations) */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
@@ -627,6 +858,8 @@ void InitElementGraphicInfo()
       }
     }
   }
+
+  UPDATE_BUSY_STATE();
 
   /* now set all '-1' values to element specific default values */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
@@ -779,6 +1012,8 @@ void InitElementGraphicInfo()
     }
   }
 
+  UPDATE_BUSY_STATE();
+
 #if 0
   /* !!! THIS ALSO CLEARS SPECIAL FLAGS (AND IS NOT NEEDED ANYWAY) !!! */
   /* set animation mode to "none" for each graphic with only 1 frame */
@@ -815,7 +1050,7 @@ void InitElementGraphicInfo()
     for (i = 0; i < MAX_NUM_ELEMENTS; i++)
       if (element_info[i].graphic[ACTION_DEFAULT] == IMG_UNKNOWN &&
 	  i != EL_UNKNOWN)
-	Error(ERR_RETURN, "warning: no graphic for element '%s' (%d)",
+	Error(ERR_INFO, "warning: no graphic for element '%s' (%d)",
 	      element_info[i].token_name, i);
   }
 #endif
@@ -846,6 +1081,15 @@ void InitElementSpecialGraphicInfo()
     boolean special_redefined =
       getImageListEntryFromImageID(graphic)->redefined;
 
+#if 0
+    if ((element == EL_EM_DYNAMITE ||
+	 element == EL_EM_DYNAMITE_ACTIVE) &&
+	(special == GFX_SPECIAL_ARG_EDITOR ||
+	 special == GFX_SPECIAL_ARG_PANEL))
+      printf("::: SPECIAL STATIC: %d, %d -> %d\n",
+	     element, special, graphic);
+#endif
+
     /* if the base graphic ("emerald", for example) has been redefined,
        but not the special graphic ("emerald.EDITOR", for example), do not
        use an existing (in this case considered obsolete) special graphic
@@ -859,14 +1103,58 @@ void InitElementSpecialGraphicInfo()
   /* initialize special element/graphic mapping from dynamic configuration */
   for (i = 0; i < num_property_mappings; i++)
   {
-    int element = property_mapping[i].base_index;
-    int special = property_mapping[i].ext3_index;
-    int graphic = property_mapping[i].artwork_index;
+    int element   = property_mapping[i].base_index;
+    int action    = property_mapping[i].ext1_index;
+    int direction = property_mapping[i].ext2_index;
+    int special   = property_mapping[i].ext3_index;
+    int graphic   = property_mapping[i].artwork_index;
+
+#if 0
+    if ((element == EL_EM_DYNAMITE ||
+	 element == EL_EM_DYNAMITE_ACTIVE ||
+	 element == EL_CONVEYOR_BELT_1_MIDDLE ||
+	 element == EL_CONVEYOR_BELT_1_MIDDLE_ACTIVE) &&
+	(special == GFX_SPECIAL_ARG_EDITOR ||
+	 special == GFX_SPECIAL_ARG_PANEL))
+      printf("::: SPECIAL DYNAMIC: %d, %d -> %d [%d]\n",
+	     element, special, graphic, property_mapping[i].ext1_index);
+#endif
+
+#if 0
+    if (element == EL_CONVEYOR_BELT_1_MIDDLE &&
+	action == ACTION_ACTIVE)
+    {
+      element = EL_CONVEYOR_BELT_1_MIDDLE_ACTIVE;
+      action = -1;
+    }
+#endif
+
+#if 0
+    if (element == EL_MAGIC_WALL &&
+	action == ACTION_ACTIVE)
+    {
+      element = EL_MAGIC_WALL_ACTIVE;
+      action = -1;
+    }
+#endif
+
+#if 1
+    /* for action ".active", replace element with active element, if exists */
+    if (action == ACTION_ACTIVE && element != ELEMENT_ACTIVE(element))
+    {
+      element = ELEMENT_ACTIVE(element);
+      action = -1;
+    }
+#endif
 
     if (element >= MAX_NUM_ELEMENTS)
       continue;
 
-    if (special >= 0 && special < NUM_SPECIAL_GFX_ARGS)
+    /* do not change special graphic if action or direction was specified */
+    if (action != -1 || direction != -1)
+      continue;
+
+    if (IS_SPECIAL_GFX_ARG(special))
       element_info[element].special_graphic[special] = graphic;
   }
 
@@ -880,14 +1168,33 @@ void InitElementSpecialGraphicInfo()
 
 static int get_graphic_parameter_value(char *value_raw, char *suffix, int type)
 {
-  int i;
-  int x = 0;
-
-  if (type != TYPE_TOKEN)
+  if (type != TYPE_ELEMENT && type != TYPE_GRAPHIC)
     return get_parameter_value(value_raw, suffix, type);
 
   if (strEqual(value_raw, ARG_UNDEFINED))
     return ARG_UNDEFINED_VALUE;
+
+#if 1
+  if (type == TYPE_ELEMENT)
+  {
+    char *value = getHashEntry(element_token_hash, value_raw);
+
+    return (value != NULL ? atoi(value) : EL_UNDEFINED);
+  }
+  else if (type == TYPE_GRAPHIC)
+  {
+    char *value = getHashEntry(graphic_token_hash, value_raw);
+
+    return (value != NULL ? atoi(value) : IMG_UNDEFINED);
+  }
+
+#else
+
+  int i;
+  int x = 0;
+
+  /* !!! THIS IS BUGGY !!! NOT SURE IF YOU GET ELEMENT ID OR GRAPHIC ID !!! */
+  /* !!! (possible reason why ".clone_from" with elements doesn't work) !!! */
 
   /* !!! OPTIMIZE THIS BY USING HASH !!! */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
@@ -909,6 +1216,7 @@ static int get_graphic_parameter_value(char *value_raw, char *suffix, int type)
 
     x++;
   }
+#endif
 
   return -1;
 }
@@ -929,8 +1237,259 @@ static int get_scaled_graphic_height(int graphic)
   return original_height * scale_up_factor;
 }
 
+static void set_graphic_parameters_ext(int graphic, struct GraphicInfo *g,
+				       int *parameter, Bitmap *src_bitmap)
+{
+  int anim_frames_per_row = 1, anim_frames_per_col = 1;
+  int anim_frames_per_line = 1;
+
+  /* always start with reliable default values */
+  g->src_image_width = 0;
+  g->src_image_height = 0;
+  g->src_x = 0;
+  g->src_y = 0;
+  g->width  = TILEX;			/* default for element graphics */
+  g->height = TILEY;			/* default for element graphics */
+  g->offset_x = 0;			/* one or both of these values ... */
+  g->offset_y = 0;			/* ... will be corrected later */
+  g->offset2_x = 0;			/* one or both of these values ... */
+  g->offset2_y = 0;			/* ... will be corrected later */
+  g->swap_double_tiles = -1;		/* auto-detect tile swapping */
+  g->crumbled_like = -1;		/* do not use clone element */
+  g->diggable_like = -1;		/* do not use clone element */
+  g->border_size = TILEX / 8;		/* "CRUMBLED" border size */
+  g->scale_up_factor = 1;		/* default: no scaling up */
+  g->clone_from = -1;			/* do not use clone graphic */
+  g->anim_delay_fixed = 0;
+  g->anim_delay_random = 0;
+  g->post_delay_fixed = 0;
+  g->post_delay_random = 0;
+  g->fade_mode = FADE_MODE_DEFAULT;
+  g->fade_delay = -1;
+  g->post_delay = -1;
+  g->auto_delay = -1;
+  g->align = ALIGN_CENTER;		/* default for title screens */
+  g->valign = VALIGN_MIDDLE;		/* default for title screens */
+  g->sort_priority = 0;			/* default for title screens */
+
+  g->bitmap = src_bitmap;
+
+#if 1
+  /* optional zoom factor for scaling up the image to a larger size */
+  if (parameter[GFX_ARG_SCALE_UP_FACTOR] != ARG_UNDEFINED_VALUE)
+    g->scale_up_factor = parameter[GFX_ARG_SCALE_UP_FACTOR];
+  if (g->scale_up_factor < 1)
+    g->scale_up_factor = 1;		/* no scaling */
+#endif
+
+#if 1
+  if (g->use_image_size)
+  {
+    /* set new default bitmap size (with scaling, but without small images) */
+    g->width  = get_scaled_graphic_width(graphic);
+    g->height = get_scaled_graphic_height(graphic);
+  }
+#endif
+
+  /* optional x and y tile position of animation frame sequence */
+  if (parameter[GFX_ARG_XPOS] != ARG_UNDEFINED_VALUE)
+    g->src_x = parameter[GFX_ARG_XPOS] * TILEX;
+  if (parameter[GFX_ARG_YPOS] != ARG_UNDEFINED_VALUE)
+    g->src_y = parameter[GFX_ARG_YPOS] * TILEY;
+
+  /* optional x and y pixel position of animation frame sequence */
+  if (parameter[GFX_ARG_X] != ARG_UNDEFINED_VALUE)
+    g->src_x = parameter[GFX_ARG_X];
+  if (parameter[GFX_ARG_Y] != ARG_UNDEFINED_VALUE)
+    g->src_y = parameter[GFX_ARG_Y];
+
+  /* optional width and height of each animation frame */
+  if (parameter[GFX_ARG_WIDTH] != ARG_UNDEFINED_VALUE)
+    g->width = parameter[GFX_ARG_WIDTH];
+  if (parameter[GFX_ARG_HEIGHT] != ARG_UNDEFINED_VALUE)
+    g->height = parameter[GFX_ARG_HEIGHT];
+
+#if 0
+  /* optional zoom factor for scaling up the image to a larger size */
+  if (parameter[GFX_ARG_SCALE_UP_FACTOR] != ARG_UNDEFINED_VALUE)
+    g->scale_up_factor = parameter[GFX_ARG_SCALE_UP_FACTOR];
+  if (g->scale_up_factor < 1)
+    g->scale_up_factor = 1;		/* no scaling */
+#endif
+
+  if (src_bitmap)
+  {
+    /* get final bitmap size (with scaling, but without small images) */
+    int src_image_width  = get_scaled_graphic_width(graphic);
+    int src_image_height = get_scaled_graphic_height(graphic);
+
+    anim_frames_per_row = src_image_width  / g->width;
+    anim_frames_per_col = src_image_height / g->height;
+
+    g->src_image_width  = src_image_width;
+    g->src_image_height = src_image_height;
+  }
+
+  /* correct x or y offset dependent of vertical or horizontal frame order */
+  if (parameter[GFX_ARG_VERTICAL])	/* frames are ordered vertically */
+  {
+    g->offset_y = (parameter[GFX_ARG_OFFSET] != ARG_UNDEFINED_VALUE ?
+		   parameter[GFX_ARG_OFFSET] : g->height);
+    anim_frames_per_line = anim_frames_per_col;
+  }
+  else					/* frames are ordered horizontally */
+  {
+    g->offset_x = (parameter[GFX_ARG_OFFSET] != ARG_UNDEFINED_VALUE ?
+		   parameter[GFX_ARG_OFFSET] : g->width);
+    anim_frames_per_line = anim_frames_per_row;
+  }
+
+  /* optionally, the x and y offset of frames can be specified directly */
+  if (parameter[GFX_ARG_XOFFSET] != ARG_UNDEFINED_VALUE)
+    g->offset_x = parameter[GFX_ARG_XOFFSET];
+  if (parameter[GFX_ARG_YOFFSET] != ARG_UNDEFINED_VALUE)
+    g->offset_y = parameter[GFX_ARG_YOFFSET];
+
+  /* optionally, moving animations may have separate start and end graphics */
+  g->double_movement = parameter[GFX_ARG_2ND_MOVEMENT_TILE];
+
+  if (parameter[GFX_ARG_2ND_VERTICAL] == ARG_UNDEFINED_VALUE)
+    parameter[GFX_ARG_2ND_VERTICAL] = !parameter[GFX_ARG_VERTICAL];
+
+  /* correct x or y offset2 dependent of vertical or horizontal frame order */
+  if (parameter[GFX_ARG_2ND_VERTICAL])	/* frames are ordered vertically */
+    g->offset2_y = (parameter[GFX_ARG_2ND_OFFSET] != ARG_UNDEFINED_VALUE ?
+		    parameter[GFX_ARG_2ND_OFFSET] : g->height);
+  else					/* frames are ordered horizontally */
+    g->offset2_x = (parameter[GFX_ARG_2ND_OFFSET] != ARG_UNDEFINED_VALUE ?
+		    parameter[GFX_ARG_2ND_OFFSET] : g->width);
+
+  /* optionally, the x and y offset of 2nd graphic can be specified directly */
+  if (parameter[GFX_ARG_2ND_XOFFSET] != ARG_UNDEFINED_VALUE)
+    g->offset2_x = parameter[GFX_ARG_2ND_XOFFSET];
+  if (parameter[GFX_ARG_2ND_YOFFSET] != ARG_UNDEFINED_VALUE)
+    g->offset2_y = parameter[GFX_ARG_2ND_YOFFSET];
+
+  /* optionally, the second movement tile can be specified as start tile */
+  if (parameter[GFX_ARG_2ND_SWAP_TILES] != ARG_UNDEFINED_VALUE)
+    g->swap_double_tiles= parameter[GFX_ARG_2ND_SWAP_TILES];
+
+  /* automatically determine correct number of frames, if not defined */
+  if (parameter[GFX_ARG_FRAMES] != ARG_UNDEFINED_VALUE)
+    g->anim_frames = parameter[GFX_ARG_FRAMES];
+  else if (parameter[GFX_ARG_XPOS] == 0 && !parameter[GFX_ARG_VERTICAL])
+    g->anim_frames = anim_frames_per_row;
+  else if (parameter[GFX_ARG_YPOS] == 0 && parameter[GFX_ARG_VERTICAL])
+    g->anim_frames = anim_frames_per_col;
+  else
+    g->anim_frames = 1;
+
+  if (g->anim_frames == 0)		/* frames must be at least 1 */
+    g->anim_frames = 1;
+
+  g->anim_frames_per_line =
+    (parameter[GFX_ARG_FRAMES_PER_LINE] != ARG_UNDEFINED_VALUE ?
+     parameter[GFX_ARG_FRAMES_PER_LINE] : anim_frames_per_line);
+
+  g->anim_delay = parameter[GFX_ARG_DELAY];
+  if (g->anim_delay == 0)		/* delay must be at least 1 */
+    g->anim_delay = 1;
+
+  g->anim_mode = parameter[GFX_ARG_ANIM_MODE];
+#if 0
+  if (g->anim_frames == 1)
+    g->anim_mode = ANIM_NONE;
+#endif
+
+  /* automatically determine correct start frame, if not defined */
+  if (parameter[GFX_ARG_START_FRAME] == ARG_UNDEFINED_VALUE)
+    g->anim_start_frame = 0;
+  else if (g->anim_mode & ANIM_REVERSE)
+    g->anim_start_frame = g->anim_frames - parameter[GFX_ARG_START_FRAME] - 1;
+  else
+    g->anim_start_frame = parameter[GFX_ARG_START_FRAME];
+
+  /* animation synchronized with global frame counter, not move position */
+  g->anim_global_sync = parameter[GFX_ARG_GLOBAL_SYNC];
+
+  /* optional element for cloning crumble graphics */
+  if (parameter[GFX_ARG_CRUMBLED_LIKE] != ARG_UNDEFINED_VALUE)
+    g->crumbled_like = parameter[GFX_ARG_CRUMBLED_LIKE];
+
+  /* optional element for cloning digging graphics */
+  if (parameter[GFX_ARG_DIGGABLE_LIKE] != ARG_UNDEFINED_VALUE)
+    g->diggable_like = parameter[GFX_ARG_DIGGABLE_LIKE];
+
+  /* optional border size for "crumbling" diggable graphics */
+  if (parameter[GFX_ARG_BORDER_SIZE] != ARG_UNDEFINED_VALUE)
+    g->border_size = parameter[GFX_ARG_BORDER_SIZE];
+
+  /* this is only used for player "boring" and "sleeping" actions */
+  if (parameter[GFX_ARG_ANIM_DELAY_FIXED] != ARG_UNDEFINED_VALUE)
+    g->anim_delay_fixed = parameter[GFX_ARG_ANIM_DELAY_FIXED];
+  if (parameter[GFX_ARG_ANIM_DELAY_RANDOM] != ARG_UNDEFINED_VALUE)
+    g->anim_delay_random = parameter[GFX_ARG_ANIM_DELAY_RANDOM];
+  if (parameter[GFX_ARG_POST_DELAY_FIXED] != ARG_UNDEFINED_VALUE)
+    g->post_delay_fixed = parameter[GFX_ARG_POST_DELAY_FIXED];
+  if (parameter[GFX_ARG_POST_DELAY_RANDOM] != ARG_UNDEFINED_VALUE)
+    g->post_delay_random = parameter[GFX_ARG_POST_DELAY_RANDOM];
+
+  /* this is only used for toon animations */
+  g->step_offset = parameter[GFX_ARG_STEP_OFFSET];
+  g->step_delay  = parameter[GFX_ARG_STEP_DELAY];
+
+  /* this is only used for drawing font characters */
+  g->draw_xoffset = parameter[GFX_ARG_DRAW_XOFFSET];
+  g->draw_yoffset = parameter[GFX_ARG_DRAW_YOFFSET];
+
+  /* this is only used for drawing envelope graphics */
+  g->draw_masked = parameter[GFX_ARG_DRAW_MASKED];
+
+  /* optional graphic for cloning all graphics settings */
+  if (parameter[GFX_ARG_CLONE_FROM] != ARG_UNDEFINED_VALUE)
+    g->clone_from = parameter[GFX_ARG_CLONE_FROM];
+
+  /* optional settings for drawing title screens and title messages */
+  if (parameter[GFX_ARG_FADE_MODE] != ARG_UNDEFINED_VALUE)
+    g->fade_mode = parameter[GFX_ARG_FADE_MODE];
+  if (parameter[GFX_ARG_FADE_DELAY] != ARG_UNDEFINED_VALUE)
+    g->fade_delay = parameter[GFX_ARG_FADE_DELAY];
+  if (parameter[GFX_ARG_POST_DELAY] != ARG_UNDEFINED_VALUE)
+    g->post_delay = parameter[GFX_ARG_POST_DELAY];
+  if (parameter[GFX_ARG_AUTO_DELAY] != ARG_UNDEFINED_VALUE)
+    g->auto_delay = parameter[GFX_ARG_AUTO_DELAY];
+  if (parameter[GFX_ARG_ALIGN] != ARG_UNDEFINED_VALUE)
+    g->align = parameter[GFX_ARG_ALIGN];
+  if (parameter[GFX_ARG_VALIGN] != ARG_UNDEFINED_VALUE)
+    g->valign = parameter[GFX_ARG_VALIGN];
+  if (parameter[GFX_ARG_SORT_PRIORITY] != ARG_UNDEFINED_VALUE)
+    g->sort_priority = parameter[GFX_ARG_SORT_PRIORITY];
+}
+
 static void set_graphic_parameters(int graphic)
 {
+#if 1
+  struct FileInfo *image = getImageListEntryFromImageID(graphic);
+  char **parameter_raw = image->parameter;
+  Bitmap *src_bitmap = getBitmapFromImageID(graphic);
+  int parameter[NUM_GFX_ARGS];
+  int i;
+
+  /* if fallback to default artwork is done, also use the default parameters */
+  if (image->fallback_to_default)
+    parameter_raw = image->default_parameter;
+
+  /* get integer values from string parameters */
+  for (i = 0; i < NUM_GFX_ARGS; i++)
+    parameter[i] = get_graphic_parameter_value(parameter_raw[i],
+					       image_config_suffix[i].token,
+					       image_config_suffix[i].type);
+
+  set_graphic_parameters_ext(graphic, &graphic_info[graphic],
+			     parameter, src_bitmap);
+
+#else
+
   struct FileInfo *image = getImageListEntryFromImageID(graphic);
   char **parameter_raw = image->parameter;
   Bitmap *src_bitmap = getBitmapFromImageID(graphic);
@@ -972,9 +1531,13 @@ static void set_graphic_parameters(int graphic)
   graphic_info[graphic].anim_delay_random = 0;
   graphic_info[graphic].post_delay_fixed = 0;
   graphic_info[graphic].post_delay_random = 0;
+  graphic_info[graphic].fade_mode = FADE_MODE_DEFAULT;
   graphic_info[graphic].fade_delay = -1;
   graphic_info[graphic].post_delay = -1;
   graphic_info[graphic].auto_delay = -1;
+  graphic_info[graphic].align = ALIGN_CENTER;	/* default for title screens */
+  graphic_info[graphic].valign = VALIGN_MIDDLE;	/* default for title screens */
+  graphic_info[graphic].sort_priority = 0;	/* default for title screens */
 
 #if 1
   /* optional zoom factor for scaling up the image to a larger size */
@@ -1160,13 +1723,24 @@ static void set_graphic_parameters(int graphic)
   if (parameter[GFX_ARG_CLONE_FROM] != ARG_UNDEFINED_VALUE)
     graphic_info[graphic].clone_from = parameter[GFX_ARG_CLONE_FROM];
 
-  /* optional settings for drawing title screens */
+  /* optional settings for drawing title screens and title messages */
+  if (parameter[GFX_ARG_FADE_MODE] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].fade_mode = parameter[GFX_ARG_FADE_MODE];
   if (parameter[GFX_ARG_FADE_DELAY] != ARG_UNDEFINED_VALUE)
     graphic_info[graphic].fade_delay = parameter[GFX_ARG_FADE_DELAY];
   if (parameter[GFX_ARG_POST_DELAY] != ARG_UNDEFINED_VALUE)
     graphic_info[graphic].post_delay = parameter[GFX_ARG_POST_DELAY];
   if (parameter[GFX_ARG_AUTO_DELAY] != ARG_UNDEFINED_VALUE)
     graphic_info[graphic].auto_delay = parameter[GFX_ARG_AUTO_DELAY];
+  if (parameter[GFX_ARG_ALIGN] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].align = parameter[GFX_ARG_ALIGN];
+  if (parameter[GFX_ARG_VALIGN] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].valign = parameter[GFX_ARG_VALIGN];
+  if (parameter[GFX_ARG_SORT_PRIORITY] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].sort_priority = parameter[GFX_ARG_SORT_PRIORITY];
+#endif
+
+  UPDATE_BUSY_STATE();
 }
 
 static void set_cloned_graphic_parameters(int graphic)
@@ -1186,18 +1760,18 @@ static void set_cloned_graphic_parameters(int graphic)
 
   if (num_references_followed >= max_num_images)
   {
-    Error(ERR_RETURN_LINE, "-");
-    Error(ERR_RETURN, "warning: error found in config file:");
-    Error(ERR_RETURN, "- config file: '%s'", getImageConfigFilename());
-    Error(ERR_RETURN, "- config token: '%s'", getTokenFromImageID(graphic));
-    Error(ERR_RETURN, "error: loop discovered when resolving cloned graphics");
-    Error(ERR_RETURN, "custom graphic rejected for this element/action");
+    Error(ERR_INFO_LINE, "-");
+    Error(ERR_INFO, "warning: error found in config file:");
+    Error(ERR_INFO, "- config file: '%s'", getImageConfigFilename());
+    Error(ERR_INFO, "- config token: '%s'", getTokenFromImageID(graphic));
+    Error(ERR_INFO, "error: loop discovered when resolving cloned graphics");
+    Error(ERR_INFO, "custom graphic rejected for this element/action");
 
     if (graphic == fallback_graphic)
       Error(ERR_EXIT, "fatal error: no fallback graphic available");
 
-    Error(ERR_RETURN, "fallback done to 'char_exclam' for this graphic");
-    Error(ERR_RETURN_LINE, "-");
+    Error(ERR_INFO, "fallback done to 'char_exclam' for this graphic");
+    Error(ERR_INFO_LINE, "-");
 
     graphic_info[graphic] = graphic_info[fallback_graphic];
   }
@@ -1234,8 +1808,8 @@ static void InitGraphicInfo()
     IMG_BACKGROUND_ENVELOPE_4,
 
     IMG_BACKGROUND,
+    IMG_BACKGROUND_TITLE_INITIAL,
     IMG_BACKGROUND_TITLE,
-    IMG_BACKGROUND_MESSAGE,
     IMG_BACKGROUND_MAIN,
     IMG_BACKGROUND_LEVELS,
     IMG_BACKGROUND_SCORES,
@@ -1338,21 +1912,21 @@ static void InitGraphicInfo()
 	src_x + width  > src_bitmap_width ||
 	src_y + height > src_bitmap_height)
     {
-      Error(ERR_RETURN_LINE, "-");
-      Error(ERR_RETURN, "warning: error found in config file:");
-      Error(ERR_RETURN, "- config file: '%s'", getImageConfigFilename());
-      Error(ERR_RETURN, "- config token: '%s'", getTokenFromImageID(i));
-      Error(ERR_RETURN, "- image file: '%s'", src_bitmap->source_filename);
-      Error(ERR_RETURN,
+      Error(ERR_INFO_LINE, "-");
+      Error(ERR_INFO, "warning: error found in config file:");
+      Error(ERR_INFO, "- config file: '%s'", getImageConfigFilename());
+      Error(ERR_INFO, "- config token: '%s'", getTokenFromImageID(i));
+      Error(ERR_INFO, "- image file: '%s'", src_bitmap->source_filename);
+      Error(ERR_INFO,
 	    "error: first animation frame out of bounds (%d, %d) [%d, %d]",
 	    src_x, src_y, src_bitmap_width, src_bitmap_height);
-      Error(ERR_RETURN, "custom graphic rejected for this element/action");
+      Error(ERR_INFO, "custom graphic rejected for this element/action");
 
       if (i == fallback_graphic)
 	Error(ERR_EXIT, "fatal error: no fallback graphic available");
 
-      Error(ERR_RETURN, "fallback done to 'char_exclam' for this graphic");
-      Error(ERR_RETURN_LINE, "-");
+      Error(ERR_INFO, "fallback done to 'char_exclam' for this graphic");
+      Error(ERR_INFO_LINE, "-");
 
       graphic_info[i] = graphic_info[fallback_graphic];
     }
@@ -1366,21 +1940,21 @@ static void InitGraphicInfo()
 	src_x + width  > src_bitmap_width ||
 	src_y + height > src_bitmap_height)
     {
-      Error(ERR_RETURN_LINE, "-");
-      Error(ERR_RETURN, "warning: error found in config file:");
-      Error(ERR_RETURN, "- config file: '%s'", getImageConfigFilename());
-      Error(ERR_RETURN, "- config token: '%s'", getTokenFromImageID(i));
-      Error(ERR_RETURN, "- image file: '%s'", src_bitmap->source_filename);
-      Error(ERR_RETURN,
+      Error(ERR_INFO_LINE, "-");
+      Error(ERR_INFO, "warning: error found in config file:");
+      Error(ERR_INFO, "- config file: '%s'", getImageConfigFilename());
+      Error(ERR_INFO, "- config token: '%s'", getTokenFromImageID(i));
+      Error(ERR_INFO, "- image file: '%s'", src_bitmap->source_filename);
+      Error(ERR_INFO,
 	    "error: last animation frame (%d) out of bounds (%d, %d) [%d, %d]",
 	    last_frame, src_x, src_y, src_bitmap_width, src_bitmap_height);
-      Error(ERR_RETURN, "custom graphic rejected for this element/action");
+      Error(ERR_INFO, "custom graphic rejected for this element/action");
 
       if (i == fallback_graphic)
 	Error(ERR_EXIT, "fatal error: no fallback graphic available");
 
-      Error(ERR_RETURN, "fallback done to 'char_exclam' for this graphic");
-      Error(ERR_RETURN_LINE, "-");
+      Error(ERR_INFO, "fallback done to 'char_exclam' for this graphic");
+      Error(ERR_INFO_LINE, "-");
 
       graphic_info[i] = graphic_info[fallback_graphic];
     }
@@ -1584,7 +2158,7 @@ static void set_sound_parameters(int sound, char **parameter_raw)
   sound_info[sound].volume = parameter[SND_ARG_VOLUME];
 
   /* sound priority to give certain sounds a higher or lower priority */
-  sound_info[sound].volume = parameter[SND_ARG_VOLUME];
+  sound_info[sound].priority = parameter[SND_ARG_PRIORITY];
 }
 
 static void InitSoundInfo()
@@ -1797,21 +2371,36 @@ static void InitMusicInfo()
 
 static void ReinitializeGraphics()
 {
+  print_timestamp_init("ReinitializeGraphics");
+
   InitGraphicInfo();			/* graphic properties mapping */
+  print_timestamp_time("InitGraphicInfo");
   InitElementGraphicInfo();		/* element game graphic mapping */
+  print_timestamp_time("InitElementGraphicInfo");
   InitElementSpecialGraphicInfo();	/* element special graphic mapping */
+  print_timestamp_time("InitElementSpecialGraphicInfo");
 
   InitElementSmallImages();		/* scale elements to all needed sizes */
+  print_timestamp_time("InitElementSmallImages");
   InitScaledImages();			/* scale all other images, if needed */
+  print_timestamp_time("InitScaledImages");
   InitFontGraphicInfo();		/* initialize text drawing functions */
+  print_timestamp_time("InitFontGraphicInfo");
 
   InitGraphicInfo_EM();			/* graphic mapping for EM engine */
+  print_timestamp_time("InitGraphicInfo_EM");
 
   SetMainBackgroundImage(IMG_BACKGROUND);
+  print_timestamp_time("SetMainBackgroundImage");
   SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
+  print_timestamp_time("SetDoorBackgroundImage");
 
   InitGadgets();
+  print_timestamp_time("InitGadgets");
   InitToons();
+  print_timestamp_time("InitToons");
+
+  print_timestamp_done("ReinitializeGraphics");
 }
 
 static void ReinitializeSounds()
@@ -1959,7 +2548,7 @@ boolean getBitfieldProperty(int *bitfield, int property_bit_nr, int element)
   return FALSE;
 }
 
-static void resolve_group_element(int group_element, int recursion_depth)
+static void ResolveGroupElementExt(int group_element, int recursion_depth)
 {
   static int group_nr;
   static struct ElementGroupInfo *group;
@@ -1983,10 +2572,13 @@ static void resolve_group_element(int group_element, int recursion_depth)
   if (recursion_depth == 0)			/* initialization */
   {
     group = actual_group;
-    group_nr = group_element - EL_GROUP_START;
+    group_nr = GROUP_NR(group_element);
 
     group->num_elements_resolved = 0;
     group->choice_pos = 0;
+
+    for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+      element_info[i].in_group[group_nr] = FALSE;
   }
 
   for (i = 0; i < actual_group->num_elements; i++)
@@ -1997,7 +2589,7 @@ static void resolve_group_element(int group_element, int recursion_depth)
       break;
 
     if (IS_GROUP_ELEMENT(element))
-      resolve_group_element(element, recursion_depth + 1);
+      ResolveGroupElementExt(element, recursion_depth + 1);
     else
     {
       group->element_resolved[group->num_elements_resolved++] = element;
@@ -2006,8 +2598,15 @@ static void resolve_group_element(int group_element, int recursion_depth)
   }
 }
 
+void ResolveGroupElement(int group_element)
+{
+  ResolveGroupElementExt(group_element, 0);
+}
+
 void InitElementPropertiesStatic()
 {
+  static boolean clipboard_elements_initialized = FALSE;
+
   static int ep_diggable[] =
   {
     EL_SAND,
@@ -2023,6 +2622,7 @@ void InitElementPropertiesStatic()
     /* (if amoeba can grow into anything diggable, maybe keep these out) */
 #if 0
     EL_LANDMINE,
+    EL_DC_LANDMINE,
     EL_TRAP_ACTIVE,
     EL_SP_BUGGY_BASE_ACTIVE,
     EL_EMC_PLANT,
@@ -2060,7 +2660,7 @@ void InitElementPropertiesStatic()
     EL_SP_DISK_RED,
     EL_PEARL,
     EL_CRYSTAL,
-    EL_KEY_WHITE,
+    EL_DC_KEY_WHITE,
     EL_SHIELD_NORMAL,
     EL_SHIELD_DEADLY,
     EL_EXTRA_TIME,
@@ -2071,6 +2671,11 @@ void InitElementPropertiesStatic()
     EL_SPEED_PILL,
     EL_EMC_LENSES,
     EL_EMC_MAGNIFIER,
+
+#if 0
+    /* !!! handle separately !!! */
+    EL_DC_LANDMINE,	/* deadly when running into, but can be snapped */
+#endif
 
     -1
   };
@@ -2098,6 +2703,7 @@ void InitElementPropertiesStatic()
     /* !!! maybe this should better be handled by 'ep_diggable' !!! */
 #if 1
     EL_LANDMINE,
+    EL_DC_LANDMINE,
     EL_TRAP_ACTIVE,
     EL_SP_BUGGY_BASE_ACTIVE,
     EL_EMC_PLANT,
@@ -2176,13 +2782,44 @@ void InitElementPropertiesStatic()
     EL_SIGN_STOP,
     EL_SIGN_WHEELCHAIR,
     EL_SIGN_PARKING,
-    EL_SIGN_ONEWAY,
+    EL_SIGN_NO_ENTRY,
+    EL_SIGN_UNUSED_1,
+    EL_SIGN_GIVE_WAY,
+    EL_SIGN_ENTRY_FORBIDDEN,
+    EL_SIGN_EMERGENCY_EXIT,
+    EL_SIGN_YIN_YANG,
+    EL_SIGN_UNUSED_2,
+    EL_SIGN_SPERMS,
+    EL_SIGN_BULLET,
     EL_SIGN_HEART,
-    EL_SIGN_TRIANGLE,
-    EL_SIGN_ROUND,
-    EL_SIGN_EXIT,
-    EL_SIGN_YINYANG,
-    EL_SIGN_OTHER,
+    EL_SIGN_CROSS,
+    EL_SIGN_FRANKIE,
+    EL_STEEL_EXIT_CLOSED,
+    EL_STEEL_EXIT_OPEN,
+    EL_EM_STEEL_EXIT_CLOSED,
+    EL_EM_STEEL_EXIT_OPEN,
+    EL_DC_STEELWALL_1_LEFT,
+    EL_DC_STEELWALL_1_RIGHT,
+    EL_DC_STEELWALL_1_TOP,
+    EL_DC_STEELWALL_1_BOTTOM,
+    EL_DC_STEELWALL_1_HORIZONTAL,
+    EL_DC_STEELWALL_1_VERTICAL,
+    EL_DC_STEELWALL_1_TOPLEFT,
+    EL_DC_STEELWALL_1_TOPRIGHT,
+    EL_DC_STEELWALL_1_BOTTOMLEFT,
+    EL_DC_STEELWALL_1_BOTTOMRIGHT,
+    EL_DC_STEELWALL_1_TOPLEFT_2,
+    EL_DC_STEELWALL_1_TOPRIGHT_2,
+    EL_DC_STEELWALL_1_BOTTOMLEFT_2,
+    EL_DC_STEELWALL_1_BOTTOMRIGHT_2,
+    EL_DC_STEELWALL_2_LEFT,
+    EL_DC_STEELWALL_2_RIGHT,
+    EL_DC_STEELWALL_2_TOP,
+    EL_DC_STEELWALL_2_BOTTOM,
+    EL_DC_STEELWALL_2_HORIZONTAL,
+    EL_DC_STEELWALL_2_VERTICAL,
+    EL_DC_STEELWALL_2_MIDDLE,
+    EL_DC_STEELWALL_2_SINGLE,
     EL_STEELWALL_SLIPPERY,
     EL_EMC_STEELWALL_1,
     EL_EMC_STEELWALL_2,
@@ -2225,21 +2862,25 @@ void InitElementPropertiesStatic()
     EL_EMC_GATE_6_GRAY_ACTIVE,
     EL_EMC_GATE_7_GRAY_ACTIVE,
     EL_EMC_GATE_8_GRAY_ACTIVE,
+    EL_DC_GATE_WHITE,
+    EL_DC_GATE_WHITE_GRAY,
+    EL_DC_GATE_WHITE_GRAY_ACTIVE,
+    EL_DC_GATE_FAKE_GRAY,
     EL_SWITCHGATE_OPEN,
     EL_SWITCHGATE_OPENING,
     EL_SWITCHGATE_CLOSED,
     EL_SWITCHGATE_CLOSING,
-#if 0
-    EL_SWITCHGATE_SWITCH_UP,
-    EL_SWITCHGATE_SWITCH_DOWN,
+#if 1
+    EL_DC_SWITCHGATE_SWITCH_UP,
+    EL_DC_SWITCHGATE_SWITCH_DOWN,
 #endif
     EL_TIMEGATE_OPEN,
     EL_TIMEGATE_OPENING,
     EL_TIMEGATE_CLOSED,
     EL_TIMEGATE_CLOSING,
-#if 0
-    EL_TIMEGATE_SWITCH,
-    EL_TIMEGATE_SWITCH_ACTIVE,
+#if 1
+    EL_DC_TIMEGATE_SWITCH,
+    EL_DC_TIMEGATE_SWITCH_ACTIVE,
 #endif
     EL_TUBE_ANY,
     EL_TUBE_VERTICAL,
@@ -2252,6 +2893,9 @@ void InitElementPropertiesStatic()
     EL_TUBE_LEFT_DOWN,
     EL_TUBE_RIGHT_UP,
     EL_TUBE_RIGHT_DOWN,
+    EL_EXPANDABLE_STEELWALL_HORIZONTAL,
+    EL_EXPANDABLE_STEELWALL_VERTICAL,
+    EL_EXPANDABLE_STEELWALL_ANY,
 
     -1
   };
@@ -2344,8 +2988,10 @@ void InitElementPropertiesStatic()
     EL_NUT,
     EL_AMOEBA_DROP,
     EL_QUICKSAND_FULL,
+    EL_QUICKSAND_FAST_FULL,
     EL_MAGIC_WALL_FULL,
     EL_BD_MAGIC_WALL_FULL,
+    EL_DC_MAGIC_WALL_FULL,
     EL_TIME_ORB_FULL,
     EL_TIME_ORB_EMPTY,
     EL_SP_ZONK,
@@ -2473,8 +3119,11 @@ void InitElementPropertiesStatic()
     EL_SP_EMPTY_SPACE,
     EL_SOKOBAN_FIELD_EMPTY,
     EL_EXIT_OPEN,
+    EL_EM_EXIT_OPEN,
     EL_SP_EXIT_OPEN,
     EL_SP_EXIT_OPENING,
+    EL_STEEL_EXIT_OPEN,
+    EL_EM_STEEL_EXIT_OPEN,
     EL_GATE_1,
     EL_GATE_2,
     EL_GATE_3,
@@ -2542,6 +3191,9 @@ void InitElementPropertiesStatic()
     EL_EMC_GATE_6_GRAY_ACTIVE,
     EL_EMC_GATE_7_GRAY_ACTIVE,
     EL_EMC_GATE_8_GRAY_ACTIVE,
+    EL_DC_GATE_WHITE,
+    EL_DC_GATE_WHITE_GRAY,
+    EL_DC_GATE_WHITE_GRAY_ACTIVE,
     EL_SWITCHGATE_OPEN,
     EL_TIMEGATE_OPEN,
 
@@ -2654,6 +3306,9 @@ void InitElementPropertiesStatic()
     EL_EMC_GATE_6_GRAY_ACTIVE,
     EL_EMC_GATE_7_GRAY_ACTIVE,
     EL_EMC_GATE_8_GRAY_ACTIVE,
+    EL_DC_GATE_WHITE,
+    EL_DC_GATE_WHITE_GRAY,
+    EL_DC_GATE_WHITE_GRAY_ACTIVE,
     EL_SWITCHGATE_OPEN,
     EL_TIMEGATE_OPEN,
 
@@ -2783,6 +3438,22 @@ void InitElementPropertiesStatic()
     -1
   };
 
+  static int ep_can_pass_dc_magic_wall[] =
+  {
+    EL_ROCK,
+    EL_BD_ROCK,
+    EL_EMERALD,
+    EL_BD_DIAMOND,
+    EL_EMERALD_YELLOW,
+    EL_EMERALD_RED,
+    EL_EMERALD_PURPLE,
+    EL_DIAMOND,
+    EL_PEARL,
+    EL_CRYSTAL,
+
+    -1
+  };
+
   static int ep_switchable[] =
   {
     EL_ROBOT_WHEEL,
@@ -2801,9 +3472,12 @@ void InitElementPropertiesStatic()
     EL_CONVEYOR_BELT_4_SWITCH_RIGHT,
     EL_SWITCHGATE_SWITCH_UP,
     EL_SWITCHGATE_SWITCH_DOWN,
+    EL_DC_SWITCHGATE_SWITCH_UP,
+    EL_DC_SWITCHGATE_SWITCH_DOWN,
     EL_LIGHT_SWITCH,
     EL_LIGHT_SWITCH_ACTIVE,
     EL_TIMEGATE_SWITCH,
+    EL_DC_TIMEGATE_SWITCH,
     EL_BALLOON_SWITCH_LEFT,
     EL_BALLOON_SWITCH_RIGHT,
     EL_BALLOON_SWITCH_UP,
@@ -3139,8 +3813,12 @@ void InitElementPropertiesStatic()
     EL_INVISIBLE_WALL_ACTIVE,
     EL_SWITCHGATE_SWITCH_UP,
     EL_SWITCHGATE_SWITCH_DOWN,
+    EL_DC_SWITCHGATE_SWITCH_UP,
+    EL_DC_SWITCHGATE_SWITCH_DOWN,
     EL_TIMEGATE_SWITCH,
     EL_TIMEGATE_SWITCH_ACTIVE,
+    EL_DC_TIMEGATE_SWITCH,
+    EL_DC_TIMEGATE_SWITCH_ACTIVE,
     EL_EMC_WALL_1,
     EL_EMC_WALL_2,
     EL_EMC_WALL_3,
@@ -3195,13 +3873,42 @@ void InitElementPropertiesStatic()
     EL_SIGN_STOP,
     EL_SIGN_WHEELCHAIR,
     EL_SIGN_PARKING,
-    EL_SIGN_ONEWAY,
+    EL_SIGN_NO_ENTRY,
+    EL_SIGN_UNUSED_1,
+    EL_SIGN_GIVE_WAY,
+    EL_SIGN_ENTRY_FORBIDDEN,
+    EL_SIGN_EMERGENCY_EXIT,
+    EL_SIGN_YIN_YANG,
+    EL_SIGN_UNUSED_2,
+    EL_SIGN_SPERMS,
+    EL_SIGN_BULLET,
     EL_SIGN_HEART,
-    EL_SIGN_TRIANGLE,
-    EL_SIGN_ROUND,
-    EL_SIGN_EXIT,
-    EL_SIGN_YINYANG,
-    EL_SIGN_OTHER,
+    EL_SIGN_CROSS,
+    EL_SIGN_FRANKIE,
+    EL_STEEL_EXIT_CLOSED,
+    EL_STEEL_EXIT_OPEN,
+    EL_DC_STEELWALL_1_LEFT,
+    EL_DC_STEELWALL_1_RIGHT,
+    EL_DC_STEELWALL_1_TOP,
+    EL_DC_STEELWALL_1_BOTTOM,
+    EL_DC_STEELWALL_1_HORIZONTAL,
+    EL_DC_STEELWALL_1_VERTICAL,
+    EL_DC_STEELWALL_1_TOPLEFT,
+    EL_DC_STEELWALL_1_TOPRIGHT,
+    EL_DC_STEELWALL_1_BOTTOMLEFT,
+    EL_DC_STEELWALL_1_BOTTOMRIGHT,
+    EL_DC_STEELWALL_1_TOPLEFT_2,
+    EL_DC_STEELWALL_1_TOPRIGHT_2,
+    EL_DC_STEELWALL_1_BOTTOMLEFT_2,
+    EL_DC_STEELWALL_1_BOTTOMRIGHT_2,
+    EL_DC_STEELWALL_2_LEFT,
+    EL_DC_STEELWALL_2_RIGHT,
+    EL_DC_STEELWALL_2_TOP,
+    EL_DC_STEELWALL_2_BOTTOM,
+    EL_DC_STEELWALL_2_HORIZONTAL,
+    EL_DC_STEELWALL_2_VERTICAL,
+    EL_DC_STEELWALL_2_MIDDLE,
+    EL_DC_STEELWALL_2_SINGLE,
     EL_STEELWALL_SLIPPERY,
     EL_EMC_STEELWALL_1,
     EL_EMC_STEELWALL_2,
@@ -3343,6 +4050,17 @@ void InitElementPropertiesStatic()
     -1
   };
 
+  static int ep_acid_pool[] =
+  {
+    EL_ACID_POOL_TOPLEFT,
+    EL_ACID_POOL_TOPRIGHT,
+    EL_ACID_POOL_BOTTOMLEFT,
+    EL_ACID_POOL_BOTTOM,
+    EL_ACID_POOL_BOTTOMRIGHT,
+
+    -1
+  };
+
   static int ep_keygate[] =
   {
     EL_GATE_1,
@@ -3381,6 +4099,9 @@ void InitElementPropertiesStatic()
     EL_EMC_GATE_6_GRAY_ACTIVE,
     EL_EMC_GATE_7_GRAY_ACTIVE,
     EL_EMC_GATE_8_GRAY_ACTIVE,
+    EL_DC_GATE_WHITE,
+    EL_DC_GATE_WHITE_GRAY,
+    EL_DC_GATE_WHITE_GRAY_ACTIVE,
 
     -1
   };
@@ -3473,6 +4194,7 @@ void InitElementPropertiesStatic()
     EL_STEELWALL,
     EL_AMOEBA_DEAD,
     EL_QUICKSAND_EMPTY,
+    EL_QUICKSAND_FAST_EMPTY,
     EL_STONEBLOCK,
     EL_ROBOT_WHEEL,
     EL_KEY_1,
@@ -3523,6 +4245,10 @@ void InitElementPropertiesStatic()
     EL_EMC_GATE_6_GRAY_ACTIVE,
     EL_EMC_GATE_7_GRAY_ACTIVE,
     EL_EMC_GATE_8_GRAY_ACTIVE,
+    EL_DC_GATE_WHITE,
+    EL_DC_GATE_WHITE_GRAY,
+    EL_DC_GATE_WHITE_GRAY_ACTIVE,
+    EL_DC_GATE_FAKE_GRAY,
     EL_DYNAMITE,
     EL_EM_DYNAMITE,
     EL_INVISIBLE_STEELWALL,
@@ -3553,6 +4279,8 @@ void InitElementPropertiesStatic()
     EL_MAGIC_WALL_DEAD,
     EL_BD_MAGIC_WALL,
     EL_BD_MAGIC_WALL_DEAD,
+    EL_DC_MAGIC_WALL,
+    EL_DC_MAGIC_WALL_DEAD,
     EL_AMOEBA_TO_DIAMOND,
     EL_BLOCKED,
     EL_SP_EMPTY,
@@ -3613,13 +4341,40 @@ void InitElementPropertiesStatic()
     EL_SIGN_STOP,
     EL_SIGN_WHEELCHAIR,
     EL_SIGN_PARKING,
-    EL_SIGN_ONEWAY,
+    EL_SIGN_NO_ENTRY,
+    EL_SIGN_UNUSED_1,
+    EL_SIGN_GIVE_WAY,
+    EL_SIGN_ENTRY_FORBIDDEN,
+    EL_SIGN_EMERGENCY_EXIT,
+    EL_SIGN_YIN_YANG,
+    EL_SIGN_UNUSED_2,
+    EL_SIGN_SPERMS,
+    EL_SIGN_BULLET,
     EL_SIGN_HEART,
-    EL_SIGN_TRIANGLE,
-    EL_SIGN_ROUND,
-    EL_SIGN_EXIT,
-    EL_SIGN_YINYANG,
-    EL_SIGN_OTHER,
+    EL_SIGN_CROSS,
+    EL_SIGN_FRANKIE,
+    EL_DC_STEELWALL_1_LEFT,
+    EL_DC_STEELWALL_1_RIGHT,
+    EL_DC_STEELWALL_1_TOP,
+    EL_DC_STEELWALL_1_BOTTOM,
+    EL_DC_STEELWALL_1_HORIZONTAL,
+    EL_DC_STEELWALL_1_VERTICAL,
+    EL_DC_STEELWALL_1_TOPLEFT,
+    EL_DC_STEELWALL_1_TOPRIGHT,
+    EL_DC_STEELWALL_1_BOTTOMLEFT,
+    EL_DC_STEELWALL_1_BOTTOMRIGHT,
+    EL_DC_STEELWALL_1_TOPLEFT_2,
+    EL_DC_STEELWALL_1_TOPRIGHT_2,
+    EL_DC_STEELWALL_1_BOTTOMLEFT_2,
+    EL_DC_STEELWALL_1_BOTTOMRIGHT_2,
+    EL_DC_STEELWALL_2_LEFT,
+    EL_DC_STEELWALL_2_RIGHT,
+    EL_DC_STEELWALL_2_TOP,
+    EL_DC_STEELWALL_2_BOTTOM,
+    EL_DC_STEELWALL_2_HORIZONTAL,
+    EL_DC_STEELWALL_2_VERTICAL,
+    EL_DC_STEELWALL_2_MIDDLE,
+    EL_DC_STEELWALL_2_SINGLE,
     EL_STEELWALL_SLIPPERY,
     EL_EMC_STEELWALL_1,
     EL_EMC_STEELWALL_2,
@@ -3658,6 +4413,7 @@ void InitElementPropertiesStatic()
   {
     EL_SAND,
     EL_LANDMINE,
+    EL_DC_LANDMINE,
     EL_TRAP,
     EL_TRAP_ACTIVE,
 
@@ -3675,6 +4431,7 @@ void InitElementPropertiesStatic()
     EL_INTERNAL_CASCADE_DC_ACTIVE,
     EL_INTERNAL_CASCADE_DX_ACTIVE,
     EL_INTERNAL_CASCADE_CHARS_ACTIVE,
+    EL_INTERNAL_CASCADE_STEEL_CHARS_ACTIVE,
     EL_INTERNAL_CASCADE_CE_ACTIVE,
     EL_INTERNAL_CASCADE_GE_ACTIVE,
     EL_INTERNAL_CASCADE_REF_ACTIVE,
@@ -3695,6 +4452,7 @@ void InitElementPropertiesStatic()
     EL_INTERNAL_CASCADE_DC,
     EL_INTERNAL_CASCADE_DX,
     EL_INTERNAL_CASCADE_CHARS,
+    EL_INTERNAL_CASCADE_STEEL_CHARS,
     EL_INTERNAL_CASCADE_CE,
     EL_INTERNAL_CASCADE_GE,
     EL_INTERNAL_CASCADE_REF,
@@ -3756,6 +4514,7 @@ void InitElementPropertiesStatic()
 
     { ep_player,			EP_PLAYER			},
     { ep_can_pass_magic_wall,		EP_CAN_PASS_MAGIC_WALL		},
+    { ep_can_pass_dc_magic_wall,	EP_CAN_PASS_DC_MAGIC_WALL	},
     { ep_switchable,			EP_SWITCHABLE			},
     { ep_bd_element,			EP_BD_ELEMENT			},
     { ep_sp_element,			EP_SP_ELEMENT			},
@@ -3771,6 +4530,7 @@ void InitElementPropertiesStatic()
     { ep_belt_active,			EP_BELT_ACTIVE			},
     { ep_belt_switch,			EP_BELT_SWITCH			},
     { ep_tube,				EP_TUBE				},
+    { ep_acid_pool,			EP_ACID_POOL			},
     { ep_keygate,			EP_KEYGATE			},
     { ep_amoeboid,			EP_AMOEBOID			},
     { ep_amoebalive,			EP_AMOEBALIVE			},
@@ -3795,9 +4555,12 @@ void InitElementPropertiesStatic()
   int i, j, k;
 
   /* always start with reliable default values (element has no properties) */
+  /* (but never initialize clipboard elements after the very first time) */
+  /* (to be able to use clipboard elements between several levels) */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
-    for (j = 0; j < NUM_ELEMENT_PROPERTIES; j++)
-      SET_PROPERTY(i, j, FALSE);
+    if (!IS_CLIPBOARD_ELEMENT(i) || !clipboard_elements_initialized)
+      for (j = 0; j < NUM_ELEMENT_PROPERTIES; j++)
+	SET_PROPERTY(i, j, FALSE);
 
   /* set all base element properties from above array definitions */
   for (i = 0; element_properties[i].elements != NULL; i++)
@@ -3811,6 +4574,12 @@ void InitElementPropertiesStatic()
       if (HAS_PROPERTY(copy_properties[j][0], i))
 	for (k = 1; k <= 4; k++)
 	  SET_PROPERTY(copy_properties[j][k], i, TRUE);
+
+  /* set static element properties that are not listed in array definitions */
+  for (i = EL_STEEL_CHAR_START; i <= EL_STEEL_CHAR_END; i++)
+    SET_PROPERTY(i, EP_INDESTRUCTIBLE, TRUE);
+
+  clipboard_elements_initialized = TRUE;
 }
 
 void InitElementPropertiesEngine(int engine_version)
@@ -3852,20 +4621,22 @@ void InitElementPropertiesEngine(int engine_version)
      property (which means that conditional property changes must be set to
      a reliable default value before) */
 
-  /* ---------- recursively resolve group elements ------------------------- */
-
-  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
-    for (j = 0; j < NUM_GROUP_ELEMENTS; j++)
-      element_info[i].in_group[j] = FALSE;
-
+  /* resolve group elements */
   for (i = 0; i < NUM_GROUP_ELEMENTS; i++)
-    resolve_group_element(EL_GROUP_START + i, 0);
+    ResolveGroupElement(EL_GROUP_START + i);
 
   /* set all special, combined or engine dependent element properties */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
+    /* do not change (already initialized) clipboard elements here */
+    if (IS_CLIPBOARD_ELEMENT(i))
+      continue;
+
     /* ---------- INACTIVE ------------------------------------------------- */
-    SET_PROPERTY(i, EP_INACTIVE, (i >= EL_CHAR_START && i <= EL_CHAR_END));
+    SET_PROPERTY(i, EP_INACTIVE, ((i >= EL_CHAR_START &&
+				   i <= EL_CHAR_END) ||
+				  (i >= EL_STEEL_CHAR_START &&
+				   i <= EL_STEEL_CHAR_END)));
 
     /* ---------- WALKABLE, PASSABLE, ACCESSIBLE --------------------------- */
     SET_PROPERTY(i, EP_WALKABLE, (IS_WALKABLE_OVER(i) ||
@@ -3919,7 +4690,6 @@ void InitElementPropertiesEngine(int engine_version)
 					     !IS_COLLECTIBLE(i)));
 
     /* ---------- DRAGONFIRE_PROOF ----------------------------------------- */
-
     if (IS_HISTORIC_SOLID(i) || i == EL_EXPLOSION)
       SET_PROPERTY(i, EP_DRAGONFIRE_PROOF, TRUE);
     else
@@ -4042,12 +4812,16 @@ void InitElementPropertiesEngine(int engine_version)
   {
     static int ep_em_slippery_wall[] =
     {
-      EL_STEELWALL,
       EL_WALL,
+      EL_STEELWALL,
       EL_EXPANDABLE_WALL,
       EL_EXPANDABLE_WALL_HORIZONTAL,
       EL_EXPANDABLE_WALL_VERTICAL,
       EL_EXPANDABLE_WALL_ANY,
+      EL_EXPANDABLE_STEELWALL_HORIZONTAL,
+      EL_EXPANDABLE_STEELWALL_VERTICAL,
+      EL_EXPANDABLE_STEELWALL_ANY,
+      EL_EXPANDABLE_STEELWALL_GROWING,
       -1
     };
 
@@ -4088,6 +4862,7 @@ void InitElementPropertiesAfterLoading(int engine_version)
 
 static void InitGlobal()
 {
+  int graphic;
   int i;
 
   for (i = 0; i < MAX_NUM_ELEMENTS + 1; i++)
@@ -4098,7 +4873,81 @@ static void InitGlobal()
 
     element_info[i].token_name = element_name_info[i].token_name;
     element_info[i].class_name = element_name_info[i].class_name;
-    element_info[i].editor_description=element_name_info[i].editor_description;
+    element_info[i].editor_description= element_name_info[i].editor_description;
+
+#if 0
+    printf("%04d: %s\n", i, element_name_info[i].token_name);
+#endif
+  }
+
+  /* create hash from image config list */
+  image_config_hash = newSetupFileHash();
+  for (i = 0; image_config[i].token != NULL; i++)
+    setHashEntry(image_config_hash,
+		 image_config[i].token,
+		 image_config[i].value);
+
+  /* create hash from element token list */
+  element_token_hash = newSetupFileHash();
+  for (i = 0; element_name_info[i].token_name != NULL; i++)
+    setHashEntry(element_token_hash,
+		 element_name_info[i].token_name,
+		 int2str(i, 0));
+
+  /* create hash from graphic token list */
+  graphic_token_hash = newSetupFileHash();
+  for (graphic = 0, i = 0; image_config[i].token != NULL; i++)
+    if (strSuffix(image_config[i].value, ".pcx") ||
+	strSuffix(image_config[i].value, ".wav") ||
+	strEqual(image_config[i].value, UNDEFINED_FILENAME))
+      setHashEntry(graphic_token_hash,
+		   image_config[i].token,
+		   int2str(graphic++, 0));
+
+  /* create hash from font token list */
+  font_token_hash = newSetupFileHash();
+  for (i = 0; font_info[i].token_name != NULL; i++)
+    setHashEntry(font_token_hash,
+		 font_info[i].token_name,
+		 int2str(i, 0));
+
+  /* always start with reliable default values (all elements) */
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+    ActiveElement[i] = i;
+
+  /* now add all entries that have an active state (active elements) */
+  for (i = 0; element_with_active_state[i].element != -1; i++)
+  {
+    int element = element_with_active_state[i].element;
+    int element_active = element_with_active_state[i].element_active;
+
+    ActiveElement[element] = element_active;
+  }
+
+  /* always start with reliable default values (all buttons) */
+  for (i = 0; i < NUM_IMAGE_FILES; i++)
+    ActiveButton[i] = i;
+
+  /* now add all entries that have an active state (active buttons) */
+  for (i = 0; button_with_active_state[i].button != -1; i++)
+  {
+    int button = button_with_active_state[i].button;
+    int button_active = button_with_active_state[i].button_active;
+
+    ActiveButton[button] = button_active;
+  }
+
+  /* always start with reliable default values (all fonts) */
+  for (i = 0; i < NUM_FONTS; i++)
+    ActiveFont[i] = i;
+
+  /* now add all entries that have an active state (active fonts) */
+  for (i = 0; font_with_active_state[i].font_nr != -1; i++)
+  {
+    int font = font_with_active_state[i].font_nr;
+    int font_active = font_with_active_state[i].font_nr_active;
+
+    ActiveFont[font] = font_active;
   }
 
   global.autoplay_leveldir = NULL;
@@ -4107,6 +4956,12 @@ static void InitGlobal()
   global.frames_per_second = 0;
   global.fps_slowdown = FALSE;
   global.fps_slowdown_factor = 1;
+
+  global.border_status = GAME_MODE_MAIN;
+#if 0
+  global.fading_status = GAME_MODE_MAIN;
+  global.fading_type = TYPE_ENTER_MENU;
+#endif
 }
 
 void Execute_Command(char *command)
@@ -4511,6 +5366,7 @@ static void InitMixer()
 void InitGfx()
 {
   char *filename_font_initial = NULL;
+  char *filename_anim_initial = NULL;
   Bitmap *bitmap_font_initial = NULL;
   int font_height;
   int i, j;
@@ -4537,7 +5393,7 @@ void InitGfx()
 	  font_initial[j].src_y = atoi(image_config[i].value);
 	else if (strEqual(&image_config[i].token[len_font_token], ".width"))
 	  font_initial[j].width = atoi(image_config[i].value);
-	else if (strEqual(&image_config[i].token[len_font_token],".height"))
+	else if (strEqual(&image_config[i].token[len_font_token], ".height"))
 	  font_initial[j].height = atoi(image_config[i].value);
       }
     }
@@ -4557,6 +5413,7 @@ void InitGfx()
   bitmap_db_field = CreateBitmap(FXSIZE, FYSIZE, DEFAULT_DEPTH);
   bitmap_db_panel = CreateBitmap(DXSIZE, DYSIZE, DEFAULT_DEPTH);
   bitmap_db_door  = CreateBitmap(3 * DXSIZE, DYSIZE + VYSIZE, DEFAULT_DEPTH);
+  bitmap_db_toons = CreateBitmap(FULL_SXSIZE, FULL_SYSIZE, DEFAULT_DEPTH);
 
   /* initialize screen properties */
   InitGfxFieldInfo(SX, SY, SXSIZE, SYSIZE,
@@ -4584,6 +5441,75 @@ void InitGfx()
   DrawInitText(PROGRAM_WEBSITE_STRING, WIN_YSIZE - 20 - font_height, FC_RED);
 
   DrawInitText("Loading graphics", 120, FC_GREEN);
+
+#if 1
+#if 1
+  /* initialize busy animation with default values */
+  int parameter[NUM_GFX_ARGS];
+  for (i = 0; i < NUM_GFX_ARGS; i++)
+    parameter[i] = get_graphic_parameter_value(image_config_suffix[i].value,
+                                               image_config_suffix[i].token,
+                                               image_config_suffix[i].type);
+#if 0
+  for (i = 0; i < NUM_GFX_ARGS; i++)
+    printf("::: '%s' => %d\n", image_config_suffix[i].token, parameter[i]);
+#endif
+#endif
+
+  /* determine settings for busy animation (when displaying startup messages) */
+  for (i = 0; image_config[i].token != NULL; i++)
+  {
+    char *anim_token = CONFIG_TOKEN_GLOBAL_BUSY;
+    int len_anim_token = strlen(anim_token);
+
+    if (strEqual(image_config[i].token, anim_token))
+      filename_anim_initial = image_config[i].value;
+    else if (strlen(image_config[i].token) > len_anim_token &&
+	     strncmp(image_config[i].token, anim_token, len_anim_token) == 0)
+    {
+#if 1
+      for (j = 0; image_config_suffix[j].token != NULL; j++)
+      {
+	if (strEqual(&image_config[i].token[len_anim_token],
+		     image_config_suffix[j].token))
+	  parameter[j] =
+	    get_graphic_parameter_value(image_config[i].value,
+					image_config_suffix[j].token,
+					image_config_suffix[j].type);
+      }
+#else
+      if (strEqual(&image_config[i].token[len_anim_token], ".x"))
+	anim_initial.src_x = atoi(image_config[i].value);
+      else if (strEqual(&image_config[i].token[len_anim_token], ".y"))
+	anim_initial.src_y = atoi(image_config[i].value);
+      else if (strEqual(&image_config[i].token[len_anim_token], ".width"))
+	anim_initial.width = atoi(image_config[i].value);
+      else if (strEqual(&image_config[i].token[len_anim_token], ".height"))
+	anim_initial.height = atoi(image_config[i].value);
+      else if (strEqual(&image_config[i].token[len_anim_token], ".frames"))
+	anim_initial.anim_frames = atoi(image_config[i].value);
+      else if (strEqual(&image_config[i].token[len_anim_token],
+			".frames_per_line"))
+	anim_initial.anim_frames_per_line = atoi(image_config[i].value);
+      else if (strEqual(&image_config[i].token[len_anim_token], ".delay"))
+	anim_initial.anim_delay = atoi(image_config[i].value);
+#endif
+    }
+  }
+
+  set_graphic_parameters_ext(0, &anim_initial, parameter, NULL);
+
+  if (filename_anim_initial == NULL)	/* should not happen */
+    Error(ERR_EXIT, "cannot get filename for '%s'", CONFIG_TOKEN_GLOBAL_BUSY);
+
+  anim_initial.bitmap = LoadCustomImage(filename_anim_initial);
+
+  init.busy.width  = anim_initial.width;
+  init.busy.height = anim_initial.height;
+
+  InitMenuDesignSettings_Static();
+  InitGfxDrawBusyAnimFunction(DrawInitAnim);
+#endif
 }
 
 void RedrawBackground()
@@ -4601,10 +5527,14 @@ void InitGfxBackground()
   fieldbuffer = bitmap_db_field;
   SetDrawtoField(DRAW_BACKBUFFER);
 
+#if 1
+  ClearRectangle(backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE);
+#else
   RedrawBackground();
 
   ClearRectangle(backbuffer, REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
   ClearRectangle(bitmap_db_door, 0, 0, 3 * DXSIZE, DYSIZE + VYSIZE);
+#endif
 
   for (x = 0; x < MAX_BUF_XSIZE; x++)
     for (y = 0; y < MAX_BUF_YSIZE; y++)
@@ -4627,6 +5557,8 @@ void InitLevelArtworkInfo()
 
 static void InitImages()
 {
+  print_timestamp_init("InitImages");
+
   setLevelArtworkDir(artwork.gfx_first);
 
 #if 0
@@ -4638,16 +5570,35 @@ static void InitImages()
 	 leveldir_current->graphics_path);
 #endif
 
+  UPDATE_BUSY_STATE();
+
   ReloadCustomImages();
+  print_timestamp_time("ReloadCustomImages");
+
+  UPDATE_BUSY_STATE();
 
   LoadCustomElementDescriptions();
-  LoadSpecialMenuDesignSettings();
+  print_timestamp_time("LoadCustomElementDescriptions");
+
+  UPDATE_BUSY_STATE();
+
+  LoadMenuDesignSettings();
+  print_timestamp_time("LoadMenuDesignSettings");
+
+  UPDATE_BUSY_STATE();
 
   ReinitializeGraphics();
+  print_timestamp_time("ReinitializeGraphics");
+
+  UPDATE_BUSY_STATE();
+
+  print_timestamp_done("InitImages");
 }
 
 static void InitSound(char *identifier)
 {
+  print_timestamp_init("InitSound");
+
   if (identifier == NULL)
     identifier = artwork.snd_current->identifier;
 
@@ -4655,11 +5606,18 @@ static void InitSound(char *identifier)
   setLevelArtworkDir(artwork.snd_first);
 
   InitReloadCustomSounds(identifier);
+  print_timestamp_time("InitReloadCustomSounds");
+
   ReinitializeSounds();
+  print_timestamp_time("ReinitializeSounds");
+
+  print_timestamp_done("InitSound");
 }
 
 static void InitMusic(char *identifier)
 {
+  print_timestamp_init("InitMusic");
+
   if (identifier == NULL)
     identifier = artwork.mus_current->identifier;
 
@@ -4667,7 +5625,12 @@ static void InitMusic(char *identifier)
   setLevelArtworkDir(artwork.mus_first);
 
   InitReloadCustomMusic(identifier);
+  print_timestamp_time("InitReloadCustomMusic");
+
   ReinitializeMusic();
+  print_timestamp_time("ReinitializeMusic");
+
+  print_timestamp_done("InitMusic");
 }
 
 void InitNetworkServer()
@@ -4808,19 +5771,48 @@ static char *getNewArtworkIdentifier(int type)
 
 void ReloadCustomArtwork(int force_reload)
 {
+  int last_game_status = game_status;	/* save current game status */
   char *gfx_new_identifier;
   char *snd_new_identifier;
   char *mus_new_identifier;
   boolean force_reload_gfx = (force_reload & (1 << ARTWORK_TYPE_GRAPHICS));
   boolean force_reload_snd = (force_reload & (1 << ARTWORK_TYPE_SOUNDS));
   boolean force_reload_mus = (force_reload & (1 << ARTWORK_TYPE_MUSIC));
-  boolean redraw_screen = FALSE;
+  boolean reload_needed;
 
   force_reload_gfx |= AdjustGraphicsForEMC();
 
   gfx_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_GRAPHICS);
   snd_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_SOUNDS);
   mus_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_MUSIC);
+
+  reload_needed = (gfx_new_identifier != NULL || force_reload_gfx ||
+		   snd_new_identifier != NULL || force_reload_snd ||
+		   mus_new_identifier != NULL || force_reload_mus);
+
+  if (!reload_needed)
+    return;
+
+  print_timestamp_init("ReloadCustomArtwork");
+
+  game_status = GAME_MODE_LOADING;
+
+  FadeOut(REDRAW_ALL);
+
+#if 1
+  ClearRectangle(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
+#else
+  ClearRectangle(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
+#endif
+  print_timestamp_time("ClearRectangle");
+
+#if 0
+  printf("::: fading in ... %d\n", fading.fade_mode);
+#endif
+  FadeIn(REDRAW_ALL);
+#if 0
+  printf("::: done\n");
+#endif
 
   if (gfx_new_identifier != NULL || force_reload_gfx)
   {
@@ -4832,39 +5824,62 @@ void ReloadCustomArtwork(int force_reload)
 	   leveldir_current->graphics_set);
 #endif
 
-    ClearRectangle(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
-
     InitImages();
-
-    redraw_screen = TRUE;
+    print_timestamp_time("InitImages");
   }
 
   if (snd_new_identifier != NULL || force_reload_snd)
   {
-    ClearRectangle(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
-
     InitSound(snd_new_identifier);
-
-    redraw_screen = TRUE;
+    print_timestamp_time("InitSound");
   }
 
   if (mus_new_identifier != NULL || force_reload_mus)
   {
-    ClearRectangle(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
-
     InitMusic(mus_new_identifier);
-
-    redraw_screen = TRUE;
+    print_timestamp_time("InitMusic");
   }
 
-  if (redraw_screen)
-  {
-    RedrawBackground();
+  game_status = last_game_status;	/* restore current game status */
 
-    /* force redraw of (open or closed) door graphics */
-    SetDoorState(DOOR_OPEN_ALL);
-    CloseDoor(DOOR_CLOSE_ALL | DOOR_NO_DELAY);
-  }
+#if 0
+  printf("::: ----------------DELAY 1 ...\n");
+  Delay(3000);
+#endif
+
+#if 0
+  printf("::: FadeOut @ ReloadCustomArtwork ...\n");
+#endif
+  FadeOut(REDRAW_ALL);
+#if 0
+  printf("::: FadeOut @ ReloadCustomArtwork done\n");
+#endif
+
+  RedrawBackground();
+
+  /* force redraw of (open or closed) door graphics */
+  SetDoorState(DOOR_OPEN_ALL);
+  CloseDoor(DOOR_CLOSE_ALL | DOOR_NO_DELAY);
+
+#if 1
+#if 1
+#if 1
+  FadeSetEnterScreen();
+  FadeSkipNextFadeOut();
+  // FadeSetDisabled();
+#else
+  FadeSkipNext();
+#endif
+#else
+  fading = fading_none;
+#endif
+#endif
+
+#if 0
+  redraw_mask = REDRAW_ALL;
+#endif
+
+  print_timestamp_done("ReloadCustomArtwork");
 }
 
 void KeyboardAutoRepeatOffUnlessAutoplay()
@@ -4880,6 +5895,10 @@ void KeyboardAutoRepeatOffUnlessAutoplay()
 
 void OpenAll()
 {
+  print_timestamp_init("OpenAll");
+
+  game_status = GAME_MODE_LOADING;
+
   InitGlobal();			/* initialize some global variables */
 
   if (options.execute_command)
@@ -4911,6 +5930,8 @@ void OpenAll()
 
   InitJoysticks();
 
+  print_timestamp_time("[pre-video]");
+
   InitVideoDisplay();
   InitVideoBuffer(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH, setup.fullscreen);
 
@@ -4919,17 +5940,26 @@ void OpenAll()
   InitElementPropertiesStatic();
   InitElementPropertiesEngine(GAME_VERSION_ACTUAL);
 
+  print_timestamp_time("[post-video]");
+
   InitGfx();
 
-  // debug_print_timestamp(0, "INIT");
+  print_timestamp_time("InitGfx");
+
   InitLevelInfo();
-  // debug_print_timestamp(0, "TIME InitLevelInfo:        ");
+  print_timestamp_time("InitLevelInfo");
+
   InitLevelArtworkInfo();
-  // debug_print_timestamp(0, "TIME InitLevelArtworkInfo: ");
+  print_timestamp_time("InitLevelArtworkInfo");
 
   InitImages();			/* needs to know current level directory */
+  print_timestamp_time("InitImages");
+
   InitSound(NULL);		/* needs to know current level directory */
+  print_timestamp_time("InitSound");
+
   InitMusic(NULL);		/* needs to know current level directory */
+  print_timestamp_time("InitMusic");
 
   InitGfxBackground();
 
@@ -4949,6 +5979,19 @@ void OpenAll()
   }
 
   game_status = GAME_MODE_MAIN;
+
+#if 1
+  FadeSetEnterScreen();
+  if (!(fading.fade_mode & FADE_TYPE_TRANSFORM))
+    FadeSkipNextFadeOut();
+  // FadeSetDisabled();
+#else
+  fading = fading_none;
+#endif
+
+  print_timestamp_time("[post-artwork]");
+
+  print_timestamp_done("OpenAll");
 
   DrawMainMenu();
 

@@ -264,6 +264,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(6),
     &li.continuous_snapping,		TRUE
   },
+  {
+    EL_PLAYER_1,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(12),
+    &li.shifted_relocation,		FALSE
+  },
 
   /* (these values are different for each player) */
   {
@@ -737,6 +742,17 @@ static struct LevelFileConfigInfo chunk_config_NOTE[] =
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
     &xx_envelope.ysize,			MAX_ENVELOPE_YSIZE,
+  },
+
+  {
+    -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
+    &xx_envelope.autowrap,		FALSE
+  },
+  {
+    -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
+    &xx_envelope.centered,		FALSE
   },
 
   {
@@ -1676,6 +1692,11 @@ static int getFileTypeFromBasename(char *basename)
   if (strlen(basename) == 10 && (strncmp(basename, "levels.d", 8) == 0 ||
 				 strncmp(basename, "LEVELS.D", 8) == 0))
     return LEVEL_FILE_TYPE_SP;
+
+  /* check for typical filename of a Diamond Caves II level package file */
+  if (strSuffix(basename, ".dc") ||
+      strSuffix(basename, ".dc2"))
+    return LEVEL_FILE_TYPE_DC;
 
   /* ---------- try to determine file type from filesize ---------- */
 
@@ -3910,7 +3931,7 @@ static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
   {
     level->no_valid_file = TRUE;
 
-    Error(ERR_WARN, "cannot fseek level '%s' -- using empty level", filename);
+    Error(ERR_WARN, "cannot fseek in file '%s' -- using empty level", filename);
 
     return;
   }
@@ -3945,7 +3966,7 @@ static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
       level->name[i] = '-';
 
     /* correct trailing multipart level meta information in level name */
-    for (i = SP_LEVEL_NAME_LEN - 1; i>=0 && level->name[i] == name_last; i--)
+    for (i = SP_LEVEL_NAME_LEN - 1; i >= 0 && level->name[i] == name_last; i--)
       level->name[i] = '-';
 
     /* ---------- check for normal single level ---------- */
@@ -4060,6 +4081,1976 @@ static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
     *level = multipart_level;
 }
 
+
+#define DC_LEVEL_HEADER_SIZE		344
+
+unsigned short getDecodedWord_DC(unsigned short data_encoded, boolean init)
+{
+  static int last_data_encoded;
+  static int offset1;
+  static int offset2;
+  int diff;
+  int diff_hi, diff_lo;
+  int data_hi, data_lo;
+  unsigned short data_decoded;
+
+  if (init)
+  {
+    last_data_encoded = 0;
+    offset1 = -1;
+    offset2 = 0;
+
+    return 0;
+  }
+
+  diff = data_encoded - last_data_encoded;
+  diff_hi = diff & ~0xff;
+  diff_lo = diff &  0xff;
+
+  offset2 += diff_lo;
+
+  data_hi = diff_hi - (offset1 << 8) + (offset2 & 0xff00);
+  data_lo = (diff_lo + (data_hi >> 16)) & 0x00ff;
+  data_hi = data_hi & 0xff00;
+
+  data_decoded = data_hi | data_lo;
+
+  last_data_encoded = data_encoded;
+
+  offset1 = (offset1 + 1) % 31;
+  offset2 = offset2 & 0xff;
+
+  return data_decoded;
+}
+
+int getMappedElement_DC(int element)
+{
+  switch (element)
+  {
+    case 0x0000:
+      element = EL_ROCK;
+      break;
+
+      /* 0x0117 - 0x036e: (?) */
+      /* EL_DIAMOND */
+
+      /* 0x042d - 0x0684: (?) */
+      /* EL_EMERALD */
+
+    case 0x06f1:
+      element = EL_NUT;
+      break;
+
+    case 0x074c:
+      element = EL_BOMB;
+      break;
+
+    case 0x07a4:
+      element = EL_PEARL;
+      break;
+
+    case 0x0823:
+      element = EL_CRYSTAL;
+      break;
+
+    case 0x0e77:	/* quicksand (boulder) */
+      element = EL_QUICKSAND_FAST_FULL;
+      break;
+
+    case 0x0e99:	/* slow quicksand (boulder) */
+      element = EL_QUICKSAND_FULL;
+      break;
+
+    case 0x0ed2:
+      element = EL_EM_EXIT_OPEN;
+      break;
+
+    case 0x0ee3:
+      element = EL_EM_EXIT_CLOSED;
+      break;
+
+    case 0x0eeb:
+      element = EL_EM_STEEL_EXIT_OPEN;
+      break;
+
+    case 0x0efc:
+      element = EL_EM_STEEL_EXIT_CLOSED;
+      break;
+
+    case 0x0f4f:	/* dynamite (lit 1) */
+      element = EL_EM_DYNAMITE_ACTIVE;
+      break;
+
+    case 0x0f57:	/* dynamite (lit 2) */
+      element = EL_EM_DYNAMITE_ACTIVE;
+      break;
+
+    case 0x0f5f:	/* dynamite (lit 3) */
+      element = EL_EM_DYNAMITE_ACTIVE;
+      break;
+
+    case 0x0f67:	/* dynamite (lit 4) */
+      element = EL_EM_DYNAMITE_ACTIVE;
+      break;
+
+    case 0x0f81:
+    case 0x0f82:
+    case 0x0f83:
+    case 0x0f84:
+      element = EL_AMOEBA_WET;
+      break;
+
+    case 0x0f85:
+      element = EL_AMOEBA_DROP;
+      break;
+
+    case 0x0fb9:
+      element = EL_DC_MAGIC_WALL;
+      break;
+
+    case 0x0fd0:
+      element = EL_SPACESHIP_UP;
+      break;
+
+    case 0x0fd9:
+      element = EL_SPACESHIP_DOWN;
+      break;
+
+    case 0x0ff1:
+      element = EL_SPACESHIP_LEFT;
+      break;
+
+    case 0x0ff9:
+      element = EL_SPACESHIP_RIGHT;
+      break;
+
+    case 0x1057:
+      element = EL_BUG_UP;
+      break;
+
+    case 0x1060:
+      element = EL_BUG_DOWN;
+      break;
+
+    case 0x1078:
+      element = EL_BUG_LEFT;
+      break;
+
+    case 0x1080:
+      element = EL_BUG_RIGHT;
+      break;
+
+    case 0x10de:
+      element = EL_MOLE_UP;
+      break;
+
+    case 0x10e7:
+      element = EL_MOLE_DOWN;
+      break;
+
+    case 0x10ff:
+      element = EL_MOLE_LEFT;
+      break;
+
+    case 0x1107:
+      element = EL_MOLE_RIGHT;
+      break;
+
+    case 0x11c0:
+      element = EL_ROBOT;
+      break;
+
+    case 0x13f5:
+      element = EL_YAMYAM;
+      break;
+
+    case 0x1425:
+      element = EL_SWITCHGATE_OPEN;
+      break;
+
+    case 0x1426:
+      element = EL_SWITCHGATE_CLOSED;
+      break;
+
+    case 0x1437:
+      element = EL_DC_SWITCHGATE_SWITCH_UP;
+      break;
+
+    case 0x143a:
+      element = EL_TIMEGATE_CLOSED;
+      break;
+
+    case 0x144c:	/* conveyor belt switch (green) */
+      element = EL_CONVEYOR_BELT_3_SWITCH_MIDDLE;
+      break;
+
+    case 0x144f:	/* conveyor belt switch (red) */
+      element = EL_CONVEYOR_BELT_1_SWITCH_MIDDLE;
+      break;
+
+    case 0x1452:	/* conveyor belt switch (blue) */
+      element = EL_CONVEYOR_BELT_4_SWITCH_MIDDLE;
+      break;
+
+    case 0x145b:
+      element = EL_CONVEYOR_BELT_3_MIDDLE;
+      break;
+
+    case 0x1463:
+      element = EL_CONVEYOR_BELT_3_LEFT;
+      break;
+
+    case 0x146b:
+      element = EL_CONVEYOR_BELT_3_RIGHT;
+      break;
+
+    case 0x1473:
+      element = EL_CONVEYOR_BELT_1_MIDDLE;
+      break;
+
+    case 0x147b:
+      element = EL_CONVEYOR_BELT_1_LEFT;
+      break;
+
+    case 0x1483:
+      element = EL_CONVEYOR_BELT_1_RIGHT;
+      break;
+
+    case 0x148b:
+      element = EL_CONVEYOR_BELT_4_MIDDLE;
+      break;
+
+    case 0x1493:
+      element = EL_CONVEYOR_BELT_4_LEFT;
+      break;
+
+    case 0x149b:
+      element = EL_CONVEYOR_BELT_4_RIGHT;
+      break;
+
+    case 0x14ac:
+      element = EL_EXPANDABLE_WALL_HORIZONTAL;
+      break;
+
+    case 0x14bd:
+      element = EL_EXPANDABLE_WALL_VERTICAL;
+      break;
+
+    case 0x14c6:
+      element = EL_EXPANDABLE_WALL_ANY;
+      break;
+
+    case 0x14ce:	/* growing steel wall (left/right) */
+      element = EL_EXPANDABLE_STEELWALL_HORIZONTAL;
+      break;
+
+    case 0x14df:	/* growing steel wall (up/down) */
+      element = EL_EXPANDABLE_STEELWALL_VERTICAL;
+      break;
+
+    case 0x14e8:	/* growing steel wall (up/down/left/right) */
+      element = EL_EXPANDABLE_STEELWALL_ANY;
+      break;
+
+    case 0x14e9:
+      element = EL_SHIELD_DEADLY;
+      break;
+
+    case 0x1501:
+      element = EL_EXTRA_TIME;
+      break;
+
+    case 0x154f:
+      element = EL_ACID;
+      break;
+
+    case 0x1577:
+      element = EL_EMPTY_SPACE;
+      break;
+
+    case 0x1578:	/* quicksand (empty) */
+      element = EL_QUICKSAND_FAST_EMPTY;
+      break;
+
+    case 0x1579:	/* slow quicksand (empty) */
+      element = EL_QUICKSAND_EMPTY;
+      break;
+
+      /* 0x157c - 0x158b: */
+      /* EL_SAND */
+
+      /* 0x1590 - 0x159f: */
+      /* EL_DC_LANDMINE */
+
+    case 0x15a0:
+      element = EL_EM_DYNAMITE;
+      break;
+
+    case 0x15a1:	/* key (red) */
+      element = EL_EM_KEY_1;
+      break;
+
+    case 0x15a2:	/* key (yellow) */
+      element = EL_EM_KEY_2;
+      break;
+
+    case 0x15a3:	/* key (blue) */
+      element = EL_EM_KEY_4;
+      break;
+
+    case 0x15a4:	/* key (green) */
+      element = EL_EM_KEY_3;
+      break;
+
+    case 0x15a5:	/* key (white) */
+      element = EL_DC_KEY_WHITE;
+      break;
+
+    case 0x15a6:
+      element = EL_WALL_SLIPPERY;
+      break;
+
+    case 0x15a7:
+      element = EL_WALL;
+      break;
+
+    case 0x15a8:	/* wall (not round) */
+      element = EL_WALL;
+      break;
+
+    case 0x15a9:	/* (blue) */
+      element = EL_CHAR_A;
+      break;
+
+    case 0x15aa:	/* (blue) */
+      element = EL_CHAR_B;
+      break;
+
+    case 0x15ab:	/* (blue) */
+      element = EL_CHAR_C;
+      break;
+
+    case 0x15ac:	/* (blue) */
+      element = EL_CHAR_D;
+      break;
+
+    case 0x15ad:	/* (blue) */
+      element = EL_CHAR_E;
+      break;
+
+    case 0x15ae:	/* (blue) */
+      element = EL_CHAR_F;
+      break;
+
+    case 0x15af:	/* (blue) */
+      element = EL_CHAR_G;
+      break;
+
+    case 0x15b0:	/* (blue) */
+      element = EL_CHAR_H;
+      break;
+
+    case 0x15b1:	/* (blue) */
+      element = EL_CHAR_I;
+      break;
+
+    case 0x15b2:	/* (blue) */
+      element = EL_CHAR_J;
+      break;
+
+    case 0x15b3:	/* (blue) */
+      element = EL_CHAR_K;
+      break;
+
+    case 0x15b4:	/* (blue) */
+      element = EL_CHAR_L;
+      break;
+
+    case 0x15b5:	/* (blue) */
+      element = EL_CHAR_M;
+      break;
+
+    case 0x15b6:	/* (blue) */
+      element = EL_CHAR_N;
+      break;
+
+    case 0x15b7:	/* (blue) */
+      element = EL_CHAR_O;
+      break;
+
+    case 0x15b8:	/* (blue) */
+      element = EL_CHAR_P;
+      break;
+
+    case 0x15b9:	/* (blue) */
+      element = EL_CHAR_Q;
+      break;
+
+    case 0x15ba:	/* (blue) */
+      element = EL_CHAR_R;
+      break;
+
+    case 0x15bb:	/* (blue) */
+      element = EL_CHAR_S;
+      break;
+
+    case 0x15bc:	/* (blue) */
+      element = EL_CHAR_T;
+      break;
+
+    case 0x15bd:	/* (blue) */
+      element = EL_CHAR_U;
+      break;
+
+    case 0x15be:	/* (blue) */
+      element = EL_CHAR_V;
+      break;
+
+    case 0x15bf:	/* (blue) */
+      element = EL_CHAR_W;
+      break;
+
+    case 0x15c0:	/* (blue) */
+      element = EL_CHAR_X;
+      break;
+
+    case 0x15c1:	/* (blue) */
+      element = EL_CHAR_Y;
+      break;
+
+    case 0x15c2:	/* (blue) */
+      element = EL_CHAR_Z;
+      break;
+
+    case 0x15c3:	/* (blue) */
+      element = EL_CHAR_AUMLAUT;
+      break;
+
+    case 0x15c4:	/* (blue) */
+      element = EL_CHAR_OUMLAUT;
+      break;
+
+    case 0x15c5:	/* (blue) */
+      element = EL_CHAR_UUMLAUT;
+      break;
+
+    case 0x15c6:	/* (blue) */
+      element = EL_CHAR_0;
+      break;
+
+    case 0x15c7:	/* (blue) */
+      element = EL_CHAR_1;
+      break;
+
+    case 0x15c8:	/* (blue) */
+      element = EL_CHAR_2;
+      break;
+
+    case 0x15c9:	/* (blue) */
+      element = EL_CHAR_3;
+      break;
+
+    case 0x15ca:	/* (blue) */
+      element = EL_CHAR_4;
+      break;
+
+    case 0x15cb:	/* (blue) */
+      element = EL_CHAR_5;
+      break;
+
+    case 0x15cc:	/* (blue) */
+      element = EL_CHAR_6;
+      break;
+
+    case 0x15cd:	/* (blue) */
+      element = EL_CHAR_7;
+      break;
+
+    case 0x15ce:	/* (blue) */
+      element = EL_CHAR_8;
+      break;
+
+    case 0x15cf:	/* (blue) */
+      element = EL_CHAR_9;
+      break;
+
+    case 0x15d0:	/* (blue) */
+      element = EL_CHAR_PERIOD;
+      break;
+
+    case 0x15d1:	/* (blue) */
+      element = EL_CHAR_EXCLAM;
+      break;
+
+    case 0x15d2:	/* (blue) */
+      element = EL_CHAR_COLON;
+      break;
+
+    case 0x15d3:	/* (blue) */
+      element = EL_CHAR_LESS;
+      break;
+
+    case 0x15d4:	/* (blue) */
+      element = EL_CHAR_GREATER;
+      break;
+
+    case 0x15d5:	/* (blue) */
+      element = EL_CHAR_QUESTION;
+      break;
+
+    case 0x15d6:	/* (blue) */
+      element = EL_CHAR_COPYRIGHT;
+      break;
+
+    case 0x15d7:	/* (blue) */
+      element = EL_CHAR_UP;
+      break;
+
+    case 0x15d8:	/* (blue) */
+      element = EL_CHAR_DOWN;
+      break;
+
+    case 0x15d9:	/* (blue) */
+      element = EL_CHAR_BUTTON;
+      break;
+
+    case 0x15da:	/* (blue) */
+      element = EL_CHAR_PLUS;
+      break;
+
+    case 0x15db:	/* (blue) */
+      element = EL_CHAR_MINUS;
+      break;
+
+    case 0x15dc:	/* (blue) */
+      element = EL_CHAR_APOSTROPHE;
+      break;
+
+    case 0x15dd:	/* (blue) */
+      element = EL_CHAR_PARENLEFT;
+      break;
+
+    case 0x15de:	/* (blue) */
+      element = EL_CHAR_PARENRIGHT;
+      break;
+
+    case 0x15df:	/* (green) */
+      element = EL_CHAR_A;
+      break;
+
+    case 0x15e0:	/* (green) */
+      element = EL_CHAR_B;
+      break;
+
+    case 0x15e1:	/* (green) */
+      element = EL_CHAR_C;
+      break;
+
+    case 0x15e2:	/* (green) */
+      element = EL_CHAR_D;
+      break;
+
+    case 0x15e3:	/* (green) */
+      element = EL_CHAR_E;
+      break;
+
+    case 0x15e4:	/* (green) */
+      element = EL_CHAR_F;
+      break;
+
+    case 0x15e5:	/* (green) */
+      element = EL_CHAR_G;
+      break;
+
+    case 0x15e6:	/* (green) */
+      element = EL_CHAR_H;
+      break;
+
+    case 0x15e7:	/* (green) */
+      element = EL_CHAR_I;
+      break;
+
+    case 0x15e8:	/* (green) */
+      element = EL_CHAR_J;
+      break;
+
+    case 0x15e9:	/* (green) */
+      element = EL_CHAR_K;
+      break;
+
+    case 0x15ea:	/* (green) */
+      element = EL_CHAR_L;
+      break;
+
+    case 0x15eb:	/* (green) */
+      element = EL_CHAR_M;
+      break;
+
+    case 0x15ec:	/* (green) */
+      element = EL_CHAR_N;
+      break;
+
+    case 0x15ed:	/* (green) */
+      element = EL_CHAR_O;
+      break;
+
+    case 0x15ee:	/* (green) */
+      element = EL_CHAR_P;
+      break;
+
+    case 0x15ef:	/* (green) */
+      element = EL_CHAR_Q;
+      break;
+
+    case 0x15f0:	/* (green) */
+      element = EL_CHAR_R;
+      break;
+
+    case 0x15f1:	/* (green) */
+      element = EL_CHAR_S;
+      break;
+
+    case 0x15f2:	/* (green) */
+      element = EL_CHAR_T;
+      break;
+
+    case 0x15f3:	/* (green) */
+      element = EL_CHAR_U;
+      break;
+
+    case 0x15f4:	/* (green) */
+      element = EL_CHAR_V;
+      break;
+
+    case 0x15f5:	/* (green) */
+      element = EL_CHAR_W;
+      break;
+
+    case 0x15f6:	/* (green) */
+      element = EL_CHAR_X;
+      break;
+
+    case 0x15f7:	/* (green) */
+      element = EL_CHAR_Y;
+      break;
+
+    case 0x15f8:	/* (green) */
+      element = EL_CHAR_Z;
+      break;
+
+    case 0x15f9:	/* (green) */
+      element = EL_CHAR_AUMLAUT;
+      break;
+
+    case 0x15fa:	/* (green) */
+      element = EL_CHAR_OUMLAUT;
+      break;
+
+    case 0x15fb:	/* (green) */
+      element = EL_CHAR_UUMLAUT;
+      break;
+
+    case 0x15fc:	/* (green) */
+      element = EL_CHAR_0;
+      break;
+
+    case 0x15fd:	/* (green) */
+      element = EL_CHAR_1;
+      break;
+
+    case 0x15fe:	/* (green) */
+      element = EL_CHAR_2;
+      break;
+
+    case 0x15ff:	/* (green) */
+      element = EL_CHAR_3;
+      break;
+
+    case 0x1600:	/* (green) */
+      element = EL_CHAR_4;
+      break;
+
+    case 0x1601:	/* (green) */
+      element = EL_CHAR_5;
+      break;
+
+    case 0x1602:	/* (green) */
+      element = EL_CHAR_6;
+      break;
+
+    case 0x1603:	/* (green) */
+      element = EL_CHAR_7;
+      break;
+
+    case 0x1604:	/* (green) */
+      element = EL_CHAR_8;
+      break;
+
+    case 0x1605:	/* (green) */
+      element = EL_CHAR_9;
+      break;
+
+    case 0x1606:	/* (green) */
+      element = EL_CHAR_PERIOD;
+      break;
+
+    case 0x1607:	/* (green) */
+      element = EL_CHAR_EXCLAM;
+      break;
+
+    case 0x1608:	/* (green) */
+      element = EL_CHAR_COLON;
+      break;
+
+    case 0x1609:	/* (green) */
+      element = EL_CHAR_LESS;
+      break;
+
+    case 0x160a:	/* (green) */
+      element = EL_CHAR_GREATER;
+      break;
+
+    case 0x160b:	/* (green) */
+      element = EL_CHAR_QUESTION;
+      break;
+
+    case 0x160c:	/* (green) */
+      element = EL_CHAR_COPYRIGHT;
+      break;
+
+    case 0x160d:	/* (green) */
+      element = EL_CHAR_UP;
+      break;
+
+    case 0x160e:	/* (green) */
+      element = EL_CHAR_DOWN;
+      break;
+
+    case 0x160f:	/* (green) */
+      element = EL_CHAR_BUTTON;
+      break;
+
+    case 0x1610:	/* (green) */
+      element = EL_CHAR_PLUS;
+      break;
+
+    case 0x1611:	/* (green) */
+      element = EL_CHAR_MINUS;
+      break;
+
+    case 0x1612:	/* (green) */
+      element = EL_CHAR_APOSTROPHE;
+      break;
+
+    case 0x1613:	/* (green) */
+      element = EL_CHAR_PARENLEFT;
+      break;
+
+    case 0x1614:	/* (green) */
+      element = EL_CHAR_PARENRIGHT;
+      break;
+
+    case 0x1615:	/* (blue steel) */
+      element = EL_STEEL_CHAR_A;
+      break;
+
+    case 0x1616:	/* (blue steel) */
+      element = EL_STEEL_CHAR_B;
+      break;
+
+    case 0x1617:	/* (blue steel) */
+      element = EL_STEEL_CHAR_C;
+      break;
+
+    case 0x1618:	/* (blue steel) */
+      element = EL_STEEL_CHAR_D;
+      break;
+
+    case 0x1619:	/* (blue steel) */
+      element = EL_STEEL_CHAR_E;
+      break;
+
+    case 0x161a:	/* (blue steel) */
+      element = EL_STEEL_CHAR_F;
+      break;
+
+    case 0x161b:	/* (blue steel) */
+      element = EL_STEEL_CHAR_G;
+      break;
+
+    case 0x161c:	/* (blue steel) */
+      element = EL_STEEL_CHAR_H;
+      break;
+
+    case 0x161d:	/* (blue steel) */
+      element = EL_STEEL_CHAR_I;
+      break;
+
+    case 0x161e:	/* (blue steel) */
+      element = EL_STEEL_CHAR_J;
+      break;
+
+    case 0x161f:	/* (blue steel) */
+      element = EL_STEEL_CHAR_K;
+      break;
+
+    case 0x1620:	/* (blue steel) */
+      element = EL_STEEL_CHAR_L;
+      break;
+
+    case 0x1621:	/* (blue steel) */
+      element = EL_STEEL_CHAR_M;
+      break;
+
+    case 0x1622:	/* (blue steel) */
+      element = EL_STEEL_CHAR_N;
+      break;
+
+    case 0x1623:	/* (blue steel) */
+      element = EL_STEEL_CHAR_O;
+      break;
+
+    case 0x1624:	/* (blue steel) */
+      element = EL_STEEL_CHAR_P;
+      break;
+
+    case 0x1625:	/* (blue steel) */
+      element = EL_STEEL_CHAR_Q;
+      break;
+
+    case 0x1626:	/* (blue steel) */
+      element = EL_STEEL_CHAR_R;
+      break;
+
+    case 0x1627:	/* (blue steel) */
+      element = EL_STEEL_CHAR_S;
+      break;
+
+    case 0x1628:	/* (blue steel) */
+      element = EL_STEEL_CHAR_T;
+      break;
+
+    case 0x1629:	/* (blue steel) */
+      element = EL_STEEL_CHAR_U;
+      break;
+
+    case 0x162a:	/* (blue steel) */
+      element = EL_STEEL_CHAR_V;
+      break;
+
+    case 0x162b:	/* (blue steel) */
+      element = EL_STEEL_CHAR_W;
+      break;
+
+    case 0x162c:	/* (blue steel) */
+      element = EL_STEEL_CHAR_X;
+      break;
+
+    case 0x162d:	/* (blue steel) */
+      element = EL_STEEL_CHAR_Y;
+      break;
+
+    case 0x162e:	/* (blue steel) */
+      element = EL_STEEL_CHAR_Z;
+      break;
+
+    case 0x162f:	/* (blue steel) */
+      element = EL_STEEL_CHAR_AUMLAUT;
+      break;
+
+    case 0x1630:	/* (blue steel) */
+      element = EL_STEEL_CHAR_OUMLAUT;
+      break;
+
+    case 0x1631:	/* (blue steel) */
+      element = EL_STEEL_CHAR_UUMLAUT;
+      break;
+
+    case 0x1632:	/* (blue steel) */
+      element = EL_STEEL_CHAR_0;
+      break;
+
+    case 0x1633:	/* (blue steel) */
+      element = EL_STEEL_CHAR_1;
+      break;
+
+    case 0x1634:	/* (blue steel) */
+      element = EL_STEEL_CHAR_2;
+      break;
+
+    case 0x1635:	/* (blue steel) */
+      element = EL_STEEL_CHAR_3;
+      break;
+
+    case 0x1636:	/* (blue steel) */
+      element = EL_STEEL_CHAR_4;
+      break;
+
+    case 0x1637:	/* (blue steel) */
+      element = EL_STEEL_CHAR_5;
+      break;
+
+    case 0x1638:	/* (blue steel) */
+      element = EL_STEEL_CHAR_6;
+      break;
+
+    case 0x1639:	/* (blue steel) */
+      element = EL_STEEL_CHAR_7;
+      break;
+
+    case 0x163a:	/* (blue steel) */
+      element = EL_STEEL_CHAR_8;
+      break;
+
+    case 0x163b:	/* (blue steel) */
+      element = EL_STEEL_CHAR_9;
+      break;
+
+    case 0x163c:	/* (blue steel) */
+      element = EL_STEEL_CHAR_PERIOD;
+      break;
+
+    case 0x163d:	/* (blue steel) */
+      element = EL_STEEL_CHAR_EXCLAM;
+      break;
+
+    case 0x163e:	/* (blue steel) */
+      element = EL_STEEL_CHAR_COLON;
+      break;
+
+    case 0x163f:	/* (blue steel) */
+      element = EL_STEEL_CHAR_LESS;
+      break;
+
+    case 0x1640:	/* (blue steel) */
+      element = EL_STEEL_CHAR_GREATER;
+      break;
+
+    case 0x1641:	/* (blue steel) */
+      element = EL_STEEL_CHAR_QUESTION;
+      break;
+
+    case 0x1642:	/* (blue steel) */
+      element = EL_STEEL_CHAR_COPYRIGHT;
+      break;
+
+    case 0x1643:	/* (blue steel) */
+      element = EL_STEEL_CHAR_UP;
+      break;
+
+    case 0x1644:	/* (blue steel) */
+      element = EL_STEEL_CHAR_DOWN;
+      break;
+
+    case 0x1645:	/* (blue steel) */
+      element = EL_STEEL_CHAR_BUTTON;
+      break;
+
+    case 0x1646:	/* (blue steel) */
+      element = EL_STEEL_CHAR_PLUS;
+      break;
+
+    case 0x1647:	/* (blue steel) */
+      element = EL_STEEL_CHAR_MINUS;
+      break;
+
+    case 0x1648:	/* (blue steel) */
+      element = EL_STEEL_CHAR_APOSTROPHE;
+      break;
+
+    case 0x1649:	/* (blue steel) */
+      element = EL_STEEL_CHAR_PARENLEFT;
+      break;
+
+    case 0x164a:	/* (blue steel) */
+      element = EL_STEEL_CHAR_PARENRIGHT;
+      break;
+
+    case 0x164b:	/* (green steel) */
+      element = EL_STEEL_CHAR_A;
+      break;
+
+    case 0x164c:	/* (green steel) */
+      element = EL_STEEL_CHAR_B;
+      break;
+
+    case 0x164d:	/* (green steel) */
+      element = EL_STEEL_CHAR_C;
+      break;
+
+    case 0x164e:	/* (green steel) */
+      element = EL_STEEL_CHAR_D;
+      break;
+
+    case 0x164f:	/* (green steel) */
+      element = EL_STEEL_CHAR_E;
+      break;
+
+    case 0x1650:	/* (green steel) */
+      element = EL_STEEL_CHAR_F;
+      break;
+
+    case 0x1651:	/* (green steel) */
+      element = EL_STEEL_CHAR_G;
+      break;
+
+    case 0x1652:	/* (green steel) */
+      element = EL_STEEL_CHAR_H;
+      break;
+
+    case 0x1653:	/* (green steel) */
+      element = EL_STEEL_CHAR_I;
+      break;
+
+    case 0x1654:	/* (green steel) */
+      element = EL_STEEL_CHAR_J;
+      break;
+
+    case 0x1655:	/* (green steel) */
+      element = EL_STEEL_CHAR_K;
+      break;
+
+    case 0x1656:	/* (green steel) */
+      element = EL_STEEL_CHAR_L;
+      break;
+
+    case 0x1657:	/* (green steel) */
+      element = EL_STEEL_CHAR_M;
+      break;
+
+    case 0x1658:	/* (green steel) */
+      element = EL_STEEL_CHAR_N;
+      break;
+
+    case 0x1659:	/* (green steel) */
+      element = EL_STEEL_CHAR_O;
+      break;
+
+    case 0x165a:	/* (green steel) */
+      element = EL_STEEL_CHAR_P;
+      break;
+
+    case 0x165b:	/* (green steel) */
+      element = EL_STEEL_CHAR_Q;
+      break;
+
+    case 0x165c:	/* (green steel) */
+      element = EL_STEEL_CHAR_R;
+      break;
+
+    case 0x165d:	/* (green steel) */
+      element = EL_STEEL_CHAR_S;
+      break;
+
+    case 0x165e:	/* (green steel) */
+      element = EL_STEEL_CHAR_T;
+      break;
+
+    case 0x165f:	/* (green steel) */
+      element = EL_STEEL_CHAR_U;
+      break;
+
+    case 0x1660:	/* (green steel) */
+      element = EL_STEEL_CHAR_V;
+      break;
+
+    case 0x1661:	/* (green steel) */
+      element = EL_STEEL_CHAR_W;
+      break;
+
+    case 0x1662:	/* (green steel) */
+      element = EL_STEEL_CHAR_X;
+      break;
+
+    case 0x1663:	/* (green steel) */
+      element = EL_STEEL_CHAR_Y;
+      break;
+
+    case 0x1664:	/* (green steel) */
+      element = EL_STEEL_CHAR_Z;
+      break;
+
+    case 0x1665:	/* (green steel) */
+      element = EL_STEEL_CHAR_AUMLAUT;
+      break;
+
+    case 0x1666:	/* (green steel) */
+      element = EL_STEEL_CHAR_OUMLAUT;
+      break;
+
+    case 0x1667:	/* (green steel) */
+      element = EL_STEEL_CHAR_UUMLAUT;
+      break;
+
+    case 0x1668:	/* (green steel) */
+      element = EL_STEEL_CHAR_0;
+      break;
+
+    case 0x1669:	/* (green steel) */
+      element = EL_STEEL_CHAR_1;
+      break;
+
+    case 0x166a:	/* (green steel) */
+      element = EL_STEEL_CHAR_2;
+      break;
+
+    case 0x166b:	/* (green steel) */
+      element = EL_STEEL_CHAR_3;
+      break;
+
+    case 0x166c:	/* (green steel) */
+      element = EL_STEEL_CHAR_4;
+      break;
+
+    case 0x166d:	/* (green steel) */
+      element = EL_STEEL_CHAR_5;
+      break;
+
+    case 0x166e:	/* (green steel) */
+      element = EL_STEEL_CHAR_6;
+      break;
+
+    case 0x166f:	/* (green steel) */
+      element = EL_STEEL_CHAR_7;
+      break;
+
+    case 0x1670:	/* (green steel) */
+      element = EL_STEEL_CHAR_8;
+      break;
+
+    case 0x1671:	/* (green steel) */
+      element = EL_STEEL_CHAR_9;
+      break;
+
+    case 0x1672:	/* (green steel) */
+      element = EL_STEEL_CHAR_PERIOD;
+      break;
+
+    case 0x1673:	/* (green steel) */
+      element = EL_STEEL_CHAR_EXCLAM;
+      break;
+
+    case 0x1674:	/* (green steel) */
+      element = EL_STEEL_CHAR_COLON;
+      break;
+
+    case 0x1675:	/* (green steel) */
+      element = EL_STEEL_CHAR_LESS;
+      break;
+
+    case 0x1676:	/* (green steel) */
+      element = EL_STEEL_CHAR_GREATER;
+      break;
+
+    case 0x1677:	/* (green steel) */
+      element = EL_STEEL_CHAR_QUESTION;
+      break;
+
+    case 0x1678:	/* (green steel) */
+      element = EL_STEEL_CHAR_COPYRIGHT;
+      break;
+
+    case 0x1679:	/* (green steel) */
+      element = EL_STEEL_CHAR_UP;
+      break;
+
+    case 0x167a:	/* (green steel) */
+      element = EL_STEEL_CHAR_DOWN;
+      break;
+
+    case 0x167b:	/* (green steel) */
+      element = EL_STEEL_CHAR_BUTTON;
+      break;
+
+    case 0x167c:	/* (green steel) */
+      element = EL_STEEL_CHAR_PLUS;
+      break;
+
+    case 0x167d:	/* (green steel) */
+      element = EL_STEEL_CHAR_MINUS;
+      break;
+
+    case 0x167e:	/* (green steel) */
+      element = EL_STEEL_CHAR_APOSTROPHE;
+      break;
+
+    case 0x167f:	/* (green steel) */
+      element = EL_STEEL_CHAR_PARENLEFT;
+      break;
+
+    case 0x1680:	/* (green steel) */
+      element = EL_STEEL_CHAR_PARENRIGHT;
+      break;
+
+    case 0x1681:	/* gate (red) */
+      element = EL_EM_GATE_1;
+      break;
+
+    case 0x1682:	/* secret gate (red) */
+      element = EL_GATE_1_GRAY;
+      break;
+
+    case 0x1683:	/* gate (yellow) */
+      element = EL_EM_GATE_2;
+      break;
+
+    case 0x1684:	/* secret gate (yellow) */
+      element = EL_GATE_2_GRAY;
+      break;
+
+    case 0x1685:	/* gate (blue) */
+      element = EL_EM_GATE_4;
+      break;
+
+    case 0x1686:	/* secret gate (blue) */
+      element = EL_GATE_4_GRAY;
+      break;
+
+    case 0x1687:	/* gate (green) */
+      element = EL_EM_GATE_3;
+      break;
+
+    case 0x1688:	/* secret gate (green) */
+      element = EL_GATE_3_GRAY;
+      break;
+
+    case 0x1689:	/* gate (white) */
+      element = EL_DC_GATE_WHITE;
+      break;
+
+    case 0x168a:	/* secret gate (white) */
+      element = EL_DC_GATE_WHITE_GRAY;
+      break;
+
+    case 0x168b:	/* secret gate (no key) */
+      element = EL_DC_GATE_FAKE_GRAY;
+      break;
+
+    case 0x168c:
+      element = EL_ROBOT_WHEEL;
+      break;
+
+    case 0x168d:
+      element = EL_DC_TIMEGATE_SWITCH;
+      break;
+
+    case 0x168e:
+      element = EL_ACID_POOL_BOTTOM;
+      break;
+
+    case 0x168f:
+      element = EL_ACID_POOL_TOPLEFT;
+      break;
+
+    case 0x1690:
+      element = EL_ACID_POOL_TOPRIGHT;
+      break;
+
+    case 0x1691:
+      element = EL_ACID_POOL_BOTTOMLEFT;
+      break;
+
+    case 0x1692:
+      element = EL_ACID_POOL_BOTTOMRIGHT;
+      break;
+
+    case 0x1693:
+      element = EL_STEELWALL;
+      break;
+
+    case 0x1694:
+      element = EL_STEELWALL_SLIPPERY;
+      break;
+
+    case 0x1695:	/* steel wall (not round) */
+      element = EL_STEELWALL;
+      break;
+
+    case 0x1696:	/* steel wall (left) */
+      element = EL_DC_STEELWALL_1_LEFT;
+      break;
+
+    case 0x1697:	/* steel wall (bottom) */
+      element = EL_DC_STEELWALL_1_BOTTOM;
+      break;
+
+    case 0x1698:	/* steel wall (right) */
+      element = EL_DC_STEELWALL_1_RIGHT;
+      break;
+
+    case 0x1699:	/* steel wall (top) */
+      element = EL_DC_STEELWALL_1_TOP;
+      break;
+
+    case 0x169a:	/* steel wall (left/bottom) */
+      element = EL_DC_STEELWALL_1_BOTTOMLEFT;
+      break;
+
+    case 0x169b:	/* steel wall (right/bottom) */
+      element = EL_DC_STEELWALL_1_BOTTOMRIGHT;
+      break;
+
+    case 0x169c:	/* steel wall (right/top) */
+      element = EL_DC_STEELWALL_1_TOPRIGHT;
+      break;
+
+    case 0x169d:	/* steel wall (left/top) */
+      element = EL_DC_STEELWALL_1_TOPLEFT;
+      break;
+
+    case 0x169e:	/* steel wall (right/bottom small) */
+      element = EL_DC_STEELWALL_1_BOTTOMRIGHT_2;
+      break;
+
+    case 0x169f:	/* steel wall (left/bottom small) */
+      element = EL_DC_STEELWALL_1_BOTTOMLEFT_2;
+      break;
+
+    case 0x16a0:	/* steel wall (right/top small) */
+      element = EL_DC_STEELWALL_1_TOPRIGHT_2;
+      break;
+
+    case 0x16a1:	/* steel wall (left/top small) */
+      element = EL_DC_STEELWALL_1_TOPLEFT_2;
+      break;
+
+    case 0x16a2:	/* steel wall (left/right) */
+      element = EL_DC_STEELWALL_1_VERTICAL;
+      break;
+
+    case 0x16a3:	/* steel wall (top/bottom) */
+      element = EL_DC_STEELWALL_1_HORIZONTAL;
+      break;
+
+    case 0x16a4:	/* steel wall 2 (left end) */
+      element = EL_DC_STEELWALL_2_LEFT;
+      break;
+
+    case 0x16a5:	/* steel wall 2 (right end) */
+      element = EL_DC_STEELWALL_2_RIGHT;
+      break;
+
+    case 0x16a6:	/* steel wall 2 (top end) */
+      element = EL_DC_STEELWALL_2_TOP;
+      break;
+
+    case 0x16a7:	/* steel wall 2 (bottom end) */
+      element = EL_DC_STEELWALL_2_BOTTOM;
+      break;
+
+    case 0x16a8:	/* steel wall 2 (left/right) */
+      element = EL_DC_STEELWALL_2_HORIZONTAL;
+      break;
+
+    case 0x16a9:	/* steel wall 2 (up/down) */
+      element = EL_DC_STEELWALL_2_VERTICAL;
+      break;
+
+    case 0x16aa:	/* steel wall 2 (mid) */
+      element = EL_DC_STEELWALL_2_MIDDLE;
+      break;
+
+    case 0x16ab:
+      element = EL_SIGN_EXCLAMATION;
+      break;
+
+    case 0x16ac:
+      element = EL_SIGN_RADIOACTIVITY;
+      break;
+
+    case 0x16ad:
+      element = EL_SIGN_STOP;
+      break;
+
+    case 0x16ae:
+      element = EL_SIGN_WHEELCHAIR;
+      break;
+
+    case 0x16af:
+      element = EL_SIGN_PARKING;
+      break;
+
+    case 0x16b0:
+      element = EL_SIGN_NO_ENTRY;
+      break;
+
+    case 0x16b1:
+      element = EL_SIGN_HEART;
+      break;
+
+    case 0x16b2:
+      element = EL_SIGN_GIVE_WAY;
+      break;
+
+    case 0x16b3:
+      element = EL_SIGN_ENTRY_FORBIDDEN;
+      break;
+
+    case 0x16b4:
+      element = EL_SIGN_EMERGENCY_EXIT;
+      break;
+
+    case 0x16b5:
+      element = EL_SIGN_YIN_YANG;
+      break;
+
+    case 0x16b6:
+      element = EL_WALL_EMERALD;
+      break;
+
+    case 0x16b7:
+      element = EL_WALL_DIAMOND;
+      break;
+
+    case 0x16b8:
+      element = EL_WALL_PEARL;
+      break;
+
+    case 0x16b9:
+      element = EL_WALL_CRYSTAL;
+      break;
+
+    case 0x16ba:
+      element = EL_INVISIBLE_WALL;
+      break;
+
+    case 0x16bb:
+      element = EL_INVISIBLE_STEELWALL;
+      break;
+
+      /* 0x16bc - 0x16cb: */
+      /* EL_INVISIBLE_SAND */
+
+    case 0x16cc:
+      element = EL_LIGHT_SWITCH;
+      break;
+
+    case 0x16cd:
+      element = EL_ENVELOPE_1;
+      break;
+
+    default:
+      if (element >= 0x0117 && element <= 0x036e)	/* (?) */
+	element = EL_DIAMOND;
+      else if (element >= 0x042d && element <= 0x0684)	/* (?) */
+	element = EL_EMERALD;
+      else if (element >= 0x157c && element <= 0x158b)
+	element = EL_SAND;
+      else if (element >= 0x1590 && element <= 0x159f)
+	element = EL_DC_LANDMINE;
+      else if (element >= 0x16bc && element <= 0x16cb)
+	element = EL_INVISIBLE_SAND;
+      else
+      {
+	Error(ERR_WARN, "unknown Diamond Caves element 0x%04x", element);
+	element = EL_UNKNOWN;
+      }
+      break;
+  }
+
+  return getMappedElement(element);
+}
+
+#if 1
+
+static void LoadLevelFromFileStream_DC(FILE *file, struct LevelInfo *level,
+				       int nr)
+{
+  byte header[DC_LEVEL_HEADER_SIZE];
+  int envelope_size;
+  int envelope_header_pos = 62;
+  int envelope_content_pos = 94;
+  int level_name_pos = 251;
+  int level_author_pos = 292;
+  int envelope_header_len;
+  int envelope_content_len;
+  int level_name_len;
+  int level_author_len;
+  int fieldx, fieldy;
+  int num_yamyam_contents;
+  int i, x, y;
+
+  getDecodedWord_DC(0, TRUE);		/* initialize DC2 decoding engine */
+
+  for (i = 0; i < DC_LEVEL_HEADER_SIZE / 2; i++)
+  {
+    unsigned short header_word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+
+    header[i * 2 + 0] = header_word >> 8;
+    header[i * 2 + 1] = header_word & 0xff;
+  }
+
+  /* read some values from level header to check level decoding integrity */
+  fieldx = header[6] | (header[7] << 8);
+  fieldy = header[8] | (header[9] << 8);
+  num_yamyam_contents = header[60] | (header[61] << 8);
+
+  /* do some simple sanity checks to ensure that level was correctly decoded */
+  if (fieldx < 1 || fieldx > 256 ||
+      fieldy < 1 || fieldy > 256 ||
+      num_yamyam_contents < 1 || num_yamyam_contents > 8)
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot decode level from stream -- using empty level");
+
+    return;
+  }
+
+  /* maximum envelope header size is 31 bytes */
+  envelope_header_len	= header[envelope_header_pos];
+  /* maximum envelope content size is 110 (156?) bytes */
+  envelope_content_len	= header[envelope_content_pos];
+
+  /* maximum level title size is 40 bytes */
+  level_name_len	= MIN(header[level_name_pos],   MAX_LEVEL_NAME_LEN);
+  /* maximum level author size is 30 (51?) bytes */
+  level_author_len	= MIN(header[level_author_pos], MAX_LEVEL_AUTHOR_LEN);
+
+  envelope_size = 0;
+
+  for (i = 0; i < envelope_header_len; i++)
+    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+      level->envelope[0].text[envelope_size++] =
+	header[envelope_header_pos + 1 + i];
+
+  if (envelope_header_len > 0 && envelope_content_len > 0)
+  {
+    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+      level->envelope[0].text[envelope_size++] = '\n';
+    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+      level->envelope[0].text[envelope_size++] = '\n';
+  }
+
+  for (i = 0; i < envelope_content_len; i++)
+    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+      level->envelope[0].text[envelope_size++] =
+	header[envelope_content_pos + 1 + i];
+
+  level->envelope[0].text[envelope_size] = '\0';
+
+  level->envelope[0].xsize = MAX_ENVELOPE_XSIZE;
+  level->envelope[0].ysize = 10;
+  level->envelope[0].autowrap = TRUE;
+  level->envelope[0].centered = TRUE;
+
+  for (i = 0; i < level_name_len; i++)
+    level->name[i] = header[level_name_pos + 1 + i];
+  level->name[level_name_len] = '\0';
+
+  for (i = 0; i < level_author_len; i++)
+    level->author[i] = header[level_author_pos + 1 + i];
+  level->author[level_author_len] = '\0';
+
+  num_yamyam_contents = header[60] | (header[61] << 8);
+  level->num_yamyam_contents =
+    MIN(MAX(MIN_ELEMENT_CONTENTS, num_yamyam_contents), MAX_ELEMENT_CONTENTS);
+
+  for (i = 0; i < num_yamyam_contents; i++)
+  {
+    for (y = 0; y < 3; y++) for (x = 0; x < 3; x++)
+    {
+      unsigned short word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+#if 1
+      int element_dc = ((word & 0xff) << 8) | ((word >> 8) & 0xff);
+#else
+      int element_dc = word;
+#endif
+
+      if (i < MAX_ELEMENT_CONTENTS)
+	level->yamyam_content[i].e[x][y] = getMappedElement_DC(element_dc);
+    }
+  }
+
+  fieldx = header[6] | (header[7] << 8);
+  fieldy = header[8] | (header[9] << 8);
+  level->fieldx = MIN(MAX(MIN_LEV_FIELDX, fieldx), MAX_LEV_FIELDX);
+  level->fieldy = MIN(MAX(MIN_LEV_FIELDY, fieldy), MAX_LEV_FIELDY);
+
+  for (y = 0; y < fieldy; y++) for (x = 0; x < fieldx; x++)
+  {
+    unsigned short word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+#if 1
+    int element_dc = ((word & 0xff) << 8) | ((word >> 8) & 0xff);
+#else
+    int element_dc = word;
+#endif
+
+    if (x < MAX_LEV_FIELDX && y < MAX_LEV_FIELDY)
+      level->field[x][y] = getMappedElement_DC(element_dc);
+  }
+
+  x = MIN(MAX(0, (header[10] | (header[11] << 8)) - 1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, (header[12] | (header[13] << 8)) - 1), MAX_LEV_FIELDY - 1);
+  level->field[x][y] = EL_PLAYER_1;
+
+  x = MIN(MAX(0, (header[14] | (header[15] << 8)) - 1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, (header[16] | (header[17] << 8)) - 1), MAX_LEV_FIELDY - 1);
+  level->field[x][y] = EL_PLAYER_2;
+
+  level->gems_needed		= header[18] | (header[19] << 8);
+
+  level->score[SC_EMERALD]	= header[20] | (header[21] << 8);
+  level->score[SC_DIAMOND]	= header[22] | (header[23] << 8);
+  level->score[SC_PEARL]	= header[24] | (header[25] << 8);
+  level->score[SC_CRYSTAL]	= header[26] | (header[27] << 8);
+  level->score[SC_NUT]		= header[28] | (header[29] << 8);
+  level->score[SC_ROBOT]	= header[30] | (header[31] << 8);
+  level->score[SC_SPACESHIP]	= header[32] | (header[33] << 8);
+  level->score[SC_BUG]		= header[34] | (header[35] << 8);
+  level->score[SC_YAMYAM]	= header[36] | (header[37] << 8);
+  level->score[SC_DYNAMITE]	= header[38] | (header[39] << 8);
+  level->score[SC_KEY]		= header[40] | (header[41] << 8);
+  level->score[SC_TIME_BONUS]	= header[42] | (header[43] << 8);
+
+  level->time			= header[44] | (header[45] << 8);
+
+  level->amoeba_speed		= header[46] | (header[47] << 8);
+  level->time_light		= header[48] | (header[49] << 8);
+  level->time_timegate		= header[50] | (header[51] << 8);
+  level->time_wheel		= header[52] | (header[53] << 8);
+  level->time_magic_wall	= header[54] | (header[55] << 8);
+  level->extra_time		= header[56] | (header[57] << 8);
+  level->shield_normal_time	= header[58] | (header[59] << 8);
+
+  /* Diamond Caves has the same (strange) behaviour as Emerald Mine that gems
+     can slip down from flat walls, like normal walls and steel walls */
+  level->em_slippery_gems = TRUE;
+
+#if 0
+  /* Diamond Caves II levels are always surrounded by indestructible wall, but
+     not necessarily in a rectangular way -- fill with invisible steel wall */
+
+  /* !!! not always true !!! keep level and set BorderElement instead !!! */
+
+  for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
+  {
+#if 1
+    if ((x == 0 || x == level->fieldx - 1 ||
+	 y == 0 || y == level->fieldy - 1) &&
+	level->field[x][y] == EL_EMPTY)
+      level->field[x][y] = EL_INVISIBLE_STEELWALL;
+#else
+    if ((x == 0 || x == level->fieldx - 1 ||
+	 y == 0 || y == level->fieldy - 1) &&
+	level->field[x][y] == EL_EMPTY)
+      FloodFillLevel(x, y, EL_INVISIBLE_STEELWALL,
+		     level->field, level->fieldx, level->fieldy);
+#endif
+  }
+#endif
+}
+
+static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info)
+{
+  char *filename = level_file_info->filename;
+  FILE *file;
+  int num_magic_bytes = 8;
+  char magic_bytes[num_magic_bytes + 1];
+  int num_levels_to_skip = level_file_info->nr - leveldir_current->first_level;
+
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+
+    return;
+  }
+
+  // fseek(file, 0x0000, SEEK_SET);
+
+  if (level_file_info->packed)
+  {
+    /* read "magic bytes" from start of file */
+    fgets(magic_bytes, num_magic_bytes + 1, file);
+
+    /* check "magic bytes" for correct file format */
+    if (!strPrefix(magic_bytes, "DC2"))
+    {
+      level->no_valid_file = TRUE;
+
+      Error(ERR_WARN, "unknown DC level file '%s' -- using empty level",
+	    filename);
+
+      return;
+    }
+
+    if (strPrefix(magic_bytes, "DC2Win95") ||
+	strPrefix(magic_bytes, "DC2Win98"))
+    {
+      int position_first_level = 0x00fa;
+      int extra_bytes = 4;
+      int skip_bytes;
+
+      /* advance file stream to first level inside the level package */
+      skip_bytes = position_first_level - num_magic_bytes - extra_bytes;
+
+      /* each block of level data is followed by block of non-level data */
+      num_levels_to_skip *= 2;
+
+      /* at least skip header bytes, therefore use ">= 0" instead of "> 0" */
+      while (num_levels_to_skip >= 0)
+      {
+	/* advance file stream to next level inside the level package */
+	if (fseek(file, skip_bytes, SEEK_CUR) != 0)
+	{
+	  level->no_valid_file = TRUE;
+
+	  Error(ERR_WARN, "cannot fseek in file '%s' -- using empty level",
+		filename);
+
+	  return;
+	}
+
+	/* skip apparently unused extra bytes following each level */
+	ReadUnusedBytesFromFile(file, extra_bytes);
+
+	/* read size of next level in level package */
+	skip_bytes = getFile32BitLE(file);
+
+	num_levels_to_skip--;
+      }
+    }
+    else
+    {
+      level->no_valid_file = TRUE;
+
+      Error(ERR_WARN, "unknown DC2 level file '%s' -- using empty level",
+	    filename);
+
+      return;
+    }
+  }
+
+  LoadLevelFromFileStream_DC(file, level, level_file_info->nr);
+
+  fclose(file);
+}
+
+#else
+
+static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info)
+{
+  char *filename = level_file_info->filename;
+  FILE *file;
+#if 0
+  int nr = level_file_info->nr - leveldir_current->first_level;
+#endif
+  byte header[DC_LEVEL_HEADER_SIZE];
+  int envelope_size;
+  int envelope_header_pos = 62;
+  int envelope_content_pos = 94;
+  int level_name_pos = 251;
+  int level_author_pos = 292;
+  int envelope_header_len;
+  int envelope_content_len;
+  int level_name_len;
+  int level_author_len;
+  int fieldx, fieldy;
+  int num_yamyam_contents;
+  int i, x, y;
+
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+
+    return;
+  }
+
+#if 0
+  /* position file stream to the requested level inside the level package */
+  if (fseek(file, nr * SP_LEVEL_SIZE, SEEK_SET) != 0)
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot fseek in file '%s' -- using empty level", filename);
+
+    return;
+  }
+#endif
+
+  getDecodedWord_DC(0, TRUE);		/* initialize DC2 decoding engine */
+
+  for (i = 0; i < DC_LEVEL_HEADER_SIZE / 2; i++)
+  {
+    unsigned short header_word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+
+    header[i * 2 + 0] = header_word >> 8;
+    header[i * 2 + 1] = header_word & 0xff;
+  }
+
+  /* read some values from level header to check level decoding integrity */
+  fieldx = header[6] | (header[7] << 8);
+  fieldy = header[8] | (header[9] << 8);
+  num_yamyam_contents = header[60] | (header[61] << 8);
+
+  /* do some simple sanity checks to ensure that level was correctly decoded */
+  if (fieldx < 1 || fieldx > 256 ||
+      fieldy < 1 || fieldy > 256 ||
+      num_yamyam_contents < 1 || num_yamyam_contents > 8)
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot read level from file '%s' -- using empty level",
+	  filename);
+
+    return;
+  }
+
+  /* maximum envelope header size is 31 bytes */
+  envelope_header_len	= header[envelope_header_pos];
+  /* maximum envelope content size is 110 (156?) bytes */
+  envelope_content_len	= header[envelope_content_pos];
+
+  /* maximum level title size is 40 bytes */
+  level_name_len	= MIN(header[level_name_pos],   MAX_LEVEL_NAME_LEN);
+  /* maximum level author size is 30 (51?) bytes */
+  level_author_len	= MIN(header[level_author_pos], MAX_LEVEL_AUTHOR_LEN);
+
+  envelope_size = 0;
+
+  for (i = 0; i < envelope_header_len; i++)
+    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+      level->envelope[0].text[envelope_size++] =
+	header[envelope_header_pos + 1 + i];
+
+  if (envelope_header_len > 0 && envelope_content_len > 0)
+  {
+    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+      level->envelope[0].text[envelope_size++] = '\n';
+    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+      level->envelope[0].text[envelope_size++] = '\n';
+  }
+
+  for (i = 0; i < envelope_content_len; i++)
+    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+      level->envelope[0].text[envelope_size++] =
+	header[envelope_content_pos + 1 + i];
+
+  level->envelope[0].text[envelope_size] = '\0';
+
+  level->envelope[0].xsize = MAX_ENVELOPE_XSIZE;
+  level->envelope[0].ysize = 10;
+  level->envelope[0].autowrap = TRUE;
+  level->envelope[0].centered = TRUE;
+
+  for (i = 0; i < level_name_len; i++)
+    level->name[i] = header[level_name_pos + 1 + i];
+  level->name[level_name_len] = '\0';
+
+  for (i = 0; i < level_author_len; i++)
+    level->author[i] = header[level_author_pos + 1 + i];
+  level->author[level_author_len] = '\0';
+
+  num_yamyam_contents = header[60] | (header[61] << 8);
+  level->num_yamyam_contents =
+    MIN(MAX(MIN_ELEMENT_CONTENTS, num_yamyam_contents), MAX_ELEMENT_CONTENTS);
+
+  for (i = 0; i < num_yamyam_contents; i++)
+  {
+    for (y = 0; y < 3; y++) for (x = 0; x < 3; x++)
+    {
+      unsigned short word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+#if 1
+      int element_dc = ((word & 0xff) << 8) | ((word >> 8) & 0xff);
+#else
+      int element_dc = word;
+#endif
+
+      if (i < MAX_ELEMENT_CONTENTS)
+	level->yamyam_content[i].e[x][y] = getMappedElement_DC(element_dc);
+    }
+  }
+
+  fieldx = header[6] | (header[7] << 8);
+  fieldy = header[8] | (header[9] << 8);
+  level->fieldx = MIN(MAX(MIN_LEV_FIELDX, fieldx), MAX_LEV_FIELDX);
+  level->fieldy = MIN(MAX(MIN_LEV_FIELDY, fieldy), MAX_LEV_FIELDY);
+
+  for (y = 0; y < fieldy; y++) for (x = 0; x < fieldx; x++)
+  {
+    unsigned short word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+#if 1
+    int element_dc = ((word & 0xff) << 8) | ((word >> 8) & 0xff);
+#else
+    int element_dc = word;
+#endif
+
+    if (x < MAX_LEV_FIELDX && y < MAX_LEV_FIELDY)
+      level->field[x][y] = getMappedElement_DC(element_dc);
+  }
+
+  x = MIN(MAX(0, (header[10] | (header[11] << 8)) - 1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, (header[12] | (header[13] << 8)) - 1), MAX_LEV_FIELDY - 1);
+  level->field[x][y] = EL_PLAYER_1;
+
+  x = MIN(MAX(0, (header[14] | (header[15] << 8)) - 1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, (header[16] | (header[17] << 8)) - 1), MAX_LEV_FIELDY - 1);
+  level->field[x][y] = EL_PLAYER_2;
+
+  level->gems_needed		= header[18] | (header[19] << 8);
+
+  level->score[SC_EMERALD]	= header[20] | (header[21] << 8);
+  level->score[SC_DIAMOND]	= header[22] | (header[23] << 8);
+  level->score[SC_PEARL]	= header[24] | (header[25] << 8);
+  level->score[SC_CRYSTAL]	= header[26] | (header[27] << 8);
+  level->score[SC_NUT]		= header[28] | (header[29] << 8);
+  level->score[SC_ROBOT]	= header[30] | (header[31] << 8);
+  level->score[SC_SPACESHIP]	= header[32] | (header[33] << 8);
+  level->score[SC_BUG]		= header[34] | (header[35] << 8);
+  level->score[SC_YAMYAM]	= header[36] | (header[37] << 8);
+  level->score[SC_DYNAMITE]	= header[38] | (header[39] << 8);
+  level->score[SC_KEY]		= header[40] | (header[41] << 8);
+  level->score[SC_TIME_BONUS]	= header[42] | (header[43] << 8);
+
+  level->time			= header[44] | (header[45] << 8);
+
+  level->amoeba_speed		= header[46] | (header[47] << 8);
+  level->time_light		= header[48] | (header[49] << 8);
+  level->time_timegate		= header[50] | (header[51] << 8);
+  level->time_wheel		= header[52] | (header[53] << 8);
+  level->time_magic_wall	= header[54] | (header[55] << 8);
+  level->extra_time		= header[56] | (header[57] << 8);
+  level->shield_normal_time	= header[58] | (header[59] << 8);
+
+  fclose(file);
+
+  /* Diamond Caves has the same (strange) behaviour as Emerald Mine that gems
+     can slip down from flat walls, like normal walls and steel walls */
+  level->em_slippery_gems = TRUE;
+
+#if 0
+  /* Diamond Caves II levels are always surrounded by indestructible wall, but
+     not necessarily in a rectangular way -- fill with invisible steel wall */
+
+  /* !!! not always true !!! keep level and set BorderElement instead !!! */
+
+  for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
+  {
+#if 1
+    if ((x == 0 || x == level->fieldx - 1 ||
+	 y == 0 || y == level->fieldy - 1) &&
+	level->field[x][y] == EL_EMPTY)
+      level->field[x][y] = EL_INVISIBLE_STEELWALL;
+#else
+    if ((x == 0 || x == level->fieldx - 1 ||
+	 y == 0 || y == level->fieldy - 1) &&
+	level->field[x][y] == EL_EMPTY)
+      FloodFillLevel(x, y, EL_INVISIBLE_STEELWALL,
+		     level->field, level->fieldx, level->fieldy);
+#endif
+  }
+#endif
+}
+
+#endif
+
+
 /* ------------------------------------------------------------------------- */
 /* functions for loading generic level                                       */
 /* ------------------------------------------------------------------------- */
@@ -4083,6 +6074,10 @@ void LoadLevelFromFileInfo(struct LevelInfo *level,
 
     case LEVEL_FILE_TYPE_SP:
       LoadLevelFromFileInfo_SP(level, level_file_info);
+      break;
+
+    case LEVEL_FILE_TYPE_DC:
+      LoadLevelFromFileInfo_DC(level, level_file_info);
       break;
 
     default:
@@ -4263,6 +6258,10 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
 	change->target_element == EL_SOKOBAN_FIELD_PLAYER)
       change->target_element = EL_PLAYER_1;
   }
+
+  /* not centering level after relocating player was default only in 3.2.3 */
+  if (level->game_version == VERSION_IDENT(3,2,3,0))	/* (no pre-releases) */
+    level->shifted_relocation = TRUE;
 }
 
 static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
@@ -4416,7 +6415,10 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
   lev_fieldy = level->fieldy;
 
   /* determine border element for this level */
-  SetBorderElement();
+  if (level->file_info.type == LEVEL_FILE_TYPE_DC)
+    BorderElement = EL_EMPTY;	/* (in editor, SetBorderElement() is used) */
+  else
+    SetBorderElement();
 }
 
 static void LoadLevel_InitNativeEngines(struct LevelInfo *level,char *filename)
@@ -5987,30 +7989,32 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_SOUND_SIMPLE		4
 #define SETUP_TOKEN_TOONS			5
 #define SETUP_TOKEN_SCROLL_DELAY		6
-#define SETUP_TOKEN_SOFT_SCROLLING		7
-#define SETUP_TOKEN_FADE_SCREENS		8
-#define SETUP_TOKEN_AUTORECORD			9
-#define SETUP_TOKEN_SHOW_TITLESCREEN		10
-#define SETUP_TOKEN_QUICK_DOORS			11
-#define SETUP_TOKEN_TEAM_MODE			12
-#define SETUP_TOKEN_HANDICAP			13
-#define SETUP_TOKEN_SKIP_LEVELS			14
-#define SETUP_TOKEN_TIME_LIMIT			15
-#define SETUP_TOKEN_FULLSCREEN			16
-#define SETUP_TOKEN_FULLSCREEN_MODE		17
-#define SETUP_TOKEN_ASK_ON_ESCAPE		18
-#define SETUP_TOKEN_ASK_ON_ESCAPE_EDITOR	19
-#define SETUP_TOKEN_QUICK_SWITCH		20
-#define SETUP_TOKEN_INPUT_ON_FOCUS		21
-#define SETUP_TOKEN_PREFER_AGA_GRAPHICS		22
-#define SETUP_TOKEN_GRAPHICS_SET		23
-#define SETUP_TOKEN_SOUNDS_SET			24
-#define SETUP_TOKEN_MUSIC_SET			25
-#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	26
-#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	27
-#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	28
+#define SETUP_TOKEN_SCROLL_DELAY_VALUE		7
+#define SETUP_TOKEN_SOFT_SCROLLING		8
+#define SETUP_TOKEN_FADE_SCREENS		9
+#define SETUP_TOKEN_AUTORECORD			10
+#define SETUP_TOKEN_SHOW_TITLESCREEN		11
+#define SETUP_TOKEN_QUICK_DOORS			12
+#define SETUP_TOKEN_TEAM_MODE			13
+#define SETUP_TOKEN_HANDICAP			14
+#define SETUP_TOKEN_SKIP_LEVELS			15
+#define SETUP_TOKEN_TIME_LIMIT			16
+#define SETUP_TOKEN_FULLSCREEN			17
+#define SETUP_TOKEN_FULLSCREEN_MODE		18
+#define SETUP_TOKEN_ASK_ON_ESCAPE		19
+#define SETUP_TOKEN_ASK_ON_ESCAPE_EDITOR	20
+#define SETUP_TOKEN_QUICK_SWITCH		21
+#define SETUP_TOKEN_INPUT_ON_FOCUS		22
+#define SETUP_TOKEN_PREFER_AGA_GRAPHICS		23
+#define SETUP_TOKEN_GAME_FRAME_DELAY		24
+#define SETUP_TOKEN_GRAPHICS_SET		25
+#define SETUP_TOKEN_SOUNDS_SET			26
+#define SETUP_TOKEN_MUSIC_SET			27
+#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	28
+#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	29
+#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	30
 
-#define NUM_GLOBAL_SETUP_TOKENS			29
+#define NUM_GLOBAL_SETUP_TOKENS			31
 
 /* editor setup */
 #define SETUP_TOKEN_EDITOR_EL_BOULDERDASH	0
@@ -6022,15 +8026,16 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_EDITOR_EL_DIAMOND_CAVES	6
 #define SETUP_TOKEN_EDITOR_EL_DX_BOULDERDASH	7
 #define SETUP_TOKEN_EDITOR_EL_CHARS		8
-#define SETUP_TOKEN_EDITOR_EL_CUSTOM		9
-#define SETUP_TOKEN_EDITOR_EL_HEADLINES		10
-#define SETUP_TOKEN_EDITOR_EL_USER_DEFINED	11
-#define SETUP_TOKEN_EDITOR_EL_DYNAMIC		12
-#define SETUP_TOKEN_EDITOR_EL_BY_GAME		13
-#define SETUP_TOKEN_EDITOR_EL_BY_TYPE		14
-#define SETUP_TOKEN_EDITOR_SHOW_ELEMENT_TOKEN	15
+#define SETUP_TOKEN_EDITOR_EL_STEEL_CHARS	9
+#define SETUP_TOKEN_EDITOR_EL_CUSTOM		10
+#define SETUP_TOKEN_EDITOR_EL_HEADLINES		11
+#define SETUP_TOKEN_EDITOR_EL_USER_DEFINED	12
+#define SETUP_TOKEN_EDITOR_EL_DYNAMIC		13
+#define SETUP_TOKEN_EDITOR_EL_BY_GAME		14
+#define SETUP_TOKEN_EDITOR_EL_BY_TYPE		15
+#define SETUP_TOKEN_EDITOR_SHOW_ELEMENT_TOKEN	16
 
-#define NUM_EDITOR_SETUP_TOKENS			16
+#define NUM_EDITOR_SETUP_TOKENS			17
 
 /* editor cascade setup */
 #define SETUP_TOKEN_EDITOR_CASCADE_BD		0
@@ -6042,13 +8047,14 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_EDITOR_CASCADE_DC		6
 #define SETUP_TOKEN_EDITOR_CASCADE_DX		7
 #define SETUP_TOKEN_EDITOR_CASCADE_TEXT		8
-#define SETUP_TOKEN_EDITOR_CASCADE_CE		9
-#define SETUP_TOKEN_EDITOR_CASCADE_GE		10
-#define SETUP_TOKEN_EDITOR_CASCADE_REF		11
-#define SETUP_TOKEN_EDITOR_CASCADE_USER		12
-#define SETUP_TOKEN_EDITOR_CASCADE_DYNAMIC	13
+#define SETUP_TOKEN_EDITOR_CASCADE_STEELTEXT	9
+#define SETUP_TOKEN_EDITOR_CASCADE_CE		10
+#define SETUP_TOKEN_EDITOR_CASCADE_GE		11
+#define SETUP_TOKEN_EDITOR_CASCADE_REF		12
+#define SETUP_TOKEN_EDITOR_CASCADE_USER		13
+#define SETUP_TOKEN_EDITOR_CASCADE_DYNAMIC	14
 
-#define NUM_EDITOR_CASCADE_SETUP_TOKENS		14
+#define NUM_EDITOR_CASCADE_SETUP_TOKENS		15
 
 /* shortcut setup */
 #define SETUP_TOKEN_SHORTCUT_SAVE_GAME		0
@@ -6083,10 +8089,11 @@ void SaveScore(int nr)
 #define NUM_PLAYER_SETUP_TOKENS			16
 
 /* system setup */
-#define SETUP_TOKEN_SYSTEM_SDL_AUDIODRIVER	0
-#define SETUP_TOKEN_SYSTEM_AUDIO_FRAGMENT_SIZE	1
+#define SETUP_TOKEN_SYSTEM_SDL_VIDEODRIVER	0
+#define SETUP_TOKEN_SYSTEM_SDL_AUDIODRIVER	1
+#define SETUP_TOKEN_SYSTEM_AUDIO_FRAGMENT_SIZE	2
 
-#define NUM_SYSTEM_SETUP_TOKENS			2
+#define NUM_SYSTEM_SETUP_TOKENS			3
 
 /* options setup */
 #define SETUP_TOKEN_OPTIONS_VERBOSE		0
@@ -6111,6 +8118,7 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_SWITCH, &si.sound_simple,	"simple_sound_effects"		},
   { TYPE_SWITCH, &si.toons,		"toons"				},
   { TYPE_SWITCH, &si.scroll_delay,	"scroll_delay"			},
+  { TYPE_INTEGER,&si.scroll_delay_value,"scroll_delay_value"		},
   { TYPE_SWITCH, &si.soft_scrolling,	"soft_scrolling"		},
   { TYPE_SWITCH, &si.fade_screens,	"fade_screens"			},
   { TYPE_SWITCH, &si.autorecord,	"automatic_tape_recording"	},
@@ -6127,6 +8135,7 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_SWITCH, &si.quick_switch,	"quick_player_switch"		},
   { TYPE_SWITCH, &si.input_on_focus,	"input_on_focus"		},
   { TYPE_SWITCH, &si.prefer_aga_graphics, "prefer_aga_graphics"		},
+  { TYPE_INTEGER,&si.game_frame_delay,	"game_frame_delay"		},
   { TYPE_STRING, &si.graphics_set,	"graphics_set"			},
   { TYPE_STRING, &si.sounds_set,	"sounds_set"			},
   { TYPE_STRING, &si.music_set,		"music_set"			},
@@ -6158,6 +8167,7 @@ static struct TokenInfo editor_setup_tokens[] =
   { TYPE_SWITCH, &sei.el_dx_boulderdash,"editor.el_dx_boulderdash"	},
 #endif
   { TYPE_SWITCH, &sei.el_chars,		"editor.el_chars"		},
+  { TYPE_SWITCH, &sei.el_steel_chars,	"editor.el_steel_chars"		},
   { TYPE_SWITCH, &sei.el_custom,	"editor.el_custom"		},
 #if 1
   { TYPE_SWITCH, &not_used,		"editor.el_headlines"		},
@@ -6182,6 +8192,7 @@ static struct TokenInfo editor_cascade_setup_tokens[] =
   { TYPE_SWITCH, &seci.el_dc,		"editor.cascade.el_dc"		},
   { TYPE_SWITCH, &seci.el_dx,		"editor.cascade.el_dx"		},
   { TYPE_SWITCH, &seci.el_chars,	"editor.cascade.el_chars"	},
+  { TYPE_SWITCH, &seci.el_steel_chars,	"editor.cascade.el_steel_chars"	},
   { TYPE_SWITCH, &seci.el_ce,		"editor.cascade.el_ce"		},
   { TYPE_SWITCH, &seci.el_ge,		"editor.cascade.el_ge"		},
   { TYPE_SWITCH, &seci.el_ref,		"editor.cascade.el_ref"		},
@@ -6223,6 +8234,7 @@ static struct TokenInfo player_setup_tokens[] =
 
 static struct TokenInfo system_setup_tokens[] =
 {
+  { TYPE_STRING,  &syi.sdl_videodriver,	"system.sdl_videodriver"	},
   { TYPE_STRING,  &syi.sdl_audiodriver,	"system.sdl_audiodriver"	},
   { TYPE_INTEGER, &syi.audio_fragment_size,"system.audio_fragment_size"	},
 };
@@ -6258,9 +8270,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->sound_music = TRUE;
   si->sound_simple = TRUE;
   si->toons = TRUE;
-  si->double_buffering = TRUE;
-  si->direct_draw = !si->double_buffering;
   si->scroll_delay = TRUE;
+  si->scroll_delay_value = STD_SCROLL_DELAY;
   si->soft_scrolling = TRUE;
   si->fade_screens = TRUE;
   si->autorecord = TRUE;
@@ -6277,6 +8288,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->quick_switch = FALSE;
   si->input_on_focus = FALSE;
   si->prefer_aga_graphics = TRUE;
+  si->game_frame_delay = GAME_FRAME_DELAY;
 
   si->graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
   si->sounds_set = getStringCopy(SND_CLASSIC_SUBDIR);
@@ -6285,16 +8297,17 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->override_level_sounds = FALSE;
   si->override_level_music = FALSE;
 
-  si->editor.el_boulderdash       = TRUE;
-  si->editor.el_emerald_mine      = TRUE;
-  si->editor.el_emerald_mine_club = TRUE;
-  si->editor.el_more              = TRUE;
-  si->editor.el_sokoban           = TRUE;
-  si->editor.el_supaplex          = TRUE;
-  si->editor.el_diamond_caves     = TRUE;
-  si->editor.el_dx_boulderdash    = TRUE;
-  si->editor.el_chars             = TRUE;
-  si->editor.el_custom            = TRUE;
+  si->editor.el_boulderdash		= TRUE;
+  si->editor.el_emerald_mine		= TRUE;
+  si->editor.el_emerald_mine_club	= TRUE;
+  si->editor.el_more			= TRUE;
+  si->editor.el_sokoban			= TRUE;
+  si->editor.el_supaplex		= TRUE;
+  si->editor.el_diamond_caves		= TRUE;
+  si->editor.el_dx_boulderdash		= TRUE;
+  si->editor.el_chars			= TRUE;
+  si->editor.el_steel_chars		= TRUE;
+  si->editor.el_custom			= TRUE;
 
   si->editor.el_headlines = TRUE;
   si->editor.el_user_defined = FALSE;
@@ -6302,15 +8315,15 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->editor.show_element_token = FALSE;
 
-  si->shortcut.save_game = DEFAULT_KEY_SAVE_GAME;
-  si->shortcut.load_game = DEFAULT_KEY_LOAD_GAME;
-  si->shortcut.toggle_pause = DEFAULT_KEY_TOGGLE_PAUSE;
+  si->shortcut.save_game	= DEFAULT_KEY_SAVE_GAME;
+  si->shortcut.load_game	= DEFAULT_KEY_LOAD_GAME;
+  si->shortcut.toggle_pause	= DEFAULT_KEY_TOGGLE_PAUSE;
 
-  si->shortcut.focus_player[0] = DEFAULT_KEY_FOCUS_PLAYER_1;
-  si->shortcut.focus_player[1] = DEFAULT_KEY_FOCUS_PLAYER_2;
-  si->shortcut.focus_player[2] = DEFAULT_KEY_FOCUS_PLAYER_3;
-  si->shortcut.focus_player[3] = DEFAULT_KEY_FOCUS_PLAYER_4;
-  si->shortcut.focus_player_all = DEFAULT_KEY_FOCUS_PLAYER_ALL;
+  si->shortcut.focus_player[0]	= DEFAULT_KEY_FOCUS_PLAYER_1;
+  si->shortcut.focus_player[1]	= DEFAULT_KEY_FOCUS_PLAYER_2;
+  si->shortcut.focus_player[2]	= DEFAULT_KEY_FOCUS_PLAYER_3;
+  si->shortcut.focus_player[3]	= DEFAULT_KEY_FOCUS_PLAYER_4;
+  si->shortcut.focus_player_all	= DEFAULT_KEY_FOCUS_PLAYER_ALL;
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
@@ -6332,6 +8345,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
     si->input[i].key.drop  = (i == 0 ? DEFAULT_KEY_DROP  : KSYM_UNDEFINED);
   }
 
+  si->system.sdl_videodriver = getStringCopy(ARG_DEFAULT);
   si->system.sdl_audiodriver = getStringCopy(ARG_DEFAULT);
   si->system.audio_fragment_size = DEFAULT_AUDIO_FRAGMENT_SIZE;
 
@@ -6340,21 +8354,22 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
 static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
 {
-  si->editor_cascade.el_bd	= TRUE;
-  si->editor_cascade.el_em	= TRUE;
-  si->editor_cascade.el_emc	= TRUE;
-  si->editor_cascade.el_rnd	= TRUE;
-  si->editor_cascade.el_sb	= TRUE;
-  si->editor_cascade.el_sp	= TRUE;
-  si->editor_cascade.el_dc	= TRUE;
-  si->editor_cascade.el_dx	= TRUE;
+  si->editor_cascade.el_bd		= TRUE;
+  si->editor_cascade.el_em		= TRUE;
+  si->editor_cascade.el_emc		= TRUE;
+  si->editor_cascade.el_rnd		= TRUE;
+  si->editor_cascade.el_sb		= TRUE;
+  si->editor_cascade.el_sp		= TRUE;
+  si->editor_cascade.el_dc		= TRUE;
+  si->editor_cascade.el_dx		= TRUE;
 
-  si->editor_cascade.el_chars	= FALSE;
-  si->editor_cascade.el_ce	= FALSE;
-  si->editor_cascade.el_ge	= FALSE;
-  si->editor_cascade.el_ref	= FALSE;
-  si->editor_cascade.el_user	= FALSE;
-  si->editor_cascade.el_dynamic	= FALSE;
+  si->editor_cascade.el_chars		= FALSE;
+  si->editor_cascade.el_steel_chars	= FALSE;
+  si->editor_cascade.el_ce		= FALSE;
+  si->editor_cascade.el_ge		= FALSE;
+  si->editor_cascade.el_ref		= FALSE;
+  si->editor_cascade.el_user		= FALSE;
+  si->editor_cascade.el_dynamic		= FALSE;
 }
 
 static void decodeSetupFileHash(SetupFileHash *setup_file_hash)
@@ -6452,14 +8467,23 @@ void LoadSetup()
     checkSetupFileHashIdentifier(setup_file_hash, filename,getCookie("SETUP"));
     decodeSetupFileHash(setup_file_hash);
 
-    setup.direct_draw = !setup.double_buffering;
-
     freeSetupFileHash(setup_file_hash);
 
     /* needed to work around problems with fixed length strings */
     player_name_new = get_corrected_login_name(setup.player_name);
     free(setup.player_name);
     setup.player_name = player_name_new;
+
+    /* "scroll_delay: on(3) / off(0)" was replaced by scroll delay value */
+    if (setup.scroll_delay == FALSE)
+    {
+      setup.scroll_delay_value = MIN_SCROLL_DELAY;
+      setup.scroll_delay = TRUE;			/* now always "on" */
+    }
+
+    /* make sure that scroll delay value stays inside valid range */
+    setup.scroll_delay_value =
+      MIN(MAX(MIN_SCROLL_DELAY, setup.scroll_delay_value), MAX_SCROLL_DELAY);
   }
   else
     Error(ERR_WARN, "using default setup values");
@@ -6621,43 +8645,306 @@ void LoadCustomElementDescriptions()
   freeSetupFileHash(setup_file_hash);
 }
 
-static void LoadSpecialMenuDesignSettingsFromFilename(char *filename)
+static int getElementFromToken(char *token)
 {
-  SetupFileHash *setup_file_hash;
+#if 1
+  char *value = getHashEntry(element_token_hash, token);
+
+  if (value != NULL)
+    return atoi(value);
+#else
+  int i;
+
+  /* !!! OPTIMIZE THIS BY USING HASH !!! */
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+    if (strEqual(token, element_info[i].token_name))
+      return i;
+#endif
+
+  Error(ERR_WARN, "unknown element token '%s'", token);
+
+  return EL_UNDEFINED;
+}
+
+static int get_token_parameter_value(char *token, char *value_raw)
+{
+  char *suffix;
+
+  if (token == NULL || value_raw == NULL)
+    return ARG_UNDEFINED_VALUE;
+
+  suffix = strrchr(token, '.');
+  if (suffix == NULL)
+    suffix = token;
+
+#if 1
+  if (strEqual(suffix, ".element"))
+    return getElementFromToken(value_raw);
+#endif
+
+#if 0
+  if (strncmp(suffix, ".font", 5) == 0)
+  {
+    int i;
+
+    /* !!! OPTIMIZE THIS BY USING HASH !!! */
+    for (i = 0; i < NUM_FONTS; i++)
+      if (strEqual(value_raw, font_info[i].token_name))
+	return i;
+
+    /* if font not found, use reliable default value */
+    return FONT_INITIAL_1;
+  }
+#endif
+
+  /* !!! USE CORRECT VALUE TYPE (currently works also for TYPE_BOOLEAN) !!! */
+  return get_parameter_value(value_raw, suffix, TYPE_INTEGER);
+}
+
+void InitMenuDesignSettings_Static()
+{
+#if 0
+  static SetupFileHash *image_config_hash = NULL;
+#endif
   int i;
 
 #if 0
-  printf("LoadSpecialMenuDesignSettings from file '%s' ...\n", filename);
+  if (image_config_hash == NULL)
+  {
+    image_config_hash = newSetupFileHash();
+
+    for (i = 0; image_config[i].token != NULL; i++)
+      setHashEntry(image_config_hash,
+		   image_config[i].token,
+		   image_config[i].value);
+  }
+#endif
+
+#if 1
+  /* always start with reliable default values from static default config */
+  for (i = 0; image_config_vars[i].token != NULL; i++)
+  {
+    char *value = getHashEntry(image_config_hash, image_config_vars[i].token);
+
+    if (value != NULL)
+      *image_config_vars[i].value =
+	get_token_parameter_value(image_config_vars[i].token, value);
+  }
+
+#else
+
+  int j;
+
+  /* always start with reliable default values from static default config */
+  for (i = 0; image_config_vars[i].token != NULL; i++)
+    for (j = 0; image_config[j].token != NULL; j++)
+      if (strEqual(image_config_vars[i].token, image_config[j].token))
+	*image_config_vars[i].value =
+	  get_token_parameter_value(image_config_vars[i].token,
+				    image_config[j].value);
+#endif
+}
+
+static void InitMenuDesignSettings_SpecialPreProcessing()
+{
+  int i;
+
+  /* the following initializes hierarchical values from static configuration */
+
+  /* special case: initialize "ARG_DEFAULT" values in static default config */
+  /* (e.g., initialize "[titlemessage].fade_mode" from "[title].fade_mode") */
+  titlemessage_initial_default.fade_mode  = title_initial_default.fade_mode;
+  titlemessage_initial_default.fade_delay = title_initial_default.fade_delay;
+  titlemessage_initial_default.post_delay = title_initial_default.post_delay;
+  titlemessage_initial_default.auto_delay = title_initial_default.auto_delay;
+  titlemessage_default.fade_mode  = title_default.fade_mode;
+  titlemessage_default.fade_delay = title_default.fade_delay;
+  titlemessage_default.post_delay = title_default.post_delay;
+  titlemessage_default.auto_delay = title_default.auto_delay;
+
+  /* special case: initialize "ARG_DEFAULT" values in static default config */
+  /* (e.g., init "titlemessage_1.fade_mode" from "[titlemessage].fade_mode") */
+  for (i = 0; i < MAX_NUM_TITLE_MESSAGES; i++)
+  {
+    titlemessage_initial[i] = titlemessage_initial_default;
+    titlemessage[i] = titlemessage_default;
+  }
+
+  /* special case: initialize "ARG_DEFAULT" values in static default config */
+  /* (eg, init "menu.enter_screen.SCORES.xyz" from "menu.enter_screen.xyz") */
+  for (i = 0; i < NUM_SPECIAL_GFX_ARGS; i++)
+  {
+    menu.enter_screen[i] = menu.enter_screen[GFX_SPECIAL_ARG_DEFAULT];
+    menu.leave_screen[i] = menu.leave_screen[GFX_SPECIAL_ARG_DEFAULT];
+  }
+}
+
+static void InitMenuDesignSettings_SpecialPostProcessing()
+{
+  /* special case: initialize later added SETUP list size from LEVELS value */
+  if (menu.list_size[GAME_MODE_SETUP] == -1)
+    menu.list_size[GAME_MODE_SETUP] = menu.list_size[GAME_MODE_LEVELS];
+}
+
+static void LoadMenuDesignSettingsFromFilename(char *filename)
+{
+  static struct TitleMessageInfo tmi;
+  static struct TokenInfo titlemessage_tokens[] =
+  {
+    { TYPE_INTEGER,	&tmi.x,			".x"			},
+    { TYPE_INTEGER,	&tmi.y,			".y"			},
+    { TYPE_INTEGER,	&tmi.width,		".width"		},
+    { TYPE_INTEGER,	&tmi.height,		".height"		},
+    { TYPE_INTEGER,	&tmi.chars,		".chars"		},
+    { TYPE_INTEGER,	&tmi.lines,		".lines"		},
+    { TYPE_INTEGER,	&tmi.align,		".align"		},
+    { TYPE_INTEGER,	&tmi.valign,		".valign"		},
+    { TYPE_INTEGER,	&tmi.font,		".font"			},
+    { TYPE_BOOLEAN,	&tmi.autowrap,		".autowrap"		},
+    { TYPE_BOOLEAN,	&tmi.centered,		".centered"		},
+    { TYPE_BOOLEAN,	&tmi.parse_comments,	".parse_comments"	},
+    { TYPE_INTEGER,	&tmi.sort_priority,	".sort_priority"	},
+    { TYPE_INTEGER,	&tmi.fade_mode,		".fade_mode"		},
+    { TYPE_INTEGER,	&tmi.fade_delay,	".fade_delay"		},
+    { TYPE_INTEGER,	&tmi.post_delay,	".post_delay"		},
+    { TYPE_INTEGER,	&tmi.auto_delay,	".auto_delay"		},
+
+    { -1,		NULL,			NULL			}
+  };
+  static struct
+  {
+    struct TitleMessageInfo *array;
+    char *text;
+  }
+  titlemessage_arrays[] =
+  {
+    { titlemessage_initial,		"[titlemessage_initial]"	},
+    { titlemessage,			"[titlemessage]"		},
+
+    { NULL,				NULL				}
+  };
+  SetupFileHash *setup_file_hash;
+  int i, j, k;
+
+#if 0
+  printf("LoadMenuDesignSettings from file '%s' ...\n", filename);
 #endif
 
   if ((setup_file_hash = loadSetupFileHash(filename)) == NULL)
     return;
 
+  /* the following initializes hierarchical values from dynamic configuration */
+
   /* special case: initialize with default values that may be overwritten */
+  /* (e.g., init "menu.draw_xoffset.INFO" from "menu.draw_xoffset") */
   for (i = 0; i < NUM_SPECIAL_GFX_ARGS; i++)
   {
-    char *value_x = getHashEntry(setup_file_hash, "menu.draw_xoffset");
-    char *value_y = getHashEntry(setup_file_hash, "menu.draw_yoffset");
-    char *list_size = getHashEntry(setup_file_hash, "menu.list_size");
+    char *value_1 = getHashEntry(setup_file_hash, "menu.draw_xoffset");
+    char *value_2 = getHashEntry(setup_file_hash, "menu.draw_yoffset");
+    char *value_3 = getHashEntry(setup_file_hash, "menu.list_size");
 
-    if (value_x != NULL)
-      menu.draw_xoffset[i] = get_integer_from_string(value_x);
-    if (value_y != NULL)
-      menu.draw_yoffset[i] = get_integer_from_string(value_y);
-    if (list_size != NULL)
-      menu.list_size[i] = get_integer_from_string(list_size);
+    if (value_1 != NULL)
+      menu.draw_xoffset[i] = get_integer_from_string(value_1);
+    if (value_2 != NULL)
+      menu.draw_yoffset[i] = get_integer_from_string(value_2);
+    if (value_3 != NULL)
+      menu.list_size[i] = get_integer_from_string(value_3);
   }
 
   /* special case: initialize with default values that may be overwritten */
+  /* (eg, init "menu.draw_xoffset.INFO[XXX]" from "menu.draw_xoffset.INFO") */
   for (i = 0; i < NUM_SPECIAL_GFX_INFO_ARGS; i++)
   {
-    char *value_x = getHashEntry(setup_file_hash, "menu.draw_xoffset.INFO");
-    char *value_y = getHashEntry(setup_file_hash, "menu.draw_yoffset.INFO");
+    char *value_1 = getHashEntry(setup_file_hash, "menu.draw_xoffset.INFO");
+    char *value_2 = getHashEntry(setup_file_hash, "menu.draw_yoffset.INFO");
 
-    if (value_x != NULL)
-      menu.draw_xoffset_info[i] = get_integer_from_string(value_x);
-    if (value_y != NULL)
-      menu.draw_yoffset_info[i] = get_integer_from_string(value_y);
+    if (value_1 != NULL)
+      menu.draw_xoffset_info[i] = get_integer_from_string(value_1);
+    if (value_2 != NULL)
+      menu.draw_yoffset_info[i] = get_integer_from_string(value_2);
+  }
+
+  /* special case: initialize with default values that may be overwritten */
+  /* (eg, init "menu.draw_xoffset.SETUP[XXX]" from "menu.draw_xoffset.SETUP") */
+  for (i = 0; i < NUM_SPECIAL_GFX_SETUP_ARGS; i++)
+  {
+    char *value_1 = getHashEntry(setup_file_hash, "menu.draw_xoffset.SETUP");
+    char *value_2 = getHashEntry(setup_file_hash, "menu.draw_yoffset.SETUP");
+
+    if (value_1 != NULL)
+      menu.draw_xoffset_setup[i] = get_integer_from_string(value_1);
+    if (value_2 != NULL)
+      menu.draw_yoffset_setup[i] = get_integer_from_string(value_2);
+  }
+
+  /* special case: initialize with default values that may be overwritten */
+  /* (eg, init "menu.enter_screen.SCORES.xyz" from "menu.enter_screen.xyz") */
+  for (i = 0; i < NUM_SPECIAL_GFX_ARGS; i++)
+  {
+    char *token_1 = "menu.enter_screen.fade_mode";
+    char *token_2 = "menu.enter_screen.fade_delay";
+    char *token_3 = "menu.enter_screen.post_delay";
+    char *token_4 = "menu.leave_screen.fade_mode";
+    char *token_5 = "menu.leave_screen.fade_delay";
+    char *token_6 = "menu.leave_screen.post_delay";
+    char *value_1 = getHashEntry(setup_file_hash, token_1);
+    char *value_2 = getHashEntry(setup_file_hash, token_2);
+    char *value_3 = getHashEntry(setup_file_hash, token_3);
+    char *value_4 = getHashEntry(setup_file_hash, token_4);
+    char *value_5 = getHashEntry(setup_file_hash, token_5);
+    char *value_6 = getHashEntry(setup_file_hash, token_6);
+
+    if (value_1 != NULL)
+      menu.enter_screen[i].fade_mode = get_token_parameter_value(token_1,
+								 value_1);
+    if (value_2 != NULL)
+      menu.enter_screen[i].fade_delay = get_token_parameter_value(token_2,
+								  value_2);
+    if (value_3 != NULL)
+      menu.enter_screen[i].post_delay = get_token_parameter_value(token_3,
+								  value_3);
+    if (value_4 != NULL)
+      menu.leave_screen[i].fade_mode = get_token_parameter_value(token_4,
+								 value_4);
+    if (value_5 != NULL)
+      menu.leave_screen[i].fade_delay = get_token_parameter_value(token_5,
+								  value_5);
+    if (value_6 != NULL)
+      menu.leave_screen[i].post_delay = get_token_parameter_value(token_6,
+								  value_6);
+  }
+
+  /* special case: initialize with default values that may be overwritten */
+  /* (e.g., init "titlemessage_1.fade_mode" from "[titlemessage].fade_mode") */
+  for (i = 0; titlemessage_arrays[i].array != NULL; i++)
+  {
+    struct TitleMessageInfo *array = titlemessage_arrays[i].array;
+    char *base_token = titlemessage_arrays[i].text;
+
+    for (j = 0; titlemessage_tokens[j].type != -1; j++)
+    {
+      char *token = getStringCat2(base_token, titlemessage_tokens[j].text);
+      char *value = getHashEntry(setup_file_hash, token);
+
+      if (value != NULL)
+      {
+	int parameter_value = get_token_parameter_value(token, value);
+
+	for (k = 0; k < MAX_NUM_TITLE_MESSAGES; k++)
+	{
+	  tmi = array[k];
+
+	  if (titlemessage_tokens[j].type == TYPE_INTEGER)
+	    *(boolean *)titlemessage_tokens[j].value = (boolean)parameter_value;
+	  else
+	    *(int     *)titlemessage_tokens[j].value = (int)parameter_value;
+
+	  array[k] = tmi;
+	}
+      }
+
+      free(token);
+    }
   }
 
   /* read (and overwrite with) values that may be specified in config file */
@@ -6665,26 +8952,21 @@ static void LoadSpecialMenuDesignSettingsFromFilename(char *filename)
   {
     char *value = getHashEntry(setup_file_hash, image_config_vars[i].token);
 
-    if (value != NULL)
+    /* (ignore definitions set to "[DEFAULT]" which are already initialized) */
+    if (value != NULL && !strEqual(value, ARG_DEFAULT))
       *image_config_vars[i].value =
-	get_auto_parameter_value(image_config_vars[i].token, value);
+	get_token_parameter_value(image_config_vars[i].token, value);
   }
 
   freeSetupFileHash(setup_file_hash);
 }
 
-void LoadSpecialMenuDesignSettings()
+void LoadMenuDesignSettings()
 {
   char *filename_base = UNDEFINED_FILENAME, *filename_local;
-  int i, j;
 
-  /* always start with reliable default values from default config */
-  for (i = 0; image_config_vars[i].token != NULL; i++)
-    for (j = 0; image_config[j].token != NULL; j++)
-      if (strEqual(image_config_vars[i].token, image_config[j].token))
-	*image_config_vars[i].value =
-	  get_auto_parameter_value(image_config_vars[i].token,
-				   image_config[j].value);
+  InitMenuDesignSettings_Static();
+  InitMenuDesignSettings_SpecialPreProcessing();
 
   if (!SETUP_OVERRIDE_ARTWORK(setup, ARTWORK_TYPE_GRAPHICS))
   {
@@ -6692,13 +8974,15 @@ void LoadSpecialMenuDesignSettings()
     filename_base = getCustomArtworkLevelConfigFilename(ARTWORK_TYPE_GRAPHICS);
 
     if (fileExists(filename_base))
-      LoadSpecialMenuDesignSettingsFromFilename(filename_base);
+      LoadMenuDesignSettingsFromFilename(filename_base);
   }
 
   filename_local = getCustomArtworkConfigFilename(ARTWORK_TYPE_GRAPHICS);
 
   if (filename_local != NULL && !strEqual(filename_base, filename_local))
-    LoadSpecialMenuDesignSettingsFromFilename(filename_local);
+    LoadMenuDesignSettingsFromFilename(filename_local);
+
+  InitMenuDesignSettings_SpecialPostProcessing();
 }
 
 void LoadUserDefinedEditorElementList(int **elements, int *num_elements)
@@ -6756,19 +9040,19 @@ void LoadUserDefinedEditorElementList(int **elements, int *num_elements)
     {
       if (num_unknown_tokens == 0)
       {
-	Error(ERR_RETURN_LINE, "-");
-	Error(ERR_RETURN, "warning: unknown token(s) found in config file:");
-	Error(ERR_RETURN, "- config file: '%s'", filename);
+	Error(ERR_INFO_LINE, "-");
+	Error(ERR_INFO, "warning: unknown token(s) found in config file:");
+	Error(ERR_INFO, "- config file: '%s'", filename);
 
 	num_unknown_tokens++;
       }
 
-      Error(ERR_RETURN, "- token: '%s'", list->token);
+      Error(ERR_INFO, "- token: '%s'", list->token);
     }
   }
 
   if (num_unknown_tokens > 0)
-    Error(ERR_RETURN_LINE, "-");
+    Error(ERR_INFO_LINE, "-");
 
   while (*num_elements % 4)	/* pad with empty elements, if needed */
     (*elements)[(*num_elements)++] = EL_EMPTY;
@@ -6856,7 +9140,7 @@ static struct MusicFileInfo *get_music_file_info_ext(char *basename, int music,
 
   /* ---------- music file info found ---------- */
 
-  memset(&tmp_music_file_info, 0, sizeof(struct MusicFileInfo));
+  clear_mem(&tmp_music_file_info, sizeof(struct MusicFileInfo));
 
   for (i = 0; token_to_value_ptr[i].token != NULL; i++)
   {
@@ -7069,18 +9353,18 @@ void print_unknown_token(char *filename, char *token, int token_nr)
 {
   if (token_nr == 0)
   {
-    Error(ERR_RETURN_LINE, "-");
-    Error(ERR_RETURN, "warning: unknown token(s) found in config file:");
-    Error(ERR_RETURN, "- config file: '%s'", filename);
+    Error(ERR_INFO_LINE, "-");
+    Error(ERR_INFO, "warning: unknown token(s) found in config file:");
+    Error(ERR_INFO, "- config file: '%s'", filename);
   }
 
-  Error(ERR_RETURN, "- token: '%s'", token);
+  Error(ERR_INFO, "- token: '%s'", token);
 }
 
 void print_unknown_token_end(int token_nr)
 {
   if (token_nr > 0)
-    Error(ERR_RETURN_LINE, "-");
+    Error(ERR_INFO_LINE, "-");
 }
 
 void LoadHelpAnimInfo()

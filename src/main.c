@@ -24,6 +24,7 @@ Bitmap		       *bitmap_db_cross;
 Bitmap		       *bitmap_db_field;
 Bitmap		       *bitmap_db_panel;
 Bitmap		       *bitmap_db_door;
+Bitmap		       *bitmap_db_toons;
 DrawBuffer	       *fieldbuffer;
 DrawBuffer	       *drawto_field;
 
@@ -75,6 +76,10 @@ int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
+int			ActiveElement[MAX_NUM_ELEMENTS];
+int			ActiveButton[NUM_IMAGE_FILES];
+int			ActiveFont[NUM_FONTS];
+
 int			lev_fieldx, lev_fieldy;
 int			scroll_x, scroll_y;
 
@@ -106,7 +111,15 @@ struct SetupInfo	setup;
 struct GameInfo		game;
 struct GlobalInfo	global;
 struct BorderInfo	border;
-struct TitleInfo	title;
+struct TitleFadingInfo	fading;
+struct TitleFadingInfo	title_initial_default;
+struct TitleFadingInfo	title_default;
+struct TitleMessageInfo	titlemessage_initial_default;
+struct TitleMessageInfo	titlemessage_initial[MAX_NUM_TITLE_MESSAGES];
+struct TitleMessageInfo	titlemessage_default;
+struct TitleMessageInfo	titlemessage[MAX_NUM_TITLE_MESSAGES];
+struct TitleMessageInfo	readme;
+struct InitInfo		init;
 struct MenuInfo		menu;
 struct DoorInfo		door_1, door_2;
 struct PreviewInfo	preview;
@@ -116,6 +129,10 @@ struct MusicInfo       *music_info = NULL;
 struct MusicFileInfo   *music_file_info = NULL;
 struct HelpAnimInfo    *helpanim_info = NULL;
 SetupFileHash          *helptext_info = NULL;
+SetupFileHash	       *image_config_hash = NULL;
+SetupFileHash	       *element_token_hash = NULL;
+SetupFileHash	       *graphic_token_hash = NULL;
+SetupFileHash	       *font_token_hash = NULL;
 
 
 /* ------------------------------------------------------------------------- */
@@ -216,12 +233,12 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "quicksand_empty",
     "quicksand",
-    "empty quicksand"
+    "quicksand (empty)"
   },
   {
     "quicksand_full",
     "quicksand",
-    "quicksand with rock"
+    "quicksand (with rock)"
   },
   {
     "amoeba_drop",
@@ -1115,17 +1132,17 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "char_unused",
     "char",
-    "letter ''"
+    "letter 'button'"
   },
   {
     "char_unused",
     "char",
-    "letter ''"
+    "letter 'up'"
   },
   {
     "char_unused",
     "char",
-    "letter ''"
+    "letter 'down'"
   },
   {
     "expandable_wall_horizontal",
@@ -1428,17 +1445,17 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "wall with crystal"
   },
   {
-    "door_white",
+    "dc_gate_white",
     "gate",
     "white door"
   },
   {
-    "door_white_gray",
+    "dc_gate_white_gray",
     "gate",
     "gray door (opened by white key)"
   },
   {
-    "key_white",
+    "dc_key_white",
     "key",
     "white key"
   },
@@ -1604,8 +1621,8 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "landmine",
-    "sand",
-    "land mine"
+    "landmine",
+    "land mine (not removable)"
   },
   {
     "envelope_obsolete",
@@ -1624,63 +1641,63 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "sign_exclamation",
-    "wall",
+    "sign",
     "sign (exclamation)"
   },
   {
     "sign_radioactivity",
-    "wall",
+    "sign",
     "sign (radio activity)"
   },
   {
     "sign_stop",
-    "wall",
+    "sign",
     "sign (stop)"
   },
   {
     "sign_wheelchair",
-    "wall",
+    "sign",
     "sign (wheel chair)"
   },
   {
     "sign_parking",
-    "wall",
+    "sign",
     "sign (parking)"
   },
   {
-    "sign_oneway",
-    "wall",
-    "sign (one way)"
+    "sign_no_entry",
+    "sign",
+    "sign (no entry)"
   },
   {
-    "sign_heart",
-    "wall",
-    "sign (heart)"
+    "sign_unused_1",
+    "sign",
+    "sign (unused)"
   },
   {
-    "sign_triangle",
-    "wall",
-    "sign (triangle)"
+    "sign_give_way",
+    "sign",
+    "sign (give way)"
   },
   {
-    "sign_round",
-    "wall",
-    "sign (round)"
+    "sign_entry_forbidden",
+    "sign",
+    "sign (entry forbidden)"
   },
   {
-    "sign_exit",
-    "wall",
-    "sign (exit)"
+    "sign_emergency_exit",
+    "sign",
+    "sign (emergency exit)"
   },
   {
-    "sign_yinyang",
-    "wall",
+    "sign_yin_yang",
+    "sign",
     "sign (yin yang)"
   },
   {
-    "sign_other",
-    "wall",
-    "sign (other)"
+    "sign_unused_2",
+    "sign",
+    "sign (unused)"
   },
   {
     "mole.left",
@@ -3787,6 +3804,661 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "any_element",
     "this element matches any element"
   },
+  {
+    "steel_char_space",
+    "steel_char",
+    "steel letter ' '"
+  },
+  {
+    "steel_char_exclam",
+    "steel_char",
+    "steel letter '!'"
+  },
+  {
+    "steel_char_quotedbl",
+    "steel_char",
+    "steel letter '\"'"
+  },
+  {
+    "steel_char_numbersign",
+    "steel_char",
+    "steel letter '#'"
+  },
+  {
+    "steel_char_dollar",
+    "steel_char",
+    "steel letter '$'"
+  },
+  {
+    "steel_char_percent",
+    "steel_char",
+    "steel letter '%'"
+  },
+  {
+    "steel_char_ampersand",
+    "steel_char",
+    "steel letter '&'"
+  },
+  {
+    "steel_char_apostrophe",
+    "steel_char",
+    "steel letter '''"
+  },
+  {
+    "steel_char_parenleft",
+    "steel_char",
+    "steel letter '('"
+  },
+  {
+    "steel_char_parenright",
+    "steel_char",
+    "steel letter ')'"
+  },
+  {
+    "steel_char_asterisk",
+    "steel_char",
+    "steel letter '*'"
+  },
+  {
+    "steel_char_plus",
+    "steel_char",
+    "steel letter '+'"
+  },
+  {
+    "steel_char_comma",
+    "steel_char",
+    "steel letter ','"
+  },
+  {
+    "steel_char_minus",
+    "steel_char",
+    "steel letter '-'"
+  },
+  {
+    "steel_char_period",
+    "steel_char",
+    "steel letter '.'"
+  },
+  {
+    "steel_char_slash",
+    "steel_char",
+    "steel letter '/'"
+  },
+  {
+    "steel_char_0",
+    "steel_char",
+    "steel letter '0'"
+  },
+  {
+    "steel_char_1",
+    "steel_char",
+    "steel letter '1'"
+  },
+  {
+    "steel_char_2",
+    "steel_char",
+    "steel letter '2'"
+  },
+  {
+    "steel_char_3",
+    "steel_char",
+    "steel letter '3'"
+  },
+  {
+    "steel_char_4",
+    "steel_char",
+    "steel letter '4'"
+  },
+  {
+    "steel_char_5",
+    "steel_char",
+    "steel letter '5'"
+  },
+  {
+    "steel_char_6",
+    "steel_char",
+    "steel letter '6'"
+  },
+  {
+    "steel_char_7",
+    "steel_char",
+    "steel letter '7'"
+  },
+  {
+    "steel_char_8",
+    "steel_char",
+    "steel letter '8'"
+  },
+  {
+    "steel_char_9",
+    "steel_char",
+    "steel letter '9'"
+  },
+  {
+    "steel_char_colon",
+    "steel_char",
+    "steel letter ':'"
+  },
+  {
+    "steel_char_semicolon",
+    "steel_char",
+    "steel letter ';'"
+  },
+  {
+    "steel_char_less",
+    "steel_char",
+    "steel letter '<'"
+  },
+  {
+    "steel_char_equal",
+    "steel_char",
+    "steel letter '='"
+  },
+  {
+    "steel_char_greater",
+    "steel_char",
+    "steel letter '>'"
+  },
+  {
+    "steel_char_question",
+    "steel_char",
+    "steel letter '?'"
+  },
+  {
+    "steel_char_at",
+    "steel_char",
+    "steel letter '@'"
+  },
+  {
+    "steel_char_a",
+    "steel_char",
+    "steel letter 'A'"
+  },
+  {
+    "steel_char_b",
+    "steel_char",
+    "steel letter 'B'"
+  },
+  {
+    "steel_char_c",
+    "steel_char",
+    "steel letter 'C'"
+  },
+  {
+    "steel_char_d",
+    "steel_char",
+    "steel letter 'D'"
+  },
+  {
+    "steel_char_e",
+    "steel_char",
+    "steel letter 'E'"
+  },
+  {
+    "steel_char_f",
+    "steel_char",
+    "steel letter 'F'"
+  },
+  {
+    "steel_char_g",
+    "steel_char",
+    "steel letter 'G'"
+  },
+  {
+    "steel_char_h",
+    "steel_char",
+    "steel letter 'H'"
+  },
+  {
+    "steel_char_i",
+    "steel_char",
+    "steel letter 'I'"
+  },
+  {
+    "steel_char_j",
+    "steel_char",
+    "steel letter 'J'"
+  },
+  {
+    "steel_char_k",
+    "steel_char",
+    "steel letter 'K'"
+  },
+  {
+    "steel_char_l",
+    "steel_char",
+    "steel letter 'L'"
+  },
+  {
+    "steel_char_m",
+    "steel_char",
+    "steel letter 'M'"
+  },
+  {
+    "steel_char_n",
+    "steel_char",
+    "steel letter 'N'"
+  },
+  {
+    "steel_char_o",
+    "steel_char",
+    "steel letter 'O'"
+  },
+  {
+    "steel_char_p",
+    "steel_char",
+    "steel letter 'P'"
+  },
+  {
+    "steel_char_q",
+    "steel_char",
+    "steel letter 'Q'"
+  },
+  {
+    "steel_char_r",
+    "steel_char",
+    "steel letter 'R'"
+  },
+  {
+    "steel_char_s",
+    "steel_char",
+    "steel letter 'S'"
+  },
+  {
+    "steel_char_t",
+    "steel_char",
+    "steel letter 'T'"
+  },
+  {
+    "steel_char_u",
+    "steel_char",
+    "steel letter 'U'"
+  },
+  {
+    "steel_char_v",
+    "steel_char",
+    "steel letter 'V'"
+  },
+  {
+    "steel_char_w",
+    "steel_char",
+    "steel letter 'W'"
+  },
+  {
+    "steel_char_x",
+    "steel_char",
+    "steel letter 'X'"
+  },
+  {
+    "steel_char_y",
+    "steel_char",
+    "steel letter 'Y'"
+  },
+  {
+    "steel_char_z",
+    "steel_char",
+    "steel letter 'Z'"
+  },
+  {
+    "steel_char_bracketleft",
+    "steel_char",
+    "steel letter '['"
+  },
+  {
+    "steel_char_backslash",
+    "steel_char",
+    "steel letter '\\'"
+  },
+  {
+    "steel_char_bracketright",
+    "steel_char",
+    "steel letter ']'"
+  },
+  {
+    "steel_char_asciicircum",
+    "steel_char",
+    "steel letter '^'"
+  },
+  {
+    "steel_char_underscore",
+    "steel_char",
+    "steel letter '_'"
+  },
+  {
+    "steel_char_copyright",
+    "steel_char",
+    "steel letter '©'"
+  },
+  {
+    "steel_char_aumlaut",
+    "steel_char",
+    "steel letter 'Ä'"
+  },
+  {
+    "steel_char_oumlaut",
+    "steel_char",
+    "steel letter 'Ö'"
+  },
+  {
+    "steel_char_uumlaut",
+    "steel_char",
+    "steel letter 'Ü'"
+  },
+  {
+    "steel_char_degree",
+    "steel_char",
+    "steel letter '°'"
+  },
+  {
+    "steel_char_trademark",
+    "steel_char",
+    "steel letter '®'"
+  },
+  {
+    "steel_char_cursor",
+    "steel_char",
+    "steel letter ' '"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter ''"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter ''"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter ''"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter ''"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter ''"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter ''"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter 'button'"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter 'up'"
+  },
+  {
+    "steel_char_unused",
+    "steel_char",
+    "steel letter 'down'"
+  },
+  {
+    "sperms",
+    "frankie",
+    "sperms"
+  },
+  {
+    "bullet",
+    "frankie",
+    "bullet"
+  },
+  {
+    "heart",
+    "frankie",
+    "heart"
+  },
+  {
+    "cross",
+    "frankie",
+    "cross"
+  },
+  {
+    "frankie",
+    "frankie",
+    "frankie"
+  },
+  {
+    "sign_sperms",
+    "sign",
+    "sign (sperms)"
+  },
+  {
+    "sign_bullet",
+    "sign",
+    "sign (bullet)"
+  },
+  {
+    "sign_heart",
+    "sign",
+    "sign (heart)"
+  },
+  {
+    "sign_cross",
+    "sign",
+    "sign (cross)"
+  },
+  {
+    "sign_frankie",
+    "sign",
+    "sign (frankie)"
+  },
+  {
+    "steel_exit_closed",
+    "steel_exit",
+    "closed steel exit"
+  },
+  {
+    "steel_exit_open",
+    "steel_exit",
+    "open steel exit"
+  },
+  {
+    "dc_steelwall_1_left",
+    "steelwall",
+    "steel wall (left)"
+  },
+  {
+    "dc_steelwall_1_right",
+    "steelwall",
+    "steel wall (right)"
+  },
+  {
+    "dc_steelwall_1_top",
+    "steelwall",
+    "steel wall (top)"
+  },
+  {
+    "dc_steelwall_1_bottom",
+    "steelwall",
+    "steel wall (bottom)"
+  },
+  {
+    "dc_steelwall_1_horizontal",
+    "steelwall",
+    "steel wall (top/bottom)"
+  },
+  {
+    "dc_steelwall_1_vertical",
+    "steelwall",
+    "steel wall (left/right)"
+  },
+  {
+    "dc_steelwall_1_topleft",
+    "steelwall",
+    "steel wall (top/left)"
+  },
+  {
+    "dc_steelwall_1_topright",
+    "steelwall",
+    "steel wall (top/right)"
+  },
+  {
+    "dc_steelwall_1_bottomleft",
+    "steelwall",
+    "steel wall (bottom/left)"
+  },
+  {
+    "dc_steelwall_1_bottomright",
+    "steelwall",
+    "steel wall (bottom/right)"
+  },
+  {
+    "dc_steelwall_1_topleft_2",
+    "steelwall",
+    "steel wall (top/left corner)"
+  },
+  {
+    "dc_steelwall_1_topright_2",
+    "steelwall",
+    "steel wall (top/right corner)"
+  },
+  {
+    "dc_steelwall_1_bottomleft_2",
+    "steelwall",
+    "steel wall (bottom/left corner)"
+  },
+  {
+    "dc_steelwall_1_bottomright_2",
+    "steelwall",
+    "steel wall (bottom/right corner)"
+  },
+  {
+    "dc_steelwall_2_left",
+    "steelwall",
+    "steel wall (left)"
+  },
+  {
+    "dc_steelwall_2_right",
+    "steelwall",
+    "steel wall (right)"
+  },
+  {
+    "dc_steelwall_2_top",
+    "steelwall",
+    "steel wall (top)"
+  },
+  {
+    "dc_steelwall_2_bottom",
+    "steelwall",
+    "steel wall (bottom)"
+  },
+  {
+    "dc_steelwall_2_horizontal",
+    "steelwall",
+    "steel wall (horizontal)"
+  },
+  {
+    "dc_steelwall_2_vertical",
+    "steelwall",
+    "steel wall (vertical)"
+  },
+  {
+    "dc_steelwall_2_middle",
+    "steelwall",
+    "steel wall (middle)"
+  },
+  {
+    "dc_steelwall_2_single",
+    "steelwall",
+    "steel wall (single)"
+  },
+  {
+    "dc_switchgate_switch_up",
+    "switchgate_switch",
+    "switch for switch gate (steel)"
+  },
+  {
+    "dc_switchgate_switch_down",
+    "switchgate_switch",
+    "switch for switch gate (steel)"
+  },
+  {
+    "dc_timegate_switch",
+    "timegate_switch",
+    "switch for time gate (steel)"
+  },
+  {
+    "dc_timegate_switch.active",
+    "timegate_switch",
+    "switch for time gate (steel)"
+  },
+  {
+    "dc_landmine",
+    "dc_landmine",
+    "land mine (DC style, removable)"
+  },
+  {
+    "expandable_steelwall",
+    "steelwall",
+    "growing steel wall"
+  },
+  {
+    "expandable_steelwall_horizontal",
+    "steelwall",
+    "growing steel wall (horizontal)"
+  },
+  {
+    "expandable_steelwall_vertical",
+    "steelwall",
+    "growing steel wall (vertical)"
+  },
+  {
+    "expandable_steelwall_any",
+    "steelwall",
+    "growing steel wall (any direction)"
+  },
+  {
+    "em_exit_closed",
+    "em_exit",
+    "closed exit (EM style)"
+  },
+  {
+    "em_exit_open",
+    "em_exit",
+    "open exit (EM style)"
+  },
+  {
+    "em_steel_exit_closed",
+    "em_steel_exit",
+    "closed steel exit (EM style)"
+  },
+  {
+    "em_steel_exit_open",
+    "em_steel_exit",
+    "open steel exit (EM style)"
+  },
+  {
+    "dc_gate_fake_gray",
+    "gate",
+    "gray door (opened by no key)"
+  },
+  {
+    "dc_magic_wall",
+    "dc_magic_wall",
+    "magic wall (DC style)"
+  },
+  {
+    "quicksand_fast_empty",
+    "quicksand",
+    "fast quicksand (empty)"
+  },
+  {
+    "quicksand_fast_full",
+    "quicksand",
+    "fast quicksand (with rock)"
+  },
 
   /* ----------------------------------------------------------------------- */
   /* "real" (and therefore drawable) runtime elements                        */
@@ -3933,6 +4605,36 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "steel_exit.opening",
+    "steel_exit",
+    "-"
+  },
+  {
+    "steel_exit.closing",
+    "steel_exit",
+    "-"
+  },
+  {
+    "em_exit.opening",
+    "em_exit",
+    "-"
+  },
+  {
+    "em_exit.closing",
+    "em_exit",
+    "-"
+  },
+  {
+    "em_steel_exit.opening",
+    "em_steel_exit",
+    "-"
+  },
+  {
+    "em_steel_exit.closing",
+    "em_steel_exit",
+    "-"
+  },
+  {
     "sp_exit.opening",
     "sp_exit",
     "-"
@@ -3978,12 +4680,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "quicksand_fast.emptying",
+    "quicksand",
+    "-"
+  },
+  {
     "magic_wall.active",
     "magic_wall",
     "-"
   },
   {
     "bd_magic_wall.active",
+    "magic_wall",
+    "-"
+  },
+  {
+    "dc_magic_wall.active",
     "magic_wall",
     "-"
   },
@@ -3998,6 +4710,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "dc_magic_wall_full",
+    "magic_wall",
+    "-"
+  },
+  {
     "magic_wall.emptying",
     "magic_wall",
     "-"
@@ -4008,12 +4725,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "dc_magic_wall.emptying",
+    "magic_wall",
+    "-"
+  },
+  {
     "magic_wall_dead",
     "magic_wall",
     "-"
   },
   {
     "bd_magic_wall_dead",
+    "magic_wall",
+    "-"
+  },
+  {
+    "dc_magic_wall_dead",
     "magic_wall",
     "-"
   },
@@ -4084,6 +4811,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "",
   },
   {
+    "dc_gate_white_gray.active",
+    "gate",
+    "",
+  },
+  {
     "emc_dripper.active",
     "dripper",
     "dripper"
@@ -4144,6 +4876,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "expandable_steelwall.growing",
+    "-",
+    "-"
+  },
+  {
     "flames",
     "-",
     "-"
@@ -4179,12 +4916,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "quicksand_fast.filling",
+    "quicksand",
+    "-"
+  },
+  {
     "magic_wall.filling",
     "-",
     "-"
   },
   {
     "bd_magic_wall.filling",
+    "-",
+    "-"
+  },
+  {
+    "dc_magic_wall.filling",
     "-",
     "-"
   },
@@ -4334,6 +5081,46 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "graphic_1",
+    "graphic",
+    "-"
+  },
+  {
+    "graphic_2",
+    "graphic",
+    "-"
+  },
+  {
+    "graphic_3",
+    "graphic",
+    "-"
+  },
+  {
+    "graphic_4",
+    "graphic",
+    "-"
+  },
+  {
+    "graphic_5",
+    "graphic",
+    "-"
+  },
+  {
+    "graphic_6",
+    "graphic",
+    "-"
+  },
+  {
+    "graphic_7",
+    "graphic",
+    "-"
+  },
+  {
+    "graphic_8",
+    "graphic",
+    "-"
+  },
+  {
     "internal_clipboard_custom",
     "internal",
     "empty custom element"
@@ -4442,6 +5229,16 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "internal_cascade_chars.active",
     "internal",
     "hide text elements"
+  },
+  {
+    "internal_cascade_steel_chars",
+    "internal",
+    "show steel text elements"
+  },
+  {
+    "internal_cascade_steel_chars.active",
+    "internal",
+    "hide steel text elements"
   },
   {
     "internal_cascade_ce",
@@ -4604,239 +5401,43 @@ struct ElementActionInfo element_action_info[NUM_ACTIONS + 1 + 1] =
 
 struct ElementDirectionInfo element_direction_info[NUM_DIRECTIONS_FULL + 1] =
 {
-  { ".left",		MV_BIT_LEFT			},
-  { ".right",		MV_BIT_RIGHT			},
-  { ".up",		MV_BIT_UP			},
-  { ".down",		MV_BIT_DOWN			},
-  { ".upleft",		MV_BIT_UP			},
-  { ".upright",		MV_BIT_RIGHT			},
-  { ".downleft",	MV_BIT_LEFT			},
-  { ".downright",	MV_BIT_DOWN			},
+  { ".left",			MV_BIT_LEFT				},
+  { ".right",			MV_BIT_RIGHT				},
+  { ".up",			MV_BIT_UP				},
+  { ".down",			MV_BIT_DOWN				},
+  { ".upleft",			MV_BIT_UP				},
+  { ".upright",			MV_BIT_RIGHT				},
+  { ".downleft",		MV_BIT_LEFT				},
+  { ".downright",		MV_BIT_DOWN				},
 
-  { NULL,		0				}
+  { NULL,			0					}
 };
 
 struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1 + 1] =
 {
-  { ".[DEFAULT]",	GFX_SPECIAL_ARG_DEFAULT,	},
-  { ".TITLE",		GFX_SPECIAL_ARG_TITLE,		},
-  { ".MESSAGE",		GFX_SPECIAL_ARG_MESSAGE,	},
-  { ".MAIN",		GFX_SPECIAL_ARG_MAIN,		},
-  { ".LEVELS",		GFX_SPECIAL_ARG_LEVELS		},
-  { ".SCORES",		GFX_SPECIAL_ARG_SCORES,		},
-  { ".EDITOR",		GFX_SPECIAL_ARG_EDITOR,		},
-  { ".INFO",		GFX_SPECIAL_ARG_INFO,		},
-  { ".SETUP",		GFX_SPECIAL_ARG_SETUP,		},
-  { ".PLAYING",		GFX_SPECIAL_ARG_PLAYING,	},
-  { ".DOOR",		GFX_SPECIAL_ARG_DOOR,		},
-  { ".PREVIEW",		GFX_SPECIAL_ARG_PREVIEW,	},
-  { ".CRUMBLED",	GFX_SPECIAL_ARG_CRUMBLED,	},
+  { ".[DEFAULT]",		GFX_SPECIAL_ARG_DEFAULT,		},
+  { ".LOADING",			GFX_SPECIAL_ARG_LOADING,		},
+  { ".TITLE_INITIAL",		GFX_SPECIAL_ARG_TITLE_INITIAL,		},
+  { ".TITLE",			GFX_SPECIAL_ARG_TITLE,			},
+  { ".MAIN",			GFX_SPECIAL_ARG_MAIN,			},
+  { ".LEVELS",			GFX_SPECIAL_ARG_LEVELS			},
+  { ".SCORES",			GFX_SPECIAL_ARG_SCORES,			},
+  { ".EDITOR",			GFX_SPECIAL_ARG_EDITOR,			},
+  { ".INFO",			GFX_SPECIAL_ARG_INFO,			},
+  { ".SETUP",			GFX_SPECIAL_ARG_SETUP,			},
+  { ".PLAYING",			GFX_SPECIAL_ARG_PLAYING,		},
+  { ".DOOR",			GFX_SPECIAL_ARG_DOOR,			},
+  { ".PANEL",			GFX_SPECIAL_ARG_PANEL,			},
+  { ".PREVIEW",			GFX_SPECIAL_ARG_PREVIEW,		},
+  { ".CRUMBLED",		GFX_SPECIAL_ARG_CRUMBLED,		},
 
   /* empty suffix always matches -- check as last entry in InitMusicInfo() */
-  { "",			GFX_SPECIAL_ARG_DEFAULT,	},
+  { "",				GFX_SPECIAL_ARG_DEFAULT,		},
 
-  { NULL,		0,				}
+  { NULL,			0,					}
 };
 
-struct TokenIntPtrInfo image_config_vars[] =
-{
-  { "global.num_toons",		&global.num_toons			      },
-
-  { "border.draw_masked.TITLE",	 &border.draw_masked[GFX_SPECIAL_ARG_TITLE]   },
-  { "border.draw_masked.MAIN",	 &border.draw_masked[GFX_SPECIAL_ARG_MAIN]    },
-  { "border.draw_masked.LEVELS", &border.draw_masked[GFX_SPECIAL_ARG_LEVELS]  },
-  { "border.draw_masked.SCORES", &border.draw_masked[GFX_SPECIAL_ARG_SCORES]  },
-  { "border.draw_masked.EDITOR", &border.draw_masked[GFX_SPECIAL_ARG_EDITOR]  },
-  { "border.draw_masked.INFO",	 &border.draw_masked[GFX_SPECIAL_ARG_INFO]    },
-  { "border.draw_masked.SETUP",	 &border.draw_masked[GFX_SPECIAL_ARG_SETUP]   },
-  { "border.draw_masked.PLAYING",&border.draw_masked[GFX_SPECIAL_ARG_PLAYING] },
-  { "border.draw_masked.DOOR",	 &border.draw_masked[GFX_SPECIAL_ARG_DOOR]    },
-
-  { "title.fade_delay",		&title.fade_delay			      },
-  { "title.post_delay",		&title.post_delay			      },
-  { "title.auto_delay",		&title.auto_delay			      },
-
-  { "menu.fade_delay",		&menu.fade_delay			      },
-  { "menu.post_delay",		&menu.post_delay			      },
-  { "menu.auto_delay",		&menu.auto_delay			      },
-
-  { "menu.draw_xoffset",	&menu.draw_xoffset[GFX_SPECIAL_ARG_DEFAULT]   },
-  { "menu.draw_yoffset",	&menu.draw_yoffset[GFX_SPECIAL_ARG_DEFAULT]   },
-  { "menu.draw_xoffset.MAIN",	&menu.draw_xoffset[GFX_SPECIAL_ARG_MAIN]      },
-  { "menu.draw_yoffset.MAIN",	&menu.draw_yoffset[GFX_SPECIAL_ARG_MAIN]      },
-  { "menu.draw_xoffset.LEVELS",	&menu.draw_xoffset[GFX_SPECIAL_ARG_LEVELS]    },
-  { "menu.draw_yoffset.LEVELS",	&menu.draw_yoffset[GFX_SPECIAL_ARG_LEVELS]    },
-  { "menu.draw_xoffset.SCORES",	&menu.draw_xoffset[GFX_SPECIAL_ARG_SCORES]    },
-  { "menu.draw_yoffset.SCORES",	&menu.draw_yoffset[GFX_SPECIAL_ARG_SCORES]    },
-  { "menu.draw_xoffset.EDITOR",	&menu.draw_xoffset[GFX_SPECIAL_ARG_EDITOR]    },
-  { "menu.draw_yoffset.EDITOR",	&menu.draw_yoffset[GFX_SPECIAL_ARG_EDITOR]    },
-  { "menu.draw_xoffset.INFO",	&menu.draw_xoffset[GFX_SPECIAL_ARG_INFO]      },
-  { "menu.draw_yoffset.INFO",	&menu.draw_yoffset[GFX_SPECIAL_ARG_INFO]      },
-  { "menu.draw_xoffset.INFO[ELEMENTS]",
-    &menu.draw_xoffset_info[GFX_SPECIAL_ARG_INFO_ELEMENTS]		      },
-  { "menu.draw_yoffset.INFO[ELEMENTS]",
-    &menu.draw_yoffset_info[GFX_SPECIAL_ARG_INFO_ELEMENTS]		      },
-  { "menu.draw_xoffset.INFO[MUSIC]",
-    &menu.draw_xoffset_info[GFX_SPECIAL_ARG_INFO_MUSIC]			      },
-  { "menu.draw_yoffset.INFO[MUSIC]",
-    &menu.draw_yoffset_info[GFX_SPECIAL_ARG_INFO_MUSIC]			      },
-  { "menu.draw_xoffset.INFO[CREDITS]",
-    &menu.draw_xoffset_info[GFX_SPECIAL_ARG_INFO_CREDITS]		      },
-  { "menu.draw_yoffset.INFO[CREDITS]",
-    &menu.draw_yoffset_info[GFX_SPECIAL_ARG_INFO_CREDITS]		      },
-  { "menu.draw_xoffset.INFO[PROGRAM]",
-    &menu.draw_xoffset_info[GFX_SPECIAL_ARG_INFO_PROGRAM]		      },
-  { "menu.draw_yoffset.INFO[PROGRAM]",
-    &menu.draw_yoffset_info[GFX_SPECIAL_ARG_INFO_PROGRAM]		      },
-  { "menu.draw_xoffset.INFO[LEVELSET]",
-    &menu.draw_xoffset_info[GFX_SPECIAL_ARG_INFO_LEVELSET]		      },
-  { "menu.draw_yoffset.INFO[LEVELSET]",
-    &menu.draw_yoffset_info[GFX_SPECIAL_ARG_INFO_LEVELSET]		      },
-  { "menu.draw_xoffset.SETUP",	&menu.draw_xoffset[GFX_SPECIAL_ARG_SETUP]     },
-  { "menu.draw_yoffset.SETUP",	&menu.draw_yoffset[GFX_SPECIAL_ARG_SETUP]     },
-
-  { "menu.scrollbar_xoffset",	&menu.scrollbar_xoffset			      },
-
-  { "menu.list_size",		&menu.list_size[GFX_SPECIAL_ARG_DEFAULT]      },
-  { "menu.list_size.LEVELS",	&menu.list_size[GFX_SPECIAL_ARG_LEVELS]	      },
-  { "menu.list_size.SCORES",	&menu.list_size[GFX_SPECIAL_ARG_SCORES]	      },
-  { "menu.list_size.INFO",	&menu.list_size[GFX_SPECIAL_ARG_INFO]	      },
-
-  { "main.button.name.x",	&menu.main.button.name.x		      },
-  { "main.button.name.y",	&menu.main.button.name.y		      },
-  { "main.button.levels.x",	&menu.main.button.levels.x		      },
-  { "main.button.levels.y",	&menu.main.button.levels.y		      },
-  { "main.button.scores.x",	&menu.main.button.scores.x		      },
-  { "main.button.scores.y",	&menu.main.button.scores.y		      },
-  { "main.button.editor.x",	&menu.main.button.editor.x		      },
-  { "main.button.editor.y",	&menu.main.button.editor.y		      },
-  { "main.button.info.x",	&menu.main.button.info.x		      },
-  { "main.button.info.y",	&menu.main.button.info.y		      },
-  { "main.button.game.x",	&menu.main.button.game.x		      },
-  { "main.button.game.y",	&menu.main.button.game.y		      },
-  { "main.button.setup.x",	&menu.main.button.setup.x		      },
-  { "main.button.setup.y",	&menu.main.button.setup.y		      },
-  { "main.button.quit.x",	&menu.main.button.quit.x		      },
-  { "main.button.quit.y",	&menu.main.button.quit.y		      },
-
-  { "main.button.prev_level.x",	&menu.main.button.prev_level.x		      },
-  { "main.button.prev_level.y",	&menu.main.button.prev_level.y		      },
-  { "main.button.next_level.x",	&menu.main.button.next_level.x		      },
-  { "main.button.next_level.y",	&menu.main.button.next_level.y		      },
-
-  { "main.text.name.x",		&menu.main.text.name.x			      },
-  { "main.text.name.y",		&menu.main.text.name.y			      },
-  { "main.text.name.width",	&menu.main.text.name.width		      },
-  { "main.text.name.height",	&menu.main.text.name.height		      },
-  { "main.text.name.align",	&menu.main.text.name.align		      },
-  { "main.text.levels.x",	&menu.main.text.levels.x		      },
-  { "main.text.levels.y",	&menu.main.text.levels.y		      },
-  { "main.text.levels.width",	&menu.main.text.levels.width		      },
-  { "main.text.levels.height",	&menu.main.text.levels.height		      },
-  { "main.text.levels.align",	&menu.main.text.levels.align		      },
-  { "main.text.scores.x",	&menu.main.text.scores.x		      },
-  { "main.text.scores.y",	&menu.main.text.scores.y		      },
-  { "main.text.scores.width",	&menu.main.text.scores.width		      },
-  { "main.text.scores.height",	&menu.main.text.scores.height		      },
-  { "main.text.scores.align",	&menu.main.text.scores.align		      },
-  { "main.text.editor.x",	&menu.main.text.editor.x		      },
-  { "main.text.editor.y",	&menu.main.text.editor.y		      },
-  { "main.text.editor.width",	&menu.main.text.editor.width		      },
-  { "main.text.editor.height",	&menu.main.text.editor.height		      },
-  { "main.text.editor.align",	&menu.main.text.editor.align		      },
-  { "main.text.info.x",		&menu.main.text.info.x			      },
-  { "main.text.info.y",		&menu.main.text.info.y			      },
-  { "main.text.info.width",	&menu.main.text.info.width		      },
-  { "main.text.info.height",	&menu.main.text.info.height		      },
-  { "main.text.info.align",	&menu.main.text.info.align		      },
-  { "main.text.game.x",		&menu.main.text.game.x			      },
-  { "main.text.game.y",		&menu.main.text.game.y			      },
-  { "main.text.game.width",	&menu.main.text.game.width		      },
-  { "main.text.game.height",	&menu.main.text.game.height		      },
-  { "main.text.game.align",	&menu.main.text.game.align		      },
-  { "main.text.setup.x",	&menu.main.text.setup.x			      },
-  { "main.text.setup.y",	&menu.main.text.setup.y			      },
-  { "main.text.setup.width",	&menu.main.text.setup.width		      },
-  { "main.text.setup.height",	&menu.main.text.setup.height		      },
-  { "main.text.setup.align",	&menu.main.text.setup.align		      },
-  { "main.text.quit.x",		&menu.main.text.quit.x			      },
-  { "main.text.quit.y",		&menu.main.text.quit.y			      },
-  { "main.text.quit.width",	&menu.main.text.quit.width		      },
-  { "main.text.quit.height",	&menu.main.text.quit.height		      },
-  { "main.text.quit.align",	&menu.main.text.quit.align		      },
-
-  { "main.text.current_level.x",	&menu.main.text.current_level.x	      },
-  { "main.text.current_level.y",	&menu.main.text.current_level.y	      },
-  { "main.text.current_level.align",	&menu.main.text.current_level.align   },
-  { "main.text.first_level.x",		&menu.main.text.first_level.x	      },
-  { "main.text.first_level.y",		&menu.main.text.first_level.y	      },
-  { "main.text.first_level.align",	&menu.main.text.first_level.align     },
-  { "main.text.last_level.x",		&menu.main.text.last_level.x	      },
-  { "main.text.last_level.y",		&menu.main.text.last_level.y	      },
-  { "main.text.last_level.align",	&menu.main.text.last_level.align      },
-  { "main.text.level_info_1.x",		&menu.main.text.level_info_1.x	      },
-  { "main.text.level_info_1.y",		&menu.main.text.level_info_1.y	      },
-  { "main.text.level_info_1.align",	&menu.main.text.level_info_1.align    },
-  { "main.text.level_info_2.x",		&menu.main.text.level_info_2.x	      },
-  { "main.text.level_info_2.y",		&menu.main.text.level_info_2.y	      },
-  { "main.text.level_info_2.align",	&menu.main.text.level_info_2.align    },
-  { "main.text.title_1.x",		&menu.main.text.title_1.x	      },
-  { "main.text.title_1.y",		&menu.main.text.title_1.y	      },
-  { "main.text.title_1.align",		&menu.main.text.title_1.align	      },
-  { "main.text.title_2.x",		&menu.main.text.title_2.x	      },
-  { "main.text.title_2.y",		&menu.main.text.title_2.y	      },
-  { "main.text.title_2.align",		&menu.main.text.title_2.align	      },
-  { "main.text.title_3.x",		&menu.main.text.title_3.x	      },
-  { "main.text.title_3.y",		&menu.main.text.title_3.y	      },
-  { "main.text.title_3.align",		&menu.main.text.title_3.align	      },
-
-  { "main.input.name.x",	&menu.main.input.name.x			      },
-  { "main.input.name.y",	&menu.main.input.name.y			      },
-  { "main.input.name.align",	&menu.main.input.name.align		      },
-
-  { "preview.x",		&preview.x				      },
-  { "preview.y",		&preview.y				      },
-  { "preview.align",		&preview.align				      },
-  { "preview.xsize",		&preview.xsize				      },
-  { "preview.ysize",		&preview.ysize				      },
-  { "preview.xoffset",		&preview.xoffset			      },
-  { "preview.yoffset",		&preview.yoffset			      },
-  { "preview.tile_size",	&preview.tile_size			      },
-  { "preview.step_offset",	&preview.step_offset			      },
-  { "preview.step_delay",	&preview.step_delay			      },
-  { "preview.anim_mode",	&preview.anim_mode			      },
-
-  { "door_1.width",		&door_1.width				      },
-  { "door_1.height",		&door_1.height				      },
-  { "door_1.step_offset",	&door_1.step_offset			      },
-  { "door_1.step_delay",	&door_1.step_delay			      },
-  { "door_1.anim_mode",		&door_1.anim_mode			      },
-  { "door_2.width",		&door_2.width				      },
-  { "door_2.height",		&door_2.height				      },
-  { "door_2.step_offset",	&door_2.step_offset			      },
-  { "door_2.step_delay",	&door_2.step_delay			      },
-  { "door_2.anim_mode",		&door_2.anim_mode			      },
-
-  { "game.panel.level.x",	&game.panel.level.x			      },
-  { "game.panel.level.y",	&game.panel.level.y			      },
-  { "game.panel.gems.x",	&game.panel.gems.x			      },
-  { "game.panel.gems.y",	&game.panel.gems.y			      },
-  { "game.panel.inventory.x",	&game.panel.inventory.x			      },
-  { "game.panel.inventory.y",	&game.panel.inventory.y			      },
-  { "game.panel.keys.x",	&game.panel.keys.x			      },
-  { "game.panel.keys.y",	&game.panel.keys.y			      },
-  { "game.panel.score.x",	&game.panel.score.x			      },
-  { "game.panel.score.y",	&game.panel.score.y			      },
-  { "game.panel.time.x",	&game.panel.time.x			      },
-  { "game.panel.time.y",	&game.panel.time.y			      },
-
-  { "[player].boring_delay_fixed",	&game.player_boring_delay_fixed       },
-  { "[player].boring_delay_random",	&game.player_boring_delay_random      },
-  { "[player].sleeping_delay_fixed",	&game.player_sleeping_delay_fixed     },
-  { "[player].sleeping_delay_random",	&game.player_sleeping_delay_random    },
-
-  { NULL,			NULL,					      }
-};
+#include "conf_var.c"	/* include auto-generated data structure definitions */
 
 
 /* ------------------------------------------------------------------------- */
@@ -4884,6 +5485,10 @@ struct FontInfo font_info[NUM_FONTS + 1] =
   { "font.level_number"		},
   { "font.tape_recorder"	},
   { "font.game_info"		},
+  { "font.info.elements"	},
+  { "font.info.levelset"	},
+
+  { NULL			}
 };
 
 

@@ -59,6 +59,8 @@
 #define USE_FIX_KILLED_BY_NON_WALKABLE	(USE_NEW_STUFF		* 1)
 #define USE_FIX_IMPACT_COLLISION	(USE_NEW_STUFF		* 1)
 
+#define USE_GFX_RESET_WHEN_NOT_MOVING	(USE_NEW_STUFF		* 1)
+
 
 /* for DigField() */
 #define DF_NO_PUSH		0
@@ -85,27 +87,33 @@
 #define EX_TYPE_DYNA		(1 << 4)
 #define EX_TYPE_SINGLE_TILE	(EX_TYPE_CENTER | EX_TYPE_BORDER)
 
-#define	PANEL_DEACTIVATED(p)	((p).x < 0 || (p).y < 0)
+#define PANEL_OFF()		(local_player->LevelSolved_PanelOff)
+#define	PANEL_DEACTIVATED(p)	((p)->x < 0 || (p)->y < 0 || PANEL_OFF())
+#define PANEL_XPOS(p)		(DX + ALIGNED_TEXT_XPOS(p))
+#define PANEL_YPOS(p)		(DY + ALIGNED_TEXT_YPOS(p))
 
 /* special positions in the game control window (relative to control window) */
-#define XX_LEVEL1		(game.panel.level.x)
-#define XX_LEVEL2		(game.panel.level.x - 1)
-#define YY_LEVEL		(game.panel.level.y)
-#define XX_EMERALDS		(game.panel.gems.x)
-#define YY_EMERALDS		(game.panel.gems.y)
-#define XX_DYNAMITE		(game.panel.inventory.x)
-#define YY_DYNAMITE		(game.panel.inventory.y)
-#define XX_KEYS			(game.panel.keys.x)
-#define YY_KEYS			(game.panel.keys.y)
-#define XX_SCORE		(game.panel.score.x)
-#define YY_SCORE		(game.panel.score.y)
-#define XX_TIME1		(game.panel.time.x)
-#define XX_TIME2		(game.panel.time.x + 1)
-#define YY_TIME			(game.panel.time.y)
+#define XX_LEVEL1		(PANEL_XPOS(game.panel.level))
+#define XX_LEVEL2		(PANEL_XPOS(game.panel.level) - 1)
+#define XX_LEVEL		(PANEL_XPOS(game.panel.level))
+#define YY_LEVEL		(PANEL_YPOS(game.panel.level))
+#define XX_EMERALDS		(PANEL_XPOS(game.panel.gems))
+#define YY_EMERALDS		(PANEL_YPOS(game.panel.gems))
+#define XX_DYNAMITE		(PANEL_XPOS(game.panel.inventory))
+#define YY_DYNAMITE		(PANEL_YPOS(game.panel.inventory))
+#define XX_KEYS			(PANEL_XPOS(game.panel.keys))
+#define YY_KEYS			(PANEL_YPOS(game.panel.keys))
+#define XX_SCORE		(PANEL_XPOS(game.panel.score))
+#define YY_SCORE		(PANEL_YPOS(game.panel.score))
+#define XX_TIME1		(PANEL_XPOS(game.panel.time))
+#define XX_TIME2		(PANEL_XPOS(game.panel.time) + 1)
+#define XX_TIME			(PANEL_XPOS(game.panel.time))
+#define YY_TIME			(PANEL_YPOS(game.panel.time))
 
 /* special positions in the game control window (relative to main window) */
 #define DX_LEVEL1		(DX + XX_LEVEL1)
 #define DX_LEVEL2		(DX + XX_LEVEL2)
+#define DX_LEVEL		(DX + XX_LEVEL)
 #define DY_LEVEL		(DY + YY_LEVEL)
 #define DX_EMERALDS		(DX + XX_EMERALDS)
 #define DY_EMERALDS		(DY + YY_EMERALDS)
@@ -117,7 +125,719 @@
 #define DY_SCORE		(DY + YY_SCORE)
 #define DX_TIME1		(DX + XX_TIME1)
 #define DX_TIME2		(DX + XX_TIME2)
+#define DX_TIME			(DX + XX_TIME)
 #define DY_TIME			(DY + YY_TIME)
+
+#if 1
+/* game panel display and control definitions */
+
+#define GAME_PANEL_LEVEL_NUMBER			0
+#define GAME_PANEL_GEMS				1
+#define GAME_PANEL_INVENTORY_COUNT		2
+#define GAME_PANEL_INVENTORY_FIRST_1		3
+#define GAME_PANEL_INVENTORY_FIRST_2		4
+#define GAME_PANEL_INVENTORY_FIRST_3		5
+#define GAME_PANEL_INVENTORY_FIRST_4		6
+#define GAME_PANEL_INVENTORY_FIRST_5		7
+#define GAME_PANEL_INVENTORY_FIRST_6		8
+#define GAME_PANEL_INVENTORY_FIRST_7		9
+#define GAME_PANEL_INVENTORY_FIRST_8		10
+#define GAME_PANEL_INVENTORY_LAST_1		11
+#define GAME_PANEL_INVENTORY_LAST_2		12
+#define GAME_PANEL_INVENTORY_LAST_3		13
+#define GAME_PANEL_INVENTORY_LAST_4		14
+#define GAME_PANEL_INVENTORY_LAST_5		15
+#define GAME_PANEL_INVENTORY_LAST_6		16
+#define GAME_PANEL_INVENTORY_LAST_7		17
+#define GAME_PANEL_INVENTORY_LAST_8		18
+#define GAME_PANEL_KEY_1			19
+#define GAME_PANEL_KEY_2			20
+#define GAME_PANEL_KEY_3			21
+#define GAME_PANEL_KEY_4			22
+#define GAME_PANEL_KEY_5			23
+#define GAME_PANEL_KEY_6			24
+#define GAME_PANEL_KEY_7			25
+#define GAME_PANEL_KEY_8			26
+#define GAME_PANEL_KEY_WHITE			27
+#define GAME_PANEL_KEY_WHITE_COUNT		28
+#define GAME_PANEL_SCORE			29
+#define GAME_PANEL_TIME				30
+#define GAME_PANEL_TIME_HH			31
+#define GAME_PANEL_TIME_MM			32
+#define GAME_PANEL_TIME_SS			33
+#define GAME_PANEL_SHIELD_NORMAL		34
+#define GAME_PANEL_SHIELD_NORMAL_TIME		35
+#define GAME_PANEL_SHIELD_DEADLY		36
+#define GAME_PANEL_SHIELD_DEADLY_TIME		37
+#define GAME_PANEL_EXIT				38
+#define GAME_PANEL_EMC_MAGIC_BALL		39
+#define GAME_PANEL_EMC_MAGIC_BALL_SWITCH	40
+#define GAME_PANEL_LIGHT_SWITCH			41
+#define GAME_PANEL_LIGHT_SWITCH_TIME		42
+#define GAME_PANEL_TIMEGATE_SWITCH		43
+#define GAME_PANEL_TIMEGATE_SWITCH_TIME		44
+#define GAME_PANEL_SWITCHGATE_SWITCH		45
+#define GAME_PANEL_EMC_LENSES			46
+#define GAME_PANEL_EMC_LENSES_TIME		47
+#define GAME_PANEL_EMC_MAGNIFIER		48
+#define GAME_PANEL_EMC_MAGNIFIER_TIME		49
+#define GAME_PANEL_BALLOON_SWITCH		50
+#define GAME_PANEL_DYNABOMB_NUMBER		51
+#define GAME_PANEL_DYNABOMB_SIZE		52
+#define GAME_PANEL_DYNABOMB_POWER		53
+#define GAME_PANEL_PENGUINS			54
+#define GAME_PANEL_SOKOBAN_OBJECTS		55
+#define GAME_PANEL_SOKOBAN_FIELDS		56
+#define GAME_PANEL_ROBOT_WHEEL			57
+#define GAME_PANEL_CONVEYOR_BELT_1		58
+#define GAME_PANEL_CONVEYOR_BELT_2		59
+#define GAME_PANEL_CONVEYOR_BELT_3		60
+#define GAME_PANEL_CONVEYOR_BELT_4		61
+#define GAME_PANEL_CONVEYOR_BELT_1_SWITCH	62
+#define GAME_PANEL_CONVEYOR_BELT_2_SWITCH	63
+#define GAME_PANEL_CONVEYOR_BELT_3_SWITCH	64
+#define GAME_PANEL_CONVEYOR_BELT_4_SWITCH	65
+#define GAME_PANEL_MAGIC_WALL			66
+#define GAME_PANEL_MAGIC_WALL_TIME		67
+#define GAME_PANEL_GRAVITY_STATE		68
+#define GAME_PANEL_GRAPHIC_1			69
+#define GAME_PANEL_GRAPHIC_2			70
+#define GAME_PANEL_GRAPHIC_3			71
+#define GAME_PANEL_GRAPHIC_4			72
+#define GAME_PANEL_GRAPHIC_5			73
+#define GAME_PANEL_GRAPHIC_6			74
+#define GAME_PANEL_GRAPHIC_7			75
+#define GAME_PANEL_GRAPHIC_8			76
+#define GAME_PANEL_ELEMENT_1			77
+#define GAME_PANEL_ELEMENT_2			78
+#define GAME_PANEL_ELEMENT_3			79
+#define GAME_PANEL_ELEMENT_4			80
+#define GAME_PANEL_ELEMENT_5			81
+#define GAME_PANEL_ELEMENT_6			82
+#define GAME_PANEL_ELEMENT_7			83
+#define GAME_PANEL_ELEMENT_8			84
+#define GAME_PANEL_ELEMENT_COUNT_1		85
+#define GAME_PANEL_ELEMENT_COUNT_2		86
+#define GAME_PANEL_ELEMENT_COUNT_3		87
+#define GAME_PANEL_ELEMENT_COUNT_4		88
+#define GAME_PANEL_ELEMENT_COUNT_5		89
+#define GAME_PANEL_ELEMENT_COUNT_6		90
+#define GAME_PANEL_ELEMENT_COUNT_7		91
+#define GAME_PANEL_ELEMENT_COUNT_8		92
+#define GAME_PANEL_CE_SCORE_1			93
+#define GAME_PANEL_CE_SCORE_2			94
+#define GAME_PANEL_CE_SCORE_3			95
+#define GAME_PANEL_CE_SCORE_4			96
+#define GAME_PANEL_CE_SCORE_5			97
+#define GAME_PANEL_CE_SCORE_6			98
+#define GAME_PANEL_CE_SCORE_7			99
+#define GAME_PANEL_CE_SCORE_8			100
+#define GAME_PANEL_CE_SCORE_1_ELEMENT		101
+#define GAME_PANEL_CE_SCORE_2_ELEMENT		102
+#define GAME_PANEL_CE_SCORE_3_ELEMENT		103
+#define GAME_PANEL_CE_SCORE_4_ELEMENT		104
+#define GAME_PANEL_CE_SCORE_5_ELEMENT		105
+#define GAME_PANEL_CE_SCORE_6_ELEMENT		106
+#define GAME_PANEL_CE_SCORE_7_ELEMENT		107
+#define GAME_PANEL_CE_SCORE_8_ELEMENT		108
+#define GAME_PANEL_PLAYER_NAME			109
+#define GAME_PANEL_LEVEL_NAME			110
+#define GAME_PANEL_LEVEL_AUTHOR			111
+
+#define NUM_GAME_PANEL_CONTROLS			112
+
+struct GamePanelOrderInfo
+{
+  int nr;
+  int sort_priority;
+};
+
+static struct GamePanelOrderInfo game_panel_order[NUM_GAME_PANEL_CONTROLS];
+
+struct GamePanelControlInfo
+{
+  int nr;
+
+  struct TextPosInfo *pos;
+  int type;
+
+  int value, last_value;
+  int frame, last_frame;
+  int gfx_frame;
+  int gfx_random;
+};
+
+static struct GamePanelControlInfo game_panel_controls[] =
+{
+  {
+    GAME_PANEL_LEVEL_NUMBER,
+    &game.panel.level_number,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_GEMS,
+    &game.panel.gems,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_INVENTORY_COUNT,
+    &game.panel.inventory_count,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_INVENTORY_FIRST_1,
+    &game.panel.inventory_first[0],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_FIRST_2,
+    &game.panel.inventory_first[1],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_FIRST_3,
+    &game.panel.inventory_first[2],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_FIRST_4,
+    &game.panel.inventory_first[3],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_FIRST_5,
+    &game.panel.inventory_first[4],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_FIRST_6,
+    &game.panel.inventory_first[5],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_FIRST_7,
+    &game.panel.inventory_first[6],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_FIRST_8,
+    &game.panel.inventory_first[7],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_LAST_1,
+    &game.panel.inventory_last[0],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_LAST_2,
+    &game.panel.inventory_last[1],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_LAST_3,
+    &game.panel.inventory_last[2],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_LAST_4,
+    &game.panel.inventory_last[3],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_LAST_5,
+    &game.panel.inventory_last[4],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_LAST_6,
+    &game.panel.inventory_last[5],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_LAST_7,
+    &game.panel.inventory_last[6],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_INVENTORY_LAST_8,
+    &game.panel.inventory_last[7],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_1,
+    &game.panel.key[0],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_2,
+    &game.panel.key[1],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_3,
+    &game.panel.key[2],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_4,
+    &game.panel.key[3],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_5,
+    &game.panel.key[4],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_6,
+    &game.panel.key[5],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_7,
+    &game.panel.key[6],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_8,
+    &game.panel.key[7],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_WHITE,
+    &game.panel.key_white,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_KEY_WHITE_COUNT,
+    &game.panel.key_white_count,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_SCORE,
+    &game.panel.score,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_TIME,
+    &game.panel.time,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_TIME_HH,
+    &game.panel.time_hh,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_TIME_MM,
+    &game.panel.time_mm,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_TIME_SS,
+    &game.panel.time_ss,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_SHIELD_NORMAL,
+    &game.panel.shield_normal,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_SHIELD_NORMAL_TIME,
+    &game.panel.shield_normal_time,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_SHIELD_DEADLY,
+    &game.panel.shield_deadly,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_SHIELD_DEADLY_TIME,
+    &game.panel.shield_deadly_time,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_EXIT,
+    &game.panel.exit,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_EMC_MAGIC_BALL,
+    &game.panel.emc_magic_ball,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_EMC_MAGIC_BALL_SWITCH,
+    &game.panel.emc_magic_ball_switch,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_LIGHT_SWITCH,
+    &game.panel.light_switch,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_LIGHT_SWITCH_TIME,
+    &game.panel.light_switch_time,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_TIMEGATE_SWITCH,
+    &game.panel.timegate_switch,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_TIMEGATE_SWITCH_TIME,
+    &game.panel.timegate_switch_time,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_SWITCHGATE_SWITCH,
+    &game.panel.switchgate_switch,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_EMC_LENSES,
+    &game.panel.emc_lenses,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_EMC_LENSES_TIME,
+    &game.panel.emc_lenses_time,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_EMC_MAGNIFIER,
+    &game.panel.emc_magnifier,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_EMC_MAGNIFIER_TIME,
+    &game.panel.emc_magnifier_time,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_BALLOON_SWITCH,
+    &game.panel.balloon_switch,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_DYNABOMB_NUMBER,
+    &game.panel.dynabomb_number,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_DYNABOMB_SIZE,
+    &game.panel.dynabomb_size,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_DYNABOMB_POWER,
+    &game.panel.dynabomb_power,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_PENGUINS,
+    &game.panel.penguins,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_SOKOBAN_OBJECTS,
+    &game.panel.sokoban_objects,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_SOKOBAN_FIELDS,
+    &game.panel.sokoban_fields,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_ROBOT_WHEEL,
+    &game.panel.robot_wheel,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CONVEYOR_BELT_1,
+    &game.panel.conveyor_belt[0],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CONVEYOR_BELT_2,
+    &game.panel.conveyor_belt[1],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CONVEYOR_BELT_3,
+    &game.panel.conveyor_belt[2],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CONVEYOR_BELT_4,
+    &game.panel.conveyor_belt[3],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CONVEYOR_BELT_1_SWITCH,
+    &game.panel.conveyor_belt_switch[0],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CONVEYOR_BELT_2_SWITCH,
+    &game.panel.conveyor_belt_switch[1],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CONVEYOR_BELT_3_SWITCH,
+    &game.panel.conveyor_belt_switch[2],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CONVEYOR_BELT_4_SWITCH,
+    &game.panel.conveyor_belt_switch[3],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_MAGIC_WALL,
+    &game.panel.magic_wall,
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_MAGIC_WALL_TIME,
+    &game.panel.magic_wall_time,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_GRAVITY_STATE,
+    &game.panel.gravity_state,
+    TYPE_STRING,
+  },
+  {
+    GAME_PANEL_GRAPHIC_1,
+    &game.panel.graphic[0],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_GRAPHIC_2,
+    &game.panel.graphic[1],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_GRAPHIC_3,
+    &game.panel.graphic[2],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_GRAPHIC_4,
+    &game.panel.graphic[3],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_GRAPHIC_5,
+    &game.panel.graphic[4],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_GRAPHIC_6,
+    &game.panel.graphic[5],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_GRAPHIC_7,
+    &game.panel.graphic[6],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_GRAPHIC_8,
+    &game.panel.graphic[7],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_1,
+    &game.panel.element[0],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_2,
+    &game.panel.element[1],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_3,
+    &game.panel.element[2],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_4,
+    &game.panel.element[3],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_5,
+    &game.panel.element[4],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_6,
+    &game.panel.element[5],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_7,
+    &game.panel.element[6],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_8,
+    &game.panel.element[7],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_ELEMENT_COUNT_1,
+    &game.panel.element_count[0],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_ELEMENT_COUNT_2,
+    &game.panel.element_count[1],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_ELEMENT_COUNT_3,
+    &game.panel.element_count[2],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_ELEMENT_COUNT_4,
+    &game.panel.element_count[3],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_ELEMENT_COUNT_5,
+    &game.panel.element_count[4],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_ELEMENT_COUNT_6,
+    &game.panel.element_count[5],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_ELEMENT_COUNT_7,
+    &game.panel.element_count[6],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_ELEMENT_COUNT_8,
+    &game.panel.element_count[7],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_1,
+    &game.panel.ce_score[0],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_2,
+    &game.panel.ce_score[1],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_3,
+    &game.panel.ce_score[2],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_4,
+    &game.panel.ce_score[3],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_5,
+    &game.panel.ce_score[4],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_6,
+    &game.panel.ce_score[5],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_7,
+    &game.panel.ce_score[6],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_8,
+    &game.panel.ce_score[7],
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_CE_SCORE_1_ELEMENT,
+    &game.panel.ce_score_element[0],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CE_SCORE_2_ELEMENT,
+    &game.panel.ce_score_element[1],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CE_SCORE_3_ELEMENT,
+    &game.panel.ce_score_element[2],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CE_SCORE_4_ELEMENT,
+    &game.panel.ce_score_element[3],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CE_SCORE_5_ELEMENT,
+    &game.panel.ce_score_element[4],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CE_SCORE_6_ELEMENT,
+    &game.panel.ce_score_element[5],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CE_SCORE_7_ELEMENT,
+    &game.panel.ce_score_element[6],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_CE_SCORE_8_ELEMENT,
+    &game.panel.ce_score_element[7],
+    TYPE_ELEMENT,
+  },
+  {
+    GAME_PANEL_PLAYER_NAME,
+    &game.panel.player_name,
+    TYPE_STRING,
+  },
+  {
+    GAME_PANEL_LEVEL_NAME,
+    &game.panel.level_name,
+    TYPE_STRING,
+  },
+  {
+    GAME_PANEL_LEVEL_AUTHOR,
+    &game.panel.level_author,
+    TYPE_STRING,
+  },
+
+  {
+    -1,
+    NULL,
+    -1,
+  }
+};
+#endif
+
 
 /* values for delayed check of falling and moving elements and for collision */
 #define CHECK_DELAY_MOVING	3
@@ -175,6 +895,9 @@
 	((be) + (e) - EL_SELF < EL_CUSTOM_START ? EL_CUSTOM_START :	\
 	 (be) + (e) - EL_SELF > EL_CUSTOM_END   ? EL_CUSTOM_END :	\
 	 (be) + (e) - EL_SELF)
+
+#define GET_PLAYER_FROM_BITS(p)						\
+	(EL_PLAYER_1 + ((p) != PLAYER_BITS_ANY ? log_2(p) : 0))
 
 #define GET_TARGET_ELEMENT(be, e, ch, cv, cs)				\
 	((e) == EL_TRIGGER_PLAYER   ? (ch)->actual_trigger_player    :	\
@@ -244,7 +967,10 @@
 	ELEMENT_CAN_ENTER_FIELD_BASE_2(e, x, y, IS_FOOD_PIG(Feld[x][y]))
 
 #define PENGUIN_CAN_ENTER_FIELD(e, x, y)				\
-	ELEMENT_CAN_ENTER_FIELD_BASE_2(e, x, y, (Feld[x][y] == EL_EXIT_OPEN ||\
+	ELEMENT_CAN_ENTER_FIELD_BASE_2(e, x, y, (Feld[x][y] == EL_EXIT_OPEN || \
+						 Feld[x][y] == EL_EM_EXIT_OPEN || \
+						 Feld[x][y] == EL_STEEL_EXIT_OPEN || \
+						 Feld[x][y] == EL_EM_STEEL_EXIT_OPEN || \
 						 IS_FOOD_PENGUIN(Feld[x][y])))
 #define DRAGON_CAN_ENTER_FIELD(e, x, y)					\
 	ELEMENT_CAN_ENTER_FIELD_BASE_2(e, x, y, 0)
@@ -290,6 +1016,8 @@
 /* forward declaration for internal use */
 
 static void CreateField(int, int, int);
+
+static void ResetGfxAnimation(int, int);
 
 static void SetPlayerWaiting(struct PlayerInfo *, boolean);
 static void AdvanceFrameAndPlayerCounters(int);
@@ -380,8 +1108,8 @@ static int getInvisibleFromInvisibleActiveElement(int);
 static struct GadgetInfo *game_gadget[NUM_GAME_BUTTONS];
 
 /* for detection of endless loops, caused by custom element programming */
-/* (using "MAX_PLAYFIELD_WIDTH" here is just a rough approximation...) */
-#define MAX_ELEMENT_CHANGE_RECURSION_DEPTH	(MAX_PLAYFIELD_WIDTH)
+/* (using maximal playfield width x 10 is just a rough approximation) */
+#define MAX_ELEMENT_CHANGE_RECURSION_DEPTH	(MAX_PLAYFIELD_WIDTH * 10)
 
 #define RECURSION_LOOP_DETECTION_START(e, rc)				\
 {									\
@@ -469,6 +1197,62 @@ static struct ChangingElementInfo change_delay_list[] =
   {
     EL_EXIT_CLOSING,
     EL_EXIT_CLOSED,
+    29,
+    NULL,
+    NULL,
+    NULL
+  },
+  {
+    EL_STEEL_EXIT_OPENING,
+    EL_STEEL_EXIT_OPEN,
+    29,
+    NULL,
+    NULL,
+    NULL
+  },
+  {
+    EL_STEEL_EXIT_CLOSING,
+    EL_STEEL_EXIT_CLOSED,
+    29,
+    NULL,
+    NULL,
+    NULL
+  },
+  {
+    EL_EM_EXIT_OPENING,
+    EL_EM_EXIT_OPEN,
+    29,
+    NULL,
+    NULL,
+    NULL
+  },
+  {
+    EL_EM_EXIT_CLOSING,
+#if 1
+    EL_EMPTY,
+#else
+    EL_EM_EXIT_CLOSED,
+#endif
+    29,
+    NULL,
+    NULL,
+    NULL
+  },
+  {
+    EL_EM_STEEL_EXIT_OPENING,
+    EL_EM_STEEL_EXIT_OPEN,
+    29,
+    NULL,
+    NULL,
+    NULL
+  },
+  {
+    EL_EM_STEEL_EXIT_CLOSING,
+#if 1
+    EL_STEELWALL,
+#else
+    EL_EM_STEEL_EXIT_CLOSED,
+#endif
     29,
     NULL,
     NULL,
@@ -596,6 +1380,14 @@ static struct ChangingElementInfo change_delay_list[] =
     NULL
   },
   {
+    EL_DC_TIMEGATE_SWITCH_ACTIVE,
+    EL_DC_TIMEGATE_SWITCH,
+    0,
+    InitTimegateWheel,
+    RunTimegateWheel,
+    NULL
+  },
+  {
     EL_EMC_MAGIC_BALL_ACTIVE,
     EL_EMC_MAGIC_BALL_ACTIVE,
     0,
@@ -667,10 +1459,14 @@ move_stepsize_list[] =
   { EL_AMOEBA_DROPPING,		2 },
   { EL_QUICKSAND_FILLING,	1 },
   { EL_QUICKSAND_EMPTYING,	1 },
+  { EL_QUICKSAND_FAST_FILLING,	2 },
+  { EL_QUICKSAND_FAST_EMPTYING,	2 },
   { EL_MAGIC_WALL_FILLING,	2 },
-  { EL_BD_MAGIC_WALL_FILLING,	2 },
   { EL_MAGIC_WALL_EMPTYING,	2 },
+  { EL_BD_MAGIC_WALL_FILLING,	2 },
   { EL_BD_MAGIC_WALL_EMPTYING,	2 },
+  { EL_DC_MAGIC_WALL_FILLING,	2 },
+  { EL_DC_MAGIC_WALL_EMPTYING,	2 },
 
   { EL_UNDEFINED,		0 },
 };
@@ -757,7 +1553,7 @@ static int playfield_scan_delta_y = 1;
 				     (y) += playfield_scan_delta_y)	\
 				for ((x) = playfield_scan_start_x;	\
 				     (x) >= 0 && (x) <= lev_fieldx - 1;	\
-				     (x) += playfield_scan_delta_x)	\
+				     (x) += playfield_scan_delta_x)
 
 #ifdef DEBUG
 void DEBUG_SetMaximumDynamite()
@@ -836,6 +1632,8 @@ static void SetPlayerMoveSpeed(struct PlayerInfo *player, int move_stepsize,
 
 void GetPlayerConfig()
 {
+  GameFrameDelay = setup.game_frame_delay;
+
   if (!audio.sound_available)
     setup.sound_simple = FALSE;
 
@@ -854,58 +1652,7 @@ void GetPlayerConfig()
   InitJoysticks();
 }
 
-static int getBeltNrFromBeltElement(int element)
-{
-  return (element < EL_CONVEYOR_BELT_2_LEFT ? 0 :
-	  element < EL_CONVEYOR_BELT_3_LEFT ? 1 :
-	  element < EL_CONVEYOR_BELT_4_LEFT ? 2 : 3);
-}
-
-static int getBeltNrFromBeltActiveElement(int element)
-{
-  return (element < EL_CONVEYOR_BELT_2_LEFT_ACTIVE ? 0 :
-	  element < EL_CONVEYOR_BELT_3_LEFT_ACTIVE ? 1 :
-	  element < EL_CONVEYOR_BELT_4_LEFT_ACTIVE ? 2 : 3);
-}
-
-static int getBeltNrFromBeltSwitchElement(int element)
-{
-  return (element < EL_CONVEYOR_BELT_2_SWITCH_LEFT ? 0 :
-	  element < EL_CONVEYOR_BELT_3_SWITCH_LEFT ? 1 :
-	  element < EL_CONVEYOR_BELT_4_SWITCH_LEFT ? 2 : 3);
-}
-
-static int getBeltDirNrFromBeltSwitchElement(int element)
-{
-  static int belt_base_element[4] =
-  {
-    EL_CONVEYOR_BELT_1_SWITCH_LEFT,
-    EL_CONVEYOR_BELT_2_SWITCH_LEFT,
-    EL_CONVEYOR_BELT_3_SWITCH_LEFT,
-    EL_CONVEYOR_BELT_4_SWITCH_LEFT
-  };
-
-  int belt_nr = getBeltNrFromBeltSwitchElement(element);
-  int belt_dir_nr = element - belt_base_element[belt_nr];
-
-  return (belt_dir_nr % 3);
-}
-
-static int getBeltDirFromBeltSwitchElement(int element)
-{
-  static int belt_move_dir[3] =
-  {
-    MV_LEFT,
-    MV_NONE,
-    MV_RIGHT
-  };
-
-  int belt_dir_nr = getBeltDirNrFromBeltSwitchElement(element);
-
-  return belt_move_dir[belt_dir_nr];
-}
-
-static int get_element_from_group_element(int element)
+int GetElementFromGroupElement(int element)
 {
   if (IS_GROUP_ELEMENT(element))
   {
@@ -1160,6 +1907,11 @@ static void InitField(int x, int y, boolean init_game)
       if (init_game)
 	Feld[x][y] = EL_SWITCHGATE_SWITCH_UP;
       break;
+
+    case EL_DC_SWITCHGATE_SWITCH_DOWN:	/* always start with same switch pos */
+      if (init_game)
+	Feld[x][y] = EL_DC_SWITCHGATE_SWITCH_UP;
+      break;
 #endif
 
     case EL_LIGHT_SWITCH_ACTIVE:
@@ -1198,7 +1950,7 @@ static void InitField(int x, int y, boolean init_game)
       }
       else if (IS_GROUP_ELEMENT(element))
       {
-	Feld[x][y] = get_element_from_group_element(element);
+	Feld[x][y] = GetElementFromGroupElement(element);
 
 	InitField(x, y, init_game);
       }
@@ -1241,27 +1993,1017 @@ static inline void InitField_WithBug2(int x, int y, boolean init_game)
   */
 }
 
-inline void DrawGameValue_Emeralds(int value)
+#if 1
+
+static int get_key_element_from_nr(int key_nr)
 {
-  int xpos = (3 * 14 - 3 * getFontWidth(FONT_TEXT_2)) / 2;
+  int key_base_element = (key_nr >= STD_NUM_KEYS ? EL_EMC_KEY_5 - STD_NUM_KEYS :
+			  level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+			  EL_EM_KEY_1 : EL_KEY_1);
+
+  return key_base_element + key_nr;
+}
+
+static int get_next_dropped_element(struct PlayerInfo *player)
+{
+  return (player->inventory_size > 0 ?
+	  player->inventory_element[player->inventory_size - 1] :
+	  player->inventory_infinite_element != EL_UNDEFINED ?
+	  player->inventory_infinite_element :
+	  player->dynabombs_left > 0 ?
+	  EL_DYNABOMB_PLAYER_1_ACTIVE + player->index_nr :
+	  EL_UNDEFINED);
+}
+
+static int get_inventory_element_from_pos(struct PlayerInfo *player, int pos)
+{
+  /* pos >= 0: get element from bottom of the stack;
+     pos <  0: get element from top of the stack */
+
+  if (pos < 0)
+  {
+    int min_inventory_size = -pos;
+    int inventory_pos = player->inventory_size - min_inventory_size;
+    int min_dynabombs_left = min_inventory_size - player->inventory_size;
+
+    return (player->inventory_size >= min_inventory_size ?
+	    player->inventory_element[inventory_pos] :
+	    player->inventory_infinite_element != EL_UNDEFINED ?
+	    player->inventory_infinite_element :
+	    player->dynabombs_left >= min_dynabombs_left ?
+	    EL_DYNABOMB_PLAYER_1 + player->index_nr :
+	    EL_UNDEFINED);
+  }
+  else
+  {
+    int min_dynabombs_left = pos + 1;
+    int min_inventory_size = pos + 1 - player->dynabombs_left;
+    int inventory_pos = pos - player->dynabombs_left;
+
+    return (player->inventory_infinite_element != EL_UNDEFINED ?
+	    player->inventory_infinite_element :
+	    player->dynabombs_left >= min_dynabombs_left ?
+	    EL_DYNABOMB_PLAYER_1 + player->index_nr :
+	    player->inventory_size >= min_inventory_size ?
+	    player->inventory_element[inventory_pos] :
+	    EL_UNDEFINED);
+  }
+}
+
+static int compareGamePanelOrderInfo(const void *object1, const void *object2)
+{
+  const struct GamePanelOrderInfo *gpo1 = (struct GamePanelOrderInfo *)object1;
+  const struct GamePanelOrderInfo *gpo2 = (struct GamePanelOrderInfo *)object2;
+  int compare_result;
+
+  if (gpo1->sort_priority != gpo2->sort_priority)
+    compare_result = gpo1->sort_priority - gpo2->sort_priority;
+  else
+    compare_result = gpo1->nr - gpo2->nr;
+
+  return compare_result;
+}
+
+void InitGameControlValues()
+{
+  int i;
+
+  for (i = 0; game_panel_controls[i].nr != -1; i++)
+  {
+    struct GamePanelControlInfo *gpc = &game_panel_controls[i];
+    struct GamePanelOrderInfo *gpo = &game_panel_order[i];
+    struct TextPosInfo *pos = gpc->pos;
+    int nr = gpc->nr;
+    int type = gpc->type;
+
+    if (nr != i)
+    {
+      Error(ERR_INFO, "'game_panel_controls' structure corrupted");
+      Error(ERR_EXIT, "this should not happen -- please debug");
+    }
+
+    /* force update of game controls after initialization */
+    gpc->value = gpc->last_value = -1;
+    gpc->frame = gpc->last_frame = -1;
+    gpc->gfx_frame = -1;
+
+    /* determine panel value width for later calculation of alignment */
+    if (type == TYPE_INTEGER || type == TYPE_STRING)
+    {
+      pos->width = pos->size * getFontWidth(pos->font);
+      pos->height = getFontHeight(pos->font);
+    }
+    else if (type == TYPE_ELEMENT)
+    {
+      pos->width = pos->size;
+      pos->height = pos->size;
+    }
+
+    /* fill structure for game panel draw order */
+    gpo->nr = gpc->nr;
+    gpo->sort_priority = pos->sort_priority;
+  }
+
+  /* sort game panel controls according to sort_priority and control number */
+  qsort(game_panel_order, NUM_GAME_PANEL_CONTROLS,
+	sizeof(struct GamePanelOrderInfo), compareGamePanelOrderInfo);
+}
+
+void UpdatePlayfieldElementCount()
+{
+  boolean use_element_count = FALSE;
+  int i, j, x, y;
+
+  /* first check if it is needed at all to calculate playfield element count */
+  for (i = GAME_PANEL_ELEMENT_COUNT_1; i <= GAME_PANEL_ELEMENT_COUNT_8; i++)
+    if (!PANEL_DEACTIVATED(game_panel_controls[i].pos))
+      use_element_count = TRUE;
+
+  if (!use_element_count)
+    return;
+
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+    element_info[i].element_count = 0;
+
+  SCAN_PLAYFIELD(x, y)
+  {
+    element_info[Feld[x][y]].element_count++;
+  }
+
+  for (i = 0; i < NUM_GROUP_ELEMENTS; i++)
+    for (j = 0; j < MAX_NUM_ELEMENTS; j++)
+      if (IS_IN_GROUP(j, i))
+	element_info[EL_GROUP_START + i].element_count +=
+	  element_info[j].element_count;
+}
+
+void UpdateGameControlValues()
+{
+  int i, k;
+  int time = (local_player->LevelSolved ?
+	      local_player->LevelSolved_CountingTime :
+	      level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+	      level.native_em_level->lev->time :
+	      level.time == 0 ? TimePlayed : TimeLeft);
+  int score = (local_player->LevelSolved ?
+	       local_player->LevelSolved_CountingScore :
+	       level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+	       level.native_em_level->lev->score :
+	       local_player->score);
+  int gems = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+	      level.native_em_level->lev->required :
+	      local_player->gems_still_needed);
+  int exit_closed = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+		     level.native_em_level->lev->required > 0 :
+		     local_player->gems_still_needed > 0 ||
+		     local_player->sokobanfields_still_needed > 0 ||
+		     local_player->lights_still_needed > 0);
+
+  UpdatePlayfieldElementCount();
+
+  /* update game panel control values */
+
+  game_panel_controls[GAME_PANEL_LEVEL_NUMBER].value = level_nr;
+  game_panel_controls[GAME_PANEL_GEMS].value = gems;
+
+  game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value = 0;
+  for (i = 0; i < MAX_NUM_KEYS; i++)
+    game_panel_controls[GAME_PANEL_KEY_1 + i].value = EL_EMPTY;
+  game_panel_controls[GAME_PANEL_KEY_WHITE].value = EL_EMPTY;
+  game_panel_controls[GAME_PANEL_KEY_WHITE_COUNT].value = 0;
+
+  if (game.centered_player_nr == -1)
+  {
+    for (i = 0; i < MAX_PLAYERS; i++)
+    {
+      for (k = 0; k < MAX_NUM_KEYS; k++)
+      {
+	if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+	{
+	  if (level.native_em_level->ply[i]->keys & (1 << k))
+	    game_panel_controls[GAME_PANEL_KEY_1 + k].value =
+	      get_key_element_from_nr(k);
+	}
+	else if (stored_player[i].key[k])
+	  game_panel_controls[GAME_PANEL_KEY_1 + k].value =
+	    get_key_element_from_nr(k);
+      }
+
+      if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+	game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
+	  level.native_em_level->ply[i]->dynamite;
+      else
+	game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
+	  stored_player[i].inventory_size;
+
+      if (stored_player[i].num_white_keys > 0)
+	game_panel_controls[GAME_PANEL_KEY_WHITE].value =
+	  EL_DC_KEY_WHITE;
+
+      game_panel_controls[GAME_PANEL_KEY_WHITE_COUNT].value +=
+	stored_player[i].num_white_keys;
+    }
+  }
+  else
+  {
+    int player_nr = game.centered_player_nr;
+
+    for (k = 0; k < MAX_NUM_KEYS; k++)
+    {
+      if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+      {
+	if (level.native_em_level->ply[player_nr]->keys & (1 << k))
+	  game_panel_controls[GAME_PANEL_KEY_1 + k].value =
+	    get_key_element_from_nr(k);
+      }
+      else if (stored_player[player_nr].key[k])
+	game_panel_controls[GAME_PANEL_KEY_1 + k].value =
+	  get_key_element_from_nr(k);
+    }
+
+    if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+      game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
+	level.native_em_level->ply[player_nr]->dynamite;
+    else
+      game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
+	stored_player[player_nr].inventory_size;
+
+    if (stored_player[player_nr].num_white_keys > 0)
+      game_panel_controls[GAME_PANEL_KEY_WHITE].value = EL_DC_KEY_WHITE;
+
+    game_panel_controls[GAME_PANEL_KEY_WHITE_COUNT].value +=
+      stored_player[player_nr].num_white_keys;
+  }
+
+  for (i = 0; i < NUM_PANEL_INVENTORY; i++)
+  {
+    game_panel_controls[GAME_PANEL_INVENTORY_FIRST_1 + i].value =
+      get_inventory_element_from_pos(local_player, i);
+    game_panel_controls[GAME_PANEL_INVENTORY_LAST_1 + i].value =
+      get_inventory_element_from_pos(local_player, -i - 1);
+  }
+
+  game_panel_controls[GAME_PANEL_SCORE].value = score;
+
+  game_panel_controls[GAME_PANEL_TIME].value = time;
+
+  game_panel_controls[GAME_PANEL_TIME_HH].value = time / 3600;
+  game_panel_controls[GAME_PANEL_TIME_MM].value = (time / 60) % 60;
+  game_panel_controls[GAME_PANEL_TIME_SS].value = time % 60;
+
+  game_panel_controls[GAME_PANEL_SHIELD_NORMAL].value =
+    (local_player->shield_normal_time_left > 0 ? EL_SHIELD_NORMAL_ACTIVE :
+     EL_EMPTY);
+  game_panel_controls[GAME_PANEL_SHIELD_NORMAL_TIME].value =
+    local_player->shield_normal_time_left;
+  game_panel_controls[GAME_PANEL_SHIELD_DEADLY].value =
+    (local_player->shield_deadly_time_left > 0 ? EL_SHIELD_DEADLY_ACTIVE :
+     EL_EMPTY);
+  game_panel_controls[GAME_PANEL_SHIELD_DEADLY_TIME].value =
+    local_player->shield_deadly_time_left;
+
+  game_panel_controls[GAME_PANEL_EXIT].value =
+    (exit_closed ? EL_EXIT_CLOSED : EL_EXIT_OPEN);
+
+  game_panel_controls[GAME_PANEL_EMC_MAGIC_BALL].value =
+    (game.ball_state ? EL_EMC_MAGIC_BALL_ACTIVE : EL_EMC_MAGIC_BALL);
+  game_panel_controls[GAME_PANEL_EMC_MAGIC_BALL_SWITCH].value =
+    (game.ball_state ? EL_EMC_MAGIC_BALL_SWITCH_ACTIVE :
+     EL_EMC_MAGIC_BALL_SWITCH);
+
+  game_panel_controls[GAME_PANEL_LIGHT_SWITCH].value =
+    (game.light_time_left > 0 ? EL_LIGHT_SWITCH_ACTIVE : EL_LIGHT_SWITCH);
+  game_panel_controls[GAME_PANEL_LIGHT_SWITCH_TIME].value =
+    game.light_time_left;
+
+  game_panel_controls[GAME_PANEL_TIMEGATE_SWITCH].value =
+    (game.timegate_time_left > 0 ? EL_TIMEGATE_OPEN : EL_TIMEGATE_CLOSED);
+  game_panel_controls[GAME_PANEL_TIMEGATE_SWITCH_TIME].value =
+    game.timegate_time_left;
+
+  game_panel_controls[GAME_PANEL_SWITCHGATE_SWITCH].value =
+    EL_SWITCHGATE_SWITCH_UP + game.switchgate_pos;
+
+  game_panel_controls[GAME_PANEL_EMC_LENSES].value =
+    (game.lenses_time_left > 0 ? EL_EMC_LENSES : EL_EMPTY);
+  game_panel_controls[GAME_PANEL_EMC_LENSES_TIME].value =
+    game.lenses_time_left;
+
+  game_panel_controls[GAME_PANEL_EMC_MAGNIFIER].value =
+    (game.magnify_time_left > 0 ? EL_EMC_MAGNIFIER : EL_EMPTY);
+  game_panel_controls[GAME_PANEL_EMC_MAGNIFIER_TIME].value =
+    game.magnify_time_left;
+
+  game_panel_controls[GAME_PANEL_BALLOON_SWITCH].value =
+    (game.wind_direction == MV_LEFT  ? EL_BALLOON_SWITCH_LEFT  :
+     game.wind_direction == MV_RIGHT ? EL_BALLOON_SWITCH_RIGHT :
+     game.wind_direction == MV_UP    ? EL_BALLOON_SWITCH_UP    :
+     game.wind_direction == MV_DOWN  ? EL_BALLOON_SWITCH_DOWN  :
+     EL_BALLOON_SWITCH_NONE);
+
+  game_panel_controls[GAME_PANEL_DYNABOMB_NUMBER].value =
+    local_player->dynabomb_count;
+  game_panel_controls[GAME_PANEL_DYNABOMB_SIZE].value =
+    local_player->dynabomb_size;
+  game_panel_controls[GAME_PANEL_DYNABOMB_POWER].value =
+    (local_player->dynabomb_xl ? EL_DYNABOMB_INCREASE_POWER : EL_EMPTY);
+
+  game_panel_controls[GAME_PANEL_PENGUINS].value =
+    local_player->friends_still_needed;
+
+  game_panel_controls[GAME_PANEL_SOKOBAN_OBJECTS].value =
+    local_player->sokobanfields_still_needed;
+  game_panel_controls[GAME_PANEL_SOKOBAN_FIELDS].value =
+    local_player->sokobanfields_still_needed;
+
+  game_panel_controls[GAME_PANEL_ROBOT_WHEEL].value =
+    (game.robot_wheel_active ? EL_ROBOT_WHEEL_ACTIVE : EL_ROBOT_WHEEL);
+
+  for (i = 0; i < NUM_BELTS; i++)
+  {
+    game_panel_controls[GAME_PANEL_CONVEYOR_BELT_1 + i].value =
+      (game.belt_dir[i] != MV_NONE ? EL_CONVEYOR_BELT_1_MIDDLE_ACTIVE :
+       EL_CONVEYOR_BELT_1_MIDDLE) + i;
+    game_panel_controls[GAME_PANEL_CONVEYOR_BELT_1_SWITCH + i].value =
+      getBeltSwitchElementFromBeltNrAndBeltDir(i, game.belt_dir[i]);
+  }
+
+  game_panel_controls[GAME_PANEL_MAGIC_WALL].value =
+    (game.magic_wall_active ? EL_MAGIC_WALL_ACTIVE : EL_MAGIC_WALL);
+  game_panel_controls[GAME_PANEL_MAGIC_WALL_TIME].value =
+    game.magic_wall_time_left;
+
+#if USE_PLAYER_GRAVITY
+  game_panel_controls[GAME_PANEL_GRAVITY_STATE].value =
+    local_player->gravity;
+#else
+  game_panel_controls[GAME_PANEL_GRAVITY_STATE].value = game.gravity;
+#endif
+
+  for (i = 0; i < NUM_PANEL_GRAPHICS; i++)
+    game_panel_controls[GAME_PANEL_GRAPHIC_1 + i].value = EL_GRAPHIC_1 + i;
+
+  for (i = 0; i < NUM_PANEL_ELEMENTS; i++)
+    game_panel_controls[GAME_PANEL_ELEMENT_1 + i].value =
+      (IS_DRAWABLE_ELEMENT(game.panel.element[i].id) ?
+       game.panel.element[i].id : EL_UNDEFINED);
+
+  for (i = 0; i < NUM_PANEL_ELEMENTS; i++)
+    game_panel_controls[GAME_PANEL_ELEMENT_COUNT_1 + i].value =
+      (IS_VALID_ELEMENT(game.panel.element_count[i].id) ?
+       element_info[game.panel.element_count[i].id].element_count : 0);
+
+  for (i = 0; i < NUM_PANEL_CE_SCORE; i++)
+    game_panel_controls[GAME_PANEL_CE_SCORE_1 + i].value =
+      (IS_CUSTOM_ELEMENT(game.panel.ce_score[i].id) ?
+       element_info[game.panel.ce_score[i].id].collect_score : 0);
+
+  for (i = 0; i < NUM_PANEL_CE_SCORE; i++)
+    game_panel_controls[GAME_PANEL_CE_SCORE_1_ELEMENT + i].value =
+      (IS_CUSTOM_ELEMENT(game.panel.ce_score_element[i].id) ?
+       element_info[game.panel.ce_score_element[i].id].collect_score :
+       EL_UNDEFINED);
+
+  game_panel_controls[GAME_PANEL_PLAYER_NAME].value = 0;
+  game_panel_controls[GAME_PANEL_LEVEL_NAME].value = 0;
+  game_panel_controls[GAME_PANEL_LEVEL_AUTHOR].value = 0;
+
+  /* update game panel control frames */
+
+  for (i = 0; game_panel_controls[i].nr != -1; i++)
+  {
+    struct GamePanelControlInfo *gpc = &game_panel_controls[i];
+
+    if (gpc->type == TYPE_ELEMENT)
+    {
+      int last_anim_random_frame = gfx.anim_random_frame;
+      int element = gpc->value;
+      int graphic = el2panelimg(element);
+
+      if (gpc->value != gpc->last_value)
+      {
+	gpc->gfx_frame = 0;
+	gpc->gfx_random = INIT_GFX_RANDOM();
+      }
+      else
+      {
+	gpc->gfx_frame++;
+
+	if (ANIM_MODE(graphic) == ANIM_RANDOM &&
+	    IS_NEXT_FRAME(gpc->gfx_frame, graphic))
+	  gpc->gfx_random = INIT_GFX_RANDOM();
+      }
+
+      if (ANIM_MODE(graphic) == ANIM_RANDOM)
+	gfx.anim_random_frame = gpc->gfx_random;
+
+      if (ANIM_MODE(graphic) == ANIM_CE_SCORE)
+	gpc->gfx_frame = element_info[element].collect_score;
+
+      gpc->frame = getGraphicAnimationFrame(el2panelimg(gpc->value),
+					    gpc->gfx_frame);
+
+      if (ANIM_MODE(graphic) == ANIM_RANDOM)
+	gfx.anim_random_frame = last_anim_random_frame;
+    }
+  }
+}
+
+void DisplayGameControlValues()
+{
+  boolean redraw_panel = FALSE;
+  int i;
+
+  for (i = 0; game_panel_controls[i].nr != -1; i++)
+  {
+    struct GamePanelControlInfo *gpc = &game_panel_controls[i];
+
+    if (PANEL_DEACTIVATED(gpc->pos))
+      continue;
+
+    if (gpc->value == gpc->last_value &&
+	gpc->frame == gpc->last_frame)
+      continue;
+
+    redraw_panel = TRUE;
+  }
+
+  if (!redraw_panel)
+    return;
+
+  /* copy default game door content to main double buffer */
+  BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
+	     DOOR_GFX_PAGEX5, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE, DX, DY);
+
+  /* redraw game control buttons */
+#if 1
+  RedrawGameButtons();
+#else
+  UnmapGameButtons();
+  MapGameButtons();
+#endif
+
+  game_status = GAME_MODE_PSEUDO_PANEL;
+
+#if 1
+  for (i = 0; i < NUM_GAME_PANEL_CONTROLS; i++)
+#else
+  for (i = 0; game_panel_controls[i].nr != -1; i++)
+#endif
+  {
+#if 1
+    int nr = game_panel_order[i].nr;
+    struct GamePanelControlInfo *gpc = &game_panel_controls[nr];
+#else
+    struct GamePanelControlInfo *gpc = &game_panel_controls[i];
+    int nr = gpc->nr;
+#endif
+    struct TextPosInfo *pos = gpc->pos;
+    int type = gpc->type;
+    int value = gpc->value;
+    int frame = gpc->frame;
+#if 0
+    int last_value = gpc->last_value;
+    int last_frame = gpc->last_frame;
+#endif
+    int size = pos->size;
+    int font = pos->font;
+    boolean draw_masked = pos->draw_masked;
+    int mask_mode = (draw_masked ? BLIT_MASKED : BLIT_OPAQUE);
+
+    if (PANEL_DEACTIVATED(pos))
+      continue;
+
+#if 0
+    if (value == last_value && frame == last_frame)
+      continue;
+#endif
+
+    gpc->last_value = value;
+    gpc->last_frame = frame;
+
+#if 0
+    printf("::: value %d changed from %d to %d\n", nr, last_value, value);
+#endif
+
+    if (type == TYPE_INTEGER)
+    {
+      if (nr == GAME_PANEL_LEVEL_NUMBER ||
+	  nr == GAME_PANEL_TIME)
+      {
+	boolean use_dynamic_size = (size == -1 ? TRUE : FALSE);
+
+	if (use_dynamic_size)		/* use dynamic number of digits */
+	{
+	  int value_change = (nr == GAME_PANEL_LEVEL_NUMBER ? 100 : 1000);
+	  int size1 = (nr == GAME_PANEL_LEVEL_NUMBER ? 2 : 3);
+	  int size2 = size1 + 1;
+	  int font1 = pos->font;
+	  int font2 = pos->font_alt;
+
+	  size = (value < value_change ? size1 : size2);
+	  font = (value < value_change ? font1 : font2);
+
+#if 0
+	  /* clear background if value just changed its size (dynamic digits) */
+	  if ((last_value < value_change) != (value < value_change))
+	  {
+	    int width1 = size1 * getFontWidth(font1);
+	    int width2 = size2 * getFontWidth(font2);
+	    int max_width = MAX(width1, width2);
+	    int max_height = MAX(getFontHeight(font1), getFontHeight(font2));
+
+	    pos->width = max_width;
+
+	    ClearRectangleOnBackground(drawto, PANEL_XPOS(pos), PANEL_YPOS(pos),
+				       max_width, max_height);
+	  }
+#endif
+	}
+      }
+
+#if 1
+      /* correct text size if "digits" is zero or less */
+      if (size <= 0)
+	size = strlen(int2str(value, size));
+
+      /* dynamically correct text alignment */
+      pos->width = size * getFontWidth(font);
+#endif
+
+      DrawTextExt(drawto, PANEL_XPOS(pos), PANEL_YPOS(pos),
+		  int2str(value, size), font, mask_mode);
+    }
+    else if (type == TYPE_ELEMENT)
+    {
+      int element, graphic;
+      Bitmap *src_bitmap;
+      int src_x, src_y;
+      int width, height;
+      int dst_x = PANEL_XPOS(pos);
+      int dst_y = PANEL_YPOS(pos);
+
+#if 1
+      if (value != EL_UNDEFINED && value != EL_EMPTY)
+      {
+	element = value;
+	graphic = el2panelimg(value);
+
+	// printf("::: %d, '%s' [%d]\n", element, EL_NAME(element), size);
+
+#if 1
+	if (element >= EL_GRAPHIC_1 && element <= EL_GRAPHIC_8 && size == 0)
+	  size = TILESIZE;
+#endif
+
+	getSizedGraphicSource(graphic, frame, size, &src_bitmap,
+			      &src_x, &src_y);
+
+	width  = graphic_info[graphic].width  * size / TILESIZE;
+	height = graphic_info[graphic].height * size / TILESIZE;
+
+	if (draw_masked)
+	{
+	  SetClipOrigin(src_bitmap, src_bitmap->stored_clip_gc,
+			dst_x - src_x, dst_y - src_y);
+	  BlitBitmapMasked(src_bitmap, drawto, src_x, src_y, width, height,
+			   dst_x, dst_y);
+	}
+	else
+	{
+	  BlitBitmap(src_bitmap, drawto, src_x, src_y, width, height,
+		     dst_x, dst_y);
+	}
+      }
+#else
+      if (value == EL_UNDEFINED || value == EL_EMPTY)
+      {
+	element = (last_value == EL_UNDEFINED ? EL_EMPTY : last_value);
+	graphic = el2panelimg(element);
+
+	src_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
+	src_x = DOOR_GFX_PAGEX5 + ALIGNED_TEXT_XPOS(pos);
+	src_y = DOOR_GFX_PAGEY1 + ALIGNED_TEXT_YPOS(pos);
+      }
+      else
+      {
+	element = value;
+	graphic = el2panelimg(value);
+
+	getSizedGraphicSource(graphic, frame, size, &src_bitmap, &src_x,&src_y);
+      }
+
+      width  = graphic_info[graphic].width  * size / TILESIZE;
+      height = graphic_info[graphic].height * size / TILESIZE;
+
+      BlitBitmap(src_bitmap, drawto, src_x, src_y, width, height, dst_x, dst_y);
+#endif
+    }
+    else if (type == TYPE_STRING)
+    {
+      boolean active = (value != 0);
+      char *state_normal = "off";
+      char *state_active = "on";
+      char *state = (active ? state_active : state_normal);
+      char *s = (nr == GAME_PANEL_GRAVITY_STATE ? state :
+		 nr == GAME_PANEL_PLAYER_NAME   ? setup.player_name :
+		 nr == GAME_PANEL_LEVEL_NAME    ? level.name :
+		 nr == GAME_PANEL_LEVEL_AUTHOR  ? level.author : NULL);
+
+      if (nr == GAME_PANEL_GRAVITY_STATE)
+      {
+	int font1 = pos->font;		/* (used for normal state) */
+	int font2 = pos->font_alt;	/* (used for active state) */
+#if 0
+	int size1 = strlen(state_normal);
+	int size2 = strlen(state_active);
+	int width1 = size1 * getFontWidth(font1);
+	int width2 = size2 * getFontWidth(font2);
+	int max_width = MAX(width1, width2);
+	int max_height = MAX(getFontHeight(font1), getFontHeight(font2));
+
+	pos->width = max_width;
+
+	/* clear background for values that may have changed its size */
+	ClearRectangleOnBackground(drawto, PANEL_XPOS(pos), PANEL_YPOS(pos),
+				   max_width, max_height);
+#endif
+
+	font = (active ? font2 : font1);
+      }
+
+      if (s != NULL)
+      {
+	char *s_cut;
+
+#if 1
+	if (size <= 0)
+	{
+	  /* don't truncate output if "chars" is zero or less */
+	  size = strlen(s);
+
+	  /* dynamically correct text alignment */
+	  pos->width = size * getFontWidth(font);
+	}
+#endif
+
+	s_cut = getStringCopyN(s, size);
+
+	DrawTextExt(drawto, PANEL_XPOS(pos), PANEL_YPOS(pos),
+		    s_cut, font, mask_mode);
+
+	free(s_cut);
+      }
+    }
+
+    redraw_mask |= REDRAW_DOOR_1;
+  }
+
+  game_status = GAME_MODE_PLAYING;
+}
+
+void UpdateAndDisplayGameControlValues()
+{
+  if (tape.warp_forward)
+    return;
+
+  UpdateGameControlValues();
+  DisplayGameControlValues();
+}
+
+void DrawGameValue_Emeralds(int value)
+{
+  struct TextPosInfo *pos = &game.panel.gems;
+#if 1
+  int font_nr = pos->font;
+#else
+  int font_nr = FONT_TEXT_2;
+#endif
+  int font_width = getFontWidth(font_nr);
+  int chars = pos->size;
+
+#if 1
+  return;	/* !!! USE NEW STUFF !!! */
+#endif
+
+  if (PANEL_DEACTIVATED(pos))
+    return;
+
+  pos->width = chars * font_width;
+
+  DrawText(PANEL_XPOS(pos), PANEL_YPOS(pos), int2str(value, chars), font_nr);
+}
+
+void DrawGameValue_Dynamite(int value)
+{
+  struct TextPosInfo *pos = &game.panel.inventory_count;
+#if 1
+  int font_nr = pos->font;
+#else
+  int font_nr = FONT_TEXT_2;
+#endif
+  int font_width = getFontWidth(font_nr);
+  int chars = pos->size;
+
+#if 1
+  return;	/* !!! USE NEW STUFF !!! */
+#endif
+
+  if (PANEL_DEACTIVATED(pos))
+    return;
+
+  pos->width = chars * font_width;
+
+  DrawText(PANEL_XPOS(pos), PANEL_YPOS(pos), int2str(value, chars), font_nr);
+}
+
+void DrawGameValue_Score(int value)
+{
+  struct TextPosInfo *pos = &game.panel.score;
+#if 1
+  int font_nr = pos->font;
+#else
+  int font_nr = FONT_TEXT_2;
+#endif
+  int font_width = getFontWidth(font_nr);
+  int chars = pos->size;
+
+#if 1
+  return;	/* !!! USE NEW STUFF !!! */
+#endif
+
+  if (PANEL_DEACTIVATED(pos))
+    return;
+
+  pos->width = chars * font_width;
+
+  DrawText(PANEL_XPOS(pos), PANEL_YPOS(pos), int2str(value, chars), font_nr);
+}
+
+void DrawGameValue_Time(int value)
+{
+  struct TextPosInfo *pos = &game.panel.time;
+  static int last_value = -1;
+  int chars1 = 3;
+  int chars2 = 4;
+  int chars = pos->size;
+#if 1
+  int font1_nr = pos->font;
+  int font2_nr = pos->font_alt;
+#else
+  int font1_nr = FONT_TEXT_2;
+  int font2_nr = FONT_TEXT_1;
+#endif
+  int font_nr = font1_nr;
+  boolean use_dynamic_chars = (chars == -1 ? TRUE : FALSE);
+
+#if 1
+  return;	/* !!! USE NEW STUFF !!! */
+#endif
+
+  if (PANEL_DEACTIVATED(pos))
+    return;
+
+  if (use_dynamic_chars)		/* use dynamic number of chars */
+  {
+    chars   = (value < 1000 ? chars1   : chars2);
+    font_nr = (value < 1000 ? font1_nr : font2_nr);
+  }
+
+  /* clear background if value just changed its size (dynamic chars only) */
+  if (use_dynamic_chars && (last_value < 1000) != (value < 1000))
+  {
+    int width1 = chars1 * getFontWidth(font1_nr);
+    int width2 = chars2 * getFontWidth(font2_nr);
+    int max_width = MAX(width1, width2);
+    int max_height = MAX(getFontHeight(font1_nr), getFontHeight(font2_nr));
+
+    pos->width = max_width;
+
+    ClearRectangleOnBackground(drawto, PANEL_XPOS(pos), PANEL_YPOS(pos),
+			       max_width, max_height);
+  }
+
+  pos->width = chars * getFontWidth(font_nr);
+
+  DrawText(PANEL_XPOS(pos), PANEL_YPOS(pos), int2str(value, chars), font_nr);
+
+  last_value = value;
+}
+
+void DrawGameValue_Level(int value)
+{
+  struct TextPosInfo *pos = &game.panel.level_number;
+  int chars1 = 2;
+  int chars2 = 3;
+  int chars = pos->size;
+#if 1
+  int font1_nr = pos->font;
+  int font2_nr = pos->font_alt;
+#else
+  int font1_nr = FONT_TEXT_2;
+  int font2_nr = FONT_TEXT_1;
+#endif
+  int font_nr = font1_nr;
+  boolean use_dynamic_chars = (chars == -1 ? TRUE : FALSE);
+
+#if 1
+  return;	/* !!! USE NEW STUFF !!! */
+#endif
+
+  if (PANEL_DEACTIVATED(pos))
+    return;
+
+  if (use_dynamic_chars)		/* use dynamic number of chars */
+  {
+    chars   = (level_nr < 100 ? chars1   : chars2);
+    font_nr = (level_nr < 100 ? font1_nr : font2_nr);
+  }
+
+  pos->width = chars * getFontWidth(font_nr);
+
+  DrawText(PANEL_XPOS(pos), PANEL_YPOS(pos), int2str(value, chars), font_nr);
+}
+
+void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
+{
+#if 0
+  struct TextPosInfo *pos = &game.panel.keys;
+#endif
+#if 0
+  int base_key_graphic = EL_KEY_1;
+#endif
+  int i;
+
+#if 1
+  return;	/* !!! USE NEW STUFF !!! */
+#endif
+
+#if 0
+  if (PANEL_DEACTIVATED(pos))
+    return;
+#endif
+
+#if 0
+  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+    base_key_graphic = EL_EM_KEY_1;
+#endif
+
+#if 0
+  pos->width = 4 * MINI_TILEX;
+#endif
+
+#if 1
+  for (i = 0; i < MAX_NUM_KEYS; i++)
+#else
+  /* currently only 4 of 8 possible keys are displayed */
+  for (i = 0; i < STD_NUM_KEYS; i++)
+#endif
+  {
+#if 1
+    struct TextPosInfo *pos = &game.panel.key[i];
+#endif
+    int src_x = DOOR_GFX_PAGEX5 + 18 + (i % 4) * MINI_TILEX;
+    int src_y = DOOR_GFX_PAGEY1 + 123;
+#if 1
+    int dst_x = PANEL_XPOS(pos);
+    int dst_y = PANEL_YPOS(pos);
+#else
+    int dst_x = PANEL_XPOS(pos) + i * MINI_TILEX;
+    int dst_y = PANEL_YPOS(pos);
+#endif
+
+#if 1
+    int element = (i >= STD_NUM_KEYS ? EL_EMC_KEY_5 - 4 :
+		   level.game_engine_type == GAME_ENGINE_TYPE_EM ? EL_EM_KEY_1 :
+		   EL_KEY_1) + i;
+    int graphic = el2edimg(element);
+#endif
+
+#if 1
+    if (PANEL_DEACTIVATED(pos))
+      continue;
+#endif
+
+#if 0
+    /* masked blit with tiles from half-size scaled bitmap does not work yet
+       (no mask bitmap created for these sizes after loading and scaling) --
+       solution: load without creating mask, scale, then create final mask */
+
+    BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto, src_x, src_y,
+	       MINI_TILEX, MINI_TILEY, dst_x, dst_y);
+
+    if (key[i])
+    {
+#if 0
+      int graphic = el2edimg(base_key_graphic + i);
+#endif
+      Bitmap *src_bitmap;
+      int src_x, src_y;
+
+      getMiniGraphicSource(graphic, &src_bitmap, &src_x, &src_y);
+
+      SetClipOrigin(src_bitmap, src_bitmap->stored_clip_gc,
+		    dst_x - src_x, dst_y - src_y);
+      BlitBitmapMasked(src_bitmap, drawto, src_x, src_y, MINI_TILEX, MINI_TILEY,
+		       dst_x, dst_y);
+    }
+#else
+#if 1
+    if (key[i])
+      DrawMiniGraphicExt(drawto, dst_x, dst_y, graphic);
+    else
+      BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto, src_x, src_y,
+		 MINI_TILEX, MINI_TILEY, dst_x, dst_y);
+#else
+    if (key[i])
+      DrawMiniGraphicExt(drawto, dst_x, dst_y, el2edimg(base_key_graphic + i));
+    else
+      BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto, src_x, src_y,
+		 MINI_TILEX, MINI_TILEY, dst_x, dst_y);
+#endif
+#endif
+  }
+}
+
+#else
+
+void DrawGameValue_Emeralds(int value)
+{
+  int font_nr = FONT_TEXT_2;
+  int xpos = (3 * 14 - 3 * getFontWidth(font_nr)) / 2;
 
   if (PANEL_DEACTIVATED(game.panel.gems))
     return;
 
-  DrawText(DX_EMERALDS + xpos, DY_EMERALDS, int2str(value, 3), FONT_TEXT_2);
+  DrawText(DX_EMERALDS + xpos, DY_EMERALDS, int2str(value, 3), font_nr);
 }
 
-inline void DrawGameValue_Dynamite(int value)
+void DrawGameValue_Dynamite(int value)
 {
-  int xpos = (3 * 14 - 3 * getFontWidth(FONT_TEXT_2)) / 2;
+  int font_nr = FONT_TEXT_2;
+  int xpos = (3 * 14 - 3 * getFontWidth(font_nr)) / 2;
 
-  if (PANEL_DEACTIVATED(game.panel.inventory))
+  if (PANEL_DEACTIVATED(game.panel.inventory_count))
     return;
 
-  DrawText(DX_DYNAMITE + xpos, DY_DYNAMITE, int2str(value, 3), FONT_TEXT_2);
+  DrawText(DX_DYNAMITE + xpos, DY_DYNAMITE, int2str(value, 3), font_nr);
 }
 
-inline void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
+void DrawGameValue_Score(int value)
+{
+  int font_nr = FONT_TEXT_2;
+  int xpos = (5 * 14 - 5 * getFontWidth(font_nr)) / 2;
+
+  if (PANEL_DEACTIVATED(game.panel.score))
+    return;
+
+  DrawText(DX_SCORE + xpos, DY_SCORE, int2str(value, 5), font_nr);
+}
+
+void DrawGameValue_Time(int value)
+{
+  int font1_nr = FONT_TEXT_2;
+#if 1
+  int font2_nr = FONT_TEXT_1;
+#else
+  int font2_nr = FONT_LEVEL_NUMBER;
+#endif
+  int xpos3 = (3 * 14 - 3 * getFontWidth(font1_nr)) / 2;
+  int xpos4 = (4 * 10 - 4 * getFontWidth(font2_nr)) / 2;
+
+  if (PANEL_DEACTIVATED(game.panel.time))
+    return;
+
+  /* clear background if value just changed its size */
+  if (value == 999 || value == 1000)
+    ClearRectangleOnBackground(drawto, DX_TIME1, DY_TIME, 14 * 3, 14);
+
+  if (value < 1000)
+    DrawText(DX_TIME1 + xpos3, DY_TIME, int2str(value, 3), font1_nr);
+  else
+    DrawText(DX_TIME2 + xpos4, DY_TIME, int2str(value, 4), font2_nr);
+}
+
+void DrawGameValue_Level(int value)
+{
+  int font1_nr = FONT_TEXT_2;
+#if 1
+  int font2_nr = FONT_TEXT_1;
+#else
+  int font2_nr = FONT_LEVEL_NUMBER;
+#endif
+
+  if (PANEL_DEACTIVATED(game.panel.level))
+    return;
+
+  if (level_nr < 100)
+    DrawText(DX_LEVEL1, DY_LEVEL, int2str(value, 2), font1_nr);
+  else
+    DrawText(DX_LEVEL2, DY_LEVEL, int2str(value, 3), font2_nr);
+}
+
+void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
 {
   int base_key_graphic = EL_KEY_1;
   int i;
@@ -1286,44 +3028,7 @@ inline void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
   }
 }
 
-inline void DrawGameValue_Score(int value)
-{
-  int xpos = (5 * 14 - 5 * getFontWidth(FONT_TEXT_2)) / 2;
-
-  if (PANEL_DEACTIVATED(game.panel.score))
-    return;
-
-  DrawText(DX_SCORE + xpos, DY_SCORE, int2str(value, 5), FONT_TEXT_2);
-}
-
-inline void DrawGameValue_Time(int value)
-{
-  int xpos3 = (3 * 14 - 3 * getFontWidth(FONT_TEXT_2)) / 2;
-  int xpos4 = (4 * 10 - 4 * getFontWidth(FONT_LEVEL_NUMBER)) / 2;
-
-  if (PANEL_DEACTIVATED(game.panel.time))
-    return;
-
-  /* clear background if value just changed its size */
-  if (value == 999 || value == 1000)
-    ClearRectangleOnBackground(drawto, DX_TIME1, DY_TIME, 14 * 3, 14);
-
-  if (value < 1000)
-    DrawText(DX_TIME1 + xpos3, DY_TIME, int2str(value, 3), FONT_TEXT_2);
-  else
-    DrawText(DX_TIME2 + xpos4, DY_TIME, int2str(value, 4), FONT_LEVEL_NUMBER);
-}
-
-inline void DrawGameValue_Level(int value)
-{
-  if (PANEL_DEACTIVATED(game.panel.level))
-    return;
-
-  if (level_nr < 100)
-    DrawText(DX_LEVEL1, DY_LEVEL, int2str(value, 2), FONT_TEXT_2);
-  else
-    DrawText(DX_LEVEL2, DY_LEVEL, int2str(value, 3), FONT_LEVEL_NUMBER);
-}
+#endif
 
 void DrawAllGameValues(int emeralds, int dynamite, int score, int time,
 		       int key_bits)
@@ -1349,7 +3054,17 @@ void DrawAllGameValues(int emeralds, int dynamite, int score, int time,
   DrawGameValue_Keys(key);
 }
 
+void UpdateGameDoorValues()
+{
+  UpdateGameControlValues();
+}
+
 void DrawGameDoorValues()
+{
+  DisplayGameControlValues();
+}
+
+void DrawGameDoorValues_OLD()
 {
   int time_value = (level.time == 0 ? TimePlayed : TimeLeft);
   int dynamite_value = 0;
@@ -1639,6 +3354,7 @@ static void InitGameEngine()
     {
       ei->change_page[j].actual_trigger_element = EL_EMPTY;
       ei->change_page[j].actual_trigger_player = EL_PLAYER_1;
+      ei->change_page[j].actual_trigger_player_bits = CH_PLAYER_1;
       ei->change_page[j].actual_trigger_side = CH_SIDE_NONE;
       ei->change_page[j].actual_trigger_ce_value = 0;
       ei->change_page[j].actual_trigger_ce_score = 0;
@@ -1818,6 +3534,13 @@ static void InitGameEngine()
   recursion_loop_depth = 0;
   recursion_loop_detected = FALSE;
   recursion_loop_element = EL_UNDEFINED;
+
+  /* ---------- initialize graphics engine ---------------------------------- */
+  game.scroll_delay_value =
+    (game.forced_scroll_delay_value != -1 ? game.forced_scroll_delay_value :
+     setup.scroll_delay                   ? setup.scroll_delay_value       : 0);
+  game.scroll_delay_value =
+    MIN(MAX(MIN_SCROLL_DELAY, game.scroll_delay_value), MAX_SCROLL_DELAY);
 }
 
 int get_num_special_action(int element, int action_first, int action_last)
@@ -1857,12 +3580,15 @@ void InitGame()
   boolean emulate_bd = TRUE;	/* unless non-BOULDERDASH elements found */
   boolean emulate_sb = TRUE;	/* unless non-SOKOBAN     elements found */
   boolean emulate_sp = TRUE;	/* unless non-SUPAPLEX    elements found */
+#if 0
   boolean do_fading = (game_status == GAME_MODE_MAIN);
+#endif
   int i, j, x, y;
 
   game_status = GAME_MODE_PLAYING;
 
   InitGameEngine();
+  InitGameControlValues();
 
   /* don't play tapes over network */
   network_playing = (options.network && !tape.playing);
@@ -1893,6 +3619,8 @@ void InitGame()
 
     for (j = 0; j < MAX_NUM_KEYS; j++)
       player->key[j] = FALSE;
+
+    player->num_white_keys = 0;
 
     player->dynabomb_count = 0;
     player->dynabomb_size = 1;
@@ -1986,9 +3714,13 @@ void InitGame()
     player->LevelSolved = FALSE;
     player->GameOver = FALSE;
 
+    player->LevelSolved_GameWon = FALSE;
     player->LevelSolved_GameEnd = FALSE;
+    player->LevelSolved_PanelOff = FALSE;
     player->LevelSolved_SaveTape = FALSE;
     player->LevelSolved_SaveScore = FALSE;
+    player->LevelSolved_CountingTime = 0;
+    player->LevelSolved_CountingScore = 0;
   }
 
   network_player_action_received = FALSE;
@@ -2017,6 +3749,7 @@ void InitGame()
   AllPlayersGone = FALSE;
 
   game.yamyam_content_nr = 0;
+  game.robot_wheel_active = FALSE;
   game.magic_wall_active = FALSE;
   game.magic_wall_time_left = 0;
   game.light_time_left = 0;
@@ -2103,6 +3836,8 @@ void InitGame()
       emulate_sp = FALSE;
 
     InitField(x, y, TRUE);
+
+    ResetGfxAnimation(x, y);
   }
 
   InitBeltMovement();
@@ -2339,7 +4074,8 @@ void InitGame()
 	  content = element_info[element].change_page[i].target_element;
 	  is_player = ELEM_IS_PLAYER(content);
 
-	  if (is_player && (found_rating < 3 || element < found_element))
+	  if (is_player && (found_rating < 3 ||
+			    (found_rating == 3 && element < found_element)))
 	  {
 	    start_x = x;
 	    start_y = y;
@@ -2356,7 +4092,8 @@ void InitGame()
 	content = element_info[element].content.e[xx][yy];
 	is_player = ELEM_IS_PLAYER(content);
 
-	if (is_player && (found_rating < 2 || element < found_element))
+	if (is_player && (found_rating < 2 ||
+			  (found_rating == 2 && element < found_element)))
 	{
 	  start_x = x + xx - 1;
 	  start_y = y + yy - 1;
@@ -2376,7 +4113,8 @@ void InitGame()
 
 	  is_player = ELEM_IS_PLAYER(content);
 
-	  if (is_player && (found_rating < 1 || element < found_element))
+	  if (is_player && (found_rating < 1 ||
+			    (found_rating == 1 && element < found_element)))
 	  {
 	    start_x = x + xx - 1;
 	    start_y = y + yy - 1;
@@ -2407,13 +4145,38 @@ void InitGame()
 		local_player->jy - MIDPOSY);
   }
 
+#if 0
+  /* do not use PLAYING mask for fading out from main screen */
+  game_status = GAME_MODE_MAIN;
+#endif
+
   StopAnimation();
 
   if (!game.restart_level)
     CloseDoor(DOOR_CLOSE_1);
 
+#if 1
+  if (level_editor_test_game)
+    FadeSkipNextFadeIn();
+  else
+    FadeSetEnterScreen();
+#else
+  if (level_editor_test_game)
+    fading = fading_none;
+  else
+    fading = menu.destination;
+#endif
+
+#if 1
+  FadeOut(REDRAW_FIELD);
+#else
   if (do_fading)
     FadeOut(REDRAW_FIELD);
+#endif
+
+#if 0
+  game_status = GAME_MODE_PLAYING;
+#endif
 
   /* !!! FIX THIS (START) !!! */
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
@@ -2440,10 +4203,14 @@ void InitGame()
   }
   /* !!! FIX THIS (END) !!! */
 
+#if 1
+  FadeIn(REDRAW_FIELD);
+#else
   if (do_fading)
     FadeIn(REDRAW_FIELD);
 
   BackToFront();
+#endif
 
   if (!game.restart_level)
   {
@@ -2455,7 +4222,12 @@ void InitGame()
   SetPanelBackground();
   SetDrawBackgroundMask(REDRAW_DOOR_1);
 
+#if 1
+  UpdateAndDisplayGameControlValues();
+#else
+  UpdateGameDoorValues();
   DrawGameDoorValues();
+#endif
 
   if (!game.restart_level)
   {
@@ -2712,16 +4484,21 @@ static void PlayerWins(struct PlayerInfo *player)
 
   player->score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 			 level.native_em_level->lev->score : player->score);
+
+  player->LevelSolved_CountingTime = (level.time == 0 ? TimePlayed : TimeLeft);
+  player->LevelSolved_CountingScore = player->score_final;
 }
 
 void GameWon()
 {
   static int time, time_final;
   static int score, score_final;
-  static int game_over_delay = 0;
-  int game_over_delay_value = 50;
+  static int game_over_delay_1 = 0;
+  static int game_over_delay_2 = 0;
+  int game_over_delay_value_1 = 50;
+  int game_over_delay_value_2 = 50;
 
-  if (!local_player->LevelSolved_GameEnd)
+  if (!local_player->LevelSolved_GameWon)
   {
     int i;
 
@@ -2729,7 +4506,7 @@ void GameWon()
     if (local_player->MovPos)
       return;
 
-    local_player->LevelSolved_GameEnd = TRUE;
+    local_player->LevelSolved_GameWon = TRUE;
     local_player->LevelSolved_SaveTape = tape.recording;
     local_player->LevelSolved_SaveScore = !tape.playing;
 
@@ -2740,7 +4517,8 @@ void GameWon()
     TapeStop();
 #endif
 
-    game_over_delay = game_over_delay_value;
+    game_over_delay_1 = game_over_delay_value_1;
+    game_over_delay_2 = game_over_delay_value_2;
 
     time = time_final = (level.time == 0 ? TimePlayed : TimeLeft);
     score = score_final = local_player->score_final;
@@ -2763,8 +4541,18 @@ void GameWon()
       time = time_final;
       score = score_final;
 
+#if 1
+      local_player->LevelSolved_CountingTime = time;
+      local_player->LevelSolved_CountingScore = score;
+
+      game_panel_controls[GAME_PANEL_TIME].value = time;
+      game_panel_controls[GAME_PANEL_SCORE].value = score;
+
+      DisplayGameControlValues();
+#else
       DrawGameValue_Time(time);
       DrawGameValue_Score(score);
+#endif
     }
 
     if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
@@ -2772,16 +4560,33 @@ void GameWon()
       if (ExitX >= 0 && ExitY >= 0)	/* local player has left the level */
       {
 	/* close exit door after last player */
-	if (AllPlayersGone &&
-	    (Feld[ExitX][ExitY] == EL_EXIT_OPEN ||
-	     Feld[ExitX][ExitY] == EL_SP_EXIT_OPEN))
+	if ((AllPlayersGone &&
+	     (Feld[ExitX][ExitY] == EL_EXIT_OPEN ||
+	      Feld[ExitX][ExitY] == EL_SP_EXIT_OPEN ||
+	      Feld[ExitX][ExitY] == EL_STEEL_EXIT_OPEN)) ||
+	    Feld[ExitX][ExitY] == EL_EM_EXIT_OPEN ||
+	    Feld[ExitX][ExitY] == EL_EM_STEEL_EXIT_OPEN)
 	{
 	  int element = Feld[ExitX][ExitY];
 
-	  Feld[ExitX][ExitY] = (element == EL_EXIT_OPEN ? EL_EXIT_CLOSING :
-				EL_SP_EXIT_CLOSING);
+#if 0
+	  if (element == EL_EM_EXIT_OPEN ||
+	      element == EL_EM_STEEL_EXIT_OPEN)
+	  {
+	    Bang(ExitX, ExitY);
+	  }
+	  else
+#endif
+	  {
+	    Feld[ExitX][ExitY] =
+	      (element == EL_EXIT_OPEN		? EL_EXIT_CLOSING :
+	       element == EL_EM_EXIT_OPEN	? EL_EM_EXIT_CLOSING :
+	       element == EL_SP_EXIT_OPEN	? EL_SP_EXIT_CLOSING:
+	       element == EL_STEEL_EXIT_OPEN	? EL_STEEL_EXIT_CLOSING:
+	       EL_EM_STEEL_EXIT_CLOSING);
 
-	  PlayLevelSoundElementAction(ExitX, ExitY, element, ACTION_CLOSING);
+	    PlayLevelSoundElementAction(ExitX, ExitY, element, ACTION_CLOSING);
+	  }
 	}
 
 	/* player disappears */
@@ -2805,9 +4610,9 @@ void GameWon()
     PlaySound(SND_GAME_WINNING);
   }
 
-  if (game_over_delay > 0)
+  if (game_over_delay_1 > 0)
   {
-    game_over_delay--;
+    game_over_delay_1--;
 
     return;
   }
@@ -2821,8 +4626,18 @@ void GameWon()
     time  += time_count_steps * time_count_dir;
     score += time_count_steps * level.score[SC_TIME_BONUS];
 
+#if 1
+    local_player->LevelSolved_CountingTime = time;
+    local_player->LevelSolved_CountingScore = score;
+
+    game_panel_controls[GAME_PANEL_TIME].value = time;
+    game_panel_controls[GAME_PANEL_SCORE].value = score;
+
+    DisplayGameControlValues();
+#else
     DrawGameValue_Time(time);
     DrawGameValue_Score(score);
+#endif
 
     if (time == time_final)
       StopSound(SND_GAME_LEVELTIME_BONUS);
@@ -2830,13 +4645,30 @@ void GameWon()
       PlaySoundLoop(SND_GAME_LEVELTIME_BONUS);
     else
       PlaySound(SND_GAME_LEVELTIME_BONUS);
+
+    return;
   }
+
+  local_player->LevelSolved_PanelOff = TRUE;
+
+  if (game_over_delay_2 > 0)
+  {
+    game_over_delay_2--;
+
+    return;
+  }
+
+#if 1
+  GameEnd();
+#endif
 }
 
 void GameEnd()
 {
   int hi_pos;
   boolean raise_level = FALSE;
+
+  local_player->LevelSolved_GameEnd = TRUE;
 
   CloseDoor(DOOR_CLOSE_1);
 
@@ -2857,14 +4689,20 @@ void GameEnd()
   {
     game_status = GAME_MODE_MAIN;
 
+#if 1
+    DrawAndFadeInMainMenu(REDRAW_FIELD);
+#else
     DrawMainMenu();
+#endif
 
     return;
   }
 
   if (!local_player->LevelSolved_SaveScore)
   {
+#if 1
     FadeOut(REDRAW_FIELD);
+#endif
 
     game_status = GAME_MODE_MAIN;
 
@@ -2896,7 +4734,9 @@ void GameEnd()
   }
   else
   {
+#if 1
     FadeOut(REDRAW_FIELD);
+#endif
 
     game_status = GAME_MODE_MAIN;
 
@@ -3064,7 +4904,12 @@ void InitMovingField(int x, int y, int direction)
 
   /* check if element was/is moving or being moved before/after mode change */
 #if 1
+#if 1
+  is_moving_before = (WasJustMoving[x][y] != 0);
+#else
+  /* (!!! this does not work -- WasJustMoving is NOT a boolean value !!!) */
   is_moving_before = WasJustMoving[x][y];
+#endif
 #else
   is_moving_before = (getElementMoveStepsizeExt(x, y, MovDir[x][y]) != 0);
 #endif
@@ -3248,8 +5093,10 @@ void RemoveMovingField(int x, int y)
 
   if (element == EL_BLOCKED &&
       (Feld[oldx][oldy] == EL_QUICKSAND_EMPTYING ||
+       Feld[oldx][oldy] == EL_QUICKSAND_FAST_EMPTYING ||
        Feld[oldx][oldy] == EL_MAGIC_WALL_EMPTYING ||
        Feld[oldx][oldy] == EL_BD_MAGIC_WALL_EMPTYING ||
+       Feld[oldx][oldy] == EL_DC_MAGIC_WALL_EMPTYING ||
        Feld[oldx][oldy] == EL_AMOEBA_DROPPING))
     next_element = get_next_element(Feld[oldx][oldy]);
 
@@ -3370,12 +5217,14 @@ void DrawRelocateScreen(int old_x, int old_y, int x, int y, int move_dir,
 
   if (quick_relocation)
   {
-    int offset = (setup.scroll_delay ? 3 : 0);
+    int offset = game.scroll_delay_value;
 
     if (!IN_VIS_FIELD(SCREENX(x), SCREENY(y)) || center_screen)
     {
-      if (center_screen)
+      if (!level.shifted_relocation || center_screen)
       {
+	/* quick relocation (without scrolling), with centering of screen */
+
 	scroll_x = (x < SBX_Left  + MIDPOSX ? SBX_Left :
 		    x > SBX_Right + MIDPOSX ? SBX_Right :
 		    x - MIDPOSX);
@@ -3410,6 +5259,8 @@ void DrawRelocateScreen(int old_x, int old_y, int x, int y, int move_dir,
     }
     else
     {
+      /* quick relocation (without scrolling), inside visible screen area */
+
       if ((move_dir == MV_LEFT  && scroll_x > x - MIDPOSX + offset) ||
 	  (move_dir == MV_RIGHT && scroll_x < x - MIDPOSX - offset))
 	scroll_x = x - MIDPOSX + (scroll_x < x - MIDPOSX ? -offset : +offset);
@@ -3431,6 +5282,49 @@ void DrawRelocateScreen(int old_x, int old_y, int x, int y, int move_dir,
   }
   else
   {
+#if 1
+    int scroll_xx, scroll_yy;
+
+    if (!level.shifted_relocation || center_screen)
+    {
+      /* visible relocation (with scrolling), with centering of screen */
+
+      scroll_xx = (x < SBX_Left  + MIDPOSX ? SBX_Left :
+		   x > SBX_Right + MIDPOSX ? SBX_Right :
+		   x - MIDPOSX);
+
+      scroll_yy = (y < SBY_Upper + MIDPOSY ? SBY_Upper :
+		   y > SBY_Lower + MIDPOSY ? SBY_Lower :
+		   y - MIDPOSY);
+    }
+    else
+    {
+      /* visible relocation (with scrolling), but do not center screen */
+
+      int center_scroll_x = (old_x < SBX_Left  + MIDPOSX ? SBX_Left :
+			     old_x > SBX_Right + MIDPOSX ? SBX_Right :
+			     old_x - MIDPOSX);
+
+      int center_scroll_y = (old_y < SBY_Upper + MIDPOSY ? SBY_Upper :
+			     old_y > SBY_Lower + MIDPOSY ? SBY_Lower :
+			     old_y - MIDPOSY);
+
+      int offset_x = x + (scroll_x - center_scroll_x);
+      int offset_y = y + (scroll_y - center_scroll_y);
+
+      scroll_xx = (offset_x < SBX_Left  + MIDPOSX ? SBX_Left :
+		   offset_x > SBX_Right + MIDPOSX ? SBX_Right :
+		   offset_x - MIDPOSX);
+
+      scroll_yy = (offset_y < SBY_Upper + MIDPOSY ? SBY_Upper :
+		   offset_y > SBY_Lower + MIDPOSY ? SBY_Lower :
+		   offset_y - MIDPOSY);
+    }
+
+#else
+
+    /* visible relocation (with scrolling), with centering of screen */
+
     int scroll_xx = (x < SBX_Left  + MIDPOSX ? SBX_Left :
 		     x > SBX_Right + MIDPOSX ? SBX_Right :
 		     x - MIDPOSX);
@@ -3438,6 +5332,7 @@ void DrawRelocateScreen(int old_x, int old_y, int x, int y, int move_dir,
     int scroll_yy = (y < SBY_Upper + MIDPOSY ? SBY_Upper :
 		     y > SBY_Lower + MIDPOSY ? SBY_Lower :
 		     y - MIDPOSY);
+#endif
 
     ScrollScreen(NULL, SCROLL_GO_ON);	/* scroll last frame to full tile */
 
@@ -4011,6 +5906,14 @@ void Bang(int x, int y)
       explosion_type = EX_TYPE_DYNA;
       break;
 
+    case EL_DC_LANDMINE:
+#if 0
+    case EL_EM_EXIT_OPEN:
+    case EL_EM_STEEL_EXIT_OPEN:
+#endif
+      explosion_type = EX_TYPE_CENTER;
+      break;
+
     case EL_PENGUIN:
     case EL_LAMP:
     case EL_LAMP_ACTIVE:
@@ -4077,12 +5980,19 @@ static void InitBeltMovement()
     for (j = 0; j < NUM_BELT_PARTS; j++)
     {
       int element = belt_base_active_element[belt_nr] + j;
-      int graphic = el2img(element);
+      int graphic_1 = el2img(element);
+      int graphic_2 = el2panelimg(element);
 
       if (game.belt_dir[i] == MV_LEFT)
-	graphic_info[graphic].anim_mode &= ~ANIM_REVERSE;
+      {
+	graphic_info[graphic_1].anim_mode &= ~ANIM_REVERSE;
+	graphic_info[graphic_2].anim_mode &= ~ANIM_REVERSE;
+      }
       else
-	graphic_info[graphic].anim_mode |=  ANIM_REVERSE;
+      {
+	graphic_info[graphic_1].anim_mode |=  ANIM_REVERSE;
+	graphic_info[graphic_2].anim_mode |=  ANIM_REVERSE;
+      }
     }
   }
 
@@ -4158,12 +6068,19 @@ static void ToggleBeltSwitch(int x, int y)
   for (i = 0; i < NUM_BELT_PARTS; i++)
   {
     int element = belt_base_active_element[belt_nr] + i;
-    int graphic = el2img(element);
+    int graphic_1 = el2img(element);
+    int graphic_2 = el2panelimg(element);
 
     if (belt_dir == MV_LEFT)
-      graphic_info[graphic].anim_mode &= ~ANIM_REVERSE;
+    {
+      graphic_info[graphic_1].anim_mode &= ~ANIM_REVERSE;
+      graphic_info[graphic_2].anim_mode &= ~ANIM_REVERSE;
+    }
     else
-      graphic_info[graphic].anim_mode |=  ANIM_REVERSE;
+    {
+      graphic_info[graphic_1].anim_mode |=  ANIM_REVERSE;
+      graphic_info[graphic_2].anim_mode |=  ANIM_REVERSE;
+    }
   }
 
   SCAN_PLAYFIELD(xx, yy)
@@ -4224,6 +6141,12 @@ static void ToggleSwitchgateSwitch(int x, int y)
       Feld[xx][yy] = EL_SWITCHGATE_SWITCH_UP + game.switchgate_pos;
       DrawLevelField(xx, yy);
     }
+    else if (element == EL_DC_SWITCHGATE_SWITCH_UP ||
+	     element == EL_DC_SWITCHGATE_SWITCH_DOWN)
+    {
+      Feld[xx][yy] = EL_DC_SWITCHGATE_SWITCH_UP + game.switchgate_pos;
+      DrawLevelField(xx, yy);
+    }
 #else
     if (element == EL_SWITCHGATE_SWITCH_UP)
     {
@@ -4233,6 +6156,16 @@ static void ToggleSwitchgateSwitch(int x, int y)
     else if (element == EL_SWITCHGATE_SWITCH_DOWN)
     {
       Feld[xx][yy] = EL_SWITCHGATE_SWITCH_UP;
+      DrawLevelField(xx, yy);
+    }
+    else if (element == EL_DC_SWITCHGATE_SWITCH_UP)
+    {
+      Feld[xx][yy] = EL_DC_SWITCHGATE_SWITCH_DOWN;
+      DrawLevelField(xx, yy);
+    }
+    else if (element == EL_DC_SWITCHGATE_SWITCH_DOWN)
+    {
+      Feld[xx][yy] = EL_DC_SWITCHGATE_SWITCH_UP;
       DrawLevelField(xx, yy);
     }
 #endif
@@ -4451,7 +6384,7 @@ static void ActivateTimegateSwitch(int x, int y)
 	element == EL_TIMEGATE_CLOSING)
     {
       Feld[xx][yy] = EL_TIMEGATE_OPENING;
-      PlayLevelSound(xx, yy, SND_TIMEGATE_OPENING);
+      PlayLevelSound(xx, yy, SND_CLASS_TIMEGATE_OPENING);
     }
 
     /*
@@ -4464,7 +6397,12 @@ static void ActivateTimegateSwitch(int x, int y)
 
   }
 
+#if 1
+  Feld[x][y] = (Feld[x][y] == EL_TIMEGATE_SWITCH ? EL_TIMEGATE_SWITCH_ACTIVE :
+		EL_DC_TIMEGATE_SWITCH_ACTIVE);
+#else
   Feld[x][y] = EL_TIMEGATE_SWITCH_ACTIVE;
+#endif
 }
 
 void Impact(int x, int y)
@@ -4499,6 +6437,16 @@ void Impact(int x, int y)
 
       object_hit = TRUE;
     }
+
+    if (Feld[x][y + 1] == EL_QUICKSAND_FAST_EMPTYING && object_hit == FALSE)
+    {
+      RemoveMovingField(x, y + 1);
+      Feld[x][y + 1] = EL_QUICKSAND_FAST_EMPTY;
+      Feld[x][y + 2] = EL_ROCK;
+      DrawLevelField(x, y + 2);
+
+      object_hit = TRUE;
+    }
 #endif
 
     if (object_hit)
@@ -4527,7 +6475,8 @@ void Impact(int x, int y)
     Bang(x, y);
     return;
   }
-  else if (impact && element == EL_PEARL)
+  else if (impact && element == EL_PEARL &&
+	   smashed != EL_DC_MAGIC_WALL && smashed != EL_DC_MAGIC_WALL_ACTIVE)
   {
     ResetGfxAnimation(x, y);
 
@@ -4560,26 +6509,33 @@ void Impact(int x, int y)
 
   if (object_hit)		/* check which object was hit */
   {
-    if (CAN_PASS_MAGIC_WALL(element) && 
-	(smashed == EL_MAGIC_WALL ||
-	 smashed == EL_BD_MAGIC_WALL))
+    if ((CAN_PASS_MAGIC_WALL(element) && 
+	 (smashed == EL_MAGIC_WALL ||
+	  smashed == EL_BD_MAGIC_WALL)) ||
+	(CAN_PASS_DC_MAGIC_WALL(element) &&
+	 smashed == EL_DC_MAGIC_WALL))
     {
       int xx, yy;
       int activated_magic_wall =
 	(smashed == EL_MAGIC_WALL ? EL_MAGIC_WALL_ACTIVE :
-	 EL_BD_MAGIC_WALL_ACTIVE);
+	 smashed == EL_BD_MAGIC_WALL ? EL_BD_MAGIC_WALL_ACTIVE :
+	 EL_DC_MAGIC_WALL_ACTIVE);
 
       /* activate magic wall / mill */
       SCAN_PLAYFIELD(xx, yy)
+      {
 	if (Feld[xx][yy] == smashed)
 	  Feld[xx][yy] = activated_magic_wall;
+      }
 
       game.magic_wall_time_left = level.time_magic_wall * FRAMES_PER_SECOND;
       game.magic_wall_active = TRUE;
 
       PlayLevelSound(x, y, (smashed == EL_MAGIC_WALL ?
 			    SND_MAGIC_WALL_ACTIVATING :
-			    SND_BD_MAGIC_WALL_ACTIVATING));
+			    smashed == EL_BD_MAGIC_WALL ?
+			    SND_BD_MAGIC_WALL_ACTIVATING :
+			    SND_DC_MAGIC_WALL_ACTIVATING));
     }
 
     if (IS_PLAYER(x, y + 1))
@@ -4659,7 +6615,9 @@ void Impact(int x, int y)
 	  ToggleBeltSwitch(x, y + 1);
 	}
 	else if (smashed == EL_SWITCHGATE_SWITCH_UP ||
-		 smashed == EL_SWITCHGATE_SWITCH_DOWN)
+		 smashed == EL_SWITCHGATE_SWITCH_DOWN ||
+		 smashed == EL_DC_SWITCHGATE_SWITCH_UP ||
+		 smashed == EL_DC_SWITCHGATE_SWITCH_DOWN)
 	{
 	  ToggleSwitchgateSwitch(x, y + 1);
 	}
@@ -4692,12 +6650,15 @@ void Impact(int x, int y)
   /* play sound of magic wall / mill */
   if (!last_line &&
       (Feld[x][y + 1] == EL_MAGIC_WALL_ACTIVE ||
-       Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE))
+       Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE ||
+       Feld[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE))
   {
     if (Feld[x][y + 1] == EL_MAGIC_WALL_ACTIVE)
       PlayLevelSound(x, y, SND_MAGIC_WALL_FILLING);
     else if (Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)
       PlayLevelSound(x, y, SND_BD_MAGIC_WALL_FILLING);
+    else if (Feld[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE)
+      PlayLevelSound(x, y, SND_DC_MAGIC_WALL_FILLING);
 
     return;
   }
@@ -5054,7 +7015,10 @@ inline static void TurnRoundExt(int x, int y)
     	int ex = x + xy[i][0];
     	int ey = y + xy[i][1];
 
-    	if (IN_LEV_FIELD(ex, ey) && Feld[ex][ey] == EL_EXIT_OPEN)
+    	if (IN_LEV_FIELD(ex, ey) && (Feld[ex][ey] == EL_EXIT_OPEN ||
+				     Feld[ex][ey] == EL_EM_EXIT_OPEN ||
+				     Feld[ex][ey] == EL_STEEL_EXIT_OPEN ||
+				     Feld[ex][ey] == EL_EM_STEEL_EXIT_OPEN))
 	{
 	  attr_x = ex;
  	  attr_y = ey;
@@ -5611,6 +7575,43 @@ void StartMoving(int x, int y)
 	PlayLevelSoundAction(x, y, ACTION_FILLING);
       }
     }
+    else if (element == EL_QUICKSAND_FAST_FULL)
+    {
+      if (IS_FREE(x, y + 1))
+      {
+	InitMovingField(x, y, MV_DOWN);
+	started_moving = TRUE;
+
+	Feld[x][y] = EL_QUICKSAND_FAST_EMPTYING;
+#if USE_QUICKSAND_BD_ROCK_BUGFIX
+	if (Store[x][y] != EL_ROCK && Store[x][y] != EL_BD_ROCK)
+	  Store[x][y] = EL_ROCK;
+#else
+	Store[x][y] = EL_ROCK;
+#endif
+
+	PlayLevelSoundAction(x, y, ACTION_EMPTYING);
+      }
+      else if (Feld[x][y + 1] == EL_QUICKSAND_FAST_EMPTY)
+      {
+	if (!MovDelay[x][y])
+	  MovDelay[x][y] = TILEY + 1;
+
+	if (MovDelay[x][y])
+	{
+	  MovDelay[x][y]--;
+	  if (MovDelay[x][y])
+	    return;
+	}
+
+	Feld[x][y] = EL_QUICKSAND_FAST_EMPTY;
+	Feld[x][y + 1] = EL_QUICKSAND_FAST_FULL;
+	Store[x][y + 1] = Store[x][y];
+	Store[x][y] = 0;
+
+	PlayLevelSoundAction(x, y, ACTION_FILLING);
+      }
+    }
     else if ((element == EL_ROCK || element == EL_BD_ROCK) &&
 	     Feld[x][y + 1] == EL_QUICKSAND_EMPTY)
     {
@@ -5618,6 +7619,17 @@ void StartMoving(int x, int y)
       started_moving = TRUE;
 
       Feld[x][y] = EL_QUICKSAND_FILLING;
+      Store[x][y] = element;
+
+      PlayLevelSoundAction(x, y, ACTION_FILLING);
+    }
+    else if ((element == EL_ROCK || element == EL_BD_ROCK) &&
+	     Feld[x][y + 1] == EL_QUICKSAND_FAST_EMPTY)
+    {
+      InitMovingField(x, y, MV_DOWN);
+      started_moving = TRUE;
+
+      Feld[x][y] = EL_QUICKSAND_FAST_FILLING;
       Store[x][y] = element;
 
       PlayLevelSoundAction(x, y, ACTION_FILLING);
@@ -5658,7 +7670,7 @@ void StartMoving(int x, int y)
 	started_moving = TRUE;
 
 	Feld[x][y] = EL_BD_MAGIC_WALL_EMPTYING;
-	Store[x][y] = EL_CHANGED2(Store[x][y]);
+	Store[x][y] = EL_CHANGED_BD(Store[x][y]);
       }
       else if (Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)
       {
@@ -5674,20 +7686,52 @@ void StartMoving(int x, int y)
 
 	Feld[x][y] = EL_BD_MAGIC_WALL_ACTIVE;
 	Feld[x][y + 1] = EL_BD_MAGIC_WALL_FULL;
-	Store[x][y + 1] = EL_CHANGED2(Store[x][y]);
+	Store[x][y + 1] = EL_CHANGED_BD(Store[x][y]);
 	Store[x][y] = 0;
       }
     }
-    else if (CAN_PASS_MAGIC_WALL(element) &&
-	     (Feld[x][y + 1] == EL_MAGIC_WALL_ACTIVE ||
-	      Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE))
+    else if (element == EL_DC_MAGIC_WALL_FULL)
+    {
+      if (IS_FREE(x, y + 1))
+      {
+	InitMovingField(x, y, MV_DOWN);
+	started_moving = TRUE;
+
+	Feld[x][y] = EL_DC_MAGIC_WALL_EMPTYING;
+	Store[x][y] = EL_CHANGED_DC(Store[x][y]);
+      }
+      else if (Feld[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE)
+      {
+	if (!MovDelay[x][y])
+	  MovDelay[x][y] = TILEY/4 + 1;
+
+	if (MovDelay[x][y])
+	{
+	  MovDelay[x][y]--;
+	  if (MovDelay[x][y])
+	    return;
+	}
+
+	Feld[x][y] = EL_DC_MAGIC_WALL_ACTIVE;
+	Feld[x][y + 1] = EL_DC_MAGIC_WALL_FULL;
+	Store[x][y + 1] = EL_CHANGED_DC(Store[x][y]);
+	Store[x][y] = 0;
+      }
+    }
+    else if ((CAN_PASS_MAGIC_WALL(element) &&
+	      (Feld[x][y + 1] == EL_MAGIC_WALL_ACTIVE ||
+	       Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)) ||
+	     (CAN_PASS_DC_MAGIC_WALL(element) &&
+	      (Feld[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE)))
+
     {
       InitMovingField(x, y, MV_DOWN);
       started_moving = TRUE;
 
       Feld[x][y] =
 	(Feld[x][y + 1] == EL_MAGIC_WALL_ACTIVE ? EL_MAGIC_WALL_FILLING :
-	 EL_BD_MAGIC_WALL_FILLING);
+	 Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE ? EL_BD_MAGIC_WALL_FILLING :
+	 EL_DC_MAGIC_WALL_FILLING);
       Store[x][y] = element;
     }
     else if (CAN_FALL(element) && Feld[x][y + 1] == EL_ACID)
@@ -6051,7 +8095,10 @@ void StartMoving(int x, int y)
     }
     else if (element == EL_PENGUIN && IN_LEV_FIELD(newx, newy))
     {
-      if (Feld[newx][newy] == EL_EXIT_OPEN)
+      if (Feld[newx][newy] == EL_EXIT_OPEN ||
+	  Feld[newx][newy] == EL_EM_EXIT_OPEN ||
+	  Feld[newx][newy] == EL_STEEL_EXIT_OPEN ||
+	  Feld[newx][newy] == EL_EM_STEEL_EXIT_OPEN)
       {
 	RemoveField(x, y);
 	DrawLevelField(x, y);
@@ -6469,6 +8516,17 @@ void ContinueMoving(int x, int y)
 
   if (ABS(MovPos[x][y]) < TILEX)
   {
+#if 0
+    int ee = Feld[x][y];
+    int gg = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
+    int ff = getGraphicAnimationFrame(gg, GfxFrame[x][y]);
+
+    printf("::: %d.%d: moving %d ... [%d, %d, %d] [%d, %d, %d]\n",
+	   x, y, ABS(MovPos[x][y]),
+	   ee, gg, ff,
+	   GfxAction[x][y], GfxDir[x][y], GfxFrame[x][y]);
+#endif
+
     DrawLevelField(x, y);
 
     return;	/* element is still moving */
@@ -6496,6 +8554,16 @@ void ContinueMoving(int x, int y)
     Store[newx][newy] = Store[x][y];
   }
   else if (element == EL_QUICKSAND_EMPTYING)
+  {
+    Feld[x][y] = get_next_element(element);
+    element = Feld[newx][newy] = Store[x][y];
+  }
+  else if (element == EL_QUICKSAND_FAST_FILLING)
+  {
+    element = Feld[newx][newy] = get_next_element(element);
+    Store[newx][newy] = Store[x][y];
+  }
+  else if (element == EL_QUICKSAND_FAST_EMPTYING)
   {
     Feld[x][y] = get_next_element(element);
     element = Feld[newx][newy] = Store[x][y];
@@ -6530,6 +8598,24 @@ void ContinueMoving(int x, int y)
     Feld[x][y] = get_next_element(element);
     if (!game.magic_wall_active)
       Feld[x][y] = EL_BD_MAGIC_WALL_DEAD;
+    element = Feld[newx][newy] = Store[x][y];
+
+#if USE_NEW_CUSTOM_VALUE
+    InitField(newx, newy, FALSE);
+#endif
+  }
+  else if (element == EL_DC_MAGIC_WALL_FILLING)
+  {
+    element = Feld[newx][newy] = get_next_element(element);
+    if (!game.magic_wall_active)
+      element = Feld[newx][newy] = EL_DC_MAGIC_WALL_DEAD;
+    Store[newx][newy] = Store[x][y];
+  }
+  else if (element == EL_DC_MAGIC_WALL_EMPTYING)
+  {
+    Feld[x][y] = get_next_element(element);
+    if (!game.magic_wall_active)
+      Feld[x][y] = EL_DC_MAGIC_WALL_DEAD;
     element = Feld[newx][newy] = Store[x][y];
 
 #if USE_NEW_CUSTOM_VALUE
@@ -7035,7 +9121,8 @@ void AmoebeAbleger(int ax, int ay)
 
     if (IS_FREE(x, y) ||
 	CAN_GROW_INTO(Feld[x][y]) ||
-	Feld[x][y] == EL_QUICKSAND_EMPTY)
+	Feld[x][y] == EL_QUICKSAND_EMPTY ||
+	Feld[x][y] == EL_QUICKSAND_FAST_EMPTY)
     {
       newax = x;
       neway = y;
@@ -7060,7 +9147,8 @@ void AmoebeAbleger(int ax, int ay)
 
       if (IS_FREE(x, y) ||
 	  CAN_GROW_INTO(Feld[x][y]) ||
-	  Feld[x][y] == EL_QUICKSAND_EMPTY)
+	  Feld[x][y] == EL_QUICKSAND_EMPTY ||
+	  Feld[x][y] == EL_QUICKSAND_FAST_EMPTY)
       {
 	newax = x;
 	neway = y;
@@ -7235,7 +9323,11 @@ static void RunRobotWheel(int x, int y)
 static void StopRobotWheel(int x, int y)
 {
   if (ZX == x && ZY == y)
+  {
     ZX = ZY = -1;
+
+    game.robot_wheel_active = FALSE;
+  }
 }
 
 static void InitTimegateWheel(int x, int y)
@@ -7245,7 +9337,7 @@ static void InitTimegateWheel(int x, int y)
 
 static void RunTimegateWheel(int x, int y)
 {
-  PlayLevelSound(x, y, SND_TIMEGATE_SWITCH_ACTIVE);
+  PlayLevelSound(x, y, SND_CLASS_TIMEGATE_SWITCH_ACTIVE);
 }
 
 static void InitMagicBallDelay(int x, int y)
@@ -7312,6 +9404,75 @@ void CheckExit(int x, int y)
   PlayLevelSoundNearest(x, y, SND_CLASS_EXIT_OPENING);
 }
 
+void CheckExitEM(int x, int y)
+{
+  if (local_player->gems_still_needed > 0 ||
+      local_player->sokobanfields_still_needed > 0 ||
+      local_player->lights_still_needed > 0)
+  {
+    int element = Feld[x][y];
+    int graphic = el2img(element);
+
+    if (IS_ANIMATED(graphic))
+      DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
+
+    return;
+  }
+
+  if (AllPlayersGone)	/* do not re-open exit door closed after last player */
+    return;
+
+  Feld[x][y] = EL_EM_EXIT_OPENING;
+
+  PlayLevelSoundNearest(x, y, SND_CLASS_EM_EXIT_OPENING);
+}
+
+void CheckExitSteel(int x, int y)
+{
+  if (local_player->gems_still_needed > 0 ||
+      local_player->sokobanfields_still_needed > 0 ||
+      local_player->lights_still_needed > 0)
+  {
+    int element = Feld[x][y];
+    int graphic = el2img(element);
+
+    if (IS_ANIMATED(graphic))
+      DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
+
+    return;
+  }
+
+  if (AllPlayersGone)	/* do not re-open exit door closed after last player */
+    return;
+
+  Feld[x][y] = EL_STEEL_EXIT_OPENING;
+
+  PlayLevelSoundNearest(x, y, SND_CLASS_STEEL_EXIT_OPENING);
+}
+
+void CheckExitSteelEM(int x, int y)
+{
+  if (local_player->gems_still_needed > 0 ||
+      local_player->sokobanfields_still_needed > 0 ||
+      local_player->lights_still_needed > 0)
+  {
+    int element = Feld[x][y];
+    int graphic = el2img(element);
+
+    if (IS_ANIMATED(graphic))
+      DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
+
+    return;
+  }
+
+  if (AllPlayersGone)	/* do not re-open exit door closed after last player */
+    return;
+
+  Feld[x][y] = EL_EM_STEEL_EXIT_OPENING;
+
+  PlayLevelSoundNearest(x, y, SND_CLASS_EM_STEEL_EXIT_OPENING);
+}
+
 void CheckExitSP(int x, int y)
 {
   if (local_player->gems_still_needed > 0)
@@ -7365,9 +9526,6 @@ void DrawTwinkleOnField(int x, int y)
   {
     MovDelay[x][y]--;
 
-    if (setup.direct_draw && MovDelay[x][y])
-      SetDrawtoField(DRAW_BUFFERED);
-
     DrawLevelElementAnimation(x, y, Feld[x][y]);
 
     if (MovDelay[x][y] != 0)
@@ -7376,18 +9534,6 @@ void DrawTwinkleOnField(int x, int y)
 					   10 - MovDelay[x][y]);
 
       DrawGraphicThruMask(SCREENX(x), SCREENY(y), IMG_TWINKLE_WHITE, frame);
-
-      if (setup.direct_draw)
-      {
-	int dest_x, dest_y;
-
-	dest_x = FX + SCREENX(x) * TILEX;
-	dest_y = FY + SCREENY(y) * TILEY;
-
-	BlitBitmap(drawto_field, window,
-		   dest_x, dest_y, TILEX, TILEY, dest_x, dest_y);
-	SetDrawtoField(DRAW_DIRECT);
-      }
     }
   }
 }
@@ -7544,6 +9690,108 @@ void MauerAbleger(int ax, int ay)
        element == EL_EXPANDABLE_WALL) &&
       ((links_massiv && rechts_massiv) ||
        element == EL_EXPANDABLE_WALL_VERTICAL))
+    Feld[ax][ay] = EL_WALL;
+
+  if (new_wall)
+    PlayLevelSoundAction(ax, ay, ACTION_GROWING);
+}
+
+void MauerAblegerStahl(int ax, int ay)
+{
+  int element = Feld[ax][ay];
+  int graphic = el2img(element);
+  boolean oben_frei = FALSE, unten_frei = FALSE;
+  boolean links_frei = FALSE, rechts_frei = FALSE;
+  boolean oben_massiv = FALSE, unten_massiv = FALSE;
+  boolean links_massiv = FALSE, rechts_massiv = FALSE;
+  boolean new_wall = FALSE;
+
+  if (IS_ANIMATED(graphic))
+    DrawLevelGraphicAnimationIfNeeded(ax, ay, graphic);
+
+  if (!MovDelay[ax][ay])	/* start building new wall */
+    MovDelay[ax][ay] = 6;
+
+  if (MovDelay[ax][ay])		/* wait some time before building new wall */
+  {
+    MovDelay[ax][ay]--;
+    if (MovDelay[ax][ay])
+      return;
+  }
+
+  if (IN_LEV_FIELD(ax, ay-1) && IS_FREE(ax, ay-1))
+    oben_frei = TRUE;
+  if (IN_LEV_FIELD(ax, ay+1) && IS_FREE(ax, ay+1))
+    unten_frei = TRUE;
+  if (IN_LEV_FIELD(ax-1, ay) && IS_FREE(ax-1, ay))
+    links_frei = TRUE;
+  if (IN_LEV_FIELD(ax+1, ay) && IS_FREE(ax+1, ay))
+    rechts_frei = TRUE;
+
+  if (element == EL_EXPANDABLE_STEELWALL_VERTICAL ||
+      element == EL_EXPANDABLE_STEELWALL_ANY)
+  {
+    if (oben_frei)
+    {
+      Feld[ax][ay-1] = EL_EXPANDABLE_STEELWALL_GROWING;
+      Store[ax][ay-1] = element;
+      GfxDir[ax][ay-1] = MovDir[ax][ay-1] = MV_UP;
+      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay-1)))
+  	DrawGraphic(SCREENX(ax), SCREENY(ay - 1),
+		    IMG_EXPANDABLE_STEELWALL_GROWING_UP, 0);
+      new_wall = TRUE;
+    }
+    if (unten_frei)
+    {
+      Feld[ax][ay+1] = EL_EXPANDABLE_STEELWALL_GROWING;
+      Store[ax][ay+1] = element;
+      GfxDir[ax][ay+1] = MovDir[ax][ay+1] = MV_DOWN;
+      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay+1)))
+  	DrawGraphic(SCREENX(ax), SCREENY(ay + 1),
+		    IMG_EXPANDABLE_STEELWALL_GROWING_DOWN, 0);
+      new_wall = TRUE;
+    }
+  }
+
+  if (element == EL_EXPANDABLE_STEELWALL_HORIZONTAL ||
+      element == EL_EXPANDABLE_STEELWALL_ANY)
+  {
+    if (links_frei)
+    {
+      Feld[ax-1][ay] = EL_EXPANDABLE_STEELWALL_GROWING;
+      Store[ax-1][ay] = element;
+      GfxDir[ax-1][ay] = MovDir[ax-1][ay] = MV_LEFT;
+      if (IN_SCR_FIELD(SCREENX(ax-1), SCREENY(ay)))
+  	DrawGraphic(SCREENX(ax - 1), SCREENY(ay),
+		    IMG_EXPANDABLE_STEELWALL_GROWING_LEFT, 0);
+      new_wall = TRUE;
+    }
+
+    if (rechts_frei)
+    {
+      Feld[ax+1][ay] = EL_EXPANDABLE_STEELWALL_GROWING;
+      Store[ax+1][ay] = element;
+      GfxDir[ax+1][ay] = MovDir[ax+1][ay] = MV_RIGHT;
+      if (IN_SCR_FIELD(SCREENX(ax+1), SCREENY(ay)))
+  	DrawGraphic(SCREENX(ax + 1), SCREENY(ay),
+		    IMG_EXPANDABLE_STEELWALL_GROWING_RIGHT, 0);
+      new_wall = TRUE;
+    }
+  }
+
+  if (!IN_LEV_FIELD(ax, ay-1) || IS_WALL(Feld[ax][ay-1]))
+    oben_massiv = TRUE;
+  if (!IN_LEV_FIELD(ax, ay+1) || IS_WALL(Feld[ax][ay+1]))
+    unten_massiv = TRUE;
+  if (!IN_LEV_FIELD(ax-1, ay) || IS_WALL(Feld[ax-1][ay]))
+    links_massiv = TRUE;
+  if (!IN_LEV_FIELD(ax+1, ay) || IS_WALL(Feld[ax+1][ay]))
+    rechts_massiv = TRUE;
+
+  if (((oben_massiv && unten_massiv) ||
+       element == EL_EXPANDABLE_STEELWALL_HORIZONTAL) &&
+      ((links_massiv && rechts_massiv) ||
+       element == EL_EXPANDABLE_STEELWALL_VERTICAL))
     Feld[ax][ay] = EL_WALL;
 
   if (new_wall)
@@ -7779,11 +10027,15 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
 			    action_mode, action_arg_number,
 			    action_arg_number_min, action_arg_number_max);
 
+#if 1
+  int trigger_player_bits = change->actual_trigger_player_bits;
+#else
   int trigger_player_bits =
     (change->actual_trigger_player >= EL_PLAYER_1 &&
      change->actual_trigger_player <= EL_PLAYER_4 ?
      (1 << (change->actual_trigger_player - EL_PLAYER_1)) :
      PLAYER_BITS_ANY);
+#endif
 
   int action_arg_player_bits =
     (action_arg >= CA_ARG_PLAYER_1 &&
@@ -7826,7 +10078,13 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
       {
 	TimeLeft = action_arg_number_new;
 
+#if 1
+	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
+
+	DisplayGameControlValues();
+#else
 	DrawGameValue_Time(TimeLeft);
+#endif
 
 	if (!TimeLeft && setup.time_limit)
 	  for (i = 0; i < MAX_PLAYERS; i++)
@@ -7840,7 +10098,13 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
     {
       local_player->score = action_arg_number_new;
 
+#if 1
+      game_panel_controls[GAME_PANEL_SCORE].value = local_player->score;
+
+      DisplayGameControlValues();
+#else
       DrawGameValue_Score(local_player->score);
+#endif
 
       break;
     }
@@ -7849,7 +10113,13 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
     {
       local_player->gems_still_needed = action_arg_number_new;
 
+#if 1
+      game_panel_controls[GAME_PANEL_GEMS].value = local_player->gems_still_needed;
+
+      DisplayGameControlValues();
+#else
       DrawGameValue_Emeralds(local_player->gems_still_needed);
+#endif
 
       break;
     }
@@ -8128,7 +10398,7 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
 static void CreateFieldExt(int x, int y, int element, boolean is_change)
 {
   int old_element = Feld[x][y];
-  int new_element = get_element_from_group_element(element);
+  int new_element = GetElementFromGroupElement(element);
   int previous_move_direction = MovDir[x][y];
 #if USE_NEW_CUSTOM_VALUE
   int last_ce_value = CustomValue[x][y];
@@ -8271,6 +10541,7 @@ static boolean ChangeElement(int x, int y, int element, int page)
     /* reset actual trigger element, trigger player and action element */
     change->actual_trigger_element = EL_EMPTY;
     change->actual_trigger_player = EL_PLAYER_1;
+    change->actual_trigger_player_bits = CH_PLAYER_1;
     change->actual_trigger_side = CH_SIDE_NONE;
     change->actual_trigger_ce_value = 0;
     change->actual_trigger_ce_score = 0;
@@ -8460,8 +10731,19 @@ static void HandleElementChange(int x, int y, int page)
 
     if (change->can_change)
     {
-      ResetGfxAnimation(x, y);
-      ResetRandomAnimationValue(x, y);
+#if 1
+      /* !!! not clear why graphic animation should be reset at all here !!! */
+      /* !!! UPDATE: but is needed for correct Snake Bite tail animation !!! */
+#if USE_GFX_RESET_WHEN_NOT_MOVING
+      /* when a custom element is about to change (for example by change delay),
+	 do not reset graphic animation when the custom element is moving */
+      if (!IS_MOVING(x, y))
+#endif
+      {
+	ResetGfxAnimation(x, y);
+	ResetRandomAnimationValue(x, y);
+      }
+#endif
 
       if (change->pre_change_function)
 	change->pre_change_function(x, y);
@@ -8640,7 +10922,8 @@ static boolean CheckTriggeredElementChangeExt(int trigger_x, int trigger_y,
 	  IS_EQUAL_OR_IN_GROUP(trigger_element, change->trigger_element))
       {
 	change->actual_trigger_element = trigger_element;
-	change->actual_trigger_player = EL_PLAYER_1 + log_2(trigger_player);
+	change->actual_trigger_player = GET_PLAYER_FROM_BITS(trigger_player);
+	change->actual_trigger_player_bits = trigger_player;
 	change->actual_trigger_side = trigger_side;
 	change->actual_trigger_ce_value = CustomValue[trigger_x][trigger_y];
 	change->actual_trigger_ce_score = GET_CE_SCORE(trigger_element);
@@ -8759,7 +11042,8 @@ static boolean CheckElementChangeExt(int x, int y,
 	 IS_EQUAL_OR_IN_GROUP(trigger_element, change->trigger_element)))
     {
       change->actual_trigger_element = trigger_element;
-      change->actual_trigger_player = EL_PLAYER_1 + log_2(trigger_player);
+      change->actual_trigger_player = GET_PLAYER_FROM_BITS(trigger_player);
+      change->actual_trigger_player_bits = trigger_player;
       change->actual_trigger_side = trigger_side;
       change->actual_trigger_ce_value = CustomValue[x][y];
       change->actual_trigger_ce_score = GET_CE_SCORE(trigger_element);
@@ -9113,7 +11397,13 @@ static void CheckLevelTime()
 	if (TimeLeft <= 10 && setup.time_limit)
 	  PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
 
+#if 1
+	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
+
+	DisplayGameControlValues();
+#else
 	DrawGameValue_Time(TimeLeft);
+#endif
 
 	if (!TimeLeft && setup.time_limit)
 	{
@@ -9124,8 +11414,17 @@ static void CheckLevelTime()
 	      KillPlayer(&stored_player[i]);
 	}
       }
+#if 1
+      else if (level.time == 0 && !AllPlayersGone) /* level w/o time limit */
+      {
+	game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
+
+	DisplayGameControlValues();
+      }
+#else
       else if (level.time == 0 && !AllPlayersGone) /* level w/o time limit */
 	DrawGameValue_Time(TimePlayed);
+#endif
 
       level.native_em_level->lev->time =
 	(level.time == 0 ? TimePlayed : TimeLeft);
@@ -9134,6 +11433,13 @@ static void CheckLevelTime()
     if (tape.recording || tape.playing)
       DrawVideoDisplay(VIDEO_STATE_TIME_ON, TapeTime);
   }
+
+#if 1
+  UpdateAndDisplayGameControlValues();
+#else
+  UpdateGameDoorValues();
+  DrawGameDoorValues();
+#endif
 }
 
 void AdvanceFrameAndPlayerCounters(int player_nr)
@@ -9256,7 +11562,7 @@ void GameActions()
       AllPlayersGone = TRUE;
   }
 
-  if (local_player->LevelSolved)
+  if (local_player->LevelSolved && !local_player->LevelSolved_GameEnd)
     GameWon();
 
   if (AllPlayersGone && !TAPE_IS_STOPPED(tape))
@@ -9493,12 +11799,14 @@ void GameActions_RND()
 
 	/* continue moving after pushing (this is actually a bug) */
 	if (!IS_MOVING(x, y))
-	{
 	  Stop[x][y] = FALSE;
-	}
       }
     }
   }
+
+#if 0
+  debug_print_timestamp(0, "start main loop profiling");
+#endif
 
   SCAN_PLAYFIELD(x, y)
   {
@@ -9574,6 +11882,63 @@ void GameActions_RND()
 #endif
   }
 
+#if 0
+  debug_print_timestamp(0, "- time for pre-main loop:");
+#endif
+
+#if 0	// -------------------- !!! TEST ONLY !!! --------------------
+  SCAN_PLAYFIELD(x, y)
+  {
+    element = Feld[x][y];
+    graphic = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
+
+#if 1
+    {
+#if 1
+      int element2 = element;
+      int graphic2 = graphic;
+#else
+      int element2 = Feld[x][y];
+      int graphic2 = el_act_dir2img(element2, GfxAction[x][y], GfxDir[x][y]);
+#endif
+      int last_gfx_frame = GfxFrame[x][y];
+
+      if (graphic_info[graphic2].anim_global_sync)
+	GfxFrame[x][y] = FrameCounter;
+      else if (ANIM_MODE(graphic2) == ANIM_CE_VALUE)
+	GfxFrame[x][y] = CustomValue[x][y];
+      else if (ANIM_MODE(graphic2) == ANIM_CE_SCORE)
+	GfxFrame[x][y] = element_info[element2].collect_score;
+      else if (ANIM_MODE(graphic2) == ANIM_CE_DELAY)
+	GfxFrame[x][y] = ChangeDelay[x][y];
+
+      if (redraw && GfxFrame[x][y] != last_gfx_frame)
+	DrawLevelGraphicAnimation(x, y, graphic2);
+    }
+#else
+    ResetGfxFrame(x, y, TRUE);
+#endif
+
+#if 1
+    if (ANIM_MODE(graphic) == ANIM_RANDOM &&
+	IS_NEXT_FRAME(GfxFrame[x][y], graphic))
+      ResetRandomAnimationValue(x, y);
+#endif
+
+#if 1
+    SetRandomAnimationValue(x, y);
+#endif
+
+#if 1
+    PlayLevelSoundActionIfLoop(x, y, GfxAction[x][y]);
+#endif
+  }
+#endif	// -------------------- !!! TEST ONLY !!! --------------------
+
+#if 0
+  debug_print_timestamp(0, "- time for TEST loop:     -->");
+#endif
+
   SCAN_PLAYFIELD(x, y)
   {
     element = Feld[x][y];
@@ -9617,6 +11982,143 @@ void GameActions_RND()
       graphic = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
     }
 
+#if 0	// ---------------------------------------------------------------------
+
+    if (!IS_MOVING(x, y) && (CAN_FALL(element) || CAN_MOVE(element)))
+    {
+      StartMoving(x, y);
+
+      element = Feld[x][y];
+      graphic = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
+
+      if (IS_ANIMATED(graphic) &&
+	  !IS_MOVING(x, y) &&
+	  !Stop[x][y])
+	DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
+
+      if (IS_GEM(element) || element == EL_SP_INFOTRON)
+	DrawTwinkleOnField(x, y);
+    }
+    else if (IS_MOVING(x, y))
+      ContinueMoving(x, y);
+    else
+    {
+      switch (element)
+      {
+        case EL_ACID:
+        case EL_EXIT_OPEN:
+        case EL_EM_EXIT_OPEN:
+        case EL_SP_EXIT_OPEN:
+        case EL_STEEL_EXIT_OPEN:
+        case EL_EM_STEEL_EXIT_OPEN:
+        case EL_SP_TERMINAL:
+        case EL_SP_TERMINAL_ACTIVE:
+        case EL_EXTRA_TIME:
+        case EL_SHIELD_NORMAL:
+        case EL_SHIELD_DEADLY:
+	  if (IS_ANIMATED(graphic))
+	    DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
+	  break;
+
+        case EL_DYNAMITE_ACTIVE:
+        case EL_EM_DYNAMITE_ACTIVE:
+        case EL_DYNABOMB_PLAYER_1_ACTIVE:
+        case EL_DYNABOMB_PLAYER_2_ACTIVE:
+        case EL_DYNABOMB_PLAYER_3_ACTIVE:
+        case EL_DYNABOMB_PLAYER_4_ACTIVE:
+        case EL_SP_DISK_RED_ACTIVE:
+	  CheckDynamite(x, y);
+	  break;
+
+        case EL_AMOEBA_GROWING:
+	  AmoebeWaechst(x, y);
+	  break;
+
+        case EL_AMOEBA_SHRINKING:
+	  AmoebaDisappearing(x, y);
+	  break;
+
+#if !USE_NEW_AMOEBA_CODE
+        case EL_AMOEBA_WET:
+        case EL_AMOEBA_DRY:
+        case EL_AMOEBA_FULL:
+        case EL_BD_AMOEBA:
+        case EL_EMC_DRIPPER:
+	  AmoebeAbleger(x, y);
+	  break;
+#endif
+
+        case EL_GAME_OF_LIFE:
+        case EL_BIOMAZE:
+	  Life(x, y);
+	  break;
+
+        case EL_EXIT_CLOSED:
+	  CheckExit(x, y);
+	  break;
+
+        case EL_EM_EXIT_CLOSED:
+	  CheckExitEM(x, y);
+	  break;
+
+        case EL_STEEL_EXIT_CLOSED:
+	  CheckExitSteel(x, y);
+	  break;
+
+        case EL_EM_STEEL_EXIT_CLOSED:
+	  CheckExitSteelEM(x, y);
+	  break;
+
+        case EL_SP_EXIT_CLOSED:
+	  CheckExitSP(x, y);
+	  break;
+
+        case EL_EXPANDABLE_WALL_GROWING:
+        case EL_EXPANDABLE_STEELWALL_GROWING:
+	  MauerWaechst(x, y);
+	  break;
+
+        case EL_EXPANDABLE_WALL:
+        case EL_EXPANDABLE_WALL_HORIZONTAL:
+        case EL_EXPANDABLE_WALL_VERTICAL:
+        case EL_EXPANDABLE_WALL_ANY:
+        case EL_BD_EXPANDABLE_WALL:
+	  MauerAbleger(x, y);
+	  break;
+
+        case EL_EXPANDABLE_STEELWALL_HORIZONTAL:
+        case EL_EXPANDABLE_STEELWALL_VERTICAL:
+        case EL_EXPANDABLE_STEELWALL_ANY:
+	  MauerAblegerStahl(x, y);
+	  break;
+
+        case EL_FLAMES:
+	  CheckForDragon(x, y);
+	  break;
+
+        case EL_EXPLOSION:
+	  break;
+
+        case EL_ELEMENT_SNAPPING:
+        case EL_DIAGONAL_SHRINKING:
+        case EL_DIAGONAL_GROWING:
+	{
+	  graphic =
+	    el_act_dir2img(GfxElement[x][y], GfxAction[x][y],GfxDir[x][y]);
+
+	  DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
+	  break;
+	}
+
+        default:
+	  if (IS_ANIMATED(graphic) && !IS_CHANGING(x, y))
+	    DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
+	  break;
+      }
+    }
+
+#else	// ---------------------------------------------------------------------
+
     if (!IS_MOVING(x, y) && (CAN_FALL(element) || CAN_MOVE(element)))
     {
       StartMoving(x, y);
@@ -9634,7 +12136,10 @@ void GameActions_RND()
     }
     else if ((element == EL_ACID ||
 	      element == EL_EXIT_OPEN ||
+	      element == EL_EM_EXIT_OPEN ||
 	      element == EL_SP_EXIT_OPEN ||
+	      element == EL_STEEL_EXIT_OPEN ||
+	      element == EL_EM_STEEL_EXIT_OPEN ||
 	      element == EL_SP_TERMINAL ||
 	      element == EL_SP_TERMINAL_ACTIVE ||
 	      element == EL_EXTRA_TIME ||
@@ -9660,9 +12165,16 @@ void GameActions_RND()
       Life(x, y);
     else if (element == EL_EXIT_CLOSED)
       CheckExit(x, y);
+    else if (element == EL_EM_EXIT_CLOSED)
+      CheckExitEM(x, y);
+    else if (element == EL_STEEL_EXIT_CLOSED)
+      CheckExitSteel(x, y);
+    else if (element == EL_EM_STEEL_EXIT_CLOSED)
+      CheckExitSteelEM(x, y);
     else if (element == EL_SP_EXIT_CLOSED)
       CheckExitSP(x, y);
-    else if (element == EL_EXPANDABLE_WALL_GROWING)
+    else if (element == EL_EXPANDABLE_WALL_GROWING ||
+	     element == EL_EXPANDABLE_STEELWALL_GROWING)
       MauerWaechst(x, y);
     else if (element == EL_EXPANDABLE_WALL ||
 	     element == EL_EXPANDABLE_WALL_HORIZONTAL ||
@@ -9670,6 +12182,10 @@ void GameActions_RND()
 	     element == EL_EXPANDABLE_WALL_ANY ||
 	     element == EL_BD_EXPANDABLE_WALL)
       MauerAbleger(x, y);
+    else if (element == EL_EXPANDABLE_STEELWALL_HORIZONTAL ||
+	     element == EL_EXPANDABLE_STEELWALL_VERTICAL ||
+	     element == EL_EXPANDABLE_STEELWALL_ANY)
+      MauerAblegerStahl(x, y);
     else if (element == EL_FLAMES)
       CheckForDragon(x, y);
     else if (element == EL_EXPLOSION)
@@ -9685,6 +12201,8 @@ void GameActions_RND()
     else if (IS_ANIMATED(graphic) && !IS_CHANGING(x, y))
       DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
 
+#endif	// ---------------------------------------------------------------------
+
     if (IS_BELT_ACTIVE(element))
       PlayLevelSoundAction(x, y, ACTION_ACTIVE);
 
@@ -9698,7 +12216,10 @@ void GameActions_RND()
 	   element == EL_MAGIC_WALL_EMPTYING ||
 	   element == EL_BD_MAGIC_WALL_FULL ||
 	   element == EL_BD_MAGIC_WALL_ACTIVE ||
-	   element == EL_BD_MAGIC_WALL_EMPTYING) &&
+	   element == EL_BD_MAGIC_WALL_EMPTYING ||
+	   element == EL_DC_MAGIC_WALL_FULL ||
+	   element == EL_DC_MAGIC_WALL_ACTIVE ||
+	   element == EL_DC_MAGIC_WALL_EMPTYING) &&
 	  ABS(x-jx) + ABS(y-jy) < ABS(magic_wall_x-jx) + ABS(magic_wall_y-jy))
       {
 	magic_wall_x = x;
@@ -9706,6 +12227,10 @@ void GameActions_RND()
       }
     }
   }
+
+#if 0
+  debug_print_timestamp(0, "- time for MAIN loop:     -->");
+#endif
 
 #if USE_NEW_AMOEBA_CODE
   /* new experimental amoeba growth stuff */
@@ -9723,6 +12248,7 @@ void GameActions_RND()
 	  (element == EL_EMPTY ||
 	   CAN_GROW_INTO(element) ||
 	   element == EL_QUICKSAND_EMPTY ||
+	   element == EL_QUICKSAND_FAST_EMPTY ||
 	   element == EL_ACID_SPLASH_LEFT ||
 	   element == EL_ACID_SPLASH_RIGHT))
       {
@@ -9769,6 +12295,10 @@ void GameActions_RND()
 	  element == EL_BD_MAGIC_WALL_ACTIVE ||
 	  element == EL_BD_MAGIC_WALL_EMPTYING)
 	PlayLevelSound(magic_wall_x, magic_wall_y, SND_BD_MAGIC_WALL_ACTIVE);
+      else if (element == EL_DC_MAGIC_WALL_FULL ||
+	       element == EL_DC_MAGIC_WALL_ACTIVE ||
+	       element == EL_DC_MAGIC_WALL_EMPTYING)
+	PlayLevelSound(magic_wall_x, magic_wall_y, SND_DC_MAGIC_WALL_ACTIVE);
       else
 	PlayLevelSound(magic_wall_x, magic_wall_y, SND_MAGIC_WALL_ACTIVE);
     }
@@ -9776,6 +12306,7 @@ void GameActions_RND()
     if (game.magic_wall_time_left > 0)
     {
       game.magic_wall_time_left--;
+
       if (!game.magic_wall_time_left)
       {
 	SCAN_PLAYFIELD(x, y)
@@ -9792,6 +12323,12 @@ void GameActions_RND()
 		   element == EL_BD_MAGIC_WALL_FULL)
 	  {
 	    Feld[x][y] = EL_BD_MAGIC_WALL_DEAD;
+	    DrawLevelField(x, y);
+	  }
+	  else if (element == EL_DC_MAGIC_WALL_ACTIVE ||
+		   element == EL_DC_MAGIC_WALL_FULL)
+	  {
+	    Feld[x][y] = EL_DC_MAGIC_WALL_DEAD;
 	    DrawLevelField(x, y);
 	  }
 	}
@@ -9879,6 +12416,11 @@ void GameActions_RND()
     local_player->show_envelope = 0;
   }
 
+#if 0
+  debug_print_timestamp(0, "stop main loop profiling ");
+  printf("----------------------------------------------------------\n");
+#endif
+
   /* use random number generator in every frame to make it less predictable */
   if (game.engine_version >= VERSION_IDENT(3,1,1,0))
     RND(1);
@@ -9925,25 +12467,85 @@ static boolean AllPlayersInVisibleScreen()
 
 void ScrollLevel(int dx, int dy)
 {
+#if 1
+  static Bitmap *bitmap_db_field2 = NULL;
   int softscroll_offset = (setup.soft_scrolling ? TILEX : 0);
   int x, y;
+#else
+  int i, x, y;
+#endif
+
+#if 0
+  /* !!! THIS IS APPARENTLY WRONG FOR PLAYER RELOCATION !!! */
+  /* only horizontal XOR vertical scroll direction allowed */
+  if ((dx == 0 && dy == 0) || (dx != 0 && dy != 0))
+    return;
+#endif
+
+#if 1
+  if (bitmap_db_field2 == NULL)
+    bitmap_db_field2 = CreateBitmap(FXSIZE, FYSIZE, DEFAULT_DEPTH);
+
+  /* needed when blitting directly to same bitmap -- should not be needed with
+     recent SDL libraries, but apparently does not work in 1.2.11 directly */
+  BlitBitmap(drawto_field, bitmap_db_field2,
+	     FX + TILEX * (dx == -1) - softscroll_offset,
+	     FY + TILEY * (dy == -1) - softscroll_offset,
+	     SXSIZE - TILEX * (dx != 0) + 2 * softscroll_offset,
+	     SYSIZE - TILEY * (dy != 0) + 2 * softscroll_offset,
+	     FX + TILEX * (dx == 1) - softscroll_offset,
+	     FY + TILEY * (dy == 1) - softscroll_offset);
+  BlitBitmap(bitmap_db_field2, drawto_field,
+	     FX + TILEX * (dx == 1) - softscroll_offset,
+	     FY + TILEY * (dy == 1) - softscroll_offset,
+	     SXSIZE - TILEX * (dx != 0) + 2 * softscroll_offset,
+	     SYSIZE - TILEY * (dy != 0) + 2 * softscroll_offset,
+	     FX + TILEX * (dx == 1) - softscroll_offset,
+	     FY + TILEY * (dy == 1) - softscroll_offset);
+
+#else
+
+#if 0
+  /* !!! DOES NOT WORK FOR DIAGONAL PLAYER RELOCATION !!! */
+  int xsize = (BX2 - BX1 + 1);
+  int ysize = (BY2 - BY1 + 1);
+  int start = (dx != 0 ? (dx == -1 ? BX1 : BX2) : (dy == -1 ? BY1 : BY2));
+  int end   = (dx != 0 ? (dx == -1 ? BX2 : BX1) : (dy == -1 ? BY2 : BY1));
+  int step  = (start < end ? +1 : -1);
+
+  for (i = start; i != end; i += step)
+  {
+    BlitBitmap(drawto_field, drawto_field,
+	       FX + TILEX * (dx != 0 ? i + step : 0),
+	       FY + TILEY * (dy != 0 ? i + step : 0),
+	       TILEX * (dx != 0 ? 1 : xsize),
+	       TILEY * (dy != 0 ? 1 : ysize),
+	       FX + TILEX * (dx != 0 ? i : 0),
+	       FY + TILEY * (dy != 0 ? i : 0));
+  }
+
+#else
+
+  int softscroll_offset = (setup.soft_scrolling ? TILEX : 0);
 
   BlitBitmap(drawto_field, drawto_field,
 	     FX + TILEX * (dx == -1) - softscroll_offset,
 	     FY + TILEY * (dy == -1) - softscroll_offset,
-	     SXSIZE - TILEX * (dx!=0) + 2 * softscroll_offset,
-	     SYSIZE - TILEY * (dy!=0) + 2 * softscroll_offset,
+	     SXSIZE - TILEX * (dx != 0) + 2 * softscroll_offset,
+	     SYSIZE - TILEY * (dy != 0) + 2 * softscroll_offset,
 	     FX + TILEX * (dx == 1) - softscroll_offset,
 	     FY + TILEY * (dy == 1) - softscroll_offset);
+#endif
+#endif
 
-  if (dx)
+  if (dx != 0)
   {
     x = (dx == 1 ? BX1 : BX2);
     for (y = BY1; y <= BY2; y++)
       DrawScreenField(x, y);
   }
 
-  if (dy)
+  if (dy != 0)
   {
     y = (dy == 1 ? BY1 : BY2);
     for (x = BX1; x <= BX2; x++)
@@ -10254,7 +12856,7 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
 #endif
   {
     int old_scroll_x = scroll_x, old_scroll_y = scroll_y;
-    int offset = (setup.scroll_delay ? 3 : 0);
+    int offset = game.scroll_delay_value;
 
     if (!IN_VIS_FIELD(SCREENX(jx), SCREENY(jy)))
     {
@@ -10482,6 +13084,9 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
     player->last_jy = jy;
 
     if (Feld[jx][jy] == EL_EXIT_OPEN ||
+	Feld[jx][jy] == EL_EM_EXIT_OPEN ||
+	Feld[jx][jy] == EL_STEEL_EXIT_OPEN ||
+	Feld[jx][jy] == EL_EM_STEEL_EXIT_OPEN ||
 	Feld[jx][jy] == EL_SP_EXIT_OPEN ||
 	Feld[jx][jy] == EL_SP_EXIT_OPENING)	/* <-- special case */
     {
@@ -10551,14 +13156,29 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 	if (TimeLeft <= 10 && setup.time_limit)
 	  PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
 
+#if 1
+	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
+
+	DisplayGameControlValues();
+#else
 	DrawGameValue_Time(TimeLeft);
+#endif
 
 	if (!TimeLeft && setup.time_limit)
 	  for (i = 0; i < MAX_PLAYERS; i++)
 	    KillPlayer(&stored_player[i]);
       }
+#if 1
+      else if (level.time == 0 && !AllPlayersGone) /* level w/o time limit */
+      {
+	game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
+
+	DisplayGameControlValues();
+      }
+#else
       else if (level.time == 0 && !AllPlayersGone) /* level w/o time limit */
 	DrawGameValue_Time(TimePlayed);
+#endif
     }
 
     if (tape.single_step && tape.recording && !tape.pausing &&
@@ -11407,6 +14027,9 @@ int DigField(struct PlayerInfo *player,
     CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_SNAPS_X,
 					player->index_bit, dig_side);
 
+    if (element == EL_DC_LANDMINE)
+      Bang(x, y);
+
     if (Feld[x][y] != element)		/* field changed by snapping */
       return MP_ACTION;
 
@@ -11447,6 +14070,9 @@ int DigField(struct PlayerInfo *player,
 	return MP_NO_ACTION;
     }
     else if (element == EL_EXIT_OPEN ||
+	     element == EL_EM_EXIT_OPEN ||
+	     element == EL_STEEL_EXIT_OPEN ||
+	     element == EL_EM_STEEL_EXIT_OPEN ||
 	     element == EL_SP_EXIT_OPEN ||
 	     element == EL_SP_EXIT_OPENING)
     {
@@ -11501,6 +14127,15 @@ int DigField(struct PlayerInfo *player,
     {
       if (!player->key[EMC_GATE_GRAY_ACTIVE_NR(element)])
 	return MP_NO_ACTION;
+    }
+    else if (element == EL_DC_GATE_WHITE ||
+	     element == EL_DC_GATE_WHITE_GRAY ||
+	     element == EL_DC_GATE_WHITE_GRAY_ACTIVE)
+    {
+      if (player->num_white_keys == 0)
+	return MP_NO_ACTION;
+
+      player->num_white_keys--;
     }
     else if (IS_SP_PORT(element))
     {
@@ -11592,7 +14227,14 @@ int DigField(struct PlayerInfo *player,
     else if (element == EL_EXTRA_TIME && level.time > 0)
     {
       TimeLeft += level.extra_time;
+
+#if 1
+      game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
+
+      DisplayGameControlValues();
+#else
       DrawGameValue_Time(TimeLeft);
+#endif
     }
     else if (element == EL_SHIELD_NORMAL || element == EL_SHIELD_DEADLY)
     {
@@ -11627,6 +14269,13 @@ int DigField(struct PlayerInfo *player,
       player->key[KEY_NR(element)] = TRUE;
 
       DrawGameDoorValues();
+    }
+    else if (element == EL_DC_KEY_WHITE)
+    {
+      player->num_white_keys++;
+
+      /* display white keys? */
+      /* DrawGameDoorValues(); */
     }
     else if (IS_ENVELOPE(element))
     {
@@ -11664,7 +14313,13 @@ int DigField(struct PlayerInfo *player,
       if (local_player->gems_still_needed < 0)
 	local_player->gems_still_needed = 0;
 
+#if 1
+      game_panel_controls[GAME_PANEL_GEMS].value = local_player->gems_still_needed;
+
+      DisplayGameControlValues();
+#else
       DrawGameValue_Emeralds(local_player->gems_still_needed);
+#endif
     }
 
     RaiseScoreElement(element);
@@ -11844,6 +14499,8 @@ int DigField(struct PlayerInfo *player,
       ZX = x;
       ZY = y;
 
+      game.robot_wheel_active = TRUE;
+
       DrawLevelField(x, y);
     }
     else if (element == EL_SP_TERMINAL)
@@ -11863,7 +14520,9 @@ int DigField(struct PlayerInfo *player,
       ToggleBeltSwitch(x, y);
     }
     else if (element == EL_SWITCHGATE_SWITCH_UP ||
-	     element == EL_SWITCHGATE_SWITCH_DOWN)
+	     element == EL_SWITCHGATE_SWITCH_DOWN ||
+	     element == EL_DC_SWITCHGATE_SWITCH_UP ||
+	     element == EL_DC_SWITCHGATE_SWITCH_DOWN)
     {
       ToggleSwitchgateSwitch(x, y);
     }
@@ -11872,7 +14531,8 @@ int DigField(struct PlayerInfo *player,
     {
       ToggleLightSwitch(x, y);
     }
-    else if (element == EL_TIMEGATE_SWITCH)
+    else if (element == EL_TIMEGATE_SWITCH ||
+	     element == EL_DC_TIMEGATE_SWITCH)
     {
       ActivateTimegateSwitch(x, y);
     }
@@ -11905,7 +14565,14 @@ int DigField(struct PlayerInfo *player,
       if (level.time > 0 || level.use_time_orb_bug)
       {
 	TimeLeft += level.time_orb_time;
+
+#if 1
+	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
+
+	DisplayGameControlValues();
+#else
 	DrawGameValue_Time(TimeLeft);
+#endif
       }
 
       ResetGfxAnimation(x, y);
@@ -12077,6 +14744,9 @@ boolean DropElement(struct PlayerInfo *player)
   int dropx = player->jx, dropy = player->jy;
   int drop_direction = player->MovDir;
   int drop_side = drop_direction;
+#if 1
+  int drop_element = get_next_dropped_element(player);
+#else
   int drop_element = (player->inventory_size > 0 ?
 		      player->inventory_element[player->inventory_size - 1] :
 		      player->inventory_infinite_element != EL_UNDEFINED ?
@@ -12084,6 +14754,7 @@ boolean DropElement(struct PlayerInfo *player)
 		      player->dynabombs_left > 0 ?
 		      EL_DYNABOMB_PLAYER_1_ACTIVE + player->index_nr :
 		      EL_UNDEFINED);
+#endif
 
   player->is_dropping_pressed = TRUE;
 
@@ -12527,7 +15198,13 @@ void RaiseScore(int value)
 {
   local_player->score += value;
 
+#if 1
+  game_panel_controls[GAME_PANEL_SCORE].value = local_player->score;
+
+  DisplayGameControlValues();
+#else
   DrawGameValue_Score(local_player->score);
+#endif
 }
 
 void RaiseScoreElement(int element)
@@ -12601,6 +15278,7 @@ void RaiseScoreElement(int element)
     case EL_EMC_KEY_6:
     case EL_EMC_KEY_7:
     case EL_EMC_KEY_8:
+    case EL_DC_KEY_WHITE:
       RaiseScore(level.score[SC_KEY]);
       break;
     default:
@@ -12621,13 +15299,31 @@ void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
     {
       if (quick_quit)
       {
+#if 1
+
+#if 1
+	FadeSkipNextFadeIn();
+#else
+	fading = fading_none;
+#endif
+
+#else
+	OpenDoor(DOOR_CLOSE_1);
+#endif
+
 	game_status = GAME_MODE_MAIN;
 
+#if 1
+	DrawAndFadeInMainMenu(REDRAW_FIELD);
+#else
 	DrawMainMenu();
+#endif
       }
       else
       {
+#if 0
 	FadeOut(REDRAW_FIELD);
+#endif
 
 	game_status = GAME_MODE_MAIN;
 
@@ -12811,9 +15507,9 @@ static void LoadEngineSnapshotValues_RND()
 
   if (game.num_random_calls != num_random_calls)
   {
-    Error(ERR_RETURN, "number of random calls out of sync");
-    Error(ERR_RETURN, "number of random calls should be %d", num_random_calls);
-    Error(ERR_RETURN, "number of random calls is %d", game.num_random_calls);
+    Error(ERR_INFO, "number of random calls out of sync");
+    Error(ERR_INFO, "number of random calls should be %d", num_random_calls);
+    Error(ERR_INFO, "number of random calls is %d", game.num_random_calls);
     Error(ERR_EXIT, "this should not happen -- please debug");
   }
 }
@@ -12986,11 +15682,50 @@ boolean CheckEngineSnapshot()
 
 static struct
 {
-  int x, y;
+  int *x, *y;
+  int gd_x, gd_y;
   int gadget_id;
   char *infotext;
 } gamebutton_info[NUM_GAME_BUTTONS] =
 {
+#if 1
+  {
+    &game.button.stop.x,	&game.button.stop.y,
+    GAME_BUTTON_STOP_XPOS,	GAME_BUTTON_YPOS,
+    GAME_CTRL_ID_STOP,
+    "stop game"
+  },
+  {
+    &game.button.pause.x,	&game.button.pause.y,
+    GAME_BUTTON_PAUSE_XPOS,	GAME_BUTTON_YPOS,
+    GAME_CTRL_ID_PAUSE,
+    "pause game"
+  },
+  {
+    &game.button.play.x,	&game.button.play.y,
+    GAME_BUTTON_PLAY_XPOS,	GAME_BUTTON_YPOS,
+    GAME_CTRL_ID_PLAY,
+    "play game"
+  },
+  {
+    &game.button.sound_music.x,	&game.button.sound_music.y,
+    SOUND_BUTTON_MUSIC_XPOS,	SOUND_BUTTON_YPOS,
+    SOUND_CTRL_ID_MUSIC,
+    "background music on/off"
+  },
+  {
+    &game.button.sound_loops.x,	&game.button.sound_loops.y,
+    SOUND_BUTTON_LOOPS_XPOS,	SOUND_BUTTON_YPOS,
+    SOUND_CTRL_ID_LOOPS,
+    "sound loops on/off"
+  },
+  {
+    &game.button.sound_simple.x,&game.button.sound_simple.y,
+    SOUND_BUTTON_SIMPLE_XPOS,	SOUND_BUTTON_YPOS,
+    SOUND_CTRL_ID_SIMPLE,
+    "normal sounds on/off"
+  }
+#else
   {
     GAME_BUTTON_STOP_XPOS,	GAME_BUTTON_YPOS,
     GAME_CTRL_ID_STOP,
@@ -13021,6 +15756,7 @@ static struct
     SOUND_CTRL_ID_SIMPLE,
     "normal sounds on/off"
   }
+#endif
 };
 
 void CreateGameButtons()
@@ -13034,12 +15770,15 @@ void CreateGameButtons()
     int button_type;
     boolean checked;
     unsigned long event_mask;
+    int x, y;
     int gd_xoffset, gd_yoffset;
     int gd_x1, gd_x2, gd_y1, gd_y2;
     int id = i;
 
-    gd_xoffset = gamebutton_info[i].x;
-    gd_yoffset = gamebutton_info[i].y;
+    x = DX + *gamebutton_info[i].x;
+    y = DY + *gamebutton_info[i].y;
+    gd_xoffset = gamebutton_info[i].gd_x;
+    gd_yoffset = gamebutton_info[i].gd_y;
     gd_x1 = DOOR_GFX_PAGEX4 + gd_xoffset;
     gd_x2 = DOOR_GFX_PAGEX3 + gd_xoffset;
 
@@ -13067,8 +15806,13 @@ void CreateGameButtons()
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
 		      GDI_INFO_TEXT, gamebutton_info[i].infotext,
+#if 1
+		      GDI_X, x,
+		      GDI_Y, y,
+#else
 		      GDI_X, DX + gd_xoffset,
 		      GDI_Y, DY + gd_yoffset,
+#endif
 		      GDI_WIDTH, GAME_BUTTON_XSIZE,
 		      GDI_HEIGHT, GAME_BUTTON_YSIZE,
 		      GDI_TYPE, button_type,
@@ -13078,6 +15822,7 @@ void CreateGameButtons()
 		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y1,
 		      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y2,
 		      GDI_ALT_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y2,
+		      GDI_DIRECT_DRAW, FALSE,
 		      GDI_EVENT_MASK, event_mask,
 		      GDI_CALLBACK_ACTION, HandleGameButtons,
 		      GDI_END);
@@ -13111,6 +15856,14 @@ void UnmapGameButtons()
 
   for (i = 0; i < NUM_GAME_BUTTONS; i++)
     UnmapGadget(game_gadget[i]);
+}
+
+void RedrawGameButtons()
+{
+  int i;
+
+  for (i = 0; i < NUM_GAME_BUTTONS; i++)
+    RedrawGadget(game_gadget[i]);
 }
 
 static void HandleGameButtons(struct GadgetInfo *gi)

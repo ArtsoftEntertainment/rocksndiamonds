@@ -14,11 +14,88 @@
 #ifndef GAME_H
 #define GAME_H
 
+/* (not included here due to collisions with Emerald Mine engine definitions) */
+/* #include "main.h" */
 
 #define MAX_INVENTORY_SIZE	1000
+
 #define STD_NUM_KEYS		4
 #define MAX_NUM_KEYS		8
 
+#define NUM_BELTS		4
+#define NUM_BELT_PARTS		3
+
+#define NUM_PANEL_INVENTORY	8
+#define NUM_PANEL_GRAPHICS	8
+#define NUM_PANEL_ELEMENTS	8
+#define NUM_PANEL_CE_SCORE	8
+
+#if 1
+struct GamePanelInfo
+{
+  struct TextPosInfo level_number;
+  struct TextPosInfo gems;
+  struct TextPosInfo inventory_count;
+  struct TextPosInfo inventory_first[NUM_PANEL_INVENTORY];
+  struct TextPosInfo inventory_last[NUM_PANEL_INVENTORY];
+  struct TextPosInfo key[MAX_NUM_KEYS];
+  struct TextPosInfo key_white;
+  struct TextPosInfo key_white_count;
+  struct TextPosInfo score;
+  struct TextPosInfo time;
+  struct TextPosInfo time_hh;
+  struct TextPosInfo time_mm;
+  struct TextPosInfo time_ss;
+  struct TextPosInfo shield_normal;
+  struct TextPosInfo shield_normal_time;
+  struct TextPosInfo shield_deadly;
+  struct TextPosInfo shield_deadly_time;
+  struct TextPosInfo exit;
+  struct TextPosInfo emc_magic_ball;
+  struct TextPosInfo emc_magic_ball_switch;
+  struct TextPosInfo light_switch;
+  struct TextPosInfo light_switch_time;
+  struct TextPosInfo timegate_switch;
+  struct TextPosInfo timegate_switch_time;
+  struct TextPosInfo switchgate_switch;
+  struct TextPosInfo emc_lenses;
+  struct TextPosInfo emc_lenses_time;
+  struct TextPosInfo emc_magnifier;
+  struct TextPosInfo emc_magnifier_time;
+  struct TextPosInfo balloon_switch;
+  struct TextPosInfo dynabomb_number;
+  struct TextPosInfo dynabomb_size;
+  struct TextPosInfo dynabomb_power;
+  struct TextPosInfo penguins;
+  struct TextPosInfo sokoban_objects;
+  struct TextPosInfo sokoban_fields;
+  struct TextPosInfo robot_wheel;
+  struct TextPosInfo conveyor_belt[NUM_BELTS];
+  struct TextPosInfo conveyor_belt_switch[NUM_BELTS];
+  struct TextPosInfo magic_wall;
+  struct TextPosInfo magic_wall_time;
+  struct TextPosInfo gravity_state;
+  struct TextPosInfo graphic[NUM_PANEL_GRAPHICS];
+  struct TextPosInfo element[NUM_PANEL_ELEMENTS];
+  struct TextPosInfo element_count[NUM_PANEL_ELEMENTS];
+  struct TextPosInfo ce_score[NUM_PANEL_CE_SCORE];
+  struct TextPosInfo ce_score_element[NUM_PANEL_CE_SCORE];
+  struct TextPosInfo player_name;
+  struct TextPosInfo level_name;
+  struct TextPosInfo level_author;
+};
+
+struct GameButtonInfo
+{
+  struct MenuPosInfo stop;
+  struct MenuPosInfo pause;
+  struct MenuPosInfo play;
+  struct MenuPosInfo sound_music;
+  struct MenuPosInfo sound_loops;
+  struct MenuPosInfo sound_simple;
+};
+
+#else
 
 struct GamePanelInfo
 {
@@ -29,11 +106,18 @@ struct GamePanelInfo
   struct XY score;
   struct XY time;
 };
+#endif
 
 struct GameInfo
 {
   /* values for control panel */
   struct GamePanelInfo panel;
+  struct GameButtonInfo button;
+
+  /* values for graphics engine customization */
+  boolean use_native_emc_graphics_engine;
+  int forced_scroll_delay_value;
+  int scroll_delay_value;
 
   /* values for engine initialization */
   int default_push_delay_fixed;
@@ -55,6 +139,7 @@ struct GameInfo
 
   /* variable within running game */
   int yamyam_content_nr;
+  boolean robot_wheel_active;
   boolean magic_wall_active;
   int magic_wall_time_left;
   int light_time_left;
@@ -128,9 +213,13 @@ struct PlayerInfo
 
   boolean LevelSolved, GameOver;
 
+  boolean LevelSolved_GameWon;
   boolean LevelSolved_GameEnd;
+  boolean LevelSolved_PanelOff;
   boolean LevelSolved_SaveTape;
   boolean LevelSolved_SaveScore;
+  int LevelSolved_CountingTime;
+  int LevelSolved_CountingScore;
 
   int last_move_dir;
 
@@ -194,6 +283,7 @@ struct PlayerInfo
   int lights_still_needed;
   int friends_still_needed;
   int key[MAX_NUM_KEYS];
+  int num_white_keys;
   int dynabomb_count, dynabomb_size, dynabombs_left, dynabomb_xl;
   int shield_normal_time_left;
   int shield_deadly_time_left;
@@ -212,9 +302,12 @@ void DEBUG_SetMaximumDynamite();
 #endif
 
 void GetPlayerConfig(void);
+int GetElementFromGroupElement(int);
 
 void DrawGameValue_Time(int);
 void DrawGameDoorValues(void);
+
+void UpdateAndDisplayGameControlValues();
 
 void InitGameSound();
 void InitGame();
@@ -256,5 +349,6 @@ boolean CheckEngineSnapshot();
 void CreateGameButtons();
 void FreeGameButtons();
 void UnmapGameButtons();
+void RedrawGameButtons();
 
 #endif

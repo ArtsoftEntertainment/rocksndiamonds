@@ -55,6 +55,7 @@ PLATFORM = unix
 endif
 
 ifeq ($(PLATFORM),macosx)
+EXTRA_LDFLAGS = -lstdc++
 PLATFORM = unix
 TARGET = sdl
 endif
@@ -195,7 +196,9 @@ CNFS =	conf_gfx.h	\
 	conf_e2s.c	\
 	conf_fnt.c	\
 	conf_g2s.c	\
-	conf_g2m.c
+	conf_g2m.c	\
+	conf_var.c	\
+	conf_act.c
 
 CNFS_CMD = ../Scripts/create_element_defs.pl
 
@@ -211,7 +214,12 @@ RNDLIBS = $(LIBGAME) $(GAME_EM)
 
 ICONBASE = windows_icon
 ifeq ($(PLATFORM),cross-win32)
-ICON32X32 = ../graphics/$(ICONBASE)_32x32.bmp
+ifdef SPECIAL_ICON
+ICONSUFFIX = 32x32_$(SPECIAL_ICON)
+else
+ICONSUFFIX = 32x32
+endif
+ICON32X32 = ../graphics/$(ICONBASE)_$(ICONSUFFIX).bmp
 ICON = $(ICONBASE).o
 endif
 
@@ -251,7 +259,7 @@ conf_mus.h: conf_mus.c
 	@$(MAKE) auto-conf
 
 $(TIMESTAMP_FILE): $(SRCS) $(LIBGAME) $(GAME_EM)
-	@date '+"[%Y-%m-%d %H:%M]"' \
+	@date '+"%Y-%m-%d %H:%M"' \
 	| sed -e 's/^/#define COMPILE_DATE_STRING /' \
 	> $(TIMESTAMP_FILE)
 

@@ -196,6 +196,11 @@ void InitGfxScrollbufferInfo(int scrollbuffer_width, int scrollbuffer_height)
   gfx.scrollbuffer_height = scrollbuffer_height;
 }
 
+void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(void))
+{
+  gfx.draw_busy_anim_function = draw_busy_anim_function;
+}
+
 void SetDrawDeactivationMask(int draw_deactivation_mask)
 {
   gfx.draw_deactivation_mask = draw_deactivation_mask;
@@ -262,17 +267,24 @@ void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
 
 void SetWindowBackgroundBitmap(Bitmap *background_bitmap_tile)
 {
+  /* remove every mask before setting mask for window */
+  /* (!!! TO BE FIXED: The whole REDRAW_* system really sucks! !!!) */
+  SetBackgroundBitmap(NULL, 0xffff);		/* !!! FIX THIS !!! */
   SetBackgroundBitmap(background_bitmap_tile, REDRAW_ALL);
 }
 
 void SetMainBackgroundBitmap(Bitmap *background_bitmap_tile)
 {
+  /* remove window area mask before setting mask for main area */
+  /* (!!! TO BE FIXED: The whole REDRAW_* system really sucks! !!!) */
   SetBackgroundBitmap(NULL, REDRAW_ALL);	/* !!! FIX THIS !!! */
   SetBackgroundBitmap(background_bitmap_tile, REDRAW_FIELD);
 }
 
 void SetDoorBackgroundBitmap(Bitmap *background_bitmap_tile)
 {
+  /* remove window area mask before setting mask for door area */
+  /* (!!! TO BE FIXED: The whole REDRAW_* system really sucks! !!!) */
   SetBackgroundBitmap(NULL, REDRAW_ALL);	/* !!! FIX THIS !!! */
   SetBackgroundBitmap(background_bitmap_tile, REDRAW_DOOR_1);
 }
@@ -843,8 +855,19 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
 				boolean create_small_bitmaps)
 {
   Bitmap swap_bitmap;
-  Bitmap *new_bitmap, *tmp_bitmap_1, *tmp_bitmap_2, *tmp_bitmap_4,*tmp_bitmap_8;
-  int width_1, height_1, width_2, height_2, width_4, height_4, width_8,height_8;
+  Bitmap *new_bitmap;
+  Bitmap *tmp_bitmap_1;
+  Bitmap *tmp_bitmap_2;
+  Bitmap *tmp_bitmap_4;
+  Bitmap *tmp_bitmap_8;
+  Bitmap *tmp_bitmap_16;
+  Bitmap *tmp_bitmap_32;
+  int width_1, height_1;
+  int width_2, height_2;
+  int width_4, height_4;
+  int width_8, height_8;
+  int width_16, height_16;
+  int width_32, height_32;
   int new_width, new_height;
 
   /* calculate new image dimensions for normal sized image */
@@ -858,7 +881,11 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     tmp_bitmap_1 = old_bitmap;
 
   /* this is only needed to make compilers happy */
-  tmp_bitmap_2 = tmp_bitmap_4 = tmp_bitmap_8 = NULL;
+  tmp_bitmap_2 = NULL;
+  tmp_bitmap_4 = NULL;
+  tmp_bitmap_8 = NULL;
+  tmp_bitmap_16 = NULL;
+  tmp_bitmap_32 = NULL;
 
   if (create_small_bitmaps)
   {
@@ -869,6 +896,12 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     height_4 = height_1 / 4;
     width_8  = width_1  / 8;
     height_8 = height_1 / 8;
+    width_16  = width_1  / 16;
+    height_16 = height_1 / 16;
+    width_32  = width_1  / 32;
+    height_32 = height_1 / 32;
+
+    UPDATE_BUSY_STATE();
 
     /* get image with 1/2 of normal size (for use in the level editor) */
     if (zoom_factor != 2)
@@ -876,19 +909,42 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     else
       tmp_bitmap_2 = old_bitmap;
 
+    UPDATE_BUSY_STATE();
+
     /* get image with 1/4 of normal size (for use in the level editor) */
     if (zoom_factor != 4)
       tmp_bitmap_4 = ZoomBitmap(tmp_bitmap_2, width_2 / 2, height_2 / 2);
     else
       tmp_bitmap_4 = old_bitmap;
 
+    UPDATE_BUSY_STATE();
+
     /* get image with 1/8 of normal size (for use on the preview screen) */
     if (zoom_factor != 8)
       tmp_bitmap_8 = ZoomBitmap(tmp_bitmap_4, width_4 / 2, height_4 / 2);
     else
       tmp_bitmap_8 = old_bitmap;
+
+    UPDATE_BUSY_STATE();
+
+    /* get image with 1/16 of normal size (for use on the preview screen) */
+    if (zoom_factor != 16)
+      tmp_bitmap_16 = ZoomBitmap(tmp_bitmap_8, width_8 / 2, height_8 / 2);
+    else
+      tmp_bitmap_16 = old_bitmap;
+
+    UPDATE_BUSY_STATE();
+
+    /* get image with 1/32 of normal size (for use on the preview screen) */
+    if (zoom_factor != 32)
+      tmp_bitmap_32 = ZoomBitmap(tmp_bitmap_16, width_16 / 2, height_16 / 2);
+    else
+      tmp_bitmap_32 = old_bitmap;
+
+    UPDATE_BUSY_STATE();
   }
 
+#if 0
   /* if image was scaled up, create new clipmask for normal size image */
   if (zoom_factor != 1)
   {
@@ -913,6 +969,7 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     SDL_SetColorKey(tmp_surface_1, 0, 0);	/* reset transparent pixel */
 #endif
   }
+#endif
 
   if (create_small_bitmaps)
   {
@@ -928,6 +985,12 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
 	       width_1 / 2, height_1);
     BlitBitmap(tmp_bitmap_8, new_bitmap, 0, 0, width_1 / 8, height_1 / 8,
 	       3 * width_1 / 4, height_1);
+    BlitBitmap(tmp_bitmap_16, new_bitmap, 0, 0, width_1 / 16, height_1 / 16,
+	       7 * width_1 / 8, height_1);
+    BlitBitmap(tmp_bitmap_32, new_bitmap, 0, 0, width_1 / 32, height_1 / 32,
+	       15 * width_1 / 16, height_1);
+
+    UPDATE_BUSY_STATE();
   }
   else
   {
@@ -951,6 +1014,12 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
 
     if (zoom_factor != 8)
       FreeBitmap(tmp_bitmap_8);
+
+    if (zoom_factor != 16)
+      FreeBitmap(tmp_bitmap_16);
+
+    if (zoom_factor != 32)
+      FreeBitmap(tmp_bitmap_32);
   }
 
   /* replace image with extended image (containing 1/1, 1/2, 1/4, 1/8 size) */
@@ -966,6 +1035,34 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
 
   old_bitmap->width  = new_bitmap->width;
   old_bitmap->height = new_bitmap->height;
+
+#if 1
+  /* this replaces all blit masks created when loading -- maybe optimize this */
+  {
+#if defined(TARGET_X11)
+    if (old_bitmap->clip_mask)
+      XFreePixmap(display, old_bitmap->clip_mask);
+
+    old_bitmap->clip_mask =
+      Pixmap_to_Mask(old_bitmap->drawable, new_width, new_height);
+
+    XSetClipMask(display, old_bitmap->stored_clip_gc, old_bitmap->clip_mask);
+#else
+    SDL_Surface *old_surface = old_bitmap->surface;
+
+    if (old_bitmap->surface_masked)
+      SDL_FreeSurface(old_bitmap->surface_masked);
+
+    SDL_SetColorKey(old_surface, SDL_SRCCOLORKEY,
+		    SDL_MapRGB(old_surface->format, 0x00, 0x00, 0x00));
+    if ((old_bitmap->surface_masked = SDL_DisplayFormat(old_surface)) ==NULL)
+      Error(ERR_EXIT, "SDL_DisplayFormat() failed");
+    SDL_SetColorKey(old_surface, 0, 0);		/* reset transparent pixel */
+#endif
+  }
+#endif
+
+  UPDATE_BUSY_STATE();
 
   FreeBitmap(new_bitmap);	/* this actually frees the _old_ bitmap now */
 }
@@ -986,8 +1083,9 @@ void ScaleBitmap(Bitmap *old_bitmap, int zoom_factor)
 /* ------------------------------------------------------------------------- */
 
 #if !defined(PLATFORM_MSDOS)
-/* XPM */
-static const char *cursor_image_playfield[] =
+#define USE_ONE_PIXEL_PLAYFIELD_MOUSEPOINTER		0
+/* XPM image definitions */
+static const char *cursor_image_none[] =
 {
   /* width height num_colors chars_per_pixel */
   "    16    16        3            1",
@@ -996,10 +1094,6 @@ static const char *cursor_image_playfield[] =
   "X c #000000",
   ". c #ffffff",
   "  c None",
-
-#if 1
-  /* some people complained about a "white dot" on the screen and thought it
-     was a graphical error... OK, let's just remove the whole pointer :-) */
 
   /* pixels */
   "                ",
@@ -1021,8 +1115,17 @@ static const char *cursor_image_playfield[] =
 
   /* hot spot */
   "0,0"
+};
+#if USE_ONE_PIXEL_PLAYFIELD_MOUSEPOINTER
+static const char *cursor_image_dot[] =
+{
+  /* width height num_colors chars_per_pixel */
+  "    16    16        3            1",
 
-#else
+  /* colors */
+  "X c #000000",
+  ". c #ffffff",
+  "  c None",
 
   /* pixels */
   " X              ",
@@ -1044,8 +1147,13 @@ static const char *cursor_image_playfield[] =
 
   /* hot spot */
   "1,1"
-#endif
 };
+static const char **cursor_image_playfield = cursor_image_dot;
+#else
+/* some people complained about a "white dot" on the screen and thought it
+   was a graphical error... OK, let's just remove the whole pointer :-) */
+static const char **cursor_image_playfield = cursor_image_none;
+#endif
 
 #if defined(TARGET_SDL)
 static const int cursor_bit_order = BIT_ORDER_MSB;
@@ -1104,15 +1212,24 @@ static struct MouseCursorInfo *get_cursor_from_image(const char **image)
 void SetMouseCursor(int mode)
 {
 #if !defined(PLATFORM_MSDOS)
+  static struct MouseCursorInfo *cursor_none = NULL;
   static struct MouseCursorInfo *cursor_playfield = NULL;
+  struct MouseCursorInfo *cursor_new;
+
+  if (cursor_none == NULL)
+    cursor_none = get_cursor_from_image(cursor_image_none);
 
   if (cursor_playfield == NULL)
     cursor_playfield = get_cursor_from_image(cursor_image_playfield);
 
+  cursor_new = (mode == CURSOR_DEFAULT   ? NULL :
+		mode == CURSOR_NONE      ? cursor_none :
+		mode == CURSOR_PLAYFIELD ? cursor_playfield : NULL);
+
 #if defined(TARGET_SDL)
-  SDLSetMouseCursor(mode == CURSOR_PLAYFIELD ? cursor_playfield : NULL);
+  SDLSetMouseCursor(cursor_new);
 #elif defined(TARGET_X11_NATIVE)
-  X11SetMouseCursor(mode == CURSOR_PLAYFIELD ? cursor_playfield : NULL);
+  X11SetMouseCursor(cursor_new);
 #endif
 #endif
 }

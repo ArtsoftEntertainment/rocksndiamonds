@@ -48,6 +48,9 @@
 #define FULLSCREEN_NOT_AVAILABLE	FALSE
 #define FULLSCREEN_AVAILABLE		TRUE
 
+#define CREATE_SPECIAL_EDITION		FALSE
+#define CREATE_SPECIAL_EDITION_RND_JUE	FALSE
+
 /* default input keys */
 #define DEFAULT_KEY_LEFT		KSYM_Left
 #define DEFAULT_KEY_RIGHT		KSYM_Right
@@ -196,20 +199,47 @@
 #define ANIM_VERTICAL		(1 << 11)
 #define ANIM_CENTERED		(1 << 12)
 #define ANIM_STATIC_PANEL	(1 << 13)
-#define ANIM_FADE		(1 << 14)
-#define ANIM_CROSSFADE		(1 << 15)
 
 #define ANIM_DEFAULT		ANIM_LOOP
+
+/* values for fade mode */
+#define FADE_TYPE_NONE		0
+#define FADE_TYPE_FADE_IN	(1 << 0)
+#define FADE_TYPE_FADE_OUT	(1 << 1)
+#define FADE_TYPE_TRANSFORM	(1 << 2)
+#define FADE_TYPE_CROSSFADE	(1 << 3)
+#define FADE_TYPE_MELT		(1 << 4)
+#define FADE_TYPE_SKIP		(1 << 5)
+
+#define FADE_MODE_NONE		(FADE_TYPE_NONE)
+#define FADE_MODE_FADE_IN	(FADE_TYPE_FADE_IN)
+#define FADE_MODE_FADE_OUT	(FADE_TYPE_FADE_OUT)
+#define FADE_MODE_FADE		(FADE_TYPE_FADE_IN | FADE_TYPE_FADE_OUT)
+#define FADE_MODE_TRANSFORM	(FADE_TYPE_TRANSFORM | FADE_TYPE_FADE_IN)
+#define FADE_MODE_CROSSFADE	(FADE_MODE_TRANSFORM | FADE_TYPE_CROSSFADE)
+#define FADE_MODE_MELT		(FADE_MODE_TRANSFORM | FADE_TYPE_MELT)
+#define FADE_MODE_SKIP_FADE_IN	(FADE_TYPE_SKIP | FADE_TYPE_FADE_IN)
+#define FADE_MODE_SKIP_FADE_OUT	(FADE_TYPE_SKIP | FADE_TYPE_FADE_OUT)
+
+#define FADE_MODE_DEFAULT	FADE_MODE_FADE
 
 /* values for text alignment */
 #define ALIGN_LEFT		(1 << 0)
 #define ALIGN_RIGHT		(1 << 1)
 #define ALIGN_CENTER		(1 << 2)
-
 #define ALIGN_DEFAULT		ALIGN_LEFT
 
-#define ALIGNED_XPOS(x,w,a)	((a) == ALIGN_CENTER ? (x) - (w) / 2 :	\
-				 (a) == ALIGN_RIGHT  ? (x) - (w) : (x))
+#define VALIGN_TOP		(1 << 0)
+#define VALIGN_BOTTOM		(1 << 1)
+#define VALIGN_MIDDLE		(1 << 2)
+#define VALIGN_DEFAULT		VALIGN_TOP
+
+#define ALIGNED_XPOS(x,w,a)	((a) == ALIGN_CENTER  ? (x) - (w) / 2 :	\
+				 (a) == ALIGN_RIGHT   ? (x) - (w) : (x))
+#define ALIGNED_YPOS(y,h,v)	((v) == VALIGN_MIDDLE ? (y) - (h) / 2 :	\
+				 (v) == VALIGN_BOTTOM ? (y) - (h) : (y))
+#define ALIGNED_TEXT_XPOS(p)	ALIGNED_XPOS((p)->x, (p)->width,  (p)->align)
+#define ALIGNED_TEXT_YPOS(p)	ALIGNED_YPOS((p)->y, (p)->height, (p)->valign)
 
 /* values for redraw_mask */
 #define REDRAW_NONE		(0)
@@ -236,10 +266,6 @@
 #define REDRAW_FPS		(1 << 11)
 #define REDRAWTILES_THRESHOLD	(SCR_FIELDX * SCR_FIELDY / 2)
 
-#define FADE_MODE_FADE_IN	0
-#define FADE_MODE_FADE_OUT	1
-#define FADE_MODE_CROSSFADE	2
-
 #define IN_GFX_SCREEN(x, y)	(x >= gfx.sx && x < gfx.sx + gfx.sxsize && \
 				 y >= gfx.sy && y < gfx.sy + gfx.sysize)
 #define IN_GFX_DOOR(x, y)	(x >= gfx.dx && x < gfx.dx + gfx.dxsize && \
@@ -249,7 +275,8 @@
 
 /* values for mouse cursor */
 #define CURSOR_DEFAULT		0
-#define CURSOR_PLAYFIELD	1
+#define CURSOR_NONE		1
+#define CURSOR_PLAYFIELD	2
 
 /* fundamental game speed values */
 #define ONE_SECOND_DELAY	1000	/* delay value for one second */
@@ -315,13 +342,25 @@
 #define CACHE_DIRECTORY		"cache"
 
 #if !defined(PLATFORM_MSDOS)
+#if CREATE_SPECIAL_EDITION_RND_JUE
+#define GFX_CLASSIC_SUBDIR	"jue0"
+#define SND_CLASSIC_SUBDIR	"jue0"
+#define MUS_CLASSIC_SUBDIR	"jue0"
+#else
 #define GFX_CLASSIC_SUBDIR	"gfx_classic"
 #define SND_CLASSIC_SUBDIR	"snd_classic"
 #define MUS_CLASSIC_SUBDIR	"mus_classic"
+#endif
 #else
 #define GFX_CLASSIC_SUBDIR	"gfx_orig"
 #define SND_CLASSIC_SUBDIR	"snd_orig"
 #define MUS_CLASSIC_SUBDIR	"mus_orig"
+#endif
+
+#if CREATE_SPECIAL_EDITION
+#define GFX_FALLBACK_FILENAME	"fallback.pcx"
+#define SND_FALLBACK_FILENAME	"fallback.wav"
+#define MUS_FALLBACK_FILENAME	"fallback.wav"
 #endif
 
 /* file names and filename extensions */
@@ -546,6 +585,12 @@
 				 (type) == ARTWORK_TYPE_MUSIC ?		\
 				 options.music_directory : "")
 
+#define UPDATE_BUSY_STATE()			\
+{						\
+  if (gfx.draw_busy_anim_function != NULL)	\
+    gfx.draw_busy_anim_function();		\
+}
+
 
 /* type definitions */
 typedef int (*EventFilter)(const Event *);
@@ -683,8 +728,11 @@ struct GfxInfo
   int num_fonts;
   struct FontBitmapInfo *font_bitmap_info;
   int (*select_font_function)(int);
+  int (*get_font_from_token_function)(char *);
 
   int anim_random_frame;
+
+  void (*draw_busy_anim_function)(void);
 };
 
 struct JoystickInfo
@@ -726,6 +774,7 @@ struct SetupEditorInfo
   boolean el_diamond_caves;
   boolean el_dx_boulderdash;
   boolean el_chars;
+  boolean el_steel_chars;
   boolean el_custom;
   boolean el_user_defined;
   boolean el_dynamic;
@@ -749,6 +798,7 @@ struct SetupEditorCascadeInfo
   boolean el_dc;
   boolean el_dx;
   boolean el_chars;
+  boolean el_steel_chars;
   boolean el_ce;
   boolean el_ge;
   boolean el_ref;
@@ -768,6 +818,7 @@ struct SetupShortcutInfo
 
 struct SetupSystemInfo
 {
+  char *sdl_videodriver;
   char *sdl_audiodriver;
   int audio_fragment_size;
 };
@@ -781,9 +832,8 @@ struct SetupInfo
   boolean sound_music;
   boolean sound_simple;
   boolean toons;
-  boolean double_buffering;
-  boolean direct_draw;		/* !double_buffering (redundant!) */
   boolean scroll_delay;
+  boolean scroll_delay_value;
   boolean soft_scrolling;
   boolean fade_screens;
   boolean autorecord;
@@ -800,6 +850,7 @@ struct SetupInfo
   boolean quick_switch;
   boolean input_on_focus;
   boolean prefer_aga_graphics;
+  int game_frame_delay;
 
   char *graphics_set;
   char *sounds_set;
@@ -837,8 +888,10 @@ struct TreeInfo
   char *name;		/* tree info name, as displayed in selection menues */
   char *name_sorting;	/* optional sorting name for correct name sorting */
   char *author;		/* level or artwork author name */
+  char *year;		/* optional year of creation for levels or artwork */
   char *imported_from;	/* optional comment for imported levels or artwork */
   char *imported_by;	/* optional comment for imported levels or artwork */
+  char *tested_by;	/* optional comment to name people who tested a set */
 
   char *graphics_set_ecs; /* special EMC custom graphics set (ECS graphics) */
   char *graphics_set_aga; /* special EMC custom graphics set (AGA graphics) */
@@ -932,6 +985,7 @@ struct FileInfo
 
   boolean redefined;
   boolean fallback_to_default;
+  boolean default_is_cloned;
 };
 
 struct SetupFileList
@@ -1006,6 +1060,25 @@ struct Rect
   int width, height;
 };
 
+struct MenuPosInfo
+{
+  int x, y;
+  int width, height;
+  int align, valign;
+};
+
+struct TextPosInfo
+{
+  int x, y;
+  int width, height;
+  int align, valign;
+  int size;
+  int font, font_alt;
+  boolean draw_masked;
+  int sort_priority;
+  int id;
+};
+
 
 /* ========================================================================= */
 /* exported variables                                                        */
@@ -1057,6 +1130,7 @@ void InitGfxFieldInfo(int, int, int, int, int, int, int, int, Bitmap *);
 void InitGfxDoor1Info(int, int, int, int);
 void InitGfxDoor2Info(int, int, int, int);
 void InitGfxScrollbufferInfo(int, int);
+void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(void));
 void SetDrawDeactivationMask(int);
 void SetDrawBackgroundMask(int);
 void SetWindowBackgroundBitmap(Bitmap *);

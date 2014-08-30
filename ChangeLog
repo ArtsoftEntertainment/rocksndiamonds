@@ -1,3 +1,354 @@
+2007-09-13
+	* version 3.2.4 released
+
+2007-09-13
+	* fixed crash bug in toon drawing functions for large step offset values
+
+2007-09-12
+	* fixed some problems with displaying game panel when quick-loading tape
+
+2007-09-07
+	* fixed (experimental only) redrawing of every tile per frame (even if
+	  unneeded) for the extended (R'n'D based) EMC graphics engine
+	* added optimization to only calculate element count for panel display
+	  if really needed (that is, if element count values defined on panel)
+	* fixed problem with special editor door redraw when entering main menu
+
+2007-09-03
+	* fixed bug with displaying background for title messages on info screen
+	* some code cleanup for the extended (R'n'D based) EMC graphics engine
+
+2007-09-01
+	* fixed bug with CE action "move player" always resulting in player 4
+	  if there was a CE action with no trigger player (because the player
+	  element was calculated by using log_2() from trigger player bits with
+	  the value PLAYER_BITS_ANY) -- this is now fixed by also storing the
+	  triggering player bit mask and handling all players in "move player"
+	* fixed bug when defined artwork cannot be found for artwork that has
+	  default artwork cloned from other artwork (without default filename)
+	* added several fixes to the extended (R'n'D based) EMC graphics engine
+
+2007-08-26
+	* fixed broken editor copy and paste for custom elements between levels
+
+2007-08-25
+	* title messages are now also searched in graphics artwork directory;
+	  those found in graphics directory have precendence over those found
+	  in level directory -- this handles title messages stored in graphics
+	  directories as part of the artwork set, just like title images; this
+	  makes sense, as corresponding special font definitions for messages
+	  are usually defined in the same graphics artwork directory, and also
+	  because title images and title messages that are combined in a level
+	  set introduction should usually not be separated when the level set
+	  is used with a different artwork set (e.g. using "override graphics")
+	* fixed problem with door borders on main screen by first drawing doors
+	  and then the corresponding border masks, but not vice versa
+	* fixed problem with artwork config entries using the value "[DEFAULT]";
+	  this does not what one might expect, but sets the value to an invalid
+	  value -- solution: simply ignore such entries, which results in this
+	  value keeping its previous (real) default value (in general, entries
+	  that should use their default value should just not be defined here)
+	* fixed problem with wrong fading area size from main menu to setup menu
+
+2007-08-22
+	* fixed problem with broken crumbled graphics after level set changes
+	  when using R'n'D custom artwork with level sets using the EMC engine
+
+2007-05-07
+	* fixed invisible "joysticks deactivated ..." text on setup input screen
+
+2007-04-27
+	* added use of hashes created from static lists (element tokens, image
+	  config, font tokens) to speed up lookup of configuration parameters
+	* fixed bug where element and graphic config token lookup was mixed up
+
+2007-04-26
+	* added "busy" animation when initializing program and loading artwork
+	* added initialization profiling for program startup (debugging only)
+
+2007-04-25
+	* fixed(?) very strange bug apparently triggered by memset() when code
+	  was cross-compiled with MinGW cross-compiler for Windows XP platform
+	  (this only happened when using SDL.dll also self-compiled with MinGW)
+
+2007-04-19
+	* added graphics engine directive "border.draw_masked_when_fading" that
+	  enables/disables drawing of border mask over screen that is just faded
+
+2007-04-18
+	* fixed small problem with separate fading definition for game screen
+
+2007-04-14
+	* added additional configuration directives for setup screen draw offset
+	  menu.draw_xoffset.SETUP[XXX] and menu.draw_yoffset.SETUP[XXX] with XXX
+	  in GAME, EDITOR, GRAPHICS, SOUND, ARTWORK, INPUT, SHORTCUTS_1,
+	  SHORTCUTS_2, CHOOSE_ARTWORK, CHOOSE_OTHER (where "CHOOSE_ARTWORK" is
+	  used to define draw offset on custom artwork selection screens and
+	  "CHOOSE_OTHER" is used on all other list style selection screens, like
+	  choosing game speed or screen mode for fullscreen mode)
+	* added additional configuration directives to define main menu buttons:
+	  - menu.button_name	and menu.button_name.active
+	  - menu.button_levels	and menu.button_levels.active
+	  - menu.button_scores	and menu.button_scores.active
+	  - menu.button_editor	and menu.button_editor.active
+	  - menu.button_info	and menu.button_info.active
+	  - menu.button_game	and menu.button_game.active
+	  - menu.button_setup	and menu.button_setup.active
+	  - menu.button_quit	and menu.button_quit.active
+	* added eight pure decoration graphic definitions for the game panel
+
+2007-04-08
+	* added support for accessing native Diamond Caves II level packages
+	* fixed displaying of game panel values for Emerald Mine game engine
+	* fixed displaying end-of-level time and score values on new game panel
+
+2007-04-07
+	* added game panel control to display arbitrary elements on game panel
+	* added game panel control to display custom element score (globally
+	  unique for identical custom elements) either as value or as element
+	* added ".draw_masked" and ".draw_order" to game panel control drawing
+
+2007-04-05
+	* fixed some general bugs with handling of ".active" elements and fonts
+
+2007-04-04
+	* cleanup of game panel elements (some elements were not really needed)
+	* added displaying of gravity state (on/off) as new game panel control
+	* added animation for game panel elements (similar to game elements)
+
+2007-04-03
+	* added new pseudo game mode "PANEL" to define panel fonts and graphics
+	  - panel fonts now use ".PANEL" suffix instead of ".PLAYING" suffix
+	  - panel graphics now use ".PANEL" suffix instead of ".DOOR" suffix
+	  (else graphics would have to use ".PLAYING", which would be confusing)
+	* fixed bug when fading out to game screen with border mask defined
+
+2007-04-02
+	* added attribute ".tile_size" for element style game panel controls
+
+2007-04-01
+	* added <space> key as additional valid key to use for confirm requester
+
+2007-03-31
+	* improved menu fading, adding separate fading definitions for entering
+	  and leaving a "content" screen (in general), and optional definitions
+	  for the special "content" screens SCORES, EDITOR, INFO and PLAYING
+
+2007-03-30
+	* added (currently invisible) setup option to define scroll delay value
+	* fixed small bug in priority handling when auto-detecting level start
+	  position in levels without player element (but player from CE etc.)
+	* added option "game.forced_scroll_delay_value" to override user choice
+	  of scroll delay value for certain level sets with "graphicsinfo.conf"
+	* replaced setup option "scroll delay: on/off" by new setup option that
+	  directly allows selecting the desired scroll delay value from 0 to 8
+
+2007-03-28
+	* added displaying of most game panel control elements (not animated)
+
+2007-03-26
+	* added new configuration directives to display additional game engine
+	  values on the game control panel, like the following examples:
+	  - game.panel.time_hh/time_mm/time_ss	- level time in HH/MM/SS format
+	  - game.panel.penguins			- number of penguins to rescue
+	  - game.panel.level_name		- level name of current level
+
+2007-03-24
+	* added support for preview tile sizes "1" and "2" (1x1 and 2x2 pixels)
+
+2007-03-23
+	* added new player option "no centering when relocating" for "invisible"
+	  teleportations to level areas that look exactly the same, giving the
+	  illusion that the player did not relocate at all (this was the default
+	  since 3.2.3, but caused visual problems with room creation in "Zelda")
+	* added new menu fading effect "melt", shamelessly stolen from "DOOM"
+
+2007-03-21
+	* improved menu fading, adding separate fading definitions for entering
+	  and leaving a menu and for fading between menu and "content" screens
+	* fixed small bug with recognizing also ".font_xyz" style definitions
+
+2007-03-20
+	* improved menu fading, adding separate fading definitions for fading
+	  between menu screens and fading between menu and "destination" screens
+
+2007-03-19
+	* titlemessage_initial_x and titlemessage_x set to "[DEFAULT]" in static
+	  configuration (set from "[titlemessage_initial]" and "[titlemessage]")
+	* fading settings of "[titlemessage_initial]" and "[titlemessage]" set
+	  to "[DEFAULT]" in static configuration (set from "[title_initial]" and
+	  "[title]")
+	* improved title fading, allowing fading animation types "none", "fade"
+	  and "crossfade" (including cross-fading of last title to main menu)
+
+2007-03-18
+	* added configurability of graphics, sounds and music for title screens,
+	  which are separated into initial title screens (only shown once at
+	  program startup) and title screens shown for a given level set; these
+	  title screens can be composed of up to five title images and up to
+	  five title text messages (each drawn using an optional background
+	  image), also using background music and/or sounds; aspects like
+	  background images, sounds and music of title screens can either be
+	  defined generally (valid for all title screens) or specifically (and
+	  therefore differently for each title screen) using these directives:
+
+	  to define a background image, sound or music file for all screens:
+	  - background.TITLE_INITIAL (for all title screens for game startup)
+	  - background.TITLE         (for all title screens for level sets)
+
+	  to define a background image, sound or music file for a single screen:
+	  - background.titlescreen_initial_x  (with x in 1,2,3,4,5)
+	  - background.titlescreen_x          (with x in 1,2,3,4,5)
+	  - background.titlemessage_initial_x (with x in 1,2,3,4,5)
+	  - background.titlemessage_x         (with x in 1,2,3,4,5)
+
+	  to define the title screen images:
+	  - titlescreen_initial_x             (with x in 1,2,3,4,5)
+	  - titlescreen_x                     (with x in 1,2,3,4,5)
+
+	  to define the title text messages, place text files into the level set
+	  directory that have the following file names:
+	  - titlemessage_initial_x.txt        (with x in 1,2,3,4,5)
+	  - titlemessage_x.txt                (with x in 1,2,3,4,5)
+
+	  to define the properties of the text messages, either use directives
+	  that affect all text messages:
+	  - [titlemessage_initial].<suffix>
+	  - [titlemessage].<suffix>
+	  or use directives that affect single text messages:
+	  - titlemessage_initial_x.<suffix>   (with x in 1,2,3,4,5)
+	  - titlemessage_x.<suffix>           (with x in 1,2,3,4,5)
+
+	  valid values for <suffix> are the same as for readme.<suffix> below;
+	  use ".sort_priority" (default: 0) to define an arbitrary order for
+	  title images and title messages (which can therefore be mixed)
+
+2007-03-14
+	* added full configurability of "readme.txt" screen appearance:
+	  - readme.x:              <left position used with alignment>
+	  - readme.y:              <top position>
+	  - readme.width:          <maximim text width in pixels>
+	  - readme.height:         <maximum text height in pixels>
+	  - readme.chars:          <maximum number of chars per line>
+	  - readme.lines:          <maximum number of lines displayed>
+	  - readme.align:          left,center,right (default: center)
+	  - readme.top:            top,middle,bottom (default: top)
+	  - readme.font:           font name
+	  - readme.autowrap:       true,false (default: true)
+	  - readme.centered:       true,false (default: false)
+	  - readme.parse_comments: true,false (default: true)
+	  - readme.sort_priority:  (not used here, but only for title screens)
+	  when "readme.chars" and/or "readme.lines" is set to "-1" (this is the
+	  default), they are automatically determined from "readme.width" and
+	  "readme.height" accordingly; when they are not "-1", they have
+	  precedence over "readme.width" and "readme.height"
+	* added internal ad-hoc config settings for displaying text files like
+	  title messages or "readme.txt" style level set info files:
+	  - .font:           font name  (default: readme.font)
+	  - .autowrap:       true,false (default: readme.autowrap)
+	  - .centered:       true,false (default: readme.centered)
+	  - .parse_comments: true,false (default: readme.parse_comments)
+	  (the leading '.' and the separating ':' are mandatory here); to use
+	  these ad-hoc settings, they have to be written inside a comment, like
+	  "# .autowrap: false" or "# .centered: true"; these settings then
+	  override the above global settings (they can even be used more than
+	  once, like "# .centered: true", then some text that should be drawn
+	  centered, then "# .centered: false" to go back to non-centered text;
+	  important note: after using "# .parse_comments: false", or when using
+	  "readme.parse_comments: false", detecting and parsing comments inside
+	  the file is disabled and comments are just printed like normal text;
+	  also be aware that all automatic text size calculations are done with
+	  the font defined in "readme.font", while using different fonts using
+	  "# .font: <font>" inside the text file may cause unexpected results
+
+2007-03-08
+	* changed some numerical limits in the level editor from 255 to 999
+
+2007-03-07
+	* added option "system.sdl_videodriver" to select SDL video driver
+	* added output of SDL video and audio driver to "version info" page
+
+2007-03-06
+	* added group element drawing to IntelliDraw drawing functions
+	* fixed animation resetting problem again (last try broke Snake Bite)
+	* fixed diagonal scrolling in screen scrolling (last try broke Pac Man)
+
+2007-03-01
+	* added new (special) "include: <filename>" directive that works in all
+	  configuration files (like "graphicsinfo.conf") and that has the same
+	  effect as if that directive would be replaced with the content of the
+	  specified file (this can be useful to split large configuration files
+	  into several smaller ones and include them from one main file, or to
+	  store configuration settings that always stay the same into a separate
+	  file, while including it and only add those parts that really change)
+
+2007-02-24
+	* fixed minor bug (screen redraw of player tiles) in EMC graphics engine
+
+2007-02-23
+	* fixed bug in "InitMovingField()" where treating an integer array as
+	  boolean caused wrong resetting of animations while elements are moving
+	* fixed problem with resetting animations when starting element change
+
+2007-02-08
+	* added sort priority for order of title screens and title messages
+
+2007-02-07
+	* changed end of game again: do not wait for the user to press a key
+	  anymore, but directly ask/confirm tape saving and go to hall of fame
+	* re-enabled quitting of lost game by pressing space or return again
+	* added blanking of mouse pointer when displaying title screens
+	* added remaining menu draw offset definitions for info sub-screens
+
+2007-02-05
+	* added setup option to select game speed (from very slow to very fast)
+	* improved handling of title text messages (initial and for level set)
+
+2007-02-03
+	* added new options "auto-wrap" and "centered" for DC2 style envelopes
+
+2007-01-31
+	* fixed displaying and typing of player name when it is centered
+	* added special characters to be allowed for player name (not only A-Z)
+
+2007-01-25
+	* fixed blit in ScrollLevel() to same bitmap to not overlap anymore
+	  (newer versions of the SDL library seem to not like this anymore)
+
+2007-01-23
+	* added code for configuration directives for control of game panel
+
+2007-01-21
+	* fixed small cosmetical bug with underlining property tabs in editor
+
+2007-01-20
+	* fixed small drawing bug in X11FadeRectangle
+	* added new elements for newly supported Diamond Caves II levels:
+	  - EM/DC style exits that disappear after passing
+	  - white key and gate (one white key needed for each white gate)
+	  - fake gate (there is no key to open/pass this kind of gate!)
+	  - extended magic wall which also handles pearls and crystals
+	  - fast quicksand
+
+2007-01-14
+	* changed maximum value for endless loop detection to a higher value
+	  (some levels really used very deep recursion without being endless)
+
+2007-01-13
+	* added new elements for newly supported Diamond Caves II levels:
+	  - growing steel walls
+	  - snappable land mine
+
+2007-01-08
+	* added new elements for newly supported Diamond Caves II levels:
+	  - steel text elements
+
+2007-01-06
+	* added level file loader for native Diamond Caves II levels
+
+2007-01-05
+	* version number set to 3.2.4
+
 2007-01-05
 	* version 3.2.3 released
 

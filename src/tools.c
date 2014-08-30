@@ -118,7 +118,7 @@ void SetDrawtoField(int mode)
 
     drawto_field = fieldbuffer;
   }
-  else	/* DRAW_DIRECT, DRAW_BACKBUFFER */
+  else	/* DRAW_BACKBUFFER */
   {
     FX = SX;
     FY = SY;
@@ -129,7 +129,7 @@ void SetDrawtoField(int mode)
     redraw_x1 = 0;
     redraw_y1 = 0;
 
-    drawto_field = (mode == DRAW_DIRECT ? window :  backbuffer);
+    drawto_field = backbuffer;
   }
 }
 
@@ -154,23 +154,17 @@ void RedrawPlayfield(boolean force_redraw, int x, int y, int width, int height)
       height = gfx.sysize + 2 * TILEY;
     }
 
-    if (force_redraw || setup.direct_draw)
+    if (force_redraw)
     {
       int xx, yy;
       int x1 = (x - SX) / TILEX, y1 = (y - SY) / TILEY;
       int x2 = (x - SX + width) / TILEX, y2 = (y - SY + height) / TILEY;
-
-      if (setup.direct_draw)
-	SetDrawtoField(DRAW_BACKBUFFER);
 
       for (xx = BX1; xx <= BX2; xx++)
 	for (yy = BY1; yy <= BY2; yy++)
 	  if (xx >= x1 && xx <= x2 && yy >= y1 && yy <= y2)
 	    DrawScreenField(xx, yy);
       DrawAllPlayers();
-
-      if (setup.direct_draw)
-	SetDrawtoField(DRAW_DIRECT);
     }
 
     if (setup.soft_scrolling)
@@ -205,16 +199,16 @@ void DrawMaskedBorder_Rect(int x, int y, int width, int height)
 
 void DrawMaskedBorder_FIELD()
 {
-  if (game_status >= GAME_MODE_TITLE &&
-      game_status <= GAME_MODE_PLAYING &&
-      border.draw_masked[game_status])
+  if (global.border_status >= GAME_MODE_TITLE &&
+      global.border_status <= GAME_MODE_PLAYING &&
+      border.draw_masked[global.border_status])
     DrawMaskedBorder_Rect(REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
 }
 
 void DrawMaskedBorder_DOOR_1()
 {
   if (border.draw_masked[GFX_SPECIAL_ARG_DOOR] &&
-      (game_status != GAME_MODE_EDITOR ||
+      (global.border_status != GAME_MODE_EDITOR ||
        border.draw_masked[GFX_SPECIAL_ARG_EDITOR]))
     DrawMaskedBorder_Rect(DX, DY, DXSIZE, DYSIZE);
 }
@@ -222,7 +216,7 @@ void DrawMaskedBorder_DOOR_1()
 void DrawMaskedBorder_DOOR_2()
 {
   if (border.draw_masked[GFX_SPECIAL_ARG_DOOR] &&
-      game_status != GAME_MODE_EDITOR)
+      global.border_status != GAME_MODE_EDITOR)
     DrawMaskedBorder_Rect(VX, VY, VXSIZE, VYSIZE);
 }
 
@@ -241,9 +235,9 @@ void DrawMaskedBorder_ALL()
 
 void DrawMaskedBorder(int redraw_mask)
 {
-  /* do not draw masked screen borders when displaying title screens */
-  if (effectiveGameStatus() == GAME_MODE_TITLE ||
-      effectiveGameStatus() == GAME_MODE_MESSAGE)
+  /* never draw masked screen borders on borderless screens */
+  if (effectiveGameStatus() == GAME_MODE_LOADING ||
+      effectiveGameStatus() == GAME_MODE_TITLE)
     return;
 
   if (redraw_mask & REDRAW_ALL)
@@ -265,9 +259,6 @@ void BackToFront()
 {
   int x,y;
   DrawBuffer *buffer = (drawto_field == window ? backbuffer : drawto_field);
-
-  if (setup.direct_draw && game_status == GAME_MODE_PLAYING)
-    redraw_mask &= ~REDRAW_MAIN;
 
   if (redraw_mask & REDRAW_TILES && redraw_tiles > REDRAWTILES_THRESHOLD)
     redraw_mask |= REDRAW_FIELD;
@@ -449,95 +440,112 @@ void BackToFront()
   redraw_mask = REDRAW_NONE;
 }
 
-void FadeToFront()
+static void FadeCrossSaveBackbuffer()
 {
-#if 0
-  long fading_delay = 300;
-
-  if (setup.fading && (redraw_mask & REDRAW_FIELD))
-  {
-#endif
-
-#if 0
-    int x,y;
-
-    ClearRectangle(window, REAL_SX,REAL_SY,FULL_SXSIZE,FULL_SYSIZE);
-    FlushDisplay();
-
-    for (i = 0; i < 2 * FULL_SYSIZE; i++)
-    {
-      for (y = 0; y < FULL_SYSIZE; y++)
-      {
-	BlitBitmap(backbuffer, window,
-		   REAL_SX,REAL_SY+i, FULL_SXSIZE,1, REAL_SX,REAL_SY+i);
-      }
-      FlushDisplay();
-      Delay(10);
-    }
-#endif
-
-#if 0
-    for (i = 1; i < FULL_SYSIZE; i+=2)
-      BlitBitmap(backbuffer, window,
-		 REAL_SX,REAL_SY+i, FULL_SXSIZE,1, REAL_SX,REAL_SY+i);
-    FlushDisplay();
-    Delay(fading_delay);
-#endif
-
-#if 0
-    SetClipOrigin(clip_gc[PIX_FADEMASK], 0, 0);
-    BlitBitmapMasked(backbuffer, window,
-		     REAL_SX,REAL_SY, FULL_SXSIZE,FULL_SYSIZE,
-		     REAL_SX,REAL_SY);
-    FlushDisplay();
-    Delay(fading_delay);
-
-    SetClipOrigin(clip_gc[PIX_FADEMASK], -1, -1);
-    BlitBitmapMasked(backbuffer, window,
-		     REAL_SX,REAL_SY, FULL_SXSIZE,FULL_SYSIZE,
-		     REAL_SX,REAL_SY);
-    FlushDisplay();
-    Delay(fading_delay);
-
-    SetClipOrigin(clip_gc[PIX_FADEMASK], 0, -1);
-    BlitBitmapMasked(backbuffer, window,
-		     REAL_SX,REAL_SY, FULL_SXSIZE,FULL_SYSIZE,
-		     REAL_SX,REAL_SY);
-    FlushDisplay();
-    Delay(fading_delay);
-
-    SetClipOrigin(clip_gc[PIX_FADEMASK], -1, 0);
-    BlitBitmapMasked(backbuffer, window,
-		     REAL_SX,REAL_SY, FULL_SXSIZE,FULL_SYSIZE,
-		     REAL_SX,REAL_SY);
-    FlushDisplay();
-    Delay(fading_delay);
-
-    redraw_mask &= ~REDRAW_MAIN;
-  }
-#endif
-
-  BackToFront();
+  BlitBitmap(backbuffer, bitmap_db_cross, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
 }
 
-void FadeExt(int fade_mask, int fade_mode)
+static void FadeExt(int fade_mask, int fade_mode, int fade_type)
 {
+  static int fade_type_skip = FADE_TYPE_NONE;
   void (*draw_border_function)(void) = NULL;
-  Bitmap *bitmap = (fade_mode == FADE_MODE_CROSSFADE ? bitmap_db_cross : NULL);
+  Bitmap *bitmap = (fade_mode & FADE_TYPE_TRANSFORM ? bitmap_db_cross : NULL);
   int x, y, width, height;
   int fade_delay, post_delay;
 
-  if (fade_mask & REDRAW_FIELD)
+  if (fade_type == FADE_TYPE_FADE_OUT)
+  {
+    if (fade_type_skip != FADE_TYPE_NONE)
+    {
+#if 0
+      printf("::: skipping %d ... [%d] (X)\n", fade_mode, fade_type_skip);
+#endif
+
+      /* skip all fade operations until specified fade operation */
+      if (fade_type & fade_type_skip)
+	fade_type_skip = FADE_TYPE_NONE;
+
+      return;
+    }
+
+    if (fading.fade_mode & FADE_TYPE_TRANSFORM)
+    {
+      FadeCrossSaveBackbuffer();
+
+      return;
+    }
+  }
+
+  redraw_mask |= fade_mask;
+
+  if (fade_type == FADE_TYPE_SKIP)
+  {
+#if 0
+    printf("::: will skip %d ... [%d]\n", fade_mode, fade_type_skip);
+#endif
+
+    fade_type_skip = fade_mode;
+
+    return;
+  }
+
+  if (fade_type_skip != FADE_TYPE_NONE)
+  {
+#if 0
+    printf("::: skipping %d ... [%d]\n", fade_mode, fade_type_skip);
+#endif
+
+    /* skip all fade operations until specified fade operation */
+    if (fade_type & fade_type_skip)
+      fade_type_skip = FADE_TYPE_NONE;
+
+    return;
+  }
+
+#if 1
+  if (global.autoplay_leveldir)
+  {
+    // fading.fade_mode = FADE_MODE_NONE;
+
+    return;
+  }
+#endif
+
+#if 0
+  if (fading.fade_mode == FADE_MODE_NONE)
+  {
+    BackToFront();
+
+    return;
+  }
+#endif
+
+  /* !!! what abount fade_mask == REDRAW_FIELD | REDRAW_ALL ??? !!! */
+
+#if 0
+  printf("::: NOW FADING %d ... [%d]\n", fade_mode, fade_type);
+#endif
+
+#if 0
+  if (fade_mask == REDRAW_NONE)
+    fade_mask = REDRAW_FIELD;
+#endif
+
+  // if (fade_mask & REDRAW_FIELD)
+  if (fade_mask == REDRAW_FIELD)
   {
     x = REAL_SX;
     y = REAL_SY;
     width  = FULL_SXSIZE;
     height = FULL_SYSIZE;
 
-    fade_delay = menu.fade_delay;
-    post_delay = (fade_mode == FADE_MODE_FADE_OUT ? menu.post_delay : 0);
+    fade_delay = fading.fade_delay;
+    post_delay = (fade_mode == FADE_MODE_FADE_OUT ? fading.post_delay : 0);
 
-    draw_border_function = DrawMaskedBorder_FIELD;
+    if (border.draw_masked_when_fading)
+      draw_border_function = DrawMaskedBorder_FIELD;	/* update when fading */
+    else
+      DrawMaskedBorder_FIELD();				/* draw once */
   }
   else		/* REDRAW_ALL */
   {
@@ -546,18 +554,33 @@ void FadeExt(int fade_mask, int fade_mode)
     width  = WIN_XSIZE;
     height = WIN_YSIZE;
 
-    fade_delay = title.fade_delay_final;
-    post_delay = (fade_mode == FADE_MODE_FADE_OUT ? title.post_delay_final : 0);
+    fade_delay = fading.fade_delay;
+    post_delay = (fade_mode == FADE_MODE_FADE_OUT ? fading.post_delay : 0);
   }
 
-  redraw_mask |= fade_mask;
-
+#if 1
+  if (!setup.fade_screens ||
+      fade_delay == 0 ||
+      fading.fade_mode == FADE_MODE_NONE)
+#else
   if (!setup.fade_screens || fade_delay == 0)
+#endif
   {
     if (fade_mode == FADE_MODE_FADE_OUT)
-      ClearRectangle(backbuffer, x, y, width, height);
+      return;
 
+#if 0
+    if (fade_mode == FADE_MODE_FADE_OUT &&
+	fading.fade_mode != FADE_MODE_NONE)
+      ClearRectangle(backbuffer, x, y, width, height);
+#endif
+
+#if 1
+    BlitBitmap(backbuffer, window, x, y, width, height, x, y);
+    redraw_mask = REDRAW_NONE;
+#else
     BackToFront();
+#endif
 
     return;
   }
@@ -570,22 +593,111 @@ void FadeExt(int fade_mask, int fade_mode)
 
 void FadeIn(int fade_mask)
 {
-  FadeExt(fade_mask, FADE_MODE_FADE_IN);
+  if (fading.fade_mode & FADE_TYPE_TRANSFORM)
+    FadeExt(fade_mask, fading.fade_mode, FADE_TYPE_FADE_IN);
+  else
+    FadeExt(fade_mask, FADE_MODE_FADE_IN, FADE_TYPE_FADE_IN);
 }
 
 void FadeOut(int fade_mask)
 {
-  FadeExt(fade_mask, FADE_MODE_FADE_OUT);
+  if (fading.fade_mode & FADE_TYPE_TRANSFORM)
+    FadeExt(fade_mask, fading.fade_mode, FADE_TYPE_FADE_OUT);
+  else
+    FadeExt(fade_mask, FADE_MODE_FADE_OUT, FADE_TYPE_FADE_OUT);
+
+  global.border_status = game_status;
 }
 
-void FadeCross(int fade_mask)
+static void FadeSetLeaveNext(struct TitleFadingInfo fading_leave, boolean set)
 {
-  FadeExt(fade_mask, FADE_MODE_CROSSFADE);
+  static struct TitleFadingInfo fading_leave_stored;
+
+  if (set)
+    fading_leave_stored = fading_leave;
+  else
+    fading = fading_leave_stored;
 }
 
-void FadeCrossSaveBackbuffer()
+void FadeSetEnterMenu()
 {
-  BlitBitmap(backbuffer, bitmap_db_cross, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+  fading = menu.enter_menu;
+
+#if 0
+  printf("::: storing enter_menu\n");
+#endif
+
+  FadeSetLeaveNext(fading, TRUE);	/* (keep same fade mode) */
+}
+
+void FadeSetLeaveMenu()
+{
+  fading = menu.leave_menu;
+
+#if 0
+  printf("::: storing leave_menu\n");
+#endif
+
+  FadeSetLeaveNext(fading, TRUE);	/* (keep same fade mode) */
+}
+
+void FadeSetEnterScreen()
+{
+  fading = menu.enter_screen[game_status];
+
+#if 0
+  printf("::: storing leave_screen[%d]\n", game_status);
+#endif
+
+  FadeSetLeaveNext(menu.leave_screen[game_status], TRUE);	/* store */
+}
+
+void FadeSetNextScreen()
+{
+  fading = menu.next_screen;
+
+#if 0
+  printf("::: storing next_screen\n");
+#endif
+
+  // (do not overwrite fade mode set by FadeSetEnterScreen)
+  // FadeSetLeaveNext(fading, TRUE);	/* (keep same fade mode) */
+}
+
+void FadeSetLeaveScreen()
+{
+#if 0
+  printf("::: recalling last stored value\n");
+#endif
+
+  FadeSetLeaveNext(menu.leave_screen[game_status], FALSE);	/* recall */
+}
+
+void FadeSetFromType(int type)
+{
+  if (type & TYPE_ENTER_SCREEN)
+    FadeSetEnterScreen();
+  else if (type & TYPE_ENTER)
+    FadeSetEnterMenu();
+  else if (type & TYPE_LEAVE)
+    FadeSetLeaveMenu();
+}
+
+void FadeSetDisabled()
+{
+  static struct TitleFadingInfo fading_none = { FADE_MODE_NONE, -1, -1, -1 };
+
+  fading = fading_none;
+}
+
+void FadeSkipNextFadeIn()
+{
+  FadeExt(0, FADE_MODE_SKIP_FADE_IN, FADE_TYPE_SKIP);
+}
+
+void FadeSkipNextFadeOut()
+{
+  FadeExt(0, FADE_MODE_SKIP_FADE_OUT, FADE_TYPE_SKIP);
 }
 
 void SetWindowBackgroundImageIfDefined(int graphic)
@@ -598,6 +710,20 @@ void SetMainBackgroundImageIfDefined(int graphic)
 {
   if (graphic_info[graphic].bitmap)
     SetMainBackgroundBitmap(graphic_info[graphic].bitmap);
+}
+
+void SetDoorBackgroundImageIfDefined(int graphic)
+{
+  if (graphic_info[graphic].bitmap)
+    SetDoorBackgroundBitmap(graphic_info[graphic].bitmap);
+}
+
+void SetWindowBackgroundImage(int graphic)
+{
+  SetWindowBackgroundBitmap(graphic == IMG_UNDEFINED ? NULL :
+			    graphic_info[graphic].bitmap ?
+			    graphic_info[graphic].bitmap :
+			    graphic_info[IMG_BACKGROUND].bitmap);
 }
 
 void SetMainBackgroundImage(int graphic)
@@ -657,7 +783,7 @@ void DrawBackgroundForGraphic(int x, int y, int width, int height, int graphic)
   DrawBackground(x, y, width, height);
 }
 
-void ClearWindow()
+void ClearField()
 {
   /* !!! "drawto" might still point to playfield buffer here (see above) !!! */
   /* (when entering hall of fame after playing) */
@@ -671,12 +797,6 @@ void ClearWindow()
   }
   else
     SetDrawtoField(DRAW_BACKBUFFER);
-
-  if (setup.direct_draw && game_status == GAME_MODE_PLAYING)
-  {
-    ClearRectangle(window, REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
-    SetDrawtoField(DRAW_DIRECT);
-  }
 }
 
 void MarkTileDirty(int x, int y)
@@ -710,6 +830,39 @@ void SetBorderElement()
   }
 }
 
+void FloodFillLevel(int from_x, int from_y, int fill_element,
+		    short field[MAX_LEV_FIELDX][MAX_LEV_FIELDY],
+		    int max_fieldx, int max_fieldy)
+{
+  int i,x,y;
+  int old_element;
+  static int check[4][2] = { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 } };
+  static int safety = 0;
+
+  /* check if starting field still has the desired content */
+  if (field[from_x][from_y] == fill_element)
+    return;
+
+  safety++;
+
+  if (safety > max_fieldx * max_fieldy)
+    Error(ERR_EXIT, "Something went wrong in 'FloodFill()'. Please debug.");
+
+  old_element = field[from_x][from_y];
+  field[from_x][from_y] = fill_element;
+
+  for (i = 0; i < 4; i++)
+  {
+    x = from_x + check[i][0];
+    y = from_y + check[i][1];
+
+    if (IN_FIELD(x, y, max_fieldx, max_fieldy) && field[x][y] == old_element)
+      FloodFillLevel(x, y, fill_element, field, max_fieldx, max_fieldy);
+  }
+
+  safety--;
+}
+
 void SetRandomAnimationValue(int x, int y)
 {
   gfx.anim_random_frame = GfxRandom[x][y];
@@ -726,6 +879,82 @@ inline int getGraphicAnimationFrame(int graphic, int sync_frame)
 			   graphic_info[graphic].anim_mode,
 			   graphic_info[graphic].anim_start_frame,
 			   sync_frame);
+}
+
+void getSizedGraphicSource(int graphic, int frame, int tilesize_raw,
+			   Bitmap **bitmap, int *x, int *y)
+{
+  struct
+  {
+    int width_mult, width_div;
+    int height_mult, height_div;
+  }
+  offset_calc[6] =
+  {
+    { 15, 16,	2, 3	},	/* 1 x 1 */
+    { 7, 8,	2, 3	},	/* 2 x 2 */
+    { 3, 4,	2, 3	},	/* 4 x 4 */
+    { 1, 2,	2, 3	},	/* 8 x 8 */
+    { 0, 1,	2, 3	},	/* 16 x 16 */
+    { 0, 1,	0, 1	},	/* 32 x 32 */
+  };
+  struct GraphicInfo *g = &graphic_info[graphic];
+  Bitmap *src_bitmap = g->bitmap;
+  int tilesize = MIN(MAX(1, tilesize_raw), TILESIZE);
+  int offset_calc_pos = log_2(tilesize);
+  int width_mult  = offset_calc[offset_calc_pos].width_mult;
+  int width_div   = offset_calc[offset_calc_pos].width_div;
+  int height_mult = offset_calc[offset_calc_pos].height_mult;
+  int height_div  = offset_calc[offset_calc_pos].height_div;
+  int startx = src_bitmap->width * width_mult / width_div;
+  int starty = src_bitmap->height * height_mult / height_div;
+  int src_x = g->src_x * tilesize / TILESIZE;
+  int src_y = g->src_y * tilesize / TILESIZE;
+  int width = g->width * tilesize / TILESIZE;
+  int height = g->height * tilesize / TILESIZE;
+  int offset_x = g->offset_x * tilesize / TILESIZE;
+  int offset_y = g->offset_y * tilesize / TILESIZE;
+
+  if (g->offset_y == 0)		/* frames are ordered horizontally */
+  {
+    int max_width = g->anim_frames_per_line * width;
+    int pos = (src_y / height) * max_width + src_x + frame * offset_x;
+
+    src_x = pos % max_width;
+    src_y = src_y % height + pos / max_width * height;
+  }
+  else if (g->offset_x == 0)	/* frames are ordered vertically */
+  {
+    int max_height = g->anim_frames_per_line * height;
+    int pos = (src_x / width) * max_height + src_y + frame * offset_y;
+
+    src_x = src_x % width + pos / max_height * width;
+    src_y = pos % max_height;
+  }
+  else				/* frames are ordered diagonally */
+  {
+    src_x = src_x + frame * offset_x;
+    src_y = src_y + frame * offset_y;
+  }
+
+  *bitmap = src_bitmap;
+  *x = startx + src_x;
+  *y = starty + src_y;
+}
+
+void getMiniGraphicSource(int graphic, Bitmap **bitmap, int *x, int *y)
+{
+#if 1
+  getSizedGraphicSource(graphic, 0, MINI_TILESIZE, bitmap, x, y);
+#else
+  struct GraphicInfo *g = &graphic_info[graphic];
+  int mini_startx = 0;
+  int mini_starty = g->bitmap->height * 2 / 3;
+
+  *bitmap = g->bitmap;
+  *x = mini_startx + g->src_x / 2;
+  *y = mini_starty + g->src_y / 2;
+#endif
 }
 
 inline void getGraphicSourceExt(int graphic, int frame, Bitmap **bitmap,
@@ -819,21 +1048,27 @@ void DrawGraphicThruMaskExt(DrawBuffer *d, int dst_x, int dst_y, int graphic,
   BlitBitmapMasked(src_bitmap, d, src_x, src_y, TILEX, TILEY, dst_x, dst_y);
 }
 
+void DrawSizedGraphic(int x, int y, int graphic, int frame, int tilesize)
+{
+  DrawSizedGraphicExt(drawto, SX + x * tilesize, SY + y * tilesize, graphic,
+		      frame, tilesize);
+  MarkTileDirty(x / tilesize, y / tilesize);
+}
+
+void DrawSizedGraphicExt(DrawBuffer *d, int x, int y, int graphic, int frame,
+			 int tilesize)
+{
+  Bitmap *src_bitmap;
+  int src_x, src_y;
+
+  getSizedGraphicSource(graphic, frame, tilesize, &src_bitmap, &src_x, &src_y);
+  BlitBitmap(src_bitmap, d, src_x, src_y, tilesize, tilesize, x, y);
+}
+
 void DrawMiniGraphic(int x, int y, int graphic)
 {
   DrawMiniGraphicExt(drawto, SX + x * MINI_TILEX,SY + y * MINI_TILEY, graphic);
   MarkTileDirty(x / 2, y / 2);
-}
-
-void getMiniGraphicSource(int graphic, Bitmap **bitmap, int *x, int *y)
-{
-  struct GraphicInfo *g = &graphic_info[graphic];
-  int mini_startx = 0;
-  int mini_starty = g->bitmap->height * 2 / 3;
-
-  *bitmap = g->bitmap;
-  *x = mini_startx + g->src_x / 2;
-  *y = mini_starty + g->src_y / 2;
 }
 
 void DrawMiniGraphicExt(DrawBuffer *d, int x, int y, int graphic)
@@ -1377,13 +1612,17 @@ void DrawScreenField(int x, int y)
     boolean cut_mode = NO_CUTTING;
 
     if (element == EL_QUICKSAND_EMPTYING ||
+	element == EL_QUICKSAND_FAST_EMPTYING ||
 	element == EL_MAGIC_WALL_EMPTYING ||
 	element == EL_BD_MAGIC_WALL_EMPTYING ||
+	element == EL_DC_MAGIC_WALL_EMPTYING ||
 	element == EL_AMOEBA_DROPPING)
       cut_mode = CUT_ABOVE;
     else if (element == EL_QUICKSAND_FILLING ||
+	     element == EL_QUICKSAND_FAST_FILLING ||
 	     element == EL_MAGIC_WALL_FILLING ||
-	     element == EL_BD_MAGIC_WALL_FILLING)
+	     element == EL_BD_MAGIC_WALL_FILLING ||
+	     element == EL_DC_MAGIC_WALL_FILLING)
       cut_mode = CUT_BELOW;
 
     if (cut_mode == CUT_ABOVE)
@@ -1425,8 +1664,10 @@ void DrawScreenField(int x, int y)
     content_old = Store[oldx][oldy];
 
     if (element_old == EL_QUICKSAND_EMPTYING ||
+	element_old == EL_QUICKSAND_FAST_EMPTYING ||
 	element_old == EL_MAGIC_WALL_EMPTYING ||
 	element_old == EL_BD_MAGIC_WALL_EMPTYING ||
+	element_old == EL_DC_MAGIC_WALL_EMPTYING ||
 	element_old == EL_AMOEBA_DROPPING)
       cut_mode = CUT_ABOVE;
 
@@ -1573,9 +1814,17 @@ void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
     for (yy = 0; yy < ysize; yy++) for (xx = 0; xx < xsize; xx++)
       DrawEnvelopeBackground(envelope_nr, sx,sy, xx,yy, xsize, ysize, font_nr);
 
+#if 1
+    DrawTextBuffer(SX + sx + font_width, SY + sy + font_height,
+		   level.envelope[envelope_nr].text, font_nr, max_xsize,
+		   xsize - 2, ysize - 2, mask_mode,
+		   level.envelope[envelope_nr].autowrap,
+		   level.envelope[envelope_nr].centered, FALSE);
+#else
     DrawTextToTextArea(SX + sx + font_width, SY + sy + font_height,
 		       level.envelope[envelope_nr].text, font_nr, max_xsize,
 		       xsize - 2, ysize - 2, mask_mode);
+#endif
 
     redraw_mask |= REDRAW_FIELD | REDRAW_FROM_BACKBUFFER;
     BackToFront();
@@ -1628,44 +1877,13 @@ void ShowEnvelope(int envelope_nr)
   BackToFront();
 }
 
-void getPreviewGraphicSource(int graphic, Bitmap **bitmap, int *x, int *y,
-			     int tilesize)
-{
-  struct
-  {
-    int width_mult, width_div;
-    int height_mult, height_div;
-  } offset_calc[4] =
-  {
-    { 0, 1,	0, 1	},
-    { 0, 1,	2, 3	},
-    { 1, 2,	2, 3	},
-    { 3, 4,	2, 3	},
-  };
-  int offset_calc_pos = (tilesize < MICRO_TILESIZE || tilesize > TILESIZE ? 3 :
-			 5 - log_2(tilesize));
-  Bitmap *src_bitmap = graphic_info[graphic].bitmap;
-  int width_mult = offset_calc[offset_calc_pos].width_mult;
-  int width_div = offset_calc[offset_calc_pos].width_div;
-  int height_mult = offset_calc[offset_calc_pos].height_mult;
-  int height_div = offset_calc[offset_calc_pos].height_div;
-  int mini_startx = src_bitmap->width * width_mult / width_div;
-  int mini_starty = src_bitmap->height * height_mult / height_div;
-  int src_x = mini_startx + graphic_info[graphic].src_x * tilesize / TILESIZE;
-  int src_y = mini_starty + graphic_info[graphic].src_y * tilesize / TILESIZE;
-
-  *bitmap = src_bitmap;
-  *x = src_x;
-  *y = src_y;
-}
-
 void DrawPreviewElement(int dst_x, int dst_y, int element, int tilesize)
 {
   Bitmap *src_bitmap;
   int src_x, src_y;
   int graphic = el2preimg(element);
 
-  getPreviewGraphicSource(graphic, &src_bitmap, &src_x, &src_y, tilesize);
+  getSizedGraphicSource(graphic, 0, tilesize, &src_bitmap, &src_x, &src_y);
   BlitBitmap(src_bitmap, drawto, src_x, src_y, tilesize, tilesize, dst_x,dst_y);
 }
 
@@ -1674,7 +1892,7 @@ void DrawLevel()
   int x,y;
 
   SetDrawBackgroundMask(REDRAW_NONE);
-  ClearWindow();
+  ClearField();
 
   for (x = BX1; x <= BX2; x++)
     for (y = BY1; y <= BY2; y++)
@@ -1705,7 +1923,7 @@ static void DrawPreviewLevelExt(int from_x, int from_y)
   int real_preview_xsize = MIN(level_xsize, preview.xsize);
   int real_preview_ysize = MIN(level_ysize, preview.ysize);
   int dst_x = SX + ALIGNED_XPOS(preview.x, preview_width, preview.align);
-  int dst_y = SY + preview.y;
+  int dst_y = SY + ALIGNED_YPOS(preview.y, preview_height, preview.valign);
   int x, y;
 
   DrawBackground(dst_x, dst_y, preview_width, preview_height);
@@ -1739,7 +1957,7 @@ static void DrawPreviewLevelExt(int from_x, int from_y)
 #define MICROLABEL_IMPORTED_BY_HEAD	6
 #define MICROLABEL_IMPORTED_BY		7
 
-static int getMaxTextLength(struct MenuPosInfo *pos, int font_nr)
+static int getMaxTextLength(struct TextPosInfo *pos, int font_nr)
 {
   int max_text_width = SXSIZE;
   int font_width = getFontWidth(font_nr);
@@ -1756,9 +1974,18 @@ static int getMaxTextLength(struct MenuPosInfo *pos, int font_nr)
 
 static void DrawPreviewLevelLabelExt(int mode)
 {
-  struct MenuPosInfo *pos = &menu.main.text.level_info_2;
+  struct TextPosInfo *pos = &menu.main.text.level_info_2;
   char label_text[MAX_OUTPUT_LINESIZE + 1];
   int max_len_label_text;
+#if 1
+  int font_nr = pos->font;
+  int i;
+
+  if (mode == MICROLABEL_LEVEL_AUTHOR_HEAD ||
+      mode == MICROLABEL_IMPORTED_FROM_HEAD ||
+      mode == MICROLABEL_IMPORTED_BY_HEAD)
+    font_nr = pos->font_alt;
+#else
   int font_nr = FONT_TEXT_2;
   int i;
 
@@ -1766,11 +1993,17 @@ static void DrawPreviewLevelLabelExt(int mode)
       mode == MICROLABEL_IMPORTED_FROM_HEAD ||
       mode == MICROLABEL_IMPORTED_BY_HEAD)
     font_nr = FONT_TEXT_3;
+#endif
 
 #if 1
   max_len_label_text = getMaxTextLength(pos, font_nr);
 #else
   max_len_label_text = SXSIZE / getFontWidth(font_nr);
+#endif
+
+#if 1
+  if (pos->size != -1)
+    max_len_label_text = pos->size;
 #endif
 
   for (i = 0; i < max_len_label_text; i++)
@@ -1827,8 +2060,10 @@ void DrawPreviewLevel(boolean restart)
   int level_ysize = lev_fieldy + (show_level_border ? 2 : 0);
   int last_game_status = game_status;		/* save current game status */
 
+#if 0
   /* force PREVIEW font on preview level */
   game_status = GAME_MODE_PSEUDO_PREVIEW;
+#endif
 
   if (restart)
   {
@@ -1859,9 +2094,13 @@ void DrawPreviewLevel(boolean restart)
 
     if (leveldir_current->name)
     {
-      struct MenuPosInfo *pos = &menu.main.text.level_info_1;
+      struct TextPosInfo *pos = &menu.main.text.level_info_1;
       char label_text[MAX_OUTPUT_LINESIZE + 1];
+#if 1
+      int font_nr = pos->font;
+#else
       int font_nr = FONT_TEXT_1;
+#endif
 #if 1
       int max_len_label_text = getMaxTextLength(pos, font_nr);
 #else
@@ -1870,6 +2109,11 @@ void DrawPreviewLevel(boolean restart)
 #if 0
       int text_width;
       int lxpos, lypos;
+#endif
+
+#if 1
+      if (pos->size != -1)
+	max_len_label_text = pos->size;
 #endif
 
       strncpy(label_text, leveldir_current->name, max_len_label_text);
@@ -2215,9 +2459,6 @@ void DrawPlayer(struct PlayerInfo *player)
   if (!IN_SCR_FIELD(sx, sy))
     return;
 
-  if (setup.direct_draw)
-    SetDrawtoField(DRAW_BUFFERED);
-
   /* ----------------------------------------------------------------------- */
   /* draw things behind the player, if needed                                */
   /* ----------------------------------------------------------------------- */
@@ -2396,18 +2637,6 @@ void DrawPlayer(struct PlayerInfo *player)
       DrawLevelFieldThruMask(jx, jy);
   }
 
-  if (setup.direct_draw)
-  {
-    int dst_x = SX + SCREENX(MIN(jx, last_jx)) * TILEX;
-    int dst_y = SY + SCREENY(MIN(jy, last_jy)) * TILEY;
-    int x_size = TILEX * (1 + ABS(jx - last_jx));
-    int y_size = TILEY * (1 + ABS(jy - last_jy));
-
-    BlitBitmap(drawto_field, window,
-	       dst_x, dst_y, x_size, y_size, dst_x, dst_y);
-    SetDrawtoField(DRAW_DIRECT);
-  }
-
   MarkTileDirty(sx, sy);
 }
 
@@ -2484,7 +2713,11 @@ boolean Request(char *text, unsigned int req_state)
     if (max_word_len > MAX_REQUEST_LINE_FONT1_LEN)
     {
       max_request_line_len = MAX_REQUEST_LINE_FONT2_LEN;
+#if 1
+      font_nr = FONT_TEXT_1;
+#else
       font_nr = FONT_LEVEL_NUMBER;
+#endif
 
       break;
     }
@@ -2535,7 +2768,7 @@ boolean Request(char *text, unsigned int req_state)
   /* clear door drawing field */
   DrawBackground(DX, DY, DXSIZE, DYSIZE);
 
-  /* force DOOR font on preview level */
+  /* force DOOR font inside door area */
   game_status = GAME_MODE_PSEUDO_DOOR;
 
   /* write text for request */
@@ -2696,6 +2929,11 @@ boolean Request(char *text, unsigned int req_state)
 	case EVENT_KEYPRESS:
 	  switch (GetEventKey((KeyEvent *)&event, TRUE))
 	  {
+	    case KSYM_space:
+	      if (req_state & REQ_CONFIRM)
+		result = 1;
+	      break;
+
 	    case KSYM_Return:
 	      result = 1;
 	      break;
@@ -2707,6 +2945,7 @@ boolean Request(char *text, unsigned int req_state)
 	    default:
 	      break;
 	  }
+
 	  if (req_state & REQ_PLAYER)
 	    result = 0;
 	  break;
@@ -2730,6 +2969,24 @@ boolean Request(char *text, unsigned int req_state)
 	result = 0;
     }
 
+#if 1
+
+    if (game_status == GAME_MODE_PLAYING && local_player->LevelSolved_GameEnd)
+    {
+      HandleGameActions();
+    }
+    else
+    {
+      DoAnimation();
+
+      if (!PendingEvent())	/* delay only if no pending events */
+	Delay(10);
+    }
+
+    BackToFront();
+
+#else
+
     DoAnimation();
 
 #if 1
@@ -2738,6 +2995,8 @@ boolean Request(char *text, unsigned int req_state)
 #else
     /* don't eat all CPU time */
     Delay(10);
+#endif
+
 #endif
   }
 
@@ -2879,7 +3138,7 @@ unsigned int MoveDoor(unsigned int door_state)
 
   if (setup.quick_doors)
   {
-    stepsize = 20;		/* must be choosen to always draw last frame */
+    stepsize = 20;		/* must be chosen to always draw last frame */
     door_delay_value = 0;
   }
 
@@ -4451,19 +4710,19 @@ em_object_mapping_list[] =
   },
   {
     Xexit,				TRUE,	FALSE,
-    EL_EXIT_CLOSED,			-1, -1
+    EL_EM_EXIT_CLOSED,			-1, -1
   },
   {
     Xexit_1,				TRUE,	FALSE,
-    EL_EXIT_OPEN,			-1, -1
+    EL_EM_EXIT_OPEN,			-1, -1
   },
   {
     Xexit_2,				FALSE,	FALSE,
-    EL_EXIT_OPEN,			-1, -1
+    EL_EM_EXIT_OPEN,			-1, -1
   },
   {
     Xexit_3,				FALSE,	FALSE,
-    EL_EXIT_OPEN,			-1, -1
+    EL_EM_EXIT_OPEN,			-1, -1
   },
   {
     Xdynamite,				TRUE,	FALSE,
@@ -4537,6 +4796,24 @@ em_object_mapping_list[] =
     Xsand_stonein_4,			FALSE,	TRUE,
     EL_ROCK,				ACTION_FILLING, -1
   },
+#if 1
+  {
+    Xsand_stonesand_1,			FALSE,	FALSE,
+    EL_QUICKSAND_EMPTYING,		-1, -1
+  },
+  {
+    Xsand_stonesand_2,			FALSE,	FALSE,
+    EL_QUICKSAND_EMPTYING,		-1, -1
+  },
+  {
+    Xsand_stonesand_3,			FALSE,	FALSE,
+    EL_QUICKSAND_EMPTYING,		-1, -1
+  },
+  {
+    Xsand_stonesand_4,			FALSE,	FALSE,
+    EL_QUICKSAND_EMPTYING,		-1, -1
+  },
+#else
   {
     Xsand_stonesand_1,			FALSE,	FALSE,
     EL_QUICKSAND_FULL,			-1, -1
@@ -4553,6 +4830,7 @@ em_object_mapping_list[] =
     Xsand_stonesand_4,			FALSE,	FALSE,
     EL_QUICKSAND_FULL,			-1, -1
   },
+#endif
   {
     Xsand_stoneout_1,			FALSE,	FALSE,
     EL_ROCK,				ACTION_EMPTYING, -1
@@ -4561,6 +4839,24 @@ em_object_mapping_list[] =
     Xsand_stoneout_2,			FALSE,	FALSE,
     EL_ROCK,				ACTION_EMPTYING, -1
   },
+#if 1
+  {
+    Xsand_sandstone_1,			FALSE,	FALSE,
+    EL_QUICKSAND_FILLING,		-1, -1
+  },
+  {
+    Xsand_sandstone_2,			FALSE,	FALSE,
+    EL_QUICKSAND_FILLING,		-1, -1
+  },
+  {
+    Xsand_sandstone_3,			FALSE,	FALSE,
+    EL_QUICKSAND_FILLING,		-1, -1
+  },
+  {
+    Xsand_sandstone_4,			FALSE,	FALSE,
+    EL_QUICKSAND_FILLING,		-1, -1
+  },
+#else
   {
     Xsand_sandstone_1,			FALSE,	FALSE,
     EL_QUICKSAND_FULL,			-1, -1
@@ -4577,6 +4873,7 @@ em_object_mapping_list[] =
     Xsand_sandstone_4,			FALSE,	FALSE,
     EL_QUICKSAND_FULL,			-1, -1
   },
+#endif
   {
     Xplant,				TRUE,	FALSE,
     EL_EMC_PLANT,			-1, -1
@@ -5372,10 +5669,14 @@ int get_next_element(int element)
   {
     case EL_QUICKSAND_FILLING:		return EL_QUICKSAND_FULL;
     case EL_QUICKSAND_EMPTYING:		return EL_QUICKSAND_EMPTY;
+    case EL_QUICKSAND_FAST_FILLING:	return EL_QUICKSAND_FAST_FULL;
+    case EL_QUICKSAND_FAST_EMPTYING:	return EL_QUICKSAND_FAST_EMPTY;
     case EL_MAGIC_WALL_FILLING:		return EL_MAGIC_WALL_FULL;
     case EL_MAGIC_WALL_EMPTYING:	return EL_MAGIC_WALL_ACTIVE;
     case EL_BD_MAGIC_WALL_FILLING:	return EL_BD_MAGIC_WALL_FULL;
     case EL_BD_MAGIC_WALL_EMPTYING:	return EL_BD_MAGIC_WALL_ACTIVE;
+    case EL_DC_MAGIC_WALL_FILLING:	return EL_DC_MAGIC_WALL_FULL;
+    case EL_DC_MAGIC_WALL_EMPTYING:	return EL_DC_MAGIC_WALL_ACTIVE;
     case EL_AMOEBA_DROPPING:		return EL_AMOEBA_WET;
 
     default:				return element;
@@ -5475,9 +5776,137 @@ int el2preimg(int element)
   return element_info[element].special_graphic[GFX_SPECIAL_ARG_PREVIEW];
 }
 
+int el2panelimg(int element)
+{
+  element = GFX_ELEMENT(element);
+
+  return element_info[element].special_graphic[GFX_SPECIAL_ARG_PANEL];
+}
+
 int font2baseimg(int font_nr)
 {
   return font_info[font_nr].special_graphic[GFX_SPECIAL_ARG_DEFAULT];
+}
+
+int getBeltNrFromBeltElement(int element)
+{
+  return (element < EL_CONVEYOR_BELT_2_LEFT ? 0 :
+	  element < EL_CONVEYOR_BELT_3_LEFT ? 1 :
+	  element < EL_CONVEYOR_BELT_4_LEFT ? 2 : 3);
+}
+
+int getBeltNrFromBeltActiveElement(int element)
+{
+  return (element < EL_CONVEYOR_BELT_2_LEFT_ACTIVE ? 0 :
+	  element < EL_CONVEYOR_BELT_3_LEFT_ACTIVE ? 1 :
+	  element < EL_CONVEYOR_BELT_4_LEFT_ACTIVE ? 2 : 3);
+}
+
+int getBeltNrFromBeltSwitchElement(int element)
+{
+  return (element < EL_CONVEYOR_BELT_2_SWITCH_LEFT ? 0 :
+	  element < EL_CONVEYOR_BELT_3_SWITCH_LEFT ? 1 :
+	  element < EL_CONVEYOR_BELT_4_SWITCH_LEFT ? 2 : 3);
+}
+
+int getBeltDirNrFromBeltElement(int element)
+{
+  static int belt_base_element[4] =
+  {
+    EL_CONVEYOR_BELT_1_LEFT,
+    EL_CONVEYOR_BELT_2_LEFT,
+    EL_CONVEYOR_BELT_3_LEFT,
+    EL_CONVEYOR_BELT_4_LEFT
+  };
+
+  int belt_nr = getBeltNrFromBeltElement(element);
+  int belt_dir_nr = element - belt_base_element[belt_nr];
+
+  return (belt_dir_nr % 3);
+}
+
+int getBeltDirNrFromBeltSwitchElement(int element)
+{
+  static int belt_base_element[4] =
+  {
+    EL_CONVEYOR_BELT_1_SWITCH_LEFT,
+    EL_CONVEYOR_BELT_2_SWITCH_LEFT,
+    EL_CONVEYOR_BELT_3_SWITCH_LEFT,
+    EL_CONVEYOR_BELT_4_SWITCH_LEFT
+  };
+
+  int belt_nr = getBeltNrFromBeltSwitchElement(element);
+  int belt_dir_nr = element - belt_base_element[belt_nr];
+
+  return (belt_dir_nr % 3);
+}
+
+int getBeltDirFromBeltElement(int element)
+{
+  static int belt_move_dir[3] =
+  {
+    MV_LEFT,
+    MV_NONE,
+    MV_RIGHT
+  };
+
+  int belt_dir_nr = getBeltDirNrFromBeltElement(element);
+
+  return belt_move_dir[belt_dir_nr];
+}
+
+int getBeltDirFromBeltSwitchElement(int element)
+{
+  static int belt_move_dir[3] =
+  {
+    MV_LEFT,
+    MV_NONE,
+    MV_RIGHT
+  };
+
+  int belt_dir_nr = getBeltDirNrFromBeltSwitchElement(element);
+
+  return belt_move_dir[belt_dir_nr];
+}
+
+int getBeltElementFromBeltNrAndBeltDirNr(int belt_nr, int belt_dir_nr)
+{
+  static int belt_base_element[4] =
+  {
+    EL_CONVEYOR_BELT_1_LEFT,
+    EL_CONVEYOR_BELT_2_LEFT,
+    EL_CONVEYOR_BELT_3_LEFT,
+    EL_CONVEYOR_BELT_4_LEFT
+  };
+
+  return belt_base_element[belt_nr] + belt_dir_nr;
+}
+
+int getBeltElementFromBeltNrAndBeltDir(int belt_nr, int belt_dir)
+{
+  int belt_dir_nr = (belt_dir == MV_LEFT ? 0 : belt_dir == MV_RIGHT ? 2 : 1);
+
+  return getBeltElementFromBeltNrAndBeltDirNr(belt_nr, belt_dir_nr);
+}
+
+int getBeltSwitchElementFromBeltNrAndBeltDirNr(int belt_nr, int belt_dir_nr)
+{
+  static int belt_base_element[4] =
+  {
+    EL_CONVEYOR_BELT_1_SWITCH_LEFT,
+    EL_CONVEYOR_BELT_2_SWITCH_LEFT,
+    EL_CONVEYOR_BELT_3_SWITCH_LEFT,
+    EL_CONVEYOR_BELT_4_SWITCH_LEFT
+  };
+
+  return belt_base_element[belt_nr] + belt_dir_nr;
+}
+
+int getBeltSwitchElementFromBeltNrAndBeltDir(int belt_nr, int belt_dir)
+{
+  int belt_dir_nr = (belt_dir == MV_LEFT ? 0 : belt_dir == MV_RIGHT ? 2 : 1);
+
+  return getBeltSwitchElementFromBeltNrAndBeltDirNr(belt_nr, belt_dir_nr);
 }
 
 int getNumActivePlayers_EM()
@@ -5518,10 +5947,346 @@ unsigned int InitRND(long seed)
     return InitEngineRandom_RND(seed);
 }
 
+#if 1
+static struct Mapping_EM_to_RND_object object_mapping[TILE_MAX];
+static struct Mapping_EM_to_RND_player player_mapping[MAX_PLAYERS][SPR_MAX];
+#endif
+
+inline static int get_effective_element_EM(int tile, int frame_em)
+{
+  int element             = object_mapping[tile].element_rnd;
+  int action              = object_mapping[tile].action;
+  boolean is_backside     = object_mapping[tile].is_backside;
+  boolean action_removing = (action == ACTION_DIGGING ||
+			     action == ACTION_SNAPPING ||
+			     action == ACTION_COLLECTING);
+
+  if (frame_em < 7)
+  {
+    switch (tile)
+    {
+      case Yacid_splash_eB:
+      case Yacid_splash_wB:
+	return (frame_em > 5 ? EL_EMPTY : element);
+
+      default:
+	return element;
+    }
+  }
+  else	/* frame_em == 7 */
+  {
+    switch (tile)
+    {
+      case Yacid_splash_eB:
+      case Yacid_splash_wB:
+	return EL_EMPTY;
+
+      case Yemerald_stone:
+	return EL_EMERALD;
+
+      case Ydiamond_stone:
+	return EL_ROCK;
+
+      case Xdrip_stretch:
+      case Xdrip_stretchB:
+      case Ydrip_s1:
+      case Ydrip_s1B:
+      case Xball_1B:
+      case Xball_2:
+      case Xball_2B:
+      case Yball_eat:
+      case Ykey_1_eat:
+      case Ykey_2_eat:
+      case Ykey_3_eat:
+      case Ykey_4_eat:
+      case Ykey_5_eat:
+      case Ykey_6_eat:
+      case Ykey_7_eat:
+      case Ykey_8_eat:
+      case Ylenses_eat:
+      case Ymagnify_eat:
+      case Ygrass_eat:
+      case Ydirt_eat:
+      case Xsand_stonein_1:
+      case Xsand_stonein_2:
+      case Xsand_stonein_3:
+      case Xsand_stonein_4:
+	return element;
+
+      default:
+	return (is_backside || action_removing ? EL_EMPTY : element);
+    }
+  }
+}
+
+inline static boolean check_linear_animation_EM(int tile)
+{
+  switch (tile)
+  {
+    case Xsand_stonesand_1:
+    case Xsand_sandstone_1:
+    case Xboom_1:
+    case Xdynamite_1:
+    case Ybug_w_n:
+    case Ybug_n_e:
+    case Ybug_e_s:
+    case Ybug_s_w:
+    case Ybug_e_n:
+    case Ybug_s_e:
+    case Ybug_w_s:
+    case Ybug_n_w:
+    case Ytank_w_n:
+    case Ytank_n_e:
+    case Ytank_e_s:
+    case Ytank_s_w:
+    case Ytank_e_n:
+    case Ytank_s_e:
+    case Ytank_w_s:
+    case Ytank_n_w:
+      return TRUE;
+  }
+
+  return FALSE;
+}
+
+inline static void set_crumbled_graphics_EM(struct GraphicInfo_EM *g_em,
+					    boolean has_crumbled_graphics,
+					    int crumbled, int sync_frame)
+{
+  /* if element can be crumbled, but certain action graphics are just empty
+     space (like instantly snapping sand to empty space in 1 frame), do not
+     treat these empty space graphics as crumbled graphics in EMC engine */
+  if (crumbled == IMG_EMPTY_SPACE)
+    has_crumbled_graphics = FALSE;
+
+  if (has_crumbled_graphics)
+  {
+    struct GraphicInfo *g_crumbled = &graphic_info[crumbled];
+    int frame_crumbled = getAnimationFrame(g_crumbled->anim_frames,
+					   g_crumbled->anim_delay,
+					   g_crumbled->anim_mode,
+					   g_crumbled->anim_start_frame,
+					   sync_frame);
+
+    getGraphicSource(crumbled, frame_crumbled, &g_em->crumbled_bitmap,
+		     &g_em->crumbled_src_x, &g_em->crumbled_src_y);
+
+    g_em->crumbled_border_size = graphic_info[crumbled].border_size;
+
+    g_em->has_crumbled_graphics = TRUE;
+  }
+  else
+  {
+    g_em->crumbled_bitmap = NULL;
+    g_em->crumbled_src_x = 0;
+    g_em->crumbled_src_y = 0;
+    g_em->crumbled_border_size = 0;
+
+    g_em->has_crumbled_graphics = FALSE;
+  }
+}
+
+void ResetGfxAnimation_EM(int x, int y, int tile)
+{
+  GfxFrame[x][y] = 0;
+}
+
+void SetGfxAnimation_EM(struct GraphicInfo_EM *g_em,
+			int tile, int frame_em, int x, int y)
+{
+  int action = object_mapping[tile].action;
+#if 1
+  int direction = object_mapping[tile].direction;
+  int effective_element = get_effective_element_EM(tile, frame_em);
+  int graphic = (direction == MV_NONE ?
+		 el_act2img(effective_element, action) :
+		 el_act_dir2img(effective_element, action, direction));
+  struct GraphicInfo *g = &graphic_info[graphic];
+  int sync_frame;
+#endif
+  boolean action_removing = (action == ACTION_DIGGING ||
+			     action == ACTION_SNAPPING ||
+			     action == ACTION_COLLECTING);
+  boolean action_moving   = (action == ACTION_FALLING ||
+			     action == ACTION_MOVING ||
+			     action == ACTION_PUSHING ||
+			     action == ACTION_EATING ||
+			     action == ACTION_FILLING ||
+			     action == ACTION_EMPTYING);
+  boolean action_falling  = (action == ACTION_FALLING ||
+			     action == ACTION_FILLING ||
+			     action == ACTION_EMPTYING);
+
+  if (action_removing || check_linear_animation_EM(tile))
+  {
+    GfxFrame[x][y] = frame_em;
+  }
+  else if (action_moving)
+  {
+    boolean is_backside = object_mapping[tile].is_backside;
+
+    if (is_backside)
+    {
+      int direction = object_mapping[tile].direction;
+      int move_dir = (action_falling ? MV_DOWN : direction);
+
+      GfxFrame[x][y]++;
+
+      if (move_dir == MV_LEFT)
+	GfxFrame[x - 1][y] = GfxFrame[x][y];
+      else if (move_dir == MV_RIGHT)
+	GfxFrame[x + 1][y] = GfxFrame[x][y];
+      else if (move_dir == MV_UP)
+	GfxFrame[x][y - 1] = GfxFrame[x][y];
+      else if (move_dir == MV_DOWN)
+	GfxFrame[x][y + 1] = GfxFrame[x][y];
+    }
+  }
+  else
+  {
+    GfxFrame[x][y]++;
+  }
+
+#if 1
+  if (graphic_info[graphic].anim_global_sync)
+    sync_frame = FrameCounter;
+  else if (IN_FIELD(x, y, MAX_LEV_FIELDX, MAX_LEV_FIELDY))
+    sync_frame = GfxFrame[x][y];
+  else
+    sync_frame = 0;	/* playfield border (pseudo steel) */
+
+  SetRandomAnimationValue(x, y);
+
+  int frame = getAnimationFrame(g->anim_frames,
+				g->anim_delay,
+				g->anim_mode,
+				g->anim_start_frame,
+				sync_frame);
+
+  g_em->unique_identifier =
+    (graphic << 16) | ((frame % 8) << 12) | (g_em->width << 6) | g_em->height;
+#endif
+}
+
+void getGraphicSourceObjectExt_EM(struct GraphicInfo_EM *g_em,
+				  int tile, int frame_em, int x, int y)
+{
+  int action = object_mapping[tile].action;
+  int direction = object_mapping[tile].direction;
+  int effective_element = get_effective_element_EM(tile, frame_em);
+  int graphic = (direction == MV_NONE ?
+		 el_act2img(effective_element, action) :
+		 el_act_dir2img(effective_element, action, direction));
+  int crumbled = (direction == MV_NONE ?
+		  el_act2crm(effective_element, action) :
+		  el_act_dir2crm(effective_element, action, direction));
+  int base_graphic = el_act2img(effective_element, ACTION_DEFAULT);
+  int base_crumbled = el_act2crm(effective_element, ACTION_DEFAULT);
+  boolean has_crumbled_graphics = (base_crumbled != base_graphic);
+  struct GraphicInfo *g = &graphic_info[graphic];
+#if 0
+  struct GraphicInfo *g_crumbled = &graphic_info[crumbled];
+#endif
+  int sync_frame;
+
+#if 0
+  if (frame_em == 0)	/* reset animation frame for certain elements */
+  {
+    if (check_linear_animation_EM(tile))
+      GfxFrame[x][y] = 0;
+  }
+#endif
+
+  if (graphic_info[graphic].anim_global_sync)
+    sync_frame = FrameCounter;
+  else if (IN_FIELD(x, y, MAX_LEV_FIELDX, MAX_LEV_FIELDY))
+    sync_frame = GfxFrame[x][y];
+  else
+    sync_frame = 0;	/* playfield border (pseudo steel) */
+
+  SetRandomAnimationValue(x, y);
+
+  int frame = getAnimationFrame(g->anim_frames,
+				g->anim_delay,
+				g->anim_mode,
+				g->anim_start_frame,
+				sync_frame);
+
+  getGraphicSourceExt(graphic, frame, &g_em->bitmap,
+		      &g_em->src_x, &g_em->src_y, FALSE);
+
+  /* (updating the "crumbled" graphic definitions is probably not really needed,
+     as animations for crumbled graphics can't be longer than one EMC cycle) */
+#if 1
+  set_crumbled_graphics_EM(g_em, has_crumbled_graphics, crumbled,
+			   sync_frame);
+
+#else
+
+  g_em->crumbled_bitmap = NULL;
+  g_em->crumbled_src_x = 0;
+  g_em->crumbled_src_y = 0;
+
+  g_em->has_crumbled_graphics = FALSE;
+
+  if (has_crumbled_graphics && crumbled != IMG_EMPTY_SPACE)
+  {
+    int frame_crumbled = getAnimationFrame(g_crumbled->anim_frames,
+					   g_crumbled->anim_delay,
+					   g_crumbled->anim_mode,
+					   g_crumbled->anim_start_frame,
+					   sync_frame);
+
+    getGraphicSource(crumbled, frame_crumbled, &g_em->crumbled_bitmap,
+		     &g_em->crumbled_src_x, &g_em->crumbled_src_y);
+
+    g_em->has_crumbled_graphics = TRUE;
+  }
+#endif
+}
+
+void getGraphicSourcePlayerExt_EM(struct GraphicInfo_EM *g_em,
+				  int player_nr, int anim, int frame_em)
+{
+  int element   = player_mapping[player_nr][anim].element_rnd;
+  int action    = player_mapping[player_nr][anim].action;
+  int direction = player_mapping[player_nr][anim].direction;
+  int graphic = (direction == MV_NONE ?
+		 el_act2img(element, action) :
+		 el_act_dir2img(element, action, direction));
+  struct GraphicInfo *g = &graphic_info[graphic];
+  int sync_frame;
+
+  InitPlayerGfxAnimation(&stored_player[player_nr], action, direction);
+
+  stored_player[player_nr].StepFrame = frame_em;
+
+  sync_frame = stored_player[player_nr].Frame;
+
+  int frame = getAnimationFrame(g->anim_frames,
+				g->anim_delay,
+				g->anim_mode,
+				g->anim_start_frame,
+				sync_frame);
+
+  getGraphicSourceExt(graphic, frame, &g_em->bitmap,
+		      &g_em->src_x, &g_em->src_y, FALSE);
+
+#if 0
+  printf("::: %d: %d, %d [%d]\n",
+	 player_nr,
+	 stored_player[player_nr].Frame,
+	 stored_player[player_nr].StepFrame,
+	 FrameCounter);
+#endif
+}
+
 void InitGraphicInfo_EM(void)
 {
+#if 0
   struct Mapping_EM_to_RND_object object_mapping[TILE_MAX];
   struct Mapping_EM_to_RND_player player_mapping[MAX_PLAYERS][SPR_MAX];
+#endif
   int i, j, p;
 
 #if DEBUG_EM_GFX
@@ -5593,9 +6358,11 @@ void InitGraphicInfo_EM(void)
     int action = object_mapping[i].action;
     int direction = object_mapping[i].direction;
     boolean is_backside = object_mapping[i].is_backside;
+#if 0
     boolean action_removing = (action == ACTION_DIGGING ||
 			       action == ACTION_SNAPPING ||
 			       action == ACTION_COLLECTING);
+#endif
     boolean action_exploding = ((action == ACTION_EXPLODING ||
 				 action == ACTION_SMASHED_BY_ROCK ||
 				 action == ACTION_SMASHED_BY_SPRING) &&
@@ -5605,6 +6372,9 @@ void InitGraphicInfo_EM(void)
 
     for (j = 0; j < 8; j++)
     {
+#if 1
+      int effective_element = get_effective_element_EM(i, j);
+#else
       int effective_element = (j > 5 && i == Yacid_splash_eB ? EL_EMPTY :
 			       j > 5 && i == Yacid_splash_wB ? EL_EMPTY :
 			       j < 7 ? element :
@@ -5637,6 +6407,7 @@ void InitGraphicInfo_EM(void)
 			       is_backside ? EL_EMPTY :
 			       action_removing ? EL_EMPTY :
 			       element);
+#endif
       int effective_action = (j < 7 ? action :
 			      i == Xdrip_stretch ? action :
 			      i == Xdrip_stretchB ? action :
@@ -5678,6 +6449,9 @@ void InitGraphicInfo_EM(void)
       boolean has_action_graphics = (graphic != base_graphic);
       boolean has_crumbled_graphics = (base_crumbled != base_graphic);
       struct GraphicInfo *g = &graphic_info[graphic];
+#if 0
+      struct GraphicInfo *g_crumbled = &graphic_info[crumbled];
+#endif
       struct GraphicInfo_EM *g_em = &graphic_info_em_object[i][7 - j];
       Bitmap *src_bitmap;
       int src_x, src_y;
@@ -5814,13 +6588,20 @@ void InitGraphicInfo_EM(void)
       g_em->width  = TILEX;
       g_em->height = TILEY;
 
+      g_em->preserve_background = FALSE;
+
+#if 1
+      set_crumbled_graphics_EM(g_em, has_crumbled_graphics, crumbled,
+			       sync_frame);
+
+#else
+
       g_em->crumbled_bitmap = NULL;
       g_em->crumbled_src_x = 0;
       g_em->crumbled_src_y = 0;
       g_em->crumbled_border_size = 0;
 
       g_em->has_crumbled_graphics = FALSE;
-      g_em->preserve_background = FALSE;
 
 #if 0
       if (has_crumbled_graphics && crumbled == IMG_EMPTY_SPACE)
@@ -5830,18 +6611,47 @@ void InitGraphicInfo_EM(void)
 #endif
 
       /* if element can be crumbled, but certain action graphics are just empty
-	 space (like snapping sand with the original R'n'D graphics), do not
+	 space (like instantly snapping sand to empty space in 1 frame), do not
 	 treat these empty space graphics as crumbled graphics in EMC engine */
       if (has_crumbled_graphics && crumbled != IMG_EMPTY_SPACE)
       {
-	getGraphicSource(crumbled, frame, &src_bitmap, &src_x, &src_y);
+	int frame_crumbled = getAnimationFrame(g_crumbled->anim_frames,
+					       g_crumbled->anim_delay,
+					       g_crumbled->anim_mode,
+					       g_crumbled->anim_start_frame,
+					       sync_frame);
+
+	getGraphicSource(crumbled, frame_crumbled, &src_bitmap, &src_x, &src_y);
 
 	g_em->has_crumbled_graphics = TRUE;
 	g_em->crumbled_bitmap = src_bitmap;
 	g_em->crumbled_src_x = src_x;
 	g_em->crumbled_src_y = src_y;
 	g_em->crumbled_border_size = graphic_info[crumbled].border_size;
+
+
+#if 0
+	if (g_em == &graphic_info_em_object[207][0])
+	  printf("... %d, %d [%d, %d, %d, %d] [%d, %d, %d, %d, %d, %d => %d]\n",
+		 graphic_info_em_object[207][0].crumbled_src_x,
+		 graphic_info_em_object[207][0].crumbled_src_y,
+
+		 crumbled, frame, src_x, src_y,
+
+		 g->anim_frames,
+		 g->anim_delay,
+		 g->anim_mode,
+		 g->anim_start_frame,
+		 sync_frame,
+		 gfx.anim_random_frame,
+		 frame);
+#endif
+
+#if 0
+	printf("::: EMC tile %d is crumbled\n", i);
+#endif
       }
+#endif
 
 #if 0
       if (element == EL_ROCK &&
@@ -6068,7 +6878,7 @@ void InitGraphicInfo_EM(void)
 				      g->anim_start_frame,
 				      sync_frame);
 
-	getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x,&src_y, FALSE);
+	getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x, &src_y, FALSE);
 
 	g_em->bitmap = src_bitmap;
 	g_em->src_x = src_x;
@@ -6139,10 +6949,8 @@ void InitGraphicInfo_EM(void)
 #endif
 }
 
-void PlayMenuSound()
+void PlayMenuSoundExt(int sound)
 {
-  int sound = menu.sound[game_status];
-
   if (sound == SND_UNDEFINED)
     return;
 
@@ -6154,6 +6962,11 @@ void PlayMenuSound()
     PlaySoundLoop(sound);
   else
     PlaySound(sound);
+}
+
+void PlayMenuSound()
+{
+  PlayMenuSoundExt(menu.sound[game_status]);
 }
 
 void PlayMenuSoundStereo(int sound, int stereo_position)
@@ -6171,10 +6984,8 @@ void PlayMenuSoundStereo(int sound, int stereo_position)
     PlaySoundStereo(sound, stereo_position);
 }
 
-void PlayMenuSoundIfLoop()
+void PlayMenuSoundIfLoopExt(int sound)
 {
-  int sound = menu.sound[game_status];
-
   if (sound == SND_UNDEFINED)
     return;
 
@@ -6186,10 +6997,13 @@ void PlayMenuSoundIfLoop()
     PlaySoundLoop(sound);
 }
 
-void PlayMenuMusic()
+void PlayMenuSoundIfLoop()
 {
-  int music = menu.music[game_status];
+  PlayMenuSoundIfLoopExt(menu.sound[game_status]);
+}
 
+void PlayMenuMusicExt(int music)
+{
   if (music == MUS_UNDEFINED)
     return;
 
@@ -6197,6 +7011,11 @@ void PlayMenuMusic()
     return;
 
   PlayMusic(music);
+}
+
+void PlayMenuMusic()
+{
+  PlayMenuMusicExt(menu.music[game_status]);
 }
 
 void PlaySoundActivating()

@@ -36,8 +36,8 @@
 #define GetSimpleRandom(max)		get_random_number(RANDOM_SIMPLE, max)
 
 /* values for Error() */
-#define ERR_RETURN			0
-#define ERR_RETURN_LINE			(1 << 0)
+#define ERR_INFO			0
+#define ERR_INFO_LINE			(1 << 0)
 #define ERR_WARN			(1 << 1)
 #define ERR_EXIT			(1 << 2)
 #define ERR_HELP			(1 << 3)
@@ -77,6 +77,8 @@ char *int2str(int, int);
 char *i_to_a(unsigned int);
 int log_2(unsigned int);
 
+boolean getTokenValueFromString(char *, char **, char **);
+
 void InitCounter(void);
 unsigned long Counter(void);
 void Delay(unsigned long);
@@ -101,9 +103,13 @@ char *getStringCat3(char *, char *, char *);
 char *getPath2(char *, char *);
 char *getPath3(char *, char *, char*);
 char *getStringCopy(char *);
+char *getStringCopyN(char *, int);
 char *getStringToLower(char *);
 void setString(char **, char *);
 boolean strEqual(char *, char *);
+boolean strEqualN(char *, char *, int);
+boolean strPrefix(char *, char *);
+boolean strSuffix(char *, char *);
 
 void GetOptions(char **, void (*print_usage_function)(void));
 
@@ -115,6 +121,7 @@ void *checked_malloc(unsigned long);
 void *checked_calloc(unsigned long);
 void *checked_realloc(void *, unsigned long);
 void checked_free(void *);
+void clear_mem(void *, unsigned long);
 
 void swap_numbers(int *, int *);
 void swap_number_pairs(int *, int *, int *, int *);
@@ -158,6 +165,7 @@ char *getX11KeyNameFromKey(Key);
 Key getKeyFromKeyName(char *);
 Key getKeyFromX11KeyName(char *);
 char getCharFromKey(Key);
+char getValidConfigValueChar(char);
 
 int get_integer_from_string(char *);
 boolean get_boolean_from_string(char *);
@@ -177,7 +185,6 @@ boolean FileIsArtworkType(char *, int);
 char *get_mapped_token(char *);
 
 int get_parameter_value(char *, char *, int);
-int get_auto_parameter_value(char *, char *);
 
 struct ScreenModeInfo *get_screen_mode_from_string(char *);
 void get_aspect_ratio_from_screen_mode(struct ScreenModeInfo *, int *x, int *y);

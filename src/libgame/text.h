@@ -34,6 +34,12 @@
 
 /* special character mapping for default fonts */
 #define FONT_ASCII_CURSOR	((char)160)
+#define FONT_ASCII_BUTTON	((char)128)
+#define FONT_ASCII_UP		((char)129)
+#define FONT_ASCII_DOWN		((char)130)
+#define FONT_ASCII_LEFT		((char)'<')
+#define FONT_ASCII_RIGHT	((char)'>')
+
 #define MAP_FONT_ASCII(c)	((c) >= 'a' && (c) <= 'z' ? 'A' + (c) - 'a' : \
 				 (c) == '©'		  ? 96  :	      \
 				 (c) == 'ä' || (c) == 'Ä' ? 97  :	      \
@@ -42,6 +48,9 @@
 				 (c) == '°'		  ? 100 :	      \
 				 (c) == '®'		  ? 101 :	      \
 				 (c) == FONT_ASCII_CURSOR ? 102 :	      \
+				 (c) == FONT_ASCII_BUTTON ? 109 :	      \
+				 (c) == FONT_ASCII_UP	  ? 110 :	      \
+				 (c) == FONT_ASCII_DOWN	  ? 111 :	      \
 				 (c))
 
 /* 64 regular ordered ASCII characters, 6 special characters, 1 cursor char. */
@@ -52,7 +61,8 @@
 
 /* font structure definitions */
 
-void InitFontInfo(struct FontBitmapInfo *, int, int (*function)(int));
+void InitFontInfo(struct FontBitmapInfo *, int,
+		  int (*function1)(int), int (*function2)(char *));
 void FreeFontInfo(struct FontBitmapInfo *);
 
 struct FontBitmapInfo *getFontBitmapInfo(int);
@@ -64,17 +74,22 @@ int getTextWidth(char *, int);
 void getFontCharSource(int, char, Bitmap **, int *, int *);
 
 void DrawInitText(char *, int, int);
+void DrawInitTextIfNeeded(char *, int, int);
+void DrawInitTextExt(char *, int, int, boolean);
 void DrawTextF(int, int, int, char *, ...);
 void DrawTextFCentered(int, int, char *, ...);
 void DrawTextS(int, int, int, char *);
 void DrawTextSCentered(int, int, char *);
+void DrawTextCentered(int, int, char *);
 void DrawTextSAligned(int, int, char *, int, int);
 void DrawTextAligned(int, int, char *, int, int);
 void DrawText(int, int, char *, int);
 void DrawTextExt(DrawBuffer *, int, int, char *, int, int);
-void DrawTextToTextArea(int, int, char *, int, int, int, int, int);
-boolean RenderLineToBuffer(char **, char *, int *, boolean, int);
-void DrawTextWrapped(int, int, char *, int, int, int);
-int DrawTextFromFile(int, int, char *, int, int, int, boolean);
+
+char *GetTextBufferFromFile(char *, int);
+int DrawTextBuffer(int, int, char *, int, int, int, int, int, boolean, boolean,
+		   boolean);
+int DrawTextFile(int, int, char *, int, int, int, int, int, boolean, boolean,
+		 boolean);
 
 #endif	/* TEXT_H */

@@ -498,33 +498,80 @@ char *getLevelSetInfoFilename()
   return NULL;
 }
 
-char *getLevelSetMessageFilename()
+char *getLevelSetTitleMessageBasename(int nr, boolean initial)
+{
+  static char basename[32];
+
+  sprintf(basename, "%s_%d.txt",
+	  (initial ? "titlemessage_initial" : "titlemessage"), nr + 1);
+
+  return basename;
+}
+
+char *getLevelSetTitleMessageFilename(int nr, boolean initial)
 {
   static char *filename = NULL;
-  char *basenames[] =
+  char *basename;
+  boolean skip_setup_artwork = FALSE;
+
+  checked_free(filename);
+
+  basename = getLevelSetTitleMessageBasename(nr, initial);
+
+  if (!setup.override_level_graphics)
   {
-    "MESSAGE",
-    "MESSAGE.TXT",
-    "MESSAGE.txt",
-    "Message",
-    "Message.txt",
-    "message",
-    "message.txt",
-
-    NULL
-  };
-  int i;
-
-  for (i = 0; basenames[i] != NULL; i++)
-  {
-    checked_free(filename);
-    filename = getPath2(getCurrentLevelDir(), basenames[i]);
-
+    /* 1st try: look for special artwork in current level series directory */
+    filename = getPath3(getCurrentLevelDir(), GRAPHICS_DIRECTORY, basename);
     if (fileExists(filename))
       return filename;
+
+    free(filename);
+
+    /* 2nd try: look for message file in current level set directory */
+    filename = getPath2(getCurrentLevelDir(), basename);
+    if (fileExists(filename))
+      return filename;
+
+    free(filename);
+
+    /* check if there is special artwork configured in level series config */
+    if (getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) != NULL)
+    {
+      /* 3rd try: look for special artwork configured in level series config */
+      filename = getPath2(getLevelArtworkDir(ARTWORK_TYPE_GRAPHICS), basename);
+      if (fileExists(filename))
+	return filename;
+
+      free(filename);
+
+      /* take missing artwork configured in level set config from default */
+      skip_setup_artwork = TRUE;
+    }
   }
 
-  return NULL;
+  if (!skip_setup_artwork)
+  {
+    /* 4th try: look for special artwork in configured artwork directory */
+    filename = getPath2(getSetupArtworkDir(artwork.gfx_current), basename);
+    if (fileExists(filename))
+      return filename;
+
+    free(filename);
+  }
+
+  /* 5th try: look for default artwork in new default artwork directory */
+  filename = getPath2(getDefaultGraphicsDir(GFX_CLASSIC_SUBDIR), basename);
+  if (fileExists(filename))
+    return filename;
+
+  free(filename);
+
+  /* 6th try: look for default artwork in old default artwork directory */
+  filename = getPath2(options.graphics_directory, basename);
+  if (fileExists(filename))
+    return filename;
+
+  return NULL;		/* cannot find specified artwork file anywhere */
 }
 
 static char *getCorrectedArtworkBasename(char *basename)
@@ -614,6 +661,21 @@ char *getCustomImageFilename(char *basename)
   if (fileExists(filename))
     return filename;
 
+#if CREATE_SPECIAL_EDITION
+  free(filename);
+
+  /* !!! INSERT WARNING HERE TO REPORT MISSING ARTWORK FILES !!! */
+#if 0
+  printf("::: MISSING ARTWORK FILE '%s'\n", basename);
+#endif
+
+  /* 6th try: look for fallback artwork in old default artwork directory */
+  /* (needed to prevent errors when trying to access unused artwork files) */
+  filename = getPath2(options.graphics_directory, GFX_FALLBACK_FILENAME);
+  if (fileExists(filename))
+    return filename;
+#endif
+
   return NULL;		/* cannot find specified artwork file anywhere */
 }
 
@@ -672,6 +734,16 @@ char *getCustomSoundFilename(char *basename)
   if (fileExists(filename))
     return filename;
 
+#if CREATE_SPECIAL_EDITION
+  free(filename);
+
+  /* 6th try: look for fallback artwork in old default artwork directory */
+  /* (needed to prevent errors when trying to access unused artwork files) */
+  filename = getPath2(options.sounds_directory, SND_FALLBACK_FILENAME);
+  if (fileExists(filename))
+    return filename;
+#endif
+
   return NULL;		/* cannot find specified artwork file anywhere */
 }
 
@@ -729,6 +801,16 @@ char *getCustomMusicFilename(char *basename)
   filename = getPath2(options.music_directory, basename);
   if (fileExists(filename))
     return filename;
+
+#if CREATE_SPECIAL_EDITION
+  free(filename);
+
+  /* 6th try: look for fallback artwork in old default artwork directory */
+  /* (needed to prevent errors when trying to access unused artwork files) */
+  filename = getPath2(options.music_directory, MUS_FALLBACK_FILENAME);
+  if (fileExists(filename))
+    return filename;
+#endif
 
   return NULL;		/* cannot find specified artwork file anywhere */
 }
@@ -1619,25 +1701,199 @@ static void printSetupFileHash(SetupFileHash *hash)
 }
 #endif
 
-static void *loadSetupFileData(char *filename, boolean use_hash)
+#define ALLOW_TOKEN_VALUE_SEPARATOR_BEING_WHITESPACE		1
+#define CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING		0
+#define CHECK_TOKEN__WARN_IF_ALREADY_EXISTS_IN_HASH		0
+
+static boolean token_value_separator_found = FALSE;
+#if CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING
+static boolean token_value_separator_warning = FALSE;
+#endif
+#if CHECK_TOKEN__WARN_IF_ALREADY_EXISTS_IN_HASH
+static boolean token_already_exists_warning = FALSE;
+#endif
+
+static boolean getTokenValueFromSetupLineExt(char *line,
+					     char **token_ptr, char **value_ptr,
+					     char *filename, char *line_raw,
+					     int line_nr,
+					     boolean separator_required)
 {
-  char line[MAX_LINE_LEN], previous_line[MAX_LINE_LEN];
+  static char line_copy[MAX_LINE_LEN + 1], line_raw_copy[MAX_LINE_LEN + 1];
   char *token, *value, *line_ptr;
-  void *setup_file_data, *insert_ptr = NULL;
+
+  /* when externally invoked via ReadTokenValueFromLine(), copy line buffers */
+  if (line_raw == NULL)
+  {
+    strncpy(line_copy, line, MAX_LINE_LEN);
+    line_copy[MAX_LINE_LEN] = '\0';
+    line = line_copy;
+
+    strcpy(line_raw_copy, line_copy);
+    line_raw = line_raw_copy;
+  }
+
+  /* cut trailing comment from input line */
+  for (line_ptr = line; *line_ptr; line_ptr++)
+  {
+    if (*line_ptr == '#')
+    {
+      *line_ptr = '\0';
+      break;
+    }
+  }
+
+  /* cut trailing whitespaces from input line */
+  for (line_ptr = &line[strlen(line)]; line_ptr >= line; line_ptr--)
+    if ((*line_ptr == ' ' || *line_ptr == '\t') && *(line_ptr + 1) == '\0')
+      *line_ptr = '\0';
+
+  /* ignore empty lines */
+  if (*line == '\0')
+    return FALSE;
+
+  /* cut leading whitespaces from token */
+  for (token = line; *token; token++)
+    if (*token != ' ' && *token != '\t')
+      break;
+
+  /* start with empty value as reliable default */
+  value = "";
+
+  token_value_separator_found = FALSE;
+
+  /* find end of token to determine start of value */
+  for (line_ptr = token; *line_ptr; line_ptr++)
+  {
+#if 1
+    /* first look for an explicit token/value separator, like ':' or '=' */
+    if (*line_ptr == ':' || *line_ptr == '=')
+#else
+    if (*line_ptr == ' ' || *line_ptr == '\t' || *line_ptr == ':')
+#endif
+    {
+      *line_ptr = '\0';			/* terminate token string */
+      value = line_ptr + 1;		/* set beginning of value */
+
+      token_value_separator_found = TRUE;
+
+      break;
+    }
+  }
+
+#if ALLOW_TOKEN_VALUE_SEPARATOR_BEING_WHITESPACE
+  /* fallback: if no token/value separator found, also allow whitespaces */
+  if (!token_value_separator_found && !separator_required)
+  {
+    for (line_ptr = token; *line_ptr; line_ptr++)
+    {
+      if (*line_ptr == ' ' || *line_ptr == '\t')
+      {
+	*line_ptr = '\0';		/* terminate token string */
+	value = line_ptr + 1;		/* set beginning of value */
+
+	token_value_separator_found = TRUE;
+
+	break;
+      }
+    }
+
+#if CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING
+    if (token_value_separator_found)
+    {
+      if (!token_value_separator_warning)
+      {
+	Error(ERR_INFO_LINE, "-");
+
+	if (filename != NULL)
+	{
+	  Error(ERR_WARN, "missing token/value separator(s) in config file:");
+	  Error(ERR_INFO, "- config file: '%s'", filename);
+	}
+	else
+	{
+	  Error(ERR_WARN, "missing token/value separator(s):");
+	}
+
+	token_value_separator_warning = TRUE;
+      }
+
+      if (filename != NULL)
+	Error(ERR_INFO, "- line %d: '%s'", line_nr, line_raw);
+      else
+	Error(ERR_INFO, "- line: '%s'", line_raw);
+    }
+#endif
+  }
+#endif
+
+  /* cut trailing whitespaces from token */
+  for (line_ptr = &token[strlen(token)]; line_ptr >= token; line_ptr--)
+    if ((*line_ptr == ' ' || *line_ptr == '\t') && *(line_ptr + 1) == '\0')
+      *line_ptr = '\0';
+
+  /* cut leading whitespaces from value */
+  for (; *value; value++)
+    if (*value != ' ' && *value != '\t')
+      break;
+
+#if 0
+  if (*value == '\0')
+    value = "true";	/* treat tokens without value as "true" */
+#endif
+
+  *token_ptr = token;
+  *value_ptr = value;
+
+  return TRUE;
+}
+
+boolean getTokenValueFromSetupLine(char *line, char **token, char **value)
+{
+  /* while the internal (old) interface does not require a token/value
+     separator (for downwards compatibility with existing files which
+     don't use them), it is mandatory for the external (new) interface */
+
+  return getTokenValueFromSetupLineExt(line, token, value, NULL, NULL, 0, TRUE);
+}
+
+#if 1
+static boolean loadSetupFileData(void *setup_file_data, char *filename,
+				 boolean top_recursion_level, boolean is_hash)
+{
+  static SetupFileHash *include_filename_hash = NULL;
+  char line[MAX_LINE_LEN], line_raw[MAX_LINE_LEN], previous_line[MAX_LINE_LEN];
+  char *token, *value, *line_ptr;
+  void *insert_ptr = NULL;
   boolean read_continued_line = FALSE;
   FILE *file;
+  int line_nr = 0, token_count = 0, include_count = 0;
+
+#if CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING
+  token_value_separator_warning = FALSE;
+#endif
+
+#if CHECK_TOKEN__WARN_IF_ALREADY_EXISTS_IN_HASH
+  token_already_exists_warning = FALSE;
+#endif
 
   if (!(file = fopen(filename, MODE_READ)))
   {
     Error(ERR_WARN, "cannot open configuration file '%s'", filename);
 
-    return NULL;
+    return FALSE;
   }
 
-  if (use_hash)
-    setup_file_data = newSetupFileHash();
-  else
-    insert_ptr = setup_file_data = newSetupFileList("", "");
+  /* use "insert pointer" to store list end for constant insertion complexity */
+  if (!is_hash)
+    insert_ptr = setup_file_data;
+
+  /* on top invocation, create hash to mark included files (to prevent loops) */
+  if (top_recursion_level)
+    include_filename_hash = newSetupFileHash();
+
+  /* mark this file as already included (to prevent including it again) */
+  setHashEntry(include_filename_hash, getBaseNamePtr(filename), "true");
 
   while (!feof(file))
   {
@@ -1645,10 +1901,190 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
     if (!fgets(line, MAX_LINE_LEN, file))
       break;
 
-    /* cut trailing newline or carriage return */
+    /* check if line was completely read and is terminated by line break */
+    if (strlen(line) > 0 && line[strlen(line) - 1] == '\n')
+      line_nr++;
+
+    /* cut trailing line break (this can be newline and/or carriage return) */
     for (line_ptr = &line[strlen(line)]; line_ptr >= line; line_ptr--)
       if ((*line_ptr == '\n' || *line_ptr == '\r') && *(line_ptr + 1) == '\0')
 	*line_ptr = '\0';
+
+    /* copy raw input line for later use (mainly debugging output) */
+    strcpy(line_raw, line);
+
+    if (read_continued_line)
+    {
+#if 0
+      /* !!! ??? WHY ??? !!! */
+      /* cut leading whitespaces from input line */
+      for (line_ptr = line; *line_ptr; line_ptr++)
+	if (*line_ptr != ' ' && *line_ptr != '\t')
+	  break;
+#endif
+
+      /* append new line to existing line, if there is enough space */
+      if (strlen(previous_line) + strlen(line_ptr) < MAX_LINE_LEN)
+	strcat(previous_line, line_ptr);
+
+      strcpy(line, previous_line);	/* copy storage buffer to line */
+
+      read_continued_line = FALSE;
+    }
+
+    /* if the last character is '\', continue at next line */
+    if (strlen(line) > 0 && line[strlen(line) - 1] == '\\')
+    {
+      line[strlen(line) - 1] = '\0';	/* cut off trailing backslash */
+      strcpy(previous_line, line);	/* copy line to storage buffer */
+
+      read_continued_line = TRUE;
+
+      continue;
+    }
+
+    if (!getTokenValueFromSetupLineExt(line, &token, &value, filename,
+				       line_raw, line_nr, FALSE))
+      continue;
+
+    if (*token)
+    {
+      if (strEqual(token, "include"))
+      {
+	if (getHashEntry(include_filename_hash, value) == NULL)
+	{
+	  char *basepath = getBasePath(filename);
+	  char *basename = getBaseName(value);
+	  char *filename_include = getPath2(basepath, basename);
+
+#if 0
+	  Error(ERR_INFO, "[including file '%s']", filename_include);
+#endif
+
+	  loadSetupFileData(setup_file_data, filename_include, FALSE, is_hash);
+
+	  free(basepath);
+	  free(basename);
+	  free(filename_include);
+
+	  include_count++;
+	}
+	else
+	{
+	  Error(ERR_WARN, "ignoring already processed file '%s'", value);
+	}
+      }
+      else
+      {
+	if (is_hash)
+	{
+#if CHECK_TOKEN__WARN_IF_ALREADY_EXISTS_IN_HASH
+	  char *old_value =
+	    getHashEntry((SetupFileHash *)setup_file_data, token);
+
+	  if (old_value != NULL)
+	  {
+	    if (!token_already_exists_warning)
+	    {
+	      Error(ERR_INFO_LINE, "-");
+	      Error(ERR_WARN, "duplicate token(s) found in config file:");
+	      Error(ERR_INFO, "- config file: '%s'", filename);
+
+	      token_already_exists_warning = TRUE;
+	    }
+
+	    Error(ERR_INFO, "- token: '%s' (in line %d)", token, line_nr);
+	    Error(ERR_INFO, "  old value: '%s'", old_value);
+	    Error(ERR_INFO, "  new value: '%s'", value);
+	  }
+#endif
+
+	  setHashEntry((SetupFileHash *)setup_file_data, token, value);
+	}
+	else
+	{
+	  insert_ptr = addListEntry((SetupFileList *)insert_ptr, token, value);
+	}
+
+	token_count++;
+      }
+    }
+  }
+
+  fclose(file);
+
+#if CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING
+  if (token_value_separator_warning)
+    Error(ERR_INFO_LINE, "-");
+#endif
+
+#if CHECK_TOKEN__WARN_IF_ALREADY_EXISTS_IN_HASH
+  if (token_already_exists_warning)
+    Error(ERR_INFO_LINE, "-");
+#endif
+
+  if (token_count == 0 && include_count == 0)
+    Error(ERR_WARN, "configuration file '%s' is empty", filename);
+
+  if (top_recursion_level)
+    freeSetupFileHash(include_filename_hash);
+
+  return TRUE;
+}
+
+#else
+
+static boolean loadSetupFileData(void *setup_file_data, char *filename,
+				 boolean top_recursion_level, boolean is_hash)
+{
+  static SetupFileHash *include_filename_hash = NULL;
+  char line[MAX_LINE_LEN], line_raw[MAX_LINE_LEN], previous_line[MAX_LINE_LEN];
+  char *token, *value, *line_ptr;
+  void *insert_ptr = NULL;
+  boolean read_continued_line = FALSE;
+  FILE *file;
+  int line_nr = 0;
+  int token_count = 0;
+
+#if CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING
+  token_value_separator_warning = FALSE;
+#endif
+
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    Error(ERR_WARN, "cannot open configuration file '%s'", filename);
+
+    return FALSE;
+  }
+
+  /* use "insert pointer" to store list end for constant insertion complexity */
+  if (!is_hash)
+    insert_ptr = setup_file_data;
+
+  /* on top invocation, create hash to mark included files (to prevent loops) */
+  if (top_recursion_level)
+    include_filename_hash = newSetupFileHash();
+
+  /* mark this file as already included (to prevent including it again) */
+  setHashEntry(include_filename_hash, getBaseNamePtr(filename), "true");
+
+  while (!feof(file))
+  {
+    /* read next line of input file */
+    if (!fgets(line, MAX_LINE_LEN, file))
+      break;
+
+    /* check if line was completely read and is terminated by line break */
+    if (strlen(line) > 0 && line[strlen(line) - 1] == '\n')
+      line_nr++;
+
+    /* cut trailing line break (this can be newline and/or carriage return) */
+    for (line_ptr = &line[strlen(line)]; line_ptr >= line; line_ptr--)
+      if ((*line_ptr == '\n' || *line_ptr == '\r') && *(line_ptr + 1) == '\0')
+	*line_ptr = '\0';
+
+    /* copy raw input line for later use (mainly debugging output) */
+    strcpy(line_raw, line);
 
     if (read_continued_line)
     {
@@ -1704,10 +2140,13 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
     /* start with empty value as reliable default */
     value = "";
 
+    token_value_separator_found = FALSE;
+
     /* find end of token to determine start of value */
     for (line_ptr = token; *line_ptr; line_ptr++)
     {
 #if 1
+      /* first look for an explicit token/value separator, like ':' or '=' */
       if (*line_ptr == ':' || *line_ptr == '=')
 #else
       if (*line_ptr == ' ' || *line_ptr == '\t' || *line_ptr == ':')
@@ -1716,9 +2155,46 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
 	*line_ptr = '\0';		/* terminate token string */
 	value = line_ptr + 1;		/* set beginning of value */
 
+	token_value_separator_found = TRUE;
+
 	break;
       }
     }
+
+#if ALLOW_TOKEN_VALUE_SEPARATOR_BEING_WHITESPACE
+    /* fallback: if no token/value separator found, also allow whitespaces */
+    if (!token_value_separator_found)
+    {
+      for (line_ptr = token; *line_ptr; line_ptr++)
+      {
+	if (*line_ptr == ' ' || *line_ptr == '\t')
+	{
+	  *line_ptr = '\0';		/* terminate token string */
+	  value = line_ptr + 1;		/* set beginning of value */
+
+	  token_value_separator_found = TRUE;
+
+	  break;
+	}
+      }
+
+#if CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING
+      if (token_value_separator_found)
+      {
+	if (!token_value_separator_warning)
+	{
+	  Error(ERR_INFO_LINE, "-");
+	  Error(ERR_WARN, "missing token/value separator(s) in config file:");
+	  Error(ERR_INFO, "- config file: '%s'", filename);
+
+	  token_value_separator_warning = TRUE;
+	}
+
+	Error(ERR_INFO, "- line %d: '%s'", line_nr, line_raw);
+      }
+#endif
+    }
+#endif
 
     /* cut trailing whitespaces from token */
     for (line_ptr = &token[strlen(token)]; line_ptr >= token; line_ptr--)
@@ -1737,36 +2213,57 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
 
     if (*token)
     {
-      if (use_hash)
-	setHashEntry((SetupFileHash *)setup_file_data, token, value);
+      if (strEqual(token, "include"))
+      {
+	if (getHashEntry(include_filename_hash, value) == NULL)
+	{
+	  char *basepath = getBasePath(filename);
+	  char *basename = getBaseName(value);
+	  char *filename_include = getPath2(basepath, basename);
+
+#if 0
+	  Error(ERR_INFO, "[including file '%s']", filename_include);
+#endif
+
+	  loadSetupFileData(setup_file_data, filename_include, FALSE, is_hash);
+
+	  free(basepath);
+	  free(basename);
+	  free(filename_include);
+	}
+	else
+	{
+	  Error(ERR_WARN, "ignoring already processed file '%s'", value);
+	}
+      }
       else
-	insert_ptr = addListEntry((SetupFileList *)insert_ptr, token, value);
+      {
+	if (is_hash)
+	  setHashEntry((SetupFileHash *)setup_file_data, token, value);
+	else
+	  insert_ptr = addListEntry((SetupFileList *)insert_ptr, token, value);
+
+	token_count++;
+      }
     }
   }
 
   fclose(file);
 
-  if (use_hash)
-  {
-    if (hashtable_count((SetupFileHash *)setup_file_data) == 0)
-      Error(ERR_WARN, "configuration file '%s' is empty", filename);
-  }
-  else
-  {
-    SetupFileList *setup_file_list = (SetupFileList *)setup_file_data;
-    SetupFileList *first_valid_list_entry = setup_file_list->next;
+#if CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING
+  if (token_value_separator_warning)
+    Error(ERR_INFO_LINE, "-");
+#endif
 
-    /* free empty list header */
-    setup_file_list->next = NULL;
-    freeSetupFileList(setup_file_list);
-    setup_file_data = first_valid_list_entry;
+  if (token_count == 0)
+    Error(ERR_WARN, "configuration file '%s' is empty", filename);
 
-    if (first_valid_list_entry == NULL)
-      Error(ERR_WARN, "configuration file '%s' is empty", filename);
-  }
+  if (top_recursion_level)
+    freeSetupFileHash(include_filename_hash);
 
-  return setup_file_data;
+  return TRUE;
 }
+#endif
 
 void saveSetupFileHash(SetupFileHash *hash, char *filename)
 {
@@ -1791,12 +2288,37 @@ void saveSetupFileHash(SetupFileHash *hash, char *filename)
 
 SetupFileList *loadSetupFileList(char *filename)
 {
-  return (SetupFileList *)loadSetupFileData(filename, FALSE);
+  SetupFileList *setup_file_list = newSetupFileList("", "");
+  SetupFileList *first_valid_list_entry;
+
+  if (!loadSetupFileData(setup_file_list, filename, TRUE, FALSE))
+  {
+    freeSetupFileList(setup_file_list);
+
+    return NULL;
+  }
+
+  first_valid_list_entry = setup_file_list->next;
+
+  /* free empty list header */
+  setup_file_list->next = NULL;
+  freeSetupFileList(setup_file_list);
+
+  return first_valid_list_entry;
 }
 
 SetupFileHash *loadSetupFileHash(char *filename)
 {
-  return (SetupFileHash *)loadSetupFileData(filename, TRUE);
+  SetupFileHash *setup_file_hash = newSetupFileHash();
+
+  if (!loadSetupFileData(setup_file_hash, filename, TRUE, TRUE))
+  {
+    freeSetupFileHash(setup_file_hash);
+
+    return NULL;
+  }
+
+  return setup_file_hash;
 }
 
 void checkSetupFileHashIdentifier(SetupFileHash *setup_file_hash,
@@ -1824,25 +2346,27 @@ void checkSetupFileHashIdentifier(SetupFileHash *setup_file_hash,
 #define LEVELINFO_TOKEN_NAME			1
 #define LEVELINFO_TOKEN_NAME_SORTING		2
 #define LEVELINFO_TOKEN_AUTHOR			3
-#define LEVELINFO_TOKEN_IMPORTED_FROM		4
-#define LEVELINFO_TOKEN_IMPORTED_BY		5
-#define LEVELINFO_TOKEN_LEVELS			6
-#define LEVELINFO_TOKEN_FIRST_LEVEL		7
-#define LEVELINFO_TOKEN_SORT_PRIORITY		8
-#define LEVELINFO_TOKEN_LATEST_ENGINE		9
-#define LEVELINFO_TOKEN_LEVEL_GROUP		10
-#define LEVELINFO_TOKEN_READONLY		11
-#define LEVELINFO_TOKEN_GRAPHICS_SET_ECS	12
-#define LEVELINFO_TOKEN_GRAPHICS_SET_AGA	13
-#define LEVELINFO_TOKEN_GRAPHICS_SET		14
-#define LEVELINFO_TOKEN_SOUNDS_SET		15
-#define LEVELINFO_TOKEN_MUSIC_SET		16
-#define LEVELINFO_TOKEN_FILENAME		17
-#define LEVELINFO_TOKEN_FILETYPE		18
-#define LEVELINFO_TOKEN_HANDICAP		19
-#define LEVELINFO_TOKEN_SKIP_LEVELS		20
+#define LEVELINFO_TOKEN_YEAR			4
+#define LEVELINFO_TOKEN_IMPORTED_FROM		5
+#define LEVELINFO_TOKEN_IMPORTED_BY		6
+#define LEVELINFO_TOKEN_TESTED_BY		7
+#define LEVELINFO_TOKEN_LEVELS			8
+#define LEVELINFO_TOKEN_FIRST_LEVEL		9
+#define LEVELINFO_TOKEN_SORT_PRIORITY		10
+#define LEVELINFO_TOKEN_LATEST_ENGINE		11
+#define LEVELINFO_TOKEN_LEVEL_GROUP		12
+#define LEVELINFO_TOKEN_READONLY		13
+#define LEVELINFO_TOKEN_GRAPHICS_SET_ECS	14
+#define LEVELINFO_TOKEN_GRAPHICS_SET_AGA	15
+#define LEVELINFO_TOKEN_GRAPHICS_SET		16
+#define LEVELINFO_TOKEN_SOUNDS_SET		17
+#define LEVELINFO_TOKEN_MUSIC_SET		18
+#define LEVELINFO_TOKEN_FILENAME		19
+#define LEVELINFO_TOKEN_FILETYPE		20
+#define LEVELINFO_TOKEN_HANDICAP		21
+#define LEVELINFO_TOKEN_SKIP_LEVELS		22
 
-#define NUM_LEVELINFO_TOKENS			21
+#define NUM_LEVELINFO_TOKENS			23
 
 static LevelDirTree ldi;
 
@@ -1853,8 +2377,10 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.name,		"name"			},
   { TYPE_STRING,	&ldi.name_sorting,	"name_sorting"		},
   { TYPE_STRING,	&ldi.author,		"author"		},
+  { TYPE_STRING,	&ldi.year,		"year"			},
   { TYPE_STRING,	&ldi.imported_from,	"imported_from"		},
   { TYPE_STRING,	&ldi.imported_by,	"imported_by"		},
+  { TYPE_STRING,	&ldi.tested_by,		"tested_by"		},
   { TYPE_INTEGER,	&ldi.levels,		"levels"		},
   { TYPE_INTEGER,	&ldi.first_level,	"first_level"		},
   { TYPE_INTEGER,	&ldi.sort_priority,	"sort_priority"		},
@@ -1914,6 +2440,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
   ti->name = getStringCopy(ANONYMOUS_NAME);
   ti->name_sorting = NULL;
   ti->author = getStringCopy(ANONYMOUS_NAME);
+  ti->year = NULL;
 
   ti->sort_priority = LEVELCLASS_UNDEFINED;	/* default: least priority */
   ti->latest_engine = FALSE;			/* default: get from level */
@@ -1929,6 +2456,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
   {
     ti->imported_from = NULL;
     ti->imported_by = NULL;
+    ti->tested_by = NULL;
 
     ti->graphics_set_ecs = NULL;
     ti->graphics_set_aga = NULL;
@@ -1983,6 +2511,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
   ti->name = getStringCopy(ANONYMOUS_NAME);
   ti->name_sorting = NULL;
   ti->author = getStringCopy(parent->author);
+  ti->year = getStringCopy(parent->year);
 
   ti->sort_priority = parent->sort_priority;
   ti->latest_engine = parent->latest_engine;
@@ -1998,6 +2527,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
   {
     ti->imported_from = getStringCopy(parent->imported_from);
     ti->imported_by = getStringCopy(parent->imported_by);
+    ti->tested_by = getStringCopy(parent->tested_by);
 
     ti->graphics_set_ecs = NULL;
     ti->graphics_set_aga = NULL;
@@ -2045,8 +2575,10 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->name			= getStringCopy(ti->name);
   ti_copy->name_sorting		= getStringCopy(ti->name_sorting);
   ti_copy->author		= getStringCopy(ti->author);
+  ti_copy->year			= getStringCopy(ti->year);
   ti_copy->imported_from	= getStringCopy(ti->imported_from);
   ti_copy->imported_by		= getStringCopy(ti->imported_by);
+  ti_copy->tested_by		= getStringCopy(ti->tested_by);
 
   ti_copy->graphics_set_ecs	= getStringCopy(ti->graphics_set_ecs);
   ti_copy->graphics_set_aga	= getStringCopy(ti->graphics_set_aga);
@@ -2097,6 +2629,7 @@ static void freeTreeInfo(TreeInfo *ti)
   checked_free(ti->name);
   checked_free(ti->name_sorting);
   checked_free(ti->author);
+  checked_free(ti->year);
 
   checked_free(ti->class_desc);
 
@@ -2106,6 +2639,7 @@ static void freeTreeInfo(TreeInfo *ti)
   {
     checked_free(ti->imported_from);
     checked_free(ti->imported_by);
+    checked_free(ti->tested_by);
 
     checked_free(ti->graphics_set_ecs);
     checked_free(ti->graphics_set_aga);
@@ -2346,12 +2880,13 @@ static TreeInfo *getArtworkInfoCacheEntry(LevelDirTree *level_node, int type)
       if (value == NULL)
       {
 #if 1
-	printf("::: - WARNING: cache entry '%s' invalid\n", token);
+	Error(ERR_WARN, "cache entry '%s' invalid", token);
 #endif
 
 	cached = FALSE;
       }
     }
+
     *artwork_info = ldi;
   }
 
@@ -2452,6 +2987,10 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
 					  char *level_directory,
 					  char *directory_name)
 {
+#if 0
+  static unsigned long progress_delay = 0;
+  unsigned long progress_delay_value = 100;	/* (in milliseconds) */
+#endif
   char *directory_path = getPath2(level_directory, directory_name);
   char *filename = getPath2(directory_path, LEVELINFO_FILENAME);
   SetupFileHash *setup_file_hash;
@@ -2552,8 +3091,14 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
      leveldir_new->last_level : leveldir_new->first_level);
 
 #if 1
-  if (leveldir_new->level_group)
+#if 1
+  DrawInitTextExt(leveldir_new->name, 150, FC_YELLOW,
+		  leveldir_new->level_group);
+#else
+  if (leveldir_new->level_group ||
+      DelayReached(&progress_delay, progress_delay_value))
     DrawInitText(leveldir_new->name, 150, FC_YELLOW);
+#endif
 #else
   DrawInitText(leveldir_new->name, 150, FC_YELLOW);
 #endif
@@ -3000,6 +3545,10 @@ void LoadArtworkInfo()
 void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
 				  LevelDirTree *level_node)
 {
+#if 0
+  static unsigned long progress_delay = 0;
+  unsigned long progress_delay_value = 100;	/* (in milliseconds) */
+#endif
   int type = (*artwork_node)->type;
 
   /* recursively check all level directories for artwork sub-directories */
@@ -3045,7 +3594,11 @@ void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
     }
 
 #if 1
-    if (level_node->level_group)
+    DrawInitTextExt(level_node->name, 150, FC_YELLOW,
+		    level_node->level_group);
+#else
+    if (level_node->level_group ||
+	DelayReached(&progress_delay, progress_delay_value))
       DrawInitText(level_node->name, 150, FC_YELLOW);
 #endif
 

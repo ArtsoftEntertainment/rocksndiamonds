@@ -324,7 +324,7 @@
 #define GADGET_ID_CUSTOM_COPY		(GADGET_ID_TOOLBOX_FIRST + 25)
 #define GADGET_ID_CUSTOM_PASTE		(GADGET_ID_TOOLBOX_FIRST + 26)
 
-/* counter button identifiers */
+/* counter gadget identifiers */
 #define GADGET_ID_COUNTER_FIRST		(GADGET_ID_TOOLBOX_FIRST + 27)
 
 #define GADGET_ID_SELECT_LEVEL_DOWN	(GADGET_ID_COUNTER_FIRST + 0)
@@ -559,42 +559,45 @@
 #define GADGET_ID_BLOCK_LAST_FIELD	(GADGET_ID_CHECKBUTTON_FIRST + 12)
 #define GADGET_ID_SP_BLOCK_LAST_FIELD	(GADGET_ID_CHECKBUTTON_FIRST + 13)
 #define GADGET_ID_INSTANT_RELOCATION	(GADGET_ID_CHECKBUTTON_FIRST + 14)
-#define GADGET_ID_USE_START_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 15)
-#define GADGET_ID_USE_ARTWORK_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 16)
-#define GADGET_ID_USE_EXPLOSION_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 17)
-#define GADGET_ID_INITIAL_GRAVITY	(GADGET_ID_CHECKBUTTON_FIRST + 18)
-#define GADGET_ID_CAN_PASS_TO_WALKABLE	(GADGET_ID_CHECKBUTTON_FIRST + 19)
-#define GADGET_ID_CAN_FALL_INTO_ACID	(GADGET_ID_CHECKBUTTON_FIRST + 20)
-#define GADGET_ID_CAN_MOVE_INTO_ACID	(GADGET_ID_CHECKBUTTON_FIRST + 21)
-#define GADGET_ID_DONT_COLLIDE_WITH	(GADGET_ID_CHECKBUTTON_FIRST + 22)
-#define GADGET_ID_CUSTOM_INDESTRUCTIBLE	(GADGET_ID_CHECKBUTTON_FIRST + 23)
-#define GADGET_ID_CUSTOM_CAN_EXPLODE	(GADGET_ID_CHECKBUTTON_FIRST + 24)
-#define GADGET_ID_CUSTOM_EXPLODE_FIRE	(GADGET_ID_CHECKBUTTON_FIRST + 25)
-#define GADGET_ID_CUSTOM_EXPLODE_SMASH	(GADGET_ID_CHECKBUTTON_FIRST + 26)
-#define GADGET_ID_CUSTOM_EXPLODE_IMPACT	(GADGET_ID_CHECKBUTTON_FIRST + 27)
-#define GADGET_ID_CUSTOM_WALK_TO_OBJECT	(GADGET_ID_CHECKBUTTON_FIRST + 28)
-#define GADGET_ID_CUSTOM_DEADLY		(GADGET_ID_CHECKBUTTON_FIRST + 29)
-#define GADGET_ID_CUSTOM_CAN_MOVE	(GADGET_ID_CHECKBUTTON_FIRST + 30)
-#define GADGET_ID_CUSTOM_CAN_FALL	(GADGET_ID_CHECKBUTTON_FIRST + 31)
-#define GADGET_ID_CUSTOM_CAN_SMASH	(GADGET_ID_CHECKBUTTON_FIRST + 32)
-#define GADGET_ID_CUSTOM_SLIPPERY	(GADGET_ID_CHECKBUTTON_FIRST + 33)
-#define GADGET_ID_CUSTOM_ACCESSIBLE	(GADGET_ID_CHECKBUTTON_FIRST + 34)
-#define GADGET_ID_CUSTOM_GRAV_REACHABLE	(GADGET_ID_CHECKBUTTON_FIRST + 35)
-#define GADGET_ID_CUSTOM_USE_LAST_VALUE	(GADGET_ID_CHECKBUTTON_FIRST + 36)
-#define GADGET_ID_CUSTOM_USE_GRAPHIC	(GADGET_ID_CHECKBUTTON_FIRST + 37)
-#define GADGET_ID_CUSTOM_USE_TEMPLATE	(GADGET_ID_CHECKBUTTON_FIRST + 38)
-#define GADGET_ID_CUSTOM_CAN_CHANGE	(GADGET_ID_CHECKBUTTON_FIRST + 39)
-#define GADGET_ID_CHANGE_USE_CONTENT	(GADGET_ID_CHECKBUTTON_FIRST + 40)
-#define GADGET_ID_CHANGE_USE_EXPLOSION	(GADGET_ID_CHECKBUTTON_FIRST + 41)
-#define GADGET_ID_CHANGE_ONLY_COMPLETE	(GADGET_ID_CHECKBUTTON_FIRST + 42)
-#define GADGET_ID_CHANGE_USE_RANDOM	(GADGET_ID_CHECKBUTTON_FIRST + 43)
-#define GADGET_ID_CHANGE_HAS_ACTION	(GADGET_ID_CHECKBUTTON_FIRST + 44)
-#define GADGET_ID_CHANGE_DELAY		(GADGET_ID_CHECKBUTTON_FIRST + 45)
-#define GADGET_ID_CHANGE_BY_DIRECT_ACT	(GADGET_ID_CHECKBUTTON_FIRST + 46)
-#define GADGET_ID_CHANGE_BY_OTHER_ACT	(GADGET_ID_CHECKBUTTON_FIRST + 47)
+#define GADGET_ID_SHIFTED_RELOCATION	(GADGET_ID_CHECKBUTTON_FIRST + 15)
+#define GADGET_ID_USE_START_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 16)
+#define GADGET_ID_USE_ARTWORK_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 17)
+#define GADGET_ID_USE_EXPLOSION_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 18)
+#define GADGET_ID_INITIAL_GRAVITY	(GADGET_ID_CHECKBUTTON_FIRST + 19)
+#define GADGET_ID_CAN_PASS_TO_WALKABLE	(GADGET_ID_CHECKBUTTON_FIRST + 20)
+#define GADGET_ID_CAN_FALL_INTO_ACID	(GADGET_ID_CHECKBUTTON_FIRST + 21)
+#define GADGET_ID_CAN_MOVE_INTO_ACID	(GADGET_ID_CHECKBUTTON_FIRST + 22)
+#define GADGET_ID_DONT_COLLIDE_WITH	(GADGET_ID_CHECKBUTTON_FIRST + 23)
+#define GADGET_ID_ENVELOPE_AUTOWRAP	(GADGET_ID_CHECKBUTTON_FIRST + 24)
+#define GADGET_ID_ENVELOPE_CENTERED	(GADGET_ID_CHECKBUTTON_FIRST + 25)
+#define GADGET_ID_CUSTOM_INDESTRUCTIBLE	(GADGET_ID_CHECKBUTTON_FIRST + 26)
+#define GADGET_ID_CUSTOM_CAN_EXPLODE	(GADGET_ID_CHECKBUTTON_FIRST + 27)
+#define GADGET_ID_CUSTOM_EXPLODE_FIRE	(GADGET_ID_CHECKBUTTON_FIRST + 28)
+#define GADGET_ID_CUSTOM_EXPLODE_SMASH	(GADGET_ID_CHECKBUTTON_FIRST + 29)
+#define GADGET_ID_CUSTOM_EXPLODE_IMPACT	(GADGET_ID_CHECKBUTTON_FIRST + 30)
+#define GADGET_ID_CUSTOM_WALK_TO_OBJECT	(GADGET_ID_CHECKBUTTON_FIRST + 31)
+#define GADGET_ID_CUSTOM_DEADLY		(GADGET_ID_CHECKBUTTON_FIRST + 32)
+#define GADGET_ID_CUSTOM_CAN_MOVE	(GADGET_ID_CHECKBUTTON_FIRST + 33)
+#define GADGET_ID_CUSTOM_CAN_FALL	(GADGET_ID_CHECKBUTTON_FIRST + 34)
+#define GADGET_ID_CUSTOM_CAN_SMASH	(GADGET_ID_CHECKBUTTON_FIRST + 35)
+#define GADGET_ID_CUSTOM_SLIPPERY	(GADGET_ID_CHECKBUTTON_FIRST + 36)
+#define GADGET_ID_CUSTOM_ACCESSIBLE	(GADGET_ID_CHECKBUTTON_FIRST + 37)
+#define GADGET_ID_CUSTOM_GRAV_REACHABLE	(GADGET_ID_CHECKBUTTON_FIRST + 38)
+#define GADGET_ID_CUSTOM_USE_LAST_VALUE	(GADGET_ID_CHECKBUTTON_FIRST + 39)
+#define GADGET_ID_CUSTOM_USE_GRAPHIC	(GADGET_ID_CHECKBUTTON_FIRST + 40)
+#define GADGET_ID_CUSTOM_USE_TEMPLATE	(GADGET_ID_CHECKBUTTON_FIRST + 41)
+#define GADGET_ID_CUSTOM_CAN_CHANGE	(GADGET_ID_CHECKBUTTON_FIRST + 42)
+#define GADGET_ID_CHANGE_USE_CONTENT	(GADGET_ID_CHECKBUTTON_FIRST + 43)
+#define GADGET_ID_CHANGE_USE_EXPLOSION	(GADGET_ID_CHECKBUTTON_FIRST + 44)
+#define GADGET_ID_CHANGE_ONLY_COMPLETE	(GADGET_ID_CHECKBUTTON_FIRST + 45)
+#define GADGET_ID_CHANGE_USE_RANDOM	(GADGET_ID_CHECKBUTTON_FIRST + 46)
+#define GADGET_ID_CHANGE_HAS_ACTION	(GADGET_ID_CHECKBUTTON_FIRST + 47)
+#define GADGET_ID_CHANGE_DELAY		(GADGET_ID_CHECKBUTTON_FIRST + 48)
+#define GADGET_ID_CHANGE_BY_DIRECT_ACT	(GADGET_ID_CHECKBUTTON_FIRST + 49)
+#define GADGET_ID_CHANGE_BY_OTHER_ACT	(GADGET_ID_CHECKBUTTON_FIRST + 50)
 
 /* gadgets for buttons in element list */
-#define GADGET_ID_ELEMENTLIST_FIRST	(GADGET_ID_CHECKBUTTON_FIRST + 48)
+#define GADGET_ID_ELEMENTLIST_FIRST	(GADGET_ID_CHECKBUTTON_FIRST + 51)
 #define GADGET_ID_ELEMENTLIST_LAST	(GADGET_ID_ELEMENTLIST_FIRST +	\
 	 				ED_NUM_ELEMENTLIST_BUTTONS - 1)
 
@@ -784,41 +787,44 @@
 #define ED_CHECKBUTTON_ID_BLOCK_LAST_FIELD	10
 #define ED_CHECKBUTTON_ID_SP_BLOCK_LAST_FIELD	11
 #define ED_CHECKBUTTON_ID_INSTANT_RELOCATION	12
-#define ED_CHECKBUTTON_ID_USE_START_ELEMENT	13
-#define ED_CHECKBUTTON_ID_USE_ARTWORK_ELEMENT	14
-#define ED_CHECKBUTTON_ID_USE_EXPLOSION_ELEMENT	15
-#define ED_CHECKBUTTON_ID_INITIAL_GRAVITY	16
-#define ED_CHECKBUTTON_ID_CAN_PASS_TO_WALKABLE	17
-#define ED_CHECKBUTTON_ID_CAN_FALL_INTO_ACID	18
-#define ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID	19
-#define ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH	20
-#define ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC	21
-#define ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE	22
-#define ED_CHECKBUTTON_ID_CUSTOM_ACCESSIBLE	23
-#define ED_CHECKBUTTON_ID_CUSTOM_GRAV_REACHABLE	24
-#define ED_CHECKBUTTON_ID_CUSTOM_USE_LAST_VALUE	25
-#define ED_CHECKBUTTON_ID_CUSTOM_WALK_TO_OBJECT	26
-#define ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE	27
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_MOVE	28
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_FALL	29
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_SMASH	30
-#define ED_CHECKBUTTON_ID_CUSTOM_SLIPPERY	31
-#define ED_CHECKBUTTON_ID_CUSTOM_DEADLY		32
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_EXPLODE	33
-#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_FIRE	34
-#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_SMASH	35
-#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_IMPACT	36
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_CHANGE	37
-#define ED_CHECKBUTTON_ID_CHANGE_DELAY		38
-#define ED_CHECKBUTTON_ID_CHANGE_BY_DIRECT_ACT	39
-#define ED_CHECKBUTTON_ID_CHANGE_BY_OTHER_ACT	40
-#define ED_CHECKBUTTON_ID_CHANGE_USE_EXPLOSION	41
-#define ED_CHECKBUTTON_ID_CHANGE_USE_CONTENT	42
-#define ED_CHECKBUTTON_ID_CHANGE_ONLY_COMPLETE	43
-#define ED_CHECKBUTTON_ID_CHANGE_USE_RANDOM	44
-#define ED_CHECKBUTTON_ID_CHANGE_HAS_ACTION	45
+#define ED_CHECKBUTTON_ID_SHIFTED_RELOCATION	13
+#define ED_CHECKBUTTON_ID_USE_START_ELEMENT	14
+#define ED_CHECKBUTTON_ID_USE_ARTWORK_ELEMENT	15
+#define ED_CHECKBUTTON_ID_USE_EXPLOSION_ELEMENT	16
+#define ED_CHECKBUTTON_ID_INITIAL_GRAVITY	17
+#define ED_CHECKBUTTON_ID_CAN_PASS_TO_WALKABLE	18
+#define ED_CHECKBUTTON_ID_CAN_FALL_INTO_ACID	19
+#define ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID	20
+#define ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH	21
+#define ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP	22
+#define ED_CHECKBUTTON_ID_ENVELOPE_CENTERED	23
+#define ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC	24
+#define ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE	25
+#define ED_CHECKBUTTON_ID_CUSTOM_ACCESSIBLE	26
+#define ED_CHECKBUTTON_ID_CUSTOM_GRAV_REACHABLE	27
+#define ED_CHECKBUTTON_ID_CUSTOM_USE_LAST_VALUE	28
+#define ED_CHECKBUTTON_ID_CUSTOM_WALK_TO_OBJECT	29
+#define ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE	30
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_MOVE	31
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_FALL	32
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_SMASH	33
+#define ED_CHECKBUTTON_ID_CUSTOM_SLIPPERY	34
+#define ED_CHECKBUTTON_ID_CUSTOM_DEADLY		35
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_EXPLODE	36
+#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_FIRE	37
+#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_SMASH	38
+#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_IMPACT	39
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_CHANGE	40
+#define ED_CHECKBUTTON_ID_CHANGE_DELAY		41
+#define ED_CHECKBUTTON_ID_CHANGE_BY_DIRECT_ACT	42
+#define ED_CHECKBUTTON_ID_CHANGE_BY_OTHER_ACT	43
+#define ED_CHECKBUTTON_ID_CHANGE_USE_EXPLOSION	44
+#define ED_CHECKBUTTON_ID_CHANGE_USE_CONTENT	45
+#define ED_CHECKBUTTON_ID_CHANGE_ONLY_COMPLETE	46
+#define ED_CHECKBUTTON_ID_CHANGE_USE_RANDOM	47
+#define ED_CHECKBUTTON_ID_CHANGE_HAS_ACTION	48
 
-#define ED_NUM_CHECKBUTTONS			46
+#define ED_NUM_CHECKBUTTONS			49
 
 #define ED_CHECKBUTTON_ID_LEVEL_FIRST	ED_CHECKBUTTON_ID_RANDOM_RESTRICTED
 #define ED_CHECKBUTTON_ID_LEVEL_LAST	ED_CHECKBUTTON_ID_RANDOM_RESTRICTED
@@ -912,11 +918,11 @@
 
 /* values for elements with score for certain actions */
 #define MIN_SCORE			0
-#define MAX_SCORE			255
+#define MAX_SCORE			999
 
 /* values for elements with count for collecting */
 #define MIN_COLLECT_COUNT		0
-#define MAX_COLLECT_COUNT		255
+#define MAX_COLLECT_COUNT		999
 
 /* values for random placement */
 #define RANDOM_USE_PERCENTAGE		0
@@ -1043,7 +1049,7 @@ static struct
   },
   {
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(9),
-    0,					255,
+    0,					999,
     GADGET_ID_LEVEL_TIMESCORE_DOWN,	GADGET_ID_LEVEL_TIMESCORE_UP,
     GADGET_ID_LEVEL_TIMESCORE_TEXT,	GADGET_ID_NONE,
     &level.score[SC_TIME_BONUS],
@@ -1121,7 +1127,7 @@ static struct
     MIN_ENVELOPE_XSIZE,			MAX_ENVELOPE_XSIZE,
     GADGET_ID_ENVELOPE_XSIZE_DOWN,	GADGET_ID_ENVELOPE_XSIZE_UP,
     GADGET_ID_ENVELOPE_XSIZE_TEXT,	GADGET_ID_NONE,
-    NULL,
+    NULL,				/* will be set when used */
     NULL,				NULL, "width",
   },
   {
@@ -1129,7 +1135,7 @@ static struct
     MIN_ENVELOPE_YSIZE,			MAX_ENVELOPE_YSIZE,
     GADGET_ID_ENVELOPE_YSIZE_DOWN,	GADGET_ID_ENVELOPE_YSIZE_UP,
     GADGET_ID_ENVELOPE_YSIZE_TEXT,	GADGET_ID_ENVELOPE_XSIZE_UP,
-    NULL,
+    NULL,				/* will be set when used */
     NULL,				" ", "height",
   },
 
@@ -1169,7 +1175,7 @@ static struct
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(7),
-    0,					255,
+    0,					999,
     GADGET_ID_PUSH_DELAY_FIX_DOWN,	GADGET_ID_PUSH_DELAY_FIX_UP,
     GADGET_ID_PUSH_DELAY_FIX_TEXT,	GADGET_ID_NONE,
     &custom_element.push_delay_fixed,
@@ -1177,7 +1183,7 @@ static struct
   },
   {
     -1,					ED_ELEMENT_SETTINGS_YPOS(7),
-    0,					255,
+    0,					999,
     GADGET_ID_PUSH_DELAY_RND_DOWN,	GADGET_ID_PUSH_DELAY_RND_UP,
     GADGET_ID_PUSH_DELAY_RND_TEXT,	GADGET_ID_PUSH_DELAY_FIX_UP,
     &custom_element.push_delay_random,
@@ -1185,7 +1191,7 @@ static struct
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(8),
-    0,					255,
+    0,					999,
     GADGET_ID_DROP_DELAY_FIX_DOWN,	GADGET_ID_DROP_DELAY_FIX_UP,
     GADGET_ID_DROP_DELAY_FIX_TEXT,	GADGET_ID_NONE,
     &custom_element.drop_delay_fixed,
@@ -1193,7 +1199,7 @@ static struct
   },
   {
     -1,					ED_ELEMENT_SETTINGS_YPOS(8),
-    0,					255,
+    0,					999,
     GADGET_ID_DROP_DELAY_RND_DOWN,	GADGET_ID_DROP_DELAY_RND_UP,
     GADGET_ID_DROP_DELAY_RND_TEXT,	GADGET_ID_DROP_DELAY_FIX_UP,
     &custom_element.drop_delay_random,
@@ -1220,7 +1226,7 @@ static struct
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(12),
-    0,					255,
+    0,					999,
     GADGET_ID_EXPLOSION_DELAY_DOWN,	GADGET_ID_EXPLOSION_DELAY_UP,
     GADGET_ID_EXPLOSION_DELAY_TEXT,	GADGET_ID_NONE,
     &custom_element.explosion_delay,
@@ -1228,7 +1234,7 @@ static struct
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(13),
-    0,					255,
+    0,					999,
     GADGET_ID_IGNITION_DELAY_DOWN,	GADGET_ID_IGNITION_DELAY_UP,
     GADGET_ID_IGNITION_DELAY_TEXT,	GADGET_ID_NONE,
     &custom_element.ignition_delay,
@@ -1316,11 +1322,11 @@ static struct
 } textarea_info[ED_NUM_TEXTAREAS] =
 {
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_ENVELOPE_INFO,
     MAX_ENVELOPE_XSIZE, MAX_ENVELOPE_YSIZE,
     NULL,
-    "Envelope Info:", "Envelope Info"
+    "Envelope Content:", "Envelope Content"
   }
 };
 
@@ -2030,7 +2036,7 @@ static struct
   /* ---------- element settings: configure (several elements) ------------- */
 
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(6),
     GADGET_ID_PLAYER_SPEED,		GADGET_ID_NONE,
     -1,
     options_player_speed,
@@ -2516,7 +2522,7 @@ static struct
     GADGET_ID_EM_SLIPPERY_GEMS,		GADGET_ID_NONE,
     &level.em_slippery_gems,
     NULL,
-    "slip down from certain flat walls","use EM style slipping behaviour"
+    "slip down from certain flat walls","use EM/DC style slipping behaviour"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
@@ -2554,14 +2560,14 @@ static struct
     "can grow into anything diggable",	"grow into more than just sand"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(7),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CONTINUOUS_SNAPPING,	GADGET_ID_NONE,
     &level.continuous_snapping,
     NULL,
     "continuos snapping",		"use snapping without releasing key"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(6),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(7),
     GADGET_ID_BLOCK_SNAP_FIELD,		GADGET_ID_NONE,
     &level.block_snap_field,
     NULL,
@@ -2589,35 +2595,42 @@ static struct
     "no scrolling when relocating",	"player gets relocated without delay"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_SHIFTED_RELOCATION,	GADGET_ID_NONE,
+    &level.shifted_relocation,
+    NULL,
+    "no centering when relocating",	"level not centered after relocation"
+  },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_USE_START_ELEMENT,	GADGET_ID_NONE,
     &level.use_start_element[0],
     NULL,
     "use level start element:",	       "start level at this element's position"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_USE_ARTWORK_ELEMENT,	GADGET_ID_NONE,
     &level.use_artwork_element[0],
     NULL,
     "use artwork from element:",	"use player artwork from other element"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_USE_EXPLOSION_ELEMENT,	GADGET_ID_NONE,
     &level.use_explosion_element[0],
     NULL,
     "use explosion from element:",	"use explosion properties from element"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_INITIAL_GRAVITY,		GADGET_ID_NONE,
     &level.initial_player_gravity[0],
     NULL,
     "use initial gravity",		"set initial player gravity"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
     GADGET_ID_CAN_PASS_TO_WALKABLE,	GADGET_ID_NONE,
     &level.can_pass_to_walkable,
     NULL,
@@ -2644,6 +2657,20 @@ static struct
     NULL,
     "deadly when colliding with",	"element is deadly when hitting player"
   },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_ENVELOPE_AUTOWRAP,	GADGET_ID_NONE,
+    &level.envelope[0].autowrap,
+    NULL,
+    "auto-wrap",			"automatically wrap envelope text"
+  },
+  {
+    -1,					ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_ENVELOPE_CENTERED,	GADGET_ID_ENVELOPE_AUTOWRAP,
+    &level.envelope[0].centered,
+    " ",
+    "centered",				"automatically center envelope text"
+  },
 
   /* ---------- element settings: configure 1 (custom elements) ----------- */
 
@@ -2654,46 +2681,54 @@ static struct
 
     /* !!! add separate "use existing element sound" !!! */
 #if 0
-    NULL, "use graphic/sound of element:", "use existing graphic and sound"
+    NULL,
+    "use graphic/sound of element:",	"use existing graphic and sound"
 #else
-    NULL, "use graphic of element:",	"use existing element graphic"
+    NULL,
+    "use graphic of element:",		"use existing element graphic"
 #endif
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_CUSTOM_USE_TEMPLATE,	GADGET_ID_NONE,
     &level.use_custom_template,
-    NULL, "use template",		"use template for custom properties"
+    NULL,
+    "use template",			"use template for custom properties"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_CUSTOM_ACCESSIBLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_ACCESSIBLE],
-    NULL, NULL,				"player can walk to or pass this field"
+    NULL,
+    NULL,				"player can walk to or pass this field"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_CUSTOM_GRAV_REACHABLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_GRAVITY_REACHABLE],
-    NULL, "reachable despite gravity",	"player can walk/dig despite gravity"
+    NULL,
+    "reachable despite gravity",	"player can walk/dig despite gravity"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(13),
     GADGET_ID_CUSTOM_USE_LAST_VALUE,	GADGET_ID_NONE,
     &custom_element.use_last_ce_value,
-    NULL, "use last CE value after change", "use last CE value after change"
+    NULL,
+    "use last CE value after change",	"use last CE value after change"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
     GADGET_ID_CUSTOM_WALK_TO_OBJECT,	GADGET_ID_NONE,
     &custom_element_properties[EP_WALK_TO_OBJECT],
-    NULL, NULL,				"player can dig/collect/push element"
+    NULL,
+    NULL,				"player can dig/collect/push element"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CUSTOM_INDESTRUCTIBLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_INDESTRUCTIBLE],
-    NULL, "indestructible",		"element is indestructible"
+    NULL,
+    "indestructible",			"element is indestructible"
   },
 
   /* ---------- element settings: configure 2 (custom elements) ----------- */
@@ -2702,55 +2737,64 @@ static struct
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_CUSTOM_CAN_MOVE,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE],
-    NULL, NULL,				"element can move with some pattern"
+    NULL,
+    NULL,				"element can move with some pattern"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(7),
     GADGET_ID_CUSTOM_CAN_FALL,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_FALL],
-    NULL, "can fall",			"element can fall down"
+    NULL,
+    "can fall",				"element can fall down"
   },
   {
     -1,					ED_ELEMENT_SETTINGS_YPOS(7),
     GADGET_ID_CUSTOM_CAN_SMASH,		GADGET_ID_CUSTOM_CAN_FALL,
     &custom_element_properties[EP_CAN_SMASH],
-    " ", NULL,				"element can smash other elements"
+    " ",
+    NULL,				"element can smash other elements"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CUSTOM_SLIPPERY,		GADGET_ID_NONE,
     &custom_element_properties[EP_SLIPPERY],
-    NULL, NULL,				"other elements can fall down from it"
+    NULL,
+    NULL,				"other elements can fall down from it"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CUSTOM_DEADLY,		GADGET_ID_NONE,
     &custom_element_properties[EP_DEADLY],
-    NULL, NULL,				"element can kill the player"
+    NULL,
+    NULL,				"element can kill the player"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_CUSTOM_CAN_EXPLODE,	GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_EXPLODE],
-    NULL, NULL,				"element can explode"
+    NULL,
+    NULL,				"element can explode"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CUSTOM_EXPLODE_FIRE,	GADGET_ID_NONE,
     &custom_element_properties[EP_EXPLODES_BY_FIRE],
-    NULL, "by fire",			"element can explode by fire/explosion"
+    NULL,
+    "by fire",				"element can explode by fire/explosion"
   },
   {
     -1,					ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CUSTOM_EXPLODE_SMASH,	GADGET_ID_CUSTOM_EXPLODE_FIRE,
     &custom_element_properties[EP_EXPLODES_SMASHED],
-    " ", "smashed",			"element can explode when smashed"
+    " ",
+    "smashed",				"element can explode when smashed"
   },
   {
     -1,					ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CUSTOM_EXPLODE_IMPACT,	GADGET_ID_CUSTOM_EXPLODE_SMASH,
     &custom_element_properties[EP_EXPLODES_IMPACT],
-    " ", "impact",			"element can explode on impact"
+    " ",
+    "impact",				"element can explode on impact"
   },
 
   /* ---------- element settings: advanced (custom elements) --------------- */
@@ -2759,55 +2803,64 @@ static struct
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_CUSTOM_CAN_CHANGE,	GADGET_ID_NONE,
     &custom_element_change.can_change,
-    NULL, "element changes to:",	"change element on specified condition"
+    NULL,
+    "element changes to:",		"change element on specified condition"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_CHANGE_DELAY,		GADGET_ID_NONE,
     &custom_element_change_events[CE_DELAY],
-    NULL, NULL,				"element changes after delay"
+    NULL,
+    NULL,				"element changes after delay"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_CHANGE_BY_DIRECT_ACT,	GADGET_ID_NONE,
     &custom_element_change_events[CE_BY_DIRECT_ACTION],
-    NULL, NULL,				"element changes by direct action"
+    NULL,
+    NULL,				"element changes by direct action"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(5),
     GADGET_ID_CHANGE_BY_OTHER_ACT,	GADGET_ID_NONE,
     &custom_element_change_events[CE_BY_OTHER_ACTION],
-    NULL, NULL,				"element changes by other element"
+    NULL,
+    NULL,				"element changes by other element"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CHANGE_USE_EXPLOSION,	GADGET_ID_NONE,
     &custom_element_change.explode,
-    NULL, "explode instead of change",	"element explodes instead of change"
+    NULL,
+    "explode instead of change",	"element explodes instead of change"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CHANGE_USE_CONTENT,	GADGET_ID_NONE,
     &custom_element_change.use_target_content,
-    NULL, "use extended change target:","element changes to more elements"
+    NULL,
+    "use extended change target:",	"element changes to more elements"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CHANGE_ONLY_COMPLETE,	GADGET_ID_NONE,
     &custom_element_change.only_if_complete,
-    NULL, "replace all or nothing",	"only replace when all can be changed"
+    NULL,
+    "replace all or nothing",		"only replace when all can be changed"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_CHANGE_USE_RANDOM,	GADGET_ID_NONE,
     &custom_element_change.use_random_replace,
-    NULL, NULL,				"use percentage for random replace"
+    NULL,
+    NULL,				"use percentage for random replace"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(13),
     GADGET_ID_CHANGE_HAS_ACTION,	GADGET_ID_NONE,
     &custom_element_change.has_action,
-    NULL, NULL,				"execute action on specified condition"
+    NULL,
+    NULL,				"execute action on specified condition"
   },
 };
 
@@ -2953,7 +3006,7 @@ static struct
   /* ---------- level start element ---------------------------------------- */
 
   {
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(8),
+    -1,					ED_AREA_1X1_SETTINGS_YPOS(9),
     GADGET_ID_START_ELEMENT,		GADGET_ID_USE_START_ELEMENT,
     &level.start_element[0],		1, 1,
     NULL, NULL, NULL,			"level start element"
@@ -2962,7 +3015,7 @@ static struct
   /* ---------- player artwork element ------------------------------------- */
 
   {
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(9),
+    -1,					ED_AREA_1X1_SETTINGS_YPOS(10),
     GADGET_ID_ARTWORK_ELEMENT,		GADGET_ID_USE_ARTWORK_ELEMENT,
     &level.artwork_element[0],		1, 1,
     NULL, NULL, NULL,			"element for player artwork"
@@ -2971,7 +3024,7 @@ static struct
   /* ---------- player explosion element ----------------------------------- */
 
   {
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(10),
+    -1,					ED_AREA_1X1_SETTINGS_YPOS(11),
     GADGET_ID_EXPLOSION_ELEMENT,	GADGET_ID_USE_EXPLOSION_ELEMENT,
     &level.explosion_element[0],	1, 1,
     NULL, NULL, NULL,			"element for player explosion"
@@ -3075,7 +3128,11 @@ static int ed_fieldx = MAX_ED_FIELDX - 1, ed_fieldy = MAX_ED_FIELDY - 1;
 /* actual position of level editor drawing area in level playfield */
 static int level_xpos = -1, level_ypos = -1;
 
+#if 1
+#define IN_ED_FIELD(x,y)	IN_FIELD(x, y, ed_fieldx, ed_fieldy)
+#else
 #define IN_ED_FIELD(x,y)  ((x)>=0 && (x)<ed_fieldx && (y)>=0 &&(y)<ed_fieldy)
+#endif
 
 /* drawing elements on the three mouse buttons */
 static int new_element1 = EL_WALL;
@@ -3126,6 +3183,7 @@ static int properties_element = 0;
 
 static short FieldBackup[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 static short UndoBuffer[NUM_UNDO_STEPS][MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+static short IntelliDrawBuffer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 static int undo_buffer_position = 0;
 static int undo_buffer_steps = 0;
 
@@ -3253,6 +3311,11 @@ static int editor_el_emerald_mine[] =
   EL_EM_GATE_2_GRAY,
   EL_EM_GATE_3_GRAY,
   EL_EM_GATE_4_GRAY,
+
+  EL_EM_EXIT_CLOSED,
+  EL_EM_EXIT_OPEN,
+  EL_EM_STEEL_EXIT_CLOSED,
+  EL_EM_STEEL_EXIT_OPEN,
 };
 static int *editor_hl_emerald_mine_ptr = editor_hl_emerald_mine;
 static int *editor_el_emerald_mine_ptr = editor_el_emerald_mine;
@@ -3574,35 +3637,112 @@ static int editor_el_diamond_caves[] =
   EL_CONVEYOR_BELT_3_SWITCH_RIGHT,
   EL_CONVEYOR_BELT_4_SWITCH_RIGHT,
 
+  EL_TIMEGATE_CLOSED,
+  EL_TIMEGATE_OPEN,
+  EL_TIMEGATE_SWITCH,
+  EL_DC_TIMEGATE_SWITCH,
+
   EL_SWITCHGATE_CLOSED,
   EL_SWITCHGATE_OPEN,
   EL_SWITCHGATE_SWITCH_UP,
   EL_SWITCHGATE_SWITCH_DOWN,
 
-  EL_TIMEGATE_CLOSED,
-  EL_TIMEGATE_OPEN,
-  EL_TIMEGATE_SWITCH,
-  EL_EMPTY,
-
-  EL_SIGN_EXCLAMATION,
-  EL_SIGN_STOP,
   EL_LIGHT_SWITCH,
   EL_LIGHT_SWITCH_ACTIVE,
+  EL_DC_SWITCHGATE_SWITCH_UP,
+  EL_DC_SWITCHGATE_SWITCH_DOWN,
 
+  EL_STEEL_EXIT_CLOSED,
+  EL_STEEL_EXIT_OPEN,
   EL_STEELWALL_SLIPPERY,
   EL_INVISIBLE_SAND,
+
+  EL_QUICKSAND_FAST_EMPTY,
+  EL_QUICKSAND_FAST_FULL,
   EL_LANDMINE,
-  EL_EMPTY,
+  EL_DC_LANDMINE,
 
   EL_SHIELD_NORMAL,
   EL_SHIELD_DEADLY,
   EL_EXTRA_TIME,
-  EL_EMPTY,
+  EL_DC_MAGIC_WALL,
 
   EL_ENVELOPE_1,
   EL_ENVELOPE_2,
   EL_ENVELOPE_3,
   EL_ENVELOPE_4,
+
+  EL_SIGN_RADIOACTIVITY,
+  EL_SIGN_WHEELCHAIR,
+  EL_SIGN_PARKING,
+  EL_SIGN_NO_ENTRY,
+
+  EL_SIGN_GIVE_WAY,
+  EL_SIGN_ENTRY_FORBIDDEN,
+  EL_SIGN_EMERGENCY_EXIT,
+  EL_SIGN_YIN_YANG,
+
+#if 0
+  EL_SIGN_SPERMS,
+  EL_SIGN_BULLET,
+  EL_SIGN_HEART,
+  EL_SIGN_CROSS,
+
+  EL_SIGN_FRANKIE,
+  EL_EMPTY,
+  EL_EMPTY,
+  EL_EMPTY,
+
+  EL_SPERMS,
+  EL_BULLET,
+  EL_HEART,
+  EL_CROSS,
+
+  EL_FRANKIE,
+  EL_EMPTY,
+  EL_EMPTY,
+  EL_EMPTY,
+#endif
+
+  EL_DC_STEELWALL_2_SINGLE,
+  EL_DC_STEELWALL_2_TOP,
+  EL_SIGN_EXCLAMATION,
+  EL_SIGN_STOP,
+
+  EL_DC_STEELWALL_2_LEFT,
+  EL_DC_STEELWALL_2_MIDDLE,
+  EL_DC_STEELWALL_2_HORIZONTAL,
+  EL_DC_STEELWALL_2_RIGHT,
+
+  EL_DC_STEELWALL_1_TOPLEFT,
+  EL_DC_STEELWALL_2_VERTICAL,
+  EL_DC_STEELWALL_1_TOPRIGHT,
+  EL_DC_GATE_WHITE,
+
+  EL_DC_STEELWALL_1_VERTICAL,
+  EL_DC_STEELWALL_2_BOTTOM,
+  EL_DC_KEY_WHITE,
+  EL_DC_GATE_WHITE_GRAY,
+
+  EL_DC_STEELWALL_1_BOTTOMLEFT,
+  EL_DC_STEELWALL_1_HORIZONTAL,
+  EL_DC_STEELWALL_1_BOTTOMRIGHT,
+  EL_DC_GATE_FAKE_GRAY,
+
+  EL_DC_STEELWALL_1_BOTTOMRIGHT_2,
+  EL_DC_STEELWALL_1_BOTTOM,
+  EL_DC_STEELWALL_1_BOTTOMLEFT_2,
+  EL_EXPANDABLE_STEELWALL_HORIZONTAL,
+
+  EL_DC_STEELWALL_1_RIGHT,
+  EL_EMPTY,
+  EL_DC_STEELWALL_1_LEFT,
+  EL_EXPANDABLE_STEELWALL_VERTICAL,
+
+  EL_DC_STEELWALL_1_TOPRIGHT_2,
+  EL_DC_STEELWALL_1_TOP,
+  EL_DC_STEELWALL_1_TOPLEFT_2,
+  EL_EXPANDABLE_STEELWALL_ANY,
 };
 static int *editor_hl_diamond_caves_ptr = editor_hl_diamond_caves;
 static int *editor_el_diamond_caves_ptr = editor_el_diamond_caves;
@@ -3742,12 +3882,127 @@ static int editor_el_chars[] =
   EL_CHAR('°'),
   EL_CHAR('®'),
   EL_CHAR(FONT_ASCII_CURSOR),
+  EL_CHAR(FONT_ASCII_BUTTON),
+
+  EL_CHAR(FONT_ASCII_UP),
+  EL_CHAR(FONT_ASCII_DOWN),
+  EL_CHAR(' '),
   EL_CHAR(' ')
 };
 static int *editor_hl_chars_ptr = editor_hl_chars;
 static int *editor_el_chars_ptr = editor_el_chars;
 static int num_editor_hl_chars = SIZEOF_ARRAY_INT(editor_hl_chars);
 static int num_editor_el_chars = SIZEOF_ARRAY_INT(editor_el_chars);
+
+static int editor_hl_steel_chars[] =
+{
+  EL_INTERNAL_CASCADE_STEEL_CHARS_ACTIVE,
+  EL_STEEL_CHAR('T'),
+  EL_STEEL_CHAR('X'),
+  EL_STEEL_CHAR('T'),
+};
+
+static int editor_el_steel_chars[] =
+{
+  EL_STEEL_CHAR(' '),
+  EL_STEEL_CHAR('!'),
+  EL_STEEL_CHAR('"'),
+  EL_STEEL_CHAR('#'),
+
+  EL_STEEL_CHAR('$'),
+  EL_STEEL_CHAR('%'),
+  EL_STEEL_CHAR('&'),
+  EL_STEEL_CHAR('\''),
+
+  EL_STEEL_CHAR('('),
+  EL_STEEL_CHAR(')'),
+  EL_STEEL_CHAR('*'),
+  EL_STEEL_CHAR('+'),
+
+  EL_STEEL_CHAR(','),
+  EL_STEEL_CHAR('-'),
+  EL_STEEL_CHAR('.'),
+  EL_STEEL_CHAR('/'),
+
+  EL_STEEL_CHAR('0'),
+  EL_STEEL_CHAR('1'),
+  EL_STEEL_CHAR('2'),
+  EL_STEEL_CHAR('3'),
+
+  EL_STEEL_CHAR('4'),
+  EL_STEEL_CHAR('5'),
+  EL_STEEL_CHAR('6'),
+  EL_STEEL_CHAR('7'),
+
+  EL_STEEL_CHAR('8'),
+  EL_STEEL_CHAR('9'),
+  EL_STEEL_CHAR(':'),
+  EL_STEEL_CHAR(';'),
+
+  EL_STEEL_CHAR('<'),
+  EL_STEEL_CHAR('='),
+  EL_STEEL_CHAR('>'),
+  EL_STEEL_CHAR('?'),
+
+  EL_STEEL_CHAR('@'),
+  EL_STEEL_CHAR('A'),
+  EL_STEEL_CHAR('B'),
+  EL_STEEL_CHAR('C'),
+
+  EL_STEEL_CHAR('D'),
+  EL_STEEL_CHAR('E'),
+  EL_STEEL_CHAR('F'),
+  EL_STEEL_CHAR('G'),
+
+  EL_STEEL_CHAR('H'),
+  EL_STEEL_CHAR('I'),
+  EL_STEEL_CHAR('J'),
+  EL_STEEL_CHAR('K'),
+
+  EL_STEEL_CHAR('L'),
+  EL_STEEL_CHAR('M'),
+  EL_STEEL_CHAR('N'),
+  EL_STEEL_CHAR('O'),
+
+  EL_STEEL_CHAR('P'),
+  EL_STEEL_CHAR('Q'),
+  EL_STEEL_CHAR('R'),
+  EL_STEEL_CHAR('S'),
+
+  EL_STEEL_CHAR('T'),
+  EL_STEEL_CHAR('U'),
+  EL_STEEL_CHAR('V'),
+  EL_STEEL_CHAR('W'),
+
+  EL_STEEL_CHAR('X'),
+  EL_STEEL_CHAR('Y'),
+  EL_STEEL_CHAR('Z'),
+  EL_STEEL_CHAR('['),
+
+  EL_STEEL_CHAR('\\'),
+  EL_STEEL_CHAR(']'),
+  EL_STEEL_CHAR('^'),
+  EL_STEEL_CHAR('_'),
+
+  EL_STEEL_CHAR('©'),
+  EL_STEEL_CHAR('Ä'),
+  EL_STEEL_CHAR('Ö'),
+  EL_STEEL_CHAR('Ü'),
+
+  EL_STEEL_CHAR('°'),
+  EL_STEEL_CHAR('®'),
+  EL_STEEL_CHAR(FONT_ASCII_CURSOR),
+  EL_STEEL_CHAR(FONT_ASCII_BUTTON),
+
+  EL_STEEL_CHAR(FONT_ASCII_UP),
+  EL_STEEL_CHAR(FONT_ASCII_DOWN),
+  EL_STEEL_CHAR(' '),
+  EL_STEEL_CHAR(' ')
+};
+static int *editor_hl_steel_chars_ptr = editor_hl_steel_chars;
+static int *editor_el_steel_chars_ptr = editor_el_steel_chars;
+static int num_editor_hl_steel_chars = SIZEOF_ARRAY_INT(editor_hl_steel_chars);
+static int num_editor_el_steel_chars = SIZEOF_ARRAY_INT(editor_el_steel_chars);
 
 static int editor_hl_custom[] =
 {
@@ -4304,6 +4559,12 @@ editor_elements_info[] =
     &setup.editor_cascade.el_chars,
     &editor_hl_chars_ptr,		&num_editor_hl_chars,
     &editor_el_chars_ptr,		&num_editor_el_chars
+  },
+  {
+    &setup.editor.el_steel_chars,
+    &setup.editor_cascade.el_steel_chars,
+    &editor_hl_steel_chars_ptr,		&num_editor_hl_steel_chars,
+    &editor_el_steel_chars_ptr,		&num_editor_el_steel_chars
   },
   {
     &setup.editor.el_custom,
@@ -5107,8 +5368,11 @@ static void CreateCounterButtons()
 	if (i == ED_COUNTER_ID_SELECT_LEVEL)
 	{
 	  font_type = FONT_LEVEL_NUMBER;
+#if 1
+	  font_type_active = FONT_LEVEL_NUMBER_ACTIVE;
+#else
 	  font_type_active = FONT_LEVEL_NUMBER;
-
+#endif
 	  x += 2 * ED_GADGET_DISTANCE;
 	  y -= ED_GADGET_DISTANCE;
 
@@ -6736,6 +7000,11 @@ void CheckElementDescriptions()
 void DrawLevelEd()
 {
   CloseDoor(DOOR_CLOSE_ALL);
+
+#if 1
+  FadeOut(REDRAW_FIELD);
+#endif
+
   OpenDoor(DOOR_OPEN_2 | DOOR_NO_DELAY);
 
 #if DEBUG
@@ -6783,11 +7052,25 @@ void DrawLevelEd()
 #endif
   MapControlButtons();
 
+#if 0
+  FadeOut(REDRAW_FIELD);
+#endif
+
   DrawEditModeWindow();
+
+#if 1
+  FadeIn(REDRAW_FIELD);
+#endif
 
   /* copy actual editor door content to door double buffer for OpenDoor() */
   BlitBitmap(drawto, bitmap_db_door,
 	     DX, DY, DXSIZE, DYSIZE, DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
+
+#if 1
+  /* draw new control window (with border) to window */
+  redraw_mask |= REDRAW_ALL;
+  BackToFront();
+#endif
 
   OpenDoor(DOOR_OPEN_1);
 }
@@ -7041,7 +7324,7 @@ static void DrawDrawingWindow()
   stick_element_properties_window = FALSE;
 
   SetMainBackgroundImage(IMG_UNDEFINED);
-  ClearWindow();
+  ClearField();
 
   UnmapLevelEditorWindowGadgets();
   UnmapLevelEditorToolboxCustomGadgets();
@@ -7064,7 +7347,7 @@ static void DrawLevelInfoWindow()
   stick_element_properties_window = FALSE;
 
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
-  ClearWindow();
+  ClearField();
   UnmapLevelEditorWindowGadgets();
 
 #if 0
@@ -7299,23 +7582,27 @@ static int PrintElementDescriptionFromFile(char *filename, int start_line)
   int max_chars_per_line = (SXSIZE - 2 * pad_x) / font_width;
   int max_lines_per_screen = (SYSIZE - pad_y) / font_height - 1;
 
-  return DrawTextFromFile(sx, sy, filename, font_nr, max_chars_per_line,
-			  max_lines_per_screen, TRUE);
+  return DrawTextFile(sx, sy, filename, font_nr, max_chars_per_line, -1,
+		      max_lines_per_screen, -1, TRUE, FALSE, FALSE);
 }
 
 static void DrawPropertiesTabulatorGadgets()
 {
-  struct GadgetInfo *gd_gi = level_editor_gadget[GADGET_ID_PROPERTIES_INFO];
-  struct GadgetDesign *gd = &gd_gi->alt_design[GD_BUTTON_UNPRESSED];
-  int gd_x = gd->x + gd_gi->border.width / 2;
-  int gd_y = gd->y + gd_gi->height - 1;
+  struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_PROPERTIES_INFO];
+  struct GadgetInfo *gd_gi4 = level_editor_gadget[GADGET_ID_PROPERTIES_CHANGE];
+  struct GadgetDesign *gd = &gd_gi1->alt_design[GD_BUTTON_UNPRESSED];
+  int gd_x = gd->x + gd_gi1->border.width / 2;
+  int gd_y = gd->y + gd_gi1->height - 1;
   Pixel tab_color = GetPixel(gd->bitmap, gd_x, gd_y);
   int id_first = ED_TEXTBUTTON_ID_PROPERTIES_INFO;
   int id_last  = ED_TEXTBUTTON_ID_PROPERTIES_CONFIG;
+#if 1
+#else
   int max_tabs = 4;
+#endif
   int i;
 
-  /* draw additional "advanced" tabulator for custom elements */
+  /* draw additional "change" tabulator for custom elements */
   if (IS_CUSTOM_ELEMENT(properties_element))
     id_last = ED_TEXTBUTTON_ID_PROPERTIES_CHANGE;
 
@@ -7331,21 +7618,29 @@ static void DrawPropertiesTabulatorGadgets()
       continue;
 
     /* draw background line below tabulator button */
-    ClearRectangleOnBackground(drawto, gi->x, gi->y + gi->height, gi->width,1);
+    ClearRectangleOnBackground(drawto, gi->x, gi->y + gi->height, gi->width, 1);
 
     /* draw solid line below inactive tabulator buttons */
     if (!active && tab_color != BLACK_PIXEL)	/* black => transparent */
-      FillRectangle(drawto, gi->x, gi->y + gi->height, gi->width,1, tab_color);
+      FillRectangle(drawto, gi->x, gi->y + gi->height, gi->width, 1, tab_color);
 
     ModifyGadget(gi, GDI_ACTIVE, active, GDI_END);
     MapTextbuttonGadget(i);
   }
 
+#if 1
   /* draw little border line below tabulator buttons */
   if (tab_color != BLACK_PIXEL)			/* black => transparent */
-    FillRectangle(drawto, gd_gi->x, gd_gi->y + gd_gi->height + 1,
-		  max_tabs * gd_gi->width + (max_tabs -1) * ED_GADGET_DISTANCE,
+    FillRectangle(drawto, gd_gi1->x, gd_gi1->y + gd_gi1->height + 1,
+		  gd_gi4->x - gd_gi1->x + gd_gi4->width, ED_GADGET_DISTANCE,
+		  tab_color);
+#else
+  /* draw little border line below tabulator buttons */
+  if (tab_color != BLACK_PIXEL)			/* black => transparent */
+    FillRectangle(drawto, gd_gi1->x, gd_gi1->y + gd_gi1->height + 1,
+		  max_tabs * gd_gi1->width + (max_tabs -1) * ED_GADGET_DISTANCE,
 		  ED_GADGET_DISTANCE, tab_color);
+#endif
 }
 
 static void DrawPropertiesInfo()
@@ -7399,6 +7694,7 @@ static void DrawPropertiesInfo()
 
     /* pre-defined properties */
     { EP_CAN_PASS_MAGIC_WALL,	"- can pass magic walls"		},
+    { EP_CAN_PASS_DC_MAGIC_WALL,"- can pass magic walls (DC style)"	},
     { EP_SWITCHABLE,		"- can be switched"			},
 #if 0
     { EP_HAS_EDITOR_CONTENT,	"- can contain other elements"		},
@@ -7566,9 +7862,11 @@ static struct
   { EL_EMC_DRIPPER,	&level.amoeba_speed,		TEXT_AMOEBA_SPEED },
   { EL_MAGIC_WALL,	&level.time_magic_wall,		TEXT_DURATION	},
   { EL_BD_MAGIC_WALL,	&level.time_magic_wall,		TEXT_DURATION	},
+  { EL_DC_MAGIC_WALL,	&level.time_magic_wall,		TEXT_DURATION	},
   { EL_ROBOT_WHEEL,	&level.time_wheel,		TEXT_DURATION	},
 
-  { EL_TIMEGATE_SWITCH,	&level.time_timegate,		TEXT_DURATION	},
+  { EL_TIMEGATE_SWITCH,	  &level.time_timegate,		TEXT_DURATION	},
+  { EL_DC_TIMEGATE_SWITCH,&level.time_timegate,		TEXT_DURATION	},
   { EL_LIGHT_SWITCH,	&level.time_light,		TEXT_DURATION	},
   { EL_LIGHT_SWITCH_ACTIVE, &level.time_light,		TEXT_DURATION	},
   { EL_SHIELD_NORMAL,	&level.shield_normal_time,	TEXT_DURATION	},
@@ -7727,6 +8025,7 @@ static void DrawPropertiesConfig()
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BLOCK_SNAP_FIELD);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_CONTINUOUS_SNAPPING);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_INSTANT_RELOCATION);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_SHIFTED_RELOCATION);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_START_ELEMENT);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_ARTWORK_ELEMENT);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_EXPLOSION_ELEMENT);
@@ -7779,14 +8078,23 @@ static void DrawPropertiesConfig()
   {
     int counter1_id = ED_COUNTER_ID_ENVELOPE_XSIZE;
     int counter2_id = ED_COUNTER_ID_ENVELOPE_YSIZE;
+    int button1_id = ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP;
+    int button2_id = ED_CHECKBUTTON_ID_ENVELOPE_CENTERED;
     int envelope_nr = properties_element - EL_ENVELOPE_1;
 
     counterbutton_info[counter1_id].value = &level.envelope[envelope_nr].xsize;
     counterbutton_info[counter2_id].value = &level.envelope[envelope_nr].ysize;
 
+    checkbutton_info[button1_id].value = &level.envelope[envelope_nr].autowrap;
+    checkbutton_info[button2_id].value = &level.envelope[envelope_nr].centered;
+
     /* display counter to choose size of envelope text area */
-    MapCounterButtons(ED_COUNTER_ID_ENVELOPE_XSIZE);
-    MapCounterButtons(ED_COUNTER_ID_ENVELOPE_YSIZE);
+    MapCounterButtons(counter1_id);
+    MapCounterButtons(counter2_id);
+
+    /* display checkbuttons to choose auto-wrap and alignment properties */
+    MapCheckbuttonGadget(button1_id);
+    MapCheckbuttonGadget(button2_id);
 
     DrawEnvelopeTextArea(envelope_nr);
   }
@@ -8009,7 +8317,7 @@ static void DrawPropertiesWindow()
     MapLevelEditorToolboxCustomGadgets();
 
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
-  ClearWindow();
+  ClearField();
 
 #if 0
   DrawTextSCentered(ED_SETTINGS1_YPOS, FONT_TITLE_1, "Element Settings");
@@ -8058,71 +8366,1038 @@ static void UpdateCustomElementGraphicGadgets()
   }
 }
 
+static int getOpenDirectionFromTube(int element)
+{
+  switch (element)
+  {
+    case EL_TUBE_LEFT_UP:		return (MV_LEFT | MV_UP);
+    case EL_TUBE_LEFT_DOWN:		return (MV_LEFT | MV_DOWN);
+    case EL_TUBE_RIGHT_UP:		return (MV_RIGHT | MV_UP);
+    case EL_TUBE_RIGHT_DOWN:		return (MV_RIGHT | MV_DOWN);
+    case EL_TUBE_HORIZONTAL:		return (MV_HORIZONTAL);
+    case EL_TUBE_HORIZONTAL_UP:		return (MV_HORIZONTAL | MV_UP);
+    case EL_TUBE_HORIZONTAL_DOWN:	return (MV_HORIZONTAL | MV_DOWN);
+    case EL_TUBE_VERTICAL:		return (MV_VERTICAL);
+    case EL_TUBE_VERTICAL_LEFT:		return (MV_VERTICAL | MV_LEFT);
+    case EL_TUBE_VERTICAL_RIGHT:	return (MV_VERTICAL | MV_RIGHT);
+    case EL_TUBE_ANY:			return (MV_ANY_DIRECTION);
+  }
+
+  return MV_NONE;
+}
+
+static int getTubeFromOpenDirection(int direction)
+{
+  switch (direction)
+  {
+    case (MV_LEFT | MV_UP):		return EL_TUBE_LEFT_UP;
+    case (MV_LEFT | MV_DOWN):		return EL_TUBE_LEFT_DOWN;
+    case (MV_RIGHT | MV_UP):		return EL_TUBE_RIGHT_UP;
+    case (MV_RIGHT | MV_DOWN):		return EL_TUBE_RIGHT_DOWN;
+    case (MV_HORIZONTAL):		return EL_TUBE_HORIZONTAL;
+    case (MV_HORIZONTAL | MV_UP):	return EL_TUBE_HORIZONTAL_UP;
+    case (MV_HORIZONTAL | MV_DOWN):	return EL_TUBE_HORIZONTAL_DOWN;
+    case (MV_VERTICAL):			return EL_TUBE_VERTICAL;
+    case (MV_VERTICAL | MV_LEFT):	return EL_TUBE_VERTICAL_LEFT;
+    case (MV_VERTICAL | MV_RIGHT):	return EL_TUBE_VERTICAL_RIGHT;
+    case (MV_ANY_DIRECTION):		return EL_TUBE_ANY;
+
+    /* if only one direction, fall back to simple tube with that direction */
+    case (MV_LEFT):			return EL_TUBE_HORIZONTAL;
+    case (MV_RIGHT):			return EL_TUBE_HORIZONTAL;
+    case (MV_UP):			return EL_TUBE_VERTICAL;
+    case (MV_DOWN):			return EL_TUBE_VERTICAL;
+  }
+
+  return EL_EMPTY;
+}
+
+static int getTubeFromOpenDirectionNotEmpty(int direction, int element_old)
+{
+  int element_new = getTubeFromOpenDirection(direction);
+
+  return (element_new != EL_EMPTY ? element_new : element_old);
+}
+
+static int getOpenDirectionFromBelt(int element)
+{
+  int belt_dir = getBeltDirFromBeltElement(element);
+
+  return (belt_dir == MV_LEFT ? MV_RIGHT :
+	  belt_dir == MV_RIGHT ? MV_LEFT :
+	  belt_dir == MV_NONE ? MV_HORIZONTAL : belt_dir);
+}
+
+static int getBeltFromNrAndOpenDirection(int nr, int direction)
+{
+  int belt_dir = (direction == MV_LEFT ? MV_RIGHT :
+		  direction == MV_RIGHT ? MV_LEFT :
+		  direction == MV_HORIZONTAL ? MV_NONE : direction);
+
+  if (direction == MV_NONE)
+    return EL_EMPTY;
+
+  return getBeltElementFromBeltNrAndBeltDir(nr, belt_dir);
+}
+
+static int getBeltFromNrAndOpenDirectionNotEmpty(int nr, int direction,
+						 int element_old)
+{
+  int element_new = getBeltFromNrAndOpenDirection(nr, direction);
+
+  return (element_new != EL_EMPTY ? element_new : element_old);
+}
+
+static int getOpenDirectionFromPool(int element)
+{
+  switch (element)
+  {
+    case EL_ACID_POOL_TOPLEFT:		return (MV_DOWN | MV_RIGHT);
+    case EL_ACID_POOL_TOPRIGHT:		return (MV_DOWN | MV_LEFT);
+    case EL_ACID_POOL_BOTTOMLEFT:	return (MV_UP | MV_RIGHT);
+    case EL_ACID_POOL_BOTTOMRIGHT:	return (MV_UP | MV_LEFT);
+    case EL_ACID_POOL_BOTTOM:		return (MV_HORIZONTAL | MV_UP);
+    case EL_ACID:			return (MV_HORIZONTAL | MV_DOWN);
+  }
+
+  return MV_NONE;
+}
+
+static int getPoolFromOpenDirection(int direction)
+{
+  switch (direction)
+  {
+    case (MV_DOWN | MV_RIGHT):		return EL_ACID_POOL_TOPLEFT;
+    case (MV_DOWN | MV_LEFT):		return EL_ACID_POOL_TOPRIGHT;
+    case (MV_UP | MV_RIGHT):		return EL_ACID_POOL_BOTTOMLEFT;
+    case (MV_UP | MV_LEFT):		return EL_ACID_POOL_BOTTOMRIGHT;
+    case (MV_HORIZONTAL | MV_UP):	return EL_ACID_POOL_BOTTOM;
+    case (MV_HORIZONTAL | MV_DOWN):	return EL_ACID;
+  }
+
+  return EL_EMPTY;
+}
+
+static int getPoolFromOpenDirectionExt(int direction, int help_element)
+{
+  int element = getPoolFromOpenDirection(direction);
+  int help_direction = getOpenDirectionFromPool(help_element);
+
+  if (element == EL_EMPTY)
+  {
+    int help_direction_vertical = help_direction & MV_VERTICAL;
+
+    element = getPoolFromOpenDirection(direction | help_direction_vertical);
+  }
+
+  if (element == EL_EMPTY)
+  {
+    int help_direction_horizontal = help_direction & MV_HORIZONTAL;
+
+    element = getPoolFromOpenDirection(direction | help_direction_horizontal);
+  }
+
+  return element;
+}
+
+static int getPoolFromOpenDirectionNotEmpty(int direction, int element_old)
+{
+  int element_new = getPoolFromOpenDirectionExt(direction, element_old);
+
+  return (element_new != EL_EMPTY ? element_new : element_old);
+}
+
+static int getOpenDirectionFromPillar(int element)
+{
+  switch (element)
+  {
+    case EL_EMC_WALL_1:			return (MV_DOWN);
+    case EL_EMC_WALL_2:			return (MV_VERTICAL);
+    case EL_EMC_WALL_3:			return (MV_UP);
+  }
+
+  return MV_NONE;
+}
+
+static int getPillarFromOpenDirection(int direction)
+{
+  switch (direction)
+  {
+    case (MV_DOWN):			return EL_EMC_WALL_1;
+    case (MV_VERTICAL):			return EL_EMC_WALL_2;
+    case (MV_UP):			return EL_EMC_WALL_3;
+  }
+
+  return EL_EMPTY;
+}
+
+static int getPillarFromOpenDirectionNotEmpty(int direction, int element_old)
+{
+  int element_new = getPillarFromOpenDirection(direction);
+
+  return (element_new != EL_EMPTY ? element_new : element_old);
+}
+
+static int getOpenDirectionFromSteel2(int element)
+{
+  switch (element)
+  {
+    case EL_DC_STEELWALL_2_LEFT:	return (MV_RIGHT);
+    case EL_DC_STEELWALL_2_RIGHT:	return (MV_LEFT);
+    case EL_DC_STEELWALL_2_TOP:		return (MV_DOWN);
+    case EL_DC_STEELWALL_2_BOTTOM:	return (MV_UP);
+    case EL_DC_STEELWALL_2_HORIZONTAL:	return (MV_HORIZONTAL);
+    case EL_DC_STEELWALL_2_VERTICAL:	return (MV_VERTICAL);
+    case EL_DC_STEELWALL_2_MIDDLE:	return (MV_ANY_DIRECTION);
+    case EL_DC_STEELWALL_2_SINGLE:	return (MV_NONE);
+  }
+
+  return MV_NONE;
+}
+
+static int getSteel2FromOpenDirection(int direction)
+{
+  switch (direction)
+  {
+    case (MV_RIGHT):			return EL_DC_STEELWALL_2_LEFT;
+    case (MV_LEFT):			return EL_DC_STEELWALL_2_RIGHT;
+    case (MV_DOWN):			return EL_DC_STEELWALL_2_TOP;
+    case (MV_UP):			return EL_DC_STEELWALL_2_BOTTOM;
+    case (MV_HORIZONTAL):		return EL_DC_STEELWALL_2_HORIZONTAL;
+    case (MV_VERTICAL):			return EL_DC_STEELWALL_2_VERTICAL;
+    case (MV_ANY_DIRECTION):		return EL_DC_STEELWALL_2_MIDDLE;
+    case (MV_NONE):			return EL_DC_STEELWALL_2_SINGLE;
+  }
+
+  return EL_EMPTY;
+}
+
+static int getSteel2FromOpenDirectionNotEmpty(int direction, int element_old)
+{
+  int element_new = getSteel2FromOpenDirection(direction);
+
+  return (element_new != EL_EMPTY ? element_new : element_old);
+}
+
+static int getOpenDirectionFromChip(int element)
+{
+  switch (element)
+  {
+    case EL_SP_CHIP_SINGLE:		return (MV_NONE);
+    case EL_SP_CHIP_LEFT:		return (MV_RIGHT);
+    case EL_SP_CHIP_RIGHT:		return (MV_LEFT);
+    case EL_SP_CHIP_TOP:		return (MV_DOWN);
+    case EL_SP_CHIP_BOTTOM:		return (MV_UP);
+  }
+
+  return MV_NONE;
+}
+
+static int getChipFromOpenDirection(int direction)
+{
+  switch (direction)
+  {
+    case (MV_NONE):			return EL_SP_CHIP_SINGLE;
+    case (MV_LEFT):			return EL_SP_CHIP_RIGHT;
+    case (MV_RIGHT):			return EL_SP_CHIP_LEFT;
+    case (MV_UP):			return EL_SP_CHIP_BOTTOM;
+    case (MV_DOWN):			return EL_SP_CHIP_TOP;
+  }
+
+  return EL_EMPTY;
+}
+
+static int getChipFromOpenDirectionNotEmpty(int direction, int element_old)
+{
+  int element_new = getChipFromOpenDirection(direction);
+
+  return (element_new != EL_EMPTY ? element_new : element_old);
+}
+
+static int getClosedTube(int x, int y)
+{
+  static int xy[4][2] =
+  {
+    { -1, 0 },
+    { +1, 0 },
+    { 0, -1 },
+    { 0, +1 }
+  };
+  int element_old = IntelliDrawBuffer[x][y];
+  int direction_old = getOpenDirectionFromTube(element_old);
+  int direction_new = MV_NONE;
+  int i;
+
+  for (i = 0; i < NUM_DIRECTIONS; i++)
+  {
+    int xx = x + xy[i][0];
+    int yy = y + xy[i][1];
+    int dir = MV_DIR_FROM_BIT(i);
+    int dir_opposite = MV_DIR_OPPOSITE(dir);
+
+    if (IN_LEV_FIELD(xx, yy) && IS_TUBE(IntelliDrawBuffer[xx][yy]) &&
+	(direction_old & dir) &&
+	(getOpenDirectionFromTube(IntelliDrawBuffer[xx][yy]) & dir_opposite))
+      direction_new |= dir;
+  }
+
+  return getTubeFromOpenDirectionNotEmpty(direction_new, element_old);
+}
+
+static int getClosedBelt(int x, int y)
+{
+  static int xy[4][2] =
+  {
+    { -1, 0 },
+    { +1, 0 },
+    { 0, -1 },
+    { 0, +1 }
+  };
+  int element_old = IntelliDrawBuffer[x][y];
+  int nr = getBeltNrFromBeltElement(element_old);
+  int direction_old = getOpenDirectionFromBelt(element_old);
+  int direction_new = MV_NONE;
+  int i;
+
+  for (i = MV_BIT_LEFT; i <= MV_BIT_RIGHT; i++)
+  {
+    int xx = x + xy[i][0];
+    int yy = y + xy[i][1];
+    int dir = MV_DIR_FROM_BIT(i);
+    int dir_opposite = MV_DIR_OPPOSITE(dir);
+
+    if (IN_LEV_FIELD(xx, yy) && IS_BELT(IntelliDrawBuffer[xx][yy]) &&
+	(direction_old & dir) &&
+	(getOpenDirectionFromBelt(IntelliDrawBuffer[xx][yy]) & dir_opposite))
+      direction_new |= dir;
+  }
+
+  return getBeltFromNrAndOpenDirection(nr, direction_new);
+}
+
+static int getClosedPool(int x, int y)
+{
+  static int xy[4][2] =
+  {
+    { -1, 0 },
+    { +1, 0 },
+    { 0, -1 },
+    { 0, +1 }
+  };
+  int element_old = IntelliDrawBuffer[x][y];
+  int direction_old = getOpenDirectionFromPool(element_old);
+  int direction_new = MV_NONE;
+  int i;
+
+  for (i = 0; i < NUM_DIRECTIONS; i++)
+  {
+    int xx = x + xy[i][0];
+    int yy = y + xy[i][1];
+    int dir = MV_DIR_FROM_BIT(i);
+    int dir_opposite = MV_DIR_OPPOSITE(dir);
+
+    if (IN_LEV_FIELD(xx, yy) &&
+	IS_ACID_POOL_OR_ACID(IntelliDrawBuffer[xx][yy]) &&
+	(direction_old & dir) &&
+	(getOpenDirectionFromPool(IntelliDrawBuffer[xx][yy]) & dir_opposite))
+      direction_new |= dir;
+  }
+
+  return getPoolFromOpenDirectionNotEmpty(direction_new, element_old);
+}
+
+static int getClosedPillar(int x, int y)
+{
+  static int xy[4][2] =
+  {
+    { -1, 0 },
+    { +1, 0 },
+    { 0, -1 },
+    { 0, +1 }
+  };
+  int element_old = IntelliDrawBuffer[x][y];
+  int direction_old = getOpenDirectionFromPillar(element_old);
+  int direction_new = MV_NONE;
+  int i;
+
+  for (i = MV_BIT_UP; i <= MV_BIT_DOWN; i++)
+  {
+    int xx = x + xy[i][0];
+    int yy = y + xy[i][1];
+    int dir = MV_DIR_FROM_BIT(i);
+    int dir_opposite = MV_DIR_OPPOSITE(dir);
+
+    if (IN_LEV_FIELD(xx, yy) && IS_EMC_PILLAR(IntelliDrawBuffer[xx][yy]) &&
+	(direction_old & dir) &&
+	(getOpenDirectionFromPillar(IntelliDrawBuffer[xx][yy]) & dir_opposite))
+      direction_new |= dir;
+  }
+
+  return getPillarFromOpenDirectionNotEmpty(direction_new, element_old);
+}
+
+static int getClosedSteel2(int x, int y)
+{
+  static int xy[4][2] =
+  {
+    { -1, 0 },
+    { +1, 0 },
+    { 0, -1 },
+    { 0, +1 }
+  };
+  int element_old = IntelliDrawBuffer[x][y];
+  int direction_old = getOpenDirectionFromSteel2(element_old);
+  int direction_new = MV_NONE;
+  int i;
+
+  for (i = 0; i < NUM_DIRECTIONS; i++)
+  {
+    int xx = x + xy[i][0];
+    int yy = y + xy[i][1];
+    int dir = MV_DIR_FROM_BIT(i);
+    int dir_opposite = MV_DIR_OPPOSITE(dir);
+
+    if (IN_LEV_FIELD(xx, yy) && IS_DC_STEELWALL_2(IntelliDrawBuffer[xx][yy]) &&
+	(direction_old & dir) &&
+	(getOpenDirectionFromSteel2(IntelliDrawBuffer[xx][yy]) & dir_opposite))
+      direction_new |= dir;
+  }
+
+  return getSteel2FromOpenDirectionNotEmpty(direction_new, element_old);
+}
+
+static int getClosedChip(int x, int y)
+{
+  static int xy[4][2] =
+  {
+    { -1, 0 },
+    { +1, 0 },
+    { 0, -1 },
+    { 0, +1 }
+  };
+  int element_old = IntelliDrawBuffer[x][y];
+  int direction_old = getOpenDirectionFromChip(element_old);
+  int direction_new = MV_NONE;
+  int i;
+
+  for (i = 0; i < NUM_DIRECTIONS; i++)
+  {
+    int xx = x + xy[i][0];
+    int yy = y + xy[i][1];
+    int dir = MV_DIR_FROM_BIT(i);
+    int dir_opposite = MV_DIR_OPPOSITE(dir);
+
+    if (IN_LEV_FIELD(xx, yy) && IS_SP_CHIP(IntelliDrawBuffer[xx][yy]) &&
+	(direction_old & dir) &&
+	(getOpenDirectionFromChip(IntelliDrawBuffer[xx][yy]) & dir_opposite))
+      direction_new |= dir;
+  }
+
+  return getChipFromOpenDirectionNotEmpty(direction_new, element_old);
+}
+
+static void SetElementSimple(int x, int y, int element, boolean change_level)
+{
+  int sx = x - level_xpos;
+  int sy = y - level_ypos;
+
+  IntelliDrawBuffer[x][y] = element;
+
+  if (change_level)
+    Feld[x][y] = element;
+
+  if (IN_ED_FIELD(sx, sy))
+    DrawMiniElement(sx, sy, element);
+}
+
+static void MergeAndCloseNeighbourElements(int x1, int y1, int *element1,
+					   int x2, int y2, int *element2,
+					   int (*close_function)(int, int),
+					   boolean change_level)
+{
+  /* set neighbour elements to newly determined connections */
+  SetElementSimple(x1, y1, *element1, change_level);
+  SetElementSimple(x2, y2, *element2, change_level);
+
+  /* remove all open connections of neighbour elements */
+  *element1 = close_function(x1, y1);
+  *element2 = close_function(x2, y2);
+
+  /* set neighbour elements to new, minimized connections */
+  SetElementSimple(x1, y1, *element1, change_level);
+  SetElementSimple(x2, y2, *element2, change_level);
+}
+
+static void SetElementIntelliDraw(int x, int y, int new_element,
+				  boolean change_level, int button)
+{
+  static int xy[4][2] =
+  {
+    { -1, 0 },
+    { +1, 0 },
+    { 0, -1 },
+    { 0, +1 }
+  };
+  static int last_x = -1;
+  static int last_y = -1;
+  int old_element = IntelliDrawBuffer[x][y];
+
+  if (new_element == EL_UNDEFINED)
+  {
+    last_x = -1;
+    last_y = -1;
+
+    return;
+  }
+
+  if (IS_TUBE(new_element))
+  {
+    int last_element_new = EL_UNDEFINED;
+    int direction = MV_NONE;
+    int i;
+
+    /* if old element is of same kind, keep all existing directions */
+    if (IS_TUBE(old_element))
+      direction |= getOpenDirectionFromTube(old_element);
+
+    for (i = 0; i < NUM_DIRECTIONS; i++)
+    {
+      int xx = x + xy[i][0];
+      int yy = y + xy[i][1];
+
+      if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
+	  IS_TUBE(IntelliDrawBuffer[last_x][last_y]))
+      {
+	int dir = MV_DIR_FROM_BIT(i);
+	int dir_opposite = MV_DIR_OPPOSITE(dir);
+	int last_element_old = IntelliDrawBuffer[last_x][last_y];
+	int last_direction_old = getOpenDirectionFromTube(last_element_old);
+	int last_direction_new = last_direction_old | dir_opposite;
+
+	last_element_new = getTubeFromOpenDirection(last_direction_new);
+
+	direction |= dir;
+      }
+    }
+
+    new_element = getTubeFromOpenDirectionNotEmpty(direction, new_element);
+
+    if (last_element_new != EL_UNDEFINED)
+      MergeAndCloseNeighbourElements(x, y, &new_element,
+				     last_x, last_y, &last_element_new,
+				     getClosedTube, change_level);
+  }
+  else if (IS_BELT(new_element))
+  {
+    int belt_nr = getBeltNrFromBeltElement(new_element);
+    int last_element_new = EL_UNDEFINED;
+    int direction = MV_NONE;
+    int i;
+
+    /* if old element is of same kind, keep all existing directions */
+    if (IS_BELT(old_element))
+      direction |= getOpenDirectionFromBelt(old_element);
+
+    for (i = MV_BIT_LEFT; i <= MV_BIT_RIGHT; i++)
+    {
+      int xx = x + xy[i][0];
+      int yy = y + xy[i][1];
+
+      if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
+	  IS_BELT(IntelliDrawBuffer[last_x][last_y]))
+      {
+	int dir = MV_DIR_FROM_BIT(i);
+	int dir_opposite = MV_DIR_OPPOSITE(dir);
+	int last_element_old = IntelliDrawBuffer[last_x][last_y];
+	int last_belt_nr = getBeltNrFromBeltElement(last_element_old);
+	int last_direction_old = getOpenDirectionFromBelt(last_element_old);
+	int last_direction_new = last_direction_old | dir_opposite;
+
+	last_element_new = getBeltFromNrAndOpenDirection(last_belt_nr,
+							 last_direction_new);
+	direction |= dir;
+      }
+    }
+
+    new_element = getBeltFromNrAndOpenDirectionNotEmpty(belt_nr, direction,
+							new_element);
+    if (last_element_new != EL_UNDEFINED)
+      MergeAndCloseNeighbourElements(x, y, &new_element,
+				     last_x, last_y, &last_element_new,
+				     getClosedBelt, change_level);
+  }
+  else if (IS_ACID_POOL_OR_ACID(new_element))
+  {
+    int last_element_new = EL_UNDEFINED;
+    int direction = MV_NONE;
+    int i;
+
+    /* if old element is of same kind, keep all existing directions */
+    if (IS_ACID_POOL_OR_ACID(old_element))
+      direction |= getOpenDirectionFromPool(old_element);
+
+    for (i = 0; i < NUM_DIRECTIONS; i++)
+    {
+      int xx = x + xy[i][0];
+      int yy = y + xy[i][1];
+
+      if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
+	  IS_ACID_POOL_OR_ACID(IntelliDrawBuffer[last_x][last_y]))
+      {
+	int dir = MV_DIR_FROM_BIT(i);
+	int dir_opposite = MV_DIR_OPPOSITE(dir);
+	int last_element_old = IntelliDrawBuffer[last_x][last_y];
+	int last_direction_old = getOpenDirectionFromPool(last_element_old);
+	int last_direction_new = last_direction_old | dir_opposite;
+
+	last_element_new = getPoolFromOpenDirection(last_direction_new);
+
+	direction |= dir;
+      }
+    }
+
+    /* special corrections needed for intuitively correct acid pool drawing */
+    if (last_element_new == EL_EMPTY)
+      last_element_new = new_element;
+    else if (last_element_new != EL_UNDEFINED)
+      new_element = last_element_new;
+
+    new_element = getPoolFromOpenDirectionNotEmpty(direction, new_element);
+
+    if (last_element_new != EL_UNDEFINED)
+      MergeAndCloseNeighbourElements(x, y, &new_element,
+				     last_x, last_y, &last_element_new,
+				     getClosedPool, change_level);
+  }
+  else if (IS_EMC_PILLAR(new_element))
+  {
+    int last_element_new = EL_UNDEFINED;
+    int direction = MV_NONE;
+    int i;
+
+    /* if old element is of same kind, keep all existing directions */
+    if (IS_EMC_PILLAR(old_element))
+      direction |= getOpenDirectionFromPillar(old_element);
+
+    for (i = MV_BIT_UP; i <= MV_BIT_DOWN; i++)
+    {
+      int xx = x + xy[i][0];
+      int yy = y + xy[i][1];
+
+      if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
+	  IS_EMC_PILLAR(IntelliDrawBuffer[last_x][last_y]))
+      {
+	int dir = MV_DIR_FROM_BIT(i);
+	int dir_opposite = MV_DIR_OPPOSITE(dir);
+	int last_element_old = IntelliDrawBuffer[last_x][last_y];
+	int last_direction_old = getOpenDirectionFromPillar(last_element_old);
+	int last_direction_new = last_direction_old | dir_opposite;
+
+	last_element_new = getPillarFromOpenDirection(last_direction_new);
+
+	direction |= dir;
+      }
+    }
+
+    new_element = getPillarFromOpenDirectionNotEmpty(direction, new_element);
+
+    if (last_element_new != EL_UNDEFINED)
+      MergeAndCloseNeighbourElements(x, y, &new_element,
+				     last_x, last_y, &last_element_new,
+				     getClosedPillar, change_level);
+  }
+  else if (IS_DC_STEELWALL_2(new_element))
+  {
+    int last_element_new = EL_UNDEFINED;
+    int direction = MV_NONE;
+    int i;
+
+    /* if old element is of same kind, keep all existing directions */
+    if (IS_DC_STEELWALL_2(old_element))
+      direction |= getOpenDirectionFromSteel2(old_element);
+
+    for (i = 0; i < NUM_DIRECTIONS; i++)
+    {
+      int xx = x + xy[i][0];
+      int yy = y + xy[i][1];
+
+      if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
+	  IS_DC_STEELWALL_2(IntelliDrawBuffer[last_x][last_y]))
+      {
+	int dir = MV_DIR_FROM_BIT(i);
+	int dir_opposite = MV_DIR_OPPOSITE(dir);
+	int last_element_old = IntelliDrawBuffer[last_x][last_y];
+	int last_direction_old = getOpenDirectionFromSteel2(last_element_old);
+	int last_direction_new = last_direction_old | dir_opposite;
+
+	last_element_new = getSteel2FromOpenDirection(last_direction_new);
+
+	direction |= dir;
+      }
+    }
+
+    new_element = getSteel2FromOpenDirectionNotEmpty(direction, new_element);
+
+    if (last_element_new != EL_UNDEFINED)
+      MergeAndCloseNeighbourElements(x, y, &new_element,
+				     last_x, last_y, &last_element_new,
+				     getClosedSteel2, change_level);
+  }
+  else if (IS_SP_CHIP(new_element))
+  {
+    int last_element_new = EL_UNDEFINED;
+    int direction = MV_NONE;
+    int i;
+
+    /* (do not keep existing directions, regardless of kind of old element) */
+
+    for (i = 0; i < NUM_DIRECTIONS; i++)
+    {
+      int xx = x + xy[i][0];
+      int yy = y + xy[i][1];
+
+      if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
+	  IS_SP_CHIP(IntelliDrawBuffer[last_x][last_y]))
+      {
+	int dir = MV_DIR_FROM_BIT(i);
+	int dir_opposite = MV_DIR_OPPOSITE(dir);
+	int last_element_old = IntelliDrawBuffer[last_x][last_y];
+	int last_direction_old = getOpenDirectionFromChip(last_element_old);
+	int last_direction_new = last_direction_old | dir_opposite;
+
+	if (last_direction_old == MV_NONE)
+	{
+	  last_element_new = getChipFromOpenDirection(last_direction_new);
+	  direction |= dir;
+	}
+	else if (last_direction_old & (dir | dir_opposite))
+	{
+	  direction |= MV_DIR_OPPOSITE(last_direction_old);
+	}
+	else
+	{
+	  direction |= MV_DIR_OPPOSITE(dir);
+	}
+      }
+    }
+
+    new_element = getChipFromOpenDirectionNotEmpty(direction, new_element);
+
+    if (last_element_new != EL_UNDEFINED)
+      MergeAndCloseNeighbourElements(x, y, &new_element,
+				     last_x, last_y, &last_element_new,
+				     getClosedChip, change_level);
+  }
+  else if (IS_SP_HARDWARE_BASE(new_element))
+  {
+    int nr = GetSimpleRandom(6);
+
+    new_element = (nr == 0 ? EL_SP_HARDWARE_BASE_1 :
+		   nr == 1 ? EL_SP_HARDWARE_BASE_2 :
+		   nr == 2 ? EL_SP_HARDWARE_BASE_3 :
+		   nr == 3 ? EL_SP_HARDWARE_BASE_4 :
+		   nr == 4 ? EL_SP_HARDWARE_BASE_5 : EL_SP_HARDWARE_BASE_6);
+  }
+  else if (new_element == EL_SP_HARDWARE_GREEN ||
+	   new_element == EL_SP_HARDWARE_BLUE ||
+	   new_element == EL_SP_HARDWARE_RED)
+  {
+    int nr = GetSimpleRandom(3);
+
+    new_element = (nr == 0 ? EL_SP_HARDWARE_GREEN :
+		   nr == 1 ? EL_SP_HARDWARE_BLUE : EL_SP_HARDWARE_RED);
+  }
+  else if (IS_GROUP_ELEMENT(new_element))
+  {
+    boolean connected_drawing = FALSE;
+    int i;
+
+    for (i = 0; i < NUM_DIRECTIONS; i++)
+    {
+      int xx = x + xy[i][0];
+      int yy = y + xy[i][1];
+
+      if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
+	  IS_IN_GROUP_EL(IntelliDrawBuffer[last_x][last_y], new_element))
+	connected_drawing = TRUE;
+    }
+
+    if (!connected_drawing)
+      ResolveGroupElement(new_element);
+
+    new_element = GetElementFromGroupElement(new_element);
+  }
+  else if (IS_BELT_SWITCH(old_element))
+  {
+    int belt_nr = getBeltNrFromBeltSwitchElement(old_element);
+    int belt_dir = getBeltDirFromBeltSwitchElement(old_element);
+
+    belt_dir = (belt_dir == MV_LEFT ? MV_NONE :
+		belt_dir == MV_NONE ? MV_RIGHT : MV_LEFT);
+
+    new_element = getBeltSwitchElementFromBeltNrAndBeltDir(belt_nr, belt_dir);
+  }
+  else
+  {
+    static int swappable_elements[][2] =
+    {
+      { EL_EXIT_CLOSED,			EL_EXIT_OPEN			},
+      { EL_DYNAMITE,			EL_DYNAMITE_ACTIVE		},
+      { EL_EM_DYNAMITE,			EL_EM_DYNAMITE_ACTIVE		},
+      { EL_QUICKSAND_EMPTY,		EL_QUICKSAND_FULL		},
+      { EL_EMERALD,			EL_WALL_EMERALD			},
+      { EL_EMERALD_YELLOW,		EL_WALL_EMERALD_YELLOW		},
+      { EL_EMERALD_RED,			EL_WALL_EMERALD_RED		},
+      { EL_EMERALD_PURPLE,		EL_WALL_EMERALD_PURPLE		},
+      { EL_DIAMOND,			EL_WALL_DIAMOND			},
+      { EL_BD_DIAMOND,			EL_WALL_BD_DIAMOND		},
+      { EL_GATE_1,			EL_GATE_1_GRAY			},
+      { EL_GATE_2,			EL_GATE_2_GRAY			},
+      { EL_GATE_3,			EL_GATE_3_GRAY			},
+      { EL_GATE_4,			EL_GATE_4_GRAY			},
+      { EL_EM_GATE_1,			EL_EM_GATE_1_GRAY		},
+      { EL_EM_GATE_2,			EL_EM_GATE_2_GRAY		},
+      { EL_EM_GATE_3,			EL_EM_GATE_3_GRAY		},
+      { EL_EM_GATE_4,			EL_EM_GATE_4_GRAY		},
+      { EL_EMC_GATE_5,			EL_EMC_GATE_5_GRAY		},
+      { EL_EMC_GATE_6,			EL_EMC_GATE_6_GRAY		},
+      { EL_EMC_GATE_7,			EL_EMC_GATE_7_GRAY		},
+      { EL_EMC_GATE_8,			EL_EMC_GATE_8_GRAY		},
+      { EL_DC_GATE_WHITE,		EL_DC_GATE_WHITE_GRAY		},
+      { EL_TIME_ORB_EMPTY,		EL_TIME_ORB_FULL		},
+      { EL_LAMP,			EL_LAMP_ACTIVE			},
+      { EL_SOKOBAN_FIELD_EMPTY,		EL_SOKOBAN_FIELD_FULL		},
+      { EL_SP_BASE,			EL_SP_BUGGY_BASE		},
+      { EL_PEARL,			EL_WALL_PEARL			},
+      { EL_CRYSTAL,			EL_WALL_CRYSTAL			},
+      { EL_TIMEGATE_CLOSED,		EL_TIMEGATE_OPEN		},
+      { EL_SWITCHGATE_CLOSED,		EL_SWITCHGATE_OPEN		},
+      { EL_SWITCHGATE_SWITCH_UP,	EL_SWITCHGATE_SWITCH_DOWN	},
+      { EL_DC_SWITCHGATE_SWITCH_UP,	EL_DC_SWITCHGATE_SWITCH_DOWN	},
+      { EL_LIGHT_SWITCH,		EL_LIGHT_SWITCH_ACTIVE		},
+      { EL_LANDMINE,			EL_DC_LANDMINE			},
+      { EL_SHIELD_NORMAL,		EL_SHIELD_DEADLY		},
+      { EL_STEEL_EXIT_CLOSED,		EL_STEEL_EXIT_OPEN		},
+      { EL_EM_EXIT_CLOSED,		EL_EM_EXIT_OPEN			},
+      { EL_EM_STEEL_EXIT_CLOSED,	EL_EM_STEEL_EXIT_OPEN		},
+      { EL_QUICKSAND_FAST_EMPTY,	EL_QUICKSAND_FAST_FULL		},
+
+      { -1,				-1				},
+    };
+    static int rotatable_elements[][4] =
+    {
+      {
+	EL_BUG_UP,
+	EL_BUG_RIGHT,
+	EL_BUG_DOWN,
+	EL_BUG_LEFT
+      },
+
+      {
+	EL_SPACESHIP_UP,
+	EL_SPACESHIP_RIGHT,
+	EL_SPACESHIP_DOWN,
+	EL_SPACESHIP_LEFT
+      },
+
+      {
+	EL_BD_BUTTERFLY_UP,
+	EL_BD_BUTTERFLY_RIGHT,
+	EL_BD_BUTTERFLY_DOWN,
+	EL_BD_BUTTERFLY_LEFT
+      },
+
+      {
+	EL_BD_FIREFLY_UP,
+	EL_BD_FIREFLY_RIGHT,
+	EL_BD_FIREFLY_DOWN,
+	EL_BD_FIREFLY_LEFT
+      },
+
+      {
+	EL_PACMAN_UP,
+	EL_PACMAN_RIGHT,
+	EL_PACMAN_DOWN,
+	EL_PACMAN_LEFT
+      },
+
+      {
+	EL_YAMYAM_UP,
+	EL_YAMYAM_RIGHT,
+	EL_YAMYAM_DOWN,
+	EL_YAMYAM_LEFT
+      },
+
+      {
+	EL_ARROW_UP,
+	EL_ARROW_RIGHT,
+	EL_ARROW_DOWN,
+	EL_ARROW_LEFT
+      },
+
+      {
+	EL_SP_PORT_UP,
+	EL_SP_PORT_RIGHT,
+	EL_SP_PORT_DOWN,
+	EL_SP_PORT_LEFT
+      },
+
+      {
+	EL_SP_GRAVITY_PORT_UP,
+	EL_SP_GRAVITY_PORT_RIGHT,
+	EL_SP_GRAVITY_PORT_DOWN,
+	EL_SP_GRAVITY_PORT_LEFT
+      },
+
+      {
+	EL_MOLE_UP,
+	EL_MOLE_RIGHT,
+	EL_MOLE_DOWN,
+	EL_MOLE_LEFT
+      },
+
+      {
+	EL_BALLOON_SWITCH_UP,
+	EL_BALLOON_SWITCH_RIGHT,
+	EL_BALLOON_SWITCH_DOWN,
+	EL_BALLOON_SWITCH_LEFT
+      },
+
+      {
+	EL_SP_GRAVITY_ON_PORT_UP,
+	EL_SP_GRAVITY_ON_PORT_RIGHT,
+	EL_SP_GRAVITY_ON_PORT_DOWN,
+	EL_SP_GRAVITY_ON_PORT_LEFT
+      },
+
+      {
+	EL_SP_GRAVITY_OFF_PORT_UP,
+	EL_SP_GRAVITY_OFF_PORT_RIGHT,
+	EL_SP_GRAVITY_OFF_PORT_DOWN,
+	EL_SP_GRAVITY_OFF_PORT_LEFT
+      },
+
+      {
+	-1,
+	-1,
+	-1,
+	-1,
+      },
+    };
+    int i, j;
+
+    for (i = 0; swappable_elements[i][0] != -1; i++)
+    {
+      int element1 = swappable_elements[i][0];
+      int element2 = swappable_elements[i][1];
+
+      if (old_element == element1 || old_element == element2)
+	new_element = (old_element == element1 ? element2 : element1);
+    }
+
+    for (i = 0; rotatable_elements[i][0] != -1; i++)
+    {
+      for (j = 0; j < 4; j++)
+      {
+	int element = rotatable_elements[i][j];
+
+	if (old_element == element)
+	  new_element = (button == 1 ? rotatable_elements[i][(j + 3) % 4] :
+			 button == 2 ? rotatable_elements[i][0]           :
+			 button == 3 ? rotatable_elements[i][(j + 1) % 4] :
+			 old_element);
+      }
+    }
+  }
+
+  SetElementSimple(x, y, new_element, change_level);
+
+  last_x = x;
+  last_y = y;
+}
+
+static void ResetIntelliDraw()
+{
+  int x, y;
+
+  for (x = 0; x < lev_fieldx; x++)
+    for (y = 0; y < lev_fieldy; y++)
+      IntelliDrawBuffer[x][y] = Feld[x][y];
+
+  SetElementIntelliDraw(-1, -1, EL_UNDEFINED, FALSE, -1);
+}
+
+static void SetElementExt(int x, int y, int element, boolean change_level,
+			  int button)
+{
+  if (element < 0)
+    SetElementSimple(x, y, Feld[x][y], change_level);
+  else if (GetKeyModState() & KMOD_Shift)
+    SetElementIntelliDraw(x, y, element, change_level, button);
+  else
+    SetElementSimple(x, y, element, change_level);
+}
+
+static void SetElement(int x, int y, int element)
+{
+  SetElementExt(x, y, element, TRUE, -1);
+}
+
+static void SetElementButton(int x, int y, int element, int button)
+{
+  SetElementExt(x, y, element, TRUE, button);
+}
+
 static void DrawLineElement(int sx, int sy, int element, boolean change_level)
 {
   int lx = sx + level_xpos;
   int ly = sy + level_ypos;
 
-  DrawMiniElement(sx, sy, (element < 0 ? Feld[lx][ly] : element));
-
-  if (change_level)
-    Feld[lx][ly] = element;
+  SetElementExt(lx, ly, element, change_level, -1);
 }
 
 static void DrawLine(int from_x, int from_y, int to_x, int to_y,
 		     int element, boolean change_level)
 {
+  int xsize = ABS(to_x - from_x);
+  int ysize = ABS(to_y - from_y);
+  int dx = (to_x < from_x ? -1 : +1);
+  int dy = (to_y < from_y ? -1 : +1);
+  int i;
+
   if (from_y == to_y)			/* horizontal line */
   {
-    int x;
-    int y = from_y;
-
-    if (from_x > to_x)
-      swap_numbers(&from_x, &to_x);
-
-    for (x = from_x; x <= to_x; x++)
-      DrawLineElement(x, y, element, change_level);
+    for (i = 0; i <= xsize; i++)
+      DrawLineElement(from_x + i * dx, from_y, element, change_level);
   }
   else if (from_x == to_x)		/* vertical line */
   {
-    int x = from_x;
-    int y;
-
-    if (from_y > to_y)
-      swap_numbers(&from_y, &to_y);
-
-    for (y = from_y; y <= to_y; y++)
-      DrawLineElement(x, y, element, change_level);
+    for (i = 0; i <= ysize; i++)
+      DrawLineElement(from_x, from_y + i * dy, element, change_level);
   }
   else					/* diagonal line */
   {
-    int len_x = ABS(to_x - from_x);
-    int len_y = ABS(to_y - from_y);
-    int x, y;
-
-    if (len_y < len_x)			/* a < 1 */
+    if (ysize < xsize)			/* a < 1 */
     {
-      float a = (float)len_y / (float)len_x;
+      float a = (float)ysize / (float)xsize;
 
-      if (from_x > to_x)
-	swap_number_pairs(&from_x, &from_y, &to_x, &to_y);
-
-      for (x = 0; x <= len_x; x++)
+      for (i = 0; i <= xsize; i++)
       {
-	y = (int)(a * x + 0.5) * (to_y < from_y ? -1 : +1);
+	int x = dx * i;
+	int y = dy * (int)(a * i + 0.5);
+
 	DrawLineElement(from_x + x, from_y + y, element, change_level);
       }
     }
     else				/* a >= 1 */
     {
-      float a = (float)len_x / (float)len_y;
+      float a = (float)xsize / (float)ysize;
 
-      if (from_y > to_y)
-	swap_number_pairs(&from_x, &from_y, &to_x, &to_y);
-
-      for (y = 0; y <= len_y; y++)
+      for (i = 0; i <= ysize; i++)
       {
-	x = (int)(a * y + 0.5) * (to_x < from_x ? -1 : +1);
+	int x = dx * (int)(a * i + 0.5);
+	int y = dy * i;
+
 	DrawLineElement(from_x + x, from_y + y, element, change_level);
       }
     }
@@ -8330,7 +9605,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 
     for (y = 0; y < brush_height; y++)
     {
-      for (x=0; x < brush_width; x++)
+      for (x = 0; x < brush_width; x++)
       {
 	brush_buffer[x][y] = Feld[from_lx + x][from_ly + y];
 
@@ -8435,33 +9710,7 @@ void DumpBrush_Small()
 
 static void FloodFill(int from_x, int from_y, int fill_element)
 {
-  int i,x,y;
-  int old_element;
-  static int check[4][2] = { {-1,0}, {0,-1}, {1,0}, {0,1} };
-  static int safety = 0;
-
-  /* check if starting field still has the desired content */
-  if (Feld[from_x][from_y] == fill_element)
-    return;
-
-  safety++;
-
-  if (safety > lev_fieldx*lev_fieldy)
-    Error(ERR_EXIT, "Something went wrong in 'FloodFill()'. Please debug.");
-
-  old_element = Feld[from_x][from_y];
-  Feld[from_x][from_y] = fill_element;
-
-  for (i = 0; i < 4; i++)
-  {
-    x = from_x + check[i][0];
-    y = from_y + check[i][1];
-
-    if (IN_LEV_FIELD(x,y) && Feld[x][y] == old_element)
-      FloodFill(x, y, fill_element);
-  }
-
-  safety--;
+  FloodFillLevel(from_x, from_y, fill_element, Feld, lev_fieldx, lev_fieldy);
 }
 
 /* values for DrawLevelText() modes */
@@ -8649,6 +9898,10 @@ static void RandomPlacement(int new_element)
   int num_percentage, num_elements;
   int x, y;
 
+#if 1
+  ResetIntelliDraw();
+#endif
+
   /* determine number of free positions for randomly placing the new element */
   for (x = 0; x < lev_fieldx; x++) for (y = 0; y < lev_fieldy; y++)
   {
@@ -8672,20 +9925,28 @@ static void RandomPlacement(int new_element)
     for (x = 0; x < lev_fieldx; x++)
       for (y = 0; y < lev_fieldy; y++)
 	if (free_position[x][y])
+#if 1
+	  SetElement(x, y, new_element);
+#else
 	  Feld[x][y] = new_element;
+#endif
   }
   else
   {
     while (num_elements > 0)
     {
-      x = RND(lev_fieldx);
-      y = RND(lev_fieldy);
+      x = GetSimpleRandom(lev_fieldx);
+      y = GetSimpleRandom(lev_fieldy);
 
       /* don't place element at the same position twice */
       if (free_position[x][y])
       {
 	free_position[x][y] = FALSE;
+#if 1
+	SetElement(x, y, new_element);
+#else
 	Feld[x][y] = new_element;
+#endif
 	num_elements--;
       }
     }
@@ -8786,6 +10047,12 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
     actual_drawing_function = GADGET_ID_PICK_ELEMENT;
   }
 
+  if (GetKeyModState() & KMOD_Shift)
+  {
+    if (button_press_event || button_release_event)
+      ResetIntelliDraw();
+  }
+
   switch (actual_drawing_function)
   {
     case GADGET_ID_SINGLE_ITEMS:
@@ -8798,17 +10065,27 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	  if (edit_mode == ED_MODE_DRAWING && draw_with_brush &&
 	      !inside_drawing_area)
 	    DeleteBrushFromCursor();
+
+#if 0
+	  ResetIntelliDraw();
+#endif
 	}
 
-	if (!button)
+	if (!button || button_release_event)
 	  break;
 
 	if (draw_with_brush)
 	{
+#if 0
 	  if (!button_release_event)
+#endif
 	    CopyBrushToLevel(sx, sy, button);
 	}
+#if 1
+	else
+#else
 	else if (new_element != Feld[lx][ly])
+#endif
 	{
 	  if (new_element == EL_PLAYER_1)
 	  {
@@ -8819,18 +10096,30 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	      {
 		if (Feld[x][y] == EL_PLAYER_1)
 		{
+#if 1
+		  SetElement(x, y, EL_EMPTY);
+#else
 		  Feld[x][y] = EL_EMPTY;
+#if 1
+		  if (IN_ED_FIELD(x - level_xpos, y - level_ypos))
+		    DrawMiniElement(x - level_xpos, y - level_ypos, EL_EMPTY);
+#else
 		  if (x - level_xpos >= 0 && x - level_xpos < ed_fieldx &&
 		      y - level_ypos >= 0 && y - level_ypos < ed_fieldy)
-		    DrawMiniElement(x - level_xpos, y - level_ypos,
-				    EL_EMPTY);
+		    DrawMiniElement(x - level_xpos, y - level_ypos, EL_EMPTY);
+#endif
+#endif
 		}
 	      }
 	    }
 	  }
 
+#if 1
+	  SetElementButton(lx, ly, new_element, button);
+#else
 	  Feld[lx][ly] = new_element;
 	  DrawMiniElement(sx, sy, new_element);
+#endif
 	}
       }
       else
@@ -9609,7 +10898,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       break;
 
     case GADGET_ID_EXIT:
-      RequestExitLevelEditor(TRUE);	/* if level has changed, ask user */
+      RequestExitLevelEditor(TRUE, FALSE);  /* if level has changed, ask user */
       break;
 
     default:
@@ -9788,7 +11077,7 @@ void HandleLevelEditorKeyInput(Key key)
       case KSYM_Escape:
         if (edit_mode == ED_MODE_DRAWING)
 	{
-	  RequestExitLevelEditor(setup.ask_on_escape_editor);
+	  RequestExitLevelEditor(setup.ask_on_escape_editor, TRUE);
 	}
         else if (edit_mode == ED_MODE_INFO)
 	{
@@ -10059,7 +11348,8 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
     DrawTextS(INFOTEXT_XPOS - SX, INFOTEXT_YPOS - SY, FONT_TEXT_2, infotext);
 }
 
-void RequestExitLevelEditor(boolean ask_if_level_has_changed)
+void RequestExitLevelEditor(boolean ask_if_level_has_changed,
+			    boolean quick_quit)
 {
   if (!ask_if_level_has_changed ||
       !LevelChanged() ||
@@ -10068,8 +11358,21 @@ void RequestExitLevelEditor(boolean ask_if_level_has_changed)
   {
     CloseDoor(DOOR_CLOSE_1);
     SetDoorState(DOOR_CLOSE_2);
+
+#if 1
+    if (quick_quit)
+      FadeSkipNextFadeIn();
+#else
+    if (quick_quit)
+      fading = fading_none;
+#endif
+
     game_status = GAME_MODE_MAIN;
+#if 1
+    DrawAndFadeInMainMenu(REDRAW_FIELD);
+#else
     DrawMainMenu();
+#endif
   }
   else
   {

@@ -52,6 +52,10 @@ font_to_graphic[] =
     IMG_FONT_TITLE_2
   },
   {
+    FONT_TITLE_2,				GFX_SPECIAL_ARG_SETUP,
+    IMG_FONT_TITLE_2_SETUP
+  },
+  {
     FONT_MENU_1,				-1,
     IMG_FONT_MENU_1
   },
@@ -72,8 +76,16 @@ font_to_graphic[] =
     IMG_FONT_TEXT_1
   },
   {
+    FONT_TEXT_1,				GFX_SPECIAL_ARG_MAIN,
+    IMG_FONT_TEXT_1_MAIN
+  },
+  {
     FONT_TEXT_1,				GFX_SPECIAL_ARG_LEVELS,
     IMG_FONT_TEXT_1_LEVELS
+  },
+  {
+    FONT_TEXT_1,				GFX_SPECIAL_ARG_SETUP,
+    IMG_FONT_TEXT_1_SETUP
   },
   {
     FONT_TEXT_1,				GFX_SPECIAL_ARG_PREVIEW,
@@ -88,12 +100,28 @@ font_to_graphic[] =
     IMG_FONT_TEXT_1_ACTIVE_SCORES
   },
   {
+    FONT_TEXT_1,				GFX_SPECIAL_ARG_PANEL,
+    IMG_FONT_TEXT_1_PANEL
+  },
+  {
+    FONT_TEXT_1,				GFX_SPECIAL_ARG_DOOR,
+    IMG_FONT_TEXT_1_DOOR
+  },
+  {
     FONT_TEXT_2,				-1,
     IMG_FONT_TEXT_2
   },
   {
+    FONT_TEXT_2,				GFX_SPECIAL_ARG_MAIN,
+    IMG_FONT_TEXT_2_MAIN
+  },
+  {
     FONT_TEXT_2,				GFX_SPECIAL_ARG_LEVELS,
     IMG_FONT_TEXT_2_LEVELS
+  },
+  {
+    FONT_TEXT_2,				GFX_SPECIAL_ARG_SETUP,
+    IMG_FONT_TEXT_2_SETUP
   },
   {
     FONT_TEXT_2,				GFX_SPECIAL_ARG_PREVIEW,
@@ -116,6 +144,10 @@ font_to_graphic[] =
     IMG_FONT_TEXT_3_LEVELS
   },
   {
+    FONT_TEXT_3,				GFX_SPECIAL_ARG_SETUP,
+    IMG_FONT_TEXT_3_SETUP
+  },
+  {
     FONT_TEXT_3,				GFX_SPECIAL_ARG_PREVIEW,
     IMG_FONT_TEXT_3_PREVIEW
   },
@@ -132,8 +164,16 @@ font_to_graphic[] =
     IMG_FONT_TEXT_4
   },
   {
+    FONT_TEXT_4,				GFX_SPECIAL_ARG_MAIN,
+    IMG_FONT_TEXT_4_MAIN
+  },
+  {
     FONT_TEXT_4,				GFX_SPECIAL_ARG_LEVELS,
     IMG_FONT_TEXT_4_LEVELS
+  },
+  {
+    FONT_TEXT_4,				GFX_SPECIAL_ARG_SETUP,
+    IMG_FONT_TEXT_4_SETUP
   },
   {
     FONT_TEXT_4,				GFX_SPECIAL_ARG_SCORES,
@@ -212,12 +252,24 @@ font_to_graphic[] =
     IMG_FONT_LEVEL_NUMBER
   },
   {
+    FONT_LEVEL_NUMBER_ACTIVE,			-1,
+    IMG_FONT_LEVEL_NUMBER_ACTIVE
+  },
+  {
     FONT_TAPE_RECORDER,				-1,
     IMG_FONT_TAPE_RECORDER
   },
   {
     FONT_GAME_INFO,				-1,
     IMG_FONT_GAME_INFO
+  },
+  {
+    FONT_INFO_ELEMENTS,				-1,
+    IMG_FONT_INFO_ELEMENTS
+  },
+  {
+    FONT_INFO_LEVELSET,				-1,
+    IMG_FONT_INFO_LEVELSET
   },
   {
     -1,						-1,

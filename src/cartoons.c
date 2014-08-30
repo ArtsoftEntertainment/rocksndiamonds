@@ -31,21 +31,6 @@ static void PrepareBackbuffer()
     return;
   }
 
-  /* fill empty backbuffer for animation functions */
-  if (setup.direct_draw && game_status == GAME_MODE_PLAYING)
-  {
-    int xx, yy;
-
-    SetDrawtoField(DRAW_BACKBUFFER);
-
-    for (xx = 0; xx < SCR_FIELDX; xx++)
-      for (yy = 0; yy < SCR_FIELDY; yy++)
-	DrawScreenField(xx, yy);
-    DrawAllPlayers();
-
-    SetDrawtoField(DRAW_DIRECT);
-  }
-
   if (setup.soft_scrolling && game_status == GAME_MODE_PLAYING)
   {
     int fx = FX, fy = FY;
@@ -95,7 +80,11 @@ void InitToons()
     toons[i].position = image->parameter[GFX_ARG_POSITION];
   }
 
+#if 1
+  InitToonScreen(bitmap_db_toons,
+#else
   InitToonScreen(bitmap_db_door,
+#endif
 		 BackToFront, PrepareBackbuffer, ToonNeedsRedraw,
 		 toons, num_toons,
 		 REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE,
