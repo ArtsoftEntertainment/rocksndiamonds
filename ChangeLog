@@ -1,6 +1,135 @@
+2007-01-05
+	* version 3.2.3 released
+
+2007-01-04
+	* fixed malloc/free bug when updating EMC artwork entries in level list
+	* added workaround (warning and request to quit the current game) when
+	  changing elements cause endless recursion loop (which would otherwise
+	  freeze the game, causing a crash-like program exit on some systems)
+
+2006-12-16
+	* fixed nasty string overflow bug when entering too long envelope text
+
+2006-12-05
+	* added feedback sounds for menu navigation "menu.item.activating" and
+	  "menu.item.selecting" (for highlighting and executing menu entries)
+
+2006-12-03
+	* improved "no scrolling when relocating" to also consider scroll delay
+	  (meaning that the player is not automatically centered in this case;
+	  this makes it possible to "invisibly" relocate the player to a region
+	  of the level playfield which looks the same as the old level region)
+	* fixed bug with not recognizing "main.input.name.align" when active
+
+2006-12-02
+	* fixed bug with displaying masked borders over title screens when
+	  screen fading is disabled
+
+2006-11-25
+	* fixed infinite loop / crash bug when killing the player while having
+	  a CE with the setting "kill player X when explosion of <player X>"
+	* added special editor graphic for "char_space" to distinguish it from
+	  "empty_space" when editing a level (in-game graphics still the same)
+
+2006-11-21
+	* fixed nasty bug with initialization only done for the first player
+
+2006-11-19
+	* small change to handle loading empty element/content list micro chunks
+
+2006-11-03
+	* uploaded pre-release (test) version 3.2.3-0 binary and source code
+
+2006-11-01
+	* some optimizations on startup speed by reducing initial text output
+
+2006-10-30
+	* added caching of custom artwork information for faster startup times
+
+2006-10-29
+	* fixed graphical bug when using fewer menu entries on level selection
+	  screen than usual (with "menu.list_size.LEVELS" directive)
+	* fixed crash bug (Windows/SDL only) caused by BlitBitmap blitting from
+	  the backbuffer to the backbuffer by error (with identical rectangle)
+
+2006-10-28
+	* fixed bug when displaying titlescreen with size less than element tile
+	* fixed bug that caused elements with "change when digging <e>" event
+	  to change for _every_ digged element, not only those specified in <e>
+	* fixed bug that caused impact style collision when dropping element one
+	  tile over the player that can both fall down and smash players
+	* fixed bug that caused impact style collision when element changed to
+	  falling/smashing element over the player immediately after movement
+
+2006-10-24
+	* fixed bug that allowed making engine snapshots from the level editor
+
+2006-10-22
+	* fixed bugs with player name and current level positions on main screen
+
+2006-10-20
+	* added configuration directives for control of title screens:
+	  - "title.fade_delay" for fading time
+	  - "title.post_delay" for pause between screens (when not crossfading)
+	  - "title.auto_delay" to automatically continue after some time
+	  these settings can each be overridden by specifying them with titles:
+	  - "titlescreen_initial_{1-5}.{fade_delay,post_delay,auto_delay}"
+	  - "titlescreen_{1-5}.{fade_delay,post_delay,auto_delay}"
+	  fading mode can also be specified:
+	  - "titlescreen_initial_{1-5}.anim_mode: {fade,crossfade}
+	  - "titlescreen_{1-5}.anim_mode: {fade,crossfade}
+	  default is using normal fading for menues and initial title screens,
+	  while using cross-fading for level set title screens
+	* fixed bug with background not drawn in Hall of Fame after game was won
+
+2006-10-18
+	* added configuration directives for the remaining main menu items
+
+2006-10-17
+	* added additional configuration directives for info screen draw offset:
+	  menu.draw_{x,y}offset.INFO[{ELEMENTS,MUSIC,CREDITS,PROGRAM,LEVELSET}]
+	* added additional configuration directives for preview info text
+	* limited mouse wheel sensitive screen area to scrollable screen area
+
+2006-10-16
+	* added highlighted menu text entries to menu navigation when selected
+
+2006-10-14
+	* fixed bug that prevented player from correctly being created in the
+	  top left corner by a custom element change in a level without player
+	* fixed bug that prevented player from being killed when indestructible,
+	  non-walkable element is placed on player position by extended change
+	* added configurable menu button, text and input positions to main menu
+
+2006-10-13
+	* added page fading effects for remaining info sub-screens
+	* fixed small bug that caused some delays when answering door request
+
+2006-10-12
+	* added directives "border.draw_masked.*" for menu/playfield area and
+	  door areas to display overlapping/masked borders from "global.border"
+
+2006-10-09
+	* fixed bug with CE with move speed "not moving" not being animated
+	* when changing player artwork by CE action, reset animation frame
+
+2006-10-03
+	* fixed bug with not unmapping main menu screen gadgets on other screens
+	* fixed bug with un-pausing a paused game by releasing still pressed key
+	* fixed bug with not redrawing screen when toggling to/from fullscreen
+	  mode while fast reloading tape (without redrawing playfield contents)
+	* fixed bug with quick-saving tape snapshot despite answering with "no"
+
+2006-08-30
+	* version number set to 3.2.3
+
+2006-08-29
+	* version 3.2.2 released
+
 2006-08-29
 	* fixed bug with redrawing screen in fullscreen mode after quick tape
 	  reloading when using the EMC game engine
+	* changed token names from "last_ce_[1-8]" to "prev_ce_[1-8]"
 
 2006-08-28
 	* fixed bug in GameWon() when level contains no exit (like in Sokoban)

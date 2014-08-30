@@ -194,9 +194,22 @@
 /* values for special (non game element) animation modes */
 #define ANIM_HORIZONTAL		(1 << 10)
 #define ANIM_VERTICAL		(1 << 11)
-#define ANIM_STATIC_PANEL	(1 << 12)
+#define ANIM_CENTERED		(1 << 12)
+#define ANIM_STATIC_PANEL	(1 << 13)
+#define ANIM_FADE		(1 << 14)
+#define ANIM_CROSSFADE		(1 << 15)
 
 #define ANIM_DEFAULT		ANIM_LOOP
+
+/* values for text alignment */
+#define ALIGN_LEFT		(1 << 0)
+#define ALIGN_RIGHT		(1 << 1)
+#define ALIGN_CENTER		(1 << 2)
+
+#define ALIGN_DEFAULT		ALIGN_LEFT
+
+#define ALIGNED_XPOS(x,w,a)	((a) == ALIGN_CENTER ? (x) - (w) / 2 :	\
+				 (a) == ALIGN_RIGHT  ? (x) - (w) : (x))
 
 /* values for redraw_mask */
 #define REDRAW_NONE		(0)
@@ -299,6 +312,7 @@
 #define TAPES_DIRECTORY		"tapes"
 #define SCORES_DIRECTORY	"scores"
 #define DOCS_DIRECTORY		"docs"
+#define CACHE_DIRECTORY		"cache"
 
 #if !defined(PLATFORM_MSDOS)
 #define GFX_CLASSIC_SUBDIR	"gfx_classic"
@@ -323,6 +337,7 @@
 #define GRAPHICSINFO_FILENAME	"graphicsinfo.conf"
 #define SOUNDSINFO_FILENAME	"soundsinfo.conf"
 #define MUSICINFO_FILENAME	"musicinfo.conf"
+#define ARTWORKINFO_CACHE_FILE	"artworkinfo.cache"
 #define LEVELFILE_EXTENSION	"level"
 #define TAPEFILE_EXTENSION	"tape"
 #define SCOREFILE_EXTENSION	"score"
@@ -338,6 +353,7 @@
 #define GRAPHICSINFO_FILENAME	"gfxinfo.cnf"
 #define SOUNDSINFO_FILENAME	"sndinfo.cnf"
 #define MUSICINFO_FILENAME	"musinfo.cnf"
+#define ARTWORKINFO_CACHE_FILE	"artinfo.cac"
 #define LEVELFILE_EXTENSION	"lvl"
 #define TAPEFILE_EXTENSION	"tap"
 #define SCOREFILE_EXTENSION	"sco"
@@ -984,6 +1000,12 @@ struct XY
   int x, y;
 };
 
+struct Rect
+{
+  int x, y;
+  int width, height;
+};
+
 
 /* ========================================================================= */
 /* exported variables                                                        */
@@ -1037,17 +1059,19 @@ void InitGfxDoor2Info(int, int, int, int);
 void InitGfxScrollbufferInfo(int, int);
 void SetDrawDeactivationMask(int);
 void SetDrawBackgroundMask(int);
+void SetWindowBackgroundBitmap(Bitmap *);
 void SetMainBackgroundBitmap(Bitmap *);
 void SetDoorBackgroundBitmap(Bitmap *);
 
 void InitVideoDisplay(void);
 void CloseVideoDisplay(void);
-void InitVideoBuffer(DrawBuffer **,DrawWindow **, int,int,int, boolean);
+void InitVideoBuffer(int, int, int, boolean);
 Bitmap *CreateBitmapStruct(void);
 Bitmap *CreateBitmap(int, int, int);
 void FreeBitmap(Bitmap *);
 void BlitBitmap(Bitmap *, Bitmap *, int, int, int, int, int, int);
-void FadeRectangle(Bitmap *bitmap, int, int, int, int, int, int, int);
+void FadeRectangle(Bitmap *bitmap, int, int, int, int, int, int, int,
+		   void (*draw_border_function)(void));
 void FillRectangle(Bitmap *, int, int, int, int, Pixel);
 void ClearRectangle(Bitmap *, int, int, int, int);
 void ClearRectangleOnBackground(Bitmap *, int, int, int, int);

@@ -104,6 +104,8 @@ void InitGadgets()
   CreateToolButtons();
   CreateScreenGadgets();
 
+  InitGadgetsSoundCallback(PlaySoundActivating, PlaySoundSelecting);
+
   gadgets_initialized = TRUE;
 }
 
@@ -165,7 +167,7 @@ static int getFontBitmapID(int font_nr)
 {
   int special = -1;
 
-  if (game_status >= GAME_MODE_MAIN && game_status <= GAME_MODE_PSEUDO_PREVIEW)
+  if (game_status >= GAME_MODE_TITLE && game_status <= GAME_MODE_PSEUDO_PREVIEW)
     special = game_status;
   else if (game_status == GAME_MODE_PSEUDO_TYPENAME)
     special = GFX_SPECIAL_ARG_MAIN;
@@ -250,7 +252,7 @@ void InitFontGraphicInfo()
     }
   }
 
-  /* initialize special element/graphic mapping from dynamic configuration */
+  /* initialize special font/graphic mapping from dynamic configuration */
   for (i = 0; i < num_property_mappings; i++)
   {
     int font_nr = property_mapping[i].base_index - MAX_NUM_ELEMENTS;
@@ -265,6 +267,54 @@ void InitFontGraphicInfo()
       font_info[font_nr].special_graphic[special] = graphic;
       font_info[font_nr].special_bitmap_id[special] = num_font_bitmaps;
       num_font_bitmaps++;
+    }
+  }
+
+  /* reset non-redefined ".active" font graphics if normal font is redefined */
+  /* (this different treatment is needed because normal and active fonts are
+     independently defined ("active" is not a property of font definitions!) */
+  for (i = 0; i < NUM_FONTS; i++)
+  {
+    int font_nr_base = i;
+    int font_nr_active = FONT_ACTIVE(font_nr_base);
+
+    /* check only those fonts with exist as normal and ".active" variant */
+    if (font_nr_base != font_nr_active)
+    {
+      int base_graphic = font_info[font_nr_base].graphic;
+      int active_graphic = font_info[font_nr_active].graphic;
+      boolean base_redefined =
+	getImageListEntryFromImageID(base_graphic)->redefined;
+      boolean active_redefined =
+	getImageListEntryFromImageID(active_graphic)->redefined;
+
+      /* if the base font ("font.menu_1", for example) has been redefined,
+	 but not the active font ("font.menu_1.active", for example), do not
+	 use an existing (in this case considered obsolete) active font
+	 anymore, but use the automatically determined default font */
+      if (base_redefined && !active_redefined)
+	font_info[font_nr_active].graphic = base_graphic;
+
+      /* now also check each "special" font (which may be the same as above) */
+      for (j = 0; j < NUM_SPECIAL_GFX_ARGS; j++)
+      {
+	int base_graphic = font_info[font_nr_base].special_graphic[j];
+	int active_graphic = font_info[font_nr_active].special_graphic[j];
+	boolean base_redefined =
+	  getImageListEntryFromImageID(base_graphic)->redefined;
+	boolean active_redefined =
+	  getImageListEntryFromImageID(active_graphic)->redefined;
+
+	/* same as above, but check special graphic definitions, for example:
+	   redefined "font.menu_1.MAIN" invalidates "font.menu_1.active.MAIN" */
+	if (base_redefined && !active_redefined)
+	{
+	  font_info[font_nr_active].special_graphic[j] =
+	    font_info[font_nr_base].special_graphic[j];
+	  font_info[font_nr_active].special_bitmap_id[j] =
+	    font_info[font_nr_base].special_bitmap_id[j];
+	}
+      }
     }
   }
 
@@ -901,13 +951,13 @@ static void set_graphic_parameters(int graphic)
 
   graphic_info[graphic].bitmap = src_bitmap;
 
-  /* start with reliable default values */
+  /* always start with reliable default values */
   graphic_info[graphic].src_image_width = 0;
   graphic_info[graphic].src_image_height = 0;
   graphic_info[graphic].src_x = 0;
   graphic_info[graphic].src_y = 0;
-  graphic_info[graphic].width = TILEX;
-  graphic_info[graphic].height = TILEY;
+  graphic_info[graphic].width  = TILEX;	/* default for element graphics */
+  graphic_info[graphic].height = TILEY;	/* default for element graphics */
   graphic_info[graphic].offset_x = 0;	/* one or both of these values ... */
   graphic_info[graphic].offset_y = 0;	/* ... will be corrected later */
   graphic_info[graphic].offset2_x = 0;	/* one or both of these values ... */
@@ -922,6 +972,26 @@ static void set_graphic_parameters(int graphic)
   graphic_info[graphic].anim_delay_random = 0;
   graphic_info[graphic].post_delay_fixed = 0;
   graphic_info[graphic].post_delay_random = 0;
+  graphic_info[graphic].fade_delay = -1;
+  graphic_info[graphic].post_delay = -1;
+  graphic_info[graphic].auto_delay = -1;
+
+#if 1
+  /* optional zoom factor for scaling up the image to a larger size */
+  if (parameter[GFX_ARG_SCALE_UP_FACTOR] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].scale_up_factor = parameter[GFX_ARG_SCALE_UP_FACTOR];
+  if (graphic_info[graphic].scale_up_factor < 1)
+    graphic_info[graphic].scale_up_factor = 1;		/* no scaling */
+#endif
+
+#if 1
+  if (graphic_info[graphic].use_image_size)
+  {
+    /* set new default bitmap size (with scaling, but without small images) */
+    graphic_info[graphic].width  = get_scaled_graphic_width(graphic);
+    graphic_info[graphic].height = get_scaled_graphic_height(graphic);
+  }
+#endif
 
   /* optional x and y tile position of animation frame sequence */
   if (parameter[GFX_ARG_XPOS] != ARG_UNDEFINED_VALUE)
@@ -941,11 +1011,13 @@ static void set_graphic_parameters(int graphic)
   if (parameter[GFX_ARG_HEIGHT] != ARG_UNDEFINED_VALUE)
     graphic_info[graphic].height = parameter[GFX_ARG_HEIGHT];
 
+#if 0
   /* optional zoom factor for scaling up the image to a larger size */
   if (parameter[GFX_ARG_SCALE_UP_FACTOR] != ARG_UNDEFINED_VALUE)
     graphic_info[graphic].scale_up_factor = parameter[GFX_ARG_SCALE_UP_FACTOR];
   if (graphic_info[graphic].scale_up_factor < 1)
     graphic_info[graphic].scale_up_factor = 1;		/* no scaling */
+#endif
 
   if (src_bitmap)
   {
@@ -1087,6 +1159,14 @@ static void set_graphic_parameters(int graphic)
   /* optional graphic for cloning all graphics settings */
   if (parameter[GFX_ARG_CLONE_FROM] != ARG_UNDEFINED_VALUE)
     graphic_info[graphic].clone_from = parameter[GFX_ARG_CLONE_FROM];
+
+  /* optional settings for drawing title screens */
+  if (parameter[GFX_ARG_FADE_DELAY] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].fade_delay = parameter[GFX_ARG_FADE_DELAY];
+  if (parameter[GFX_ARG_POST_DELAY] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].post_delay = parameter[GFX_ARG_POST_DELAY];
+  if (parameter[GFX_ARG_AUTO_DELAY] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].auto_delay = parameter[GFX_ARG_AUTO_DELAY];
 }
 
 static void set_cloned_graphic_parameters(int graphic)
@@ -1142,9 +1222,60 @@ static void InitGraphicInfo()
   GC copy_clipmask_gc = None;
 #endif
 
+  /* use image size as default values for width and height for these images */
+  static int full_size_graphics[] =
+  {
+    IMG_GLOBAL_BORDER,
+    IMG_GLOBAL_DOOR,
+
+    IMG_BACKGROUND_ENVELOPE_1,
+    IMG_BACKGROUND_ENVELOPE_2,
+    IMG_BACKGROUND_ENVELOPE_3,
+    IMG_BACKGROUND_ENVELOPE_4,
+
+    IMG_BACKGROUND,
+    IMG_BACKGROUND_TITLE,
+    IMG_BACKGROUND_MESSAGE,
+    IMG_BACKGROUND_MAIN,
+    IMG_BACKGROUND_LEVELS,
+    IMG_BACKGROUND_SCORES,
+    IMG_BACKGROUND_EDITOR,
+    IMG_BACKGROUND_INFO,
+    IMG_BACKGROUND_INFO_ELEMENTS,
+    IMG_BACKGROUND_INFO_MUSIC,
+    IMG_BACKGROUND_INFO_CREDITS,
+    IMG_BACKGROUND_INFO_PROGRAM,
+    IMG_BACKGROUND_INFO_LEVELSET,
+    IMG_BACKGROUND_SETUP,
+    IMG_BACKGROUND_DOOR,
+
+    IMG_TITLESCREEN_INITIAL_1,
+    IMG_TITLESCREEN_INITIAL_2,
+    IMG_TITLESCREEN_INITIAL_3,
+    IMG_TITLESCREEN_INITIAL_4,
+    IMG_TITLESCREEN_INITIAL_5,
+    IMG_TITLESCREEN_1,
+    IMG_TITLESCREEN_2,
+    IMG_TITLESCREEN_3,
+    IMG_TITLESCREEN_4,
+    IMG_TITLESCREEN_5,
+
+    -1
+  };
+
   checked_free(graphic_info);
 
   graphic_info = checked_calloc(num_images * sizeof(struct GraphicInfo));
+
+#if 1
+  /* initialize "use_image_size" flag with default value */
+  for (i = 0; i < num_images; i++)
+    graphic_info[i].use_image_size = FALSE;
+
+  /* initialize "use_image_size" flag from static configuration above */
+  for (i = 0; full_size_graphics[i] != -1; i++)
+    graphic_info[full_size_graphics[i]].use_image_size = TRUE;
+#endif
 
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
   if (clipmasks_initialized)
@@ -1175,6 +1306,7 @@ static void InitGraphicInfo()
   {
     Bitmap *src_bitmap;
     int src_x, src_y;
+    int width, height;
     int first_frame, last_frame;
     int src_bitmap_width, src_bitmap_height;
 
@@ -1182,6 +1314,10 @@ static void InitGraphicInfo()
 
     if (graphic_info[i].bitmap == NULL)
       continue;		/* skip check for optional images that are undefined */
+
+    /* get image size (this can differ from the standard element tile size!) */
+    width  = graphic_info[i].width;
+    height = graphic_info[i].height;
 
     /* get final bitmap size (with scaling, but without small images) */
     src_bitmap_width  = graphic_info[i].src_image_width;
@@ -1192,9 +1328,15 @@ static void InitGraphicInfo()
     first_frame = 0;
     getGraphicSource(i, first_frame, &src_bitmap, &src_x, &src_y);
 
+#if 1
+    /* this avoids calculating wrong start position for out-of-bounds frame */
+    src_x = graphic_info[i].src_x;
+    src_y = graphic_info[i].src_y;
+#endif
+
     if (src_x < 0 || src_y < 0 ||
-	src_x + TILEX > src_bitmap_width ||
-	src_y + TILEY > src_bitmap_height)
+	src_x + width  > src_bitmap_width ||
+	src_y + height > src_bitmap_height)
     {
       Error(ERR_RETURN_LINE, "-");
       Error(ERR_RETURN, "warning: error found in config file:");
@@ -1221,8 +1363,8 @@ static void InitGraphicInfo()
     getGraphicSource(i, last_frame, &src_bitmap, &src_x, &src_y);
 
     if (src_x < 0 || src_y < 0 ||
-	src_x + TILEX > src_bitmap_width ||
-	src_y + TILEY > src_bitmap_height)
+	src_x + width  > src_bitmap_width ||
+	src_y + height > src_bitmap_height)
     {
       Error(ERR_RETURN_LINE, "-");
       Error(ERR_RETURN, "warning: error found in config file:");
@@ -4433,11 +4575,15 @@ void InitGfx()
 
   font_height = getFontHeight(FC_RED);
 
+#if 1
+  DrawInitText(getWindowTitleString(), 20, FC_YELLOW);
+#else
   DrawInitText(getProgramInitString(), 20, FC_YELLOW);
+#endif
   DrawInitText(PROGRAM_COPYRIGHT_STRING, 50, FC_RED);
   DrawInitText(PROGRAM_WEBSITE_STRING, WIN_YSIZE - 20 - font_height, FC_RED);
 
-  DrawInitText("Loading graphics:", 120, FC_GREEN);
+  DrawInitText("Loading graphics", 120, FC_GREEN);
 }
 
 void RedrawBackground()
@@ -4452,7 +4598,6 @@ void InitGfxBackground()
 {
   int x, y;
 
-  drawto = backbuffer;
   fieldbuffer = bitmap_db_field;
   SetDrawtoField(DRAW_BACKBUFFER);
 
@@ -4767,8 +4912,7 @@ void OpenAll()
   InitJoysticks();
 
   InitVideoDisplay();
-  InitVideoBuffer(&backbuffer, &window, WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH,
-		  setup.fullscreen);
+  InitVideoBuffer(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH, setup.fullscreen);
 
   InitEventFilter(FilterMouseMotionEvents);
 
@@ -4777,8 +4921,11 @@ void OpenAll()
 
   InitGfx();
 
+  // debug_print_timestamp(0, "INIT");
   InitLevelInfo();
+  // debug_print_timestamp(0, "TIME InitLevelInfo:        ");
   InitLevelArtworkInfo();
+  // debug_print_timestamp(0, "TIME InitLevelArtworkInfo: ");
 
   InitImages();			/* needs to know current level directory */
   InitSound(NULL);		/* needs to know current level directory */

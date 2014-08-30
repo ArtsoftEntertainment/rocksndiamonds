@@ -156,12 +156,12 @@ int getTextWidth(char *text, int font_nr)
   return (text != NULL ? strlen(text) * getFontWidth(font_nr) : 0);
 }
 
-static char getFontCharPosition(int font_nr, char c)
+static int getFontCharPosition(int font_nr, char c)
 {
   int font_bitmap_id = gfx.select_font_function(font_nr);
   struct FontBitmapInfo *font = &gfx.font_bitmap_info[font_bitmap_id];
   boolean default_font = (font->num_chars == DEFAULT_NUM_CHARS_PER_FONT);
-  int font_pos = c - 32;
+  int font_pos = (unsigned char)c - 32;
 
   /* map some special characters to their ascii values in default font */
   if (default_font)
@@ -187,14 +187,20 @@ void getFontCharSource(int font_nr, char c, Bitmap **bitmap, int *x, int *y)
 
 void DrawInitText(char *text, int ypos, int font_nr)
 {
-  if (window &&
+  if (window != NULL &&
       gfx.num_fonts > 0 &&
       gfx.font_bitmap_info[font_nr].bitmap != NULL)
   {
-    ClearRectangle(window, 0, ypos, video.width, getFontHeight(font_nr));
-    DrawTextExt(window, (video.width - getTextWidth(text, font_nr)) / 2, ypos,
-		text, font_nr, BLIT_OPAQUE);
-    FlushDisplay();
+    int x = (video.width - getTextWidth(text, font_nr)) / 2;
+    int y = ypos;
+    int width = video.width;
+    int height = getFontHeight(font_nr);
+
+    ClearRectangle(drawto, 0, y, width, height);
+    DrawTextExt(drawto, x, y, text, font_nr, BLIT_OPAQUE);
+
+    /* this makes things significantly faster than directly drawing to window */
+    BlitBitmap(drawto, window, 0, y, width, height, 0, y);
   }
 }
 
@@ -240,6 +246,18 @@ void DrawTextSCentered(int y, int font_nr, char *text)
 	   gfx.sy + y, text, font_nr);
 }
 
+void DrawTextSAligned(int x, int y, char *text, int font_nr, int align)
+{
+  DrawText(gfx.sx + ALIGNED_XPOS(x, getTextWidth(text, font_nr), align),
+	   gfx.sx + y, text, font_nr);
+}
+
+void DrawTextAligned(int x, int y, char *text, int font_nr, int align)
+{
+  DrawText(ALIGNED_XPOS(x, getTextWidth(text, font_nr), align),
+	   y, text, font_nr);
+}
+
 void DrawText(int x, int y, char *text, int font_nr)
 {
   int mask_mode = BLIT_OPAQUE;
@@ -258,8 +276,12 @@ void DrawText(int x, int y, char *text, int font_nr)
 void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
 		 int font_nr, int mask_mode)
 {
+#if 1
+  struct FontBitmapInfo *font = getFontBitmapInfo(font_nr);
+#else
   int font_bitmap_id = gfx.select_font_function(font_nr);
   struct FontBitmapInfo *font = &gfx.font_bitmap_info[font_bitmap_id];
+#endif
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
 #if 0
@@ -287,7 +309,7 @@ void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
     char c = *text_ptr++;
 
     if (c == '\n')
-      c = ' ';		/* print space instaed of newline */
+      c = ' ';		/* print space instead of newline */
 
     getFontCharSource(font_nr, c, &src_bitmap, &src_x, &src_y);
 
@@ -501,7 +523,7 @@ void DrawTextWrapped(int x, int y, char *text, int font_nr, int line_length,
 }
 
 int DrawTextFromFile(int x, int y, char *filename, int font_nr,
-		     int line_length, int max_lines)
+		     int line_length, int max_lines, boolean rewrap)
 {
   int font_height = getFontHeight(font_nr);
   char line[MAX_LINE_LEN];
@@ -552,10 +574,41 @@ int DrawTextFromFile(int x, int y, char *filename, int font_nr,
 
     while (*line_ptr && current_line < max_lines)
     {
+#if 1
+      boolean buffer_filled;
+
+      if (rewrap)
+      {
+	buffer_filled = RenderLineToBuffer(&line_ptr,
+					   buffer, &buffer_len,
+					   last_line_was_empty,
+					   line_length);
+      }
+      else
+      {
+	if (strlen(line_ptr) <= line_length)
+	{
+	  buffer_len = strlen(line_ptr);
+	  strcpy(buffer, line_ptr);
+	}
+	else
+	{
+	  buffer_len = line_length;
+	  strncpy(buffer, line_ptr, line_length);
+	}
+
+	buffer[buffer_len] = '\0';
+	line_ptr += buffer_len;
+
+	buffer_filled = TRUE;
+      }
+#else
       boolean buffer_filled = RenderLineToBuffer(&line_ptr,
 						 buffer, &buffer_len,
 						 last_line_was_empty,
 						 line_length);
+#endif
+
       if (buffer_filled)
       {
 	DrawText(x, y + current_line * font_height, buffer, font_nr);

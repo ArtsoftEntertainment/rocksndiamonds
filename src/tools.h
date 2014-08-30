@@ -62,6 +62,13 @@
 
 void DumpTile(int, int);
 
+void DrawMaskedBorder_FIELD();
+void DrawMaskedBorder_DOOR_1();
+void DrawMaskedBorder_DOOR_2();
+void DrawMaskedBorder_DOOR_3();
+void DrawMaskedBorder_ALL();
+void DrawMaskedBorder(int);
+
 void SetDrawtoField(int);
 void RedrawPlayfield(boolean, int, int, int, int);
 void BackToFront();
@@ -73,11 +80,14 @@ void FadeCross(int);
 void FadeCrossSaveBackbuffer();
 
 void ClearWindow();
+void SetWindowBackgroundImageIfDefined(int);
 void SetMainBackgroundImageIfDefined(int);
 void SetMainBackgroundImage(int);
 void SetDoorBackgroundImage(int);
 void SetPanelBackground();
 void DrawBackground(int, int, int, int);
+void DrawBackgroundForFont(int, int, int, int, int);
+void DrawBackgroundForGraphic(int, int, int, int, int);
 
 void MarkTileDirty(int, int);
 void SetBorderElement();
@@ -169,6 +179,8 @@ void PlayMenuSound();
 void PlayMenuSoundStereo(int, int);
 void PlayMenuSoundIfLoop();
 void PlayMenuMusic();
+void PlaySoundActivating();
+void PlaySoundSelecting();
 
 void ToggleFullscreenIfNeeded();
 

@@ -498,36 +498,45 @@ char *getBasePath(char *filename)
 /* various string functions                                                  */
 /* ------------------------------------------------------------------------- */
 
-char *getPath2(char *path1, char *path2)
+char *getStringCat2WithSeparator(char *s1, char *s2, char *sep)
 {
-  char *sep = STRING_PATH_SEPARATOR;
-  char *complete_path = checked_malloc(strlen(path1) + 1 +
-				       strlen(path2) + 1);
+  char *complete_string = checked_malloc(strlen(s1) + strlen(sep) +
+					 strlen(s2) + 1);
 
-  sprintf(complete_path, "%s%s%s", path1, sep, path2);
+  sprintf(complete_string, "%s%s%s", s1, sep, s2);
 
-  return complete_path;
+  return complete_string;
 }
 
-char *getPath3(char *path1, char *path2, char *path3)
+char *getStringCat3WithSeparator(char *s1, char *s2, char *s3, char *sep)
 {
-  char *sep = STRING_PATH_SEPARATOR;
-  char *complete_path = checked_malloc(strlen(path1) + 1 +
-				       strlen(path2) + 1 +
-				       strlen(path3) + 1);
+  char *complete_string = checked_malloc(strlen(s1) + strlen(sep) +
+					 strlen(s2) + strlen(sep) +
+					 strlen(s3) + 1);
 
-  sprintf(complete_path, "%s%s%s%s%s", path1, sep, path2, sep, path3);
+  sprintf(complete_string, "%s%s%s%s%s", s1, sep, s2, sep, s3);
 
-  return complete_path;
+  return complete_string;
 }
 
 char *getStringCat2(char *s1, char *s2)
 {
-  char *complete_string = checked_malloc(strlen(s1) + strlen(s2) + 1);
+  return getStringCat2WithSeparator(s1, s2, "");
+}
 
-  sprintf(complete_string, "%s%s", s1, s2);
+char *getStringCat3(char *s1, char *s2, char *s3)
+{
+  return getStringCat3WithSeparator(s1, s2, s3, "");
+}
 
-  return complete_string;
+char *getPath2(char *path1, char *path2)
+{
+  return getStringCat2WithSeparator(path1, path2, STRING_PATH_SEPARATOR);
+}
+
+char *getPath3(char *path1, char *path2, char *path3)
+{
+  return getStringCat3WithSeparator(path1, path2, path3, STRING_PATH_SEPARATOR);
 }
 
 char *getStringCopy(char *s)
@@ -1761,6 +1770,12 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 	      strEqual(value, "up")    ? MV_UP :
 	      strEqual(value, "down")  ? MV_DOWN : MV_NONE);
   }
+  else if (strEqual(suffix, ".align"))
+  {
+    result = (strEqual(value, "left")   ? ALIGN_LEFT :
+	      strEqual(value, "right")  ? ALIGN_RIGHT :
+	      strEqual(value, "center") ? ALIGN_CENTER : ALIGN_DEFAULT);
+  }
   else if (strEqual(suffix, ".anim_mode"))
   {
     result = (string_has_parameter(value, "none")	? ANIM_NONE :
@@ -1774,6 +1789,9 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 	      string_has_parameter(value, "ce_delay")	? ANIM_CE_DELAY :
 	      string_has_parameter(value, "horizontal")	? ANIM_HORIZONTAL :
 	      string_has_parameter(value, "vertical")	? ANIM_VERTICAL :
+	      string_has_parameter(value, "centered")	? ANIM_CENTERED :
+	      string_has_parameter(value, "fade")	? ANIM_FADE :
+	      string_has_parameter(value, "crossfade")	? ANIM_CROSSFADE :
 	      ANIM_DEFAULT);
 
     if (string_has_parameter(value, "reverse"))
@@ -2472,7 +2490,7 @@ void LoadArtworkConfig(struct ArtworkListInfo *artwork_info)
   char *filename_base = UNDEFINED_FILENAME, *filename_local;
   int i, j;
 
-  DrawInitText("Loading artwork config:", 120, FC_GREEN);
+  DrawInitText("Loading artwork config", 120, FC_GREEN);
   DrawInitText(ARTWORKINFO_FILENAME(artwork_info->type), 150, FC_YELLOW);
 
   /* always start with reliable default values */
@@ -2549,9 +2567,9 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
 {
   char *init_text[] =
   {
-    "Loading graphics:",
-    "Loading sounds:",
-    "Loading music:"
+    "Loading graphics",
+    "Loading sounds",
+    "Loading music"
   };
 
   ListNode *node;
@@ -2769,6 +2787,8 @@ void NotifyUserAboutErrorFile()
 /* the following is only for debugging purpose and normally not used         */
 /* ------------------------------------------------------------------------- */
 
+#if DEBUG
+
 #define DEBUG_NUM_TIMESTAMPS	3
 
 void debug_print_timestamp(int counter_nr, char *message)
@@ -2781,10 +2801,10 @@ void debug_print_timestamp(int counter_nr, char *message)
   counter[counter_nr][0] = Counter();
 
   if (message)
-    printf("%s %.2f seconds\n", message,
+    printf("%s %.3f seconds\n", message,
 	   (float)(counter[counter_nr][0] - counter[counter_nr][1]) / 1000);
 
-  counter[counter_nr][1] = Counter();
+  counter[counter_nr][1] = counter[counter_nr][0];
 }
 
 void debug_print_parent_only(char *format, ...)
@@ -2803,3 +2823,4 @@ void debug_print_parent_only(char *format, ...)
     printf("\n");
   }
 }
+#endif

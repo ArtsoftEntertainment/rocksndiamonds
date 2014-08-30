@@ -86,11 +86,17 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 
 #define MAX_COOKIE_LEN				256
 
+
 static void setTreeInfoToDefaults(TreeInfo *, int);
+static TreeInfo *getTreeInfoCopy(TreeInfo *ti);
 static int compareTreeInfoEntries(const void *, const void *);
 
 static int token_value_position   = TOKEN_VALUE_POSITION_DEFAULT;
 static int token_comment_position = TOKEN_COMMENT_POSITION_DEFAULT;
+
+static SetupFileHash *artworkinfo_cache_old = NULL;
+static SetupFileHash *artworkinfo_cache_new = NULL;
+static boolean use_artworkinfo_cache = TRUE;
 
 
 /* ------------------------------------------------------------------------- */
@@ -153,6 +159,16 @@ static char *getLevelSetupDir(char *level_subdir)
     levelsetup_dir = getPath2(data_dir, levelsetup_subdir);
 
   return levelsetup_dir;
+}
+
+static char *getCacheDir()
+{
+  static char *cache_dir = NULL;
+
+  if (cache_dir == NULL)
+    cache_dir = getPath2(getUserGameDataDir(), CACHE_DIRECTORY);
+
+  return cache_dir;
 }
 
 static char *getLevelDirFromTreeInfo(TreeInfo *node)
@@ -482,6 +498,35 @@ char *getLevelSetInfoFilename()
   return NULL;
 }
 
+char *getLevelSetMessageFilename()
+{
+  static char *filename = NULL;
+  char *basenames[] =
+  {
+    "MESSAGE",
+    "MESSAGE.TXT",
+    "MESSAGE.txt",
+    "Message",
+    "Message.txt",
+    "message",
+    "message.txt",
+
+    NULL
+  };
+  int i;
+
+  for (i = 0; basenames[i] != NULL; i++)
+  {
+    checked_free(filename);
+    filename = getPath2(getCurrentLevelDir(), basenames[i]);
+
+    if (fileExists(filename))
+      return filename;
+  }
+
+  return NULL;
+}
+
 static char *getCorrectedArtworkBasename(char *basename)
 {
   char *basename_corrected = basename;
@@ -794,7 +839,7 @@ void InitUserLevelDirectory(char *level_subdir)
   {
     createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
     createDirectory(getUserLevelDir(NULL), "main user level", PERMS_PRIVATE);
-    createDirectory(getUserLevelDir(level_subdir), "user level",PERMS_PRIVATE);
+    createDirectory(getUserLevelDir(level_subdir), "user level", PERMS_PRIVATE);
 
     SaveUserLevelInfo();
   }
@@ -804,7 +849,13 @@ void InitLevelSetupDirectory(char *level_subdir)
 {
   createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
   createDirectory(getLevelSetupDir(NULL), "main level setup", PERMS_PRIVATE);
-  createDirectory(getLevelSetupDir(level_subdir), "level setup",PERMS_PRIVATE);
+  createDirectory(getLevelSetupDir(level_subdir), "level setup", PERMS_PRIVATE);
+}
+
+void InitCacheDirectory()
+{
+  createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
+  createDirectory(getCacheDir(), "cache data", PERMS_PRIVATE);
 }
 
 
@@ -959,9 +1010,13 @@ TreeInfo *cloneTreeNode(TreeInfo **node_top, TreeInfo *node_parent,
     return cloneTreeNode(node_top, node_parent, node->next,
 			 skip_sets_without_levels);
 
+#if 1
+  node_new = getTreeInfoCopy(node);		/* copy complete node */
+#else
   node_new = newTreeInfo();
 
   *node_new = *node;				/* copy complete node */
+#endif
 
   node_new->node_top = node_top;		/* correct top node link */
   node_new->node_parent = node_parent;		/* correct parent node link */
@@ -1652,7 +1707,11 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
     /* find end of token to determine start of value */
     for (line_ptr = token; *line_ptr; line_ptr++)
     {
+#if 1
+      if (*line_ptr == ':' || *line_ptr == '=')
+#else
       if (*line_ptr == ' ' || *line_ptr == '\t' || *line_ptr == ':')
+#endif
       {
 	*line_ptr = '\0';		/* terminate token string */
 	value = line_ptr + 1;		/* set beginning of value */
@@ -1660,6 +1719,11 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
 	break;
       }
     }
+
+    /* cut trailing whitespaces from token */
+    for (line_ptr = &token[strlen(token)]; line_ptr >= token; line_ptr--)
+      if ((*line_ptr == ' ' || *line_ptr == '\t') && *(line_ptr + 1) == '\0')
+	*line_ptr = '\0';
 
     /* cut leading whitespaces from value */
     for (; *value; value++)
@@ -1702,6 +1766,27 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
   }
 
   return setup_file_data;
+}
+
+void saveSetupFileHash(SetupFileHash *hash, char *filename)
+{
+  FILE *file;
+
+  if (!(file = fopen(filename, MODE_WRITE)))
+  {
+    Error(ERR_WARN, "cannot write configuration file '%s'", filename);
+
+    return;
+  }
+
+  BEGIN_HASH_ITERATION(hash, itr)
+  {
+    fprintf(file, "%s\n", getFormattedSetupEntry(HASH_ITERATION_TOKEN(itr),
+						 HASH_ITERATION_VALUE(itr)));
+  }
+  END_HASH_ITERATION(hash, itr)
+
+  fclose(file);
 }
 
 SetupFileList *loadSetupFileList(char *filename)
@@ -1785,6 +1870,24 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.level_filetype,	"filetype"		},
   { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"		},
   { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"		}
+};
+
+static struct TokenInfo artworkinfo_tokens[] =
+{
+  /* artwork directory info */
+  { TYPE_STRING,	&ldi.identifier,	"identifier"		},
+  { TYPE_STRING,	&ldi.subdir,		"subdir"		},
+  { TYPE_STRING,	&ldi.name,		"name"			},
+  { TYPE_STRING,	&ldi.name_sorting,	"name_sorting"		},
+  { TYPE_STRING,	&ldi.author,		"author"		},
+  { TYPE_INTEGER,	&ldi.sort_priority,	"sort_priority"		},
+  { TYPE_STRING,	&ldi.basepath,		"basepath"		},
+  { TYPE_STRING,	&ldi.fullpath,		"fullpath"		},
+  { TYPE_BOOLEAN,	&ldi.in_user_dir,	"in_user_dir"		},
+  { TYPE_INTEGER,	&ldi.color,		"color"			},
+  { TYPE_STRING,	&ldi.class_desc,	"class_desc"		},
+
+  { -1,			NULL,			NULL			},
 };
 
 static void setTreeInfoToDefaults(TreeInfo *ti, int type)
@@ -1919,8 +2022,73 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
   }
 }
 
+static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
+{
+  TreeInfo *ti_copy = newTreeInfo();
+
+  /* copy all values from the original structure */
+
+  ti_copy->type			= ti->type;
+
+  ti_copy->node_top		= ti->node_top;
+  ti_copy->node_parent		= ti->node_parent;
+  ti_copy->node_group		= ti->node_group;
+  ti_copy->next			= ti->next;
+
+  ti_copy->cl_first		= ti->cl_first;
+  ti_copy->cl_cursor		= ti->cl_cursor;
+
+  ti_copy->subdir		= getStringCopy(ti->subdir);
+  ti_copy->fullpath		= getStringCopy(ti->fullpath);
+  ti_copy->basepath		= getStringCopy(ti->basepath);
+  ti_copy->identifier		= getStringCopy(ti->identifier);
+  ti_copy->name			= getStringCopy(ti->name);
+  ti_copy->name_sorting		= getStringCopy(ti->name_sorting);
+  ti_copy->author		= getStringCopy(ti->author);
+  ti_copy->imported_from	= getStringCopy(ti->imported_from);
+  ti_copy->imported_by		= getStringCopy(ti->imported_by);
+
+  ti_copy->graphics_set_ecs	= getStringCopy(ti->graphics_set_ecs);
+  ti_copy->graphics_set_aga	= getStringCopy(ti->graphics_set_aga);
+  ti_copy->graphics_set		= getStringCopy(ti->graphics_set);
+  ti_copy->sounds_set		= getStringCopy(ti->sounds_set);
+  ti_copy->music_set		= getStringCopy(ti->music_set);
+  ti_copy->graphics_path	= getStringCopy(ti->graphics_path);
+  ti_copy->sounds_path		= getStringCopy(ti->sounds_path);
+  ti_copy->music_path		= getStringCopy(ti->music_path);
+
+  ti_copy->level_filename	= getStringCopy(ti->level_filename);
+  ti_copy->level_filetype	= getStringCopy(ti->level_filetype);
+
+  ti_copy->levels		= ti->levels;
+  ti_copy->first_level		= ti->first_level;
+  ti_copy->last_level		= ti->last_level;
+  ti_copy->sort_priority	= ti->sort_priority;
+
+  ti_copy->latest_engine	= ti->latest_engine;
+
+  ti_copy->level_group		= ti->level_group;
+  ti_copy->parent_link		= ti->parent_link;
+  ti_copy->in_user_dir		= ti->in_user_dir;
+  ti_copy->user_defined		= ti->user_defined;
+  ti_copy->readonly		= ti->readonly;
+  ti_copy->handicap		= ti->handicap;
+  ti_copy->skip_levels		= ti->skip_levels;
+
+  ti_copy->color		= ti->color;
+  ti_copy->class_desc		= getStringCopy(ti->class_desc);
+  ti_copy->handicap_level	= ti->handicap_level;
+
+  ti_copy->infotext		= getStringCopy(ti->infotext);
+
+  return ti_copy;
+}
+
 static void freeTreeInfo(TreeInfo *ti)
 {
+  if (ti == NULL)
+    return;
+
   checked_free(ti->subdir);
   checked_free(ti->fullpath);
   checked_free(ti->basepath);
@@ -1952,6 +2120,8 @@ static void freeTreeInfo(TreeInfo *ti)
     checked_free(ti->level_filename);
     checked_free(ti->level_filetype);
   }
+
+  checked_free(ti);
 }
 
 void setSetupInfo(struct TokenInfo *token_info,
@@ -2059,6 +2229,221 @@ static void createParentTreeInfoNode(TreeInfo *node_parent)
   pushTreeInfo(&node_parent->node_group, ti_new);
 }
 
+
+/* -------------------------------------------------------------------------- */
+/* functions for handling level and custom artwork info cache                 */
+/* -------------------------------------------------------------------------- */
+
+static void LoadArtworkInfoCache()
+{
+  InitCacheDirectory();
+
+  if (artworkinfo_cache_old == NULL)
+  {
+    char *filename = getPath2(getCacheDir(), ARTWORKINFO_CACHE_FILE);
+
+    /* try to load artwork info hash from already existing cache file */
+    artworkinfo_cache_old = loadSetupFileHash(filename);
+
+    /* if no artwork info cache file was found, start with empty hash */
+    if (artworkinfo_cache_old == NULL)
+      artworkinfo_cache_old = newSetupFileHash();
+
+    free(filename);
+  }
+
+  if (artworkinfo_cache_new == NULL)
+    artworkinfo_cache_new = newSetupFileHash();
+}
+
+static void SaveArtworkInfoCache()
+{
+  char *filename = getPath2(getCacheDir(), ARTWORKINFO_CACHE_FILE);
+
+  InitCacheDirectory();
+
+  saveSetupFileHash(artworkinfo_cache_new, filename);
+
+  free(filename);
+}
+
+static char *getCacheTokenPrefix(char *prefix1, char *prefix2)
+{
+  static char *prefix = NULL;
+
+  checked_free(prefix);
+
+  prefix = getStringCat2WithSeparator(prefix1, prefix2, ".");
+
+  return prefix;
+}
+
+/* (identical to above function, but separate string buffer needed -- nasty) */
+static char *getCacheToken(char *prefix, char *suffix)
+{
+  static char *token = NULL;
+
+  checked_free(token);
+
+  token = getStringCat2WithSeparator(prefix, suffix, ".");
+
+  return token;
+}
+
+static char *getFileTimestamp(char *filename)
+{
+  struct stat file_status;
+
+  if (stat(filename, &file_status) != 0)	/* cannot stat file */
+    return getStringCopy(i_to_a(0));
+
+  return getStringCopy(i_to_a(file_status.st_mtime));
+}
+
+static boolean modifiedFileTimestamp(char *filename, char *timestamp_string)
+{
+  struct stat file_status;
+
+  if (timestamp_string == NULL)
+    return TRUE;
+
+  if (stat(filename, &file_status) != 0)	/* cannot stat file */
+    return TRUE;
+
+  return (file_status.st_mtime != atoi(timestamp_string));
+}
+
+static TreeInfo *getArtworkInfoCacheEntry(LevelDirTree *level_node, int type)
+{
+  char *identifier = level_node->subdir;
+  char *type_string = ARTWORK_DIRECTORY(type);
+  char *token_prefix = getCacheTokenPrefix(type_string, identifier);
+  char *token_main = getCacheToken(token_prefix, "CACHED");
+  char *cache_entry = getHashEntry(artworkinfo_cache_old, token_main);
+  boolean cached = (cache_entry != NULL && strEqual(cache_entry, "true"));
+  TreeInfo *artwork_info = NULL;
+
+  if (!use_artworkinfo_cache)
+    return NULL;
+
+  if (cached)
+  {
+    int i;
+
+    artwork_info = newTreeInfo();
+    setTreeInfoToDefaults(artwork_info, type);
+
+    /* set all structure fields according to the token/value pairs */
+    ldi = *artwork_info;
+    for (i = 0; artworkinfo_tokens[i].type != -1; i++)
+    {
+      char *token = getCacheToken(token_prefix, artworkinfo_tokens[i].text);
+      char *value = getHashEntry(artworkinfo_cache_old, token);
+
+      setSetupInfo(artworkinfo_tokens, i, value);
+
+      /* check if cache entry for this item is invalid or incomplete */
+      if (value == NULL)
+      {
+#if 1
+	printf("::: - WARNING: cache entry '%s' invalid\n", token);
+#endif
+
+	cached = FALSE;
+      }
+    }
+    *artwork_info = ldi;
+  }
+
+  if (cached)
+  {
+    char *filename_levelinfo = getPath2(getLevelDirFromTreeInfo(level_node),
+					LEVELINFO_FILENAME);
+    char *filename_artworkinfo = getPath2(getSetupArtworkDir(artwork_info),
+					  ARTWORKINFO_FILENAME(type));
+
+    /* check if corresponding "levelinfo.conf" file has changed */
+    token_main = getCacheToken(token_prefix, "TIMESTAMP_LEVELINFO");
+    cache_entry = getHashEntry(artworkinfo_cache_old, token_main);
+
+    if (modifiedFileTimestamp(filename_levelinfo, cache_entry))
+      cached = FALSE;
+
+    /* check if corresponding "<artworkinfo>.conf" file has changed */
+    token_main = getCacheToken(token_prefix, "TIMESTAMP_ARTWORKINFO");
+    cache_entry = getHashEntry(artworkinfo_cache_old, token_main);
+
+    if (modifiedFileTimestamp(filename_artworkinfo, cache_entry))
+      cached = FALSE;
+
+#if 0
+    if (!cached)
+      printf("::: '%s': INVALIDATED FROM CACHE BY TIMESTAMP\n", identifier);
+#endif
+
+    checked_free(filename_levelinfo);
+    checked_free(filename_artworkinfo);
+  }
+
+  if (!cached && artwork_info != NULL)
+  {
+    freeTreeInfo(artwork_info);
+
+    return NULL;
+  }
+
+  return artwork_info;
+}
+
+static void setArtworkInfoCacheEntry(TreeInfo *artwork_info,
+				     LevelDirTree *level_node, int type)
+{
+  char *identifier = level_node->subdir;
+  char *type_string = ARTWORK_DIRECTORY(type);
+  char *token_prefix = getCacheTokenPrefix(type_string, identifier);
+  char *token_main = getCacheToken(token_prefix, "CACHED");
+  boolean set_cache_timestamps = TRUE;
+  int i;
+
+  setHashEntry(artworkinfo_cache_new, token_main, "true");
+
+  if (set_cache_timestamps)
+  {
+    char *filename_levelinfo = getPath2(getLevelDirFromTreeInfo(level_node),
+					LEVELINFO_FILENAME);
+    char *filename_artworkinfo = getPath2(getSetupArtworkDir(artwork_info),
+					  ARTWORKINFO_FILENAME(type));
+    char *timestamp_levelinfo = getFileTimestamp(filename_levelinfo);
+    char *timestamp_artworkinfo = getFileTimestamp(filename_artworkinfo);
+
+    token_main = getCacheToken(token_prefix, "TIMESTAMP_LEVELINFO");
+    setHashEntry(artworkinfo_cache_new, token_main, timestamp_levelinfo);
+
+    token_main = getCacheToken(token_prefix, "TIMESTAMP_ARTWORKINFO");
+    setHashEntry(artworkinfo_cache_new, token_main, timestamp_artworkinfo);
+
+    checked_free(filename_levelinfo);
+    checked_free(filename_artworkinfo);
+    checked_free(timestamp_levelinfo);
+    checked_free(timestamp_artworkinfo);
+  }
+
+  ldi = *artwork_info;
+  for (i = 0; artworkinfo_tokens[i].type != -1; i++)
+  {
+    char *token = getCacheToken(token_prefix, artworkinfo_tokens[i].text);
+    char *value = getSetupValue(artworkinfo_tokens[i].type,
+				artworkinfo_tokens[i].value);
+    if (value != NULL)
+      setHashEntry(artworkinfo_cache_new, token, value);
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* functions for loading level info and custom artwork info                   */
+/* -------------------------------------------------------------------------- */
+
 /* forward declaration for recursive call by "LoadLevelInfoFromLevelDir()" */
 static void LoadLevelInfoFromLevelDir(TreeInfo **, TreeInfo *, char *);
 
@@ -2116,8 +2501,6 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
   if (strEqual(leveldir_new->name, ANONYMOUS_NAME))
     setString(&leveldir_new->name, leveldir_new->subdir);
 
-  DrawInitText(leveldir_new->name, 150, FC_YELLOW);
-
   if (leveldir_new->identifier == NULL)
     leveldir_new->identifier = getStringCopy(leveldir_new->subdir);
 
@@ -2168,6 +2551,13 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
     (leveldir_new->user_defined || !leveldir_new->handicap ?
      leveldir_new->last_level : leveldir_new->first_level);
 
+#if 1
+  if (leveldir_new->level_group)
+    DrawInitText(leveldir_new->name, 150, FC_YELLOW);
+#else
+  DrawInitText(leveldir_new->name, 150, FC_YELLOW);
+#endif
+
 #if 0
   /* !!! don't skip sets without levels (else artwork base sets are missing) */
 #if 1
@@ -2193,7 +2583,7 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
     /* create node to link back to current level directory */
     createParentTreeInfoNode(leveldir_new);
 
-    /* step into sub-directory and look for more level series */
+    /* recursively step into sub-directory and look for more level series */
     LoadLevelInfoFromLevelDir(&leveldir_new->node_group,
 			      leveldir_new, directory_path);
   }
@@ -2281,7 +2671,7 @@ void LoadLevelInfo()
 {
   InitUserLevelDirectory(getLoginName());
 
-  DrawInitText("Loading level series:", 120, FC_GREEN);
+  DrawInitText("Loading level series", 120, FC_GREEN);
 
   LoadLevelInfoFromLevelDir(&leveldir_first, NULL, options.level_directory);
   LoadLevelInfoFromLevelDir(&leveldir_first, NULL, getUserLevelDir(NULL));
@@ -2381,10 +2771,6 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
     if (strEqual(artwork_new->name, ANONYMOUS_NAME))
       setString(&artwork_new->name, artwork_new->subdir);
 
-#if 0
-    DrawInitText(artwork_new->name, 150, FC_YELLOW);
-#endif
-
     if (artwork_new->identifier == NULL)
       artwork_new->identifier = getStringCopy(artwork_new->subdir);
 
@@ -2441,7 +2827,9 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
     setString(&artwork_new->name_sorting, artwork_new->name);
   }
 
+#if 0
   DrawInitText(artwork_new->name, 150, FC_YELLOW);
+#endif
 
   pushTreeInfo(node_first, artwork_new);
 
@@ -2531,7 +2919,9 @@ static TreeInfo *getDummyArtworkInfo(int type)
 
 void LoadArtworkInfo()
 {
-  DrawInitText("Looking for custom artwork:", 120, FC_GREEN);
+  LoadArtworkInfoCache();
+
+  DrawInitText("Looking for custom artwork", 120, FC_GREEN);
 
   LoadArtworkInfoFromArtworkDir(&artwork.gfx_first, NULL,
 				options.graphics_directory,
@@ -2610,6 +3000,8 @@ void LoadArtworkInfo()
 void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
 				  LevelDirTree *level_node)
 {
+  int type = (*artwork_node)->type;
+
   /* recursively check all level directories for artwork sub-directories */
 
   while (level_node)
@@ -2617,29 +3009,45 @@ void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
     /* check all tree entries for artwork, but skip parent link entries */
     if (!level_node->parent_link)
     {
-      TreeInfo *topnode_last = *artwork_node;
-      char *path = getPath2(getLevelDirFromTreeInfo(level_node),
-			    ARTWORK_DIRECTORY((*artwork_node)->type));
+      TreeInfo *artwork_new = getArtworkInfoCacheEntry(level_node, type);
+      boolean cached = (artwork_new != NULL);
 
-      LoadArtworkInfoFromArtworkDir(artwork_node, NULL, path,
-				    (*artwork_node)->type);
-
-      if (topnode_last != *artwork_node)
+      if (cached)
       {
-	free((*artwork_node)->identifier);
-	free((*artwork_node)->name);
-	free((*artwork_node)->name_sorting);
+	pushTreeInfo(artwork_node, artwork_new);
+      }
+      else
+      {
+	TreeInfo *topnode_last = *artwork_node;
+	char *path = getPath2(getLevelDirFromTreeInfo(level_node),
+			      ARTWORK_DIRECTORY(type));
 
-	(*artwork_node)->identifier   = getStringCopy(level_node->subdir);
-	(*artwork_node)->name         = getStringCopy(level_node->name);
-	(*artwork_node)->name_sorting = getStringCopy(level_node->name);
+	LoadArtworkInfoFromArtworkDir(artwork_node, NULL, path, type);
 
-	(*artwork_node)->sort_priority = level_node->sort_priority;
-	(*artwork_node)->color = LEVELCOLOR((*artwork_node));
+	if (topnode_last != *artwork_node)	/* check for newly added node */
+	{
+	  artwork_new = *artwork_node;
+
+	  setString(&artwork_new->identifier,   level_node->subdir);
+	  setString(&artwork_new->name,         level_node->name);
+	  setString(&artwork_new->name_sorting, level_node->name_sorting);
+
+	  artwork_new->sort_priority = level_node->sort_priority;
+	  artwork_new->color = LEVELCOLOR(artwork_new);
+	}
+
+	free(path);
       }
 
-      free(path);
+      /* insert artwork info (from old cache or filesystem) into new cache */
+      if (artwork_new != NULL)
+	setArtworkInfoCacheEntry(artwork_new, level_node, type);
     }
+
+#if 1
+    if (level_node->level_group)
+      DrawInitText(level_node->name, 150, FC_YELLOW);
+#endif
 
     if (level_node->node_group != NULL)
       LoadArtworkInfoFromLevelInfo(artwork_node, level_node->node_group);
@@ -2650,11 +3058,13 @@ void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
 
 void LoadLevelArtworkInfo()
 {
-  DrawInitText("Looking for custom level artwork:", 120, FC_GREEN);
+  DrawInitText("Looking for custom level artwork", 120, FC_GREEN);
 
   LoadArtworkInfoFromLevelInfo(&artwork.gfx_first, leveldir_first_all);
   LoadArtworkInfoFromLevelInfo(&artwork.snd_first, leveldir_first_all);
   LoadArtworkInfoFromLevelInfo(&artwork.mus_first, leveldir_first_all);
+
+  SaveArtworkInfoCache();
 
   /* needed for reloading level artwork not known at ealier stage */
 
@@ -2795,6 +3205,9 @@ char *getSetupValue(int type, void *value)
       break;
 
     case TYPE_STRING:
+      if (*(char **)value == NULL)
+	return NULL;
+
       strcpy(value_string, *(char **)value);
       break;
 

@@ -2413,8 +2413,13 @@ static struct
     ED_SCROLLBAR_XPOS,			ED_SCROLLBAR_YPOS,
     SX + ED_SCROLL_HORIZONTAL_XPOS,	SY + ED_SCROLL_HORIZONTAL_YPOS,
     ED_SCROLL_HORIZONTAL_XSIZE,		ED_SCROLL_HORIZONTAL_YSIZE,
+#if 1
+    SX,					SY,
+    SXSIZE,				SYSIZE,
+#else
     0,					0,
     SX + SXSIZE + SX,			WIN_YSIZE,
+#endif
     GD_TYPE_SCROLLBAR_HORIZONTAL,
     GADGET_ID_SCROLL_HORIZONTAL,
     "scroll level editing area horizontally"
@@ -2423,8 +2428,13 @@ static struct
     ED_SCROLLBAR_XPOS,			ED_SCROLLBAR_YPOS,
     SX + ED_SCROLL_VERTICAL_XPOS,	SY + ED_SCROLL_VERTICAL_YPOS,
     ED_SCROLL_VERTICAL_XSIZE,		ED_SCROLL_VERTICAL_YSIZE,
+#if 1
+    SX,					SY,
+    SXSIZE,				SYSIZE,
+#else
     0,					0,
     SX + SXSIZE + SX,			WIN_YSIZE,
+#endif
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_VERTICAL,
     "scroll level editing area vertically"
@@ -2433,8 +2443,13 @@ static struct
     ED_SCROLLBAR2_XPOS,			ED_SCROLLBAR2_YPOS,
     DX + ED_SCROLL2_VERTICAL_XPOS,	DY + ED_SCROLL2_VERTICAL_YPOS,
     ED_SCROLL2_VERTICAL_XSIZE,		ED_SCROLL2_VERTICAL_YSIZE,
+#if 1
+    DX,					DY,
+    DXSIZE,				DYSIZE,
+#else
     SX + SXSIZE + SX,			0,
     WIN_XSIZE - (SX + SXSIZE + SX),	WIN_YSIZE,
+#endif
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_LIST_VERTICAL,
     "scroll element list vertically"
@@ -6761,7 +6776,11 @@ void DrawLevelEd()
   ReinitializeElementList();		/* update dynamic level element list */
   ReinitializeElementListButtons();	/* custom element may look different */
 
+#if 1
+  UnmapAllGadgets();
+#else
   UnmapTapeButtons();
+#endif
   MapControlButtons();
 
   DrawEditModeWindow();
@@ -7281,7 +7300,7 @@ static int PrintElementDescriptionFromFile(char *filename, int start_line)
   int max_lines_per_screen = (SYSIZE - pad_y) / font_height - 1;
 
   return DrawTextFromFile(sx, sy, filename, font_nr, max_chars_per_line,
-			  max_lines_per_screen);
+			  max_lines_per_screen, TRUE);
 }
 
 static void DrawPropertiesTabulatorGadgets()
@@ -9062,7 +9081,14 @@ static void HandleTextAreaGadgets(struct GadgetInfo *gi)
 {
   int type_id = gi->custom_type_id;
 
+#if 1
+  strncpy(textarea_info[type_id].value, gi->textarea.value,
+	  MAX_ENVELOPE_TEXT_LEN);
+  textarea_info[type_id].value[MAX_ENVELOPE_TEXT_LEN] = '\0';
+#else
+  /* !!! BUGGY !!! MAX_ENVELOPE_TEXT_LEN != MAX_GADGET_TEXTSIZE !!! */
   strcpy(textarea_info[type_id].value, gi->textarea.value);
+#endif
 
   level.changed = TRUE;
 }

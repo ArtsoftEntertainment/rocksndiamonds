@@ -1586,18 +1586,30 @@
 /* values for special image configuration suffixes (must match game mode) */
 #define GFX_SPECIAL_ARG_DEFAULT		0
 #define GFX_SPECIAL_ARG_TITLE		1
-#define GFX_SPECIAL_ARG_MAIN		2
-#define GFX_SPECIAL_ARG_LEVELS		3
-#define GFX_SPECIAL_ARG_SCORES		4
-#define GFX_SPECIAL_ARG_EDITOR		5
-#define GFX_SPECIAL_ARG_INFO		6
-#define GFX_SPECIAL_ARG_SETUP		7
-#define GFX_SPECIAL_ARG_PLAYING		8
-#define GFX_SPECIAL_ARG_DOOR		9
-#define GFX_SPECIAL_ARG_PREVIEW		10
-#define GFX_SPECIAL_ARG_CRUMBLED	11
+#define GFX_SPECIAL_ARG_MESSAGE		2
+#define GFX_SPECIAL_ARG_MAIN		3
+#define GFX_SPECIAL_ARG_LEVELS		4
+#define GFX_SPECIAL_ARG_SCORES		5
+#define GFX_SPECIAL_ARG_EDITOR		6
+#define GFX_SPECIAL_ARG_INFO		7
+#define GFX_SPECIAL_ARG_SETUP		8
+#define GFX_SPECIAL_ARG_PLAYING		9
+#define GFX_SPECIAL_ARG_DOOR		10
+#define GFX_SPECIAL_ARG_PREVIEW		11
+#define GFX_SPECIAL_ARG_CRUMBLED	12
 
-#define NUM_SPECIAL_GFX_ARGS		12
+#define NUM_SPECIAL_GFX_ARGS		13
+
+/* these additional definitions are currently only used for draw offsets */
+#define GFX_SPECIAL_ARG_INFO_MAIN	0
+#define GFX_SPECIAL_ARG_INFO_TITLE	1
+#define GFX_SPECIAL_ARG_INFO_ELEMENTS	2
+#define GFX_SPECIAL_ARG_INFO_MUSIC	3
+#define GFX_SPECIAL_ARG_INFO_CREDITS	4
+#define GFX_SPECIAL_ARG_INFO_PROGRAM	5
+#define GFX_SPECIAL_ARG_INFO_LEVELSET	6
+
+#define NUM_SPECIAL_GFX_INFO_ARGS	7
 
 
 /* values for image configuration suffixes */
@@ -1640,8 +1652,11 @@
 #define GFX_ARG_NAME			36
 #define GFX_ARG_SCALE_UP_FACTOR		37
 #define GFX_ARG_CLONE_FROM		38
+#define GFX_ARG_FADE_DELAY		39
+#define GFX_ARG_POST_DELAY		40
+#define GFX_ARG_AUTO_DELAY		41
 
-#define NUM_GFX_ARGS			39
+#define NUM_GFX_ARGS			42
 
 
 /* values for sound configuration suffixes */
@@ -1658,61 +1673,77 @@
 #define NUM_MUS_ARGS			1
 
 
-/* values for font configuration */
+/* values for font configuration (definitions must match those from main.c) */
 #define FONT_INITIAL_1			0
 #define FONT_INITIAL_2			1
 #define FONT_INITIAL_3			2
 #define FONT_INITIAL_4			3
 #define FONT_TITLE_1			4
 #define FONT_TITLE_2			5
-#define FONT_MENU_1			6
-#define FONT_MENU_2			7
-#define FONT_TEXT_1_ACTIVE		8
-#define FONT_TEXT_2_ACTIVE		9
-#define FONT_TEXT_3_ACTIVE		10
-#define FONT_TEXT_4_ACTIVE		11
-#define FONT_TEXT_1			12
-#define FONT_TEXT_2			13
-#define FONT_TEXT_3			14
-#define FONT_TEXT_4			15
-#define FONT_ENVELOPE_1			16
-#define FONT_ENVELOPE_2			17
-#define FONT_ENVELOPE_3			18
-#define FONT_ENVELOPE_4			19
-#define FONT_INPUT_1_ACTIVE		20
-#define FONT_INPUT_2_ACTIVE		21
-#define FONT_INPUT_1			22
-#define FONT_INPUT_2			23
-#define FONT_OPTION_OFF			24
-#define FONT_OPTION_ON			25
-#define FONT_VALUE_1			26
-#define FONT_VALUE_2			27
-#define FONT_VALUE_OLD			28
-#define FONT_LEVEL_NUMBER_ACTIVE	29
-#define FONT_LEVEL_NUMBER		30
-#define FONT_TAPE_RECORDER		31
-#define FONT_GAME_INFO			32
+#define FONT_MENU_1_ACTIVE		6
+#define FONT_MENU_2_ACTIVE		7
+#define FONT_MENU_1			8
+#define FONT_MENU_2			9
+#define FONT_TEXT_1_ACTIVE		10
+#define FONT_TEXT_2_ACTIVE		11
+#define FONT_TEXT_3_ACTIVE		12
+#define FONT_TEXT_4_ACTIVE		13
+#define FONT_TEXT_1			14
+#define FONT_TEXT_2			15
+#define FONT_TEXT_3			16
+#define FONT_TEXT_4			17
+#define FONT_ENVELOPE_1			18
+#define FONT_ENVELOPE_2			19
+#define FONT_ENVELOPE_3			20
+#define FONT_ENVELOPE_4			21
+#define FONT_INPUT_1_ACTIVE		22
+#define FONT_INPUT_2_ACTIVE		23
+#define FONT_INPUT_1			24
+#define FONT_INPUT_2			25
+#define FONT_OPTION_OFF			26
+#define FONT_OPTION_ON			27
+#define FONT_VALUE_1			28
+#define FONT_VALUE_2			29
+#define FONT_VALUE_OLD			30
+#define FONT_LEVEL_NUMBER_ACTIVE	31
+#define FONT_LEVEL_NUMBER		32
+#define FONT_TAPE_RECORDER		33
+#define FONT_GAME_INFO			34
 
-#define NUM_FONTS			33
+#define NUM_FONTS			35
 #define NUM_INITIAL_FONTS		4
+
+#define FONT_ACTIVE(f)							  \
+	((f) == FONT_MENU_1		? FONT_MENU_1_ACTIVE		: \
+	 (f) == FONT_MENU_2		? FONT_MENU_2_ACTIVE		: \
+	 (f) == FONT_TEXT_1		? FONT_TEXT_1_ACTIVE		: \
+	 (f) == FONT_TEXT_2		? FONT_TEXT_2_ACTIVE		: \
+	 (f) == FONT_TEXT_3		? FONT_TEXT_3_ACTIVE		: \
+	 (f) == FONT_TEXT_4		? FONT_TEXT_4_ACTIVE		: \
+	 (f) == FONT_INPUT_1		? FONT_INPUT_1_ACTIVE		: \
+	 (f) == FONT_INPUT_2		? FONT_INPUT_2_ACTIVE		: \
+	 (f) == FONT_LEVEL_NUMBER	? FONT_LEVEL_NUMBER_ACTIVE	: \
+	 (f))
+
 
 /* values for game_status (must match special image configuration suffixes) */
 #define GAME_MODE_DEFAULT		0
 #define GAME_MODE_TITLE			1
-#define GAME_MODE_MAIN			2
-#define GAME_MODE_LEVELS		3
-#define GAME_MODE_SCORES		4
-#define GAME_MODE_EDITOR		5
-#define GAME_MODE_INFO			6
-#define GAME_MODE_SETUP			7
-#define GAME_MODE_PLAYING		8
-#define GAME_MODE_PSEUDO_DOOR		9
-#define GAME_MODE_PSEUDO_PREVIEW	10
-#define GAME_MODE_PSEUDO_CRUMBLED	11
+#define GAME_MODE_MESSAGE		2
+#define GAME_MODE_MAIN			3
+#define GAME_MODE_LEVELS		4
+#define GAME_MODE_SCORES		5
+#define GAME_MODE_EDITOR		6
+#define GAME_MODE_INFO			7
+#define GAME_MODE_SETUP			8
+#define GAME_MODE_PLAYING		9
+#define GAME_MODE_PSEUDO_DOOR		10
+#define GAME_MODE_PSEUDO_PREVIEW	11
+#define GAME_MODE_PSEUDO_CRUMBLED	12
 
 /* there are no special config file suffixes for these modes */
-#define GAME_MODE_PSEUDO_TYPENAME	12
-#define GAME_MODE_QUIT			13
+#define GAME_MODE_PSEUDO_TYPENAME	13
+#define GAME_MODE_QUIT			14
 
 /* special definitions currently only used for custom artwork configuration */
 #define MUSIC_PREFIX_BACKGROUND		0
@@ -1727,7 +1758,7 @@
 /* program information and versioning definitions */
 #define PROGRAM_VERSION_MAJOR		3
 #define PROGRAM_VERSION_MINOR		2
-#define PROGRAM_VERSION_PATCH		2
+#define PROGRAM_VERSION_PATCH		3
 #define PROGRAM_VERSION_BUILD		0
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
@@ -1735,6 +1766,7 @@
 #define PROGRAM_COPYRIGHT_STRING	"Copyright ©1995-2006 by Holger Schemel"
 #define PROGRAM_EMAIL_STRING		"info@artsoft.org"
 #define PROGRAM_WEBSITE_STRING		"http://www.artsoft.org/"
+#define PROGRAM_GAME_BY_STRING		"A Game by Artsoft Entertainment"
 
 #define ICON_TITLE_STRING		PROGRAM_TITLE_STRING
 #define COOKIE_PREFIX			"ROCKSNDIAMONDS"
@@ -1815,10 +1847,83 @@
 #define NUM_ENGINE_TYPES		3
 
 
+struct BorderInfo
+{
+  int draw_masked[NUM_SPECIAL_GFX_ARGS];
+};
+
+struct MenuPosInfo
+{
+  int x, y;
+  int width, height;
+  int align;
+};
+
+struct MenuMainButtonInfo
+{
+  struct MenuPosInfo name;
+  struct MenuPosInfo levels;
+  struct MenuPosInfo scores;
+  struct MenuPosInfo editor;
+  struct MenuPosInfo info;
+  struct MenuPosInfo game;
+  struct MenuPosInfo setup;
+  struct MenuPosInfo quit;
+
+  struct MenuPosInfo prev_level;
+  struct MenuPosInfo next_level;
+};
+
+struct MenuMainTextInfo
+{
+  struct MenuPosInfo name;
+  struct MenuPosInfo levels;
+  struct MenuPosInfo scores;
+  struct MenuPosInfo editor;
+  struct MenuPosInfo info;
+  struct MenuPosInfo game;
+  struct MenuPosInfo setup;
+  struct MenuPosInfo quit;
+
+  struct MenuPosInfo current_level;
+  struct MenuPosInfo first_level;
+  struct MenuPosInfo last_level;
+  struct MenuPosInfo level_info_1;
+  struct MenuPosInfo level_info_2;
+  struct MenuPosInfo title_1;
+  struct MenuPosInfo title_2;
+  struct MenuPosInfo title_3;
+};
+
+struct MenuMainInputInfo
+{
+  struct MenuPosInfo name;
+};
+
+struct MenuMainInfo
+{
+  struct MenuMainButtonInfo button;
+  struct MenuMainTextInfo text;
+  struct MenuMainInputInfo input;
+};
+
+struct TitleInfo
+{
+  int fade_delay;
+  int post_delay;
+  int auto_delay;
+
+  int fade_delay_final;
+  int post_delay_final;
+  int auto_delay_final;
+};
+
 struct MenuInfo
 {
   int draw_xoffset[NUM_SPECIAL_GFX_ARGS];
   int draw_yoffset[NUM_SPECIAL_GFX_ARGS];
+  int draw_xoffset_info[NUM_SPECIAL_GFX_INFO_ARGS];
+  int draw_yoffset_info[NUM_SPECIAL_GFX_INFO_ARGS];
 
   int scrollbar_xoffset;
 
@@ -1826,9 +1931,12 @@ struct MenuInfo
 
   int fade_delay;
   int post_delay;
+  int auto_delay;
 
   int sound[NUM_SPECIAL_GFX_ARGS];
   int music[NUM_SPECIAL_GFX_ARGS];
+
+  struct MenuMainInfo main;
 };
 
 struct DoorInfo
@@ -1843,10 +1951,13 @@ struct DoorInfo
 struct PreviewInfo
 {
   int x, y;
+  int align;
   int xsize, ysize;
+  int xoffset, yoffset;
   int tile_size;
   int step_offset;
   int step_delay;
+  int anim_mode;
 };
 
 struct HiScore
@@ -2250,6 +2361,12 @@ struct GraphicInfo
 
   int draw_masked;		/* optional setting for drawing envelope gfx */
 
+  int fade_delay;		/* optional setting for drawing title screens */
+  int post_delay;		/* optional setting for drawing title screens */
+  int auto_delay;		/* optional setting for drawing title screens */
+
+  boolean use_image_size;	/* use image size as default width and height */
+
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
   Pixmap clip_mask;		/* single-graphic-only clip mask for X11 */
   GC clip_gc;			/* single-graphic-only clip gc for X11 */
@@ -2364,6 +2481,7 @@ extern short			ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			WasJustMoving[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			WasJustFalling[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			CheckCollision[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern short			CheckImpact[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			AmoebaNr[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			AmoebaCnt[MAX_NUM_AMOEBA];
 extern short			AmoebaCnt2[MAX_NUM_AMOEBA];
@@ -2407,6 +2525,8 @@ extern struct LevelInfo		level, level_template;
 extern struct HiScore		highscore[];
 extern struct TapeInfo		tape;
 extern struct GlobalInfo	global;
+extern struct BorderInfo	border;
+extern struct TitleInfo		title;
 extern struct MenuInfo		menu;
 extern struct DoorInfo		door_1, door_2;
 extern struct PreviewInfo	preview;

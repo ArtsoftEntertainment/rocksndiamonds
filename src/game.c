@@ -53,6 +53,12 @@
 
 #define USE_UFAST_PLAYER_EXIT_BUGFIX	(USE_NEW_STUFF		* 1)
 
+#define USE_GFX_RESET_ONLY_WHEN_MOVING	(USE_NEW_STUFF		* 1)
+#define USE_GFX_RESET_PLAYER_ARTWORK	(USE_NEW_STUFF		* 1)
+
+#define USE_FIX_KILLED_BY_NON_WALKABLE	(USE_NEW_STUFF		* 1)
+#define USE_FIX_IMPACT_COLLISION	(USE_NEW_STUFF		* 1)
+
 
 /* for DigField() */
 #define DF_NO_PUSH		0
@@ -115,8 +121,9 @@
 
 /* values for delayed check of falling and moving elements and for collision */
 #define CHECK_DELAY_MOVING	3
-#define CHECK_DELAY_FALLING	3
+#define CHECK_DELAY_FALLING	CHECK_DELAY_MOVING
 #define CHECK_DELAY_COLLISION	2
+#define CHECK_DELAY_IMPACT	CHECK_DELAY_COLLISION
 
 /* values for initial player move delay (initial delay counter value) */
 #define INITIAL_MOVE_DELAY_OFF	-1
@@ -371,6 +378,33 @@ static int getInvisibleActiveFromInvisibleElement(int);
 static int getInvisibleFromInvisibleActiveElement(int);
 
 static struct GadgetInfo *game_gadget[NUM_GAME_BUTTONS];
+
+/* for detection of endless loops, caused by custom element programming */
+/* (using "MAX_PLAYFIELD_WIDTH" here is just a rough approximation...) */
+#define MAX_ELEMENT_CHANGE_RECURSION_DEPTH	(MAX_PLAYFIELD_WIDTH)
+
+#define RECURSION_LOOP_DETECTION_START(e, rc)				\
+{									\
+  if (recursion_loop_detected)						\
+    return (rc);							\
+									\
+  if (recursion_loop_depth > MAX_ELEMENT_CHANGE_RECURSION_DEPTH)	\
+  {									\
+    recursion_loop_detected = TRUE;					\
+    recursion_loop_element = (e);					\
+  }									\
+									\
+  recursion_loop_depth++;						\
+}
+
+#define RECURSION_LOOP_DETECTION_END()					\
+{									\
+  recursion_loop_depth--;						\
+}
+
+static int recursion_loop_depth;
+static boolean recursion_loop_detected;
+static boolean recursion_loop_element;
 
 
 /* ------------------------------------------------------------------------- */
@@ -1779,6 +1813,11 @@ static void InitGameEngine()
 	 EL_EMPTY);
     }
   }
+
+  /* ---------- initialize recursion detection ------------------------------ */
+  recursion_loop_depth = 0;
+  recursion_loop_detected = FALSE;
+  recursion_loop_element = EL_UNDEFINED;
 }
 
 int get_num_special_action(int element, int action_first, int action_last)
@@ -1838,6 +1877,7 @@ void InitGame()
 
     player->present = FALSE;
     player->active = FALSE;
+    player->killed = FALSE;
 
     player->action = 0;
     player->effective_action = 0;
@@ -1929,8 +1969,10 @@ void InitGame()
     player->drop_delay = 0;
     player->drop_pressed_delay = 0;
 
-    player->last_jx = player->last_jy = 0;
-    player->jx = player->jy = 0;
+    player->last_jx = -1;
+    player->last_jy = -1;
+    player->jx = -1;
+    player->jy = -1;
 
     player->shield_normal_time_left = 0;
     player->shield_deadly_time_left = 0;
@@ -2030,6 +2072,7 @@ void InitGame()
     WasJustMoving[x][y] = 0;
     WasJustFalling[x][y] = 0;
     CheckCollision[x][y] = 0;
+    CheckImpact[x][y] = 0;
     Stop[x][y] = FALSE;
     Pushed[x][y] = FALSE;
 
@@ -2445,6 +2488,13 @@ void InitGame()
     }
   }
 
+#if 1
+  UnmapAllGadgets();
+
+  MapGameButtons();
+  MapTapeButtons();
+#endif
+
   game.restart_level = FALSE;
 }
 
@@ -2474,7 +2524,7 @@ void InitMovDir(int x, int y)
     { MV_LEFT,  MV_RIGHT, MV_UP, MV_DOWN }
   };
 
-  switch(element)
+  switch (element)
   {
     case EL_BUG_RIGHT:
     case EL_BUG_UP:
@@ -2717,35 +2767,38 @@ void GameWon()
       DrawGameValue_Score(score);
     }
 
-    if (ExitX >= 0 && ExitY >= 0)	/* local player has left the level */
+    if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
     {
-      /* close exit door after last player */
-      if (AllPlayersGone &&
-	  (Feld[ExitX][ExitY] == EL_EXIT_OPEN ||
-	   Feld[ExitX][ExitY] == EL_SP_EXIT_OPEN))
+      if (ExitX >= 0 && ExitY >= 0)	/* local player has left the level */
       {
-	int element = Feld[ExitX][ExitY];
+	/* close exit door after last player */
+	if (AllPlayersGone &&
+	    (Feld[ExitX][ExitY] == EL_EXIT_OPEN ||
+	     Feld[ExitX][ExitY] == EL_SP_EXIT_OPEN))
+	{
+	  int element = Feld[ExitX][ExitY];
 
-	Feld[ExitX][ExitY] = (element == EL_EXIT_OPEN ? EL_EXIT_CLOSING :
-			      EL_SP_EXIT_CLOSING);
+	  Feld[ExitX][ExitY] = (element == EL_EXIT_OPEN ? EL_EXIT_CLOSING :
+				EL_SP_EXIT_CLOSING);
 
-	PlayLevelSoundElementAction(ExitX, ExitY, element, ACTION_CLOSING);
-      }
-
-      /* player disappears */
-      DrawLevelField(ExitX, ExitY);
-    }
-
-    for (i = 0; i < MAX_PLAYERS; i++)
-    {
-      struct PlayerInfo *player = &stored_player[i];
-
-      if (player->present)
-      {
-	RemovePlayer(player);
+	  PlayLevelSoundElementAction(ExitX, ExitY, element, ACTION_CLOSING);
+	}
 
 	/* player disappears */
-	DrawLevelField(player->jx, player->jy);
+	DrawLevelField(ExitX, ExitY);
+      }
+
+      for (i = 0; i < MAX_PLAYERS; i++)
+      {
+	struct PlayerInfo *player = &stored_player[i];
+
+	if (player->present)
+	{
+	  RemovePlayer(player);
+
+	  /* player disappears */
+	  DrawLevelField(player->jx, player->jy);
+	}
       }
     }
 
@@ -2793,7 +2846,11 @@ void GameEnd()
     TapeStop();
 #endif
 
+#if 1
+    SaveTapeChecked(tape.level_nr);	/* ask to save tape */
+#else
     SaveTape(tape.level_nr);		/* ask to save tape */
+#endif
   }
 
   if (level_editor_test_game)
@@ -2913,10 +2970,9 @@ int NewHiScore()
   return position;
 }
 
-inline static int getElementMoveStepsize(int x, int y)
+inline static int getElementMoveStepsizeExt(int x, int y, int direction)
 {
   int element = Feld[x][y];
-  int direction = MovDir[x][y];
   int dx = (direction == MV_LEFT ? -1 : direction == MV_RIGHT ? +1 : 0);
   int dy = (direction == MV_UP   ? -1 : direction == MV_DOWN  ? +1 : 0);
   int horiz_move = (dx != 0);
@@ -2934,6 +2990,11 @@ inline static int getElementMoveStepsize(int x, int y)
   }
 
   return step;
+}
+
+inline static int getElementMoveStepsize(int x, int y)
+{
+  return getElementMoveStepsizeExt(x, y, MovDir[x][y]);
 }
 
 void InitPlayerGfxAnimation(struct PlayerInfo *player, int action, int dir)
@@ -2996,18 +3057,51 @@ void InitMovingField(int x, int y, int direction)
   int dy = (direction == MV_UP   ? -1 : direction == MV_DOWN  ? +1 : 0);
   int newx = x + dx;
   int newy = y + dy;
+  boolean is_moving_before, is_moving_after;
+#if 0
+  boolean continues_moving = (WasJustMoving[x][y] && direction == MovDir[x][y]);
+#endif
 
-  if (!WasJustMoving[x][y] || direction != MovDir[x][y])
+  /* check if element was/is moving or being moved before/after mode change */
+#if 1
+  is_moving_before = WasJustMoving[x][y];
+#else
+  is_moving_before = (getElementMoveStepsizeExt(x, y, MovDir[x][y]) != 0);
+#endif
+  is_moving_after  = (getElementMoveStepsizeExt(x, y, direction)    != 0);
+
+  /* reset animation only for moving elements which change direction of moving
+     or which just started or stopped moving
+     (else CEs with property "can move" / "not moving" are reset each frame) */
+#if USE_GFX_RESET_ONLY_WHEN_MOVING
+#if 1
+  if (is_moving_before != is_moving_after ||
+      direction != MovDir[x][y])
     ResetGfxAnimation(x, y);
+#else
+  if ((is_moving_before || is_moving_after) && !continues_moving)
+    ResetGfxAnimation(x, y);
+#endif
+#else
+  if (!continues_moving)
+    ResetGfxAnimation(x, y);
+#endif
 
   MovDir[x][y] = direction;
   GfxDir[x][y] = direction;
+
+#if USE_GFX_RESET_ONLY_WHEN_MOVING
+  GfxAction[x][y] = (!is_moving_after ? ACTION_WAITING :
+		     direction == MV_DOWN && CAN_FALL(element) ?
+		     ACTION_FALLING : ACTION_MOVING);
+#else
   GfxAction[x][y] = (direction == MV_DOWN && CAN_FALL(element) ?
 		     ACTION_FALLING : ACTION_MOVING);
+#endif
 
   /* this is needed for CEs with property "can move" / "not moving" */
 
-  if (getElementMoveStepsize(x, y) != 0)	/* moving or being moved */
+  if (is_moving_after)
   {
     if (Feld[newx][newy] == EL_EMPTY)
       Feld[newx][newy] = EL_BLOCKED;
@@ -3266,8 +3360,8 @@ static void setScreenCenteredToAllPlayers(int *sx, int *sy)
   *sy = (sy1 + sy2) / 2;
 }
 
-void DrawRelocateScreen(int x, int y, int move_dir, boolean center_screen,
-			boolean quick_relocation)
+void DrawRelocateScreen(int old_x, int old_y, int x, int y, int move_dir,
+			boolean center_screen, boolean quick_relocation)
 {
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
   boolean no_delay = (tape.warp_forward);
@@ -3280,13 +3374,39 @@ void DrawRelocateScreen(int x, int y, int move_dir, boolean center_screen,
 
     if (!IN_VIS_FIELD(SCREENX(x), SCREENY(y)) || center_screen)
     {
-      scroll_x = (x < SBX_Left  + MIDPOSX ? SBX_Left :
-		  x > SBX_Right + MIDPOSX ? SBX_Right :
-		  x - MIDPOSX);
+      if (center_screen)
+      {
+	scroll_x = (x < SBX_Left  + MIDPOSX ? SBX_Left :
+		    x > SBX_Right + MIDPOSX ? SBX_Right :
+		    x - MIDPOSX);
 
-      scroll_y = (y < SBY_Upper + MIDPOSY ? SBY_Upper :
-		  y > SBY_Lower + MIDPOSY ? SBY_Lower :
-		  y - MIDPOSY);
+	scroll_y = (y < SBY_Upper + MIDPOSY ? SBY_Upper :
+		    y > SBY_Lower + MIDPOSY ? SBY_Lower :
+		    y - MIDPOSY);
+      }
+      else
+      {
+	/* quick relocation (without scrolling), but do not center screen */
+
+	int center_scroll_x = (old_x < SBX_Left  + MIDPOSX ? SBX_Left :
+			       old_x > SBX_Right + MIDPOSX ? SBX_Right :
+			       old_x - MIDPOSX);
+
+	int center_scroll_y = (old_y < SBY_Upper + MIDPOSY ? SBY_Upper :
+			       old_y > SBY_Lower + MIDPOSY ? SBY_Lower :
+			       old_y - MIDPOSY);
+
+	int offset_x = x + (scroll_x - center_scroll_x);
+	int offset_y = y + (scroll_y - center_scroll_y);
+
+	scroll_x = (offset_x < SBX_Left  + MIDPOSX ? SBX_Left :
+		    offset_x > SBX_Right + MIDPOSX ? SBX_Right :
+		    offset_x - MIDPOSX);
+
+	scroll_y = (offset_y < SBY_Upper + MIDPOSY ? SBY_Upper :
+		    offset_y > SBY_Lower + MIDPOSY ? SBY_Lower :
+		    offset_y - MIDPOSY);
+      }
     }
     else
     {
@@ -3433,8 +3553,8 @@ void RelocatePlayer(int jx, int jy, int el_player_raw)
   }
 
   /* only visually relocate centered player */
-  DrawRelocateScreen(player->jx, player->jy, player->MovDir, FALSE,
-		     level.instant_relocation);
+  DrawRelocateScreen(old_jx, old_jy, player->jx, player->jy, player->MovDir,
+		     FALSE, level.instant_relocation);
 
   TestIfPlayerTouchesBadThing(jx, jy);
   TestIfPlayerTouchesCustomElement(jx, jy);
@@ -3867,7 +3987,7 @@ void Bang(int x, int y)
     }
   }
 
-  switch(element)
+  switch (element)
   {
     case EL_BUG:
     case EL_SPACESHIP:
@@ -5579,9 +5699,14 @@ void StartMoving(int x, int y)
 
       Store[x][y] = EL_ACID;
     }
-    else if ((game.engine_version >= VERSION_IDENT(3,1,0,0) &&
+    else if (
+#if USE_FIX_IMPACT_COLLISION
+	     (game.engine_version >= VERSION_IDENT(3,1,0,0) &&
+	      CheckImpact[x][y] && !IS_FREE(x, y + 1)) ||
+#else
+	     (game.engine_version >= VERSION_IDENT(3,1,0,0) &&
 	      CheckCollision[x][y] && !IS_FREE(x, y + 1)) ||
-
+#endif
 	     (game.engine_version >= VERSION_IDENT(3,0,7,0) &&
 	      CAN_FALL(element) && WasJustFalling[x][y] &&
 	      (Feld[x][y + 1] == EL_BLOCKED || IS_PLAYER(x, y + 1))) ||
@@ -5601,6 +5726,7 @@ void StartMoving(int x, int y)
 	 simply not covered here... :-/ ) */
 
       CheckCollision[x][y] = 0;
+      CheckImpact[x][y] = 0;
 
       Impact(x, y);
     }
@@ -6545,6 +6671,11 @@ void ContinueMoving(int x, int y)
 
     if ((!CAN_FALL(element) || direction == MV_DOWN) && check_collision_again)
       CheckCollision[newx][newy] = CHECK_DELAY_COLLISION;
+
+#if USE_FIX_IMPACT_COLLISION
+    if (CAN_FALL(element) && direction == MV_DOWN && check_collision_again)
+      CheckImpact[newx][newy] = CHECK_DELAY_IMPACT;
+#endif
   }
 
   if (DONT_TOUCH(element))	/* object may be nasty to player or others */
@@ -6612,7 +6743,7 @@ void ContinueMoving(int x, int y)
   if (IS_CUSTOM_ELEMENT(element) && ei->move_enter_element != EL_EMPTY &&
       IS_EQUAL_OR_IN_GROUP(stored_new, ei->move_enter_element))
     CheckElementChangeBySide(newx, newy, element, stored_new, CE_DIGGING_X,
-				      MV_DIR_OPPOSITE(direction));
+			     MV_DIR_OPPOSITE(direction));
 }
 
 int AmoebeNachbarNr(int ax, int ay)
@@ -7219,7 +7350,7 @@ static void CloseAllOpenTimegates()
   }
 }
 
-void EdelsteinFunkeln(int x, int y)
+void DrawTwinkleOnField(int x, int y)
 {
   if (!IN_SCR_FIELD(SCREENX(x), SCREENY(y)) || IS_MOVING(x, y))
     return;
@@ -7662,7 +7793,7 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
 
   /* ---------- execute action  -------------------------------------------- */
 
-  switch(action_type)
+  switch (action_type)
   {
     case CA_NO_ACTION:
     {
@@ -7890,6 +8021,11 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
 	      (level.use_artwork_element[i] ? level.artwork_element[i] :
 	       stored_player[i].element_nr);
 
+#if USE_GFX_RESET_PLAYER_ARTWORK
+	  if (stored_player[i].artwork_element != artwork_element)
+	    stored_player[i].Frame = 0;
+#endif
+
 	  stored_player[i].artwork_element = artwork_element;
 
 	  SetPlayerWaiting(&stored_player[i], FALSE);
@@ -7997,6 +8133,7 @@ static void CreateFieldExt(int x, int y, int element, boolean is_change)
 #if USE_NEW_CUSTOM_VALUE
   int last_ce_value = CustomValue[x][y];
 #endif
+  boolean player_explosion_protected = PLAYER_EXPLOSION_PROTECTED(x, y);
   boolean new_element_is_player = ELEM_IS_PLAYER(new_element);
   boolean add_player_onto_element = (new_element_is_player &&
 #if USE_CODE_THAT_BREAKS_SNAKE_BITE
@@ -8060,6 +8197,15 @@ static void CreateFieldExt(int x, int y, int element, boolean is_change)
   /* check if element under the player changes from accessible to unaccessible
      (needed for special case of dropping element which then changes) */
   /* (must be checked after creating new element for walkable group elements) */
+#if USE_FIX_KILLED_BY_NON_WALKABLE
+  if (IS_PLAYER(x, y) && !player_explosion_protected &&
+      IS_ACCESSIBLE(old_element) && !IS_ACCESSIBLE(new_element))
+  {
+    Bang(x, y);
+
+    return;
+  }
+#else
   if (IS_PLAYER(x, y) && !PLAYER_EXPLOSION_PROTECTED(x, y) &&
       IS_ACCESSIBLE(old_element) && !IS_ACCESSIBLE(new_element))
   {
@@ -8067,6 +8213,7 @@ static void CreateFieldExt(int x, int y, int element, boolean is_change)
 
     return;
   }
+#endif
 #endif
 
   /* "ChangeCount" not set yet to allow "entered by player" change one time */
@@ -8463,6 +8610,14 @@ static boolean CheckTriggeredElementChangeExt(int trigger_x, int trigger_y,
   if (!(trigger_events[trigger_element][trigger_event]))
     return FALSE;
 
+#if 0
+  printf("::: CheckTriggeredElementChangeExt %d ... [%d, %d, %d, '%s']\n",
+	 trigger_event, recursion_loop_depth, recursion_loop_detected,
+	 recursion_loop_element, EL_NAME(recursion_loop_element));
+#endif
+
+  RECURSION_LOOP_DETECTION_START(trigger_element, FALSE);
+
   for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
@@ -8531,6 +8686,8 @@ static boolean CheckTriggeredElementChangeExt(int trigger_x, int trigger_y,
     }
   }
 
+  RECURSION_LOOP_DETECTION_END();
+
   return change_done_any;
 }
 
@@ -8569,14 +8726,30 @@ static boolean CheckElementChangeExt(int x, int y,
     return FALSE;
 #endif
 
+#if 0
+  printf("::: CheckElementChangeExt %d ... [%d, %d, %d, '%s']\n",
+	 trigger_event, recursion_loop_depth, recursion_loop_detected,
+	 recursion_loop_element, EL_NAME(recursion_loop_element));
+#endif
+
+  RECURSION_LOOP_DETECTION_START(trigger_element, FALSE);
+
   for (p = 0; p < element_info[element].num_change_pages; p++)
   {
     struct ElementChangeInfo *change = &element_info[element].change_page[p];
 
+    /* check trigger element for all events where the element that is checked
+       for changing interacts with a directly adjacent element -- this is
+       different to element changes that affect other elements to change on the
+       whole playfield (which is handeld by CheckTriggeredElementChangeExt()) */
     boolean check_trigger_element =
       (trigger_event == CE_TOUCHING_X ||
        trigger_event == CE_HITTING_X ||
-       trigger_event == CE_HIT_BY_X);
+       trigger_event == CE_HIT_BY_X ||
+#if 1
+       /* this one was forgotten until 3.2.3 */
+       trigger_event == CE_DIGGING_X);
+#endif
 
     if (change->can_change_or_has_action &&
 	change->has_event[trigger_event] &&
@@ -8639,6 +8812,8 @@ static boolean CheckElementChangeExt(int x, int y,
 #endif
     }
   }
+
+  RECURSION_LOOP_DETECTION_END();
 
   return change_done;
 }
@@ -9041,6 +9216,25 @@ void GameActions()
   byte tape_action[MAX_PLAYERS];
   int i;
 
+  /* detect endless loops, caused by custom element programming */
+  if (recursion_loop_detected && recursion_loop_depth == 0)
+  {
+    char *message = getStringCat3("Internal Error ! Element ",
+				  EL_NAME(recursion_loop_element),
+				  " caused endless loop ! Quit the game ?");
+
+    Error(ERR_WARN, "element '%s' caused endless loop in game engine",
+	  EL_NAME(recursion_loop_element));
+
+    RequestQuitGameExt(FALSE, level_editor_test_game, message);
+
+    recursion_loop_detected = FALSE;	/* if game should be continued */
+
+    free(message);
+
+    return;
+  }
+
   if (game.restart_level)
     StartGameActions(options.network, setup.autorecord, NEW_RANDOMIZE);
 
@@ -9244,7 +9438,7 @@ void GameActions_RND()
     game.centered_player_nr = game.centered_player_nr_next;
     game.set_centered_player = FALSE;
 
-    DrawRelocateScreen(sx, sy, MV_NONE, TRUE, setup.quick_switch);
+    DrawRelocateScreen(0, 0, sx, sy, MV_NONE, TRUE, setup.quick_switch);
     DrawGameDoorValues();
   }
 
@@ -9350,6 +9544,8 @@ void GameActions_RND()
       WasJustFalling[x][y]--;
     if (CheckCollision[x][y] > 0)
       CheckCollision[x][y]--;
+    if (CheckImpact[x][y] > 0)
+      CheckImpact[x][y]--;
 
     GfxFrame[x][y]++;
 
@@ -9434,7 +9630,7 @@ void GameActions_RND()
 	DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
 
       if (IS_GEM(element) || element == EL_SP_INFOTRON)
-	EdelsteinFunkeln(x, y);
+	DrawTwinkleOnField(x, y);
     }
     else if ((element == EL_ACID ||
 	      element == EL_EXIT_OPEN ||
@@ -10961,6 +11157,23 @@ void KillPlayer(struct PlayerInfo *player)
   if (!player->active)
     return;
 
+  /* the following code was introduced to prevent an infinite loop when calling
+     -> Bang()
+     -> CheckTriggeredElementChangeExt()
+     -> ExecuteCustomElementAction()
+     -> KillPlayer()
+     -> (infinitely repeating the above sequence of function calls)
+     which occurs when killing the player while having a CE with the setting
+     "kill player X when explosion of <player X>"; the solution using a new
+     field "player->killed" was chosen for backwards compatibility, although
+     clever use of the fields "player->active" etc. would probably also work */
+#if 1
+  if (player->killed)
+    return;
+#endif
+
+  player->killed = TRUE;
+
   /* remove accessible field at the player's position */
   Feld[jx][jy] = EL_EMPTY;
 
@@ -11986,7 +12199,13 @@ boolean DropElement(struct PlayerInfo *player)
     nexty = dropy + GET_DY_FROM_DIR(move_direction);
 
     ChangeCount[dropx][dropy] = 0;	/* allow at least one more change */
+
+#if USE_FIX_IMPACT_COLLISION
+    /* do not cause impact style collision by dropping elements that can fall */
     CheckCollision[dropx][dropy] = CHECK_DELAY_COLLISION;
+#else
+    CheckCollision[dropx][dropy] = CHECK_DELAY_COLLISION;
+#endif
   }
 
   player->drop_delay = GET_NEW_DROP_DELAY(drop_element);
@@ -12313,7 +12532,7 @@ void RaiseScore(int value)
 
 void RaiseScoreElement(int element)
 {
-  switch(element)
+  switch (element)
   {
     case EL_EMERALD:
     case EL_BD_DIAMOND:
@@ -12390,13 +12609,9 @@ void RaiseScoreElement(int element)
   }
 }
 
-void RequestQuitGame(boolean ask_if_really_quit)
+void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
 {
-  if (AllPlayersGone ||
-      !ask_if_really_quit ||
-      level_editor_test_game ||
-      Request("Do you really want to quit the game ?",
-	      REQ_ASK | REQ_STAY_CLOSED))
+  if (skip_request || Request(message, REQ_ASK | REQ_STAY_CLOSED))
   {
 #if defined(NETWORK_AVALIABLE)
     if (options.network)
@@ -12404,7 +12619,7 @@ void RequestQuitGame(boolean ask_if_really_quit)
     else
 #endif
     {
-      if (!ask_if_really_quit || level_editor_test_game)
+      if (quick_quit)
       {
 	game_status = GAME_MODE_MAIN;
 
@@ -12420,7 +12635,7 @@ void RequestQuitGame(boolean ask_if_really_quit)
       }
     }
   }
-  else
+  else		/* continue playing the game */
   {
     if (tape.playing && tape.deactivate_display)
       TapeDeactivateDisplayOff(TRUE);
@@ -12430,6 +12645,15 @@ void RequestQuitGame(boolean ask_if_really_quit)
     if (tape.playing && tape.deactivate_display)
       TapeDeactivateDisplayOn();
   }
+}
+
+void RequestQuitGame(boolean ask_if_really_quit)
+{
+  boolean quick_quit = (!ask_if_really_quit || level_editor_test_game);
+  boolean skip_request = AllPlayersGone || quick_quit;
+
+  RequestQuitGameExt(skip_request, quick_quit,
+		     "Do you really want to quit the game ?");
 }
 
 
@@ -12612,6 +12836,9 @@ void SaveEngineSnapshot()
 {
   FreeEngineSnapshot();		/* free previous snapshot, if needed */
 
+  if (level_editor_test_game)	/* do not save snapshots from editor */
+    return;
+
   /* copy some special values to a structure better suited for the snapshot */
 
   SaveEngineSnapshotValues_RND();
@@ -12665,6 +12892,7 @@ void SaveEngineSnapshot()
   SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(WasJustMoving));
   SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(WasJustFalling));
   SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(CheckCollision));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(CheckImpact));
   SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(Stop));
   SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(Pushed));
 

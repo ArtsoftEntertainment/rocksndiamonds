@@ -19,6 +19,7 @@
 #include "cartoons.h"
 #include "network.h"
 #include "tape.h"
+#include "screens.h"
 
 
 /* select level set with EMC X11 graphics before activating EM GFX debugging */
@@ -194,6 +195,72 @@ void RedrawPlayfield(boolean force_redraw, int x, int y, int width, int height)
   BlitBitmap(drawto, window, x, y, width, height, x, y);
 }
 
+void DrawMaskedBorder_Rect(int x, int y, int width, int height)
+{
+  Bitmap *bitmap = graphic_info[IMG_GLOBAL_BORDER].bitmap;
+
+  SetClipOrigin(bitmap, bitmap->stored_clip_gc, 0, 0);
+  BlitBitmapMasked(bitmap, backbuffer, x, y, width, height, x, y);
+}
+
+void DrawMaskedBorder_FIELD()
+{
+  if (game_status >= GAME_MODE_TITLE &&
+      game_status <= GAME_MODE_PLAYING &&
+      border.draw_masked[game_status])
+    DrawMaskedBorder_Rect(REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
+}
+
+void DrawMaskedBorder_DOOR_1()
+{
+  if (border.draw_masked[GFX_SPECIAL_ARG_DOOR] &&
+      (game_status != GAME_MODE_EDITOR ||
+       border.draw_masked[GFX_SPECIAL_ARG_EDITOR]))
+    DrawMaskedBorder_Rect(DX, DY, DXSIZE, DYSIZE);
+}
+
+void DrawMaskedBorder_DOOR_2()
+{
+  if (border.draw_masked[GFX_SPECIAL_ARG_DOOR] &&
+      game_status != GAME_MODE_EDITOR)
+    DrawMaskedBorder_Rect(VX, VY, VXSIZE, VYSIZE);
+}
+
+void DrawMaskedBorder_DOOR_3()
+{
+  /* currently not available */
+}
+
+void DrawMaskedBorder_ALL()
+{
+  DrawMaskedBorder_FIELD();
+  DrawMaskedBorder_DOOR_1();
+  DrawMaskedBorder_DOOR_2();
+  DrawMaskedBorder_DOOR_3();
+}
+
+void DrawMaskedBorder(int redraw_mask)
+{
+  /* do not draw masked screen borders when displaying title screens */
+  if (effectiveGameStatus() == GAME_MODE_TITLE ||
+      effectiveGameStatus() == GAME_MODE_MESSAGE)
+    return;
+
+  if (redraw_mask & REDRAW_ALL)
+    DrawMaskedBorder_ALL();
+  else
+  {
+    if (redraw_mask & REDRAW_FIELD)
+      DrawMaskedBorder_FIELD();
+    if (redraw_mask & REDRAW_DOOR_1)
+      DrawMaskedBorder_DOOR_1();
+    if (redraw_mask & REDRAW_DOOR_2)
+      DrawMaskedBorder_DOOR_2();
+    if (redraw_mask & REDRAW_DOOR_3)
+      DrawMaskedBorder_DOOR_3();
+  }
+}
+
 void BackToFront()
 {
   int x,y;
@@ -210,6 +277,11 @@ void BackToFront()
 
   if (redraw_mask == REDRAW_NONE)
     return;
+
+  if (redraw_mask & REDRAW_TILES &&
+      game_status == GAME_MODE_PLAYING &&
+      border.draw_masked[GAME_MODE_PLAYING])
+    redraw_mask |= REDRAW_FIELD;
 
   if (global.fps_slowdown && game_status == GAME_MODE_PLAYING)
   {
@@ -248,6 +320,14 @@ void BackToFront()
 
   SyncDisplay();
 
+  /* prevent drawing masked border to backbuffer when using playfield buffer */
+  if (game_status != GAME_MODE_PLAYING ||
+      redraw_mask & REDRAW_FROM_BACKBUFFER ||
+      buffer == backbuffer)
+    DrawMaskedBorder(redraw_mask);
+  else
+    DrawMaskedBorder(redraw_mask & REDRAW_DOORS);
+
   if (redraw_mask & REDRAW_ALL)
   {
     BlitBitmap(backbuffer, window, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
@@ -278,7 +358,23 @@ void BackToFront()
 	  ABS(ScreenMovPos) == ScrollStepSize ||
 	  redraw_tiles > REDRAWTILES_THRESHOLD)
       {
-	BlitBitmap(buffer, window, fx, fy, SXSIZE, SYSIZE, SX, SY);
+	if (border.draw_masked[GAME_MODE_PLAYING])
+	{
+	  if (buffer != backbuffer)
+	  {
+	    /* copy playfield buffer to backbuffer to add masked border */
+	    BlitBitmap(buffer, backbuffer, fx, fy, SXSIZE, SYSIZE, SX, SY);
+	    DrawMaskedBorder(REDRAW_FIELD);
+	  }
+
+	  BlitBitmap(backbuffer, window,
+		     REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE,
+		     REAL_SX, REAL_SY);
+	}
+	else
+	{
+	  BlitBitmap(buffer, window, fx, fy, SXSIZE, SYSIZE, SX, SY);
+	}
 
 #if 0
 #ifdef DEBUG
@@ -426,10 +522,10 @@ void FadeToFront()
 
 void FadeExt(int fade_mask, int fade_mode)
 {
+  void (*draw_border_function)(void) = NULL;
   Bitmap *bitmap = (fade_mode == FADE_MODE_CROSSFADE ? bitmap_db_cross : NULL);
-  int fade_delay = menu.fade_delay;
-  int post_delay = (fade_mode == FADE_MODE_FADE_OUT ? menu.post_delay : 0);
   int x, y, width, height;
+  int fade_delay, post_delay;
 
   if (fade_mask & REDRAW_FIELD)
   {
@@ -437,6 +533,11 @@ void FadeExt(int fade_mask, int fade_mode)
     y = REAL_SY;
     width  = FULL_SXSIZE;
     height = FULL_SYSIZE;
+
+    fade_delay = menu.fade_delay;
+    post_delay = (fade_mode == FADE_MODE_FADE_OUT ? menu.post_delay : 0);
+
+    draw_border_function = DrawMaskedBorder_FIELD;
   }
   else		/* REDRAW_ALL */
   {
@@ -444,6 +545,9 @@ void FadeExt(int fade_mask, int fade_mode)
     y = 0;
     width  = WIN_XSIZE;
     height = WIN_YSIZE;
+
+    fade_delay = title.fade_delay_final;
+    post_delay = (fade_mode == FADE_MODE_FADE_OUT ? title.post_delay_final : 0);
   }
 
   redraw_mask |= fade_mask;
@@ -458,7 +562,8 @@ void FadeExt(int fade_mask, int fade_mode)
     return;
   }
 
-  FadeRectangle(bitmap, x, y, width, height, fade_mode, fade_delay, post_delay);
+  FadeRectangle(bitmap, x, y, width, height, fade_mode, fade_delay, post_delay,
+		draw_border_function);
 
   redraw_mask &= ~fade_mask;
 }
@@ -483,10 +588,16 @@ void FadeCrossSaveBackbuffer()
   BlitBitmap(backbuffer, bitmap_db_cross, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
 }
 
+void SetWindowBackgroundImageIfDefined(int graphic)
+{
+  if (graphic_info[graphic].bitmap)
+    SetWindowBackgroundBitmap(graphic_info[graphic].bitmap);
+}
+
 void SetMainBackgroundImageIfDefined(int graphic)
 {
   if (graphic_info[graphic].bitmap)
-    SetMainBackgroundImage(graphic);
+    SetMainBackgroundBitmap(graphic_info[graphic].bitmap);
 }
 
 void SetMainBackgroundImage(int graphic)
@@ -513,21 +624,46 @@ void SetPanelBackground()
   SetDoorBackgroundBitmap(bitmap_db_panel);
 }
 
-void DrawBackground(int dst_x, int dst_y, int width, int height)
+void DrawBackground(int x, int y, int width, int height)
 {
-#if 1
-  ClearRectangleOnBackground(drawto, dst_x, dst_y, width, height);
+  /* !!! "drawto" might still point to playfield buffer here (see below) !!! */
+  /* (when entering hall of fame after playing) */
+#if 0
+  ClearRectangleOnBackground(drawto, x, y, width, height);
 #else
-  ClearRectangleOnBackground(backbuffer, dst_x, dst_y, width, height);
+  ClearRectangleOnBackground(backbuffer, x, y, width, height);
 #endif
 
   redraw_mask |= REDRAW_FIELD;
 }
 
+void DrawBackgroundForFont(int x, int y, int width, int height, int font_nr)
+{
+  struct FontBitmapInfo *font = getFontBitmapInfo(font_nr);
+
+  if (font->bitmap == NULL)
+    return;
+
+  DrawBackground(x, y, width, height);
+}
+
+void DrawBackgroundForGraphic(int x, int y, int width, int height, int graphic)
+{
+  struct GraphicInfo *g = &graphic_info[graphic];
+
+  if (g->bitmap == NULL)
+    return;
+
+  DrawBackground(x, y, width, height);
+}
+
 void ClearWindow()
 {
+  /* !!! "drawto" might still point to playfield buffer here (see above) !!! */
+  /* (when entering hall of fame after playing) */
   DrawBackground(REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
 
+  /* !!! maybe this should be done before clearing the background !!! */
   if (setup.soft_scrolling && game_status == GAME_MODE_PLAYING)
   {
     ClearRectangle(fieldbuffer, 0, 0, FXSIZE, FYSIZE);
@@ -1561,8 +1697,6 @@ void DrawMiniLevel(int size_x, int size_y, int scroll_x, int scroll_y)
 static void DrawPreviewLevelExt(int from_x, int from_y)
 {
   boolean show_level_border = (BorderElement != EL_EMPTY);
-  int dst_x = preview.x;
-  int dst_y = preview.y;
   int level_xsize = lev_fieldx + (show_level_border ? 2 : 0);
   int level_ysize = lev_fieldy + (show_level_border ? 2 : 0);
   int tile_size = preview.tile_size;
@@ -1570,6 +1704,8 @@ static void DrawPreviewLevelExt(int from_x, int from_y)
   int preview_height = preview.ysize * tile_size;
   int real_preview_xsize = MIN(level_xsize, preview.xsize);
   int real_preview_ysize = MIN(level_ysize, preview.ysize);
+  int dst_x = SX + ALIGNED_XPOS(preview.x, preview_width, preview.align);
+  int dst_y = SY + preview.y;
   int x, y;
 
   DrawBackground(dst_x, dst_y, preview_width, preview_height);
@@ -1603,8 +1739,24 @@ static void DrawPreviewLevelExt(int from_x, int from_y)
 #define MICROLABEL_IMPORTED_BY_HEAD	6
 #define MICROLABEL_IMPORTED_BY		7
 
+static int getMaxTextLength(struct MenuPosInfo *pos, int font_nr)
+{
+  int max_text_width = SXSIZE;
+  int font_width = getFontWidth(font_nr);
+
+  if (pos->align == ALIGN_CENTER)
+    max_text_width = (pos->x < SXSIZE / 2 ? pos->x * 2 : (SXSIZE - pos->x) * 2);
+  else if (pos->align == ALIGN_RIGHT)
+    max_text_width = pos->x;
+  else
+    max_text_width = SXSIZE - pos->x;
+
+  return max_text_width / font_width;
+}
+
 static void DrawPreviewLevelLabelExt(int mode)
 {
+  struct MenuPosInfo *pos = &menu.main.text.level_info_2;
   char label_text[MAX_OUTPUT_LINESIZE + 1];
   int max_len_label_text;
   int font_nr = FONT_TEXT_2;
@@ -1615,7 +1767,11 @@ static void DrawPreviewLevelLabelExt(int mode)
       mode == MICROLABEL_IMPORTED_BY_HEAD)
     font_nr = FONT_TEXT_3;
 
+#if 1
+  max_len_label_text = getMaxTextLength(pos, font_nr);
+#else
   max_len_label_text = SXSIZE / getFontWidth(font_nr);
+#endif
 
   for (i = 0; i < max_len_label_text; i++)
     label_text[i] = ' ';
@@ -1623,10 +1779,14 @@ static void DrawPreviewLevelLabelExt(int mode)
 
   if (strlen(label_text) > 0)
   {
+#if 1
+    DrawTextSAligned(pos->x, pos->y, label_text, font_nr, pos->align);
+#else
     int lxpos = SX + (SXSIZE - getTextWidth(label_text, font_nr)) / 2;
     int lypos = MICROLABEL2_YPOS;
 
     DrawText(lxpos, lypos, label_text, font_nr);
+#endif
   }
 
   strncpy(label_text,
@@ -1642,10 +1802,14 @@ static void DrawPreviewLevelLabelExt(int mode)
 
   if (strlen(label_text) > 0)
   {
+#if 1
+    DrawTextSAligned(pos->x, pos->y, label_text, font_nr, pos->align);
+#else
     int lxpos = SX + (SXSIZE - getTextWidth(label_text, font_nr)) / 2;
     int lypos = MICROLABEL2_YPOS;
 
     DrawText(lxpos, lypos, label_text, font_nr);
+#endif
   }
 
   redraw_mask |= REDRAW_MICROLEVEL;
@@ -1668,7 +1832,20 @@ void DrawPreviewLevel(boolean restart)
 
   if (restart)
   {
-    from_x = from_y = 0;
+    from_x = 0;
+    from_y = 0;
+
+    if (preview.anim_mode == ANIM_CENTERED)
+    {
+      if (level_xsize > preview.xsize)
+	from_x = (level_xsize - preview.xsize) / 2;
+      if (level_ysize > preview.ysize)
+	from_y = (level_ysize - preview.ysize) / 2;
+    }
+
+    from_x += preview.xoffset;
+    from_y += preview.yoffset;
+
     scroll_direction = MV_RIGHT;
     label_state = 1;
     label_counter = 0;
@@ -1682,18 +1859,30 @@ void DrawPreviewLevel(boolean restart)
 
     if (leveldir_current->name)
     {
+      struct MenuPosInfo *pos = &menu.main.text.level_info_1;
       char label_text[MAX_OUTPUT_LINESIZE + 1];
       int font_nr = FONT_TEXT_1;
+#if 1
+      int max_len_label_text = getMaxTextLength(pos, font_nr);
+#else
       int max_len_label_text = SXSIZE / getFontWidth(font_nr);
+#endif
+#if 0
+      int text_width;
       int lxpos, lypos;
+#endif
 
       strncpy(label_text, leveldir_current->name, max_len_label_text);
       label_text[max_len_label_text] = '\0';
 
+#if 1
+      DrawTextSAligned(pos->x, pos->y, label_text, font_nr, pos->align);
+#else
       lxpos = SX + (SXSIZE - getTextWidth(label_text, font_nr)) / 2;
       lypos = SY + MICROLABEL1_YPOS;
 
       DrawText(lxpos, lypos, label_text, font_nr);
+#endif
     }
 
     game_status = last_game_status;	/* restore current game status */
@@ -1702,7 +1891,8 @@ void DrawPreviewLevel(boolean restart)
   }
 
   /* scroll preview level, if needed */
-  if ((level_xsize > preview.xsize || level_ysize > preview.ysize) &&
+  if (preview.anim_mode != ANIM_NONE &&
+      (level_xsize > preview.xsize || level_ysize > preview.ysize) &&
       DelayReached(&scroll_delay, scroll_delay_value))
   {
     switch (scroll_direction)
@@ -2439,7 +2629,7 @@ boolean Request(char *text, unsigned int req_state)
 
       NextEvent(&event);
 
-      switch(event.type)
+      switch (event.type)
       {
 	case EVENT_BUTTONPRESS:
 	case EVENT_BUTTONRELEASE:
@@ -2471,7 +2661,7 @@ boolean Request(char *text, unsigned int req_state)
 	  /* this sets 'request_gadget_id' */
 	  HandleGadgets(mx, my, button_status);
 
-	  switch(request_gadget_id)
+	  switch (request_gadget_id)
 	  {
 	    case TOOL_CTRL_ID_YES:
 	      result = TRUE;
@@ -2504,7 +2694,7 @@ boolean Request(char *text, unsigned int req_state)
 	}
 
 	case EVENT_KEYPRESS:
-	  switch(GetEventKey((KeyEvent *)&event, TRUE))
+	  switch (GetEventKey((KeyEvent *)&event, TRUE))
 	  {
 	    case KSYM_Return:
 	      result = 1;
@@ -2542,8 +2732,13 @@ boolean Request(char *text, unsigned int req_state)
 
     DoAnimation();
 
+#if 1
+    if (!PendingEvent())	/* delay only if no pending events */
+      Delay(10);
+#else
     /* don't eat all CPU time */
     Delay(10);
+#endif
   }
 
   if (game_status != GAME_MODE_MAIN)
@@ -3093,6 +3288,7 @@ void CreateToolButtons()
 		      GDI_DECORATION_POSITION, deco_xpos, deco_ypos,
 		      GDI_DECORATION_SIZE, MINI_TILEX, MINI_TILEY,
 		      GDI_DECORATION_SHIFTING, 1, 1,
+		      GDI_DIRECT_DRAW, FALSE,
 		      GDI_EVENT_MASK, event_mask,
 		      GDI_CALLBACK_ACTION, HandleToolButtons,
 		      GDI_END);
@@ -5172,7 +5368,7 @@ int map_direction_EM_to_RND(int direction)
 
 int get_next_element(int element)
 {
-  switch(element)
+  switch (element)
   {
     case EL_QUICKSAND_FILLING:		return EL_QUICKSAND_FULL;
     case EL_QUICKSAND_EMPTYING:		return EL_QUICKSAND_EMPTY;
@@ -5997,28 +6193,67 @@ void PlayMenuMusic()
   if (music == MUS_UNDEFINED)
     return;
 
+  if (!setup.sound_music)
+    return;
+
   PlayMusic(music);
+}
+
+void PlaySoundActivating()
+{
+#if 0
+  PlaySound(SND_MENU_ITEM_ACTIVATING);
+#endif
+}
+
+void PlaySoundSelecting()
+{
+#if 0
+  PlaySound(SND_MENU_ITEM_SELECTING);
+#endif
 }
 
 void ToggleFullscreenIfNeeded()
 {
+  boolean change_fullscreen = (setup.fullscreen !=
+			       video.fullscreen_enabled);
+  boolean change_fullscreen_mode = (video.fullscreen_enabled &&
+				    !strEqual(setup.fullscreen_mode,
+					      video.fullscreen_mode_current));
+
+  if (!video.fullscreen_available)
+    return;
+
+#if 1
+  if (change_fullscreen || change_fullscreen_mode)
+#else
   if (setup.fullscreen != video.fullscreen_enabled ||
       setup.fullscreen_mode != video.fullscreen_mode_current)
+#endif
   {
     Bitmap *tmp_backbuffer = CreateBitmap(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
 
     /* save backbuffer content which gets lost when toggling fullscreen mode */
     BlitBitmap(backbuffer, tmp_backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
 
+#if 1
+    if (change_fullscreen_mode)
+#else
     if (setup.fullscreen && video.fullscreen_enabled)
+#endif
     {
-      /* keep fullscreen mode, but change screen mode */
+      /* keep fullscreen, but change fullscreen mode (screen resolution) */
+#if 1
+      /* (this is now set in sdl.c) */
+#else
       video.fullscreen_mode_current = setup.fullscreen_mode;
-      video.fullscreen_enabled = FALSE;
+#endif
+      video.fullscreen_enabled = FALSE;		/* force new fullscreen mode */
     }
 
     /* toggle fullscreen */
     ChangeVideoModeIfNeeded(setup.fullscreen);
+
     setup.fullscreen = video.fullscreen_enabled;
 
     /* restore backbuffer content from temporary backbuffer backup bitmap */
@@ -6026,6 +6261,11 @@ void ToggleFullscreenIfNeeded()
 
     FreeBitmap(tmp_backbuffer);
 
+#if 1
+    /* update visible window/screen */
+    BlitBitmap(backbuffer, window, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+#else
     redraw_mask = REDRAW_ALL;
+#endif
   }
 }

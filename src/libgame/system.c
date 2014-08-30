@@ -245,7 +245,10 @@ void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
   if (background_bitmap_tile == NULL)	/* empty background requested */
     return;
 
-  if (mask == REDRAW_FIELD)
+  if (mask == REDRAW_ALL)
+    DrawBitmapFromTile(gfx.background_bitmap, background_bitmap_tile,
+		       0, 0, video.width, video.height);
+  else if (mask == REDRAW_FIELD)
     DrawBitmapFromTile(gfx.background_bitmap, background_bitmap_tile,
 		       gfx.real_sx, gfx.real_sy,
 		       gfx.full_sxsize, gfx.full_sysize);
@@ -257,13 +260,20 @@ void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
   }
 }
 
+void SetWindowBackgroundBitmap(Bitmap *background_bitmap_tile)
+{
+  SetBackgroundBitmap(background_bitmap_tile, REDRAW_ALL);
+}
+
 void SetMainBackgroundBitmap(Bitmap *background_bitmap_tile)
 {
+  SetBackgroundBitmap(NULL, REDRAW_ALL);	/* !!! FIX THIS !!! */
   SetBackgroundBitmap(background_bitmap_tile, REDRAW_FIELD);
 }
 
 void SetDoorBackgroundBitmap(Bitmap *background_bitmap_tile)
 {
+  SetBackgroundBitmap(NULL, REDRAW_ALL);	/* !!! FIX THIS !!! */
   SetBackgroundBitmap(background_bitmap_tile, REDRAW_DOOR_1);
 }
 
@@ -321,8 +331,7 @@ void CloseVideoDisplay(void)
 #endif
 }
 
-void InitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
-		     int width, int height, int depth, boolean fullscreen)
+void InitVideoBuffer(int width, int height, int depth, boolean fullscreen)
 {
   video.width = width;
   video.height = height;
@@ -334,10 +343,12 @@ void InitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
   video.fullscreen_mode_current = NULL;
 
 #if defined(TARGET_SDL)
-  SDLInitVideoBuffer(backbuffer, window, fullscreen);
+  SDLInitVideoBuffer(&backbuffer, &window, fullscreen);
 #else
-  X11InitVideoBuffer(backbuffer, window);
+  X11InitVideoBuffer(&backbuffer, &window);
 #endif
+
+  drawto = backbuffer;
 }
 
 Bitmap *CreateBitmapStruct(void)
@@ -424,13 +435,16 @@ inline static boolean CheckDrawingArea(int x, int y, int width, int height,
   if (draw_mask & REDRAW_ALL)
     return TRUE;
 
-  if ((draw_mask & REDRAW_FIELD) && x < gfx.real_sx + gfx.full_sxsize)
+  if ((draw_mask & REDRAW_FIELD) &&
+      x >= gfx.real_sx && x < gfx.real_sx + gfx.full_sxsize)
     return TRUE;
 
-  if ((draw_mask & REDRAW_DOOR_1) && x >= gfx.dx && y < gfx.dy + gfx.dysize)
+  if ((draw_mask & REDRAW_DOOR_1) &&
+      x >= gfx.dx && y < gfx.dy + gfx.dysize)
     return TRUE;
 
-  if ((draw_mask & REDRAW_DOOR_2) && x >= gfx.dx && y >= gfx.vy)
+  if ((draw_mask & REDRAW_DOOR_2) &&
+      x >= gfx.dx && y >= gfx.vy)
     return TRUE;
 
   return FALSE;
@@ -459,14 +473,15 @@ void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 }
 
 void FadeRectangle(Bitmap *bitmap_cross, int x, int y, int width, int height,
-		   int fade_mode, int fade_delay, int post_delay)
+		   int fade_mode, int fade_delay, int post_delay,
+		   void (*draw_border_function)(void))
 {
 #if defined(TARGET_SDL)
   SDLFadeRectangle(bitmap_cross, x, y, width, height,
-		   fade_mode, fade_delay, post_delay);
+		   fade_mode, fade_delay, post_delay, draw_border_function);
 #else
   X11FadeRectangle(bitmap_cross, x, y, width, height,
-		   fade_mode, fade_delay, post_delay);
+		   fade_mode, fade_delay, post_delay, draw_border_function);
 #endif
 }
 

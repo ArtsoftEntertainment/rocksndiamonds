@@ -21,10 +21,14 @@
 #define SCROLL_PAGE	(2 * SCR_FIELDY)
 
 
+int effectiveGameStatus();
+
 void DrawMainMenuExt(int, boolean);
 void DrawAndFadeInMainMenu(int);
 void DrawMainMenu(void);
 void DrawHallOfFame(int);
+
+void RedrawSetupScreenAfterFullscreenToggle();
 
 void HandleTitleScreen(int, int, int, int, int);
 void HandleMainMenu(int, int, int, int, int);
