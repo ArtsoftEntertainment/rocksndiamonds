@@ -125,6 +125,7 @@ struct ConfigInfo sound_config[] =
   { "[quicksand].filling",		UNDEFINED_FILENAME	},
   { "[quicksand].emptying",		UNDEFINED_FILENAME	},
   { "[exit].opening",			"oeffnen.wav"		},
+  { "[exit].closing",			"oeffnen.wav"		},
   { "[exit].passing",			"buing.wav"		},
   { "penguin.passing",			"buing.wav"		},
 
@@ -144,7 +145,9 @@ struct ConfigInfo sound_config[] =
   { "pearl.impact",			"pling.wav"		},
   { "crystal.collecting",		"pong.wav"		},
   { "crystal.impact",			"pling.wav"		},
-  { "envelope.collecting",		"pong.wav"		},
+  { "[envelope].collecting",		"pong.wav"		},
+  { "[envelope].opening",		UNDEFINED_FILENAME	},
+  { "[envelope].closing",		UNDEFINED_FILENAME	},
   { "invisible_sand.digging",		"schlurf.wav"		},
   { "shield_normal.collecting",		"pong.wav"		},
   { "shield_normal.active",		UNDEFINED_FILENAME	},

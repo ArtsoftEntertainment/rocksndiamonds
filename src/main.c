@@ -50,7 +50,8 @@ short			StorePlayer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Back[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Pushed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-boolean			Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+unsigned long		Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+unsigned long		ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			JustStopped[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			AmoebaNr[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			AmoebaCnt[MAX_NUM_AMOEBA];
@@ -95,7 +96,7 @@ struct SetupInfo	setup;
 struct GameInfo		game;
 struct GlobalInfo	global;
 struct MenuInfo		menu;
-struct DoorInfo		door;
+struct DoorInfo		door_1, door_2;
 struct GraphicInfo     *graphic_info = NULL;
 struct SoundInfo       *sound_info = NULL;
 
@@ -139,8 +140,8 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "key_obsolete",
-    "key",
-    "key"
+    "obsolete",
+    "key (OBSOLETE)"
   },
   {
     "emerald",
@@ -154,18 +155,18 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "player_obsolete",
-    "player",
-    "player"
+    "obsolete",
+    "player (OBSOLETE)"
   },
   {
     "bug",
     "bug",
-    "bug"
+    "bug (random start direction)"
   },
   {
     "spaceship",
     "spaceship",
-    "spaceship"
+    "spaceship (random start direction)"
   },
   {
     "yamyam",
@@ -337,7 +338,7 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   {
     "pacman",
     "pacman",
-    "pac man"
+    "pac man (random start direction)"
   },
   {
     "invisible_wall",
@@ -499,12 +500,12 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_butterfly",
     "bd_butterfly",
-    "butterfly"
+    "butterfly (random start direction)"
   },
   {
     "bd_firefly",
     "bd_firefly",
-    "firefly"
+    "firefly (random start direction)"
   },
   {
     "player_1",
@@ -656,7 +657,7 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   {
     "mole",
     "mole",
-    "mole"
+    "mole (random start direction)"
   },
   {
     "penguin",
@@ -699,9 +700,9 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "fire breathing dragon"
   },
   {
-    "em_key_1_file",
-    "key",
-    "red key (EM style)"
+    "em_key_1_file_obsolete",
+    "obsolete",
+    "key (OBSOLETE)"
   },
   {
     "char_space",
@@ -1139,19 +1140,19 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "blue door (EM style)"
   },
   {
-    "em_key_2_file",
-    "key",
-    "yellow key (EM style)"
+    "em_key_2_file_obsolete",
+    "obsolete",
+    "key (OBSOLETE)"
   },
   {
-    "em_key_3_file",
-    "key",
-    "green key (EM style)"
+    "em_key_3_file_obsolete",
+    "obsolete",
+    "key (OBSOLETE)"
   },
   {
-    "em_key_4_file",
-    "key",
-    "blue key (EM style)"
+    "em_key_4_file_obsolete",
+    "obsolete",
+    "key (OBSOLETE)"
   },
   {
     "sp_empty_space",
@@ -1584,9 +1585,9 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "land mine"
   },
   {
-    "envelope",
-    "envelope",
-    "mail envelope"
+    "envelope_obsolete",
+    "obsolete",
+    "envelope (OBSOLETE)"
   },
   {
     "light_switch",
@@ -3183,31 +3184,51 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "custom",
     "custom element 256"
   },
+  {
+    "em_key_1",
+    "key",
+    "red key (EM style)"
+    },
+  {
+    "em_key_2",
+    "key",
+    "yellow key (EM style)"
+    },
+  {
+    "em_key_3",
+    "key",
+    "green key (EM style)"
+  },
+  {
+    "em_key_4",
+    "key",
+    "blue key (EM style)"
+  },
+  {
+    "envelope_1",
+    "envelope",
+    "mail envelope 1"
+  },
+  {
+    "envelope_2",
+    "envelope",
+    "mail envelope 2"
+  },
+  {
+    "envelope_3",
+    "envelope",
+    "mail envelope 3"
+  },
+  {
+    "envelope_4",
+    "envelope",
+    "mail envelope 4"
+  },
 
   /* ----------------------------------------------------------------------- */
   /* "real" (and therefore drawable) runtime elements                        */
   /* ----------------------------------------------------------------------- */
 
-  {
-    "em_key_1",
-    "key",
-    "-"
-    },
-  {
-    "em_key_2",
-    "key",
-    "-"
-    },
-  {
-    "em_key_3",
-    "key",
-    "-"
-  },
-  {
-    "em_key_4",
-    "key",
-    "-"
-  },
   {
     "dynabomb_player_1_active",
     "dynabomb",
@@ -3340,6 +3361,11 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "exit_opening",
+    "exit",
+    "-"
+  },
+  {
+    "exit_closing",
     "exit",
     "-"
   },
@@ -3721,8 +3747,12 @@ struct TokenIntPtrInfo image_config_vars[] =
   { "menu.list_size.SCORES",	&menu.list_size[GFX_SPECIAL_ARG_SCORES]	   },
   { "menu.list_size.INFO",	&menu.list_size[GFX_SPECIAL_ARG_INFO]	   },
 
-  { "door.step_offset",		&door.step_offset			   },
-  { "door.step_delay",		&door.step_delay			   },
+  { "door_1.step_offset",	&door_1.step_offset			   },
+  { "door_1.step_delay",	&door_1.step_delay			   },
+  { "door_1.anim_mode",		&door_1.anim_mode			   },
+  { "door_2.step_offset",	&door_2.step_offset			   },
+  { "door_2.step_delay",	&door_2.step_delay			   },
+  { "door_2.anim_mode",		&door_2.anim_mode			   },
 
   { NULL,			NULL,					   }
 };
@@ -3753,6 +3783,10 @@ struct FontInfo font_info[NUM_FONTS + 1] =
   { "font.text_2"		},
   { "font.text_3"		},
   { "font.text_4"		},
+  { "font.envelope_1"		},
+  { "font.envelope_2"		},
+  { "font.envelope_3"		},
+  { "font.envelope_4"		},
   { "font.input_1.active"	},
   { "font.input_2.active"	},
   { "font.input_1"		},

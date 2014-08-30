@@ -190,10 +190,6 @@ element_to_graphic[] =
     IMG_SP_DEFAULT_EXPLODING
   },
   {
-    EL_SP_EMPTY_SPACE,			-1, -1, FALSE,
-    IMG_SP_EMPTY_SPACE
-  },
-  {
     EL_SP_ZONK,				-1, -1, FALSE,
     IMG_SP_ZONK
   },
@@ -942,6 +938,10 @@ element_to_graphic[] =
     IMG_EXIT_OPEN
   },
   {
+    EL_EXIT_CLOSING,			-1, -1, FALSE,
+    IMG_EXIT_CLOSING
+  },
+  {
     EL_BALLOON,				-1, -1, FALSE,
     IMG_BALLOON
   },
@@ -1286,8 +1286,36 @@ element_to_graphic[] =
     IMG_TIMEGATE_SWITCH_ACTIVE
   },
   {
-    EL_ENVELOPE,			-1, -1, FALSE,
-    IMG_ENVELOPE
+    EL_ENVELOPE_1,			-1, -1, FALSE,
+    IMG_ENVELOPE_1
+  },
+  {
+    EL_ENVELOPE_1,			ACTION_COLLECTING, -1, FALSE,
+    IMG_ENVELOPE_1_COLLECTING
+  },
+  {
+    EL_ENVELOPE_2,			-1, -1, FALSE,
+    IMG_ENVELOPE_2
+  },
+  {
+    EL_ENVELOPE_2,			ACTION_COLLECTING, -1, FALSE,
+    IMG_ENVELOPE_2_COLLECTING
+  },
+  {
+    EL_ENVELOPE_3,			-1, -1, FALSE,
+    IMG_ENVELOPE_3
+  },
+  {
+    EL_ENVELOPE_3,			ACTION_COLLECTING, -1, FALSE,
+    IMG_ENVELOPE_3_COLLECTING
+  },
+  {
+    EL_ENVELOPE_4,			-1, -1, FALSE,
+    IMG_ENVELOPE_4
+  },
+  {
+    EL_ENVELOPE_4,			ACTION_COLLECTING, -1, FALSE,
+    IMG_ENVELOPE_4_COLLECTING
   },
   {
     EL_SIGN_EXCLAMATION,		-1, -1, FALSE,
@@ -2460,22 +2488,6 @@ element_to_graphic[] =
   {
     EL_DX_UNKNOWN_42,			-1, -1, FALSE,
     IMG_CHAR_QUESTION
-  },
-  {
-    EL_EM_KEY_1_FILE,			-1, -1, FALSE,
-    IMG_EM_KEY_1
-  },
-  {
-    EL_EM_KEY_2_FILE,			-1, -1, FALSE,
-    IMG_EM_KEY_2
-  },
-  {
-    EL_EM_KEY_3_FILE,			-1, -1, FALSE,
-    IMG_EM_KEY_3
-  },
-  {
-    EL_EM_KEY_4_FILE,			-1, -1, FALSE,
-    IMG_EM_KEY_4
   },
   {
     EL_KEY_WHITE,			-1, -1, FALSE,

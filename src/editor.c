@@ -24,6 +24,9 @@
 #include "tape.h"
 
 
+#define INFOTEXT_UNKNOWN_ELEMENT	"unknown"
+
+
 /*
   -----------------------------------------------------------------------------
   screen and artwork graphic pixel position definitions
@@ -131,7 +134,7 @@
 					 ED_GADGET_DISTANCE)
 /* extended custom change target */
 #define ED_AREA_ELEM_CONTENT6_XPOS	(29 * MINI_TILEX)
-#define ED_AREA_ELEM_CONTENT6_YPOS	(ED_SETTINGS_YPOS(9) + \
+#define ED_AREA_ELEM_CONTENT6_YPOS	(ED_SETTINGS_YPOS(10) + \
 					 ED_GADGET_DISTANCE - MINI_TILEY)
 
 /* values for random placement background drawing area */
@@ -399,11 +402,12 @@
 #define GADGET_ID_CHANGE_TIME_UNITS	(GADGET_ID_SELECTBOX_FIRST + 10)
 #define GADGET_ID_CHANGE_DIRECT_ACTION	(GADGET_ID_SELECTBOX_FIRST + 11)
 #define GADGET_ID_CHANGE_OTHER_ACTION	(GADGET_ID_SELECTBOX_FIRST + 12)
-#define GADGET_ID_CHANGE_POWER		(GADGET_ID_SELECTBOX_FIRST + 13)
-#define GADGET_ID_SELECT_CHANGE_PAGE	(GADGET_ID_SELECTBOX_FIRST + 14)
+#define GADGET_ID_CHANGE_SIDES		(GADGET_ID_SELECTBOX_FIRST + 13)
+#define GADGET_ID_CHANGE_POWER		(GADGET_ID_SELECTBOX_FIRST + 14)
+#define GADGET_ID_SELECT_CHANGE_PAGE	(GADGET_ID_SELECTBOX_FIRST + 15)
 
 /* textbutton identifiers */
-#define GADGET_ID_TEXTBUTTON_FIRST	(GADGET_ID_SELECTBOX_FIRST + 15)
+#define GADGET_ID_TEXTBUTTON_FIRST	(GADGET_ID_SELECTBOX_FIRST + 16)
 
 #define GADGET_ID_PROPERTIES_INFO	(GADGET_ID_TEXTBUTTON_FIRST + 0)
 #define GADGET_ID_PROPERTIES_CONFIG	(GADGET_ID_TEXTBUTTON_FIRST + 1)
@@ -567,10 +571,11 @@
 #define ED_SELECTBOX_ID_CHANGE_TIME_UNITS	10
 #define ED_SELECTBOX_ID_CHANGE_DIRECT_ACTION	11
 #define ED_SELECTBOX_ID_CHANGE_OTHER_ACTION	12
-#define ED_SELECTBOX_ID_CHANGE_POWER		13
-#define ED_SELECTBOX_ID_SELECT_CHANGE_PAGE	14
+#define ED_SELECTBOX_ID_CHANGE_SIDES		13
+#define ED_SELECTBOX_ID_CHANGE_POWER		14
+#define ED_SELECTBOX_ID_SELECT_CHANGE_PAGE	15
 
-#define ED_NUM_SELECTBOX			15
+#define ED_NUM_SELECTBOX			16
 
 #define ED_SELECTBOX_ID_CUSTOM_FIRST	ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE
 #define ED_SELECTBOX_ID_CUSTOM_LAST	ED_SELECTBOX_ID_CUSTOM_CONSISTENCY
@@ -858,7 +863,7 @@ static struct
     MIN_ENVELOPE_XSIZE,			MAX_ENVELOPE_XSIZE,
     GADGET_ID_ENVELOPE_XSIZE_DOWN,	GADGET_ID_ENVELOPE_XSIZE_UP,
     GADGET_ID_ENVELOPE_XSIZE_TEXT,	GADGET_ID_NONE,
-    &level.envelope_xsize,
+    NULL,
     NULL,				NULL, "width",
   },
   {
@@ -866,7 +871,7 @@ static struct
     MIN_ENVELOPE_YSIZE,			MAX_ENVELOPE_YSIZE,
     GADGET_ID_ENVELOPE_YSIZE_DOWN,	GADGET_ID_ENVELOPE_YSIZE_UP,
     GADGET_ID_ENVELOPE_YSIZE_TEXT,	GADGET_ID_ENVELOPE_XSIZE_UP,
-    &level.envelope_ysize,
+    NULL,
     NULL,				" ", "height",
   },
 
@@ -940,12 +945,12 @@ static struct
     NULL,				"+random", NULL
   },
   {
-    ED_SETTINGS_XPOS(3),		ED_SETTINGS_YPOS(11),
+    ED_SETTINGS_XPOS(3),		ED_SETTINGS_YPOS(12),
     0,					100,
     GADGET_ID_CHANGE_CONT_RND_DOWN,	GADGET_ID_CHANGE_CONT_RND_UP,
     GADGET_ID_CHANGE_CONT_RND_TEXT,	GADGET_ID_NONE,
     &custom_element_change.random,
-    NULL,				"use random change:", "(%)"
+    NULL,				"use random replace:", "%"
   },
 };
 
@@ -994,7 +999,7 @@ static struct
     ED_SETTINGS_XPOS(0),		ED_SETTINGS_YPOS(2),
     GADGET_ID_ENVELOPE_INFO,
     MAX_ENVELOPE_XSIZE, MAX_ENVELOPE_YSIZE,
-    level.envelope,
+    NULL,
     "Envelope Info:", "Envelope Info"
   }
 };
@@ -1038,6 +1043,7 @@ static struct ValueTextInfo options_move_pattern[] =
   { MV_ALONG_RIGHT_SIDE,	"along right side"		},
   { MV_TURNING_LEFT,		"turning left"			},
   { MV_TURNING_RIGHT,		"turning right"			},
+  { MV_WHEN_PUSHED,		"when pushed"			},
   { -1,				NULL				}
 };
 
@@ -1099,18 +1105,20 @@ static struct ValueTextInfo options_consistency[] =
 
 static struct ValueTextInfo options_time_units[] =
 {
-  { FRAMES_PER_SECOND,		"seconds"			},
   { 1,				"frames"			},
+  { FRAMES_PER_SECOND,		"seconds"			},
   { -1,				NULL				}
 };
 
 static struct ValueTextInfo options_change_direct_action[] =
 {
-  { CE_TOUCHED_BY_PLAYER,	"touched by player"		},
-  { CE_PRESSED_BY_PLAYER,	"pressed by player"		},
-  { CE_PUSHED_BY_PLAYER,	"pushed by player"		},
+  { CE_TOUCHED_BY_PLAYER,	"touched by player ..."		},
+  { CE_PRESSED_BY_PLAYER,	"pressed by player ..."		},
+  { CE_PUSHED_BY_PLAYER,	"pushed by player ..."		},
+  { CE_ENTERED_BY_PLAYER,	"entered by player ..."		},
+  { CE_LEFT_BY_PLAYER,		"left by player ..."		},
   { CE_DROPPED_BY_PLAYER,	"dropped by player"		},
-  { CE_COLLISION,		"collision"			},
+  { CE_COLLISION,		"collision ..."			},
   { CE_IMPACT,			"impact"			},
   { CE_SMASHED,			"smashed"			},
   { -1,				NULL				}
@@ -1118,15 +1126,29 @@ static struct ValueTextInfo options_change_direct_action[] =
 
 static struct ValueTextInfo options_change_other_action[] =
 {
-  { CE_OTHER_GETS_TOUCHED,	"player touches"		},
-  { CE_OTHER_GETS_PRESSED,	"player presses"		},
-  { CE_OTHER_GETS_PUSHED,	"player pushes"			},
+  { CE_OTHER_GETS_TOUCHED,	"player touches ..."		},
+  { CE_OTHER_GETS_PRESSED,	"player presses ..."		},
+  { CE_OTHER_GETS_PUSHED,	"player pushes ..."		},
+  { CE_OTHER_GETS_ENTERED,	"player enters ..."		},
+  { CE_OTHER_GETS_LEFT,		"player leaves ..."		},
   { CE_OTHER_GETS_DIGGED,	"player digs"			},
   { CE_OTHER_GETS_COLLECTED,	"player collects"		},
   { CE_OTHER_GETS_DROPPED,	"player drops"			},
-  { CE_OTHER_IS_TOUCHING,	"touching"			},
+  { CE_OTHER_IS_TOUCHING,	"touching ..."			},
   { CE_OTHER_IS_CHANGING,	"change of"			},
   { CE_OTHER_IS_EXPLODING,	"explosion of"			},
+  { -1,				NULL				}
+};
+
+static struct ValueTextInfo options_change_sides[] =
+{
+  { CH_SIDE_LEFT,		"left side"			},
+  { CH_SIDE_RIGHT,		"right side"			},
+  { CH_SIDE_TOP,		"top side"			},
+  { CH_SIDE_BOTTOM,		"bottom side"			},
+  { CH_SIDE_LEFT_RIGHT,		"left/right side"		},
+  { CH_SIDE_TOP_BOTTOM,		"top/bottom side"		},
+  { CH_SIDE_ANY,		"all sides"			},
   { -1,				NULL				}
 };
 
@@ -1265,7 +1287,15 @@ static struct
     NULL, "element:",			"type of other element action"
   },
   {
-    ED_SETTINGS_XPOS(2),		ED_SETTINGS_YPOS(9),
+    ED_SETTINGS_XPOS(2),		ED_SETTINGS_YPOS(7),
+    GADGET_ID_CHANGE_SIDES,		GADGET_ID_NONE,
+    -1,
+    options_change_sides,
+    &custom_element_change.sides,
+    "... at", NULL,			"element side that causes change"
+  },
+  {
+    ED_SETTINGS_XPOS(2),		ED_SETTINGS_YPOS(10),
     GADGET_ID_CHANGE_POWER,		GADGET_ID_NONE,
     -1,
     options_change_power,
@@ -1273,7 +1303,7 @@ static struct
     "replace when", NULL,		"which elements can be replaced"
   },
   {
-    ED_SETTINGS_XPOS(1),		ED_SETTINGS_YPOS(13),
+    ED_SETTINGS_XPOS(1),		ED_SETTINGS_YPOS(14),
     GADGET_ID_SELECT_CHANGE_PAGE,	GADGET_ID_NONE,
     3,
     options_change_page,
@@ -1311,19 +1341,19 @@ static struct
     NULL, NULL,				"Advanced element configuration"
   },
   {
-    -1,					ED_SETTINGS_YPOS(12),
+    -1,					ED_SETTINGS_YPOS(13),
     GADGET_ID_SAVE_AS_TEMPLATE,		GADGET_ID_CUSTOM_USE_TEMPLATE,
     -1,					"Save as template",
     " ", NULL,				"Save current settings as new template"
   },
   {
-    -1,					ED_SETTINGS_YPOS(13),
+    -1,					ED_SETTINGS_YPOS(14),
     GADGET_ID_ADD_CHANGE_PAGE,		GADGET_ID_NEXT_CHANGE_PAGE,
     -1,					"New",
     " ", NULL,				"Add new config page"
   },
   {
-    -1,					ED_SETTINGS_YPOS(13),
+    -1,					ED_SETTINGS_YPOS(14),
     GADGET_ID_DEL_CHANGE_PAGE,		GADGET_ID_ADD_CHANGE_PAGE,
     -1,					"Delete",
     NULL, NULL,				"Delete current config page"
@@ -1342,14 +1372,14 @@ static struct
 {
   {
     ED_BUTTON_MINUS_XPOS,		ED_BUTTON_COUNT_YPOS,
-    ED_SETTINGS_XPOS(0),		ED_SETTINGS_YPOS(13),
+    ED_SETTINGS_XPOS(0),		ED_SETTINGS_YPOS(14),
     ED_BUTTON_COUNT_XSIZE,		ED_BUTTON_COUNT_YSIZE,
     GADGET_ID_PREV_CHANGE_PAGE,		GADGET_ID_NONE,
     NULL, NULL,				"select previous config page"
   },
   {
     ED_BUTTON_PLUS_XPOS,		ED_BUTTON_COUNT_YPOS,
-    -1,					ED_SETTINGS_YPOS(13),
+    -1,					ED_SETTINGS_YPOS(14),
     ED_BUTTON_COUNT_XSIZE,		ED_BUTTON_COUNT_YSIZE,
     GADGET_ID_NEXT_CHANGE_PAGE,		GADGET_ID_SELECT_CHANGE_PAGE,
     NULL, "config page",		"select next config page"
@@ -1615,31 +1645,31 @@ static struct
     NULL, NULL,				"element changes by other element"
   },
   {
-    ED_SETTINGS_XPOS(1),		ED_SETTINGS_YPOS(7),
+    ED_SETTINGS_XPOS(1),		ED_SETTINGS_YPOS(8),
     GADGET_ID_CHANGE_USE_EXPLOSION,	GADGET_ID_NONE,
     &custom_element_change.explode,
     NULL, "explode instead of change",	"element explodes instead of change"
   },
   {
-    ED_SETTINGS_XPOS(1),		ED_SETTINGS_YPOS(8),
+    ED_SETTINGS_XPOS(1),		ED_SETTINGS_YPOS(9),
     GADGET_ID_CHANGE_USE_CONTENT,	GADGET_ID_NONE,
     &custom_element_change.use_content,
     NULL, "use extended change target:","element changes to more elements"
   },
   {
-    ED_SETTINGS_XPOS(2),		ED_SETTINGS_YPOS(10),
+    ED_SETTINGS_XPOS(2),		ED_SETTINGS_YPOS(11),
     GADGET_ID_CHANGE_ONLY_COMPLETE,	GADGET_ID_NONE,
     &custom_element_change.only_complete,
-    NULL, "only use complete change",	"only use complete extended content"
+    NULL, "replace all or nothing",	"only replace when all can be changed"
   },
   {
-    ED_SETTINGS_XPOS(2),		ED_SETTINGS_YPOS(11),
+    ED_SETTINGS_XPOS(2),		ED_SETTINGS_YPOS(12),
     GADGET_ID_CHANGE_USE_RANDOM,	GADGET_ID_NONE,
     &custom_element_change.use_random_change,
-    NULL, NULL,				"use random value for new content"
+    NULL, NULL,				"use percentage for random replace"
   },
   {
-    ED_SETTINGS_XPOS(0),		ED_SETTINGS_YPOS(12),
+    ED_SETTINGS_XPOS(0),		ED_SETTINGS_YPOS(13),
     GADGET_ID_CUSTOM_USE_TEMPLATE,	GADGET_ID_NONE,
     &level.use_custom_template,
     NULL, "use template",		"use template for custom properties"
@@ -1973,10 +2003,17 @@ static int editor_el_emerald_mine[] =
   EL_AMOEBA_WET,
   EL_AMOEBA_DRY,
 
+#if 1
+  EL_EM_KEY_1,
+  EL_EM_KEY_2,
+  EL_EM_KEY_3,
+  EL_EM_KEY_4,
+#else
   EL_EM_KEY_1_FILE,
   EL_EM_KEY_2_FILE,
   EL_EM_KEY_3_FILE,
   EL_EM_KEY_4_FILE,
+#endif
 
   EL_EM_GATE_1,
   EL_EM_GATE_2,
@@ -2056,17 +2093,17 @@ static int editor_el_more[] =
   EL_PIG,
   EL_DRAGON,
 
-  EL_EMPTY,
+  EL_BUG,
   EL_MOLE_UP,
-  EL_EMPTY,
-  EL_EMPTY,
+  EL_BD_BUTTERFLY,
+  EL_BD_FIREFLY,
 
   EL_MOLE_LEFT,
   EL_EMPTY,
   EL_MOLE_RIGHT,
-  EL_EMPTY,
+  EL_PACMAN,
 
-  EL_EMPTY,
+  EL_SPACESHIP,
   EL_MOLE_DOWN,
   EL_BALLOON,
   EL_BALLOON_SWITCH_ANY,
@@ -2137,7 +2174,11 @@ static int editor_hl_supaplex[] =
 
 static int editor_el_supaplex[] =
 {
+#if 1
+  EL_EMPTY,
+#else
   EL_SP_EMPTY,
+#endif
   EL_SP_ZONK,
   EL_SP_BASE,
   EL_SP_MURPHY,
@@ -2253,7 +2294,12 @@ static int editor_el_diamond_caves[] =
   EL_SWITCHGATE_OPEN,
   EL_SWITCHGATE_CLOSED,
   EL_SWITCHGATE_SWITCH_UP,
-  EL_ENVELOPE,
+  EL_EMPTY,
+
+  EL_ENVELOPE_1,
+  EL_ENVELOPE_2,
+  EL_ENVELOPE_3,
+  EL_ENVELOPE_4,
 
   EL_TIMEGATE_CLOSED,
   EL_TIMEGATE_OPEN,
@@ -2867,13 +2913,80 @@ editor_elements_info[] =
   -----------------------------------------------------------------------------
 */
 
+static int getMaxInfoTextLength()
+{
+  return (SXSIZE / getFontWidth(FONT_TEXT_2));
+}
+
+static int getTextWidthForGadget(char *text)
+{
+  if (text == NULL)
+    return 0;
+
+  return (getTextWidth(text, FONT_TEXT_1) + ED_GADGET_TEXT_DISTANCE);
+}
+
+static int getTextWidthForDrawingArea(char *text)
+{
+  if (text == NULL)
+    return 0;
+
+  return (getTextWidth(text, FONT_TEXT_1) + ED_DRAWINGAREA_TEXT_DISTANCE);
+}
+
+static int getRightGadgetBorder(struct GadgetInfo *gi, char *text)
+{
+  return (gi->x + gi->width + getTextWidthForGadget(text));
+}
+
+static char *getElementInfoText(int element)
+{
+  char *info_text = NULL;
+
+  if (element < NUM_FILE_ELEMENTS)
+  {
+    if (strlen(element_info[element].description) > 0)
+      info_text = element_info[element].description;
+    else if (element_info[element].custom_description != NULL)
+      info_text = element_info[element].custom_description;
+    else if (element_info[element].editor_description != NULL)
+      info_text = element_info[element].editor_description;
+  }
+
+  if (info_text == NULL)
+    info_text = INFOTEXT_UNKNOWN_ELEMENT;
+
+  return info_text;
+}
+
 static void ReinitializeElementList()
 {
+  static boolean initialized = FALSE;
   int pos = 0;
   int i, j;
 
   if (editor_elements != NULL)
     free(editor_elements);
+
+  /* do some sanity check for each element from element list at startup */
+  if (!initialized)
+  {
+    for (i=0; editor_elements_info[i].setup_value != NULL; i++)
+    {
+      for (j=0; j < *editor_elements_info[i].element_list_size; j++)
+      {
+	int element = editor_elements_info[i].element_list[j];
+
+	if (element >= NUM_FILE_ELEMENTS)
+	  Error(ERR_WARN, "editor element %d is runtime element", element);
+
+	if (strcmp(getElementInfoText(element), INFOTEXT_UNKNOWN_ELEMENT) == 0)
+	  Error(ERR_WARN, "no element description for element %d", element);
+      }
+    }
+
+    initialized = TRUE;
+  }
 
   num_editor_elements = 0;
 
@@ -2951,56 +3064,6 @@ static void ReinitializeElementListButtons()
       *editor_elements_info[i].setup_value;
 
   initialization_needed = FALSE;
-}
-
-static int getMaxInfoTextLength()
-{
-  return (SXSIZE / getFontWidth(FONT_TEXT_2));
-}
-
-static int getTextWidthForGadget(char *text)
-{
-  if (text == NULL)
-    return 0;
-
-  return (getTextWidth(text, FONT_TEXT_1) + ED_GADGET_TEXT_DISTANCE);
-}
-
-static int getTextWidthForDrawingArea(char *text)
-{
-  if (text == NULL)
-    return 0;
-
-  return (getTextWidth(text, FONT_TEXT_1) + ED_DRAWINGAREA_TEXT_DISTANCE);
-}
-
-static int getRightGadgetBorder(struct GadgetInfo *gi, char *text)
-{
-  return (gi->x + gi->width + getTextWidthForGadget(text));
-}
-
-static char *getElementInfoText(int element)
-{
-  char *info_text = NULL;
-
-  if (element < NUM_FILE_ELEMENTS)
-  {
-    if (strlen(element_info[element].description) > 0)
-      info_text = element_info[element].description;
-    else if (element_info[element].custom_description != NULL)
-      info_text = element_info[element].custom_description;
-    else if (element_info[element].editor_description != NULL)
-      info_text = element_info[element].editor_description;
-  }
-
-  if (info_text == NULL)
-  {
-    info_text = "unknown";
-
-    Error(ERR_WARN, "no element description for element %d", element);
-  }
-
-  return info_text;
 }
 
 static void DrawElementBorder(int dest_x, int dest_y, int width, int height,
@@ -3259,7 +3322,7 @@ static void CreateControlButtons()
   }
 
   /* create buttons for element list */
-  for (i=0; i<ED_NUM_ELEMENTLIST_BUTTONS; i++)
+  for (i=0; i < ED_NUM_ELEMENTLIST_BUTTONS; i++)
   {
     Bitmap *deco_bitmap;
     int deco_x, deco_y, deco_xpos, deco_ypos;
@@ -4527,6 +4590,8 @@ static void CopyCustomElementPropertiesToEditor(int element)
     (HAS_CHANGE_EVENT(element, CE_TOUCHED_BY_PLAYER) ? CE_TOUCHED_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_PRESSED_BY_PLAYER) ? CE_PRESSED_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_PUSHED_BY_PLAYER) ? CE_PUSHED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_ENTERED_BY_PLAYER) ? CE_ENTERED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_LEFT_BY_PLAYER) ? CE_LEFT_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_DROPPED_BY_PLAYER) ? CE_DROPPED_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_COLLISION) ? CE_COLLISION :
      HAS_CHANGE_EVENT(element, CE_IMPACT) ? CE_IMPACT :
@@ -4535,10 +4600,11 @@ static void CopyCustomElementPropertiesToEditor(int element)
 
   /* set "change by other element action" selectbox help value */
   custom_element_change.other_action =
-    (
-     HAS_CHANGE_EVENT(element, CE_OTHER_GETS_TOUCHED) ? CE_OTHER_GETS_TOUCHED :
+    (HAS_CHANGE_EVENT(element, CE_OTHER_GETS_TOUCHED) ? CE_OTHER_GETS_TOUCHED :
      HAS_CHANGE_EVENT(element, CE_OTHER_GETS_PRESSED) ? CE_OTHER_GETS_PRESSED :
      HAS_CHANGE_EVENT(element, CE_OTHER_GETS_PUSHED) ? CE_OTHER_GETS_PUSHED :
+     HAS_CHANGE_EVENT(element, CE_OTHER_GETS_ENTERED) ? CE_OTHER_GETS_ENTERED :
+     HAS_CHANGE_EVENT(element, CE_OTHER_GETS_LEFT) ? CE_OTHER_GETS_LEFT :
      HAS_CHANGE_EVENT(element, CE_OTHER_GETS_DIGGED) ? CE_OTHER_GETS_DIGGED :
      HAS_CHANGE_EVENT(element, CE_OTHER_GETS_COLLECTED) ? CE_OTHER_GETS_COLLECTED :
      HAS_CHANGE_EVENT(element, CE_OTHER_GETS_DROPPED) ? CE_OTHER_GETS_DROPPED :
@@ -4640,6 +4706,8 @@ static void CopyCustomElementPropertiesToGame(int element)
   custom_element_change_events[CE_TOUCHED_BY_PLAYER] = FALSE;
   custom_element_change_events[CE_PRESSED_BY_PLAYER] = FALSE;
   custom_element_change_events[CE_PUSHED_BY_PLAYER] = FALSE;
+  custom_element_change_events[CE_ENTERED_BY_PLAYER] = FALSE;
+  custom_element_change_events[CE_LEFT_BY_PLAYER] = FALSE;
   custom_element_change_events[CE_DROPPED_BY_PLAYER] = FALSE;
   custom_element_change_events[CE_COLLISION] = FALSE;
   custom_element_change_events[CE_IMPACT] = FALSE;
@@ -4648,15 +4716,17 @@ static void CopyCustomElementPropertiesToGame(int element)
     custom_element_change_events[CE_BY_DIRECT_ACTION];
 
   /* set other element action change event from checkbox and selectbox */
-  custom_element_change_events[CE_OTHER_IS_TOUCHING] = FALSE;
-  custom_element_change_events[CE_OTHER_IS_CHANGING] = FALSE;
-  custom_element_change_events[CE_OTHER_IS_EXPLODING] = FALSE;
   custom_element_change_events[CE_OTHER_GETS_TOUCHED] = FALSE;
   custom_element_change_events[CE_OTHER_GETS_PRESSED] = FALSE;
   custom_element_change_events[CE_OTHER_GETS_PUSHED] = FALSE;
+  custom_element_change_events[CE_OTHER_GETS_ENTERED] = FALSE;
+  custom_element_change_events[CE_OTHER_GETS_LEFT] = FALSE;
   custom_element_change_events[CE_OTHER_GETS_DIGGED] = FALSE;
   custom_element_change_events[CE_OTHER_GETS_COLLECTED] = FALSE;
   custom_element_change_events[CE_OTHER_GETS_DROPPED] = FALSE;
+  custom_element_change_events[CE_OTHER_IS_TOUCHING] = FALSE;
+  custom_element_change_events[CE_OTHER_IS_CHANGING] = FALSE;
+  custom_element_change_events[CE_OTHER_IS_EXPLODING] = FALSE;
   custom_element_change_events[custom_element_change.other_action] =
     custom_element_change_events[CE_BY_OTHER_ACTION];
 
@@ -5033,7 +5103,7 @@ static void DrawElementContentAreas()
   DrawText(x, y + 2 * MINI_TILEY, "smashed", FONT_TEXT_1);
 }
 
-static void DrawEnvelopeTextArea()
+static void DrawEnvelopeTextArea(int envelope_nr)
 {
   int id = ED_TEXTAREA_ID_ENVELOPE_INFO;
   struct GadgetInfo *gi = level_editor_gadget[textarea_info[id].gadget_id];
@@ -5041,8 +5111,14 @@ static void DrawEnvelopeTextArea()
   UnmapGadget(gi);
   DrawBackground(gi->x, gi->y, gi->width, gi->height);
 
-  ModifyGadget(gi, GDI_AREA_SIZE, level.envelope_xsize, level.envelope_ysize,
+  if (envelope_nr != -1)
+    textarea_info[id].value = level.envelope_text[envelope_nr];
+
+  ModifyGadget(gi, GDI_AREA_SIZE,
+	       *counterbutton_info[ED_COUNTER_ID_ENVELOPE_XSIZE].value,
+	       *counterbutton_info[ED_COUNTER_ID_ENVELOPE_YSIZE].value,
 	       GDI_END);
+
   MapTextAreaGadget(ED_TEXTAREA_ID_ENVELOPE_INFO);
 }
 
@@ -5301,7 +5377,7 @@ static void DrawPropertiesInfo()
     { EP_DONT_COLLIDE_WITH,	"- deadly when colliding with"		},
     { EP_DONT_TOUCH,		"- deadly when touching"		},
 
-    { EP_INDESTRUCTIBLE,	"- undestructible"			},
+    { EP_INDESTRUCTIBLE,	"- indestructible"			},
 
     { EP_CAN_EXPLODE_BY_FIRE,	"- can explode by fire or explosions"	},
     { EP_CAN_EXPLODE_SMASHED,	"- can explode when smashed"		},
@@ -5434,10 +5510,17 @@ static struct
   { EL_KEY_2,		&level.score[SC_KEY],		TEXT_COLLECTING	},
   { EL_KEY_3,		&level.score[SC_KEY],		TEXT_COLLECTING	},
   { EL_KEY_4,		&level.score[SC_KEY],		TEXT_COLLECTING	},
+#if 1
+  { EL_EM_KEY_1,	&level.score[SC_KEY],		TEXT_COLLECTING	},
+  { EL_EM_KEY_2,	&level.score[SC_KEY],		TEXT_COLLECTING	},
+  { EL_EM_KEY_3,	&level.score[SC_KEY],		TEXT_COLLECTING	},
+  { EL_EM_KEY_4,	&level.score[SC_KEY],		TEXT_COLLECTING	},
+#else
   { EL_EM_KEY_1_FILE,	&level.score[SC_KEY],		TEXT_COLLECTING	},
   { EL_EM_KEY_2_FILE,	&level.score[SC_KEY],		TEXT_COLLECTING	},
   { EL_EM_KEY_3_FILE,	&level.score[SC_KEY],		TEXT_COLLECTING	},
   { EL_EM_KEY_4_FILE,	&level.score[SC_KEY],		TEXT_COLLECTING	},
+#endif
   { EL_AMOEBA_WET,	&level.amoeba_speed,		TEXT_SPEED	},
   { EL_AMOEBA_DRY,	&level.amoeba_speed,		TEXT_SPEED	},
   { EL_AMOEBA_FULL,	&level.amoeba_speed,		TEXT_SPEED	},
@@ -5453,8 +5536,8 @@ static boolean checkPropertiesConfig()
 
   if (IS_GEM(properties_element) ||
       IS_CUSTOM_ELEMENT(properties_element) ||
-      HAS_CONTENT(properties_element) ||
-      properties_element == EL_ENVELOPE)
+      IS_ENVELOPE(properties_element) ||
+      HAS_CONTENT(properties_element))
     return TRUE;
   else
     for (i=0; elements_with_counter[i].element != -1; i++)
@@ -5506,13 +5589,20 @@ static void DrawPropertiesConfig()
   if (IS_GEM(properties_element))
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS);
 
-  if (properties_element == EL_ENVELOPE)
+  if (IS_ENVELOPE(properties_element))
   {
+    int counter1_id = ED_COUNTER_ID_ENVELOPE_XSIZE;
+    int counter2_id = ED_COUNTER_ID_ENVELOPE_YSIZE;
+    int envelope_nr = properties_element - EL_ENVELOPE_1;
+
+    counterbutton_info[counter1_id].value = &level.envelope_xsize[envelope_nr];
+    counterbutton_info[counter2_id].value = &level.envelope_ysize[envelope_nr];
+
     /* display counter to choose size of envelope text area */
     MapCounterButtons(ED_COUNTER_ID_ENVELOPE_XSIZE);
     MapCounterButtons(ED_COUNTER_ID_ENVELOPE_YSIZE);
 
-    DrawEnvelopeTextArea();
+    DrawEnvelopeTextArea(envelope_nr);
   }
 
   if (IS_CUSTOM_ELEMENT(properties_element))
@@ -6628,7 +6718,7 @@ static void HandleCounterButtons(struct GadgetInfo *gi)
 
     case ED_COUNTER_ID_ENVELOPE_XSIZE:
     case ED_COUNTER_ID_ENVELOPE_YSIZE:
-      DrawEnvelopeTextArea();
+      DrawEnvelopeTextArea(-1);
       break;
 
     case ED_COUNTER_ID_LEVEL_XSIZE:
@@ -7482,10 +7572,12 @@ void RequestExitLevelEditor(boolean ask_if_level_has_changed)
       Request("Level has changed! Exit without saving ?",
 	      REQ_ASK | REQ_STAY_OPEN))
   {
+#if 1
     CloseDoor(DOOR_CLOSE_1);
-    /*
+    SetDoorState(DOOR_CLOSE_2);
+#else
     CloseDoor(DOOR_CLOSE_ALL);
-    */
+#endif
     game_status = GAME_MODE_MAIN;
     DrawMainMenu();
   }
