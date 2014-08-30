@@ -651,8 +651,10 @@ typedef int (*EventFilter)(const Event *);
 
 struct ProgramInfo
 {
-  char *command_basepath;	/* directory that contains the program */
+  char *command_basepath;	/* path to the program binary */
   char *command_basename;	/* base filename of the program binary */
+
+  char *maindata_path;		/* main game data (installation) directory */
 
   char *userdata_subdir;	/* personal user game data directory */
   char *userdata_subdir_unix;	/* personal user game data directory (Unix) */
@@ -677,6 +679,7 @@ struct ProgramInfo
   int version_minor;
   int version_patch;
 
+  void (*exit_message_function)(char *, va_list);
   void (*exit_function)(int);
 };
 
@@ -1228,6 +1231,7 @@ extern int			FrameCounter;
 void InitProgramInfo(char *, char *, char *, char *, char *, char *, char *,
 		     char *, char *, char *, char *, char *, int);
 
+void InitExitMessageFunction(void (*exit_message_function)(char *, va_list));
 void InitExitFunction(void (*exit_function)(int));
 void InitPlatformDependentStuff(void);
 void ClosePlatformDependentStuff(void);

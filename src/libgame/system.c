@@ -105,6 +105,11 @@ void InitProgramInfo(char *argv0,
   program.error_file = stderr;
 }
 
+void InitExitMessageFunction(void (*exit_message_function)(char *, va_list))
+{
+  program.exit_message_function = exit_message_function;
+}
+
 void InitExitFunction(void (*exit_function)(int))
 {
   program.exit_function = exit_function;
@@ -129,8 +134,12 @@ void InitPlatformDependentStuff(void)
   updateUserGameDataDir();
 #endif
 
+#if 1
+  openErrorFile();
+#else
 #if !defined(PLATFORM_UNIX) || defined(PLATFORM_MACOSX)
   openErrorFile();
+#endif
 #endif
 
 #if defined(TARGET_SDL)
