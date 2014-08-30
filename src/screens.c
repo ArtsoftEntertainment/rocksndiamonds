@@ -141,7 +141,8 @@ static void execSetupGraphics(void);
 static void execSetupArtwork(void);
 static void HandleChooseTree(int, int, int, int, int, TreeInfo **);
 
-static void DrawChooseLevel(void);
+static void DrawChooseLevelSet(void);
+static void DrawChooseLevelNr(void);
 static void DrawInfoScreen(void);
 static void DrawAndFadeInInfoScreen(int);
 static void DrawSetupScreen(void);
@@ -174,6 +175,9 @@ static TreeInfo *scroll_delay_current = NULL;
 
 static TreeInfo *game_speeds = NULL;
 static TreeInfo *game_speed_current = NULL;
+
+static TreeInfo *level_number = NULL;
+static TreeInfo *level_number_current = NULL;
 
 static struct
 {
@@ -867,8 +871,13 @@ static void InitializeMainControls()
 
     if (pos_text != NULL)		/* (x/y may be -1/-1 here) */
     {
+#if 1
+      /* calculate size for non-clickable text -- needed for text alignment */
+      boolean calculate_text_size = (pos_button == NULL && text != NULL);
+#else
       /* calculate width for non-clickable text -- needed for text alignment */
       boolean calculate_text_width = (pos_button == NULL && text != NULL);
+#endif
 
       if (visibleMenuPos(pos_button))
       {
@@ -878,10 +887,17 @@ static void InitializeMainControls()
 	  pos_text->y = pos_button->y;
       }
 
+#if 1
+      if (pos_text->width == -1 || calculate_text_size)
+	pos_text->width = text_width;
+      if (pos_text->height == -1 || calculate_text_size)
+	pos_text->height = text_height;
+#else
       if (pos_text->width == -1 || calculate_text_width)
 	pos_text->width = text_width;
       if (pos_text->height == -1)
 	pos_text->height = text_height;
+#endif
     }
 
     if (pos_input != NULL)		/* (x/y may be -1/-1 here) */
@@ -945,7 +961,7 @@ static void DrawCursorAndText_Main_Ext(int nr, boolean active_text,
 	int y = mSY + pos->y;
 
 	DrawBackgroundForGraphic(x, y, pos->width, pos->height, button_graphic);
-	DrawGraphicThruMaskExt(drawto, x, y, button_graphic, 0);
+	DrawFixedGraphicThruMaskExt(drawto, x, y, button_graphic, 0);
       }
 
       if (visibleTextPos(pos_text) && text != NULL)
@@ -1020,6 +1036,13 @@ static boolean insideTextPosRect(struct TextPosInfo *rect, int x, int y)
   int rect_x = ALIGNED_TEXT_XPOS(rect);
   int rect_y = ALIGNED_TEXT_YPOS(rect);
 
+#if 0
+  printf("::: insideTextPosRect: (%d, %d), (%d, %d) [%d, %d] (%d, %d) => %d\n",
+	 x, y, rect_x, rect_y, rect->x, rect->y, rect->width, rect->height,
+	 (x >= rect_x && x < rect_x + rect->width &&
+	  y >= rect_y && y < rect_y + rect->height));
+#endif
+
   return (x >= rect_x && x < rect_x + rect->width &&
 	  y >= rect_y && y < rect_y + rect->height);
 }
@@ -1046,7 +1069,7 @@ static void drawCursorExt(int xpos, int ypos, boolean active, int graphic)
     graphic = BUTTON_ACTIVE(graphic);
 
   DrawBackgroundForGraphic(x, y, TILEX, TILEY, graphic);
-  DrawGraphicThruMaskExt(drawto, x, y, graphic, 0);
+  DrawFixedGraphicThruMaskExt(drawto, x, y, graphic, 0);
 }
 
 static void initCursor(int ypos, int graphic)
@@ -1425,7 +1448,7 @@ static void gotoTopLevelDir()
 
 void HandleTitleScreen(int mx, int my, int dx, int dy, int button)
 {
-  static unsigned long title_delay = 0;
+  static unsigned int title_delay = 0;
   static int title_screen_nr = 0;
   static int last_sound = -1, last_music = -1;
   boolean return_to_main_menu = FALSE;
@@ -1703,10 +1726,19 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 
     for (i = 0; main_controls[i].nr != -1; i++)
     {
+#if 0
+      printf("::: check click (%d, %d) for %d [%d] ...\n",
+	     mx - mSX, my - mSY, i, main_controls[i].nr);
+#endif
+
       if (insideMenuPosRect(main_controls[i].pos_button, mx - mSX, my - mSY) ||
 	  insideTextPosRect(main_controls[i].pos_text,   mx - mSX, my - mSY) ||
 	  insideTextPosRect(main_controls[i].pos_input,  mx - mSX, my - mSY))
       {
+#if 0
+	printf("::: inside %d\n", i);
+#endif
+
 	pos = main_controls[i].nr;
 
 	break;
@@ -1725,6 +1757,20 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
   if (pos == MAIN_CONTROL_LEVELS && dx != 0 && button)
   {
     HandleMainMenu_SelectLevel(1, dx < 0 ? -1 : +1);
+  }
+  else if (pos == MAIN_CONTROL_FIRST_LEVEL && !button)
+  {
+    HandleMainMenu_SelectLevel(MAX_LEVELS, -1);
+  }
+  else if (pos == MAIN_CONTROL_LAST_LEVEL && !button)
+  {
+    HandleMainMenu_SelectLevel(MAX_LEVELS, +1);
+  }
+  else if (pos == MAIN_CONTROL_LEVEL_NUMBER && !button)
+  {
+    game_status = GAME_MODE_LEVELNR;
+
+    DrawChooseLevelNr();
   }
   else if (pos >= MAIN_CONTROL_NAME && pos <= MAIN_CONTROL_QUIT)
   {
@@ -1763,7 +1809,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	  gotoTopLevelDir();
 #endif
 
-	  DrawChooseLevel();
+	  DrawChooseLevelSet();
 	}
       }
       else if (pos == MAIN_CONTROL_SCORES)
@@ -2197,8 +2243,8 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
 
     ClearRectangleOnBackground(drawto, xstart, ystart2 + (i - start) * ystep,
 			       TILEX, TILEY);
-    DrawGraphicAnimationExt(drawto, xstart, ystart2 + (i - start) * ystep,
-			    graphic, sync_frame, USE_MASKING);
+    DrawFixedGraphicAnimationExt(drawto, xstart, ystart2 + (i - start) * ystep,
+				 graphic, sync_frame, USE_MASKING);
 
     if (init)
       DrawInfoScreen_HelpText(element, action, direction, i - start);
@@ -2289,7 +2335,7 @@ void DrawInfoScreen_Elements()
 
 void HandleInfoScreen_Elements(int button)
 {
-  static unsigned long info_delay = 0;
+  static unsigned int info_delay = 0;
   static int num_anims;
   static int num_pages;
   static int page;
@@ -3296,8 +3342,8 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
   char *title_string = NULL;
   int yoffset_sets = MENU_TITLE1_YPOS;
   int yoffset_setup = 16;
-  int yoffset = (ti->type == TREE_TYPE_LEVEL_DIR ? yoffset_sets :
-		 yoffset_setup);
+  int yoffset = (ti->type == TREE_TYPE_LEVEL_DIR ||
+		 ti->type == TREE_TYPE_LEVEL_NR ? yoffset_sets : yoffset_setup);
   int last_game_status = game_status;	/* save current game status */
 
   title_string = ti->infotext;
@@ -3365,6 +3411,9 @@ static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
   int ypos = MENU_TITLE2_YPOS;
   int font_nr = FONT_TITLE_2;
 
+  if (ti->type == TREE_TYPE_LEVEL_NR)
+    DrawTextFCentered(ypos, font_nr, leveldir_current->name);
+
   if (ti->type != TREE_TYPE_LEVEL_DIR)
     return;
 
@@ -3373,6 +3422,18 @@ static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
 
   DrawBackgroundForFont(SX, SY + ypos, SXSIZE, getFontHeight(font_nr), font_nr);
 
+#if 1
+  if (node->parent_link)
+    DrawTextFCentered(ypos, font_nr, "leave \"%s\"",
+		      node->node_parent->name);
+  else if (node->level_group)
+    DrawTextFCentered(ypos, font_nr, "enter \"%s\"",
+		      node->name);
+  else if (ti->type == TREE_TYPE_LEVEL_DIR)
+    DrawTextFCentered(ypos, font_nr, "%3d %s (%s)",
+		      node->levels, (node->levels > 1 ? "levels" : "level"),
+		      node->class_desc);
+#else
   if (node->parent_link)
     DrawTextFCentered(ypos, font_nr, "leave group \"%s\"",
 		      node->class_desc);
@@ -3382,6 +3443,7 @@ static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
   else if (ti->type == TREE_TYPE_LEVEL_DIR)
     DrawTextFCentered(ypos, font_nr, "%3d levels (%s)",
 		      node->levels, node->class_desc);
+#endif
 
   /* let BackToFront() redraw only what is needed */
   redraw_mask = last_redraw_mask | REDRAW_TILES;
@@ -3468,6 +3530,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     }
     else
     {
+      if (game_status == GAME_MODE_LEVELNR)
+	level_nr = atoi(level_number_current->identifier);
+
       game_status = GAME_MODE_MAIN;
 
       DrawMainMenuExt(REDRAW_FIELD, FALSE);
@@ -3651,7 +3716,11 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	}
 	else
 	{
+	  if (game_status == GAME_MODE_LEVELNR)
+	    level_nr = atoi(level_number_current->identifier);
+
 	  game_status = GAME_MODE_MAIN;
+
 	  DrawMainMenu();
 	}
       }
@@ -3659,7 +3728,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   }
 }
 
-void DrawChooseLevel()
+void DrawChooseLevelSet()
 {
   SetMainBackgroundImage(IMG_BACKGROUND_LEVELS);
 
@@ -3669,9 +3738,80 @@ void DrawChooseLevel()
   PlayMenuMusic();
 }
 
-void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
+void HandleChooseLevelSet(int mx, int my, int dx, int dy, int button)
 {
   HandleChooseTree(mx, my, dx, dy, button, &leveldir_current);
+
+  DoAnimation();
+}
+
+void DrawChooseLevelNr()
+{
+  int i;
+
+  if (level_number != NULL)
+  {
+    freeTreeInfo(level_number);
+
+    level_number = NULL;
+  }
+
+  for (i = leveldir_current->first_level; i <= leveldir_current->last_level;i++)
+  {
+    TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_LEVEL_NR);
+    char identifier[32], name[32];
+    int value = i;
+
+    /* temporarily load level info to get level name */
+    LoadLevelInfoOnly(i);
+
+    ti->node_top = &level_number;
+    ti->sort_priority = 10000 + value;
+    ti->color = (level.no_valid_file ? FC_BLUE :
+		 LevelStats_getSolved(i) ? FC_GREEN :
+		 LevelStats_getPlayed(i) ? FC_YELLOW : FC_RED);
+
+    sprintf(identifier, "%d", value);
+    sprintf(name, "%03d: %s", value,
+	    (level.no_valid_file ? "(no file)" : level.name));
+
+    setString(&ti->identifier, identifier);
+    setString(&ti->name, name);
+    setString(&ti->name_sorting, name);
+
+    pushTreeInfo(&level_number, ti);
+  }
+
+  /* sort level number values to start with lowest level number */
+  sortTreeInfo(&level_number);
+
+  /* set current level number to current level number */
+  level_number_current =
+    getTreeInfoFromIdentifier(level_number, i_to_a(level_nr));
+
+  /* if that also fails, set current level number to first available level */
+  if (level_number_current == NULL)
+    level_number_current = level_number;
+
+  SetMainBackgroundImage(IMG_BACKGROUND_LEVELNR);
+
+#if 1
+  DrawChooseTree(&level_number_current);
+#else
+  DrawChooseTree(&leveldir_current);
+#endif
+
+  PlayMenuSound();
+  PlayMenuMusic();
+}
+
+void HandleChooseLevelNr(int mx, int my, int dx, int dy, int button)
+{
+#if 1
+  HandleChooseTree(mx, my, dx, dy, button, &level_number_current);
+#else
+  HandleChooseTree(mx, my, dx, dy, button, &leveldir_current);
+#endif
 
   DoAnimation();
 }
@@ -4241,6 +4381,7 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_SWITCH,	&setup.toons,		"Show Toons:"		},
   { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,"EMC graphics preference:" },
   { TYPE_SWITCH, &setup.sp_show_border_elements,"Supaplex Border Elements:" },
+  { TYPE_SWITCH,	&setup.small_game_graphics, "Small Game Graphics:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
 
@@ -4312,11 +4453,11 @@ static struct TokenInfo setup_info_input[] =
 
 static struct TokenInfo setup_info_shortcuts[] =
 {
-  { TYPE_ENTER_MENU,	execSetupShortcuts1,	"Various Keys"	},
-  { TYPE_ENTER_MENU,	execSetupShortcuts2,	"Player Focus"	},
-  { TYPE_ENTER_MENU,	execSetupShortcuts3,	"Tape Buttons"	},
-  { TYPE_ENTER_MENU,	execSetupShortcuts4,	"Sound & Music"	},
-  { TYPE_ENTER_MENU,	execSetupShortcuts5,	"TAS Snap Keys"	},
+  { TYPE_ENTER_MENU,	execSetupShortcuts1,	"Various Keys"		},
+  { TYPE_ENTER_MENU,	execSetupShortcuts2,	"Player Focus"		},
+  { TYPE_ENTER_MENU,	execSetupShortcuts3,	"Tape Buttons"		},
+  { TYPE_ENTER_MENU,	execSetupShortcuts4,	"Sound & Music"		},
+  { TYPE_ENTER_MENU,	execSetupShortcuts5,	"TAS Snap Keys"		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
 
@@ -4360,15 +4501,17 @@ static struct TokenInfo setup_info_shortcuts_2[] =
 
 static struct TokenInfo setup_info_shortcuts_3[] =
 {
-  { TYPE_KEYTEXT,	NULL,			"Tape Eject:",		},
+  { TYPE_KEYTEXT,	NULL,			"Eject Tape:",		},
   { TYPE_KEY,		&setup.shortcut.tape_eject, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Tape Stop:",		},
+  { TYPE_KEYTEXT,	NULL,			"Warp / Single Step:",	},
+  { TYPE_KEY,		&setup.shortcut.tape_extra, ""			},
+  { TYPE_KEYTEXT,	NULL,			"Stop Tape:",		},
   { TYPE_KEY,		&setup.shortcut.tape_stop, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Tape Pause:",		},
+  { TYPE_KEYTEXT,	NULL,			"Pause / Unpause Tape:",},
   { TYPE_KEY,		&setup.shortcut.tape_pause, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Tape Record:",		},
+  { TYPE_KEYTEXT,	NULL,			"Record Tape:",		},
   { TYPE_KEY,		&setup.shortcut.tape_record, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Tape Play:",		},
+  { TYPE_KEYTEXT,	NULL,			"Play Tape:",		},
   { TYPE_KEY,		&setup.shortcut.tape_play, ""			},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
@@ -4378,11 +4521,11 @@ static struct TokenInfo setup_info_shortcuts_3[] =
 
 static struct TokenInfo setup_info_shortcuts_4[] =
 {
-  { TYPE_KEYTEXT,	NULL,		"Sound Effects (Normal):",	},
+  { TYPE_KEYTEXT,	NULL,		"Toggle Sound Effects (Normal):", },
   { TYPE_KEY,		&setup.shortcut.sound_simple, ""		},
-  { TYPE_KEYTEXT,	NULL,		"Sound Effects (Looping):",	},
+  { TYPE_KEYTEXT,	NULL,		"Toggle Sound Effects (Looping):", },
   { TYPE_KEY,		&setup.shortcut.sound_loops, ""			},
-  { TYPE_KEYTEXT,	NULL,		"Music:",			},
+  { TYPE_KEYTEXT,	NULL,		"Toggle Music:",		},
   { TYPE_KEY,		&setup.shortcut.sound_music, ""			},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
@@ -4492,7 +4635,10 @@ static void drawSetupValue(int pos)
   int ypos = MENU_SCREEN_START_YPOS + pos;
   int startx = mSX + xpos * 32;
   int starty = mSY + ypos * 32;
-  int font_nr, font_width, font_height;
+  int font_nr, font_width;
+#if 0
+  int font_height;
+#endif
   int type = setup_info[pos].type;
   void *value = setup_info[pos].value;
   char *value_string = getSetupValue(type, value);
@@ -4528,7 +4674,9 @@ static void drawSetupValue(int pos)
   starty = mSY + ypos * 32;
   font_nr = getSetupValueFont(type, value);
   font_width = getFontWidth(font_nr);
+#if 0
   font_height = getFontHeight(font_nr);
+#endif
 
   /* downward compatibility correction for Juergen Bonhagen's menu settings */
   if (setup_mode != SETUP_MODE_INPUT)
@@ -5011,8 +5159,8 @@ static void drawPlayerSetupInputInfo(int player_nr, boolean active)
 
   ClearRectangleOnBackground(drawto, mSX + 8 * TILEX, mSY + 2 * TILEY,
 			     TILEX, TILEY);
-  DrawGraphicThruMaskExt(drawto, mSX + 8 * TILEX, mSY + 2 * TILEY,
-			 PLAYER_NR_GFX(IMG_PLAYER_1, player_nr), 0);
+  DrawFixedGraphicThruMaskExt(drawto, mSX + 8 * TILEX, mSY + 2 * TILEY,
+			      PLAYER_NR_GFX(IMG_PLAYER_1, player_nr), 0);
 
   if (setup.input[player_nr].use_joystick)
   {
@@ -5368,7 +5516,7 @@ static boolean CalibrateJoystickMain(int player_nr)
   {
     for (x = 0; x < 3; x++)
     {
-      DrawGraphic(xpos + x - 1, ypos + y - 1, IMG_MENU_CALIBRATE_BLUE, 0);
+      DrawFixedGraphic(xpos + x - 1, ypos + y - 1, IMG_MENU_CALIBRATE_BLUE, 0);
       check[x][y] = FALSE;
     }
   }
@@ -5392,7 +5540,7 @@ static boolean CalibrateJoystickMain(int player_nr)
   new_joystick_xmiddle = joy_x;
   new_joystick_ymiddle = joy_y;
 
-  DrawGraphic(xpos + last_x, ypos + last_y, IMG_MENU_CALIBRATE_RED, 0);
+  DrawFixedGraphic(xpos + last_x, ypos + last_y, IMG_MENU_CALIBRATE_RED, 0);
 
   FadeIn(REDRAW_FIELD);
 
@@ -5464,8 +5612,10 @@ static boolean CalibrateJoystickMain(int player_nr)
 
     if (x != last_x || y != last_y)
     {
-      DrawGraphic(xpos + last_x, ypos + last_y, IMG_MENU_CALIBRATE_YELLOW, 0);
-      DrawGraphic(xpos + x,      ypos + y,      IMG_MENU_CALIBRATE_RED,    0);
+      DrawFixedGraphic(xpos + last_x, ypos + last_y,
+		       IMG_MENU_CALIBRATE_YELLOW, 0);
+      DrawFixedGraphic(xpos + x,      ypos + y,
+		       IMG_MENU_CALIBRATE_RED,    0);
 
       last_x = x;
       last_y = y;
@@ -5768,7 +5918,7 @@ static struct
 static void CreateScreenMenubuttons()
 {
   struct GadgetInfo *gi;
-  unsigned long event_mask;
+  unsigned int event_mask;
   int i;
 
   for (i = 0; i < NUM_SCREEN_MENUBUTTONS; i++)
@@ -5821,7 +5971,7 @@ static void CreateScreenMenubuttons()
 static void CreateScreenScrollbuttons()
 {
   struct GadgetInfo *gi;
-  unsigned long event_mask;
+  unsigned int event_mask;
   int i;
 
   /* these values are not constant, but can change at runtime */
@@ -5901,7 +6051,7 @@ static void CreateScreenScrollbars()
     int gd_x1, gd_x2, gd_y1, gd_y2;
     struct GadgetInfo *gi;
     int items_max, items_visible, item_position;
-    unsigned long event_mask;
+    unsigned int event_mask;
     int num_page_entries = NUM_MENU_ENTRIES_ON_SCREEN;
     int id = scrollbar_info[i].gadget_id;
 
@@ -6082,21 +6232,27 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_SCROLL_UP:
       if (game_status == GAME_MODE_LEVELS)
-	HandleChooseLevel(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleChooseLevelSet(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_LEVELNR)
+	HandleChooseLevelNr(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SETUP)
 	HandleSetupScreen(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       break;
 
     case SCREEN_CTRL_ID_SCROLL_DOWN:
       if (game_status == GAME_MODE_LEVELS)
-	HandleChooseLevel(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleChooseLevelSet(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_LEVELNR)
+	HandleChooseLevelNr(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SETUP)
 	HandleSetupScreen(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       break;
 
     case SCREEN_CTRL_ID_SCROLL_VERTICAL:
       if (game_status == GAME_MODE_LEVELS)
-	HandleChooseLevel(0,0, 999,gi->event.item_position,MB_MENU_INITIALIZE);
+	HandleChooseLevelSet(0,0,999,gi->event.item_position,MB_MENU_INITIALIZE);
+      else if (game_status == GAME_MODE_LEVELNR)
+	HandleChooseLevelNr(0,0,999,gi->event.item_position,MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_SETUP)
 	HandleSetupScreen(0,0, 999,gi->event.item_position,MB_MENU_INITIALIZE);
       break;

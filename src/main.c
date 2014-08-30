@@ -41,7 +41,11 @@ SDL_Thread	       *server_thread;
 int			key_joystick_mapping = 0;
 
 #if 1
+#if NEW_SCROLL
+boolean			redraw[2 + MAX_LEV_FIELDX + 2][2 + MAX_LEV_FIELDY + 2];
+#else
 boolean			redraw[MAX_LEV_FIELDX + 2][MAX_LEV_FIELDY + 2];
+#endif
 #else
 boolean			redraw[MAX_BUF_XSIZE][MAX_BUF_YSIZE];
 #endif
@@ -97,6 +101,11 @@ int			DX = 566, DY = 60;
 int			VX = 566, VY = 400;
 int			EX = 566, EY = 356;
 int			dDX, dDY;
+int			SXSIZE = 17 * TILEX;	/* SCR_FIELDX * TILEX */
+int			SYSIZE = 17 * TILEY;	/* SCR_FIELDY * TILEY */
+int			FULL_SXSIZE = 2 + 17 * TILEX + 2; /* 2 + SXSIZE + 2 */
+int			FULL_SYSIZE = 2 + 17 * TILEY + 2; /* 2 + SYSIZE + 2 */
+int			TILESIZE_VAR = TILESIZE;
 
 #if 1
 int			FX, FY;
@@ -5451,12 +5460,14 @@ struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1 + 1] =
   { ".TITLE",			GFX_SPECIAL_ARG_TITLE,			},
   { ".MAIN",			GFX_SPECIAL_ARG_MAIN,			},
   { ".LEVELS",			GFX_SPECIAL_ARG_LEVELS			},
+  { ".LEVELNR",			GFX_SPECIAL_ARG_LEVELNR			},
   { ".SCORES",			GFX_SPECIAL_ARG_SCORES,			},
   { ".EDITOR",			GFX_SPECIAL_ARG_EDITOR,			},
   { ".INFO",			GFX_SPECIAL_ARG_INFO,			},
   { ".SETUP",			GFX_SPECIAL_ARG_SETUP,			},
   { ".PLAYING",			GFX_SPECIAL_ARG_PLAYING,		},
   { ".DOOR",			GFX_SPECIAL_ARG_DOOR,			},
+  { ".TAPE",			GFX_SPECIAL_ARG_TAPE,			},
   { ".PANEL",			GFX_SPECIAL_ARG_PANEL,			},
   { ".PREVIEW",			GFX_SPECIAL_ARG_PREVIEW,		},
   { ".CRUMBLED",		GFX_SPECIAL_ARG_CRUMBLED,		},

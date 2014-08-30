@@ -70,6 +70,7 @@ void DrawMaskedBorder(int);
 
 void SetDrawtoField(int);
 void RedrawPlayfield(boolean, int, int, int, int);
+void BlitScreenToBitmap(Bitmap *);
 void BackToFront();
 
 void FadeIn(int);
@@ -103,8 +104,13 @@ void FloodFillLevel(int, int, int, short[MAX_LEV_FIELDX][MAX_LEV_FIELDY],
 
 void SetRandomAnimationValue(int, int);
 int getGraphicAnimationFrame(int, int);
-void DrawGraphicAnimationExt(DrawBuffer *, int, int, int, int, int);
+
 void DrawGraphicAnimation(int, int, int);
+void DrawGraphicAnimationExt(DrawBuffer *, int, int, int, int, int);
+
+void DrawFixedGraphicAnimation(int, int, int);
+void DrawFixedGraphicAnimationExt(DrawBuffer *, int, int, int, int, int);
+
 void DrawLevelGraphicAnimation(int, int, int);
 void DrawLevelElementAnimation(int, int, int);
 void DrawLevelGraphicAnimationIfNeeded(int, int, int);
@@ -114,17 +120,27 @@ void DrawAllPlayers(void);
 void DrawPlayerField(int, int);
 void DrawPlayer(struct PlayerInfo *);
 
+void getSizedGraphicSourceExt(int, int, int, Bitmap **, int *, int *, boolean);
+void getFixedGraphicSourceExt(int, int, Bitmap **, int *, int *, boolean);
 void getSizedGraphicSource(int, int, int, Bitmap **, int *, int *);
+void getFixedGraphicSource(int, int, Bitmap **, int *, int *);
 void getMiniGraphicSource(int, Bitmap **, int *, int *);
 void getGraphicSourceExt(int, int, Bitmap **, int *, int *, boolean);
 void getGraphicSource(int, int, Bitmap **, int *, int *);
+
 void DrawGraphic(int, int, int, int);
 void DrawGraphicExt(DrawBuffer *, int, int, int, int);
 void DrawGraphicThruMask(int, int, int, int);
 void DrawGraphicThruMaskExt(DrawBuffer *, int, int, int, int);
 
+void DrawFixedGraphic(int, int, int, int);
+void DrawFixedGraphicExt(DrawBuffer *, int, int, int, int);
+void DrawFixedGraphicThruMask(int, int, int, int);
+void DrawFixedGraphicThruMaskExt(DrawBuffer *, int, int, int, int);
+
 void DrawSizedGraphic(int, int, int, int, int);
 void DrawSizedGraphicExt(DrawBuffer *, int, int, int, int, int);
+
 void DrawMiniGraphic(int, int, int);
 void DrawMiniGraphicExt(DrawBuffer *, int, int, int);
 
@@ -202,7 +218,7 @@ int getBeltElementFromBeltNrAndBeltDir(int, int);
 int getBeltSwitchElementFromBeltNrAndBeltDirNr(int, int);
 int getBeltSwitchElementFromBeltNrAndBeltDir(int, int);
 
-unsigned int InitRND(long);
+unsigned int InitRND(int);
 void InitGraphicInfo_EM(void);
 
 void PlayMenuSoundExt(int);

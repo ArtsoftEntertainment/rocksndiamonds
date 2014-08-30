@@ -14,6 +14,10 @@ extern int debug;
 extern char *progname;
 extern char *arg_basedir;
 
+#if 0
+extern int TILEX, TILEY;
+#endif
+
 extern int frame;
 
 extern short ulaw_to_linear[256];
@@ -41,7 +45,6 @@ void play_sound(int, int, int);
 void sound_play(void);
 
 int cave_convert(char *);
-boolean LoadNativeLevel_EM(char *);
 
 void game_init_vars(void);
 void game_play_init(int, char *);
@@ -56,7 +59,7 @@ void convert_em_level(unsigned char *, int);
 void prepare_em_level(void);
 
 int sound_thread(void);
-int read_sample(char *, short **, long *);
+int read_sample(char *, short **, int *);
 
 void read_cave_list(void);
 void free_cave_list(void);

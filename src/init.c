@@ -39,7 +39,7 @@
 #define CONFIG_TOKEN_GLOBAL_BUSY		"global.busy"
 
 #define DEBUG_PRINT_INIT_TIMESTAMPS		TRUE
-#define DEBUG_PRINT_INIT_TIMESTAMPS_DEPTH	1
+#define DEBUG_PRINT_INIT_TIMESTAMPS_DEPTH	0
 
 
 static struct FontBitmapInfo font_initial[NUM_INITIAL_FONTS];
@@ -159,8 +159,8 @@ void DrawInitAnim()
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
   int graphic = 0;
-  static unsigned long action_delay = 0;
-  unsigned long action_delay_value = GameFrameDelay;
+  static unsigned int action_delay = 0;
+  unsigned int action_delay_value = GameFrameDelay;
   int sync_frame = FrameCounter;
   int x, y;
 
@@ -175,9 +175,9 @@ void DrawInitAnim()
 
 #if 0
   {
-    static unsigned long last_counter = -1;
-    unsigned long current_counter = Counter();
-    unsigned long delay = current_counter - last_counter;
+    static unsigned int last_counter = -1;
+    unsigned int current_counter = Counter();
+    unsigned int delay = current_counter - last_counter;
 
     if (last_counter != -1 && delay > action_delay_value + 5)
       printf("::: DrawInitAnim: DELAY TOO LONG: %ld\n", delay);
@@ -217,7 +217,7 @@ void DrawInitAnim()
     int height = graphic_info[graphic].height;
     int frame = getGraphicAnimationFrame(graphic, sync_frame);
 
-    getGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
+    getFixedGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
     BlitBitmap(src_bitmap, window, src_x, src_y, width, height, x, y);
 #else
     /* !!! this can only draw TILEX/TILEY size animations !!! */
@@ -862,8 +862,8 @@ void InitElementGraphicInfo()
 	  if (swap_movement_tiles_always || swap_movement_tiles_autodetected)
 	  {
 	    /* get current (wrong) backside tile coordinates */
-	    getGraphicSourceExt(graphic, 0, &dummy, &src_x_back, &src_y_back,
-				TRUE);
+	    getFixedGraphicSourceExt(graphic, 0, &dummy,
+				     &src_x_back, &src_y_back, TRUE);
 
 	    /* set frontside tile coordinates to backside tile coordinates */
 	    g->src_x = src_x_back;
@@ -1334,6 +1334,29 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   if (parameter[GFX_ARG_HEIGHT] != ARG_UNDEFINED_VALUE)
     g->height = parameter[GFX_ARG_HEIGHT];
 
+  if (src_bitmap)
+  {
+    if (g->width <= 0)
+    {
+      Error(ERR_INFO_LINE, "-");
+      Error(ERR_WARN, "invalid value %d for '%s.width' (fallback done to %d)",
+	    g->width, getTokenFromImageID(graphic), TILEX);
+      Error(ERR_INFO_LINE, "-");
+
+      g->width = TILEX;		/* will be checked to be inside bitmap later */
+    }
+
+    if (g->height <= 0)
+    {
+      Error(ERR_INFO_LINE, "-");
+      Error(ERR_WARN, "invalid value %d for '%s.height' (fallback done to %d)",
+	    g->height, getTokenFromImageID(graphic), TILEY);
+      Error(ERR_INFO_LINE, "-");
+
+      g->height = TILEY;	/* will be checked to be inside bitmap later */
+    }
+  }
+
 #if 0
   /* optional zoom factor for scaling up the image to a larger size */
   if (parameter[GFX_ARG_SCALE_UP_FACTOR] != ARG_UNDEFINED_VALUE)
@@ -1501,6 +1524,12 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
     g->class = parameter[GFX_ARG_CLASS];
   if (parameter[GFX_ARG_STYLE] != ARG_UNDEFINED_VALUE)
     g->style = parameter[GFX_ARG_STYLE];
+
+  /* this is only used for drawing menu buttons and text */
+  g->active_xoffset = parameter[GFX_ARG_ACTIVE_XOFFSET];
+  g->active_yoffset = parameter[GFX_ARG_ACTIVE_YOFFSET];
+  g->pressed_xoffset = parameter[GFX_ARG_PRESSED_XOFFSET];
+  g->pressed_yoffset = parameter[GFX_ARG_PRESSED_YOFFSET];
 }
 
 static void set_graphic_parameters(int graphic)
@@ -1828,7 +1857,7 @@ static void InitGraphicInfo()
   static boolean clipmasks_initialized = FALSE;
   Pixmap src_pixmap;
   XGCValues clip_gc_values;
-  unsigned long clip_gc_valuemask;
+  unsigned int clip_gc_valuemask;
   GC copy_clipmask_gc = None;
 #endif
 
@@ -1848,6 +1877,7 @@ static void InitGraphicInfo()
     IMG_BACKGROUND_TITLE,
     IMG_BACKGROUND_MAIN,
     IMG_BACKGROUND_LEVELS,
+    IMG_BACKGROUND_LEVELNR,
     IMG_BACKGROUND_SCORES,
     IMG_BACKGROUND_EDITOR,
     IMG_BACKGROUND_INFO,
@@ -1858,6 +1888,8 @@ static void InitGraphicInfo()
     IMG_BACKGROUND_INFO_LEVELSET,
     IMG_BACKGROUND_SETUP,
     IMG_BACKGROUND_DOOR,
+    IMG_BACKGROUND_TAPE,
+    IMG_BACKGROUND_PANEL,
 
     IMG_TITLESCREEN_INITIAL_1,
     IMG_TITLESCREEN_INITIAL_2,
@@ -1936,7 +1968,7 @@ static void InitGraphicInfo()
     /* check if first animation frame is inside specified bitmap */
 
     first_frame = 0;
-    getGraphicSource(i, first_frame, &src_bitmap, &src_x, &src_y);
+    getFixedGraphicSource(i, first_frame, &src_bitmap, &src_x, &src_y);
 
 #if 1
     /* this avoids calculating wrong start position for out-of-bounds frame */
@@ -1970,7 +2002,7 @@ static void InitGraphicInfo()
     /* check if last animation frame is inside specified bitmap */
 
     last_frame = graphic_info[i].anim_frames - 1;
-    getGraphicSource(i, last_frame, &src_bitmap, &src_x, &src_y);
+    getFixedGraphicSource(i, last_frame, &src_bitmap, &src_x, &src_y);
 
     if (src_x < 0 || src_y < 0 ||
 	src_x + width  > src_bitmap_width ||
@@ -1984,6 +2016,7 @@ static void InitGraphicInfo()
       Error(ERR_INFO,
 	    "error: last animation frame (%d) out of bounds (%d, %d) [%d, %d]",
 	    last_frame, src_x, src_y, src_bitmap_width, src_bitmap_height);
+      Error(ERR_INFO, "::: %d, %d", width, height);
       Error(ERR_INFO, "custom graphic rejected for this element/action");
 
       if (i == fallback_graphic)
@@ -1997,7 +2030,7 @@ static void InitGraphicInfo()
 
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
     /* currently we only need a tile clip mask from the first frame */
-    getGraphicSource(i, first_frame, &src_bitmap, &src_x, &src_y);
+    getFixedGraphicSource(i, first_frame, &src_bitmap, &src_x, &src_y);
 
     if (copy_clipmask_gc == None)
     {
@@ -2028,6 +2061,60 @@ static void InitGraphicInfo()
     XFreeGC(display, copy_clipmask_gc);
 
   clipmasks_initialized = TRUE;
+#endif
+}
+
+static void InitGraphicCompatibilityInfo()
+{
+  struct FileInfo *fi_global_door =
+    getImageListEntryFromImageID(IMG_GLOBAL_DOOR);
+  int num_images = getImageListSize();
+  int i;
+
+  /* the following compatibility handling is needed for the following case:
+     versions up to 3.3.0.0 used one large bitmap "global.door" for various
+     graphics mainly used for door and panel graphics, like editor, tape and
+     in-game buttons with hard-coded bitmap positions and button sizes; as
+     these graphics now have individual definitions, redefining "global.door"
+     to change all these graphics at once like before does not work anymore
+     (because all those individual definitions still have their default values);
+     to solve this, remap all those individual definitions that are not
+     redefined to the new bitmap of "global.door" if it was redefined */
+
+  /* special compatibility handling if image "global.door" was redefined */
+  if (fi_global_door->redefined)
+  {
+    for (i = 0; i < num_images; i++)
+    {
+      struct FileInfo *fi = getImageListEntryFromImageID(i);
+
+      /* process only those images that still use the default settings */
+      if (!fi->redefined)
+      {
+	/* process all images which default to same image as "global.door" */
+	if (strEqual(fi->default_filename, fi_global_door->default_filename))
+	{
+	  // printf("::: special treatment needed for token '%s'\n", fi->token);
+
+	  graphic_info[i].bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
+	}
+      }
+    }
+  }
+
+#if 0
+  for (i = 0; i < num_images; i++)
+  {
+    struct FileInfo *fi = getImageListEntryFromImageID(i);
+
+    if (i == IMG_GLOBAL_DOOR)
+    {
+      printf("::: %s, %s, %d\n",
+	     fi->default_filename,
+	     fi->filename,
+	     fi->redefined);
+    }
+  }
 #endif
 }
 
@@ -2425,6 +2512,9 @@ static void ReinitializeGraphics()
 
   InitGraphicInfo_EM();			/* graphic mapping for EM engine */
   print_timestamp_time("InitGraphicInfo_EM");
+
+  InitGraphicCompatibilityInfo();
+  print_timestamp_time("InitGraphicCompatibilityInfo");
 
   SetMainBackgroundImage(IMG_BACKGROUND);
   print_timestamp_time("SetMainBackgroundImage");
@@ -5035,6 +5125,8 @@ static void InitGlobal()
   global.fading_status = GAME_MODE_MAIN;
   global.fading_type = TYPE_ENTER_MENU;
 #endif
+
+  global.use_envelope_request = FALSE;	/* !!! MOVE TO ARTWORK CONFIG !!! */
 }
 
 void Execute_Command(char *command)
@@ -5468,6 +5560,7 @@ void InitGfxBuffers()
   InitGfxScrollbufferInfo(FXSIZE, FYSIZE);
   InitGfxClipRegion(FALSE, -1, -1, -1, -1);
 
+  InitGfxBuffers_EM();
   InitGfxBuffers_SP();
 }
 
@@ -6216,11 +6309,18 @@ void OpenAll()
 
   InitSetup();
 
+  print_timestamp_time("[init setup/config stuff (1)]");
+
   InitGameInfo();
+  print_timestamp_time("[init setup/config stuff (2)]");
   InitPlayerInfo();
+  print_timestamp_time("[init setup/config stuff (3)]");
   InitArtworkInfo();		/* needed before loading gfx, sound & music */
+  print_timestamp_time("[init setup/config stuff (4)]");
   InitArtworkConfig();		/* needed before forking sound child process */
+  print_timestamp_time("[init setup/config stuff (5)]");
   InitMixer();
+  print_timestamp_time("[init setup/config stuff (6)]");
 
 #if 0
   InitCounter();

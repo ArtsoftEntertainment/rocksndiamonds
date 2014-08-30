@@ -87,7 +87,8 @@ static void SendBufferToServer(int size)
 #if defined(TARGET_SDL)
   SDLNet_TCP_Send(sfd, writbuffer, nwrite);
 #else
-  write(sfd, writbuffer, nwrite);
+  if (write(sfd, writbuffer, nwrite) == -1)
+    Error(ERR_WARN, "write() failed; %s", strerror(errno));
 #endif
   nwrite = 0;
 }
@@ -308,7 +309,7 @@ void SendToServer_NrWanted(int nr_wanted)
 
 void SendToServer_StartPlaying()
 {
-  unsigned long new_random_seed = InitRND(level.random_seed);
+  unsigned int new_random_seed = InitRND(level.random_seed);
 
   int dummy = 0;		/* !!! HAS NO MEANING ANYMORE !!! */
 				/* the name of the level must be enough */
@@ -502,12 +503,10 @@ static void Handle_OP_START_PLAYING()
 {
   LevelDirTree *new_leveldir;
   int new_level_nr;
-  int dummy;
-  unsigned long new_random_seed;
+  unsigned int new_random_seed;
   char *new_leveldir_identifier;
 
   new_level_nr = (buffer[2] << 8) + buffer[3];
-  dummy = (buffer[4] << 8) + buffer[5];			/* (obsolete) */
   new_random_seed =
     (buffer[6] << 24) | (buffer[7] << 16) | (buffer[8] << 8) | (buffer[9]);
   new_leveldir_identifier = (char *)&buffer[10];

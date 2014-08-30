@@ -19,6 +19,7 @@
 #include <dirent.h>
 #include <signal.h>
 #include <math.h>
+#include <errno.h>
 
 #include "platform.h"
 
@@ -75,8 +76,8 @@ struct SoundHeader_WAV
 {
   unsigned short compression_code;
   unsigned short num_channels;
-  unsigned long  sample_rate;
-  unsigned long  bytes_per_second;
+  unsigned int   sample_rate;
+  unsigned int   bytes_per_second;
   unsigned short block_align;
   unsigned short bits_per_sample;
 };
@@ -98,7 +99,7 @@ struct SampleInfo
   int type;
   int format;
   void *data_ptr;		/* pointer to first sample (8 or 16 bit) */
-  long data_len;		/* number of samples, NOT number of bytes */
+  int data_len;			/* number of samples, NOT number of bytes */
   int num_channels;		/* mono: 1 channel, stereo: 2 channels */
 };
 typedef struct SampleInfo SoundInfo;
@@ -114,13 +115,13 @@ struct SoundControl
 
   int state;
 
-  unsigned long playing_starttime;
-  unsigned long playing_pos;
+  unsigned int playing_starttime;
+  unsigned int playing_pos;
 
   int type;
   int format;
   void *data_ptr;		/* pointer to first sample (8 or 16 bit) */
-  long data_len;		/* number of samples, NOT number of bytes */
+  int data_len;		/* number of samples, NOT number of bytes */
   int num_channels;		/* mono: 1 channel, stereo: 2 channels */
 
 #if defined(TARGET_ALLEGRO)
@@ -468,11 +469,11 @@ static void WriteReloadInfoToPipe(char *set_identifier, int type)
   SoundControl snd_ctrl;
   TreeInfo *ti = (type == SND_CTRL_RELOAD_SOUNDS ? artwork.snd_current :
 		  artwork.mus_current);
-  unsigned long str_size1 = strlen(leveldir_current->fullpath) + 1;
-  unsigned long str_size2 = strlen(leveldir_current->sounds_path) + 1;
-  unsigned long str_size3 = strlen(leveldir_current->music_path) + 1;
-  unsigned long str_size4 = strlen(ti->basepath) + 1;
-  unsigned long str_size5 = strlen(ti->fullpath) + 1;
+  unsigned int str_size1 = strlen(leveldir_current->fullpath) + 1;
+  unsigned int str_size2 = strlen(leveldir_current->sounds_path) + 1;
+  unsigned int str_size3 = strlen(leveldir_current->music_path) + 1;
+  unsigned int str_size4 = strlen(ti->basepath) + 1;
+  unsigned int str_size5 = strlen(ti->fullpath) + 1;
   boolean override_level_artwork = (type == SND_CTRL_RELOAD_SOUNDS ?
 				    gfx.override_level_sounds :
 				    gfx.override_level_music);
@@ -500,15 +501,15 @@ static void WriteReloadInfoToPipe(char *set_identifier, int type)
       write(audio.mixer_pipe[1], ti,
 	    sizeof(TreeInfo)) < 0 ||
       write(audio.mixer_pipe[1], &str_size1,
-	    sizeof(unsigned long)) < 0 ||
+	    sizeof(unsigned int)) < 0 ||
       write(audio.mixer_pipe[1], &str_size2,
-	    sizeof(unsigned long)) < 0 ||
+	    sizeof(unsigned int)) < 0 ||
       write(audio.mixer_pipe[1], &str_size3,
-	    sizeof(unsigned long)) < 0 ||
+	    sizeof(unsigned int)) < 0 ||
       write(audio.mixer_pipe[1], &str_size4,
-	    sizeof(unsigned long)) < 0 ||
+	    sizeof(unsigned int)) < 0 ||
       write(audio.mixer_pipe[1], &str_size5,
-	    sizeof(unsigned long)) < 0 ||
+	    sizeof(unsigned int)) < 0 ||
       write(audio.mixer_pipe[1], leveldir_current->fullpath,
 	    str_size1) < 0 ||
       write(audio.mixer_pipe[1], leveldir_current->sounds_path,
@@ -531,7 +532,7 @@ static void ReadReloadInfoFromPipe(SoundControl *snd_ctrl)
   TreeInfo **ti_ptr = ((snd_ctrl->state & SND_CTRL_RELOAD_SOUNDS) ?
 		       &artwork.snd_current : &artwork.mus_current);
   TreeInfo *ti = *ti_ptr;
-  unsigned long str_size1, str_size2, str_size3, str_size4, str_size5;
+  unsigned int str_size1, str_size2, str_size3, str_size4, str_size5;
   static char *set_identifier = NULL;
   boolean *override_level_artwork = (snd_ctrl->state & SND_CTRL_RELOAD_SOUNDS ?
 				     &gfx.override_level_sounds :
@@ -562,15 +563,15 @@ static void ReadReloadInfoFromPipe(SoundControl *snd_ctrl)
       read(audio.mixer_pipe[0], ti,
 	   sizeof(TreeInfo)) != sizeof(TreeInfo) ||
       read(audio.mixer_pipe[0], &str_size1,
-	   sizeof(unsigned long)) != sizeof(unsigned long) ||
+	   sizeof(unsigned int)) != sizeof(unsigned int) ||
       read(audio.mixer_pipe[0], &str_size2,
-	   sizeof(unsigned long)) != sizeof(unsigned long) ||
+	   sizeof(unsigned int)) != sizeof(unsigned int) ||
       read(audio.mixer_pipe[0], &str_size3,
-	   sizeof(unsigned long)) != sizeof(unsigned long) ||
+	   sizeof(unsigned int)) != sizeof(unsigned int) ||
       read(audio.mixer_pipe[0], &str_size4,
-	   sizeof(unsigned long)) != sizeof(unsigned long) ||
+	   sizeof(unsigned int)) != sizeof(unsigned int) ||
       read(audio.mixer_pipe[0], &str_size5,
-	   sizeof(unsigned long)) != sizeof(unsigned long))
+	   sizeof(unsigned int)) != sizeof(unsigned int))
     Error(ERR_EXIT_SOUND_SERVER, "broken pipe -- no sounds");
 
   leveldir_current->fullpath = checked_calloc(str_size1);
@@ -874,7 +875,7 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
   /* don't play sound more than n times simultaneously (with n == 2 for now) */
   if (k >= 2)
   {
-    unsigned long playing_current = Counter();
+    unsigned int playing_current = Counter();
     int longest = 0, longest_nr = audio.first_sound_channel;
 
     /* look for oldest equal sound */
@@ -925,7 +926,7 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
   if (mixer_active_channels ==
       audio.num_channels - (mixer[audio.music_channel].active ? 0 : 1))
   {
-    unsigned long playing_current = Counter();
+    unsigned int playing_current = Counter();
     int longest = 0, longest_nr = audio.first_sound_channel;
 
 #if 0
@@ -933,8 +934,8 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
     /* print some debugging information about audio channel usage */
     for (i = audio.first_sound_channel; i < audio.num_channels; i++)
     {
-      Error(ERR_INFO, "Mixer_InsertSound: %d [%d]: %ld (%ld)",
-	    i, mixer[i].active, mixer[i].data_len, (long)mixer[i].data_ptr);
+      Error(ERR_INFO, "Mixer_InsertSound: %d [%d]: %d (%d)",
+	    i, mixer[i].active, mixer[i].data_len, (int)mixer[i].data_ptr);
     }
 #endif
 #endif
@@ -1120,7 +1121,7 @@ static void CopySampleToMixingBuffer(SoundControl *snd_ctrl,
 static void Mixer_Main_DSP()
 {
   static short premix_first_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
-  static long premix_last_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
+  static int premix_last_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
   static byte playing_buffer[DEFAULT_AUDIO_FRAGMENT_SIZE];
   boolean stereo;
   int fragment_size;
@@ -1148,11 +1149,11 @@ static void Mixer_Main_DSP()
 
   /* first clear the last premixing buffer */
   clear_mem(premix_last_buffer,
-	    max_sample_size * num_output_channels * sizeof(long));
+	    max_sample_size * num_output_channels * sizeof(int));
 
   for (i = 0; i < audio.num_channels; i++)
   {
-    void *sample_ptr;
+    // void *sample_ptr;
     int sample_len;
     int sample_pos;
     int sample_size;
@@ -1167,7 +1168,7 @@ static void Mixer_Main_DSP()
     }
 
     /* pointer, lenght and actual playing position of sound sample */
-    sample_ptr = mixer[i].data_ptr;
+    // sample_ptr = mixer[i].data_ptr;
     sample_len = mixer[i].data_len;
     sample_pos = mixer[i].playing_pos;
     sample_size = MIN(max_sample_size, sample_len - sample_pos);
@@ -1203,7 +1204,7 @@ static void Mixer_Main_DSP()
     if (mixer[i].volume != SOUND_MAX_VOLUME)
       for (j = 0; j < sample_size * num_output_channels; j++)
 	premix_first_buffer[j] =
-	  mixer[i].volume * (long)premix_first_buffer[j] / SOUND_MAX_VOLUME;
+	  mixer[i].volume * (int)premix_first_buffer[j] / SOUND_MAX_VOLUME;
 
     /* adjust left and right channel volume due to stereo sound position */
     if (stereo)
@@ -1265,7 +1266,8 @@ static void Mixer_Main_DSP()
   }
 
   /* finally play the sound fragment */
-  write(audio.device_fd, playing_buffer, fragment_size);
+  if (write(audio.device_fd, playing_buffer, fragment_size) == -1)
+    Error(ERR_WARN, "write() failed; %s", strerror(errno));
 
   if (!mixer_active_channels)
     CloseAudioDevice(&audio.device_fd);
@@ -1302,7 +1304,7 @@ static int Mixer_Main_SimpleAudio(SoundControl snd_ctrl)
   if (mixer[i].volume != SOUND_MAX_VOLUME)
     for (j = 0; j < sample_size; j++)
       premix_first_buffer[j] =
-	mixer[i].volume * (long)premix_first_buffer[j] / SOUND_MAX_VOLUME;
+	mixer[i].volume * (int)premix_first_buffer[j] / SOUND_MAX_VOLUME;
 
   /* might be needed for u-law /dev/audio */
   for (j = 0; j < sample_size; j++)
@@ -1648,8 +1650,8 @@ static void *Load_WAV(char *filename)
       printf("WAV file: '%s'\n", filename);
       printf("  Compression code: %d'\n", header.compression_code);
       printf("  Number of channels: %d'\n", header.num_channels);
-      printf("  Sample rate: %ld'\n", header.sample_rate);
-      printf("  Average bytes per second: %ld'\n", header.bytes_per_second);
+      printf("  Sample rate: %d'\n", header.sample_rate);
+      printf("  Average bytes per second: %d'\n", header.bytes_per_second);
       printf("  Block align: %d'\n", header.block_align);
       printf("  Significant bits per sample: %d'\n", header.bits_per_sample);
 #endif

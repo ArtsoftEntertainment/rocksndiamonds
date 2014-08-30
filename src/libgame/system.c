@@ -46,6 +46,8 @@ LevelDirTree	       *leveldir_first = NULL;
 LevelDirTree	       *leveldir_current = NULL;
 int			level_nr;
 
+struct LevelStats	level_stats[MAX_LEVELS];
+
 Display		       *display = NULL;
 Visual		       *visual = NULL;
 int			screen = 0;
@@ -244,6 +246,8 @@ void SetDrawBackgroundMask(int draw_background_mask)
   gfx.draw_background_mask = draw_background_mask;
 }
 
+#if 0
+
 static void DrawBitmapFromTile(Bitmap *bitmap, Bitmap *tile,
 			       int dest_x, int dest_y, int width, int height)
 {
@@ -299,6 +303,39 @@ void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
 		       gfx.dxsize, gfx.dysize);
   }
 }
+
+#else
+
+void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
+{
+  if (background_bitmap_tile != NULL)
+    gfx.background_bitmap_mask |= mask;
+  else
+    gfx.background_bitmap_mask &= ~mask;
+
+#if 0
+  if (gfx.background_bitmap == NULL)
+    gfx.background_bitmap = CreateBitmap(video.width, video.height,
+					 DEFAULT_DEPTH);
+#endif
+
+  if (background_bitmap_tile == NULL)	/* empty background requested */
+    return;
+
+  if (mask == REDRAW_ALL)
+    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap, 0, 0, 0, 0,
+		    0, 0, video.width, video.height);
+  else if (mask == REDRAW_FIELD)
+    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap, 0, 0, 0, 0,
+		    gfx.real_sx, gfx.real_sy, gfx.full_sxsize, gfx.full_sysize);
+  else if (mask == REDRAW_DOOR_1)
+  {
+    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap, 0, 0, 0, 0,
+		    gfx.dx, gfx.dy, gfx.dxsize, gfx.dysize);
+  }
+}
+
+#endif
 
 void SetWindowBackgroundBitmap(Bitmap *background_bitmap_tile)
 {
@@ -701,8 +738,41 @@ void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 #endif
 #endif
 
+#if 0
+  if (dst_x < gfx.sx + gfx.sxsize)
+    printf("::: %d: BlitBitmap(%d, %d, %d, %d)\n",
+	   FrameCounter, dst_x, dst_y, width, height);
+#endif
+
   sysCopyArea(src_bitmap, dst_bitmap,
 	      src_x, src_y, width, height, dst_x, dst_y, BLIT_OPAQUE);
+}
+
+void BlitBitmapTiled(Bitmap *src_bitmap, Bitmap *dst_bitmap,
+		     int src_x, int src_y, int src_width, int src_height,
+		     int dst_x, int dst_y, int dst_width, int dst_height)
+{
+  int src_xsize = (src_width  == 0 ? src_bitmap->width  : src_width);
+  int src_ysize = (src_height == 0 ? src_bitmap->height : src_height);
+  int dst_xsize = dst_width;
+  int dst_ysize = dst_height;
+  int src_xsteps = (dst_xsize + src_xsize - 1) / src_xsize;
+  int src_ysteps = (dst_ysize + src_ysize - 1) / src_ysize;
+  int x, y;
+
+  for (y = 0; y < src_ysteps; y++)
+  {
+    for (x = 0; x < src_xsteps; x++)
+    {
+      int draw_x = dst_x + x * src_xsize;
+      int draw_y = dst_y + y * src_ysize;
+      int draw_xsize = MIN(src_xsize, dst_xsize - x * src_xsize);
+      int draw_ysize = MIN(src_ysize, dst_ysize - y * src_ysize);
+
+      BlitBitmap(src_bitmap, dst_bitmap, src_x, src_y, draw_xsize, draw_ysize,
+		 draw_x, draw_y);
+    }
+  }
 }
 
 void FadeRectangle(Bitmap *bitmap_cross, int x, int y, int width, int height,
@@ -1110,7 +1180,9 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
   int width_4, height_4;
   int width_8, height_8;
   int width_16, height_16;
+#if 0
   int width_32, height_32;
+#endif
   int new_width, new_height;
 
   /* calculate new image dimensions for normal sized image */
@@ -1141,8 +1213,10 @@ static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
     height_8 = height_1 / 8;
     width_16  = width_1  / 16;
     height_16 = height_1 / 16;
+#if 0
     width_32  = width_1  / 32;
     height_32 = height_1 / 32;
+#endif
 
     UPDATE_BUSY_STATE();
 

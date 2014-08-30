@@ -30,8 +30,10 @@ RANLIB = ranlib
 ETAGS = etags
 RM = rm -f
 
-BMP2ICO = bmp2ico
+CONVERT = convert
 WINDRES = windres
+
+CONVERT_ICON_ARGS = -transparent black -background transparent
 
 PROGBASE = rocksndiamonds
 
@@ -108,7 +110,7 @@ endif
 
 ifeq ($(TARGET),sdl-static)		# compiling for SDL target (static)
 SYS_CFLAGS  = -DTARGET_SDL $(shell sdl-config --cflags)
-SDL_LIBS = -lSDL_image -lSDL_mixer -lSDL_net -lsmpeg
+SDL_LIBS = -lSDL_image -lSDL_mixer -lSDL_net -lsmpeg -lmikmod
 SYS_LDFLAGS = $(SDL_LIBS) $(shell sdl-config --static-libs)
 endif
 
@@ -232,15 +234,19 @@ GAME_SP_DIR = game_sp
 GAME_SP = $(GAME_SP_DIR)/game_sp.a
 
 RNDLIBS = $(LIBGAME) $(GAME_EM) $(GAME_SP)
+AUTOCONF = conf_gfx.h conf_snd.h conf_mus.h
 
 ICONBASE = windows_icon
+ICON_BASEPATH = ../Special/Icons/windows_icons
 ifeq ($(PLATFORM),cross-win32)
 ifdef SPECIAL_EDITION
-ICONSUFFIX = 32x32_$(SPECIAL_EDITION)
+# ICONSUFFIX = 32x32_$(SPECIAL_EDITION)
+ICON_PATH = $(ICON_BASEPATH)/$(SPECIAL_EDITION)
 else
-ICONSUFFIX = 32x32
+# ICONSUFFIX = 32x32
+ICON_PATH = $(ICON_BASEPATH)/default
 endif
-ICON32X32 = ../graphics/$(ICONBASE)_$(ICONSUFFIX).bmp
+# ICON32X32 = ../graphics/$(ICONBASE)_$(ICONSUFFIX).bmp
 ICON = $(ICONBASE).o
 endif
 
@@ -249,7 +255,7 @@ endif
 # build targets
 # -----------------------------------------------------------------------------
 
-all: libgame_dir game_em_dir game_sp_dir $(PROGNAME)
+all: $(AUTOCONF) libgame_dir game_em_dir game_sp_dir $(PROGNAME)
 
 $(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(OBJS) $(ICON)
 	$(CC) $(PROFILING) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
@@ -290,7 +296,8 @@ $(TIMESTAMP_FILE): $(SRCS) $(LIBGAME) $(GAME_EM) $(GAME_SP)
 	> $(TIMESTAMP_FILE)
 
 $(ICON):
-	$(BMP2ICO) -transparent $(ICONBASE).ico $(ICON32X32)
+#	$(CONVERT) $(ICON32X32) $(CONVERT_ICON_ARGS) $(ICONBASE).ico
+	$(CONVERT) $(ICON_PATH)/*.png $(CONVERT_ICON_ARGS) $(ICONBASE).ico
 	echo "$(ICONBASE) ICON $(ICONBASE).ico" | $(WINDRES) -o $(ICON)
 
 .c.o:

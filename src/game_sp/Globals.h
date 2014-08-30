@@ -13,9 +13,14 @@
 #define True				(!False)
 #endif
 
-#define ScrollDelta			((long)1)
+#define ScrollDelta			((int)1)
 
+#if NEW_TILESIZE
+// #define ZoomFactor			(ZOOM_FACTOR)
 #define ZoomFactor			(2)
+#else
+#define ZoomFactor			(2)
+#endif
 
 #define StretchWidth			(ZoomFactor * 16)
 #define TwoPixels			(ZoomFactor * 2)
@@ -224,8 +229,8 @@ typedef struct
 {
   int Width;
   int Height;
-  long OffSet;
-  long Size;
+  int OffSet;
+  int Size;
 } LevelDescriptor;
 #define HAS_LevelDescriptor
 #endif
@@ -295,8 +300,10 @@ extern boolean DemoAvailable;
 extern boolean menBorder;
 
 #if 1
-extern int PlayField16[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
-extern byte PlayField8[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
+extern int *PlayField16;
+extern byte *PlayField8;
+// extern int PlayField16[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
+// extern byte PlayField8[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
 extern byte DisPlayField[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
 #else
 extern int *PlayField16;
@@ -312,7 +319,9 @@ extern int HeaderSize;
 extern int TimerVar;
 extern short RandomSeed;
 
-extern long FileMax;
+#if 0
+extern int FileMax;
+#endif
 
 extern LevelInfoType LInfo;
 extern int ScrollMinX, ScrollMaxX, ScrollMinY, ScrollMaxY;
@@ -334,6 +343,6 @@ extern int RedDiskReleasePhase;
 extern int ScratchGravity, GravityFlag;
 extern int SnikSnaksElectronsFrozen;
 extern int YellowDisksExploded;
-extern long YawnSleepCounter;
+extern int YawnSleepCounter;
 
 #endif /* GLOBALS_H */

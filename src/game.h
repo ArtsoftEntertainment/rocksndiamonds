@@ -89,12 +89,12 @@ struct GamePanelInfo
 
 struct GameButtonInfo
 {
-  struct MenuPosInfo stop;
-  struct MenuPosInfo pause;
-  struct MenuPosInfo play;
-  struct MenuPosInfo sound_music;
-  struct MenuPosInfo sound_loops;
-  struct MenuPosInfo sound_simple;
+  struct Rect stop;
+  struct Rect pause;
+  struct Rect play;
+  struct Rect sound_music;
+  struct Rect sound_loops;
+  struct Rect sound_simple;
 };
 
 #else
@@ -122,6 +122,7 @@ struct GameInfo
   boolean use_masked_pushing;
   int forced_scroll_delay_value;
   int scroll_delay_value;
+  int tile_size;
 
   /* values for engine initialization */
   int default_push_delay_fixed;
@@ -155,6 +156,7 @@ struct GameInfo
   boolean gravity;
   boolean explosions_delayed;
   boolean envelope_active;
+  boolean no_time_limit;	/* (variable only in very special case) */
 
   /* values for the new EMC elements */
   int lenses_time_left;
@@ -177,7 +179,7 @@ struct GameInfo
   boolean set_centered_player;
 
   /* values for random number generator initialization after snapshot */
-  unsigned long num_random_calls;
+  unsigned int num_random_calls;
 };
 
 struct PlayerInfo
@@ -277,7 +279,7 @@ struct PlayerInfo
   int push_delay;
   int push_delay_value;
 
-  unsigned long actual_frame_counter;
+  unsigned int actual_frame_counter;
 
   int drop_delay;
   int drop_pressed_delay;
@@ -330,7 +332,7 @@ void Moving2Blocked(int, int, int *, int *);
 void Blocked2Moving(int, int, int *, int *);
 void DrawDynamite(int, int);
 
-void StartGameActions(boolean, boolean, long);
+void StartGameActions(boolean, boolean, int);
 
 void GameActions(void);
 void GameActions_EM_Main();
@@ -349,7 +351,7 @@ void RaiseScoreElement(int);
 void RequestQuitGameExt(boolean, boolean, char *);
 void RequestQuitGame(boolean);
 
-unsigned int InitEngineRandom_RND(long);
+unsigned int InitEngineRandom_RND(int);
 unsigned int RND(int);
 
 void FreeEngineSnapshot();

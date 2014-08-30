@@ -77,7 +77,7 @@ static unsigned char realbuffer[512], *buffer = realbuffer + 4;
 
 static int interrupt;
 
-static unsigned long ServerFrameCounter = 0;
+static unsigned int ServerFrameCounter = 0;
 
 static void addtobuffer(struct NetworkServerPlayerInfo *player,
 			unsigned char *b, int len)
@@ -97,7 +97,8 @@ static void flushuser(struct NetworkServerPlayerInfo *player)
 #if defined(TARGET_SDL)
     SDLNet_TCP_Send(player->fd, player->writbuffer, player->nwrite);
 #else
-    write(player->fd, player->writbuffer, player->nwrite);
+    if (write(player->fd, player->writbuffer, player->nwrite) == -1)
+      Error(ERR_WARN, "write() failed; %s", strerror(errno));
 #endif
     player->nwrite = 0;
   }
@@ -586,7 +587,8 @@ void NetworkServer(int port, int serveronly)
     setsid();
     if (fork())
       exit(0);
-    chdir("/");
+    if (chdir("/") == -1)
+      Error(ERR_WARN, "chdir() failed; %s", strerror(errno));
 
     /* open a fake stdin, stdout, stderr, just in case */
     open("/dev/null", O_RDONLY);

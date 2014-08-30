@@ -93,6 +93,51 @@
 #define VIDEO_DISPLAY_SYMBOL_ONLY	-2
 
 
+struct TapeButtonInfo
+{
+  struct Rect eject;
+  struct Rect stop;
+  struct Rect pause;
+  struct Rect record;
+  struct Rect play;
+};
+
+struct TapeSymbolInfo
+{
+  struct Rect eject;
+  struct Rect stop;
+  struct Rect pause;
+  struct Rect record;
+  struct Rect play;
+  struct Rect fast_forward;
+  struct Rect warp_forward;
+  struct Rect warp_forward_blind;
+  struct Rect pause_before_end;
+  struct Rect single_step;
+};
+
+struct TapeLabelInfo
+{
+  struct Rect eject;
+  struct Rect stop;
+  struct Rect pause;
+  struct Rect record;
+  struct Rect play;
+  struct Rect fast_forward;
+  struct Rect warp_forward;
+  struct Rect warp_forward_blind;
+  struct Rect pause_before_end;
+  struct Rect single_step;
+  struct Rect date;
+  struct Rect time;
+};
+
+struct TapeTextInfo
+{
+  struct TextPosInfo date;
+  struct TextPosInfo time;
+};
+
 struct TapeInfo
 {
   int file_version;	/* file format version the tape is stored with    */
@@ -101,11 +146,11 @@ struct TapeInfo
 
   char *level_identifier;
   int level_nr;
-  unsigned long random_seed;
-  unsigned long date;
-  unsigned long counter;
-  unsigned long length;
-  unsigned long length_seconds;
+  unsigned int random_seed;
+  unsigned int date;
+  unsigned int counter;
+  unsigned int length;
+  unsigned int length_seconds;
   unsigned int delay_played;
   boolean pause_before_death;
   boolean recording, playing, pausing;
@@ -128,11 +173,16 @@ struct TapeInfo
     byte delay;
   } pos[MAX_TAPE_LEN];
 
+  struct TapeButtonInfo button;
+  struct TapeSymbolInfo symbol;
+  struct TapeLabelInfo label;
+  struct TapeTextInfo text;
+
   boolean no_valid_file;	/* set when tape file missing or invalid */
 };
 
 
-void DrawVideoDisplay(unsigned long, unsigned long);
+void DrawVideoDisplay(unsigned int, unsigned int);
 void DrawCompleteVideoDisplay(void);
 
 void TapeDeactivateDisplayOn();
@@ -141,7 +191,7 @@ void TapeDeactivateDisplayOff(boolean);
 void TapeSetDateFromEpochSeconds(time_t);
 void TapeSetDateFromNow();
 
-void TapeStartRecording(long);
+void TapeStartRecording(int);
 void TapeHaltRecording(void);
 void TapeStopRecording(void);
 void TapeRecordAction(byte *);

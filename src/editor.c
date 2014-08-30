@@ -971,8 +971,13 @@
 #define RANDOM_USE_QUANTITY		1
 
 /* maximal size of level editor drawing area */
+#if NEW_TILESIZE
+#define MAX_ED_FIELDX		(SCR_FIELDX)
+#define MAX_ED_FIELDY		(SCR_FIELDY - 1)
+#else
 #define MAX_ED_FIELDX		(2 * SCR_FIELDX)
 #define MAX_ED_FIELDY		(2 * SCR_FIELDY - 1)
+#endif
 
 
 /*
@@ -2710,7 +2715,7 @@ static struct
     GADGET_ID_CONTINUOUS_SNAPPING,	GADGET_ID_NONE,
     &level.continuous_snapping,
     NULL,
-    "continuos snapping",		"use snapping without releasing key"
+    "continuous snapping",		"use snapping without releasing key"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(7),
@@ -5143,7 +5148,7 @@ static void DrawElementBorder(int dest_x, int dest_y, int width, int height,
   int by2 = TILEY - by;
   int i;
 
-  getGraphicSource(border_graphic, 0, &src_bitmap, &src_x, &src_y);
+  getFixedGraphicSource(border_graphic, 0, &src_bitmap, &src_x, &src_y);
 
   BlitBitmap(src_bitmap, drawto, src_x, src_y,
 	     bx, by, dest_x - bx, dest_y - by);
@@ -5225,7 +5230,7 @@ static void CreateControlButtons()
 {
   Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
   struct GadgetInfo *gi;
-  unsigned long event_mask;
+  unsigned int event_mask;
   int i;
 
   /* create toolbox buttons */
@@ -5514,7 +5519,7 @@ static void CreateCounterButtons()
       int gd_xoffset;
       int gd_x, gd_x1, gd_x2, gd_y;
       int x_size, y_size;
-      unsigned long event_mask;
+      unsigned int event_mask;
       char infotext[max_infotext_len + 1];
 
       event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
@@ -5650,7 +5655,7 @@ static void CreateDrawingAreas()
   for (i = 0; i < ED_NUM_DRAWING_AREAS; i++)
   {
     struct GadgetInfo *gi;
-    unsigned long event_mask;
+    unsigned int event_mask;
     int id = drawingarea_info[i].gadget_id;
     int x = SX + drawingarea_info[i].x;
     int y = SY + drawingarea_info[i].y;
@@ -5701,7 +5706,7 @@ static void CreateTextInputGadgets()
     Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
     int gd_x, gd_y;
     struct GadgetInfo *gi;
-    unsigned long event_mask;
+    unsigned int event_mask;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = textinput_info[i].gadget_id;
 
@@ -5749,7 +5754,7 @@ static void CreateTextAreaGadgets()
     Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
     int gd_x, gd_y;
     struct GadgetInfo *gi;
-    unsigned long event_mask;
+    unsigned int event_mask;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = textarea_info[i].gadget_id;
     int area_xsize = textarea_info[i].xsize;
@@ -5798,7 +5803,7 @@ static void CreateSelectboxGadgets()
     Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
     int gd_x, gd_y;
     struct GadgetInfo *gi;
-    unsigned long event_mask;
+    unsigned int event_mask;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = selectbox_info[i].gadget_id;
     int x = SX + selectbox_info[i].x;
@@ -5875,7 +5880,7 @@ static void CreateTextbuttonGadgets()
     Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
     int gd_x1, gd_x2, gd_y1, gd_y2;
     struct GadgetInfo *gi;
-    unsigned long event_mask;
+    unsigned int event_mask;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = textbutton_info[i].gadget_id;
     int x = SX + textbutton_info[i].x;
@@ -5948,7 +5953,7 @@ static void CreateGraphicbuttonGadgets()
 {
   Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
   struct GadgetInfo *gi;
-  unsigned long event_mask;
+  unsigned int event_mask;
   int i;
 
   /* create buttons for scrolling of drawing area and element list */
@@ -6055,7 +6060,7 @@ static void CreateScrollbarGadgets()
     int gd_x1, gd_x2, gd_y1, gd_y2;
     struct GadgetInfo *gi;
     int items_max, items_visible, item_position;
-    unsigned long event_mask;
+    unsigned int event_mask;
 
     if (i == ED_SCROLLBAR_ID_LIST_VERTICAL)
     {
@@ -6122,7 +6127,7 @@ static void CreateCheckbuttonGadgets()
 {
   Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
   struct GadgetInfo *gi;
-  unsigned long event_mask;
+  unsigned int event_mask;
   int gd_x1, gd_x2, gd_x3, gd_x4, gd_y;
   int i;
 
@@ -6185,7 +6190,7 @@ static void CreateRadiobuttonGadgets()
 {
   Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
   struct GadgetInfo *gi;
-  unsigned long event_mask;
+  unsigned int event_mask;
   int gd_x1, gd_x2, gd_x3, gd_x4, gd_y;
   int i;
 
@@ -8812,7 +8817,7 @@ static void DrawEditorElementAnimation(int x, int y)
 	       ANIM_MODE(graphic) == ANIM_CE_SCORE ?
 	       custom_element.collect_score_initial : FrameCounter);
 
-  DrawGraphicAnimationExt(drawto, x, y, graphic, frame, NO_MASKING);
+  DrawFixedGraphicAnimationExt(drawto, x, y, graphic, frame, NO_MASKING);
 }
 
 static void DrawEditorElementName(int x, int y, int element)
@@ -10309,7 +10314,10 @@ static void FloodFill(int from_x, int from_y, int fill_element)
 static int DrawLevelText(int sx, int sy, char letter, int mode)
 {
   static short delete_buffer[MAX_LEV_FIELDX];
-  static int start_sx, start_sy;
+  static int start_sx;
+#if 0
+  static int start_sy;
+#endif
   static int last_sx, last_sy;
   static boolean typing = FALSE;
   int letter_element = EL_CHAR_ASCII0 + letter;
@@ -10351,8 +10359,12 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 	DrawLevelText(0, 0, 0, TEXT_END);
 
       typing = TRUE;
-      start_sx = last_sx = sx;
-      start_sy = last_sy = sy;
+      start_sx = sx;
+#if 0
+      start_sy = sy;
+#endif
+      last_sx = sx;
+      last_sy = sy;
       DrawLevelText(sx, sy, 0, TEXT_SETCURSOR);
       break;
 
@@ -10717,10 +10729,10 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 			     gi->y + sy * MINI_TILEY,
 			     el2edimg(new_element));
 	else
-	  DrawGraphicExt(drawto,
-			 gi->x + sx * TILEX,
-			 gi->y + sy * TILEY,
-			 el2img(new_element), 0);
+	  DrawFixedGraphicExt(drawto,
+			      gi->x + sx * TILEX,
+			      gi->y + sy * TILEY,
+			      el2img(new_element), 0);
 
 	if (id == GADGET_ID_CUSTOM_GRAPHIC)
 	  new_element = GFX_ELEMENT(new_element);
@@ -11744,8 +11756,8 @@ void HandleLevelEditorKeyInput(Key key)
 
 void HandleLevelEditorIdle()
 {
-  static unsigned long action_delay = 0;
-  unsigned long action_delay_value = GameFrameDelay;
+  static unsigned int action_delay = 0;
+  unsigned int action_delay_value = GameFrameDelay;
   int xpos = 1, ypos = 2;
   int i;
 

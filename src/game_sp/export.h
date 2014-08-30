@@ -110,6 +110,7 @@ struct GameInfo_SP
   int score;
 
   /* needed for engine snapshots */
+  char **preceding_buffer;
   int preceding_buffer_size;
 
   int scroll_xoffset, scroll_yoffset;
@@ -186,16 +187,17 @@ extern struct EngineSnapshotInfo_SP engine_snapshot_sp;
 extern void sp_open_all();
 extern void sp_close_all();
 
+extern void InitPrecedingPlayfieldMemory();
 extern void InitGfxBuffers_SP();
 
 extern void InitGameEngine_SP();
 extern void GameActions_SP(byte *, boolean);
 
-extern unsigned int InitEngineRandom_SP(long);
+extern unsigned int InitEngineRandom_SP(int);
 
 extern void setLevelInfoToDefaults_SP();
 extern void copyInternalEngineVars_SP();
-extern boolean LoadNativeLevel_SP(char *, int);
+extern boolean LoadNativeLevel_SP(char *, int, boolean);
 extern void SaveNativeLevel_SP(char *);
 
 extern void BackToFront_SP(void);
@@ -208,5 +210,7 @@ extern void SaveEngineSnapshotValues_SP();
 
 extern int map_key_RND_to_SP(int);
 extern int map_key_SP_to_RND(int);
+
+extern int getRedDiskReleaseFlag_SP();
 
 #endif	/* GAME_SP_EXPORT_H */

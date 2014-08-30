@@ -14,11 +14,15 @@ int FieldWidth;		// standard size = 60
 int FieldHeight;	// standard size = 24
 int HeaderSize;		// standard size = 96
 int FieldMax, LevelMax;
-long FileMax;
+#if 0
+int FileMax;
+#endif
 
 #if 1
-int PlayField16[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
-byte PlayField8[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
+int *PlayField16;
+byte *PlayField8;
+// int PlayField16[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
+// byte PlayField8[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
 byte DisPlayField[SP_MAX_PLAYFIELD_SIZE + SP_HEADER_SIZE];
 #else
 int *PlayField16;
@@ -44,7 +48,7 @@ int MurphyPosIndex, MurphyXPos, MurphyYPos;
 int MurphyScreenXPos, MurphyScreenYPos;
 int MurphyExplodePos, SplitMoveFlag, RedDiskReleaseMurphyPos;
 int KillMurphyFlag, MurphyMoveCounter;
-long YawnSleepCounter;
+int YawnSleepCounter;
 int MurphyVarFaceLeft;
 int ScratchGravity, GravityFlag;
 int RedDiskReleaseFlag, MovingPictureSequencePhase;
@@ -164,6 +168,8 @@ boolean isSnappingSequence(int sequence)
 
 void InitGlobals()
 {
+  InitPrecedingPlayfieldMemory();
+
   AutoScrollFlag = True;
   FreezeZonks = 0;
   LevelLoaded = False;
@@ -174,6 +180,18 @@ void InitGlobals()
   LevelMax = (FieldWidth * FieldHeight) - 1;
   bPlaying = False;
   menBorder = False;
+
+  /* add preceding playfield buffer (as large as preceding memory area) */
+  PlayField16 = checked_calloc((game_sp.preceding_buffer_size +
+				SP_MAX_PLAYFIELD_SIZE +
+				SP_HEADER_SIZE) * sizeof(int));
+  PlayField16 = &PlayField16[game_sp.preceding_buffer_size];
+
+  /* add preceding playfield buffer (as large as one playfield row) */
+  PlayField8 = checked_calloc((SP_MAX_PLAYFIELD_WIDTH +
+			       SP_MAX_PLAYFIELD_SIZE +
+			       SP_HEADER_SIZE) * sizeof(byte));
+  PlayField8 = &PlayField8[SP_MAX_PLAYFIELD_WIDTH];
 
 #if 0
   /* these defaults will be changed after reading a Supaplex level file */

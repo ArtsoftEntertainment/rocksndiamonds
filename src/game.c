@@ -120,45 +120,7 @@
 #define PANEL_XPOS(p)		(DX + ALIGNED_TEXT_XPOS(p))
 #define PANEL_YPOS(p)		(DY + ALIGNED_TEXT_YPOS(p))
 
-/* special positions in the game control window (relative to control window) */
-#define XX_LEVEL1		(PANEL_XPOS(game.panel.level))
-#define XX_LEVEL2		(PANEL_XPOS(game.panel.level) - 1)
-#define XX_LEVEL		(PANEL_XPOS(game.panel.level))
-#define YY_LEVEL		(PANEL_YPOS(game.panel.level))
-#define XX_EMERALDS		(PANEL_XPOS(game.panel.gems))
-#define YY_EMERALDS		(PANEL_YPOS(game.panel.gems))
-#define XX_DYNAMITE		(PANEL_XPOS(game.panel.inventory))
-#define YY_DYNAMITE		(PANEL_YPOS(game.panel.inventory))
-#define XX_KEYS			(PANEL_XPOS(game.panel.keys))
-#define YY_KEYS			(PANEL_YPOS(game.panel.keys))
-#define XX_SCORE		(PANEL_XPOS(game.panel.score))
-#define YY_SCORE		(PANEL_YPOS(game.panel.score))
-#define XX_TIME1		(PANEL_XPOS(game.panel.time))
-#define XX_TIME2		(PANEL_XPOS(game.panel.time) + 1)
-#define XX_TIME			(PANEL_XPOS(game.panel.time))
-#define YY_TIME			(PANEL_YPOS(game.panel.time))
-
-/* special positions in the game control window (relative to main window) */
-#define DX_LEVEL1		(DX + XX_LEVEL1)
-#define DX_LEVEL2		(DX + XX_LEVEL2)
-#define DX_LEVEL		(DX + XX_LEVEL)
-#define DY_LEVEL		(DY + YY_LEVEL)
-#define DX_EMERALDS		(DX + XX_EMERALDS)
-#define DY_EMERALDS		(DY + YY_EMERALDS)
-#define DX_DYNAMITE		(DX + XX_DYNAMITE)
-#define DY_DYNAMITE		(DY + YY_DYNAMITE)
-#define DX_KEYS			(DX + XX_KEYS)
-#define DY_KEYS			(DY + YY_KEYS)
-#define DX_SCORE		(DX + XX_SCORE)
-#define DY_SCORE		(DY + YY_SCORE)
-#define DX_TIME1		(DX + XX_TIME1)
-#define DX_TIME2		(DX + XX_TIME2)
-#define DX_TIME			(DX + XX_TIME)
-#define DY_TIME			(DY + YY_TIME)
-
-#if 1
 /* game panel display and control definitions */
-
 #define GAME_PANEL_LEVEL_NUMBER			0
 #define GAME_PANEL_GEMS				1
 #define GAME_PANEL_INVENTORY_COUNT		2
@@ -876,8 +838,6 @@ static struct GamePanelControlInfo game_panel_controls[] =
     -1,
   }
 };
-#endif
-
 
 /* values for delayed check of falling and moving elements and for collision */
 #define CHECK_DELAY_MOVING	3
@@ -2076,8 +2036,6 @@ static inline void InitField_WithBug2(int x, int y, boolean init_game)
   */
 }
 
-#if 1
-
 static int get_key_element_from_nr(int key_nr)
 {
   int key_base_element = (key_nr >= STD_NUM_KEYS ? EL_EMC_KEY_5 - STD_NUM_KEYS :
@@ -2229,7 +2187,7 @@ void UpdateGameControlValues()
 	      level.native_em_level->lev->time :
 	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
 	      level.native_sp_level->game_sp->time_played :
-	      level.time == 0 ? TimePlayed : TimeLeft);
+	      game.no_time_limit ? TimePlayed : TimeLeft);
   int score = (local_player->LevelSolved ?
 	       local_player->LevelSolved_CountingScore :
 	       level.game_engine_type == GAME_ENGINE_TYPE_EM ?
@@ -2539,8 +2497,15 @@ void DisplayGameControlValues()
     return;
 
   /* copy default game door content to main double buffer */
+#if 1
+  /* !!! CHECK AGAIN !!! */
+  SetPanelBackground();
+  // SetDoorBackgroundImage(IMG_BACKGROUND_PANEL);
+  DrawBackground(DX, DY, DXSIZE, DYSIZE);
+#else
   BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 	     DOOR_GFX_PAGEX5, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE, DX, DY);
+#endif
 
   /* redraw game control buttons */
 #if 1
@@ -2781,11 +2746,7 @@ void UpdateAndDisplayGameControlValues()
 void DrawGameValue_Emeralds(int value)
 {
   struct TextPosInfo *pos = &game.panel.gems;
-#if 1
   int font_nr = pos->font;
-#else
-  int font_nr = FONT_TEXT_2;
-#endif
   int font_width = getFontWidth(font_nr);
   int chars = pos->size;
 
@@ -2804,11 +2765,7 @@ void DrawGameValue_Emeralds(int value)
 void DrawGameValue_Dynamite(int value)
 {
   struct TextPosInfo *pos = &game.panel.inventory_count;
-#if 1
   int font_nr = pos->font;
-#else
-  int font_nr = FONT_TEXT_2;
-#endif
   int font_width = getFontWidth(font_nr);
   int chars = pos->size;
 
@@ -2827,11 +2784,7 @@ void DrawGameValue_Dynamite(int value)
 void DrawGameValue_Score(int value)
 {
   struct TextPosInfo *pos = &game.panel.score;
-#if 1
   int font_nr = pos->font;
-#else
-  int font_nr = FONT_TEXT_2;
-#endif
   int font_width = getFontWidth(font_nr);
   int chars = pos->size;
 
@@ -2854,13 +2807,8 @@ void DrawGameValue_Time(int value)
   int chars1 = 3;
   int chars2 = 4;
   int chars = pos->size;
-#if 1
   int font1_nr = pos->font;
   int font2_nr = pos->font_alt;
-#else
-  int font1_nr = FONT_TEXT_2;
-  int font2_nr = FONT_TEXT_1;
-#endif
   int font_nr = font1_nr;
   boolean use_dynamic_chars = (chars == -1 ? TRUE : FALSE);
 
@@ -2904,13 +2852,8 @@ void DrawGameValue_Level(int value)
   int chars1 = 2;
   int chars2 = 3;
   int chars = pos->size;
-#if 1
   int font1_nr = pos->font;
   int font2_nr = pos->font_alt;
-#else
-  int font1_nr = FONT_TEXT_2;
-  int font2_nr = FONT_TEXT_1;
-#endif
   int font_nr = font1_nr;
   boolean use_dynamic_chars = (chars == -1 ? TRUE : FALSE);
 
@@ -2934,63 +2877,27 @@ void DrawGameValue_Level(int value)
 
 void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
 {
-#if 0
-  struct TextPosInfo *pos = &game.panel.keys;
-#endif
-#if 0
-  int base_key_graphic = EL_KEY_1;
-#endif
   int i;
 
 #if 1
   return;	/* !!! USE NEW STUFF !!! */
 #endif
 
-#if 0
-  if (PANEL_DEACTIVATED(pos))
-    return;
-#endif
-
-#if 0
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-    base_key_graphic = EL_EM_KEY_1;
-#endif
-
-#if 0
-  pos->width = 4 * MINI_TILEX;
-#endif
-
-#if 1
   for (i = 0; i < MAX_NUM_KEYS; i++)
-#else
-  /* currently only 4 of 8 possible keys are displayed */
-  for (i = 0; i < STD_NUM_KEYS; i++)
-#endif
   {
-#if 1
     struct TextPosInfo *pos = &game.panel.key[i];
-#endif
     int src_x = DOOR_GFX_PAGEX5 + 18 + (i % 4) * MINI_TILEX;
     int src_y = DOOR_GFX_PAGEY1 + 123;
-#if 1
     int dst_x = PANEL_XPOS(pos);
     int dst_y = PANEL_YPOS(pos);
-#else
-    int dst_x = PANEL_XPOS(pos) + i * MINI_TILEX;
-    int dst_y = PANEL_YPOS(pos);
-#endif
 
-#if 1
     int element = (i >= STD_NUM_KEYS ? EL_EMC_KEY_5 - 4 :
 		   level.game_engine_type == GAME_ENGINE_TYPE_EM ? EL_EM_KEY_1 :
 		   EL_KEY_1) + i;
     int graphic = el2edimg(element);
-#endif
 
-#if 1
     if (PANEL_DEACTIVATED(pos))
       continue;
-#endif
 
 #if 0
     /* masked blit with tiles from half-size scaled bitmap does not work yet
@@ -3002,9 +2909,6 @@ void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
 
     if (key[i])
     {
-#if 0
-      int graphic = el2edimg(base_key_graphic + i);
-#endif
       Bitmap *src_bitmap;
       int src_x, src_y;
 
@@ -3016,126 +2920,14 @@ void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
 		       dst_x, dst_y);
     }
 #else
-#if 1
     if (key[i])
       DrawMiniGraphicExt(drawto, dst_x, dst_y, graphic);
     else
       BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto, src_x, src_y,
 		 MINI_TILEX, MINI_TILEY, dst_x, dst_y);
-#else
-    if (key[i])
-      DrawMiniGraphicExt(drawto, dst_x, dst_y, el2edimg(base_key_graphic + i));
-    else
-      BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto, src_x, src_y,
-		 MINI_TILEX, MINI_TILEY, dst_x, dst_y);
-#endif
 #endif
   }
 }
-
-#else
-
-void DrawGameValue_Emeralds(int value)
-{
-  int font_nr = FONT_TEXT_2;
-  int xpos = (3 * 14 - 3 * getFontWidth(font_nr)) / 2;
-
-  if (PANEL_DEACTIVATED(game.panel.gems))
-    return;
-
-  DrawText(DX_EMERALDS + xpos, DY_EMERALDS, int2str(value, 3), font_nr);
-}
-
-void DrawGameValue_Dynamite(int value)
-{
-  int font_nr = FONT_TEXT_2;
-  int xpos = (3 * 14 - 3 * getFontWidth(font_nr)) / 2;
-
-  if (PANEL_DEACTIVATED(game.panel.inventory_count))
-    return;
-
-  DrawText(DX_DYNAMITE + xpos, DY_DYNAMITE, int2str(value, 3), font_nr);
-}
-
-void DrawGameValue_Score(int value)
-{
-  int font_nr = FONT_TEXT_2;
-  int xpos = (5 * 14 - 5 * getFontWidth(font_nr)) / 2;
-
-  if (PANEL_DEACTIVATED(game.panel.score))
-    return;
-
-  DrawText(DX_SCORE + xpos, DY_SCORE, int2str(value, 5), font_nr);
-}
-
-void DrawGameValue_Time(int value)
-{
-  int font1_nr = FONT_TEXT_2;
-#if 1
-  int font2_nr = FONT_TEXT_1;
-#else
-  int font2_nr = FONT_LEVEL_NUMBER;
-#endif
-  int xpos3 = (3 * 14 - 3 * getFontWidth(font1_nr)) / 2;
-  int xpos4 = (4 * 10 - 4 * getFontWidth(font2_nr)) / 2;
-
-  if (PANEL_DEACTIVATED(game.panel.time))
-    return;
-
-  /* clear background if value just changed its size */
-  if (value == 999 || value == 1000)
-    ClearRectangleOnBackground(drawto, DX_TIME1, DY_TIME, 14 * 3, 14);
-
-  if (value < 1000)
-    DrawText(DX_TIME1 + xpos3, DY_TIME, int2str(value, 3), font1_nr);
-  else
-    DrawText(DX_TIME2 + xpos4, DY_TIME, int2str(value, 4), font2_nr);
-}
-
-void DrawGameValue_Level(int value)
-{
-  int font1_nr = FONT_TEXT_2;
-#if 1
-  int font2_nr = FONT_TEXT_1;
-#else
-  int font2_nr = FONT_LEVEL_NUMBER;
-#endif
-
-  if (PANEL_DEACTIVATED(game.panel.level))
-    return;
-
-  if (level_nr < 100)
-    DrawText(DX_LEVEL1, DY_LEVEL, int2str(value, 2), font1_nr);
-  else
-    DrawText(DX_LEVEL2, DY_LEVEL, int2str(value, 3), font2_nr);
-}
-
-void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
-{
-  int base_key_graphic = EL_KEY_1;
-  int i;
-
-  if (PANEL_DEACTIVATED(game.panel.keys))
-    return;
-
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-    base_key_graphic = EL_EM_KEY_1;
-
-  /* currently only 4 of 8 possible keys are displayed */
-  for (i = 0; i < STD_NUM_KEYS; i++)
-  {
-    int x = XX_KEYS + i * MINI_TILEX;
-    int y = YY_KEYS;
-
-    if (key[i])
-      DrawMiniGraphicExt(drawto, DX + x,DY + y, el2edimg(base_key_graphic + i));
-    else
-      BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
-		 DOOR_GFX_PAGEX5 + x, y, MINI_TILEX, MINI_TILEY, DX + x,DY + y);
-  }
-}
-
-#endif
 
 void DrawAllGameValues(int emeralds, int dynamite, int score, int time,
 		       int key_bits)
@@ -3173,7 +2965,7 @@ void DrawGameDoorValues()
 
 void DrawGameDoorValues_OLD()
 {
-  int time_value = (level.time == 0 ? TimePlayed : TimeLeft);
+  int time_value = (game.no_time_limit ? TimePlayed : TimeLeft);
   int dynamite_value = 0;
   int score_value = (local_player->LevelSolved ? local_player->score_final :
 		     local_player->score);
@@ -3916,6 +3708,8 @@ void InitGame()
 
   AllPlayersGone = FALSE;
 
+  game.no_time_limit = (level.time == 0);
+
   game.yamyam_content_nr = 0;
   game.robot_wheel_active = FALSE;
   game.magic_wall_active = FALSE;
@@ -4347,11 +4141,27 @@ void InitGame()
     SBY_Lower = lev_fieldy - SCR_FIELDY + 1;
   }
 
+#if NEW_TILESIZE
+
+  if (lev_fieldx + (SBX_Left < 0 ? 2 : 0) <= SCR_FIELDX)
+    SBX_Left = SBX_Right = -1 * (SCR_FIELDX - lev_fieldx) / 2;
+
+  if (lev_fieldy + (SBY_Upper < 0 ? 2 : 0) <= SCR_FIELDY)
+    SBY_Upper = SBY_Lower = -1 * (SCR_FIELDY - lev_fieldy) / 2;
+
+  if (EVEN(SCR_FIELDX))
+    SBX_Left--;
+  if (EVEN(SCR_FIELDY))
+    SBY_Upper--;
+
+#else
+
   if (lev_fieldx + (SBX_Left == -1 ? 2 : 0) <= SCR_FIELDX)
     SBX_Left = SBX_Right = -1 * (SCR_FIELDX - lev_fieldx) / 2;
 
   if (lev_fieldy + (SBY_Upper == -1 ? 2 : 0) <= SCR_FIELDY)
     SBY_Upper = SBY_Lower = -1 * (SCR_FIELDY - lev_fieldy) / 2;
+#endif
 
   /* if local player not found, look for custom element that might create
      the player (make some assumptions about the right custom element) */
@@ -4463,6 +4273,10 @@ void InitGame()
   }
 
 #if 0
+  printf("::: %d, %d (initial)\n", scroll_x, scroll_y);
+#endif
+
+#if 0
   /* do not use PLAYING mask for fading out from main screen */
   game_status = GAME_MODE_MAIN;
 #endif
@@ -4519,9 +4333,13 @@ void InitGame()
     if (game.timegate_time_left == 0)
       CloseAllOpenTimegates();
 
+#if NEW_TILESIZE
+    BlitScreenToBitmap(backbuffer);
+#else
     /* blit playfield from scroll buffer to normal back buffer for fading in */
     if (setup.soft_scrolling)
       BlitBitmap(fieldbuffer, backbuffer, FX, FY, SXSIZE, SYSIZE, SX, SY);
+#endif
 
     redraw_mask |= REDRAW_FROM_BACKBUFFER;
   }
@@ -4539,8 +4357,24 @@ void InitGame()
   if (!game.restart_level)
   {
     /* copy default game door content to main double buffer */
+#if 1
+#if 1
+    /* !!! CHECK AGAIN !!! */
+    SetPanelBackground();
+    // SetDoorBackgroundImage(IMG_BACKGROUND_PANEL);
+    DrawBackground(DX, DY, DXSIZE, DYSIZE);
+#else
+    struct GraphicInfo *gfx = &graphic_info[IMG_BACKGROUND_PANEL];
+
+    /* (ClearRectangle() only needed if panel bitmap is smaller than panel) */
+    ClearRectangle(drawto, DX, DY, DXSIZE, DYSIZE);
+    BlitBitmap(gfx->bitmap, drawto, gfx->src_x, gfx->src_y,
+	       MIN(gfx->width, DXSIZE), MIN(gfx->height, DYSIZE), DX, DY);
+#endif
+#else
     BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 	       DOOR_GFX_PAGEX5, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE, DX, DY);
+#endif
   }
 
   SetPanelBackground();
@@ -4590,6 +4424,17 @@ void InitGame()
   MapGameButtons();
   MapTapeButtons();
 #endif
+
+  if (!game.restart_level && !tape.playing)
+  {
+    LevelStats_incPlayed(level_nr);
+
+    SaveLevelSetup_SeriesInfo();
+
+#if 0
+    printf("::: PLAYING LEVEL (%d)\n", LevelStats_getPlayed(level_nr));
+#endif
+  }
 
   game.restart_level = FALSE;
 }
@@ -4809,7 +4654,8 @@ static void PlayerWins(struct PlayerInfo *player)
   player->score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 			 level.native_em_level->lev->score : player->score);
 
-  player->LevelSolved_CountingTime = (level.time == 0 ? TimePlayed : TimeLeft);
+  player->LevelSolved_CountingTime = (game.no_time_limit ? TimePlayed :
+				      TimeLeft);
   player->LevelSolved_CountingScore = player->score_final;
 }
 
@@ -4834,6 +4680,17 @@ void GameWon()
     local_player->LevelSolved_SaveTape = tape.recording;
     local_player->LevelSolved_SaveScore = !tape.playing;
 
+    if (!tape.playing)
+    {
+      LevelStats_incSolved(level_nr);
+
+      SaveLevelSetup_SeriesInfo();
+
+#if 0
+      printf("::: LEVEL SOLVED (%d)\n", LevelStats_getSolved(level_nr));
+#endif
+    }
+
     if (tape.auto_play)		/* tape might already be stopped here */
       tape.auto_play_level_solved = TRUE;
 
@@ -4844,7 +4701,7 @@ void GameWon()
     game_over_delay_1 = game_over_delay_value_1;
     game_over_delay_2 = game_over_delay_value_2;
 
-    time = time_final = (level.time == 0 ? TimePlayed : TimeLeft);
+    time = time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
     score = score_final = local_player->score_final;
 
     if (TimeLeft > 0)
@@ -4852,7 +4709,7 @@ void GameWon()
       time_final = 0;
       score_final += TimeLeft * level.score[SC_TIME_BONUS];
     }
-    else if (level.time == 0 && TimePlayed < 999)
+    else if (game.no_time_limit && TimePlayed < 999)
     {
       time_final = 999;
       score_final += (999 - TimePlayed) * level.score[SC_TIME_BONUS];
@@ -5038,6 +4895,7 @@ void GameEnd()
   if (level_nr == leveldir_current->handicap_level)
   {
     leveldir_current->handicap_level++;
+
     SaveLevelSetup_SeriesInfo();
   }
 
@@ -8115,7 +7973,7 @@ void StartMoving(int x, int y)
       else if (Feld[x][y + 1] == EL_MAGIC_WALL_ACTIVE)
       {
 	if (!MovDelay[x][y])
-	  MovDelay[x][y] = TILEY/4 + 1;
+	  MovDelay[x][y] = TILEY / 4 + 1;
 
 	if (MovDelay[x][y])
 	{
@@ -8143,7 +8001,7 @@ void StartMoving(int x, int y)
       else if (Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)
       {
 	if (!MovDelay[x][y])
-	  MovDelay[x][y] = TILEY/4 + 1;
+	  MovDelay[x][y] = TILEY / 4 + 1;
 
 	if (MovDelay[x][y])
 	{
@@ -8171,7 +8029,7 @@ void StartMoving(int x, int y)
       else if (Feld[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE)
       {
 	if (!MovDelay[x][y])
-	  MovDelay[x][y] = TILEY/4 + 1;
+	  MovDelay[x][y] = TILEY / 4 + 1;
 
 	if (MovDelay[x][y])
 	{
@@ -9485,8 +9343,8 @@ void AmoebeUmwandelnBD(int ax, int ay, int new_element)
 
 void AmoebeWaechst(int x, int y)
 {
-  static unsigned long sound_delay = 0;
-  static unsigned long sound_delay_value = 0;
+  static unsigned int sound_delay = 0;
+  static unsigned int sound_delay_value = 0;
 
   if (!MovDelay[x][y])		/* start new growing cycle */
   {
@@ -9521,8 +9379,8 @@ void AmoebeWaechst(int x, int y)
 
 void AmoebaDisappearing(int x, int y)
 {
-  static unsigned long sound_delay = 0;
-  static unsigned long sound_delay_value = 0;
+  static unsigned int sound_delay = 0;
+  static unsigned int sound_delay_value = 0;
 
   if (!MovDelay[x][y])		/* start new shrinking cycle */
   {
@@ -11998,9 +11856,22 @@ static void SetPlayerWaiting(struct PlayerInfo *player, boolean is_waiting)
   }
 }
 
+static void CheckSingleStepMode(struct PlayerInfo *player)
+{
+  if (tape.single_step && tape.recording && !tape.pausing)
+  {
+    /* as it is called "single step mode", just return to pause mode when the
+       player stopped moving after one tile (or never starts moving at all) */
+    if (!player->is_moving && !player->is_pushing)
+    {
+      TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+      SnapField(player, 0, 0);			/* stop snapping */
+    }
+  }
+}
+
 static byte PlayerActions(struct PlayerInfo *player, byte player_action)
 {
-  boolean moved = FALSE, snapped = FALSE, dropped = FALSE;
   int left	= player_action & JOY_LEFT;
   int right	= player_action & JOY_RIGHT;
   int up	= player_action & JOY_UP;
@@ -12016,32 +11887,16 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
   if (player_action)
   {
     if (button1)
-      snapped = SnapField(player, dx, dy);
+      SnapField(player, dx, dy);
     else
     {
       if (button2)
-	dropped = DropElement(player);
+	DropElement(player);
 
-      moved = MovePlayer(player, dx, dy);
+      MovePlayer(player, dx, dy);
     }
 
-    if (tape.single_step && tape.recording && !tape.pausing)
-    {
-#if 1
-      /* as it is called "single step mode", just return to pause mode when the
-	 player stopped moving after one tile (or never starts moving at all) */
-      if (!player->is_moving)
-#else
-      /* this is buggy: there are quite some cases where the single step mode
-	 does not return to pause mode (like pushing things that don't move
-	 or simply by trying to run against a wall) */
-      if (button1 || (dropped && !moved))
-#endif
-      {
-	TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
-	SnapField(player, 0, 0);		/* stop snapping */
-      }
-    }
+    CheckSingleStepMode(player);
 
     SetPlayerWaiting(player, FALSE);
 
@@ -12064,6 +11919,8 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
     player->is_dropping = FALSE;
     player->is_dropping_pressed = FALSE;
     player->drop_pressed_delay = 0;
+
+    CheckSingleStepMode(player);
 
     return 0;
   }
@@ -12137,9 +11994,13 @@ static void CheckLevelTime()
 	  PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
 
 #if 1
+	/* this does not make sense: game_panel_controls[GAME_PANEL_TIME].value
+	   is reset from other values in UpdateGameDoorValues() -- FIX THIS */
+
 	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
 
-	DisplayGameControlValues();
+	/* (already called by UpdateAndDisplayGameControlValues() below) */
+	// DisplayGameControlValues();
 #else
 	DrawGameValue_Time(TimeLeft);
 #endif
@@ -12154,19 +12015,20 @@ static void CheckLevelTime()
 	}
       }
 #if 1
-      else if (level.time == 0 && !AllPlayersGone) /* level w/o time limit */
+      else if (game.no_time_limit && !AllPlayersGone) /* level w/o time limit */
       {
 	game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
 
-	DisplayGameControlValues();
+	/* (already called by UpdateAndDisplayGameControlValues() below) */
+	// DisplayGameControlValues();
       }
 #else
-      else if (level.time == 0 && !AllPlayersGone) /* level w/o time limit */
+      else if (game.no_time_limit && !AllPlayersGone) /* level w/o time limit */
 	DrawGameValue_Time(TimePlayed);
 #endif
 
       level.native_em_level->lev->time =
-	(level.time == 0 ? TimePlayed : TimeLeft);
+	(game.no_time_limit ? TimePlayed : TimeLeft);
     }
 
     if (tape.recording || tape.playing)
@@ -12233,9 +12095,9 @@ void AdvanceFrameAndPlayerCounters(int player_nr)
 }
 
 void StartGameActions(boolean init_network_game, boolean record_tape,
-		      long random_seed)
+		      int random_seed)
 {
-  unsigned long new_random_seed = InitRND(random_seed);
+  unsigned int new_random_seed = InitRND(random_seed);
 
   if (record_tape)
     TapeStartRecording(new_random_seed);
@@ -12254,8 +12116,8 @@ void StartGameActions(boolean init_network_game, boolean record_tape,
 
 void GameActions()
 {
-  static unsigned long game_frame_delay = 0;
-  unsigned long game_frame_delay_value;
+  static unsigned int game_frame_delay = 0;
+  unsigned int game_frame_delay_value;
   byte *recorded_player_action;
   byte summarized_player_action = 0;
   byte tape_action[MAX_PLAYERS];
@@ -13023,7 +12885,7 @@ void GameActions_RND()
   /* new experimental amoeba growth stuff */
   if (!(FrameCounter % 8))
   {
-    static unsigned long random = 1684108901;
+    static unsigned int random = 1684108901;
 
     for (i = 0; i < level.amoeba_speed * 28 / 8; i++)
     {
@@ -13207,9 +13069,9 @@ void GameActions_RND()
 
   if (options.debug)			/* calculate frames per second */
   {
-    static unsigned long fps_counter = 0;
+    static unsigned int fps_counter = 0;
     static int fps_frames = 0;
-    unsigned long fps_delay_ms = Counter() - fps_counter;
+    unsigned int fps_delay_ms = Counter() - fps_counter;
 
     fps_frames++;
 
@@ -13345,8 +13207,29 @@ void ScrollLevel(int dx, int dy)
 
 #else
 
+#if NEW_TILESIZE
+#if NEW_SCROLL
+  int softscroll_offset = (setup.soft_scrolling ? 2 * TILEX_VAR : 0);
+#else
+  int softscroll_offset = (setup.soft_scrolling ? TILEX_VAR : 0);
+#endif
+#else
+#if NEW_SCROLL
+  int softscroll_offset = (setup.soft_scrolling ? 2 * TILEX : 0);
+#else
   int softscroll_offset = (setup.soft_scrolling ? TILEX : 0);
+#endif
+#endif
 
+#if NEW_TILESIZE
+  BlitBitmap(drawto_field, drawto_field,
+	     FX + TILEX_VAR * (dx == -1) - softscroll_offset,
+	     FY + TILEY_VAR * (dy == -1) - softscroll_offset,
+	     SXSIZE - TILEX_VAR * (dx != 0) + 2 * softscroll_offset,
+	     SYSIZE - TILEY_VAR * (dy != 0) + 2 * softscroll_offset,
+	     FX + TILEX_VAR * (dx == 1) - softscroll_offset,
+	     FY + TILEY_VAR * (dy == 1) - softscroll_offset);
+#else
   BlitBitmap(drawto_field, drawto_field,
 	     FX + TILEX * (dx == -1) - softscroll_offset,
 	     FY + TILEY * (dy == -1) - softscroll_offset,
@@ -13354,6 +13237,8 @@ void ScrollLevel(int dx, int dy)
 	     SYSIZE - TILEY * (dy != 0) + 2 * softscroll_offset,
 	     FX + TILEX * (dx == 1) - softscroll_offset,
 	     FY + TILEY * (dy == 1) - softscroll_offset);
+#endif
+
 #endif
 #endif
 
@@ -13617,7 +13502,7 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
     int original_move_delay_value = player->move_delay_value;
 
 #if DEBUG
-    printf("THIS SHOULD ONLY HAPPEN WITH PRE-1.2 LEVEL TAPES. [%ld]\n",
+    printf("THIS SHOULD ONLY HAPPEN WITH PRE-1.2 LEVEL TAPES. [%d]\n",
 	   tape.counter);
 #endif
 
@@ -13999,14 +13884,14 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 	    KillPlayer(&stored_player[i]);
       }
 #if 1
-      else if (level.time == 0 && !AllPlayersGone) /* level w/o time limit */
+      else if (game.no_time_limit && !AllPlayersGone) /* level w/o time limit */
       {
 	game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
 
 	DisplayGameControlValues();
       }
 #else
-      else if (level.time == 0 && !AllPlayersGone) /* level w/o time limit */
+      else if (game.no_time_limit && !AllPlayersGone) /* level w/o time limit */
 	DrawGameValue_Time(TimePlayed);
 #endif
     }
@@ -14019,7 +13904,7 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 
 void ScrollScreen(struct PlayerInfo *player, int mode)
 {
-  static unsigned long screen_frame_counter = 0;
+  static unsigned int screen_frame_counter = 0;
 
   if (mode == SCROLL_INIT)
   {
@@ -15562,6 +15447,7 @@ static int DigField(struct PlayerInfo *player,
       if (level.time > 0 || level.use_time_orb_bug)
       {
 	TimeLeft += level.time_orb_time;
+	game.no_time_limit = FALSE;
 
 #if 1
 	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
@@ -15916,14 +15802,19 @@ static boolean DropElement(struct PlayerInfo *player)
   if (IS_CUSTOM_ELEMENT(new_element) && CAN_MOVE(new_element) &&
       element_info[new_element].move_pattern == MV_WHEN_DROPPED)
   {
-    int move_direction, nextx, nexty;
+#if 0
+    int move_direction;
+    int nextx, nexty;
+#endif
 
     if (element_info[new_element].move_direction_initial == MV_START_AUTOMATIC)
       MovDir[dropx][dropy] = drop_direction;
 
+#if 0
     move_direction = MovDir[dropx][dropy];
     nextx = dropx + GET_DX_FROM_DIR(move_direction);
     nexty = dropy + GET_DY_FROM_DIR(move_direction);
+#endif
 
     ChangeCount[dropx][dropy] = 0;	/* allow at least one more change */
 
@@ -16240,31 +16131,6 @@ void PlayLevelSound_SP(int xx, int yy, int element_sp, int action_sp)
   PlayLevelSoundElementAction(x, y, element, action);
 }
 
-#if 0
-void ChangeTime(int value)
-{
-  int *time = (level.time == 0 ? &TimePlayed : &TimeLeft);
-
-  *time += value;
-
-  /* EMC game engine uses value from time counter of RND game engine */
-  level.native_em_level->lev->time = *time;
-
-  DrawGameValue_Time(*time);
-}
-
-void RaiseScore(int value)
-{
-  /* EMC game engine and RND game engine have separate score counters */
-  int *score = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-		&level.native_em_level->lev->score : &local_player->score);
-
-  *score += value;
-
-  DrawGameValue_Score(*score);
-}
-#endif
-
 void RaiseScore(int value)
 {
   local_player->score += value;
@@ -16428,7 +16294,7 @@ void RequestQuitGame(boolean ask_if_really_quit)
 /* random generator functions                                                */
 /* ------------------------------------------------------------------------- */
 
-unsigned int InitEngineRandom_RND(long seed)
+unsigned int InitEngineRandom_RND(int seed)
 {
   game.num_random_calls = 0;
 
@@ -16521,7 +16387,7 @@ static void SaveEngineSnapshotValues_RND()
 
 static void LoadEngineSnapshotValues_RND()
 {
-  unsigned long num_random_calls = game.num_random_calls;
+  unsigned int num_random_calls = game.num_random_calls;
   int i, j;
 
   for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
@@ -16694,98 +16560,38 @@ boolean CheckEngineSnapshot()
 
 /* ---------- new game button stuff ---------------------------------------- */
 
-/* graphic position values for game buttons */
-#define GAME_BUTTON_XSIZE	30
-#define GAME_BUTTON_YSIZE	30
-#define GAME_BUTTON_XPOS	5
-#define GAME_BUTTON_YPOS	215
-#define SOUND_BUTTON_XPOS	5
-#define SOUND_BUTTON_YPOS	(GAME_BUTTON_YPOS + GAME_BUTTON_YSIZE)
-
-#define GAME_BUTTON_STOP_XPOS	(GAME_BUTTON_XPOS + 0 * GAME_BUTTON_XSIZE)
-#define GAME_BUTTON_PAUSE_XPOS	(GAME_BUTTON_XPOS + 1 * GAME_BUTTON_XSIZE)
-#define GAME_BUTTON_PLAY_XPOS	(GAME_BUTTON_XPOS + 2 * GAME_BUTTON_XSIZE)
-#define SOUND_BUTTON_MUSIC_XPOS	(SOUND_BUTTON_XPOS + 0 * GAME_BUTTON_XSIZE)
-#define SOUND_BUTTON_LOOPS_XPOS	(SOUND_BUTTON_XPOS + 1 * GAME_BUTTON_XSIZE)
-#define SOUND_BUTTON_SIMPLE_XPOS (SOUND_BUTTON_XPOS + 2 * GAME_BUTTON_XSIZE)
-
 static struct
 {
-  int *x, *y;
-  int gd_x, gd_y;
+  int graphic;
+  struct Rect *pos;
   int gadget_id;
   char *infotext;
 } gamebutton_info[NUM_GAME_BUTTONS] =
 {
-#if 1
   {
-    &game.button.stop.x,	&game.button.stop.y,
-    GAME_BUTTON_STOP_XPOS,	GAME_BUTTON_YPOS,
-    GAME_CTRL_ID_STOP,
-    "stop game"
+    IMG_GAME_BUTTON_GFX_STOP,		&game.button.stop,
+    GAME_CTRL_ID_STOP,			"stop game"
   },
   {
-    &game.button.pause.x,	&game.button.pause.y,
-    GAME_BUTTON_PAUSE_XPOS,	GAME_BUTTON_YPOS,
-    GAME_CTRL_ID_PAUSE,
-    "pause game"
+    IMG_GAME_BUTTON_GFX_PAUSE,		&game.button.pause,
+    GAME_CTRL_ID_PAUSE,			"pause game"
   },
   {
-    &game.button.play.x,	&game.button.play.y,
-    GAME_BUTTON_PLAY_XPOS,	GAME_BUTTON_YPOS,
-    GAME_CTRL_ID_PLAY,
-    "play game"
+    IMG_GAME_BUTTON_GFX_PLAY,		&game.button.play,
+    GAME_CTRL_ID_PLAY,			"play game"
   },
   {
-    &game.button.sound_music.x,	&game.button.sound_music.y,
-    SOUND_BUTTON_MUSIC_XPOS,	SOUND_BUTTON_YPOS,
-    SOUND_CTRL_ID_MUSIC,
-    "background music on/off"
+    IMG_GAME_BUTTON_GFX_SOUND_MUSIC,	&game.button.sound_music,
+    SOUND_CTRL_ID_MUSIC,		"background music on/off"
   },
   {
-    &game.button.sound_loops.x,	&game.button.sound_loops.y,
-    SOUND_BUTTON_LOOPS_XPOS,	SOUND_BUTTON_YPOS,
-    SOUND_CTRL_ID_LOOPS,
-    "sound loops on/off"
+    IMG_GAME_BUTTON_GFX_SOUND_LOOPS,	&game.button.sound_loops,
+    SOUND_CTRL_ID_LOOPS,		"sound loops on/off"
   },
   {
-    &game.button.sound_simple.x,&game.button.sound_simple.y,
-    SOUND_BUTTON_SIMPLE_XPOS,	SOUND_BUTTON_YPOS,
-    SOUND_CTRL_ID_SIMPLE,
-    "normal sounds on/off"
+    IMG_GAME_BUTTON_GFX_SOUND_SIMPLE,	&game.button.sound_simple,
+    SOUND_CTRL_ID_SIMPLE,		"normal sounds on/off"
   }
-#else
-  {
-    GAME_BUTTON_STOP_XPOS,	GAME_BUTTON_YPOS,
-    GAME_CTRL_ID_STOP,
-    "stop game"
-  },
-  {
-    GAME_BUTTON_PAUSE_XPOS,	GAME_BUTTON_YPOS,
-    GAME_CTRL_ID_PAUSE,
-    "pause game"
-  },
-  {
-    GAME_BUTTON_PLAY_XPOS,	GAME_BUTTON_YPOS,
-    GAME_CTRL_ID_PLAY,
-    "play game"
-  },
-  {
-    SOUND_BUTTON_MUSIC_XPOS,	SOUND_BUTTON_YPOS,
-    SOUND_CTRL_ID_MUSIC,
-    "background music on/off"
-  },
-  {
-    SOUND_BUTTON_LOOPS_XPOS,	SOUND_BUTTON_YPOS,
-    SOUND_CTRL_ID_LOOPS,
-    "sound loops on/off"
-  },
-  {
-    SOUND_BUTTON_SIMPLE_XPOS,	SOUND_BUTTON_YPOS,
-    SOUND_CTRL_ID_SIMPLE,
-    "normal sounds on/off"
-  }
-#endif
 };
 
 void CreateGameButtons()
@@ -16794,22 +16600,21 @@ void CreateGameButtons()
 
   for (i = 0; i < NUM_GAME_BUTTONS; i++)
   {
-    Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
+    struct GraphicInfo *gfx = &graphic_info[gamebutton_info[i].graphic];
+    struct Rect *pos = gamebutton_info[i].pos;
     struct GadgetInfo *gi;
     int button_type;
     boolean checked;
-    unsigned long event_mask;
-    int x, y;
-    int gd_xoffset, gd_yoffset;
-    int gd_x1, gd_x2, gd_y1, gd_y2;
+    unsigned int event_mask;
+    int gd_x   = gfx->src_x;
+    int gd_y   = gfx->src_y;
+    int gd_xp  = gfx->src_x + gfx->pressed_xoffset;
+    int gd_yp  = gfx->src_y + gfx->pressed_yoffset;
+    int gd_xa  = gfx->src_x + gfx->active_xoffset;
+    int gd_ya  = gfx->src_y + gfx->active_yoffset;
+    int gd_xap = gfx->src_x + gfx->active_xoffset + gfx->pressed_xoffset;
+    int gd_yap = gfx->src_y + gfx->active_yoffset + gfx->pressed_yoffset;
     int id = i;
-
-    x = DX + *gamebutton_info[i].x;
-    y = DY + *gamebutton_info[i].y;
-    gd_xoffset = gamebutton_info[i].gd_x;
-    gd_yoffset = gamebutton_info[i].gd_y;
-    gd_x1 = DOOR_GFX_PAGEX4 + gd_xoffset;
-    gd_x2 = DOOR_GFX_PAGEX3 + gd_xoffset;
 
     if (id == GAME_CTRL_ID_STOP ||
 	id == GAME_CTRL_ID_PAUSE ||
@@ -16818,8 +16623,6 @@ void CreateGameButtons()
       button_type = GD_TYPE_NORMAL_BUTTON;
       checked = FALSE;
       event_mask = GD_EVENT_RELEASED;
-      gd_y1  = DOOR_GFX_PAGEY1 + gd_yoffset - GAME_BUTTON_YSIZE;
-      gd_y2  = DOOR_GFX_PAGEY1 + gd_yoffset - GAME_BUTTON_YSIZE;
     }
     else
     {
@@ -16829,28 +16632,21 @@ void CreateGameButtons()
 	 (id == SOUND_CTRL_ID_LOOPS && setup.sound_loops) ||
 	 (id == SOUND_CTRL_ID_SIMPLE && setup.sound_simple) ? TRUE : FALSE);
       event_mask = GD_EVENT_PRESSED;
-      gd_y1  = DOOR_GFX_PAGEY1 + gd_yoffset;
-      gd_y2  = DOOR_GFX_PAGEY1 + gd_yoffset - GAME_BUTTON_YSIZE;
     }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
 		      GDI_INFO_TEXT, gamebutton_info[i].infotext,
-#if 1
-		      GDI_X, x,
-		      GDI_Y, y,
-#else
-		      GDI_X, DX + gd_xoffset,
-		      GDI_Y, DY + gd_yoffset,
-#endif
-		      GDI_WIDTH, GAME_BUTTON_XSIZE,
-		      GDI_HEIGHT, GAME_BUTTON_YSIZE,
+		      GDI_X, DX + pos->x,
+		      GDI_Y, DY + pos->y,
+		      GDI_WIDTH, gfx->width,
+		      GDI_HEIGHT, gfx->height,
 		      GDI_TYPE, button_type,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
 		      GDI_CHECKED, checked,
-		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y1,
-		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y1,
-		      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y2,
-		      GDI_ALT_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y2,
+		      GDI_DESIGN_UNPRESSED, gfx->bitmap, gd_x, gd_y,
+		      GDI_DESIGN_PRESSED, gfx->bitmap, gd_xp, gd_yp,
+		      GDI_ALT_DESIGN_UNPRESSED, gfx->bitmap, gd_xa, gd_ya,
+		      GDI_ALT_DESIGN_PRESSED, gfx->bitmap, gd_xap, gd_yap,
 		      GDI_DIRECT_DRAW, FALSE,
 		      GDI_EVENT_MASK, event_mask,
 		      GDI_CALLBACK_ACTION, HandleGameButtons,

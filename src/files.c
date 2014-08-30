@@ -1596,10 +1596,202 @@ void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
   change->post_change_function = NULL;
 }
 
-static void setLevelInfoToDefaults(struct LevelInfo *level)
+#if 1
+
+static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
+{
+  int i, x, y;
+
+  li = *level;		/* copy level data into temporary buffer */
+  setConfigToDefaultsFromConfigList(chunk_config_INFO);
+  *level = li;		/* copy temporary buffer back to level data */
+
+  setLevelInfoToDefaults_EM();
+  setLevelInfoToDefaults_SP();
+
+  level->native_em_level = &native_em_level;
+  level->native_sp_level = &native_sp_level;
+
+  level->file_version = FILE_VERSION_ACTUAL;
+  level->game_version = GAME_VERSION_ACTUAL;
+
+  level->creation_date = getCurrentDate();
+
+  level->encoding_16bit_field  = TRUE;
+  level->encoding_16bit_yamyam = TRUE;
+  level->encoding_16bit_amoeba = TRUE;
+
+  for (x = 0; x < MAX_LEV_FIELDX; x++)
+    for (y = 0; y < MAX_LEV_FIELDY; y++)
+      level->field[x][y] = EL_SAND;
+
+  for (i = 0; i < MAX_LEVEL_NAME_LEN; i++)
+    level->name[i] = '\0';
+  for (i = 0; i < MAX_LEVEL_AUTHOR_LEN; i++)
+    level->author[i] = '\0';
+
+  strcpy(level->name, NAMELESS_LEVEL_NAME);
+  strcpy(level->author, ANONYMOUS_NAME);
+
+  level->field[0][0] = EL_PLAYER_1;
+  level->field[STD_LEV_FIELDX - 1][STD_LEV_FIELDY - 1] = EL_EXIT_CLOSED;
+
+  BorderElement = EL_STEELWALL;
+
+  /* set all bug compatibility flags to "false" => do not emulate this bug */
+  level->use_action_after_change_bug = FALSE;
+
+  if (leveldir_current)
+  {
+    /* try to determine better author name than 'anonymous' */
+    if (!strEqual(leveldir_current->author, ANONYMOUS_NAME))
+    {
+      strncpy(level->author, leveldir_current->author, MAX_LEVEL_AUTHOR_LEN);
+      level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+    }
+    else
+    {
+      switch (LEVELCLASS(leveldir_current))
+      {
+	case LEVELCLASS_TUTORIAL:
+	  strcpy(level->author, PROGRAM_AUTHOR_STRING);
+	  break;
+
+        case LEVELCLASS_CONTRIB:
+	  strncpy(level->author, leveldir_current->name, MAX_LEVEL_AUTHOR_LEN);
+	  level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+	  break;
+
+        case LEVELCLASS_PRIVATE:
+	  strncpy(level->author, getRealName(), MAX_LEVEL_AUTHOR_LEN);
+	  level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+	  break;
+
+        default:
+	  /* keep default value */
+	  break;
+      }
+    }
+  }
+}
+
+static void setLevelInfoToDefaults_Elements(struct LevelInfo *level)
+{
+  static boolean clipboard_elements_initialized = FALSE;
+  int i;
+
+  InitElementPropertiesStatic();
+
+  li = *level;		/* copy level data into temporary buffer */
+  setConfigToDefaultsFromConfigList(chunk_config_ELEM);
+  *level = li;		/* copy temporary buffer back to level data */
+
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+  {
+    int element = i;
+    struct ElementInfo *ei = &element_info[element];
+
+    /* never initialize clipboard elements after the very first time */
+    /* (to be able to use clipboard elements between several levels) */
+    if (IS_CLIPBOARD_ELEMENT(element) && clipboard_elements_initialized)
+      continue;
+
+    if (IS_ENVELOPE(element))
+    {
+      int envelope_nr = element - EL_ENVELOPE_1;
+
+      setConfigToDefaultsFromConfigList(chunk_config_NOTE);
+
+      level->envelope[envelope_nr] = xx_envelope;
+    }
+
+    if (IS_CUSTOM_ELEMENT(element) ||
+	IS_GROUP_ELEMENT(element) ||
+	IS_INTERNAL_ELEMENT(element))
+    {
+      xx_ei = *ei;	/* copy element data into temporary buffer */
+
+      setConfigToDefaultsFromConfigList(chunk_config_CUSX_base);
+
+      *ei = xx_ei;
+    }
+
+    setElementChangePages(ei, 1);
+    setElementChangeInfoToDefaults(ei->change);
+
+    if (IS_CUSTOM_ELEMENT(element) ||
+	IS_GROUP_ELEMENT(element) ||
+	IS_INTERNAL_ELEMENT(element))
+    {
+      setElementDescriptionToDefault(ei);
+
+      ei->modified_settings = FALSE;
+    }
+
+    if (IS_CUSTOM_ELEMENT(element) ||
+	IS_INTERNAL_ELEMENT(element))
+    {
+      /* internal values used in level editor */
+
+      ei->access_type = 0;
+      ei->access_layer = 0;
+      ei->access_protected = 0;
+      ei->walk_to_action = 0;
+      ei->smash_targets = 0;
+      ei->deadliness = 0;
+
+      ei->can_explode_by_fire = FALSE;
+      ei->can_explode_smashed = FALSE;
+      ei->can_explode_impact = FALSE;
+
+      ei->current_change_page = 0;
+    }
+
+    if (IS_GROUP_ELEMENT(element) ||
+	IS_INTERNAL_ELEMENT(element))
+    {
+      struct ElementGroupInfo *group;
+
+      /* initialize memory for list of elements in group */
+      if (ei->group == NULL)
+	ei->group = checked_malloc(sizeof(struct ElementGroupInfo));
+
+      group = ei->group;
+
+      xx_group = *group;	/* copy group data into temporary buffer */
+
+      setConfigToDefaultsFromConfigList(chunk_config_GRPX);
+
+      *group = xx_group;
+    }
+  }
+
+  clipboard_elements_initialized = TRUE;
+}
+
+static void setLevelInfoToDefaults(struct LevelInfo *level,
+				   boolean level_info_only)
+{
+  setLevelInfoToDefaults_Level(level);
+
+  if (!level_info_only)
+    setLevelInfoToDefaults_Elements(level);
+
+  level->no_valid_file = FALSE;
+
+  level->changed = FALSE;
+}
+
+#else
+
+static void setLevelInfoToDefaults(struct LevelInfo *level,
+				   boolean level_info_only)
 {
   static boolean clipboard_elements_initialized = FALSE;
   int i, x, y;
+
+  if (level_info_only)
+    return;
 
   InitElementPropertiesStatic();
 
@@ -1731,39 +1923,41 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
   /* set all bug compatibility flags to "false" => do not emulate this bug */
   level->use_action_after_change_bug = FALSE;
 
-  if (leveldir_current == NULL)		/* only when dumping level */
-    return;
-
-  /* try to determine better author name than 'anonymous' */
-  if (!strEqual(leveldir_current->author, ANONYMOUS_NAME))
+  if (leveldir_current)
   {
-    strncpy(level->author, leveldir_current->author, MAX_LEVEL_AUTHOR_LEN);
-    level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
-  }
-  else
-  {
-    switch (LEVELCLASS(leveldir_current))
+    /* try to determine better author name than 'anonymous' */
+    if (!strEqual(leveldir_current->author, ANONYMOUS_NAME))
     {
-      case LEVELCLASS_TUTORIAL:
-	strcpy(level->author, PROGRAM_AUTHOR_STRING);
-	break;
+      strncpy(level->author, leveldir_current->author, MAX_LEVEL_AUTHOR_LEN);
+      level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+    }
+    else
+    {
+      switch (LEVELCLASS(leveldir_current))
+      {
+	case LEVELCLASS_TUTORIAL:
+	  strcpy(level->author, PROGRAM_AUTHOR_STRING);
+	  break;
 
-      case LEVELCLASS_CONTRIB:
-	strncpy(level->author, leveldir_current->name, MAX_LEVEL_AUTHOR_LEN);
-	level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
-	break;
+        case LEVELCLASS_CONTRIB:
+	  strncpy(level->author, leveldir_current->name, MAX_LEVEL_AUTHOR_LEN);
+	  level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+	  break;
 
-      case LEVELCLASS_PRIVATE:
-	strncpy(level->author, getRealName(), MAX_LEVEL_AUTHOR_LEN);
-	level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
-	break;
+        case LEVELCLASS_PRIVATE:
+	  strncpy(level->author, getRealName(), MAX_LEVEL_AUTHOR_LEN);
+	  level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+	  break;
 
-      default:
-	/* keep default value */
-	break;
+        default:
+	  /* keep default value */
+	  break;
+      }
     }
   }
 }
+
+#endif
 
 static void setFileInfoToDefaults(struct LevelFileInfo *level_file_info)
 {
@@ -2390,13 +2584,21 @@ static int LoadLevel_CNT2(FILE *file, int chunk_size, struct LevelInfo *level)
 {
   int i, x, y;
   int element;
-  int num_contents, content_xsize, content_ysize;
+  int num_contents;
+#if 0
+  int content_xsize, content_ysize;
+#endif
   int content_array[MAX_ELEMENT_CONTENTS][3][3];
 
   element = getMappedElement(getFile16BitBE(file));
   num_contents = getFile8Bit(file);
+#if 1
+  getFile8Bit(file);	/* content x size (unused) */
+  getFile8Bit(file);	/* content y size (unused) */
+#else
   content_xsize = getFile8Bit(file);
   content_ysize = getFile8Bit(file);
+#endif
 
   ReadUnusedBytesFromFile(file, LEVEL_CHUNK_CNT2_UNUSED);
 
@@ -3120,7 +3322,8 @@ static int LoadLevel_GRPX(FILE *file, int chunk_size, struct LevelInfo *level)
 }
 
 static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
-				      struct LevelFileInfo *level_file_info)
+				      struct LevelFileInfo *level_file_info,
+				      boolean level_info_only)
 {
   char *filename = level_file_info->filename;
   char cookie[MAX_LINE_LEN];
@@ -3133,7 +3336,8 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
     level->no_valid_file = TRUE;
 
 #if 1
-    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+    if (!level_info_only)
+      Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
 #else
     if (level != &level_template)
       Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
@@ -3160,7 +3364,8 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
   else	/* check for pre-2.0 file format with cookie string */
   {
     strcpy(cookie, chunk_name);
-    fgets(&cookie[4], MAX_LINE_LEN - 4, file);
+    if (fgets(&cookie[4], MAX_LINE_LEN - 4, file) == NULL)
+      cookie[4] = '\0';
     if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
       cookie[strlen(cookie) - 1] = '\0';
 
@@ -4091,7 +4296,8 @@ static void LoadLevelFromFileStream_SP(FILE *file, struct LevelInfo *level,
 }
 
 static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
-				     struct LevelFileInfo *level_file_info)
+				     struct LevelFileInfo *level_file_info,
+				     boolean level_info_only)
 {
   char *filename = level_file_info->filename;
   FILE *file;
@@ -4109,7 +4315,8 @@ static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
   {
     level->no_valid_file = TRUE;
 
-    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+    if (!level_info_only)
+      Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
 
     return;
   }
@@ -6186,7 +6393,8 @@ static void LoadLevelFromFileStream_DC(FILE *file, struct LevelInfo *level,
 }
 
 static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
-				     struct LevelFileInfo *level_file_info)
+				     struct LevelFileInfo *level_file_info,
+				     boolean level_info_only)
 {
   char *filename = level_file_info->filename;
   FILE *file;
@@ -6198,7 +6406,8 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
   {
     level->no_valid_file = TRUE;
 
-    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+    if (!level_info_only)
+      Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
 
     return;
   }
@@ -6208,7 +6417,8 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
   if (level_file_info->packed)
   {
     /* read "magic bytes" from start of file */
-    fgets(magic_bytes, num_magic_bytes + 1, file);
+    if (fgets(magic_bytes, num_magic_bytes + 1, file) == NULL)
+      magic_bytes[0] = '\0';
 
     /* check "magic bytes" for correct file format */
     if (!strPrefix(magic_bytes, "DC2"))
@@ -6301,7 +6511,8 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
   {
     level->no_valid_file = TRUE;
 
-    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+    if (!level_info_only)
+      Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
 
     return;
   }
@@ -6535,7 +6746,8 @@ int getMappedElement_SB(int element_ascii, boolean use_ces)
 }
 
 static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
-				     struct LevelFileInfo *level_file_info)
+				     struct LevelFileInfo *level_file_info,
+				     boolean level_info_only)
 {
   char *filename = level_file_info->filename;
   char line[MAX_LINE_LEN], line_raw[MAX_LINE_LEN], previous_line[MAX_LINE_LEN];
@@ -6565,7 +6777,8 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
   {
     level->no_valid_file = TRUE;
 
-    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+    if (!level_info_only)
+      Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
 
     return;
   }
@@ -6842,14 +7055,16 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
 /* ------------------------------------------------------------------------- */
 
 static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
-				     struct LevelFileInfo *level_file_info)
+				     struct LevelFileInfo *level_file_info,
+				     boolean level_info_only)
 {
-  if (!LoadNativeLevel_EM(level_file_info->filename))
+  if (!LoadNativeLevel_EM(level_file_info->filename, level_info_only))
     level->no_valid_file = TRUE;
 }
 
 static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
-				     struct LevelFileInfo *level_file_info)
+				     struct LevelFileInfo *level_file_info,
+				     boolean level_info_only)
 {
   int pos = 0;
 
@@ -6857,7 +7072,7 @@ static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
   if (level_file_info->packed)
     pos = level_file_info->nr - leveldir_current->first_level;
 
-  if (!LoadNativeLevel_SP(level_file_info->filename, pos))
+  if (!LoadNativeLevel_SP(level_file_info->filename, pos, level_info_only))
     level->no_valid_file = TRUE;
 }
 
@@ -6896,44 +7111,49 @@ void SaveNativeLevel(struct LevelInfo *level)
 /* functions for loading generic level                                       */
 /* ------------------------------------------------------------------------- */
 
-void LoadLevelFromFileInfo(struct LevelInfo *level,
-			   struct LevelFileInfo *level_file_info)
+static void LoadLevelFromFileInfo(struct LevelInfo *level,
+				  struct LevelFileInfo *level_file_info,
+				  boolean level_info_only)
 {
   /* always start with reliable default values */
-  setLevelInfoToDefaults(level);
+  setLevelInfoToDefaults(level, level_info_only);
 
   switch (level_file_info->type)
   {
     case LEVEL_FILE_TYPE_RND:
-      LoadLevelFromFileInfo_RND(level, level_file_info);
+      LoadLevelFromFileInfo_RND(level, level_file_info, level_info_only);
       break;
 
     case LEVEL_FILE_TYPE_EM:
-      LoadLevelFromFileInfo_EM(level, level_file_info);
+      LoadLevelFromFileInfo_EM(level, level_file_info, level_info_only);
       level->game_engine_type = GAME_ENGINE_TYPE_EM;
       break;
 
     case LEVEL_FILE_TYPE_SP:
-      LoadLevelFromFileInfo_SP(level, level_file_info);
+      LoadLevelFromFileInfo_SP(level, level_file_info, level_info_only);
       level->game_engine_type = GAME_ENGINE_TYPE_SP;
       break;
 
     case LEVEL_FILE_TYPE_DC:
-      LoadLevelFromFileInfo_DC(level, level_file_info);
+      LoadLevelFromFileInfo_DC(level, level_file_info, level_info_only);
       break;
 
     case LEVEL_FILE_TYPE_SB:
-      LoadLevelFromFileInfo_SB(level, level_file_info);
+      LoadLevelFromFileInfo_SB(level, level_file_info, level_info_only);
       break;
 
     default:
-      LoadLevelFromFileInfo_RND(level, level_file_info);
+      LoadLevelFromFileInfo_RND(level, level_file_info, level_info_only);
       break;
   }
 
   /* if level file is invalid, restore level structure to default values */
   if (level->no_valid_file)
-    setLevelInfoToDefaults(level);
+  {
+    setLevelInfoToDefaults(level, level_info_only);
+
+    level->no_valid_file = TRUE;	/* but keep "no valid file" flag */
+  }
 
   if (level->game_engine_type == GAME_ENGINE_TYPE_UNKNOWN)
     level->game_engine_type = GAME_ENGINE_TYPE_RND;
@@ -6953,7 +7173,7 @@ void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
   level_file_info.type = LEVEL_FILE_TYPE_RND;	/* no others supported yet */
   level_file_info.filename = filename;
 
-  LoadLevelFromFileInfo(level, &level_file_info);
+  LoadLevelFromFileInfo(level, &level_file_info, FALSE);
 }
 
 static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
@@ -7341,7 +7561,7 @@ void LoadLevelTemplate(int nr)
   setLevelFileInfo(&level_template.file_info, nr);
   filename = level_template.file_info.filename;
 
-  LoadLevelFromFileInfo(&level_template, &level_template.file_info);
+  LoadLevelFromFileInfo(&level_template, &level_template.file_info, FALSE);
 
   LoadLevel_InitVersion(&level_template, filename);
   LoadLevel_InitElements(&level_template, filename);
@@ -7356,7 +7576,7 @@ void LoadLevel(int nr)
   setLevelFileInfo(&level.file_info, nr);
   filename = level.file_info.filename;
 
-  LoadLevelFromFileInfo(&level, &level.file_info);
+  LoadLevelFromFileInfo(&level, &level.file_info, FALSE);
 
   if (level.use_custom_template)
     LoadLevelTemplate(-1);
@@ -7366,6 +7586,20 @@ void LoadLevel(int nr)
   LoadLevel_InitPlayfield(&level, filename);
 
   LoadLevel_InitNativeEngines(&level, filename);
+}
+
+void LoadLevelInfoOnly(int nr)
+{
+#if 0
+  char *filename;
+#endif
+
+  setLevelFileInfo(&level.file_info, nr);
+#if 0
+  filename = level.file_info.filename;
+#endif
+
+  LoadLevelFromFileInfo(&level, &level.file_info, TRUE);
 }
 
 static int SaveLevel_VERS(FILE *file, struct LevelInfo *level)
@@ -8567,7 +8801,8 @@ void LoadTapeFromFilename(char *filename)
   else	/* check for pre-2.0 file format with cookie string */
   {
     strcpy(cookie, chunk_name);
-    fgets(&cookie[4], MAX_LINE_LEN - 4, file);
+    if (fgets(&cookie[4], MAX_LINE_LEN - 4, file) == NULL)
+      cookie[4] = '\0';
     if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
       cookie[strlen(cookie) - 1] = '\0';
 
@@ -8910,7 +9145,8 @@ void LoadScore(int nr)
     return;
 
   /* check file identifier */
-  fgets(cookie, MAX_LINE_LEN, file);
+  if (fgets(cookie, MAX_LINE_LEN, file) == NULL)
+    cookie[0] = '\0';
   if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
     cookie[strlen(cookie) - 1] = '\0';
 
@@ -8923,10 +9159,12 @@ void LoadScore(int nr)
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
-    fscanf(file, "%d", &highscore[i].Score);
-    fgets(line, MAX_LINE_LEN, file);
+    if (fscanf(file, "%d", &highscore[i].Score) == EOF)
+      Error(ERR_WARN, "fscanf() failed; %s", strerror(errno));
+    if (fgets(line, MAX_LINE_LEN, file) == NULL)
+      line[0] = '\0';
 
-    if (line[strlen(line) - 1] == '\n')
+    if (strlen(line) > 0 && line[strlen(line) - 1] == '\n')
       line[strlen(line) - 1] = '\0';
 
     for (line_ptr = line; *line_ptr; line_ptr++)
@@ -9001,14 +9239,15 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_PREFER_AGA_GRAPHICS		23
 #define SETUP_TOKEN_GAME_FRAME_DELAY		24
 #define SETUP_TOKEN_SP_SHOW_BORDER_ELEMENTS	25
-#define SETUP_TOKEN_GRAPHICS_SET		26
-#define SETUP_TOKEN_SOUNDS_SET			27
-#define SETUP_TOKEN_MUSIC_SET			28
-#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	29
-#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	30
-#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	31
+#define SETUP_TOKEN_SMALL_GAME_GRAPHICS		26
+#define SETUP_TOKEN_GRAPHICS_SET		27
+#define SETUP_TOKEN_SOUNDS_SET			28
+#define SETUP_TOKEN_MUSIC_SET			29
+#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	30
+#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	31
+#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	32
 
-#define NUM_GLOBAL_SETUP_TOKENS			32
+#define NUM_GLOBAL_SETUP_TOKENS			33
 
 /* editor setup */
 #define SETUP_TOKEN_EDITOR_EL_BOULDERDASH	0
@@ -9060,19 +9299,20 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_SHORTCUT_FOCUS_PLAYER_4	6
 #define SETUP_TOKEN_SHORTCUT_FOCUS_PLAYER_ALL	7
 #define SETUP_TOKEN_SHORTCUT_TAPE_EJECT		8
-#define SETUP_TOKEN_SHORTCUT_TAPE_STOP		9
-#define SETUP_TOKEN_SHORTCUT_TAPE_PAUSE		10
-#define SETUP_TOKEN_SHORTCUT_TAPE_RECORD	11
-#define SETUP_TOKEN_SHORTCUT_TAPE_PLAY		12
-#define SETUP_TOKEN_SHORTCUT_SOUND_SIMPLE	13
-#define SETUP_TOKEN_SHORTCUT_SOUND_LOOPS	14
-#define SETUP_TOKEN_SHORTCUT_SOUND_MUSIC	15
-#define SETUP_TOKEN_SHORTCUT_SNAP_LEFT		16
-#define SETUP_TOKEN_SHORTCUT_SNAP_RIGHT		17
-#define SETUP_TOKEN_SHORTCUT_SNAP_UP		18
-#define SETUP_TOKEN_SHORTCUT_SNAP_DOWN		19
+#define SETUP_TOKEN_SHORTCUT_TAPE_EXTRA		9
+#define SETUP_TOKEN_SHORTCUT_TAPE_STOP		10
+#define SETUP_TOKEN_SHORTCUT_TAPE_PAUSE		11
+#define SETUP_TOKEN_SHORTCUT_TAPE_RECORD	12
+#define SETUP_TOKEN_SHORTCUT_TAPE_PLAY		13
+#define SETUP_TOKEN_SHORTCUT_SOUND_SIMPLE	14
+#define SETUP_TOKEN_SHORTCUT_SOUND_LOOPS	15
+#define SETUP_TOKEN_SHORTCUT_SOUND_MUSIC	16
+#define SETUP_TOKEN_SHORTCUT_SNAP_LEFT		17
+#define SETUP_TOKEN_SHORTCUT_SNAP_RIGHT		18
+#define SETUP_TOKEN_SHORTCUT_SNAP_UP		19
+#define SETUP_TOKEN_SHORTCUT_SNAP_DOWN		20
 
-#define NUM_SHORTCUT_SETUP_TOKENS		20
+#define NUM_SHORTCUT_SETUP_TOKENS		21
 
 /* player setup */
 #define SETUP_TOKEN_PLAYER_USE_JOYSTICK		0
@@ -9143,6 +9383,7 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_SWITCH, &si.prefer_aga_graphics,     "prefer_aga_graphics"	},
   { TYPE_INTEGER,&si.game_frame_delay,        "game_frame_delay"	},
   { TYPE_SWITCH, &si.sp_show_border_elements, "sp_show_border_elements"	},
+  { TYPE_SWITCH, &si.small_game_graphics,     "small_game_graphics"	},
   { TYPE_STRING, &si.graphics_set,            "graphics_set"		},
   { TYPE_STRING, &si.sounds_set,              "sounds_set"		},
   { TYPE_STRING, &si.music_set,               "music_set"		},
@@ -9218,6 +9459,7 @@ static struct TokenInfo shortcut_setup_tokens[] =
   { TYPE_KEY_X11, &ssi.focus_player[3],	"shortcut.focus_player_4"	},
   { TYPE_KEY_X11, &ssi.focus_player_all,"shortcut.focus_player_all"	},
   { TYPE_KEY_X11, &ssi.tape_eject,	"shortcut.tape_eject"		},
+  { TYPE_KEY_X11, &ssi.tape_extra,	"shortcut.tape_extra"		},
   { TYPE_KEY_X11, &ssi.tape_stop,	"shortcut.tape_stop"		},
   { TYPE_KEY_X11, &ssi.tape_pause,	"shortcut.tape_pause"		},
   { TYPE_KEY_X11, &ssi.tape_record,	"shortcut.tape_record"		},
@@ -9309,6 +9551,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->prefer_aga_graphics = TRUE;
   si->game_frame_delay = GAME_FRAME_DELAY;
   si->sp_show_border_elements = FALSE;
+  si->small_game_graphics = FALSE;
 
   si->graphics_set = getStringCopy(GFX_DEFAULT_SUBDIR);
   si->sounds_set = getStringCopy(SND_DEFAULT_SUBDIR);
@@ -9346,6 +9589,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->shortcut.focus_player_all	= DEFAULT_KEY_FOCUS_PLAYER_ALL;
 
   si->shortcut.tape_eject	= DEFAULT_KEY_TAPE_EJECT;
+  si->shortcut.tape_extra	= DEFAULT_KEY_TAPE_EXTRA;
   si->shortcut.tape_stop	= DEFAULT_KEY_TAPE_STOP;
   si->shortcut.tape_pause	= DEFAULT_KEY_TAPE_PAUSE;
   si->shortcut.tape_record	= DEFAULT_KEY_TAPE_RECORD;
@@ -10870,8 +11114,9 @@ void CreateLevelSketchImages()
     filename1 = getPath2(global.create_images_dir, basename1);
     filename2 = getPath2(global.create_images_dir, basename2);
 
-    getGraphicSource(graphic, 0, &src_bitmap, &src_x, &src_y);
-    BlitBitmap(src_bitmap, bitmap1, src_x, src_y, TILEX, TILEY, 0, 0);
+    getFixedGraphicSource(graphic, 0, &src_bitmap, &src_x, &src_y);
+    BlitBitmap(src_bitmap, bitmap1, src_x, src_y, TILEX, TILEY,
+	       0, 0);
 
     if (SDL_SaveBMP(bitmap1->surface, filename1) != 0)
       Error(ERR_EXIT, "cannot save level sketch image file '%s'", filename1);
@@ -10922,7 +11167,7 @@ void CreateCustomElementImages()
 			TILEY * (NUM_CUSTOM_ELEMENTS + NUM_GROUP_ELEMENTS) / 16,
 			DEFAULT_DEPTH);
 
-  getGraphicSource(dummy_graphic, 0, &src_bitmap, &src_x, &src_y);
+  getFixedGraphicSource(dummy_graphic, 0, &src_bitmap, &src_x, &src_y);
 
   for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
@@ -10934,18 +11179,22 @@ void CreateCustomElementImages()
     BlitBitmap(src_bitmap, bitmap, 0, 0, TILEX, TILEY,
 	       TILEX * x, TILEY * y + yoffset_ce);
 
-    BlitBitmap(src_bitmap, bitmap, 0, TILEY, TILEX, TILEY,
-	       TILEX * x + TILEX * 16, TILEY * y + yoffset_ce);
+    BlitBitmap(src_bitmap, bitmap, 0, TILEY,
+	       TILEX, TILEY,
+	       TILEX * x + TILEX * 16,
+	       TILEY * y + yoffset_ce);
 
     for (j = 2; j >= 0; j--)
     {
       int c = ii % 10;
 
-      BlitBitmap(src_bitmap, bitmap, TILEX + c * 7, 0, 6, 10,
+      BlitBitmap(src_bitmap, bitmap,
+		 TILEX + c * 7, 0, 6, 10,
 		 TILEX * x + 6 + j * 7,
 		 TILEY * y + 11 + yoffset_ce);
 
-      BlitBitmap(src_bitmap, bitmap, TILEX + c * 8, TILEY, 6, 10,
+      BlitBitmap(src_bitmap, bitmap,
+		 TILEX + c * 8, TILEY, 6, 10,
 		 TILEX * 16 + TILEX * x + 6 + j * 8,
 		 TILEY * y + 10 + yoffset_ce);
 
@@ -10963,8 +11212,10 @@ void CreateCustomElementImages()
     BlitBitmap(src_bitmap, bitmap, 0, 0, TILEX, TILEY,
 	       TILEX * x, TILEY * y + yoffset_ge);
 
-    BlitBitmap(src_bitmap, bitmap, 0, TILEY, TILEX, TILEY,
-	       TILEX * x + TILEX * 16, TILEY * y + yoffset_ge);
+    BlitBitmap(src_bitmap, bitmap, 0, TILEY,
+	       TILEX, TILEY,
+	       TILEX * x + TILEX * 16,
+	       TILEY * y + yoffset_ge);
 
     for (j = 1; j >= 0; j--)
     {
@@ -10974,7 +11225,8 @@ void CreateCustomElementImages()
 		 TILEX * x + 6 + j * 10,
 		 TILEY * y + 11 + yoffset_ge);
 
-      BlitBitmap(src_bitmap, bitmap, TILEX + c * 8, TILEY + 12, 6, 10,
+      BlitBitmap(src_bitmap, bitmap,
+		 TILEX + c * 8, TILEY + 12, 6, 10,
 		 TILEX * 16 + TILEX * x + 10 + j * 8,
 		 TILEY * y + 10 + yoffset_ge);
 

@@ -937,6 +937,10 @@ struct TokenIntPtrInfo image_config_vars[] =
     &border.draw_masked[GFX_SPECIAL_ARG_LEVELS]
   },
   {
+    "border.draw_masked.LEVELNR",
+    &border.draw_masked[GFX_SPECIAL_ARG_LEVELNR]
+  },
+  {
     "border.draw_masked.SCORES",
     &border.draw_masked[GFX_SPECIAL_ARG_SCORES]
   },
@@ -1161,6 +1165,14 @@ struct TokenIntPtrInfo image_config_vars[] =
     &menu.draw_yoffset[GFX_SPECIAL_ARG_LEVELS]
   },
   {
+    "menu.draw_xoffset.LEVELNR",
+    &menu.draw_xoffset[GFX_SPECIAL_ARG_LEVELNR]
+  },
+  {
+    "menu.draw_yoffset.LEVELNR",
+    &menu.draw_yoffset[GFX_SPECIAL_ARG_LEVELNR]
+  },
+  {
     "menu.draw_xoffset.SCORES",
     &menu.draw_xoffset[GFX_SPECIAL_ARG_SCORES]
   },
@@ -1355,6 +1367,10 @@ struct TokenIntPtrInfo image_config_vars[] =
   {
     "menu.list_size.LEVELS",
     &menu.list_size[GFX_SPECIAL_ARG_LEVELS]
+  },
+  {
+    "menu.list_size.LEVELNR",
+    &menu.list_size[GFX_SPECIAL_ARG_LEVELNR]
   },
   {
     "menu.list_size.SCORES",
@@ -5061,6 +5077,270 @@ struct TokenIntPtrInfo image_config_vars[] =
     &game.button.sound_simple.y
   },
   {
+    "tape.button.eject.x",
+    &tape.button.eject.x
+  },
+  {
+    "tape.button.eject.y",
+    &tape.button.eject.y
+  },
+  {
+    "tape.button.stop.x",
+    &tape.button.stop.x
+  },
+  {
+    "tape.button.stop.y",
+    &tape.button.stop.y
+  },
+  {
+    "tape.button.pause.x",
+    &tape.button.pause.x
+  },
+  {
+    "tape.button.pause.y",
+    &tape.button.pause.y
+  },
+  {
+    "tape.button.record.x",
+    &tape.button.record.x
+  },
+  {
+    "tape.button.record.y",
+    &tape.button.record.y
+  },
+  {
+    "tape.button.play.x",
+    &tape.button.play.x
+  },
+  {
+    "tape.button.play.y",
+    &tape.button.play.y
+  },
+  {
+    "tape.symbol.eject.x",
+    &tape.symbol.eject.x
+  },
+  {
+    "tape.symbol.eject.y",
+    &tape.symbol.eject.y
+  },
+  {
+    "tape.symbol.stop.x",
+    &tape.symbol.stop.x
+  },
+  {
+    "tape.symbol.stop.y",
+    &tape.symbol.stop.y
+  },
+  {
+    "tape.symbol.pause.x",
+    &tape.symbol.pause.x
+  },
+  {
+    "tape.symbol.pause.y",
+    &tape.symbol.pause.y
+  },
+  {
+    "tape.symbol.record.x",
+    &tape.symbol.record.x
+  },
+  {
+    "tape.symbol.record.y",
+    &tape.symbol.record.y
+  },
+  {
+    "tape.symbol.play.x",
+    &tape.symbol.play.x
+  },
+  {
+    "tape.symbol.play.y",
+    &tape.symbol.play.y
+  },
+  {
+    "tape.symbol.fast_forward.x",
+    &tape.symbol.fast_forward.x
+  },
+  {
+    "tape.symbol.fast_forward.y",
+    &tape.symbol.fast_forward.y
+  },
+  {
+    "tape.symbol.warp_forward.x",
+    &tape.symbol.warp_forward.x
+  },
+  {
+    "tape.symbol.warp_forward.y",
+    &tape.symbol.warp_forward.y
+  },
+  {
+    "tape.symbol.warp_forward_blind.x",
+    &tape.symbol.warp_forward_blind.x
+  },
+  {
+    "tape.symbol.warp_forward_blind.y",
+    &tape.symbol.warp_forward_blind.y
+  },
+  {
+    "tape.symbol.pause_before_end.x",
+    &tape.symbol.pause_before_end.x
+  },
+  {
+    "tape.symbol.pause_before_end.y",
+    &tape.symbol.pause_before_end.y
+  },
+  {
+    "tape.symbol.single_step.x",
+    &tape.symbol.single_step.x
+  },
+  {
+    "tape.symbol.single_step.y",
+    &tape.symbol.single_step.y
+  },
+  {
+    "tape.label.eject.x",
+    &tape.label.eject.x
+  },
+  {
+    "tape.label.eject.y",
+    &tape.label.eject.y
+  },
+  {
+    "tape.label.stop.x",
+    &tape.label.stop.x
+  },
+  {
+    "tape.label.stop.y",
+    &tape.label.stop.y
+  },
+  {
+    "tape.label.pause.x",
+    &tape.label.pause.x
+  },
+  {
+    "tape.label.pause.y",
+    &tape.label.pause.y
+  },
+  {
+    "tape.label.record.x",
+    &tape.label.record.x
+  },
+  {
+    "tape.label.record.y",
+    &tape.label.record.y
+  },
+  {
+    "tape.label.play.x",
+    &tape.label.play.x
+  },
+  {
+    "tape.label.play.y",
+    &tape.label.play.y
+  },
+  {
+    "tape.label.fast_forward.x",
+    &tape.label.fast_forward.x
+  },
+  {
+    "tape.label.fast_forward.y",
+    &tape.label.fast_forward.y
+  },
+  {
+    "tape.label.warp_forward.x",
+    &tape.label.warp_forward.x
+  },
+  {
+    "tape.label.warp_forward.y",
+    &tape.label.warp_forward.y
+  },
+  {
+    "tape.label.warp_forward_blind.x",
+    &tape.label.warp_forward_blind.x
+  },
+  {
+    "tape.label.warp_forward_blind.y",
+    &tape.label.warp_forward_blind.y
+  },
+  {
+    "tape.label.pause_before_end.x",
+    &tape.label.pause_before_end.x
+  },
+  {
+    "tape.label.pause_before_end.y",
+    &tape.label.pause_before_end.y
+  },
+  {
+    "tape.label.single_step.x",
+    &tape.label.single_step.x
+  },
+  {
+    "tape.label.single_step.y",
+    &tape.label.single_step.y
+  },
+  {
+    "tape.label.date.x",
+    &tape.label.date.x
+  },
+  {
+    "tape.label.date.y",
+    &tape.label.date.y
+  },
+  {
+    "tape.label.time.x",
+    &tape.label.time.x
+  },
+  {
+    "tape.label.time.y",
+    &tape.label.time.y
+  },
+  {
+    "tape.text.date.x",
+    &tape.text.date.x
+  },
+  {
+    "tape.text.date.y",
+    &tape.text.date.y
+  },
+  {
+    "tape.text.date.align",
+    &tape.text.date.align
+  },
+  {
+    "tape.text.date.valign",
+    &tape.text.date.valign
+  },
+  {
+    "tape.text.date.digits",
+    &tape.text.date.size
+  },
+  {
+    "tape.text.date.font",
+    &tape.text.date.font
+  },
+  {
+    "tape.text.time.x",
+    &tape.text.time.x
+  },
+  {
+    "tape.text.time.y",
+    &tape.text.time.y
+  },
+  {
+    "tape.text.time.align",
+    &tape.text.time.align
+  },
+  {
+    "tape.text.time.valign",
+    &tape.text.time.valign
+  },
+  {
+    "tape.text.time.digits",
+    &tape.text.time.size
+  },
+  {
+    "tape.text.time.font",
+    &tape.text.time.font
+  },
+  {
     "game.forced_scroll_delay_value",
     &game.forced_scroll_delay_value
   },
@@ -5075,6 +5355,10 @@ struct TokenIntPtrInfo image_config_vars[] =
   {
     "game.use_masked_pushing",
     &game.use_masked_pushing
+  },
+  {
+    "game.tile_size",
+    &game.tile_size
   },
   {
     "[player].boring_delay_fixed",

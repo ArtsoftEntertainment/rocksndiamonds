@@ -186,7 +186,7 @@ static struct GadgetInfo *tape_gadget[NUM_TAPE_BUTTONS];
 /* video display functions                                                   */
 /* ========================================================================= */
 
-void DrawVideoDisplay(unsigned long state, unsigned long value)
+void DrawVideoDisplay(unsigned int state, unsigned int value)
 {
   int i, j, k;
   static char *monatsname[12] =
@@ -194,6 +194,8 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
     "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
   };
+
+#if 0
   static struct
   {
     int gd_x1, gd_y1;
@@ -344,6 +346,105 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
       }
     },
   };
+#endif
+
+#if 1
+  static struct
+  {
+    int graphic;
+    struct Rect *pos;
+  }
+  video_pos[NUM_TAPE_FUNCTIONS][NUM_TAPE_FUNCTION_PARTS] =
+  {
+    {
+      { IMG_TAPE_LABEL_GFX_PLAY,		&tape.label.play	},
+      { IMG_TAPE_SYMBOL_GFX_PLAY,		&tape.symbol.play	},
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_RECORD,		&tape.label.record	},
+      { IMG_TAPE_SYMBOL_GFX_RECORD,		&tape.symbol.record	},
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_PAUSE,		&tape.label.pause	},
+      { IMG_TAPE_SYMBOL_GFX_PAUSE,		&tape.symbol.pause	},
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_DATE,		&tape.label.date	},
+      { -1,					NULL			},
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_TIME,		&tape.label.time	},
+      { -1,					NULL			},
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_FAST_FORWARD,	&tape.label.fast_forward  },
+      { IMG_TAPE_SYMBOL_GFX_FAST_FORWARD,	&tape.symbol.fast_forward },
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_PAUSE_BEFORE_END,	&tape.label.pause_before_end  },
+      { IMG_TAPE_SYMBOL_GFX_PAUSE_BEFORE_END,	&tape.symbol.pause_before_end },
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_WARP_FORWARD_BLIND,	&tape.label.warp_forward_blind},
+      { IMG_TAPE_SYMBOL_GFX_WARP_FORWARD_BLIND, &tape.symbol.warp_forward_blind},
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_WARP_FORWARD,	&tape.label.warp_forward  },
+      { IMG_TAPE_SYMBOL_GFX_WARP_FORWARD,	&tape.symbol.warp_forward },
+    },
+    {
+      { IMG_TAPE_LABEL_GFX_SINGLE_STEP,		&tape.label.single_step	 },
+      { IMG_TAPE_SYMBOL_GFX_SINGLE_STEP,	&tape.symbol.single_step },
+    },
+  };
+
+  for (k = 0; k < NUM_TAPE_FUNCTION_STATES; k++)	/* on or off states */
+  {
+    for (i = 0; i < NUM_TAPE_FUNCTIONS; i++)		/* record, play, ... */
+    {
+      for (j = 0; j < NUM_TAPE_FUNCTION_PARTS; j++)	/* label or symbol */
+      {
+	if (video_pos[i][j].graphic == -1 ||
+	    video_pos[i][j].pos->x < 0 ||
+	    video_pos[i][j].pos->y < 0)
+	  continue;
+
+	if (state & (1 << (i * 2 + k)))
+	{
+	  struct GraphicInfo *gfx_bg = &graphic_info[IMG_BACKGROUND_TAPE];
+	  struct GraphicInfo *gfx = &graphic_info[video_pos[i][j].graphic];
+	  struct Rect *pos = video_pos[i][j].pos;
+	  Bitmap *gd_bitmap;
+	  int gd_x, gd_y;
+	  int skip_value =
+	    (j == 0 ? VIDEO_DISPLAY_SYMBOL_ONLY : VIDEO_DISPLAY_LABEL_ONLY);
+
+	  if (value == skip_value)
+	    continue;
+
+	  if (k == 1)		/* on */
+	  {
+	    gd_bitmap = gfx->bitmap;
+	    gd_x = gfx->src_x;
+	    gd_y = gfx->src_y;
+	  }
+	  else			/* off */
+	  {
+	    gd_bitmap = gfx_bg->bitmap;
+	    gd_x = gfx_bg->src_x + pos->x;
+	    gd_y = gfx_bg->src_y + pos->y;
+	  }
+
+	  /* some tape graphics may be undefined -- only draw if defined */
+	  if (gd_bitmap != NULL)
+	    BlitBitmap(gd_bitmap, drawto, gd_x, gd_y, gfx->width, gfx->height,
+		       VX + pos->x, VY + pos->y);
+	}
+      }
+    }
+  }
+
+#else
 
   for (k = 0; k < NUM_TAPE_FUNCTION_STATES; k++)	/* on or off states */
   {
@@ -379,6 +480,32 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
       }
     }
   }
+#endif
+
+#if 1
+  if (state & VIDEO_STATE_DATE_ON)
+  {
+    struct TextPosInfo *pos = &tape.text.date;
+    int tag = value % 100;
+    int monat = (value/100) % 100;
+    int jahr = (value/10000);
+
+    DrawText(VX + pos->x,      VY + pos->y, int2str(tag, 2),   pos->font);
+    DrawText(VX + pos->x + 27, VY + pos->y, monatsname[monat], pos->font);
+    DrawText(VX + pos->x + 64, VY + pos->y, int2str(jahr, 2),  pos->font);
+  }
+
+  if (state & VIDEO_STATE_TIME_ON)
+  {
+    struct TextPosInfo *pos = &tape.text.time;
+    int min = value / 60;
+    int sec = value % 60;
+
+    DrawText(VX + pos->x,      VY + pos->y, int2str(min, 2), pos->font);
+    DrawText(VX + pos->x + 27, VY + pos->y, int2str(sec, 2), pos->font);
+  }
+
+#else
 
   if (state & VIDEO_STATE_DATE_ON)
   {
@@ -404,6 +531,7 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
     DrawText(VX + VIDEO_TIME_XPOS + 27, VY + VIDEO_TIME_YPOS,
 	     int2str(sec, 2), FONT_TAPE_RECORDER);
   }
+#endif
 
   redraw_mask |= REDRAW_DOOR_2;
 }
@@ -549,12 +677,12 @@ static void TapeRewind()
   InitRND(tape.random_seed);
 }
 
-static void TapeSetRandomSeed(long random_seed)
+static void TapeSetRandomSeed(int random_seed)
 {
   tape.random_seed = InitRND(random_seed);
 }
 
-void TapeStartRecording(long random_seed)
+void TapeStartRecording(int random_seed)
 {
   if (!TAPE_IS_STOPPED(tape))
     TapeStop();
@@ -1060,7 +1188,9 @@ void AutoPlayTape()
   static int num_levels_solved = 0;
   static int num_tape_missing = 0;
   static boolean level_failed[MAX_TAPES_PER_SET];
+#if 0
   static boolean tape_missing[MAX_TAPES_PER_SET];
+#endif
   int i;
 
   if (autoplay_initialized)
@@ -1109,7 +1239,9 @@ void AutoPlayTape()
     for (i = 0; i < MAX_TAPES_PER_SET; i++)
     {
       level_failed[i] = FALSE;
+#if 0
       tape_missing[i] = FALSE;
+#endif
     }
 
     autoplay_initialized = TRUE;
@@ -1144,8 +1276,10 @@ void AutoPlayTape()
     if (tape.no_valid_file)
     {
       num_tape_missing++;
+#if 0
       if (level_nr >= 0 && level_nr < MAX_TAPES_PER_SET)
 	tape_missing[level_nr] = TRUE;
+#endif
 
       printf("(no tape)\n");
       continue;
@@ -1197,55 +1331,38 @@ void AutoPlayTape()
 
 /* ---------- new tape button stuff ---------------------------------------- */
 
-/* graphic position values for tape buttons */
-#define TAPE_BUTTON_XSIZE	18
-#define TAPE_BUTTON_YSIZE	18
-#define TAPE_BUTTON_XPOS	5
-#define TAPE_BUTTON_YPOS	77
-
-#define TAPE_BUTTON_EJECT_XPOS	(TAPE_BUTTON_XPOS + 0 * TAPE_BUTTON_XSIZE)
-#define TAPE_BUTTON_EXTRA_XPOS	(TAPE_BUTTON_XPOS + 0 * TAPE_BUTTON_XSIZE)
-#define TAPE_BUTTON_STOP_XPOS	(TAPE_BUTTON_XPOS + 1 * TAPE_BUTTON_XSIZE)
-#define TAPE_BUTTON_PAUSE_XPOS	(TAPE_BUTTON_XPOS + 2 * TAPE_BUTTON_XSIZE)
-#define TAPE_BUTTON_RECORD_XPOS	(TAPE_BUTTON_XPOS + 3 * TAPE_BUTTON_XSIZE)
-#define TAPE_BUTTON_PLAY_XPOS	(TAPE_BUTTON_XPOS + 4 * TAPE_BUTTON_XSIZE)
-
 static struct
 {
-  int x, y;
+  int graphic;
+  struct Rect *pos;
   int gadget_id;
   char *infotext;
 } tapebutton_info[NUM_TAPE_BUTTONS] =
 {
   {
-    TAPE_BUTTON_EJECT_XPOS,	TAPE_BUTTON_YPOS,
-    TAPE_CTRL_ID_EJECT,
-    "eject tape"
+    IMG_TAPE_BUTTON_GFX_EJECT,		&tape.button.eject,
+    TAPE_CTRL_ID_EJECT,			"eject tape"
   },
   {
-    TAPE_BUTTON_EXTRA_XPOS,	TAPE_BUTTON_YPOS,
-    TAPE_CTRL_ID_EXTRA,
-    "extra functions"
+    /* (same position as "eject" button) */
+    IMG_TAPE_BUTTON_GFX_EXTRA,		&tape.button.eject,
+    TAPE_CTRL_ID_EXTRA,			"extra functions"
   },
   {
-    TAPE_BUTTON_STOP_XPOS,	TAPE_BUTTON_YPOS,
-    TAPE_CTRL_ID_STOP,
-    "stop tape"
+    IMG_TAPE_BUTTON_GFX_STOP,		&tape.button.stop,
+    TAPE_CTRL_ID_STOP,			"stop tape"
   },
   {
-    TAPE_BUTTON_PAUSE_XPOS,	TAPE_BUTTON_YPOS,
-    TAPE_CTRL_ID_PAUSE,
-    "pause tape"
+    IMG_TAPE_BUTTON_GFX_PAUSE,		&tape.button.pause,
+    TAPE_CTRL_ID_PAUSE,			"pause tape"
   },
   {
-    TAPE_BUTTON_RECORD_XPOS,	TAPE_BUTTON_YPOS,
-    TAPE_CTRL_ID_RECORD,
-    "record tape"
+    IMG_TAPE_BUTTON_GFX_RECORD,		&tape.button.record,
+    TAPE_CTRL_ID_RECORD,		"record tape"
   },
   {
-    TAPE_BUTTON_PLAY_XPOS,	TAPE_BUTTON_YPOS,
-    TAPE_CTRL_ID_PLAY,
-    "play tape"
+    IMG_TAPE_BUTTON_GFX_PLAY,		&tape.button.play,
+    TAPE_CTRL_ID_PLAY,			"play tape"
   }
 };
 
@@ -1255,34 +1372,25 @@ void CreateTapeButtons()
 
   for (i = 0; i < NUM_TAPE_BUTTONS; i++)
   {
-    Bitmap *gd_bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
+    struct GraphicInfo *gfx = &graphic_info[tapebutton_info[i].graphic];
+    struct Rect *pos = tapebutton_info[i].pos;
     struct GadgetInfo *gi;
-    int gd_xoffset, gd_yoffset;
-    int gd_x1, gd_x2, gd_y;
+    int gd_x = gfx->src_x;
+    int gd_y = gfx->src_y;
+    int gd_xp = gfx->src_x + gfx->pressed_xoffset;
+    int gd_yp = gfx->src_y + gfx->pressed_yoffset;
     int id = i;
-
-    gd_xoffset = tapebutton_info[i].x;
-    gd_yoffset = tapebutton_info[i].y;
-    gd_x1 = DOOR_GFX_PAGEX4 + gd_xoffset;
-    gd_x2 = DOOR_GFX_PAGEX3 + gd_xoffset;
-    gd_y  = DOOR_GFX_PAGEY2 + gd_yoffset;
-
-    if (i == TAPE_CTRL_ID_EXTRA)
-    {
-      gd_x1 = DOOR_GFX_PAGEX6 + gd_xoffset;
-      gd_x2 = DOOR_GFX_PAGEX5 + gd_xoffset;
-    }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
 		      GDI_INFO_TEXT, tapebutton_info[i].infotext,
-		      GDI_X, VX + gd_xoffset,
-		      GDI_Y, VY + gd_yoffset,
-		      GDI_WIDTH, TAPE_BUTTON_XSIZE,
-		      GDI_HEIGHT, TAPE_BUTTON_YSIZE,
+		      GDI_X, VX + pos->x,
+		      GDI_Y, VY + pos->y,
+		      GDI_WIDTH, gfx->width,
+		      GDI_HEIGHT, gfx->height,
 		      GDI_TYPE, GD_TYPE_NORMAL_BUTTON,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
-		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y,
-		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y,
+		      GDI_DESIGN_UNPRESSED, gfx->bitmap, gd_x, gd_y,
+		      GDI_DESIGN_PRESSED, gfx->bitmap, gd_xp, gd_yp,
 		      GDI_DIRECT_DRAW, FALSE,
 		      GDI_EVENT_MASK, GD_EVENT_RELEASED,
 		      GDI_CALLBACK_ACTION, HandleTapeButtons,
@@ -1449,10 +1557,13 @@ static void HandleTapeButtons(struct GadgetInfo *gi)
 
 void HandleTapeButtonKeys(Key key)
 {
-  boolean use_extra = (tape.recording || tape.playing);
+  boolean eject_button_is_active = TAPE_IS_STOPPED(tape);
+  boolean extra_button_is_active = !eject_button_is_active;
 
-  if (key == setup.shortcut.tape_eject)
-    HandleTapeButtonsExt(use_extra ? TAPE_CTRL_ID_EXTRA : TAPE_CTRL_ID_EJECT);
+  if (key == setup.shortcut.tape_eject && eject_button_is_active)
+    HandleTapeButtonsExt(TAPE_CTRL_ID_EJECT);
+  else if (key == setup.shortcut.tape_extra && extra_button_is_active)
+    HandleTapeButtonsExt(TAPE_CTRL_ID_EXTRA);
   else if (key == setup.shortcut.tape_stop)
     HandleTapeButtonsExt(TAPE_CTRL_ID_STOP);
   else if (key == setup.shortcut.tape_pause)

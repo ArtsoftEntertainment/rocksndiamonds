@@ -29,6 +29,12 @@
 
 #define USE_EXTENDED_GRAPHICS_ENGINE		1
 
+
+#if 0
+int TILEX = ORIG_TILEX * ZOOM_FACTOR;
+int TILEY = ORIG_TILEY * ZOOM_FACTOR;
+#endif
+
 int frame;				/* current screen frame */
 int screen_x, screen_y;			/* current scroll position */
 
@@ -59,7 +65,63 @@ void BlitScreenToBitmap_EM(Bitmap *target_bitmap)
 {
   int x = screen_x % (MAX_BUF_XSIZE * TILEX);
   int y = screen_y % (MAX_BUF_YSIZE * TILEY);
+  int sx, sy, sxsize, sysize;
+  int xsize = SXSIZE;
+  int ysize = SYSIZE;
+  int full_xsize = lev.width  * TILEX;
+  int full_ysize = lev.height * TILEY;
 
+  sxsize = (full_xsize < xsize ? full_xsize : xsize);
+  sysize = (full_ysize < ysize ? full_ysize : ysize);
+  sx = SX + (full_xsize < xsize ? (xsize - full_xsize) / 2 : 0);
+  sy = SY + (full_ysize < ysize ? (ysize - full_ysize) / 2 : 0);
+
+#if 0
+  printf("::: %d, %d\n", screenBitmap->width, screenBitmap->height);
+  BlitBitmap(screenBitmap, target_bitmap, 0, 0, 544, 544, SX, SY);
+  return;
+#endif
+
+#if 1
+  if (x < 2 * TILEX && y < 2 * TILEY)
+  {
+    BlitBitmap(screenBitmap, target_bitmap, x, y,
+	       sxsize, sysize, sx, sy);
+  }
+  else if (x < 2 * TILEX && y >= 2 * TILEY)
+  {
+    BlitBitmap(screenBitmap, target_bitmap, x, y,
+	       sxsize, MAX_BUF_YSIZE * TILEY - y,
+	       sx, sy);
+    BlitBitmap(screenBitmap, target_bitmap, x, 0,
+	       sxsize, y - 2 * TILEY,
+	       sx, sy + MAX_BUF_YSIZE * TILEY - y);
+  }
+  else if (x >= 2 * TILEX && y < 2 * TILEY)
+  {
+    BlitBitmap(screenBitmap, target_bitmap, x, y,
+	       MAX_BUF_XSIZE * TILEX - x, sysize,
+	       sx, sy);
+    BlitBitmap(screenBitmap, target_bitmap, 0, y,
+	       x - 2 * TILEX, sysize,
+	       sx + MAX_BUF_XSIZE * TILEX - x, sy);
+  }
+  else
+  {
+    BlitBitmap(screenBitmap, target_bitmap, x, y,
+	       MAX_BUF_XSIZE * TILEX - x, MAX_BUF_YSIZE * TILEY - y,
+	       sx, sy);
+    BlitBitmap(screenBitmap, target_bitmap, 0, y,
+	       x - 2 * TILEX, MAX_BUF_YSIZE * TILEY - y,
+	       sx + MAX_BUF_XSIZE * TILEX - x, sy);
+    BlitBitmap(screenBitmap, target_bitmap, x, 0,
+	       MAX_BUF_XSIZE * TILEX - x, y - 2 * TILEY,
+	       sx, sy + MAX_BUF_YSIZE * TILEY - y);
+    BlitBitmap(screenBitmap, target_bitmap, 0, 0,
+	       x - 2 * TILEX, y - 2 * TILEY,
+	       sx + MAX_BUF_XSIZE * TILEX - x, sy + MAX_BUF_YSIZE * TILEY - y);
+  }
+#else
   if (x < 2 * TILEX && y < 2 * TILEY)
   {
     BlitBitmap(screenBitmap, target_bitmap, x, y,
@@ -98,6 +160,7 @@ void BlitScreenToBitmap_EM(Bitmap *target_bitmap)
 	       x - 2 * TILEX, y - 2 * TILEY,
 	       SX + MAX_BUF_XSIZE * TILEX - x, SY + MAX_BUF_YSIZE * TILEY - y);
   }
+#endif
 }
 
 void BackToFront_EM(void)
@@ -138,6 +201,22 @@ void BackToFront_EM(void)
     boolean half_shifted_y = (EVEN(SCR_FIELDY) && screen_y % TILEY != 0);
 #endif
 
+    int sx, sy;
+#if 0
+    int sxsize, sysize;
+#endif
+    int xsize = SXSIZE;
+    int ysize = SYSIZE;
+    int full_xsize = lev.width  * TILEX;
+    int full_ysize = lev.height * TILEY;
+
+#if 0
+    sxsize = (full_xsize < xsize ? full_xsize : xsize);
+    sysize = (full_ysize < ysize ? full_ysize : ysize);
+#endif
+    sx = SX + (full_xsize < xsize ? (xsize - full_xsize) / 2 : 0);
+    sy = SY + (full_ysize < ysize ? (ysize - full_ysize) / 2 : 0);
+
 #if 0
 #if 1
     printf("::: %d, %d\n", EVEN(SCR_FIELDX), screen_x);
@@ -164,8 +243,8 @@ void BackToFront_EM(void)
 	if (redraw[xx][yy])
 	  BlitBitmap(screenBitmap, window,
 		     xx * TILEX, yy * TILEY, TILEX, TILEY,
-		     SX + x * TILEX - scroll_xoffset,
-		     SY + y * TILEY - scroll_yoffset);
+		     sx + x * TILEX - scroll_xoffset,
+		     sy + y * TILEY - scroll_yoffset);
       }
     }
 
@@ -231,12 +310,21 @@ static void DrawLevelField_EM(int x, int y, int sx, int sy,
 			      boolean draw_masked)
 {
   struct GraphicInfo_EM *g = getObjectGraphic(x, y);
+#if NEW_TILESIZE
+  int src_x = g->src_x + g->src_offset_x * TILESIZE_VAR / TILESIZE;
+  int src_y = g->src_y + g->src_offset_y * TILESIZE_VAR / TILESIZE;
+  int dst_x = sx * TILEX + g->dst_offset_x * TILESIZE_VAR / TILESIZE;
+  int dst_y = sy * TILEY + g->dst_offset_y * TILESIZE_VAR / TILESIZE;
+  int width = g->width * TILESIZE_VAR / TILESIZE;
+  int height = g->height * TILESIZE_VAR / TILESIZE;
+#else
   int src_x = g->src_x + g->src_offset_x;
   int src_y = g->src_y + g->src_offset_y;
   int dst_x = sx * TILEX + g->dst_offset_x;
   int dst_y = sy * TILEY + g->dst_offset_y;
   int width = g->width;
   int height = g->height;
+#endif
   int left = screen_x / TILEX;
   int top  = screen_y / TILEY;
 
@@ -274,6 +362,7 @@ static void DrawLevelFieldCrumbled_EM(int x, int y, int sx, int sy,
 #else
   struct GraphicInfo_EM *g = getObjectGraphic(x, y);
 #endif
+  int crumbled_border_size;
   int left = screen_x / TILEX;
   int top  = screen_y / TILEY;
   int i;
@@ -288,6 +377,12 @@ static void DrawLevelFieldCrumbled_EM(int x, int y, int sx, int sy,
 
 #if 1
   g = getObjectGraphic(x, y);
+#endif
+
+  crumbled_border_size = g->crumbled_border_size;
+
+#if NEW_TILESIZE
+  crumbled_border_size = crumbled_border_size * TILESIZE_VAR / TILESIZE;
 #endif
 
 #if 0
@@ -305,17 +400,17 @@ static void DrawLevelFieldCrumbled_EM(int x, int y, int sx, int sy,
 
       if (i == 1 || i == 2)
       {
-	width = g->crumbled_border_size;
+	width = crumbled_border_size;
 	height = TILEY;
-	cx = (i == 2 ? TILEX - g->crumbled_border_size : 0);
+	cx = (i == 2 ? TILEX - crumbled_border_size : 0);
 	cy = 0;
       }
       else
       {
 	width = TILEX;
-	height = g->crumbled_border_size;
+	height = crumbled_border_size;
 	cx = 0;
-	cy = (i == 3 ? TILEY - g->crumbled_border_size : 0);
+	cy = (i == 3 ? TILEY - crumbled_border_size : 0);
       }
 
       if (width > 0 && height > 0)
@@ -918,9 +1013,9 @@ void RedrawPlayfield_EM(boolean force_redraw)
   if (draw_new_player_location && !quick_relocation)
   {
 #if 1
-    unsigned long game_frame_delay_value = getGameFrameDelay_EM(20);
+    unsigned int game_frame_delay_value = getGameFrameDelay_EM(20);
 #else
-    unsigned long game_frame_delay_value = getGameFrameDelay_EM(25);
+    unsigned int game_frame_delay_value = getGameFrameDelay_EM(25);
 #endif
     int wait_delay_value = game_frame_delay_value;
     int screen_xx = VALID_SCREEN_X(sx);

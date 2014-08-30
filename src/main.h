@@ -31,6 +31,9 @@
 #include "conf_mus.h"	/* include auto-generated data structure definitions */
 
 
+#define NEW_TILESIZE			1
+#define NEW_SCROLL			1
+
 #define IMG_UNDEFINED			(-1)
 #define IMG_EMPTY			IMG_EMPTY_SPACE
 #define IMG_SP_EMPTY			IMG_EMPTY_SPACE
@@ -962,6 +965,8 @@
 #define TILESIZE		32
 #define TILEX			TILESIZE
 #define TILEY			TILESIZE
+#define TILEX_VAR		TILESIZE_VAR
+#define TILEY_VAR		TILESIZE_VAR
 #define MINI_TILESIZE		(TILESIZE / 2)
 #define MINI_TILEX		MINI_TILESIZE
 #define MINI_TILEY		MINI_TILESIZE
@@ -970,18 +975,49 @@
 #define MICRO_TILEY		MICRO_TILESIZE
 #define MIDPOSX			(SCR_FIELDX / 2)
 #define MIDPOSY			(SCR_FIELDY / 2)
+#if NEW_TILESIZE
+#if NEW_SCROLL
+#if 0
+#define SXSIZE			(SCR_FIELDX * TILEX_VAR)
+#define SYSIZE			(SCR_FIELDY * TILEY_VAR)
+#endif
+#define FXSIZE			((2 + SCR_FIELDX + 2) * TILEX_VAR)
+#define FYSIZE			((2 + SCR_FIELDY + 2) * TILEY_VAR)
+#else
+#if 0
+#define SXSIZE			(SCR_FIELDX * TILEX_VAR)
+#define SYSIZE			(SCR_FIELDY * TILEY_VAR)
+#endif
+#define FXSIZE			((SCR_FIELDX + 2) * TILEX_VAR)
+#define FYSIZE			((SCR_FIELDY + 2) * TILEY_VAR)
+#endif
+#else
+#if NEW_SCROLL
+#if 0
 #define SXSIZE			(SCR_FIELDX * TILEX)
 #define SYSIZE			(SCR_FIELDY * TILEY)
+#endif
+#define FXSIZE			((2 + SCR_FIELDX + 2) * TILEX)
+#define FYSIZE			((2 + SCR_FIELDY + 2) * TILEY)
+#else
+#if 0
+#define SXSIZE			(SCR_FIELDX * TILEX)
+#define SYSIZE			(SCR_FIELDY * TILEY)
+#endif
 #define FXSIZE			((SCR_FIELDX + 2) * TILEX)
 #define FYSIZE			((SCR_FIELDY + 2) * TILEY)
+#endif
+#endif
 #define DXSIZE			100
 #define DYSIZE			280
 #define VXSIZE			DXSIZE
 #define VYSIZE			100
 #define EXSIZE			DXSIZE
 #define EYSIZE			(VYSIZE + 44)
+#if 0
 #define FULL_SXSIZE		(2 + SXSIZE + 2)
 #define FULL_SYSIZE		(2 + SYSIZE + 2)
+#endif
 #define MICROLEVEL_XSIZE	((STD_LEV_FIELDX + 2) * MICRO_TILEX)
 #define MICROLEVEL_YSIZE	((STD_LEV_FIELDY + 2) * MICRO_TILEY)
 #define MICROLEVEL_XPOS		(SX + (SXSIZE - MICROLEVEL_XSIZE) / 2)
@@ -1822,17 +1858,19 @@
 #define GFX_SPECIAL_ARG_TITLE		3
 #define GFX_SPECIAL_ARG_MAIN		4
 #define GFX_SPECIAL_ARG_LEVELS		5
-#define GFX_SPECIAL_ARG_SCORES		6
-#define GFX_SPECIAL_ARG_EDITOR		7
-#define GFX_SPECIAL_ARG_INFO		8
-#define GFX_SPECIAL_ARG_SETUP		9
-#define GFX_SPECIAL_ARG_PLAYING		10
-#define GFX_SPECIAL_ARG_DOOR		11
-#define GFX_SPECIAL_ARG_PANEL		12
-#define GFX_SPECIAL_ARG_PREVIEW		13
-#define GFX_SPECIAL_ARG_CRUMBLED	14
+#define GFX_SPECIAL_ARG_LEVELNR		6
+#define GFX_SPECIAL_ARG_SCORES		7
+#define GFX_SPECIAL_ARG_EDITOR		8
+#define GFX_SPECIAL_ARG_INFO		9
+#define GFX_SPECIAL_ARG_SETUP		10
+#define GFX_SPECIAL_ARG_PLAYING		11
+#define GFX_SPECIAL_ARG_DOOR		12
+#define GFX_SPECIAL_ARG_TAPE		13
+#define GFX_SPECIAL_ARG_PANEL		14
+#define GFX_SPECIAL_ARG_PREVIEW		15
+#define GFX_SPECIAL_ARG_CRUMBLED	16
 
-#define NUM_SPECIAL_GFX_ARGS		15
+#define NUM_SPECIAL_GFX_ARGS		17
 
 /* these additional definitions are currently only used for draw offsets */
 #define GFX_SPECIAL_ARG_INFO_MAIN	0
@@ -1914,8 +1952,12 @@
 #define GFX_ARG_SORT_PRIORITY		45
 #define GFX_ARG_CLASS			46
 #define GFX_ARG_STYLE			47
+#define GFX_ARG_ACTIVE_XOFFSET		48
+#define GFX_ARG_ACTIVE_YOFFSET		49
+#define GFX_ARG_PRESSED_XOFFSET		50
+#define GFX_ARG_PRESSED_YOFFSET		51
 
-#define NUM_GFX_ARGS			48
+#define NUM_GFX_ARGS			52
 
 
 /* values for sound configuration suffixes */
@@ -1995,24 +2037,25 @@
 #define GAME_MODE_TITLE			3
 #define GAME_MODE_MAIN			4
 #define GAME_MODE_LEVELS		5
-#define GAME_MODE_SCORES		6
-#define GAME_MODE_EDITOR		7
-#define GAME_MODE_INFO			8
-#define GAME_MODE_SETUP			9
-#define GAME_MODE_PLAYING		10
-#define GAME_MODE_PSEUDO_DOOR		11
-#define GAME_MODE_PSEUDO_PANEL		12
-#define GAME_MODE_PSEUDO_PREVIEW	13
-#define GAME_MODE_PSEUDO_CRUMBLED	14
+#define GAME_MODE_LEVELNR		6
+#define GAME_MODE_SCORES		7
+#define GAME_MODE_EDITOR		8
+#define GAME_MODE_INFO			9
+#define GAME_MODE_SETUP			10
+#define GAME_MODE_PLAYING		11
+#define GAME_MODE_PSEUDO_DOOR		12
+#define GAME_MODE_PSEUDO_TAPE		13
+#define GAME_MODE_PSEUDO_PANEL		14
+#define GAME_MODE_PSEUDO_PREVIEW	15
+#define GAME_MODE_PSEUDO_CRUMBLED	16
 
 /* there are no special config file suffixes for these modes */
-#define GAME_MODE_PSEUDO_TYPENAME	15
-#define GAME_MODE_QUIT			16
+#define GAME_MODE_PSEUDO_TYPENAME	17
+#define GAME_MODE_QUIT			18
 
 /* special definitions currently only used for custom artwork configuration */
 #define MUSIC_PREFIX_BACKGROUND		0
 #define NUM_MUSIC_PREFIXES		1
-#define MAX_LEVELS			1000
 
 /* definitions for demo animation lists */
 #define HELPANIM_LIST_NEXT		-1
@@ -2022,8 +2065,8 @@
 /* program information and versioning definitions */
 #define PROGRAM_VERSION_MAJOR		3
 #define PROGRAM_VERSION_MINOR		3
-#define PROGRAM_VERSION_PATCH		0
-#define PROGRAM_VERSION_BUILD		1
+#define PROGRAM_VERSION_PATCH		1
+#define PROGRAM_VERSION_BUILD		0
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
@@ -2460,6 +2503,8 @@ struct GlobalInfo
   int fading_status;
   int fading_type;
 #endif
+
+  boolean use_envelope_request;
 };
 
 struct ElementChangeInfo
@@ -2573,7 +2618,7 @@ struct ElementInfo
 
   /* ---------- special element property values ---------- */
 
-  unsigned long properties[NUM_EP_BITFIELDS];	/* element base properties */
+  unsigned int properties[NUM_EP_BITFIELDS];	/* element base properties */
 
   boolean use_gfx_element;	/* use custom graphic element */
   int gfx_element_initial;	/* initial optional custom graphic element */
@@ -2716,6 +2761,11 @@ struct GraphicInfo
   int class;
   int style;
 
+  int active_xoffset;
+  int active_yoffset;
+  int pressed_xoffset;
+  int pressed_yoffset;
+
   boolean use_image_size;	/* use image size as default width and height */
 
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
@@ -2814,7 +2864,11 @@ extern SDL_Thread	       *server_thread;
 extern int			key_joystick_mapping;
 
 #if 1
+#if NEW_SCROLL
+extern boolean			redraw[2 + MAX_LEV_FIELDX + 2][2 + MAX_LEV_FIELDY + 2];
+#else
 extern boolean			redraw[MAX_LEV_FIELDX + 2][MAX_LEV_FIELDY + 2];
+#endif
 #else
 extern boolean			redraw[MAX_BUF_XSIZE][MAX_BUF_YSIZE];
 #endif
@@ -2870,6 +2924,9 @@ extern int			DX, DY;
 extern int			VX, VY;
 extern int			EX, EY;
 extern int			dDX, dDY;
+extern int			SXSIZE, SYSIZE;
+extern int			FULL_SXSIZE, FULL_SYSIZE;
+extern int			TILESIZE_VAR;
 
 extern int			FX, FY;
 extern int			ScrollStepSize;

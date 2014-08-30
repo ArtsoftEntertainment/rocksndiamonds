@@ -73,6 +73,7 @@
 #define DEFAULT_KEY_FOCUS_PLAYER_4	KSYM_F8
 #define DEFAULT_KEY_FOCUS_PLAYER_ALL	KSYM_F9
 #define DEFAULT_KEY_TAPE_EJECT		KSYM_UNDEFINED
+#define DEFAULT_KEY_TAPE_EXTRA		KSYM_UNDEFINED
 #define DEFAULT_KEY_TAPE_STOP		KSYM_UNDEFINED
 #define DEFAULT_KEY_TAPE_PAUSE		KSYM_UNDEFINED
 #define DEFAULT_KEY_TAPE_RECORD		KSYM_UNDEFINED
@@ -284,7 +285,18 @@
 				 REDRAW_TILES | \
 				 REDRAW_MICROLEVEL)
 #define REDRAW_FPS		(1 << 11)
+
+#if defined(TARGET_X11)
+/* on old-style, classic and potentially slow graphics systems, redraw single
+   tiles instead of the whole playfield unless a certain threshold is reached;
+   when using the X11 target, this method should still be fast on all systems */
 #define REDRAWTILES_THRESHOLD	(SCR_FIELDX * SCR_FIELDY / 2)
+#else
+/* on modern graphics systems and when using the SDL target, this tile redraw
+   optimization can slow things down a lot due to many small blits compared to
+   one single playfield-sized blit (especially observed on Mac OS X with SDL) */
+#define REDRAWTILES_THRESHOLD	0
+#endif
 
 #define IN_GFX_SCREEN(x, y)	(x >= gfx.sx && x < gfx.sx + gfx.sxsize && \
 				 y >= gfx.sy && y < gfx.sy + gfx.sysize)
@@ -303,6 +315,7 @@
 #define GAME_FRAME_DELAY	20	/* frame delay in milliseconds */
 #define FFWD_FRAME_DELAY	10	/* 200% speed for fast forward */
 #define FRAMES_PER_SECOND	(ONE_SECOND_DELAY / GAME_FRAME_DELAY)
+#define FRAMES_PER_SECOND_SP	35
 
 /* maximum playfield size supported by libgame functions */
 #define MAX_PLAYFIELD_WIDTH	128
@@ -313,6 +326,9 @@
 
 /* maximum allowed length of player name */
 #define MAX_PLAYER_NAME_LEN	10
+
+/* maximum number of levels in a level set */
+#define MAX_LEVELS		1000
 
 /* default name for empty highscore entry */
 #define EMPTY_PLAYER_NAME	"no name"
@@ -502,16 +518,20 @@
 #define TREE_TYPE_SOUNDS_DIR	ARTWORK_TYPE_SOUNDS
 #define TREE_TYPE_MUSIC_DIR	ARTWORK_TYPE_MUSIC
 #define TREE_TYPE_LEVEL_DIR	3
+#define TREE_TYPE_LEVEL_NR	4
 
-#define NUM_TREE_TYPES		4
+#define NUM_TREE_TYPES		5
 
 #define INFOTEXT_UNDEFINED	""
 #define INFOTEXT_GRAPHICS_DIR	"Custom Graphics"
 #define INFOTEXT_SOUNDS_DIR	"Custom Sounds"
 #define INFOTEXT_MUSIC_DIR	"Custom Music"
 #define INFOTEXT_LEVEL_DIR	"Level Sets"
+#define INFOTEXT_LEVEL_NR	"Levels"
 
-#define TREE_INFOTEXT(t)	((t) == TREE_TYPE_LEVEL_DIR ?		\
+#define TREE_INFOTEXT(t)	((t) == TREE_TYPE_LEVEL_NR ?		\
+				 INFOTEXT_LEVEL_NR :			\
+				 (t) == TREE_TYPE_LEVEL_DIR ?		\
 				 INFOTEXT_LEVEL_DIR :			\
 				 (t) == TREE_TYPE_GRAPHICS_DIR ?	\
 				 INFOTEXT_GRAPHICS_DIR :		\
@@ -863,6 +883,7 @@ struct SetupShortcutInfo
   Key focus_player_all;
 
   Key tape_eject;
+  Key tape_extra;
   Key tape_stop;
   Key tape_pause;
   Key tape_record;
@@ -914,6 +935,7 @@ struct SetupInfo
   boolean prefer_aga_graphics;
   int game_frame_delay;
   boolean sp_show_border_elements;
+  boolean small_game_graphics;
 
   char *graphics_set;
   char *sounds_set;
@@ -1151,6 +1173,12 @@ struct TextPosInfo
   int id;
 };
 
+struct LevelStats
+{
+  int played;
+  int solved;
+};
+
 
 /* ========================================================================= */
 /* exported variables                                                        */
@@ -1170,6 +1198,8 @@ extern LevelDirTree	       *leveldir_first_all;
 extern LevelDirTree	       *leveldir_first;
 extern LevelDirTree	       *leveldir_current;
 extern int			level_nr;
+
+extern struct LevelStats	level_stats[];
 
 extern Display		       *display;
 extern Visual		       *visual;
@@ -1220,6 +1250,7 @@ Bitmap *CreateBitmap(int, int, int);
 void ReCreateBitmap(Bitmap **, int, int, int);
 void FreeBitmap(Bitmap *);
 void BlitBitmap(Bitmap *, Bitmap *, int, int, int, int, int, int);
+void BlitBitmapTiled(Bitmap *, Bitmap *, int, int, int, int, int, int, int,int);
 void FadeRectangle(Bitmap *bitmap, int, int, int, int, int, int, int,
 		   void (*draw_border_function)(void));
 void FillRectangle(Bitmap *, int, int, int, int, Pixel);
