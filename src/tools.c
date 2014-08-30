@@ -1634,8 +1634,7 @@ static void DrawMicroLevelLabelExt(int mode)
 
   if (strlen(label_text) > 0)
   {
-    int text_width = strlen(label_text) * getFontWidth(font_nr);
-    int lxpos = SX + (SXSIZE - text_width) / 2;
+    int lxpos = SX + (SXSIZE - getTextWidth(label_text, font_nr)) / 2;
     int lypos = MICROLABEL_YPOS;
 
     DrawText(lxpos, lypos, label_text, font_nr);
@@ -1671,8 +1670,8 @@ void DrawMicroLevel(int xpos, int ypos, boolean restart)
 
     if (leveldir_current->name)
     {
-      int len = strlen(leveldir_current->name);
-      int lxpos = SX + (SXSIZE - len * getFontWidth(FONT_TEXT_1)) / 2;
+      int text_width = getTextWidth(leveldir_current->name, FONT_TEXT_1);
+      int lxpos = SX + (SXSIZE - text_width) / 2;
       int lypos = SY + 352;
 
       DrawText(lxpos, lypos, leveldir_current->name, FONT_TEXT_1);
@@ -1882,6 +1881,8 @@ boolean Request(char *text, unsigned int req_state)
   request_gadget_id = -1;
 
   SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
+
+  SetMouseCursor(CURSOR_DEFAULT);
 
   while(result < 0)
   {

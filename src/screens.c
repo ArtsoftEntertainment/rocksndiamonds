@@ -155,10 +155,10 @@ static void PlaySound_Menu_Continue(int sound)
 
 void DrawHeadline()
 {
-  int font1_width = getFontWidth(FONT_TITLE_1);
-  int font2_width = getFontWidth(FONT_TITLE_2);
-  int x1 = SX + (SXSIZE - strlen(PROGRAM_TITLE_STRING)   * font1_width) / 2;
-  int x2 = SX + (SXSIZE - strlen(WINDOW_SUBTITLE_STRING) * font2_width) / 2;
+  int text1_width = getTextWidth(PROGRAM_TITLE_STRING,   FONT_TITLE_1);
+  int text2_width = getTextWidth(WINDOW_SUBTITLE_STRING, FONT_TITLE_2);
+  int x1 = SX + (SXSIZE - text1_width) / 2;
+  int x2 = SX + (SXSIZE - text2_width) / 2;
 
   DrawText(x1, SY + 8,  PROGRAM_TITLE_STRING,   FONT_TITLE_1);
   DrawText(x2, SY + 46, WINDOW_SUBTITLE_STRING, FONT_TITLE_2);
@@ -192,9 +192,8 @@ void DrawMainMenu()
 {
   static LevelDirTree *leveldir_last_valid = NULL;
   char *name_text = (!options.network && setup.team_mode ? "Team:" : "Name:");
-  int font_width = getFontWidth(FONT_MENU_1);
-  int name_width = font_width * strlen("Name:");
-  int level_width = font_width * strlen("Level:");
+  int name_width  = getTextWidth("Name:",  FONT_MENU_1);
+  int level_width = getTextWidth("Level:", FONT_MENU_1);
   int i;
 
   UnmapAllGadgets();
@@ -1242,8 +1241,11 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
   int yoffset = (ti->type == TREE_TYPE_LEVEL_DIR ? 0 : yoffset_setup);
   int last_game_status = game_status;	/* save current game status */
 
+#if 1
+  DrawBackground(mSX, mSY, SXSIZE - 32 + menu.scrollbar_xoffset, SYSIZE);
+#else
   DrawBackground(SX, SY, SXSIZE - 32, SYSIZE);
-  redraw_mask |= REDRAW_FIELD;
+#endif
 
   title_string =
     (ti->type == TREE_TYPE_LEVEL_DIR ? "Level Directories" :
@@ -1279,6 +1281,8 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
   }
 
   game_status = last_game_status;	/* restore current game status */
+
+  redraw_mask |= REDRAW_FIELD;
 }
 
 static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
@@ -1808,6 +1812,7 @@ static struct TokenInfo setup_info_editor[] =
   { TYPE_SWITCH,	&setup.editor.el_dx_boulderdash,"DX Boulderd.:"	},
   { TYPE_SWITCH,	&setup.editor.el_chars,		"Characters:"	},
   { TYPE_SWITCH,	&setup.editor.el_custom,	"Custom:"	},
+  { TYPE_SWITCH,	&setup.editor.el_custom_more,	"More Custom:"	},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
   { 0,			NULL,			NULL			}
@@ -1831,8 +1836,6 @@ static struct TokenInfo setup_info_graphics[] =
 
 static struct TokenInfo setup_info_sound[] =
 {
-  { TYPE_SWITCH,	&setup.sound,		"Sound:",		},
-  { TYPE_EMPTY,		NULL,			""			},
   { TYPE_SWITCH,	&setup.sound_simple,	"Simple Sound:"		},
   { TYPE_SWITCH,	&setup.sound_loops,	"Sound Loops:"		},
   { TYPE_SWITCH,	&setup.sound_music,	"Game Music:"		},
@@ -2041,10 +2044,10 @@ static void DrawSetupScreen_Generic()
     int font_nr = FONT_MENU_1;
 
     /* set some entries to "unchangeable" according to other variables */
-    if ((value_ptr == &setup.sound       && !audio.sound_available) ||
-	(value_ptr == &setup.sound_loops && !audio.loops_available) ||
-	(value_ptr == &setup.sound_music && !audio.music_available) ||
-	(value_ptr == &setup.fullscreen  && !video.fullscreen_available))
+    if ((value_ptr == &setup.sound_simple && !audio.sound_available) ||
+	(value_ptr == &setup.sound_loops  && !audio.loops_available) ||
+	(value_ptr == &setup.sound_music  && !audio.music_available) ||
+	(value_ptr == &setup.fullscreen   && !video.fullscreen_available))
       setup_info[i].type |= TYPE_GHOSTED;
 
     if (setup_info[i].type & TYPE_STRING)

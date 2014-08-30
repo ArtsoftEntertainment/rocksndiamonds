@@ -548,6 +548,34 @@ void InitElementGraphicInfo()
     }
   }
 
+#if 1
+  /* now set all undefined/invalid graphics to -1 to set to default after it */
+  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+  {
+    for (act=0; act<NUM_ACTIONS; act++)
+    {
+      if (graphic_info[element_info[i].graphic[act]].bitmap == NULL)
+	element_info[i].graphic[act] = -1;
+
+      if (graphic_info[element_info[i].crumbled[act]].bitmap == NULL)
+	element_info[i].crumbled[act] = -1;
+
+      for (dir=0; dir<NUM_DIRECTIONS; dir++)
+      {
+	int graphic;
+
+	graphic = element_info[i].direction_graphic[act][dir];
+	if (graphic_info[graphic].bitmap == NULL)
+	  element_info[i].direction_graphic[act][dir] = -1;
+
+	graphic = element_info[i].direction_crumbled[act][dir];
+	if (graphic_info[graphic].bitmap == NULL)
+	  element_info[i].direction_crumbled[act][dir] = -1;
+      }
+    }
+  }
+#endif
+
   /* now set all '-1' values to element specific default values */
   for (i=0; i<MAX_NUM_ELEMENTS; i++)
   {
@@ -576,9 +604,9 @@ void InitElementGraphicInfo()
 
     for (act=0; act<NUM_ACTIONS; act++)
     {
-      boolean act_remove = (act == ACTION_DIGGING ||
-			    act == ACTION_SNAPPING ||
-			    act == ACTION_COLLECTING);
+      boolean act_remove = ((IS_DIGGABLE(i)    && act == ACTION_DIGGING)  ||
+			    (IS_SNAPPABLE(i)   && act == ACTION_SNAPPING) ||
+			    (IS_COLLECTIBLE(i) && act == ACTION_COLLECTING));
 
       /* generic default action graphic (defined by "[default]" directive) */
       int default_action_graphic = element_info[EL_DEFAULT].graphic[act];
@@ -693,6 +721,15 @@ void InitElementSpecialGraphicInfo()
     if (special >= 0 && special < NUM_SPECIAL_GFX_ARGS)
       element_info[element].special_graphic[special] = graphic;
   }
+
+#if 1
+  /* now set all undefined/invalid graphics to default */
+  for (i=0; i < MAX_NUM_ELEMENTS; i++)
+    for (j=0; j < NUM_SPECIAL_GFX_ARGS; j++)
+      if (graphic_info[element_info[i].special_graphic[j]].bitmap == NULL)
+	element_info[i].special_graphic[j] =
+	  element_info[i].graphic[ACTION_DEFAULT];
+#endif
 }
 
 static int get_element_from_token(char *token)
@@ -879,7 +916,7 @@ static void InitGraphicInfo()
     int first_frame, last_frame;
 
 #if 0
-    printf("::: image: '%s'\n", image->token);
+    printf("::: image: '%s' [%d]\n", image->token, i);
 #endif
 
 #if 0
@@ -1284,7 +1321,7 @@ void InitElementPropertiesStatic()
     -1
   };
 
-  static int ep_collectible[] =
+  static int ep_collectible_only[] =
   {
     EL_BD_DIAMOND,
     EL_EMERALD,
@@ -1774,6 +1811,7 @@ void InitElementPropertiesStatic()
     EL_PLAYER_2,
     EL_PLAYER_3,
     EL_PLAYER_4,
+    EL_SP_MURPHY,
     -1
   };
 
@@ -2495,7 +2533,7 @@ void InitElementPropertiesStatic()
   } element_properties[] =
   {
     { ep_diggable,		EP_DIGGABLE		},
-    { ep_collectible,		EP_COLLECTIBLE		},
+    { ep_collectible_only,	EP_COLLECTIBLE_ONLY	},
     { ep_dont_run_into,		EP_DONT_RUN_INTO	},
     { ep_dont_collide_with,	EP_DONT_COLLIDE_WITH	},
     { ep_dont_touch,		EP_DONT_TOUCH		},
@@ -2639,7 +2677,7 @@ void InitElementPropertiesEngine(int engine_version)
   static int no_wall_properties[] =
   {
     EP_DIGGABLE,
-    EP_COLLECTIBLE,
+    EP_COLLECTIBLE_ONLY,
     EP_DONT_RUN_INTO,
     EP_DONT_COLLIDE_WITH,
     EP_CAN_MOVE,
@@ -2704,6 +2742,10 @@ void InitElementPropertiesEngine(int engine_version)
 
     SET_PROPERTY(i, EP_ACCESSIBLE, (IS_WALKABLE(i) ||
 				    IS_PASSABLE(i)));
+
+    /* ---------- COLLECTIBLE ---------------------------------------------- */
+    SET_PROPERTY(i, EP_COLLECTIBLE, (IS_COLLECTIBLE_ONLY(i) ||
+				     IS_DROPPABLE(i)));
 
     /* ---------- SNAPPABLE ------------------------------------------------ */
     SET_PROPERTY(i, EP_SNAPPABLE, (IS_DIGGABLE(i) ||
@@ -2772,6 +2814,10 @@ void InitElementPropertiesEngine(int engine_version)
     SET_PROPERTY(i, EP_CAN_EXPLODE, (CAN_EXPLODE_BY_FIRE(i) ||
 				     CAN_EXPLODE_SMASHED(i) ||
 				     CAN_EXPLODE_IMPACT(i)));
+
+    /* ---------- CAN_EXPLODE_3X3 ------------------------------------------ */
+    SET_PROPERTY(i, EP_CAN_EXPLODE_3X3, (CAN_EXPLODE(i) &&
+					 !CAN_EXPLODE_1X1(i)));
 
     /* ---------- CAN_BE_CRUMBLED ------------------------------------------ */
     SET_PROPERTY(i, EP_CAN_BE_CRUMBLED,
@@ -3195,7 +3241,9 @@ void InitLevelArtworkInfo()
 
 static void InitImages()
 {
+#if 0
   setLevelArtworkDir(artwork.gfx_first);
+#endif
 
 #if 0
   printf("::: InitImages for '%s' ['%s', '%s'] ['%s', '%s']\n",
@@ -3219,8 +3267,10 @@ static void InitSound(char *identifier)
   if (identifier == NULL)
     identifier = artwork.snd_current->identifier;
 
+#if 0
   /* set artwork path to send it to the sound server process */
   setLevelArtworkDir(artwork.snd_first);
+#endif
 
   InitReloadCustomSounds(identifier);
   ReinitializeSounds();
@@ -3231,8 +3281,10 @@ static void InitMusic(char *identifier)
   if (identifier == NULL)
     identifier = artwork.mus_current->identifier;
 
+#if 0
   /* set artwork path to send it to the sound server process */
   setLevelArtworkDir(artwork.mus_first);
+#endif
 
   InitReloadCustomMusic(identifier);
   ReinitializeMusic();
@@ -3271,7 +3323,12 @@ static char *getNewArtworkIdentifier(int type)
   boolean setup_override_artwork = SETUP_OVERRIDE_ARTWORK(setup, type);
   char *setup_artwork_set = SETUP_ARTWORK_SET(setup, type);
   char *leveldir_identifier = leveldir_current->identifier;
+#if 1
+  /* !!! setLevelArtworkDir() should be moved to an earlier stage !!! */
+  char *leveldir_artwork_set = setLevelArtworkDir(artwork_first_node);
+#else
   char *leveldir_artwork_set = LEVELDIR_ARTWORK_SET(leveldir_current, type);
+#endif
   boolean has_level_artwork_set = (leveldir_artwork_set != NULL);
   char *artwork_current_identifier;
   char *artwork_new_identifier = NULL;	/* default: nothing has changed */
@@ -3279,7 +3336,6 @@ static char *getNewArtworkIdentifier(int type)
   /* leveldir_current may be invalid (level group, parent link) */
   if (!validLevelSeries(leveldir_current))
     return NULL;
-
 
   /* 1st step: determine artwork set to be activated in descending order:
      --------------------------------------------------------------------
@@ -3302,6 +3358,16 @@ static char *getNewArtworkIdentifier(int type)
   /* 2nd step: check if it is really needed to reload artwork set
      ------------------------------------------------------------ */
 
+#if 0
+  if (type == ARTWORK_TYPE_GRAPHICS)
+    printf("::: 0: '%s' ['%s', '%s'] ['%s' ('%s')]\n",
+	   artwork_new_identifier,
+	   ARTWORK_CURRENT_IDENTIFIER(artwork, type),
+	   artwork_current_identifier,
+	   leveldir_current->graphics_set,
+	   leveldir_current->identifier);
+#endif
+
   /* ---------- reload if level set and also artwork set has changed ------- */
   if (leveldir_current_identifier[type] != leveldir_identifier &&
       (last_has_level_artwork_set[type] || has_level_artwork_set))
@@ -3310,11 +3376,21 @@ static char *getNewArtworkIdentifier(int type)
   leveldir_current_identifier[type] = leveldir_identifier;
   last_has_level_artwork_set[type] = has_level_artwork_set;
 
+#if 0
+  if (type == ARTWORK_TYPE_GRAPHICS)
+    printf("::: 1: '%s'\n", artwork_new_identifier);
+#endif
+
   /* ---------- reload if "override artwork" setting has changed ----------- */
   if (last_override_level_artwork[type] != setup_override_artwork)
     artwork_new_identifier = artwork_current_identifier;
 
   last_override_level_artwork[type] = setup_override_artwork;
+
+#if 0
+  if (type == ARTWORK_TYPE_GRAPHICS)
+    printf("::: 2: '%s'\n", artwork_new_identifier);
+#endif
 
   /* ---------- reload if current artwork identifier has changed ----------- */
   if (strcmp(ARTWORK_CURRENT_IDENTIFIER(artwork, type),
@@ -3323,6 +3399,11 @@ static char *getNewArtworkIdentifier(int type)
 
   *(&(ARTWORK_CURRENT_IDENTIFIER(artwork, type))) = artwork_current_identifier;
 
+#if 0
+  if (type == ARTWORK_TYPE_GRAPHICS)
+    printf("::: 3: '%s'\n", artwork_new_identifier);
+#endif
+
   /* ---------- do not reload directly after starting ---------------------- */
   if (!initialized[type])
     artwork_new_identifier = NULL;
@@ -3330,10 +3411,16 @@ static char *getNewArtworkIdentifier(int type)
   initialized[type] = TRUE;
 
 #if 0
-  printf("CHECKING OLD/NEW GFX:\n- OLD: %s\n- NEW: %s ['%s', '%s'] ['%s']\n",
-	 artwork.gfx_current_identifier, artwork_current_identifier,
-	 artwork.gfx_current->identifier, leveldir_current->graphics_set,
-	 artwork_new_identifier);
+  if (type == ARTWORK_TYPE_GRAPHICS)
+    printf("::: 4: '%s'\n", artwork_new_identifier);
+#endif
+
+#if 0
+  if (type == ARTWORK_TYPE_GRAPHICS)
+    printf("CHECKING OLD/NEW GFX:\n- OLD: %s\n- NEW: %s ['%s', '%s'] ['%s']\n",
+	   artwork.gfx_current_identifier, artwork_current_identifier,
+	   artwork.gfx_current->identifier, leveldir_current->graphics_set,
+	   artwork_new_identifier);
 #endif
 
   return artwork_new_identifier;
@@ -3349,15 +3436,21 @@ void ReloadCustomArtwork()
   if (gfx_new_identifier != NULL)
   {
 #if 0
-    printf("RELOADING GRAPHICS '%s' -> '%s' ['%s']\n",
+    printf("RELOADING GRAPHICS '%s' -> '%s' ['%s', '%s']\n",
 	   artwork.gfx_current_identifier,
 	   gfx_new_identifier,
-	   artwork.gfx_current->identifier);
+	   artwork.gfx_current->identifier,
+	   leveldir_current->graphics_set);
 #endif
 
     ClearRectangle(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
     InitImages();
+
+#if 0
+    printf("... '%s'\n",
+	   leveldir_current->graphics_set);
+#endif
 
     FreeTileClipmasks();
     InitTileClipmasks();
@@ -3442,6 +3535,7 @@ void OpenAll()
   InitEventFilter(FilterMouseMotionEvents);
 
   InitElementPropertiesStatic();
+  InitElementPropertiesEngine(GAME_VERSION_ACTUAL);
 
   InitGfx();
 
