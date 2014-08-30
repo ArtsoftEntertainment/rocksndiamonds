@@ -203,6 +203,7 @@
 #define RO_BASE_PATH		RO_GAME_DIR
 #define RW_BASE_PATH		RW_GAME_DIR
 
+/* directory names */
 #define GRAPHICS_DIRECTORY	"graphics"
 #define SOUNDS_DIRECTORY	"sounds"
 #define MUSIC_DIRECTORY		"music"
@@ -219,6 +220,31 @@
 #define GFX_CLASSIC_SUBDIR	"gfx_orig"
 #define SND_CLASSIC_SUBDIR	"snd_orig"
 #define MUS_CLASSIC_SUBDIR	"mus_orig"
+#endif
+
+/* file names and filename extensions */
+#if !defined(PLATFORM_MSDOS)
+#define LEVELSETUP_DIRECTORY	"levelsetup"
+#define SETUP_FILENAME		"setup.conf"
+#define LEVELSETUP_FILENAME	"levelsetup.conf"
+#define LEVELINFO_FILENAME	"levelinfo.conf"
+#define GRAPHICSINFO_FILENAME	"graphicsinfo.conf"
+#define SOUNDSINFO_FILENAME	"soundsinfo.conf"
+#define MUSICINFO_FILENAME	"musicinfo.conf"
+#define LEVELFILE_EXTENSION	"level"
+#define TAPEFILE_EXTENSION	"tape"
+#define SCOREFILE_EXTENSION	"score"
+#else
+#define LEVELSETUP_DIRECTORY	"lvlsetup"
+#define SETUP_FILENAME		"setup.cnf"
+#define LEVELSETUP_FILENAME	"lvlsetup.cnf"
+#define LEVELINFO_FILENAME	"lvlinfo.cnf"
+#define GRAPHICSINFO_FILENAME	"gfxinfo.cnf"
+#define SOUNDSINFO_FILENAME	"sndinfo.cnf"
+#define MUSICINFO_FILENAME	"musinfo.cnf"
+#define LEVELFILE_EXTENSION	"lvl"
+#define TAPEFILE_EXTENSION	"tap"
+#define SCOREFILE_EXTENSION	"sco"
 #endif
 
 
@@ -243,12 +269,11 @@
 
 
 /* macros for version handling */
-#define VERSION_IDENT(x,y,z)	((x) * 1000000 + (y) * 10000 + (z) * 100)
-#define RELEASE_IDENT(x,y,z,r)	(VERSION_IDENT(x,y,z) + (r))
 #define VERSION_MAJOR(x)	((x) / 1000000)
 #define VERSION_MINOR(x)	(((x) % 1000000) / 10000)
 #define VERSION_PATCH(x)	(((x) % 10000) / 100)
-#define VERSION_RELEASE(x)	((x) % 100)
+#define VERSION_BUILD(x)	((x) % 100)
+#define VERSION_IDENT(a,b,c,d)	((a) * 1000000 + (b) * 10000 + (c) * 100 + (d))
 
 
 /* macros for parent/child process identification */
@@ -323,6 +348,30 @@
 				 (type) == ARTWORK_TYPE_SOUNDS ?	\
 				 (artwork).snd_current_identifier :	\
 				 (artwork).mus_current_identifier)
+
+#define ARTWORKINFO_FILENAME(type)					\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 GRAPHICSINFO_FILENAME :		\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 SOUNDSINFO_FILENAME :			\
+				 (type) == ARTWORK_TYPE_MUSIC ?		\
+				 MUSICINFO_FILENAME : "")
+
+#define ARTWORK_DIRECTORY(type)						\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 GRAPHICS_DIRECTORY :			\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 SOUNDS_DIRECTORY :			\
+				 (type) == ARTWORK_TYPE_MUSIC ?		\
+				 MUSIC_DIRECTORY : "")
+
+#define OPTIONS_ARTWORK_DIRECTORY(type)					\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 options.graphics_directory :		\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 options.sounds_directory :		\
+				 (type) == ARTWORK_TYPE_MUSIC ?		\
+				 options.music_directory : "")
 
 
 /* type definitions */
@@ -577,6 +626,8 @@ struct TreeInfo
   int first_level;	/* first level number (to allow start with 0 or 1) */
   int last_level;	/* last level number (automatically calculated) */
   int sort_priority;	/* sort levels by 'sort_priority' and then by name */
+
+  boolean latest_engine;/* force level set to use the latest game engine */
 
   boolean level_group;	/* directory contains more level series directories */
   boolean parent_link;	/* entry links back to parent directory */

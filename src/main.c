@@ -44,6 +44,7 @@ short			MovPos[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			MovDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			MovDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			ChangeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			ChangePage[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Store[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Store2[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			StorePlayer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -52,7 +53,8 @@ boolean			Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Pushed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 unsigned long		Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 unsigned long		ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-short			JustStopped[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			WasJustMoving[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			WasJustFalling[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			AmoebaNr[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			AmoebaCnt[MAX_NUM_AMOEBA];
 short			AmoebaCnt2[MAX_NUM_AMOEBA];
@@ -62,9 +64,10 @@ short			ExplodeField[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 unsigned long		Properties[MAX_NUM_ELEMENTS][NUM_EP_BITFIELDS];
 
 int			GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+int 			GfxDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
 int			lev_fieldx, lev_fieldy;
 int			scroll_x, scroll_y;
@@ -3370,6 +3373,16 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "sp_exit.opening",
+    "sp_exit",
+    "-"
+  },
+  {
+    "sp_exit.closing",
+    "sp_exit",
+    "-"
+  },
+  {
     "sp_exit_open",
     "sp_exit",
     "-"
@@ -3661,38 +3674,43 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
 
 struct ElementActionInfo element_action_info[NUM_ACTIONS + 1 + 1] =
 {
-  { ".[DEFAULT]",	ACTION_DEFAULT,		TRUE	},
-  { ".waiting",		ACTION_WAITING,		TRUE	},
-  { ".falling",		ACTION_FALLING,		TRUE	},
-  { ".moving",		ACTION_MOVING,		TRUE	},
-  { ".digging",		ACTION_DIGGING,		FALSE	},
-  { ".snapping",	ACTION_SNAPPING,	FALSE	},
-  { ".collecting",	ACTION_COLLECTING,	FALSE	},
-  { ".dropping",	ACTION_DROPPING,	FALSE	},
-  { ".pushing",		ACTION_PUSHING,		FALSE	},
-  { ".walking",		ACTION_WALKING,		FALSE	},
-  { ".passing",		ACTION_PASSING,		FALSE	},
-  { ".impact",		ACTION_IMPACT,		FALSE	},
-  { ".breaking",	ACTION_BREAKING,	FALSE	},
-  { ".activating",	ACTION_ACTIVATING,	FALSE	},
-  { ".deactivating",	ACTION_DEACTIVATING,	FALSE	},
-  { ".opening",		ACTION_OPENING,		FALSE	},
-  { ".closing",		ACTION_CLOSING,		FALSE	},
-  { ".attacking",	ACTION_ATTACKING,	TRUE	},
-  { ".growing",		ACTION_GROWING,		TRUE	},
-  { ".shrinking",	ACTION_SHRINKING,	FALSE	},
-  { ".active",		ACTION_ACTIVE,		TRUE	},
-  { ".filling",		ACTION_FILLING,		FALSE	},
-  { ".emptying",	ACTION_EMPTYING,	FALSE	},
-  { ".changing",	ACTION_CHANGING,	FALSE	},
-  { ".exploding",	ACTION_EXPLODING,	FALSE	},
-  { ".dying",		ACTION_DYING,		FALSE	},
-  { ".other",		ACTION_OTHER,		FALSE	},
+  { ".[DEFAULT]",		ACTION_DEFAULT,			TRUE	},
+  { ".waiting",			ACTION_WAITING,			TRUE	},
+  { ".falling",			ACTION_FALLING,			TRUE	},
+  { ".moving",			ACTION_MOVING,			TRUE	},
+  { ".digging",			ACTION_DIGGING,			FALSE	},
+  { ".snapping",		ACTION_SNAPPING,		FALSE	},
+  { ".collecting",		ACTION_COLLECTING,		FALSE	},
+  { ".dropping",		ACTION_DROPPING,		FALSE	},
+  { ".pushing",			ACTION_PUSHING,			FALSE	},
+  { ".walking",			ACTION_WALKING,			FALSE	},
+  { ".passing",			ACTION_PASSING,			FALSE	},
+  { ".impact",			ACTION_IMPACT,			FALSE	},
+  { ".breaking",		ACTION_BREAKING,		FALSE	},
+  { ".activating",		ACTION_ACTIVATING,		FALSE	},
+  { ".deactivating",		ACTION_DEACTIVATING,		FALSE	},
+  { ".opening",			ACTION_OPENING,			FALSE	},
+  { ".closing",			ACTION_CLOSING,			FALSE	},
+  { ".attacking",		ACTION_ATTACKING,		TRUE	},
+  { ".growing",			ACTION_GROWING,			TRUE	},
+  { ".shrinking",		ACTION_SHRINKING,		FALSE	},
+  { ".active",			ACTION_ACTIVE,			TRUE	},
+  { ".filling",			ACTION_FILLING,			FALSE	},
+  { ".emptying",		ACTION_EMPTYING,		FALSE	},
+  { ".changing",		ACTION_CHANGING,		FALSE	},
+  { ".exploding",		ACTION_EXPLODING,		FALSE	},
+  { ".dying",			ACTION_DYING,			FALSE	},
+  { ".turning",			ACTION_TURNING,			FALSE	},
+  { ".turning_from_left",	ACTION_TURNING_FROM_LEFT,	FALSE	},
+  { ".turning_from_right",	ACTION_TURNING_FROM_RIGHT,	FALSE	},
+  { ".turning_from_up",		ACTION_TURNING_FROM_UP,		FALSE	},
+  { ".turning_from_down",	ACTION_TURNING_FROM_DOWN,	FALSE	},
+  { ".other",			ACTION_OTHER,			FALSE	},
 
   /* empty suffix always matches -- check as last entry in InitSoundInfo() */
-  { "",			ACTION_DEFAULT,		TRUE	},
+  { "",				ACTION_DEFAULT,			TRUE	},
 
-  { NULL,		0,			0	}
+  { NULL,			0,				0	}
 };
 
 struct ElementDirectionInfo element_direction_info[NUM_DIRECTIONS + 1] =

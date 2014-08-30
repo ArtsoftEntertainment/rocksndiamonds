@@ -1517,7 +1517,7 @@ static struct
   {
     -1,					ED_COUNTER_YPOS(6) - MINI_TILEY,
     GADGET_ID_GRAVITY,			GADGET_ID_DOUBLE_SPEED,
-    &level.gravity,
+    &level.initial_gravity,
     " ", "gravity",			"set level gravity"
   },
   {
@@ -5411,6 +5411,15 @@ static void DrawPropertiesInfo()
   int pad_y = ED_SETTINGS_YPOS(0) + ED_BORDER_SIZE;
   int screen_line = 0;
   int i, x, y;
+
+#if DEBUG
+  if (IS_CUSTOM_ELEMENT(properties_element))
+  {
+    DrawTextF(pad_x, pad_y + screen_line++ * font2_height, FONT_TEXT_3,
+	      "[Custom Element %d]", properties_element - EL_CUSTOM_START + 1);
+    screen_line++;
+  }
+#endif
 
   /* ----- print number of elements / percentage of this element in level */
 

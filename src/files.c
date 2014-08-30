@@ -128,7 +128,7 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
   level->time_timegate = 10;
   level->amoeba_content = EL_DIAMOND;
   level->double_speed = FALSE;
-  level->gravity = FALSE;
+  level->initial_gravity = FALSE;
   level->em_slippery_gems = FALSE;
 
   level->use_custom_template = FALSE;
@@ -186,8 +186,8 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
     element_info[element].collect_score = 10;		/* special default */
     element_info[element].collect_count = 1;		/* special default */
 
-    element_info[element].push_delay_fixed = 2;		/* special default */
-    element_info[element].push_delay_random = 8;	/* special default */
+    element_info[element].push_delay_fixed = -1;	/* initialize later */
+    element_info[element].push_delay_random = -1;	/* initialize later */
     element_info[element].move_delay_fixed = 0;
     element_info[element].move_delay_random = 0;
 
@@ -242,12 +242,12 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
 	strcpy(level->author, PROGRAM_AUTHOR_STRING);
 	break;
 
-      case LEVELCLASS_CONTRIBUTION:
-	strncpy(level->author, leveldir_current->name,MAX_LEVEL_AUTHOR_LEN);
+      case LEVELCLASS_CONTRIB:
+	strncpy(level->author, leveldir_current->name, MAX_LEVEL_AUTHOR_LEN);
 	level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
 	break;
 
-      case LEVELCLASS_USER:
+      case LEVELCLASS_PRIVATE:
 	strncpy(level->author, getRealName(), MAX_LEVEL_AUTHOR_LEN);
 	level->author[MAX_LEVEL_AUTHOR_LEN] = '\0';
 	break;
@@ -372,7 +372,7 @@ static int LoadLevel_HEAD(FILE *file, int chunk_size, struct LevelInfo *level)
   level->time_wheel		= getFile8Bit(file);
   level->amoeba_content		= checkLevelElement(getFile8Bit(file));
   level->double_speed		= (getFile8Bit(file) == 1 ? TRUE : FALSE);
-  level->gravity		= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+  level->initial_gravity	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
   level->encoding_16bit_field	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
   level->em_slippery_gems	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
 
@@ -925,23 +925,36 @@ void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
   fclose(file);
 }
 
-#if 1
-
 static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
 {
   if (leveldir_current == NULL)		/* only when dumping level */
     return;
 
+#if 0
+  printf("::: sort_priority: %d\n", leveldir_current->sort_priority);
+#endif
+
   /* determine correct game engine version of current level */
-  if (IS_LEVELCLASS_CONTRIBUTION(leveldir_current) ||
-      IS_LEVELCLASS_USER(leveldir_current))
+#if 1
+  if (!leveldir_current->latest_engine)
+#else
+  if (IS_LEVELCLASS_CONTRIB(leveldir_current) ||
+      IS_LEVELCLASS_PRIVATE(leveldir_current) ||
+      IS_LEVELCLASS_UNDEFINED(leveldir_current))
+#endif
   {
 #if 0
     printf("\n::: This level is private or contributed: '%s'\n", filename);
 #endif
 
-    /* For user contributed and private levels, use the version of
-       the game engine the levels were created for.
+#if 0
+    printf("\n::: Use the stored game engine version for this level\n");
+#endif
+
+    /* For all levels which are not forced to use the latest game engine
+       version (normally user contributed, private and undefined levels),
+       use the version of the game engine the levels were created for.
+
        Since 2.0.1, the game engine version is now directly stored
        in the level file (chunk "VERS"), so there is no need anymore
        to set the game version from the file version (except for old,
@@ -951,7 +964,7 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
     /* do some special adjustments to support older level versions */
     if (level->file_version == FILE_VERSION_1_0)
     {
-      Error(ERR_WARN, "level file '%s'has version number 1.0", filename);
+      Error(ERR_WARN, "level file '%s' has version number 1.0", filename);
       Error(ERR_WARN, "using high speed movement for player");
 
       /* player was faster than monsters in (pre-)1.0 levels */
@@ -959,7 +972,7 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
     }
 
     /* Default behaviour for EM style gems was "slippery" only in 2.0.1 */
-    if (level->game_version == VERSION_IDENT(2,0,1))
+    if (level->game_version == VERSION_IDENT(2,0,1,0))
       level->em_slippery_gems = TRUE;
   }
   else
@@ -969,12 +982,22 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
 	   leveldir_current->sort_priority, filename);
 #endif
 
-    /* Always use the latest version of the game engine for all but
-       user contributed and private levels; this allows for actual
-       corrections in the game engine to take effect for existing,
-       converted levels (from "classic" or other existing games) to
-       make the game emulation more accurate, while (hopefully) not
-       breaking existing levels created from other players. */
+#if 0
+    printf("\n::: Use latest game engine version for this level.\n");
+#endif
+
+    /* For all levels which are forced to use the latest game engine version
+       (normally all but user contributed, private and undefined levels), set
+       the game engine version to the actual version; this allows for actual
+       corrections in the game engine to take effect for existing, converted
+       levels (from "classic" or other existing games) to make the emulation
+       of the corresponding game more accurate, while (hopefully) not breaking
+       existing levels created from other players. */
+
+#if 0
+    printf("::: changing engine from %d to %d\n",
+	   level->game_version, GAME_VERSION_ACTUAL);
+#endif
 
     level->game_version = GAME_VERSION_ACTUAL;
 
@@ -988,6 +1011,10 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
     if (level->file_version < FILE_VERSION_2_0)
       level->em_slippery_gems = TRUE;
   }
+
+#if 0
+  printf("::: => %d\n", level->game_version);
+#endif
 }
 
 static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
@@ -996,7 +1023,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
 
   /* map custom element change events that have changed in newer versions
      (these following values were accidentally changed in version 3.0.1) */
-  if (level->game_version <= VERSION_IDENT(3,0,0))
+  if (level->game_version <= VERSION_IDENT(3,0,0,0))
   {
     for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
     {
@@ -1040,7 +1067,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
   }
 
   /* initialize "can_change" field for old levels with only one change page */
-  if (level->game_version <= VERSION_IDENT(3,0,2))
+  if (level->game_version <= VERSION_IDENT(3,0,2,0))
   {
     for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
     {
@@ -1050,6 +1077,31 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
 	element_info[element].change->can_change = TRUE;
     }
   }
+
+#if 0
+  /* set default push delay values (corrected since version 3.0.7-1) */
+  if (level->game_version < VERSION_IDENT(3,0,7,1))
+  {
+    game.default_push_delay_fixed = 2;
+    game.default_push_delay_random = 8;
+  }
+  else
+  {
+    game.default_push_delay_fixed = 8;
+    game.default_push_delay_random = 8;
+  }
+
+  /* set uninitialized push delay values of custom elements in older levels */
+  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    int element = EL_CUSTOM_START + i;
+
+    if (element_info[element].push_delay_fixed == -1)
+      element_info[element].push_delay_fixed = game.default_push_delay_fixed;
+    if (element_info[element].push_delay_random == -1)
+      element_info[element].push_delay_random = game.default_push_delay_random;
+  }
+#endif
 
   /* initialize element properties for level editor etc. */
   InitElementPropertiesEngine(level->game_version);
@@ -1066,7 +1118,7 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
     {
       int element = level->field[x][y];
 
-      if (level->game_version <= VERSION_IDENT(2,2,0))
+      if (level->game_version <= VERSION_IDENT(2,2,0,0))
       {
 	/* map game font elements */
 	element = (element == EL_CHAR('[')  ? EL_CHAR_AUMLAUT :
@@ -1075,7 +1127,7 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
 		   element == EL_CHAR('^')  ? EL_CHAR_COPYRIGHT : element);
       }
 
-      if (level->game_version < VERSION_IDENT(3,0,0))
+      if (level->game_version < VERSION_IDENT(3,0,0,0))
       {
 	/* map Supaplex gravity tube elements */
 	element = (element == EL_SP_GRAVITY_PORT_LEFT  ? EL_SP_PORT_LEFT  :
@@ -1101,162 +1153,6 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
   /* determine border element for this level */
   SetBorderElement();
 }
-
-#else
-
-static void LoadLevel_InitLevel(struct LevelInfo *level, char *filename)
-{
-  int i, j, x, y;
-
-  if (leveldir_current == NULL)		/* only when dumping level */
-    return;
-
-  /* determine correct game engine version of current level */
-  if (IS_LEVELCLASS_CONTRIBUTION(leveldir_current) ||
-      IS_LEVELCLASS_USER(leveldir_current))
-  {
-#if 0
-    printf("\n::: This level is private or contributed: '%s'\n", filename);
-#endif
-
-    /* For user contributed and private levels, use the version of
-       the game engine the levels were created for.
-       Since 2.0.1, the game engine version is now directly stored
-       in the level file (chunk "VERS"), so there is no need anymore
-       to set the game version from the file version (except for old,
-       pre-2.0 levels, where the game version is still taken from the
-       file format version used to store the level -- see above). */
-
-    /* do some special adjustments to support older level versions */
-    if (level->file_version == FILE_VERSION_1_0)
-    {
-      Error(ERR_WARN, "level file '%s'has version number 1.0", filename);
-      Error(ERR_WARN, "using high speed movement for player");
-
-      /* player was faster than monsters in (pre-)1.0 levels */
-      level->double_speed = TRUE;
-    }
-
-    /* Default behaviour for EM style gems was "slippery" only in 2.0.1 */
-    if (level->game_version == VERSION_IDENT(2,0,1))
-      level->em_slippery_gems = TRUE;
-  }
-  else
-  {
-#if 0
-    printf("\n::: ALWAYS USE LATEST ENGINE FOR THIS LEVEL: [%d] '%s'\n",
-	   leveldir_current->sort_priority, filename);
-#endif
-
-    /* Always use the latest version of the game engine for all but
-       user contributed and private levels; this allows for actual
-       corrections in the game engine to take effect for existing,
-       converted levels (from "classic" or other existing games) to
-       make the game emulation more accurate, while (hopefully) not
-       breaking existing levels created from other players. */
-
-    level->game_version = GAME_VERSION_ACTUAL;
-
-    /* Set special EM style gems behaviour: EM style gems slip down from
-       normal, steel and growing wall. As this is a more fundamental change,
-       it seems better to set the default behaviour to "off" (as it is more
-       natural) and make it configurable in the level editor (as a property
-       of gem style elements). Already existing converted levels (neither
-       private nor contributed levels) are changed to the new behaviour. */
-
-    if (level->file_version < FILE_VERSION_2_0)
-      level->em_slippery_gems = TRUE;
-  }
-
-  /* map elements that have changed in newer versions */
-  for(y=0; y<level->fieldy; y++)
-  {
-    for(x=0; x<level->fieldx; x++)
-    {
-      int element = level->field[x][y];
-
-      if (level->game_version <= VERSION_IDENT(2,2,0))
-      {
-	/* map game font elements */
-	element = (element == EL_CHAR('[')  ? EL_CHAR_AUMLAUT :
-		   element == EL_CHAR('\\') ? EL_CHAR_OUMLAUT :
-		   element == EL_CHAR(']')  ? EL_CHAR_UUMLAUT :
-		   element == EL_CHAR('^')  ? EL_CHAR_COPYRIGHT : element);
-      }
-
-      if (level->game_version < VERSION_IDENT(3,0,0))
-      {
-	/* map Supaplex gravity tube elements */
-	element = (element == EL_SP_GRAVITY_PORT_LEFT  ? EL_SP_PORT_LEFT  :
-		   element == EL_SP_GRAVITY_PORT_RIGHT ? EL_SP_PORT_RIGHT :
-		   element == EL_SP_GRAVITY_PORT_UP    ? EL_SP_PORT_UP    :
-		   element == EL_SP_GRAVITY_PORT_DOWN  ? EL_SP_PORT_DOWN  :
-		   element);
-      }
-
-      level->field[x][y] = element;
-    }
-  }
-
-  /* map custom element change events that have changed in newer versions
-     (these following values have accidentally changed in version 3.0.1) */
-  if (level->game_version <= VERSION_IDENT(3,0,0))
-  {
-    for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
-    {
-      int element = EL_CUSTOM_START + i;
-
-      /* order of checking events to be mapped is important */
-      for (j=CE_BY_OTHER; j >= CE_BY_PLAYER; j--)
-      {
-	if (HAS_CHANGE_EVENT(element, j - 2))
-	{
-	  SET_CHANGE_EVENT(element, j - 2, FALSE);
-	  SET_CHANGE_EVENT(element, j, TRUE);
-	}
-      }
-
-      /* order of checking events to be mapped is important */
-      for (j=CE_OTHER_GETS_COLLECTED; j >= CE_COLLISION; j--)
-      {
-	if (HAS_CHANGE_EVENT(element, j - 1))
-	{
-	  SET_CHANGE_EVENT(element, j - 1, FALSE);
-	  SET_CHANGE_EVENT(element, j, TRUE);
-	}
-      }
-    }
-  }
-
-  /* initialize "can_change" field for old levels with only one change page */
-  if (level->game_version <= VERSION_IDENT(3,0,2))
-  {
-    for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
-    {
-      int element = EL_CUSTOM_START + i;
-
-      if (CAN_CHANGE(element))
-	element_info[element].change->can_change = TRUE;
-    }
-  }
-
-  /* copy elements to runtime playfield array */
-  for(x=0; x<MAX_LEV_FIELDX; x++)
-    for(y=0; y<MAX_LEV_FIELDY; y++)
-      Feld[x][y] = level->field[x][y];
-
-  /* initialize level size variables for faster access */
-  lev_fieldx = level->fieldx;
-  lev_fieldy = level->fieldy;
-
-  /* determine border element for this level */
-  SetBorderElement();
-
-  /* initialize element properties for level editor etc. */
-  InitElementPropertiesEngine(level->game_version);
-}
-
-#endif
 
 void LoadLevelTemplate(int level_nr)
 {
@@ -1321,7 +1217,7 @@ static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
   putFile8Bit(file, (level->encoding_16bit_amoeba ? EL_EMPTY :
 		     level->amoeba_content));
   putFile8Bit(file, (level->double_speed ? 1 : 0));
-  putFile8Bit(file, (level->gravity ? 1 : 0));
+  putFile8Bit(file, (level->initial_gravity ? 1 : 0));
   putFile8Bit(file, (level->encoding_16bit_field ? 1 : 0));
   putFile8Bit(file, (level->em_slippery_gems ? 1 : 0));
 
@@ -1796,7 +1692,7 @@ void DumpLevel(struct LevelInfo *level)
   printf("\n");
   printf("Amoeba Speed: %d\n", level->amoeba_speed);
   printf("\n");
-  printf("Gravity:                %s\n", (level->gravity ? "yes" : "no"));
+  printf("Gravity:                %s\n", (level->initial_gravity ? "yes" : "no"));
   printf("Double Speed Movement:  %s\n", (level->double_speed ? "yes" : "no"));
   printf("EM style slippery gems: %s\n", (level->em_slippery_gems ? "yes" : "no"));
 
@@ -2101,8 +1997,8 @@ void LoadTapeFromFilename(char *filename)
   tape.length_seconds = GetTapeLength();
 
 #if 0
-  printf("tape game version: %d\n", tape.game_version);
-  printf("tape engine version: %d\n", tape.engine_version);
+  printf("::: tape game version: %d\n", tape.game_version);
+  printf("::: tape engine version: %d\n", tape.engine_version);
 #endif
 }
 

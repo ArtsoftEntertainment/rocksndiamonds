@@ -24,6 +24,7 @@
 #include "network.h"
 #include "netserv.h"
 #include "cartoons.h"
+#include "config.h"
 
 #include "conf_e2g.c"	/* include auto-generated data structure definitions */
 #include "conf_esg.c"	/* include auto-generated data structure definitions */
@@ -614,6 +615,10 @@ void InitElementGraphicInfo()
       boolean act_remove = ((IS_DIGGABLE(i)    && act == ACTION_DIGGING)  ||
 			    (IS_SNAPPABLE(i)   && act == ACTION_SNAPPING) ||
 			    (IS_COLLECTIBLE(i) && act == ACTION_COLLECTING));
+      boolean act_turning = (act == ACTION_TURNING_FROM_LEFT ||
+			     act == ACTION_TURNING_FROM_RIGHT ||
+			     act == ACTION_TURNING_FROM_UP ||
+			     act == ACTION_TURNING_FROM_DOWN);
 
       /* generic default action graphic (defined by "[default]" directive) */
       int default_action_graphic = element_info[EL_DEFAULT].graphic[act];
@@ -647,10 +652,16 @@ void InitElementGraphicInfo()
 	/* no graphic for current action -- use default direction graphic */
 	if (default_action_direction_graphic == -1)
 	  default_action_direction_graphic =
-	    (act_remove ? IMG_EMPTY : default_direction_graphic[dir]);
+	    (act_remove ? IMG_EMPTY :
+	     act_turning ?
+	     element_info[i].direction_graphic[ACTION_TURNING][dir] :
+	     default_direction_graphic[dir]);
 	if (default_action_direction_crumbled == -1)
 	  default_action_direction_crumbled =
-	    (act_remove ? IMG_EMPTY : default_direction_crumbled[dir]);
+	    (act_remove ? IMG_EMPTY :
+	     act_turning ?
+	     element_info[i].direction_crumbled[ACTION_TURNING][dir] :
+	     default_direction_crumbled[dir]);
 
 	if (element_info[i].direction_graphic[act][dir] == -1)
 	  element_info[i].direction_graphic[act][dir] =
@@ -663,10 +674,14 @@ void InitElementGraphicInfo()
       /* no graphic for this specific action -- use default action graphic */
       if (element_info[i].graphic[act] == -1)
 	element_info[i].graphic[act] =
-	  (act_remove ? IMG_EMPTY : default_action_graphic);
+	  (act_remove ? IMG_EMPTY :
+	   act_turning ? element_info[i].graphic[ACTION_TURNING] :
+	   default_action_graphic);
       if (element_info[i].crumbled[act] == -1)
 	element_info[i].crumbled[act] =
-	  (act_remove ? IMG_EMPTY : default_action_crumbled);
+	  (act_remove ? IMG_EMPTY :
+	   act_turning ? element_info[i].crumbled[ACTION_TURNING] :
+	   default_action_crumbled);
     }
   }
 
@@ -1758,6 +1773,7 @@ void InitElementPropertiesStatic()
     EL_SOKOBAN_FIELD_EMPTY,
     EL_EXIT_OPEN,
     EL_SP_EXIT_OPEN,
+    EL_SP_EXIT_OPENING,
     EL_GATE_1,
     EL_GATE_2,
     EL_GATE_3,
@@ -1996,6 +2012,8 @@ void InitElementPropertiesStatic()
     EL_SP_TERMINAL_ACTIVE,
     EL_SP_BUGGY_BASE_ACTIVATING,
     EL_SP_BUGGY_BASE_ACTIVE,
+    EL_SP_EXIT_OPENING,
+    EL_SP_EXIT_CLOSING,
     -1
   };
 
@@ -2836,7 +2854,7 @@ void InitElementPropertiesEngine(int engine_version)
       SET_PROPERTY(i, EP_WALL, TRUE);
 
     /* ---------- SOLID_FOR_PUSHING ---------------------------------------- */
-    if (engine_version < VERSION_IDENT(2,2,0))
+    if (engine_version < VERSION_IDENT(2,2,0,0))
       SET_PROPERTY(i, EP_SOLID_FOR_PUSHING, IS_HISTORIC_SOLID(i));
     else
       SET_PROPERTY(i, EP_SOLID_FOR_PUSHING, (!IS_WALKABLE(i) &&
@@ -2854,7 +2872,7 @@ void InitElementPropertiesEngine(int engine_version)
     /* ---------- EXPLOSION_PROOF ------------------------------------------ */
     if (i == EL_FLAMES)
       SET_PROPERTY(i, EP_EXPLOSION_PROOF, TRUE);
-    else if (engine_version < VERSION_IDENT(2,2,0))
+    else if (engine_version < VERSION_IDENT(2,2,0,0))
       SET_PROPERTY(i, EP_EXPLOSION_PROOF, IS_INDESTRUCTIBLE(i));
     else
       SET_PROPERTY(i, EP_EXPLOSION_PROOF, (IS_INDESTRUCTIBLE(i) &&
@@ -2941,22 +2959,31 @@ void InitElementPropertiesEngine(int engine_version)
     /* "EL_EXPANDABLE_WALL_GROWING" wasn't slippery for EM gems in 2.0.1 */
     SET_PROPERTY(EL_EXPANDABLE_WALL_GROWING, EP_EM_SLIPPERY_WALL,
 		 (level.em_slippery_gems &&
-		  engine_version > VERSION_IDENT(2,0,1)));
+		  engine_version > VERSION_IDENT(2,0,1,0)));
   }
 
-#if 0
-  /* dynamically adjust element properties according to game engine version */
-#if 0
-  if (engine_version < RELEASE_IDENT(2,2,0,7))
-#endif
+#if 1
+  /* set default push delay values (corrected since version 3.0.7-1) */
+  if (engine_version < VERSION_IDENT(3,0,7,1))
   {
-    for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
-    {
-      int element = EL_CUSTOM_START + i;
+    game.default_push_delay_fixed = 2;
+    game.default_push_delay_random = 8;
+  }
+  else
+  {
+    game.default_push_delay_fixed = 8;
+    game.default_push_delay_random = 8;
+  }
 
-      element_info[element].push_delay_fixed = 2;
-      element_info[element].push_delay_random = 8;
-    }
+  /* set uninitialized push delay values of custom elements in older levels */
+  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    int element = EL_CUSTOM_START + i;
+
+    if (element_info[element].push_delay_fixed == -1)
+      element_info[element].push_delay_fixed = game.default_push_delay_fixed;
+    if (element_info[element].push_delay_random == -1)
+      element_info[element].push_delay_random = game.default_push_delay_random;
   }
 #endif
 }
@@ -3269,8 +3296,8 @@ void InitGfx()
 
   InitFontGraphicInfo();
 
-  DrawInitText(WINDOW_TITLE_STRING, 20, FC_YELLOW);
-  DrawInitText(WINDOW_SUBTITLE_STRING, 50, FC_RED);
+  DrawInitText(getProgramInitString(), 20, FC_YELLOW);
+  DrawInitText(PROGRAM_COPYRIGHT_STRING, 50, FC_RED);
 
   DrawInitText("Loading graphics:", 120, FC_GREEN);
 

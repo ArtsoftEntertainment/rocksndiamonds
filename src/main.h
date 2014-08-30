@@ -359,7 +359,7 @@
 #define PLAYER_PROTECTED(x,y)	(SHIELD_ON(PLAYERINFO(x, y)) ||		\
 				 PROTECTED_FIELD(x, y))
 
-#define PLAYER_SWITCHING(p,x,y)	((p)->Switching &&			\
+#define PLAYER_SWITCHING(p,x,y)	((p)->is_switching &&			\
 				 (p)->switch_x == (x) && (p)->switch_y == (y))
 
 #define PLAYER_NR_GFX(g,i)	((g) + i * (IMG_PLAYER_2 - IMG_PLAYER_1))
@@ -821,24 +821,26 @@
 #define EL_CONVEYOR_BELT_4_RIGHT_ACTIVE	 (EL_FIRST_RUNTIME_REAL + 25)
 #define EL_EXIT_OPENING			(EL_FIRST_RUNTIME_REAL + 26)
 #define EL_EXIT_CLOSING			(EL_FIRST_RUNTIME_REAL + 27)
-#define EL_SP_EXIT_OPEN			(EL_FIRST_RUNTIME_REAL + 28)
-#define EL_SP_TERMINAL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 29)
-#define EL_SP_BUGGY_BASE_ACTIVATING	(EL_FIRST_RUNTIME_REAL + 30)
-#define EL_SP_BUGGY_BASE_ACTIVE		(EL_FIRST_RUNTIME_REAL + 31)
-#define EL_SP_MURPHY_CLONE		(EL_FIRST_RUNTIME_REAL + 32)
-#define EL_AMOEBA_DROPPING		(EL_FIRST_RUNTIME_REAL + 33)
-#define EL_QUICKSAND_EMPTYING		(EL_FIRST_RUNTIME_REAL + 34)
-#define EL_MAGIC_WALL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 35)
-#define EL_BD_MAGIC_WALL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 36)
-#define EL_MAGIC_WALL_FULL		(EL_FIRST_RUNTIME_REAL + 37)
-#define EL_BD_MAGIC_WALL_FULL		(EL_FIRST_RUNTIME_REAL + 38)
-#define EL_MAGIC_WALL_EMPTYING		(EL_FIRST_RUNTIME_REAL + 39)
-#define EL_BD_MAGIC_WALL_EMPTYING	(EL_FIRST_RUNTIME_REAL + 40)
-#define EL_MAGIC_WALL_DEAD		(EL_FIRST_RUNTIME_REAL + 41)
-#define EL_BD_MAGIC_WALL_DEAD		(EL_FIRST_RUNTIME_REAL + 42)
+#define EL_SP_EXIT_OPENING		(EL_FIRST_RUNTIME_REAL + 28)
+#define EL_SP_EXIT_CLOSING		(EL_FIRST_RUNTIME_REAL + 29)
+#define EL_SP_EXIT_OPEN			(EL_FIRST_RUNTIME_REAL + 30)
+#define EL_SP_TERMINAL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 31)
+#define EL_SP_BUGGY_BASE_ACTIVATING	(EL_FIRST_RUNTIME_REAL + 32)
+#define EL_SP_BUGGY_BASE_ACTIVE		(EL_FIRST_RUNTIME_REAL + 33)
+#define EL_SP_MURPHY_CLONE		(EL_FIRST_RUNTIME_REAL + 34)
+#define EL_AMOEBA_DROPPING		(EL_FIRST_RUNTIME_REAL + 35)
+#define EL_QUICKSAND_EMPTYING		(EL_FIRST_RUNTIME_REAL + 36)
+#define EL_MAGIC_WALL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 37)
+#define EL_BD_MAGIC_WALL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 38)
+#define EL_MAGIC_WALL_FULL		(EL_FIRST_RUNTIME_REAL + 39)
+#define EL_BD_MAGIC_WALL_FULL		(EL_FIRST_RUNTIME_REAL + 40)
+#define EL_MAGIC_WALL_EMPTYING		(EL_FIRST_RUNTIME_REAL + 41)
+#define EL_BD_MAGIC_WALL_EMPTYING	(EL_FIRST_RUNTIME_REAL + 42)
+#define EL_MAGIC_WALL_DEAD		(EL_FIRST_RUNTIME_REAL + 43)
+#define EL_BD_MAGIC_WALL_DEAD		(EL_FIRST_RUNTIME_REAL + 44)
 
 /* "unreal" (and therefore not drawable) runtime elements */
-#define EL_FIRST_RUNTIME_UNREAL		(EL_FIRST_RUNTIME_REAL + 43)
+#define EL_FIRST_RUNTIME_UNREAL		(EL_FIRST_RUNTIME_REAL + 45)
 
 #define EL_BLOCKED			(EL_FIRST_RUNTIME_UNREAL + 0)
 #define EL_EXPLOSION			(EL_FIRST_RUNTIME_UNREAL + 1)
@@ -913,9 +915,14 @@
 #define ACTION_CHANGING				23
 #define ACTION_EXPLODING			24
 #define ACTION_DYING				25
-#define ACTION_OTHER				26
+#define ACTION_TURNING				26
+#define ACTION_TURNING_FROM_LEFT		27
+#define ACTION_TURNING_FROM_RIGHT		28
+#define ACTION_TURNING_FROM_UP			29
+#define ACTION_TURNING_FROM_DOWN		30
+#define ACTION_OTHER				31
 
-#define NUM_ACTIONS				27
+#define NUM_ACTIONS				32
 
 /* values for special image configuration suffixes (must match game mode) */
 #define GFX_SPECIAL_ARG_MAIN			0
@@ -1026,17 +1033,23 @@
 
 #define PROGRAM_VERSION_MAJOR	3
 #define PROGRAM_VERSION_MINOR	0
-#define PROGRAM_VERSION_PATCH	6
-#define PROGRAM_VERSION_RELEASE	0
-#define PROGRAM_VERSION_STRING	"3.0.6"
+#define PROGRAM_VERSION_PATCH	7
+#define PROGRAM_VERSION_BUILD	1
+
+#if 0
+#define PROGRAM_VERSION_STRING	"3.0.7"
+#endif
 
 #define PROGRAM_TITLE_STRING	"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING	"Holger Schemel"
-#define PROGRAM_RIGHTS_STRING	"Copyright ©1995-2003 by"
+#define PROGRAM_COPYRIGHT_STRING "Copyright ©1995-2003 by Holger Schemel"
+
+#if 0
 #define PROGRAM_DOS_PORT_STRING	"DOS port done by Guido Schulz"
 #define PROGRAM_IDENT_STRING	PROGRAM_VERSION_STRING " " TARGET_STRING
 #define WINDOW_TITLE_STRING	PROGRAM_TITLE_STRING " " PROGRAM_IDENT_STRING
-#define WINDOW_SUBTITLE_STRING	PROGRAM_RIGHTS_STRING " " PROGRAM_AUTHOR_STRING
+#endif
+
 #define ICON_TITLE_STRING	PROGRAM_TITLE_STRING
 #define COOKIE_PREFIX		"ROCKSNDIAMONDS"
 #define FILENAME_PREFIX		"Rocks"
@@ -1060,10 +1073,10 @@
 **	1.4 (still in use)
 **	2.0 (actual)
 */
-#define FILE_VERSION_1_0	VERSION_IDENT(1,0,0)
-#define FILE_VERSION_1_2	VERSION_IDENT(1,2,0)
-#define FILE_VERSION_1_4	VERSION_IDENT(1,4,0)
-#define FILE_VERSION_2_0	VERSION_IDENT(2,0,0)
+#define FILE_VERSION_1_0	VERSION_IDENT(1,0,0,0)
+#define FILE_VERSION_1_2	VERSION_IDENT(1,2,0,0)
+#define FILE_VERSION_1_4	VERSION_IDENT(1,4,0,0)
+#define FILE_VERSION_2_0	VERSION_IDENT(2,0,0,0)
 
 /* file version does not change for every program version, but is changed
    when new features are introduced that are incompatible with older file
@@ -1075,10 +1088,10 @@
 #define GAME_VERSION_1_4	FILE_VERSION_1_4
 #define GAME_VERSION_2_0	FILE_VERSION_2_0
 
-#define GAME_VERSION_ACTUAL	RELEASE_IDENT(PROGRAM_VERSION_MAJOR, \
+#define GAME_VERSION_ACTUAL	VERSION_IDENT(PROGRAM_VERSION_MAJOR, \
 					      PROGRAM_VERSION_MINOR, \
 					      PROGRAM_VERSION_PATCH, \
-					      PROGRAM_VERSION_RELEASE)
+					      PROGRAM_VERSION_BUILD)
 
 /* values for game_emulation */
 #define EMU_NONE		0
@@ -1134,20 +1147,20 @@ struct PlayerInfo
   int GfxAction;
 
   boolean use_murphy_graphic;
-  boolean use_disk_red_graphic;
 
-  boolean Pushing;
-  boolean Switching;
   boolean LevelSolved, GameOver;
-  boolean snapped;
-
-  int switch_x, switch_y;
 
   int last_move_dir;
-  boolean is_moving;
+
   boolean is_waiting;
+  boolean is_moving;
   boolean is_digging;
+  boolean is_snapping;
   boolean is_collecting;
+  boolean is_pushing;
+  boolean is_switching;
+
+  int switch_x, switch_y;
 
   int show_envelope;
 
@@ -1199,7 +1212,7 @@ struct LevelInfo
   int time_light;
   int time_timegate;
   boolean double_speed;
-  boolean gravity;
+  boolean initial_gravity;
   boolean em_slippery_gems;	/* EM style "gems slip from wall" behaviour */
 
   short field[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -1244,13 +1257,16 @@ struct TapeInfo
 
 struct GameInfo
 {
+  /* values for engine initialization */
+  int default_push_delay_fixed;
+  int default_push_delay_random;
+
   /* constant within running game */
   int engine_version;
   int emulation;
   int initial_move_delay;
   int initial_move_delay_value;
-
-  boolean envelope_active;
+  int initial_push_delay_value;
 
   /* variable within running game */
   int yamyam_content_nr;
@@ -1262,7 +1278,9 @@ struct GameInfo
   int belt_dir_nr[4];
   int switchgate_pos;
   int balloon_dir;
+  boolean gravity;
   boolean explosions_delayed;
+  boolean envelope_active;
 };
 
 struct GlobalInfo
@@ -1476,6 +1494,7 @@ extern short			MovPos[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			MovDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			MovDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			ChangeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern short			ChangePage[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			Store[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			Store2[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			StorePlayer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -1484,7 +1503,8 @@ extern boolean			Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern boolean			Pushed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern unsigned long		Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern unsigned long		ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-extern short			JustStopped[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern short			WasJustMoving[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern short			WasJustFalling[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			AmoebaNr[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			AmoebaCnt[MAX_NUM_AMOEBA];
 extern short			AmoebaCnt2[MAX_NUM_AMOEBA];
@@ -1494,9 +1514,10 @@ extern short			ExplodeField[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern unsigned long		Properties[MAX_NUM_ELEMENTS][NUM_EP_BITFIELDS];
 
 extern int			GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-extern int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern int 			GfxDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
 extern int			lev_fieldx, lev_fieldy;
 extern int			scroll_x, scroll_y;

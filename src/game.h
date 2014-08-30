@@ -54,7 +54,6 @@ void DynaExplode(int, int);
 void Bang(int, int);
 void Blurb(int, int);
 void Impact(int, int);
-void TurnRound(int, int);
 void StartMoving(int, int);
 void ContinueMoving(int, int);
 int AmoebeNachbarNr(int, int);
@@ -75,11 +74,6 @@ void MauerWaechst(int, int);
 void MauerAbleger(int, int);
 void GameActions(void);
 void ScrollLevel(int, int);
-
-boolean MoveFigureOneStep(struct PlayerInfo *, int, int, int, int);
-boolean MoveFigure(struct PlayerInfo *, int, int);
-void ScrollFigure(struct PlayerInfo *, int);
-void ScrollScreen(struct PlayerInfo *, int);
 
 void TestIfGoodThingHitsBadThing(int, int, int);
 void TestIfBadThingHitsGoodThing(int, int, int);

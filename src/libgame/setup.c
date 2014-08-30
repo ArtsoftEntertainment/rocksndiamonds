@@ -23,32 +23,9 @@
 #include "misc.h"
 #include "hash.h"
 
-/* file names and filename extensions */
-#if !defined(PLATFORM_MSDOS)
-#define LEVELSETUP_DIRECTORY	"levelsetup"
-#define SETUP_FILENAME		"setup.conf"
-#define LEVELSETUP_FILENAME	"levelsetup.conf"
-#define LEVELINFO_FILENAME	"levelinfo.conf"
-#define GRAPHICSINFO_FILENAME	"graphicsinfo.conf"
-#define SOUNDSINFO_FILENAME	"soundsinfo.conf"
-#define MUSICINFO_FILENAME	"musicinfo.conf"
-#define LEVELFILE_EXTENSION	"level"
-#define TAPEFILE_EXTENSION	"tape"
-#define SCOREFILE_EXTENSION	"score"
-#else
-#define LEVELSETUP_DIRECTORY	"lvlsetup"
-#define SETUP_FILENAME		"setup.cnf"
-#define LEVELSETUP_FILENAME	"lvlsetup.cnf"
-#define LEVELINFO_FILENAME	"lvlinfo.cnf"
-#define GRAPHICSINFO_FILENAME	"gfxinfo.cnf"
-#define SOUNDSINFO_FILENAME	"sndinfo.cnf"
-#define MUSICINFO_FILENAME	"musinfo.cnf"
-#define LEVELFILE_EXTENSION	"lvl"
-#define TAPEFILE_EXTENSION	"tap"
-#define SCOREFILE_EXTENSION	"sco"
-#endif
 
 #define NUM_LEVELCLASS_DESC	8
+
 static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 {
   "Tutorial Levels",
@@ -61,63 +38,43 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
   "DX Boulderdash"
 };
 
-#define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		FC_BLUE : \
-			 IS_LEVELCLASS_CLASSICS(n) ?		FC_RED : \
-			 IS_LEVELCLASS_BD(n) ?			FC_GREEN : \
-			 IS_LEVELCLASS_EM(n) ?			FC_YELLOW : \
-			 IS_LEVELCLASS_SP(n) ?			FC_GREEN : \
-			 IS_LEVELCLASS_DX(n) ?			FC_YELLOW : \
-			 IS_LEVELCLASS_CONTRIBUTION(n) ?	FC_GREEN : \
-			 IS_LEVELCLASS_USER(n) ?		FC_RED : \
+
+#define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		FC_BLUE :    \
+			 IS_LEVELCLASS_CLASSICS(n) ?		FC_RED :     \
+			 IS_LEVELCLASS_BD(n) ?			FC_GREEN :   \
+			 IS_LEVELCLASS_EM(n) ?			FC_YELLOW :  \
+			 IS_LEVELCLASS_SP(n) ?			FC_GREEN :   \
+			 IS_LEVELCLASS_DX(n) ?			FC_YELLOW :  \
+			 IS_LEVELCLASS_CONTRIB(n) ?		FC_GREEN :   \
+			 IS_LEVELCLASS_PRIVATE(n) ?		FC_RED :     \
 			 FC_BLUE)
 
-#define LEVELSORTING(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		0 : \
-			 IS_LEVELCLASS_CLASSICS(n) ?		1 : \
-			 IS_LEVELCLASS_BD(n) ?			2 : \
-			 IS_LEVELCLASS_EM(n) ?			3 : \
-			 IS_LEVELCLASS_SP(n) ?			4 : \
-			 IS_LEVELCLASS_DX(n) ?			5 : \
-			 IS_LEVELCLASS_CONTRIBUTION(n) ?	6 : \
-			 IS_LEVELCLASS_USER(n) ?		7 : \
+#define LEVELSORTING(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		0 :	\
+			 IS_LEVELCLASS_CLASSICS(n) ?		1 :	\
+			 IS_LEVELCLASS_BD(n) ?			2 :	\
+			 IS_LEVELCLASS_EM(n) ?			3 :	\
+			 IS_LEVELCLASS_SP(n) ?			4 :	\
+			 IS_LEVELCLASS_DX(n) ?			5 :	\
+			 IS_LEVELCLASS_CONTRIB(n) ?		6 :	\
+			 IS_LEVELCLASS_PRIVATE(n) ?		7 :	\
 			 9)
 
-#define ARTWORKCOLOR(n)	(IS_ARTWORKCLASS_CLASSICS(n) ?		FC_RED : \
-			 IS_ARTWORKCLASS_CONTRIBUTION(n) ?	FC_YELLOW : \
-			 IS_ARTWORKCLASS_LEVEL(n) ?		FC_GREEN : \
-			 IS_ARTWORKCLASS_USER(n) ?		FC_RED : \
+#define ARTWORKCOLOR(n)	(IS_ARTWORKCLASS_CLASSICS(n) ?		FC_RED :     \
+			 IS_ARTWORKCLASS_CONTRIB(n) ?		FC_YELLOW :  \
+			 IS_ARTWORKCLASS_PRIVATE(n) ?		FC_RED :     \
+			 IS_ARTWORKCLASS_LEVEL(n) ?		FC_GREEN :   \
 			 FC_BLUE)
 
-#define ARTWORKSORTING(n) (IS_ARTWORKCLASS_CLASSICS(n) ?	0 : \
-			 IS_ARTWORKCLASS_CONTRIBUTION(n) ?	1 : \
-			 IS_ARTWORKCLASS_LEVEL(n) ?		2 : \
-			 IS_ARTWORKCLASS_USER(n) ?		3 : \
-			 9)
+#define ARTWORKSORTING(n) (IS_ARTWORKCLASS_CLASSICS(n) ?	0 :	\
+			   IS_ARTWORKCLASS_LEVEL(n) ?		1 :	\
+			   IS_ARTWORKCLASS_CONTRIB(n) ?		2 :	\
+			   IS_ARTWORKCLASS_PRIVATE(n) ?		3 :	\
+			   9)
 
 #define TOKEN_VALUE_POSITION		40
 #define TOKEN_COMMENT_POSITION		60
 
 #define MAX_COOKIE_LEN			256
-
-#define ARTWORKINFO_FILENAME(type)	((type) == ARTWORK_TYPE_GRAPHICS ? \
-					 GRAPHICSINFO_FILENAME :	   \
-					 (type) == ARTWORK_TYPE_SOUNDS ?   \
-					 SOUNDSINFO_FILENAME :		   \
-					 (type) == ARTWORK_TYPE_MUSIC ?    \
-					 MUSICINFO_FILENAME : "")
-
-#define ARTWORK_DIRECTORY(type)		((type) == ARTWORK_TYPE_GRAPHICS ? \
-					 GRAPHICS_DIRECTORY :		   \
-					 (type) == ARTWORK_TYPE_SOUNDS ?   \
-					 SOUNDS_DIRECTORY :		   \
-					 (type) == ARTWORK_TYPE_MUSIC ?    \
-					 MUSIC_DIRECTORY : "")
-
-#define OPTIONS_ARTWORK_DIRECTORY(type)	((type) == ARTWORK_TYPE_GRAPHICS ? \
-					 options.graphics_directory :	   \
-					 (type) == ARTWORK_TYPE_SOUNDS ?   \
-					 options.sounds_directory :	   \
-					 (type) == ARTWORK_TYPE_MUSIC ?    \
-					 options.music_directory : "")
 
 
 /* ------------------------------------------------------------------------- */
@@ -1096,7 +1053,7 @@ int getFileVersionFromCookieString(const char *cookie)
   version_major = ptr_cookie2[0] - '0';
   version_minor = ptr_cookie2[2] - '0';
 
-  return VERSION_IDENT(version_major, version_minor, 0);
+  return VERSION_IDENT(version_major, version_minor, 0, 0);
 }
 
 boolean checkCookieString(const char *cookie, const char *template)
@@ -1172,10 +1129,10 @@ char *getListEntry(SetupFileList *list, char *token)
     return getListEntry(list->next, token);
 }
 
-void setListEntry(SetupFileList *list, char *token, char *value)
+SetupFileList *setListEntry(SetupFileList *list, char *token, char *value)
 {
   if (list == NULL)
-    return;
+    return NULL;
 
   if (strcmp(list->token, token) == 0)
   {
@@ -1183,11 +1140,13 @@ void setListEntry(SetupFileList *list, char *token, char *value)
       free(list->value);
 
     list->value = getStringCopy(value);
+
+    return list;
   }
   else if (list->next == NULL)
-    list->next = newSetupFileList(token, value);
+    return (list->next = newSetupFileList(token, value));
   else
-    setListEntry(list->next, token, value);
+    return setListEntry(list->next, token, value);
 }
 
 #ifdef DEBUG
@@ -1308,13 +1267,13 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
   int line_len;
   char line[MAX_LINE_LEN];
   char *token, *value, *line_ptr;
-  void *setup_file_data;
+  void *setup_file_data, *insert_ptr = NULL;
   FILE *file;
 
   if (use_hash)
     setup_file_data = newSetupFileHash();
   else
-    setup_file_data = newSetupFileList("", "");
+    insert_ptr = setup_file_data = newSetupFileList("", "");
 
   if (!(file = fopen(filename, MODE_READ)))
   {
@@ -1379,7 +1338,7 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
       if (use_hash)
 	setHashEntry((SetupFileHash *)setup_file_data, token, value);
       else
-	setListEntry((SetupFileList *)setup_file_data, token, value);
+	insert_ptr = setListEntry((SetupFileList *)insert_ptr, token, value);
     }
   }
 
@@ -1446,13 +1405,14 @@ void checkSetupFileHashIdentifier(SetupFileHash *setup_file_hash,
 #define LEVELINFO_TOKEN_LEVELS		5
 #define LEVELINFO_TOKEN_FIRST_LEVEL	6
 #define LEVELINFO_TOKEN_SORT_PRIORITY	7
-#define LEVELINFO_TOKEN_LEVEL_GROUP	8
-#define LEVELINFO_TOKEN_READONLY	9
-#define LEVELINFO_TOKEN_GRAPHICS_SET	10
-#define LEVELINFO_TOKEN_SOUNDS_SET	11
-#define LEVELINFO_TOKEN_MUSIC_SET	12
+#define LEVELINFO_TOKEN_LATEST_ENGINE	8
+#define LEVELINFO_TOKEN_LEVEL_GROUP	9
+#define LEVELINFO_TOKEN_READONLY	10
+#define LEVELINFO_TOKEN_GRAPHICS_SET	11
+#define LEVELINFO_TOKEN_SOUNDS_SET	12
+#define LEVELINFO_TOKEN_MUSIC_SET	13
 
-#define NUM_LEVELINFO_TOKENS		13
+#define NUM_LEVELINFO_TOKENS		14
 
 static LevelDirTree ldi;
 
@@ -1467,6 +1427,7 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_INTEGER, &ldi.levels,		"levels"	},
   { TYPE_INTEGER, &ldi.first_level,	"first_level"	},
   { TYPE_INTEGER, &ldi.sort_priority,	"sort_priority"	},
+  { TYPE_BOOLEAN, &ldi.latest_engine,	"latest_engine"	},
   { TYPE_BOOLEAN, &ldi.level_group,	"level_group"	},
   { TYPE_BOOLEAN, &ldi.readonly,	"readonly"	},
   { TYPE_STRING,  &ldi.graphics_set,	"graphics_set"	},
@@ -1500,6 +1461,7 @@ static void setTreeInfoToDefaults(TreeInfo *ldi, int type)
   ldi->author = getStringCopy(ANONYMOUS_NAME);
 
   ldi->sort_priority = LEVELCLASS_UNDEFINED;	/* default: least priority */
+  ldi->latest_engine = FALSE;			/* default: get from level */
   ldi->parent_link = FALSE;
   ldi->user_defined = FALSE;
   ldi->color = 0;
@@ -1558,6 +1520,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
   ldi->author = getStringCopy(parent->author);
 
   ldi->sort_priority = parent->sort_priority;
+  ldi->latest_engine = parent->latest_engine;
   ldi->parent_link = FALSE;
   ldi->user_defined = parent->user_defined;
   ldi->color = parent->color;
@@ -1763,6 +1726,7 @@ static void createParentTreeInfoNode(TreeInfo *node_parent)
   setString(&ti_new->fullpath, node_parent->fullpath);
 
   ti_new->sort_priority = node_parent->sort_priority;
+  ti_new->latest_engine = node_parent->latest_engine;
 
   setString(&ti_new->class_desc, getLevelClassDescription(ti_new));
 #else
@@ -1774,6 +1738,7 @@ static void createParentTreeInfoNode(TreeInfo *node_parent)
   ti_new->fullpath = getStringCopy(node_parent->fullpath);
 
   ti_new->sort_priority = node_parent->sort_priority;
+  ti_new->latest_engine = node_parent->latest_engine;
 
   ti_new->class_desc = getLevelClassDescription(ti_new);
 #endif
@@ -2129,7 +2094,7 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
 #else
 	artwork_new->identifier = getStringCopy("private");
 #endif
-	artwork_new->sort_priority = ARTWORKCLASS_USER;
+	artwork_new->sort_priority = ARTWORKCLASS_PRIVATE;
       }
       else
       {
@@ -2472,7 +2437,7 @@ static void SaveUserLevelInfo()
   setString(&level_info->author, getRealName());
   level_info->levels = 100;
   level_info->first_level = 1;
-  level_info->sort_priority = LEVELCLASS_USER_START;
+  level_info->sort_priority = LEVELCLASS_PRIVATE_START;
   level_info->readonly = FALSE;
   setString(&level_info->graphics_set, GFX_CLASSIC_SUBDIR);
   setString(&level_info->sounds_set,   SND_CLASSIC_SUBDIR);
@@ -2482,7 +2447,7 @@ static void SaveUserLevelInfo()
   ldi.author = getStringCopy(getRealName());
   ldi.levels = 100;
   ldi.first_level = 1;
-  ldi.sort_priority = LEVELCLASS_USER_START;
+  ldi.sort_priority = LEVELCLASS_PRIVATE_START;
   ldi.readonly = FALSE;
   ldi.graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
   ldi.sounds_set = getStringCopy(SND_CLASSIC_SUBDIR);
