@@ -8,10 +8,10 @@
  * inconsequential, but no doubt it will break some caves.
  */
 
-#include "global.h"
-#include "tile.h"
-#include "level.h"
+#include "main_em.h"
 
+
+#define ALLOW_ROLLING_SPRING
 
 static unsigned char remap_v6[256] =
 {
@@ -22,7 +22,11 @@ static unsigned char remap_v6[256] =
   0,16,2,18,       36,37,37,37,     40,41,42,43,     44,45,128,128,
   128,148,148,     148,45,45,45,    148,0,57,58,     59,60,61,62,63,
 
+#ifdef ALLOW_ROLLING_SPRING
+  64,65,66,67,     68,69,69,71,     72,73,74,75,     118,75,75,75,
+#else
   64,65,66,67,     68,69,69,69,     69,73,74,75,     118,75,75,75,
+#endif
   75,75,75,75,     75,153,153,153,  153,153,153,153, 153,153,153,153,
   153,153,153,99,  100,68,68,68,    68,68,68,68,     68,118,118,118,
   118,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,
@@ -151,7 +155,7 @@ int cleanup_em_level(unsigned char *src, int length)
     for (i = 2112; i < 2148; i++) src[i] = src[i - 64];
   }
   else if (length >= 2106 &&
-	   src[0] == 241 &&
+	   src[0] == 241 &&	/* <-- Emerald Mine I levels */
 	   src[1983] == 27)
   {
     unsigned char j = 94;
@@ -171,7 +175,7 @@ int cleanup_em_level(unsigned char *src, int length)
   }
 #if 1
   else if (length >= 2106 &&
-	   src[0] == 245 &&
+	   src[0] == 245 &&	/* <-- Emerald Mine II levels */
 	   src[1983] == 27)
   {
     unsigned char j = 94;
@@ -181,6 +185,7 @@ int cleanup_em_level(unsigned char *src, int length)
 
     for (i = 0; i < 2106; i++)
       src[i] = (src[i] ^ (j += 7)) - 0x11;
+    src[0] = 131;		/* needed for Emerald Mine II levels */
     src[1] = 131;
     for (i = 0; i < 2048; i++)
       src[i] = remap_v4[src[i]];
@@ -188,13 +193,18 @@ int cleanup_em_level(unsigned char *src, int length)
       src[i] = remap_v4eater[src[i] >= 28 ? 0 : src[i]];
     for (i = 2112; i < 2148; i++)
       src[i] = src[i - 64];
+
+    /* fix copyright sign in Emerald Mine II levels */
+    for (i = 0; i < 2048; i++)
+      if (src[i] == 241)
+	src[i] = 254;		/* replace 'Xdecor_1' with 'Xalpha_copyr' */
   }
 #endif
   else
   {
     /* ---------- this cave has unknown file format ---------- */
 
-#if 1
+#if 0
     printf("::: %d, %d\n", src[0], src[1983]);
 #endif
 
@@ -436,6 +446,11 @@ int cleanup_em_level(unsigned char *src, int length)
  * - rolling spring is now turned into regular spring. it appears the emc
  *   editor only uses the force code for initially moving spring. i will
  *   follow this in my editor.
+ *
+ * 2006-04-02
+ * - introduced ALLOW_ROLLING_SPRING; if defined, do NOT turn rolling spring
+ *   into regular spring, because this breaks at least E.M.C. Mine 3, level 79
+ *   (see comment directly above)
  */
 
 static unsigned short remap_emerald[256] =
@@ -460,10 +475,17 @@ static unsigned short remap_emerald[256] =
   Xstone,		Xgrow_ew,	Xgrow_ns,	Xdynamite_1,
   Xdynamite_2,		Xdynamite_3,	Xdynamite_4,	Xacid_s,
 
+#ifdef ALLOW_ROLLING_SPRING
+  Xexit_1,		Xexit_2,	Xexit_3,	Xballoon,
+  Xplant,		Xspring,	Xspring_fall,	Xspring_w,
+  Xspring_e,		Xball_1,	Xball_2,	Xandroid,
+  Xblank,		Xandroid,	Xandroid,	Xandroid,
+#else
   Xexit_1,		Xexit_2,	Xexit_3,	Xballoon,
   Xplant,		Xspring,	Xspring,	Xspring,
   Xspring,		Xball_1,	Xball_2,	Xandroid,
   Xblank,		Xandroid,	Xandroid,	Xandroid,
+#endif
 
   Xandroid,		Xandroid,	Xandroid,	Xandroid,
   Xandroid,		Xblank,		Xblank,		Xblank,
@@ -538,9 +560,23 @@ static unsigned short remap_emerald[256] =
   Xblank,		Xblank,		Xblank,		Xblank,
 #else
   /* special elements added to solve compatibility problems */
-  Xblank,		Xblank,		Xblank,		Xfake_acid_1
+  Xblank,		Xblank,		Xalpha_copyr,	Xfake_acid_1
 #endif
 };
+
+static int get_em_element(unsigned short em_element_raw, int file_version)
+{
+  int em_element = remap_emerald[em_element_raw];
+
+  if (file_version <= FILE_VERSION_EM_V4)
+  {
+    /* versions up to V4 had no grass, but only sand/dirt */
+    if (em_element == Xgrass)
+      em_element = Xdirt;
+  }
+
+  return em_element;
+}
 
 void convert_em_level(unsigned char *src, int file_version)
 {
@@ -548,7 +584,7 @@ void convert_em_level(unsigned char *src, int file_version)
   {
     0x800, 0x809, 0x812, 0x81B, 0x840, 0x849, 0x852, 0x85B
   };
-  unsigned int i, x, y, temp;
+  int i, x, y, temp;
 
 #if 1
   lev.time_seconds = src[0x83E] << 8 | src[0x83F];
@@ -563,12 +599,12 @@ void convert_em_level(unsigned char *src, int file_version)
 
   lev.required_initial = src[0x82F];
 
-  temp = src[0x830] << 8 | src[0x831];
-  ply1.x_initial = (temp & 63) + 1;
-  ply1.y_initial = (temp >> 6 & 31) + 1;
-  temp = src[0x832] << 8 | src[0x833];
-  ply2.x_initial = (temp & 63) + 1;
-  ply2.y_initial = (temp >> 6 & 31) + 1;
+  for (i = 0; i < 2; i++)
+  {
+    temp = src[0x830 + i * 2] << 8 | src[0x831 + i * 2];
+    ply[i].x_initial = (temp & 63) + 1;
+    ply[i].y_initial = (temp >> 6 & 31) + 1;
+  }
 
   temp = (src[0x834] << 8 | src[0x835]) * 28;
   if (temp > 9999)
@@ -611,9 +647,10 @@ void convert_em_level(unsigned char *src, int file_version)
 
   for (i = 0; i < 8; i++)
     for (x = 0; x < 9; x++)
-      lev.eater_array[i][x] = remap_emerald[src[eater_offset[i] + x]];
+      lev.eater_array[i][x] =
+	get_em_element(src[eater_offset[i] + x], file_version);
 
-  temp = remap_emerald[src[0x86F]];
+  temp = get_em_element(src[0x86F], file_version);
   for (y = 0; y < 8; y++)
   {
     if (src[0x872] & 1)
@@ -638,163 +675,173 @@ void convert_em_level(unsigned char *src, int file_version)
 
   if (temp & 1)
   {
-    lev.android_array[Xemerald] =
-      lev.android_array[Xemerald_pause] =
-      lev.android_array[Xemerald_fall] =
-      lev.android_array[Yemerald_sB] =
-      lev.android_array[Yemerald_eB] =
-      lev.android_array[Yemerald_wB] = Xemerald;
+    lev.android_array[Xemerald]		= Xemerald;
+    lev.android_array[Xemerald_pause]	= Xemerald;
+    lev.android_array[Xemerald_fall]	= Xemerald;
+    lev.android_array[Yemerald_sB]	= Xemerald;
+    lev.android_array[Yemerald_eB]	= Xemerald;
+    lev.android_array[Yemerald_wB]	= Xemerald;
   }
 
   if (temp & 2)
   {
-    lev.android_array[Xdiamond] =
-      lev.android_array[Xdiamond_pause] =
-      lev.android_array[Xdiamond_fall] =
-      lev.android_array[Ydiamond_sB] =
-      lev.android_array[Ydiamond_eB] =
-      lev.android_array[Ydiamond_wB] = Xdiamond;
+    lev.android_array[Xdiamond]		= Xdiamond;
+    lev.android_array[Xdiamond_pause]	= Xdiamond;
+    lev.android_array[Xdiamond_fall]	= Xdiamond;
+    lev.android_array[Ydiamond_sB]	= Xdiamond;
+    lev.android_array[Ydiamond_eB]	= Xdiamond;
+    lev.android_array[Ydiamond_wB]	= Xdiamond;
   }
 
   if (temp & 4)
   {
-    lev.android_array[Xstone] =
-      lev.android_array[Xstone_pause] =
-      lev.android_array[Xstone_fall] =
-      lev.android_array[Ystone_sB] =
-      lev.android_array[Ystone_eB] =
-      lev.android_array[Ystone_wB] = Xstone;
+    lev.android_array[Xstone]		= Xstone;
+    lev.android_array[Xstone_pause]	= Xstone;
+    lev.android_array[Xstone_fall]	= Xstone;
+    lev.android_array[Ystone_sB]	= Xstone;
+    lev.android_array[Ystone_eB]	= Xstone;
+    lev.android_array[Ystone_wB]	= Xstone;
   }
 
   if (temp & 8)
   {
-    lev.android_array[Xbomb] =
-      lev.android_array[Xbomb_pause] =
-      lev.android_array[Xbomb_fall] =
-      lev.android_array[Ybomb_sB] =
-      lev.android_array[Ybomb_eB] =
-      lev.android_array[Ybomb_wB] = Xbomb;
+    lev.android_array[Xbomb]		= Xbomb;
+    lev.android_array[Xbomb_pause]	= Xbomb;
+    lev.android_array[Xbomb_fall]	= Xbomb;
+    lev.android_array[Ybomb_sB]		= Xbomb;
+    lev.android_array[Ybomb_eB]		= Xbomb;
+    lev.android_array[Ybomb_wB]		= Xbomb;
   }
 
   if (temp & 16)
   {
-    lev.android_array[Xnut] =
-      lev.android_array[Xnut_pause] =
-      lev.android_array[Xnut_fall] =
-      lev.android_array[Ynut_sB] =
-      lev.android_array[Ynut_eB] =
-      lev.android_array[Ynut_wB] = Xnut;
+    lev.android_array[Xnut]		= Xnut;
+    lev.android_array[Xnut_pause]	= Xnut;
+    lev.android_array[Xnut_fall]	= Xnut;
+    lev.android_array[Ynut_sB]		= Xnut;
+    lev.android_array[Ynut_eB]		= Xnut;
+    lev.android_array[Ynut_wB]		= Xnut;
   }
 
   if (temp & 32)
   {
-    lev.android_array[Xtank_n] =
-      lev.android_array[Xtank_gon] =
-      lev.android_array[Ytank_nB] =
-      lev.android_array[Ytank_n_e] =
-      lev.android_array[Ytank_n_w] = Xtank_n;
+    lev.android_array[Xtank_n]		= Xtank_n;
+    lev.android_array[Xtank_gon]	= Xtank_n;
+    lev.android_array[Ytank_nB]		= Xtank_n;
+    lev.android_array[Ytank_n_e]	= Xtank_n;
+    lev.android_array[Ytank_n_w]	= Xtank_n;
 
-    lev.android_array[Xtank_e] =
-      lev.android_array[Xtank_goe] =
-      lev.android_array[Ytank_eB] =
-      lev.android_array[Ytank_e_s] =
-      lev.android_array[Ytank_e_n] = Xtank_e;
+    lev.android_array[Xtank_e]		= Xtank_e;
+    lev.android_array[Xtank_goe]	= Xtank_e;
+    lev.android_array[Ytank_eB]		= Xtank_e;
+    lev.android_array[Ytank_e_s]	= Xtank_e;
+    lev.android_array[Ytank_e_n]	= Xtank_e;
 
-    lev.android_array[Xtank_s] =
-      lev.android_array[Xtank_gos] =
-      lev.android_array[Ytank_sB] =
-      lev.android_array[Ytank_s_w] =
-      lev.android_array[Ytank_s_e] = Xtank_s;
+    lev.android_array[Xtank_s]		= Xtank_s;
+    lev.android_array[Xtank_gos]	= Xtank_s;
+    lev.android_array[Ytank_sB]		= Xtank_s;
+    lev.android_array[Ytank_s_w]	= Xtank_s;
+    lev.android_array[Ytank_s_e]	= Xtank_s;
 
-    lev.android_array[Xtank_w] =
-      lev.android_array[Xtank_gow] =
-      lev.android_array[Ytank_wB] =
-      lev.android_array[Ytank_w_n] =
-      lev.android_array[Ytank_w_s] = Xtank_w;
+    lev.android_array[Xtank_w]		= Xtank_w;
+    lev.android_array[Xtank_gow]	= Xtank_w;
+    lev.android_array[Ytank_wB]		= Xtank_w;
+    lev.android_array[Ytank_w_n]	= Xtank_w;
+    lev.android_array[Ytank_w_s]	= Xtank_w;
   }
 
   if (temp & 64)
   {
-    lev.android_array[Xeater_n] = lev.android_array[Yeater_nB] = Xeater_n;
-    lev.android_array[Xeater_e] = lev.android_array[Yeater_eB] = Xeater_e;
-    lev.android_array[Xeater_s] = lev.android_array[Yeater_sB] = Xeater_s;
-    lev.android_array[Xeater_w] = lev.android_array[Yeater_wB] = Xeater_w;
+    lev.android_array[Xeater_n]		= Xeater_n;
+    lev.android_array[Yeater_nB]	= Xeater_n;
+
+    lev.android_array[Xeater_e]		= Xeater_e;
+    lev.android_array[Yeater_eB]	= Xeater_e;
+
+    lev.android_array[Xeater_s]		= Xeater_s;
+    lev.android_array[Yeater_sB]	= Xeater_s;
+
+    lev.android_array[Xeater_w]		= Xeater_w;
+    lev.android_array[Yeater_wB]	= Xeater_w;
   }
 
   if (temp & 128)
   {
-    lev.android_array[Xbug_n] =
-      lev.android_array[Xbug_gon] =
-      lev.android_array[Ybug_nB] =
-      lev.android_array[Ybug_n_e] =
-      lev.android_array[Ybug_n_w] = Xbug_gon;
+    lev.android_array[Xbug_n]		= Xbug_gon;
+    lev.android_array[Xbug_gon]		= Xbug_gon;
+    lev.android_array[Ybug_nB]		= Xbug_gon;
+    lev.android_array[Ybug_n_e]		= Xbug_gon;
+    lev.android_array[Ybug_n_w]		= Xbug_gon;
 
-    lev.android_array[Xbug_e] =
-      lev.android_array[Xbug_goe] =
-      lev.android_array[Ybug_eB] =
-      lev.android_array[Ybug_e_s] =
-      lev.android_array[Ybug_e_n] = Xbug_goe;
+    lev.android_array[Xbug_e]		= Xbug_goe;
+    lev.android_array[Xbug_goe]		= Xbug_goe;
+    lev.android_array[Ybug_eB]		= Xbug_goe;
+    lev.android_array[Ybug_e_s]		= Xbug_goe;
+    lev.android_array[Ybug_e_n]		= Xbug_goe;
 
-    lev.android_array[Xbug_s] =
-      lev.android_array[Xbug_gos] =
-      lev.android_array[Ybug_sB] =
-      lev.android_array[Ybug_s_w] =
-      lev.android_array[Ybug_s_e] = Xbug_gos;
+    lev.android_array[Xbug_s]		= Xbug_gos;
+    lev.android_array[Xbug_gos]		= Xbug_gos;
+    lev.android_array[Ybug_sB]		= Xbug_gos;
+    lev.android_array[Ybug_s_w]		= Xbug_gos;
+    lev.android_array[Ybug_s_e]		= Xbug_gos;
 
-    lev.android_array[Xbug_w] =
-      lev.android_array[Xbug_gow] =
-      lev.android_array[Ybug_wB] =
-      lev.android_array[Ybug_w_n] =
-      lev.android_array[Ybug_w_s] = Xbug_gow;
+    lev.android_array[Xbug_w]		= Xbug_gow;
+    lev.android_array[Xbug_gow]		= Xbug_gow;
+    lev.android_array[Ybug_wB]		= Xbug_gow;
+    lev.android_array[Ybug_w_n]		= Xbug_gow;
+    lev.android_array[Ybug_w_s]		= Xbug_gow;
   }
 
   if (temp & 256)
   {
-    lev.android_array[Xalien] = lev.android_array[Xalien_pause] =
-      lev.android_array[Yalien_nB] = lev.android_array[Yalien_eB] =
-      lev.android_array[Yalien_sB] = lev.android_array[Yalien_wB] = Xalien;
+    lev.android_array[Xalien]		= Xalien;
+    lev.android_array[Xalien_pause]	= Xalien;
+    lev.android_array[Yalien_nB]	= Xalien;
+    lev.android_array[Yalien_eB]	= Xalien;
+    lev.android_array[Yalien_sB]	= Xalien;
+    lev.android_array[Yalien_wB]	= Xalien;
   }
 
   if (temp & 512)
   {
-    lev.android_array[Xspring] =
-      lev.android_array[Xspring_pause] =
-      lev.android_array[Xspring_e] =
-      lev.android_array[Yspring_eB] =
-      lev.android_array[Yspring_kill_eB] =
-      lev.android_array[Xspring_w] =
-      lev.android_array[Yspring_wB] =
-      lev.android_array[Yspring_kill_wB] =
-      lev.android_array[Xspring_fall] =
-      lev.android_array[Yspring_sB] = Xspring;
+    lev.android_array[Xspring]		= Xspring;
+    lev.android_array[Xspring_pause]	= Xspring;
+    lev.android_array[Xspring_e]	= Xspring;
+    lev.android_array[Yspring_eB]	= Xspring;
+    lev.android_array[Yspring_kill_eB]	= Xspring;
+    lev.android_array[Xspring_w]	= Xspring;
+    lev.android_array[Yspring_wB]	= Xspring;
+    lev.android_array[Yspring_kill_wB]	= Xspring;
+    lev.android_array[Xspring_fall]	= Xspring;
+    lev.android_array[Yspring_sB]	= Xspring;
   }
 
   if (temp & 1024)
   {
-    lev.android_array[Yballoon_nB] =
-      lev.android_array[Yballoon_eB] =
-      lev.android_array[Yballoon_sB] =
-      lev.android_array[Yballoon_wB] =
-      lev.android_array[Xballoon] = Xballoon;
+    lev.android_array[Yballoon_nB]	= Xballoon;
+    lev.android_array[Yballoon_eB]	= Xballoon;
+    lev.android_array[Yballoon_sB]	= Xballoon;
+    lev.android_array[Yballoon_wB]	= Xballoon;
+    lev.android_array[Xballoon]		= Xballoon;
   }
 
   if (temp & 2048)
   {
-    lev.android_array[Xdripper] =
-      lev.android_array[XdripperB] =
-      lev.android_array[Xamoeba_1] =
-      lev.android_array[Xamoeba_2] =
-      lev.android_array[Xamoeba_3] =
-      lev.android_array[Xamoeba_4] =
-      lev.android_array[Xamoeba_5] =
-      lev.android_array[Xamoeba_6] =
-      lev.android_array[Xamoeba_7] =
-      lev.android_array[Xamoeba_8] = Xdrip_eat;
+    lev.android_array[Xdripper]		= Xdrip_eat;
+    lev.android_array[XdripperB]	= Xdrip_eat;
+    lev.android_array[Xamoeba_1]	= Xdrip_eat;
+    lev.android_array[Xamoeba_2]	= Xdrip_eat;
+    lev.android_array[Xamoeba_3]	= Xdrip_eat;
+    lev.android_array[Xamoeba_4]	= Xdrip_eat;
+    lev.android_array[Xamoeba_5]	= Xdrip_eat;
+    lev.android_array[Xamoeba_6]	= Xdrip_eat;
+    lev.android_array[Xamoeba_7]	= Xdrip_eat;
+    lev.android_array[Xamoeba_8]	= Xdrip_eat;
   }
 
   if (temp & 4096)
   {
-    lev.android_array[Xdynamite] = Xdynamite;
+    lev.android_array[Xdynamite]	= Xdynamite;
   }
 
   for (temp = 1; temp < 2047; temp++)
@@ -873,20 +920,28 @@ void convert_em_level(unsigned char *src, int file_version)
   temp = 0;
   for (y = 0; y < lev.height; y++)
     for (x = 0; x < lev.width; x++)
-      native_em_level.cave[x + 1][y + 1] = remap_emerald[src[temp++]];
+      native_em_level.cave[x + 1][y + 1] =
+	get_em_element(src[temp++], file_version);
 
   /* at last, set the two players at their positions in the playfield */
-  if (ply1.alive_initial)
-    native_em_level.cave[ply1.x_initial][ply1.y_initial] = Zplayer;
-  if (ply2.alive_initial)
-    native_em_level.cave[ply2.x_initial][ply2.y_initial] = Zplayer;
+  /* (native EM[C] levels always have exactly two players in a level) */
+#if 1
+  for (i = 0; i < 2; i++)
+    native_em_level.cave[ply[i].x_initial][ply[i].y_initial] = Zplayer;
+#else
+  for (i = 0; i < 2; i++)
+    if (ply[i].alive_initial)
+      native_em_level.cave[ply[i].x_initial][ply[i].y_initial] = Zplayer;
+#endif
 
   native_em_level.file_version = file_version;
 }
 
 void prepare_em_level(void)
 {
-  unsigned int x, y;
+  int i, x, y;
+  int players_left;
+  int num_tape_players;
 
   /* reset all runtime variables to their initial values */
 
@@ -929,39 +984,85 @@ void prepare_em_level(void)
   lev.wheel_x   = lev.wheel_x_initial;
   lev.wheel_y   = lev.wheel_y_initial;
 
-  lev.wind_cnt       = lev.wind_cnt_initial;
   lev.wind_direction = lev.wind_direction_initial;
+  lev.wind_cnt       = lev.wind_cnt_initial;
 
   lev.wonderwall_state = lev.wonderwall_state_initial;
   lev.wonderwall_time  = lev.wonderwall_time_initial;
 
-  lev.home = lev.home_initial;
-
   lev.killed_out_of_time = FALSE;
 
-  ply1.num = 0;
-  ply1.alive = ply1.alive_initial;
-  ply1.dynamite = 0;
-  ply1.dynamite_cnt = 0;
-  ply1.keys = 0;
-  ply1.anim = 0;
-  ply1.oldx = ply1.x = ply1.x_initial;
-  ply1.oldy = ply1.y = ply1.y_initial;
-  ply1.last_move_dir = MV_NO_MOVING;
-  ply1.joy_n = ply1.joy_e = ply1.joy_s = ply1.joy_w = 0;
-  ply1.joy_snap = ply1.joy_drop = 0;
-  ply1.joy_stick = ply1.joy_spin = 0;
+  /* determine number of players in this level */
+  lev.home_initial = 0;
 
-  ply2.num = 1;
-  ply2.alive = ply2.alive_initial;
-  ply2.dynamite = 0;
-  ply2.dynamite_cnt = 0;
-  ply2.keys = 0;
-  ply2.anim = 0;
-  ply2.oldx = ply2.x = ply2.x_initial;
-  ply2.oldy = ply2.y = ply2.y_initial;
-  ply2.last_move_dir = MV_NO_MOVING;
-  ply2.joy_n = ply2.joy_e = ply2.joy_s = ply2.joy_w = 0;
-  ply2.joy_snap = ply1.joy_drop = 0;
-  ply2.joy_stick = ply2.joy_spin = 0;
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    ply[i].exists = 0;
+    ply[i].alive_initial = FALSE;
+
+    if (ply[i].x_initial > 0 && ply[i].y_initial > 0)
+    {
+      ply[i].exists = 1;
+
+      lev.home_initial++;
+    }
+  }
+
+  num_tape_players = getNumActivePlayers_EM();
+
+  if (num_tape_players != -1)
+    lev.home_initial = MIN(lev.home_initial, num_tape_players);
+  else if (!setup.team_mode)
+    lev.home_initial = MIN(lev.home_initial, 1);
+
+  lev.home = lev.home_initial;
+  players_left = lev.home_initial;
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    if (ply[i].exists)
+    {
+      if (players_left)
+      {
+	ply[i].alive_initial = TRUE;
+	players_left--;
+      }
+      else
+      {
+	int x = ply[i].x_initial;
+	int y = ply[i].y_initial;
+
+	native_em_level.cave[x][y] = Xblank;
+
+	Cave[y][x] = Next[y][x] = Draw[y][x] = Xblank;
+      }
+    }
+  }
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    ply[i].num = i;
+    ply[i].alive = ply[i].alive_initial;
+    ply[i].dynamite = 0;
+    ply[i].dynamite_cnt = 0;
+    ply[i].keys = 0;
+    ply[i].anim = 0;
+    ply[i].oldx = ply[i].x = ply[i].x_initial;
+    ply[i].oldy = ply[i].y = ply[i].y_initial;
+    ply[i].last_move_dir = MV_NONE;
+    ply[i].joy_n = ply[i].joy_e = ply[i].joy_s = ply[i].joy_w = 0;
+    ply[i].joy_snap  = ply[i].joy_drop = 0;
+    ply[i].joy_stick = ply[i].joy_spin = 0;
+
+#if 0
+    printf("player %d: x/y == %d/%d, alive == %d\n",
+	   i, ply[i].x_initial, ply[i].y_initial, ply[i].alive);
+#endif
+  }
+
+  game_em.any_player_moving = FALSE;
+  game_em.last_moving_player = 0;	/* default: first player */
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+    game_em.last_player_direction[i] = MV_NONE;
 }

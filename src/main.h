@@ -29,141 +29,157 @@
 #include "conf_snd.h"	/* include auto-generated data structure definitions */
 #include "conf_mus.h"	/* include auto-generated data structure definitions */
 
-#define IMG_UNDEFINED		(-1)
-#define IMG_EMPTY		IMG_EMPTY_SPACE
-#define IMG_SP_EMPTY		IMG_SP_EMPTY_SPACE
-#define IMG_EXPLOSION		IMG_DEFAULT_EXPLODING
-#define IMG_CHAR_START		IMG_CHAR_SPACE
-#define IMG_CUSTOM_START	IMG_CUSTOM_1
+#define IMG_UNDEFINED			(-1)
+#define IMG_EMPTY			IMG_EMPTY_SPACE
+#define IMG_SP_EMPTY			IMG_SP_EMPTY_SPACE
+#define IMG_EXPLOSION			IMG_DEFAULT_EXPLODING
+#define IMG_CHAR_START			IMG_CHAR_SPACE
+#define IMG_CUSTOM_START		IMG_CUSTOM_1
 
-#define SND_UNDEFINED		(-1)
-#define MUS_UNDEFINED		(-1)
+#define SND_UNDEFINED			(-1)
+#define MUS_UNDEFINED			(-1)
 
-#define WIN_XSIZE		672
-#define WIN_YSIZE		560
+#define WIN_XSIZE			672
+#define WIN_YSIZE			560
 
-#define SCR_FIELDX		17
-#define SCR_FIELDY		17
-#define MAX_BUF_XSIZE		(SCR_FIELDX + 2)
-#define MAX_BUF_YSIZE		(SCR_FIELDY + 2)
-#define MIN_LEV_FIELDX		3
-#define MIN_LEV_FIELDY		3
-#define STD_LEV_FIELDX		64
-#define STD_LEV_FIELDY		32
-#define MAX_LEV_FIELDX		128
-#define MAX_LEV_FIELDY		128
+#define SCR_FIELDX			17
+#define SCR_FIELDY			17
+#define MAX_BUF_XSIZE			(SCR_FIELDX + 2)
+#define MAX_BUF_YSIZE			(SCR_FIELDY + 2)
+#define MIN_LEV_FIELDX			3
+#define MIN_LEV_FIELDY			3
+#define STD_LEV_FIELDX			64
+#define STD_LEV_FIELDY			32
+#define MAX_LEV_FIELDX			MAX_PLAYFIELD_WIDTH
+#define MAX_LEV_FIELDY			MAX_PLAYFIELD_HEIGHT
 
-#define SCREENX(a)		((a) - scroll_x)
-#define SCREENY(a)		((a) - scroll_y)
-#define LEVELX(a)		((a) + scroll_x)
-#define LEVELY(a)		((a) + scroll_y)
+#define SCREENX(a)			((a) - scroll_x)
+#define SCREENY(a)			((a) - scroll_y)
+#define LEVELX(a)			((a) + scroll_x)
+#define LEVELY(a)			((a) + scroll_y)
 #define IN_VIS_FIELD(x,y) ((x)>=0 && (x)<SCR_FIELDX && (y)>=0 &&(y)<SCR_FIELDY)
 #define IN_SCR_FIELD(x,y) ((x)>=BX1 && (x)<=BX2 && (y)>=BY1 &&(y)<=BY2)
 #define IN_LEV_FIELD(x,y) ((x)>=0 && (x)<lev_fieldx && (y)>=0 &&(y)<lev_fieldy)
 
 /* values for configurable properties (custom elem's only, else pre-defined) */
-#define EP_DIGGABLE		0
-#define EP_COLLECTIBLE_ONLY	1
-#define EP_DONT_RUN_INTO	2
-#define EP_DONT_COLLIDE_WITH	3
-#define EP_DONT_TOUCH		4
-#define EP_INDESTRUCTIBLE	5
-#define EP_SLIPPERY		6
-#define EP_CAN_CHANGE		7
-#define EP_CAN_MOVE		8
-#define EP_CAN_FALL		9
-#define EP_CAN_SMASH_PLAYER	10
-#define EP_CAN_SMASH_ENEMIES	11
-#define EP_CAN_SMASH_EVERYTHING	12
-#define EP_EXPLODES_BY_FIRE	13
-#define EP_EXPLODES_SMASHED	14
-#define EP_EXPLODES_IMPACT	15
-#define EP_WALKABLE_OVER	16
-#define EP_WALKABLE_INSIDE	17
-#define EP_WALKABLE_UNDER	18
-#define EP_PASSABLE_OVER	19
-#define EP_PASSABLE_INSIDE	20
-#define EP_PASSABLE_UNDER	21
-#define EP_DROPPABLE		22
-#define EP_EXPLODES_1X1_OLD	23
-#define EP_PUSHABLE		24
-#define EP_EXPLODES_CROSS_OLD	25
-#define EP_PROTECTED		26
-#define EP_CAN_MOVE_INTO_ACID	27
-#define EP_THROWABLE		28
-#define EP_CAN_EXPLODE		29
-#define EP_GRAVITY_REACHABLE	30
+#define EP_DIGGABLE			0
+#define EP_COLLECTIBLE_ONLY		1
+#define EP_DONT_RUN_INTO		2
+#define EP_DONT_COLLIDE_WITH		3
+#define EP_DONT_TOUCH			4
+#define EP_INDESTRUCTIBLE		5
+#define EP_SLIPPERY			6
+#define EP_CAN_CHANGE			7
+#define EP_CAN_MOVE			8
+#define EP_CAN_FALL			9
+#define EP_CAN_SMASH_PLAYER		10
+#define EP_CAN_SMASH_ENEMIES		11
+#define EP_CAN_SMASH_EVERYTHING		12
+#define EP_EXPLODES_BY_FIRE		13
+#define EP_EXPLODES_SMASHED		14
+#define EP_EXPLODES_IMPACT		15
+#define EP_WALKABLE_OVER		16
+#define EP_WALKABLE_INSIDE		17
+#define EP_WALKABLE_UNDER		18
+#define EP_PASSABLE_OVER		19
+#define EP_PASSABLE_INSIDE		20
+#define EP_PASSABLE_UNDER		21
+#define EP_DROPPABLE			22
+#define EP_EXPLODES_1X1_OLD		23
+#define EP_PUSHABLE			24
+#define EP_EXPLODES_CROSS_OLD		25
+#define EP_PROTECTED			26
+#define EP_CAN_MOVE_INTO_ACID		27
+#define EP_THROWABLE			28
+#define EP_CAN_EXPLODE			29
+#define EP_GRAVITY_REACHABLE		30
 
 /* values for pre-defined properties */
-#define EP_PLAYER		32
-#define EP_CAN_PASS_MAGIC_WALL	33
-#define EP_SWITCHABLE		34
-#define EP_BD_ELEMENT		35
-#define EP_SP_ELEMENT		36
-#define EP_SB_ELEMENT		37
-#define EP_GEM			38
-#define EP_FOOD_DARK_YAMYAM	39
-#define EP_FOOD_PENGUIN		40
-#define EP_FOOD_PIG		41
-#define EP_HISTORIC_WALL	42
-#define EP_HISTORIC_SOLID	43
-#define EP_CLASSIC_ENEMY	44
-#define EP_BELT			45
-#define EP_BELT_ACTIVE		46
-#define EP_BELT_SWITCH		47
-#define EP_TUBE			48
-#define EP_KEYGATE		49
-#define EP_AMOEBOID		50
-#define EP_AMOEBALIVE		51
-#define EP_HAS_CONTENT		52
-#define EP_CAN_TURN_EACH_MOVE	53
-#define EP_CAN_GROW		54
-#define EP_ACTIVE_BOMB		55
-#define EP_INACTIVE		56
+#define EP_PLAYER			32
+#define EP_CAN_PASS_MAGIC_WALL		33
+#define EP_SWITCHABLE			34
+#define EP_BD_ELEMENT			35
+#define EP_SP_ELEMENT			36
+#define EP_SB_ELEMENT			37
+#define EP_GEM				38
+#define EP_FOOD_DARK_YAMYAM		39
+#define EP_FOOD_PENGUIN			40
+#define EP_FOOD_PIG			41
+#define EP_HISTORIC_WALL		42
+#define EP_HISTORIC_SOLID		43
+#define EP_CLASSIC_ENEMY		44
+#define EP_BELT				45
+#define EP_BELT_ACTIVE			46
+#define EP_BELT_SWITCH			47
+#define EP_TUBE				48
+#define EP_KEYGATE			49
+#define EP_AMOEBOID			50
+#define EP_AMOEBALIVE			51
+#define EP_HAS_EDITOR_CONTENT		52
+#define EP_CAN_TURN_EACH_MOVE		53
+#define EP_CAN_GROW			54
+#define EP_ACTIVE_BOMB			55
+#define EP_INACTIVE			56
 
 /* values for special configurable properties (depending on level settings) */
-#define EP_EM_SLIPPERY_WALL	57
+#define EP_EM_SLIPPERY_WALL		57
 
 /* values for special graphics properties (no effect on game engine) */
-#define EP_GFX_CRUMBLED		58
+#define EP_GFX_CRUMBLED			58
 
 /* values for derived properties (determined from properties above) */
-#define EP_ACCESSIBLE_OVER	59
-#define EP_ACCESSIBLE_INSIDE	60
-#define EP_ACCESSIBLE_UNDER	61
-#define EP_WALKABLE		62
-#define EP_PASSABLE		63
-#define EP_ACCESSIBLE		64
-#define EP_COLLECTIBLE		65
-#define EP_SNAPPABLE		66
-#define EP_WALL			67
-#define EP_SOLID_FOR_PUSHING	68
-#define EP_DRAGONFIRE_PROOF	69
-#define EP_EXPLOSION_PROOF	70
-#define EP_CAN_SMASH		71
-#define EP_EXPLODES_3X3_OLD	72
-#define EP_CAN_EXPLODE_BY_FIRE	73
-#define EP_CAN_EXPLODE_SMASHED	74
-#define EP_CAN_EXPLODE_IMPACT	75
-#define EP_SP_PORT		76
+#define EP_ACCESSIBLE_OVER		59
+#define EP_ACCESSIBLE_INSIDE		60
+#define EP_ACCESSIBLE_UNDER		61
+#define EP_WALKABLE			62
+#define EP_PASSABLE			63
+#define EP_ACCESSIBLE			64
+#define EP_COLLECTIBLE			65
+#define EP_SNAPPABLE			66
+#define EP_WALL				67
+#define EP_SOLID_FOR_PUSHING		68
+#define EP_DRAGONFIRE_PROOF		69
+#define EP_EXPLOSION_PROOF		70
+#define EP_CAN_SMASH			71
+#define EP_EXPLODES_3X3_OLD		72
+#define EP_CAN_EXPLODE_BY_FIRE		73
+#define EP_CAN_EXPLODE_SMASHED		74
+#define EP_CAN_EXPLODE_IMPACT		75
+#define EP_SP_PORT			76
 #define EP_CAN_EXPLODE_BY_DRAGONFIRE	77
 #define EP_CAN_EXPLODE_BY_EXPLOSION	78
 #define EP_COULD_MOVE_INTO_ACID		79
 #define EP_MAYBE_DONT_COLLIDE_WITH	80
+#define EP_CAN_BE_CLONED_BY_ANDROID	81
 
 /* values for internal purpose only (level editor) */
-#define EP_WALK_TO_OBJECT	81
-#define EP_DEADLY		82
+#define EP_WALK_TO_OBJECT		82
+#define EP_DEADLY			83
+#define EP_EDITOR_CASCADE		84
+#define EP_EDITOR_CASCADE_ACTIVE	85
+#define EP_EDITOR_CASCADE_INACTIVE	86
 
-#define NUM_ELEMENT_PROPERTIES	83
+/* values for internal purpose only (game engine) */
+#define EP_HAS_ACTION			87
+#define EP_CAN_CHANGE_OR_HAS_ACTION	88
 
-#define NUM_EP_BITFIELDS	((NUM_ELEMENT_PROPERTIES + 31) / 32)
-#define EP_BITFIELD_BASE	0
+/* values for internal purpose only (other) */
+#define EP_OBSOLETE			89
 
-#define EP_BITMASK_DEFAULT	0
+#define NUM_ELEMENT_PROPERTIES		90
 
-#define PROPERTY_BIT(p)		(1 << ((p) % 32))
-#define PROPERTY_VAR(e,p)	(Properties[e][(p) / 32])
+#define NUM_EP_BITFIELDS		((NUM_ELEMENT_PROPERTIES + 31) / 32)
+#define EP_BITFIELD_BASE_NR		0
+
+#define EP_BITMASK_BASE_DEFAULT		(1 << EP_CAN_MOVE_INTO_ACID)
+#define EP_BITMASK_DEFAULT		0
+
+#define PROPERTY_BIT(p)			(1 << ((p) % 32))
+#if 1
+#define PROPERTY_VAR(e,p)		(element_info[e].properties[(p) / 32])
+#else
+#define PROPERTY_VAR(e,p)		(Properties[e][(p) / 32])
+#endif
 #define HAS_PROPERTY(e,p)	((PROPERTY_VAR(e, p) & PROPERTY_BIT(p)) != 0)
 #define SET_PROPERTY(e,p,v)	((v) ?					   \
 				 (PROPERTY_VAR(e,p) |=  PROPERTY_BIT(p)) : \
@@ -171,167 +187,320 @@
 
 
 /* values for change events for custom elements (stored in level file) */
-#define CE_DELAY		0
-#define CE_TOUCHED_BY_PLAYER	1
-#define CE_PRESSED_BY_PLAYER	2
-#define CE_PUSHED_BY_PLAYER	3
-#define CE_DROPPED_BY_PLAYER	4
-#define CE_HITTING_SOMETHING	5
-#define CE_IMPACT		6
-#define CE_SMASHED		7
-#define CE_TOUCHING_X		8
-#define CE_CHANGE_OF_X		9
-#define CE_EXPLOSION_OF_X	10
-#define CE_PLAYER_TOUCHES_X	11
-#define CE_PLAYER_PRESSES_X	12
-#define CE_PLAYER_PUSHES_X	13
-#define CE_PLAYER_COLLECTS_X	14
-#define CE_PLAYER_DROPS_X	15
-#define CE_BY_PLAYER_OBSOLETE	16	/* obsolete; now CE_BY_DIRECT_ACTION */
-#define CE_BY_COLLISION_OBSOLETE 17	/* obsolete; now CE_BY_DIRECT_ACTION */
-#define CE_BY_OTHER_ACTION	18	/* activates other element events */
-#define CE_BY_DIRECT_ACTION	19	/* activates direct element events */
-#define CE_PLAYER_DIGS_X	20
-#define CE_ENTERED_BY_PLAYER	21
-#define CE_LEFT_BY_PLAYER	22
-#define CE_PLAYER_ENTERS_X	23
-#define CE_PLAYER_LEAVES_X	24
-#define CE_SWITCHED		25
-#define CE_SWITCH_OF_X		26
-#define CE_HIT_BY_SOMETHING	27
-#define CE_HITTING_X		28
-#define CE_HIT_BY_X		29
-#define CE_BLOCKED		30
+#define CE_DELAY			0
+#define CE_TOUCHED_BY_PLAYER		1
+#define CE_PRESSED_BY_PLAYER		2
+#define CE_PUSHED_BY_PLAYER		3
+#define CE_DROPPED_BY_PLAYER		4
+#define CE_HITTING_SOMETHING		5
+#define CE_IMPACT			6
+#define CE_SMASHED			7
+#define CE_TOUCHING_X			8
+#define CE_CHANGE_OF_X			9
+#define CE_EXPLOSION_OF_X		10
+#define CE_PLAYER_TOUCHES_X		11
+#define CE_PLAYER_PRESSES_X		12
+#define CE_PLAYER_PUSHES_X		13
+#define CE_PLAYER_COLLECTS_X		14
+#define CE_PLAYER_DROPS_X		15
+#define CE_VALUE_GETS_ZERO		16
+#define CE_VALUE_GETS_ZERO_OF_X		17
+#define CE_BY_OTHER_ACTION		18
+#define CE_BY_DIRECT_ACTION		19
+#define CE_PLAYER_DIGS_X		20
+#define CE_ENTERED_BY_PLAYER		21
+#define CE_LEFT_BY_PLAYER		22
+#define CE_PLAYER_ENTERS_X		23
+#define CE_PLAYER_LEAVES_X		24
+#define CE_SWITCHED			25
+#define CE_SWITCH_OF_X			26
+#define CE_HIT_BY_SOMETHING		27
+#define CE_HITTING_X			28
+#define CE_HIT_BY_X			29
+#define CE_BLOCKED			30
+#define CE_SWITCHED_BY_PLAYER		31
+#define CE_PLAYER_SWITCHES_X		32
+#define CE_SNAPPED_BY_PLAYER		33
+#define CE_PLAYER_SNAPS_X		34
+#define CE_MOVE_OF_X			35
+#define CE_DIGGING_X			36
+#define CE_CREATION_OF_X		37
+#define CE_SCORE_GETS_ZERO		38
+#define CE_SCORE_GETS_ZERO_OF_X		39
+#define CE_VALUE_CHANGES		40
+#define CE_VALUE_CHANGES_OF_X		41
+#define CE_SCORE_CHANGES		42
+#define CE_SCORE_CHANGES_OF_X		43
 
-#define NUM_CHANGE_EVENTS	31
+#define NUM_CHANGE_EVENTS		44
 
-#define CE_BITMASK_DEFAULT	0
+#define NUM_CE_BITFIELDS		((NUM_CHANGE_EVENTS + 31) / 32)
 
-#if 1
+#define CE_BITMASK_DEFAULT		0
 
-#define CH_EVENT_VAR(e,c)	(element_info[e].change->has_event[c])
-#define CH_ANY_EVENT_VAR(e,c)	(element_info[e].has_change_event[c])
+#define CH_EVENT_BITFIELD_NR(e)		(e / 32)
+#define CH_EVENT_BIT(e)			(1 << ((e) % 32))
 
-#define PAGE_HAS_CHANGE_EVENT(p,c)  ((p)->has_event[c])
-#define HAS_CHANGE_EVENT(e,c)	    (IS_CUSTOM_ELEMENT(e) &&		\
-				     CH_EVENT_VAR(e,c))
-#define HAS_ANY_CHANGE_EVENT(e,c)   (IS_CUSTOM_ELEMENT(e) &&		\
-				     CH_ANY_EVENT_VAR(e,c))
+#define CH_EVENT_VAR(e,c)		(element_info[e].change->has_event[c])
+#define CH_ANY_EVENT_VAR(e,c)		(element_info[e].has_change_event[c])
 
-#define SET_CHANGE_EVENT(e,c,v)     (IS_CUSTOM_ELEMENT(e) ?		\
-				     CH_EVENT_VAR(e,c) = (v) : 0)
-#define SET_ANY_CHANGE_EVENT(e,c,v) (IS_CUSTOM_ELEMENT(e) ?		\
-				     CH_ANY_EVENT_VAR(e,c) = (v) : 0)
+#define PAGE_HAS_CHANGE_EVENT(p,c)	((p)->has_event[c])
+#define HAS_CHANGE_EVENT(e,c)		(IS_CUSTOM_ELEMENT(e) &&	\
+					 CH_EVENT_VAR(e,c))
+#define HAS_ANY_CHANGE_EVENT(e,c)	(IS_CUSTOM_ELEMENT(e) &&	\
+					 CH_ANY_EVENT_VAR(e,c))
 
-#else
+#define SET_CHANGE_EVENT(e,c,v)		(IS_CUSTOM_ELEMENT(e) ?		\
+					 CH_EVENT_VAR(e,c) = (v) : 0)
+#define SET_ANY_CHANGE_EVENT(e,c,v)	(IS_CUSTOM_ELEMENT(e) ?		\
+					 CH_ANY_EVENT_VAR(e,c) = (v) : 0)
 
-#define CH_EVENT_BIT(c)		(1 << (c))
-#define CH_EVENT_VAR(e)		(element_info[e].change->events)
-#define CH_ANY_EVENT_VAR(e)	(element_info[e].change_events)
+/* values for player bitmasks */
+#define PLAYER_BITS_NONE		0
+#define PLAYER_BITS_1			(1 << 0)
+#define PLAYER_BITS_2			(1 << 1)
+#define PLAYER_BITS_3			(1 << 2)
+#define PLAYER_BITS_4			(1 << 3)
+#define PLAYER_BITS_ANY			(PLAYER_BITS_1 | \
+					 PLAYER_BITS_2 | \
+					 PLAYER_BITS_3 | \
+					 PLAYER_BITS_4)
+#define PLAYER_BITS_TRIGGER		(1 << 4)
 
-#define HAS_CHANGE_EVENT(e,c)	(IS_CUSTOM_ELEMENT(e) &&		  \
-				 (CH_EVENT_VAR(e) & CH_EVENT_BIT(c)) != 0)
-#define HAS_ANY_CHANGE_EVENT(e,c) (IS_CUSTOM_ELEMENT(e) &&		  \
-				 (CH_ANY_EVENT_VAR(e) & CH_EVENT_BIT(c)) != 0)
-#define SET_CHANGE_EVENT(e,c,v)	(IS_CUSTOM_ELEMENT(e) ?			  \
-				 ((v) ?					  \
-				  (CH_EVENT_VAR(e) |=  CH_EVENT_BIT(c)) : \
-				  (CH_EVENT_VAR(e) &= ~CH_EVENT_BIT(c))) : 0)
-#define SET_ANY_CHANGE_EVENT(e,c,v) (IS_CUSTOM_ELEMENT(e) ?		  \
-			       ((v) ?					  \
-			        (CH_ANY_EVENT_VAR(e) |=  CH_EVENT_BIT(c)) : \
-			        (CH_ANY_EVENT_VAR(e) &= ~CH_EVENT_BIT(c))) : 0)
-#endif
+/* values for move directions (bits 0 - 3: basic move directions) */
+#define MV_BIT_PREVIOUS			4
+#define MV_BIT_TRIGGER			5
+#define MV_BIT_TRIGGER_BACK		6
+#define MV_BIT_NORMAL			MV_BIT_TRIGGER
+#define MV_BIT_REVERSE			MV_BIT_TRIGGER_BACK
+
+#define MV_PREVIOUS			(1 << MV_BIT_PREVIOUS)
+#define MV_TRIGGER			(1 << MV_BIT_TRIGGER)
+#define MV_TRIGGER_BACK			(1 << MV_BIT_TRIGGER_BACK)
+#define MV_NORMAL			(1 << MV_BIT_NORMAL)
+#define MV_REVERSE			(1 << MV_BIT_REVERSE)
+
+/* values for move stepsize */
+#define STEPSIZE_NOT_MOVING		0
+#define STEPSIZE_VERY_SLOW		1
+#define STEPSIZE_SLOW			2
+#define STEPSIZE_NORMAL			4
+#define STEPSIZE_FAST			8
+#define STEPSIZE_VERY_FAST		16
+#define STEPSIZE_EVEN_FASTER		32
+#define STEPSIZE_SLOWER			50	/* (symbolic value only) */
+#define STEPSIZE_FASTER			200	/* (symbolic value only) */
+#define STEPSIZE_RESET			100	/* (symbolic value only) */
 
 /* values for change side for custom elements */
-#define CH_SIDE_NONE		MV_NO_MOVING
-#define CH_SIDE_LEFT		MV_LEFT
-#define CH_SIDE_RIGHT		MV_RIGHT
-#define CH_SIDE_TOP		MV_UP
-#define CH_SIDE_BOTTOM		MV_DOWN
-#define CH_SIDE_LEFT_RIGHT	MV_HORIZONTAL
-#define CH_SIDE_TOP_BOTTOM	MV_VERTICAL
-#define CH_SIDE_ANY		MV_ANY_DIRECTION
+#define CH_SIDE_NONE			MV_NONE
+#define CH_SIDE_LEFT			MV_LEFT
+#define CH_SIDE_RIGHT			MV_RIGHT
+#define CH_SIDE_TOP			MV_UP
+#define CH_SIDE_BOTTOM			MV_DOWN
+#define CH_SIDE_LEFT_RIGHT		MV_HORIZONTAL
+#define CH_SIDE_TOP_BOTTOM		MV_VERTICAL
+#define CH_SIDE_ANY			MV_ANY_DIRECTION
 
 /* values for change player for custom elements */
-#define CH_PLAYER_NONE		0
-#define CH_PLAYER_1		(1 << 0)
-#define CH_PLAYER_2		(1 << 1)
-#define CH_PLAYER_3		(1 << 2)
-#define CH_PLAYER_4		(1 << 3)
-#define CH_PLAYER_ANY		(CH_PLAYER_1 | CH_PLAYER_2 | CH_PLAYER_3 | \
-				 CH_PLAYER_4)
+#define CH_PLAYER_NONE			PLAYER_BITS_NONE
+#define CH_PLAYER_1			PLAYER_BITS_1
+#define CH_PLAYER_2			PLAYER_BITS_2
+#define CH_PLAYER_3			PLAYER_BITS_3
+#define CH_PLAYER_4			PLAYER_BITS_4
+#define CH_PLAYER_ANY			PLAYER_BITS_ANY
 
 /* values for change page for custom elements */
-#define CH_PAGE_ANY_FILE	(0xff)
-#define CH_PAGE_ANY		(0xffffffff)
+#define CH_PAGE_ANY_FILE		(0xff)
+#define CH_PAGE_ANY			(0xffffffff)
 
 /* values for change power for custom elements */
-#define CP_WHEN_EMPTY		0
-#define CP_WHEN_DIGGABLE	1
-#define CP_WHEN_DESTRUCTIBLE	2
-#define CP_WHEN_COLLECTIBLE	3
-#define CP_WHEN_REMOVABLE	4
-#define CP_WHEN_WALKABLE	5
+#define CP_WHEN_EMPTY			0
+#define CP_WHEN_DIGGABLE		1
+#define CP_WHEN_DESTRUCTIBLE		2
+#define CP_WHEN_COLLECTIBLE		3
+#define CP_WHEN_REMOVABLE		4
+#define CP_WHEN_WALKABLE		5
+
+/* values for change actions for custom elements */
+#define CA_NO_ACTION			0
+#define CA_EXIT_PLAYER			1
+#define CA_KILL_PLAYER			2
+#define CA_MOVE_PLAYER			3
+#define CA_RESTART_LEVEL		4
+#define CA_SHOW_ENVELOPE		5
+#define CA_SET_LEVEL_TIME		6
+#define CA_SET_LEVEL_GEMS		7
+#define CA_SET_LEVEL_SCORE		8
+#define CA_SET_LEVEL_WIND		9
+#define CA_SET_PLAYER_GRAVITY		10
+#define CA_SET_PLAYER_KEYS		11
+#define CA_SET_PLAYER_SPEED		12
+#define CA_SET_PLAYER_SHIELD		13
+#define CA_SET_PLAYER_ARTWORK		14
+#define CA_SET_CE_SCORE			15
+#define CA_SET_CE_VALUE			16
+#define CA_SET_ENGINE_SCAN_MODE		17
+
+#define CA_HEADLINE_LEVEL_ACTIONS	250
+#define CA_HEADLINE_PLAYER_ACTIONS	251
+#define CA_HEADLINE_CE_ACTIONS		252
+#define CA_HEADLINE_ENGINE_ACTIONS	253
+#define CA_UNDEFINED			255
+
+/* values for change action mode for custom elements */
+#define CA_MODE_UNDEFINED		0
+#define CA_MODE_SET			1
+#define CA_MODE_ADD			2
+#define CA_MODE_SUBTRACT		3
+#define CA_MODE_MULTIPLY		4
+#define CA_MODE_DIVIDE			5
+#define CA_MODE_MODULO			6
+
+/* values for change action parameters for custom elements */
+#define CA_ARG_MIN			0
+#define CA_ARG_0			0
+#define CA_ARG_1			1
+#define CA_ARG_2			2
+#define CA_ARG_3			3
+#define CA_ARG_4			4
+#define CA_ARG_5			5
+#define CA_ARG_6			6
+#define CA_ARG_7			7
+#define CA_ARG_8			8
+#define CA_ARG_9			9
+#define CA_ARG_10			10
+#define CA_ARG_100			100
+#define CA_ARG_1000			1000
+#define CA_ARG_MAX			9999
+#define CA_ARG_PLAYER			10000
+#define CA_ARG_PLAYER_1			(CA_ARG_PLAYER + PLAYER_BITS_1)
+#define CA_ARG_PLAYER_2			(CA_ARG_PLAYER + PLAYER_BITS_2)
+#define CA_ARG_PLAYER_3			(CA_ARG_PLAYER + PLAYER_BITS_3)
+#define CA_ARG_PLAYER_4			(CA_ARG_PLAYER + PLAYER_BITS_4)
+#define CA_ARG_PLAYER_ANY		(CA_ARG_PLAYER + PLAYER_BITS_ANY)
+#define CA_ARG_PLAYER_TRIGGER		(CA_ARG_PLAYER + PLAYER_BITS_TRIGGER)
+#define CA_ARG_PLAYER_HEADLINE		(CA_ARG_PLAYER + 999)
+#define CA_ARG_NUMBER			11000
+#define CA_ARG_NUMBER_MIN		(CA_ARG_NUMBER + 0)
+#define CA_ARG_NUMBER_MAX		(CA_ARG_NUMBER + 1)
+#define CA_ARG_NUMBER_RESET		(CA_ARG_NUMBER + 2)
+#define CA_ARG_NUMBER_CE_SCORE		(CA_ARG_NUMBER + 3)
+#define CA_ARG_NUMBER_CE_VALUE		(CA_ARG_NUMBER + 4)
+#define CA_ARG_NUMBER_CE_DELAY		(CA_ARG_NUMBER + 5)
+#define CA_ARG_NUMBER_LEVEL_TIME	(CA_ARG_NUMBER + 6)
+#define CA_ARG_NUMBER_LEVEL_GEMS	(CA_ARG_NUMBER + 7)
+#define CA_ARG_NUMBER_LEVEL_SCORE	(CA_ARG_NUMBER + 8)
+#define CA_ARG_NUMBER_HEADLINE		(CA_ARG_NUMBER + 999)
+#define CA_ARG_ELEMENT			12000
+#define CA_ARG_ELEMENT_RESET		(CA_ARG_ELEMENT + 0)
+#define CA_ARG_ELEMENT_TARGET		(CA_ARG_ELEMENT + 1)
+#define CA_ARG_ELEMENT_TRIGGER		(CA_ARG_ELEMENT + 2)
+#define CA_ARG_ELEMENT_HEADLINE		(CA_ARG_ELEMENT + 997)
+#define CA_ARG_ELEMENT_CV_TARGET	(CA_ARG_ELEMENT_TARGET)
+#define CA_ARG_ELEMENT_CV_TRIGGER	(CA_ARG_ELEMENT_TRIGGER)
+#define CA_ARG_ELEMENT_CV_HEADLINE	(CA_ARG_ELEMENT_HEADLINE)
+#define CA_ARG_ELEMENT_NR_TARGET	(CA_ARG_ELEMENT + 3)
+#define CA_ARG_ELEMENT_NR_TRIGGER	(CA_ARG_ELEMENT + 4)
+#define CA_ARG_ELEMENT_NR_HEADLINE	(CA_ARG_ELEMENT + 998)
+#define CA_ARG_ELEMENT_CS_TARGET	(CA_ARG_ELEMENT + 5)
+#define CA_ARG_ELEMENT_CS_TRIGGER	(CA_ARG_ELEMENT + 6)
+#define CA_ARG_ELEMENT_CS_HEADLINE	(CA_ARG_ELEMENT + 999)
+#define CA_ARG_SPEED			13000
+#define CA_ARG_SPEED_NOT_MOVING		(CA_ARG_SPEED + STEPSIZE_NOT_MOVING)
+#define CA_ARG_SPEED_VERY_SLOW		(CA_ARG_SPEED + STEPSIZE_VERY_SLOW)
+#define CA_ARG_SPEED_SLOW		(CA_ARG_SPEED + STEPSIZE_SLOW)
+#define CA_ARG_SPEED_NORMAL		(CA_ARG_SPEED + STEPSIZE_NORMAL)
+#define CA_ARG_SPEED_FAST		(CA_ARG_SPEED + STEPSIZE_FAST)
+#define CA_ARG_SPEED_VERY_FAST		(CA_ARG_SPEED + STEPSIZE_VERY_FAST)
+#define CA_ARG_SPEED_EVEN_FASTER	(CA_ARG_SPEED + STEPSIZE_EVEN_FASTER)
+#define CA_ARG_SPEED_SLOWER		(CA_ARG_SPEED + STEPSIZE_SLOWER)
+#define CA_ARG_SPEED_FASTER		(CA_ARG_SPEED + STEPSIZE_FASTER)
+#define CA_ARG_SPEED_RESET		(CA_ARG_SPEED + STEPSIZE_RESET)
+#define CA_ARG_SPEED_HEADLINE		(CA_ARG_SPEED + 999)
+#define CA_ARG_GRAVITY			14000
+#define CA_ARG_GRAVITY_OFF		(CA_ARG_GRAVITY + 0)
+#define CA_ARG_GRAVITY_ON		(CA_ARG_GRAVITY + 1)
+#define CA_ARG_GRAVITY_TOGGLE		(CA_ARG_GRAVITY + 2)
+#define CA_ARG_GRAVITY_HEADLINE		(CA_ARG_GRAVITY + 999)
+#define CA_ARG_DIRECTION		15000
+#define CA_ARG_DIRECTION_NONE		(CA_ARG_DIRECTION + MV_NONE)
+#define CA_ARG_DIRECTION_LEFT		(CA_ARG_DIRECTION + MV_LEFT)
+#define CA_ARG_DIRECTION_RIGHT		(CA_ARG_DIRECTION + MV_RIGHT)
+#define CA_ARG_DIRECTION_UP		(CA_ARG_DIRECTION + MV_UP)
+#define CA_ARG_DIRECTION_DOWN		(CA_ARG_DIRECTION + MV_DOWN)
+#define CA_ARG_DIRECTION_TRIGGER	(CA_ARG_DIRECTION + MV_TRIGGER)
+#define CA_ARG_DIRECTION_TRIGGER_BACK	(CA_ARG_DIRECTION + MV_TRIGGER_BACK)
+#define CA_ARG_DIRECTION_HEADLINE	(CA_ARG_DIRECTION + 999)
+#define CA_ARG_SHIELD			16000
+#define CA_ARG_SHIELD_OFF		(CA_ARG_SHIELD + 0)
+#define CA_ARG_SHIELD_NORMAL		(CA_ARG_SHIELD + 1)
+#define CA_ARG_SHIELD_DEADLY		(CA_ARG_SHIELD + 2)
+#define CA_ARG_SHIELD_HEADLINE		(CA_ARG_SHIELD + 999)
+#define CA_ARG_SCAN_MODE		17000
+#define CA_ARG_SCAN_MODE_NORMAL		(CA_ARG_SCAN_MODE + MV_NORMAL)
+#define CA_ARG_SCAN_MODE_REVERSE	(CA_ARG_SCAN_MODE + MV_REVERSE)
+#define CA_ARG_SCAN_MODE_HEADLINE	(CA_ARG_SCAN_MODE + 999)
+#define CA_ARG_UNDEFINED		65535
 
 /* values for custom move patterns (bits 0 - 3: basic move directions) */
-#define MV_BIT_TOWARDS_PLAYER	4
-#define MV_BIT_AWAY_FROM_PLAYER	5
-#define MV_BIT_ALONG_LEFT_SIDE	6
-#define MV_BIT_ALONG_RIGHT_SIDE	7
-#define MV_BIT_TURNING_LEFT	8
-#define MV_BIT_TURNING_RIGHT	9
-#define MV_BIT_WHEN_PUSHED	10
-#define MV_BIT_MAZE_RUNNER	11
-#define MV_BIT_MAZE_HUNTER	12
-#define MV_BIT_WHEN_DROPPED	13
-#define MV_BIT_TURNING_LEFT_RIGHT 14
-#define MV_BIT_TURNING_RIGHT_LEFT 15
-#define MV_BIT_TURNING_RANDOM	16
+#define MV_BIT_TOWARDS_PLAYER		4
+#define MV_BIT_AWAY_FROM_PLAYER		5
+#define MV_BIT_ALONG_LEFT_SIDE		6
+#define MV_BIT_ALONG_RIGHT_SIDE		7
+#define MV_BIT_TURNING_LEFT		8
+#define MV_BIT_TURNING_RIGHT		9
+#define MV_BIT_WHEN_PUSHED		10
+#define MV_BIT_MAZE_RUNNER		11
+#define MV_BIT_MAZE_HUNTER		12
+#define MV_BIT_WHEN_DROPPED		13
+#define MV_BIT_TURNING_LEFT_RIGHT	14
+#define MV_BIT_TURNING_RIGHT_LEFT	15
+#define MV_BIT_TURNING_RANDOM		16
+#define MV_BIT_WIND_DIRECTION		17
 
 /* values for custom move patterns */
-#define MV_TOWARDS_PLAYER	(1 << MV_BIT_TOWARDS_PLAYER)
-#define MV_AWAY_FROM_PLAYER	(1 << MV_BIT_AWAY_FROM_PLAYER)
-#define MV_ALONG_LEFT_SIDE	(1 << MV_BIT_ALONG_LEFT_SIDE)
-#define MV_ALONG_RIGHT_SIDE	(1 << MV_BIT_ALONG_RIGHT_SIDE)
-#define MV_TURNING_LEFT		(1 << MV_BIT_TURNING_LEFT)
-#define MV_TURNING_RIGHT	(1 << MV_BIT_TURNING_RIGHT)
-#define MV_WHEN_PUSHED		(1 << MV_BIT_WHEN_PUSHED)
-#define MV_MAZE_RUNNER		(1 << MV_BIT_MAZE_RUNNER)
-#define MV_MAZE_HUNTER		(1 << MV_BIT_MAZE_HUNTER)
-#define MV_MAZE_RUNNER_STYLE	(MV_MAZE_RUNNER | MV_MAZE_HUNTER)
-#define MV_WHEN_DROPPED		(1 << MV_BIT_WHEN_DROPPED)
-#define MV_TURNING_LEFT_RIGHT	(1 << MV_BIT_TURNING_LEFT_RIGHT)
-#define MV_TURNING_RIGHT_LEFT	(1 << MV_BIT_TURNING_RIGHT_LEFT)
-#define MV_TURNING_RANDOM	(1 << MV_BIT_TURNING_RANDOM)
-
-/* values for initial move direction (bits 0 - 3: basic move directions) */
-#define MV_START_BIT_PREVIOUS	4
+#define MV_TOWARDS_PLAYER		(1 << MV_BIT_TOWARDS_PLAYER)
+#define MV_AWAY_FROM_PLAYER		(1 << MV_BIT_AWAY_FROM_PLAYER)
+#define MV_ALONG_LEFT_SIDE		(1 << MV_BIT_ALONG_LEFT_SIDE)
+#define MV_ALONG_RIGHT_SIDE		(1 << MV_BIT_ALONG_RIGHT_SIDE)
+#define MV_TURNING_LEFT			(1 << MV_BIT_TURNING_LEFT)
+#define MV_TURNING_RIGHT		(1 << MV_BIT_TURNING_RIGHT)
+#define MV_WHEN_PUSHED			(1 << MV_BIT_WHEN_PUSHED)
+#define MV_MAZE_RUNNER			(1 << MV_BIT_MAZE_RUNNER)
+#define MV_MAZE_HUNTER			(1 << MV_BIT_MAZE_HUNTER)
+#define MV_MAZE_RUNNER_STYLE		(MV_MAZE_RUNNER | MV_MAZE_HUNTER)
+#define MV_WHEN_DROPPED			(1 << MV_BIT_WHEN_DROPPED)
+#define MV_TURNING_LEFT_RIGHT		(1 << MV_BIT_TURNING_LEFT_RIGHT)
+#define MV_TURNING_RIGHT_LEFT		(1 << MV_BIT_TURNING_RIGHT_LEFT)
+#define MV_TURNING_RANDOM		(1 << MV_BIT_TURNING_RANDOM)
+#define MV_WIND_DIRECTION		(1 << MV_BIT_WIND_DIRECTION)
 
 /* values for initial move direction */
-#define MV_START_AUTOMATIC	(MV_NO_MOVING)
-#define MV_START_LEFT		(MV_LEFT)
-#define MV_START_RIGHT		(MV_RIGHT)
-#define MV_START_UP		(MV_UP)
-#define MV_START_DOWN		(MV_DOWN)
-#define MV_START_RANDOM		(MV_ALL_DIRECTIONS)
-#define MV_START_PREVIOUS	(1 << MV_START_BIT_PREVIOUS)
+#define MV_START_NONE			(MV_NONE)
+#define MV_START_AUTOMATIC		(MV_NONE)
+#define MV_START_LEFT			(MV_LEFT)
+#define MV_START_RIGHT			(MV_RIGHT)
+#define MV_START_UP			(MV_UP)
+#define MV_START_DOWN			(MV_DOWN)
+#define MV_START_RANDOM			(MV_ALL_DIRECTIONS)
+#define MV_START_PREVIOUS		(MV_PREVIOUS)
 
 /* values for elements left behind by custom elements */
-#define LEAVE_TYPE_UNLIMITED	0
-#define LEAVE_TYPE_LIMITED	1
+#define LEAVE_TYPE_UNLIMITED		0
+#define LEAVE_TYPE_LIMITED		1
 
 /* values for slippery property for custom elements */
-#define SLIPPERY_ANY_RANDOM	0
-#define SLIPPERY_ANY_LEFT_RIGHT	1
-#define SLIPPERY_ANY_RIGHT_LEFT	2
-#define SLIPPERY_ONLY_LEFT	3
-#define SLIPPERY_ONLY_RIGHT	4
+#define SLIPPERY_ANY_RANDOM		0
+#define SLIPPERY_ANY_LEFT_RIGHT		1
+#define SLIPPERY_ANY_RIGHT_LEFT		2
+#define SLIPPERY_ONLY_LEFT		3
+#define SLIPPERY_ONLY_RIGHT		4
 
 /* values for explosion type for custom elements */
-#define EXPLODES_3X3		0
-#define EXPLODES_1X1		1
-#define EXPLODES_CROSS		2
+#define EXPLODES_3X3			0
+#define EXPLODES_1X1			1
+#define EXPLODES_CROSS			2
 
 /* macros for configurable properties */
 #define IS_DIGGABLE(e)		HAS_PROPERTY(e, EP_DIGGABLE)
@@ -393,7 +562,7 @@
 #define IS_KEYGATE(e)		HAS_PROPERTY(e, EP_KEYGATE)
 #define IS_AMOEBOID(e)		HAS_PROPERTY(e, EP_AMOEBOID)
 #define IS_AMOEBALIVE(e)	HAS_PROPERTY(e, EP_AMOEBALIVE)
-#define HAS_CONTENT(e)		HAS_PROPERTY(e, EP_HAS_CONTENT)
+#define HAS_EDITOR_CONTENT(e)	HAS_PROPERTY(e, EP_HAS_EDITOR_CONTENT)
 #define CAN_TURN_EACH_MOVE(e)	HAS_PROPERTY(e, EP_CAN_TURN_EACH_MOVE)
 #define CAN_GROW(e)		HAS_PROPERTY(e, EP_CAN_GROW)
 #define IS_ACTIVE_BOMB(e)	HAS_PROPERTY(e, EP_ACTIVE_BOMB)
@@ -424,6 +593,20 @@
 				HAS_PROPERTY(e, EP_CAN_EXPLODE_BY_EXPLOSION)
 #define COULD_MOVE_INTO_ACID(e)	HAS_PROPERTY(e, EP_COULD_MOVE_INTO_ACID)
 #define MAYBE_DONT_COLLIDE_WITH(e) HAS_PROPERTY(e, EP_MAYBE_DONT_COLLIDE_WITH)
+#define CAN_BE_CLONED_BY_ANDROID(e)	\
+				HAS_PROPERTY(e, EP_CAN_BE_CLONED_BY_ANDROID)
+
+#define IS_EDITOR_CASCADE(e)	HAS_PROPERTY(e, EP_EDITOR_CASCADE)
+#define IS_EDITOR_CASCADE_ACTIVE(e)	\
+				HAS_PROPERTY(e, EP_EDITOR_CASCADE_ACTIVE)
+#define IS_EDITOR_CASCADE_INACTIVE(e)	\
+				HAS_PROPERTY(e, EP_EDITOR_CASCADE_INACTIVE)
+
+#define HAS_ACTION(e)		HAS_PROPERTY(e, EP_HAS_ACTION)
+#define CAN_CHANGE_OR_HAS_ACTION(e)	\
+				HAS_PROPERTY(e, EP_CAN_CHANGE_OR_HAS_ACTION)
+
+#define IS_OBSOLETE(e)		HAS_PROPERTY(e, EP_OBSOLETE)
 
 /* special macros used in game engine */
 #define IS_CUSTOM_ELEMENT(e)	((e) >= EL_CUSTOM_START &&		\
@@ -475,16 +658,28 @@
 
 #define IS_RND_GATE_GRAY(e)	((e) >= EL_GATE_1_GRAY &&		\
 	 			 (e) <= EL_GATE_4_GRAY)
+#define IS_RND_GATE_GRAY_ACTIVE(e) ((e) >= EL_GATE_1_GRAY_ACTIVE &&	\
+	 			 (e) <= EL_GATE_4_GRAY_ACTIVE)
 #define IS_EM_GATE_GRAY(e)	((e) >= EL_EM_GATE_1_GRAY &&		\
 	 			 (e) <= EL_EM_GATE_4_GRAY)
+#define IS_EM_GATE_GRAY_ACTIVE(e) ((e) >= EL_EM_GATE_1_GRAY_ACTIVE &&	\
+	 			 (e) <= EL_EM_GATE_4_GRAY_ACTIVE)
 #define IS_EMC_GATE_GRAY(e)	((e) >= EL_EMC_GATE_5_GRAY &&		\
 	 			 (e) <= EL_EMC_GATE_8_GRAY)
+#define IS_EMC_GATE_GRAY_ACTIVE(e) ((e) >= EL_EMC_GATE_5_GRAY_ACTIVE &&	\
+	 			 (e) <= EL_EMC_GATE_8_GRAY_ACTIVE)
 #define IS_GATE_GRAY(e)		(IS_RND_GATE_GRAY(e) ||			\
 				 IS_EM_GATE_GRAY(e) ||			\
 				 IS_EMC_GATE_GRAY(e))
+#define IS_GATE_GRAY_ACTIVE(e)	(IS_RND_GATE_GRAY_ACTIVE(e) ||		\
+				 IS_EM_GATE_GRAY_ACTIVE(e) ||		\
+				 IS_EMC_GATE_GRAY_ACTIVE(e))
 #define RND_GATE_GRAY_NR(e)	((e) - EL_GATE_1_GRAY)
+#define RND_GATE_GRAY_ACTIVE_NR(e) ((e) - EL_GATE_1_GRAY_ACTIVE)
 #define EM_GATE_GRAY_NR(e)	((e) - EL_EM_GATE_1_GRAY)
+#define EM_GATE_GRAY_ACTIVE_NR(e) ((e) - EL_EM_GATE_1_GRAY_ACTIVE)
 #define EMC_GATE_GRAY_NR(e)	((e) - EL_EMC_GATE_5_GRAY + 4)
+#define EMC_GATE_GRAY_ACTIVE_NR(e) ((e) - EL_EMC_GATE_5_GRAY_ACTIVE + 4)
 #define GATE_GRAY_NR(e)		(IS_RND_GATE_GRAY(e) ? RND_GATE_GRAY_NR(e) :  \
 				 IS_EM_GATE_GRAY(e) ?  EM_GATE_GRAY_NR(e) :   \
 				 IS_EMC_GATE_GRAY(e) ? EMC_GATE_GRAY_NR(e) : 0)
@@ -492,12 +687,34 @@
 #define GFX_ELEMENT(e)		(element_info[e].use_gfx_element ?	\
 				 element_info[e].gfx_element : e)
 
+/* !!! CHECK THIS !!! */
+#if 1
+#define TILE_GFX_ELEMENT(x, y)						\
+		   (GfxElement[x][y] != EL_UNDEFINED &&			\
+		    Feld[x][y] != EL_EXPLOSION ?			\
+		    GfxElement[x][y] : Feld[x][y])
+#else
+#define TILE_GFX_ELEMENT(x, y)						\
+	GFX_ELEMENT(GfxElement[x][y] != EL_UNDEFINED &&			\
+		    Feld[x][y] != EL_EXPLOSION ?			\
+		    GfxElement[x][y] : Feld[x][y])
+#endif
+
 /* !!! "use sound" deactivated due to problems with level "bug machine" !!! */
 /* (solution: add separate "use sound of element" to level file and editor) */
 #if 0
 #define SND_ELEMENT(e)		GFX_ELEMENT(e)
 #else
 #define SND_ELEMENT(e)		(e)
+#endif
+
+#if 1
+#define GROUP_NR(e)		((e) - EL_GROUP_START)
+#define IS_IN_GROUP(e, nr)	(element_info[e].in_group[nr] == TRUE)
+#define IS_IN_GROUP_EL(e, ge)	(IS_IN_GROUP(e, (ge) - EL_GROUP_START))
+
+#define IS_EQUAL_OR_IN_GROUP(e, ge)					\
+	(IS_GROUP_ELEMENT(ge) ? IS_IN_GROUP(e, GROUP_NR(ge)) : (e) == (ge))
 #endif
 
 #define IS_PLAYER(x, y)		(ELEM_IS_PLAYER(StorePlayer[x][y]))
@@ -508,6 +725,8 @@
 #define IS_MOVING(x,y)		(MovPos[x][y] != 0)
 #define IS_FALLING(x,y)		(MovPos[x][y] != 0 && MovDir[x][y] == MV_DOWN)
 #define IS_BLOCKED(x,y)		(Feld[x][y] == EL_BLOCKED)
+
+#define IS_MV_DIAGONAL(x)	((x) & MV_HORIZONTAL && (x) & MV_VERTICAL)
 
 #define EL_CHANGED(e)		((e) == EL_ROCK           ? EL_EMERALD :    \
 				 (e) == EL_BD_ROCK        ? EL_BD_DIAMOND : \
@@ -527,8 +746,6 @@
 #define PLAYERINFO(x,y)		(&stored_player[StorePlayer[x][y]-EL_PLAYER_1])
 #define SHIELD_ON(p)		((p)->shield_normal_time_left > 0)
 
-#if 1
-
 #define ENEMY_PROTECTED_FIELD(x,y)	(IS_PROTECTED(Feld[x][y]) ||       \
 					 IS_PROTECTED(Back[x][y]))
 #define EXPLOSION_PROTECTED_FIELD(x,y)  (IS_EXPLOSION_PROOF(Feld[x][y]))
@@ -537,16 +754,6 @@
 #define PLAYER_EXPLOSION_PROTECTED(x,y) (SHIELD_ON(PLAYERINFO(x, y)) ||	   \
 					 EXPLOSION_PROTECTED_FIELD(x, y))
 
-#else
-
-#define PROTECTED_FIELD(x,y)	(IS_ACCESSIBLE_INSIDE(Feld[x][y]) &&	\
-				 IS_INDESTRUCTIBLE(Feld[x][y]))
-#define PLAYER_ENEMY_PROTECTED(x,y)	(SHIELD_ON(PLAYERINFO(x, y)) ||	\
-				 PROTECTED_FIELD(x, y))
-#define PLAYER_EXPLOSION_PROTECTED(x,y)	(SHIELD_ON(PLAYERINFO(x, y)) ||	\
-				 PROTECTED_FIELD(x, y))
-#endif
-
 #define PLAYER_SWITCHING(p,x,y)	((p)->is_switching &&			\
 				 (p)->switch_x == (x) && (p)->switch_y == (y))
 
@@ -554,6 +761,11 @@
 				 (p)->drop_x == (x) && (p)->drop_y == (y))
 
 #define PLAYER_NR_GFX(g,i)	((g) + i * (IMG_PLAYER_2 - IMG_PLAYER_1))
+
+#define GET_PLAYER_ELEMENT(e)	((e) >= EL_PLAYER_1 && (e) <= EL_PLAYER_4 ? \
+				 (e) : EL_PLAYER_1)
+
+#define GET_PLAYER_NR(e)	(GET_PLAYER_ELEMENT(e) - EL_PLAYER_1)
 
 #define ANIM_FRAMES(g)		(graphic_info[g].anim_frames)
 #define ANIM_DELAY(g)		(graphic_info[g].anim_delay)
@@ -566,12 +778,19 @@
 
 #define IS_LOOP_SOUND(s)	(sound_info[s].loop)
 
+#define EL_CASCADE_ACTIVE(e)	(IS_EDITOR_CASCADE_INACTIVE(e) ? (e) + 1 : (e))
+#define EL_CASCADE_INACTIVE(e)	(IS_EDITOR_CASCADE_ACTIVE(e)   ? (e) - 1 : (e))
+#define EL_CASCADE_TOGGLE(e)	(IS_EDITOR_CASCADE_INACTIVE(e) ? (e) + 1 :    \
+				 IS_EDITOR_CASCADE_ACTIVE(e)   ? (e) - 1 : (e))
+
+#define EL_NAME(e)		((e) >= 0 ? element_info[e].token_name : "(?)")
+#define MV_TEXT(d)		((d) == MV_NONE  ? "MV_NONE"  :		\
+				 (d) == MV_LEFT  ? "MV_LEFT"  :		\
+				 (d) == MV_RIGHT ? "MV_RIGHT" :		\
+				 (d) == MV_UP    ? "MV_UP"    :		\
+				 (d) == MV_DOWN  ? "MV_DOWN"  : "(various)")
 
 /* fundamental game speed values */
-#define ONE_SECOND_DELAY	1000	/* delay value for one second */
-#define GAME_FRAME_DELAY	20	/* frame delay in milliseconds */
-#define FFWD_FRAME_DELAY	10	/* 200% speed for fast forward */
-#define FRAMES_PER_SECOND	(ONE_SECOND_DELAY / GAME_FRAME_DELAY)
 #define MICROLEVEL_SCROLL_DELAY	50	/* delay for scrolling micro level */
 #define MICROLEVEL_LABEL_DELAY	250	/* delay for micro level label */
 
@@ -579,15 +798,21 @@
 #define MAX_LEVEL_NAME_LEN	32
 #define MAX_LEVEL_AUTHOR_LEN	32
 #define MAX_ELEMENT_NAME_LEN	32
-#define MAX_TAPE_LEN		(1000 * FRAMES_PER_SECOND) /* max.time x fps */
 #define MAX_TAPES_PER_SET	1024
 #define MAX_SCORE_ENTRIES	100
+#define MAX_NUM_TITLE_SCREENS	5
+
 #define MAX_NUM_AMOEBA		100
+
+#if 0	/* game.h */
 #define MAX_INVENTORY_SIZE	1000
 #define STD_NUM_KEYS		4
 #define MAX_NUM_KEYS		8
+#endif
+
 #define NUM_BELTS		4
 #define NUM_BELT_PARTS		3
+#define NUM_ENVELOPES		4
 #define MIN_ENVELOPE_XSIZE	1
 #define MIN_ENVELOPE_YSIZE	1
 #define MAX_ENVELOPE_XSIZE	30
@@ -597,14 +822,13 @@
 #define MAX_CHANGE_PAGES	32
 #define MIN_ELEMENTS_IN_GROUP	1
 #define MAX_ELEMENTS_IN_GROUP	16
+#define MIN_ANDROID_ELEMENTS	1
+#define MAX_ANDROID_ELEMENTS	16
 
 /* values for elements with content */
 #define MIN_ELEMENT_CONTENTS	1
 #define STD_ELEMENT_CONTENTS	4
 #define MAX_ELEMENT_CONTENTS	8
-#define NUM_MAGIC_BALL_CONTENTS	8
-
-#define LEVEL_SCORE_ELEMENTS	16	/* level elements with score */
 
 /* often used screen positions */
 #define SX			8
@@ -663,6 +887,10 @@
 #define SC_CRYSTAL		11
 #define SC_PEARL		12
 #define SC_SHIELD		13
+#define SC_UNKNOWN_14		14
+#define SC_UNKNOWN_15		15
+
+#define LEVEL_SCORE_ELEMENTS	16	/* level elements with score */
 
 
 /* "real" level file elements */
@@ -872,8 +1100,8 @@
 #define EL_EM_GATE_3_GRAY		252
 #define EL_EM_GATE_4_GRAY		253
 
-#define EL_UNUSED_254			254
-#define EL_UNUSED_255			255
+#define EL_EM_DYNAMITE			254
+#define EL_EM_DYNAMITE_ACTIVE		255
 
 #define EL_PEARL			256
 #define EL_CRYSTAL			257
@@ -1019,6 +1247,7 @@
 #define EL_TRIGGER_ELEMENT		657
 #define EL_TRIGGER_PLAYER		658
 
+/* SP style elements */
 #define EL_SP_GRAVITY_ON_PORT_RIGHT	659
 #define EL_SP_GRAVITY_ON_PORT_DOWN	660
 #define EL_SP_GRAVITY_ON_PORT_LEFT	661
@@ -1028,8 +1257,7 @@
 #define EL_SP_GRAVITY_OFF_PORT_LEFT	665
 #define EL_SP_GRAVITY_OFF_PORT_UP	666
 
-
-/* the following EMC style elements are currently not implemented in R'n'D */
+/* EMC style elements */
 #define EL_BALLOON_SWITCH_NONE		667
 #define EL_EMC_GATE_5			668
 #define EL_EMC_GATE_6			669
@@ -1069,7 +1297,19 @@
 #define EL_EMC_FAKE_ACID		703
 #define EL_EMC_DRIPPER			704
 
-#define NUM_FILE_ELEMENTS		705
+#define EL_TRIGGER_CE_VALUE		705
+#define EL_TRIGGER_CE_SCORE		706
+#define EL_CURRENT_CE_VALUE		707
+#define EL_CURRENT_CE_SCORE		708
+
+#define EL_YAMYAM_LEFT			709
+#define EL_YAMYAM_RIGHT			710
+#define EL_YAMYAM_UP			711
+#define EL_YAMYAM_DOWN			712
+
+#define EL_BD_EXPANDABLE_WALL		713
+
+#define NUM_FILE_ELEMENTS		714
 
 
 /* "real" (and therefore drawable) runtime elements */
@@ -1120,9 +1360,24 @@
 #define EL_BD_MAGIC_WALL_EMPTYING	(EL_FIRST_RUNTIME_REAL + 42)
 #define EL_MAGIC_WALL_DEAD		(EL_FIRST_RUNTIME_REAL + 43)
 #define EL_BD_MAGIC_WALL_DEAD		(EL_FIRST_RUNTIME_REAL + 44)
+#define EL_EMC_FAKE_GRASS_ACTIVE	(EL_FIRST_RUNTIME_REAL + 45)
+#define EL_GATE_1_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 46)
+#define EL_GATE_2_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 47)
+#define EL_GATE_3_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 48)
+#define EL_GATE_4_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 49)
+#define EL_EM_GATE_1_GRAY_ACTIVE	(EL_FIRST_RUNTIME_REAL + 50)
+#define EL_EM_GATE_2_GRAY_ACTIVE	(EL_FIRST_RUNTIME_REAL + 51)
+#define EL_EM_GATE_3_GRAY_ACTIVE	(EL_FIRST_RUNTIME_REAL + 52)
+#define EL_EM_GATE_4_GRAY_ACTIVE	(EL_FIRST_RUNTIME_REAL + 53)
+#define EL_EMC_GATE_5_GRAY_ACTIVE	(EL_FIRST_RUNTIME_REAL + 54)
+#define EL_EMC_GATE_6_GRAY_ACTIVE	(EL_FIRST_RUNTIME_REAL + 55)
+#define EL_EMC_GATE_7_GRAY_ACTIVE	(EL_FIRST_RUNTIME_REAL + 56)
+#define EL_EMC_GATE_8_GRAY_ACTIVE	(EL_FIRST_RUNTIME_REAL + 57)
+#define EL_EMC_DRIPPER_ACTIVE		(EL_FIRST_RUNTIME_REAL + 58)
+#define EL_EMC_SPRING_BUMPER_ACTIVE	(EL_FIRST_RUNTIME_REAL + 59)
 
 /* "unreal" (and therefore not drawable) runtime elements */
-#define EL_FIRST_RUNTIME_UNREAL		(EL_FIRST_RUNTIME_REAL + 45)
+#define EL_FIRST_RUNTIME_UNREAL		(EL_FIRST_RUNTIME_REAL + 60)
 
 #define EL_BLOCKED			(EL_FIRST_RUNTIME_UNREAL + 0)
 #define EL_EXPLOSION			(EL_FIRST_RUNTIME_UNREAL + 1)
@@ -1142,9 +1397,14 @@
 #define EL_QUICKSAND_FILLING		(EL_FIRST_RUNTIME_UNREAL + 15)
 #define EL_MAGIC_WALL_FILLING		(EL_FIRST_RUNTIME_UNREAL + 16)
 #define EL_BD_MAGIC_WALL_FILLING	(EL_FIRST_RUNTIME_UNREAL + 17)
+#define EL_ELEMENT_SNAPPING		(EL_FIRST_RUNTIME_UNREAL + 18)
+#define EL_DIAGONAL_SHRINKING		(EL_FIRST_RUNTIME_UNREAL + 19)
+#define EL_DIAGONAL_GROWING		(EL_FIRST_RUNTIME_UNREAL + 20)
+
+#define NUM_RUNTIME_ELEMENTS		(EL_FIRST_RUNTIME_UNREAL + 21)
 
 /* dummy elements (never used as game elements, only used as graphics) */
-#define EL_FIRST_DUMMY			(EL_FIRST_RUNTIME_UNREAL + 18)
+#define EL_FIRST_DUMMY			NUM_RUNTIME_ELEMENTS
 
 #define EL_STEELWALL_TOPLEFT		(EL_FIRST_DUMMY + 0)
 #define EL_STEELWALL_TOPRIGHT		(EL_FIRST_DUMMY + 1)
@@ -1180,12 +1440,41 @@
 #define EL_INTERNAL_CLIPBOARD_GROUP	(EL_FIRST_INTERNAL + 2)
 #define EL_INTERNAL_DUMMY		(EL_FIRST_INTERNAL + 3)
 
+#define EL_INTERNAL_CASCADE_BD			(EL_FIRST_INTERNAL + 4)
+#define EL_INTERNAL_CASCADE_BD_ACTIVE		(EL_FIRST_INTERNAL + 5)
+#define EL_INTERNAL_CASCADE_EM			(EL_FIRST_INTERNAL + 6)
+#define EL_INTERNAL_CASCADE_EM_ACTIVE		(EL_FIRST_INTERNAL + 7)
+#define EL_INTERNAL_CASCADE_EMC			(EL_FIRST_INTERNAL + 8)
+#define EL_INTERNAL_CASCADE_EMC_ACTIVE		(EL_FIRST_INTERNAL + 9)
+#define EL_INTERNAL_CASCADE_RND			(EL_FIRST_INTERNAL + 10)
+#define EL_INTERNAL_CASCADE_RND_ACTIVE		(EL_FIRST_INTERNAL + 11)
+#define EL_INTERNAL_CASCADE_SB			(EL_FIRST_INTERNAL + 12)
+#define EL_INTERNAL_CASCADE_SB_ACTIVE		(EL_FIRST_INTERNAL + 13)
+#define EL_INTERNAL_CASCADE_SP			(EL_FIRST_INTERNAL + 14)
+#define EL_INTERNAL_CASCADE_SP_ACTIVE		(EL_FIRST_INTERNAL + 15)
+#define EL_INTERNAL_CASCADE_DC			(EL_FIRST_INTERNAL + 16)
+#define EL_INTERNAL_CASCADE_DC_ACTIVE		(EL_FIRST_INTERNAL + 17)
+#define EL_INTERNAL_CASCADE_DX			(EL_FIRST_INTERNAL + 18)
+#define EL_INTERNAL_CASCADE_DX_ACTIVE		(EL_FIRST_INTERNAL + 19)
+#define EL_INTERNAL_CASCADE_CHARS		(EL_FIRST_INTERNAL + 20)
+#define EL_INTERNAL_CASCADE_CHARS_ACTIVE	(EL_FIRST_INTERNAL + 21)
+#define EL_INTERNAL_CASCADE_CE			(EL_FIRST_INTERNAL + 22)
+#define EL_INTERNAL_CASCADE_CE_ACTIVE		(EL_FIRST_INTERNAL + 23)
+#define EL_INTERNAL_CASCADE_GE			(EL_FIRST_INTERNAL + 24)
+#define EL_INTERNAL_CASCADE_GE_ACTIVE		(EL_FIRST_INTERNAL + 25)
+#define EL_INTERNAL_CASCADE_REF			(EL_FIRST_INTERNAL + 26)
+#define EL_INTERNAL_CASCADE_REF_ACTIVE		(EL_FIRST_INTERNAL + 27)
+#define EL_INTERNAL_CASCADE_USER		(EL_FIRST_INTERNAL + 28)
+#define EL_INTERNAL_CASCADE_USER_ACTIVE		(EL_FIRST_INTERNAL + 29)
+#define EL_INTERNAL_CASCADE_DYNAMIC		(EL_FIRST_INTERNAL + 30)
+#define EL_INTERNAL_CASCADE_DYNAMIC_ACTIVE	(EL_FIRST_INTERNAL + 31)
+
 #define EL_INTERNAL_CLIPBOARD_START	(EL_FIRST_INTERNAL + 0)
 #define EL_INTERNAL_CLIPBOARD_END	(EL_FIRST_INTERNAL + 2)
 #define EL_INTERNAL_START		(EL_FIRST_INTERNAL + 0)
-#define EL_INTERNAL_END			(EL_FIRST_INTERNAL + 3)
+#define EL_INTERNAL_END			(EL_FIRST_INTERNAL + 31)
 
-#define MAX_NUM_ELEMENTS		(EL_FIRST_INTERNAL + 4)
+#define MAX_NUM_ELEMENTS		(EL_FIRST_INTERNAL + 32)
 
 
 /* values for graphics/sounds action types */
@@ -1238,12 +1527,44 @@
 #define ACTION_TURNING_FROM_DOWN	46
 #define ACTION_SMASHED_BY_ROCK		47
 #define ACTION_SMASHED_BY_SPRING	48
-#define ACTION_SLURPED_BY_SPRING	49
+#define ACTION_EATING			49
 #define ACTION_TWINKLING		50
 #define ACTION_SPLASHING		51
-#define ACTION_OTHER			52
+#define ACTION_PAGE_1			52
+#define ACTION_PAGE_2			53
+#define ACTION_PAGE_3			54
+#define ACTION_PAGE_4			55
+#define ACTION_PAGE_5			56
+#define ACTION_PAGE_6			57
+#define ACTION_PAGE_7			58
+#define ACTION_PAGE_8			59
+#define ACTION_PAGE_9			60
+#define ACTION_PAGE_10			61
+#define ACTION_PAGE_11			62
+#define ACTION_PAGE_12			63
+#define ACTION_PAGE_13			64
+#define ACTION_PAGE_14			65
+#define ACTION_PAGE_15			66
+#define ACTION_PAGE_16			67
+#define ACTION_PAGE_17			68
+#define ACTION_PAGE_18			69
+#define ACTION_PAGE_19			70
+#define ACTION_PAGE_20			71
+#define ACTION_PAGE_21			72
+#define ACTION_PAGE_22			73
+#define ACTION_PAGE_23			74
+#define ACTION_PAGE_24			75
+#define ACTION_PAGE_25			76
+#define ACTION_PAGE_26			77
+#define ACTION_PAGE_27			78
+#define ACTION_PAGE_28			79
+#define ACTION_PAGE_29			80
+#define ACTION_PAGE_30			81
+#define ACTION_PAGE_31			82
+#define ACTION_PAGE_32			83
+#define ACTION_OTHER			84
 
-#define NUM_ACTIONS			53
+#define NUM_ACTIONS			85
 
 #define ACTION_BORING_LAST		ACTION_BORING_10
 #define ACTION_SLEEPING_LAST		ACTION_SLEEPING_3
@@ -1251,18 +1572,19 @@
 
 /* values for special image configuration suffixes (must match game mode) */
 #define GFX_SPECIAL_ARG_DEFAULT		0
-#define GFX_SPECIAL_ARG_MAIN		1
-#define GFX_SPECIAL_ARG_LEVELS		2
-#define GFX_SPECIAL_ARG_SCORES		3
-#define GFX_SPECIAL_ARG_EDITOR		4
-#define GFX_SPECIAL_ARG_INFO		5
-#define GFX_SPECIAL_ARG_SETUP		6
-#define GFX_SPECIAL_ARG_PLAYING		7
-#define GFX_SPECIAL_ARG_DOOR		8
-#define GFX_SPECIAL_ARG_PREVIEW		9
-#define GFX_SPECIAL_ARG_CRUMBLED	10
+#define GFX_SPECIAL_ARG_TITLE		1
+#define GFX_SPECIAL_ARG_MAIN		2
+#define GFX_SPECIAL_ARG_LEVELS		3
+#define GFX_SPECIAL_ARG_SCORES		4
+#define GFX_SPECIAL_ARG_EDITOR		5
+#define GFX_SPECIAL_ARG_INFO		6
+#define GFX_SPECIAL_ARG_SETUP		7
+#define GFX_SPECIAL_ARG_PLAYING		8
+#define GFX_SPECIAL_ARG_DOOR		9
+#define GFX_SPECIAL_ARG_PREVIEW		10
+#define GFX_SPECIAL_ARG_CRUMBLED	11
 
-#define NUM_SPECIAL_GFX_ARGS		11
+#define NUM_SPECIAL_GFX_ARGS		12
 
 
 /* values for image configuration suffixes */
@@ -1304,8 +1626,9 @@
 #define GFX_ARG_POST_DELAY_RANDOM	35
 #define GFX_ARG_NAME			36
 #define GFX_ARG_SCALE_UP_FACTOR		37
+#define GFX_ARG_CLONE_FROM		38
 
-#define NUM_GFX_ARGS			38
+#define NUM_GFX_ARGS			39
 
 
 /* values for sound configuration suffixes */
@@ -1352,29 +1675,31 @@
 #define FONT_VALUE_1			26
 #define FONT_VALUE_2			27
 #define FONT_VALUE_OLD			28
-#define FONT_LEVEL_NUMBER		29
-#define FONT_TAPE_RECORDER		30
-#define FONT_GAME_INFO			31
+#define FONT_LEVEL_NUMBER_ACTIVE	29
+#define FONT_LEVEL_NUMBER		30
+#define FONT_TAPE_RECORDER		31
+#define FONT_GAME_INFO			32
 
-#define NUM_FONTS			32
+#define NUM_FONTS			33
 #define NUM_INITIAL_FONTS		4
 
 /* values for game_status (must match special image configuration suffixes) */
 #define GAME_MODE_DEFAULT		0
-#define GAME_MODE_MAIN			1
-#define GAME_MODE_LEVELS		2
-#define GAME_MODE_SCORES		3
-#define GAME_MODE_EDITOR		4
-#define GAME_MODE_INFO			5
-#define GAME_MODE_SETUP			6
-#define GAME_MODE_PLAYING		7
-#define GAME_MODE_PSEUDO_DOOR		8
-#define GAME_MODE_PSEUDO_PREVIEW	9
-#define GAME_MODE_PSEUDO_CRUMBLED	10
+#define GAME_MODE_TITLE			1
+#define GAME_MODE_MAIN			2
+#define GAME_MODE_LEVELS		3
+#define GAME_MODE_SCORES		4
+#define GAME_MODE_EDITOR		5
+#define GAME_MODE_INFO			6
+#define GAME_MODE_SETUP			7
+#define GAME_MODE_PLAYING		8
+#define GAME_MODE_PSEUDO_DOOR		9
+#define GAME_MODE_PSEUDO_PREVIEW	10
+#define GAME_MODE_PSEUDO_CRUMBLED	11
 
 /* there are no special config file suffixes for these modes */
-#define GAME_MODE_PSEUDO_TYPENAME	11
-#define GAME_MODE_QUIT			12
+#define GAME_MODE_PSEUDO_TYPENAME	12
+#define GAME_MODE_QUIT			13
 
 /* special definitions currently only used for custom artwork configuration */
 #define MUSIC_PREFIX_BACKGROUND		0
@@ -1387,13 +1712,10 @@
 
 
 /* program information and versioning definitions */
-
-#define RELEASE_312			TRUE
-
 #define PROGRAM_VERSION_MAJOR		3
-#define PROGRAM_VERSION_MINOR		1
-#define PROGRAM_VERSION_PATCH		2
-#define PROGRAM_VERSION_BUILD		0
+#define PROGRAM_VERSION_MINOR		2
+#define PROGRAM_VERSION_PATCH		0
+#define PROGRAM_VERSION_BUILD		9
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
@@ -1426,16 +1748,18 @@
 #define FILE_VERSION_1_2		VERSION_IDENT(1,2,0,0)
 #define FILE_VERSION_1_4		VERSION_IDENT(1,4,0,0)
 #define FILE_VERSION_2_0		VERSION_IDENT(2,0,0,0)
+#define FILE_VERSION_3_0		VERSION_IDENT(3,0,0,0)
 
 /* file version does not change for every program version, but is changed
    when new features are introduced that are incompatible with older file
    versions, so that they can be treated accordingly */
-#define FILE_VERSION_ACTUAL		FILE_VERSION_2_0
+#define FILE_VERSION_ACTUAL		FILE_VERSION_3_0
 
 #define GAME_VERSION_1_0		FILE_VERSION_1_0
 #define GAME_VERSION_1_2		FILE_VERSION_1_2
 #define GAME_VERSION_1_4		FILE_VERSION_1_4
 #define GAME_VERSION_2_0		FILE_VERSION_2_0
+#define GAME_VERSION_3_0		FILE_VERSION_3_0
 
 #define GAME_VERSION_ACTUAL		VERSION_IDENT(PROGRAM_VERSION_MAJOR, \
 						      PROGRAM_VERSION_MINOR, \
@@ -1483,6 +1807,8 @@ struct MenuInfo
 
 struct DoorInfo
 {
+  int width;
+  int height;
   int step_offset;
   int step_delay;
   int anim_mode;
@@ -1494,109 +1820,17 @@ struct HiScore
   int Score;
 };
 
-struct PlayerInfo
+struct Content
 {
-  boolean present;		/* player present in level playfield */
-  boolean connected;		/* player connected (locally or via network) */
-  boolean active;		/* player present and connected */
+  int e[3][3];
+};
 
-  int index_nr;			/* player number (0 to 3) */
-  int index_bit;		/* player number bit (1 << 0 to 1 << 3) */
-  int element_nr;		/* element (EL_PLAYER_1 to EL_PLAYER_4) */
-  int client_nr;		/* network client identifier */
+struct EnvelopeInfo
+{
+  int xsize;
+  int ysize;
 
-  byte action;			/* action from local input device */
-  byte effective_action;	/* action acknowledged from network server
-				   or summarized over all configured input
-				   devices when in single player mode */
-  byte programmed_action;	/* action forced by game itself (like moving
-				   through doors); overrides other actions */
-
-  int jx, jy, last_jx, last_jy;
-  int MovDir, MovPos, GfxDir, GfxPos;
-  int Frame, StepFrame;
-
-  int GfxAction;
-
-  boolean use_murphy_graphic;
-
-  boolean block_last_field;
-  int block_delay_adjustment;	/* needed for different engine versions */
-
-  boolean can_fall_into_acid;
-
-  boolean LevelSolved, GameOver;
-
-  int last_move_dir;
-
-  boolean is_waiting;
-  boolean is_moving;
-  boolean is_auto_moving;
-  boolean is_digging;
-  boolean is_snapping;
-  boolean is_collecting;
-  boolean is_pushing;
-  boolean is_switching;
-  boolean is_dropping;
-
-  boolean is_bored;
-  boolean is_sleeping;
-
-  int frame_counter_bored;
-  int frame_counter_sleeping;
-
-  int anim_delay_counter;
-  int post_delay_counter;
-
-  int action_waiting, last_action_waiting;
-  int special_action_bored;
-  int special_action_sleeping;
-
-  int num_special_action_bored;
-  int num_special_action_sleeping;
-
-  int switch_x, switch_y;
-  int drop_x, drop_y;
-
-  int show_envelope;
-
-#if 1	/* USE_NEW_MOVE_DELAY */
-  int move_delay;
-  int move_delay_value;
-#else
-  unsigned long move_delay;
-  int move_delay_value;
-#endif
-
-  int move_delay_reset_counter;
-
-#if 1	/* USE_NEW_PUSH_DELAY */
-  int push_delay;
-  int push_delay_value;
-#else
-  unsigned long push_delay;
-  unsigned long push_delay_value;
-#endif
-
-  unsigned long actual_frame_counter;
-
-  int drop_delay;
-
-  int step_counter;
-
-  int score;
-  int gems_still_needed;
-  int sokobanfields_still_needed;
-  int lights_still_needed;
-  int friends_still_needed;
-  int key[MAX_NUM_KEYS];
-  int dynabomb_count, dynabomb_size, dynabombs_left, dynabomb_xl;
-  int shield_normal_time_left;
-  int shield_deadly_time_left;
-
-  int inventory_element[MAX_INVENTORY_SIZE];
-  int inventory_infinite_element;
-  int inventory_size;
+  char text[MAX_ENVELOPE_TEXT_LEN + 1];
 };
 
 struct LevelSetInfo
@@ -1613,6 +1847,13 @@ struct LevelFileInfo
   char *filename;
 };
 
+struct DateInfo
+{
+  int year;
+  int month;
+  int day;
+};
+
 struct LevelInfo
 {
   struct LevelFileInfo file_info;
@@ -1624,6 +1865,8 @@ struct LevelInfo
 
   int file_version;	/* file format version the level is stored with    */
   int game_version;	/* game release version the level was created with */
+
+  struct DateInfo creation_date;
 
   boolean encoding_16bit_field;		/* level contains 16-bit elements  */
   boolean encoding_16bit_yamyam;	/* yamyam contains 16-bit elements */
@@ -1637,22 +1880,42 @@ struct LevelInfo
   char name[MAX_LEVEL_NAME_LEN + 1];
   char author[MAX_LEVEL_AUTHOR_LEN + 1];
 
-  char envelope_text[4][MAX_ENVELOPE_TEXT_LEN + 1];
-  int envelope_xsize[4], envelope_ysize[4];
+  struct EnvelopeInfo envelope[NUM_ENVELOPES];
 
   int score[LEVEL_SCORE_ELEMENTS];
 
-  int yamyam_content[MAX_ELEMENT_CONTENTS][3][3];
+  struct Content yamyam_content[MAX_ELEMENT_CONTENTS];
   int num_yamyam_contents;
 
   int amoeba_speed;
   int amoeba_content;
+
+  int game_of_life[4];
+  int biomaze[4];
 
   int time_magic_wall;
   int time_wheel;
   int time_light;
   int time_timegate;
 
+  int shield_normal_time;
+  int shield_deadly_time;
+
+  int extra_time;
+  int time_orb_time;
+
+  int extra_time_score;
+
+  int start_element[MAX_PLAYERS];
+  boolean use_start_element[MAX_PLAYERS];
+
+  int artwork_element[MAX_PLAYERS];
+  boolean use_artwork_element[MAX_PLAYERS];
+
+  int explosion_element[MAX_PLAYERS];
+  boolean use_explosion_element[MAX_PLAYERS];
+
+#if 1
   /* values for the new EMC elements */
   int android_move_time;
   int android_clone_time;
@@ -1665,27 +1928,34 @@ struct LevelInfo
   int lenses_time;
   int magnify_time;
   int wind_direction_initial;
-  int ball_content[NUM_MAGIC_BALL_CONTENTS][3][3];
+
+  struct Content ball_content[MAX_ELEMENT_CONTENTS];
+  int num_ball_contents;
+
+#if 0
   boolean android_array[16];
+#endif
+  int num_android_clone_elements;
+  int android_clone_element[MAX_ANDROID_ELEMENTS];
+#endif
 
   int can_move_into_acid_bits;	/* bitfield to store property for elements */
   int dont_collide_with_bits;	/* bitfield to store property for elements */
 
-  boolean double_speed;
-  boolean initial_gravity;
+  int initial_player_stepsize[MAX_PLAYERS];	/* initial player speed */
+  boolean initial_player_gravity[MAX_PLAYERS];
+
   boolean em_slippery_gems;	/* EM style "gems slip from wall" behaviour */
   boolean use_spring_bug;	/* for compatibility with old levels */
+  boolean use_time_orb_bug;	/* for compatibility with old levels */
   boolean instant_relocation;	/* no visual delay when relocating player */
   boolean can_pass_to_walkable;	/* player can pass to empty or walkable tile */
   boolean grow_into_diggable;	/* amoeba can grow into anything diggable */
 
+  boolean continuous_snapping;	/* repeated snapping without releasing key */
+  boolean block_snap_field;	/* snapping blocks field to show animation */
   boolean block_last_field;	/* player blocks previous field while moving */
   boolean sp_block_last_field;	/* player blocks previous field while moving */
-
-#if 0	/* !!! THIS IS NOT A LEVEL SETTING => LOGIC MOVED TO "game.c" !!! */
-  int block_delay;		/* delay for blocking previous field */
-  int sp_block_delay;		/* delay for blocking previous field */
-#endif
 
   /* ('int' instead of 'boolean' because used as selectbox value in editor) */
   int use_step_counter;		/* count steps instead of seconds for level */
@@ -1697,81 +1967,6 @@ struct LevelInfo
   boolean no_valid_file;	/* set when level file missing or invalid */
 
   boolean changed;		/* set when level was changed in the editor */
-};
-
-struct TapeInfo
-{
-  int file_version;	/* file format version the tape is stored with    */
-  int game_version;	/* game release version the tape was created with */
-  int engine_version;	/* game engine version the tape was recorded with */
-
-  char *level_identifier;
-  int level_nr;
-  unsigned long random_seed;
-  unsigned long date;
-  unsigned long counter;
-  unsigned long length;
-  unsigned long length_seconds;
-  unsigned int delay_played;
-  boolean pause_before_death;
-  boolean recording, playing, pausing;
-  boolean fast_forward;
-  boolean warp_forward;
-  boolean deactivate_display;
-  boolean auto_play;
-  boolean auto_play_level_solved;
-  boolean quick_resume;
-  boolean single_step;
-  boolean changed;
-  boolean player_participates[MAX_PLAYERS];
-  int num_participating_players;
-
-  struct
-  {
-    byte action[MAX_PLAYERS];
-    byte delay;
-  } pos[MAX_TAPE_LEN];
-
-  boolean no_valid_file;	/* set when tape file missing or invalid */
-};
-
-struct GameInfo
-{
-  /* values for engine initialization */
-  int default_push_delay_fixed;
-  int default_push_delay_random;
-
-  /* constant within running game */
-  int engine_version;
-  int emulation;
-  int initial_move_delay;
-  int initial_move_delay_value;
-  int initial_push_delay_value;
-
-  /* flags to handle bugs in and changes between different engine versions */
-  /* (for the latest engine version, these flags should always be "FALSE") */
-  boolean use_change_when_pushing_bug;
-  boolean use_block_last_field_bug;
-
-  /* variable within running game */
-  int yamyam_content_nr;
-  boolean magic_wall_active;
-  int magic_wall_time_left;
-  int light_time_left;
-  int timegate_time_left;
-  int belt_dir[4];
-  int belt_dir_nr[4];
-  int switchgate_pos;
-  int balloon_dir;
-  boolean gravity;
-  boolean explosions_delayed;
-  boolean envelope_active;
-
-  /* values for player idle animation (no effect on engine) */
-  int player_boring_delay_fixed;
-  int player_boring_delay_random;
-  int player_sleeping_delay_fixed;
-  int player_sleeping_delay_random;
 };
 
 struct GlobalInfo
@@ -1794,25 +1989,21 @@ struct ElementChangeInfo
 {
   boolean can_change;		/* use or ignore this change info */
 
-#if 1
   boolean has_event[NUM_CHANGE_EVENTS];		/* change events */
-#else
-  unsigned long events;		/* change events */
-#endif
 
   int trigger_player;		/* player triggering change */
   int trigger_side;		/* side triggering change */
   int trigger_page;		/* page triggering change */
 
-  short target_element;		/* target element after change */
+  int target_element;		/* target element after change */
 
   int delay_fixed;		/* added frame delay before changed (fixed) */
   int delay_random;		/* added frame delay before changed (random) */
   int delay_frames;		/* either 1 (frames) or 50 (seconds; 50 fps) */
 
-  short trigger_element;	/* element triggering change */
+  int trigger_element;		/* element triggering change */
 
-  int target_content[3][3];	/* elements for extended change target */
+  struct Content target_content;/* elements for extended change target */
   boolean use_target_content;	/* use extended change target */
   boolean only_if_complete;	/* only use complete target content */
   boolean use_random_replace;	/* use random value for replacing elements */
@@ -1820,6 +2011,11 @@ struct ElementChangeInfo
   int replace_when;		/* type of elements that can be replaced */
 
   boolean explode;		/* explode instead of change */
+
+  boolean has_action;		/* execute action on specified condition */
+  int action_type;		/* type of action */
+  int action_mode;		/* mode of action */
+  int action_arg;		/* parameter of action */
 
   /* ---------- internal values used at runtime when playing ---------- */
 
@@ -1830,7 +2026,12 @@ struct ElementChangeInfo
   void (*post_change_function)(int x, int y);
 
   short actual_trigger_element;	/* element that actually triggered change */
+  int actual_trigger_side;	/* element side that triggered the change */
   int actual_trigger_player;	/* player which actually triggered change */
+  int actual_trigger_ce_value;	/* CE value of element that triggered change */
+  int actual_trigger_ce_score;	/* CE score of element that triggered change */
+
+  boolean can_change_or_has_action;	/* can_change | has_action */
 
   /* ---------- internal values used in level editor ---------- */
 
@@ -1841,7 +2042,7 @@ struct ElementChangeInfo
 struct ElementGroupInfo
 {
   int num_elements;			/* number of elements in this group */
-  short element[MAX_ELEMENTS_IN_GROUP];	/* list of elements in this group */
+  int element[MAX_ELEMENTS_IN_GROUP];	/* list of elements in this group */
 
   int choice_mode;		/* how to choose element from group */
 
@@ -1877,11 +2078,11 @@ struct ElementInfo
   /* ---------- graphic and sound definitions ---------- */
 
   int graphic[NUM_ACTIONS];	/* default graphics for several actions */
-  int direction_graphic[NUM_ACTIONS][NUM_DIRECTIONS];
+  int direction_graphic[NUM_ACTIONS][NUM_DIRECTIONS_FULL];
 				/* special graphics for left/right/up/down */
 
   int crumbled[NUM_ACTIONS];	/* crumbled graphics for several actions */
-  int direction_crumbled[NUM_ACTIONS][NUM_DIRECTIONS];
+  int direction_crumbled[NUM_ACTIONS][NUM_DIRECTIONS_FULL];
 				/* crumbled graphics for left/right/up/down */
 
   int special_graphic[NUM_SPECIAL_GFX_ARGS];
@@ -1891,13 +2092,19 @@ struct ElementInfo
 
   /* ---------- special element property values ---------- */
 
+  unsigned long properties[NUM_EP_BITFIELDS];	/* element base properties */
+
   boolean use_gfx_element;	/* use custom graphic element */
-  short gfx_element;		/* optional custom graphic element */
+  int gfx_element;		/* optional custom graphic element */
 
   int access_direction;		/* accessible from which direction */
 
-  int collect_score;		/* score value for collecting */
-  int collect_count;		/* count value for collecting */
+  int collect_score_initial;	/* initial score value for collecting */
+  int collect_count_initial;	/* initial count value for collecting */
+
+  int ce_value_fixed_initial;	/* initial value for custom variable (fix) */
+  int ce_value_random_initial;	/* initial value for custom variable (rnd) */
+  boolean use_last_ce_value;	/* use value from element before change */
 
   int push_delay_fixed;		/* constant delay before pushing */
   int push_delay_random;	/* additional random delay before pushing */
@@ -1916,7 +2123,7 @@ struct ElementInfo
 
   int slippery_type;		/* how/where other elements slip away */
 
-  int content[3][3];		/* new elements after explosion */
+  struct Content content;	/* new elements after explosion */
 
   int explosion_type;		/* type of explosion, like 3x3, 3+3 or 1x1 */
   int explosion_delay;		/* duration of explosion of this element */
@@ -1932,21 +2139,14 @@ struct ElementInfo
 
   /* ---------- internal values used at runtime when playing ---------- */
 
-#if 1
   boolean has_change_event[NUM_CHANGE_EVENTS];
-#else
-  unsigned long change_events;	/* bitfield for combined change events */
-#endif
 
   int event_page_nr[NUM_CHANGE_EVENTS]; /* page number for each event */
   struct ElementChangeInfo *event_page[NUM_CHANGE_EVENTS]; /* page for event */
 
   boolean in_group[NUM_GROUP_ELEMENTS];
 
-#if 0
-  boolean can_leave_element;	/* element can leave other element behind */
-  boolean can_leave_element_last;
-#endif
+  int collect_score;		/* runtime score value for collecting */
 
   /* ---------- internal values used in level editor ---------- */
 
@@ -1978,6 +2178,9 @@ struct FontInfo
 struct GraphicInfo
 {
   Bitmap *bitmap;
+  int src_image_width;		/* scaled bitmap size, but w/o small images */
+  int src_image_height;		/* scaled bitmap size, but w/o small images */
+
   int src_x, src_y;		/* start position of animation frames */
   int width, height;		/* width/height of each animation frame */
   int offset_x, offset_y;	/* x/y offset to next animation frame */
@@ -1994,6 +2197,7 @@ struct GraphicInfo
   int diggable_like;		/* element for cloning digging graphics */
   int border_size;		/* border size for "crumbled" graphics */
   int scale_up_factor;		/* optional factor for scaling image up */
+  int clone_from;		/* graphic for cloning *all* settings */
 
   int anim_delay_fixed;		/* optional delay values for bored and   */
   int anim_delay_random;	/* sleeping player animations (animation */
@@ -2003,7 +2207,8 @@ struct GraphicInfo
   int step_offset;		/* optional step offset of toon animations */
   int step_delay;		/* optional step delay of toon animations */
 
-  int draw_x, draw_y;		/* optional offset for drawing fonts chars */
+  int draw_xoffset;		/* optional offset for drawing font chars */
+  int draw_yoffset;		/* optional offset for drawing font chars */
 
   int draw_masked;		/* optional setting for drawing envelope gfx */
 
@@ -2081,14 +2286,12 @@ struct HelpAnimInfo
 };
 
 
-#if 0
-extern GC			tile_clip_gc;
-extern Bitmap		       *pix[];
-#endif
-extern Bitmap		       *bitmap_db_field, *bitmap_db_door;
+extern Bitmap		       *bitmap_db_title;
+extern Bitmap		       *bitmap_db_field;
+extern Bitmap		       *bitmap_db_door;
 extern Pixmap			tile_clipmask[];
-extern DrawBuffer	      *fieldbuffer;
-extern DrawBuffer	      *drawto_field;
+extern DrawBuffer	       *fieldbuffer;
+extern DrawBuffer	       *drawto_field;
 
 extern int			game_status;
 extern boolean			level_editor_test_game;
@@ -2110,13 +2313,14 @@ extern short			MovDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			MovDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			ChangeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			ChangePage[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern short			CustomValue[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			Store[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			Store2[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			StorePlayer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			Back[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern boolean			Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern boolean			Pushed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-extern boolean			Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern short			ChangeCount[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			WasJustMoving[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			WasJustFalling[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -2130,7 +2334,9 @@ extern short			ExplodeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			RunnerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			PlayerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
+#if 0
 extern unsigned long		Properties[MAX_NUM_ELEMENTS][NUM_EP_BITFIELDS];
+#endif
 
 extern int			GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -2165,10 +2371,8 @@ extern int			graphics_action_mapping[];
 
 extern struct LevelSetInfo	levelset;
 extern struct LevelInfo		level, level_template;
-extern struct PlayerInfo	stored_player[], *local_player;
 extern struct HiScore		highscore[];
 extern struct TapeInfo		tape;
-extern struct GameInfo		game;
 extern struct GlobalInfo	global;
 extern struct MenuInfo		menu;
 extern struct DoorInfo		door_1, door_2;

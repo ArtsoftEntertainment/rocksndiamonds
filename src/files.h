@@ -29,6 +29,7 @@
 
 void setElementChangePages(struct ElementInfo *, int);
 void setElementChangeInfoToDefaults(struct ElementChangeInfo *);
+void copyElementInfo(struct ElementInfo *, struct ElementInfo *);
 
 char *getDefaultLevelFilename(int);
 
@@ -53,6 +54,9 @@ void SaveScore(int);
 
 void LoadSetup();
 void SaveSetup();
+
+void LoadSetup_EditorCascade();
+void SaveSetup_EditorCascade();
 
 void LoadCustomElementDescriptions();
 void LoadSpecialMenuDesignSettings();

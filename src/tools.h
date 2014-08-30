@@ -15,6 +15,7 @@
 #define TOOLS_H
 
 #include "main.h"
+#include "game.h"
 
 /* for SetDrawtoField */
 #define DRAW_DIRECT		0
@@ -45,8 +46,9 @@
 #define DOOR_COPY_BACK		(1 << 4)
 #define DOOR_NO_COPY_BACK	(1 << 5)
 #define DOOR_NO_DELAY		(1 << 6)
-#define DOOR_GET_STATE		(1 << 7)
-#define DOOR_SET_STATE		(1 << 8)
+#define DOOR_FORCE_REDRAW	(1 << 7)
+#define DOOR_GET_STATE		(1 << 8)
+#define DOOR_SET_STATE		(1 << 9)
 
 /* for Request */
 #define REQ_ASK			(1 << 0)
@@ -64,7 +66,13 @@ void SetDrawtoField(int);
 void RedrawPlayfield(boolean, int, int, int, int);
 void BackToFront();
 void FadeToFront();
+
+void FadeIn(int);
+void FadeOut(int, int);
+void FadeCross(int);
+
 void ClearWindow();
+void SetMainBackgroundImageIfDefined(int);
 void SetMainBackgroundImage(int);
 void SetDoorBackgroundImage(int);
 void DrawBackground(int, int, int, int);
@@ -138,6 +146,11 @@ void FreeToolButtons();
 
 int map_element_RND_to_EM(int);
 int map_element_EM_to_RND(int);
+int map_direction_RND_to_EM(int);
+int map_direction_EM_to_RND(int);
+
+void map_android_clone_elements_RND_to_EM(struct LevelInfo *);
+void map_android_clone_elements_EM_to_RND(struct LevelInfo *);
 
 int get_next_element(int);
 int el_act_dir2img(int, int, int);
@@ -147,8 +160,14 @@ int el2baseimg(int);
 int el2img(int);
 int el2edimg(int);
 int el2preimg(int);
+int font2baseimg(int);
 
 unsigned int InitRND(long);
 void InitGraphicInfo_EM(void);
+
+void PlayMenuSound();
+void PlayMenuSoundStereo(int, int);
+void PlayMenuSoundIfLoop();
+void PlayMenuMusic();
 
 #endif	/* TOOLS_H */

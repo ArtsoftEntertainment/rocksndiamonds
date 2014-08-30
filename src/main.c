@@ -16,17 +16,13 @@
 #include "main.h"
 #include "init.h"
 #include "game.h"
+#include "tape.h"
 #include "events.h"
 #include "config.h"
 
-#if 0
-GC			tile_clip_gc;
-Bitmap		       *pix[NUM_BITMAPS];
-#endif
-Bitmap		       *bitmap_db_field, *bitmap_db_door;
-#if 0
-Pixmap			tile_clipmask[NUM_TILES];
-#endif
+Bitmap		       *bitmap_db_title;
+Bitmap		       *bitmap_db_field;
+Bitmap		       *bitmap_db_door;
 DrawBuffer	       *fieldbuffer;
 DrawBuffer	       *drawto_field;
 
@@ -50,13 +46,14 @@ short			MovDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			MovDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			ChangeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			ChangePage[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			CustomValue[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Store[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Store2[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			StorePlayer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Back[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Pushed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-boolean			Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			ChangeCount[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			WasJustMoving[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			WasJustFalling[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -70,7 +67,9 @@ short			ExplodeDelay[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			RunnerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			PlayerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
+#if 0
 unsigned long		Properties[MAX_NUM_ELEMENTS][NUM_EP_BITFIELDS];
+#endif
 
 int			GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -83,7 +82,7 @@ int			scroll_x, scroll_y;
 
 int			FX = SX, FY = SY;
 int			ScrollStepSize;
-int			ScreenMovDir = MV_NO_MOVING, ScreenMovPos = 0;
+int			ScreenMovDir = MV_NONE, ScreenMovPos = 0;
 int			ScreenGfxPos = 0;
 int			BorderElement = EL_STEELWALL;
 int			GameFrameDelay = GAME_FRAME_DELAY;
@@ -191,7 +190,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "yamyam",
     "yamyam",
-    "yam yam"
+    "yam yam (random start direction)"
   },
   {
     "robot",
@@ -200,7 +199,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "steelwall",
-    "wall",
+    "steelwall",
     "steel wall"
   },
   {
@@ -251,7 +250,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "amoeba_wet",
     "amoeba",
-    "dropping amoeba"
+    "dropping amoeba (EM style)"
   },
   {
     "amoeba_dry",
@@ -296,60 +295,63 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "key_1",
     "key",
-    "red key"
+    "key 1"
   },
   {
     "key_2",
     "key",
-    "yellow key"
+    "key 2"
   },
   {
     "key_3",
     "key",
-    "green key"
+    "key 3"
   },
   {
     "key_4",
     "key",
-    "blue key"
+    "key 4"
   },
   {
     "gate_1",
     "gate",
-    "red door"
+    "door 1"
   },
   {
     "gate_2",
     "gate",
-    "yellow door"
+    "door 2"
   },
   {
     "gate_3",
     "gate",
-    "green door"
+    "door 3"
   },
   {
     "gate_4",
     "gate",
-    "blue door"
+    "door 4"
   },
   {
     "gate_1_gray",
     "gate",
-    "gray door (opened by red key)"
+    "gray door (opened by key 1)"
   },
   {
     "gate_2_gray",
     "gate",
-    "gray door (opened by yellow key)"},
+    "gray door (opened by key 2)"
+  },
   {
     "gate_3_gray",
     "gate",
-    "gray door (opened by green key)"},
+    "gray door (opened by key 3)"
+  },
   {
     "gate_4_gray",
     "gate",
-    "gray door (opened by blue key)"},
+    "gray door (opened by key 4)"
+  },
   {
     "dynamite",
     "dynamite",
@@ -408,7 +410,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "expandable_wall",
     "wall",
-    "growing wall"
+    "growing wall (horizontal, visible)"
   },
   {
     "bd_diamond",
@@ -442,7 +444,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "invisible_steelwall",
-    "wall",
+    "steelwall",
     "invisible steel wall"
   },
   {
@@ -530,22 +532,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "player_1",
     "player",
-    "yellow player"
+    "player 1"
   },
   {
     "player_2",
     "player",
-    "red player"
+    "player 2"
   },
   {
     "player_3",
     "player",
-    "green player"
+    "player 3"
   },
   {
     "player_4",
     "player",
-    "blue player"
+    "player 4"
   },
   {
     "bug.right",
@@ -1142,22 +1144,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "em_gate_1",
     "gate",
-    "red door (EM style)"
+    "door 1 (EM style)"
   },
   {
     "em_gate_2",
     "gate",
-    "yellow door (EM style)"
+    "door 2 (EM style)"
   },
   {
     "em_gate_3",
     "gate",
-    "green door (EM style)"
+    "door 3 (EM style)"
   },
   {
     "em_gate_4",
     "gate",
-    "blue door (EM style)"
+    "door 4 (EM style)"
   },
   {
     "em_key_2_file_obsolete",
@@ -1377,32 +1379,32 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "em_gate_1_gray",
     "gate",
-    "gray door (EM style, red key)"
+    "gray door (EM style, key 1)"
   },
   {
     "em_gate_2_gray",
     "gate",
-    "gray door (EM style, yellow key)"
+    "gray door (EM style, key 2)"
   },
   {
     "em_gate_3_gray",
     "gate",
-    "gray door (EM style, green key)"
+    "gray door (EM style, key 3)"
   },
   {
     "em_gate_4_gray",
     "gate",
-    "gray door (EM style, blue key)"
+    "gray door (EM style, key 4)"
   },
   {
-    "unused_254",
-    "unused",
-    "(not used)"
+    "em_dynamite",
+    "dynamite",
+    "dynamite (EM style)"
   },
   {
-    "unused_255",
-    "unused",
-    "(not used)"
+    "em_dynamite.active",
+    "dynamite",
+    "burning dynamite (EM style)"
   },
   {
     "pearl",
@@ -1482,122 +1484,122 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "conveyor_belt_1_left",
     "conveyor_belt",
-    "red conveyor belt (left)"
+    "conveyor belt 1 (left)"
   },
   {
     "conveyor_belt_1_middle",
     "conveyor_belt",
-    "red conveyor belt (middle)"
+    "conveyor belt 1 (middle)"
   },
   {
     "conveyor_belt_1_right",
     "conveyor_belt",
-    "red conveyor belt (right)"
+    "conveyor belt 1 (right)"
   },
   {
     "conveyor_belt_1_switch_left",
     "conveyor_belt_switch",
-    "switch for red conveyor belt (left)"
+    "switch for conveyor belt 1 (left)"
   },
   {
     "conveyor_belt_1_switch_middle",
     "conveyor_belt_switch",
-    "switch for red conveyor belt (middle)"
+    "switch for conveyor belt 1 (middle)"
   },
   {
     "conveyor_belt_1_switch_right",
     "conveyor_belt_switch",
-    "switch for red conveyor belt (right)"
+    "switch for conveyor belt 1 (right)"
   },
   {
     "conveyor_belt_2_left",
     "conveyor_belt",
-    "yellow conveyor belt (left)"
+    "conveyor belt 2 (left)"
   },
   {
     "conveyor_belt_2_middle",
     "conveyor_belt",
-    "yellow conveyor belt (middle)"
+    "conveyor belt 2 (middle)"
   },
   {
     "conveyor_belt_2_right",
     "conveyor_belt",
-    "yellow conveyor belt (right)"
+    "conveyor belt 2 (right)"
   },
   {
     "conveyor_belt_2_switch_left",
     "conveyor_belt_switch",
-    "switch for yellow conveyor belt (left)"
+    "switch for conveyor belt 2 (left)"
   },
   {
     "conveyor_belt_2_switch_middle",
     "conveyor_belt_switch",
-    "switch for yellow conveyor belt (middle)"
+    "switch for conveyor belt 2 (middle)"
   },
   {
     "conveyor_belt_2_switch_right",
     "conveyor_belt_switch",
-    "switch for yellow conveyor belt (right)"
+    "switch for conveyor belt 2 (right)"
   },
   {
     "conveyor_belt_3_left",
     "conveyor_belt",
-    "green conveyor belt (left)"
+    "conveyor belt 3 (left)"
   },
   {
     "conveyor_belt_3_middle",
     "conveyor_belt",
-    "green conveyor belt (middle)"
+    "conveyor belt 3 (middle)"
   },
   {
     "conveyor_belt_3_right",
     "conveyor_belt",
-    "green conveyor belt (right)"
+    "conveyor belt 3 (right)"
   },
   {
     "conveyor_belt_3_switch_left",
     "conveyor_belt_switch",
-    "switch for green conveyor belt (left)"
+    "switch for conveyor belt 3 (left)"
   },
   {
     "conveyor_belt_3_switch_middle",
     "conveyor_belt_switch",
-    "switch for green conveyor belt (middle)"
+    "switch for conveyor belt 3 (middle)"
   },
   {
     "conveyor_belt_3_switch_right",
     "conveyor_belt_switch",
-    "switch for green conveyor belt (right)"
+    "switch for conveyor belt 3 (right)"
   },
   {
     "conveyor_belt_4_left",
     "conveyor_belt",
-    "blue conveyor belt (left)"
+    "conveyor belt 4 (left)"
   },
   {
     "conveyor_belt_4_middle",
     "conveyor_belt",
-    "blue conveyor belt (middle)"
+    "conveyor belt 4 (middle)"
   },
   {
     "conveyor_belt_4_right",
     "conveyor_belt",
-    "blue conveyor belt (right)"
+    "conveyor belt 4 (right)"
   },
   {
     "conveyor_belt_4_switch_left",
     "conveyor_belt_switch",
-    "switch for blue conveyor belt (left)"
+    "switch for conveyor belt 4 (left)"
   },
   {
     "conveyor_belt_4_switch_middle",
     "conveyor_belt_switch",
-    "switch for blue conveyor belt (middle)"
+    "switch for conveyor belt 4 (middle)"
   },
   {
     "conveyor_belt_4_switch_right",
     "conveyor_belt_switch",
-    "switch for blue conveyor belt (right)"
+    "switch for conveyor belt 4 (right)"
   },
   {
     "landmine",
@@ -1701,7 +1703,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "steelwall_slippery",
-    "wall",
+    "steelwall",
     "slippery steel wall"
   },
   {
@@ -1762,46 +1764,46 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "balloon_switch_left",
     "balloon_switch",
-    "send balloon to the left"
+    "wind switch (left)"
   },
   {
     "balloon_switch_right",
     "balloon_switch",
-    "send balloon to the right"
+    "wind switch (right)"
   },
   {
     "balloon_switch_up",
     "balloon_switch",
-    "send balloon up"
+    "wind switch (up)"
   },
   {
     "balloon_switch_down",
     "balloon_switch",
-    "send balloon down"
+    "wind switch (down)"
   },
   {
     "balloon_switch_any",
     "balloon_switch",
-    "send balloon in pressed direction"
+    "wind switch (any direction)"
   },
   {
     "emc_steelwall_1",
-    "wall",
+    "steelwall",
     "steel wall"
   },
   {
     "emc_steelwall_2",
-    "wall",
+    "steelwall",
     "steel wall"
   },
   {
     "emc_steelwall_3",
-    "wall",
+    "steelwall",
     "steel wall"
   },
   {
     "emc_steelwall_4",
-    "wall",
+    "steelwall",
     "steel wall"
   },
   {
@@ -3207,22 +3209,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "em_key_1",
     "key",
-    "red key (EM style)"
+    "key 1 (EM style)"
     },
   {
     "em_key_2",
     "key",
-    "yellow key (EM style)"
+    "key 2 (EM style)"
     },
   {
     "em_key_3",
     "key",
-    "green key (EM style)"
+    "key 3 (EM style)"
   },
   {
     "em_key_4",
     "key",
-    "blue key (EM style)"
+    "key 4 (EM style)"
   },
   {
     "envelope_1",
@@ -3462,7 +3464,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "balloon_switch_none",
     "balloon_switch",
-    "stop moving balloon"
+    "wind switch (off)"
   },
   {
     "emc_gate_5",
@@ -3636,18 +3638,63 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "emc_fake_grass",
-    "fake grass",
+    "fake_grass",
     "fake grass"
   },
   {
     "emc_fake_acid",
-    "fake acid",
+    "fake_acid",
     "fake acid"
   },
   {
     "emc_dripper",
     "dripper",
     "dripper"
+  },
+  {
+    "trigger_ce_value",
+    "trigger",
+    "CE value of element triggering change"
+  },
+  {
+    "trigger_ce_score",
+    "trigger",
+    "CE score of element triggering change"
+  },
+  {
+    "current_ce_value",
+    "current",
+    "CE value of current element"
+  },
+  {
+    "current_ce_score",
+    "current",
+    "CE score of current element"
+  },
+  {
+    "yamyam.left",
+    "yamyam",
+    "yam yam (starts moving left)"
+  },
+  {
+    "yamyam.right",
+    "yamyam",
+    "yam yam (starts moving right)"
+  },
+  {
+    "yamyam.up",
+    "yamyam",
+    "yam yam (starts moving up)"
+  },
+  {
+    "yamyam.down",
+    "yamyam",
+    "yam yam (starts moving down)"
+  },
+  {
+    "bd_expandable_wall",
+    "wall",
+    "growing wall (horizontal, BD style)"
   },
 
   /* ----------------------------------------------------------------------- */
@@ -3711,7 +3758,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "invisible_steelwall.active",
-    "wall",
+    "steelwall",
     "-"
   },
   {
@@ -3880,6 +3927,82 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
 
+  {
+    "emc_fake_grass.active",
+    "fake_grass",
+    "-"
+  },
+  {
+    "gate_1_gray.active",
+    "gate",
+    ""
+  },
+  {
+    "gate_2_gray.active",
+    "gate",
+    ""
+  },
+  {
+    "gate_3_gray.active",
+    "gate",
+    ""
+  },
+  {
+    "gate_4_gray.active",
+    "gate",
+    ""
+  },
+  {
+    "em_gate_1_gray.active",
+    "gate",
+    ""
+  },
+  {
+    "em_gate_2_gray.active",
+    "gate",
+    ""
+  },
+  {
+    "em_gate_3_gray.active",
+    "gate",
+    ""
+  },
+  {
+    "em_gate_4_gray.active",
+    "gate",
+    ""
+  },
+  {
+    "emc_gate_5_gray.active",
+    "gate",
+    "",
+  },
+  {
+    "emc_gate_6_gray.active",
+    "gate",
+    "",
+  },
+  {
+    "emc_gate_7_gray.active",
+    "gate",
+    "",
+  },
+  {
+    "emc_gate_8_gray.active",
+    "gate",
+    "",
+  },
+  {
+    "emc_dripper.active",
+    "dripper",
+    "dripper"
+  },
+  {
+    "emc_spring_bumper.active",
+    "emc_spring_bumper",
+    "spring bumper",
+  },
+
   /* ----------------------------------------------------------------------- */
   /* "unreal" (and therefore not drawable) runtime elements                  */
   /* ----------------------------------------------------------------------- */
@@ -3971,6 +4094,21 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "bd_magic_wall.filling",
+    "-",
+    "-"
+  },
+  {
+    "element.snapping",
+    "-",
+    "-"
+  },
+  {
+    "diagonal.shrinking",
+    "-",
+    "-"
+  },
+  {
+    "diagonal.growing",
     "-",
     "-"
   },
@@ -4124,6 +4262,146 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "internal",
     "-"
   },
+  {
+    "internal_cascade_bd",
+    "internal",
+    "show Boulder Dash elements"
+  },
+  {
+    "internal_cascade_bd.active",
+    "internal",
+    "hide Boulder Dash elements"
+  },
+  {
+    "internal_cascade_em",
+    "internal",
+    "show Emerald Mine elements"
+  },
+  {
+    "internal_cascade_em.active",
+    "internal",
+    "hide Emerald Mine elements"
+  },
+  {
+    "internal_cascade_emc",
+    "internal",
+    "show Emerald Mine Club elements"
+  },
+  {
+    "internal_cascade_emc.active",
+    "internal",
+    "hide Emerald Mine Club elements"
+  },
+  {
+    "internal_cascade_rnd",
+    "internal",
+    "show Rocks'n'Diamonds elements"
+  },
+  {
+    "internal_cascade_rnd.active",
+    "internal",
+    "hide Rocks'n'Diamonds elements"
+  },
+  {
+    "internal_cascade_sb",
+    "internal",
+    "show Sokoban elements"
+  },
+  {
+    "internal_cascade_sb.active",
+    "internal",
+    "hide Sokoban elements"
+  },
+  {
+    "internal_cascade_sp",
+    "internal",
+    "show Supaplex elements"
+  },
+  {
+    "internal_cascade_sp.active",
+    "internal",
+    "hide Supaplex elements"
+  },
+  {
+    "internal_cascade_dc",
+    "internal",
+    "show Diamond Caves II elements"
+  },
+  {
+    "internal_cascade_dc.active",
+    "internal",
+    "hide Diamond Caves II elements"
+  },
+  {
+    "internal_cascade_dx",
+    "internal",
+    "show DX Boulderdash elements"
+  },
+  {
+    "internal_cascade_dx.active",
+    "internal",
+    "hide DX Boulderdash elements"
+  },
+  {
+    "internal_cascade_chars",
+    "internal",
+    "show text elements"
+  },
+  {
+    "internal_cascade_chars.active",
+    "internal",
+    "hide text elements"
+  },
+  {
+    "internal_cascade_ce",
+    "internal",
+    "show custom elements"
+  },
+  {
+    "internal_cascade_ce.active",
+    "internal",
+    "hide custom elements"
+  },
+  {
+    "internal_cascade_ge",
+    "internal",
+    "show group elements"
+  },
+  {
+    "internal_cascade_ge.active",
+    "internal",
+    "hide group elements"
+  },
+  {
+    "internal_cascade_ref",
+    "internal",
+    "show reference elements"
+  },
+  {
+    "internal_cascade_ref.active",
+    "internal",
+    "hide reference elements"
+  },
+  {
+    "internal_cascade_user",
+    "internal",
+    "show user defined elements"
+  },
+  {
+    "internal_cascade_user.active",
+    "internal",
+    "hide user defined elements"
+  },
+  {
+    "internal_cascade_dynamic",
+    "internal",
+    "show elements used in this level"
+  },
+  {
+    "internal_cascade_dynamic.active",
+    "internal",
+    "hide elements used in this level"
+  },
 
   /* keyword to stop parser: "ELEMENT_INFO_END" <-- do not change! */
 
@@ -4190,9 +4468,41 @@ struct ElementActionInfo element_action_info[NUM_ACTIONS + 1 + 1] =
   { ".turning_from_down",	ACTION_TURNING_FROM_DOWN,	FALSE	},
   { ".smashed_by_rock",		ACTION_SMASHED_BY_ROCK,		FALSE	},
   { ".smashed_by_spring",	ACTION_SMASHED_BY_SPRING,	FALSE	},
-  { ".slurped_by_spring",	ACTION_SLURPED_BY_SPRING,	FALSE	},
+  { ".eating",			ACTION_EATING,			FALSE	},
   { ".twinkling",		ACTION_TWINKLING,		FALSE	},
   { ".splashing",		ACTION_SPLASHING,		FALSE	},
+  { ".page[1]",			ACTION_PAGE_1,			FALSE	},
+  { ".page[2]",			ACTION_PAGE_2,			FALSE	},
+  { ".page[3]",			ACTION_PAGE_3,			FALSE	},
+  { ".page[4]",			ACTION_PAGE_4,			FALSE	},
+  { ".page[5]",			ACTION_PAGE_5,			FALSE	},
+  { ".page[6]",			ACTION_PAGE_6,			FALSE	},
+  { ".page[7]",			ACTION_PAGE_7,			FALSE	},
+  { ".page[8]",			ACTION_PAGE_8,			FALSE	},
+  { ".page[9]",			ACTION_PAGE_9,			FALSE	},
+  { ".page[10]",		ACTION_PAGE_10,			FALSE	},
+  { ".page[11]",		ACTION_PAGE_11,			FALSE	},
+  { ".page[12]",		ACTION_PAGE_12,			FALSE	},
+  { ".page[13]",		ACTION_PAGE_13,			FALSE	},
+  { ".page[14]",		ACTION_PAGE_14,			FALSE	},
+  { ".page[15]",		ACTION_PAGE_15,			FALSE	},
+  { ".page[16]",		ACTION_PAGE_16,			FALSE	},
+  { ".page[17]",		ACTION_PAGE_17,			FALSE	},
+  { ".page[18]",		ACTION_PAGE_18,			FALSE	},
+  { ".page[19]",		ACTION_PAGE_19,			FALSE	},
+  { ".page[20]",		ACTION_PAGE_20,			FALSE	},
+  { ".page[21]",		ACTION_PAGE_21,			FALSE	},
+  { ".page[22]",		ACTION_PAGE_22,			FALSE	},
+  { ".page[23]",		ACTION_PAGE_23,			FALSE	},
+  { ".page[24]",		ACTION_PAGE_24,			FALSE	},
+  { ".page[25]",		ACTION_PAGE_25,			FALSE	},
+  { ".page[26]",		ACTION_PAGE_26,			FALSE	},
+  { ".page[27]",		ACTION_PAGE_27,			FALSE	},
+  { ".page[28]",		ACTION_PAGE_28,			FALSE	},
+  { ".page[29]",		ACTION_PAGE_29,			FALSE	},
+  { ".page[30]",		ACTION_PAGE_30,			FALSE	},
+  { ".page[31]",		ACTION_PAGE_31,			FALSE	},
+  { ".page[32]",		ACTION_PAGE_32,			FALSE	},
   { ".other",			ACTION_OTHER,			FALSE	},
 
   /* empty suffix always matches -- check as last entry in InitSoundInfo() */
@@ -4201,12 +4511,16 @@ struct ElementActionInfo element_action_info[NUM_ACTIONS + 1 + 1] =
   { NULL,			0,				0	}
 };
 
-struct ElementDirectionInfo element_direction_info[NUM_DIRECTIONS + 1] =
+struct ElementDirectionInfo element_direction_info[NUM_DIRECTIONS_FULL + 1] =
 {
   { ".left",		MV_BIT_LEFT			},
   { ".right",		MV_BIT_RIGHT			},
   { ".up",		MV_BIT_UP			},
   { ".down",		MV_BIT_DOWN			},
+  { ".upleft",		MV_BIT_UP			},
+  { ".upright",		MV_BIT_RIGHT			},
+  { ".downleft",	MV_BIT_LEFT			},
+  { ".downright",	MV_BIT_DOWN			},
 
   { NULL,		0				}
 };
@@ -4214,6 +4528,7 @@ struct ElementDirectionInfo element_direction_info[NUM_DIRECTIONS + 1] =
 struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1 + 1] =
 {
   { ".[DEFAULT]",	GAME_MODE_DEFAULT,		},
+  { ".TITLE",		GAME_MODE_TITLE,		},
   { ".MAIN",		GAME_MODE_MAIN,			},
   { ".LEVELS",		GAME_MODE_LEVELS		},
   { ".SCORES",		GAME_MODE_SCORES,		},
@@ -4257,9 +4572,13 @@ struct TokenIntPtrInfo image_config_vars[] =
   { "menu.list_size.SCORES",	&menu.list_size[GFX_SPECIAL_ARG_SCORES]	   },
   { "menu.list_size.INFO",	&menu.list_size[GFX_SPECIAL_ARG_INFO]	   },
 
+  { "door_1.width",		&door_1.width				   },
+  { "door_1.height",		&door_1.height				   },
   { "door_1.step_offset",	&door_1.step_offset			   },
   { "door_1.step_delay",	&door_1.step_delay			   },
   { "door_1.anim_mode",		&door_1.anim_mode			   },
+  { "door_2.width",		&door_2.width				   },
+  { "door_2.height",		&door_2.height				   },
   { "door_2.step_offset",	&door_2.step_offset			   },
   { "door_2.step_delay",	&door_2.step_delay			   },
   { "door_2.anim_mode",		&door_2.anim_mode			   },
@@ -4311,6 +4630,7 @@ struct FontInfo font_info[NUM_FONTS + 1] =
   { "font.value_1"		},
   { "font.value_2"		},
   { "font.value_old"		},
+  { "font.level_number.active"	},
   { "font.level_number"		},
   { "font.tape_recorder"	},
   { "font.game_info"		},

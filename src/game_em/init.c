@@ -3,18 +3,14 @@
  * open X11 display and sound
  */
 
+#include "main_em.h"
+
+
 #include <signal.h>
 
 #if !defined(TARGET_SDL)
 #include <sys/wait.h>
 #endif
-
-#include "main_em.h"
-
-#include "global.h"
-#include "display.h"
-#include "sample.h"
-#include "level.h"
 
 
 Bitmap *objBitmap;
@@ -44,6 +40,7 @@ int play_element[SAMPLE_MAX];
 static boolean use_native_em_sound = 0;
 
 struct GlobalInfo_EM global_em_info;
+struct GameInfo_EM game_em;
 
 #if defined(AUDIO_UNIX_NATIVE)
 static int sound_pid = -1;
@@ -299,18 +296,18 @@ void em_close_all(void)
 
 /* ---------------------------------------------------------------------- */
 
-extern unsigned int screen_x;
-extern unsigned int screen_y;
+extern int screen_x;
+extern int screen_y;
 
 void play_element_sound(int x, int y, int sample, int element)
 {
 #if 0
-  unsigned int left = screen_x / TILEX;
-  unsigned int top  = screen_y / TILEY;
+  int left = screen_x / TILEX;
+  int top  = screen_y / TILEY;
 
   if ((x == -1 && y == -1) ||	/* play sound in the middle of the screen */
-      ((unsigned int)(y - top)  <= SCR_FIELDY &&
-       (unsigned int)(x - left) <= SCR_FIELDX))
+      ((int)(y - top)  <= SCR_FIELDY &&
+       (int)(x - left) <= SCR_FIELDX))
 #endif
   {
 #if 1

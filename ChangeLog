@@ -1,3 +1,378 @@
+2006-06-23
+	* reorganized level editor element list a bit to match engines better
+
+2006-06-21
+	* fixed newly introduced bug with wrongly initializing clipboard element
+
+2006-06-19
+	* fixed bug with displaying visible/invisible level border in editor
+
+2006-06-14
+	* reorganized some elements in the level editor element list
+
+2006-06-06
+	* fixed bug with displaying any player as "yellow" when moving into acid
+	* fixed bug with displaying running player when player stopped at border
+
+2006-06-03
+	* fixed bug with player exploding when moving into acid
+	* fixed bug with level settings being reset in editor and when playing
+	  (some compatibility settings being set not only after level loading)
+	* fixed crash bug when number of custom graphic frames was set to zero
+	* fixed bug with teleporting player on walkable tile not working anymore
+	* added partial compatibility support for pre-release-only "CONF" chunk
+	  (to make Alan Bond's "color cycle" demo work again :-) )
+
+2006-05-30
+	* fixed some bugs when displaying title screens from info screen menu
+	* fixed bug which caused EMC doors #5 to #8 to be passable without keys
+
+2006-05-20
+	* changed file major version to 3 to reflect level file format changes
+	* uploaded pre-release (test) version 3.2.0-8 binary and source code
+
+2006-05-19
+	* added new chunk "NAME" to level file format for level name settings
+	* added new chunk "NOTE" to level file format for envelope settings
+	* changed name of chunk "CONF" to "ELEM" (for normal element settings)
+	* updated magic(5) file to recognize changed and new level file chunks
+	* removed change events "change when CE value/score changes" as unneeded
+
+2006-05-17
+	* changed gravity (which only affects the player) from level property
+	  to player property (only makes a difference in multi-player levels)
+	* added change events "change when CE value/score changes"
+	* added change events "change when CE value/score changes of <element>"
+
+2006-05-16
+	* added new chunk "INFO" to level file format for global level settings
+	* added all element settings from "HEAD" chunk to "CONF" chunk
+	* added all global level settings from "HEAD" chunk to "INFO" chunk
+
+2006-05-09
+	* changed level file format by adding two new chunks "CUSX" (for custom
+	  elements, replacing the previous "CUS4" chunk) and "GRPX" (for group
+	  elements, replacing the previous "GRP1" chunk); these new IFF style
+	  chunks use the new and flexible "micro chunks inside chunks" technique
+	  already used with the new "CONF" chunk (for normal element properties)
+	  which makes it possible to easily extend the existing level format
+	  (instead of using fixed-length chunks like before, which are either
+	  too big due to reserved bytes for future use, or too small when those
+	  reserved bytes have all been used and even more data should be stored,
+	  requiring the replacement by new and larger chunks just like it went
+	  with "CUS1" to "CUS4"); this whole problem now does not exist anymore
+
+2006-05-06
+	* added credits pages to the "credits" section that were really missing
+	* added some missing element descriptions to the level editor
+	* added down position of switchgate switch to the level editor
+	  and allowed the use of both switch positions at the same time
+	* changed use of "Insert" and "Delete" keys to navigate element list in
+	  level editor to start of previous or next cascading block of elements
+
+2006-05-05
+	* added the possibility to view the title screen to the info screen menu
+	* fixed some minor bugs with viewing title screens
+
+2006-05-02
+	* fixed bug with title (cross)fading in/out when using fullscreen mode
+
+2006-04-30
+	* fixed bug that forced re-defining of menu settings in local graphics
+	  config file which are already defined in existing base config file
+	* fixed small bug that caused door sounds playing when music is enabled
+
+2006-04-29
+	* added the possibility to define up to five title screens for each
+	  level set that are displayed after loading using (cross)fading in/out
+	  (this was added to display the various start images of the EMC sets)
+
+2006-04-28
+	* added "CE score gets zero [of]" to custom element trigger conditions
+	* added setup option to display element token name in level editor
+
+2006-04-19
+	* added compatibility code for Juergen Bonhagen's menu artwork settings
+
+2006-04-15
+	* fixed bug with displaying wrong animation frame 0 after CE changes
+	* fixed bug with creating invisible elements when light switch is on
+
+2006-04-06
+	* added selection between ECS and AGA graphics for EMC levels to setup
+
+2006-04-04
+	* adjusted font handling for various narrow EMC style fonts
+
+2006-04-03
+	* changed EM engine behaviour back to re-allow initial rolling springs
+
+2006-04-02
+	* fixed handling of over-large selectboxes (less error-prone now)
+	* fixed bug when creating GE with walkable element under the player
+
+2006-04-01
+	* added use of "Insert" and "Delete" keys to navigate element list in
+	  level editor to start of custom elements or start of group elements
+	* added virtual elements to access CE value and CE score of elements:
+	  - "CE value of triggering element"
+	  - "CE score of triggering element"
+	  - "CE value of current element"
+	  - "CE score of current element"
+
+2006-03-30
+	* fixed "grass" to "sand" in older EM levels (up to file version V4)
+
+2006-03-29
+	* changed behaviour of network games with internal errors (because of
+	  different client frame counters) from immediately terminating R'n'D
+	  to displaying an error message requester and stopping only the game
+	  (also to prevent impression of crashes under non command-line runs)
+	* fixed playing network games with the EMC engine (did not work before)
+	* fixed bug with not scrolling the screen in multi-player mode with the
+	  focus on player 1 when all players are moving in different directions
+	* fixed bug with keeping pointer to gadget even after its deallocation
+	* fixed bug with allowing "focus on all players" in network games
+	* fixed bug with player focus when playing tapes from network games
+
+2006-03-22
+	* uploaded pre-release (test) version 3.2.0-7 binary and source code
+
+2006-03-19
+	* code cleanup for game action control for R'n'D and EMC game engine
+
+2006-03-18
+	* fixed bug in multi-player movement with focus on both players
+	* added option to control only the focussed player with all input
+
+2006-03-14
+	* added player focus switching to level tape recording and re-playing
+
+2006-03-13
+	* fixed some bugs in player focus switching in EMC and RND game engine
+
+2006-03-11
+	* added special Supaplex animations for Murphy digging and snapping
+	* added special Supaplex animations for Murphy being bored and sleeping
+
+2006-03-10
+	* added four new yam yams with explicit start direction for EMC engine
+	* fixed bug in src/libgame/text.c with printing text outside the window
+
+2006-03-09
+	* fixed small bug in EMC level loader (copyright sign in EM II levels)
+
+2006-03-08
+	* added delayed ignition of EM style dynamite when used in R'n'D engine
+	* added limited movement range to EMC engine when focus on all players
+
+2006-03-06
+	* fixed bug with missing (zero) score values for native Supaplex levels
+
+2006-03-05
+	* added "continuous snapping" (snapping many elements while holding the
+	  snap key pressed, without releasing the snap key after each element)
+	  as a new player setting for more compatibility with the classic games
+
+2006-03-04
+	* finished scrolling for "focus on all players" in EMC graphics engine
+
+2006-02-28
+	* level sets with "levels: 0" are ignored for levels, but not artwork
+	* fixed bug when scanning empty level group directories (endless loop)
+
+2006-02-26
+	* fixed bug with explosion graphic for player using "Murphy" graphic
+	* fixed bug with explosion graphic if player leaves explosion in time
+	* changed some descriptive text in setup menu to use medium-width font
+	* added key shortcut settings for switching player focus to setup menu
+
+2006-02-25
+	* fixed bug with random value initialization when recording tapes
+	* fixed bug with playing single player tapes when team mode activated
+
+2006-02-22
+	* fixed little bug when trying to switch to player that does not exist
+
+2006-02-19
+	* added player switching (visual and quick) to R'n'D and EM game engine
+	* added setup option to select visual or quick in-game player switching
+
+2006-02-16
+	* added use of "Home" and "End" keys to handle element list in editor
+
+2006-02-15
+	* fixed bug with adding score when playing tape with EMC game engine
+	* added steel wall border for levels using EMC engine without border
+	* finally fixed delayed scrolling in EMC engine also for small levels
+
+2006-02-12
+	* fixed potential crash bug in WarnBuggyBase() (missing boundary check)
+
+2006-02-11
+	* fixed bug with CE change order in TestIfElementTouchesCustomElement()
+	* fixed bug when displaying info element without action, but direction
+
+2006-02-09
+	* fixed minor graphical problems with springs smashing and slurping
+	  (when using R'n'D style graphics instead of EMC style graphics)
+
+2006-02-07
+	* added scroll delay (as configured in setup) to EMC graphics engine
+
+2006-02-06
+	* improved screen redraw for EMC graphics engine (faster and smoother)
+	* when not scrolling, do not redraw the whole playfield if not needed
+
+2006-02-03
+	* added multi-player mode for EMC game engine (with up to four players)
+
+2006-01-28
+	* added android (can clone elements) from EMC engine to R'n'D engine
+
+2006-01-14
+	* added spring bumper (reflects spring) from EMC engine to R'n'D engine
+
+2006-01-11
+	* added selectbox for initial player speed to player settings in editor
+
+2006-01-11
+	* version 3.1.2 created that is basically version 3.1.1, but with a
+	  major bug fixed that prevented editing your own private levels
+	* version 3.1.2 released
+
+2006-01-09
+	* added magic ball (creates elements) from EMC engine to R'n'D engine
+
+2006-01-07
+	* uploaded fixed pre-release version 3.2.0-6 binary and source code
+
+2006-01-07
+	* fixed bug when using "CE can leave behind <trigger element>"
+	* added new change condition "(after/when) creation of <element>"
+	* added new change condition "(after/when) digging <element>"
+	* fixed bug accessing invalid gadget that caused crashes under Windows
+	* deactivated new possibility for multiple CE changes per frame
+
+2006-01-04
+	* uploaded pre-release (test) version 3.2.0-6 binary and source code
+
+2006-01-02
+	* added animation types "ce_value" and "ce_score" to graphicsinfo.conf
+	* fixed bug with not keeping CE value for moving CEs with only action
+	* changed CE action selectboxes in editor to be only reset when needed
+
+2006-01-01
+	* added option "use artwork from element" for custom player artwork
+	* added option "use explosion from element" for player explosions
+
+2005-12-30
+	* added cascaded element lists in the level editor
+	* added persistence for cascaded element lists by "editorcascade.conf"
+	* added dynamic element list with all elements used in current level
+	* added possibility for multiple CE changes per frame (experimental)
+
+2005-12-28
+	* uploaded pre-release (test) version 3.2.0-5 binary and source code
+
+2005-12-27
+	* changed "score for each 10 seconds/steps left" to "1 second/step"
+	* added own score for collecting "extra time" instead of sharing it
+	* added change events "switched by player" and "player switches <e>"
+	* added change events "snapped by player" and "player snaps <e>"
+	* added "set player artwork: <element choice>" to CE action options
+	* added change event "move of <element>"
+
+2005-12-22
+	* added "set player shield: off / normal / deadly" to CE action options
+	* added new player option "use level start element" in level editor
+	  to set the correct focus at level start to elements from which the
+	  player is created later (this did not work before for cascaded CE
+	  changes resulting in creation of the player; it is now also possible
+	  to create the player from a yam yam which is smashed at level start)
+
+2005-12-20
+	* added "set player speed: frozen (not moving)" to CE action options
+	* added "move player: l/r/u/d/trigger/-trigger" to CE action options
+
+2005-12-17
+	* added new player option "block snap field" (enabled by default) to
+	  make it possible to show a snapping animation like in Emerald Mine
+
+2005-12-16
+	* added dynamic selectboxes to custom element action settings in editor
+	* added "CE value" counter for custom elements (instead of "CE count")
+	* added option to use the last "CE value" after custom element change
+	* added option to use the "CE value" of other elements in CE actions
+	* fixed odd behaviour when pressing time orb in levels w/o time limit
+	* added checkbox "use time orb bug" for older levels that use this bug
+
+2005-12-15
+	* added missing configuration settings for the following elements:
+	  - EL_TIMEGATE_SWITCH		(time of open time gate)
+	  - EL_LIGHT_SWITCH_ACTIVE	(time of light switched on)
+	  - EL_SHIELD_NORMAL		(time of shield duration)
+	  - EL_SHIELD_DEADLY		(time of shield duration)
+	  - EL_EXTRA_TIME		(time added to level time)
+	  - EL_TIME_ORB_FULL		(time added to level time)
+
+2005-12-14
+	* added "wind direction" as a movement pattern for custom elements
+	* added initial wind direction for balloon / custom elements to editor
+	* added functionality for EL_BALLOON_SWITCH_NONE to R'n'D game engine
+
+2005-12-13
+	* added parameters for "game of life" and "biomaze" elements to editor
+
+2005-12-12
+	* added level file chunk "CONF" for generic level and element settings
+
+2005-12-11
+	* uploaded pre-release (test) version 3.2.0-4 binary and source code
+
+2005-12-11
+	* skip empty level sets (with "levels: 0"; may be artwork base sets)
+	* added sound action ".page[1]" to ".page[32]" for each CE change page
+
+2005-12-10
+	* added image config suffix ".clone_from" to copy whole image settings
+	* fixed bug with invalid ("undefined") CE settings in old level files
+
+2005-12-05
+	* fixed graphical bug with smashing elements falling faster than player
+
+2005-12-03
+	* fixed major bug which prevented private levels from being edited
+	* fixed bug with precedence of general and special font definitions
+
+2005-12-02
+	* fixed graphical bug with player animation when player moves slowly
+
+2005-11-29
+	* uploaded pre-release (test) version 3.2.0-3 binary and source code
+
+2005-11-28
+	* fixed bug which prevented "global.num_toons: 0" from working
+
+2005-11-27
+	* major code cleanup (removed all these annoying "#if 0" blocks)
+
+2005-11-26
+	* added custom element actions for CE change page in level editor
+
+2005-11-19
+	* fixed music initialization bug in init.c (thanks to David Binderman)
+	* fixed mouse wheel "button" bug in editor (thanks to Tomi Belan)
+	  (this bug must probably be fixed at other places, too)
+
+2005-10-16
+	* fixed buggy '#include "SDL.h"' statements in src/libgame/sdl.h
+	  (should be '#include <SDL.h>' instead)
+
+2005-08-20
+	* fixed bug which prevented "walkable from no direction" from working
+	  (due to compatibility code overwriting this setting after loading)
+
 2005-08-15
 	* fixed bug on Mac OS X (use of reserved name "Random") in EM engine
 

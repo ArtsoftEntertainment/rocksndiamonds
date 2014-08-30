@@ -20,6 +20,10 @@
 #include "network.h"
 #include "tape.h"
 
+
+/* select level set with EMC X11 graphics before activating EM GFX debugging */
+#define DEBUG_EM_GFX	0
+
 /* tool button identifiers */
 #define TOOL_CTRL_ID_YES	0
 #define TOOL_CTRL_ID_NO		1
@@ -63,6 +67,12 @@ void DumpTile(int x, int y)
   int sx = SCREENX(x);
   int sy = SCREENY(y);
 
+  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  {
+    x--;
+    y--;
+  }
+
   printf_line("-", 79);
   printf("Field Info: SCREEN(%d, %d), LEVEL(%d, %d)\n", sx, sy, x, y);
   printf_line("-", 79);
@@ -85,6 +95,7 @@ void DumpTile(int x, int y)
   printf("  MovDir:      %d\n", MovDir[x][y]);
   printf("  MovDelay:    %d\n", MovDelay[x][y]);
   printf("  ChangeDelay: %d\n", ChangeDelay[x][y]);
+  printf("  CustomValue: %d\n", CustomValue[x][y]);
   printf("  GfxElement:  %d\n", GfxElement[x][y]);
   printf("  GfxAction:   %d\n", GfxAction[x][y]);
   printf("  GfxFrame:    %d\n", GfxFrame[x][y]);
@@ -126,7 +137,9 @@ void RedrawPlayfield(boolean force_redraw, int x, int y, int width, int height)
   if (game_status == GAME_MODE_PLAYING &&
       level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
-    BlitScreenToBitmap_EM(backbuffer);
+    /* currently there is no partial redraw -- always redraw whole playfield */
+
+    RedrawPlayfield_EM(TRUE);
   }
   else if (game_status == GAME_MODE_PLAYING && !game.envelope_active)
   {
@@ -228,7 +241,8 @@ void BackToFront()
   if (redraw_mask & REDRAW_ALL)
   {
     BlitBitmap(backbuffer, window, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
-    redraw_mask = 0;
+
+    redraw_mask = REDRAW_NONE;
   }
 
   if (redraw_mask & REDRAW_FIELD)
@@ -256,8 +270,8 @@ void BackToFront()
       {
 	BlitBitmap(buffer, window, fx, fy, SXSIZE, SYSIZE, SX, SY);
 
-#ifdef DEBUG
 #if 0
+#ifdef DEBUG
 	printf("redrawing all (ScreenGfxPos == %d) because %s\n",
 	       ScreenGfxPos,
 	       (setup.soft_scrolling ?
@@ -281,32 +295,7 @@ void BackToFront()
       BlitBitmap(backbuffer, window, DX, DY, DXSIZE, DYSIZE, DX, DY);
 
     if (redraw_mask & REDRAW_DOOR_2)
-    {
-#if 0
-      if ((redraw_mask & REDRAW_DOOR_2) == REDRAW_DOOR_2)
-#endif
-	BlitBitmap(backbuffer, window, VX, VY, VXSIZE, VYSIZE, VX, VY);
-#if 0
-      else
-      {
-	if (redraw_mask & REDRAW_VIDEO_1)
-	  BlitBitmap(backbuffer, window,
-		     VX + VIDEO_DISPLAY1_XPOS, VY + VIDEO_DISPLAY1_YPOS,
-		     VIDEO_DISPLAY_XSIZE, VIDEO_DISPLAY_YSIZE,
-		     VX + VIDEO_DISPLAY1_XPOS, VY + VIDEO_DISPLAY1_YPOS);
-	if (redraw_mask & REDRAW_VIDEO_2)
-	  BlitBitmap(backbuffer, window,
-		     VX + VIDEO_DISPLAY2_XPOS, VY + VIDEO_DISPLAY2_YPOS,
-		     VIDEO_DISPLAY_XSIZE, VIDEO_DISPLAY_YSIZE,
-		     VX + VIDEO_DISPLAY2_XPOS, VY + VIDEO_DISPLAY2_YPOS);
-	if (redraw_mask & REDRAW_VIDEO_3)
-	  BlitBitmap(backbuffer, window,
-		     VX + VIDEO_CONTROL_XPOS, VY + VIDEO_CONTROL_YPOS,
-		     VIDEO_CONTROL_XSIZE, VIDEO_CONTROL_YSIZE,
-		     VX + VIDEO_CONTROL_XPOS, VY + VIDEO_CONTROL_YPOS);
-      }
-#endif
-    }
+      BlitBitmap(backbuffer, window, VX, VY, VXSIZE, VYSIZE, VX, VY);
 
     if (redraw_mask & REDRAW_DOOR_3)
       BlitBitmap(backbuffer, window, EX, EY, EXSIZE, EYSIZE, EX, EY);
@@ -425,6 +414,56 @@ void FadeToFront()
   BackToFront();
 }
 
+void FadeIn(int fade_delay)
+{
+  if (fade_delay == 0)
+  {
+    BackToFront();
+
+    return;
+  }
+
+  FadeScreen(NULL, FADE_MODE_FADE_IN, fade_delay, 0);
+
+  redraw_mask = REDRAW_NONE;
+}
+
+void FadeOut(int fade_delay, int post_delay)
+{
+  if (fade_delay == 0)
+  {
+    ClearRectangle(backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE);
+    BackToFront();
+
+    return;
+  }
+
+  FadeScreen(NULL, FADE_MODE_FADE_OUT, fade_delay, post_delay);
+
+  redraw_mask = REDRAW_NONE;
+}
+
+void FadeCross(int fade_delay)
+{
+  if (fade_delay == 0)
+  {
+    BlitBitmap(bitmap_db_title, backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+    BackToFront();
+
+    return;
+  }
+
+  FadeScreen(bitmap_db_title, FADE_MODE_CROSSFADE, fade_delay, 0);
+
+  redraw_mask = REDRAW_NONE;
+}
+
+void SetMainBackgroundImageIfDefined(int graphic)
+{
+  if (graphic_info[graphic].bitmap)
+    SetMainBackgroundImage(graphic);
+}
+
 void SetMainBackgroundImage(int graphic)
 {
   SetMainBackgroundBitmap(graphic == IMG_UNDEFINED ? NULL :
@@ -509,6 +548,17 @@ inline int getGraphicAnimationFrame(int graphic, int sync_frame)
   if (graphic_info[graphic].anim_global_sync || sync_frame < 0)
     sync_frame = FrameCounter;
 
+#if 0
+  if (graphic == element_info[EL_CUSTOM_START + 255].graphic[ACTION_DEFAULT] &&
+      sync_frame == 0 &&
+      FrameCounter > 10)
+  {
+    int x = 1 / 0;
+
+    printf("::: FOO!\n");
+  }
+#endif
+
   return getAnimationFrame(graphic_info[graphic].anim_frames,
 			   graphic_info[graphic].anim_delay,
 			   graphic_info[graphic].anim_mode,
@@ -528,28 +578,18 @@ inline void getGraphicSourceExt(int graphic, int frame, Bitmap **bitmap,
   if (g->offset_y == 0)		/* frames are ordered horizontally */
   {
     int max_width = g->anim_frames_per_line * g->width;
-#if 1
     int pos = (src_y / g->height) * max_width + src_x + frame * g->offset_x;
 
     *x = pos % max_width;
     *y = src_y % g->height + pos / max_width * g->height;
-#else
-    *x = (src_x + frame * g->offset_x) % max_width;
-    *y = src_y + (src_x + frame * g->offset_x) / max_width * g->height;
-#endif
   }
   else if (g->offset_x == 0)	/* frames are ordered vertically */
   {
     int max_height = g->anim_frames_per_line * g->height;
-#if 1
     int pos = (src_x / g->width) * max_height + src_y + frame * g->offset_y;
 
     *x = src_x % g->width + pos / max_height * g->width;
     *y = pos % max_height;
-#else
-    *x = src_x + (src_y + frame * g->offset_y) / max_height * g->width;
-    *y = (src_y + frame * g->offset_y) % max_height;
-#endif
   }
   else				/* frames are ordered diagonally */
   {
@@ -765,11 +805,14 @@ inline static void DrawGraphicShiftedDouble(int x, int y, int dx, int dy,
   int y2 = y + SIGN(dy);
   int anim_frames = graphic_info[graphic].anim_frames;
   int sync_frame = (dx ? ABS(dx) : ABS(dy)) * anim_frames / TILESIZE;
+  boolean draw_start_tile = (cut_mode != CUT_ABOVE);	/* only for falling! */
+  boolean draw_end_tile   = (cut_mode != CUT_BELOW);	/* only for falling! */
 
   /* re-calculate animation frame for two-tile movement animation */
   frame = getGraphicAnimationFrame(graphic, sync_frame);
 
-  if (IN_SCR_FIELD(x1, y1))	/* movement start graphic inside screen area */
+  /* check if movement start graphic inside screen area and should be drawn */
+  if (draw_start_tile && IN_SCR_FIELD(x1, y1))
   {
     getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x, &src_y, TRUE);
 
@@ -790,7 +833,8 @@ inline static void DrawGraphicShiftedDouble(int x, int y, int dx, int dy,
     MarkTileDirty(x1, y1);
   }
 
-  if (IN_SCR_FIELD(x2, y2))	/* movement end graphic inside screen area */
+  /* check if movement end graphic inside screen area and should be drawn */
+  if (draw_end_tile && IN_SCR_FIELD(x2, y2))
   {
     getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x, &src_y, FALSE);
 
@@ -810,12 +854,6 @@ inline static void DrawGraphicShiftedDouble(int x, int y, int dx, int dy,
 
     MarkTileDirty(x2, y2);
   }
-
-#if 0
-  printf("::: DONE DrawGraphicShiftedDouble");
-  BackToFront();
-  Delay(1000);
-#endif
 }
 
 static void DrawGraphicShifted(int x, int y, int dx, int dy,
@@ -929,10 +967,6 @@ void DrawLevelFieldThruMask(int x, int y)
   DrawLevelElementExt(x, y, 0, 0, Feld[x][y], NO_CUTTING, USE_MASKING);
 }
 
-#define TILE_GFX_ELEMENT(x, y)						    \
-	(GfxElement[x][y] != EL_UNDEFINED && Feld[x][y] != EL_EXPLOSION ?   \
-	 GfxElement[x][y] : Feld[x][y])
-
 static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
 {
   Bitmap *src_bitmap;
@@ -940,11 +974,7 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
   int sx = SCREENX(x), sy = SCREENY(y);
   int element;
   int width, height, cx, cy, i;
-#if 1
   int crumbled_border_size = graphic_info[graphic].border_size;
-#else
-  int snip = TILEX / 8;	/* number of border pixels from "crumbled graphic" */
-#endif
   static int xy[4][2] =
   {
     { 0, -1 },
@@ -952,12 +982,6 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
     { +1, 0 },
     { 0, +1 }
   };
-
-#if 0
-  if (x == 0 && y == 7)
-    printf("::: %d, %d [%d]\n", GfxElement[x][y], Feld[x][y],
-	   crumbled_border_size);
-#endif
 
   if (!IN_LEV_FIELD(x, y))
     return;
@@ -977,23 +1001,12 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
       int xx = x + xy[i][0];
       int yy = y + xy[i][1];
 
-#if 1
       element = (IN_LEV_FIELD(xx, yy) ? TILE_GFX_ELEMENT(xx, yy) :
 		 BorderElement);
-#else
-      element = (IN_LEV_FIELD(xx, yy) ? Feld[xx][yy] : BorderElement);
-#endif
 
       /* check if neighbour field is of same type */
       if (GFX_CRUMBLED(element) && !IS_MOVING(xx, yy))
 	continue;
-
-#if 0
-      if (Feld[x][y] == EL_CUSTOM_START + 123)
-	printf("::: crumble [%d] THE CHAOS ENGINE (%d, %d): %d, %d\n",
-	       i, Feld[x][y], element,
-	       GFX_CRUMBLED(element), IS_MOVING(x, y));
-#endif
 
       if (i == 1 || i == 2)
       {
@@ -1018,10 +1031,6 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
   }
   else		/* crumble neighbour fields */
   {
-#if 0
-    getGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
-#endif
-
     for (i = 0; i < 4; i++)
     {
       int xx = x + xy[i][0];
@@ -1034,6 +1043,11 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
 	  !IN_SCR_FIELD(sxx, syy) ||
 	  IS_MOVING(xx, yy))
 	continue;
+
+#if 1
+      if (Feld[xx][yy] == EL_ELEMENT_SNAPPING)
+	continue;
+#endif
 
       element = TILE_GFX_ELEMENT(xx, yy);
 
@@ -1048,11 +1062,13 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
 #endif
 
 #if 1
+      graphic = el_act2crm(element, ACTION_DEFAULT);
+#else
       graphic = el_act2crm(Feld[xx][yy], ACTION_DEFAULT);
+#endif
       crumbled_border_size = graphic_info[graphic].border_size;
 
       getGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
-#endif
 
       if (i == 1 || i == 2)
       {
@@ -1079,30 +1095,43 @@ static void DrawLevelFieldCrumbledSandExt(int x, int y, int graphic, int frame)
 
 void DrawLevelFieldCrumbledSand(int x, int y)
 {
-#if 1
   int graphic;
 
   if (!IN_LEV_FIELD(x, y))
     return;
 
+#if 1
+  /* !!! CHECK THIS !!! */
+
+  /*
+  if (Feld[x][y] == EL_ELEMENT_SNAPPING &&
+      GFX_CRUMBLED(GfxElement[x][y]))
+  */
+
+  if (Feld[x][y] == EL_ELEMENT_SNAPPING &&
+      GfxElement[x][y] != EL_UNDEFINED &&
+      GFX_CRUMBLED(GfxElement[x][y]))
+  {
+    DrawLevelFieldCrumbledSandDigging(x, y, GfxDir[x][y], GfxFrame[x][y]);
+
+    return;
+  }
+#endif
+
+#if 1
+  graphic = el_act2crm(TILE_GFX_ELEMENT(x, y), ACTION_DEFAULT);
+#else
   graphic = el_act2crm(Feld[x][y], ACTION_DEFAULT);
+#endif
 
   DrawLevelFieldCrumbledSandExt(x, y, graphic, 0);
-#else
-  DrawLevelFieldCrumbledSandExt(x, y, IMG_SAND_CRUMBLED, 0);
-#endif
 }
 
 void DrawLevelFieldCrumbledSandDigging(int x, int y, int direction,
 				       int step_frame)
 {
-#if 1
   int graphic1 = el_act_dir2img(GfxElement[x][y], ACTION_DIGGING, direction);
   int graphic2 = el_act_dir2crm(GfxElement[x][y], ACTION_DIGGING, direction);
-#else
-  int graphic1 = el_act_dir2img(EL_SAND,          ACTION_DIGGING, direction);
-  int graphic2 = el_act_dir2img(EL_SAND_CRUMBLED, ACTION_DIGGING, direction);
-#endif
   int frame1 = getGraphicAnimationFrame(graphic1, step_frame);
   int frame2 = getGraphicAnimationFrame(graphic2, step_frame);
   int sx = SCREENX(x), sy = SCREENY(y);
@@ -1359,13 +1388,8 @@ void DrawEnvelopeBackground(int envelope_nr, int startx, int starty,
 void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
 {
   int graphic = IMG_BACKGROUND_ENVELOPE_1 + envelope_nr;
-#if 1
   Bitmap *src_bitmap = graphic_info[graphic].bitmap;
   int mask_mode = (src_bitmap != NULL ? BLIT_MASKED : BLIT_ON_BACKGROUND);
-#else
-  boolean draw_masked = graphic_info[graphic].draw_masked;
-  int mask_mode = (draw_masked ? BLIT_MASKED : BLIT_ON_BACKGROUND);
-#endif
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
   boolean no_delay = (tape.warp_forward);
   unsigned long anim_delay = 0;
@@ -1374,8 +1398,8 @@ void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
   int font_nr = FONT_ENVELOPE_1 + envelope_nr;
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
-  int max_xsize = level.envelope_xsize[envelope_nr];
-  int max_ysize = level.envelope_ysize[envelope_nr];
+  int max_xsize = level.envelope[envelope_nr].xsize;
+  int max_ysize = level.envelope[envelope_nr].ysize;
   int xstart = (anim_mode & ANIM_VERTICAL ? max_xsize : 0);
   int ystart = (anim_mode & ANIM_HORIZONTAL ? max_ysize : 0);
   int xend = max_xsize;
@@ -1402,7 +1426,7 @@ void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
       DrawEnvelopeBackground(envelope_nr, sx,sy, xx,yy, xsize, ysize, font_nr);
 
     DrawTextToTextArea(SX + sx + font_width, SY + sy + font_height,
-		       level.envelope_text[envelope_nr], font_nr, max_xsize,
+		       level.envelope[envelope_nr].text, font_nr, max_xsize,
 		       xsize - 2, ysize - 2, mask_mode);
 
     redraw_mask |= REDRAW_FIELD | REDRAW_FROM_BACKBUFFER;
@@ -1428,7 +1452,7 @@ void ShowEnvelope(int envelope_nr)
 
   game.envelope_active = TRUE;	/* needed for RedrawPlayfield() events */
 
-  PlaySoundStereo(sound_opening, SOUND_MIDDLE);
+  PlayMenuSoundStereo(sound_opening, SOUND_MIDDLE);
 
   if (anim_mode == ANIM_DEFAULT)
     AnimateEnvelope(envelope_nr, ANIM_DEFAULT, ACTION_OPENING);
@@ -1440,7 +1464,7 @@ void ShowEnvelope(int envelope_nr)
   else
     WaitForEventToContinue();
 
-  PlaySoundStereo(sound_closing, SOUND_MIDDLE);
+  PlayMenuSoundStereo(sound_closing, SOUND_MIDDLE);
 
   if (anim_mode != ANIM_NONE)
     AnimateEnvelope(envelope_nr, main_anim_mode, ACTION_CLOSING);
@@ -1561,8 +1585,6 @@ static void DrawMicroLevelLabelExt(int mode)
 
   max_len_label_text = SXSIZE / getFontWidth(font_nr);
 
-#if 1
-
   for (i = 0; i < max_len_label_text; i++)
     label_text[i] = ' ';
   label_text[max_len_label_text] = '\0';
@@ -1574,12 +1596,6 @@ static void DrawMicroLevelLabelExt(int mode)
 
     DrawText(lxpos, lypos, label_text, font_nr);
   }
-
-#else
-
-  DrawBackground(SX, MICROLABEL2_YPOS, SXSIZE, getFontHeight(font_nr));
-
-#endif
 
   strncpy(label_text,
 	  (mode == MICROLABEL_LEVEL_NAME ? level.name :
@@ -1692,9 +1708,9 @@ void DrawMicroLevel(int xpos, int ypos, boolean restart)
 
   /* !!! THIS ALL SUCKS -- SHOULD BE CLEANLY REWRITTEN !!! */
   /* redraw micro level label, if needed */
-  if (strcmp(level.name, NAMELESS_LEVEL_NAME) != 0 &&
-      strcmp(level.author, ANONYMOUS_NAME) != 0 &&
-      strcmp(level.author, leveldir_current->name) != 0 &&
+  if (!strEqual(level.name, NAMELESS_LEVEL_NAME) &&
+      !strEqual(level.author, ANONYMOUS_NAME) &&
+      !strEqual(level.author, leveldir_current->name) &&
       DelayReached(&label_delay, MICROLEVEL_LABEL_DELAY))
   {
     int max_label_counter = 23;
@@ -1764,13 +1780,9 @@ void DrawLevelGraphicAnimation(int x, int y, int graphic)
 
 void DrawLevelElementAnimation(int x, int y, int element)
 {
-#if 1
   int graphic = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
 
   DrawGraphicAnimation(SCREENX(x), SCREENY(y), graphic);
-#else
-  DrawGraphicAnimation(SCREENX(x), SCREENY(y), el2img(element));
-#endif
 }
 
 inline void DrawLevelGraphicAnimationIfNeeded(int x, int y, int graphic)
@@ -1785,8 +1797,13 @@ inline void DrawLevelGraphicAnimationIfNeeded(int x, int y, int graphic)
 
   DrawGraphicAnimation(sx, sy, graphic);
 
+#if 1
+  if (GFX_CRUMBLED(TILE_GFX_ELEMENT(x, y)))
+    DrawLevelFieldCrumbledSand(x, y);
+#else
   if (GFX_CRUMBLED(Feld[x][y]))
     DrawLevelFieldCrumbledSand(x, y);
+#endif
 }
 
 void DrawLevelElementAnimationIfNeeded(int x, int y, int element)
@@ -1810,7 +1827,7 @@ void DrawLevelElementAnimationIfNeeded(int x, int y, int element)
 
 static int getPlayerGraphic(struct PlayerInfo *player, int move_dir)
 {
-  if (player->use_murphy_graphic)
+  if (player->use_murphy)
   {
     /* this works only because currently only one player can be "murphy" ... */
     static int last_horizontal_dir = MV_LEFT;
@@ -1829,7 +1846,7 @@ static int getPlayerGraphic(struct PlayerInfo *player, int move_dir)
     return graphic;
   }
   else
-    return el_act_dir2img(player->element_nr, player->GfxAction, move_dir);
+    return el_act_dir2img(player->artwork_element, player->GfxAction,move_dir);
 }
 
 static boolean equalGraphics(int graphic1, int graphic2)
@@ -1867,13 +1884,6 @@ void DrawPlayer(struct PlayerInfo *player)
   int jx = player->jx;
   int jy = player->jy;
   int move_dir = player->MovDir;
-#if 0
-  int last_jx = player->last_jx;
-  int last_jy = player->last_jy;
-  int next_jx = jx + (jx - last_jx);
-  int next_jy = jy + (jy - last_jy);
-  boolean player_is_moving = (last_jx != jx || last_jy != jy ? TRUE : FALSE);
-#else
   int dx = (move_dir == MV_LEFT ? -1 : move_dir == MV_RIGHT ? +1 : 0);
   int dy = (move_dir == MV_UP   ? -1 : move_dir == MV_DOWN  ? +1 : 0);
   int last_jx = (player->is_moving ? jx - dx : jx);
@@ -1881,7 +1891,7 @@ void DrawPlayer(struct PlayerInfo *player)
   int next_jx = jx + dx;
   int next_jy = jy + dy;
   boolean player_is_moving = (player->MovPos ? TRUE : FALSE);
-#endif
+  boolean player_is_opaque = FALSE;
   int sx = SCREENX(jx), sy = SCREENY(jy);
   int sxx = 0, syy = 0;
   int element = Feld[jx][jy], last_element = Feld[last_jx][last_jy];
@@ -1890,6 +1900,13 @@ void DrawPlayer(struct PlayerInfo *player)
   int last_player_graphic = getPlayerGraphic(player, move_dir);
   int last_player_frame = player->Frame;
   int frame = 0;
+
+#if 1
+  /* GfxElement[][] is set to the element the player is digging or collecting;
+     remove also for off-screen player if the player is not moving anymore */
+  if (IN_LEV_FIELD(jx, jy) && !player_is_moving)
+    GfxElement[jx][jy] = EL_UNDEFINED;
+#endif
 
   if (!player->active || !IN_SCR_FIELD(SCREENX(last_jx), SCREENY(last_jy)))
     return;
@@ -1915,33 +1932,45 @@ void DrawPlayer(struct PlayerInfo *player)
 	    player->is_dropping   ? ACTION_DROPPING        :
 	    player->is_waiting    ? player->action_waiting : ACTION_DEFAULT);
 
+#if 1
+  if (player->is_waiting)
+    move_dir = player->dir_waiting;
+#endif
+
   InitPlayerGfxAnimation(player, action, move_dir);
 
   /* ----------------------------------------------------------------------- */
   /* draw things in the field the player is leaving, if needed               */
   /* ----------------------------------------------------------------------- */
 
-#if 1
   if (player->is_moving)
-#else
-  if (player_is_moving)
-#endif
   {
     if (Back[last_jx][last_jy] && IS_DRAWABLE(last_element))
     {
       DrawLevelElement(last_jx, last_jy, Back[last_jx][last_jy]);
 
       if (last_element == EL_DYNAMITE_ACTIVE ||
+	  last_element == EL_EM_DYNAMITE_ACTIVE ||
 	  last_element == EL_SP_DISK_RED_ACTIVE)
 	DrawDynamite(last_jx, last_jy);
       else
 	DrawLevelFieldThruMask(last_jx, last_jy);
     }
     else if (last_element == EL_DYNAMITE_ACTIVE ||
+	     last_element == EL_EM_DYNAMITE_ACTIVE ||
 	     last_element == EL_SP_DISK_RED_ACTIVE)
       DrawDynamite(last_jx, last_jy);
+#if 0
+    /* !!! this is not enough to prevent flickering of players which are
+       moving next to each others without a free tile between them -- this
+       can only be solved by drawing all players layer by layer (first the
+       background, then the foreground etc.) !!! => TODO */
+    else if (!IS_PLAYER(last_jx, last_jy))
+      DrawLevelField(last_jx, last_jy);
+#else
     else
       DrawLevelField(last_jx, last_jy);
+#endif
 
     if (player->is_pushing && IN_SCR_FIELD(SCREENX(next_jx), SCREENY(next_jy)))
       DrawLevelElement(next_jx, next_jy, EL_EMPTY);
@@ -1965,20 +1994,25 @@ void DrawPlayer(struct PlayerInfo *player)
   {
     if (player_is_moving && GfxElement[jx][jy] != EL_UNDEFINED)
     {
-      if (GFX_CRUMBLED(GfxElement[jx][jy]))
+      int old_element = GfxElement[jx][jy];
+      int old_graphic = el_act_dir2img(old_element, action, move_dir);
+      int frame = getGraphicAnimationFrame(old_graphic, player->StepFrame);
+
+      if (GFX_CRUMBLED(old_element))
 	DrawLevelFieldCrumbledSandDigging(jx, jy, move_dir, player->StepFrame);
       else
-      {
-	int old_element = GfxElement[jx][jy];
-	int old_graphic = el_act_dir2img(old_element, action, move_dir);
-	int frame = getGraphicAnimationFrame(old_graphic, player->StepFrame);
-
 	DrawGraphic(sx, sy, old_graphic, frame);
-      }
+
+      if (graphic_info[old_graphic].anim_mode & ANIM_OPAQUE_PLAYER)
+	player_is_opaque = TRUE;
     }
     else
     {
       GfxElement[jx][jy] = EL_UNDEFINED;
+
+      /* make sure that pushed elements are drawn with correct frame rate */
+      if (player->is_pushing && player->is_moving)
+	GfxFrame[jx][jy] = player->StepFrame;
 
       DrawLevelField(jx, jy);
     }
@@ -1988,37 +2022,12 @@ void DrawPlayer(struct PlayerInfo *player)
   /* draw player himself                                                     */
   /* ----------------------------------------------------------------------- */
 
-#if 1
-
   graphic = getPlayerGraphic(player, move_dir);
 
   /* in the case of changed player action or direction, prevent the current
      animation frame from being restarted for identical animations */
   if (player->Frame == 0 && equalGraphics(graphic, last_player_graphic))
     player->Frame = last_player_frame;
-
-#else
-
-  if (player->use_murphy_graphic)
-  {
-    static int last_horizontal_dir = MV_LEFT;
-
-    if (move_dir == MV_LEFT || move_dir == MV_RIGHT)
-      last_horizontal_dir = move_dir;
-
-    graphic = el_act_dir2img(EL_SP_MURPHY, player->GfxAction, move_dir);
-
-    if (graphic == IMG_SP_MURPHY)	/* undefined => use special graphic */
-    {
-      int direction = (player->is_snapping ? move_dir : last_horizontal_dir);
-
-      graphic = el_act_dir2img(EL_SP_MURPHY, player->GfxAction, direction);
-    }
-  }
-  else
-    graphic = el_act_dir2img(player->element_nr, player->GfxAction, move_dir);
-
-#endif
 
   frame = getGraphicAnimationFrame(graphic, player->Frame);
 
@@ -2033,7 +2042,10 @@ void DrawPlayer(struct PlayerInfo *player)
   if (!setup.soft_scrolling && ScreenMovPos)
     sxx = syy = 0;
 
-  DrawGraphicShiftedThruMask(sx, sy, sxx, syy, graphic, frame, NO_CUTTING);
+  if (player_is_opaque)
+    DrawGraphicShifted(sx, sy, sxx, syy, graphic, frame,NO_CUTTING,NO_MASKING);
+  else
+    DrawGraphicShiftedThruMask(sx, sy, sxx, syy, graphic, frame, NO_CUTTING);
 
   if (SHIELD_ON(player))
   {
@@ -2056,21 +2068,11 @@ void DrawPlayer(struct PlayerInfo *player)
 
 #if 1
   if (player->is_pushing && player->is_moving)
-#else
-  if (player->is_pushing && player_is_moving)
-#endif
   {
-#if 1
     int px = SCREENX(jx), py = SCREENY(jy);
     int pxx = (TILEX - ABS(sxx)) * dx;
     int pyy = (TILEY - ABS(syy)) * dy;
-#else
-    int px = SCREENX(next_jx), py = SCREENY(next_jy);
-    int pxx = sxx;
-    int pyy = syy;
-#endif
 
-#if 1
     int graphic;
     int frame;
 
@@ -2086,35 +2088,8 @@ void DrawPlayer(struct PlayerInfo *player)
 
     /* masked drawing is needed for EMC style (double) movement graphics */
     DrawGraphicShiftedThruMask(px, py, pxx, pyy, graphic, frame, NO_CUTTING);
-
-#else
-    if (Back[next_jx][next_jy])
-      DrawLevelElement(next_jx, next_jy, Back[next_jx][next_jy]);
-
-    if ((pxx || pyy) && element == EL_SOKOBAN_OBJECT)
-      DrawGraphicShiftedThruMask(px, py, pxx, pyy, IMG_SOKOBAN_OBJECT, 0,
-				 NO_CUTTING);
-    else
-    {
-      int element = MovingOrBlocked2Element(next_jx, next_jy);
-      int graphic = el_act_dir2img(element, ACTION_PUSHING, move_dir);
-#if 1
-      int frame = getGraphicAnimationFrame(graphic, player->StepFrame);
-#else
-      int frame = getGraphicAnimationFrame(graphic, player->Frame);
-#endif
-
-#if 1
-      /* masked drawing is needed for EMC style (double) movement graphics */
-      DrawGraphicShiftedThruMask(px, py, pxx, pyy, graphic, frame,
-				 NO_CUTTING);
-#else
-      DrawGraphicShifted(px, py, pxx, pyy, graphic, frame,
-			 NO_CUTTING, NO_MASKING);
-#endif
-    }
-#endif
   }
+#endif
 
   /* ----------------------------------------------------------------------- */
   /* draw things in front of player (active dynamite or dynabombs)           */
@@ -2133,7 +2108,9 @@ void DrawPlayer(struct PlayerInfo *player)
 
   if (player_is_moving && last_element == EL_EXPLOSION)
   {
-    int graphic = el_act2img(GfxElement[last_jx][last_jy], ACTION_EXPLODING);
+    int element = (GfxElement[last_jx][last_jy] != EL_UNDEFINED ?
+		   GfxElement[last_jx][last_jy] :  EL_EMPTY);
+    int graphic = el_act2img(element, ACTION_EXPLODING);
     int delay = (game.emulation == EMU_SUPAPLEX ? 3 : 2);
     int phase = ExplodePhase[last_jx][last_jy] - 1;
     int frame = getGraphicAnimationFrame(graphic, phase - delay);
@@ -2155,7 +2132,6 @@ void DrawPlayer(struct PlayerInfo *player)
       DrawLevelFieldThruMask(last_jx, last_jy);
   }
 
-#if 1
   /* do not redraw accessible elements if the player is just pushing them */
   if (!player_is_moving || !player->is_pushing)
   {
@@ -2165,22 +2141,6 @@ void DrawPlayer(struct PlayerInfo *player)
     else if (IS_ACCESSIBLE_UNDER(element))
       DrawLevelFieldThruMask(jx, jy);
   }
-
-#else
-
-#if 0
-  /* !!! I have forgotton what this should be good for !!! */
-  /* !!! causes player being visible when pushing from within tubes !!! */
-  if (!player->is_pushing)
-#endif
-  {
-    /* ... and the field the player is entering */
-    if (IS_ACCESSIBLE_INSIDE(element))
-      DrawLevelField(jx, jy);
-    else if (IS_ACCESSIBLE_UNDER(element))
-      DrawLevelFieldThruMask(jx, jy);
-  }
-#endif
 
   if (setup.direct_draw)
   {
@@ -2272,21 +2232,15 @@ boolean Request(char *text, unsigned int req_state)
     }
   }
 
-#if 1
   if (game_status == GAME_MODE_PLAYING &&
       level.game_engine_type == GAME_ENGINE_TYPE_EM)
     BlitScreenToBitmap_EM(backbuffer);
-#endif
 
-#if 1
   /* disable deactivated drawing when quick-loading level tape recording */
   if (tape.playing && tape.deactivate_display)
     TapeDeactivateDisplayOff(TRUE);
-#endif
 
-#if 1
   SetMouseCursor(CURSOR_DEFAULT);
-#endif
 
 #if defined(NETWORK_AVALIABLE)
   /* pause network game while waiting for request to answer */
@@ -2381,10 +2335,6 @@ boolean Request(char *text, unsigned int req_state)
 
   OpenDoor(DOOR_OPEN_1);
 
-#if 0
-  ClearEventQueue();
-#endif
-
   if (!(req_state & REQUEST_WAIT_FOR_INPUT))
   {
     SetDrawBackgroundMask(REDRAW_FIELD);
@@ -2400,10 +2350,6 @@ boolean Request(char *text, unsigned int req_state)
   request_gadget_id = -1;
 
   SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
-
-#if 0
-  SetMouseCursor(CURSOR_DEFAULT);
-#endif
 
   while (result < 0)
   {
@@ -2546,11 +2492,9 @@ boolean Request(char *text, unsigned int req_state)
     SendToServer_ContinuePlaying();
 #endif
 
-#if 1
   /* restore deactivated drawing when quick-loading level tape recording */
   if (tape.playing && tape.deactivate_display)
     TapeDeactivateDisplayOn();
-#endif
 
   return result;
 }
@@ -2613,8 +2557,17 @@ unsigned int MoveDoor(unsigned int door_state)
   unsigned long door_delay_value;
   int stepsize = 1;
 
+  if (door_1.width < 0 || door_1.width > DXSIZE)
+    door_1.width = DXSIZE;
+  if (door_1.height < 0 || door_1.height > DYSIZE)
+    door_1.height = DYSIZE;
+  if (door_2.width < 0 || door_2.width > VXSIZE)
+    door_2.width = VXSIZE;
+  if (door_2.height < 0 || door_2.height > VYSIZE)
+    door_2.height = VYSIZE;
+
   if (door_state == DOOR_GET_STATE)
-    return(door1 | door2);
+    return (door1 | door2);
 
   if (door_state & DOOR_SET_STATE)
   {
@@ -2623,17 +2576,20 @@ unsigned int MoveDoor(unsigned int door_state)
     if (door_state & DOOR_ACTION_2)
       door2 = door_state & DOOR_ACTION_2;
 
-    return(door1 | door2);
+    return (door1 | door2);
   }
 
-  if (door1 == DOOR_OPEN_1 && door_state & DOOR_OPEN_1)
-    door_state &= ~DOOR_OPEN_1;
-  else if (door1 == DOOR_CLOSE_1 && door_state & DOOR_CLOSE_1)
-    door_state &= ~DOOR_CLOSE_1;
-  if (door2 == DOOR_OPEN_2 && door_state & DOOR_OPEN_2)
-    door_state &= ~DOOR_OPEN_2;
-  else if (door2 == DOOR_CLOSE_2 && door_state & DOOR_CLOSE_2)
-    door_state &= ~DOOR_CLOSE_2;
+  if (!(door_state & DOOR_FORCE_REDRAW))
+  {
+    if (door1 == DOOR_OPEN_1 && door_state & DOOR_OPEN_1)
+      door_state &= ~DOOR_OPEN_1;
+    else if (door1 == DOOR_CLOSE_1 && door_state & DOOR_CLOSE_1)
+      door_state &= ~DOOR_CLOSE_1;
+    if (door2 == DOOR_OPEN_2 && door_state & DOOR_OPEN_2)
+      door_state &= ~DOOR_OPEN_2;
+    else if (door2 == DOOR_CLOSE_2 && door_state & DOOR_CLOSE_2)
+      door_state &= ~DOOR_CLOSE_2;
+  }
 
   door_delay_value = (door_state & DOOR_ACTION_1 ? door_1.step_delay :
 		      door_2.step_delay);
@@ -2642,11 +2598,6 @@ unsigned int MoveDoor(unsigned int door_state)
   {
     stepsize = 20;		/* must be choosen to always draw last frame */
     door_delay_value = 0;
-
-#if 0
-    StopSound(SND_DOOR_OPENING);
-    StopSound(SND_DOOR_CLOSING);
-#endif
   }
 
   if (global.autoplay_leveldir)
@@ -2657,42 +2608,69 @@ unsigned int MoveDoor(unsigned int door_state)
 
   if (door_state & DOOR_ACTION)
   {
-    boolean door_1_done = !(door_state & DOOR_ACTION_1);
-    boolean door_2_done = !(door_state & DOOR_ACTION_2);
-    int start = ((door_state & DOOR_NO_DELAY) ? DXSIZE : 0);
-    int end = (door_state & DOOR_ACTION_1 &&
-	       door_1.anim_mode == ANIM_VERTICAL ? DYSIZE : DXSIZE);
-    int x;
+    boolean handle_door_1 = (door_state & DOOR_ACTION_1);
+    boolean handle_door_2 = (door_state & DOOR_ACTION_2);
+    boolean door_1_done = (!handle_door_1);
+    boolean door_2_done = (!handle_door_2);
+    boolean door_1_vertical = (door_1.anim_mode & ANIM_VERTICAL);
+    boolean door_2_vertical = (door_2.anim_mode & ANIM_VERTICAL);
+    int door_size_1 = (door_1_vertical ? door_1.height : door_1.width);
+    int door_size_2 = (door_2_vertical ? door_2.height : door_2.width);
+    int max_door_size_1 = (door_1_vertical ? DYSIZE : DXSIZE);
+    int max_door_size_2 = (door_2_vertical ? VYSIZE : VXSIZE);
+    int door_size     = (handle_door_1 ? door_size_1     : door_size_2);
+    int max_door_size = (handle_door_1 ? max_door_size_1 : max_door_size_2);
+    int door_skip = max_door_size - door_size;
+#if 1
+    int end = door_size;
+#else
+    int end = (door_state & DOOR_ACTION_1 && door_1.anim_mode & ANIM_VERTICAL ?
+	       DYSIZE : DXSIZE);
+#endif
+#if 1
+    int start = ((door_state & DOOR_NO_DELAY) ? end : 0);
+#else
+    int start = ((door_state & DOOR_NO_DELAY) ? end : offset_skip);
+#endif
+    int k;
 
     if (!(door_state & DOOR_NO_DELAY) && !setup.quick_doors)
     {
       /* opening door sound has priority over simultaneously closing door */
       if (door_state & (DOOR_OPEN_1 | DOOR_OPEN_2))
-	PlaySoundStereo(SND_DOOR_OPENING, SOUND_MIDDLE);
+	PlayMenuSoundStereo(SND_DOOR_OPENING, SOUND_MIDDLE);
       else if (door_state & (DOOR_CLOSE_1 | DOOR_CLOSE_2))
-	PlaySoundStereo(SND_DOOR_CLOSING, SOUND_MIDDLE);
+	PlayMenuSoundStereo(SND_DOOR_CLOSING, SOUND_MIDDLE);
     }
 
-    for (x = start; x <= end && !(door_1_done && door_2_done); x += stepsize)
+    for (k = start; k <= end && !(door_1_done && door_2_done); k += stepsize)
     {
+      int x = k;
       Bitmap *bitmap = graphic_info[IMG_GLOBAL_DOOR].bitmap;
       GC gc = bitmap->stored_clip_gc;
 
       if (door_state & DOOR_ACTION_1)
       {
 	int a = MIN(x * door_1.step_offset, end);
-	int i = (door_state & DOOR_OPEN_1 ? end - a : a);
+	int p = (door_state & DOOR_OPEN_1 ? end - a : a);
+	int i = p + door_skip;
 
-	if (x <= a)
+	if (door_1.anim_mode & ANIM_STATIC_PANEL)
 	{
 	  BlitBitmap(bitmap_db_door, drawto,
-		     DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1 + i / 2,
-		     DXSIZE, DYSIZE - i / 2, DX, DY);
+		     DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1,
+		     DXSIZE, DYSIZE, DX, DY);
+	}
+	else if (x <= a)
+	{
+	  BlitBitmap(bitmap_db_door, drawto,
+		     DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1 + p / 2,
+		     DXSIZE, DYSIZE - p / 2, DX, DY);
 
-	  ClearRectangle(drawto, DX, DY + DYSIZE - i / 2, DXSIZE, i / 2);
+	  ClearRectangle(drawto, DX, DY + DYSIZE - p / 2, DXSIZE, p / 2);
 	}
 
-	if (door_1.anim_mode == ANIM_HORIZONTAL && x <= DXSIZE)
+	if (door_1.anim_mode & ANIM_HORIZONTAL && x <= DXSIZE)
 	{
 	  int src1_x = DXSIZE,		src1_y = DOOR_GFX_PAGEY1;
 	  int dst1_x = DX + DXSIZE - i,	dst1_y = DY;
@@ -2708,7 +2686,7 @@ unsigned int MoveDoor(unsigned int door_state)
 	  BlitBitmapMasked(bitmap, drawto, src2_x, src2_y, width, height,
 			   dst2_x, dst2_y);
 	}
-	else if (door_1.anim_mode == ANIM_VERTICAL && x <= DYSIZE)
+	else if (door_1.anim_mode & ANIM_VERTICAL && x <= DYSIZE)
 	{
 	  int src1_x = DXSIZE,		src1_y = DOOR_GFX_PAGEY1;
 	  int dst1_x = DX,		dst1_y = DY + DYSIZE - i;
@@ -2765,19 +2743,32 @@ unsigned int MoveDoor(unsigned int door_state)
 
       if (door_state & DOOR_ACTION_2)
       {
-	int a = MIN(x * door_2.step_offset, VXSIZE);
-	int i = (door_state & DOOR_OPEN_2 ? VXSIZE - a : a);
+#if 1
+	int a = MIN(x * door_2.step_offset, door_size);
+	int p = (door_state & DOOR_OPEN_2 ? door_size - a : a);
+	int i = p + door_skip;
+#else
+	int a = MIN(x * door_2.step_offset, door_size_2);
+	int p = (door_state & DOOR_OPEN_2 ? door_size_2 - a : a);
+	int i = p + door_skip;
+#endif
 
-	if (x <= VYSIZE)
+	if (door_2.anim_mode & ANIM_STATIC_PANEL)
 	{
 	  BlitBitmap(bitmap_db_door, drawto,
-		     DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY2 + i / 2,
-		     VXSIZE, VYSIZE - i / 2, VX, VY);
+		     DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY2,
+		     VXSIZE, VYSIZE, VX, VY);
+	}
+	else if (x <= VYSIZE)
+	{
+	  BlitBitmap(bitmap_db_door, drawto,
+		     DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY2 + p / 2,
+		     VXSIZE, VYSIZE - p / 2, VX, VY);
 
-	  ClearRectangle(drawto, VX, VY + VYSIZE - i / 2, VXSIZE, i / 2);
+	  ClearRectangle(drawto, VX, VY + VYSIZE - p / 2, VXSIZE, p / 2);
 	}
 
-	if (door_2.anim_mode == ANIM_HORIZONTAL && x <= VXSIZE)
+	if (door_2.anim_mode & ANIM_HORIZONTAL && x <= VXSIZE)
 	{
 	  int src1_x = VXSIZE,		src1_y = DOOR_GFX_PAGEY2;
 	  int dst1_x = VX + VXSIZE - i,	dst1_y = VY;
@@ -2793,7 +2784,7 @@ unsigned int MoveDoor(unsigned int door_state)
 	  BlitBitmapMasked(bitmap, drawto, src2_x, src2_y, width, height,
 			   dst2_x, dst2_y);
 	}
-	else if (door_2.anim_mode == ANIM_VERTICAL && x <= VYSIZE)
+	else if (door_2.anim_mode & ANIM_VERTICAL && x <= VYSIZE)
 	{
 	  int src1_x = VXSIZE,		src1_y = DOOR_GFX_PAGEY2;
 	  int dst1_x = VX,		dst1_y = VY + VYSIZE - i;
@@ -2837,23 +2828,17 @@ unsigned int MoveDoor(unsigned int door_state)
 	door_2_done = (a == VXSIZE);
       }
 
-      BackToFront();
-
-      if (game_status == GAME_MODE_MAIN)
-	DoAnimation();
-
       if (!(door_state & DOOR_NO_DELAY))
+      {
+	BackToFront();
+
+	if (game_status == GAME_MODE_MAIN)
+	  DoAnimation();
+
 	WaitUntilDelayReached(&door_delay, door_delay_value);
+      }
     }
   }
-
-#if 0
-  if (setup.quick_doors)
-  {
-    StopSound(SND_DOOR_OPENING);
-    StopSound(SND_DOOR_CLOSING);
-  }
-#endif
 
   if (door_state & DOOR_ACTION_1)
     door1 = door_state & DOOR_ACTION_1;
@@ -2870,8 +2855,8 @@ void DrawSpecialEditorDoor()
 	     DOOR_GFX_PAGEX7, 0, EXSIZE + 8, 8,
 	     EX - 4, EY - 12);
   BlitBitmap(graphic_info[IMG_GLOBAL_BORDER].bitmap, drawto,
-	     EX - 4, VY - 4, EXSIZE + 8, EYSIZE - VYSIZE + 4,
-	     EX - 4, EY - 4);
+	     EX - 6, VY - 4, EXSIZE + 12, EYSIZE - VYSIZE + 4,
+	     EX - 6, EY - 4);
 
   redraw_mask |= REDRAW_ALL;
 }
@@ -2880,8 +2865,8 @@ void UndrawSpecialEditorDoor()
 {
   /* draw normal tape recorder window */
   BlitBitmap(graphic_info[IMG_GLOBAL_BORDER].bitmap, drawto,
-	     EX - 4, EY - 12, EXSIZE + 8, EYSIZE - VYSIZE + 12,
-	     EX - 4, EY - 12);
+	     EX - 6, EY - 12, EXSIZE + 12, EYSIZE - VYSIZE + 12,
+	     EX - 6, EY - 12);
 
   redraw_mask |= REDRAW_ALL;
 }
@@ -3066,8 +3051,6 @@ static void HandleToolButtons(struct GadgetInfo *gi)
 {
   request_gadget_id = gi->custom_id;
 }
-
-#if 1
 
 static struct Mapping_EM_to_RND_object
 {
@@ -3471,11 +3454,11 @@ em_object_mapping_list[] =
   },
   {
     Yandroid_ne,			FALSE,	FALSE,
-    EL_EMC_ANDROID,			ACTION_TURNING_FROM_UP, MV_BIT_RIGHT
+    EL_EMC_ANDROID,			ACTION_GROWING, MV_BIT_UPRIGHT
   },
   {
     Yandroid_neB,			FALSE,	TRUE,
-    EL_EMC_ANDROID,			ACTION_TURNING_FROM_UP, MV_BIT_RIGHT
+    EL_EMC_ANDROID,			ACTION_SHRINKING, MV_BIT_UPRIGHT
   },
   {
     Yandroid_e,				FALSE,	FALSE,
@@ -3487,11 +3470,11 @@ em_object_mapping_list[] =
   },
   {
     Yandroid_se,			FALSE,	FALSE,
-    EL_EMC_ANDROID,			ACTION_TURNING_FROM_DOWN, MV_BIT_RIGHT
+    EL_EMC_ANDROID,			ACTION_GROWING, MV_BIT_DOWNRIGHT
   },
   {
     Yandroid_seB,			FALSE,	TRUE,
-    EL_EMC_ANDROID,			ACTION_TURNING_FROM_DOWN, MV_BIT_RIGHT
+    EL_EMC_ANDROID,			ACTION_SHRINKING, MV_BIT_DOWNRIGHT
   },
   {
     Yandroid_s,				FALSE,	FALSE,
@@ -3503,11 +3486,11 @@ em_object_mapping_list[] =
   },
   {
     Yandroid_sw,			FALSE,	FALSE,
-    EL_EMC_ANDROID,			ACTION_TURNING_FROM_DOWN, MV_BIT_LEFT
+    EL_EMC_ANDROID,			ACTION_GROWING, MV_BIT_DOWNLEFT
   },
   {
     Yandroid_swB,			FALSE,	TRUE,
-    EL_EMC_ANDROID,			ACTION_TURNING_FROM_DOWN, MV_BIT_LEFT
+    EL_EMC_ANDROID,			ACTION_SHRINKING, MV_BIT_DOWNLEFT
   },
   {
     Yandroid_w,				FALSE,	FALSE,
@@ -3519,11 +3502,11 @@ em_object_mapping_list[] =
   },
   {
     Yandroid_nw,			FALSE,	FALSE,
-    EL_EMC_ANDROID,			ACTION_TURNING_FROM_UP, MV_BIT_LEFT
+    EL_EMC_ANDROID,			ACTION_GROWING, MV_BIT_UPLEFT
   },
   {
     Yandroid_nwB,			FALSE,	TRUE,
-    EL_EMC_ANDROID,			ACTION_TURNING_FROM_UP, MV_BIT_LEFT
+    EL_EMC_ANDROID,			ACTION_SHRINKING, MV_BIT_UPLEFT
   },
   {
     Xspring,				TRUE,	FALSE,
@@ -3571,35 +3554,35 @@ em_object_mapping_list[] =
   },
   {
     Yspring_kill_e,			FALSE,	FALSE,
-    EL_ROBOT,				ACTION_SLURPED_BY_SPRING, MV_BIT_RIGHT
+    EL_SPRING,				ACTION_EATING, MV_BIT_RIGHT
   },
   {
     Yspring_kill_eB,			FALSE,	TRUE,
-    EL_ROBOT,				ACTION_SLURPED_BY_SPRING, MV_BIT_RIGHT
+    EL_SPRING,				ACTION_EATING, MV_BIT_RIGHT
   },
   {
     Yspring_kill_w,			FALSE,	FALSE,
-    EL_ROBOT,				ACTION_SLURPED_BY_SPRING, MV_BIT_LEFT
+    EL_SPRING,				ACTION_EATING, MV_BIT_LEFT
   },
   {
     Yspring_kill_wB,			FALSE,	TRUE,
-    EL_ROBOT,				ACTION_SLURPED_BY_SPRING, MV_BIT_LEFT
+    EL_SPRING,				ACTION_EATING, MV_BIT_LEFT
   },
   {
     Xeater_n,				TRUE,	FALSE,
-    EL_YAMYAM,				-1, -1
+    EL_YAMYAM_UP,			-1, -1
   },
   {
-    Xeater_e,				FALSE,	FALSE,
-    EL_YAMYAM,				-1, -1
+    Xeater_e,				TRUE,	FALSE,
+    EL_YAMYAM_RIGHT,			-1, -1
   },
   {
-    Xeater_w,				FALSE,	FALSE,
-    EL_YAMYAM,				-1, -1
+    Xeater_w,				TRUE,	FALSE,
+    EL_YAMYAM_LEFT,			-1, -1
   },
   {
-    Xeater_s,				FALSE,	FALSE,
-    EL_YAMYAM,				-1, -1
+    Xeater_s,				TRUE,	FALSE,
+    EL_YAMYAM_DOWN,			-1, -1
   },
   {
     Yeater_n,				FALSE,	FALSE,
@@ -4215,27 +4198,27 @@ em_object_mapping_list[] =
   },
   {
     Xdynamite,				TRUE,	FALSE,
-    EL_DYNAMITE,			-1, -1
+    EL_EM_DYNAMITE,			-1, -1
   },
   {
     Ydynamite_eat,			FALSE,	FALSE,
-    EL_DYNAMITE,			ACTION_COLLECTING, -1
+    EL_EM_DYNAMITE,			ACTION_COLLECTING, -1
   },
   {
     Xdynamite_1,			TRUE,	FALSE,
-    EL_DYNAMITE_ACTIVE,			-1, -1
+    EL_EM_DYNAMITE_ACTIVE,		-1, -1
   },
   {
     Xdynamite_2,			FALSE,	FALSE,
-    EL_DYNAMITE_ACTIVE,			-1, -1
+    EL_EM_DYNAMITE_ACTIVE,		-1, -1
   },
   {
     Xdynamite_3,			FALSE,	FALSE,
-    EL_DYNAMITE_ACTIVE,			-1, -1
+    EL_EM_DYNAMITE_ACTIVE,		-1, -1
   },
   {
     Xdynamite_4,			FALSE,	FALSE,
-    EL_DYNAMITE_ACTIVE,			-1, -1
+    EL_EM_DYNAMITE_ACTIVE,		-1, -1
   },
   {
     Xbumper,				TRUE,	FALSE,
@@ -4270,19 +4253,19 @@ em_object_mapping_list[] =
     EL_QUICKSAND_FULL,			-1, -1
   },
   {
-    Xsand_stonein_1,			FALSE,	FALSE,
+    Xsand_stonein_1,			FALSE,	TRUE,
     EL_ROCK,				ACTION_FILLING, -1
   },
   {
-    Xsand_stonein_2,			FALSE,	FALSE,
+    Xsand_stonein_2,			FALSE,	TRUE,
     EL_ROCK,				ACTION_FILLING, -1
   },
   {
-    Xsand_stonein_3,			FALSE,	FALSE,
+    Xsand_stonein_3,			FALSE,	TRUE,
     EL_ROCK,				ACTION_FILLING, -1
   },
   {
-    Xsand_stonein_4,			FALSE,	FALSE,
+    Xsand_stonein_4,			FALSE,	TRUE,
     EL_ROCK,				ACTION_FILLING, -1
   },
   {
@@ -4709,10 +4692,6 @@ em_object_mapping_list[] =
     Xalpha_copyr,			TRUE,	FALSE,
     EL_CHAR('©'),			-1, -1
   },
-  {
-    Xalpha_copyr,			TRUE,	FALSE,
-    EL_CHAR('©'),			-1, -1
-  },
 
   {
     Xboom_bug,				FALSE,	FALSE,
@@ -4872,6 +4851,110 @@ em_player_mapping_list[] =
     SPR_still,				1,
     EL_PLAYER_2,			ACTION_DEFAULT, -1,
   },
+  {
+    SPR_walk + 0,			2,
+    EL_PLAYER_3,			ACTION_MOVING, MV_BIT_UP,
+  },
+  {
+    SPR_walk + 1,			2,
+    EL_PLAYER_3,			ACTION_MOVING, MV_BIT_RIGHT,
+  },
+  {
+    SPR_walk + 2,			2,
+    EL_PLAYER_3,			ACTION_MOVING, MV_BIT_DOWN,
+  },
+  {
+    SPR_walk + 3,			2,
+    EL_PLAYER_3,			ACTION_MOVING, MV_BIT_LEFT,
+  },
+  {
+    SPR_push + 0,			2,
+    EL_PLAYER_3,			ACTION_PUSHING, MV_BIT_UP,
+  },
+  {
+    SPR_push + 1,			2,
+    EL_PLAYER_3,			ACTION_PUSHING, MV_BIT_RIGHT,
+  },
+  {
+    SPR_push + 2,			2,
+    EL_PLAYER_3,			ACTION_PUSHING, MV_BIT_DOWN,
+  },
+  {
+    SPR_push + 3,			2,
+    EL_PLAYER_3,			ACTION_PUSHING, MV_BIT_LEFT,
+  },
+  {
+    SPR_spray + 0,			2,
+    EL_PLAYER_3,			ACTION_SNAPPING, MV_BIT_UP,
+  },
+  {
+    SPR_spray + 1,			2,
+    EL_PLAYER_3,			ACTION_SNAPPING, MV_BIT_RIGHT,
+  },
+  {
+    SPR_spray + 2,			2,
+    EL_PLAYER_3,			ACTION_SNAPPING, MV_BIT_DOWN,
+  },
+  {
+    SPR_spray + 3,			2,
+    EL_PLAYER_3,			ACTION_SNAPPING, MV_BIT_LEFT,
+  },
+  {
+    SPR_walk + 0,			3,
+    EL_PLAYER_4,			ACTION_MOVING, MV_BIT_UP,
+  },
+  {
+    SPR_walk + 1,			3,
+    EL_PLAYER_4,			ACTION_MOVING, MV_BIT_RIGHT,
+  },
+  {
+    SPR_walk + 2,			3,
+    EL_PLAYER_4,			ACTION_MOVING, MV_BIT_DOWN,
+  },
+  {
+    SPR_walk + 3,			3,
+    EL_PLAYER_4,			ACTION_MOVING, MV_BIT_LEFT,
+  },
+  {
+    SPR_push + 0,			3,
+    EL_PLAYER_4,			ACTION_PUSHING, MV_BIT_UP,
+  },
+  {
+    SPR_push + 1,			3,
+    EL_PLAYER_4,			ACTION_PUSHING, MV_BIT_RIGHT,
+  },
+  {
+    SPR_push + 2,			3,
+    EL_PLAYER_4,			ACTION_PUSHING, MV_BIT_DOWN,
+  },
+  {
+    SPR_push + 3,			3,
+    EL_PLAYER_4,			ACTION_PUSHING, MV_BIT_LEFT,
+  },
+  {
+    SPR_spray + 0,			3,
+    EL_PLAYER_4,			ACTION_SNAPPING, MV_BIT_UP,
+  },
+  {
+    SPR_spray + 1,			3,
+    EL_PLAYER_4,			ACTION_SNAPPING, MV_BIT_RIGHT,
+  },
+  {
+    SPR_spray + 2,			3,
+    EL_PLAYER_4,			ACTION_SNAPPING, MV_BIT_DOWN,
+  },
+  {
+    SPR_spray + 3,			3,
+    EL_PLAYER_4,			ACTION_SNAPPING, MV_BIT_LEFT,
+  },
+  {
+    SPR_still,				2,
+    EL_PLAYER_3,			ACTION_DEFAULT, -1,
+  },
+  {
+    SPR_still,				3,
+    EL_PLAYER_4,			ACTION_DEFAULT, -1,
+  },
 
   {
     -1,					-1,
@@ -4936,639 +5019,83 @@ int map_element_EM_to_RND(int element_em)
   return EL_UNKNOWN;
 }
 
-#else
-
-int map_element_RND_to_EM(int element_rnd)
+void map_android_clone_elements_RND_to_EM(struct LevelInfo *level)
 {
-  static unsigned short mapping_RND_to_EM[NUM_FILE_ELEMENTS];
-  static boolean mapping_initialized = FALSE;
+  struct LevelInfo_EM *level_em = level->native_em_level;
+  struct LEVEL *lev = level_em->lev;
+  int i, j;
 
-  struct
+  for (i = 0; i < TILE_MAX; i++)
+    lev->android_array[i] = Xblank;
+
+  for (i = 0; i < level->num_android_clone_elements; i++)
   {
-    int element_em;
-    int element_rnd;
+    int element_rnd = level->android_clone_element[i];
+    int element_em = map_element_RND_to_EM(element_rnd);
+
+    for (j = 0; em_object_mapping_list[j].element_em != -1; j++)
+      if (em_object_mapping_list[j].element_rnd == element_rnd)
+	lev->android_array[em_object_mapping_list[j].element_em] = element_em;
   }
-  mapping_RND_to_EM_list[] =
-  {
-    { Xblank,			EL_EMPTY			},
-    { Xstone,			EL_ROCK				},
-    { Xnut,			EL_NUT				},
-    { Xbug_n,			EL_BUG_UP			},
-    { Xbug_e,			EL_BUG_RIGHT			},
-    { Xbug_s,			EL_BUG_DOWN			},
-    { Xbug_w,			EL_BUG_LEFT			},
-    { Xtank_n,			EL_SPACESHIP_UP			},
-    { Xtank_e,			EL_SPACESHIP_RIGHT		},
-    { Xtank_s,			EL_SPACESHIP_DOWN		},
-    { Xtank_w,			EL_SPACESHIP_LEFT		},
-    { Xandroid,			EL_EMC_ANDROID			},
-    { Xandroid_1_n,		EL_EMC_ANDROID_UP		},
-    { Xandroid_1_e,		EL_EMC_ANDROID_RIGHT		},
-    { Xandroid_1_w,		EL_EMC_ANDROID_LEFT		},
-    { Xandroid_1_s,		EL_EMC_ANDROID_DOWN		},
-    { Xspring,			EL_SPRING			},
-    { Xeater_n,			EL_YAMYAM			},
-    { Xalien,			EL_ROBOT			},
-    { Xemerald,			EL_EMERALD			},
-    { Xdiamond,			EL_DIAMOND			},
-    { Xdrip_fall,		EL_AMOEBA_DROP			},
-    { Xbomb,			EL_BOMB				},
-    { Xballoon,			EL_BALLOON			},
-    { Xgrass,			EL_EMC_GRASS			},
-    { Xdirt,			EL_SAND				},
-    { Xacid_ne,			EL_ACID_POOL_TOPRIGHT		},
-    { Xacid_se,			EL_ACID_POOL_BOTTOMRIGHT	},
-    { Xacid_s,			EL_ACID_POOL_BOTTOM		},
-    { Xacid_sw,			EL_ACID_POOL_BOTTOMLEFT		},
-    { Xacid_nw,			EL_ACID_POOL_TOPLEFT		},
-    { Xacid_1,			EL_ACID				},
-    { Xball_1,			EL_EMC_MAGIC_BALL		},
-    { Xgrow_ns,			EL_EMC_GROW			},
-    { Xwonderwall,		EL_MAGIC_WALL			},
-    { Xamoeba_1,		EL_AMOEBA_WET			},
-    { Xdoor_1,			EL_EM_GATE_1			},
-    { Xdoor_2,			EL_EM_GATE_2			},
-    { Xdoor_3,			EL_EM_GATE_3			},
-    { Xdoor_4,			EL_EM_GATE_4			},
-    { Xdoor_5,			EL_EMC_GATE_5			},
-    { Xdoor_6,			EL_EMC_GATE_6			},
-    { Xdoor_7,			EL_EMC_GATE_7			},
-    { Xdoor_8,			EL_EMC_GATE_8			},
-    { Xkey_1,			EL_EM_KEY_1			},
-    { Xkey_2,			EL_EM_KEY_2			},
-    { Xkey_3,			EL_EM_KEY_3			},
-    { Xkey_4,			EL_EM_KEY_4			},
-    { Xkey_5,			EL_EMC_KEY_5			},
-    { Xkey_6,			EL_EMC_KEY_6			},
-    { Xkey_7,			EL_EMC_KEY_7			},
-    { Xkey_8,			EL_EMC_KEY_8			},
-    { Xwind_n,			EL_BALLOON_SWITCH_UP		},
-    { Xwind_e,			EL_BALLOON_SWITCH_RIGHT		},
-    { Xwind_s,			EL_BALLOON_SWITCH_DOWN		},
-    { Xwind_w,			EL_BALLOON_SWITCH_LEFT		},
-    { Xwind_nesw,		EL_BALLOON_SWITCH_ANY		},
-    { Xwind_stop,		EL_BALLOON_SWITCH_NONE		},
-    { Xexit,			EL_EXIT_CLOSED			},
-    { Xexit_1,			EL_EXIT_OPEN			},
-    { Xdynamite,		EL_DYNAMITE			},
-    { Xdynamite_1,		EL_DYNAMITE_ACTIVE		},
-    { Xbumper,			EL_EMC_BUMPER			},
-    { Xwheel,			EL_ROBOT_WHEEL			},
-    { Xswitch,			EL_UNKNOWN			},
-    { Xsand,			EL_QUICKSAND_EMPTY		},
-    { Xsand_stone,		EL_QUICKSAND_FULL		},
-    { Xplant,			EL_EMC_PLANT			},
-    { Xlenses,			EL_EMC_LENSES			},
-    { Xmagnify,			EL_EMC_MAGNIFIER		},
-    { Xdripper,			EL_UNKNOWN			},
-    { Xfake_blank,		EL_INVISIBLE_WALL		},
-    { Xfake_grass,		EL_INVISIBLE_SAND		},
-    { Xfake_door_1,		EL_EM_GATE_1_GRAY		},
-    { Xfake_door_2,		EL_EM_GATE_2_GRAY		},
-    { Xfake_door_3,		EL_EM_GATE_3_GRAY		},
-    { Xfake_door_4,		EL_EM_GATE_4_GRAY		},
-    { Xfake_door_5,		EL_EMC_GATE_5_GRAY		},
-    { Xfake_door_6,		EL_EMC_GATE_6_GRAY		},
-    { Xfake_door_7,		EL_EMC_GATE_7_GRAY		},
-    { Xfake_door_8,		EL_EMC_GATE_8_GRAY		},
-    { Xsteel_1,			EL_STEELWALL			},
-    { Xsteel_2,			EL_UNKNOWN			},
-    { Xsteel_3,			EL_EMC_STEELWALL_1		},
-    { Xsteel_4,			EL_UNKNOWN			},
-    { Xwall_1,			EL_WALL				},
-    { Xwall_2,			EL_UNKNOWN			},
-    { Xwall_3,			EL_UNKNOWN			},
-    { Xwall_4,			EL_UNKNOWN			},
-    { Xround_wall_1,		EL_WALL_SLIPPERY		},
-    { Xround_wall_2,		EL_UNKNOWN			},
-    { Xround_wall_3,		EL_UNKNOWN			},
-    { Xround_wall_4,		EL_UNKNOWN			},
-    { Xdecor_1,			EL_UNKNOWN			},
-    { Xdecor_2,			EL_EMC_WALL_6			},
-    { Xdecor_3,			EL_EMC_WALL_4			},
-    { Xdecor_4,			EL_EMC_WALL_5			},
-    { Xdecor_5,			EL_EMC_WALL_7			},
-    { Xdecor_6,			EL_EMC_WALL_8			},
-    { Xdecor_7,			EL_UNKNOWN			},
-    { Xdecor_8,			EL_EMC_WALL_1			},
-    { Xdecor_9,			EL_EMC_WALL_2			},
-    { Xdecor_10,		EL_EMC_WALL_3			},
-    { Xdecor_11,		EL_UNKNOWN			},
-    { Xdecor_12,		EL_UNKNOWN			},
-    { Xalpha_0,			EL_CHAR('0')			},
-    { Xalpha_1,			EL_CHAR('1')			},
-    { Xalpha_2,			EL_CHAR('2')			},
-    { Xalpha_3,			EL_CHAR('3')			},
-    { Xalpha_4,			EL_CHAR('4')			},
-    { Xalpha_5,			EL_CHAR('5')			},
-    { Xalpha_6,			EL_CHAR('6')			},
-    { Xalpha_7,			EL_CHAR('7')			},
-    { Xalpha_8,			EL_CHAR('8')			},
-    { Xalpha_9,			EL_CHAR('9')			},
-    { Xalpha_excla,		EL_CHAR('!')			},
-    { Xalpha_quote,		EL_CHAR('"')			},
-    { Xalpha_comma,		EL_CHAR(',')			},
-    { Xalpha_minus,		EL_CHAR('-')			},
-    { Xalpha_perio,		EL_CHAR('.')			},
-    { Xalpha_colon,		EL_CHAR(':')			},
-    { Xalpha_quest,		EL_CHAR('?')			},
-    { Xalpha_a,			EL_CHAR('A')			},
-    { Xalpha_b,			EL_CHAR('B')			},
-    { Xalpha_c,			EL_CHAR('C')			},
-    { Xalpha_d,			EL_CHAR('D')			},
-    { Xalpha_e,			EL_CHAR('E')			},
-    { Xalpha_f,			EL_CHAR('F')			},
-    { Xalpha_g,			EL_CHAR('G')			},
-    { Xalpha_h,			EL_CHAR('H')			},
-    { Xalpha_i,			EL_CHAR('I')			},
-    { Xalpha_j,			EL_CHAR('J')			},
-    { Xalpha_k,			EL_CHAR('K')			},
-    { Xalpha_l,			EL_CHAR('L')			},
-    { Xalpha_m,			EL_CHAR('M')			},
-    { Xalpha_n,			EL_CHAR('N')			},
-    { Xalpha_o,			EL_CHAR('O')			},
-    { Xalpha_p,			EL_CHAR('P')			},
-    { Xalpha_q,			EL_CHAR('Q')			},
-    { Xalpha_r,			EL_CHAR('R')			},
-    { Xalpha_s,			EL_CHAR('S')			},
-    { Xalpha_t,			EL_CHAR('T')			},
-    { Xalpha_u,			EL_CHAR('U')			},
-    { Xalpha_v,			EL_CHAR('V')			},
-    { Xalpha_w,			EL_CHAR('W')			},
-    { Xalpha_x,			EL_CHAR('X')			},
-    { Xalpha_y,			EL_CHAR('Y')			},
-    { Xalpha_z,			EL_CHAR('Z')			},
-    { Xalpha_arrow_e,		EL_CHAR('>')			},
-    { Xalpha_arrow_w,		EL_CHAR('<')			},
-    { Xalpha_copyr,		EL_CHAR('©')			},
-
-    { Zplayer,			EL_PLAYER_1			},
-    { Zplayer,			EL_PLAYER_2			},
-    { Zplayer,			EL_PLAYER_3			},
-    { Zplayer,			EL_PLAYER_4			},
-
-    { ZBORDER,			EL_EMC_LEVEL_BORDER		},
-
-    { -1,			-1				}
-  };
-
-  if (!mapping_initialized)
-  {
-    int i;
-
-    /* return "Xalpha_quest" for all undefined elements in mapping array */
-    for (i = 0; i < NUM_FILE_ELEMENTS; i++)
-      mapping_RND_to_EM[i] = Xalpha_quest;
-
-    for (i = 0; mapping_RND_to_EM_list[i].element_rnd != -1; i++)
-      mapping_RND_to_EM[mapping_RND_to_EM_list[i].element_rnd] =
-	mapping_RND_to_EM_list[i].element_em;
-
-    mapping_initialized = TRUE;
-  }
-
-  if (element_rnd >= 0 && element_rnd < NUM_FILE_ELEMENTS)
-    return mapping_RND_to_EM[element_rnd];
-
-  Error(ERR_WARN, "invalid RND level element %d", element_rnd);
-
-  return EL_UNKNOWN;
 }
 
-int map_element_EM_to_RND(int element_em)
+void map_android_clone_elements_EM_to_RND(struct LevelInfo *level)
 {
-  static unsigned short mapping_EM_to_RND[TILE_MAX];
-  static boolean mapping_initialized = FALSE;
+  struct LevelInfo_EM *level_em = level->native_em_level;
+  struct LEVEL *lev = level_em->lev;
+  int i, j;
 
-  struct
+  level->num_android_clone_elements = 0;
+
+  for (i = 0; i < TILE_MAX; i++)
   {
-    int element_em;
+    int element_em = lev->android_array[i];
     int element_rnd;
-  }
-  em_object_mapping_list[] =
-  {
-    { Xblank,			EL_EMPTY			},
-    { Yacid_splash_eB,		EL_EMPTY			},
-    { Yacid_splash_wB,		EL_EMPTY			},
+    boolean element_found = FALSE;
 
-#ifdef EM_ENGINE_BAD_ROLL
-    { Xstone_force_e,		EL_ROCK				},
-    { Xstone_force_w,		EL_ROCK				},
-    { Xnut_force_e,		EL_NUT				},
-    { Xnut_force_w,		EL_NUT				},
-    { Xspring_force_e,		EL_SPRING			},
-    { Xspring_force_w,		EL_SPRING			},
-    { Xemerald_force_e,		EL_EMERALD			},
-    { Xemerald_force_w,		EL_EMERALD			},
-    { Xdiamond_force_e,		EL_DIAMOND			},
-    { Xdiamond_force_w,		EL_DIAMOND			},
-    { Xbomb_force_e,		EL_BOMB				},
-    { Xbomb_force_w,		EL_BOMB				},
-#endif
+    if (element_em == Xblank)
+      continue;
 
-    { Xstone,			EL_ROCK				},
-    { Xstone_pause,		EL_ROCK				},
-    { Xstone_fall,		EL_ROCK				},
-    { Ystone_s,			EL_ROCK				},
-    { Ystone_sB,		EL_ROCK				},
-    { Ystone_e,			EL_ROCK				},
-    { Ystone_eB,		EL_ROCK				},
-    { Ystone_w,			EL_ROCK				},
-    { Ystone_wB,		EL_ROCK				},
-    { Xnut,			EL_NUT				},
-    { Xnut_pause,		EL_NUT				},
-    { Xnut_fall,		EL_NUT				},
-    { Ynut_s,			EL_NUT				},
-    { Ynut_sB,			EL_NUT				},
-    { Ynut_e,			EL_NUT				},
-    { Ynut_eB,			EL_NUT				},
-    { Ynut_w,			EL_NUT				},
-    { Ynut_wB,			EL_NUT				},
-    { Xbug_n,			EL_BUG_UP			},
-    { Xbug_e,			EL_BUG_RIGHT			},
-    { Xbug_s,			EL_BUG_DOWN			},
-    { Xbug_w,			EL_BUG_LEFT			},
-    { Xbug_gon,			EL_BUG_UP			},
-    { Xbug_goe,			EL_BUG_RIGHT			},
-    { Xbug_gos,			EL_BUG_DOWN			},
-    { Xbug_gow,			EL_BUG_LEFT			},
-    { Ybug_n,			EL_BUG_UP			},
-    { Ybug_nB,			EL_BUG_UP			},
-    { Ybug_e,			EL_BUG_RIGHT			},
-    { Ybug_eB,			EL_BUG_RIGHT			},
-    { Ybug_s,			EL_BUG_DOWN			},
-    { Ybug_sB,			EL_BUG_DOWN			},
-    { Ybug_w,			EL_BUG_LEFT			},
-    { Ybug_wB,			EL_BUG_LEFT			},
-    { Ybug_w_n,			EL_BUG_UP			},
-    { Ybug_n_e,			EL_BUG_RIGHT			},
-    { Ybug_e_s,			EL_BUG_DOWN			},
-    { Ybug_s_w,			EL_BUG_LEFT			},
-    { Ybug_e_n,			EL_BUG_UP			},
-    { Ybug_s_e,			EL_BUG_RIGHT			},
-    { Ybug_w_s,			EL_BUG_DOWN			},
-    { Ybug_n_w,			EL_BUG_LEFT			},
-    { Ybug_stone,		EL_ROCK				},
-    { Ybug_spring,		EL_SPRING			},
-    { Xtank_n,			EL_SPACESHIP_UP			},
-    { Xtank_e,			EL_SPACESHIP_RIGHT		},
-    { Xtank_s,			EL_SPACESHIP_DOWN		},
-    { Xtank_w,			EL_SPACESHIP_LEFT		},
-    { Xtank_gon,		EL_SPACESHIP_UP			},
-    { Xtank_goe,		EL_SPACESHIP_RIGHT		},
-    { Xtank_gos,		EL_SPACESHIP_DOWN		},
-    { Xtank_gow,		EL_SPACESHIP_LEFT		},
-    { Ytank_n,			EL_SPACESHIP_UP			},
-    { Ytank_nB,			EL_SPACESHIP_UP			},
-    { Ytank_e,			EL_SPACESHIP_RIGHT		},
-    { Ytank_eB,			EL_SPACESHIP_RIGHT		},
-    { Ytank_s,			EL_SPACESHIP_DOWN		},
-    { Ytank_sB,			EL_SPACESHIP_DOWN		},
-    { Ytank_w,			EL_SPACESHIP_LEFT		},
-    { Ytank_wB,			EL_SPACESHIP_LEFT		},
-    { Ytank_w_n,		EL_SPACESHIP_UP			},
-    { Ytank_n_e,		EL_SPACESHIP_RIGHT		},
-    { Ytank_e_s,		EL_SPACESHIP_DOWN		},
-    { Ytank_s_w,		EL_SPACESHIP_LEFT		},
-    { Ytank_e_n,		EL_SPACESHIP_UP			},
-    { Ytank_s_e,		EL_SPACESHIP_RIGHT		},
-    { Ytank_w_s,		EL_SPACESHIP_DOWN		},
-    { Ytank_n_w,		EL_SPACESHIP_LEFT		},
-    { Ytank_stone,		EL_ROCK				},
-    { Ytank_spring,		EL_SPRING			},
-    { Xandroid,			EL_EMC_ANDROID			},
-    { Xandroid_1_n,		EL_EMC_ANDROID_UP		},
-    { Xandroid_2_n,		EL_EMC_ANDROID_UP		},
-    { Xandroid_1_e,		EL_EMC_ANDROID_RIGHT		},
-    { Xandroid_2_e,		EL_EMC_ANDROID_RIGHT		},
-    { Xandroid_1_w,		EL_EMC_ANDROID_LEFT		},
-    { Xandroid_2_w,		EL_EMC_ANDROID_LEFT		},
-    { Xandroid_1_s,		EL_EMC_ANDROID_DOWN		},
-    { Xandroid_2_s,		EL_EMC_ANDROID_DOWN		},
-    { Yandroid_n,		EL_EMC_ANDROID_UP		},
-    { Yandroid_nB,		EL_EMC_ANDROID_UP		},
-    { Yandroid_ne,		EL_EMC_ANDROID_RIGHT_UP		},
-    { Yandroid_neB,		EL_EMC_ANDROID_RIGHT_UP		},
-    { Yandroid_e,		EL_EMC_ANDROID_RIGHT		},
-    { Yandroid_eB,		EL_EMC_ANDROID_RIGHT		},
-    { Yandroid_se,		EL_EMC_ANDROID_RIGHT_DOWN	},
-    { Yandroid_seB,		EL_EMC_ANDROID_RIGHT_DOWN	},
-    { Yandroid_s,		EL_EMC_ANDROID_DOWN		},
-    { Yandroid_sB,		EL_EMC_ANDROID_DOWN		},
-    { Yandroid_sw,		EL_EMC_ANDROID_LEFT_DOWN	},
-    { Yandroid_swB,		EL_EMC_ANDROID_LEFT_DOWN	},
-    { Yandroid_w,		EL_EMC_ANDROID_LEFT		},
-    { Yandroid_wB,		EL_EMC_ANDROID_LEFT		},
-    { Yandroid_nw,		EL_EMC_ANDROID_LEFT_UP		},
-    { Yandroid_nwB,		EL_EMC_ANDROID_LEFT_UP		},
-    { Xspring,			EL_SPRING			},
-    { Xspring_pause,		EL_SPRING			},
-    { Xspring_e,		EL_SPRING			},
-    { Xspring_w,		EL_SPRING			},
-    { Xspring_fall,		EL_SPRING			},
-    { Yspring_s,		EL_SPRING			},
-    { Yspring_sB,		EL_SPRING			},
-    { Yspring_e,		EL_SPRING			},
-    { Yspring_eB,		EL_SPRING			},
-    { Yspring_w,		EL_SPRING			},
-    { Yspring_wB,		EL_SPRING			},
-    { Yspring_kill_e,		EL_SPRING			},
-    { Yspring_kill_eB,		EL_SPRING			},
-    { Yspring_kill_w,		EL_SPRING			},
-    { Yspring_kill_wB,		EL_SPRING			},
-    { Xeater_n,			EL_YAMYAM			},
-    { Xeater_e,			EL_YAMYAM			},
-    { Xeater_w,			EL_YAMYAM			},
-    { Xeater_s,			EL_YAMYAM			},
-    { Yeater_n,			EL_YAMYAM			},
-    { Yeater_nB,		EL_YAMYAM			},
-    { Yeater_e,			EL_YAMYAM			},
-    { Yeater_eB,		EL_YAMYAM			},
-    { Yeater_s,			EL_YAMYAM			},
-    { Yeater_sB,		EL_YAMYAM			},
-    { Yeater_w,			EL_YAMYAM			},
-    { Yeater_wB,		EL_YAMYAM			},
-    { Yeater_stone,		EL_ROCK				},
-    { Yeater_spring,		EL_SPRING			},
-    { Xalien,			EL_ROBOT			},
-    { Xalien_pause,		EL_ROBOT			},
-    { Yalien_n,			EL_ROBOT			},
-    { Yalien_nB,		EL_ROBOT			},
-    { Yalien_e,			EL_ROBOT			},
-    { Yalien_eB,		EL_ROBOT			},
-    { Yalien_s,			EL_ROBOT			},
-    { Yalien_sB,		EL_ROBOT			},
-    { Yalien_w,			EL_ROBOT			},
-    { Yalien_wB,		EL_ROBOT			},
-    { Yalien_stone,		EL_ROCK				},
-    { Yalien_spring,		EL_SPRING			},
-    { Xemerald,			EL_EMERALD			},
-    { Xemerald_pause,		EL_EMERALD			},
-    { Xemerald_fall,		EL_EMERALD			},
-    { Xemerald_shine,		EL_EMERALD			},
-    { Yemerald_s,		EL_EMERALD			},
-    { Yemerald_sB,		EL_EMERALD			},
-    { Yemerald_e,		EL_EMERALD			},
-    { Yemerald_eB,		EL_EMERALD			},
-    { Yemerald_w,		EL_EMERALD			},
-    { Yemerald_wB,		EL_EMERALD			},
-    { Yemerald_eat,		EL_EMERALD			},
-    { Yemerald_stone,		EL_ROCK				},
-    { Xdiamond,			EL_DIAMOND			},
-    { Xdiamond_pause,		EL_DIAMOND			},
-    { Xdiamond_fall,		EL_DIAMOND			},
-    { Xdiamond_shine,		EL_DIAMOND			},
-    { Ydiamond_s,		EL_DIAMOND			},
-    { Ydiamond_sB,		EL_DIAMOND			},
-    { Ydiamond_e,		EL_DIAMOND			},
-    { Ydiamond_eB,		EL_DIAMOND			},
-    { Ydiamond_w,		EL_DIAMOND			},
-    { Ydiamond_wB,		EL_DIAMOND			},
-    { Ydiamond_eat,		EL_DIAMOND			},
-    { Ydiamond_stone,		EL_ROCK				},
-    { Xdrip_fall,		EL_AMOEBA_DROP			},
-    { Xdrip_stretch,		EL_AMOEBA_DROP			},
-    { Xdrip_stretchB,		EL_AMOEBA_DROP			},
-    { Xdrip_eat,		EL_AMOEBA_DROP			},
-    { Ydrip_s1,			EL_AMOEBA_DROP			},
-    { Ydrip_s1B,		EL_AMOEBA_DROP			},
-    { Ydrip_s2,			EL_AMOEBA_DROP			},
-    { Ydrip_s2B,		EL_AMOEBA_DROP			},
-    { Xbomb,			EL_BOMB				},
-    { Xbomb_pause,		EL_BOMB				},
-    { Xbomb_fall,		EL_BOMB				},
-    { Ybomb_s,			EL_BOMB				},
-    { Ybomb_sB,			EL_BOMB				},
-    { Ybomb_e,			EL_BOMB				},
-    { Ybomb_eB,			EL_BOMB				},
-    { Ybomb_w,			EL_BOMB				},
-    { Ybomb_wB,			EL_BOMB				},
-    { Ybomb_eat,		EL_BOMB				},
-    { Xballoon,			EL_BALLOON			},
-    { Yballoon_n,		EL_BALLOON			},
-    { Yballoon_nB,		EL_BALLOON			},
-    { Yballoon_e,		EL_BALLOON			},
-    { Yballoon_eB,		EL_BALLOON			},
-    { Yballoon_s,		EL_BALLOON			},
-    { Yballoon_sB,		EL_BALLOON			},
-    { Yballoon_w,		EL_BALLOON			},
-    { Yballoon_wB,		EL_BALLOON			},
-    { Xgrass,			EL_SAND				},
-    { Ygrass_nB,		EL_SAND				},
-    { Ygrass_eB,		EL_SAND				},
-    { Ygrass_sB,		EL_SAND				},
-    { Ygrass_wB,		EL_SAND				},
-    { Xdirt,			EL_SAND				},
-    { Ydirt_nB,			EL_SAND				},
-    { Ydirt_eB,			EL_SAND				},
-    { Ydirt_sB,			EL_SAND				},
-    { Ydirt_wB,			EL_SAND				},
-    { Xacid_ne,			EL_ACID_POOL_TOPRIGHT		},
-    { Xacid_se,			EL_ACID_POOL_BOTTOMRIGHT	},
-    { Xacid_s,			EL_ACID_POOL_BOTTOM		},
-    { Xacid_sw,			EL_ACID_POOL_BOTTOMLEFT		},
-    { Xacid_nw,			EL_ACID_POOL_TOPLEFT		},
-    { Xacid_1,			EL_ACID				},
-    { Xacid_2,			EL_ACID				},
-    { Xacid_3,			EL_ACID				},
-    { Xacid_4,			EL_ACID				},
-    { Xacid_5,			EL_ACID				},
-    { Xacid_6,			EL_ACID				},
-    { Xacid_7,			EL_ACID				},
-    { Xacid_8,			EL_ACID				},
-    { Xball_1,			EL_EMC_MAGIC_BALL		},
-    { Xball_1B,			EL_EMC_MAGIC_BALL		},
-    { Xball_2,			EL_EMC_MAGIC_BALL		},
-    { Xball_2B,			EL_EMC_MAGIC_BALL		},
-    { Yball_eat,		EL_EMC_MAGIC_BALL		},
-    { Xgrow_ns,			EL_EMC_GROW			},
-    { Ygrow_ns_eat,		EL_EMC_GROW			},
-    { Xgrow_ew,			EL_EMC_GROW			},
-    { Ygrow_ew_eat,		EL_EMC_GROW			},
-    { Xwonderwall,		EL_MAGIC_WALL			},
-    { XwonderwallB,		EL_MAGIC_WALL			},
-    { Xamoeba_1,		EL_AMOEBA_WET			},
-    { Xamoeba_2,		EL_AMOEBA_WET			},
-    { Xamoeba_3,		EL_AMOEBA_WET			},
-    { Xamoeba_4,		EL_AMOEBA_WET			},
-    { Xamoeba_5,		EL_AMOEBA_WET			},
-    { Xamoeba_6,		EL_AMOEBA_WET			},
-    { Xamoeba_7,		EL_AMOEBA_WET			},
-    { Xamoeba_8,		EL_AMOEBA_WET			},
-    { Xdoor_1,			EL_EM_GATE_1			},
-    { Xdoor_2,			EL_EM_GATE_2			},
-    { Xdoor_3,			EL_EM_GATE_3			},
-    { Xdoor_4,			EL_EM_GATE_4			},
-    { Xdoor_5,			EL_EMC_GATE_5			},
-    { Xdoor_6,			EL_EMC_GATE_6			},
-    { Xdoor_7,			EL_EMC_GATE_7			},
-    { Xdoor_8,			EL_EMC_GATE_8			},
-    { Xkey_1,			EL_EM_KEY_1			},
-    { Xkey_2,			EL_EM_KEY_2			},
-    { Xkey_3,			EL_EM_KEY_3			},
-    { Xkey_4,			EL_EM_KEY_4			},
-    { Xkey_5,			EL_EMC_KEY_5			},
-    { Xkey_6,			EL_EMC_KEY_6			},
-    { Xkey_7,			EL_EMC_KEY_7			},
-    { Xkey_8,			EL_EMC_KEY_8			},
-    { Xwind_n,			EL_BALLOON_SWITCH_UP		},
-    { Xwind_e,			EL_BALLOON_SWITCH_RIGHT		},
-    { Xwind_s,			EL_BALLOON_SWITCH_DOWN		},
-    { Xwind_w,			EL_BALLOON_SWITCH_LEFT		},
-    { Xwind_nesw,		EL_BALLOON_SWITCH_ANY		},
-    { Xwind_stop,		EL_BALLOON_SWITCH_NONE		},
-    { Xexit,			EL_EXIT_CLOSED			},
-    { Xexit_1,			EL_EXIT_OPEN			},
-    { Xexit_2,			EL_EXIT_OPEN			},
-    { Xexit_3,			EL_EXIT_OPEN			},
-    { Xdynamite,		EL_DYNAMITE			},
-    { Ydynamite_eat,		EL_DYNAMITE			},
-    { Xdynamite_1,		EL_DYNAMITE_ACTIVE		},
-    { Xdynamite_2,		EL_DYNAMITE_ACTIVE		},
-    { Xdynamite_3,		EL_DYNAMITE_ACTIVE		},
-    { Xdynamite_4,		EL_DYNAMITE_ACTIVE		},
-    { Xbumper,			EL_EMC_BUMPER			},
-    { XbumperB,			EL_EMC_BUMPER			},
-    { Xwheel,			EL_ROBOT_WHEEL			},
-    { XwheelB,			EL_ROBOT_WHEEL			},
-    { Xswitch,			EL_UNKNOWN			},
-    { XswitchB,			EL_UNKNOWN			},
-    { Xsand,			EL_QUICKSAND_EMPTY		},
-    { Xsand_stone,		EL_QUICKSAND_FULL		},
-    { Xsand_stonein_1,		EL_QUICKSAND_FULL		},
-    { Xsand_stonein_2,		EL_QUICKSAND_FULL		},
-    { Xsand_stonein_3,		EL_QUICKSAND_FULL		},
-    { Xsand_stonein_4,		EL_QUICKSAND_FULL		},
-    { Xsand_stonesand_1,	EL_QUICKSAND_FULL		},
-    { Xsand_stonesand_2,	EL_QUICKSAND_FULL		},
-    { Xsand_stonesand_3,	EL_QUICKSAND_FULL		},
-    { Xsand_stonesand_4,	EL_QUICKSAND_FULL		},
-    { Xsand_stoneout_1,		EL_QUICKSAND_FULL		},
-    { Xsand_stoneout_2,		EL_QUICKSAND_FULL		},
-    { Xsand_sandstone_1,	EL_QUICKSAND_FULL		},
-    { Xsand_sandstone_2,	EL_QUICKSAND_FULL		},
-    { Xsand_sandstone_3,	EL_QUICKSAND_FULL		},
-    { Xsand_sandstone_4,	EL_QUICKSAND_FULL		},
-    { Xplant,			EL_EMC_PLANT			},
-    { Yplant,			EL_EMC_PLANT			},
-    { Xlenses,			EL_EMC_LENSES			},
-    { Xmagnify,			EL_EMC_MAGNIFIER		},
-    { Xdripper,			EL_UNKNOWN			},
-    { XdripperB,		EL_UNKNOWN			},
-    { Xfake_blank,		EL_INVISIBLE_WALL		},
-    { Xfake_blankB,		EL_INVISIBLE_WALL		},
-    { Xfake_grass,		EL_INVISIBLE_SAND		},
-    { Xfake_grassB,		EL_INVISIBLE_SAND		},
-    { Xfake_door_1,		EL_EM_GATE_1_GRAY		},
-    { Xfake_door_2,		EL_EM_GATE_2_GRAY		},
-    { Xfake_door_3,		EL_EM_GATE_3_GRAY		},
-    { Xfake_door_4,		EL_EM_GATE_4_GRAY		},
-    { Xfake_door_5,		EL_EMC_GATE_5_GRAY		},
-    { Xfake_door_6,		EL_EMC_GATE_6_GRAY		},
-    { Xfake_door_7,		EL_EMC_GATE_7_GRAY		},
-    { Xfake_door_8,		EL_EMC_GATE_8_GRAY		},
-    { Xsteel_1,			EL_STEELWALL			},
-    { Xsteel_2,			EL_UNKNOWN			},
-    { Xsteel_3,			EL_EMC_STEELWALL_1		},
-    { Xsteel_4,			EL_UNKNOWN			},
-    { Xwall_1,			EL_WALL				},
-    { Xwall_2,			EL_UNKNOWN			},
-    { Xwall_3,			EL_UNKNOWN			},
-    { Xwall_4,			EL_UNKNOWN			},
-    { Xround_wall_1,		EL_WALL_SLIPPERY		},
-    { Xround_wall_2,		EL_UNKNOWN			},
-    { Xround_wall_3,		EL_UNKNOWN			},
-    { Xround_wall_4,		EL_UNKNOWN			},
-    { Xdecor_1,			EL_UNKNOWN			},
-    { Xdecor_2,			EL_EMC_WALL_6			},
-    { Xdecor_3,			EL_EMC_WALL_4			},
-    { Xdecor_4,			EL_EMC_WALL_5			},
-    { Xdecor_5,			EL_EMC_WALL_7			},
-    { Xdecor_6,			EL_EMC_WALL_8			},
-    { Xdecor_7,			EL_UNKNOWN			},
-    { Xdecor_8,			EL_EMC_WALL_1			},
-    { Xdecor_9,			EL_EMC_WALL_2			},
-    { Xdecor_10,		EL_EMC_WALL_3			},
-    { Xdecor_11,		EL_UNKNOWN			},
-    { Xdecor_12,		EL_UNKNOWN			},
-    { Xalpha_0,			EL_CHAR('0')			},
-    { Xalpha_1,			EL_CHAR('1')			},
-    { Xalpha_2,			EL_CHAR('2')			},
-    { Xalpha_3,			EL_CHAR('3')			},
-    { Xalpha_4,			EL_CHAR('4')			},
-    { Xalpha_5,			EL_CHAR('5')			},
-    { Xalpha_6,			EL_CHAR('6')			},
-    { Xalpha_7,			EL_CHAR('7')			},
-    { Xalpha_8,			EL_CHAR('8')			},
-    { Xalpha_9,			EL_CHAR('9')			},
-    { Xalpha_excla,		EL_CHAR('!')			},
-    { Xalpha_quote,		EL_CHAR('"')			},
-    { Xalpha_comma,		EL_CHAR(',')			},
-    { Xalpha_minus,		EL_CHAR('-')			},
-    { Xalpha_perio,		EL_CHAR('.')			},
-    { Xalpha_colon,		EL_CHAR(':')			},
-    { Xalpha_quest,		EL_CHAR('?')			},
-    { Xalpha_a,			EL_CHAR('A')			},
-    { Xalpha_b,			EL_CHAR('B')			},
-    { Xalpha_c,			EL_CHAR('C')			},
-    { Xalpha_d,			EL_CHAR('D')			},
-    { Xalpha_e,			EL_CHAR('E')			},
-    { Xalpha_f,			EL_CHAR('F')			},
-    { Xalpha_g,			EL_CHAR('G')			},
-    { Xalpha_h,			EL_CHAR('H')			},
-    { Xalpha_i,			EL_CHAR('I')			},
-    { Xalpha_j,			EL_CHAR('J')			},
-    { Xalpha_k,			EL_CHAR('K')			},
-    { Xalpha_l,			EL_CHAR('L')			},
-    { Xalpha_m,			EL_CHAR('M')			},
-    { Xalpha_n,			EL_CHAR('N')			},
-    { Xalpha_o,			EL_CHAR('O')			},
-    { Xalpha_p,			EL_CHAR('P')			},
-    { Xalpha_q,			EL_CHAR('Q')			},
-    { Xalpha_r,			EL_CHAR('R')			},
-    { Xalpha_s,			EL_CHAR('S')			},
-    { Xalpha_t,			EL_CHAR('T')			},
-    { Xalpha_u,			EL_CHAR('U')			},
-    { Xalpha_v,			EL_CHAR('V')			},
-    { Xalpha_w,			EL_CHAR('W')			},
-    { Xalpha_x,			EL_CHAR('X')			},
-    { Xalpha_y,			EL_CHAR('Y')			},
-    { Xalpha_z,			EL_CHAR('Z')			},
-    { Xalpha_arrow_e,		EL_CHAR('>')			},
-    { Xalpha_arrow_w,		EL_CHAR('<')			},
-    { Xalpha_copyr,		EL_CHAR('©')			},
+    element_rnd = map_element_EM_to_RND(element_em);
 
-    { Zplayer,			EL_PLAYER_1			},
+    for (j = 0; j < level->num_android_clone_elements; j++)
+      if (level->android_clone_element[j] == element_rnd)
+	element_found = TRUE;
 
-    { ZBORDER,			EL_EMC_LEVEL_BORDER		},
+    if (!element_found)
+    {
+      level->android_clone_element[level->num_android_clone_elements++] =
+	element_rnd;
 
-    { -1,			-1				}
-  };
-
-  if (!mapping_initialized)
-  {
-    int i;
-
-    /* return "EL_UNKNOWN" for all undefined elements in mapping array */
-    for (i = 0; i < TILE_MAX; i++)
-      mapping_EM_to_RND[i] = EL_UNKNOWN;
-
-    for (i = 0; em_object_mapping_list[i].element_em != -1; i++)
-      mapping_EM_to_RND[em_object_mapping_list[i].element_em] =
-	em_object_mapping_list[i].element_rnd;
-
-    mapping_initialized = TRUE;
+      if (level->num_android_clone_elements == MAX_ANDROID_ELEMENTS)
+	break;
+    }
   }
 
-  if (element_em >= 0 && element_em < TILE_MAX)
-    return mapping_EM_to_RND[element_em];
-
-  Error(ERR_WARN, "invalid EM level element %d", element_em);
-
-  return EL_UNKNOWN;
+  if (level->num_android_clone_elements == 0)
+  {
+    level->num_android_clone_elements = 1;
+    level->android_clone_element[0] = EL_EMPTY;
+  }
 }
 
-#endif
+int map_direction_RND_to_EM(int direction)
+{
+  return (direction == MV_UP    ? 0 :
+	  direction == MV_RIGHT ? 1 :
+	  direction == MV_DOWN  ? 2 :
+	  direction == MV_LEFT  ? 3 :
+	  -1);
+}
+
+int map_direction_EM_to_RND(int direction)
+{
+  return (direction == 0 ? MV_UP    :
+	  direction == 1 ? MV_RIGHT :
+	  direction == 2 ? MV_DOWN  :
+	  direction == 3 ? MV_LEFT  :
+	  MV_NONE);
+}
 
 int get_next_element(int element)
 {
@@ -5591,10 +5118,10 @@ int el_act_dir2img(int element, int action, int direction)
 {
   element = GFX_ELEMENT(element);
 
-  if (direction == MV_NO_MOVING)
+  if (direction == MV_NONE)
     return element_info[element].graphic[action];
 
-  direction = MV_DIR_BIT(direction);
+  direction = MV_DIR_TO_BIT(direction);
 
   return element_info[element].direction_graphic[action][direction];
 }
@@ -5602,7 +5129,7 @@ int el_act_dir2img(int element, int action, int direction)
 int el_act_dir2img(int element, int action, int direction)
 {
   element = GFX_ELEMENT(element);
-  direction = MV_DIR_BIT(direction);	/* default: MV_NO_MOVING => MV_DOWN */
+  direction = MV_DIR_TO_BIT(direction);	/* default: MV_NONE => MV_DOWN */
 
   /* direction_graphic[][] == graphic[] for undefined direction graphics */
   return element_info[element].direction_graphic[action][direction];
@@ -5614,10 +5141,10 @@ static int el_act_dir2crm(int element, int action, int direction)
 {
   element = GFX_ELEMENT(element);
 
-  if (direction == MV_NO_MOVING)
+  if (direction == MV_NONE)
     return element_info[element].crumbled[action];
 
-  direction = MV_DIR_BIT(direction);
+  direction = MV_DIR_TO_BIT(direction);
 
   return element_info[element].direction_crumbled[action][direction];
 }
@@ -5625,7 +5152,7 @@ static int el_act_dir2crm(int element, int action, int direction)
 static int el_act_dir2crm(int element, int action, int direction)
 {
   element = GFX_ELEMENT(element);
-  direction = MV_DIR_BIT(direction);	/* default: MV_NO_MOVING => MV_DOWN */
+  direction = MV_DIR_TO_BIT(direction);	/* default: MV_NONE => MV_DOWN */
 
   /* direction_graphic[][] == graphic[] for undefined direction graphics */
   return element_info[element].direction_crumbled[action][direction];
@@ -5679,6 +5206,58 @@ int el2preimg(int element)
   return element_info[element].special_graphic[GFX_SPECIAL_ARG_PREVIEW];
 }
 
+int font2baseimg(int font_nr)
+{
+  return font_info[font_nr].special_graphic[GFX_SPECIAL_ARG_DEFAULT];
+}
+
+#if 0
+void setCenteredPlayerNr_EM(int centered_player_nr)
+{
+  game.centered_player_nr = game.centered_player_nr_next = centered_player_nr;
+}
+
+int getCenteredPlayerNr_EM()
+{
+#if 0
+  if (game.centered_player_nr_next >= 0 &&
+      !native_em_level.ply[game.centered_player_nr_next]->alive)
+    game.centered_player_nr_next = game.centered_player_nr;
+#endif
+
+  if (game.centered_player_nr != game.centered_player_nr_next)
+    game.centered_player_nr = game.centered_player_nr_next;
+
+  return game.centered_player_nr;
+}
+
+void setSetCenteredPlayer_EM(boolean set_centered_player)
+{
+  game.set_centered_player = set_centered_player;
+}
+
+boolean getSetCenteredPlayer_EM()
+{
+  return game.set_centered_player;
+}
+#endif
+
+int getNumActivePlayers_EM()
+{
+  int num_players = 0;
+  int i;
+
+  if (!tape.playing)
+    return -1;
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+    if (tape.player_participates[i])
+      num_players++;
+
+  return num_players;
+}
+
+#if 1
 int getGameFrameDelay_EM(int native_em_game_frame_delay)
 {
   int game_frame_delay_value;
@@ -5693,6 +5272,7 @@ int getGameFrameDelay_EM(int native_em_game_frame_delay)
 
   return game_frame_delay_value;
 }
+#endif
 
 unsigned int InitRND(long seed)
 {
@@ -5702,21 +5282,23 @@ unsigned int InitRND(long seed)
     return InitEngineRND(seed);
 }
 
-#define DEBUG_EM_GFX	0
-
 void InitGraphicInfo_EM(void)
 {
   struct Mapping_EM_to_RND_object object_mapping[TILE_MAX];
-  struct Mapping_EM_to_RND_player player_mapping[2][SPR_MAX];
+  struct Mapping_EM_to_RND_player player_mapping[MAX_PLAYERS][SPR_MAX];
   int i, j, p;
 
 #if DEBUG_EM_GFX
+  int num_em_gfx_errors = 0;
+
   if (graphic_info_em_object[0][0].bitmap == NULL)
   {
     /* EM graphics not yet initialized in em_open_all() */
 
     return;
   }
+
+  printf("::: [4 errors can be ignored (1 x 'bomb', 3 x 'em_dynamite']\n");
 #endif
 
   /* always start with reliable default values */
@@ -5725,17 +5307,17 @@ void InitGraphicInfo_EM(void)
     object_mapping[i].element_rnd = EL_UNKNOWN;
     object_mapping[i].is_backside = FALSE;
     object_mapping[i].action = ACTION_DEFAULT;
-    object_mapping[i].direction = MV_NO_MOVING;
+    object_mapping[i].direction = MV_NONE;
   }
 
   /* always start with reliable default values */
-  for (p = 0; p < 2; p++)
+  for (p = 0; p < MAX_PLAYERS; p++)
   {
     for (i = 0; i < SPR_MAX; i++)
     {
       player_mapping[p][i].element_rnd = EL_UNKNOWN;
       player_mapping[p][i].action = ACTION_DEFAULT;
-      player_mapping[p][i].direction = MV_NO_MOVING;
+      player_mapping[p][i].direction = MV_NONE;
     }
   }
 
@@ -5750,7 +5332,8 @@ void InitGraphicInfo_EM(void)
       object_mapping[e].action = em_object_mapping_list[i].action;
 
     if (em_object_mapping_list[i].direction != -1)
-      object_mapping[e].direction = (1 << em_object_mapping_list[i].direction);
+      object_mapping[e].direction =
+	MV_DIR_FROM_BIT(em_object_mapping_list[i].direction);
   }
 
   for (i = 0; em_player_mapping_list[i].action_em != -1; i++)
@@ -5765,7 +5348,7 @@ void InitGraphicInfo_EM(void)
 
     if (em_player_mapping_list[i].direction != -1)
       player_mapping[p][a].direction =
-	(1 << em_player_mapping_list[i].direction);
+	MV_DIR_FROM_BIT(em_player_mapping_list[i].direction);
   }
 
   for (i = 0; i < TILE_MAX; i++)
@@ -5809,12 +5392,12 @@ void InitGraphicInfo_EM(void)
 			       i == Ymagnify_eat ? element :
 			       i == Ygrass_eat ? element :
 			       i == Ydirt_eat ? element :
-			       i == Yspring_kill_e ? EL_SPRING :
-			       i == Yspring_kill_w ? EL_SPRING :
 			       i == Yemerald_stone ? EL_EMERALD :
 			       i == Ydiamond_stone ? EL_ROCK :
-			       i == Xsand_stonein_4 ? EL_EMPTY :
-			       i == Xsand_stoneout_2 ? EL_ROCK :
+			       i == Xsand_stonein_1 ? element :
+			       i == Xsand_stonein_2 ? element :
+			       i == Xsand_stonein_3 ? element :
+			       i == Xsand_stonein_4 ? element :
 			       is_backside ? EL_EMPTY :
 			       action_removing ? EL_EMPTY :
 			       element);
@@ -5856,6 +5439,7 @@ void InitGraphicInfo_EM(void)
 				     direction));
       int base_graphic = el_act2img(effective_element, ACTION_DEFAULT);
       int base_crumbled = el_act2crm(effective_element, ACTION_DEFAULT);
+      boolean has_action_graphics = (graphic != base_graphic);
       boolean has_crumbled_graphics = (base_crumbled != base_graphic);
       struct GraphicInfo *g = &graphic_info[graphic];
       struct GraphicInfo_EM *g_em = &graphic_info_em_object[i][7 - j];
@@ -5912,9 +5496,9 @@ void InitGraphicInfo_EM(void)
 			i == Xexit_2 ? j + 8 :
 			i == Xexit_3 ? j + 16 :
 			i == Xdynamite_1 ? 0 :
-			i == Xdynamite_2 ? 20 :
-			i == Xdynamite_3 ? 40 :
-			i == Xdynamite_4 ? 60 :
+			i == Xdynamite_2 ? 8 :
+			i == Xdynamite_3 ? 16 :
+			i == Xdynamite_4 ? 24 :
 			i == Xsand_stonein_1 ? j + 1 :
 			i == Xsand_stonein_2 ? j + 9 :
 			i == Xsand_stonein_3 ? j + 17 :
@@ -5984,7 +5568,6 @@ void InitGraphicInfo_EM(void)
       getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x, &src_y,
 			  g->double_movement && is_backside);
 
-#if 1
       g_em->bitmap = src_bitmap;
       g_em->src_x = src_x;
       g_em->src_y = src_y;
@@ -6002,13 +5585,6 @@ void InitGraphicInfo_EM(void)
 
       g_em->has_crumbled_graphics = FALSE;
       g_em->preserve_background = FALSE;
-#endif
-
-#if 0
-      if (effective_element == EL_EMC_GRASS &&
-	  effective_action == ACTION_DIGGING)
-	printf("::: %d\n", crumbled);
-#endif
 
 #if 0
       if (has_crumbled_graphics && crumbled == IMG_EMPTY_SPACE)
@@ -6031,23 +5607,43 @@ void InitGraphicInfo_EM(void)
 	g_em->crumbled_border_size = graphic_info[crumbled].border_size;
       }
 
-#if 1
-      if (!g->double_movement && (effective_action == ACTION_FALLING ||
-				  effective_action == ACTION_MOVING ||
-				  effective_action == ACTION_PUSHING))
+#if 0
+      if (element == EL_ROCK &&
+	  effective_action == ACTION_FILLING)
+	printf("::: has_action_graphics == %d\n", has_action_graphics);
+#endif
+
+      if ((!g->double_movement && (effective_action == ACTION_FALLING ||
+				   effective_action == ACTION_MOVING  ||
+				   effective_action == ACTION_PUSHING ||
+				   effective_action == ACTION_EATING)) ||
+	  (!has_action_graphics && (effective_action == ACTION_FILLING ||
+				    effective_action == ACTION_EMPTYING)))
       {
 	int move_dir =
-	  (effective_action == ACTION_FALLING ? MV_DOWN : direction);
+	  (effective_action == ACTION_FALLING ||
+	   effective_action == ACTION_FILLING ||
+	   effective_action == ACTION_EMPTYING ? MV_DOWN : direction);
 	int dx = (move_dir == MV_LEFT ? -1 : move_dir == MV_RIGHT ? 1 : 0);
 	int dy = (move_dir == MV_UP   ? -1 : move_dir == MV_DOWN  ? 1 : 0);
-	int num_steps = (i == Ydrip_s1 ||
-			 i == Ydrip_s1B ||
-			 i == Ydrip_s2 ||
-			 i == Ydrip_s2B ? 16 : 8);
+	int num_steps = (i == Ydrip_s1  ? 16 :
+			 i == Ydrip_s1B ? 16 :
+			 i == Ydrip_s2  ? 16 :
+			 i == Ydrip_s2B ? 16 :
+			 i == Xsand_stonein_1 ? 32 :
+			 i == Xsand_stonein_2 ? 32 :
+			 i == Xsand_stonein_3 ? 32 :
+			 i == Xsand_stonein_4 ? 32 :
+			 i == Xsand_stoneout_1 ? 16 :
+			 i == Xsand_stoneout_2 ? 16 : 8);
 	int cx = ABS(dx) * (TILEX / num_steps);
 	int cy = ABS(dy) * (TILEY / num_steps);
-	int step_frame = (i == Ydrip_s2 ||
-			  i == Ydrip_s2B ? j + 8 : j) + 1;
+	int step_frame = (i == Ydrip_s2         ? j + 8 :
+			  i == Ydrip_s2B        ? j + 8 :
+			  i == Xsand_stonein_2  ? j + 8 :
+			  i == Xsand_stonein_3  ? j + 16 :
+			  i == Xsand_stonein_4  ? j + 24 :
+			  i == Xsand_stoneout_2 ? j + 8 : j) + 1;
 	int step = (is_backside ? step_frame : num_steps - step_frame);
 
 	if (is_backside)	/* tile where movement starts */
@@ -6081,77 +5677,15 @@ void InitGraphicInfo_EM(void)
 	g_em->height = TILEY - cy * step;
       }
 
-#if 0
-      if (effective_action == ACTION_SMASHED_BY_ROCK &&
-	  element_info[effective_element].graphic[effective_action] ==
-	  element_info[effective_element].graphic[ACTION_DEFAULT])
-      {
-	int move_dir = MV_DOWN;
-	int dx = (move_dir == MV_LEFT ? -1 : move_dir == MV_RIGHT ? 1 : 0);
-	int dy = (move_dir == MV_UP   ? -1 : move_dir == MV_DOWN  ? 1 : 0);
-	int num_steps = 8;
-	int cx = ABS(dx) * (TILEX / num_steps);
-	int cy = ABS(dy) * (TILEY / num_steps);
-	int step_frame = j + 1;
-	int step = (is_backside ? step_frame : num_steps - step_frame);
-
-	graphic = (el_act_dir2img(EL_ROCK, ACTION_FALLING, MV_DOWN));
-	g = &graphic_info[graphic];
-	sync_frame = j;
-	frame = getAnimationFrame(g->anim_frames,
-				  g->anim_delay,
-				  g->anim_mode,
-				  g->anim_start_frame,
-				  sync_frame);
-	getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x, &src_y,
-			    g->double_movement && is_backside);
-
-	g_em->bitmap = src_bitmap;
-	g_em->src_x = src_x;
-	g_em->src_y = src_y;
-	g_em->src_offset_x = 0;
-	g_em->src_offset_y = 0;
-	g_em->dst_offset_x = 0;
-	g_em->dst_offset_y = 0;
-
-	if (is_backside)	/* tile where movement starts */
-	{
-	  if (dx < 0 || dy < 0)
-	  {
-	    g_em->src_offset_x = cx * step;
-	    g_em->src_offset_y = cy * step;
-	  }
-	  else
-	  {
-	    g_em->dst_offset_x = cx * step;
-	    g_em->dst_offset_y = cy * step;
-	  }
-	}
-	else			/* tile where movement ends */
-	{
-	  if (dx < 0 || dy < 0)
-	  {
-	    g_em->dst_offset_x = cx * step;
-	    g_em->dst_offset_y = cy * step;
-	  }
-	  else
-	  {
-	    g_em->src_offset_x = cx * step;
-	    g_em->src_offset_y = cy * step;
-	  }
-	}
-
-	g_em->width  = TILEX - cx * step;
-	g_em->height = TILEY - cy * step;
-
-#if 0
-	printf("::: -> '%s'\n", element_info[effective_element].token_name);
-#endif
-      }
-#endif
-
-#endif
-
+#if 1
+      /* create unique graphic identifier to decide if tile must be redrawn */
+      /* bit 31 - 16 (16 bit): EM style graphic
+	 bit 15 - 12 ( 4 bit): EM style frame
+	 bit 11 -  6 ( 6 bit): graphic width
+	 bit  5 -  0 ( 6 bit): graphic height */
+      g_em->unique_identifier =
+	(graphic << 16) | (frame << 12) | (g_em->width << 6) | g_em->height;
+#else
       /* create unique graphic identifier to decide if tile must be redrawn */
       /* bit 31 - 16 (16 bit): EM style element
 	 bit 15 - 12 ( 4 bit): EM style frame
@@ -6159,8 +5693,22 @@ void InitGraphicInfo_EM(void)
 	 bit  5 -  0 ( 6 bit): graphic height */
       g_em->unique_identifier =
 	(i << 16) | (j << 12) | (g_em->width << 6) | g_em->height;
+#endif
+
+#if 0
+      if (effective_element == EL_ROCK)
+	printf("::: EL_ROCK(%d, %d): %d, %d => %d\n",
+	       effective_action, j, graphic, frame, g_em->unique_identifier);
+#endif
 
 #if DEBUG_EM_GFX
+
+#if 1
+      /* skip check for EMC elements not contained in original EMC artwork */
+      if (element == EL_EMC_FAKE_ACID)
+	continue;
+#endif
+
       if (g_em->bitmap != debug_bitmap ||
 	  g_em->src_x != debug_src_x ||
 	  g_em->src_y != debug_src_y ||
@@ -6217,27 +5765,44 @@ void InitGraphicInfo_EM(void)
 	  printf("    %d (%d): size %d,%d should be %d,%d\n",
 		 j, is_backside,
 		 g_em->width, g_em->height, TILEX, TILEY);
+
+	num_em_gfx_errors++;
       }
 #endif
 
     }
   }
 
-#if 1
   for (i = 0; i < TILE_MAX; i++)
   {
     for (j = 0; j < 8; j++)
     {
       int element = object_mapping[i].element_rnd;
       int action = object_mapping[i].action;
+      int direction = object_mapping[i].direction;
+      boolean is_backside = object_mapping[i].is_backside;
+#if 1
+      int graphic_action  = el_act_dir2img(element, action, direction);
+      int graphic_default = el_act_dir2img(element, ACTION_DEFAULT, direction);
+#else
+      int graphic_action  = element_info[element].graphic[action];
+      int graphic_default = element_info[element].graphic[ACTION_DEFAULT];
+#endif
 
-      if (action == ACTION_SMASHED_BY_ROCK &&
-	  element_info[element].graphic[action] ==
-	  element_info[element].graphic[ACTION_DEFAULT])
+      if ((action == ACTION_SMASHED_BY_ROCK ||
+	   action == ACTION_SMASHED_BY_SPRING ||
+	   action == ACTION_EATING) &&
+	  graphic_action == graphic_default)
       {
+	int e = (action == ACTION_SMASHED_BY_ROCK   ? Ystone_s  :
+		 action == ACTION_SMASHED_BY_SPRING ? Yspring_s :
+		 direction == MV_LEFT  ? (is_backside? Yspring_wB: Yspring_w) :
+		 direction == MV_RIGHT ? (is_backside? Yspring_eB: Yspring_e) :
+		 Xspring);
+
 	/* no separate animation for "smashed by rock" -- use rock instead */
 	struct GraphicInfo_EM *g_em = &graphic_info_em_object[i][7 - j];
-	struct GraphicInfo_EM *g_xx = &graphic_info_em_object[Ystone_s][7 - j];
+	struct GraphicInfo_EM *g_xx = &graphic_info_em_object[e][7 - j];
 
 	g_em->bitmap		= g_xx->bitmap;
 	g_em->src_x		= g_xx->src_x;
@@ -6248,14 +5813,17 @@ void InitGraphicInfo_EM(void)
 	g_em->dst_offset_y	= g_xx->dst_offset_y;
 	g_em->width 		= g_xx->width;
 	g_em->height		= g_xx->height;
+#if 1
+	g_em->unique_identifier	= g_xx->unique_identifier;
+#endif
 
-	g_em->preserve_background = TRUE;
+	if (!is_backside)
+	  g_em->preserve_background = TRUE;
       }
     }
   }
-#endif
 
-  for (p = 0; p < 2; p++)
+  for (p = 0; p < MAX_PLAYERS; p++)
   {
     for (i = 0; i < SPR_MAX; i++)
     {
@@ -6267,7 +5835,7 @@ void InitGraphicInfo_EM(void)
       {
 	int effective_element = element;
 	int effective_action = action;
-	int graphic = (direction == MV_NO_MOVING ?
+	int graphic = (direction == MV_NONE ?
 		       el_act2img(effective_element, effective_action) :
 		       el_act_dir2img(effective_element, effective_action,
 				      direction));
@@ -6291,7 +5859,6 @@ void InitGraphicInfo_EM(void)
 
 	getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x,&src_y, FALSE);
 
-#if 1
 	g_em->bitmap = src_bitmap;
 	g_em->src_x = src_x;
 	g_em->src_y = src_y;
@@ -6301,9 +5868,16 @@ void InitGraphicInfo_EM(void)
 	g_em->dst_offset_y = 0;
 	g_em->width  = TILEX;
 	g_em->height = TILEY;
-#endif
 
 #if DEBUG_EM_GFX
+
+#if 1
+	/* skip check for EMC elements not contained in original EMC artwork */
+	if (element == EL_PLAYER_3 ||
+	    element == EL_PLAYER_4)
+	  continue;
+#endif
+
 	if (g_em->bitmap != debug_bitmap ||
 	    g_em->src_x != debug_src_x ||
 	    g_em->src_y != debug_src_y)
@@ -6339,6 +5913,8 @@ void InitGraphicInfo_EM(void)
 		   g_em->src_x / 32, g_em->src_y / 32,
 		   debug_src_x, debug_src_y,
 		   debug_src_x / 32, debug_src_y / 32);
+
+	  num_em_gfx_errors++;
 	}
 #endif
 
@@ -6347,6 +5923,66 @@ void InitGraphicInfo_EM(void)
   }
 
 #if DEBUG_EM_GFX
+  printf("\n");
+  printf("::: [%d errors found]\n", num_em_gfx_errors);
+
   exit(0);
 #endif
+}
+
+void PlayMenuSound()
+{
+  int sound = menu.sound[game_status];
+
+  if (sound == SND_UNDEFINED)
+    return;
+
+  if ((!setup.sound_simple && !IS_LOOP_SOUND(sound)) ||
+      (!setup.sound_loops && IS_LOOP_SOUND(sound)))
+    return;
+
+  if (IS_LOOP_SOUND(sound))
+    PlaySoundLoop(sound);
+  else
+    PlaySound(sound);
+}
+
+void PlayMenuSoundStereo(int sound, int stereo_position)
+{
+  if (sound == SND_UNDEFINED)
+    return;
+
+  if ((!setup.sound_simple && !IS_LOOP_SOUND(sound)) ||
+      (!setup.sound_loops && IS_LOOP_SOUND(sound)))
+    return;
+
+  if (IS_LOOP_SOUND(sound))
+    PlaySoundExt(sound, SOUND_MAX_VOLUME, stereo_position, SND_CTRL_PLAY_LOOP);
+  else
+    PlaySoundStereo(sound, stereo_position);
+}
+
+void PlayMenuSoundIfLoop()
+{
+  int sound = menu.sound[game_status];
+
+  if (sound == SND_UNDEFINED)
+    return;
+
+  if ((!setup.sound_simple && !IS_LOOP_SOUND(sound)) ||
+      (!setup.sound_loops && IS_LOOP_SOUND(sound)))
+    return;
+
+  if (IS_LOOP_SOUND(sound))
+    PlaySoundLoop(sound);
+}
+
+void PlayMenuMusic()
+{
+  int music = menu.music[game_status];
+
+  if (music == MUS_UNDEFINED)
+    return;
+
+  PlayMusic(music);
 }

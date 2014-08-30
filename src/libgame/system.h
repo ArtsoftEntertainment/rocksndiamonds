@@ -34,83 +34,104 @@
 
 
 /* the additional 'b' is needed for Win32 to open files in binary mode */
-#define MODE_READ		"rb"
-#define MODE_WRITE		"wb"
-#define MODE_APPEND		"ab"
+#define MODE_READ			"rb"
+#define MODE_WRITE			"wb"
+#define MODE_APPEND			"ab"
 
-#define DEFAULT_DEPTH		0
+#define DEFAULT_DEPTH			0
 
-#define BLIT_OPAQUE		0
-#define BLIT_MASKED		1
-#define BLIT_INVERSE		2
-#define BLIT_ON_BACKGROUND	3
+#define BLIT_OPAQUE			0
+#define BLIT_MASKED			1
+#define BLIT_INVERSE			2
+#define BLIT_ON_BACKGROUND		3
 
-#define FULLSCREEN_NOT_AVAILABLE FALSE
-#define FULLSCREEN_AVAILABLE	 TRUE
+#define FULLSCREEN_NOT_AVAILABLE	FALSE
+#define FULLSCREEN_AVAILABLE		TRUE
 
 /* default input keys */
-#define DEFAULT_KEY_LEFT	KSYM_Left
-#define DEFAULT_KEY_RIGHT	KSYM_Right
-#define DEFAULT_KEY_UP		KSYM_Up
-#define DEFAULT_KEY_DOWN	KSYM_Down
+#define DEFAULT_KEY_LEFT		KSYM_Left
+#define DEFAULT_KEY_RIGHT		KSYM_Right
+#define DEFAULT_KEY_UP			KSYM_Up
+#define DEFAULT_KEY_DOWN		KSYM_Down
 #if defined(PLATFORM_MACOSX)
-#define DEFAULT_KEY_SNAP	KSYM_Control_L
-#define DEFAULT_KEY_DROP	KSYM_KP_Enter
+#define DEFAULT_KEY_SNAP		KSYM_Control_L
+#define DEFAULT_KEY_DROP		KSYM_KP_Enter
 #else
-#define DEFAULT_KEY_SNAP	KSYM_Control_L
-#define DEFAULT_KEY_DROP	KSYM_Control_R
+#define DEFAULT_KEY_SNAP		KSYM_Control_L
+#define DEFAULT_KEY_DROP		KSYM_Control_R
 #endif
-#define DEFAULT_KEY_OKAY	KSYM_Return
-#define DEFAULT_KEY_CANCEL	KSYM_Escape
+#define DEFAULT_KEY_OKAY		KSYM_Return
+#define DEFAULT_KEY_CANCEL		KSYM_Escape
 
 /* default shortcut keys */
-#define DEFAULT_KEY_SAVE_GAME	KSYM_F1
-#define DEFAULT_KEY_LOAD_GAME	KSYM_F2
-#define DEFAULT_KEY_TOGGLE_PAUSE KSYM_space
+#define DEFAULT_KEY_SAVE_GAME		KSYM_F1
+#define DEFAULT_KEY_LOAD_GAME		KSYM_F2
+#define DEFAULT_KEY_TOGGLE_PAUSE	KSYM_space
+#define DEFAULT_KEY_FOCUS_PLAYER_1	KSYM_F5
+#define DEFAULT_KEY_FOCUS_PLAYER_2	KSYM_F6
+#define DEFAULT_KEY_FOCUS_PLAYER_3	KSYM_F7
+#define DEFAULT_KEY_FOCUS_PLAYER_4	KSYM_F8
+#define DEFAULT_KEY_FOCUS_PLAYER_ALL	KSYM_F9
 
 /* values for key_status */
-#define KEY_NOT_PRESSED		FALSE
-#define KEY_RELEASED		FALSE
-#define KEY_PRESSED		TRUE
+#define KEY_NOT_PRESSED			FALSE
+#define KEY_RELEASED			FALSE
+#define KEY_PRESSED			TRUE
 
 /* values for button status */
-#define MB_NOT_PRESSED		FALSE
-#define MB_NOT_RELEASED		TRUE
-#define MB_RELEASED		FALSE
-#define MB_PRESSED		TRUE
-#define MB_MENU_CHOICE		FALSE
-#define MB_MENU_MARK		TRUE
-#define MB_MENU_INITIALIZE	(-1)
-#define MB_MENU_LEAVE		(-2)
-#define MB_LEFTBUTTON		1
-#define MB_MIDDLEBUTTON		2
-#define MB_RIGHTBUTTON		3
+#define MB_NOT_PRESSED			FALSE
+#define MB_NOT_RELEASED			TRUE
+#define MB_RELEASED			FALSE
+#define MB_PRESSED			TRUE
+#define MB_MENU_CHOICE			FALSE
+#define MB_MENU_MARK			TRUE
+#define MB_MENU_INITIALIZE		(-1)
+#define MB_MENU_LEAVE			(-2)
+#define MB_LEFTBUTTON			1
+#define MB_MIDDLEBUTTON			2
+#define MB_RIGHTBUTTON			3
 
 
 /* values for move directions */
-#define MV_BIT_LEFT		0
-#define MV_BIT_RIGHT		1
-#define MV_BIT_UP		2
-#define MV_BIT_DOWN	       	3
+#define MV_BIT_LEFT			0
+#define MV_BIT_RIGHT			1
+#define MV_BIT_UP			2
+#define MV_BIT_DOWN	       		3
 
-#define NUM_DIRECTIONS		4
+#define NUM_DIRECTIONS			4
+
+/* diagonal movement directions are used in a different contect than buttons */
+#define MV_BIT_UPLEFT			4
+#define MV_BIT_UPRIGHT			5
+#define MV_BIT_DOWNLEFT			6
+#define MV_BIT_DOWNRIGHT		7
+
+#define NUM_DIRECTIONS_FULL		8
 
 /* values for special "button" bitmasks */
-#define BUTTON_1		4
-#define BUTTON_2		5
+#define BUTTON_1			4
+#define BUTTON_2			5
+
+/* values for special "focus player" bitmasks */
+#define BIT_SET_FOCUS			6
 
 /* values for move directions and special "button" key bitmasks */
-#define MV_NO_MOVING		0
+#define MV_NONE			0
 #define MV_LEFT			(1 << MV_BIT_LEFT)
 #define MV_RIGHT		(1 << MV_BIT_RIGHT)
 #define MV_UP			(1 << MV_BIT_UP)
 #define MV_DOWN	       		(1 << MV_BIT_DOWN)
 
+#define MV_UPLEFT		(MV_UP   | MV_LEFT)
+#define MV_UPRIGHT		(MV_UP   | MV_RIGHT)
+#define MV_DOWNLEFT		(MV_DOWN | MV_LEFT)
+#define MV_DOWNRIGHT		(MV_DOWN | MV_RIGHT)
+
 #define MV_HORIZONTAL		(MV_LEFT | MV_RIGHT)
 #define MV_VERTICAL		(MV_UP   | MV_DOWN)
 #define MV_ALL_DIRECTIONS	(MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)
 #define MV_ANY_DIRECTION	(MV_ALL_DIRECTIONS)
-#define MV_NO_DIRECTIONS	(MV_NO_MOVING)
+#define MV_NO_DIRECTION		(MV_NONE)
 
 #define KEY_BUTTON_1		(1 << BUTTON_1)
 #define KEY_BUTTON_2		(1 << BUTTON_2)
@@ -118,15 +139,34 @@
 #define KEY_BUTTON		(KEY_BUTTON_1 | KEY_BUTTON_2)
 #define KEY_ACTION		(KEY_MOTION | KEY_BUTTON)
 
-#define MV_DIR_BIT(x)		((x) == MV_LEFT  ? MV_BIT_LEFT  :	\
-				 (x) == MV_RIGHT ? MV_BIT_RIGHT :	\
-				 (x) == MV_UP    ? MV_BIT_UP    : MV_BIT_DOWN)
+#define KEY_SET_FOCUS		(1 << BIT_SET_FOCUS)
 
-#define MV_DIR_OPPOSITE(x)	((x) == MV_LEFT  ? MV_RIGHT :		\
-				 (x) == MV_RIGHT ? MV_LEFT  :		\
-				 (x) == MV_UP    ? MV_DOWN  :		\
-				 (x) == MV_DOWN  ? MV_UP    : MV_NO_MOVING)
+#define MV_DIR_FROM_BIT(x)	((x) < NUM_DIRECTIONS ? 1 << (x) :	  \
+				 (x) == MV_BIT_UPLEFT    ? MV_UPLEFT    : \
+				 (x) == MV_BIT_UPRIGHT   ? MV_UPRIGHT   : \
+				 (x) == MV_BIT_DOWNLEFT  ? MV_DOWNLEFT  : \
+				 (x) == MV_BIT_DOWNRIGHT ? MV_DOWNRIGHT : \
+				 MV_NONE)
 
+#define MV_DIR_TO_BIT(x)	((x) == MV_LEFT      ? MV_BIT_LEFT      : \
+				 (x) == MV_RIGHT     ? MV_BIT_RIGHT     : \
+				 (x) == MV_UP        ? MV_BIT_UP        : \
+				 (x) == MV_DOWN      ? MV_BIT_DOWN      : \
+				 (x) == MV_UPLEFT    ? MV_BIT_UPLEFT    : \
+				 (x) == MV_UPRIGHT   ? MV_BIT_UPRIGHT   : \
+				 (x) == MV_DOWNLEFT  ? MV_BIT_DOWNLEFT  : \
+				 (x) == MV_DOWNRIGHT ? MV_BIT_DOWNRIGHT : \
+				 MV_BIT_DOWN)
+
+#define MV_DIR_OPPOSITE(x)	((x) == MV_LEFT      ? MV_RIGHT     : \
+				 (x) == MV_RIGHT     ? MV_LEFT      : \
+				 (x) == MV_UP        ? MV_DOWN      : \
+				 (x) == MV_DOWN      ? MV_UP        : \
+				 (x) == MV_UPLEFT    ? MV_DOWNRIGHT : \
+				 (x) == MV_UPRIGHT   ? MV_DOWNLEFT  : \
+				 (x) == MV_DOWNLEFT  ? MV_UPRIGHT   : \
+				 (x) == MV_DOWNRIGHT ? MV_UPLEFT    : \
+				 MV_NONE)
 
 /* values for animation mode (frame order and direction) */
 #define ANIM_NONE		0
@@ -135,11 +175,16 @@
 #define ANIM_PINGPONG		(1 << 2)
 #define ANIM_PINGPONG2		(1 << 3)
 #define ANIM_RANDOM		(1 << 4)
-#define ANIM_REVERSE		(1 << 5)
+#define ANIM_CE_VALUE		(1 << 5)
+#define ANIM_CE_SCORE		(1 << 6)
+#define ANIM_CE_DELAY		(1 << 7)
+#define ANIM_REVERSE		(1 << 8)
+#define ANIM_OPAQUE_PLAYER	(1 << 9)
 
 /* values for special (non game element) animation modes */
-#define ANIM_HORIZONTAL		(1 << 6)
-#define ANIM_VERTICAL		(1 << 7)
+#define ANIM_HORIZONTAL		(1 << 10)
+#define ANIM_VERTICAL		(1 << 11)
+#define ANIM_STATIC_PANEL	(1 << 12)
 
 #define ANIM_DEFAULT		ANIM_LOOP
 
@@ -168,6 +213,10 @@
 #define REDRAW_FPS		(1 << 11)
 #define REDRAWTILES_THRESHOLD	(SCR_FIELDX * SCR_FIELDY / 2)
 
+#define FADE_MODE_FADE_IN	0
+#define FADE_MODE_FADE_OUT	1
+#define FADE_MODE_CROSSFADE	2
+
 #define IN_GFX_SCREEN(x, y)	(x >= gfx.sx && x < gfx.sx + gfx.sxsize && \
 				 y >= gfx.sy && y < gfx.sy + gfx.sysize)
 #define IN_GFX_DOOR(x, y)	(x >= gfx.dx && x < gfx.dx + gfx.dxsize && \
@@ -179,6 +228,15 @@
 #define CURSOR_DEFAULT		0
 #define CURSOR_PLAYFIELD	1
 
+/* fundamental game speed values */
+#define ONE_SECOND_DELAY	1000	/* delay value for one second */
+#define GAME_FRAME_DELAY	20	/* frame delay in milliseconds */
+#define FFWD_FRAME_DELAY	10	/* 200% speed for fast forward */
+#define FRAMES_PER_SECOND	(ONE_SECOND_DELAY / GAME_FRAME_DELAY)
+
+/* maximum playfield size supported by libgame functions */
+#define MAX_PLAYFIELD_WIDTH	128
+#define MAX_PLAYFIELD_HEIGHT	128
 
 /* maximum number of parallel players supported by libgame functions */
 #define MAX_PLAYERS		4
@@ -248,6 +306,7 @@
 #define SETUP_FILENAME		"setup.conf"
 #define LEVELSETUP_FILENAME	"levelsetup.conf"
 #define EDITORSETUP_FILENAME	"editorsetup.conf"
+#define EDITORCASCADE_FILENAME	"editorcascade.conf"
 #define HELPANIM_FILENAME	"helpanim.conf"
 #define HELPTEXT_FILENAME	"helptext.conf"
 #define LEVELINFO_FILENAME	"levelinfo.conf"
@@ -262,6 +321,7 @@
 #define SETUP_FILENAME		"setup.cnf"
 #define LEVELSETUP_FILENAME	"lvlsetup.cnf"
 #define EDITORSETUP_FILENAME	"edsetup.cnf"
+#define EDITORCASCADE_FILENAME	"edcascad.conf"
 #define HELPANIM_FILENAME	"helpanim.cnf"
 #define HELPTEXT_FILENAME	"helptext.cnf"
 #define LEVELINFO_FILENAME	"lvlinfo.cnf"
@@ -381,9 +441,9 @@
 
 #define ARTWORK_FIRST_NODE(artwork, type)				\
 				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 (artwork).gfx_first :	\
+				 (artwork).gfx_first :			\
 				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 (artwork).snd_first :	\
+				 (artwork).snd_first :			\
 				 (artwork).mus_first)
 
 #define ARTWORK_CURRENT_IDENTIFIER_PTR(artwork, type)			\
@@ -506,9 +566,13 @@ struct AudioSystemInfo
 struct FontBitmapInfo
 {
   Bitmap *bitmap;
+
   int src_x, src_y;		/* start position of animation frames */
   int width, height;		/* width/height of each animation frame */
-  int draw_x, draw_y;		/* offset for drawing font characters */
+
+  int draw_xoffset;		/* offset for drawing font characters */
+  int draw_yoffset;		/* offset for drawing font characters */
+
   int num_chars;
   int num_chars_per_line;
 
@@ -586,10 +650,33 @@ struct SetupEditorInfo
   boolean el_dx_boulderdash;
   boolean el_chars;
   boolean el_custom;
-  boolean el_custom_more;
   boolean el_user_defined;
+  boolean el_dynamic;
 
   boolean el_headlines;
+
+  boolean el_by_game;
+  boolean el_by_type;
+
+  boolean show_element_token;
+};
+
+struct SetupEditorCascadeInfo
+{
+  boolean el_bd;
+  boolean el_em;
+  boolean el_emc;
+  boolean el_rnd;
+  boolean el_sb;
+  boolean el_sp;
+  boolean el_dc;
+  boolean el_dx;
+  boolean el_chars;
+  boolean el_ce;
+  boolean el_ge;
+  boolean el_ref;
+  boolean el_user;
+  boolean el_dynamic;
 };
 
 struct SetupShortcutInfo
@@ -597,6 +684,9 @@ struct SetupShortcutInfo
   Key save_game;
   Key load_game;
   Key toggle_pause;
+
+  Key focus_player[MAX_PLAYERS];
+  Key focus_player_all;
 };
 
 struct SetupSystemInfo
@@ -620,6 +710,7 @@ struct SetupInfo
   boolean soft_scrolling;
   boolean fading;
   boolean autorecord;
+  boolean show_titlescreen;
   boolean quick_doors;
   boolean team_mode;
   boolean handicap;
@@ -627,6 +718,10 @@ struct SetupInfo
   boolean time_limit;
   boolean fullscreen;
   boolean ask_on_escape;
+  boolean ask_on_escape_editor;
+  boolean quick_switch;
+  boolean input_on_focus;
+  boolean prefer_aga_graphics;
 
   char *graphics_set;
   char *sounds_set;
@@ -636,6 +731,7 @@ struct SetupInfo
   boolean override_level_music;
 
   struct SetupEditorInfo editor;
+  struct SetupEditorCascadeInfo editor_cascade;
   struct SetupShortcutInfo shortcut;
   struct SetupInputInfo input[MAX_PLAYERS];
   struct SetupSystemInfo system;
@@ -666,6 +762,8 @@ struct TreeInfo
   char *imported_from;	/* optional comment for imported levels or artwork */
   char *imported_by;	/* optional comment for imported levels or artwork */
 
+  char *graphics_set_ecs; /* special EMC custom graphics set (ECS graphics) */
+  char *graphics_set_aga; /* special EMC custom graphics set (AGA graphics) */
   char *graphics_set;	/* optional custom graphics set (level tree only) */
   char *sounds_set;	/* optional custom sounds set (level tree only) */
   char *music_set;	/* optional custom music set (level tree only) */
@@ -832,6 +930,7 @@ extern struct ArtworkInfo	artwork;
 extern struct JoystickInfo	joystick;
 extern struct SetupInfo		setup;
 
+extern LevelDirTree	       *leveldir_first_all;
 extern LevelDirTree	       *leveldir_first;
 extern LevelDirTree	       *leveldir_current;
 extern int			level_nr;
@@ -872,35 +971,36 @@ void SetDrawBackgroundMask(int);
 void SetMainBackgroundBitmap(Bitmap *);
 void SetDoorBackgroundBitmap(Bitmap *);
 
-inline void InitVideoDisplay(void);
-inline void CloseVideoDisplay(void);
-inline void InitVideoBuffer(DrawBuffer **,DrawWindow **, int,int,int, boolean);
-inline Bitmap *CreateBitmapStruct(void);
-inline Bitmap *CreateBitmap(int, int, int);
-inline void FreeBitmap(Bitmap *);
-inline void BlitBitmap(Bitmap *, Bitmap *, int, int, int, int, int, int);
-inline void FillRectangle(Bitmap *, int, int, int, int, Pixel);
-inline void ClearRectangle(Bitmap *, int, int, int, int);
-inline void ClearRectangleOnBackground(Bitmap *, int, int, int, int);
-inline void SetClipMask(Bitmap *, GC, Pixmap);
-inline void SetClipOrigin(Bitmap *, GC, int, int);
-inline void BlitBitmapMasked(Bitmap *, Bitmap *, int, int, int, int, int, int);
-inline boolean DrawingOnBackground(int, int);
-inline void BlitBitmapOnBackground(Bitmap *, Bitmap *, int, int, int, int, int,
-				   int);
-inline void DrawSimpleWhiteLine(Bitmap *, int, int, int, int);
-inline void DrawLines(Bitmap *, struct XY *, int, Pixel);
-inline Pixel GetPixel(Bitmap *, int, int);
-inline Pixel GetPixelFromRGB(Bitmap *, unsigned int,unsigned int,unsigned int);
-inline Pixel GetPixelFromRGBcompact(Bitmap *, unsigned int);
+void InitVideoDisplay(void);
+void CloseVideoDisplay(void);
+void InitVideoBuffer(DrawBuffer **,DrawWindow **, int,int,int, boolean);
+Bitmap *CreateBitmapStruct(void);
+Bitmap *CreateBitmap(int, int, int);
+void FreeBitmap(Bitmap *);
+void BlitBitmap(Bitmap *, Bitmap *, int, int, int, int, int, int);
+void FadeScreen(Bitmap *bitmap, int, int, int);
+void FillRectangle(Bitmap *, int, int, int, int, Pixel);
+void ClearRectangle(Bitmap *, int, int, int, int);
+void ClearRectangleOnBackground(Bitmap *, int, int, int, int);
+void SetClipMask(Bitmap *, GC, Pixmap);
+void SetClipOrigin(Bitmap *, GC, int, int);
+void BlitBitmapMasked(Bitmap *, Bitmap *, int, int, int, int, int, int);
+boolean DrawingOnBackground(int, int);
+void BlitBitmapOnBackground(Bitmap *, Bitmap *, int, int, int, int, int, int);
+void DrawSimpleBlackLine(Bitmap *, int, int, int, int);
+void DrawSimpleWhiteLine(Bitmap *, int, int, int, int);
+void DrawLines(Bitmap *, struct XY *, int, Pixel);
+Pixel GetPixel(Bitmap *, int, int);
+Pixel GetPixelFromRGB(Bitmap *, unsigned int,unsigned int,unsigned int);
+Pixel GetPixelFromRGBcompact(Bitmap *, unsigned int);
 
-inline void FlushDisplay(void);
-inline void SyncDisplay(void);
-inline void KeyboardAutoRepeatOn(void);
-inline void KeyboardAutoRepeatOff(void);
-inline boolean PointerInWindow(DrawWindow *);
-inline boolean SetVideoMode(boolean);
-inline boolean ChangeVideoModeIfNeeded(boolean);
+void FlushDisplay(void);
+void SyncDisplay(void);
+void KeyboardAutoRepeatOn(void);
+void KeyboardAutoRepeatOff(void);
+boolean PointerInWindow(DrawWindow *);
+boolean SetVideoMode(boolean);
+boolean ChangeVideoModeIfNeeded(boolean);
 
 Bitmap *LoadImage(char *);
 Bitmap *LoadCustomImage(char *);
@@ -908,23 +1008,24 @@ void ReloadCustomImage(Bitmap *, char *);
 
 Bitmap *ZoomBitmap(Bitmap *, int, int);
 void CreateBitmapWithSmallBitmaps(Bitmap *, int);
+void ScaleBitmap(Bitmap *, int);
 
 void SetMouseCursor(int);
 
-inline void OpenAudio(void);
-inline void CloseAudio(void);
-inline void SetAudioMode(boolean);
+void OpenAudio(void);
+void CloseAudio(void);
+void SetAudioMode(boolean);
 
-inline void InitEventFilter(EventFilter);
-inline boolean PendingEvent(void);
-inline void NextEvent(Event *event);
-inline void PeekEvent(Event *event);
-inline Key GetEventKey(KeyEvent *, boolean);
-inline KeyMod HandleKeyModState(Key, int);
-inline KeyMod GetKeyModState();
-inline boolean CheckCloseWindowEvent(ClientMessageEvent *);
+void InitEventFilter(EventFilter);
+boolean PendingEvent(void);
+void NextEvent(Event *event);
+void PeekEvent(Event *event);
+Key GetEventKey(KeyEvent *, boolean);
+KeyMod HandleKeyModState(Key, int);
+KeyMod GetKeyModState();
+boolean CheckCloseWindowEvent(ClientMessageEvent *);
 
-inline void InitJoysticks();
-inline boolean ReadJoystick(int, int *, int *, boolean *, boolean *);
+void InitJoysticks();
+boolean ReadJoystick(int, int *, int *, boolean *, boolean *);
 
 #endif /* SYSTEM_H */

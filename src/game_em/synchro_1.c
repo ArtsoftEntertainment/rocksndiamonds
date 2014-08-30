@@ -5,11 +5,16 @@
  * large switch statement for tiles the player interacts with.
  */
 
-#include "tile.h"
-#include "level.h"
-#include "sample.h"
-#include "display.h"
+#include "main_em.h"
 
+
+#if 0
+extern int centered_player_nr;
+#endif
+
+#define USE_CHANGED_ACID_STUFF		1
+
+extern boolean checkIfAllPlayersFitToScreen();
 
 static void check_player(struct PLAYER *);
 static void kill_player(struct PLAYER *);
@@ -18,7 +23,26 @@ static boolean player_killed(struct PLAYER *);
 
 void synchro_1(void)
 {
- /* must test for death and actually kill separately */
+#if 1
+
+  int start_check_nr;
+  int i;
+
+  game_em.any_player_moving = FALSE;
+
+  /* must test for death and actually kill separately */
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    boolean ply_kill = player_killed(&ply[i]);
+
+    if (ply[i].alive && ply_kill)
+      kill_player(&ply[i]);
+  }
+
+#else
+
+  /* must test for death and actually kill separately */
   boolean ply1_kill = player_killed(&ply1);
   boolean ply2_kill = player_killed(&ply2);
 
@@ -27,9 +51,50 @@ void synchro_1(void)
   if (ply2.alive && ply2_kill)
     kill_player(&ply2);
 
+#endif
+
 #if 0
   ply1.alive = 1; /* debugging */
 #endif
+
+#if 1
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    ply[i].oldx = ply[i].x;
+    ply[i].oldy = ply[i].y;
+    ply[i].anim = SPR_still;
+  }
+
+  start_check_nr = (RandomEM & 128 ? 0 : 1) * 2 + (RandomEM & 256 ? 0 : 1);
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    int check_nr = (start_check_nr + i) % MAX_PLAYERS;
+
+    if (ply[check_nr].alive)
+      check_player(&ply[check_nr]);
+  }
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    if (!ply[i].alive)
+      continue;
+
+    if (Cave[ply[i].oldy][ply[i].oldx] == Zplayer)
+    {
+      Cave[ply[i].oldy][ply[i].oldx] = Xblank;
+      Next[ply[i].oldy][ply[i].oldx] = Xblank;
+    }
+
+    if (Cave[ply[i].y][ply[i].x] == Xblank)
+    {
+      Cave[ply[i].y][ply[i].x] = Zplayer;
+      Next[ply[i].y][ply[i].x] = Zplayer;
+    }
+  }
+
+#else
 
   ply1.oldx = ply1.x;
   ply1.oldy = ply1.y;
@@ -78,12 +143,18 @@ void synchro_1(void)
       Next[ply2.y][ply2.x] = Zplayer;
     }
   }
+
+#endif
 }
 
 static boolean player_killed(struct PLAYER *ply)
 {
-  register unsigned int x = ply->x;
-  register unsigned int y = ply->y;
+  int x = ply->x;
+  int y = ply->y;
+
+#if 0
+  printf("::: %d: %d, %d\n", ply->num, x, y);
+#endif
 
   if (!ply->alive)
     return FALSE;
@@ -208,8 +279,8 @@ static boolean player_killed(struct PLAYER *ply)
 
 static void kill_player(struct PLAYER *ply)
 {
-  register unsigned int x = ply->x;
-  register unsigned int y = ply->y;
+  int x = ply->x;
+  int y = ply->y;
 
   ply->alive = 0;
 
@@ -352,7 +423,7 @@ static void kill_player(struct PLAYER *ply)
 
   switch(Cave[y][x])
   {
-#if 1
+#if USE_CHANGED_ACID_STUFF
     case Xacid_1:
     case Xacid_2:
     case Xacid_3:
@@ -373,12 +444,14 @@ static void kill_player(struct PLAYER *ply)
 
 static void check_player(struct PLAYER *ply)
 {
-  unsigned int oldx = ply->x;
-  unsigned int oldy = ply->y;
-  register unsigned int x = oldx;
-  register unsigned int y = oldy;
-  unsigned int anim = 0;
+  int oldx = ply->x;
+  int oldy = ply->y;
+  int x = oldx;
+  int y = oldy;
+  int anim = 0;
   int dx = 0, dy = 0;
+
+  game_em.last_player_direction[ply->num] = MV_NONE;
 
 #if 0
   printf("::: up == %d, down == %d, left == %d, right == %d, fire == %d [spin == %d, stick == %d]\n",
@@ -471,6 +544,44 @@ static void check_player(struct PLAYER *ply)
   }
 #endif
 
+  if (dx || dy)
+  {
+    int oldx = ply->x;
+    int oldy = ply->y;
+    int x = oldx + dx;
+    int y = oldy + dy;
+    boolean players_visible_before_move;
+    boolean players_visible_after_move;
+    boolean can_move;
+
+    players_visible_before_move = checkIfAllPlayersFitToScreen();
+
+    ply->x = x;
+    ply->y = y;
+
+    players_visible_after_move = checkIfAllPlayersFitToScreen();
+
+    /*
+      player is allowed to move only in the following cases:
+      - it is not needed to display all players (not focussed to all players)
+      - all players are (still or again) visible after the move
+      - some players were already outside visible screen area before the move
+    */
+    can_move = (game.centered_player_nr != -1 ||
+		players_visible_after_move ||
+		!players_visible_before_move);
+
+    ply->x = oldx;
+    ply->y = oldy;
+
+    if (!can_move)
+    {
+      ply->joy_n = ply->joy_e = ply->joy_s = ply->joy_w = 0;
+
+      return;
+    }
+  }
+
   if (dx == 0 && dy == 0)
   {
     ply->joy_stick = 0;
@@ -496,7 +607,7 @@ static void check_player(struct PLAYER *ply)
 
   ply->joy_stick = 1;
   ply->joy_n = ply->joy_e = ply->joy_s = ply->joy_w = 0;
-  ply->dynamite_cnt = 0; /* reset dynamite timer if we move */
+  ply->dynamite_cnt = 0;	/* reset dynamite timer if we move */
   ply->joy_spin = !ply->joy_spin;
 
   if (ply->joy_snap == 0)		/* player wants to move */
@@ -520,6 +631,10 @@ static void check_player(struct PLAYER *ply)
 	ply->last_move_dir = (dx < 0 ? MV_LEFT : MV_RIGHT);
       else if (oldy != ply->y)
 	ply->last_move_dir = (dy < 0 ? MV_UP : MV_DOWN);
+
+      game_em.any_player_moving = TRUE;
+      game_em.last_moving_player = ply->num;
+      game_em.last_player_direction[ply->num] = ply->last_move_dir;
     }
   }
   else					/* player wants to snap */
@@ -531,10 +646,10 @@ static void check_player(struct PLAYER *ply)
 static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 {
   int anim = (dx < 0 ? 3 : dx > 0 ? 1 : dy < 0 ? 0 : dy > 0 ? 2 : 2);
-  unsigned int oldx = ply->x;
-  unsigned int oldy = ply->y;
-  register unsigned int x = oldx + dx;
-  register unsigned int y = oldy + dy;
+  int oldx = ply->x;
+  int oldy = ply->y;
+  int x = oldx + dx;
+  int y = oldy + dy;
   boolean result = TRUE;
 
   if (!dx && !dy)			/* no direction specified */
@@ -571,7 +686,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	ply->y = y;
 	break;
 
-#if 1
+#if USE_CHANGED_ACID_STUFF
       case Xacid_1:
       case Xacid_2:
       case Xacid_3:
@@ -580,12 +695,12 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xacid_6:
       case Xacid_7:
       case Xacid_8:
-#endif
 	if (Cave[y-1][x+1] == Xblank)
 	  Cave[y-1][x+1] = Yacid_splash_eB;
 	if (Cave[y-1][x-1] == Xblank)
 	  Cave[y-1][x-1] = Yacid_splash_wB;
 	play_element_sound(x, y, SAMPLE_acid, Xacid_1);
+#endif
 
       case Xboom_android:
       case Xboom_1:
@@ -605,7 +720,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xtank_goe:
       case Xtank_gos:
       case Xtank_gow:
-#if 0
+
+#if !USE_CHANGED_ACID_STUFF
       case Xacid_1:
       case Xacid_2:
       case Xacid_3:

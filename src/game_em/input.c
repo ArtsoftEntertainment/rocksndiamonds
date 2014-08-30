@@ -3,27 +3,24 @@
  * handle input from x11 and keyboard and joystick
  */
 
-#include "global.h"
-#include "display.h"
-#include "level.h"
+#include "main_em.h"
 
 
 unsigned long RandomEM;
 
-struct PLAYER ply1;
-struct PLAYER ply2;
 struct LEVEL lev;
+struct PLAYER ply[MAX_PLAYERS];
 
-unsigned short **Boom;
-unsigned short **Cave;
-unsigned short **Next;
-unsigned short **Draw;
+short **Boom;
+short **Cave;
+short **Next;
+short **Draw;
 
-static unsigned short *Index[4][HEIGHT];
-static unsigned short Array[4][HEIGHT][WIDTH];
+static short *Index[4][HEIGHT];
+static short Array[4][HEIGHT][WIDTH];
 
-extern unsigned int screen_x;
-extern unsigned int screen_y;
+extern int screen_x;
+extern int screen_y;
 
 void game_init_vars(void)
 {
@@ -67,21 +64,9 @@ void InitGameEngine_EM()
   game_animscreen();
 }
 
-void GameActions_EM(byte action)
+void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
 {
-  static unsigned long game_frame_delay = 0;
-#if 1
-  unsigned long game_frame_delay_value = getGameFrameDelay_EM(20);
-#else
-  unsigned long game_frame_delay_value = getGameFrameDelay_EM(25);
-#endif
-
-#if 0
-  /* this is done in screens.c/HandleGameActions() by calling BackToFront() */
-  XSync(display, False);	/* block until all graphics are drawn */
-#endif
-
-  WaitUntilDelayReached(&game_frame_delay, game_frame_delay_value);
+  int i;
 
   game_animscreen();
 
@@ -89,7 +74,8 @@ void GameActions_EM(byte action)
 
   frame = (frame - 1) & 7;
 
-  readjoy(action);
+  for (i = 0; i < MAX_PLAYERS; i++)
+    readjoy(action[i], &ply[i]);
 
   UpdateEngineValues(screen_x / TILEX, screen_y / TILEY);
 
@@ -104,31 +90,17 @@ void GameActions_EM(byte action)
     synchro_3();
     sound_play();
 
-    if (game_frame_delay_value > 0)	/* do not redraw values in warp mode */
+    if (!warp_mode)		/* do not redraw values in warp mode */
       DrawGameDoorValues_EM();
   }
-
-#if 0
-  if (lev.time_initial == 0)
-    lev.time++;
-  else if (lev.time > 0)
-    lev.time--;
-#endif
-
-#if 0
-  if (lev.time_initial > 0 &&
-      lev.time > 0 && lev.time <= 50 && lev.time % 5 == 0 && setup.time_limit)
-    play_sound(-1, -1, SAMPLE_time);
-#endif
 }
-
 
 /* read input device for players */
 
-void readjoy(byte action)
+void readjoy(byte action, struct PLAYER *ply)
 {
-  unsigned int north = 0, east = 0, south = 0, west = 0;
-  unsigned int snap = 0, drop = 0;
+  int north = 0, east = 0, south = 0, west = 0;
+  int snap = 0, drop = 0;
 
   if (action & JOY_LEFT)
     west = 1;
@@ -148,27 +120,14 @@ void readjoy(byte action)
   if (action & JOY_BUTTON_2)
     drop = 1;
 
-#if 1
-  ply1.joy_snap = snap;
-  ply1.joy_drop = drop;
-  if (ply1.joy_stick || (north | east | south | west))
-  {
-    ply1.joy_n = north;
-    ply1.joy_e = east;
-    ply1.joy_s = south;
-    ply1.joy_w = west;
-  }
+  ply->joy_snap = snap;
+  ply->joy_drop = drop;
 
-#else
-
-  ply2.joy_snap = snap;
-  ply2.joy_drop = drop;
-  if (ply2.joy_stick || (north | east | south | west))
+  if (ply->joy_stick || (north | east | south | west))
   {
-    ply2.joy_n = north;
-    ply2.joy_e = east;
-    ply2.joy_s = south;
-    ply2.joy_w = west;
+    ply->joy_n = north;
+    ply->joy_e = east;
+    ply->joy_s = south;
+    ply->joy_w = west;
   }
-#endif
 }

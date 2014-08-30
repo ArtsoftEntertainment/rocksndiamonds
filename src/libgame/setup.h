@@ -22,26 +22,37 @@
 #define TYPE_BOOLEAN			(1 << 0)
 #define TYPE_SWITCH			(1 << 1)
 #define TYPE_YES_NO			(1 << 2)
-#define TYPE_KEY			(1 << 3)
-#define TYPE_KEY_X11			(1 << 4)
-#define TYPE_INTEGER			(1 << 5)
-#define TYPE_STRING			(1 << 6)
-#define TYPE_TOKEN			(1 << 7)
-
-#define TYPE_BOOLEAN_STYLE		(TYPE_BOOLEAN | \
-					 TYPE_SWITCH  | \
-					 TYPE_YES_NO)
+#define TYPE_ECS_AGA			(1 << 3)
+#define TYPE_KEY			(1 << 4)
+#define TYPE_KEY_X11			(1 << 5)
+#define TYPE_INTEGER			(1 << 6)
+#define TYPE_STRING			(1 << 7)
+#define TYPE_TOKEN			(1 << 8)
 
 /* additional values for setup screen */
-#define TYPE_ENTER_SCREEN		(1 << 8)
-#define TYPE_ENTER_MENU			(1 << 9)
-#define TYPE_LEAVE_MENU			(1 << 10)
-#define TYPE_EMPTY			(1 << 11)
-#define TYPE_KEYTEXT			(1 << 12)
+#define TYPE_ENTER_SCREEN		(1 << 9)
+#define TYPE_ENTER_MENU			(1 << 10)
+#define TYPE_LEAVE_MENU			(1 << 11)
+#define TYPE_EMPTY			(1 << 12)
+#define TYPE_KEYTEXT			(1 << 13)
 
-#define TYPE_GHOSTED			(1 << 13)
-#define TYPE_QUERY			(1 << 14)
+#define TYPE_GHOSTED			(1 << 14)
+#define TYPE_QUERY			(1 << 15)
 
+/* additional values for internal purposes */
+#define TYPE_BITFIELD			(1 << 16)
+#define TYPE_ELEMENT			(1 << 17)
+#define TYPE_CONTENT			(1 << 18)
+#define TYPE_ELEMENT_LIST		(1 << 19)
+#define TYPE_CONTENT_LIST		(1 << 20)
+
+/* derived values for setup file handling */
+#define TYPE_BOOLEAN_STYLE		(TYPE_BOOLEAN | \
+					 TYPE_SWITCH  | \
+					 TYPE_YES_NO  | \
+					 TYPE_ECS_AGA )
+
+/* derived values for setup screen */
 #define TYPE_VALUE			(TYPE_BOOLEAN_STYLE	| \
 					 TYPE_KEY		| \
 					 TYPE_KEY_X11		| \
@@ -265,10 +276,12 @@ char *getHashEntry(SetupFileHash *, char *);
 void setHashEntry(SetupFileHash *, char *, char *);
 char *removeHashEntry(SetupFileHash *, char *);
 SetupFileHash *loadSetupFileHash(char *);
-void checkSetupFileHashIdentifier(SetupFileHash *, char *);
+void checkSetupFileHashIdentifier(SetupFileHash *, char *, char *);
 void setSetupInfo(struct TokenInfo *, int, char *);
 char *getSetupValue(int, void *);
 char *getSetupLine(struct TokenInfo *, char *, int);
+
+boolean AdjustGraphicsForEMC();
 
 void LoadLevelInfo(void);
 void LoadArtworkInfo(void);

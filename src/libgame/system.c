@@ -41,6 +41,7 @@ struct ArtworkInfo	artwork;
 struct JoystickInfo	joystick;
 struct SetupInfo	setup;
 
+LevelDirTree	       *leveldir_first_all = NULL;
 LevelDirTree	       *leveldir_first = NULL;
 LevelDirTree	       *leveldir_current = NULL;
 int			level_nr;
@@ -213,29 +214,6 @@ static void DrawBitmapFromTile(Bitmap *bitmap, Bitmap *tile,
 
 void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
 {
-  /* !!! THIS DOES NOT WORK !!! REPLACED BITMAPS MAY HAVE SAME ADDRESS !!! */
-#if 0
-  static Bitmap *main_bitmap_tile = NULL;
-  static Bitmap *door_bitmap_tile = NULL;
-
-  if (mask == REDRAW_FIELD)
-  {
-    if (background_bitmap_tile == main_bitmap_tile)
-      return;		/* main background tile has not changed */
-
-    main_bitmap_tile = background_bitmap_tile;
-  }
-  else if (mask == REDRAW_DOOR_1)
-  {
-    if (background_bitmap_tile == door_bitmap_tile)
-      return;		/* main background tile has not changed */
-
-    door_bitmap_tile = background_bitmap_tile;
-  }
-  else			/* should not happen */
-    return;
-#endif
-
   if (background_bitmap_tile != NULL)
     gfx.background_bitmap_mask |= mask;
   else
@@ -303,7 +281,7 @@ inline static void sysCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 #endif
 }
 
-inline void InitVideoDisplay(void)
+void InitVideoDisplay(void)
 {
 #if defined(TARGET_SDL)
   SDLInitVideoDisplay();
@@ -312,7 +290,7 @@ inline void InitVideoDisplay(void)
 #endif
 }
 
-inline void CloseVideoDisplay(void)
+void CloseVideoDisplay(void)
 {
   KeyboardAutoRepeatOn();
 
@@ -324,9 +302,8 @@ inline void CloseVideoDisplay(void)
 #endif
 }
 
-inline void InitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
-			    int width, int height, int depth,
-			    boolean fullscreen)
+void InitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
+		     int width, int height, int depth, boolean fullscreen)
 {
   video.width = width;
   video.height = height;
@@ -341,7 +318,7 @@ inline void InitVideoBuffer(DrawBuffer **backbuffer, DrawWindow **window,
 #endif
 }
 
-inline Bitmap *CreateBitmapStruct(void)
+Bitmap *CreateBitmapStruct(void)
 {
 #if defined(TARGET_SDL)
   return checked_calloc(sizeof(struct SDLSurfaceInfo));
@@ -350,7 +327,7 @@ inline Bitmap *CreateBitmapStruct(void)
 #endif
 }
 
-inline Bitmap *CreateBitmap(int width, int height, int depth)
+Bitmap *CreateBitmap(int width, int height, int depth)
 {
   Bitmap *new_bitmap = CreateBitmapStruct();
   int real_depth = GetRealDepth(depth);
@@ -393,7 +370,7 @@ inline static void TransferBitmapPointers(Bitmap *src_bitmap,
   *dst_bitmap = *src_bitmap;
 }
 
-inline void FreeBitmap(Bitmap *bitmap)
+void FreeBitmap(Bitmap *bitmap)
 {
   if (bitmap == NULL)
     return;
@@ -403,7 +380,7 @@ inline void FreeBitmap(Bitmap *bitmap)
   free(bitmap);
 }
 
-inline void CloseWindow(DrawWindow *window)
+void CloseWindow(DrawWindow *window)
 {
 #if defined(TARGET_X11)
   if (window->drawable)
@@ -416,7 +393,7 @@ inline void CloseWindow(DrawWindow *window)
 #endif
 }
 
-static inline boolean CheckDrawingArea(int x, int y, int width, int height,
+inline static boolean CheckDrawingArea(int x, int y, int width, int height,
 				       int draw_mask)
 {
   if (draw_mask == REDRAW_NONE)
@@ -437,25 +414,20 @@ static inline boolean CheckDrawingArea(int x, int y, int width, int height,
   return FALSE;
 }
 
-inline boolean DrawingDeactivated(int x, int y, int width, int height)
+boolean DrawingDeactivated(int x, int y, int width, int height)
 {
   return CheckDrawingArea(x, y, width, height, gfx.draw_deactivation_mask);
 }
 
-inline boolean DrawingOnBackground(int x, int y)
+boolean DrawingOnBackground(int x, int y)
 {
-#if 1
   return (CheckDrawingArea(x, y, 1, 1, gfx.background_bitmap_mask) &&
 	  CheckDrawingArea(x, y, 1, 1, gfx.draw_background_mask));
-#else
-  return ((gfx.draw_background_mask & gfx.background_bitmap_mask) &&
-	  CheckDrawingArea(x, y, 1, 1, gfx.draw_background_mask));
-#endif
 }
 
-inline void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
-		       int src_x, int src_y, int width, int height,
-		       int dst_x, int dst_y)
+void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
+		int src_x, int src_y, int width, int height,
+		int dst_x, int dst_y)
 {
   if (DrawingDeactivated(dst_x, dst_y, width, height))
     return;
@@ -464,8 +436,18 @@ inline void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 	      dst_x, dst_y, BLIT_OPAQUE);
 }
 
-inline void FillRectangle(Bitmap *bitmap, int x, int y, int width, int height,
-			  Pixel color)
+void FadeScreen(Bitmap *bitmap_cross, int fade_mode, int fade_delay,
+		int post_delay)
+{
+#if defined(TARGET_SDL)
+  SDLFadeScreen(bitmap_cross, fade_mode, fade_delay, post_delay);
+#else
+  X11FadeScreen(bitmap_cross, fade_mode, fade_delay, post_delay);
+#endif
+}
+
+void FillRectangle(Bitmap *bitmap, int x, int y, int width, int height,
+		   Pixel color)
 {
   if (DrawingDeactivated(x, y, width, height))
     return;
@@ -473,13 +455,13 @@ inline void FillRectangle(Bitmap *bitmap, int x, int y, int width, int height,
   sysFillRectangle(bitmap, x, y, width, height, color);
 }
 
-inline void ClearRectangle(Bitmap *bitmap, int x, int y, int width, int height)
+void ClearRectangle(Bitmap *bitmap, int x, int y, int width, int height)
 {
   FillRectangle(bitmap, x, y, width, height, BLACK_PIXEL);
 }
 
-inline void ClearRectangleOnBackground(Bitmap *bitmap, int x, int y,
-				       int width, int height)
+void ClearRectangleOnBackground(Bitmap *bitmap, int x, int y,
+				int width, int height)
 {
   if (DrawingOnBackground(x, y))
     BlitBitmap(gfx.background_bitmap, bitmap, x, y, width, height, x, y);
@@ -487,13 +469,7 @@ inline void ClearRectangleOnBackground(Bitmap *bitmap, int x, int y,
     ClearRectangle(bitmap, x, y, width, height);
 }
 
-#if 0
-#ifndef TARGET_SDL
-static GC last_clip_gc = 0;	/* needed for XCopyArea() through clip mask */
-#endif
-#endif
-
-inline void SetClipMask(Bitmap *bitmap, GC clip_gc, Pixmap clip_pixmap)
+void SetClipMask(Bitmap *bitmap, GC clip_gc, Pixmap clip_pixmap)
 {
 #if defined(TARGET_X11)
   if (clip_gc)
@@ -501,13 +477,10 @@ inline void SetClipMask(Bitmap *bitmap, GC clip_gc, Pixmap clip_pixmap)
     bitmap->clip_gc = clip_gc;
     XSetClipMask(display, bitmap->clip_gc, clip_pixmap);
   }
-#if 0
-  last_clip_gc = clip_gc;
-#endif
 #endif
 }
 
-inline void SetClipOrigin(Bitmap *bitmap, GC clip_gc, int clip_x, int clip_y)
+void SetClipOrigin(Bitmap *bitmap, GC clip_gc, int clip_x, int clip_y)
 {
 #if defined(TARGET_X11)
   if (clip_gc)
@@ -515,16 +488,12 @@ inline void SetClipOrigin(Bitmap *bitmap, GC clip_gc, int clip_x, int clip_y)
     bitmap->clip_gc = clip_gc;
     XSetClipOrigin(display, bitmap->clip_gc, clip_x, clip_y);
   }
-#if 0
-  last_clip_gc = clip_gc;
-#endif
 #endif
 }
 
-inline void BlitBitmapMasked(Bitmap *src_bitmap, Bitmap *dst_bitmap,
-			     int src_x, int src_y,
-			     int width, int height,
-			     int dst_x, int dst_y)
+void BlitBitmapMasked(Bitmap *src_bitmap, Bitmap *dst_bitmap,
+		      int src_x, int src_y, int width, int height,
+		      int dst_x, int dst_y)
 {
   if (DrawingDeactivated(dst_x, dst_y, width, height))
     return;
@@ -533,10 +502,9 @@ inline void BlitBitmapMasked(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 	      dst_x, dst_y, BLIT_MASKED);
 }
 
-inline void BlitBitmapOnBackground(Bitmap *src_bitmap, Bitmap *dst_bitmap,
-				   int src_x, int src_y,
-				   int width, int height,
-				   int dst_x, int dst_y)
+void BlitBitmapOnBackground(Bitmap *src_bitmap, Bitmap *dst_bitmap,
+			    int src_x, int src_y, int width, int height,
+			    int dst_x, int dst_y)
 {
   if (DrawingOnBackground(dst_x, dst_y))
   {
@@ -555,8 +523,18 @@ inline void BlitBitmapOnBackground(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 	       dst_x, dst_y);
 }
 
-inline void DrawSimpleWhiteLine(Bitmap *bitmap, int from_x, int from_y,
-				int to_x, int to_y)
+void DrawSimpleBlackLine(Bitmap *bitmap, int from_x, int from_y,
+			 int to_x, int to_y)
+{
+#if defined(TARGET_SDL)
+  SDLDrawSimpleLine(bitmap, from_x, from_y, to_x, to_y, BLACK_PIXEL);
+#else
+  X11DrawSimpleLine(bitmap, from_x, from_y, to_x, to_y, BLACK_PIXEL);
+#endif
+}
+
+void DrawSimpleWhiteLine(Bitmap *bitmap, int from_x, int from_y,
+			 int to_x, int to_y)
 {
 #if defined(TARGET_SDL)
   SDLDrawSimpleLine(bitmap, from_x, from_y, to_x, to_y, WHITE_PIXEL);
@@ -566,8 +544,8 @@ inline void DrawSimpleWhiteLine(Bitmap *bitmap, int from_x, int from_y,
 }
 
 #if !defined(TARGET_X11_NATIVE)
-inline void DrawLine(Bitmap *bitmap, int from_x, int from_y,
-		     int to_x, int to_y, Pixel pixel, int line_width)
+void DrawLine(Bitmap *bitmap, int from_x, int from_y,
+	      int to_x, int to_y, Pixel pixel, int line_width)
 {
   int x, y;
 
@@ -596,8 +574,7 @@ inline void DrawLine(Bitmap *bitmap, int from_x, int from_y,
 }
 #endif
 
-inline void DrawLines(Bitmap *bitmap, struct XY *points, int num_points,
-		      Pixel pixel)
+void DrawLines(Bitmap *bitmap, struct XY *points, int num_points, Pixel pixel)
 {
 #if !defined(TARGET_X11_NATIVE)
   int line_width = 4;
@@ -617,7 +594,7 @@ inline void DrawLines(Bitmap *bitmap, struct XY *points, int num_points,
 #endif
 }
 
-inline Pixel GetPixel(Bitmap *bitmap, int x, int y)
+Pixel GetPixel(Bitmap *bitmap, int x, int y)
 {
   if (x < 0 || x >= bitmap->width ||
       y < 0 || y >= bitmap->height)
@@ -632,8 +609,8 @@ inline Pixel GetPixel(Bitmap *bitmap, int x, int y)
 #endif
 }
 
-inline Pixel GetPixelFromRGB(Bitmap *bitmap, unsigned int color_r,
-			     unsigned int color_g, unsigned int color_b)
+Pixel GetPixelFromRGB(Bitmap *bitmap, unsigned int color_r,
+		      unsigned int color_g, unsigned int color_b)
 {
 #if defined(TARGET_SDL)
   return SDL_MapRGB(bitmap->surface->format, color_r, color_g, color_b);
@@ -644,7 +621,7 @@ inline Pixel GetPixelFromRGB(Bitmap *bitmap, unsigned int color_r,
 #endif
 }
 
-inline Pixel GetPixelFromRGBcompact(Bitmap *bitmap, unsigned int color)
+Pixel GetPixelFromRGBcompact(Bitmap *bitmap, unsigned int color)
 {
   unsigned int color_r = (color >> 16) & 0xff;
   unsigned int color_g = (color >>  8) & 0xff;
@@ -654,7 +631,7 @@ inline Pixel GetPixelFromRGBcompact(Bitmap *bitmap, unsigned int color)
 }
 
 /* execute all pending screen drawing operations */
-inline void FlushDisplay(void)
+void FlushDisplay(void)
 {
 #ifndef TARGET_SDL
   XFlush(display);
@@ -662,14 +639,14 @@ inline void FlushDisplay(void)
 }
 
 /* execute and wait for all pending screen drawing operations */
-inline void SyncDisplay(void)
+void SyncDisplay(void)
 {
 #ifndef TARGET_SDL
   XSync(display, FALSE);
 #endif
 }
 
-inline void KeyboardAutoRepeatOn(void)
+void KeyboardAutoRepeatOn(void)
 {
 #if defined(TARGET_SDL)
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY / 2,
@@ -681,7 +658,7 @@ inline void KeyboardAutoRepeatOn(void)
 #endif
 }
 
-inline void KeyboardAutoRepeatOff(void)
+void KeyboardAutoRepeatOff(void)
 {
 #if defined(TARGET_SDL)
   SDL_EnableKeyRepeat(0, SDL_DEFAULT_REPEAT_INTERVAL);
@@ -692,7 +669,7 @@ inline void KeyboardAutoRepeatOff(void)
 #endif
 }
 
-inline boolean PointerInWindow(DrawWindow *window)
+boolean PointerInWindow(DrawWindow *window)
 {
 #if defined(TARGET_SDL)
   return TRUE;
@@ -709,7 +686,7 @@ inline boolean PointerInWindow(DrawWindow *window)
 #endif
 }
 
-inline boolean SetVideoMode(boolean fullscreen)
+boolean SetVideoMode(boolean fullscreen)
 {
 #if defined(TARGET_SDL)
   return SDLSetVideoMode(&backbuffer, fullscreen);
@@ -730,7 +707,7 @@ inline boolean SetVideoMode(boolean fullscreen)
 #endif
 }
 
-inline boolean ChangeVideoModeIfNeeded(boolean fullscreen)
+boolean ChangeVideoModeIfNeeded(boolean fullscreen)
 {
 #if defined(TARGET_SDL)
   if ((fullscreen && !video.fullscreen_enabled && video.fullscreen_available)||
@@ -782,7 +759,7 @@ void ReloadCustomImage(Bitmap *bitmap, char *basename)
     return;
   }
 
-  if (strcmp(filename, bitmap->source_filename) == 0)
+  if (strEqual(filename, bitmap->source_filename))
   {
     /* The old and new image are the same (have the same filename and path).
        This usually means that this image does not exist in this graphic set
@@ -823,19 +800,17 @@ Bitmap *ZoomBitmap(Bitmap *src_bitmap, int zoom_width, int zoom_height)
   return dst_bitmap;
 }
 
-void CreateBitmapWithSmallBitmaps(Bitmap *old_bitmap, int zoom_factor)
+static void CreateScaledBitmaps(Bitmap *old_bitmap, int zoom_factor,
+				boolean create_small_bitmaps)
 {
   Bitmap swap_bitmap;
   Bitmap *new_bitmap, *tmp_bitmap_1, *tmp_bitmap_2, *tmp_bitmap_8;
   int width_1, height_1, width_2, height_2, width_8, height_8;
   int new_width, new_height;
 
+  /* calculate new image dimensions for normal sized image */
   width_1  = old_bitmap->width  * zoom_factor;
   height_1 = old_bitmap->height * zoom_factor;
-  width_2  = width_1  / 2;
-  height_2 = height_1 / 2;
-  width_8  = width_1  / 8;
-  height_8 = height_1 / 8;
 
   /* get image with normal size (this might require scaling up) */
   if (zoom_factor != 1)
@@ -843,17 +818,29 @@ void CreateBitmapWithSmallBitmaps(Bitmap *old_bitmap, int zoom_factor)
   else
     tmp_bitmap_1 = old_bitmap;
 
-  /* get image with 1/2 of normal size (for use in the level editor) */
-  if (zoom_factor != 2)
-    tmp_bitmap_2 = ZoomBitmap(tmp_bitmap_1, width_1 / 2, height_1 / 2);
-  else
-    tmp_bitmap_2 = old_bitmap;
+  /* this is only needed to make compilers happy */
+  tmp_bitmap_2 = tmp_bitmap_8 = NULL;
 
-  /* get image with 1/8 of normal size (for use on the preview screen) */
-  if (zoom_factor != 8)
-    tmp_bitmap_8 = ZoomBitmap(tmp_bitmap_1, width_1 / 8, height_1 / 8);
-  else
-    tmp_bitmap_8 = old_bitmap;
+  if (create_small_bitmaps)
+  {
+    /* calculate new image dimensions for small images */
+    width_2  = width_1  / 2;
+    height_2 = height_1 / 2;
+    width_8  = width_1  / 8;
+    height_8 = height_1 / 8;
+
+    /* get image with 1/2 of normal size (for use in the level editor) */
+    if (zoom_factor != 2)
+      tmp_bitmap_2 = ZoomBitmap(tmp_bitmap_1, width_1 / 2, height_1 / 2);
+    else
+      tmp_bitmap_2 = old_bitmap;
+
+    /* get image with 1/8 of normal size (for use on the preview screen) */
+    if (zoom_factor != 8)
+      tmp_bitmap_8 = ZoomBitmap(tmp_bitmap_1, width_1 / 8, height_1 / 8);
+    else
+      tmp_bitmap_8 = old_bitmap;
+  }
 
   /* if image was scaled up, create new clipmask for normal size image */
   if (zoom_factor != 1)
@@ -880,39 +867,39 @@ void CreateBitmapWithSmallBitmaps(Bitmap *old_bitmap, int zoom_factor)
 #endif
   }
 
-  new_width  = width_1;
-  new_height = height_1 + (height_1 + 1) / 2;     /* prevent odd height */
+  if (create_small_bitmaps)
+  {
+    new_width  = width_1;
+    new_height = height_1 + (height_1 + 1) / 2;     /* prevent odd height */
 
-  new_bitmap = CreateBitmap(new_width, new_height, DEFAULT_DEPTH);
+    new_bitmap = CreateBitmap(new_width, new_height, DEFAULT_DEPTH);
 
-  BlitBitmap(tmp_bitmap_1, new_bitmap, 0, 0, width_1, height_1, 0, 0);
-  BlitBitmap(tmp_bitmap_2, new_bitmap, 0, 0, width_1 / 2, height_1 / 2,
-	     0, height_1);
-  BlitBitmap(tmp_bitmap_8, new_bitmap, 0, 0, width_1 / 8, height_1 / 8,
-	     3 * width_1 / 4, height_1);
+    BlitBitmap(tmp_bitmap_1, new_bitmap, 0, 0, width_1, height_1, 0, 0);
+    BlitBitmap(tmp_bitmap_2, new_bitmap, 0, 0, width_1 / 2, height_1 / 2,
+	       0, height_1);
+    BlitBitmap(tmp_bitmap_8, new_bitmap, 0, 0, width_1 / 8, height_1 / 8,
+	       3 * width_1 / 4, height_1);
+  }
+  else
+  {
+    new_width  = width_1;
+    new_height = height_1;
 
-  if (zoom_factor != 1)
-    FreeBitmap(tmp_bitmap_1);
+    new_bitmap = tmp_bitmap_1;	/* directly use tmp_bitmap_1 as new bitmap */
+  }
 
-  if (zoom_factor != 2)
-    FreeBitmap(tmp_bitmap_2);
+  if (create_small_bitmaps)
+  {
+    /* if no small bitmaps created, tmp_bitmap_1 is used as new bitmap now */
+    if (zoom_factor != 1)
+      FreeBitmap(tmp_bitmap_1);
 
-  if (zoom_factor != 8)
-    FreeBitmap(tmp_bitmap_8);
+    if (zoom_factor != 2)
+      FreeBitmap(tmp_bitmap_2);
 
-#if 0
-
-#if defined(TARGET_SDL)
-  /* !!! what about the old old_bitmap->surface ??? FIX ME !!! */
-  old_bitmap->surface = new_bitmap->surface;
-  new_bitmap->surface = NULL;
-#else
-  /* !!! see above !!! */
-  old_bitmap->drawable = new_bitmap->drawable;
-  new_bitmap->drawable = None;
-#endif
-
-#else
+    if (zoom_factor != 8)
+      FreeBitmap(tmp_bitmap_8);
+  }
 
   /* replace image with extended image (containing normal, 1/2 and 1/8 size) */
 #if defined(TARGET_SDL)
@@ -925,12 +912,20 @@ void CreateBitmapWithSmallBitmaps(Bitmap *old_bitmap, int zoom_factor)
   new_bitmap->drawable = swap_bitmap.drawable;
 #endif
 
-#endif
-
   old_bitmap->width  = new_bitmap->width;
   old_bitmap->height = new_bitmap->height;
 
-  FreeBitmap(new_bitmap);
+  FreeBitmap(new_bitmap);	/* this actually frees the _old_ bitmap now */
+}
+
+void CreateBitmapWithSmallBitmaps(Bitmap *old_bitmap, int zoom_factor)
+{
+  CreateScaledBitmaps(old_bitmap, zoom_factor, TRUE);
+}
+
+void ScaleBitmap(Bitmap *old_bitmap, int zoom_factor)
+{
+  CreateScaledBitmaps(old_bitmap, zoom_factor, FALSE);
 }
 
 
@@ -974,7 +969,9 @@ static const char *cursor_image_playfield[] =
 
   /* hot spot */
   "0,0"
+
 #else
+
   /* pixels */
   " X              ",
   "X.X             ",
@@ -1073,7 +1070,7 @@ void SetMouseCursor(int mode)
 /* audio functions                                                           */
 /* ========================================================================= */
 
-inline void OpenAudio(void)
+void OpenAudio(void)
 {
   /* always start with reliable default values */
   audio.sound_available = FALSE;
@@ -1101,7 +1098,7 @@ inline void OpenAudio(void)
 #endif
 }
 
-inline void CloseAudio(void)
+void CloseAudio(void)
 {
 #if defined(TARGET_SDL)
   SDLCloseAudio();
@@ -1114,7 +1111,7 @@ inline void CloseAudio(void)
   audio.sound_enabled = FALSE;
 }
 
-inline void SetAudioMode(boolean enabled)
+void SetAudioMode(boolean enabled)
 {
   if (!audio.sound_available)
     return;
@@ -1127,7 +1124,7 @@ inline void SetAudioMode(boolean enabled)
 /* event functions                                                           */
 /* ========================================================================= */
 
-inline void InitEventFilter(EventFilter filter_function)
+void InitEventFilter(EventFilter filter_function)
 {
 #if defined(TARGET_SDL)
   /* set event filter to filter out certain events */
@@ -1135,7 +1132,7 @@ inline void InitEventFilter(EventFilter filter_function)
 #endif
 }
 
-inline boolean PendingEvent(void)
+boolean PendingEvent(void)
 {
 #if defined(TARGET_SDL)
   return (SDL_PollEvent(NULL) ? TRUE : FALSE);
@@ -1144,7 +1141,7 @@ inline boolean PendingEvent(void)
 #endif
 }
 
-inline void NextEvent(Event *event)
+void NextEvent(Event *event)
 {
 #if defined(TARGET_SDL)
   SDLNextEvent(event);
@@ -1153,7 +1150,7 @@ inline void NextEvent(Event *event)
 #endif
 }
 
-inline void PeekEvent(Event *event)
+void PeekEvent(Event *event)
 {
 #if defined(TARGET_SDL)
   SDL_PeepEvents(event, 1, SDL_PEEKEVENT, SDL_ALLEVENTS);
@@ -1162,9 +1159,10 @@ inline void PeekEvent(Event *event)
 #endif
 }
 
-inline Key GetEventKey(KeyEvent *event, boolean with_modifiers)
+Key GetEventKey(KeyEvent *event, boolean with_modifiers)
 {
 #if defined(TARGET_SDL)
+
 #if 0
   printf("unicode == '%d', sym == '%d', mod == '0x%04x'\n",
 	 (int)event->keysym.unicode,
@@ -1178,7 +1176,9 @@ inline Key GetEventKey(KeyEvent *event, boolean with_modifiers)
     return event->keysym.unicode;
   else
     return event->keysym.sym;
+
 #else
+
 #if 0
   printf("with modifiers == '0x%04x', without modifiers == '0x%04x'\n",
 	 (int)XLookupKeysym(event, event->state),
@@ -1192,7 +1192,7 @@ inline Key GetEventKey(KeyEvent *event, boolean with_modifiers)
 #endif
 }
 
-inline KeyMod HandleKeyModState(Key key, int key_status)
+KeyMod HandleKeyModState(Key key, int key_status)
 {
   static KeyMod current_modifiers = KMOD_None;
 
@@ -1241,7 +1241,7 @@ inline KeyMod HandleKeyModState(Key key, int key_status)
   return current_modifiers;
 }
 
-inline KeyMod GetKeyModState()
+KeyMod GetKeyModState()
 {
 #if defined(TARGET_SDL)
   return (KeyMod)SDL_GetModState();
@@ -1250,7 +1250,7 @@ inline KeyMod GetKeyModState()
 #endif
 }
 
-inline boolean CheckCloseWindowEvent(ClientMessageEvent *event)
+boolean CheckCloseWindowEvent(ClientMessageEvent *event)
 {
   if (event->type != EVENT_CLIENTMESSAGE)
     return FALSE;
@@ -1271,7 +1271,7 @@ inline boolean CheckCloseWindowEvent(ClientMessageEvent *event)
 /* joystick functions                                                        */
 /* ========================================================================= */
 
-inline void InitJoysticks()
+void InitJoysticks()
 {
   int i;
 
@@ -1291,9 +1291,14 @@ inline void InitJoysticks()
 #elif defined(PLATFORM_MSDOS)
   MSDOSInitJoysticks();
 #endif
+
+#if 0
+  for (i = 0; i < MAX_PLAYERS; i++)
+    printf("::: Joystick for player %d: %d\n", i, joystick.fd[i]);
+#endif
 }
 
-inline boolean ReadJoystick(int nr, int *x, int *y, boolean *b1, boolean *b2)
+boolean ReadJoystick(int nr, int *x, int *y, boolean *b1, boolean *b2)
 {
 #if defined(TARGET_SDL)
   return SDLReadJoystick(nr, x, y, b1, b2);

@@ -799,7 +799,7 @@ void InitLevelSetupDirectory(char *level_subdir)
 
 
 /* ------------------------------------------------------------------------- */
-/* some functions to handle lists of level directories                       */
+/* some functions to handle lists of level and artwork directories           */
 /* ------------------------------------------------------------------------- */
 
 TreeInfo *newTreeInfo()
@@ -917,7 +917,7 @@ TreeInfo *getTreeInfoFromIdentifier(TreeInfo *node, char *identifier)
     }
     else if (!node->parent_link)
     {
-      if (strcmp(identifier, node->identifier) == 0)
+      if (strEqual(identifier, node->identifier))
 	return node;
     }
 
@@ -925,6 +925,71 @@ TreeInfo *getTreeInfoFromIdentifier(TreeInfo *node, char *identifier)
   }
 
   return NULL;
+}
+
+TreeInfo *cloneTreeNode(TreeInfo **node_top, TreeInfo *node_parent,
+			TreeInfo *node, boolean skip_sets_without_levels)
+{
+  TreeInfo *node_new;
+
+  if (node == NULL)
+    return NULL;
+
+  if (!node->parent_link && !node->level_group &&
+      skip_sets_without_levels && node->levels == 0)
+    return cloneTreeNode(node_top, node_parent, node->next,
+			 skip_sets_without_levels);
+
+  node_new = newTreeInfo();
+
+  *node_new = *node;				/* copy complete node */
+
+  node_new->node_top = node_top;		/* correct top node link */
+  node_new->node_parent = node_parent;		/* correct parent node link */
+
+  if (node->level_group)
+    node_new->node_group = cloneTreeNode(node_top, node_new, node->node_group,
+					 skip_sets_without_levels);
+
+  node_new->next = cloneTreeNode(node_top, node_parent, node->next,
+				 skip_sets_without_levels);
+  
+  return node_new;
+}
+
+void cloneTree(TreeInfo **ti_new, TreeInfo *ti, boolean skip_empty_sets)
+{
+  TreeInfo *ti_cloned = cloneTreeNode(ti_new, NULL, ti, skip_empty_sets);
+
+  *ti_new = ti_cloned;
+}
+
+static boolean adjustTreeGraphicsForEMC(TreeInfo *node)
+{
+  boolean settings_changed = FALSE;
+
+  while (node)
+  {
+    if (node->graphics_set_ecs && !setup.prefer_aga_graphics &&
+	!strEqual(node->graphics_set, node->graphics_set_ecs))
+    {
+      setString(&node->graphics_set, node->graphics_set_ecs);
+      settings_changed = TRUE;
+    }
+    else if (node->graphics_set_aga && setup.prefer_aga_graphics &&
+	     !strEqual(node->graphics_set, node->graphics_set_aga))
+    {
+      setString(&node->graphics_set, node->graphics_set_aga);
+      settings_changed = TRUE;
+    }
+
+    if (node->node_group != NULL)
+      settings_changed |= adjustTreeGraphicsForEMC(node->node_group);
+
+    node = node->next;
+  }
+
+  return settings_changed;
 }
 
 void dumpTreeInfo(TreeInfo *node, int depth)
@@ -938,13 +1003,8 @@ void dumpTreeInfo(TreeInfo *node, int depth)
     for (i = 0; i < (depth + 1) * 3; i++)
       printf(" ");
 
-#if 1
     printf("subdir == '%s' ['%s', '%s'] [%d])\n",
 	   node->subdir, node->fullpath, node->basepath, node->in_user_dir);
-#else
-    printf("subdir == '%s' (%s) [%s] (%d)\n",
-	   node->subdir, node->name, node->identifier, node->sort_priority);
-#endif
 
     if (node->node_group != NULL)
       dumpTreeInfo(node->node_group, depth + 1);
@@ -1068,7 +1128,7 @@ char *getCommonDataDir(void)
     char *dir = checked_malloc(MAX_PATH + 1);
 
     if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_COMMON_DOCUMENTS, NULL, 0, dir))
-	&& strcmp(dir, "") != 0)	/* empty for Windows 95/98 */
+	&& !strEqual(dir, ""))		/* empty for Windows 95/98 */
       common_data_dir = getPath2(dir, program.userdata_directory);
     else
       common_data_dir = options.rw_base_directory;
@@ -1249,7 +1309,7 @@ char *getListEntry(SetupFileList *list, char *token)
   if (list == NULL)
     return NULL;
 
-  if (strcmp(list->token, token) == 0)
+  if (strEqual(list->token, token))
     return list->value;
   else
     return getListEntry(list->next, token);
@@ -1260,7 +1320,7 @@ SetupFileList *setListEntry(SetupFileList *list, char *token, char *value)
   if (list == NULL)
     return NULL;
 
-  if (strcmp(list->token, token) == 0)
+  if (strEqual(list->token, token))
   {
     checked_free(list->value);
 
@@ -1342,7 +1402,7 @@ static unsigned int get_hash_from_key(void *key)
 
 static int keys_are_equal(void *key1, void *key2)
 {
-  return (strcmp((char *)key1, (char *)key2) == 0);
+  return (strEqual((char *)key1, (char *)key2));
 }
 
 SetupFileHash *newSetupFileHash()
@@ -1396,7 +1456,6 @@ char *removeHashEntry(SetupFileHash *hash, char *token)
 }
 
 #if 0
-#ifdef DEBUG
 static void printSetupFileHash(SetupFileHash *hash)
 {
   BEGIN_HASH_ITERATION(hash, itr)
@@ -1406,7 +1465,6 @@ static void printSetupFileHash(SetupFileHash *hash)
   }
   END_HASH_ITERATION(hash, itr)
 }
-#endif
 #endif
 
 static void *loadSetupFileData(char *filename, boolean use_hash)
@@ -1560,14 +1618,14 @@ SetupFileHash *loadSetupFileHash(char *filename)
 }
 
 void checkSetupFileHashIdentifier(SetupFileHash *setup_file_hash,
-				  char *identifier)
+				  char *filename, char *identifier)
 {
   char *value = getHashEntry(setup_file_hash, TOKEN_STR_FILE_IDENTIFIER);
 
   if (value == NULL)
-    Error(ERR_WARN, "configuration file has no file identifier");
+    Error(ERR_WARN, "config file '%s' has no file identifier", filename);
   else if (!checkCookieString(value, identifier))
-    Error(ERR_WARN, "configuration file has wrong file identifier");
+    Error(ERR_WARN, "config file '%s' has wrong file identifier", filename);
 }
 
 
@@ -1575,57 +1633,61 @@ void checkSetupFileHashIdentifier(SetupFileHash *setup_file_hash,
 /* setup file stuff                                                          */
 /* ========================================================================= */
 
-#define TOKEN_STR_LAST_LEVEL_SERIES	"last_level_series"
-#define TOKEN_STR_LAST_PLAYED_LEVEL	"last_played_level"
-#define TOKEN_STR_HANDICAP_LEVEL	"handicap_level"
+#define TOKEN_STR_LAST_LEVEL_SERIES		"last_level_series"
+#define TOKEN_STR_LAST_PLAYED_LEVEL		"last_played_level"
+#define TOKEN_STR_HANDICAP_LEVEL		"handicap_level"
 
 /* level directory info */
-#define LEVELINFO_TOKEN_IDENTIFIER	0
-#define LEVELINFO_TOKEN_NAME		1
-#define LEVELINFO_TOKEN_NAME_SORTING	2
-#define LEVELINFO_TOKEN_AUTHOR		3
-#define LEVELINFO_TOKEN_IMPORTED_FROM	4
-#define LEVELINFO_TOKEN_IMPORTED_BY	5
-#define LEVELINFO_TOKEN_LEVELS		6
-#define LEVELINFO_TOKEN_FIRST_LEVEL	7
-#define LEVELINFO_TOKEN_SORT_PRIORITY	8
-#define LEVELINFO_TOKEN_LATEST_ENGINE	9
-#define LEVELINFO_TOKEN_LEVEL_GROUP	10
-#define LEVELINFO_TOKEN_READONLY	11
-#define LEVELINFO_TOKEN_GRAPHICS_SET	12
-#define LEVELINFO_TOKEN_SOUNDS_SET	13
-#define LEVELINFO_TOKEN_MUSIC_SET	14
-#define LEVELINFO_TOKEN_FILENAME	15
-#define LEVELINFO_TOKEN_FILETYPE	16
-#define LEVELINFO_TOKEN_HANDICAP	17
-#define LEVELINFO_TOKEN_SKIP_LEVELS	18
+#define LEVELINFO_TOKEN_IDENTIFIER		0
+#define LEVELINFO_TOKEN_NAME			1
+#define LEVELINFO_TOKEN_NAME_SORTING		2
+#define LEVELINFO_TOKEN_AUTHOR			3
+#define LEVELINFO_TOKEN_IMPORTED_FROM		4
+#define LEVELINFO_TOKEN_IMPORTED_BY		5
+#define LEVELINFO_TOKEN_LEVELS			6
+#define LEVELINFO_TOKEN_FIRST_LEVEL		7
+#define LEVELINFO_TOKEN_SORT_PRIORITY		8
+#define LEVELINFO_TOKEN_LATEST_ENGINE		9
+#define LEVELINFO_TOKEN_LEVEL_GROUP		10
+#define LEVELINFO_TOKEN_READONLY		11
+#define LEVELINFO_TOKEN_GRAPHICS_SET_ECS	12
+#define LEVELINFO_TOKEN_GRAPHICS_SET_AGA	13
+#define LEVELINFO_TOKEN_GRAPHICS_SET		14
+#define LEVELINFO_TOKEN_SOUNDS_SET		15
+#define LEVELINFO_TOKEN_MUSIC_SET		16
+#define LEVELINFO_TOKEN_FILENAME		17
+#define LEVELINFO_TOKEN_FILETYPE		18
+#define LEVELINFO_TOKEN_HANDICAP		19
+#define LEVELINFO_TOKEN_SKIP_LEVELS		20
 
-#define NUM_LEVELINFO_TOKENS		19
+#define NUM_LEVELINFO_TOKENS			21
 
 static LevelDirTree ldi;
 
 static struct TokenInfo levelinfo_tokens[] =
 {
   /* level directory info */
-  { TYPE_STRING,	&ldi.identifier,	"identifier"	},
-  { TYPE_STRING,	&ldi.name,		"name"		},
-  { TYPE_STRING,	&ldi.name_sorting,	"name_sorting"	},
-  { TYPE_STRING,	&ldi.author,		"author"	},
-  { TYPE_STRING,	&ldi.imported_from,	"imported_from"	},
-  { TYPE_STRING,	&ldi.imported_by,	"imported_by"	},
-  { TYPE_INTEGER,	&ldi.levels,		"levels"	},
-  { TYPE_INTEGER,	&ldi.first_level,	"first_level"	},
-  { TYPE_INTEGER,	&ldi.sort_priority,	"sort_priority"	},
-  { TYPE_BOOLEAN,	&ldi.latest_engine,	"latest_engine"	},
-  { TYPE_BOOLEAN,	&ldi.level_group,	"level_group"	},
-  { TYPE_BOOLEAN,	&ldi.readonly,		"readonly"	},
-  { TYPE_STRING,	&ldi.graphics_set,	"graphics_set"	},
-  { TYPE_STRING,	&ldi.sounds_set,	"sounds_set"	},
-  { TYPE_STRING,	&ldi.music_set,		"music_set"	},
-  { TYPE_STRING,	&ldi.level_filename,	"filename"	},
-  { TYPE_STRING,	&ldi.level_filetype,	"filetype"	},
-  { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"	},
-  { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"	}
+  { TYPE_STRING,	&ldi.identifier,	"identifier"		},
+  { TYPE_STRING,	&ldi.name,		"name"			},
+  { TYPE_STRING,	&ldi.name_sorting,	"name_sorting"		},
+  { TYPE_STRING,	&ldi.author,		"author"		},
+  { TYPE_STRING,	&ldi.imported_from,	"imported_from"		},
+  { TYPE_STRING,	&ldi.imported_by,	"imported_by"		},
+  { TYPE_INTEGER,	&ldi.levels,		"levels"		},
+  { TYPE_INTEGER,	&ldi.first_level,	"first_level"		},
+  { TYPE_INTEGER,	&ldi.sort_priority,	"sort_priority"		},
+  { TYPE_BOOLEAN,	&ldi.latest_engine,	"latest_engine"		},
+  { TYPE_BOOLEAN,	&ldi.level_group,	"level_group"		},
+  { TYPE_BOOLEAN,	&ldi.readonly,		"readonly"		},
+  { TYPE_STRING,	&ldi.graphics_set_ecs,	"graphics_set.ecs"	},
+  { TYPE_STRING,	&ldi.graphics_set_aga,	"graphics_set.aga"	},
+  { TYPE_STRING,	&ldi.graphics_set,	"graphics_set"		},
+  { TYPE_STRING,	&ldi.sounds_set,	"sounds_set"		},
+  { TYPE_STRING,	&ldi.music_set,		"music_set"		},
+  { TYPE_STRING,	&ldi.level_filename,	"filename"		},
+  { TYPE_STRING,	&ldi.level_filetype,	"filetype"		},
+  { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"		},
+  { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"		}
 };
 
 static void setTreeInfoToDefaults(TreeInfo *ldi, int type)
@@ -1666,6 +1728,8 @@ static void setTreeInfoToDefaults(TreeInfo *ldi, int type)
     ldi->imported_from = NULL;
     ldi->imported_by = NULL;
 
+    ldi->graphics_set_ecs = NULL;
+    ldi->graphics_set_aga = NULL;
     ldi->graphics_set = NULL;
     ldi->sounds_set = NULL;
     ldi->music_set = NULL;
@@ -1698,7 +1762,6 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
     return;
   }
 
-#if 1
   /* copy all values from the parent structure */
 
   ldi->type = parent->type;
@@ -1732,6 +1795,8 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
     ldi->imported_from = getStringCopy(parent->imported_from);
     ldi->imported_by = getStringCopy(parent->imported_by);
 
+    ldi->graphics_set_ecs = NULL;
+    ldi->graphics_set_aga = NULL;
     ldi->graphics_set = NULL;
     ldi->sounds_set = NULL;
     ldi->music_set = NULL;
@@ -1751,47 +1816,6 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
     ldi->handicap = TRUE;
     ldi->skip_levels = FALSE;
   }
-
-#else
-
-  /* first copy all values from the parent structure ... */
-  *ldi = *parent;
-
-  /* ... then set all fields to default that cannot be inherited from parent.
-     This is especially important for all those fields that can be set from
-     the 'levelinfo.conf' config file, because the function 'setSetupInfo()'
-     calls 'free()' for all already set token values which requires that no
-     other structure's pointer may point to them!
-  */
-
-  ldi->subdir = NULL;
-  ldi->fullpath = NULL;
-  ldi->basepath = NULL;
-  ldi->identifier = NULL;
-  ldi->name = getStringCopy(ANONYMOUS_NAME);
-  ldi->name_sorting = NULL;
-  ldi->author = getStringCopy(parent->author);
-
-  ldi->imported_from = getStringCopy(parent->imported_from);
-  ldi->imported_by = getStringCopy(parent->imported_by);
-  ldi->class_desc = getStringCopy(parent->class_desc);
-
-  ldi->graphics_set = NULL;
-  ldi->sounds_set = NULL;
-  ldi->music_set = NULL;
-  ldi->graphics_path = NULL;
-  ldi->sounds_path = NULL;
-  ldi->music_path = NULL;
-
-  ldi->level_group = FALSE;
-  ldi->parent_link = FALSE;
-
-  ldi->node_top = parent->node_top;
-  ldi->node_parent = parent;
-  ldi->node_group = NULL;
-  ldi->next = NULL;
-
-#endif
 }
 
 static void freeTreeInfo(TreeInfo *ldi)
@@ -1812,6 +1836,8 @@ static void freeTreeInfo(TreeInfo *ldi)
     checked_free(ldi->imported_from);
     checked_free(ldi->imported_by);
 
+    checked_free(ldi->graphics_set_ecs);
+    checked_free(ldi->graphics_set_aga);
     checked_free(ldi->graphics_set);
     checked_free(ldi->sounds_set);
     checked_free(ldi->music_set);
@@ -1915,7 +1941,6 @@ static void createParentTreeInfoNode(TreeInfo *node_parent)
   ti_new->node_parent = node_parent;
   ti_new->parent_link = TRUE;
 
-#if 1
   setString(&ti_new->identifier, node_parent->identifier);
   setString(&ti_new->name, ".. (parent directory)");
   setString(&ti_new->name_sorting, ti_new->name);
@@ -1927,19 +1952,6 @@ static void createParentTreeInfoNode(TreeInfo *node_parent)
   ti_new->latest_engine = node_parent->latest_engine;
 
   setString(&ti_new->class_desc, getLevelClassDescription(ti_new));
-#else
-  ti_new->identifier = getStringCopy(node_parent->identifier);
-  ti_new->name = ".. (parent directory)";
-  ti_new->name_sorting = getStringCopy(ti_new->name);
-
-  ti_new->subdir = "..";
-  ti_new->fullpath = getStringCopy(node_parent->fullpath);
-
-  ti_new->sort_priority = node_parent->sort_priority;
-  ti_new->latest_engine = node_parent->latest_engine;
-
-  ti_new->class_desc = getLevelClassDescription(ti_new);
-#endif
 
   pushTreeInfo(&node_parent->node_group, ti_new);
 }
@@ -1988,7 +2000,8 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
 
   leveldir_new->subdir = getStringCopy(directory_name);
 
-  checkSetupFileHashIdentifier(setup_file_hash, getCookie("LEVELINFO"));
+  checkSetupFileHashIdentifier(setup_file_hash, filename,
+			       getCookie("LEVELINFO"));
 
   /* set all structure fields according to the token/value pairs */
   ldi = *leveldir_new;
@@ -1997,16 +2010,8 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
 		 getHashEntry(setup_file_hash, levelinfo_tokens[i].text));
   *leveldir_new = ldi;
 
-#if 1
-  if (strcmp(leveldir_new->name, ANONYMOUS_NAME) == 0)
+  if (strEqual(leveldir_new->name, ANONYMOUS_NAME))
     setString(&leveldir_new->name, leveldir_new->subdir);
-#else
-  if (strcmp(leveldir_new->name, ANONYMOUS_NAME) == 0)
-  {
-    free(leveldir_new->name);
-    leveldir_new->name = getStringCopy(leveldir_new->subdir);
-  }
-#endif
 
   DrawInitText(leveldir_new->name, 150, FC_YELLOW);
 
@@ -2027,53 +2032,54 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
     leveldir_new->fullpath = getPath2(node_parent->fullpath, directory_name);
   }
 
+#if 0
   if (leveldir_new->levels < 1)
     leveldir_new->levels = 1;
+#endif
 
   leveldir_new->last_level =
     leveldir_new->first_level + leveldir_new->levels - 1;
 
-#if 1
   leveldir_new->in_user_dir =
-    (strcmp(leveldir_new->basepath, options.level_directory) != 0);
-#else
-  leveldir_new->in_user_dir =
-    (leveldir_new->basepath == options.level_directory ? FALSE : TRUE);
-#endif
+    (!strEqual(leveldir_new->basepath, options.level_directory));
 
-#if 1
   /* adjust some settings if user's private level directory was detected */
   if (leveldir_new->sort_priority == LEVELCLASS_UNDEFINED &&
       leveldir_new->in_user_dir &&
-      (strcmp(leveldir_new->subdir, getLoginName()) == 0 ||
-       strcmp(leveldir_new->name,   getLoginName()) == 0 ||
-       strcmp(leveldir_new->author, getRealName())  == 0))
+      (strEqual(leveldir_new->subdir, getLoginName()) ||
+       strEqual(leveldir_new->name,   getLoginName()) ||
+       strEqual(leveldir_new->author, getRealName())))
   {
     leveldir_new->sort_priority = LEVELCLASS_PRIVATE_START;
     leveldir_new->readonly = FALSE;
   }
 
-#else
-  /* adjust sort priority if user's private level directory was detected */
-  if (leveldir_new->sort_priority == LEVELCLASS_UNDEFINED &&
-      leveldir_new->in_user_dir &&
-      strcmp(leveldir_new->subdir, getLoginName()) == 0)
-    leveldir_new->sort_priority = LEVELCLASS_PRIVATE_START;
-#endif
-
   leveldir_new->user_defined =
     (leveldir_new->in_user_dir && IS_LEVELCLASS_PRIVATE(leveldir_new));
 
   leveldir_new->color = LEVELCOLOR(leveldir_new);
-#if 1
+
   setString(&leveldir_new->class_desc, getLevelClassDescription(leveldir_new));
-#else
-  leveldir_new->class_desc = getLevelClassDescription(leveldir_new);
-#endif
 
   leveldir_new->handicap_level =	/* set handicap to default value */
     (leveldir_new->user_defined || !leveldir_new->handicap ?
      leveldir_new->last_level : leveldir_new->first_level);
+
+#if 0
+  /* !!! don't skip sets without levels (else artwork base sets are missing) */
+#if 1
+  if (leveldir_new->levels < 1 && !leveldir_new->level_group)
+  {
+    /* skip level sets without levels (which are probably artwork base sets) */
+
+    freeSetupFileHash(setup_file_hash);
+    free(directory_path);
+    free(filename);
+
+    return FALSE;
+  }
+#endif
+#endif
 
   pushTreeInfo(node_first, leveldir_new);
 
@@ -2116,8 +2122,8 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
     char *directory_path = getPath2(level_directory, directory_name);
 
     /* skip entries for current and parent directory */
-    if (strcmp(directory_name, ".")  == 0 ||
-	strcmp(directory_name, "..") == 0)
+    if (strEqual(directory_name, ".") ||
+	strEqual(directory_name, ".."))
     {
       free(directory_path);
       continue;
@@ -2133,9 +2139,9 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
 
     free(directory_path);
 
-    if (strcmp(directory_name, GRAPHICS_DIRECTORY) == 0 ||
-	strcmp(directory_name, SOUNDS_DIRECTORY) == 0 ||
-	strcmp(directory_name, MUSIC_DIRECTORY) == 0)
+    if (strEqual(directory_name, GRAPHICS_DIRECTORY) ||
+	strEqual(directory_name, SOUNDS_DIRECTORY) ||
+	strEqual(directory_name, MUSIC_DIRECTORY))
       continue;
 
     valid_entry_found |= LoadLevelInfoFromLevelConf(node_first, node_parent,
@@ -2145,7 +2151,8 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
 
   closedir(dir);
 
-  if (!valid_entry_found)
+  /* special case: top level directory may directly contain "levelinfo.conf" */
+  if (node_parent == NULL && !valid_entry_found)
   {
     /* check if this directory directly contains a file "levelinfo.conf" */
     valid_entry_found |= LoadLevelInfoFromLevelConf(node_first, node_parent,
@@ -2157,6 +2164,16 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
 	  level_directory);
 }
 
+boolean AdjustGraphicsForEMC()
+{
+  boolean settings_changed = FALSE;
+
+  settings_changed |= adjustTreeGraphicsForEMC(leveldir_first_all);
+  settings_changed |= adjustTreeGraphicsForEMC(leveldir_first);
+
+  return settings_changed;
+}
+
 void LoadLevelInfo()
 {
   InitUserLevelDirectory(getLoginName());
@@ -2165,6 +2182,17 @@ void LoadLevelInfo()
 
   LoadLevelInfoFromLevelDir(&leveldir_first, NULL, options.level_directory);
   LoadLevelInfoFromLevelDir(&leveldir_first, NULL, getUserLevelDir(NULL));
+
+#if 1
+  /* after loading all level set information, clone the level directory tree
+     and remove all level sets without levels (these may still contain artwork
+     to be offered in the setup menu as "custom artwork", and are therefore
+     checked for existing artwork in the function "LoadLevelArtworkInfo()") */
+  leveldir_first_all = leveldir_first;
+  cloneTree(&leveldir_first, leveldir_first_all, TRUE);
+#endif
+
+  AdjustGraphicsForEMC();
 
   /* before sorting, the first entries will be from the user directory */
   leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
@@ -2217,7 +2245,7 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
 
     if (!valid_file_found)
     {
-      if (strcmp(directory_name, ".") != 0)
+      if (!strEqual(directory_name, "."))
 	Error(ERR_WARN, "ignoring artwork directory '%s'", directory_path);
 
       free(directory_path);
@@ -2239,7 +2267,7 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
   if (setup_file_hash)	/* (before defining ".color" and ".class_desc") */
   {
 #if 0
-    checkSetupFileHashIdentifier(setup_file_hash, getCookie("..."));
+    checkSetupFileHashIdentifier(setup_file_hash, filename, getCookie("..."));
 #endif
 
     /* set all structure fields according to the token/value pairs */
@@ -2249,16 +2277,8 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
 		   getHashEntry(setup_file_hash, levelinfo_tokens[i].text));
     *artwork_new = ldi;
 
-#if 1
-    if (strcmp(artwork_new->name, ANONYMOUS_NAME) == 0)
+    if (strEqual(artwork_new->name, ANONYMOUS_NAME))
       setString(&artwork_new->name, artwork_new->subdir);
-#else
-    if (strcmp(artwork_new->name, ANONYMOUS_NAME) == 0)
-    {
-      free(artwork_new->name);
-      artwork_new->name = getStringCopy(artwork_new->subdir);
-    }
-#endif
 
 #if 0
     DrawInitText(artwork_new->name, 150, FC_YELLOW);
@@ -2282,86 +2302,42 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
     artwork_new->fullpath = getPath2(node_parent->fullpath, directory_name);
   }
 
-#if 1
   artwork_new->in_user_dir =
-    (strcmp(artwork_new->basepath, OPTIONS_ARTWORK_DIRECTORY(type)) != 0);
-#else
-  artwork_new->in_user_dir =
-    (artwork_new->basepath == OPTIONS_ARTWORK_DIRECTORY(type) ? FALSE : TRUE);
-#endif
+    (!strEqual(artwork_new->basepath, OPTIONS_ARTWORK_DIRECTORY(type)));
 
   /* (may use ".sort_priority" from "setup_file_hash" above) */
   artwork_new->color = ARTWORKCOLOR(artwork_new);
-#if 1
+
   setString(&artwork_new->class_desc, getLevelClassDescription(artwork_new));
-#else
-  artwork_new->class_desc = getLevelClassDescription(artwork_new);
-#endif
 
   if (setup_file_hash == NULL)	/* (after determining ".user_defined") */
   {
-#if 0
-    if (artwork_new->name != NULL)
-    {
-      free(artwork_new->name);
-      artwork_new->name = NULL;
-    }
-#endif
-
-#if 0
-    if (artwork_new->identifier != NULL)
-    {
-      free(artwork_new->identifier);
-      artwork_new->identifier = NULL;
-    }
-#endif
-
-    if (strcmp(artwork_new->subdir, ".") == 0)
+    if (strEqual(artwork_new->subdir, "."))
     {
       if (artwork_new->user_defined)
       {
-#if 1
 	setString(&artwork_new->identifier, "private");
-#else
-	artwork_new->identifier = getStringCopy("private");
-#endif
 	artwork_new->sort_priority = ARTWORKCLASS_PRIVATE;
       }
       else
       {
-#if 1
 	setString(&artwork_new->identifier, "classic");
-#else
-	artwork_new->identifier = getStringCopy("classic");
-#endif
 	artwork_new->sort_priority = ARTWORKCLASS_CLASSICS;
       }
 
       /* set to new values after changing ".sort_priority" */
       artwork_new->color = ARTWORKCOLOR(artwork_new);
-#if 1
+
       setString(&artwork_new->class_desc,
 		getLevelClassDescription(artwork_new));
-#else
-      artwork_new->class_desc = getLevelClassDescription(artwork_new);
-#endif
     }
     else
     {
-#if 1
       setString(&artwork_new->identifier, artwork_new->subdir);
-#else
-      artwork_new->identifier = getStringCopy(artwork_new->subdir);
-#endif
     }
 
-#if 1
     setString(&artwork_new->name, artwork_new->identifier);
     setString(&artwork_new->name_sorting, artwork_new->name);
-#else
-    artwork_new->name = getStringCopy(artwork_new->identifier);
-    artwork_new->name_sorting = getStringCopy(artwork_new->name);
-#endif
   }
 
   DrawInitText(artwork_new->name, 150, FC_YELLOW);
@@ -2386,8 +2362,10 @@ static void LoadArtworkInfoFromArtworkDir(TreeInfo **node_first,
 
   if ((dir = opendir(base_directory)) == NULL)
   {
+    /* display error if directory is main "options.graphics_directory" etc. */
     if (base_directory == OPTIONS_ARTWORK_DIRECTORY(type))
       Error(ERR_WARN, "cannot read directory '%s'", base_directory);
+
     return;
   }
 
@@ -2397,15 +2375,15 @@ static void LoadArtworkInfoFromArtworkDir(TreeInfo **node_first,
     char *directory_name = dir_entry->d_name;
     char *directory_path = getPath2(base_directory, directory_name);
 
-    /* skip entries for current and parent directory */
-    if (strcmp(directory_name, ".")  == 0 ||
-	strcmp(directory_name, "..") == 0)
+    /* skip directory entries for current and parent directory */
+    if (strEqual(directory_name, ".") ||
+	strEqual(directory_name, ".."))
     {
       free(directory_path);
       continue;
     }
 
-    /* find out if directory entry is itself a directory */
+    /* skip directory entries which are not a directory or are not accessible */
     if (stat(directory_path, &file_status) != 0 ||	/* cannot stat file */
 	(file_status.st_mode & S_IFMT) != S_IFDIR)	/* not a directory */
     {
@@ -2416,7 +2394,7 @@ static void LoadArtworkInfoFromArtworkDir(TreeInfo **node_first,
     free(directory_path);
 
     /* check if this directory contains artwork with or without config file */
-    valid_entry_found |= LoadArtworkInfoFromArtworkConf(node_first,node_parent,
+    valid_entry_found |= LoadArtworkInfoFromArtworkConf(node_first, node_parent,
 							base_directory,
 							directory_name, type);
   }
@@ -2424,7 +2402,7 @@ static void LoadArtworkInfoFromArtworkDir(TreeInfo **node_first,
   closedir(dir);
 
   /* check if this directory directly contains artwork itself */
-  valid_entry_found |= LoadArtworkInfoFromArtworkConf(node_first,node_parent,
+  valid_entry_found |= LoadArtworkInfoFromArtworkConf(node_first, node_parent,
 						      base_directory, ".",
 						      type);
   if (!valid_entry_found)
@@ -2439,7 +2417,6 @@ static TreeInfo *getDummyArtworkInfo(int type)
 
   setTreeInfoToDefaults(artwork_new, type);
 
-#if 1
   setString(&artwork_new->subdir,   UNDEFINED_FILENAME);
   setString(&artwork_new->fullpath, UNDEFINED_FILENAME);
   setString(&artwork_new->basepath, UNDEFINED_FILENAME);
@@ -2447,17 +2424,6 @@ static TreeInfo *getDummyArtworkInfo(int type)
   setString(&artwork_new->identifier,   UNDEFINED_FILENAME);
   setString(&artwork_new->name,         UNDEFINED_FILENAME);
   setString(&artwork_new->name_sorting, UNDEFINED_FILENAME);
-#else
-  artwork_new->subdir   = getStringCopy(UNDEFINED_FILENAME);
-  artwork_new->fullpath = getStringCopy(UNDEFINED_FILENAME);
-  artwork_new->basepath = getStringCopy(UNDEFINED_FILENAME);
-
-  checked_free(artwork_new->name);
-
-  artwork_new->identifier   = getStringCopy(UNDEFINED_FILENAME);
-  artwork_new->name         = getStringCopy(UNDEFINED_FILENAME);
-  artwork_new->name_sorting = getStringCopy(UNDEFINED_FILENAME);
-#endif
 
   return artwork_new;
 }
@@ -2547,18 +2513,12 @@ void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
 
   while (level_node)
   {
-    char *path = getPath2(getLevelDirFromTreeInfo(level_node),
-			  ARTWORK_DIRECTORY((*artwork_node)->type));
-
-#if 0
-    if (!level_node->parent_link)
-      printf("CHECKING '%s' ['%s', '%s'] ...\n", path,
-	     level_node->subdir, level_node->name);
-#endif
-
+    /* check all tree entries for artwork, but skip parent link entries */
     if (!level_node->parent_link)
     {
       TreeInfo *topnode_last = *artwork_node;
+      char *path = getPath2(getLevelDirFromTreeInfo(level_node),
+			    ARTWORK_DIRECTORY((*artwork_node)->type));
 
       LoadArtworkInfoFromArtworkDir(artwork_node, NULL, path,
 				    (*artwork_node)->type);
@@ -2576,9 +2536,9 @@ void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
 	(*artwork_node)->sort_priority = level_node->sort_priority;
 	(*artwork_node)->color = LEVELCOLOR((*artwork_node));
       }
-    }
 
-    free(path);
+      free(path);
+    }
 
     if (level_node->node_group != NULL)
       LoadArtworkInfoFromLevelInfo(artwork_node, level_node->node_group);
@@ -2591,13 +2551,13 @@ void LoadLevelArtworkInfo()
 {
   DrawInitText("Looking for custom level artwork:", 120, FC_GREEN);
 
-  LoadArtworkInfoFromLevelInfo(&artwork.gfx_first, leveldir_first);
-  LoadArtworkInfoFromLevelInfo(&artwork.snd_first, leveldir_first);
-  LoadArtworkInfoFromLevelInfo(&artwork.mus_first, leveldir_first);
+  LoadArtworkInfoFromLevelInfo(&artwork.gfx_first, leveldir_first_all);
+  LoadArtworkInfoFromLevelInfo(&artwork.snd_first, leveldir_first_all);
+  LoadArtworkInfoFromLevelInfo(&artwork.mus_first, leveldir_first_all);
 
   /* needed for reloading level artwork not known at ealier stage */
 
-  if (strcmp(artwork.gfx_current_identifier, setup.graphics_set) != 0)
+  if (!strEqual(artwork.gfx_current_identifier, setup.graphics_set))
   {
     artwork.gfx_current =
       getTreeInfoFromIdentifier(artwork.gfx_first, setup.graphics_set);
@@ -2608,7 +2568,7 @@ void LoadLevelArtworkInfo()
       artwork.gfx_current = getFirstValidTreeInfoEntry(artwork.gfx_first);
   }
 
-  if (strcmp(artwork.snd_current_identifier, setup.sounds_set) != 0)
+  if (!strEqual(artwork.snd_current_identifier, setup.sounds_set))
   {
     artwork.snd_current =
       getTreeInfoFromIdentifier(artwork.snd_first, setup.sounds_set);
@@ -2619,7 +2579,7 @@ void LoadLevelArtworkInfo()
       artwork.snd_current = getFirstValidTreeInfoEntry(artwork.snd_first);
   }
 
-  if (strcmp(artwork.mus_current_identifier, setup.music_set) != 0)
+  if (!strEqual(artwork.mus_current_identifier, setup.music_set))
   {
     artwork.mus_current =
       getTreeInfoFromIdentifier(artwork.mus_first, setup.music_set);
@@ -2662,29 +2622,10 @@ static void SaveUserLevelInfo()
   /* always start with reliable default values */
   setTreeInfoToDefaults(level_info, TREE_TYPE_LEVEL_DIR);
 
-#if 1
   setString(&level_info->name, getLoginName());
   setString(&level_info->author, getRealName());
   level_info->levels = 100;
   level_info->first_level = 1;
-#if 0
-  level_info->sort_priority = LEVELCLASS_PRIVATE_START;
-  level_info->readonly = FALSE;
-  setString(&level_info->graphics_set, GFX_CLASSIC_SUBDIR);
-  setString(&level_info->sounds_set,   SND_CLASSIC_SUBDIR);
-  setString(&level_info->music_set,    MUS_CLASSIC_SUBDIR);
-#endif
-#else
-  ldi.name = getStringCopy(getLoginName());
-  ldi.author = getStringCopy(getRealName());
-  ldi.levels = 100;
-  ldi.first_level = 1;
-  ldi.sort_priority = LEVELCLASS_PRIVATE_START;
-  ldi.readonly = FALSE;
-  ldi.graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
-  ldi.sounds_set = getStringCopy(SND_CLASSIC_SUBDIR);
-  ldi.music_set = getStringCopy(MUS_CLASSIC_SUBDIR);
-#endif
 
   token_value_position = TOKEN_VALUE_POSITION_SHORT;
 
@@ -2694,7 +2635,6 @@ static void SaveUserLevelInfo()
   ldi = *level_info;
   for (i = 0; i < NUM_LEVELINFO_TOKENS; i++)
   {
-#if 1
     if (i == LEVELINFO_TOKEN_NAME ||
 	i == LEVELINFO_TOKEN_AUTHOR ||
 	i == LEVELINFO_TOKEN_LEVELS ||
@@ -2704,15 +2644,6 @@ static void SaveUserLevelInfo()
     /* just to make things nicer :) */
     if (i == LEVELINFO_TOKEN_AUTHOR)
       fprintf(file, "\n");	
-#else
-    if (i != LEVELINFO_TOKEN_IDENTIFIER &&
-	i != LEVELINFO_TOKEN_NAME_SORTING &&
-	i != LEVELINFO_TOKEN_IMPORTED_FROM &&
-	i != LEVELINFO_TOKEN_IMPORTED_BY &&
-	i != LEVELINFO_TOKEN_FILENAME &&
-	i != LEVELINFO_TOKEN_FILETYPE)
-      fprintf(file, "%s\n", getSetupLine(levelinfo_tokens, "", i));
-#endif
   }
 
   token_value_position = TOKEN_VALUE_POSITION_DEFAULT;
@@ -2746,6 +2677,10 @@ char *getSetupValue(int type, void *value)
       strcpy(value_string, (*(boolean *)value ? "yes" : "no"));
       break;
 
+    case TYPE_ECS_AGA:
+      strcpy(value_string, (*(boolean *)value ? "AGA" : "ECS"));
+      break;
+
     case TYPE_KEY:
       strcpy(value_string, getKeyNameFromKey(*(Key *)value));
       break;
@@ -2766,6 +2701,9 @@ char *getSetupValue(int type, void *value)
       value_string[0] = '\0';
       break;
   }
+
+  if (type & TYPE_GHOSTED)
+    strcpy(value_string, "n/a");
 
   return value_string;
 }
@@ -2792,8 +2730,8 @@ char *getSetupLine(struct TokenInfo *token_info, char *prefix, int token_nr)
     char *keyname = getKeyNameFromKey(key);
 
     /* add comment, if useful */
-    if (strcmp(keyname, "(undefined)") != 0 &&
-	strcmp(keyname, "(unknown)") != 0)
+    if (!strEqual(keyname, "(undefined)") &&
+	!strEqual(keyname, "(unknown)"))
     {
       /* add at least one whitespace */
       strcat(line, " ");
@@ -2830,7 +2768,8 @@ void LoadLevelSetup_LastSeries()
     if (leveldir_current == NULL)
       leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
 
-    checkSetupFileHashIdentifier(level_setup_hash, getCookie("LEVELSETUP"));
+    checkSetupFileHashIdentifier(level_setup_hash, filename,
+				 getCookie("LEVELSETUP"));
 
     freeSetupFileHash(level_setup_hash);
   }
@@ -2894,7 +2833,7 @@ static void checkSeriesInfo()
   {
     if (strlen(dir_entry->d_name) > 4 &&
 	dir_entry->d_name[3] == '.' &&
-	strcmp(&dir_entry->d_name[4], LEVELFILE_EXTENSION) == 0)
+	strEqual(&dir_entry->d_name[4], LEVELFILE_EXTENSION))
     {
       char levelnum_str[4];
       int levelnum_value;
@@ -2974,7 +2913,8 @@ void LoadLevelSetup_SeriesInfo()
       leveldir_current->handicap_level = level_nr;
     }
 
-    checkSetupFileHashIdentifier(level_setup_hash, getCookie("LEVELSETUP"));
+    checkSetupFileHashIdentifier(level_setup_hash, filename,
+				 getCookie("LEVELSETUP"));
 
     freeSetupFileHash(level_setup_hash);
   }

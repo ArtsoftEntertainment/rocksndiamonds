@@ -130,6 +130,13 @@ void FreeFontInfo(struct FontBitmapInfo *font_bitmap_info)
   free(font_bitmap_info);
 }
 
+struct FontBitmapInfo *getFontBitmapInfo(int font_nr)
+{
+  int font_bitmap_id = gfx.select_font_function(font_nr);
+
+  return &gfx.font_bitmap_info[font_bitmap_id];
+}
+
 int getFontWidth(int font_nr)
 {
   int font_bitmap_id = gfx.select_font_function(font_nr);
@@ -255,6 +262,11 @@ void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
   struct FontBitmapInfo *font = &gfx.font_bitmap_info[font_bitmap_id];
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
+#if 0
+  int border_1 = gfx.sx + gfx.sxsize;
+  int border_2 = gfx.dx + gfx.dxsize;
+  int dst_x_start = dst_x;
+#endif
   Bitmap *src_bitmap;
   int src_x, src_y;
   char *text_ptr = text;
@@ -262,9 +274,13 @@ void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
   if (font->bitmap == NULL)
     return;
 
+  /* skip text to be printed outside the window (left/right will be clipped) */
+  if (dst_y < 0 || dst_y + font_height > video.height)
+    return;
+
   /* add offset for drawing font characters */
-  dst_x += font->draw_x;
-  dst_y += font->draw_y;
+  dst_x += font->draw_xoffset;
+  dst_y += font->draw_yoffset;
 
   while (*text_ptr)
   {
@@ -274,6 +290,25 @@ void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
       c = ' ';		/* print space instaed of newline */
 
     getFontCharSource(font_nr, c, &src_bitmap, &src_x, &src_y);
+
+    /* clip text at the left side of the window */
+    if (dst_x < 0)
+    {
+      dst_x += font_width;
+
+      continue;
+    }
+
+    /* clip text at the right side of the window */
+#if 1
+    if (dst_x + font_width > video.width)
+      break;
+#else
+    /* (this does not work well when trying to print text to whole screen) */
+    if ((dst_x_start < border_1 && dst_x + font_width > border_1) ||
+	(dst_x_start < border_2 && dst_x + font_width > border_2))
+      break;
+#endif
 
     if (mask_mode == BLIT_INVERSE)	/* special mode for text gadgets */
     {
