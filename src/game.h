@@ -182,7 +182,10 @@ struct PlayerInfo
   boolean present;		/* player present in level playfield */
   boolean connected;		/* player connected (locally or via network) */
   boolean active;		/* player present and connected */
+  boolean mapped;		/* player already mapped to input device */
+
   boolean killed;		/* player maybe present/active, but killed */
+  boolean reanimated;		/* player maybe killed, but reanimated */
 
   int index_nr;			/* player number (0 to 3) */
   int index_bit;		/* player number bit (1 << 0 to 1 << 3) */
@@ -190,6 +193,7 @@ struct PlayerInfo
   int client_nr;		/* network client identifier */
 
   byte action;			/* action from local input device */
+  byte mapped_action;		/* action mapped from device to player */
   byte effective_action;	/* action acknowledged from network server
 				   or summarized over all configured input
 				   devices when in single player mode */
@@ -202,8 +206,9 @@ struct PlayerInfo
 
   int GfxAction;
 
-  boolean use_murphy;
+  int initial_element;		/* EL_PLAYER_1 to EL_PLAYER_4 or EL_SP_MURPHY */
   int artwork_element;
+  boolean use_murphy;
 
   boolean block_last_field;
   int block_delay_adjustment;	/* needed for different engine versions */

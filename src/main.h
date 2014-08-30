@@ -108,6 +108,7 @@
 #define EP_THROWABLE			28
 #define EP_CAN_EXPLODE			29
 #define EP_GRAVITY_REACHABLE		30
+#define EP_DONT_GET_HIT_BY		31
 
 /* values for pre-defined properties */
 /* (from here on, values can be changed by inserting new values) */
@@ -280,6 +281,7 @@
 					 PLAYER_BITS_3 | \
 					 PLAYER_BITS_4)
 #define PLAYER_BITS_TRIGGER		(1 << 4)
+#define PLAYER_BITS_ACTION		(1 << 5)
 
 /* values for move directions (bits 0 - 3: basic move directions) */
 #define MV_BIT_PREVIOUS			4
@@ -336,7 +338,7 @@
 #define CP_WHEN_REMOVABLE		4
 #define CP_WHEN_WALKABLE		5
 
-/* values for change actions for custom elements */
+/* values for change actions for custom elements (stored in level file) */
 #define CA_NO_ACTION			0
 #define CA_EXIT_PLAYER			1
 #define CA_KILL_PLAYER			2
@@ -355,6 +357,9 @@
 #define CA_SET_CE_SCORE			15
 #define CA_SET_CE_VALUE			16
 #define CA_SET_ENGINE_SCAN_MODE		17
+#define CA_SET_PLAYER_INVENTORY		18
+#define CA_SET_CE_ARTWORK		19
+#define CA_SET_LEVEL_RANDOM_SEED	20
 
 #define CA_HEADLINE_LEVEL_ACTIONS	250
 #define CA_HEADLINE_PLAYER_ACTIONS	251
@@ -394,6 +399,7 @@
 #define CA_ARG_PLAYER_4			(CA_ARG_PLAYER + PLAYER_BITS_4)
 #define CA_ARG_PLAYER_ANY		(CA_ARG_PLAYER + PLAYER_BITS_ANY)
 #define CA_ARG_PLAYER_TRIGGER		(CA_ARG_PLAYER + PLAYER_BITS_TRIGGER)
+#define CA_ARG_PLAYER_ACTION		(CA_ARG_PLAYER + PLAYER_BITS_ACTION)
 #define CA_ARG_PLAYER_HEADLINE		(CA_ARG_PLAYER + 999)
 #define CA_ARG_NUMBER			11000
 #define CA_ARG_NUMBER_MIN		(CA_ARG_NUMBER + 0)
@@ -410,15 +416,19 @@
 #define CA_ARG_ELEMENT_RESET		(CA_ARG_ELEMENT + 0)
 #define CA_ARG_ELEMENT_TARGET		(CA_ARG_ELEMENT + 1)
 #define CA_ARG_ELEMENT_TRIGGER		(CA_ARG_ELEMENT + 2)
+#define CA_ARG_ELEMENT_ACTION		(CA_ARG_ELEMENT + 7)
 #define CA_ARG_ELEMENT_HEADLINE		(CA_ARG_ELEMENT + 997)
 #define CA_ARG_ELEMENT_CV_TARGET	(CA_ARG_ELEMENT_TARGET)
 #define CA_ARG_ELEMENT_CV_TRIGGER	(CA_ARG_ELEMENT_TRIGGER)
+#define CA_ARG_ELEMENT_CV_ACTION	(CA_ARG_ELEMENT_ACTION)
 #define CA_ARG_ELEMENT_CV_HEADLINE	(CA_ARG_ELEMENT_HEADLINE)
 #define CA_ARG_ELEMENT_NR_TARGET	(CA_ARG_ELEMENT + 3)
 #define CA_ARG_ELEMENT_NR_TRIGGER	(CA_ARG_ELEMENT + 4)
+#define CA_ARG_ELEMENT_NR_ACTION	(CA_ARG_ELEMENT + 8)
 #define CA_ARG_ELEMENT_NR_HEADLINE	(CA_ARG_ELEMENT + 998)
 #define CA_ARG_ELEMENT_CS_TARGET	(CA_ARG_ELEMENT + 5)
 #define CA_ARG_ELEMENT_CS_TRIGGER	(CA_ARG_ELEMENT + 6)
+#define CA_ARG_ELEMENT_CS_ACTION	(CA_ARG_ELEMENT + 9)
 #define CA_ARG_ELEMENT_CS_HEADLINE	(CA_ARG_ELEMENT + 999)
 #define CA_ARG_SPEED			13000
 #define CA_ARG_SPEED_NOT_MOVING		(CA_ARG_SPEED + STEPSIZE_NOT_MOVING)
@@ -455,6 +465,16 @@
 #define CA_ARG_SCAN_MODE_NORMAL		(CA_ARG_SCAN_MODE + MV_NORMAL)
 #define CA_ARG_SCAN_MODE_REVERSE	(CA_ARG_SCAN_MODE + MV_REVERSE)
 #define CA_ARG_SCAN_MODE_HEADLINE	(CA_ARG_SCAN_MODE + 999)
+#define CA_ARG_INVENTORY		18000
+#define CA_ARG_INVENTORY_RESET		(CA_ARG_INVENTORY + 0)
+#define CA_ARG_INVENTORY_RM_TARGET	(CA_ARG_INVENTORY + 1)
+#define CA_ARG_INVENTORY_RM_TRIGGER	(CA_ARG_INVENTORY + 2)
+#define CA_ARG_INVENTORY_RM_ACTION	(CA_ARG_INVENTORY + 3)
+#define CA_ARG_INVENTORY_RM_FIRST	(CA_ARG_INVENTORY + 4)
+#define CA_ARG_INVENTORY_RM_LAST	(CA_ARG_INVENTORY + 5)
+#define CA_ARG_INVENTORY_RM_ALL		(CA_ARG_INVENTORY + 6)
+#define CA_ARG_INVENTORY_HEADLINE	(CA_ARG_INVENTORY + 998)
+#define CA_ARG_INVENTORY_RM_HEADLINE	(CA_ARG_INVENTORY + 999)
 #define CA_ARG_UNDEFINED		65535
 
 /* values for custom move patterns (bits 0 - 3: basic move directions) */
@@ -548,6 +568,7 @@
 #define IS_THROWABLE(e)		HAS_PROPERTY(e, EP_THROWABLE)
 #define CAN_EXPLODE(e)		HAS_PROPERTY(e, EP_CAN_EXPLODE)
 #define IS_GRAVITY_REACHABLE(e)	HAS_PROPERTY(e, EP_GRAVITY_REACHABLE)
+#define DONT_GET_HIT_BY(e)	HAS_PROPERTY(e, EP_DONT_GET_HIT_BY)
 
 /* macros for special configurable properties */
 #define IS_EM_SLIPPERY_WALL(e)	HAS_PROPERTY(e, EP_EM_SLIPPERY_WALL)
@@ -674,9 +695,11 @@
 	 			 (e) <= EL_EM_GATE_4)
 #define IS_EMC_GATE(e)		((e) >= EL_EMC_GATE_5 &&		\
 	 			 (e) <= EL_EMC_GATE_8)
+#define IS_DC_GATE(e)		((e) == EL_DC_GATE_WHITE)
 #define IS_GATE(e)		(IS_RND_GATE(e) ||			\
 				 IS_EM_GATE(e) ||			\
-				 IS_EMC_GATE(e))
+				 IS_EMC_GATE(e) ||			\
+				 IS_DC_GATE(e))
 #define RND_GATE_NR(e)		((e) - EL_GATE_1)
 #define EM_GATE_NR(e)		((e) - EL_EM_GATE_1)
 #define EMC_GATE_NR(e)		((e) - EL_EMC_GATE_5 + 4)
@@ -696,12 +719,17 @@
 	 			 (e) <= EL_EMC_GATE_8_GRAY)
 #define IS_EMC_GATE_GRAY_ACTIVE(e) ((e) >= EL_EMC_GATE_5_GRAY_ACTIVE &&	\
 	 			 (e) <= EL_EMC_GATE_8_GRAY_ACTIVE)
+#define IS_DC_GATE_GRAY(e)	((e) == EL_DC_GATE_WHITE_GRAY)
+#define IS_DC_GATE_GRAY_ACTIVE(e) ((e) == EL_DC_GATE_WHITE_GRAY_ACTIVE)
+
 #define IS_GATE_GRAY(e)		(IS_RND_GATE_GRAY(e) ||			\
 				 IS_EM_GATE_GRAY(e) ||			\
-				 IS_EMC_GATE_GRAY(e))
+				 IS_EMC_GATE_GRAY(e) ||			\
+				 IS_DC_GATE_GRAY(e))
 #define IS_GATE_GRAY_ACTIVE(e)	(IS_RND_GATE_GRAY_ACTIVE(e) ||		\
 				 IS_EM_GATE_GRAY_ACTIVE(e) ||		\
-				 IS_EMC_GATE_GRAY_ACTIVE(e))
+				 IS_EMC_GATE_GRAY_ACTIVE(e) ||		\
+				 IS_DC_GATE_GRAY_ACTIVE(e))
 #define RND_GATE_GRAY_NR(e)	((e) - EL_GATE_1_GRAY)
 #define RND_GATE_GRAY_ACTIVE_NR(e) ((e) - EL_GATE_1_GRAY_ACTIVE)
 #define EM_GATE_GRAY_NR(e)	((e) - EL_EM_GATE_1_GRAY)
@@ -731,8 +759,12 @@
 #define IS_DC_STEELWALL_2(e)	((e) >= EL_DC_STEELWALL_2_LEFT &&	\
 				 (e) <= EL_DC_STEELWALL_2_SINGLE)
 
+#if 1
+#define GFX_ELEMENT(e)		(element_info[e].gfx_element)
+#else
 #define GFX_ELEMENT(e)		(element_info[e].use_gfx_element ?	\
 				 element_info[e].gfx_element : e)
+#endif
 
 /* !!! CHECK THIS !!! */
 #if 1
@@ -888,6 +920,10 @@
 #define STD_ELEMENT_CONTENTS	4
 #define MAX_ELEMENT_CONTENTS	8
 
+/* values for initial player inventory */
+#define MIN_INITIAL_INVENTORY_SIZE	1
+#define MAX_INITIAL_INVENTORY_SIZE	8
+
 /* often used screen positions */
 #define SX			8
 #define SY			8
@@ -929,6 +965,12 @@
 #define MICROLABEL1_YPOS	(MICROLEVEL_YPOS - 36)
 #define MICROLABEL2_YPOS	(MICROLEVEL_YPOS + MICROLEVEL_YSIZE + 7)
 
+/* values for GfxRedraw */
+#define GFX_REDRAW_NONE				(0)
+#define GFX_REDRAW_TILE				(1 << 0)
+#define GFX_REDRAW_TILE_CRUMBLED		(1 << 1)
+#define GFX_REDRAW_TILE_CRUMBLED_NEIGHBOURS	(1 << 2)
+#define GFX_REDRAW_TILE_TWINKLED		(1 << 3)
 
 /* score for elements */
 #define SC_EMERALD		0
@@ -1949,12 +1991,12 @@
 /* program information and versioning definitions */
 #define PROGRAM_VERSION_MAJOR		3
 #define PROGRAM_VERSION_MINOR		2
-#define PROGRAM_VERSION_PATCH		5
+#define PROGRAM_VERSION_PATCH		6
 #define PROGRAM_VERSION_BUILD		0
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
-#define PROGRAM_COPYRIGHT_STRING	"Copyright ©1995-2007 by Holger Schemel"
+#define PROGRAM_COPYRIGHT_STRING	"Copyright ©1995-2008 by Holger Schemel"
 #define PROGRAM_EMAIL_STRING		"info@artsoft.org"
 #define PROGRAM_WEBSITE_STRING		"http://www.artsoft.org/"
 #define PROGRAM_GAME_BY_STRING		"A Game by Artsoft Entertainment"
@@ -2252,6 +2294,8 @@ struct LevelInfo
   char name[MAX_LEVEL_NAME_LEN + 1];
   char author[MAX_LEVEL_AUTHOR_LEN + 1];
 
+  int random_seed;
+
   struct EnvelopeInfo envelope[NUM_ENVELOPES];
 
   int score[LEVEL_SCORE_ELEMENTS];
@@ -2312,7 +2356,12 @@ struct LevelInfo
   int initial_player_stepsize[MAX_PLAYERS];	/* initial player speed */
   boolean initial_player_gravity[MAX_PLAYERS];
 
+  boolean use_initial_inventory[MAX_PLAYERS];
+  int initial_inventory_size[MAX_PLAYERS];
+  int initial_inventory_content[MAX_PLAYERS][MAX_INITIAL_INVENTORY_SIZE];
+
   boolean em_slippery_gems;	/* EM style "gems slip from wall" behaviour */
+  boolean em_explodes_by_fire;	/* EM style chain explosion behaviour */
   boolean use_spring_bug;	/* for compatibility with old levels */
   boolean use_time_orb_bug;	/* for compatibility with old levels */
   boolean instant_relocation;	/* no visual delay when relocating player */
@@ -2335,6 +2384,9 @@ struct LevelInfo
   boolean no_valid_file;	/* set when level file missing or invalid */
 
   boolean changed;		/* set when level was changed in the editor */
+
+  /* runtime flags to handle bugs in old levels (not stored in level file) */
+  boolean use_action_after_change_bug;
 };
 
 struct GlobalInfo
@@ -2345,6 +2397,8 @@ struct GlobalInfo
 
   char *convert_leveldir;
   int convert_level_nr;
+
+  char *create_images_dir;
 
   int num_toons;
 
@@ -2376,7 +2430,7 @@ struct ElementChangeInfo
   int delay_random;		/* added frame delay before changed (random) */
   int delay_frames;		/* either 1 (frames) or 50 (seconds; 50 fps) */
 
-  int trigger_element;		/* element triggering change */
+  int initial_trigger_element;	/* initial element triggering change */
 
   struct Content target_content;/* elements for extended change target */
   boolean use_target_content;	/* use extended change target */
@@ -2391,8 +2445,11 @@ struct ElementChangeInfo
   int action_type;		/* type of action */
   int action_mode;		/* mode of action */
   int action_arg;		/* parameter of action */
+  int action_element;		/* element related to action */
 
   /* ---------- internal values used at runtime when playing ---------- */
+
+  int trigger_element;		/* element triggering change */
 
   /* functions that are called before, while and after the change of an
      element -- currently only used for non-custom elements */
@@ -2471,7 +2528,7 @@ struct ElementInfo
   unsigned long properties[NUM_EP_BITFIELDS];	/* element base properties */
 
   boolean use_gfx_element;	/* use custom graphic element */
-  int gfx_element;		/* optional custom graphic element */
+  int gfx_element_initial;	/* initial optional custom graphic element */
 
   int access_direction;		/* accessible from which direction */
 
@@ -2521,6 +2578,8 @@ struct ElementInfo
   struct ElementChangeInfo *event_page[NUM_CHANGE_EVENTS]; /* page for event */
 
   boolean in_group[NUM_GROUP_ELEMENTS];
+
+  int gfx_element;		/* runtime optional custom graphic element */
 
   int collect_score;		/* runtime score value for collecting */
 
@@ -2738,6 +2797,7 @@ extern int			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int 			GfxDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern int 			GfxRedraw[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
 extern int			ActiveElement[MAX_NUM_ELEMENTS];
 extern int			ActiveButton[NUM_IMAGE_FILES];

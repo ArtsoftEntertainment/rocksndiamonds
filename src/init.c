@@ -344,6 +344,15 @@ static int getFontBitmapID(int font_nr)
     special = GFX_SPECIAL_ARG_DOOR;
 #endif
 
+#if 0
+  if (special != -1)
+  {
+    printf("%s%s\n",
+	   font_info[font_nr].token_name,
+	   special_suffix_info[special].suffix);
+  }
+#endif
+
   if (special != -1)
     return font_info[font_nr].special_bitmap_id[special];
   else
@@ -3144,10 +3153,16 @@ void InitElementPropertiesStatic()
     EL_SOKOBAN_FIELD_EMPTY,
     EL_EXIT_OPEN,
     EL_EM_EXIT_OPEN,
+#if 1
+    EL_EM_EXIT_OPENING,
+#endif
     EL_SP_EXIT_OPEN,
     EL_SP_EXIT_OPENING,
     EL_STEEL_EXIT_OPEN,
     EL_EM_STEEL_EXIT_OPEN,
+#if 1
+    EL_EM_STEEL_EXIT_OPENING,
+#endif
     EL_GATE_1,
     EL_GATE_2,
     EL_GATE_3,
@@ -4849,6 +4864,14 @@ void InitElementPropertiesEngine(int engine_version)
       -1
     };
 
+    static int ep_em_explodes_by_fire[] =
+    {
+      EL_EM_DYNAMITE,
+      EL_EM_DYNAMITE_ACTIVE,
+      EL_MOLE,
+      -1
+    };
+
     /* special EM style gems behaviour */
     for (i = 0; ep_em_slippery_wall[i] != -1; i++)
       SET_PROPERTY(ep_em_slippery_wall[i], EP_EM_SLIPPERY_WALL,
@@ -4858,6 +4881,11 @@ void InitElementPropertiesEngine(int engine_version)
     SET_PROPERTY(EL_EXPANDABLE_WALL_GROWING, EP_EM_SLIPPERY_WALL,
 		 (level.em_slippery_gems &&
 		  engine_version > VERSION_IDENT(2,0,1,0)));
+
+    /* special EM style explosion behaviour regarding chain reactions */
+    for (i = 0; ep_em_explodes_by_fire[i] != -1; i++)
+      SET_PROPERTY(ep_em_explodes_by_fire[i], EP_EXPLODES_BY_FIRE,
+		   level.em_explodes_by_fire);
   }
 
   /* this is needed because some graphics depend on element properties */
@@ -4881,6 +4909,18 @@ void InitElementPropertiesAfterLoading(int engine_version)
       element_info[element].explosion_delay = 17;
       element_info[element].ignition_delay = 8;
     }
+  }
+}
+
+void InitElementPropertiesGfxElement()
+{
+  int i;
+
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+  {
+    struct ElementInfo *ei = &element_info[i];
+
+    ei->gfx_element = (ei->use_gfx_element ? ei->gfx_element_initial : i);
   }
 }
 
@@ -4976,6 +5016,7 @@ static void InitGlobal()
 
   global.autoplay_leveldir = NULL;
   global.convert_leveldir = NULL;
+  global.create_images_dir = NULL;
 
   global.frames_per_second = 0;
   global.fps_slowdown = FALSE;
@@ -5156,6 +5197,18 @@ void Execute_Command(char *command)
       *str_ptr++ = '\0';			/* terminate leveldir string */
       global.convert_level_nr = atoi(str_ptr);	/* get level_nr value */
     }
+  }
+  else if (strncmp(command, "create images ", 14) == 0)
+  {
+#if defined(TARGET_SDL)
+    global.create_images_dir = getStringCopy(&command[14]);
+
+    if (access(global.create_images_dir, W_OK) != 0)
+      Error(ERR_EXIT, "image target directory '%s' not found or not writable",
+	    global.create_images_dir);
+#else
+    Error(ERR_EXIT, "command only available for SDL target");
+#endif
   }
 
 #if DEBUG
@@ -5611,7 +5664,29 @@ static void InitImages()
 {
   print_timestamp_init("InitImages");
 
+#if 0
+  printf("::: leveldir_current->identifier == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
+  printf("::: leveldir_current->graphics_path == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
+  printf("::: leveldir_current->graphics_set == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_set);
+  printf("::: getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : LEVELDIR_ARTWORK_SET(leveldir_current, ARTWORK_TYPE_GRAPHICS));
+#endif
+
   setLevelArtworkDir(artwork.gfx_first);
+
+#if 0
+  printf("::: leveldir_current->identifier == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
+  printf("::: leveldir_current->graphics_path == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
+  printf("::: leveldir_current->graphics_set == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_set);
+  printf("::: getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : LEVELDIR_ARTWORK_SET(leveldir_current, ARTWORK_TYPE_GRAPHICS));
+#endif
 
 #if 0
   printf("::: InitImages for '%s' ['%s', '%s'] ['%s', '%s']\n",
@@ -5736,46 +5811,94 @@ static boolean CheckArtworkConfigForCustomElements(char *filename)
   return redefined_ce_found;
 }
 
+static boolean CheckArtworkTypeForRedefinedCustomElements(int type)
+{
+  char *filename_base, *filename_local;
+  boolean redefined_ce_found = FALSE;
+
+  setLevelArtworkDir(ARTWORK_FIRST_NODE(artwork, type));
+
+#if 0
+  printf("::: leveldir_current->identifier == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
+  printf("::: leveldir_current->graphics_path == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
+  printf("::: leveldir_current->graphics_set == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_set);
+  printf("::: getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'\n",
+	 leveldir_current == NULL ? "[NULL]" :
+	 LEVELDIR_ARTWORK_SET(leveldir_current, type));
+#endif
+
+  /* first look for special artwork configured in level series config */
+  filename_base = getCustomArtworkLevelConfigFilename(type);
+
+#if 0
+  printf("::: filename_base == '%s'\n", filename_base);
+#endif
+
+  if (fileExists(filename_base))
+    redefined_ce_found |= CheckArtworkConfigForCustomElements(filename_base);
+
+  filename_local = getCustomArtworkConfigFilename(type);
+
+#if 0
+  printf("::: filename_local == '%s'\n", filename_local);
+#endif
+
+  if (filename_local != NULL && !strEqual(filename_base, filename_local))
+    redefined_ce_found |= CheckArtworkConfigForCustomElements(filename_local);
+
+#if 0
+  printf("::: redefined_ce_found == %d\n", redefined_ce_found);
+#endif
+
+  return redefined_ce_found;
+}
+
 static void InitOverrideArtwork()
 {
-  boolean init_override_from_setup = TRUE;
+  boolean redefined_ce_found = FALSE;
 
+  /* to check if this level set redefines any CEs, do not use overriding */
   gfx.override_level_graphics = FALSE;
   gfx.override_level_sounds   = FALSE;
   gfx.override_level_music    = FALSE;
 
-  if (setup.auto_override_artwork)
+  /* now check if this level set has definitions for custom elements */
+  if (setup.override_level_graphics == AUTO ||
+      setup.override_level_sounds   == AUTO ||
+      setup.override_level_music    == AUTO)
+    redefined_ce_found =
+      (CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_GRAPHICS) |
+       CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_SOUNDS) |
+       CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_MUSIC));
+
+#if 0
+  printf("::: redefined_ce_found == %d\n", redefined_ce_found);
+#endif
+
+  if (redefined_ce_found)
   {
-    char *filename_base, *filename_local;
-    boolean redefined_ce_found = FALSE;
-
-    /* first look for special artwork configured in level series config */
-    filename_base = getCustomArtworkLevelConfigFilename(ARTWORK_TYPE_GRAPHICS);
-
-    if (fileExists(filename_base))
-      redefined_ce_found |= CheckArtworkConfigForCustomElements(filename_base);
-
-    filename_local = getCustomArtworkConfigFilename(ARTWORK_TYPE_GRAPHICS);
-
-    if (filename_local != NULL && !strEqual(filename_base, filename_local))
-      redefined_ce_found |= CheckArtworkConfigForCustomElements(filename_local);
-
-    if (!redefined_ce_found)
-    {
-      gfx.override_level_graphics = TRUE;
-      gfx.override_level_sounds   = TRUE;
-      gfx.override_level_music    = TRUE;
-
-      init_override_from_setup = FALSE;
-    }
+    /* this level set has CE definitions: change "AUTO" to "FALSE" */
+    gfx.override_level_graphics = (setup.override_level_graphics == TRUE);
+    gfx.override_level_sounds   = (setup.override_level_sounds   == TRUE);
+    gfx.override_level_music    = (setup.override_level_music    == TRUE);
+  }
+  else
+  {
+    /* this level set has no CE definitions: change "AUTO" to "TRUE" */
+    gfx.override_level_graphics = (setup.override_level_graphics != FALSE);
+    gfx.override_level_sounds   = (setup.override_level_sounds   != FALSE);
+    gfx.override_level_music    = (setup.override_level_music    != FALSE);
   }
 
-  if (init_override_from_setup)
-  {
-    gfx.override_level_graphics = setup.override_level_graphics;
-    gfx.override_level_sounds   = setup.override_level_sounds;
-    gfx.override_level_music    = setup.override_level_music;
-  }
+#if 0
+  printf("::: => %d, %d, %d\n",
+	 gfx.override_level_graphics,
+	 gfx.override_level_sounds,
+	 gfx.override_level_music);
+#endif
 }
 
 static char *getNewArtworkIdentifier(int type)
@@ -6106,6 +6229,11 @@ void OpenAll()
   else if (global.convert_leveldir)
   {
     ConvertLevels();
+    return;
+  }
+  else if (global.create_images_dir)
+  {
+    CreateLevelSketchImages();
     return;
   }
 

@@ -223,6 +223,10 @@ void HandleOtherEvents(Event *event)
     case SDL_JOYBUTTONUP:
       HandleJoystickEvent(event);
       break;
+
+    case SDL_SYSWMEVENT:
+      HandleWindowManagerEvent(event);
+      break;
 #endif
 
     default:
@@ -411,6 +415,13 @@ void HandleClientMessageEvent(ClientMessageEvent *event)
 {
   if (CheckCloseWindowEvent(event))
     CloseAllAndExit(0);
+}
+
+void HandleWindowManagerEvent(Event *event)
+{
+#if defined(TARGET_SDL)
+  SDLHandleWindowManagerEvent(event);
+#endif
 }
 
 void HandleButton(int mx, int my, int button, int button_nr)
@@ -733,7 +744,7 @@ void HandleKey(Key key, int key_status)
   if (game_status == GAME_MODE_MAIN &&
       (key == setup.shortcut.toggle_pause || key == KSYM_space))
   {
-    StartGameActions(options.network, setup.autorecord, NEW_RANDOMIZE);
+    StartGameActions(options.network, setup.autorecord, level.random_seed);
 
     return;
   }

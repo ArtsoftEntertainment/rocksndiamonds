@@ -184,6 +184,12 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(2),
+    &li.random_seed,			0
+  },
+
+  {
+    -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.use_step_counter,		FALSE
   },
@@ -216,6 +222,12 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     -1,					-1,
     TYPE_BITFIELD,			CONF_VALUE_8_BIT(7),
     &li.dont_collide_with_bits,		~0	/* default: always deadly */
+  },
+
+  {
+    -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(8),
+    &li.em_explodes_by_fire,		FALSE
   },
 
   {
@@ -311,6 +323,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
     &li.explosion_element[0],		EL_PLAYER_1
   },
+  {
+    EL_PLAYER_1,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
+    &li.use_initial_inventory[0],	FALSE
+  },
+  {
+    EL_PLAYER_1,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
+    &li.initial_inventory_size[0],	1
+  },
+  {
+    EL_PLAYER_1,			-1,
+    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
+    &li.initial_inventory_content[0][0],EL_EMPTY, NULL,
+    &li.initial_inventory_size[0],	1, MAX_INITIAL_INVENTORY_SIZE
+  },
 
   {
     EL_PLAYER_2,			-1,
@@ -351,6 +379,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     EL_PLAYER_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
     &li.explosion_element[1],		EL_PLAYER_2
+  },
+  {
+    EL_PLAYER_2,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
+    &li.use_initial_inventory[1],	FALSE
+  },
+  {
+    EL_PLAYER_2,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
+    &li.initial_inventory_size[1],	1
+  },
+  {
+    EL_PLAYER_2,			-1,
+    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
+    &li.initial_inventory_content[1][0],EL_EMPTY, NULL,
+    &li.initial_inventory_size[1],	1, MAX_INITIAL_INVENTORY_SIZE
   },
 
   {
@@ -393,6 +437,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
     &li.explosion_element[2],		EL_PLAYER_3
   },
+  {
+    EL_PLAYER_3,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
+    &li.use_initial_inventory[2],	FALSE
+  },
+  {
+    EL_PLAYER_3,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
+    &li.initial_inventory_size[2],	1
+  },
+  {
+    EL_PLAYER_3,			-1,
+    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
+    &li.initial_inventory_content[2][0],EL_EMPTY, NULL,
+    &li.initial_inventory_size[2],	1, MAX_INITIAL_INVENTORY_SIZE
+  },
 
   {
     EL_PLAYER_4,			-1,
@@ -433,6 +493,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     EL_PLAYER_4,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
     &li.explosion_element[3],		EL_PLAYER_4
+  },
+  {
+    EL_PLAYER_4,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
+    &li.use_initial_inventory[3],	FALSE
+  },
+  {
+    EL_PLAYER_4,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
+    &li.initial_inventory_size[3],	1
+  },
+  {
+    EL_PLAYER_4,			-1,
+    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
+    &li.initial_inventory_content[3][0],EL_EMPTY, NULL,
+    &li.initial_inventory_size[3],	1, MAX_INITIAL_INVENTORY_SIZE
   },
 
   {
@@ -806,8 +882,8 @@ static struct LevelFileConfigInfo chunk_config_CUSX_base[] =
   {
     -1,					-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &xx_ei.gfx_element,			EL_EMPTY_SPACE,
-    &yy_ei.gfx_element
+    &xx_ei.gfx_element_initial,		EL_EMPTY_SPACE,
+    &yy_ei.gfx_element_initial
   },
 
   {
@@ -1045,7 +1121,7 @@ static struct LevelFileConfigInfo chunk_config_CUSX_change[] =
   {
     -1,					-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &xx_change.trigger_element,		EL_EMPTY_SPACE
+    &xx_change.initial_trigger_element,	EL_EMPTY_SPACE
   },
 
   {
@@ -1102,6 +1178,12 @@ static struct LevelFileConfigInfo chunk_config_CUSX_change[] =
 
   {
     -1,					-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
+    &xx_change.action_element,		EL_EMPTY_SPACE
+  },
+
+  {
+    -1,					-1,
     TYPE_CONTENT_LIST,			CONF_VALUE_BYTES(1),
     &xx_change.target_content,		EL_EMPTY_SPACE, NULL,
     &xx_num_contents,			1, 1
@@ -1132,7 +1214,7 @@ static struct LevelFileConfigInfo chunk_config_GRPX[] =
   {
     -1,					-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &xx_ei.gfx_element,			EL_EMPTY_SPACE
+    &xx_ei.gfx_element_initial,		EL_EMPTY_SPACE
   },
 
   {
@@ -1620,6 +1702,9 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
 
   level->changed = FALSE;
 
+  /* set all bug compatibility flags to "false" => do not emulate this bug */
+  level->use_action_after_change_bug = FALSE;
+
   if (leveldir_current == NULL)		/* only when dumping level */
     return;
 
@@ -1950,6 +2035,7 @@ int getMappedElement(int element)
 
     case EL_KEY_OBSOLETE:
       element = EL_KEY_1;
+      break;
 
     case EL_EM_KEY_1_FILE_OBSOLETE:
       element = EL_EM_KEY_1;
@@ -2355,7 +2441,7 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
     ReadUnusedBytesFromFile(file, 7);
 
     ei->use_gfx_element = getFile8Bit(file);
-    ei->gfx_element = getMappedElement(getFile16BitBE(file));
+    ei->gfx_element_initial = getMappedElement(getFile16BitBE(file));
 
     ei->collect_score_initial = getFile8Bit(file);
     ei->collect_count_initial = getFile8Bit(file);
@@ -2384,7 +2470,7 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
     ei->change->delay_random = getFile16BitBE(file);
     ei->change->delay_frames = getFile16BitBE(file);
 
-    ei->change->trigger_element = getMappedElement(getFile16BitBE(file));
+    ei->change->initial_trigger_element= getMappedElement(getFile16BitBE(file));
 
     ei->change->explode = getFile8Bit(file);
     ei->change->use_target_content = getFile8Bit(file);
@@ -2454,7 +2540,7 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
   ei->use_last_ce_value = getFile8Bit(file);
 
   ei->use_gfx_element = getFile8Bit(file);
-  ei->gfx_element = getMappedElement(getFile16BitBE(file));
+  ei->gfx_element_initial = getMappedElement(getFile16BitBE(file));
 
   ei->collect_score_initial = getFile8Bit(file);
   ei->collect_count_initial = getFile8Bit(file);
@@ -2517,7 +2603,7 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
     change->delay_random = getFile16BitBE(file);
     change->delay_frames = getFile16BitBE(file);
 
-    change->trigger_element = getMappedElement(getFile16BitBE(file));
+    change->initial_trigger_element = getMappedElement(getFile16BitBE(file));
 
     change->explode = getFile8Bit(file);
     change->use_target_content = getFile8Bit(file);
@@ -2587,7 +2673,7 @@ static int LoadLevel_GRP1(FILE *file, int chunk_size, struct LevelInfo *level)
   group->num_elements = getFile8Bit(file);
 
   ei->use_gfx_element = getFile8Bit(file);
-  ei->gfx_element = getMappedElement(getFile16BitBE(file));
+  ei->gfx_element_initial = getMappedElement(getFile16BitBE(file));
 
   group->choice_mode = getFile8Bit(file);
 
@@ -6239,7 +6325,7 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
 
   /* try to detect and fix "Snake Bite" levels, which are broken with 3.2.0 */
   {
-    int element = EL_CUSTOM_START + 255;
+    int element = EL_CUSTOM_256;
     struct ElementInfo *ei = &element_info[element];
     struct ElementChangeInfo *change = &ei->change_page[0];
 
@@ -6259,9 +6345,40 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
       change->target_element = EL_PLAYER_1;
   }
 
+  /* try to detect and fix "Zelda II" levels, which are broken with 3.2.5 */
+  {
+    int element = EL_CUSTOM_16;
+    struct ElementInfo *ei = &element_info[element];
+
+    /* This is needed to fix a problem that was caused by a bugfix in function
+       game.c/CheckTriggeredElementChangeExt() introduced with 3.2.5 that
+       corrects the behaviour when a custom element changes to another custom
+       element with a higher element number that has change actions defined.
+       Normally, only one change per frame is allowed for custom elements.
+       Therefore, it is checked if a custom element already changed in the
+       current frame; if it did, subsequent changes are suppressed.
+       Unfortunately, this is only checked for element changes, but not for
+       change actions, which are still executed. As the function above loops
+       through all custom elements from lower to higher, an element change
+       resulting in a lower CE number won't be checked again, while a target
+       element with a higher number will also be checked, and potential change
+       actions will get executed for this CE, too (which is wrong), while
+       further changes are ignored (which is correct). As this bugfix breaks
+       Zelda II (but no other levels), allow the previous, incorrect behaviour
+       for this outstanding level set to not break the game or existing tapes */
+
+    if (strncmp(leveldir_current->identifier, "zelda2", 6) == 0 ||
+	strncmp(ei->description, "scanline - row 1", 16) == 0)
+      level->use_action_after_change_bug = TRUE;
+  }
+
   /* not centering level after relocating player was default only in 3.2.3 */
   if (level->game_version == VERSION_IDENT(3,2,3,0))	/* (no pre-releases) */
     level->shifted_relocation = TRUE;
+
+  /* EM style elements always chain-exploded in R'n'D engine before 3.2.6 */
+  if (level->game_version < VERSION_IDENT(3,2,6,0))
+    level->em_explodes_by_fire = TRUE;
 }
 
 static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
@@ -6393,6 +6510,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
   /* initialize element properties for level editor etc. */
   InitElementPropertiesEngine(level->game_version);
   InitElementPropertiesAfterLoading(level->game_version);
+  InitElementPropertiesGfxElement();
 }
 
 static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
@@ -6771,7 +6889,7 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
 	WriteUnusedBytesToFile(file, 7);
 
 	putFile8Bit(file, ei->use_gfx_element);
-	putFile16BitBE(file, ei->gfx_element);
+	putFile16BitBE(file, ei->gfx_element_initial);
 
 	putFile8Bit(file, ei->collect_score_initial);
 	putFile8Bit(file, ei->collect_count_initial);
@@ -6797,7 +6915,7 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
 	putFile16BitBE(file, ei->change->delay_random);
 	putFile16BitBE(file, ei->change->delay_frames);
 
-	putFile16BitBE(file, ei->change->trigger_element);
+	putFile16BitBE(file, ei->change->initial_trigger_element);
 
 	putFile8Bit(file, ei->change->explode);
 	putFile8Bit(file, ei->change->use_target_content);
@@ -6850,7 +6968,7 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
   putFile8Bit(file, ei->use_last_ce_value);
 
   putFile8Bit(file, ei->use_gfx_element);
-  putFile16BitBE(file, ei->gfx_element);
+  putFile16BitBE(file, ei->gfx_element_initial);
 
   putFile8Bit(file, ei->collect_score_initial);
   putFile8Bit(file, ei->collect_count_initial);
@@ -6909,7 +7027,7 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
     putFile16BitBE(file, change->delay_random);
     putFile16BitBE(file, change->delay_frames);
 
-    putFile16BitBE(file, change->trigger_element);
+    putFile16BitBE(file, change->initial_trigger_element);
 
     putFile8Bit(file, change->explode);
     putFile8Bit(file, change->use_target_content);
@@ -6961,7 +7079,7 @@ static void SaveLevel_GRP1(FILE *file, struct LevelInfo *level, int element)
   putFile8Bit(file, group->num_elements);
 
   putFile8Bit(file, ei->use_gfx_element);
-  putFile16BitBE(file, ei->gfx_element);
+  putFile16BitBE(file, ei->gfx_element_initial);
 
   putFile8Bit(file, group->choice_mode);
 
@@ -8013,9 +8131,8 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	28
 #define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	29
 #define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	30
-#define SETUP_TOKEN_AUTO_OVERRIDE_ARTWORK	31
 
-#define NUM_GLOBAL_SETUP_TOKENS			32
+#define NUM_GLOBAL_SETUP_TOKENS			31
 
 /* editor setup */
 #define SETUP_TOKEN_EDITOR_EL_BOULDERDASH	0
@@ -8140,10 +8257,9 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_STRING, &si.graphics_set,	"graphics_set"			},
   { TYPE_STRING, &si.sounds_set,	"sounds_set"			},
   { TYPE_STRING, &si.music_set,		"music_set"			},
-  { TYPE_SWITCH, &si.override_level_graphics, "override_level_graphics"	},
-  { TYPE_SWITCH, &si.override_level_sounds,   "override_level_sounds"	},
-  { TYPE_SWITCH, &si.override_level_music,    "override_level_music"	},
-  { TYPE_SWITCH, &si.auto_override_artwork,   "auto_override_artwork"	},
+  { TYPE_SWITCH3,&si.override_level_graphics, "override_level_graphics"	},
+  { TYPE_SWITCH3,&si.override_level_sounds,   "override_level_sounds"	},
+  { TYPE_SWITCH3,&si.override_level_music,    "override_level_music"	},
 };
 
 static boolean not_used = FALSE;
@@ -8298,7 +8414,6 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->override_level_graphics = FALSE;
   si->override_level_sounds = FALSE;
   si->override_level_music = FALSE;
-  si->auto_override_artwork = FALSE;
 
   si->editor.el_boulderdash		= TRUE;
   si->editor.el_emerald_mine		= TRUE;
@@ -8357,7 +8472,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 #if defined(CREATE_SPECIAL_EDITION_RND_JUE)
   si->handicap = FALSE;
   si->fullscreen = TRUE;
-  si->auto_override_artwork = TRUE;
+  si->override_level_graphics = AUTO;
+  si->override_level_sounds = AUTO;
+  si->override_level_music = AUTO;
 #endif
 }
 
@@ -9626,9 +9743,9 @@ void LoadHelpTextInfo()
 }
 
 
-/* ------------------------------------------------------------------------- *
- * convert levels
- * ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
+/* convert levels                                                            */
+/* ------------------------------------------------------------------------- */
 
 #define MAX_NUM_CONVERT_LEVELS		1000
 
@@ -9738,3 +9855,165 @@ void ConvertLevels()
 
   CloseAllAndExit(0);
 }
+
+
+/* ------------------------------------------------------------------------- */
+/* create and save images for use in level sketches (raw BMP format)         */
+/* ------------------------------------------------------------------------- */
+
+void CreateLevelSketchImages()
+{
+#if defined(TARGET_SDL)
+  Bitmap *bitmap1;
+  Bitmap *bitmap2;
+  int i;
+
+  InitElementPropertiesGfxElement();
+
+  bitmap1 = CreateBitmap(TILEX, TILEY, DEFAULT_DEPTH);
+  bitmap2 = CreateBitmap(MINI_TILEX, MINI_TILEY, DEFAULT_DEPTH);
+
+  for (i = 0; i < NUM_FILE_ELEMENTS; i++)
+  {
+    Bitmap *src_bitmap;
+    int src_x, src_y;
+    int element = getMappedElement(i);
+    int graphic = el2edimg(element);
+    char basename1[16];
+    char basename2[16];
+    char *filename1;
+    char *filename2;
+
+    sprintf(basename1, "%03d.bmp", i);
+    sprintf(basename2, "%03ds.bmp", i);
+
+    filename1 = getPath2(global.create_images_dir, basename1);
+    filename2 = getPath2(global.create_images_dir, basename2);
+
+    getGraphicSource(graphic, 0, &src_bitmap, &src_x, &src_y);
+    BlitBitmap(src_bitmap, bitmap1, src_x, src_y, TILEX, TILEY, 0, 0);
+
+    if (SDL_SaveBMP(bitmap1->surface, filename1) != 0)
+      Error(ERR_EXIT, "cannot save level sketch image file '%s'", filename1);
+
+    getMiniGraphicSource(graphic, &src_bitmap, &src_x, &src_y);
+    BlitBitmap(src_bitmap, bitmap2, src_x, src_y, MINI_TILEX, MINI_TILEY, 0, 0);
+
+    if (SDL_SaveBMP(bitmap2->surface, filename2) != 0)
+      Error(ERR_EXIT, "cannot save level sketch image file '%s'", filename2);
+
+    free(filename1);
+    free(filename2);
+
+    if (options.debug)
+      printf("%03d `%03d%c", i, i, (i % 10 < 9 ? ' ' : '\n'));
+  }
+
+  FreeBitmap(bitmap1);
+  FreeBitmap(bitmap2);
+
+  if (options.debug)
+    printf("\n");
+
+  Error(ERR_INFO, "%d normal and small images created", NUM_FILE_ELEMENTS);
+
+  CloseAllAndExit(0);
+#endif
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* create and save images for custom and group elements (raw BMP format)     */
+/* ------------------------------------------------------------------------- */
+
+void CreateCustomElementImages()
+{
+#if defined(TARGET_SDL)
+  char *filename = "graphics.classic/RocksCE.bmp";
+  Bitmap *bitmap;
+  Bitmap *src_bitmap;
+  int dummy_graphic = IMG_CUSTOM_99;
+  int yoffset_ce = 0;
+  int yoffset_ge = (TILEY * NUM_CUSTOM_ELEMENTS / 16);
+  int src_x, src_y;
+  int i;
+
+  bitmap = CreateBitmap(TILEX * 16 * 2,
+			TILEY * (NUM_CUSTOM_ELEMENTS + NUM_GROUP_ELEMENTS) / 16,
+			DEFAULT_DEPTH);
+
+  getGraphicSource(dummy_graphic, 0, &src_bitmap, &src_x, &src_y);
+
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    int x = i % 16;
+    int y = i / 16;
+    int ii = i + 1;
+    int j;
+
+    BlitBitmap(src_bitmap, bitmap, 0, 0, TILEX, TILEY,
+	       TILEX * x, TILEY * y + yoffset_ce);
+
+    BlitBitmap(src_bitmap, bitmap, 0, TILEY, TILEX, TILEY,
+	       TILEX * x + TILEX * 16, TILEY * y + yoffset_ce);
+
+    for (j = 2; j >= 0; j--)
+    {
+      int c = ii % 10;
+
+      BlitBitmap(src_bitmap, bitmap, TILEX + c * 7, 0, 6, 10,
+		 TILEX * x + 6 + j * 7,
+		 TILEY * y + 11 + yoffset_ce);
+
+      BlitBitmap(src_bitmap, bitmap, TILEX + c * 8, TILEY, 6, 10,
+		 TILEX * 16 + TILEX * x + 6 + j * 8,
+		 TILEY * y + 10 + yoffset_ce);
+
+      ii /= 10;
+    }
+  }
+
+  for (i = 0; i < NUM_GROUP_ELEMENTS; i++)
+  {
+    int x = i % 16;
+    int y = i / 16;
+    int ii = i + 1;
+    int j;
+
+    BlitBitmap(src_bitmap, bitmap, 0, 0, TILEX, TILEY,
+	       TILEX * x, TILEY * y + yoffset_ge);
+
+    BlitBitmap(src_bitmap, bitmap, 0, TILEY, TILEX, TILEY,
+	       TILEX * x + TILEX * 16, TILEY * y + yoffset_ge);
+
+    for (j = 1; j >= 0; j--)
+    {
+      int c = ii % 10;
+
+      BlitBitmap(src_bitmap, bitmap, TILEX + c * 10, 11, 10, 10,
+		 TILEX * x + 6 + j * 10,
+		 TILEY * y + 11 + yoffset_ge);
+
+      BlitBitmap(src_bitmap, bitmap, TILEX + c * 8, TILEY + 12, 6, 10,
+		 TILEX * 16 + TILEX * x + 10 + j * 8,
+		 TILEY * y + 10 + yoffset_ge);
+
+      ii /= 10;
+    }
+  }
+
+  if (SDL_SaveBMP(bitmap->surface, filename) != 0)
+    Error(ERR_EXIT, "cannot save CE graphics file '%s'", filename);
+
+  FreeBitmap(bitmap);
+
+  CloseAllAndExit(0);
+#endif
+}
+
+#if 0
+void CreateLevelSketchImages_TEST()
+{
+  void CreateCustomElementImages()
+}
+#endif

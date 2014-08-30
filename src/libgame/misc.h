@@ -25,7 +25,7 @@
 #define READ_COUNTER			1
 
 /* values for InitRND() */
-#define NEW_RANDOMIZE			-1
+#define NEW_RANDOMIZE			0
 
 #define RANDOM_ENGINE			0
 #define RANDOM_SIMPLE			1
@@ -169,6 +169,7 @@ char getValidConfigValueChar(char);
 
 int get_integer_from_string(char *);
 boolean get_boolean_from_string(char *);
+int get_switch3_from_string(char *);
 
 ListNode *newListNode(void);
 void addNodeToList(ListNode **, char *, void *);

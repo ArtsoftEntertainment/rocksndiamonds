@@ -1,3 +1,126 @@
+2008-10-11
+	* fixed behaviour of player option "no centering when relocating" which
+	  was incorrect when disabled and relocation target inside visible area
+	  and "no scrolling when relocating" enabled at the same time
+
+2008-10-06
+	* fixed problems with re-mapping players on playfield to input devices:
+	  previously, players found on the level playfield were changed to the
+	  players connected to input devices (for example, player 3 in the level
+	  was changed to player 1 (using artwork of player 3, to be able to use
+	  a player with a different color)); this had the disadvantage that CE
+	  conditions using player elements did not work (because the players in
+	  the level definition are different to those effectively used in-game);
+	  the new system uses the same player elements as defined in the level
+	  playfield and re-maps the input devices of connected players to the
+	  corresponding player elements when playing the level (in the above
+	  example, player 3 now really exists in the game and is moved using the
+	  events from input device 1); level tapes still store the events from
+	  input devices 1 to 4, which are then re-mapped to players accordingly
+	  when re-playing the tape (just as it is done when playing the level)
+
+2008-09-29
+	* fixed bug with player relocation while the player switches an element
+
+2008-09-24
+	* fixed bug with EM/DC style exit and EM/DC style steel exit which was
+	  not walkable (and did not let the player enter) when in process of
+	  opening, but not fully open yet (which can cause the player not being
+	  able to enter the exit in EM/DC style levels in time)
+
+2008-08-02
+	* fixed some bugs regarding the new level/CE random seed reset options
+
+2008-07-14
+	* moved "level settings" and "editor settings" to two tabbed screens in
+	  level editor to gain space for additional level property settings
+	* added level setting to start a level with always the same random seed
+	* added CE action "set random seed" to re-initialize random seed in game
+	  (this is the only CE action that gets executed before the CE changes,
+	  which is needed to use the newly set random seed during the CE change)
+
+2008-06-16
+	* fixed redraw problem of special editor door when playing from editor
+
+2008-06-16
+	* fixed initialization of gfx_element for level sketch image creation
+
+2008-06-15
+	* added switch for EM style dynamite "[ ] explodes with chain reaction"
+	  (with default set to "on" for existing levels, but "off" for all new
+	  levels), as EM style dynamite does not chain-explode in original EM
+
+2008-02-05
+	* added optional initial inventory for players (pre-collected elements)
+	* added change page actions "set player inventory" and "set CE artwork"
+	* added recognition of "player" parameter on change pages when player
+	  actions are defined, but no trigger player in corresponding condition
+	  (this resulted in actions that only affected the first player before)
+	* fixed bug with change actions being executed for newly created custom
+	  elements resulting from custom element changes, when the intention was
+	  only to check for change actions for the previous custom element
+
+2008-02-03
+	* changed design and size of element drawing area in level editor
+	* added "element used as action parameter" to element change actions
+
+2008-01-27
+	* added possibility to reanimate player immediately after his death
+	  (for example, by "change to <player> when explosion of <player>")
+
+2008-01-25
+	* fixed bug with "gray" white door not being uncovered by magnifier
+	* added score for collecting (any) key to the white key config page
+
+2008-01-22
+	* added condition "deadly when <getting hit by>" for custom elements
+	  that behaves a bit like the existing "deadly when <colliding with>",
+	  but with the following differences:
+	  - it only kills players or friends when it was moving before it hits
+	  - it does not kill players or friends that try to run into it
+
+2008-01-21
+	* fixed the following change conditions where a player element is used
+	  as the "element that is triggering the custom element change":
+	  - touching <element>
+	  - hitting <element>
+	  - explosion of <element>
+	  - move of <element>
+	  (the last two conditions already worked partially, but only for the
+	  first player, and not for the "Murphy" player when using "move of")
+
+2008-01-20
+	* fixed crash bug caused by accessing invalid element (with value -1)
+	  in UpdateGameControlValues()
+	* fixed graphical bug when using two-tile movement animations with EMC
+	  game engine without explicitly using native EMC graphics engine
+
+2007-10-31
+	* fixed bug in new "can dig" feature (see below) so that an unsuccessful
+	  try to push something (due to push delay) does not cause a dig action
+
+2007-10-29
+	* fixed bug with reference elements used as trigger elements on custom
+	  element change pages not being recognized
+	* fixed bug with reference elements not being removed from the playfield
+	* added engine functionality that allows custom elements that "can dig"
+	  other elements not only to do so when moving by themselves, but also
+	  when being pushed by the player (therefore adding the functionality to
+	  push one element over another element, replacing it with the new one)
+
+2007-10-23
+	* added command line function to write level sketch images to directory
+
+2007-10-20
+	* merged override and auto-override options into new override options
+	  with a new data type than can take the values "no", "yes" and "auto"
+
+2007-10-18
+	* fixed growing steel wall to also leave behind steel wall instead of
+	  normal, destructible wall
+	* fixed handling of rocks falling through stacks of quicksand with
+	  different speed (before, the rocks just got stuck in the quicksand)
+
 2007-10-09
 	* fixed nasty bug with auto-override and normal override not working on
 	  program startup (especially when current level set has custom artwork)

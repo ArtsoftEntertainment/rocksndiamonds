@@ -75,6 +75,7 @@ int 			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+int 			GfxRedraw[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
 int			ActiveElement[MAX_NUM_ELEMENTS];
 int			ActiveButton[NUM_IMAGE_FILES];
@@ -5538,6 +5539,7 @@ static void print_usage()
 	 "  \"dump tape FILE\"                 dump tape data from FILE\n"
 	 "  \"autoplay LEVELDIR [NR ...]\"     play level tapes for LEVELDIR\n"
 	 "  \"convert LEVELDIR [NR]\"          convert levels in LEVELDIR\n"
+	 "  \"create images DIRECTORY\"        write BMP images to DIRECTORY\n"
 	 "\n",
 	 program.command_basename);
 }
