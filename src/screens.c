@@ -97,12 +97,13 @@ static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 static int setup_mode = SETUP_MODE_MAIN;
 static int info_mode = INFO_MODE_MAIN;
 
-#define mSX (SX + (game_status >= GAME_MODE_MAIN &&	\
-		   game_status <= GAME_MODE_SETUP ?	\
-		   menu.draw_xoffset[game_status] : menu.draw_xoffset_default))
-#define mSY (SY + (game_status >= GAME_MODE_MAIN &&	\
-		   game_status <= GAME_MODE_SETUP ?	\
-		   menu.draw_yoffset[game_status] : menu.draw_yoffset_default))
+#define DRAW_OFFSET_MODE(x)	(x >= GAME_MODE_MAIN &&			\
+				 x <= GAME_MODE_SETUP ? x :		\
+				 x == GAME_MODE_PSEUDO_TYPENAME ?	\
+				 GAME_MODE_MAIN : GAME_MODE_DEFAULT)
+
+#define mSX (SX + menu.draw_xoffset[DRAW_OFFSET_MODE(game_status)])
+#define mSY (SY + menu.draw_yoffset[DRAW_OFFSET_MODE(game_status)])
 
 #define NUM_MENU_ENTRIES_ON_SCREEN (menu.list_size[game_status] > 2 ?	\
 				    menu.list_size[game_status] :	\
@@ -308,7 +309,7 @@ void DrawMainMenu()
   DrawText(mSX + level_width + 5 * 32, mSY + 3*32, int2str(level_nr,3),
 	   FONT_VALUE_1);
 
-  DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, TRUE);
+  DrawMicroLevel(MICROLEVEL_XPOS, MICROLEVEL_YPOS, TRUE);
 
   DrawTextF(mSX + 32 + level_width - 2, mSY + 3*32 + 1, FONT_TEXT_3, "%d-%d",
 	    leveldir_current->first_level, leveldir_current->last_level);
@@ -346,6 +347,7 @@ void DrawMainMenu()
   OpenDoor(DOOR_CLOSE_1 | DOOR_OPEN_2);
 }
 
+#if 0
 static void gotoTopLevelDir()
 {
   /* move upwards to top level directory */
@@ -374,9 +376,11 @@ static void gotoTopLevelDir()
     leveldir_current = leveldir_current->node_parent;
   }
 }
+#endif
 
 void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 {
+  static unsigned long level_delay = 0;
   static int choice = 5;
   int x = 0;
   int y = choice;
@@ -402,9 +406,8 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 
   if (y == 1 && ((x == 10 && level_nr > leveldir_current->first_level) ||
 		 (x == 14 && level_nr < leveldir_current->last_level)) &&
-      button)
+      button && DelayReached(&level_delay, GADGET_FRAME_DELAY))
   {
-    static unsigned long level_delay = 0;
     int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
     int old_level_nr = level_nr;
     int new_level_nr;
@@ -415,11 +418,25 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
     if (new_level_nr > leveldir_current->last_level)
       new_level_nr = leveldir_current->last_level;
 
+#if 1
+    if (setup.handicap && new_level_nr > leveldir_current->handicap_level)
+    {
+      /* skipping levels is only allowed when trying to skip single level */
+      if (setup.skip_levels && step == 1 &&
+	  Request("Level still unsolved ! Skip despite handicap ?", REQ_ASK))
+      {
+	leveldir_current->handicap_level++;
+	SaveLevelSetup_SeriesInfo();
+      }
+
+      new_level_nr = leveldir_current->handicap_level;
+    }
+#else
     if (setup.handicap && new_level_nr > leveldir_current->handicap_level)
       new_level_nr = leveldir_current->handicap_level;
+#endif
 
-    if (new_level_nr != old_level_nr &&
-	DelayReached(&level_delay, GADGET_FRAME_DELAY))
+    if (new_level_nr != old_level_nr)
     {
       level_nr = new_level_nr;
 
@@ -427,7 +444,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	       FONT_VALUE_1);
 
       LoadLevel(level_nr);
-      DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, TRUE);
+      DrawMicroLevel(MICROLEVEL_XPOS, MICROLEVEL_YPOS, TRUE);
 
       TapeErase();
       LoadTape(level_nr);
@@ -466,7 +483,9 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	  SaveLevelSetup_LastSeries();
 	  SaveLevelSetup_SeriesInfo();
 
+#if 0
 	  gotoTopLevelDir();
+#endif
 
 	  DrawChooseLevel();
 	}
@@ -524,7 +543,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 
   if (game_status == GAME_MODE_MAIN)
   {
-    DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, FALSE);
+    DrawMicroLevel(MICROLEVEL_XPOS, MICROLEVEL_YPOS, FALSE);
     DoAnimation();
   }
 }
@@ -1481,6 +1500,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   int num_entries = numTreeInfoInGroup(ti);
   int num_page_entries;
   int last_game_status = game_status;	/* save current game status */
+  boolean position_set_by_scrollbar = (dx == 999);
 
   /* force LEVELS draw offset on choose level and artwork setup screen */
   game_status = GAME_MODE_LEVELS;
@@ -1512,7 +1532,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       ti->cl_cursor = entry_pos - ti->cl_first;
     }
 
-    if (dx == 999)	/* first entry is set by scrollbar position */
+    if (position_set_by_scrollbar)
       ti->cl_first = dy;
     else
       AdjustChooseTreeScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL,
@@ -1634,7 +1654,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     return;
   }
 
-  if (IN_VIS_FIELD(x, y) &&
+  if (!anyScrollbarGadgetActive() &&
+      IN_VIS_FIELD(x, y) &&
       mx < screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x &&
       y >= 0 && y < num_page_entries)
   {
@@ -1942,6 +1963,7 @@ static struct TokenInfo setup_info_game[] =
 {
   { TYPE_SWITCH,	&setup.team_mode,	"Team-Mode:"		},
   { TYPE_SWITCH,	&setup.handicap,	"Handicap:"		},
+  { TYPE_SWITCH,	&setup.skip_levels,	"Skip Levels:"		},
   { TYPE_SWITCH,	&setup.time_limit,	"Timelimit:"		},
   { TYPE_SWITCH,	&setup.autorecord,	"Auto-Record:"		},
   { TYPE_EMPTY,		NULL,			""			},
@@ -1957,6 +1979,7 @@ static struct TokenInfo setup_info_editor[] =
 #endif
   { TYPE_SWITCH,	&setup.editor.el_boulderdash,	"BoulderDash:"	},
   { TYPE_SWITCH,	&setup.editor.el_emerald_mine,	"Emerald Mine:"	},
+  { TYPE_SWITCH,	&setup.editor.el_emerald_mine_club,"E.M. Club:"	},
   { TYPE_SWITCH,	&setup.editor.el_more,		"More:"		},
   { TYPE_SWITCH,	&setup.editor.el_sokoban,	"Sokoban:"	},
   { TYPE_SWITCH,	&setup.editor.el_supaplex,	"Supaplex:"	},
@@ -2944,17 +2967,133 @@ void HandleGameActions()
   if (game_status != GAME_MODE_PLAYING)
     return;
 
-  if (local_player->LevelSolved)
-    GameWon();
+  /* !!! FIX THIS (START) !!! */
+  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  {
+    byte *recorded_player_action;
+    byte summarized_player_action = 0;
+    byte tape_action[MAX_PLAYERS];
+    int i;
 
-  if (AllPlayersGone && !TAPE_IS_STOPPED(tape))
-    TapeStop();
+    if (level.native_em_level->lev->home == 0)	/* all players at home */
+    {
+      GameWon();
 
-  GameActions();
-  BackToFront();
+      if (!TAPE_IS_STOPPED(tape))
+	TapeStop();
 
-  if (tape.auto_play && !tape.playing)
-    AutoPlayTape();	/* continue automatically playing next tape */
+      if (game_status != GAME_MODE_PLAYING)
+	return;
+    }
+
+    if (level.native_em_level->ply1->alive == 0 &&
+	level.native_em_level->ply2->alive == 0)	/* all dead */
+      AllPlayersGone = TRUE;
+
+    if (AllPlayersGone && !TAPE_IS_STOPPED(tape))
+      TapeStop();
+
+    /* --- game actions --- */
+
+    if (tape.pausing)
+    {
+      /* don't use 100% CPU while in pause mode -- this should better be solved
+	 like in the R'n'D game engine! */
+
+      Delay(10);
+
+      return;
+    }
+
+    recorded_player_action = (tape.playing ? TapePlayAction() : NULL);
+
+#if 1
+    /* !!! CHECK THIS (tape.pausing is always FALSE here!) !!! */
+    if (recorded_player_action == NULL && tape.pausing)
+      return;
+#endif
+
+    for (i = 0; i < MAX_PLAYERS; i++)
+    {
+      summarized_player_action |= stored_player[i].action;
+
+      if (!network_playing)
+	stored_player[i].effective_action = stored_player[i].action;
+    }
+
+    if (!options.network && !setup.team_mode)
+      local_player->effective_action = summarized_player_action;
+
+    if (recorded_player_action != NULL)
+      for (i = 0; i < MAX_PLAYERS; i++)
+	stored_player[i].effective_action = recorded_player_action[i];
+
+    for (i = 0; i < MAX_PLAYERS; i++)
+    {
+      tape_action[i] = stored_player[i].effective_action;
+
+      /* !!! (this does not happen in the EM engine) !!! */
+      if (tape.recording && tape_action[i] && !tape.player_participates[i])
+	tape.player_participates[i] = TRUE;  /* player just appeared from CE */
+    }
+
+    /* only save actions from input devices, but not programmed actions */
+    if (tape.recording)
+      TapeRecordAction(tape_action);
+
+    GameActions_EM(local_player->effective_action);
+
+    if (TimeFrames >= FRAMES_PER_SECOND)
+    {
+      TimeFrames = 0;
+      TapeTime++;
+
+      if (!level.use_step_counter)
+      {
+	TimePlayed++;
+
+	if (TimeLeft > 0)
+	{
+	  TimeLeft--;
+
+	  if (TimeLeft <= 10 && setup.time_limit)
+	    PlaySoundStereo(SND_GAME_RUNNING_OUT_OF_TIME, SOUND_MIDDLE);
+
+	  DrawGameValue_Time(TimeLeft);
+
+	  if (!TimeLeft && setup.time_limit)
+	    level.native_em_level->lev->killed_out_of_time = TRUE;
+	}
+	else if (level.time == 0 && level.native_em_level->lev->home > 0)
+	  DrawGameValue_Time(TimePlayed);
+
+	level.native_em_level->lev->time =
+	  (level.time == 0 ? TimePlayed : TimeLeft);
+      }
+
+      if (tape.recording || tape.playing)
+	DrawVideoDisplay(VIDEO_STATE_TIME_ON, TapeTime);
+    }
+
+    FrameCounter++;
+    TimeFrames++;
+
+    BackToFront();
+  }
+  else
+  {
+    if (local_player->LevelSolved)
+      GameWon();
+
+    if (AllPlayersGone && !TAPE_IS_STOPPED(tape))
+      TapeStop();
+
+    GameActions();
+    BackToFront();
+
+    if (tape.auto_play && !tape.playing)
+      AutoPlayTape();	/* continue automatically playing next tape */
+  }
 }
 
 /* ---------- new screen button stuff -------------------------------------- */

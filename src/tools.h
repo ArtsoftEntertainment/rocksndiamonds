@@ -43,20 +43,20 @@
 #define DOOR_ACTION_2		(DOOR_OPEN_2 | DOOR_CLOSE_2)
 #define DOOR_ACTION		(DOOR_ACTION_1 | DOOR_ACTION_2)
 #define DOOR_COPY_BACK		(1 << 4)
-#define DOOR_NO_DELAY		(1 << 5)
-#define DOOR_GET_STATE		(1 << 6)
-#define DOOR_SET_STATE		(1 << 7)
+#define DOOR_NO_COPY_BACK	(1 << 5)
+#define DOOR_NO_DELAY		(1 << 6)
+#define DOOR_GET_STATE		(1 << 7)
+#define DOOR_SET_STATE		(1 << 8)
 
 /* for Request */
 #define REQ_ASK			(1 << 0)
-#define REQ_OPEN		(1 << 1)
-#define REQ_CLOSE		(1 << 2)
-#define REQ_CONFIRM		(1 << 3)
+#define REQ_CONFIRM		(1 << 1)
+#define REQ_PLAYER		(1 << 2)
+#define REQ_STAY_OPEN		(1 << 3)
 #define REQ_STAY_CLOSED		(1 << 4)
-#define REQ_STAY_OPEN		(1 << 5)
-#define REQ_PLAYER		(1 << 6)
+#define REQ_REOPEN		(1 << 5)
 
-#define REQUEST_WAIT_FOR	(REQ_ASK | REQ_CONFIRM | REQ_PLAYER)
+#define REQUEST_WAIT_FOR_INPUT	(REQ_ASK | REQ_CONFIRM | REQ_PLAYER)
 
 void DumpTile(int, int);
 
@@ -85,6 +85,7 @@ void DrawAllPlayers(void);
 void DrawPlayerField(int, int);
 void DrawPlayer(struct PlayerInfo *);
 
+void getGraphicSourceExt(int, int, Bitmap **, int *, int *, boolean);
 void getGraphicSource(int, int, Bitmap **, int *, int *);
 void DrawGraphic(int, int, int, int);
 void DrawGraphicExt(DrawBuffer *, int, int, int, int);
@@ -95,8 +96,6 @@ void DrawMiniGraphic(int, int, int);
 void getMiniGraphicSource(int, Bitmap **, int *, int *);
 void DrawMiniGraphicExt(DrawBuffer *, int, int, int);
 
-void DrawGraphicShifted(int, int, int, int, int, int, int, int);
-void DrawGraphicShiftedThruMask(int, int, int, int, int, int, int);
 void DrawScreenElementExt(int, int, int, int, int, int, int);
 void DrawLevelElementExt(int, int, int, int, int, int, int);
 void DrawScreenElementShifted(int, int, int, int, int, int);
@@ -137,6 +136,9 @@ void UndrawSpecialEditorDoor();
 void CreateToolButtons();
 void FreeToolButtons();
 
+int map_element_RND_to_EM(int);
+int map_element_EM_to_RND(int);
+
 int get_next_element(int);
 int el_act_dir2img(int, int, int);
 int el_act2img(int, int);
@@ -145,5 +147,8 @@ int el2baseimg(int);
 int el2img(int);
 int el2edimg(int);
 int el2preimg(int);
+
+unsigned int InitRND(long);
+void InitGraphicInfo_EM(void);
 
 #endif	/* TOOLS_H */

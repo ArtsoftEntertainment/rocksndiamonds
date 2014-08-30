@@ -19,9 +19,11 @@
    reliable default values. If that value is SND_ARG_UNDEFINED, it will
    be dynamically determined, using some of the other list values. */
 
-struct ConfigInfo sound_config_suffix[] =
+struct ConfigTypeInfo sound_config_suffix[] =
 {
   { ".mode_loop",			ARG_UNDEFINED,	TYPE_BOOLEAN	},
+  { ".volume",				"100",		TYPE_INTEGER	},
+  { ".priority",			"0",		TYPE_INTEGER	},
 
   { NULL,				NULL,		0		}
 };
@@ -110,7 +112,7 @@ struct ConfigInfo sound_config[] =
   { "spaceship.waiting",		"roehr.wav"			},
   { "yamyam.moving",			UNDEFINED_FILENAME		},
   { "yamyam.waiting",			"njam.wav"			},
-  { "yamyam.digging",			UNDEFINED_FILENAME		},
+  { "yamyam.digging",			"njam.wav"			},
   { "robot.moving",			"schlurf.wav"			},
   { "robot.moving.mode_loop",		"false"				},
   { "robot.waiting",			UNDEFINED_FILENAME		},
@@ -139,6 +141,11 @@ struct ConfigInfo sound_config[] =
   { "spring.pushing",			"pusch.wav"			},
   { "spring.impact",			"klopf.wav"			},
   { "[wall].growing",			UNDEFINED_FILENAME		},
+  { "emc_android.pushing",		"pusch.wav"			},
+  { "emc_android.moving",		"roehr.wav"			},
+  { "emc_android.moving.mode_loop",	"false"				},
+  { "emc_android.dropping",		"deng.wav"			},
+  { "emc_magic_ball.dropping",		"deng.wav"			},
 
   /* sounds for Diamond Caves style elements and actions */
   { "pearl.collecting",			"pong.wav"			},
@@ -150,6 +157,7 @@ struct ConfigInfo sound_config[] =
   { "[envelope].opening",		UNDEFINED_FILENAME		},
   { "[envelope].closing",		UNDEFINED_FILENAME		},
   { "invisible_sand.digging",		"schlurf.wav"			},
+  { "invisible_sand.active.digging",	"schlurf.wav"			},
   { "shield_normal.collecting",		"pong.wav"			},
   { "shield_normal.active",		UNDEFINED_FILENAME		},
   { "shield_deadly.collecting",		"pong.wav"			},

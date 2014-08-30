@@ -23,7 +23,15 @@ static struct ToonInfo toons[MAX_NUM_TOONS];
 
 static void PrepareBackbuffer()
 {
-  /* Fill empty backbuffer for animation functions */
+  if (game_status == GAME_MODE_PLAYING &&
+      level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  {
+    BlitScreenToBitmap_EM(backbuffer);
+
+    return;
+  }
+
+  /* fill empty backbuffer for animation functions */
   if (setup.direct_draw && game_status == GAME_MODE_PLAYING)
   {
     int xx, yy;
@@ -74,7 +82,7 @@ void InitToons()
   for (i=0; i < num_toons; i++)
   {
     int graphic = IMG_TOON_1 + i;
-    struct FileInfo *image = getImageListEntry(graphic);
+    struct FileInfo *image = getImageListEntryFromImageID(graphic);
 
     toons[i].bitmap = graphic_info[graphic].bitmap;
 

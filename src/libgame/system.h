@@ -99,12 +99,18 @@
 #define BUTTON_1		4
 #define BUTTON_2		5
 
-/* values for move direction and special "button" key bitmasks */
+/* values for move directions and special "button" key bitmasks */
 #define MV_NO_MOVING		0
 #define MV_LEFT			(1 << MV_BIT_LEFT)
 #define MV_RIGHT		(1 << MV_BIT_RIGHT)
 #define MV_UP			(1 << MV_BIT_UP)
 #define MV_DOWN	       		(1 << MV_BIT_DOWN)
+
+#define MV_HORIZONTAL		(MV_LEFT | MV_RIGHT)
+#define MV_VERTICAL		(MV_UP   | MV_DOWN)
+#define MV_ALL_DIRECTIONS	(MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)
+#define MV_ANY_DIRECTION	(MV_ALL_DIRECTIONS)
+#define MV_NO_DIRECTIONS	(MV_NO_MOVING)
 
 #define KEY_BUTTON_1		(1 << BUTTON_1)
 #define KEY_BUTTON_2		(1 << BUTTON_2)
@@ -331,12 +337,26 @@
 
 
 /* values for artwork handling */
+#define LEVELDIR_ARTWORK_SET_PTR(leveldir, type)			\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 &(leveldir)->graphics_set :		\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 &(leveldir)->sounds_set :		\
+	 			 &(leveldir)->music_set)
+
 #define LEVELDIR_ARTWORK_SET(leveldir, type)				\
 				((type) == ARTWORK_TYPE_GRAPHICS ?	\
 				 (leveldir)->graphics_set :		\
 				 (type) == ARTWORK_TYPE_SOUNDS ?	\
 				 (leveldir)->sounds_set :		\
 	 			 (leveldir)->music_set)
+
+#define LEVELDIR_ARTWORK_PATH_PTR(leveldir, type)			\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 &(leveldir)->graphics_path :		\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 &(leveldir)->sounds_path :		\
+				 &(leveldir)->music_path)
 
 #define LEVELDIR_ARTWORK_PATH(leveldir, type)				\
 				((type) == ARTWORK_TYPE_GRAPHICS ?	\
@@ -365,6 +385,13 @@
 				 (type) == ARTWORK_TYPE_SOUNDS ?	\
 				 (artwork).snd_first :	\
 				 (artwork).mus_first)
+
+#define ARTWORK_CURRENT_IDENTIFIER_PTR(artwork, type)			\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 &(artwork).gfx_current_identifier :	\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 &(artwork).snd_current_identifier :	\
+				 &(artwork).mus_current_identifier)
 
 #define ARTWORK_CURRENT_IDENTIFIER(artwork, type)			\
 				((type) == ARTWORK_TYPE_GRAPHICS ?	\
@@ -406,8 +433,9 @@ typedef int (*EventFilter)(const Event *);
 
 struct ProgramInfo
 {
-  char *command_basename;
-  char *userdata_directory;
+  char *command_basepath;	/* directory that contains the program */
+  char *command_basename;	/* base filename of the program binary */
+  char *userdata_directory;	/* personal user data directory */
 
   char *program_title;
   char *window_title;
@@ -550,6 +578,7 @@ struct SetupEditorInfo
 {
   boolean el_boulderdash;
   boolean el_emerald_mine;
+  boolean el_emerald_mine_club;
   boolean el_more;
   boolean el_sokoban;
   boolean el_supaplex;
@@ -594,6 +623,7 @@ struct SetupInfo
   boolean quick_doors;
   boolean team_mode;
   boolean handicap;
+  boolean skip_levels;
   boolean time_limit;
   boolean fullscreen;
   boolean ask_on_escape;
@@ -634,6 +664,7 @@ struct TreeInfo
   char *name_sorting;	/* optional sorting name for correct name sorting */
   char *author;		/* level or artwork author name */
   char *imported_from;	/* optional comment for imported levels or artwork */
+  char *imported_by;	/* optional comment for imported levels or artwork */
 
   char *graphics_set;	/* optional custom graphics set (level tree only) */
   char *sounds_set;	/* optional custom sounds set (level tree only) */
@@ -654,9 +685,11 @@ struct TreeInfo
 
   boolean level_group;	/* directory contains more level series directories */
   boolean parent_link;	/* entry links back to parent directory */
-  boolean user_defined;	/* user defined levels are stored in home directory */
+  boolean in_user_dir;	/* user defined levels are stored in home directory */
+  boolean user_defined;	/* levels in user directory and marked as "private" */
   boolean readonly;	/* readonly levels can not be changed with editor */
   boolean handicap;	/* level set has no handicap when set to "false" */
+  boolean skip_levels;	/* levels can be skipped when set to "true" */
 
   int color;		/* color to use on selection screen for this level */
   char *class_desc;	/* description of level series class */
@@ -694,6 +727,12 @@ struct ConfigInfo
 {
   char *token;
   char *value;
+};
+
+struct ConfigTypeInfo
+{
+  char *token;
+  char *value;
   int type;
 };
 
@@ -714,6 +753,7 @@ struct FileInfo
   char **parameter;				/* array of file parameters */
 
   boolean redefined;
+  boolean fallback_to_default;
 };
 
 struct SetupFileList
@@ -750,7 +790,7 @@ struct ArtworkListInfo
   struct FileInfo *dynamic_file_list;		/* dynamic artwrk file array */
 
   int num_suffix_list_entries;
-  struct ConfigInfo *suffix_list;		/* parameter suffixes array */
+  struct ConfigTypeInfo *suffix_list;		/* parameter suffixes array */
 
   int num_base_prefixes;
   int num_ext1_suffixes;
@@ -867,7 +907,7 @@ Bitmap *LoadCustomImage(char *);
 void ReloadCustomImage(Bitmap *, char *);
 
 Bitmap *ZoomBitmap(Bitmap *, int, int);
-void CreateBitmapWithSmallBitmaps(Bitmap *);
+void CreateBitmapWithSmallBitmaps(Bitmap *, int);
 
 void SetMouseCursor(int);
 
@@ -878,6 +918,7 @@ inline void SetAudioMode(boolean);
 inline void InitEventFilter(EventFilter);
 inline boolean PendingEvent(void);
 inline void NextEvent(Event *event);
+inline void PeekEvent(Event *event);
 inline Key GetEventKey(KeyEvent *, boolean);
 inline KeyMod HandleKeyModState(Key, int);
 inline KeyMod GetKeyModState();

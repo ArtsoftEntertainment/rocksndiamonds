@@ -27,6 +27,38 @@
 /* EXPERIMENTAL STUFF */
 #define USE_NEW_AMOEBA_CODE	FALSE
 
+/* EXPERIMENTAL STUFF */
+#define USE_NEW_STUFF			(TRUE				* 1)
+
+#define USE_NEW_MOVE_STYLE		(TRUE	* USE_NEW_STUFF		* 1)
+#define USE_NEW_MOVE_DELAY		(TRUE	* USE_NEW_STUFF		* 1)
+#define USE_NEW_PUSH_DELAY		(TRUE	* USE_NEW_STUFF		* 1)
+#define USE_NEW_BLOCK_STYLE		(TRUE	* USE_NEW_STUFF		* 1)
+#define USE_NEW_SP_SLIPPERY		(TRUE	* USE_NEW_STUFF		* 1)
+#define USE_NEW_RANDOMIZE		(TRUE	* USE_NEW_STUFF		* 1)
+
+#define USE_CAN_MOVE_NOT_MOVING		(TRUE	* USE_NEW_STUFF		* 1)
+#define USE_PREVIOUS_MOVE_DIR		(TRUE	* USE_NEW_STUFF		* 1)
+
+#define USE_PUSH_BUGFIX			(TRUE	* USE_NEW_STUFF		* 1)
+#if 0
+#define USE_BLOCK_DELAY_BUGFIX		(TRUE	* USE_NEW_STUFF		* 1)
+#endif
+#define USE_GRAVITY_BUGFIX_NEW		(TRUE	* USE_NEW_STUFF		* 1)
+#define USE_GRAVITY_BUGFIX_OLD		(TRUE	* USE_NEW_STUFF		* 0)
+
+#define USE_PENGUIN_COLLECT_BUGFIX	(TRUE	* USE_NEW_STUFF		* 1)
+
+#define USE_IMPACT_BUGFIX		(TRUE	* USE_NEW_STUFF		* 1)
+
+#define USE_HITTING_SOMETHING_BUGFIX	(TRUE	* USE_NEW_STUFF		* 1)
+#define USE_HIT_BY_SOMETHING_BUGFIX	(TRUE	* USE_NEW_STUFF		* 1)
+
+#define USE_DROP_BUGFIX			(TRUE	* USE_NEW_STUFF		* 1)
+
+#define USE_CHANGE_TO_TRIGGERED		(TRUE	* USE_NEW_STUFF		* 1)
+
+
 /* for DigField() */
 #define DF_NO_PUSH		0
 #define DF_DIG			1
@@ -291,6 +323,8 @@
 
 
 /* forward declaration for internal use */
+
+static void AdvanceFrameAndPlayerCounters(int);
 
 static boolean MovePlayerOneStep(struct PlayerInfo *, int, int, int, int);
 static boolean MovePlayer(struct PlayerInfo *, int, int);
@@ -647,10 +681,9 @@ access_direction_list[] =
   { EL_UNDEFINED,			MV_NO_MOVING			     }
 };
 
-static unsigned long trigger_events[MAX_NUM_ELEMENTS];
+static boolean trigger_events[MAX_NUM_ELEMENTS][NUM_CHANGE_EVENTS];
 
-#define IS_AUTO_CHANGING(e)	(element_info[e].change_events & \
-				 CH_EVENT_BIT(CE_DELAY))
+#define IS_AUTO_CHANGING(e)	(element_info[e].has_change_event[CE_DELAY])
 #define IS_JUST_CHANGING(x, y)	(ChangeDelay[x][y] != 0)
 #define IS_CHANGING(x, y)	(IS_AUTO_CHANGING(Feld[x][y]) || \
 				 IS_JUST_CHANGING(x, y))
@@ -760,6 +793,65 @@ static void InitPlayerField(int x, int y, int element, boolean init_game)
     player->block_last_field = (element == EL_SP_MURPHY ?
 				level.sp_block_last_field :
 				level.block_last_field);
+
+#if USE_NEW_BLOCK_STYLE
+#if 1
+
+    /* ---------- initialize player's last field block delay --------------- */
+
+    /* always start with reliable default value (no adjustment needed) */
+    player->block_delay_adjustment = 0;
+
+    /* special case 1: in Supaplex, Murphy blocks last field one more frame */
+    if (player->block_last_field && element == EL_SP_MURPHY)
+      player->block_delay_adjustment = 1;
+
+    /* special case 2: in game engines before 3.1.1, blocking was different */
+    if (game.use_block_last_field_bug)
+      player->block_delay_adjustment = (player->block_last_field ? -1 : 1);
+
+#if 0
+    /* blocking the last field when moving was corrected in version 3.1.1 */
+    if (game.use_block_last_field_bug)
+    {
+      /* even "not blocking" was blocking the last field for one frame */
+      level.block_delay    = (level.block_last_field    ? 7 : 1);
+      level.sp_block_delay = (level.sp_block_last_field ? 7 : 1);
+
+      level.block_last_field = TRUE;
+      level.sp_block_last_field = TRUE;
+    }
+#endif
+
+#if 0	/* !!! THIS IS NOT A LEVEL SETTING => REMOVED !!! */
+    level.block_delay = 8;		/* when blocking, block 8 frames */
+    level.sp_block_delay = 9;		/* SP indeed blocks 9 frames, not 8 */
+#endif
+
+#if 0
+    printf("::: %d, %d\n", level.block_delay, level.sp_block_delay);
+#endif
+
+#else
+
+#if 1
+    player->block_delay = (player->block_last_field ?
+			   (element == EL_SP_MURPHY ?
+			    level.sp_block_delay :
+			    level.block_delay) : 0);
+#else
+    player->block_delay = (element == EL_SP_MURPHY ?
+			   (player->block_last_field ? 7 : 1) :
+			   (player->block_last_field ? 7 : 1));
+#endif
+
+#endif
+
+#if 0
+    printf("::: block_last_field == %d, block_delay = %d\n",
+	   player->block_last_field, player->block_delay);
+#endif
+#endif
 
     if (!options.network || player->connected)
     {
@@ -1030,12 +1122,13 @@ inline void DrawGameValue_Dynamite(int value)
   DrawText(DX_DYNAMITE, DY_DYNAMITE, int2str(value, 3), FONT_TEXT_2);
 }
 
-inline void DrawGameValue_Keys(struct PlayerInfo *player)
+inline void DrawGameValue_Keys(int key[MAX_NUM_KEYS])
 {
   int i;
 
-  for (i = 0; i < MAX_KEYS; i++)
-    if (player->key[i])
+  /* currently only 4 of 8 possible keys are displayed */
+  for (i = 0; i < STD_NUM_KEYS; i++)
+    if (key[i])
       DrawMiniGraphicExt(drawto, DX_KEYS + i * MINI_TILEX, DY_KEYS,
 			 el2edimg(EL_KEY_1 + i));
 }
@@ -1077,19 +1170,45 @@ inline void DrawGameValue_Level(int value)
   }
 }
 
+void DrawAllGameValues(int emeralds, int dynamite, int score, int time,
+		       int key_bits)
+{
+  int key[MAX_NUM_KEYS];
+  int i;
+
+  for (i = 0; i < MAX_NUM_KEYS; i++)
+    key[i] = key_bits & (1 << i);
+
+  DrawGameValue_Level(level_nr);
+
+  DrawGameValue_Emeralds(emeralds);
+  DrawGameValue_Dynamite(dynamite);
+  DrawGameValue_Score(score);
+  DrawGameValue_Time(time);
+
+  DrawGameValue_Keys(key);
+}
+
 void DrawGameDoorValues()
 {
   int i;
 
-  DrawGameValue_Level(level_nr);
+  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  {
+    DrawGameDoorValues_EM();
 
-  for (i = 0; i < MAX_PLAYERS; i++)
-    DrawGameValue_Keys(&stored_player[i]);
+    return;
+  }
+
+  DrawGameValue_Level(level_nr);
 
   DrawGameValue_Emeralds(local_player->gems_still_needed);
   DrawGameValue_Dynamite(local_player->inventory_size);
   DrawGameValue_Score(local_player->score);
   DrawGameValue_Time(TimeLeft);
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+    DrawGameValue_Keys(stored_player[i].key);
 }
 
 static void resolve_group_element(int group_element, int recursion_depth)
@@ -1158,11 +1277,79 @@ static void resolve_group_element(int group_element, int recursion_depth)
 
 static void InitGameEngine()
 {
-  int i, j, k;
+  int i, j, k, l;
 
   /* set game engine from tape file when re-playing, else from level file */
   game.engine_version = (tape.playing ? tape.engine_version :
 			 level.game_version);
+
+  /* ---------------------------------------------------------------------- */
+  /* set flags for bugs and changes according to active game engine version */
+  /* ---------------------------------------------------------------------- */
+
+  /*
+    Summary of bugfix/change:
+    Fixed handling for custom elements that change when pushed by the player.
+
+    Fixed/changed in version:
+    3.1.0
+
+    Description:
+    Before 3.1.0, custom elements that "change when pushing" changed directly
+    after the player started pushing them (until then handled in "DigField()").
+    Since 3.1.0, these custom elements are not changed until the "pushing"
+    move of the element is finished (now handled in "ContinueMoving()").
+
+    Affected levels/tapes:
+    The first condition is generally needed for all levels/tapes before version
+    3.1.0, which might use the old behaviour before it was changed; known tapes
+    that are affected are some tapes from the level set "Walpurgis Gardens" by
+    Jamie Cullen.
+    The second condition is an exception from the above case and is needed for
+    the special case of tapes recorded with game (not engine!) version 3.1.0 or
+    above (including some development versions of 3.1.0), but before it was
+    known that this change would break tapes like the above and was fixed in
+    3.1.1, so that the changed behaviour was active although the engine version
+    while recording maybe was before 3.1.0. There is at least one tape that is
+    affected by this exception, which is the tape for the one-level set "Bug
+    Machine" by Juergen Bonhagen.
+  */
+
+  game.use_change_when_pushing_bug =
+    (game.engine_version < VERSION_IDENT(3,1,0,0) &&
+     !(tape.playing &&
+       tape.game_version >= VERSION_IDENT(3,1,0,0) &&
+       tape.game_version <  VERSION_IDENT(3,1,1,0)));
+
+  /*
+    Summary of bugfix/change:
+    Fixed handling for blocking the field the player leaves when moving.
+
+    Fixed/changed in version:
+    3.1.1
+
+    Description:
+    Before 3.1.1, when "block last field when moving" was enabled, the field
+    the player is leaving when moving was blocked for the time of the move,
+    and was directly unblocked afterwards. This resulted in the last field
+    being blocked for exactly one less than the number of frames of one player
+    move. Additionally, even when blocking was disabled, the last field was
+    blocked for exactly one frame.
+    Since 3.1.1, due to changes in player movement handling, the last field
+    is not blocked at all when blocking is disabled. When blocking is enabled,
+    the last field is blocked for exactly the number of frames of one player
+    move. Additionally, if the player is Murphy, the hero of Supaplex, the
+    last field is blocked for exactly one more than the number of frames of
+    one player move.
+
+    Affected levels/tapes:
+    (!!! yet to be determined -- probably many !!!)
+  */
+
+  game.use_block_last_field_bug =
+    (game.engine_version < VERSION_IDENT(3,1,1,0));
+
+  /* ---------------------------------------------------------------------- */
 
   /* dynamically adjust element properties according to game engine version */
   InitElementPropertiesEngine(game.engine_version);
@@ -1186,6 +1373,15 @@ static void InitGameEngine()
 
   /* ---------- initialize player's initial move delay --------------------- */
 
+#if USE_NEW_MOVE_DELAY
+  /* dynamically adjust player properties according to level information */
+  game.initial_move_delay_value =
+    (level.double_speed ? MOVE_DELAY_HIGH_SPEED : MOVE_DELAY_NORMAL_SPEED);
+
+  /* dynamically adjust player properties according to game engine version */
+  game.initial_move_delay = (game.engine_version <= VERSION_IDENT(2,0,1,0) ?
+			     game.initial_move_delay_value : 0);
+#else
   /* dynamically adjust player properties according to game engine version */
   game.initial_move_delay =
     (game.engine_version <= VERSION_IDENT(2,0,1,0) ? INITIAL_MOVE_DELAY_ON :
@@ -1194,6 +1390,7 @@ static void InitGameEngine()
   /* dynamically adjust player properties according to level information */
   game.initial_move_delay_value =
     (level.double_speed ? MOVE_DELAY_HIGH_SPEED : MOVE_DELAY_NORMAL_SPEED);
+#endif
 
   /* ---------- initialize player's initial push delay --------------------- */
 
@@ -1219,9 +1416,10 @@ static void InitGameEngine()
       ei->change->delay_frames = 1;
     }
 
-    ei->change_events = CE_BITMASK_DEFAULT;
     for (j = 0; j < NUM_CHANGE_EVENTS; j++)
     {
+      ei->has_change_event[j] = FALSE;
+
       ei->event_page_nr[j] = 0;
       ei->event_page[j] = &ei->change_page[0];
     }
@@ -1240,7 +1438,7 @@ static void InitGameEngine()
     ei->change->change_function      = ch_delay->change_function;
     ei->change->post_change_function = ch_delay->post_change_function;
 
-    ei->change_events |= CH_EVENT_BIT(CE_DELAY);
+    ei->has_change_event[CE_DELAY] = TRUE;
 
 #if 1
     SET_PROPERTY(ch_delay->element, EP_CAN_CHANGE, TRUE);
@@ -1261,10 +1459,10 @@ static void InitGameEngine()
       for (k = 0; k < NUM_CHANGE_EVENTS; k++)
       {
 	/* only add event page for the first page found with this event */
-	if (ei->change_page[j].events & CH_EVENT_BIT(k) &&
-	    !(ei->change_events & CH_EVENT_BIT(k)))
+	if (ei->change_page[j].has_event[k] && !(ei->has_change_event[k]))
 	{
-	  ei->change_events |= CH_EVENT_BIT(k);
+	  ei->has_change_event[k] = TRUE;
+
 	  ei->event_page_nr[k] = j;
 	  ei->event_page[k] = &ei->change_page[j];
 	}
@@ -1281,7 +1479,7 @@ static void InitGameEngine()
 
     /* only add custom elements that change after fixed/random frame delay */
     if (CAN_CHANGE(element) && HAS_CHANGE_EVENT(element, CE_DELAY))
-      element_info[element].change_events |= CH_EVENT_BIT(CE_DELAY);
+      element_info[element].has_change_event[CE_DELAY] = TRUE;
   }
 #endif
 
@@ -1302,7 +1500,8 @@ static void InitGameEngine()
 
   /* initialize trigger events information */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
-    trigger_events[i] = EP_BITMASK_DEFAULT;
+    for (j = 0; j < NUM_CHANGE_EVENTS; j++)
+      trigger_events[i][j] = FALSE;
 
 #if 1
   /* add trigger events from element change event properties */
@@ -1315,20 +1514,26 @@ static void InitGameEngine()
       if (!ei->change_page[j].can_change)
 	continue;
 
-      if (ei->change_page[j].events & CH_EVENT_BIT(CE_BY_OTHER_ACTION))
+      if (ei->change_page[j].has_event[CE_BY_OTHER_ACTION])
       {
 	int trigger_element = ei->change_page[j].trigger_element;
 
-	if (IS_GROUP_ELEMENT(trigger_element))
+	for (k = 0; k < NUM_CHANGE_EVENTS; k++)
 	{
-	  struct ElementGroupInfo *group = element_info[trigger_element].group;
+	  if (ei->change_page[j].has_event[k])
+	  {
+	    if (IS_GROUP_ELEMENT(trigger_element))
+	    {
+	      struct ElementGroupInfo *group =
+		element_info[trigger_element].group;
 
-	  for (k = 0; k < group->num_elements_resolved; k++)
-	    trigger_events[group->element_resolved[k]]
-	      |= ei->change_page[j].events;
+	      for (l = 0; l < group->num_elements_resolved; l++)
+		trigger_events[group->element_resolved[l]][k] = TRUE;
+	    }
+	    else
+	      trigger_events[trigger_element][k] = TRUE;
+	  }
 	}
-	else
-	  trigger_events[trigger_element] |= ei->change_page[j].events;
       }
     }
   }
@@ -1336,8 +1541,9 @@ static void InitGameEngine()
   /* add trigger events from element change event properties */
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
     if (HAS_CHANGE_EVENT(i, CE_BY_OTHER_ACTION))
-      trigger_events[element_info[i].change->trigger_element] |=
-	element_info[i].change->events;
+      for (j = 0; j < NUM_CHANGE_EVENTS; j++)
+	if (element_info[i].change->has_event[j])
+	  trigger_events[element_info[i].change->trigger_element][j] = TRUE;
 #endif
 
   /* ---------- initialize push delay -------------------------------------- */
@@ -1368,8 +1574,16 @@ static void InitGameEngine()
     {
       if (IS_SP_ELEMENT(i))
       {
+#if USE_NEW_MOVE_STYLE
+	/* set SP push delay to just enough to push under a falling zonk */
+	int delay = (game.engine_version >= VERSION_IDENT(3,1,1,0) ? 8 : 6);
+
+	element_info[i].push_delay_fixed  = delay;
+	element_info[i].push_delay_random = 0;
+#else
 	element_info[i].push_delay_fixed  = 6;	/* just enough to escape ... */
 	element_info[i].push_delay_random = 0;	/* ... from falling zonk     */
+#endif
       }
     }
   }
@@ -1476,7 +1690,7 @@ void InitGame()
     player->lights_still_needed = 0;
     player->friends_still_needed = 0;
 
-    for (j = 0; j < MAX_KEYS; j++)
+    for (j = 0; j < MAX_NUM_KEYS; j++)
       player->key[j] = FALSE;
 
     player->dynabomb_count = 0;
@@ -1494,7 +1708,9 @@ void InitGame()
 
     player->use_murphy_graphic = FALSE;
 
-    player->block_last_field = FALSE;
+    player->block_last_field = FALSE;	/* initialized in InitPlayerField() */
+    player->block_delay_adjustment = 0;	/* initialized in InitPlayerField() */
+
     player->can_fall_into_acid = CAN_MOVE_INTO_ACID(player->element_nr);
 
     player->actual_frame_counter = 0;
@@ -1563,6 +1779,11 @@ void InitGame()
     player->switch_x = -1;
     player->switch_y = -1;
 
+#if USE_DROP_BUGFIX
+    player->drop_x = -1;
+    player->drop_y = -1;
+#endif
+
     player->show_envelope = 0;
 
     player->move_delay       = game.initial_move_delay;
@@ -1570,8 +1791,13 @@ void InitGame()
 
     player->move_delay_reset_counter = 0;
 
-    player->push_delay = 0;
+#if USE_NEW_PUSH_DELAY
+    player->push_delay       = -1;	/* initialized when pushing starts */
     player->push_delay_value = game.initial_push_delay_value;
+#else
+    player->push_delay       = 0;
+    player->push_delay_value = game.initial_push_delay_value;
+#endif
 
     player->drop_delay = 0;
 
@@ -1600,6 +1826,7 @@ void InitGame()
 #endif
 
   ZX = ZY = -1;
+  ExitX = ExitY = -1;
 
   FrameCounter = 0;
   TimeFrames = 0;
@@ -1652,8 +1879,8 @@ void InitGame()
       Stop[x][y] = FALSE;
       Pushed[x][y] = FALSE;
 
-      Changed[x][y] = CE_BITMASK_DEFAULT;
-      ChangeEvent[x][y] = CE_BITMASK_DEFAULT;
+      Changed[x][y] = FALSE;
+      ChangeEvent[x][y] = -1;
 
       ExplodePhase[x][y] = 0;
       ExplodeDelay[x][y] = 0;
@@ -1752,6 +1979,11 @@ void InitGame()
 
 #if 0
 	  player->element_nr = some_player->element_nr;
+#endif
+
+#if USE_NEW_BLOCK_STYLE
+	  player->block_last_field       = some_player->block_last_field;
+	  player->block_delay_adjustment = some_player->block_delay_adjustment;
 #endif
 
 	  StorePlayer[jx][jy] = player->element_nr;
@@ -1956,18 +2188,27 @@ void InitGame()
 
   CloseDoor(DOOR_CLOSE_1);
 
-  DrawLevel();
-  DrawAllPlayers();
+  /* !!! FIX THIS (START) !!! */
+  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  {
+    InitGameEngine_EM();
+  }
+  else
+  {
+    DrawLevel();
+    DrawAllPlayers();
 
-  /* after drawing the level, correct some elements */
-  if (game.timegate_time_left == 0)
-    CloseAllOpenTimegates();
+    /* after drawing the level, correct some elements */
+    if (game.timegate_time_left == 0)
+      CloseAllOpenTimegates();
 
-  if (setup.soft_scrolling)
-    BlitBitmap(fieldbuffer, backbuffer, FX, FY, SXSIZE, SYSIZE, SX, SY);
+    if (setup.soft_scrolling)
+      BlitBitmap(fieldbuffer, backbuffer, FX, FY, SXSIZE, SYSIZE, SX, SY);
 
-  redraw_mask |= REDRAW_FROM_BACKBUFFER;
-  FadeToFront();
+    redraw_mask |= REDRAW_FROM_BACKBUFFER;
+    FadeToFront();
+  }
+  /* !!! FIX THIS (END) !!! */
 
   /* copy default game door content to main double buffer */
   BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
@@ -2006,6 +2247,15 @@ void InitGame()
 #if 0
   printf("::: starting game [%d]\n", FrameCounter);
 #endif
+}
+
+void UpdateEngineValues(int actual_scroll_x, int actual_scroll_y)
+{
+  /* this is used for non-R'n'D game engines to update certain engine values */
+
+  /* needed to determine if sounds are played within the visible screen area */
+  scroll_x = actual_scroll_x;
+  scroll_y = actual_scroll_y;
 }
 
 void InitMovDir(int x, int y)
@@ -2278,8 +2528,9 @@ void GameWon()
   }
 
   /* close exit door after last player */
-  if ((Feld[ExitX][ExitY] == EL_EXIT_OPEN ||
-       Feld[ExitX][ExitY] == EL_SP_EXIT_OPEN) && AllPlayersGone)
+  if (AllPlayersGone && ExitX >= 0 && ExitY >= 0 &&
+      (Feld[ExitX][ExitY] == EL_EXIT_OPEN ||
+       Feld[ExitX][ExitY] == EL_SP_EXIT_OPEN))
   {
     int element = Feld[ExitX][ExitY];
 
@@ -2290,7 +2541,9 @@ void GameWon()
   }
 
   /* Hero disappears */
-  DrawLevelField(ExitX, ExitY);
+  if (ExitX >= 0 && ExitY >= 0)
+    DrawLevelField(ExitX, ExitY);
+
   BackToFront();
 
   if (tape.playing)
@@ -2399,6 +2652,37 @@ int NewHiScore()
   return position;
 }
 
+inline static int getElementMoveStepsize(int x, int y)
+{
+  int element = Feld[x][y];
+  int direction = MovDir[x][y];
+  int dx = (direction == MV_LEFT ? -1 : direction == MV_RIGHT ? +1 : 0);
+  int dy = (direction == MV_UP   ? -1 : direction == MV_DOWN  ? +1 : 0);
+  int horiz_move = (dx != 0);
+  int sign = (horiz_move ? dx : dy);
+  int step = sign * element_info[element].move_stepsize;
+
+  /* special values for move stepsize for spring and things on conveyor belt */
+  if (horiz_move)
+  {
+#if 0
+    if (element == EL_SPRING)
+      step = sign * MOVE_STEPSIZE_NORMAL * 2;
+    else if (CAN_FALL(element) && !CAN_MOVE(element) &&
+	     y < lev_fieldy - 1 && IS_BELT_ACTIVE(Feld[x][y + 1]))
+      step = sign * MOVE_STEPSIZE_NORMAL / 2;
+#else
+    if (CAN_FALL(element) &&
+	y < lev_fieldy - 1 && IS_BELT_ACTIVE(Feld[x][y + 1]))
+      step = sign * MOVE_STEPSIZE_NORMAL / 2;
+    else if (element == EL_SPRING)
+      step = sign * MOVE_STEPSIZE_NORMAL * 2;
+#endif
+  }
+
+  return step;
+}
+
 void InitPlayerGfxAnimation(struct PlayerInfo *player, int action, int dir)
 {
   if (player->GfxAction != action || player->GfxDir != dir)
@@ -2438,6 +2722,27 @@ void InitMovingField(int x, int y, int direction)
   if (!WasJustMoving[x][y] || direction != MovDir[x][y])
     ResetGfxAnimation(x, y);
 
+#if USE_CAN_MOVE_NOT_MOVING
+
+  MovDir[x][y] = direction;
+  GfxDir[x][y] = direction;
+  GfxAction[x][y] = (direction == MV_DOWN && CAN_FALL(element) ?
+		     ACTION_FALLING : ACTION_MOVING);
+
+  if (getElementMoveStepsize(x, y) != 0)	/* moving or being moved */
+  {
+    if (Feld[newx][newy] == EL_EMPTY)
+      Feld[newx][newy] = EL_BLOCKED;
+
+    MovDir[newx][newy] = MovDir[x][y];
+    GfxFrame[newx][newy] = GfxFrame[x][y];
+    GfxRandom[newx][newy] = GfxRandom[x][y];
+    GfxAction[newx][newy] = GfxAction[x][y];
+    GfxDir[newx][newy] = GfxDir[x][y];
+  }
+
+#else
+
   MovDir[newx][newy] = MovDir[x][y] = direction;
   GfxDir[x][y] = direction;
 
@@ -2453,6 +2758,7 @@ void InitMovingField(int x, int y, int direction)
   GfxRandom[newx][newy] = GfxRandom[x][y];
   GfxAction[newx][newy] = GfxAction[x][y];
   GfxDir[newx][newy] = GfxDir[x][y];
+#endif
 }
 
 void Moving2Blocked(int x, int y, int *goes_to_x, int *goes_to_y)
@@ -2887,7 +3193,12 @@ void RelocatePlayer(int jx, int jy, int el_player_raw)
     {
       ScrollPlayer(player, SCROLL_GO_ON);
       ScrollScreen(NULL, SCROLL_GO_ON);
+
+#if USE_NEW_MOVE_DELAY
+      AdvanceFrameAndPlayerCounters(player->index_nr);
+#else
       FrameCounter++;
+#endif
 
       DrawPlayer(player);
 
@@ -2908,7 +3219,7 @@ void RelocatePlayer(int jx, int jy, int el_player_raw)
 			       player->index_bit, leave_side);
 
   CheckTriggeredElementChangeByPlayer(old_jx, old_jy, old_element,
-				      CE_OTHER_GETS_LEFT,
+				      CE_PLAYER_LEAVES_X,
 				      player->index_bit, leave_side);
 #endif
 
@@ -2960,7 +3271,7 @@ void RelocatePlayer(int jx, int jy, int el_player_raw)
 			       player->index_bit, enter_side);
 
   CheckTriggeredElementChangeByPlayer(jx, jy, element,
-				      CE_OTHER_GETS_ENTERED,
+				      CE_PLAYER_ENTERS_X,
 				      player->index_bit, enter_side);
 #endif
 }
@@ -3007,8 +3318,15 @@ void Explode(int ex, int ey, int phase, int mode)
       return;
 #endif
 
+#if 1
+    if (mode == EX_TYPE_NORMAL ||
+	mode == EX_TYPE_CENTER ||
+	mode == EX_TYPE_CROSS)
+      PlayLevelSoundAction(ex, ey, ACTION_EXPLODING);
+#else
     if (mode == EX_TYPE_NORMAL || mode == EX_TYPE_CENTER)
       PlayLevelSoundAction(ex, ey, ACTION_EXPLODING);
+#endif
 
     /* remove things displayed in background while burning dynamite */
     if (Back[ex][ey] != EL_EMPTY && !IS_INDESTRUCTIBLE(Back[ex][ey]))
@@ -3097,7 +3415,11 @@ void Explode(int ex, int ey, int phase, int mode)
 	continue;
 #endif
 
-#if 1
+      /* no idea why this was changed from 3.0.8 to 3.1.0 -- this causes buggy
+	 behaviour, for example when touching a yamyam that explodes to rocks
+	 with active deadly shield, a rock is created under the player !!! */
+      /* (case 1 (surely buggy): >= 3.1.0, case 2 (maybe buggy): <= 3.0.8) */
+#if 0
       if (IS_PLAYER(x, y) && SHIELD_ON(PLAYERINFO(x, y)) &&
 	  (game.engine_version < VERSION_IDENT(3,1,0,0) ||
 	   (x == ex && y == ey && mode != EX_TYPE_BORDER)))
@@ -3720,7 +4042,7 @@ void Bang(int x, int y)
       break;
   }
 
-  CheckTriggeredElementChange(x, y, element, CE_OTHER_IS_EXPLODING);
+  CheckTriggeredElementChange(x, y, element, CE_EXPLOSION_OF_X);
 }
 
 void SplashAcid(int x, int y)
@@ -4014,6 +4336,10 @@ static void RedrawAllLightSwitchesAndInvisibleElements()
 	  Feld[x][y] = getInvisibleActiveFromInvisibleElement(element);
 
 	DrawLevelField(x, y);
+
+	/* uncrumble neighbour fields, if needed */
+	if (element == EL_INVISIBLE_SAND)
+	  DrawLevelFieldCrumbledSandNeighbours(x, y);
       }
       else if (element == EL_INVISIBLE_STEELWALL_ACTIVE ||
 	       element == EL_INVISIBLE_WALL_ACTIVE ||
@@ -4023,6 +4349,10 @@ static void RedrawAllLightSwitchesAndInvisibleElements()
 	  Feld[x][y] = getInvisibleFromInvisibleActiveElement(element);
 
 	DrawLevelField(x, y);
+
+	/* re-crumble neighbour fields, if needed */
+	if (element == EL_INVISIBLE_SAND)
+	  DrawLevelFieldCrumbledSandNeighbours(x, y);
       }
     }
   }
@@ -4072,46 +4402,19 @@ static void ActivateTimegateSwitch(int x, int y)
   Feld[x][y] = EL_TIMEGATE_SWITCH_ACTIVE;
 }
 
-inline static int getElementMoveStepsize(int x, int y)
-{
-  int element = Feld[x][y];
-  int direction = MovDir[x][y];
-  int dx = (direction == MV_LEFT ? -1 : direction == MV_RIGHT ? +1 : 0);
-  int dy = (direction == MV_UP   ? -1 : direction == MV_DOWN  ? +1 : 0);
-  int horiz_move = (dx != 0);
-  int sign = (horiz_move ? dx : dy);
-  int step = sign * element_info[element].move_stepsize;
-
-  /* special values for move stepsize for spring and things on conveyor belt */
-  if (horiz_move)
-  {
-#if 0
-    if (element == EL_SPRING)
-      step = sign * MOVE_STEPSIZE_NORMAL * 2;
-    else if (CAN_FALL(element) && !CAN_MOVE(element) &&
-	     y < lev_fieldy - 1 && IS_BELT_ACTIVE(Feld[x][y + 1]))
-      step = sign * MOVE_STEPSIZE_NORMAL / 2;
-#else
-    if (CAN_FALL(element) &&
-	y < lev_fieldy - 1 && IS_BELT_ACTIVE(Feld[x][y + 1]))
-      step = sign * MOVE_STEPSIZE_NORMAL / 2;
-    else if (element == EL_SPRING)
-      step = sign * MOVE_STEPSIZE_NORMAL * 2;
-#endif
-  }
-
-  return step;
-}
-
 void Impact(int x, int y)
 {
-  boolean lastline = (y == lev_fieldy-1);
+  boolean last_line = (y == lev_fieldy - 1);
   boolean object_hit = FALSE;
-  boolean impact = (lastline || object_hit);
+  boolean impact = (last_line || object_hit);
   int element = Feld[x][y];
   int smashed = EL_STEELWALL;
 
-  if (!lastline)	/* check if element below was hit */
+#if 0
+  printf("IMPACT!\n");
+#endif
+
+  if (!last_line)	/* check if element below was hit */
   {
     if (Feld[x][y + 1] == EL_PLAYER_IS_LEAVING)
       return;
@@ -4132,10 +4435,10 @@ void Impact(int x, int y)
     if (object_hit)
       smashed = MovingOrBlocked2Element(x, y + 1);
 
-    impact = (lastline || object_hit);
+    impact = (last_line || object_hit);
   }
 
-  if (!lastline && smashed == EL_ACID)	/* element falls into acid */
+  if (!last_line && smashed == EL_ACID)	/* element falls into acid */
   {
     SplashAcid(x, y + 1);
     return;
@@ -4317,10 +4620,10 @@ void Impact(int x, int y)
 	  CheckElementChangeBySide(x, y + 1, smashed, element,
 				   CE_SWITCHED, CH_SIDE_TOP);
 	  CheckTriggeredElementChangeBySide(x, y + 1, smashed,
-					    CE_OTHER_IS_SWITCHING,CH_SIDE_TOP);
+					    CE_SWITCH_OF_X, CH_SIDE_TOP);
 #else
 	  CheckTriggeredElementChangeBySide(x, y + 1, smashed,
-					    CE_OTHER_IS_SWITCHING,CH_SIDE_TOP);
+					    CE_SWITCH_OF_X, CH_SIDE_TOP);
 	  CheckElementChangeBySide(x, y + 1, smashed, element,
 				   CE_SWITCHED, CH_SIDE_TOP);
 #endif
@@ -4334,7 +4637,7 @@ void Impact(int x, int y)
   }
 
   /* play sound of magic wall / mill */
-  if (!lastline &&
+  if (!last_line &&
       (Feld[x][y + 1] == EL_MAGIC_WALL_ACTIVE ||
        Feld[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE))
   {
@@ -4347,7 +4650,7 @@ void Impact(int x, int y)
   }
 
   /* play sound of object that hits the ground */
-  if (lastline || object_hit)
+  if (last_line || object_hit)
     PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
 }
 
@@ -4570,8 +4873,15 @@ inline static void TurnRoundExt(int x, int y)
     xx = x + move_xy[MovDir[x][y]].x;
     yy = y + move_xy[MovDir[x][y]].y;
 
+#if 1
+    /* !!! this bugfix breaks at least BD2K3, level 010 !!! [re-recorded] */
+    if (!IN_LEV_FIELD(xx, yy) ||
+        (!IS_FREE(xx, yy) && !IS_FOOD_PIG(Feld[xx][yy])))
+      MovDir[x][y] = old_move_dir;
+#else
     if (!IS_FREE(xx, yy) && !IS_FOOD_PIG(Feld[xx][yy]))
       MovDir[x][y] = old_move_dir;
+#endif
 
     MovDelay[x][y] = 0;
   }
@@ -4834,6 +5144,11 @@ inline static void TurnRoundExt(int x, int y)
     boolean can_turn_right =
       CUSTOM_ELEMENT_CAN_ENTER_FIELD(element, right_x,right_y);
 
+#if USE_CAN_MOVE_NOT_MOVING
+    if (element_info[element].move_stepsize == 0)	/* not moving */
+      return;
+#endif
+
     if (move_pattern == MV_TURNING_LEFT)
       MovDir[x][y] = left_dir;
     else if (move_pattern == MV_TURNING_RIGHT)
@@ -4944,6 +5259,16 @@ inline static void TurnRoundExt(int x, int y)
       boolean first_horiz = RND(2);
       int new_move_dir = MovDir[x][y];
 
+#if USE_CAN_MOVE_NOT_MOVING
+      if (element_info[element].move_stepsize == 0)	/* not moving */
+      {
+	first_horiz = (ABS(attr_x - x) >= ABS(attr_y - y));
+	MovDir[x][y] &= (first_horiz ? MV_HORIZONTAL : MV_VERTICAL);
+
+	return;
+      }
+#endif
+
       MovDir[x][y] =
 	new_move_dir & (first_horiz ? MV_HORIZONTAL : MV_VERTICAL);
       Moving2Blocked(x, y, &newx, &newy);
@@ -5037,7 +5362,13 @@ inline static void TurnRoundExt(int x, int y)
 
     MovDir[x][y] = new_move_dir;
     if (old_move_dir != new_move_dir)
+    {
+#if 1
+      MovDelay[x][y] = GET_NEW_MOVE_DELAY(element);
+#else
       MovDelay[x][y] = 9;
+#endif
+    }
   }
 }
 
@@ -5256,6 +5587,15 @@ void StartMoving(int x, int y)
     else if ((game.engine_version >= VERSION_IDENT(3,1,0,0) &&
 	      CheckCollision[x][y] && !IS_FREE(x, y + 1)) ||
 
+#if USE_IMPACT_BUGFIX
+	     (game.engine_version >= VERSION_IDENT(3,0,7,0) &&
+	      CAN_FALL(element) && WasJustFalling[x][y] &&
+	      (Feld[x][y + 1] == EL_BLOCKED || IS_PLAYER(x, y + 1))) ||
+
+	     (game.engine_version < VERSION_IDENT(2,2,0,7) &&
+	      CAN_FALL(element) && WasJustMoving[x][y] && !Pushed[x][y + 1] &&
+	      (Feld[x][y + 1] == EL_BLOCKED)))
+#else
 	     (game.engine_version >= VERSION_IDENT(3,0,7,0) &&
 	      CAN_SMASH(element) && WasJustFalling[x][y] &&
 	      (Feld[x][y + 1] == EL_BLOCKED || IS_PLAYER(x, y + 1))) ||
@@ -5263,6 +5603,7 @@ void StartMoving(int x, int y)
 	     (game.engine_version < VERSION_IDENT(2,2,0,7) &&
 	      CAN_SMASH(element) && WasJustMoving[x][y] && !Pushed[x][y + 1] &&
 	      (Feld[x][y + 1] == EL_BLOCKED)))
+#endif
 
 #else
 #if 1
@@ -5292,6 +5633,11 @@ void StartMoving(int x, int y)
 #endif
 
       CheckCollision[x][y] = 0;
+
+#if 0
+      if (IS_PLAYER(x, y + 1))
+	printf("::: we ARE now killing the player [%d]\n", FrameCounter);
+#endif
 
       Impact(x, y);
     }
@@ -5360,13 +5706,39 @@ void StartMoving(int x, int y)
 	can_fall_both = (can_fall_left && can_fall_right);
       }
 
+#if USE_NEW_SP_SLIPPERY
+      /* !!! better use the same properties as for custom elements here !!! */
+      else if (game.engine_version >= VERSION_IDENT(3,1,1,0) &&
+	       can_fall_both && IS_SP_ELEMENT(Feld[x][y + 1]))
+      {
+	can_fall_right = FALSE;		/* slip down on left side */
+	can_fall_both = FALSE;
+      }
+#endif
+
+#if 1
+      if (can_fall_both)
+      {
+	if (game.emulation == EMU_BOULDERDASH ||
+	    element == EL_BD_ROCK || element == EL_BD_DIAMOND)
+	  can_fall_right = FALSE;	/* slip down on left side */
+	else
+	  can_fall_left = !(can_fall_right = RND(2));
+
+	can_fall_both = FALSE;
+      }
+#endif
+
       if (can_fall_any)
       {
+#if 0
 	if (can_fall_both &&
 	    (game.emulation != EMU_BOULDERDASH &&
 	     element != EL_BD_ROCK && element != EL_BD_DIAMOND))
 	  can_fall_left = !(can_fall_right = RND(2));
+#endif
 
+	/* if not determined otherwise, prefer left side for slipping down */
 	InitMovingField(x, y, can_fall_left ? MV_LEFT : MV_RIGHT);
 	started_moving = TRUE;
       }
@@ -5457,8 +5829,8 @@ void StartMoving(int x, int y)
 	     WasJustMoving[x][y],
 	     HAS_ANY_CHANGE_EVENT(element, CE_HITTING_SOMETHING),
 	     HAS_ANY_CHANGE_EVENT(element, CE_HIT_BY_SOMETHING),
-	     HAS_ANY_CHANGE_EVENT(element, CE_OTHER_IS_HITTING),
-	     HAS_ANY_CHANGE_EVENT(element, CE_OTHER_GETS_HIT));
+	     HAS_ANY_CHANGE_EVENT(element, CE_HITTING_X),
+	     HAS_ANY_CHANGE_EVENT(element, CE_HIT_BY_X));
 #endif
 
 #if 1
@@ -5849,7 +6221,16 @@ void StartMoving(int x, int y)
 #if 1
       Store[newx][newy] = EL_EMPTY;
       if (IS_EQUAL_OR_IN_GROUP(new_element, MOVE_ENTER_EL(element)))
+      {
+#if USE_CHANGE_TO_TRIGGERED
+	int move_leave_element = element_info[element].move_leave_element;
+
+	Store[newx][newy] = (move_leave_element == EL_TRIGGER_ELEMENT ?
+			     new_element : move_leave_element);
+#else
 	Store[newx][newy] = element_info[element].move_leave_element;
+#endif
+      }
 #else
       Store[newx][newy] = EL_EMPTY;
       if (IS_EQUAL_OR_IN_GROUP(new_element, MOVE_ENTER_EL(element)) ||
@@ -6080,6 +6461,10 @@ void StartMoving(int x, int y)
     ContinueMoving(x, y);
 }
 
+void dummy()
+{
+}
+
 void ContinueMoving(int x, int y)
 {
   int element = Feld[x][y];
@@ -6098,6 +6483,7 @@ void ContinueMoving(int x, int y)
 #else
   boolean pushed_by_player = Pushed[x][y];
 #endif
+  boolean last_line = (newy == lev_fieldy - 1);
 
   MovPos[x][y] += getElementMoveStepsize(x, y);
 
@@ -6213,7 +6599,9 @@ void ContinueMoving(int x, int y)
 #endif
 
   Store[x][y] = EL_EMPTY;
-  MovPos[x][y] = MovDir[x][y] = MovDelay[x][y] = 0;
+  MovPos[x][y] = 0;
+  MovDir[x][y] = 0;
+  MovDelay[x][y] = 0;
   MovDelay[newx][newy] = 0;
 
   if (CAN_CHANGE(element))
@@ -6227,8 +6615,8 @@ void ContinueMoving(int x, int y)
 
   ChangeDelay[x][y] = 0;
   ChangePage[x][y] = -1;
-  Changed[x][y] = CE_BITMASK_DEFAULT;
-  ChangeEvent[x][y] = CE_BITMASK_DEFAULT;
+  Changed[x][y] = FALSE;
+  ChangeEvent[x][y] = -1;
 
   /* copy animation control values to new field */
   GfxFrame[newx][newy]  = GfxFrame[x][y];
@@ -6238,7 +6626,10 @@ void ContinueMoving(int x, int y)
 
   Pushed[x][y] = Pushed[newx][newy] = FALSE;
 
+#if 0
+  /* do this after checking for left-behind element */
   ResetGfxAnimation(x, y);	/* reset animation values for old field */
+#endif
 
 #if 1
   /* some elements can leave other elements behind after moving */
@@ -6254,7 +6645,19 @@ void ContinueMoving(int x, int y)
   {
     int move_leave_element = ei->move_leave_element;
 
+#if USE_CHANGE_TO_TRIGGERED
+    if (ei->move_leave_type == LEAVE_TYPE_LIMITED &&
+        ei->move_leave_element == EL_TRIGGER_ELEMENT)
+      move_leave_element = stored;
+#endif
+
     Feld[x][y] = move_leave_element;
+
+#if USE_PREVIOUS_MOVE_DIR
+    if (element_info[Feld[x][y]].move_direction_initial == MV_START_PREVIOUS)
+      MovDir[x][y] = direction;
+#endif
+
     InitField(x, y, FALSE);
 
     if (GFX_CRUMBLED(Feld[x][y]))
@@ -6281,6 +6684,11 @@ void ContinueMoving(int x, int y)
 
   ei->can_leave_element_last = ei->can_leave_element;
   ei->can_leave_element = FALSE;
+#endif
+
+#if 1
+  /* do this after checking for left-behind element */
+  ResetGfxAnimation(x, y);	/* reset animation values for old field */
 #endif
 
 #if 0
@@ -6368,12 +6776,37 @@ void ContinueMoving(int x, int y)
   else if (element == EL_PENGUIN)
     TestIfFriendTouchesBadThing(newx, newy);
 
+#if USE_NEW_MOVE_STYLE
+#if 0
   if (CAN_FALL(element) && direction == MV_DOWN &&
-      (newy == lev_fieldy - 1 || !IS_FREE(x, newy + 1)))
+      !last_line && IS_PLAYER(x, newy + 1))
+    printf("::: we would now kill the player [%d]\n", FrameCounter);
+#endif
+
+  /* give the player one last chance (one more frame) to move away */
+  if (CAN_FALL(element) && direction == MV_DOWN &&
+      (last_line || (!IS_FREE(x, newy + 1) &&
+		     (!IS_PLAYER(x, newy + 1) ||
+		      game.engine_version < VERSION_IDENT(3,1,1,0)))))
     Impact(x, newy);
+#else
+  if (CAN_FALL(element) && direction == MV_DOWN &&
+      (last_line || !IS_FREE(x, newy + 1)))
+    Impact(x, newy);
+#endif
 
 #if 1
+
+#if USE_PUSH_BUGFIX
+#if 1
+  if (pushed_by_player && !game.use_change_when_pushing_bug)
+#else
+  if (pushed_by_player && game.engine_version >= VERSION_IDENT(3,1,0,0))
+#endif
+#else
   if (pushed_by_player)
+#endif
+
   {
 #if 1
     int dig_side = MV_DIR_OPPOSITE(direction);
@@ -6391,7 +6824,7 @@ void ContinueMoving(int x, int y)
 
     CheckElementChangeByPlayer(newx, newy, element, CE_PUSHED_BY_PLAYER,
 			       player->index_bit, dig_side);
-    CheckTriggeredElementChangeByPlayer(newx,newy,element,CE_OTHER_GETS_PUSHED,
+    CheckTriggeredElementChangeByPlayer(newx,newy, element, CE_PLAYER_PUSHES_X,
 					player->index_bit, dig_side);
   }
 #endif
@@ -6438,7 +6871,7 @@ void ContinueMoving(int x, int y)
 				 CE_HIT_BY_SOMETHING, opposite_direction);
 
 	if (IS_CUSTOM_ELEMENT(hitting_element) &&
-	    HAS_ANY_CHANGE_EVENT(hitting_element, CE_OTHER_IS_HITTING))
+	    HAS_ANY_CHANGE_EVENT(hitting_element, CE_HITTING_X))
 	{
 	  for (i = 0; i < element_info[hitting_element].num_change_pages; i++)
 	  {
@@ -6446,19 +6879,19 @@ void ContinueMoving(int x, int y)
 	      &element_info[hitting_element].change_page[i];
 
 	    if (change->can_change &&
-		change->events & CH_EVENT_BIT(CE_OTHER_IS_HITTING) &&
+		change->has_event[CE_HITTING_X] &&
 		change->trigger_side & touched_side &&
 		change->trigger_element == touched_element)
 	    {
 	      CheckElementChangeByPage(newx, newy, hitting_element,
-				       touched_element, CE_OTHER_IS_HITTING,i);
+				       touched_element, CE_HITTING_X, i);
 	      break;
 	    }
 	  }
 	}
 
 	if (IS_CUSTOM_ELEMENT(touched_element) &&
-	    HAS_ANY_CHANGE_EVENT(touched_element, CE_OTHER_GETS_HIT))
+	    HAS_ANY_CHANGE_EVENT(touched_element, CE_HIT_BY_X))
 	{
 	  for (i = 0; i < element_info[touched_element].num_change_pages; i++)
 	  {
@@ -6466,12 +6899,12 @@ void ContinueMoving(int x, int y)
 	      &element_info[touched_element].change_page[i];
 
 	    if (change->can_change &&
-		change->events & CH_EVENT_BIT(CE_OTHER_GETS_HIT) &&
+		change->has_event[CE_HIT_BY_X] &&
 		change->trigger_side & hitting_side &&
 		change->trigger_element == hitting_element)
 	    {
 	      CheckElementChangeByPage(nextx, nexty, touched_element,
-				       hitting_element, CE_OTHER_GETS_HIT, i);
+				       hitting_element, CE_HIT_BY_X,i);
 	      break;
 	    }
 	  }
@@ -7501,6 +7934,8 @@ static void ChangeElementNowExt(int x, int y, int target_element)
     RelocatePlayer(x, y, target_element);
 
 #if 1
+  Changed[x][y] = TRUE;		/* ignore all further changes in this frame */
+#else
   Changed[x][y] |= ChangeEvent[x][y];	/* ignore same changes in this frame */
 #endif
 
@@ -7518,30 +7953,35 @@ static boolean ChangeElementNow(int x, int y, int element, int page)
   int old_element = Feld[x][y];
 
   /* always use default change event to prevent running into a loop */
-  if (ChangeEvent[x][y] == CE_BITMASK_DEFAULT)
-    ChangeEvent[x][y] = CH_EVENT_BIT(CE_DELAY);
+  if (ChangeEvent[x][y] == -1)
+    ChangeEvent[x][y] = CE_DELAY;
 
-  if (ChangeEvent[x][y] == CH_EVENT_BIT(CE_DELAY))
+  if (ChangeEvent[x][y] == CE_DELAY)
   {
     /* reset actual trigger element and player */
     change->actual_trigger_element = EL_EMPTY;
     change->actual_trigger_player = EL_PLAYER_1;
   }
 
-  /* do not change already changed elements with same change event */
-#if 0
-  if (Changed[x][y] & ChangeEvent[x][y])
+#if 1
+  /* do not change any elements that have already changed in this frame */
+  if (Changed[x][y])
     return FALSE;
 #else
-  if (Changed[x][y])
+  /* do not change already changed elements with same change event */
+  if (Changed[x][y] & ChangeEvent[x][y])
     return FALSE;
 #endif
 
+#if 1
+  Changed[x][y] = TRUE;		/* ignore all further changes in this frame */
+#else
   Changed[x][y] |= ChangeEvent[x][y];	/* ignore same changes in this frame */
+#endif
 
 #if 0
   /* !!! indirect change before direct change !!! */
-  CheckTriggeredElementChangeByPage(x,y,Feld[x][y], CE_OTHER_IS_CHANGING,page);
+  CheckTriggeredElementChangeByPage(x, y, Feld[x][y], CE_CHANGE_OF_X, page);
 #endif
 
   if (change->explode)
@@ -7710,7 +8150,7 @@ static boolean ChangeElementNow(int x, int y, int element, int page)
 
 #if 1
   /* this uses direct change before indirect change */
-  CheckTriggeredElementChangeByPage(x,y,old_element,CE_OTHER_IS_CHANGING,page);
+  CheckTriggeredElementChangeByPage(x, y, old_element, CE_CHANGE_OF_X, page);
 #endif
 
   return TRUE;
@@ -7808,7 +8248,7 @@ static boolean CheckTriggeredElementChangeExt(int lx, int ly,
   int i, j, x, y;
   int trigger_page_bits = (trigger_page < 0 ? CH_PAGE_ANY : 1 << trigger_page);
 
-  if (!(trigger_events[trigger_element] & CH_EVENT_BIT(trigger_event)))
+  if (!(trigger_events[trigger_element][trigger_event]))
     return FALSE;
 
   for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
@@ -7826,14 +8266,14 @@ static boolean CheckTriggeredElementChangeExt(int lx, int ly,
       struct ElementChangeInfo *change = &element_info[element].change_page[j];
 
       if (change->can_change &&
-	  change->events & CH_EVENT_BIT(trigger_event) &&
+	  change->has_event[trigger_event] &&
 	  change->trigger_side & trigger_side &&
 	  change->trigger_player & trigger_player &&
 	  change->trigger_page & trigger_page_bits &&
 	  IS_EQUAL_OR_IN_GROUP(trigger_element, change->trigger_element))
       {
 #if 0
-	if (!(change->events & CH_EVENT_BIT(trigger_event)))
+	if (!(change->has_event[trigger_event]))
 	  printf("::: !!! %d triggers %d: using wrong page %d [event %d]\n",
 		 trigger_element-EL_CUSTOM_START+1, i+1, j, trigger_event);
 #endif
@@ -7861,7 +8301,7 @@ static boolean CheckTriggeredElementChangeExt(int lx, int ly,
       if (Feld[x][y] == element)
       {
 	ChangeDelay[x][y] = 1;
-	ChangeEvent[x][y] = CH_EVENT_BIT(trigger_event);
+	ChangeEvent[x][y] = trigger_event;
 	ChangeElement(x, y, page);
       }
     }
@@ -7912,7 +8352,7 @@ static boolean CheckElementChangeExt(int x, int y,
       struct ElementChangeInfo *change = &element_info[element].change_page[i];
 
       if (change->can_change &&
-	  change->events & CH_EVENT_BIT(trigger_event) &&
+	  change->has_event[trigger_event] &&
 	  change->trigger_side & trigger_side &&
 	  change->trigger_player & trigger_player)
       {
@@ -7950,7 +8390,7 @@ static boolean CheckElementChangeExt(int x, int y,
 #endif
 
   ChangeDelay[x][y] = 1;
-  ChangeEvent[x][y] = CH_EVENT_BIT(trigger_event);
+  ChangeEvent[x][y] = trigger_event;
   ChangeElement(x, y, trigger_page);
 
   return TRUE;
@@ -8300,10 +8740,49 @@ static void PlayerActions(struct PlayerInfo *player, byte player_action)
 }
 #endif
 
+void AdvanceFrameAndPlayerCounters(int player_nr)
+{
+  int i;
+
+  /* advance frame counters (global frame counter and time frame counter) */
+  FrameCounter++;
+  TimeFrames++;
+
+  /* advance player counters (counters for move delay, move animation etc.) */
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    boolean advance_player_counters = (player_nr == -1 || player_nr == i);
+    int move_frames =
+      MOVE_DELAY_NORMAL_SPEED /  stored_player[i].move_delay_value;
+
+    if (!advance_player_counters)	/* not all players may be affected */
+      continue;
+
+    stored_player[i].Frame += move_frames;
+
+    if (stored_player[i].MovPos != 0)
+      stored_player[i].StepFrame += move_frames;
+
+#if USE_NEW_MOVE_DELAY
+    if (stored_player[i].move_delay > 0)
+      stored_player[i].move_delay--;
+#endif
+
+#if USE_NEW_PUSH_DELAY
+    /* due to bugs in previous versions, counter must count up, not down */
+    if (stored_player[i].push_delay != -1)
+      stored_player[i].push_delay++;
+#endif
+
+    if (stored_player[i].drop_delay > 0)
+      stored_player[i].drop_delay--;
+  }
+}
+
 void GameActions()
 {
-  static unsigned long action_delay = 0;
-  unsigned long action_delay_value;
+  static unsigned long game_frame_delay = 0;
+  unsigned long game_frame_delay_value;
   int magic_wall_x = 0, magic_wall_y = 0;
   int i, x, y, element, graphic;
   byte *recorded_player_action;
@@ -8315,15 +8794,15 @@ void GameActions()
   if (game_status != GAME_MODE_PLAYING)
     return;
 
-  action_delay_value =
+  game_frame_delay_value =
     (tape.playing && tape.fast_forward ? FfwdFrameDelay : GameFrameDelay);
 
   if (tape.playing && tape.warp_forward && !tape.pausing)
-    action_delay_value = 0;
+    game_frame_delay_value = 0;
 
   /* ---------- main game synchronization point ---------- */
 
-  WaitUntilDelayReached(&action_delay, action_delay_value);
+  WaitUntilDelayReached(&game_frame_delay, game_frame_delay_value);
 
   if (network_playing && !network_player_action_received)
   {
@@ -8362,6 +8841,7 @@ void GameActions()
   recorded_player_action = (tape.playing ? TapePlayAction() : NULL);
 
 #if 1
+  /* !!! CHECK THIS (tape.pausing is always FALSE here!) !!! */
   if (recorded_player_action == NULL && tape.pausing)
     return;
 #endif
@@ -8494,7 +8974,7 @@ void GameActions()
 #endif
 
 #if 1
-  /* for downwards compatibility, the following code emulates a fixed bug that
+  /* for backwards compatibility, the following code emulates a fixed bug that
      occured when pushing elements (causing elements that just made their last
      pushing step to already (if possible) make their first falling step in the
      same game frame, which is bad); this code is also needed to use the famous
@@ -8538,8 +9018,18 @@ void GameActions()
 
   for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
   {
-    Changed[x][y] = CE_BITMASK_DEFAULT;
-    ChangeEvent[x][y] = CE_BITMASK_DEFAULT;
+    Changed[x][y] = FALSE;
+    ChangeEvent[x][y] = -1;
+
+#if USE_NEW_BLOCK_STYLE
+    /* this must be handled before main playfield loop */
+    if (Feld[x][y] == EL_PLAYER_IS_LEAVING)
+    {
+      MovDelay[x][y]--;
+      if (MovDelay[x][y] <= 0)
+	RemoveField(x, y);
+    }
+#endif
 
 #if DEBUG
     if (ChangePage[x][y] != -1 && ChangeDelay[x][y] != 1)
@@ -8991,7 +9481,9 @@ void GameActions()
 	   stored_player[0].StepFrame);
 #endif
 
-#if 1
+#if USE_NEW_MOVE_DELAY
+  AdvanceFrameAndPlayerCounters(-1);	/* advance counters for all players */
+#else
   FrameCounter++;
   TimeFrames++;
 
@@ -9005,6 +9497,11 @@ void GameActions()
     if (stored_player[i].MovPos != 0)
       stored_player[i].StepFrame += move_frames;
 
+#if USE_NEW_MOVE_DELAY
+    if (stored_player[i].move_delay > 0)
+      stored_player[i].move_delay--;
+#endif
+
     if (stored_player[i].drop_delay > 0)
       stored_player[i].drop_delay--;
   }
@@ -9017,6 +9514,12 @@ void GameActions()
 
     local_player->show_envelope = 0;
   }
+#endif
+
+#if USE_NEW_RANDOMIZE
+  /* use random number generator in every frame to make it less predictable */
+  if (game.engine_version >= VERSION_IDENT(3,1,1,0))
+    RND(1);
 #endif
 }
 
@@ -9129,6 +9632,11 @@ static boolean canFallDown(struct PlayerInfo *player)
 
   return (IN_LEV_FIELD(jx, jy + 1) &&
 	  (IS_FREE(jx, jy + 1) ||
+#if USE_NEW_BLOCK_STYLE
+#if USE_GRAVITY_BUGFIX_OLD
+	   Feld[jx][jy + 1] == EL_PLAYER_IS_LEAVING ||
+#endif
+#endif
 	   (Feld[jx][jy + 1] == EL_ACID && player->can_fall_into_acid)) &&
 	  IS_WALKABLE_FROM(Feld[jx][jy], MV_DOWN) &&
 	  !IS_WALKABLE_INSIDE(Feld[jx][jy]));
@@ -9407,7 +9915,7 @@ boolean MovePlayerOneStep(struct PlayerInfo *player,
 
   /* check if DigField() has caused relocation of the player */
   if (player->jx != jx || player->jy != jy)
-    return MF_NO_ACTION;
+    return MF_NO_ACTION;	/* <-- !!! CHECK THIS [-> MF_ACTION ?] !!! */
 
   StorePlayer[jx][jy] = 0;
   player->last_jx = jx;
@@ -9432,7 +9940,7 @@ boolean MovePlayerOneStep(struct PlayerInfo *player,
 #if 0
   if (IS_CUSTOM_ELEMENT(Feld[jx][jy]))
   {
-    CheckTriggeredElementChangeBySide(jx, jy, Feld[jx][jy], CE_OTHER_GETS_LEFT,
+    CheckTriggeredElementChangeBySide(jx, jy, Feld[jx][jy], CE_PLAYER_LEAVES_X,
 				      leave_side);
     CheckElementChangeBySide(jx,jy, Feld[jx][jy],CE_LEFT_BY_PLAYER,leave_side);
   }
@@ -9440,7 +9948,7 @@ boolean MovePlayerOneStep(struct PlayerInfo *player,
   if (IS_CUSTOM_ELEMENT(Feld[new_jx][new_jy]))
   {
     CheckTriggeredElementChangeBySide(new_jx, new_jy, Feld[new_jx][new_jy],
-				      CE_OTHER_GETS_ENTERED, enter_side);
+				      CE_PLAYER_ENTERS_X, enter_side);
     CheckElementChangeBySide(new_jx, new_jy, Feld[new_jx][new_jy],
 			     CE_ENTERED_BY_PLAYER, enter_side);
   }
@@ -9484,14 +9992,38 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
 #else
 
 #if 1
+
+#if 0
+  printf("::: %d <= %d < %d ?\n", player->move_delay, FrameCounter,
+	 player->move_delay + player->move_delay_value);
+#endif
+
+#if USE_NEW_MOVE_DELAY
+  if (player->move_delay > 0)
+#else
   if (!FrameReached(&player->move_delay, player->move_delay_value))
+#endif
+  {
+#if 0
+    printf("::: can NOT move\n");
+#endif
+
     return FALSE;
+  }
 #else
   if (!FrameReached(&player->move_delay, player->move_delay_value) &&
       !(tape.playing && tape.file_version < FILE_VERSION_2_0))
     return FALSE;
 #endif
 
+#endif
+
+#if 0
+  printf("::: COULD move now\n");
+#endif
+
+#if USE_NEW_MOVE_DELAY
+  player->move_delay = -1;		/* set to "uninitialized" value */
 #endif
 
   /* store if player is automatically moved to next field */
@@ -9519,7 +10051,13 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
     {
       ScrollPlayer(player, SCROLL_GO_ON);
       ScrollScreen(NULL, SCROLL_GO_ON);
+
+#if USE_NEW_MOVE_DELAY
+      AdvanceFrameAndPlayerCounters(player->index_nr);
+#else
       FrameCounter++;
+#endif
+
       DrawAllPlayers();
       BackToFront();
     }
@@ -9623,6 +10161,10 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
 
   if (moved & MF_MOVING)
   {
+#if 0
+    printf("::: REALLY moves now\n");
+#endif
+
     if (old_jx != jx && old_jy == jy)
       player->MovDir = (old_jx < jx ? MV_RIGHT : MV_LEFT);
     else if (old_jx == jx && old_jy != jy)
@@ -9677,7 +10219,7 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
 				   player->index_bit, leave_side);
 
       CheckTriggeredElementChangeByPlayer(old_jx, old_jy, old_element,
-					  CE_OTHER_GETS_LEFT,
+					  CE_PLAYER_LEAVES_X,
 					  player->index_bit, leave_side);
 
       if (IS_CUSTOM_ELEMENT(new_element))
@@ -9685,7 +10227,7 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
 				   player->index_bit, enter_side);
 
       CheckTriggeredElementChangeByPlayer(jx, jy, new_element,
-					  CE_OTHER_GETS_ENTERED,
+					  CE_PLAYER_ENTERS_X,
 					  player->index_bit, enter_side);
 #endif
 
@@ -9702,7 +10244,22 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
     player->last_move_dir = MV_NO_MOVING;
     */
     player->is_moving = FALSE;
+
+#if USE_NEW_MOVE_STYLE
+    /* player is ALLOWED to move, but CANNOT move (something blocks his way) */
+    /* ensure that the player is also allowed to move in the next frame */
+    /* (currently, the player is forced to wait eight frames before he can try
+       again!!!) */
+
+    if (game.engine_version >= VERSION_IDENT(3,1,1,0))
+      player->move_delay = 0;	/* allow direct movement in the next frame */
+#endif
   }
+
+#if USE_NEW_MOVE_DELAY
+  if (player->move_delay == -1)		/* not yet initialized by DigField() */
+    player->move_delay = player->move_delay_value;
+#endif
 
   if (game.engine_version < VERSION_IDENT(3,0,7,0))
   {
@@ -9730,8 +10287,74 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
     player->actual_frame_counter = FrameCounter;
     player->GfxPos = move_stepsize * (player->MovPos / move_stepsize);
 
+#if 0
+    printf("::: %06d: %d,%d: %d (%d) [%d]\n",
+	   FrameCounter,
+	   last_jx, last_jy, Feld[last_jx][last_jy], EL_EXPLOSION,
+	   player->block_delay);
+#endif
+
+#if USE_NEW_BLOCK_STYLE
+
+#if 0
+    if (player->block_delay <= 0)
+      printf("::: ALERT! block_delay == %d\n", player->block_delay);
+#endif
+
+    if ((player->block_last_field || player->block_delay_adjustment > 0) &&
+	Feld[last_jx][last_jy] == EL_EMPTY)
+    {
+      int last_field_block_delay = 0;	/* start with no blocking at all */
+      int block_delay_adjustment = player->block_delay_adjustment;
+
+      /* if player blocks last field, add delay for exactly one move */
+      if (player->block_last_field)
+      {
+	last_field_block_delay += player->move_delay_value;
+
+#if USE_GRAVITY_BUGFIX_NEW
+	/* when blocking enabled, prevent moving up despite gravity */
+	if (game.gravity && player->MovDir == MV_UP)
+	  block_delay_adjustment = -1;
+#endif
+      }
+
+      /* add block delay adjustment (also possible when not blocking) */
+      last_field_block_delay += block_delay_adjustment;
+
+#if 0
+#if USE_BLOCK_DELAY_BUGFIX
+      /* when blocking enabled, correct block delay for fast movement */
+      if (player->block_last_field &&
+	  player->move_delay_value < MOVE_DELAY_NORMAL_SPEED)
+	last_field_block_delay =
+	  player->move_delay_value + player->block_delay_adjustment;
+#endif
+#endif
+
+#if 0
+#if USE_GRAVITY_BUGFIX_NEW
+      /* when blocking enabled, correct block delay for gravity movement */
+      if (player->block_last_field &&
+	  game.gravity && player->MovDir == MV_UP)
+	last_field_block_delay = player->move_delay_value - 1;
+#endif
+#endif
+
+      Feld[last_jx][last_jy] = EL_PLAYER_IS_LEAVING;
+      MovDelay[last_jx][last_jy] = last_field_block_delay + 1;
+    }
+#else
+#if USE_NEW_MOVE_STYLE
+    if ((game.engine_version < VERSION_IDENT(3,1,1,0) ||
+	 player->block_last_field) &&
+	Feld[last_jx][last_jy] == EL_EMPTY)
+      Feld[last_jx][last_jy] = EL_PLAYER_IS_LEAVING;
+#else
     if (Feld[last_jx][last_jy] == EL_EMPTY)
       Feld[last_jx][last_jy] = EL_PLAYER_IS_LEAVING;
+#endif
+#endif
 
 #if 0
     DrawPlayer(player);
@@ -9745,9 +10368,16 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
   player->MovPos += (player->MovPos > 0 ? -1 : 1) * move_stepsize;
   player->GfxPos = move_stepsize * (player->MovPos / move_stepsize);
 
+#if USE_NEW_BLOCK_STYLE
+#else
   if (!player->block_last_field &&
       Feld[last_jx][last_jy] == EL_PLAYER_IS_LEAVING)
+#if 1
+    RemoveField(last_jx, last_jy);
+#else
     Feld[last_jx][last_jy] = EL_EMPTY;
+#endif
+#endif
 
   /* before DrawPlayer() to draw correct player graphic for this case */
   if (player->MovPos == 0)
@@ -9784,9 +10414,16 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
     }
 #endif
 
+#if USE_NEW_BLOCK_STYLE
+#else
     if (player->block_last_field &&
 	Feld[last_jx][last_jy] == EL_PLAYER_IS_LEAVING)
+#if 1
+      RemoveField(last_jx, last_jy);
+#else
       Feld[last_jx][last_jy] = EL_EMPTY;
+#endif
+#endif
 
     player->last_jx = jx;
     player->last_jy = jy;
@@ -9839,7 +10476,7 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 				   player->index_bit, leave_side);
 
       CheckTriggeredElementChangeByPlayer(old_jx, old_jy, old_element,
-					  CE_OTHER_GETS_LEFT,
+					  CE_PLAYER_LEAVES_X,
 					  player->index_bit, leave_side);
 
       if (IS_CUSTOM_ELEMENT(new_element))
@@ -9847,7 +10484,7 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 				   player->index_bit, enter_side);
 
       CheckTriggeredElementChangeByPlayer(jx, jy, new_element,
-					  CE_OTHER_GETS_ENTERED,
+					  CE_PLAYER_ENTERS_X,
 					  player->index_bit, enter_side);
 #endif
 
@@ -9984,11 +10621,11 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
       CheckElementChangeByPlayer(xx, yy, border_element, CE_TOUCHED_BY_PLAYER,
 				 player->index_bit, border_side);
       CheckTriggeredElementChangeByPlayer(xx, yy, border_element,
-					  CE_OTHER_GETS_TOUCHED,
+					  CE_PLAYER_TOUCHES_X,
 					  player->index_bit, border_side);
 #else
       CheckTriggeredElementChangeByPlayer(xx, yy, border_element,
-					  CE_OTHER_GETS_TOUCHED,
+					  CE_PLAYER_TOUCHES_X,
 					  player->index_bit, border_side);
       CheckElementChangeByPlayer(xx, yy, border_element, CE_TOUCHED_BY_PLAYER,
 				 player->index_bit, border_side);
@@ -10009,11 +10646,11 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
       CheckElementChangeByPlayer(x, y, center_element, CE_TOUCHED_BY_PLAYER,
 				 player->index_bit, center_side);
       CheckTriggeredElementChangeByPlayer(x, y, center_element,
-					  CE_OTHER_GETS_TOUCHED,
+					  CE_PLAYER_TOUCHES_X,
 					  player->index_bit, center_side);
 #else
       CheckTriggeredElementChangeByPlayer(x, y, center_element,
-					  CE_OTHER_GETS_TOUCHED,
+					  CE_PLAYER_TOUCHES_X,
 					  player->index_bit, center_side);
       CheckElementChangeByPlayer(x, y, center_element, CE_TOUCHED_BY_PLAYER,
 				 player->index_bit, center_side);
@@ -10076,7 +10713,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
 
     /* check for change of center element (but change it only once) */
     if (IS_CUSTOM_ELEMENT(center_element) &&
-	HAS_ANY_CHANGE_EVENT(center_element, CE_OTHER_IS_TOUCHING) &&
+	HAS_ANY_CHANGE_EVENT(center_element, CE_TOUCHING_X) &&
 	!change_center_element)
     {
       for (j = 0; j < element_info[center_element].num_change_pages; j++)
@@ -10085,7 +10722,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
 	  &element_info[center_element].change_page[j];
 
 	if (change->can_change &&
-	    change->events & CH_EVENT_BIT(CE_OTHER_IS_TOUCHING) &&
+	    change->has_event[CE_TOUCHING_X] &&
 	    change->trigger_side & border_side &&
 #if 1
 	    IS_EQUAL_OR_IN_GROUP(border_element, change->trigger_element)
@@ -10105,7 +10742,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
 
     /* check for change of border element */
     if (IS_CUSTOM_ELEMENT(border_element) &&
-	HAS_ANY_CHANGE_EVENT(border_element, CE_OTHER_IS_TOUCHING))
+	HAS_ANY_CHANGE_EVENT(border_element, CE_TOUCHING_X))
     {
       for (j = 0; j < element_info[border_element].num_change_pages; j++)
       {
@@ -10113,7 +10750,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
 	  &element_info[border_element].change_page[j];
 
 	if (change->can_change &&
-	    change->events & CH_EVENT_BIT(CE_OTHER_IS_TOUCHING) &&
+	    change->has_event[CE_TOUCHING_X] &&
 	    change->trigger_side & center_side &&
 #if 1
 	    IS_EQUAL_OR_IN_GROUP(center_element, change->trigger_element)
@@ -10127,7 +10764,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
 #endif
 
 	  CheckElementChangeByPage(xx, yy, border_element, center_element,
-				   CE_OTHER_IS_TOUCHING, j);
+				   CE_TOUCHING_X, j);
 	  break;
 	}
       }
@@ -10141,7 +10778,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
 #endif
 
     CheckElementChangeByPage(x, y, center_element, border_trigger_element,
-			     CE_OTHER_IS_TOUCHING, center_element_change_page);
+			     CE_TOUCHING_X, center_element_change_page);
   }
 }
 
@@ -10171,8 +10808,11 @@ void TestIfElementHitsCustomElement(int x, int y, int direction)
   touched_element = (IN_LEV_FIELD(hitx, hity) ?
 		     MovingOrBlocked2Element(hitx, hity) : EL_STEELWALL);
 
+#if !USE_HITTING_SOMETHING_BUGFIX
+  /* "hitting something" is also true when hitting the playfield border */
   CheckElementChangeBySide(x, y, hitting_element, touched_element,
 			   CE_HITTING_SOMETHING, direction);
+#endif
 
   if (IN_LEV_FIELD(hitx, hity))
   {
@@ -10194,11 +10834,13 @@ void TestIfElementHitsCustomElement(int x, int y, int direction)
     {
       int i;
 
+#if !USE_HIT_BY_SOMETHING_BUGFIX
       CheckElementChangeBySide(hitx, hity, touched_element, hitting_element,
 			       CE_HIT_BY_SOMETHING, opposite_direction);
+#endif
 
       if (IS_CUSTOM_ELEMENT(hitting_element) &&
-	  HAS_ANY_CHANGE_EVENT(hitting_element, CE_OTHER_IS_HITTING))
+	  HAS_ANY_CHANGE_EVENT(hitting_element, CE_HITTING_X))
       {
 	for (i = 0; i < element_info[hitting_element].num_change_pages; i++)
 	{
@@ -10206,7 +10848,7 @@ void TestIfElementHitsCustomElement(int x, int y, int direction)
 	    &element_info[hitting_element].change_page[i];
 
 	  if (change->can_change &&
-	      change->events & CH_EVENT_BIT(CE_OTHER_IS_HITTING) &&
+	      change->has_event[CE_HITTING_X] &&
 	      change->trigger_side & touched_side &&
 	  
 #if 1
@@ -10217,14 +10859,14 @@ void TestIfElementHitsCustomElement(int x, int y, int direction)
 	      )
 	  {
 	    CheckElementChangeByPage(x, y, hitting_element, touched_element,
-				     CE_OTHER_IS_HITTING, i);
+				     CE_HITTING_X, i);
 	    break;
 	  }
 	}
       }
 
       if (IS_CUSTOM_ELEMENT(touched_element) &&
-	  HAS_ANY_CHANGE_EVENT(touched_element, CE_OTHER_GETS_HIT))
+	  HAS_ANY_CHANGE_EVENT(touched_element, CE_HIT_BY_X))
       {
 	for (i = 0; i < element_info[touched_element].num_change_pages; i++)
 	{
@@ -10232,7 +10874,7 @@ void TestIfElementHitsCustomElement(int x, int y, int direction)
 	    &element_info[touched_element].change_page[i];
 
 	  if (change->can_change &&
-	      change->events & CH_EVENT_BIT(CE_OTHER_GETS_HIT) &&
+	      change->has_event[CE_HIT_BY_X] &&
 	      change->trigger_side & hitting_side &&
 #if 1
 	      IS_EQUAL_OR_IN_GROUP(hitting_element, change->trigger_element)
@@ -10242,13 +10884,24 @@ void TestIfElementHitsCustomElement(int x, int y, int direction)
 	      )
 	  {
 	    CheckElementChangeByPage(hitx, hity, touched_element,
-				     hitting_element, CE_OTHER_GETS_HIT, i);
+				     hitting_element, CE_HIT_BY_X, i);
 	    break;
 	  }
 	}
       }
+
+#if USE_HIT_BY_SOMETHING_BUGFIX
+      CheckElementChangeBySide(hitx, hity, touched_element, hitting_element,
+			       CE_HIT_BY_SOMETHING, opposite_direction);
+#endif
     }
   }
+
+#if USE_HITTING_SOMETHING_BUGFIX
+  /* "hitting something" is also true when hitting the playfield border */
+  CheckElementChangeBySide(x, y, hitting_element, touched_element,
+			   CE_HITTING_SOMETHING, direction);
+#endif
 }
 
 #if 0
@@ -10313,7 +10966,7 @@ void TestIfElementSmashesCustomElement(int x, int y, int direction)
 	    &element_info[hitting_element].change_page[i];
 
 	  if (change->can_change &&
-	      change->events & CH_EVENT_BIT(CE_OTHER_IS_SMASHING) &&
+	      change->has_event[CE_OTHER_IS_SMASHING] &&
 	      change->trigger_side & touched_side &&
 	  
 #if 1
@@ -10339,7 +10992,7 @@ void TestIfElementSmashesCustomElement(int x, int y, int direction)
 	    &element_info[touched_element].change_page[i];
 
 	  if (change->can_change &&
-	      change->events & CH_EVENT_BIT(CE_OTHER_GETS_SMASHED) &&
+	      change->has_event[CE_OTHER_GETS_SMASHED] &&
 	      change->trigger_side & hitting_side &&
 #if 1
 	      IS_EQUAL_OR_IN_GROUP(hitting_element, change->trigger_element)
@@ -10752,7 +11405,11 @@ int DigField(struct PlayerInfo *player,
     if (mode == DF_NO_PUSH)	/* player just stopped pushing */
     {
       player->is_switching = FALSE;
+#if USE_NEW_PUSH_DELAY
+      player->push_delay = -1;
+#else
       player->push_delay = 0;
+#endif
 
       return MF_NO_ACTION;
     }
@@ -10975,14 +11632,14 @@ int DigField(struct PlayerInfo *player,
 	  return MF_NO_ACTION;	/* player cannot walk here due to gravity */
 #endif
 
-	if (IS_GATE(element))
+	if (IS_RND_GATE(element))
 	{
-	  if (!player->key[element - EL_GATE_1])
+	  if (!player->key[RND_GATE_NR(element)])
 	    return MF_NO_ACTION;
 	}
-	else if (IS_GATE_GRAY(element))
+	else if (IS_RND_GATE_GRAY(element))
 	{
-	  if (!player->key[element - EL_GATE_1_GRAY])
+	  if (!player->key[RND_GATE_GRAY_NR(element)])
 	    return MF_NO_ACTION;
 	}
 	else if (element == EL_EXIT_OPEN ||
@@ -11045,12 +11702,12 @@ int DigField(struct PlayerInfo *player,
 
 	if (IS_EM_GATE(element))
 	{
-	  if (!player->key[element - EL_EM_GATE_1])
+	  if (!player->key[EM_GATE_NR(element)])
 	    return MF_NO_ACTION;
 	}
 	else if (IS_EM_GATE_GRAY(element))
 	{
-	  if (!player->key[element - EL_EM_GATE_1_GRAY])
+	  if (!player->key[EM_GATE_GRAY_NR(element)])
 	    return MF_NO_ACTION;
 	}
 	else if (IS_SP_PORT(element))
@@ -11108,7 +11765,7 @@ int DigField(struct PlayerInfo *player,
 
 	PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
 
-	CheckTriggeredElementChangeByPlayer(x, y, element,CE_OTHER_GETS_DIGGED,
+	CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_DIGS_X,
 					    player->index_bit, dig_side);
 
 #if 1
@@ -11161,15 +11818,11 @@ int DigField(struct PlayerInfo *player,
 	{
 	  player->dynabomb_xl = TRUE;
 	}
-	else if ((element >= EL_KEY_1 && element <= EL_KEY_4) ||
-		 (element >= EL_EM_KEY_1 && element <= EL_EM_KEY_4))
+	else if (IS_KEY(element))
 	{
-	  int key_nr = (element >= EL_KEY_1 && element <= EL_KEY_4 ?
-			element - EL_KEY_1 : element - EL_EM_KEY_1);
+	  player->key[KEY_NR(element)] = TRUE;
 
-	  player->key[key_nr] = TRUE;
-
-	  DrawGameValue_Keys(player);
+	  DrawGameValue_Keys(player->key);
 
 	  redraw_mask |= REDRAW_DOOR_1;
 	}
@@ -11210,7 +11863,7 @@ int DigField(struct PlayerInfo *player,
 
 	if (is_player)
 	  CheckTriggeredElementChangeByPlayer(x, y, element,
-					      CE_OTHER_GETS_COLLECTED,
+					      CE_PLAYER_COLLECTS_X,
 					      player->index_bit, dig_side);
 
 #if 1
@@ -11315,16 +11968,56 @@ int DigField(struct PlayerInfo *player,
 	if (!checkDiagonalPushing(player, x, y, real_dx, real_dy))
 	  return MF_NO_ACTION;
 
+#if USE_NEW_PUSH_DELAY
+
+#if 0
+	if ( (player->push_delay == -1) != (player->push_delay2 == 0) )
+	  printf("::: ALERT: %d, %d [%d / %d]\n",
+		 player->push_delay, player->push_delay2,
+		 FrameCounter, FrameCounter / 50);
+#endif
+
+	if (player->push_delay == -1)	/* new pushing; restart delay */
+	  player->push_delay = 0;
+#else
 	if (player->push_delay == 0)	/* new pushing; restart delay */
 	  player->push_delay = FrameCounter;
+#endif
 
+#if USE_NEW_PUSH_DELAY
+#if 0
+	if ( (player->push_delay > 0) != (!xxx_fr) )
+	  printf("::: PUSH BUG! %d, (%d -> %d) %d [%d / %d]\n",
+		 player->push_delay,
+		 xxx_pdv2, player->push_delay2, player->push_delay_value,
+		 FrameCounter, FrameCounter / 50);
+#endif
+
+#if 0
+	if (player->push_delay > 0 &&
+	    !(tape.playing && tape.file_version < FILE_VERSION_2_0) &&
+	    element != EL_SPRING && element != EL_BALLOON)
+#else
+	/* !!! */
+	if (player->push_delay < player->push_delay_value &&
+	    !(tape.playing && tape.file_version < FILE_VERSION_2_0) &&
+	    element != EL_SPRING && element != EL_BALLOON)
+#endif
+
+#else
 	if (!FrameReached(&player->push_delay, player->push_delay_value) &&
 	    !(tape.playing && tape.file_version < FILE_VERSION_2_0) &&
 	    element != EL_SPRING && element != EL_BALLOON)
+#endif
 	{
 	  /* make sure that there is no move delay before next try to push */
+#if USE_NEW_MOVE_DELAY
+	  if (game.engine_version >= VERSION_IDENT(3,0,7,1))
+	    player->move_delay = 0;
+#else
 	  if (game.engine_version >= VERSION_IDENT(3,0,7,1))
 	    player->move_delay = INITIAL_MOVE_DELAY_OFF;
+#endif
 
 	  return MF_NO_ACTION;
 	}
@@ -11384,22 +12077,40 @@ int DigField(struct PlayerInfo *player,
 	else
 	  player->push_delay_value = -1;	/* get new value later */
 
+#if USE_PUSH_BUGFIX
+	/* now: check for element change _after_ element has been pushed! */
+#if 1
+	if (game.use_change_when_pushing_bug)
+#else
+	if (game.engine_version < VERSION_IDENT(3,1,0,0))
+#endif
+	{
+	  CheckElementChangeByPlayer(x, y, element, CE_PUSHED_BY_PLAYER,
+				     player->index_bit, dig_side);
+	  CheckTriggeredElementChangeByPlayer(x,y, element, CE_PLAYER_PUSHES_X,
+					      player->index_bit, dig_side);
+	}
+
+#else
+
 #if 1
 	/* check for element change _after_ element has been pushed! */
 #else
 
 #if 1
-      /* !!! TEST ONLY !!! */
+	/* !!! TEST ONLY !!! */
 	CheckElementChangeByPlayer(x, y, element, CE_PUSHED_BY_PLAYER,
 				   player->index_bit, dig_side);
-	CheckTriggeredElementChangeByPlayer(x, y, element,CE_OTHER_GETS_PUSHED,
+	CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_PUSHES_X,
 					    player->index_bit, dig_side);
 #else
-	CheckTriggeredElementChangeByPlayer(x, y, element,CE_OTHER_GETS_PUSHED,
+	CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_PUSHES_X,
 					    player->index_bit, dig_side);
 	CheckElementChangeByPlayer(x, y, element, CE_PUSHED_BY_PLAYER,
 				   player->index_bit, dig_side);
 #endif
+#endif
+
 #endif
 
 	break;
@@ -11409,7 +12120,7 @@ int DigField(struct PlayerInfo *player,
 	if (PLAYER_SWITCHING(player, x, y))
 	{
 	  CheckTriggeredElementChangeByPlayer(x,y, element,
-					      CE_OTHER_GETS_PRESSED,
+					      CE_PLAYER_PRESSES_X,
 					      player->index_bit, dig_side);
 
 	  return MF_ACTION;
@@ -11485,6 +12196,7 @@ int DigField(struct PlayerInfo *player,
 	  Feld[x][y] = EL_LAMP_ACTIVE;
 	  local_player->lights_still_needed--;
 
+	  ResetGfxAnimation(x, y);
 	  DrawLevelField(x, y);
 	}
 	else if (element == EL_TIME_ORB_FULL)
@@ -11493,6 +12205,7 @@ int DigField(struct PlayerInfo *player,
 	  TimeLeft += 10;
 	  DrawGameValue_Time(TimeLeft);
 
+	  ResetGfxAnimation(x, y);
 	  DrawLevelField(x, y);
 
 #if 0
@@ -11501,10 +12214,10 @@ int DigField(struct PlayerInfo *player,
 	}
 
 	CheckTriggeredElementChangeByPlayer(x, y, element,
-					    CE_OTHER_IS_SWITCHING,
+					    CE_SWITCH_OF_X,
 					    player->index_bit, dig_side);
 
-	CheckTriggeredElementChangeByPlayer(x,y, element,CE_OTHER_GETS_PRESSED,
+	CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_PRESSES_X,
 					    player->index_bit, dig_side);
 
 	return MF_ACTION;
@@ -11522,11 +12235,11 @@ int DigField(struct PlayerInfo *player,
 	  CheckElementChangeByPlayer(x, y, element, CE_SWITCHED,
 				     player->index_bit, dig_side);
 	  CheckTriggeredElementChangeByPlayer(x, y, element,
-					      CE_OTHER_IS_SWITCHING,
+					      CE_SWITCH_OF_X,
 					      player->index_bit, dig_side);
 #else
 	  CheckTriggeredElementChangeByPlayer(x, y, element,
-					      CE_OTHER_IS_SWITCHING,
+					      CE_SWITCH_OF_X,
 					      player->index_bit, dig_side);
 	  CheckElementChangeByPlayer(x, y, element, CE_SWITCHED,
 				     player->index_bit, dig_side);
@@ -11537,10 +12250,10 @@ int DigField(struct PlayerInfo *player,
 	/* !!! TEST ONLY !!! (this breaks "machine", level 000) */
 	CheckElementChangeByPlayer(x, y, element, CE_PRESSED_BY_PLAYER,
 				   player->index_bit, dig_side);
-	CheckTriggeredElementChangeByPlayer(x,y, element,CE_OTHER_GETS_PRESSED,
+	CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_PRESSES_X,
 					    player->index_bit, dig_side);
 #else
-	CheckTriggeredElementChangeByPlayer(x,y, element,CE_OTHER_GETS_PRESSED,
+	CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_PRESSES_X,
 					    player->index_bit, dig_side);
 	CheckElementChangeByPlayer(x, y, element, CE_PRESSED_BY_PLAYER,
 				   player->index_bit, dig_side);
@@ -11550,10 +12263,19 @@ int DigField(struct PlayerInfo *player,
       return MF_NO_ACTION;
   }
 
+#if USE_NEW_PUSH_DELAY
+  player->push_delay = -1;
+#else
   player->push_delay = 0;
+#endif
 
-  if (Feld[x][y] != element)		/* really digged/collected something */
-    player->is_collecting = !player->is_digging;
+#if USE_PENGUIN_COLLECT_BUGFIX
+  if (is_player)		/* function can also be called by EL_PENGUIN */
+#endif
+  {
+    if (Feld[x][y] != element)		/* really digged/collected something */
+      player->is_collecting = !player->is_digging;
+  }
 
   return MF_MOVING;
 }
@@ -11667,6 +12389,15 @@ boolean DropElement(struct PlayerInfo *player)
 		      EL_DYNABOMB_PLAYER_1_ACTIVE + player->index_nr :
 		      EL_UNDEFINED);
 
+#if USE_DROP_BUGFIX
+  /* do not drop an element on top of another element; when holding drop key
+     pressed without moving, dropped element must move away before the next
+     element can be dropped (this is especially important if the next element
+     is dynamite, which can be placed on background for historical reasons) */
+  if (PLAYER_DROPPING(player, dropx, dropy) && Feld[dropx][dropy] != EL_EMPTY)
+    return MF_ACTION;
+#endif
+
   if (IS_THROWABLE(drop_element))
   {
     dropx += GET_DX_FROM_DIR(drop_direction);
@@ -11744,7 +12475,7 @@ boolean DropElement(struct PlayerInfo *player)
 
 #if 1
     /* needed if previous element just changed to "empty" in the last frame */
-    Changed[dropx][dropy] = 0;		/* allow another change */
+    Changed[dropx][dropy] = FALSE;		/* allow another change */
 #endif
 
 #if 1
@@ -11752,11 +12483,11 @@ boolean DropElement(struct PlayerInfo *player)
     CheckElementChangeByPlayer(dropx, dropy, new_element, CE_DROPPED_BY_PLAYER,
 			       player->index_bit, drop_side);
     CheckTriggeredElementChangeByPlayer(dropx, dropy, new_element,
-					CE_OTHER_GETS_DROPPED,
+					CE_PLAYER_DROPS_X,
 					player->index_bit, drop_side);
 #else
     CheckTriggeredElementChangeByPlayer(dropx, dropy, new_element,
-					CE_OTHER_GETS_DROPPED,
+					CE_PLAYER_DROPS_X,
 					player->index_bit, drop_side);
     CheckElementChangeByPlayer(dropx, dropy, new_element, CE_DROPPED_BY_PLAYER,
 			       player->index_bit, drop_side);
@@ -11814,7 +12545,7 @@ boolean DropElement(struct PlayerInfo *player)
     nexty = dropy + GET_DY_FROM_DIR(move_direction);
 
 #if 1
-    Changed[dropx][dropy] = 0;		/* allow another change */
+    Changed[dropx][dropy] = FALSE;		/* allow another change */
     CheckCollision[dropx][dropy] = 2;
 #else
 
@@ -11833,7 +12564,7 @@ boolean DropElement(struct PlayerInfo *player)
     /* !!! commented out from 3.1.0-4 to 3.1.0-5 !!! */
     else
     {
-      Changed[dropx][dropy] = 0;	/* allow another change */
+      Changed[dropx][dropy] = FALSE;	/* allow another change */
 
 #if 1
       TestIfElementHitsCustomElement(dropx, dropy, move_direction);
@@ -11863,6 +12594,10 @@ boolean DropElement(struct PlayerInfo *player)
 
   player->is_dropping = TRUE;
 
+#if USE_DROP_BUGFIX
+  player->drop_x = dropx;
+  player->drop_y = dropy;
+#endif
 
   return TRUE;
 }
@@ -11985,6 +12720,168 @@ static void PlayLevelMusic()
     PlayMusic(MAP_NOCONF_MUSIC(level_nr));	/* from music dir */
 }
 
+void PlayLevelSound_EM(int x, int y, int element_em, int sample)
+{
+  int element = (element_em > -1 ? map_element_EM_to_RND(element_em) : 0);
+
+#if 0
+  if (sample == SAMPLE_bug)
+    printf("::: PlayLevelSound_EM: %d, %d: %d\n", x, y, sample);
+#endif
+
+  switch (sample)
+  {
+    case SAMPLE_blank:
+      PlayLevelSoundElementAction(x, y, element, ACTION_WALKING);
+      break;
+
+    case SAMPLE_roll:
+      PlayLevelSoundElementAction(x, y, element, ACTION_PUSHING);
+      break;
+
+    case SAMPLE_stone:
+      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      break;
+
+    case SAMPLE_nut:
+      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      break;
+
+    case SAMPLE_crack:
+      PlayLevelSoundElementAction(x, y, element, ACTION_BREAKING);
+      break;
+
+    case SAMPLE_bug:
+      PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
+      break;
+
+    case SAMPLE_tank:
+      PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
+      break;
+
+    case SAMPLE_android_clone:
+      PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
+      break;
+
+    case SAMPLE_android_move:
+      PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
+      break;
+
+    case SAMPLE_spring:
+      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      break;
+
+    case SAMPLE_slurp:
+      PlayLevelSoundElementAction(x, y, element, ACTION_SLURPED_BY_SPRING);
+      break;
+
+    case SAMPLE_eater:
+      PlayLevelSoundElementAction(x, y, element, ACTION_WAITING);
+      break;
+
+    case SAMPLE_eater_eat:
+      PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
+      break;
+
+    case SAMPLE_alien:
+      PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
+      break;
+
+    case SAMPLE_collect:
+      PlayLevelSoundElementAction(x, y, element, ACTION_COLLECTING);
+      break;
+
+    case SAMPLE_diamond:
+      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      break;
+
+    case SAMPLE_squash:
+      /* !!! CHECK THIS !!! */
+#if 1
+      PlayLevelSoundElementAction(x, y, element, ACTION_BREAKING);
+#else
+      PlayLevelSoundElementAction(x, y, element, ACTION_SMASHED_BY_ROCK);
+#endif
+      break;
+
+    case SAMPLE_wonderfall:
+      PlayLevelSoundElementAction(x, y, element, ACTION_FILLING);
+      break;
+
+    case SAMPLE_drip:
+      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      break;
+
+    case SAMPLE_push:
+      PlayLevelSoundElementAction(x, y, element, ACTION_PUSHING);
+      break;
+
+    case SAMPLE_dirt:
+      PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
+      break;
+
+    case SAMPLE_acid:
+      PlayLevelSoundElementAction(x, y, element, ACTION_SPLASHING);
+      break;
+
+    case SAMPLE_ball:
+      PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
+      break;
+
+    case SAMPLE_grow:
+      PlayLevelSoundElementAction(x, y, element, ACTION_GROWING);
+      break;
+
+    case SAMPLE_wonder:
+      PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
+      break;
+
+    case SAMPLE_door:
+      PlayLevelSoundElementAction(x, y, element, ACTION_PASSING);
+      break;
+
+    case SAMPLE_exit_open:
+      PlayLevelSoundElementAction(x, y, element, ACTION_OPENING);
+      break;
+
+    case SAMPLE_exit_leave:
+      PlayLevelSoundElementAction(x, y, element, ACTION_PASSING);
+      break;
+
+    case SAMPLE_dynamite:
+      PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
+      break;
+
+    case SAMPLE_tick:
+      PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
+      break;
+
+    case SAMPLE_press:
+      PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVATING);
+      break;
+
+    case SAMPLE_wheel:
+      PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
+      break;
+
+    case SAMPLE_boom:
+      PlayLevelSoundElementAction(x, y, element, ACTION_EXPLODING);
+      break;
+
+    case SAMPLE_die:
+      PlayLevelSoundElementAction(x, y, element, ACTION_DYING);
+      break;
+
+    case SAMPLE_time:
+      PlaySoundStereo(SND_GAME_RUNNING_OUT_OF_TIME, SOUND_MIDDLE);
+      break;
+
+    default:
+      PlayLevelSoundElementAction(x, y, element, ACTION_DEFAULT);
+      break;
+  }
+}
+
 void RaiseScore(int value)
 {
   local_player->score += value;
@@ -12054,6 +12951,14 @@ void RaiseScoreElement(int element)
     case EL_KEY_2:
     case EL_KEY_3:
     case EL_KEY_4:
+    case EL_EM_KEY_1:
+    case EL_EM_KEY_2:
+    case EL_EM_KEY_3:
+    case EL_EM_KEY_4:
+    case EL_EMC_KEY_5:
+    case EL_EMC_KEY_6:
+    case EL_EMC_KEY_7:
+    case EL_EMC_KEY_8:
       RaiseScore(level.score[SC_KEY]);
       break;
     default:

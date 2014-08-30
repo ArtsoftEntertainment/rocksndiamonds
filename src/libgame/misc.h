@@ -27,7 +27,7 @@
 /* values for InitRND() */
 #define NEW_RANDOMIZE			-1
 
-#define InitRND(seed)			init_random_number(0, seed)
+#define InitEngineRND(seed)		init_random_number(0, seed)
 #define InitSimpleRND(seed)		init_random_number(1, seed)
 #define RND(max)			get_random_number(0, max)
 #define SimpleRND(max)			get_random_number(1, max)
@@ -93,6 +93,9 @@ unsigned int get_random_number(int, int);
 char *getLoginName(void);
 char *getRealName(void);
 char *getHomeDir(void);
+
+char *getBasePath(char *);
+char *getBaseName(char *);
 
 char *getPath2(char *, char *);
 char *getPath3(char *, char *, char*);
@@ -162,11 +165,14 @@ boolean FileIsSound(char *);
 boolean FileIsMusic(char *);
 boolean FileIsArtworkType(char *, int);
 
+char *get_mapped_token(char *);
+
 int get_parameter_value(char *, char *, int);
 int get_auto_parameter_value(char *, char *);
 
 struct FileInfo *getFileListFromConfigList(struct ConfigInfo *,
-					   struct ConfigInfo *, char **, int);
+					   struct ConfigTypeInfo *,
+					   char **, int);
 void LoadArtworkConfig(struct ArtworkListInfo *);
 void ReloadCustomArtworkList(struct ArtworkListInfo *);
 void FreeCustomArtworkLists(struct ArtworkListInfo *);

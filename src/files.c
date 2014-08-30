@@ -29,7 +29,7 @@
 #define CHUNK_SIZE_NONE		-1	/* do not write chunk size    */
 #define FILE_VERS_CHUNK_SIZE	8	/* size of file version chunk */
 #define LEVEL_HEADER_SIZE	80	/* size of level file header  */
-#define LEVEL_HEADER_UNUSED	1	/* unused level header bytes  */
+#define LEVEL_HEADER_UNUSED	0	/* unused level header bytes  */
 #define LEVEL_CHUNK_CNT2_SIZE	160	/* size of level CNT2 chunk   */
 #define LEVEL_CHUNK_CNT2_UNUSED	11	/* unused CNT2 chunk bytes    */
 #define LEVEL_CHUNK_CNT3_HEADER	16	/* size of level CNT3 header  */
@@ -49,21 +49,22 @@
 #define TAPE_COOKIE_TMPL	"ROCKSNDIAMONDS_TAPE_FILE_VERSION_x.x"
 #define SCORE_COOKIE		"ROCKSNDIAMONDS_SCORE_FILE_VERSION_1.2"
 
-/* values for level file type identifier */
-#define LEVEL_FILE_TYPE_UNKNOWN		0
-#define LEVEL_FILE_TYPE_RND		1
-#define LEVEL_FILE_TYPE_BD		2
-#define LEVEL_FILE_TYPE_EM		3
-#define LEVEL_FILE_TYPE_SP		4
-#define LEVEL_FILE_TYPE_DX		5
-#define LEVEL_FILE_TYPE_SB		6
-#define LEVEL_FILE_TYPE_DC		7
-
-#define LEVEL_FILE_TYPE_RND_PACKED	(10 + LEVEL_FILE_TYPE_RND)
-#define LEVEL_FILE_TYPE_EM_PACKED	(10 + LEVEL_FILE_TYPE_EM)
-
-#define IS_SINGLE_LEVEL_FILE(x)		(x < 10)
-#define IS_PACKED_LEVEL_FILE(x)		(x > 10)
+static struct
+{
+  int filetype;
+  char *id;
+}
+filetype_id_list[] =
+{
+  { LEVEL_FILE_TYPE_RND,	"RND"	},
+  { LEVEL_FILE_TYPE_BD,		"BD"	},
+  { LEVEL_FILE_TYPE_EM,		"EM"	},
+  { LEVEL_FILE_TYPE_SP,		"SP"	},
+  { LEVEL_FILE_TYPE_DX,		"DX"	},
+  { LEVEL_FILE_TYPE_SB,		"SB"	},
+  { LEVEL_FILE_TYPE_DC,		"DC"	},
+  { -1,				NULL	},
+};
 
 
 /* ========================================================================= */
@@ -87,11 +88,12 @@ void setElementChangePages(struct ElementInfo *ei, int change_pages)
 
 void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
 {
-  int x, y;
+  int i, x, y;
 
   change->can_change = FALSE;
 
-  change->events = CE_BITMASK_DEFAULT;
+  for (i = 0; i < NUM_CHANGE_EVENTS; i++)
+    change->has_event[i] = FALSE;
 
   change->trigger_player = CH_PLAYER_ANY;
   change->trigger_side = CH_SIDE_ANY;
@@ -127,8 +129,13 @@ void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
 static void setLevelInfoToDefaults(struct LevelInfo *level)
 {
   static boolean clipboard_elements_initialized = FALSE;
-
   int i, j, x, y;
+
+  setLevelInfoToDefaults_EM();
+
+  level->native_em_level = &native_em_level;
+
+  level->game_engine_type = GAME_ENGINE_TYPE_RND;
 
   level->file_version = FILE_VERSION_ACTUAL;
   level->game_version = GAME_VERSION_ACTUAL;
@@ -159,17 +166,42 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
   level->double_speed = FALSE;
   level->initial_gravity = FALSE;
   level->em_slippery_gems = FALSE;
-  level->block_last_field = FALSE;
-  level->sp_block_last_field = TRUE;
   level->instant_relocation = FALSE;
   level->can_pass_to_walkable = FALSE;
   level->grow_into_diggable = TRUE;
 
+  level->block_last_field = FALSE;	/* EM does not block by default */
+  level->sp_block_last_field = TRUE;	/* SP blocks the last field */
+
+#if 0	/* !!! THIS IS NOT A LEVEL SETTING => LOGIC MOVED TO "game.c" !!! */
+  level->block_delay = 8;		/* when blocking, block 8 frames */
+  level->sp_block_delay = 9;		/* SP indeed blocks 9 frames, not 8 */
+#endif
+
   level->can_move_into_acid_bits = ~0;	/* everything can move into acid */
-  level->dont_collide_with_bits = ~0;	/* always deadly when colliding  */
+  level->dont_collide_with_bits = ~0;	/* always deadly when colliding */
 
   level->use_spring_bug = FALSE;
   level->use_step_counter = FALSE;
+
+  /* values for the new EMC elements */
+  level->android_move_time = 10;
+  level->android_clone_time = 10;
+  level->ball_random = FALSE;
+  level->ball_state_initial = FALSE;
+  level->ball_time = 10;
+  level->lenses_score = 10;
+  level->magnify_score = 10;
+  level->slurp_score = 10;
+  level->lenses_time = 10;
+  level->magnify_time = 10;
+  level->wind_direction_initial = MV_NO_MOVING;
+  for (i = 0; i < NUM_MAGIC_BALL_CONTENTS; i++)
+    for (x = 0; x < 3; x++)
+      for (y = 0; y < 3; y++)
+	level->ball_content[i][x][y] = EL_EMPTY;
+  for (i = 0; i < 16; i++)
+    level->android_array[i] = FALSE;
 
   level->use_custom_template = FALSE;
 
@@ -310,6 +342,8 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
 
   level->no_valid_file = FALSE;
 
+  level->changed = FALSE;
+
   if (leveldir_current == NULL)		/* only when dumping level */
     return;
 
@@ -398,34 +432,14 @@ static int getFileTypeFromBasename(char *basename)
   return LEVEL_FILE_TYPE_UNKNOWN;
 }
 
-static char *getSingleLevelBasename(int nr, int type)
+static char *getSingleLevelBasename(int nr)
 {
   static char basename[MAX_FILENAME_LEN];
-  char *level_filename = getStringCopy(leveldir_current->level_filename);
 
-  if (level_filename == NULL)
-    level_filename = getStringCat2("%03d.", LEVELFILE_EXTENSION);
-
-  switch (type)
-  {
-    case LEVEL_FILE_TYPE_RND:
-      if (nr < 0)
-	sprintf(basename, "template.%s", LEVELFILE_EXTENSION);
-      else
-	sprintf(basename, "%03d.%s", nr, LEVELFILE_EXTENSION);
-      break;
-
-    case LEVEL_FILE_TYPE_EM:
-      sprintf(basename, "%d", nr);
-      break;
-
-    case LEVEL_FILE_TYPE_UNKNOWN:
-    default:
-      sprintf(basename, level_filename, nr);
-      break;
-  }
-
-  free(level_filename);
+  if (nr < 0)
+    sprintf(basename, "template.%s", LEVELFILE_EXTENSION);
+  else
+    sprintf(basename, "%03d.%s", nr, LEVELFILE_EXTENSION);
 
   return basename;
 }
@@ -468,9 +482,9 @@ static char *getPackedLevelBasename(int type)
   return basename;
 }
 
-static char *getSingleLevelFilename(int nr, int type)
+static char *getSingleLevelFilename(int nr)
 {
-  return getLevelFilenameFromBasename(getSingleLevelBasename(nr, type));
+  return getLevelFilenameFromBasename(getSingleLevelBasename(nr));
 }
 
 #if 0
@@ -482,15 +496,33 @@ static char *getPackedLevelFilename(int type)
 
 char *getDefaultLevelFilename(int nr)
 {
-  return getSingleLevelFilename(nr, LEVEL_FILE_TYPE_RND);
+  return getSingleLevelFilename(nr);
 }
 
+#if 0
 static void setLevelFileInfo_SingleLevelFilename(struct LevelFileInfo *lfi,
 						 int type)
 {
   lfi->type = type;
   lfi->packed = FALSE;
   lfi->basename = getSingleLevelBasename(lfi->nr, lfi->type);
+  lfi->filename = getLevelFilenameFromBasename(lfi->basename);
+}
+#endif
+
+static void setLevelFileInfo_FormatLevelFilename(struct LevelFileInfo *lfi,
+						 int type, char *format, ...)
+{
+  static char basename[MAX_FILENAME_LEN];
+  va_list ap;
+
+  va_start(ap, format);
+  vsprintf(basename, format, ap);
+  va_end(ap);
+
+  lfi->type = type;
+  lfi->packed = FALSE;
+  lfi->basename = basename;
   lfi->filename = getLevelFilenameFromBasename(lfi->basename);
 }
 
@@ -503,7 +535,37 @@ static void setLevelFileInfo_PackedLevelFilename(struct LevelFileInfo *lfi,
   lfi->filename = getLevelFilenameFromBasename(lfi->basename);
 }
 
-static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
+static int getFiletypeFromID(char *filetype_id)
+{
+  char *filetype_id_lower;
+  int filetype = LEVEL_FILE_TYPE_UNKNOWN;
+  int i;
+
+  if (filetype_id == NULL)
+    return LEVEL_FILE_TYPE_UNKNOWN;
+
+  filetype_id_lower = getStringToLower(filetype_id);
+
+  for (i = 0; filetype_id_list[i].id != NULL; i++)
+  {
+    char *id_lower = getStringToLower(filetype_id_list[i].id);
+    
+    if (strcmp(filetype_id_lower, id_lower) == 0)
+      filetype = filetype_id_list[i].filetype;
+
+    free(id_lower);
+
+    if (filetype != LEVEL_FILE_TYPE_UNKNOWN)
+      break;
+  }
+
+  free(filetype_id_lower);
+
+  return filetype;
+}
+
+#if 0
+static void OLD_determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
 {
   /* special case: level number is negative => check for level template file */
   if (lfi->nr < 0)
@@ -515,8 +577,11 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
 
   if (leveldir_current->level_filename != NULL)
   {
+    int filetype = getFiletypeFromID(leveldir_current->level_filetype);
+
     /* check for file name/pattern specified in "levelinfo.conf" */
-    setLevelFileInfo_SingleLevelFilename(lfi, LEVEL_FILE_TYPE_UNKNOWN);
+    setLevelFileInfo_SingleLevelFilename(lfi, filetype);
+
     if (fileExists(lfi->filename))
       return;
   }
@@ -539,12 +604,99 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
   /* no known level file found -- try to use default values */
   setLevelFileInfo_SingleLevelFilename(lfi, LEVEL_FILE_TYPE_UNKNOWN);
 }
+#endif
+
+static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
+{
+  int nr = lfi->nr;
+
+  /* special case: level number is negative => check for level template file */
+  if (nr < 0)
+  {
+    setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND,
+					 "template.%s", LEVELFILE_EXTENSION);
+
+    /* no fallback if template file not existing */
+    return;
+  }
+
+  /* special case: check for file name/pattern specified in "levelinfo.conf" */
+  if (leveldir_current->level_filename != NULL)
+  {
+    int filetype = getFiletypeFromID(leveldir_current->level_filetype);
+
+    setLevelFileInfo_FormatLevelFilename(lfi, filetype,
+					 leveldir_current->level_filename, nr);
+    if (fileExists(lfi->filename))
+      return;
+  }
+
+  /* check for native Rocks'n'Diamonds level file */
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND,
+				       "%03d.%s", nr, LEVELFILE_EXTENSION);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* check for Emerald Mine level file (V1) */
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_EM, "a%c%c",
+				       'a' + (nr / 10) % 26, '0' + nr % 10);
+  if (fileExists(lfi->filename))
+    return;
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_EM, "A%c%c",
+				       'A' + (nr / 10) % 26, '0' + nr % 10);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* check for Emerald Mine level file (V2 to V5) */
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_EM, "%d", nr);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* check for Emerald Mine level file (V6 / single mode) */
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_EM, "%02ds", nr);
+  if (fileExists(lfi->filename))
+    return;
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_EM, "%02dS", nr);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* check for Emerald Mine level file (V6 / teamwork mode) */
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_EM, "%02dt", nr);
+  if (fileExists(lfi->filename))
+    return;
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_EM, "%02dT", nr);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* check for various packed level file formats */
+  setLevelFileInfo_PackedLevelFilename(lfi, LEVEL_FILE_TYPE_UNKNOWN);
+  if (fileExists(lfi->filename))
+    return;
+
+  /* no known level file found -- use default values (and fail later) */
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND,
+				       "%03d.%s", nr, LEVELFILE_EXTENSION);
+}
 
 static void determineLevelFileInfo_Filetype(struct LevelFileInfo *lfi)
 {
   if (lfi->type == LEVEL_FILE_TYPE_UNKNOWN)
     lfi->type = getFileTypeFromBasename(lfi->basename);
 }
+
+#if 1
+static void setLevelFileInfo(struct LevelFileInfo *level_file_info, int nr)
+{
+  /* always start with reliable default values */
+  setFileInfoToDefaults(level_file_info);
+
+  level_file_info->nr = nr;	/* set requested level number */
+
+  determineLevelFileInfo_Filename(level_file_info);
+  determineLevelFileInfo_Filetype(level_file_info);
+}
+
+#else
 
 static struct LevelFileInfo *getLevelFileInfo(int nr)
 {
@@ -560,7 +712,7 @@ static struct LevelFileInfo *getLevelFileInfo(int nr)
 
   return &level_file_info;
 }
-
+#endif
 
 /* ------------------------------------------------------------------------- */
 /* functions for loading R'n'D level                                         */
@@ -708,6 +860,8 @@ static int LoadLevel_HEAD(FILE *file, int chunk_size, struct LevelInfo *level)
   level->instant_relocation	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
   level->can_pass_to_walkable	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
   level->grow_into_diggable	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
+
+  level->game_engine_type	= getFile8Bit(file);
 
   ReadUnusedBytesFromFile(file, LEVEL_HEADER_UNUSED);
 
@@ -937,6 +1091,7 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
   for (i = 0; i < num_changed_custom_elements; i++)
   {
     int element = getFile16BitBE(file);
+    unsigned long event_bits;
 
     if (!IS_CUSTOM_ELEMENT(element))
     {
@@ -975,7 +1130,10 @@ static int LoadLevel_CUS3(FILE *file, int chunk_size, struct LevelInfo *level)
 	element_info[element].content[x][y] =
 	  getMappedElement(getFile16BitBE(file));
 
-    element_info[element].change->events = getFile32BitBE(file);
+    event_bits = getFile32BitBE(file);
+    for (j = 0; j < NUM_CHANGE_EVENTS; j++)
+      if (event_bits & (1 << j))
+	element_info[element].change->has_event[j] = TRUE;
 
     element_info[element].change->target_element =
       getMappedElement(getFile16BitBE(file));
@@ -1017,7 +1175,7 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
   struct ElementInfo *ei;
   int chunk_size_expected;
   int element;
-  int i, x, y;
+  int i, j, x, y;
 
   element = getFile16BitBE(file);
 
@@ -1099,11 +1257,15 @@ static int LoadLevel_CUS4(FILE *file, int chunk_size, struct LevelInfo *level)
   for (i = 0; i < ei->num_change_pages; i++)
   {
     struct ElementChangeInfo *change = &ei->change_page[i];
+    unsigned long event_bits;
 
     /* always start with reliable default values */
     setElementChangeInfoToDefaults(change);
 
-    change->events = getFile32BitBE(file);
+    event_bits = getFile32BitBE(file);
+    for (j = 0; j < NUM_CHANGE_EVENTS; j++)
+      if (event_bits & (1 << j))
+	change->has_event[j] = TRUE;
 
     change->target_element = getMappedElement(getFile16BitBE(file));
 
@@ -1335,6 +1497,8 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 /* ------------------------------------------------------------------------- */
 /* functions for loading EM level                                            */
 /* ------------------------------------------------------------------------- */
+
+#if 0
 
 static int map_em_element_yam(int element)
 {
@@ -1648,16 +1812,13 @@ static int map_em_element_field(int element)
 #define EM_LEVEL_XSIZE			64
 #define EM_LEVEL_YSIZE			32
 
-static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
-				     struct LevelFileInfo *level_file_info)
+static void OLD_LoadLevelFromFileInfo_EM(struct LevelInfo *level,
+					 struct LevelFileInfo *level_file_info)
 {
   char *filename = level_file_info->filename;
   FILE *file;
   unsigned char leveldata[EM_LEVEL_SIZE];
   unsigned char *header = &leveldata[EM_LEVEL_XSIZE * EM_LEVEL_YSIZE];
-  unsigned char code0 = 0x65;
-  unsigned char code1 = 0x11;
-  boolean level_is_crypted = FALSE;
   int nr = level_file_info->nr;
   int i, x, y;
 
@@ -1670,7 +1831,7 @@ static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
     return;
   }
 
-  for(i = 0; i < EM_LEVEL_SIZE; i++)
+  for (i = 0; i < EM_LEVEL_SIZE; i++)
     leveldata[i] = fgetc(file);
 
   fclose(file);
@@ -1681,20 +1842,20 @@ static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
   if ((leveldata[0] == 0xf1 ||
        leveldata[0] == 0xf5) && leveldata[2] == 0xe7 && leveldata[3] == 0xee)
   {
-    level_is_crypted = TRUE;
+    unsigned char code0 = 0x65;
+    unsigned char code1 = 0x11;
 
     if (leveldata[0] == 0xf5)	/* error in crypted Emerald Mine 2 levels */
       leveldata[0] = 0xf1;
-  }
 
-  if (level_is_crypted)		/* decode crypted level data */
-  {
-    for(i = 0; i < EM_LEVEL_SIZE; i++)
+    /* decode crypted level data */
+
+    for (i = 0; i < EM_LEVEL_SIZE; i++)
     {
       leveldata[i] ^= code0;
       leveldata[i] -= code1;
 
-      code0  = (code0 + 7) & 0xff;
+      code0 = (code0 + 7) & 0xff;
     }
   }
 
@@ -1727,9 +1888,9 @@ static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
 
   level->num_yamyam_contents = 4;
 
-  for(i = 0; i < level->num_yamyam_contents; i++)
-    for(y = 0; y < 3; y++)
-      for(x = 0; x < 3; x++)
+  for (i = 0; i < level->num_yamyam_contents; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	level->yamyam_content[i][x][y] =
 	  map_em_element_yam(header[i * 9 + y * 3 + x]);
 
@@ -1756,6 +1917,231 @@ static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
   y = (header[50] * 256 + header[51]) / EM_LEVEL_XSIZE;
   level->field[x][y] = EL_PLAYER_2;
 }
+
+#else
+
+void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
+{
+  static int ball_xy[8][2] =
+  {
+    { 0, 0 },
+    { 1, 0 },
+    { 2, 0 },
+    { 0, 1 },
+    { 2, 1 },
+    { 0, 2 },
+    { 1, 2 },
+    { 2, 2 },
+  };
+  struct LevelInfo_EM *level_em = level->native_em_level;
+  struct LEVEL *lev = level_em->lev;
+  struct PLAYER *ply1 = level_em->ply1;
+  struct PLAYER *ply2 = level_em->ply2;
+  int i, j, x, y;
+
+  lev->width  = MIN(level->fieldx, EM_MAX_CAVE_WIDTH);
+  lev->height = MIN(level->fieldy, EM_MAX_CAVE_HEIGHT);
+
+  lev->time_seconds     = level->time;
+  lev->required_initial = level->gems_needed;
+
+  lev->emerald_score	= level->score[SC_EMERALD];
+  lev->diamond_score	= level->score[SC_DIAMOND];
+  lev->alien_score	= level->score[SC_ROBOT];
+  lev->tank_score	= level->score[SC_SPACESHIP];
+  lev->bug_score	= level->score[SC_BUG];
+  lev->eater_score	= level->score[SC_YAMYAM];
+  lev->nut_score	= level->score[SC_NUT];
+  lev->dynamite_score	= level->score[SC_DYNAMITE];
+  lev->key_score	= level->score[SC_KEY];
+  lev->exit_score	= level->score[SC_TIME_BONUS];
+
+  for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
+	lev->eater_array[i][y * 3 + x] =
+	  map_element_RND_to_EM(level->yamyam_content[i][x][y]);
+
+  lev->amoeba_time		= level->amoeba_speed;
+  lev->wonderwall_time_initial	= level->time_magic_wall;
+  lev->wheel_time		= level->time_wheel;
+
+  lev->android_move_time	= level->android_move_time;
+  lev->android_clone_time	= level->android_clone_time;
+  lev->ball_random		= level->ball_random;
+  lev->ball_state_initial	= level->ball_state_initial;
+  lev->ball_time		= level->ball_time;
+
+  lev->lenses_score		= level->lenses_score;
+  lev->magnify_score		= level->magnify_score;
+  lev->slurp_score		= level->slurp_score;
+
+  lev->lenses_time		= level->lenses_time;
+  lev->magnify_time		= level->magnify_time;
+  lev->wind_direction_initial	= level->wind_direction_initial;
+
+  for (i = 0; i < NUM_MAGIC_BALL_CONTENTS; i++)
+    for (j = 0; j < 8; j++)
+      lev->ball_array[i][j] =
+	map_element_RND_to_EM(level->
+			      ball_content[i][ball_xy[j][0]][ball_xy[j][1]]);
+
+  for (i = 0; i < 16; i++)
+    lev->android_array[i] = FALSE;	/* !!! YET TO COME !!! */
+
+  /* first fill the complete playfield with the default border element */
+  for (y = 0; y < EM_MAX_CAVE_HEIGHT; y++)
+    for (x = 0; x < EM_MAX_CAVE_WIDTH; x++)
+      level_em->cave[x][y] = ZBORDER;
+
+  /* then copy the real level contents from level file into the playfield */
+  for (y = 0; y < lev->height; y++) for (x = 0; x < lev->width; x++)
+  {
+    int new_element = map_element_RND_to_EM(level->field[x][y]);
+
+    if (level->field[x][y] == EL_AMOEBA_DEAD)
+      new_element = map_element_RND_to_EM(EL_AMOEBA_WET);
+
+    level_em->cave[x + 1][y + 1] = new_element;
+  }
+
+  ply1->x_initial = 0;
+  ply1->y_initial = 0;
+
+  ply2->x_initial = 0;
+  ply2->y_initial = 0;
+
+  /* initialize player positions and delete players from the playfield */
+  for (y = 0; y < lev->height; y++) for (x = 0; x < lev->width; x++)
+  {
+    if (level->field[x][y] == EL_PLAYER_1)
+    {
+      ply1->x_initial = x + 1;
+      ply1->y_initial = y + 1;
+      level_em->cave[x + 1][y + 1] = map_element_RND_to_EM(EL_EMPTY);
+    }
+    else if (level->field[x][y] == EL_PLAYER_2)
+    {
+      ply2->x_initial = x + 1;
+      ply2->y_initial = y + 1;
+      level_em->cave[x + 1][y + 1] = map_element_RND_to_EM(EL_EMPTY);
+    }
+  }
+}
+
+void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
+{
+  static int ball_xy[8][2] =
+  {
+    { 0, 0 },
+    { 1, 0 },
+    { 2, 0 },
+    { 0, 1 },
+    { 2, 1 },
+    { 0, 2 },
+    { 1, 2 },
+    { 2, 2 },
+  };
+  struct LevelInfo_EM *level_em = level->native_em_level;
+  struct LEVEL *lev = level_em->lev;
+  struct PLAYER *ply1 = level_em->ply1;
+  struct PLAYER *ply2 = level_em->ply2;
+  int i, j, x, y;
+
+  level->fieldx = MIN(lev->width,  MAX_LEV_FIELDX);
+  level->fieldy = MIN(lev->height, MAX_LEV_FIELDY);
+
+  level->time        = lev->time_seconds;
+  level->gems_needed = lev->required_initial;
+
+  sprintf(level->name, "Level %d", level->file_info.nr);
+
+  level->score[SC_EMERALD]	= lev->emerald_score;
+  level->score[SC_DIAMOND]	= lev->diamond_score;
+  level->score[SC_ROBOT]	= lev->alien_score;
+  level->score[SC_SPACESHIP]	= lev->tank_score;
+  level->score[SC_BUG]		= lev->bug_score;
+  level->score[SC_YAMYAM]	= lev->eater_score;
+  level->score[SC_NUT]		= lev->nut_score;
+  level->score[SC_DYNAMITE]	= lev->dynamite_score;
+  level->score[SC_KEY]		= lev->key_score;
+  level->score[SC_TIME_BONUS]	= lev->exit_score;
+
+  level->num_yamyam_contents = MAX_ELEMENT_CONTENTS;
+
+  for (i = 0; i < level->num_yamyam_contents; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
+	level->yamyam_content[i][x][y] =
+	  map_element_EM_to_RND(lev->eater_array[i][y * 3 + x]);
+
+  level->amoeba_speed		= lev->amoeba_time;
+  level->time_magic_wall	= lev->wonderwall_time_initial;
+  level->time_wheel		= lev->wheel_time;
+
+  level->android_move_time	= lev->android_move_time;
+  level->android_clone_time	= lev->android_clone_time;
+  level->ball_random		= lev->ball_random;
+  level->ball_state_initial	= lev->ball_state_initial;
+  level->ball_time		= lev->ball_time;
+
+  level->lenses_score		= lev->lenses_score;
+  level->magnify_score		= lev->magnify_score;
+  level->slurp_score		= lev->slurp_score;
+
+  level->lenses_time		= lev->lenses_time;
+  level->magnify_time		= lev->magnify_time;
+  level->wind_direction_initial	= lev->wind_direction_initial;
+
+  for (i = 0; i < NUM_MAGIC_BALL_CONTENTS; i++)
+    for (j = 0; j < 8; j++)
+      level->ball_content[i][ball_xy[j][0]][ball_xy[j][1]] =
+	map_element_EM_to_RND(lev->ball_array[i][j]);
+
+  for (i = 0; i < 16; i++)
+    level->android_array[i] = FALSE;	/* !!! YET TO COME !!! */
+
+  /* convert the playfield (some elements need special treatment) */
+  for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
+  {
+    int new_element = map_element_EM_to_RND(level_em->cave[x + 1][y + 1]);
+
+    if (new_element == EL_AMOEBA_WET && level->amoeba_speed == 0)
+      new_element = EL_AMOEBA_DEAD;
+
+    level->field[x][y] = new_element;
+  }
+
+  /* in case of both players set to the same field, use the first player */
+  level->field[ply2->x_initial - 1][ply2->y_initial - 1] = EL_PLAYER_2;
+  level->field[ply1->x_initial - 1][ply1->y_initial - 1] = EL_PLAYER_1;
+
+#if 0
+  printf("::: native Emerald Mine file version: %d\n", level_em->file_version);
+#endif
+}
+
+static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info)
+{
+  if (!LoadNativeLevel_EM(level_file_info->filename))
+    level->no_valid_file = TRUE;
+}
+
+#endif
+
+void CopyNativeLevel_RND_to_Native(struct LevelInfo *level)
+{
+  if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
+    CopyNativeLevel_RND_to_EM(level);
+}
+
+void CopyNativeLevel_Native_to_RND(struct LevelInfo *level)
+{
+  if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
+    CopyNativeLevel_EM_to_RND(level);
+}
+
 
 /* ------------------------------------------------------------------------- */
 /* functions for loading SP level                                            */
@@ -1908,13 +2294,13 @@ static void LoadLevelFromFileStream_SP(FILE *file, struct LevelInfo *level,
   level->time_wheel = 0;
   level->amoeba_content = EL_EMPTY;
 
-  for(i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
+  for (i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
     level->score[i] = 0;		/* !!! CORRECT THIS !!! */
 
   /* there are no yamyams in supaplex levels */
-  for(i = 0; i < level->num_yamyam_contents; i++)
-    for(y = 0; y < 3; y++)
-      for(x = 0; x < 3; x++)
+  for (i = 0; i < level->num_yamyam_contents; i++)
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
 	level->yamyam_content[i][x][y] = EL_EMPTY;
 }
 
@@ -2115,6 +2501,7 @@ void LoadLevelFromFileInfo(struct LevelInfo *level,
 
     case LEVEL_FILE_TYPE_EM:
       LoadLevelFromFileInfo_EM(level, level_file_info);
+      level->game_engine_type = GAME_ENGINE_TYPE_EM;
       break;
 
     case LEVEL_FILE_TYPE_SP:
@@ -2125,6 +2512,18 @@ void LoadLevelFromFileInfo(struct LevelInfo *level,
       LoadLevelFromFileInfo_RND(level, level_file_info);
       break;
   }
+
+  /* if level file is invalid, restore level structure to default values */
+  if (level->no_valid_file)
+    setLevelInfoToDefaults(level);
+
+  if (level->game_engine_type == GAME_ENGINE_TYPE_UNKNOWN)
+    level->game_engine_type = GAME_ENGINE_TYPE_RND;
+
+  if (level_file_info->type == LEVEL_FILE_TYPE_RND)
+    CopyNativeLevel_RND_to_Native(level);
+  else
+    CopyNativeLevel_Native_to_RND(level);
 }
 
 void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
@@ -2197,12 +2596,17 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
     if (level->game_version == VERSION_IDENT(2,0,1,0))
       level->em_slippery_gems = TRUE;
 
+    /* springs could be pushed over pits before (pre-release version) 2.2.0 */
     if (level->game_version < VERSION_IDENT(2,2,0,0))
       level->use_spring_bug = TRUE;
 
+    /* only few elements were able to actively move into acid before 3.1.0 */
+    /* trigger settings did not exist before 3.1.0; set to default "any" */
     if (level->game_version < VERSION_IDENT(3,1,0,0))
     {
       int i, j;
+
+      /* correct "can move into acid" settings (all zero in old levels) */
 
       level->can_move_into_acid_bits = 0; /* nothing can move into acid */
       level->dont_collide_with_bits = 0; /* nothing is deadly when colliding */
@@ -2214,6 +2618,8 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
 
       for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
 	SET_PROPERTY(EL_CUSTOM_START + i, EP_CAN_MOVE_INTO_ACID, TRUE);
+
+      /* correct trigger settings (stored as zero == "none" in old levels) */
 
       for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
       {
@@ -2229,8 +2635,28 @@ static void LoadLevel_InitVersion(struct LevelInfo *level, char *filename)
 	}
       }
     }
+
+#if 0	/* !!! MOVED TO "game.c", BECAUSE CAN CHANGE INSIDE LEVEL EDITOR !!! */
+#if 1	/* USE_NEW_BLOCK_STYLE */
+    /* blocking the last field when moving was corrected in version 3.1.1 */
+    if (level->game_version < VERSION_IDENT(3,1,1,0))
+    {
+#if 0
+      printf("::: %d\n", level->block_last_field);
+#endif
+
+      /* even "not blocking" was blocking the last field for one frame */
+      level->block_delay    = (level->block_last_field    ? 7 : 1);
+      level->sp_block_delay = (level->sp_block_last_field ? 7 : 1);
+
+      level->block_last_field = TRUE;
+      level->sp_block_last_field = TRUE;
+    }
+#endif
+#endif
+
   }
-  else
+  else		/* always use the latest game engine version */
   {
 #if 0
     printf("\n::: ALWAYS USE LATEST ENGINE FOR THIS LEVEL: [%d] '%s'\n",
@@ -2295,7 +2721,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
       }
 
       /* order of checking and copying events to be mapped is important */
-      for (j = CE_OTHER_GETS_COLLECTED; j >= CE_HITTING_SOMETHING; j--)
+      for (j = CE_PLAYER_COLLECTS_X; j >= CE_HITTING_SOMETHING; j--)
       {
 	if (HAS_CHANGE_EVENT(element, j - 1))
 	{
@@ -2352,6 +2778,7 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
   }
 
   /* initialize "can_explode" field for old levels which did not store this */
+  /* !!! CHECK THIS -- "<= 3,1,0,0" IS PROBABLY WRONG !!! */
   if (level->game_version <= VERSION_IDENT(3,1,0,0))
   {
     for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
@@ -2364,6 +2791,22 @@ static void LoadLevel_InitElements(struct LevelInfo *level, char *filename)
       SET_PROPERTY(element, EP_CAN_EXPLODE, (EXPLODES_BY_FIRE(element) ||
 					     EXPLODES_SMASHED(element) ||
 					     EXPLODES_IMPACT(element)));
+    }
+  }
+
+  /* correct previously hard-coded move delay values for maze runner style */
+  if (level->game_version < VERSION_IDENT(3,1,1,0))
+  {
+    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+    {
+      int element = EL_CUSTOM_START + i;
+
+      if (element_info[element].move_pattern & MV_MAZE_RUNNER_STYLE)
+      {
+	/* previously hard-coded and therefore ignored */
+	element_info[element].move_delay_fixed = 9;
+	element_info[element].move_delay_random = 0;
+      }
     }
   }
 
@@ -2460,6 +2903,16 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level, char *filename)
 void LoadLevelTemplate(int nr)
 {
 #if 1
+  char *filename;
+
+  setLevelFileInfo(&level_template.file_info, nr);
+  filename = level_template.file_info.filename;
+
+  LoadLevelFromFileInfo(&level_template, &level_template.file_info);
+
+#else
+
+#if 1
   struct LevelFileInfo *level_file_info = getLevelFileInfo(nr);
   char *filename = level_file_info->filename;
 
@@ -2469,15 +2922,31 @@ void LoadLevelTemplate(int nr)
 
   LoadLevelFromFilename_RND(&level_template, filename);
 #endif
+#endif
 
+#if 1
+  LoadLevel_InitVersion(&level_template, filename);
+  LoadLevel_InitElements(&level_template, filename);
+#else
   LoadLevel_InitVersion(&level, filename);
   LoadLevel_InitElements(&level, filename);
+#endif
 
   ActivateLevelTemplate();
 }
 
 void LoadLevel(int nr)
 {
+#if 1
+  char *filename;
+
+  setLevelFileInfo(&level.file_info, nr);
+  filename = level.file_info.filename;
+
+  LoadLevelFromFileInfo(&level, &level.file_info);
+
+#else
+
 #if 1
   struct LevelFileInfo *level_file_info = getLevelFileInfo(nr);
   char *filename = level_file_info->filename;
@@ -2487,6 +2956,7 @@ void LoadLevel(int nr)
   char *filename = getLevelFilename(nr);
 
   LoadLevelFromFilename_RND(&level, filename);
+#endif
 #endif
 
   if (level.use_custom_template)
@@ -2551,6 +3021,8 @@ static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
   putFile8Bit(file, (level->instant_relocation ? 1 : 0));
   putFile8Bit(file, (level->can_pass_to_walkable ? 1 : 0));
   putFile8Bit(file, (level->grow_into_diggable ? 1 : 0));
+
+  putFile8Bit(file, level->game_engine_type);
 
   WriteUnusedBytesToFile(file, LEVEL_HEADER_UNUSED);
 }
@@ -2806,7 +3278,7 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
 static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
 {
   struct ElementInfo *ei = &element_info[element];
-  int i, x, y;
+  int i, j, x, y;
 
   putFile16BitBE(file, element);
 
@@ -2868,8 +3340,13 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
   for (i = 0; i < ei->num_change_pages; i++)
   {
     struct ElementChangeInfo *change = &ei->change_page[i];
+    unsigned long event_bits = 0;
 
-    putFile32BitBE(file, change->events);
+    for (j = 0; j < NUM_CHANGE_EVENTS; j++)
+      if (change->has_event[j])
+	event_bits |= (1 << j);
+
+    putFile32BitBE(file, event_bits);
 
     putFile16BitBE(file, change->target_element);
 
@@ -3218,7 +3695,7 @@ static int LoadTape_BODY(FILE *file, int chunk_size, struct TapeInfo *tape)
 
   for (i = 0; i < tape->length; i++)
   {
-    if (i >= MAX_TAPELEN)
+    if (i >= MAX_TAPE_LEN)
       break;
 
     for (j = 0; j < MAX_PLAYERS; j++)
@@ -3507,7 +3984,7 @@ void SaveTape(int nr)
   InitTapeDirectory(leveldir_current->subdir);
 
   /* if a tape still exists, ask to overwrite it */
-  if (access(filename, F_OK) == 0)
+  if (fileExists(filename))
   {
     new_tape = FALSE;
     if (!Request("Replace old tape ?", REQ_ASK))
@@ -3553,7 +4030,7 @@ void SaveTape(int nr)
   tape.changed = FALSE;
 
   if (new_tape)
-    Request("tape saved !", REQ_CONFIRM);
+    Request("Tape saved !", REQ_CONFIRM);
 }
 
 void DumpTape(struct TapeInfo *tape)
@@ -3579,12 +4056,14 @@ void DumpTape(struct TapeInfo *tape)
   printf_line("-", 79);
   printf("Tape of Level %03d (file version %08d, game version %08d)\n",
 	 tape->level_nr, tape->file_version, tape->game_version);
+  printf("                  (effective engine version %08d)\n",
+	 tape->engine_version);
   printf("Level series identifier: '%s'\n", tape->level_identifier);
   printf_line("-", 79);
 
   for (i = 0; i < tape->length; i++)
   {
-    if (i >= MAX_TAPELEN)
+    if (i >= MAX_TAPE_LEN)
       break;
 
     printf("%03d: ", i);
@@ -3715,33 +4194,35 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_QUICK_DOORS			10
 #define SETUP_TOKEN_TEAM_MODE			11
 #define SETUP_TOKEN_HANDICAP			12
-#define SETUP_TOKEN_TIME_LIMIT			13
-#define SETUP_TOKEN_FULLSCREEN			14
-#define SETUP_TOKEN_ASK_ON_ESCAPE		15
-#define SETUP_TOKEN_GRAPHICS_SET		16
-#define SETUP_TOKEN_SOUNDS_SET			17
-#define SETUP_TOKEN_MUSIC_SET			18
-#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	19
-#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	20
-#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	21
+#define SETUP_TOKEN_SKIP_LEVELS			13
+#define SETUP_TOKEN_TIME_LIMIT			14
+#define SETUP_TOKEN_FULLSCREEN			15
+#define SETUP_TOKEN_ASK_ON_ESCAPE		16
+#define SETUP_TOKEN_GRAPHICS_SET		17
+#define SETUP_TOKEN_SOUNDS_SET			18
+#define SETUP_TOKEN_MUSIC_SET			19
+#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	20
+#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	21
+#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	22
 
-#define NUM_GLOBAL_SETUP_TOKENS			22
+#define NUM_GLOBAL_SETUP_TOKENS			23
 
 /* editor setup */
 #define SETUP_TOKEN_EDITOR_EL_BOULDERDASH	0
 #define SETUP_TOKEN_EDITOR_EL_EMERALD_MINE	1
-#define SETUP_TOKEN_EDITOR_EL_MORE		2
-#define SETUP_TOKEN_EDITOR_EL_SOKOBAN		3
-#define SETUP_TOKEN_EDITOR_EL_SUPAPLEX		4
-#define SETUP_TOKEN_EDITOR_EL_DIAMOND_CAVES	5
-#define SETUP_TOKEN_EDITOR_EL_DX_BOULDERDASH	6
-#define SETUP_TOKEN_EDITOR_EL_CHARS		7
-#define SETUP_TOKEN_EDITOR_EL_CUSTOM		8
-#define SETUP_TOKEN_EDITOR_EL_CUSTOM_MORE	9
-#define SETUP_TOKEN_EDITOR_EL_HEADLINES		10
-#define SETUP_TOKEN_EDITOR_EL_USER_DEFINED	11
+#define SETUP_TOKEN_EDITOR_EL_EMERALD_MINE_CLUB	2
+#define SETUP_TOKEN_EDITOR_EL_MORE		3
+#define SETUP_TOKEN_EDITOR_EL_SOKOBAN		4
+#define SETUP_TOKEN_EDITOR_EL_SUPAPLEX		5
+#define SETUP_TOKEN_EDITOR_EL_DIAMOND_CAVES	6
+#define SETUP_TOKEN_EDITOR_EL_DX_BOULDERDASH	7
+#define SETUP_TOKEN_EDITOR_EL_CHARS		8
+#define SETUP_TOKEN_EDITOR_EL_CUSTOM		9
+#define SETUP_TOKEN_EDITOR_EL_CUSTOM_MORE	10
+#define SETUP_TOKEN_EDITOR_EL_HEADLINES		11
+#define SETUP_TOKEN_EDITOR_EL_USER_DEFINED	12
 
-#define NUM_EDITOR_SETUP_TOKENS			12
+#define NUM_EDITOR_SETUP_TOKENS			13
 
 /* shortcut setup */
 #define SETUP_TOKEN_SHORTCUT_SAVE_GAME		0
@@ -3804,6 +4285,7 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_SWITCH, &si.quick_doors,	"quick_doors"			},
   { TYPE_SWITCH, &si.team_mode,		"team_mode"			},
   { TYPE_SWITCH, &si.handicap,		"handicap"			},
+  { TYPE_SWITCH, &si.skip_levels,	"skip_levels"			},
   { TYPE_SWITCH, &si.time_limit,	"time_limit"			},
   { TYPE_SWITCH, &si.fullscreen,	"fullscreen"			},
   { TYPE_SWITCH, &si.ask_on_escape,	"ask_on_escape"			},
@@ -3819,6 +4301,7 @@ static struct TokenInfo editor_setup_tokens[] =
 {
   { TYPE_SWITCH, &sei.el_boulderdash,	"editor.el_boulderdash"		},
   { TYPE_SWITCH, &sei.el_emerald_mine,	"editor.el_emerald_mine"	},
+  { TYPE_SWITCH, &sei.el_emerald_mine_club,"editor.el_emerald_mine_club"},
   { TYPE_SWITCH, &sei.el_more,		"editor.el_more"		},
   { TYPE_SWITCH, &sei.el_sokoban,	"editor.el_sokoban"		},
   { TYPE_SWITCH, &sei.el_supaplex,	"editor.el_supaplex"		},
@@ -3904,6 +4387,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->quick_doors = FALSE;
   si->team_mode = FALSE;
   si->handicap = TRUE;
+  si->skip_levels = TRUE;
   si->time_limit = TRUE;
   si->fullscreen = FALSE;
   si->ask_on_escape = TRUE;
@@ -3915,16 +4399,17 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->override_level_sounds = FALSE;
   si->override_level_music = FALSE;
 
-  si->editor.el_boulderdash = TRUE;
-  si->editor.el_emerald_mine = TRUE;
-  si->editor.el_more = TRUE;
-  si->editor.el_sokoban = TRUE;
-  si->editor.el_supaplex = TRUE;
-  si->editor.el_diamond_caves = TRUE;
-  si->editor.el_dx_boulderdash = TRUE;
-  si->editor.el_chars = TRUE;
-  si->editor.el_custom = TRUE;
-  si->editor.el_custom_more = FALSE;
+  si->editor.el_boulderdash       = TRUE;
+  si->editor.el_emerald_mine      = TRUE;
+  si->editor.el_emerald_mine_club = TRUE;
+  si->editor.el_more              = TRUE;
+  si->editor.el_sokoban           = TRUE;
+  si->editor.el_supaplex          = TRUE;
+  si->editor.el_diamond_caves     = TRUE;
+  si->editor.el_dx_boulderdash    = TRUE;
+  si->editor.el_chars             = TRUE;
+  si->editor.el_custom            = TRUE;
+  si->editor.el_custom_more       = FALSE;
 
   si->editor.el_headlines = TRUE;
   si->editor.el_user_defined = FALSE;
@@ -4231,7 +4716,19 @@ void LoadUserDefinedEditorElementList(int **elements, int *num_elements)
   {
     char *value = getHashEntry(element_hash, list->token);
 
-    if (value)
+    if (value == NULL)		/* try to find obsolete token mapping */
+    {
+      char *mapped_token = get_mapped_token(list->token);
+
+      if (mapped_token != NULL)
+      {
+	value = getHashEntry(element_hash, mapped_token);
+
+	free(mapped_token);
+      }
+    }
+
+    if (value != NULL)
     {
       (*elements)[(*num_elements)++] = atoi(value);
     }

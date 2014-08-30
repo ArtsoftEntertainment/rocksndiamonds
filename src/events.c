@@ -53,11 +53,40 @@ int FilterMouseMotionEvents(const Event *event)
   }
 
   /* skip mouse motion events without pressed button outside level editor */
-  if (button_status == MB_RELEASED && game_status != GAME_MODE_EDITOR &&
-      game_status != GAME_MODE_PLAYING)
+  if (button_status == MB_RELEASED &&
+      game_status != GAME_MODE_EDITOR && game_status != GAME_MODE_PLAYING)
     return 0;
   else
     return 1;
+}
+
+/* to prevent delay problems, skip mouse motion events if the very next
+   event is also a mouse motion event (and therefore effectively only
+   handling the last of a row of mouse motion events in the event queue) */
+
+boolean SkipPressedMouseMotionEvent(const Event *event)
+{
+  /* nothing to do if the current event is not a mouse motion event */
+  if (event->type != EVENT_MOTIONNOTIFY)
+    return FALSE;
+
+  /* only skip motion events with pressed button outside level editor */
+  if (button_status == MB_RELEASED ||
+      game_status == GAME_MODE_EDITOR || game_status == GAME_MODE_PLAYING)
+    return FALSE;
+
+  if (PendingEvent())
+  {
+    Event next_event;
+
+    PeekEvent(&next_event);
+
+    /* if next event is also a mouse motion event, skip the current one */
+    if (next_event.type == EVENT_MOTIONNOTIFY)
+      return TRUE;
+  }
+
+  return FALSE;
 }
 
 /* this is only really needed for non-SDL targets to filter unwanted events;
@@ -68,9 +97,19 @@ static boolean NextValidEvent(Event *event)
 {
   while (PendingEvent())
   {
+    boolean handle_this_event = FALSE;
+
     NextEvent(event);
 
     if (FilterMouseMotionEvents(event))
+      handle_this_event = TRUE;
+
+#if 1
+    if (SkipPressedMouseMotionEvent(event))
+      handle_this_event = FALSE;
+#endif
+
+    if (handle_this_event)
       return TRUE;
   }
 
@@ -283,6 +322,11 @@ void HandleButtonEvent(ButtonEvent *event)
   else
     button_status = MB_RELEASED;
 
+#if 0
+  printf("::: button %s\n", event->type == EVENT_BUTTONPRESS ?
+	"pressed" : "released");
+#endif
+
   HandleButton(event->x, event->y, button_status);
 }
 
@@ -297,6 +341,10 @@ void HandleMotionEvent(MotionEvent *event)
 #endif
 
   motion_status = TRUE;
+
+#if 0
+  printf("::: %d, %d\n", event->x, event->y);
+#endif
 
   HandleButton(event->x, event->y, button_status);
 }
@@ -347,6 +395,7 @@ void HandleFocusEvent(FocusChangeEvent *event)
       Delay(100);
       KeyboardAutoRepeatOffUnlessAutoplay();
     }
+
     if (old_joystick_status != -1)
       joystick.status = old_joystick_status;
   }
@@ -519,6 +568,10 @@ static void HandleKeysSpecial(Key key)
 	is_string_suffix(cheat_input, ":DB"))
     {
       DumpBrush();
+    }
+    else if (is_string_suffix(cheat_input, ":DDB"))
+    {
+      DumpBrush_Small();
     }
   }
 }
@@ -871,6 +924,11 @@ void HandleKey(Key key, int key_status)
 	case KSYM_l:
 	  ScrollStepSize = TILEX;
 	  printf("ScrollStepSize == %d (1/1)\n", ScrollStepSize);
+	  break;
+
+	case KSYM_v:
+	  printf("::: currently using game engine version %d\n",
+		 game.engine_version);
 	  break;
 
 #if 0

@@ -16,6 +16,17 @@
 
 #include "main.h"
 
+
+#define LEVEL_PACKED_START		100
+#define PACKED_LEVELS(x)		(LEVEL_PACKED_START + x)
+
+#define LEVEL_FILE_TYPE_RND_PACKED	PACKED_LEVELS(LEVEL_FILE_TYPE_RND)
+#define LEVEL_FILE_TYPE_EM_PACKED	PACKED_LEVELS(LEVEL_FILE_TYPE_EM)
+
+#define IS_SINGLE_LEVEL_FILE(x)		(x < LEVEL_PACKED_START)
+#define IS_PACKED_LEVEL_FILE(x)		(x > LEVEL_PACKED_START)
+
+
 void setElementChangePages(struct ElementInfo *, int);
 void setElementChangeInfoToDefaults(struct ElementChangeInfo *);
 
@@ -27,6 +38,9 @@ void LoadLevelTemplate(int);
 void SaveLevel(int);
 void SaveLevelTemplate();
 void DumpLevel(struct LevelInfo *);
+
+void CopyNativeLevel_RND_to_Native(struct LevelInfo *);
+void CopyNativeLevel_Native_to_RND(struct LevelInfo *);
 
 void LoadTapeFromFilename(char *);
 void LoadTape(int);

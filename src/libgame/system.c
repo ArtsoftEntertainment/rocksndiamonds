@@ -21,6 +21,7 @@
 #endif
 
 #include "system.h"
+#include "image.h"
 #include "sound.h"
 #include "setup.h"
 #include "joystick.h"
@@ -74,8 +75,8 @@ void InitProgramInfo(char *argv0,
 		     char *cookie_prefix, char *filename_prefix,
 		     int program_version)
 {
-  program.command_basename =
-    (strrchr(argv0, '/') ? strrchr(argv0, '/') + 1 : argv0);
+  program.command_basepath = getBasePath(argv0);
+  program.command_basename = getBaseName(argv0);
 
   program.userdata_directory = userdata_directory;
   program.program_title = program_title;
@@ -212,6 +213,8 @@ static void DrawBitmapFromTile(Bitmap *bitmap, Bitmap *tile,
 
 void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
 {
+  /* !!! THIS DOES NOT WORK !!! REPLACED BITMAPS MAY HAVE SAME ADDRESS !!! */
+#if 0
   static Bitmap *main_bitmap_tile = NULL;
   static Bitmap *door_bitmap_tile = NULL;
 
@@ -225,14 +228,15 @@ void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
   else if (mask == REDRAW_DOOR_1)
   {
     if (background_bitmap_tile == door_bitmap_tile)
-      return;	/* main background tile has not changed */
+      return;		/* main background tile has not changed */
 
     door_bitmap_tile = background_bitmap_tile;
   }
-  else		/* should not happen */
+  else			/* should not happen */
     return;
+#endif
 
-  if (background_bitmap_tile)
+  if (background_bitmap_tile != NULL)
     gfx.background_bitmap_mask |= mask;
   else
     gfx.background_bitmap_mask &= ~mask;
@@ -248,10 +252,12 @@ void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
     DrawBitmapFromTile(gfx.background_bitmap, background_bitmap_tile,
 		       gfx.real_sx, gfx.real_sy,
 		       gfx.full_sxsize, gfx.full_sysize);
-  else
+  else if (mask == REDRAW_DOOR_1)
+  {
     DrawBitmapFromTile(gfx.background_bitmap, background_bitmap_tile,
 		       gfx.dx, gfx.dy,
 		       gfx.dxsize, gfx.dysize);
+  }
 }
 
 void SetMainBackgroundBitmap(Bitmap *background_bitmap_tile)
@@ -438,8 +444,13 @@ inline boolean DrawingDeactivated(int x, int y, int width, int height)
 
 inline boolean DrawingOnBackground(int x, int y)
 {
+#if 1
+  return (CheckDrawingArea(x, y, 1, 1, gfx.background_bitmap_mask) &&
+	  CheckDrawingArea(x, y, 1, 1, gfx.draw_background_mask));
+#else
   return ((gfx.draw_background_mask & gfx.background_bitmap_mask) &&
 	  CheckDrawingArea(x, y, 1, 1, gfx.draw_background_mask));
+#endif
 }
 
 inline void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
@@ -812,45 +823,114 @@ Bitmap *ZoomBitmap(Bitmap *src_bitmap, int zoom_width, int zoom_height)
   return dst_bitmap;
 }
 
-void CreateBitmapWithSmallBitmaps(Bitmap *src_bitmap)
+void CreateBitmapWithSmallBitmaps(Bitmap *old_bitmap, int zoom_factor)
 {
-  Bitmap *tmp_bitmap, *tmp_bitmap_2, *tmp_bitmap_8;
-  int src_width, src_height;
-  int tmp_width, tmp_height;
+  Bitmap swap_bitmap;
+  Bitmap *new_bitmap, *tmp_bitmap_1, *tmp_bitmap_2, *tmp_bitmap_8;
+  int width_1, height_1, width_2, height_2, width_8, height_8;
+  int new_width, new_height;
 
-  src_width  = src_bitmap->width;
-  src_height = src_bitmap->height;
+  width_1  = old_bitmap->width  * zoom_factor;
+  height_1 = old_bitmap->height * zoom_factor;
+  width_2  = width_1  / 2;
+  height_2 = height_1 / 2;
+  width_8  = width_1  / 8;
+  height_8 = height_1 / 8;
 
-  tmp_width  = src_width;
-  tmp_height = src_height + (src_height + 1) / 2;     /* prevent odd height */
+  /* get image with normal size (this might require scaling up) */
+  if (zoom_factor != 1)
+    tmp_bitmap_1 = ZoomBitmap(old_bitmap, width_1, height_1);
+  else
+    tmp_bitmap_1 = old_bitmap;
 
-  tmp_bitmap = CreateBitmap(tmp_width, tmp_height, DEFAULT_DEPTH);
+  /* get image with 1/2 of normal size (for use in the level editor) */
+  if (zoom_factor != 2)
+    tmp_bitmap_2 = ZoomBitmap(tmp_bitmap_1, width_1 / 2, height_1 / 2);
+  else
+    tmp_bitmap_2 = old_bitmap;
 
-  tmp_bitmap_2 = ZoomBitmap(src_bitmap, src_width / 2, src_height / 2);
-  tmp_bitmap_8 = ZoomBitmap(src_bitmap, src_width / 8, src_height / 8);
+  /* get image with 1/8 of normal size (for use on the preview screen) */
+  if (zoom_factor != 8)
+    tmp_bitmap_8 = ZoomBitmap(tmp_bitmap_1, width_1 / 8, height_1 / 8);
+  else
+    tmp_bitmap_8 = old_bitmap;
 
-  BlitBitmap(src_bitmap, tmp_bitmap, 0, 0, src_width, src_height, 0, 0);
-  BlitBitmap(tmp_bitmap_2, tmp_bitmap, 0, 0, src_width / 2, src_height / 2,
-	     0, src_height);
-  BlitBitmap(tmp_bitmap_8, tmp_bitmap, 0, 0, src_width / 8, src_height / 8,
-	     3 * src_width / 4, src_height);
+  /* if image was scaled up, create new clipmask for normal size image */
+  if (zoom_factor != 1)
+  {
+#if defined(TARGET_X11)
+    if (old_bitmap->clip_mask)
+      XFreePixmap(display, old_bitmap->clip_mask);
 
-  FreeBitmap(tmp_bitmap_2);
-  FreeBitmap(tmp_bitmap_8);
+    old_bitmap->clip_mask =
+      Pixmap_to_Mask(tmp_bitmap_1->drawable, width_1, height_1);
+
+    XSetClipMask(display, old_bitmap->stored_clip_gc, old_bitmap->clip_mask);
+#else
+    SDL_Surface *tmp_surface_1 = tmp_bitmap_1->surface;
+
+    if (old_bitmap->surface_masked)
+      SDL_FreeSurface(old_bitmap->surface_masked);
+
+    SDL_SetColorKey(tmp_surface_1, SDL_SRCCOLORKEY,
+		    SDL_MapRGB(tmp_surface_1->format, 0x00, 0x00, 0x00));
+    if ((old_bitmap->surface_masked = SDL_DisplayFormat(tmp_surface_1)) ==NULL)
+      Error(ERR_EXIT, "SDL_DisplayFormat() failed");
+    SDL_SetColorKey(tmp_surface_1, 0, 0);	/* reset transparent pixel */
+#endif
+  }
+
+  new_width  = width_1;
+  new_height = height_1 + (height_1 + 1) / 2;     /* prevent odd height */
+
+  new_bitmap = CreateBitmap(new_width, new_height, DEFAULT_DEPTH);
+
+  BlitBitmap(tmp_bitmap_1, new_bitmap, 0, 0, width_1, height_1, 0, 0);
+  BlitBitmap(tmp_bitmap_2, new_bitmap, 0, 0, width_1 / 2, height_1 / 2,
+	     0, height_1);
+  BlitBitmap(tmp_bitmap_8, new_bitmap, 0, 0, width_1 / 8, height_1 / 8,
+	     3 * width_1 / 4, height_1);
+
+  if (zoom_factor != 1)
+    FreeBitmap(tmp_bitmap_1);
+
+  if (zoom_factor != 2)
+    FreeBitmap(tmp_bitmap_2);
+
+  if (zoom_factor != 8)
+    FreeBitmap(tmp_bitmap_8);
+
+#if 0
 
 #if defined(TARGET_SDL)
-  /* !!! what about the old src_bitmap->surface ??? FIX ME !!! */
-  src_bitmap->surface = tmp_bitmap->surface;
-  tmp_bitmap->surface = NULL;
+  /* !!! what about the old old_bitmap->surface ??? FIX ME !!! */
+  old_bitmap->surface = new_bitmap->surface;
+  new_bitmap->surface = NULL;
 #else
   /* !!! see above !!! */
-  src_bitmap->drawable = tmp_bitmap->drawable;
-  tmp_bitmap->drawable = None;
+  old_bitmap->drawable = new_bitmap->drawable;
+  new_bitmap->drawable = None;
 #endif
 
-  src_bitmap->height = tmp_bitmap->height;
+#else
 
-  FreeBitmap(tmp_bitmap);
+  /* replace image with extended image (containing normal, 1/2 and 1/8 size) */
+#if defined(TARGET_SDL)
+  swap_bitmap.surface = old_bitmap->surface;
+  old_bitmap->surface = new_bitmap->surface;
+  new_bitmap->surface = swap_bitmap.surface;
+#else
+  swap_bitmap.drawable = old_bitmap->drawable;
+  old_bitmap->drawable = new_bitmap->drawable;
+  new_bitmap->drawable = swap_bitmap.drawable;
+#endif
+
+#endif
+
+  old_bitmap->width  = new_bitmap->width;
+  old_bitmap->height = new_bitmap->height;
+
+  FreeBitmap(new_bitmap);
 }
 
 
@@ -1070,6 +1150,15 @@ inline void NextEvent(Event *event)
   SDLNextEvent(event);
 #else
   XNextEvent(display, event);
+#endif
+}
+
+inline void PeekEvent(Event *event)
+{
+#if defined(TARGET_SDL)
+  SDL_PeepEvents(event, 1, SDL_PEEKEVENT, SDL_ALLEVENTS);
+#else
+  XPeekEvent(display, event);
 #endif
 }
 

@@ -68,6 +68,8 @@ Image *newImage(unsigned int, unsigned int, unsigned int);
 void freeImage(Image *);
 void freeXImage(Image *, XImageInfo *);
 
+Pixmap Pixmap_to_Mask(Pixmap, int, int);
+
 void ZoomPixmap(Display *, GC, Pixmap, Pixmap, int, int, int, int);
 
 int Read_PCX_to_Pixmap(Display *, Window, GC, char *, Pixmap *, Pixmap *);
@@ -75,18 +77,20 @@ int Read_PCX_to_Pixmap(Display *, Window, GC, char *, Pixmap *, Pixmap *);
 #endif /* TARGET_X11 */
 
 int getImageListSize();
-struct FileInfo *getImageListEntry(int);
+struct FileInfo *getImageListEntryFromImageID(int);
 Bitmap *getBitmapFromImageID(int);
+int getOriginalImageWidthFromImageID(int);
+int getOriginalImageHeightFromImageID(int);
 char *getTokenFromImageID(int);
 int getImageIDFromToken(char *);
 char *getImageConfigFilename();
 int getImageListPropertyMappingSize();
 struct PropertyMapping *getImageListPropertyMapping();
-void InitImageList(struct ConfigInfo *, int, struct ConfigInfo *,
+void InitImageList(struct ConfigInfo *, int, struct ConfigTypeInfo *,
 		   char **, char **, char **, char **, char **);
 
 void ReloadCustomImages();
-void CreateImageWithSmallImages(int);
+void CreateImageWithSmallImages(int, int);
 
 void FreeAllImages();
 

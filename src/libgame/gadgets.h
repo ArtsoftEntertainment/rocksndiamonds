@@ -152,6 +152,7 @@ struct GadgetTextButton
 struct GadgetTextInput
 {
   char value[MAX_GADGET_TEXTSIZE];	/* text string in input field */
+  char last_value[MAX_GADGET_TEXTSIZE];	/* last text string in input field */
   int cursor_position;			/* actual text cursor position */
   int number_value;			/* integer value, if numeric */
   int number_min;			/* minimal allowed numeric value */
@@ -162,6 +163,7 @@ struct GadgetTextInput
 struct GadgetTextArea
 {
   char value[MAX_GADGET_TEXTSIZE];	/* text string in input field */
+  char last_value[MAX_GADGET_TEXTSIZE];	/* last text string in input field */
   int cursor_position;			/* actual text cursor position */
   int cursor_x;				/* actual x cursor position */
   int cursor_y;				/* actual y cursor position */
@@ -193,7 +195,9 @@ struct GadgetScrollbar
   int items_max;			/* number of items to access */
   int items_visible;			/* number of visible items */
   int item_position;			/* actual item position */
+  int size_min;				/* minimal scrollbar size */
   int size_max;				/* this is either width or height */
+  int size_max_cmp;			/* needed for minimal scrollbar size */
   int size;				/* scrollbar size on screen */
   int position;				/* scrollbar position on screen */
   int position_max;			/* bottom/right scrollbar position */
@@ -209,8 +213,8 @@ struct GadgetInfo
   char info_text[MAX_INFO_TEXTSIZE];	/* short popup info text */
   int x, y;				/* gadget position */
   int width, height;			/* gadget size */
-  unsigned long type;			/* type (button, text input, ...) */
-  unsigned long state;			/* state (pressed, released, ...) */
+  unsigned int type;			/* type (button, text input, ...) */
+  unsigned int state;			/* state (pressed, released, ...) */
   boolean checked;			/* check/radio button state */
   int radio_nr;				/* number of radio button series */
   boolean mapped;			/* gadget is mapped on the screen */
@@ -222,7 +226,7 @@ struct GadgetInfo
   struct GadgetDesign design[2];	/* 0: normal; 1: pressed */
   struct GadgetDesign alt_design[2];	/* alternative design */
   struct GadgetDecoration deco;		/* decoration on top of gadget */
-  unsigned long event_mask;		/* possible events for this gadget */
+  unsigned int event_mask;		/* possible events for this gadget */
   struct GadgetEvent event;		/* actual gadget event */
   gadget_function callback_info;	/* function for pop-up info text */
   gadget_function callback_action;	/* function for gadget action */
@@ -246,7 +250,12 @@ void UnmapGadget(struct GadgetInfo *);
 void UnmapAllGadgets();
 void RemapAllGadgets();
 
+boolean anyTextInputGadgetActive();
+boolean anyTextAreaGadgetActive();
+boolean anySelectboxGadgetActive();
+boolean anyScrollbarGadgetActive();
 boolean anyTextGadgetActive();
+
 void ClickOnGadget(struct GadgetInfo *, int);
 
 boolean HandleGadgets(int, int, int);

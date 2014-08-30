@@ -17,9 +17,15 @@
 #include "main.h"
 
 void GetPlayerConfig(void);
+
+void DrawGameValue_Time(int);
 void DrawGameDoorValues(void);
+
 void InitGameSound();
 void InitGame(void);
+
+void UpdateEngineValues(int, int);
+
 void InitMovDir(int, int);
 void InitAmoebaNr(int, int);
 void GameWon(void);
@@ -76,6 +82,7 @@ boolean SnapField(struct PlayerInfo *, int, int);
 boolean DropElement(struct PlayerInfo *);
 
 void InitPlayLevelSound();
+void PlayLevelSound_EM(int, int, int, int);
 
 void RaiseScore(int);
 void RaiseScoreElement(int);

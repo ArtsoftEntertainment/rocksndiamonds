@@ -56,8 +56,8 @@ short			StorePlayer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Back[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Pushed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-unsigned long		Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-unsigned long		ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+boolean			Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			ChangeEvent[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			WasJustMoving[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			WasJustFalling[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			CheckCollision[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -122,7 +122,10 @@ SetupFileHash          *helptext_info = NULL;
 /* element definitions                                                       */
 /* ------------------------------------------------------------------------- */
 
-struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
+struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1];
+
+/* this contains predefined structure elements to initialize "element_info" */
+struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
 {
   /* keyword to start parser: "ELEMENT_INFO_START" <-- do not change! */
 
@@ -747,7 +750,7 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "letter '$'"
   },
   {
-    "char_procent",
+    "char_percent",
     "char",
     "letter '%'"
   },
@@ -1779,7 +1782,7 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
   {
     "balloon_switch_any",
     "balloon_switch",
-    "send balloon in any direction"
+    "send balloon in pressed direction"
   },
   {
     "emc_steelwall_1",
@@ -3456,6 +3459,196 @@ struct ElementInfo element_info[MAX_NUM_ELEMENTS + 1] =
     "sp_port",
     "gravity off port (leading up)"
   },
+  {
+    "balloon_switch_none",
+    "balloon_switch",
+    "stop moving balloon"
+  },
+  {
+    "emc_gate_5",
+    "gate",
+    "door 5 (EMC style)",
+  },
+  {
+    "emc_gate_6",
+    "gate",
+    "door 6 (EMC style)",
+  },
+  {
+    "emc_gate_7",
+    "gate",
+    "door 7 (EMC style)",
+  },
+  {
+    "emc_gate_8",
+    "gate",
+    "door 8 (EMC style)",
+  },
+  {
+    "emc_gate_5_gray",
+    "gate",
+    "gray door (EMC style, key 5)",
+  },
+  {
+    "emc_gate_6_gray",
+    "gate",
+    "gray door (EMC style, key 6)",
+  },
+  {
+    "emc_gate_7_gray",
+    "gate",
+    "gray door (EMC style, key 7)",
+  },
+  {
+    "emc_gate_8_gray",
+    "gate",
+    "gray door (EMC style, key 8)",
+  },
+  {
+    "emc_key_5",
+    "key",
+    "key 5 (EMC style)",
+  },
+  {
+    "emc_key_6",
+    "key",
+    "key 6 (EMC style)",
+  },
+  {
+    "emc_key_7",
+    "key",
+    "key 7 (EMC style)",
+  },
+  {
+    "emc_key_8",
+    "key",
+    "key 8 (EMC style)",
+  },
+  {
+    "emc_android",
+    "emc_android",
+    "android",
+  },
+  {
+    "emc_grass",
+    "emc_grass",
+    "grass",
+  },
+  {
+    "emc_magic_ball",
+    "emc_magic_ball",
+    "magic ball",
+  },
+  {
+    "emc_magic_ball.active",
+    "emc_magic_ball",
+    "magic ball (activated)",
+  },
+  {
+    "emc_magic_ball_switch",
+    "emc_magic_ball_switch",
+    "magic ball switch (off)",
+  },
+  {
+    "emc_magic_ball_switch.active",
+    "emc_magic_ball_switch",
+    "magic ball switch (on)",
+  },
+  {
+    "emc_spring_bumper",
+    "emc_spring_bumper",
+    "spring bumper",
+  },
+  {
+    "emc_plant",
+    "emc_plant",
+    "plant",
+  },
+  {
+    "emc_lenses",
+    "emc_lenses",
+    "lenses",
+  },
+  {
+    "emc_magnifier",
+    "emc_magnifier",
+    "magnifier",
+  },
+  {
+    "emc_wall_9",
+    "wall",
+    "normal wall"
+  },
+  {
+    "emc_wall_10",
+    "wall",
+    "normal wall"
+  },
+  {
+    "emc_wall_11",
+    "wall",
+    "normal wall"
+  },
+  {
+    "emc_wall_12",
+    "wall",
+    "normal wall"
+  },
+  {
+    "emc_wall_13",
+    "wall",
+    "normal wall"
+  },
+  {
+    "emc_wall_14",
+    "wall",
+    "normal wall"
+  },
+  {
+    "emc_wall_15",
+    "wall",
+    "normal wall"
+  },
+  {
+    "emc_wall_16",
+    "wall",
+    "normal wall"
+  },
+  {
+    "emc_wall_slippery_1",
+    "wall",
+    "slippery wall"
+  },
+  {
+    "emc_wall_slippery_2",
+    "wall",
+    "slippery wall"
+  },
+  {
+    "emc_wall_slippery_3",
+    "wall",
+    "slippery wall"
+  },
+  {
+    "emc_wall_slippery_4",
+    "wall",
+    "slippery wall"
+  },
+  {
+    "emc_fake_grass",
+    "fake grass",
+    "fake grass"
+  },
+  {
+    "emc_fake_acid",
+    "fake acid",
+    "fake acid"
+  },
+  {
+    "emc_dripper",
+    "dripper",
+    "dripper"
+  },
 
   /* ----------------------------------------------------------------------- */
   /* "real" (and therefore drawable) runtime elements                        */
@@ -3995,6 +4188,11 @@ struct ElementActionInfo element_action_info[NUM_ACTIONS + 1 + 1] =
   { ".turning_from_right",	ACTION_TURNING_FROM_RIGHT,	FALSE	},
   { ".turning_from_up",		ACTION_TURNING_FROM_UP,		FALSE	},
   { ".turning_from_down",	ACTION_TURNING_FROM_DOWN,	FALSE	},
+  { ".smashed_by_rock",		ACTION_SMASHED_BY_ROCK,		FALSE	},
+  { ".smashed_by_spring",	ACTION_SMASHED_BY_SPRING,	FALSE	},
+  { ".slurped_by_spring",	ACTION_SLURPED_BY_SPRING,	FALSE	},
+  { ".twinkling",		ACTION_TWINKLING,		FALSE	},
+  { ".splashing",		ACTION_SPLASHING,		FALSE	},
   { ".other",			ACTION_OTHER,			FALSE	},
 
   /* empty suffix always matches -- check as last entry in InitSoundInfo() */
@@ -4037,8 +4235,8 @@ struct TokenIntPtrInfo image_config_vars[] =
 {
   { "global.num_toons",		&global.num_toons			   },
 
-  { "menu.draw_xoffset",	&menu.draw_xoffset_default		   },
-  { "menu.draw_yoffset",	&menu.draw_yoffset_default		   },
+  { "menu.draw_xoffset",	&menu.draw_xoffset[GFX_SPECIAL_ARG_DEFAULT]},
+  { "menu.draw_yoffset",	&menu.draw_yoffset[GFX_SPECIAL_ARG_DEFAULT]},
   { "menu.draw_xoffset.MAIN",	&menu.draw_xoffset[GFX_SPECIAL_ARG_MAIN]   },
   { "menu.draw_yoffset.MAIN",	&menu.draw_yoffset[GFX_SPECIAL_ARG_MAIN]   },
   { "menu.draw_xoffset.LEVELS",	&menu.draw_xoffset[GFX_SPECIAL_ARG_LEVELS] },
@@ -4054,7 +4252,7 @@ struct TokenIntPtrInfo image_config_vars[] =
 
   { "menu.scrollbar_xoffset",	&menu.scrollbar_xoffset			   },
 
-  { "menu.list_size",		&menu.list_size_default			   },
+  { "menu.list_size",		&menu.list_size[GFX_SPECIAL_ARG_DEFAULT]   },
   { "menu.list_size.LEVELS",	&menu.list_size[GFX_SPECIAL_ARG_LEVELS]	   },
   { "menu.list_size.SCORES",	&menu.list_size[GFX_SPECIAL_ARG_SCORES]	   },
   { "menu.list_size.INFO",	&menu.list_size[GFX_SPECIAL_ARG_INFO]	   },
@@ -4162,7 +4360,7 @@ static void print_usage()
 	 "  \"print helptext.conf\"            print default helptext config\n"
 	 "  \"dump level FILE\"                dump level data from FILE\n"
 	 "  \"dump tape FILE\"                 dump tape data from FILE\n"
-	 "  \"autoplay LEVELDIR [NR]\"         play level tapes for LEVELDIR\n"
+	 "  \"autoplay LEVELDIR [NR ...]\"     play level tapes for LEVELDIR\n"
 	 "  \"convert LEVELDIR [NR]\"          convert levels in LEVELDIR\n"
 	 "\n",
 	 program.command_basename);

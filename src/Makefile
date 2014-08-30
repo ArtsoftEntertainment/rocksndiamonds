@@ -1,7 +1,7 @@
 # =============================================================================
 # Rocks'n'Diamonds Makefile (src)
 # -----------------------------------------------------------------------------
-# (c) 1995-2003 Holger Schemel <info@artsoft.org>
+# (c) 1995-2005 Holger Schemel <info@artsoft.org>
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -27,6 +27,7 @@ endif
 
 AR = ar
 RANLIB = ranlib
+ETAGS = etags
 
 BMP2ICO = bmp2ico
 WINDRES = windres
@@ -92,6 +93,12 @@ ifeq ($(TARGET),sdl)
 SYS_CFLAGS  = -DTARGET_SDL $(shell sdl-config --cflags)
 SDL_LIBS = -lSDL_image -lSDL_mixer -lSDL_net -lsmpeg
 SYS_LDFLAGS = $(SDL_LIBS) $(shell sdl-config --libs)
+endif
+
+ifeq ($(TARGET),sdl-static)
+SYS_CFLAGS  = -DTARGET_SDL $(shell sdl-config --cflags)
+SDL_LIBS = -lSDL_image -lSDL_mixer -lSDL_net -lsmpeg
+SYS_LDFLAGS = $(SDL_LIBS) $(shell sdl-config --static-libs)
 endif
 
 ifeq ($(TARGET),allegro)
@@ -194,8 +201,13 @@ CNFS_CMD = ../Scripts/create_element_defs.pl
 
 TIMESTAMP_FILE = conftime.h
 
-LIBDIR = libgame
-LIBGAME = $(LIBDIR)/libgame.a
+LIBGAME_DIR = libgame
+LIBGAME = $(LIBGAME_DIR)/libgame.a
+
+GAME_EM_DIR = game_em
+GAME_EM = $(GAME_EM_DIR)/game_em.a
+
+RNDLIBS = $(LIBGAME) $(GAME_EM)
 
 ICONBASE = windows_icon
 ifeq ($(PLATFORM),cross-win32)
@@ -208,15 +220,20 @@ endif
 # build targets
 # -----------------------------------------------------------------------------
 
-all: libgame_dir $(PROGNAME)
+all: libgame_dir game_em_dir $(PROGNAME)
 
-$(PROGNAME): $(LIBGAME) $(TIMESTAMP_FILE) $(OBJS) $(ICON)
-	$(CC) $(PROFILING) $(OBJS) $(ICON) $(LIBGAME) $(LDFLAGS) -o $(PROGNAME)
+$(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(OBJS) $(ICON)
+	$(CC) $(PROFILING) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
 
 libgame_dir:
-	@$(MAKE) -C $(LIBDIR)
+	@$(MAKE) -C $(LIBGAME_DIR)
 $(LIBGAME):
-	@$(MAKE) -C $(LIBDIR)
+	@$(MAKE) -C $(LIBGAME_DIR)
+
+game_em_dir:
+	@$(MAKE) -C $(GAME_EM_DIR)
+$(GAME_EM):
+	@$(MAKE) -C $(GAME_EM_DIR)
 
 auto-conf:
 	@for i in $(CNFS); do			\
@@ -233,7 +250,7 @@ conf_snd.h: conf_snd.c
 conf_mus.h: conf_mus.c
 	@$(MAKE) auto-conf
 
-$(TIMESTAMP_FILE): $(SRCS) $(LIBGAME)
+$(TIMESTAMP_FILE): $(SRCS) $(LIBGAME) $(GAME_EM)
 	@date '+"[%Y-%m-%d %H:%M]"' \
 	| sed -e 's/^/#define COMPILE_DATE_STRING /' \
 	> $(TIMESTAMP_FILE)
@@ -246,9 +263,11 @@ $(ICON):
 	$(CC) $(PROFILING) $(CFLAGS) -c $*.c
 
 clean-obj:
-	$(MAKE) -C $(LIBDIR) clean
+	$(MAKE) -C $(LIBGAME_DIR) clean
+	$(MAKE) -C $(GAME_EM_DIR) clean
 	$(RM) $(OBJS)
 	$(RM) $(LIBGAME)
+	$(RM) $(GAME_EM)
 
 clean-ico:
 	$(RM) $(ICONBASE).ico
@@ -267,8 +286,12 @@ clean: clean-obj clean-ico clean-bin
 
 dist-clean: clean-obj
 
+tags:
+	$(ETAGS) *.[ch] $(LIBGAME_DIR)/*.[ch] $(GAME_EM_DIR)/*.[ch]
+
 depend:
-	$(MAKE) -C $(LIBDIR) depend
+	$(MAKE) -C $(LIBGAME_DIR) depend
+	$(MAKE) -C $(GAME_EM_DIR) depend
 	for i in $(SRCS); do $(CPP) $(CFLAGS) -M $$i; done > .depend
 
 ifeq (.depend,$(wildcard .depend))

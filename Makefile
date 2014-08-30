@@ -1,7 +1,7 @@
 # =============================================================================
 # Rocks'n'Diamonds Makefile
 # -----------------------------------------------------------------------------
-# (c) 1995-2003 Holger Schemel <info@artsoft.org>
+# (c) 1995-2005 Holger Schemel <info@artsoft.org>
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -76,6 +76,9 @@ solaris-sdl:
 mac:
 	@$(MAKE_CMD) PLATFORM=macosx
 
+mac-static:
+	@$(MAKE_CMD) PLATFORM=macosx TARGET=sdl-static
+
 msdos:
 	@$(MAKE_CMD) PLATFORM=msdos
 
@@ -103,7 +106,7 @@ run: all
 	@./rocksndiamonds --verbose
 
 gdb: all
-	@gdb ./rocksndiamonds
+	@gdb -batch -x GDB_COMMANDS ./rocksndiamonds
 
 valgrind: all
 	@valgrind -v --leak-check=yes ./rocksndiamonds 2> valgrind.out
@@ -169,11 +172,16 @@ dist-build-all:
 	$(MAKE) clean
 	$(MAKE) dist-build-unix		; $(MAKE) dist-clean
 	$(MAKE) dist-build-win32	; $(MAKE) dist-clean
-	$(MAKE) dist-build-msdos	; $(MAKE) dist-clean
+#	$(MAKE) dist-build-msdos	; $(MAKE) dist-clean
 
-dist-all: dist-build-all dist-unix dist-msdos dist-win32 dist-macosx
+# dist-all: dist-build-all dist-unix dist-msdos dist-win32 dist-macosx
+dist-all: dist-build-all dist-unix dist-win32 dist-macosx
 
-upload-all: upload-unix upload-msdos upload-win32 upload-macosx
+# upload-all: upload-unix upload-msdos upload-win32 upload-macosx
+upload-all: upload-unix upload-win32 upload-macosx
+
+tags:
+	$(MAKE_CMD) tags
 
 depend dep:
 	$(MAKE_CMD) depend

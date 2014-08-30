@@ -1116,9 +1116,8 @@ int zoomSurfaceY(SDL_Surface * src, SDL_Surface * dst)
   -----------------------------------------------------------------------------
   zoomSurface()
 
-  Zoomes a 32bit or 8bit 'src' surface to newly created 'dst' surface.
+  Zooms a 32bit or 8bit 'src' surface to newly created 'dst' surface.
   'zoomx' and 'zoomy' are scaling factors for width and height.
-  If 'smooth' is 1 then the destination 32bit surface is anti-aliased.
   If the surface is not 8bit or 32bit RGBA/ABGR it will be converted
   into a 32bit RGBA format on the fly.
   -----------------------------------------------------------------------------
@@ -1441,6 +1440,7 @@ void HandleJoystickEvent(Event *event)
 void SDLInitJoysticks()
 {
   static boolean sdl_joystick_subsystem_initialized = FALSE;
+  boolean print_warning = !sdl_joystick_subsystem_initialized;
   int i;
 
   if (!sdl_joystick_subsystem_initialized)
@@ -1460,10 +1460,18 @@ void SDLInitJoysticks()
     int joystick_nr = getJoystickNrFromDeviceName(device_name);
 
     if (joystick_nr >= SDL_NumJoysticks())
+    {
+      if (setup.input[i].use_joystick && print_warning)
+	Error(ERR_WARN, "cannot find joystick %d", joystick_nr);
+
       joystick_nr = -1;
+    }
 
     /* misuse joystick file descriptor variable to store joystick number */
     joystick.fd[i] = joystick_nr;
+
+    if (joystick_nr == -1)
+      continue;
 
     /* this allows subsequent calls to 'InitJoysticks' for re-initialization */
     if (SDLCheckJoystickOpened(joystick_nr))
@@ -1474,7 +1482,9 @@ void SDLInitJoysticks()
 
     if (!SDLOpenJoystick(joystick_nr))
     {
-      Error(ERR_WARN, "cannot open joystick %d", joystick_nr);
+      if (print_warning)
+	Error(ERR_WARN, "cannot open joystick %d", joystick_nr);
+
       continue;
     }
 

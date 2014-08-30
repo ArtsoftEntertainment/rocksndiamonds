@@ -41,10 +41,11 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 
 #define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		FC_BLUE :    \
 			 IS_LEVELCLASS_CLASSICS(n) ?		FC_RED :     \
-			 IS_LEVELCLASS_BD(n) ?			FC_GREEN :   \
+			 IS_LEVELCLASS_BD(n) ?			FC_YELLOW :  \
 			 IS_LEVELCLASS_EM(n) ?			FC_YELLOW :  \
-			 IS_LEVELCLASS_SP(n) ?			FC_GREEN :   \
+			 IS_LEVELCLASS_SP(n) ?			FC_YELLOW :  \
 			 IS_LEVELCLASS_DX(n) ?			FC_YELLOW :  \
+			 IS_LEVELCLASS_SB(n) ?			FC_YELLOW :  \
 			 IS_LEVELCLASS_CONTRIB(n) ?		FC_GREEN :   \
 			 IS_LEVELCLASS_PRIVATE(n) ?		FC_RED :     \
 			 FC_BLUE)
@@ -55,14 +56,15 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 			 IS_LEVELCLASS_EM(n) ?			3 :	\
 			 IS_LEVELCLASS_SP(n) ?			4 :	\
 			 IS_LEVELCLASS_DX(n) ?			5 :	\
-			 IS_LEVELCLASS_CONTRIB(n) ?		6 :	\
-			 IS_LEVELCLASS_PRIVATE(n) ?		7 :	\
+			 IS_LEVELCLASS_SB(n) ?			6 :	\
+			 IS_LEVELCLASS_CONTRIB(n) ?		7 :	\
+			 IS_LEVELCLASS_PRIVATE(n) ?		8 :	\
 			 9)
 
 #define ARTWORKCOLOR(n)	(IS_ARTWORKCLASS_CLASSICS(n) ?		FC_RED :     \
-			 IS_ARTWORKCLASS_CONTRIB(n) ?		FC_YELLOW :  \
+			 IS_ARTWORKCLASS_CONTRIB(n) ?		FC_GREEN :   \
 			 IS_ARTWORKCLASS_PRIVATE(n) ?		FC_RED :     \
-			 IS_ARTWORKCLASS_LEVEL(n) ?		FC_GREEN :   \
+			 IS_ARTWORKCLASS_LEVEL(n) ?		FC_YELLOW :  \
 			 FC_BLUE)
 
 #define ARTWORKSORTING(n) (IS_ARTWORKCLASS_CLASSICS(n) ?	0 :	\
@@ -71,10 +73,14 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 			   IS_ARTWORKCLASS_PRIVATE(n) ?		3 :	\
 			   9)
 
-#define TOKEN_VALUE_POSITION		40
-#define TOKEN_COMMENT_POSITION		60
+#define TOKEN_VALUE_POSITION_SHORT		32
+#define TOKEN_VALUE_POSITION_DEFAULT		40
+#define TOKEN_COMMENT_POSITION_DEFAULT		60
 
-#define MAX_COOKIE_LEN			256
+#define MAX_COOKIE_LEN				256
+
+static int token_value_position   = TOKEN_VALUE_POSITION_DEFAULT;
+static int token_comment_position = TOKEN_COMMENT_POSITION_DEFAULT;
 
 
 /* ------------------------------------------------------------------------- */
@@ -148,7 +154,7 @@ static char *getLevelDirFromTreeInfo(TreeInfo *node)
 
   checked_free(level_dir);
 
-  level_dir = getPath2((node->user_defined ? getUserLevelDir(NULL) :
+  level_dir = getPath2((node->in_user_dir ? getUserLevelDir(NULL) :
 			options.level_directory), node->fullpath);
 
   return level_dir;
@@ -296,8 +302,8 @@ char *setLevelArtworkDir(TreeInfo *ti)
   if (ti == NULL || leveldir_current == NULL)
     return NULL;
 
-  artwork_path_ptr = &(LEVELDIR_ARTWORK_PATH(leveldir_current, ti->type));
-  artwork_set_ptr  = &(LEVELDIR_ARTWORK_SET( leveldir_current, ti->type));
+  artwork_path_ptr = LEVELDIR_ARTWORK_PATH_PTR(leveldir_current, ti->type);
+  artwork_set_ptr  = LEVELDIR_ARTWORK_SET_PTR( leveldir_current, ti->type);
 
   checked_free(*artwork_path_ptr);
 
@@ -404,7 +410,12 @@ char *getEditorSetupFilename()
   static char *filename = NULL;
 
   checked_free(filename);
+  filename = getPath2(getCurrentLevelDir(), EDITORSETUP_FILENAME);
 
+  if (fileExists(filename))
+    return filename;
+
+  checked_free(filename);
   filename = getPath2(getSetupDir(), EDITORSETUP_FILENAME);
 
   return filename;
@@ -438,8 +449,8 @@ char *getLevelSetInfoFilename()
   char *basenames[] =
   {
     "README",
-    "README.txt",
     "README.TXT",
+    "README.txt",
     "Readme",
     "Readme.txt",
     "readme",
@@ -452,8 +463,8 @@ char *getLevelSetInfoFilename()
   for (i = 0; basenames[i] != NULL; i++)
   {
     checked_free(filename);
-
     filename = getPath2(getCurrentLevelDir(), basenames[i]);
+
     if (fileExists(filename))
       return filename;
   }
@@ -769,7 +780,7 @@ static void SaveUserLevelInfo();
 
 void InitUserLevelDirectory(char *level_subdir)
 {
-  if (access(getUserLevelDir(level_subdir), F_OK) != 0)
+  if (!fileExists(getUserLevelDir(level_subdir)))
   {
     createDirectory(getUserDataDir(), "user data", PERMS_PRIVATE);
     createDirectory(getUserLevelDir(NULL), "main user level", PERMS_PRIVATE);
@@ -929,7 +940,7 @@ void dumpTreeInfo(TreeInfo *node, int depth)
 
 #if 1
     printf("subdir == '%s' ['%s', '%s'] [%d])\n",
-	   node->subdir, node->fullpath, node->basepath, node->user_defined);
+	   node->subdir, node->fullpath, node->basepath, node->in_user_dir);
 #else
     printf("subdir == '%s' (%s) [%s] (%d)\n",
 	   node->subdir, node->name, node->identifier, node->sort_priority);
@@ -1103,7 +1114,7 @@ void createDirectory(char *dir, char *text, int permission_class)
   mode_t group_umask = ~(dir_mode & S_IRWXG);
   posix_umask(normal_umask & group_umask);
 
-  if (access(dir, F_OK) != 0)
+  if (!fileExists(dir))
     if (posix_mkdir(dir, dir_mode) != 0)
       Error(ERR_WARN, "cannot create %s directory '%s'", text, dir);
 
@@ -1198,7 +1209,7 @@ char *getFormattedSetupEntry(char *token, char *value)
 
   /* start with the token and some spaces to format output line */
   sprintf(entry, "%s:", token);
-  for (i = strlen(entry); i < TOKEN_VALUE_POSITION; i++)
+  for (i = strlen(entry); i < token_value_position; i++)
     strcat(entry, " ");
 
   /* continue with the token's value */
@@ -1406,16 +1417,17 @@ static void *loadSetupFileData(char *filename, boolean use_hash)
   boolean read_continued_line = FALSE;
   FILE *file;
 
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    Error(ERR_WARN, "cannot open configuration file '%s'", filename);
+
+    return NULL;
+  }
+
   if (use_hash)
     setup_file_data = newSetupFileHash();
   else
     insert_ptr = setup_file_data = newSetupFileList("", "");
-
-  if (!(file = fopen(filename, MODE_READ)))
-  {
-    Error(ERR_WARN, "cannot open configuration file '%s'", filename);
-    return NULL;
-  }
 
   while (!feof(file))
   {
@@ -1573,20 +1585,22 @@ void checkSetupFileHashIdentifier(SetupFileHash *setup_file_hash,
 #define LEVELINFO_TOKEN_NAME_SORTING	2
 #define LEVELINFO_TOKEN_AUTHOR		3
 #define LEVELINFO_TOKEN_IMPORTED_FROM	4
-#define LEVELINFO_TOKEN_LEVELS		5
-#define LEVELINFO_TOKEN_FIRST_LEVEL	6
-#define LEVELINFO_TOKEN_SORT_PRIORITY	7
-#define LEVELINFO_TOKEN_LATEST_ENGINE	8
-#define LEVELINFO_TOKEN_LEVEL_GROUP	9
-#define LEVELINFO_TOKEN_READONLY	10
-#define LEVELINFO_TOKEN_GRAPHICS_SET	11
-#define LEVELINFO_TOKEN_SOUNDS_SET	12
-#define LEVELINFO_TOKEN_MUSIC_SET	13
-#define LEVELINFO_TOKEN_FILENAME	14
-#define LEVELINFO_TOKEN_FILETYPE	15
-#define LEVELINFO_TOKEN_HANDICAP	16
+#define LEVELINFO_TOKEN_IMPORTED_BY	5
+#define LEVELINFO_TOKEN_LEVELS		6
+#define LEVELINFO_TOKEN_FIRST_LEVEL	7
+#define LEVELINFO_TOKEN_SORT_PRIORITY	8
+#define LEVELINFO_TOKEN_LATEST_ENGINE	9
+#define LEVELINFO_TOKEN_LEVEL_GROUP	10
+#define LEVELINFO_TOKEN_READONLY	11
+#define LEVELINFO_TOKEN_GRAPHICS_SET	12
+#define LEVELINFO_TOKEN_SOUNDS_SET	13
+#define LEVELINFO_TOKEN_MUSIC_SET	14
+#define LEVELINFO_TOKEN_FILENAME	15
+#define LEVELINFO_TOKEN_FILETYPE	16
+#define LEVELINFO_TOKEN_HANDICAP	17
+#define LEVELINFO_TOKEN_SKIP_LEVELS	18
 
-#define NUM_LEVELINFO_TOKENS		17
+#define NUM_LEVELINFO_TOKENS		19
 
 static LevelDirTree ldi;
 
@@ -1598,6 +1612,7 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.name_sorting,	"name_sorting"	},
   { TYPE_STRING,	&ldi.author,		"author"	},
   { TYPE_STRING,	&ldi.imported_from,	"imported_from"	},
+  { TYPE_STRING,	&ldi.imported_by,	"imported_by"	},
   { TYPE_INTEGER,	&ldi.levels,		"levels"	},
   { TYPE_INTEGER,	&ldi.first_level,	"first_level"	},
   { TYPE_INTEGER,	&ldi.sort_priority,	"sort_priority"	},
@@ -1609,7 +1624,8 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.music_set,		"music_set"	},
   { TYPE_STRING,	&ldi.level_filename,	"filename"	},
   { TYPE_STRING,	&ldi.level_filetype,	"filetype"	},
-  { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"	}
+  { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"	},
+  { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"	}
 };
 
 static void setTreeInfoToDefaults(TreeInfo *ldi, int type)
@@ -1640,6 +1656,7 @@ static void setTreeInfoToDefaults(TreeInfo *ldi, int type)
   ldi->sort_priority = LEVELCLASS_UNDEFINED;	/* default: least priority */
   ldi->latest_engine = FALSE;			/* default: get from level */
   ldi->parent_link = FALSE;
+  ldi->in_user_dir = FALSE;
   ldi->user_defined = FALSE;
   ldi->color = 0;
   ldi->class_desc = NULL;
@@ -1647,6 +1664,7 @@ static void setTreeInfoToDefaults(TreeInfo *ldi, int type)
   if (ldi->type == TREE_TYPE_LEVEL_DIR)
   {
     ldi->imported_from = NULL;
+    ldi->imported_by = NULL;
 
     ldi->graphics_set = NULL;
     ldi->sounds_set = NULL;
@@ -1665,6 +1683,7 @@ static void setTreeInfoToDefaults(TreeInfo *ldi, int type)
     ldi->handicap_level = 0;
     ldi->readonly = TRUE;
     ldi->handicap = TRUE;
+    ldi->skip_levels = FALSE;
   }
 }
 
@@ -1703,6 +1722,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
   ldi->sort_priority = parent->sort_priority;
   ldi->latest_engine = parent->latest_engine;
   ldi->parent_link = FALSE;
+  ldi->in_user_dir = parent->in_user_dir;
   ldi->user_defined = parent->user_defined;
   ldi->color = parent->color;
   ldi->class_desc = getStringCopy(parent->class_desc);
@@ -1710,6 +1730,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
   if (ldi->type == TREE_TYPE_LEVEL_DIR)
   {
     ldi->imported_from = getStringCopy(parent->imported_from);
+    ldi->imported_by = getStringCopy(parent->imported_by);
 
     ldi->graphics_set = NULL;
     ldi->sounds_set = NULL;
@@ -1728,6 +1749,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
     ldi->handicap_level = 0;
     ldi->readonly = TRUE;
     ldi->handicap = TRUE;
+    ldi->skip_levels = FALSE;
   }
 
 #else
@@ -1751,6 +1773,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ldi, TreeInfo *parent)
   ldi->author = getStringCopy(parent->author);
 
   ldi->imported_from = getStringCopy(parent->imported_from);
+  ldi->imported_by = getStringCopy(parent->imported_by);
   ldi->class_desc = getStringCopy(parent->class_desc);
 
   ldi->graphics_set = NULL;
@@ -1787,6 +1810,7 @@ static void freeTreeInfo(TreeInfo *ldi)
   if (ldi->type == TREE_TYPE_LEVEL_DIR)
   {
     checked_free(ldi->imported_from);
+    checked_free(ldi->imported_by);
 
     checked_free(ldi->graphics_set);
     checked_free(ldi->sounds_set);
@@ -1930,9 +1954,20 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
 {
   char *directory_path = getPath2(level_directory, directory_name);
   char *filename = getPath2(directory_path, LEVELINFO_FILENAME);
-  SetupFileHash *setup_file_hash = loadSetupFileHash(filename);
+  SetupFileHash *setup_file_hash;
   LevelDirTree *leveldir_new = NULL;
   int i;
+
+  /* unless debugging, silently ignore directories without "levelinfo.conf" */
+  if (!options.debug && !fileExists(filename))
+  {
+    free(directory_path);
+    free(filename);
+
+    return FALSE;
+  }
+
+  setup_file_hash = loadSetupFileHash(filename);
 
   if (setup_file_hash == NULL)
   {
@@ -1999,12 +2034,23 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
     leveldir_new->first_level + leveldir_new->levels - 1;
 
 #if 1
-  leveldir_new->user_defined =
+  leveldir_new->in_user_dir =
     (strcmp(leveldir_new->basepath, options.level_directory) != 0);
 #else
-  leveldir_new->user_defined =
+  leveldir_new->in_user_dir =
     (leveldir_new->basepath == options.level_directory ? FALSE : TRUE);
 #endif
+
+#if 1
+  /* adjust sort priority if user's private level directory was detected */
+  if (leveldir_new->sort_priority == LEVELCLASS_UNDEFINED &&
+      leveldir_new->in_user_dir &&
+      strcmp(leveldir_new->subdir, getLoginName()) == 0)
+    leveldir_new->sort_priority = LEVELCLASS_PRIVATE_START;
+#endif
+
+  leveldir_new->user_defined =
+    (leveldir_new->in_user_dir && IS_LEVELCLASS_PRIVATE(leveldir_new));
 
   leveldir_new->color = LEVELCOLOR(leveldir_new);
 #if 1
@@ -2132,7 +2178,7 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
   TreeInfo *artwork_new = NULL;
   int i;
 
-  if (access(filename, F_OK) == 0)		/* file exists */
+  if (fileExists(filename))
     setup_file_hash = loadSetupFileHash(filename);
 
   if (setup_file_hash == NULL)	/* no config file -- look for artwork files */
@@ -2225,10 +2271,10 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
   }
 
 #if 1
-  artwork_new->user_defined =
+  artwork_new->in_user_dir =
     (strcmp(artwork_new->basepath, OPTIONS_ARTWORK_DIRECTORY(type)) != 0);
 #else
-  artwork_new->user_defined =
+  artwork_new->in_user_dir =
     (artwork_new->basepath == OPTIONS_ARTWORK_DIRECTORY(type) ? FALSE : TRUE);
 #endif
 
@@ -2609,11 +2655,13 @@ static void SaveUserLevelInfo()
   setString(&level_info->author, getRealName());
   level_info->levels = 100;
   level_info->first_level = 1;
+#if 0
   level_info->sort_priority = LEVELCLASS_PRIVATE_START;
   level_info->readonly = FALSE;
   setString(&level_info->graphics_set, GFX_CLASSIC_SUBDIR);
   setString(&level_info->sounds_set,   SND_CLASSIC_SUBDIR);
   setString(&level_info->music_set,    MUS_CLASSIC_SUBDIR);
+#endif
 #else
   ldi.name = getStringCopy(getLoginName());
   ldi.author = getStringCopy(getRealName());
@@ -2626,17 +2674,36 @@ static void SaveUserLevelInfo()
   ldi.music_set = getStringCopy(MUS_CLASSIC_SUBDIR);
 #endif
 
+  token_value_position = TOKEN_VALUE_POSITION_SHORT;
+
   fprintf(file, "%s\n\n", getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER,
 						 getCookie("LEVELINFO")));
 
   ldi = *level_info;
   for (i = 0; i < NUM_LEVELINFO_TOKENS; i++)
+  {
+#if 1
+    if (i == LEVELINFO_TOKEN_NAME ||
+	i == LEVELINFO_TOKEN_AUTHOR ||
+	i == LEVELINFO_TOKEN_LEVELS ||
+	i == LEVELINFO_TOKEN_FIRST_LEVEL)
+      fprintf(file, "%s\n", getSetupLine(levelinfo_tokens, "", i));
+
+    /* just to make things nicer :) */
+    if (i == LEVELINFO_TOKEN_AUTHOR)
+      fprintf(file, "\n");	
+#else
     if (i != LEVELINFO_TOKEN_IDENTIFIER &&
 	i != LEVELINFO_TOKEN_NAME_SORTING &&
 	i != LEVELINFO_TOKEN_IMPORTED_FROM &&
+	i != LEVELINFO_TOKEN_IMPORTED_BY &&
 	i != LEVELINFO_TOKEN_FILENAME &&
 	i != LEVELINFO_TOKEN_FILETYPE)
       fprintf(file, "%s\n", getSetupLine(levelinfo_tokens, "", i));
+#endif
+  }
+
+  token_value_position = TOKEN_VALUE_POSITION_DEFAULT;
 
   fclose(file);
 
@@ -2718,7 +2785,7 @@ char *getSetupLine(struct TokenInfo *token_info, char *prefix, int token_nr)
     {
       /* add at least one whitespace */
       strcat(line, " ");
-      for (i = strlen(line); i < TOKEN_COMMENT_POSITION; i++)
+      for (i = strlen(line); i < token_comment_position; i++)
 	strcat(line, " ");
 
       strcat(line, "# ");
@@ -2800,7 +2867,7 @@ static void checkSeriesInfo()
 
   /* check for more levels besides the 'levels' field of 'levelinfo.conf' */
 
-  level_directory = getPath2((leveldir_current->user_defined ?
+  level_directory = getPath2((leveldir_current->in_user_dir ?
 			      getUserLevelDir(NULL) :
 			      options.level_directory),
 			     leveldir_current->fullpath);
