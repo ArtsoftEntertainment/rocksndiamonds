@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -19,10 +19,10 @@
 
 
 /* symbol 'window' is defined in DJGPP cross-compiler in libc.a(conio.o) */
-#define window window_djgpp
+#define window window_internal
 
 /* symbol 'font' is defined in "allegro.h" */
-#define font font_allegro
+#define font font_internal
 
 /* system dependent definitions */
 
@@ -39,6 +39,18 @@
 
 #define XRES	800
 #define YRES	600
+
+/* allegro defines some macros that bother the rest of the program */
+#ifdef joy_x
+#undef joy_x
+#undef joy_y
+#undef joy_left
+#undef joy_right
+#undef joy_up
+#undef joy_down
+#undef joy_b1
+#undef joy_b2
+#endif
 
 /* additional Allegro keyboard mapping */
 
@@ -450,7 +462,6 @@
 
 /* end of X11 keyboard mapping */
 
-#define JOYSTICK_FILENAME	"joystick.cnf"
 
 #define screen myscreen
 
@@ -740,5 +751,8 @@ void MSDOSOpenAudio(void);
 void MSDOSCloseAudio(void);
 
 void NetworkServer(int, int);
+
+void MSDOSInitJoysticks();
+boolean MSDOSReadJoystick(int, int *, int *, boolean *, boolean *);
 
 #endif /* MSDOS_H */

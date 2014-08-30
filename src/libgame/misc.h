@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -19,12 +19,6 @@
 
 #include "system.h"
 
-
-/* functions for version handling */
-#define VERSION_IDENT(x,y,z)	((x) * 10000 + (y) * 100 + (z))
-#define VERSION_MAJOR(x)	((x) / 10000)
-#define VERSION_MINOR(x)	(((x) % 10000) / 100)
-#define VERSION_PATCH(x)	((x) % 100)
 
 /* values for InitCounter() and Counter() */
 #define INIT_COUNTER			0
@@ -59,31 +53,6 @@
 #define MAX_FILENAME_LEN		256
 #define MAX_LINE_LEN			1000
 
-/* values for setup file stuff */
-#define TYPE_BOOLEAN			1
-#define TYPE_SWITCH			2
-#define TYPE_KEY			3
-#define TYPE_INTEGER			4
-#define TYPE_STRING			5
-
-#define TOKEN_STR_FILE_IDENTIFIER	"file_identifier"
-
-#define TOKEN_VALUE_POSITION		30
-
-struct SetupFileList
-{
-  char *token;
-  char *value;
-  struct SetupFileList *next;
-};
-
-struct TokenInfo
-{
-  int type;
-  void *value;
-  char *text;
-};
-
 void InitCounter(void);
 unsigned long Counter(void);
 void Delay(unsigned long);
@@ -101,60 +70,53 @@ char *getPath2(char *, char *);
 char *getPath3(char *, char *, char*);
 char *getStringCopy(char *);
 char *getStringToLower(char *);
+
 void GetOptions(char **);
+
+void SetError(char *, ...);
+char *GetError(void);
 void Error(int, char *, ...);
+
 void *checked_malloc(unsigned long);
 void *checked_calloc(unsigned long);
 void *checked_realloc(void *, unsigned long);
+inline void swap_numbers(int *, int *);
+inline void swap_number_pairs(int *, int *, int *, int *);
+
 short getFile16BitInteger(FILE *, int);
 void putFile16BitInteger(FILE *, short, int);
 int getFile32BitInteger(FILE *, int);
 void putFile32BitInteger(FILE *, int, int);
 boolean getFileChunk(FILE *, char *, int *, int);
 void putFileChunk(FILE *, char *, int, int);
+int getFileVersion(FILE *);
+void putFileVersion(FILE *, int);
 void ReadUnusedBytesFromFile(FILE *, unsigned long);
 void WriteUnusedBytesToFile(FILE *, unsigned long);
 
+#define getFile16BitBE(f)     getFile16BitInteger(f,BYTE_ORDER_BIG_ENDIAN)
+#define getFile16BitLE(f)     getFile16BitInteger(f,BYTE_ORDER_LITTLE_ENDIAN)
+#define putFile16BitBE(f,x)   putFile16BitInteger(f,x,BYTE_ORDER_BIG_ENDIAN)
+#define putFile16BitLE(f,x)   putFile16BitInteger(f,x,BYTE_ORDER_LITTLE_ENDIAN)
+#define getFile32BitBE(f)     getFile32BitInteger(f,BYTE_ORDER_BIG_ENDIAN)
+#define getFile32BitLE(f)     getFile32BitInteger(f,BYTE_ORDER_LITTLE_ENDIAN)
+#define putFile32BitBE(f,x)   putFile32BitInteger(f,x,BYTE_ORDER_BIG_ENDIAN)
+#define putFile32BitLE(f,x)   putFile32BitInteger(f,x,BYTE_ORDER_LITTLE_ENDIAN)
+#define getFileChunkBE(f,s,x) getFileChunk(f,s,x,BYTE_ORDER_BIG_ENDIAN)
+#define getFileChunkLE(f,s,x) getFileChunk(f,s,x,BYTE_ORDER_LITTLE_ENDIAN)
+#define putFileChunkBE(f,s,x) putFileChunk(f,s,x,BYTE_ORDER_BIG_ENDIAN)
+#define putFileChunkLE(f,s,x) putFileChunk(f,s,x,BYTE_ORDER_LITTLE_ENDIAN)
+
 char *getKeyNameFromKey(Key);
 char *getX11KeyNameFromKey(Key);
+Key getKeyFromKeyName(char *);
 Key getKeyFromX11KeyName(char *);
 char getCharFromKey(Key);
-char *getJoyNameFromJoySymbol(int);
-int getJoySymbolFromJoyName(char *);
-int getJoystickNrFromDeviceName(char *);
 
-struct LevelDirInfo *newLevelDirInfo();
-void pushLevelDirInfo(struct LevelDirInfo **, struct LevelDirInfo *);
-int numLevelDirInfo(struct LevelDirInfo *);
-boolean validLevelSeries(struct LevelDirInfo *);
-struct LevelDirInfo *getFirstValidLevelSeries(struct LevelDirInfo *);
-struct LevelDirInfo *getLevelDirInfoFirstGroupEntry(struct LevelDirInfo *);
-int numLevelDirInfoInGroup(struct LevelDirInfo *);
-int posLevelDirInfo(struct LevelDirInfo *);
-struct LevelDirInfo *getLevelDirInfoFromPos(struct LevelDirInfo *, int);
-struct LevelDirInfo *getLevelDirInfoFromFilename(char *);
-void dumpLevelDirInfo(struct LevelDirInfo *, int);
-void sortLevelDirInfo(struct LevelDirInfo **,
-		      int (*compare_function)(const void *, const void *));
-
-inline void swap_numbers(int *, int *);
-inline void swap_number_pairs(int *, int *, int *, int *);
-
-char *getUserDataDir(void);
-char *getSetupDir(void);
-void createDirectory(char *, char *, int);
-void InitUserDataDirectory(void);
-void SetFilePermissions(char *, int);
-int getFileVersionFromCookieString(const char *);
-boolean checkCookieString(const char *, const char *);
-
-int get_string_integer_value(char *);
-boolean get_string_boolean_value(char *);
-char *getFormattedSetupEntry(char *, char *);
-void freeSetupFileList(struct SetupFileList *);
-char *getTokenValue(struct SetupFileList *, char *);
-struct SetupFileList *loadSetupFileList(char *);
-void checkSetupFileListIdentifier(struct SetupFileList *, char *);
+boolean FileIsGraphic(char *);
+boolean FileIsSound(char *);
+boolean FileIsMusic(char *);
+boolean FileIsArtworkType(char *, int);
 
 #if !defined(PLATFORM_UNIX)
 void initErrorFile();

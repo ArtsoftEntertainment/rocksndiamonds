@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -14,6 +14,7 @@
 #include "system.h"
 #include "pcx.h"
 #include "misc.h"
+#include "setup.h"
 
 
 #if defined(TARGET_X11)
@@ -73,17 +74,11 @@ static void X11InitDisplay()
 
   /* got appropriate visual? */
   if (depth < 8)
-  {
-    printf("Sorry, displays with less than 8 bits per pixel not supported.\n");
-    exit(-1);
-  }
+    Error(ERR_EXIT, "X11 display not supported (less than 8 bits per pixel)");
   else if ((depth ==8 && visual->class != PseudoColor) ||
 	   (depth > 8 && visual->class != TrueColor &&
 	    visual->class != DirectColor))
-  {
-    printf("Sorry, cannot get appropriate visual.\n");
-    exit(-1);
-  }
+    Error(ERR_EXIT, "X11 display not supported (inappropriate visual)");
 #endif /* !PLATFORM_MSDOS */
 }
 
@@ -146,24 +141,22 @@ static DrawWindow *X11InitWindow()
 		    PropModePrepend, (unsigned char *) &delete_atom, 1);
 
 #if 0
-  sprintf(icon_filename, "%s/%s/%s",
-	  options.ro_base_directory, GRAPHICS_DIRECTORY,
+  sprintf(icon_filename, "%s/%s", options.graphics_directory,
 	  icon_pic.picture_filename);
 #endif
   if (XReadBitmapFile(display, new_window->drawable,
-		      program.x11_icon_filename,
+		      getCustomImageFilename(program.x11_icon_filename),
 		      &icon_width, &icon_height, &icon_pixmap,
 		      &icon_hot_x, &icon_hot_y) != BitmapSuccess)
     Error(ERR_EXIT, "cannot read icon bitmap file '%s'",
 	  program.x11_icon_filename);
 
 #if 0
-  sprintf(icon_filename, "%s/%s/%s",
-	  options.ro_base_directory, GRAPHICS_DIRECTORY,
+  sprintf(icon_filename, "%s/%s", options.graphics_directory,
 	  icon_pic.picturemask_filename);
 #endif
   if (XReadBitmapFile(display, new_window->drawable,
-		      program.x11_iconmask_filename,
+		      getCustomImageFilename(program.x11_iconmask_filename),
 		      &icon_width, &icon_height, &iconmask_pixmap,
 		      &icon_hot_x, &icon_hot_y) != BitmapSuccess)
     Error(ERR_EXIT, "cannot read icon bitmap file '%s'",
@@ -239,14 +232,28 @@ static DrawWindow *X11InitWindow()
   return new_window;
 }
 
+static void SetImageDimensions(Bitmap *bitmap)
+{
+#if defined(TARGET_ALLEGRO)
+  BITMAP *allegro_bitmap = (BITMAP *)(bitmap->drawable);
+
+  bitmap->width  = allegro_bitmap->w;
+  bitmap->height = allegro_bitmap->h;
+#else
+  Window root;
+  int x, y;
+  unsigned int border_width, depth;
+
+  XGetGeometry(display, bitmap->drawable, &root, &x, &y,
+	       &bitmap->width, &bitmap->height, &border_width, &depth);
+#endif
+}
+
 Bitmap *X11LoadImage(char *filename)
 {
   Bitmap *new_bitmap = CreateBitmapStruct();
+  char *error = "Read_PCX_to_Pixmap(): %s '%s'";
   int pcx_err;
-
-#if defined(PLATFORM_MSDOS)
-  rest(100);
-#endif
 
   pcx_err = Read_PCX_to_Pixmap(display, window->drawable, window->gc, filename,
 			       &new_bitmap->drawable, &new_bitmap->clip_mask);
@@ -255,27 +262,45 @@ Bitmap *X11LoadImage(char *filename)
     case PCX_Success:
       break;
     case PCX_OpenFailed:
-      Error(ERR_EXIT, "cannot open PCX file '%s'", filename);
+      SetError(error, "cannot open PCX file", filename);
+      return NULL;
     case PCX_ReadFailed:
-      Error(ERR_EXIT, "cannot read PCX file '%s'", filename);
+      SetError(error, "cannot read PCX file", filename);
+      return NULL;
     case PCX_FileInvalid:
-      Error(ERR_EXIT, "invalid PCX file '%s'", filename);
+      SetError(error, "invalid PCX file", filename);
+      return NULL;
     case PCX_NoMemory:
-      Error(ERR_EXIT, "not enough memory for PCX file '%s'", filename);
+      SetError(error, "not enough memory for PCX file", filename);
+      return NULL;
     case PCX_ColorFailed:
-      Error(ERR_EXIT, "cannot get colors for PCX file '%s'", filename);
+      SetError(error, "cannot get colors for PCX file", filename);
+      return NULL;
+    case PCX_OtherError:
+      /* this should already have called SetError() */
+      return NULL;
     default:
-      break;
+      SetError(error, "unknown error reading PCX file", filename);
+      return NULL;
   }
 
   if (!new_bitmap->drawable)
-    Error(ERR_EXIT, "cannot get graphics for '%s'", filename);
+  {
+    SetError("X11LoadImage(): cannot get graphics for '%s'", filename);
+    return NULL;
+  }
 
   if (!new_bitmap->clip_mask)
-    Error(ERR_EXIT, "cannot get clipmask for '%s'", filename);
+  {
+    SetError("X11LoadImage(): cannot get clipmask for '%s'", filename);
+    return NULL;
+  }
 
   /* set GraphicContext inheritated from Window */
   new_bitmap->gc = window->gc;
+
+  /* set image width and height */
+  SetImageDimensions(new_bitmap);
 
   return new_bitmap;
 }

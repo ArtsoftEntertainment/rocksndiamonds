@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -12,7 +12,6 @@
 ***********************************************************/
 
 #include <ctype.h>
-#include <dirent.h>
 #include <sys/stat.h>
 
 #include "libgame/libgame.h"
@@ -20,345 +19,28 @@
 #include "files.h"
 #include "tools.h"
 #include "tape.h"
-#include "joystick.h"
+
 
 #define CHUNK_ID_LEN		4	/* IFF style chunk id length  */
 #define CHUNK_SIZE_UNDEFINED	0	/* undefined chunk size == 0  */
 #define CHUNK_SIZE_NONE		-1	/* do not write chunk size    */
 #define FILE_VERS_CHUNK_SIZE	8	/* size of file version chunk */
 #define LEVEL_HEADER_SIZE	80	/* size of level file header  */
-#define LEVEL_HEADER_UNUSED	15	/* unused level header bytes  */
+#define LEVEL_HEADER_UNUSED	14	/* unused level header bytes  */
 #define LEVEL_CHUNK_CNT2_SIZE	160	/* size of level CNT2 chunk   */
 #define LEVEL_CHUNK_CNT2_UNUSED	11	/* unused CNT2 chunk bytes    */
 #define TAPE_HEADER_SIZE	20	/* size of tape file header   */
-#define TAPE_HEADER_UNUSED	7	/* unused tape header bytes   */
+#define TAPE_HEADER_UNUSED	3	/* unused tape header bytes   */
 
 /* file identifier strings */
 #define LEVEL_COOKIE_TMPL	"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_x.x"
 #define TAPE_COOKIE_TMPL	"ROCKSNDIAMONDS_TAPE_FILE_VERSION_x.x"
 #define SCORE_COOKIE		"ROCKSNDIAMONDS_SCORE_FILE_VERSION_1.2"
-#define SETUP_COOKIE		"ROCKSNDIAMONDS_SETUP_FILE_VERSION_1.2"
-#define LEVELSETUP_COOKIE	"ROCKSNDIAMONDS_LEVELSETUP_FILE_VERSION_1.2"
-#define LEVELINFO_COOKIE	"ROCKSNDIAMONDS_LEVELINFO_FILE_VERSION_1.2"
 
-/* file names and filename extensions */
-#if !defined(PLATFORM_MSDOS)
-#define LEVELSETUP_DIRECTORY	"levelsetup"
-#define SETUP_FILENAME		"setup.conf"
-#define LEVELSETUP_FILENAME	"levelsetup.conf"
-#define LEVELINFO_FILENAME	"levelinfo.conf"
-#define LEVELFILE_EXTENSION	"level"
-#define TAPEFILE_EXTENSION	"tape"
-#define SCOREFILE_EXTENSION	"score"
-#else
-#define LEVELSETUP_DIRECTORY	"lvlsetup"
-#define SETUP_FILENAME		"setup.cnf"
-#define LEVELSETUP_FILENAME	"lvlsetup.cnf"
-#define LEVELINFO_FILENAME	"lvlinfo.cnf"
-#define LEVELFILE_EXTENSION	"lvl"
-#define TAPEFILE_EXTENSION	"tap"
-#define SCOREFILE_EXTENSION	"sco"
-#endif
 
-/* sort priorities of level series (also used as level series classes) */
-#define LEVELCLASS_TUTORIAL_START	10
-#define LEVELCLASS_TUTORIAL_END		99
-#define LEVELCLASS_CLASSICS_START	100
-#define LEVELCLASS_CLASSICS_END		199
-#define LEVELCLASS_CONTRIBUTION_START	200
-#define LEVELCLASS_CONTRIBUTION_END	299
-#define LEVELCLASS_USER_START		300
-#define LEVELCLASS_USER_END		399
-#define LEVELCLASS_BD_START		400
-#define LEVELCLASS_BD_END		499
-#define LEVELCLASS_EM_START		500
-#define LEVELCLASS_EM_END		599
-#define LEVELCLASS_SP_START		600
-#define LEVELCLASS_SP_END		699
-#define LEVELCLASS_DX_START		700
-#define LEVELCLASS_DX_END		799
-
-#define LEVELCLASS_TUTORIAL		LEVELCLASS_TUTORIAL_START
-#define LEVELCLASS_CLASSICS		LEVELCLASS_CLASSICS_START
-#define LEVELCLASS_CONTRIBUTION		LEVELCLASS_CONTRIBUTION_START
-#define LEVELCLASS_USER			LEVELCLASS_USER_START
-#define LEVELCLASS_BD			LEVELCLASS_BD_START
-#define LEVELCLASS_EM			LEVELCLASS_EM_START
-#define LEVELCLASS_SP			LEVELCLASS_SP_START
-#define LEVELCLASS_DX			LEVELCLASS_DX_START
-
-#define LEVELCLASS_UNDEFINED		999
-
-#define NUM_LEVELCLASS_DESC	8
-char *levelclass_desc[NUM_LEVELCLASS_DESC] =
-{
-  "Tutorial Levels",
-  "Classic Originals",
-  "Contributions",
-  "Private Levels",
-  "Boulderdash",
-  "Emerald Mine",
-  "Supaplex",
-  "DX Boulderdash"
-};
-
-#define IS_LEVELCLASS_TUTORIAL(p) \
-	((p)->sort_priority >= LEVELCLASS_TUTORIAL_START && \
-	 (p)->sort_priority <= LEVELCLASS_TUTORIAL_END)
-#define IS_LEVELCLASS_CLASSICS(p) \
-	((p)->sort_priority >= LEVELCLASS_CLASSICS_START && \
-	 (p)->sort_priority <= LEVELCLASS_CLASSICS_END)
-#define IS_LEVELCLASS_CONTRIBUTION(p) \
-	((p)->sort_priority >= LEVELCLASS_CONTRIBUTION_START && \
-	 (p)->sort_priority <= LEVELCLASS_CONTRIBUTION_END)
-#define IS_LEVELCLASS_USER(p) \
-	((p)->sort_priority >= LEVELCLASS_USER_START && \
-	 (p)->sort_priority <= LEVELCLASS_USER_END)
-#define IS_LEVELCLASS_BD(p) \
-	((p)->sort_priority >= LEVELCLASS_BD_START && \
-	 (p)->sort_priority <= LEVELCLASS_BD_END)
-#define IS_LEVELCLASS_EM(p) \
-	((p)->sort_priority >= LEVELCLASS_EM_START && \
-	 (p)->sort_priority <= LEVELCLASS_EM_END)
-#define IS_LEVELCLASS_SP(p) \
-	((p)->sort_priority >= LEVELCLASS_SP_START && \
-	 (p)->sort_priority <= LEVELCLASS_SP_END)
-#define IS_LEVELCLASS_DX(p) \
-	((p)->sort_priority >= LEVELCLASS_DX_START && \
-	 (p)->sort_priority <= LEVELCLASS_DX_END)
-
-#define LEVELCLASS(n)	(IS_LEVELCLASS_TUTORIAL(n) ? LEVELCLASS_TUTORIAL : \
-			 IS_LEVELCLASS_CLASSICS(n) ? LEVELCLASS_CLASSICS : \
-			 IS_LEVELCLASS_CONTRIBUTION(n) ? LEVELCLASS_CONTRIBUTION : \
-			 IS_LEVELCLASS_USER(n) ? LEVELCLASS_USER : \
-			 IS_LEVELCLASS_BD(n) ? LEVELCLASS_BD : \
-			 IS_LEVELCLASS_EM(n) ? LEVELCLASS_EM : \
-			 IS_LEVELCLASS_SP(n) ? LEVELCLASS_SP : \
-			 IS_LEVELCLASS_DX(n) ? LEVELCLASS_DX : \
-			 LEVELCLASS_UNDEFINED)
-
-#define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		FC_BLUE : \
-			 IS_LEVELCLASS_CLASSICS(n) ?		FC_RED : \
-			 IS_LEVELCLASS_BD(n) ?			FC_GREEN : \
-			 IS_LEVELCLASS_EM(n) ?			FC_YELLOW : \
-			 IS_LEVELCLASS_SP(n) ?			FC_GREEN : \
-			 IS_LEVELCLASS_DX(n) ?			FC_YELLOW : \
-			 IS_LEVELCLASS_CONTRIBUTION(n) ?	FC_GREEN : \
-			 IS_LEVELCLASS_USER(n) ?		FC_RED : \
-			 FC_BLUE)
-
-#define LEVELSORTING(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		0 : \
-			 IS_LEVELCLASS_CLASSICS(n) ?		1 : \
-			 IS_LEVELCLASS_BD(n) ?			2 : \
-			 IS_LEVELCLASS_EM(n) ?			3 : \
-			 IS_LEVELCLASS_SP(n) ?			4 : \
-			 IS_LEVELCLASS_DX(n) ?			5 : \
-			 IS_LEVELCLASS_CONTRIBUTION(n) ?	6 : \
-			 IS_LEVELCLASS_USER(n) ?		7 : \
-			 9)
-
-char *getLevelClassDescription(struct LevelDirInfo *ldi)
-{
-  int position = ldi->sort_priority / 100;
-
-  if (position >= 0 && position < NUM_LEVELCLASS_DESC)
-    return levelclass_desc[position];
-  else
-    return "Unknown Level Class";
-}
-
-static void SaveUserLevelInfo();		/* for 'InitUserLevelDir()' */
-static char *getSetupLine(char *, int);		/* for 'SaveUserLevelInfo()' */
-
-static char *getUserLevelDir(char *level_subdir)
-{
-  static char *userlevel_dir = NULL;
-  char *data_dir = getUserDataDir();
-  char *userlevel_subdir = LEVELS_DIRECTORY;
-
-  if (userlevel_dir)
-    free(userlevel_dir);
-
-  if (strlen(level_subdir) > 0)
-    userlevel_dir = getPath3(data_dir, userlevel_subdir, level_subdir);
-  else
-    userlevel_dir = getPath2(data_dir, userlevel_subdir);
-
-  return userlevel_dir;
-}
-
-static char *getTapeDir(char *level_subdir)
-{
-  static char *tape_dir = NULL;
-  char *data_dir = getUserDataDir();
-  char *tape_subdir = TAPES_DIRECTORY;
-
-  if (tape_dir)
-    free(tape_dir);
-
-  if (strlen(level_subdir) > 0)
-    tape_dir = getPath3(data_dir, tape_subdir, level_subdir);
-  else
-    tape_dir = getPath2(data_dir, tape_subdir);
-
-  return tape_dir;
-}
-
-static char *getScoreDir(char *level_subdir)
-{
-  static char *score_dir = NULL;
-  char *data_dir = options.rw_base_directory;
-  char *score_subdir = SCORES_DIRECTORY;
-
-  if (score_dir)
-    free(score_dir);
-
-  if (strlen(level_subdir) > 0)
-    score_dir = getPath3(data_dir, score_subdir, level_subdir);
-  else
-    score_dir = getPath2(data_dir, score_subdir);
-
-  return score_dir;
-}
-
-static char *getLevelSetupDir(char *level_subdir)
-{
-  static char *levelsetup_dir = NULL;
-  char *data_dir = getUserDataDir();
-  char *levelsetup_subdir = LEVELSETUP_DIRECTORY;
-
-  if (levelsetup_dir)
-    free(levelsetup_dir);
-
-  if (strlen(level_subdir) > 0)
-    levelsetup_dir = getPath3(data_dir, levelsetup_subdir, level_subdir);
-  else
-    levelsetup_dir = getPath2(data_dir, levelsetup_subdir);
-
-  return levelsetup_dir;
-}
-
-static char *getLevelFilename(int nr)
-{
-  static char *filename = NULL;
-  char basename[MAX_FILENAME_LEN];
-
-  if (filename != NULL)
-    free(filename);
-
-  sprintf(basename, "%03d.%s", nr, LEVELFILE_EXTENSION);
-  filename = getPath3((leveldir_current->user_defined ?
-		       getUserLevelDir("") :
-		       options.level_directory),
-		      leveldir_current->fullpath,
-		      basename);
-
-  return filename;
-}
-
-static char *getTapeFilename(int nr)
-{
-  static char *filename = NULL;
-  char basename[MAX_FILENAME_LEN];
-
-  if (filename != NULL)
-    free(filename);
-
-  sprintf(basename, "%03d.%s", nr, TAPEFILE_EXTENSION);
-  filename = getPath2(getTapeDir(leveldir_current->filename), basename);
-
-  return filename;
-}
-
-static char *getScoreFilename(int nr)
-{
-  static char *filename = NULL;
-  char basename[MAX_FILENAME_LEN];
-
-  if (filename != NULL)
-    free(filename);
-
-  sprintf(basename, "%03d.%s", nr, SCOREFILE_EXTENSION);
-  filename = getPath2(getScoreDir(leveldir_current->filename), basename);
-
-  return filename;
-}
-
-static void InitTapeDirectory(char *level_subdir)
-{
-  createDirectory(getUserDataDir(), "user data", PERMS_PRIVATE);
-  createDirectory(getTapeDir(""), "main tape", PERMS_PRIVATE);
-  createDirectory(getTapeDir(level_subdir), "level tape", PERMS_PRIVATE);
-}
-
-static void InitScoreDirectory(char *level_subdir)
-{
-  createDirectory(getScoreDir(""), "main score", PERMS_PUBLIC);
-  createDirectory(getScoreDir(level_subdir), "level score", PERMS_PUBLIC);
-}
-
-static void InitUserLevelDirectory(char *level_subdir)
-{
-  if (access(getUserLevelDir(level_subdir), F_OK) != 0)
-  {
-    createDirectory(getUserDataDir(), "user data", PERMS_PRIVATE);
-    createDirectory(getUserLevelDir(""), "main user level", PERMS_PRIVATE);
-    createDirectory(getUserLevelDir(level_subdir), "user level",PERMS_PRIVATE);
-
-    SaveUserLevelInfo();
-  }
-}
-
-static void InitLevelSetupDirectory(char *level_subdir)
-{
-  createDirectory(getUserDataDir(), "user data", PERMS_PRIVATE);
-  createDirectory(getLevelSetupDir(""), "main level setup", PERMS_PRIVATE);
-  createDirectory(getLevelSetupDir(level_subdir), "level setup",PERMS_PRIVATE);
-}
-
-static void ReadChunk_VERS(FILE *file, int *file_version, int *game_version)
-{
-  int file_version_major, file_version_minor, file_version_patch;
-  int game_version_major, game_version_minor, game_version_patch;
-
-  file_version_major = fgetc(file);
-  file_version_minor = fgetc(file);
-  file_version_patch = fgetc(file);
-  fgetc(file);		/* not used */
-
-  game_version_major = fgetc(file);
-  game_version_minor = fgetc(file);
-  game_version_patch = fgetc(file);
-  fgetc(file);		/* not used */
-
-  *file_version = VERSION_IDENT(file_version_major,
-				file_version_minor,
-				file_version_patch);
-
-  *game_version = VERSION_IDENT(game_version_major,
-				game_version_minor,
-				game_version_patch);
-}
-
-static void WriteChunk_VERS(FILE *file, int file_version, int game_version)
-{
-  int file_version_major = VERSION_MAJOR(file_version);
-  int file_version_minor = VERSION_MINOR(file_version);
-  int file_version_patch = VERSION_PATCH(file_version);
-  int game_version_major = VERSION_MAJOR(game_version);
-  int game_version_minor = VERSION_MINOR(game_version);
-  int game_version_patch = VERSION_PATCH(game_version);
-
-  fputc(file_version_major, file);
-  fputc(file_version_minor, file);
-  fputc(file_version_patch, file);
-  fputc(0, file);	/* not used */
-
-  fputc(game_version_major, file);
-  fputc(game_version_minor, file);
-  fputc(game_version_patch, file);
-  fputc(0, file);	/* not used */
-}
+/* ========================================================================= */
+/* level file functions                                                      */
+/* ========================================================================= */
 
 static void setLevelInfoToDefaults()
 {
@@ -388,6 +70,7 @@ static void setLevelInfoToDefaults()
   level.amoeba_content = EL_DIAMANT;
   level.double_speed = FALSE;
   level.gravity = FALSE;
+  level.em_slippery_gems = FALSE;
 
   for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
     level.name[i] = '\0';
@@ -457,7 +140,8 @@ static int checkLevelElement(int element)
 
 static int LoadLevel_VERS(FILE *file, int chunk_size, struct LevelInfo *level)
 {
-  ReadChunk_VERS(file, &(level->file_version), &(level->game_version));
+  level->file_version = getFileVersion(file);
+  level->game_version = getFileVersion(file);
 
   return chunk_size;
 }
@@ -469,8 +153,8 @@ static int LoadLevel_HEAD(FILE *file, int chunk_size, struct LevelInfo *level)
   lev_fieldx = level->fieldx = fgetc(file);
   lev_fieldy = level->fieldy = fgetc(file);
 
-  level->time		= getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
-  level->gems_needed	= getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+  level->time		= getFile16BitBE(file);
+  level->gems_needed	= getFile16BitBE(file);
 
   for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
     level->name[i] = fgetc(file);
@@ -491,8 +175,8 @@ static int LoadLevel_HEAD(FILE *file, int chunk_size, struct LevelInfo *level)
   level->amoeba_content		= checkLevelElement(fgetc(file));
   level->double_speed		= (fgetc(file) == 1 ? TRUE : FALSE);
   level->gravity		= (fgetc(file) == 1 ? TRUE : FALSE);
-
   level->encoding_16bit_field	= (fgetc(file) == 1 ? TRUE : FALSE);
+  level->em_slippery_gems	= (fgetc(file) == 1 ? TRUE : FALSE);
 
   ReadUnusedBytesFromFile(file, LEVEL_HEADER_UNUSED);
 
@@ -546,8 +230,7 @@ static int LoadLevel_CONT(FILE *file, int chunk_size, struct LevelInfo *level)
       for(x=0; x<3; x++)
 	level->yam_content[i][x][y] =
 	  checkLevelElement(level->encoding_16bit_field ?
-			    getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN) :
-			    fgetc(file));
+			    getFile16BitBE(file) : fgetc(file));
   return chunk_size;
 }
 
@@ -574,8 +257,7 @@ static int LoadLevel_BODY(FILE *file, int chunk_size, struct LevelInfo *level)
     for(x=0; x<level->fieldx; x++)
       Feld[x][y] = Ur[x][y] =
 	checkLevelElement(level->encoding_16bit_field ?
-			  getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN) :
-			  fgetc(file));
+			  getFile16BitBE(file) : fgetc(file));
   return chunk_size;
 }
 
@@ -586,7 +268,7 @@ static int LoadLevel_CNT2(FILE *file, int chunk_size, struct LevelInfo *level)
   int num_contents, content_xsize, content_ysize;
   int content_array[MAX_ELEMENT_CONTENTS][3][3];
 
-  element = checkLevelElement(getFile16BitInteger(file,BYTE_ORDER_BIG_ENDIAN));
+  element = checkLevelElement(getFile16BitBE(file));
   num_contents = fgetc(file);
   content_xsize = fgetc(file);
   content_ysize = fgetc(file);
@@ -595,8 +277,7 @@ static int LoadLevel_CNT2(FILE *file, int chunk_size, struct LevelInfo *level)
   for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
     for(y=0; y<3; y++)
       for(x=0; x<3; x++)
-	content_array[i][x][y] =
-	  checkLevelElement(getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN));
+	content_array[i][x][y] = checkLevelElement(getFile16BitBE(file));
 
   /* correct invalid number of content fields -- should never happen */
   if (num_contents < 1 || num_contents > MAX_ELEMENT_CONTENTS)
@@ -640,12 +321,12 @@ void LoadLevel(int level_nr)
     return;
   }
 
-  getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
+  getFileChunkBE(file, chunk_name, NULL);
   if (strcmp(chunk_name, "RND1") == 0)
   {
-    getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);	/* not used */
+    getFile32BitBE(file);		/* not used */
 
-    getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
+    getFileChunkBE(file, chunk_name, NULL);
     if (strcmp(chunk_name, "CAVE") != 0)
     {
       Error(ERR_WARN, "unknown format of level file '%s'", filename);
@@ -673,6 +354,9 @@ void LoadLevel(int level_nr)
       fclose(file);
       return;
     }
+
+    /* pre-2.0 level files have no game version, so use file version here */
+    level.game_version = level.file_version;
   }
 
   if (level.file_version < FILE_VERSION_1_2)
@@ -700,7 +384,7 @@ void LoadLevel(int level_nr)
       {  NULL,  0,			NULL }
     };
 
-    while (getFileChunk(file, chunk_name, &chunk_size, BYTE_ORDER_BIG_ENDIAN))
+    while (getFileChunkBE(file, chunk_name, &chunk_size))
     {
       int i = 0;
 
@@ -744,27 +428,58 @@ void LoadLevel(int level_nr)
   if (IS_LEVELCLASS_CONTRIBUTION(leveldir_current) ||
       IS_LEVELCLASS_USER(leveldir_current))
   {
-    /* for user contributed and private levels, use the version of
-       the game engine the levels were created for */
-    level.game_version = level.file_version;
+    /* For user contributed and private levels, use the version of
+       the game engine the levels were created for.
+       Since 2.0.1, the game engine version is now directly stored
+       in the level file (chunk "VERS"), so there is no need anymore
+       to set the game version from the file version (except for old,
+       pre-2.0 levels, where the game version is still taken from the
+       file format version used to store the level -- see above). */
 
-    /* player was faster than monsters in pre-1.0 levels */
+    /* do some special adjustments to support older level versions */
     if (level.file_version == FILE_VERSION_1_0)
     {
       Error(ERR_WARN, "level file '%s' has version number 1.0", filename);
       Error(ERR_WARN, "using high speed movement for player");
+
+      /* player was faster than monsters in (pre-)1.0 levels */
       level.double_speed = TRUE;
     }
+
+    /* Default behaviour for EM style gems was "slippery" only in 2.0.1 */
+    if (level.game_version == VERSION_IDENT(2,0,1))
+      level.em_slippery_gems = TRUE;
   }
   else
   {
-    /* always use the latest version of the game engine for all but
-       user contributed and private levels */
+    /* Always use the latest version of the game engine for all but
+       user contributed and private levels; this allows for actual
+       corrections in the game engine to take effect for existing,
+       converted levels (from "classic" or other existing games) to
+       make the game emulation more accurate, while (hopefully) not
+       breaking existing levels created from other players. */
+
     level.game_version = GAME_VERSION_ACTUAL;
+
+    /* Set special EM style gems behaviour: EM style gems slip down from
+       normal, steel and growing wall. As this is a more fundamental change,
+       it seems better to set the default behaviour to "off" (as it is more
+       natural) and make it configurable in the level editor (as a property
+       of gem style elements). Already existing converted levels (neither
+       private nor contributed levels) are changed to the new behaviour. */
+
+    if (level.file_version < FILE_VERSION_2_0)
+      level.em_slippery_gems = TRUE;
   }
 
   /* determine border element for this level */
   SetBorderElement();
+}
+
+static void SaveLevel_VERS(FILE *file, struct LevelInfo *level)
+{
+  putFileVersion(file, level->file_version);
+  putFileVersion(file, level->game_version);
 }
 
 static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
@@ -774,8 +489,8 @@ static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
   fputc(level->fieldx, file);
   fputc(level->fieldy, file);
 
-  putFile16BitInteger(file, level->time,        BYTE_ORDER_BIG_ENDIAN);
-  putFile16BitInteger(file, level->gems_needed, BYTE_ORDER_BIG_ENDIAN);
+  putFile16BitBE(file, level->time);
+  putFile16BitBE(file, level->gems_needed);
 
   for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
     fputc(level->name[i], file);
@@ -796,8 +511,8 @@ static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
 	file);
   fputc((level->double_speed ? 1 : 0), file);
   fputc((level->gravity ? 1 : 0), file);
-
   fputc((level->encoding_16bit_field ? 1 : 0), file);
+  fputc((level->em_slippery_gems ? 1 : 0), file);
 
   WriteUnusedBytesToFile(file, LEVEL_HEADER_UNUSED);
 }
@@ -824,8 +539,7 @@ static void SaveLevel_CONT(FILE *file, struct LevelInfo *level)
     for(y=0; y<3; y++)
       for(x=0; x<3; x++)
 	if (level->encoding_16bit_field)
-	  putFile16BitInteger(file, level->yam_content[i][x][y],
-			      BYTE_ORDER_BIG_ENDIAN);
+	  putFile16BitBE(file, level->yam_content[i][x][y]);
 	else
 	  fputc(level->yam_content[i][x][y], file);
 }
@@ -838,7 +552,7 @@ static void SaveLevel_BODY(FILE *file, struct LevelInfo *level)
   for(y=0; y<level->fieldy; y++) 
     for(x=0; x<level->fieldx; x++) 
       if (level->encoding_16bit_field)
-	putFile16BitInteger(file, Ur[x][y], BYTE_ORDER_BIG_ENDIAN);
+	putFile16BitBE(file, Ur[x][y]);
       else
 	fputc(Ur[x][y], file);
 }
@@ -881,7 +595,7 @@ static void SaveLevel_CNT2(FILE *file, struct LevelInfo *level, int element)
     return;
   }
 
-  putFile16BitInteger(file, element, BYTE_ORDER_BIG_ENDIAN);
+  putFile16BitBE(file, element);
   fputc(num_contents, file);
   fputc(content_xsize, file);
   fputc(content_ysize, file);
@@ -891,8 +605,7 @@ static void SaveLevel_CNT2(FILE *file, struct LevelInfo *level, int element)
   for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
     for(y=0; y<3; y++)
       for(x=0; x<3; x++)
-	putFile16BitInteger(file, content_array[i][x][y],
-			    BYTE_ORDER_BIG_ENDIAN);
+	putFile16BitBE(file, content_array[i][x][y]);
 }
 
 void SaveLevel(int level_nr)
@@ -908,6 +621,8 @@ void SaveLevel(int level_nr)
     return;
   }
 
+  level.file_version = FILE_VERSION_ACTUAL;
+  level.game_version = GAME_VERSION_ACTUAL;
 
   /* check level field for 16-bit elements */
   level.encoding_16bit_field = FALSE;
@@ -932,31 +647,31 @@ void SaveLevel(int level_nr)
   body_chunk_size =
     level.fieldx * level.fieldy * (level.encoding_16bit_field ? 2 : 1);
 
-  putFileChunk(file, "RND1", CHUNK_SIZE_UNDEFINED, BYTE_ORDER_BIG_ENDIAN);
-  putFileChunk(file, "CAVE", CHUNK_SIZE_NONE,      BYTE_ORDER_BIG_ENDIAN);
+  putFileChunkBE(file, "RND1", CHUNK_SIZE_UNDEFINED);
+  putFileChunkBE(file, "CAVE", CHUNK_SIZE_NONE);
 
-  putFileChunk(file, "VERS", FILE_VERS_CHUNK_SIZE, BYTE_ORDER_BIG_ENDIAN);
-  WriteChunk_VERS(file, FILE_VERSION_ACTUAL, GAME_VERSION_ACTUAL);
+  putFileChunkBE(file, "VERS", FILE_VERS_CHUNK_SIZE);
+  SaveLevel_VERS(file, &level);
 
-  putFileChunk(file, "HEAD", LEVEL_HEADER_SIZE, BYTE_ORDER_BIG_ENDIAN);
+  putFileChunkBE(file, "HEAD", LEVEL_HEADER_SIZE);
   SaveLevel_HEAD(file, &level);
 
-  putFileChunk(file, "AUTH", MAX_LEVEL_AUTHOR_LEN, BYTE_ORDER_BIG_ENDIAN);
+  putFileChunkBE(file, "AUTH", MAX_LEVEL_AUTHOR_LEN);
   SaveLevel_AUTH(file, &level);
 
-  putFileChunk(file, "BODY", body_chunk_size, BYTE_ORDER_BIG_ENDIAN);
+  putFileChunkBE(file, "BODY", body_chunk_size);
   SaveLevel_BODY(file, &level);
 
   if (level.encoding_16bit_yamyam ||
       level.num_yam_contents != STD_ELEMENT_CONTENTS)
   {
-    putFileChunk(file, "CNT2", LEVEL_CHUNK_CNT2_SIZE, BYTE_ORDER_BIG_ENDIAN);
+    putFileChunkBE(file, "CNT2", LEVEL_CHUNK_CNT2_SIZE);
     SaveLevel_CNT2(file, &level, EL_MAMPFER);
   }
 
   if (level.encoding_16bit_amoeba)
   {
-    putFileChunk(file, "CNT2", LEVEL_CHUNK_CNT2_SIZE, BYTE_ORDER_BIG_ENDIAN);
+    putFileChunkBE(file, "CNT2", LEVEL_CHUNK_CNT2_SIZE);
     SaveLevel_CNT2(file, &level, EL_AMOEBE_BD);
   }
 
@@ -965,13 +680,16 @@ void SaveLevel(int level_nr)
   SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
+
+/* ========================================================================= */
+/* tape file functions                                                       */
+/* ========================================================================= */
+
 static void setTapeInfoToDefaults()
 {
   int i;
 
   /* always start with reliable default values (empty tape) */
-  tape.file_version = FILE_VERSION_ACTUAL;
-  tape.game_version = GAME_VERSION_ACTUAL;
   TapeErase();
 
   /* default values (also for pre-1.2 tapes) with only the first player */
@@ -993,7 +711,8 @@ static void setTapeInfoToDefaults()
 
 static int LoadTape_VERS(FILE *file, int chunk_size, struct TapeInfo *tape)
 {
-  ReadChunk_VERS(file, &(tape->file_version), &(tape->game_version));
+  tape->file_version = getFileVersion(file);
+  tape->game_version = getFileVersion(file);
 
   return chunk_size;
 }
@@ -1002,16 +721,15 @@ static int LoadTape_HEAD(FILE *file, int chunk_size, struct TapeInfo *tape)
 {
   int i;
 
-  tape->random_seed = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
-  tape->date        = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
-  tape->length      = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+  tape->random_seed = getFile32BitBE(file);
+  tape->date        = getFile32BitBE(file);
+  tape->length      = getFile32BitBE(file);
 
   /* read header fields that are new since version 1.2 */
   if (tape->file_version >= FILE_VERSION_1_2)
   {
     byte store_participating_players = fgetc(file);
-
-    ReadUnusedBytesFromFile(file, TAPE_HEADER_UNUSED);
+    int engine_version;
 
     /* since version 1.2, tapes store which players participate in the tape */
     tape->num_participating_players = 0;
@@ -1025,6 +743,12 @@ static int LoadTape_HEAD(FILE *file, int chunk_size, struct TapeInfo *tape)
 	tape->num_participating_players++;
       }
     }
+
+    ReadUnusedBytesFromFile(file, TAPE_HEADER_UNUSED);
+
+    engine_version = getFileVersion(file);
+    if (engine_version > 0)
+      tape->engine_version = engine_version;
   }
 
   return chunk_size;
@@ -1086,6 +810,8 @@ static int LoadTape_BODY(FILE *file, int chunk_size, struct TapeInfo *tape)
     }
     else if (tape->file_version < FILE_VERSION_2_0)
     {
+      /* convert pre-2.0 tapes to new tape format */
+
       if (tape->pos[i].delay > 1)
       {
 	/* action part */
@@ -1126,12 +852,12 @@ void LoadTape(int level_nr)
   if (!(file = fopen(filename, MODE_READ)))
     return;
 
-  getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
+  getFileChunkBE(file, chunk_name, NULL);
   if (strcmp(chunk_name, "RND1") == 0)
   {
-    getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);	/* not used */
+    getFile32BitBE(file);		/* not used */
 
-    getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
+    getFileChunkBE(file, chunk_name, NULL);
     if (strcmp(chunk_name, "TAPE") != 0)
     {
       Error(ERR_WARN, "unknown format of tape file '%s'", filename);
@@ -1159,9 +885,10 @@ void LoadTape(int level_nr)
       fclose(file);
       return;
     }
-  }
 
-  tape.game_version = tape.file_version;
+    /* pre-2.0 tape files have no game version, so use file version here */
+    tape.game_version = tape.file_version;
+  }
 
   if (tape.file_version < FILE_VERSION_1_2)
   {
@@ -1185,7 +912,7 @@ void LoadTape(int level_nr)
       {  NULL,  0,			NULL }
     };
 
-    while (getFileChunk(file, chunk_name, &chunk_size, BYTE_ORDER_BIG_ENDIAN))
+    while (getFileChunkBE(file, chunk_name, &chunk_size))
     {
       int i = 0;
 
@@ -1229,6 +956,12 @@ void LoadTape(int level_nr)
   tape.length_seconds = GetTapeLength();
 }
 
+static void SaveTape_VERS(FILE *file, struct TapeInfo *tape)
+{
+  putFileVersion(file, tape->file_version);
+  putFileVersion(file, tape->game_version);
+}
+
 static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
 {
   int i;
@@ -1239,13 +972,16 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
     if (tape->player_participates[i])
       store_participating_players |= (1 << i);
 
-  putFile32BitInteger(file, tape->random_seed, BYTE_ORDER_BIG_ENDIAN);
-  putFile32BitInteger(file, tape->date, BYTE_ORDER_BIG_ENDIAN);
-  putFile32BitInteger(file, tape->length, BYTE_ORDER_BIG_ENDIAN);
+  putFile32BitBE(file, tape->random_seed);
+  putFile32BitBE(file, tape->date);
+  putFile32BitBE(file, tape->length);
 
   fputc(store_participating_players, file);
 
+  /* unused bytes not at the end here for 4-byte alignment of engine_version */
   WriteUnusedBytesToFile(file, TAPE_HEADER_UNUSED);
+
+  putFileVersion(file, tape->engine_version);
 }
 
 static void SaveTape_BODY(FILE *file, struct TapeInfo *tape)
@@ -1287,6 +1023,9 @@ void SaveTape(int level_nr)
     return;
   }
 
+  tape.file_version = FILE_VERSION_ACTUAL;
+  tape.game_version = GAME_VERSION_ACTUAL;
+
   /* count number of participating players  */
   for(i=0; i<MAX_PLAYERS; i++)
     if (tape.player_participates[i])
@@ -1294,16 +1033,16 @@ void SaveTape(int level_nr)
 
   body_chunk_size = (num_participating_players + 1) * tape.length;
 
-  putFileChunk(file, "RND1", CHUNK_SIZE_UNDEFINED, BYTE_ORDER_BIG_ENDIAN);
-  putFileChunk(file, "TAPE", CHUNK_SIZE_NONE,      BYTE_ORDER_BIG_ENDIAN);
+  putFileChunkBE(file, "RND1", CHUNK_SIZE_UNDEFINED);
+  putFileChunkBE(file, "TAPE", CHUNK_SIZE_NONE);
 
-  putFileChunk(file, "VERS", FILE_VERS_CHUNK_SIZE, BYTE_ORDER_BIG_ENDIAN);
-  WriteChunk_VERS(file, FILE_VERSION_ACTUAL, GAME_VERSION_ACTUAL);
+  putFileChunkBE(file, "VERS", FILE_VERS_CHUNK_SIZE);
+  SaveTape_VERS(file, &tape);
 
-  putFileChunk(file, "HEAD", TAPE_HEADER_SIZE, BYTE_ORDER_BIG_ENDIAN);
+  putFileChunkBE(file, "HEAD", TAPE_HEADER_SIZE);
   SaveTape_HEAD(file, &tape);
 
-  putFileChunk(file, "BODY", body_chunk_size, BYTE_ORDER_BIG_ENDIAN);
+  putFileChunkBE(file, "BODY", body_chunk_size);
   SaveTape_BODY(file, &tape);
 
   fclose(file);
@@ -1328,7 +1067,7 @@ void DumpTape(struct TapeInfo *tape)
 
   printf("\n");
   printf("-------------------------------------------------------------------------------\n");
-  printf("Tape of Level %d (file version %06d, game version %06d\n",
+  printf("Tape of Level %d (file version %06d, game version %06d)\n",
 	 tape->level_nr, tape->file_version, tape->game_version);
   printf("-------------------------------------------------------------------------------\n");
 
@@ -1359,6 +1098,11 @@ void DumpTape(struct TapeInfo *tape)
 
   printf("-------------------------------------------------------------------------------\n");
 }
+
+
+/* ========================================================================= */
+/* score file functions                                                      */
+/* ========================================================================= */
 
 void LoadScore(int level_nr)
 {
@@ -1437,91 +1181,107 @@ void SaveScore(int level_nr)
   SetFilePermissions(filename, PERMS_PUBLIC);
 }
 
-/* ------------------------------------------------------------------------- */
-/* setup file stuff                                                          */
-/* ------------------------------------------------------------------------- */
 
-#define TOKEN_STR_LAST_LEVEL_SERIES	"last_level_series"
-#define TOKEN_STR_LAST_PLAYED_LEVEL	"last_played_level"
-#define TOKEN_STR_HANDICAP_LEVEL	"handicap_level"
-#define TOKEN_STR_PLAYER_PREFIX		"player_"
+/* ========================================================================= */
+/* setup file functions                                                      */
+/* ========================================================================= */
+
+#define TOKEN_STR_PLAYER_PREFIX			"player_"
 
 /* global setup */
-#define SETUP_TOKEN_PLAYER_NAME		0
-#define SETUP_TOKEN_SOUND		1
-#define SETUP_TOKEN_SOUND_LOOPS		2
-#define SETUP_TOKEN_SOUND_MUSIC		3
-#define SETUP_TOKEN_SOUND_SIMPLE	4
-#define SETUP_TOKEN_SCROLL_DELAY	5
-#define SETUP_TOKEN_SOFT_SCROLLING	6
-#define SETUP_TOKEN_FADING		7
-#define SETUP_TOKEN_AUTORECORD		8
-#define SETUP_TOKEN_QUICK_DOORS		9
-#define SETUP_TOKEN_TEAM_MODE		10
-#define SETUP_TOKEN_HANDICAP		11
-#define SETUP_TOKEN_TIME_LIMIT		12
-#define SETUP_TOKEN_FULLSCREEN		13
+#define SETUP_TOKEN_PLAYER_NAME			0
+#define SETUP_TOKEN_SOUND			1
+#define SETUP_TOKEN_SOUND_LOOPS			2
+#define SETUP_TOKEN_SOUND_MUSIC			3
+#define SETUP_TOKEN_SOUND_SIMPLE		4
+#define SETUP_TOKEN_TOONS			5
+#define SETUP_TOKEN_SCROLL_DELAY		6
+#define SETUP_TOKEN_SOFT_SCROLLING		7
+#define SETUP_TOKEN_FADING			8
+#define SETUP_TOKEN_AUTORECORD			9
+#define SETUP_TOKEN_QUICK_DOORS			10
+#define SETUP_TOKEN_TEAM_MODE			11
+#define SETUP_TOKEN_HANDICAP			12
+#define SETUP_TOKEN_TIME_LIMIT			13
+#define SETUP_TOKEN_FULLSCREEN			14
+#define SETUP_TOKEN_ASK_ON_ESCAPE		15
+#define SETUP_TOKEN_GRAPHICS_SET		16
+#define SETUP_TOKEN_SOUNDS_SET			17
+#define SETUP_TOKEN_MUSIC_SET			18
+#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	19
+#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	20
+#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	21
+
+#define NUM_GLOBAL_SETUP_TOKENS			22
+
+/* shortcut setup */
+#define SETUP_TOKEN_SAVE_GAME			0
+#define SETUP_TOKEN_LOAD_GAME			1
+#define SETUP_TOKEN_TOGGLE_PAUSE		2
+
+#define NUM_SHORTCUT_SETUP_TOKENS		3
 
 /* player setup */
-#define SETUP_TOKEN_USE_JOYSTICK	14
-#define SETUP_TOKEN_JOY_DEVICE_NAME	15
-#define SETUP_TOKEN_JOY_XLEFT		16
-#define SETUP_TOKEN_JOY_XMIDDLE		17
-#define SETUP_TOKEN_JOY_XRIGHT		18
-#define SETUP_TOKEN_JOY_YUPPER		19
-#define SETUP_TOKEN_JOY_YMIDDLE		20
-#define SETUP_TOKEN_JOY_YLOWER		21
-#define SETUP_TOKEN_JOY_SNAP		22
-#define SETUP_TOKEN_JOY_BOMB		23
-#define SETUP_TOKEN_KEY_LEFT		24
-#define SETUP_TOKEN_KEY_RIGHT		25
-#define SETUP_TOKEN_KEY_UP		26
-#define SETUP_TOKEN_KEY_DOWN		27
-#define SETUP_TOKEN_KEY_SNAP		28
-#define SETUP_TOKEN_KEY_BOMB		29
+#define SETUP_TOKEN_USE_JOYSTICK		0
+#define SETUP_TOKEN_JOY_DEVICE_NAME		1
+#define SETUP_TOKEN_JOY_XLEFT			2
+#define SETUP_TOKEN_JOY_XMIDDLE			3
+#define SETUP_TOKEN_JOY_XRIGHT			4
+#define SETUP_TOKEN_JOY_YUPPER			5
+#define SETUP_TOKEN_JOY_YMIDDLE			6
+#define SETUP_TOKEN_JOY_YLOWER			7
+#define SETUP_TOKEN_JOY_SNAP			8
+#define SETUP_TOKEN_JOY_BOMB			9
+#define SETUP_TOKEN_KEY_LEFT			10
+#define SETUP_TOKEN_KEY_RIGHT			11
+#define SETUP_TOKEN_KEY_UP			12
+#define SETUP_TOKEN_KEY_DOWN			13
+#define SETUP_TOKEN_KEY_SNAP			14
+#define SETUP_TOKEN_KEY_BOMB			15
 
-/* level directory info */
-#define LEVELINFO_TOKEN_NAME		30
-#define LEVELINFO_TOKEN_NAME_SHORT	31
-#define LEVELINFO_TOKEN_NAME_SORTING	32
-#define LEVELINFO_TOKEN_AUTHOR		33
-#define LEVELINFO_TOKEN_IMPORTED_FROM	34
-#define LEVELINFO_TOKEN_LEVELS		35
-#define LEVELINFO_TOKEN_FIRST_LEVEL	36
-#define LEVELINFO_TOKEN_SORT_PRIORITY	37
-#define LEVELINFO_TOKEN_LEVEL_GROUP	38
-#define LEVELINFO_TOKEN_READONLY	39
-
-#define FIRST_GLOBAL_SETUP_TOKEN	SETUP_TOKEN_PLAYER_NAME
-#define LAST_GLOBAL_SETUP_TOKEN		SETUP_TOKEN_FULLSCREEN
-
-#define FIRST_PLAYER_SETUP_TOKEN	SETUP_TOKEN_USE_JOYSTICK
-#define LAST_PLAYER_SETUP_TOKEN		SETUP_TOKEN_KEY_BOMB
-
-#define FIRST_LEVELINFO_TOKEN		LEVELINFO_TOKEN_NAME
-#define LAST_LEVELINFO_TOKEN		LEVELINFO_TOKEN_READONLY
+#define NUM_PLAYER_SETUP_TOKENS			16
 
 static struct SetupInfo si;
+static struct SetupShortcutInfo ssi;
 static struct SetupInputInfo sii;
-static struct LevelDirInfo ldi;
-static struct TokenInfo token_info[] =
+
+static struct TokenInfo global_setup_tokens[] =
 {
   /* global setup */
-  { TYPE_STRING,  &si.player_name,	"player_name"			},
-  { TYPE_SWITCH,  &si.sound,		"sound"				},
-  { TYPE_SWITCH,  &si.sound_loops,	"repeating_sound_loops"		},
-  { TYPE_SWITCH,  &si.sound_music,	"background_music"		},
-  { TYPE_SWITCH,  &si.sound_simple,	"simple_sound_effects"		},
-  { TYPE_SWITCH,  &si.scroll_delay,	"scroll_delay"			},
-  { TYPE_SWITCH,  &si.soft_scrolling,	"soft_scrolling"		},
-  { TYPE_SWITCH,  &si.fading,		"screen_fading"			},
-  { TYPE_SWITCH,  &si.autorecord,	"automatic_tape_recording"	},
-  { TYPE_SWITCH,  &si.quick_doors,	"quick_doors"			},
-  { TYPE_SWITCH,  &si.team_mode,	"team_mode"			},
-  { TYPE_SWITCH,  &si.handicap,		"handicap"			},
-  { TYPE_SWITCH,  &si.time_limit,	"time_limit"			},
-  { TYPE_SWITCH,  &si.fullscreen,	"fullscreen"			},
+  { TYPE_STRING, &si.player_name,	"player_name"			},
+  { TYPE_SWITCH, &si.sound,		"sound"				},
+  { TYPE_SWITCH, &si.sound_loops,	"repeating_sound_loops"		},
+  { TYPE_SWITCH, &si.sound_music,	"background_music"		},
+  { TYPE_SWITCH, &si.sound_simple,	"simple_sound_effects"		},
+  { TYPE_SWITCH, &si.toons,		"toons"				},
+  { TYPE_SWITCH, &si.scroll_delay,	"scroll_delay"			},
+  { TYPE_SWITCH, &si.soft_scrolling,	"soft_scrolling"		},
+  { TYPE_SWITCH, &si.fading,		"screen_fading"			},
+  { TYPE_SWITCH, &si.autorecord,	"automatic_tape_recording"	},
+  { TYPE_SWITCH, &si.quick_doors,	"quick_doors"			},
+  { TYPE_SWITCH, &si.team_mode,		"team_mode"			},
+  { TYPE_SWITCH, &si.handicap,		"handicap"			},
+  { TYPE_SWITCH, &si.time_limit,	"time_limit"			},
+  { TYPE_SWITCH, &si.fullscreen,	"fullscreen"			},
+  { TYPE_SWITCH, &si.ask_on_escape,	"ask_on_escape"			},
+  { TYPE_STRING, &si.graphics_set,	"graphics_set"			},
+  { TYPE_STRING, &si.sounds_set,	"sounds_set"			},
+  { TYPE_STRING, &si.music_set,		"music_set"			},
+  { TYPE_SWITCH, &si.override_level_graphics, "override_level_graphics"	},
+  { TYPE_SWITCH, &si.override_level_sounds,   "override_level_sounds"	},
+  { TYPE_SWITCH, &si.override_level_music,    "override_level_music"	},
+};
 
+static struct TokenInfo shortcut_setup_tokens[] =
+{
+  /* shortcut setup */
+  { TYPE_KEY_X11, &ssi.save_game,	"shortcut.save_game"		},
+  { TYPE_KEY_X11, &ssi.load_game,	"shortcut.load_game"		},
+  { TYPE_KEY_X11, &ssi.toggle_pause,	"shortcut.toggle_pause"		}
+};
+
+static struct TokenInfo player_setup_tokens[] =
+{
   /* player setup */
   { TYPE_BOOLEAN, &sii.use_joystick,	".use_joystick"			},
   { TYPE_STRING,  &sii.joy.device_name,	".joy.device_name"		},
@@ -1533,90 +1293,13 @@ static struct TokenInfo token_info[] =
   { TYPE_INTEGER, &sii.joy.ylower,	".joy.ylower"			},
   { TYPE_INTEGER, &sii.joy.snap,	".joy.snap_field"		},
   { TYPE_INTEGER, &sii.joy.bomb,	".joy.place_bomb"		},
-  { TYPE_KEY,     &sii.key.left,	".key.move_left"		},
-  { TYPE_KEY,     &sii.key.right,	".key.move_right"		},
-  { TYPE_KEY,     &sii.key.up,		".key.move_up"			},
-  { TYPE_KEY,     &sii.key.down,	".key.move_down"		},
-  { TYPE_KEY,     &sii.key.snap,	".key.snap_field"		},
-  { TYPE_KEY,     &sii.key.bomb,	".key.place_bomb"		},
-
-  /* level directory info */
-  { TYPE_STRING,  &ldi.name,		"name"				},
-  { TYPE_STRING,  &ldi.name_short,	"name_short"			},
-  { TYPE_STRING,  &ldi.name_sorting,	"name_sorting"			},
-  { TYPE_STRING,  &ldi.author,		"author"			},
-  { TYPE_STRING,  &ldi.imported_from,	"imported_from"			},
-  { TYPE_INTEGER, &ldi.levels,		"levels"			},
-  { TYPE_INTEGER, &ldi.first_level,	"first_level"			},
-  { TYPE_INTEGER, &ldi.sort_priority,	"sort_priority"			},
-  { TYPE_BOOLEAN, &ldi.level_group,	"level_group"			},
-  { TYPE_BOOLEAN, &ldi.readonly,	"readonly"			}
+  { TYPE_KEY_X11, &sii.key.left,	".key.move_left"		},
+  { TYPE_KEY_X11, &sii.key.right,	".key.move_right"		},
+  { TYPE_KEY_X11, &sii.key.up,		".key.move_up"			},
+  { TYPE_KEY_X11, &sii.key.down,	".key.move_down"		},
+  { TYPE_KEY_X11, &sii.key.snap,	".key.snap_field"		},
+  { TYPE_KEY_X11, &sii.key.bomb,	".key.place_bomb"		}
 };
-
-static void setLevelDirInfoToDefaults(struct LevelDirInfo *ldi)
-{
-  ldi->filename = NULL;
-  ldi->fullpath = NULL;
-  ldi->basepath = NULL;
-  ldi->name = getStringCopy(ANONYMOUS_NAME);
-  ldi->name_short = NULL;
-  ldi->name_sorting = NULL;
-  ldi->author = getStringCopy(ANONYMOUS_NAME);
-  ldi->imported_from = NULL;
-  ldi->levels = 0;
-  ldi->first_level = 0;
-  ldi->last_level = 0;
-  ldi->sort_priority = LEVELCLASS_UNDEFINED;	/* default: least priority */
-  ldi->level_group = FALSE;
-  ldi->parent_link = FALSE;
-  ldi->user_defined = FALSE;
-  ldi->readonly = TRUE;
-  ldi->color = 0;
-  ldi->class_desc = NULL;
-  ldi->handicap_level = 0;
-  ldi->cl_first = -1;
-  ldi->cl_cursor = -1;
-
-  ldi->node_parent = NULL;
-  ldi->node_group = NULL;
-  ldi->next = NULL;
-}
-
-static void setLevelDirInfoToDefaultsFromParent(struct LevelDirInfo *ldi,
-						struct LevelDirInfo *parent)
-{
-  if (parent == NULL)
-  {
-    setLevelDirInfoToDefaults(ldi);
-    return;
-  }
-
-  /* first copy all values from the parent structure ... */
-  *ldi = *parent;
-
-  /* ... then set all fields to default that cannot be inherited from parent.
-     This is especially important for all those fields that can be set from
-     the 'levelinfo.conf' config file, because the function 'setSetupInfo()'
-     calls 'free()' for all already set token values which requires that no
-     other structure's pointer may point to them!
-  */
-
-  ldi->filename = NULL;
-  ldi->fullpath = NULL;
-  ldi->basepath = NULL;
-  ldi->name = getStringCopy(ANONYMOUS_NAME);
-  ldi->name_short = NULL;
-  ldi->name_sorting = NULL;
-  ldi->author = getStringCopy(parent->author);
-  ldi->imported_from = getStringCopy(parent->imported_from);
-
-  ldi->level_group = FALSE;
-  ldi->parent_link = FALSE;
-
-  ldi->node_parent = parent;
-  ldi->node_group = NULL;
-  ldi->next = NULL;
-}
 
 static void setSetupInfoToDefaults(struct SetupInfo *si)
 {
@@ -1640,11 +1323,23 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->handicap = TRUE;
   si->time_limit = TRUE;
   si->fullscreen = FALSE;
+  si->ask_on_escape = TRUE;
+
+  si->graphics_set = getStringCopy(GRAPHICS_SUBDIR);
+  si->sounds_set = getStringCopy(SOUNDS_SUBDIR);
+  si->music_set = getStringCopy(MUSIC_SUBDIR);
+  si->override_level_graphics = FALSE;
+  si->override_level_sounds = FALSE;
+  si->override_level_music = FALSE;
+
+  si->shortcut.save_game = DEFAULT_KEY_SAVE_GAME;
+  si->shortcut.load_game = DEFAULT_KEY_LOAD_GAME;
+  si->shortcut.toggle_pause = DEFAULT_KEY_TOGGLE_PAUSE;
 
   for (i=0; i<MAX_PLAYERS; i++)
   {
     si->input[i].use_joystick = FALSE;
-    si->input[i].joy.device_name = getStringCopy(joystick_device_name[i]);
+    si->input[i].joy.device_name=getStringCopy(getDeviceNameFromJoystickNr(i));
     si->input[i].joy.xleft   = JOYSTICK_XLEFT;
     si->input[i].joy.xmiddle = JOYSTICK_XMIDDLE;
     si->input[i].joy.xright  = JOYSTICK_XRIGHT;
@@ -1662,41 +1357,6 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   }
 }
 
-static void setSetupInfo(int token_nr, char *token_value)
-{
-  int token_type = token_info[token_nr].type;
-  void *setup_value = token_info[token_nr].value;
-
-  if (token_value == NULL)
-    return;
-
-  /* set setup field to corresponding token value */
-  switch (token_type)
-  {
-    case TYPE_BOOLEAN:
-    case TYPE_SWITCH:
-      *(boolean *)setup_value = get_string_boolean_value(token_value);
-      break;
-
-    case TYPE_KEY:
-      *(Key *)setup_value = getKeyFromX11KeyName(token_value);
-      break;
-
-    case TYPE_INTEGER:
-      *(int *)setup_value = get_string_integer_value(token_value);
-      break;
-
-    case TYPE_STRING:
-      if (*(char **)setup_value != NULL)
-	free(*(char **)setup_value);
-      *(char **)setup_value = getStringCopy(token_value);
-      break;
-
-    default:
-      break;
-  }
-}
-
 static void decodeSetupFileList(struct SetupFileList *setup_file_list)
 {
   int i, pnr;
@@ -1704,13 +1364,21 @@ static void decodeSetupFileList(struct SetupFileList *setup_file_list)
   if (!setup_file_list)
     return;
 
-  /* handle global setup values */
+  /* global setup */
   si = setup;
-  for (i=FIRST_GLOBAL_SETUP_TOKEN; i<=LAST_GLOBAL_SETUP_TOKEN; i++)
-    setSetupInfo(i, getTokenValue(setup_file_list, token_info[i].text));
+  for (i=0; i<NUM_GLOBAL_SETUP_TOKENS; i++)
+    setSetupInfo(global_setup_tokens, i,
+		 getTokenValue(setup_file_list, global_setup_tokens[i].text));
   setup = si;
 
-  /* handle player specific setup values */
+  /* shortcut setup */
+  ssi = setup.shortcut;
+  for (i=0; i<NUM_SHORTCUT_SETUP_TOKENS; i++)
+    setSetupInfo(shortcut_setup_tokens, i,
+		 getTokenValue(setup_file_list,shortcut_setup_tokens[i].text));
+  setup.shortcut = ssi;
+
+  /* player setup */
   for (pnr=0; pnr<MAX_PLAYERS; pnr++)
   {
     char prefix[30];
@@ -1718,264 +1386,31 @@ static void decodeSetupFileList(struct SetupFileList *setup_file_list)
     sprintf(prefix, "%s%d", TOKEN_STR_PLAYER_PREFIX, pnr + 1);
 
     sii = setup.input[pnr];
-    for (i=FIRST_PLAYER_SETUP_TOKEN; i<=LAST_PLAYER_SETUP_TOKEN; i++)
+    for (i=0; i<NUM_PLAYER_SETUP_TOKENS; i++)
     {
       char full_token[100];
 
-      sprintf(full_token, "%s%s", prefix, token_info[i].text);
-      setSetupInfo(i, getTokenValue(setup_file_list, full_token));
+      sprintf(full_token, "%s%s", prefix, player_setup_tokens[i].text);
+      setSetupInfo(player_setup_tokens, i,
+		   getTokenValue(setup_file_list, full_token));
     }
     setup.input[pnr] = sii;
   }
 }
 
-static int compareLevelDirInfoEntries(const void *object1, const void *object2)
-{
-  const struct LevelDirInfo *entry1 = *((struct LevelDirInfo **)object1);
-  const struct LevelDirInfo *entry2 = *((struct LevelDirInfo **)object2);
-  int compare_result;
-
-  if (entry1->parent_link || entry2->parent_link)
-    compare_result = (entry1->parent_link ? -1 : +1);
-  else if (entry1->sort_priority == entry2->sort_priority)
-  {
-    char *name1 = getStringToLower(entry1->name_sorting);
-    char *name2 = getStringToLower(entry2->name_sorting);
-
-    compare_result = strcmp(name1, name2);
-
-    free(name1);
-    free(name2);
-  }
-  else if (LEVELSORTING(entry1) == LEVELSORTING(entry2))
-    compare_result = entry1->sort_priority - entry2->sort_priority;
-  else
-    compare_result = LEVELSORTING(entry1) - LEVELSORTING(entry2);
-
-  return compare_result;
-}
-
-static void createParentLevelDirNode(struct LevelDirInfo *node_parent)
-{
-  struct LevelDirInfo *leveldir_new = newLevelDirInfo();
-
-  setLevelDirInfoToDefaults(leveldir_new);
-
-  leveldir_new->node_parent = node_parent;
-  leveldir_new->parent_link = TRUE;
-
-  leveldir_new->name = ".. (parent directory)";
-  leveldir_new->name_short = getStringCopy(leveldir_new->name);
-  leveldir_new->name_sorting = getStringCopy(leveldir_new->name);
-
-  leveldir_new->filename = "..";
-  leveldir_new->fullpath = getStringCopy(node_parent->fullpath);
-
-  leveldir_new->sort_priority = node_parent->sort_priority;
-  leveldir_new->class_desc = getLevelClassDescription(leveldir_new);
-
-  pushLevelDirInfo(&node_parent->node_group, leveldir_new);
-}
-
-static void LoadLevelInfoFromLevelDir(struct LevelDirInfo **node_first,
-				      struct LevelDirInfo *node_parent,
-				      char *level_directory)
-{
-  DIR *dir;
-  struct dirent *dir_entry;
-  boolean valid_entry_found = FALSE;
-
-  if ((dir = opendir(level_directory)) == NULL)
-  {
-    Error(ERR_WARN, "cannot read level directory '%s'", level_directory);
-    return;
-  }
-
-  while ((dir_entry = readdir(dir)) != NULL)	/* loop until last dir entry */
-  {
-    struct SetupFileList *setup_file_list = NULL;
-    struct stat file_status;
-    char *directory_name = dir_entry->d_name;
-    char *directory_path = getPath2(level_directory, directory_name);
-    char *filename = NULL;
-
-    /* skip entries for current and parent directory */
-    if (strcmp(directory_name, ".")  == 0 ||
-	strcmp(directory_name, "..") == 0)
-    {
-      free(directory_path);
-      continue;
-    }
-
-    /* find out if directory entry is itself a directory */
-    if (stat(directory_path, &file_status) != 0 ||	/* cannot stat file */
-	(file_status.st_mode & S_IFMT) != S_IFDIR)	/* not a directory */
-    {
-      free(directory_path);
-      continue;
-    }
-
-    filename = getPath2(directory_path, LEVELINFO_FILENAME);
-    setup_file_list = loadSetupFileList(filename);
-
-    if (setup_file_list)
-    {
-      struct LevelDirInfo *leveldir_new = newLevelDirInfo();
-      int i;
-
-      checkSetupFileListIdentifier(setup_file_list, LEVELINFO_COOKIE);
-      setLevelDirInfoToDefaultsFromParent(leveldir_new, node_parent);
-
-      /* set all structure fields according to the token/value pairs */
-      ldi = *leveldir_new;
-      for (i=FIRST_LEVELINFO_TOKEN; i<=LAST_LEVELINFO_TOKEN; i++)
-	setSetupInfo(i, getTokenValue(setup_file_list, token_info[i].text));
-      *leveldir_new = ldi;
-
-      DrawInitText(leveldir_new->name, 150, FC_YELLOW);
-
-      if (leveldir_new->name_short == NULL)
-	leveldir_new->name_short = getStringCopy(leveldir_new->name);
-
-      if (leveldir_new->name_sorting == NULL)
-	leveldir_new->name_sorting = getStringCopy(leveldir_new->name);
-
-      leveldir_new->filename = getStringCopy(directory_name);
-
-      if (node_parent == NULL)		/* top level group */
-      {
-	leveldir_new->basepath = level_directory;
-	leveldir_new->fullpath = leveldir_new->filename;
-      }
-      else				/* sub level group */
-      {
-	leveldir_new->basepath = node_parent->basepath;
-	leveldir_new->fullpath = getPath2(node_parent->fullpath,
-					  directory_name);
-      }
-
-      if (leveldir_new->levels < 1)
-	leveldir_new->levels = 1;
-
-      leveldir_new->last_level =
-	leveldir_new->first_level + leveldir_new->levels - 1;
-
-      leveldir_new->user_defined =
-	(leveldir_new->basepath == options.level_directory ? FALSE : TRUE);
-
-      leveldir_new->color = LEVELCOLOR(leveldir_new);
-      leveldir_new->class_desc = getLevelClassDescription(leveldir_new);
-
-      leveldir_new->handicap_level =	/* set handicap to default value */
-	(leveldir_new->user_defined ?
-	 leveldir_new->last_level :
-	 leveldir_new->first_level);
-
-      pushLevelDirInfo(node_first, leveldir_new);
-
-      freeSetupFileList(setup_file_list);
-      valid_entry_found = TRUE;
-
-      if (leveldir_new->level_group)
-      {
-	/* create node to link back to current level directory */
-	createParentLevelDirNode(leveldir_new);
-
-	/* step into sub-directory and look for more level series */
-	LoadLevelInfoFromLevelDir(&leveldir_new->node_group,
-				  leveldir_new, directory_path);
-      }
-    }
-    else
-      Error(ERR_WARN, "ignoring level directory '%s'", directory_path);
-
-    free(directory_path);
-    free(filename);
-  }
-
-  closedir(dir);
-
-  if (!valid_entry_found)
-    Error(ERR_WARN, "cannot find any valid level series in directory '%s'",
-	  level_directory);
-}
-
-void LoadLevelInfo()
-{
-  InitUserLevelDirectory(getLoginName());
-
-  DrawInitText("Loading level series:", 120, FC_GREEN);
-
-  LoadLevelInfoFromLevelDir(&leveldir_first, NULL, options.level_directory);
-  LoadLevelInfoFromLevelDir(&leveldir_first, NULL, getUserLevelDir(""));
-
-  leveldir_current = getFirstValidLevelSeries(leveldir_first);
-
-  if (leveldir_first == NULL)
-    Error(ERR_EXIT, "cannot find any valid level series in any directory");
-
-  sortLevelDirInfo(&leveldir_first, compareLevelDirInfoEntries);
-
-#if 0
-  dumpLevelDirInfo(leveldir_first, 0);
-#endif
-}
-
-static void SaveUserLevelInfo()
-{
-  char *filename;
-  FILE *file;
-  int i;
-
-  filename = getPath2(getUserLevelDir(getLoginName()), LEVELINFO_FILENAME);
-
-  if (!(file = fopen(filename, MODE_WRITE)))
-  {
-    Error(ERR_WARN, "cannot write level info file '%s'", filename);
-    free(filename);
-    return;
-  }
-
-  /* always start with reliable default values */
-  setLevelDirInfoToDefaults(&ldi);
-
-  ldi.name = getLoginName();
-  ldi.author = getRealName();
-  ldi.levels = 100;
-  ldi.first_level = 1;
-  ldi.sort_priority = LEVELCLASS_USER_START;
-  ldi.readonly = FALSE;
-
-  fprintf(file, "%s\n\n",
-	  getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER, LEVELINFO_COOKIE));
-
-  for (i=FIRST_LEVELINFO_TOKEN; i<=LAST_LEVELINFO_TOKEN; i++)
-    if (i != LEVELINFO_TOKEN_NAME_SHORT &&
-	i != LEVELINFO_TOKEN_NAME_SORTING &&
-	i != LEVELINFO_TOKEN_IMPORTED_FROM)
-      fprintf(file, "%s\n", getSetupLine("", i));
-
-  fclose(file);
-  free(filename);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
-}
-
 void LoadSetup()
 {
-  char *filename;
+  char *filename = getSetupFilename();
   struct SetupFileList *setup_file_list = NULL;
 
   /* always start with reliable default values */
   setSetupInfoToDefaults(&setup);
 
-  filename = getPath2(getSetupDir(), SETUP_FILENAME);
-
   setup_file_list = loadSetupFileList(filename);
 
   if (setup_file_list)
   {
-    checkSetupFileListIdentifier(setup_file_list, SETUP_COOKIE);
+    checkSetupFileListIdentifier(setup_file_list, getCookie("SETUP"));
     decodeSetupFileList(setup_file_list);
 
     setup.direct_draw = !setup.double_buffering;
@@ -1996,106 +1431,44 @@ void LoadSetup()
   }
   else
     Error(ERR_WARN, "using default setup values");
-
-  free(filename);
-}
-
-static char *getSetupLine(char *prefix, int token_nr)
-{
-  int i;
-  static char entry[MAX_LINE_LEN];
-  int token_type = token_info[token_nr].type;
-  void *setup_value = token_info[token_nr].value;
-  char *token_text = token_info[token_nr].text;
-
-  /* start with the prefix, token and some spaces to format output line */
-  sprintf(entry, "%s%s:", prefix, token_text);
-  for (i=strlen(entry); i<TOKEN_VALUE_POSITION; i++)
-    strcat(entry, " ");
-
-  /* continue with the token's value (which can have different types) */
-  switch (token_type)
-  {
-    case TYPE_BOOLEAN:
-      strcat(entry, (*(boolean *)setup_value ? "true" : "false"));
-      break;
-
-    case TYPE_SWITCH:
-      strcat(entry, (*(boolean *)setup_value ? "on" : "off"));
-      break;
-
-    case TYPE_KEY:
-      {
-	Key key = *(Key *)setup_value;
-	char *keyname = getKeyNameFromKey(key);
-
-	strcat(entry, getX11KeyNameFromKey(key));
-	for (i=strlen(entry); i<50; i++)
-	  strcat(entry, " ");
-
-	/* add comment, if useful */
-	if (strcmp(keyname, "(undefined)") != 0 &&
-	    strcmp(keyname, "(unknown)") != 0)
-	{
-	  strcat(entry, "# ");
-	  strcat(entry, keyname);
-	}
-      }
-      break;
-
-    case TYPE_INTEGER:
-      {
-	char buffer[MAX_LINE_LEN];
-
-	sprintf(buffer, "%d", *(int *)setup_value);
-	strcat(entry, buffer);
-      }
-      break;
-
-    case TYPE_STRING:
-      strcat(entry, *(char **)setup_value);
-      break;
-
-    default:
-      break;
-  }
-
-  return entry;
 }
 
 void SaveSetup()
 {
-  int i, pnr;
-  char *filename;
+  char *filename = getSetupFilename();
   FILE *file;
+  int i, pnr;
 
   InitUserDataDirectory();
-
-  filename = getPath2(getSetupDir(), SETUP_FILENAME);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot write setup file '%s'", filename);
-    free(filename);
     return;
   }
 
-  fprintf(file, "%s\n",
-	  getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER, SETUP_COOKIE));
+  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER,
+					       getCookie("SETUP")));
   fprintf(file, "\n");
 
-  /* handle global setup values */
+  /* global setup */
   si = setup;
-  for (i=FIRST_GLOBAL_SETUP_TOKEN; i<=LAST_GLOBAL_SETUP_TOKEN; i++)
+  for (i=0; i<NUM_GLOBAL_SETUP_TOKENS; i++)
   {
-    fprintf(file, "%s\n", getSetupLine("", i));
+    fprintf(file, "%s\n", getSetupLine(global_setup_tokens, "", i));
 
     /* just to make things nicer :) */
-    if (i == SETUP_TOKEN_PLAYER_NAME)
+    if (i == SETUP_TOKEN_PLAYER_NAME || i == SETUP_TOKEN_GRAPHICS_SET - 1)
       fprintf(file, "\n");
   }
 
-  /* handle player specific setup values */
+  /* shortcut setup */
+  ssi = setup.shortcut;
+  fprintf(file, "\n");
+  for (i=0; i<NUM_SHORTCUT_SETUP_TOKENS; i++)
+    fprintf(file, "%s\n", getSetupLine(shortcut_setup_tokens, "", i));
+
+  /* player setup */
   for (pnr=0; pnr<MAX_PLAYERS; pnr++)
   {
     char prefix[30];
@@ -2104,224 +1477,11 @@ void SaveSetup()
     fprintf(file, "\n");
 
     sii = setup.input[pnr];
-    for (i=FIRST_PLAYER_SETUP_TOKEN; i<=LAST_PLAYER_SETUP_TOKEN; i++)
-      fprintf(file, "%s\n", getSetupLine(prefix, i));
+    for (i=0; i<NUM_PLAYER_SETUP_TOKENS; i++)
+      fprintf(file, "%s\n", getSetupLine(player_setup_tokens, prefix, i));
   }
 
   fclose(file);
-  free(filename);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
-}
-
-void LoadLevelSetup_LastSeries()
-{
-  char *filename;
-  struct SetupFileList *level_setup_list = NULL;
-
-  /* always start with reliable default values */
-  leveldir_current = getFirstValidLevelSeries(leveldir_first);
-
-  /* ----------------------------------------------------------------------- */
-  /* ~/.rocksndiamonds/levelsetup.conf                                       */
-  /* ----------------------------------------------------------------------- */
-
-  filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
-
-  if ((level_setup_list = loadSetupFileList(filename)))
-  {
-    char *last_level_series =
-      getTokenValue(level_setup_list, TOKEN_STR_LAST_LEVEL_SERIES);
-
-    leveldir_current = getLevelDirInfoFromFilename(last_level_series);
-    if (leveldir_current == NULL)
-      leveldir_current = leveldir_first;
-
-    checkSetupFileListIdentifier(level_setup_list, LEVELSETUP_COOKIE);
-
-    freeSetupFileList(level_setup_list);
-  }
-  else
-    Error(ERR_WARN, "using default setup values");
-
-  free(filename);
-}
-
-void SaveLevelSetup_LastSeries()
-{
-  char *filename;
-  char *level_subdir = leveldir_current->filename;
-  FILE *file;
-
-  /* ----------------------------------------------------------------------- */
-  /* ~/.rocksndiamonds/levelsetup.conf                                       */
-  /* ----------------------------------------------------------------------- */
-
-  InitUserDataDirectory();
-
-  filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
-
-  if (!(file = fopen(filename, MODE_WRITE)))
-  {
-    Error(ERR_WARN, "cannot write setup file '%s'", filename);
-    free(filename);
-    return;
-  }
-
-  fprintf(file, "%s\n\n", getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER,
-						 LEVELSETUP_COOKIE));
-  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_LAST_LEVEL_SERIES,
-					       level_subdir));
-
-  fclose(file);
-  free(filename);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
-}
-
-static void checkSeriesInfo()
-{
-  static char *level_directory = NULL;
-  DIR *dir;
-  struct dirent *dir_entry;
-
-  /* check for more levels besides the 'levels' field of 'levelinfo.conf' */
-
-  level_directory = getPath2((leveldir_current->user_defined ?
-			      getUserLevelDir("") :
-			      options.level_directory),
-			     leveldir_current->fullpath);
-
-  if ((dir = opendir(level_directory)) == NULL)
-  {
-    Error(ERR_WARN, "cannot read level directory '%s'", level_directory);
-    return;
-  }
-
-  while ((dir_entry = readdir(dir)) != NULL)	/* last directory entry */
-  {
-    if (strlen(dir_entry->d_name) > 4 &&
-	dir_entry->d_name[3] == '.' &&
-	strcmp(&dir_entry->d_name[4], LEVELFILE_EXTENSION) == 0)
-    {
-      char levelnum_str[4];
-      int levelnum_value;
-
-      strncpy(levelnum_str, dir_entry->d_name, 3);
-      levelnum_str[3] = '\0';
-
-      levelnum_value = atoi(levelnum_str);
-
-      if (levelnum_value < leveldir_current->first_level)
-      {
-	Error(ERR_WARN, "additional level %d found", levelnum_value);
-	leveldir_current->first_level = levelnum_value;
-      }
-      else if (levelnum_value > leveldir_current->last_level)
-      {
-	Error(ERR_WARN, "additional level %d found", levelnum_value);
-	leveldir_current->last_level = levelnum_value;
-      }
-    }
-  }
-
-  closedir(dir);
-}
-
-void LoadLevelSetup_SeriesInfo()
-{
-  char *filename;
-  struct SetupFileList *level_setup_list = NULL;
-  char *level_subdir = leveldir_current->filename;
-
-  /* always start with reliable default values */
-  level_nr = leveldir_current->first_level;
-
-  checkSeriesInfo(leveldir_current);
-
-  /* ----------------------------------------------------------------------- */
-  /* ~/.rocksndiamonds/levelsetup/<level series>/levelsetup.conf             */
-  /* ----------------------------------------------------------------------- */
-
-  level_subdir = leveldir_current->filename;
-
-  filename = getPath2(getLevelSetupDir(level_subdir), LEVELSETUP_FILENAME);
-
-  if ((level_setup_list = loadSetupFileList(filename)))
-  {
-    char *token_value;
-
-    token_value = getTokenValue(level_setup_list, TOKEN_STR_LAST_PLAYED_LEVEL);
-
-    if (token_value)
-    {
-      level_nr = atoi(token_value);
-
-      if (level_nr < leveldir_current->first_level)
-	level_nr = leveldir_current->first_level;
-      if (level_nr > leveldir_current->last_level)
-	level_nr = leveldir_current->last_level;
-    }
-
-    token_value = getTokenValue(level_setup_list, TOKEN_STR_HANDICAP_LEVEL);
-
-    if (token_value)
-    {
-      int level_nr = atoi(token_value);
-
-      if (level_nr < leveldir_current->first_level)
-	level_nr = leveldir_current->first_level;
-      if (level_nr > leveldir_current->last_level + 1)
-	level_nr = leveldir_current->last_level;
-
-      if (leveldir_current->user_defined)
-	level_nr = leveldir_current->last_level;
-
-      leveldir_current->handicap_level = level_nr;
-    }
-
-    checkSetupFileListIdentifier(level_setup_list, LEVELSETUP_COOKIE);
-
-    freeSetupFileList(level_setup_list);
-  }
-  else
-    Error(ERR_WARN, "using default setup values");
-
-  free(filename);
-}
-
-void SaveLevelSetup_SeriesInfo()
-{
-  char *filename;
-  char *level_subdir = leveldir_current->filename;
-  char *level_nr_str = int2str(level_nr, 0);
-  char *handicap_level_str = int2str(leveldir_current->handicap_level, 0);
-  FILE *file;
-
-  /* ----------------------------------------------------------------------- */
-  /* ~/.rocksndiamonds/levelsetup/<level series>/levelsetup.conf             */
-  /* ----------------------------------------------------------------------- */
-
-  InitLevelSetupDirectory(level_subdir);
-
-  filename = getPath2(getLevelSetupDir(level_subdir), LEVELSETUP_FILENAME);
-
-  if (!(file = fopen(filename, MODE_WRITE)))
-  {
-    Error(ERR_WARN, "cannot write setup file '%s'", filename);
-    free(filename);
-    return;
-  }
-
-  fprintf(file, "%s\n\n", getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER,
-						 LEVELSETUP_COOKIE));
-  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_LAST_PLAYED_LEVEL,
-					       level_nr_str));
-  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_HANDICAP_LEVEL,
-					       handicap_level_str));
-
-  fclose(file);
-  free(filename);
 
   SetFilePermissions(filename, PERMS_PRIVATE);
 }

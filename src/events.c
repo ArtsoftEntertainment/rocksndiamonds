@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -21,7 +21,6 @@
 #include "editor.h"
 #include "files.h"
 #include "tape.h"
-#include "joystick.h"
 #include "network.h"
 
 /* values for key_status */
@@ -177,6 +176,16 @@ void ClearEventQueue()
   }
 }
 
+void ClearPlayerAction()
+{
+  int i;
+
+  /* simulate key release events for still pressed keys */
+  key_joystick_mapping = 0;
+  for (i=0; i<MAX_PLAYERS; i++)
+    stored_player[i].action = 0;
+}
+
 void SleepWhileUnmapped()
 {
   boolean window_unmapped = TRUE;
@@ -223,38 +232,7 @@ void SleepWhileUnmapped()
 void HandleExposeEvent(ExposeEvent *event)
 {
 #ifndef TARGET_SDL
-  int x = event->x, y = event->y;
-  int width = event->width, height = event->height;
-
-  if (setup.direct_draw && game_status==PLAYING)
-  {
-    int xx,yy;
-    int x1 = (x-SX)/TILEX, y1 = (y-SY)/TILEY;
-    int x2 = (x-SX+width)/TILEX, y2 = (y-SY+height)/TILEY;
-
-    SetDrawtoField(DRAW_BACKBUFFER);
-
-    for(xx=0; xx<SCR_FIELDX; xx++)
-      for(yy=0; yy<SCR_FIELDY; yy++)
-	if (xx>=x1 && xx<=x2 && yy>=y1 && yy<=y2)
-	  DrawScreenField(xx,yy);
-    DrawAllPlayers();
-
-    SetDrawtoField(DRAW_DIRECT);
-  }
-
-  if (setup.soft_scrolling && game_status == PLAYING)
-  {
-    int fx = FX, fy = FY;
-
-    fx += (ScreenMovDir & (MV_LEFT|MV_RIGHT) ? ScreenGfxPos : 0);
-    fy += (ScreenMovDir & (MV_UP|MV_DOWN)    ? ScreenGfxPos : 0);
-
-    BlitBitmap(fieldbuffer, backbuffer, fx,fy, SXSIZE,SYSIZE, SX,SY);
-  }
-
-  BlitBitmap(drawto, window, x,y, width,height, x,y);
-
+  RedrawPlayfield(FALSE, event->x, event->y, event->width, event->height);
   FlushDisplay();
 #endif
 }
@@ -301,16 +279,11 @@ void HandleFocusEvent(FocusChangeEvent *event)
 
   if (event->type == EVENT_FOCUSOUT)
   {
-    int i;
-
     KeyboardAutoRepeatOn();
-    old_joystick_status = joystick_status;
-    joystick_status = JOYSTICK_OFF;
+    old_joystick_status = joystick.status;
+    joystick.status = JOYSTICK_NOT_AVAILABLE;
 
-    /* simulate key release events for still pressed keys */
-    key_joystick_mapping = 0;
-    for (i=0; i<MAX_PLAYERS; i++)
-      stored_player[i].action = 0;
+    ClearPlayerAction();
   }
   else if (event->type == EVENT_FOCUSIN)
   {
@@ -336,7 +309,7 @@ void HandleFocusEvent(FocusChangeEvent *event)
       KeyboardAutoRepeatOff();
     }
     if (old_joystick_status != -1)
-      joystick_status = old_joystick_status;
+      joystick.status = old_joystick_status;
   }
 }
 
@@ -391,10 +364,6 @@ void HandleButton(int mx, int my, int button)
 
     case SETUP:
       HandleSetupScreen(mx,my, 0,0, button);
-      break;
-
-    case SETUPINPUT:
-      HandleSetupInputScreen(mx,my, 0,0, button);
       break;
 
     case PLAYING:
@@ -454,6 +423,9 @@ void HandleKey(Key key, int key_status)
 
   if (game_status == PLAYING)
   {
+    /* only needed for single-step tape recording mode */
+    static boolean clear_button_2[MAX_PLAYERS] = { FALSE,FALSE,FALSE,FALSE };
+    static boolean bomb_placed[MAX_PLAYERS] = { FALSE,FALSE,FALSE,FALSE };
     int pnr;
 
     for (pnr=0; pnr<MAX_PLAYERS; pnr++)
@@ -470,10 +442,46 @@ void HandleKey(Key key, int key_status)
 	if (key == *key_info[i].key_custom)
 	  key_action |= key_info[i].action;
 
+      if (tape.single_step && clear_button_2[pnr])
+      {
+	stored_player[pnr].action &= ~KEY_BUTTON_2;
+	clear_button_2[pnr] = FALSE;
+      }
+
       if (key_status == KEY_PRESSED)
 	stored_player[pnr].action |= key_action;
       else
 	stored_player[pnr].action &= ~key_action;
+
+      if (tape.single_step && tape.recording && tape.pausing)
+      {
+	if (key_status == KEY_PRESSED &&
+	    (key_action & (KEY_MOTION | KEY_BUTTON_1)))
+	{
+	  TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+
+	  if (key_action & KEY_MOTION)
+	  {
+	    if (stored_player[pnr].action & KEY_BUTTON_2)
+	      bomb_placed[pnr] = TRUE;
+	  }
+	}
+	else if (key_status == KEY_RELEASED &&
+		 (key_action & KEY_BUTTON_2))
+	{
+	  if (!bomb_placed[pnr])
+	  {
+	    TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+
+	    stored_player[pnr].action |= KEY_BUTTON_2;
+	    clear_button_2[pnr] = TRUE;
+	  }
+
+	  bomb_placed[pnr] = FALSE;
+	}
+      }
+      else if (tape.recording && tape.pausing && (key_action & KEY_ACTION))
+	TapeTogglePause(TAPE_TOGGLE_MANUAL);
     }
   }
   else
@@ -501,7 +509,7 @@ void HandleKey(Key key, int key_status)
   if (key_status == KEY_RELEASED)
     return;
 
-  if ((key == KSYM_Return || key == KSYM_space) &&
+  if ((key == KSYM_Return || key == setup.shortcut.toggle_pause) &&
       game_status == PLAYING && AllPlayersGone)
   {
     CloseDoor(DOOR_CLOSE_1);
@@ -511,14 +519,28 @@ void HandleKey(Key key, int key_status)
   }
 
   /* allow quick escape to the main menu with the Escape key */
-  if (key == KSYM_Escape && game_status != MAINMENU)
+  if (key == KSYM_Escape &&
+      game_status != MAINMENU &&
+      game_status != PLAYING &&
+      game_status != LEVELED &&
+      game_status != CHOOSELEVEL &&
+      game_status != SETUP)
   {
-    CloseDoor(DOOR_CLOSE_1 | DOOR_OPEN_2 | DOOR_NO_DELAY);
     game_status = MAINMENU;
     DrawMainMenu();
     return;
   }
 
+  /* special key shortcuts */
+  if (game_status == MAINMENU || game_status == PLAYING)
+  {
+    if (key == setup.shortcut.save_game)
+      TapeQuickSave();
+    else if (key == setup.shortcut.load_game)
+      TapeQuickLoad();
+    else if (key == setup.shortcut.toggle_pause)
+      TapeTogglePause(TAPE_TOGGLE_MANUAL);
+  }
 
 
 #ifndef DEBUG
@@ -541,29 +563,36 @@ void HandleKey(Key key, int key_status)
     case MAINMENU:
     case CHOOSELEVEL:
     case SETUP:
-    case SETUPINPUT:
       switch(key)
       {
 	case KSYM_Return:
-	case KSYM_space:
 	  if (game_status == MAINMENU)
 	    HandleMainMenu(0,0, 0,0, MB_MENU_CHOICE);
           else if (game_status == CHOOSELEVEL)
             HandleChooseLevel(0,0, 0,0, MB_MENU_CHOICE);
 	  else if (game_status == SETUP)
 	    HandleSetupScreen(0,0, 0,0, MB_MENU_CHOICE);
-	  else if (game_status == SETUPINPUT)
-	    HandleSetupInputScreen(0,0, 0,0, MB_MENU_CHOICE);
+	  break;
+
+	case KSYM_Escape:
+          if (game_status == CHOOSELEVEL)
+            HandleChooseLevel(0,0, 0,0, MB_MENU_LEAVE);
+	  else if (game_status == SETUP)
+	    HandleSetupScreen(0,0, 0,0, MB_MENU_LEAVE);
 	  break;
 
         case KSYM_Page_Up:
           if (game_status == CHOOSELEVEL)
             HandleChooseLevel(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
+	  else if (game_status == SETUP)
+	    HandleSetupScreen(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
 	  break;
 
         case KSYM_Page_Down:
           if (game_status == CHOOSELEVEL)
             HandleChooseLevel(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
+	  else if (game_status == SETUP)
+	    HandleSetupScreen(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
 	  break;
 
 #ifdef DEBUG
@@ -585,7 +614,6 @@ void HandleKey(Key key, int key_status)
       switch(key)
       {
 	case KSYM_Return:
-	case KSYM_space:
 	  game_status = MAINMENU;
 	  DrawMainMenu();
 	  BackToFront();
@@ -605,7 +633,7 @@ void HandleKey(Key key, int key_status)
       break;
 
     case LEVELED:
-      if (!anyTextGadgetActiveOrJustFinished)
+      if (!anyTextGadgetActiveOrJustFinished || key == KSYM_Escape)
 	HandleLevelEditorKeyInput(key);
       break;
 
@@ -613,6 +641,9 @@ void HandleKey(Key key, int key_status)
     {
       switch(key)
       {
+        case KSYM_Escape:
+	  RequestQuitGame(setup.ask_on_escape);
+	  break;
 
 #ifdef DEBUG
 	case KSYM_0:
@@ -788,10 +819,8 @@ static int HandleJoystickForAllPlayers()
     joy_action = Joystick(i);
     result |= joy_action;
 
-
     if (!setup.input[i].use_joystick)
       continue;
-
 
     stored_player[i].action = joy_action;
   }
@@ -818,7 +847,6 @@ void HandleJoystick()
     case MAINMENU:
     case CHOOSELEVEL:
     case SETUP:
-    case SETUPINPUT:
     {
       static unsigned long joystickmove_delay = 0;
 
@@ -826,15 +854,12 @@ void HandleJoystick()
 	  !DelayReached(&joystickmove_delay, GADGET_FRAME_DELAY))
 	newbutton = dx = dy = 0;
 
-      if (game_status==MAINMENU)
+      if (game_status == MAINMENU)
 	HandleMainMenu(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
-      else if (game_status==CHOOSELEVEL)
+      else if (game_status == CHOOSELEVEL)
         HandleChooseLevel(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
-      else if (game_status==SETUP)
+      else if (game_status == SETUP)
 	HandleSetupScreen(0,0,dx,dy,newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
-      else if (game_status==SETUPINPUT)
-	HandleSetupInputScreen(0,0,dx,dy,
-			       newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       break;
     }
 

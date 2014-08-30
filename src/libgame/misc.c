@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -14,7 +14,6 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <string.h>
@@ -28,6 +27,7 @@
 #endif
 
 #include "misc.h"
+#include "setup.h"
 #include "random.h"
 
 
@@ -111,10 +111,12 @@ static void sleep_milliseconds(unsigned long milliseconds_delay)
 {
   boolean do_busy_waiting = (milliseconds_delay < 5 ? TRUE : FALSE);
 
+#if 0
 #if defined(PLATFORM_MSDOS)
-  /* don't use select() to perform waiting operations under DOS/Windows
+  /* don't use select() to perform waiting operations under DOS
      environment; always use a busy loop for waiting instead */
   do_busy_waiting = TRUE;
+#endif
 #endif
 
   if (do_busy_waiting)
@@ -134,6 +136,8 @@ static void sleep_milliseconds(unsigned long milliseconds_delay)
   {
 #if defined(TARGET_SDL)
     SDL_Delay(milliseconds_delay);
+#elif defined(TARGET_ALLEGRO)
+    rest(milliseconds_delay);
 #else
     struct timeval delay;
 
@@ -156,12 +160,13 @@ boolean FrameReached(unsigned long *frame_counter_var,
 {
   unsigned long actual_frame_counter = FrameCounter;
 
-  if (actual_frame_counter < *frame_counter_var+frame_delay &&
+  if (actual_frame_counter < *frame_counter_var + frame_delay &&
       actual_frame_counter >= *frame_counter_var)
-    return(FALSE);
+    return FALSE;
 
   *frame_counter_var = actual_frame_counter;
-  return(TRUE);
+
+  return TRUE;
 }
 
 boolean DelayReached(unsigned long *counter_var,
@@ -171,10 +176,11 @@ boolean DelayReached(unsigned long *counter_var,
 
   if (actual_counter < *counter_var + delay &&
       actual_counter >= *counter_var)
-    return(FALSE);
+    return FALSE;
 
   *counter_var = actual_counter;
-  return(TRUE);
+
+  return TRUE;
 }
 
 void WaitUntilDelayReached(unsigned long *counter_var, unsigned long delay)
@@ -300,12 +306,19 @@ char *getLoginName()
 #if defined(PLATFORM_WIN32)
   return ANONYMOUS_NAME;
 #else
-  struct passwd *pwd;
+  static char *login_name = NULL;
 
-  if ((pwd = getpwuid(getuid())) == NULL)
-    return ANONYMOUS_NAME;
-  else
-    return pwd->pw_name;
+  if (login_name == NULL)
+  {
+    struct passwd *pwd;
+
+    if ((pwd = getpwuid(getuid())) == NULL)
+      login_name = ANONYMOUS_NAME;
+    else
+      login_name = getStringCopy(pwd->pw_name);
+  }
+
+  return login_name;
 #endif
 }
 
@@ -351,16 +364,16 @@ char *getHomeDir()
 #if defined(PLATFORM_UNIX)
   static char *home_dir = NULL;
 
-  if (!home_dir)
+  if (home_dir == NULL)
   {
-    if (!(home_dir = getenv("HOME")))
+    if ((home_dir = getenv("HOME")) == NULL)
     {
       struct passwd *pwd;
 
-      if ((pwd = getpwuid(getuid())))
-	home_dir = pwd->pw_dir;
-      else
+      if ((pwd = getpwuid(getuid())) == NULL)
 	home_dir = ".";
+      else
+	home_dir = getStringCopy(pwd->pw_dir);
     }
   }
 
@@ -425,10 +438,14 @@ void GetOptions(char *argv[])
   options.ro_base_directory = RO_BASE_PATH;
   options.rw_base_directory = RW_BASE_PATH;
   options.level_directory = RO_BASE_PATH "/" LEVELS_DIRECTORY;
+  options.graphics_directory = RO_BASE_PATH "/" GRAPHICS_DIRECTORY;
+  options.sounds_directory = RO_BASE_PATH "/" SOUNDS_DIRECTORY;
+  options.music_directory = RO_BASE_PATH "/" MUSIC_DIRECTORY;
   options.serveronly = FALSE;
   options.network = FALSE;
   options.verbose = FALSE;
   options.debug = FALSE;
+  options.debug_command = NULL;
 
   while (*options_left)
   {
@@ -466,16 +483,23 @@ void GetOptions(char *argv[])
       Error(ERR_EXIT_HELP, "unrecognized option '%s'", option);
     else if (strncmp(option, "-help", option_len) == 0)
     {
-      printf("Usage: %s [options] [server.name [port]]\n"
+      printf("Usage: %s [options] [<server host> [<server port>]]\n"
 	     "Options:\n"
-	     "  -d, --display machine:0       X server display\n"
-	     "  -b, --basepath directory      alternative base directory\n"
-	     "  -l, --level directory         alternative level directory\n"
-	     "  -s, --serveronly              only start network server\n"
+	     "  -d, --display <host>[:<scr>]  X server display\n"
+	     "  -b, --basepath <directory>    alternative base directory\n"
+	     "  -l, --level <directory>       alternative level directory\n"
+	     "  -g, --graphics <directory>    alternative graphics directory\n"
+	     "  -s, --sounds <directory>      alternative sounds directory\n"
+	     "  -m, --music <directory>       alternative music directory\n"
 	     "  -n, --network                 network multiplayer game\n"
+	     "      --serveronly              only start network server\n"
 	     "  -v, --verbose                 verbose mode\n"
 	     "      --debug                   display debugging information\n",
 	     program.command_basename);
+
+      if (options.debug)
+	printf("      --debug-command <command> execute special command\n");
+
       exit(0);
     }
     else if (strncmp(option, "-display", option_len) == 0)
@@ -511,6 +535,33 @@ void GetOptions(char *argv[])
       if (option_arg == next_option)
 	options_left++;
     }
+    else if (strncmp(option, "-graphics", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+
+      options.graphics_directory = option_arg;
+      if (option_arg == next_option)
+	options_left++;
+    }
+    else if (strncmp(option, "-sounds", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+
+      options.sounds_directory = option_arg;
+      if (option_arg == next_option)
+	options_left++;
+    }
+    else if (strncmp(option, "-music", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+
+      options.music_directory = option_arg;
+      if (option_arg == next_option)
+	options_left++;
+    }
     else if (strncmp(option, "-network", option_len) == 0)
     {
       options.network = TRUE;
@@ -526,6 +577,15 @@ void GetOptions(char *argv[])
     else if (strncmp(option, "-debug", option_len) == 0)
     {
       options.debug = TRUE;
+    }
+    else if (strncmp(option, "-debug-command", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+
+      options.debug_command = option_arg;
+      if (option_arg == next_option)
+	options_left++;
     }
     else if (*option == '-')
     {
@@ -546,6 +606,23 @@ void GetOptions(char *argv[])
 
     options_left++;
   }
+}
+
+/* used by SetError() and GetError() to store internal error messages */
+static char internal_error[1024];	/* this is bad */
+
+void SetError(char *format, ...)
+{
+  va_list ap;
+
+  va_start(ap, format);
+  vsprintf(internal_error, format, ap);
+  va_end(ap);
+}
+
+char *GetError()
+{
+  return internal_error;
 }
 
 void Error(int mode, char *format, ...)
@@ -645,6 +722,26 @@ void *checked_realloc(void *ptr, unsigned long size)
   return ptr;
 }
 
+inline void swap_numbers(int *i1, int *i2)
+{
+  int help = *i1;
+
+  *i1 = *i2;
+  *i2 = help;
+}
+
+inline void swap_number_pairs(int *x1, int *y1, int *x2, int *y2)
+{
+  int help_x = *x1;
+  int help_y = *y1;
+
+  *x1 = *x2;
+  *x2 = help_x;
+
+  *y1 = *y2;
+  *y2 = help_y;
+}
+
 short getFile16BitInteger(FILE *file, int byte_order)
 {
   if (byte_order == BYTE_ORDER_BIG_ENDIAN)
@@ -731,9 +828,33 @@ void putFileChunk(FILE *file, char *chunk_name, int chunk_size,
   }
 }
 
+int getFileVersion(FILE *file)
+{
+  int version_major, version_minor, version_patch;
+
+  version_major = fgetc(file);
+  version_minor = fgetc(file);
+  version_patch = fgetc(file);
+  fgetc(file);		/* not used */
+
+  return VERSION_IDENT(version_major, version_minor, version_patch);
+}
+
+void putFileVersion(FILE *file, int version)
+{
+  int version_major = VERSION_MAJOR(version);
+  int version_minor = VERSION_MINOR(version);
+  int version_patch = VERSION_PATCH(version);
+
+  fputc(version_major, file);
+  fputc(version_minor, file);
+  fputc(version_patch, file);
+  fputc(0, file);	/* not used */
+}
+
 void ReadUnusedBytesFromFile(FILE *file, unsigned long bytes)
 {
-  while (bytes--)
+  while (bytes-- && !feof(file))
     fgetc(file);
 }
 
@@ -743,9 +864,15 @@ void WriteUnusedBytesToFile(FILE *file, unsigned long bytes)
     fputc(0, file);
 }
 
+
+/* ------------------------------------------------------------------------- */
+/* functions to translate key identifiers between different format           */
+/* ------------------------------------------------------------------------- */
+
 #define TRANSLATE_KEYSYM_TO_KEYNAME	0
 #define TRANSLATE_KEYSYM_TO_X11KEYNAME	1
-#define TRANSLATE_X11KEYNAME_TO_KEYSYM	2
+#define TRANSLATE_KEYNAME_TO_KEYSYM	2
+#define TRANSLATE_X11KEYNAME_TO_KEYSYM	3
 
 void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
 {
@@ -871,8 +998,8 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
       sprintf(name_buffer, "%c", '0' + (char)(key - KSYM_0));
     else if (key >= KSYM_KP_0 && key <= KSYM_KP_9)
       sprintf(name_buffer, "keypad %c", '0' + (char)(key - KSYM_KP_0));
-    else if (key >= KSYM_F1 && key <= KSYM_F24)
-      sprintf(name_buffer, "function F%d", (int)(key - KSYM_F1 + 1));
+    else if (key >= KSYM_FKEY_FIRST && key <= KSYM_FKEY_LAST)
+      sprintf(name_buffer, "function F%d", (int)(key - KSYM_FKEY_FIRST + 1));
     else if (key == KSYM_UNDEFINED)
       strcpy(name_buffer, "(undefined)");
     else
@@ -908,8 +1035,8 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
       sprintf(name_buffer, "XK_%c", '0' + (char)(key - KSYM_0));
     else if (key >= KSYM_KP_0 && key <= KSYM_KP_9)
       sprintf(name_buffer, "XK_KP_%c", '0' + (char)(key - KSYM_KP_0));
-    else if (key >= KSYM_F1 && key <= KSYM_F24)
-      sprintf(name_buffer, "XK_F%d", (int)(key - KSYM_F1 + 1));
+    else if (key >= KSYM_FKEY_FIRST && key <= KSYM_FKEY_LAST)
+      sprintf(name_buffer, "XK_F%d", (int)(key - KSYM_FKEY_FIRST + 1));
     else if (key == KSYM_UNDEFINED)
       strcpy(name_buffer, "[undefined]");
     else
@@ -931,6 +1058,26 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
     }
 
     *x11name = name_buffer;
+  }
+  else if (mode == TRANSLATE_KEYNAME_TO_KEYSYM)
+  {
+    Key key = KSYM_UNDEFINED;
+
+    i = 0;
+    do
+    {
+      if (strcmp(translate_key[i].name, *name) == 0)
+      {
+	key = translate_key[i].key;
+	break;
+      }
+    }
+    while (translate_key[++i].x11name);
+
+    if (key == KSYM_UNDEFINED)
+      Error(ERR_WARN, "getKeyFromKeyName(): not completely implemented");
+
+    *keysym = key;
   }
   else if (mode == TRANSLATE_X11KEYNAME_TO_KEYSYM)
   {
@@ -965,7 +1112,7 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
 	  ((c2 >= '0' && c1 <= '9') || c2 == '\0'))
 	d = atoi(&name_ptr[4]);
 
-      if (d >=1 && d <= 24)
+      if (d >= 1 && d <= KSYM_NUM_FKEYS)
 	key = KSYM_F1 + (Key)(d - 1);
     }
     else if (strncmp(name_ptr, "XK_", 3) == 0)
@@ -1033,6 +1180,14 @@ char *getX11KeyNameFromKey(Key key)
   return x11name;
 }
 
+Key getKeyFromKeyName(char *name)
+{
+  Key key;
+
+  translate_keyname(&key, NULL, &name, TRANSLATE_KEYNAME_TO_KEYSYM);
+  return key;
+}
+
 Key getKeyFromX11KeyName(char *x11name)
 {
   Key key;
@@ -1056,648 +1211,56 @@ char getCharFromKey(Key key)
   return letter;
 }
 
-/* ------------------------------------------------------------------------- */
-/* some functions to handle lists of level directories                       */
-/* ------------------------------------------------------------------------- */
-
-struct LevelDirInfo *newLevelDirInfo()
-{
-  return checked_calloc(sizeof(struct LevelDirInfo));
-}
-
-void pushLevelDirInfo(struct LevelDirInfo **node_first,
-		      struct LevelDirInfo *node_new)
-{
-  node_new->next = *node_first;
-  *node_first = node_new;
-}
-
-int numLevelDirInfo(struct LevelDirInfo *node)
-{
-  int num = 0;
-
-  while (node)
-  {
-    num++;
-    node = node->next;
-  }
-
-  return num;
-}
-
-boolean validLevelSeries(struct LevelDirInfo *node)
-{
-  return (node != NULL && !node->node_group && !node->parent_link);
-}
-
-struct LevelDirInfo *getFirstValidLevelSeries(struct LevelDirInfo *node)
-{
-  if (node == NULL)
-  {
-    if (leveldir_first)		/* start with first level directory entry */
-      return getFirstValidLevelSeries(leveldir_first);
-    else
-      return NULL;
-  }
-  else if (node->node_group)	/* enter level group (step down into tree) */
-    return getFirstValidLevelSeries(node->node_group);
-  else if (node->parent_link)	/* skip start entry of level group */
-  {
-    if (node->next)		/* get first real level series entry */
-      return getFirstValidLevelSeries(node->next);
-    else			/* leave empty level group and go on */
-      return getFirstValidLevelSeries(node->node_parent->next);
-  }
-  else				/* this seems to be a regular level series */
-    return node;
-}
-
-struct LevelDirInfo *getLevelDirInfoFirstGroupEntry(struct LevelDirInfo *node)
-{
-  if (node == NULL)
-    return NULL;
-
-  if (node->node_parent == NULL)		/* top level group */
-    return leveldir_first;
-  else						/* sub level group */
-    return node->node_parent->node_group;
-}
-
-int numLevelDirInfoInGroup(struct LevelDirInfo *node)
-{
-  return numLevelDirInfo(getLevelDirInfoFirstGroupEntry(node));
-}
-
-int posLevelDirInfo(struct LevelDirInfo *node)
-{
-  struct LevelDirInfo *node_cmp = getLevelDirInfoFirstGroupEntry(node);
-  int pos = 0;
-
-  while (node_cmp)
-  {
-    if (node_cmp == node)
-      return pos;
-
-    pos++;
-    node_cmp = node_cmp->next;
-  }
-
-  return 0;
-}
-
-struct LevelDirInfo *getLevelDirInfoFromPos(struct LevelDirInfo *node, int pos)
-{
-  struct LevelDirInfo *node_default = node;
-  int pos_cmp = 0;
-
-  while (node)
-  {
-    if (pos_cmp == pos)
-      return node;
-
-    pos_cmp++;
-    node = node->next;
-  }
-
-  return node_default;
-}
-
-struct LevelDirInfo *getLevelDirInfoFromFilenameExt(struct LevelDirInfo *node,
-						    char *filename)
-{
-  if (filename == NULL)
-    return NULL;
-
-  while (node)
-  {
-    if (node->node_group)
-    {
-      struct LevelDirInfo *node_group;
-
-      node_group = getLevelDirInfoFromFilenameExt(node->node_group, filename);
-
-      if (node_group)
-	return node_group;
-    }
-    else if (!node->parent_link)
-    {
-      if (strcmp(filename, node->filename) == 0)
-	return node;
-    }
-
-    node = node->next;
-  }
-
-  return NULL;
-}
-
-struct LevelDirInfo *getLevelDirInfoFromFilename(char *filename)
-{
-  return getLevelDirInfoFromFilenameExt(leveldir_first, filename);
-}
-
-void dumpLevelDirInfo(struct LevelDirInfo *node, int depth)
-{
-  int i;
-
-  while (node)
-  {
-    for (i=0; i<depth * 3; i++)
-      printf(" ");
-
-    printf("filename == '%s'\n", node->filename);
-
-    if (node->node_group != NULL)
-      dumpLevelDirInfo(node->node_group, depth + 1);
-
-    node = node->next;
-  }
-}
-
-void sortLevelDirInfo(struct LevelDirInfo **node_first,
-		      int (*compare_function)(const void *, const void *))
-{
-  int num_nodes = numLevelDirInfo(*node_first);
-  struct LevelDirInfo **sort_array;
-  struct LevelDirInfo *node = *node_first;
-  int i = 0;
-
-  if (num_nodes == 0)
-    return;
-
-  /* allocate array for sorting structure pointers */
-  sort_array = checked_calloc(num_nodes * sizeof(struct LevelDirInfo *));
-
-  /* writing structure pointers to sorting array */
-  while (i < num_nodes && node)		/* double boundary check... */
-  {
-    sort_array[i] = node;
-
-    i++;
-    node = node->next;
-  }
-
-  /* sorting the structure pointers in the sorting array */
-  qsort(sort_array, num_nodes, sizeof(struct LevelDirInfo *),
-	compare_function);
-
-  /* update the linkage of list elements with the sorted node array */
-  for (i=0; i<num_nodes - 1; i++)
-    sort_array[i]->next = sort_array[i + 1];
-  sort_array[num_nodes - 1]->next = NULL;
-
-  /* update the linkage of the main list anchor pointer */
-  *node_first = sort_array[0];
-
-  free(sort_array);
-
-  /* now recursively sort the level group structures */
-  node = *node_first;
-  while (node)
-  {
-    if (node->node_group != NULL)
-      sortLevelDirInfo(&node->node_group, compare_function);
-
-    node = node->next;
-  }
-}
-
-inline void swap_numbers(int *i1, int *i2)
-{
-  int help = *i1;
-
-  *i1 = *i2;
-  *i2 = help;
-}
-
-inline void swap_number_pairs(int *x1, int *y1, int *x2, int *y2)
-{
-  int help_x = *x1;
-  int help_y = *y1;
-
-  *x1 = *x2;
-  *x2 = help_x;
-
-  *y1 = *y2;
-  *y2 = help_y;
-}
-
 
 /* ========================================================================= */
-/* some stuff from "files.c"                                                 */
+/* functions for checking filenames                                          */
 /* ========================================================================= */
 
-#if defined(PLATFORM_WIN32)
-#ifndef S_IRGRP
-#define S_IRGRP S_IRUSR
-#endif
-#ifndef S_IROTH
-#define S_IROTH S_IRUSR
-#endif
-#ifndef S_IWGRP
-#define S_IWGRP S_IWUSR
-#endif
-#ifndef S_IWOTH
-#define S_IWOTH S_IWUSR
-#endif
-#ifndef S_IXGRP
-#define S_IXGRP S_IXUSR
-#endif
-#ifndef S_IXOTH
-#define S_IXOTH S_IXUSR
-#endif
-#ifndef S_IRWXG
-#define S_IRWXG (S_IRGRP | S_IWGRP | S_IXGRP)
-#endif
-#ifndef S_ISGID
-#define S_ISGID 0
-#endif
-#endif	/* PLATFORM_WIN32 */
-
-/* file permissions for newly written files */
-#define MODE_R_ALL		(S_IRUSR | S_IRGRP | S_IROTH)
-#define MODE_W_ALL		(S_IWUSR | S_IWGRP | S_IWOTH)
-#define MODE_X_ALL		(S_IXUSR | S_IXGRP | S_IXOTH)
-
-#define MODE_W_PRIVATE		(S_IWUSR)
-#define MODE_W_PUBLIC		(S_IWUSR | S_IWGRP)
-#define MODE_W_PUBLIC_DIR	(S_IWUSR | S_IWGRP | S_ISGID)
-
-#define DIR_PERMS_PRIVATE	(MODE_R_ALL | MODE_X_ALL | MODE_W_PRIVATE)
-#define DIR_PERMS_PUBLIC	(MODE_R_ALL | MODE_X_ALL | MODE_W_PUBLIC_DIR)
-
-#define FILE_PERMS_PRIVATE	(MODE_R_ALL | MODE_W_PRIVATE)
-#define FILE_PERMS_PUBLIC	(MODE_R_ALL | MODE_W_PUBLIC)
-
-char *getUserDataDir(void)
+boolean FileIsGraphic(char *filename)
 {
-  static char *userdata_dir = NULL;
-
-  if (!userdata_dir)
-  {
-    char *home_dir = getHomeDir();
-    char *data_dir = program.userdata_directory;
-
-    userdata_dir = getPath2(home_dir, data_dir);
-  }
-
-  return userdata_dir;
-}
-
-char *getSetupDir()
-{
-  return getUserDataDir();
-}
-
-static mode_t posix_umask(mode_t mask)
-{
-#if defined(PLATFORM_UNIX)
-  return umask(mask);
-#else
-  return 0;
-#endif
-}
-
-static int posix_mkdir(const char *pathname, mode_t mode)
-{
-#if defined(PLATFORM_WIN32)
-  return mkdir(pathname);
-#else
-  return mkdir(pathname, mode);
-#endif
-}
-
-void createDirectory(char *dir, char *text, int permission_class)
-{
-  /* leave "other" permissions in umask untouched, but ensure group parts
-     of USERDATA_DIR_MODE are not masked */
-  mode_t dir_mode = (permission_class == PERMS_PRIVATE ?
-		     DIR_PERMS_PRIVATE : DIR_PERMS_PUBLIC);
-  mode_t normal_umask = posix_umask(0);
-  mode_t group_umask = ~(dir_mode & S_IRWXG);
-  posix_umask(normal_umask & group_umask);
-
-  if (access(dir, F_OK) != 0)
-    if (posix_mkdir(dir, dir_mode) != 0)
-      Error(ERR_WARN, "cannot create %s directory '%s'", text, dir);
-
-  posix_umask(normal_umask);		/* reset normal umask */
-}
-
-void InitUserDataDirectory()
-{
-  createDirectory(getUserDataDir(), "user data", PERMS_PRIVATE);
-}
-
-void SetFilePermissions(char *filename, int permission_class)
-{
-  chmod(filename, (permission_class == PERMS_PRIVATE ?
-		   FILE_PERMS_PRIVATE : FILE_PERMS_PUBLIC));
-}
-
-int getFileVersionFromCookieString(const char *cookie)
-{
-  const char *ptr_cookie1, *ptr_cookie2;
-  const char *pattern1 = "_FILE_VERSION_";
-  const char *pattern2 = "?.?";
-  const int len_cookie = strlen(cookie);
-  const int len_pattern1 = strlen(pattern1);
-  const int len_pattern2 = strlen(pattern2);
-  const int len_pattern = len_pattern1 + len_pattern2;
-  int version_major, version_minor;
-
-  if (len_cookie <= len_pattern)
-    return -1;
-
-  ptr_cookie1 = &cookie[len_cookie - len_pattern];
-  ptr_cookie2 = &cookie[len_cookie - len_pattern2];
-
-  if (strncmp(ptr_cookie1, pattern1, len_pattern1) != 0)
-    return -1;
-
-  if (ptr_cookie2[0] < '0' || ptr_cookie2[0] > '9' ||
-      ptr_cookie2[1] != '.' ||
-      ptr_cookie2[2] < '0' || ptr_cookie2[2] > '9')
-    return -1;
-
-  version_major = ptr_cookie2[0] - '0';
-  version_minor = ptr_cookie2[2] - '0';
-
-  return VERSION_IDENT(version_major, version_minor, 0);
-}
-
-boolean checkCookieString(const char *cookie, const char *template)
-{
-  const char *pattern = "_FILE_VERSION_?.?";
-  const int len_cookie = strlen(cookie);
-  const int len_template = strlen(template);
-  const int len_pattern = strlen(pattern);
-
-  if (len_cookie != len_template)
-    return FALSE;
-
-  if (strncmp(cookie, template, len_cookie - len_pattern) != 0)
-    return FALSE;
-
-  return TRUE;
-}
-
-/* ------------------------------------------------------------------------- */
-/* setup file stuff                                                          */
-/* ------------------------------------------------------------------------- */
-
-static char *string_tolower(char *s)
-{
-  static char s_lower[100];
-  int i;
-
-  if (strlen(s) >= 100)
-    return s;
-
-  strcpy(s_lower, s);
-
-  for (i=0; i<strlen(s_lower); i++)
-    s_lower[i] = tolower(s_lower[i]);
-
-  return s_lower;
-}
-
-int get_string_integer_value(char *s)
-{
-  static char *number_text[][3] =
-  {
-    { "0", "zero", "null", },
-    { "1", "one", "first" },
-    { "2", "two", "second" },
-    { "3", "three", "third" },
-    { "4", "four", "fourth" },
-    { "5", "five", "fifth" },
-    { "6", "six", "sixth" },
-    { "7", "seven", "seventh" },
-    { "8", "eight", "eighth" },
-    { "9", "nine", "ninth" },
-    { "10", "ten", "tenth" },
-    { "11", "eleven", "eleventh" },
-    { "12", "twelve", "twelfth" },
-  };
-
-  int i, j;
-
-  for (i=0; i<13; i++)
-    for (j=0; j<3; j++)
-      if (strcmp(string_tolower(s), number_text[i][j]) == 0)
-	return i;
-
-  return atoi(s);
-}
-
-boolean get_string_boolean_value(char *s)
-{
-  if (strcmp(string_tolower(s), "true") == 0 ||
-      strcmp(string_tolower(s), "yes") == 0 ||
-      strcmp(string_tolower(s), "on") == 0 ||
-      get_string_integer_value(s) == 1)
+  if (strlen(filename) > 4 &&
+      strcmp(&filename[strlen(filename) - 4], ".pcx") == 0)
     return TRUE;
-  else
-    return FALSE;
+
+  return FALSE;
 }
 
-char *getFormattedSetupEntry(char *token, char *value)
+boolean FileIsSound(char *basename)
 {
-  int i;
-  static char entry[MAX_LINE_LEN];
+  if (strlen(basename) > 4 &&
+      strcmp(&basename[strlen(basename) - 4], ".wav") == 0)
+    return TRUE;
 
-  sprintf(entry, "%s:", token);
-  for (i=strlen(entry); i<TOKEN_VALUE_POSITION; i++)
-    entry[i] = ' ';
-  entry[i] = '\0';
-
-  strcat(entry, value);
-
-  return entry;
+  return FALSE;
 }
 
-void freeSetupFileList(struct SetupFileList *setup_file_list)
+boolean FileIsMusic(char *basename)
 {
-  if (!setup_file_list)
-    return;
+  /* "music" can be a WAV (loop) file or (if compiled with SDL) a MOD file */
 
-  if (setup_file_list->token)
-    free(setup_file_list->token);
-  if (setup_file_list->value)
-    free(setup_file_list->value);
-  if (setup_file_list->next)
-    freeSetupFileList(setup_file_list->next);
-  free(setup_file_list);
-}
+  if (FileIsSound(basename))
+    return TRUE;
 
-static struct SetupFileList *newSetupFileList(char *token, char *value)
-{
-  struct SetupFileList *new = checked_malloc(sizeof(struct SetupFileList));
-
-  new->token = checked_malloc(strlen(token) + 1);
-  strcpy(new->token, token);
-
-  new->value = checked_malloc(strlen(value) + 1);
-  strcpy(new->value, value);
-
-  new->next = NULL;
-
-  return new;
-}
-
-char *getTokenValue(struct SetupFileList *setup_file_list, char *token)
-{
-  if (!setup_file_list)
-    return NULL;
-
-  if (strcmp(setup_file_list->token, token) == 0)
-    return setup_file_list->value;
-  else
-    return getTokenValue(setup_file_list->next, token);
-}
-
-static void setTokenValue(struct SetupFileList *setup_file_list,
-			  char *token, char *value)
-{
-  if (!setup_file_list)
-    return;
-
-  if (strcmp(setup_file_list->token, token) == 0)
-  {
-    free(setup_file_list->value);
-    setup_file_list->value = checked_malloc(strlen(value) + 1);
-    strcpy(setup_file_list->value, value);
-  }
-  else if (setup_file_list->next == NULL)
-    setup_file_list->next = newSetupFileList(token, value);
-  else
-    setTokenValue(setup_file_list->next, token, value);
-}
-
-#ifdef DEBUG
-static void printSetupFileList(struct SetupFileList *setup_file_list)
-{
-  if (!setup_file_list)
-    return;
-
-  printf("token: '%s'\n", setup_file_list->token);
-  printf("value: '%s'\n", setup_file_list->value);
-
-  printSetupFileList(setup_file_list->next);
-}
+#if defined(TARGET_SDL)
+  if (strlen(basename) > 4 &&
+      (strcmp(&basename[strlen(basename) - 4], ".mod") == 0 ||
+       strcmp(&basename[strlen(basename) - 4], ".MOD") == 0 ||
+       strncmp(basename, "mod.", 4) == 0 ||
+       strncmp(basename, "MOD.", 4) == 0))
+    return TRUE;
 #endif
 
-struct SetupFileList *loadSetupFileList(char *filename)
-{
-  int line_len;
-  char line[MAX_LINE_LEN];
-  char *token, *value, *line_ptr;
-  struct SetupFileList *setup_file_list = newSetupFileList("", "");
-  struct SetupFileList *first_valid_list_entry;
-
-  FILE *file;
-
-  if (!(file = fopen(filename, MODE_READ)))
-  {
-    Error(ERR_WARN, "cannot open configuration file '%s'", filename);
-    return NULL;
-  }
-
-  while(!feof(file))
-  {
-    /* read next line of input file */
-    if (!fgets(line, MAX_LINE_LEN, file))
-      break;
-
-    /* cut trailing comment or whitespace from input line */
-    for (line_ptr = line; *line_ptr; line_ptr++)
-    {
-      if (*line_ptr == '#' || *line_ptr == '\n' || *line_ptr == '\r')
-      {
-	*line_ptr = '\0';
-	break;
-      }
-    }
-
-    /* cut trailing whitespaces from input line */
-    for (line_ptr = &line[strlen(line)]; line_ptr > line; line_ptr--)
-      if ((*line_ptr == ' ' || *line_ptr == '\t') && line_ptr[1] == '\0')
-	*line_ptr = '\0';
-
-    /* ignore empty lines */
-    if (*line == '\0')
-      continue;
-
-    line_len = strlen(line);
-
-    /* cut leading whitespaces from token */
-    for (token = line; *token; token++)
-      if (*token != ' ' && *token != '\t')
-	break;
-
-    /* find end of token */
-    for (line_ptr = token; *line_ptr; line_ptr++)
-    {
-      if (*line_ptr == ' ' || *line_ptr == '\t' || *line_ptr == ':')
-      {
-	*line_ptr = '\0';
-	break;
-      }
-    }
-
-    if (line_ptr < line + line_len)
-      value = line_ptr + 1;
-    else
-      value = "\0";
-
-    /* cut leading whitespaces from value */
-    for (; *value; value++)
-      if (*value != ' ' && *value != '\t')
-	break;
-
-    if (*token && *value)
-      setTokenValue(setup_file_list, token, value);
-  }
-
-  fclose(file);
-
-  first_valid_list_entry = setup_file_list->next;
-
-  /* free empty list header */
-  setup_file_list->next = NULL;
-  freeSetupFileList(setup_file_list);
-
-  if (first_valid_list_entry == NULL)
-    Error(ERR_WARN, "configuration file '%s' is empty", filename);
-
-  return first_valid_list_entry;
+  return FALSE;
 }
 
-void checkSetupFileListIdentifier(struct SetupFileList *setup_file_list,
-				  char *identifier)
+boolean FileIsArtworkType(char *basename, int type)
 {
-  if (!setup_file_list)
-    return;
+  if ((type == TREE_TYPE_GRAPHICS_DIR && FileIsGraphic(basename)) ||
+      (type == TREE_TYPE_SOUNDS_DIR && FileIsSound(basename)) ||
+      (type == TREE_TYPE_MUSIC_DIR && FileIsMusic(basename)))
+    return TRUE;
 
-  if (strcmp(setup_file_list->token, TOKEN_STR_FILE_IDENTIFIER) == 0)
-  {
-    if (strcmp(setup_file_list->value, identifier) != 0)
-    {
-      Error(ERR_WARN, "configuration file has wrong version");
-      return;
-    }
-    else
-      return;
-  }
-
-  if (setup_file_list->next)
-    checkSetupFileListIdentifier(setup_file_list->next, identifier);
-  else
-  {
-    Error(ERR_WARN, "configuration file has no version information");
-    return;
-  }
+  return FALSE;
 }
 
 

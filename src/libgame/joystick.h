@@ -1,7 +1,7 @@
 /***********************************************************
-* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -14,14 +14,14 @@
 #ifndef JOYSTICK_H
 #define JOYSTICK_H
 
-#include "main.h"
+#include "system.h"
 
-/* values for the joystick */
-#define JOYSTICK_OFF		0
-#define	JOYSTICK_AVAILABLE	1
+#define JOYSTICK_NOT_AVAILABLE	0
+#define	JOYSTICK_AVAILABLE	(1 << 0)
+#define	JOYSTICK_ACTIVE		(1 << 1)
+#define JOYSTICK_ACTIVATED	(JOYSTICK_AVAILABLE | JOYSTICK_ACTIVE)
 
-#ifdef __FreeBSD__
-#include <machine/joystick.h>
+#if defined(PLATFORM_FREEBSD)
 #define DEV_JOYSTICK_0		"/dev/joy0"
 #define DEV_JOYSTICK_1		"/dev/joy1"
 #define DEV_JOYSTICK_2		"/dev/joy2"
@@ -44,49 +44,49 @@
 #define JOYSTICK_YMIDDLE	0
 #define JOYSTICK_YLOWER		32767
 #else
-#define JOYSTICK_XLEFT		30
-#define JOYSTICK_XMIDDLE	530
-#define JOYSTICK_XRIGHT		1250
-#define JOYSTICK_YUPPER		40
-#define JOYSTICK_YMIDDLE	680
-#define JOYSTICK_YLOWER		1440
+#define JOYSTICK_XLEFT		1
+#define JOYSTICK_XMIDDLE	128
+#define JOYSTICK_XRIGHT		255
+#define JOYSTICK_YUPPER		1
+#define JOYSTICK_YMIDDLE	128
+#define JOYSTICK_YLOWER		255
 #endif
 
 #define JOYSTICK_PERCENT	25
 
+#define JOY_NO_ACTION		0
 #define JOY_LEFT		MV_LEFT
 #define JOY_RIGHT		MV_RIGHT
 #define JOY_UP			MV_UP
 #define JOY_DOWN	       	MV_DOWN
-#define JOY_BUTTON_1		(1<<4)
-#define JOY_BUTTON_2		(1<<5)
-#define JOY_BUTTON		(JOY_BUTTON_1 | JOY_BUTTON_2)
+#define JOY_BUTTON_1		KEY_BUTTON_1
+#define JOY_BUTTON_2		KEY_BUTTON_2
+#define JOY_MOTION		KEY_MOTION
+#define JOY_BUTTON		KEY_BUTTON
+#define JOY_ACTION		KEY_ACTION
 
 #define JOY_BUTTON_NOT_PRESSED	0
 #define JOY_BUTTON_PRESSED	1
 #define JOY_BUTTON_NEW_PRESSED	2
 #define JOY_BUTTON_NEW_RELEASED	3
 
-#ifdef NO_JOYSTICK
-#define JOYSTICK_STATUS		JOYSTICK_OFF
-#else
-#define JOYSTICK_STATUS		JOYSTICK_AVAILABLE
+#if defined(PLATFORM_UNIX)
+void UnixInitJoysticks(void);
+boolean UnixReadJoystick(int, int *, int *, boolean *, boolean *);
 #endif
 
-
-#if defined(TARGET_SDL)
-SDL_Joystick *Get_SDL_Joystick(int);
-boolean Open_SDL_Joystick(int);
-void Close_SDL_Joystick(int);
-boolean Check_SDL_JoystickOpened(int);
-void HandleJoystickEvent(Event *);
-int Get_SDL_Joystick_Axis(int, int);
-#endif
+char *getJoyNameFromJoySymbol(int);
+int getJoySymbolFromJoyName(char *);
+int getJoystickNrFromDeviceName(char *);
+char *getDeviceNameFromJoystickNr(int);
 
 void CheckJoystickData(void);
 int Joystick(int);
 int JoystickButton(int);
 int AnyJoystick(void);
 int AnyJoystickButton(void);
+
+void DeactivateJoystick();
+void ActivateJoystick();
 
 #endif	/* JOYSTICK_H */

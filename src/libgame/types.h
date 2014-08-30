@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -13,6 +13,11 @@
 
 #ifndef TYPES_H
 #define TYPES_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <sys/types.h>
 
 typedef unsigned char boolean;
 typedef unsigned char byte;
@@ -37,5 +42,8 @@ typedef unsigned char byte;
 #ifndef SIGN
 #define SIGN(a)		((a) < 0 ? -1 : ((a)>0 ? 1 : 0))
 #endif
+
+#define SIZEOF_ARRAY(array, type)	(sizeof(array) / sizeof(type))
+#define SIZEOF_ARRAY_INT(array)		SIZEOF_ARRAY(array, int)
 
 #endif /* TYPES_H */

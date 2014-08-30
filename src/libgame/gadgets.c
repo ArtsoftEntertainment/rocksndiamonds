@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -82,11 +82,6 @@ static struct GadgetInfo *getGadgetInfoFromMousePosition(int mx, int my)
 
 static void default_callback_info(void *ptr)
 {
-#if 0
-  if (game_status == LEVELED)
-    HandleEditorGadgetInfoText(ptr);
-#endif
-
   return;
 }
 
@@ -309,7 +304,9 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	break;
 
       case GDI_CHECKED:
-	gi->checked = va_arg(ap, boolean);
+	/* take care here: "boolean" is typedef'ed as "unsigned char",
+	   which gets promoted to "int" */
+	gi->checked = (boolean)va_arg(ap, int);
 	break;
 
       case GDI_RADIO_NR:
@@ -849,15 +846,27 @@ void HandleGadgets(int mx, int my, int button)
   if (last_info_gi != new_gi ||
       (new_gi && new_gi->type == GD_TYPE_DRAWING_AREA && changed_position))
   {
-    last_info_gi = new_gi;
-
     if (new_gi != NULL && (button == 0 || new_gi == last_gi))
     {
-      new_gi->event.type = 0;
+      new_gi->event.type = GD_EVENT_INFO_ENTERING;
       new_gi->callback_info(new_gi);
     }
-    else
+    else if (last_info_gi != NULL)
+    {
+      last_info_gi->event.type = GD_EVENT_INFO_LEAVING;
+      last_info_gi->callback_info(last_info_gi);
+
+#if 0
       default_callback_info(NULL);
+
+      printf("It seems that we are leaving gadget [%s]!\n",
+	     (last_info_gi != NULL &&
+	      last_info_gi->info_text != NULL ?
+	      last_info_gi->info_text : ""));
+#endif
+    }
+
+    last_info_gi = new_gi;
   }
 
   if (gadget_pressed)

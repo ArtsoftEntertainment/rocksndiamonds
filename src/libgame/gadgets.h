@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -45,6 +45,8 @@
 #define GD_EVENT_OFF_BORDERS		(1 << 4)
 #define GD_EVENT_TEXT_RETURN		(1 << 5)
 #define GD_EVENT_TEXT_LEAVING		(1 << 6)
+#define GD_EVENT_INFO_ENTERING		(1 << 7)
+#define GD_EVENT_INFO_LEAVING		(1 << 8)
 
 /* gadget button states */
 #define GD_BUTTON_UNPRESSED		0

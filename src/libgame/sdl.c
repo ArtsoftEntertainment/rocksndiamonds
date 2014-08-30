@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -13,6 +13,7 @@
 
 #include "system.h"
 #include "sound.h"
+#include "joystick.h"
 #include "misc.h"
 
 
@@ -828,20 +829,32 @@ Bitmap *SDLLoadImage(char *filename)
 
   /* load image to temporary surface */
   if ((sdl_image_tmp = IMG_Load(filename)) == NULL)
-    Error(ERR_EXIT, "IMG_Load() failed: %s", SDL_GetError());
+  {
+    SetError("IMG_Load(): %s", SDL_GetError());
+    return NULL;
+  }
 
   /* create native non-transparent surface for current image */
   if ((new_bitmap->surface = SDL_DisplayFormat(sdl_image_tmp)) == NULL)
-    Error(ERR_EXIT, "SDL_DisplayFormat() failed: %s", SDL_GetError());
+  {
+    SetError("SDL_DisplayFormat(): %s", SDL_GetError());
+    return NULL;
+  }
 
   /* create native transparent surface for current image */
   SDL_SetColorKey(sdl_image_tmp, SDL_SRCCOLORKEY,
 		  SDL_MapRGB(sdl_image_tmp->format, 0x00, 0x00, 0x00));
   if ((new_bitmap->surface_masked = SDL_DisplayFormat(sdl_image_tmp)) == NULL)
-    Error(ERR_EXIT, "SDL_DisplayFormat() failed: %s", SDL_GetError());
+  {
+    SetError("SDL_DisplayFormat(): %s", SDL_GetError());
+    return NULL;
+  }
 
   /* free temporary surface */
   SDL_FreeSurface(sdl_image_tmp);
+
+  new_bitmap->width = new_bitmap->surface->w;
+  new_bitmap->height = new_bitmap->surface->h;
 
   return new_bitmap;
 }
@@ -859,8 +872,8 @@ inline void SDLOpenAudio(void)
     return;
   }
 
-  if (Mix_OpenAudio(DEFAULT_AUDIO_SAMPLE_RATE, AUDIO_S16,
-		    AUDIO_STEREO_CHANNELS,
+  if (Mix_OpenAudio(DEFAULT_AUDIO_SAMPLE_RATE, MIX_DEFAULT_FORMAT,
+		    AUDIO_NUM_CHANNELS_STEREO,
 		    DEFAULT_AUDIO_FRAGMENT_SIZE) < 0)
   {
     Error(ERR_WARN, "Mix_OpenAudio() failed: %s", SDL_GetError());
@@ -872,19 +885,12 @@ inline void SDLOpenAudio(void)
   audio.loops_available = TRUE;
   audio.sound_enabled = TRUE;
 
-  /* determine number of available channels */
-  audio.channels = Mix_AllocateChannels(MIX_CHANNELS);
+  /* set number of available mixer channels */
+  audio.num_channels = Mix_AllocateChannels(NUM_MIXER_CHANNELS);
+  audio.music_channel = MUSIC_CHANNEL;
+  audio.first_sound_channel = FIRST_SOUND_CHANNEL;
 
-  if (!audio.mods_available)	/* reserve first channel for music loops */
-  {
-    if (Mix_ReserveChannels(1) == 1)
-      audio.music_channel = 0;
-    else
-      audio.music_available = FALSE;
-  }
-
-  Mix_Volume(-1, SOUND_MAX_VOLUME);
-  Mix_VolumeMusic(SOUND_MAX_VOLUME);
+  Mixer_InitChannels();
 }
 
 inline void SDLCloseAudio(void)
@@ -930,6 +936,125 @@ inline void SDLNextEvent(Event *event)
       ((ButtonEvent *)event)->y = 0;
   }
 #endif
+}
+
+
+/* ========================================================================= */
+/* joystick functions                                                        */
+/* ========================================================================= */
+
+static SDL_Joystick *sdl_joystick[MAX_PLAYERS] = { NULL, NULL, NULL, NULL };
+static int sdl_js_axis[MAX_PLAYERS][2]   = { {0, 0}, {0, 0}, {0, 0}, {0, 0} };
+static int sdl_js_button[MAX_PLAYERS][2] = { {0, 0}, {0, 0}, {0, 0}, {0, 0} };
+
+static boolean SDLOpenJoystick(int nr)
+{
+  if (nr < 0 || nr > MAX_PLAYERS)
+    return FALSE;
+
+  return ((sdl_joystick[nr] = SDL_JoystickOpen(nr)) == NULL ? FALSE : TRUE);
+}
+
+static void SDLCloseJoystick(int nr)
+{
+  if (nr < 0 || nr > MAX_PLAYERS)
+    return;
+
+  SDL_JoystickClose(sdl_joystick[nr]);
+}
+
+static boolean SDLCheckJoystickOpened(int nr)
+{
+  if (nr < 0 || nr > MAX_PLAYERS)
+    return FALSE;
+
+  return (SDL_JoystickOpened(nr) ? TRUE : FALSE);
+}
+
+void HandleJoystickEvent(Event *event)
+{
+  switch(event->type)
+  {
+    case SDL_JOYAXISMOTION:
+      if (event->jaxis.axis < 2)
+	sdl_js_axis[event->jaxis.which][event->jaxis.axis]= event->jaxis.value;
+      break;
+
+    case SDL_JOYBUTTONDOWN:
+      if (event->jbutton.button < 2)
+	sdl_js_button[event->jbutton.which][event->jbutton.button] = TRUE;
+      break;
+
+    case SDL_JOYBUTTONUP:
+      if (event->jbutton.button < 2)
+	sdl_js_button[event->jbutton.which][event->jbutton.button] = FALSE;
+      break;
+
+    default:
+      break;
+  }
+}
+
+void SDLInitJoysticks()
+{
+  static boolean sdl_joystick_subsystem_initialized = FALSE;
+  int i;
+
+  if (!sdl_joystick_subsystem_initialized)
+  {
+    sdl_joystick_subsystem_initialized = TRUE;
+
+    if (SDL_Init(SDL_INIT_JOYSTICK) < 0)
+    {
+      Error(ERR_EXIT, "SDL_Init() failed: %s", SDL_GetError());
+      return;
+    }
+  }
+
+  for (i=0; i<MAX_PLAYERS; i++)
+  {
+    char *device_name = setup.input[i].joy.device_name;
+    int joystick_nr = getJoystickNrFromDeviceName(device_name);
+
+    if (joystick_nr >= SDL_NumJoysticks())
+      joystick_nr = -1;
+
+    /* misuse joystick file descriptor variable to store joystick number */
+    joystick.fd[i] = joystick_nr;
+
+    /* this allows subsequent calls to 'InitJoysticks' for re-initialization */
+    if (SDLCheckJoystickOpened(joystick_nr))
+      SDLCloseJoystick(joystick_nr);
+
+    if (!setup.input[i].use_joystick)
+      continue;
+
+    if (!SDLOpenJoystick(joystick_nr))
+    {
+      Error(ERR_WARN, "cannot open joystick %d", joystick_nr);
+      continue;
+    }
+
+    joystick.status = JOYSTICK_ACTIVATED;
+  }
+}
+
+boolean SDLReadJoystick(int nr, int *x, int *y, boolean *b1, boolean *b2)
+{
+  if (nr < 0 || nr >= MAX_PLAYERS)
+    return FALSE;
+
+  if (x != NULL)
+    *x = sdl_js_axis[nr][0];
+  if (y != NULL)
+    *y = sdl_js_axis[nr][1];
+
+  if (b1 != NULL)
+    *b1 = sdl_js_button[nr][0];
+  if (b2 != NULL)
+    *b2 = sdl_js_button[nr][1];
+
+  return TRUE;
 }
 
 #endif /* TARGET_SDL */

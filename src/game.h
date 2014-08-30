@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -30,6 +30,8 @@
 #define SC_ZEITBONUS		10
 
 void GetPlayerConfig(void);
+void DrawGameDoorValues(void);
+void InitGameSound();
 void InitGame(void);
 void InitMovDir(int, int);
 void InitAmoebaNr(int, int);
@@ -89,9 +91,9 @@ void RemoveHero(struct PlayerInfo *);
 int DigField(struct PlayerInfo *, int, int, int, int, int);
 boolean SnapField(struct PlayerInfo *, int, int);
 boolean PlaceBomb(struct PlayerInfo *);
-void PlaySoundLevel(int, int, int);
 void RaiseScore(int);
 void RaiseScoreElement(int);
+void RequestQuitGame(boolean);
 
 void CreateGameButtons();
 void UnmapGameButtons();

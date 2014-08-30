@@ -8,25 +8,23 @@
 *               Germany                                    *
 *               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-* files.h                                                  *
+* config.c                                                 *
 ***********************************************************/
 
-#ifndef FILES_H
-#define FILES_H
+#include "libgame/libgame.h"
 
-#include "main.h"
+#include "config.h"
+#include "conftime.h"
 
-void LoadLevel(int);
-void SaveLevel(int);
+/* use timestamp created at compile-time */
+#define PROGRAM_BUILD_STRING	PROGRAM_IDENT_STRING " " COMPILE_DATE_STRING
+#ifdef DEBUG
+#undef WINDOW_TITLE_STRING
+#define WINDOW_TITLE_STRING	PROGRAM_TITLE_STRING " " PROGRAM_BUILD_STRING
+#endif
 
-void LoadTape(int);
-void SaveTape(int);
-void DumpTape(struct TapeInfo *);
 
-void LoadScore(int);
-void SaveScore(int);
-
-void LoadSetup(void);
-void SaveSetup(void);
-
-#endif	/* FILES_H */
+char *getWindowTitleString()
+{
+  return WINDOW_TITLE_STRING;
+}

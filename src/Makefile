@@ -1,6 +1,6 @@
 #=============================================================================#
 # Makefile for Rocks'n'Diamonds                                               #
-# (c) 1995-2000 Holger Schemel, info@artsoft.org                              #
+# (c) 1995-2002 Holger Schemel, info@artsoft.org                              #
 #=============================================================================#
 
 .EXPORT_ALL_VARIABLES:
@@ -46,6 +46,11 @@ PROGNAME = ../$(PROGBASE)
 ifeq ($(PLATFORM),solaris)
 EXTRA_LDFLAGS = -lnsl -lsocket -R$(XLIB_PATH)
 PLATFORM = unix
+endif
+
+ifeq ($(PLATFORM),macosx)
+PLATFORM = unix
+TARGET=sdl
 endif
 
 ifeq ($(PLATFORM),unix)
@@ -97,7 +102,7 @@ CONFIG_GAME_DIR = $(CONFIG_RO_GAME_DIR) $(CONFIG_RW_GAME_DIR)
 
 
 CONFIG = $(CONFIG_GAME_DIR) $(CONFIG_SCORE_ENTRIES) $(JOYSTICK)
-DEBUG = -DDEBUG -g
+# DEBUG = -DDEBUG -g
 # PROFILING = $(PROFILING_FLAGS)
 
 # OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
@@ -118,6 +123,7 @@ LDFLAGS = $(SYS_LDFLAGS) $(EXTRA_LDFLAGS) -lm
 
 SRCS =	main.c		\
 	init.c		\
+	config.c	\
 	events.c	\
 	tools.c		\
 	screens.c	\
@@ -125,13 +131,13 @@ SRCS =	main.c		\
 	editor.c	\
 	files.c		\
 	tape.c		\
-	joystick.c	\
 	cartoons.c	\
 	network.c	\
 	netserv.c
 
 OBJS =	main.o		\
 	init.o		\
+	config.o	\
 	events.o	\
 	tools.o		\
 	screens.o	\
@@ -139,10 +145,11 @@ OBJS =	main.o		\
 	editor.o	\
 	files.o		\
 	tape.o		\
-	joystick.o	\
 	cartoons.o	\
 	network.o	\
 	netserv.o
+
+TIMESTAMP_FILE = conftime.h
 
 LIBDIR = libgame
 LIBGAME = $(LIBDIR)/libgame.a
@@ -156,13 +163,18 @@ endif
 
 all: libgame_dir $(PROGNAME)
 
-$(PROGNAME): $(LIBGAME) $(OBJS) $(ICON)
+$(PROGNAME): $(LIBGAME) $(TIMESTAMP_FILE) $(OBJS) $(ICON)
 	$(CC) $(PROFILING) $(OBJS) $(ICON) $(LIBGAME) $(LDFLAGS) -o $(PROGNAME)
 
 libgame_dir:
 	@$(MAKE) -C $(LIBDIR)
 $(LIBGAME):
 	@$(MAKE) -C $(LIBDIR)
+
+$(TIMESTAMP_FILE): $(SRCS)
+	@date '+"[%Y-%m-%d %H:%M]"' \
+	| sed -e 's/^/#define COMPILE_DATE_STRING /' \
+	> $(TIMESTAMP_FILE)
 
 $(ICON):
 	$(BMP2ICO) -transparent $(ICONBASE).ico $(ICON32X32)

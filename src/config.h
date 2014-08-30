@@ -8,25 +8,14 @@
 *               Germany                                    *
 *               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-* files.h                                                  *
+* config.h                                                 *
 ***********************************************************/
 
-#ifndef FILES_H
-#define FILES_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include "main.h"
 
-void LoadLevel(int);
-void SaveLevel(int);
+char *getWindowTitleString(void);
 
-void LoadTape(int);
-void SaveTape(int);
-void DumpTape(struct TapeInfo *);
-
-void LoadScore(int);
-void SaveScore(int);
-
-void LoadSetup(void);
-void SaveSetup(void);
-
-#endif	/* FILES_H */
+#endif	/* CONFIG_H */

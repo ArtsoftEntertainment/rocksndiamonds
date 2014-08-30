@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -14,7 +14,6 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
-#include <sys/time.h>
 #include "main.h"
 
 /* for SetDrawtoField */
@@ -46,6 +45,7 @@
 #define DOOR_COPY_BACK		(1 << 4)
 #define DOOR_NO_DELAY		(1 << 5)
 #define DOOR_GET_STATE		(1 << 6)
+#define DOOR_SET_STATE		(1 << 7)
 
 /* for Request */
 #define REQ_ASK			(1 << 0)
@@ -59,6 +59,7 @@
 #define REQUEST_WAIT_FOR	(REQ_ASK | REQ_CONFIRM | REQ_PLAYER)
 
 void SetDrawtoField(int);
+void RedrawPlayfield(boolean, int, int, int, int);
 void BackToFront();
 void FadeToFront();
 void ClearWindow();
@@ -104,6 +105,7 @@ boolean Request(char *, unsigned int);
 unsigned int OpenDoor(unsigned int);
 unsigned int CloseDoor(unsigned int);
 unsigned int GetDoorState(void);
+unsigned int SetDoorState(unsigned int);
 unsigned int MoveDoor(unsigned int);
 void DrawSpecialEditorDoor();
 void UndrawSpecialEditorDoor();

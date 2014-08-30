@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -19,7 +19,6 @@
 #include "init.h"
 #include "files.h"
 #include "tape.h"
-#include "joystick.h"
 #include "network.h"
 
 /* this switch controls how rocks move horizontally */
@@ -77,12 +76,9 @@
 #define DX_TIME			(DX + XX_TIME)
 #define DY_TIME			(DY + YY_TIME)
 
-#define IS_LOOP_SOUND(s)	((s)==SND_KLAPPER || (s)==SND_ROEHR ||	\
-				 (s)==SND_NJAM || (s)==SND_MIEP)
-#define IS_MUSIC_SOUND(s)	((s)==SND_ALCHEMY || (s)==SND_CHASE || \
-				 (s)==SND_NETWORK || (s)==SND_CZARDASZ || \
-				 (s)==SND_TYGER || (s)==SND_VOYAGER || \
-				 (s)==SND_TWILIGHT)
+/* values for initial player move delay (initial delay counter value) */
+#define INITIAL_MOVE_DELAY_OFF	-1
+#define INITIAL_MOVE_DELAY_ON	0
 
 /* values for player movement speed (which is in fact a delay value) */
 #define MOVE_DELAY_NORMAL_SPEED	8
@@ -108,11 +104,58 @@ static void CloseAllOpenTimegates(void);
 static void CheckGravityMovement(struct PlayerInfo *);
 static void KillHeroUnlessProtected(int, int);
 
+void PlaySoundLevel(int, int, int);
+void PlaySoundLevelAction(int, int, int);
+void PlaySoundLevelElementAction(int, int, int, int);
+
 static void MapGameButtons();
 static void HandleGameButtons(struct GadgetInfo *);
 
 static struct GadgetInfo *game_gadget[NUM_GAME_BUTTONS];
 
+#define SND_ACTION_UNKNOWN		0
+#define SND_ACTION_WAITING		1
+#define SND_ACTION_MOVING		2
+#define SND_ACTION_DIGGING		3
+#define SND_ACTION_COLLECTING		4
+#define SND_ACTION_PASSING		5
+#define SND_ACTION_IMPACT		6
+#define SND_ACTION_PUSHING		7
+#define SND_ACTION_ACTIVATING		8
+#define SND_ACTION_BURNING		9
+
+#define NUM_SND_ACTIONS			10
+
+static struct
+{
+  char *text;
+  int value;
+  boolean is_loop;
+} sound_action_properties[] =
+{
+  /* insert _all_ loop sound actions here */
+  { ".waiting",		SND_ACTION_WAITING,	TRUE },
+  { ".moving",		SND_ACTION_MOVING,	TRUE }, /* continuos moving */
+  { ".running",		SND_ACTION_UNKNOWN,	TRUE },
+  { ".burning",		SND_ACTION_BURNING,	TRUE },
+  { ".growing",		SND_ACTION_UNKNOWN,	TRUE },
+  { ".attacking",	SND_ACTION_UNKNOWN,	TRUE },
+  { ".activated",	SND_ACTION_UNKNOWN,	TRUE },
+
+  /* other (non-loop) sound actions are optional */
+  { ".stepping",	SND_ACTION_MOVING,	FALSE }, /* discrete moving */
+  { ".digging",		SND_ACTION_DIGGING,	FALSE },
+  { ".collecting",	SND_ACTION_COLLECTING,	FALSE },
+  { ".passing",		SND_ACTION_PASSING,	FALSE },
+  { ".impact",		SND_ACTION_IMPACT,	FALSE },
+  { ".pushing",		SND_ACTION_PUSHING,	FALSE },
+  { ".activating",	SND_ACTION_ACTIVATING,	FALSE },
+  { NULL,		0,			0 },
+};
+static int element_action_sound[NUM_LEVEL_ELEMENTS][NUM_SND_ACTIONS];
+static boolean is_loop_sound[NUM_SOUND_EFFECTS];
+
+#define IS_LOOP_SOUND(x)	(is_loop_sound[x])
 
 
 #ifdef DEBUG
@@ -174,10 +217,10 @@ void GetPlayerConfig()
     setup.sound = FALSE;
 
   if (!audio.loops_available)
-  {
     setup.sound_loops = FALSE;
+
+  if (!audio.music_available)
     setup.sound_music = FALSE;
-  }
 
   if (!video.fullscreen_available)
     setup.fullscreen = FALSE;
@@ -433,12 +476,200 @@ static void InitField(int x, int y, boolean init_game)
   }
 }
 
+void DrawGameDoorValues()
+{
+  int i, j;
+
+  for (i=0; i<MAX_PLAYERS; i++)
+    for (j=0; j<4; j++)
+      if (stored_player[i].key[j])
+	DrawMiniGraphicExt(drawto, DX_KEYS + j * MINI_TILEX, DY_KEYS,
+			   GFX_SCHLUESSEL1 + j);
+
+  DrawText(DX + XX_EMERALDS, DY + YY_EMERALDS,
+	   int2str(local_player->gems_still_needed, 3), FS_SMALL, FC_YELLOW);
+  DrawText(DX + XX_DYNAMITE, DY + YY_DYNAMITE,
+	   int2str(local_player->dynamite, 3), FS_SMALL, FC_YELLOW);
+  DrawText(DX + XX_SCORE, DY + YY_SCORE,
+	   int2str(local_player->score, 5), FS_SMALL, FC_YELLOW);
+  DrawText(DX + XX_TIME, DY + YY_TIME,
+	   int2str(TimeLeft, 3), FS_SMALL, FC_YELLOW);
+}
+
+
+/*
+  =============================================================================
+  InitGameSound()
+  -----------------------------------------------------------------------------
+  initialize sound effect lookup table for element actions
+  =============================================================================
+*/
+
+void InitGameSound()
+{
+  int sound_effect_properties[NUM_SOUND_EFFECTS];
+  int i, j;
+
+#if 0
+  debug_print_timestamp(0, NULL);
+#endif
+
+  for (i=0; i<NUM_SND_ACTIONS; i++)
+    for (j=0; j<NUM_LEVEL_ELEMENTS; j++)
+      element_action_sound[j][i] = -1;
+
+  for (i=0; i<NUM_SOUND_EFFECTS; i++)
+  {
+    int len_effect_text = strlen(sound_effects[i].text);
+
+    sound_effect_properties[i] = SND_ACTION_UNKNOWN;
+    is_loop_sound[i] = FALSE;
+
+    /* determine all loop sounds and identify certain sound classes */
+
+    j = 0;
+    while (sound_action_properties[j].text)
+    {
+      int len_action_text = strlen(sound_action_properties[j].text);
+
+      if (len_action_text < len_effect_text &&
+	  strcmp(&sound_effects[i].text[len_effect_text - len_action_text],
+		 sound_action_properties[j].text) == 0)
+      {
+	sound_effect_properties[i] = sound_action_properties[j].value;
+
+	if (sound_action_properties[j].is_loop)
+	  is_loop_sound[i] = TRUE;
+      }
+
+      j++;
+    }
+
+    /* associate elements and some selected sound actions */
+
+    for (j=0; j<NUM_LEVEL_ELEMENTS; j++)
+    {
+      if (element_info[j].sound_class_name)
+      {
+	int len_class_text = strlen(element_info[j].sound_class_name);
+
+	if (len_class_text + 1 < len_effect_text &&
+	    strncmp(sound_effects[i].text,
+		    element_info[j].sound_class_name, len_class_text) == 0 &&
+	    sound_effects[i].text[len_class_text] == '.')
+	{
+	  int sound_action_value = sound_effect_properties[i];
+
+	  element_action_sound[j][sound_action_value] = i;
+	}
+      }
+    }
+  }
+
+#if 0
+  debug_print_timestamp(0, "InitGameEngine");
+#endif
+
+#if 0
+  /* TEST ONLY */
+  {
+    int element = EL_ERDREICH;
+    int sound_action = SND_ACTION_DIGGING;
+    int j = 0;
+
+    while (sound_action_properties[j].text)
+    {
+      if (sound_action_properties[j].value == sound_action)
+	printf("element %d, sound action '%s'  == %d\n",
+	       element, sound_action_properties[j].text,
+	       element_action_sound[element][sound_action]);
+      j++;
+    }
+  }
+#endif
+}
+
+
+/*
+  =============================================================================
+  InitGameEngine()
+  -----------------------------------------------------------------------------
+  initialize game engine due to level / tape version number
+  =============================================================================
+*/
+
+static void InitGameEngine()
+{
+  int i;
+
+  game.engine_version = (tape.playing ? tape.engine_version :
+			 level.game_version);
+
+#if 0
+    printf("level %d: level version == %06d\n", level_nr, level.game_version);
+    printf("          tape version == %06d [%s] [file: %06d]\n",
+	   tape.engine_version, (tape.playing ? "PLAYING" : "RECORDING"),
+	   tape.file_version);
+    printf("       => game.engine_version == %06d\n", game.engine_version);
+#endif
+
+  /* dynamically adjust player properties according to game engine version */
+  game.initial_move_delay =
+    (game.engine_version <= VERSION_IDENT(2,0,1) ? INITIAL_MOVE_DELAY_ON :
+     INITIAL_MOVE_DELAY_OFF);
+
+  /* dynamically adjust player properties according to level information */
+  game.initial_move_delay_value =
+    (level.double_speed ? MOVE_DELAY_HIGH_SPEED : MOVE_DELAY_NORMAL_SPEED);
+
+  /* dynamically adjust element properties according to game engine version */
+  {
+    static int ep_em_slippery_wall[] =
+    {
+      EL_BETON,
+      EL_MAUERWERK,
+      EL_MAUER_LEBT,
+      EL_MAUER_X,
+      EL_MAUER_Y,
+      EL_MAUER_XY
+    };
+    static int ep_em_slippery_wall_num = SIZEOF_ARRAY_INT(ep_em_slippery_wall);
+
+    for (i=0; i<ep_em_slippery_wall_num; i++)
+    {
+      if (level.em_slippery_gems)	/* special EM style gems behaviour */
+	Elementeigenschaften2[ep_em_slippery_wall[i]] |=
+	  EP_BIT_EM_SLIPPERY_WALL;
+      else
+	Elementeigenschaften2[ep_em_slippery_wall[i]] &=
+	  ~EP_BIT_EM_SLIPPERY_WALL;
+    }
+
+    /* "EL_MAUERND" was not slippery for EM gems in version 2.0.1 */
+    if (level.em_slippery_gems && game.engine_version > VERSION_IDENT(2,0,1))
+      Elementeigenschaften2[EL_MAUERND] |=  EP_BIT_EM_SLIPPERY_WALL;
+    else
+      Elementeigenschaften2[EL_MAUERND] &= ~EP_BIT_EM_SLIPPERY_WALL;
+  }
+}
+
+
+/*
+  =============================================================================
+  InitGame()
+  -----------------------------------------------------------------------------
+  initialize and start new game
+  =============================================================================
+*/
+
 void InitGame()
 {
-  int i, j, x, y;
   boolean emulate_bd = TRUE;	/* unless non-BOULDERDASH elements found */
   boolean emulate_sb = TRUE;	/* unless non-SOKOBAN     elements found */
   boolean emulate_sp = TRUE;	/* unless non-SUPAPLEX    elements found */
+  int i, j, x, y;
+
+  InitGameEngine();
 
 #if DEBUG
 #if USE_NEW_AMOEBA_CODE
@@ -491,15 +722,14 @@ void InitGame()
 
     player->frame_reset_delay = 0;
 
-    player->push_delay = 0;
-    player->push_delay_value = 5;
-
-    player->move_delay = 0;
     player->last_move_dir = MV_NO_MOVING;
     player->is_moving = FALSE;
 
-    player->move_delay_value =
-      (level.double_speed ? MOVE_DELAY_HIGH_SPEED : MOVE_DELAY_NORMAL_SPEED);
+    player->move_delay       = game.initial_move_delay;
+    player->move_delay_value = game.initial_move_delay_value;
+
+    player->push_delay = 0;
+    player->push_delay_value = 5;
 
     player->snapped = FALSE;
 
@@ -586,6 +816,10 @@ void InitGame()
       InitField(x, y, TRUE);
     }
   }
+
+  game.emulation = (emulate_bd ? EMU_BOULDERDASH :
+		    emulate_sb ? EMU_SOKOBAN :
+		    emulate_sp ? EMU_SUPAPLEX : EMU_NONE);
 
   /* correct non-moving belts to start moving left */
   for (i=0; i<4; i++)
@@ -686,33 +920,6 @@ void InitGame()
     }
   }
 
-  game.version = (tape.playing ? tape.game_version : level.game_version);
-  game.emulation = (emulate_bd ? EMU_BOULDERDASH :
-		    emulate_sb ? EMU_SOKOBAN :
-		    emulate_sp ? EMU_SUPAPLEX : EMU_NONE);
-
-  /* dynamically adjust element properties according to game engine version */
-  {
-    static int ep_slippery[] =
-    {
-      EL_BETON,
-      EL_MAUERWERK,
-      EL_MAUER_LEBT,
-      EL_MAUER_X,
-      EL_MAUER_Y,
-      EL_MAUER_XY
-    };
-    static int ep_slippery_num = sizeof(ep_slippery)/sizeof(int);
-
-    for (i=0; i<ep_slippery_num; i++)
-    {
-      if (game.version >= GAME_VERSION_2_0)
-	Elementeigenschaften2[ep_slippery[i]] |= EP_BIT_SLIPPERY_GEMS;
-      else
-	Elementeigenschaften2[ep_slippery[i]] &= ~EP_BIT_SLIPPERY_GEMS;
-    }
-  }
-
   if (BorderElement == EL_LEERRAUM)
   {
     SBX_Left = 0;
@@ -777,16 +984,10 @@ void InitGame()
 	       DX + XX_LEVEL - 1, DY + YY_LEVEL + 1);
   }
 
-  DrawText(DX + XX_EMERALDS, DY + YY_EMERALDS,
-	   int2str(local_player->gems_still_needed, 3), FS_SMALL, FC_YELLOW);
-  DrawText(DX + XX_DYNAMITE, DY + YY_DYNAMITE,
-	   int2str(local_player->dynamite, 3), FS_SMALL, FC_YELLOW);
-  DrawText(DX + XX_SCORE, DY + YY_SCORE,
-	   int2str(local_player->score, 5), FS_SMALL, FC_YELLOW);
-  DrawText(DX + XX_TIME, DY + YY_TIME,
-	   int2str(TimeLeft, 3), FS_SMALL, FC_YELLOW);
+  DrawGameDoorValues();
 
   UnmapGameButtons();
+  UnmapTapeButtons();
   game_gadget[SOUND_CTRL_ID_MUSIC]->checked = setup.sound_music;
   game_gadget[SOUND_CTRL_ID_LOOPS]->checked = setup.sound_loops;
   game_gadget[SOUND_CTRL_ID_SIMPLE]->checked = setup.sound_simple;
@@ -799,8 +1000,9 @@ void InitGame()
 
   OpenDoor(DOOR_OPEN_ALL);
 
-  if (setup.sound_music && num_bg_loops)
-    PlayMusic(level_nr % num_bg_loops);
+  PlaySoundStereo(SND_GAME_STARTING, SOUND_MAX_RIGHT);
+  if (setup.sound_music)
+    PlayMusic(level_nr);
 
   KeyboardAutoRepeatOff();
 
@@ -951,15 +1153,18 @@ void GameWon()
 
   local_player->LevelSolved = FALSE;
 
+  PlaySoundStereo(SND_GAME_WINNING, SOUND_MAX_RIGHT);
+
   if (TimeLeft)
   {
     if (!tape.playing && setup.sound_loops)
-      PlaySoundExt(SND_SIRR, PSND_MAX_VOLUME, PSND_MAX_RIGHT, PSND_LOOP);
+      PlaySoundExt(SND_GAME_LEVELTIME_BONUS, SOUND_MAX_VOLUME, SOUND_MAX_RIGHT,
+		   SND_CTRL_PLAY_LOOP);
 
-    while(TimeLeft > 0)
+    while (TimeLeft > 0)
     {
       if (!tape.playing && !setup.sound_loops)
-	PlaySoundStereo(SND_SIRR, PSND_MAX_RIGHT);
+	PlaySoundStereo(SND_GAME_LEVELTIME_BONUS, SOUND_MAX_RIGHT);
       if (TimeLeft > 0 && !(TimeLeft % 10))
 	RaiseScore(level.score[SC_ZEITBONUS]);
       if (TimeLeft > 100 && !(TimeLeft % 10))
@@ -974,17 +1179,18 @@ void GameWon()
     }
 
     if (!tape.playing && setup.sound_loops)
-      StopSound(SND_SIRR);
+      StopSound(SND_GAME_LEVELTIME_BONUS);
   }
   else if (level.time == 0)		/* level without time limit */
   {
     if (!tape.playing && setup.sound_loops)
-      PlaySoundExt(SND_SIRR, PSND_MAX_VOLUME, PSND_MAX_RIGHT, PSND_LOOP);
+      PlaySoundExt(SND_GAME_LEVELTIME_BONUS, SOUND_MAX_VOLUME, SOUND_MAX_RIGHT,
+		   SND_CTRL_PLAY_LOOP);
 
-    while(TimePlayed < 999)
+    while (TimePlayed < 999)
     {
       if (!tape.playing && !setup.sound_loops)
-	PlaySoundStereo(SND_SIRR, PSND_MAX_RIGHT);
+	PlaySoundStereo(SND_GAME_LEVELTIME_BONUS, SOUND_MAX_RIGHT);
       if (TimePlayed < 999 && !(TimePlayed % 10))
 	RaiseScore(level.score[SC_ZEITBONUS]);
       if (TimePlayed < 900 && !(TimePlayed % 10))
@@ -999,7 +1205,7 @@ void GameWon()
     }
 
     if (!tape.playing && setup.sound_loops)
-      StopSound(SND_SIRR);
+      StopSound(SND_GAME_LEVELTIME_BONUS);
   }
 
 #if 0
@@ -1278,8 +1484,8 @@ void CheckDynamite(int x, int y)
     MovDelay[x][y]--;
     if (MovDelay[x][y])
     {
-      if (!(MovDelay[x][y] % 12))
-	PlaySoundLevel(x, y, SND_ZISCH);
+      if (!(MovDelay[x][y] % 6))
+	PlaySoundLevelAction(x, y, SND_ACTION_BURNING);
 
       if (IS_ACTIVE_BOMB(Feld[x][y]))
       {
@@ -1293,7 +1499,11 @@ void CheckDynamite(int x, int y)
     }
   }
 
-  StopSound(SND_ZISCH);
+  if (Feld[x][y] == EL_DYNAMITE_ACTIVE)
+    StopSound(SND_DYNAMITE_BURNING);
+  else
+    StopSound(SND_DYNABOMB_BURNING);
+
   Bang(x, y);
 }
 
@@ -1570,9 +1780,9 @@ void Bang(int x, int y)
   int element = Feld[x][y];
 
   if (game.emulation == EMU_SUPAPLEX)
-    PlaySoundLevel(x, y, SND_SP_BOOOM);
+    PlaySoundLevel(x, y, SND_SP_ELEMENT_EXPLODING);
   else
-    PlaySoundLevel(x, y, SND_ROAAAR);
+    PlaySoundLevel(x, y, SND_ELEMENT_EXPLODING);
 
 #if 0
   if (IS_PLAYER(x, y))	/* remove objects that might cause smaller explosion */
@@ -1622,7 +1832,7 @@ void Blurb(int x, int y)
 
   if (element != EL_BLURB_LEFT && element != EL_BLURB_RIGHT)	/* start */
   {
-    PlaySoundLevel(x, y, SND_BLURB);
+    PlaySoundLevel(x, y, SND_ACID_SPLASHING);
     if (IN_LEV_FIELD(x-1, y) && IS_FREE(x-1, y) &&
 	(!IN_LEV_FIELD(x-1, y-1) ||
 	 !CAN_FALL(MovingOrBlocked2Element(x-1, y-1))))
@@ -1739,13 +1949,13 @@ static void ToggleSwitchgateSwitch(int x, int y)
 	       element == EL_SWITCHGATE_OPENING)
       {
 	Feld[xx][yy] = EL_SWITCHGATE_CLOSING;
-	PlaySoundLevel(xx, yy, SND_OEFFNEN);
+	PlaySoundLevel(xx, yy, SND_SWITCHGATE_CLOSING);
       }
       else if (element == EL_SWITCHGATE_CLOSED ||
 	       element == EL_SWITCHGATE_CLOSING)
       {
 	Feld[xx][yy] = EL_SWITCHGATE_OPENING;
-	PlaySoundLevel(xx, yy, SND_OEFFNEN);
+	PlaySoundLevel(xx, yy, SND_SWITCHGATE_OPENING);
       }
     }
   }
@@ -1809,7 +2019,7 @@ static void ActivateTimegateSwitch(int x, int y)
 	  element == EL_TIMEGATE_CLOSING)
       {
 	Feld[xx][yy] = EL_TIMEGATE_OPENING;
-	PlaySoundLevel(xx, yy, SND_OEFFNEN);
+	PlaySoundLevel(xx, yy, SND_TIMEGATE_OPENING);
       }
 
       /*
@@ -1862,7 +2072,7 @@ void Impact(int x, int y)
   else if (element == EL_PEARL)
   {
     Feld[x][y] = EL_PEARL_BREAKING;
-    PlaySoundLevel(x, y, SND_KNACK);
+    PlaySoundLevel(x, y, SND_PEARL_BREAKING);
     return;
   }
 
@@ -1885,20 +2095,23 @@ void Impact(int x, int y)
     if (CAN_CHANGE(element) && 
 	(smashed == EL_MAGIC_WALL_OFF || smashed == EL_MAGIC_WALL_BD_OFF))
     {
-      int x, y;
+      int xx, yy;
       int activated_magic_wall =
 	(smashed == EL_MAGIC_WALL_OFF ? EL_MAGIC_WALL_EMPTY :
 	 EL_MAGIC_WALL_BD_EMPTY);
 
       /* activate magic wall / mill */
-
-      for (y=0; y<lev_fieldy; y++)
-	for (x=0; x<lev_fieldx; x++)
-	  if (Feld[x][y] == smashed)
-	    Feld[x][y] = activated_magic_wall;
+      for (yy=0; yy<lev_fieldy; yy++)
+	for (xx=0; xx<lev_fieldx; xx++)
+	  if (Feld[xx][yy] == smashed)
+	    Feld[xx][yy] = activated_magic_wall;
 
       game.magic_wall_time_left = level.time_magic_wall * FRAMES_PER_SECOND;
       game.magic_wall_active = TRUE;
+
+      PlaySoundLevel(x, y, (smashed == EL_MAGIC_WALL_OFF ?
+			    SND_MAGIC_WALL_ACTIVATING :
+			    SND_BD_MAGIC_WALL_ACTIVATING));
     }
 
     if (IS_PLAYER(x, y+1))
@@ -1949,20 +2162,20 @@ void Impact(int x, int y)
 	else if (smashed == EL_KOKOSNUSS)
 	{
 	  Feld[x][y+1] = EL_CRACKINGNUT;
-	  PlaySoundLevel(x, y, SND_KNACK);
+	  PlaySoundLevel(x, y, SND_NUT_CRACKING);
 	  RaiseScoreElement(EL_KOKOSNUSS);
 	  return;
 	}
 	else if (smashed == EL_PEARL)
 	{
 	  Feld[x][y+1] = EL_PEARL_BREAKING;
-	  PlaySoundLevel(x, y, SND_KNACK);
+	  PlaySoundLevel(x, y, SND_PEARL_BREAKING);
 	  return;
 	}
 	else if (smashed == EL_DIAMANT)
 	{
 	  Feld[x][y+1] = EL_LEERRAUM;
-	  PlaySoundLevel(x, y, SND_QUIRK);
+	  PlaySoundLevel(x, y, SND_DIAMOND_BREAKING);
 	  return;
 	}
 	else if (IS_BELT_SWITCH(smashed))
@@ -1988,59 +2201,17 @@ void Impact(int x, int y)
       (Feld[x][y+1] == EL_MAGIC_WALL_EMPTY ||
        Feld[x][y+1] == EL_MAGIC_WALL_BD_EMPTY))
   {
-    PlaySoundLevel(x, y, SND_QUIRK);
+    if (Feld[x][y+1] == EL_MAGIC_WALL_EMPTY)
+      PlaySoundLevel(x, y, SND_MAGIC_WALL_CHANGING);
+    else if (Feld[x][y+1] == EL_MAGIC_WALL_BD_EMPTY)
+      PlaySoundLevel(x, y, SND_BD_MAGIC_WALL_CHANGING);
+
     return;
   }
 
   /* play sound of object that hits the ground */
   if (lastline || object_hit)
-  {
-    int sound;
-
-    switch(element)
-    {
-      case EL_EDELSTEIN:
-      case EL_EDELSTEIN_BD:
-      case EL_EDELSTEIN_GELB:
-      case EL_EDELSTEIN_ROT:
-      case EL_EDELSTEIN_LILA:
-      case EL_DIAMANT:
-      case EL_SP_INFOTRON:
-        sound = SND_PLING;
-	break;
-      case EL_KOKOSNUSS:
-	sound = SND_KLUMPF;
-	break;
-      case EL_FELSBROCKEN:
-      case EL_BD_ROCK:
-	sound = SND_KLOPF;
-	break;
-      case EL_SP_ZONK:
-	sound = SND_SP_ZONKDOWN;
-	break;
-      case EL_SCHLUESSEL:
-      case EL_SCHLUESSEL1:
-      case EL_SCHLUESSEL2:
-      case EL_SCHLUESSEL3:
-      case EL_SCHLUESSEL4:
-      case EL_EM_KEY_1:
-      case EL_EM_KEY_2:
-      case EL_EM_KEY_3:
-      case EL_EM_KEY_4:
-	sound = SND_KINK;
-	break;
-      case EL_ZEIT_VOLL:
-      case EL_ZEIT_LEER:
-	sound = SND_DENG;
-	break;
-      default:
-	sound = -1;
-        break;
-    }
-
-    if (sound >= 0)
-      PlaySoundLevel(x, y, sound);
-  }
+    PlaySoundLevelElementAction(x, y, element, SND_ACTION_IMPACT);
 }
 
 void TurnRound(int x, int y)
@@ -2505,6 +2676,7 @@ void StartMoving(int x, int y)
 	InitMovingField(x, y, MV_DOWN);
 	Feld[x][y] = EL_QUICKSAND_EMPTYING;
 	Store[x][y] = EL_FELSBROCKEN;
+	PlaySoundLevel(x, y, SND_QUICKSAND_EMPTYING);
       }
       else if (Feld[x][y+1] == EL_MORAST_LEER)
       {
@@ -2522,6 +2694,7 @@ void StartMoving(int x, int y)
 	Feld[x][y+1] = EL_MORAST_VOLL;
 	Store[x][y+1] = Store[x][y];
 	Store[x][y] = 0;
+	PlaySoundLevel(x, y, SND_QUICKSAND_SLIPPING_THROUGH);
       }
     }
     else if ((element == EL_FELSBROCKEN || element == EL_BD_ROCK) &&
@@ -2530,6 +2703,7 @@ void StartMoving(int x, int y)
       InitMovingField(x, y, MV_DOWN);
       Feld[x][y] = EL_QUICKSAND_FILLING;
       Store[x][y] = element;
+      PlaySoundLevel(x, y, SND_QUICKSAND_FILLING);
     }
     else if (element == EL_MAGIC_WALL_FULL)
     {
@@ -2626,7 +2800,7 @@ void StartMoving(int x, int y)
 #endif
 #else
     else if ((IS_SLIPPERY(Feld[x][y+1]) ||
-	      (IS_SLIPPERY_GEMS(Feld[x][y+1]) && IS_GEM(element))) &&
+	      (IS_EM_SLIPPERY_WALL(Feld[x][y+1]) && IS_GEM(element))) &&
 	     !IS_FALLING(x, y+1) && !JustStopped[x][y+1] &&
 	     element != EL_DX_SUPABOMB && element != EL_SP_DISK_ORANGE)
 #endif
@@ -2675,6 +2849,7 @@ void StartMoving(int x, int y)
       if (element!=EL_MAMPFER && element!=EL_MAMPFER2 && element!=EL_PACMAN)
       {
 	TurnRound(x, y);
+
 	if (MovDelay[x][y] && (element == EL_KAEFER ||
 			       element == EL_FLIEGER ||
 			       element == EL_SP_SNIKSNAK ||
@@ -2693,15 +2868,19 @@ void StartMoving(int x, int y)
       {
 	int phase = MovDelay[x][y] % 8;
 
-	if (phase>3)
-	  phase = 7-phase;
+	if (phase > 3)
+	  phase = 7 - phase;
 
 	if (IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
-	  DrawGraphic(SCREENX(x), SCREENY(y), el2gfx(element)+phase);
+	  DrawGraphic(SCREENX(x), SCREENY(y), el2gfx(element) + phase);
 
-	if ((element == EL_MAMPFER || element == EL_MAMPFER2)
-	    && MovDelay[x][y]%4 == 3)
-	  PlaySoundLevel(x, y, SND_NJAM);
+	if (MovDelay[x][y] % 4 == 3)
+	{
+	  if (element == EL_MAMPFER)
+	    PlaySoundLevel(x, y, SND_YAMYAM_WAITING);
+	  else if (element == EL_MAMPFER2)
+	    PlaySoundLevel(x, y, SND_DARK_YAMYAM_WAITING);
+	}
       }
       else if (element == EL_SP_ELECTRON)
 	DrawGraphicAnimation(x, y, GFX2_SP_ELECTRON, 8, 2, ANIM_NORMAL);
@@ -2748,17 +2927,12 @@ void StartMoving(int x, int y)
 	}
       }
 
-      if (MovDelay[x][y])
-	return;
-    }
+      if (MovDelay[x][y])	/* element still has to wait some time */
+      {
+	PlaySoundLevelAction(x, y, SND_ACTION_WAITING);
 
-    if (element == EL_KAEFER || element == EL_BUTTERFLY)
-    {
-      PlaySoundLevel(x, y, SND_KLAPPER);
-    }
-    else if (element == EL_FLIEGER || element == EL_FIREFLY)
-    {
-      PlaySoundLevel(x, y, SND_ROEHR);
+	return;
+      }
     }
 
     /* now make next step */
@@ -2795,7 +2969,7 @@ void StartMoving(int x, int y)
 	Feld[x][y] = EL_LEERRAUM;
 	DrawLevelField(x, y);
 
-	PlaySoundLevel(newx, newy, SND_BUING);
+	PlaySoundLevel(newx, newy, SND_PENGUIN_ENTERING_EXIT);
 	if (IN_SCR_FIELD(SCREENX(newx), SCREENY(newy)))
 	  DrawGraphicThruMask(SCREENX(newx), SCREENY(newy), el2gfx(element));
 
@@ -2833,6 +3007,8 @@ void StartMoving(int x, int y)
 	  Feld[newx][newy] = EL_LEERRAUM;
 	  DrawLevelField(newx, newy);
 	}
+
+	PlaySoundLevel(x, y, SND_PIG_EATING_GEM);
       }
       else if (!IS_FREE(newx, newy))
       {
@@ -2873,6 +3049,8 @@ void StartMoving(int x, int y)
 	  else
 	    DrawLevelField(x, y);
 
+	  PlaySoundLevel(x, y, SND_DRAGON_ATTACKING);
+
 	  MovDelay[x][y] = 50;
 	  Feld[newx][newy] = EL_BURNING;
 	  if (IN_LEV_FIELD(newx1, newy1) && Feld[newx1][newy1] == EL_LEERRAUM)
@@ -2893,6 +3071,8 @@ void StartMoving(int x, int y)
 	Feld[newx][newy] = EL_LEERRAUM;
 	DrawLevelField(newx, newy);
       }
+
+      PlaySoundLevel(x, y, SND_YAMYAM_EATING_DIAMOND);
     }
     else if (element == EL_MAMPFER2 && IN_LEV_FIELD(newx, newy) &&
 	     IS_MAMPF2(Feld[newx][newy]))
@@ -2912,6 +3092,8 @@ void StartMoving(int x, int y)
 	Feld[newx][newy] = EL_LEERRAUM;
 	DrawLevelField(newx, newy);
       }
+
+      PlaySoundLevel(x, y, SND_DARK_YAMYAM_EATING_ANY);
     }
     else if ((element == EL_PACMAN || element == EL_MOLE)
 	     && IN_LEV_FIELD(newx, newy) && IS_AMOEBOID(Feld[newx][newy]))
@@ -2927,6 +3109,7 @@ void StartMoving(int x, int y)
       if (element == EL_MOLE)
       {
 	Feld[newx][newy] = EL_DEAMOEBING;
+	PlaySoundLevel(x, y, SND_MOLE_EATING_AMOEBA);
 	MovDelay[newx][newy] = 0;	/* start amoeba shrinking delay */
 	return;				/* wait for shrinking amoeba */
       }
@@ -2934,6 +3117,7 @@ void StartMoving(int x, int y)
       {
 	Feld[newx][newy] = EL_LEERRAUM;
 	DrawLevelField(newx, newy);
+	PlaySoundLevel(x, y, SND_PACMAN_EATING_AMOEBA);
       }
     }
     else if (element == EL_MOLE && IN_LEV_FIELD(newx, newy) &&
@@ -2962,13 +3146,14 @@ void StartMoving(int x, int y)
       if (DONT_TOUCH(element))
 	TestIfBadThingTouchesHero(x, y);
 
+      PlaySoundLevelAction(x, y, SND_ACTION_WAITING);
+
       return;
     }
 
-    if (element == EL_ROBOT && IN_SCR_FIELD(x, y))
-      PlaySoundLevel(x, y, SND_SCHLURF);
-
     InitMovingField(x, y, MovDir[x][y]);
+
+    PlaySoundLevelAction(x, y, SND_ACTION_MOVING);
   }
 
   if (MovDir[x][y])
@@ -3008,7 +3193,7 @@ void ContinueMoving(int x, int y)
 
   MovPos[x][y] += step;
 
-  if (ABS(MovPos[x][y])>=TILEX)		/* object reached its destination */
+  if (ABS(MovPos[x][y]) >= TILEX)	/* object reached its destination */
   {
     Feld[x][y] = EL_LEERRAUM;
     Feld[newx][newy] = element;
@@ -3223,6 +3408,9 @@ void AmoebeUmwandeln(int ax, int ay)
 	}
       }
     }
+    PlaySoundLevel(ax, ay, (IS_GEM(level.amoeba_content) ?
+			    SND_AMOEBA_TURNING_TO_GEM :
+			    SND_AMOEBA_TURNING_TO_ROCK));
     Bang(ax, ay);
   }
   else
@@ -3244,7 +3432,12 @@ void AmoebeUmwandeln(int ax, int ay)
 	continue;
 
       if (Feld[x][y] == EL_AMOEBA2DIAM)
+      {
+	PlaySoundLevel(x, y, (IS_GEM(level.amoeba_content) ?
+			      SND_AMOEBA_TURNING_TO_GEM :
+			      SND_AMOEBA_TURNING_TO_ROCK));
 	Bang(x, y);
+      }
     }
   }
 }
@@ -3283,8 +3476,9 @@ void AmoebeUmwandelnBD(int ax, int ay, int new_element)
   }
 
   if (done)
-    PlaySoundLevel(ax, ay,
-		   (new_element == EL_BD_ROCK ? SND_KLOPF : SND_PLING));
+    PlaySoundLevel(ax, ay, (new_element == EL_BD_ROCK ?
+			    SND_BD_AMOEBA_TURNING_TO_ROCK :
+			    SND_BD_AMOEBA_TURNING_TO_GEM));
 }
 
 void AmoebeWaechst(int x, int y)
@@ -3298,7 +3492,10 @@ void AmoebeWaechst(int x, int y)
 
     if (DelayReached(&sound_delay, sound_delay_value))
     {
-      PlaySoundLevel(x, y, SND_AMOEBE);
+      if (Store[x][y] == EL_AMOEBE_BD)
+	PlaySoundLevel(x, y, SND_BD_AMOEBA_CREATING);
+      else
+	PlaySoundLevel(x, y, SND_AMOEBA_CREATING);
       sound_delay_value = 30;
     }
   }
@@ -3318,7 +3515,7 @@ void AmoebeWaechst(int x, int y)
   }
 }
 
-void AmoebeSchrumpft(int x, int y)
+void AmoebaDisappearing(int x, int y)
 {
   static unsigned long sound_delay = 0;
   static unsigned long sound_delay_value = 0;
@@ -3328,10 +3525,7 @@ void AmoebeSchrumpft(int x, int y)
     MovDelay[x][y] = 7;
 
     if (DelayReached(&sound_delay, sound_delay_value))
-    {
-      PlaySoundLevel(x, y, SND_BLURB);
       sound_delay_value = 30;
-    }
   }
 
   if (MovDelay[x][y])		/* wait some time before shrinking */
@@ -3481,7 +3675,10 @@ void AmoebeAbleger(int ax, int ay)
     Store[newax][neway] = element;
   }
   else if (neway == ay)
+  {
     Feld[newax][neway] = EL_TROPFEN;	/* drop left or right from amoeba */
+    PlaySoundLevel(newax, neway, SND_AMOEBA_DROPPING);
+  }
   else
   {
     InitMovingField(ax, ay, MV_DOWN);	/* drop dripping out of amoeba */
@@ -3500,6 +3697,7 @@ void Life(int ax, int ay)
   static int life[4] = { 2, 3, 3, 3 };	/* parameters for "game of life" */
   int life_time = 40;
   int element = Feld[ax][ay];
+  boolean changed = FALSE;
 
   if (Stop[ax][ay])
     return;
@@ -3538,29 +3736,35 @@ void Life(int ax, int ay)
 
     if (xx == ax && yy == ay)		/* field in the middle */
     {
-      if (nachbarn<life[0] || nachbarn>life[1])
+      if (nachbarn < life[0] || nachbarn > life[1])
       {
 	Feld[xx][yy] = EL_LEERRAUM;
 	if (!Stop[xx][yy])
 	  DrawLevelField(xx, yy);
 	Stop[xx][yy] = TRUE;
+	changed = TRUE;
       }
     }
     else if (IS_FREE(xx, yy) || Feld[xx][yy] == EL_ERDREICH)
     {					/* free border field */
-      if (nachbarn>=life[2] && nachbarn<=life[3])
+      if (nachbarn >= life[2] && nachbarn <= life[3])
       {
 	Feld[xx][yy] = element;
 	MovDelay[xx][yy] = (element == EL_LIFE ? 0 : life_time-1);
 	if (!Stop[xx][yy])
 	  DrawLevelField(xx, yy);
 	Stop[xx][yy] = TRUE;
+	changed = TRUE;
       }
     }
   }
+
+  if (changed)
+    PlaySoundLevel(ax, ay, element == EL_LIFE ? SND_GAMEOFLIFE_CREATING :
+		   SND_BIOMAZE_CREATING);
 }
 
-void Ablenk(int x, int y)
+void RobotWheel(int x, int y)
 {
   if (!MovDelay[x][y])		/* next animation frame */
     MovDelay[x][y] = level.time_wheel * FRAMES_PER_SECOND;
@@ -3573,7 +3777,7 @@ void Ablenk(int x, int y)
       if (IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
 	DrawGraphic(SCREENX(x), SCREENY(y), GFX_ABLENK+MovDelay[x][y]%4);
       if (!(MovDelay[x][y]%4))
-	PlaySoundLevel(x, y, SND_MIEP);
+	PlaySoundLevel(x, y, SND_ROBOT_WHEEL_RUNNING);
       return;
     }
   }
@@ -3598,7 +3802,7 @@ void TimegateWheel(int x, int y)
 	DrawGraphic(SCREENX(x), SCREENY(y),
 		    GFX_TIMEGATE_SWITCH + MovDelay[x][y]%4);
       if (!(MovDelay[x][y]%4))
-	PlaySoundLevel(x, y, SND_MIEP);
+	PlaySoundLevel(x, y, SND_TIMEGATE_WHEEL_RUNNING);
       return;
     }
   }
@@ -3705,7 +3909,7 @@ void AusgangstuerPruefen(int x, int y)
 		   (x > LEVELX(BX2) ? LEVELX(BX2) : x),
 		   y < LEVELY(BY1) ? LEVELY(BY1) :
 		   (y > LEVELY(BY2) ? LEVELY(BY2) : y),
-		   SND_OEFFNEN);
+		   SND_EXIT_OPENING);
   }
 }
 
@@ -3847,7 +4051,7 @@ static void CloseAllOpenTimegates()
       if (element == EL_TIMEGATE_OPEN || element == EL_TIMEGATE_OPENING)
       {
 	Feld[x][y] = EL_TIMEGATE_CLOSING;
-	PlaySoundLevel(x, y, SND_OEFFNEN);
+	PlaySoundLevel(x, y, SND_TIMEGATE_CLOSING);
       }
     }
   }
@@ -3957,6 +4161,7 @@ void MauerAbleger(int ax, int ay)
   boolean links_frei = FALSE, rechts_frei = FALSE;
   boolean oben_massiv = FALSE, unten_massiv = FALSE;
   boolean links_massiv = FALSE, rechts_massiv = FALSE;
+  boolean new_wall = FALSE;
 
   if (!MovDelay[ax][ay])	/* start building new wall */
     MovDelay[ax][ay] = 6;
@@ -3986,6 +4191,7 @@ void MauerAbleger(int ax, int ay)
       MovDir[ax][ay-1] = MV_UP;
       if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay-1)))
   	DrawGraphic(SCREENX(ax), SCREENY(ay-1), GFX_MAUER_UP);
+      new_wall = TRUE;
     }
     if (unten_frei)
     {
@@ -3994,6 +4200,7 @@ void MauerAbleger(int ax, int ay)
       MovDir[ax][ay+1] = MV_DOWN;
       if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay+1)))
   	DrawGraphic(SCREENX(ax), SCREENY(ay+1), GFX_MAUER_DOWN);
+      new_wall = TRUE;
     }
   }
 
@@ -4007,7 +4214,9 @@ void MauerAbleger(int ax, int ay)
       MovDir[ax-1][ay] = MV_LEFT;
       if (IN_SCR_FIELD(SCREENX(ax-1), SCREENY(ay)))
   	DrawGraphic(SCREENX(ax-1), SCREENY(ay), GFX_MAUER_LEFT);
+      new_wall = TRUE;
     }
+
     if (rechts_frei)
     {
       Feld[ax+1][ay] = EL_MAUERND;
@@ -4015,6 +4224,7 @@ void MauerAbleger(int ax, int ay)
       MovDir[ax+1][ay] = MV_RIGHT;
       if (IN_SCR_FIELD(SCREENX(ax+1), SCREENY(ay)))
   	DrawGraphic(SCREENX(ax+1), SCREENY(ay), GFX_MAUER_RIGHT);
+      new_wall = TRUE;
     }
   }
 
@@ -4035,6 +4245,9 @@ void MauerAbleger(int ax, int ay)
       ((links_massiv && rechts_massiv) ||
        element == EL_MAUER_Y))
     Feld[ax][ay] = EL_MAUERWERK;
+
+  if (new_wall)
+    PlaySoundLevel(ax, ay, SND_WALL_GROWING);
 }
 
 void CheckForDragon(int x, int y)
@@ -4134,7 +4347,7 @@ static void CheckBuggyBase(int x, int y)
 
 	  if (IS_PLAYER(xx, yy))
 	  {
-	    PlaySoundLevel(x, y, SND_SP_BUG);
+	    PlaySoundLevel(x, y, SND_SP_BUGGY_BASE_ACTIVATING);
 	    break;
 	  }
 	}
@@ -4164,6 +4377,7 @@ static void CheckTrap(int x, int y)
 	return;
 
       Feld[x][y] = EL_TRAP_ACTIVE;
+      PlaySoundLevel(x, y, SND_TRAP_ACTIVATING);
     }
   }
   else if (element == EL_TRAP_ACTIVE)
@@ -4215,6 +4429,9 @@ static void DrawBeltAnimation(int x, int y, int element)
     int graphic = el2gfx(element) + (belt_dir == MV_LEFT ? 0 : 7);
 
     DrawGraphicAnimation(x, y, graphic, 8, delay, mode);
+
+    if (!(FrameCounter % 2))
+      PlaySoundLevel(x, y, SND_CONVEYOR_BELT_RUNNING);
   }
 }
 
@@ -4255,6 +4472,15 @@ static void PlayerActions(struct PlayerInfo *player, byte player_action)
       if (button2)
 	bombed = PlaceBomb(player);
       moved = MoveFigure(player, dx, dy);
+    }
+
+    if (tape.single_step && tape.recording && !tape.pausing)
+    {
+      if (button1 || (bombed && !moved))
+      {
+	TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+	SnapField(player, 0, 0);		/* stop snapping */
+      }
     }
 
 #if 0
@@ -4364,6 +4590,9 @@ void GameActions()
   action_delay_value =
     (tape.playing && tape.fast_forward ? FfwdFrameDelay : GameFrameDelay);
 
+  if (tape.playing && tape.index_search && !tape.pausing)
+    action_delay_value = 0;
+
   /* ---------- main game synchronization point ---------- */
 
   WaitUntilDelayReached(&action_delay, action_delay_value);
@@ -4397,11 +4626,6 @@ void GameActions()
 
   if (tape.pausing)
     return;
-
-  if (tape.playing)
-    TapePlayDelay();
-  else if (tape.recording)
-    TapeRecordDelay();
 
   recorded_player_action = (tape.playing ? TapePlayAction() : NULL);
 
@@ -4513,7 +4737,7 @@ void GameActions()
     else if (element == EL_AMOEBING)
       AmoebeWaechst(x, y);
     else if (element == EL_DEAMOEBING)
-      AmoebeSchrumpft(x, y);
+      AmoebaDisappearing(x, y);
 
 #if !USE_NEW_AMOEBA_CODE
     else if (IS_AMOEBALIVE(element))
@@ -4523,7 +4747,7 @@ void GameActions()
     else if (element == EL_LIFE || element == EL_LIFE_ASYNC)
       Life(x, y);
     else if (element == EL_ABLENK_EIN)
-      Ablenk(x, y);
+      RobotWheel(x, y);
     else if (element == EL_TIMEGATE_SWITCH_ON)
       TimegateWheel(x, y);
     else if (element == EL_SALZSAEURE)
@@ -4570,9 +4794,21 @@ void GameActions()
     else if (element == EL_EXTRA_TIME)
       DrawGraphicAnimation(x, y, GFX_EXTRA_TIME, 6, 4, ANIM_NORMAL);
     else if (element == EL_SHIELD_PASSIVE)
+    {
       DrawGraphicAnimation(x, y, GFX_SHIELD_PASSIVE, 6, 4, ANIM_NORMAL);
+#if 0
+      if (!(FrameCounter % 4))
+	PlaySoundLevel(x, y, SND_SHIELD_PASSIVE_ACTIVATED);
+#endif
+    }
     else if (element == EL_SHIELD_ACTIVE)
+    {
       DrawGraphicAnimation(x, y, GFX_SHIELD_ACTIVE, 6, 4, ANIM_NORMAL);
+#if 0
+      if (!(FrameCounter % 4))
+	PlaySoundLevel(x, y, SND_SHIELD_ACTIVE_ACTIVATED);
+#endif
+    }
 
     if (game.magic_wall_active)
     {
@@ -4665,7 +4901,16 @@ void GameActions()
   if (game.magic_wall_active)
   {
     if (!(game.magic_wall_time_left % 4))
-      PlaySoundLevel(sieb_x, sieb_y, SND_MIEP);
+    {
+      int element = Feld[sieb_x][sieb_y];
+
+      if (element == EL_MAGIC_WALL_BD_FULL ||
+	  element == EL_MAGIC_WALL_BD_EMPTY ||
+	  element == EL_MAGIC_WALL_BD_EMPTYING)
+	PlaySoundLevel(sieb_x, sieb_y, SND_BD_MAGIC_WALL_RUNNING);
+      else
+	PlaySoundLevel(sieb_x, sieb_y, SND_MAGIC_WALL_RUNNING);
+    }
 
     if (game.magic_wall_time_left > 0)
     {
@@ -4726,6 +4971,19 @@ void GameActions()
       CloseAllOpenTimegates();
   }
 
+  for (i=0; i<MAX_PLAYERS; i++)
+  {
+    struct PlayerInfo *player = &stored_player[i];
+
+    if (SHIELD_ON(player))
+    {
+      if (player->shield_active_time_left)
+	PlaySoundLevel(player->jx, player->jy, SND_SHIELD_ACTIVE_ACTIVATED);
+      else if (player->shield_passive_time_left)
+	PlaySoundLevel(player->jx, player->jy, SND_SHIELD_PASSIVE_ACTIVATED);
+    }
+  }
+
   if (TimeFrames >= (1000 / GameFrameDelay))
   {
     TimeFrames = 0;
@@ -4733,12 +4991,14 @@ void GameActions()
 
     for (i=0; i<MAX_PLAYERS; i++)
     {
-      if (SHIELD_ON(&stored_player[i]))
-      {
-	stored_player[i].shield_passive_time_left--;
+      struct PlayerInfo *player = &stored_player[i];
 
-	if (stored_player[i].shield_active_time_left > 0)
-	  stored_player[i].shield_active_time_left--;
+      if (SHIELD_ON(player))
+      {
+	player->shield_passive_time_left--;
+
+	if (player->shield_active_time_left > 0)
+	  player->shield_active_time_left--;
       }
     }
 
@@ -4750,7 +5010,7 @@ void GameActions()
       TimeLeft--;
 
       if (TimeLeft <= 10 && setup.time_limit)
-	PlaySoundStereo(SND_GONG, PSND_MAX_RIGHT);
+	PlaySoundStereo(SND_GAME_RUNNING_OUT_OF_TIME, SOUND_MAX_RIGHT);
 
       DrawText(DX_TIME, DY_TIME, int2str(TimeLeft, 3), FS_SMALL, FC_YELLOW);
 
@@ -4758,7 +5018,7 @@ void GameActions()
 	for (i=0; i<MAX_PLAYERS; i++)
 	  KillHero(&stored_player[i]);
     }
-    else if (level.time == 0)		/* level without time limit */
+    else if (level.time == 0 && !AllPlayersGone) /* level without time limit */
       DrawText(DX_TIME, DY_TIME, int2str(TimePlayed, 3), FS_SMALL, FC_YELLOW);
   }
 
@@ -4873,7 +5133,9 @@ static void CheckGravityMovement(struct PlayerInfo *player)
        (Feld[new_jx][new_jy] == EL_SP_BASE ||
 	Feld[new_jx][new_jy] == EL_ERDREICH));
 
-    if (field_under_player_is_free && !player_is_moving_to_valid_field)
+    if (field_under_player_is_free &&
+	!player_is_moving_to_valid_field &&
+	!IS_TUBE(Feld[jx][jy]))
       player->programmed_action = MV_DOWN;
   }
 }
@@ -5164,6 +5426,10 @@ void ScrollFigure(struct PlayerInfo *player, int mode)
       if (!local_player->friends_still_needed)
 	player->LevelSolved = player->GameOver = TRUE;
     }
+
+    if (tape.single_step && tape.recording && !tape.pausing &&
+	!player->programmed_action)
+      TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
   }
 }
 
@@ -5451,8 +5717,8 @@ void BuryHero(struct PlayerInfo *player)
   if (!player->active)
     return;
 
-  PlaySoundLevel(jx, jy, SND_AUTSCH);
-  PlaySoundLevel(jx, jy, SND_LACHEN);
+  PlaySoundLevel(jx, jy, SND_PLAYER_DYING);
+  PlaySoundLevel(jx, jy, SND_GAME_LOSING);
 
   player->GameOver = TRUE;
   RemoveHero(player);
@@ -5491,7 +5757,7 @@ int DigField(struct PlayerInfo *player,
 			dy == +1 ? MV_DOWN : MV_NO_MOVING);
   int element;
 
-  if (!player->MovPos)
+  if (player->MovPos == 0)
     player->Pushing = FALSE;
 
   if (mode == DF_NO_PUSH)
@@ -5539,20 +5805,13 @@ int DigField(struct PlayerInfo *player,
   switch (element)
   {
     case EL_LEERRAUM:
-      PlaySoundLevel(x, y, SND_EMPTY);
-      break;
-
     case EL_ERDREICH:
     case EL_SAND_INVISIBLE:
     case EL_TRAP_INACTIVE:
-      Feld[x][y] = EL_LEERRAUM;
-      PlaySoundLevel(x, y, SND_SCHLURF);
-      break;
-
     case EL_SP_BASE:
     case EL_SP_BUG:
-      Feld[x][y] = EL_LEERRAUM;
-      PlaySoundLevel(x, y, SND_SP_BASE);
+      RemoveField(x, y);
+      PlaySoundLevelElementAction(x, y, element, SND_ACTION_DIGGING);
       break;
 
     case EL_EDELSTEIN:
@@ -5574,21 +5833,18 @@ int DigField(struct PlayerInfo *player,
       DrawText(DX_EMERALDS, DY_EMERALDS,
 	       int2str(local_player->gems_still_needed, 3),
 	       FS_SMALL, FC_YELLOW);
-      if (element == EL_SP_INFOTRON)
-	PlaySoundLevel(x, y, SND_SP_INFOTRON);
-      else
-	PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevelElementAction(x, y, element, SND_ACTION_COLLECTING);
       break;
 
     case EL_SPEED_PILL:
       RemoveField(x, y);
       player->move_delay_value = MOVE_DELAY_HIGH_SPEED;
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_SPEED_PILL_COLLECTING);
       break;
 
     case EL_ENVELOPE:
       Feld[x][y] = EL_LEERRAUM;
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_ENVELOPE_COLLECTING);
       break;
 
     case EL_EXTRA_TIME:
@@ -5598,20 +5854,20 @@ int DigField(struct PlayerInfo *player,
 	TimeLeft += 10;
 	DrawText(DX_TIME, DY_TIME, int2str(TimeLeft, 3), FS_SMALL, FC_YELLOW);
       }
-      PlaySoundStereo(SND_GONG, PSND_MAX_RIGHT);
+      PlaySoundStereo(SND_EXTRA_TIME_COLLECTING, SOUND_MAX_RIGHT);
       break;
 
     case EL_SHIELD_PASSIVE:
       RemoveField(x, y);
       player->shield_passive_time_left += 10;
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_SHIELD_PASSIVE_COLLECTING);
       break;
 
     case EL_SHIELD_ACTIVE:
       RemoveField(x, y);
       player->shield_passive_time_left += 10;
       player->shield_active_time_left += 10;
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_SHIELD_ACTIVE_COLLECTING);
       break;
 
     case EL_DYNAMITE_INACTIVE:
@@ -5622,10 +5878,7 @@ int DigField(struct PlayerInfo *player,
       DrawText(DX_DYNAMITE, DY_DYNAMITE,
 	       int2str(local_player->dynamite, 3),
 	       FS_SMALL, FC_YELLOW);
-      if (element == EL_SP_DISK_RED)
-	PlaySoundLevel(x, y, SND_SP_INFOTRON);
-      else
-	PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevelElementAction(x, y, element, SND_ACTION_COLLECTING);
       break;
 
     case EL_DYNABOMB_NR:
@@ -5633,21 +5886,21 @@ int DigField(struct PlayerInfo *player,
       player->dynabomb_count++;
       player->dynabombs_left++;
       RaiseScoreElement(EL_DYNAMITE_INACTIVE);
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_DYNABOMB_NR_COLLECTING);
       break;
 
     case EL_DYNABOMB_SZ:
       RemoveField(x, y);
       player->dynabomb_size++;
       RaiseScoreElement(EL_DYNAMITE_INACTIVE);
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_DYNABOMB_SZ_COLLECTING);
       break;
 
     case EL_DYNABOMB_XL:
       RemoveField(x, y);
       player->dynabomb_xl = TRUE;
       RaiseScoreElement(EL_DYNAMITE_INACTIVE);
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_DYNABOMB_XL_COLLECTING);
       break;
 
     case EL_SCHLUESSEL1:
@@ -5664,7 +5917,7 @@ int DigField(struct PlayerInfo *player,
 			 GFX_SCHLUESSEL1 + key_nr);
       DrawMiniGraphicExt(window, DX_KEYS + key_nr * MINI_TILEX, DY_KEYS,
 			 GFX_SCHLUESSEL1 + key_nr);
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_KEY_COLLECTING);
       break;
     }
 
@@ -5682,7 +5935,7 @@ int DigField(struct PlayerInfo *player,
 			 GFX_SCHLUESSEL1 + key_nr);
       DrawMiniGraphicExt(window, DX_KEYS + key_nr * MINI_TILEX, DY_KEYS,
 			 GFX_SCHLUESSEL1 + key_nr);
-      PlaySoundLevel(x, y, SND_PONG);
+      PlaySoundLevel(x, y, SND_KEY_COLLECTING);
       break;
     }
 
@@ -5691,12 +5944,15 @@ int DigField(struct PlayerInfo *player,
       ZX = x;
       ZY = y;
       DrawLevelField(x, y);
+      PlaySoundLevel(x, y, SND_ROBOT_WHEEL_ACTIVATING);
       return MF_ACTION;
       break;
 
     case EL_SP_TERMINAL:
       {
 	int xx, yy;
+
+	PlaySoundLevel(x, y, SND_SP_TERMINAL_ACTIVATING);
 
 	for (yy=0; yy<lev_fieldy; yy++)
 	{
@@ -5729,6 +5985,7 @@ int DigField(struct PlayerInfo *player,
       {
 	player->Switching = TRUE;
 	ToggleBeltSwitch(x, y);
+	PlaySoundLevel(x, y, SND_CONVEYOR_BELT_SWITCH_ACTIVATING);
       }
       return MF_ACTION;
       break;
@@ -5739,6 +5996,7 @@ int DigField(struct PlayerInfo *player,
       {
 	player->Switching = TRUE;
 	ToggleSwitchgateSwitch(x, y);
+	PlaySoundLevel(x, y, SND_SWITCHGATE_SWITCH_ACTIVATING);
       }
       return MF_ACTION;
       break;
@@ -5749,12 +6007,16 @@ int DigField(struct PlayerInfo *player,
       {
 	player->Switching = TRUE;
 	ToggleLightSwitch(x, y);
+	PlaySoundLevel(x, y, element == EL_LIGHT_SWITCH_OFF ?
+		       SND_LIGHT_SWITCH_ACTIVATING :
+		       SND_LIGHT_SWITCH_DEACTIVATING);
       }
       return MF_ACTION;
       break;
 
     case EL_TIMEGATE_SWITCH_OFF:
       ActivateTimegateSwitch(x, y);
+      PlaySoundLevel(x, y, SND_TIMEGATE_WHEEL_ACTIVATING);
 
       return MF_ACTION;
       break;
@@ -5772,6 +6034,7 @@ int DigField(struct PlayerInfo *player,
 			    element == EL_BALLOON_SEND_UP    ? MV_UP :
 			    element == EL_BALLOON_SEND_DOWN  ? MV_DOWN :
 			    MV_NO_MOVING);
+      PlaySoundLevel(x, y, SND_BALLOON_SWITCH_ACTIVATING);
 
       return MF_ACTION;
       break;
@@ -5781,11 +6044,11 @@ int DigField(struct PlayerInfo *player,
 	return MF_NO_ACTION;
 
       player->LevelSolved = player->GameOver = TRUE;
-      PlaySoundStereo(SND_SP_EXIT, PSND_MAX_RIGHT);
+      PlaySoundStereo(SND_SP_EXIT_ENTERING, SOUND_MAX_RIGHT);
       break;
 
+      /* the following elements cannot be pushed by "snapping" */
     case EL_FELSBROCKEN:
-    case EL_BD_ROCK:
     case EL_BOMBE:
     case EL_DX_SUPABOMB:
     case EL_KOKOSNUSS:
@@ -5793,7 +6056,12 @@ int DigField(struct PlayerInfo *player,
     case EL_SP_ZONK:
     case EL_SP_DISK_ORANGE:
     case EL_SPRING:
-      if (dy || mode == DF_SNAP)
+      if (mode == DF_SNAP)
+	return MF_NO_ACTION;
+      /* no "break" -- fall through to next case */
+      /* the following elements can be pushed by "snapping" */
+    case EL_BD_ROCK:
+      if (dy)
 	return MF_NO_ACTION;
 
       player->Pushing = TRUE;
@@ -5820,8 +6088,16 @@ int DigField(struct PlayerInfo *player,
 	return MF_NO_ACTION;
 #endif
 
-      RemoveField(x, y);
-      Feld[x+dx][y+dy] = element;
+      if (mode == DF_SNAP)
+      {
+	InitMovingField(x, y, move_direction);
+	ContinueMoving(x, y);
+      }
+      else
+      {
+	RemoveField(x, y);
+	Feld[x+dx][y+dy] = element;
+      }
 
       if (element == EL_SPRING)
       {
@@ -5832,14 +6108,7 @@ int DigField(struct PlayerInfo *player,
       player->push_delay_value = (element == EL_SPRING ? 0 : 2 + RND(8));
 
       DrawLevelField(x+dx, y+dy);
-      if (element == EL_FELSBROCKEN || element == EL_BD_ROCK)
-	PlaySoundLevel(x+dx, y+dy, SND_PUSCH);
-      else if (element == EL_KOKOSNUSS)
-	PlaySoundLevel(x+dx, y+dy, SND_KNURK);
-      else if (IS_SP_ELEMENT(element))
-	PlaySoundLevel(x+dx, y+dy, SND_SP_ZONKPUSH);
-      else
-	PlaySoundLevel(x+dx, y+dy, SND_PUSCH);	/* better than "SND_KLOPF" */
+      PlaySoundLevelElementAction(x, y, element, SND_ACTION_PUSHING);
       break;
 
     case EL_PFORTE1:
@@ -5871,8 +6140,7 @@ int DigField(struct PlayerInfo *player,
       player->programmed_action = move_direction;
       DOUBLE_PLAYER_SPEED(player);
 
-      PlaySoundLevel(x, y, SND_GATE);
-
+      PlaySoundLevel(x, y, SND_GATE_PASSING);
       break;
 
     case EL_EM_GATE_1X:
@@ -5888,8 +6156,7 @@ int DigField(struct PlayerInfo *player,
       player->programmed_action = move_direction;
       DOUBLE_PLAYER_SPEED(player);
 
-      PlaySoundLevel(x, y, SND_GATE);
-
+      PlaySoundLevel(x, y, SND_GATE_PASSING);
       break;
 
     case EL_SWITCHGATE_OPEN:
@@ -5901,8 +6168,7 @@ int DigField(struct PlayerInfo *player,
       player->programmed_action = move_direction;
       DOUBLE_PLAYER_SPEED(player);
 
-      PlaySoundLevel(x, y, SND_GATE);
-
+      PlaySoundLevelElementAction(x, y, element, SND_ACTION_PASSING);
       break;
 
     case EL_SP_PORT1_LEFT:
@@ -5944,7 +6210,7 @@ int DigField(struct PlayerInfo *player,
       player->programmed_action = move_direction;
       DOUBLE_PLAYER_SPEED(player);
 
-      PlaySoundLevel(x, y, SND_GATE);
+      PlaySoundLevel(x, y, SND_SP_PORT_PASSING);
       break;
 
     case EL_TUBE_CROSS:
@@ -5985,6 +6251,8 @@ int DigField(struct PlayerInfo *player,
 
 	if (!(tube_enter_directions[i][1] & move_direction))
 	  return MF_NO_ACTION;	/* tube has no opening in this direction */
+
+	PlaySoundLevel(x, y, SND_TUBE_PASSING);
       }
       break;
 
@@ -5998,7 +6266,7 @@ int DigField(struct PlayerInfo *player,
       if (mode == DF_SNAP)
 	return MF_NO_ACTION;
 
-      PlaySoundLevel(x, y, SND_BUING);
+      PlaySoundLevel(x, y, SND_EXIT_ENTERING);
 
       break;
 
@@ -6006,7 +6274,7 @@ int DigField(struct PlayerInfo *player,
       Feld[x][y] = EL_BIRNE_EIN;
       local_player->lights_still_needed--;
       DrawLevelField(x, y);
-      PlaySoundLevel(x, y, SND_DENG);
+      PlaySoundLevel(x, y, SND_LAMP_ACTIVATING);
       return MF_ACTION;
       break;
 
@@ -6015,15 +6283,15 @@ int DigField(struct PlayerInfo *player,
       TimeLeft += 10;
       DrawText(DX_TIME, DY_TIME, int2str(TimeLeft, 3), FS_SMALL, FC_YELLOW);
       DrawLevelField(x, y);
-      PlaySoundStereo(SND_GONG, PSND_MAX_RIGHT);
+      PlaySoundStereo(SND_TIME_ORB_FULL_COLLECTING, SOUND_MAX_RIGHT);
       return MF_ACTION;
       break;
 
     case EL_SOKOBAN_FELD_LEER:
       break;
 
-    case EL_SOKOBAN_FELD_VOLL:
     case EL_SOKOBAN_OBJEKT:
+    case EL_SOKOBAN_FELD_VOLL:
     case EL_SONDE:
     case EL_SP_DISK_YELLOW:
     case EL_BALLOON:
@@ -6077,32 +6345,37 @@ int DigField(struct PlayerInfo *player,
 	  Feld[x+dx][y+dy] = EL_SOKOBAN_FELD_VOLL;
 	  local_player->sokobanfields_still_needed--;
 	  if (element == EL_SOKOBAN_OBJEKT)
-	    PlaySoundLevel(x, y, SND_DENG);
+	    PlaySoundLevel(x, y, SND_SOKOBAN_FIELD_FILLING);
+	  else
+	    PlaySoundLevel(x, y, SND_SOKOBAN_OBJECT_PUSHING);
 	}
 	else
+	{
 	  Feld[x+dx][y+dy] = EL_SOKOBAN_OBJEKT;
+	  if (element == EL_SOKOBAN_FELD_VOLL)
+	    PlaySoundLevel(x, y, SND_SOKOBAN_FIELD_CLEARING);
+	  else
+	    PlaySoundLevel(x, y, SND_SOKOBAN_OBJECT_PUSHING);
+	}
       }
       else
       {
 	RemoveField(x, y);
 	Feld[x+dx][y+dy] = element;
+	PlaySoundLevelElementAction(x, y, element, SND_ACTION_PUSHING);
       }
 
       player->push_delay_value = (element == EL_BALLOON ? 0 : 2);
 
       DrawLevelField(x, y);
       DrawLevelField(x+dx, y+dy);
-      if (element == EL_BALLOON)
-	PlaySoundLevel(x+dx, y+dy, SND_SCHLURF);
-      else
-	PlaySoundLevel(x+dx, y+dy, SND_PUSCH);
 
       if (IS_SB_ELEMENT(element) &&
 	  local_player->sokobanfields_still_needed == 0 &&
 	  game.emulation == EMU_SOKOBAN)
       {
 	player->LevelSolved = player->GameOver = TRUE;
-	PlaySoundLevel(x, y, SND_BUING);
+	PlaySoundLevel(x, y, SND_SOKOBAN_GAME_SOLVING);
       }
 
       break;
@@ -6134,6 +6407,9 @@ boolean SnapField(struct PlayerInfo *player, int dx, int dy)
 
   if (!dx && !dy)
   {
+    if (player->MovPos == 0)
+      player->Pushing = FALSE;
+
     player->snapped = FALSE;
     return FALSE;
   }
@@ -6187,6 +6463,8 @@ boolean PlaceBomb(struct PlayerInfo *player)
       else
 	DrawGraphicThruMask(SCREENX(jx), SCREENY(jy), GFX_DYNAMIT);
     }
+
+    PlaySoundLevel(jx, jy, SND_DYNAMITE_PLACING);
   }
   else
   {
@@ -6195,47 +6473,71 @@ boolean PlaceBomb(struct PlayerInfo *player)
     player->dynabombs_left--;
     if (IN_SCR_FIELD(SCREENX(jx), SCREENY(jy)))
       DrawGraphicThruMask(SCREENX(jx), SCREENY(jy), GFX_DYNABOMB);
+
+    PlaySoundLevel(jx, jy, SND_DYNABOMB_PLACING);
   }
 
   return TRUE;
 }
 
-void PlaySoundLevel(int x, int y, int sound_nr)
+void PlaySoundLevel(int x, int y, int nr)
 {
+  static int loop_sound_frame[NUM_SOUND_EFFECTS];
+  static int loop_sound_volume[NUM_SOUND_EFFECTS];
   int sx = SCREENX(x), sy = SCREENY(y);
-  int volume, stereo;
-  int silence_distance = 8;
+  int volume, stereo_position;
+  int max_distance = 8;
+  int type = (IS_LOOP_SOUND(nr) ? SND_CTRL_PLAY_LOOP : SND_CTRL_PLAY_SOUND);
 
-  if ((!setup.sound_simple && !IS_LOOP_SOUND(sound_nr)) ||
-      (!setup.sound_loops && IS_LOOP_SOUND(sound_nr)))
+  if ((!setup.sound_simple && !IS_LOOP_SOUND(nr)) ||
+      (!setup.sound_loops && IS_LOOP_SOUND(nr)))
     return;
 
   if (!IN_LEV_FIELD(x, y) ||
-      sx < -silence_distance || sx >= SCR_FIELDX+silence_distance ||
-      sy < -silence_distance || sy >= SCR_FIELDY+silence_distance)
+      sx < -max_distance || sx >= SCR_FIELDX + max_distance ||
+      sy < -max_distance || sy >= SCR_FIELDY + max_distance)
     return;
 
-  volume = PSND_MAX_VOLUME;
-
-#if !defined(PLATFORM_MSDOS)
-  stereo = (sx - SCR_FIELDX/2) * 12;
-#else
-  stereo = PSND_MIDDLE + (2 * sx - (SCR_FIELDX - 1)) * 5;
-  if (stereo > PSND_MAX_RIGHT)
-    stereo = PSND_MAX_RIGHT;
-  if (stereo < PSND_MAX_LEFT)
-    stereo = PSND_MAX_LEFT;
-#endif
+  volume = SOUND_MAX_VOLUME;
 
   if (!IN_SCR_FIELD(sx, sy))
   {
-    int dx = ABS(sx - SCR_FIELDX/2) - SCR_FIELDX/2;
-    int dy = ABS(sy - SCR_FIELDY/2) - SCR_FIELDY/2;
+    int dx = ABS(sx - SCR_FIELDX / 2) - SCR_FIELDX / 2;
+    int dy = ABS(sy - SCR_FIELDY / 2) - SCR_FIELDY / 2;
 
-    volume -= volume * (dx > dy ? dx : dy) / silence_distance;
+    volume -= volume * (dx > dy ? dx : dy) / max_distance;
   }
 
-  PlaySoundExt(sound_nr, volume, stereo, PSND_NO_LOOP);
+  stereo_position = (SOUND_MAX_LEFT +
+		     (sx + max_distance) * SOUND_MAX_LEFT2RIGHT /
+		     (SCR_FIELDX + 2 * max_distance));
+
+  if (IS_LOOP_SOUND(nr))
+  {
+    /* This assures that quieter loop sounds do not overwrite louder ones,
+       while restarting sound volume comparison with each new game frame. */
+
+    if (loop_sound_volume[nr] > volume && loop_sound_frame[nr] == FrameCounter)
+      return;
+
+    loop_sound_volume[nr] = volume;
+    loop_sound_frame[nr] = FrameCounter;
+  }
+
+  PlaySoundExt(nr, volume, stereo_position, type);
+}
+
+void PlaySoundLevelAction(int x, int y, int sound_action)
+{
+  PlaySoundLevelElementAction(x, y, Feld[x][y], sound_action);
+}
+
+void PlaySoundLevelElementAction(int x, int y, int element, int sound_action)
+{
+  int sound_effect = element_action_sound[element][sound_action];
+
+  if (sound_effect != -1)
+    PlaySoundLevel(x, y, sound_effect);
 }
 
 void RaiseScore(int value)
@@ -6290,6 +6592,31 @@ void RaiseScoreElement(int element)
       break;
   }
 }
+
+void RequestQuitGame(boolean ask_if_really_quit)
+{
+  if (AllPlayersGone ||
+      !ask_if_really_quit ||
+      level_editor_test_game ||
+      Request("Do you really want to quit the game ?",
+	      REQ_ASK | REQ_STAY_CLOSED))
+  {
+#if defined(PLATFORM_UNIX)
+    if (options.network)
+      SendToServer_StopPlaying();
+    else
+#endif
+    {
+      game_status = MAINMENU;
+      DrawMainMenu();
+    }
+  }
+  else
+  {
+    OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
+  }
+}
+
 
 /* ---------- new game button stuff ---------------------------------------- */
 
@@ -6439,30 +6766,7 @@ static void HandleGameButtons(struct GadgetInfo *gi)
   switch (id)
   {
     case GAME_CTRL_ID_STOP:
-      if (AllPlayersGone)
-      {
-	CloseDoor(DOOR_CLOSE_1);
-	game_status = MAINMENU;
-	DrawMainMenu();
-	break;
-      }
-
-      if (level_editor_test_game ||
-	  Request("Do you really want to quit the game ?",
-		  REQ_ASK | REQ_STAY_CLOSED))
-      { 
-#if defined(PLATFORM_UNIX)
-	if (options.network)
-	  SendToServer_StopPlaying();
-	else
-#endif
-	{
-	  game_status = MAINMENU;
-	  DrawMainMenu();
-	}
-      }
-      else
-	OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
+      RequestQuitGame(TRUE);
       break;
 
     case GAME_CTRL_ID_PAUSE:
@@ -6476,7 +6780,7 @@ static void HandleGameButtons(struct GadgetInfo *gi)
 #endif
       }
       else
-	TapeTogglePause();
+	TapeTogglePause(TAPE_TOGGLE_MANUAL);
       break;
 
     case GAME_CTRL_ID_PLAY:
@@ -6500,11 +6804,10 @@ static void HandleGameButtons(struct GadgetInfo *gi)
 	setup.sound_music = FALSE;
 	FadeMusic();
       }
-      else if (audio.loops_available)
+      else if (audio.music_available)
       { 
 	setup.sound = setup.sound_music = TRUE;
-	if (num_bg_loops)
-	  PlayMusic(level_nr % num_bg_loops);
+	PlayMusic(level_nr);
       }
       break;
 

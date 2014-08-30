@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -60,6 +60,9 @@ typedef int			Colormap;
 
 struct SDLSurfaceInfo
 {
+  char *source_filename;
+
+  int width, height;
   SDL_Surface *surface;
   SDL_Surface *surface_masked;
   GC gc;
@@ -311,6 +314,10 @@ struct XY
 #define KSYM_F23		KSYM_UNDEFINED
 #define KSYM_F24		KSYM_UNDEFINED
 
+#define KSYM_FKEY_FIRST		KSYM_F1
+#define KSYM_FKEY_LAST		KSYM_F15
+#define KSYM_NUM_FKEYS		(KSYM_FKEY_LAST - KSYM_FKEY_FIRST + 1)
+
 
 /* SDL function definitions */
 
@@ -329,5 +336,9 @@ inline void SDLOpenAudio(void);
 inline void SDLCloseAudio(void);
 
 inline void SDLNextEvent(Event *);
+
+void HandleJoystickEvent(Event *);
+void SDLInitJoysticks(void);
+boolean SDLReadJoystick(int, int *, int *, boolean *, boolean *);
 
 #endif /* SDL_H */

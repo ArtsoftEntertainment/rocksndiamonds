@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -11,25 +11,14 @@
 * tools.c                                                  *
 ***********************************************************/
 
-#include <stdarg.h>
-
-#if defined(PLATFORM_FREEBSD)
-#include <machine/joystick.h>
-#endif
-
 #include "libgame/libgame.h"
 
 #include "tools.h"
 #include "game.h"
 #include "events.h"
-#include "joystick.h"
 #include "cartoons.h"
 #include "network.h"
 #include "tape.h"
-
-#if defined(PLATFORM_MSDOS)
-extern boolean wait_for_vsync;
-#endif
 
 /* tool button identifiers */
 #define TOOL_CTRL_ID_YES	0
@@ -82,6 +71,51 @@ void SetDrawtoField(int mode)
   }
 }
 
+void RedrawPlayfield(boolean force_redraw, int x, int y, int width, int height)
+{
+  if (game_status == PLAYING)
+  {
+    if (force_redraw)
+    {
+      x = gfx.sx - TILEX;
+      y = gfx.sy - TILEY;
+      width = gfx.sxsize + 2 * TILEX;
+      height = gfx.sysize + 2 * TILEY;
+    }
+
+    if (force_redraw || setup.direct_draw)
+    {
+      int xx, yy;
+      int x1 = (x - SX) / TILEX, y1 = (y - SY) / TILEY;
+      int x2 = (x - SX + width) / TILEX, y2 = (y - SY + height) / TILEY;
+
+      if (setup.direct_draw)
+	SetDrawtoField(DRAW_BACKBUFFER);
+
+      for(xx=BX1; xx<=BX2; xx++)
+	for(yy=BY1; yy<=BY2; yy++)
+	  if (xx >= x1 && xx <= x2 && yy >= y1 && yy <= y2)
+	    DrawScreenField(xx, yy);
+      DrawAllPlayers();
+
+      if (setup.direct_draw)
+	SetDrawtoField(DRAW_DIRECT);
+    }
+
+    if (setup.soft_scrolling)
+    {
+      int fx = FX, fy = FY;
+
+      fx += (ScreenMovDir & (MV_LEFT|MV_RIGHT) ? ScreenGfxPos : 0);
+      fy += (ScreenMovDir & (MV_UP|MV_DOWN)    ? ScreenGfxPos : 0);
+
+      BlitBitmap(fieldbuffer, backbuffer, fx,fy, SXSIZE,SYSIZE, SX,SY);
+    }
+  }
+
+  BlitBitmap(drawto, window, x, y, width, height, x, y);
+}
+
 void BackToFront()
 {
   int x,y;
@@ -96,7 +130,7 @@ void BackToFront()
   if (redraw_mask & REDRAW_FIELD)
     redraw_mask &= ~REDRAW_TILES;
 
-  if (!redraw_mask)
+  if (redraw_mask == REDRAW_NONE)
     return;
 
   if (global.fps_slowdown && game_status == PLAYING)
@@ -257,7 +291,7 @@ void BackToFront()
     for(y=0; y<MAX_BUF_YSIZE; y++)
       redraw[x][y] = 0;
   redraw_tiles = 0;
-  redraw_mask = 0;
+  redraw_mask = REDRAW_NONE;
 }
 
 void FadeToFront()
@@ -1737,6 +1771,9 @@ int REQ_in_range(int x, int y)
   return 0;
 }
 
+#define MAX_REQUEST_LINES		13
+#define MAX_REQUEST_LINE_LEN		7
+
 boolean Request(char *text, unsigned int req_state)
 {
   int mx, my, ty, result = -1;
@@ -1765,31 +1802,35 @@ boolean Request(char *text, unsigned int req_state)
   ClearRectangle(drawto, DX, DY, DXSIZE, DYSIZE);
 
   /* write text for request */
-  for(ty=0; ty<13; ty++)
+  for(ty=0; ty < MAX_REQUEST_LINES; ty++)
   {
+    char text_line[MAX_REQUEST_LINE_LEN + 1];
     int tx, tl, tc;
-    char txt[256];
 
     if (!*text)
       break;
 
-    for(tl=0,tx=0; tx<7; tl++,tx++)
+    for(tl=0,tx=0; tx < MAX_REQUEST_LINE_LEN; tl++,tx++)
     {
       tc = *(text + tx);
-      if (!tc || tc == 32)
+      if (!tc || tc == ' ')
 	break;
     }
+
     if (!tl)
     { 
       text++; 
       ty--; 
       continue; 
     }
-    sprintf(txt, text); 
-    txt[tl] = 0;
-    DrawTextExt(drawto, DX + 51 - (tl * 14)/2, DY + 8 + ty * 16,
-		txt, FS_SMALL, FC_YELLOW);
-    text += tl + (tc == 32 ? 1 : 0);
+
+    strncpy(text_line, text, tl);
+    text_line[tl] = 0;
+
+    DrawTextExt(drawto, DX + 50 - (tl * 14)/2, DY + 8 + ty * 16,
+		text_line, FS_SMALL, FC_YELLOW);
+
+    text += tl + (tc == ' ' ? 1 : 0);
   }
 
   if (req_state & REQ_ASK)
@@ -1921,7 +1962,7 @@ boolean Request(char *text, unsigned int req_state)
 	  break;
 
 	case EVENT_KEYRELEASE:
-	  key_joystick_mapping = 0;
+	  ClearPlayerAction();
 	  break;
 
 	default:
@@ -2009,7 +2050,12 @@ unsigned int CloseDoor(unsigned int door_state)
 
 unsigned int GetDoorState()
 {
-  return(MoveDoor(DOOR_GET_STATE));
+  return MoveDoor(DOOR_GET_STATE);
+}
+
+unsigned int SetDoorState(unsigned int door_state)
+{
+  return MoveDoor(door_state | DOOR_SET_STATE);
 }
 
 unsigned int MoveDoor(unsigned int door_state)
@@ -2022,6 +2068,16 @@ unsigned int MoveDoor(unsigned int door_state)
 
   if (door_state == DOOR_GET_STATE)
     return(door1 | door2);
+
+  if (door_state & DOOR_SET_STATE)
+  {
+    if (door_state & DOOR_ACTION_1)
+      door1 = door_state & DOOR_ACTION_1;
+    if (door_state & DOOR_ACTION_2)
+      door2 = door_state & DOOR_ACTION_2;
+
+    return(door1 | door2);
+  }
 
   if (door1 == DOOR_OPEN_1 && door_state & DOOR_OPEN_1)
     door_state &= ~DOOR_OPEN_1;
@@ -2036,13 +2092,20 @@ unsigned int MoveDoor(unsigned int door_state)
   {
     stepsize = 20;
     door_delay_value = 0;
-    StopSound(SND_OEFFNEN);
+    StopSound(SND_MENU_DOOR_OPENING);
+    StopSound(SND_MENU_DOOR_CLOSING);
   }
 
   if (door_state & DOOR_ACTION)
   {
     if (!(door_state & DOOR_NO_DELAY))
-      PlaySoundStereo(SND_OEFFNEN, PSND_MAX_RIGHT);
+    {
+      /* opening door sound has priority over simultaneously closing door */
+      if (door_state & (DOOR_OPEN_1 | DOOR_OPEN_2))
+	PlaySoundStereo(SND_MENU_DOOR_OPENING, SOUND_MAX_RIGHT);
+      else if (door_state & (DOOR_CLOSE_1 | DOOR_CLOSE_2))
+	PlaySoundStereo(SND_MENU_DOOR_CLOSING, SOUND_MAX_RIGHT);
+    }
 
     start = ((door_state & DOOR_NO_DELAY) ? DXSIZE : 0);
 
@@ -2137,7 +2200,10 @@ unsigned int MoveDoor(unsigned int door_state)
   }
 
   if (setup.quick_doors)
-    StopSound(SND_OEFFNEN);
+  {
+    StopSound(SND_MENU_DOOR_OPENING);
+    StopSound(SND_MENU_DOOR_CLOSING);
+  }
 
   if (door_state & DOOR_ACTION_1)
     door1 = door_state & DOOR_ACTION_1;
@@ -2282,13 +2348,6 @@ static struct
   }
 };
 
-#if 0
-static void DoNotDisplayInfoText(void *ptr)
-{
-  return;
-}
-#endif
-
 void CreateToolButtons()
 {
   int i;
@@ -2335,11 +2394,6 @@ void CreateToolButtons()
 		      GDI_DECORATION_SIZE, MINI_TILEX, MINI_TILEY,
 		      GDI_DECORATION_SHIFTING, 1, 1,
 		      GDI_EVENT_MASK, event_mask,
-
-#if 0
-		      GDI_CALLBACK_INFO, DoNotDisplayInfoText,
-#endif
-
 		      GDI_CALLBACK_ACTION, HandleToolButtons,
 		      GDI_END);
 

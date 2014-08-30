@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -288,13 +288,14 @@
 #define GADGET_ID_DOUBLE_SPEED		73
 #define GADGET_ID_GRAVITY		74
 #define GADGET_ID_STICK_ELEMENT		75
+#define GADGET_ID_EM_SLIPPERY_GEMS	76
 
 /* another drawing area for random placement */
-#define GADGET_ID_RANDOM_BACKGROUND	76
+#define GADGET_ID_RANDOM_BACKGROUND	77
 
 /* gadgets for buttons in element list */
-#define GADGET_ID_ELEMENTLIST_FIRST	77
-#define GADGET_ID_ELEMENTLIST_LAST	(77 + ED_NUM_ELEMENTLIST_BUTTONS - 1)
+#define GADGET_ID_ELEMENTLIST_FIRST	78
+#define GADGET_ID_ELEMENTLIST_LAST	(78 + ED_NUM_ELEMENTLIST_BUTTONS - 1)
 
 #define NUM_EDITOR_GADGETS		(GADGET_ID_ELEMENTLIST_LAST + 1)
 
@@ -356,8 +357,9 @@
 #define ED_CHECKBUTTON_ID_GRAVITY		1
 #define ED_CHECKBUTTON_ID_RANDOM_RESTRICTED	2
 #define ED_CHECKBUTTON_ID_STICK_ELEMENT		3
+#define ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS	4
 
-#define ED_NUM_CHECKBUTTONS			4
+#define ED_NUM_CHECKBUTTONS			5
 
 #define ED_CHECKBUTTON_ID_LEVEL_FIRST	ED_CHECKBUTTON_ID_DOUBLE_SPEED
 #define ED_CHECKBUTTON_ID_LEVEL_LAST	ED_CHECKBUTTON_ID_RANDOM_RESTRICTED
@@ -670,6 +672,12 @@ static struct
     GADGET_ID_STICK_ELEMENT,
     &stick_element_properties_window,
     "stick window to edit content",	"stick window to edit content"
+  },
+  {
+    ED_SETTINGS_XPOS,			ED_COUNTER_YPOS(4),
+    GADGET_ID_EM_SLIPPERY_GEMS,
+    &level.em_slippery_gems,
+    "slip down from certain flat walls","use EM style slipping behaviour"
   }
 };
 
@@ -1265,8 +1273,8 @@ static char *getElementInfoText(int element)
 {
   char *info_text = "unknown";
 
-  if (element < num_element_info)
-    info_text = element_info[element];
+  if (element < NUM_LEVEL_ELEMENTS)
+    info_text = element_info[element].editor_description;
   else
     Error(ERR_WARN, "no element description for element %d", element);
 
@@ -2732,6 +2740,19 @@ static void DrawPropertiesWindow()
     else
       DrawElementContentAreas();
   }
+
+  if (IS_GEM(properties_element))
+  {
+    /* draw checkbutton gadget */
+    i = ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS;
+    x = checkbutton_info[i].x + xoffset_right2;
+    y = checkbutton_info[i].y + yoffset_right2;
+
+    DrawTextF(x, y, font_color, checkbutton_info[i].text);
+    ModifyGadget(level_editor_gadget[checkbutton_info[i].gadget_id],
+		 GDI_CHECKED, *checkbutton_info[i].value, GDI_END);
+    MapCheckbuttonGadget(i);
+  }
 }
 
 static void DrawLineElement(int sx, int sy, int element, boolean change_level)
@@ -3620,6 +3641,7 @@ static void HandleCounterButtons(struct GadgetInfo *gi)
 
     case ED_COUNTER_ID_SELECT_LEVEL:
       LoadLevel(level_nr);
+      TapeErase();
       ResetUndoBuffer();
       DrawEditModeWindow();
       break;
@@ -3899,6 +3921,9 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	Request("No Level without Gregor Mc Duffin please !", REQ_CONFIRM);
       else
       {
+	if (LevelChanged())
+	  level.game_version = GAME_VERSION_ACTUAL;
+
 	for(x=0; x<lev_fieldx; x++)
 	  for(y=0; y<lev_fieldy; y++)
 	    FieldBackup[x][y] = Ur[x][y];
@@ -3925,27 +3950,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       break;
 
     case GADGET_ID_EXIT:
-      if (!LevelChanged() ||
-	  Request("Level has changed! Exit without saving ?",
-		  REQ_ASK | REQ_STAY_OPEN))
-      {
-	CloseDoor(DOOR_CLOSE_1);
-
-	/*
-	CloseDoor(DOOR_CLOSE_ALL);
-	*/
-
-	game_status = MAINMENU;
-	DrawMainMenu();
-      }
-      else
-      {
-	CloseDoor(DOOR_CLOSE_1);
-	BlitBitmap(pix[PIX_DB_DOOR], pix[PIX_DB_DOOR],
-		   DOOR_GFX_PAGEX2, DOOR_GFX_PAGEY1, DXSIZE,DYSIZE,
-		   DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
-	OpenDoor(DOOR_OPEN_1);
-      }
+      RequestExitLevelEditor(TRUE);	/* if level has changed, ask user */
       break;
 
     default:
@@ -3997,10 +4002,12 @@ void HandleLevelEditorKeyInput(Key key)
       DrawLevelText(0, 0, 0, TEXT_BACKSPACE);
     else if (key == KSYM_Return)
       DrawLevelText(0, 0, 0, TEXT_NEWLINE);
+    else if (key == KSYM_Escape)
+      DrawLevelText(0, 0, 0, TEXT_END);
   }
   else if (button_status == MB_RELEASED)
   {
-    int i, id;
+    int i, id = GADGET_ID_NONE;
 
     switch (key)
     {
@@ -4025,8 +4032,19 @@ void HandleLevelEditorKeyInput(Key key)
 	button = MB_RIGHTBUTTON;
 	break;
 
+      case KSYM_Escape:
+        if (edit_mode == ED_MODE_DRAWING)
+	{
+	  RequestExitLevelEditor(setup.ask_on_escape);
+	}
+        else
+	{
+	  DrawDrawingWindow();
+	  edit_mode = ED_MODE_DRAWING;
+	}
+        break;
+
       default:
-	id = GADGET_ID_NONE;
 	break;
     }
 
@@ -4034,7 +4052,7 @@ void HandleLevelEditorKeyInput(Key key)
       ClickOnGadget(level_editor_gadget[id], button);
     else if (letter == '.')
       ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS], button);
-    else if (key == KSYM_space || key == KSYM_Return)
+    else if (key == KSYM_Return || key == setup.shortcut.toggle_pause)
       ClickOnGadget(level_editor_gadget[GADGET_ID_TEST], button);
     else
       for (i=0; i<ED_NUM_CTRL_BUTTONS; i++)
@@ -4061,6 +4079,9 @@ void HandleEditorGadgetInfoText(void *ptr)
     return;
 
   ClearEditorGadgetInfoText();
+
+  if (gi->event.type == GD_EVENT_INFO_LEAVING)
+    return;
 
   /* misuse this function to delete brush cursor, if needed */
   if (edit_mode == ED_MODE_DRAWING && draw_with_brush)
@@ -4108,6 +4129,9 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
   int max_sy = gi->drawing.area_ysize - 1;
 
   ClearEditorGadgetInfoText();
+
+  if (gi->event.type == GD_EVENT_INFO_LEAVING)
+    return;
 
   /* make sure to stay inside drawing area boundaries */
   sx = (sx < min_sx ? min_sx : sx > max_sx ? max_sx : sx);
@@ -4216,4 +4240,28 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
     DrawTextF(INFOTEXT_XPOS - SX, INFOTEXT_YPOS - SY, FC_YELLOW,
 	      "Content area %d position: %d, %d",
 	      id - GADGET_ID_ELEM_CONTENT_0 + 1, sx, sy);
+}
+
+void RequestExitLevelEditor(boolean ask_if_level_has_changed)
+{
+  if (!ask_if_level_has_changed ||
+      !LevelChanged() ||
+      Request("Level has changed! Exit without saving ?",
+	      REQ_ASK | REQ_STAY_OPEN))
+  {
+    CloseDoor(DOOR_CLOSE_1);
+    /*
+    CloseDoor(DOOR_CLOSE_ALL);
+    */
+    game_status = MAINMENU;
+    DrawMainMenu();
+  }
+  else
+  {
+    CloseDoor(DOOR_CLOSE_1);
+    BlitBitmap(pix[PIX_DB_DOOR], pix[PIX_DB_DOOR],
+	       DOOR_GFX_PAGEX2, DOOR_GFX_PAGEY1, DXSIZE,DYSIZE,
+	       DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
+    OpenDoor(DOOR_OPEN_1);
+  }
 }

@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -29,14 +30,6 @@
 #define WIN_XSIZE	672
 #define WIN_YSIZE	560
 
-#if !defined(PLATFORM_MSDOS)
-#define WIN_XPOS	0
-#define WIN_YPOS	0
-#else
-#define WIN_XPOS	((XRES - WIN_XSIZE) / 2)
-#define WIN_YPOS	((YRES - WIN_YSIZE) / 2)
-#endif
-
 #define SCR_FIELDX	17
 #define SCR_FIELDY	17
 #define MAX_BUF_XSIZE	(SCR_FIELDX + 2)
@@ -47,8 +40,6 @@
 #define STD_LEV_FIELDY	32
 #define MAX_LEV_FIELDX	128
 #define MAX_LEV_FIELDY	128
-
-#define MAX_PLAYERS	4
 
 #define SCREENX(a)	((a) - scroll_x)
 #define SCREENY(a)	((a) - scroll_y)
@@ -96,7 +87,7 @@
 #define EP_BIT_BELT		(1 << 0)
 #define EP_BIT_BELT_SWITCH	(1 << 1)
 #define EP_BIT_TUBE		(1 << 2)
-#define EP_BIT_SLIPPERY_GEMS	(1 << 3)
+#define EP_BIT_EM_SLIPPERY_WALL	(1 << 3)
 
 #define IS_AMOEBALIVE(e)	(Elementeigenschaften1[e] & EP_BIT_AMOEBALIVE)
 #define IS_AMOEBOID(e)		(Elementeigenschaften1[e] & EP_BIT_AMOEBOID)
@@ -133,7 +124,7 @@
 #define IS_BELT(e)		(Elementeigenschaften2[e] & EP_BIT_BELT)
 #define IS_BELT_SWITCH(e)	(Elementeigenschaften2[e] & EP_BIT_BELT_SWITCH)
 #define IS_TUBE(e)		(Elementeigenschaften2[e] & EP_BIT_TUBE)
-#define IS_SLIPPERY_GEMS(e)	(Elementeigenschaften2[e] & EP_BIT_SLIPPERY_GEMS)
+#define IS_EM_SLIPPERY_WALL(e)	(Elementeigenschaften2[e] & EP_BIT_EM_SLIPPERY_WALL)
 
 #define IS_PLAYER(x,y)		(ELEM_IS_PLAYER(StorePlayer[x][y]))
 
@@ -157,7 +148,7 @@
 #define IS_DRAWABLE(e)		((e) < EL_BLOCKED)
 #define IS_NOT_DRAWABLE(e)	((e) >= EL_BLOCKED)
 #define TAPE_IS_EMPTY(x)	((x).length == 0)
-#define TAPE_IS_STOPPED(x)	(!(x).recording && !(x).playing &&!(x).pausing)
+#define TAPE_IS_STOPPED(x)	(!(x).recording && !(x).playing)
 
 #define PLAYERINFO(x,y)		(&stored_player[StorePlayer[x][y]-EL_SPIELER1])
 #define SHIELD_ON(p)		((p)->shield_passive_time_left > 0)
@@ -184,7 +175,6 @@
 #define NUM_BITMAPS		12
 
 /* boundaries of arrays etc. */
-#define MAX_PLAYER_NAME_LEN	10
 #define MAX_LEVEL_NAME_LEN	32
 #define MAX_LEVEL_AUTHOR_LEN	32
 #define MAX_TAPELEN		(1000 * 50)	/* max. time * framerate */
@@ -212,56 +202,6 @@ struct HiScore
   int Score;
 };
 
-struct SetupJoystickInfo
-{
-  char *device_name;
-  int xleft, xmiddle, xright;
-  int yupper, ymiddle, ylower;
-  int snap;
-  int bomb;
-};
-
-struct SetupKeyboardInfo
-{
-  Key left;
-  Key right;
-  Key up;
-  Key down;
-  Key snap;
-  Key bomb;
-};
-
-struct SetupInputInfo
-{
-  boolean use_joystick;
-  struct SetupJoystickInfo joy;
-  struct SetupKeyboardInfo key;
-};
-
-struct SetupInfo
-{
-  char *player_name;
-
-  boolean sound;
-  boolean sound_loops;
-  boolean sound_music;
-  boolean sound_simple;
-  boolean toons;
-  boolean double_buffering;
-  boolean direct_draw;		/* !double_buffering (redundant!) */
-  boolean scroll_delay;
-  boolean soft_scrolling;
-  boolean fading;
-  boolean autorecord;
-  boolean quick_doors;
-  boolean team_mode;
-  boolean handicap;
-  boolean time_limit;
-  boolean fullscreen;
-
-  struct SetupInputInfo input[MAX_PLAYERS];
-};
-
 struct PlayerInfo
 {
   boolean present;		/* player present in level playfield */
@@ -277,8 +217,6 @@ struct PlayerInfo
   byte programmed_action;	/* action forced by game itself (like moving
 				   through doors); overrides other actions */
 
-  int joystick_fd;		/* file descriptor of player's joystick */
-
   int jx,jy, last_jx,last_jy;
   int MovDir, MovPos, GfxPos;
   int Frame;
@@ -288,11 +226,11 @@ struct PlayerInfo
   boolean LevelSolved, GameOver;
   boolean snapped;
 
-  unsigned long move_delay;
-  int move_delay_value;
-
   int last_move_dir;
   int is_moving;
+
+  unsigned long move_delay;
+  int move_delay_value;
 
   unsigned long push_delay;
   unsigned long push_delay_value;
@@ -315,9 +253,10 @@ struct PlayerInfo
 
 struct LevelInfo
 {
-  int file_version;		/* version of file the level was stored with */
-  int game_version;		/* version of game engine to play this level */
-  boolean encoding_16bit_field;		/* level contains 16-bit elements */
+  int file_version;	/* file format version the level is stored with    */
+  int game_version;	/* game release version the level was created with */
+
+  boolean encoding_16bit_field;		/* level contains 16-bit elements  */
   boolean encoding_16bit_yamyam;	/* yamyam contains 16-bit elements */
   boolean encoding_16bit_amoeba;	/* amoeba contains 16-bit elements */
 
@@ -338,13 +277,15 @@ struct LevelInfo
   int time_timegate;
   boolean double_speed;
   boolean gravity;
+  boolean em_slippery_gems;	/* EM style "gems slip from wall" behaviour */
 };
 
 struct TapeInfo
 {
-  int file_version;	/* version of file this level tape was stored with */
-  int game_version;	/* version of game engine to play this tape´s level */
-  int version;
+  int file_version;	/* file format version the tape is stored with    */
+  int game_version;	/* game release version the tape was created with */
+  int engine_version;	/* game engine version the tape was recorded with */
+
   int level_nr;
   unsigned long random_seed;
   unsigned long date;
@@ -355,9 +296,13 @@ struct TapeInfo
   boolean pause_before_death;
   boolean recording, playing, pausing;
   boolean fast_forward;
+  boolean index_search;
+  boolean quick_resume;
+  boolean single_step;
   boolean changed;
   boolean player_participates[MAX_PLAYERS];
   int num_participating_players;
+
   struct
   {
     byte action[MAX_PLAYERS];
@@ -367,8 +312,13 @@ struct TapeInfo
 
 struct GameInfo
 {
-  int version;
+  /* constant within running game */
+  int engine_version;
   int emulation;
+  int initial_move_delay;
+  int initial_move_delay_value;
+
+  /* variable within running game */
   int yam_content_nr;
   boolean magic_wall_active;
   int magic_wall_time_left;
@@ -388,21 +338,23 @@ struct GlobalInfo
   int fps_slowdown_factor;
 };
 
+struct ElementInfo
+{
+  char *sound_class_name;
+  char *editor_description;
+};
+
 extern GC		tile_clip_gc;
 extern Bitmap	       *pix[];
 extern Pixmap		tile_clipmask[];
 extern DrawBuffer      *fieldbuffer;
 extern DrawBuffer      *drawto_field;
 
-extern int		joystick_device;
-extern char	       *joystick_device_name[];
-
 extern int		game_status;
 extern boolean		level_editor_test_game;
 extern boolean		network_playing;
 
 extern int		key_joystick_mapping;
-extern int	    	global_joystick_status, joystick_status;
 
 extern boolean		redraw[MAX_BUF_XSIZE][MAX_BUF_YSIZE];
 extern int		redraw_x1, redraw_y1;
@@ -424,7 +376,6 @@ extern short		ExplodeField[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern unsigned long	Elementeigenschaften1[MAX_ELEMENTS];
 extern unsigned long	Elementeigenschaften2[MAX_ELEMENTS];
 
-extern int		level_nr;
 extern int		lev_fieldx,lev_fieldy, scroll_x,scroll_y;
 
 extern int		FX,FY, ScrollStepSize;
@@ -448,16 +399,10 @@ extern struct LevelInfo		level;
 extern struct PlayerInfo	stored_player[], *local_player;
 extern struct HiScore		highscore[];
 extern struct TapeInfo		tape;
-extern struct JoystickInfo	joystick[];
-extern struct SetupInfo		setup;
 extern struct GameInfo		game;
 extern struct GlobalInfo	global;
-
-extern char		*sound_name[];
-extern int		background_loop[];
-extern int		num_bg_loops;
-extern char		*element_info[];
-extern int		num_element_info;
+extern struct ElementInfo	element_info[];
+extern struct SoundEffectInfo	sound_effects[];
 
 /* often used screen positions */
 #define SX			8
@@ -881,6 +826,9 @@ extern int		num_element_info;
 #define EL_SPRING		355
 #define EL_TRAP_INACTIVE	356
 #define EL_DX_SUPABOMB		357
+
+#define NUM_LEVEL_ELEMENTS	358
+
 
 /* "real" (and therefore drawable) runtime elements */
 #define EL_FIRST_RUNTIME_EL	500
@@ -1496,22 +1444,180 @@ extern int		num_element_info;
 
 #define NUM_SOUNDS		55
 
-/* default input keys */
-#define DEFAULT_KEY_LEFT	KSYM_Left
-#define DEFAULT_KEY_RIGHT	KSYM_Right
-#define DEFAULT_KEY_UP		KSYM_Up
-#define DEFAULT_KEY_DOWN	KSYM_Down
-#define DEFAULT_KEY_SNAP	KSYM_Shift_L
-#define DEFAULT_KEY_BOMB	KSYM_Shift_R
-#define DEFAULT_KEY_OKAY	KSYM_Return
-#define DEFAULT_KEY_CANCEL	KSYM_Escape
 
-/* directions for moving */
-#define MV_NO_MOVING		0
-#define MV_LEFT			(1 << 0)
-#define MV_RIGHT		(1 << 1)
-#define MV_UP			(1 << 2)
-#define MV_DOWN	       		(1 << 3)
+/* values for sound effects */
+#define SND_BD_EMPTY_SPACE_DIGGING		0
+#define SND_BD_SAND_DIGGING			1
+#define SND_BD_DIAMOND_COLLECTING		2
+#define SND_BD_DIAMOND_IMPACT			3
+#define SND_BD_ROCK_PUSHING			4
+#define SND_BD_ROCK_IMPACT			5
+#define SND_BD_MAGIC_WALL_ACTIVATING		6
+#define SND_BD_MAGIC_WALL_CHANGING		7
+#define SND_BD_MAGIC_WALL_RUNNING		8
+#define SND_BD_AMOEBA_WAITING			9
+#define SND_BD_AMOEBA_CREATING			10
+#define SND_BD_AMOEBA_TURNING_TO_GEM		11
+#define SND_BD_AMOEBA_TURNING_TO_ROCK		12
+#define SND_BD_BUTTERFLY_MOVING			13
+#define SND_BD_BUTTERFLY_WAITING		14
+#define SND_BD_FIREFLY_MOVING			15
+#define SND_BD_FIREFLY_WAITING			16
+#define SND_BD_EXIT_ENTERING			17
+#define SND_SP_EMPTY_SPACE_DIGGING		18
+#define SND_SP_BASE_DIGGING			19
+#define SND_SP_BUGGY_BASE_DIGGING		20
+#define SND_SP_BUGGY_BASE_ACTIVATING		21
+#define SND_SP_INFOTRON_COLLECTING		22
+#define SND_SP_INFOTRON_IMPACT			23
+#define SND_SP_ZONK_PUSHING			24
+#define SND_SP_ZONK_IMPACT			25
+#define SND_SP_DISK_RED_COLLECTING		26
+#define SND_SP_DISK_ORANGE_PUSHING		27
+#define SND_SP_DISK_YELLOW_PUSHING		28
+#define SND_SP_PORT_PASSING			29
+#define SND_SP_EXIT_ENTERING			30
+#define SND_SP_ELEMENT_EXPLODING		31
+#define SND_SP_SNIKSNAK_MOVING			32
+#define SND_SP_SNIKSNAK_WAITING			33
+#define SND_SP_ELECTRON_MOVING			34
+#define SND_SP_ELECTRON_WAITING			35
+#define SND_SP_TERMINAL_ACTIVATING		36
+#define SND_SOKOBAN_OBJECT_PUSHING		37
+#define SND_SOKOBAN_FIELD_FILLING		38
+#define SND_SOKOBAN_FIELD_CLEARING		39
+#define SND_SOKOBAN_GAME_SOLVING		40
+#define SND_EMPTY_SPACE_DIGGING			41
+#define SND_SAND_DIGGING			42
+#define SND_EMERALD_COLLECTING			43
+#define SND_EMERALD_IMPACT			44
+#define SND_DIAMOND_COLLECTING			45
+#define SND_DIAMOND_IMPACT			46
+#define SND_DIAMOND_BREAKING			47
+#define SND_ROCK_PUSHING			48
+#define SND_ROCK_IMPACT				49
+#define SND_BOMB_PUSHING			50
+#define SND_NUT_PUSHING				51
+#define SND_NUT_CRACKING			52
+#define SND_NUT_IMPACT				53
+#define SND_DYNAMITE_COLLECTING			54
+#define SND_DYNAMITE_PLACING			55
+#define SND_DYNAMITE_BURNING			56
+#define SND_KEY_COLLECTING			57
+#define SND_GATE_PASSING			58
+#define SND_BUG_MOVING				59
+#define SND_BUG_WAITING				60
+#define SND_SPACESHIP_MOVING			61
+#define SND_SPACESHIP_WAITING			62
+#define SND_YAMYAM_MOVING			63
+#define SND_YAMYAM_WAITING			64
+#define SND_YAMYAM_EATING_DIAMOND		65
+#define SND_ROBOT_STEPPING			66
+#define SND_ROBOT_WAITING			67
+#define SND_ROBOT_WHEEL_ACTIVATING		68
+#define SND_ROBOT_WHEEL_RUNNING			69
+#define SND_MAGIC_WALL_ACTIVATING		70
+#define SND_MAGIC_WALL_CHANGING			71
+#define SND_MAGIC_WALL_RUNNING			72
+#define SND_AMOEBA_WAITING			73
+#define SND_AMOEBA_CREATING			74
+#define SND_AMOEBA_DROPPING			75
+#define SND_ACID_SPLASHING			76
+#define SND_QUICKSAND_FILLING			77
+#define SND_QUICKSAND_SLIPPING_THROUGH		78
+#define SND_QUICKSAND_EMPTYING			79
+#define SND_EXIT_OPENING			80
+#define SND_EXIT_ENTERING			81
+#define SND_BALLOON_MOVING			82
+#define SND_BALLOON_WAITING			83
+#define SND_BALLOON_PUSHING			84
+#define SND_BALLOON_SWITCH_ACTIVATING		85
+#define SND_SPRING_MOVING			86
+#define SND_SPRING_PUSHING			87
+#define SND_SPRING_IMPACT			88
+#define SND_WALL_GROWING			89
+#define SND_PEARL_COLLECTING			90
+#define SND_PEARL_BREAKING			91
+#define SND_PEARL_IMPACT			92
+#define SND_CRYSTAL_COLLECTING			93
+#define SND_CRYSTAL_IMPACT			94
+#define SND_ENVELOPE_COLLECTING			95
+#define SND_SAND_INVISIBLE_DIGGING		96
+#define SND_SHIELD_PASSIVE_COLLECTING		97
+#define SND_SHIELD_PASSIVE_ACTIVATED		98
+#define SND_SHIELD_ACTIVE_COLLECTING		99
+#define SND_SHIELD_ACTIVE_ACTIVATED		100
+#define SND_EXTRA_TIME_COLLECTING		101
+#define SND_MOLE_MOVING				102
+#define SND_MOLE_WAITING			103
+#define SND_MOLE_EATING_AMOEBA			104
+#define SND_SWITCHGATE_SWITCH_ACTIVATING	105
+#define SND_SWITCHGATE_OPENING			106
+#define SND_SWITCHGATE_CLOSING			107
+#define SND_SWITCHGATE_PASSING			108
+#define SND_TIMEGATE_WHEEL_ACTIVATING		109
+#define SND_TIMEGATE_WHEEL_RUNNING		110
+#define SND_TIMEGATE_OPENING			111
+#define SND_TIMEGATE_CLOSING			112
+#define SND_TIMEGATE_PASSING			113
+#define SND_CONVEYOR_BELT_SWITCH_ACTIVATING	114
+#define SND_CONVEYOR_BELT_RUNNING		115
+#define SND_LIGHT_SWITCH_ACTIVATING		116
+#define SND_LIGHT_SWITCH_DEACTIVATING		117
+#define SND_DX_BOMB_PUSHING			118
+#define SND_TRAP_INACTIVE_DIGGING		119
+#define SND_TRAP_ACTIVATING			120
+#define SND_TUBE_PASSING			121
+#define SND_AMOEBA_TURNING_TO_GEM		122
+#define SND_AMOEBA_TURNING_TO_ROCK		123
+#define SND_SPEED_PILL_COLLECTING		124
+#define SND_DYNABOMB_NR_COLLECTING		125
+#define SND_DYNABOMB_SZ_COLLECTING		126
+#define SND_DYNABOMB_XL_COLLECTING		127
+#define SND_DYNABOMB_PLACING			128
+#define SND_DYNABOMB_BURNING			129
+#define SND_SATELLITE_MOVING			130
+#define SND_SATELLITE_WAITING			131
+#define SND_SATELLITE_PUSHING			132
+#define SND_LAMP_ACTIVATING			133
+#define SND_LAMP_DEACTIVATING			134
+#define SND_TIME_ORB_FULL_COLLECTING		135
+#define SND_TIME_ORB_FULL_IMPACT		136
+#define SND_TIME_ORB_EMPTY_PUSHING		137
+#define SND_TIME_ORB_EMPTY_IMPACT		138
+#define SND_GAMEOFLIFE_WAITING			139
+#define SND_GAMEOFLIFE_CREATING			140
+#define SND_BIOMAZE_WAITING			141
+#define SND_BIOMAZE_CREATING			142
+#define SND_PACMAN_MOVING			143
+#define SND_PACMAN_WAITING			144
+#define SND_PACMAN_EATING_AMOEBA		145
+#define SND_DARK_YAMYAM_MOVING			146
+#define SND_DARK_YAMYAM_WAITING			147
+#define SND_DARK_YAMYAM_EATING_ANY		148
+#define SND_PENGUIN_MOVING			149
+#define SND_PENGUIN_WAITING			150
+#define SND_PENGUIN_ENTERING_EXIT		151
+#define SND_PIG_MOVING				152
+#define SND_PIG_WAITING				153
+#define SND_PIG_EATING_GEM			154
+#define SND_DRAGON_MOVING			155
+#define SND_DRAGON_WAITING			156
+#define SND_DRAGON_ATTACKING			157
+#define SND_PLAYER_DYING			158
+#define SND_ELEMENT_EXPLODING			159
+#define SND_GAME_STARTING			160
+#define SND_GAME_RUNNING_OUT_OF_TIME		161
+#define SND_GAME_LEVELTIME_BONUS		162
+#define SND_GAME_LOSING				163
+#define SND_GAME_WINNING			164
+#define SND_MENU_DOOR_OPENING			165
+#define SND_MENU_DOOR_CLOSING			166
+#define SND_MENU_HALL_OF_FAME			167
+#define SND_MENU_INFO_SCREEN			168
+
+#define NUM_SOUND_EFFECTS			169
+
 
 /* values for game_status */
 #define EXITGAME		0
@@ -1523,23 +1629,23 @@ extern int		num_element_info;
 #define TYPENAME		6
 #define HALLOFFAME		7
 #define SETUP			8
-#define SETUPINPUT		9
-#define CALIBRATION		10
 
 #define PROGRAM_VERSION_MAJOR	2
-#define PROGRAM_VERSION_MINOR	0
-#define PROGRAM_VERSION_PATCH	1
-#define PROGRAM_VERSION_STRING	"2.0.1"
+#define PROGRAM_VERSION_MINOR	1
+#define PROGRAM_VERSION_PATCH	0
+#define PROGRAM_VERSION_STRING	"2.1.0"
 
 #define PROGRAM_TITLE_STRING	"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING	"Holger Schemel"
-#define PROGRAM_RIGHTS_STRING	"Copyright ^1995-2001 by"
+#define PROGRAM_RIGHTS_STRING	"Copyright ^1995-2002 by"
 #define PROGRAM_DOS_PORT_STRING	"DOS port done by Guido Schulz"
 #define PROGRAM_IDENT_STRING	PROGRAM_VERSION_STRING " " TARGET_STRING
 #define WINDOW_TITLE_STRING	PROGRAM_TITLE_STRING " " PROGRAM_IDENT_STRING
 #define WINDOW_SUBTITLE_STRING	PROGRAM_RIGHTS_STRING " " PROGRAM_AUTHOR_STRING
 #define ICON_TITLE_STRING	PROGRAM_TITLE_STRING
 #define UNIX_USERDATA_DIRECTORY	".rocksndiamonds"
+#define COOKIE_PREFIX		"ROCKSNDIAMONDS"
+#define FILENAME_PREFIX		"Rocks"
 
 #define X11_ICON_FILENAME	"rocks_icon.xbm"
 #define X11_ICONMASK_FILENAME	"rocks_iconmask.xbm"

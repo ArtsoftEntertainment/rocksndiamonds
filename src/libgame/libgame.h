@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -23,8 +23,11 @@
 #include "gadgets.h"
 #include "text.h"
 #include "sound.h"
+#include "joystick.h"
+#include "toons.h"
 #include "image.h"
 #include "pcx.h"
+#include "setup.h"
 #include "misc.h"
 
 #endif /* LIBGAME_H */

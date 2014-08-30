@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -16,7 +16,10 @@
 
 #include "main.h"
 
-#define TAPE_PAUSE_SECONDS_BEFORE_DEATH		3
+
+/* values for TapeTogglePause() */
+#define	TAPE_TOGGLE_MANUAL	TRUE
+#define	TAPE_TOGGLE_AUTOMATIC	FALSE
 
 /* some positions in the video tape control window */
 #define VIDEO_DISPLAY1_XPOS	5
@@ -82,19 +85,22 @@ void DrawVideoDisplay(unsigned long, unsigned long);
 void DrawCompleteVideoDisplay(void);
 
 void TapeStartRecording(void);
+void TapeHaltRecording(void);
 void TapeStopRecording(void);
 void TapeRecordAction(byte *);
-void TapeRecordDelay(void);
-void TapeTogglePause(void);
+void TapeTogglePause(boolean);
 void TapeStartPlaying(void);
 void TapeStopPlaying(void);
 byte *TapePlayAction(void);
-boolean TapePlayDelay(void);
 void TapeStop(void);
 void TapeErase(void);
 unsigned int GetTapeLength(void);
+void TapeQuickSave(void);
+void TapeQuickLoad(void);
 
 void CreateTapeButtons();
+void MapTapeEjectButton();
+void MapTapeIndexButton();
 void MapTapeButtons();
 void UnmapTapeButtons();
 

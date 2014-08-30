@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -59,6 +59,9 @@ typedef XClientMessageEvent	ClientMessageEvent;
 
 struct X11DrawableInfo
 {
+  char *source_filename;
+
+  int width, height;
   Drawable drawable;
   Drawable clip_mask;
   GC gc;		/* GC for normal drawing (inheritated from 'window') */
@@ -282,6 +285,10 @@ struct XY
 #define KSYM_F22		XK_F22
 #define KSYM_F23		XK_F23
 #define KSYM_F24		XK_F24
+
+#define KSYM_FKEY_FIRST		KSYM_F1
+#define KSYM_FKEY_LAST		KSYM_F24
+#define KSYM_NUM_FKEYS		(KSYM_FKEY_LAST - KSYM_FKEY_FIRST + 1)
 
 
 /* X11 function definitions */

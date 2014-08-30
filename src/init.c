@@ -1,7 +1,7 @@
 /***********************************************************
 * Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-* (c) 1995-2001 Artsoft Entertainment                      *
+* (c) 1995-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -21,21 +21,48 @@
 #include "tape.h"
 #include "tools.h"
 #include "files.h"
-#include "joystick.h"
 #include "network.h"
 #include "netserv.h"
+#include "cartoons.h"
+#include "config.h"
 
+static char *image_filename[NUM_PICTURES] =
+{
+  "RocksScreen.pcx",
+  "RocksDoor.pcx",
+  "RocksHeroes.pcx",
+  "RocksToons.pcx",
+  "RocksSP.pcx",
+  "RocksDC.pcx",
+  "RocksMore.pcx",
+  "RocksFont.pcx",
+  "RocksFont2.pcx",
+  "RocksFont3.pcx"
+}; 
+
+static void InitSetup(void);
 static void InitPlayerInfo(void);
 static void InitLevelInfo(void);
+static void InitArtworkInfo(void);
+static void InitLevelArtworkInfo(void);
 static void InitNetworkServer(void);
+static void InitMixer(void);
 static void InitSound(void);
 static void InitGfx(void);
 static void InitGfxBackground(void);
 static void InitGadgets(void);
 static void InitElementProperties(void);
+static void Execute_Debug_Command(char *);
 
 void OpenAll(void)
 {
+  if (options.debug_command)
+  {
+    Execute_Debug_Command(options.debug_command);
+
+    exit(0);
+  }
+
   if (options.serveronly)
   {
 #if defined(PLATFORM_UNIX)
@@ -47,14 +74,17 @@ void OpenAll(void)
   }
 
   InitProgramInfo(UNIX_USERDATA_DIRECTORY,
-		  PROGRAM_TITLE_STRING, WINDOW_TITLE_STRING,
+		  PROGRAM_TITLE_STRING, getWindowTitleString(),
 		  ICON_TITLE_STRING, X11_ICON_FILENAME, X11_ICONMASK_FILENAME,
-		  MSDOS_POINTER_FILENAME);
+		  MSDOS_POINTER_FILENAME,
+		  COOKIE_PREFIX, FILENAME_PREFIX, GAME_VERSION_ACTUAL);
 
+  InitSetup();
   InitPlayerInfo();
+  InitArtworkInfo();		/* needed before loading gfx, sound & music */
 
   InitCounter();
-  InitSound();
+  InitMixer();
   InitJoysticks();
   InitRND(NEW_RANDOMIZE);
 
@@ -68,12 +98,21 @@ void OpenAll(void)
   InitElementProperties();	/* initializes IS_CHAR() for el2gfx() */
 
   InitLevelInfo();
+  InitLevelArtworkInfo();
   InitGadgets();		/* needs to know number of level series */
+  InitSound();			/* needs to know current level directory */
 
   InitGfxBackground();
+  InitToons();
+
   DrawMainMenu();
 
   InitNetworkServer();
+}
+
+void InitSetup()
+{
+  LoadSetup();					/* global setup info */
 }
 
 void InitPlayerInfo()
@@ -84,14 +123,9 @@ void InitPlayerInfo()
   local_player = &stored_player[0];
 
   for (i=0; i<MAX_PLAYERS; i++)
-  {
-    stored_player[i].joystick_fd = -1;	/* joystick device closed */
     stored_player[i].connected = FALSE;
-  }
 
   local_player->connected = TRUE;
-
-  LoadSetup();					/* global setup info */
 }
 
 void InitLevelInfo()
@@ -99,6 +133,16 @@ void InitLevelInfo()
   LoadLevelInfo();				/* global level info */
   LoadLevelSetup_LastSeries();			/* last played series info */
   LoadLevelSetup_SeriesInfo();			/* last played level info */
+}
+
+void InitArtworkInfo()
+{
+  LoadArtworkInfo();
+}
+
+void InitLevelArtworkInfo()
+{
+  LoadLevelArtworkInfo();
 }
 
 void InitNetworkServer()
@@ -124,182 +168,33 @@ void InitNetworkServer()
 #endif
 }
 
-void InitSound()
+static void InitMixer()
 {
-  int i;
-
   OpenAudio();
+  InitSoundList(sound_effects, NUM_SOUND_EFFECTS);
 
-  for(i=0; i<NUM_SOUNDS; i++)
-  {
-    if (!LoadSound(sound_name[i]))
-    {
-      audio.sound_available = FALSE;
-      audio.loops_available = FALSE;
-      audio.sound_enabled = FALSE;
-
-      return;
-    }
-  }
-
-  num_bg_loops = LoadMusic();
-
-  StartSoundserver();
+  StartMixer();
 }
 
-void InitJoysticks()
+static void InitSound()
 {
-#if defined(TARGET_SDL)
-  static boolean sdl_joystick_subsystem_initialized = FALSE;
-#endif
+  /* load custom sounds and music */
+  InitReloadSounds(artwork.snd_current->name);
+  InitReloadMusic(artwork.mus_current->name);
 
-  int i;
-
-  if (global_joystick_status == JOYSTICK_OFF)
-    return;
-
-  joystick_status = JOYSTICK_OFF;
-
-#if defined(TARGET_SDL)
-
-  if (!sdl_joystick_subsystem_initialized)
-  {
-    sdl_joystick_subsystem_initialized = TRUE;
-
-    if (SDL_Init(SDL_INIT_JOYSTICK) < 0)
-    {
-      Error(ERR_EXIT, "SDL_Init() failed: %s", SDL_GetError());
-      return;
-    }
-  }
-
-  for (i=0; i<MAX_PLAYERS; i++)
-  {
-    char *device_name = setup.input[i].joy.device_name;
-    int joystick_nr = getJoystickNrFromDeviceName(device_name);
-
-    if (joystick_nr >= SDL_NumJoysticks())
-      joystick_nr = -1;
-
-    /* misuse joystick file descriptor variable to store joystick number */
-    stored_player[i].joystick_fd = joystick_nr;
-
-    /* this allows subsequent calls to 'InitJoysticks' for re-initialization */
-    if (Check_SDL_JoystickOpened(joystick_nr))
-      Close_SDL_Joystick(joystick_nr);
-
-    if (!setup.input[i].use_joystick)
-      continue;
-
-    if (!Open_SDL_Joystick(joystick_nr))
-    {
-      Error(ERR_WARN, "cannot open joystick %d", joystick_nr);
-      continue;
-    }
-
-    joystick_status = JOYSTICK_AVAILABLE;
-  }
-
-#else /* !TARGET_SDL */
-
-#if defined(PLATFORM_UNIX)
-  for (i=0; i<MAX_PLAYERS; i++)
-  {
-    char *device_name = setup.input[i].joy.device_name;
-
-    /* this allows subsequent calls to 'InitJoysticks' for re-initialization */
-    if (stored_player[i].joystick_fd != -1)
-    {
-      close(stored_player[i].joystick_fd);
-      stored_player[i].joystick_fd = -1;
-    }
-
-    if (!setup.input[i].use_joystick)
-      continue;
-
-    if (access(device_name, R_OK) != 0)
-    {
-      Error(ERR_WARN, "cannot access joystick device '%s'", device_name);
-      continue;
-    }
-
-    if ((stored_player[i].joystick_fd = open(device_name, O_RDONLY)) < 0)
-    {
-      Error(ERR_WARN, "cannot open joystick device '%s'", device_name);
-      continue;
-    }
-
-    joystick_status = JOYSTICK_AVAILABLE;
-  }
-
-#else /* !PLATFORM_UNIX */
-
-  /* try to access two joysticks; if that fails, try to access just one */
-  if (install_joystick(JOY_TYPE_2PADS) == 0 ||
-      install_joystick(JOY_TYPE_AUTODETECT) == 0)
-    joystick_status = JOYSTICK_AVAILABLE;
-
-  /*
-  load_joystick_data(JOYSTICK_FILENAME);
-  */
-
-  for (i=0; i<MAX_PLAYERS; i++)
-  {
-    char *device_name = setup.input[i].joy.device_name;
-    int joystick_nr = getJoystickNrFromDeviceName(device_name);
-
-    if (joystick_nr >= num_joysticks)
-      joystick_nr = -1;
-
-    /* misuse joystick file descriptor variable to store joystick number */
-    stored_player[i].joystick_fd = joystick_nr;
-  }
-#endif
-
-#endif /* !TARGET_SDL */
+  /* initialize sound effect lookup table for element actions */
+  InitGameSound();
 }
 
-void InitGfx()
+static void InitTileClipmasks()
 {
-  int i;
-
 #if defined(TARGET_X11)
-  GC copy_clipmask_gc;
   XGCValues clip_gc_values;
   unsigned long clip_gc_valuemask;
-#endif
-
-#if !defined(PLATFORM_MSDOS)
-  static char *image_filename[NUM_PICTURES] =
-  {
-    "RocksScreen.pcx",
-    "RocksDoor.pcx",
-    "RocksHeroes.pcx",
-    "RocksToons.pcx",
-    "RocksSP.pcx",
-    "RocksDC.pcx",
-    "RocksMore.pcx",
-    "RocksFont.pcx",
-    "RocksFont2.pcx",
-    "RocksFont3.pcx"
-  }; 
-#else
-  static char *image_filename[NUM_PICTURES] =
-  {
-    "Screen.pcx",
-    "Door.pcx",
-    "Heroes.pcx",
-    "Toons.pcx",
-    "SP.pcx",
-    "DC.pcx",
-    "More.pcx",
-    "Font.pcx",
-    "Font2.pcx",
-    "Font3.pcx"
-  }; 
-#endif
 
 #if defined(TARGET_X11_NATIVE)
+  GC copy_clipmask_gc;
+
   static struct
   {
     int start;
@@ -351,45 +246,10 @@ void InitGfx()
     { GFX2_SHIELD_ACTIVE, 3 },
     { -1, 0 }
   };
-#endif
+#endif /* TARGET_X11_NATIVE */
+#endif /* TARGET_X11 */
 
-  /* initialize some global variables */
-  global.frames_per_second = 0;
-  global.fps_slowdown = FALSE;
-  global.fps_slowdown_factor = 1;
-
-  /* initialize screen properties */
-  InitGfxFieldInfo(SX, SY, SXSIZE, SYSIZE,
-		   REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
-  InitGfxDoor1Info(DX, DY, DXSIZE, DYSIZE);
-  InitGfxDoor2Info(VX, VY, VXSIZE, VYSIZE);
-  InitGfxScrollbufferInfo(FXSIZE, FYSIZE);
-
-  /* create additional image buffers for double-buffering */
-  pix[PIX_DB_DOOR] = CreateBitmap(3 * DXSIZE, DYSIZE + VYSIZE, DEFAULT_DEPTH);
-  pix[PIX_DB_FIELD] = CreateBitmap(FXSIZE, FYSIZE, DEFAULT_DEPTH);
-
-  pix[PIX_SMALLFONT] = LoadImage(image_filename[PIX_SMALLFONT]);
-  InitFontInfo(NULL, NULL, pix[PIX_SMALLFONT]);
-
-  DrawInitText(WINDOW_TITLE_STRING, 20, FC_YELLOW);
-  DrawInitText(WINDOW_SUBTITLE_STRING, 50, FC_RED);
-#if defined(PLATFORM_MSDOS)
-  DrawInitText(PROGRAM_DOS_PORT_STRING, 210, FC_BLUE);
-  rest(200);
-#endif
-  DrawInitText("Loading graphics:",120,FC_GREEN);
-
-  for(i=0; i<NUM_PICTURES; i++)
-  {
-    if (i != PIX_SMALLFONT)
-    {
-      DrawInitText(image_filename[i], 150, FC_YELLOW);
-      pix[i] = LoadImage(image_filename[i]);
-    }
-  }
-
-  InitFontInfo(pix[PIX_BIGFONT], pix[PIX_MEDIUMFONT], pix[PIX_SMALLFONT]);
+  int i;
 
   /* initialize pixmap array for special X11 tile clipping to Pixmap 'None' */
   for(i=0; i<NUM_TILES; i++)
@@ -400,13 +260,6 @@ void InitGfx()
      often very slow when preparing a masked XCopyArea() for big Pixmaps.
      To prevent this, create small (tile-sized) mask Pixmaps which will then
      be set much faster with XSetClipOrigin() and speed things up a lot. */
-
-  /* create graphic context structures needed for clipping */
-  clip_gc_values.graphics_exposures = False;
-  clip_gc_valuemask = GCGraphicsExposures;
-  copy_clipmask_gc =
-    XCreateGC(display, pix[PIX_BACK]->clip_mask,
-	      clip_gc_valuemask, &clip_gc_values);
 
   clip_gc_values.graphics_exposures = False;
   clip_gc_valuemask = GCGraphicsExposures;
@@ -421,11 +274,19 @@ void InitGfx()
       clip_gc_values.clip_mask = pix[i]->clip_mask;
       clip_gc_valuemask = GCGraphicsExposures | GCClipMask;
       pix[i]->stored_clip_gc = XCreateGC(display, window->drawable,
-					 clip_gc_valuemask,&clip_gc_values);
+					 clip_gc_valuemask, &clip_gc_values);
     }
   }
 
 #if defined(TARGET_X11_NATIVE)
+
+  /* create graphic context structures needed for clipping */
+  clip_gc_values.graphics_exposures = False;
+  clip_gc_valuemask = GCGraphicsExposures;
+  copy_clipmask_gc =
+    XCreateGC(display, pix[PIX_BACK]->clip_mask,
+	      clip_gc_valuemask, &clip_gc_values);
+
   /* create only those clipping Pixmaps we really need */
   for(i=0; tile_needs_clipping[i].start>=0; i++)
   {
@@ -449,8 +310,84 @@ void InitGfx()
 		src_x, src_y, TILEX, TILEY, 0, 0);
     }
   }
+
+  XFreeGC(display, copy_clipmask_gc);
+
 #endif /* TARGET_X11_NATIVE */
 #endif /* TARGET_X11 */
+}
+
+void FreeTileClipmasks()
+{
+#if defined(TARGET_X11)
+  int i;
+
+  for(i=0; i<NUM_TILES; i++)
+  {
+    if (tile_clipmask[i] != None)
+    {
+      XFreePixmap(display, tile_clipmask[i]);
+      tile_clipmask[i] = None;
+    }
+  }
+
+  if (tile_clip_gc)
+    XFreeGC(display, tile_clip_gc);
+  tile_clip_gc = None;
+
+  for(i=0; i<NUM_BITMAPS; i++)
+  {
+    if (pix[i] != NULL && pix[i]->stored_clip_gc)
+    {
+      XFreeGC(display, pix[i]->stored_clip_gc);
+      pix[i]->stored_clip_gc = None;
+    }
+  }
+#endif /* TARGET_X11 */
+}
+
+void InitGfx()
+{
+  int i;
+
+  /* initialize some global variables */
+  global.frames_per_second = 0;
+  global.fps_slowdown = FALSE;
+  global.fps_slowdown_factor = 1;
+
+  /* initialize screen properties */
+  InitGfxFieldInfo(SX, SY, SXSIZE, SYSIZE,
+		   REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
+  InitGfxDoor1Info(DX, DY, DXSIZE, DYSIZE);
+  InitGfxDoor2Info(VX, VY, VXSIZE, VYSIZE);
+  InitGfxScrollbufferInfo(FXSIZE, FYSIZE);
+
+  /* create additional image buffers for double-buffering */
+  pix[PIX_DB_DOOR] = CreateBitmap(3 * DXSIZE, DYSIZE + VYSIZE, DEFAULT_DEPTH);
+  pix[PIX_DB_FIELD] = CreateBitmap(FXSIZE, FYSIZE, DEFAULT_DEPTH);
+
+  pix[PIX_SMALLFONT] = LoadCustomImage(image_filename[PIX_SMALLFONT]);
+
+  InitFontInfo(NULL, NULL, pix[PIX_SMALLFONT]);
+
+  DrawInitText(WINDOW_TITLE_STRING, 20, FC_YELLOW);
+  DrawInitText(WINDOW_SUBTITLE_STRING, 50, FC_RED);
+
+  DrawInitText("Loading graphics:", 120, FC_GREEN);
+
+  for(i=0; i<NUM_PICTURES; i++)
+  {
+    if (i != PIX_SMALLFONT)
+    {
+      DrawInitText(image_filename[i], 150, FC_YELLOW);
+
+      pix[i] = LoadCustomImage(image_filename[i]);
+    }
+  }
+
+  InitFontInfo(pix[PIX_BIGFONT], pix[PIX_MEDIUMFONT], pix[PIX_SMALLFONT]);
+
+  InitTileClipmasks();
 }
 
 void InitGfxBackground()
@@ -461,15 +398,86 @@ void InitGfxBackground()
   fieldbuffer = pix[PIX_DB_FIELD];
   SetDrawtoField(DRAW_BACKBUFFER);
 
-  BlitBitmap(pix[PIX_BACK], backbuffer, 0,0, WIN_XSIZE,WIN_YSIZE, 0,0);
-  ClearRectangle(backbuffer, REAL_SX,REAL_SY, FULL_SXSIZE,FULL_SYSIZE);
-  ClearRectangle(pix[PIX_DB_DOOR], 0,0, 3*DXSIZE,DYSIZE+VYSIZE);
+  BlitBitmap(pix[PIX_BACK], backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+  ClearRectangle(backbuffer, REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
+  ClearRectangle(pix[PIX_DB_DOOR], 0, 0, 3 * DXSIZE, DYSIZE + VYSIZE);
 
   for(x=0; x<MAX_BUF_XSIZE; x++)
     for(y=0; y<MAX_BUF_YSIZE; y++)
       redraw[x][y] = 0;
   redraw_tiles = 0;
   redraw_mask = REDRAW_ALL;
+}
+
+void ReloadCustomArtwork()
+{
+  static char *leveldir_current_filename = NULL;
+  static boolean last_override_level_graphics = FALSE;
+  static boolean last_override_level_sounds = FALSE;
+  static boolean last_override_level_music = FALSE;
+
+  if (leveldir_current_filename != leveldir_current->filename)
+  {
+    char *filename_old = leveldir_current_filename;
+    char *filename_new = leveldir_current->filename;
+
+    /* force reload of custom artwork after new level series was selected,
+       but reload only that part of the artwork that really has changed */
+    if (getTreeInfoFromFilename(artwork.gfx_first, filename_old) !=
+	getTreeInfoFromFilename(artwork.gfx_first, filename_new))
+      artwork.graphics_set_current_name = NULL;
+    if (getTreeInfoFromFilename(artwork.snd_first, filename_old) !=
+	getTreeInfoFromFilename(artwork.snd_first, filename_new))
+      artwork.sounds_set_current_name = NULL;
+    if (getTreeInfoFromFilename(artwork.mus_first, filename_new) !=
+	getTreeInfoFromFilename(artwork.mus_first, filename_new))
+      artwork.music_set_current_name = NULL;
+
+    leveldir_current_filename = leveldir_current->filename;
+  }
+
+  if (artwork.graphics_set_current_name != artwork.gfx_current->name ||
+      last_override_level_graphics != setup.override_level_graphics)
+  {
+    int i;
+
+    ClearRectangle(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
+
+    for(i=0; i<NUM_PICTURES; i++)
+    {
+      DrawInitText(image_filename[i], 150, FC_YELLOW);
+      ReloadCustomImage(pix[i], image_filename[i]);
+    }
+
+    FreeTileClipmasks();
+    InitTileClipmasks();
+    InitGfxBackground();
+
+    /* force redraw of (open or closed) door graphics */
+    SetDoorState(DOOR_OPEN_ALL);
+    CloseDoor(DOOR_CLOSE_ALL | DOOR_NO_DELAY);
+
+    artwork.graphics_set_current_name = artwork.gfx_current->name;
+    last_override_level_graphics = setup.override_level_graphics;
+  }
+
+  if (artwork.sounds_set_current_name != artwork.snd_current->name ||
+      last_override_level_sounds != setup.override_level_sounds)
+  {
+    InitReloadSounds(artwork.snd_current->name);
+
+    artwork.sounds_set_current_name = artwork.snd_current->name;
+    last_override_level_sounds = setup.override_level_sounds;
+  }
+
+  if (artwork.music_set_current_name != artwork.mus_current->name ||
+      last_override_level_music != setup.override_level_music)
+  {
+    InitReloadMusic(artwork.mus_current->name);
+
+    artwork.music_set_current_name = artwork.mus_current->name;
+    last_override_level_music = setup.override_level_music;
+  }
 }
 
 void InitGadgets()
@@ -492,7 +500,7 @@ void InitElementProperties()
     EL_AMOEBE_VOLL,
     EL_AMOEBE_BD
   };
-  static int ep_amoebalive_num = sizeof(ep_amoebalive)/sizeof(int);
+  static int ep_amoebalive_num = SIZEOF_ARRAY_INT(ep_amoebalive);
 
   static int ep_amoeboid[] =
   {
@@ -502,7 +510,7 @@ void InitElementProperties()
     EL_AMOEBE_VOLL,
     EL_AMOEBE_BD
   };
-  static int ep_amoeboid_num = sizeof(ep_amoeboid)/sizeof(int);
+  static int ep_amoeboid_num = SIZEOF_ARRAY_INT(ep_amoeboid);
 
   static int ep_schluessel[] =
   {
@@ -515,7 +523,7 @@ void InitElementProperties()
     EL_EM_KEY_3,
     EL_EM_KEY_4
   };
-  static int ep_schluessel_num = sizeof(ep_schluessel)/sizeof(int);
+  static int ep_schluessel_num = SIZEOF_ARRAY_INT(ep_schluessel);
 
   static int ep_pforte[] =
   {
@@ -536,9 +544,13 @@ void InitElementProperties()
     EL_EM_GATE_3X,
     EL_EM_GATE_4X,
     EL_SWITCHGATE_OPEN,
+    EL_SWITCHGATE_OPENING,
     EL_SWITCHGATE_CLOSED,
+    EL_SWITCHGATE_CLOSING,
     EL_TIMEGATE_OPEN,
+    EL_TIMEGATE_OPENING,
     EL_TIMEGATE_CLOSED,
+    EL_TIMEGATE_CLOSING,
     EL_TUBE_CROSS,
     EL_TUBE_VERTICAL,
     EL_TUBE_HORIZONTAL,
@@ -551,7 +563,7 @@ void InitElementProperties()
     EL_TUBE_RIGHT_UP,
     EL_TUBE_RIGHT_DOWN
   };
-  static int ep_pforte_num = sizeof(ep_pforte)/sizeof(int);
+  static int ep_pforte_num = SIZEOF_ARRAY_INT(ep_pforte);
 
   static int ep_solid[] =
   {
@@ -577,11 +589,15 @@ void InitElementProperties()
     EL_QUICKSAND_EMPTYING,
     EL_MAGIC_WALL_OFF,
     EL_MAGIC_WALL_EMPTY,
+    EL_MAGIC_WALL_EMPTYING,
+    EL_MAGIC_WALL_FILLING,
     EL_MAGIC_WALL_FULL,
     EL_MAGIC_WALL_DEAD,
     EL_MAGIC_WALL_BD_OFF,
     EL_MAGIC_WALL_BD_EMPTY,
+    EL_MAGIC_WALL_BD_EMPTYING,
     EL_MAGIC_WALL_BD_FULL,
+    EL_MAGIC_WALL_BD_FILLING,
     EL_MAGIC_WALL_BD_DEAD,
     EL_LIFE,
     EL_LIFE_ASYNC,
@@ -607,6 +623,7 @@ void InitElementProperties()
     EL_SP_HARD_BASE5,
     EL_SP_HARD_BASE6,
     EL_SP_TERMINAL,
+    EL_SP_TERMINAL_ACTIVE,
     EL_SP_EXIT,
     EL_INVISIBLE_STEEL,
     EL_BELT1_SWITCH_LEFT,
@@ -655,29 +672,6 @@ void InitElementProperties()
     EL_CRYSTAL,
     EL_WALL_PEARL,
     EL_WALL_CRYSTAL,
-    EL_TUBE_CROSS,
-    EL_TUBE_VERTICAL,
-    EL_TUBE_HORIZONTAL,
-    EL_TUBE_VERT_LEFT,
-    EL_TUBE_VERT_RIGHT,
-    EL_TUBE_HORIZ_UP,
-    EL_TUBE_HORIZ_DOWN,
-    EL_TUBE_LEFT_UP,
-    EL_TUBE_LEFT_DOWN,
-    EL_TUBE_RIGHT_UP,
-    EL_TUBE_RIGHT_DOWN
-  };
-  static int ep_solid_num = sizeof(ep_solid)/sizeof(int);
-
-  static int ep_massive[] =
-  {
-    EL_BETON,
-    EL_SALZSAEURE,
-    EL_BADEWANNE1,
-    EL_BADEWANNE2,
-    EL_BADEWANNE3,
-    EL_BADEWANNE4,
-    EL_BADEWANNE5,
     EL_PFORTE1,
     EL_PFORTE2,
     EL_PFORTE3,
@@ -695,9 +689,36 @@ void InitElementProperties()
     EL_EM_GATE_3X,
     EL_EM_GATE_4X,
     EL_SWITCHGATE_OPEN,
+    EL_SWITCHGATE_OPENING,
     EL_SWITCHGATE_CLOSED,
+    EL_SWITCHGATE_CLOSING,
     EL_TIMEGATE_OPEN,
+    EL_TIMEGATE_OPENING,
     EL_TIMEGATE_CLOSED,
+    EL_TIMEGATE_CLOSING,
+    EL_TUBE_CROSS,
+    EL_TUBE_VERTICAL,
+    EL_TUBE_HORIZONTAL,
+    EL_TUBE_VERT_LEFT,
+    EL_TUBE_VERT_RIGHT,
+    EL_TUBE_HORIZ_UP,
+    EL_TUBE_HORIZ_DOWN,
+    EL_TUBE_LEFT_UP,
+    EL_TUBE_LEFT_DOWN,
+    EL_TUBE_RIGHT_UP,
+    EL_TUBE_RIGHT_DOWN
+  };
+  static int ep_solid_num = SIZEOF_ARRAY_INT(ep_solid);
+
+  static int ep_massive[] =
+  {
+    EL_BETON,
+    EL_SALZSAEURE,
+    EL_BADEWANNE1,
+    EL_BADEWANNE2,
+    EL_BADEWANNE3,
+    EL_BADEWANNE4,
+    EL_BADEWANNE5,
     EL_SP_HARD_GRAY,
     EL_SP_HARD_GREEN,
     EL_SP_HARD_BLUE,
@@ -742,6 +763,30 @@ void InitElementProperties()
     EL_EMC_STEEL_WALL_3,
     EL_EMC_STEEL_WALL_4,
     EL_CRYSTAL,
+    EL_PFORTE1,
+    EL_PFORTE2,
+    EL_PFORTE3,
+    EL_PFORTE4,
+    EL_PFORTE1X,
+    EL_PFORTE2X,
+    EL_PFORTE3X,
+    EL_PFORTE4X,
+    EL_EM_GATE_1,
+    EL_EM_GATE_2,
+    EL_EM_GATE_3,
+    EL_EM_GATE_4,
+    EL_EM_GATE_1X,
+    EL_EM_GATE_2X,
+    EL_EM_GATE_3X,
+    EL_EM_GATE_4X,
+    EL_SWITCHGATE_OPEN,
+    EL_SWITCHGATE_OPENING,
+    EL_SWITCHGATE_CLOSED,
+    EL_SWITCHGATE_CLOSING,
+    EL_TIMEGATE_OPEN,
+    EL_TIMEGATE_OPENING,
+    EL_TIMEGATE_CLOSED,
+    EL_TIMEGATE_CLOSING,
     EL_TUBE_CROSS,
     EL_TUBE_VERTICAL,
     EL_TUBE_HORIZONTAL,
@@ -754,7 +799,7 @@ void InitElementProperties()
     EL_TUBE_RIGHT_UP,
     EL_TUBE_RIGHT_DOWN
   };
-  static int ep_massive_num = sizeof(ep_massive)/sizeof(int);
+  static int ep_massive_num = SIZEOF_ARRAY_INT(ep_massive);
 
   static int ep_slippery[] =
   {
@@ -791,7 +836,7 @@ void InitElementProperties()
     EL_PEARL,
     EL_CRYSTAL
   };
-  static int ep_slippery_num = sizeof(ep_slippery)/sizeof(int);
+  static int ep_slippery_num = SIZEOF_ARRAY_INT(ep_slippery);
 
   static int ep_enemy[] =
   {
@@ -806,7 +851,7 @@ void InitElementProperties()
     EL_SP_SNIKSNAK,
     EL_SP_ELECTRON
   };
-  static int ep_enemy_num = sizeof(ep_enemy)/sizeof(int);
+  static int ep_enemy_num = SIZEOF_ARRAY_INT(ep_enemy);
 
   static int ep_mauer[] =
   {
@@ -855,6 +900,7 @@ void InitElementProperties()
     EL_SP_HARD_BASE5,
     EL_SP_HARD_BASE6,
     EL_SP_TERMINAL,
+    EL_SP_TERMINAL_ACTIVE,
     EL_SP_EXIT,
     EL_INVISIBLE_STEEL,
     EL_STEEL_SLANTED,
@@ -871,7 +917,7 @@ void InitElementProperties()
     EL_EMC_WALL_7,
     EL_EMC_WALL_8
   };
-  static int ep_mauer_num = sizeof(ep_mauer)/sizeof(int);
+  static int ep_mauer_num = SIZEOF_ARRAY_INT(ep_mauer);
 
   static int ep_can_fall[] =
   {
@@ -899,7 +945,7 @@ void InitElementProperties()
     EL_SPRING,
     EL_DX_SUPABOMB
   };
-  static int ep_can_fall_num = sizeof(ep_can_fall)/sizeof(int);
+  static int ep_can_fall_num = SIZEOF_ARRAY_INT(ep_can_fall);
 
   static int ep_can_smash[] =
   {
@@ -932,7 +978,7 @@ void InitElementProperties()
     EL_SPRING,
     EL_DX_SUPABOMB
   };
-  static int ep_can_smash_num = sizeof(ep_can_smash)/sizeof(int);
+  static int ep_can_smash_num = SIZEOF_ARRAY_INT(ep_can_smash);
 
   static int ep_can_change[] =
   {
@@ -945,7 +991,7 @@ void InitElementProperties()
     EL_EDELSTEIN_LILA,
     EL_DIAMANT
   };
-  static int ep_can_change_num = sizeof(ep_can_change)/sizeof(int);
+  static int ep_can_change_num = SIZEOF_ARRAY_INT(ep_can_change);
 
   static int ep_can_move[] =
   {
@@ -967,7 +1013,7 @@ void InitElementProperties()
     EL_BALLOON,
     EL_SPRING_MOVING
   };
-  static int ep_can_move_num = sizeof(ep_can_move)/sizeof(int);
+  static int ep_can_move_num = SIZEOF_ARRAY_INT(ep_can_move);
 
   static int ep_could_move[] =
   {
@@ -992,7 +1038,7 @@ void InitElementProperties()
     EL_PACMAN_LEFT,
     EL_PACMAN_DOWN
   };
-  static int ep_could_move_num = sizeof(ep_could_move)/sizeof(int);
+  static int ep_could_move_num = SIZEOF_ARRAY_INT(ep_could_move);
 
   static int ep_dont_touch[] =
   {
@@ -1001,7 +1047,7 @@ void InitElementProperties()
     EL_BUTTERFLY,
     EL_FIREFLY
   };
-  static int ep_dont_touch_num = sizeof(ep_dont_touch)/sizeof(int);
+  static int ep_dont_touch_num = SIZEOF_ARRAY_INT(ep_dont_touch);
 
   static int ep_dont_go_to[] =
   {
@@ -1021,7 +1067,7 @@ void InitElementProperties()
     EL_TRAP_ACTIVE,
     EL_LANDMINE
   };
-  static int ep_dont_go_to_num = sizeof(ep_dont_go_to)/sizeof(int);
+  static int ep_dont_go_to_num = SIZEOF_ARRAY_INT(ep_dont_go_to);
 
   static int ep_mampf2[] =
   {
@@ -1048,7 +1094,7 @@ void InitElementProperties()
     EL_PEARL,
     EL_CRYSTAL
   };
-  static int ep_mampf2_num = sizeof(ep_mampf2)/sizeof(int);
+  static int ep_mampf2_num = SIZEOF_ARRAY_INT(ep_mampf2);
 
   static int ep_bd_element[] =
   {
@@ -1077,7 +1123,7 @@ void InitElementProperties()
     EL_AMOEBE_BD,
     EL_CHAR_FRAGE
   };
-  static int ep_bd_element_num = sizeof(ep_bd_element)/sizeof(int);
+  static int ep_bd_element_num = SIZEOF_ARRAY_INT(ep_bd_element);
 
   static int ep_sb_element[] =
   {
@@ -1089,7 +1135,7 @@ void InitElementProperties()
     EL_SPIELFIGUR,
     EL_INVISIBLE_STEEL
   };
-  static int ep_sb_element_num = sizeof(ep_sb_element)/sizeof(int);
+  static int ep_sb_element_num = SIZEOF_ARRAY_INT(ep_sb_element);
 
   static int ep_gem[] =
   {
@@ -1100,7 +1146,7 @@ void InitElementProperties()
     EL_EDELSTEIN_LILA,
     EL_DIAMANT
   };
-  static int ep_gem_num = sizeof(ep_gem)/sizeof(int);
+  static int ep_gem_num = SIZEOF_ARRAY_INT(ep_gem);
 
   static int ep_inactive[] =
   {
@@ -1237,7 +1283,7 @@ void InitElementProperties()
     EL_EMC_WALL_7,
     EL_EMC_WALL_8
   };
-  static int ep_inactive_num = sizeof(ep_inactive)/sizeof(int);
+  static int ep_inactive_num = SIZEOF_ARRAY_INT(ep_inactive);
 
   static int ep_explosive[] =
   {
@@ -1264,7 +1310,7 @@ void InitElementProperties()
     EL_SP_ELECTRON,
     EL_DX_SUPABOMB
   };
-  static int ep_explosive_num = sizeof(ep_explosive)/sizeof(int);
+  static int ep_explosive_num = SIZEOF_ARRAY_INT(ep_explosive);
 
   static int ep_mampf3[] =
   {
@@ -1277,7 +1323,7 @@ void InitElementProperties()
     EL_PEARL,
     EL_CRYSTAL
   };
-  static int ep_mampf3_num = sizeof(ep_mampf3)/sizeof(int);
+  static int ep_mampf3_num = SIZEOF_ARRAY_INT(ep_mampf3);
 
   static int ep_pushable[] =
   {
@@ -1296,7 +1342,7 @@ void InitElementProperties()
     EL_SPRING,
     EL_DX_SUPABOMB
   };
-  static int ep_pushable_num = sizeof(ep_pushable)/sizeof(int);
+  static int ep_pushable_num = SIZEOF_ARRAY_INT(ep_pushable);
 
   static int ep_player[] =
   {
@@ -1306,7 +1352,7 @@ void InitElementProperties()
     EL_SPIELER3,
     EL_SPIELER4
   };
-  static int ep_player_num = sizeof(ep_player)/sizeof(int);
+  static int ep_player_num = SIZEOF_ARRAY_INT(ep_player);
 
   static int ep_has_content[] =
   {
@@ -1316,7 +1362,7 @@ void InitElementProperties()
     EL_AMOEBE_VOLL,
     EL_AMOEBE_BD
   };
-  static int ep_has_content_num = sizeof(ep_has_content)/sizeof(int);
+  static int ep_has_content_num = SIZEOF_ARRAY_INT(ep_has_content);
 
   static int ep_eatable[] =
   {
@@ -1326,7 +1372,7 @@ void InitElementProperties()
     EL_TRAP_INACTIVE,
     EL_SAND_INVISIBLE
   };
-  static int ep_eatable_num = sizeof(ep_eatable)/sizeof(int);
+  static int ep_eatable_num = SIZEOF_ARRAY_INT(ep_eatable);
 
   static int ep_sp_element[] =
   {
@@ -1375,7 +1421,7 @@ void InitElementProperties()
     /* more than one murphy in a level results in an inactive clone */
     EL_SP_MURPHY_CLONE
   };
-  static int ep_sp_element_num = sizeof(ep_sp_element)/sizeof(int);
+  static int ep_sp_element_num = SIZEOF_ARRAY_INT(ep_sp_element);
 
   static int ep_quick_gate[] =
   {
@@ -1401,7 +1447,7 @@ void InitElementProperties()
     EL_SWITCHGATE_OPEN,
     EL_TIMEGATE_OPEN
   };
-  static int ep_quick_gate_num = sizeof(ep_quick_gate)/sizeof(int);
+  static int ep_quick_gate_num = SIZEOF_ARRAY_INT(ep_quick_gate);
 
   static int ep_over_player[] =
   {
@@ -1428,7 +1474,7 @@ void InitElementProperties()
     EL_TUBE_RIGHT_UP,
     EL_TUBE_RIGHT_DOWN
   };
-  static int ep_over_player_num = sizeof(ep_over_player)/sizeof(int);
+  static int ep_over_player_num = SIZEOF_ARRAY_INT(ep_over_player);
 
   static int ep_active_bomb[] =
   {
@@ -1438,7 +1484,7 @@ void InitElementProperties()
     EL_DYNABOMB_ACTIVE_3,
     EL_DYNABOMB_ACTIVE_4
   };
-  static int ep_active_bomb_num = sizeof(ep_active_bomb)/sizeof(int);
+  static int ep_active_bomb_num = SIZEOF_ARRAY_INT(ep_active_bomb);
 
   static int ep_belt[] =
   {
@@ -1455,7 +1501,7 @@ void InitElementProperties()
     EL_BELT4_MIDDLE,
     EL_BELT4_RIGHT,
   };
-  static int ep_belt_num = sizeof(ep_belt)/sizeof(int);
+  static int ep_belt_num = SIZEOF_ARRAY_INT(ep_belt);
 
   static int ep_belt_switch[] =
   {
@@ -1472,7 +1518,7 @@ void InitElementProperties()
     EL_BELT4_SWITCH_MIDDLE,
     EL_BELT4_SWITCH_RIGHT,
   };
-  static int ep_belt_switch_num = sizeof(ep_belt_switch)/sizeof(int);
+  static int ep_belt_switch_num = SIZEOF_ARRAY_INT(ep_belt_switch);
 
   static int ep_tube[] =
   {
@@ -1488,7 +1534,7 @@ void InitElementProperties()
     EL_TUBE_RIGHT_UP,
     EL_TUBE_RIGHT_DOWN
   };
-  static int ep_tube_num = sizeof(ep_tube)/sizeof(int);
+  static int ep_tube_num = SIZEOF_ARRAY_INT(ep_tube);
 
   static long ep1_bit[] =
   {
@@ -1610,8 +1656,8 @@ void InitElementProperties()
     &ep_belt_switch_num,
     &ep_tube_num
   };
-  static int num_properties1 = sizeof(ep1_num)/sizeof(int *);
-  static int num_properties2 = sizeof(ep2_num)/sizeof(int *);
+  static int num_properties1 = SIZEOF_ARRAY(ep1_num, int *);
+  static int num_properties2 = SIZEOF_ARRAY(ep2_num, int *);
 
   for(i=0; i<MAX_ELEMENTS; i++)
   {
@@ -1630,18 +1676,57 @@ void InitElementProperties()
     Elementeigenschaften1[i] |= (EP_BIT_CHAR | EP_BIT_INACTIVE);
 }
 
+void Execute_Debug_Command(char *command)
+{
+  if (strcmp(command, "create graphicsinfo.conf") == 0)
+  {
+    printf("# (Currently only \"name\" and \"sort_priority\" recognized.)\n");
+    printf("\n");
+    printf("%s\n", getFormattedSetupEntry("name", "Classic Graphics"));
+    printf("\n");
+    printf("%s\n", getFormattedSetupEntry("sort_priority", "100"));
+  }
+  else if (strcmp(command, "create soundsinfo.conf") == 0)
+  {
+    int i;
+
+    printf("# You can configure additional/alternative sound effects here\n");
+    printf("# (The sounds below are default and therefore commented out.)\n");
+    printf("\n");
+    printf("%s\n", getFormattedSetupEntry("name", "Classic Sounds"));
+    printf("\n");
+    printf("%s\n", getFormattedSetupEntry("sort_priority", "100"));
+    printf("\n");
+
+    for (i=0; i<NUM_SOUND_EFFECTS; i++)
+      printf("# %s\n",
+	     getFormattedSetupEntry(sound_effects[i].text,
+				    sound_effects[i].default_filename));
+  }
+  else if (strcmp(command, "create musicinfo.conf") == 0)
+  {
+    printf("# (Currently only \"name\" and \"sort_priority\" recognized.)\n");
+    printf("\n");
+    printf("%s\n", getFormattedSetupEntry("name", "Classic Music"));
+    printf("\n");
+    printf("%s\n", getFormattedSetupEntry("sort_priority", "100"));
+  }
+}
+
 void CloseAllAndExit(int exit_value)
 {
   int i;
 
   StopSounds();
-  FreeSounds(NUM_SOUNDS);
-  CloseAudio();
+  FreeAllSounds();
+  FreeAllMusic();
+  CloseAudio();		/* called after freeing sounds (needed for SDL) */
 
+  FreeTileClipmasks();
   for(i=0; i<NUM_BITMAPS; i++)
     FreeBitmap(pix[i]);
-  CloseVideoDisplay();
 
+  CloseVideoDisplay();
   ClosePlatformDependantStuff();
 
   exit(exit_value);

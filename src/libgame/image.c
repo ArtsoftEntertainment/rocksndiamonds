@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -23,21 +23,30 @@
 Image *newImage(unsigned int width, unsigned int height, unsigned int depth)
 {
   Image *image;
-  const unsigned int bytes_per_pixel = 1;
+  unsigned int bytes_per_pixel = (depth + 7) / 8;
   int i;
 
+#if 0
   if (depth > 8)
     Error(ERR_EXIT, "images with more than 256 colors are not supported");
 
   depth = 8;
+#endif
+
   image = checked_malloc(sizeof(Image));
   image->data = checked_malloc(width * height * bytes_per_pixel);
   image->width = width;
   image->height = height;
   image->depth = depth;
+  image->bytes_per_pixel = bytes_per_pixel;
+  image->bytes_per_row = width * bytes_per_pixel;
+
   image->rgb.used = 0;
   for (i=0; i<MAX_COLORS; i++)
     image->rgb.color_used[i] = FALSE;
+
+  image->type = (depth < 8 ? IMAGETYPE_BITMAP :
+		 depth > 8 ? IMAGETYPE_TRUECOLOR : IMAGETYPE_RGB);
 
   return image;
 }
@@ -53,26 +62,39 @@ void freeImage(Image *image)
 /* extra colors to try allocating in private color maps to minimize flashing */
 #define NOFLASH_COLORS 256
 
-/* architecture independent value-to-memory conversion
+/* architecture independent value <-> memory conversions;
    note: the internal format is big endian */
 
-#define value_to_memory(value, ptr, length) (				\
-(length) == 1 ? (*( (byte *)(ptr)   ) = ( value     ) ) :		\
-(length) == 2 ? (*( (byte *)(ptr)   ) = (((unsigned long)(value))>> 8),	\
-		 *(((byte *)(ptr))+1) = ( value     ) ) :		\
-(length) == 3 ? (*( (byte *)(ptr)   ) = (((unsigned long)(value))>>16),	\
-		 *(((byte *)(ptr))+1) = (((unsigned long)(value))>> 8),	\
-		 *(((byte *)(ptr))+2) = ( value     ) ) :		\
-                (*( (byte *)(ptr)   ) = (((unsigned long)(value))>>24),	\
-		 *(((byte *)(ptr))+1) = (((unsigned long)(value))>>16),	\
-		 *(((byte *)(ptr))+2) = (((unsigned long)(value))>> 8),	\
-		 *(((byte *)(ptr))+3) = ( value     ) ))
+#define memory_to_value(ptr, len) (					    \
+(len) == 1 ? (unsigned long)(                 *( (byte *)(ptr))         ) : \
+(len) == 2 ? (unsigned long)(((unsigned long)(*( (byte *)(ptr))   ))<< 8)   \
+			  + (                 *(((byte *)(ptr))+1)      ) : \
+(len) == 3 ? (unsigned long)(((unsigned long)(*( (byte *)(ptr))   ))<<16)   \
+			  + (((unsigned long)(*(((byte *)(ptr))+1)))<< 8)   \
+			  + (                 *(((byte *)(ptr))+2)      ) : \
+	     (unsigned long)(((unsigned long)(*( (byte *)(ptr))   ))<<24)   \
+			  + (((unsigned long)(*(((byte *)(ptr))+1)))<<16)   \
+			  + (((unsigned long)(*(((byte *)(ptr))+2)))<< 8)   \
+			  + (                 *(((byte *)(ptr))+3)      ) )
+
+
+#define value_to_memory(value, ptr, len) (				\
+(len) == 1 ? (*( (byte *)(ptr)   ) = ( value     ) ) :			\
+(len) == 2 ? (*( (byte *)(ptr)   ) = (((unsigned long)(value))>> 8),	\
+	      *(((byte *)(ptr))+1) = ( value     ) ) :			\
+(len) == 3 ? (*( (byte *)(ptr)   ) = (((unsigned long)(value))>>16),	\
+	      *(((byte *)(ptr))+1) = (((unsigned long)(value))>> 8),	\
+	      *(((byte *)(ptr))+2) = ( value     ) ) :			\
+             (*( (byte *)(ptr)   ) = (((unsigned long)(value))>>24),	\
+	      *(((byte *)(ptr))+1) = (((unsigned long)(value))>>16),	\
+	      *(((byte *)(ptr))+2) = (((unsigned long)(value))>> 8),	\
+	      *(((byte *)(ptr))+3) = ( value     ) ))
 
 static Pixmap Image_to_Mask(Image *image, Display *display, Window window)
 {
   byte *src_ptr, *dst_ptr, *dst_ptr2;
   unsigned int bytes_per_row;
-  unsigned int x, y;
+  unsigned int x, y, i;
   byte bitmask;
   byte *mask_data;
   Pixmap mask_pixmap;
@@ -95,8 +117,9 @@ static Pixmap Image_to_Mask(Image *image, Display *display, Window window)
 
     for (x=0; x<image->width; x++)
     {
-      if (*src_ptr++)		/* source pixel solid? (pixel index != 0)  */
-	*dst_ptr2 |= bitmask;	/* then write a bit into the image mask    */
+      for (i=0; i<image->bytes_per_pixel; i++)
+	if (*src_ptr++)		/* source pixel solid? (pixel index != 0)  */
+	  *dst_ptr2 |= bitmask;	/* then write a bit into the image mask    */
 
       if ((bitmask <<= 1) == 0)	/* bit at rightmost byte position reached? */
       {
@@ -146,11 +169,19 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
   static int num_cmap_entries, free_cmap_entries;
   static boolean private_cmap = FALSE;
   Pixel *redvalue, *greenvalue, *bluevalue;
-  unsigned int a, c = 0, x, y, bytes_per_pixel, bits_per_pixel;
+  unsigned int display_bytes_per_pixel, display_bits_per_pixel;
+  unsigned int a, c = 0, x, y;
   XColor xcolor;
   XImage *ximage;
   XImageInfo *ximageinfo;
   byte *src_ptr, *dst_ptr;
+  char *error = "Image_to_Pixmap(): %s";
+
+  if (image->type == IMAGETYPE_TRUECOLOR && depth == 8)
+  {
+    SetError(error, "cannot handle true-color images on 8-bit display");
+    return NULL;
+  }
 
   if (!global_cmap)
   {
@@ -214,6 +245,7 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
       bluestep = 256 / bluecolors;
       redbottom = greenbottom = bluebottom = 0;
       redtop = greentop = bluetop = 0;
+
       for (a=0; a<visual->map_entries; a++)
       {
 	if (redbottom < 256)
@@ -243,11 +275,13 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
 
 	  /* something completely unexpected happened */
 
-	  fprintf(stderr, "imageToXImage: XAllocColor failed on a TrueColor/Directcolor visual\n");
+	  fprintf(stderr, "Image_to_Pixmap: XAllocColor failed on a TrueColor/Directcolor visual\n");
+
           free(redvalue);
           free(greenvalue);
           free(bluevalue);
           free(ximageinfo);
+
 	  return NULL;
 	}
 
@@ -260,6 +294,7 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
 	while ((bluebottom < 256) && (bluebottom < bluetop))
 	  bluevalue[bluebottom++] = xcolor.pixel & visual->blue_mask;
       }
+
       break;
     }
 
@@ -365,7 +400,10 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
 	  }
 
 	  if (!color_found)		/* no more free color cells */
-	    Error(ERR_EXIT, "cannot allocate enough color cells");
+	  {
+	    SetError(error, "cannot allocate enough color cells");
+	    return NULL;
+	  }
 
 	  xcolor.pixel = xcolor2.pixel;
 	  xcolor_private[xcolor.pixel] = xcolor;
@@ -385,9 +423,10 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
       break;
   
     default:
-      Error(ERR_RETURN, "display class not supported");
-      Error(ERR_EXIT, "DirectColor, TrueColor or PseudoColor display needed");
-      break;
+      Error(ERR_RETURN,"DirectColor, TrueColor or PseudoColor display needed");
+      SetError(error, "display class not supported");
+
+      return NULL;
   }
 
 #if DEBUG_TIMING
@@ -396,14 +435,14 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
 
   /* create XImage from internal image structure and convert it to Pixmap */
 
-  bits_per_pixel = bitsPerPixelAtDepth(display, screen, depth);
-  bytes_per_pixel = (bits_per_pixel + 7) / 8;
+  display_bits_per_pixel = bitsPerPixelAtDepth(display, screen, depth);
+  display_bytes_per_pixel = (display_bits_per_pixel + 7) / 8;
 
   ximage = XCreateImage(display, visual, depth, ZPixmap, 0,
 			NULL, image->width, image->height,
-			8, image->width * bytes_per_pixel);
+			8, image->width * display_bytes_per_pixel);
   ximage->data =
-    checked_malloc(image->width * image->height * bytes_per_pixel);
+    checked_malloc(image->width * image->height * display_bytes_per_pixel);
   ximage->byte_order = MSBFirst;
 
   src_ptr = image->data;
@@ -416,25 +455,60 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
     {
       Pixel pixval;
 
-      for (y=0; y<image->height; y++)		/* general case */
+      switch (image->type)
       {
-	for (x=0; x<image->width; x++)
+        case IMAGETYPE_RGB:
 	{
-	  pixval = *src_ptr++;
-	  pixval =
-	    redvalue[image->rgb.red[pixval] >> 8] |
-	    greenvalue[image->rgb.green[pixval] >> 8] |
-	    bluevalue[image->rgb.blue[pixval] >> 8];
-	  value_to_memory(pixval, dst_ptr, bytes_per_pixel);
-	  dst_ptr += bytes_per_pixel;
+	  for (y=0; y<image->height; y++)		/* general case */
+	  {
+	    for (x=0; x<image->width; x++)
+	    {
+	      pixval = *src_ptr++;
+	      pixval =
+		redvalue[image->rgb.red[pixval] >> 8] |
+		greenvalue[image->rgb.green[pixval] >> 8] |
+		bluevalue[image->rgb.blue[pixval] >> 8];
+	      value_to_memory(pixval, dst_ptr, display_bytes_per_pixel);
+	      dst_ptr += display_bytes_per_pixel;
+	    }
+	  }
+
+	  break;
 	}
+
+        case IMAGETYPE_TRUECOLOR:
+	{
+	  for (y=0; y<image->height; y++)		/* general case */
+	  {
+	    for (x=0; x<image->width; x++)
+	    {
+	      pixval = memory_to_value(src_ptr, image->bytes_per_pixel);
+	      pixval =
+		redvalue[TRUECOLOR_RED(pixval)] |
+		greenvalue[TRUECOLOR_GREEN(pixval)] |
+		bluevalue[TRUECOLOR_BLUE(pixval)];
+	      value_to_memory(pixval, dst_ptr, display_bytes_per_pixel);
+	      src_ptr += image->bytes_per_pixel;
+	      dst_ptr += display_bytes_per_pixel;
+	    }
+	  }
+
+	  break;
+	}
+
+        default:
+	  Error(ERR_RETURN, "RGB or TrueColor image needed");
+	  SetError(error, "image type not supported");
+
+	  return NULL;
       }
+
       break;
     }
 
     case PseudoColor:
     {
-      if (bytes_per_pixel == 1)			/* (common) special case */
+      if (display_bytes_per_pixel == 1)		/* special case */
       {
 	for (y=0; y<image->height; y++)
 	  for (x=0; x<image->width; x++)
@@ -447,18 +521,20 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
 	  for (x=0; x<image->width; x++)
 	  {
 	    value_to_memory(ximageinfo->index[c + *src_ptr++],
-			    dst_ptr, bytes_per_pixel);
-	    dst_ptr += bytes_per_pixel;
+			    dst_ptr, display_bytes_per_pixel);
+	    dst_ptr += display_bytes_per_pixel;
 	  }
 	}
       }
+
       break;
     }
 
     default:
-      Error(ERR_RETURN, "display class not supported");
-      Error(ERR_EXIT, "DirectColor, TrueColor or PseudoColor display needed");
-      break;
+      Error(ERR_RETURN,"DirectColor, TrueColor or PseudoColor display needed");
+      SetError(error, "display class not supported");
+
+      return NULL;
   }
 
   if (redvalue)
@@ -479,11 +555,9 @@ XImageInfo *Image_to_Pixmap(Display *display, int screen, Visual *visual,
   XPutImage(ximageinfo->display, ximageinfo->pixmap, gc,
 	    ximage, 0, 0, 0, 0, ximage->width, ximage->height);
 
-  free(ximage->data);
-  ximage->data = NULL;
   XDestroyImage(ximage);
 
-  return(ximageinfo);
+  return ximageinfo;
 }
 
 void freeXImage(Image *image, XImageInfo *ximageinfo)
@@ -528,7 +602,11 @@ int Read_PCX_to_Pixmap(Display *display, Window window, GC gc, char *filename,
   /* convert image structure to X11 Pixmap */
   if (!(ximageinfo = Image_to_Pixmap(display, screen, visual,
 				     window, gc, depth, image)))
-    Error(ERR_EXIT, "cannot convert Image to Pixmap");
+  {
+    freeImage(image);
+
+    return PCX_OtherError;
+  }
 
   /* if a private colormap has been created, install it */
   if (ximageinfo->cmap != DefaultColormap(display, screen))
@@ -547,6 +625,10 @@ int Read_PCX_to_Pixmap(Display *display, Window window, GC gc, char *filename,
 
   *pixmap = ximageinfo->pixmap;
   *pixmap_mask = ximageinfo->pixmap_mask;
+
+  /* free generic image and ximageinfo after native Pixmap has been created */
+  free(ximageinfo);
+  freeImage(image);
 
   return PCX_Success;
 }

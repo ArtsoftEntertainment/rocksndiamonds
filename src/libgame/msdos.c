@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -17,7 +17,9 @@
 #if defined(PLATFORM_MSDOS)
 
 #include "sound.h"
+#include "joystick.h"
 #include "misc.h"
+#include "setup.h"
 #include "pcx.h"
 
 #define AllegroDefaultScreen() (display->screens[display->default_screen])
@@ -52,12 +54,6 @@ static int global_colormap_entries_used = 0;
 
 boolean wait_for_vsync;
 
-/*
-extern int playing_sounds;
-extern struct SoundControl playlist[MAX_SOUNDS_PLAYING];
-extern struct SoundControl emptySoundControl;
-*/
-
 static BITMAP *Read_PCX_to_AllegroBitmap(char *);
 
 static void allegro_init_drivers()
@@ -90,7 +86,7 @@ static void allegro_init_drivers()
 
 static boolean allegro_init_audio()
 {
-  reserve_voices(MAX_SOUNDS_PLAYING, 0);
+  reserve_voices(NUM_MIXER_CHANNELS, 0);
 
   if (install_sound(DIGI_AUTODETECT, MIDI_NONE, NULL) == -1)
     if (install_sound(DIGI_SB, MIDI_NONE, NULL) == -1)
@@ -301,9 +297,9 @@ Display *XOpenDisplay(char *display_name)
   Screen *screen;
   Display *display;
   BITMAP *mouse_bitmap = NULL;
+  char *mouse_filename =getCustomImageFilename(program.msdos_pointer_filename);
 
-  mouse_bitmap = Read_PCX_to_AllegroBitmap(program.msdos_pointer_filename);
-  if (mouse_bitmap == NULL)
+  if ((mouse_bitmap = Read_PCX_to_AllegroBitmap(mouse_filename)) == NULL)
     return NULL;
 
   screen = malloc(sizeof(Screen));
@@ -311,13 +307,8 @@ Display *XOpenDisplay(char *display_name)
 
   screen[0].cmap = 0;
   screen[0].root = 0;
-#if 0
-  screen[0].white_pixel = 0xFF;
-  screen[0].black_pixel = 0x00;
-#else
   screen[0].white_pixel = AllegroAllocColorCell(0xFFFF, 0xFFFF, 0xFFFF);
   screen[0].black_pixel = AllegroAllocColorCell(0x0000, 0x0000, 0x0000);
-#endif
   screen[0].video_bitmap = NULL;
 
   display->default_screen = 0;
@@ -510,12 +501,10 @@ static BITMAP *Image_to_AllegroBitmap(Image *image)
   byte *src_ptr = image->data;
   byte pixel_mapping[MAX_COLORS];
   unsigned int depth = 8;
-
-#if 0
-  int i, j, x, y;
-#else
   int i, x, y;
-#endif
+
+  if (image->type == IMAGETYPE_TRUECOLOR && depth == 8)
+    Error(ERR_EXIT, "cannot handle true-color images on 8-bit display");
 
   /* allocate new allegro bitmap structure */
   if ((bitmap = create_bitmap_ex(depth, image->width, image->height)) == NULL)
@@ -529,48 +518,12 @@ static BITMAP *Image_to_AllegroBitmap(Image *image)
   /* try to use existing colors from the global colormap */
   for (i=0; i<MAX_COLORS; i++)
   {
-
-#if 0
-    int r, g, b;
-#endif
-
     if (!image->rgb.color_used[i])
       continue;
 
-
-#if 0
-    r = image->rgb.red[i] >> 10;
-    g = image->rgb.green[i] >> 10;
-    b = image->rgb.blue[i] >> 10;
-
-    for (j=0; j<global_colormap_entries_used; j++)
-    {
-      if (r == global_colormap[j].r &&
-	  g == global_colormap[j].g &&
-	  b == global_colormap[j].b)		/* color found */
-      {
-	pixel_mapping[i] = j;
-	break;
-      }
-    }
-
-    if (j == global_colormap_entries_used)	/* color not found */
-    {
-      if (global_colormap_entries_used < MAX_COLORS)
-	global_colormap_entries_used++;
-
-      global_colormap[j].r = r;
-      global_colormap[j].g = g;
-      global_colormap[j].b = b;
-
-      pixel_mapping[i] = j;
-    }
-#else
     pixel_mapping[i] = AllegroAllocColorCell(image->rgb.red[i],
 					     image->rgb.green[i],
 					     image->rgb.blue[i]);
-#endif
-
   }
 
   /* copy bitmap data */
@@ -608,17 +561,10 @@ int Read_PCX_to_Pixmap(Display *display, Window window, GC gc, char *filename,
     return errno_pcx;
 
   *pixmap = (Pixmap)bitmap;
-#if 0
-  *pixmap_mask = (Pixmap)bitmap;
-  /* !!! two pointers on same bitmap => second free() fails !!! */
-#else
+
   /* pixmap_mask will never be used in Allegro (which uses masked_blit()),
      so use non-NULL dummy pointer to empty Pixmap */
-  /*
-  *pixmap_mask = (Pixmap)checked_calloc(sizeof(Pixmap));
-  */
   *pixmap_mask = (Pixmap)DUMMY_MASK;
-#endif
 
   return PCX_Success;
 }
@@ -979,9 +925,13 @@ void MSDOSOpenAudio(void)
     audio.music_available = TRUE;
     audio.loops_available = TRUE;
     audio.sound_enabled = TRUE;
-  }
 
-  InitPlaylist();
+    audio.num_channels = NUM_MIXER_CHANNELS;
+    audio.music_channel = MUSIC_CHANNEL;
+    audio.first_sound_channel = FIRST_SOUND_CHANNEL;
+
+    Mixer_InitChannels();
+  }
 }
 
 void MSDOSCloseAudio(void)
@@ -992,6 +942,59 @@ void MSDOSCloseAudio(void)
 void NetworkServer(int port, int serveronly)
 {
   Error(ERR_WARN, "networking not supported in DOS version");
+}
+
+
+/* ========================================================================= */
+/* joystick functions                                                        */
+/* ========================================================================= */
+
+void MSDOSInitJoysticks()
+{
+  int i;
+
+  /* start from scratch */
+  remove_joystick();
+
+  /* try to access two joysticks; if that fails, try to access just one */
+  if (install_joystick(JOY_TYPE_2PADS) == 0 ||
+      install_joystick(JOY_TYPE_AUTODETECT) == 0)
+    joystick.status = JOYSTICK_ACTIVATED;
+
+  for (i=0; i<MAX_PLAYERS; i++)
+  {
+    char *device_name = setup.input[i].joy.device_name;
+    int joystick_nr = getJoystickNrFromDeviceName(device_name);
+
+    if (joystick_nr >= num_joysticks)
+      joystick_nr = -1;
+
+    /* misuse joystick file descriptor variable to store joystick number */
+    joystick.fd[i] = joystick_nr;
+  }
+}
+
+boolean MSDOSReadJoystick(int nr, int *x, int *y, boolean *b1, boolean *b2)
+{
+  /* the allegro global variable 'num_joysticks' contains the number
+     of joysticks found at initialization under MS-DOS / Windows */
+
+  if (nr < 0 || nr >= num_joysticks)
+    return FALSE;
+
+  poll_joystick();
+
+  if (x != NULL)
+    *x = joy[nr].stick[0].axis[0].pos;
+  if (y != NULL)
+    *y = joy[nr].stick[0].axis[1].pos;
+
+  if (b1 != NULL)
+    *b1 = joy[nr].button[0].b;
+  if (b2 != NULL)
+    *b2 = joy[nr].button[1].b;
+
+  return TRUE;
 }
 
 #endif /* PLATFORM_MSDOS */

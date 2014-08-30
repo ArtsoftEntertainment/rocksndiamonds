@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -26,6 +26,7 @@
 #define	PCX_FileInvalid		-3
 #define PCX_NoMemory		-4
 #define PCX_ColorFailed		-5
+#define PCX_OtherError		-6
 
 /* global PCX error value */
 extern int errno_pcx;

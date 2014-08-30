@@ -1,7 +1,7 @@
 /***********************************************************
 * Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1994-2001 Artsoft Entertainment                      *
+* (c) 1994-2002 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
@@ -147,17 +147,21 @@ void DrawTextExt(DrawBuffer *bitmap, int x, int y,
       c = 92;
     else if (c == 'ü' || c == 'Ü')
       c = 93;
+    else if (c == '[' || c == ']')	/* map to normal braces */
+      c = (c == '[' ? '(' : ')');
+    else if (c == '\\')			/* bad luck ... */
+      c = '/';
 
-    if ((c >= 32 && c <= 95) || c == '°')
+    if ((c >= 32 && c <= 95) || c == '°' || c == '´')
     {
       int src_x = ((c - 32) % FONT_CHARS_PER_LINE) * font_width;
       int src_y = ((c - 32) / FONT_CHARS_PER_LINE) * font_height + font_start;
       int dest_x = x, dest_y = y;
 
-      if (c == '°')
+      if (c == '°' || c == '´')		/* map '°' and 'TM' signs */
       {
-	src_x = (FONT_CHARS_PER_LINE + 1) * font_width;
-	src_y = 3 * font_height + font_start;
+	src_x = FONT_CHARS_PER_LINE * font_width;
+	src_y = (c == '°' ? 1 : 2) * font_height + font_start;
       }
 
       if (print_inverse)

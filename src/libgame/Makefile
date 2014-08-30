@@ -1,15 +1,18 @@
 #=============================================================================#
 # Makefile for Artsoft Retro-Game Library                                     #
-# (c) 1994-2000 Holger Schemel, info@artsoft.org                              #
+# (c) 1994-2002 Holger Schemel, info@artsoft.org                              #
 #=============================================================================#
 
 SRCS =	system.c	\
 	gadgets.c	\
 	text.c		\
 	sound.c		\
+	joystick.c	\
+	toons.c		\
 	pcx.c		\
 	image.c		\
 	random.c	\
+	setup.c		\
 	misc.c		\
 	msdos.c		\
 	x11.c		\
@@ -19,9 +22,12 @@ OBJS =	system.o	\
 	gadgets.o	\
 	text.o		\
 	sound.o		\
+	joystick.o	\
+	toons.o		\
 	pcx.o		\
 	image.o		\
 	random.o	\
+	setup.o		\
 	misc.o		\
 	msdos.o		\
 	x11.o		\
