@@ -1,45 +1,71 @@
 /***********************************************************
 *  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
 *----------------------------------------------------------*
-*  ©1995 Artsoft Development                               *
-*        Holger Schemel                                    *
-*        33659 Bielefeld-Senne                             *
-*        Telefon: (0521) 493245                            *
-*        eMail: aeglos@valinor.owl.de                      *
-*               aeglos@uni-paderborn.de                    *
-*               q99492@pbhrzx.uni-paderborn.de             *
+*  (c) 1995-98 Artsoft Entertainment                       *
+*              Holger Schemel                              *
+*              Oststrasse 11a                              *
+*              33604 Bielefeld                             *
+*              phone: ++49 +521 290471                     *
+*              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
 *  sound.c                                                 *
 ***********************************************************/
 
 #include "sound.h"
+#include "misc.h"
 
 /*** THE STUFF BELOW IS ONLY USED BY THE SOUND SERVER CHILD PROCESS ***/
 
+static int playing_sounds = 0;
 static struct SoundControl playlist[MAX_SOUNDS_PLAYING];
 static struct SoundControl emptySoundControl =
 {
   -1,0,0, FALSE,FALSE,FALSE,FALSE,FALSE, 0,0L,0L,NULL
 };
+
+#ifndef MSDOS
 static int stereo_volume[PSND_MAX_LEFT2RIGHT+1];
 static char premix_first_buffer[SND_BLOCKSIZE];
+#ifdef VOXWARE
 static char premix_left_buffer[SND_BLOCKSIZE];
 static char premix_right_buffer[SND_BLOCKSIZE];
 static int premix_last_buffer[SND_BLOCKSIZE];
+#endif /* VOXWARE */
 static unsigned char playing_buffer[SND_BLOCKSIZE];
-static int playing_sounds = 0;
+#endif /* MSDOS */
+
+/* forward declaration of internal functions */
+#ifdef VOXWARE
+static void SoundServer_InsertNewSound(struct SoundControl);
+#endif
+#ifndef VOXWARE
+static unsigned char linear_to_ulaw(int);
+static int ulaw_to_linear(unsigned char);
+#endif
+#ifdef HPUX_AUDIO
+static void HPUX_Audio_Control();
+#endif
+#ifdef MSDOS
+static void SoundServer_InsertNewSound(struct SoundControl);
+static void SoundServer_StopSound(int);
+static void SoundServer_StopAllSounds();
+#endif
 
 void SoundServer()
 {
+  int i;
+#ifndef MSDOS
   struct SoundControl snd_ctrl;
   fd_set sound_fdset;
-  int i;
 
   close(sound_pipe[1]);		/* no writing into pipe needed */
+#endif
 
   for(i=0;i<MAX_SOUNDS_PLAYING;i++)
     playlist[i] = emptySoundControl;
+  playing_sounds = 0;
 
+#ifndef MSDOS
   stereo_volume[PSND_MAX_LEFT2RIGHT] = 0;
   for(i=0;i<PSND_MAX_LEFT2RIGHT;i++)
     stereo_volume[i] =
@@ -52,17 +78,14 @@ void SoundServer()
   FD_ZERO(&sound_fdset); 
   FD_SET(sound_pipe[0], &sound_fdset);
 
-  for(;;)	/* wait for calls from PlaySound(), StopSound(), ... */
+  while(1)	/* wait for sound playing commands from client */
   {
     FD_SET(sound_pipe[0], &sound_fdset);
     select(sound_pipe[0]+1, &sound_fdset, NULL, NULL, NULL);
     if (!FD_ISSET(sound_pipe[0], &sound_fdset))
       continue;
     if (read(sound_pipe[0], &snd_ctrl, sizeof(snd_ctrl)) != sizeof(snd_ctrl))
-    {
-      fprintf(stderr,"%s: broken pipe - no sounds\n",progname);
-      exit(0);
-    }
+      Error(ERR_EXIT_SOUND_SERVER, "broken pipe - no sounds");
 
 #ifdef VOXWARE
 
@@ -105,10 +128,11 @@ void SoundServer()
     if (playing_sounds || snd_ctrl.active)
     {
       struct timeval delay = { 0, 0 };
-      char *sample_ptr;
-      long sample_size, max_sample_size;
-      long fragment_size;
-      BOOL stereo;
+      byte *sample_ptr;
+      long sample_size;
+      static long max_sample_size = 0;
+      static long fragment_size = 0;
+      boolean stereo;
 
       if (playing_sounds || (sound_device=open(sound_device_name,O_WRONLY))>=0)
       {
@@ -238,12 +262,12 @@ void SoundServer()
       }
     }
 
-#else	/* von '#ifdef VOXWARE' */
+#else /* !VOXWARE */
 
     if (snd_ctrl.active && !snd_ctrl.loop)
     {
       struct timeval delay = { 0, 0 };
-      char *sample_ptr;
+      byte *sample_ptr;
       long sample_size, max_sample_size = SND_BLOCKSIZE;
       long sample_rate = 8000;	/* standard "/dev/audio" sampling rate */
       int wait_percent = 90;	/* wait 90% of the real playing time */
@@ -259,9 +283,9 @@ void SoundServer()
 	  FD_SET(sound_pipe[0], &sound_fdset);
 
 	  /* get pointer and size of the actual sound sample */
-	  sample_ptr = snd_ctrl.data_ptr+snd_ctrl.playingpos;
+	  sample_ptr = snd_ctrl.data_ptr + snd_ctrl.playingpos;
 	  sample_size =
-	    MIN(max_sample_size,snd_ctrl.data_len-snd_ctrl.playingpos);
+	    MIN(max_sample_size, snd_ctrl.data_len - snd_ctrl.playingpos);
 	  snd_ctrl.playingpos += sample_size;
 
 	  /* fill the first mixing buffer with original sample */
@@ -292,24 +316,81 @@ void SoundServer()
       }
     }
 
-#endif	/* von '#ifdef VOXWARE' */
+#endif /* !VOXWARE */
 
   }
+#endif /* !MSDOS */
 }
 
-void SoundServer_InsertNewSound(struct SoundControl snd_ctrl)
+#ifdef MSDOS
+static void sound_handler(struct SoundControl snd_ctrl)
 {
-  int i,k;
+  int i;
 
-  /* wenn voll, ältesten Sound 'rauswerfen */
+  if (snd_ctrl.fade_sound)
+  {
+    if (!playing_sounds)
+      return;
+
+    for (i=0; i<MAX_SOUNDS_PLAYING; i++)
+      if ((snd_ctrl.stop_all_sounds || playlist[i].nr == snd_ctrl.nr) &&
+	  !playlist[i].fade_sound)
+      {
+	playlist[i].fade_sound = TRUE;
+	if (voice_check(playlist[i].voice))
+	  voice_ramp_volume(playlist[i].voice, 1000, 0);
+	playlist[i].loop = PSND_NO_LOOP;
+      }
+  }
+  else if (snd_ctrl.stop_all_sounds)
+  {
+    if (!playing_sounds)
+      return;
+    SoundServer_StopAllSounds();
+  }
+  else if (snd_ctrl.stop_sound)
+  {
+    if (!playing_sounds)
+      return;
+    SoundServer_StopSound(snd_ctrl.nr);
+  }
+
+  for (i=0; i<MAX_SOUNDS_PLAYING; i++)
+  {
+    if (!playlist[i].active || playlist[i].loop)
+      continue;
+
+    playlist[i].playingpos = voice_get_position(playlist[i].voice);
+    playlist[i].volume = voice_get_volume(playlist[i].voice);
+    if (playlist[i].playingpos == -1 || !playlist[i].volume)
+    {
+      deallocate_voice(playlist[i].voice);
+      playlist[i] = emptySoundControl;
+      playing_sounds--;
+    }
+  }
+
+  if (snd_ctrl.active)
+    SoundServer_InsertNewSound(snd_ctrl);
+}
+#endif /* MSDOS */
+
+static void SoundServer_InsertNewSound(struct SoundControl snd_ctrl)
+{
+  int i, k;
+
+  /* if playlist is full, remove oldest sound */
   if (playing_sounds==MAX_SOUNDS_PLAYING)
   {
     int longest=0, longest_nr=0;
 
     for(i=0;i<MAX_SOUNDS_PLAYING;i++)
     {
-      int actual =
-	100 * playlist[i].playingpos / playlist[i].data_len;
+#ifndef MSDOS
+      int actual = 100 * playlist[i].playingpos / playlist[i].data_len;
+#else
+      int actual = playlist[i].playingpos;
+#endif
 
       if (!playlist[i].loop && actual>longest)
       {
@@ -317,18 +398,22 @@ void SoundServer_InsertNewSound(struct SoundControl snd_ctrl)
 	longest_nr=i;
       }
     }
+#ifdef MSDOS
+    voice_set_volume(playlist[longest_nr].voice, 0);
+    deallocate_voice(playlist[longest_nr].voice);
+#endif
     playlist[longest_nr] = emptySoundControl;
     playing_sounds--;
   }
 
-  /* nachsehen, ob (und ggf. wie oft) Sound bereits gespielt wird */
+  /* check if sound is already being played (and how often) */
   for(k=0,i=0;i<MAX_SOUNDS_PLAYING;i++)
   {
     if (playlist[i].nr == snd_ctrl.nr)
       k++;
   }
 
-  /* falls Sound-Loop: nur neu beginnen, wenn Sound gerade ausklingt */
+  /* restart loop sounds only if they are just fading out */
   if (k>=1 && snd_ctrl.loop)
   {
     for(i=0;i<MAX_SOUNDS_PLAYING;i++)
@@ -337,17 +422,22 @@ void SoundServer_InsertNewSound(struct SoundControl snd_ctrl)
       {
 	playlist[i].fade_sound = FALSE;
 	playlist[i].volume = PSND_MAX_VOLUME;
+#ifdef MSDOS
+        playlist[i].loop = PSND_LOOP;
+        voice_stop_volumeramp(playlist[i].voice);
+        voice_ramp_volume(playlist[i].voice, playlist[i].volume, 1000);
+#endif
       }
     }
     return;
   }
 
-  /* keinen Sound mehr als n mal gleichzeitig spielen (momentan n==2) */
+  /* don't play sound more than n times simultaneously (with n == 2 for now) */
   if (k>=2)
   {
     int longest=0, longest_nr=0;
 
-    /* den bereits am längsten gespielten (gleichen) Sound suchen */
+    /* look for oldest equal sound */
     for(i=0;i<MAX_SOUNDS_PLAYING;i++)
     {
       int actual;
@@ -355,13 +445,21 @@ void SoundServer_InsertNewSound(struct SoundControl snd_ctrl)
       if (!playlist[i].active || playlist[i].nr != snd_ctrl.nr)
 	continue;
 
+#ifndef MSDOS
       actual = 100 * playlist[i].playingpos / playlist[i].data_len;
+#else
+      actual = playlist[i].playingpos;
+#endif
       if (actual>=longest)
       {
 	longest=actual;
 	longest_nr=i;
       }
     }
+#ifdef MSDOS
+    voice_set_volume(playlist[longest_nr].voice, 0);
+    deallocate_voice(playlist[longest_nr].voice);
+#endif
     playlist[longest_nr] = emptySoundControl;
     playing_sounds--;
   }
@@ -373,6 +471,14 @@ void SoundServer_InsertNewSound(struct SoundControl snd_ctrl)
     {
       playlist[i] = snd_ctrl;
       playing_sounds++;
+#ifdef MSDOS
+      playlist[i].voice = allocate_voice(Sound[snd_ctrl.nr].sample_ptr);
+      if(snd_ctrl.loop)
+        voice_set_playmode(playlist[i].voice, PLAYMODE_LOOP);
+      voice_set_volume(playlist[i].voice, snd_ctrl.volume);
+      voice_set_pan(playlist[i].voice, snd_ctrl.stereo);
+      voice_start(playlist[i].voice);       
+#endif
       break;
     }
   }
@@ -392,7 +498,7 @@ void SoundServer_FadeSound(int nr)
 }
 */
 
-void SoundServer_StopSound(int nr)
+static void SoundServer_StopSound(int nr)
 {
   int i;
 
@@ -402,49 +508,54 @@ void SoundServer_StopSound(int nr)
   for(i=0;i<MAX_SOUNDS_PLAYING;i++)
     if (playlist[i].nr == nr)
     {
+#ifdef MSDOS
+      voice_set_volume(playlist[i].voice, 0);
+      deallocate_voice(playlist[i].voice);
+#endif
       playlist[i] = emptySoundControl;
       playing_sounds--;
     }
 
+#ifndef MSDOS
   if (!playing_sounds)
     close(sound_device);
+#endif
 }
 
-void SoundServer_StopAllSounds()
+static void SoundServer_StopAllSounds()
 {
   int i;
 
   for(i=0;i<MAX_SOUNDS_PLAYING;i++)
+  {
+#ifdef MSDOS
+    voice_set_volume(playlist[i].voice, 0);
+    deallocate_voice(playlist[i].voice);
+#endif
     playlist[i]=emptySoundControl;
-  playing_sounds=0;
+  }
+  playing_sounds = 0;
 
+#ifndef MSDOS
   close(sound_device);
+#endif
 }
 
 #ifdef HPUX_AUDIO
-void HPUX_Audio_Control()
+static void HPUX_Audio_Control()
 {
   struct audio_describe ainfo;
   int audio_ctl;
 
   audio_ctl = open("/dev/audioCtl", O_WRONLY | O_NDELAY);
   if (audio_ctl == -1)
-  {
-    fprintf(stderr,"%s: cannot open /dev/audioCtl - no sounds\n",progname);
-    exit(0);
-  }
+    Error(ERR_EXIT_SOUND_SERVER, "cannot open /dev/audioCtl - no sounds");
 
   if (ioctl(audio_ctl, AUDIO_DESCRIBE, &ainfo) == -1)
-  {
-    fprintf(stderr,"%s: no audio info - no sounds\n",progname);
-    exit(0);
-  }
+    Error(ERR_EXIT_SOUND_SERVER, "no audio info - no sounds");
 
   if (ioctl(audio_ctl, AUDIO_SET_DATA_FORMAT, AUDIO_FORMAT_ULAW) == -1)
-  {
-    fprintf(stderr,"%s: ulaw audio not available - no sounds\n",progname);
-    exit(0);
-  }
+    Error(ERR_EXIT_SOUND_SERVER, "ulaw audio not available - no sounds");
 
   ioctl(audio_ctl, AUDIO_SET_CHANNELS, 1);
   ioctl(audio_ctl, AUDIO_SET_SAMPLE_RATE, 8000);
@@ -480,7 +591,7 @@ void HPUX_Audio_Control()
 #define BIAS 0x84   /* define the add-in bias for 16 bit samples */
 #define CLIP 32635
 
-unsigned char linear_to_ulaw(int sample)
+static unsigned char linear_to_ulaw(int sample)
 {
   static int exp_lut[256] =
   {
@@ -541,7 +652,7 @@ unsigned char linear_to_ulaw(int sample)
 ** Output: signed 16 bit linear sample
 */
 
-int ulaw_to_linear(unsigned char ulawbyte)
+static int ulaw_to_linear(unsigned char ulawbyte)
 {
   static int exp_lut[8] = { 0, 132, 396, 924, 1980, 4092, 8316, 16764 };
   int sign, exponent, mantissa, sample;
@@ -563,27 +674,123 @@ int ulaw_to_linear(unsigned char ulawbyte)
 
 /*** THE STUFF BELOW IS ONLY USED BY THE MAIN PROCESS ***/
 
-BOOL LoadSound(struct SoundInfo *snd_info)
+#ifndef MSDOS
+static unsigned long be2long(unsigned long *be)	/* big-endian -> longword */
 {
-  FILE *file;
+  unsigned char *ptr = (unsigned char *)be;
+
+  return(ptr[0]<<24 | ptr[1]<<16 | ptr[2]<<8 | ptr[3]);
+}
+
+static unsigned long le2long(unsigned long *be)	/* little-endian -> longword */
+{
+  unsigned char *ptr = (unsigned char *)be;
+
+  return(ptr[3]<<24 | ptr[2]<<16 | ptr[1]<<8 | ptr[0]);
+}
+#endif /* !MSDOS */
+
+boolean LoadSound(struct SoundInfo *snd_info)
+{
   char filename[256];
+  char *sound_ext = "wav";
+#ifndef MSDOS
+  struct SoundHeader_WAV *sound_header;
+  FILE *file;
+  int i;
+#endif
+
+  sprintf(filename, "%s/%s/%s.%s",
+	  options.base_directory, SOUNDS_DIRECTORY, snd_info->name, sound_ext);
+
+#ifndef MSDOS
+
+  if ((file = fopen(filename, "r")) == NULL)
+  {
+    Error(ERR_WARN, "cannot open sound file '%s' - no sounds", filename);
+    return(FALSE);
+  }
+
+  if (fseek(file, 0, SEEK_END) < 0)
+  {
+    Error(ERR_WARN, "cannot read sound file '%s' - no sounds", filename);
+    fclose(file);
+    return(FALSE);
+  }
+
+  snd_info->file_len = ftell(file);
+  rewind(file);
+
+  snd_info->file_ptr = checked_malloc(snd_info->file_len);
+
+  if (fread(snd_info->file_ptr, 1, snd_info->file_len, file) !=
+      snd_info->file_len)
+  {
+    Error(ERR_WARN, "cannot read sound file '%s' - no sounds", filename);
+    fclose(file);
+    return(FALSE);
+  }
+
+  fclose(file);
+
+  sound_header = (struct SoundHeader_WAV *)snd_info->file_ptr;
+
+  if (strncmp(sound_header->magic_RIFF, "RIFF", 4) ||
+      snd_info->file_len != le2long(&sound_header->header_size) + 8 ||
+      strncmp(sound_header->magic_WAVE, "WAVE", 4) ||
+      strncmp(sound_header->magic_DATA, "data", 4) ||
+      snd_info->file_len != le2long(&sound_header->data_size) + 44)
+  {
+    Error(ERR_WARN, "'%s' is not a RIFF/WAVE file or broken - no sounds",
+	  filename);
+    return(FALSE);
+  }
+
+  snd_info->data_ptr = snd_info->file_ptr + 44;
+  snd_info->data_len = le2long(&sound_header->data_size);
+
+  for (i=0; i<snd_info->data_len; i++)
+    snd_info->data_ptr[i] = snd_info->data_ptr[i]^0x80;
+
+#else /* MSDOS */
+
+  snd_info->sample_ptr = load_sample(filename);
+  if (!snd_info->sample_ptr)
+  {
+    Error(ERR_WARN, "cannot read sound file '%s' - no sounds", filename);
+    return(FALSE);
+  }
+
+#endif /* MSDOS */
+
+  return(TRUE);
+}
+
+boolean LoadSound_8SVX(struct SoundInfo *snd_info)
+{
+  char filename[256];
+#ifndef MSDOS
+  struct SoundHeader_8SVX *sound_header;
+  FILE *file;
+  char *ptr;
   char *sound_ext = "8svx";
-  struct SoundHeader_8SVX *snd_hdr;
-  unsigned char *ptr;
+#else
+  char *sound_ext = "wav";
+#endif
 
-  sprintf(filename,"%s/%s.%s",SND_PATH,snd_info->name,sound_ext);
+  sprintf(filename, "%s/%s/%s.%s",
+	  options.base_directory, SOUNDS_DIRECTORY, snd_info->name, sound_ext);
 
+#ifndef MSDOS
   if (!(file=fopen(filename,"r")))
   {
-    fprintf(stderr,"%s: cannot open sound file '%s' - no sounds\n",
-	    progname,filename);
+    Error(ERR_WARN, "cannot open sound file '%s' - no sounds", filename);
     return(FALSE);
   }
 
   if (fseek(file,0,SEEK_END)<0)
   {
-    fprintf(stderr,"%s: cannot read sound file '%s' - no sounds\n",
-	    progname,filename);
+    Error(ERR_WARN, "cannot read sound file '%s' - no sounds", filename);
     fclose(file);
     return(FALSE);
   }
@@ -593,59 +800,74 @@ BOOL LoadSound(struct SoundInfo *snd_info)
 
   if (!(snd_info->file_ptr=malloc(snd_info->file_len)))
   {
-    fprintf(stderr,"%s: out of memory (this shouldn't happen :) - no sounds\n",
-	    progname);
+    Error(ERR_WARN, "out of memory (this shouldn't happen :) - no sounds");
     fclose(file);
     return(FALSE);
   }
 
   if (fread(snd_info->file_ptr,1,snd_info->file_len,file)!=snd_info->file_len)
   {
-    fprintf(stderr,"%s: cannot read sound file '%s' - no sounds\n",
-	    progname,filename);
+    Error(ERR_WARN, "cannot read sound file '%s' - no sounds", filename);
     fclose(file);
     return(FALSE);
   }
 
   fclose(file);
 
-  snd_hdr = (struct SoundHeader_8SVX *)snd_info->file_ptr;
+  sound_header = (struct SoundHeader_8SVX *)snd_info->file_ptr;
 
-  if (strncmp(snd_hdr->magic_FORM,"FORM",4) ||
-      snd_info->file_len!=be2long(&snd_hdr->chunk_size)+8 ||
-      strncmp(snd_hdr->magic_8SVX,"8SVX",4))
+  if (strncmp(sound_header->magic_FORM,"FORM",4) ||
+      snd_info->file_len != be2long(&sound_header->chunk_size)+8 ||
+      strncmp(sound_header->magic_8SVX,"8SVX",4))
   {
-    fprintf(stderr,"%s: '%s' is not an IFF/8SVX file or broken- no sounds\n",
-	    progname,filename);
+    Error(ERR_WARN, "'%s' is not an IFF/8SVX file or broken - no sounds",
+	  filename);
     return(FALSE);
   }
 
-  ptr = (unsigned char *)snd_info->file_ptr;
+  ptr = (char *)snd_info->file_ptr + 12;
 
-  while(ptr<(unsigned char *)snd_info->file_ptr+snd_info->file_len)
+  while(ptr < (char *)(snd_info->file_ptr + snd_info->file_len))
   {
     if (!strncmp(ptr,"VHDR",4))
     {
-      ptr+=be2long((unsigned long *)(ptr+4));
+      ptr += be2long((unsigned long *)(ptr + 4)) + 8;
+      continue;
     }
-    if (!strncmp(ptr,"ANNO",4))
+    else if (!strncmp(ptr,"ANNO",4))
     {
-      ptr+=be2long((unsigned long *)(ptr+4));
+      ptr += be2long((unsigned long *)(ptr + 4)) + 8;
+      continue;
     }
-    if (!strncmp(ptr,"CHAN",4))
+    else if (!strncmp(ptr,"CHAN",4))
     {
-      ptr+=be2long((unsigned long *)(ptr+4));
+      ptr += be2long((unsigned long *)(ptr + 4)) + 8;
+      continue;
     }
-    if (!strncmp(ptr,"BODY",4))
+    else if (!strncmp(ptr,"BODY",4))
     {
-      snd_info->data_ptr = ptr+8;
-      snd_info->data_len = be2long((unsigned long *)(ptr+4));
+      snd_info->data_ptr = (byte *)ptr + 8;
+      snd_info->data_len = be2long((unsigned long *)(ptr + 4));
       return(TRUE);
     }
-    ptr++;
+    else
+    {
+      /* other chunk not recognized here */
+      ptr += be2long((unsigned long *)(ptr + 4)) + 8;
+      continue;
+    }
   }
 
   return(FALSE);
+#else /* MSDOS */
+  snd_info->sample_ptr = load_sample(filename);
+  if(!snd_info->sample_ptr)
+  {
+    Error(ERR_WARN, "cannot read sound file '%s' - no sounds", filename);
+    return(FALSE);
+  }
+  return(TRUE);
+#endif /* MSDOS */
 }
 
 void PlaySound(int nr)
@@ -663,11 +885,11 @@ void PlaySoundLoop(int nr)
   PlaySoundExt(nr, PSND_MAX_VOLUME, PSND_MIDDLE, PSND_LOOP);
 }
 
-void PlaySoundExt(int nr, int volume, int stereo, BOOL loop)
+void PlaySoundExt(int nr, int volume, int stereo, boolean loop)
 {
   struct SoundControl snd_ctrl = emptySoundControl;
 
-  if (sound_status==SOUND_OFF || !sound_on)
+  if (sound_status==SOUND_OFF || !setup.sound)
     return;
 
   if (volume<PSND_MIN_VOLUME)
@@ -688,12 +910,16 @@ void PlaySoundExt(int nr, int volume, int stereo, BOOL loop)
   snd_ctrl.data_ptr	= Sound[nr].data_ptr;
   snd_ctrl.data_len	= Sound[nr].data_len;
 
+#ifndef MSDOS
   if (write(sound_pipe[1], &snd_ctrl, sizeof(snd_ctrl))<0)
   {
-    fprintf(stderr,"%s: cannot pipe to child process - no sounds\n",progname);
-    sound_status=SOUND_OFF;
+    Error(ERR_WARN, "cannot pipe to child process - no sounds");
+    sound_status = SOUND_OFF;
     return;
   }
+#else
+  sound_handler(snd_ctrl);
+#endif
 }
 
 void FadeSound(int nr)
@@ -734,12 +960,16 @@ void StopSoundExt(int nr, int method)
     snd_ctrl.stop_sound = TRUE;
   }
 
+#ifndef MSDOS
   if (write(sound_pipe[1], &snd_ctrl, sizeof(snd_ctrl))<0)
   {
-    fprintf(stderr,"%s: cannot pipe to child process - no sounds\n",progname);
-    sound_status=SOUND_OFF;
+    Error(ERR_WARN, "cannot pipe to child process - no sounds");
+    sound_status = SOUND_OFF;
     return;
   }
+#else
+  sound_handler(snd_ctrl);
+#endif
 }
 
 void FreeSounds(int max)
@@ -750,7 +980,11 @@ void FreeSounds(int max)
     return;
 
   for(i=0;i<max;i++)
+#ifndef MSDOS
     free(Sound[i].file_ptr);
+#else
+    destroy_sample(Sound[i].sample_ptr);
+#endif
 }
 
 /*** THE STUFF ABOVE IS ONLY USED BY THE MAIN PROCESS ***/

@@ -8,30 +8,27 @@
 *              phone: ++49 +521 290471                     *
 *              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
-*  events.h                                                *
+*  tape.c                                                  *
 ***********************************************************/
 
-#ifndef EVENTS_H
-#define EVENTS_H
+#ifndef TAPE_H
+#define TAPE_H
 
 #include "main.h"
 
-void EventLoop(void);
-void HandleOtherEvents(XEvent *);
-void ClearEventQueue(void);
-void SleepWhileUnmapped(void);
+#define PAUSE_SECONDS_BEFORE_DEATH	3
 
-void HandleExposeEvent(XExposeEvent *);
-void HandleButtonEvent(XButtonEvent *);
-void HandleMotionEvent(XMotionEvent *);
-void HandleKeyEvent(XKeyEvent *);
-void HandleFocusEvent(XFocusChangeEvent *);
-void HandleClientMessageEvent(XClientMessageEvent *event);
-
-void HandleNoXEvent(void);
-
-void HandleButton(int, int, int);
-void HandleKey(KeySym, int);
-void HandleJoystick();
+void TapeStartRecording(void);
+void TapeStopRecording(void);
+void TapeRecordAction(byte *);
+void TapeRecordDelay(void);
+void TapeTogglePause(void);
+void TapeStartPlaying(void);
+void TapeStopPlaying(void);
+byte *TapePlayAction(void);
+boolean TapePlayDelay(void);
+void TapeStop(void);
+void TapeErase(void);
+unsigned int GetTapeLength(void);
 
 #endif

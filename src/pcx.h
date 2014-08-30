@@ -8,30 +8,22 @@
 *              phone: ++49 +521 290471                     *
 *              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
-*  events.h                                                *
+*  pcx.h                                                   *
 ***********************************************************/
 
-#ifndef EVENTS_H
-#define EVENTS_H
+#ifndef PCX_H
+#define PCX_H
 
 #include "main.h"
+#include "image.h"
 
-void EventLoop(void);
-void HandleOtherEvents(XEvent *);
-void ClearEventQueue(void);
-void SleepWhileUnmapped(void);
+#define PCX_Success		 0
+#define PCX_OpenFailed		-1
+#define PCX_ReadFailed		-2
+#define	PCX_FileInvalid		-3
+#define PCX_NoMemory		-4
+#define PCX_ColorFailed		-5
 
-void HandleExposeEvent(XExposeEvent *);
-void HandleButtonEvent(XButtonEvent *);
-void HandleMotionEvent(XMotionEvent *);
-void HandleKeyEvent(XKeyEvent *);
-void HandleFocusEvent(XFocusChangeEvent *);
-void HandleClientMessageEvent(XClientMessageEvent *event);
+Image *Read_PCX_to_Image(char *);
 
-void HandleNoXEvent(void);
-
-void HandleButton(int, int, int);
-void HandleKey(KeySym, int);
-void HandleJoystick();
-
-#endif
+#endif	/* PCX_H */

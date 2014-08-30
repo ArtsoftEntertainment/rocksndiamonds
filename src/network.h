@@ -8,30 +8,23 @@
 *              phone: ++49 +521 290471                     *
 *              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
-*  events.h                                                *
+*  network.h                                               *
 ***********************************************************/
 
-#ifndef EVENTS_H
-#define EVENTS_H
+#ifndef NETWORK_H
+#define NETWORK_H
 
 #include "main.h"
 
-void EventLoop(void);
-void HandleOtherEvents(XEvent *);
-void ClearEventQueue(void);
-void SleepWhileUnmapped(void);
-
-void HandleExposeEvent(XExposeEvent *);
-void HandleButtonEvent(XButtonEvent *);
-void HandleMotionEvent(XMotionEvent *);
-void HandleKeyEvent(XKeyEvent *);
-void HandleFocusEvent(XFocusChangeEvent *);
-void HandleClientMessageEvent(XClientMessageEvent *event);
-
-void HandleNoXEvent(void);
-
-void HandleButton(int, int, int);
-void HandleKey(KeySym, int);
-void HandleJoystick();
+boolean ConnectToServer(char *, int);
+void SendToServer_PlayerName(char *);
+void SendToServer_ProtocolVersion(void);
+void SendToServer_NrWanted(int);
+void SendToServer_StartPlaying(void);
+void SendToServer_PausePlaying(void);
+void SendToServer_ContinuePlaying(void);
+void SendToServer_StopPlaying(void);
+void SendToServer_MovePlayer(byte);
+void HandleNetworking(void);
 
 #endif

@@ -8,30 +8,14 @@
 *              phone: ++49 +521 290471                     *
 *              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
-*  events.h                                                *
+*  cartoons.h                                              *
 ***********************************************************/
 
-#ifndef EVENTS_H
-#define EVENTS_H
+#ifndef CARTOONS_H
+#define CARTOONS_H
 
-#include "main.h"
-
-void EventLoop(void);
-void HandleOtherEvents(XEvent *);
-void ClearEventQueue(void);
-void SleepWhileUnmapped(void);
-
-void HandleExposeEvent(XExposeEvent *);
-void HandleButtonEvent(XButtonEvent *);
-void HandleMotionEvent(XMotionEvent *);
-void HandleKeyEvent(XKeyEvent *);
-void HandleFocusEvent(XFocusChangeEvent *);
-void HandleClientMessageEvent(XClientMessageEvent *event);
-
-void HandleNoXEvent(void);
-
-void HandleButton(int, int, int);
-void HandleKey(KeySym, int);
-void HandleJoystick();
+void InitAnimation(void);
+void StopAnimation(void);
+void DoAnimation(void);
 
 #endif

@@ -1,13 +1,12 @@
 /***********************************************************
 *  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
 *----------------------------------------------------------*
-*  ©1995 Artsoft Development                               *
-*        Holger Schemel                                    *
-*        33659 Bielefeld-Senne                             *
-*        Telefon: (0521) 493245                            *
-*        eMail: aeglos@valinor.owl.de                      *
-*               aeglos@uni-paderborn.de                    *
-*               q99492@pbhrzx.uni-paderborn.de             *
+*  (c) 1995-98 Artsoft Entertainment                       *
+*              Holger Schemel                              *
+*              Oststrasse 11a                              *
+*              33604 Bielefeld                             *
+*              phone: ++49 +521 290471                     *
+*              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
 *  editor.c                                                *
 ***********************************************************/
@@ -19,9 +18,29 @@
 #include "buttons.h"
 #include "files.h"
 
+/* positions in the level editor */
+#define ED_WIN_MB_LEFT_XPOS	7
+#define ED_WIN_MB_LEFT_YPOS	6
+#define ED_WIN_LEVELNR_XPOS	77
+#define ED_WIN_LEVELNR_YPOS	7
+#define ED_WIN_MB_MIDDLE_XPOS	7
+#define ED_WIN_MB_MIDDLE_YPOS	258
+#define ED_WIN_MB_RIGHT_XPOS	77
+#define ED_WIN_MB_RIGHT_YPOS	258
+
+/* other constants for the editor */
+#define ED_SCROLL_NO		0
+#define ED_SCROLL_LEFT		1
+#define ED_SCROLL_RIGHT		2
+#define ED_SCROLL_UP		4
+#define ED_SCROLL_DOWN		8
+
+/* delay value to avoid too fast scrolling etc. */
+#define CHOICE_DELAY_VALUE	100
+
 static int level_xpos,level_ypos;
-static BOOL edit_mode;
-static BOOL name_typing;
+static boolean edit_mode;
+static boolean name_typing;
 static int new_element1 = EL_MAUERWERK;
 static int new_element2 = EL_LEERRAUM;
 static int new_element3 = EL_ERDREICH;
@@ -29,6 +48,66 @@ static int new_element3 = EL_ERDREICH;
 int element_shift;
 int editor_element[] =
 {
+  EL_CHAR_A + ('B' - 'A'),
+  EL_CHAR_A + ('O' - 'A'),
+  EL_CHAR_A + ('U' - 'A'),
+  EL_CHAR_A + ('L' - 'A'),
+
+  EL_CHAR_MINUS,
+  EL_CHAR_A + ('D' - 'A'),
+  EL_CHAR_A + ('E' - 'A'),
+  EL_CHAR_A + ('R' - 'A'),
+
+  EL_CHAR_A + ('D' - 'A'),
+  EL_CHAR_A + ('A' - 'A'),
+  EL_CHAR_A + ('S' - 'A'),
+  EL_CHAR_A + ('H' - 'A'),
+
+  EL_SPIELFIGUR,
+  EL_LEERRAUM,
+  EL_ERDREICH,
+  EL_BETON,
+
+  EL_FELSBODEN,
+  EL_SIEB2_LEER,
+  EL_AUSGANG_ZU,
+  EL_AUSGANG_AUF,
+
+  EL_EDELSTEIN_BD,
+  EL_BUTTERFLY_O,
+  EL_FIREFLY_O,
+  EL_FELSBROCKEN,
+
+  EL_BUTTERFLY_L,
+  EL_FIREFLY_L,
+  EL_BUTTERFLY_R,
+  EL_FIREFLY_R,
+
+  EL_AMOEBE_BD,
+  EL_BUTTERFLY_U,
+  EL_FIREFLY_U,
+  EL_LEERRAUM,
+
+  EL_CHAR_A + ('E' - 'A'),
+  EL_CHAR_A + ('M' - 'A'),
+  EL_CHAR_A + ('E' - 'A'),
+  EL_CHAR_MINUS,
+
+  EL_CHAR_A + ('R' - 'A'),
+  EL_CHAR_A + ('A' - 'A'),
+  EL_CHAR_A + ('L' - 'A'),
+  EL_CHAR_A + ('D' - 'A'),
+
+  EL_CHAR_A + ('M' - 'A'),
+  EL_CHAR_A + ('I' - 'A'),
+  EL_CHAR_A + ('N' - 'A'),
+  EL_CHAR_A + ('E' - 'A'),
+
+  EL_SPIELER1,
+  EL_SPIELER2,
+  EL_SPIELER3,
+  EL_SPIELER4,
+
   EL_SPIELFIGUR,
   EL_LEERRAUM,
   EL_ERDREICH,
@@ -44,50 +123,45 @@ int editor_element[] =
   EL_KOKOSNUSS,
   EL_BOMBE,
 
+  EL_ERZ_EDEL,
+  EL_ERZ_DIAM,
   EL_MORAST_LEER,
   EL_MORAST_VOLL,
+
+  EL_DYNAMIT_AUS,
+  EL_DYNAMIT,
   EL_AUSGANG_ZU,
   EL_AUSGANG_AUF,
 
-  EL_KAEFER,
-  EL_FLIEGER,
   EL_MAMPFER,
-  EL_ZOMBIE,
+  EL_KAEFER_O,
+  EL_FLIEGER_O,
+  EL_ROBOT,
 
-  EL_PACMAN,
-  EL_DYNAMIT_AUS,
-  EL_DYNAMIT,
+  EL_KAEFER_L,
+  EL_FLIEGER_L,
+  EL_KAEFER_R,
+  EL_FLIEGER_R,
+
   EL_ABLENK_AUS,
+  EL_KAEFER_U,
+  EL_FLIEGER_U,
+  EL_UNSICHTBAR,
 
   EL_BADEWANNE1,
   EL_SALZSAEURE,
   EL_BADEWANNE2,
-  EL_BADEWANNE,
+  EL_LEERRAUM,
 
   EL_BADEWANNE3,
   EL_BADEWANNE4,
   EL_BADEWANNE5,
-  EL_UNSICHTBAR,
+  EL_LEERRAUM,
 
   EL_TROPFEN,
   EL_AMOEBE_TOT,
   EL_AMOEBE_NASS,
   EL_AMOEBE_NORM,
-
-  EL_AMOEBE_VOLL,
-
-/*
-  EL_LIFE,
-*/
-  EL_LIFE_ASYNC,
-
-  EL_ERZ_EDEL,
-  EL_ERZ_DIAM,
-
-  EL_ZEIT_VOLL,
-  EL_ZEIT_LEER,
-  EL_BIRNE_AUS,
-  EL_BIRNE_EIN,
 
   EL_SCHLUESSEL1,
   EL_SCHLUESSEL2,
@@ -104,20 +178,92 @@ int editor_element[] =
   EL_PFORTE3X,
   EL_PFORTE4X,
 
-  EL_KAEFER_R,
-  EL_KAEFER_O,
-  EL_KAEFER_L,
-  EL_KAEFER_U,
+  EL_CHAR_A + ('M' - 'A'),
+  EL_CHAR_A + ('O' - 'A'),
+  EL_CHAR_A + ('R' - 'A'),
+  EL_CHAR_A + ('E' - 'A'),
 
-  EL_FLIEGER_R,
-  EL_FLIEGER_O,
-  EL_FLIEGER_L,
-  EL_FLIEGER_U,
+  EL_PFEIL_L,
+  EL_PFEIL_R,
+  EL_PFEIL_O,
+  EL_PFEIL_U,
 
-  EL_PACMAN_R,
+  EL_AMOEBE_VOLL,
+  EL_EDELSTEIN_GELB,
+  EL_EDELSTEIN_ROT,
+  EL_EDELSTEIN_LILA,
+
+  EL_ERZ_EDEL_BD,
+  EL_ERZ_EDEL_GELB,
+  EL_ERZ_EDEL_ROT,
+  EL_ERZ_EDEL_LILA,
+
+  EL_LIFE,
   EL_PACMAN_O,
+  EL_ZEIT_VOLL,
+  EL_ZEIT_LEER,
+
   EL_PACMAN_L,
+  EL_MAMPFER2,
+  EL_PACMAN_R,
+  EL_MAUER_LEBT,
+
+  EL_LIFE_ASYNC,
   EL_PACMAN_U,
+  EL_BIRNE_AUS,
+  EL_BIRNE_EIN,
+
+  EL_DYNABOMB_NR,
+  EL_DYNABOMB_SZ,
+  EL_DYNABOMB_XL,
+  EL_BADEWANNE,
+
+  EL_MAULWURF,
+  EL_PINGUIN,
+  EL_SCHWEIN,
+  EL_DRACHE,
+
+  EL_SONDE,
+  EL_MAUER_X,
+  EL_MAUER_Y,
+  EL_MAUER_XY,
+
+  EL_CHAR_A + ('S' - 'A'),
+  EL_CHAR_A + ('O' - 'A'),
+  EL_CHAR_A + ('K' - 'A'),
+  EL_CHAR_A + ('O' - 'A'),
+
+  EL_CHAR_MINUS,
+  EL_CHAR_A + ('B' - 'A'),
+  EL_CHAR_A + ('A' - 'A'),
+  EL_CHAR_A + ('N' - 'A'),
+
+  EL_SOKOBAN_OBJEKT,
+  EL_SOKOBAN_FELD_LEER,
+  EL_SOKOBAN_FELD_VOLL,
+  EL_BETON,
+
+/*
+  EL_CHAR_A + ('D' - 'A'),
+  EL_CHAR_A + ('Y' - 'A'),
+  EL_CHAR_A + ('N' - 'A'),
+  EL_CHAR_A + ('A' - 'A'),
+
+  EL_CHAR_A + ('B' - 'A'),
+  EL_CHAR_A + ('L' - 'A'),
+  EL_CHAR_A + ('A' - 'A'),
+  EL_CHAR_A + ('S' - 'A'),
+
+  EL_CHAR_MINUS,
+  EL_CHAR_A + ('T' - 'A'),
+  EL_CHAR_A + ('E' - 'A'),
+  EL_CHAR_A + ('R' - 'A'),
+*/
+
+  EL_LEERRAUM,
+  EL_LEERRAUM,
+  EL_LEERRAUM,
+  EL_LEERRAUM,
 
   EL_CHAR_AUSRUF,
   EL_CHAR_ZOLL,
@@ -228,26 +374,26 @@ void DrawLevelEd()
     else
       graphic = GFX_LEERRAUM;
 
-    DrawMiniGraphicExtHiRes(pix[PIX_DB_DOOR],gc,
-			    DOOR_GFX_PAGEX1+ED_BUTTON_ELEM_XPOS+3 + 
-			    (i%MAX_ELEM_X)*ED_BUTTON_ELEM_XSIZE,
-			    DOOR_GFX_PAGEY1+ED_BUTTON_ELEM_YPOS+3 +
-			    (i/MAX_ELEM_X)*ED_BUTTON_ELEM_YSIZE,
-			    graphic);
+    DrawMiniGraphicExt(pix[PIX_DB_DOOR],gc,
+		       DOOR_GFX_PAGEX1+ED_BUTTON_ELEM_XPOS+3 + 
+		       (i%MAX_ELEM_X)*ED_BUTTON_ELEM_XSIZE,
+		       DOOR_GFX_PAGEY1+ED_BUTTON_ELEM_YPOS+3 +
+		       (i/MAX_ELEM_X)*ED_BUTTON_ELEM_YSIZE,
+		       graphic);
   }
 
-  DrawMiniGraphicExtHiRes(pix[PIX_DB_DOOR],gc,
-			  DOOR_GFX_PAGEX1+ED_WIN_MB_LEFT_XPOS,
-			  DOOR_GFX_PAGEY1+ED_WIN_MB_LEFT_YPOS,
-			  el2gfx(new_element1));
-  DrawMiniGraphicExtHiRes(pix[PIX_DB_DOOR],gc,
-			  DOOR_GFX_PAGEX1+ED_WIN_MB_MIDDLE_XPOS,
-			  DOOR_GFX_PAGEY1+ED_WIN_MB_MIDDLE_YPOS,
-			  el2gfx(new_element2));
-  DrawMiniGraphicExtHiRes(pix[PIX_DB_DOOR],gc,
-			  DOOR_GFX_PAGEX1+ED_WIN_MB_RIGHT_XPOS,
-			  DOOR_GFX_PAGEY1+ED_WIN_MB_RIGHT_YPOS,
-			  el2gfx(new_element3));
+  DrawMiniGraphicExt(pix[PIX_DB_DOOR],gc,
+		     DOOR_GFX_PAGEX1+ED_WIN_MB_LEFT_XPOS,
+		     DOOR_GFX_PAGEY1+ED_WIN_MB_LEFT_YPOS,
+		     el2gfx(new_element1));
+  DrawMiniGraphicExt(pix[PIX_DB_DOOR],gc,
+		     DOOR_GFX_PAGEX1+ED_WIN_MB_MIDDLE_XPOS,
+		     DOOR_GFX_PAGEY1+ED_WIN_MB_MIDDLE_YPOS,
+		     el2gfx(new_element2));
+  DrawMiniGraphicExt(pix[PIX_DB_DOOR],gc,
+		     DOOR_GFX_PAGEX1+ED_WIN_MB_RIGHT_XPOS,
+		     DOOR_GFX_PAGEY1+ED_WIN_MB_RIGHT_YPOS,
+		     el2gfx(new_element3));
   DrawTextExt(pix[PIX_DB_DOOR],gc,
 	      DOOR_GFX_PAGEX2+ED_WIN_LEVELNR_XPOS,
 	      DOOR_GFX_PAGEY1+ED_WIN_LEVELNR_YPOS,
@@ -479,27 +625,28 @@ void FloodFill(int from_x, int from_y, int fill_element)
 {
   int i,x,y;
   int old_element;
-  static int check[4][2] = { -1,0, 0,-1, 1,0, 0,1 };
+  static int check[4][2] = { {-1,0}, {0,-1}, {1,0}, {0,1} };
   static int safety = 0;
+
+  /* check if starting field still has the desired content */
+  if (Feld[from_x][from_y] == fill_element)
+    return;
 
   safety++;
 
-  if (safety>lev_fieldx*lev_fieldy)
-  {
-    fprintf(stderr,"Something went wrong in 'FloodFill()'. Please debug.\n");
-    exit(-1);
-  }
+  if (safety > lev_fieldx*lev_fieldy)
+    Error(ERR_EXIT, "Something went wrong in 'FloodFill()'. Please debug.");
 
   old_element = Feld[from_x][from_y];
   Feld[from_x][from_y] = fill_element;
 
   for(i=0;i<4;i++)
   {
-    x = from_x+check[i][0];
-    y = from_y+check[i][1];
+    x = from_x + check[i][0];
+    y = from_y + check[i][1];
 
-    if (IN_LEV_FIELD(x,y) && Feld[x][y]==old_element)
-      FloodFill(x,y,fill_element);
+    if (IN_LEV_FIELD(x,y) && Feld[x][y] == old_element)
+      FloodFill(x, y, fill_element);
   }
 
   safety--;
@@ -509,7 +656,7 @@ void LevelEd(int mx, int my, int button)
 {
   static int last_button = 0;
   static int in_field_pressed = FALSE;
-  static BOOL use_floodfill = FALSE;
+  static boolean use_floodfill = FALSE;
   int x = (mx-SX)/MINI_TILEX; 
   int y = (my-SY)/MINI_TILEY; 
 
@@ -547,69 +694,61 @@ void LevelEd(int mx, int my, int button)
   }
   else				/********** EDIT/CTRL-FENSTER **********/
   {
+    static unsigned long choice_delay = 0;
     int choice = CheckElemButtons(mx,my,button);
     int elem_pos = choice-ED_BUTTON_ELEM;
 
-    switch(choice)
+    if (((choice == ED_BUTTON_EUP && element_shift>0) ||
+	 (choice == ED_BUTTON_EDOWN &&
+	  element_shift<elements_in_list-MAX_ELEM_X*MAX_ELEM_Y)) &&
+	DelayReached(&choice_delay, CHOICE_DELAY_VALUE))
     {
-      case ED_BUTTON_EUP:
-      case ED_BUTTON_EDOWN:
-        if ((choice==ED_BUTTON_EUP && element_shift>0) ||
-	    (choice==ED_BUTTON_EDOWN &&
-	     element_shift<elements_in_list-MAX_ELEM_X*MAX_ELEM_Y))
-	{
-	  int i, step;
+      int i, step;
 
-	  step = (button==1 ? MAX_ELEM_X : button==2 ? 5*MAX_ELEM_X :
-		  elements_in_list);
-	  element_shift += (choice==ED_BUTTON_EUP ? -step : step);
-	  if (element_shift<0)
-	    element_shift = 0;
-	  if (element_shift>elements_in_list-MAX_ELEM_X*MAX_ELEM_Y)
-	    element_shift = elements_in_list-MAX_ELEM_X*MAX_ELEM_Y;
-	  if (element_shift % MAX_ELEM_X)
-	    element_shift += MAX_ELEM_X-(element_shift % MAX_ELEM_X);
+      step = (button==1 ? MAX_ELEM_X : button==2 ? 5*MAX_ELEM_X :
+	      elements_in_list);
+      element_shift += (choice==ED_BUTTON_EUP ? -step : step);
+      if (element_shift<0)
+	element_shift = 0;
+      if (element_shift>elements_in_list-MAX_ELEM_X*MAX_ELEM_Y)
+	element_shift = elements_in_list-MAX_ELEM_X*MAX_ELEM_Y;
+      if (element_shift % MAX_ELEM_X)
+	element_shift += MAX_ELEM_X-(element_shift % MAX_ELEM_X);
 
-	  for(i=0;i<MAX_ELEM_X*MAX_ELEM_Y;i++)
-	    DrawElemButton(i+2,ED_BUTTON_RELEASED);
-	  BackToFront();
-	  Delay(100000);
-	}
-	break;
-      default:
-	if (elem_pos>=0 && elem_pos<MAX_ELEM_X*MAX_ELEM_Y)
-	{
-	  int new_element;
-
-	  if (elem_pos+element_shift < elements_in_list)
-	    new_element = editor_element[elem_pos+element_shift];
-	  else
-	    new_element = EL_LEERRAUM;
-
-	  if (last_button==1)
-	    new_element1 = new_element;
-	  else if (last_button==2)
-	    new_element2 = new_element;
-	  else if (last_button==3)
-	    new_element3 = new_element;
-
-	  DrawMiniGraphicExtHiRes(drawto,gc,
-				  DX+ED_WIN_MB_LEFT_XPOS,
-				  DY+ED_WIN_MB_LEFT_YPOS,
-				  el2gfx(new_element1));
-	  DrawMiniGraphicExtHiRes(drawto,gc,
-				  DX+ED_WIN_MB_MIDDLE_XPOS,
-				  DY+ED_WIN_MB_MIDDLE_YPOS,
-				  el2gfx(new_element2));
-	  DrawMiniGraphicExtHiRes(drawto,gc,
-				  DX+ED_WIN_MB_RIGHT_XPOS,
-				  DY+ED_WIN_MB_RIGHT_YPOS,
-				  el2gfx(new_element3));
-	  redraw_mask |= REDRAW_DOOR_1;
-	}
-	break;
+      for(i=0;i<MAX_ELEM_X*MAX_ELEM_Y;i++)
+	DrawElemButton(i+2,ED_BUTTON_RELEASED);
     }
+    else if (elem_pos>=0 && elem_pos<MAX_ELEM_X*MAX_ELEM_Y)
+    {
+      int new_element;
 
+      if (elem_pos+element_shift < elements_in_list)
+	new_element = editor_element[elem_pos+element_shift];
+      else
+	new_element = EL_LEERRAUM;
+
+      if (last_button==1)
+	new_element1 = new_element;
+      else if (last_button==2)
+	new_element2 = new_element;
+      else if (last_button==3)
+	new_element3 = new_element;
+
+      DrawMiniGraphicExt(drawto,gc,
+			 DX+ED_WIN_MB_LEFT_XPOS,
+			 DY+ED_WIN_MB_LEFT_YPOS,
+			 el2gfx(new_element1));
+      DrawMiniGraphicExt(drawto,gc,
+			 DX+ED_WIN_MB_MIDDLE_XPOS,
+			 DY+ED_WIN_MB_MIDDLE_YPOS,
+			 el2gfx(new_element2));
+      DrawMiniGraphicExt(drawto,gc,
+			 DX+ED_WIN_MB_RIGHT_XPOS,
+			 DY+ED_WIN_MB_RIGHT_YPOS,
+			 el2gfx(new_element3));
+      redraw_mask |= REDRAW_DOOR_1;
+    }
+  
     if (edit_mode)		/********** EDIT-FENSTER **********/
     {
       switch(CheckEditButtons(mx,my,button))
@@ -625,13 +764,15 @@ void LevelEd(int mx, int my, int button)
 	  edit_mode = FALSE;
 	  break;
 	case ED_BUTTON_FILL:
-	  AreYouSure("Caution ! Flood fill mode ! Choose area !",AYS_OPEN);
+	  Request("Caution ! Flood fill mode ! Choose area !",REQ_OPEN);
 	  use_floodfill = TRUE;
 	  return;
 	  break;
 	case ED_BUTTON_LEFT:
 	  if (level_xpos>=0)
 	  {
+	    if (!DelayReached(&choice_delay, CHOICE_DELAY_VALUE))
+	      break;
 	    if (lev_fieldx<2*SCR_FIELDX-2)
 	      break;
 
@@ -642,13 +783,13 @@ void LevelEd(int mx, int my, int button)
 	      ScrollMiniLevel(level_xpos,level_ypos,ED_SCROLL_RIGHT);
 	    else
 	      DrawMiniLevel(level_xpos,level_ypos);
-	    BackToFront();
-	    Delay(100000);
 	  }
 	  break;
 	case ED_BUTTON_RIGHT:
 	  if (level_xpos<=lev_fieldx-2*SCR_FIELDX)
 	  {
+	    if (!DelayReached(&choice_delay, CHOICE_DELAY_VALUE))
+	      break;
 	    if (lev_fieldx<2*SCR_FIELDX-2)
 	      break;
 
@@ -659,13 +800,13 @@ void LevelEd(int mx, int my, int button)
 	      ScrollMiniLevel(level_xpos,level_ypos,ED_SCROLL_LEFT);
 	    else
 	      DrawMiniLevel(level_xpos,level_ypos);
-	    BackToFront();
-	    Delay(100000);
 	  }
 	  break;
 	case ED_BUTTON_UP:
 	  if (level_ypos>=0)
 	  {
+	    if (!DelayReached(&choice_delay, CHOICE_DELAY_VALUE))
+	      break;
 	    if (lev_fieldy<2*SCR_FIELDY-2)
 	      break;
 
@@ -676,13 +817,13 @@ void LevelEd(int mx, int my, int button)
 	      ScrollMiniLevel(level_xpos,level_ypos,ED_SCROLL_DOWN);
 	    else
 	      DrawMiniLevel(level_xpos,level_ypos);
-	    BackToFront();
-	    Delay(100000);
 	  }
 	  break;
 	case ED_BUTTON_DOWN:
 	  if (level_ypos<=lev_fieldy-2*SCR_FIELDY)
 	  {
+	    if (!DelayReached(&choice_delay, CHOICE_DELAY_VALUE))
+	      break;
 	    if (lev_fieldy<2*SCR_FIELDY-2)
 	      break;
 
@@ -693,8 +834,6 @@ void LevelEd(int mx, int my, int button)
 	      ScrollMiniLevel(level_xpos,level_ypos,ED_SCROLL_UP);
 	    else
 	      DrawMiniLevel(level_xpos,level_ypos);
-	    BackToFront();
-	    Delay(100000);
 	  }
 	  break;
 	default:
@@ -747,11 +886,11 @@ void LevelEd(int mx, int my, int button)
     }
     else			/********** KONTROLL-FENSTER **********/
     {
-      static long choice_delay = 0;
       int choice = CheckCountButtons(mx,my,button);
       int step = (button==1 ? 1 : button==2 ? 5 : button==3 ? 10 : 0);
 
-      if (choice>=0 && choice<36 && DelayReached(&choice_delay,10))
+      if (choice >= 0 && choice < 36 &&
+	  DelayReached(&choice_delay, CHOICE_DELAY_VALUE))
       {
 	if (!(choice % 2))
 	  step = -step;
@@ -890,7 +1029,7 @@ void LevelEd(int mx, int my, int button)
 	  edit_mode = TRUE;
 	  break;
 	case ED_BUTTON_CLEAR:
-	  if (AreYouSure("Are you sure to clear this level ?",AYS_ASK))
+	  if (Request("Are you sure to clear this level ?",REQ_ASK))
 	  {
 	    for(x=0;x<MAX_LEV_FIELDX;x++) 
 	      for(y=0;y<MAX_LEV_FIELDY;y++) 
@@ -899,7 +1038,8 @@ void LevelEd(int mx, int my, int button)
 	  }
 	  break;
 	case ED_BUTTON_UNDO:
-	  if (AreYouSure("Exit without saving ?",AYS_ASK | AYS_STAY_OPEN))
+	  if (leveldir[leveldir_nr].readonly ||
+	      Request("Exit without saving ?",REQ_ASK | REQ_STAY_OPEN))
 	  {
 	    CloseDoor(DOOR_CLOSE_BOTH);
 	    game_status=MAINMENU;
@@ -914,18 +1054,25 @@ void LevelEd(int mx, int my, int button)
 	case ED_BUTTON_EXIT:
 	  {
 	    int figur_vorhanden = FALSE;
+
+	    if (leveldir[leveldir_nr].readonly)
+	    {
+	      Request("This level is read only !",REQ_CONFIRM);
+	      break;
+	    }
+
 	    for(y=0;y<lev_fieldy;y++) 
 	      for(x=0;x<lev_fieldx;x++)
 		if (Feld[x][y]==EL_SPIELFIGUR || Feld[x][y]==EL_SPIELER1) 
 		  figur_vorhanden = TRUE;
 
 	    if (!figur_vorhanden)
-	      AreYouSure("No Level without Gregor Mc Duffin please !",
-			 AYS_CONFIRM);
+	      Request("No Level without Gregor Mc Duffin please !",
+			 REQ_CONFIRM);
 	    else
 	    {
-	      if (AreYouSure("Save this level and kill the old ?",
-			     AYS_ASK | AYS_STAY_OPEN))
+	      if (Request("Save this level and kill the old ?",
+			     REQ_ASK | REQ_STAY_OPEN))
 	      {
 		for(x=0;x<lev_fieldx;x++)
 		  for(y=0;y<lev_fieldy;y++) 
@@ -1087,7 +1234,7 @@ void LevelNameTyping(KeySym key)
 		ED_COUNT_TEXT_YPOS+16*ED_COUNT_TEXT_YSIZE,
 		"<",FS_SMALL,FC_RED);
   }
-  else if (key==XK_Delete && len>0)
+  else if ((key==XK_Delete || key==XK_BackSpace) && len>0)
   {
     level.name[len-1] = 0;
     len--;

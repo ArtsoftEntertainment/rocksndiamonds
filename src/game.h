@@ -1,13 +1,12 @@
 /***********************************************************
 *  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
 *----------------------------------------------------------*
-*  ©1995 Artsoft Development                               *
-*        Holger Schemel                                    *
-*        33659 Bielefeld-Senne                             *
-*        Telefon: (0521) 493245                            *
-*        eMail: aeglos@valinor.owl.de                      *
-*               aeglos@uni-paderborn.de                    *
-*               q99492@pbhrzx.uni-paderborn.de             *
+*  (c) 1995-98 Artsoft Entertainment                       *
+*              Holger Schemel                              *
+*              Oststrasse 11a                              *
+*              33604 Bielefeld                             *
+*              phone: ++49 +521 290471                     *
+*              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
 *  game.h                                                  *
 ***********************************************************/
@@ -17,20 +16,12 @@
 
 #include "main.h"
 
-#define DF_DIG		0
-#define DF_SNAP		1
-#define DF_NO_PUSH	2
-
-#define MF_NO_ACTION	0
-#define MF_MOVING	1
-#define MF_ACTION	2
-
 void GetPlayerConfig(void);
 void InitGame(void);
 void InitMovDir(int, int);
 void InitAmoebaNr(int, int);
 void GameWon(void);
-BOOL NewHiScore(void);
+boolean NewHiScore(void);
 void InitMovingField(int, int, int);
 void Moving2Blocked(int, int, int *, int *);
 void Blocked2Moving(int, int, int *, int *);
@@ -38,7 +29,8 @@ int MovingOrBlocked2Element(int, int);
 void RemoveMovingField(int, int);
 void DrawDynamite(int, int);
 void CheckDynamite(int, int);
-void Explode(int, int, int);
+void Explode(int, int, int, int);
+void DynaExplode(int, int);
 void Bang(int, int);
 void Blurb(int, int);
 void Impact(int, int);
@@ -47,39 +39,43 @@ void StartMoving(int, int);
 void ContinueMoving(int, int);
 int AmoebeNachbarNr(int, int);
 void AmoebeUmwandeln(int, int);
+void AmoebeUmwandeln2(int, int, int);
 void AmoebeWaechst(int, int);
 void AmoebeAbleger(int, int);
 void Life(int, int);
 void Ablenk(int, int);
 void Blubber(int, int);
 void NussKnacken(int, int);
-void SiebAktivieren(int x, int y);
-void AusgangstuerPruefen(int x, int y);
-void AusgangstuerOeffnen(int x, int y);
-int GameActions(int, int, int);
+void SiebAktivieren(int, int, int);
+void AusgangstuerPruefen(int, int);
+void AusgangstuerOeffnen(int, int);
+void AusgangstuerBlinken(int, int);
+void EdelsteinFunkeln(int, int);
+void MauerWaechst(int, int);
+void MauerAbleger(int, int);
+void GameActions(void);
 void ScrollLevel(int, int);
-BOOL MoveFigure(int, int);
-void TestIfHeroHitsBadThing(void);
-void TestIfBadThingHitsHero(void);
+
+boolean MoveFigureOneStep(struct PlayerInfo *, int, int, int, int);
+boolean MoveFigure(struct PlayerInfo *, int, int);
+void ScrollFigure(struct PlayerInfo *, int);
+void ScrollScreen(struct PlayerInfo *, int);
+
+void TestIfGoodThingHitsBadThing(int, int);
+void TestIfBadThingHitsGoodThing(int, int);
+void TestIfHeroHitsBadThing(int, int);
+void TestIfBadThingHitsHero(int, int);
+void TestIfFriendHitsBadThing(int, int);
+void TestIfBadThingHitsFriend(int, int);
 void TestIfBadThingHitsOtherBadThing(int, int);
-void KillHero(void);
-int DigField(int, int, int);
-BOOL SnapField(int, int);
-BOOL PlaceBomb(void);
+void KillHero(struct PlayerInfo *);
+void BuryHero(struct PlayerInfo *);
+void RemoveHero(struct PlayerInfo *);
+int DigField(struct PlayerInfo *, int, int, int, int, int);
+boolean SnapField(struct PlayerInfo *, int, int);
+boolean PlaceBomb(struct PlayerInfo *);
 void PlaySoundLevel(int, int, int);
 void RaiseScore(int);
-void TapeInitRecording(void);
-void TapeStartRecording(void);
-void TapeStopRecording(void);
-void TapeRecordAction(int);
-void TapeRecordDelay(void);
-void TapeTogglePause(void);
-void TapeInitPlaying(void);
-void TapeStartPlaying(void);
-void TapeStopPlaying(void);
-int TapePlayAction(void);
-BOOL TapePlayDelay(void);
-void TapeStop(void);
-void TapeErase(void);
+void RaiseScoreElement(int);
 
 #endif

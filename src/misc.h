@@ -1,13 +1,12 @@
 /***********************************************************
 *  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
 *----------------------------------------------------------*
-*  ©1995 Artsoft Development                               *
-*        Holger Schemel                                    *
-*        33659 Bielefeld-Senne                             *
-*        Telefon: (0521) 493245                            *
-*        eMail: aeglos@valinor.owl.de                      *
-*               aeglos@uni-paderborn.de                    *
-*               q99492@pbhrzx.uni-paderborn.de             *
+*  (c) 1995-98 Artsoft Entertainment                       *
+*              Holger Schemel                              *
+*              Oststrasse 11a                              *
+*              33604 Bielefeld                             *
+*              phone: ++49 +521 290471                     *
+*              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
 *  misc.h                                                  *
 ***********************************************************/
@@ -17,91 +16,53 @@
 
 #include "main.h"
 
-/* values for cartoon figures */
-#define NUM_TOONS	6
+#define INIT_COUNTER		0
+#define READ_COUNTER		1
 
-#define DWARF_XSIZE	40
-#define DWARF_YSIZE	48
-#define DWARF_X		2
-#define DWARF_Y		72
-#define DWARF2_Y	186
-#define DWARF_FRAMES	8
-#define DWARF_FPS	10
-#define DWARF_STEPSIZE	4
-#define JUMPER_XSIZE	48
-#define JUMPER_YSIZE	56
-#define JUMPER_X	2
-#define JUMPER_Y	125
-#define JUMPER_FRAMES	8
-#define JUMPER_FPS	10
-#define JUMPER_STEPSIZE	4
-#define CLOWN_XSIZE	80
-#define CLOWN_YSIZE	110
-#define CLOWN_X		327
-#define CLOWN_Y		10
-#define CLOWN_FRAMES	1
-#define CLOWN_FPS	10
-#define CLOWN_STEPSIZE	4
-#define BIRD_XSIZE	32
-#define BIRD_YSIZE	30
-#define BIRD1_X		2
-#define BIRD1_Y		2
-#define BIRD2_X		2
-#define BIRD2_Y		37
-#define BIRD_FRAMES	8
-#define BIRD_FPS	20
-#define BIRD_STEPSIZE	4
+#define NEW_RANDOMIZE		-1
 
-#define ANIMDIR_LEFT	1
-#define ANIMDIR_RIGHT	2
-#define ANIMDIR_UP	4
-#define ANIMDIR_DOWN	8
+#define ERR_RETURN		0
+#define ERR_WARN		(1 << 0)
+#define ERR_EXIT		(1 << 1)
+#define ERR_HELP		(1 << 2)
+#define ERR_SOUND_SERVER	(1 << 3)
+#define ERR_NETWORK_SERVER	(1 << 4)
+#define ERR_NETWORK_CLIENT	(1 << 5)
+#define ERR_FROM_SERVER		(ERR_SOUND_SERVER | ERR_NETWORK_SERVER)
+#define ERR_EXIT_HELP		(ERR_EXIT | ERR_HELP)
+#define ERR_EXIT_SOUND_SERVER	(ERR_EXIT | ERR_SOUND_SERVER)
+#define ERR_EXIT_NETWORK_SERVER	(ERR_EXIT | ERR_NETWORK_SERVER)
+#define ERR_EXIT_NETWORK_CLIENT	(ERR_EXIT | ERR_NETWORK_CLIENT)
 
-#define ANIMPOS_ANY	0
-#define ANIMPOS_LEFT	1
-#define ANIMPOS_RIGHT	2
-#define ANIMPOS_UP	4
-#define ANIMPOS_DOWN	8
-#define ANIMPOS_UPPER	16
-
-#define ANIM_START	0
-#define ANIM_CONTINUE	1
-#define ANIM_STOP	2
-
-struct AnimInfo
-{
-  int width, height;
-  int src_x, src_y;
-  int frames;
-  int frames_per_second;
-  int stepsize;
-  BOOL pingpong;
-  int direction;
-  int position;
-};
-
-#define NEW_RANDOMIZE	-1
-
-void microsleep(unsigned long);
-long mainCounter(int);
 void InitCounter(void);
-long Counter(void);
-long Counter2(void);
-void WaitCounter(long);
-void WaitCounter2(long);
-void Delay(long);
-BOOL DelayReached(long *, int);
-unsigned long be2long(unsigned long *);
+unsigned long Counter(void);
+void Delay(unsigned long);
+boolean FrameReached(unsigned long *, unsigned long);
+boolean DelayReached(unsigned long *, unsigned long);
+void WaitUntilDelayReached(unsigned long *, unsigned long);
 char *int2str(int, int);
+unsigned int SimpleRND(unsigned int);
 unsigned int RND(unsigned int);
 unsigned int InitRND(long);
-char *GetLoginName(void);
+char *getLoginName(void);
+char *getHomeDir(void);
+char *getPath2(char *, char *);
+char *getPath3(char *, char *, char*);
+char *getStringCopy(char *);
+char *getStringToLower(char *);
+void MarkTileDirty(int, int);
+void GetOptions(char **);
+void Error(int, char *, ...);
+void *checked_malloc(unsigned long);
+void *checked_calloc(unsigned long);
+char *getKeyNameFromKeySym(KeySym);
+char *getX11KeyNameFromKeySym(KeySym);
+KeySym getKeySymFromX11KeyName(char *);
+char *getJoyNameFromJoySymbol(int);
+int getJoySymbolFromJoyName(char *);
+int getJoystickNrFromDeviceName(char *);
 
-void InitAnimation(void);
-void StopAnimation(void);
-void DoAnimation(void);
-void HandleAnimation(int);
-BOOL AnimateToon(int, BOOL);
-void DrawAnim(int, int, int, int, int, int, int, int);
+void debug_print_timestamp(int, char *);
+void print_debug(char *);
 
-#endif
+#endif /* MISC_H */

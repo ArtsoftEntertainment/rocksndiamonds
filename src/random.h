@@ -8,30 +8,13 @@
 *              phone: ++49 +521 290471                     *
 *              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
-*  events.h                                                *
+*  random.h                                                *
 ***********************************************************/
 
-#ifndef EVENTS_H
-#define EVENTS_H
+#ifndef RANDOM_H
+#define RANDOM_H
 
-#include "main.h"
-
-void EventLoop(void);
-void HandleOtherEvents(XEvent *);
-void ClearEventQueue(void);
-void SleepWhileUnmapped(void);
-
-void HandleExposeEvent(XExposeEvent *);
-void HandleButtonEvent(XButtonEvent *);
-void HandleMotionEvent(XMotionEvent *);
-void HandleKeyEvent(XKeyEvent *);
-void HandleFocusEvent(XFocusChangeEvent *);
-void HandleClientMessageEvent(XClientMessageEvent *event);
-
-void HandleNoXEvent(void);
-
-void HandleButton(int, int, int);
-void HandleKey(KeySym, int);
-void HandleJoystick();
+void srandom_linux_libc(unsigned int);
+long int random_linux_libc(void);
 
 #endif

@@ -1,441 +1,900 @@
 /***********************************************************
 *  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
 *----------------------------------------------------------*
-*  ©1995 Artsoft Development                               *
-*        Holger Schemel                                    *
-*        33659 Bielefeld-Senne                             *
-*        Telefon: (0521) 493245                            *
-*        eMail: aeglos@valinor.owl.de                      *
-*               aeglos@uni-paderborn.de                    *
-*               q99492@pbhrzx.uni-paderborn.de             *
+*  (c) 1995-98 Artsoft Entertainment                       *
+*              Holger Schemel                              *
+*              Oststrasse 11a                              *
+*              33604 Bielefeld                             *
+*              phone: ++49 +521 290471                     *
+*              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
 *  misc.c                                                  *
 ***********************************************************/
 
-#include "misc.h"
-#include "tools.h"
-#include "sound.h"
 #include <pwd.h>
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
 #include <sys/param.h>
 #include <sys/types.h>
+#include <stdarg.h>
+#include <ctype.h>
 
-void microsleep(unsigned long usec)
+#include "misc.h"
+#include "init.h"
+#include "tools.h"
+#include "sound.h"
+#include "random.h"
+#include "joystick.h"
+#include "files.h"
+
+#ifdef MSDOS
+volatile unsigned long counter = 0;
+
+void increment_counter()
 {
-  struct timeval delay;
-
-  delay.tv_sec  = usec / 1000000;
-  delay.tv_usec = usec % 1000000;
-
-  if (select(0,NULL,NULL,NULL,&delay)!=0)
-    fprintf(stderr,"%s: in function microsleep: select failed!\n",
-	    progname);
+  counter++;
 }
 
-long mainCounter(int mode)
+END_OF_FUNCTION(increment_counter);
+#endif
+
+
+
+/* maximal allowed length of a command line option */
+#define MAX_OPTION_LEN		256
+
+#ifndef MSDOS
+static unsigned long mainCounter(int mode)
 {
   static struct timeval base_time = { 0, 0 };
   struct timeval current_time;
-  long counter_ms;
+  unsigned long counter_ms;
 
-  gettimeofday(&current_time,NULL);
-  if (mode==0 || current_time.tv_sec<base_time.tv_sec)
+  gettimeofday(&current_time, NULL);
+
+  if (mode == INIT_COUNTER || current_time.tv_sec < base_time.tv_sec)
     base_time = current_time;
 
-  counter_ms = (current_time.tv_sec - base_time.tv_sec)*1000
-             + (current_time.tv_usec - base_time.tv_usec)/1000;
+  counter_ms = (current_time.tv_sec  - base_time.tv_sec)  * 1000
+             + (current_time.tv_usec - base_time.tv_usec) / 1000;
 
-  if (mode==1)
-    return(counter_ms/10);	/* return 1/100 secs since last init */
-  else
-    return(counter_ms);		/* return 1/1000 secs since last init */
+  return counter_ms;		/* return milliseconds since last init */
+}
+#endif
+
+void InitCounter()		/* set counter back to zero */
+{
+#ifndef MSDOS
+  mainCounter(INIT_COUNTER);
+#else
+  LOCK_VARIABLE(counter);
+  LOCK_FUNCTION(increment_counter);
+  install_int_ex(increment_counter, BPS_TO_TIMER(100));
+#endif
 }
 
-void InitCounter() /* set counter back to zero */
+unsigned long Counter()	/* get milliseconds since last call of InitCounter() */
 {
-  mainCounter(0);
+#ifndef MSDOS
+  return mainCounter(READ_COUNTER);
+#else
+  return (counter * 10);
+#endif
 }
 
-long Counter()	/* returns 1/100 secs since last call of InitCounter() */
+static void sleep_milliseconds(unsigned long milliseconds_delay)
 {
-  return(mainCounter(1));
-}
+  boolean do_busy_waiting = (milliseconds_delay < 5 ? TRUE : FALSE);
 
-long Counter2()	/* returns 1/1000 secs since last call of InitCounter() */
-{
-  return(mainCounter(2));
-}
+#ifdef MSDOS
+  /* donït use select() to perform waiting operations under DOS/Windows
+     environment; always use a busy loop for waiting instead */
+  do_busy_waiting = TRUE;
+#endif
 
-void WaitCounter(long value) 	/* wait for counter to reach value */
-{
-  long wait;
-
-  while((wait=value-Counter())>0)
-    microsleep(wait*10000);
-}
-
-void WaitCounter2(long value) 	/* wait for counter to reach value */
-{
-  long wait;
-
-  while((wait=value-Counter2())>0)
-    microsleep(wait*1000);
-}
-
-void Delay(long value)
-{
-  microsleep(value);
-}
-
-BOOL DelayReached(long *counter_var, int delay)
-{
-  long actual_counter = Counter();
-
-  if (actual_counter>*counter_var+delay || actual_counter<*counter_var)
+  if (do_busy_waiting)
   {
-    *counter_var = actual_counter;
-    return(TRUE);
+    /* we want to wait only a few ms -- if we assume that we have a
+       kernel timer resolution of 10 ms, we would wait far to long;
+       therefore it's better to do a short interval of busy waiting
+       to get our sleeping time more accurate */
+
+    unsigned long base_counter = Counter(), actual_counter = Counter();
+
+    while (actual_counter < base_counter + milliseconds_delay &&
+	   actual_counter >= base_counter)
+      actual_counter = Counter();
   }
   else
+  {
+    struct timeval delay;
+
+    delay.tv_sec  = milliseconds_delay / 1000;
+    delay.tv_usec = 1000 * (milliseconds_delay % 1000);
+
+    if (select(0, NULL, NULL, NULL, &delay) != 0)
+      Error(ERR_WARN, "sleep_milliseconds(): select() failed");
+  }
+}
+
+void Delay(unsigned long delay)	/* Sleep specified number of milliseconds */
+{
+  sleep_milliseconds(delay);
+}
+
+boolean FrameReached(unsigned long *frame_counter_var,
+		     unsigned long frame_delay)
+{
+  unsigned long actual_frame_counter = FrameCounter;
+
+  if (actual_frame_counter < *frame_counter_var+frame_delay &&
+      actual_frame_counter >= *frame_counter_var)
     return(FALSE);
+
+  *frame_counter_var = actual_frame_counter;
+  return(TRUE);
 }
 
-unsigned long be2long(unsigned long *be)	/* big-endian -> longword */
+boolean DelayReached(unsigned long *counter_var,
+		     unsigned long delay)
 {
-  unsigned char *ptr = (unsigned char *)be;
+  unsigned long actual_counter = Counter();
 
-  return(ptr[0]<<24 | ptr[1]<<16 | ptr[2]<<8 | ptr[3]);
+  if (actual_counter < *counter_var + delay &&
+      actual_counter >= *counter_var)
+    return(FALSE);
+
+  *counter_var = actual_counter;
+  return(TRUE);
 }
 
-char *int2str(int ct, int nr)
+void WaitUntilDelayReached(unsigned long *counter_var, unsigned long delay)
 {
-  static char str[20];
+  unsigned long actual_counter;
 
-  sprintf(str,"%09d",ct);
-  return(&str[strlen(str)-nr]);
+  while(1)
+  {
+    actual_counter = Counter();
+
+    if (actual_counter < *counter_var + delay &&
+	actual_counter >= *counter_var)
+      sleep_milliseconds((*counter_var + delay - actual_counter) / 2);
+    else
+      break;
+  }
+
+  *counter_var = actual_counter;
 }
+
+char *int2str(int number, int size)
+{
+  static char s[40];
+
+  if (size > 20)
+    size = 20;
+
+  if (size)
+  {
+    sprintf(s, "                    %09d", number);
+    return &s[strlen(s) - size];
+  }
+  else
+  {
+    sprintf(s, "%d", number);
+    return s;
+  }
+}
+
+unsigned int SimpleRND(unsigned int max)
+{
+  static unsigned long root = 654321;
+  struct timeval current_time;
+
+  gettimeofday(&current_time,NULL);
+  root = root * 4253261 + current_time.tv_sec + current_time.tv_usec;
+  return (root % max);
+}
+
+#ifdef DEBUG
+static unsigned int last_RND_value = 0;
+
+unsigned int last_RND()
+{
+  return last_RND_value;
+}
+#endif
 
 unsigned int RND(unsigned int max)
 {
-  return(rand() % max);
+#ifdef DEBUG
+  return (last_RND_value = random_linux_libc() % max);
+#else
+  return (random_linux_libc() % max);
+#endif
 }
 
 unsigned int InitRND(long seed)
 {
   struct timeval current_time;
 
-  if (seed==NEW_RANDOMIZE)
+  if (seed == NEW_RANDOMIZE)
   {
     gettimeofday(&current_time,NULL);
-    srand((unsigned int) current_time.tv_usec);
-    return((unsigned int) current_time.tv_usec);
+    srandom_linux_libc((unsigned int) current_time.tv_usec);
+    return (unsigned int)current_time.tv_usec;
   }
   else
   {
-    srand((unsigned int) seed);
-    return((unsigned int) seed);
+    srandom_linux_libc((unsigned int) seed);
+    return (unsigned int)seed;
   }
 }
 
-char *GetLoginName()
+char *getLoginName()
 {
   struct passwd *pwd;
 
-  if (!(pwd=getpwuid(getuid())))
-    return("ANONYMOUS");
+  if (!(pwd = getpwuid(getuid())))
+    return "ANONYMOUS";
   else
-    return(pwd->pw_name);
+    return pwd->pw_name;
 }
 
-void InitAnimation()
+char *getHomeDir()
 {
-  HandleAnimation(ANIM_START);
+#ifndef MSDOS
+  static char *home_dir = NULL;
+
+  if (!home_dir)
+  {
+    if (!(home_dir = getenv("HOME")))
+    {
+      struct passwd *pwd;
+
+      if ((pwd = getpwuid(getuid())))
+	home_dir = pwd->pw_dir;
+      else
+	home_dir = ".";
+    }
+  }
+
+  return home_dir;
+#else
+  return ".";
+#endif
 }
 
-void StopAnimation()
+char *getPath2(char *path1, char *path2)
 {
-  HandleAnimation(ANIM_STOP);
+  char *complete_path = checked_malloc(strlen(path1) + 1 +
+				       strlen(path2) + 1);
+
+  sprintf(complete_path, "%s/%s", path1, path2);
+  return complete_path;
 }
 
-void DoAnimation()
+char *getPath3(char *path1, char *path2, char *path3)
 {
-  HandleAnimation(ANIM_CONTINUE);
+  char *complete_path = checked_malloc(strlen(path1) + 1 +
+				       strlen(path2) + 1 +
+				       strlen(path3) + 1);
+
+  sprintf(complete_path, "%s/%s/%s", path1, path2, path3);
+  return complete_path;
 }
 
-void HandleAnimation(int mode)
+char *getStringCopy(char *s)
 {
-  static long animstart_delay = -1;
-  static long animstart_delay_value = 0;
-  static BOOL anim_restart = TRUE;
-  static BOOL reset_delay = TRUE;
-  static int toon_nr = 0;
+  char *s_copy = checked_malloc(strlen(s) + 1);
 
-  if (!toons_on || game_status==PLAYING)
+  strcpy(s_copy, s);
+  return s_copy;
+}
+
+char *getStringToLower(char *s)
+{
+  char *s_copy = checked_malloc(strlen(s) + 1);
+  char *s_ptr = s_copy;
+
+  while (*s)
+    *s_ptr++ = tolower(*s++);
+
+  return s_copy;
+}
+
+void MarkTileDirty(int x, int y)
+{
+  int xx = redraw_x1 + x;
+  int yy = redraw_y1 + y;
+
+  if (!redraw[xx][yy])
+    redraw_tiles++;
+
+  redraw[xx][yy] = TRUE;
+  redraw_mask |= REDRAW_TILES;
+}
+
+void GetOptions(char *argv[])
+{
+  char **options_left = &argv[1];
+
+  /* initialize global program options */
+  options.display_name = NULL;
+  options.server_host = NULL;
+  options.server_port = 0;
+  options.base_directory = BASE_PATH;
+  options.level_directory = BASE_PATH "/" LEVELS_DIRECTORY;
+  options.serveronly = FALSE;
+  options.network = FALSE;
+  options.verbose = FALSE;
+
+  while (*options_left)
+  {
+    char option_str[MAX_OPTION_LEN];
+    char *option = options_left[0];
+    char *next_option = options_left[1];
+    char *option_arg = NULL;
+    int option_len = strlen(option);
+
+    if (option_len >= MAX_OPTION_LEN)
+      Error(ERR_EXIT_HELP, "unrecognized option '%s'", option);
+
+    strcpy(option_str, option);			/* copy argument into buffer */
+    option = option_str;
+
+    if (strcmp(option, "--") == 0)		/* stop scanning arguments */
+      break;
+
+    if (strncmp(option, "--", 2) == 0)		/* treat '--' like '-' */
+      option++;
+
+    option_arg = strchr(option, '=');
+    if (option_arg == NULL)			/* no '=' in option */
+      option_arg = next_option;
+    else
+    {
+      *option_arg++ = '\0';			/* cut argument from option */
+      if (*option_arg == '\0')			/* no argument after '=' */
+	Error(ERR_EXIT_HELP, "option '%s' has invalid argument", option_str);
+    }
+
+    option_len = strlen(option);
+
+    if (strcmp(option, "-") == 0)
+      Error(ERR_EXIT_HELP, "unrecognized option '%s'", option);
+    else if (strncmp(option, "-help", option_len) == 0)
+    {
+      printf("Usage: %s [options] [server.name [port]]\n"
+	     "Options:\n"
+	     "  -d, --display machine:0       X server display\n"
+	     "  -b, --basepath directory      alternative base directory\n"
+	     "  -l, --levels directory        alternative level directory\n"
+	     "  -s, --serveronly              only start network server\n"
+	     "  -n, --network                 network multiplayer game\n"
+	     "  -v, --verbose                 verbose mode\n",
+	     program_name);
+      exit(0);
+    }
+    else if (strncmp(option, "-display", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+
+      options.display_name = option_arg;
+      if (option_arg == next_option)
+	options_left++;
+    }
+    else if (strncmp(option, "-basepath", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+
+      options.base_directory = option_arg;
+      if (option_arg == next_option)
+	options_left++;
+
+      /* adjust path for level directory accordingly */
+      options.level_directory =
+	getPath2(options.base_directory, LEVELS_DIRECTORY);
+    }
+    else if (strncmp(option, "-levels", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+
+      options.level_directory = option_arg;
+      if (option_arg == next_option)
+	options_left++;
+    }
+    else if (strncmp(option, "-network", option_len) == 0)
+    {
+      options.network = TRUE;
+    }
+    else if (strncmp(option, "-serveronly", option_len) == 0)
+    {
+      options.serveronly = TRUE;
+    }
+    else if (strncmp(option, "-verbose", option_len) == 0)
+    {
+      options.verbose = TRUE;
+    }
+    else if (*option == '-')
+    {
+      Error(ERR_EXIT_HELP, "unrecognized option '%s'", option_str);
+    }
+    else if (options.server_host == NULL)
+    {
+      options.server_host = *options_left;
+    }
+    else if (options.server_port == 0)
+    {
+      options.server_port = atoi(*options_left);
+      if (options.server_port < 1024)
+	Error(ERR_EXIT_HELP, "bad port number '%d'", options.server_port);
+    }
+    else
+      Error(ERR_EXIT_HELP, "too many arguments");
+
+    options_left++;
+  }
+}
+
+void Error(int mode, char *format, ...)
+{
+  char *process_name = "";
+  FILE *error = stderr;
+
+  /* display warnings only when running in verbose mode */
+  if (mode & ERR_WARN && !options.verbose)
     return;
 
-  switch(mode)
+#ifdef MSDOS
+  if ((error = openErrorFile()) == NULL)
   {
-    case ANIM_START:
-      anim_restart = TRUE;
-      reset_delay = TRUE;
-      return;
-      break;
-    case ANIM_CONTINUE:
-      break;
-    case ANIM_STOP:
-      redraw_mask |= REDRAW_FIELD;
-      BackToFront();
-      return;
-      break;
-    default:
-      break;
+    printf("Cannot write to error output file!\n");
+    CloseAllAndExit(1);
   }
-
-  if (reset_delay)
-  {
-    animstart_delay = Counter();
-    animstart_delay_value = RND(500);
-    reset_delay = FALSE;
-  }
-
-  if (anim_restart)
-  {
-    if (!DelayReached(&animstart_delay,animstart_delay_value))
-      return;
-
-    toon_nr = RND(NUM_TOONS);
-  }
-
-  anim_restart = reset_delay = AnimateToon(toon_nr,anim_restart);
-}
-
-BOOL AnimateToon(int toon_nr, BOOL restart)
-{
-  static pos_x = 0, pos_y = 0;
-  static delta_x = 0, delta_y = 0;
-  static int frame = 0, frame_step = 1;
-  static BOOL horiz_move, vert_move;
-  static long anim_delay = 0;
-  static int anim_delay_value = 0;
-  static int width,height;
-  static int pad_x,pad_y;
-  static int cut_x,cut_y;
-  static int src_x, src_y;
-  static int dest_x, dest_y;
-  static struct AnimInfo toon[NUM_TOONS] =
-  {
-    DWARF_XSIZE, DWARF_YSIZE,
-    DWARF_X, DWARF_Y,
-    DWARF_FRAMES,
-    DWARF_FPS,
-    DWARF_STEPSIZE,
-    FALSE,
-    ANIMDIR_RIGHT,
-    ANIMPOS_DOWN,
-
-    DWARF_XSIZE, DWARF_YSIZE,
-    DWARF_X, DWARF2_Y,
-    DWARF_FRAMES,
-    DWARF_FPS,
-    DWARF_STEPSIZE,
-    FALSE,
-    ANIMDIR_LEFT,
-    ANIMPOS_DOWN,
-
-    JUMPER_XSIZE, JUMPER_YSIZE,
-    JUMPER_X, JUMPER_Y,
-    JUMPER_FRAMES,
-    JUMPER_FPS,
-    JUMPER_STEPSIZE,
-    FALSE,
-    ANIMDIR_LEFT,
-    ANIMPOS_DOWN,
-
-    CLOWN_XSIZE, CLOWN_YSIZE,
-    CLOWN_X, CLOWN_Y,
-    CLOWN_FRAMES,
-    CLOWN_FPS,
-    CLOWN_STEPSIZE,
-    FALSE,
-    ANIMDIR_UP,
-    ANIMPOS_ANY,
-
-    BIRD_XSIZE, BIRD_YSIZE,
-    BIRD1_X, BIRD1_Y,
-    BIRD_FRAMES,
-    BIRD_FPS,
-    BIRD_STEPSIZE,
-    TRUE,
-    ANIMDIR_RIGHT,
-    ANIMPOS_UPPER,
-
-    BIRD_XSIZE, BIRD_YSIZE,
-    BIRD2_X, BIRD2_Y,
-    BIRD_FRAMES,
-    BIRD_FPS,
-    BIRD_STEPSIZE,
-    TRUE,
-    ANIMDIR_LEFT,
-    ANIMPOS_UPPER
-  };
-  struct AnimInfo *anim = &toon[toon_nr];
-
-  if (restart)
-  {
-    horiz_move = (anim->direction & (ANIMDIR_LEFT | ANIMDIR_RIGHT));
-    vert_move = (anim->direction & (ANIMDIR_UP | ANIMDIR_DOWN));
-    anim_delay_value = 100/anim->frames_per_second;
-    frame = 0;
-
-    if (horiz_move)
-    {
-      if (anim->position==ANIMPOS_UP)
-	pos_y = 0;
-      else if (anim->position==ANIMPOS_DOWN)
-	pos_y = FULL_SYSIZE-anim->height;
-      else if (anim->position==ANIMPOS_UPPER)
-	pos_y = RND((FULL_SYSIZE-anim->height)/2);
-      else
-	pos_y = RND(FULL_SYSIZE-anim->height);
-
-      if (anim->direction==ANIMDIR_RIGHT)
-      {
-	delta_x = anim->stepsize;
-	pos_x = -anim->width+delta_x;
-      }
-      else
-      {
-	delta_x = -anim->stepsize;
-	pos_x = FULL_SXSIZE+delta_x;
-      }
-      delta_y = 0;
-    }
-    else
-    {
-      if (anim->position==ANIMPOS_LEFT)
-	pos_x = 0;
-      else if (anim->position==ANIMPOS_RIGHT)
-	pos_x = FULL_SXSIZE-anim->width;
-      else
-	pos_x = RND(FULL_SXSIZE-anim->width);
-
-      if (anim->direction==ANIMDIR_DOWN)
-      {
-	delta_y = anim->stepsize;
-	pos_y = -anim->height+delta_y;
-      }
-      else
-      {
-	delta_y = -anim->stepsize;
-	pos_y = FULL_SYSIZE+delta_y;
-      }
-      delta_x = 0;
-    }
-  }
-
-  if (pos_x <= -anim->width  - anim->stepsize ||
-      pos_x >=  FULL_SXSIZE  + anim->stepsize ||
-      pos_y <= -anim->height - anim->stepsize ||
-      pos_y >=  FULL_SYSIZE  + anim->stepsize)
-    return(TRUE);
-
-  if (!DelayReached(&anim_delay,anim_delay_value))
-  {
-    if (game_status==HELPSCREEN && !restart)
-      DrawAnim(src_x+cut_x,src_y+cut_y, width,height,
-	       REAL_SX+dest_x,REAL_SY+dest_y, pad_x,pad_y);
-
-    return(FALSE);
-  }
-
-  if (pos_x<-anim->width)
-    pos_x = -anim->width;
-  else if (pos_x>FULL_SXSIZE)
-    pos_x = FULL_SXSIZE;
-  if (pos_y<-anim->height)
-    pos_y = -anim->height;
-  else if (pos_y>FULL_SYSIZE)
-    pos_y = FULL_SYSIZE;
-
-  pad_x = (horiz_move ? anim->stepsize : 0);
-  pad_y = (vert_move  ? anim->stepsize : 0);
-  src_x = anim->src_x + frame * anim->width;
-  src_y = anim->src_y;
-  dest_x = pos_x;
-  dest_y = pos_y;
-  cut_x = cut_y = 0;
-  width  = anim->width;
-  height = anim->height;
-
-  if (pos_x<0)
-  {
-    dest_x = 0;
-    width += pos_x;
-    cut_x = -pos_x;
-  }
-  else if (pos_x>FULL_SXSIZE-anim->width)
-    width -= (pos_x - (FULL_SXSIZE-anim->width));
-
-  if (pos_y<0)
-  {
-    dest_y = 0;
-    height += pos_y;
-    cut_y = -pos_y;
-  }
-  else if (pos_y>FULL_SYSIZE-anim->height)
-    height -= (pos_y - (FULL_SYSIZE-anim->height));
-
-  DrawAnim(src_x+cut_x,src_y+cut_y, width,height,
-	   REAL_SX+dest_x,REAL_SY+dest_y, pad_x,pad_y);
-
-  pos_x += delta_x;
-  pos_y += delta_y;
-  frame += frame_step;
-
-  if (frame<0 || frame>=anim->frames)
-  {
-    if (anim->pingpong)
-    {
-      frame_step *= -1;
-      frame = (frame<0 ? 1 : anim->frames-2);
-    }
-    else
-      frame = (frame<0 ? anim->frames-1 : 0);
-  }
-
-  return(FALSE);
-}
-
-void DrawAnim(int src_x, int src_y, int width, int height,
-	      int dest_x, int dest_y, int pad_x, int pad_y)
-{
-  int buf_x = DOOR_GFX_PAGEX3, buf_y = DOOR_GFX_PAGEY1;
-
-#if 1
-  /* special method to avoid flickering interference with BackToFront() */
-  XCopyArea(display,backbuffer,pix[PIX_DB_DOOR],gc,dest_x-pad_x,dest_y-pad_y,
-	    width+2*pad_x,height+2*pad_y, buf_x,buf_y);
-  XSetClipOrigin(display,clip_gc[PIX_TOONS],dest_x-src_x,dest_y-src_y);
-  XCopyArea(display,pix[PIX_TOONS],backbuffer,clip_gc[PIX_TOONS],
-	    src_x,src_y, width,height, dest_x,dest_y);
-  XCopyArea(display,backbuffer,window,gc, dest_x-pad_x,dest_y-pad_y,
-	    width+2*pad_x,height+2*pad_y, dest_x-pad_x,dest_y-pad_y);
-  BackToFront();
-  XCopyArea(display,pix[PIX_DB_DOOR],backbuffer,gc, buf_x,buf_y,
-	    width+2*pad_x,height+2*pad_y, dest_x-pad_x,dest_y-pad_y);
-#else
-  /* normal method, causing flickering interference with BackToFront() */
-  XCopyArea(display,backbuffer,pix[PIX_DB_DOOR],gc,dest_x-pad_x,dest_y-pad_y,
-	    width+2*pad_x,height+2*pad_y, buf_x,buf_y);
-  XSetClipOrigin(display,clip_gc[PIX_TOONS],
-		 buf_x-src_x+pad_x,buf_y-src_y+pad_y);
-  XCopyArea(display,pix[PIX_TOONS],pix[PIX_DB_DOOR],clip_gc[PIX_TOONS],
-	    src_x,src_y, width,height, buf_x+pad_x,buf_y+pad_y);
-  XCopyArea(display,pix[PIX_DB_DOOR],window,gc, buf_x,buf_y,
-	    width+2*pad_x,height+2*pad_y, dest_x-pad_x,dest_y-pad_y);
 #endif
 
-  XFlush(display);
+  if (mode & ERR_SOUND_SERVER)
+    process_name = " sound server";
+  else if (mode & ERR_NETWORK_SERVER)
+    process_name = " network server";
+  else if (mode & ERR_NETWORK_CLIENT)
+    process_name = " network client **";
+
+  if (format)
+  {
+    va_list ap;
+
+    fprintf(error, "%s%s: ", program_name, process_name);
+
+    if (mode & ERR_WARN)
+      fprintf(error, "warning: ");
+
+    va_start(ap, format);
+    vfprintf(error, format, ap);
+    va_end(ap);
+  
+    fprintf(error, "\n");
+  }
+  
+  if (mode & ERR_HELP)
+    fprintf(error, "%s: Try option '--help' for more information.\n",
+	    program_name);
+
+  if (mode & ERR_EXIT)
+    fprintf(error, "%s%s: aborting\n", program_name, process_name);
+
+  if (error != stderr)
+    fclose(error);
+
+  if (mode & ERR_EXIT)
+  {
+    if (mode & ERR_FROM_SERVER)
+      exit(1);				/* child process: normal exit */
+    else
+      CloseAllAndExit(1);		/* main process: clean up stuff */
+  }
+}
+
+void *checked_malloc(unsigned long size)
+{
+  void *ptr;
+
+  ptr = malloc(size);
+
+  if (ptr == NULL)
+    Error(ERR_EXIT, "cannot allocate %d bytes -- out of memory", size);
+
+  return ptr;
+}
+
+void *checked_calloc(unsigned long size)
+{
+  void *ptr;
+
+  ptr = calloc(1, size);
+
+  if (ptr == NULL)
+    Error(ERR_EXIT, "cannot allocate %d bytes -- out of memory", size);
+
+  return ptr;
+}
+
+#define TRANSLATE_KEYSYM_TO_KEYNAME	0
+#define TRANSLATE_KEYSYM_TO_X11KEYNAME	1
+#define TRANSLATE_X11KEYNAME_TO_KEYSYM	2
+
+void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
+{
+  static struct
+  {
+    KeySym keysym;
+    char *x11name;
+    char *name;
+  } translate_key[] =
+  {
+    /* normal cursor keys */
+    { XK_Left,		"XK_Left",		"cursor left" },
+    { XK_Right,		"XK_Right",		"cursor right" },
+    { XK_Up,		"XK_Up",		"cursor up" },
+    { XK_Down,		"XK_Down",		"cursor down" },
+
+    /* keypad cursor keys */
+#ifdef XK_KP_Left
+    { XK_KP_Left,	"XK_KP_Left",		"keypad left" },
+    { XK_KP_Right,	"XK_KP_Right",		"keypad right" },
+    { XK_KP_Up,		"XK_KP_Up",		"keypad up" },
+    { XK_KP_Down,	"XK_KP_Down",		"keypad down" },
+#endif
+
+    /* other keypad keys */
+#ifdef XK_KP_Enter
+    { XK_KP_Enter,	"XK_KP_Enter",		"keypad enter" },
+    { XK_KP_Add,	"XK_KP_Add",		"keypad +" },
+    { XK_KP_Subtract,	"XK_KP_Subtract",	"keypad -" },
+    { XK_KP_Multiply,	"XK_KP_Multiply",	"keypad mltply" },
+    { XK_KP_Divide,	"XK_KP_Divide",		"keypad /" },
+    { XK_KP_Separator,	"XK_KP_Separator",	"keypad ," },
+#endif
+
+    /* modifier keys */
+    { XK_Shift_L,	"XK_Shift_L",		"left shift" },
+    { XK_Shift_R,	"XK_Shift_R",		"right shift" },
+    { XK_Control_L,	"XK_Control_L",		"left control" },
+    { XK_Control_R,	"XK_Control_R",		"right control" },
+    { XK_Meta_L,	"XK_Meta_L",		"left meta" },
+    { XK_Meta_R,	"XK_Meta_R",		"right meta" },
+    { XK_Alt_L,		"XK_Alt_L",		"left alt" },
+    { XK_Alt_R,		"XK_Alt_R",		"right alt" },
+    { XK_Mode_switch,	"XK_Mode_switch",	"mode switch" },
+    { XK_Multi_key,	"XK_Multi_key",		"multi key" },
+
+    /* some special keys */
+    { XK_BackSpace,	"XK_BackSpace",		"backspace" },
+    { XK_Delete,	"XK_Delete",		"delete" },
+    { XK_Insert,	"XK_Insert",		"insert" },
+    { XK_Tab,		"XK_Tab",		"tab" },
+    { XK_Home,		"XK_Home",		"home" },
+    { XK_End,		"XK_End",		"end" },
+    { XK_Page_Up,	"XK_Page_Up",		"page up" },
+    { XK_Page_Down,	"XK_Page_Down",		"page down" },
+    { XK_space,		"XK_space",		"space" },
+
+    /* even more special keys */
+    { XK_adiaeresis,	"XK_adiaeresis",	"ä" },
+    { XK_odiaeresis,	"XK_odiaeresis",	"ö" },
+    { XK_udiaeresis,	"XK_udiaeresis",	"ü" },
+    { XK_apostrophe,	"XK_apostrophe",	"'" },
+    { XK_plus,		"XK_plus",		"+" },
+    { XK_minus,		"XK_minus",		"-" },
+    { XK_equal,		"XK_equal",		"equal" },
+    { XK_comma,		"XK_comma",		"," },
+    { XK_period,	"XK_period",		"." },
+    { XK_colon,		"XK_colon",		";" },
+    { XK_slash,		"XK_slash",		"/" },
+    { XK_numbersign,	"XK_numbersign",	"#" },
+    { XK_backslash,	"XK_backslash",		"backslash" },
+    { XK_braceleft,	"XK_braceleft",		"brace left" },
+    { XK_braceright,	"XK_braceright",	"brace right" },
+    { XK_less,		"XK_less",		"less" },
+    { XK_greater,	"XK_greater",		"greater" },
+    { XK_asciicircum,	"XK_asciicircum",	"circumflex" },
+    { XK_ssharp,	"XK_ssharp",		"sharp s" },
+
+    /* end-of-array identifier */
+    { 0,                NULL,			NULL }
+  };
+
+  int i;
+
+  if (mode == TRANSLATE_KEYSYM_TO_KEYNAME)
+  {
+    static char name_buffer[30];
+    KeySym key = *keysym;
+
+    if (key >= XK_A && key <= XK_Z)
+      sprintf(name_buffer, "%c", 'A' + (char)(key - XK_A));
+    else if (key >= XK_a && key <= XK_z)
+      sprintf(name_buffer, "%c", 'a' + (char)(key - XK_a));
+    else if (key >= XK_0 && key <= XK_9)
+      sprintf(name_buffer, "%c", '0' + (char)(key - XK_0));
+    else if (key >= XK_KP_0 && key <= XK_KP_9)
+      sprintf(name_buffer, "keypad %c", '0' + (char)(key - XK_KP_0));
+    else if (key >= XK_F1 && key <= XK_F24)
+      sprintf(name_buffer, "function F%d", (int)(key - XK_F1 + 1));
+    else if (key == KEY_UNDEFINDED)
+      strcpy(name_buffer, "(undefined)");
+    else
+    {
+      i = 0;
+
+      do
+      {
+	if (key == translate_key[i].keysym)
+	{
+	  strcpy(name_buffer, translate_key[i].name);
+	  break;
+	}
+      }
+      while (translate_key[++i].name);
+
+      if (!translate_key[i].name)
+	strcpy(name_buffer, "(unknown)");
+    }
+
+    *name = name_buffer;
+  }
+  else if (mode == TRANSLATE_KEYSYM_TO_X11KEYNAME)
+  {
+    static char name_buffer[30];
+    KeySym key = *keysym;
+
+    if (key >= XK_A && key <= XK_Z)
+      sprintf(name_buffer, "XK_%c", 'A' + (char)(key - XK_A));
+    else if (key >= XK_a && key <= XK_z)
+      sprintf(name_buffer, "XK_%c", 'a' + (char)(key - XK_a));
+    else if (key >= XK_0 && key <= XK_9)
+      sprintf(name_buffer, "XK_%c", '0' + (char)(key - XK_0));
+    else if (key >= XK_KP_0 && key <= XK_KP_9)
+      sprintf(name_buffer, "XK_KP_%c", '0' + (char)(key - XK_KP_0));
+    else if (key >= XK_F1 && key <= XK_F24)
+      sprintf(name_buffer, "XK_F%d", (int)(key - XK_F1 + 1));
+    else if (key == KEY_UNDEFINDED)
+      strcpy(name_buffer, "[undefined]");
+    else
+    {
+      i = 0;
+
+      do
+      {
+	if (key == translate_key[i].keysym)
+	{
+	  strcpy(name_buffer, translate_key[i].x11name);
+	  break;
+	}
+      }
+      while (translate_key[++i].x11name);
+
+      if (!translate_key[i].x11name)
+	sprintf(name_buffer, "0x%04lx", (unsigned long)key);
+    }
+
+    *x11name = name_buffer;
+  }
+  else if (mode == TRANSLATE_X11KEYNAME_TO_KEYSYM)
+  {
+    KeySym key = XK_VoidSymbol;
+    char *name_ptr = *x11name;
+
+    if (strncmp(name_ptr, "XK_", 3) == 0 && strlen(name_ptr) == 4)
+    {
+      char c = name_ptr[3];
+
+      if (c >= 'A' && c <= 'Z')
+	key = XK_A + (KeySym)(c - 'A');
+      else if (c >= 'a' && c <= 'z')
+	key = XK_a + (KeySym)(c - 'a');
+      else if (c >= '0' && c <= '9')
+	key = XK_0 + (KeySym)(c - '0');
+    }
+    else if (strncmp(name_ptr, "XK_KP_", 6) == 0 && strlen(name_ptr) == 7)
+    {
+      char c = name_ptr[6];
+
+      if (c >= '0' && c <= '9')
+	key = XK_0 + (KeySym)(c - '0');
+    }
+    else if (strncmp(name_ptr, "XK_F", 4) == 0 && strlen(name_ptr) <= 6)
+    {
+      char c1 = name_ptr[4];
+      char c2 = name_ptr[5];
+      int d = 0;
+
+      if ((c1 >= '0' && c1 <= '9') &&
+	  ((c2 >= '0' && c1 <= '9') || c2 == '\0'))
+	d = atoi(&name_ptr[4]);
+
+      if (d >=1 && d <= 24)
+	key = XK_F1 + (KeySym)(d - 1);
+    }
+    else if (strncmp(name_ptr, "XK_", 3) == 0)
+    {
+      i = 0;
+
+      do
+      {
+	if (strcmp(name_ptr, translate_key[i].x11name) == 0)
+	{
+	  key = translate_key[i].keysym;
+	  break;
+	}
+      }
+      while (translate_key[++i].x11name);
+    }
+    else if (strncmp(name_ptr, "0x", 2) == 0)
+    {
+      unsigned long value = 0;
+
+      name_ptr += 2;
+
+      while (name_ptr)
+      {
+	char c = *name_ptr++;
+	int d = -1;
+
+	if (c >= '0' && c <= '9')
+	  d = (int)(c - '0');
+	else if (c >= 'a' && c <= 'f')
+	  d = (int)(c - 'a' + 10);
+	else if (c >= 'A' && c <= 'F')
+	  d = (int)(c - 'A' + 10);
+
+	if (d == -1)
+	{
+	  value = -1;
+	  break;
+	}
+
+	value = value * 16 + d;
+      }
+
+      if (value != -1)
+	key = (KeySym)value;
+    }
+
+    *keysym = key;
+  }
+}
+
+char *getKeyNameFromKeySym(KeySym keysym)
+{
+  char *name;
+
+  translate_keyname(&keysym, NULL, &name, TRANSLATE_KEYSYM_TO_KEYNAME);
+  return name;
+}
+
+char *getX11KeyNameFromKeySym(KeySym keysym)
+{
+  char *x11name;
+
+  translate_keyname(&keysym, &x11name, NULL, TRANSLATE_KEYSYM_TO_X11KEYNAME);
+  return x11name;
+}
+
+KeySym getKeySymFromX11KeyName(char *x11name)
+{
+  KeySym keysym;
+
+  translate_keyname(&keysym, &x11name, NULL, TRANSLATE_X11KEYNAME_TO_KEYSYM);
+  return keysym;
+}
+
+#define TRANSLATE_JOYSYMBOL_TO_JOYNAME	0
+#define TRANSLATE_JOYNAME_TO_JOYSYMBOL	1
+
+void translate_joyname(int *joysymbol, char **name, int mode)
+{
+  static struct
+  {
+    int joysymbol;
+    char *name;
+  } translate_joy[] =
+  {
+    { JOY_LEFT,		"joystick_left" },
+    { JOY_RIGHT,	"joystick_right" },
+    { JOY_UP,		"joystick_up" },
+    { JOY_DOWN,		"joystick_down" },
+    { JOY_BUTTON_1,	"joystick_button_1" },
+    { JOY_BUTTON_2,	"joystick_button_2" },
+  };
+
+  int i;
+
+  if (mode == TRANSLATE_JOYSYMBOL_TO_JOYNAME)
+  {
+    *name = "[undefined]";
+
+    for (i=0; i<6; i++)
+    {
+      if (*joysymbol == translate_joy[i].joysymbol)
+      {
+	*name = translate_joy[i].name;
+	break;
+      }
+    }
+  }
+  else if (mode == TRANSLATE_JOYNAME_TO_JOYSYMBOL)
+  {
+    *joysymbol = 0;
+
+    for (i=0; i<6; i++)
+    {
+      if (strcmp(*name, translate_joy[i].name) == 0)
+      {
+	*joysymbol = translate_joy[i].joysymbol;
+	break;
+      }
+    }
+  }
+}
+
+char *getJoyNameFromJoySymbol(int joysymbol)
+{
+  char *name;
+
+  translate_joyname(&joysymbol, &name, TRANSLATE_JOYSYMBOL_TO_JOYNAME);
+  return name;
+}
+
+int getJoySymbolFromJoyName(char *name)
+{
+  int joysymbol;
+
+  translate_joyname(&joysymbol, &name, TRANSLATE_JOYNAME_TO_JOYSYMBOL);
+  return joysymbol;
+}
+
+int getJoystickNrFromDeviceName(char *device_name)
+{
+  char c;
+  int joystick_nr = 0;
+
+  if (device_name == NULL || device_name[0] == '\0')
+    return 0;
+
+  c = device_name[strlen(device_name) - 1];
+
+  if (c >= '0' && c <= '9')
+    joystick_nr = (int)(c - '0');
+
+  if (joystick_nr < 0 || joystick_nr >= MAX_PLAYERS)
+    joystick_nr = 0;
+
+  return joystick_nr;
+}
+
+/* ----------------------------------------------------------------- */
+/* the following is only for debugging purpose and normally not used */
+/* ----------------------------------------------------------------- */
+
+#define DEBUG_NUM_TIMESTAMPS	3
+
+void debug_print_timestamp(int counter_nr, char *message)
+{
+  static long counter[DEBUG_NUM_TIMESTAMPS][2];
+
+  if (counter_nr >= DEBUG_NUM_TIMESTAMPS)
+    Error(ERR_EXIT, "debugging: increase DEBUG_NUM_TIMESTAMPS in misc.c");
+
+  counter[counter_nr][0] = Counter();
+
+  if (message)
+    printf("%s %.2f seconds\n", message,
+	   (float)(counter[counter_nr][0] - counter[counter_nr][1]) / 1000);
+
+  counter[counter_nr][1] = Counter();
 }

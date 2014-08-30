@@ -1,13 +1,12 @@
 /***********************************************************
 *  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
 *----------------------------------------------------------*
-*  ©1995 Artsoft Development                               *
-*        Holger Schemel                                    *
-*        33659 Bielefeld-Senne                             *
-*        Telefon: (0521) 493245                            *
-*        eMail: aeglos@valinor.owl.de                      *
-*               aeglos@uni-paderborn.de                    *
-*               q99492@pbhrzx.uni-paderborn.de             *
+*  (c) 1995-98 Artsoft Entertainment                       *
+*              Holger Schemel                              *
+*              Oststrasse 11a                              *
+*              33604 Bielefeld                             *
+*              phone: ++49 +521 290471                     *
+*              email: aeglos@valinor.owl.de                *
 *----------------------------------------------------------*
 *  screens.h                                               *
 ***********************************************************/
@@ -17,24 +16,29 @@
 
 #include "main.h"
 
-void DrawMainMenu();
+void DrawHeadline(void);
+void DrawMainMenu(void);
 void HandleMainMenu(int, int, int, int, int);
 void DrawHelpScreenElAction(int);
 void DrawHelpScreenElText(int);
 void DrawHelpScreenMusicText(int);
 void DrawHelpScreenCreditsText(void);
-void DrawHelpScreen();
+void DrawHelpScreen(void);
 void HandleHelpScreen(int);
 void HandleTypeName(int, KeySym);
 void DrawChooseLevel(void);
 void HandleChooseLevel(int, int, int, int, int);
 void DrawHallOfFame(int);
 void HandleHallOfFame(int);
-void DrawSetupScreen();
+void DrawSetupScreen(void);
 void HandleSetupScreen(int, int, int, int, int);
-void CalibrateJoystick(void);
+void DrawSetupInputScreen(void);
+void HandleSetupInputScreen(int, int, int, int, int);
+void CustomizeKeyboard(int);
+void CalibrateJoystick(int);
+void HandleGameActions(void);
 void HandleVideoButtons(int, int, int);
 void HandleSoundButtons(int, int, int);
 void HandleGameButtons(int, int, int);
 
-#endif
+#endif	/* SCREENS_H */
