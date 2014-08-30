@@ -66,6 +66,7 @@
 #define MUS_TYPE_MOD			2
 
 #define DEVICENAME_DSP			"/dev/dsp"
+#define DEVICENAME_SOUND_DSP		"/dev/sound/dsp"
 #define DEVICENAME_AUDIO		"/dev/audio"
 #define DEVICENAME_AUDIOCTL		"/dev/audioCtl"
 
@@ -234,6 +235,7 @@ static boolean TestAudioDevices(void)
   static char *audio_device_name[] =
   {
     DEVICENAME_DSP,
+    DEVICENAME_SOUND_DSP,
     DEVICENAME_AUDIO
   };
   int audio_device_fd = -1;
@@ -350,7 +352,7 @@ static void InitAudioDevice_Linux(struct AudioFormatInfo *afmt)
 
   if (ioctl(audio.device_fd, SNDCTL_DSP_SETFRAGMENT, &fragment_spec) < 0)
     Error(ERR_EXIT_SOUND_SERVER,
-	  "cannot set fragment size of /dev/dsp -- no sounds");
+	  "cannot set fragment size of audio device -- no sounds");
 
   i = 0;
   afmt->format = 0;
@@ -366,7 +368,7 @@ static void InitAudioDevice_Linux(struct AudioFormatInfo *afmt)
 
   if (afmt->format == 0)	/* no supported audio format found */
     Error(ERR_EXIT_SOUND_SERVER,
-	  "cannot set audio format of /dev/dsp -- no sounds");
+	  "cannot set audio format of audio device -- no sounds");
 
   /* try if we can use stereo sound */
   afmt->stereo = TRUE;
@@ -375,15 +377,15 @@ static void InitAudioDevice_Linux(struct AudioFormatInfo *afmt)
 
   if (ioctl(audio.device_fd, SNDCTL_DSP_SPEED, &afmt->sample_rate) < 0)
     Error(ERR_EXIT_SOUND_SERVER,
-	  "cannot set sample rate of /dev/dsp -- no sounds");
+	  "cannot set sample rate of audio device -- no sounds");
 
   /* get the real fragmentation size; this should return 512 */
   if (ioctl(audio.device_fd, SNDCTL_DSP_GETBLKSIZE, &fragment_size_query) < 0)
     Error(ERR_EXIT_SOUND_SERVER,
-	  "cannot get fragment size of /dev/dsp -- no sounds");
+	  "cannot get fragment size of audio device -- no sounds");
   if (fragment_size_query != afmt->fragment_size)
     Error(ERR_EXIT_SOUND_SERVER,
-	  "cannot set fragment size of /dev/dsp -- no sounds");
+	  "cannot set fragment size of audio device -- no sounds");
 }
 #endif	/* AUDIO_LINUX_IOCTL */
 
@@ -397,8 +399,8 @@ static void InitAudioDevice_NetBSD(struct AudioFormatInfo *afmt)
   a_info.play.encoding = AUDIO_ENCODING_LINEAR8;
   a_info.play.precision = 8;
   a_info.play.channels = 2;
-  a_info.play.sample_rate = sample_rate;
-  a_info.blocksize = fragment_size;
+  a_info.play.sample_rate = afmt->sample_rate;
+  a_info.blocksize = afmt->fragment_size;
 
   afmt->format = AUDIO_FORMAT_U8;
   afmt->stereo = TRUE;
@@ -412,7 +414,7 @@ static void InitAudioDevice_NetBSD(struct AudioFormatInfo *afmt)
 
     if (ioctl(audio.device_fd, AUDIO_SETINFO, &a_info) < 0)
       Error(ERR_EXIT_SOUND_SERVER,
-	    "cannot set sample rate of /dev/audio -- no sounds");
+	    "cannot set sample rate of audio device -- no sounds");
   }
 }
 #endif /* PLATFORM_NETBSD */
@@ -425,7 +427,7 @@ static void InitAudioDevice_HPUX(struct AudioFormatInfo *afmt)
 
   audio_ctl = open("/dev/audioCtl", O_WRONLY | O_NDELAY);
   if (audio_ctl == -1)
-    Error(ERR_EXIT_SOUND_SERVER, "cannot open /dev/audioCtl -- no sounds");
+    Error(ERR_EXIT_SOUND_SERVER, "cannot open audio device -- no sounds");
 
   if (ioctl(audio_ctl, AUDIO_DESCRIBE, &ainfo) == -1)
     Error(ERR_EXIT_SOUND_SERVER, "no audio info -- no sounds");
@@ -803,11 +805,8 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
   int i, k;
 
 #if 0
-  printf("NEW SOUND %d HAS ARRIVED [%d]\n", snd_ctrl.nr, num_sounds);
-#endif
-
-#if 0
-  printf("%d ACTIVE CHANNELS\n", mixer_active_channels);
+  printf("NEW SOUND %d ARRIVED [%d] [%d ACTIVE CHANNELS]\n",
+	 snd_ctrl.nr, num_sounds, mixer_active_channels);
 #endif
 
   if (IS_MUSIC(snd_ctrl))
@@ -833,10 +832,7 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
   /* play music samples on a dedicated music channel */
   if (IS_MUSIC(snd_ctrl))
   {
-#if 0
-    printf("PLAY MUSIC WITH VOLUME/STEREO %d/%d\n",
-	   snd_ctrl.volume, snd_ctrl.stereo_position);
-#endif
+    Mixer_StopMusicChannel();
 
     mixer[audio.music_channel] = snd_ctrl;
     Mixer_PlayMusicChannel();
@@ -921,11 +917,35 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
      of the channel's sound sample when compiling with the SDL mixer
      library, we use the current playing time (in milliseconds) instead. */
 
+#if DEBUG
+  /* channel allocation sanity check -- should not be needed */
+  if (mixer_active_channels ==
+      audio.num_channels - (mixer[audio.music_channel].active ? 0 : 1))
+  {
+    for (i=audio.first_sound_channel; i<audio.num_channels; i++)
+    {
+      if (!mixer[i].active)
+      {
+	Error(ERR_RETURN, "Mixer_InsertSound: Channel %d inactive", i);
+	Error(ERR_RETURN, "Mixer_InsertSound: This should never happen!");
+
+	mixer_active_channels--;
+      }
+    }
+  }
+#endif
+
   if (mixer_active_channels ==
       audio.num_channels - (mixer[audio.music_channel].active ? 0 : 1))
   {
     unsigned long playing_current = Counter();
     int longest = 0, longest_nr = audio.first_sound_channel;
+
+    for (i=audio.first_sound_channel; i<audio.num_channels; i++)
+    {
+      Error(ERR_RETURN, "Mixer_InsertSound: %d [%d]: %ld (%ld)",
+	    i, mixer[i].active, mixer[i].data_len, (long)mixer[i].data_ptr);
+    }
 
     for (i=audio.first_sound_channel; i<audio.num_channels; i++)
     {
@@ -943,40 +963,22 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
   }
 
   /* add the new sound to the mixer */
-  for(i=0; i<audio.num_channels; i++)
+  for(i=audio.first_sound_channel; i<audio.num_channels; i++)
   {
 #if 0
     printf("CHECKING CHANNEL %d FOR SOUND %d ...\n", i, snd_ctrl.nr);
 #endif
 
-    /*
-    if (!mixer[i].active ||
-	(IS_MUSIC(snd_ctrl) && i == audio.music_channel))
-    */
-    if ((i == audio.music_channel && IS_MUSIC(snd_ctrl)) ||
-	(i != audio.music_channel && !mixer[i].active))
+    if (!mixer[i].active)
     {
 #if 0
       printf("ADDING NEW SOUND %d TO MIXER\n", snd_ctrl.nr);
 #endif
 
-#if 1
 #if defined(AUDIO_UNIX_NATIVE)
       if (snd_info->data_len == 0)
       {
 	printf("THIS SHOULD NEVER HAPPEN! [snd_info->data_len == 0]\n");
-      }
-#endif
-#endif
-
-#if 1
-      if (IS_MUSIC(snd_ctrl) && i == audio.music_channel && mixer[i].active)
-      {
-	printf("THIS SHOULD NEVER HAPPEN! [adding music twice]\n");
-
-#if 1
-	Mixer_StopChannel(i);
-#endif
       }
 #endif
 
