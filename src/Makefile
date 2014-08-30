@@ -220,7 +220,7 @@ CNFS =	conf_gfx.h	\
 	conf_var.c	\
 	conf_act.c
 
-CNFS_CMD = ../Scripts/create_element_defs.pl
+CNFS_CMD = ../build-scripts/create_element_defs.pl
 
 TIMESTAMP_FILE = conftime.h
 
