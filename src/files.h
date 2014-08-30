@@ -1,14 +1,14 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  files.h                                                 *
+* files.h                                                  *
 ***********************************************************/
 
 #ifndef FILES_H
@@ -32,11 +32,5 @@ void LoadLevelSetup_LastSeries(void);
 void SaveLevelSetup_LastSeries(void);
 void LoadLevelSetup_SeriesInfo(void);
 void SaveLevelSetup_SeriesInfo(void);
-
-#ifdef MSDOS
-void initErrorFile();
-FILE *openErrorFile();
-void dumpErrorFile();
-#endif
 
 #endif	/* FILES_H */

@@ -1,21 +1,20 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  init.c                                                  *
+* init.c                                                   *
 ***********************************************************/
 
-#include <signal.h>
+#include "libgame/libgame.h"
 
 #include "init.h"
-#include "misc.h"
-#include "sound.h"
+#include "events.h"
 #include "screens.h"
 #include "editor.h"
 #include "game.h"
@@ -23,77 +22,61 @@
 #include "tools.h"
 #include "files.h"
 #include "joystick.h"
-#include "image.h"
-#include "pcx.h"
 #include "network.h"
 #include "netserv.h"
 
-struct PictureFileInfo
-{
-  char *picture_filename;
-  boolean picture_with_mask;
-};
-
-struct IconFileInfo
-{
-  char *picture_filename;
-  char *picturemask_filename;
-};
-
-static int sound_process_id = 0;
-
-static void InitLevelAndPlayerInfo(void);
+static void InitPlayerInfo(void);
+static void InitLevelInfo(void);
 static void InitNetworkServer(void);
-static void InitDisplay(void);
 static void InitSound(void);
-static void InitSoundServer(void);
-static void InitWindow(int, char **);
 static void InitGfx(void);
-static void LoadGfx(int, struct PictureFileInfo *);
+static void InitGfxBackground(void);
 static void InitGadgets(void);
 static void InitElementProperties(void);
 
-void OpenAll(int argc, char *argv[])
+void OpenAll(void)
 {
-#ifdef MSDOS
-  initErrorFile();
-#endif
-
   if (options.serveronly)
   {
+#if defined(PLATFORM_UNIX)
     NetworkServer(options.server_port, options.serveronly);
-
-    /* never reached */
-    exit(0);
+#else
+    Error(ERR_WARN, "networking only supported in Unix version");
+#endif
+    exit(0);	/* never reached */
   }
+
+  InitProgramInfo(UNIX_USERDATA_DIRECTORY,
+		  PROGRAM_TITLE_STRING, WINDOW_TITLE_STRING,
+		  ICON_TITLE_STRING, X11_ICON_FILENAME, X11_ICONMASK_FILENAME,
+		  MSDOS_POINTER_FILENAME);
+
+  InitPlayerInfo();
 
   InitCounter();
   InitSound();
-  InitSoundServer();
   InitJoysticks();
   InitRND(NEW_RANDOMIZE);
 
-  signal(SIGINT, CloseAllAndExit);
-  signal(SIGTERM, CloseAllAndExit);
+  InitVideoDisplay();
+  InitVideoBuffer(&backbuffer, &window, WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH,
+		  setup.fullscreen);
 
-  InitDisplay();
-  InitWindow(argc, argv);
-
-  XMapWindow(display, window);
-  XFlush(display);
+  InitEventFilter(FilterMouseMotionEvents);
 
   InitGfx();
   InitElementProperties();	/* initializes IS_CHAR() for el2gfx() */
 
-  InitLevelAndPlayerInfo();
+  InitLevelInfo();
   InitGadgets();		/* needs to know number of level series */
 
+  InitGfxBackground();
   DrawMainMenu();
 
   InitNetworkServer();
 }
 
-void InitLevelAndPlayerInfo()
+void InitPlayerInfo()
 {
   int i;
 
@@ -108,22 +91,26 @@ void InitLevelAndPlayerInfo()
 
   local_player->connected = TRUE;
 
-  LoadLevelInfo();				/* global level info */
   LoadSetup();					/* global setup info */
+}
+
+void InitLevelInfo()
+{
+  LoadLevelInfo();				/* global level info */
   LoadLevelSetup_LastSeries();			/* last played series info */
   LoadLevelSetup_SeriesInfo();			/* last played level info */
 }
 
 void InitNetworkServer()
 {
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
   int nr_wanted;
 #endif
 
   if (!options.network)
     return;
 
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
   nr_wanted = Request("Choose player", REQ_PLAYER | REQ_STAY_CLOSED);
 
   if (!ConnectToServer(options.server_host, options.server_port))
@@ -141,99 +128,31 @@ void InitSound()
 {
   int i;
 
-  if (sound_status == SOUND_OFF)
-    return;
-
-#ifndef MSDOS
-  if (access(sound_device_name, W_OK) != 0)
-  {
-    Error(ERR_WARN, "cannot access sound device - no sounds");
-    sound_status = SOUND_OFF;
-    return;
-  }
-
-  if ((sound_device = open(sound_device_name,O_WRONLY))<0)
-  {
-    Error(ERR_WARN, "cannot open sound device - no sounds");
-    sound_status = SOUND_OFF;
-    return;
-  }
-
-  close(sound_device);
-  sound_status = SOUND_AVAILABLE;
-
-#ifdef VOXWARE
-  sound_loops_allowed = TRUE;
-
-  /*
-  setup.sound_loops_on = TRUE;
-  */
-
-#endif
-#else /* MSDOS */
-  sound_loops_allowed = TRUE;
-
-  /*
-  setup.sound_loops_on = TRUE;
-  */
-
-#endif /* MSDOS */
+  OpenAudio();
 
   for(i=0; i<NUM_SOUNDS; i++)
   {
-#ifdef MSDOS
-    sprintf(sound_name[i], "%d", i + 1);
-#endif
-
-    Sound[i].name = sound_name[i];
-    if (!LoadSound(&Sound[i]))
+    if (!LoadSound(sound_name[i]))
     {
-      sound_status = SOUND_OFF;
+      audio.sound_available = FALSE;
+      audio.loops_available = FALSE;
+      audio.sound_enabled = FALSE;
+
       return;
     }
   }
-}
 
-void InitSoundServer()
-{
-  if (sound_status == SOUND_OFF)
-    return;
+  num_bg_loops = LoadMusic();
 
-#ifndef MSDOS
-
-  if (pipe(sound_pipe)<0)
-  {
-    Error(ERR_WARN, "cannot create pipe - no sounds");
-    sound_status = SOUND_OFF;
-    return;
-  }
-
-  if ((sound_process_id = fork()) < 0)
-  {       
-    Error(ERR_WARN, "cannot create sound server process - no sounds");
-    sound_status = SOUND_OFF;
-    return;
-  }
-
-  if (!sound_process_id)	/* we are child */
-  {
-    SoundServer();
-
-    /* never reached */
-    exit(0);
-  }
-  else				/* we are parent */
-    close(sound_pipe[0]);	/* no reading from pipe needed */
-
-#else /* MSDOS */
-
-  SoundServer();
-
-#endif /* MSDOS */
+  StartSoundserver();
 }
 
 void InitJoysticks()
 {
+#if defined(TARGET_SDL)
+  static boolean sdl_joystick_subsystem_initialized = FALSE;
+#endif
+
   int i;
 
   if (global_joystick_status == JOYSTICK_OFF)
@@ -241,7 +160,49 @@ void InitJoysticks()
 
   joystick_status = JOYSTICK_OFF;
 
-#ifndef MSDOS
+#if defined(TARGET_SDL)
+
+  if (!sdl_joystick_subsystem_initialized)
+  {
+    sdl_joystick_subsystem_initialized = TRUE;
+
+    if (SDL_Init(SDL_INIT_JOYSTICK) < 0)
+    {
+      Error(ERR_EXIT, "SDL_Init() failed: %s", SDL_GetError());
+      return;
+    }
+  }
+
+  for (i=0; i<MAX_PLAYERS; i++)
+  {
+    char *device_name = setup.input[i].joy.device_name;
+    int joystick_nr = getJoystickNrFromDeviceName(device_name);
+
+    if (joystick_nr >= SDL_NumJoysticks())
+      joystick_nr = -1;
+
+    /* misuse joystick file descriptor variable to store joystick number */
+    stored_player[i].joystick_fd = joystick_nr;
+
+    /* this allows subsequent calls to 'InitJoysticks' for re-initialization */
+    if (Check_SDL_JoystickOpened(joystick_nr))
+      Close_SDL_Joystick(joystick_nr);
+
+    if (!setup.input[i].use_joystick)
+      continue;
+
+    if (!Open_SDL_Joystick(joystick_nr))
+    {
+      Error(ERR_WARN, "cannot open joystick %d", joystick_nr);
+      continue;
+    }
+
+    joystick_status = JOYSTICK_AVAILABLE;
+  }
+
+#else /* !TARGET_SDL */
+
+#if defined(PLATFORM_UNIX)
   for (i=0; i<MAX_PLAYERS; i++)
   {
     char *device_name = setup.input[i].joy.device_name;
@@ -271,7 +232,7 @@ void InitJoysticks()
     joystick_status = JOYSTICK_AVAILABLE;
   }
 
-#else /* MSDOS */
+#else /* !PLATFORM_UNIX */
 
   /* try to access two joysticks; if that fails, try to access just one */
   if (install_joystick(JOY_TYPE_2PADS) == 0 ||
@@ -294,224 +255,51 @@ void InitJoysticks()
     stored_player[i].joystick_fd = joystick_nr;
   }
 #endif
-}
 
-void InitDisplay()
-{
-#ifndef MSDOS
-  XVisualInfo vinfo_template, *vinfo;
-  int num_visuals;
-#endif
-  unsigned int depth;
-
-  /* connect to X server */
-  if (!(display = XOpenDisplay(options.display_name)))
-    Error(ERR_EXIT, "cannot connect to X server %s",
-	  XDisplayName(options.display_name));
-
-  screen = DefaultScreen(display);
-  visual = DefaultVisual(display, screen);
-  depth  = DefaultDepth(display, screen);
-  cmap   = DefaultColormap(display, screen);
-
-#ifndef MSDOS
-  /* look for good enough visual */
-  vinfo_template.screen = screen;
-  vinfo_template.class = (depth == 8 ? PseudoColor : TrueColor);
-  vinfo_template.depth = depth;
-  if ((vinfo = XGetVisualInfo(display, VisualScreenMask | VisualClassMask |
-			      VisualDepthMask, &vinfo_template, &num_visuals)))
-  {
-    visual = vinfo->visual;
-    XFree((void *)vinfo);
-  }
-
-  /* got appropriate visual? */
-  if (depth < 8)
-  {
-    printf("Sorry, displays with less than 8 bits per pixel not supported.\n");
-    exit(-1);
-  }
-  else if ((depth ==8 && visual->class != PseudoColor) ||
-	   (depth > 8 && visual->class != TrueColor &&
-	    visual->class != DirectColor))
-  {
-    printf("Sorry, cannot get appropriate visual.\n");
-    exit(-1);
-  }
-#endif
-}
-
-void InitWindow(int argc, char *argv[])
-{
-  unsigned int border_width = 4;
-  XGCValues gc_values;
-  unsigned long gc_valuemask;
-#ifndef MSDOS
-  XTextProperty windowName, iconName;
-  Pixmap icon_pixmap, iconmask_pixmap;
-  unsigned int icon_width, icon_height;
-  int icon_hot_x, icon_hot_y;
-  char icon_filename[256];
-  XSizeHints size_hints;
-  XWMHints wm_hints;
-  XClassHint class_hints;
-  char *window_name = WINDOW_TITLE_STRING;
-  char *icon_name = WINDOW_TITLE_STRING;
-  long window_event_mask;
-  Atom proto_atom = None, delete_atom = None;
-#endif
-  int screen_width, screen_height;
-  int win_xpos = WIN_XPOS, win_ypos = WIN_YPOS;
-  unsigned long pen_fg = WhitePixel(display,screen);
-  unsigned long pen_bg = BlackPixel(display,screen);
-  const int width = WIN_XSIZE, height = WIN_YSIZE;
-
-#ifndef MSDOS
-  static struct IconFileInfo icon_pic =
-  {
-    "rocks_icon.xbm",
-    "rocks_iconmask.xbm"
-  };
-#endif
-
-  screen_width = XDisplayWidth(display, screen);
-  screen_height = XDisplayHeight(display, screen);
-
-  win_xpos = (screen_width - width) / 2;
-  win_ypos = (screen_height - height) / 2;
-
-  window = XCreateSimpleWindow(display, RootWindow(display, screen),
-			       win_xpos, win_ypos, width, height, border_width,
-			       pen_fg, pen_bg);
-
-#ifndef MSDOS
-  proto_atom = XInternAtom(display, "WM_PROTOCOLS", FALSE);
-  delete_atom = XInternAtom(display, "WM_DELETE_WINDOW", FALSE);
-  if ((proto_atom != None) && (delete_atom != None))
-    XChangeProperty(display, window, proto_atom, XA_ATOM, 32,
-		    PropModePrepend, (unsigned char *) &delete_atom, 1);
-
-  sprintf(icon_filename, "%s/%s/%s",
-	  options.ro_base_directory, GRAPHICS_DIRECTORY,
-	  icon_pic.picture_filename);
-  XReadBitmapFile(display,window,icon_filename,
-		  &icon_width,&icon_height,
-		  &icon_pixmap,&icon_hot_x,&icon_hot_y);
-  if (!icon_pixmap)
-    Error(ERR_EXIT, "cannot read icon bitmap file '%s'", icon_filename);
-
-  sprintf(icon_filename, "%s/%s/%s",
-	  options.ro_base_directory, GRAPHICS_DIRECTORY,
-	  icon_pic.picturemask_filename);
-  XReadBitmapFile(display,window,icon_filename,
-		  &icon_width,&icon_height,
-		  &iconmask_pixmap,&icon_hot_x,&icon_hot_y);
-  if (!iconmask_pixmap)
-    Error(ERR_EXIT, "cannot read icon bitmap file '%s'", icon_filename);
-
-  size_hints.width  = size_hints.min_width  = size_hints.max_width  = width;
-  size_hints.height = size_hints.min_height = size_hints.max_height = height;
-  size_hints.flags = PSize | PMinSize | PMaxSize;
-
-  if (win_xpos || win_ypos)
-  {
-    size_hints.x = win_xpos;
-    size_hints.y = win_ypos;
-    size_hints.flags |= PPosition;
-  }
-
-  if (!XStringListToTextProperty(&window_name, 1, &windowName))
-    Error(ERR_EXIT, "structure allocation for windowName failed");
-
-  if (!XStringListToTextProperty(&icon_name, 1, &iconName))
-    Error(ERR_EXIT, "structure allocation for iconName failed");
-
-  wm_hints.initial_state = NormalState;
-  wm_hints.input = True;
-  wm_hints.icon_pixmap = icon_pixmap;
-  wm_hints.icon_mask = iconmask_pixmap;
-  wm_hints.flags = StateHint | IconPixmapHint | IconMaskHint | InputHint;
-
-  class_hints.res_name = program_name;
-  class_hints.res_class = "Rocks'n'Diamonds";
-
-  XSetWMProperties(display, window, &windowName, &iconName, 
-		   argv, argc, &size_hints, &wm_hints, 
-		   &class_hints);
-
-  XFree(windowName.value);
-  XFree(iconName.value);
-
-  /* Select event types wanted */
-  window_event_mask =
-    ExposureMask | StructureNotifyMask | FocusChangeMask |
-    ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
-    PointerMotionHintMask | KeyPressMask | KeyReleaseMask;
-
-  XSelectInput(display, window, window_event_mask);
-#endif
-
-  /* create GC for drawing with window depth */
-  gc_values.graphics_exposures = False;
-  gc_values.foreground = pen_bg;
-  gc_values.background = pen_bg;
-  gc_valuemask = GCGraphicsExposures | GCForeground | GCBackground;
-  gc = XCreateGC(display, window, gc_valuemask, &gc_values);
+#endif /* !TARGET_SDL */
 }
 
 void InitGfx()
 {
-  int i,j;
+  int i;
+
+#if defined(TARGET_X11)
   GC copy_clipmask_gc;
   XGCValues clip_gc_values;
   unsigned long clip_gc_valuemask;
+#endif
 
-#ifdef MSDOS
-  static struct PictureFileInfo pic[NUM_PICTURES] =
+#if !defined(PLATFORM_MSDOS)
+  static char *image_filename[NUM_PICTURES] =
   {
-    { "Screen",	TRUE },
-    { "Door",	TRUE },
-    { "Heroes",	TRUE },
-    { "Toons",	TRUE },
-    { "SP",	TRUE },
-    { "DC",	TRUE },
-    { "More",	TRUE },
-    { "Font",	FALSE },
-    { "Font2",	FALSE },
-    { "Font3",	FALSE }
+    "RocksScreen.pcx",
+    "RocksDoor.pcx",
+    "RocksHeroes.pcx",
+    "RocksToons.pcx",
+    "RocksSP.pcx",
+    "RocksDC.pcx",
+    "RocksMore.pcx",
+    "RocksFont.pcx",
+    "RocksFont2.pcx",
+    "RocksFont3.pcx"
   }; 
 #else
-  static struct PictureFileInfo pic[NUM_PICTURES] =
+  static char *image_filename[NUM_PICTURES] =
   {
-    { "RocksScreen",	TRUE },
-    { "RocksDoor",	TRUE },
-    { "RocksHeroes",	TRUE },
-    { "RocksToons",	TRUE },
-    { "RocksSP",	TRUE },
-    { "RocksDC",	TRUE },
-    { "RocksMore",	TRUE },
-    { "RocksFont",	FALSE },
-    { "RocksFont2",	FALSE },
-    { "RocksFont3",	FALSE }
+    "Screen.pcx",
+    "Door.pcx",
+    "Heroes.pcx",
+    "Toons.pcx",
+    "SP.pcx",
+    "DC.pcx",
+    "More.pcx",
+    "Font.pcx",
+    "Font2.pcx",
+    "Font3.pcx"
   }; 
 #endif
 
-#ifdef DEBUG
-#if 0
-  static struct PictureFileInfo test_pic1 =
-  {
-    "RocksFont2",
-    FALSE
-  };
-  static struct PictureFileInfo test_pic2 =
-  {
-    "mouse",
-    FALSE
-  };
-#endif
-#endif
-
+#if defined(TARGET_X11_NATIVE)
   static struct
   {
     int start;
@@ -563,68 +351,86 @@ void InitGfx()
     { GFX2_SHIELD_ACTIVE, 3 },
     { -1, 0 }
   };
-
-#if DEBUG_TIMING
-  debug_print_timestamp(0, NULL);	/* initialize timestamp function */
 #endif
 
-#ifdef DEBUG
-#if 0
-  printf("Test: Loading RocksFont2.pcx ...\n");
-  LoadGfx(PIX_SMALLFONT,&test_pic1);
-  printf("Test: Done.\n");
-  printf("Test: Loading mouse.pcx ...\n");
-  LoadGfx(PIX_SMALLFONT,&test_pic2);
-  printf("Test: Done.\n");
-#endif
-#endif
+  /* initialize some global variables */
+  global.frames_per_second = 0;
+  global.fps_slowdown = FALSE;
+  global.fps_slowdown_factor = 1;
 
+  /* initialize screen properties */
+  InitGfxFieldInfo(SX, SY, SXSIZE, SYSIZE,
+		   REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
+  InitGfxDoor1Info(DX, DY, DXSIZE, DYSIZE);
+  InitGfxDoor2Info(VX, VY, VXSIZE, VYSIZE);
+  InitGfxScrollbufferInfo(FXSIZE, FYSIZE);
 
+  /* create additional image buffers for double-buffering */
+  pix[PIX_DB_DOOR] = CreateBitmap(3 * DXSIZE, DYSIZE + VYSIZE, DEFAULT_DEPTH);
+  pix[PIX_DB_FIELD] = CreateBitmap(FXSIZE, FYSIZE, DEFAULT_DEPTH);
 
-  LoadGfx(PIX_SMALLFONT,&pic[PIX_SMALLFONT]);
-  DrawInitText(WINDOW_TITLE_STRING,20,FC_YELLOW);
-  DrawInitText(COPYRIGHT_STRING,50,FC_RED);
-#ifdef MSDOS
-  DrawInitText("MSDOS version done by Guido Schulz",210,FC_BLUE);
+  pix[PIX_SMALLFONT] = LoadImage(image_filename[PIX_SMALLFONT]);
+  InitFontInfo(NULL, NULL, pix[PIX_SMALLFONT]);
+
+  DrawInitText(WINDOW_TITLE_STRING, 20, FC_YELLOW);
+  DrawInitText(WINDOW_SUBTITLE_STRING, 50, FC_RED);
+#if defined(PLATFORM_MSDOS)
+  DrawInitText(PROGRAM_DOS_PORT_STRING, 210, FC_BLUE);
   rest(200);
-#endif /* MSDOS */
+#endif
   DrawInitText("Loading graphics:",120,FC_GREEN);
 
   for(i=0; i<NUM_PICTURES; i++)
+  {
     if (i != PIX_SMALLFONT)
-      LoadGfx(i,&pic[i]);
+    {
+      DrawInitText(image_filename[i], 150, FC_YELLOW);
+      pix[i] = LoadImage(image_filename[i]);
+    }
+  }
 
-#if DEBUG_TIMING
-  debug_print_timestamp(0, "SUMMARY LOADING ALL GRAPHICS:");
-#endif
+  InitFontInfo(pix[PIX_BIGFONT], pix[PIX_MEDIUMFONT], pix[PIX_SMALLFONT]);
 
-  pix[PIX_DB_BACK] = XCreatePixmap(display, window,
-				   WIN_XSIZE,WIN_YSIZE,
-				   XDefaultDepth(display,screen));
-  pix[PIX_DB_DOOR] = XCreatePixmap(display, window,
-				   3*DXSIZE,DYSIZE+VYSIZE,
-				   XDefaultDepth(display,screen));
-  pix[PIX_DB_FIELD] = XCreatePixmap(display, window,
-				    FXSIZE,FYSIZE,
-				    XDefaultDepth(display,screen));
+  /* initialize pixmap array for special X11 tile clipping to Pixmap 'None' */
+  for(i=0; i<NUM_TILES; i++)
+    tile_clipmask[i] = None;
 
+#if defined(TARGET_X11)
+  /* This stuff is needed because X11 (XSetClipOrigin(), to be precise) is
+     often very slow when preparing a masked XCopyArea() for big Pixmaps.
+     To prevent this, create small (tile-sized) mask Pixmaps which will then
+     be set much faster with XSetClipOrigin() and speed things up a lot. */
+
+  /* create graphic context structures needed for clipping */
   clip_gc_values.graphics_exposures = False;
   clip_gc_valuemask = GCGraphicsExposures;
   copy_clipmask_gc =
-    XCreateGC(display,clipmask[PIX_BACK],clip_gc_valuemask,&clip_gc_values);
+    XCreateGC(display, pix[PIX_BACK]->clip_mask,
+	      clip_gc_valuemask, &clip_gc_values);
 
   clip_gc_values.graphics_exposures = False;
   clip_gc_valuemask = GCGraphicsExposures;
   tile_clip_gc =
-    XCreateGC(display,window,clip_gc_valuemask,&clip_gc_values);
+    XCreateGC(display, window->drawable, clip_gc_valuemask, &clip_gc_values);
 
-  /* initialize pixmap array to Pixmap 'None' */
-  for(i=0; i<NUM_TILES; i++)
-    tile_clipmask[i] = None;
+  for(i=0; i<NUM_BITMAPS; i++)
+  {
+    if (pix[i]->clip_mask)
+    {
+      clip_gc_values.graphics_exposures = False;
+      clip_gc_values.clip_mask = pix[i]->clip_mask;
+      clip_gc_valuemask = GCGraphicsExposures | GCClipMask;
+      pix[i]->stored_clip_gc = XCreateGC(display, window->drawable,
+					 clip_gc_valuemask,&clip_gc_values);
+    }
+  }
 
+#if defined(TARGET_X11_NATIVE)
   /* create only those clipping Pixmaps we really need */
   for(i=0; tile_needs_clipping[i].start>=0; i++)
   {
+    int j;
+
     for(j=0; j<tile_needs_clipping[i].count; j++)
     {
       int tile = tile_needs_clipping[i].start + j;
@@ -634,179 +440,36 @@ void InitGfx()
       Pixmap src_pixmap;
 
       getGraphicSource(graphic, &pixmap_nr, &src_x, &src_y);
-      src_pixmap = clipmask[pixmap_nr];
+      src_pixmap = pix[pixmap_nr]->clip_mask;
 
-      tile_clipmask[tile] = XCreatePixmap(display, window, TILEX,TILEY, 1);
+      tile_clipmask[tile] = XCreatePixmap(display, window->drawable,
+					  TILEX, TILEY, 1);
 
-      XCopyArea(display,src_pixmap,tile_clipmask[tile],copy_clipmask_gc,
-		src_x,src_y, TILEX,TILEY, 0,0);
+      XCopyArea(display, src_pixmap, tile_clipmask[tile], copy_clipmask_gc,
+		src_x, src_y, TILEX, TILEY, 0, 0);
     }
   }
+#endif /* TARGET_X11_NATIVE */
+#endif /* TARGET_X11 */
+}
 
-  if (!pix[PIX_DB_BACK] || !pix[PIX_DB_DOOR])
-    Error(ERR_EXIT, "cannot create additional pixmaps");
+void InitGfxBackground()
+{
+  int x, y;
 
-  for(i=0; i<NUM_PIXMAPS; i++)
-  {
-    if (clipmask[i])
-    {
-      clip_gc_values.graphics_exposures = False;
-      clip_gc_values.clip_mask = clipmask[i];
-      clip_gc_valuemask = GCGraphicsExposures | GCClipMask;
-      clip_gc[i] = XCreateGC(display,window,clip_gc_valuemask,&clip_gc_values);
-    }
-  }
-
-  drawto = backbuffer = pix[PIX_DB_BACK];
+  drawto = backbuffer;
   fieldbuffer = pix[PIX_DB_FIELD];
   SetDrawtoField(DRAW_BACKBUFFER);
 
-  XCopyArea(display,pix[PIX_BACK],backbuffer,gc,
-	    0,0, WIN_XSIZE,WIN_YSIZE, 0,0);
-  XFillRectangle(display,pix[PIX_DB_BACK],gc,
-		 REAL_SX,REAL_SY, FULL_SXSIZE,FULL_SYSIZE);
-  XFillRectangle(display,pix[PIX_DB_DOOR],gc,
-		 0,0, 3*DXSIZE,DYSIZE+VYSIZE);
+  BlitBitmap(pix[PIX_BACK], backbuffer, 0,0, WIN_XSIZE,WIN_YSIZE, 0,0);
+  ClearRectangle(backbuffer, REAL_SX,REAL_SY, FULL_SXSIZE,FULL_SYSIZE);
+  ClearRectangle(pix[PIX_DB_DOOR], 0,0, 3*DXSIZE,DYSIZE+VYSIZE);
 
-  for(i=0; i<MAX_BUF_XSIZE; i++)
-    for(j=0; j<MAX_BUF_YSIZE; j++)
-      redraw[i][j] = 0;
+  for(x=0; x<MAX_BUF_XSIZE; x++)
+    for(y=0; y<MAX_BUF_YSIZE; y++)
+      redraw[x][y] = 0;
   redraw_tiles = 0;
   redraw_mask = REDRAW_ALL;
-}
-
-void LoadGfx(int pos, struct PictureFileInfo *pic)
-{
-  char basefilename[256];
-  char filename[256];
-
-#ifdef USE_XPM_LIBRARY
-  int xpm_err, xbm_err;
-  unsigned int width,height;
-  int hot_x,hot_y;
-  Pixmap shapemask;
-  char *picture_ext = ".xpm";
-  char *picturemask_ext = "Mask.xbm";
-#else
-  int pcx_err;
-  char *picture_ext = ".pcx";
-#endif
-
-  /* Grafik laden */
-  if (pic->picture_filename)
-  {
-    sprintf(basefilename, "%s%s", pic->picture_filename, picture_ext);
-    DrawInitText(basefilename, 150, FC_YELLOW);
-    sprintf(filename, "%s/%s/%s",
-	    options.ro_base_directory, GRAPHICS_DIRECTORY, basefilename);
-
-#ifdef MSDOS
-    rest(100);
-#endif /* MSDOS */
-
-#if DEBUG_TIMING
-    debug_print_timestamp(1, NULL);	/* initialize timestamp function */
-#endif
-
-#ifdef USE_XPM_LIBRARY
-
-    xpm_att[pos].valuemask = XpmCloseness;
-    xpm_att[pos].closeness = 20000;
-    xpm_err = XpmReadFileToPixmap(display,window,filename,
-				  &pix[pos],&shapemask,&xpm_att[pos]);
-    switch(xpm_err)
-    {
-      case XpmOpenFailed:
-	Error(ERR_EXIT, "cannot open XPM file '%s'", filename);
-      case XpmFileInvalid:
-	Error(ERR_EXIT, "invalid XPM file '%s'", filename);
-      case XpmNoMemory:
-	Error(ERR_EXIT, "not enough memory for XPM file '%s'", filename);
-      case XpmColorFailed:
-	Error(ERR_EXIT, "cannot get colors for XPM file '%s'", filename);
-      default:
-	break;
-    }
-
-#if DEBUG_TIMING
-    printf("LOADING XPM FILE %s:", filename);
-    debug_print_timestamp(1, "");
-#endif
-
-#else /* !USE_XPM_LIBRARY */
-
-    pcx_err = Read_PCX_to_Pixmap(display, window, gc, filename,
-				 &pix[pos], &clipmask[pos]);
-    switch(pcx_err)
-    {
-      case PCX_Success:
-        break;
-      case PCX_OpenFailed:
-        Error(ERR_EXIT, "cannot open PCX file '%s'", filename);
-      case PCX_ReadFailed:
-        Error(ERR_EXIT, "cannot read PCX file '%s'", filename);
-      case PCX_FileInvalid:
-	Error(ERR_EXIT, "invalid PCX file '%s'", filename);
-      case PCX_NoMemory:
-	Error(ERR_EXIT, "not enough memory for PCX file '%s'", filename);
-      case PCX_ColorFailed:
-	Error(ERR_EXIT, "cannot get colors for PCX file '%s'", filename);
-      default:
-	break;
-    }
-
-#if DEBUG_TIMING
-    printf("SUMMARY LOADING PCX FILE %s:", filename);
-    debug_print_timestamp(1, "");
-#endif
-
-#endif /* !USE_XPM_LIBRARY */
-
-    if (!pix[pos])
-      Error(ERR_EXIT, "cannot get graphics for '%s'", pic->picture_filename);
-  }
-
-  /* zugehörige Maske laden (wenn vorhanden) */
-  if (pic->picture_with_mask)
-  {
-#ifdef USE_XPM_LIBRARY
-
-    sprintf(basefilename, "%s%s", pic->picture_filename, picturemask_ext);
-    DrawInitText(basefilename, 150, FC_YELLOW);
-    sprintf(filename, "%s/%s/%s",
-	    options.ro_base_directory, GRAPHICS_DIRECTORY, basefilename);
-
-#if DEBUG_TIMING
-    debug_print_timestamp(1, NULL);	/* initialize timestamp function */
-#endif
-
-    xbm_err = XReadBitmapFile(display,window,filename,
-			      &width,&height,&clipmask[pos],&hot_x,&hot_y);
-    switch(xbm_err)
-    {
-      case BitmapSuccess:
-        break;
-      case BitmapOpenFailed:
-	Error(ERR_EXIT, "cannot open XBM file '%s'", filename);
-      case BitmapFileInvalid:
-	Error(ERR_EXIT, "invalid XBM file '%s'", filename);
-      case BitmapNoMemory:
-	Error(ERR_EXIT, "not enough memory for XBM file '%s'", filename);
-	break;
-      default:
-	break;
-    }
-
-#if DEBUG_TIMING
-    printf("LOADING XBM FILE %s:", filename);
-    debug_print_timestamp(1, "");
-#endif
-
-#endif /* USE_XPM_LIBRARY */
-
-    if (!clipmask[pos])
-      Error(ERR_EXIT, "cannot get clipmask for '%s'", pic->picture_filename);
-  }
 }
 
 void InitGadgets()
@@ -1962,7 +1625,7 @@ void InitElementProperties()
     for(j=0; j<*(ep2_num[i]); j++)
       Elementeigenschaften2[(ep2_array[i])[j]] |= ep2_bit[i];
 
-  for(i=EL_CHAR_START; i<EL_CHAR_END; i++)
+  for(i=EL_CHAR_START; i<=EL_CHAR_END; i++)
     Elementeigenschaften1[i] |= (EP_BIT_CHAR | EP_BIT_INACTIVE);
 }
 
@@ -1970,45 +1633,15 @@ void CloseAllAndExit(int exit_value)
 {
   int i;
 
-  if (sound_process_id)
-  {
-    StopSounds();
-    kill(sound_process_id, SIGTERM);
-    FreeSounds(NUM_SOUNDS);
-  }
+  StopSounds();
+  FreeSounds(NUM_SOUNDS);
+  CloseAudio();
 
-  for(i=0; i<NUM_PIXMAPS; i++)
-  {
-    if (pix[i])
-    {
-#ifdef USE_XPM_LIBRARY
-      if (i < NUM_PICTURES)	/* XPM pictures */
-      {
-	XFreeColors(display,DefaultColormap(display,screen),
-		    xpm_att[i].pixels,xpm_att[i].npixels,0);
-	XpmFreeAttributes(&xpm_att[i]);
-      }
-#endif
-      XFreePixmap(display,pix[i]);
-    }
-    if (clipmask[i])
-      XFreePixmap(display,clipmask[i]);
-    if (clip_gc[i])
-      XFreeGC(display, clip_gc[i]);
-  }
+  for(i=0; i<NUM_BITMAPS; i++)
+    FreeBitmap(pix[i]);
+  CloseVideoDisplay();
 
-  if (gc)
-    XFreeGC(display, gc);
-
-  if (display)
-  {
-    XAutoRepeatOn(display);
-    XCloseDisplay(display);
-  }
-
-#ifdef MSDOS
-  dumpErrorFile();
-#endif
+  ClosePlatformDependantStuff();
 
   exit(exit_value);
 }

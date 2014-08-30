@@ -1,24 +1,24 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  files.h                                                 *
+* files.c                                                  *
 ***********************************************************/
 
 #include <ctype.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include <unistd.h>
+
+#include "libgame/libgame.h"
 
 #include "files.h"
 #include "tools.h"
-#include "misc.h"
 #include "tape.h"
 #include "joystick.h"
 
@@ -46,8 +46,7 @@
 #define TAPE_COOKIE_10		"ROCKSNDIAMONDS_LEVELREC_FILE_VERSION_1.0"
 
 /* file names and filename extensions */
-#ifndef MSDOS
-#define USERDATA_DIRECTORY	".rocksndiamonds"
+#if !defined(PLATFORM_MSDOS)
 #define LEVELSETUP_DIRECTORY	"levelsetup"
 #define SETUP_FILENAME		"setup.conf"
 #define LEVELSETUP_FILENAME	"levelsetup.conf"
@@ -56,7 +55,6 @@
 #define TAPEFILE_EXTENSION	"tape"
 #define SCOREFILE_EXTENSION	"score"
 #else
-#define USERDATA_DIRECTORY	"userdata"
 #define LEVELSETUP_DIRECTORY	"lvlsetup"
 #define SETUP_FILENAME		"setup.cnf"
 #define LEVELSETUP_FILENAME	"lvlsetup.cnf"
@@ -64,14 +62,33 @@
 #define LEVELFILE_EXTENSION	"lvl"
 #define TAPEFILE_EXTENSION	"tap"
 #define SCOREFILE_EXTENSION	"sco"
-#define ERROR_FILENAME		"error.out"
 #endif
+
+#if defined(PLATFORM_WIN32)
+#ifndef S_IRGRP
+#define S_IRGRP S_IRUSR
+#endif
+#ifndef S_IROTH
+#define S_IROTH S_IRUSR
+#endif
+#ifndef S_IWGRP
+#define S_IWGRP S_IWUSR
+#endif
+#ifndef S_IWOTH
+#define S_IWOTH S_IWUSR
+#endif
+#ifndef S_IXGRP
+#define S_IXGRP S_IXUSR
+#endif
+#ifndef S_IXOTH
+#define S_IXOTH S_IXUSR
+#endif
+#endif	/* PLATFORM_WIN32 */
 
 /* file permissions for newly written files */
 #define MODE_R_ALL		(S_IRUSR | S_IRGRP | S_IROTH)
 #define MODE_W_ALL		(S_IWUSR | S_IWGRP | S_IWOTH)
 #define MODE_X_ALL		(S_IXUSR | S_IXGRP | S_IXOTH)
-#define USERDATA_DIR_MODE	(MODE_R_ALL | MODE_X_ALL | S_IWUSR)
 #define LEVEL_PERMS		(MODE_R_ALL | MODE_W_ALL)
 #define SCORE_PERMS		LEVEL_PERMS
 #define TAPE_PERMS		LEVEL_PERMS
@@ -186,21 +203,6 @@ char *getLevelClassDescription(struct LevelDirInfo *ldi)
 
 static void SaveUserLevelInfo();		/* for 'InitUserLevelDir()' */
 static char *getSetupLine(char *, int);		/* for 'SaveUserLevelInfo()' */
-
-char *getUserDataDir()
-{
-  static char *userdata_dir = NULL;
-
-  if (!userdata_dir)
-  {
-    char *home_dir = getHomeDir();
-    char *data_dir = USERDATA_DIRECTORY;
-
-    userdata_dir = getPath2(home_dir, data_dir);
-  }
-
-  return userdata_dir;
-}
 
 static char *getSetupDir()
 {
@@ -319,18 +321,6 @@ static char *getScoreFilename(int nr)
   filename = getPath2(getScoreDir(leveldir_current->filename), basename);
 
   return filename;
-}
-
-static void createDirectory(char *dir, char *text)
-{
-  if (access(dir, F_OK) != 0)
-    if (mkdir(dir, USERDATA_DIR_MODE) != 0)
-      Error(ERR_WARN, "cannot create %s directory '%s'", text, dir);
-}
-
-static void InitUserDataDirectory()
-{
-  createDirectory(getUserDataDir(), "user data");
 }
 
 static void InitTapeDirectory(char *level_subdir)
@@ -466,7 +456,7 @@ void LoadLevel(int level_nr)
   /* always start with reliable default values */
   setLevelInfoToDefaults();
 
-  if (!(file = fopen(filename, "r")))
+  if (!(file = fopen(filename, MODE_READ)))
   {
     Error(ERR_WARN, "cannot read level '%s' - creating new level", filename);
     return;
@@ -630,7 +620,7 @@ void SaveLevel(int level_nr)
   char *oldest_possible_cookie;
   FILE *file;
 
-  if (!(file = fopen(filename, "w")))
+  if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot save level file '%s'", filename);
     return;
@@ -740,7 +730,7 @@ void LoadTape(int level_nr)
   /* at least one (default: the first) player participates in every tape */
   num_participating_players = 1;
 
-  if (!(file = fopen(filename, "r")))
+  if (!(file = fopen(filename, MODE_READ)))
     return;
 
   /* check file identifier */
@@ -902,7 +892,7 @@ void SaveTape(int level_nr)
     }
   }
 
-  if (!(file = fopen(filename, "w")))
+  if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot save level recording file '%s'", filename);
     return;
@@ -962,7 +952,7 @@ void LoadScore(int level_nr)
     highscore[i].Score = 0;
   }
 
-  if (!(file = fopen(filename, "r")))
+  if (!(file = fopen(filename, MODE_READ)))
     return;
 
   /* check file identifier */
@@ -1007,7 +997,7 @@ void SaveScore(int level_nr)
 
   InitScoreDirectory(leveldir_current->filename);
 
-  if (!(file = fopen(filename, "w")))
+  if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot save score for level %d", level_nr);
     return;
@@ -1051,39 +1041,40 @@ void SaveScore(int level_nr)
 #define SETUP_TOKEN_TEAM_MODE		10
 #define SETUP_TOKEN_HANDICAP		11
 #define SETUP_TOKEN_TIME_LIMIT		12
+#define SETUP_TOKEN_FULLSCREEN		13
 
 /* player setup */
-#define SETUP_TOKEN_USE_JOYSTICK	13
-#define SETUP_TOKEN_JOY_DEVICE_NAME	14
-#define SETUP_TOKEN_JOY_XLEFT		15
-#define SETUP_TOKEN_JOY_XMIDDLE		16
-#define SETUP_TOKEN_JOY_XRIGHT		17
-#define SETUP_TOKEN_JOY_YUPPER		18
-#define SETUP_TOKEN_JOY_YMIDDLE		19
-#define SETUP_TOKEN_JOY_YLOWER		20
-#define SETUP_TOKEN_JOY_SNAP		21
-#define SETUP_TOKEN_JOY_BOMB		22
-#define SETUP_TOKEN_KEY_LEFT		23
-#define SETUP_TOKEN_KEY_RIGHT		24
-#define SETUP_TOKEN_KEY_UP		25
-#define SETUP_TOKEN_KEY_DOWN		26
-#define SETUP_TOKEN_KEY_SNAP		27
-#define SETUP_TOKEN_KEY_BOMB		28
+#define SETUP_TOKEN_USE_JOYSTICK	14
+#define SETUP_TOKEN_JOY_DEVICE_NAME	15
+#define SETUP_TOKEN_JOY_XLEFT		16
+#define SETUP_TOKEN_JOY_XMIDDLE		17
+#define SETUP_TOKEN_JOY_XRIGHT		18
+#define SETUP_TOKEN_JOY_YUPPER		19
+#define SETUP_TOKEN_JOY_YMIDDLE		20
+#define SETUP_TOKEN_JOY_YLOWER		21
+#define SETUP_TOKEN_JOY_SNAP		22
+#define SETUP_TOKEN_JOY_BOMB		23
+#define SETUP_TOKEN_KEY_LEFT		24
+#define SETUP_TOKEN_KEY_RIGHT		25
+#define SETUP_TOKEN_KEY_UP		26
+#define SETUP_TOKEN_KEY_DOWN		27
+#define SETUP_TOKEN_KEY_SNAP		28
+#define SETUP_TOKEN_KEY_BOMB		29
 
 /* level directory info */
-#define LEVELINFO_TOKEN_NAME		29
-#define LEVELINFO_TOKEN_NAME_SHORT	30
-#define LEVELINFO_TOKEN_NAME_SORTING	31
-#define LEVELINFO_TOKEN_AUTHOR		32
-#define LEVELINFO_TOKEN_IMPORTED_FROM	33
-#define LEVELINFO_TOKEN_LEVELS		34
-#define LEVELINFO_TOKEN_FIRST_LEVEL	35
-#define LEVELINFO_TOKEN_SORT_PRIORITY	36
-#define LEVELINFO_TOKEN_LEVEL_GROUP	37
-#define LEVELINFO_TOKEN_READONLY	38
+#define LEVELINFO_TOKEN_NAME		30
+#define LEVELINFO_TOKEN_NAME_SHORT	31
+#define LEVELINFO_TOKEN_NAME_SORTING	32
+#define LEVELINFO_TOKEN_AUTHOR		33
+#define LEVELINFO_TOKEN_IMPORTED_FROM	34
+#define LEVELINFO_TOKEN_LEVELS		35
+#define LEVELINFO_TOKEN_FIRST_LEVEL	36
+#define LEVELINFO_TOKEN_SORT_PRIORITY	37
+#define LEVELINFO_TOKEN_LEVEL_GROUP	38
+#define LEVELINFO_TOKEN_READONLY	39
 
 #define FIRST_GLOBAL_SETUP_TOKEN	SETUP_TOKEN_PLAYER_NAME
-#define LAST_GLOBAL_SETUP_TOKEN		SETUP_TOKEN_TIME_LIMIT
+#define LAST_GLOBAL_SETUP_TOKEN		SETUP_TOKEN_FULLSCREEN
 
 #define FIRST_PLAYER_SETUP_TOKEN	SETUP_TOKEN_USE_JOYSTICK
 #define LAST_PLAYER_SETUP_TOKEN		SETUP_TOKEN_KEY_BOMB
@@ -1093,7 +1084,7 @@ void SaveScore(int level_nr)
 
 #define TYPE_BOOLEAN			1
 #define TYPE_SWITCH			2
-#define TYPE_KEYSYM			3
+#define TYPE_KEY			3
 #define TYPE_INTEGER			4
 #define TYPE_STRING			5
 
@@ -1127,6 +1118,7 @@ static struct
   { TYPE_SWITCH,  &si.team_mode,	"team_mode"			},
   { TYPE_SWITCH,  &si.handicap,		"handicap"			},
   { TYPE_SWITCH,  &si.time_limit,	"time_limit"			},
+  { TYPE_SWITCH,  &si.fullscreen,	"fullscreen"			},
 
   /* player setup */
   { TYPE_BOOLEAN, &sii.use_joystick,	".use_joystick"			},
@@ -1139,12 +1131,12 @@ static struct
   { TYPE_INTEGER, &sii.joy.ylower,	".joy.ylower"			},
   { TYPE_INTEGER, &sii.joy.snap,	".joy.snap_field"		},
   { TYPE_INTEGER, &sii.joy.bomb,	".joy.place_bomb"		},
-  { TYPE_KEYSYM,  &sii.key.left,	".key.move_left"		},
-  { TYPE_KEYSYM,  &sii.key.right,	".key.move_right"		},
-  { TYPE_KEYSYM,  &sii.key.up,		".key.move_up"			},
-  { TYPE_KEYSYM,  &sii.key.down,	".key.move_down"		},
-  { TYPE_KEYSYM,  &sii.key.snap,	".key.snap_field"		},
-  { TYPE_KEYSYM,  &sii.key.bomb,	".key.place_bomb"		},
+  { TYPE_KEY,     &sii.key.left,	".key.move_left"		},
+  { TYPE_KEY,     &sii.key.right,	".key.move_right"		},
+  { TYPE_KEY,     &sii.key.up,		".key.move_up"			},
+  { TYPE_KEY,     &sii.key.down,	".key.move_down"		},
+  { TYPE_KEY,     &sii.key.snap,	".key.snap_field"		},
+  { TYPE_KEY,     &sii.key.bomb,	".key.place_bomb"		},
 
   /* level directory info */
   { TYPE_STRING,  &ldi.name,		"name"				},
@@ -1312,7 +1304,7 @@ static struct SetupFileList *loadSetupFileList(char *filename)
 
   FILE *file;
 
-  if (!(file = fopen(filename, "r")))
+  if (!(file = fopen(filename, MODE_READ)))
   {
     Error(ERR_WARN, "cannot open configuration file '%s'", filename);
     return NULL;
@@ -1500,6 +1492,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->team_mode = FALSE;
   si->handicap = TRUE;
   si->time_limit = TRUE;
+  si->fullscreen = FALSE;
 
   for (i=0; i<MAX_PLAYERS; i++)
   {
@@ -1513,12 +1506,12 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
     si->input[i].joy.ylower  = JOYSTICK_YLOWER;
     si->input[i].joy.snap  = (i == 0 ? JOY_BUTTON_1 : 0);
     si->input[i].joy.bomb  = (i == 0 ? JOY_BUTTON_2 : 0);
-    si->input[i].key.left  = (i == 0 ? DEFAULT_KEY_LEFT  : KEY_UNDEFINDED);
-    si->input[i].key.right = (i == 0 ? DEFAULT_KEY_RIGHT : KEY_UNDEFINDED);
-    si->input[i].key.up    = (i == 0 ? DEFAULT_KEY_UP    : KEY_UNDEFINDED);
-    si->input[i].key.down  = (i == 0 ? DEFAULT_KEY_DOWN  : KEY_UNDEFINDED);
-    si->input[i].key.snap  = (i == 0 ? DEFAULT_KEY_SNAP  : KEY_UNDEFINDED);
-    si->input[i].key.bomb  = (i == 0 ? DEFAULT_KEY_BOMB  : KEY_UNDEFINDED);
+    si->input[i].key.left  = (i == 0 ? DEFAULT_KEY_LEFT  : KSYM_UNDEFINED);
+    si->input[i].key.right = (i == 0 ? DEFAULT_KEY_RIGHT : KSYM_UNDEFINED);
+    si->input[i].key.up    = (i == 0 ? DEFAULT_KEY_UP    : KSYM_UNDEFINED);
+    si->input[i].key.down  = (i == 0 ? DEFAULT_KEY_DOWN  : KSYM_UNDEFINED);
+    si->input[i].key.snap  = (i == 0 ? DEFAULT_KEY_SNAP  : KSYM_UNDEFINED);
+    si->input[i].key.bomb  = (i == 0 ? DEFAULT_KEY_BOMB  : KSYM_UNDEFINED);
   }
 }
 
@@ -1538,8 +1531,8 @@ static void setSetupInfo(int token_nr, char *token_value)
       *(boolean *)setup_value = get_string_boolean_value(token_value);
       break;
 
-    case TYPE_KEYSYM:
-      *(KeySym *)setup_value = getKeySymFromX11KeyName(token_value);
+    case TYPE_KEY:
+      *(Key *)setup_value = getKeyFromX11KeyName(token_value);
       break;
 
     case TYPE_INTEGER:
@@ -1789,7 +1782,7 @@ static void SaveUserLevelInfo()
 
   filename = getPath2(getUserLevelDir(getLoginName()), LEVELINFO_FILENAME);
 
-  if (!(file = fopen(filename, "w")))
+  if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot write level info file '%s'", filename);
     free(filename);
@@ -1884,12 +1877,12 @@ static char *getSetupLine(char *prefix, int token_nr)
       strcat(entry, (*(boolean *)setup_value ? "on" : "off"));
       break;
 
-    case TYPE_KEYSYM:
+    case TYPE_KEY:
       {
-	KeySym keysym = *(KeySym *)setup_value;
-	char *keyname = getKeyNameFromKeySym(keysym);
+	Key key = *(Key *)setup_value;
+	char *keyname = getKeyNameFromKey(key);
 
-	strcat(entry, getX11KeyNameFromKeySym(keysym));
+	strcat(entry, getX11KeyNameFromKey(key));
 	for (i=strlen(entry); i<50; i++)
 	  strcat(entry, " ");
 
@@ -1933,7 +1926,7 @@ void SaveSetup()
 
   filename = getPath2(getSetupDir(), SETUP_FILENAME);
 
-  if (!(file = fopen(filename, "w")))
+  if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot write setup file '%s'", filename);
     free(filename);
@@ -2021,7 +2014,7 @@ void SaveLevelSetup_LastSeries()
 
   filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
 
-  if (!(file = fopen(filename, "w")))
+  if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot write setup file '%s'", filename);
     free(filename);
@@ -2050,7 +2043,7 @@ static void checkSeriesInfo()
   level_directory = getPath2((leveldir_current->user_defined ?
 			      getUserLevelDir("") :
 			      options.level_directory),
-			     leveldir_current->filename);
+			     leveldir_current->fullpath);
 
   if ((dir = opendir(level_directory)) == NULL)
   {
@@ -2166,7 +2159,7 @@ void SaveLevelSetup_SeriesInfo()
 
   filename = getPath2(getLevelSetupDir(level_subdir), LEVELSETUP_FILENAME);
 
-  if (!(file = fopen(filename, "w")))
+  if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot write setup file '%s'", filename);
     free(filename);
@@ -2185,46 +2178,5 @@ void SaveLevelSetup_SeriesInfo()
 
   chmod(filename, SETUP_PERMS);
 }
-
-#ifdef MSDOS
-void initErrorFile()
-{
-  char *filename;
-
-  InitUserDataDirectory();
-
-  filename = getPath2(getUserDataDir(), ERROR_FILENAME);
-  unlink(filename);
-  free(filename);
-}
-
-FILE *openErrorFile()
-{
-  char *filename;
-  FILE *error_file;
-
-  filename = getPath2(getUserDataDir(), ERROR_FILENAME);
-  error_file = fopen(filename, "a");
-  free(filename);
-
-  return error_file;
-}
-
-void dumpErrorFile()
-{
-  char *filename;
-  FILE *error_file;
-
-  filename = getPath2(getUserDataDir(), ERROR_FILENAME);
-  error_file = fopen(filename, "r");
-  free(filename);
-
-  if (error_file != NULL)
-  {
-    while (!feof(error_file))
-      fputc(fgetc(error_file), stderr);
-
-    fclose(error_file);
-  }
-}
-#endif
+/*  LocalWords:  Rocks'n
+ */

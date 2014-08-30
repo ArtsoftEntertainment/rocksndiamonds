@@ -1,46 +1,30 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  main.c                                                  *
+* main.c                                                   *
 ***********************************************************/
+
+#include "libgame/libgame.h"
 
 #include "main.h"
 #include "init.h"
 #include "game.h"
 #include "events.h"
-#include "sound.h"
 #include "joystick.h"
-#include "misc.h"
 
-#ifdef MSDOS
-#include <fcntl.h>
-#endif
+GC		tile_clip_gc;
+Bitmap	       *pix[NUM_BITMAPS];
+Pixmap		tile_clipmask[NUM_TILES];
+DrawBuffer     *fieldbuffer;
+DrawBuffer     *drawto_field;
 
-Display        *display;
-Visual	       *visual;
-int		screen;
-Window  	window;
-GC		gc, clip_gc[NUM_PIXMAPS], tile_clip_gc;
-Pixmap		pix[NUM_PIXMAPS];
-Pixmap		clipmask[NUM_PIXMAPS], tile_clipmask[NUM_TILES];
-
-#ifdef USE_XPM_LIBRARY
-XpmAttributes 	xpm_att[NUM_PICTURES];
-#endif
-
-Drawable        drawto, drawto_field, backbuffer, fieldbuffer;
-Colormap	cmap;
-
-int		sound_pipe[2];
-int		sound_device;
-char	       *sound_device_name = SOUND_DEVICE;
 int		joystick_device = 0;
 char	       *joystick_device_name[MAX_PLAYERS] =
 {
@@ -50,23 +34,16 @@ char	       *joystick_device_name[MAX_PLAYERS] =
   DEV_JOYSTICK_3
 };
 
-char	       *program_name = NULL;
-
 int		game_status = MAINMENU;
 boolean		level_editor_test_game = FALSE;
 boolean		network_playing = FALSE;
-int		button_status = MB_NOT_PRESSED;
-boolean		motion_status = FALSE;
+
 int		key_joystick_mapping = 0;
 int	    	global_joystick_status = JOYSTICK_STATUS;
 int	    	joystick_status = JOYSTICK_STATUS;
-int	    	sound_status = SOUND_STATUS;
-boolean		sound_loops_allowed = FALSE;
 
 boolean		redraw[MAX_BUF_XSIZE][MAX_BUF_YSIZE];
 int		redraw_x1 = 0, redraw_y1 = 0;
-int		redraw_mask;
-int		redraw_tiles;
 
 short		Feld[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short		Ur[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -98,91 +75,83 @@ int		SBX_Left, SBX_Right;
 int		SBY_Upper, SBY_Lower;
 int		ZX,ZY, ExitX,ExitY;
 int		AllPlayersGone;
-int		FrameCounter, TimeFrames, TimePlayed, TimeLeft;
+
+int		TimeFrames, TimePlayed, TimeLeft;
 
 boolean		network_player_action_received = FALSE;
 
-struct LevelDirInfo    *leveldir_first = NULL, *leveldir_current = NULL;
 struct LevelInfo	level;
 struct PlayerInfo	stored_player[MAX_PLAYERS], *local_player = NULL;
 struct HiScore		highscore[MAX_SCORE_ENTRIES];
-struct SoundInfo	Sound[NUM_SOUNDS];
 struct TapeInfo		tape;
-struct OptionInfo	options;
 struct SetupInfo	setup;
 struct GameInfo		game;
 struct GlobalInfo	global;
 
-/* data needed for playing sounds */
+/* filenames of sound effects */
 char *sound_name[NUM_SOUNDS] =
 {
-  "alchemy",
-  "amoebe",
-  "antigrav",
-  "autsch",
-  "blurb",
-  "bong",
-  "buing",
-  "chase",
-  "czardasz",
-  "deng",
-  "fuel",
-  "gong",
-  "halloffame",
-  "holz",
-  "hui",
-  "kabumm",
-  "kink",
-  "klapper",
-  "kling",
-  "klopf",
-  "klumpf",
-  "knack",
-  "knurk",
-  "krach",
-  "lachen",
-  "laser",
-  "miep",
-  "network",
-  "njam",
-  "oeffnen",
-  "pling",
-  "pong",
-  "pusch",
-  "quiek",
-  "quirk",
-  "rhythmloop",
-  "roaaar",
-  "roehr",
-  "rumms",
-  "schlopp",
-  "schlurf",
-  "schrff",
-  "schwirr",
-  "sirr",
-  "slurp",
-  "sproing",
-  "twilight",
-  "tyger",
-  "voyager",
-  "warnton",
-  "whoosh",
-  "zisch",
-  "base",
-  "infotron",
-  "zonkdown",
-  "zonkpush",
-  "bug",
-  "boom",
-  "booom",
-  "exit",
-  "empty",
-  "gate"
+  "amoebe.wav",
+  "antigrav.wav",
+  "autsch.wav",
+  "blurb.wav",
+  "bong.wav",
+  "buing.wav",
+  "deng.wav",
+  "fuel.wav",
+  "gong.wav",
+  "halloffame.wav",
+  "holz.wav",
+  "hui.wav",
+  "kabumm.wav",
+  "kink.wav",
+  "klapper.wav",
+  "kling.wav",
+  "klopf.wav",
+  "klumpf.wav",
+  "knack.wav",
+  "knurk.wav",
+  "krach.wav",
+  "lachen.wav",
+  "laser.wav",
+  "miep.wav",
+  "njam.wav",
+  "oeffnen.wav",
+  "pling.wav",
+  "pong.wav",
+  "pusch.wav",
+  "quiek.wav",
+  "quirk.wav",
+  "rhythmloop.wav",
+  "roaaar.wav",
+  "roehr.wav",
+  "rumms.wav",
+  "schlopp.wav",
+  "schlurf.wav",
+  "schrff.wav",
+  "schwirr.wav",
+  "sirr.wav",
+  "slurp.wav",
+  "sproing.wav",
+  "warnton.wav",
+  "whoosh.wav",
+  "zisch.wav",
+  "base.wav",
+  "infotron.wav",
+  "zonkdown.wav",
+  "zonkpush.wav",
+  "bug.wav",
+  "boom.wav",
+  "booom.wav",
+  "exit.wav",
+  "empty.wav",
+  "gate.wav"
 };
 
 /* background music */
 int background_loop[] =
 {
+#if 0
   SND_ALCHEMY,
   SND_CHASE,
   SND_NETWORK,
@@ -190,6 +159,7 @@ int background_loop[] =
   SND_TYGER,
   SND_VOYAGER,
   SND_TWILIGHT
+#endif
 };
 int num_bg_loops = sizeof(background_loop)/sizeof(int);
 
@@ -303,7 +273,7 @@ char *element_info[] =
   "normal wall (BD style)",
   "rock (BD style)",
   "open exit",
-  "unknown",
+  "black orb bomb",
   "amoeba",
   "mole",					/* 110 */
   "penguin",
@@ -314,7 +284,7 @@ char *element_info[] =
   "arrow down",
   "pig",
   "fire breathing dragon",
-  "unknown",
+  "red key (EM style)",
   "letter ' '",					/* 120 */
   "letter '!'",
   "letter '\"'",
@@ -398,13 +368,13 @@ char *element_info[] =
   "growing wall (horizontal)",			/* 200 */
   "growing wall (vertical)",
   "growing wall (all directions)",
-  "unused",
-  "unused",
-  "unused",
-  "unused",
-  "unused",
-  "unused",
-  "unused",
+  "red door (EM style)",
+  "yellow door (EM style)",
+  "green door (EM style)",
+  "blue door (EM style)",
+  "yellow key (EM style)",
+  "green key (EM style)",
+  "blue key (EM style)",
   "empty space",				/* 210 */
   "zonk",
   "base",
@@ -445,10 +415,10 @@ char *element_info[] =
   "hardware",
   "chip (upper half)",
   "chip (lower half)",
-  "unknown",					/* 250 */
-  "unknown",
-  "unknown",
-  "unknown",
+  "gray door (EM style, red key)",		/* 250 */
+  "gray door (EM style, yellow key)",
+  "gray door (EM style, green key)",
+  "gray door (EM style, blue key)",
   "unknown",
   "unknown",
 
@@ -562,17 +532,22 @@ char *element_info[] =
   "-------------------------------",
   */
 };
+int num_element_info = sizeof(element_info)/sizeof(char *);
+
+
+/* ========================================================================= */
+/* main()                                                                    */
+/* ========================================================================= */
 
 int main(int argc, char *argv[])
 {
-  program_name = (strrchr(argv[0],'/') ? strrchr(argv[0],'/') + 1 : argv[0]);
-
-#ifdef MSDOS
-  _fmode = O_BINARY;
-#endif
+  InitCommandName(argv[0]);
+  InitExitFunction(CloseAllAndExit);
+  InitPlatformDependantStuff();
 
   GetOptions(argv);
-  OpenAll(argc,argv);
+  OpenAll();
+
   EventLoop();
   CloseAllAndExit(0);
   exit(0);	/* to keep compilers happy */

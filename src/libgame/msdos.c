@@ -1,27 +1,26 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-*  ©1995 Artsoft Development                               *
-*        Holger Schemel                                    *
-*        33659 Bielefeld-Senne                             *
-*        Telefon: (0521) 493245                            *
-*        eMail: aeglos@valinor.owl.de                      *
-*               aeglos@uni-paderborn.de                    *
-*               q99492@pbhrzx.uni-paderborn.de             *
+* (c) 1994-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  msdos.c                                                 *
+* msdos.c                                                  *
 ***********************************************************/
 
-#ifdef MSDOS
+#include "system.h"
 
-#include "main.h"
-#include "misc.h"
-#include "tools.h"
+
+#if defined(PLATFORM_MSDOS)
+
 #include "sound.h"
-#include "files.h"
-#include "joystick.h"
-#include "image.h"
+#include "misc.h"
 #include "pcx.h"
+
+#define AllegroDefaultScreen() (display->screens[display->default_screen])
 
 /* allegro driver declarations */
 DECLARE_GFX_DRIVER_LIST(GFX_DRIVER_VBEAF GFX_DRIVER_VESA2L GFX_DRIVER_VESA1)
@@ -61,7 +60,7 @@ extern struct SoundControl emptySoundControl;
 
 static BITMAP *Read_PCX_to_AllegroBitmap(char *);
 
-static void allegro_drivers()
+static void allegro_init_drivers()
 {
   int i;
 
@@ -87,11 +86,17 @@ static void allegro_drivers()
 
   last_joystick_state = 0;
   joystick_event = FALSE;
+}
 
+static boolean allegro_init_audio()
+{
   reserve_voices(MAX_SOUNDS_PLAYING, 0);
+
   if (install_sound(DIGI_AUTODETECT, MIDI_NONE, NULL) == -1)
     if (install_sound(DIGI_SB, MIDI_NONE, NULL) == -1)
-      sound_status = SOUND_OFF;
+      return FALSE;
+
+  return TRUE;
 }
 
 static boolean hide_mouse(Display *display, int x, int y,
@@ -233,25 +238,7 @@ static KeySym ScancodeToKeySym(byte scancode)
   }
 }
 
-void XMapWindow(Display *display, Window window)
-{
-  int x, y;
-  unsigned int width, height;
-  boolean mouse_off;
-
-  x = display->screens[display->default_screen].x;
-  y = display->screens[display->default_screen].y;
-  width = display->screens[display->default_screen].width;
-  height = display->screens[display->default_screen].height;
-
-  mouse_off = hide_mouse(display, x, y, width, height);
-  blit((BITMAP *)window, video_bitmap, 0, 0, x, y, width, height);
-
-  if (mouse_off)
-    unhide_mouse(display);
-}
-
-static unsigned long AllocColorCell(int r, int g, int b)
+Pixel AllegroAllocColorCell(int r, int g, int b)
 {
   byte pixel_mapping = 0;
   int i;
@@ -277,9 +264,13 @@ static unsigned long AllocColorCell(int r, int g, int b)
     if (global_colormap_entries_used < MAX_COLORS)
       global_colormap_entries_used++;
 
+    i = global_colormap_entries_used - 1;
+
     global_colormap[i].r = r;
     global_colormap[i].g = g;
     global_colormap[i].b = b;
+
+    set_palette(global_colormap);
 
     pixel_mapping = i;
   }
@@ -287,19 +278,31 @@ static unsigned long AllocColorCell(int r, int g, int b)
   return pixel_mapping;
 }
 
+void XMapWindow(Display *display, Window window)
+{
+  int x, y;
+  unsigned int width, height;
+  boolean mouse_off;
+
+  x = AllegroDefaultScreen().x;
+  y = AllegroDefaultScreen().y;
+  width = AllegroDefaultScreen().width;
+  height = AllegroDefaultScreen().height;
+
+  mouse_off = hide_mouse(display, x, y, width, height);
+  blit((BITMAP *)window, video_bitmap, 0, 0, x, y, width, height);
+
+  if (mouse_off)
+    unhide_mouse(display);
+}
+
 Display *XOpenDisplay(char *display_name)
 {
   Screen *screen;
   Display *display;
   BITMAP *mouse_bitmap = NULL;
-  char *filename;
 
-  filename = getPath3(options.ro_base_directory, GRAPHICS_DIRECTORY,
-		      MOUSE_FILENAME);
-
-  mouse_bitmap = Read_PCX_to_AllegroBitmap(filename);
-  free(filename);
-
+  mouse_bitmap = Read_PCX_to_AllegroBitmap(program.msdos_pointer_filename);
   if (mouse_bitmap == NULL)
     return NULL;
 
@@ -312,8 +315,8 @@ Display *XOpenDisplay(char *display_name)
   screen[0].white_pixel = 0xFF;
   screen[0].black_pixel = 0x00;
 #else
-  screen[0].white_pixel = AllocColorCell(0xFFFF, 0xFFFF, 0xFFFF);
-  screen[0].black_pixel = AllocColorCell(0x0000, 0x0000, 0x0000);
+  screen[0].white_pixel = AllegroAllocColorCell(0xFFFF, 0xFFFF, 0xFFFF);
+  screen[0].black_pixel = AllegroAllocColorCell(0x0000, 0x0000, 0x0000);
 #endif
   screen[0].video_bitmap = NULL;
 
@@ -322,7 +325,7 @@ Display *XOpenDisplay(char *display_name)
   display->mouse_ptr = mouse_bitmap;
 
   allegro_init();
-  allegro_drivers();
+  allegro_init_drivers();
   set_color_depth(8);
 
   /* force Windows 95 to switch to fullscreen mode */
@@ -341,11 +344,11 @@ Window XCreateSimpleWindow(Display *display, Window parent, int x, int y,
   video_bitmap = create_video_bitmap(XRES, YRES);
   clear_to_color(video_bitmap, background);
 
-  display->screens[display->default_screen].video_bitmap = video_bitmap;
-  display->screens[display->default_screen].x = x;
-  display->screens[display->default_screen].y = y;
-  display->screens[display->default_screen].width = XRES;
-  display->screens[display->default_screen].height = YRES;
+  AllegroDefaultScreen().video_bitmap = video_bitmap;
+  AllegroDefaultScreen().x = x;
+  AllegroDefaultScreen().y = y;
+  AllegroDefaultScreen().width = XRES;
+  AllegroDefaultScreen().height = YRES;
 
   set_mouse_sprite(display->mouse_ptr);
 
@@ -354,10 +357,10 @@ Window XCreateSimpleWindow(Display *display, Window parent, int x, int y,
 #endif
 
   set_mouse_speed(1, 1);
-  set_mouse_range(display->screens[display->default_screen].x + 1,
-		  display->screens[display->default_screen].y + 1,
-		  display->screens[display->default_screen].x + WIN_XSIZE + 1,
-		  display->screens[display->default_screen].y + WIN_YSIZE + 1);
+  set_mouse_range(AllegroDefaultScreen().x + 1,
+		  AllegroDefaultScreen().y + 1,
+		  AllegroDefaultScreen().x + video.width + 1,
+		  AllegroDefaultScreen().y + video.height + 1);
 
   show_video_bitmap(video_bitmap);
 
@@ -426,8 +429,8 @@ void XFillRectangle(Display *display, Drawable d, GC gc, int x, int y,
 
   if ((BITMAP *)d == video_bitmap)
   {
-    x += display->screens[display->default_screen].x;
-    y += display->screens[display->default_screen].y;
+    x += AllegroDefaultScreen().x;
+    y += AllegroDefaultScreen().y;
     freeze_mouse_flag = TRUE;
     mouse_off = hide_mouse(display, x, y, width, height);
   }
@@ -447,7 +450,7 @@ Pixmap XCreatePixmap(Display *display, Drawable d, unsigned int width,
   BITMAP *bitmap = NULL;
 
   if (gfx_capabilities & GFX_HW_VRAM_BLIT &&
-      width == FXSIZE && height == FYSIZE)
+      width  == gfx.scrollbuffer_width && height == gfx.scrollbuffer_height)
     bitmap = create_video_bitmap(width, height);
 
   if (bitmap == NULL)
@@ -470,14 +473,14 @@ inline void XCopyArea(Display *display, Drawable src, Drawable dest, GC gc,
 
   if ((BITMAP *)src == video_bitmap)
   {
-    src_x += display->screens[display->default_screen].x;
-    src_y += display->screens[display->default_screen].y;
+    src_x += AllegroDefaultScreen().x;
+    src_y += AllegroDefaultScreen().y;
   }
 
   if ((BITMAP *)dest == video_bitmap)
   {
-    dest_x += display->screens[display->default_screen].x;
-    dest_y += display->screens[display->default_screen].y;
+    dest_x += AllegroDefaultScreen().x;
+    dest_y += AllegroDefaultScreen().y;
     freeze_mouse_flag = TRUE;
     mouse_off = hide_mouse(display, dest_x, dest_y, width, height);
   }
@@ -563,9 +566,9 @@ static BITMAP *Image_to_AllegroBitmap(Image *image)
       pixel_mapping[i] = j;
     }
 #else
-    pixel_mapping[i] = AllocColorCell(image->rgb.red[i],
-				      image->rgb.green[i],
-				      image->rgb.blue[i]);
+    pixel_mapping[i] = AllegroAllocColorCell(image->rgb.red[i],
+					     image->rgb.green[i],
+					     image->rgb.blue[i]);
 #endif
 
   }
@@ -605,23 +608,19 @@ int Read_PCX_to_Pixmap(Display *display, Window window, GC gc, char *filename,
     return errno_pcx;
 
   *pixmap = (Pixmap)bitmap;
+#if 0
   *pixmap_mask = (Pixmap)bitmap;
+  /* !!! two pointers on same bitmap => second free() fails !!! */
+#else
+  /* pixmap_mask will never be used in Allegro (which uses masked_blit()),
+     so use non-NULL dummy pointer to empty Pixmap */
+  /*
+  *pixmap_mask = (Pixmap)checked_calloc(sizeof(Pixmap));
+  */
+  *pixmap_mask = (Pixmap)DUMMY_MASK;
+#endif
 
   return PCX_Success;
-}
-
-int XpmReadFileToPixmap(Display *display, Drawable d, char *filename,
-			Pixmap *pixmap_return, Pixmap *shapemask_return,
-			XpmAttributes *attributes)
-{
-  BITMAP *bitmap;
-
-  if ((bitmap = Read_PCX_to_AllegroBitmap(filename)) == NULL)
-    return XpmOpenFailed;
-
-  *pixmap_return = (Pixmap)bitmap;
-
-  return XpmSuccess;
 }
 
 int XReadBitmapFile(Display *display, Drawable d, char *filename,
@@ -658,6 +657,10 @@ void XFreeGC(Display *display, GC gc)
   gcv = (XGCValues *)gc;
   if (gcv)
     free(gcv);
+}
+
+void XUnmapWindow(Display *display, Window window)
+{
 }
 
 void XCloseDisplay(Display *display)
@@ -827,8 +830,8 @@ int XPending(Display *display)
     pending_events++;
     xmotion = (XMotionEvent *)&event_buffer[pending_events];
     xmotion->type = MotionNotify;
-    xmotion->x = mouse_x - display->screens[display->default_screen].x;
-    xmotion->y = mouse_y - display->screens[display->default_screen].y;
+    xmotion->x = mouse_x - AllegroDefaultScreen().x;
+    xmotion->y = mouse_y - AllegroDefaultScreen().y;
   }
 
   /* mouse button event */
@@ -846,8 +849,8 @@ int XPending(Display *display)
         xbutton = (XButtonEvent *)&event_buffer[pending_events];
         xbutton->type = (mouse_b & bitmask ? ButtonPress : ButtonRelease);
         xbutton->button = mapping[i];
-	xbutton->x = mouse_x - display->screens[display->default_screen].x;
-	xbutton->y = mouse_y - display->screens[display->default_screen].y;
+	xbutton->x = mouse_x - AllegroDefaultScreen().x;
+	xbutton->y = mouse_y - AllegroDefaultScreen().y;
       }
     }
     last_mouse_b = mouse_b;
@@ -883,10 +886,10 @@ void XDrawLine(Display *display, Drawable d, GC gc,
 
   if ((BITMAP *)d == video_bitmap)
   {
-    x1 += display->screens[display->default_screen].x;
-    y1 += display->screens[display->default_screen].y;
-    x2 += display->screens[display->default_screen].x;
-    y2 += display->screens[display->default_screen].y;
+    x1 += AllegroDefaultScreen().x;
+    y1 += AllegroDefaultScreen().y;
+    x2 += AllegroDefaultScreen().x;
+    y2 += AllegroDefaultScreen().y;
     freeze_mouse_flag = TRUE;
     mouse_off = hide_mouse(display, MIN(x1, x2), MIN(y1, y2),
 			   MAX(x1, x2) - MIN(x1, x2),
@@ -905,12 +908,16 @@ void XDestroyImage(XImage *ximage)
 {
 }
 
+void XDestroyWindow(Display *display, Window window)
+{
+}
+
 Bool XQueryPointer(Display *display, Window window,
 		   Window *root, Window *child, int *root_x, int *root_y,
 		   int *win_x, int *win_y, unsigned int *mask)
 {
-  *win_x = mouse_x - display->screens[display->default_screen].x;
-  *win_y = mouse_y - display->screens[display->default_screen].y;
+  *win_x = mouse_x - AllegroDefaultScreen().x;
+  *win_y = mouse_y - AllegroDefaultScreen().y;
 
   return True;
 }
@@ -926,9 +933,65 @@ void XAutoRepeatOff(Display *display)
   keyboard_auto_repeat = FALSE;
 }
 
+void AllegroDrawLine(Drawable d, int from_x, int from_y, int to_x, int to_y,
+		     Pixel color)
+{
+  boolean mouse_off = FALSE;
+
+  if ((BITMAP *)d == video_bitmap)
+  {
+    int dx = AllegroDefaultScreen().x;
+    int dy = AllegroDefaultScreen().y;
+    int x1, y1, x2, y2;
+
+    from_x += dx;
+    from_y += dy;
+    to_x += dx;
+    to_y += dy;
+
+    x1 = (from_x < to_x ? from_x : to_x);
+    y1 = (from_y < to_y ? from_y : to_y);
+    x2 = (from_x < to_x ? to_x : from_x);
+    y2 = (from_y < to_y ? to_y : from_y);
+
+    freeze_mouse_flag = TRUE;
+    mouse_off = hide_mouse(display, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+  }
+
+  line((BITMAP *)d, from_x, from_y, to_x, to_y, color);
+
+  if (mouse_off)
+    unhide_mouse(display);
+
+  freeze_mouse_flag = FALSE;
+}
+
+Pixel AllegroGetPixel(Drawable d, int x, int y)
+{
+  return getpixel((BITMAP *)d, x, y);
+}
+
+void MSDOSOpenAudio(void)
+{
+  if (allegro_init_audio())
+  {
+    audio.sound_available = TRUE;
+    audio.music_available = TRUE;
+    audio.loops_available = TRUE;
+    audio.sound_enabled = TRUE;
+  }
+
+  InitPlaylist();
+}
+
+void MSDOSCloseAudio(void)
+{
+  /* nothing to be done here */
+}
+
 void NetworkServer(int port, int serveronly)
 {
   Error(ERR_WARN, "networking not supported in DOS version");
 }
 
-#endif /* MSDOS */
+#endif /* PLATFORM_MSDOS */

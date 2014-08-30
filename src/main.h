@@ -1,14 +1,14 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  main.h                                                  *
+* main.h                                                   *
 ***********************************************************/
 
 #ifndef MAIN_H
@@ -17,50 +17,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-#ifndef MSDOS
-#define XK_MISCELLANY
-#define XK_LATIN1
-
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
-#include <X11/Xos.h>
-#include <X11/Intrinsic.h>
-#include <X11/keysymdef.h>
-
-#ifdef   XPM_INCLUDE_FILE
-#define  USE_XPM_LIBRARY
-#include XPM_INCLUDE_FILE
-#endif
-#else	/* MSDOS */
-#include "msdos.h"
-#endif  /* MSDOS */
-
-#ifdef DEBUG
-#define DEBUG_TIMING	0
-#endif
-
-typedef unsigned char boolean;
-typedef unsigned char byte;
-
-#ifndef FALSE
-#define FALSE		0
-#define TRUE		(!FALSE)
-#endif
+#include "libgame/libgame.h"
 
 #define WIN_XSIZE	672
 #define WIN_YSIZE	560
-#ifndef MSDOS
+
+#if !defined(PLATFORM_MSDOS)
 #define WIN_XPOS	0
 #define WIN_YPOS	0
-#else	/* MSDOS */
+#else
 #define WIN_XPOS	((XRES - WIN_XSIZE) / 2)
 #define WIN_YPOS	((YRES - WIN_YSIZE) / 2)
-#endif	/* MSDOS */
+#endif
+
 #define SCR_FIELDX	17
 #define SCR_FIELDY	17
 #define MAX_BUF_XSIZE	(SCR_FIELDX + 2)
@@ -73,19 +49,6 @@ typedef unsigned char byte;
 #define MAX_LEV_FIELDY	128
 
 #define MAX_PLAYERS	4
-
-#ifndef MIN
-#define MIN(a,b) 	((a) < (b) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(a,b) 	((a) > (b) ? (a) : (b))
-#endif
-#ifndef ABS
-#define ABS(a)		((a) < 0 ? -(a) : (a))
-#endif
-#ifndef SIGN
-#define SIGN(a)		((a) < 0 ? -1 : ((a)>0 ? 1 : 0))
-#endif
 
 #define SCREENX(a)	((a) - scroll_x)
 #define SCREENY(a)	((a) - scroll_y)
@@ -200,7 +163,7 @@ typedef unsigned char byte;
 #define PLAYER_PROTECTED(x,y)	(SHIELD_ON(PLAYERINFO(x, y)) ||		\
 				 PROTECTED_FIELD(x, y))
 
-/* Pixmaps with graphic file */
+/* Bitmaps with graphic file */
 #define PIX_BACK		0
 #define PIX_DOOR		1
 #define PIX_HEROES		2
@@ -211,13 +174,12 @@ typedef unsigned char byte;
 #define	PIX_BIGFONT		7
 #define PIX_SMALLFONT		8
 #define PIX_MEDIUMFONT		9
-/* Pixmaps without graphic file */
-#define PIX_DB_BACK		10
-#define PIX_DB_DOOR		11
-#define PIX_DB_FIELD		12
+/* Bitmaps without graphic file */
+#define PIX_DB_DOOR		10
+#define PIX_DB_FIELD		11
 
 #define NUM_PICTURES		10
-#define NUM_PIXMAPS		13
+#define NUM_BITMAPS		12
 
 /* boundaries of arrays etc. */
 #define MAX_PLAYER_NAME_LEN	10
@@ -239,7 +201,6 @@ typedef unsigned char byte;
 #define GAME_FRAME_DELAY	20	/* frame delay in milliseconds */
 #define FFWD_FRAME_DELAY	10	/* 200% speed for fast forward */
 #define FRAMES_PER_SECOND	(1000 / GAME_FRAME_DELAY)
-#define GADGET_FRAME_DELAY	150	/* delay between gadget actions */
 #define MICROLEVEL_SCROLL_DELAY	50	/* delay for scrolling micro level */
 #define MICROLEVEL_LABEL_DELAY	250	/* delay for micro level label */
 
@@ -247,19 +208,6 @@ struct HiScore
 {
   char Name[MAX_PLAYER_NAME_LEN + 1];
   int Score;
-};
-
-struct OptionInfo
-{
-  char *display_name;
-  char *server_host;
-  int server_port;
-  char *ro_base_directory;
-  char *rw_base_directory;
-  char *level_directory;
-  boolean serveronly;
-  boolean network;
-  boolean verbose;
 };
 
 struct SetupJoystickInfo
@@ -273,12 +221,12 @@ struct SetupJoystickInfo
 
 struct SetupKeyboardInfo
 {
-  KeySym left;
-  KeySym right;
-  KeySym up;
-  KeySym down;
-  KeySym snap;
-  KeySym bomb;
+  Key left;
+  Key right;
+  Key up;
+  Key down;
+  Key snap;
+  Key bomb;
 };
 
 struct SetupInputInfo
@@ -307,6 +255,7 @@ struct SetupInfo
   boolean team_mode;
   boolean handicap;
   boolean time_limit;
+  boolean fullscreen;
 
   struct SetupInputInfo input[MAX_PLAYERS];
 };
@@ -389,35 +338,6 @@ struct LevelInfo
   boolean gravity;
 };
 
-struct LevelDirInfo
-{
-  char *filename;	/* level series single directory name */
-  char *fullpath;	/* complete path relative to level directory */
-  char *basepath;	/* absolute base path of level directory */
-  char *name;		/* level series name, as displayed on main screen */
-  char *name_short;	/* optional short name for level selection screen */
-  char *name_sorting;	/* optional sorting name for correct level sorting */
-  char *author;		/* level series author name levels without author */
-  char *imported_from;	/* optional comment for imported level series */
-  int levels;		/* number of levels in level series */
-  int first_level;	/* first level number (to allow start with 0 or 1) */
-  int last_level;	/* last level number (automatically calculated) */
-  int sort_priority;	/* sort levels by 'sort_priority' and then by name */
-  boolean level_group;	/* directory contains more level series directories */
-  boolean parent_link;	/* entry links back to parent directory */
-  boolean user_defined;	/* user defined levels are stored in home directory */
-  boolean readonly;	/* readonly levels can not be changed with editor */
-  int color;		/* color to use on selection screen for this level */
-  char *class_desc;	/* description of level series class */
-  int handicap_level;	/* number of the lowest unsolved level */
-  int cl_first;		/* internal control field for "choose level" screen */
-  int cl_cursor;	/* internal control field for "choose level" screen */
-
-  struct LevelDirInfo *node_parent;	/* parent level directory info */
-  struct LevelDirInfo *node_group;	/* level group sub-directory info */
-  struct LevelDirInfo *next;		/* next level series structure node */
-};
-
 struct TapeInfo
 {
   int level_nr;
@@ -455,46 +375,29 @@ struct GameInfo
 
 struct GlobalInfo
 {
-  int dummy;
+  float frames_per_second;
+  boolean fps_slowdown;
+  int fps_slowdown_factor;
 };
 
-extern Display	       *display;
-extern Visual	       *visual;
-extern int		screen;
-extern Window  		window;
-extern GC		gc, clip_gc[], tile_clip_gc;
-extern Pixmap		pix[];
-extern Pixmap		clipmask[], tile_clipmask[];
+extern GC		tile_clip_gc;
+extern Bitmap	       *pix[];
+extern Pixmap		tile_clipmask[];
+extern DrawBuffer      *fieldbuffer;
+extern DrawBuffer      *drawto_field;
 
-#ifdef USE_XPM_LIBRARY
-extern XpmAttributes 	xpm_att[];
-#endif
-
-extern Drawable    	drawto, drawto_field, backbuffer, fieldbuffer;
-extern Colormap		cmap;
-
-extern int		sound_pipe[2];
-extern int		sound_device;
-extern char	       *sound_device_name;
 extern int		joystick_device;
 extern char	       *joystick_device_name[];
-
-extern char	       *program_name;
 
 extern int		game_status;
 extern boolean		level_editor_test_game;
 extern boolean		network_playing;
-extern int		button_status;
-extern boolean		motion_status;
+
 extern int		key_joystick_mapping;
 extern int	    	global_joystick_status, joystick_status;
-extern int		sound_status;
-extern boolean		sound_loops_allowed;
 
 extern boolean		redraw[MAX_BUF_XSIZE][MAX_BUF_YSIZE];
 extern int		redraw_x1, redraw_y1;
-extern int		redraw_mask;
-extern int		redraw_tiles;
 
 extern short		Feld[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		Ur[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -525,20 +428,18 @@ extern int		SBX_Left, SBX_Right;
 extern int		SBY_Upper, SBY_Lower;
 extern int		ZX,ZY, ExitX,ExitY;
 extern int		AllPlayersGone;
-extern int		FrameCounter, TimeFrames, TimePlayed, TimeLeft;
+
+extern int		TimeFrames, TimePlayed, TimeLeft;
 extern boolean		SiebAktiv;
 extern int		SiebCount;
 
 extern boolean		network_player_action_received;
 
-extern struct LevelDirInfo     *leveldir_first, *leveldir_current;
 extern struct LevelInfo		level;
 extern struct PlayerInfo	stored_player[], *local_player;
 extern struct HiScore		highscore[];
 extern struct TapeInfo		tape;
-extern struct SoundInfo		Sound[];
 extern struct JoystickInfo	joystick[];
-extern struct OptionInfo	options;
 extern struct SetupInfo		setup;
 extern struct GameInfo		game;
 extern struct GlobalInfo	global;
@@ -547,7 +448,7 @@ extern char		*sound_name[];
 extern int		background_loop[];
 extern int		num_bg_loops;
 extern char		*element_info[];
-
+extern int		num_element_info;
 
 /* often used screen positions */
 #define SX			8
@@ -585,18 +486,6 @@ extern char		*element_info[];
 #define MICROLEV_XPOS		(SX + (SXSIZE - MICROLEV_XSIZE) / 2)
 #define MICROLEV_YPOS		(SX + 12 * TILEY - MICRO_TILEY)
 #define MICROLABEL_YPOS		(MICROLEV_YPOS + MICROLEV_YSIZE + 7)
-#define FONT1_XSIZE		32
-#define FONT1_YSIZE		32
-#define FONT2_XSIZE		14
-#define FONT2_YSIZE		14
-#define FONT3_XSIZE		11
-#define FONT3_YSIZE		14
-#define FONT4_XSIZE		16
-#define FONT4_YSIZE		16
-#define FONT5_XSIZE		10
-#define FONT5_YSIZE		14
-#define FONT6_XSIZE		16
-#define FONT6_YSIZE		32
 
 #define GFX_STARTX		SX
 #define GFX_STARTY		SY
@@ -633,9 +522,6 @@ extern char		*element_info[];
 #define MORE_PER_LINE		16
 #define MINI_MORE_PER_LINE	16
 #define MICRO_MORE_PER_LINE	16
-
-#define FONT_CHARS_PER_LINE	16
-#define FONT_LINES_PER_FONT	4
 
 /* game elements:
 **	  0 - 499: real elements, stored in level file
@@ -1536,81 +1422,73 @@ extern char		*element_info[];
 
 
 /* the names of the sounds */
-#define SND_ALCHEMY		0
-#define SND_AMOEBE		1
-#define SND_ANTIGRAV		2
-#define SND_AUTSCH		3
-#define SND_BLURB		4
-#define SND_BONG		5
-#define SND_BUING		6
-#define SND_CHASE		7
-#define SND_CZARDASZ		8
-#define SND_DENG		9
-#define SND_FUEL		10
-#define SND_GONG		11
-#define SND_HALLOFFAME		12
-#define SND_HOLZ		13
-#define SND_HUI			14
-#define SND_KABUMM		15
-#define SND_KINK		16
-#define SND_KLAPPER		17
-#define SND_KLING		18
-#define SND_KLOPF		19
-#define SND_KLUMPF		20
-#define SND_KNACK		21
-#define SND_KNURK		22
-#define SND_KRACH		23
-#define SND_LACHEN		24
-#define SND_LASER		25
-#define SND_MIEP		26
-#define SND_NETWORK		27
-#define SND_NJAM		28
-#define SND_OEFFNEN		29
-#define SND_PLING		30
-#define SND_PONG		31
-#define SND_PUSCH		32
-#define SND_QUIEK		33
-#define SND_QUIRK		34
-#define SND_RHYTHMLOOP		35
-#define SND_ROAAAR		36
-#define SND_ROEHR		37
-#define SND_RUMMS		38
-#define SND_SCHLOPP		39
-#define SND_SCHLURF		40
-#define SND_SCHRFF		41
-#define SND_SCHWIRR		42
-#define SND_SIRR		43
-#define SND_SLURP		44
-#define SND_SPROING		45
-#define SND_TWILIGHT		46
-#define SND_TYGER		47
-#define SND_VOYAGER		48
-#define SND_WARNTON		49
-#define SND_WHOOSH		50
-#define SND_ZISCH		51
-#define SND_SP_BASE		52
-#define SND_SP_INFOTRON		53
-#define SND_SP_ZONKDOWN		54
-#define SND_SP_ZONKPUSH		55
-#define SND_SP_BUG		56
-#define SND_SP_BOOM		57
-#define SND_SP_BOOOM		58
-#define SND_SP_EXIT		59
-#define SND_EMPTY		60
-#define SND_GATE		61
+#define SND_AMOEBE		0
+#define SND_ANTIGRAV		1
+#define SND_AUTSCH		2
+#define SND_BLURB		3
+#define SND_BONG		4
+#define SND_BUING		5
+#define SND_DENG		6
+#define SND_FUEL		7
+#define SND_GONG		8
+#define SND_HALLOFFAME		9
+#define SND_HOLZ		10
+#define SND_HUI			11
+#define SND_KABUMM		12
+#define SND_KINK		13
+#define SND_KLAPPER		14
+#define SND_KLING		15
+#define SND_KLOPF		16
+#define SND_KLUMPF		17
+#define SND_KNACK		18
+#define SND_KNURK		19
+#define SND_KRACH		20
+#define SND_LACHEN		21
+#define SND_LASER		22
+#define SND_MIEP		23
+#define SND_NJAM		24
+#define SND_OEFFNEN		25
+#define SND_PLING		26
+#define SND_PONG		27
+#define SND_PUSCH		28
+#define SND_QUIEK		29
+#define SND_QUIRK		30
+#define SND_RHYTHMLOOP		31
+#define SND_ROAAAR		32
+#define SND_ROEHR		33
+#define SND_RUMMS		34
+#define SND_SCHLOPP		35
+#define SND_SCHLURF		36
+#define SND_SCHRFF		37
+#define SND_SCHWIRR		38
+#define SND_SIRR		39
+#define SND_SLURP		40
+#define SND_SPROING		41
+#define SND_WARNTON		42
+#define SND_WHOOSH		43
+#define SND_ZISCH		44
+#define SND_SP_BASE		45
+#define SND_SP_INFOTRON		46
+#define SND_SP_ZONKDOWN		47
+#define SND_SP_ZONKPUSH		48
+#define SND_SP_BUG		49
+#define SND_SP_BOOM		50
+#define SND_SP_BOOOM		51
+#define SND_SP_EXIT		52
+#define SND_EMPTY		53
+#define SND_GATE		54
 
-#define NUM_SOUNDS		62
+#define NUM_SOUNDS		55
 
 /* default input keys */
-#define KEY_UNDEFINDED		XK_VoidSymbol
-#define DEFAULT_KEY_LEFT	XK_Left
-#define DEFAULT_KEY_RIGHT	XK_Right
-#define DEFAULT_KEY_UP		XK_Up
-#define DEFAULT_KEY_DOWN	XK_Down
-#define DEFAULT_KEY_SNAP	XK_Shift_L
-#define DEFAULT_KEY_BOMB	XK_Shift_R
-#define DEFAULT_KEY_OKAY	XK_Return
-#define DEFAULT_KEY_CANCEL	XK_Escape
+#define DEFAULT_KEY_LEFT	KSYM_Left
+#define DEFAULT_KEY_RIGHT	KSYM_Right
+#define DEFAULT_KEY_UP		KSYM_Up
+#define DEFAULT_KEY_DOWN	KSYM_Down
+#define DEFAULT_KEY_SNAP	KSYM_Shift_L
+#define DEFAULT_KEY_BOMB	KSYM_Shift_R
+#define DEFAULT_KEY_OKAY	KSYM_Return
+#define DEFAULT_KEY_CANCEL	KSYM_Escape
 
 /* directions for moving */
 #define MV_NO_MOVING		0
@@ -1618,19 +1496,6 @@ extern char		*element_info[];
 #define MV_RIGHT		(1 << 1)
 #define MV_UP			(1 << 2)
 #define MV_DOWN	       		(1 << 3)
-
-/* font types */
-#define FS_SMALL		0
-#define FS_BIG			1
-#define FS_MEDIUM		2
-/* font colors */
-#define FC_RED			0
-#define FC_BLUE			1
-#define FC_GREEN		2
-#define FC_YELLOW		3
-#define FC_SPECIAL1		4
-#define FC_SPECIAL2		5
-#define FC_SPECIAL3		6
 
 /* values for game_status */
 #define EXITGAME		0
@@ -1645,89 +1510,20 @@ extern char		*element_info[];
 #define SETUPINPUT		9
 #define CALIBRATION		10
 
-#ifndef RO_GAME_DIR
-#define RO_GAME_DIR		"."
-#endif
-
-#ifndef RW_GAME_DIR
-#define RW_GAME_DIR		"."
-#endif
-
-#define RO_BASE_PATH		RO_GAME_DIR
-#define RW_BASE_PATH		RW_GAME_DIR
-
-#define GRAPHICS_DIRECTORY	"graphics"
-#define SOUNDS_DIRECTORY	"sounds"
-#define LEVELS_DIRECTORY	"levels"
-#define TAPES_DIRECTORY		"tapes"
-#define SCORES_DIRECTORY	"scores"
-
-#define PROGRAM_VERSION_STRING	"1.4.0"
+#define PROGRAM_VERSION_STRING	"2.0.0"
 #define PROGRAM_TITLE_STRING	"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING	"Holger Schemel"
-#define WINDOW_TITLE_STRING	PROGRAM_TITLE_STRING " " PROGRAM_VERSION_STRING
-#define COPYRIGHT_STRING	"Copyright ^1995-99 by " PROGRAM_AUTHOR_STRING
+#define PROGRAM_RIGHTS_STRING	"Copyright ^1995-2000 by"
+#define PROGRAM_DOS_PORT_STRING	"DOS port done by Guido Schulz"
+#define PROGRAM_IDENT_STRING	PROGRAM_VERSION_STRING " " TARGET_STRING
+#define WINDOW_TITLE_STRING	PROGRAM_TITLE_STRING " " PROGRAM_IDENT_STRING
+#define WINDOW_SUBTITLE_STRING	PROGRAM_RIGHTS_STRING " " PROGRAM_AUTHOR_STRING
+#define ICON_TITLE_STRING	PROGRAM_TITLE_STRING
+#define UNIX_USERDATA_DIRECTORY	".rocksndiamonds"
 
-/* default name for empty highscore entry */
-#define EMPTY_PLAYER_NAME	"no name"
-
-/* default name for unknown player names */
-#define ANONYMOUS_NAME		"anonymous"
-
-/* default name for new levels */
-#define NAMELESS_LEVEL_NAME	"nameless level"
-
-/* values for button_status */
-#define MB_NOT_PRESSED		FALSE
-#define MB_RELEASED		FALSE
-#define MB_PRESSED		TRUE
-#define MB_MENU_CHOICE		FALSE
-#define MB_MENU_MARK		TRUE
-#define MB_MENU_INITIALIZE	(-1)
-#define MB_LEFT			1
-#define MB_MIDDLE		2
-#define MB_RIGHT		3
-
-/* values for redraw_mask */
-#define REDRAW_ALL		(1 << 0)
-#define REDRAW_FIELD		(1 << 1)
-#define REDRAW_TILES		(1 << 2)
-#define REDRAW_DOOR_1		(1 << 3)
-#define REDRAW_VIDEO_1		(1 << 4)
-#define REDRAW_VIDEO_2		(1 << 5)
-#define REDRAW_VIDEO_3		(1 << 6)
-#define REDRAW_MICROLEVEL	(1 << 7)
-#define REDRAW_FROM_BACKBUFFER	(1 << 8)
-#define REDRAW_DOOR_2		(REDRAW_VIDEO_1 | \
-				 REDRAW_VIDEO_2 | \
-				 REDRAW_VIDEO_3)
-#define REDRAW_DOOR_3		(1 << 9)
-#define REDRAW_DOORS		(REDRAW_DOOR_1 | \
-				 REDRAW_DOOR_2 | \
-				 REDRAW_DOOR_3)
-#define REDRAW_MAIN		(REDRAW_FIELD | \
-				 REDRAW_TILES | \
-				 REDRAW_MICROLEVEL)
-#define REDRAWTILES_THRESHOLD	(SCR_FIELDX * SCR_FIELDY / 2)
-
-/* areas in pixmap PIX_DOOR */
-/* meaning in PIX_DB_DOOR: (3 PAGEs)
-   PAGEX1: 1. buffer for DOOR_1
-   PAGEX2: 2. buffer for DOOR_1
-   PAGEX3: buffer for animations
-*/
-
-#define DOOR_GFX_PAGESIZE	DXSIZE
-#define DOOR_GFX_PAGEX1		(0 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX2		(1 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX3		(2 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX4		(3 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX5		(4 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX6		(5 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX7		(6 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX8		(7 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEY1		0
-#define DOOR_GFX_PAGEY2		DYSIZE
+#define X11_ICON_FILENAME	"rocks_icon.xbm"
+#define X11_ICONMASK_FILENAME	"rocks_iconmask.xbm"
+#define MSDOS_POINTER_FILENAME	"mouse.pcx"
 
 /* for DrawGraphicAnimation() [tools.c] and AnimateToon() [cartoons.c] */
 #define ANIM_NORMAL		0

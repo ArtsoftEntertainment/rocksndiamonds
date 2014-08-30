@@ -1,21 +1,20 @@
 /***********************************************************
-* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1995-2000 Artsoft Entertainment                      *
+* (c) 1994-2000 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
 *               Germany                                    *
 *               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-* cartoons.h                                               *
+* random.h                                                 *
 ***********************************************************/
 
-#ifndef CARTOONS_H
-#define CARTOONS_H
+#ifndef RANDOM_H
+#define RANDOM_H
 
-void InitAnimation(void);
-void StopAnimation(void);
-void DoAnimation(void);
+void srandom_linux_libc(unsigned int);
+long int random_linux_libc(void);
 
 #endif

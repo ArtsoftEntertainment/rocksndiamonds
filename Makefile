@@ -1,6 +1,6 @@
 #=============================================================================#
-# Makefile for Rocks'n'Diamonds 1.4.0                                         #
-# (c) 1995-1999 Holger Schemel, aeglos@valinor.owl.de                         #
+# Makefile for Rocks'n'Diamonds                                               #
+# (c) 1995-2000 Holger Schemel, info@artsoft.org                              #
 #=============================================================================#
 
 #-----------------------------------------------------------------------------#
@@ -9,12 +9,6 @@
 
 # specify your favorite ANSI C compiler
 CC = gcc
-
-# explicitely choose your platform, if defaults doesn't work right
-# needed for SUN/Solaris; Linux and DOS work fine with auto detection
-# PLATFORM = solaris
-# PLATFORM = unix
-# PLATFORM = dos
 
 # specify path to X11 on your system
 # if undefined, use system defaults (works with Linux/gcc/libc5)
@@ -31,15 +25,16 @@ X11_PATH = /usr/X11
 # uncomment this if your system has no joystick include file
 # JOYSTICK = -DNO_JOYSTICK
 
-# uncomment this if your system has no sound
-# SOUNDS = -DNO_SOUNDS
-
 # choose if you want to allow many global score file entries for one player
 # default is 'MANY_PER_NAME'
 # when installing the game in a multi user environment, choose this
 # SCORE_ENTRIES = ONE_PER_NAME
 # when installing the game in a single user environment, choose this
 # SCORE_ENTRIES = MANY_PER_NAME
+
+# specify paths for cross-compiling (only needed for MS-DOS and Win32 build)
+CROSS_PATH_MSDOS=/usr/local/cross-msdos/i386-msdosdjgpp
+CROSS_PATH_WIN32=/usr/local/cross-tools/i386-mingw32msvc
 
 #-----------------------------------------------------------------------------#
 # you should not need to change anything below                                #
@@ -50,13 +45,56 @@ X11_PATH = /usr/X11
 MAKE = make
 
 SRC_DIR = src
-MAKE_CMD = @$(MAKE) -C $(SRC_DIR)
+MAKE_CMD = $(MAKE) -C $(SRC_DIR)
 
 all:
-	$(MAKE_CMD)
+	@$(MAKE_CMD) TARGET=x11
+
+x11:
+	@$(MAKE_CMD) TARGET=x11
+
+sdl:
+	@$(MAKE_CMD) TARGET=sdl
 
 solaris:
-	$(MAKE_CMD) PLATFORM=solaris
+	@$(MAKE_CMD) PLATFORM=solaris
+
+msdos:
+	@$(MAKE_CMD) PLATFORM=msdos
+
+cross-msdos:
+	@PATH=$(CROSS_PATH_MSDOS)/bin:${PATH} $(MAKE_CMD) PLATFORM=cross-msdos
+
+cross-win32:
+	@PATH=$(CROSS_PATH_WIN32)/bin:${PATH} $(MAKE_CMD) PLATFORM=cross-win32
 
 clean:
-	$(MAKE_CMD) clean
+	@$(MAKE_CMD) clean
+
+
+#-----------------------------------------------------------------------------#
+# development only stuff                                                      #
+#-----------------------------------------------------------------------------#
+
+backup:
+	./Scripts/make_backup.sh src
+
+backup_lev:
+	./Scripts/make_backup.sh lev
+
+backup_gfx:
+	./Scripts/make_backup.sh gfx
+
+dist-unix:
+	./Scripts/make_dist.sh unix .
+
+dist-msdos:
+	./Scripts/make_dist.sh dos .
+
+dist-win32:
+	./Scripts/make_dist.sh win .
+
+dist: dist-unix dist-msdos dist-win32
+
+depend dep:
+	$(MAKE_CMD) depend

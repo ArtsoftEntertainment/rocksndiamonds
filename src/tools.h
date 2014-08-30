@@ -1,14 +1,14 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  tools.h                                                 *
+* tools.h                                                  *
 ***********************************************************/
 
 #ifndef TOOLS_H
@@ -62,13 +62,10 @@ void SetDrawtoField(int);
 void BackToFront();
 void FadeToFront();
 void ClearWindow();
-int getFontWidth(int, int);
-int getFontHeight(int, int);
-void DrawInitText(char *, int, int);
-void DrawTextF(int, int, int, char *, ...);
-void DrawTextFCentered(int, int, char *, ...);
-void DrawText(int, int, char *, int, int);
-void DrawTextExt(Drawable, GC, int, int, char *, int, int);
+
+void MarkTileDirty(int, int);
+void SetBorderElement();
+
 void DrawAllPlayers(void);
 void DrawPlayerField(int, int);
 void DrawPlayer(struct PlayerInfo *);
@@ -77,12 +74,12 @@ void DrawGraphicAnimation(int, int, int, int, int, int);
 void DrawGraphicAnimationThruMask(int, int, int, int, int, int);
 void getGraphicSource(int, int *, int *, int *);
 void DrawGraphic(int, int, int);
-void DrawGraphicExt(Drawable, GC, int, int, int);
+void DrawGraphicExt(DrawBuffer *, int, int, int);
 void DrawGraphicThruMask(int, int, int);
-void DrawGraphicThruMaskExt(Drawable, int, int, int);
+void DrawGraphicThruMaskExt(DrawBuffer *, int, int, int);
 void DrawMiniGraphic(int, int, int);
-void getMiniGraphicSource(int, Pixmap *, int *, int *);
-void DrawMiniGraphicExt(Drawable, GC, int, int, int);
+void getMiniGraphicSource(int, Bitmap **, int *, int *);
+void DrawMiniGraphicExt(DrawBuffer *, int, int, int);
 void DrawGraphicShifted(int, int, int, int, int, int, int);
 void DrawGraphicShiftedThruMask(int, int, int, int, int, int);
 void DrawScreenElementExt(int, int, int, int, int, int, int);
@@ -110,10 +107,10 @@ unsigned int GetDoorState(void);
 unsigned int MoveDoor(unsigned int);
 void DrawSpecialEditorDoor();
 void UndrawSpecialEditorDoor();
-int ReadPixel(Drawable, int, int);
+int ReadPixel(DrawBuffer *, int, int);
 
 void CreateToolButtons();
 
 int el2gfx(int);
 
-#endif
+#endif	/* TOOLS_H */

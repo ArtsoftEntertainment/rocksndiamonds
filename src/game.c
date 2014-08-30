@@ -1,23 +1,22 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  game.c                                                  *
+* game.c                                                   *
 ***********************************************************/
 
+#include "libgame/libgame.h"
+
 #include "game.h"
-#include "misc.h"
 #include "tools.h"
 #include "screens.h"
-#include "sound.h"
 #include "init.h"
-#include "buttons.h"
 #include "files.h"
 #include "tape.h"
 #include "joystick.h"
@@ -167,17 +166,21 @@ static unsigned int getStateCheckSum(int counter)
 
 void GetPlayerConfig()
 {
-  if (sound_status == SOUND_OFF)
+  if (!audio.sound_available)
     setup.sound = FALSE;
 
-  if (!sound_loops_allowed)
+  if (!audio.loops_available)
   {
     setup.sound_loops = FALSE;
     setup.sound_music = FALSE;
   }
 
+  if (!video.fullscreen_available)
+    setup.fullscreen = FALSE;
+
   setup.sound_simple = setup.sound;
 
+  SetAudioMode(setup.sound);
   InitJoysticks();
 }
 
@@ -502,7 +505,7 @@ void InitGame()
 
   network_player_action_received = FALSE;
 
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
   /* initial null action */
   if (network_playing)
     SendToServer_MovePlayer(MV_NO_MOVING);
@@ -510,7 +513,6 @@ void InitGame()
 
   ZX = ZY = -1;
 
-  game.yam_content_nr = 0;
   FrameCounter = 0;
   TimeFrames = 0;
   TimePlayed = 0;
@@ -523,6 +525,8 @@ void InitGame()
   ScrollStepSize = 0;	/* will be correctly initialized by ScrollScreen() */
 
   AllPlayersGone = FALSE;
+
+  game.yam_content_nr = 0;
   game.magic_wall_active = FALSE;
   game.magic_wall_time_left = 0;
   game.light_time_left = 0;
@@ -709,32 +713,30 @@ void InitGame()
   DrawAllPlayers();
   FadeToFront();
 
-  /* after drawing the level, corect some elements */
-
+  /* after drawing the level, correct some elements */
   if (game.timegate_time_left == 0)
     CloseAllOpenTimegates();
 
   if (setup.soft_scrolling)
-    XCopyArea(display, fieldbuffer, backbuffer, gc,
-	      FX, FY, SXSIZE, SYSIZE, SX, SY);
+    BlitBitmap(fieldbuffer, backbuffer, FX, FY, SXSIZE, SYSIZE, SX, SY);
 
   redraw_mask |= REDRAW_FROM_BACKBUFFER;
 
   /* copy default game door content to main double buffer */
-  XCopyArea(display, pix[PIX_DOOR], drawto, gc,
-	    DOOR_GFX_PAGEX5, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE, DX, DY);
+  BlitBitmap(pix[PIX_DOOR], drawto,
+	     DOOR_GFX_PAGEX5, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE, DX, DY);
 
   if (level_nr < 100)
     DrawText(DX + XX_LEVEL, DY + YY_LEVEL,
 	     int2str(level_nr, 2), FS_SMALL, FC_YELLOW);
   else
   {
-    DrawTextExt(drawto, gc, DX + XX_EMERALDS, DY + YY_EMERALDS,
+    DrawTextExt(drawto, DX + XX_EMERALDS, DY + YY_EMERALDS,
 		int2str(level_nr, 3), FS_SMALL, FC_SPECIAL3);
-    XCopyArea(display, drawto, drawto, gc,
-	      DX + XX_EMERALDS, DY + YY_EMERALDS + 1,
-	      FONT5_XSIZE * 3, FONT5_YSIZE - 1,
-	      DX + XX_LEVEL - 1, DY + YY_LEVEL + 1);
+    BlitBitmap(drawto, drawto,
+	       DX + XX_EMERALDS, DY + YY_EMERALDS + 1,
+	       FONT5_XSIZE * 3, FONT5_YSIZE - 1,
+	       DX + XX_LEVEL - 1, DY + YY_LEVEL + 1);
   }
 
   DrawText(DX + XX_EMERALDS, DY + YY_EMERALDS,
@@ -754,15 +756,15 @@ void InitGame()
   MapTapeButtons();
 
   /* copy actual game door content to door double buffer for OpenDoor() */
-  XCopyArea(display, drawto, pix[PIX_DB_DOOR], gc,
-	    DX, DY, DXSIZE, DYSIZE, DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
+  BlitBitmap(drawto, pix[PIX_DB_DOOR],
+	     DX, DY, DXSIZE, DYSIZE, DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
 
   OpenDoor(DOOR_OPEN_ALL);
 
-  if (setup.sound_music)
-    PlaySoundLoop(background_loop[level_nr % num_bg_loops]);
+  if (setup.sound_music && num_bg_loops)
+    PlayMusic(level_nr % num_bg_loops);
 
-  XAutoRepeatOff(display);
+  KeyboardAutoRepeatOff();
 
   if (options.verbose)
   {
@@ -958,7 +960,9 @@ void GameWon()
       StopSound(SND_SIRR);
   }
 
+#if 0
   FadeSounds();
+#endif
 
   /* Hero disappears */
   DrawLevelField(ExitX, ExitY);
@@ -979,10 +983,12 @@ void GameWon()
   {
     leveldir_current->handicap_level++;
     SaveLevelSetup_SeriesInfo();
-
-    if (level_nr < leveldir_current->last_level)
-      raise_level = TRUE;
   }
+
+  if (level_editor_test_game)
+    local_player->score = -1;	/* no highscore when playing from editor */
+  else if (level_nr < leveldir_current->last_level)
+    raise_level = TRUE;		/* advance to next level */
 
   if ((hi_pos = NewHiScore()) >= 0) 
   {
@@ -3793,8 +3799,8 @@ void EdelsteinFunkeln(int x, int y)
 	  dest_x = FX + SCREENX(x)*TILEX;
 	  dest_y = FY + SCREENY(y)*TILEY;
 
-	  XCopyArea(display, drawto_field, window, gc,
-		    dest_x, dest_y, TILEX, TILEY, dest_x, dest_y);
+	  BlitBitmap(drawto_field, window,
+		     dest_x, dest_y, TILEX, TILEY, dest_x, dest_y);
 	  SetDrawtoField(DRAW_DIRECT);
 	}
       }
@@ -4241,7 +4247,7 @@ void GameActions()
 #endif
     */
 
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
     /* last chance to get network player actions without main loop delay */
     HandleNetworking();
 #endif
@@ -4278,7 +4284,7 @@ void GameActions()
       stored_player[i].effective_action = stored_player[i].action;
   }
 
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
   if (network_playing)
     SendToServer_MovePlayer(summarized_player_action);
 #endif
@@ -4561,6 +4567,25 @@ void GameActions()
   }
 
   DrawAllPlayers();
+
+  if (options.debug)			/* calculate frames per second */
+  {
+    static unsigned long fps_counter = 0;
+    static int fps_frames = 0;
+    unsigned long fps_delay_ms = Counter() - fps_counter;
+
+    fps_frames++;
+
+    if (fps_delay_ms >= 500)	/* calculate fps every 0.5 seconds */
+    {
+      global.frames_per_second = 1000 * (float)fps_frames / fps_delay_ms;
+
+      fps_frames = 0;
+      fps_counter = Counter();
+    }
+
+    redraw_mask |= REDRAW_FPS;
+  }
 }
 
 static boolean AllPlayersInSight(struct PlayerInfo *player, int x, int y)
@@ -4607,13 +4632,13 @@ void ScrollLevel(int dx, int dy)
   int softscroll_offset = (setup.soft_scrolling ? TILEX : 0);
   int x, y;
 
-  XCopyArea(display, drawto_field, drawto_field, gc,
-	    FX + TILEX*(dx == -1) - softscroll_offset,
-	    FY + TILEY*(dy == -1) - softscroll_offset,
-	    SXSIZE - TILEX*(dx!=0) + 2*softscroll_offset,
-	    SYSIZE - TILEY*(dy!=0) + 2*softscroll_offset,
-	    FX + TILEX*(dx == 1) - softscroll_offset,
-	    FY + TILEY*(dy == 1) - softscroll_offset);
+  BlitBitmap(drawto_field, drawto_field,
+	     FX + TILEX*(dx == -1) - softscroll_offset,
+	     FY + TILEY*(dy == -1) - softscroll_offset,
+	     SXSIZE - TILEX*(dx!=0) + 2*softscroll_offset,
+	     SYSIZE - TILEY*(dy!=0) + 2*softscroll_offset,
+	     FX + TILEX*(dx == 1) - softscroll_offset,
+	     FY + TILEY*(dy == 1) - softscroll_offset);
 
   if (dx)
   {
@@ -5382,12 +5407,10 @@ int DigField(struct PlayerInfo *player,
       RemoveField(x, y);
       player->key[key_nr] = TRUE;
       RaiseScoreElement(EL_SCHLUESSEL);
-      DrawMiniGraphicExt(drawto, gc,
-			 DX_KEYS+key_nr*MINI_TILEX, DY_KEYS,
-			 GFX_SCHLUESSEL1+key_nr);
-      DrawMiniGraphicExt(window, gc,
-			 DX_KEYS+key_nr*MINI_TILEX, DY_KEYS,
-			 GFX_SCHLUESSEL1+key_nr);
+      DrawMiniGraphicExt(drawto, DX_KEYS + key_nr * MINI_TILEX, DY_KEYS,
+			 GFX_SCHLUESSEL1 + key_nr);
+      DrawMiniGraphicExt(window, DX_KEYS + key_nr * MINI_TILEX, DY_KEYS,
+			 GFX_SCHLUESSEL1 + key_nr);
       PlaySoundLevel(x, y, SND_PONG);
       break;
     }
@@ -5402,12 +5425,10 @@ int DigField(struct PlayerInfo *player,
       RemoveField(x, y);
       player->key[key_nr] = TRUE;
       RaiseScoreElement(EL_SCHLUESSEL);
-      DrawMiniGraphicExt(drawto, gc,
-			 DX_KEYS+key_nr*MINI_TILEX, DY_KEYS,
-			 GFX_SCHLUESSEL1+key_nr);
-      DrawMiniGraphicExt(window, gc,
-			 DX_KEYS+key_nr*MINI_TILEX, DY_KEYS,
-			 GFX_SCHLUESSEL1+key_nr);
+      DrawMiniGraphicExt(drawto, DX_KEYS + key_nr * MINI_TILEX, DY_KEYS,
+			 GFX_SCHLUESSEL1 + key_nr);
+      DrawMiniGraphicExt(window, DX_KEYS + key_nr * MINI_TILEX, DY_KEYS,
+			 GFX_SCHLUESSEL1 + key_nr);
       PlaySoundLevel(x, y, SND_PONG);
       break;
     }
@@ -5929,7 +5950,7 @@ void PlaySoundLevel(int x, int y, int sound_nr)
 
   volume = PSND_MAX_VOLUME;
 
-#ifndef MSDOS
+#if !defined(PLATFORM_MSDOS)
   stereo = (sx - SCR_FIELDX/2) * 12;
 #else
   stereo = PSND_MIDDLE + (2 * sx - (SCR_FIELDX - 1)) * 5;
@@ -6065,7 +6086,7 @@ void CreateGameButtons()
 
   for (i=0; i<NUM_GAME_BUTTONS; i++)
   {
-    Pixmap gd_pixmap = pix[PIX_DOOR];
+    Bitmap *gd_bitmap = pix[PIX_DOOR];
     struct GadgetInfo *gi;
     int button_type;
     boolean checked;
@@ -6110,10 +6131,10 @@ void CreateGameButtons()
 		      GDI_TYPE, button_type,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
 		      GDI_CHECKED, checked,
-		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y1,
-		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y1,
-		      GDI_ALT_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y2,
-		      GDI_ALT_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y2,
+		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y1,
+		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y1,
+		      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y2,
+		      GDI_ALT_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y2,
 		      GDI_EVENT_MASK, event_mask,
 		      GDI_CALLBACK_ACTION, HandleGameButtons,
 		      GDI_END);
@@ -6163,7 +6184,7 @@ static void HandleGameButtons(struct GadgetInfo *gi)
 	  Request("Do you really want to quit the game ?",
 		  REQ_ASK | REQ_STAY_CLOSED))
       { 
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
 	if (options.network)
 	  SendToServer_StopPlaying();
 	else
@@ -6180,7 +6201,7 @@ static void HandleGameButtons(struct GadgetInfo *gi)
     case GAME_CTRL_ID_PAUSE:
       if (options.network)
       {
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
 	if (tape.pausing)
 	  SendToServer_ContinuePlaying();
 	else
@@ -6194,7 +6215,7 @@ static void HandleGameButtons(struct GadgetInfo *gi)
     case GAME_CTRL_ID_PLAY:
       if (tape.pausing)
       {
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
 	if (options.network)
 	  SendToServer_ContinuePlaying();
 	else
@@ -6210,26 +6231,27 @@ static void HandleGameButtons(struct GadgetInfo *gi)
       if (setup.sound_music)
       { 
 	setup.sound_music = FALSE;
-	FadeSound(background_loop[level_nr % num_bg_loops]);
+	FadeMusic();
       }
-      else if (sound_loops_allowed)
+      else if (audio.loops_available)
       { 
 	setup.sound = setup.sound_music = TRUE;
-	PlaySoundLoop(background_loop[level_nr % num_bg_loops]);
+	if (num_bg_loops)
+	  PlayMusic(level_nr % num_bg_loops);
       }
       break;
 
     case SOUND_CTRL_ID_LOOPS:
       if (setup.sound_loops)
 	setup.sound_loops = FALSE;
-      else if (sound_loops_allowed)
+      else if (audio.loops_available)
 	setup.sound = setup.sound_loops = TRUE;
       break;
 
     case SOUND_CTRL_ID_SIMPLE:
       if (setup.sound_simple)
 	setup.sound_simple = FALSE;
-      else if (sound_status==SOUND_AVAILABLE)
+      else if (audio.sound_available)
 	setup.sound = setup.sound_simple = TRUE;
       break;
 

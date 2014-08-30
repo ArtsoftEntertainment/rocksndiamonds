@@ -1,20 +1,24 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1994-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  misc.h                                                  *
+* misc.h                                                   *
 ***********************************************************/
 
 #ifndef MISC_H
 #define MISC_H
 
-#include "main.h"
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "system.h"
+
 
 /* values for InitCounter() and Counter() */
 #define INIT_COUNTER			0
@@ -58,22 +62,21 @@ char *getPath2(char *, char *);
 char *getPath3(char *, char *, char*);
 char *getStringCopy(char *);
 char *getStringToLower(char *);
-void MarkTileDirty(int, int);
-void SetBorderElement();
 void GetOptions(char **);
 void Error(int, char *, ...);
 void *checked_malloc(unsigned long);
 void *checked_calloc(unsigned long);
+void *checked_realloc(void *, unsigned long);
 short getFile16BitInteger(FILE *, int);
 void putFile16BitInteger(FILE *, short, int);
 int getFile32BitInteger(FILE *, int);
 void putFile32BitInteger(FILE *, int, int);
 void getFileChunk(FILE *, char *, int *, int);
 void putFileChunk(FILE *, char *, int, int);
-char *getKeyNameFromKeySym(KeySym);
-char *getX11KeyNameFromKeySym(KeySym);
-KeySym getKeySymFromX11KeyName(char *);
-char getCharFromKeySym(KeySym);
+char *getKeyNameFromKey(Key);
+char *getX11KeyNameFromKey(Key);
+Key getKeyFromX11KeyName(char *);
+char getCharFromKey(Key);
 char *getJoyNameFromJoySymbol(int);
 int getJoySymbolFromJoyName(char *);
 int getJoystickNrFromDeviceName(char *);
@@ -91,6 +94,19 @@ struct LevelDirInfo *getLevelDirInfoFromFilename(char *);
 void dumpLevelDirInfo(struct LevelDirInfo *, int);
 void sortLevelDirInfo(struct LevelDirInfo **,
 		      int (*compare_function)(const void *, const void *));
+
+inline void swap_numbers(int *, int *);
+inline void swap_number_pairs(int *, int *, int *, int *);
+
+char *getUserDataDir(void);
+void createDirectory(char *, char *);
+void InitUserDataDirectory(void);
+
+#if !defined(PLATFORM_UNIX)
+void initErrorFile();
+FILE *openErrorFile();
+void dumpErrorFile();
+#endif
 
 void debug_print_timestamp(int, char *);
 

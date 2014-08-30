@@ -1,19 +1,23 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1994-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  pcx.c                                                   *
+* pcx.c                                                    *
 ***********************************************************/
 
+#ifndef TARGET_SDL
+
+#include <stdio.h>
+
 #include "pcx.h"
-#include "image.h"
 #include "misc.h"
+
 
 #define PCX_DEBUG		FALSE
 
@@ -134,7 +138,7 @@ Image *Read_PCX_to_Image(char *filename)
 
   errno_pcx = PCX_Success;
 
-  if (!(file = fopen(filename, "r")))
+  if (!(file = fopen(filename, MODE_READ)))
   {
     errno_pcx = PCX_OpenFailed;
     return NULL;
@@ -259,3 +263,5 @@ Image *Read_PCX_to_Image(char *filename)
 
   return image;
 }
+
+#endif /* !TARGET_SDL */

@@ -1,23 +1,23 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  editor.c                                                *
+* editor.c                                                 *
 ***********************************************************/
 
 #include <math.h>
 
+#include "libgame/libgame.h"
+
 #include "editor.h"
 #include "screens.h"
 #include "tools.h"
-#include "misc.h"
-#include "buttons.h"
 #include "files.h"
 #include "game.h"
 #include "tape.h"
@@ -690,10 +690,10 @@ static int new_element1 = EL_MAUERWERK;
 static int new_element2 = EL_LEERRAUM;
 static int new_element3 = EL_ERDREICH;
 
-#define BUTTON_ELEMENT(button) (button == 1 ? new_element1 : \
-				button == 2 ? new_element2 : \
-				button == 3 ? new_element3 : EL_LEERRAUM)
-#define BUTTON_STEPSIZE(button) (button == 1 ? 1 : button == 2 ? 5 : 10)
+#define BUTTON_ELEMENT(button) ((button) == 1 ? new_element1 : \
+				(button) == 2 ? new_element2 : \
+				(button) == 3 ? new_element3 : EL_LEERRAUM)
+#define BUTTON_STEPSIZE(button) ((button) == 1 ? 1 : (button) == 2 ? 5 : 10)
 
 /* forward declaration for internal use */
 static void ModifyEditorCounter(int, int);
@@ -1261,19 +1261,31 @@ int editor_element[] =
 };
 int elements_in_list = sizeof(editor_element)/sizeof(int);
 
+static char *getElementInfoText(int element)
+{
+  char *info_text = "unknown";
+
+  if (element < num_element_info)
+    info_text = element_info[element];
+  else
+    Error(ERR_WARN, "no element description for element %d", element);
+
+  return info_text;
+}
+
 static void ScrollMiniLevel(int from_x, int from_y, int scroll)
 {
   int x,y;
   int dx = (scroll == ED_SCROLL_LEFT ? -1 : scroll == ED_SCROLL_RIGHT ? 1 : 0);
   int dy = (scroll == ED_SCROLL_UP   ? -1 : scroll == ED_SCROLL_DOWN  ? 1 : 0);
 
-  XCopyArea(display, drawto, drawto, gc,
-	    SX + (dx == -1 ? MINI_TILEX : 0),
-	    SY + (dy == -1 ? MINI_TILEY : 0),
-	    (ed_fieldx * MINI_TILEX) - (dx != 0 ? MINI_TILEX : 0),
-	    (ed_fieldy * MINI_TILEY) - (dy != 0 ? MINI_TILEY : 0),
-	    SX + (dx == +1 ? MINI_TILEX : 0),
-	    SY + (dy == +1 ? MINI_TILEY : 0));
+  BlitBitmap(drawto, drawto,
+	     SX + (dx == -1 ? MINI_TILEX : 0),
+	     SY + (dy == -1 ? MINI_TILEY : 0),
+	     (ed_fieldx * MINI_TILEX) - (dx != 0 ? MINI_TILEX : 0),
+	     (ed_fieldy * MINI_TILEY) - (dy != 0 ? MINI_TILEY : 0),
+	     SX + (dx == +1 ? MINI_TILEX : 0),
+	     SY + (dy == +1 ? MINI_TILEY : 0));
   if (dx)
   {
     x = (dx == 1 ? 0 : ed_fieldx - 1);
@@ -1293,7 +1305,7 @@ static void ScrollMiniLevel(int from_x, int from_y, int scroll)
 
 static void CreateControlButtons()
 {
-  Pixmap gd_pixmap = pix[PIX_DOOR];
+  Bitmap *gd_bitmap = pix[PIX_DOOR];
   struct GadgetInfo *gi;
   unsigned long event_mask;
   int i;
@@ -1377,11 +1389,12 @@ static void CreateControlButtons()
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
 		      GDI_RADIO_NR, radio_button_nr,
 		      GDI_CHECKED, checked,
-		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y1,
-		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y1,
-		      GDI_ALT_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y2,
-		      GDI_ALT_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y2,
+		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y1,
+		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y1,
+		      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y2,
+		      GDI_ALT_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y2,
 		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleControlButtons,
 		      GDI_END);
 
@@ -1436,9 +1449,10 @@ static void CreateControlButtons()
 		      GDI_HEIGHT, height,
 		      GDI_TYPE, GD_TYPE_NORMAL_BUTTON,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
-		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y1,
-		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y2,
+		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y1,
+		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y2,
 		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleControlButtons,
 		      GDI_END);
 
@@ -1451,7 +1465,7 @@ static void CreateControlButtons()
   /* create buttons for element list */
   for (i=0; i<ED_NUM_ELEMENTLIST_BUTTONS; i++)
   {
-    Pixmap deco_pixmap;
+    Bitmap *deco_bitmap;
     int deco_x, deco_y, deco_xpos, deco_ypos;
     int gd_xoffset, gd_yoffset;
     int gd_x1, gd_x2, gd_y;
@@ -1469,26 +1483,27 @@ static void CreateControlButtons()
     gd_y  = DOOR_GFX_PAGEY1 + ED_ELEMENTLIST_YPOS;
 
     getMiniGraphicSource(el2gfx(editor_element[i]),
-			 &deco_pixmap, &deco_x, &deco_y);
+			 &deco_bitmap, &deco_x, &deco_y);
     deco_xpos = (ED_ELEMENTLIST_XSIZE - MINI_TILEX) / 2;
     deco_ypos = (ED_ELEMENTLIST_YSIZE - MINI_TILEY) / 2;
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
 		      GDI_CUSTOM_TYPE_ID, i,
-		      GDI_INFO_TEXT, element_info[editor_element[i]],
+		      GDI_INFO_TEXT, getElementInfoText(editor_element[i]),
 		      GDI_X, DX + gd_xoffset,
 		      GDI_Y, DY + gd_yoffset,
 		      GDI_WIDTH, ED_ELEMENTLIST_XSIZE,
 		      GDI_HEIGHT, ED_ELEMENTLIST_YSIZE,
 		      GDI_TYPE, GD_TYPE_NORMAL_BUTTON,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
-		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y,
-		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y,
-		      GDI_DECORATION_DESIGN, deco_pixmap, deco_x, deco_y,
+		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y,
+		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y,
+		      GDI_DECORATION_DESIGN, deco_bitmap, deco_x, deco_y,
 		      GDI_DECORATION_POSITION, deco_xpos, deco_ypos,
 		      GDI_DECORATION_SIZE, MINI_TILEX, MINI_TILEY,
 		      GDI_DECORATION_SHIFTING, 1, 1,
 		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleControlButtons,
 		      GDI_END);
 
@@ -1511,7 +1526,7 @@ static void CreateCounterButtons()
 
     for (j=0; j<2; j++)
     {
-      Pixmap gd_pixmap = pix[PIX_DOOR];
+      Bitmap *gd_bitmap = pix[PIX_DOOR];
       struct GadgetInfo *gi;
       int id = (j == 0 ?
 		counterbutton_info[i].gadget_id_down :
@@ -1564,9 +1579,10 @@ static void CreateCounterButtons()
 			GDI_HEIGHT, y_size,
 			GDI_TYPE, GD_TYPE_NORMAL_BUTTON,
 			GDI_STATE, GD_BUTTON_UNPRESSED,
-			GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y,
-			GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y,
+			GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y,
+			GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y,
 			GDI_EVENT_MASK, event_mask,
+			GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 			GDI_CALLBACK_ACTION, HandleCounterButtons,
 			GDI_END);
 
@@ -1612,11 +1628,12 @@ static void CreateCounterButtons()
 			  GDI_NUMBER_MAX, counterbutton_info[i].max_value,
 			  GDI_TEXT_SIZE, 3,
 			  GDI_TEXT_FONT, font_type,
-			  GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x, gd_y,
-			  GDI_DESIGN_PRESSED, gd_pixmap, gd_x, gd_y,
+			  GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x, gd_y,
+			  GDI_DESIGN_PRESSED, gd_bitmap, gd_x, gd_y,
 			  GDI_BORDER_SIZE, ED_BORDER_SIZE,
 			  GDI_TEXTINPUT_DESIGN_WIDTH, gd_width,
 			  GDI_EVENT_MASK, event_mask,
+			  GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 			  GDI_CALLBACK_ACTION, HandleCounterButtons,
 			  GDI_END);
 
@@ -1731,7 +1748,7 @@ static void CreateTextInputGadgets()
 
   for (i=0; i<ED_NUM_TEXTINPUT; i++)
   {
-    Pixmap gd_pixmap = pix[PIX_DOOR];
+    Bitmap *gd_bitmap = pix[PIX_DOOR];
     int gd_x, gd_y;
     struct GadgetInfo *gi;
     unsigned long event_mask;
@@ -1755,11 +1772,12 @@ static void CreateTextInputGadgets()
 		      GDI_TEXT_VALUE, textinput_info[i].value,
 		      GDI_TEXT_SIZE, textinput_info[i].size,
 		      GDI_TEXT_FONT, FC_YELLOW,
-		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x, gd_y,
-		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x, gd_y,
+		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x, gd_y,
+		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x, gd_y,
 		      GDI_BORDER_SIZE, ED_BORDER_SIZE,
 		      GDI_TEXTINPUT_DESIGN_WIDTH, ED_WIN_COUNT_XSIZE,
 		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleTextInputGadgets,
 		      GDI_END);
 
@@ -1777,7 +1795,7 @@ static void CreateScrollbarGadgets()
   for (i=0; i<ED_NUM_SCROLLBARS; i++)
   {
     int id = scrollbar_info[i].gadget_id;
-    Pixmap gd_pixmap = pix[PIX_DOOR];
+    Bitmap *gd_bitmap = pix[PIX_DOOR];
     int gd_x1, gd_x2, gd_y1, gd_y2;
     struct GadgetInfo *gi;
     int items_max, items_visible, item_position;
@@ -1825,10 +1843,11 @@ static void CreateScrollbarGadgets()
 		      GDI_SCROLLBAR_ITEMS_VISIBLE, items_visible,
 		      GDI_SCROLLBAR_ITEM_POSITION, item_position,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
-		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y1,
-		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y2,
+		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y1,
+		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y2,
 		      GDI_BORDER_SIZE, ED_BORDER_SIZE,
 		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleControlButtons,
 		      GDI_END);
 
@@ -1841,7 +1860,7 @@ static void CreateScrollbarGadgets()
 
 static void CreateCheckbuttonGadgets()
 {
-  Pixmap gd_pixmap = pix[PIX_DOOR];
+  Bitmap *gd_bitmap = pix[PIX_DOOR];
   struct GadgetInfo *gi;
   unsigned long event_mask;
   int gd_x1, gd_x2, gd_x3, gd_x4, gd_y;
@@ -1873,11 +1892,12 @@ static void CreateCheckbuttonGadgets()
 		      GDI_TYPE, GD_TYPE_RADIO_BUTTON,
 		      GDI_RADIO_NR, radiobutton_info[i].radio_button_nr,
 		      GDI_CHECKED, checked,
-		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y,
-		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y,
-		      GDI_ALT_DESIGN_UNPRESSED, gd_pixmap, gd_x3, gd_y,
-		      GDI_ALT_DESIGN_PRESSED, gd_pixmap, gd_x4, gd_y,
+		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y,
+		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y,
+		      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap, gd_x3, gd_y,
+		      GDI_ALT_DESIGN_PRESSED, gd_bitmap, gd_x4, gd_y,
 		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleRadiobuttons,
 		      GDI_END);
 
@@ -1905,11 +1925,12 @@ static void CreateCheckbuttonGadgets()
 		      GDI_HEIGHT, ED_CHECKBUTTON_YSIZE,
 		      GDI_TYPE, GD_TYPE_CHECK_BUTTON,
 		      GDI_CHECKED, *checkbutton_info[i].value,
-		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y,
-		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y,
-		      GDI_ALT_DESIGN_UNPRESSED, gd_pixmap, gd_x3, gd_y,
-		      GDI_ALT_DESIGN_PRESSED, gd_pixmap, gd_x4, gd_y,
+		      GDI_DESIGN_UNPRESSED, gd_bitmap, gd_x1, gd_y,
+		      GDI_DESIGN_PRESSED, gd_bitmap, gd_x2, gd_y,
+		      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap, gd_x3, gd_y,
+		      GDI_ALT_DESIGN_PRESSED, gd_bitmap, gd_x4, gd_y,
 		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleCheckbuttons,
 		      GDI_END);
 
@@ -2109,17 +2130,17 @@ void DrawLevelEd()
   }
 
   /* copy default editor door content to main double buffer */
-  XCopyArea(display, pix[PIX_DOOR], drawto, gc,
-	    DOOR_GFX_PAGEX6, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE, DX, DY);
+  BlitBitmap(pix[PIX_DOOR], drawto,
+	     DOOR_GFX_PAGEX6, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE, DX, DY);
 
   /* draw mouse button brush elements */
-  DrawMiniGraphicExt(drawto, gc,
+  DrawMiniGraphicExt(drawto,
 		     DX + ED_WIN_MB_LEFT_XPOS, DY + ED_WIN_MB_LEFT_YPOS,
 		     el2gfx(new_element1));
-  DrawMiniGraphicExt(drawto, gc,
+  DrawMiniGraphicExt(drawto,
 		     DX + ED_WIN_MB_MIDDLE_XPOS, DY + ED_WIN_MB_MIDDLE_YPOS,
 		     el2gfx(new_element2));
-  DrawMiniGraphicExt(drawto, gc,
+  DrawMiniGraphicExt(drawto,
 		     DX + ED_WIN_MB_RIGHT_XPOS, DY + ED_WIN_MB_RIGHT_YPOS,
 		     el2gfx(new_element3));
 
@@ -2127,18 +2148,16 @@ void DrawLevelEd()
   DrawSpecialEditorDoor();
 
   /* draw new control window */
-  XCopyArea(display, pix[PIX_DOOR], drawto, gc,
-	    DOOR_GFX_PAGEX8, 236,
-	    EXSIZE, EYSIZE,
-	    EX, EY);
+  BlitBitmap(pix[PIX_DOOR], drawto,
+	     DOOR_GFX_PAGEX8, 236, EXSIZE, EYSIZE, EX, EY);
 
   redraw_mask |= REDRAW_ALL;
 
   MapControlButtons();
 
   /* copy actual editor door content to door double buffer for OpenDoor() */
-  XCopyArea(display, drawto, pix[PIX_DB_DOOR], gc,
-	    DX, DY, DXSIZE, DYSIZE, DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
+  BlitBitmap(drawto, pix[PIX_DB_DOOR],
+	     DX, DY, DXSIZE, DYSIZE, DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
 
   DrawEditModeWindow();
 
@@ -2294,21 +2313,21 @@ static void PickDrawingElement(int button, int element)
   if (button == 1)
   {
     new_element1 = element;
-    DrawMiniGraphicExt(drawto, gc,
+    DrawMiniGraphicExt(drawto,
 		       DX + ED_WIN_MB_LEFT_XPOS, DY + ED_WIN_MB_LEFT_YPOS,
 		       el2gfx(new_element1));
   }
   else if (button == 2)
   {
     new_element2 = element;
-    DrawMiniGraphicExt(drawto, gc,
+    DrawMiniGraphicExt(drawto,
 		       DX + ED_WIN_MB_MIDDLE_XPOS, DY + ED_WIN_MB_MIDDLE_YPOS,
 		       el2gfx(new_element2));
   }
   else
   {
     new_element3 = element;
-    DrawMiniGraphicExt(drawto, gc,
+    DrawMiniGraphicExt(drawto,
 		       DX + ED_WIN_MB_RIGHT_XPOS, DY + ED_WIN_MB_RIGHT_YPOS,
 		       el2gfx(new_element3));
   }
@@ -2343,14 +2362,14 @@ static void DrawRandomPlacementBackgroundArea()
     for (x=0; x<2; x++)
       DrawMiniElement(area_x + x, area_y + y, EL_ERDREICH);
 
-  XFillRectangle(display, drawto, gc,
+  ClearRectangle(drawto,
 		 area_sx + MINI_TILEX/2 - 1, area_sy + MINI_TILEY/2 - 1,
 		 MINI_TILEX + 2, MINI_TILEY + 2);
 
   /* copy border to the right location */
-  XCopyArea(display, drawto, drawto, gc,
-	    area_sx, area_sy, 3 * MINI_TILEX, 3 * MINI_TILEY,
-	    area_sx - MINI_TILEX/2, area_sy - MINI_TILEY/2);
+  BlitBitmap(drawto, drawto,
+	     area_sx, area_sy, 3 * MINI_TILEX, 3 * MINI_TILEY,
+	     area_sx - MINI_TILEX/2, area_sy - MINI_TILEY/2);
 
   DrawMiniElement(area_x, area_y, ElementContent[0][0][0]);
 
@@ -2465,14 +2484,14 @@ static void DrawAmoebaContentArea()
     for (x=0; x<2; x++)
       DrawMiniElement(area_x + x, area_y + y, EL_ERDREICH);
 
-  XFillRectangle(display, drawto, gc,
+  ClearRectangle(drawto,
 		 area_sx + MINI_TILEX/2 - 1, area_sy + MINI_TILEY/2 - 1,
 		 MINI_TILEX + 2, MINI_TILEY + 2);
 
   /* copy border to the right location */
-  XCopyArea(display, drawto, drawto, gc,
-	    area_sx, area_sy, 3 * MINI_TILEX, 3 * MINI_TILEY,
-	    area_sx - MINI_TILEX/2, area_sy - MINI_TILEY/2);
+  BlitBitmap(drawto, drawto,
+	     area_sx, area_sy, 3 * MINI_TILEX, 3 * MINI_TILEY,
+	     area_sx - MINI_TILEX/2, area_sy - MINI_TILEY/2);
 
   DrawText(area_sx + TILEX, area_sy + 1, "Content of amoeba",
 	   FS_SMALL, font_color);
@@ -2511,7 +2530,7 @@ static void DrawElementContentAreas()
   MapCounterButtons(counter_id);
 
   /* delete content areas in case of reducing number of them */
-  XFillRectangle(display, backbuffer, gc,
+  ClearRectangle(backbuffer,
 		 SX, area_sy - MINI_TILEX,
 		 SXSIZE, 12 * MINI_TILEY);
 
@@ -2523,16 +2542,16 @@ static void DrawElementContentAreas()
 	DrawMiniElement(area_x + 5 * (i % 4) + x, area_y + 6 * (i / 4) + y,
 			EL_ERDREICH);
 
-    XFillRectangle(display, drawto, gc,
+    ClearRectangle(drawto,
 		   area_sx + 5 * (i % 4) * MINI_TILEX + MINI_TILEX/2 - 1,
 		   area_sy + 6 * (i / 4) * MINI_TILEY + MINI_TILEY/2 - 1,
 		   3 * MINI_TILEX + 2, 3 * MINI_TILEY + 2);
   }
 
   /* copy border to the right location */
-  XCopyArea(display, drawto, drawto, gc,
-	    area_sx, area_sy, (5 * 4 + 1) * MINI_TILEX, 11 * MINI_TILEY,
-	    area_sx - MINI_TILEX/2, area_sy - MINI_TILEY/2);
+  BlitBitmap(drawto, drawto,
+	     area_sx, area_sy, (5 * 4 + 1) * MINI_TILEX, 11 * MINI_TILEY,
+	     area_sx - MINI_TILEX/2, area_sy - MINI_TILEY/2);
 
   DrawText(area_sx + (5 * 4 - 1) * MINI_TILEX, area_sy + 0 * MINI_TILEY + 1,
 	   "Content", FS_SMALL, font_color);
@@ -2642,31 +2661,31 @@ static void DrawPropertiesWindow()
     for (x=0; x<3; x++)
       DrawMiniElement(xstart + x , ystart + y, EL_ERDREICH);
 
-  XFillRectangle(display, drawto, gc,
+  ClearRectangle(drawto,
 		 SX + xstart * MINI_TILEX + MINI_TILEX/2 - 1,
 		 SY + ystart * MINI_TILEY + MINI_TILEY/2 - 1,
 		 TILEX + 2, TILEY + 2);
 
   /* copy border to the right location */
-  XCopyArea(display, drawto, drawto, gc,
-	    SX + xstart * MINI_TILEX,
-	    SY + ystart * MINI_TILEY,
-	    2 * TILEX, 2 * TILEY,
-	    SX + xstart * MINI_TILEX - MINI_TILEX/2,
-	    SY + ystart * MINI_TILEY - MINI_TILEY/2);
+  BlitBitmap(drawto, drawto,
+	     SX + xstart * MINI_TILEX,
+	     SY + ystart * MINI_TILEY,
+	     2 * TILEX, 2 * TILEY,
+	     SX + xstart * MINI_TILEX - MINI_TILEX/2,
+	     SY + ystart * MINI_TILEY - MINI_TILEY/2);
 
   DrawGraphic(xstart/2, ystart/2, el2gfx(properties_element));
 
   /* copy the whole stuff to the definitive location */
-  XCopyArea(display, drawto, drawto, gc,
-	    SX + xstart * MINI_TILEX - MINI_TILEX/2,
-	    SY + ystart * MINI_TILEY - MINI_TILEY,
-	    2 * TILEX, 2 * TILEY,
-	    SX + xstart * MINI_TILEX - MINI_TILEX/2,
-	    SY + ystart * MINI_TILEY - MINI_TILEY/2);
+  BlitBitmap(drawto, drawto,
+	     SX + xstart * MINI_TILEX - MINI_TILEX/2,
+	     SY + ystart * MINI_TILEY - MINI_TILEY,
+	     2 * TILEX, 2 * TILEY,
+	     SX + xstart * MINI_TILEX - MINI_TILEX/2,
+	     SY + ystart * MINI_TILEY - MINI_TILEY/2);
 
   DrawTextF((xstart + 3) * MINI_TILEX, (ystart + 1) * MINI_TILEY,
-	    font_color, element_info[properties_element]);
+	    font_color, getElementInfoText(properties_element));
 
   num_elements_in_level = 0;
   for (y=0; y<lev_fieldy; y++) 
@@ -2713,26 +2732,6 @@ static void DrawPropertiesWindow()
     else
       DrawElementContentAreas();
   }
-}
-
-static void swap_numbers(int *i1, int *i2)
-{
-  int help = *i1;
-
-  *i1 = *i2;
-  *i2 = help;
-}
-
-static void swap_number_pairs(int *x1, int *y1, int *x2, int *y2)
-{
-  int help_x = *x1;
-  int help_y = *y1;
-
-  *x1 = *x2;
-  *x2 = help_x;
-
-  *y1 = *y2;
-  *y2 = help_y;
 }
 
 static void DrawLineElement(int sx, int sy, int element, boolean change_level)
@@ -2914,14 +2913,10 @@ static void DrawAreaBorder(int from_x, int from_y, int to_x, int to_y)
   to_sx = SX + to_x * MINI_TILEX + MINI_TILEX - 1;
   to_sy = SY + to_y * MINI_TILEY + MINI_TILEY - 1;
 
-  XSetForeground(display, gc, WhitePixel(display, screen));
-
-  XDrawLine(display, drawto, gc, from_sx, from_sy, to_sx, from_sy);
-  XDrawLine(display, drawto, gc, to_sx, from_sy, to_sx, to_sy);
-  XDrawLine(display, drawto, gc, to_sx, to_sy, from_sx, to_sy);
-  XDrawLine(display, drawto, gc, from_sx, to_sy, from_sx, from_sy);
-
-  XSetForeground(display, gc, BlackPixel(display, screen));
+  DrawSimpleWhiteLine(drawto, from_sx, from_sy, to_sx, from_sy);
+  DrawSimpleWhiteLine(drawto, to_sx, from_sy, to_sx, to_sy);
+  DrawSimpleWhiteLine(drawto, to_sx, to_sy, from_sx, to_sy);
+  DrawSimpleWhiteLine(drawto, from_sx, to_sy, from_sx, from_sy);
 
   if (from_x == to_x && from_y == to_y)
     MarkTileDirty(from_x/2, from_y/2);
@@ -3456,11 +3451,11 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
       }
       else
       {
-	DrawMiniGraphicExt(drawto, gc,
+	DrawMiniGraphicExt(drawto,
 			   gi->x + sx * MINI_TILEX,
 			   gi->y + sy * MINI_TILEY,
 			   el2gfx(new_element));
-	DrawMiniGraphicExt(window, gc,
+	DrawMiniGraphicExt(window,
 			   gi->x + sx * MINI_TILEX,
 			   gi->y + sy * MINI_TILEY,
 			   el2gfx(new_element));
@@ -3537,7 +3532,8 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	  {
 	    CopyAreaToBrush(start_sx, start_sy, sx, sy, button);
 	    CopyBrushToCursor(sx, sy);
-	    ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS],MB_LEFT);
+	    ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS],
+			  MB_LEFTBUTTON);
 	    draw_with_brush = TRUE;
 	  }
 	  else if (drawing_function == GADGET_ID_TEXT)
@@ -3566,7 +3562,8 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 
     case GADGET_ID_PICK_ELEMENT:
       if (button_release_event)
-	ClickOnGadget(level_editor_gadget[last_drawing_function], MB_LEFT);
+	ClickOnGadget(level_editor_gadget[last_drawing_function],
+		      MB_LEFTBUTTON);
       else
 	PickDrawingElement(button, Feld[lx][ly]);
 
@@ -3782,8 +3779,8 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	int element = editor_element[element_shift + i];
 
 	UnmapGadget(gi);
-	getMiniGraphicSource(el2gfx(element), &gd->pixmap, &gd->x, &gd->y);
-	ModifyGadget(gi, GDI_INFO_TEXT, element_info[element], GDI_END);
+	getMiniGraphicSource(el2gfx(element), &gd->bitmap, &gd->x, &gd->y);
+	ModifyGadget(gi, GDI_INFO_TEXT, getElementInfoText(element), GDI_END);
 	MapGadget(gi);
       }
       break;
@@ -3944,9 +3941,9 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       else
       {
 	CloseDoor(DOOR_CLOSE_1);
-	XCopyArea(display, pix[PIX_DB_DOOR], pix[PIX_DB_DOOR], gc,
-		  DOOR_GFX_PAGEX2, DOOR_GFX_PAGEY1, DXSIZE,DYSIZE,
-		  DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
+	BlitBitmap(pix[PIX_DB_DOOR], pix[PIX_DB_DOOR],
+		   DOOR_GFX_PAGEX2, DOOR_GFX_PAGEY1, DXSIZE,DYSIZE,
+		   DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
 	OpenDoor(DOOR_OPEN_1);
       }
       break;
@@ -3969,7 +3966,8 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	}
 
 	if (drawing_function == GADGET_ID_PICK_ELEMENT)
-	  ClickOnGadget(level_editor_gadget[last_drawing_function], MB_LEFT);
+	  ClickOnGadget(level_editor_gadget[last_drawing_function],
+			MB_LEFTBUTTON);
       }
 #ifdef DEBUG
       else if (gi->event.type == GD_EVENT_PRESSED)
@@ -3985,19 +3983,19 @@ static void HandleControlButtons(struct GadgetInfo *gi)
   }
 }
 
-void HandleLevelEditorKeyInput(KeySym key)
+void HandleLevelEditorKeyInput(Key key)
 {
-  char letter = getCharFromKeySym(key);
-  int button = MB_LEFT;
+  char letter = getCharFromKey(key);
+  int button = MB_LEFTBUTTON;
 
   if (drawing_function == GADGET_ID_TEXT &&
       DrawLevelText(0, 0, 0, TEXT_QUERY_TYPING) == TRUE)
   {
     if (letter)
       DrawLevelText(0, 0, letter, TEXT_WRITECHAR);
-    else if (key == XK_Delete || key == XK_BackSpace)
+    else if (key == KSYM_Delete || key == KSYM_BackSpace)
       DrawLevelText(0, 0, 0, TEXT_BACKSPACE);
-    else if (key == XK_Return)
+    else if (key == KSYM_Return)
       DrawLevelText(0, 0, 0, TEXT_NEWLINE);
   }
   else if (button_status == MB_RELEASED)
@@ -4006,25 +4004,25 @@ void HandleLevelEditorKeyInput(KeySym key)
 
     switch (key)
     {
-      case XK_Left:
+      case KSYM_Left:
 	id = GADGET_ID_SCROLL_LEFT;
 	break;
-      case XK_Right:
+      case KSYM_Right:
 	id = GADGET_ID_SCROLL_RIGHT;
 	break;
-      case XK_Up:
+      case KSYM_Up:
 	id = GADGET_ID_SCROLL_UP;
 	break;
-      case XK_Down:
+      case KSYM_Down:
 	id = GADGET_ID_SCROLL_DOWN;
 	break;
-      case XK_Page_Up:
+      case KSYM_Page_Up:
 	id = GADGET_ID_SCROLL_LIST_UP;
-	button = 3;
+	button = MB_RIGHTBUTTON;
 	break;
-      case XK_Page_Down:
+      case KSYM_Page_Down:
 	id = GADGET_ID_SCROLL_LIST_DOWN;
-	button = 3;
+	button = MB_RIGHTBUTTON;
 	break;
 
       default:
@@ -4036,7 +4034,7 @@ void HandleLevelEditorKeyInput(KeySym key)
       ClickOnGadget(level_editor_gadget[id], button);
     else if (letter == '.')
       ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS], button);
-    else if (key == XK_space || key == XK_Return)
+    else if (key == KSYM_space || key == KSYM_Return)
       ClickOnGadget(level_editor_gadget[GADGET_ID_TEST], button);
     else
       for (i=0; i<ED_NUM_CTRL_BUTTONS; i++)
@@ -4048,7 +4046,7 @@ void HandleLevelEditorKeyInput(KeySym key)
 
 void ClearEditorGadgetInfoText()
 {
-  XFillRectangle(display, drawto, gc,
+  ClearRectangle(drawto,
 		 INFOTEXT_XPOS, INFOTEXT_YPOS, INFOTEXT_XSIZE, INFOTEXT_YSIZE);
   redraw_mask |= REDRAW_FIELD;
 }
@@ -4058,6 +4056,9 @@ void HandleEditorGadgetInfoText(void *ptr)
   struct GadgetInfo *gi = (struct GadgetInfo *)ptr;
   char infotext[MAX_INFOTEXT_LEN + 1];
   char shortcut[MAX_INFOTEXT_LEN + 1];
+
+  if (game_status != LEVELED)
+    return;
 
   ClearEditorGadgetInfoText();
 
@@ -4190,7 +4191,7 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
       }
       else if (drawing_function == GADGET_ID_PICK_ELEMENT)
 	DrawTextF(INFOTEXT_XPOS - SX, INFOTEXT_YPOS - SY, FC_YELLOW,
-		  "%s", element_info[Feld[lx][ly]]);
+		  "%s", getElementInfoText(Feld[lx][ly]));
       else
 	DrawTextF(INFOTEXT_XPOS - SX, INFOTEXT_YPOS - SY, FC_YELLOW,
 		  "Level position: %d, %d", lx, ly);

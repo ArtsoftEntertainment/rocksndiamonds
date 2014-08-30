@@ -1,14 +1,14 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  joystick.h                                              *
+* joystick.h                                               *
 ***********************************************************/
 
 #ifndef JOYSTICK_H
@@ -19,6 +19,7 @@
 /* values for the joystick */
 #define JOYSTICK_OFF		0
 #define	JOYSTICK_AVAILABLE	1
+
 #ifdef __FreeBSD__
 #include <machine/joystick.h>
 #define DEV_JOYSTICK_0		"/dev/joy0"
@@ -34,12 +35,22 @@
 
 /* get these values from the program 'js' from the joystick package, */
 /* set JOYSTICK_PERCENT to a threshold appropriate for your joystick */
+
+#ifdef TARGET_SDL
+#define JOYSTICK_XLEFT		-32767
+#define JOYSTICK_XMIDDLE	0
+#define JOYSTICK_XRIGHT		32767
+#define JOYSTICK_YUPPER		-32767
+#define JOYSTICK_YMIDDLE	0
+#define JOYSTICK_YLOWER		32767
+#else
 #define JOYSTICK_XLEFT		30
 #define JOYSTICK_XMIDDLE	530
 #define JOYSTICK_XRIGHT		1250
 #define JOYSTICK_YUPPER		40
 #define JOYSTICK_YMIDDLE	680
 #define JOYSTICK_YLOWER		1440
+#endif
 
 #define JOYSTICK_PERCENT	25
 
@@ -63,10 +74,19 @@
 #endif
 
 
+#if defined(TARGET_SDL)
+SDL_Joystick *Get_SDL_Joystick(int);
+boolean Open_SDL_Joystick(int);
+void Close_SDL_Joystick(int);
+boolean Check_SDL_JoystickOpened(int);
+void HandleJoystickEvent(Event *);
+int Get_SDL_Joystick_Axis(int, int);
+#endif
+
 void CheckJoystickData(void);
 int Joystick(int);
 int JoystickButton(int);
 int AnyJoystick(void);
 int AnyJoystickButton(void);
 
-#endif
+#endif	/* JOYSTICK_H */

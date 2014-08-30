@@ -1,34 +1,37 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1994-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  misc.c                                                  *
+* misc.c                                                   *
 ***********************************************************/
 
-#include <pwd.h>
-#include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
-#include <sys/param.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include <string.h>
+#include <unistd.h>
+
+#include "platform.h"
+
+#if !defined(PLATFORM_WIN32)
+#include <pwd.h>
+#include <sys/param.h>
+#endif
 
 #include "misc.h"
-#include "init.h"
-#include "tools.h"
-#include "sound.h"
 #include "random.h"
-#include "joystick.h"
-#include "files.h"
 
-#ifdef MSDOS
+
+#if defined(PLATFORM_MSDOS)
 volatile unsigned long counter = 0;
 
 void increment_counter()
@@ -40,11 +43,30 @@ END_OF_FUNCTION(increment_counter);
 #endif
 
 
-
 /* maximal allowed length of a command line option */
 #define MAX_OPTION_LEN		256
 
-#ifndef MSDOS
+#ifdef TARGET_SDL
+static unsigned long mainCounter(int mode)
+{
+  static unsigned long base_ms = 0;
+  unsigned long current_ms;
+  unsigned long counter_ms;
+
+  current_ms = SDL_GetTicks();
+
+  /* reset base time in case of counter initializing or wrap-around */
+  if (mode == INIT_COUNTER || current_ms < base_ms)
+    base_ms = current_ms;
+
+  counter_ms = current_ms - base_ms;
+
+  return counter_ms;		/* return milliseconds since last init */
+}
+
+#else /* !TARGET_SDL */
+
+#if defined(PLATFORM_UNIX)
 static unsigned long mainCounter(int mode)
 {
   static struct timeval base_time = { 0, 0 };
@@ -53,6 +75,7 @@ static unsigned long mainCounter(int mode)
 
   gettimeofday(&current_time, NULL);
 
+  /* reset base time in case of counter initializing or wrap-around */
   if (mode == INIT_COUNTER || current_time.tv_sec < base_time.tv_sec)
     base_time = current_time;
 
@@ -61,11 +84,12 @@ static unsigned long mainCounter(int mode)
 
   return counter_ms;		/* return milliseconds since last init */
 }
-#endif
+#endif /* PLATFORM_UNIX */
+#endif /* !TARGET_SDL */
 
 void InitCounter()		/* set counter back to zero */
 {
-#ifndef MSDOS
+#if !defined(PLATFORM_MSDOS)
   mainCounter(INIT_COUNTER);
 #else
   LOCK_VARIABLE(counter);
@@ -76,7 +100,7 @@ void InitCounter()		/* set counter back to zero */
 
 unsigned long Counter()	/* get milliseconds since last call of InitCounter() */
 {
-#ifndef MSDOS
+#if !defined(PLATFORM_MSDOS)
   return mainCounter(READ_COUNTER);
 #else
   return (counter * 10);
@@ -87,8 +111,8 @@ static void sleep_milliseconds(unsigned long milliseconds_delay)
 {
   boolean do_busy_waiting = (milliseconds_delay < 5 ? TRUE : FALSE);
 
-#ifdef MSDOS
-  /* donït use select() to perform waiting operations under DOS/Windows
+#if defined(PLATFORM_MSDOS)
+  /* don't use select() to perform waiting operations under DOS/Windows
      environment; always use a busy loop for waiting instead */
   do_busy_waiting = TRUE;
 #endif
@@ -108,6 +132,9 @@ static void sleep_milliseconds(unsigned long milliseconds_delay)
   }
   else
   {
+#if defined(TARGET_SDL)
+    SDL_Delay(milliseconds_delay);
+#else
     struct timeval delay;
 
     delay.tv_sec  = milliseconds_delay / 1000;
@@ -115,6 +142,7 @@ static void sleep_milliseconds(unsigned long milliseconds_delay)
 
     if (select(0, NULL, NULL, NULL, &delay) != 0)
       Error(ERR_WARN, "sleep_milliseconds(): select() failed");
+#endif
   }
 }
 
@@ -199,12 +227,21 @@ char *int2str(int number, int size)
 
 unsigned int SimpleRND(unsigned int max)
 {
+#if defined(TARGET_SDL)
+  static unsigned long root = 654321;
+  unsigned long current_ms;
+
+  current_ms = SDL_GetTicks();
+  root = root * 4253261 + current_ms;
+  return (root % max);
+#else
   static unsigned long root = 654321;
   struct timeval current_time;
 
-  gettimeofday(&current_time,NULL);
+  gettimeofday(&current_time, NULL);
   root = root * 4253261 + current_time.tv_sec + current_time.tv_usec;
   return (root % max);
+#endif
 }
 
 #ifdef DEBUG
@@ -227,34 +264,54 @@ unsigned int RND(unsigned int max)
 
 unsigned int InitRND(long seed)
 {
-  struct timeval current_time;
+#if defined(TARGET_SDL)
+  unsigned long current_ms;
 
   if (seed == NEW_RANDOMIZE)
   {
-    gettimeofday(&current_time,NULL);
-    srandom_linux_libc((unsigned int) current_time.tv_usec);
-    return (unsigned int)current_time.tv_usec;
+    current_ms = SDL_GetTicks();
+    srandom_linux_libc((unsigned int) current_ms);
+    return (unsigned int) current_ms;
   }
   else
   {
     srandom_linux_libc((unsigned int) seed);
-    return (unsigned int)seed;
+    return (unsigned int) seed;
   }
+#else
+  struct timeval current_time;
+
+  if (seed == NEW_RANDOMIZE)
+  {
+    gettimeofday(&current_time, NULL);
+    srandom_linux_libc((unsigned int) current_time.tv_usec);
+    return (unsigned int) current_time.tv_usec;
+  }
+  else
+  {
+    srandom_linux_libc((unsigned int) seed);
+    return (unsigned int) seed;
+  }
+#endif
 }
 
 char *getLoginName()
 {
+#if defined(PLATFORM_WIN32)
+  return ANONYMOUS_NAME;
+#else
   struct passwd *pwd;
 
   if ((pwd = getpwuid(getuid())) == NULL)
     return ANONYMOUS_NAME;
   else
     return pwd->pw_name;
+#endif
 }
 
 char *getRealName()
 {
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
   struct passwd *pwd;
 
   if ((pwd = getpwuid(getuid())) == NULL || strlen(pwd->pw_gecos) == 0)
@@ -284,14 +341,14 @@ char *getRealName()
 
     return real_name;
   }
-#else
+#else /* !PLATFORM_UNIX */
   return ANONYMOUS_NAME;
 #endif
 }
 
 char *getHomeDir()
 {
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
   static char *home_dir = NULL;
 
   if (!home_dir)
@@ -357,37 +414,6 @@ char *getStringToLower(char *s)
   return s_copy;
 }
 
-void MarkTileDirty(int x, int y)
-{
-  int xx = redraw_x1 + x;
-  int yy = redraw_y1 + y;
-
-  if (!redraw[xx][yy])
-    redraw_tiles++;
-
-  redraw[xx][yy] = TRUE;
-  redraw_mask |= REDRAW_TILES;
-}
-
-void SetBorderElement()
-{
-  int x, y;
-
-  BorderElement = EL_LEERRAUM;
-
-  for(y=0; y<lev_fieldy && BorderElement == EL_LEERRAUM; y++)
-  {
-    for(x=0; x<lev_fieldx; x++)
-    {
-      if (!IS_MASSIVE(Feld[x][y]))
-	BorderElement = EL_BETON;
-
-      if (y != 0 && y != lev_fieldy - 1 && x != lev_fieldx - 1)
-	x = lev_fieldx - 2;
-    }
-  }
-}
-
 void GetOptions(char *argv[])
 {
   char **options_left = &argv[1];
@@ -402,6 +428,7 @@ void GetOptions(char *argv[])
   options.serveronly = FALSE;
   options.network = FALSE;
   options.verbose = FALSE;
+  options.debug = FALSE;
 
   while (*options_left)
   {
@@ -443,11 +470,11 @@ void GetOptions(char *argv[])
 	     "Options:\n"
 	     "  -d, --display machine:0       X server display\n"
 	     "  -b, --basepath directory      alternative base directory\n"
-	     "  -l, --level directory        alternative level directory\n"
+	     "  -l, --level directory         alternative level directory\n"
 	     "  -s, --serveronly              only start network server\n"
 	     "  -n, --network                 network multiplayer game\n"
 	     "  -v, --verbose                 verbose mode\n",
-	     program_name);
+	     program.command_basename);
       exit(0);
     }
     else if (strncmp(option, "-display", option_len) == 0)
@@ -495,6 +522,10 @@ void GetOptions(char *argv[])
     {
       options.verbose = TRUE;
     }
+    else if (strncmp(option, "-debug", option_len) == 0)
+    {
+      options.debug = TRUE;
+    }
     else if (*option == '-')
     {
       Error(ERR_EXIT_HELP, "unrecognized option '%s'", option_str);
@@ -520,16 +551,19 @@ void Error(int mode, char *format, ...)
 {
   char *process_name = "";
   FILE *error = stderr;
+  char *newline = "\n";
 
   /* display warnings only when running in verbose mode */
   if (mode & ERR_WARN && !options.verbose)
     return;
 
-#ifdef MSDOS
+#if !defined(PLATFORM_UNIX)
+  newline = "\r\n";
+
   if ((error = openErrorFile()) == NULL)
   {
-    printf("Cannot write to error output file!\n");
-    CloseAllAndExit(1);
+    printf("Cannot write to error output file!%s", newline);
+    program.exit_function(1);
   }
 #endif
 
@@ -544,7 +578,7 @@ void Error(int mode, char *format, ...)
   {
     va_list ap;
 
-    fprintf(error, "%s%s: ", program_name, process_name);
+    fprintf(error, "%s%s: ", program.command_basename, process_name);
 
     if (mode & ERR_WARN)
       fprintf(error, "warning: ");
@@ -553,15 +587,16 @@ void Error(int mode, char *format, ...)
     vfprintf(error, format, ap);
     va_end(ap);
   
-    fprintf(error, "\n");
+    fprintf(error, "%s", newline);
   }
   
   if (mode & ERR_HELP)
-    fprintf(error, "%s: Try option '--help' for more information.\n",
-	    program_name);
+    fprintf(error, "%s: Try option '--help' for more information.%s",
+	    program.command_basename, newline);
 
   if (mode & ERR_EXIT)
-    fprintf(error, "%s%s: aborting\n", program_name, process_name);
+    fprintf(error, "%s%s: aborting%s",
+	    program.command_basename, process_name, newline);
 
   if (error != stderr)
     fclose(error);
@@ -571,7 +606,7 @@ void Error(int mode, char *format, ...)
     if (mode & ERR_FROM_SERVER)
       exit(1);				/* child process: normal exit */
     else
-      CloseAllAndExit(1);		/* main process: clean up stuff */
+      program.exit_function(1);		/* main process: clean up stuff */
   }
 }
 
@@ -592,6 +627,16 @@ void *checked_calloc(unsigned long size)
   void *ptr;
 
   ptr = calloc(1, size);
+
+  if (ptr == NULL)
+    Error(ERR_EXIT, "cannot allocate %d bytes -- out of memory", size);
+
+  return ptr;
+}
+
+void *checked_realloc(void *ptr, unsigned long size)
+{
+  ptr = realloc(ptr, size);
 
   if (ptr == NULL)
     Error(ERR_EXIT, "cannot allocate %d bytes -- out of memory", size);
@@ -681,108 +726,110 @@ void putFileChunk(FILE *file, char *chunk_name, int chunk_length,
 #define TRANSLATE_KEYSYM_TO_X11KEYNAME	1
 #define TRANSLATE_X11KEYNAME_TO_KEYSYM	2
 
-void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
+void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
 {
   static struct
   {
-    KeySym keysym;
+    Key key;
     char *x11name;
     char *name;
   } translate_key[] =
   {
     /* normal cursor keys */
-    { XK_Left,		"XK_Left",		"cursor left" },
-    { XK_Right,		"XK_Right",		"cursor right" },
-    { XK_Up,		"XK_Up",		"cursor up" },
-    { XK_Down,		"XK_Down",		"cursor down" },
+    { KSYM_Left,	"XK_Left",		"cursor left" },
+    { KSYM_Right,	"XK_Right",		"cursor right" },
+    { KSYM_Up,		"XK_Up",		"cursor up" },
+    { KSYM_Down,	"XK_Down",		"cursor down" },
 
     /* keypad cursor keys */
-#ifdef XK_KP_Left
-    { XK_KP_Left,	"XK_KP_Left",		"keypad left" },
-    { XK_KP_Right,	"XK_KP_Right",		"keypad right" },
-    { XK_KP_Up,		"XK_KP_Up",		"keypad up" },
-    { XK_KP_Down,	"XK_KP_Down",		"keypad down" },
+#ifdef KSYM_KP_Left
+    { KSYM_KP_Left,	"XK_KP_Left",		"keypad left" },
+    { KSYM_KP_Right,	"XK_KP_Right",		"keypad right" },
+    { KSYM_KP_Up,	"XK_KP_Up",		"keypad up" },
+    { KSYM_KP_Down,	"XK_KP_Down",		"keypad down" },
 #endif
 
     /* other keypad keys */
-#ifdef XK_KP_Enter
-    { XK_KP_Enter,	"XK_KP_Enter",		"keypad enter" },
-    { XK_KP_Add,	"XK_KP_Add",		"keypad +" },
-    { XK_KP_Subtract,	"XK_KP_Subtract",	"keypad -" },
-    { XK_KP_Multiply,	"XK_KP_Multiply",	"keypad mltply" },
-    { XK_KP_Divide,	"XK_KP_Divide",		"keypad /" },
-    { XK_KP_Separator,	"XK_KP_Separator",	"keypad ," },
+#ifdef KSYM_KP_Enter
+    { KSYM_KP_Enter,	"XK_KP_Enter",		"keypad enter" },
+    { KSYM_KP_Add,	"XK_KP_Add",		"keypad +" },
+    { KSYM_KP_Subtract,	"XK_KP_Subtract",	"keypad -" },
+    { KSYM_KP_Multiply,	"XK_KP_Multiply",	"keypad mltply" },
+    { KSYM_KP_Divide,	"XK_KP_Divide",		"keypad /" },
+    { KSYM_KP_Separator,"XK_KP_Separator",	"keypad ," },
 #endif
 
     /* modifier keys */
-    { XK_Shift_L,	"XK_Shift_L",		"left shift" },
-    { XK_Shift_R,	"XK_Shift_R",		"right shift" },
-    { XK_Control_L,	"XK_Control_L",		"left control" },
-    { XK_Control_R,	"XK_Control_R",		"right control" },
-    { XK_Meta_L,	"XK_Meta_L",		"left meta" },
-    { XK_Meta_R,	"XK_Meta_R",		"right meta" },
-    { XK_Alt_L,		"XK_Alt_L",		"left alt" },
-    { XK_Alt_R,		"XK_Alt_R",		"right alt" },
-    { XK_Mode_switch,	"XK_Mode_switch",	"mode switch" },
-    { XK_Multi_key,	"XK_Multi_key",		"multi key" },
+    { KSYM_Shift_L,	"XK_Shift_L",		"left shift" },
+    { KSYM_Shift_R,	"XK_Shift_R",		"right shift" },
+    { KSYM_Control_L,	"XK_Control_L",		"left control" },
+    { KSYM_Control_R,	"XK_Control_R",		"right control" },
+    { KSYM_Meta_L,	"XK_Meta_L",		"left meta" },
+    { KSYM_Meta_R,	"XK_Meta_R",		"right meta" },
+    { KSYM_Alt_L,	"XK_Alt_L",		"left alt" },
+    { KSYM_Alt_R,	"XK_Alt_R",		"right alt" },
+    { KSYM_Super_L,	"XK_Super_L",		"left super" },	 /* Win-L */
+    { KSYM_Super_R,	"XK_Super_R",		"right super" }, /* Win-R */
+    { KSYM_Mode_switch,	"XK_Mode_switch",	"mode switch" }, /* Alt-R */
+    { KSYM_Multi_key,	"XK_Multi_key",		"multi key" },	 /* Ctrl-R */
 
     /* some special keys */
-    { XK_BackSpace,	"XK_BackSpace",		"backspace" },
-    { XK_Delete,	"XK_Delete",		"delete" },
-    { XK_Insert,	"XK_Insert",		"insert" },
-    { XK_Tab,		"XK_Tab",		"tab" },
-    { XK_Home,		"XK_Home",		"home" },
-    { XK_End,		"XK_End",		"end" },
-    { XK_Page_Up,	"XK_Page_Up",		"page up" },
-    { XK_Page_Down,	"XK_Page_Down",		"page down" },
-
+    { KSYM_BackSpace,	"XK_BackSpace",		"backspace" },
+    { KSYM_Delete,	"XK_Delete",		"delete" },
+    { KSYM_Insert,	"XK_Insert",		"insert" },
+    { KSYM_Tab,		"XK_Tab",		"tab" },
+    { KSYM_Home,	"XK_Home",		"home" },
+    { KSYM_End,		"XK_End",		"end" },
+    { KSYM_Page_Up,	"XK_Page_Up",		"page up" },
+    { KSYM_Page_Down,	"XK_Page_Down",		"page down" },
+    { KSYM_Menu,	"XK_Menu",		"menu" },	 /* Win-Menu */
 
     /* ASCII 0x20 to 0x40 keys (except numbers) */
-    { XK_space,		"XK_space",		"space" },
-    { XK_exclam,	"XK_exclam",		"!" },
-    { XK_quotedbl,	"XK_quotedbl",		"\"" },
-    { XK_numbersign,	"XK_numbersign",	"#" },
-    { XK_dollar,	"XK_dollar",		"$" },
-    { XK_percent,	"XK_percent",		"%" },
-    { XK_ampersand,	"XK_ampersand",		"&" },
-    { XK_apostrophe,	"XK_apostrophe",	"'" },
-    { XK_parenleft,	"XK_parenleft",		"(" },
-    { XK_parenright,	"XK_parenright",	")" },
-    { XK_asterisk,	"XK_asterisk",		"*" },
-    { XK_plus,		"XK_plus",		"+" },
-    { XK_comma,		"XK_comma",		"," },
-    { XK_minus,		"XK_minus",		"-" },
-    { XK_period,	"XK_period",		"." },
-    { XK_slash,		"XK_slash",		"/" },
-    { XK_colon,		"XK_colon",		":" },
-    { XK_semicolon,	"XK_semicolon",		";" },
-    { XK_less,		"XK_less",		"<" },
-    { XK_equal,		"XK_equal",		"=" },
-    { XK_greater,	"XK_greater",		">" },
-    { XK_question,	"XK_question",		"?" },
-    { XK_at,		"XK_at",		"@" },
+    { KSYM_space,	"XK_space",		"space" },
+    { KSYM_exclam,	"XK_exclam",		"!" },
+    { KSYM_quotedbl,	"XK_quotedbl",		"\"" },
+    { KSYM_numbersign,	"XK_numbersign",	"#" },
+    { KSYM_dollar,	"XK_dollar",		"$" },
+    { KSYM_percent,	"XK_percent",		"%" },
+    { KSYM_ampersand,	"XK_ampersand",		"&" },
+    { KSYM_apostrophe,	"XK_apostrophe",	"'" },
+    { KSYM_parenleft,	"XK_parenleft",		"(" },
+    { KSYM_parenright,	"XK_parenright",	")" },
+    { KSYM_asterisk,	"XK_asterisk",		"*" },
+    { KSYM_plus,	"XK_plus",		"+" },
+    { KSYM_comma,	"XK_comma",		"," },
+    { KSYM_minus,	"XK_minus",		"-" },
+    { KSYM_period,	"XK_period",		"." },
+    { KSYM_slash,	"XK_slash",		"/" },
+    { KSYM_colon,	"XK_colon",		":" },
+    { KSYM_semicolon,	"XK_semicolon",		";" },
+    { KSYM_less,	"XK_less",		"<" },
+    { KSYM_equal,	"XK_equal",		"=" },
+    { KSYM_greater,	"XK_greater",		">" },
+    { KSYM_question,	"XK_question",		"?" },
+    { KSYM_at,		"XK_at",		"@" },
 
     /* more ASCII keys */
-    { XK_bracketleft,	"XK_bracketleft",	"[" },
-    { XK_backslash,	"XK_backslash",		"backslash" },
-    { XK_bracketright,	"XK_bracketright",	"]" },
-    { XK_asciicircum,	"XK_asciicircum",	"circumflex" },
-    { XK_underscore,	"XK_underscore",	"_" },
-    { XK_grave,		"XK_grave",		"grave" },
-    { XK_quoteleft,	"XK_quoteleft",		"quote left" },
-    { XK_braceleft,	"XK_braceleft",		"brace left" },
-    { XK_bar,		"XK_bar",		"bar" },
-    { XK_braceright,	"XK_braceright",	"brace right" },
-    { XK_asciitilde,	"XK_asciitilde",	"ascii tilde" },
+    { KSYM_bracketleft,	"XK_bracketleft",	"[" },
+    { KSYM_backslash,	"XK_backslash",		"backslash" },
+    { KSYM_bracketright,"XK_bracketright",	"]" },
+    { KSYM_asciicircum,	"XK_asciicircum",	"circumflex" },
+    { KSYM_underscore,	"XK_underscore",	"_" },
+    { KSYM_grave,	"XK_grave",		"grave" },
+    { KSYM_quoteleft,	"XK_quoteleft",		"quote left" },
+    { KSYM_braceleft,	"XK_braceleft",		"brace left" },
+    { KSYM_bar,		"XK_bar",		"bar" },
+    { KSYM_braceright,	"XK_braceright",	"brace right" },
+    { KSYM_asciitilde,	"XK_asciitilde",	"ascii tilde" },
 
     /* special (non-ASCII) keys */
-    { XK_Adiaeresis,	"XK_Adiaeresis",	"Ä" },
-    { XK_Odiaeresis,	"XK_Odiaeresis",	"Ö" },
-    { XK_Udiaeresis,	"XK_Udiaeresis",	"Ü" },
-    { XK_adiaeresis,	"XK_adiaeresis",	"ä" },
-    { XK_odiaeresis,	"XK_odiaeresis",	"ö" },
-    { XK_udiaeresis,	"XK_udiaeresis",	"ü" },
-    { XK_ssharp,	"XK_ssharp",		"sharp s" },
+    { KSYM_Adiaeresis,	"XK_Adiaeresis",	"Ä" },
+    { KSYM_Odiaeresis,	"XK_Odiaeresis",	"Ö" },
+    { KSYM_Udiaeresis,	"XK_Udiaeresis",	"Ü" },
+    { KSYM_adiaeresis,	"XK_adiaeresis",	"ä" },
+    { KSYM_odiaeresis,	"XK_odiaeresis",	"ö" },
+    { KSYM_udiaeresis,	"XK_udiaeresis",	"ü" },
+    { KSYM_ssharp,	"XK_ssharp",		"sharp s" },
 
     /* end-of-array identifier */
     { 0,                NULL,			NULL }
@@ -793,19 +840,19 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
   if (mode == TRANSLATE_KEYSYM_TO_KEYNAME)
   {
     static char name_buffer[30];
-    KeySym key = *keysym;
+    Key key = *keysym;
 
-    if (key >= XK_A && key <= XK_Z)
-      sprintf(name_buffer, "%c", 'A' + (char)(key - XK_A));
-    else if (key >= XK_a && key <= XK_z)
-      sprintf(name_buffer, "%c", 'a' + (char)(key - XK_a));
-    else if (key >= XK_0 && key <= XK_9)
-      sprintf(name_buffer, "%c", '0' + (char)(key - XK_0));
-    else if (key >= XK_KP_0 && key <= XK_KP_9)
-      sprintf(name_buffer, "keypad %c", '0' + (char)(key - XK_KP_0));
-    else if (key >= XK_F1 && key <= XK_F24)
-      sprintf(name_buffer, "function F%d", (int)(key - XK_F1 + 1));
-    else if (key == KEY_UNDEFINDED)
+    if (key >= KSYM_A && key <= KSYM_Z)
+      sprintf(name_buffer, "%c", 'A' + (char)(key - KSYM_A));
+    else if (key >= KSYM_a && key <= KSYM_z)
+      sprintf(name_buffer, "%c", 'a' + (char)(key - KSYM_a));
+    else if (key >= KSYM_0 && key <= KSYM_9)
+      sprintf(name_buffer, "%c", '0' + (char)(key - KSYM_0));
+    else if (key >= KSYM_KP_0 && key <= KSYM_KP_9)
+      sprintf(name_buffer, "keypad %c", '0' + (char)(key - KSYM_KP_0));
+    else if (key >= KSYM_F1 && key <= KSYM_F24)
+      sprintf(name_buffer, "function F%d", (int)(key - KSYM_F1 + 1));
+    else if (key == KSYM_UNDEFINED)
       strcpy(name_buffer, "(undefined)");
     else
     {
@@ -813,7 +860,7 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
 
       do
       {
-	if (key == translate_key[i].keysym)
+	if (key == translate_key[i].key)
 	{
 	  strcpy(name_buffer, translate_key[i].name);
 	  break;
@@ -830,19 +877,19 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
   else if (mode == TRANSLATE_KEYSYM_TO_X11KEYNAME)
   {
     static char name_buffer[30];
-    KeySym key = *keysym;
+    Key key = *keysym;
 
-    if (key >= XK_A && key <= XK_Z)
-      sprintf(name_buffer, "XK_%c", 'A' + (char)(key - XK_A));
-    else if (key >= XK_a && key <= XK_z)
-      sprintf(name_buffer, "XK_%c", 'a' + (char)(key - XK_a));
-    else if (key >= XK_0 && key <= XK_9)
-      sprintf(name_buffer, "XK_%c", '0' + (char)(key - XK_0));
-    else if (key >= XK_KP_0 && key <= XK_KP_9)
-      sprintf(name_buffer, "XK_KP_%c", '0' + (char)(key - XK_KP_0));
-    else if (key >= XK_F1 && key <= XK_F24)
-      sprintf(name_buffer, "XK_F%d", (int)(key - XK_F1 + 1));
-    else if (key == KEY_UNDEFINDED)
+    if (key >= KSYM_A && key <= KSYM_Z)
+      sprintf(name_buffer, "XK_%c", 'A' + (char)(key - KSYM_A));
+    else if (key >= KSYM_a && key <= KSYM_z)
+      sprintf(name_buffer, "XK_%c", 'a' + (char)(key - KSYM_a));
+    else if (key >= KSYM_0 && key <= KSYM_9)
+      sprintf(name_buffer, "XK_%c", '0' + (char)(key - KSYM_0));
+    else if (key >= KSYM_KP_0 && key <= KSYM_KP_9)
+      sprintf(name_buffer, "XK_KP_%c", '0' + (char)(key - KSYM_KP_0));
+    else if (key >= KSYM_F1 && key <= KSYM_F24)
+      sprintf(name_buffer, "XK_F%d", (int)(key - KSYM_F1 + 1));
+    else if (key == KSYM_UNDEFINED)
       strcpy(name_buffer, "[undefined]");
     else
     {
@@ -850,7 +897,7 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
 
       do
       {
-	if (key == translate_key[i].keysym)
+	if (key == translate_key[i].key)
 	{
 	  strcpy(name_buffer, translate_key[i].x11name);
 	  break;
@@ -866,7 +913,7 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
   }
   else if (mode == TRANSLATE_X11KEYNAME_TO_KEYSYM)
   {
-    KeySym key = XK_VoidSymbol;
+    Key key = KSYM_UNDEFINED;
     char *name_ptr = *x11name;
 
     if (strncmp(name_ptr, "XK_", 3) == 0 && strlen(name_ptr) == 4)
@@ -874,18 +921,18 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
       char c = name_ptr[3];
 
       if (c >= 'A' && c <= 'Z')
-	key = XK_A + (KeySym)(c - 'A');
+	key = KSYM_A + (Key)(c - 'A');
       else if (c >= 'a' && c <= 'z')
-	key = XK_a + (KeySym)(c - 'a');
+	key = KSYM_a + (Key)(c - 'a');
       else if (c >= '0' && c <= '9')
-	key = XK_0 + (KeySym)(c - '0');
+	key = KSYM_0 + (Key)(c - '0');
     }
     else if (strncmp(name_ptr, "XK_KP_", 6) == 0 && strlen(name_ptr) == 7)
     {
       char c = name_ptr[6];
 
       if (c >= '0' && c <= '9')
-	key = XK_0 + (KeySym)(c - '0');
+	key = KSYM_0 + (Key)(c - '0');
     }
     else if (strncmp(name_ptr, "XK_F", 4) == 0 && strlen(name_ptr) <= 6)
     {
@@ -898,7 +945,7 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
 	d = atoi(&name_ptr[4]);
 
       if (d >=1 && d <= 24)
-	key = XK_F1 + (KeySym)(d - 1);
+	key = KSYM_F1 + (Key)(d - 1);
     }
     else if (strncmp(name_ptr, "XK_", 3) == 0)
     {
@@ -908,7 +955,7 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
       {
 	if (strcmp(name_ptr, translate_key[i].x11name) == 0)
 	{
-	  key = translate_key[i].keysym;
+	  key = translate_key[i].key;
 	  break;
 	}
       }
@@ -942,40 +989,40 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
       }
 
       if (value != -1)
-	key = (KeySym)value;
+	key = (Key)value;
     }
 
     *keysym = key;
   }
 }
 
-char *getKeyNameFromKeySym(KeySym keysym)
+char *getKeyNameFromKey(Key key)
 {
   char *name;
 
-  translate_keyname(&keysym, NULL, &name, TRANSLATE_KEYSYM_TO_KEYNAME);
+  translate_keyname(&key, NULL, &name, TRANSLATE_KEYSYM_TO_KEYNAME);
   return name;
 }
 
-char *getX11KeyNameFromKeySym(KeySym keysym)
+char *getX11KeyNameFromKey(Key key)
 {
   char *x11name;
 
-  translate_keyname(&keysym, &x11name, NULL, TRANSLATE_KEYSYM_TO_X11KEYNAME);
+  translate_keyname(&key, &x11name, NULL, TRANSLATE_KEYSYM_TO_X11KEYNAME);
   return x11name;
 }
 
-KeySym getKeySymFromX11KeyName(char *x11name)
+Key getKeyFromX11KeyName(char *x11name)
 {
-  KeySym keysym;
+  Key key;
 
-  translate_keyname(&keysym, &x11name, NULL, TRANSLATE_X11KEYNAME_TO_KEYSYM);
-  return keysym;
+  translate_keyname(&key, &x11name, NULL, TRANSLATE_X11KEYNAME_TO_KEYSYM);
+  return key;
 }
 
-char getCharFromKeySym(KeySym keysym)
+char getCharFromKey(Key key)
 {
-  char *keyname = getKeyNameFromKeySym(keysym);
+  char *keyname = getKeyNameFromKey(key);
   char letter = 0;
 
   if (strlen(keyname) == 1)
@@ -986,90 +1033,6 @@ char getCharFromKeySym(KeySym keysym)
     letter = '^';
 
   return letter;
-}
-
-#define TRANSLATE_JOYSYMBOL_TO_JOYNAME	0
-#define TRANSLATE_JOYNAME_TO_JOYSYMBOL	1
-
-void translate_joyname(int *joysymbol, char **name, int mode)
-{
-  static struct
-  {
-    int joysymbol;
-    char *name;
-  } translate_joy[] =
-  {
-    { JOY_LEFT,		"joystick_left" },
-    { JOY_RIGHT,	"joystick_right" },
-    { JOY_UP,		"joystick_up" },
-    { JOY_DOWN,		"joystick_down" },
-    { JOY_BUTTON_1,	"joystick_button_1" },
-    { JOY_BUTTON_2,	"joystick_button_2" },
-  };
-
-  int i;
-
-  if (mode == TRANSLATE_JOYSYMBOL_TO_JOYNAME)
-  {
-    *name = "[undefined]";
-
-    for (i=0; i<6; i++)
-    {
-      if (*joysymbol == translate_joy[i].joysymbol)
-      {
-	*name = translate_joy[i].name;
-	break;
-      }
-    }
-  }
-  else if (mode == TRANSLATE_JOYNAME_TO_JOYSYMBOL)
-  {
-    *joysymbol = 0;
-
-    for (i=0; i<6; i++)
-    {
-      if (strcmp(*name, translate_joy[i].name) == 0)
-      {
-	*joysymbol = translate_joy[i].joysymbol;
-	break;
-      }
-    }
-  }
-}
-
-char *getJoyNameFromJoySymbol(int joysymbol)
-{
-  char *name;
-
-  translate_joyname(&joysymbol, &name, TRANSLATE_JOYSYMBOL_TO_JOYNAME);
-  return name;
-}
-
-int getJoySymbolFromJoyName(char *name)
-{
-  int joysymbol;
-
-  translate_joyname(&joysymbol, &name, TRANSLATE_JOYNAME_TO_JOYSYMBOL);
-  return joysymbol;
-}
-
-int getJoystickNrFromDeviceName(char *device_name)
-{
-  char c;
-  int joystick_nr = 0;
-
-  if (device_name == NULL || device_name[0] == '\0')
-    return 0;
-
-  c = device_name[strlen(device_name) - 1];
-
-  if (c >= '0' && c <= '9')
-    joystick_nr = (int)(c - '0');
-
-  if (joystick_nr < 0 || joystick_nr >= MAX_PLAYERS)
-    joystick_nr = 0;
-
-  return joystick_nr;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -1108,8 +1071,13 @@ boolean validLevelSeries(struct LevelDirInfo *node)
 
 struct LevelDirInfo *getFirstValidLevelSeries(struct LevelDirInfo *node)
 {
-  if (node == NULL)		/* start with first level directory entry */
-    return getFirstValidLevelSeries(leveldir_first);
+  if (node == NULL)
+  {
+    if (leveldir_first)		/* start with first level directory entry */
+      return getFirstValidLevelSeries(leveldir_first);
+    else
+      return NULL;
+  }
   else if (node->node_group)	/* enter level group (step down into tree) */
     return getFirstValidLevelSeries(node->node_group);
   else if (node->parent_link)	/* skip start entry of level group */
@@ -1273,10 +1241,122 @@ void sortLevelDirInfo(struct LevelDirInfo **node_first,
   }
 }
 
+inline void swap_numbers(int *i1, int *i2)
+{
+  int help = *i1;
 
-/* ------------------------------------------------------------------------- */
+  *i1 = *i2;
+  *i2 = help;
+}
+
+inline void swap_number_pairs(int *x1, int *y1, int *x2, int *y2)
+{
+  int help_x = *x1;
+  int help_y = *y1;
+
+  *x1 = *x2;
+  *x2 = help_x;
+
+  *y1 = *y2;
+  *y2 = help_y;
+}
+
+
+/* ========================================================================= */
+/* some stuff from "files.c"                                                 */
+/* ========================================================================= */
+
+#define MODE_R_ALL		(S_IRUSR | S_IRGRP | S_IROTH)
+#define MODE_W_ALL		(S_IWUSR | S_IWGRP | S_IWOTH)
+#define MODE_X_ALL		(S_IXUSR | S_IXGRP | S_IXOTH)
+#define USERDATA_DIR_MODE	(MODE_R_ALL | MODE_X_ALL | S_IWUSR)
+
+char *getUserDataDir(void)
+{
+  static char *userdata_dir = NULL;
+
+  if (!userdata_dir)
+  {
+    char *home_dir = getHomeDir();
+    char *data_dir = program.userdata_directory;
+
+    userdata_dir = getPath2(home_dir, data_dir);
+  }
+
+  return userdata_dir;
+}
+
+void createDirectory(char *dir, char *text)
+{
+  if (access(dir, F_OK) != 0)
+#if defined(PLATFORM_WIN32)
+    if (mkdir(dir) != 0)
+#else
+    if (mkdir(dir, USERDATA_DIR_MODE) != 0)
+#endif
+      Error(ERR_WARN, "cannot create %s directory '%s'", text, dir);
+}
+
+void InitUserDataDirectory()
+{
+  createDirectory(getUserDataDir(), "user data");
+}
+
+
+/* ========================================================================= */
+/* functions only needed for non-Unix (non-command-line) systems */
+/* ========================================================================= */
+
+#if !defined(PLATFORM_UNIX)
+
+#define ERROR_FILENAME		"error.out"
+
+void initErrorFile()
+{
+  char *filename;
+
+  InitUserDataDirectory();
+
+  filename = getPath2(getUserDataDir(), ERROR_FILENAME);
+  unlink(filename);
+  free(filename);
+}
+
+FILE *openErrorFile()
+{
+  char *filename;
+  FILE *error_file;
+
+  filename = getPath2(getUserDataDir(), ERROR_FILENAME);
+  error_file = fopen(filename, MODE_APPEND);
+  free(filename);
+
+  return error_file;
+}
+
+void dumpErrorFile()
+{
+  char *filename;
+  FILE *error_file;
+
+  filename = getPath2(getUserDataDir(), ERROR_FILENAME);
+  error_file = fopen(filename, MODE_READ);
+  free(filename);
+
+  if (error_file != NULL)
+  {
+    while (!feof(error_file))
+      fputc(fgetc(error_file), stderr);
+
+    fclose(error_file);
+  }
+}
+#endif
+
+
+/* ========================================================================= */
 /* the following is only for debugging purpose and normally not used         */
-/* ------------------------------------------------------------------------- */
+/* ========================================================================= */
 
 #define DEBUG_NUM_TIMESTAMPS	3
 

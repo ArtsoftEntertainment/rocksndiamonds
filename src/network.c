@@ -1,19 +1,20 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  network.c                                               *
+* network.c                                                *
 ***********************************************************/
 
-#ifndef MSDOS
+#include "libgame/libgame.h"
 
-#include <unistd.h>
+#if defined(PLATFORM_UNIX)
+
 #include <signal.h>
 #include <sys/time.h>
 #include <sys/wait.h>
@@ -23,15 +24,17 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
+#if 0
+#include "libgame/libgame.h"
+#endif
+
 #include "network.h"
 #include "netserv.h"
 #include "game.h"
 #include "tape.h"
 #include "files.h"
 #include "tools.h"
-#include "buttons.h"
 #include "screens.h"
-#include "misc.h"
 
 struct NetworkClientPlayerInfo
 {
@@ -237,9 +240,9 @@ void SendToServer_StartPlaying()
   buffer[8] = (unsigned char)((new_random_seed >>  8) & 0xff);
   buffer[9] = (unsigned char)((new_random_seed >>  0) & 0xff);
 
-  strcpy((char *)&buffer[10], leveldir_current->name);
+  strcpy((char *)&buffer[10], leveldir_current->filename);
 
-  SendBufferToServer(10 + strlen(leveldir_current->name) + 1);
+  SendBufferToServer(10 + strlen(leveldir_current->filename) + 1);
 }
 
 void SendToServer_PausePlaying()
@@ -416,18 +419,18 @@ static void Handle_OP_START_PLAYING()
   int new_level_nr;
   int dummy;				/* !!! HAS NO MEANING ANYMORE !!! */
   unsigned long new_random_seed;
-  char *new_leveldir_name;
+  char *new_leveldir_filename;
 
   new_level_nr = (buffer[2] << 8) + buffer[3];
   dummy = (buffer[4] << 8) + buffer[5];
   new_random_seed =
     (buffer[6] << 24) | (buffer[7] << 16) | (buffer[8] << 8) | (buffer[9]);
-  new_leveldir_name = (char *)&buffer[10];
+  new_leveldir_filename = (char *)&buffer[10];
 
-  new_leveldir = getLevelDirInfoFromFilename(new_leveldir_name);
+  new_leveldir = getLevelDirInfoFromFilename(new_leveldir_filename);
   if (new_leveldir == NULL)
   {
-    Error(ERR_WARN, "no such level directory: '%s'", new_leveldir_name);
+    Error(ERR_WARN, "no such level directory: '%s'", new_leveldir_filename);
 
     new_leveldir = leveldir_first;
     Error(ERR_WARN, "using default level directory: '%s'", new_leveldir->name);
@@ -616,4 +619,4 @@ void HandleNetworking()
   }
 }
 
-#endif /* !MSDOS */
+#endif /* PLATFORM_UNIX */

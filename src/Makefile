@@ -1,11 +1,13 @@
 #=============================================================================#
-# Makefile for Rocks'n'Diamonds 1.4.0                                         #
-# (c) 1995-1999 Holger Schemel, aeglos@valinor.owl.de                         #
+# Makefile for Rocks'n'Diamonds                                               #
+# (c) 1995-2000 Holger Schemel, info@artsoft.org                              #
 #=============================================================================#
+
+.EXPORT_ALL_VARIABLES:
 
 ifndef PLATFORM			# platform not specified -- try auto detection
 ifdef COMSPEC
-PLATFORM = dos
+PLATFORM = msdos
 else
 PLATFORM = unix
 endif
@@ -18,26 +20,57 @@ X11_INCL = -I$(XINC_PATH)
 X11_LIBS = -L$(XLIB_PATH)
 endif
 
+AR = ar
+RANLIB = ranlib
 
-ifeq ($(PLATFORM),dos)		# DOS / Windows
+ifeq ($(PLATFORM),msdos)	# MS-DOS native compiling
 
 RM = del
 PROGNAME = ../rocks.exe
-LIBS = -s -lm -lalleg
 
-else				# Unix
+SYS_CFLAGS = -DTARGET_X11
+SYS_LDFLAGS = -s -lalleg
+
+else				# Unix or cross-compiling for MS-DOS and Win32
 
 RM = rm -f
 PROGNAME = ../rocksndiamonds
 
 ifeq ($(PLATFORM),solaris)
-EXTRA_LIBS = -lnsl -lsocket -R$(XLIB_PATH)
+EXTRA_LDFLAGS = -lnsl -lsocket -R$(XLIB_PATH)
+PLATFORM = unix
 endif
 
-INCL = $(X11_INCL)
-LIBS = $(X11_LIBS) -lX11 -lm $(EXTRA_LIBS)
-
+ifeq ($(PLATFORM),unix)
+PROFILING_FLAGS = -pg
 endif
+
+ifeq ($(PLATFORM),cross-msdos)
+PROGNAME = ../rocks.exe
+TARGET = allegro
+endif
+
+ifeq ($(PLATFORM),cross-win32)
+PROGNAME = ../rocksndiamonds.exe
+TARGET = sdl
+endif
+
+ifeq ($(TARGET),x11)
+SYS_CFLAGS  = -DTARGET_X11 $(X11_INCL)
+SYS_LDFLAGS = $(X11_LIBS) -lX11
+endif
+
+ifeq ($(TARGET),sdl)
+SYS_CFLAGS  = -DTARGET_SDL $(shell sdl-config --cflags)
+SYS_LDFLAGS = -lSDL_image -lSDL_mixer $(shell sdl-config --libs)
+endif
+
+ifeq ($(TARGET),allegro)
+SYS_CFLAGS = -DTARGET_ALLEGRO -I$(CROSS_PATH_MSDOS)/include
+SYS_LDFLAGS = -lalleg
+endif
+
+endif				# (PLATFORM != msdos)
 
 
 ifdef RO_GAME_DIR		# path to read-only game data specified
@@ -55,68 +88,81 @@ endif
 CONFIG_GAME_DIR = $(CONFIG_RO_GAME_DIR) $(CONFIG_RW_GAME_DIR)
 
 
-CONFIG = $(CONFIG_GAME_DIR) $(CONFIG_SCORE_ENTRIES) $(SOUNDS) $(JOYSTICK)
+CONFIG = $(CONFIG_GAME_DIR) $(CONFIG_SCORE_ENTRIES) $(JOYSTICK)
+DEBUG = -DDEBUG -g
+# PROFILING = $(PROFILING_FLAGS)
 
-# OPTIONS = -DDEBUG -g -Wall -ansi -pedantic	# only for debugging purposes
-# OPTIONS = -DDEBUG -g -Wall			# only for debugging purposes
+# OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
+# OPTIONS = $(DEBUG) -O3 -Wall			# only for debugging purposes
+# OPTIONS = $(DEBUG) -Wall -ansi -pedantic	# only for debugging purposes
 # OPTIONS = -O3 -Wall -ansi -pedantic
-# OPTIONS = -O3 -Wall
-OPTIONS = -O3
+OPTIONS = -O3 -Wall
+# OPTIONS = -O3
+# OPTIONS = -DSYSV -Ae				# may be needed for HP-UX
 
-# SYSTEM = -DSYSV -Ae		# may be needed for HP-UX
+CFLAGS = $(OPTIONS) $(SYS_CFLAGS) $(CONFIG)
+LDFLAGS = $(SYS_LDFLAGS) $(EXTRA_LDFLAGS) -lm
 
-CFLAGS = $(OPTIONS) $(SYSTEM) $(INCL) $(CONFIG)
 
 SRCS =	main.c		\
 	init.c		\
 	events.c	\
 	tools.c		\
 	screens.c	\
-	misc.c		\
 	game.c		\
 	editor.c	\
-	buttons.c	\
 	files.c		\
 	tape.c		\
-	sound.c		\
 	joystick.c	\
 	cartoons.c	\
-	random.c	\
-	pcx.c		\
-	image.c		\
 	network.c	\
-	netserv.c	\
-	msdos.c
+	netserv.c
 
 OBJS =	main.o		\
 	init.o		\
 	events.o	\
 	tools.o		\
 	screens.o	\
-	misc.o		\
 	game.o		\
 	editor.o	\
-	buttons.o	\
 	files.o		\
 	tape.o		\
-	sound.o		\
 	joystick.o	\
 	cartoons.o	\
-	random.o	\
-	pcx.o		\
-	image.o		\
 	network.o	\
-	netserv.o	\
-	msdos.o
+	netserv.o
 
-all:	$(PROGNAME)
+LIBDIR = libgame
+LIBGAME = $(LIBDIR)/libgame.a
 
-$(PROGNAME):	$(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(PROGNAME)
+
+all: $(PROGNAME)
+
+$(PROGNAME): $(LIBGAME) $(OBJS)
+	$(CC) $(PROFILING) $(OBJS) $(LIBGAME) $(LDFLAGS) -o $(PROGNAME)
+
+$(LIBGAME):
+	$(MAKE) -C $(LIBDIR)
 
 .c.o:
-	$(CC) $(CFLAGS) -c $*.c
+	$(CC) $(PROFILING) $(CFLAGS) -c $*.c
 
 clean:
-	$(RM) *.o
+	$(MAKE) -C $(LIBDIR) clean
+	$(RM) $(OBJS)
+	$(RM) $(LIBGAME)
 	$(RM) $(PROGNAME)
+	$(RM) ../*.exe
+
+
+#-----------------------------------------------------------------------------#
+# development only stuff                                                      #
+#-----------------------------------------------------------------------------#
+
+depend:
+	$(MAKE) -C $(LIBDIR) depend
+	for i in $(SRCS); do $(CPP) $(CFLAGS) -M $$i; done > .depend
+
+ifeq (.depend,$(wildcard .depend))
+include .depend
+endif

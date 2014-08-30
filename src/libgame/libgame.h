@@ -1,21 +1,30 @@
 /***********************************************************
-* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-* (c) 1995-2000 Artsoft Entertainment                      *
+* (c) 1994-2000 Artsoft Entertainment                      *
 *               Holger Schemel                             *
 *               Detmolder Strasse 189                      *
 *               33604 Bielefeld                            *
 *               Germany                                    *
 *               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-* cartoons.h                                               *
+* libgame.h                                                *
 ***********************************************************/
 
-#ifndef CARTOONS_H
-#define CARTOONS_H
+#ifndef LIBGAME_H
+#define LIBGAME_H
 
-void InitAnimation(void);
-void StopAnimation(void);
-void DoAnimation(void);
+#define LIBGAME_VERSION_1_0_0
 
-#endif
+#include "platform.h"
+#include "types.h"
+#include "system.h"
+#include "random.h"
+#include "gadgets.h"
+#include "text.h"
+#include "sound.h"
+#include "image.h"
+#include "pcx.h"
+#include "misc.h"
+
+#endif /* LIBGAME_H */

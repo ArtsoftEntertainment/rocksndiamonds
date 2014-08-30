@@ -1,14 +1,14 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  events.h                                                *
+* events.h                                                 *
 ***********************************************************/
 
 #ifndef EVENTS_H
@@ -16,22 +16,23 @@
 
 #include "main.h"
 
+int FilterMouseMotionEvents(const Event *);
 void EventLoop(void);
-void HandleOtherEvents(XEvent *);
+void HandleOtherEvents(Event *);
 void ClearEventQueue(void);
 void SleepWhileUnmapped(void);
 
-void HandleExposeEvent(XExposeEvent *);
-void HandleButtonEvent(XButtonEvent *);
-void HandleMotionEvent(XMotionEvent *);
-void HandleKeyEvent(XKeyEvent *);
-void HandleFocusEvent(XFocusChangeEvent *);
-void HandleClientMessageEvent(XClientMessageEvent *event);
+void HandleExposeEvent(ExposeEvent *);
+void HandleButtonEvent(ButtonEvent *);
+void HandleMotionEvent(MotionEvent *);
+void HandleKeyEvent(KeyEvent *);
+void HandleFocusEvent(FocusChangeEvent *);
+void HandleClientMessageEvent(ClientMessageEvent *event);
 
-void HandleNoXEvent(void);
+void HandleNoEvent(void);
 
 void HandleButton(int, int, int);
-void HandleKey(KeySym, int);
+void HandleKey(Key, int);
 void HandleJoystick();
 
 #endif

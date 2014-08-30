@@ -1,15 +1,17 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  events.c                                                *
+* events.c                                                 *
 ***********************************************************/
+
+#include "libgame/libgame.h"
 
 #include "events.h"
 #include "init.h"
@@ -17,10 +19,8 @@
 #include "tools.h"
 #include "game.h"
 #include "editor.h"
-#include "misc.h"
 #include "tape.h"
 #include "joystick.h"
-#include "buttons.h"
 #include "network.h"
 
 /* values for key_status */
@@ -28,47 +28,84 @@
 #define KEY_RELEASED		FALSE
 #define KEY_PRESSED		TRUE
 
+
+/* event filter especially needed for SDL event filtering due to
+   delay problems with lots of mouse motion events when mouse
+   button not pressed */
+
+int FilterMouseMotionEvents(const Event *event)
+{
+  if (event->type != EVENT_MOTIONNOTIFY)
+    return 1;
+
+  /* get mouse motion events without pressed button only in level editor */
+  if (button_status == MB_RELEASED && game_status != LEVELED)
+    return 0;
+  else
+    return 1;
+}
+
+/* this is only really needed for non-SDL targets to filter unwanted events;
+   when using SDL with properly installed event filter, this function can be
+   replaced with a simple "NextEvent()" call, but it doesn't hurt either */
+
+static boolean NextValidEvent(Event *event)
+{
+  while (PendingEvent())
+  {
+    NextEvent(event);
+
+    if (FilterMouseMotionEvents(event))
+      return TRUE;
+  }
+
+  return FALSE;
+}
+
 void EventLoop(void)
 {
   while(1)
   {
-    if (XPending(display))	/* got event from X server */
+    if (PendingEvent())		/* got event */
     {
-      XEvent event;
+      Event event;
 
-      XNextEvent(display, &event);
-
-      switch(event.type)
+      if (NextValidEvent(&event))
       {
-	case ButtonPress:
-	case ButtonRelease:
-	  HandleButtonEvent((XButtonEvent *) &event);
-	  break;
-
-	case MotionNotify:
-	  HandleMotionEvent((XMotionEvent *) &event);
-	  break;
-
-	case KeyPress:
-	case KeyRelease:
-	  HandleKeyEvent((XKeyEvent *) &event);
-	  break;
-
-	default:
-	  HandleOtherEvents(&event);
-	  break;
+  	switch(event.type)
+  	{
+  	  case EVENT_BUTTONPRESS:
+  	  case EVENT_BUTTONRELEASE:
+  	    HandleButtonEvent((ButtonEvent *) &event);
+  	    break;
+  
+  	  case EVENT_MOTIONNOTIFY:
+  	    HandleMotionEvent((MotionEvent *) &event);
+  	    break;
+  
+  	  case EVENT_KEYPRESS:
+  	  case EVENT_KEYRELEASE:
+  	    HandleKeyEvent((KeyEvent *) &event);
+  	    break;
+  
+  	  default:
+  	    HandleOtherEvents(&event);
+  	    break;
+  	}
       }
     }
-
-    HandleNoXEvent();
+    else
+      HandleNoEvent();
 
     /* don't use all CPU time when idle; the main loop while playing
        has its own synchronization and is CPU friendly, too */
 
-    if (game_status != PLAYING)
+    if (game_status == PLAYING)
+      HandleGameActions();
+    else
     {
-      XSync(display, FALSE);
-      if (!XPending(display))	/* delay only if no pending events */
+      SyncDisplay();
+      if (!PendingEvent())	/* delay only if no pending events */
 	Delay(10);
     }
 
@@ -80,26 +117,34 @@ void EventLoop(void)
   }
 }
 
-void HandleOtherEvents(XEvent *event)
+void HandleOtherEvents(Event *event)
 {
   switch(event->type)
   {
-    case Expose:
-      HandleExposeEvent((XExposeEvent *) event);
+    case EVENT_EXPOSE:
+      HandleExposeEvent((ExposeEvent *) event);
       break;
 
-    case UnmapNotify:
+    case EVENT_UNMAPNOTIFY:
       SleepWhileUnmapped();
       break;
 
-    case FocusIn:
-    case FocusOut:
-      HandleFocusEvent((XFocusChangeEvent *) event);
+    case EVENT_FOCUSIN:
+    case EVENT_FOCUSOUT:
+      HandleFocusEvent((FocusChangeEvent *) event);
       break;
 
-    case ClientMessage:
-      HandleClientMessageEvent((XClientMessageEvent *) event);
+    case EVENT_CLIENTMESSAGE:
+      HandleClientMessageEvent((ClientMessageEvent *) event);
       break;
+
+#if defined(TARGET_SDL)
+    case SDL_JOYAXISMOTION:
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYBUTTONUP:
+      HandleJoystickEvent(event);
+      break;
+#endif
 
     default:
       break;
@@ -108,19 +153,19 @@ void HandleOtherEvents(XEvent *event)
 
 void ClearEventQueue()
 {
-  while(XPending(display))
+  while (PendingEvent())
   {
-    XEvent event;
+    Event event;
 
-    XNextEvent(display, &event);
+    NextEvent(&event);
 
     switch(event.type)
     {
-      case ButtonRelease:
+      case EVENT_BUTTONRELEASE:
 	button_status = MB_RELEASED;
 	break;
 
-      case KeyRelease:
+      case EVENT_KEYRELEASE:
 	key_joystick_mapping = 0;
 	break;
 
@@ -135,29 +180,29 @@ void SleepWhileUnmapped()
 {
   boolean window_unmapped = TRUE;
 
-  XAutoRepeatOn(display);
+  KeyboardAutoRepeatOn();
 
   while(window_unmapped)
   {
-    XEvent event;
+    Event event;
 
-    XNextEvent(display, &event);
+    NextEvent(&event);
 
     switch(event.type)
     {
-      case ButtonRelease:
+      case EVENT_BUTTONRELEASE:
 	button_status = MB_RELEASED;
 	break;
 
-      case KeyRelease:
+      case EVENT_KEYRELEASE:
 	key_joystick_mapping = 0;
 	break;
 
-      case MapNotify:
+      case EVENT_MAPNOTIFY:
 	window_unmapped = FALSE;
 	break;
 
-      case UnmapNotify:
+      case EVENT_UNMAPNOTIFY:
 	/* this is only to surely prevent the 'should not happen' case
 	 * of recursively looping between 'SleepWhileUnmapped()' and
 	 * 'HandleOtherEvents()' which usually calls this funtion.
@@ -171,11 +216,12 @@ void SleepWhileUnmapped()
   }
 
   if (game_status == PLAYING)
-    XAutoRepeatOff(display);
+    KeyboardAutoRepeatOff();
 }
 
-void HandleExposeEvent(XExposeEvent *event)
+void HandleExposeEvent(ExposeEvent *event)
 {
+#ifndef TARGET_SDL
   int x = event->x, y = event->y;
   int width = event->width, height = event->height;
 
@@ -203,21 +249,20 @@ void HandleExposeEvent(XExposeEvent *event)
     fx += (ScreenMovDir & (MV_LEFT|MV_RIGHT) ? ScreenGfxPos : 0);
     fy += (ScreenMovDir & (MV_UP|MV_DOWN)    ? ScreenGfxPos : 0);
 
-    XCopyArea(display,fieldbuffer,backbuffer,gc,
-	      fx,fy, SXSIZE,SYSIZE,
-	      SX,SY);
+    BlitBitmap(fieldbuffer, backbuffer, fx,fy, SXSIZE,SYSIZE, SX,SY);
   }
 
-  XCopyArea(display,drawto,window,gc, x,y, width,height, x,y);
+  BlitBitmap(drawto, window, x,y, width,height, x,y);
 
-  XFlush(display);
+  FlushDisplay();
+#endif
 }
 
-void HandleButtonEvent(XButtonEvent *event)
+void HandleButtonEvent(ButtonEvent *event)
 {
   motion_status = FALSE;
 
-  if (event->type == ButtonPress)
+  if (event->type == EVENT_BUTTONPRESS)
     button_status = event->button;
   else
     button_status = MB_RELEASED;
@@ -225,59 +270,39 @@ void HandleButtonEvent(XButtonEvent *event)
   HandleButton(event->x, event->y, button_status);
 }
 
-void HandleMotionEvent(XMotionEvent *event)
+void HandleMotionEvent(MotionEvent *event)
 {
-  Window root, child;
-  int root_x, root_y;
-  int win_x, win_y;
-  unsigned int mask;
+  if (!PointerInWindow(window))
+    return;	/* window and pointer are on different screens */
 
-  if (!XQueryPointer(display, window, &root, &child, &root_x, &root_y,
-		     &win_x, &win_y, &mask))
+#if 1
+  if (button_status == MB_RELEASED && game_status != LEVELED)
     return;
-
-  if (!button_status && game_status != LEVELED)
-    return;
+#endif
 
   motion_status = TRUE;
 
-  HandleButton(win_x, win_y, button_status);
+  HandleButton(event->x, event->y, button_status);
 }
 
-void HandleKeyEvent(XKeyEvent *event)
+void HandleKeyEvent(KeyEvent *event)
 {
-  int key_status = (event->type == KeyPress ? KEY_PRESSED : KEY_RELEASED);
-  KeySym key;
-
-  if (game_status == PLAYING)
-  {
-    /* use '0' instead of 'event->state' to get the key without modifiers */
-    key = XLookupKeysym(event, 0);
-  }
-  else
-  {
-    /* get the key with all modifiers */
-    char buffer[10];
-    int buffer_size = 10;
-    XComposeStatus compose;
-    int char_count;
-
-    char_count = XLookupString(event, buffer, buffer_size, &key, &compose);
-    buffer[char_count] = '\0';
-  }
+  int key_status = (event->type==EVENT_KEYPRESS ? KEY_PRESSED : KEY_RELEASED);
+  boolean with_modifiers = (game_status == PLAYING ? FALSE : TRUE);
+  Key key = GetEventKey(event, with_modifiers);
 
   HandleKey(key, key_status);
 }
 
-void HandleFocusEvent(XFocusChangeEvent *event)
+void HandleFocusEvent(FocusChangeEvent *event)
 {
   static int old_joystick_status = -1;
 
-  if (event->type == FocusOut)
+  if (event->type == EVENT_FOCUSOUT)
   {
     int i;
 
-    XAutoRepeatOn(display);
+    KeyboardAutoRepeatOn();
     old_joystick_status = joystick_status;
     joystick_status = JOYSTICK_OFF;
 
@@ -286,7 +311,7 @@ void HandleFocusEvent(XFocusChangeEvent *event)
     for (i=0; i<MAX_PLAYERS; i++)
       stored_player[i].action = 0;
   }
-  else if (event->type == FocusIn)
+  else if (event->type == EVENT_FOCUSIN)
   {
     /* When there are two Rocks'n'Diamonds windows which overlap and
        the player moves the pointer from one game window to the other,
@@ -307,20 +332,17 @@ void HandleFocusEvent(XFocusChangeEvent *event)
     if (game_status == PLAYING)
     {
       Delay(100);
-      XAutoRepeatOff(display);
+      KeyboardAutoRepeatOff();
     }
     if (old_joystick_status != -1)
       joystick_status = old_joystick_status;
   }
 }
 
-void HandleClientMessageEvent(XClientMessageEvent *event)
+void HandleClientMessageEvent(ClientMessageEvent *event)
 {
-#ifndef MSDOS
-  if ((event->window == window) &&
-      (event->data.l[0] == XInternAtom(display, "WM_DELETE_WINDOW", FALSE)))
+  if (CheckCloseWindowEvent(event))
     CloseAllAndExit(0);
-#endif
 }
 
 void HandleButton(int mx, int my, int button)
@@ -348,7 +370,7 @@ void HandleButton(int mx, int my, int button)
       break;
 
     case TYPENAME:
-      HandleTypeName(0, XK_Return);
+      HandleTypeName(0, KSYM_Return);
       break;
 
     case CHOOSELEVEL:
@@ -409,14 +431,15 @@ void HandleButton(int mx, int my, int button)
   }
 }
 
-void HandleKey(KeySym key, int key_status)
+void HandleKey(Key key, int key_status)
 {
   int joy = 0;
+  boolean anyTextGadgetActiveOrJustFinished = anyTextGadgetActive();
   static struct SetupKeyboardInfo custom_key;
   static struct
   {
-    KeySym *keysym_custom;
-    KeySym keysym_default;
+    Key *key_custom;
+    Key key_default;
     byte action;
   } key_info[] =
   {
@@ -443,7 +466,7 @@ void HandleKey(KeySym key, int key_status)
       custom_key = setup.input[pnr].key;
 
       for (i=0; i<6; i++)
-	if (key == *key_info[i].keysym_custom)
+	if (key == *key_info[i].key_custom)
 	  key_action |= key_info[i].action;
 
       if (key_status == KEY_PRESSED)
@@ -457,7 +480,7 @@ void HandleKey(KeySym key, int key_status)
     int i;
 
     for (i=0; i<6; i++)
-      if (key == key_info[i].keysym_default)
+      if (key == key_info[i].key_default)
 	joy |= key_info[i].action;
   }
 
@@ -477,7 +500,7 @@ void HandleKey(KeySym key, int key_status)
   if (key_status == KEY_RELEASED)
     return;
 
-  if ((key == XK_Return || key == XK_space) &&
+  if ((key == KSYM_Return || key == KSYM_space) &&
       game_status == PLAYING && AllPlayersGone)
   {
     CloseDoor(DOOR_CLOSE_1);
@@ -487,7 +510,7 @@ void HandleKey(KeySym key, int key_status)
   }
 
   /* allow quick escape to the main menu with the Escape key */
-  if (key == XK_Escape && game_status != MAINMENU)
+  if (key == KSYM_Escape && game_status != MAINMENU)
   {
     CloseDoor(DOOR_CLOSE_1 | DOOR_OPEN_2 | DOOR_NO_DELAY);
     game_status = MAINMENU;
@@ -520,8 +543,8 @@ void HandleKey(KeySym key, int key_status)
     case SETUPINPUT:
       switch(key)
       {
-	case XK_Return:
-	case XK_space:
+	case KSYM_Return:
+	case KSYM_space:
 	  if (game_status == MAINMENU)
 	    HandleMainMenu(0,0, 0,0, MB_MENU_CHOICE);
           else if (game_status == CHOOSELEVEL)
@@ -532,12 +555,12 @@ void HandleKey(KeySym key, int key_status)
 	    HandleSetupInputScreen(0,0, 0,0, MB_MENU_CHOICE);
 	  break;
 
-        case XK_Page_Up:
+        case KSYM_Page_Up:
           if (game_status == CHOOSELEVEL)
             HandleChooseLevel(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
 	  break;
 
-        case XK_Page_Down:
+        case KSYM_Page_Down:
           if (game_status == CHOOSELEVEL)
             HandleChooseLevel(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
 	  break;
@@ -554,18 +577,18 @@ void HandleKey(KeySym key, int key_status)
     case HALLOFFAME:
       switch(key)
       {
-	case XK_Return:
-	case XK_space:
+	case KSYM_Return:
+	case KSYM_space:
 	  game_status = MAINMENU;
 	  DrawMainMenu();
 	  BackToFront();
 	  break;
 
-        case XK_Page_Up:
+        case KSYM_Page_Up:
 	  HandleHallOfFame(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
 	  break;
 
-        case XK_Page_Down:
+        case KSYM_Page_Down:
 	  HandleHallOfFame(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
 	  break;
 
@@ -575,7 +598,8 @@ void HandleKey(KeySym key, int key_status)
       break;
 
     case LEVELED:
-      HandleLevelEditorKeyInput(key);
+      if (!anyTextGadgetActiveOrJustFinished)
+	HandleLevelEditorKeyInput(key);
       break;
 
     case PLAYING:
@@ -584,17 +608,17 @@ void HandleKey(KeySym key, int key_status)
       {
 
 #ifdef DEBUG
-	case XK_0:
-	case XK_1:
-	case XK_2:
-	case XK_3:
-	case XK_4:
-	case XK_5:
-	case XK_6:
-	case XK_7:
-	case XK_8:
-	case XK_9:
-	  if (key == XK_0)
+	case KSYM_0:
+	case KSYM_1:
+	case KSYM_2:
+	case KSYM_3:
+	case KSYM_4:
+	case KSYM_5:
+	case KSYM_6:
+	case KSYM_7:
+	case KSYM_8:
+	case KSYM_9:
+	  if (key == KSYM_0)
 	  {
 	    if (GameFrameDelay == 500)
 	      GameFrameDelay = GAME_FRAME_DELAY;
@@ -602,14 +626,46 @@ void HandleKey(KeySym key, int key_status)
 	      GameFrameDelay = 500;
 	  }
 	  else
-	    GameFrameDelay = (key - XK_0) * 10;
+	    GameFrameDelay = (key - KSYM_0) * 10;
 	  printf("Game speed == %d%% (%d ms delay between two frames)\n",
 		 GAME_FRAME_DELAY * 100 / GameFrameDelay, GameFrameDelay);
 	  break;
 
+	case KSYM_d:
+	  if (options.debug)
+	  {
+	    options.debug = FALSE;
+	    printf("debug mode disabled\n");
+	  }
+	  else
+	  {
+	    options.debug = TRUE;
+	    printf("debug mode enabled\n");
+	  }
+	  break;
+
+	case KSYM_s:
+	  if (!global.fps_slowdown)
+	  {
+	    global.fps_slowdown = TRUE;
+	    global.fps_slowdown_factor = 2;
+	    printf("fps slowdown enabled -- display only every 2nd frame\n");
+	  }
+	  else if (global.fps_slowdown_factor == 2)
+	  {
+	    global.fps_slowdown_factor = 4;
+	    printf("fps slowdown enabled -- display only every 4th frame\n");
+	  }
+	  else
+	  {
+	    global.fps_slowdown = FALSE;
+	    global.fps_slowdown_factor = 1;
+	    printf("fps slowdown disabled\n");
+	  }
+	  break;
 
 #if 0
-	case XK_a:
+	case KSYM_a:
 	  if (ScrollStepSize == TILEX/8)
 	    ScrollStepSize = TILEX/4;
 	  else
@@ -619,7 +675,7 @@ void HandleKey(KeySym key, int key_status)
 #endif
 
 #if 0
-	case XK_m:
+	case KSYM_m:
 	  if (MoveSpeed == 8)
 	  {
 	    MoveSpeed = 4;
@@ -634,30 +690,28 @@ void HandleKey(KeySym key, int key_status)
 	  break;
 #endif
 
-	case XK_f:
+	case KSYM_f:
 	  ScrollStepSize = TILEX/8;
 	  printf("ScrollStepSize == %d (1/8)\n", ScrollStepSize);
 	  break;
 
-	case XK_g:
+	case KSYM_g:
 	  ScrollStepSize = TILEX/4;
 	  printf("ScrollStepSize == %d (1/4)\n", ScrollStepSize);
 	  break;
 
-	case XK_h:
+	case KSYM_h:
 	  ScrollStepSize = TILEX/2;
 	  printf("ScrollStepSize == %d (1/2)\n", ScrollStepSize);
 	  break;
 
-	case XK_l:
+	case KSYM_l:
 	  ScrollStepSize = TILEX;
 	  printf("ScrollStepSize == %d (1/1)\n", ScrollStepSize);
 	  break;
 
-#ifndef MSDOS
-	case XK_Q:
-#endif
-	case XK_q:
+	case KSYM_Q:
+	case KSYM_q:
 	  local_player->dynamite = 1000;
 	  break;
 
@@ -665,7 +719,7 @@ void HandleKey(KeySym key, int key_status)
 
 #if 0
 
-	case XK_z:
+	case KSYM_z:
 	  {
 	    int i;
 
@@ -694,7 +748,7 @@ void HandleKey(KeySym key, int key_status)
   }
 }
 
-void HandleNoXEvent()
+void HandleNoEvent()
 {
   if (button_status && game_status != PLAYING)
   {
@@ -702,15 +756,12 @@ void HandleNoXEvent()
     return;
   }
 
-#ifndef MSDOS
+#if defined(PLATFORM_UNIX)
   if (options.network)
     HandleNetworking();
 #endif
 
   HandleJoystick();
-
-  if (game_status == PLAYING)
-    HandleGameActions();
 }
 
 static int HandleJoystickForAllPlayers()

@@ -1,19 +1,32 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-*  ©1995 Artsoft Development                               *
-*        Holger Schemel                                    *
-*        33659 Bielefeld-Senne                             *
-*        Telefon: (0521) 493245                            *
-*        eMail: aeglos@valinor.owl.de                      *
-*               aeglos@uni-paderborn.de                    *
-*               q99492@pbhrzx.uni-paderborn.de             *
+* (c) 1994-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  msdos.h                                                 *
+* msdos.h                                                  *
 ***********************************************************/
 
-#include <allegro.h>
+#ifndef MSDOS_H
+#define MSDOS_H
+
 #include <time.h>
+#include "allegro.h"
+
+
+/* symbol 'window' is defined in DJGPP cross-compiler in libc.a(conio.o) */
+#define window window_djgpp
+
+/* symbol 'font' is defined in "allegro.h" */
+#define font font_allegro
+
+/* system dependent definitions */
+
+#define TARGET_STRING		"DOS"
 
 /* allegro defines TRUE as -1 */
 #ifdef TRUE
@@ -437,7 +450,6 @@
 
 /* end of X11 keyboard mapping */
 
-#define MOUSE_FILENAME		"mouse.pcx"
 #define JOYSTICK_FILENAME	"joystick.cnf"
 
 #define screen myscreen
@@ -446,7 +458,6 @@
 #define XGetImage(a,b,c,d,e,f,g,h)		((XImage *) NULL)
 #define XDisplayName(a)				((char *) NULL)
 #define XFreeColors(a,b,c,d,e)
-#define XpmFreeAttributes(a)
 #define XSelectInput(a,b,c)
 #define XDefaultDepth(a,b)			(8)
 #define XSetWMProperties(a,b,c,d,e,f,g,h,i)
@@ -482,8 +493,25 @@
 #define MapNotify		19
 #define ClientMessage		33
 
+#define LineSolid               0
+#define LineOnOffDash           1
+#define LineDoubleDash          2
+
+#define CapNotLast              0
+#define CapButt                 1
+#define CapRound                2
+#define CapProjecting           3
+
+#define JoinMiter               0
+#define JoinRound               1
+#define JoinBevel               2
+
 #define GCForeground            (1L << 2)
 #define GCBackground            (1L << 3)
+#define GCLineWidth             (1L << 4)
+#define GCLineStyle             (1L << 5)
+#define GCCapStyle              (1L << 6)
+#define GCJoinStyle             (1L << 7)
 #define GCGraphicsExposures     (1L << 16)
 #define GCClipMask		(1L << 19)
 
@@ -495,14 +523,6 @@
 #define PSize			(1L << 3) /* program specified size */
 #define PMinSize		(1L << 4) /* program specified minimum size */
 #define PMaxSize		(1L << 5) /* program specified maximum size */
-
-#define XpmSuccess		 0
-#define XpmOpenFailed		-1
-#define XpmFileInvalid		-2
-#define XpmNoMemory		-3
-#define XpmColorFailed		-4
-
-#define XpmCloseness		(1L << 12)
 
 #define PCX_Success		 0
 #define PCX_OpenFailed		-1
@@ -621,15 +641,13 @@ typedef struct
   int clip_x_origin;		/* x origin for clipping */
   int clip_y_origin;		/* y origin for clipping */
   unsigned long value_mask;
-} XGCValues;
+  int line_width;		/* line width */
+  int line_style;		/* LineSolid, LineOnOffDash, LineDoubleDash */
+  int cap_style;		/* CapNotLast, CapButt, 
+				   CapRound, CapProjecting */
+  int join_style;		/* JoinMiter, JoinRound, JoinBevel */
 
-typedef struct
-{
-  unsigned long valuemask;	/* specifies which attributes are */
-  unsigned int closeness;	/* allowable RGB deviation */
-  Pixel *pixels;		/* list of used color pixels */
-  unsigned int npixels;		/* number of used pixels */
-} XpmAttributes;
+} XGCValues;
 
 typedef struct
 {
@@ -676,7 +694,8 @@ typedef union _XEvent
   XKeyEvent xkey;
 } XEvent;
 
-unsigned char get_ascii(KeySym);
+Pixel AllegroAllocColorCell(int, int, int);
+
 void XMapWindow(Display *, Window);
 Display *XOpenDisplay(char *);
 Window XCreateSimpleWindow(Display *, Window, int, int,
@@ -695,12 +714,11 @@ void XSync(Display *, Bool);
 inline void XCopyArea(Display *, Drawable, Drawable, GC, int, int,
 		      unsigned int, unsigned int, int, int);
 int Read_PCX_to_Pixmap(Display *, Window, GC, char *, Pixmap *, Pixmap *);
-int XpmReadFileToPixmap(Display *, Drawable, char *, Pixmap *, Pixmap *,
-			XpmAttributes *);
 int XReadBitmapFile(Display *, Drawable, char *,
 		    unsigned int *, unsigned int *, Pixmap *, int *, int *);
 void XFreePixmap(Display *, Pixmap);
 void XFreeGC(Display *, GC);
+void XUnmapWindow(Display *, Window);
 void XCloseDisplay(Display *);
 void XNextEvent(Display *, XEvent *);
 int XPending(Display *);
@@ -709,8 +727,18 @@ int XLookupString(XKeyEvent *, char *, int, KeySym *, XComposeStatus *);
 void XSetForeground(Display *, GC, unsigned long);
 void XDrawLine(Display *, Drawable, GC, int, int, int, int);
 void XDestroyImage(XImage *);
+void XDestroyWindow(Display *, Window);
 Bool XQueryPointer(Display *, Window, Window *, Window *, int *, int *,
 		   int *, int *, unsigned int *);
 void XAutoRepeatOn(Display *);
 void XAutoRepeatOff(Display *);
+
+void AllegroDrawLine(Drawable, int, int, int, int, Pixel);
+Pixel AllegroGetPixel(Drawable, int, int);
+
+void MSDOSOpenAudio(void);
+void MSDOSCloseAudio(void);
+
 void NetworkServer(int, int);
+
+#endif /* MSDOS_H */

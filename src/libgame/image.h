@@ -1,20 +1,23 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Artsoft Retro-Game Library                               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1994-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  image.h                                                 *
+* image.h                                                  *
 ***********************************************************/
 
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "main.h"
+#include "system.h"
+
+
+#if defined(TARGET_X11)
 
 #define MAX_COLORS	256	/* maximal number of colors for each image */
 
@@ -49,10 +52,11 @@ typedef struct
   byte         *data;		/* image data                          */
 } Image;
 
-int Read_PCX_to_Pixmap(Display *, Window, GC, char *, Pixmap *, Pixmap *);
-
 Image *newImage(unsigned int, unsigned int, unsigned int);
 void freeImage(Image *);
 void freeXImage(Image *, XImageInfo *);
+int Read_PCX_to_Pixmap(Display *, Window, GC, char *, Pixmap *, Pixmap *);
+
+#endif /* TARGET_X11 */
 
 #endif	/* IMAGE_H */

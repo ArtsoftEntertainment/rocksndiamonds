@@ -1,19 +1,20 @@
 /***********************************************************
-*  Rocks'n'Diamonds -- McDuffin Strikes Back!              *
+* Rocks'n'Diamonds -- McDuffin Strikes Back!               *
 *----------------------------------------------------------*
-*  (c) 1995-98 Artsoft Entertainment                       *
-*              Holger Schemel                              *
-*              Oststrasse 11a                              *
-*              33604 Bielefeld                             *
-*              phone: ++49 +521 290471                     *
-*              email: aeglos@valinor.owl.de                *
+* (c) 1995-2000 Artsoft Entertainment                      *
+*               Holger Schemel                             *
+*               Detmolder Strasse 189                      *
+*               33604 Bielefeld                            *
+*               Germany                                    *
+*               e-mail: info@artsoft.org                   *
 *----------------------------------------------------------*
-*  network.c                                               *
+* network.c                                                *
 ***********************************************************/
 
-#ifndef MSDOS
+#include "libgame/libgame.h"
 
-#include <unistd.h>
+#if defined(PLATFORM_UNIX)
+
 #include <fcntl.h>
 #include <sys/time.h>
 #include <signal.h>
@@ -25,8 +26,11 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
+#if 0
+#include "libgame/libgame.h"
+#endif
+
 #include "netserv.h"
-#include "misc.h"
 
 static int clients = 0;
 static int onceonly = 0;
@@ -662,4 +666,4 @@ void NetworkServer(int port, int serveronly)
   }
 }
 
-#endif /* !MSDOS */
+#endif /* PLATFORM_UNIX */
