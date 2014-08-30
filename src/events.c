@@ -577,6 +577,11 @@ static void HandleKeysSpecial(Key key)
     {
       DumpTape(&tape);
     }
+    else if (is_string_suffix(cheat_input, ":save-native-level") ||
+	     is_string_suffix(cheat_input, ":snl"))
+    {
+      SaveNativeLevel(&level);
+    }
   }
   else if (game_status == GAME_MODE_PLAYING)
   {
@@ -757,6 +762,9 @@ void HandleKey(Key key, int key_status)
       TapeQuickLoad();
     else if (key == setup.shortcut.toggle_pause)
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
+
+    HandleTapeButtonKeys(key);
+    HandleSoundButtonKeys(key);
   }
 
   if (game_status == GAME_MODE_PLAYING && !network_playing)
@@ -862,6 +870,12 @@ void HandleKey(Key key, int key_status)
 #ifdef DEBUG
 	case KSYM_0:
 	  GameFrameDelay = (GameFrameDelay == 500 ? GAME_FRAME_DELAY : 500);
+	  break;
+
+	case KSYM_b:
+	  setup.sp_show_border_elements = !setup.sp_show_border_elements;
+	  printf("Supaplex border elements %s\n",
+		 setup.sp_show_border_elements ? "enabled" : "disabled");
 	  break;
 #endif
 

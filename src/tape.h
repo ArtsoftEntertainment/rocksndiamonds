@@ -138,6 +138,9 @@ void DrawCompleteVideoDisplay(void);
 void TapeDeactivateDisplayOn();
 void TapeDeactivateDisplayOff(boolean);
 
+void TapeSetDateFromEpochSeconds(time_t);
+void TapeSetDateFromNow();
+
 void TapeStartRecording(long);
 void TapeHaltRecording(void);
 void TapeStopRecording(void);
@@ -161,5 +164,7 @@ void MapTapeEjectButton();
 void MapTapeWarpButton();
 void MapTapeButtons();
 void UnmapTapeButtons();
+
+void HandleTapeButtonKeys(Key);
 
 #endif

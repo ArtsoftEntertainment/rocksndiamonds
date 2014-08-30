@@ -576,51 +576,52 @@
 #define GADGET_ID_RANDOM_BALL_CONTENT	(GADGET_ID_CHECKBUTTON_FIRST + 8)
 #define GADGET_ID_INITIAL_BALL_STATE	(GADGET_ID_CHECKBUTTON_FIRST + 9)
 #define GADGET_ID_GROW_INTO_DIGGABLE	(GADGET_ID_CHECKBUTTON_FIRST + 10)
-#define GADGET_ID_CONTINUOUS_SNAPPING	(GADGET_ID_CHECKBUTTON_FIRST + 11)
-#define GADGET_ID_BLOCK_SNAP_FIELD	(GADGET_ID_CHECKBUTTON_FIRST + 12)
-#define GADGET_ID_BLOCK_LAST_FIELD	(GADGET_ID_CHECKBUTTON_FIRST + 13)
-#define GADGET_ID_SP_BLOCK_LAST_FIELD	(GADGET_ID_CHECKBUTTON_FIRST + 14)
-#define GADGET_ID_INSTANT_RELOCATION	(GADGET_ID_CHECKBUTTON_FIRST + 15)
-#define GADGET_ID_SHIFTED_RELOCATION	(GADGET_ID_CHECKBUTTON_FIRST + 16)
-#define GADGET_ID_USE_START_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 17)
-#define GADGET_ID_USE_ARTWORK_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 18)
-#define GADGET_ID_USE_EXPLOSION_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 19)
-#define GADGET_ID_INITIAL_GRAVITY	(GADGET_ID_CHECKBUTTON_FIRST + 20)
-#define GADGET_ID_USE_INITIAL_INVENTORY	(GADGET_ID_CHECKBUTTON_FIRST + 21)
-#define GADGET_ID_CAN_PASS_TO_WALKABLE	(GADGET_ID_CHECKBUTTON_FIRST + 22)
-#define GADGET_ID_CAN_FALL_INTO_ACID	(GADGET_ID_CHECKBUTTON_FIRST + 23)
-#define GADGET_ID_CAN_MOVE_INTO_ACID	(GADGET_ID_CHECKBUTTON_FIRST + 24)
-#define GADGET_ID_DONT_COLLIDE_WITH	(GADGET_ID_CHECKBUTTON_FIRST + 25)
-#define GADGET_ID_ENVELOPE_AUTOWRAP	(GADGET_ID_CHECKBUTTON_FIRST + 26)
-#define GADGET_ID_ENVELOPE_CENTERED	(GADGET_ID_CHECKBUTTON_FIRST + 27)
-#define GADGET_ID_CUSTOM_INDESTRUCTIBLE	(GADGET_ID_CHECKBUTTON_FIRST + 28)
-#define GADGET_ID_CUSTOM_CAN_EXPLODE	(GADGET_ID_CHECKBUTTON_FIRST + 29)
-#define GADGET_ID_CUSTOM_EXPLODE_FIRE	(GADGET_ID_CHECKBUTTON_FIRST + 30)
-#define GADGET_ID_CUSTOM_EXPLODE_SMASH	(GADGET_ID_CHECKBUTTON_FIRST + 31)
-#define GADGET_ID_CUSTOM_EXPLODE_IMPACT	(GADGET_ID_CHECKBUTTON_FIRST + 32)
-#define GADGET_ID_CUSTOM_WALK_TO_OBJECT	(GADGET_ID_CHECKBUTTON_FIRST + 33)
-#define GADGET_ID_CUSTOM_DEADLY		(GADGET_ID_CHECKBUTTON_FIRST + 34)
-#define GADGET_ID_CUSTOM_CAN_MOVE	(GADGET_ID_CHECKBUTTON_FIRST + 35)
-#define GADGET_ID_CUSTOM_CAN_FALL	(GADGET_ID_CHECKBUTTON_FIRST + 36)
-#define GADGET_ID_CUSTOM_CAN_SMASH	(GADGET_ID_CHECKBUTTON_FIRST + 37)
-#define GADGET_ID_CUSTOM_SLIPPERY	(GADGET_ID_CHECKBUTTON_FIRST + 38)
-#define GADGET_ID_CUSTOM_ACCESSIBLE	(GADGET_ID_CHECKBUTTON_FIRST + 39)
-#define GADGET_ID_CUSTOM_GRAV_REACHABLE	(GADGET_ID_CHECKBUTTON_FIRST + 40)
-#define GADGET_ID_CUSTOM_USE_LAST_VALUE	(GADGET_ID_CHECKBUTTON_FIRST + 41)
-#define GADGET_ID_CUSTOM_USE_GRAPHIC	(GADGET_ID_CHECKBUTTON_FIRST + 42)
-#define GADGET_ID_CUSTOM_USE_TEMPLATE	(GADGET_ID_CHECKBUTTON_FIRST + 43)
-#define GADGET_ID_CUSTOM_CAN_CHANGE	(GADGET_ID_CHECKBUTTON_FIRST + 44)
-#define GADGET_ID_CHANGE_USE_CONTENT	(GADGET_ID_CHECKBUTTON_FIRST + 45)
-#define GADGET_ID_CHANGE_USE_EXPLOSION	(GADGET_ID_CHECKBUTTON_FIRST + 46)
-#define GADGET_ID_CHANGE_ONLY_COMPLETE	(GADGET_ID_CHECKBUTTON_FIRST + 47)
-#define GADGET_ID_CHANGE_USE_RANDOM	(GADGET_ID_CHECKBUTTON_FIRST + 48)
-#define GADGET_ID_CHANGE_HAS_ACTION	(GADGET_ID_CHECKBUTTON_FIRST + 49)
-#define GADGET_ID_CHANGE_DELAY		(GADGET_ID_CHECKBUTTON_FIRST + 50)
-#define GADGET_ID_CHANGE_BY_DIRECT_ACT	(GADGET_ID_CHECKBUTTON_FIRST + 51)
-#define GADGET_ID_CHANGE_BY_OTHER_ACT	(GADGET_ID_CHECKBUTTON_FIRST + 52)
+#define GADGET_ID_AUTO_EXIT_SOKOBAN	(GADGET_ID_CHECKBUTTON_FIRST + 11)
+#define GADGET_ID_CONTINUOUS_SNAPPING	(GADGET_ID_CHECKBUTTON_FIRST + 12)
+#define GADGET_ID_BLOCK_SNAP_FIELD	(GADGET_ID_CHECKBUTTON_FIRST + 13)
+#define GADGET_ID_BLOCK_LAST_FIELD	(GADGET_ID_CHECKBUTTON_FIRST + 14)
+#define GADGET_ID_SP_BLOCK_LAST_FIELD	(GADGET_ID_CHECKBUTTON_FIRST + 15)
+#define GADGET_ID_INSTANT_RELOCATION	(GADGET_ID_CHECKBUTTON_FIRST + 16)
+#define GADGET_ID_SHIFTED_RELOCATION	(GADGET_ID_CHECKBUTTON_FIRST + 17)
+#define GADGET_ID_USE_START_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 18)
+#define GADGET_ID_USE_ARTWORK_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 19)
+#define GADGET_ID_USE_EXPLOSION_ELEMENT	(GADGET_ID_CHECKBUTTON_FIRST + 20)
+#define GADGET_ID_INITIAL_GRAVITY	(GADGET_ID_CHECKBUTTON_FIRST + 21)
+#define GADGET_ID_USE_INITIAL_INVENTORY	(GADGET_ID_CHECKBUTTON_FIRST + 22)
+#define GADGET_ID_CAN_PASS_TO_WALKABLE	(GADGET_ID_CHECKBUTTON_FIRST + 23)
+#define GADGET_ID_CAN_FALL_INTO_ACID	(GADGET_ID_CHECKBUTTON_FIRST + 24)
+#define GADGET_ID_CAN_MOVE_INTO_ACID	(GADGET_ID_CHECKBUTTON_FIRST + 25)
+#define GADGET_ID_DONT_COLLIDE_WITH	(GADGET_ID_CHECKBUTTON_FIRST + 26)
+#define GADGET_ID_ENVELOPE_AUTOWRAP	(GADGET_ID_CHECKBUTTON_FIRST + 27)
+#define GADGET_ID_ENVELOPE_CENTERED	(GADGET_ID_CHECKBUTTON_FIRST + 28)
+#define GADGET_ID_CUSTOM_INDESTRUCTIBLE	(GADGET_ID_CHECKBUTTON_FIRST + 29)
+#define GADGET_ID_CUSTOM_CAN_EXPLODE	(GADGET_ID_CHECKBUTTON_FIRST + 30)
+#define GADGET_ID_CUSTOM_EXPLODE_FIRE	(GADGET_ID_CHECKBUTTON_FIRST + 31)
+#define GADGET_ID_CUSTOM_EXPLODE_SMASH	(GADGET_ID_CHECKBUTTON_FIRST + 32)
+#define GADGET_ID_CUSTOM_EXPLODE_IMPACT	(GADGET_ID_CHECKBUTTON_FIRST + 33)
+#define GADGET_ID_CUSTOM_WALK_TO_OBJECT	(GADGET_ID_CHECKBUTTON_FIRST + 34)
+#define GADGET_ID_CUSTOM_DEADLY		(GADGET_ID_CHECKBUTTON_FIRST + 35)
+#define GADGET_ID_CUSTOM_CAN_MOVE	(GADGET_ID_CHECKBUTTON_FIRST + 36)
+#define GADGET_ID_CUSTOM_CAN_FALL	(GADGET_ID_CHECKBUTTON_FIRST + 37)
+#define GADGET_ID_CUSTOM_CAN_SMASH	(GADGET_ID_CHECKBUTTON_FIRST + 38)
+#define GADGET_ID_CUSTOM_SLIPPERY	(GADGET_ID_CHECKBUTTON_FIRST + 39)
+#define GADGET_ID_CUSTOM_ACCESSIBLE	(GADGET_ID_CHECKBUTTON_FIRST + 40)
+#define GADGET_ID_CUSTOM_GRAV_REACHABLE	(GADGET_ID_CHECKBUTTON_FIRST + 41)
+#define GADGET_ID_CUSTOM_USE_LAST_VALUE	(GADGET_ID_CHECKBUTTON_FIRST + 42)
+#define GADGET_ID_CUSTOM_USE_GRAPHIC	(GADGET_ID_CHECKBUTTON_FIRST + 43)
+#define GADGET_ID_CUSTOM_USE_TEMPLATE	(GADGET_ID_CHECKBUTTON_FIRST + 44)
+#define GADGET_ID_CUSTOM_CAN_CHANGE	(GADGET_ID_CHECKBUTTON_FIRST + 45)
+#define GADGET_ID_CHANGE_USE_CONTENT	(GADGET_ID_CHECKBUTTON_FIRST + 46)
+#define GADGET_ID_CHANGE_USE_EXPLOSION	(GADGET_ID_CHECKBUTTON_FIRST + 47)
+#define GADGET_ID_CHANGE_ONLY_COMPLETE	(GADGET_ID_CHECKBUTTON_FIRST + 48)
+#define GADGET_ID_CHANGE_USE_RANDOM	(GADGET_ID_CHECKBUTTON_FIRST + 49)
+#define GADGET_ID_CHANGE_HAS_ACTION	(GADGET_ID_CHECKBUTTON_FIRST + 50)
+#define GADGET_ID_CHANGE_DELAY		(GADGET_ID_CHECKBUTTON_FIRST + 51)
+#define GADGET_ID_CHANGE_BY_DIRECT_ACT	(GADGET_ID_CHECKBUTTON_FIRST + 52)
+#define GADGET_ID_CHANGE_BY_OTHER_ACT	(GADGET_ID_CHECKBUTTON_FIRST + 53)
 
 /* gadgets for buttons in element list */
-#define GADGET_ID_ELEMENTLIST_FIRST	(GADGET_ID_CHECKBUTTON_FIRST + 53)
+#define GADGET_ID_ELEMENTLIST_FIRST	(GADGET_ID_CHECKBUTTON_FIRST + 54)
 #define GADGET_ID_ELEMENTLIST_LAST	(GADGET_ID_ELEMENTLIST_FIRST +	\
 	 				ED_NUM_ELEMENTLIST_BUTTONS - 1)
 
@@ -815,50 +816,51 @@
 #define ED_CHECKBUTTON_ID_RANDOM_BALL_CONTENT	6
 #define ED_CHECKBUTTON_ID_INITIAL_BALL_STATE	7
 #define ED_CHECKBUTTON_ID_GROW_INTO_DIGGABLE	8
-#define ED_CHECKBUTTON_ID_CONTINUOUS_SNAPPING	9
-#define ED_CHECKBUTTON_ID_BLOCK_SNAP_FIELD	10
-#define ED_CHECKBUTTON_ID_BLOCK_LAST_FIELD	11
-#define ED_CHECKBUTTON_ID_SP_BLOCK_LAST_FIELD	12
-#define ED_CHECKBUTTON_ID_INSTANT_RELOCATION	13
-#define ED_CHECKBUTTON_ID_SHIFTED_RELOCATION	14
-#define ED_CHECKBUTTON_ID_USE_START_ELEMENT	15
-#define ED_CHECKBUTTON_ID_USE_ARTWORK_ELEMENT	16
-#define ED_CHECKBUTTON_ID_USE_EXPLOSION_ELEMENT	17
-#define ED_CHECKBUTTON_ID_INITIAL_GRAVITY	18
-#define ED_CHECKBUTTON_ID_USE_INITIAL_INVENTORY	19
-#define ED_CHECKBUTTON_ID_CAN_PASS_TO_WALKABLE	20
-#define ED_CHECKBUTTON_ID_CAN_FALL_INTO_ACID	21
-#define ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID	22
-#define ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH	23
-#define ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP	24
-#define ED_CHECKBUTTON_ID_ENVELOPE_CENTERED	25
-#define ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC	26
-#define ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE	27
-#define ED_CHECKBUTTON_ID_CUSTOM_ACCESSIBLE	28
-#define ED_CHECKBUTTON_ID_CUSTOM_GRAV_REACHABLE	29
-#define ED_CHECKBUTTON_ID_CUSTOM_USE_LAST_VALUE	30
-#define ED_CHECKBUTTON_ID_CUSTOM_WALK_TO_OBJECT	31
-#define ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE	32
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_MOVE	33
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_FALL	34
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_SMASH	35
-#define ED_CHECKBUTTON_ID_CUSTOM_SLIPPERY	36
-#define ED_CHECKBUTTON_ID_CUSTOM_DEADLY		37
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_EXPLODE	38
-#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_FIRE	39
-#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_SMASH	40
-#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_IMPACT	41
-#define ED_CHECKBUTTON_ID_CUSTOM_CAN_CHANGE	42
-#define ED_CHECKBUTTON_ID_CHANGE_DELAY		43
-#define ED_CHECKBUTTON_ID_CHANGE_BY_DIRECT_ACT	44
-#define ED_CHECKBUTTON_ID_CHANGE_BY_OTHER_ACT	45
-#define ED_CHECKBUTTON_ID_CHANGE_USE_EXPLOSION	46
-#define ED_CHECKBUTTON_ID_CHANGE_USE_CONTENT	47
-#define ED_CHECKBUTTON_ID_CHANGE_ONLY_COMPLETE	48
-#define ED_CHECKBUTTON_ID_CHANGE_USE_RANDOM	49
-#define ED_CHECKBUTTON_ID_CHANGE_HAS_ACTION	50
+#define ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN	9
+#define ED_CHECKBUTTON_ID_CONTINUOUS_SNAPPING	10
+#define ED_CHECKBUTTON_ID_BLOCK_SNAP_FIELD	11
+#define ED_CHECKBUTTON_ID_BLOCK_LAST_FIELD	12
+#define ED_CHECKBUTTON_ID_SP_BLOCK_LAST_FIELD	13
+#define ED_CHECKBUTTON_ID_INSTANT_RELOCATION	14
+#define ED_CHECKBUTTON_ID_SHIFTED_RELOCATION	15
+#define ED_CHECKBUTTON_ID_USE_START_ELEMENT	16
+#define ED_CHECKBUTTON_ID_USE_ARTWORK_ELEMENT	17
+#define ED_CHECKBUTTON_ID_USE_EXPLOSION_ELEMENT	18
+#define ED_CHECKBUTTON_ID_INITIAL_GRAVITY	19
+#define ED_CHECKBUTTON_ID_USE_INITIAL_INVENTORY	20
+#define ED_CHECKBUTTON_ID_CAN_PASS_TO_WALKABLE	21
+#define ED_CHECKBUTTON_ID_CAN_FALL_INTO_ACID	22
+#define ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID	23
+#define ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH	24
+#define ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP	25
+#define ED_CHECKBUTTON_ID_ENVELOPE_CENTERED	26
+#define ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC	27
+#define ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE	28
+#define ED_CHECKBUTTON_ID_CUSTOM_ACCESSIBLE	29
+#define ED_CHECKBUTTON_ID_CUSTOM_GRAV_REACHABLE	30
+#define ED_CHECKBUTTON_ID_CUSTOM_USE_LAST_VALUE	31
+#define ED_CHECKBUTTON_ID_CUSTOM_WALK_TO_OBJECT	32
+#define ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE	33
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_MOVE	34
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_FALL	35
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_SMASH	36
+#define ED_CHECKBUTTON_ID_CUSTOM_SLIPPERY	37
+#define ED_CHECKBUTTON_ID_CUSTOM_DEADLY		38
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_EXPLODE	39
+#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_FIRE	40
+#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_SMASH	41
+#define ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_IMPACT	42
+#define ED_CHECKBUTTON_ID_CUSTOM_CAN_CHANGE	43
+#define ED_CHECKBUTTON_ID_CHANGE_DELAY		44
+#define ED_CHECKBUTTON_ID_CHANGE_BY_DIRECT_ACT	45
+#define ED_CHECKBUTTON_ID_CHANGE_BY_OTHER_ACT	46
+#define ED_CHECKBUTTON_ID_CHANGE_USE_EXPLOSION	47
+#define ED_CHECKBUTTON_ID_CHANGE_USE_CONTENT	48
+#define ED_CHECKBUTTON_ID_CHANGE_ONLY_COMPLETE	49
+#define ED_CHECKBUTTON_ID_CHANGE_USE_RANDOM	50
+#define ED_CHECKBUTTON_ID_CHANGE_HAS_ACTION	51
 
-#define ED_NUM_CHECKBUTTONS			51
+#define ED_NUM_CHECKBUTTONS			52
 
 #define ED_CHECKBUTTON_ID_EDITOR_FIRST	ED_CHECKBUTTON_ID_RANDOM_RESTRICTED
 #define ED_CHECKBUTTON_ID_EDITOR_LAST	ED_CHECKBUTTON_ID_RANDOM_RESTRICTED
@@ -1045,7 +1047,11 @@ static struct
   /* ---------- current level number --------------------------------------- */
 
   {
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     DX + 5 - SX,			DY + 3 - SY,
+#endif
     1,					100,
     GADGET_ID_SELECT_LEVEL_DOWN,	GADGET_ID_SELECT_LEVEL_UP,
     GADGET_ID_SELECT_LEVEL_TEXT,	GADGET_ID_NONE,
@@ -1398,6 +1404,7 @@ static struct ValueTextInfo options_game_engine_type[] =
 {
   { GAME_ENGINE_TYPE_RND,	"Rocks'n'Diamonds"		},
   { GAME_ENGINE_TYPE_EM,	"Emerald Mine"			},
+  { GAME_ENGINE_TYPE_SP,	"Supaplex"			},
 
   { -1,				NULL				}
 };
@@ -2471,25 +2478,41 @@ static struct
 {
   {
     ED_SCROLLBUTTON_XPOS,   ED_SCROLLBUTTON_YPOS + 0 * ED_SCROLLBUTTON_YSIZE,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     ED_SCROLL_UP_XPOS,      ED_SCROLL_UP_YPOS,
+#endif
     GADGET_ID_SCROLL_UP,
     "scroll level editing area up"
   },
   {
     ED_SCROLLBUTTON_XPOS,   ED_SCROLLBUTTON_YPOS + 1 * ED_SCROLLBUTTON_YSIZE,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     ED_SCROLL_DOWN_XPOS,    ED_SCROLL_DOWN_YPOS,
+#endif
     GADGET_ID_SCROLL_DOWN,
     "scroll level editing area down"
   },
   {
     ED_SCROLLBUTTON_XPOS,   ED_SCROLLBUTTON_YPOS + 2 * ED_SCROLLBUTTON_YSIZE,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     ED_SCROLL_LEFT_XPOS,    ED_SCROLL_LEFT_YPOS,
+#endif
     GADGET_ID_SCROLL_LEFT,
     "scroll level editing area left"
   },
   {
     ED_SCROLLBUTTON_XPOS,   ED_SCROLLBUTTON_YPOS + 3 * ED_SCROLLBUTTON_YSIZE,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     ED_SCROLL_RIGHT_XPOS,   ED_SCROLL_RIGHT_YPOS,
+#endif
     GADGET_ID_SCROLL_RIGHT,
     "scroll level editing area right"
   },
@@ -2521,14 +2544,16 @@ static struct
 {
   {
     ED_SCROLLBAR_XPOS,			ED_SCROLLBAR_YPOS,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+    -1, -1,	/* these values are not constant, but can change at runtime */
+    -1, -1,	/* these values are not constant, but can change at runtime */
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     SX + ED_SCROLL_HORIZONTAL_XPOS,	SY + ED_SCROLL_HORIZONTAL_YPOS,
     ED_SCROLL_HORIZONTAL_XSIZE,		ED_SCROLL_HORIZONTAL_YSIZE,
-#if 1
     SX,					SY,
     SXSIZE,				SYSIZE,
-#else
-    0,					0,
-    SX + SXSIZE + SX,			WIN_YSIZE,
 #endif
     GD_TYPE_SCROLLBAR_HORIZONTAL,
     GADGET_ID_SCROLL_HORIZONTAL,
@@ -2536,14 +2561,16 @@ static struct
   },
   {
     ED_SCROLLBAR_XPOS,			ED_SCROLLBAR_YPOS,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+    -1, -1,	/* these values are not constant, but can change at runtime */
+    -1, -1,	/* these values are not constant, but can change at runtime */
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     SX + ED_SCROLL_VERTICAL_XPOS,	SY + ED_SCROLL_VERTICAL_YPOS,
     ED_SCROLL_VERTICAL_XSIZE,		ED_SCROLL_VERTICAL_YSIZE,
-#if 1
     SX,					SY,
     SXSIZE,				SYSIZE,
-#else
-    0,					0,
-    SX + SXSIZE + SX,			WIN_YSIZE,
 #endif
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_VERTICAL,
@@ -2551,15 +2578,16 @@ static struct
   },
   {
     ED_SCROLLBAR2_XPOS,			ED_SCROLLBAR2_YPOS,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+    ED_SCROLL2_VERTICAL_XSIZE,		ED_SCROLL2_VERTICAL_YSIZE,
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     DX + ED_SCROLL2_VERTICAL_XPOS,	DY + ED_SCROLL2_VERTICAL_YPOS,
     ED_SCROLL2_VERTICAL_XSIZE,		ED_SCROLL2_VERTICAL_YSIZE,
-#if 1
     DX,					DY,
-    DXSIZE,				DYSIZE,
-#else
-    SX + SXSIZE + SX,			0,
-    WIN_XSIZE - (SX + SXSIZE + SX),	WIN_YSIZE,
 #endif
+    DXSIZE,				DYSIZE,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_LIST_VERTICAL,
     "scroll element list vertically"
@@ -2669,6 +2697,13 @@ static struct
     &level.grow_into_diggable,
     NULL,
     "can grow into anything diggable",	"grow into more than just sand"
+  },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_AUTO_EXIT_SOKOBAN,	GADGET_ID_NONE,
+    &level.auto_exit_sokoban,
+    NULL,
+    "exit level if all fields solved",	"automatically finish Sokoban levels"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
@@ -2997,7 +3032,12 @@ static struct
   {
     0,					0,
     GADGET_ID_DRAWING_LEVEL,		GADGET_ID_NONE,
-    NULL,				MAX_ED_FIELDX, MAX_ED_FIELDY,
+    NULL,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
+    MAX_ED_FIELDX, MAX_ED_FIELDY,
+#endif
     NULL, NULL, NULL,			NULL
   },
 
@@ -3259,7 +3299,11 @@ static struct
 */
 
 /* actual size of level editor drawing area */
+#if 1
+static int ed_fieldx, ed_fieldy;
+#else
 static int ed_fieldx = MAX_ED_FIELDX - 1, ed_fieldy = MAX_ED_FIELDY - 1;
+#endif
 
 /* actual position of level editor drawing area in level playfield */
 static int level_xpos = -1, level_ypos = -1;
@@ -3703,6 +3747,16 @@ static int editor_el_supaplex[] =
   EL_SP_GRAVITY_PORT_RIGHT,
   EL_SP_GRAVITY_PORT_UP,
   EL_SP_GRAVITY_PORT_DOWN,
+
+  EL_SP_GRAVITY_ON_PORT_LEFT,
+  EL_SP_GRAVITY_ON_PORT_RIGHT,
+  EL_SP_GRAVITY_ON_PORT_UP,
+  EL_SP_GRAVITY_ON_PORT_DOWN,
+
+  EL_SP_GRAVITY_OFF_PORT_LEFT,
+  EL_SP_GRAVITY_OFF_PORT_RIGHT,
+  EL_SP_GRAVITY_OFF_PORT_UP,
+  EL_SP_GRAVITY_OFF_PORT_DOWN,
 
   EL_SP_HARDWARE_GRAY,
   EL_SP_HARDWARE_GREEN,
@@ -5138,37 +5192,9 @@ static void DrawDrawingArea(int id)
 
 static void ScrollMiniLevel(int from_x, int from_y, int scroll)
 {
-#if 0
-  /* (directly solved in BlitBitmap() now) */
-  static Bitmap *tmp_backbuffer = NULL;
-#endif
   int x, y;
   int dx = (scroll == ED_SCROLL_LEFT ? -1 : scroll == ED_SCROLL_RIGHT ? 1 : 0);
   int dy = (scroll == ED_SCROLL_UP   ? -1 : scroll == ED_SCROLL_DOWN  ? 1 : 0);
-
-#if 0
-  /* (directly solved in BlitBitmap() now) */
-  if (tmp_backbuffer == NULL)
-    tmp_backbuffer = CreateBitmap(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
-
-  /* needed when blitting directly to same bitmap -- should not be needed with
-     recent SDL libraries, but apparently does not work in 1.2.11 directly */
-  BlitBitmap(drawto, tmp_backbuffer,
-	     SX + (dx == -1 ? MINI_TILEX : 0),
-	     SY + (dy == -1 ? MINI_TILEY : 0),
-	     (ed_fieldx * MINI_TILEX) - (dx != 0 ? MINI_TILEX : 0),
-	     (ed_fieldy * MINI_TILEY) - (dy != 0 ? MINI_TILEY : 0),
-	     SX + (dx == +1 ? MINI_TILEX : 0),
-	     SY + (dy == +1 ? MINI_TILEY : 0));
-  BlitBitmap(tmp_backbuffer, drawto,
-	     SX + (dx == +1 ? MINI_TILEX : 0),
-	     SY + (dy == +1 ? MINI_TILEY : 0),
-	     (ed_fieldx * MINI_TILEX) - (dx != 0 ? MINI_TILEX : 0),
-	     (ed_fieldy * MINI_TILEY) - (dy != 0 ? MINI_TILEY : 0),
-	     SX + (dx == +1 ? MINI_TILEX : 0),
-	     SY + (dy == +1 ? MINI_TILEY : 0));
-
-#else
 
   BlitBitmap(drawto, drawto,
 	     SX + (dx == -1 ? MINI_TILEX : 0),
@@ -5177,7 +5203,6 @@ static void ScrollMiniLevel(int from_x, int from_y, int scroll)
 	     (ed_fieldy * MINI_TILEY) - (dy != 0 ? MINI_TILEY : 0),
 	     SX + (dx == +1 ? MINI_TILEX : 0),
 	     SY + (dy == +1 ? MINI_TILEY : 0));
-#endif
 
   if (dx)
   {
@@ -5335,6 +5360,16 @@ static void CreateControlButtons()
     level_editor_gadget[id] = gi;
   }
 
+  /* these values are not constant, but can change at runtime */
+  scrollbutton_info[ED_SCROLLBUTTON_ID_AREA_UP].x    = ED_SCROLL_UP_XPOS;
+  scrollbutton_info[ED_SCROLLBUTTON_ID_AREA_UP].y    = ED_SCROLL_UP_YPOS;
+  scrollbutton_info[ED_SCROLLBUTTON_ID_AREA_DOWN].x  = ED_SCROLL_DOWN_XPOS;
+  scrollbutton_info[ED_SCROLLBUTTON_ID_AREA_DOWN].y  = ED_SCROLL_DOWN_YPOS;
+  scrollbutton_info[ED_SCROLLBUTTON_ID_AREA_LEFT].x  = ED_SCROLL_LEFT_XPOS;
+  scrollbutton_info[ED_SCROLLBUTTON_ID_AREA_LEFT].y  = ED_SCROLL_LEFT_YPOS;
+  scrollbutton_info[ED_SCROLLBUTTON_ID_AREA_RIGHT].x = ED_SCROLL_RIGHT_XPOS;
+  scrollbutton_info[ED_SCROLLBUTTON_ID_AREA_RIGHT].y = ED_SCROLL_RIGHT_YPOS;
+
   /* create buttons for scrolling of drawing area and element list */
   for (i = 0; i < ED_NUM_SCROLLBUTTONS; i++)
   {
@@ -5449,6 +5484,10 @@ static void CreateCounterButtons()
 {
   int max_infotext_len = getMaxInfoTextLength();
   int i;
+
+  /* these values are not constant, but can change at runtime */
+  counterbutton_info[ED_COUNTER_ID_SELECT_LEVEL].x = DX + 5 - SX;
+  counterbutton_info[ED_COUNTER_ID_SELECT_LEVEL].y = DY + 3 - SY;
 
   for (i = 0; i < ED_NUM_COUNTERBUTTONS; i++)
   {
@@ -5603,6 +5642,10 @@ static void CreateCounterButtons()
 static void CreateDrawingAreas()
 {
   int i;
+
+  /* these values are not constant, but can change at runtime */
+  drawingarea_info[ED_DRAWING_ID_DRAWING_LEVEL].area_xsize = MAX_ED_FIELDX;
+  drawingarea_info[ED_DRAWING_ID_DRAWING_LEVEL].area_ysize = MAX_ED_FIELDY;
 
   for (i = 0; i < ED_NUM_DRAWING_AREAS; i++)
   {
@@ -5971,6 +6014,40 @@ static void CreateScrollbarGadgets()
 {
   int i;
 
+  /* these values are not constant, but can change at runtime */
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_HORIZONTAL].x =
+    SX + ED_SCROLL_HORIZONTAL_XPOS;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_HORIZONTAL].y =
+    SY + ED_SCROLL_HORIZONTAL_YPOS;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_HORIZONTAL].width =
+    ED_SCROLL_HORIZONTAL_XSIZE;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_HORIZONTAL].height =
+    ED_SCROLL_HORIZONTAL_YSIZE;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_HORIZONTAL].wheel_x      = SX;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_HORIZONTAL].wheel_y      = SY;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_HORIZONTAL].wheel_width  = SXSIZE;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_HORIZONTAL].wheel_height = SYSIZE;
+
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_VERTICAL].x =
+    SX + ED_SCROLL_VERTICAL_XPOS;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_VERTICAL].y =
+    SY + ED_SCROLL_VERTICAL_YPOS;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_VERTICAL].width =
+    ED_SCROLL_VERTICAL_XSIZE;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_VERTICAL].height =
+    ED_SCROLL_VERTICAL_YSIZE;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_VERTICAL].wheel_x      = SX;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_VERTICAL].wheel_y      = SY;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_VERTICAL].wheel_width  = SXSIZE;
+  scrollbar_info[ED_SCROLLBAR_ID_AREA_VERTICAL].wheel_height = SYSIZE;
+
+  scrollbar_info[ED_SCROLLBAR_ID_LIST_VERTICAL].x =
+    DX + ED_SCROLL2_VERTICAL_XPOS;
+  scrollbar_info[ED_SCROLLBAR_ID_LIST_VERTICAL].y =
+    DY + ED_SCROLL2_VERTICAL_YPOS;
+  scrollbar_info[ED_SCROLLBAR_ID_LIST_VERTICAL].wheel_x = DX;
+  scrollbar_info[ED_SCROLLBAR_ID_LIST_VERTICAL].wheel_y = DY;
+
   for (i = 0; i < ED_NUM_SCROLLBARS; i++)
   {
     int id = scrollbar_info[i].gadget_id;
@@ -6172,6 +6249,10 @@ void CreateLevelEditorGadgets()
 
   /* setting 'game_status' is needed to get the right fonts for the editor */
   game_status = GAME_MODE_EDITOR;
+
+  /* these values are not constant, but can change at runtime */
+  ed_fieldx = MAX_ED_FIELDX - 1;
+  ed_fieldy = MAX_ED_FIELDY - 1;
 
   ReinitializeElementList();
 
@@ -6610,8 +6691,12 @@ static boolean LevelChanged()
   boolean field_changed = FALSE;
   int x, y;
 
+#if 1
+  /* changed read-only levels can now be saved in personal level set */
+#else
   if (leveldir_current->readonly)
     return FALSE;
+#endif
 
   for (y = 0; y < lev_fieldy; y++) 
     for (x = 0; x < lev_fieldx; x++)
@@ -6621,21 +6706,151 @@ static boolean LevelChanged()
   return (level.changed || field_changed);
 }
 
-static boolean LevelContainsPlayer()
+static boolean PrepareSavingIntoPersonalLevelSet()
 {
-  boolean player_found = FALSE;
-  int x, y;
+  static LevelDirTree *last_copied_leveldir = NULL;
+  static LevelDirTree *last_written_leveldir = NULL;
+  static int last_copied_level_nr = -1;
+  static int last_written_level_nr = -1;
+  LevelDirTree *leveldir_former = leveldir_current;
+  int level_nr_former = level_nr;
+  int new_level_nr;
 
-  return TRUE;		/* !!! CURRENTLY DEACTIVATED !!! */
-
-  for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
+  // remember last mod/save so that for current session, we write
+  // back to the same personal copy, asking only about overwrite.
+  if (leveldir_current == last_copied_leveldir &&
+      level_nr == last_copied_level_nr)
   {
-    if (Feld[x][y] == EL_PLAYER_1 ||
-	Feld[x][y] == EL_SP_MURPHY) 
-      player_found = TRUE;
+    // "cd" to personal level set dir (as used when writing last copy)
+    leveldir_current = last_written_leveldir;
+    level_nr = last_written_level_nr;
+
+    return TRUE;
   }
 
-  return player_found;
+  if (!Request("This level is read only ! "
+	       "Save into personal level set ?", REQ_ASK))
+    return FALSE;
+
+  // "cd" to personal level set dir (for writing copy the first time)
+  leveldir_current =
+    getTreeInfoFromIdentifier(leveldir_first, getLoginName());
+
+  // find unused level number
+  for (new_level_nr = leveldir_current->first_level; ; new_level_nr++)
+  {
+    static char *level_filename = NULL;
+
+    setString(&level_filename, getDefaultLevelFilename(new_level_nr));
+
+    if (!fileExists(level_filename))
+      break;
+  }
+
+  last_copied_leveldir = leveldir_former;
+  last_copied_level_nr = level_nr_former;
+
+  last_written_leveldir = leveldir_current;
+  last_written_level_nr = level_nr = new_level_nr;
+
+  return TRUE;
+}
+
+static void ModifyLevelInfoForSavingIntoPersonalLevelSet(char *former_name)
+{
+  static char *filename_levelinfo = NULL, *mod_name = NULL;
+  FILE *file;
+
+  // annotate this copy-and-mod in personal levelinfo.conf
+  setString(&filename_levelinfo,
+	    getPath2(getCurrentLevelDir(), LEVELINFO_FILENAME));
+
+  if ((file = fopen(filename_levelinfo, MODE_APPEND)))
+  {
+    fprintf(file, "\n");
+    fprintf(file, "# level %d was modified from:\n", level_nr);
+    fprintf(file, "# - previous level set name:    %s\n",
+	    former_name);
+    fprintf(file, "# - level within previous set:  %d \"%s\"\n",
+	    level.file_info.nr, level.name);
+    fprintf(file, "# - previous author:            %s\n",
+	    level.author);
+    fprintf(file, "# - previous save date:         ");
+
+    if (level.creation_date.src == DATE_SRC_LEVELFILE)
+    {
+      fprintf(file, "%04d-%02d-%02d\n",
+	      level.creation_date.year,
+	      level.creation_date.month,
+	      level.creation_date.day);
+    }
+    else
+    {
+      fprintf(file, "not recorded\n");
+    }
+
+    fclose(file);
+  }
+
+  if (level_nr > leveldir_current->last_level)
+  {
+    static char *temp_levelinfo = NULL;
+    FILE *temp_file = NULL;
+    char line[MAX_LINE_LEN];
+
+    setString(&temp_levelinfo,
+	      getPath2(getCurrentLevelDir(),
+		       getStringCat2(LEVELINFO_FILENAME, ".new")));
+
+    if ((file = fopen(filename_levelinfo, MODE_READ)) &&
+	(temp_file = fopen(temp_levelinfo, MODE_WRITE)))
+    {
+      while (fgets(line, MAX_LINE_LEN, file))
+      {
+	if (!strPrefix(line, "levels:"))
+	  fputs(line, temp_file);
+	else
+	  fprintf(temp_file, "%-32s%d\n", "levels:", level_nr + 9);
+      }
+    }
+
+    if (temp_file)
+      fclose(temp_file);
+
+    if (file)
+      fclose(file);
+
+    // needs error handling; also, ok on dos/win?
+    unlink(filename_levelinfo);
+    rename(temp_levelinfo, filename_levelinfo);
+  }
+
+  // else: allow the save even if annotation failed
+
+  // now... spray graffiti on the old level vital statistics
+  // user can change these; just trying to set a good baseline
+
+  // don't truncate names for fear of making offensive or silly:
+  // long-named original author only recorded in levelinfo.conf.
+  // try to fit "Joe after Bob", "Joe (ed.)", then just "Joe"
+  if (!strEqual(level.author, leveldir_current->author))
+  {
+    setString(&mod_name, getStringCat3(leveldir_current->author,
+				       " after ", level.author));
+
+    if (strlen(mod_name) > MAX_LEVEL_AUTHOR_LEN)
+      setString(&mod_name,
+		getStringCat2(leveldir_current->author, " (ed.)"));
+
+    if (strlen(mod_name) > MAX_LEVEL_AUTHOR_LEN)
+      setString(&mod_name, leveldir_current->author);
+
+    strncpy(level.author, mod_name, MAX_LEVEL_AUTHOR_LEN);
+
+    // less worried about truncation here
+    setString(&mod_name, getStringCat2("Mod: ", level.name));
+    strncpy(level.name, mod_name, MAX_LEVEL_NAME_LEN);
+  }
 }
 
 static void CopyPlayfield(short src[MAX_LEV_FIELDX][MAX_LEV_FIELDY],
@@ -7194,6 +7409,11 @@ void DrawLevelEd()
   FadeOut(REDRAW_FIELD);
 #endif
 
+#if 1
+  /* needed if different viewport properties defined for editor */
+  ChangeViewportPropertiesIfNeeded();
+#endif
+
   OpenDoor(DOOR_OPEN_2 | DOOR_NO_DELAY);
 
 #if DEBUG
@@ -7223,6 +7443,10 @@ void DrawLevelEd()
   BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 	     DOOR_GFX_PAGEX6, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE, DX, DY);
 
+#if 0
+  printf("::: %d, %d  /  %d, %d\n", VX, VY, EX, EY);
+#endif
+
   /* draw bigger door */
   DrawSpecialEditorDoor();
 
@@ -7231,6 +7455,11 @@ void DrawLevelEd()
 	     DOOR_GFX_PAGEX8, 236, EXSIZE, EYSIZE, EX, EY);
 
   redraw_mask |= REDRAW_ALL;
+
+#if 1
+  FreeLevelEditorGadgets();
+  CreateLevelEditorGadgets();
+#endif
 
   ReinitializeElementList();		/* update dynamic level element list */
   ReinitializeElementListButtons();	/* custom element may look different */
@@ -7944,7 +8173,7 @@ static int PrintElementDescriptionFromFile(char *filename, int start_line)
   int max_lines_per_screen = (SYSIZE - pad_y) / font_height - 1;
 
   return DrawTextFile(sx, sy, filename, font_nr, max_chars_per_line, -1,
-		      max_lines_per_screen, -1, TRUE, FALSE, FALSE);
+		      max_lines_per_screen, 0, -1, TRUE, FALSE, FALSE);
 }
 
 static void DrawPropertiesInfo()
@@ -8212,7 +8441,10 @@ static boolean checkPropertiesConfig(int element)
       HAS_EDITOR_CONTENT(element) ||
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
-      MAYBE_DONT_COLLIDE_WITH(element))
+      MAYBE_DONT_COLLIDE_WITH(element) ||
+      element == EL_SOKOBAN_OBJECT ||
+      element == EL_SOKOBAN_FIELD_EMPTY ||
+      element == EL_SOKOBAN_FIELD_FULL)
     return TRUE;
   else
     for (i = 0; elements_with_counter[i].element != -1; i++)
@@ -8405,6 +8637,11 @@ static void DrawPropertiesConfig()
 
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_GROW_INTO_DIGGABLE);
   }
+
+  if (properties_element == EL_SOKOBAN_OBJECT ||
+      properties_element == EL_SOKOBAN_FIELD_EMPTY ||
+      properties_element == EL_SOKOBAN_FIELD_FULL)
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN);
 
   if (IS_ENVELOPE(properties_element))
   {
@@ -9593,20 +9830,6 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
       },
 
       {
-	EL_MOLE_UP,
-	EL_MOLE_RIGHT,
-	EL_MOLE_DOWN,
-	EL_MOLE_LEFT
-      },
-
-      {
-	EL_BALLOON_SWITCH_UP,
-	EL_BALLOON_SWITCH_RIGHT,
-	EL_BALLOON_SWITCH_DOWN,
-	EL_BALLOON_SWITCH_LEFT
-      },
-
-      {
 	EL_SP_GRAVITY_ON_PORT_UP,
 	EL_SP_GRAVITY_ON_PORT_RIGHT,
 	EL_SP_GRAVITY_ON_PORT_DOWN,
@@ -9618,6 +9841,20 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
 	EL_SP_GRAVITY_OFF_PORT_RIGHT,
 	EL_SP_GRAVITY_OFF_PORT_DOWN,
 	EL_SP_GRAVITY_OFF_PORT_LEFT
+      },
+
+      {
+	EL_MOLE_UP,
+	EL_MOLE_RIGHT,
+	EL_MOLE_DOWN,
+	EL_MOLE_LEFT
+      },
+
+      {
+	EL_BALLOON_SWITCH_UP,
+	EL_BALLOON_SWITCH_RIGHT,
+	EL_BALLOON_SWITCH_DOWN,
+	EL_BALLOON_SWITCH_LEFT
       },
 
       {
@@ -9887,7 +10124,11 @@ static void SelectArea(int from_x, int from_y, int to_x, int to_y,
 static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 			 int button, int mode)
 {
+#if 1
+  static short brush_buffer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+#else
   static short brush_buffer[MAX_ED_FIELDX][MAX_ED_FIELDY];
+#endif
   static int brush_width, brush_height;
   static int last_cursor_x = -1, last_cursor_y = -1;
   static boolean delete_old_brush;
@@ -10791,12 +11032,21 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
     char *template_filename = getDefaultLevelFilename(-1);
     boolean new_template = !fileExists(template_filename);
 
+    /* backup original "level.field" (needed to track playfield changes) */
+    CopyPlayfield(level.field, FieldBackup);
+
+    /* "SaveLevelTemplate()" uses "level.field", so copy editor playfield */
+    CopyPlayfield(Feld, level.field);
+
     if (new_template ||
 	Request("Save this template and kill the old ?", REQ_ASK))
       SaveLevelTemplate();
 
     if (new_template)
       Request("Template saved !", REQ_CONFIRM);
+
+    /* restore original "level.field" (needed to track playfield changes) */
+    CopyPlayfield(FieldBackup, level.field);
   }
   else if (type_id == ED_TEXTBUTTON_ID_ADD_CHANGE_PAGE &&
 	   custom_element.num_change_pages < MAX_CHANGE_PAGES)
@@ -11200,60 +11450,78 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       break;
 
     case GADGET_ID_SAVE:
-      if (leveldir_current->readonly)
-      {
-	Request("This level is read only !", REQ_CONFIRM);
+    {
+      /* saving read-only levels into personal level set modifies global vars
+	 "leveldir_current" and "level_nr"; restore them after saving level */
+      LevelDirTree *leveldir_former = leveldir_current;
+      int level_nr_former = level_nr;
+      char *level_filename;
+      boolean new_level;
+
+      if (leveldir_current->readonly &&
+	  !PrepareSavingIntoPersonalLevelSet())
 	break;
-      }
 
-      if (!LevelContainsPlayer())
-	Request("No Level without Gregor Mc Duffin please !", REQ_CONFIRM);
-      else
+      level_filename = getDefaultLevelFilename(level_nr);
+      new_level = !fileExists(level_filename);
+
+      if (new_level ||
+	  Request("Save this level and kill the old ?", REQ_ASK))
       {
-	char *level_filename = getDefaultLevelFilename(level_nr);
-	boolean new_level = !fileExists(level_filename);
+	if (leveldir_former->readonly)
+	  ModifyLevelInfoForSavingIntoPersonalLevelSet(leveldir_former->name);
 
-	if (new_level ||
-	    Request("Save this level and kill the old ?", REQ_ASK))
-	{
-	  CopyPlayfield(Feld, level.field);
-
-	  SaveLevel(level_nr);
-	}
-
-	if (new_level)
-	  Request("Level saved !", REQ_CONFIRM);
+	CopyPlayfield(Feld, level.field);
+	SaveLevel(level_nr);
 
 	level.changed = FALSE;
+
+	if (new_level)
+	{
+	  char level_saved_msg[64];
+
+	  if (leveldir_former->readonly)
+	    sprintf(level_saved_msg,
+		    "Level saved as level %d into personal level set !",
+		    level_nr);
+	  else
+	    strcpy(level_saved_msg, "Level saved !");
+
+	  Request(level_saved_msg, REQ_CONFIRM);
+	}
       }
+
+      /* "cd" back to copied-from levelset (in case of saved read-only level) */
+      leveldir_current = leveldir_former;
+      level_nr = level_nr_former;
+
       break;
+    }
 
     case GADGET_ID_TEST:
-      if (!LevelContainsPlayer())
-	Request("No Level without Gregor Mc Duffin please !", REQ_CONFIRM);
-      else
-      {
-	if (LevelChanged())
-	  level.game_version = GAME_VERSION_ACTUAL;
+      if (LevelChanged())
+	level.game_version = GAME_VERSION_ACTUAL;
 
-	CopyPlayfield(level.field, FieldBackup);
-	CopyPlayfield(Feld, level.field);
+      CopyPlayfield(level.field, FieldBackup);
+      CopyPlayfield(Feld, level.field);
 
-	CopyNativeLevel_RND_to_Native(&level);
+      CopyNativeLevel_RND_to_Native(&level);
 
-	UnmapLevelEditorGadgets();
-	UndrawSpecialEditorDoor();
+      UnmapLevelEditorGadgets();
+      UndrawSpecialEditorDoor();
 
-	CloseDoor(DOOR_CLOSE_ALL);
+      CloseDoor(DOOR_CLOSE_ALL);
 
-	BackToFront();		/* force redraw of undrawn special door */
+      BackToFront();		/* force redraw of undrawn special door */
 
-	DrawCompleteVideoDisplay();
+#if 0
+      DrawCompleteVideoDisplay();
+#endif
 
-	level_editor_test_game = TRUE;
+      level_editor_test_game = TRUE;
 
-	StartGameActions(FALSE, setup.autorecord, level.random_seed);
-      }
+      StartGameActions(FALSE, setup.autorecord, level.random_seed);
+
       break;
 
     case GADGET_ID_EXIT:
@@ -11462,7 +11730,9 @@ void HandleLevelEditorKeyInput(Key key)
       ClickOnGadget(level_editor_gadget[id], button);
     else if (letter == '.')
       ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS], button);
-    else if (key == KSYM_Return || key == setup.shortcut.toggle_pause)
+    else if (key == KSYM_Return ||
+	     key == KSYM_space ||
+	     key == setup.shortcut.toggle_pause)
       ClickOnGadget(level_editor_gadget[GADGET_ID_TEST], button);
     else
       for (i = 0; i < ED_NUM_CTRL_BUTTONS; i++)

@@ -24,14 +24,17 @@
 
 #include "libgame/libgame.h"
 #include "game_em/game_em.h"
+#include "game_sp/game_sp.h"
 
 #include "conf_gfx.h"	/* include auto-generated data structure definitions */
 #include "conf_snd.h"	/* include auto-generated data structure definitions */
 #include "conf_mus.h"	/* include auto-generated data structure definitions */
 
+
 #define IMG_UNDEFINED			(-1)
 #define IMG_EMPTY			IMG_EMPTY_SPACE
-#define IMG_SP_EMPTY			IMG_SP_EMPTY_SPACE
+#define IMG_SP_EMPTY			IMG_EMPTY_SPACE
+#define IMG_SP_EMPTY_SPACE		IMG_EMPTY_SPACE
 #define IMG_EXPLOSION			IMG_DEFAULT_EXPLODING
 #define IMG_CHAR_START			IMG_CHAR_SPACE
 #define IMG_STEEL_CHAR_START		IMG_STEEL_CHAR_SPACE
@@ -40,13 +43,17 @@
 #define SND_UNDEFINED			(-1)
 #define MUS_UNDEFINED			(-1)
 
+#if 0
 #define WIN_XSIZE			672
 #define WIN_YSIZE			560
+#endif
 
 #define DEFAULT_FULLSCREEN_MODE		"800x600"
 
+#if 0
 #define SCR_FIELDX			17
 #define SCR_FIELDY			17
+#endif
 #define MAX_BUF_XSIZE			(SCR_FIELDX + 2)
 #define MAX_BUF_YSIZE			(SCR_FIELDY + 2)
 #define MIN_LEV_FIELDX			3
@@ -940,6 +947,7 @@
 #define MAX_INITIAL_INVENTORY_SIZE	8
 
 /* often used screen positions */
+#if 0
 #define SX			8
 #define SY			8
 #define REAL_SX			(SX - 2)
@@ -950,6 +958,7 @@
 #define VY			400
 #define EX			DX
 #define EY			(VY - 44)
+#endif
 #define TILESIZE		32
 #define TILEX			TILESIZE
 #define TILEY			TILESIZE
@@ -1516,7 +1525,9 @@
 #define EL_QUICKSAND_FAST_EMPTY		861
 #define EL_QUICKSAND_FAST_FULL		862
 
-#define NUM_FILE_ELEMENTS		863
+#define EL_FROM_LEVEL_TEMPLATE		863
+
+#define NUM_FILE_ELEMENTS		864
 
 
 /* "real" (and therefore drawable) runtime elements */
@@ -1843,12 +1854,15 @@
 #define GFX_SPECIAL_ARG_SETUP_SOUND		4
 #define GFX_SPECIAL_ARG_SETUP_ARTWORK		5
 #define GFX_SPECIAL_ARG_SETUP_INPUT		6
-#define GFX_SPECIAL_ARG_SETUP_SHORTCUTS_1	7
-#define GFX_SPECIAL_ARG_SETUP_SHORTCUTS_2	8
-#define GFX_SPECIAL_ARG_SETUP_CHOOSE_ARTWORK	9
-#define GFX_SPECIAL_ARG_SETUP_CHOOSE_OTHER	10
+#define GFX_SPECIAL_ARG_SETUP_SHORTCUTS		7
+#define GFX_SPECIAL_ARG_SETUP_SHORTCUTS_1	8
+#define GFX_SPECIAL_ARG_SETUP_SHORTCUTS_2	9
+#define GFX_SPECIAL_ARG_SETUP_SHORTCUTS_3	10
+#define GFX_SPECIAL_ARG_SETUP_SHORTCUTS_4	11
+#define GFX_SPECIAL_ARG_SETUP_CHOOSE_ARTWORK	12
+#define GFX_SPECIAL_ARG_SETUP_CHOOSE_OTHER	13
 
-#define NUM_SPECIAL_GFX_SETUP_ARGS		11
+#define NUM_SPECIAL_GFX_SETUP_ARGS		14
 
 
 /* values for image configuration suffixes */
@@ -1898,8 +1912,10 @@
 #define GFX_ARG_ALIGN			43
 #define GFX_ARG_VALIGN			44
 #define GFX_ARG_SORT_PRIORITY		45
+#define GFX_ARG_CLASS			46
+#define GFX_ARG_STYLE			47
 
-#define NUM_GFX_ARGS			46
+#define NUM_GFX_ARGS			48
 
 
 /* values for sound configuration suffixes */
@@ -2005,13 +2021,13 @@
 
 /* program information and versioning definitions */
 #define PROGRAM_VERSION_MAJOR		3
-#define PROGRAM_VERSION_MINOR		2
-#define PROGRAM_VERSION_PATCH		6
-#define PROGRAM_VERSION_BUILD		1
+#define PROGRAM_VERSION_MINOR		3
+#define PROGRAM_VERSION_PATCH		0
+#define PROGRAM_VERSION_BUILD		0
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
-#define PROGRAM_COPYRIGHT_STRING	"Copyright ©1995-2008 by Holger Schemel"
+#define PROGRAM_COPYRIGHT_STRING	"Copyright ©1995-2010 by Holger Schemel"
 #define PROGRAM_EMAIL_STRING		"info@artsoft.org"
 #define PROGRAM_WEBSITE_STRING		"http://www.artsoft.org/"
 #define PROGRAM_GAME_BY_STRING		"A Game by Artsoft Entertainment"
@@ -2099,8 +2115,9 @@
 #define GAME_ENGINE_TYPE_UNKNOWN	LEVEL_FILE_TYPE_UNKNOWN
 #define GAME_ENGINE_TYPE_RND		LEVEL_FILE_TYPE_RND
 #define GAME_ENGINE_TYPE_EM		LEVEL_FILE_TYPE_EM
+#define GAME_ENGINE_TYPE_SP		LEVEL_FILE_TYPE_SP
 
-#define NUM_ENGINE_TYPES		3
+#define NUM_ENGINE_TYPES		4
 
 
 struct BorderInfo
@@ -2240,6 +2257,14 @@ struct PreviewInfo
   int anim_mode;
 };
 
+struct ViewportInfo
+{
+  struct RectWithBorder window;
+  struct RectWithBorder playfield[NUM_SPECIAL_GFX_ARGS];
+  struct RectWithBorder door_1[NUM_SPECIAL_GFX_ARGS];
+  struct RectWithBorder door_2[NUM_SPECIAL_GFX_ARGS];
+};
+
 struct HiScore
 {
   char Name[MAX_PLAYER_NAME_LEN + 1];
@@ -2281,6 +2306,12 @@ struct DateInfo
   int year;
   int month;
   int day;
+
+  enum
+  {
+    DATE_SRC_CLOCK,
+    DATE_SRC_LEVELFILE
+  } src;
 };
 
 struct LevelInfo
@@ -2291,6 +2322,7 @@ struct LevelInfo
 
   /* level stored in native format for the alternative native game engines */
   struct LevelInfo_EM *native_em_level;
+  struct LevelInfo_SP *native_sp_level;
 
   int file_version;	/* file format version the level is stored with    */
   int game_version;	/* game release version the level was created with */
@@ -2383,6 +2415,7 @@ struct LevelInfo
   boolean shifted_relocation;	/* no level centering when relocating player */
   boolean can_pass_to_walkable;	/* player can pass to empty or walkable tile */
   boolean grow_into_diggable;	/* amoeba can grow into anything diggable */
+  boolean auto_exit_sokoban;	/* automatically finish solved Sokoban levels */
 
   boolean continuous_snapping;	/* repeated snapping without releasing key */
   boolean block_snap_field;	/* snapping blocks field to show animation */
@@ -2680,6 +2713,9 @@ struct GraphicInfo
   int align, valign;		/* optional setting for drawing title screens */
   int sort_priority;		/* optional setting for drawing title screens */
 
+  int class;
+  int style;
+
   boolean use_image_size;	/* use image size as default width and height */
 
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
@@ -2756,6 +2792,7 @@ struct HelpAnimInfo
 };
 
 
+extern Bitmap		       *bitmap_db_store;
 extern Bitmap		       *bitmap_db_cross;
 extern Bitmap		       *bitmap_db_field;
 extern Bitmap		       *bitmap_db_panel;
@@ -2776,7 +2813,11 @@ extern SDL_Thread	       *server_thread;
 
 extern int			key_joystick_mapping;
 
+#if 1
+extern boolean			redraw[MAX_LEV_FIELDX + 2][MAX_LEV_FIELDY + 2];
+#else
 extern boolean			redraw[MAX_BUF_XSIZE][MAX_BUF_YSIZE];
+#endif
 extern int			redraw_x1, redraw_y1;
 
 extern short			Feld[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -2821,6 +2862,15 @@ extern int			ActiveFont[NUM_FONTS];
 extern int			lev_fieldx, lev_fieldy;
 extern int			scroll_x, scroll_y;
 
+extern int			WIN_XSIZE, WIN_YSIZE;
+extern int			SCR_FIELDX, SCR_FIELDY;
+extern int			SX, SY;
+extern int			REAL_SX, REAL_SY;
+extern int			DX, DY;
+extern int			VX, VY;
+extern int			EX, EY;
+extern int			dDX, dDY;
+
 extern int			FX, FY;
 extern int			ScrollStepSize;
 extern int			ScreenMovDir, ScreenMovPos, ScreenGfxPos;
@@ -2847,6 +2897,7 @@ extern struct HiScore		highscore[];
 extern struct TapeInfo		tape;
 extern struct GlobalInfo	global;
 extern struct BorderInfo	border;
+extern struct ViewportInfo	viewport;
 extern struct TitleFadingInfo	fading;
 extern struct TitleFadingInfo	fading_none;
 extern struct TitleFadingInfo	title_initial_default;
@@ -2856,7 +2907,7 @@ extern struct TitleMessageInfo	titlemessage_initial[];
 extern struct TitleMessageInfo	titlemessage_default;
 extern struct TitleMessageInfo	titlemessage[];
 extern struct TitleMessageInfo	readme;
-extern struct InitInfo		init;
+extern struct InitInfo		init, init_last;
 extern struct MenuInfo		menu;
 extern struct DoorInfo		door_1, door_2;
 extern struct PreviewInfo	preview;

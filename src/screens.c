@@ -45,22 +45,25 @@
 #define SETUP_MODE_SOUND		4
 #define SETUP_MODE_ARTWORK		5
 #define SETUP_MODE_INPUT		6
-#define SETUP_MODE_SHORTCUTS_1		7
-#define SETUP_MODE_SHORTCUTS_2		8
+#define SETUP_MODE_SHORTCUTS		7
+#define SETUP_MODE_SHORTCUTS_1		8
+#define SETUP_MODE_SHORTCUTS_2		9
+#define SETUP_MODE_SHORTCUTS_3		10
+#define SETUP_MODE_SHORTCUTS_4		11
 
 /* sub-screens on the setup screen (generic) */
-#define SETUP_MODE_CHOOSE_ARTWORK	9
-#define SETUP_MODE_CHOOSE_OTHER		10
+#define SETUP_MODE_CHOOSE_ARTWORK	12
+#define SETUP_MODE_CHOOSE_OTHER		13
 
 /* sub-screens on the setup screen (specific) */
-#define SETUP_MODE_CHOOSE_GAME_SPEED	11
-#define SETUP_MODE_CHOOSE_SCREEN_MODE	12
-#define SETUP_MODE_CHOOSE_SCROLL_DELAY	13
-#define SETUP_MODE_CHOOSE_GRAPHICS	14
-#define SETUP_MODE_CHOOSE_SOUNDS	15
-#define SETUP_MODE_CHOOSE_MUSIC		16
+#define SETUP_MODE_CHOOSE_GAME_SPEED	14
+#define SETUP_MODE_CHOOSE_SCREEN_MODE	15
+#define SETUP_MODE_CHOOSE_SCROLL_DELAY	16
+#define SETUP_MODE_CHOOSE_GRAPHICS	17
+#define SETUP_MODE_CHOOSE_SOUNDS	18
+#define SETUP_MODE_CHOOSE_MUSIC		19
 
-#define MAX_SETUP_MODES			17
+#define MAX_SETUP_MODES			20
 
 /* for input setup functions */
 #define SETUPINPUT_SCREEN_POS_START	0
@@ -232,7 +235,7 @@ static struct
 				 INFO_MODE_MAIN)
 
 #define DRAW_MODE_SETUP(i)	((i) >= SETUP_MODE_MAIN &&		\
-				 (i) <= SETUP_MODE_SHORTCUTS_2 ? (i) :	\
+				 (i) <= SETUP_MODE_SHORTCUTS_4 ? (i) :	\
 				 (i) >= SETUP_MODE_CHOOSE_GRAPHICS &&	\
 				 (i) <= SETUP_MODE_CHOOSE_MUSIC ?	\
 				 SETUP_MODE_CHOOSE_ARTWORK :		\
@@ -757,10 +760,12 @@ static void InitializeTitleControls(boolean show_title_initial)
   num_title_screens = 0;
 
 #if 1
+  /* 1st step: initialize title screens for game start (only when starting) */
   if (show_title_initial)
     InitializeTitleControls_CheckTitleInfo(TRUE);
 #endif
 
+  /* 2nd step: initialize title screens for current level set */
   InitializeTitleControls_CheckTitleInfo(FALSE);
 
   /* sort title screens according to sort_priority and title number */
@@ -1020,7 +1025,11 @@ static boolean insideTextPosRect(struct TextPosInfo *rect, int x, int y)
 
 static void drawCursorExt(int xpos, int ypos, boolean active, int graphic)
 {
+#if 1
+  static int cursor_array[MAX_LEV_FIELDY];
+#else
   static int cursor_array[SCR_FIELDY];
+#endif
   int x = mSX + TILEX * xpos;
   int y = mSY + TILEY * (MENU_SCREEN_START_YPOS + ypos);
 
@@ -1181,7 +1190,7 @@ void DrawTitleScreenMessage(int nr, boolean initial)
   ClearRectangleOnBackground(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
   DrawTextFile(ALIGNED_TEXT_XPOS(tmi), ALIGNED_TEXT_YPOS(tmi),
-	       filename, tmi->font, tmi->chars, -1, tmi->lines, -1,
+	       filename, tmi->font, tmi->chars, -1, tmi->lines, 0, -1,
 	       tmi->autowrap, tmi->centered, tmi->parse_comments);
 
   game_status = last_game_status;	/* restore current game status */
@@ -1261,6 +1270,8 @@ void DrawMainMenuExt(int fade_mask, boolean do_fading)
   /* store valid level series information */
   leveldir_last_valid = leveldir_current;
 
+  init_last = init;			/* switch to new busy animation */
+
   /* needed if last screen (level choice) changed graphics, sounds or music */
   ReloadCustomArtwork(0);
 
@@ -1276,6 +1287,11 @@ void DrawMainMenuExt(int fade_mask, boolean do_fading)
   if (fade_mask == REDRAW_FIELD)
     BackToFront();
 #endif
+#endif
+
+#if 1
+  /* needed if different viewport properties defined for menues */
+  ChangeViewportPropertiesIfNeeded();
 #endif
 
 #if defined(TARGET_SDL)
@@ -1375,7 +1391,7 @@ void DrawMainMenu()
   DrawMainMenuExt(REDRAW_ALL, FALSE);
 }
 
-#if 0
+#if defined(CREATE_SPECIAL_EDITION_RND_JUE)
 static void gotoTopLevelDir()
 {
   /* move upwards to top level directory */
@@ -1742,7 +1758,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	  SaveLevelSetup_LastSeries();
 	  SaveLevelSetup_SeriesInfo();
 
-#if 0
+#if defined(CREATE_SPECIAL_EDITION_RND_JUE)
 	  gotoTopLevelDir();
 #endif
 
@@ -1764,6 +1780,11 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	game_status = GAME_MODE_EDITOR;
 
 	FadeSetEnterScreen();
+
+#if 0
+	/* needed if different viewport properties defined for editor */
+	ChangeViewportPropertiesIfNeeded();
+#endif
 
 	DrawLevelEd();
       }
@@ -2235,7 +2256,7 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
     sy += getFontHeight(font_nr) / 2;
 
   DrawTextBuffer(sx, sy + ypos * ystep, text, font_nr,
-		 max_chars_per_line, -1, max_lines_per_text, -1,
+		 max_chars_per_line, -1, max_lines_per_text, 0, -1,
 		 TRUE, FALSE, FALSE);
 }
 
@@ -2637,8 +2658,15 @@ static void DrawInfoScreen_CreditsScreen(int screen_nr)
 		      "Thanks to");
     DrawTextSCentered(ystart2 + 1 * ystep, FONT_TEXT_3,
 		      "David Tritscher");
+#if 1
+    DrawTextSCentered(ystart2 + 2 * ystep, FONT_TEXT_2,
+		      "for the code base used for the");
+    DrawTextSCentered(ystart2 + 3 * ystep, FONT_TEXT_2,
+		      "native Emerald Mine engine");
+#else
     DrawTextSCentered(ystart2 + 2 * ystep, FONT_TEXT_2,
 		      "for the new Emerald Mine engine");
+#endif
   }
   else if (screen_nr == 7)
   {
@@ -3032,7 +3060,7 @@ void DrawInfoScreen_LevelSet()
 
   if (filename != NULL)
     DrawTextFile(mSX + ALIGNED_TEXT_XPOS(tmi), mSY + ALIGNED_TEXT_YPOS(tmi),
-		 filename, tmi->font, tmi->chars, -1, tmi->lines, -1,
+		 filename, tmi->font, tmi->chars, -1, tmi->lines, 0, -1,
 		 tmi->autowrap, tmi->centered, tmi->parse_comments);
   else
     DrawTextCentered(mSY + ALIGNED_TEXT_YPOS(tmi), FONT_TEXT_2,
@@ -4072,6 +4100,13 @@ static void execSetupInput()
   DrawSetupScreen();
 }
 
+static void execSetupShortcuts()
+{
+  setup_mode = SETUP_MODE_SHORTCUTS;
+
+  DrawSetupScreen();
+}
+
 static void execSetupShortcuts1()
 {
   setup_mode = SETUP_MODE_SHORTCUTS_1;
@@ -4082,6 +4117,20 @@ static void execSetupShortcuts1()
 static void execSetupShortcuts2()
 {
   setup_mode = SETUP_MODE_SHORTCUTS_2;
+
+  DrawSetupScreen();
+}
+
+static void execSetupShortcuts3()
+{
+  setup_mode = SETUP_MODE_SHORTCUTS_3;
+
+  DrawSetupScreen();
+}
+
+static void execSetupShortcuts4()
+{
+  setup_mode = SETUP_MODE_SHORTCUTS_4;
 
   DrawSetupScreen();
 }
@@ -4107,8 +4156,7 @@ static struct TokenInfo setup_info_main[] =
   { TYPE_ENTER_MENU,	execSetupSound,		"Sound & Music"		},
   { TYPE_ENTER_MENU,	execSetupArtwork,	"Custom Artwork"	},
   { TYPE_ENTER_MENU,	execSetupInput,		"Input Devices"		},
-  { TYPE_ENTER_MENU,	execSetupShortcuts1,	"Key Shortcuts 1"	},
-  { TYPE_ENTER_MENU,	execSetupShortcuts2,	"Key Shortcuts 2"	},
+  { TYPE_ENTER_MENU,	execSetupShortcuts,	"Key Shortcuts"		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execExitSetup, 		"Exit"			},
   { TYPE_LEAVE_MENU,	execSaveAndExitSetup,	"Save and Exit"		},
@@ -4184,6 +4232,7 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_SWITCH,	&setup.show_titlescreen,"Show Title Screens:"	},
   { TYPE_SWITCH,	&setup.toons,		"Show Toons:"		},
   { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,"EMC graphics preference:" },
+  { TYPE_SWITCH, &setup.sp_show_border_elements,"Supaplex Border Elements:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
 
@@ -4253,6 +4302,18 @@ static struct TokenInfo setup_info_input[] =
   { 0,			NULL,			NULL			}
 };
 
+static struct TokenInfo setup_info_shortcuts[] =
+{
+  { TYPE_ENTER_MENU,	execSetupShortcuts1,	"Various Keys"	},
+  { TYPE_ENTER_MENU,	execSetupShortcuts2,	"Player Focus"	},
+  { TYPE_ENTER_MENU,	execSetupShortcuts3,	"Tape Buttons"	},
+  { TYPE_ENTER_MENU,	execSetupShortcuts4,	"Sound & Music"	},
+  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+
+  { 0,			NULL,			NULL			}
+};
+
 static struct TokenInfo setup_info_shortcuts_1[] =
 {
   { TYPE_KEYTEXT,	NULL,		"Quick Save Game to Tape:",	},
@@ -4265,7 +4326,7 @@ static struct TokenInfo setup_info_shortcuts_1[] =
   { TYPE_YES_NO,	&setup.ask_on_escape,	"Ask on 'Esc' Key:"	},
   { TYPE_YES_NO, &setup.ask_on_escape_editor,	"Ask on 'Esc' Key (Editor):" },
   { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
 
   { 0,			NULL,			NULL			}
 };
@@ -4283,7 +4344,39 @@ static struct TokenInfo setup_info_shortcuts_2[] =
   { TYPE_KEYTEXT,	NULL,		"Set Focus to All Players:",	},
   { TYPE_KEY,		&setup.shortcut.focus_player_all, ""		},
   { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
+
+  { 0,			NULL,			NULL			}
+};
+
+static struct TokenInfo setup_info_shortcuts_3[] =
+{
+  { TYPE_KEYTEXT,	NULL,			"Tape Eject:",		},
+  { TYPE_KEY,		&setup.shortcut.tape_eject, ""			},
+  { TYPE_KEYTEXT,	NULL,			"Tape Stop:",		},
+  { TYPE_KEY,		&setup.shortcut.tape_stop, ""			},
+  { TYPE_KEYTEXT,	NULL,			"Tape Pause:",		},
+  { TYPE_KEY,		&setup.shortcut.tape_pause, ""			},
+  { TYPE_KEYTEXT,	NULL,			"Tape Record:",		},
+  { TYPE_KEY,		&setup.shortcut.tape_record, ""			},
+  { TYPE_KEYTEXT,	NULL,			"Tape Play:",		},
+  { TYPE_KEY,		&setup.shortcut.tape_play, ""			},
+  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
+
+  { 0,			NULL,			NULL			}
+};
+
+static struct TokenInfo setup_info_shortcuts_4[] =
+{
+  { TYPE_KEYTEXT,	NULL,		"Sound Effects (Normal):",	},
+  { TYPE_KEY,		&setup.shortcut.sound_simple, ""		},
+  { TYPE_KEYTEXT,	NULL,		"Sound Effects (Looping):",	},
+  { TYPE_KEY,		&setup.shortcut.sound_loops, ""			},
+  { TYPE_KEYTEXT,	NULL,		"Music:",			},
+  { TYPE_KEY,		&setup.shortcut.sound_music, ""			},
+  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
 
   { 0,			NULL,			NULL			}
 };
@@ -4566,6 +4659,11 @@ static void DrawSetupScreen_Generic()
     setup_info = setup_info_artwork;
     title_string = "Custom Artwork";
   }
+  else if (setup_mode == SETUP_MODE_SHORTCUTS)
+  {
+    setup_info = setup_info_shortcuts;
+    title_string = "Setup Shortcuts";
+  }
   else if (setup_mode == SETUP_MODE_SHORTCUTS_1)
   {
     setup_info = setup_info_shortcuts_1;
@@ -4574,6 +4672,16 @@ static void DrawSetupScreen_Generic()
   else if (setup_mode == SETUP_MODE_SHORTCUTS_2)
   {
     setup_info = setup_info_shortcuts_2;
+    title_string = "Setup Shortcuts";
+  }
+  else if (setup_mode == SETUP_MODE_SHORTCUTS_3)
+  {
+    setup_info = setup_info_shortcuts_3;
+    title_string = "Setup Shortcuts";
+  }
+  else if (setup_mode == SETUP_MODE_SHORTCUTS_4)
+  {
+    setup_info = setup_info_shortcuts_4;
     title_string = "Setup Shortcuts";
   }
 
@@ -5574,13 +5682,21 @@ static struct
 {
   {
     IMG_MENU_BUTTON_UP, IMG_MENU_BUTTON_UP_ACTIVE,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     SC_SCROLL_UP_XPOS, SC_SCROLL_UP_YPOS,
+#endif
     SCREEN_CTRL_ID_SCROLL_UP,
     "scroll up"
   },
   {
     IMG_MENU_BUTTON_DOWN, IMG_MENU_BUTTON_DOWN_ACTIVE,
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     SC_SCROLL_DOWN_XPOS, SC_SCROLL_DOWN_YPOS,
+#endif
     SCREEN_CTRL_ID_SCROLL_DOWN,
     "scroll down"
   }
@@ -5606,8 +5722,13 @@ static struct
 #else
     IMG_MENU_SCROLLBAR, IMG_MENU_SCROLLBAR_ACTIVE,
 #endif
+#if 1
+    -1, -1,	/* these values are not constant, but can change at runtime */
+    -1, -1,	/* these values are not constant, but can change at runtime */
+#else
     SC_SCROLL_VERTICAL_XPOS, SC_SCROLL_VERTICAL_YPOS,
     SC_SCROLL_VERTICAL_XSIZE, SC_SCROLL_VERTICAL_YSIZE,
+#endif
     GD_TYPE_SCROLLBAR_VERTICAL,
     SCREEN_CTRL_ID_SCROLL_VERTICAL,
     "scroll level series vertically"
@@ -5673,6 +5794,12 @@ static void CreateScreenScrollbuttons()
   unsigned long event_mask;
   int i;
 
+  /* these values are not constant, but can change at runtime */
+  scrollbutton_info[0].x = SC_SCROLL_UP_XPOS;
+  scrollbutton_info[0].y = SC_SCROLL_UP_YPOS;
+  scrollbutton_info[1].x = SC_SCROLL_DOWN_XPOS;
+  scrollbutton_info[1].y = SC_SCROLL_DOWN_YPOS;
+
   for (i = 0; i < NUM_SCREEN_SCROLLBUTTONS; i++)
   {
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
@@ -5727,6 +5854,12 @@ static void CreateScreenScrollbuttons()
 static void CreateScreenScrollbars()
 {
   int i;
+
+  /* these values are not constant, but can change at runtime */
+  scrollbar_info[0].x = SC_SCROLL_VERTICAL_XPOS;
+  scrollbar_info[0].y = SC_SCROLL_VERTICAL_YPOS;
+  scrollbar_info[0].width  = SC_SCROLL_VERTICAL_XSIZE;
+  scrollbar_info[0].height = SC_SCROLL_VERTICAL_YSIZE;
 
   for (i = 0; i < NUM_SCREEN_SCROLLBARS; i++)
   {

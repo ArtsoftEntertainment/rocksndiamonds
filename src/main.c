@@ -20,6 +20,7 @@
 #include "events.h"
 #include "config.h"
 
+Bitmap		       *bitmap_db_store;
 Bitmap		       *bitmap_db_cross;
 Bitmap		       *bitmap_db_field;
 Bitmap		       *bitmap_db_panel;
@@ -39,7 +40,11 @@ SDL_Thread	       *server_thread;
 
 int			key_joystick_mapping = 0;
 
+#if 1
+boolean			redraw[MAX_LEV_FIELDX + 2][MAX_LEV_FIELDY + 2];
+#else
 boolean			redraw[MAX_BUF_XSIZE][MAX_BUF_YSIZE];
+#endif
 int			redraw_x1 = 0, redraw_y1 = 0;
 
 short			Feld[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
@@ -84,15 +89,33 @@ int			ActiveFont[NUM_FONTS];
 int			lev_fieldx, lev_fieldy;
 int			scroll_x, scroll_y;
 
+int			WIN_XSIZE = 672, WIN_YSIZE = 560;
+int			SCR_FIELDX = 17, SCR_FIELDY = 17;
+int			SX = 8, SY = 8;
+int			REAL_SX = 6, REAL_SY = 6;
+int			DX = 566, DY = 60;
+int			VX = 566, VY = 400;
+int			EX = 566, EY = 356;
+int			dDX, dDY;
+
+#if 1
+int			FX, FY;
+#else
 int			FX = SX, FY = SY;
+#endif
 int			ScrollStepSize;
 int			ScreenMovDir = MV_NONE, ScreenMovPos = 0;
 int			ScreenGfxPos = 0;
 int			BorderElement = EL_STEELWALL;
 int			GameFrameDelay = GAME_FRAME_DELAY;
 int			FfwdFrameDelay = FFWD_FRAME_DELAY;
+#if 1
+int			BX1, BY1;
+int			BX2, BY2;
+#else
 int			BX1 = 0, BY1 = 0;
 int			BX2 = SCR_FIELDX - 1, BY2 = SCR_FIELDY - 1;
+#endif
 int			SBX_Left, SBX_Right;
 int			SBY_Upper, SBY_Lower;
 int			ZX, ZY;
@@ -112,6 +135,7 @@ struct SetupInfo	setup;
 struct GameInfo		game;
 struct GlobalInfo	global;
 struct BorderInfo	border;
+struct ViewportInfo	viewport;
 struct TitleFadingInfo	fading;
 struct TitleFadingInfo	title_initial_default;
 struct TitleFadingInfo	title_default;
@@ -120,7 +144,7 @@ struct TitleMessageInfo	titlemessage_initial[MAX_NUM_TITLE_MESSAGES];
 struct TitleMessageInfo	titlemessage_default;
 struct TitleMessageInfo	titlemessage[MAX_NUM_TITLE_MESSAGES];
 struct TitleMessageInfo	readme;
-struct InitInfo		init;
+struct InitInfo		init, init_last;
 struct MenuInfo		menu;
 struct DoorInfo		door_1, door_2;
 struct PreviewInfo	preview;
@@ -1262,23 +1286,23 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "sp_gravity_port_right",
-    "sp_port",
-    "gravity port (leading right)"
+    "sp_gravity_port",
+    "gravity-on/off port (leading right)"
   },
   {
     "sp_gravity_port_down",
-    "sp_port",
-    "gravity port (leading down)"
+    "sp_gravity_port",
+    "gravity-on/off port (leading down)"
   },
   {
     "sp_gravity_port_left",
-    "sp_port",
-    "gravity port (leading left)"
+    "sp_gravity_port",
+    "gravity-on/off port (leading left)"
   },
   {
     "sp_gravity_port_up",
-    "sp_port",
-    "gravity port (leading up)"
+    "sp_gravity_port",
+    "gravity-on/off port (leading up)"
   },
   {
     "sp_sniksnak",
@@ -3442,43 +3466,43 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "sp_gravity_on_port_right",
-    "sp_port",
-    "gravity on port (leading right)"
+    "sp_gravity_on_port",
+    "gravity-on port (leading right)"
   },
   {
     "sp_gravity_on_port_down",
-    "sp_port",
-    "gravity on port (leading down)"
+    "sp_gravity_on_port",
+    "gravity-on port (leading down)"
   },
   {
     "sp_gravity_on_port_left",
-    "sp_port",
-    "gravity on port (leading left)"
+    "sp_gravity_on_port",
+    "gravity-on port (leading left)"
   },
   {
     "sp_gravity_on_port_up",
-    "sp_port",
-    "gravity on port (leading up)"
+    "sp_gravity_on_port",
+    "gravity-on port (leading up)"
   },
   {
     "sp_gravity_off_port_right",
-    "sp_port",
-    "gravity off port (leading right)"
+    "sp_gravity_off_port",
+    "gravity-off port (leading right)"
   },
   {
     "sp_gravity_off_port_down",
-    "sp_port",
-    "gravity off port (leading down)"
+    "sp_gravity_off_port",
+    "gravity-off port (leading down)"
   },
   {
     "sp_gravity_off_port_left",
-    "sp_port",
-    "gravity off port (leading left)"
+    "sp_gravity_off_port",
+    "gravity-off port (leading left)"
   },
   {
     "sp_gravity_off_port_up",
-    "sp_port",
-    "gravity off port (leading up)"
+    "sp_gravity_off_port",
+    "gravity-off port (leading up)"
   },
   {
     "balloon_switch_none",
@@ -4459,6 +4483,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "quicksand_fast_full",
     "quicksand",
     "fast quicksand (with rock)"
+  },
+  {
+    "from_level_template",
+    "from_level_template",
+    "element taken from level template"
   },
 
   /* ----------------------------------------------------------------------- */

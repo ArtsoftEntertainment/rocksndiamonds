@@ -72,6 +72,14 @@
 #define DEFAULT_KEY_FOCUS_PLAYER_3	KSYM_F7
 #define DEFAULT_KEY_FOCUS_PLAYER_4	KSYM_F8
 #define DEFAULT_KEY_FOCUS_PLAYER_ALL	KSYM_F9
+#define DEFAULT_KEY_TAPE_EJECT		KSYM_UNDEFINED
+#define DEFAULT_KEY_TAPE_STOP		KSYM_UNDEFINED
+#define DEFAULT_KEY_TAPE_PAUSE		KSYM_UNDEFINED
+#define DEFAULT_KEY_TAPE_RECORD		KSYM_UNDEFINED
+#define DEFAULT_KEY_TAPE_PLAY		KSYM_UNDEFINED
+#define DEFAULT_KEY_SOUND_SIMPLE	KSYM_UNDEFINED
+#define DEFAULT_KEY_SOUND_LOOPS		KSYM_UNDEFINED
+#define DEFAULT_KEY_SOUND_MUSIC		KSYM_UNDEFINED
 
 /* values for key_status */
 #define KEY_NOT_PRESSED			FALSE
@@ -198,6 +206,13 @@
 #define ANIM_STATIC_PANEL	(1 << 13)
 
 #define ANIM_DEFAULT		ANIM_LOOP
+
+/* values for special drawing styles (currently only for crumbled graphics) */
+#define STYLE_NONE		0
+#define STYLE_ACCURATE_BORDERS	(1 << 0)
+#define STYLE_INNER_CORNERS	(1 << 1)
+
+#define STYLE_DEFAULT		STYLE_NONE
 
 /* values for fade mode */
 #define FADE_TYPE_NONE		0
@@ -650,7 +665,10 @@ struct OptionInfo
   char *sounds_directory;
   char *music_directory;
   char *docs_directory;
+
   char *execute_command;
+
+  char *special_flags;
 
   boolean serveronly;
   boolean network;
@@ -735,6 +753,10 @@ struct GfxInfo
 
   Bitmap *background_bitmap;
   int background_bitmap_mask;
+
+  boolean clipping_enabled;
+  int clip_x, clip_y;
+  int clip_width, clip_height;
 
   boolean override_level_graphics;
   boolean override_level_sounds;
@@ -831,6 +853,16 @@ struct SetupShortcutInfo
 
   Key focus_player[MAX_PLAYERS];
   Key focus_player_all;
+
+  Key tape_eject;
+  Key tape_stop;
+  Key tape_pause;
+  Key tape_record;
+  Key tape_play;
+
+  Key sound_simple;
+  Key sound_loops;
+  Key sound_music;
 };
 
 struct SetupSystemInfo
@@ -868,6 +900,7 @@ struct SetupInfo
   boolean input_on_focus;
   boolean prefer_aga_graphics;
   int game_frame_delay;
+  boolean sp_show_border_elements;
 
   char *graphics_set;
   char *sounds_set;
@@ -921,6 +954,8 @@ struct TreeInfo
 
   char *level_filename;	/* filename of level file (for packed level file) */
   char *level_filetype;	/* type of levels in level directory or level file */
+
+  char *special_flags;	/* flags for special actions performed on level file */
 
   int levels;		/* number of levels in level series */
   int first_level;	/* first level number (to allow start with 0 or 1) */
@@ -1077,6 +1112,13 @@ struct Rect
   int width, height;
 };
 
+struct RectWithBorder
+{
+  int x, y;
+  int width, height;
+  int border_size;
+};
+
 struct MenuPosInfo
 {
   int x, y;
@@ -1148,6 +1190,7 @@ void InitGfxDoor1Info(int, int, int, int);
 void InitGfxDoor2Info(int, int, int, int);
 void InitGfxWindowInfo(int, int);
 void InitGfxScrollbufferInfo(int, int);
+void InitGfxClipRegion(boolean, int, int, int, int);
 void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(void));
 void InitGfxCustomArtworkInfo();
 void SetDrawDeactivationMask(int);
@@ -1161,6 +1204,7 @@ void CloseVideoDisplay(void);
 void InitVideoBuffer(int, int, int, boolean);
 Bitmap *CreateBitmapStruct(void);
 Bitmap *CreateBitmap(int, int, int);
+void ReCreateBitmap(Bitmap **, int, int, int);
 void FreeBitmap(Bitmap *);
 void BlitBitmap(Bitmap *, Bitmap *, int, int, int, int, int, int);
 void FadeRectangle(Bitmap *bitmap, int, int, int, int, int, int, int,

@@ -412,6 +412,19 @@ char *getSolutionTapeFilename(int nr)
   sprintf(basename, "%03d.%s", nr, TAPEFILE_EXTENSION);
   filename = getPath2(getSolutionTapeDir(), basename);
 
+  if (!fileExists(filename))
+  {
+    static char *filename_sln = NULL;
+
+    checked_free(filename_sln);
+
+    sprintf(basename, "%03d.sln", nr);
+    filename_sln = getPath2(getSolutionTapeDir(), basename);
+
+    if (fileExists(filename_sln))
+      return filename_sln;
+  }
+
   return filename;
 }
 
@@ -1410,21 +1423,41 @@ static int posix_mkdir(const char *pathname, mode_t mode)
 #endif
 }
 
+static boolean posix_process_running_setgid()
+{
+#if defined(PLATFORM_UNIX)
+  return (getgid() != getegid());
+#else
+  return FALSE;
+#endif
+}
+
 void createDirectory(char *dir, char *text, int permission_class)
 {
   /* leave "other" permissions in umask untouched, but ensure group parts
      of USERDATA_DIR_MODE are not masked */
   mode_t dir_mode = (permission_class == PERMS_PRIVATE ?
 		     DIR_PERMS_PRIVATE : DIR_PERMS_PUBLIC);
-  mode_t normal_umask = posix_umask(0);
+  mode_t last_umask = posix_umask(0);
   mode_t group_umask = ~(dir_mode & S_IRWXG);
-  posix_umask(normal_umask & group_umask);
+  int running_setgid = posix_process_running_setgid();
+
+  /* if we're setgid, protect files against "other" */
+  /* else keep umask(0) to make the dir world-writable */
+
+  if (running_setgid)
+    posix_umask(last_umask & group_umask);
+  else
+    dir_mode |= MODE_W_ALL;
 
   if (!fileExists(dir))
     if (posix_mkdir(dir, dir_mode) != 0)
       Error(ERR_WARN, "cannot create %s directory '%s'", text, dir);
 
-  posix_umask(normal_umask);		/* reset normal umask */
+  if (permission_class == PERMS_PUBLIC && !running_setgid)
+    chmod(dir, dir_mode);
+
+  posix_umask(last_umask);		/* restore previous umask */
 }
 
 void InitUserDataDirectory()
@@ -1434,8 +1467,14 @@ void InitUserDataDirectory()
 
 void SetFilePermissions(char *filename, int permission_class)
 {
-  chmod(filename, (permission_class == PERMS_PRIVATE ?
-		   FILE_PERMS_PRIVATE : FILE_PERMS_PUBLIC));
+  int running_setgid = posix_process_running_setgid();
+  int perms = (permission_class == PERMS_PRIVATE ?
+	       FILE_PERMS_PRIVATE : FILE_PERMS_PUBLIC);
+
+  if (permission_class == PERMS_PUBLIC && !running_setgid)
+    perms |= MODE_W_ALL;
+
+  chmod(filename, perms);
 }
 
 char *getCookie(char *file_type)
@@ -1616,7 +1655,7 @@ DEFINE_HASHTABLE_REMOVE(remove_hash_entry, char, char);
 #define remove_hash_entry hashtable_remove
 #endif
 
-static unsigned int get_hash_from_key(void *key)
+unsigned int get_hash_from_key(void *key)
 {
   /*
     djb2
@@ -2375,10 +2414,11 @@ void checkSetupFileHashIdentifier(SetupFileHash *setup_file_hash,
 #define LEVELINFO_TOKEN_MUSIC_SET		18
 #define LEVELINFO_TOKEN_FILENAME		19
 #define LEVELINFO_TOKEN_FILETYPE		20
-#define LEVELINFO_TOKEN_HANDICAP		21
-#define LEVELINFO_TOKEN_SKIP_LEVELS		22
+#define LEVELINFO_TOKEN_SPECIAL_FLAGS		21
+#define LEVELINFO_TOKEN_HANDICAP		22
+#define LEVELINFO_TOKEN_SKIP_LEVELS		23
 
-#define NUM_LEVELINFO_TOKENS			23
+#define NUM_LEVELINFO_TOKENS			24
 
 static LevelDirTree ldi;
 
@@ -2406,6 +2446,7 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.music_set,		"music_set"		},
   { TYPE_STRING,	&ldi.level_filename,	"filename"		},
   { TYPE_STRING,	&ldi.level_filetype,	"filetype"		},
+  { TYPE_STRING,	&ldi.special_flags,	"special_flags"		},
   { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"		},
   { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"		}
 };
@@ -2482,6 +2523,8 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
     ti->level_filename = NULL;
     ti->level_filetype = NULL;
 
+    ti->special_flags = NULL;
+
     ti->levels = 0;
     ti->first_level = 0;
     ti->last_level = 0;
@@ -2553,12 +2596,18 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
     ti->level_filename = NULL;
     ti->level_filetype = NULL;
 
+    ti->special_flags = getStringCopy(parent->special_flags);
+
     ti->levels = 0;
     ti->first_level = 0;
     ti->last_level = 0;
     ti->level_group = FALSE;
     ti->handicap_level = 0;
+#if 1
+    ti->readonly = parent->readonly;
+#else
     ti->readonly = TRUE;
+#endif
     ti->handicap = TRUE;
     ti->skip_levels = FALSE;
   }
@@ -2603,6 +2652,8 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
 
   ti_copy->level_filename	= getStringCopy(ti->level_filename);
   ti_copy->level_filetype	= getStringCopy(ti->level_filetype);
+
+  ti_copy->special_flags	= getStringCopy(ti->special_flags);
 
   ti_copy->levels		= ti->levels;
   ti_copy->first_level		= ti->first_level;
@@ -2665,6 +2716,8 @@ static void freeTreeInfo(TreeInfo *ti)
 
     checked_free(ti->level_filename);
     checked_free(ti->level_filetype);
+
+    checked_free(ti->special_flags);
   }
 
   checked_free(ti);
@@ -2840,14 +2893,18 @@ static char *getCacheToken(char *prefix, char *suffix)
   return token;
 }
 
-static char *getFileTimestamp(char *filename)
+static char *getFileTimestampString(char *filename)
 {
+#if 1
+  return getStringCopy(i_to_a(getFileTimestampEpochSeconds(filename)));
+#else
   struct stat file_status;
 
   if (stat(filename, &file_status) != 0)	/* cannot stat file */
     return getStringCopy(i_to_a(0));
 
   return getStringCopy(i_to_a(file_status.st_mtime));
+#endif
 }
 
 static boolean modifiedFileTimestamp(char *filename, char *timestamp_string)
@@ -2964,8 +3021,8 @@ static void setArtworkInfoCacheEntry(TreeInfo *artwork_info,
 					LEVELINFO_FILENAME);
     char *filename_artworkinfo = getPath2(getSetupArtworkDir(artwork_info),
 					  ARTWORKINFO_FILENAME(type));
-    char *timestamp_levelinfo = getFileTimestamp(filename_levelinfo);
-    char *timestamp_artworkinfo = getFileTimestamp(filename_artworkinfo);
+    char *timestamp_levelinfo = getFileTimestampString(filename_levelinfo);
+    char *timestamp_artworkinfo = getFileTimestampString(filename_artworkinfo);
 
     token_main = getCacheToken(token_prefix, "TIMESTAMP_LEVELINFO");
     setHashEntry(artworkinfo_cache_new, token_main, timestamp_levelinfo);
@@ -3083,6 +3140,12 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
 
   leveldir_new->in_user_dir =
     (!strEqual(leveldir_new->basepath, options.level_directory));
+
+#if 0
+  printf("::: '%s' -> %d\n",
+	 leveldir_new->identifier,
+	 leveldir_new->in_user_dir);
+#endif
 
   /* adjust some settings if user's private level directory was detected */
   if (leveldir_new->sort_priority == LEVELCLASS_UNDEFINED &&

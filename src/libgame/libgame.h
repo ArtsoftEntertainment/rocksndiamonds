@@ -23,6 +23,7 @@
 #include "gadgets.h"
 #include "text.h"
 #include "sound.h"
+#include "snapshot.h"
 #include "joystick.h"
 #include "toons.h"
 #include "image.h"

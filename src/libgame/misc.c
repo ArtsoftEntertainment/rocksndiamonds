@@ -14,6 +14,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <string.h>
@@ -181,6 +182,46 @@ END_OF_FUNCTION(increment_counter);
 /* maximal allowed length of a command line option */
 #define MAX_OPTION_LEN		256
 
+#if 1
+
+#ifdef TARGET_SDL
+static unsigned long getCurrentMS()
+{
+  return SDL_GetTicks();
+}
+
+#else /* !TARGET_SDL */
+
+#if defined(PLATFORM_UNIX)
+static unsigned long getCurrentMS()
+{
+  struct timeval current_time;
+
+  gettimeofday(&current_time, NULL);
+
+  return current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
+}
+#endif /* PLATFORM_UNIX */
+#endif /* !TARGET_SDL */
+
+static unsigned long mainCounter(int mode)
+{
+  static unsigned long base_ms = 0;
+  unsigned long current_ms;
+
+  /* get current system milliseconds */
+  current_ms = getCurrentMS();
+
+  /* reset base timestamp in case of counter reset or wrap-around */
+  if (mode == INIT_COUNTER || current_ms < base_ms)
+    base_ms = current_ms;
+
+  /* return milliseconds since last counter reset */
+  return current_ms - base_ms;
+}
+
+#else
+
 #ifdef TARGET_SDL
 static unsigned long mainCounter(int mode)
 {
@@ -221,6 +262,8 @@ static unsigned long mainCounter(int mode)
 }
 #endif /* PLATFORM_UNIX */
 #endif /* !TARGET_SDL */
+
+#endif
 
 void InitCounter()		/* set counter back to zero */
 {
@@ -468,6 +511,16 @@ char *getRealName()
   return real_name;
 }
 
+time_t getFileTimestampEpochSeconds(char *filename)
+{
+  struct stat file_status;
+
+  if (stat(filename, &file_status) != 0)	/* cannot stat file */
+    return 0;
+
+  return file_status.st_mtime;
+}
+
 
 /* ------------------------------------------------------------------------- */
 /* path manipulation functions                                               */
@@ -637,6 +690,26 @@ boolean strSuffix(char *s, char *suffix)
 	  strncmp(&s[strlen(s) - strlen(suffix)], suffix, strlen(suffix)) == 0);
 }
 
+boolean strPrefixLower(char *s, char *prefix)
+{
+  char *s_lower = getStringToLower(s);
+  boolean match = strPrefix(s_lower, prefix);
+
+  free(s_lower);
+
+  return match;
+}
+
+boolean strSuffixLower(char *s, char *suffix)
+{
+  char *s_lower = getStringToLower(s);
+  boolean match = strSuffix(s_lower, suffix);
+
+  free(s_lower);
+
+  return match;
+}
+
 
 /* ------------------------------------------------------------------------- */
 /* command line option handling functions                                    */
@@ -665,6 +738,7 @@ void GetOptions(char *argv[], void (*print_usage_function)(void))
   options.display_name = NULL;
   options.server_host = NULL;
   options.server_port = 0;
+
   options.ro_base_directory = ro_base_path;
   options.rw_base_directory = rw_base_path;
   options.level_directory    = getPath2(ro_base_path, LEVELS_DIRECTORY);
@@ -672,7 +746,10 @@ void GetOptions(char *argv[], void (*print_usage_function)(void))
   options.sounds_directory   = getPath2(ro_base_path, SOUNDS_DIRECTORY);
   options.music_directory    = getPath2(ro_base_path, MUSIC_DIRECTORY);
   options.docs_directory     = getPath2(ro_base_path, DOCS_DIRECTORY);
+
   options.execute_command = NULL;
+  options.special_flags = NULL;
+
   options.serveronly = FALSE;
   options.network = FALSE;
   options.verbose = FALSE;
@@ -701,7 +778,7 @@ void GetOptions(char *argv[], void (*print_usage_function)(void))
     if (strEqual(option, "--"))			/* stop scanning arguments */
       break;
 
-    if (strncmp(option, "--", 2) == 0)		/* treat '--' like '-' */
+    if (strPrefix(option, "--"))		/* treat '--' like '-' */
       option++;
 
     option_arg = strchr(option, '=');
@@ -806,6 +883,25 @@ void GetOptions(char *argv[], void (*print_usage_function)(void))
     else if (strncmp(option, "-debug-x11-sync", option_len) == 0)
     {
       options.debug_x11_sync = TRUE;
+    }
+    else if (strPrefix(option, "-D"))
+    {
+#if 1
+      options.special_flags = getStringCopy(&option[2]);
+#else
+      char *flags_string = &option[2];
+      unsigned long flags_value;
+
+      if (*flags_string == '\0')
+	Error(ERR_EXIT_HELP, "empty flag ignored");
+
+      flags_value = get_special_flags_function(flags_string);
+
+      if (flags_value == 0)
+	Error(ERR_EXIT_HELP, "unknown flag '%s'", flags_string);
+
+      options.special_flags |= flags_value;
+#endif
     }
     else if (strncmp(option, "-execute", option_len) == 0)
     {
@@ -1409,7 +1505,7 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
     Key key = KSYM_UNDEFINED;
     char *name_ptr = *x11name;
 
-    if (strncmp(name_ptr, "XK_", 3) == 0 && strlen(name_ptr) == 4)
+    if (strPrefix(name_ptr, "XK_") && strlen(name_ptr) == 4)
     {
       char c = name_ptr[3];
 
@@ -1420,14 +1516,14 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
       else if (c >= '0' && c <= '9')
 	key = KSYM_0 + (Key)(c - '0');
     }
-    else if (strncmp(name_ptr, "XK_KP_", 6) == 0 && strlen(name_ptr) == 7)
+    else if (strPrefix(name_ptr, "XK_KP_") && strlen(name_ptr) == 7)
     {
       char c = name_ptr[6];
 
       if (c >= '0' && c <= '9')
 	key = KSYM_KP_0 + (Key)(c - '0');
     }
-    else if (strncmp(name_ptr, "XK_F", 4) == 0 && strlen(name_ptr) <= 6)
+    else if (strPrefix(name_ptr, "XK_F") && strlen(name_ptr) <= 6)
     {
       char c1 = name_ptr[4];
       char c2 = name_ptr[5];
@@ -1440,7 +1536,7 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
       if (d >= 1 && d <= KSYM_NUM_FKEYS)
 	key = KSYM_F1 + (Key)(d - 1);
     }
-    else if (strncmp(name_ptr, "XK_", 3) == 0)
+    else if (strPrefix(name_ptr, "XK_"))
     {
       i = 0;
 
@@ -1454,7 +1550,7 @@ void translate_keyname(Key *keysym, char **x11name, char **name, int mode)
       }
       while (translate_key[++i].x11name);
     }
-    else if (strncmp(name_ptr, "0x", 2) == 0)
+    else if (strPrefix(name_ptr, "0x"))
     {
       unsigned long value = 0;
 
@@ -1777,7 +1873,7 @@ boolean FileIsMusic(char *filename)
     return TRUE;
 
 #if defined(TARGET_SDL)
-  if (fileHasPrefix(basename, "mod") ||
+  if ((fileHasPrefix(basename, "mod") && !fileHasSuffix(basename, "txt")) ||
       fileHasSuffix(basename, "mod") ||
       fileHasSuffix(basename, "s3m") ||
       fileHasSuffix(basename, "it") ||
@@ -1914,6 +2010,20 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 
     if (string_has_parameter(value, "static_panel"))
       result |= ANIM_STATIC_PANEL;
+  }
+  else if (strEqual(suffix, ".class"))
+  {
+    result = get_hash_from_key(value);
+  }
+  else if (strEqual(suffix, ".style"))
+  {
+    result = STYLE_DEFAULT;
+
+    if (string_has_parameter(value, "accurate_borders"))
+      result |= STYLE_ACCURATE_BORDERS;
+
+    if (string_has_parameter(value, "inner_corners"))
+      result |= STYLE_INNER_CORNERS;
   }
   else if (strEqual(suffix, ".fade_mode"))
   {

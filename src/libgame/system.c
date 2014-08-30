@@ -166,8 +166,10 @@ void InitGfxFieldInfo(int sx, int sy, int sxsize, int sysize,
 
   gfx.field_save_buffer = field_save_buffer;
 
+#if 0
   gfx.background_bitmap = NULL;
   gfx.background_bitmap_mask = REDRAW_NONE;
+#endif
 
   SetDrawDeactivationMask(REDRAW_NONE);		/* do not deactivate drawing */
   SetDrawBackgroundMask(REDRAW_NONE);		/* deactivate masked drawing */
@@ -193,6 +195,12 @@ void InitGfxWindowInfo(int win_xsize, int win_ysize)
 {
   gfx.win_xsize = win_xsize;
   gfx.win_ysize = win_ysize;
+
+#if 1
+  gfx.background_bitmap_mask = REDRAW_NONE;
+
+  ReCreateBitmap(&gfx.background_bitmap, win_xsize, win_ysize, DEFAULT_DEPTH);
+#endif
 }
 
 void InitGfxScrollbufferInfo(int scrollbuffer_width, int scrollbuffer_height)
@@ -201,6 +209,15 @@ void InitGfxScrollbufferInfo(int scrollbuffer_width, int scrollbuffer_height)
   /* 2009-03-24: also (temporarily?) used for overlapping blit workaround */
   gfx.scrollbuffer_width = scrollbuffer_width;
   gfx.scrollbuffer_height = scrollbuffer_height;
+}
+
+void InitGfxClipRegion(boolean enabled, int x, int y, int width, int height)
+{
+  gfx.clipping_enabled = enabled;
+  gfx.clip_x = x;
+  gfx.clip_y = y;
+  gfx.clip_width = width;
+  gfx.clip_height = height;
 }
 
 void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(void))
@@ -259,9 +276,11 @@ void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
   else
     gfx.background_bitmap_mask &= ~mask;
 
+#if 0
   if (gfx.background_bitmap == NULL)
     gfx.background_bitmap = CreateBitmap(video.width, video.height,
 					 DEFAULT_DEPTH);
+#endif
 
   if (background_bitmap_tile == NULL)	/* empty background requested */
     return;
@@ -367,8 +386,10 @@ void InitVideoBuffer(int width, int height, int depth, boolean fullscreen)
 
   video.fullscreen_available = FULLSCREEN_STATUS;
   video.fullscreen_enabled = FALSE;
-  video.fullscreen_modes = NULL;
+#if 0
   video.fullscreen_mode_current = NULL;
+  video.fullscreen_modes = NULL;
+#endif
 
 #if defined(TARGET_SDL)
   SDLInitVideoBuffer(&backbuffer, &window, fullscreen);
@@ -377,34 +398,6 @@ void InitVideoBuffer(int width, int height, int depth, boolean fullscreen)
 #endif
 
   drawto = backbuffer;
-}
-
-Bitmap *CreateBitmapStruct(void)
-{
-#if defined(TARGET_SDL)
-  return checked_calloc(sizeof(struct SDLSurfaceInfo));
-#else
-  return checked_calloc(sizeof(struct X11DrawableInfo));
-#endif
-}
-
-Bitmap *CreateBitmap(int width, int height, int depth)
-{
-  Bitmap *new_bitmap = CreateBitmapStruct();
-  int real_width  = MAX(1, width);	/* prevent zero bitmap width */
-  int real_height = MAX(1, height);	/* prevent zero bitmap height */
-  int real_depth  = GetRealDepth(depth);
-
-#if defined(TARGET_SDL)
-  SDLCreateBitmapContent(new_bitmap, real_width, real_height, real_depth);
-#else
-  X11CreateBitmapContent(new_bitmap, real_width, real_height, real_depth);
-#endif
-
-  new_bitmap->width  = real_width;
-  new_bitmap->height = real_height;
-
-  return new_bitmap;
 }
 
 inline static void FreeBitmapPointers(Bitmap *bitmap)
@@ -443,16 +436,53 @@ void FreeBitmap(Bitmap *bitmap)
   free(bitmap);
 }
 
+Bitmap *CreateBitmapStruct(void)
+{
+#if defined(TARGET_SDL)
+  return checked_calloc(sizeof(struct SDLSurfaceInfo));
+#else
+  return checked_calloc(sizeof(struct X11DrawableInfo));
+#endif
+}
+
+Bitmap *CreateBitmap(int width, int height, int depth)
+{
+  Bitmap *new_bitmap = CreateBitmapStruct();
+  int real_width  = MAX(1, width);	/* prevent zero bitmap width */
+  int real_height = MAX(1, height);	/* prevent zero bitmap height */
+  int real_depth  = GetRealDepth(depth);
+
+#if defined(TARGET_SDL)
+  SDLCreateBitmapContent(new_bitmap, real_width, real_height, real_depth);
+#else
+  X11CreateBitmapContent(new_bitmap, real_width, real_height, real_depth);
+#endif
+
+  new_bitmap->width  = real_width;
+  new_bitmap->height = real_height;
+
+  return new_bitmap;
+}
+
+void ReCreateBitmap(Bitmap **bitmap, int width, int height, int depth)
+{
+  Bitmap *new_bitmap = CreateBitmap(width, height, depth);
+
+  if (*bitmap == NULL)
+  {
+    *bitmap = new_bitmap;
+  }
+  else
+  {
+    TransferBitmapPointers(new_bitmap, *bitmap);
+    free(new_bitmap);
+  }
+}
+
 void CloseWindow(DrawWindow *window)
 {
 #if defined(TARGET_X11)
-  if (window->drawable)
-  {
-    XUnmapWindow(display, window->drawable);
-    XDestroyWindow(display, window->drawable);
-  }
-  if (window->gc)
-    XFreeGC(display, window->gc);
+  X11CloseWindow(window);
 #endif
 }
 
@@ -491,12 +521,132 @@ boolean DrawingOnBackground(int x, int y)
 	  CheckDrawingArea(x, y, 1, 1, gfx.draw_background_mask));
 }
 
+static boolean InClippedRectangle(Bitmap *bitmap, int *x, int *y,
+				  int *width, int *height, boolean is_dest)
+{
+#if 1
+  int clip_x, clip_y, clip_width, clip_height;
+
+  if (gfx.clipping_enabled && is_dest)	/* only clip destination bitmap */
+  {
+    clip_x = MIN(MAX(0, gfx.clip_x), bitmap->width);
+    clip_y = MIN(MAX(0, gfx.clip_y), bitmap->height);
+    clip_width = MIN(MAX(0, gfx.clip_width), bitmap->width - clip_x);
+    clip_height = MIN(MAX(0, gfx.clip_height), bitmap->height - clip_y);
+  }
+  else
+  {
+    clip_x = 0;
+    clip_y = 0;
+    clip_width = bitmap->width;
+    clip_height = bitmap->height;
+  }
+
+  /* skip if rectangle completely outside bitmap */
+
+  if (*x + *width  <= clip_x ||
+      *y + *height <= clip_y ||
+      *x >= clip_x + clip_width ||
+      *y >= clip_y + clip_height)
+    return FALSE;
+
+  /* clip if rectangle overlaps bitmap */
+
+  if (*x < clip_x)
+  {
+    *width -= clip_x - *x;
+    *x = clip_x;
+  }
+  else if (*x + *width > clip_x + clip_width)
+  {
+    *width = clip_x + clip_width - *x;
+  }
+
+  if (*y < clip_y)
+  {
+    *height -= clip_y - *y;
+    *y = clip_y;
+  }
+  else if (*y + *height > clip_y + clip_height)
+  {
+    *height = clip_y + clip_height - *y;
+  }
+
+  return TRUE;
+
+#else
+
+  /* skip if rectangle completely outside bitmap */
+
+  if (*x + *width <= 0 ||
+      *y + *height <= 0 ||
+      *x >= bitmap->width ||
+      *y >= bitmap->height)
+    return FALSE;
+
+  /* clip if rectangle overlaps bitmap */
+
+  if (*x < 0)
+  {
+    *width += *x;
+    *x = 0;
+  }
+  else if (*x + *width > bitmap->width)
+  {
+    *width = bitmap->width - *x;
+  }
+
+  if (*y < 0)
+  {
+    *height += *y;
+    *y = 0;
+  }
+  else if (*y + *height > bitmap->height)
+  {
+    *height = bitmap->height - *y;
+  }
+
+  return TRUE;
+#endif
+}
+
 void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 		int src_x, int src_y, int width, int height,
 		int dst_x, int dst_y)
 {
+  int dst_x_unclipped = dst_x;
+  int dst_y_unclipped = dst_y;
+
   if (DrawingDeactivated(dst_x, dst_y, width, height))
     return;
+
+#if 1
+  if (!InClippedRectangle(src_bitmap, &src_x, &src_y, &width, &height, FALSE) ||
+      !InClippedRectangle(dst_bitmap, &dst_x, &dst_y, &width, &height, TRUE))
+    return;
+
+  /* source x/y might need adjustment if destination x/y was clipped top/left */
+  src_x += dst_x - dst_x_unclipped;
+  src_y += dst_y - dst_y_unclipped;
+
+#else
+  /* skip if rectangle starts outside bitmap */
+  if (src_x >= src_bitmap->width ||
+      src_y >= src_bitmap->height ||
+      dst_x >= dst_bitmap->width ||
+      dst_y >= dst_bitmap->height)
+    return;
+
+  /* clip if rectangle overlaps bitmap */
+  if (src_x + width > src_bitmap->width)
+    width = src_bitmap->width - src_x;
+  if (src_y + height > src_bitmap->height)
+    height = src_bitmap->height - src_y;
+  if (dst_x + width > dst_bitmap->width)
+    width = dst_bitmap->width - dst_x;
+  if (dst_y + height > dst_bitmap->height)
+    height = dst_bitmap->height - dst_y;
+#endif
 
 #if 0
   /* !!! 2009-03-30: Fixed by using self-compiled, patched SDL.dll !!! */
@@ -559,6 +709,12 @@ void FadeRectangle(Bitmap *bitmap_cross, int x, int y, int width, int height,
 		   int fade_mode, int fade_delay, int post_delay,
 		   void (*draw_border_function)(void))
 {
+#if 1
+  /* (use destination bitmap "backbuffer" -- "bitmap_cross" may be undefined) */
+  if (!InClippedRectangle(backbuffer, &x, &y, &width, &height, TRUE))
+    return;
+#endif
+
 #if defined(TARGET_SDL)
   SDLFadeRectangle(bitmap_cross, x, y, width, height,
 		   fade_mode, fade_delay, post_delay, draw_border_function);
@@ -573,6 +729,22 @@ void FillRectangle(Bitmap *bitmap, int x, int y, int width, int height,
 {
   if (DrawingDeactivated(x, y, width, height))
     return;
+
+#if 1
+  if (!InClippedRectangle(bitmap, &x, &y, &width, &height, TRUE))
+    return;
+#else
+  /* skip if rectangle starts outside bitmap */
+  if (x >= bitmap->width ||
+      y >= bitmap->height)
+    return;
+
+  /* clip if rectangle overlaps bitmap */
+  if (x + width > bitmap->width)
+    width = bitmap->width - x;
+  if (y + height > bitmap->height)
+    height = bitmap->height - y;
+#endif
 
   sysFillRectangle(bitmap, x, y, width, height, color);
 }

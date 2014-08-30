@@ -72,19 +72,19 @@
 #if USE_DELAYED_GFX_REDRAW
 #define TEST_DrawLevelField(x, y)				\
 	GfxRedraw[x][y] |= GFX_REDRAW_TILE
-#define TEST_DrawLevelFieldCrumbledSand(x, y)			\
+#define TEST_DrawLevelFieldCrumbled(x, y)			\
 	GfxRedraw[x][y] |= GFX_REDRAW_TILE_CRUMBLED
-#define TEST_DrawLevelFieldCrumbledSandNeighbours(x, y)		\
+#define TEST_DrawLevelFieldCrumbledNeighbours(x, y)		\
 	GfxRedraw[x][y] |= GFX_REDRAW_TILE_CRUMBLED_NEIGHBOURS
 #define TEST_DrawTwinkleOnField(x, y)				\
 	GfxRedraw[x][y] |= GFX_REDRAW_TILE_TWINKLED
 #else
 #define TEST_DrawLevelField(x, y)				\
 	     DrawLevelField(x, y)
-#define TEST_DrawLevelFieldCrumbledSand(x, y)			\
-	     DrawLevelFieldCrumbledSand(x, y)
-#define TEST_DrawLevelFieldCrumbledSandNeighbours(x, y)		\
-	     DrawLevelFieldCrumbledSandNeighbours(x, y)
+#define TEST_DrawLevelFieldCrumbled(x, y)			\
+	     DrawLevelFieldCrumbled(x, y)
+#define TEST_DrawLevelFieldCrumbledNeighbours(x, y)		\
+	     DrawLevelFieldCrumbledNeighbours(x, y)
 #define TEST_DrawTwinkleOnField(x, y)				\
 	     DrawTwinkleOnField(x, y)
 #endif
@@ -194,86 +194,87 @@
 #define GAME_PANEL_TIME_HH			32
 #define GAME_PANEL_TIME_MM			33
 #define GAME_PANEL_TIME_SS			34
-#define GAME_PANEL_SHIELD_NORMAL		35
-#define GAME_PANEL_SHIELD_NORMAL_TIME		36
-#define GAME_PANEL_SHIELD_DEADLY		37
-#define GAME_PANEL_SHIELD_DEADLY_TIME		38
-#define GAME_PANEL_EXIT				39
-#define GAME_PANEL_EMC_MAGIC_BALL		40
-#define GAME_PANEL_EMC_MAGIC_BALL_SWITCH	41
-#define GAME_PANEL_LIGHT_SWITCH			42
-#define GAME_PANEL_LIGHT_SWITCH_TIME		43
-#define GAME_PANEL_TIMEGATE_SWITCH		44
-#define GAME_PANEL_TIMEGATE_SWITCH_TIME		45
-#define GAME_PANEL_SWITCHGATE_SWITCH		46
-#define GAME_PANEL_EMC_LENSES			47
-#define GAME_PANEL_EMC_LENSES_TIME		48
-#define GAME_PANEL_EMC_MAGNIFIER		49
-#define GAME_PANEL_EMC_MAGNIFIER_TIME		50
-#define GAME_PANEL_BALLOON_SWITCH		51
-#define GAME_PANEL_DYNABOMB_NUMBER		52
-#define GAME_PANEL_DYNABOMB_SIZE		53
-#define GAME_PANEL_DYNABOMB_POWER		54
-#define GAME_PANEL_PENGUINS			55
-#define GAME_PANEL_SOKOBAN_OBJECTS		56
-#define GAME_PANEL_SOKOBAN_FIELDS		57
-#define GAME_PANEL_ROBOT_WHEEL			58
-#define GAME_PANEL_CONVEYOR_BELT_1		59
-#define GAME_PANEL_CONVEYOR_BELT_2		60
-#define GAME_PANEL_CONVEYOR_BELT_3		61
-#define GAME_PANEL_CONVEYOR_BELT_4		62
-#define GAME_PANEL_CONVEYOR_BELT_1_SWITCH	63
-#define GAME_PANEL_CONVEYOR_BELT_2_SWITCH	64
-#define GAME_PANEL_CONVEYOR_BELT_3_SWITCH	65
-#define GAME_PANEL_CONVEYOR_BELT_4_SWITCH	66
-#define GAME_PANEL_MAGIC_WALL			67
-#define GAME_PANEL_MAGIC_WALL_TIME		68
-#define GAME_PANEL_GRAVITY_STATE		69
-#define GAME_PANEL_GRAPHIC_1			70
-#define GAME_PANEL_GRAPHIC_2			71
-#define GAME_PANEL_GRAPHIC_3			72
-#define GAME_PANEL_GRAPHIC_4			73
-#define GAME_PANEL_GRAPHIC_5			74
-#define GAME_PANEL_GRAPHIC_6			75
-#define GAME_PANEL_GRAPHIC_7			76
-#define GAME_PANEL_GRAPHIC_8			77
-#define GAME_PANEL_ELEMENT_1			78
-#define GAME_PANEL_ELEMENT_2			79
-#define GAME_PANEL_ELEMENT_3			80
-#define GAME_PANEL_ELEMENT_4			81
-#define GAME_PANEL_ELEMENT_5			82
-#define GAME_PANEL_ELEMENT_6			83
-#define GAME_PANEL_ELEMENT_7			84
-#define GAME_PANEL_ELEMENT_8			85
-#define GAME_PANEL_ELEMENT_COUNT_1		86
-#define GAME_PANEL_ELEMENT_COUNT_2		87
-#define GAME_PANEL_ELEMENT_COUNT_3		88
-#define GAME_PANEL_ELEMENT_COUNT_4		89
-#define GAME_PANEL_ELEMENT_COUNT_5		90
-#define GAME_PANEL_ELEMENT_COUNT_6		91
-#define GAME_PANEL_ELEMENT_COUNT_7		92
-#define GAME_PANEL_ELEMENT_COUNT_8		93
-#define GAME_PANEL_CE_SCORE_1			94
-#define GAME_PANEL_CE_SCORE_2			95
-#define GAME_PANEL_CE_SCORE_3			96
-#define GAME_PANEL_CE_SCORE_4			97
-#define GAME_PANEL_CE_SCORE_5			98
-#define GAME_PANEL_CE_SCORE_6			99
-#define GAME_PANEL_CE_SCORE_7			100
-#define GAME_PANEL_CE_SCORE_8			101
-#define GAME_PANEL_CE_SCORE_1_ELEMENT		102
-#define GAME_PANEL_CE_SCORE_2_ELEMENT		103
-#define GAME_PANEL_CE_SCORE_3_ELEMENT		104
-#define GAME_PANEL_CE_SCORE_4_ELEMENT		105
-#define GAME_PANEL_CE_SCORE_5_ELEMENT		106
-#define GAME_PANEL_CE_SCORE_6_ELEMENT		107
-#define GAME_PANEL_CE_SCORE_7_ELEMENT		108
-#define GAME_PANEL_CE_SCORE_8_ELEMENT		109
-#define GAME_PANEL_PLAYER_NAME			110
-#define GAME_PANEL_LEVEL_NAME			111
-#define GAME_PANEL_LEVEL_AUTHOR			112
+#define GAME_PANEL_FRAME			35
+#define GAME_PANEL_SHIELD_NORMAL		36
+#define GAME_PANEL_SHIELD_NORMAL_TIME		37
+#define GAME_PANEL_SHIELD_DEADLY		38
+#define GAME_PANEL_SHIELD_DEADLY_TIME		39
+#define GAME_PANEL_EXIT				40
+#define GAME_PANEL_EMC_MAGIC_BALL		41
+#define GAME_PANEL_EMC_MAGIC_BALL_SWITCH	42
+#define GAME_PANEL_LIGHT_SWITCH			43
+#define GAME_PANEL_LIGHT_SWITCH_TIME		44
+#define GAME_PANEL_TIMEGATE_SWITCH		45
+#define GAME_PANEL_TIMEGATE_SWITCH_TIME		46
+#define GAME_PANEL_SWITCHGATE_SWITCH		47
+#define GAME_PANEL_EMC_LENSES			48
+#define GAME_PANEL_EMC_LENSES_TIME		49
+#define GAME_PANEL_EMC_MAGNIFIER		50
+#define GAME_PANEL_EMC_MAGNIFIER_TIME		51
+#define GAME_PANEL_BALLOON_SWITCH		52
+#define GAME_PANEL_DYNABOMB_NUMBER		53
+#define GAME_PANEL_DYNABOMB_SIZE		54
+#define GAME_PANEL_DYNABOMB_POWER		55
+#define GAME_PANEL_PENGUINS			56
+#define GAME_PANEL_SOKOBAN_OBJECTS		57
+#define GAME_PANEL_SOKOBAN_FIELDS		58
+#define GAME_PANEL_ROBOT_WHEEL			59
+#define GAME_PANEL_CONVEYOR_BELT_1		60
+#define GAME_PANEL_CONVEYOR_BELT_2		61
+#define GAME_PANEL_CONVEYOR_BELT_3		62
+#define GAME_PANEL_CONVEYOR_BELT_4		63
+#define GAME_PANEL_CONVEYOR_BELT_1_SWITCH	64
+#define GAME_PANEL_CONVEYOR_BELT_2_SWITCH	65
+#define GAME_PANEL_CONVEYOR_BELT_3_SWITCH	66
+#define GAME_PANEL_CONVEYOR_BELT_4_SWITCH	67
+#define GAME_PANEL_MAGIC_WALL			68
+#define GAME_PANEL_MAGIC_WALL_TIME		69
+#define GAME_PANEL_GRAVITY_STATE		70
+#define GAME_PANEL_GRAPHIC_1			71
+#define GAME_PANEL_GRAPHIC_2			72
+#define GAME_PANEL_GRAPHIC_3			73
+#define GAME_PANEL_GRAPHIC_4			74
+#define GAME_PANEL_GRAPHIC_5			75
+#define GAME_PANEL_GRAPHIC_6			76
+#define GAME_PANEL_GRAPHIC_7			77
+#define GAME_PANEL_GRAPHIC_8			78
+#define GAME_PANEL_ELEMENT_1			79
+#define GAME_PANEL_ELEMENT_2			80
+#define GAME_PANEL_ELEMENT_3			81
+#define GAME_PANEL_ELEMENT_4			82
+#define GAME_PANEL_ELEMENT_5			83
+#define GAME_PANEL_ELEMENT_6			84
+#define GAME_PANEL_ELEMENT_7			85
+#define GAME_PANEL_ELEMENT_8			86
+#define GAME_PANEL_ELEMENT_COUNT_1		87
+#define GAME_PANEL_ELEMENT_COUNT_2		88
+#define GAME_PANEL_ELEMENT_COUNT_3		89
+#define GAME_PANEL_ELEMENT_COUNT_4		90
+#define GAME_PANEL_ELEMENT_COUNT_5		91
+#define GAME_PANEL_ELEMENT_COUNT_6		92
+#define GAME_PANEL_ELEMENT_COUNT_7		93
+#define GAME_PANEL_ELEMENT_COUNT_8		94
+#define GAME_PANEL_CE_SCORE_1			95
+#define GAME_PANEL_CE_SCORE_2			96
+#define GAME_PANEL_CE_SCORE_3			97
+#define GAME_PANEL_CE_SCORE_4			98
+#define GAME_PANEL_CE_SCORE_5			99
+#define GAME_PANEL_CE_SCORE_6			100
+#define GAME_PANEL_CE_SCORE_7			101
+#define GAME_PANEL_CE_SCORE_8			102
+#define GAME_PANEL_CE_SCORE_1_ELEMENT		103
+#define GAME_PANEL_CE_SCORE_2_ELEMENT		104
+#define GAME_PANEL_CE_SCORE_3_ELEMENT		105
+#define GAME_PANEL_CE_SCORE_4_ELEMENT		106
+#define GAME_PANEL_CE_SCORE_5_ELEMENT		107
+#define GAME_PANEL_CE_SCORE_6_ELEMENT		108
+#define GAME_PANEL_CE_SCORE_7_ELEMENT		109
+#define GAME_PANEL_CE_SCORE_8_ELEMENT		110
+#define GAME_PANEL_PLAYER_NAME			111
+#define GAME_PANEL_LEVEL_NAME			112
+#define GAME_PANEL_LEVEL_AUTHOR			113
 
-#define NUM_GAME_PANEL_CONTROLS			113
+#define NUM_GAME_PANEL_CONTROLS			114
 
 struct GamePanelOrderInfo
 {
@@ -471,6 +472,11 @@ static struct GamePanelControlInfo game_panel_controls[] =
   {
     GAME_PANEL_TIME_SS,
     &game.panel.time_ss,
+    TYPE_INTEGER,
+  },
+  {
+    GAME_PANEL_FRAME,
+    &game.panel.frame,
     TYPE_INTEGER,
   },
   {
@@ -2221,17 +2227,25 @@ void UpdateGameControlValues()
 	      local_player->LevelSolved_CountingTime :
 	      level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 	      level.native_em_level->lev->time :
+	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
+	      level.native_sp_level->game_sp->time_played :
 	      level.time == 0 ? TimePlayed : TimeLeft);
   int score = (local_player->LevelSolved ?
 	       local_player->LevelSolved_CountingScore :
 	       level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 	       level.native_em_level->lev->score :
+	       level.game_engine_type == GAME_ENGINE_TYPE_SP ?
+	       level.native_sp_level->game_sp->score :
 	       local_player->score);
   int gems = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 	      level.native_em_level->lev->required :
+	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
+	      level.native_sp_level->game_sp->infotrons_still_needed :
 	      local_player->gems_still_needed);
   int exit_closed = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 		     level.native_em_level->lev->required > 0 :
+		     level.game_engine_type == GAME_ENGINE_TYPE_SP ?
+		     level.native_sp_level->game_sp->infotrons_still_needed > 0 :
 		     local_player->gems_still_needed > 0 ||
 		     local_player->sokobanfields_still_needed > 0 ||
 		     local_player->lights_still_needed > 0);
@@ -2253,6 +2267,10 @@ void UpdateGameControlValues()
   {
     for (i = 0; i < MAX_PLAYERS; i++)
     {
+      /* only one player in Supaplex game engine */
+      if (level.game_engine_type == GAME_ENGINE_TYPE_SP && i > 0)
+	break;
+
       for (k = 0; k < MAX_NUM_KEYS; k++)
       {
 	if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
@@ -2269,6 +2287,9 @@ void UpdateGameControlValues()
       if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
 	game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
 	  level.native_em_level->ply[i]->dynamite;
+      else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+	game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
+	  level.native_sp_level->game_sp->red_disk_count;
       else
 	game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
 	  stored_player[i].inventory_size;
@@ -2301,6 +2322,9 @@ void UpdateGameControlValues()
     if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
       game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
 	level.native_em_level->ply[player_nr]->dynamite;
+    else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+      game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
+	level.native_sp_level->game_sp->red_disk_count;
     else
       game_panel_controls[GAME_PANEL_INVENTORY_COUNT].value +=
 	stored_player[player_nr].inventory_size;
@@ -2328,6 +2352,8 @@ void UpdateGameControlValues()
   game_panel_controls[GAME_PANEL_TIME_HH].value = time / 3600;
   game_panel_controls[GAME_PANEL_TIME_MM].value = (time / 60) % 60;
   game_panel_controls[GAME_PANEL_TIME_SS].value = time % 60;
+
+  game_panel_controls[GAME_PANEL_FRAME].value = FrameCounter;
 
   game_panel_controls[GAME_PANEL_SHIELD_NORMAL].value =
     (local_player->shield_normal_time_left > 0 ? EL_SHIELD_NORMAL_ACTIVE :
@@ -3694,6 +3720,15 @@ void InitGame()
 
   game_status = GAME_MODE_PLAYING;
 
+#if 1
+  /* needed if different viewport properties defined for playing */
+  ChangeViewportPropertiesIfNeeded();
+#endif
+
+#if 1
+  DrawCompleteVideoDisplay();
+#endif
+
   InitGameEngine();
   InitGameControlValues();
 
@@ -4467,6 +4502,13 @@ void InitGame()
 
     /* blit playfield from scroll buffer to normal back buffer for fading in */
     BlitScreenToBitmap_EM(backbuffer);
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+  {
+    InitGameEngine_SP();
+
+    /* blit playfield from scroll buffer to normal back buffer for fading in */
+    BlitScreenToBitmap_SP(backbuffer);
   }
   else
   {
@@ -5765,10 +5807,19 @@ void RelocatePlayer(int jx, int jy, int el_player_raw)
   Feld[jx][jy] = el_player;
   InitPlayerField(jx, jy, el_player, TRUE);
 
+  /* "InitPlayerField()" above sets Feld[jx][jy] to EL_EMPTY, but it may be
+     possible that the relocation target field did not contain a player element,
+     but a walkable element, to which the new player was relocated -- in this
+     case, restore that (already initialized!) element on the player field */
   if (!ELEM_IS_PLAYER(element))	/* player may be set on walkable element */
   {
-    Feld[jx][jy] = element;
+    Feld[jx][jy] = element;	/* restore previously existing element */
+#if 0
+    /* !!! do not initialize already initialized element a second time !!! */
+    /* (this causes at least problems with "element creation" CE trigger for
+       already existing elements, and existing Sokoban fields counted twice) */
     InitField(jx, jy, FALSE);
+#endif
   }
 
   /* only visually relocate centered player */
@@ -6116,7 +6167,7 @@ void Explode(int ex, int ey, int phase, int mode)
     TestIfElementTouchesCustomElement(x, y);
 
     if (GFX_CRUMBLED(element))
-      TEST_DrawLevelFieldCrumbledSandNeighbours(x, y);
+      TEST_DrawLevelFieldCrumbledNeighbours(x, y);
 
     if (IS_PLAYER(x, y) && !PLAYERINFO(x, y)->present)
       StorePlayer[x][y] = 0;
@@ -6130,7 +6181,7 @@ void Explode(int ex, int ey, int phase, int mode)
     int frame = getGraphicAnimationFrame(graphic, GfxFrame[x][y]);
 
     if (phase == delay)
-      TEST_DrawLevelFieldCrumbledSand(x, y);
+      TEST_DrawLevelFieldCrumbled(x, y);
 
     if (IS_WALKABLE_OVER(Back[x][y]) && Back[x][y] != EL_EMPTY)
     {
@@ -6588,7 +6639,7 @@ static void RedrawAllLightSwitchesAndInvisibleElements()
 
       /* uncrumble neighbour fields, if needed */
       if (element == EL_INVISIBLE_SAND)
-	TEST_DrawLevelFieldCrumbledSandNeighbours(x, y);
+	TEST_DrawLevelFieldCrumbledNeighbours(x, y);
     }
     else if (element == EL_INVISIBLE_STEELWALL_ACTIVE ||
 	     element == EL_INVISIBLE_WALL_ACTIVE ||
@@ -6601,7 +6652,7 @@ static void RedrawAllLightSwitchesAndInvisibleElements()
 
       /* re-crumble neighbour fields, if needed */
       if (element == EL_INVISIBLE_SAND)
-	TEST_DrawLevelFieldCrumbledSandNeighbours(x, y);
+	TEST_DrawLevelFieldCrumbledNeighbours(x, y);
     }
   }
 }
@@ -6637,7 +6688,7 @@ static void RedrawAllInvisibleElementsForLenses()
 
       /* uncrumble neighbour fields, if needed */
       if (element == EL_INVISIBLE_SAND)
-	TEST_DrawLevelFieldCrumbledSandNeighbours(x, y);
+	TEST_DrawLevelFieldCrumbledNeighbours(x, y);
     }
     else if (element == EL_INVISIBLE_STEELWALL_ACTIVE ||
 	     element == EL_INVISIBLE_WALL_ACTIVE ||
@@ -6650,7 +6701,7 @@ static void RedrawAllInvisibleElementsForLenses()
 
       /* re-crumble neighbour fields, if needed */
       if (element == EL_INVISIBLE_SAND)
-	TEST_DrawLevelFieldCrumbledSandNeighbours(x, y);
+	TEST_DrawLevelFieldCrumbledNeighbours(x, y);
     }
   }
 }
@@ -8467,7 +8518,7 @@ void StartMoving(int x, int y)
 
 	    if (IN_SCR_FIELD(sx, sy))
 	    {
-	      TEST_DrawLevelFieldCrumbledSand(xx, yy);
+	      TEST_DrawLevelFieldCrumbled(xx, yy);
 	      DrawGraphic(sx, sy, flame_graphic, frame);
 	    }
 	  }
@@ -8970,7 +9021,7 @@ void ContinueMoving(int x, int y)
   {
     Feld[x][y] = EL_SAND;
 
-    TEST_DrawLevelFieldCrumbledSandNeighbours(x, y);
+    TEST_DrawLevelFieldCrumbledNeighbours(x, y);
   }
   else if (element == EL_QUICKSAND_FILLING)
   {
@@ -9137,7 +9188,7 @@ void ContinueMoving(int x, int y)
     InitField(x, y, FALSE);
 
     if (GFX_CRUMBLED(Feld[x][y]))
-      TEST_DrawLevelFieldCrumbledSandNeighbours(x, y);
+      TEST_DrawLevelFieldCrumbledNeighbours(x, y);
 
     if (ELEM_IS_PLAYER(move_leave_element))
       RelocatePlayer(x, y, move_leave_element);
@@ -10331,7 +10382,7 @@ static void ChangeActiveTrap(int x, int y)
 
   /* if new animation frame was drawn, correct crumbled sand border */
   if (IS_NEW_FRAME(GfxFrame[x][y], graphic))
-    TEST_DrawLevelFieldCrumbledSand(x, y);
+    TEST_DrawLevelFieldCrumbled(x, y);
 }
 
 static int getSpecialActionElement(int element, int number, int base_element)
@@ -11067,7 +11118,7 @@ static void CreateFieldExt(int x, int y, int element, boolean is_change)
     TEST_DrawLevelField(x, y);
 
     if (GFX_CRUMBLED(new_element))
-      TEST_DrawLevelFieldCrumbledSandNeighbours(x, y);
+      TEST_DrawLevelFieldCrumbledNeighbours(x, y);
   }
 
 #if 1
@@ -11976,7 +12027,16 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
 
     if (tape.single_step && tape.recording && !tape.pausing)
     {
+#if 1
+      /* as it is called "single step mode", just return to pause mode when the
+	 player stopped moving after one tile (or never starts moving at all) */
+      if (!player->is_moving)
+#else
+      /* this is buggy: there are quite some cases where the single step mode
+	 does not return to pause mode (like pushing things that don't move
+	 or simply by trying to run against a wall) */
       if (button1 || (dropped && !moved))
+#endif
       {
 	TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
 	SnapField(player, 0, 0);		/* stop snapping */
@@ -12013,6 +12073,7 @@ static void CheckLevelTime()
 {
   int i;
 
+  /* !!! SAME CODE AS IN "GameActions()" -- FIX THIS !!! */
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
     if (level.native_em_level->lev->home == 0)	/* all players at home */
@@ -12028,6 +12089,21 @@ static void CheckLevelTime()
 	level.native_em_level->ply[1]->alive == 0 &&
 	level.native_em_level->ply[2]->alive == 0 &&
 	level.native_em_level->ply[3]->alive == 0)	/* all dead */
+      AllPlayersGone = TRUE;
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+  {
+    if (game_sp.LevelSolved &&
+	!game_sp.GameOver)				/* game won */
+    {
+      PlayerWins(local_player);
+
+      game_sp.GameOver = TRUE;
+
+      AllPlayersGone = TRUE;
+    }
+
+    if (game_sp.GameOver)				/* game lost */
       AllPlayersGone = TRUE;
   }
 
@@ -12207,6 +12283,7 @@ void GameActions()
   if (game.restart_level)
     StartGameActions(options.network, setup.autorecord, level.random_seed);
 
+  /* !!! SAME CODE AS IN "CheckLevelTime()" -- FIX THIS !!! */
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
     if (level.native_em_level->lev->home == 0)	/* all players at home */
@@ -12222,6 +12299,21 @@ void GameActions()
 	level.native_em_level->ply[1]->alive == 0 &&
 	level.native_em_level->ply[2]->alive == 0 &&
 	level.native_em_level->ply[3]->alive == 0)	/* all dead */
+      AllPlayersGone = TRUE;
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+  {
+    if (game_sp.LevelSolved &&
+	!game_sp.GameOver)				/* game won */
+    {
+      PlayerWins(local_player);
+
+      game_sp.GameOver = TRUE;
+
+      AllPlayersGone = TRUE;
+    }
+
+    if (game_sp.GameOver)				/* game lost */
       AllPlayersGone = TRUE;
   }
 
@@ -12341,6 +12433,10 @@ void GameActions()
   {
     GameActions_EM_Main();
   }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+  {
+    GameActions_SP_Main();
+  }
   else
   {
     GameActions_RND();
@@ -12357,6 +12453,22 @@ void GameActions_EM_Main()
     effective_action[i] = stored_player[i].effective_action;
 
   GameActions_EM(effective_action, warp_mode);
+
+  CheckLevelTime();
+
+  AdvanceFrameAndPlayerCounters(-1);	/* advance counters for all players */
+}
+
+void GameActions_SP_Main()
+{
+  byte effective_action[MAX_PLAYERS];
+  boolean warp_mode = (tape.playing && tape.warp_forward && !tape.pausing);
+  int i;
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+    effective_action[i] = stored_player[i].effective_action;
+
+  GameActions_SP(effective_action, warp_mode);
 
   CheckLevelTime();
 
@@ -13075,10 +13187,10 @@ void GameActions_RND()
 	DrawLevelField(x, y);
 
       if (GfxRedraw[x][y] & GFX_REDRAW_TILE_CRUMBLED)
-	DrawLevelFieldCrumbledSand(x, y);
+	DrawLevelFieldCrumbled(x, y);
 
       if (GfxRedraw[x][y] & GFX_REDRAW_TILE_CRUMBLED_NEIGHBOURS)
-	DrawLevelFieldCrumbledSandNeighbours(x, y);
+	DrawLevelFieldCrumbledNeighbours(x, y);
 
       if (GfxRedraw[x][y] & GFX_REDRAW_TILE_TWINKLED)
 	DrawTwinkleOnField(x, y);
@@ -15321,8 +15433,13 @@ static int DigField(struct PlayerInfo *player,
 	PlayLevelSoundElementAction(nextx, nexty, EL_SOKOBAN_FIELD_EMPTY,
 				    ACTION_FILLING);
 
+#if 1
+      if (local_player->sokobanfields_still_needed == 0 &&
+	  (game.emulation == EMU_SOKOBAN || level.auto_exit_sokoban))
+#else
       if (local_player->sokobanfields_still_needed == 0 &&
 	  game.emulation == EMU_SOKOBAN)
+#endif
       {
 	PlayerWins(player);
 
@@ -16108,6 +16225,21 @@ void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
   }
 }
 
+void PlayLevelSound_SP(int xx, int yy, int element_sp, int action_sp)
+{
+  int element = map_element_SP_to_RND(element_sp);
+  int action = map_action_SP_to_RND(action_sp);
+  int offset = (setup.sp_show_border_elements ? 0 : 1);
+  int x = xx - offset;
+  int y = yy - offset;
+
+#if 0
+  printf("::: %d -> %d\n", element_sp, action_sp);
+#endif
+
+  PlayLevelSoundElementAction(x, y, element, action);
+}
+
 #if 0
 void ChangeTime(int value)
 {
@@ -16331,8 +16463,6 @@ unsigned int RND(int max)
 /* game engine snapshot handling functions                                   */
 /* ------------------------------------------------------------------------- */
 
-#define ARGS_ADDRESS_AND_SIZEOF(x)		(&(x)), (sizeof(x))
-
 struct EngineSnapshotInfo
 {
   /* runtime values for custom element collect score */
@@ -16342,31 +16472,13 @@ struct EngineSnapshotInfo
   int choice_pos[NUM_GROUP_ELEMENTS];
 
   /* runtime values for belt position animations */
-  int belt_graphic[4 * NUM_BELT_PARTS];
-  int belt_anim_mode[4 * NUM_BELT_PARTS];
-};
-
-struct EngineSnapshotNodeInfo
-{
-  void *buffer_orig;
-  void *buffer_copy;
-  int size;
+  int belt_graphic[4][NUM_BELT_PARTS];
+  int belt_anim_mode[4][NUM_BELT_PARTS];
 };
 
 static struct EngineSnapshotInfo engine_snapshot_rnd;
-static ListNode *engine_snapshot_list = NULL;
 static char *snapshot_level_identifier = NULL;
 static int snapshot_level_nr = -1;
-
-void FreeEngineSnapshot()
-{
-  while (engine_snapshot_list != NULL)
-    deleteNodeFromList(&engine_snapshot_list, engine_snapshot_list->key,
-		       checked_free);
-
-  setString(&snapshot_level_identifier, NULL);
-  snapshot_level_nr = -1;
-}
 
 static void SaveEngineSnapshotValues_RND()
 {
@@ -16401,8 +16513,8 @@ static void SaveEngineSnapshotValues_RND()
       int graphic = el2img(element);
       int anim_mode = graphic_info[graphic].anim_mode;
 
-      engine_snapshot_rnd.belt_graphic[i * 4 + j] = graphic;
-      engine_snapshot_rnd.belt_anim_mode[i * 4 + j] = anim_mode;
+      engine_snapshot_rnd.belt_graphic[i][j] = graphic;
+      engine_snapshot_rnd.belt_anim_mode[i][j] = anim_mode;
     }
   }
 }
@@ -16430,8 +16542,8 @@ static void LoadEngineSnapshotValues_RND()
   {
     for (j = 0; j < NUM_BELT_PARTS; j++)
     {
-      int graphic = engine_snapshot_rnd.belt_graphic[i * 4 + j];
-      int anim_mode = engine_snapshot_rnd.belt_anim_mode[i * 4 + j];
+      int graphic = engine_snapshot_rnd.belt_graphic[i][j];
+      int anim_mode = engine_snapshot_rnd.belt_anim_mode[i][j];
 
       graphic_info[graphic].anim_mode = anim_mode;
     }
@@ -16453,36 +16565,26 @@ static void LoadEngineSnapshotValues_RND()
   }
 }
 
-static void SaveEngineSnapshotBuffer(void *buffer, int size)
-{
-  struct EngineSnapshotNodeInfo *bi =
-    checked_calloc(sizeof(struct EngineSnapshotNodeInfo));
-
-  bi->buffer_orig = buffer;
-  bi->buffer_copy = checked_malloc(size);
-  bi->size = size;
-
-  memcpy(bi->buffer_copy, buffer, size);
-
-  addNodeToList(&engine_snapshot_list, NULL, bi);
-}
-
 void SaveEngineSnapshot()
 {
-  FreeEngineSnapshot();		/* free previous snapshot, if needed */
-
-  if (level_editor_test_game)	/* do not save snapshots from editor */
+  /* do not save snapshots from editor */
+  if (level_editor_test_game)
     return;
+
+  /* free previous snapshot buffers, if needed */
+  FreeEngineSnapshotBuffers();
 
   /* copy some special values to a structure better suited for the snapshot */
 
   SaveEngineSnapshotValues_RND();
   SaveEngineSnapshotValues_EM();
+  SaveEngineSnapshotValues_SP();
 
   /* save values stored in special snapshot structure */
 
   SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(engine_snapshot_rnd));
   SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(engine_snapshot_em));
+  SaveEngineSnapshotBuffer(ARGS_ADDRESS_AND_SIZEOF(engine_snapshot_sp));
 
   /* save further RND engine values */
 
@@ -16556,7 +16658,7 @@ void SaveEngineSnapshot()
   snapshot_level_nr = level_nr;
 
 #if 0
-  ListNode *node = engine_snapshot_list;
+  ListNode *node = engine_snapshot_list_rnd;
   int num_bytes = 0;
 
   while (node != NULL)
@@ -16570,29 +16672,17 @@ void SaveEngineSnapshot()
 #endif
 }
 
-static void LoadEngineSnapshotBuffer(struct EngineSnapshotNodeInfo *bi)
-{
-  memcpy(bi->buffer_orig, bi->buffer_copy, bi->size);
-}
-
 void LoadEngineSnapshot()
 {
-  ListNode *node = engine_snapshot_list;
+  /* restore generically stored snapshot buffers */
 
-  if (engine_snapshot_list == NULL)
-    return;
-
-  while (node != NULL)
-  {
-    LoadEngineSnapshotBuffer((struct EngineSnapshotNodeInfo *)node->content);
-
-    node = node->next;
-  }
+  LoadEngineSnapshotBuffers();
 
   /* restore special values from snapshot structure */
 
   LoadEngineSnapshotValues_RND();
   LoadEngineSnapshotValues_EM();
+  LoadEngineSnapshotValues_SP();
 }
 
 boolean CheckEngineSnapshot()
@@ -16805,10 +16895,8 @@ void RedrawGameButtons()
     RedrawGadget(game_gadget[i]);
 }
 
-static void HandleGameButtons(struct GadgetInfo *gi)
+static void HandleGameButtonsExt(int id)
 {
-  int id = gi->custom_id;
-
   if (game_status != GAME_MODE_PLAYING)
     return;
 
@@ -16854,6 +16942,7 @@ static void HandleGameButtons(struct GadgetInfo *gi)
       if (setup.sound_music)
       { 
 	setup.sound_music = FALSE;
+
 	FadeMusic();
       }
       else if (audio.music_available)
@@ -16872,6 +16961,7 @@ static void HandleGameButtons(struct GadgetInfo *gi)
       else if (audio.loops_available)
       {
 	setup.sound = setup.sound_loops = TRUE;
+
 	SetAudioMode(setup.sound);
       }
       break;
@@ -16882,6 +16972,7 @@ static void HandleGameButtons(struct GadgetInfo *gi)
       else if (audio.sound_available)
       {
 	setup.sound = setup.sound_simple = TRUE;
+
 	SetAudioMode(setup.sound);
       }
       break;
@@ -16889,4 +16980,28 @@ static void HandleGameButtons(struct GadgetInfo *gi)
     default:
       break;
   }
+}
+
+static void HandleGameButtons(struct GadgetInfo *gi)
+{
+  HandleGameButtonsExt(gi->custom_id);
+}
+
+void HandleSoundButtonKeys(Key key)
+{
+#if 1
+  if (key == setup.shortcut.sound_simple)
+    ClickOnGadget(game_gadget[SOUND_CTRL_ID_SIMPLE], MB_LEFTBUTTON);
+  else if (key == setup.shortcut.sound_loops)
+    ClickOnGadget(game_gadget[SOUND_CTRL_ID_LOOPS], MB_LEFTBUTTON);
+  else if (key == setup.shortcut.sound_music)
+    ClickOnGadget(game_gadget[SOUND_CTRL_ID_MUSIC], MB_LEFTBUTTON);
+#else
+  if (key == setup.shortcut.sound_simple)
+    HandleGameButtonsExt(SOUND_CTRL_ID_SIMPLE);
+  else if (key == setup.shortcut.sound_loops)
+    HandleGameButtonsExt(SOUND_CTRL_ID_LOOPS);
+  else if (key == setup.shortcut.sound_music)
+    HandleGameButtonsExt(SOUND_CTRL_ID_MUSIC);
+#endif
 }

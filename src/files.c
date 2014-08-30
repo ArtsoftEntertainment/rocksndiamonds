@@ -238,6 +238,12 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
+    &li.auto_exit_sokoban,		FALSE
+  },
+
+  {
+    -1,					-1,
     -1,					-1,
     NULL,				-1
   }
@@ -1314,6 +1320,22 @@ filetype_id_list[] =
 /* level file functions                                                      */
 /* ========================================================================= */
 
+static boolean check_special_flags(char *flag)
+{
+#if 0
+  printf("::: '%s', '%s', '%s'\n",
+	 flag,
+	 options.special_flags,
+	 leveldir_current->special_flags);
+#endif
+
+  if (strEqual(options.special_flags, flag) ||
+      strEqual(leveldir_current->special_flags, flag))
+    return TRUE;
+
+  return FALSE;
+}
+
 static struct DateInfo getCurrentDate()
 {
   time_t epoch_seconds = time(NULL);
@@ -1323,6 +1345,8 @@ static struct DateInfo getCurrentDate()
   date.year  = now->tm_year + 1900;
   date.month = now->tm_mon  + 1;
   date.day   = now->tm_mday;
+
+  date.src   = DATE_SRC_CLOCK;
 
   return date;
 }
@@ -1587,8 +1611,10 @@ static void setLevelInfoToDefaults(struct LevelInfo *level)
   *level = li;		/* copy temporary buffer back to level data */
 
   setLevelInfoToDefaults_EM();
+  setLevelInfoToDefaults_SP();
 
   level->native_em_level = &native_em_level;
+  level->native_sp_level = &native_sp_level;
 
   level->file_version = FILE_VERSION_ACTUAL;
   level->game_version = GAME_VERSION_ACTUAL;
@@ -1750,9 +1776,44 @@ static void setFileInfoToDefaults(struct LevelFileInfo *level_file_info)
 
 static void ActivateLevelTemplate()
 {
+  int x, y;
+
   /* Currently there is no special action needed to activate the template
      data, because 'element_info' property settings overwrite the original
      level data, while all other variables do not change. */
+
+  /* Exception: 'from_level_template' elements in the original level playfield
+     are overwritten with the corresponding elements at the same position in
+     playfield from the level template. */
+
+  for (x = 0; x < level.fieldx; x++)
+    for (y = 0; y < level.fieldy; y++)
+      if (level.field[x][y] == EL_FROM_LEVEL_TEMPLATE)
+	level.field[x][y] = level_template.field[x][y];
+
+  if (check_special_flags("load_xsb_to_ces"))
+  {
+    struct LevelInfo level_backup = level;
+
+    /* overwrite all individual level settings from template level settings */
+    level = level_template;
+
+    /* restore playfield size */
+    level.fieldx = level_backup.fieldx;
+    level.fieldy = level_backup.fieldy;
+
+    /* restore playfield content */
+    for (x = 0; x < level.fieldx; x++)
+      for (y = 0; y < level.fieldy; y++)
+	level.field[x][y] = level_backup.field[x][y];
+
+    /* restore name and author from individual level */
+    strcpy(level.name,   level_backup.name);
+    strcpy(level.author, level_backup.author);
+
+    /* restore flag "use_custom_template" */
+    level.use_custom_template = level_backup.use_custom_template;
+  }
 }
 
 static char *getLevelFilenameFromBasename(char *basename)
@@ -1768,20 +1829,32 @@ static char *getLevelFilenameFromBasename(char *basename)
 
 static int getFileTypeFromBasename(char *basename)
 {
+  /* !!! ALSO SEE COMMENT IN checkForPackageFromBasename() !!! */
+
   static char *filename = NULL;
   struct stat file_status;
 
   /* ---------- try to determine file type from filename ---------- */
 
   /* check for typical filename of a Supaplex level package file */
+#if 1
+  if (strlen(basename) == 10 && strPrefixLower(basename, "levels.d"))
+    return LEVEL_FILE_TYPE_SP;
+#else
   if (strlen(basename) == 10 && (strncmp(basename, "levels.d", 8) == 0 ||
 				 strncmp(basename, "LEVELS.D", 8) == 0))
     return LEVEL_FILE_TYPE_SP;
+#endif
 
   /* check for typical filename of a Diamond Caves II level package file */
-  if (strSuffix(basename, ".dc") ||
-      strSuffix(basename, ".dc2"))
+  if (strSuffixLower(basename, ".dc") ||
+      strSuffixLower(basename, ".dc2"))
     return LEVEL_FILE_TYPE_DC;
+
+  /* check for typical filename of a Sokoban level package file */
+  if (strSuffixLower(basename, ".xsb") &&
+      strchr(basename, '%') == NULL)
+    return LEVEL_FILE_TYPE_SB;
 
   /* ---------- try to determine file type from filesize ---------- */
 
@@ -1798,16 +1871,29 @@ static int getFileTypeFromBasename(char *basename)
   return LEVEL_FILE_TYPE_UNKNOWN;
 }
 
-static char *getSingleLevelBasename(int nr)
+static boolean checkForPackageFromBasename(char *basename)
+{
+  /* !!! WON'T WORK ANYMORE IF getFileTypeFromBasename() ALSO DETECTS !!!
+     !!! SINGLE LEVELS (CURRENTLY ONLY DETECTS LEVEL PACKAGES         !!! */
+
+  return (getFileTypeFromBasename(basename) != LEVEL_FILE_TYPE_UNKNOWN);
+}
+
+static char *getSingleLevelBasenameExt(int nr, char *extension)
 {
   static char basename[MAX_FILENAME_LEN];
 
   if (nr < 0)
-    sprintf(basename, "template.%s", LEVELFILE_EXTENSION);
+    sprintf(basename, "template.%s", extension);
   else
-    sprintf(basename, "%03d.%s", nr, LEVELFILE_EXTENSION);
+    sprintf(basename, "%03d.%s", nr, extension);
 
   return basename;
+}
+
+static char *getSingleLevelBasename(int nr)
+{
+  return getSingleLevelBasenameExt(nr, LEVELFILE_EXTENSION);
 }
 
 static char *getPackedLevelBasename(int type)
@@ -1937,8 +2023,32 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
   /* special case: level number is negative => check for level template file */
   if (nr < 0)
   {
+#if 1
+    /* global variable "leveldir_current" must be modified in the loop below */
+    LevelDirTree *leveldir_current_last = leveldir_current;
+
+    /* check for template level in path from current to topmost tree node */
+
+    while (leveldir_current != NULL)
+    {
+      setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND,
+					   "template.%s", LEVELFILE_EXTENSION);
+
+      if (fileExists(lfi->filename))
+	break;
+
+      leveldir_current = leveldir_current->node_parent;
+    }
+
+    /* restore global variable "leveldir_current" modified in above loop */
+    leveldir_current = leveldir_current_last;
+
+#else
+
     setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND,
 					 "template.%s", LEVELFILE_EXTENSION);
+
+#endif
 
     /* no fallback if template file not existing */
     return;
@@ -1951,6 +2061,9 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
 
     setLevelFileInfo_FormatLevelFilename(lfi, filetype,
 					 leveldir_current->level_filename, nr);
+
+    lfi->packed = checkForPackageFromBasename(leveldir_current->level_filename);
+
     if (fileExists(lfi->filename))
       return;
   }
@@ -2113,6 +2226,8 @@ static int LoadLevel_DATE(FILE *file, int chunk_size, struct LevelInfo *level)
   level->creation_date.year  = getFile16BitBE(file);
   level->creation_date.month = getFile8Bit(file);
   level->creation_date.day   = getFile8Bit(file);
+
+  level->creation_date.src   = DATE_SRC_LEVELFILE;
 
   return chunk_size;
 }
@@ -3017,8 +3132,12 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
   {
     level->no_valid_file = TRUE;
 
+#if 1
+    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+#else
     if (level != &level_template)
       Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+#endif
 
     return;
   }
@@ -3799,29 +3918,12 @@ void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   }
 }
 
-static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
-				     struct LevelFileInfo *level_file_info)
-{
-  if (!LoadNativeLevel_EM(level_file_info->filename))
-    level->no_valid_file = TRUE;
-}
-
-void CopyNativeLevel_RND_to_Native(struct LevelInfo *level)
-{
-  if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
-    CopyNativeLevel_RND_to_EM(level);
-}
-
-void CopyNativeLevel_Native_to_RND(struct LevelInfo *level)
-{
-  if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
-    CopyNativeLevel_EM_to_RND(level);
-}
-
 
 /* ------------------------------------------------------------------------- */
 /* functions for loading SP level                                            */
 /* ------------------------------------------------------------------------- */
+
+#if 0
 
 #define NUM_SUPAPLEX_LEVELS_PER_PACKAGE	111
 #define SP_LEVEL_SIZE			1536
@@ -4013,7 +4115,8 @@ static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
   }
 
   /* position file stream to the requested level inside the level package */
-  if (fseek(file, nr * SP_LEVEL_SIZE, SEEK_SET) != 0)
+  if (level_file_info->packed &&
+      fseek(file, nr * SP_LEVEL_SIZE, SEEK_SET) != 0)
   {
     level->no_valid_file = TRUE;
 
@@ -4167,6 +4270,261 @@ static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
     *level = multipart_level;
 }
 
+#endif
+
+void CopyNativeLevel_RND_to_SP(struct LevelInfo *level)
+{
+  struct LevelInfo_SP *level_sp = level->native_sp_level;
+  LevelInfoType *header = &level_sp->header;
+  int i, x, y;
+
+  level_sp->width  = level->fieldx;
+  level_sp->height = level->fieldy;
+
+  for (x = 0; x < level->fieldx; x++)
+    for (y = 0; y < level->fieldy; y++)
+      level_sp->playfield[x][y] = map_element_RND_to_SP(level->field[x][y]);
+
+  header->InitialGravity = (level->initial_player_gravity[0] ? 1 : 0);
+
+  for (i = 0; i < SP_LEVEL_NAME_LEN; i++)
+    header->LevelTitle[i] = level->name[i];
+  /* !!! NO STRING TERMINATION IN SUPAPLEX VB CODE YET -- FIX THIS !!! */
+
+  header->InfotronsNeeded = level->gems_needed;
+
+  header->SpecialPortCount = 0;
+
+  for (x = 0; x < level->fieldx; x++) for (y = 0; y < level->fieldy; y++)
+  {
+    boolean gravity_port_found = FALSE;
+    boolean gravity_port_valid = FALSE;
+    int gravity_port_flag;
+    int gravity_port_base_element;
+    int element = level->field[x][y];
+
+    if (element >= EL_SP_GRAVITY_ON_PORT_RIGHT &&
+	element <= EL_SP_GRAVITY_ON_PORT_UP)
+    {
+      gravity_port_found = TRUE;
+      gravity_port_valid = TRUE;
+      gravity_port_flag = 1;
+      gravity_port_base_element = EL_SP_GRAVITY_ON_PORT_RIGHT;
+    }
+    else if (element >= EL_SP_GRAVITY_OFF_PORT_RIGHT &&
+	     element <= EL_SP_GRAVITY_OFF_PORT_UP)
+    {
+      gravity_port_found = TRUE;
+      gravity_port_valid = TRUE;
+      gravity_port_flag = 0;
+      gravity_port_base_element = EL_SP_GRAVITY_OFF_PORT_RIGHT;
+    }
+    else if (element >= EL_SP_GRAVITY_PORT_RIGHT &&
+	     element <= EL_SP_GRAVITY_PORT_UP)
+    {
+      /* change R'n'D style gravity inverting special port to normal port
+	 (there are no gravity inverting ports in native Supaplex engine) */
+
+      gravity_port_found = TRUE;
+      gravity_port_valid = FALSE;
+      gravity_port_base_element = EL_SP_GRAVITY_PORT_RIGHT;
+    }
+
+    if (gravity_port_found)
+    {
+      if (gravity_port_valid &&
+	  header->SpecialPortCount < SP_MAX_SPECIAL_PORTS)
+      {
+	SpecialPortType *port = &header->SpecialPort[header->SpecialPortCount];
+
+	port->PortLocation = (y * level->fieldx + x) * 2;
+	port->Gravity = gravity_port_flag;
+
+	element += EL_SP_GRAVITY_PORT_RIGHT - gravity_port_base_element;
+
+	header->SpecialPortCount++;
+      }
+      else
+      {
+	/* change special gravity port to normal port */
+
+	element += EL_SP_PORT_RIGHT - gravity_port_base_element;
+      }
+
+      level_sp->playfield[x][y] = element - EL_SP_START;
+    }
+  }
+}
+
+void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
+{
+  struct LevelInfo_SP *level_sp = level->native_sp_level;
+  LevelInfoType *header = &level_sp->header;
+  int i, x, y;
+
+  level->fieldx = level_sp->width;
+  level->fieldy = level_sp->height;
+
+  for (x = 0; x < level->fieldx; x++)
+  {
+    for (y = 0; y < level->fieldy; y++)
+    {
+      int element_old = level_sp->playfield[x][y];
+      int element_new = getMappedElement(map_element_SP_to_RND(element_old));
+
+      if (element_new == EL_UNKNOWN)
+	Error(ERR_WARN, "invalid element %d at position %d, %d",
+	      element_old, x, y);
+
+      level->field[x][y] = element_new;
+    }
+  }
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+    level->initial_player_gravity[i] =
+      (header->InitialGravity == 1 ? TRUE : FALSE);
+
+  for (i = 0; i < SP_LEVEL_NAME_LEN; i++)
+    level->name[i] = header->LevelTitle[i];
+  level->name[SP_LEVEL_NAME_LEN] = '\0';
+
+  level->gems_needed = header->InfotronsNeeded;
+
+  for (i = 0; i < header->SpecialPortCount; i++)
+  {
+    SpecialPortType *port = &header->SpecialPort[i];
+    int port_location = port->PortLocation;
+    int gravity = port->Gravity;
+    int port_x, port_y, port_element;
+
+    port_x = (port_location / 2) % level->fieldx;
+    port_y = (port_location / 2) / level->fieldx;
+
+    if (port_x < 0 || port_x >= level->fieldx ||
+	port_y < 0 || port_y >= level->fieldy)
+    {
+      Error(ERR_WARN, "special port position (%d, %d) out of bounds",
+	    port_x, port_y);
+
+      continue;
+    }
+
+    port_element = level->field[port_x][port_y];
+
+    if (port_element < EL_SP_GRAVITY_PORT_RIGHT ||
+	port_element > EL_SP_GRAVITY_PORT_UP)
+    {
+      Error(ERR_WARN, "no special port at position (%d, %d)", port_x, port_y);
+
+      continue;
+    }
+
+    /* change previous (wrong) gravity inverting special port to either
+       gravity enabling special port or gravity disabling special port */
+    level->field[port_x][port_y] +=
+      (gravity == 1 ? EL_SP_GRAVITY_ON_PORT_RIGHT :
+       EL_SP_GRAVITY_OFF_PORT_RIGHT) - EL_SP_GRAVITY_PORT_RIGHT;
+  }
+
+  /* change special gravity ports without database entries to normal ports */
+  for (x = 0; x < level->fieldx; x++)
+    for (y = 0; y < level->fieldy; y++)
+      if (level->field[x][y] >= EL_SP_GRAVITY_PORT_RIGHT &&
+	  level->field[x][y] <= EL_SP_GRAVITY_PORT_UP)
+	level->field[x][y] += EL_SP_PORT_RIGHT - EL_SP_GRAVITY_PORT_RIGHT;
+
+  level->time = 0;			/* no time limit */
+  level->amoeba_speed = 0;
+  level->time_magic_wall = 0;
+  level->time_wheel = 0;
+  level->amoeba_content = EL_EMPTY;
+
+#if 1
+  /* original Supaplex does not use score values -- use default values */
+#else
+  for (i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
+    level->score[i] = 0;
+#endif
+
+  /* there are no yamyams in supaplex levels */
+  for (i = 0; i < level->num_yamyam_contents; i++)
+    for (x = 0; x < 3; x++)
+      for (y = 0; y < 3; y++)
+	level->yamyam_content[i].e[x][y] = EL_EMPTY;
+}
+
+static void CopyNativeTape_RND_to_SP(struct LevelInfo *level)
+{
+  struct LevelInfo_SP *level_sp = level->native_sp_level;
+  struct DemoInfo_SP *demo = &level_sp->demo;
+  int i, j;
+
+  /* always start with reliable default values */
+  demo->is_available = FALSE;
+  demo->length = 0;
+
+  if (TAPE_IS_EMPTY(tape))
+    return;
+
+  demo->level_nr = tape.level_nr;	/* (currently not used) */
+
+  level_sp->header.DemoRandomSeed = tape.random_seed;
+
+  demo->length = 0;
+  for (i = 0; i < tape.length; i++)
+  {
+    int demo_action = map_key_RND_to_SP(tape.pos[i].action[0]);
+    int demo_repeat = tape.pos[i].delay;
+
+    for (j = 0; j < demo_repeat / 16; j++)
+      demo->data[demo->length++] = 0xf0 | demo_action;
+
+    if (demo_repeat % 16)
+      demo->data[demo->length++] = ((demo_repeat % 16 - 1) << 4) | demo_action;
+  }
+
+  demo->data[demo->length++] = 0xff;
+
+  demo->is_available = TRUE;
+}
+
+static void setTapeInfoToDefaults();
+
+static void CopyNativeTape_SP_to_RND(struct LevelInfo *level)
+{
+  struct LevelInfo_SP *level_sp = level->native_sp_level;
+  struct DemoInfo_SP *demo = &level_sp->demo;
+  char *filename = level->file_info.filename;
+  int i;
+
+  /* always start with reliable default values */
+  setTapeInfoToDefaults();
+
+  if (!demo->is_available)
+    return;
+
+  tape.level_nr = demo->level_nr;	/* (currently not used) */
+  tape.length = demo->length - 1;	/* without "end of demo" byte */
+  tape.random_seed = level_sp->header.DemoRandomSeed;
+
+  TapeSetDateFromEpochSeconds(getFileTimestampEpochSeconds(filename));
+
+  for (i = 0; i < demo->length - 1; i++)
+  {
+    int demo_action = demo->data[i] & 0x0f;
+    int demo_repeat = (demo->data[i] & 0xf0) >> 4;
+
+    tape.pos[i].action[0] = map_key_SP_to_RND(demo_action);
+    tape.pos[i].delay = demo_repeat + 1;
+  }
+
+  tape.length_seconds = GetTapeLength();
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* functions for loading DC level                                            */
+/* ------------------------------------------------------------------------- */
 
 #define DC_LEVEL_HEADER_SIZE		344
 
@@ -6138,6 +6496,403 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 
 
 /* ------------------------------------------------------------------------- */
+/* functions for loading SB level                                            */
+/* ------------------------------------------------------------------------- */
+
+int getMappedElement_SB(int element_ascii, boolean use_ces)
+{
+  static struct
+  {
+    int ascii;
+    int sb;
+    int ce;
+  }
+  sb_element_mapping[] =
+  {
+    { ' ', EL_EMPTY,                EL_CUSTOM_1 },  /* floor (space) */
+    { '#', EL_STEELWALL,            EL_CUSTOM_2 },  /* wall */
+    { '@', EL_PLAYER_1,             EL_CUSTOM_3 },  /* player */
+    { '$', EL_SOKOBAN_OBJECT,       EL_CUSTOM_4 },  /* box */
+    { '.', EL_SOKOBAN_FIELD_EMPTY,  EL_CUSTOM_5 },  /* goal square */
+    { '*', EL_SOKOBAN_FIELD_FULL,   EL_CUSTOM_6 },  /* box on goal square */
+    { '+', EL_SOKOBAN_FIELD_PLAYER, EL_CUSTOM_7 },  /* player on goal square */
+#if 0
+    { '_', EL_INVISIBLE_STEELWALL,  EL_CUSTOM_8 },  /* floor beyond border */
+#else
+    { '_', EL_INVISIBLE_STEELWALL,  EL_FROM_LEVEL_TEMPLATE },  /* floor beyond border */
+#endif
+
+    { 0,   -1,                      -1          },
+  };
+
+  int i;
+
+  for (i = 0; sb_element_mapping[i].ascii != 0; i++)
+    if (element_ascii == sb_element_mapping[i].ascii)
+      return (use_ces ? sb_element_mapping[i].ce : sb_element_mapping[i].sb);
+
+  return EL_UNDEFINED;
+}
+
+static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info)
+{
+  char *filename = level_file_info->filename;
+  char line[MAX_LINE_LEN], line_raw[MAX_LINE_LEN], previous_line[MAX_LINE_LEN];
+  char last_comment[MAX_LINE_LEN];
+  char level_name[MAX_LINE_LEN];
+  char *line_ptr;
+  FILE *file;
+  int num_levels_to_skip = level_file_info->nr - leveldir_current->first_level;
+  boolean read_continued_line = FALSE;
+  boolean reading_playfield = FALSE;
+  boolean got_valid_playfield_line = FALSE;
+  boolean invalid_playfield_char = FALSE;
+  boolean load_xsb_to_ces = check_special_flags("load_xsb_to_ces");
+  int file_level_nr = 0;
+  int line_nr = 0;
+  int x = 0, y = 0;		/* initialized to make compilers happy */
+
+#if 0
+  printf("::: looking for level number %d [%d]\n",
+	 level_file_info->nr, num_levels_to_skip);
+#endif
+
+  last_comment[0] = '\0';
+  level_name[0] = '\0';
+
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+
+    return;
+  }
+
+  while (!feof(file))
+  {
+    /* level successfully read, but next level may follow here */
+    if (!got_valid_playfield_line && reading_playfield)
+    {
+#if 0
+      printf("::: read complete playfield\n");
+#endif
+
+      /* read playfield from single level file -- skip remaining file */
+      if (!level_file_info->packed)
+	break;
+
+      if (file_level_nr >= num_levels_to_skip)
+	break;
+
+      file_level_nr++;
+
+      last_comment[0] = '\0';
+      level_name[0] = '\0';
+
+      reading_playfield = FALSE;
+    }
+
+    got_valid_playfield_line = FALSE;
+
+    /* read next line of input file */
+    if (!fgets(line, MAX_LINE_LEN, file))
+      break;
+
+    /* check if line was completely read and is terminated by line break */
+    if (strlen(line) > 0 && line[strlen(line) - 1] == '\n')
+      line_nr++;
+
+    /* cut trailing line break (this can be newline and/or carriage return) */
+    for (line_ptr = &line[strlen(line)]; line_ptr >= line; line_ptr--)
+      if ((*line_ptr == '\n' || *line_ptr == '\r') && *(line_ptr + 1) == '\0')
+        *line_ptr = '\0';
+
+    /* copy raw input line for later use (mainly debugging output) */
+    strcpy(line_raw, line);
+
+    if (read_continued_line)
+    {
+      /* append new line to existing line, if there is enough space */
+      if (strlen(previous_line) + strlen(line_ptr) < MAX_LINE_LEN)
+        strcat(previous_line, line_ptr);
+
+      strcpy(line, previous_line);      /* copy storage buffer to line */
+
+      read_continued_line = FALSE;
+    }
+
+    /* if the last character is '\', continue at next line */
+    if (strlen(line) > 0 && line[strlen(line) - 1] == '\\')
+    {
+      line[strlen(line) - 1] = '\0';    /* cut off trailing backslash */
+      strcpy(previous_line, line);      /* copy line to storage buffer */
+
+      read_continued_line = TRUE;
+
+      continue;
+    }
+
+    /* skip empty lines */
+    if (line[0] == '\0')
+      continue;
+
+    /* extract comment text from comment line */
+    if (line[0] == ';')
+    {
+      for (line_ptr = line; *line_ptr; line_ptr++)
+        if (*line_ptr != ' ' && *line_ptr != '\t' && *line_ptr != ';')
+          break;
+
+      strcpy(last_comment, line_ptr);
+
+#if 0
+      printf("::: found comment '%s' in line %d\n", last_comment, line_nr);
+#endif
+
+      continue;
+    }
+
+    /* extract level title text from line containing level title */
+    if (line[0] == '\'')
+    {
+      strcpy(level_name, &line[1]);
+
+      if (strlen(level_name) > 0 && level_name[strlen(level_name) - 1] == '\'')
+	level_name[strlen(level_name) - 1] = '\0';
+
+#if 0
+      printf("::: found level name '%s' in line %d\n", level_name, line_nr);
+#endif
+
+      continue;
+    }
+
+    /* skip lines containing only spaces (or empty lines) */
+    for (line_ptr = line; *line_ptr; line_ptr++)
+      if (*line_ptr != ' ')
+	break;
+    if (*line_ptr == '\0')
+      continue;
+
+    /* at this point, we have found a line containing part of a playfield */
+
+#if 0
+    printf("::: found playfield row in line %d\n", line_nr);
+#endif
+
+    got_valid_playfield_line = TRUE;
+
+    if (!reading_playfield)
+    {
+      reading_playfield = TRUE;
+      invalid_playfield_char = FALSE;
+
+      for (x = 0; x < MAX_LEV_FIELDX; x++)
+	for (y = 0; y < MAX_LEV_FIELDY; y++)
+	  level->field[x][y] = getMappedElement_SB(' ', load_xsb_to_ces);
+
+      level->fieldx = 0;
+      level->fieldy = 0;
+
+      /* start with topmost tile row */
+      y = 0;
+    }
+
+    /* skip playfield line if larger row than allowed */
+    if (y >= MAX_LEV_FIELDY)
+      continue;
+
+    /* start with leftmost tile column */
+    x = 0;
+
+    /* read playfield elements from line */
+    for (line_ptr = line; *line_ptr; line_ptr++)
+    {
+      int mapped_sb_element = getMappedElement_SB(*line_ptr, load_xsb_to_ces);
+
+      /* stop parsing playfield line if larger column than allowed */
+      if (x >= MAX_LEV_FIELDX)
+	break;
+
+      if (mapped_sb_element == EL_UNDEFINED)
+      {
+	invalid_playfield_char = TRUE;
+
+	break;
+      }
+
+      level->field[x][y] = mapped_sb_element;
+
+      /* continue with next tile column */
+      x++;
+
+      level->fieldx = MAX(x, level->fieldx);
+    }
+
+    if (invalid_playfield_char)
+    {
+      /* if first playfield line, treat invalid lines as comment lines */
+      if (y == 0)
+	reading_playfield = FALSE;
+
+      continue;
+    }
+
+    /* continue with next tile row */
+    y++;
+  }
+
+  fclose(file);
+
+  level->fieldy = y;
+
+  level->fieldx = MIN(MAX(MIN_LEV_FIELDX, level->fieldx), MAX_LEV_FIELDX);
+  level->fieldy = MIN(MAX(MIN_LEV_FIELDY, level->fieldy), MAX_LEV_FIELDY);
+
+  if (!reading_playfield)
+  {
+    level->no_valid_file = TRUE;
+
+    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+
+    return;
+  }
+
+  if (*level_name != '\0')
+  {
+    strncpy(level->name, level_name, MAX_LEVEL_NAME_LEN);
+    level->name[MAX_LEVEL_NAME_LEN] = '\0';
+
+#if 0
+    printf(":1: level name: '%s'\n", level->name);
+#endif
+  }
+  else if (*last_comment != '\0')
+  {
+    strncpy(level->name, last_comment, MAX_LEVEL_NAME_LEN);
+    level->name[MAX_LEVEL_NAME_LEN] = '\0';
+
+#if 0
+    printf(":2: level name: '%s'\n", level->name);
+#endif
+  }
+  else
+  {
+    sprintf(level->name, "--> Level %d <--", level_file_info->nr);
+  }
+
+  /* set all empty fields beyond the border walls to invisible steel wall */
+  for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
+  {
+    if ((x == 0 || x == level->fieldx - 1 ||
+	 y == 0 || y == level->fieldy - 1) &&
+	level->field[x][y] == getMappedElement_SB(' ', load_xsb_to_ces))
+      FloodFillLevel(x, y, getMappedElement_SB('_', load_xsb_to_ces),
+		     level->field, level->fieldx, level->fieldy);
+  }
+
+  /* set special level settings for Sokoban levels */
+
+  level->time = 0;
+  level->use_step_counter = TRUE;
+
+  if (load_xsb_to_ces)
+  {
+#if 1
+    /* !!! special global settings can now be set in level template !!! */
+#else
+    level->initial_player_stepsize[0] = STEPSIZE_SLOW;
+#endif
+
+    /* fill smaller playfields with padding "beyond border wall" elements */
+    if (level->fieldx < SCR_FIELDX ||
+	level->fieldy < SCR_FIELDY)
+    {
+      short field[level->fieldx][level->fieldy];
+      int new_fieldx = MAX(level->fieldx, SCR_FIELDX);
+      int new_fieldy = MAX(level->fieldy, SCR_FIELDY);
+      int pos_fieldx = (new_fieldx - level->fieldx) / 2;
+      int pos_fieldy = (new_fieldy - level->fieldy) / 2;
+
+      /* copy old playfield (which is smaller than the visible area) */
+      for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
+	field[x][y] = level->field[x][y];
+
+      /* fill new, larger playfield with "beyond border wall" elements */
+      for (y = 0; y < new_fieldy; y++) for (x = 0; x < new_fieldx; x++)
+	level->field[x][y] = getMappedElement_SB('_', load_xsb_to_ces);
+
+      /* copy the old playfield to the middle of the new playfield */
+      for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
+	level->field[pos_fieldx + x][pos_fieldy + y] = field[x][y];
+
+      level->fieldx = new_fieldx;
+      level->fieldy = new_fieldy;
+    }
+
+    level->use_custom_template = TRUE;
+  }
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* functions for handling native levels                                      */
+/* ------------------------------------------------------------------------- */
+
+static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info)
+{
+  if (!LoadNativeLevel_EM(level_file_info->filename))
+    level->no_valid_file = TRUE;
+}
+
+static void LoadLevelFromFileInfo_SP(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info)
+{
+  int pos = 0;
+
+  /* determine position of requested level inside level package */
+  if (level_file_info->packed)
+    pos = level_file_info->nr - leveldir_current->first_level;
+
+  if (!LoadNativeLevel_SP(level_file_info->filename, pos))
+    level->no_valid_file = TRUE;
+}
+
+void CopyNativeLevel_RND_to_Native(struct LevelInfo *level)
+{
+  if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
+    CopyNativeLevel_RND_to_EM(level);
+  else if (level->game_engine_type == GAME_ENGINE_TYPE_SP)
+    CopyNativeLevel_RND_to_SP(level);
+}
+
+void CopyNativeLevel_Native_to_RND(struct LevelInfo *level)
+{
+  if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
+    CopyNativeLevel_EM_to_RND(level);
+  else if (level->game_engine_type == GAME_ENGINE_TYPE_SP)
+    CopyNativeLevel_SP_to_RND(level);
+}
+
+void SaveNativeLevel(struct LevelInfo *level)
+{
+  if (level->game_engine_type == GAME_ENGINE_TYPE_SP)
+  {
+    char *basename = getSingleLevelBasenameExt(level->file_info.nr, "sp");
+    char *filename = getLevelFilenameFromBasename(basename);
+
+    CopyNativeLevel_RND_to_SP(level);
+    CopyNativeTape_RND_to_SP(level);
+
+    SaveNativeLevel_SP(filename);
+  }
+}
+
+
+/* ------------------------------------------------------------------------- */
 /* functions for loading generic level                                       */
 /* ------------------------------------------------------------------------- */
 
@@ -6160,10 +6915,15 @@ void LoadLevelFromFileInfo(struct LevelInfo *level,
 
     case LEVEL_FILE_TYPE_SP:
       LoadLevelFromFileInfo_SP(level, level_file_info);
+      level->game_engine_type = GAME_ENGINE_TYPE_SP;
       break;
 
     case LEVEL_FILE_TYPE_DC:
       LoadLevelFromFileInfo_DC(level, level_file_info);
+      break;
+
+    case LEVEL_FILE_TYPE_SB:
+      LoadLevelFromFileInfo_SB(level, level_file_info);
       break;
 
     default:
@@ -7692,6 +8452,79 @@ static int LoadTape_BODY(FILE *file, int chunk_size, struct TapeInfo *tape)
   return chunk_size;
 }
 
+void LoadTape_SokobanSolution(char *filename)
+{
+  FILE *file;
+  int move_delay = TILESIZE / level.initial_player_stepsize[0];
+
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    tape.no_valid_file = TRUE;
+
+    return;
+  }
+
+  while (!feof(file))
+  {
+    unsigned char c = fgetc(file);
+
+    if (feof(file))
+      break;
+
+    switch (c)
+    {
+      case 'u':
+      case 'U':
+	tape.pos[tape.length].action[0] = MV_UP;
+	tape.pos[tape.length].delay = move_delay + (c < 'a' ? 2 : 0);
+	tape.length++;
+	break;
+
+      case 'd':
+      case 'D':
+	tape.pos[tape.length].action[0] = MV_DOWN;
+	tape.pos[tape.length].delay = move_delay + (c < 'a' ? 2 : 0);
+	tape.length++;
+	break;
+
+      case 'l':
+      case 'L':
+	tape.pos[tape.length].action[0] = MV_LEFT;
+	tape.pos[tape.length].delay = move_delay + (c < 'a' ? 2 : 0);
+	tape.length++;
+	break;
+
+      case 'r':
+      case 'R':
+	tape.pos[tape.length].action[0] = MV_RIGHT;
+	tape.pos[tape.length].delay = move_delay + (c < 'a' ? 2 : 0);
+	tape.length++;
+	break;
+
+      case '\n':
+      case '\r':
+      case '\t':
+      case ' ':
+	/* ignore white-space characters */
+	break;
+
+      default:
+	tape.no_valid_file = TRUE;
+
+	Error(ERR_WARN, "unsupported Sokoban solution file '%s' ['%d']", filename, c);
+
+	break;
+    }
+  }
+
+  fclose(file);
+
+  if (tape.no_valid_file)
+    return;
+
+  tape.length_seconds = GetTapeLength();
+}
+
 void LoadTapeFromFilename(char *filename)
 {
   char cookie[MAX_LINE_LEN];
@@ -7701,6 +8534,13 @@ void LoadTapeFromFilename(char *filename)
 
   /* always start with reliable default values */
   setTapeInfoToDefaults();
+
+  if (strSuffix(filename, ".sln"))
+  {
+    LoadTape_SokobanSolution(filename);
+
+    return;
+  }
 
   if (!(file = fopen(filename, MODE_READ)))
   {
@@ -7746,6 +8586,7 @@ void LoadTapeFromFilename(char *filename)
 
       Error(ERR_WARN, "unsupported version of tape file '%s'", filename);
       fclose(file);
+
       return;
     }
 
@@ -7838,6 +8679,13 @@ void LoadSolutionTape(int nr)
   char *filename = getSolutionTapeFilename(nr);
 
   LoadTapeFromFilename(filename);
+
+#if 1
+  if (TAPE_IS_EMPTY(tape) &&
+      level.game_engine_type == GAME_ENGINE_TYPE_SP &&
+      level.native_sp_level->demo.is_available)
+    CopyNativeTape_SP_to_RND(&level);
+#endif
 }
 
 static void SaveTape_VERS(FILE *file, struct TapeInfo *tape)
@@ -8152,14 +9000,15 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_INPUT_ON_FOCUS		22
 #define SETUP_TOKEN_PREFER_AGA_GRAPHICS		23
 #define SETUP_TOKEN_GAME_FRAME_DELAY		24
-#define SETUP_TOKEN_GRAPHICS_SET		25
-#define SETUP_TOKEN_SOUNDS_SET			26
-#define SETUP_TOKEN_MUSIC_SET			27
-#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	28
-#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	29
-#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	30
+#define SETUP_TOKEN_SP_SHOW_BORDER_ELEMENTS	25
+#define SETUP_TOKEN_GRAPHICS_SET		26
+#define SETUP_TOKEN_SOUNDS_SET			27
+#define SETUP_TOKEN_MUSIC_SET			28
+#define SETUP_TOKEN_OVERRIDE_LEVEL_GRAPHICS	29
+#define SETUP_TOKEN_OVERRIDE_LEVEL_SOUNDS	30
+#define SETUP_TOKEN_OVERRIDE_LEVEL_MUSIC	31
 
-#define NUM_GLOBAL_SETUP_TOKENS			31
+#define NUM_GLOBAL_SETUP_TOKENS			32
 
 /* editor setup */
 #define SETUP_TOKEN_EDITOR_EL_BOULDERDASH	0
@@ -8210,8 +9059,16 @@ void SaveScore(int nr)
 #define SETUP_TOKEN_SHORTCUT_FOCUS_PLAYER_3	5
 #define SETUP_TOKEN_SHORTCUT_FOCUS_PLAYER_4	6
 #define SETUP_TOKEN_SHORTCUT_FOCUS_PLAYER_ALL	7
+#define SETUP_TOKEN_SHORTCUT_TAPE_EJECT		8
+#define SETUP_TOKEN_SHORTCUT_TAPE_STOP		9
+#define SETUP_TOKEN_SHORTCUT_TAPE_PAUSE		10
+#define SETUP_TOKEN_SHORTCUT_TAPE_RECORD	11
+#define SETUP_TOKEN_SHORTCUT_TAPE_PLAY		12
+#define SETUP_TOKEN_SHORTCUT_SOUND_SIMPLE	13
+#define SETUP_TOKEN_SHORTCUT_SOUND_LOOPS	14
+#define SETUP_TOKEN_SHORTCUT_SOUND_MUSIC	15
 
-#define NUM_SHORTCUT_SETUP_TOKENS		8
+#define NUM_SHORTCUT_SETUP_TOKENS		16
 
 /* player setup */
 #define SETUP_TOKEN_PLAYER_USE_JOYSTICK		0
@@ -8256,34 +9113,35 @@ static struct OptionInfo soi;
 
 static struct TokenInfo global_setup_tokens[] =
 {
-  { TYPE_STRING, &si.player_name,	"player_name"			},
-  { TYPE_SWITCH, &si.sound,		"sound"				},
-  { TYPE_SWITCH, &si.sound_loops,	"repeating_sound_loops"		},
-  { TYPE_SWITCH, &si.sound_music,	"background_music"		},
-  { TYPE_SWITCH, &si.sound_simple,	"simple_sound_effects"		},
-  { TYPE_SWITCH, &si.toons,		"toons"				},
-  { TYPE_SWITCH, &si.scroll_delay,	"scroll_delay"			},
-  { TYPE_INTEGER,&si.scroll_delay_value,"scroll_delay_value"		},
-  { TYPE_SWITCH, &si.soft_scrolling,	"soft_scrolling"		},
-  { TYPE_SWITCH, &si.fade_screens,	"fade_screens"			},
-  { TYPE_SWITCH, &si.autorecord,	"automatic_tape_recording"	},
-  { TYPE_SWITCH, &si.show_titlescreen,	"show_titlescreen"		},
-  { TYPE_SWITCH, &si.quick_doors,	"quick_doors"			},
-  { TYPE_SWITCH, &si.team_mode,		"team_mode"			},
-  { TYPE_SWITCH, &si.handicap,		"handicap"			},
-  { TYPE_SWITCH, &si.skip_levels,	"skip_levels"			},
-  { TYPE_SWITCH, &si.time_limit,	"time_limit"			},
-  { TYPE_SWITCH, &si.fullscreen,	"fullscreen"			},
-  { TYPE_STRING, &si.fullscreen_mode,	"fullscreen_mode"		},
-  { TYPE_SWITCH, &si.ask_on_escape,	"ask_on_escape"			},
-  { TYPE_SWITCH, &si.ask_on_escape_editor, "ask_on_escape_editor"	},
-  { TYPE_SWITCH, &si.quick_switch,	"quick_player_switch"		},
-  { TYPE_SWITCH, &si.input_on_focus,	"input_on_focus"		},
-  { TYPE_SWITCH, &si.prefer_aga_graphics, "prefer_aga_graphics"		},
-  { TYPE_INTEGER,&si.game_frame_delay,	"game_frame_delay"		},
-  { TYPE_STRING, &si.graphics_set,	"graphics_set"			},
-  { TYPE_STRING, &si.sounds_set,	"sounds_set"			},
-  { TYPE_STRING, &si.music_set,		"music_set"			},
+  { TYPE_STRING, &si.player_name,             "player_name"		},
+  { TYPE_SWITCH, &si.sound,                   "sound"			},
+  { TYPE_SWITCH, &si.sound_loops,             "repeating_sound_loops"	},
+  { TYPE_SWITCH, &si.sound_music,             "background_music"	},
+  { TYPE_SWITCH, &si.sound_simple,            "simple_sound_effects"	},
+  { TYPE_SWITCH, &si.toons,                   "toons"			},
+  { TYPE_SWITCH, &si.scroll_delay,            "scroll_delay"		},
+  { TYPE_INTEGER,&si.scroll_delay_value,      "scroll_delay_value"	},
+  { TYPE_SWITCH, &si.soft_scrolling,          "soft_scrolling"		},
+  { TYPE_SWITCH, &si.fade_screens,            "fade_screens"		},
+  { TYPE_SWITCH, &si.autorecord,              "automatic_tape_recording"},
+  { TYPE_SWITCH, &si.show_titlescreen,        "show_titlescreen"	},
+  { TYPE_SWITCH, &si.quick_doors,             "quick_doors"		},
+  { TYPE_SWITCH, &si.team_mode,               "team_mode"		},
+  { TYPE_SWITCH, &si.handicap,                "handicap"		},
+  { TYPE_SWITCH, &si.skip_levels,             "skip_levels"		},
+  { TYPE_SWITCH, &si.time_limit,              "time_limit"		},
+  { TYPE_SWITCH, &si.fullscreen,              "fullscreen"		},
+  { TYPE_STRING, &si.fullscreen_mode,         "fullscreen_mode"		},
+  { TYPE_SWITCH, &si.ask_on_escape,           "ask_on_escape"		},
+  { TYPE_SWITCH, &si.ask_on_escape_editor,    "ask_on_escape_editor"	},
+  { TYPE_SWITCH, &si.quick_switch,            "quick_player_switch"	},
+  { TYPE_SWITCH, &si.input_on_focus,          "input_on_focus"		},
+  { TYPE_SWITCH, &si.prefer_aga_graphics,     "prefer_aga_graphics"	},
+  { TYPE_INTEGER,&si.game_frame_delay,        "game_frame_delay"	},
+  { TYPE_SWITCH, &si.sp_show_border_elements, "sp_show_border_elements"	},
+  { TYPE_STRING, &si.graphics_set,            "graphics_set"		},
+  { TYPE_STRING, &si.sounds_set,              "sounds_set"		},
+  { TYPE_STRING, &si.music_set,               "music_set"		},
   { TYPE_SWITCH3,&si.override_level_graphics, "override_level_graphics"	},
   { TYPE_SWITCH3,&si.override_level_sounds,   "override_level_sounds"	},
   { TYPE_SWITCH3,&si.override_level_music,    "override_level_music"	},
@@ -8355,6 +9213,14 @@ static struct TokenInfo shortcut_setup_tokens[] =
   { TYPE_KEY_X11, &ssi.focus_player[2],	"shortcut.focus_player_3"	},
   { TYPE_KEY_X11, &ssi.focus_player[3],	"shortcut.focus_player_4"	},
   { TYPE_KEY_X11, &ssi.focus_player_all,"shortcut.focus_player_all"	},
+  { TYPE_KEY_X11, &ssi.tape_eject,	"shortcut.tape_eject"		},
+  { TYPE_KEY_X11, &ssi.tape_stop,	"shortcut.tape_stop"		},
+  { TYPE_KEY_X11, &ssi.tape_pause,	"shortcut.tape_pause"		},
+  { TYPE_KEY_X11, &ssi.tape_record,	"shortcut.tape_record"		},
+  { TYPE_KEY_X11, &ssi.tape_play,	"shortcut.tape_play"		},
+  { TYPE_KEY_X11, &ssi.sound_simple,	"shortcut.sound_simple"		},
+  { TYPE_KEY_X11, &ssi.sound_loops,	"shortcut.sound_loops"		},
+  { TYPE_KEY_X11, &ssi.sound_music,	"shortcut.sound_music"		},
 };
 
 static struct TokenInfo player_setup_tokens[] =
@@ -8434,6 +9300,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->input_on_focus = FALSE;
   si->prefer_aga_graphics = TRUE;
   si->game_frame_delay = GAME_FRAME_DELAY;
+  si->sp_show_border_elements = FALSE;
 
   si->graphics_set = getStringCopy(GFX_DEFAULT_SUBDIR);
   si->sounds_set = getStringCopy(SND_DEFAULT_SUBDIR);
@@ -8470,6 +9337,16 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->shortcut.focus_player[3]	= DEFAULT_KEY_FOCUS_PLAYER_4;
   si->shortcut.focus_player_all	= DEFAULT_KEY_FOCUS_PLAYER_ALL;
 
+  si->shortcut.tape_eject	= DEFAULT_KEY_TAPE_EJECT;
+  si->shortcut.tape_stop	= DEFAULT_KEY_TAPE_STOP;
+  si->shortcut.tape_pause	= DEFAULT_KEY_TAPE_PAUSE;
+  si->shortcut.tape_record	= DEFAULT_KEY_TAPE_RECORD;
+  si->shortcut.tape_play	= DEFAULT_KEY_TAPE_PLAY;
+
+  si->shortcut.sound_simple	= DEFAULT_KEY_SOUND_SIMPLE;
+  si->shortcut.sound_loops	= DEFAULT_KEY_SOUND_LOOPS;
+  si->shortcut.sound_music	= DEFAULT_KEY_SOUND_MUSIC;
+
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     si->input[i].use_joystick = FALSE;
@@ -8497,6 +9374,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->options.verbose = FALSE;
 
 #if defined(CREATE_SPECIAL_EDITION_RND_JUE)
+  si->toons = FALSE;
   si->handicap = FALSE;
   si->fullscreen = TRUE;
   si->override_level_graphics = AUTO;
@@ -8930,6 +9808,16 @@ static void InitMenuDesignSettings_SpecialPreProcessing()
     menu.enter_screen[i] = menu.enter_screen[GFX_SPECIAL_ARG_DEFAULT];
     menu.leave_screen[i] = menu.leave_screen[GFX_SPECIAL_ARG_DEFAULT];
   }
+
+  /* special case: initialize "ARG_DEFAULT" values in static default config */
+  /* (eg, init "viewport.door_1.MAIN.xyz" from "viewport.door_1.xyz") */
+  for (i = 0; i < NUM_SPECIAL_GFX_ARGS; i++)
+  {
+    viewport.playfield[i] = viewport.playfield[GFX_SPECIAL_ARG_DEFAULT];
+    viewport.door_1[i] = viewport.door_1[GFX_SPECIAL_ARG_DEFAULT];
+    if (i != GFX_SPECIAL_ARG_EDITOR)	/* editor value already initialized */
+      viewport.door_2[i] = viewport.door_2[GFX_SPECIAL_ARG_DEFAULT];
+  }
 }
 
 static void InitMenuDesignSettings_SpecialPostProcessing()
@@ -9065,6 +9953,50 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
     if (value_6 != NULL)
       menu.leave_screen[i].post_delay = get_token_parameter_value(token_6,
 								  value_6);
+  }
+
+  /* special case: initialize with default values that may be overwritten */
+  /* (eg, init "viewport.door_1.MAIN.xyz" from "viewport.door_1.xyz") */
+  for (i = 0; i < NUM_SPECIAL_GFX_ARGS; i++)
+  {
+    char *token_1 = "viewport.playfield.x";
+    char *token_2 = "viewport.playfield.y";
+    char *token_3 = "viewport.playfield.width";
+    char *token_4 = "viewport.playfield.height";
+    char *token_5 = "viewport.playfield.border_size";
+    char *token_6 = "viewport.door_1.x";
+    char *token_7 = "viewport.door_1.y";
+    char *token_8 = "viewport.door_2.x";
+    char *token_9 = "viewport.door_2.y";
+    char *value_1 = getHashEntry(setup_file_hash, token_1);
+    char *value_2 = getHashEntry(setup_file_hash, token_2);
+    char *value_3 = getHashEntry(setup_file_hash, token_3);
+    char *value_4 = getHashEntry(setup_file_hash, token_4);
+    char *value_5 = getHashEntry(setup_file_hash, token_5);
+    char *value_6 = getHashEntry(setup_file_hash, token_6);
+    char *value_7 = getHashEntry(setup_file_hash, token_7);
+    char *value_8 = getHashEntry(setup_file_hash, token_8);
+    char *value_9 = getHashEntry(setup_file_hash, token_9);
+
+    if (value_1 != NULL)
+      viewport.playfield[i].x = get_token_parameter_value(token_1, value_1);
+    if (value_2 != NULL)
+      viewport.playfield[i].y = get_token_parameter_value(token_2, value_2);
+    if (value_3 != NULL)
+      viewport.playfield[i].width = get_token_parameter_value(token_3, value_3);
+    if (value_4 != NULL)
+      viewport.playfield[i].height = get_token_parameter_value(token_4,value_4);
+    if (value_5 != NULL)
+      viewport.playfield[i].border_size = get_token_parameter_value(token_5,
+								    value_5);
+    if (value_6 != NULL)
+      viewport.door_1[i].x = get_token_parameter_value(token_6, value_6);
+    if (value_7 != NULL)
+      viewport.door_1[i].y = get_token_parameter_value(token_7, value_7);
+    if (value_8 != NULL)
+      viewport.door_2[i].x = get_token_parameter_value(token_8, value_8);
+    if (value_9 != NULL)
+      viewport.door_2[i].y = get_token_parameter_value(token_9, value_9);
   }
 
   /* special case: initialize with default values that may be overwritten */
@@ -9403,6 +10335,10 @@ void LoadMusicInfo()
     if (!music_info_listed(music_file_info, music->filename))
     {
       *new = get_music_file_info(music->filename, i);
+#if 0
+      if (*new != NULL)
+	printf(":1: adding '%s' ['%s'] ...\n", (*new)->title, music->filename);
+#endif
       if (*new != NULL)
 	new = &(*new)->next;
     }
@@ -9448,6 +10384,10 @@ void LoadMusicInfo()
     if (!music_info_listed(music_file_info, basename))
     {
       *new = get_music_file_info(basename, MAP_NOCONF_MUSIC(num_music_noconf));
+#if 0
+      if (*new != NULL)
+	printf(":2: adding '%s' ['%s'] ...\n", (*new)->title, basename);
+#endif
       if (*new != NULL)
 	new = &(*new)->next;
     }

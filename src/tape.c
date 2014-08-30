@@ -410,6 +410,12 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
 
 void DrawCompleteVideoDisplay()
 {
+#if 0
+  printf("::: %d, %d  /  %d, %d [%d] [%d, %d] [%d/%d]\n",
+	 VX, VY, EX, EY, game_status, gfx.vx, gfx.vy,
+	 tape.date, tape.length);
+#endif
+
   BlitBitmap(graphic_info[IMG_GLOBAL_DOOR].bitmap, drawto,
 	     DOOR_GFX_PAGEX3, DOOR_GFX_PAGEY2,
 	     gfx.vxsize, gfx.vysize, gfx.vx, gfx.vy);
@@ -420,11 +426,38 @@ void DrawCompleteVideoDisplay()
 	     gfx.vx + VIDEO_CONTROL_XPOS, gfx.vy + VIDEO_CONTROL_YPOS);
 
   DrawVideoDisplay(VIDEO_ALL_OFF, 0);
+
+#if 1
+  if (tape.recording)
+  {
+    DrawVideoDisplay(VIDEO_STATE_REC_ON, 0);
+    DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
+    DrawVideoDisplay(VIDEO_STATE_TIME_ON, tape.length_seconds);
+
+    if (tape.pausing)
+      DrawVideoDisplay(VIDEO_STATE_PAUSE_ON, 0);
+  }
+  else if (tape.playing)
+  {
+    DrawVideoDisplay(VIDEO_STATE_PLAY_ON, 0);
+    DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
+    DrawVideoDisplay(VIDEO_STATE_TIME_ON, 0);
+
+    if (tape.pausing)
+      DrawVideoDisplay(VIDEO_STATE_PAUSE_ON, 0);
+  }
+  else if (tape.date && tape.length)
+  {
+    DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
+    DrawVideoDisplay(VIDEO_STATE_TIME_ON, tape.length_seconds);
+  }
+#else
   if (tape.date && tape.length)
   {
     DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
     DrawVideoDisplay(VIDEO_STATE_TIME_ON, tape.length_seconds);
   }
+#endif
 
   BlitBitmap(drawto, bitmap_db_door, gfx.vx, gfx.vy, gfx.vxsize, gfx.vysize,
 	     DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY2);
@@ -453,20 +486,25 @@ void TapeDeactivateDisplayOff(boolean redraw_display)
 /* tape control functions                                                    */
 /* ========================================================================= */
 
-static void TapeSetDate()
+void TapeSetDateFromEpochSeconds(time_t epoch_seconds)
 {
-  time_t epoch_seconds = time(NULL);
-  struct tm *now = localtime(&epoch_seconds);
+  struct tm *lt = localtime(&epoch_seconds);
 
-  tape.date = 10000 * (now->tm_year % 100) + 100 * now->tm_mon + now->tm_mday;
+  tape.date = 10000 * (lt->tm_year % 100) + 100 * lt->tm_mon + lt->tm_mday;
+}
+
+void TapeSetDateFromNow()
+{
+  TapeSetDateFromEpochSeconds(time(NULL));
 }
 
 void TapeErase()
 {
   int i;
 
-  tape.length = 0;
   tape.counter = 0;
+  tape.length = 0;
+  tape.length_seconds = 0;
 
   if (leveldir_current)
     setString(&tape.level_identifier, leveldir_current->identifier);
@@ -481,7 +519,7 @@ void TapeErase()
   tape.game_version = GAME_VERSION_ACTUAL;
   tape.engine_version = level.game_version;
 
-  TapeSetDate();
+  TapeSetDateFromNow();
 
   for (i = 0; i < MAX_PLAYERS; i++)
     tape.player_participates[i] = FALSE;
@@ -530,6 +568,7 @@ void TapeStartRecording(long random_seed)
   DrawVideoDisplay(VIDEO_STATE_REC_ON, 0);
   DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
   DrawVideoDisplay(VIDEO_STATE_TIME_ON, 0);
+
   MapTapeWarpButton();
 
   SetDrawDeactivationMask(REDRAW_NONE);
@@ -562,7 +601,7 @@ static void TapeAppendRecording()
   tape.recording = TRUE;
   tape.changed = TRUE;
 
-  TapeSetDate();
+  TapeSetDateFromNow();
 
   DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
   DrawVideoDisplay(VIDEO_STATE_PLAY_OFF | VIDEO_STATE_REC_ON, 0);
@@ -703,6 +742,7 @@ void TapeStartPlaying()
   DrawVideoDisplay(VIDEO_STATE_PLAY_ON, 0);
   DrawVideoDisplay(VIDEO_STATE_DATE_ON, tape.date);
   DrawVideoDisplay(VIDEO_STATE_TIME_ON, 0);
+
   MapTapeWarpButton();
 
   SetDrawDeactivationMask(REDRAW_NONE);
@@ -1295,10 +1335,8 @@ void UnmapTapeButtons()
     UnmapGadget(tape_gadget[i]);
 }
 
-static void HandleTapeButtons(struct GadgetInfo *gi)
+static void HandleTapeButtonsExt(int id)
 {
-  int id = gi->custom_id;
-
   if (game_status != GAME_MODE_MAIN && game_status != GAME_MODE_PLAYING)
     return;
 
@@ -1402,4 +1440,25 @@ static void HandleTapeButtons(struct GadgetInfo *gi)
     default:
       break;
   }
+}
+
+static void HandleTapeButtons(struct GadgetInfo *gi)
+{
+  HandleTapeButtonsExt(gi->custom_id);
+}
+
+void HandleTapeButtonKeys(Key key)
+{
+  boolean use_extra = (tape.recording || tape.playing);
+
+  if (key == setup.shortcut.tape_eject)
+    HandleTapeButtonsExt(use_extra ? TAPE_CTRL_ID_EXTRA : TAPE_CTRL_ID_EJECT);
+  else if (key == setup.shortcut.tape_stop)
+    HandleTapeButtonsExt(TAPE_CTRL_ID_STOP);
+  else if (key == setup.shortcut.tape_pause)
+    HandleTapeButtonsExt(TAPE_CTRL_ID_PAUSE);
+  else if (key == setup.shortcut.tape_record)
+    HandleTapeButtonsExt(TAPE_CTRL_ID_RECORD);
+  else if (key == setup.shortcut.tape_play)
+    HandleTapeButtonsExt(TAPE_CTRL_ID_PLAY);
 }

@@ -47,6 +47,7 @@ struct GamePanelInfo
   struct TextPosInfo time_hh;
   struct TextPosInfo time_mm;
   struct TextPosInfo time_ss;
+  struct TextPosInfo frame;
   struct TextPosInfo shield_normal;
   struct TextPosInfo shield_normal_time;
   struct TextPosInfo shield_deadly;
@@ -117,6 +118,8 @@ struct GameInfo
 
   /* values for graphics engine customization */
   boolean use_native_emc_graphics_engine;
+  boolean use_native_sp_graphics_engine;
+  boolean use_masked_pushing;
   int forced_scroll_delay_value;
   int scroll_delay_value;
 
@@ -331,12 +334,14 @@ void StartGameActions(boolean, boolean, long);
 
 void GameActions(void);
 void GameActions_EM_Main();
+void GameActions_SP_Main();
 void GameActions_RND();
 
 void ScrollLevel(int, int);
 
 void InitPlayLevelSound();
 void PlayLevelSound_EM(int, int, int, int);
+void PlayLevelSound_SP(int, int, int, int);
 
 void RaiseScore(int);
 void RaiseScoreElement(int);
@@ -356,5 +361,7 @@ void CreateGameButtons();
 void FreeGameButtons();
 void UnmapGameButtons();
 void RedrawGameButtons();
+
+void HandleSoundButtonKeys(Key);
 
 #endif

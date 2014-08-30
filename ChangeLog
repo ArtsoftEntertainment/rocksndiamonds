@@ -1,3 +1,240 @@
+2010-05-22
+	* fixed missing memory allocation in SP engine when saving engine data
+	  for non-SP game engine snapshots (which also stores SP engine part)
+
+2010-05-21
+	* fixed problem with scrolling in native EM engine in multi-user mode
+	  (this bug was just introduced with the experimental viewport stuff)
+	* fixed animation of splashing acid in EM engine with classic artwork
+	* fixed animation of cracking nut in EM engine with classic artwork
+	* fixed (implemented) single step mode in native EM and SP engines
+	* fixed "latest_engine" flag in classic levels (moved to single sets)
+	* updated SDL library DLLs for Windows to the latest release versions
+	  (this fixed some mysterious crashes of the game on Windows systems)
+	* replaced EM and SP set in classic level set with native level files
+	* finally added a newly written "CREDITS" file to the game package
+	* removed sampled music loops from classic music set
+
+2010-04-20
+	* changed native Emerald Mine engine to support different viewport sizes
+
+2010-04-19
+	* changed native Supaplex engine to support different viewport sizes
+
+2010-04-07
+	* added initial, experimental support for different viewport properties
+	  (with "viewports" being menu/playfield area and doors; currently the
+	  size of the menu/playfield area and door positions can be redefined)
+
+2010-04-02
+	* added initial, experimental support for different window sizes
+
+2010-03-27
+	* added support for native Sokoban solution files in pure 'udlrUDLR'
+	  format with extension ".sln" instead of ".tape" for solution tapes
+
+2010-03-26
+	* added image config suffix ".class" to be able to define classes of
+	  crumbled elements which are then separated against each others when
+	  drawing crumbled borders (class names can freely be defined)
+	  (Example: "sand.CRUMBLED.class: sand" and "emc_grass.CRUMBLED.class:
+	  emc_grass" results in sand and emc_grass being crumbled separately,
+	  even if directly adjacent on the playfield.)
+	* added image config suffix ".style" to use two new features for
+	  crumbled graphics:
+	  - "accurate_borders": try to draw correctly crumbled corners (which
+	    means that a row of crumbled elements does not have two crumbled
+	    corners for each element in the row, but only at the "real" corners
+	    at the start and the end of the row of elements)
+	  - "inner_corners": also draw inner corners in concave constructions
+	    of several crumbled elements -- this is currently a big kludge: the
+	    number of frames for crumbled graphic must be "2", with the first
+	    frame as usual (crumbled graphic), while the second frame contains
+	    the graphic with inner (crumbled) corners for the crumbled graphic
+	  (These two features are mainly intended for bevelled walls, not for
+	  diggable elements like sand; "inner_corners" only works reliably for
+	  static walls, not for in-game dynamically changing walls using CEs.)
+
+2010-03-16
+	* finished code cleanup of native Supaplex game engine
+
+2010-03-14
+	* started code cleanup of native Supaplex game engine
+
+2010-03-13
+	* integrated playing sound effects into native Supaplex game engine
+
+2010-03-10
+	* added configurable key shortcuts for the tape recorder buttons
+
+2010-03-09
+	* added (hidden) function to save native Supaplex levels with tape as
+	  native *.sp file containing level with demo (saved with a file name
+	  similar to native R'n'D levels, but with ".sp" extension instead of
+	  ".level"); to use this functionality, enter ":save-native-level" or
+	  ":snl" from the main menu with the native Supaplex level loaded and
+	  the appropriate tape loaded to the tape recorder
+	* fixed potential crash bug caused by illegal array access in engine
+	  snapshot loading and saving code
+	* changed setting permissions of score files to be world-writable if
+	  the program is not installed and running setgid to allow the program
+	  to modify existing score files when run as a different user (which
+	  allows cheating, of course, as the score files are not protected
+	  against modification in this case)
+	* added (commented out) suggestions for RO_GAME_DIR and RW_GAME_DIR to
+	  the top level Makefile for Debian / Ubuntu installations
+	* added saving read-only levels from editor into personal level set
+	  (thanks to Bela Lubkin for the above four patches)
+
+2010-03-03
+	* added updating of game values on the panel to Supaplex game engine
+
+2010-02-23
+	* finished integrating R'n'D graphics engine into Supaplex game engine
+	  (although some animations do not support full customizability yet)
+
+2010-02-22
+	* done integrating R'n'D graphics engine into file "Infotron.c"
+	* done integrating R'n'D graphics engine into file "OrangeDisk.c"
+
+2010-02-19
+	* integrated engine snapshot functionality into Supaplex game engine
+
+2010-02-16
+	* fixed bug in native Supaplex engine that broke several demo solutions
+	* fixed bug with re-initializing already existing elements in function
+	  RelocatePlayer() in src/game.c (causing problems with Sokoban fields
+	  counted a second time, making the currently playing level unsolvable)
+	* done integrating R'n'D graphics engine into file "SnikSnaks.c"
+	* done integrating R'n'D graphics engine into file "Electrons.c"
+	* done integrating R'n'D graphics engine into file "Zonk.c"
+
+2010-02-14
+	* done integrating R'n'D graphics engine into file "Murphy.c"
+	* done integrating R'n'D graphics engine into file "BugsTerminals.c"
+
+2010-02-07
+	* started integrating R'n'D graphics engine into Supaplex game engine
+
+2010-02-02
+	* added small kludge that allows transparent pushing animation over
+	  non-black background (by using "game.use_masked_pushing: true")
+	* added editor flag to Sokoban field/object elements to automatically
+	  finish solved Sokoban style levels (even if they contain non-Sokoban
+	  elements, which prevents auto-enabling this feature for such levels)
+
+2010-01-10
+	* added new element "from_level_template" which is replaced by element
+	  from level template at same playfield position when loaded (currently
+	  not accessible from level editor, but only used for special Sokoban
+	  level conversion when using "special_flags: load_xsb_to_ces")
+	* added special behaviour for "special_flags: load_xsb_to_ces": global
+	  settings of individual level files are overwritten by template level
+	  (except playfield size, level name, level author and template flag)
+
+2010-01-07
+	* added handling of gravity ports when converting Supaplex style R'n'D
+	  levels to native Supaplex levels for playing with Supaplex engine
+
+2010-01-06
+	* fixed bug in Supaplex engine regarding initial screen scroll position
+
+2009-12-17
+	* fixed EMC style pushing animations in the R'n'D graphics engine (when
+	  using ".2nd_movement_tile" for animations having start and end tile)
+	* for this to work (look) properly for two-tile pushing animations with
+	  non-black (i.e. opaque) background, the pushing graphics drawing order
+	  was changed to first draw the pushed element, then the player (maybe
+	  this should be controlled by an ".anim_mode" flag yet to be added)
+	* two-tile animations for moving or pushing should have 7 frames for
+	  normal speed, 15 frames for half speed etc. to display correct frames
+	* two-tile animations are also displayed correctly with different speed
+	  settings for the player (for pushing animations) or moving elements
+
+2009-12-16
+	* added searching for template level (file "template.level") not only
+	  inside the level set directory, but also in above level directories;
+	  this makes is possible to use the same single template level file
+	  (placed in a level group directory) for many level sub-directories
+
+2009-12-10
+	* fixed bug with steel exit being destructible during opening phase
+	* added token "special_flags" to "levelinfo.conf" (currently with the
+	  only recognized value "load_xsb_to_ces", doing the same as the flag
+	  "-Dload_xsb_to_ces" on the command line, but as a permanent flag for
+	  converting all elements in native (XSB) Sokoban level files to CEs)
+
+2009-12-08
+	* fixed some problems with Supaplex engine when compiling for Windows
+
+2009-12-05
+	* added special mode to convert elements of Sokoban XSB levels to CEs
+	  by adding "-Dload_xsb_to_ces" to the command line starting the game
+	  (also adding a dependency to a template level file "template.level")
+
+2009-12-01
+	* added reading native Sokoban levels and level packages (XSB files)
+
+2009-11-25
+	* fixed bugs in (auto)scrolling behaviour when passing ports or when
+	  wrapping around the playfield through "holes" in the playfield border
+
+2009-11-24
+	* changed internal playfield bitmap handling from playfield sized bitmap
+	  to screen sized bitmap (visible scrolling area), therefore speeding up
+	  graphics operations (by eliminating bitmap updates in invisible areas)
+	  and removing playfield size limitations due to increasing bitmap size
+	  for larger playfield sizes (while the new implementation always uses
+	  a fixed playfield bitmap size for arbitrary internal playfield sizes)
+
+2009-11-12
+	* fixed bug with single step mode (there were some cases where the game
+	  did not automatically return to pause mode, e.g. when trying to push
+	  things that cannot be pushed or when trying to run against a wall)
+
+2009-11-01
+	* added support for loading Supaplex levels in MPX level file format
+
+2009-10-31
+	* fixed SP engine to set "game over" not before lead out counter done
+
+2009-10-30
+	* fixed (potential) compile error when using GCC option "-std=gnu99"
+	  (thanks to Tom "spot" Callaway)
+
+2009-10-28
+	* fixed array allocation in native Supaplex engine to correctly handle
+	  preceding scratch buffers (needed because of missing border checking)
+	* fixed playfield initialization to correctly add raw header bytes as
+	  subsequent scratch buffer (needed because of missing border checking)
+
+2009-10-24
+	* most important parts of native Supaplex engine integration working:
+	  - native Supaplex levels can be played in native Supaplex engine
+	  - native Supaplex level/demo files ("*.sp" files) can be re-played
+	  - all 111 classic original Supaplex levels automatically solvable
+	  - native Supaplex engine can be selected and used from level editor
+	  - logic of re-playing Supaplex demos migrated to R'n'D tape logic
+
+2009-09-25
+	* fixed another translation problem from VisualBasic to C (where "int"
+	  should be "short") causing unsolvable demos with bugs and terminals
+	  ("bugs" being related to the Supaplex "buggy base" element here ;-) )
+
+2009-09-23
+	* fixed bug when reading Supaplex single level files (preventing loader
+	  from seeking to level position like in Supaplex level package files)
+
+2009-08-01
+	* first classic Supaplex level running and solved by solution/demo tape
+
+2009-06-20
+	* started with integration of native Supaplex engine, using source code
+	  of Megaplex from Frank Schindler, based on original Supaplex engine
+
+2009-06-16
+	* version number set to 3.2.6.2
+
 2009-06-15
 	* version 3.2.6.1 released
 

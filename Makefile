@@ -22,10 +22,14 @@ X11_PATH = /usr/X11R6
 # directory for read-only game data (like graphics, sounds, levels)
 # default is '.' to be able to run program without installation
 # RO_GAME_DIR = /usr/games
+# use the following setting for Debian / Ubuntu installations:
+# RO_GAME_DIR = /usr/share/games/rocksndiamonds
 
 # directory for writable game data (like highscore files)
 # default is '.' to be able to run program without installation
 # RW_GAME_DIR = /var/games
+# use the following setting for Debian / Ubuntu installations:
+# RW_GAME_DIR = /var/games/rocksndiamonds
 
 # uncomment if system has no joystick include file
 # JOYSTICK = -DNO_JOYSTICK
@@ -134,13 +138,12 @@ levelsketch_images: all
 	./Scripts/make_levelsketch_images.sh
 
 backup:
-	./Scripts/make_backup.sh src 1
+	./Scripts/make_backup.sh src tar
 
-backup2:
-	./Scripts/make_backup.sh src 2
+backup-net-copy:
+	./Scripts/make_backup.sh src scp
 
-backup3:
-	./Scripts/make_backup.sh src 3
+backup-net: backup backup-net-copy
 
 backup_lev:
 	./Scripts/make_backup.sh lev
@@ -150,6 +153,12 @@ backup_gfx:
 
 # prerelease:
 #	./Scripts/make_prerelease.sh
+
+jue:
+	@$(MAKE) SPECIAL_EDITION=rnd_jue all
+
+jue-win:
+	@$(MAKE) SPECIAL_EDITION=rnd_jue cross-win32
 
 dist-clean:
 	@$(MAKE_CMD) dist-clean

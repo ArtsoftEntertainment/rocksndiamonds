@@ -92,6 +92,8 @@ unsigned int get_random_number(int, int);
 char *getLoginName(void);
 char *getRealName(void);
 
+time_t getFileTimestampEpochSeconds(char *);
+
 char *getBasePath(char *);
 char *getBaseName(char *);
 char *getBaseNamePtr(char *);
@@ -110,6 +112,8 @@ boolean strEqual(char *, char *);
 boolean strEqualN(char *, char *, int);
 boolean strPrefix(char *, char *);
 boolean strSuffix(char *, char *);
+boolean strPrefixLower(char *, char *);
+boolean strSuffixLower(char *, char *);
 
 void GetOptions(char **, void (*print_usage_function)(void));
 

@@ -186,20 +186,8 @@ void DrawInitAnim()
   }
 #endif
 
-#if 0
-  anim_initial.anim_mode = ANIM_LOOP;
-  anim_initial.anim_start_frame = 0;
-  anim_initial.offset_x = anim_initial.width;
-  anim_initial.offset_y = 0;
-#endif
-
-#if 1
-  x = ALIGNED_TEXT_XPOS(&init.busy);
-  y = ALIGNED_TEXT_YPOS(&init.busy);
-#else
-  x = WIN_XSIZE / 2 - TILESIZE / 2;
-  y = WIN_YSIZE / 2 - TILESIZE / 2;
-#endif
+  x = ALIGNED_TEXT_XPOS(&init_last.busy);
+  y = ALIGNED_TEXT_YPOS(&init_last.busy);
 
   graphic_info = &anim_initial;		/* graphic == 0 => anim_initial */
 
@@ -326,6 +314,14 @@ void SetBitmaps_EM(Bitmap **em_bitmap)
 {
   em_bitmap[0] = graphic_info[IMG_EMC_OBJECT].bitmap;
   em_bitmap[1] = graphic_info[IMG_EMC_SPRITE].bitmap;
+}
+#endif
+
+#if 0
+/* !!! FIX THIS (CHANGE TO USING NORMAL ELEMENT GRAPHIC DEFINITIONS) !!! */
+void SetBitmaps_SP(Bitmap **sp_bitmap)
+{
+  *sp_bitmap = graphic_info[IMG_SP_OBJECTS].bitmap;
 }
 #endif
 
@@ -1298,6 +1294,8 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   g->align = ALIGN_CENTER;		/* default for title screens */
   g->valign = VALIGN_MIDDLE;		/* default for title screens */
   g->sort_priority = 0;			/* default for title screens */
+  g->class = 0;
+  g->style = STYLE_DEFAULT;
 
   g->bitmap = src_bitmap;
 
@@ -1498,6 +1496,11 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
     g->valign = parameter[GFX_ARG_VALIGN];
   if (parameter[GFX_ARG_SORT_PRIORITY] != ARG_UNDEFINED_VALUE)
     g->sort_priority = parameter[GFX_ARG_SORT_PRIORITY];
+
+  if (parameter[GFX_ARG_CLASS] != ARG_UNDEFINED_VALUE)
+    g->class = parameter[GFX_ARG_CLASS];
+  if (parameter[GFX_ARG_STYLE] != ARG_UNDEFINED_VALUE)
+    g->style = parameter[GFX_ARG_STYLE];
 }
 
 static void set_graphic_parameters(int graphic)
@@ -2829,8 +2832,12 @@ void InitElementPropertiesStatic()
     EL_SIGN_FRANKIE,
     EL_STEEL_EXIT_CLOSED,
     EL_STEEL_EXIT_OPEN,
+    EL_STEEL_EXIT_OPENING,
+    EL_STEEL_EXIT_CLOSING,
     EL_EM_STEEL_EXIT_CLOSED,
     EL_EM_STEEL_EXIT_OPEN,
+    EL_EM_STEEL_EXIT_OPENING,
+    EL_EM_STEEL_EXIT_CLOSING,
     EL_DC_STEELWALL_1_LEFT,
     EL_DC_STEELWALL_1_RIGHT,
     EL_DC_STEELWALL_1_TOP,
@@ -4174,6 +4181,7 @@ void InitElementPropertiesStatic()
     EL_PLAYER_2,
     EL_PLAYER_3,
     EL_PLAYER_4,
+    EL_SOKOBAN_FIELD_PLAYER,
     EL_SP_MURPHY,
     EL_YAMYAM,
     EL_YAMYAM_LEFT,
@@ -5124,7 +5132,7 @@ void Execute_Command(char *command)
 
     exit(0);
   }
-  else if (strncmp(command, "dump level ", 11) == 0)
+  else if (strPrefix(command, "dump level "))
   {
     char *filename = &command[11];
 
@@ -5136,7 +5144,7 @@ void Execute_Command(char *command)
 
     exit(0);
   }
-  else if (strncmp(command, "dump tape ", 10) == 0)
+  else if (strPrefix(command, "dump tape "))
   {
     char *filename = &command[10];
 
@@ -5148,7 +5156,7 @@ void Execute_Command(char *command)
 
     exit(0);
   }
-  else if (strncmp(command, "autoplay ", 9) == 0)
+  else if (strPrefix(command, "autoplay "))
   {
     char *str_ptr = getStringCopy(&command[9]);	/* read command parameters */
 
@@ -5184,9 +5192,9 @@ void Execute_Command(char *command)
 	str_ptr++;
     }
   }
-  else if (strncmp(command, "convert ", 8) == 0)
+  else if (strPrefix(command, "convert "))
   {
-    char *str_copy = getStringCopy(&command[8]);
+    char *str_copy = getStringCopy(strchr(command, ' ') + 1);
     char *str_ptr = strchr(str_copy, ' ');
 
     global.convert_leveldir = str_copy;
@@ -5198,7 +5206,7 @@ void Execute_Command(char *command)
       global.convert_level_nr = atoi(str_ptr);	/* get level_nr value */
     }
   }
-  else if (strncmp(command, "create images ", 14) == 0)
+  else if (strPrefix(command, "create images "))
   {
 #if defined(TARGET_SDL)
     global.create_images_dir = getStringCopy(&command[14]);
@@ -5441,6 +5449,28 @@ static void InitMixer()
   StartMixer();
 }
 
+void InitGfxBuffers()
+{
+  ReCreateBitmap(&bitmap_db_store, WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
+  ReCreateBitmap(&bitmap_db_cross, WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
+  ReCreateBitmap(&bitmap_db_field, FXSIZE, FYSIZE, DEFAULT_DEPTH);
+  ReCreateBitmap(&bitmap_db_panel, DXSIZE, DYSIZE, DEFAULT_DEPTH);
+  ReCreateBitmap(&bitmap_db_door, 3 * DXSIZE, DYSIZE + VYSIZE, DEFAULT_DEPTH);
+  ReCreateBitmap(&bitmap_db_toons, FULL_SXSIZE, FULL_SYSIZE, DEFAULT_DEPTH);
+
+  /* initialize screen properties */
+  InitGfxFieldInfo(SX, SY, SXSIZE, SYSIZE,
+		   REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE,
+		   bitmap_db_field);
+  InitGfxDoor1Info(DX, DY, DXSIZE, DYSIZE);
+  InitGfxDoor2Info(VX, VY, VXSIZE, VYSIZE);
+  InitGfxWindowInfo(WIN_XSIZE, WIN_YSIZE);
+  InitGfxScrollbufferInfo(FXSIZE, FYSIZE);
+  InitGfxClipRegion(FALSE, -1, -1, -1, -1);
+
+  InitGfxBuffers_SP();
+}
+
 void InitGfx()
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
@@ -5487,7 +5517,11 @@ void InitGfx()
   if (filename_font_initial == NULL)	/* should not happen */
     Error(ERR_EXIT, "cannot get filename for '%s'", CONFIG_TOKEN_FONT_INITIAL);
 
+#if 1
+  InitGfxBuffers();
+#else
   /* create additional image buffers for double-buffering and cross-fading */
+  bitmap_db_store = CreateBitmap(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
   bitmap_db_cross = CreateBitmap(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
   bitmap_db_field = CreateBitmap(FXSIZE, FYSIZE, DEFAULT_DEPTH);
   bitmap_db_panel = CreateBitmap(DXSIZE, DYSIZE, DEFAULT_DEPTH);
@@ -5502,6 +5536,8 @@ void InitGfx()
   InitGfxDoor2Info(VX, VY, VXSIZE, VYSIZE);
   InitGfxWindowInfo(WIN_XSIZE, WIN_YSIZE);
   InitGfxScrollbufferInfo(FXSIZE, FYSIZE);
+#endif
+
   InitGfxCustomArtworkInfo();
 
   bitmap_font_initial = LoadCustomImage(filename_font_initial);
@@ -5615,6 +5651,9 @@ void InitGfx()
 
   InitMenuDesignSettings_Static();
   InitGfxDrawBusyAnimFunction(DrawInitAnim);
+
+  /* use copy of busy animation to prevent change while reloading artwork */
+  init_last = init;
 #endif
 }
 
@@ -6094,6 +6133,8 @@ void ReloadCustomArtwork(int force_reload)
 
   game_status = last_game_status;	/* restore current game status */
 
+  init_last = init;			/* switch to new busy animation */
+
 #if 0
   printf("::: ----------------DELAY 1 ...\n");
   Delay(3000);
@@ -6151,7 +6192,13 @@ void OpenAll()
 
   game_status = GAME_MODE_LOADING;
 
+#if 1
+  InitCounter();
+#endif
+
   InitGlobal();			/* initialize some global variables */
+
+  print_timestamp_time("[init global stuff]");
 
   if (options.execute_command)
     Execute_Command(options.execute_command);
@@ -6175,25 +6222,29 @@ void OpenAll()
   InitArtworkConfig();		/* needed before forking sound child process */
   InitMixer();
 
+#if 0
   InitCounter();
+#endif
 
   InitRND(NEW_RANDOMIZE);
   InitSimpleRandom(NEW_RANDOMIZE);
 
   InitJoysticks();
 
-  print_timestamp_time("[pre-video]");
+  print_timestamp_time("[init setup/config stuff]");
 
   InitVideoDisplay();
   InitVideoBuffer(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH, setup.fullscreen);
 
   InitEventFilter(FilterMouseMotionEvents);
 
+  print_timestamp_time("[init video stuff]");
+
   InitElementPropertiesStatic();
   InitElementPropertiesEngine(GAME_VERSION_ACTUAL);
   InitElementPropertiesGfxElement();
 
-  print_timestamp_time("[post-video]");
+  print_timestamp_time("[init element properties stuff]");
 
   InitGfx();
 
@@ -6221,6 +6272,10 @@ void OpenAll()
 
 #if 1
   em_open_all();
+#endif
+
+#if 1
+  sp_open_all();
 #endif
 
   if (global.autoplay_leveldir)
@@ -6268,6 +6323,10 @@ void CloseAllAndExit(int exit_value)
 
 #if 1
   em_close_all();
+#endif
+
+#if 1
+  sp_close_all();
 #endif
 
   FreeAllImages();

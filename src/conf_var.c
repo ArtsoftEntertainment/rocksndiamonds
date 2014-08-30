@@ -1289,6 +1289,14 @@ struct TokenIntPtrInfo image_config_vars[] =
     &menu.draw_yoffset_setup[GFX_SPECIAL_ARG_SETUP_INPUT]
   },
   {
+    "menu.draw_xoffset.SETUP[SHORTCUTS]",
+    &menu.draw_xoffset_setup[GFX_SPECIAL_ARG_SETUP_SHORTCUTS]
+  },
+  {
+    "menu.draw_yoffset.SETUP[SHORTCUTS]",
+    &menu.draw_yoffset_setup[GFX_SPECIAL_ARG_SETUP_SHORTCUTS]
+  },
+  {
     "menu.draw_xoffset.SETUP[SHORTCUTS_1]",
     &menu.draw_xoffset_setup[GFX_SPECIAL_ARG_SETUP_SHORTCUTS_1]
   },
@@ -1303,6 +1311,22 @@ struct TokenIntPtrInfo image_config_vars[] =
   {
     "menu.draw_yoffset.SETUP[SHORTCUTS_2]",
     &menu.draw_yoffset_setup[GFX_SPECIAL_ARG_SETUP_SHORTCUTS_2]
+  },
+  {
+    "menu.draw_xoffset.SETUP[SHORTCUTS_3]",
+    &menu.draw_xoffset_setup[GFX_SPECIAL_ARG_SETUP_SHORTCUTS_3]
+  },
+  {
+    "menu.draw_yoffset.SETUP[SHORTCUTS_3]",
+    &menu.draw_yoffset_setup[GFX_SPECIAL_ARG_SETUP_SHORTCUTS_3]
+  },
+  {
+    "menu.draw_xoffset.SETUP[SHORTCUTS_4]",
+    &menu.draw_xoffset_setup[GFX_SPECIAL_ARG_SETUP_SHORTCUTS_4]
+  },
+  {
+    "menu.draw_yoffset.SETUP[SHORTCUTS_4]",
+    &menu.draw_yoffset_setup[GFX_SPECIAL_ARG_SETUP_SHORTCUTS_4]
   },
   {
     "menu.draw_xoffset.SETUP[CHOOSE_ARTWORK]",
@@ -2911,6 +2935,38 @@ struct TokenIntPtrInfo image_config_vars[] =
   {
     "game.panel.time_ss.draw_order",
     &game.panel.time_ss.sort_priority
+  },
+  {
+    "game.panel.frame.x",
+    &game.panel.frame.x
+  },
+  {
+    "game.panel.frame.y",
+    &game.panel.frame.y
+  },
+  {
+    "game.panel.frame.align",
+    &game.panel.frame.align
+  },
+  {
+    "game.panel.frame.valign",
+    &game.panel.frame.valign
+  },
+  {
+    "game.panel.frame.digits",
+    &game.panel.frame.size
+  },
+  {
+    "game.panel.frame.font",
+    &game.panel.frame.font
+  },
+  {
+    "game.panel.frame.draw_masked",
+    &game.panel.frame.draw_masked
+  },
+  {
+    "game.panel.frame.draw_order",
+    &game.panel.frame.sort_priority
   },
   {
     "game.panel.shield_normal.x",
@@ -5013,6 +5069,14 @@ struct TokenIntPtrInfo image_config_vars[] =
     &game.use_native_emc_graphics_engine
   },
   {
+    "game.use_native_sp_graphics_engine",
+    &game.use_native_sp_graphics_engine
+  },
+  {
+    "game.use_masked_pushing",
+    &game.use_masked_pushing
+  },
+  {
     "[player].boring_delay_fixed",
     &game.player_boring_delay_fixed
   },
@@ -5027,6 +5091,158 @@ struct TokenIntPtrInfo image_config_vars[] =
   {
     "[player].sleeping_delay_random",
     &game.player_sleeping_delay_random
+  },
+  {
+    "viewport.window.width",
+    &viewport.window.width
+  },
+  {
+    "viewport.window.height",
+    &viewport.window.height
+  },
+  {
+    "viewport.playfield.x",
+    &viewport.playfield[GFX_SPECIAL_ARG_DEFAULT].x
+  },
+  {
+    "viewport.playfield.y",
+    &viewport.playfield[GFX_SPECIAL_ARG_DEFAULT].y
+  },
+  {
+    "viewport.playfield.width",
+    &viewport.playfield[GFX_SPECIAL_ARG_DEFAULT].width
+  },
+  {
+    "viewport.playfield.height",
+    &viewport.playfield[GFX_SPECIAL_ARG_DEFAULT].height
+  },
+  {
+    "viewport.playfield.border_size",
+    &viewport.playfield[GFX_SPECIAL_ARG_DEFAULT].border_size
+  },
+  {
+    "viewport.playfield.MAIN.x",
+    &viewport.playfield[GFX_SPECIAL_ARG_MAIN].x
+  },
+  {
+    "viewport.playfield.MAIN.y",
+    &viewport.playfield[GFX_SPECIAL_ARG_MAIN].y
+  },
+  {
+    "viewport.playfield.MAIN.width",
+    &viewport.playfield[GFX_SPECIAL_ARG_MAIN].width
+  },
+  {
+    "viewport.playfield.MAIN.height",
+    &viewport.playfield[GFX_SPECIAL_ARG_MAIN].height
+  },
+  {
+    "viewport.playfield.MAIN.border_size",
+    &viewport.playfield[GFX_SPECIAL_ARG_MAIN].border_size
+  },
+  {
+    "viewport.playfield.PLAYING.x",
+    &viewport.playfield[GFX_SPECIAL_ARG_PLAYING].x
+  },
+  {
+    "viewport.playfield.PLAYING.y",
+    &viewport.playfield[GFX_SPECIAL_ARG_PLAYING].y
+  },
+  {
+    "viewport.playfield.PLAYING.width",
+    &viewport.playfield[GFX_SPECIAL_ARG_PLAYING].width
+  },
+  {
+    "viewport.playfield.PLAYING.height",
+    &viewport.playfield[GFX_SPECIAL_ARG_PLAYING].height
+  },
+  {
+    "viewport.playfield.PLAYING.border_size",
+    &viewport.playfield[GFX_SPECIAL_ARG_PLAYING].border_size
+  },
+  {
+    "viewport.playfield.EDITOR.x",
+    &viewport.playfield[GFX_SPECIAL_ARG_EDITOR].x
+  },
+  {
+    "viewport.playfield.EDITOR.y",
+    &viewport.playfield[GFX_SPECIAL_ARG_EDITOR].y
+  },
+  {
+    "viewport.playfield.EDITOR.width",
+    &viewport.playfield[GFX_SPECIAL_ARG_EDITOR].width
+  },
+  {
+    "viewport.playfield.EDITOR.height",
+    &viewport.playfield[GFX_SPECIAL_ARG_EDITOR].height
+  },
+  {
+    "viewport.playfield.EDITOR.border_size",
+    &viewport.playfield[GFX_SPECIAL_ARG_EDITOR].border_size
+  },
+  {
+    "viewport.door_1.x",
+    &viewport.door_1[GFX_SPECIAL_ARG_DEFAULT].x
+  },
+  {
+    "viewport.door_1.y",
+    &viewport.door_1[GFX_SPECIAL_ARG_DEFAULT].y
+  },
+  {
+    "viewport.door_1.MAIN.x",
+    &viewport.door_1[GFX_SPECIAL_ARG_MAIN].x
+  },
+  {
+    "viewport.door_1.MAIN.y",
+    &viewport.door_1[GFX_SPECIAL_ARG_MAIN].y
+  },
+  {
+    "viewport.door_1.PLAYING.x",
+    &viewport.door_1[GFX_SPECIAL_ARG_PLAYING].x
+  },
+  {
+    "viewport.door_1.PLAYING.y",
+    &viewport.door_1[GFX_SPECIAL_ARG_PLAYING].y
+  },
+  {
+    "viewport.door_1.EDITOR.x",
+    &viewport.door_1[GFX_SPECIAL_ARG_EDITOR].x
+  },
+  {
+    "viewport.door_1.EDITOR.y",
+    &viewport.door_1[GFX_SPECIAL_ARG_EDITOR].y
+  },
+  {
+    "viewport.door_2.x",
+    &viewport.door_2[GFX_SPECIAL_ARG_DEFAULT].x
+  },
+  {
+    "viewport.door_2.y",
+    &viewport.door_2[GFX_SPECIAL_ARG_DEFAULT].y
+  },
+  {
+    "viewport.door_2.MAIN.x",
+    &viewport.door_2[GFX_SPECIAL_ARG_MAIN].x
+  },
+  {
+    "viewport.door_2.MAIN.y",
+    &viewport.door_2[GFX_SPECIAL_ARG_MAIN].y
+  },
+  {
+    "viewport.door_2.PLAYING.x",
+    &viewport.door_2[GFX_SPECIAL_ARG_PLAYING].x
+  },
+  {
+    "viewport.door_2.PLAYING.y",
+    &viewport.door_2[GFX_SPECIAL_ARG_PLAYING].y
+  },
+  {
+    "viewport.door_2.EDITOR.x",
+    &viewport.door_2[GFX_SPECIAL_ARG_EDITOR].x
+  },
+  {
+    "viewport.door_2.EDITOR.y",
+    &viewport.door_2[GFX_SPECIAL_ARG_EDITOR].y
   },
   {
     NULL,
