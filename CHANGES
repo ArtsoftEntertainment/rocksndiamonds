@@ -1,3 +1,14 @@
+Release Version 3.0.3 [08 SEP 2003]
+-----------------------------------
+	- fixed bug (missing array boundary check) which could crash the game
+	- fixed problem with setting mouse cursor in SDL version in fullscreen
+	- fixed problem with flickering when drawing toon animations
+	- fixed problem with player animation when snapping and moving
+	- fixed several nasty bugs that may have caused crashes on some systems
+	- added envelope content which gets displayed when collecting envelope
+	- added multiple change event pages for custom elements
+	- added support for loading various music formats through SDL_mixer
+
 Release Version 3.0.2 [22 AUG 2003]
 -----------------------------------
 	- fixed bug with messing up custom element properties in 3.0.0 levels

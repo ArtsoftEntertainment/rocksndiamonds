@@ -113,12 +113,15 @@ void DrawLevelField(int, int);
 void DrawMiniElement(int, int, int);
 void DrawMiniElementOrWall(int, int, int, int);
 
+void ShowEnvelope();
+
 void getMicroGraphicSource(int, Bitmap **, int *, int *);
 void DrawMicroElement(int, int, int);
 void DrawLevel(void);
 void DrawMiniLevel(int, int, int, int);
 void DrawMicroLevel(int, int, boolean);
 
+void WaitForEventToContinue();
 boolean Request(char *, unsigned int);
 unsigned int OpenDoor(unsigned int);
 unsigned int CloseDoor(unsigned int);

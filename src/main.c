@@ -50,7 +50,7 @@ short			StorePlayer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Back[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 boolean			Pushed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-boolean			Changing[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+boolean			Changed[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			JustStopped[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			AmoebaNr[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			AmoebaCnt[MAX_NUM_AMOEBA];
@@ -3687,6 +3687,7 @@ struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1] =
   { ".EDITOR",		GAME_MODE_EDITOR,		},
   { ".INFO",		GAME_MODE_INFO,			},
   { ".SETUP",		GAME_MODE_SETUP,		},
+  { ".PLAYING",		GAME_MODE_PLAYING,		},
   { ".DOOR",		GAME_MODE_PSEUDO_DOOR,		},
   { ".PREVIEW",		GAME_MODE_PSEUDO_PREVIEW,	},
   { ".CRUMBLED",	GAME_MODE_PSEUDO_CRUMBLED,	},

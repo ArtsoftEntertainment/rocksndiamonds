@@ -171,7 +171,6 @@ static void TestIfElementTouchesCustomElement(int, int);
 
 static boolean CheckTriggeredElementChange(int, int, int, int);
 static boolean CheckElementChange(int, int, int, int);
-static void ChangeElementNow(int, int, int);
 
 static void PlaySoundLevel(int, int, int);
 static void PlaySoundLevelNearest(int, int, int);
@@ -216,7 +215,7 @@ struct ChangingElementInfo
   void (*post_change_function)(int x, int y);
 };
 
-static struct ChangingElementInfo changing_element_list[] =
+static struct ChangingElementInfo change_delay_list[] =
 {
   {
     EL_NUT_BREAKING,
@@ -415,13 +414,15 @@ collect_count_list[] =
   { EL_UNDEFINED,		0 },
 };
 
-static boolean changing_element[MAX_NUM_ELEMENTS];
 static unsigned long trigger_events[MAX_NUM_ELEMENTS];
 
-#define IS_AUTO_CHANGING(e)	(changing_element[e])
+#define IS_AUTO_CHANGING(e)	(element_info[e].change_events & \
+				 CH_EVENT_BIT(CE_DELAY))
 #define IS_JUST_CHANGING(x, y)	(ChangeDelay[x][y] != 0)
 #define IS_CHANGING(x, y)	(IS_AUTO_CHANGING(Feld[x][y]) || \
 				 IS_JUST_CHANGING(x, y))
+
+#define CE_PAGE(e, ce)		(element_info[e].event_page[ce])
 
 
 void GetPlayerConfig()
@@ -742,7 +743,7 @@ void DrawGameDoorValues()
 
 static void InitGameEngine()
 {
-  int i;
+  int i, j, k;
 
   /* set game engine from tape file when re-playing, else from level file */
   game.engine_version = (tape.playing ? tape.engine_version :
@@ -752,11 +753,11 @@ static void InitGameEngine()
   InitElementPropertiesEngine(game.engine_version);
 
 #if 0
-    printf("level %d: level version == %06d\n", level_nr, level.game_version);
-    printf("          tape version == %06d [%s] [file: %06d]\n",
-	   tape.engine_version, (tape.playing ? "PLAYING" : "RECORDING"),
-	   tape.file_version);
-    printf("       => game.engine_version == %06d\n", game.engine_version);
+  printf("level %d: level version == %06d\n", level_nr, level.game_version);
+  printf("          tape version == %06d [%s] [file: %06d]\n",
+	 tape.engine_version, (tape.playing ? "PLAYING" : "RECORDING"),
+	 tape.file_version);
+  printf("       => game.engine_version == %06d\n", game.engine_version);
 #endif
 
   /* ---------- initialize player's initial move delay --------------------- */
@@ -773,78 +774,82 @@ static void InitGameEngine()
   /* ---------- initialize changing elements ------------------------------- */
 
   /* initialize changing elements information */
-  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+  for (i=0; i < MAX_NUM_ELEMENTS; i++)
   {
-#if 1
-    element_info[i].change.pre_change_function = NULL;
-    element_info[i].change.change_function = NULL;
-    element_info[i].change.post_change_function = NULL;
+    struct ElementInfo *ei = &element_info[i];
+
+    /* this pointer might have been changed in the level editor */
+    ei->change = &ei->change_page[0];
 
     if (!IS_CUSTOM_ELEMENT(i))
     {
-      element_info[i].change.target_element = EL_EMPTY_SPACE;
-      element_info[i].change.delay_fixed = 0;
-      element_info[i].change.delay_random = 0;
-      element_info[i].change.delay_frames = 1;
+      ei->change->target_element = EL_EMPTY_SPACE;
+      ei->change->delay_fixed = 0;
+      ei->change->delay_random = 0;
+      ei->change->delay_frames = 1;
     }
 
-    changing_element[i] = FALSE;
-#else
-    changing_element[i].base_element = EL_UNDEFINED;
-    changing_element[i].next_element = EL_UNDEFINED;
-    changing_element[i].change_delay = -1;
-    changing_element[i].pre_change_function = NULL;
-    changing_element[i].change_function = NULL;
-    changing_element[i].post_change_function = NULL;
-#endif
+    ei->change_events = CE_BITMASK_DEFAULT;
+    for (j=0; j < NUM_CHANGE_EVENTS; j++)
+    {
+      ei->event_page_num[j] = 0;
+      ei->event_page[j] = &ei->change_page[0];
+    }
   }
 
   /* add changing elements from pre-defined list */
-  for (i=0; changing_element_list[i].element != EL_UNDEFINED; i++)
+  for (i=0; change_delay_list[i].element != EL_UNDEFINED; i++)
   {
-    int element = changing_element_list[i].element;
-    struct ChangingElementInfo *ce = &changing_element_list[i];
-    struct ElementChangeInfo *change = &element_info[element].change;
+    struct ChangingElementInfo *ch_delay = &change_delay_list[i];
+    struct ElementInfo *ei = &element_info[ch_delay->element];
 
-#if 1
-    change->target_element       = ce->target_element;
-    change->delay_fixed          = ce->change_delay;
-    change->pre_change_function  = ce->pre_change_function;
-    change->change_function      = ce->change_function;
-    change->post_change_function = ce->post_change_function;
+    ei->change->target_element       = ch_delay->target_element;
+    ei->change->delay_fixed          = ch_delay->change_delay;
 
-    changing_element[element] = TRUE;
-#else
-    changing_element[element].base_element         = ce->base_element;
-    changing_element[element].next_element         = ce->next_element;
-    changing_element[element].change_delay         = ce->change_delay;
-    changing_element[element].pre_change_function  = ce->pre_change_function;
-    changing_element[element].change_function      = ce->change_function;
-    changing_element[element].post_change_function = ce->post_change_function;
-#endif
+    ei->change->pre_change_function  = ch_delay->pre_change_function;
+    ei->change->change_function      = ch_delay->change_function;
+    ei->change->post_change_function = ch_delay->post_change_function;
+
+    ei->change_events |= CH_EVENT_BIT(CE_DELAY);
   }
 
-  /* add changing elements from custom element configuration */
+#if 1
+  /* add change events from custom element configuration */
+  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    struct ElementInfo *ei = &element_info[EL_CUSTOM_START + i];
+
+    for (j=0; j < ei->num_change_pages; j++)
+    {
+      if (!ei->change_page[j].can_change)
+	continue;
+
+      for (k=0; k < NUM_CHANGE_EVENTS; k++)
+      {
+	/* only add event page for the first page found with this event */
+	if (ei->change_page[j].events & CH_EVENT_BIT(k) &&
+	    !(ei->change_events & CH_EVENT_BIT(k)))
+	{
+	  ei->change_events |= CH_EVENT_BIT(k);
+	  ei->event_page_num[k] = j;
+	  ei->event_page[k] = &ei->change_page[j];
+	}
+      }
+    }
+  }
+
+#else
+
+  /* add change events from custom element configuration */
   for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
     int element = EL_CUSTOM_START + i;
-#if 0
-    struct ElementChangeInfo *change = &element_info[element].change;
-#endif
 
     /* only add custom elements that change after fixed/random frame delay */
-    if (!CAN_CHANGE(element) || !HAS_CHANGE_EVENT(element, CE_DELAY))
-      continue;
-
-#if 1
-    changing_element[element] = TRUE;
-#else
-    changing_element[element].base_element = element;
-    changing_element[element].next_element = change->target_element;
-    changing_element[element].change_delay = (change->delay_fixed *
-					      change->delay_frames);
-#endif
+    if (CAN_CHANGE(element) && HAS_CHANGE_EVENT(element, CE_DELAY))
+      element_info[element].change_events |= CH_EVENT_BIT(CE_DELAY);
   }
+#endif
 
   /* ---------- initialize trigger events ---------------------------------- */
 
@@ -852,11 +857,32 @@ static void InitGameEngine()
   for (i=0; i<MAX_NUM_ELEMENTS; i++)
     trigger_events[i] = EP_BITMASK_DEFAULT;
 
+#if 1
   /* add trigger events from element change event properties */
   for (i=0; i<MAX_NUM_ELEMENTS; i++)
-    if (HAS_CHANGE_EVENT(i, CE_BY_OTHER))
-      trigger_events[element_info[i].change.trigger_element] |=
-	element_info[i].change.events;
+  {
+    struct ElementInfo *ei = &element_info[i];
+
+    for (j=0; j < ei->num_change_pages; j++)
+    {
+      if (!ei->change_page->can_change)
+	continue;
+
+      if (ei->change_page[j].events & CH_EVENT_BIT(CE_BY_OTHER_ACTION))
+      {
+	int trigger_element = ei->change_page[j].trigger_element;
+
+	trigger_events[trigger_element] |= ei->change_page[j].events;
+      }
+    }
+  }
+#else
+  /* add trigger events from element change event properties */
+  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+    if (HAS_CHANGE_EVENT(i, CE_BY_OTHER_ACTION))
+      trigger_events[element_info[i].change->trigger_element] |=
+	element_info[i].change->events;
+#endif
 
   /* ---------- initialize push delay -------------------------------------- */
 
@@ -1064,7 +1090,7 @@ void InitGame()
       JustStopped[x][y] = 0;
       Stop[x][y] = FALSE;
       Pushed[x][y] = FALSE;
-      Changing[x][y] = FALSE;
+      Changed[x][y] = FALSE;
       ExplodePhase[x][y] = 0;
       ExplodeField[x][y] = EX_NO_EXPLOSION;
 
@@ -1236,16 +1262,19 @@ void InitGame()
 
       if (CAN_CHANGE(element))
       {
-	content = element_info[element].change.target_element;
-	is_player = ELEM_IS_PLAYER(content);
-
-	if (is_player && (found_rating < 3 || element < found_element))
+	for (i=0; i < element_info[element].num_change_pages; i++)
 	{
-	  start_x = x;
-	  start_y = y;
+	  content = element_info[element].change_page[i].target_element;
+	  is_player = ELEM_IS_PLAYER(content);
 
-	  found_rating = 3;
-	  found_element = element;
+	  if (is_player && (found_rating < 3 || element < found_element))
+	  {
+	    start_x = x;
+	    start_y = y;
+
+	    found_rating = 3;
+	    found_element = element;
+	  }
 	}
       }
 
@@ -1266,16 +1295,19 @@ void InitGame()
 	if (!CAN_CHANGE(element))
 	  continue;
 
-	content = element_info[element].change.content[xx][yy];
-	is_player = ELEM_IS_PLAYER(content);
-
-	if (is_player && (found_rating < 1 || element < found_element))
+	for (i=0; i < element_info[element].num_change_pages; i++)
 	{
-	  start_x = x + xx - 1;
-	  start_y = y + yy - 1;
+	  content = element_info[element].change_page[i].content[xx][yy];
+	  is_player = ELEM_IS_PLAYER(content);
 
-	  found_rating = 1;
-	  found_element = element;
+	  if (is_player && (found_rating < 1 || element < found_element))
+	  {
+	    start_x = x + xx - 1;
+	    start_y = y + yy - 1;
+
+	    found_rating = 1;
+	    found_element = element;
+	  }
 	}
       }
     }
@@ -1549,8 +1581,13 @@ void GameWon()
   if (local_player->MovPos)
     return;
 
+#if 1
+  if (tape.auto_play)		/* tape might already be stopped here */
+    tape.auto_play_level_solved = TRUE;
+#else
   if (tape.playing && tape.auto_play)
     tape.auto_play_level_solved = TRUE;
+#endif
 
   local_player->LevelSolved = FALSE;
 
@@ -2865,24 +2902,12 @@ void Impact(int x, int y)
     PlaySoundLevel(x, y, SND_PEARL_BREAKING);
     return;
   }
-#if 1
   else if (impact && CheckElementChange(x, y, element, CE_IMPACT))
   {
     PlaySoundLevelElementAction(x, y, element, ACTION_IMPACT);
 
     return;
   }
-#else
-  else if (impact && CAN_CHANGE(element) &&
-	   HAS_CHANGE_EVENT(element, CE_IMPACT))
-  {
-    PlaySoundLevelElementAction(x, y, element, ACTION_IMPACT);
-
-    ChangeElementNow(x, y, element);
-
-    return;
-  }
-#endif
 
   if (impact && element == EL_AMOEBA_DROP)
   {
@@ -3014,17 +3039,10 @@ void Impact(int x, int y)
 	{
 	  ToggleLightSwitch(x, y + 1);
 	}
-#if 1
 	else
 	{
 	  CheckElementChange(x, y + 1, smashed, CE_SMASHED);
 	}
-#else
-	else if (CAN_CHANGE(smashed) && HAS_CHANGE_EVENT(smashed, CE_SMASHED))
-	{
-	  ChangeElementNow(x, y + 1, smashed);
-	}
-#endif
       }
       else
       {
@@ -3620,7 +3638,8 @@ void StartMoving(int x, int y)
 
   if (CAN_FALL(element) && y < lev_fieldy - 1)
   {
-    if ((x>0 && IS_PLAYER(x-1, y)) || (x<lev_fieldx-1 && IS_PLAYER(x+1, y)))
+    if ((x > 0 && IS_PLAYER(x - 1, y)) ||
+	(x < lev_fieldx-1 && IS_PLAYER(x + 1, y)))
       if (JustBeingPushed(x, y))
 	return;
 
@@ -4021,7 +4040,8 @@ void StartMoving(int x, int y)
 
     Moving2Blocked(x, y, &newx, &newy);	/* get next screen position */
 
-    if (DONT_COLLIDE_WITH(element) && IS_PLAYER(newx, newy) &&
+    if (DONT_COLLIDE_WITH(element) &&
+	IN_LEV_FIELD(newx, newy) && IS_PLAYER(newx, newy) &&
 	!PLAYER_PROTECTED(newx, newy))
     {
 #if 1
@@ -5312,7 +5332,7 @@ static void ChangeElementNowExt(int x, int y, int target_element)
 {
   /* check if element under player changes from accessible to unaccessible
      (needed for special case of dropping element which then changes) */
-  if (IS_PLAYER(x, y) &&
+  if (IS_PLAYER(x, y) && !PLAYER_PROTECTED(x, y) &&
       IS_ACCESSIBLE(Feld[x][y]) && !IS_ACCESSIBLE(target_element))
   {
     Bang(x, y);
@@ -5321,6 +5341,8 @@ static void ChangeElementNowExt(int x, int y, int target_element)
 
   RemoveField(x, y);
   Feld[x][y] = target_element;
+
+  Changed[x][y] = TRUE;		/* no more changes in this frame */
 
   ResetGfxAnimation(x, y);
   ResetRandomAnimationValue(x, y);
@@ -5342,16 +5364,13 @@ static void ChangeElementNowExt(int x, int y, int target_element)
     RelocatePlayer(x, y, target_element);
 }
 
-static void ChangeElementNow(int x, int y, int element)
+static void ChangeElementNow(int x, int y, int element, int page)
 {
-  struct ElementChangeInfo *change = &element_info[element].change;
+  struct ElementChangeInfo *change = &element_info[element].change_page[page];
 
-  /* prevent CheckTriggeredElementChange() from looping */
-  Changing[x][y] = TRUE;
+  Changed[x][y] = TRUE;		/* no more changes in this frame */
 
   CheckTriggeredElementChange(x, y, Feld[x][y], CE_OTHER_IS_CHANGING);
-
-  Changing[x][y] = FALSE;
 
   if (change->explode)
   {
@@ -5431,9 +5450,9 @@ static void ChangeElementNow(int x, int y, int element)
 
 	  something_has_changed = TRUE;
 
-	  /* for symmetry reasons, stop newly created border elements */
+	  /* for symmetry reasons, freeze newly created border elements */
 	  if (ex != x || ey != y)
-	    Stop[ex][ey] = TRUE;
+	    Stop[ex][ey] = TRUE;	/* no more moving in this frame */
 	}
       }
 
@@ -5449,42 +5468,21 @@ static void ChangeElementNow(int x, int y, int element)
   }
 }
 
-static void ChangeElement(int x, int y)
+static void ChangeElement(int x, int y, int page)
 {
-#if 1
   int element = MovingOrBlocked2Element(x, y);
-#else
-  int element = Feld[x][y];
-#endif
-  struct ElementChangeInfo *change = &element_info[element].change;
+  struct ElementChangeInfo *change = &element_info[element].change_page[page];
 
   if (ChangeDelay[x][y] == 0)		/* initialize element change */
   {
-#if 1
     ChangeDelay[x][y] = (    change->delay_fixed  * change->delay_frames +
 			 RND(change->delay_random * change->delay_frames)) + 1;
-#else
-    ChangeDelay[x][y] = changing_element[element].change_delay + 1;
-
-    if (IS_CUSTOM_ELEMENT(element) && HAS_CHANGE_EVENT(element, CE_DELAY))
-    {
-      int max_random_delay = element_info[element].change.delay_random;
-      int delay_frames = element_info[element].change.delay_frames;
-
-      ChangeDelay[x][y] += RND(max_random_delay * delay_frames);
-    }
-#endif
 
     ResetGfxAnimation(x, y);
     ResetRandomAnimationValue(x, y);
 
-#if 1
     if (change->pre_change_function)
       change->pre_change_function(x, y);
-#else
-    if (changing_element[element].pre_change_function)
-      changing_element[element].pre_change_function(x, y);
-#endif
   }
 
   ChangeDelay[x][y]--;
@@ -5496,20 +5494,11 @@ static void ChangeElement(int x, int y)
     if (IS_ANIMATED(graphic))
       DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
 
-#if 1
     if (change->change_function)
       change->change_function(x, y);
-#else
-    if (changing_element[element].change_function)
-      changing_element[element].change_function(x, y);
-#endif
   }
   else					/* finish element change */
   {
-#if 0
-    int next_element = changing_element[element].next_element;
-#endif
-
     if (IS_MOVING(x, y))		/* never change a running system ;-) */
     {
       ChangeDelay[x][y] = 1;		/* try change after next move step */
@@ -5517,68 +5506,110 @@ static void ChangeElement(int x, int y)
       return;
     }
 
-#if 1
-    ChangeElementNow(x, y, element);
+    ChangeElementNow(x, y, element, page);
 
     if (change->post_change_function)
       change->post_change_function(x, y);
-#else
-    if (next_element != EL_UNDEFINED)
-      ChangeElementNow(x, y, next_element);
-    else
-      ChangeElementNow(x, y, element_info[element].change.target_element);
-
-    if (changing_element[element].post_change_function)
-      changing_element[element].post_change_function(x, y);
-#endif
   }
 }
 
 static boolean CheckTriggeredElementChange(int lx, int ly, int trigger_element,
 					   int trigger_event)
 {
-  int i, x, y;
+  int i, j, x, y;
 
   if (!(trigger_events[trigger_element] & CH_EVENT_BIT(trigger_event)))
     return FALSE;
 
-  for (i=0; i<MAX_NUM_ELEMENTS; i++)
+#if 0
+  /* prevent this function from running into a loop */
+  if (trigger_event == CE_OTHER_IS_CHANGING)
+    Changed[lx][ly] = TRUE;
+#endif
+
+  for (i=0; i < NUM_CUSTOM_ELEMENTS; i++)
   {
-    if (!CAN_CHANGE(i) || !HAS_CHANGE_EVENT(i, trigger_event) ||
-	element_info[i].change.trigger_element != trigger_element)
+    int element = EL_CUSTOM_START + i;
+
+#if 1
+    boolean change_element = FALSE;
+    int page;
+
+    if (!CAN_CHANGE(element) ||
+	!HAS_ANY_CHANGE_EVENT(element, trigger_event))
       continue;
+
+    for (j=0; j < element_info[element].num_change_pages; j++)
+    {
+      if (element_info[element].change_page[j].trigger_element ==
+	  trigger_element)
+      {
+	change_element = TRUE;
+	page = j;
+
+	break;
+      }
+    }
+
+    if (!change_element)
+      continue;
+
+#else
+    if (!CAN_CHANGE(element) ||
+	!HAS_ANY_CHANGE_EVENT(element, trigger_event) ||
+	element_info[element].change->trigger_element != trigger_element)
+      continue;
+#endif
 
     for (y=0; y<lev_fieldy; y++) for (x=0; x<lev_fieldx; x++)
     {
       if (x == lx && y == ly)	/* do not change trigger element itself */
 	continue;
 
-      if (Changing[x][y])	/* do not change just changing elements */
+      if (Changed[x][y])	/* do not change already changed elements */
 	continue;
 
-      if (Feld[x][y] == i)
+      if (Feld[x][y] == element)
       {
 	ChangeDelay[x][y] = 1;
-	ChangeElement(x, y);
+	ChangeElement(x, y, page);
+
+#if 0
+	Changed[x][y] = TRUE;	/* prevent element from being changed again */
+#endif
       }
     }
   }
 
+#if 0
+  /* reset change prevention array */
+  for (y=0; y<lev_fieldy; y++) for (x=0; x<lev_fieldx; x++)
+    Changed[x][y] = FALSE;
+#endif
+
   return TRUE;
 }
 
-static boolean CheckElementChange(int x, int y, int element, int trigger_event)
+static boolean CheckElementChangeExt(int x, int y, int element,
+				     int trigger_event, int page)
 {
-  if (!CAN_CHANGE(element) || !HAS_CHANGE_EVENT(element, trigger_event))
+  if (!CAN_CHANGE(element) || !HAS_ANY_CHANGE_EVENT(element, trigger_event))
     return FALSE;
 
   if (Feld[x][y] == EL_BLOCKED)
     Blocked2Moving(x, y, &x, &y);
 
   ChangeDelay[x][y] = 1;
-  ChangeElement(x, y);
+  ChangeElement(x, y, page);
 
   return TRUE;
+}
+
+static boolean CheckElementChange(int x, int y, int element, int trigger_event)
+{
+  int page = element_info[element].event_page_num[trigger_event];
+
+  return CheckElementChangeExt(x, y, element, trigger_event, page);
 }
 
 static void PlayerActions(struct PlayerInfo *player, byte player_action)
@@ -5633,13 +5664,7 @@ static void PlayerActions(struct PlayerInfo *player, byte player_action)
     CheckGravityMovement(player);
 
     if (player->MovPos == 0)
-    {
-#if 0
-      printf("Trying... Player frame reset\n");
-#endif
-
       InitPlayerGfxAnimation(player, ACTION_DEFAULT, player->MovDir);
-    }
 
     if (player->MovPos == 0)	/* needed for tape.playing */
       player->is_moving = FALSE;
@@ -5774,6 +5799,8 @@ void GameActions()
 
   for (y=0; y<lev_fieldy; y++) for (x=0; x<lev_fieldx; x++)
   {
+    Changed[x][y] = FALSE;
+
     Stop[x][y] = FALSE;
     if (JustStopped[x][y] > 0)
       JustStopped[x][y]--;
@@ -5782,7 +5809,7 @@ void GameActions()
 
 #if 1
     /* reset finished pushing action (not done in ContinueMoving() to allow
-       continous pushing animation for elements without push delay) */
+       continous pushing animation for elements with zero push delay) */
     if (GfxAction[x][y] == ACTION_PUSHING && !IS_MOVING(x, y))
     {
       ResetGfxAnimation(x, y);
@@ -5850,7 +5877,7 @@ void GameActions()
     /* this may take place after moving, so 'element' may have changed */
     if (IS_CHANGING(x, y))
     {
-      ChangeElement(x, y);
+      ChangeElement(x, y, element_info[element].event_page_num[CE_DELAY]);
       element = Feld[x][y];
       graphic = el_act_dir2img(element, GfxAction[x][y], MovDir[x][y]);
     }
@@ -6515,6 +6542,9 @@ boolean MoveFigure(struct PlayerInfo *player, int dx, int dy)
 
     player->last_move_dir = player->MovDir;
     player->is_moving = TRUE;
+#if 1
+    player->snapped = FALSE;
+#endif
   }
   else
   {
@@ -6635,7 +6665,9 @@ void ScrollScreen(struct PlayerInfo *player, int mode)
 
 void TestIfPlayerTouchesCustomElement(int x, int y)
 {
+#if 0
   static boolean check_changing = FALSE;
+#endif
   static int xy[4][2] =
   {
     { 0, -1 },
@@ -6645,10 +6677,12 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
   };
   int i;
 
+#if 0
   if (check_changing)	/* prevent this function from running into a loop */
     return;
 
   check_changing = TRUE;
+#endif
 
   for (i=0; i<4; i++)
   {
@@ -6672,12 +6706,16 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
     }
   }
 
+#if 0
   check_changing = FALSE;
+#endif
 }
 
 void TestIfElementTouchesCustomElement(int x, int y)
 {
+#if 0
   static boolean check_changing = FALSE;
+#endif
   static int xy[4][2] =
   {
     { 0, -1 },
@@ -6686,13 +6724,16 @@ void TestIfElementTouchesCustomElement(int x, int y)
     { 0, +1 }
   };
   boolean change_center_element = FALSE;
+  int center_element_change_page = 0;
   int center_element = Feld[x][y];
-  int i;
+  int i, j;
 
+#if 0
   if (check_changing)	/* prevent this function from running into a loop */
     return;
 
   check_changing = TRUE;
+#endif
 
   for (i=0; i<4; i++)
   {
@@ -6707,19 +6748,51 @@ void TestIfElementTouchesCustomElement(int x, int y)
 
     /* check for change of center element (but change it only once) */
     if (IS_CUSTOM_ELEMENT(center_element) &&
-	border_element == element_info[center_element].change.trigger_element)
-      change_center_element = TRUE;
+	HAS_ANY_CHANGE_EVENT(center_element, CE_OTHER_IS_TOUCHING) &&
+	!change_center_element)
+    {
+      for (j=0; j < element_info[center_element].num_change_pages; j++)
+      {
+	struct ElementChangeInfo *change =
+	  &element_info[center_element].change_page[j];
+
+	if (change->events & CH_EVENT_BIT(CE_OTHER_IS_TOUCHING) &&
+	    change->trigger_element == border_element)
+	{
+	  change_center_element = TRUE;
+	  center_element_change_page = j;
+
+	  break;
+	}
+      }
+    }
 
     /* check for change of border element */
     if (IS_CUSTOM_ELEMENT(border_element) &&
-	center_element == element_info[border_element].change.trigger_element)
-      CheckElementChange(xx, yy, border_element, CE_OTHER_IS_TOUCHING);
+	HAS_ANY_CHANGE_EVENT(border_element, CE_OTHER_IS_TOUCHING))
+    {
+      for (j=0; j < element_info[border_element].num_change_pages; j++)
+      {
+	struct ElementChangeInfo *change =
+	  &element_info[border_element].change_page[j];
+
+	if (change->events & CH_EVENT_BIT(CE_OTHER_IS_TOUCHING) &&
+	    change->trigger_element == center_element)
+	{
+	  CheckElementChangeExt(xx,yy, border_element,CE_OTHER_IS_TOUCHING, j);
+	  break;
+	}
+      }
+    }
   }
 
   if (change_center_element)
-    CheckElementChange(x, y, center_element, CE_OTHER_IS_TOUCHING);
+    CheckElementChangeExt(x, y, center_element, CE_OTHER_IS_TOUCHING,
+			  center_element_change_page);
 
+#if 0
   check_changing = FALSE;
+#endif
 }
 
 void TestIfGoodThingHitsBadThing(int good_x, int good_y, int good_move_dir)
@@ -7407,6 +7480,10 @@ int DigField(struct PlayerInfo *player,
 
 	PlaySoundLevelElementAction(x, y, element, ACTION_DIGGING);
 
+	CheckTriggeredElementChange(x, y, element, CE_OTHER_GETS_DIGGED);
+
+	TestIfElementTouchesCustomElement(x, y);
+
 	break;
       }
       else if (IS_COLLECTIBLE(element))
@@ -7467,6 +7544,10 @@ int DigField(struct PlayerInfo *player,
 			     el2edimg(EL_KEY_1 + key_nr));
 	  redraw_mask |= REDRAW_DOOR_1;
 	}
+	else if (element == EL_ENVELOPE)
+	{
+	  ShowEnvelope();
+	}
 	else if (IS_DROPPABLE(element))	/* can be collected and dropped */
 	{
 	  int i;
@@ -7493,6 +7574,8 @@ int DigField(struct PlayerInfo *player,
 	PlaySoundLevelElementAction(x, y, element, ACTION_COLLECTING);
 
 	CheckTriggeredElementChange(x, y, element, CE_OTHER_GETS_COLLECTED);
+
+	TestIfElementTouchesCustomElement(x, y);
 
 	break;
       }
@@ -7634,7 +7717,14 @@ boolean SnapField(struct PlayerInfo *player, int dx, int dy)
     {
       player->is_digging = FALSE;
       player->is_collecting = FALSE;
+#if 1
+      player->is_moving = FALSE;
+#endif
     }
+
+#if 0
+    printf("::: trying to snap...\n");
+#endif
 
     return FALSE;
   }
@@ -7644,12 +7734,25 @@ boolean SnapField(struct PlayerInfo *player, int dx, int dy)
 
   player->MovDir = snap_direction;
 
+#if 1
+  player->is_digging = FALSE;
+  player->is_collecting = FALSE;
+#if 1
+  player->is_moving = FALSE;
+#endif
+#endif
+
   if (DigField(player, x, y, 0, 0, DF_SNAP) == MF_NO_ACTION)
     return FALSE;
 
   player->snapped = TRUE;
+#if 1
   player->is_digging = FALSE;
   player->is_collecting = FALSE;
+#if 1
+  player->is_moving = FALSE;
+#endif
+#endif
 
   DrawLevelField(x, y);
   BackToFront();
@@ -7712,6 +7815,8 @@ boolean DropElement(struct PlayerInfo *player)
 
     CheckTriggeredElementChange(jx, jy, new_element, CE_OTHER_GETS_DROPPED);
     CheckElementChange(jx, jy, new_element, CE_DROPPED_BY_PLAYER);
+
+    TestIfElementTouchesCustomElement(jx, jy);
   }
   else		/* player is dropping a dyna bomb */
   {

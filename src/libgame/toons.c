@@ -81,17 +81,18 @@ int getAnimationFrame(int num_frames, int delay, int mode, int start_frame,
 /* toon animation functions                                                  */
 /* ========================================================================= */
 
-static int get_toon_direction(char *direction_raw)
+static int get_toon_direction(char *direction_string_raw)
 {
-  static char *direction = NULL;
+  char *direction_string = getStringToLower(direction_string_raw);
+  int direction = (strcmp(direction_string, "left")  == 0 ? MV_LEFT :
+		   strcmp(direction_string, "right") == 0 ? MV_RIGHT :
+		   strcmp(direction_string, "up")    == 0 ? MV_UP :
+		   strcmp(direction_string, "down")  == 0 ? MV_DOWN :
+		   MV_NO_MOVING);
 
-  /* !!! MEMORY LEAK HERE! FIX IT! !!! */
-  setString(&direction, getStringToLower(direction_raw));
+  free(direction_string);
 
-  return (strcmp(direction, "left")  == 0 ? MV_LEFT :
-	  strcmp(direction, "right") == 0 ? MV_RIGHT :
-	  strcmp(direction, "up")    == 0 ? MV_UP :
-	  strcmp(direction, "down")  == 0 ? MV_DOWN : MV_NO_MOVING);
+  return direction;
 }
 
 void InitToonScreen(Bitmap *save_buffer,
@@ -310,6 +311,7 @@ void HandleAnimation(int mode)
 {
   static unsigned long animstart_delay = -1;
   static unsigned long animstart_delay_value = 0;
+  static boolean anim_running = FALSE;
   static boolean anim_restart = TRUE;
   static boolean reset_delay = TRUE;
   static int toon_nr = 0;
@@ -326,12 +328,17 @@ void HandleAnimation(int mode)
   {
     case ANIM_START:
       screen_info.prepare_backbuffer_function();
+
+      anim_running = TRUE;
       anim_restart = TRUE;
       reset_delay = TRUE;
 
       return;
 
     case ANIM_CONTINUE:
+      if (!anim_running)
+	return;
+
       break;
 
     case ANIM_STOP:
@@ -342,6 +349,8 @@ void HandleAnimation(int mode)
       setup.direct_draw = FALSE;
       screen_info.update_function();
       setup.direct_draw = draw_mode;
+
+      anim_running = FALSE;
 
       return;
 

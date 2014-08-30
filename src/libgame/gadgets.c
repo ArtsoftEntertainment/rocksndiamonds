@@ -22,6 +22,7 @@
 /* values for DrawGadget() */
 #define DG_UNPRESSED		0
 #define DG_PRESSED		1
+
 #define DG_BUFFERED		0
 #define DG_DIRECT		1
 
@@ -104,6 +105,67 @@ static struct GadgetInfo *getGadgetInfoFromMousePosition(int mx, int my)
   return NULL;
 }
 
+static void setTextAreaCursorExt(struct GadgetInfo *gi, boolean set_cursor_pos)
+{
+  char *text = gi->textarea.value;
+  int area_xsize = gi->textarea.xsize;
+  int area_ysize = gi->textarea.ysize;
+  int cursor_position = gi->textarea.cursor_position;
+  int cursor_x = gi->textarea.cursor_x;
+  int cursor_y = gi->textarea.cursor_y;
+  int pos = 0;
+  int x = 0;
+  int y = 0;
+
+  while (*text)
+  {
+    if (set_cursor_pos)		/* x/y => position */
+    {
+      if (y == cursor_y && (x == cursor_x || (x < cursor_x && *text == '\n')))
+	break;
+    }
+    else			/* position => x/y */
+    {
+      if (pos == cursor_position)
+	break;
+    }
+
+    if (x + 1 >= area_xsize || *text == '\n')
+    {
+      if (y + 1 >= area_ysize)
+	break;
+
+      x = 0;
+      y++;
+    }
+    else
+      x++;
+
+    text++;
+    pos++;
+  }
+
+  gi->textarea.cursor_x = x;
+  gi->textarea.cursor_y = y;
+  gi->textarea.cursor_x_preferred = x;
+  gi->textarea.cursor_position = pos;
+}
+
+static void setTextAreaCursorXY(struct GadgetInfo *gi, int x, int y)
+{
+  gi->textarea.cursor_x = x;
+  gi->textarea.cursor_y = y;
+
+  setTextAreaCursorExt(gi, TRUE);
+}
+
+static void setTextAreaCursorPosition(struct GadgetInfo *gi, int pos)
+{
+  gi->textarea.cursor_position = pos;
+
+  setTextAreaCursorExt(gi, FALSE);
+}
+
 static void default_callback_info(void *ptr)
 {
   return;
@@ -172,8 +234,8 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
       }
       break;
 
-    case GD_TYPE_TEXTINPUT_ALPHANUMERIC:
-    case GD_TYPE_TEXTINPUT_NUMERIC:
+    case GD_TYPE_TEXT_INPUT_ALPHANUMERIC:
+    case GD_TYPE_TEXT_INPUT_NUMERIC:
       {
 	int i;
 	char cursor_letter;
@@ -189,7 +251,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       border_x, gi->height, gi->x, gi->y);
 
 	/* middle part of gadget */
-	for (i=0; i < gi->text.size + 1; i++)
+	for (i=0; i < gi->textinput.size + 1; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
 				 font_width, gi->height,
 				 gi->x + border_x + i * font_width, gi->y);
@@ -201,7 +263,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       gi->x + gi->width - border_x, gi->y);
 
 	/* set text value */
-	strcpy(text, gi->text.value);
+	strcpy(text, gi->textinput.value);
 	strcat(text, " ");
 
 	/* gadget text value */
@@ -209,15 +271,107 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 		    gi->x + border_x, gi->y + border_y, text,
 		    font_nr, BLIT_MASKED);
 
-	cursor_letter = gi->text.value[gi->text.cursor_position];
+	cursor_letter = gi->textinput.value[gi->textinput.cursor_position];
 	cursor_string[0] = (cursor_letter != '\0' ? cursor_letter : ' ');
 	cursor_string[1] = '\0';
 
 	/* draw cursor, if active */
 	if (pressed)
 	  DrawTextExt(drawto,
-		      gi->x + border_x + gi->text.cursor_position * font_width,
+		      gi->x + border_x +
+		      gi->textinput.cursor_position * font_width,
 		      gi->y + border_y, cursor_string,
+		      font_nr, BLIT_INVERSE);
+      }
+      break;
+
+    case GD_TYPE_TEXT_AREA:
+      {
+	int i;
+	char cursor_letter;
+	char cursor_string[2];
+	int font_nr = (pressed ? gi->font_active : gi->font);
+	int font_width = getFontWidth(font_nr);
+	int font_height = getFontHeight(font_nr);
+	int border_x = gi->border.xsize;
+	int border_y = gi->border.ysize;
+	int gd_height = 2 * border_y + font_height;
+
+	/* top left part of gadget border */
+	BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y,
+			       border_x, border_y, gi->x, gi->y);
+
+	/* top middle part of gadget border */
+	for (i=0; i < gi->textarea.xsize; i++)
+	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
+				 font_width, border_y,
+				 gi->x + border_x + i * font_width, gi->y);
+
+	/* top right part of gadget border */
+	BlitBitmapOnBackground(gd->bitmap, drawto,
+			       gd->x + gi->border.width - border_x, gd->y,
+			       border_x, border_y,
+			       gi->x + gi->width - border_x, gi->y);
+
+	/* left and right part of gadget border for each row */
+	for (i=0; i < gi->textarea.ysize; i++)
+	{
+	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y + border_y,
+				 border_x, font_height,
+				 gi->x, gi->y + border_y + i * font_height);
+	  BlitBitmapOnBackground(gd->bitmap, drawto,
+				 gd->x + gi->border.width - border_x,
+				 gd->y + border_y,
+				 border_x, font_height,
+				 gi->x + gi->width - border_x,
+				 gi->y + border_y + i * font_height);
+	}
+
+	/* bottom left part of gadget border */
+	BlitBitmapOnBackground(gd->bitmap, drawto,
+			       gd->x, gd->y + gd_height - border_y,
+			       border_x, border_y,
+			       gi->x, gi->y + gi->height - border_y);
+
+	/* bottom middle part of gadget border */
+	for (i=0; i < gi->textarea.xsize; i++)
+	  BlitBitmapOnBackground(gd->bitmap, drawto,
+				 gd->x + border_x,
+				 gd->y + gd_height - border_y,
+				 font_width, border_y,
+				 gi->x + border_x + i * font_width,
+				 gi->y + gi->height - border_y);
+
+	/* bottom right part of gadget border */
+	BlitBitmapOnBackground(gd->bitmap, drawto,
+			       gd->x + gi->border.width - border_x,
+			       gd->y + gd_height - border_y,
+			       border_x, border_y,
+			       gi->x + gi->width - border_x,
+			       gi->y + gi->height - border_y);
+
+	ClearRectangleOnBackground(drawto,
+				   gi->x + border_x,
+				   gi->y + border_y,
+				   gi->width - 2 * border_x,
+				   gi->height - 2 * border_y);
+
+	/* gadget text value */
+	DrawTextToTextArea(gi->x + border_x, gi->y + border_y,
+			   gi->textarea.value, font_nr,
+			   gi->textarea.xsize, gi->textarea.ysize,
+			   BLIT_ON_BACKGROUND);
+
+	cursor_letter = gi->textarea.value[gi->textarea.cursor_position];
+	cursor_string[0] = (cursor_letter != '\0' ? cursor_letter : ' ');
+	cursor_string[1] = '\0';
+
+	/* draw cursor, if active */
+	if (pressed)
+	  DrawTextExt(drawto,
+		      gi->x + border_x + gi->textarea.cursor_x * font_width,
+		      gi->y + border_y + gi->textarea.cursor_y * font_height,
+		      cursor_string,
 		      font_nr, BLIT_INVERSE);
       }
       break;
@@ -366,7 +520,10 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	  /* selectbox text values */
 	  for (i=0; i < gi->selectbox.num_values; i++)
 	  {
-	    int mask_mode;
+	    int mask_mode = BLIT_MASKED;
+
+	    strncpy(text, gi->selectbox.options[i].text, gi->selectbox.size);
+	    text[gi->selectbox.size] = '\0';
 
 	    if (i == gi->selectbox.current_index)
 	    {
@@ -376,17 +533,11 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			    gi->selectbox.width - 2 * border_x, font_height,
 			    gi->selectbox.inverse_color);
 
-	      strncpy(text, gi->selectbox.options[i].text, gi->selectbox.size);
-	      text[1 + gi->selectbox.size] = '\0';
-
-	      mask_mode = BLIT_INVERSE;
-	    }
-	    else
-	    {
-	      strncpy(text, gi->selectbox.options[i].text, gi->selectbox.size);
+	      /* prevent use of cursor graphic by drawing at least two chars */
+	      strcat(text, "  ");
 	      text[gi->selectbox.size] = '\0';
 
-	      mask_mode = BLIT_MASKED;
+	      mask_mode = BLIT_INVERSE;
 	    }
 
 	    DrawTextExt(drawto,
@@ -590,6 +741,12 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	gi->active = (boolean)va_arg(ap, int);
 	break;
 
+      case GDI_DIRECT_DRAW:
+	/* take care here: "boolean" is typedef'ed as "unsigned char",
+	   which gets promoted to "int" */
+	gi->direct_draw = (boolean)va_arg(ap, int);
+	break;
+
       case GDI_CHECKED:
 	/* take care here: "boolean" is typedef'ed as "unsigned char",
 	   which gets promoted to "int" */
@@ -601,26 +758,26 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	break;
 
       case GDI_NUMBER_VALUE:
-	gi->text.number_value = va_arg(ap, long);
-	sprintf(gi->text.value, "%d", gi->text.number_value);
-	gi->text.cursor_position = strlen(gi->text.value);
+	gi->textinput.number_value = va_arg(ap, long);
+	sprintf(gi->textinput.value, "%d", gi->textinput.number_value);
+	gi->textinput.cursor_position = strlen(gi->textinput.value);
 	break;
 
       case GDI_NUMBER_MIN:
-	gi->text.number_min = va_arg(ap, long);
-	if (gi->text.number_value < gi->text.number_min)
+	gi->textinput.number_min = va_arg(ap, long);
+	if (gi->textinput.number_value < gi->textinput.number_min)
 	{
-	  gi->text.number_value = gi->text.number_min;
-	  sprintf(gi->text.value, "%d", gi->text.number_value);
+	  gi->textinput.number_value = gi->textinput.number_min;
+	  sprintf(gi->textinput.value, "%d", gi->textinput.number_value);
 	}
 	break;
 
       case GDI_NUMBER_MAX:
-	gi->text.number_max = va_arg(ap, long);
-	if (gi->text.number_value > gi->text.number_max)
+	gi->textinput.number_max = va_arg(ap, long);
+	if (gi->textinput.number_value > gi->textinput.number_max)
 	{
-	  gi->text.number_value = gi->text.number_max;
-	  sprintf(gi->text.value, "%d", gi->text.number_value);
+	  gi->textinput.number_value = gi->textinput.number_max;
+	  sprintf(gi->textinput.value, "%d", gi->textinput.number_value);
 	}
 	break;
 
@@ -628,15 +785,16 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	{
 	  int max_textsize = MAX_GADGET_TEXTSIZE;
 
-	  if (gi->text.size)
-	    max_textsize = MIN(gi->text.size, MAX_GADGET_TEXTSIZE - 1);
+	  if (gi->textinput.size)
+	    max_textsize = MIN(gi->textinput.size, MAX_GADGET_TEXTSIZE - 1);
 
-	  strncpy(gi->text.value, va_arg(ap, char *), max_textsize);
-	  gi->text.value[max_textsize] = '\0';
-	  gi->text.cursor_position = strlen(gi->text.value);
+	  strncpy(gi->textinput.value, va_arg(ap, char *), max_textsize);
+	  gi->textinput.value[max_textsize] = '\0';
+	  gi->textinput.cursor_position = strlen(gi->textinput.value);
 
-	  /* same tag also used for textbutton definition */
-	  strcpy(gi->textbutton.value, gi->text.value);
+	  /* same tag also used for other gadget definitions */
+	  strcpy(gi->textbutton.value, gi->textinput.value);
+	  strcpy(gi->textarea.value, gi->textinput.value);
 	}
 	break;
 
@@ -645,13 +803,13 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	  int tag_value = va_arg(ap, int);
 	  int max_textsize = MIN(tag_value, MAX_GADGET_TEXTSIZE - 1);
 
-	  gi->text.size = max_textsize;
-	  gi->text.value[max_textsize] = '\0';
+	  gi->textinput.size = max_textsize;
+	  gi->textinput.value[max_textsize] = '\0';
 
-	  /* same tag also used for textbutton and selectbox definition */
-	  strcpy(gi->textbutton.value, gi->text.value);
-	  gi->textbutton.size = gi->text.size;
-	  gi->selectbox.size = gi->text.size;
+	  /* same tag also used for other gadget definitions */
+	  strcpy(gi->textbutton.value, gi->textinput.value);
+	  gi->textbutton.size = gi->textinput.size;
+	  gi->selectbox.size = gi->textinput.size;
 	}
 	break;
 
@@ -752,6 +910,17 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	  gi->drawing.item_xsize = gi->width / gi->drawing.area_xsize;
 	  gi->drawing.item_ysize = gi->height / gi->drawing.area_ysize;
 	}
+
+	/* same tag also used for other gadget definitions */
+	gi->textarea.xsize = gi->drawing.area_xsize;
+	gi->textarea.ysize = gi->drawing.area_ysize;
+
+	if (gi->type & GD_TYPE_TEXT_AREA)	/* force recalculation */
+	{
+	  gi->width = 0;
+	  gi->height = 0;
+	}
+
 	break;
 
       case GDI_ITEM_SIZE:
@@ -808,7 +977,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 
   /* adjust gadget values in relation to other gadget values */
 
-  if (gi->type & GD_TYPE_TEXTINPUT)
+  if (gi->type & GD_TYPE_TEXT_INPUT)
   {
     int font_nr = gi->font_active;
     int font_width = getFontWidth(font_nr);
@@ -816,7 +985,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     int border_xsize = gi->border.xsize;
     int border_ysize = gi->border.ysize;
 
-    gi->width  = 2 * border_xsize + (gi->text.size + 1) * font_width;
+    gi->width  = 2 * border_xsize + (gi->textinput.size + 1) * font_width;
     gi->height = 2 * border_ysize + font_height;
   }
 
@@ -832,7 +1001,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     Bitmap *src_bitmap;
     int src_x, src_y;
 
-    gi->width  = 2 * border_xsize + gi->text.size * font_width + button_size;
+    gi->width  = 2 * border_xsize + gi->textinput.size*font_width +button_size;
     gi->height = 2 * border_ysize + font_height;
 
     if (gi->selectbox.options == NULL)
@@ -863,9 +1032,9 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     gi->selectbox.open = FALSE;
   }
 
-  if (gi->type & GD_TYPE_TEXTINPUT_NUMERIC)
+  if (gi->type & GD_TYPE_TEXT_INPUT_NUMERIC)
   {
-    struct GadgetTextInput *text = &gi->text;
+    struct GadgetTextInput *text = &gi->textinput;
     int value = text->number_value;
 
     text->number_value = (value < text->number_min ? text->number_min :
@@ -907,6 +1076,26 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     if (gs->item_position == gs->items_max - gs->items_visible)
       gs->position = gs->position_max;
   }
+
+  if (gi->type & GD_TYPE_TEXT_AREA)
+  {
+    int font_nr = gi->font_active;
+    int font_width = getFontWidth(font_nr);
+    int font_height = getFontHeight(font_nr);
+    int border_xsize = gi->border.xsize;
+    int border_ysize = gi->border.ysize;
+
+    if (gi->width == 0 || gi->height == 0)
+    {
+      gi->width  = 2 * border_xsize + gi->textarea.xsize * font_width;
+      gi->height = 2 * border_ysize + gi->textarea.ysize * font_height;
+    }
+    else
+    {
+      gi->textarea.xsize = (gi->width  - 2 * border_xsize) / font_width;
+      gi->textarea.ysize = (gi->height - 2 * border_ysize) / font_height;
+    }
+  }
 }
 
 void ModifyGadget(struct GadgetInfo *gi, int first_tag, ...)
@@ -923,7 +1112,7 @@ void ModifyGadget(struct GadgetInfo *gi, int first_tag, ...)
 void RedrawGadget(struct GadgetInfo *gi)
 {
   if (gi->mapped)
-    DrawGadget(gi, gi->state, DG_DIRECT);
+    DrawGadget(gi, gi->state, gi->direct_draw);
 }
 
 struct GadgetInfo *CreateGadget(int first_tag, ...)
@@ -936,6 +1125,8 @@ struct GadgetInfo *CreateGadget(int first_tag, ...)
   new_gadget->callback_info = default_callback_info;
   new_gadget->callback_action = default_callback_action;
   new_gadget->active = TRUE;
+  new_gadget->direct_draw = TRUE;
+
   new_gadget->next = NULL;
 
   va_start(ap, first_tag);
@@ -975,22 +1166,22 @@ void FreeGadget(struct GadgetInfo *gi)
 
 static void CheckRangeOfNumericInputGadget(struct GadgetInfo *gi)
 {
-  if (gi->type != GD_TYPE_TEXTINPUT_NUMERIC)
+  if (gi->type != GD_TYPE_TEXT_INPUT_NUMERIC)
     return;
 
-  gi->text.number_value = atoi(gi->text.value);
+  gi->textinput.number_value = atoi(gi->textinput.value);
 
-  if (gi->text.number_value < gi->text.number_min)
-    gi->text.number_value = gi->text.number_min;
-  if (gi->text.number_value > gi->text.number_max)
-    gi->text.number_value = gi->text.number_max;
+  if (gi->textinput.number_value < gi->textinput.number_min)
+    gi->textinput.number_value = gi->textinput.number_min;
+  if (gi->textinput.number_value > gi->textinput.number_max)
+    gi->textinput.number_value = gi->textinput.number_max;
 
-  sprintf(gi->text.value, "%d", gi->text.number_value);
+  sprintf(gi->textinput.value, "%d", gi->textinput.number_value);
 
-  if (gi->text.cursor_position < 0)
-    gi->text.cursor_position = 0;
-  else if (gi->text.cursor_position > strlen(gi->text.value))
-    gi->text.cursor_position = strlen(gi->text.value);
+  if (gi->textinput.cursor_position < 0)
+    gi->textinput.cursor_position = 0;
+  else if (gi->textinput.cursor_position > strlen(gi->textinput.value))
+    gi->textinput.cursor_position = strlen(gi->textinput.value);
 }
 
 /* global pointer to gadget actually in use (when mouse button pressed) */
@@ -1076,19 +1267,26 @@ void RemapAllGadgets()
   MultiMapGadgets(MULTIMAP_ALL | MULTIMAP_REMAP);
 }
 
-boolean anyTextInputGadgetActive()
+static boolean anyTextInputGadgetActive()
 {
-  return (last_gi && (last_gi->type & GD_TYPE_TEXTINPUT) && last_gi->mapped);
+  return (last_gi && (last_gi->type & GD_TYPE_TEXT_INPUT) && last_gi->mapped);
 }
 
-boolean anySelectboxGadgetActive()
+static boolean anyTextAreaGadgetActive()
+{
+  return (last_gi && (last_gi->type & GD_TYPE_TEXT_AREA) && last_gi->mapped);
+}
+
+static boolean anySelectboxGadgetActive()
 {
   return (last_gi && (last_gi->type & GD_TYPE_SELECTBOX) && last_gi->mapped);
 }
 
 boolean anyTextGadgetActive()
 {
-  return (anyTextInputGadgetActive() || anySelectboxGadgetActive());
+  return (anyTextInputGadgetActive() ||
+	  anyTextAreaGadgetActive() ||
+	  anySelectboxGadgetActive());
 }
 
 void ClickOnGadget(struct GadgetInfo *gi, int button)
@@ -1151,76 +1349,20 @@ void HandleGadgets(int mx, int my, int button)
   last_mx = mx;
   last_my = my;
 
-  /* special treatment for text and number input gadgets */
-  if (anyTextInputGadgetActive() && button != 0 && !motion_status)
+  /* if mouse button pressed outside text or selectbox gadget, deactivate it */
+  if (anyTextGadgetActive() &&
+      button != 0 && !motion_status && new_gi != last_gi)
   {
-    struct GadgetInfo *gi = last_gi;
+    CheckRangeOfNumericInputGadget(last_gi);	/* in case of numeric gadget */
 
-    if (new_gi == last_gi)
-    {
-      int old_cursor_position = gi->text.cursor_position;
+    DrawGadget(last_gi, DG_UNPRESSED, last_gi->direct_draw);
 
-      /* if mouse button pressed inside activated text gadget, set cursor */
-      gi->text.cursor_position =
-	(mx - gi->x - gi->border.xsize) / getFontWidth(gi->font);
+    last_gi->event.type = GD_EVENT_TEXT_LEAVING;
 
-      if (gi->text.cursor_position < 0)
-	gi->text.cursor_position = 0;
-      else if (gi->text.cursor_position > strlen(gi->text.value))
-	gi->text.cursor_position = strlen(gi->text.value);
+    if (last_gi->event_mask & GD_EVENT_TEXT_LEAVING)
+      last_gi->callback_action(last_gi);
 
-      if (gi->text.cursor_position != old_cursor_position)
-	DrawGadget(gi, DG_PRESSED, DG_DIRECT);
-    }
-    else
-    {
-      /* if mouse button pressed outside text input gadget, deactivate it */
-      CheckRangeOfNumericInputGadget(gi);
-      DrawGadget(gi, DG_UNPRESSED, DG_DIRECT);
-
-      gi->event.type = GD_EVENT_TEXT_LEAVING;
-
-      if (gi->event_mask & GD_EVENT_TEXT_LEAVING)
-	gi->callback_action(gi);
-
-      last_gi = NULL;
-    }
-  }
-
-  /* special treatment for selectbox gadgets */
-  if (anySelectboxGadgetActive() && button != 0 && !motion_status)
-  {
-    struct GadgetInfo *gi = last_gi;
-
-    if (new_gi == last_gi)
-    {
-      int old_index = gi->selectbox.current_index;
-
-      /* if mouse button pressed inside activated selectbox, select value */
-      if (my >= gi->selectbox.y && my < gi->selectbox.y + gi->selectbox.height)
-	gi->selectbox.current_index =
-	  (my - gi->selectbox.y - gi->border.ysize) / getFontHeight(gi->font);
-
-      if (gi->selectbox.current_index < 0)
-	gi->selectbox.current_index = 0;
-      else if (gi->selectbox.current_index > gi->selectbox.num_values - 1)
-	gi->selectbox.current_index = gi->selectbox.num_values - 1;
-
-      if (gi->selectbox.current_index != old_index)
-	DrawGadget(gi, DG_PRESSED, DG_DIRECT);
-    }
-    else
-    {
-      /* if mouse button pressed outside selectbox gadget, deactivate it */
-      DrawGadget(gi, DG_UNPRESSED, DG_DIRECT);
-
-      gi->event.type = GD_EVENT_TEXT_LEAVING;
-
-      if (gi->event_mask & GD_EVENT_TEXT_LEAVING)
-	gi->callback_action(gi);
-
-      last_gi = NULL;
-    }
+    last_gi = NULL;
   }
 
   gadget_pressed =
@@ -1269,11 +1411,12 @@ void HandleGadgets(int mx, int my, int button)
   /* if mouse button released, no gadget needs to be handled anymore */
   if (gadget_released)
   {
-    if ((last_gi->type & GD_TYPE_SELECTBOX) &&
+    if (last_gi->type & GD_TYPE_SELECTBOX &&
 	(gadget_released_inside_select_line ||
-	 gadget_released_off_borders))		    /* selectbox stays open */
+	 gadget_released_off_borders))		     /* selectbox stays open */
       gi->selectbox.stay_open = TRUE;
-    else if (!(last_gi->type & GD_TYPE_TEXTINPUT))  /* text input stays open */
+    else if (!(last_gi->type & GD_TYPE_TEXT_INPUT ||
+	       last_gi->type & GD_TYPE_TEXT_AREA))  /* text input stays open */
       last_gi = NULL;
   }
 
@@ -1297,6 +1440,36 @@ void HandleGadgets(int mx, int my, int button)
       if (last_x != gi->event.x || last_y != gi->event.y)
 	changed_position = TRUE;
     }
+    else if (gi->type & GD_TYPE_TEXT_INPUT && button != 0 && !motion_status)
+    {
+      int old_cursor_position = gi->textinput.cursor_position;
+
+      /* if mouse button pressed inside activated text gadget, set cursor */
+      gi->textinput.cursor_position =
+	(mx - gi->x - gi->border.xsize) / getFontWidth(gi->font);
+
+      if (gi->textinput.cursor_position < 0)
+	gi->textinput.cursor_position = 0;
+      else if (gi->textinput.cursor_position > strlen(gi->textinput.value))
+	gi->textinput.cursor_position = strlen(gi->textinput.value);
+
+      if (gi->textinput.cursor_position != old_cursor_position)
+	DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (gi->type & GD_TYPE_TEXT_AREA && button != 0 && !motion_status)
+    {
+      int old_cursor_position = gi->textarea.cursor_position;
+      int x = (mx - gi->x - gi->border.xsize) / getFontWidth(gi->font);
+      int y = (my - gi->y - gi->border.ysize) / getFontHeight(gi->font);
+
+      x = (x < 0 ? 0 : x >= gi->textarea.xsize ? gi->textarea.xsize - 1 : x);
+      y = (y < 0 ? 0 : y >= gi->textarea.ysize ? gi->textarea.ysize - 1 : y);
+
+      setTextAreaCursorXY(gi, x, y);
+
+      if (gi->textarea.cursor_position != old_cursor_position)
+	DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
     else if (gi->type & GD_TYPE_SELECTBOX)
     {
       int old_index = gi->selectbox.current_index;
@@ -1312,7 +1485,7 @@ void HandleGadgets(int mx, int my, int button)
 	gi->selectbox.current_index = gi->selectbox.num_values - 1;
 
       if (gi->selectbox.current_index != old_index)
-	DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+	DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
   }
 
@@ -1329,15 +1502,6 @@ void HandleGadgets(int mx, int my, int button)
     {
       last_info_gi->event.type = GD_EVENT_INFO_LEAVING;
       last_info_gi->callback_info(last_info_gi);
-
-#if 0
-      default_callback_info(NULL);
-
-      printf("It seems that we are leaving gadget [%s]!\n",
-	     (last_info_gi != NULL &&
-	      last_info_gi->info_text != NULL ?
-	      last_info_gi->info_text : ""));
-#endif
     }
 
     last_info_gi = new_gi;
@@ -1361,7 +1525,7 @@ void HandleGadgets(int mx, int my, int button)
 	    rgi != gi)
 	{
 	  rgi->checked = FALSE;
-	  DrawGadget(rgi, DG_UNPRESSED, DG_DIRECT);
+	  DrawGadget(rgi, DG_UNPRESSED, rgi->direct_draw);
 	}
 
 	rgi = rgi->next;
@@ -1431,7 +1595,7 @@ void HandleGadgets(int mx, int my, int button)
       }
     }
 
-    DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+    DrawGadget(gi, DG_PRESSED, gi->direct_draw);
 
     gi->state = GD_BUTTON_PRESSED;
     gi->event.type = GD_EVENT_PRESSED;
@@ -1459,9 +1623,9 @@ void HandleGadgets(int mx, int my, int button)
     if (gi->type & GD_TYPE_BUTTON)
     {
       if (gadget_moving_inside && gi->state == GD_BUTTON_UNPRESSED)
-	DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+	DrawGadget(gi, DG_PRESSED, gi->direct_draw);
       else if (gadget_moving_off_borders && gi->state == GD_BUTTON_PRESSED)
-	DrawGadget(gi, DG_UNPRESSED, DG_DIRECT);
+	DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
     }
     else if (gi->type & GD_TYPE_SELECTBOX)
     {
@@ -1478,7 +1642,7 @@ void HandleGadgets(int mx, int my, int button)
 	gi->selectbox.current_index = gi->selectbox.num_values - 1;
 
       if (gi->selectbox.current_index != old_index)
-	DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+	DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
     else if (gi->type & GD_TYPE_SCROLLBAR)
     {
@@ -1506,7 +1670,7 @@ void HandleGadgets(int mx, int my, int button)
 	changed_position = TRUE;
       }
 
-      DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
 
     gi->state = (gadget_moving_inside || gi->type & GD_TYPE_SCROLLBAR ?
@@ -1533,8 +1697,9 @@ void HandleGadgets(int mx, int my, int button)
     }
 
     if (deactivate_gadget &&
-	!(gi->type & GD_TYPE_TEXTINPUT))	    /* text input stays open */
-      DrawGadget(gi, DG_UNPRESSED, DG_DIRECT);
+	!(gi->type & GD_TYPE_TEXT_INPUT ||
+	  gi->type & GD_TYPE_TEXT_AREA))	    /* text input stays open */
+      DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
 
     gi->state = GD_BUTTON_UNPRESSED;
     gi->event.type = GD_EVENT_RELEASED;
@@ -1546,7 +1711,7 @@ void HandleGadgets(int mx, int my, int button)
   if (gadget_released_off_borders)
   {
     if (gi->type & GD_TYPE_SCROLLBAR)
-      DrawGadget(gi, DG_UNPRESSED, DG_DIRECT);
+      DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
 
     gi->event.type = GD_EVENT_RELEASED;
 
@@ -1560,71 +1725,161 @@ void HandleGadgets(int mx, int my, int button)
     new_gi->state = GD_BUTTON_UNPRESSED;
 }
 
+static void insertCharIntoTextArea(struct GadgetInfo *gi, char c)
+{
+  char text[MAX_GADGET_TEXTSIZE];
+  int cursor_position = gi->textarea.cursor_position;
+
+  if (strlen(gi->textarea.value) == MAX_GADGET_TEXTSIZE) /* no space left */
+    return;
+
+  strcpy(text, gi->textarea.value);
+  strcpy(&gi->textarea.value[cursor_position + 1], &text[cursor_position]);
+  gi->textarea.value[cursor_position] = c;
+
+  setTextAreaCursorPosition(gi, gi->textarea.cursor_position + 1);
+}
+
 void HandleGadgetsKeyInput(Key key)
 {
   struct GadgetInfo *gi = last_gi;
 
   if (gi == NULL || !gi->mapped ||
-      !((gi->type & GD_TYPE_TEXTINPUT) || (gi->type & GD_TYPE_SELECTBOX)))
+      !(gi->type & GD_TYPE_TEXT_INPUT ||
+	gi->type & GD_TYPE_TEXT_AREA ||
+	gi->type & GD_TYPE_SELECTBOX))
     return;
 
   if (key == KSYM_Return)	/* valid for both text input and selectbox */
   {
-    if (gi->type & GD_TYPE_TEXTINPUT)
+    if (gi->type & GD_TYPE_TEXT_INPUT)
       CheckRangeOfNumericInputGadget(gi);
     else if (gi->type & GD_TYPE_SELECTBOX)
       gi->selectbox.index = gi->selectbox.current_index;
 
-    DrawGadget(gi, DG_UNPRESSED, DG_DIRECT);
+    if (gi->type & GD_TYPE_TEXT_AREA)
+    {
+      insertCharIntoTextArea(gi, '\n');
 
-    gi->event.type = GD_EVENT_TEXT_RETURN;
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else
+    {
+      DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
+
+      gi->event.type = GD_EVENT_TEXT_RETURN;
+
+      last_gi = NULL;
+    }
 
     if (gi->event_mask & GD_EVENT_TEXT_RETURN)
       gi->callback_action(gi);
-
-    last_gi = NULL;
   }
-  else if (gi->type & GD_TYPE_TEXTINPUT)	/* only valid for text input */
+  else if (gi->type & GD_TYPE_TEXT_INPUT)	/* only valid for text input */
   {
     char text[MAX_GADGET_TEXTSIZE];
-    int text_length = strlen(gi->text.value);
-    int cursor_pos = gi->text.cursor_position;
+    int text_length = strlen(gi->textinput.value);
+    int cursor_pos = gi->textinput.cursor_position;
     char letter = getCharFromKey(key);
-    boolean legal_letter = (gi->type == GD_TYPE_TEXTINPUT_NUMERIC ?
+    boolean legal_letter = (gi->type == GD_TYPE_TEXT_INPUT_NUMERIC ?
 			    letter >= '0' && letter <= '9' :
 			    letter != 0);
 
-    if (legal_letter && text_length < gi->text.size)
+    if (legal_letter && text_length < gi->textinput.size)
     {
-      strcpy(text, gi->text.value);
-      strcpy(&gi->text.value[cursor_pos + 1], &text[cursor_pos]);
-      gi->text.value[cursor_pos] = letter;
-      gi->text.cursor_position++;
+      strcpy(text, gi->textinput.value);
+      strcpy(&gi->textinput.value[cursor_pos + 1], &text[cursor_pos]);
+      gi->textinput.value[cursor_pos] = letter;
+      gi->textinput.cursor_position++;
 
-      DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
     else if (key == KSYM_Left && cursor_pos > 0)
     {
-      gi->text.cursor_position--;
-      DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+      gi->textinput.cursor_position--;
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
     else if (key == KSYM_Right && cursor_pos < text_length)
     {
-      gi->text.cursor_position++;
-      DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+      gi->textinput.cursor_position++;
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
     else if (key == KSYM_BackSpace && cursor_pos > 0)
     {
-      strcpy(text, gi->text.value);
-      strcpy(&gi->text.value[cursor_pos - 1], &text[cursor_pos]);
-      gi->text.cursor_position--;
-      DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+      strcpy(text, gi->textinput.value);
+      strcpy(&gi->textinput.value[cursor_pos - 1], &text[cursor_pos]);
+      gi->textinput.cursor_position--;
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
     else if (key == KSYM_Delete && cursor_pos < text_length)
     {
-      strcpy(text, gi->text.value);
-      strcpy(&gi->text.value[cursor_pos], &text[cursor_pos + 1]);
-      DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+      strcpy(text, gi->textinput.value);
+      strcpy(&gi->textinput.value[cursor_pos], &text[cursor_pos + 1]);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+  }
+  else if (gi->type & GD_TYPE_TEXT_AREA)	/* only valid for text area */
+  {
+    char text[MAX_GADGET_TEXTSIZE];
+    int text_length = strlen(gi->textarea.value);
+    int area_ysize = gi->textarea.ysize;
+    int cursor_x_pref = gi->textarea.cursor_x_preferred;
+    int cursor_y = gi->textarea.cursor_y;
+    int cursor_pos = gi->textarea.cursor_position;
+    char letter = getCharFromKey(key);
+    boolean legal_letter = (letter != 0);
+
+    if (legal_letter)
+    {
+      insertCharIntoTextArea(gi, letter);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_Left && cursor_pos > 0)
+    {
+      setTextAreaCursorPosition(gi, gi->textarea.cursor_position - 1);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_Right && cursor_pos < text_length)
+    {
+      setTextAreaCursorPosition(gi, gi->textarea.cursor_position + 1);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_Up && cursor_y > 0)
+    {
+      setTextAreaCursorXY(gi, cursor_x_pref, cursor_y - 1);
+      gi->textarea.cursor_x_preferred = cursor_x_pref;
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_Down && cursor_y < area_ysize - 1)
+    {
+      setTextAreaCursorXY(gi, cursor_x_pref, cursor_y + 1);
+      gi->textarea.cursor_x_preferred = cursor_x_pref;
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_BackSpace && cursor_pos > 0)
+    {
+      strcpy(text, gi->textarea.value);
+      strcpy(&gi->textarea.value[cursor_pos - 1], &text[cursor_pos]);
+
+      setTextAreaCursorPosition(gi, gi->textarea.cursor_position - 1);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_Delete && cursor_pos < text_length)
+    {
+      strcpy(text, gi->textarea.value);
+      strcpy(&gi->textarea.value[cursor_pos], &text[cursor_pos + 1]);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
   }
   else if (gi->type & GD_TYPE_SELECTBOX)	/* only valid for selectbox */
@@ -1635,12 +1890,14 @@ void HandleGadgetsKeyInput(Key key)
     if (key == KSYM_Up && index > 0)
     {
       gi->selectbox.current_index--;
-      DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
     else if (key == KSYM_Down && index < num_values - 1)
     {
       gi->selectbox.current_index++;
-      DrawGadget(gi, DG_PRESSED, DG_DIRECT);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
   }
 }

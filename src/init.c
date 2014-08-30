@@ -554,22 +554,24 @@ void InitElementGraphicInfo()
   {
     for (act=0; act<NUM_ACTIONS; act++)
     {
-      if (graphic_info[element_info[i].graphic[act]].bitmap == NULL)
+      int graphic;
+
+      graphic = element_info[i].graphic[act];
+      if (graphic > 0 && graphic_info[graphic].bitmap == NULL)
 	element_info[i].graphic[act] = -1;
 
-      if (graphic_info[element_info[i].crumbled[act]].bitmap == NULL)
+      graphic = element_info[i].crumbled[act];
+      if (graphic > 0 && graphic_info[graphic].bitmap == NULL)
 	element_info[i].crumbled[act] = -1;
 
       for (dir=0; dir<NUM_DIRECTIONS; dir++)
       {
-	int graphic;
-
 	graphic = element_info[i].direction_graphic[act][dir];
-	if (graphic_info[graphic].bitmap == NULL)
+	if (graphic > 0 && graphic_info[graphic].bitmap == NULL)
 	  element_info[i].direction_graphic[act][dir] = -1;
 
 	graphic = element_info[i].direction_crumbled[act][dir];
-	if (graphic_info[graphic].bitmap == NULL)
+	if (graphic > 0 && graphic_info[graphic].bitmap == NULL)
 	  element_info[i].direction_crumbled[act][dir] = -1;
       }
     }
@@ -773,6 +775,7 @@ static void set_graphic_parameters(int graphic, char **parameter_raw)
   graphic_info[graphic].offset_y = 0;	/* ... will be corrected later */
   graphic_info[graphic].crumbled_like = -1;	/* do not use clone element */
   graphic_info[graphic].diggable_like = -1;	/* do not use clone element */
+  graphic_info[graphic].border_size = TILEX / 8;  /* "CRUMBLED" border size */
 
   /* optional x and y tile position of animation frame sequence */
   if (parameter[GFX_ARG_XPOS] != ARG_UNDEFINED_VALUE)
@@ -862,6 +865,10 @@ static void set_graphic_parameters(int graphic, char **parameter_raw)
   if (parameter[GFX_ARG_DIGGABLE_LIKE] != ARG_UNDEFINED_VALUE)
     graphic_info[graphic].diggable_like = parameter[GFX_ARG_DIGGABLE_LIKE];
 
+  /* optional border size for "crumbling" diggable graphics */
+  if (parameter[GFX_ARG_BORDER_SIZE] != ARG_UNDEFINED_VALUE)
+    graphic_info[graphic].border_size = parameter[GFX_ARG_BORDER_SIZE];
+
   /* this is only used for toon animations */
   graphic_info[graphic].step_offset = parameter[GFX_ARG_STEP_OFFSET];
   graphic_info[graphic].step_delay  = parameter[GFX_ARG_STEP_DELAY];
@@ -869,6 +876,9 @@ static void set_graphic_parameters(int graphic, char **parameter_raw)
   /* this is only used for drawing font characters */
   graphic_info[graphic].draw_x = parameter[GFX_ARG_DRAW_XOFFSET];
   graphic_info[graphic].draw_y = parameter[GFX_ARG_DRAW_YOFFSET];
+
+  /* this is only used for drawing envelope graphics */
+  graphic_info[graphic].draw_masked = parameter[GFX_ARG_DRAW_MASKED];
 }
 
 static void InitGraphicInfo()
@@ -891,6 +901,10 @@ static void InitGraphicInfo()
     free(graphic_info);
 
   graphic_info = checked_calloc(num_images * sizeof(struct GraphicInfo));
+
+#if 0
+  printf("::: graphic_info: %d entries\n", num_images);
+#endif
 
 #if defined(TARGET_X11_NATIVE_PERFORMANCE_WORKAROUND)
   if (clipmasks_initialized)
@@ -2829,6 +2843,12 @@ void InitElementPropertiesEngine(int engine_version)
 	     element_info[i].token_name,
 	     element_info[i].crumbled[ACTION_DEFAULT]);
 #endif
+
+    /* ---------- CAN_CHANGE ----------------------------------------------- */
+    SET_PROPERTY(i, EP_CAN_CHANGE, FALSE);	/* default: cannot change */
+    for (j=0; j < element_info[i].num_change_pages; j++)
+      if (element_info[i].change_page[j].can_change)
+	SET_PROPERTY(i, EP_CAN_CHANGE, TRUE);
   }
 
 #if 0
