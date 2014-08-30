@@ -21,7 +21,7 @@ void InitGame(void);
 void InitMovDir(int, int);
 void InitAmoebaNr(int, int);
 void GameWon(void);
-boolean NewHiScore(void);
+int NewHiScore(void);
 void InitMovingField(int, int, int);
 void Moving2Blocked(int, int, int *, int *);
 void Blocked2Moving(int, int, int *, int *);
@@ -39,7 +39,7 @@ void StartMoving(int, int);
 void ContinueMoving(int, int);
 int AmoebeNachbarNr(int, int);
 void AmoebeUmwandeln(int, int);
-void AmoebeUmwandeln2(int, int, int);
+void AmoebeUmwandelnBD(int, int, int);
 void AmoebeWaechst(int, int);
 void AmoebeAbleger(int, int);
 void Life(int, int);
@@ -77,5 +77,8 @@ boolean PlaceBomb(struct PlayerInfo *);
 void PlaySoundLevel(int, int, int);
 void RaiseScore(int);
 void RaiseScoreElement(int);
+
+void CreateGameButtons();
+void UnmapGameButtons();
 
 #endif

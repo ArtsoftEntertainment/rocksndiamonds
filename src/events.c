@@ -20,6 +20,7 @@
 #include "misc.h"
 #include "tape.h"
 #include "joystick.h"
+#include "buttons.h"
 #include "network.h"
 
 /* values for key_status */
@@ -69,6 +70,9 @@ void EventLoop(void)
       XSync(display, FALSE);
       Delay(10);
     }
+
+    /* refresh window contents from drawing buffer, if needed */
+    BackToFront();
 
     if (game_status == EXITGAME)
       return;
@@ -165,7 +169,7 @@ void SleepWhileUnmapped()
     }
   }
 
-  if (game_status==PLAYING)
+  if (game_status == PLAYING)
     XAutoRepeatOff(display);
 }
 
@@ -212,7 +216,7 @@ void HandleButtonEvent(XButtonEvent *event)
 {
   motion_status = FALSE;
 
-  if (event->type==ButtonPress)
+  if (event->type == ButtonPress)
     button_status = event->button;
   else
     button_status = MB_RELEASED;
@@ -222,16 +226,44 @@ void HandleButtonEvent(XButtonEvent *event)
 
 void HandleMotionEvent(XMotionEvent *event)
 {
+  Window root, child;
+  int root_x, root_y;
+  int win_x, win_y;
+  unsigned int mask;
+
+  if (!XQueryPointer(display, window, &root, &child, &root_x, &root_y,
+		     &win_x, &win_y, &mask))
+    return;
+
+  if (!button_status && game_status != LEVELED)
+    return;
+
   motion_status = TRUE;
 
-  HandleButton(event->x, event->y, button_status);
+  HandleButton(win_x, win_y, button_status);
 }
 
 void HandleKeyEvent(XKeyEvent *event)
 {
   int key_status = (event->type == KeyPress ? KEY_PRESSED : KEY_RELEASED);
-  unsigned int event_state = (game_status != PLAYING ? event->state : 0);
-  KeySym key = XLookupKeysym(event, event_state);
+  KeySym key;
+
+  if (game_status == PLAYING)
+  {
+    /* use '0' instead of 'event->state' to get the key without modifiers */
+    key = XLookupKeysym(event, 0);
+  }
+  else
+  {
+    /* get the key with all modifiers */
+    char buffer[10];
+    int buffer_size = 10;
+    XComposeStatus compose;
+    int char_count;
+
+    char_count = XLookupString(event, buffer, buffer_size, &key, &compose);
+    buffer[char_count] = '\0';
+  }
 
   HandleKey(key, key_status);
 }
@@ -242,13 +274,36 @@ void HandleFocusEvent(XFocusChangeEvent *event)
 
   if (event->type == FocusOut)
   {
+    int i;
+
     XAutoRepeatOn(display);
     old_joystick_status = joystick_status;
     joystick_status = JOYSTICK_OFF;
+
+    /* simulate key release events for still pressed keys */
     key_joystick_mapping = 0;
+    for (i=0; i<MAX_PLAYERS; i++)
+      stored_player[i].action = 0;
   }
   else if (event->type == FocusIn)
   {
+    /* When there are two Rocks'n'Diamonds windows which overlap and
+       the player moves the pointer from one game window to the other,
+       a 'FocusOut' event is generated for the window the pointer is
+       leaving and a 'FocusIn' event is generated for the window the
+       pointer is entering. In some cases, it can happen that the
+       'FocusIn' event is handled by the one game process before the
+       'FocusOut' event by the other game process. In this case the
+       X11 environment would end up with activated keyboard auto repeat,
+       because unfortunately this is a global setting and not (which
+       would be far better) set for each X11 window individually.
+       The effect would be keyboard auto repeat while playing the game
+       (game_status == PLAYING), which is not desired.
+       To avoid this special case, we just wait 1/50 second before
+       processing the 'FocusIn' event.
+    */
+
+    Delay(20);
     if (game_status == PLAYING)
       XAutoRepeatOff(display);
     if (old_joystick_status != -1)
@@ -269,20 +324,25 @@ void HandleButton(int mx, int my, int button)
 {
   static int old_mx = 0, old_my = 0;
 
-  if (mx<0 || my<0)
+  if (button < 0)
   {
     mx = old_mx;
     my = old_my;
+    button = -button;
   }
   else
   {
     old_mx = mx;
     old_my = my;
 
+    /*
     HandleVideoButtons(mx,my, button);
     HandleSoundButtons(mx,my, button);
     HandleGameButtons(mx,my, button);
+    */
   }
+
+  HandleGadgets(mx, my, button);
 
   switch(game_status)
   {
@@ -303,7 +363,6 @@ void HandleButton(int mx, int my, int button)
       break;
 
     case LEVELED:
-      LevelEd(mx,my, button);
       break;
 
     case HELPSCREEN:
@@ -330,7 +389,12 @@ void HandleButton(int mx, int my, int button)
 	  int x = LEVELX(sx);
 	  int y = LEVELY(sy);
 
-	  printf("INFO: Feld[%d][%d] == %d\n", x,y, Feld[x][y]);
+	  printf("INFO: SCREEN(%d, %d), LEVEL(%d, %d)\n", sx, sy, x, y);
+
+	  if (!IN_LEV_FIELD(x, y))
+	    break;
+
+	  printf("      Feld[%d][%d] == %d\n", x,y, Feld[x][y]);
 	  printf("      Store[%d][%d] == %d\n", x,y, Store[x][y]);
 	  printf("      Store2[%d][%d] == %d\n", x,y, Store2[x][y]);
 	  printf("      StorePlayer[%d][%d] == %d\n", x,y, StorePlayer[x][y]);
@@ -427,7 +491,17 @@ void HandleKey(KeySym key, int key_status)
   /* allow quick escape to the main menu with the Escape key */
   if (key == XK_Escape && game_status != MAINMENU)
   {
-    CloseDoor(DOOR_CLOSE_1 | DOOR_NO_DELAY);
+    if (game_status == LEVELED)
+    {
+      /* draw smaller door */
+      XCopyArea(display, pix[PIX_DOOR], drawto, gc,
+		DOOR_GFX_PAGEX7, 64,
+		108, 64,
+		EX - 4, EY - 12);
+      redraw_mask |= REDRAW_ALL;
+    }
+
+    CloseDoor(DOOR_CLOSE_1 | DOOR_OPEN_2 | DOOR_NO_DELAY);
     game_status = MAINMENU;
     DrawMainMenu();
     return;
@@ -443,6 +517,8 @@ void HandleKey(KeySym key, int key_status)
 #endif
 
 
+
+  HandleGadgetsKeyInput(key);
 
   switch(game_status)
   {
@@ -491,7 +567,7 @@ void HandleKey(KeySym key, int key_status)
       break;
 
     case LEVELED:
-      LevelNameTyping(key);
+      HandleLevelEditorKeyInput(key);
       break;
 
     case PLAYING:
@@ -531,6 +607,22 @@ void HandleKey(KeySym key, int key_status)
 	  else
 	    ScrollStepSize = TILEX/8;
 	  printf("ScrollStepSize == %d\n", ScrollStepSize);
+	  break;
+#endif
+
+#if 1
+	case XK_m:
+	  if (MoveSpeed == 8)
+	  {
+	    MoveSpeed = 4;
+	    ScrollStepSize = TILEX/4;
+	  }
+	  else
+	  {
+	    MoveSpeed = 8;
+	    ScrollStepSize = TILEX/8;
+	  }
+	  printf("MoveSpeed == %d\n", MoveSpeed);
 	  break;
 #endif
 
@@ -598,7 +690,7 @@ void HandleNoXEvent()
 {
   if (button_status && game_status != PLAYING)
   {
-    HandleButton(-1,-1, button_status);
+    HandleButton(0, 0, -button_status);
     return;
   }
 
@@ -664,7 +756,8 @@ void HandleJoystick()
     {
       static unsigned long joystickmove_delay = 0;
 
-      if (joystick && !button && !DelayReached(&joystickmove_delay, 150))
+      if (joystick && !button &&
+	  !DelayReached(&joystickmove_delay, GADGET_FRAME_DELAY))
 	newbutton = dx = dy = 0;
 
       if (game_status==MAINMENU)

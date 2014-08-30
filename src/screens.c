@@ -47,9 +47,9 @@ extern unsigned char get_ascii(KeySym);
 
 void DrawHeadline()
 {
-  int x = SX + (SXSIZE - strlen(GAMETITLE_STRING) * FONT1_XSIZE) / 2;
+  int x = SX + (SXSIZE - strlen(PROGRAM_TITLE_STRING) * FONT1_XSIZE) / 2;
 
-  DrawText(x, SY + 8, GAMETITLE_STRING, FS_BIG, FC_YELLOW);
+  DrawText(x, SY + 8, PROGRAM_TITLE_STRING, FS_BIG, FC_YELLOW);
   DrawTextFCentered(46, FC_RED, COPYRIGHT_STRING);
 }
 
@@ -58,7 +58,21 @@ void DrawMainMenu()
   int i;
   char *name_text = (!options.network && setup.team_mode ? "Team:" : "Name:");
 
+  UnmapAllGadgets();
   FadeSounds();
+  XAutoRepeatOn(display);
+
+  /* needed if last screen was the playing screen, invoked from level editor */
+  if (level_editor_test_game)
+  {
+    game_status = LEVELED;
+    DrawLevelEd();
+    return;
+  }
+
+  /* map gadgets for main menu screen */
+  MapTapeButtons();
+
   GetPlayerConfig();
   LoadLevel(level_nr);
 
@@ -76,14 +90,22 @@ void DrawMainMenu()
   DrawText(SX + 32,    SY + 8*32, "Setup", FS_BIG, FC_GREEN);
   DrawText(SX + 32,    SY + 9*32, "Quit", FS_BIG, FC_GREEN);
 
-  DrawMicroLevel(MICROLEV_XPOS,MICROLEV_YPOS);
+  DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, TRUE);
+
+  DrawTextF(7*32 + 6, 3*32 + 9, FC_RED, "%d-%d",
+	    leveldir[leveldir_nr].first_level,
+	    leveldir[leveldir_nr].last_level);
+
+  if (leveldir[leveldir_nr].readonly)
+  {
+    DrawTextF(15*32 + 6, 3*32 + 9 - 7, FC_RED, "READ");
+    DrawTextF(15*32 + 6, 3*32 + 9 + 7, FC_RED, "ONLY");
+  }
 
   for(i=2; i<10; i++)
     DrawGraphic(0, i, GFX_KUGEL_BLAU);
   DrawGraphic(10, 3, GFX_PFEIL_L);
   DrawGraphic(14, 3, GFX_PFEIL_R);
-
-  DrawTextF(15*32 + 6, 3*32 + 9, FC_RED, "%d", leveldir[leveldir_nr].levels);
 
   DrawText(SX + 56, SY + 326, "A Game by Artsoft Entertainment",
 	   FS_SMALL, FC_RED);
@@ -109,7 +131,6 @@ void DrawMainMenu()
   OpenDoor(DOOR_CLOSE_1 | DOOR_OPEN_2);
 
   ClearEventQueue();
-  XAutoRepeatOn(display);
 }
 
 void HandleMainMenu(int mx, int my, int dx, int dy, int button)
@@ -154,8 +175,8 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
     y = choice;
   }
 
-  if (y == 4 && ((x == 11 && level_nr > 0) ||
-		 (x == 15 && level_nr < leveldir[leveldir_nr].levels - 1)) &&
+  if (y == 4 && ((x == 11 && level_nr > leveldir[leveldir_nr].first_level) ||
+		 (x == 15 && level_nr < leveldir[leveldir_nr].last_level)) &&
       button)
   {
     static unsigned long level_delay = 0;
@@ -164,12 +185,13 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
     int font_color = (leveldir[leveldir_nr].readonly ? FC_RED : FC_YELLOW);
 
     new_level_nr = level_nr + (x == 11 ? -step : +step);
-    if (new_level_nr < 0)
-      new_level_nr = 0;
-    if (new_level_nr > leveldir[leveldir_nr].levels - 1)
-      new_level_nr = leveldir[leveldir_nr].levels - 1;
+    if (new_level_nr < leveldir[leveldir_nr].first_level)
+      new_level_nr = leveldir[leveldir_nr].first_level;
+    if (new_level_nr > leveldir[leveldir_nr].last_level)
+      new_level_nr = leveldir[leveldir_nr].last_level;
 
-    if (old_level_nr == new_level_nr || !DelayReached(&level_delay, 150))
+    if (old_level_nr == new_level_nr ||
+	!DelayReached(&level_delay, GADGET_FRAME_DELAY))
       goto out;
 
     level_nr = new_level_nr;
@@ -180,7 +202,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 		int2str(level_nr, 3), FS_BIG, font_color);
 
     LoadLevel(level_nr);
-    DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS);
+    DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, TRUE);
 
     TapeErase();
     LoadTape(level_nr);
@@ -225,7 +247,8 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       }
       else if (y == 6)
       {
-	if (leveldir[leveldir_nr].readonly)
+	if (leveldir[leveldir_nr].readonly &&
+	    strcmp(setup.player_name, "Artsoft") != 0)
 	  Request("This level is read only !", REQ_CONFIRM);
 	game_status = LEVELED;
 	DrawLevelEd();
@@ -270,7 +293,10 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
   out:
 
   if (game_status == MAINMENU)
+  {
+    DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, FALSE);
     DoAnimation();
+  }
 }
 
 #define MAX_HELPSCREEN_ELS	10
@@ -294,8 +320,10 @@ static int helpscreen_action[] =
   GFX_MORAST_LEER,1,100,					HA_NEXT,
   GFX_BETON,1,100,						HA_NEXT,
   GFX_MAUERWERK,1,100,						HA_NEXT,
-  GFX_MAUER_R1,3,4, GFX_MAUERWERK,1,20, GFX_LEERRAUM,1,10,
-  GFX_MAUER_L1,3,4, GFX_MAUERWERK,1,20, GFX_LEERRAUM,1,10,	HA_NEXT,
+  GFX_MAUER_L1,  3,4, GFX_MAUERWERK,1,20, GFX_LEERRAUM,1,10,
+  GFX_MAUER_R1,  3,4, GFX_MAUERWERK,1,20, GFX_LEERRAUM,1,10,
+  GFX_MAUER_UP,  3,4, GFX_MAUERWERK,1,20, GFX_LEERRAUM,1,10,
+  GFX_MAUER_DOWN,3,4, GFX_MAUERWERK,1,20, GFX_LEERRAUM,1,10,	HA_NEXT,
   GFX_UNSICHTBAR,1,100,						HA_NEXT,
   GFX_FELSBODEN,1,100,						HA_NEXT,
   GFX_CHAR_A,30,4, GFX_CHAR_AUSRUF,32,4,			HA_NEXT,
@@ -374,13 +402,17 @@ static int helpscreen_action[] =
   GFX_DIAMANT,1,10,						HA_NEXT,
   GFX_LIFE,1,100,						HA_NEXT,
   GFX_LIFE_ASYNC,1,100,						HA_NEXT,
-  GFX_SIEB_LEER,4,2,						HA_NEXT,
-  GFX_SIEB2_LEER,4,2,						HA_NEXT,
+  GFX_SIEB_INAKTIV,4,2,						HA_NEXT,
+  GFX_SIEB2_INAKTIV,4,2,					HA_NEXT,
   GFX_AUSGANG_ZU,1,100, GFX_AUSGANG_ACT,4,2,
   GFX_AUSGANG_AUF+0,4,2, GFX_AUSGANG_AUF+3,1,2,
   GFX_AUSGANG_AUF+2,1,2, GFX_AUSGANG_AUF+1,1,2,			HA_NEXT,
   GFX_AUSGANG_AUF+0,4,2, GFX_AUSGANG_AUF+3,1,2,
   GFX_AUSGANG_AUF+2,1,2, GFX_AUSGANG_AUF+1,1,2,			HA_NEXT,
+  GFX_SOKOBAN_OBJEKT,1,100,					HA_NEXT,
+  GFX_SOKOBAN_FELD_LEER,1,100,					HA_NEXT,
+  GFX_SOKOBAN_FELD_VOLL,1,100,					HA_NEXT,
+  GFX_SPEED_PILL,1,100,						HA_NEXT,
   HA_END
 };
 static char *helpscreen_eltext[][2] =
@@ -391,7 +423,7 @@ static char *helpscreen_eltext[][2] =
  {"Quicksand: You cannot pass it,",	"but rocks can fall though it"},
  {"Massive Wall:",			"Nothing can go through it"},
  {"Normal Wall: You can't go through",	"it, but you can bomb it away"},
- {"Growing Wall: Grows to the left or",	"right if there is an empty field"},
+ {"Growing Wall: Grows in several di-",	"rections if there is an empty field"},
  {"Invisible Wall: Behaves like normal","wall, but is invisible"},
  {"Old Wall: Like normal wall, but",	"some things can fall down from it"},
  {"Letter Wall: Looks like a letter,",	"behaves like a normal wall"},
@@ -442,6 +474,10 @@ static char *helpscreen_eltext[][2] =
  {"Magic Wall (BD style):",		"Changes rocks and BD style diamonds"},
  {"Exit door: Opens if you have enough","emeralds to finish the level"},
  {"Open exit door: Enter here to leave","the level and exit the actual game"},
+ {"Sokoban element: Object which must", "be pushed to an empty field"},
+ {"Sokoban element: Empty field where", "a Sokoban object can be placed on"},
+ {"Sokoban element: Field with object", "which can be pushed away"},
+ {"Speed pill: Lets the player run",    "twice as fast as normally"},
 };
 static int num_helpscreen_els = sizeof(helpscreen_eltext)/(2*sizeof(char *));
 
@@ -640,6 +676,7 @@ void DrawHelpScreen()
 {
   int i;
 
+  UnmapAllGadgets();
   CloseDoor(DOOR_CLOSE_2);
 
   for(i=0;i<MAX_HELPSCREEN_ELS;i++)
@@ -759,6 +796,7 @@ void HandleTypeName(int newxpos, KeySym key)
 
 void DrawChooseLevel()
 {
+  UnmapAllGadgets();
   CloseDoor(DOOR_CLOSE_2);
 
   FadeToFront();
@@ -778,7 +816,8 @@ static void drawChooseLevelList(int first_entry, int num_page_entries)
   {
     strncpy(buffer, leveldir[first_entry + i].name , SCR_FIELDX - 1);
     buffer[SCR_FIELDX - 1] = '\0';
-    DrawText(SX + 32, SY + (i + 2) * 32, buffer, FS_BIG, FC_YELLOW);
+    DrawText(SX + 32, SY + (i + 2) * 32, buffer,
+	     FS_BIG, leveldir[first_entry + i].color);
     DrawGraphic(0, i + 2, GFX_KUGEL_BLAU);
   }
 
@@ -791,10 +830,17 @@ static void drawChooseLevelList(int first_entry, int num_page_entries)
 
 static void drawChooseLevelInfo(int leveldir_nr)
 {
+  int x, last_redraw_mask = redraw_mask;
+
   XFillRectangle(display, drawto, gc, SX + 32, SY + 32, SXSIZE - 32, 32);
   DrawTextFCentered(40, FC_RED, "%3d levels (%s)",
 		    leveldir[leveldir_nr].levels,
 		    leveldir[leveldir_nr].readonly ? "readonly" : "writable");
+
+  /* let BackToFront() redraw only what is needed */
+  redraw_mask = last_redraw_mask | REDRAW_TILES;
+  for (x=0; x<SCR_FIELDX; x++)
+    MarkTileDirty(x, 1);
 }
 
 void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
@@ -850,7 +896,7 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
   if (x == 1 && y == 2)
   {
     if (first_entry > 0 &&
-	(dy || DelayReached(&choose_delay, 150)))
+	(dy || DelayReached(&choose_delay, GADGET_FRAME_DELAY)))
     {
 #if 0
       first_entry--;
@@ -868,7 +914,7 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
   else if (x == 1 && y > num_page_entries + 2)
   {
     if (first_entry + num_page_entries < num_leveldirs &&
-	(dy || DelayReached(&choose_delay, 150)))
+	(dy || DelayReached(&choose_delay, GADGET_FRAME_DELAY)))
     {
 #if 0
       first_entry++;
@@ -927,6 +973,7 @@ void DrawHallOfFame(int highlight_position)
 {
   int i;
 
+  UnmapAllGadgets();
   CloseDoor(DOOR_CLOSE_2);
 
   if (highlight_position < 0) 
@@ -994,9 +1041,11 @@ void DrawSetupScreen()
     { NULL,			"Save and exit"	}
   };
 
+  UnmapAllGadgets();
   CloseDoor(DOOR_CLOSE_2);
   ClearWindow();
-  DrawText(SX+16, SY+16, "SETUP",FS_BIG,FC_YELLOW);
+
+  DrawText(SX + 16, SY + 16, "SETUP",FS_BIG,FC_YELLOW);
 
   for(i=SETUP_SCREEN_POS_START;i<=SETUP_SCREEN_POS_END;i++)
   {
@@ -1410,7 +1459,7 @@ void HandleSetupInputScreen(int mx, int my, int dx, int dy, int button)
   {
     static unsigned long delay = 0;
 
-    if (!DelayReached(&delay, 150))
+    if (!DelayReached(&delay, GADGET_FRAME_DELAY))
       goto out;
 
     player_nr = (player_nr + (x == 11 ? -1 : +1) + MAX_PLAYERS) % MAX_PLAYERS;
@@ -2077,6 +2126,11 @@ void HandleGameActions()
 
 void HandleVideoButtons(int mx, int my, int button)
 {
+  return;
+
+
+
+
   if (game_status != MAINMENU && game_status != PLAYING)
     return;
 
@@ -2181,6 +2235,13 @@ void HandleVideoButtons(int mx, int my, int button)
 
 void HandleSoundButtons(int mx, int my, int button)
 {
+
+
+
+  return;
+
+
+
   if (game_status != PLAYING)
     return;
 
@@ -2242,6 +2303,13 @@ void HandleSoundButtons(int mx, int my, int button)
 
 void HandleGameButtons(int mx, int my, int button)
 {
+
+
+
+  return;
+
+
+
   if (game_status != PLAYING)
     return;
 

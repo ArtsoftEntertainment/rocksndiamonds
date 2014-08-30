@@ -235,10 +235,47 @@ char *getLoginName()
 {
   struct passwd *pwd;
 
-  if (!(pwd = getpwuid(getuid())))
-    return "ANONYMOUS";
+  if ((pwd = getpwuid(getuid())) == NULL)
+    return ANONYMOUS_NAME;
   else
     return pwd->pw_name;
+}
+
+char *getRealName()
+{
+#ifndef MSDOS
+  struct passwd *pwd;
+
+  if ((pwd = getpwuid(getuid())) == NULL || strlen(pwd->pw_gecos) == 0)
+    return ANONYMOUS_NAME;
+  else
+  {
+    static char real_name[1024];
+    char *from_ptr = pwd->pw_gecos, *to_ptr = real_name;
+
+    if (strchr(pwd->pw_gecos, 'ß') == NULL)
+      return pwd->pw_gecos;
+
+    /* the user's real name contains a 'ß' character (german sharp s),
+       which has no equivalent in upper case letters (which our fonts use) */
+    while (*from_ptr != '\0' && (long)(to_ptr - real_name) < 1024 - 2)
+    {
+      if (*from_ptr != 'ß')
+	*to_ptr++ = *from_ptr++;
+      else
+      {
+	from_ptr++;
+	*to_ptr++ = 's';
+	*to_ptr++ = 's';
+      }
+    }
+    *to_ptr = '\0';
+
+    return real_name;
+  }
+#else
+  return ANONYMOUS_NAME;
+#endif
 }
 
 char *getHomeDir()
@@ -313,6 +350,25 @@ void MarkTileDirty(int x, int y)
 
   redraw[xx][yy] = TRUE;
   redraw_mask |= REDRAW_TILES;
+}
+
+void SetBorderElement()
+{
+  int x, y;
+
+  BorderElement = EL_LEERRAUM;
+
+  for(y=0; y<lev_fieldy && BorderElement == EL_LEERRAUM; y++)
+  {
+    for(x=0; x<lev_fieldx; x++)
+    {
+      if (!IS_MASSIVE(Feld[x][y]))
+	BorderElement = EL_BETON;
+
+      if (y != 0 && y != lev_fieldy - 1 && x != lev_fieldx - 1)
+	x = lev_fieldx - 2;
+    }
+  }
 }
 
 void GetOptions(char *argv[])
@@ -581,27 +637,53 @@ void translate_keyname(KeySym *keysym, char **x11name, char **name, int mode)
     { XK_End,		"XK_End",		"end" },
     { XK_Page_Up,	"XK_Page_Up",		"page up" },
     { XK_Page_Down,	"XK_Page_Down",		"page down" },
-    { XK_space,		"XK_space",		"space" },
 
-    /* even more special keys */
+
+    /* ASCII 0x20 to 0x40 keys (except numbers) */
+    { XK_space,		"XK_space",		"space" },
+    { XK_exclam,	"XK_exclam",		"!" },
+    { XK_quotedbl,	"XK_quotedbl",		"\"" },
+    { XK_numbersign,	"XK_numbersign",	"#" },
+    { XK_dollar,	"XK_dollar",		"$" },
+    { XK_percent,	"XK_percent",		"%" },
+    { XK_ampersand,	"XK_ampersand",		"&" },
+    { XK_apostrophe,	"XK_apostrophe",	"'" },
+    { XK_parenleft,	"XK_parenleft",		"(" },
+    { XK_parenright,	"XK_parenright",	")" },
+    { XK_asterisk,	"XK_asterisk",		"*" },
+    { XK_plus,		"XK_plus",		"+" },
+    { XK_comma,		"XK_comma",		"," },
+    { XK_minus,		"XK_minus",		"-" },
+    { XK_period,	"XK_period",		"." },
+    { XK_slash,		"XK_slash",		"/" },
+    { XK_colon,		"XK_colon",		":" },
+    { XK_semicolon,	"XK_semicolon",		";" },
+    { XK_less,		"XK_less",		"<" },
+    { XK_equal,		"XK_equal",		"=" },
+    { XK_greater,	"XK_greater",		">" },
+    { XK_question,	"XK_question",		"?" },
+    { XK_at,		"XK_at",		"@" },
+
+    /* more ASCII keys */
+    { XK_bracketleft,	"XK_bracketleft",	"[" },
+    { XK_backslash,	"XK_backslash",		"backslash" },
+    { XK_bracketright,	"XK_bracketright",	"]" },
+    { XK_asciicircum,	"XK_asciicircum",	"circumflex" },
+    { XK_underscore,	"XK_underscore",	"_" },
+    { XK_grave,		"XK_grave",		"grave" },
+    { XK_quoteleft,	"XK_quoteleft",		"quote left" },
+    { XK_braceleft,	"XK_braceleft",		"brace left" },
+    { XK_bar,		"XK_bar",		"bar" },
+    { XK_braceright,	"XK_braceright",	"brace right" },
+    { XK_asciitilde,	"XK_asciitilde",	"ascii tilde" },
+
+    /* special (non-ASCII) keys */
+    { XK_Adiaeresis,	"XK_Adiaeresis",	"Ä" },
+    { XK_Odiaeresis,	"XK_Odiaeresis",	"Ö" },
+    { XK_Udiaeresis,	"XK_Udiaeresis",	"Ü" },
     { XK_adiaeresis,	"XK_adiaeresis",	"ä" },
     { XK_odiaeresis,	"XK_odiaeresis",	"ö" },
     { XK_udiaeresis,	"XK_udiaeresis",	"ü" },
-    { XK_apostrophe,	"XK_apostrophe",	"'" },
-    { XK_plus,		"XK_plus",		"+" },
-    { XK_minus,		"XK_minus",		"-" },
-    { XK_equal,		"XK_equal",		"equal" },
-    { XK_comma,		"XK_comma",		"," },
-    { XK_period,	"XK_period",		"." },
-    { XK_colon,		"XK_colon",		";" },
-    { XK_slash,		"XK_slash",		"/" },
-    { XK_numbersign,	"XK_numbersign",	"#" },
-    { XK_backslash,	"XK_backslash",		"backslash" },
-    { XK_braceleft,	"XK_braceleft",		"brace left" },
-    { XK_braceright,	"XK_braceright",	"brace right" },
-    { XK_less,		"XK_less",		"less" },
-    { XK_greater,	"XK_greater",		"greater" },
-    { XK_asciicircum,	"XK_asciicircum",	"circumflex" },
     { XK_ssharp,	"XK_ssharp",		"sharp s" },
 
     /* end-of-array identifier */
@@ -791,6 +873,21 @@ KeySym getKeySymFromX11KeyName(char *x11name)
 
   translate_keyname(&keysym, &x11name, NULL, TRANSLATE_X11KEYNAME_TO_KEYSYM);
   return keysym;
+}
+
+char getCharFromKeySym(KeySym keysym)
+{
+  char *keyname = getKeyNameFromKeySym(keysym);
+  char letter = 0;
+
+  if (strlen(keyname) == 1)
+    letter = keyname[0];
+  else if (strcmp(keyname, "space") == 0)
+    letter = ' ';
+  else if (strcmp(keyname, "circumflex") == 0)
+    letter = '^';
+
+  return letter;
 }
 
 #define TRANSLATE_JOYSYMBOL_TO_JOYNAME	0

@@ -17,6 +17,9 @@
 #include "misc.h"
 #include "sound.h"
 #include "screens.h"
+#include "editor.h"
+#include "game.h"
+#include "tape.h"
 #include "tools.h"
 #include "files.h"
 #include "joystick.h"
@@ -47,6 +50,7 @@ static void InitSoundServer(void);
 static void InitWindow(int, char **);
 static void InitGfx(void);
 static void LoadGfx(int, struct PictureFileInfo *);
+static void InitGadgets(void);
 static void InitElementProperties(void);
 
 void OpenAll(int argc, char *argv[])
@@ -78,6 +82,7 @@ void OpenAll(int argc, char *argv[])
 
   InitGfx();
   InitElementProperties();
+  InitGadgets();
 
   DrawMainMenu();
 
@@ -346,8 +351,8 @@ void InitWindow(int argc, char *argv[])
   XSizeHints size_hints;
   XWMHints wm_hints;
   XClassHint class_hints;
-  char *window_name = WINDOWTITLE_STRING;
-  char *icon_name = WINDOWTITLE_STRING;
+  char *window_name = WINDOW_TITLE_STRING;
+  char *icon_name = WINDOW_TITLE_STRING;
   long window_event_mask;
   Atom proto_atom = None, delete_atom = None;
 #endif
@@ -434,9 +439,11 @@ void InitWindow(int argc, char *argv[])
   XFree(iconName.value);
 
   /* Select event types wanted */
-  window_event_mask = ExposureMask | StructureNotifyMask | FocusChangeMask |
-                      ButtonPressMask | ButtonReleaseMask | ButtonMotionMask |
-                      KeyPressMask | KeyReleaseMask;
+  window_event_mask =
+    ExposureMask | StructureNotifyMask | FocusChangeMask |
+    ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+    PointerMotionHintMask | KeyPressMask | KeyReleaseMask;
+
   XSelectInput(display, window, window_event_mask);
 #endif
 
@@ -473,6 +480,7 @@ void InitGfx()
     { "Door",	TRUE },
     { "Heroes",	TRUE },
     { "Toons",	TRUE },
+    { "More",	TRUE },
     { "Font",	FALSE },
     { "Font2",	FALSE }
   }; 
@@ -483,9 +491,25 @@ void InitGfx()
     { "RocksDoor",	TRUE },
     { "RocksHeroes",	TRUE },
     { "RocksToons",	TRUE },
+    { "RocksMore",	TRUE },
     { "RocksFont",	FALSE },
     { "RocksFont2",	FALSE }
   }; 
+#endif
+
+#ifdef DEBUG
+#if 0
+  static struct PictureFileInfo test_pic1 =
+  {
+    "RocksFont2",
+    FALSE
+  };
+  static struct PictureFileInfo test_pic2 =
+  {
+    "mouse",
+    FALSE
+  };
+#endif
 #endif
 
   static struct
@@ -519,6 +543,15 @@ void InitGfx()
     { GFX_SPIELER4_RIGHT, 4 },
     { GFX_SPIELER4_PUSH_LEFT, 4 },
     { GFX_SPIELER4_PUSH_RIGHT, 4 },
+    { GFX_SP_MURPHY, 1 },
+    { GFX_MURPHY_GO_LEFT, 3 },
+    { GFX_MURPHY_GO_RIGHT, 3 },
+    { GFX_MURPHY_SNAP_UP, 1 },
+    { GFX_MURPHY_SNAP_DOWN, 1 },
+    { GFX_MURPHY_SNAP_RIGHT, 1 },
+    { GFX_MURPHY_SNAP_LEFT, 1 },
+    { GFX_MURPHY_PUSH_RIGHT, 1 },
+    { GFX_MURPHY_PUSH_LEFT, 1 },
     { GFX_GEBLUBBER, 4 },
     { GFX_DYNAMIT, 7 },
     { GFX_DYNABOMB, 4 },
@@ -533,8 +566,21 @@ void InitGfx()
   debug_print_timestamp(0, NULL);	/* initialize timestamp function */
 #endif
 
+#ifdef DEBUG
+#if 0
+  printf("Test: Loading RocksFont2.pcx ...\n");
+  LoadGfx(PIX_SMALLFONT,&test_pic1);
+  printf("Test: Done.\n");
+  printf("Test: Loading mouse.pcx ...\n");
+  LoadGfx(PIX_SMALLFONT,&test_pic2);
+  printf("Test: Done.\n");
+#endif
+#endif
+
+
+
   LoadGfx(PIX_SMALLFONT,&pic[PIX_SMALLFONT]);
-  DrawInitText(WINDOWTITLE_STRING,20,FC_YELLOW);
+  DrawInitText(WINDOW_TITLE_STRING,20,FC_YELLOW);
   DrawInitText(COPYRIGHT_STRING,50,FC_RED);
 #ifdef MSDOS
   DrawInitText("MSDOS version done by Guido Schulz",210,FC_BLUE);
@@ -584,6 +630,7 @@ void InitGfx()
       int src_x, src_y;
       Pixmap src_pixmap;
 
+#if 0
       if (graphic >= GFX_START_ROCKSSCREEN &&
 	  graphic <= GFX_END_ROCKSSCREEN)
       {
@@ -611,6 +658,14 @@ void InitGfx()
       }
       else
 	break;
+#else
+
+      int pixmap_nr;
+
+      getGraphicSource(graphic, &pixmap_nr, &src_x, &src_y);
+      src_pixmap = clipmask[pixmap_nr];
+
+#endif
 
       tile_clipmask[tile] = XCreatePixmap(display, window, TILEX,TILEY, 1);
 
@@ -785,6 +840,14 @@ void LoadGfx(int pos, struct PictureFileInfo *pic)
   }
 }
 
+void InitGadgets()
+{
+  CreateLevelEditorGadgets();
+  CreateGameButtons();
+  CreateTapeButtons();
+  CreateToolButtons();
+}
+
 void InitElementProperties()
 {
   int i,j;
@@ -849,11 +912,13 @@ void InitElementProperties()
     EL_AMOEBE_BD,
     EL_MORAST_VOLL,
     EL_MORAST_LEER,
-    EL_SIEB_VOLL,
+    EL_SIEB_INAKTIV,
     EL_SIEB_LEER,
+    EL_SIEB_VOLL,
     EL_SIEB_TOT,
-    EL_SIEB2_VOLL,
+    EL_SIEB2_INAKTIV,
     EL_SIEB2_LEER,
+    EL_SIEB2_VOLL,
     EL_SIEB2_TOT,
     EL_LIFE,
     EL_LIFE_ASYNC,
@@ -861,11 +926,30 @@ void InitElementProperties()
     EL_BADEWANNE2,
     EL_BADEWANNE3,
     EL_BADEWANNE4,
-    EL_BADEWANNE5
+    EL_BADEWANNE5,
+    EL_SP_CHIP_SINGLE,
+    EL_SP_CHIP_LEFT,
+    EL_SP_CHIP_RIGHT,
+    EL_SP_CHIP_UPPER,
+    EL_SP_CHIP_LOWER,
+    EL_SP_HARD_GRAY,
+    EL_SP_HARD_GREEN,
+    EL_SP_HARD_BLUE,
+    EL_SP_HARD_RED,
+    EL_SP_HARD_YELLOW,
+    EL_SP_HARD_BASE1,
+    EL_SP_HARD_BASE2,
+    EL_SP_HARD_BASE3,
+    EL_SP_HARD_BASE4,
+    EL_SP_HARD_BASE5,
+    EL_SP_HARD_BASE6,
+    EL_SP_TERMINAL,
+    EL_SP_EXIT,
+    EL_INVISIBLE_STEEL
   };
   static int ep_solid_num = sizeof(ep_solid)/sizeof(int);
 
-  static int ep_massiv[] =
+  static int ep_massive[] =
   {
     EL_BETON,
     EL_SALZSAEURE,
@@ -881,9 +965,21 @@ void InitElementProperties()
     EL_PFORTE1X,
     EL_PFORTE2X,
     EL_PFORTE3X,
-    EL_PFORTE4X
+    EL_PFORTE4X,
+    EL_SP_HARD_GRAY,
+    EL_SP_HARD_GREEN,
+    EL_SP_HARD_BLUE,
+    EL_SP_HARD_RED,
+    EL_SP_HARD_YELLOW,
+    EL_SP_HARD_BASE1,
+    EL_SP_HARD_BASE2,
+    EL_SP_HARD_BASE3,
+    EL_SP_HARD_BASE4,
+    EL_SP_HARD_BASE5,
+    EL_SP_HARD_BASE6,
+    EL_INVISIBLE_STEEL
   };
-  static int ep_massiv_num = sizeof(ep_massiv)/sizeof(int);
+  static int ep_massive_num = sizeof(ep_massive)/sizeof(int);
 
   static int ep_slippery[] =
   {
@@ -905,7 +1001,15 @@ void InitElementProperties()
     EL_BIRNE_AUS,
     EL_BADEWANNE1,
     EL_BADEWANNE2,
-    EL_SONDE
+    EL_SONDE,
+    EL_SP_ZONK,
+    EL_SP_INFOTRON,
+    EL_SP_CHIP_SINGLE,
+    EL_SP_CHIP_LEFT,
+    EL_SP_CHIP_RIGHT,
+    EL_SP_CHIP_UPPER,
+    EL_SP_CHIP_LOWER,
+    EL_SPEED_PILL
   };
   static int ep_slippery_num = sizeof(ep_slippery)/sizeof(int);
 
@@ -918,7 +1022,9 @@ void InitElementProperties()
     EL_MAMPFER,
     EL_MAMPFER2,
     EL_ROBOT,
-    EL_PACMAN
+    EL_PACMAN,
+    EL_SP_SNIKSNAK,
+    EL_SP_ELECTRON
   };
   static int ep_enemy_num = sizeof(ep_enemy)/sizeof(int);
 
@@ -942,7 +1048,26 @@ void InitElementProperties()
     EL_MAUER_X,
     EL_MAUER_Y,
     EL_MAUER_XY,
-    EL_MAUERND
+    EL_MAUERND,
+    EL_SP_CHIP_SINGLE,
+    EL_SP_CHIP_LEFT,
+    EL_SP_CHIP_RIGHT,
+    EL_SP_CHIP_UPPER,
+    EL_SP_CHIP_LOWER,
+    EL_SP_HARD_GRAY,
+    EL_SP_HARD_GREEN,
+    EL_SP_HARD_BLUE,
+    EL_SP_HARD_RED,
+    EL_SP_HARD_YELLOW,
+    EL_SP_HARD_BASE1,
+    EL_SP_HARD_BASE2,
+    EL_SP_HARD_BASE3,
+    EL_SP_HARD_BASE4,
+    EL_SP_HARD_BASE5,
+    EL_SP_HARD_BASE6,
+    EL_SP_TERMINAL,
+    EL_SP_EXIT,
+    EL_INVISIBLE_STEEL
   };
   static int ep_mauer_num = sizeof(ep_mauer)/sizeof(int);
 
@@ -962,7 +1087,10 @@ void InitElementProperties()
     EL_SIEB_VOLL,
     EL_SIEB2_VOLL,
     EL_ZEIT_VOLL,
-    EL_ZEIT_LEER
+    EL_ZEIT_LEER,
+    EL_SP_ZONK,
+    EL_SP_INFOTRON,
+    EL_SP_DISK_ORANGE
   };
   static int ep_can_fall_num = sizeof(ep_can_fall)/sizeof(int);
 
@@ -983,7 +1111,10 @@ void InitElementProperties()
     EL_KOKOSNUSS,
     EL_TROPFEN,
     EL_ZEIT_VOLL,
-    EL_ZEIT_LEER
+    EL_ZEIT_LEER,
+    EL_SP_ZONK,
+    EL_SP_INFOTRON,
+    EL_SP_DISK_ORANGE
   };
   static int ep_can_smash_num = sizeof(ep_can_smash)/sizeof(int);
 
@@ -1013,7 +1144,9 @@ void InitElementProperties()
     EL_PINGUIN,
     EL_SCHWEIN,
     EL_DRACHE,
-    EL_SONDE
+    EL_SONDE,
+    EL_SP_SNIKSNAK,
+    EL_SP_ELECTRON
   };
   static int ep_can_move_num = sizeof(ep_can_move)/sizeof(int);
 
@@ -1062,7 +1195,10 @@ void InitElementProperties()
     EL_ROBOT,
     EL_PACMAN,
     EL_TROPFEN,
-    EL_SALZSAEURE
+    EL_SALZSAEURE,
+    EL_SP_SNIKSNAK,
+    EL_SP_ELECTRON,
+    EL_SP_BUG_ACTIVE
   };
   static int ep_dont_go_to_num = sizeof(ep_dont_go_to)/sizeof(int);
 
@@ -1098,7 +1234,7 @@ void InitElementProperties()
     EL_FELSBODEN,
     EL_FELSBROCKEN,
     EL_EDELSTEIN_BD,
-    EL_SIEB2_LEER,
+    EL_SIEB2_INAKTIV,
     EL_AUSGANG_ZU,
     EL_AUSGANG_AUF,
     EL_BETON,
@@ -1125,7 +1261,8 @@ void InitElementProperties()
     EL_SOKOBAN_OBJEKT,
     EL_SOKOBAN_FELD_LEER,
     EL_SOKOBAN_FELD_VOLL,
-    EL_SPIELFIGUR
+    EL_SPIELFIGUR,
+    EL_INVISIBLE_STEEL
   };
   static int ep_sb_element_num = sizeof(ep_sb_element)/sizeof(int);
 
@@ -1136,7 +1273,8 @@ void InitElementProperties()
     EL_EDELSTEIN_GELB,
     EL_EDELSTEIN_ROT,
     EL_EDELSTEIN_LILA,
-    EL_DIAMANT
+    EL_DIAMANT,
+    EL_SP_INFOTRON
   };
   static int ep_gem_num = sizeof(ep_gem)/sizeof(int);
 
@@ -1185,10 +1323,45 @@ void InitElementProperties()
     EL_BADEWANNE3,
     EL_BADEWANNE4,
     EL_BADEWANNE5,
+    EL_SIEB_INAKTIV,
     EL_SIEB_TOT,
+    EL_SIEB2_INAKTIV,
     EL_SIEB2_TOT,
     EL_AMOEBA2DIAM,
-    EL_BLOCKED
+    EL_BLOCKED,
+    EL_SP_EMPTY,
+    EL_SP_BASE,
+    EL_SP_PORT1_RIGHT,
+    EL_SP_PORT1_DOWN,
+    EL_SP_PORT1_LEFT,
+    EL_SP_PORT1_UP,
+    EL_SP_PORT2_RIGHT,
+    EL_SP_PORT2_DOWN,
+    EL_SP_PORT2_LEFT,
+    EL_SP_PORT2_UP,
+    EL_SP_PORT_X,
+    EL_SP_PORT_Y,
+    EL_SP_PORT_XY,
+    EL_SP_DISK_RED,
+    EL_SP_DISK_YELLOW,
+    EL_SP_CHIP_SINGLE,
+    EL_SP_CHIP_LEFT,
+    EL_SP_CHIP_RIGHT,
+    EL_SP_CHIP_UPPER,
+    EL_SP_CHIP_LOWER,
+    EL_SP_HARD_GRAY,
+    EL_SP_HARD_GREEN,
+    EL_SP_HARD_BLUE,
+    EL_SP_HARD_RED,
+    EL_SP_HARD_YELLOW,
+    EL_SP_HARD_BASE1,
+    EL_SP_HARD_BASE2,
+    EL_SP_HARD_BASE3,
+    EL_SP_HARD_BASE4,
+    EL_SP_HARD_BASE5,
+    EL_SP_HARD_BASE6,
+    EL_SP_EXIT,
+    EL_INVISIBLE_STEEL
   };
   static int ep_inactive_num = sizeof(ep_inactive)/sizeof(int);
 
@@ -1206,7 +1379,12 @@ void InitElementProperties()
     EL_PINGUIN,
     EL_SCHWEIN,
     EL_DRACHE,
-    EL_SONDE
+    EL_SONDE,
+    EL_SP_DISK_RED,
+    EL_SP_DISK_ORANGE,
+    EL_SP_DISK_YELLOW,
+    EL_SP_SNIKSNAK,
+    EL_SP_ELECTRON
   };
   static int ep_explosive_num = sizeof(ep_explosive)/sizeof(int);
 
@@ -1229,7 +1407,10 @@ void InitElementProperties()
     EL_ZEIT_LEER,
     EL_SOKOBAN_FELD_VOLL,
     EL_SOKOBAN_OBJEKT,
-    EL_SONDE
+    EL_SONDE,
+    EL_SP_ZONK,
+    EL_SP_DISK_ORANGE,
+    EL_SP_DISK_YELLOW
   };
   static int ep_pushable_num = sizeof(ep_pushable)/sizeof(int);
 
@@ -1243,6 +1424,69 @@ void InitElementProperties()
   };
   static int ep_player_num = sizeof(ep_player)/sizeof(int);
 
+  static int ep_has_content[] =
+  {
+    EL_MAMPFER,
+    EL_AMOEBE_NASS,
+    EL_AMOEBE_NORM,
+    EL_AMOEBE_VOLL,
+    EL_AMOEBE_BD
+  };
+  static int ep_has_content_num = sizeof(ep_has_content)/sizeof(int);
+
+  static int ep_eatable[] =
+  {
+    EL_ERDREICH,
+    EL_SP_BASE,
+    EL_SP_BUG
+  };
+  static int ep_eatable_num = sizeof(ep_eatable)/sizeof(int);
+
+  static int ep_sp_element[] =
+  {
+    EL_SP_EMPTY,
+    EL_SP_ZONK,
+    EL_SP_BASE,
+    EL_SP_MURPHY,
+    EL_SP_INFOTRON,
+    EL_SP_CHIP_SINGLE,
+    EL_SP_HARD_GRAY,
+    EL_SP_EXIT,
+    EL_SP_DISK_ORANGE,
+    EL_SP_PORT1_RIGHT,
+    EL_SP_PORT1_DOWN,
+    EL_SP_PORT1_LEFT,
+    EL_SP_PORT1_UP,
+    EL_SP_PORT2_RIGHT,
+    EL_SP_PORT2_DOWN,
+    EL_SP_PORT2_LEFT,
+    EL_SP_PORT2_UP,
+    EL_SP_SNIKSNAK,
+    EL_SP_DISK_YELLOW,
+    EL_SP_TERMINAL,
+    EL_SP_DISK_RED,
+    EL_SP_PORT_Y,
+    EL_SP_PORT_X,
+    EL_SP_PORT_XY,
+    EL_SP_ELECTRON,
+    EL_SP_BUG,
+    EL_SP_CHIP_LEFT,
+    EL_SP_CHIP_RIGHT,
+    EL_SP_HARD_BASE1,
+    EL_SP_HARD_GREEN,
+    EL_SP_HARD_BLUE,
+    EL_SP_HARD_RED,
+    EL_SP_HARD_YELLOW,
+    EL_SP_HARD_BASE2,
+    EL_SP_HARD_BASE3,
+    EL_SP_HARD_BASE4,
+    EL_SP_HARD_BASE5,
+    EL_SP_HARD_BASE6,
+    EL_SP_CHIP_UPPER,
+    EL_SP_CHIP_LOWER
+  };
+  static int ep_sp_element_num = sizeof(ep_sp_element)/sizeof(int);
+
   static long ep_bit[] =
   {
     EP_BIT_AMOEBALIVE,
@@ -1250,7 +1494,7 @@ void InitElementProperties()
     EP_BIT_SCHLUESSEL,
     EP_BIT_PFORTE,
     EP_BIT_SOLID,
-    EP_BIT_MASSIV,
+    EP_BIT_MASSIVE,
     EP_BIT_SLIPPERY,
     EP_BIT_ENEMY,
     EP_BIT_MAUER,
@@ -1269,7 +1513,10 @@ void InitElementProperties()
     EP_BIT_EXPLOSIVE,
     EP_BIT_MAMPF3,
     EP_BIT_PUSHABLE,
-    EP_BIT_PLAYER
+    EP_BIT_PLAYER,
+    EP_BIT_HAS_CONTENT,
+    EP_BIT_EATABLE,
+    EP_BIT_SP_ELEMENT
   };
   static int *ep_array[] =
   {
@@ -1278,7 +1525,7 @@ void InitElementProperties()
     ep_schluessel,
     ep_pforte,
     ep_solid,
-    ep_massiv,
+    ep_massive,
     ep_slippery,
     ep_enemy,
     ep_mauer,
@@ -1297,7 +1544,10 @@ void InitElementProperties()
     ep_explosive,
     ep_mampf3,
     ep_pushable,
-    ep_player
+    ep_player,
+    ep_has_content,
+    ep_eatable,
+    ep_sp_element
   };
   static int *ep_num[] =
   {
@@ -1306,7 +1556,7 @@ void InitElementProperties()
     &ep_schluessel_num,
     &ep_pforte_num,
     &ep_solid_num,
-    &ep_massiv_num,
+    &ep_massive_num,
     &ep_slippery_num,
     &ep_enemy_num,
     &ep_mauer_num,
@@ -1325,7 +1575,10 @@ void InitElementProperties()
     &ep_explosive_num,
     &ep_mampf3_num,
     &ep_pushable_num,
-    &ep_player_num
+    &ep_player_num,
+    &ep_has_content_num,
+    &ep_eatable_num,
+    &ep_sp_element_num
   };
   static int num_properties = sizeof(ep_num)/sizeof(int *);
 

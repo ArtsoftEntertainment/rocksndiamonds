@@ -37,6 +37,7 @@ extern JOYSTICK_INFO joy[];
 extern int i_love_bill;
 
 /* internal variables of msdos.c */
+static boolean keyboard_auto_repeat = TRUE;
 static int key_press_state[MAX_SCANCODES];
 static XEvent event_buffer[MAX_EVENT_BUFFER];
 static int pending_events;
@@ -250,6 +251,42 @@ void XMapWindow(Display *display, Window window)
     unhide_mouse(display);
 }
 
+static unsigned long AllocColorCell(int r, int g, int b)
+{
+  byte pixel_mapping = 0;
+  int i;
+
+  r >>= 10;
+  g >>= 10;
+  b >>= 10;
+
+  /* try to use existing colors from the global colormap */
+  for (i=0; i<global_colormap_entries_used; i++)
+  {
+    if (r == global_colormap[i].r &&
+	g == global_colormap[i].g &&
+	b == global_colormap[i].b)		/* color found */
+    {
+      pixel_mapping = i;
+      break;
+    }
+  }
+
+  if (i == global_colormap_entries_used)	/* color not found */
+  {
+    if (global_colormap_entries_used < MAX_COLORS)
+      global_colormap_entries_used++;
+
+    global_colormap[i].r = r;
+    global_colormap[i].g = g;
+    global_colormap[i].b = b;
+
+    pixel_mapping = i;
+  }
+
+  return pixel_mapping;
+}
+
 Display *XOpenDisplay(char *display_name)
 {
   Screen *screen;
@@ -271,8 +308,13 @@ Display *XOpenDisplay(char *display_name)
 
   screen[0].cmap = 0;
   screen[0].root = 0;
+#if 0
   screen[0].white_pixel = 0xFF;
   screen[0].black_pixel = 0x00;
+#else
+  screen[0].white_pixel = AllocColorCell(0xFFFF, 0xFFFF, 0xFFFF);
+  screen[0].black_pixel = AllocColorCell(0x0000, 0x0000, 0x0000);
+#endif
   screen[0].video_bitmap = NULL;
 
   display->default_screen = 0;
@@ -306,6 +348,11 @@ Window XCreateSimpleWindow(Display *display, Window parent, int x, int y,
   display->screens[display->default_screen].height = YRES;
 
   set_mouse_sprite(display->mouse_ptr);
+
+#if 0
+  set_mouse_sprite_focus(1, 1);
+#endif
+
   set_mouse_speed(1, 1);
   set_mouse_range(display->screens[display->default_screen].x + 1,
 		  display->screens[display->default_screen].y + 1,
@@ -385,7 +432,7 @@ void XFillRectangle(Display *display, Drawable d, GC gc, int x, int y,
     mouse_off = hide_mouse(display, x, y, width, height);
   }
 
-  rectfill((BITMAP *)d, x, y, x + width, y + height,
+  rectfill((BITMAP *)d, x, y, x + width - 1, y + height - 1,
 	   ((XGCValues *)gc)->foreground);
 
   if (mouse_off)
@@ -460,7 +507,12 @@ static BITMAP *Image_to_AllegroBitmap(Image *image)
   byte *src_ptr = image->data;
   byte pixel_mapping[MAX_COLORS];
   unsigned int depth = 8;
+
+#if 0
   int i, j, x, y;
+#else
+  int i, x, y;
+#endif
 
   /* allocate new allegro bitmap structure */
   if ((bitmap = create_bitmap_ex(depth, image->width, image->height)) == NULL)
@@ -471,11 +523,16 @@ static BITMAP *Image_to_AllegroBitmap(Image *image)
   /* try to use existing colors from the global colormap */
   for (i=0; i<MAX_COLORS; i++)
   {
+
+#if 0
     int r, g, b;
+#endif
 
     if (!image->rgb.color_used[i])
       continue;
 
+
+#if 0
     r = image->rgb.red[i] >> 10;
     g = image->rgb.green[i] >> 10;
     b = image->rgb.blue[i] >> 10;
@@ -502,6 +559,12 @@ static BITMAP *Image_to_AllegroBitmap(Image *image)
 
       pixel_mapping[i] = j;
     }
+#else
+    pixel_mapping[i] = AllocColorCell(image->rgb.red[i],
+				      image->rgb.green[i],
+				      image->rgb.blue[i]);
+#endif
+
   }
 
   /* copy bitmap data */
@@ -519,13 +582,19 @@ static BITMAP *Read_PCX_to_AllegroBitmap(char *filename)
 
   /* read the graphic file in PCX format to internal image structure */
   if ((image = Read_PCX_to_Image(filename)) == NULL)
+  {
+    Error(ERR_RETURN, "Read_PCX_to_Image failed");
     return NULL;
+  }
 
   /* convert internal image structure to allegro bitmap structure */
   if ((bitmap = Image_to_AllegroBitmap(image)) == NULL)
+  {
+    Error(ERR_RETURN, "Image_to_AllegroBitmap failed");
     return NULL;
+  }
 
-  set_pallete(global_colormap);
+  set_palette(global_colormap);
 
   return bitmap;
 }
@@ -633,7 +702,7 @@ static void NewKeyEvent(int key_press_state, KeySym keysym)
   xkey->state = (unsigned int)keysym;
 }
 
-#define HANDLE_RAW_KB_ALL_KEYS		0
+#define HANDLE_RAW_KB_ALL_KEYS			0
 #define HANDLE_RAW_KB_MODIFIER_KEYS_ONLY	1
 
 static int modifier_scancode[] =
@@ -701,6 +770,26 @@ static void HandleKeyboardEvent()
       else if (ascii == '.')
 	keysym = XK_KP_Separator;
     }
+    else if (ascii >= ' ' && ascii <= 'Z')
+      keysym = XK_space + (KeySym)(ascii - ' ');
+    else if (ascii == '^')
+      keysym = XK_asciicircum;
+    else if (ascii == '_')
+      keysym = XK_underscore;
+    else if (ascii == 'Ä')
+      keysym = XK_Adiaeresis;
+    else if (ascii == 'Ö')
+      keysym = XK_Odiaeresis;
+    else if (ascii == 'Ü')
+      keysym = XK_Udiaeresis;
+    else if (ascii == 'ä')
+      keysym = XK_adiaeresis;
+    else if (ascii == 'ö')
+      keysym = XK_odiaeresis;
+    else if (ascii == 'ü')
+      keysym = XK_udiaeresis;
+    else if (ascii == 'ß')
+      keysym = XK_ssharp;
 
     NewKeyEvent(KeyPress, keysym);
   }
@@ -720,15 +809,22 @@ int XPending(Display *display)
   XMotionEvent *xmotion;
   int i;
 
+  /* When using 'HandleKeyboardRaw()', keyboard input is also stored in
+     the allegro keyboard input buffer and would be available a second
+     time by calling 'HandleKeyboardEvent()'. To avoid double keyboard
+     events, the allegro function 'clear_keybuf()' must be called each
+     time when switching from calling 'HandleKeyboardRaw()' to calling
+     'HandleKeyboardEvent()' to get keyboard input, which is actually
+     done by 'XAutoRepeatOn()' which sets keyboard_auto_repeat to TRUE. */
+
   /* keyboard event */
-  if (game_status == PLAYING)
-    HandleKeyboardRaw(HANDLE_RAW_KB_ALL_KEYS);
-  else
+  if (keyboard_auto_repeat)
     HandleKeyboardEvent();
+  else
+    HandleKeyboardRaw(HANDLE_RAW_KB_ALL_KEYS);
 
   /* mouse motion event */
-  /* generate mouse motion event only if any mouse buttons are pressed */
-  if (mouse_pos != last_mouse_pos && mouse_b)
+  if (mouse_pos != last_mouse_pos)
   {
     last_mouse_pos = mouse_pos;
     pending_events++;
@@ -766,6 +862,71 @@ int XPending(Display *display)
 KeySym XLookupKeysym(XKeyEvent *key_event, int index)
 {
   return key_event->state;
+}
+
+int XLookupString(XKeyEvent *key_event, char *buffer, int buffer_size,
+		  KeySym *key, XComposeStatus *compose)
+{
+  *key = key_event->state;
+  return 0;
+}
+
+void XSetForeground(Display *display, GC gc, unsigned long pixel)
+{
+  XGCValues *gcv = (XGCValues *)gc;
+
+  gcv->foreground = pixel;
+}
+
+void XDrawLine(Display *display, Drawable d, GC gc,
+	       int x1, int y1, int x2, int y2)
+{
+  XGCValues *gcv = (XGCValues *)gc;
+  boolean mouse_off = FALSE;
+
+  if ((BITMAP *)d == video_bitmap)
+  {
+    x1 += display->screens[display->default_screen].x;
+    y1 += display->screens[display->default_screen].y;
+    x2 += display->screens[display->default_screen].x;
+    y2 += display->screens[display->default_screen].y;
+    freeze_mouse_flag = TRUE;
+    mouse_off = hide_mouse(display, MIN(x1, x2), MIN(y1, y2),
+			   MAX(x1, x2) - MIN(x1, x2),
+			   MAX(y1, y2) - MIN(y1, y2));
+  }
+
+  line((BITMAP *)d, x1, y1, x2, y2, gcv->foreground);
+
+  if (mouse_off)
+    unhide_mouse(display);
+
+  freeze_mouse_flag = FALSE;
+}
+
+void XDestroyImage(XImage *ximage)
+{
+}
+
+Bool XQueryPointer(Display *display, Window window,
+		   Window *root, Window *child, int *root_x, int *root_y,
+		   int *win_x, int *win_y, unsigned int *mask)
+{
+  *win_x = mouse_x - display->screens[display->default_screen].x;
+  *win_y = mouse_y - display->screens[display->default_screen].y;
+
+  return True;
+}
+
+void XAutoRepeatOn(Display *display)
+{
+  keyboard_auto_repeat = TRUE;
+  clear_keybuf();
+}
+
+void XAutoRepeatOff(Display *display)
+{
+  keyboard_auto_repeat = FALSE;
 }
 
 void NetworkServer(int port, int serveronly)

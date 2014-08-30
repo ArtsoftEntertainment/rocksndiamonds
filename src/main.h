@@ -65,9 +65,8 @@ typedef unsigned char byte;
 #define SCR_FIELDY	17
 #define MAX_BUF_XSIZE	(SCR_FIELDX + 2)
 #define MAX_BUF_YSIZE	(SCR_FIELDY + 2)
-
-#define MIN_LEV_FIELDX	(SCR_FIELDX - 2)
-#define MIN_LEV_FIELDY	(SCR_FIELDY - 2)
+#define MIN_LEV_FIELDX	3
+#define MIN_LEV_FIELDY	3
 #define STD_LEV_FIELDX	64
 #define STD_LEV_FIELDY	32
 #define MAX_LEV_FIELDX	128
@@ -96,39 +95,42 @@ typedef unsigned char byte;
 #define IN_SCR_FIELD(x,y) ((x)>=BX1 && (x)<=BX2 && (y)>=BY1 &&(y)<=BY2)
 #define IN_LEV_FIELD(x,y) ((x)>=0 && (x)<lev_fieldx && (y)>=0 &&(y)<lev_fieldy)
 
-#define EP_BIT_AMOEBALIVE	(1<<0)
-#define EP_BIT_AMOEBOID		(1<<1)
-#define EP_BIT_SCHLUESSEL	(1<<2)
-#define EP_BIT_PFORTE		(1<<3)
-#define EP_BIT_SOLID		(1<<4)
-#define EP_BIT_MASSIV		(1<<5)
-#define EP_BIT_SLIPPERY		(1<<6)
-#define EP_BIT_ENEMY		(1<<7)
-#define EP_BIT_MAUER		(1<<8)
-#define EP_BIT_CAN_FALL		(1<<9)
-#define EP_BIT_CAN_SMASH	(1<<10)
-#define EP_BIT_CAN_CHANGE	(1<<11)
-#define EP_BIT_CAN_MOVE		(1<<12)
-#define EP_BIT_COULD_MOVE	(1<<13)
-#define EP_BIT_DONT_TOUCH	(1<<14)
-#define EP_BIT_DONT_GO_TO	(1<<15)
-#define EP_BIT_MAMPF2		(1<<16)
-#define EP_BIT_CHAR		(1<<17)
-#define EP_BIT_BD_ELEMENT	(1<<18)
-#define EP_BIT_SB_ELEMENT	(1<<19)
-#define EP_BIT_GEM		(1<<20)
-#define EP_BIT_INACTIVE		(1<<21)
-#define EP_BIT_EXPLOSIVE	(1<<22)
-#define EP_BIT_MAMPF3		(1<<23)
-#define EP_BIT_PUSHABLE		(1<<24)
-#define EP_BIT_PLAYER		(1<<25)
+#define EP_BIT_AMOEBALIVE	(1 << 0)
+#define EP_BIT_AMOEBOID		(1 << 1)
+#define EP_BIT_SCHLUESSEL	(1 << 2)
+#define EP_BIT_PFORTE		(1 << 3)
+#define EP_BIT_SOLID		(1 << 4)
+#define EP_BIT_MASSIVE		(1 << 5)
+#define EP_BIT_SLIPPERY		(1 << 6)
+#define EP_BIT_ENEMY		(1 << 7)
+#define EP_BIT_MAUER		(1 << 8)
+#define EP_BIT_CAN_FALL		(1 << 9)
+#define EP_BIT_CAN_SMASH	(1 << 10)
+#define EP_BIT_CAN_CHANGE	(1 << 11)
+#define EP_BIT_CAN_MOVE		(1 << 12)
+#define EP_BIT_COULD_MOVE	(1 << 13)
+#define EP_BIT_DONT_TOUCH	(1 << 14)
+#define EP_BIT_DONT_GO_TO	(1 << 15)
+#define EP_BIT_MAMPF2		(1 << 16)
+#define EP_BIT_CHAR		(1 << 17)
+#define EP_BIT_BD_ELEMENT	(1 << 18)
+#define EP_BIT_SB_ELEMENT	(1 << 19)
+#define EP_BIT_GEM		(1 << 20)
+#define EP_BIT_INACTIVE		(1 << 21)
+#define EP_BIT_EXPLOSIVE	(1 << 22)
+#define EP_BIT_MAMPF3		(1 << 23)
+#define EP_BIT_PUSHABLE		(1 << 24)
+#define EP_BIT_PLAYER		(1 << 25)
+#define EP_BIT_HAS_CONTENT	(1 << 26)
+#define EP_BIT_EATABLE		(1 << 27)
+#define EP_BIT_SP_ELEMENT	(1 << 28)
 
 #define IS_AMOEBALIVE(e)	(Elementeigenschaften[e] & EP_BIT_AMOEBALIVE)
 #define IS_AMOEBOID(e)		(Elementeigenschaften[e] & EP_BIT_AMOEBOID)
 #define IS_SCHLUESSEL(e)	(Elementeigenschaften[e] & EP_BIT_SCHLUESSEL)
 #define IS_PFORTE(e)		(Elementeigenschaften[e] & EP_BIT_PFORTE)
 #define IS_SOLID(e)		(Elementeigenschaften[e] & EP_BIT_SOLID)
-#define IS_MASSIV(e)		(Elementeigenschaften[e] & EP_BIT_MASSIV)
+#define IS_MASSIVE(e)		(Elementeigenschaften[e] & EP_BIT_MASSIVE)
 #define IS_SLIPPERY(e)		(Elementeigenschaften[e] & EP_BIT_SLIPPERY)
 #define IS_ENEMY(e)		(Elementeigenschaften[e] & EP_BIT_ENEMY)
 #define IS_MAUER(e)		(Elementeigenschaften[e] & EP_BIT_MAUER)
@@ -149,6 +151,9 @@ typedef unsigned char byte;
 #define IS_MAMPF3(e)		(Elementeigenschaften[e] & EP_BIT_MAMPF3)
 #define IS_PUSHABLE(e)		(Elementeigenschaften[e] & EP_BIT_PUSHABLE)
 #define ELEM_IS_PLAYER(e)	(Elementeigenschaften[e] & EP_BIT_PLAYER)
+#define HAS_CONTENT(e)		(Elementeigenschaften[e] & EP_BIT_HAS_CONTENT)
+#define IS_EATABLE(e)		(Elementeigenschaften[e] & EP_BIT_EATABLE)
+#define IS_SP_ELEMENT(e)	(Elementeigenschaften[e] & EP_BIT_SP_ELEMENT)
 
 #define IS_PLAYER(x,y)		(ELEM_IS_PLAYER(StorePlayer[x][y]))
 
@@ -168,7 +173,6 @@ typedef unsigned char byte;
 				 EL_FELSBROCKEN)
 #define IS_DRAWABLE(e)		((e) < EL_BLOCKED)
 #define IS_NOT_DRAWABLE(e)	((e) >= EL_BLOCKED)
-#define TIMESIZE		(TimeLeft * 100 / level.time)
 #define TAPE_IS_EMPTY(x)	((x).length == 0)
 #define TAPE_IS_STOPPED(x)	(!(x).recording && !(x).playing &&!(x).pausing)
 
@@ -179,19 +183,21 @@ typedef unsigned char byte;
 #define PIX_DOOR		1
 #define PIX_HEROES		2
 #define PIX_TOONS		3
-#define	PIX_BIGFONT		4
-#define PIX_SMALLFONT		5
+#define PIX_MORE		4
+#define	PIX_BIGFONT		5
+#define PIX_SMALLFONT		6
 /* Pixmaps without them */
-#define PIX_DB_BACK		6
-#define PIX_DB_DOOR		7
-#define PIX_DB_FIELD		8
+#define PIX_DB_BACK		7
+#define PIX_DB_DOOR		8
+#define PIX_DB_FIELD		9
 
-#define NUM_PICTURES		6
-#define NUM_PIXMAPS		9
+#define NUM_PICTURES		7
+#define NUM_PIXMAPS		10
 
 /* boundaries of arrays etc. */
 #define MAX_NAMELEN		(10+1)
-#define MAX_LEVNAMLEN		32
+#define MAX_LEVEL_NAME_LEN	32
+#define MAX_LEVEL_AUTHOR_LEN	32
 #define MAX_TAPELEN		(1000 * 50)	/* max. time * framerate */
 #define MAX_LEVDIR_ENTRIES	100
 #define MAX_SCORE_ENTRIES	100
@@ -204,6 +210,9 @@ typedef unsigned char byte;
 #define GAME_FRAME_DELAY	20	/* frame delay in milliseconds */
 #define FFWD_FRAME_DELAY	10	/* 200% speed for fast forward */
 #define FRAMES_PER_SECOND	(1000 / GAME_FRAME_DELAY)
+#define GADGET_FRAME_DELAY	150	/* delay between gadget actions */
+#define MICROLEVEL_SCROLL_DELAY	50	/* delay for scrolling micro level */
+#define MICROLEVEL_LABEL_DELAY	250	/* delay for micro level label */
 
 struct HiScore
 {
@@ -326,23 +335,29 @@ struct LevelInfo
   int fieldy;
   int time;
   int edelsteine;
-  char name[MAX_LEVNAMLEN];
+  char name[MAX_LEVEL_NAME_LEN + 1];
+  char author[MAX_LEVEL_AUTHOR_LEN + 1];
   int score[LEVEL_SCORE_ELEMENTS];
-  int mampfer_inhalt[4][3][3];
+  int mampfer_inhalt[8][3][3];
   int tempo_amoebe;
   int dauer_sieb;
   int dauer_ablenk;
   int amoebe_inhalt;
+  boolean double_speed;
 };
 
 struct LevelDirInfo
 {
   char *filename;
   char *name;
+  char *author;
   int levels;
+  int first_level;
+  int last_level;
   int sort_priority;
   boolean user_defined;
   boolean readonly;
+  int color;
 };
 
 struct TapeInfo
@@ -390,6 +405,7 @@ extern char	       *joystick_device_name[];
 extern char	       *program_name;
 
 extern int		game_status;
+extern boolean		level_editor_test_game;
 extern boolean		network_playing;
 extern int		button_status;
 extern boolean		motion_status;
@@ -423,14 +439,21 @@ extern int		lev_fieldx,lev_fieldy, scroll_x,scroll_y;
 
 extern int		FX,FY, ScrollStepSize;
 extern int		ScreenMovDir, ScreenMovPos, ScreenGfxPos;
+extern int		BorderElement;
 extern int		GameFrameDelay;
 extern int		FfwdFrameDelay;
 extern int		MoveSpeed;
 extern int		BX1,BY1, BX2,BY2;
+extern int		SBX_Left, SBX_Right;
+extern int		SBY_Upper, SBY_Lower;
 extern int		ZX,ZY, ExitX,ExitY;
 extern int		AllPlayersGone;
-extern int		FrameCounter, TimeFrames, TimeLeft;
-extern int		MampferNr, SiebAktiv;
+extern int		FrameCounter, TimeFrames, TimePlayed, TimeLeft;
+extern int		MampferMax, MampferNr;
+extern boolean		SiebAktiv;
+extern int		SiebCount;
+
+extern int		game_emulation;
 
 extern boolean		network_player_action_received;
 
@@ -449,40 +472,45 @@ extern struct SetupFileList	*level_setup_list;
 extern char		*sound_name[];
 extern int		background_loop[];
 extern int		num_bg_loops;
+extern char		*element_info[];
 
 
 /* often used screen positions */
 #define SX			8
 #define SY			8
-#define REAL_SX			(SX-2)
-#define REAL_SY			(SY-2)
+#define REAL_SX			(SX - 2)
+#define REAL_SY			(SY - 2)
 #define DX			566
 #define DY			60
 #define VX			DX
 #define VY			400
+#define EX			DX
+#define EY			(VY - 44)
 #define TILEX			32
 #define TILEY			32
-#define MINI_TILEX		(TILEX/2)
-#define MINI_TILEY		(TILEY/2)
-#define MICRO_TILEX		(TILEX/8)
-#define MICRO_TILEY		(TILEY/8)
-#define MIDPOSX			(SCR_FIELDX/2)
-#define MIDPOSY			(SCR_FIELDY/2)
-#define SXSIZE			(SCR_FIELDX*TILEX)
-#define SYSIZE			(SCR_FIELDY*TILEY)
-#define FXSIZE			((SCR_FIELDX+2)*TILEX)
-#define FYSIZE			((SCR_FIELDY+2)*TILEY)
+#define MINI_TILEX		(TILEX / 2)
+#define MINI_TILEY		(TILEY / 2)
+#define MICRO_TILEX		(TILEX / 8)
+#define MICRO_TILEY		(TILEY / 8)
+#define MIDPOSX			(SCR_FIELDX / 2)
+#define MIDPOSY			(SCR_FIELDY / 2)
+#define SXSIZE			(SCR_FIELDX * TILEX)
+#define SYSIZE			(SCR_FIELDY * TILEY)
+#define FXSIZE			((SCR_FIELDX + 2) * TILEX)
+#define FYSIZE			((SCR_FIELDY + 2) * TILEY)
 #define DXSIZE			100
 #define DYSIZE			280
 #define VXSIZE			DXSIZE
 #define VYSIZE			100
-#define FULL_SXSIZE		(2+SXSIZE+2)
-#define FULL_SYSIZE		(2+SYSIZE+2)
-#define MICROLEV_XPOS		(SX+4*32+16)
-#define MICROLEV_YPOS		(SX+12*32)
-#define MICROLEV_XSIZE		(STD_LEV_FIELDX*MICRO_TILEX)
-#define MICROLEV_YSIZE		(STD_LEV_FIELDY*MICRO_TILEY)
-#define MICROLABEL_YPOS		(MICROLEV_YPOS+MICROLEV_YSIZE+12)
+#define EXSIZE			DXSIZE
+#define EYSIZE			(VXSIZE + 44)
+#define FULL_SXSIZE		(2 + SXSIZE + 2)
+#define FULL_SYSIZE		(2 + SYSIZE + 2)
+#define MICROLEV_XSIZE		((STD_LEV_FIELDX + 2) * MICRO_TILEX)
+#define MICROLEV_YSIZE		((STD_LEV_FIELDY + 2) * MICRO_TILEY)
+#define MICROLEV_XPOS		(SX + (SXSIZE - MICROLEV_XSIZE) / 2)
+#define MICROLEV_YPOS		(SX + 12 * TILEY - MICRO_TILEY)
+#define MICROLABEL_YPOS		(MICROLEV_YPOS + MICROLEV_YSIZE + 7)
 #define FONT1_XSIZE		32
 #define FONT1_YSIZE		32
 #define FONT2_XSIZE		14
@@ -502,6 +530,13 @@ extern int		num_bg_loops;
 #define MINI_GFX_PER_LINE	32
 #define MICRO_GFX_PER_LINE	128
 #define HEROES_PER_LINE		16
+#define MINI_MORE_STARTX	0
+#define MINI_MORE_STARTY	224
+#define MICRO_MORE_STARTX	0
+#define MICRO_MORE_STARTY	336
+#define MORE_PER_LINE		16
+#define MINI_MORE_PER_LINE	16
+#define MICRO_MORE_PER_LINE	16
 #define FONT_CHARS_PER_LINE	16
 #define FONT_LINES_PER_FONT	4
 
@@ -530,8 +565,8 @@ extern int		num_bg_loops;
 #define EL_MORAST_VOLL		17
 #define EL_TROPFEN		18
 #define EL_BOMBE		19
-#define EL_SIEB_LEER		20
-#define EL_SIEB_VOLL		21
+#define EL_SIEB_INAKTIV		20
+#define EL_SPEED_PILL		21
 #define EL_SALZSAEURE		22
 #define EL_AMOEBE_NASS		23
 #define EL_AMOEBE_NORM		24
@@ -571,8 +606,8 @@ extern int		num_bg_loops;
 #define EL_ERZ_EDEL_BD		58
 #define EL_ERZ_EDEL_GELB	59
 #define EL_MAMPFER2		60
-#define EL_SIEB2_LEER		61
-#define EL_SIEB2_VOLL		62
+#define EL_SIEB2_INAKTIV	61
+#define EL_INVISIBLE_STEEL	62
 #define EL_DYNABOMB		63
 #define EL_DYNABOMB_NR		64
 #define EL_DYNABOMB_SZ		65
@@ -623,10 +658,14 @@ extern int		num_bg_loops;
 #define EL_BADEWANNE3		102
 #define EL_BADEWANNE4		103
 #define EL_BADEWANNE5		104
-#define EL_SIEB_TOT		105
-#define EL_AUSGANG_ACT		106
+
+#define EL_UNUSED_105		105
+#define EL_UNUSED_106		106
+
 #define EL_AUSGANG_AUF		107
-#define EL_SIEB2_TOT		108
+
+#define EL_BLACK_ORB		108
+
 #define EL_AMOEBA2DIAM		109
 #define EL_MAULWURF		110
 #define EL_PINGUIN		111
@@ -644,11 +683,14 @@ extern int		num_bg_loops;
 #define EL_CHAR_ASCII0		(EL_CHAR_START-32)
 #define EL_CHAR_AUSRUF		(EL_CHAR_ASCII0+33)
 #define EL_CHAR_ZOLL		(EL_CHAR_ASCII0+34)
+#define EL_CHAR_RAUTE		(EL_CHAR_ASCII0+35)
 #define EL_CHAR_DOLLAR		(EL_CHAR_ASCII0+36)
 #define EL_CHAR_PROZ		(EL_CHAR_ASCII0+37)
+#define EL_CHAR_AMPERSAND	(EL_CHAR_ASCII0+38)
 #define EL_CHAR_APOSTR		(EL_CHAR_ASCII0+39)
 #define EL_CHAR_KLAMM1		(EL_CHAR_ASCII0+40)
 #define EL_CHAR_KLAMM2		(EL_CHAR_ASCII0+41)
+#define EL_CHAR_MULT		(EL_CHAR_ASCII0+42)
 #define EL_CHAR_PLUS		(EL_CHAR_ASCII0+43)
 #define EL_CHAR_KOMMA		(EL_CHAR_ASCII0+44)
 #define EL_CHAR_MINUS		(EL_CHAR_ASCII0+45)
@@ -671,39 +713,112 @@ extern int		num_bg_loops;
 #define EL_CHAR_COPY		(EL_CHAR_ASCII0+94)
 #define EL_CHAR_END		(EL_CHAR_START+79)
 
+#define EL_CHAR(x)		((x) == 'Ä' ? EL_CHAR_AE : \
+				 (x) == 'Ö' ? EL_CHAR_OE : \
+				 (x) == 'Ü' ? EL_CHAR_UE : \
+				 EL_CHAR_A + (x) - 'A')
+
 #define EL_MAUER_X		200
 #define EL_MAUER_Y		201
 #define EL_MAUER_XY		202
 
-#define EL_UNUSED_200		203
-/* ... */
+#define EL_UNUSED_203		203
+#define EL_UNUSED_204		204
+#define EL_UNUSED_205		205
+#define EL_UNUSED_206		206
+#define EL_UNUSED_207		207
+#define EL_UNUSED_208		208
+#define EL_UNUSED_209		209
+
+#define EL_SP_START		210
+#define EL_SP_EMPTY		(EL_SP_START + 0)
+#define EL_SP_ZONK		(EL_SP_START + 1)
+#define EL_SP_BASE		(EL_SP_START + 2)
+#define EL_SP_MURPHY		(EL_SP_START + 3)
+#define EL_SP_INFOTRON		(EL_SP_START + 4)
+#define EL_SP_CHIP_SINGLE	(EL_SP_START + 5)
+#define EL_SP_HARD_GRAY		(EL_SP_START + 6)
+#define EL_SP_EXIT		(EL_SP_START + 7)
+#define EL_SP_DISK_ORANGE	(EL_SP_START + 8)
+#define EL_SP_PORT1_RIGHT	(EL_SP_START + 9)
+#define EL_SP_PORT1_DOWN	(EL_SP_START + 10)
+#define EL_SP_PORT1_LEFT	(EL_SP_START + 11)
+#define EL_SP_PORT1_UP		(EL_SP_START + 12)
+#define EL_SP_PORT2_RIGHT	(EL_SP_START + 13)
+#define EL_SP_PORT2_DOWN	(EL_SP_START + 14)
+#define EL_SP_PORT2_LEFT	(EL_SP_START + 15)
+#define EL_SP_PORT2_UP		(EL_SP_START + 16)
+#define EL_SP_SNIKSNAK		(EL_SP_START + 17)
+#define EL_SP_DISK_YELLOW	(EL_SP_START + 18)
+#define EL_SP_TERMINAL		(EL_SP_START + 19)
+#define EL_SP_DISK_RED		(EL_SP_START + 20)
+#define EL_SP_PORT_Y		(EL_SP_START + 21)
+#define EL_SP_PORT_X		(EL_SP_START + 22)
+#define EL_SP_PORT_XY		(EL_SP_START + 23)
+#define EL_SP_ELECTRON		(EL_SP_START + 24)
+#define EL_SP_BUG		(EL_SP_START + 25)
+#define EL_SP_CHIP_LEFT		(EL_SP_START + 26)
+#define EL_SP_CHIP_RIGHT	(EL_SP_START + 27)
+#define EL_SP_HARD_BASE1	(EL_SP_START + 28)
+#define EL_SP_HARD_GREEN	(EL_SP_START + 29)
+#define EL_SP_HARD_BLUE		(EL_SP_START + 30)
+#define EL_SP_HARD_RED		(EL_SP_START + 31)
+#define EL_SP_HARD_YELLOW	(EL_SP_START + 32)
+#define EL_SP_HARD_BASE2	(EL_SP_START + 33)
+#define EL_SP_HARD_BASE3	(EL_SP_START + 34)
+#define EL_SP_HARD_BASE4	(EL_SP_START + 35)
+#define EL_SP_HARD_BASE5	(EL_SP_START + 36)
+#define EL_SP_HARD_BASE6	(EL_SP_START + 37)
+#define EL_SP_CHIP_UPPER	(EL_SP_START + 38)
+#define EL_SP_CHIP_LOWER	(EL_SP_START + 39)
+#define EL_SP_END		(EL_SP_START + 39)
+
+#define EL_UNUSED_250		250
+#define EL_UNUSED_251		251
+#define EL_UNUSED_252		252
+#define EL_UNUSED_253		253
+#define EL_UNUSED_254		254
 #define EL_UNUSED_255		255
 
-/* "unreal" runtime elements */
-#define EL_BLOCKED		300
-#define EL_EXPLODING		301
-#define EL_CRACKINGNUT		302
-#define EL_BLURB_LEFT		303
-#define EL_BLURB_RIGHT		304
-#define EL_AMOEBING		305
-#define EL_MAUERND		306
-#define EL_BURNING		307
-#define EL_PLAYER_IS_LEAVING	308
+/* "real" (and therefore drawable) runtime elements */
+#define EL_SIEB_LEER		300
+#define EL_SIEB2_LEER		301
+#define EL_SIEB_VOLL		302
+#define EL_SIEB2_VOLL		303
+#define EL_SIEB_TOT		304
+#define EL_SIEB2_TOT		305
+#define EL_AUSGANG_ACT		306
+#define EL_SP_TERMINAL_ACTIVE	307
+#define EL_SP_BUG_ACTIVE	308
+
+/* "unreal" (and therefore not drawable) runtime elements */
+#define EL_BLOCKED		400
+#define EL_EXPLODING		401
+#define EL_CRACKINGNUT		402
+#define EL_BLURB_LEFT		403
+#define EL_BLURB_RIGHT		404
+#define EL_AMOEBING		405
+#define EL_MAUERND		406
+#define EL_BURNING		407
+#define EL_PLAYER_IS_LEAVING	408
 
 /* game graphics:
-**	  0 - 255: graphics from "RocksScreen"
-**	256 - 511: graphics from "RocksFont"
-**	512 - 767: graphics from "RocksHeroes"
+**	  0 -  255: graphics from "RocksScreen"
+**	256 -  511: graphics from "RocksFont"
+**	512 -  767: graphics from "RocksMore"
+**	768 - 1023: graphics from "RocksHeroes"
 */
 
 #define GFX_START_ROCKSSCREEN	0
 #define GFX_END_ROCKSSCREEN	255
 #define GFX_START_ROCKSFONT	256
 #define GFX_END_ROCKSFONT	511
-#define GFX_START_ROCKSHEROES	512
-#define GFX_END_ROCKSHEROES	767
+#define GFX_START_ROCKSMORE	512
+#define GFX_END_ROCKSMORE	767
+#define GFX_START_ROCKSHEROES	768
+#define GFX_END_ROCKSHEROES	1023
 
-#define NUM_TILES		768
+#define NUM_TILES		1024
 
 /* graphics from "RocksScreen" */
 /* Zeile 0 (0) */
@@ -722,7 +837,11 @@ extern int		num_bg_loops;
 #define GFX_BADEWANNE1		16
 #define GFX_SALZSAEURE		17
 #define GFX_BADEWANNE2		18
+
+/*
 #define GFX_UNSICHTBAR		19
+*/
+
 #define GFX_SCHLUESSEL1		20
 #define GFX_SCHLUESSEL2		21
 #define GFX_SCHLUESSEL3		22
@@ -796,9 +915,10 @@ extern int		num_bg_loops;
 #define GFX_SOKOBAN_FELD_VOLL	123
 #define GFX_GEBLUBBER		124
 /* Zeile 8 (128) */
-#define GFX_SIEB_LEER		128
-#define GFX_SIEB_VOLL		GFX_SIEB_LEER
-#define GFX_SIEB_TOT		GFX_SIEB_LEER
+#define GFX_SIEB_INAKTIV	128
+#define GFX_SIEB_LEER		GFX_SIEB_INAKTIV
+#define GFX_SIEB_VOLL		GFX_SIEB_INAKTIV
+#define GFX_SIEB_TOT		GFX_SIEB_INAKTIV
 #define GFX_ERZ_EDEL		132
 #define GFX_ERZ_DIAM		133
 #define GFX_ERZ_EDEL_ROT	134
@@ -821,6 +941,8 @@ extern int		num_bg_loops;
 #define GFX_EDELSTEIN_ROT	152
 #define GFX_EDELSTEIN_LILA	154
 #define GFX_DYNABOMB_XL		156
+#define GFX_BLACK_ORB		157
+#define GFX_SPEED_PILL		158
 #define GFX_SONDE		159
 /* Zeile 10 (160) */
 #define GFX_EDELSTEIN_BD	163
@@ -831,9 +953,10 @@ extern int		num_bg_loops;
 #define GFX_MAUER_L1		GFX_MAUER_LEFT
 #define GFX_MAUER_L		170
 #define GFX_MAUER_LEBT		171
-#define GFX_SIEB2_LEER		172
-#define GFX_SIEB2_VOLL		GFX_SIEB2_LEER
-#define GFX_SIEB2_TOT		GFX_SIEB2_LEER
+#define GFX_SIEB2_INAKTIV	172
+#define GFX_SIEB2_LEER		GFX_SIEB2_INAKTIV
+#define GFX_SIEB2_VOLL		GFX_SIEB2_INAKTIV
+#define GFX_SIEB2_TOT		GFX_SIEB2_INAKTIV
 /* Zeile 11 (176) */
 #define	GFX_AUSGANG_ZU		176
 #define	GFX_AUSGANG_ACT		177
@@ -858,12 +981,25 @@ extern int		num_bg_loops;
 #define GFX_FIREFLY_L		206
 #define GFX_FIREFLY_U		207
 
+/* only available as size MINI_TILE */
+#define GFX_VSTEEL_UPPER_LEFT	208
+#define GFX_VSTEEL_UPPER_RIGHT	209
+#define GFX_VSTEEL_LOWER_LEFT	210
+#define GFX_VSTEEL_LOWER_RIGHT	211
+#define GFX_VSTEEL_HORIZONTAL	212
+#define GFX_VSTEEL_VERTICAL	213
+#define GFX_ISTEEL_UPPER_LEFT	214
+#define GFX_ISTEEL_UPPER_RIGHT	215
+#define GFX_ISTEEL_LOWER_LEFT	216
+#define GFX_ISTEEL_LOWER_RIGHT	217
+#define GFX_ISTEEL_HORIZONTAL	218
+#define GFX_ISTEEL_VERTICAL	219
+
+/* elements with graphics borrowed from other elements */
 #define GFX_SCHLUESSEL		GFX_SCHLUESSEL1
 #define GFX_SPIELFIGUR		GFX_SPIELER1
 
-
 /* graphics from "RocksHeroes" */
-
 #define GFX_SPIELER1_DOWN	(GFX_START_ROCKSHEROES + 0*HEROES_PER_LINE + 0)
 #define GFX_SPIELER1_UP		(GFX_START_ROCKSHEROES + 0*HEROES_PER_LINE + 4)
 #define GFX_SPIELER1_LEFT	(GFX_START_ROCKSHEROES + 1*HEROES_PER_LINE + 0)
@@ -917,37 +1053,106 @@ extern int		num_bg_loops;
 #define GFX_FLAMMEN_UP		(GFX_START_ROCKSHEROES +14*HEROES_PER_LINE + 8)
 #define GFX_FLAMMEN_DOWN	(GFX_START_ROCKSHEROES +15*HEROES_PER_LINE + 8)
 
+/* graphics from "RocksMore" */
+#define GFX_SP_EMPTY		(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  0)
+#define GFX_SP_ZONK		(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  1)
+#define GFX_SP_BASE		(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  2)
+#define GFX_SP_MURPHY		(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  3)
+#define GFX_SP_INFOTRON		(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  4)
+#define GFX_SP_CHIP_SINGLE	(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  5)
+#define GFX_SP_HARD_GRAY	(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  6)
+#define GFX_SP_EXIT		(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  7)
+#define GFX_SP_DISK_ORANGE	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  0)
+#define GFX_SP_PORT1_RIGHT	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  1)
+#define GFX_SP_PORT1_DOWN	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  2)
+#define GFX_SP_PORT1_LEFT	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  3)
+#define GFX_SP_PORT1_UP		(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  4)
+#define GFX_SP_PORT2_RIGHT	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  5)
+#define GFX_SP_PORT2_DOWN	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  6)
+#define GFX_SP_PORT2_LEFT	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  7)
+#define GFX_SP_PORT2_UP		(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE +  0)
+#define GFX_SP_SNIKSNAK		(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE +  1)
+#define GFX_SP_DISK_YELLOW	(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE +  2)
+#define GFX_SP_TERMINAL		(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE +  3)
+#define GFX_SP_DISK_RED		(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE +  4)
+#define GFX_SP_PORT_Y		(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE +  5)
+#define GFX_SP_PORT_X		(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE +  6)
+#define GFX_SP_PORT_XY		(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE +  7)
+#define GFX_SP_ELECTRON		(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  0)
+#define GFX_SP_BUG		(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  1)
+#define GFX_SP_CHIP_LEFT	(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  2)
+#define GFX_SP_CHIP_RIGHT	(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  3)
+#define GFX_SP_HARD_BASE1	(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  4)
+#define GFX_SP_HARD_GREEN	(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  5)
+#define GFX_SP_HARD_BLUE	(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  6)
+#define GFX_SP_HARD_RED		(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  7)
+#define GFX_SP_HARD_YELLOW	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  0)
+#define GFX_SP_HARD_BASE2	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  1)
+#define GFX_SP_HARD_BASE3	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  2)
+#define GFX_SP_HARD_BASE4	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  3)
+#define GFX_SP_HARD_BASE5	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  4)
+#define GFX_SP_HARD_BASE6	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  5)
+#define GFX_SP_CHIP_UPPER	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  6)
+#define GFX_SP_CHIP_LOWER	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  7)
+
+#define GFX_INVISIBLE_STEEL	(GFX_START_ROCKSMORE +  5 * MORE_PER_LINE +  3)
+#define GFX_UNSICHTBAR		(GFX_START_ROCKSMORE +  5 * MORE_PER_LINE +  7)
+
+#define GFX_MURPHY_GO_LEFT	(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  8)
+#define GFX_MURPHY_ANY_LEFT	(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE +  9)
+#define GFX_MURPHY_GO_RIGHT	(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE + 11)
+#define GFX_MURPHY_ANY_RIGHT	(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE + 12)
+#define GFX_MURPHY_SNAP_UP	(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE + 14)
+#define GFX_MURPHY_SNAP_DOWN	(GFX_START_ROCKSMORE +  0 * MORE_PER_LINE + 15)
+#define GFX_MURPHY_SNAP_RIGHT	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  8)
+#define GFX_MURPHY_SNAP_LEFT	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE +  9)
+#define GFX_MURPHY_PUSH_RIGHT	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE + 10)
+#define GFX_MURPHY_PUSH_LEFT	(GFX_START_ROCKSMORE +  1 * MORE_PER_LINE + 11)
+
+#define GFX_SP_BUG_WARNING	(GFX_START_ROCKSMORE +  2 * MORE_PER_LINE + 15)
+#define GFX_SP_EXPLODE_EMPTY	(GFX_START_ROCKSMORE +  3 * MORE_PER_LINE +  8)
+#define GFX_SP_EXPLODE_INFOTRON	(GFX_START_ROCKSMORE +  4 * MORE_PER_LINE +  8)
+#define GFX_SP_BUG_ACTIVE	(GFX_START_ROCKSMORE +  6 * MORE_PER_LINE +  8)
+#define GFX_SP_SNIKSNAK_LEFT	(GFX_START_ROCKSMORE +  8 * MORE_PER_LINE +  8)
+#define GFX_SP_SNIKSNAK_RIGHT	(GFX_START_ROCKSMORE +  8 * MORE_PER_LINE + 12)
+#define GFX_SP_SNIKSNAK_UP	(GFX_START_ROCKSMORE +  9 * MORE_PER_LINE +  8)
+#define GFX_SP_SNIKSNAK_DOWN	(GFX_START_ROCKSMORE +  9 * MORE_PER_LINE + 12)
+
+#define GFX2_SP_ELECTRON	(GFX_START_ROCKSMORE + 10 * MORE_PER_LINE +  8)
+#define GFX2_SP_TERMINAL	(GFX_START_ROCKSMORE + 11 * MORE_PER_LINE +  8)
+#define GFX2_SP_TERMINAL_ACTIVE	(GFX_START_ROCKSMORE + 12 * MORE_PER_LINE +  8)
+
 /* graphics from "RocksFont" */
 #define GFX_CHAR_START		(GFX_START_ROCKSFONT)
-#define GFX_CHAR_ASCII0		(GFX_CHAR_START-32)
-#define GFX_CHAR_AUSRUF		(GFX_CHAR_ASCII0+33)
-#define GFX_CHAR_ZOLL		(GFX_CHAR_ASCII0+34)
-#define GFX_CHAR_DOLLAR		(GFX_CHAR_ASCII0+36)
-#define GFX_CHAR_PROZ		(GFX_CHAR_ASCII0+37)
-#define GFX_CHAR_APOSTR		(GFX_CHAR_ASCII0+39)
-#define GFX_CHAR_KLAMM1		(GFX_CHAR_ASCII0+40)
-#define GFX_CHAR_KLAMM2		(GFX_CHAR_ASCII0+41)
-#define GFX_CHAR_PLUS		(GFX_CHAR_ASCII0+43)
-#define GFX_CHAR_KOMMA		(GFX_CHAR_ASCII0+44)
-#define GFX_CHAR_MINUS		(GFX_CHAR_ASCII0+45)
-#define GFX_CHAR_PUNKT		(GFX_CHAR_ASCII0+46)
-#define GFX_CHAR_SLASH		(GFX_CHAR_ASCII0+47)
-#define GFX_CHAR_0		(GFX_CHAR_ASCII0+48)
-#define GFX_CHAR_9		(GFX_CHAR_ASCII0+57)
-#define GFX_CHAR_DOPPEL		(GFX_CHAR_ASCII0+58)
-#define GFX_CHAR_SEMIKL		(GFX_CHAR_ASCII0+59)
-#define GFX_CHAR_LT		(GFX_CHAR_ASCII0+60)
-#define GFX_CHAR_GLEICH		(GFX_CHAR_ASCII0+61)
-#define GFX_CHAR_GT		(GFX_CHAR_ASCII0+62)
-#define GFX_CHAR_FRAGE		(GFX_CHAR_ASCII0+63)
-#define GFX_CHAR_AT		(GFX_CHAR_ASCII0+64)
-#define GFX_CHAR_A		(GFX_CHAR_ASCII0+65)
-#define GFX_CHAR_Z		(GFX_CHAR_ASCII0+90)
-#define GFX_CHAR_AE		(GFX_CHAR_ASCII0+91)
-#define GFX_CHAR_OE		(GFX_CHAR_ASCII0+92)
-#define GFX_CHAR_UE		(GFX_CHAR_ASCII0+93)
-#define GFX_CHAR_COPY		(GFX_CHAR_ASCII0+94)
-#define GFX_CHAR_END		(GFX_CHAR_START+79)
+#define GFX_CHAR_ASCII0		(GFX_CHAR_START - 32)
+#define GFX_CHAR_AUSRUF		(GFX_CHAR_ASCII0 + 33)
+#define GFX_CHAR_ZOLL		(GFX_CHAR_ASCII0 + 34)
+#define GFX_CHAR_DOLLAR		(GFX_CHAR_ASCII0 + 36)
+#define GFX_CHAR_PROZ		(GFX_CHAR_ASCII0 + 37)
+#define GFX_CHAR_APOSTR		(GFX_CHAR_ASCII0 + 39)
+#define GFX_CHAR_KLAMM1		(GFX_CHAR_ASCII0 + 40)
+#define GFX_CHAR_KLAMM2		(GFX_CHAR_ASCII0 + 41)
+#define GFX_CHAR_PLUS		(GFX_CHAR_ASCII0 + 43)
+#define GFX_CHAR_KOMMA		(GFX_CHAR_ASCII0 + 44)
+#define GFX_CHAR_MINUS		(GFX_CHAR_ASCII0 + 45)
+#define GFX_CHAR_PUNKT		(GFX_CHAR_ASCII0 + 46)
+#define GFX_CHAR_SLASH		(GFX_CHAR_ASCII0 + 47)
+#define GFX_CHAR_0		(GFX_CHAR_ASCII0 + 48)
+#define GFX_CHAR_9		(GFX_CHAR_ASCII0 + 57)
+#define GFX_CHAR_DOPPEL		(GFX_CHAR_ASCII0 + 58)
+#define GFX_CHAR_SEMIKL		(GFX_CHAR_ASCII0 + 59)
+#define GFX_CHAR_LT		(GFX_CHAR_ASCII0 + 60)
+#define GFX_CHAR_GLEICH		(GFX_CHAR_ASCII0 + 61)
+#define GFX_CHAR_GT		(GFX_CHAR_ASCII0 + 62)
+#define GFX_CHAR_FRAGE		(GFX_CHAR_ASCII0 + 63)
+#define GFX_CHAR_AT		(GFX_CHAR_ASCII0 + 64)
+#define GFX_CHAR_A		(GFX_CHAR_ASCII0 + 65)
+#define GFX_CHAR_Z		(GFX_CHAR_ASCII0 + 90)
+#define GFX_CHAR_AE		(GFX_CHAR_ASCII0 + 91)
+#define GFX_CHAR_OE		(GFX_CHAR_ASCII0 + 92)
+#define GFX_CHAR_UE		(GFX_CHAR_ASCII0 + 93)
+#define GFX_CHAR_COPY		(GFX_CHAR_ASCII0 + 94)
+#define GFX_CHAR_END		(GFX_CHAR_START + 79)
 
 /* the names of the sounds */
 #define SND_ALCHEMY		0
@@ -1002,8 +1207,17 @@ extern int		num_bg_loops;
 #define SND_WARNTON		49
 #define SND_WHOOSH		50
 #define SND_ZISCH		51
+#define SND_SP_BASE		52
+#define SND_SP_INFOTRON		53
+#define SND_SP_ZONKDOWN		54
+#define SND_SP_ZONKPUSH		55
+#define SND_SP_BUG		56
+#define SND_SP_BOOM		57
+#define SND_SP_BOOOM		58
+#define SND_SP_EXIT		59
+#define SND_EMPTY		60
 
-#define NUM_SOUNDS		52
+#define NUM_SOUNDS		61
 
 /* default input keys */
 #define KEY_UNDEFINDED		XK_VoidSymbol
@@ -1018,10 +1232,10 @@ extern int		num_bg_loops;
 
 /* directions for moving */
 #define MV_NO_MOVING		0
-#define MV_LEFT			(1<<0)
-#define MV_RIGHT		(1<<1)
-#define MV_UP			(1<<2)
-#define MV_DOWN	       		(1<<3)
+#define MV_LEFT			(1 << 0)
+#define MV_RIGHT		(1 << 1)
+#define MV_UP			(1 << 2)
+#define MV_DOWN	       		(1 << 3)
 
 /* font types */
 #define FS_SMALL		0
@@ -1059,13 +1273,20 @@ extern int		num_bg_loops;
 #define TAPES_DIRECTORY		"tapes"
 #define SCORES_DIRECTORY	"scores"
 
-#define VERSION_STRING		"1.2.0"
-#define GAMETITLE_STRING	"Rocks'n'Diamonds"
-#define WINDOWTITLE_STRING	GAMETITLE_STRING " " VERSION_STRING
-#define COPYRIGHT_STRING	"Copyright ^1995-98 by Holger Schemel"
+#define PROGRAM_VERSION_STRING	"1.3.0"
+#define PROGRAM_TITLE_STRING	"Rocks'n'Diamonds"
+#define PROGRAM_AUTHOR_STRING	"Holger Schemel"
+#define WINDOW_TITLE_STRING	PROGRAM_TITLE_STRING " " PROGRAM_VERSION_STRING
+#define COPYRIGHT_STRING	"Copyright ^1995-99 by " PROGRAM_AUTHOR_STRING
 
 /* default name for empty highscore entry */
 #define EMPTY_PLAYER_NAME	"no name"
+
+/* default name for unknown player names */
+#define ANONYMOUS_NAME		"anonymous"
+
+/* default name for new levels */
+#define NAMELESS_LEVEL_NAME	"nameless level"
 
 /* values for button_status */
 #define MB_NOT_PRESSED		FALSE
@@ -1075,28 +1296,30 @@ extern int		num_bg_loops;
 #define MB_MENU_MARK		TRUE
 #define MB_MENU_INITIALIZE	(-1)
 #define MB_LEFT			1
-#ifdef MSDOS
-#define MB_MIDDLE		4
-#define MB_RIGHT		2
-#else
 #define MB_MIDDLE		2
 #define MB_RIGHT		3
-#endif
 
 /* values for redraw_mask */
-#define REDRAW_ALL		(1L<<0)
-#define REDRAW_FIELD		(1L<<1)
-#define REDRAW_TILES		(1L<<2)
-#define REDRAW_DOOR_1		(1L<<3)
-#define REDRAW_VIDEO_1		(1L<<4)
-#define REDRAW_VIDEO_2		(1L<<5)
-#define REDRAW_VIDEO_3		(1L<<6)
-#define REDRAW_MICROLEV		(1L<<7)
-#define REDRAW_FROM_BACKBUFFER	(1L<<8)
-#define REDRAW_DOOR_2	(REDRAW_VIDEO_1 | REDRAW_VIDEO_2 | REDRAW_VIDEO_3)
-#define REDRAW_DOORS	(REDRAW_DOOR_1 | REDRAW_DOOR_2)
-#define REDRAW_MAIN	(REDRAW_FIELD | REDRAW_TILES | REDRAW_MICROLEV)
-#define REDRAWTILES_THRESHOLD	SCR_FIELDX*SCR_FIELDY/2
+#define REDRAW_ALL		(1 << 0)
+#define REDRAW_FIELD		(1 << 1)
+#define REDRAW_TILES		(1 << 2)
+#define REDRAW_DOOR_1		(1 << 3)
+#define REDRAW_VIDEO_1		(1 << 4)
+#define REDRAW_VIDEO_2		(1 << 5)
+#define REDRAW_VIDEO_3		(1 << 6)
+#define REDRAW_MICROLEVEL	(1 << 7)
+#define REDRAW_FROM_BACKBUFFER	(1 << 8)
+#define REDRAW_DOOR_2		(REDRAW_VIDEO_1 | \
+				 REDRAW_VIDEO_2 | \
+				 REDRAW_VIDEO_3)
+#define REDRAW_DOOR_3		(1 << 9)
+#define REDRAW_DOORS		(REDRAW_DOOR_1 | \
+				 REDRAW_DOOR_2 | \
+				 REDRAW_DOOR_3)
+#define REDRAW_MAIN		(REDRAW_FIELD | \
+				 REDRAW_TILES | \
+				 REDRAW_MICROLEVEL)
+#define REDRAWTILES_THRESHOLD	(SCR_FIELDX * SCR_FIELDY / 2)
 
 /* areas in pixmap PIX_DOOR */
 /* meaning in PIX_DB_DOOR: (3 PAGEs)
@@ -1112,12 +1335,20 @@ extern int		num_bg_loops;
 #define DOOR_GFX_PAGEX4		(3 * DOOR_GFX_PAGESIZE)
 #define DOOR_GFX_PAGEX5		(4 * DOOR_GFX_PAGESIZE)
 #define DOOR_GFX_PAGEX6		(5 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX7		(6 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX8		(7 * DOOR_GFX_PAGESIZE)
 #define DOOR_GFX_PAGEY1		0
 #define DOOR_GFX_PAGEY2		DYSIZE
 
 /* for DrawGraphicAnimation() [tools.c] and AnimateToon() [cartoons.c] */
-#define ANIM_NORMAL	0
-#define ANIM_OSCILLATE	1
-#define ANIM_REVERSE	2
+#define ANIM_NORMAL		0
+#define ANIM_OSCILLATE		1
+#define ANIM_REVERSE		2
+
+/* values for game_emulation */
+#define EMU_NONE		0
+#define EMU_BOULDERDASH		1
+#define EMU_SOKOBAN		2
+#define EMU_SUPAPLEX		3
 
 #endif	/* MAIN_H */

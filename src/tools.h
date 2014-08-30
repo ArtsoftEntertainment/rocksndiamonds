@@ -38,8 +38,8 @@
 #define DOOR_OPEN_2		(1 << 1)
 #define DOOR_CLOSE_1		(1 << 2)
 #define DOOR_CLOSE_2		(1 << 3)
-#define DOOR_OPEN_BOTH		(DOOR_OPEN_1 | DOOR_OPEN_2)
-#define DOOR_CLOSE_BOTH		(DOOR_CLOSE_1 | DOOR_CLOSE_2)
+#define DOOR_OPEN_ALL		(DOOR_OPEN_1 | DOOR_OPEN_2)
+#define DOOR_CLOSE_ALL		(DOOR_CLOSE_1 | DOOR_CLOSE_2)
 #define DOOR_ACTION_1		(DOOR_OPEN_1 | DOOR_CLOSE_1)
 #define DOOR_ACTION_2		(DOOR_OPEN_2 | DOOR_CLOSE_2)
 #define DOOR_ACTION		(DOOR_ACTION_1 | DOOR_ACTION_2)
@@ -72,11 +72,13 @@ void DrawPlayer(struct PlayerInfo *);
 void DrawGraphicAnimationExt(int, int, int, int, int, int, int);
 void DrawGraphicAnimation(int, int, int, int, int, int);
 void DrawGraphicAnimationThruMask(int, int, int, int, int, int);
+void getGraphicSource(int, int *, int *, int *);
 void DrawGraphic(int, int, int);
 void DrawGraphicExt(Drawable, GC, int, int, int);
 void DrawGraphicThruMask(int, int, int);
 void DrawGraphicThruMaskExt(Drawable, int, int, int);
 void DrawMiniGraphic(int, int, int);
+void getMiniGraphicSource(int, Pixmap *, int *, int *);
 void DrawMiniGraphicExt(Drawable, GC, int, int, int);
 void DrawGraphicShifted(int, int, int, int, int, int, int);
 void DrawGraphicShiftedThruMask(int, int, int, int, int, int);
@@ -96,14 +98,17 @@ void DrawMiniElement(int, int, int);
 void DrawMiniElementOrWall(int, int, int, int);
 void DrawMicroElement(int, int, int);
 void DrawLevel(void);
-void DrawMiniLevel(int, int);
-void DrawMicroLevel(int, int);
+void DrawMiniLevel(int, int, int, int);
+void DrawMicroLevel(int, int, boolean);
 boolean Request(char *, unsigned int);
 unsigned int OpenDoor(unsigned int);
 unsigned int CloseDoor(unsigned int);
 unsigned int GetDoorState(void);
 unsigned int MoveDoor(unsigned int);
 int ReadPixel(Drawable, int, int);
+
+void CreateToolButtons();
+
 int el2gfx(int);
 
 #endif

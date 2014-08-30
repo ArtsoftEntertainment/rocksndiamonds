@@ -26,7 +26,7 @@
 #define MAX_LINE_LEN		1000	/* maximal input line length */
 #define CHUNK_ID_LEN		4	/* IFF style chunk id length */
 #define LEVEL_HEADER_SIZE	80	/* size of level file header */
-#define LEVEL_HEADER_UNUSED	18	/* unused level header bytes */
+#define LEVEL_HEADER_UNUSED	17	/* unused level header bytes */
 #define TAPE_HEADER_SIZE	20	/* size of tape file header */
 #define TAPE_HEADER_UNUSED	7	/* unused tape header bytes */
 #define FILE_VERSION_1_0	10	/* old 1.0 file version */
@@ -72,6 +72,46 @@
 #define SCORE_PERMS		LEVEL_PERMS
 #define TAPE_PERMS		LEVEL_PERMS
 #define SETUP_PERMS		LEVEL_PERMS
+
+/* sort priorities of level series (also used as level series classes) */
+#define LEVELCLASS_TUTORIAL_START	10
+#define LEVELCLASS_TUTORIAL_END		99
+#define LEVELCLASS_CLASSICS_START	100
+#define LEVELCLASS_CLASSICS_END		199
+#define LEVELCLASS_CONTRIBUTION_START	200
+#define LEVELCLASS_CONTRIBUTION_END	299
+#define LEVELCLASS_USER_START		300
+#define LEVELCLASS_USER_END		399
+
+#define LEVELCLASS_TUTORIAL		LEVELCLASS_TUTORIAL_START
+#define LEVELCLASS_CLASSICS		LEVELCLASS_CLASSICS_START
+#define LEVELCLASS_CONTRIBUTION		LEVELCLASS_CONTRIBUTION_START
+#define LEVELCLASS_USER			LEVELCLASS_USER_START
+#define LEVELCLASS_UNDEFINED		999
+
+#define IS_LEVELCLASS_TUTORIAL(n) \
+	(leveldir[n].sort_priority >= LEVELCLASS_TUTORIAL_START && \
+	 leveldir[n].sort_priority <= LEVELCLASS_TUTORIAL_END)
+#define IS_LEVELCLASS_CLASSICS(n) \
+	(leveldir[n].sort_priority >= LEVELCLASS_CLASSICS_START && \
+	 leveldir[n].sort_priority <= LEVELCLASS_CLASSICS_END)
+#define IS_LEVELCLASS_CONTRIBUTION(n) \
+	(leveldir[n].sort_priority >= LEVELCLASS_CONTRIBUTION_START && \
+	 leveldir[n].sort_priority <= LEVELCLASS_CONTRIBUTION_END)
+#define IS_LEVELCLASS_USER(n) \
+	(leveldir[n].sort_priority >= LEVELCLASS_USER_START && \
+	 leveldir[n].sort_priority <= LEVELCLASS_USER_END)
+
+#define LEVELCLASS(n)	(IS_LEVELCLASS_TUTORIAL(n) ? LEVELCLASS_TUTORIAL : \
+			 IS_LEVELCLASS_CLASSICS(n) ? LEVELCLASS_CLASSICS : \
+			 IS_LEVELCLASS_CONTRIBUTION(n) ? LEVELCLASS_CONTRIBUTION : \
+			 IS_LEVELCLASS_USER(n) ? LEVELCLASS_USER : \
+			 LEVELCLASS_UNDEFINED)
+
+#define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ? FC_BLUE : \
+			 IS_LEVELCLASS_CLASSICS(n) ? FC_YELLOW : \
+			 IS_LEVELCLASS_CONTRIBUTION(n) ? FC_GREEN : \
+			 IS_LEVELCLASS_USER(n) ? FC_RED : FC_BLUE)
 
 static void SaveUserLevelInfo();		/* for 'InitUserLevelDir()' */
 static char *getSetupLine(char *, int);		/* for 'SaveUserLevelInfo()' */
@@ -235,6 +275,27 @@ static void InitUserLevelDirectory(char *level_subdir)
   }
 }
 
+static void getFileChunk(FILE *file, char *chunk_buffer, int *chunk_length)
+{
+  fgets(chunk_buffer, CHUNK_ID_LEN + 1, file);
+
+  *chunk_length =
+    (fgetc(file) << 24) |
+    (fgetc(file) << 16) |
+    (fgetc(file) <<  8)  |
+    (fgetc(file) <<  0);
+}
+
+static void putFileChunk(FILE *file, char *chunk_name, int chunk_length)
+{
+  fputs(chunk_name, file);
+
+  fputc((chunk_length >> 24) & 0xff, file);
+  fputc((chunk_length >> 16) & 0xff, file);
+  fputc((chunk_length >>  8) & 0xff, file);
+  fputc((chunk_length >>  0) & 0xff, file);
+}
+
 static void setLevelInfoToDefaults()
 {
   int i, x, y;
@@ -242,8 +303,8 @@ static void setLevelInfoToDefaults()
   lev_fieldx = level.fieldx = STD_LEV_FIELDX;
   lev_fieldy = level.fieldy = STD_LEV_FIELDY;
 
-  for(x=0; x<MAX_LEV_FIELDX; x++) 
-    for(y=0; y<MAX_LEV_FIELDY; y++) 
+  for(x=0; x<MAX_LEV_FIELDX; x++)
+    for(y=0; y<MAX_LEV_FIELDY; y++)
       Feld[x][y] = Ur[x][y] = EL_ERDREICH;
 
   level.time = 100;
@@ -252,13 +313,21 @@ static void setLevelInfoToDefaults()
   level.dauer_sieb = 10;
   level.dauer_ablenk = 10;
   level.amoebe_inhalt = EL_DIAMANT;
+  level.double_speed = FALSE;
 
-  strcpy(level.name, "Nameless Level");
+  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
+    level.name[i] = '\0';
+  for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
+    level.author[i] = '\0';
+
+  strcpy(level.name, NAMELESS_LEVEL_NAME);
+  strcpy(level.author, ANONYMOUS_NAME);
 
   for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
     level.score[i] = 10;
 
-  for(i=0; i<4; i++)
+  MampferMax = 4;
+  for(i=0; i<8; i++)
     for(x=0; x<3; x++)
       for(y=0; y<3; y++)
 	level.mampfer_inhalt[i][x][y] = EL_FELSBROCKEN;
@@ -266,6 +335,38 @@ static void setLevelInfoToDefaults()
   Feld[0][0] = Ur[0][0] = EL_SPIELFIGUR;
   Feld[STD_LEV_FIELDX-1][STD_LEV_FIELDY-1] =
     Ur[STD_LEV_FIELDX-1][STD_LEV_FIELDY-1] = EL_AUSGANG_ZU;
+
+  BorderElement = EL_BETON;
+
+  /* try to determine better author name than 'anonymous' */
+  if (strcmp(leveldir[leveldir_nr].author, ANONYMOUS_NAME) != 0)
+  {
+    strncpy(level.author, leveldir[leveldir_nr].author, MAX_LEVEL_AUTHOR_LEN);
+    level.author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+  }
+  else
+  {
+    switch (LEVELCLASS(leveldir_nr))
+    {
+      case LEVELCLASS_TUTORIAL:
+  	strcpy(level.author, PROGRAM_AUTHOR_STRING);
+  	break;
+
+      case LEVELCLASS_CONTRIBUTION:
+  	strncpy(level.author, leveldir[leveldir_nr].name,MAX_LEVEL_AUTHOR_LEN);
+  	level.author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+  	break;
+
+      case LEVELCLASS_USER:
+  	strncpy(level.author, getRealName(), MAX_LEVEL_AUTHOR_LEN);
+  	level.author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+  	break;
+
+      default:
+  	/* keep default value */
+  	break;
+    }
+  }
 }
 
 void LoadLevel(int level_nr)
@@ -304,10 +405,7 @@ void LoadLevel(int level_nr)
   /* read chunk "HEAD" */
   if (file_version >= FILE_VERSION_1_2)
   {
-    /* first check header chunk identifier and chunk length */
-    fgets(chunk, CHUNK_ID_LEN + 1, file);
-    chunk_length =
-      (fgetc(file)<<24) | (fgetc(file)<<16) | (fgetc(file)<<8) | fgetc(file);
+    getFileChunk(file, chunk, &chunk_length);
     if (strcmp(chunk, "HEAD") || chunk_length != LEVEL_HEADER_SIZE)
     {
       Error(ERR_WARN, "wrong 'HEAD' chunk of level file '%s'", filename);
@@ -322,22 +420,33 @@ void LoadLevel(int level_nr)
   level.time		= (fgetc(file)<<8) | fgetc(file);
   level.edelsteine	= (fgetc(file)<<8) | fgetc(file);
 
-  for(i=0; i<MAX_LEVNAMLEN; i++)
+  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
     level.name[i]	= fgetc(file);
-  level.name[MAX_LEVNAMLEN - 1] = 0;
+  level.name[MAX_LEVEL_NAME_LEN] = 0;
 
   for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
     level.score[i]	= fgetc(file);
 
-  for(i=0; i<4; i++)
+  MampferMax = 4;
+  for(i=0; i<8; i++)
+  {
     for(y=0; y<3; y++)
+    {
       for(x=0; x<3; x++)
-	level.mampfer_inhalt[i][x][y] = fgetc(file);
+      {
+	if (i < 4)
+	  level.mampfer_inhalt[i][x][y] = fgetc(file);
+	else
+	  level.mampfer_inhalt[i][x][y] = EL_LEERRAUM;
+      }
+    }
+  }
 
   level.tempo_amoebe	= fgetc(file);
   level.dauer_sieb	= fgetc(file);
   level.dauer_ablenk	= fgetc(file);
-  level.amoebe_inhalt = fgetc(file);
+  level.amoebe_inhalt	= fgetc(file);
+  level.double_speed	= (fgetc(file) == 1 ? TRUE : FALSE);
 
   for(i=0; i<LEVEL_HEADER_UNUSED; i++)	/* skip unused header bytes */
     fgetc(file);
@@ -345,10 +454,35 @@ void LoadLevel(int level_nr)
   /* read chunk "BODY" */
   if (file_version >= FILE_VERSION_1_2)
   {
+    getFileChunk(file, chunk, &chunk_length);
+
+    /* look for optional author chunk */
+    if (strcmp(chunk, "AUTH") == 0 && chunk_length == MAX_LEVEL_AUTHOR_LEN)
+    {
+      for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
+	level.author[i]	= fgetc(file);
+      level.author[MAX_LEVEL_NAME_LEN] = 0;
+
+      getFileChunk(file, chunk, &chunk_length);
+    }
+
+    /* look for optional content chunk */
+    if (strcmp(chunk, "CONT") == 0 && chunk_length == 4 + 8 * 3 * 3)
+    {
+      fgetc(file);
+      MampferMax = fgetc(file);
+      fgetc(file);
+      fgetc(file);
+
+      for(i=0; i<8; i++)
+	for(y=0; y<3; y++)
+	  for(x=0; x<3; x++)
+	    level.mampfer_inhalt[i][x][y] = fgetc(file);
+
+      getFileChunk(file, chunk, &chunk_length);
+    }
+
     /* next check body chunk identifier and chunk length */
-    fgets(chunk, CHUNK_ID_LEN + 1, file);
-    chunk_length =
-      (fgetc(file)<<24) | (fgetc(file)<<16) | (fgetc(file)<<8) | fgetc(file);
     if (strcmp(chunk, "BODY") || chunk_length != lev_fieldx * lev_fieldy)
     {
       Error(ERR_WARN, "wrong 'BODY' chunk of level file '%s'", filename);
@@ -357,14 +491,26 @@ void LoadLevel(int level_nr)
     }
   }
 
-  for(y=0; y<lev_fieldy; y++) 
-    for(x=0; x<lev_fieldx; x++) 
+  /* clear all other level fields (needed if resized in level editor later) */
+  for(x=0; x<MAX_LEV_FIELDX; x++)
+    for(y=0; y<MAX_LEV_FIELDY; y++)
+      Feld[x][y] = Ur[x][y] = EL_LEERRAUM;
+
+  /* now read in the valid level fields from level file */
+  for(y=0; y<lev_fieldy; y++)
+    for(x=0; x<lev_fieldx; x++)
       Feld[x][y] = Ur[x][y] = fgetc(file);
 
   fclose(file);
 
-  if (level.time <= 10)		/* minimum playing time of each level */
-    level.time = 10;
+  /* player was faster than monsters in pre-1.0 levels */
+  if (file_version == FILE_VERSION_1_0 &&
+      IS_LEVELCLASS_CONTRIBUTION(leveldir_nr))
+  {
+    Error(ERR_WARN, "level file '%s' has version number 1.0", filename);
+    Error(ERR_WARN, "using high speed movement for player");
+    level.double_speed = TRUE;
+  }
 }
 
 void SaveLevel(int level_nr)
@@ -372,7 +518,6 @@ void SaveLevel(int level_nr)
   int i, x, y;
   char *filename = getLevelFilename(level_nr);
   FILE *file;
-  int chunk_length;
 
   if (!(file = fopen(filename, "w")))
   {
@@ -383,14 +528,7 @@ void SaveLevel(int level_nr)
   fputs(LEVEL_COOKIE, file);		/* file identifier */
   fputc('\n', file);
 
-  fputs("HEAD", file);			/* chunk identifier for file header */
-
-  chunk_length = LEVEL_HEADER_SIZE;
-
-  fputc((chunk_length >>  24) & 0xff, file);
-  fputc((chunk_length >>  16) & 0xff, file);
-  fputc((chunk_length >>   8) & 0xff, file);
-  fputc((chunk_length >>   0) & 0xff, file);
+  putFileChunk(file, "HEAD", LEVEL_HEADER_SIZE);
 
   fputc(level.fieldx, file);
   fputc(level.fieldy, file);
@@ -399,7 +537,7 @@ void SaveLevel(int level_nr)
   fputc(level.edelsteine / 256, file);
   fputc(level.edelsteine % 256, file);
 
-  for(i=0; i<MAX_LEVNAMLEN; i++)
+  for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
     fputc(level.name[i], file);
   for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
     fputc(level.score[i], file);
@@ -411,17 +549,29 @@ void SaveLevel(int level_nr)
   fputc(level.dauer_sieb, file);
   fputc(level.dauer_ablenk, file);
   fputc(level.amoebe_inhalt, file);
+  fputc((level.double_speed ? 1 : 0), file);
 
   for(i=0; i<LEVEL_HEADER_UNUSED; i++)	/* set unused header bytes to zero */
     fputc(0, file);
 
-  fputs("BODY", file);			/* chunk identifier for file body */
-  chunk_length = lev_fieldx * lev_fieldy;
+  putFileChunk(file, "AUTH", MAX_LEVEL_AUTHOR_LEN);
 
-  fputc((chunk_length >>  24) & 0xff, file);
-  fputc((chunk_length >>  16) & 0xff, file);
-  fputc((chunk_length >>   8) & 0xff, file);
-  fputc((chunk_length >>   0) & 0xff, file);
+  for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
+    fputc(level.author[i], file);
+
+  putFileChunk(file, "CONT", 4 + 8 * 3 * 3);
+
+  fputc(EL_MAMPFER, file);
+  fputc(MampferMax, file);
+  fputc(0, file);
+  fputc(0, file);
+
+  for(i=0; i<8; i++)
+    for(y=0; y<3; y++)
+      for(x=0; x<3; x++)
+	fputc(level.mampfer_inhalt[i][x][y], file);
+
+  putFileChunk(file, "BODY", lev_fieldx * lev_fieldy);
 
   for(y=0; y<lev_fieldy; y++) 
     for(x=0; x<lev_fieldx; x++) 
@@ -812,9 +962,11 @@ void SaveScore(int level_nr)
 
 /* level directory info */
 #define LEVELINFO_TOKEN_NAME		29
-#define LEVELINFO_TOKEN_LEVELS		30
-#define LEVELINFO_TOKEN_SORT_PRIORITY	31
-#define LEVELINFO_TOKEN_READONLY	32
+#define LEVELINFO_TOKEN_AUTHOR		30
+#define LEVELINFO_TOKEN_LEVELS		31
+#define LEVELINFO_TOKEN_FIRST_LEVEL	32
+#define LEVELINFO_TOKEN_SORT_PRIORITY	33
+#define LEVELINFO_TOKEN_READONLY	34
 
 #define FIRST_GLOBAL_SETUP_TOKEN	SETUP_TOKEN_PLAYER_NAME
 #define LAST_GLOBAL_SETUP_TOKEN		SETUP_TOKEN_TEAM_MODE
@@ -876,7 +1028,9 @@ static struct
 
   /* level directory info */
   { TYPE_STRING,  &ldi.name,		"name"				},
+  { TYPE_STRING,  &ldi.author,		"author"			},
   { TYPE_INTEGER, &ldi.levels,		"levels"			},
+  { TYPE_INTEGER, &ldi.first_level,	"first_level"			},
   { TYPE_INTEGER, &ldi.sort_priority,	"sort_priority"			},
   { TYPE_BOOLEAN, &ldi.readonly,	"readonly"			}
 };
@@ -1049,7 +1203,7 @@ static struct SetupFileList *loadSetupFileList(char *filename)
     /* cut trailing comment or whitespace from input line */
     for (line_ptr = line; *line_ptr; line_ptr++)
     {
-      if (*line_ptr == '#' || *line_ptr == '\n')
+      if (*line_ptr == '#' || *line_ptr == '\n' || *line_ptr == '\r')
       {
 	*line_ptr = '\0';
 	break;
@@ -1138,9 +1292,11 @@ static void checkSetupFileListIdentifier(struct SetupFileList *setup_file_list,
 
 static void setLevelDirInfoToDefaults(struct LevelDirInfo *ldi)
 {
-  ldi->name = getStringCopy("non-existing");
+  ldi->name = getStringCopy(ANONYMOUS_NAME);
+  ldi->author = getStringCopy(ANONYMOUS_NAME);
   ldi->levels = 0;
-  ldi->sort_priority = 999;	/* default: least priority */
+  ldi->first_level = 0;
+  ldi->sort_priority = LEVELCLASS_UNDEFINED;	/* default: least priority */
   ldi->readonly = TRUE;
 }
 
@@ -1269,7 +1425,7 @@ int getLastPlayedLevelOfLevelSeries(char *level_series_name)
 {
   char *token_value;
   int level_series_nr = getLevelSeriesNrFromLevelSeriesName(level_series_name);
-  int last_level_nr = 0;
+  int last_level_nr = leveldir[level_series_nr].first_level;
 
   if (!level_series_name)
     return 0;
@@ -1278,14 +1434,12 @@ int getLastPlayedLevelOfLevelSeries(char *level_series_name)
 
   if (token_value)
   {
-    int highest_level_nr = leveldir[level_series_nr].levels - 1;
-
     last_level_nr = atoi(token_value);
 
-    if (last_level_nr < 0)
-      last_level_nr = 0;
-    if (last_level_nr > highest_level_nr)
-      last_level_nr = highest_level_nr;
+    if (last_level_nr < leveldir[level_series_nr].first_level)
+      last_level_nr = leveldir[level_series_nr].first_level;
+    if (last_level_nr > leveldir[level_series_nr].last_level)
+      last_level_nr = leveldir[level_series_nr].last_level;
   }
 
   return last_level_nr;
@@ -1362,8 +1516,12 @@ static int LoadLevelInfoFromLevelDir(char *level_directory, int start_entry)
       leveldir[current_entry] = ldi;
 
       leveldir[current_entry].filename = getStringCopy(dir_entry->d_name);
+      leveldir[current_entry].last_level =
+	leveldir[current_entry].first_level +
+	leveldir[current_entry].levels - 1;
       leveldir[current_entry].user_defined =
 	(level_directory == options.level_directory ? FALSE : TRUE);
+      leveldir[current_entry].color = LEVELCOLOR(current_entry);
 
       freeSetupFileList(setup_file_list);
       current_entry++;
@@ -1423,9 +1581,14 @@ static void SaveUserLevelInfo()
     return;
   }
 
+  /* always start with reliable default values */
+  setLevelDirInfoToDefaults(&ldi);
+
   ldi.name = getLoginName();
+  ldi.author = getRealName();
   ldi.levels = 100;
-  ldi.sort_priority = 300;
+  ldi.first_level = 1;
+  ldi.sort_priority = LEVELCLASS_USER_START;
   ldi.readonly = FALSE;
 
   fprintf(file, "%s\n\n",
