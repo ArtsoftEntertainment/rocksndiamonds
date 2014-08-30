@@ -44,6 +44,8 @@ extern boolean wait_for_vsync;
 
 /* forward declaration for internal use */
 static int getGraphicAnimationPhase(int, int, int);
+static void DrawGraphicAnimationShiftedThruMask(int, int, int, int, int,
+						int, int, int);
 static void UnmapToolButtons();
 static void HandleToolButtons(struct GadgetInfo *);
 
@@ -94,12 +96,6 @@ void BackToFront()
   if (redraw_mask & REDRAW_FIELD)
     redraw_mask &= ~REDRAW_TILES;
 
-  /*
-  if (redraw_mask & REDRAW_FIELD ||
-      (ScreenGfxPos && setup.soft_scrolling && game_status == PLAYING))
-    redraw_mask &= ~REDRAW_TILES;
-  */
-
   if (!redraw_mask)
     return;
 
@@ -109,12 +105,6 @@ void BackToFront()
      although we could go on doing calculations for the next frame */
 
   XSync(display, FALSE);
-
-  /*
-#ifdef MSDOS
-  wait_for_vsync = TRUE;
-#endif
-  */
 
   if (redraw_mask & REDRAW_ALL)
   {
@@ -326,26 +316,54 @@ void ClearWindow()
   redraw_mask |= REDRAW_FIELD;
 }
 
+int getFontWidth(int font_size, int font_type)
+{
+  return (font_size == FS_BIG ? FONT1_XSIZE :
+	  font_size == FS_MEDIUM ? FONT6_XSIZE :
+	  font_type == FC_SPECIAL1 ? FONT3_XSIZE :
+	  font_type == FC_SPECIAL2 ? FONT4_XSIZE :
+	  font_type == FC_SPECIAL3 ? FONT5_XSIZE :
+	  FONT2_XSIZE);
+}
+
+int getFontHeight(int font_size, int font_type)
+{
+  return (font_size == FS_BIG ? FONT1_YSIZE :
+	  font_size == FS_MEDIUM ? FONT6_YSIZE :
+	  font_type == FC_SPECIAL1 ? FONT3_YSIZE :
+	  font_type == FC_SPECIAL2 ? FONT4_YSIZE :
+	  font_type == FC_SPECIAL3 ? FONT5_YSIZE :
+	  FONT2_YSIZE);
+}
+
+void DrawInitText(char *text, int ypos, int color)
+{
+  if (display && window && pix[PIX_SMALLFONT])
+  {
+    XFillRectangle(display, window, gc, 0, ypos, WIN_XSIZE, FONT2_YSIZE);
+    DrawTextExt(window, gc, (WIN_XSIZE - strlen(text) * FONT2_XSIZE)/2,
+		ypos,text,FS_SMALL,color);
+    XFlush(display);
+  }
+}
+
 void DrawTextFCentered(int y, int font_type, char *format, ...)
 {
-  char buffer[FULL_SXSIZE / FONT3_XSIZE + 10];
-  int font_xsize;
+  char buffer[FULL_SXSIZE / FONT5_XSIZE + 10];
+  int font_width = getFontWidth(FS_SMALL, font_type);
   va_list ap;
-
-  font_xsize = (font_type < FC_SPECIAL1 ? FONT2_XSIZE :
-		font_type < FC_SPECIAL2 ? FONT3_XSIZE : FONT4_XSIZE);
 
   va_start(ap, format);
   vsprintf(buffer, format, ap);
   va_end(ap);
 
-  DrawText(SX + (SXSIZE - strlen(buffer) * font_xsize) / 2, SY + y,
+  DrawText(SX + (SXSIZE - strlen(buffer) * font_width) / 2, SY + y,
 	   buffer, FS_SMALL, font_type);
 }
 
 void DrawTextF(int x, int y, int font_type, char *format, ...)
 {
-  char buffer[FULL_SXSIZE / FONT3_XSIZE + 10];
+  char buffer[FULL_SXSIZE / FONT5_XSIZE + 10];
   va_list ap;
 
   va_start(ap, format);
@@ -372,25 +390,30 @@ void DrawTextExt(Drawable d, GC gc, int x, int y,
   int font_pixmap;
   boolean print_inverse = FALSE;
 
-  if (font_size != FS_SMALL && font_size != FS_BIG)
+  if (font_size != FS_SMALL && font_size != FS_BIG && font_size != FS_MEDIUM)
     font_size = FS_SMALL;
-  if (font_type < FC_RED || font_type > FC_SPECIAL2)
+  if (font_type < FC_RED || font_type > FC_SPECIAL3)
     font_type = FC_RED;
 
-  font_width = (font_size == FS_BIG ? FONT1_XSIZE :
-		font_type < FC_SPECIAL1 ? FONT2_XSIZE :
-		font_type < FC_SPECIAL2 ? FONT3_XSIZE : FONT4_XSIZE);
-  font_height = (font_size == FS_BIG ? FONT1_XSIZE :
-		 font_type < FC_SPECIAL2 ? FONT2_XSIZE : FONT4_XSIZE);
-  font_pixmap = (font_size == FS_BIG ? PIX_BIGFONT : PIX_SMALLFONT);
-  font_start = (font_type * (font_size == FS_BIG ? FONT1_YSIZE : FONT2_YSIZE) *
+  font_width = getFontWidth(font_size, font_type);
+  font_height = getFontHeight(font_size, font_type);
+
+  font_pixmap = (font_size == FS_BIG ? PIX_BIGFONT :
+		 font_size == FS_MEDIUM ? PIX_MEDIUMFONT :
+		 PIX_SMALLFONT);
+  font_start = (font_type * (font_size == FS_BIG ? FONT1_YSIZE :
+			     font_size == FS_MEDIUM ? FONT6_YSIZE :
+			     FONT2_YSIZE) *
 		FONT_LINES_PER_FONT);
+
+  if (font_type == FC_SPECIAL3)
+    font_start += (FONT4_YSIZE - FONT2_YSIZE) * FONT_LINES_PER_FONT;
 
   while (*text)
   {
     char c = *text++;
 
-    if (c == '~' && font_size == FS_SMALL && font_type <= FC_YELLOW)
+    if (c == '~' && font_size == FS_SMALL)
     {
       print_inverse = TRUE;
       continue;
@@ -443,10 +466,10 @@ void DrawAllPlayers()
 
 void DrawPlayerField(int x, int y)
 {
-  if (!IS_PLAYER(x,y))
+  if (!IS_PLAYER(x, y))
     return;
 
-  DrawPlayer(PLAYERINFO(x,y));
+  DrawPlayer(PLAYERINFO(x, y));
 }
 
 void DrawPlayer(struct PlayerInfo *player)
@@ -456,11 +479,11 @@ void DrawPlayer(struct PlayerInfo *player)
   int next_jx = jx + (jx - last_jx), next_jy = jy + (jy - last_jy);
   int sx = SCREENX(jx), sy = SCREENY(jy);
   int sxx = 0, syy = 0;
-  int element = Feld[jx][jy];
+  int element = Feld[jx][jy], last_element = Feld[last_jx][last_jy];
   int graphic, phase;
+  boolean player_is_moving = (last_jx != jx || last_jy != jy ? TRUE : FALSE);
 
-  if (!player->active || player->gone ||
-      !IN_SCR_FIELD(SCREENX(last_jx), SCREENY(last_jy)))
+  if (!player->active || !IN_SCR_FIELD(SCREENX(last_jx), SCREENY(last_jy)))
     return;
 
 #if DEBUG
@@ -478,14 +501,14 @@ void DrawPlayer(struct PlayerInfo *player)
 
   /* draw things in the field the player is leaving, if needed */
 
-  if (last_jx != jx || last_jy != jy)
+  if (player_is_moving)
   {
-    if (Store[last_jx][last_jy] && IS_DRAWABLE(Feld[last_jx][last_jy]))
+    if (Store[last_jx][last_jy] && IS_DRAWABLE(last_element))
     {
       DrawLevelElement(last_jx, last_jy, Store[last_jx][last_jy]);
       DrawLevelFieldThruMask(last_jx, last_jy);
     }
-    else if (Feld[last_jx][last_jy] == EL_DYNAMIT)
+    else if (last_element == EL_DYNAMITE_ACTIVE)
       DrawDynamite(last_jx, last_jy);
     else
       DrawLevelField(last_jx, last_jy);
@@ -514,17 +537,20 @@ void DrawPlayer(struct PlayerInfo *player)
 
   if (Store[jx][jy])
     DrawLevelElement(jx, jy, Store[jx][jy]);
-  else if (element != EL_DYNAMIT && element != EL_DYNABOMB)
+  else if (!IS_ACTIVE_BOMB(element))
     DrawLevelField(jx, jy);
 
   /* draw player himself */
 
-  if (game_emulation == EMU_SUPAPLEX)
+  if (game.emulation == EMU_SUPAPLEX)
   {
     static int last_dir = MV_LEFT;
+    int action = (player->programmed_action ? player->programmed_action :
+		  player->action);
     boolean action_moving =
-      ((player->action & (MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)) &&
-       !(player->action & ~(MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)));
+      (player_is_moving ||
+       ((action & (MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)) &&
+	!(action & ~(MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN))));
 
     graphic = GFX_SP_MURPHY;
 
@@ -553,15 +579,17 @@ void DrawPlayer(struct PlayerInfo *player)
     else if (action_moving)
     {
       if (player->MovDir == MV_LEFT)
-	graphic = GFX_MURPHY_ANY_LEFT;
+	graphic = GFX_MURPHY_GO_LEFT;
       else if (player->MovDir == MV_RIGHT)
-	graphic = GFX_MURPHY_ANY_RIGHT;
+	graphic = GFX_MURPHY_GO_RIGHT;
       else if (player->MovDir & (MV_UP | MV_DOWN) && last_dir == MV_LEFT)
-	graphic = GFX_MURPHY_ANY_LEFT;
+	graphic = GFX_MURPHY_GO_LEFT;
       else if (player->MovDir & (MV_UP | MV_DOWN) && last_dir == MV_RIGHT)
-	graphic = GFX_MURPHY_ANY_RIGHT;
+	graphic = GFX_MURPHY_GO_RIGHT;
+      else
+	graphic = GFX_MURPHY_GO_LEFT;
 
-      graphic -= getGraphicAnimationPhase(2, 4, ANIM_NORMAL);
+      graphic += getGraphicAnimationPhase(3, 2, ANIM_OSCILLATE);
     }
 
     if (player->MovDir == MV_LEFT || player->MovDir == MV_RIGHT)
@@ -597,11 +625,20 @@ void DrawPlayer(struct PlayerInfo *player)
 
   DrawGraphicShiftedThruMask(sx, sy, sxx, syy, graphic, NO_CUTTING);
 
+  if (SHIELD_ON(player))
+  {
+    int graphic = (player->shield_active_time_left ? GFX2_SHIELD_ACTIVE :
+		   GFX2_SHIELD_PASSIVE);
+
+    DrawGraphicAnimationShiftedThruMask(sx, sy, sxx, syy, graphic,
+					3, 8, ANIM_OSCILLATE);
+  }
+
   if (player->Pushing && player->GfxPos)
   {
     int px = SCREENX(next_jx), py = SCREENY(next_jy);
 
-    if (Feld[jx][jy] == EL_SOKOBAN_FELD_LEER ||
+    if (element == EL_SOKOBAN_FELD_LEER ||
 	Feld[next_jx][next_jy] == EL_SOKOBAN_FELD_VOLL)
       DrawGraphicShiftedThruMask(px, py, sxx, syy, GFX_SOKOBAN_OBJEKT,
 				 NO_CUTTING);
@@ -610,27 +647,29 @@ void DrawPlayer(struct PlayerInfo *player)
       int element = Feld[next_jx][next_jy];
       int graphic = el2gfx(element);
 
-      if (element == EL_FELSBROCKEN && sxx)
+      if ((element == EL_FELSBROCKEN ||
+	   element == EL_SP_ZONK ||
+	   element == EL_BD_ROCK) && sxx)
       {
-	int phase = (player->GfxPos / (TILEX/4));
+	int phase = (player->GfxPos / (TILEX / 4));
 
 	if (player->MovDir == MV_LEFT)
 	  graphic += phase;
 	else
-	  graphic += (phase+4)%4;
+	  graphic += (phase + 4) % 4;
       }
 
       DrawGraphicShifted(px, py, sxx, syy, graphic, NO_CUTTING, NO_MASKING);
     }
   }
 
-  /* draw things in front of player (EL_DYNAMIT || EL_DYNABOMB) */
+  /* draw things in front of player (active dynamite or dynabombs) */
 
-  if (element == EL_DYNAMIT || element == EL_DYNABOMB)
+  if (IS_ACTIVE_BOMB(element))
   {
     graphic = el2gfx(element);
 
-    if (element == EL_DYNAMIT)
+    if (element == EL_DYNAMITE_ACTIVE)
     {
       if ((phase = (96 - MovDelay[jx][jy]) / 12) > 6)
 	phase = 6;
@@ -641,14 +680,13 @@ void DrawPlayer(struct PlayerInfo *player)
 	phase = 7 - phase;
     }
 
-    if (game_emulation == EMU_SUPAPLEX)
+    if (game.emulation == EMU_SUPAPLEX)
       DrawGraphic(sx, sy, GFX_SP_DISK_RED);
     else
       DrawGraphicThruMask(sx, sy, graphic + phase);
   }
 
-  if ((last_jx != jx || last_jy != jy) &&
-      Feld[last_jx][last_jy] == EL_EXPLODING)
+  if (player_is_moving && last_element == EL_EXPLODING)
   {
     int phase = Frame[last_jx][last_jy];
     int delay = 2;
@@ -657,6 +695,14 @@ void DrawPlayer(struct PlayerInfo *player)
       DrawGraphicThruMask(SCREENX(last_jx), SCREENY(last_jy),
 			  GFX_EXPLOSION + ((phase - 1) / delay - 1));
   }
+
+  /* draw elements that stay over the player */
+  /* handle the field the player is leaving ... */
+  if (player_is_moving && IS_OVER_PLAYER(last_element))
+    DrawLevelField(last_jx, last_jy);
+  /* ... and the field the player is entering */
+  if (IS_OVER_PLAYER(element))
+    DrawLevelField(jx, jy);
 
   if (setup.direct_draw)
   {
@@ -718,6 +764,17 @@ void DrawGraphicAnimationThruMask(int x, int y, int graphic,
   DrawGraphicAnimationExt(x, y, graphic, frames, delay, mode, USE_MASKING);
 }
 
+static void DrawGraphicAnimationShiftedThruMask(int sx, int sy,
+						int sxx, int syy,
+						int graphic,
+						int frames, int delay,
+						int mode)
+{
+  int phase = getGraphicAnimationPhase(frames, delay, mode);
+
+  DrawGraphicShiftedThruMask(sx, sy, sxx, syy, graphic + phase, NO_CUTTING);
+}
+
 void getGraphicSource(int graphic, int *pixmap_nr, int *x, int *y)
 {
   if (graphic >= GFX_START_ROCKSSCREEN && graphic <= GFX_END_ROCKSSCREEN)
@@ -727,19 +784,33 @@ void getGraphicSource(int graphic, int *pixmap_nr, int *x, int *y)
     *x = SX + (graphic % GFX_PER_LINE) * TILEX;
     *y = SY + (graphic / GFX_PER_LINE) * TILEY;
   }
-  else if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
-  {
-    graphic -= GFX_START_ROCKSMORE;
-    *pixmap_nr = PIX_MORE;
-    *x = (graphic % MORE_PER_LINE) * TILEX;
-    *y = (graphic / MORE_PER_LINE) * TILEY;
-  }
   else if (graphic >= GFX_START_ROCKSHEROES && graphic <= GFX_END_ROCKSHEROES)
   {
     graphic -= GFX_START_ROCKSHEROES;
     *pixmap_nr = PIX_HEROES;
     *x = (graphic % HEROES_PER_LINE) * TILEX;
     *y = (graphic / HEROES_PER_LINE) * TILEY;
+  }
+  else if (graphic >= GFX_START_ROCKSSP && graphic <= GFX_END_ROCKSSP)
+  {
+    graphic -= GFX_START_ROCKSSP;
+    *pixmap_nr = PIX_SP;
+    *x = (graphic % SP_PER_LINE) * TILEX;
+    *y = (graphic / SP_PER_LINE) * TILEY;
+  }
+  else if (graphic >= GFX_START_ROCKSDC && graphic <= GFX_END_ROCKSDC)
+  {
+    graphic -= GFX_START_ROCKSDC;
+    *pixmap_nr = PIX_DC;
+    *x = (graphic % DC_PER_LINE) * TILEX;
+    *y = (graphic / DC_PER_LINE) * TILEY;
+  }
+  else if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
+  {
+    graphic -= GFX_START_ROCKSMORE;
+    *pixmap_nr = PIX_MORE;
+    *x = (graphic % MORE_PER_LINE) * TILEX;
+    *y = (graphic / MORE_PER_LINE) * TILEY;
   }
   else if (graphic >= GFX_START_ROCKSFONT && graphic <= GFX_END_ROCKSFONT)
   {
@@ -751,7 +822,7 @@ void getGraphicSource(int graphic, int *pixmap_nr, int *x, int *y)
   }
   else
   {
-    *pixmap_nr = PIX_MORE;
+    *pixmap_nr = PIX_SP;
     *x = 0;
     *y = 0;
   }
@@ -774,56 +845,12 @@ void DrawGraphic(int x, int y, int graphic)
 
 void DrawGraphicExt(Drawable d, GC gc, int x, int y, int graphic)
 {
-
-#if 1
-
   int pixmap_nr;
   int src_x, src_y;
 
   getGraphicSource(graphic, &pixmap_nr, &src_x, &src_y);
   XCopyArea(display, pix[pixmap_nr], d, gc,
 	    src_x, src_y, TILEX, TILEY, x, y);
-
-#else
-
-  if (graphic >= GFX_START_ROCKSSCREEN && graphic <= GFX_END_ROCKSSCREEN)
-  {
-    graphic -= GFX_START_ROCKSSCREEN;
-    XCopyArea(display, pix[PIX_BACK], d, gc,
-	      SX + (graphic % GFX_PER_LINE) * TILEX,
-	      SY + (graphic / GFX_PER_LINE) * TILEY,
-	      TILEX, TILEY, x, y);
-  }
-  else if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
-  {
-    graphic -= GFX_START_ROCKSMORE;
-    XCopyArea(display, pix[PIX_MORE], d, gc,
-	      (graphic % MORE_PER_LINE) * TILEX,
-	      (graphic / MORE_PER_LINE) * TILEY,
-	      TILEX, TILEY, x, y);
-  }
-  else if (graphic >= GFX_START_ROCKSHEROES && graphic <= GFX_END_ROCKSHEROES)
-  {
-    graphic -= GFX_START_ROCKSHEROES;
-    XCopyArea(display, pix[PIX_HEROES], d, gc,
-	      (graphic % HEROES_PER_LINE) * TILEX,
-	      (graphic / HEROES_PER_LINE) * TILEY,
-	      TILEX, TILEY, x, y);
-  }
-  else if (graphic >= GFX_START_ROCKSFONT && graphic <= GFX_END_ROCKSFONT)
-  {
-    graphic -= GFX_START_ROCKSFONT;
-    XCopyArea(display, pix[PIX_BIGFONT], d, gc,
-	      (graphic % FONT_CHARS_PER_LINE) * TILEX,
-	      (graphic / FONT_CHARS_PER_LINE) * TILEY +
-	      FC_SPECIAL1 * FONT_LINES_PER_FONT * TILEY,
-	      TILEX, TILEY, x, y);
-  }
-  else
-    XFillRectangle(display, d, gc, x, y, TILEX, TILEY);
-
-#endif
-
 }
 
 void DrawGraphicThruMask(int x, int y, int graphic)
@@ -843,9 +870,6 @@ void DrawGraphicThruMask(int x, int y, int graphic)
 
 void DrawGraphicThruMaskExt(Drawable d, int dest_x, int dest_y, int graphic)
 {
-
-#if 1
-
   int tile = graphic;
   int pixmap_nr;
   int src_x, src_y;
@@ -858,46 +882,6 @@ void DrawGraphicThruMaskExt(Drawable d, int dest_x, int dest_y, int graphic)
   getGraphicSource(graphic, &pixmap_nr, &src_x, &src_y);
   src_pixmap = pix[pixmap_nr];
   drawing_gc = clip_gc[pixmap_nr];
-
-#else
-
-  int src_x, src_y;
-  int tile = graphic;
-  Pixmap src_pixmap;
-  GC drawing_gc;
-
-  if (graphic >= GFX_START_ROCKSSCREEN && graphic <= GFX_END_ROCKSSCREEN)
-  {
-    src_pixmap = pix[PIX_BACK];
-    drawing_gc = clip_gc[PIX_BACK];
-    graphic -= GFX_START_ROCKSSCREEN;
-    src_x  = SX + (graphic % GFX_PER_LINE) * TILEX;
-    src_y  = SY + (graphic / GFX_PER_LINE) * TILEY;
-  }
-  else if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
-  {
-    src_pixmap = pix[PIX_MORE];
-    drawing_gc = clip_gc[PIX_MORE];
-    graphic -= GFX_START_ROCKSMORE;
-    src_x  = (graphic % MORE_PER_LINE) * TILEX;
-    src_y  = (graphic / MORE_PER_LINE) * TILEY;
-  }
-  else if (graphic >= GFX_START_ROCKSHEROES && graphic <= GFX_END_ROCKSHEROES)
-  {
-    src_pixmap = pix[PIX_HEROES];
-    drawing_gc = clip_gc[PIX_HEROES];
-    graphic -= GFX_START_ROCKSHEROES;
-    src_x  = (graphic % HEROES_PER_LINE) * TILEX;
-    src_y  = (graphic / HEROES_PER_LINE) * TILEY;
-  }
-  else
-  {
-    DrawGraphicExt(d, gc, dest_x,dest_y, graphic);
-    return;
-  }
-
-#endif
-
 
   if (tile_clipmask[tile] != None)
   {
@@ -933,6 +917,21 @@ void getMiniGraphicSource(int graphic, Pixmap *pixmap, int *x, int *y)
     *x = MINI_GFX_STARTX + (graphic % MINI_GFX_PER_LINE) * MINI_TILEX;
     *y = MINI_GFX_STARTY + (graphic / MINI_GFX_PER_LINE) * MINI_TILEY;
   }
+  else if (graphic >= GFX_START_ROCKSSP && graphic <= GFX_END_ROCKSSP)
+  {
+    graphic -= GFX_START_ROCKSSP;
+    graphic -= ((graphic / SP_PER_LINE) * SP_PER_LINE) / 2;
+    *pixmap = pix[PIX_SP];
+    *x = MINI_SP_STARTX + (graphic % MINI_SP_PER_LINE) * MINI_TILEX;
+    *y = MINI_SP_STARTY + (graphic / MINI_SP_PER_LINE) * MINI_TILEY;
+  }
+  else if (graphic >= GFX_START_ROCKSDC && graphic <= GFX_END_ROCKSDC)
+  {
+    graphic -= GFX_START_ROCKSDC;
+    *pixmap = pix[PIX_DC];
+    *x = MINI_DC_STARTX + (graphic % MINI_DC_PER_LINE) * MINI_TILEX;
+    *y = MINI_DC_STARTY + (graphic / MINI_DC_PER_LINE) * MINI_TILEY;
+  }
   else if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
   {
     graphic -= GFX_START_ROCKSMORE;
@@ -950,56 +949,20 @@ void getMiniGraphicSource(int graphic, Pixmap *pixmap, int *x, int *y)
   }
   else
   {
-    *pixmap = pix[PIX_MORE];
-    *x = MINI_MORE_STARTX;
-    *y = MINI_MORE_STARTY;
+    *pixmap = pix[PIX_SP];
+    *x = MINI_SP_STARTX;
+    *y = MINI_SP_STARTY;
   }
 }
 
 void DrawMiniGraphicExt(Drawable d, GC gc, int x, int y, int graphic)
 {
-
-#if 1
-
   Pixmap pixmap;
   int src_x, src_y;
 
   getMiniGraphicSource(graphic, &pixmap, &src_x, &src_y);
   XCopyArea(display, pixmap, d, gc,
 	    src_x, src_y, MINI_TILEX, MINI_TILEY, x, y);
-
-#else
-
-  if (graphic >= GFX_START_ROCKSSCREEN && graphic <= GFX_END_ROCKSSCREEN)
-  {
-    graphic -= GFX_START_ROCKSSCREEN;
-    XCopyArea(display, pix[PIX_BACK], d, gc,
-	      MINI_GFX_STARTX + (graphic % MINI_GFX_PER_LINE) * MINI_TILEX,
-	      MINI_GFX_STARTY + (graphic / MINI_GFX_PER_LINE) * MINI_TILEY,
-	      MINI_TILEX, MINI_TILEY, x, y);
-  }
-  else if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
-  {
-    graphic -= GFX_START_ROCKSMORE;
-    XCopyArea(display, pix[PIX_MORE], d, gc,
-	      MINI_MORE_STARTX + (graphic % MINI_MORE_PER_LINE) * MINI_TILEX,
-	      MINI_MORE_STARTY + (graphic / MINI_MORE_PER_LINE) * MINI_TILEY,
-	      MINI_TILEX, MINI_TILEY, x, y);
-  }
-  else if (graphic >= GFX_START_ROCKSFONT && graphic <= GFX_END_ROCKSFONT)
-  {
-    graphic -= GFX_START_ROCKSFONT;
-    XCopyArea(display, pix[PIX_SMALLFONT], d, gc,
-	      (graphic % FONT_CHARS_PER_LINE) * FONT4_XSIZE,
-	      (graphic / FONT_CHARS_PER_LINE) * FONT4_YSIZE +
-	      FC_SPECIAL2 * FONT2_YSIZE * FONT_LINES_PER_FONT,
-	      MINI_TILEX, MINI_TILEY, x, y);
-  }
-  else
-    XFillRectangle(display, d, gc, x, y, MINI_TILEX, MINI_TILEY);
-
-#endif
-
 }
 
 void DrawGraphicShifted(int x,int y, int dx,int dy, int graphic,
@@ -1009,6 +972,7 @@ void DrawGraphicShifted(int x,int y, int dx,int dy, int graphic,
   int cx = 0, cy = 0;
   int src_x, src_y, dest_x, dest_y;
   int tile = graphic;
+  int pixmap_nr;
   Pixmap src_pixmap;
   GC drawing_gc;
 
@@ -1082,32 +1046,12 @@ void DrawGraphicShifted(int x,int y, int dx,int dy, int graphic,
       MarkTileDirty(x, y + SIGN(dy));
   }
 
-  if (graphic >= GFX_START_ROCKSSCREEN && graphic <= GFX_END_ROCKSSCREEN)
-  {
-    src_pixmap = pix[PIX_BACK];
-    drawing_gc = clip_gc[PIX_BACK];
-    graphic -= GFX_START_ROCKSSCREEN;
-    src_x  = SX + (graphic % GFX_PER_LINE) * TILEX + cx;
-    src_y  = SY + (graphic / GFX_PER_LINE) * TILEY + cy;
-  }
-  else if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
-  {
-    src_pixmap = pix[PIX_MORE];
-    drawing_gc = clip_gc[PIX_MORE];
-    graphic -= GFX_START_ROCKSMORE;
-    src_x  = (graphic % MORE_PER_LINE) * TILEX + cx;
-    src_y  = (graphic / MORE_PER_LINE) * TILEY + cy;
-  }
-  else if (graphic >= GFX_START_ROCKSHEROES && graphic <= GFX_END_ROCKSHEROES)
-  {
-    src_pixmap = pix[PIX_HEROES];
-    drawing_gc = clip_gc[PIX_HEROES];
-    graphic -= GFX_START_ROCKSHEROES;
-    src_x  = (graphic % HEROES_PER_LINE) * TILEX + cx;
-    src_y  = (graphic / HEROES_PER_LINE) * TILEY + cy;
-  }
-  else	/* big font graphics currently not allowed (and not needed) */
-    return;
+  getGraphicSource(graphic, &pixmap_nr, &src_x, &src_y);
+  src_pixmap = pix[pixmap_nr];
+  drawing_gc = clip_gc[pixmap_nr];
+
+  src_x += cx;
+  src_y += cy;
 
   dest_x = FX + x * TILEX + dx;
   dest_y = FY + y * TILEY + dy;
@@ -1192,23 +1136,23 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
   {
     graphic = GFX2_SP_ELECTRON + getGraphicAnimationPhase(8, 2, ANIM_NORMAL);
   }
-  else if (element == EL_MAULWURF || element == EL_PINGUIN ||
+  else if (element == EL_MOLE || element == EL_PINGUIN ||
 	   element == EL_SCHWEIN || element == EL_DRACHE)
   {
     if (dir == MV_LEFT)
-      graphic = (element == EL_MAULWURF ? GFX_MAULWURF_LEFT :
+      graphic = (element == EL_MOLE ? GFX_MOLE_LEFT :
 		 element == EL_PINGUIN ? GFX_PINGUIN_LEFT :
 		 element == EL_SCHWEIN ? GFX_SCHWEIN_LEFT : GFX_DRACHE_LEFT);
     else if (dir == MV_RIGHT)
-      graphic = (element == EL_MAULWURF ? GFX_MAULWURF_RIGHT :
+      graphic = (element == EL_MOLE ? GFX_MOLE_RIGHT :
 		 element == EL_PINGUIN ? GFX_PINGUIN_RIGHT :
 		 element == EL_SCHWEIN ? GFX_SCHWEIN_RIGHT : GFX_DRACHE_RIGHT);
     else if (dir == MV_UP)
-      graphic = (element == EL_MAULWURF ? GFX_MAULWURF_UP :
+      graphic = (element == EL_MOLE ? GFX_MOLE_UP :
 		 element == EL_PINGUIN ? GFX_PINGUIN_UP :
 		 element == EL_SCHWEIN ? GFX_SCHWEIN_UP : GFX_DRACHE_UP);
     else
-      graphic = (element == EL_MAULWURF ? GFX_MAULWURF_DOWN :
+      graphic = (element == EL_MOLE ? GFX_MOLE_DOWN :
 		 element == EL_PINGUIN ? GFX_PINGUIN_DOWN :
 		 element == EL_SCHWEIN ? GFX_SCHWEIN_DOWN : GFX_DRACHE_DOWN);
 
@@ -1226,13 +1170,36 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
   {
     graphic += !phase2;
   }
-  else if ((element == EL_FELSBROCKEN || IS_GEM(element)) && !cut_mode)
+  else if (element == EL_BALLOON)
   {
-    if (element != EL_SP_INFOTRON)
-      graphic += phase2 * (element == EL_FELSBROCKEN ? 2 : 1);
+    graphic += phase4;
   }
-  else if (element == EL_SIEB_LEER || element == EL_SIEB2_LEER ||
-	   element == EL_SIEB_VOLL || element == EL_SIEB2_VOLL)
+  else if ((element == EL_FELSBROCKEN ||
+	    element == EL_SP_ZONK ||
+	    element == EL_BD_ROCK ||
+	    IS_GEM(element)) && !cut_mode)
+  {
+    if (uy >= lev_fieldy-1 || !IS_BELT(Feld[ux][uy+1]))
+    {
+      if (element == EL_FELSBROCKEN ||
+	  element == EL_SP_ZONK ||
+	  element == EL_BD_ROCK)
+      {
+	if (dir == MV_LEFT)
+	  graphic += (4 - phase4) % 4;
+	else if (dir == MV_RIGHT)
+	  graphic += phase4;
+	else
+	  graphic += phase2 * 2;
+      }
+      else if (element != EL_SP_INFOTRON)
+	graphic += phase2;
+    }
+  }
+  else if (element == EL_MAGIC_WALL_EMPTY ||
+	   element == EL_MAGIC_WALL_BD_EMPTY ||
+	   element == EL_MAGIC_WALL_FULL ||
+	   element == EL_MAGIC_WALL_BD_FULL)
   {
     graphic += 3 + getGraphicAnimationPhase(4, 4, ANIM_REVERSE);
   }
@@ -1256,6 +1223,14 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
       graphic = GFX_MAUER_R;
     else if (rechts_massiv)
       graphic = GFX_MAUER_L;
+  }
+  else if ((element == EL_INVISIBLE_STEEL ||
+	    element == EL_UNSICHTBAR ||
+	    element == EL_SAND_INVISIBLE) && game.light_time_left)
+  {
+    graphic = (element == EL_INVISIBLE_STEEL ? GFX_INVISIBLE_STEEL_ON :
+	       element == EL_UNSICHTBAR ? GFX_UNSICHTBAR_ON :
+	       GFX_SAND_INVISIBLE_ON);
   }
 
   if (dx || dy)
@@ -1320,7 +1295,10 @@ void ErdreichAnbroeckeln(int x, int y)
 
   element = Feld[ux][uy];
 
-  if (element == EL_ERDREICH)
+  if (element == EL_ERDREICH ||
+      element == EL_LANDMINE ||
+      element == EL_TRAP_INACTIVE ||
+      element == EL_TRAP_ACTIVE)
   {
     if (!IN_SCR_FIELD(x, y))
       return;
@@ -1338,7 +1316,10 @@ void ErdreichAnbroeckeln(int x, int y)
       else
 	element = Feld[uxx][uyy];
 
-      if (element == EL_ERDREICH)
+      if (element == EL_ERDREICH ||
+	  element == EL_LANDMINE ||
+	  element == EL_TRAP_INACTIVE ||
+	  element == EL_TRAP_ACTIVE)
 	continue;
 
       if (i == 1 || i == 2)
@@ -1377,7 +1358,11 @@ void ErdreichAnbroeckeln(int x, int y)
       uxx = ux + xy[i][0];
       uyy = uy + xy[i][1];
 
-      if (!IN_LEV_FIELD(uxx, uyy) || Feld[uxx][uyy] != EL_ERDREICH ||
+      if (!IN_LEV_FIELD(uxx, uyy) ||
+	  (Feld[uxx][uyy] != EL_ERDREICH &&
+	   Feld[uxx][uyy] != EL_LANDMINE &&
+	   Feld[uxx][uyy] != EL_TRAP_INACTIVE &&
+	   Feld[uxx][uyy] != EL_TRAP_ACTIVE) ||
 	  !IN_SCR_FIELD(xx, yy))
 	continue;
 
@@ -1442,13 +1427,13 @@ void DrawScreenField(int x, int y)
     boolean cut_mode = NO_CUTTING;
 
     if (Store[ux][uy] == EL_MORAST_LEER ||
-	Store[ux][uy] == EL_SIEB_LEER ||
-	Store[ux][uy] == EL_SIEB2_LEER ||
+	Store[ux][uy] == EL_MAGIC_WALL_EMPTY ||
+	Store[ux][uy] == EL_MAGIC_WALL_BD_EMPTY ||
 	Store[ux][uy] == EL_AMOEBE_NASS)
       cut_mode = CUT_ABOVE;
     else if (Store[ux][uy] == EL_MORAST_VOLL ||
-	     Store[ux][uy] == EL_SIEB_VOLL ||
-	     Store[ux][uy] == EL_SIEB2_VOLL)
+	     Store[ux][uy] == EL_MAGIC_WALL_FULL ||
+	     Store[ux][uy] == EL_MAGIC_WALL_BD_FULL)
       cut_mode = CUT_BELOW;
 
     if (cut_mode == CUT_ABOVE)
@@ -1478,8 +1463,8 @@ void DrawScreenField(int x, int y)
 		  MovDir[oldx][oldy] == MV_RIGHT);
 
     if (Store[oldx][oldy] == EL_MORAST_LEER ||
-	Store[oldx][oldy] == EL_SIEB_LEER ||
-	Store[oldx][oldy] == EL_SIEB2_LEER ||
+	Store[oldx][oldy] == EL_MAGIC_WALL_EMPTY ||
+	Store[oldx][oldy] == EL_MAGIC_WALL_BD_EMPTY ||
 	Store[oldx][oldy] == EL_AMOEBE_NASS)
       cut_mode = CUT_ABOVE;
 
@@ -1564,24 +1549,6 @@ void DrawMiniElementOrWall(int sx, int sy, int scroll_x, int scroll_y)
 
     if (steel_position != -1)
       DrawMiniGraphic(sx, sy, border[steel_position][steel_type]);
-
-
-#if 0
-    if (x == -1 && y == -1)
-      DrawMiniGraphic(sx, sy, GFX_STEEL_UPPER_LEFT);
-    else if (x == lev_fieldx && y == -1)
-      DrawMiniGraphic(sx, sy, GFX_STEEL_UPPER_RIGHT);
-    else if (x == -1 && y == lev_fieldy)
-      DrawMiniGraphic(sx, sy, GFX_STEEL_LOWER_LEFT);
-    else if (x == lev_fieldx && y == lev_fieldy)
-      DrawMiniGraphic(sx, sy, GFX_STEEL_LOWER_RIGHT);
-    else if (x == -1 || x == lev_fieldx)
-      DrawMiniGraphic(sx, sy, GFX_STEEL_VERTICAL);
-    else if (y == -1 || y == lev_fieldy)
-      DrawMiniGraphic(sx, sy, GFX_STEEL_HORIZONTAL);
-#endif
-
-
   }
 }
 
@@ -1594,7 +1561,24 @@ void DrawMicroElement(int xpos, int ypos, int element)
 
   graphic = el2gfx(element);
 
-  if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
+  if (graphic >= GFX_START_ROCKSSP && graphic <= GFX_END_ROCKSSP)
+  {
+    graphic -= GFX_START_ROCKSSP;
+    graphic -= ((graphic / SP_PER_LINE) * SP_PER_LINE) / 2;
+    XCopyArea(display, pix[PIX_SP], drawto, gc,
+	      MICRO_SP_STARTX + (graphic % MICRO_SP_PER_LINE) * MICRO_TILEX,
+	      MICRO_SP_STARTY + (graphic / MICRO_SP_PER_LINE) * MICRO_TILEY,
+	      MICRO_TILEX, MICRO_TILEY, xpos, ypos);
+  }
+  else if (graphic >= GFX_START_ROCKSDC && graphic <= GFX_END_ROCKSDC)
+  {
+    graphic -= GFX_START_ROCKSDC;
+    XCopyArea(display, pix[PIX_DC], drawto, gc,
+	      MICRO_DC_STARTX + (graphic % MICRO_DC_PER_LINE) * MICRO_TILEX,
+	      MICRO_DC_STARTY + (graphic / MICRO_DC_PER_LINE) * MICRO_TILEY,
+	      MICRO_TILEX, MICRO_TILEY, xpos, ypos);
+  }
+  else if (graphic >= GFX_START_ROCKSMORE && graphic <= GFX_END_ROCKSMORE)
   {
     graphic -= GFX_START_ROCKSMORE;
     XCopyArea(display, pix[PIX_MORE], drawto, gc,
@@ -1619,11 +1603,7 @@ void DrawLevel()
     for(y=BY1; y<=BY2; y++)
       DrawScreenField(x, y);
 
-  if (setup.soft_scrolling)
-    XCopyArea(display, fieldbuffer, backbuffer, gc,
-	      FX, FY, SXSIZE, SYSIZE, SX, SY);
-
-  redraw_mask |= (REDRAW_FIELD | REDRAW_FROM_BACKBUFFER);
+  redraw_mask |= REDRAW_FIELD;
 }
 
 void DrawMiniLevel(int size_x, int size_y, int scroll_x, int scroll_y)
@@ -1640,9 +1620,6 @@ void DrawMiniLevel(int size_x, int size_y, int scroll_x, int scroll_y)
 static void DrawMicroLevelExt(int xpos, int ypos, int from_x, int from_y)
 {
   int x, y;
-
-  /* determine border element for this level */
-  SetBorderElement();
 
   XFillRectangle(display, drawto, gc,
 		 xpos, ypos, MICROLEV_XSIZE, MICROLEV_YSIZE);
@@ -1673,26 +1650,35 @@ static void DrawMicroLevelExt(int xpos, int ypos, int from_x, int from_y)
   redraw_mask |= REDRAW_MICROLEVEL;
 }
 
+#define MICROLABEL_EMPTY		0
+#define MICROLABEL_LEVEL_NAME		1
+#define MICROLABEL_CREATED_BY		2
+#define MICROLABEL_LEVEL_AUTHOR		3
+#define MICROLABEL_IMPORTED_FROM	4
+#define MICROLABEL_LEVEL_IMPORT_INFO	5
+
+#define MAX_MICROLABEL_SIZE		(SXSIZE / FONT4_XSIZE)
+
 static void DrawMicroLevelLabelExt(int mode)
 {
-  char label_text[100];
+  char label_text[MAX_MICROLABEL_SIZE + 1];
 
   XFillRectangle(display, drawto,gc,
 		 SX, MICROLABEL_YPOS, SXSIZE, FONT4_YSIZE);
 
-  strcpy(label_text, (mode == 1 ? level.name :
-		      mode == 2 ? "created by" :
-		      mode == 3 ? level.author : ""));
+  strncpy(label_text, (mode == MICROLABEL_LEVEL_NAME ? level.name :
+		       mode == MICROLABEL_CREATED_BY ? "created by" :
+		       mode == MICROLABEL_LEVEL_AUTHOR ? level.author :
+		       mode == MICROLABEL_IMPORTED_FROM ? "imported from" :
+		       mode == MICROLABEL_LEVEL_IMPORT_INFO ?
+		       leveldir_current->imported_from : ""),
+	  MAX_MICROLABEL_SIZE);
+  label_text[MAX_MICROLABEL_SIZE] = '\0';
 
   if (strlen(label_text) > 0)
   {
-    int size, lxpos, lypos;
-
-    label_text[SXSIZE / FONT4_XSIZE] = '\0';
-
-    size = strlen(label_text);
-    lxpos = SX + (SXSIZE - size * FONT4_XSIZE) / 2;
-    lypos = MICROLABEL_YPOS;
+    int lxpos = SX + (SXSIZE - strlen(label_text) * FONT4_XSIZE) / 2;
+    int lypos = MICROLABEL_YPOS;
 
     DrawText(lxpos, lypos, label_text, FS_SMALL, FC_SPECIAL2);
   }
@@ -1768,13 +1754,25 @@ void DrawMicroLevel(int xpos, int ypos, boolean restart)
   /* redraw micro level label, if needed */
   if (strcmp(level.name, NAMELESS_LEVEL_NAME) != 0 &&
       strcmp(level.author, ANONYMOUS_NAME) != 0 &&
-      strcmp(level.author, leveldir[leveldir_nr].name) != 0 &&
+      strcmp(level.author, leveldir_current->name) != 0 &&
       DelayReached(&label_delay, MICROLEVEL_LABEL_DELAY))
   {
-    label_counter = (label_counter + 1) % 23;
-    label_state = (label_counter >= 0 && label_counter <= 7 ? 1 :
-		   label_counter >= 9 && label_counter <= 12 ? 2 :
-		   label_counter >= 14 && label_counter <= 21 ? 3 : 0);
+    int max_label_counter = 23;
+
+    if (leveldir_current->imported_from != NULL)
+      max_label_counter += 14;
+
+    label_counter = (label_counter + 1) % max_label_counter;
+    label_state = (label_counter >= 0 && label_counter <= 7 ?
+		   MICROLABEL_LEVEL_NAME :
+		   label_counter >= 9 && label_counter <= 12 ?
+		   MICROLABEL_CREATED_BY :
+		   label_counter >= 14 && label_counter <= 21 ?
+		   MICROLABEL_LEVEL_AUTHOR :
+		   label_counter >= 23 && label_counter <= 26 ?
+		   MICROLABEL_IMPORTED_FROM :
+		   label_counter >= 28 && label_counter <= 35 ?
+		   MICROLABEL_LEVEL_IMPORT_INFO : MICROLABEL_EMPTY);
     DrawMicroLevelLabelExt(label_state);
   }
 }
@@ -1816,12 +1814,7 @@ boolean Request(char *text, unsigned int req_state)
 	    DOOR_GFX_PAGEX2, DOOR_GFX_PAGEY1);
 
   /* clear door drawing field */
-#if 0
-  XFillRectangle(display, pix[PIX_DB_DOOR], gc,
-		 DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1, DXSIZE, DYSIZE);
-#else
   XFillRectangle(display, drawto, gc, DX, DY, DXSIZE, DYSIZE);
-#endif
 
   /* write text for request */
   for(ty=0; ty<13; ty++)
@@ -1846,36 +1839,11 @@ boolean Request(char *text, unsigned int req_state)
     }
     sprintf(txt, text); 
     txt[tl] = 0;
-#if 0
-    DrawTextExt(pix[PIX_DB_DOOR], gc,
-		DOOR_GFX_PAGEX1 + 51 - (tl * 14)/2, SY + ty * 16,
-		txt, FS_SMALL, FC_YELLOW);
-#else
     DrawTextExt(drawto, gc,
 		DX + 51 - (tl * 14)/2, DY + 8 + ty * 16,
 		txt, FS_SMALL, FC_YELLOW);
-#endif
     text += tl + (tc == 32 ? 1 : 0);
   }
-
-#if 0
-  if (req_state & REQ_ASK)
-  {
-    DrawYesNoButton(BUTTON_OK, DB_INIT);
-    DrawYesNoButton(BUTTON_NO, DB_INIT);
-  }
-  else if (req_state & REQ_CONFIRM)
-  {
-    DrawConfirmButton(BUTTON_CONFIRM, DB_INIT);
-  }
-  else if (req_state & REQ_PLAYER)
-  {
-    DrawPlayerButton(BUTTON_PLAYER_1, DB_INIT);
-    DrawPlayerButton(BUTTON_PLAYER_2, DB_INIT);
-    DrawPlayerButton(BUTTON_PLAYER_3, DB_INIT);
-    DrawPlayerButton(BUTTON_PLAYER_4, DB_INIT);
-  }
-#else
 
   if (req_state & REQ_ASK)
   {
@@ -1899,10 +1867,11 @@ boolean Request(char *text, unsigned int req_state)
 	    DX, DY, DXSIZE, DYSIZE,
 	    DOOR_GFX_PAGEX1, DOOR_GFX_PAGEY1);
 
-#endif
-
   OpenDoor(DOOR_OPEN_1);
+
+#if 0
   ClearEventQueue();
+#endif
 
   if (!(req_state & REQUEST_WAIT_FOR))
     return(FALSE);
@@ -1928,11 +1897,6 @@ boolean Request(char *text, unsigned int req_state)
 	case ButtonRelease:
 	case MotionNotify:
 	{
-
-#if 0
-	  int choice;
-#endif
-
 	  if (event.type == MotionNotify)
 	  {
 	    Window root, child;
@@ -1961,46 +1925,6 @@ boolean Request(char *text, unsigned int req_state)
 	    else
 	      button_status = MB_RELEASED;
 	  }
-
-
-
-#if 0
-	  if (req_state & REQ_ASK)
-	    choice = CheckYesNoButtons(mx,my,button_status);
-	  else if (req_state & REQ_CONFIRM)
-	    choice = CheckConfirmButton(mx,my,button_status);
-	  else
-	    choice = CheckPlayerButtons(mx,my,button_status);
-
-	  switch(choice)
-	  {
-	    case BUTTON_OK:
-	      result = TRUE;
-	      break;
-	    case BUTTON_NO:
-	      result = FALSE;
-	      break;
-	    case BUTTON_CONFIRM:
-	      result = TRUE | FALSE;
-	      break;
-
-	    case BUTTON_PLAYER_1:
-	      result = 1;
-	      break;
-	    case BUTTON_PLAYER_2:
-	      result = 2;
-	      break;
-	    case BUTTON_PLAYER_3:
-	      result = 3;
-	      break;
-	    case BUTTON_PLAYER_4:
-	      result = 4;
-	      break;
-
-	    default:
-	      break;
-	  }
-#else
 
 	  /* this sets 'request_gadget_id' */
 	  HandleGadgets(mx, my, button_status);
@@ -2033,7 +1957,6 @@ boolean Request(char *text, unsigned int req_state)
 	    default:
 	      break;
 	  }
-#endif
 
 	  break;
 	}
@@ -2262,15 +2185,7 @@ unsigned int MoveDoor(unsigned int door_state)
 	redraw_mask |= REDRAW_DOOR_2;
       }
 
-
-
-#if 1
       BackToFront();
-#else
-      XCopyArea(display, drawto, window, gc, DX, DY, DXSIZE, DYSIZE, DX, DY);
-#endif
-
-
 
       if (game_status == MAINMENU)
 	DoAnimation();
@@ -2285,7 +2200,25 @@ unsigned int MoveDoor(unsigned int door_state)
   if (door_state & DOOR_ACTION_2)
     door2 = door_state & DOOR_ACTION_2;
 
-  return(door1 | door2);
+  return (door1 | door2);
+}
+
+void DrawSpecialEditorDoor()
+{
+  /* draw bigger toolbox window */
+  XCopyArea(display, pix[PIX_DOOR], drawto, gc,
+	    DOOR_GFX_PAGEX7, 0, 108, 56, EX - 4, EY - 12);
+
+  redraw_mask |= REDRAW_ALL;
+}
+
+void UndrawSpecialEditorDoor()
+{
+  /* draw normal tape recorder window */
+  XCopyArea(display, pix[PIX_BACK], drawto, gc,
+	    562, 344, 108, 56, EX - 4, EY - 12);
+
+  redraw_mask |= REDRAW_ALL;
 }
 
 int ReadPixel(Drawable d, int x, int y)
@@ -2402,6 +2335,11 @@ static struct
   }
 };
 
+static void DoNotDisplayInfoText(void *ptr)
+{
+  return;
+}
+
 void CreateToolButtons()
 {
   int i;
@@ -2449,6 +2387,7 @@ void CreateToolButtons()
 		      GDI_DECORATION_SHIFTING, 1, 1,
 		      GDI_EVENT_MASK, event_mask,
 		      GDI_CALLBACK_ACTION, HandleToolButtons,
+		      GDI_CALLBACK_INFO, DoNotDisplayInfoText,
 		      GDI_END);
 
     if (gi == NULL)
@@ -2469,105 +2408,6 @@ static void UnmapToolButtons()
 static void HandleToolButtons(struct GadgetInfo *gi)
 {
   request_gadget_id = gi->custom_id;
-
-
-#if 0
-  int id = gi->custom_id;
-
-  if (game_status != PLAYING)
-    return;
-
-  switch (id)
-  {
-    case GAME_CTRL_ID_STOP:
-      if (AllPlayersGone)
-      {
-	CloseDoor(DOOR_CLOSE_1);
-	game_status = MAINMENU;
-	DrawMainMenu();
-	break;
-      }
-
-      if (Request("Do you really want to quit the game ?",
-		  REQ_ASK | REQ_STAY_CLOSED))
-      { 
-#ifndef MSDOS
-	if (options.network)
-	  SendToServer_StopPlaying();
-	else
-#endif
-	{
-	  game_status = MAINMENU;
-	  DrawMainMenu();
-	}
-      }
-      else
-	OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
-      break;
-
-    case GAME_CTRL_ID_PAUSE:
-      if (options.network)
-      {
-#ifndef MSDOS
-	if (tape.pausing)
-	  SendToServer_ContinuePlaying();
-	else
-	  SendToServer_PausePlaying();
-#endif
-      }
-      else
-	TapeTogglePause();
-      break;
-
-    case GAME_CTRL_ID_PLAY:
-      if (tape.pausing)
-      {
-#ifndef MSDOS
-	if (options.network)
-	  SendToServer_ContinuePlaying();
-	else
-#endif
-	{
-	  tape.pausing = FALSE;
-	  DrawVideoDisplay(VIDEO_STATE_PAUSE_OFF,0);
-	}
-      }
-      break;
-
-    case SOUND_CTRL_ID_MUSIC:
-      if (setup.sound_music)
-      { 
-	setup.sound_music = FALSE;
-	FadeSound(background_loop[level_nr % num_bg_loops]);
-      }
-      else if (sound_loops_allowed)
-      { 
-	setup.sound = setup.sound_music = TRUE;
-	PlaySoundLoop(background_loop[level_nr % num_bg_loops]);
-      }
-      break;
-
-    case SOUND_CTRL_ID_LOOPS:
-      if (setup.sound_loops)
-	setup.sound_loops = FALSE;
-      else if (sound_loops_allowed)
-	setup.sound = setup.sound_loops = TRUE;
-      break;
-
-    case SOUND_CTRL_ID_SIMPLE:
-      if (setup.sound_simple)
-	setup.sound_simple = FALSE;
-      else if (sound_status==SOUND_AVAILABLE)
-	setup.sound = setup.sound_simple = TRUE;
-      break;
-
-    default:
-      break;
-  }
-#endif
-
-
-
 }
 
 int el2gfx(int element)
@@ -2590,25 +2430,25 @@ int el2gfx(int element)
     case EL_SPIELER3:		return GFX_SPIELER3;
     case EL_SPIELER4:		return GFX_SPIELER4;
     case EL_KAEFER:		return GFX_KAEFER;
-    case EL_KAEFER_R:		return GFX_KAEFER_R;
-    case EL_KAEFER_O:		return GFX_KAEFER_O;
-    case EL_KAEFER_L:		return GFX_KAEFER_L;
-    case EL_KAEFER_U:		return GFX_KAEFER_U;
+    case EL_KAEFER_RIGHT:	return GFX_KAEFER_RIGHT;
+    case EL_KAEFER_UP:		return GFX_KAEFER_UP;
+    case EL_KAEFER_LEFT:	return GFX_KAEFER_LEFT;
+    case EL_KAEFER_DOWN:	return GFX_KAEFER_DOWN;
     case EL_FLIEGER:		return GFX_FLIEGER;
-    case EL_FLIEGER_R:		return GFX_FLIEGER_R;
-    case EL_FLIEGER_O:		return GFX_FLIEGER_O;
-    case EL_FLIEGER_L:		return GFX_FLIEGER_L;
-    case EL_FLIEGER_U:		return GFX_FLIEGER_U;
+    case EL_FLIEGER_RIGHT:	return GFX_FLIEGER_RIGHT;
+    case EL_FLIEGER_UP:		return GFX_FLIEGER_UP;
+    case EL_FLIEGER_LEFT:	return GFX_FLIEGER_LEFT;
+    case EL_FLIEGER_DOWN:	return GFX_FLIEGER_DOWN;
     case EL_BUTTERFLY:		return GFX_BUTTERFLY;
-    case EL_BUTTERFLY_R:	return GFX_BUTTERFLY_R;
-    case EL_BUTTERFLY_O:	return GFX_BUTTERFLY_O;
-    case EL_BUTTERFLY_L:	return GFX_BUTTERFLY_L;
-    case EL_BUTTERFLY_U:	return GFX_BUTTERFLY_U;
+    case EL_BUTTERFLY_RIGHT:	return GFX_BUTTERFLY_RIGHT;
+    case EL_BUTTERFLY_UP:	return GFX_BUTTERFLY_UP;
+    case EL_BUTTERFLY_LEFT:	return GFX_BUTTERFLY_LEFT;
+    case EL_BUTTERFLY_DOWN:	return GFX_BUTTERFLY_DOWN;
     case EL_FIREFLY:		return GFX_FIREFLY;
-    case EL_FIREFLY_R:		return GFX_FIREFLY_R;
-    case EL_FIREFLY_O:		return GFX_FIREFLY_O;
-    case EL_FIREFLY_L:		return GFX_FIREFLY_L;
-    case EL_FIREFLY_U:		return GFX_FIREFLY_U;
+    case EL_FIREFLY_RIGHT:	return GFX_FIREFLY_RIGHT;
+    case EL_FIREFLY_UP:		return GFX_FIREFLY_UP;
+    case EL_FIREFLY_LEFT:	return GFX_FIREFLY_LEFT;
+    case EL_FIREFLY_DOWN:	return GFX_FIREFLY_DOWN;
     case EL_MAMPFER:		return GFX_MAMPFER;
     case EL_ROBOT:		return GFX_ROBOT;
     case EL_BETON:		return GFX_BETON;
@@ -2617,10 +2457,10 @@ int el2gfx(int element)
     case EL_MORAST_VOLL:	return GFX_MORAST_VOLL;
     case EL_TROPFEN:		return GFX_TROPFEN;
     case EL_BOMBE:		return GFX_BOMBE;
-    case EL_SIEB_INAKTIV:	return GFX_SIEB_INAKTIV;
-    case EL_SIEB_LEER:		return GFX_SIEB_LEER;
-    case EL_SIEB_VOLL:		return GFX_SIEB_VOLL;
-    case EL_SIEB_TOT:		return GFX_SIEB_TOT;
+    case EL_MAGIC_WALL_OFF:	return GFX_MAGIC_WALL_OFF;
+    case EL_MAGIC_WALL_EMPTY:	return GFX_MAGIC_WALL_EMPTY;
+    case EL_MAGIC_WALL_FULL:	return GFX_MAGIC_WALL_FULL;
+    case EL_MAGIC_WALL_DEAD:	return GFX_MAGIC_WALL_DEAD;
     case EL_SALZSAEURE:		return GFX_SALZSAEURE;
     case EL_AMOEBE_TOT:		return GFX_AMOEBE_TOT;
     case EL_AMOEBE_NASS:	return GFX_AMOEBE_NASS;
@@ -2631,7 +2471,7 @@ int el2gfx(int element)
     case EL_KOKOSNUSS:		return GFX_KOKOSNUSS;
     case EL_LIFE:		return GFX_LIFE;
     case EL_LIFE_ASYNC:		return GFX_LIFE_ASYNC;
-    case EL_DYNAMIT:		return GFX_DYNAMIT;
+    case EL_DYNAMITE_ACTIVE:	return GFX_DYNAMIT;
     case EL_BADEWANNE:		return GFX_BADEWANNE;
     case EL_BADEWANNE1:		return GFX_BADEWANNE1;
     case EL_BADEWANNE2:		return GFX_BADEWANNE2;
@@ -2652,12 +2492,12 @@ int el2gfx(int element)
     case EL_PFORTE2X:		return GFX_PFORTE2X;
     case EL_PFORTE3X:		return GFX_PFORTE3X;
     case EL_PFORTE4X:		return GFX_PFORTE4X;
-    case EL_DYNAMIT_AUS:	return GFX_DYNAMIT_AUS;
+    case EL_DYNAMITE_INACTIVE:	return GFX_DYNAMIT_AUS;
     case EL_PACMAN:		return GFX_PACMAN;
-    case EL_PACMAN_R:		return GFX_PACMAN_R;
-    case EL_PACMAN_O:		return GFX_PACMAN_O;
-    case EL_PACMAN_L:		return GFX_PACMAN_L;
-    case EL_PACMAN_U:		return GFX_PACMAN_U;
+    case EL_PACMAN_RIGHT:	return GFX_PACMAN_RIGHT;
+    case EL_PACMAN_UP:		return GFX_PACMAN_UP;
+    case EL_PACMAN_LEFT:	return GFX_PACMAN_LEFT;
+    case EL_PACMAN_DOWN:	return GFX_PACMAN_DOWN;
     case EL_UNSICHTBAR:		return GFX_UNSICHTBAR;
     case EL_ERZ_EDEL:		return GFX_ERZ_EDEL;
     case EL_ERZ_DIAM:		return GFX_ERZ_DIAM;
@@ -2678,31 +2518,155 @@ int el2gfx(int element)
     case EL_ERZ_EDEL_ROT:	return GFX_ERZ_EDEL_ROT;
     case EL_ERZ_EDEL_LILA:	return GFX_ERZ_EDEL_LILA;
     case EL_MAMPFER2:		return GFX_MAMPFER2;
-    case EL_SIEB2_INAKTIV:	return GFX_SIEB2_INAKTIV;
-    case EL_SIEB2_LEER:		return GFX_SIEB2_LEER;
-    case EL_SIEB2_VOLL:		return GFX_SIEB2_VOLL;
-    case EL_SIEB2_TOT:		return GFX_SIEB2_TOT;
-    case EL_DYNABOMB:		return GFX_DYNABOMB;
+    case EL_MAGIC_WALL_BD_OFF:	return GFX_MAGIC_WALL_BD_OFF;
+    case EL_MAGIC_WALL_BD_EMPTY:return GFX_MAGIC_WALL_BD_EMPTY;
+    case EL_MAGIC_WALL_BD_FULL:	return GFX_MAGIC_WALL_BD_FULL;
+    case EL_MAGIC_WALL_BD_DEAD:	return GFX_MAGIC_WALL_BD_DEAD;
+    case EL_DYNABOMB_ACTIVE_1:	return GFX_DYNABOMB;
+    case EL_DYNABOMB_ACTIVE_2:	return GFX_DYNABOMB;
+    case EL_DYNABOMB_ACTIVE_3:	return GFX_DYNABOMB;
+    case EL_DYNABOMB_ACTIVE_4:	return GFX_DYNABOMB;
     case EL_DYNABOMB_NR:	return GFX_DYNABOMB_NR;
     case EL_DYNABOMB_SZ:	return GFX_DYNABOMB_SZ;
     case EL_DYNABOMB_XL:	return GFX_DYNABOMB_XL;
     case EL_SOKOBAN_OBJEKT:	return GFX_SOKOBAN_OBJEKT;
     case EL_SOKOBAN_FELD_LEER:	return GFX_SOKOBAN_FELD_LEER;
     case EL_SOKOBAN_FELD_VOLL:	return GFX_SOKOBAN_FELD_VOLL;
-    case EL_MAULWURF:		return GFX_MAULWURF;
+    case EL_MOLE:		return GFX_MOLE;
     case EL_PINGUIN:		return GFX_PINGUIN;
     case EL_SCHWEIN:		return GFX_SCHWEIN;
     case EL_DRACHE:		return GFX_DRACHE;
     case EL_SONDE:		return GFX_SONDE;
-    case EL_PFEIL_L:		return GFX_PFEIL_L;
-    case EL_PFEIL_R:		return GFX_PFEIL_R;
-    case EL_PFEIL_O:		return GFX_PFEIL_O;
-    case EL_PFEIL_U:		return GFX_PFEIL_U;
+    case EL_PFEIL_LEFT:		return GFX_PFEIL_LEFT;
+    case EL_PFEIL_RIGHT:	return GFX_PFEIL_RIGHT;
+    case EL_PFEIL_UP:		return GFX_PFEIL_UP;
+    case EL_PFEIL_DOWN:		return GFX_PFEIL_DOWN;
     case EL_SPEED_PILL:		return GFX_SPEED_PILL;
     case EL_SP_TERMINAL_ACTIVE:	return GFX_SP_TERMINAL;
     case EL_SP_BUG_ACTIVE:	return GFX_SP_BUG_ACTIVE;
+    case EL_SP_ZONK:		return GFX_SP_ZONK;
+      /* ^^^^^^^^^^ non-standard position in supaplex graphic set! */
     case EL_INVISIBLE_STEEL:	return GFX_INVISIBLE_STEEL;
     case EL_BLACK_ORB:		return GFX_BLACK_ORB;
+    case EL_EM_GATE_1:		return GFX_EM_GATE_1;
+    case EL_EM_GATE_2:		return GFX_EM_GATE_2;
+    case EL_EM_GATE_3:		return GFX_EM_GATE_3;
+    case EL_EM_GATE_4:		return GFX_EM_GATE_4;
+    case EL_EM_GATE_1X:		return GFX_EM_GATE_1X;
+    case EL_EM_GATE_2X:		return GFX_EM_GATE_2X;
+    case EL_EM_GATE_3X:		return GFX_EM_GATE_3X;
+    case EL_EM_GATE_4X:		return GFX_EM_GATE_4X;
+    case EL_EM_KEY_1_FILE:	return GFX_EM_KEY_1;
+    case EL_EM_KEY_2_FILE:	return GFX_EM_KEY_2;
+    case EL_EM_KEY_3_FILE:	return GFX_EM_KEY_3;
+    case EL_EM_KEY_4_FILE:	return GFX_EM_KEY_4;
+    case EL_EM_KEY_1:		return GFX_EM_KEY_1;
+    case EL_EM_KEY_2:		return GFX_EM_KEY_2;
+    case EL_EM_KEY_3:		return GFX_EM_KEY_3;
+    case EL_EM_KEY_4:		return GFX_EM_KEY_4;
+    case EL_PEARL:		return GFX_PEARL;
+    case EL_CRYSTAL:		return GFX_CRYSTAL;
+    case EL_WALL_PEARL:		return GFX_WALL_PEARL;
+    case EL_WALL_CRYSTAL:	return GFX_WALL_CRYSTAL;
+    case EL_DOOR_WHITE:		return GFX_DOOR_WHITE;
+    case EL_DOOR_WHITE_GRAY:	return GFX_DOOR_WHITE_GRAY;
+    case EL_KEY_WHITE:		return GFX_KEY_WHITE;
+    case EL_SHIELD_PASSIVE:	return GFX_SHIELD_PASSIVE;
+    case EL_SHIELD_ACTIVE:	return GFX_SHIELD_ACTIVE;
+    case EL_EXTRA_TIME:		return GFX_EXTRA_TIME;
+    case EL_SWITCHGATE_OPEN:	return GFX_SWITCHGATE_OPEN;
+    case EL_SWITCHGATE_CLOSED:	return GFX_SWITCHGATE_CLOSED;
+    case EL_SWITCHGATE_SWITCH_1:return GFX_SWITCHGATE_SWITCH_1;
+    case EL_SWITCHGATE_SWITCH_2:return GFX_SWITCHGATE_SWITCH_2;
+    case EL_BELT1_LEFT:		return GFX_BELT1_LEFT;
+    case EL_BELT1_MIDDLE:	return GFX_BELT1_MIDDLE;
+    case EL_BELT1_RIGHT:	return GFX_BELT1_RIGHT;
+    case EL_BELT1_SWITCH_LEFT:	return GFX_BELT1_SWITCH_LEFT;
+    case EL_BELT1_SWITCH_MIDDLE:return GFX_BELT1_SWITCH_MIDDLE;
+    case EL_BELT1_SWITCH_RIGHT:	return GFX_BELT1_SWITCH_RIGHT;
+    case EL_BELT2_LEFT:		return GFX_BELT2_LEFT;
+    case EL_BELT2_MIDDLE:	return GFX_BELT2_MIDDLE;
+    case EL_BELT2_RIGHT:	return GFX_BELT2_RIGHT;
+    case EL_BELT2_SWITCH_LEFT:	return GFX_BELT2_SWITCH_LEFT;
+    case EL_BELT2_SWITCH_MIDDLE:return GFX_BELT2_SWITCH_MIDDLE;
+    case EL_BELT2_SWITCH_RIGHT:	return GFX_BELT2_SWITCH_RIGHT;
+    case EL_BELT3_LEFT:		return GFX_BELT3_LEFT;
+    case EL_BELT3_MIDDLE:	return GFX_BELT3_MIDDLE;
+    case EL_BELT3_RIGHT:	return GFX_BELT3_RIGHT;
+    case EL_BELT3_SWITCH_LEFT:	return GFX_BELT3_SWITCH_LEFT;
+    case EL_BELT3_SWITCH_MIDDLE:return GFX_BELT3_SWITCH_MIDDLE;
+    case EL_BELT3_SWITCH_RIGHT:	return GFX_BELT3_SWITCH_RIGHT;
+    case EL_BELT4_LEFT:		return GFX_BELT4_LEFT;
+    case EL_BELT4_MIDDLE:	return GFX_BELT4_MIDDLE;
+    case EL_BELT4_RIGHT:	return GFX_BELT4_RIGHT;
+    case EL_BELT4_SWITCH_LEFT:	return GFX_BELT4_SWITCH_LEFT;
+    case EL_BELT4_SWITCH_MIDDLE:return GFX_BELT4_SWITCH_MIDDLE;
+    case EL_BELT4_SWITCH_RIGHT:	return GFX_BELT4_SWITCH_RIGHT;
+    case EL_LANDMINE:		return GFX_LANDMINE;
+    case EL_ENVELOPE:		return GFX_ENVELOPE;
+    case EL_LIGHT_SWITCH_OFF:	return GFX_LIGHT_SWITCH_OFF;
+    case EL_LIGHT_SWITCH_ON:	return GFX_LIGHT_SWITCH_ON;
+    case EL_SIGN_EXCLAMATION:	return GFX_SIGN_EXCLAMATION;
+    case EL_SIGN_RADIOACTIVITY:	return GFX_SIGN_RADIOACTIVITY;
+    case EL_SIGN_STOP:		return GFX_SIGN_STOP;
+    case EL_SIGN_WHEELCHAIR:	return GFX_SIGN_WHEELCHAIR;
+    case EL_SIGN_PARKING:	return GFX_SIGN_PARKING;
+    case EL_SIGN_ONEWAY:	return GFX_SIGN_ONEWAY;
+    case EL_SIGN_HEART:		return GFX_SIGN_HEART;
+    case EL_SIGN_TRIANGLE:	return GFX_SIGN_TRIANGLE;
+    case EL_SIGN_ROUND:		return GFX_SIGN_ROUND;
+    case EL_SIGN_EXIT:		return GFX_SIGN_EXIT;
+    case EL_SIGN_YINYANG:	return GFX_SIGN_YINYANG;
+    case EL_SIGN_OTHER:		return GFX_SIGN_OTHER;
+    case EL_MOLE_LEFT:		return GFX_MOLE_LEFT;
+    case EL_MOLE_RIGHT:		return GFX_MOLE_RIGHT;
+    case EL_MOLE_UP:		return GFX_MOLE_UP;
+    case EL_MOLE_DOWN:		return GFX_MOLE_DOWN;
+    case EL_STEEL_SLANTED:	return GFX_STEEL_SLANTED;
+    case EL_SAND_INVISIBLE:	return GFX_SAND_INVISIBLE;
+    case EL_DX_UNKNOWN_15:	return GFX_DX_UNKNOWN_15;
+    case EL_DX_UNKNOWN_42:	return GFX_DX_UNKNOWN_42;
+    case EL_TIMEGATE_OPEN:	return GFX_TIMEGATE_OPEN;
+    case EL_TIMEGATE_CLOSED:	return GFX_TIMEGATE_CLOSED;
+    case EL_TIMEGATE_SWITCH_ON:	return GFX_TIMEGATE_SWITCH;
+    case EL_TIMEGATE_SWITCH_OFF:return GFX_TIMEGATE_SWITCH;
+    case EL_BALLOON:		return GFX_BALLOON;
+    case EL_BALLOON_SEND_LEFT:	return GFX_BALLOON_SEND_LEFT;
+    case EL_BALLOON_SEND_RIGHT:	return GFX_BALLOON_SEND_RIGHT;
+    case EL_BALLOON_SEND_UP:	return GFX_BALLOON_SEND_UP;
+    case EL_BALLOON_SEND_DOWN:	return GFX_BALLOON_SEND_DOWN;
+    case EL_BALLOON_SEND_ANY:	return GFX_BALLOON_SEND_ANY;
+    case EL_EMC_STEEL_WALL_1:	return GFX_EMC_STEEL_WALL_1;
+    case EL_EMC_STEEL_WALL_2:	return GFX_EMC_STEEL_WALL_2;
+    case EL_EMC_STEEL_WALL_3:	return GFX_EMC_STEEL_WALL_3;
+    case EL_EMC_STEEL_WALL_4:	return GFX_EMC_STEEL_WALL_4;
+    case EL_EMC_WALL_1:		return GFX_EMC_WALL_1;
+    case EL_EMC_WALL_2:		return GFX_EMC_WALL_2;
+    case EL_EMC_WALL_3:		return GFX_EMC_WALL_3;
+    case EL_EMC_WALL_4:		return GFX_EMC_WALL_4;
+    case EL_EMC_WALL_5:		return GFX_EMC_WALL_5;
+    case EL_EMC_WALL_6:		return GFX_EMC_WALL_6;
+    case EL_EMC_WALL_7:		return GFX_EMC_WALL_7;
+    case EL_EMC_WALL_8:		return GFX_EMC_WALL_8;
+    case EL_TUBE_CROSS:		return GFX_TUBE_CROSS;
+    case EL_TUBE_VERTICAL:	return GFX_TUBE_VERTICAL;
+    case EL_TUBE_HORIZONTAL:	return GFX_TUBE_HORIZONTAL;
+    case EL_TUBE_VERT_LEFT:	return GFX_TUBE_VERT_LEFT;
+    case EL_TUBE_VERT_RIGHT:	return GFX_TUBE_VERT_RIGHT;
+    case EL_TUBE_HORIZ_UP:	return GFX_TUBE_HORIZ_UP;
+    case EL_TUBE_HORIZ_DOWN:	return GFX_TUBE_HORIZ_DOWN;
+    case EL_TUBE_LEFT_UP:	return GFX_TUBE_LEFT_UP;
+    case EL_TUBE_LEFT_DOWN:	return GFX_TUBE_LEFT_DOWN;
+    case EL_TUBE_RIGHT_UP:	return GFX_TUBE_RIGHT_UP;
+    case EL_TUBE_RIGHT_DOWN:	return GFX_TUBE_RIGHT_DOWN;
+    case EL_SPRING:		return GFX_SPRING;
+    case EL_SPRING_MOVING:	return GFX_SPRING;
+    case EL_TRAP_INACTIVE:	return GFX_TRAP_INACTIVE;
+    case EL_TRAP_ACTIVE:	return GFX_TRAP_ACTIVE;
+    case EL_BD_WALL:		return GFX_BD_WALL;
+    case EL_BD_ROCK:		return GFX_BD_ROCK;
+    case EL_DX_SUPABOMB:	return GFX_DX_SUPABOMB;
+    case EL_SP_MURPHY_CLONE:	return GFX_SP_MURPHY_CLONE;
 
     default:
     {
@@ -2713,10 +2677,10 @@ int el2gfx(int element)
 	int nr_element = element - EL_SP_START;
 	int gfx_per_line = 8;
 	int nr_graphic =
-	  (nr_element / gfx_per_line) * MORE_PER_LINE +
+	  (nr_element / gfx_per_line) * SP_PER_LINE +
 	  (nr_element % gfx_per_line);
 
-	return GFX_START_ROCKSMORE + nr_graphic;
+	return GFX_START_ROCKSSP + nr_graphic;
       }
       else
 	return -1;

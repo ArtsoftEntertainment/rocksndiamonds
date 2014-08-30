@@ -25,15 +25,16 @@ void SaveTape(int);
 void LoadScore(int);
 void SaveScore(int);
 
-int getLastPlayedLevelOfLevelSeries(char *);
-
 void LoadLevelInfo(void);
 void LoadSetup(void);
 void SaveSetup(void);
-void LoadLevelSetup(void);
-void SaveLevelSetup(void);
+void LoadLevelSetup_LastSeries(void);
+void SaveLevelSetup_LastSeries(void);
+void LoadLevelSetup_SeriesInfo(void);
+void SaveLevelSetup_SeriesInfo(void);
 
 #ifdef MSDOS
+void initErrorFile();
 FILE *openErrorFile();
 void dumpErrorFile();
 #endif

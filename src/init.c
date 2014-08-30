@@ -55,6 +55,10 @@ static void InitElementProperties(void);
 
 void OpenAll(int argc, char *argv[])
 {
+#ifdef MSDOS
+  initErrorFile();
+#endif
+
   if (options.serveronly)
   {
     NetworkServer(options.server_port, options.serveronly);
@@ -62,8 +66,6 @@ void OpenAll(int argc, char *argv[])
     /* never reached */
     exit(0);
   }
-
-  InitLevelAndPlayerInfo();
 
   InitCounter();
   InitSound();
@@ -81,8 +83,10 @@ void OpenAll(int argc, char *argv[])
   XFlush(display);
 
   InitGfx();
-  InitElementProperties();
-  InitGadgets();
+  InitElementProperties();	/* initializes IS_CHAR() for el2gfx() */
+
+  InitLevelAndPlayerInfo();
+  InitGadgets();		/* needs to know number of level series */
 
   DrawMainMenu();
 
@@ -104,9 +108,10 @@ void InitLevelAndPlayerInfo()
 
   local_player->connected = TRUE;
 
-  LoadLevelInfo();			/* global level info */
-  LoadSetup();				/* global setup info */
-  LoadLevelSetup();			/* info about last played level */
+  LoadLevelInfo();				/* global level info */
+  LoadSetup();					/* global setup info */
+  LoadLevelSetup_LastSeries();			/* last played series info */
+  LoadLevelSetup_SeriesInfo();			/* last played level info */
 }
 
 void InitNetworkServer()
@@ -388,7 +393,7 @@ void InitWindow(int argc, char *argv[])
 		    PropModePrepend, (unsigned char *) &delete_atom, 1);
 
   sprintf(icon_filename, "%s/%s/%s",
-	  options.base_directory, GRAPHICS_DIRECTORY,
+	  options.ro_base_directory, GRAPHICS_DIRECTORY,
 	  icon_pic.picture_filename);
   XReadBitmapFile(display,window,icon_filename,
 		  &icon_width,&icon_height,
@@ -397,7 +402,7 @@ void InitWindow(int argc, char *argv[])
     Error(ERR_EXIT, "cannot read icon bitmap file '%s'", icon_filename);
 
   sprintf(icon_filename, "%s/%s/%s",
-	  options.base_directory, GRAPHICS_DIRECTORY,
+	  options.ro_base_directory, GRAPHICS_DIRECTORY,
 	  icon_pic.picturemask_filename);
   XReadBitmapFile(display,window,icon_filename,
 		  &icon_width,&icon_height,
@@ -455,17 +460,6 @@ void InitWindow(int argc, char *argv[])
   gc = XCreateGC(display, window, gc_valuemask, &gc_values);
 }
 
-void DrawInitText(char *text, int ypos, int color)
-{
-  if (display && window && pix[PIX_SMALLFONT])
-  {
-    XFillRectangle(display,window,gc,0,ypos, WIN_XSIZE,FONT2_YSIZE);
-    DrawTextExt(window,gc,(WIN_XSIZE-strlen(text)*FONT2_XSIZE)/2,
-		ypos,text,FS_SMALL,color);
-    XFlush(display);
-  }
-}
-
 void InitGfx()
 {
   int i,j;
@@ -480,9 +474,12 @@ void InitGfx()
     { "Door",	TRUE },
     { "Heroes",	TRUE },
     { "Toons",	TRUE },
+    { "SP",	TRUE },
+    { "DC",	TRUE },
     { "More",	TRUE },
     { "Font",	FALSE },
-    { "Font2",	FALSE }
+    { "Font2",	FALSE },
+    { "Font3",	FALSE }
   }; 
 #else
   static struct PictureFileInfo pic[NUM_PICTURES] =
@@ -491,9 +488,12 @@ void InitGfx()
     { "RocksDoor",	TRUE },
     { "RocksHeroes",	TRUE },
     { "RocksToons",	TRUE },
+    { "RocksSP",	TRUE },
+    { "RocksDC",	TRUE },
     { "RocksMore",	TRUE },
     { "RocksFont",	FALSE },
-    { "RocksFont2",	FALSE }
+    { "RocksFont2",	FALSE },
+    { "RocksFont3",	FALSE }
   }; 
 #endif
 
@@ -559,6 +559,8 @@ void InitGfx()
     { GFX_SOKOBAN_OBJEKT, 1 },
     { GFX_FUNKELN_BLAU, 3 },
     { GFX_FUNKELN_WEISS, 3 },
+    { GFX2_SHIELD_PASSIVE, 3 },
+    { GFX2_SHIELD_ACTIVE, 3 },
     { -1, 0 }
   };
 
@@ -628,44 +630,11 @@ void InitGfx()
       int tile = tile_needs_clipping[i].start + j;
       int graphic = tile;
       int src_x, src_y;
-      Pixmap src_pixmap;
-
-#if 0
-      if (graphic >= GFX_START_ROCKSSCREEN &&
-	  graphic <= GFX_END_ROCKSSCREEN)
-      {
-	src_pixmap = clipmask[PIX_BACK];
-	graphic -= GFX_START_ROCKSSCREEN;
-	src_x = SX + (graphic % GFX_PER_LINE) * TILEX;
-	src_y = SY + (graphic / GFX_PER_LINE) * TILEY;
-      }
-      else if (graphic >= GFX_START_ROCKSHEROES &&
-	       graphic <= GFX_END_ROCKSHEROES)
-      {
-	src_pixmap = clipmask[PIX_HEROES];
-	graphic -= GFX_START_ROCKSHEROES;
-	src_x = (graphic % HEROES_PER_LINE) * TILEX;
-	src_y = (graphic / HEROES_PER_LINE) * TILEY;
-      }
-      else if (graphic >= GFX_START_ROCKSFONT &&
-	       graphic <= GFX_END_ROCKSFONT)
-      {
-	src_pixmap = clipmask[PIX_BIGFONT];
-	graphic -= GFX_START_ROCKSFONT;
-	src_x = (graphic % FONT_CHARS_PER_LINE) * TILEX;
-	src_y = (graphic / FONT_CHARS_PER_LINE) * TILEY +
-	  FC_SPECIAL1 * FONT_LINES_PER_FONT * TILEY;
-      }
-      else
-	break;
-#else
-
       int pixmap_nr;
+      Pixmap src_pixmap;
 
       getGraphicSource(graphic, &pixmap_nr, &src_x, &src_y);
       src_pixmap = clipmask[pixmap_nr];
-
-#endif
 
       tile_clipmask[tile] = XCreatePixmap(display, window, TILEX,TILEY, 1);
 
@@ -729,7 +698,7 @@ void LoadGfx(int pos, struct PictureFileInfo *pic)
     sprintf(basefilename, "%s%s", pic->picture_filename, picture_ext);
     DrawInitText(basefilename, 150, FC_YELLOW);
     sprintf(filename, "%s/%s/%s",
-	    options.base_directory, GRAPHICS_DIRECTORY, basefilename);
+	    options.ro_base_directory, GRAPHICS_DIRECTORY, basefilename);
 
 #ifdef MSDOS
     rest(100);
@@ -805,7 +774,7 @@ void LoadGfx(int pos, struct PictureFileInfo *pic)
     sprintf(basefilename, "%s%s", pic->picture_filename, picturemask_ext);
     DrawInitText(basefilename, 150, FC_YELLOW);
     sprintf(filename, "%s/%s/%s",
-	    options.base_directory, GRAPHICS_DIRECTORY, basefilename);
+	    options.ro_base_directory, GRAPHICS_DIRECTORY, basefilename);
 
 #if DEBUG_TIMING
     debug_print_timestamp(1, NULL);	/* initialize timestamp function */
@@ -846,6 +815,7 @@ void InitGadgets()
   CreateGameButtons();
   CreateTapeButtons();
   CreateToolButtons();
+  CreateScreenGadgets();
 }
 
 void InitElementProperties()
@@ -876,7 +846,11 @@ void InitElementProperties()
     EL_SCHLUESSEL1,
     EL_SCHLUESSEL2,
     EL_SCHLUESSEL3,
-    EL_SCHLUESSEL4
+    EL_SCHLUESSEL4,
+    EL_EM_KEY_1,
+    EL_EM_KEY_2,
+    EL_EM_KEY_3,
+    EL_EM_KEY_4
   };
   static int ep_schluessel_num = sizeof(ep_schluessel)/sizeof(int);
 
@@ -889,7 +863,30 @@ void InitElementProperties()
     EL_PFORTE1X,
     EL_PFORTE2X,
     EL_PFORTE3X,
-    EL_PFORTE4X
+    EL_PFORTE4X,
+    EL_EM_GATE_1,
+    EL_EM_GATE_2,
+    EL_EM_GATE_3,
+    EL_EM_GATE_4,
+    EL_EM_GATE_1X,
+    EL_EM_GATE_2X,
+    EL_EM_GATE_3X,
+    EL_EM_GATE_4X,
+    EL_SWITCHGATE_OPEN,
+    EL_SWITCHGATE_CLOSED,
+    EL_TIMEGATE_OPEN,
+    EL_TIMEGATE_CLOSED,
+    EL_TUBE_CROSS,
+    EL_TUBE_VERTICAL,
+    EL_TUBE_HORIZONTAL,
+    EL_TUBE_VERT_LEFT,
+    EL_TUBE_VERT_RIGHT,
+    EL_TUBE_HORIZ_UP,
+    EL_TUBE_HORIZ_DOWN,
+    EL_TUBE_LEFT_UP,
+    EL_TUBE_LEFT_DOWN,
+    EL_TUBE_RIGHT_UP,
+    EL_TUBE_RIGHT_DOWN
   };
   static int ep_pforte_num = sizeof(ep_pforte)/sizeof(int);
 
@@ -901,6 +898,7 @@ void InitElementProperties()
     EL_MAUER_X,
     EL_MAUER_Y,
     EL_MAUER_XY,
+    EL_BD_WALL,
     EL_FELSBODEN,
     EL_AUSGANG_ZU,
     EL_AUSGANG_ACT,
@@ -912,14 +910,14 @@ void InitElementProperties()
     EL_AMOEBE_BD,
     EL_MORAST_VOLL,
     EL_MORAST_LEER,
-    EL_SIEB_INAKTIV,
-    EL_SIEB_LEER,
-    EL_SIEB_VOLL,
-    EL_SIEB_TOT,
-    EL_SIEB2_INAKTIV,
-    EL_SIEB2_LEER,
-    EL_SIEB2_VOLL,
-    EL_SIEB2_TOT,
+    EL_MAGIC_WALL_OFF,
+    EL_MAGIC_WALL_EMPTY,
+    EL_MAGIC_WALL_FULL,
+    EL_MAGIC_WALL_DEAD,
+    EL_MAGIC_WALL_BD_OFF,
+    EL_MAGIC_WALL_BD_EMPTY,
+    EL_MAGIC_WALL_BD_FULL,
+    EL_MAGIC_WALL_BD_DEAD,
     EL_LIFE,
     EL_LIFE_ASYNC,
     EL_BADEWANNE1,
@@ -945,7 +943,64 @@ void InitElementProperties()
     EL_SP_HARD_BASE6,
     EL_SP_TERMINAL,
     EL_SP_EXIT,
-    EL_INVISIBLE_STEEL
+    EL_INVISIBLE_STEEL,
+    EL_BELT1_SWITCH_LEFT,
+    EL_BELT1_SWITCH_MIDDLE,
+    EL_BELT1_SWITCH_RIGHT,
+    EL_BELT2_SWITCH_LEFT,
+    EL_BELT2_SWITCH_MIDDLE,
+    EL_BELT2_SWITCH_RIGHT,
+    EL_BELT3_SWITCH_LEFT,
+    EL_BELT3_SWITCH_MIDDLE,
+    EL_BELT3_SWITCH_RIGHT,
+    EL_BELT4_SWITCH_LEFT,
+    EL_BELT4_SWITCH_MIDDLE,
+    EL_BELT4_SWITCH_RIGHT,
+    EL_SWITCHGATE_SWITCH_1,
+    EL_SWITCHGATE_SWITCH_2,
+    EL_LIGHT_SWITCH_OFF,
+    EL_LIGHT_SWITCH_ON,
+    EL_TIMEGATE_SWITCH_OFF,
+    EL_TIMEGATE_SWITCH_ON,
+    EL_SIGN_EXCLAMATION,
+    EL_SIGN_RADIOACTIVITY,
+    EL_SIGN_STOP,
+    EL_SIGN_WHEELCHAIR,
+    EL_SIGN_PARKING,
+    EL_SIGN_ONEWAY,
+    EL_SIGN_HEART,
+    EL_SIGN_TRIANGLE,
+    EL_SIGN_ROUND,
+    EL_SIGN_EXIT,
+    EL_SIGN_YINYANG,
+    EL_SIGN_OTHER,
+    EL_STEEL_SLANTED,
+    EL_EMC_STEEL_WALL_1,
+    EL_EMC_STEEL_WALL_2,
+    EL_EMC_STEEL_WALL_3,
+    EL_EMC_STEEL_WALL_4,
+    EL_EMC_WALL_1,
+    EL_EMC_WALL_2,
+    EL_EMC_WALL_3,
+    EL_EMC_WALL_4,
+    EL_EMC_WALL_5,
+    EL_EMC_WALL_6,
+    EL_EMC_WALL_7,
+    EL_EMC_WALL_8,
+    EL_CRYSTAL,
+    EL_WALL_PEARL,
+    EL_WALL_CRYSTAL,
+    EL_TUBE_CROSS,
+    EL_TUBE_VERTICAL,
+    EL_TUBE_HORIZONTAL,
+    EL_TUBE_VERT_LEFT,
+    EL_TUBE_VERT_RIGHT,
+    EL_TUBE_HORIZ_UP,
+    EL_TUBE_HORIZ_DOWN,
+    EL_TUBE_LEFT_UP,
+    EL_TUBE_LEFT_DOWN,
+    EL_TUBE_RIGHT_UP,
+    EL_TUBE_RIGHT_DOWN
   };
   static int ep_solid_num = sizeof(ep_solid)/sizeof(int);
 
@@ -966,6 +1021,18 @@ void InitElementProperties()
     EL_PFORTE2X,
     EL_PFORTE3X,
     EL_PFORTE4X,
+    EL_EM_GATE_1,
+    EL_EM_GATE_2,
+    EL_EM_GATE_3,
+    EL_EM_GATE_4,
+    EL_EM_GATE_1X,
+    EL_EM_GATE_2X,
+    EL_EM_GATE_3X,
+    EL_EM_GATE_4X,
+    EL_SWITCHGATE_OPEN,
+    EL_SWITCHGATE_CLOSED,
+    EL_TIMEGATE_OPEN,
+    EL_TIMEGATE_CLOSED,
     EL_SP_HARD_GRAY,
     EL_SP_HARD_GREEN,
     EL_SP_HARD_BLUE,
@@ -977,14 +1044,59 @@ void InitElementProperties()
     EL_SP_HARD_BASE4,
     EL_SP_HARD_BASE5,
     EL_SP_HARD_BASE6,
-    EL_INVISIBLE_STEEL
+    EL_INVISIBLE_STEEL,
+    EL_BELT1_SWITCH_LEFT,
+    EL_BELT1_SWITCH_MIDDLE,
+    EL_BELT1_SWITCH_RIGHT,
+    EL_BELT2_SWITCH_LEFT,
+    EL_BELT2_SWITCH_MIDDLE,
+    EL_BELT2_SWITCH_RIGHT,
+    EL_BELT3_SWITCH_LEFT,
+    EL_BELT3_SWITCH_MIDDLE,
+    EL_BELT3_SWITCH_RIGHT,
+    EL_BELT4_SWITCH_LEFT,
+    EL_BELT4_SWITCH_MIDDLE,
+    EL_BELT4_SWITCH_RIGHT,
+    EL_LIGHT_SWITCH_OFF,
+    EL_LIGHT_SWITCH_ON,
+    EL_SIGN_EXCLAMATION,
+    EL_SIGN_RADIOACTIVITY,
+    EL_SIGN_STOP,
+    EL_SIGN_WHEELCHAIR,
+    EL_SIGN_PARKING,
+    EL_SIGN_ONEWAY,
+    EL_SIGN_HEART,
+    EL_SIGN_TRIANGLE,
+    EL_SIGN_ROUND,
+    EL_SIGN_EXIT,
+    EL_SIGN_YINYANG,
+    EL_SIGN_OTHER,
+    EL_STEEL_SLANTED,
+    EL_EMC_STEEL_WALL_1,
+    EL_EMC_STEEL_WALL_2,
+    EL_EMC_STEEL_WALL_3,
+    EL_EMC_STEEL_WALL_4,
+    EL_CRYSTAL,
+    EL_TUBE_CROSS,
+    EL_TUBE_VERTICAL,
+    EL_TUBE_HORIZONTAL,
+    EL_TUBE_VERT_LEFT,
+    EL_TUBE_VERT_RIGHT,
+    EL_TUBE_HORIZ_UP,
+    EL_TUBE_HORIZ_DOWN,
+    EL_TUBE_LEFT_UP,
+    EL_TUBE_LEFT_DOWN,
+    EL_TUBE_RIGHT_UP,
+    EL_TUBE_RIGHT_DOWN
   };
   static int ep_massive_num = sizeof(ep_massive)/sizeof(int);
 
   static int ep_slippery[] =
   {
     EL_FELSBODEN,
+    EL_BD_WALL,
     EL_FELSBROCKEN,
+    EL_BD_ROCK,
     EL_EDELSTEIN,
     EL_EDELSTEIN_BD,
     EL_EDELSTEIN_GELB,
@@ -1009,7 +1121,10 @@ void InitElementProperties()
     EL_SP_CHIP_RIGHT,
     EL_SP_CHIP_UPPER,
     EL_SP_CHIP_LOWER,
-    EL_SPEED_PILL
+    EL_SPEED_PILL,
+    EL_STEEL_SLANTED,
+    EL_PEARL,
+    EL_CRYSTAL
   };
   static int ep_slippery_num = sizeof(ep_slippery)/sizeof(int);
 
@@ -1039,6 +1154,14 @@ void InitElementProperties()
     EL_PFORTE2X,
     EL_PFORTE3X,
     EL_PFORTE4X,
+    EL_EM_GATE_1,
+    EL_EM_GATE_2,
+    EL_EM_GATE_3,
+    EL_EM_GATE_4,
+    EL_EM_GATE_1X,
+    EL_EM_GATE_2X,
+    EL_EM_GATE_3X,
+    EL_EM_GATE_4X,
     EL_AUSGANG_ZU,
     EL_AUSGANG_ACT,
     EL_AUSGANG_AUF,
@@ -1049,6 +1172,7 @@ void InitElementProperties()
     EL_MAUER_Y,
     EL_MAUER_XY,
     EL_MAUERND,
+    EL_BD_WALL,
     EL_SP_CHIP_SINGLE,
     EL_SP_CHIP_LEFT,
     EL_SP_CHIP_RIGHT,
@@ -1067,13 +1191,27 @@ void InitElementProperties()
     EL_SP_HARD_BASE6,
     EL_SP_TERMINAL,
     EL_SP_EXIT,
-    EL_INVISIBLE_STEEL
+    EL_INVISIBLE_STEEL,
+    EL_STEEL_SLANTED,
+    EL_EMC_STEEL_WALL_1,
+    EL_EMC_STEEL_WALL_2,
+    EL_EMC_STEEL_WALL_3,
+    EL_EMC_STEEL_WALL_4,
+    EL_EMC_WALL_1,
+    EL_EMC_WALL_2,
+    EL_EMC_WALL_3,
+    EL_EMC_WALL_4,
+    EL_EMC_WALL_5,
+    EL_EMC_WALL_6,
+    EL_EMC_WALL_7,
+    EL_EMC_WALL_8
   };
   static int ep_mauer_num = sizeof(ep_mauer)/sizeof(int);
 
   static int ep_can_fall[] =
   {
     EL_FELSBROCKEN,
+    EL_BD_ROCK,
     EL_EDELSTEIN,
     EL_EDELSTEIN_BD,
     EL_EDELSTEIN_GELB,
@@ -1084,19 +1222,24 @@ void InitElementProperties()
     EL_KOKOSNUSS,
     EL_TROPFEN,
     EL_MORAST_VOLL,
-    EL_SIEB_VOLL,
-    EL_SIEB2_VOLL,
+    EL_MAGIC_WALL_FULL,
+    EL_MAGIC_WALL_BD_FULL,
     EL_ZEIT_VOLL,
     EL_ZEIT_LEER,
     EL_SP_ZONK,
     EL_SP_INFOTRON,
-    EL_SP_DISK_ORANGE
+    EL_SP_DISK_ORANGE,
+    EL_PEARL,
+    EL_CRYSTAL,
+    EL_SPRING,
+    EL_DX_SUPABOMB
   };
   static int ep_can_fall_num = sizeof(ep_can_fall)/sizeof(int);
 
   static int ep_can_smash[] =
   {
     EL_FELSBROCKEN,
+    EL_BD_ROCK,
     EL_EDELSTEIN,
     EL_EDELSTEIN_BD,
     EL_EDELSTEIN_GELB,
@@ -1107,6 +1250,10 @@ void InitElementProperties()
     EL_SCHLUESSEL2,
     EL_SCHLUESSEL3,
     EL_SCHLUESSEL4,
+    EL_EM_KEY_1,
+    EL_EM_KEY_2,
+    EL_EM_KEY_3,
+    EL_EM_KEY_4,
     EL_BOMBE,
     EL_KOKOSNUSS,
     EL_TROPFEN,
@@ -1114,13 +1261,18 @@ void InitElementProperties()
     EL_ZEIT_LEER,
     EL_SP_ZONK,
     EL_SP_INFOTRON,
-    EL_SP_DISK_ORANGE
+    EL_SP_DISK_ORANGE,
+    EL_PEARL,
+    EL_CRYSTAL,
+    EL_SPRING,
+    EL_DX_SUPABOMB
   };
   static int ep_can_smash_num = sizeof(ep_can_smash)/sizeof(int);
 
   static int ep_can_change[] =
   {
     EL_FELSBROCKEN,
+    EL_BD_ROCK,
     EL_EDELSTEIN,
     EL_EDELSTEIN_BD,
     EL_EDELSTEIN_GELB,
@@ -1140,38 +1292,40 @@ void InitElementProperties()
     EL_MAMPFER2,
     EL_ROBOT,
     EL_PACMAN,
-    EL_MAULWURF,
+    EL_MOLE,
     EL_PINGUIN,
     EL_SCHWEIN,
     EL_DRACHE,
     EL_SONDE,
     EL_SP_SNIKSNAK,
-    EL_SP_ELECTRON
+    EL_SP_ELECTRON,
+    EL_BALLOON,
+    EL_SPRING_MOVING
   };
   static int ep_can_move_num = sizeof(ep_can_move)/sizeof(int);
 
   static int ep_could_move[] =
   {
-    EL_KAEFER_R,
-    EL_KAEFER_O,
-    EL_KAEFER_L,
-    EL_KAEFER_U,
-    EL_FLIEGER_R,
-    EL_FLIEGER_O,
-    EL_FLIEGER_L,
-    EL_FLIEGER_U,
-    EL_BUTTERFLY_R,
-    EL_BUTTERFLY_O,
-    EL_BUTTERFLY_L,
-    EL_BUTTERFLY_U,
-    EL_FIREFLY_R,
-    EL_FIREFLY_O,
-    EL_FIREFLY_L,
-    EL_FIREFLY_U,
-    EL_PACMAN_R,
-    EL_PACMAN_O,
-    EL_PACMAN_L,
-    EL_PACMAN_U
+    EL_KAEFER_RIGHT,
+    EL_KAEFER_UP,
+    EL_KAEFER_LEFT,
+    EL_KAEFER_DOWN,
+    EL_FLIEGER_RIGHT,
+    EL_FLIEGER_UP,
+    EL_FLIEGER_LEFT,
+    EL_FLIEGER_DOWN,
+    EL_BUTTERFLY_RIGHT,
+    EL_BUTTERFLY_UP,
+    EL_BUTTERFLY_LEFT,
+    EL_BUTTERFLY_DOWN,
+    EL_FIREFLY_RIGHT,
+    EL_FIREFLY_UP,
+    EL_FIREFLY_LEFT,
+    EL_FIREFLY_DOWN,
+    EL_PACMAN_RIGHT,
+    EL_PACMAN_UP,
+    EL_PACMAN_LEFT,
+    EL_PACMAN_DOWN
   };
   static int ep_could_move_num = sizeof(ep_could_move)/sizeof(int);
 
@@ -1198,7 +1352,9 @@ void InitElementProperties()
     EL_SALZSAEURE,
     EL_SP_SNIKSNAK,
     EL_SP_ELECTRON,
-    EL_SP_BUG_ACTIVE
+    EL_SP_BUG_ACTIVE,
+    EL_TRAP_ACTIVE,
+    EL_LANDMINE
   };
   static int ep_dont_go_to_num = sizeof(ep_dont_go_to)/sizeof(int);
 
@@ -1223,7 +1379,9 @@ void InitElementProperties()
     EL_EDELSTEIN_GELB,
     EL_EDELSTEIN_ROT,
     EL_EDELSTEIN_LILA,
-    EL_DIAMANT
+    EL_DIAMANT,
+    EL_PEARL,
+    EL_CRYSTAL
   };
   static int ep_mampf2_num = sizeof(ep_mampf2)/sizeof(int);
 
@@ -1232,9 +1390,11 @@ void InitElementProperties()
     EL_LEERRAUM,
     EL_ERDREICH,
     EL_FELSBODEN,
+    EL_BD_WALL,
     EL_FELSBROCKEN,
+    EL_BD_ROCK,
     EL_EDELSTEIN_BD,
-    EL_SIEB2_INAKTIV,
+    EL_MAGIC_WALL_BD_OFF,
     EL_AUSGANG_ZU,
     EL_AUSGANG_AUF,
     EL_BETON,
@@ -1283,6 +1443,7 @@ void InitElementProperties()
     EL_LEERRAUM,
     EL_ERDREICH,
     EL_MAUERWERK,
+    EL_BD_WALL,
     EL_FELSBODEN,
     EL_SCHLUESSEL,
     EL_BETON,
@@ -1294,6 +1455,10 @@ void InitElementProperties()
     EL_SCHLUESSEL2,
     EL_SCHLUESSEL3,
     EL_SCHLUESSEL4,
+    EL_EM_KEY_1,
+    EL_EM_KEY_2,
+    EL_EM_KEY_3,
+    EL_EM_KEY_4,
     EL_PFORTE1,
     EL_PFORTE2,
     EL_PFORTE3,
@@ -1302,7 +1467,15 @@ void InitElementProperties()
     EL_PFORTE2X,
     EL_PFORTE3X,
     EL_PFORTE4X,
-    EL_DYNAMIT_AUS,
+    EL_EM_GATE_1,
+    EL_EM_GATE_2,
+    EL_EM_GATE_3,
+    EL_EM_GATE_4,
+    EL_EM_GATE_1X,
+    EL_EM_GATE_2X,
+    EL_EM_GATE_3X,
+    EL_EM_GATE_4X,
+    EL_DYNAMITE_INACTIVE,
     EL_UNSICHTBAR,
     EL_BIRNE_AUS,
     EL_BIRNE_EIN,
@@ -1323,10 +1496,10 @@ void InitElementProperties()
     EL_BADEWANNE3,
     EL_BADEWANNE4,
     EL_BADEWANNE5,
-    EL_SIEB_INAKTIV,
-    EL_SIEB_TOT,
-    EL_SIEB2_INAKTIV,
-    EL_SIEB2_TOT,
+    EL_MAGIC_WALL_OFF,
+    EL_MAGIC_WALL_DEAD,
+    EL_MAGIC_WALL_BD_OFF,
+    EL_MAGIC_WALL_BD_DEAD,
     EL_AMOEBA2DIAM,
     EL_BLOCKED,
     EL_SP_EMPTY,
@@ -1361,21 +1534,61 @@ void InitElementProperties()
     EL_SP_HARD_BASE5,
     EL_SP_HARD_BASE6,
     EL_SP_EXIT,
-    EL_INVISIBLE_STEEL
+    EL_INVISIBLE_STEEL,
+    EL_BELT1_SWITCH_LEFT,
+    EL_BELT1_SWITCH_MIDDLE,
+    EL_BELT1_SWITCH_RIGHT,
+    EL_BELT2_SWITCH_LEFT,
+    EL_BELT2_SWITCH_MIDDLE,
+    EL_BELT2_SWITCH_RIGHT,
+    EL_BELT3_SWITCH_LEFT,
+    EL_BELT3_SWITCH_MIDDLE,
+    EL_BELT3_SWITCH_RIGHT,
+    EL_BELT4_SWITCH_LEFT,
+    EL_BELT4_SWITCH_MIDDLE,
+    EL_BELT4_SWITCH_RIGHT,
+    EL_SIGN_EXCLAMATION,
+    EL_SIGN_RADIOACTIVITY,
+    EL_SIGN_STOP,
+    EL_SIGN_WHEELCHAIR,
+    EL_SIGN_PARKING,
+    EL_SIGN_ONEWAY,
+    EL_SIGN_HEART,
+    EL_SIGN_TRIANGLE,
+    EL_SIGN_ROUND,
+    EL_SIGN_EXIT,
+    EL_SIGN_YINYANG,
+    EL_SIGN_OTHER,
+    EL_STEEL_SLANTED,
+    EL_EMC_STEEL_WALL_1,
+    EL_EMC_STEEL_WALL_2,
+    EL_EMC_STEEL_WALL_3,
+    EL_EMC_STEEL_WALL_4,
+    EL_EMC_WALL_1,
+    EL_EMC_WALL_2,
+    EL_EMC_WALL_3,
+    EL_EMC_WALL_4,
+    EL_EMC_WALL_5,
+    EL_EMC_WALL_6,
+    EL_EMC_WALL_7,
+    EL_EMC_WALL_8
   };
   static int ep_inactive_num = sizeof(ep_inactive)/sizeof(int);
 
   static int ep_explosive[] =
   {
     EL_BOMBE,
-    EL_DYNAMIT,
-    EL_DYNAMIT_AUS,
-    EL_DYNABOMB,
+    EL_DYNAMITE_ACTIVE,
+    EL_DYNAMITE_INACTIVE,
+    EL_DYNABOMB_ACTIVE_1,
+    EL_DYNABOMB_ACTIVE_2,
+    EL_DYNABOMB_ACTIVE_3,
+    EL_DYNABOMB_ACTIVE_4,
     EL_DYNABOMB_NR,
     EL_DYNABOMB_SZ,
     EL_DYNABOMB_XL,
     EL_KAEFER,
-    EL_MAULWURF,
+    EL_MOLE,
     EL_PINGUIN,
     EL_SCHWEIN,
     EL_DRACHE,
@@ -1384,7 +1597,8 @@ void InitElementProperties()
     EL_SP_DISK_ORANGE,
     EL_SP_DISK_YELLOW,
     EL_SP_SNIKSNAK,
-    EL_SP_ELECTRON
+    EL_SP_ELECTRON,
+    EL_DX_SUPABOMB
   };
   static int ep_explosive_num = sizeof(ep_explosive)/sizeof(int);
 
@@ -1395,13 +1609,16 @@ void InitElementProperties()
     EL_EDELSTEIN_GELB,
     EL_EDELSTEIN_ROT,
     EL_EDELSTEIN_LILA,
-    EL_DIAMANT
+    EL_DIAMANT,
+    EL_PEARL,
+    EL_CRYSTAL
   };
   static int ep_mampf3_num = sizeof(ep_mampf3)/sizeof(int);
 
   static int ep_pushable[] =
   {
     EL_FELSBROCKEN,
+    EL_BD_ROCK,
     EL_BOMBE,
     EL_KOKOSNUSS,
     EL_ZEIT_LEER,
@@ -1410,7 +1627,10 @@ void InitElementProperties()
     EL_SONDE,
     EL_SP_ZONK,
     EL_SP_DISK_ORANGE,
-    EL_SP_DISK_YELLOW
+    EL_SP_DISK_YELLOW,
+    EL_BALLOON,
+    EL_SPRING,
+    EL_DX_SUPABOMB
   };
   static int ep_pushable_num = sizeof(ep_pushable)/sizeof(int);
 
@@ -1438,7 +1658,9 @@ void InitElementProperties()
   {
     EL_ERDREICH,
     EL_SP_BASE,
-    EL_SP_BUG
+    EL_SP_BUG,
+    EL_TRAP_INACTIVE,
+    EL_SAND_INVISIBLE
   };
   static int ep_eatable_num = sizeof(ep_eatable)/sizeof(int);
 
@@ -1483,11 +1705,128 @@ void InitElementProperties()
     EL_SP_HARD_BASE5,
     EL_SP_HARD_BASE6,
     EL_SP_CHIP_UPPER,
-    EL_SP_CHIP_LOWER
+    EL_SP_CHIP_LOWER,
+    /* additional elements that appeared in newer Supaplex levels */
+    EL_UNSICHTBAR,
+    /* more than one murphy in a level results in an inactive clone */
+    EL_SP_MURPHY_CLONE
   };
   static int ep_sp_element_num = sizeof(ep_sp_element)/sizeof(int);
 
-  static long ep_bit[] =
+  static int ep_quick_gate[] =
+  {
+    EL_EM_GATE_1,
+    EL_EM_GATE_2,
+    EL_EM_GATE_3,
+    EL_EM_GATE_4,
+    EL_EM_GATE_1X,
+    EL_EM_GATE_2X,
+    EL_EM_GATE_3X,
+    EL_EM_GATE_4X,
+    EL_SP_PORT1_LEFT,
+    EL_SP_PORT2_LEFT,
+    EL_SP_PORT1_RIGHT,
+    EL_SP_PORT2_RIGHT,
+    EL_SP_PORT1_UP,
+    EL_SP_PORT2_UP,
+    EL_SP_PORT1_DOWN,
+    EL_SP_PORT2_DOWN,
+    EL_SP_PORT_X,
+    EL_SP_PORT_Y,
+    EL_SP_PORT_XY,
+    EL_SWITCHGATE_OPEN,
+    EL_TIMEGATE_OPEN
+  };
+  static int ep_quick_gate_num = sizeof(ep_quick_gate)/sizeof(int);
+
+  static int ep_over_player[] =
+  {
+    EL_SP_PORT1_LEFT,
+    EL_SP_PORT2_LEFT,
+    EL_SP_PORT1_RIGHT,
+    EL_SP_PORT2_RIGHT,
+    EL_SP_PORT1_UP,
+    EL_SP_PORT2_UP,
+    EL_SP_PORT1_DOWN,
+    EL_SP_PORT2_DOWN,
+    EL_SP_PORT_X,
+    EL_SP_PORT_Y,
+    EL_SP_PORT_XY,
+    EL_TUBE_CROSS,
+    EL_TUBE_VERTICAL,
+    EL_TUBE_HORIZONTAL,
+    EL_TUBE_VERT_LEFT,
+    EL_TUBE_VERT_RIGHT,
+    EL_TUBE_HORIZ_UP,
+    EL_TUBE_HORIZ_DOWN,
+    EL_TUBE_LEFT_UP,
+    EL_TUBE_LEFT_DOWN,
+    EL_TUBE_RIGHT_UP,
+    EL_TUBE_RIGHT_DOWN
+  };
+  static int ep_over_player_num = sizeof(ep_over_player)/sizeof(int);
+
+  static int ep_active_bomb[] =
+  {
+    EL_DYNAMITE_ACTIVE,
+    EL_DYNABOMB_ACTIVE_1,
+    EL_DYNABOMB_ACTIVE_2,
+    EL_DYNABOMB_ACTIVE_3,
+    EL_DYNABOMB_ACTIVE_4
+  };
+  static int ep_active_bomb_num = sizeof(ep_active_bomb)/sizeof(int);
+
+  static int ep_belt[] =
+  {
+    EL_BELT1_LEFT,
+    EL_BELT1_MIDDLE,
+    EL_BELT1_RIGHT,
+    EL_BELT2_LEFT,
+    EL_BELT2_MIDDLE,
+    EL_BELT2_RIGHT,
+    EL_BELT3_LEFT,
+    EL_BELT3_MIDDLE,
+    EL_BELT3_RIGHT,
+    EL_BELT4_LEFT,
+    EL_BELT4_MIDDLE,
+    EL_BELT4_RIGHT,
+  };
+  static int ep_belt_num = sizeof(ep_belt)/sizeof(int);
+
+  static int ep_belt_switch[] =
+  {
+    EL_BELT1_SWITCH_LEFT,
+    EL_BELT1_SWITCH_MIDDLE,
+    EL_BELT1_SWITCH_RIGHT,
+    EL_BELT2_SWITCH_LEFT,
+    EL_BELT2_SWITCH_MIDDLE,
+    EL_BELT2_SWITCH_RIGHT,
+    EL_BELT3_SWITCH_LEFT,
+    EL_BELT3_SWITCH_MIDDLE,
+    EL_BELT3_SWITCH_RIGHT,
+    EL_BELT4_SWITCH_LEFT,
+    EL_BELT4_SWITCH_MIDDLE,
+    EL_BELT4_SWITCH_RIGHT,
+  };
+  static int ep_belt_switch_num = sizeof(ep_belt_switch)/sizeof(int);
+
+  static int ep_tube[] =
+  {
+    EL_TUBE_CROSS,
+    EL_TUBE_VERTICAL,
+    EL_TUBE_HORIZONTAL,
+    EL_TUBE_VERT_LEFT,
+    EL_TUBE_VERT_RIGHT,
+    EL_TUBE_HORIZ_UP,
+    EL_TUBE_HORIZ_DOWN,
+    EL_TUBE_LEFT_UP,
+    EL_TUBE_LEFT_DOWN,
+    EL_TUBE_RIGHT_UP,
+    EL_TUBE_RIGHT_DOWN
+  };
+  static int ep_tube_num = sizeof(ep_tube)/sizeof(int);
+
+  static long ep1_bit[] =
   {
     EP_BIT_AMOEBALIVE,
     EP_BIT_AMOEBOID,
@@ -1516,9 +1855,18 @@ void InitElementProperties()
     EP_BIT_PLAYER,
     EP_BIT_HAS_CONTENT,
     EP_BIT_EATABLE,
-    EP_BIT_SP_ELEMENT
+    EP_BIT_SP_ELEMENT,
+    EP_BIT_QUICK_GATE,
+    EP_BIT_OVER_PLAYER,
+    EP_BIT_ACTIVE_BOMB
   };
-  static int *ep_array[] =
+  static long ep2_bit[] =
+  {
+    EP_BIT_BELT,
+    EP_BIT_BELT_SWITCH,
+    EP_BIT_TUBE
+  };
+  static int *ep1_array[] =
   {
     ep_amoebalive,
     ep_amoeboid,
@@ -1547,9 +1895,18 @@ void InitElementProperties()
     ep_player,
     ep_has_content,
     ep_eatable,
-    ep_sp_element
+    ep_sp_element,
+    ep_quick_gate,
+    ep_over_player,
+    ep_active_bomb
   };
-  static int *ep_num[] =
+  static int *ep2_array[] =
+  {
+    ep_belt,
+    ep_belt_switch,
+    ep_tube
+  };
+  static int *ep1_num[] =
   {
     &ep_amoebalive_num,
     &ep_amoeboid_num,
@@ -1578,18 +1935,35 @@ void InitElementProperties()
     &ep_player_num,
     &ep_has_content_num,
     &ep_eatable_num,
-    &ep_sp_element_num
+    &ep_sp_element_num,
+    &ep_quick_gate_num,
+    &ep_over_player_num,
+    &ep_active_bomb_num
   };
-  static int num_properties = sizeof(ep_num)/sizeof(int *);
+  static int *ep2_num[] =
+  {
+    &ep_belt_num,
+    &ep_belt_switch_num,
+    &ep_tube_num
+  };
+  static int num_properties1 = sizeof(ep1_num)/sizeof(int *);
+  static int num_properties2 = sizeof(ep2_num)/sizeof(int *);
 
   for(i=0; i<MAX_ELEMENTS; i++)
-    Elementeigenschaften[i] = 0;
+  {
+    Elementeigenschaften1[i] = 0;
+    Elementeigenschaften2[i] = 0;
+  }
 
-  for(i=0; i<num_properties; i++)
-    for(j=0; j<*(ep_num[i]); j++)
-      Elementeigenschaften[(ep_array[i])[j]] |= ep_bit[i];
+  for(i=0; i<num_properties1; i++)
+    for(j=0; j<*(ep1_num[i]); j++)
+      Elementeigenschaften1[(ep1_array[i])[j]] |= ep1_bit[i];
+  for(i=0; i<num_properties2; i++)
+    for(j=0; j<*(ep2_num[i]); j++)
+      Elementeigenschaften2[(ep2_array[i])[j]] |= ep2_bit[i];
+
   for(i=EL_CHAR_START; i<EL_CHAR_END; i++)
-    Elementeigenschaften[i] |= (EP_BIT_CHAR | EP_BIT_INACTIVE);
+    Elementeigenschaften1[i] |= (EP_BIT_CHAR | EP_BIT_INACTIVE);
 }
 
 void CloseAllAndExit(int exit_value)

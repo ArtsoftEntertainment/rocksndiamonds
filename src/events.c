@@ -68,7 +68,8 @@ void EventLoop(void)
     if (game_status != PLAYING)
     {
       XSync(display, FALSE);
-      Delay(10);
+      if (!XPending(display))	/* delay only if no pending events */
+	Delay(10);
     }
 
     /* refresh window contents from drawing buffer, if needed */
@@ -299,13 +300,15 @@ void HandleFocusEvent(XFocusChangeEvent *event)
        would be far better) set for each X11 window individually.
        The effect would be keyboard auto repeat while playing the game
        (game_status == PLAYING), which is not desired.
-       To avoid this special case, we just wait 1/50 second before
+       To avoid this special case, we just wait 1/10 second before
        processing the 'FocusIn' event.
     */
 
-    Delay(20);
     if (game_status == PLAYING)
+    {
+      Delay(100);
       XAutoRepeatOff(display);
+    }
     if (old_joystick_status != -1)
       joystick_status = old_joystick_status;
   }
@@ -334,12 +337,6 @@ void HandleButton(int mx, int my, int button)
   {
     old_mx = mx;
     old_my = my;
-
-    /*
-    HandleVideoButtons(mx,my, button);
-    HandleSoundButtons(mx,my, button);
-    HandleGameButtons(mx,my, button);
-    */
   }
 
   HandleGadgets(mx, my, button);
@@ -359,7 +356,7 @@ void HandleButton(int mx, int my, int button)
       break;
 
     case HALLOFFAME:
-      HandleHallOfFame(button);
+      HandleHallOfFame(0,0, 0,0, button);
       break;
 
     case LEVELED:
@@ -480,7 +477,8 @@ void HandleKey(KeySym key, int key_status)
   if (key_status == KEY_RELEASED)
     return;
 
-  if (key == XK_Return && game_status == PLAYING && AllPlayersGone)
+  if ((key == XK_Return || key == XK_space) &&
+      game_status == PLAYING && AllPlayersGone)
   {
     CloseDoor(DOOR_CLOSE_1);
     game_status = MAINMENU;
@@ -491,16 +489,6 @@ void HandleKey(KeySym key, int key_status)
   /* allow quick escape to the main menu with the Escape key */
   if (key == XK_Escape && game_status != MAINMENU)
   {
-    if (game_status == LEVELED)
-    {
-      /* draw smaller door */
-      XCopyArea(display, pix[PIX_DOOR], drawto, gc,
-		DOOR_GFX_PAGEX7, 64,
-		108, 64,
-		EX - 4, EY - 12);
-      redraw_mask |= REDRAW_ALL;
-    }
-
     CloseDoor(DOOR_CLOSE_1 | DOOR_OPEN_2 | DOOR_NO_DELAY);
     game_status = MAINMENU;
     DrawMainMenu();
@@ -533,6 +521,7 @@ void HandleKey(KeySym key, int key_status)
       switch(key)
       {
 	case XK_Return:
+	case XK_space:
 	  if (game_status == MAINMENU)
 	    HandleMainMenu(0,0, 0,0, MB_MENU_CHOICE);
           else if (game_status == CHOOSELEVEL)
@@ -541,6 +530,16 @@ void HandleKey(KeySym key, int key_status)
 	    HandleSetupScreen(0,0, 0,0, MB_MENU_CHOICE);
 	  else if (game_status == SETUPINPUT)
 	    HandleSetupInputScreen(0,0, 0,0, MB_MENU_CHOICE);
+	  break;
+
+        case XK_Page_Up:
+          if (game_status == CHOOSELEVEL)
+            HandleChooseLevel(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
+	  break;
+
+        case XK_Page_Down:
+          if (game_status == CHOOSELEVEL)
+            HandleChooseLevel(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
 	  break;
 
 	default:
@@ -556,9 +555,18 @@ void HandleKey(KeySym key, int key_status)
       switch(key)
       {
 	case XK_Return:
+	case XK_space:
 	  game_status = MAINMENU;
 	  DrawMainMenu();
 	  BackToFront();
+	  break;
+
+        case XK_Page_Up:
+	  HandleHallOfFame(0,0, 0,-SCR_FIELDY, MB_MENU_MARK);
+	  break;
+
+        case XK_Page_Down:
+	  HandleHallOfFame(0,0, 0,SCR_FIELDY, MB_MENU_MARK);
 	  break;
 
 	default:
@@ -610,7 +618,7 @@ void HandleKey(KeySym key, int key_status)
 	  break;
 #endif
 
-#if 1
+#if 0
 	case XK_m:
 	  if (MoveSpeed == 8)
 	  {
@@ -773,7 +781,7 @@ void HandleJoystick()
     }
 
     case HALLOFFAME:
-      HandleHallOfFame(!newbutton);
+      HandleHallOfFame(0,0, dx,dy, !newbutton);
       break;
 
     case HELPSCREEN:

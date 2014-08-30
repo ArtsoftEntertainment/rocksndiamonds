@@ -26,14 +26,15 @@
 #define MAX_LINE_LEN		1000	/* maximal input line length */
 #define CHUNK_ID_LEN		4	/* IFF style chunk id length */
 #define LEVEL_HEADER_SIZE	80	/* size of level file header */
-#define LEVEL_HEADER_UNUSED	17	/* unused level header bytes */
+#define LEVEL_HEADER_UNUSED	15	/* unused level header bytes */
 #define TAPE_HEADER_SIZE	20	/* size of tape file header */
 #define TAPE_HEADER_UNUSED	7	/* unused tape header bytes */
-#define FILE_VERSION_1_0	10	/* old 1.0 file version */
-#define FILE_VERSION_1_2	12	/* actual file version */
+#define FILE_VERSION_1_0	10	/* 1.0 file version (old) */
+#define FILE_VERSION_1_2	12	/* 1.2 file version (still in use) */
+#define FILE_VERSION_1_4	14	/* 1.4 file version (new) */
 
 /* file identifier strings */
-#define LEVEL_COOKIE		"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_1.2"
+#define LEVEL_COOKIE		"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_1.4"
 #define SCORE_COOKIE		"ROCKSNDIAMONDS_SCORE_FILE_VERSION_1.2"
 #define TAPE_COOKIE		"ROCKSNDIAMONDS_TAPE_FILE_VERSION_1.2"
 #define SETUP_COOKIE		"ROCKSNDIAMONDS_SETUP_FILE_VERSION_1.2"
@@ -41,11 +42,13 @@
 #define LEVELINFO_COOKIE	"ROCKSNDIAMONDS_LEVELINFO_FILE_VERSION_1.2"
 /* old file identifiers for backward compatibility */
 #define LEVEL_COOKIE_10		"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_1.0"
+#define LEVEL_COOKIE_12		"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_1.2"
 #define TAPE_COOKIE_10		"ROCKSNDIAMONDS_LEVELREC_FILE_VERSION_1.0"
 
 /* file names and filename extensions */
 #ifndef MSDOS
 #define USERDATA_DIRECTORY	".rocksndiamonds"
+#define LEVELSETUP_DIRECTORY	"levelsetup"
 #define SETUP_FILENAME		"setup.conf"
 #define LEVELSETUP_FILENAME	"levelsetup.conf"
 #define LEVELINFO_FILENAME	"levelinfo.conf"
@@ -54,6 +57,7 @@
 #define SCOREFILE_EXTENSION	"score"
 #else
 #define USERDATA_DIRECTORY	"userdata"
+#define LEVELSETUP_DIRECTORY	"lvlsetup"
 #define SETUP_FILENAME		"setup.cnf"
 #define LEVELSETUP_FILENAME	"lvlsetup.cnf"
 #define LEVELINFO_FILENAME	"lvlinfo.cnf"
@@ -82,44 +86,106 @@
 #define LEVELCLASS_CONTRIBUTION_END	299
 #define LEVELCLASS_USER_START		300
 #define LEVELCLASS_USER_END		399
+#define LEVELCLASS_BD_START		400
+#define LEVELCLASS_BD_END		499
+#define LEVELCLASS_EM_START		500
+#define LEVELCLASS_EM_END		599
+#define LEVELCLASS_SP_START		600
+#define LEVELCLASS_SP_END		699
+#define LEVELCLASS_DX_START		700
+#define LEVELCLASS_DX_END		799
 
 #define LEVELCLASS_TUTORIAL		LEVELCLASS_TUTORIAL_START
 #define LEVELCLASS_CLASSICS		LEVELCLASS_CLASSICS_START
 #define LEVELCLASS_CONTRIBUTION		LEVELCLASS_CONTRIBUTION_START
 #define LEVELCLASS_USER			LEVELCLASS_USER_START
+#define LEVELCLASS_BD			LEVELCLASS_BD_START
+#define LEVELCLASS_EM			LEVELCLASS_EM_START
+#define LEVELCLASS_SP			LEVELCLASS_SP_START
+#define LEVELCLASS_DX			LEVELCLASS_DX_START
+
 #define LEVELCLASS_UNDEFINED		999
 
-#define IS_LEVELCLASS_TUTORIAL(n) \
-	(leveldir[n].sort_priority >= LEVELCLASS_TUTORIAL_START && \
-	 leveldir[n].sort_priority <= LEVELCLASS_TUTORIAL_END)
-#define IS_LEVELCLASS_CLASSICS(n) \
-	(leveldir[n].sort_priority >= LEVELCLASS_CLASSICS_START && \
-	 leveldir[n].sort_priority <= LEVELCLASS_CLASSICS_END)
-#define IS_LEVELCLASS_CONTRIBUTION(n) \
-	(leveldir[n].sort_priority >= LEVELCLASS_CONTRIBUTION_START && \
-	 leveldir[n].sort_priority <= LEVELCLASS_CONTRIBUTION_END)
-#define IS_LEVELCLASS_USER(n) \
-	(leveldir[n].sort_priority >= LEVELCLASS_USER_START && \
-	 leveldir[n].sort_priority <= LEVELCLASS_USER_END)
+#define NUM_LEVELCLASS_DESC	8
+char *levelclass_desc[NUM_LEVELCLASS_DESC] =
+{
+  "Tutorial Levels",
+  "Classic Originals",
+  "Contributions",
+  "Private Levels",
+  "Boulderdash",
+  "Emerald Mine",
+  "Supaplex",
+  "DX Boulderdash"
+};
+
+#define IS_LEVELCLASS_TUTORIAL(p) \
+	((p)->sort_priority >= LEVELCLASS_TUTORIAL_START && \
+	 (p)->sort_priority <= LEVELCLASS_TUTORIAL_END)
+#define IS_LEVELCLASS_CLASSICS(p) \
+	((p)->sort_priority >= LEVELCLASS_CLASSICS_START && \
+	 (p)->sort_priority <= LEVELCLASS_CLASSICS_END)
+#define IS_LEVELCLASS_CONTRIBUTION(p) \
+	((p)->sort_priority >= LEVELCLASS_CONTRIBUTION_START && \
+	 (p)->sort_priority <= LEVELCLASS_CONTRIBUTION_END)
+#define IS_LEVELCLASS_USER(p) \
+	((p)->sort_priority >= LEVELCLASS_USER_START && \
+	 (p)->sort_priority <= LEVELCLASS_USER_END)
+#define IS_LEVELCLASS_BD(p) \
+	((p)->sort_priority >= LEVELCLASS_BD_START && \
+	 (p)->sort_priority <= LEVELCLASS_BD_END)
+#define IS_LEVELCLASS_EM(p) \
+	((p)->sort_priority >= LEVELCLASS_EM_START && \
+	 (p)->sort_priority <= LEVELCLASS_EM_END)
+#define IS_LEVELCLASS_SP(p) \
+	((p)->sort_priority >= LEVELCLASS_SP_START && \
+	 (p)->sort_priority <= LEVELCLASS_SP_END)
+#define IS_LEVELCLASS_DX(p) \
+	((p)->sort_priority >= LEVELCLASS_DX_START && \
+	 (p)->sort_priority <= LEVELCLASS_DX_END)
 
 #define LEVELCLASS(n)	(IS_LEVELCLASS_TUTORIAL(n) ? LEVELCLASS_TUTORIAL : \
 			 IS_LEVELCLASS_CLASSICS(n) ? LEVELCLASS_CLASSICS : \
 			 IS_LEVELCLASS_CONTRIBUTION(n) ? LEVELCLASS_CONTRIBUTION : \
 			 IS_LEVELCLASS_USER(n) ? LEVELCLASS_USER : \
+			 IS_LEVELCLASS_BD(n) ? LEVELCLASS_BD : \
+			 IS_LEVELCLASS_EM(n) ? LEVELCLASS_EM : \
+			 IS_LEVELCLASS_SP(n) ? LEVELCLASS_SP : \
+			 IS_LEVELCLASS_DX(n) ? LEVELCLASS_DX : \
 			 LEVELCLASS_UNDEFINED)
 
-#define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ? FC_BLUE : \
-			 IS_LEVELCLASS_CLASSICS(n) ? FC_YELLOW : \
-			 IS_LEVELCLASS_CONTRIBUTION(n) ? FC_GREEN : \
-			 IS_LEVELCLASS_USER(n) ? FC_RED : FC_BLUE)
+#define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		FC_BLUE : \
+			 IS_LEVELCLASS_CLASSICS(n) ?		FC_RED : \
+			 IS_LEVELCLASS_BD(n) ?			FC_GREEN : \
+			 IS_LEVELCLASS_EM(n) ?			FC_YELLOW : \
+			 IS_LEVELCLASS_SP(n) ?			FC_GREEN : \
+			 IS_LEVELCLASS_DX(n) ?			FC_YELLOW : \
+			 IS_LEVELCLASS_CONTRIBUTION(n) ?	FC_GREEN : \
+			 IS_LEVELCLASS_USER(n) ?		FC_RED : \
+			 FC_BLUE)
+
+#define LEVELSORTING(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		0 : \
+			 IS_LEVELCLASS_CLASSICS(n) ?		1 : \
+			 IS_LEVELCLASS_BD(n) ?			2 : \
+			 IS_LEVELCLASS_EM(n) ?			3 : \
+			 IS_LEVELCLASS_SP(n) ?			4 : \
+			 IS_LEVELCLASS_DX(n) ?			5 : \
+			 IS_LEVELCLASS_CONTRIBUTION(n) ?	6 : \
+			 IS_LEVELCLASS_USER(n) ?		7 : \
+			 9)
+
+char *getLevelClassDescription(struct LevelDirInfo *ldi)
+{
+  int position = ldi->sort_priority / 100;
+
+  if (position >= 0 && position < NUM_LEVELCLASS_DESC)
+    return levelclass_desc[position];
+  else
+    return "Unknown Level Class";
+}
 
 static void SaveUserLevelInfo();		/* for 'InitUserLevelDir()' */
 static char *getSetupLine(char *, int);		/* for 'SaveUserLevelInfo()' */
-
-static char *getGlobalDataDir()
-{
-  return GAME_DIR;
-}
 
 char *getUserDataDir()
 {
@@ -178,7 +244,7 @@ static char *getTapeDir(char *level_subdir)
 static char *getScoreDir(char *level_subdir)
 {
   static char *score_dir = NULL;
-  char *data_dir = getGlobalDataDir();
+  char *data_dir = options.rw_base_directory;
   char *score_subdir = SCORES_DIRECTORY;
 
   if (score_dir)
@@ -192,6 +258,23 @@ static char *getScoreDir(char *level_subdir)
   return score_dir;
 }
 
+static char *getLevelSetupDir(char *level_subdir)
+{
+  static char *levelsetup_dir = NULL;
+  char *data_dir = getUserDataDir();
+  char *levelsetup_subdir = LEVELSETUP_DIRECTORY;
+
+  if (levelsetup_dir)
+    free(levelsetup_dir);
+
+  if (strlen(level_subdir) > 0)
+    levelsetup_dir = getPath3(data_dir, levelsetup_subdir, level_subdir);
+  else
+    levelsetup_dir = getPath2(data_dir, levelsetup_subdir);
+
+  return levelsetup_dir;
+}
+
 static char *getLevelFilename(int nr)
 {
   static char *filename = NULL;
@@ -201,10 +284,10 @@ static char *getLevelFilename(int nr)
     free(filename);
 
   sprintf(basename, "%03d.%s", nr, LEVELFILE_EXTENSION);
-  filename = getPath3((leveldir[leveldir_nr].user_defined ?
+  filename = getPath3((leveldir_current->user_defined ?
 		       getUserLevelDir("") :
 		       options.level_directory),
-		      leveldir[leveldir_nr].filename,
+		      leveldir_current->fullpath,
 		      basename);
 
   return filename;
@@ -219,7 +302,7 @@ static char *getTapeFilename(int nr)
     free(filename);
 
   sprintf(basename, "%03d.%s", nr, TAPEFILE_EXTENSION);
-  filename = getPath2(getTapeDir(leveldir[leveldir_nr].filename), basename);
+  filename = getPath2(getTapeDir(leveldir_current->filename), basename);
 
   return filename;
 }
@@ -233,7 +316,7 @@ static char *getScoreFilename(int nr)
     free(filename);
 
   sprintf(basename, "%03d.%s", nr, SCOREFILE_EXTENSION);
-  filename = getPath2(getScoreDir(leveldir[leveldir_nr].filename), basename);
+  filename = getPath2(getScoreDir(leveldir_current->filename), basename);
 
   return filename;
 }
@@ -275,25 +358,11 @@ static void InitUserLevelDirectory(char *level_subdir)
   }
 }
 
-static void getFileChunk(FILE *file, char *chunk_buffer, int *chunk_length)
+static void InitLevelSetupDirectory(char *level_subdir)
 {
-  fgets(chunk_buffer, CHUNK_ID_LEN + 1, file);
-
-  *chunk_length =
-    (fgetc(file) << 24) |
-    (fgetc(file) << 16) |
-    (fgetc(file) <<  8)  |
-    (fgetc(file) <<  0);
-}
-
-static void putFileChunk(FILE *file, char *chunk_name, int chunk_length)
-{
-  fputs(chunk_name, file);
-
-  fputc((chunk_length >> 24) & 0xff, file);
-  fputc((chunk_length >> 16) & 0xff, file);
-  fputc((chunk_length >>  8) & 0xff, file);
-  fputc((chunk_length >>  0) & 0xff, file);
+  createDirectory(getUserDataDir(), "user data");
+  createDirectory(getLevelSetupDir(""), "main level setup");
+  createDirectory(getLevelSetupDir(level_subdir), "level setup");
 }
 
 static void setLevelInfoToDefaults()
@@ -308,12 +377,15 @@ static void setLevelInfoToDefaults()
       Feld[x][y] = Ur[x][y] = EL_ERDREICH;
 
   level.time = 100;
-  level.edelsteine = 0;
-  level.tempo_amoebe = 10;
-  level.dauer_sieb = 10;
-  level.dauer_ablenk = 10;
-  level.amoebe_inhalt = EL_DIAMANT;
+  level.gems_needed = 0;
+  level.amoeba_speed = 10;
+  level.time_magic_wall = 10;
+  level.time_wheel = 10;
+  level.time_light = 10;
+  level.time_timegate = 10;
+  level.amoeba_content = EL_DIAMANT;
   level.double_speed = FALSE;
+  level.gravity = FALSE;
 
   for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
     level.name[i] = '\0';
@@ -326,11 +398,11 @@ static void setLevelInfoToDefaults()
   for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
     level.score[i] = 10;
 
-  MampferMax = 4;
-  for(i=0; i<8; i++)
+  level.num_yam_contents = STD_ELEMENT_CONTENTS;
+  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
     for(x=0; x<3; x++)
       for(y=0; y<3; y++)
-	level.mampfer_inhalt[i][x][y] = EL_FELSBROCKEN;
+	level.yam_content[i][x][y] = EL_FELSBROCKEN;
 
   Feld[0][0] = Ur[0][0] = EL_SPIELFIGUR;
   Feld[STD_LEV_FIELDX-1][STD_LEV_FIELDY-1] =
@@ -339,34 +411,45 @@ static void setLevelInfoToDefaults()
   BorderElement = EL_BETON;
 
   /* try to determine better author name than 'anonymous' */
-  if (strcmp(leveldir[leveldir_nr].author, ANONYMOUS_NAME) != 0)
+  if (strcmp(leveldir_current->author, ANONYMOUS_NAME) != 0)
   {
-    strncpy(level.author, leveldir[leveldir_nr].author, MAX_LEVEL_AUTHOR_LEN);
+    strncpy(level.author, leveldir_current->author, MAX_LEVEL_AUTHOR_LEN);
     level.author[MAX_LEVEL_AUTHOR_LEN] = '\0';
   }
   else
   {
-    switch (LEVELCLASS(leveldir_nr))
+    switch (LEVELCLASS(leveldir_current))
     {
       case LEVELCLASS_TUTORIAL:
-  	strcpy(level.author, PROGRAM_AUTHOR_STRING);
-  	break;
+	strcpy(level.author, PROGRAM_AUTHOR_STRING);
+	break;
 
       case LEVELCLASS_CONTRIBUTION:
-  	strncpy(level.author, leveldir[leveldir_nr].name,MAX_LEVEL_AUTHOR_LEN);
-  	level.author[MAX_LEVEL_AUTHOR_LEN] = '\0';
-  	break;
+	strncpy(level.author, leveldir_current->name,MAX_LEVEL_AUTHOR_LEN);
+	level.author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+	break;
 
       case LEVELCLASS_USER:
-  	strncpy(level.author, getRealName(), MAX_LEVEL_AUTHOR_LEN);
-  	level.author[MAX_LEVEL_AUTHOR_LEN] = '\0';
-  	break;
+	strncpy(level.author, getRealName(), MAX_LEVEL_AUTHOR_LEN);
+	level.author[MAX_LEVEL_AUTHOR_LEN] = '\0';
+	break;
 
       default:
-  	/* keep default value */
-  	break;
+	/* keep default value */
+	break;
     }
   }
+}
+
+static int checkLevelElement(int element)
+{
+  if (element >= EL_FIRST_RUNTIME_EL)
+  {
+    Error(ERR_WARN, "invalid level element %d", element);
+    element = EL_CHAR_FRAGE;
+  }
+
+  return element;
 }
 
 void LoadLevel(int level_nr)
@@ -375,7 +458,8 @@ void LoadLevel(int level_nr)
   char *filename = getLevelFilename(level_nr);
   char cookie[MAX_LINE_LEN];
   char chunk[CHUNK_ID_LEN + 1];
-  int file_version = FILE_VERSION_1_2;	/* last version of level files */
+  boolean encoding_16bit = FALSE;	/* default: maximal 256 elements */
+  int file_version = FILE_VERSION_1_4;	/* last version of level files */
   int chunk_length;
   FILE *file;
 
@@ -395,6 +479,8 @@ void LoadLevel(int level_nr)
 
   if (strcmp(cookie, LEVEL_COOKIE_10) == 0)	/* old 1.0 level format */
     file_version = FILE_VERSION_1_0;
+  else if (strcmp(cookie, LEVEL_COOKIE_12) == 0)/* 1.2 (8 bit) level format */
+    file_version = FILE_VERSION_1_2;
   else if (strcmp(cookie, LEVEL_COOKIE) != 0)	/* unknown level format */
   {
     Error(ERR_WARN, "wrong file identifier of level file '%s'", filename);
@@ -405,7 +491,7 @@ void LoadLevel(int level_nr)
   /* read chunk "HEAD" */
   if (file_version >= FILE_VERSION_1_2)
   {
-    getFileChunk(file, chunk, &chunk_length);
+    getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
     if (strcmp(chunk, "HEAD") || chunk_length != LEVEL_HEADER_SIZE)
     {
       Error(ERR_WARN, "wrong 'HEAD' chunk of level file '%s'", filename);
@@ -417,44 +503,46 @@ void LoadLevel(int level_nr)
   lev_fieldx = level.fieldx = fgetc(file);
   lev_fieldy = level.fieldy = fgetc(file);
 
-  level.time		= (fgetc(file)<<8) | fgetc(file);
-  level.edelsteine	= (fgetc(file)<<8) | fgetc(file);
+  level.time        = getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+  level.gems_needed = getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
 
   for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
-    level.name[i]	= fgetc(file);
+    level.name[i] = fgetc(file);
   level.name[MAX_LEVEL_NAME_LEN] = 0;
 
   for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
-    level.score[i]	= fgetc(file);
+    level.score[i] = fgetc(file);
 
-  MampferMax = 4;
-  for(i=0; i<8; i++)
+  level.num_yam_contents = STD_ELEMENT_CONTENTS;
+  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
   {
     for(y=0; y<3; y++)
     {
       for(x=0; x<3; x++)
       {
-	if (i < 4)
-	  level.mampfer_inhalt[i][x][y] = fgetc(file);
+	if (i < STD_ELEMENT_CONTENTS)
+	  level.yam_content[i][x][y] = checkLevelElement(fgetc(file));
 	else
-	  level.mampfer_inhalt[i][x][y] = EL_LEERRAUM;
+	  level.yam_content[i][x][y] = EL_LEERRAUM;
       }
     }
   }
 
-  level.tempo_amoebe	= fgetc(file);
-  level.dauer_sieb	= fgetc(file);
-  level.dauer_ablenk	= fgetc(file);
-  level.amoebe_inhalt	= fgetc(file);
+  level.amoeba_speed	= fgetc(file);
+  level.time_magic_wall	= fgetc(file);
+  level.time_wheel	= fgetc(file);
+  level.amoeba_content	= checkLevelElement(fgetc(file));
   level.double_speed	= (fgetc(file) == 1 ? TRUE : FALSE);
+  level.gravity		= (fgetc(file) == 1 ? TRUE : FALSE);
+
+  encoding_16bit	= (fgetc(file) == 1 ? TRUE : FALSE);
 
   for(i=0; i<LEVEL_HEADER_UNUSED; i++)	/* skip unused header bytes */
     fgetc(file);
 
-  /* read chunk "BODY" */
   if (file_version >= FILE_VERSION_1_2)
   {
-    getFileChunk(file, chunk, &chunk_length);
+    getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
 
     /* look for optional author chunk */
     if (strcmp(chunk, "AUTH") == 0 && chunk_length == MAX_LEVEL_AUTHOR_LEN)
@@ -463,23 +551,38 @@ void LoadLevel(int level_nr)
 	level.author[i]	= fgetc(file);
       level.author[MAX_LEVEL_NAME_LEN] = 0;
 
-      getFileChunk(file, chunk, &chunk_length);
+      getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
     }
 
     /* look for optional content chunk */
-    if (strcmp(chunk, "CONT") == 0 && chunk_length == 4 + 8 * 3 * 3)
+    if (strcmp(chunk, "CONT") == 0 &&
+	chunk_length == 4 + MAX_ELEMENT_CONTENTS * 3 * 3)
     {
       fgetc(file);
-      MampferMax = fgetc(file);
+      level.num_yam_contents = fgetc(file);
       fgetc(file);
       fgetc(file);
 
-      for(i=0; i<8; i++)
+      if (level.num_yam_contents < 1 ||
+	  level.num_yam_contents > MAX_ELEMENT_CONTENTS)
+      {
+#if DEBUG
+	printf("WARNING: num_yam_contents == %d (corrected)\n",
+	       level.num_yam_contents);
+#endif
+	level.num_yam_contents = STD_ELEMENT_CONTENTS;
+      }
+
+      for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
 	for(y=0; y<3; y++)
 	  for(x=0; x<3; x++)
-	    level.mampfer_inhalt[i][x][y] = fgetc(file);
+	    level.yam_content[i][x][y] =
+	      checkLevelElement(encoding_16bit ?
+				getFile16BitInteger(file,
+						    BYTE_ORDER_BIG_ENDIAN) :
+				fgetc(file));
 
-      getFileChunk(file, chunk, &chunk_length);
+      getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
     }
 
     /* next check body chunk identifier and chunk length */
@@ -499,24 +602,32 @@ void LoadLevel(int level_nr)
   /* now read in the valid level fields from level file */
   for(y=0; y<lev_fieldy; y++)
     for(x=0; x<lev_fieldx; x++)
-      Feld[x][y] = Ur[x][y] = fgetc(file);
+      Feld[x][y] = Ur[x][y] =
+	checkLevelElement(encoding_16bit ?
+			  getFile16BitInteger(file, BYTE_ORDER_BIG_ENDIAN) :
+			  fgetc(file));
 
   fclose(file);
 
   /* player was faster than monsters in pre-1.0 levels */
   if (file_version == FILE_VERSION_1_0 &&
-      IS_LEVELCLASS_CONTRIBUTION(leveldir_nr))
+      IS_LEVELCLASS_CONTRIBUTION(leveldir_current))
   {
     Error(ERR_WARN, "level file '%s' has version number 1.0", filename);
     Error(ERR_WARN, "using high speed movement for player");
     level.double_speed = TRUE;
   }
+
+  /* determine border element for this level */
+  SetBorderElement();
 }
 
 void SaveLevel(int level_nr)
 {
   int i, x, y;
   char *filename = getLevelFilename(level_nr);
+  boolean encoding_16bit = FALSE;	/* default: maximal 256 elements */
+  char *oldest_possible_cookie;
   FILE *file;
 
   if (!(file = fopen(filename, "w")))
@@ -525,57 +636,82 @@ void SaveLevel(int level_nr)
     return;
   }
 
-  fputs(LEVEL_COOKIE, file);		/* file identifier */
+  /* check yam content for 16-bit elements */
+  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
+    for(y=0; y<3; y++)
+      for(x=0; x<3; x++)
+	if (level.yam_content[i][x][y] > 255)
+	  encoding_16bit = TRUE;
+
+  /* check level field for 16-bit elements */
+  for(y=0; y<lev_fieldy; y++) 
+    for(x=0; x<lev_fieldx; x++) 
+      if (Ur[x][y] > 255)
+	encoding_16bit = TRUE;
+
+  oldest_possible_cookie = (encoding_16bit ? LEVEL_COOKIE : LEVEL_COOKIE_12);
+
+  fputs(oldest_possible_cookie, file);		/* file identifier */
   fputc('\n', file);
 
-  putFileChunk(file, "HEAD", LEVEL_HEADER_SIZE);
+  putFileChunk(file, "HEAD", LEVEL_HEADER_SIZE, BYTE_ORDER_BIG_ENDIAN);
 
   fputc(level.fieldx, file);
   fputc(level.fieldy, file);
-  fputc(level.time / 256, file);
-  fputc(level.time % 256, file);
-  fputc(level.edelsteine / 256, file);
-  fputc(level.edelsteine % 256, file);
+
+  putFile16BitInteger(file, level.time, BYTE_ORDER_BIG_ENDIAN);
+  putFile16BitInteger(file, level.gems_needed, BYTE_ORDER_BIG_ENDIAN);
 
   for(i=0; i<MAX_LEVEL_NAME_LEN; i++)
     fputc(level.name[i], file);
   for(i=0; i<LEVEL_SCORE_ELEMENTS; i++)
     fputc(level.score[i], file);
-  for(i=0; i<4; i++)
+  for(i=0; i<STD_ELEMENT_CONTENTS; i++)
     for(y=0; y<3; y++)
       for(x=0; x<3; x++)
-	fputc(level.mampfer_inhalt[i][x][y], file);
-  fputc(level.tempo_amoebe, file);
-  fputc(level.dauer_sieb, file);
-  fputc(level.dauer_ablenk, file);
-  fputc(level.amoebe_inhalt, file);
+	fputc(encoding_16bit ? EL_LEERRAUM : level.yam_content[i][x][y], file);
+  fputc(level.amoeba_speed, file);
+  fputc(level.time_magic_wall, file);
+  fputc(level.time_wheel, file);
+  fputc(level.amoeba_content, file);
   fputc((level.double_speed ? 1 : 0), file);
+  fputc((level.gravity ? 1 : 0), file);
+
+  fputc((encoding_16bit ? 1 : 0), file);
 
   for(i=0; i<LEVEL_HEADER_UNUSED; i++)	/* set unused header bytes to zero */
     fputc(0, file);
 
-  putFileChunk(file, "AUTH", MAX_LEVEL_AUTHOR_LEN);
+  putFileChunk(file, "AUTH", MAX_LEVEL_AUTHOR_LEN, BYTE_ORDER_BIG_ENDIAN);
 
   for(i=0; i<MAX_LEVEL_AUTHOR_LEN; i++)
     fputc(level.author[i], file);
 
-  putFileChunk(file, "CONT", 4 + 8 * 3 * 3);
+  putFileChunk(file, "CONT", 4 + MAX_ELEMENT_CONTENTS * 3 * 3,
+	       BYTE_ORDER_BIG_ENDIAN);
 
   fputc(EL_MAMPFER, file);
-  fputc(MampferMax, file);
+  fputc(level.num_yam_contents, file);
   fputc(0, file);
   fputc(0, file);
 
-  for(i=0; i<8; i++)
+  for(i=0; i<MAX_ELEMENT_CONTENTS; i++)
     for(y=0; y<3; y++)
       for(x=0; x<3; x++)
-	fputc(level.mampfer_inhalt[i][x][y], file);
+	if (encoding_16bit)
+	  putFile16BitInteger(file, level.yam_content[i][x][y],
+			      BYTE_ORDER_BIG_ENDIAN);
+	else
+	  fputc(level.yam_content[i][x][y], file);
 
-  putFileChunk(file, "BODY", lev_fieldx * lev_fieldy);
+  putFileChunk(file, "BODY", lev_fieldx * lev_fieldy, BYTE_ORDER_BIG_ENDIAN);
 
   for(y=0; y<lev_fieldy; y++) 
     for(x=0; x<lev_fieldx; x++) 
-      fputc(Ur[x][y], file);
+      if (encoding_16bit)
+	putFile16BitInteger(file, Ur[x][y], BYTE_ORDER_BIG_ENDIAN);
+      else
+	fputc(Ur[x][y], file);
 
   fclose(file);
 
@@ -624,11 +760,7 @@ void LoadTape(int level_nr)
   /* read chunk "HEAD" */
   if (file_version >= FILE_VERSION_1_2)
   {
-    /* first check header chunk identifier and chunk length */
-    fgets(chunk, CHUNK_ID_LEN + 1, file);
-    chunk_length =
-      (fgetc(file)<<24) | (fgetc(file)<<16) | (fgetc(file)<<8) | fgetc(file);
-
+    getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
     if (strcmp(chunk, "HEAD") || chunk_length != TAPE_HEADER_SIZE)
     {
       Error(ERR_WARN, "wrong 'HEAD' chunk of tape file '%s'", filename);
@@ -637,12 +769,9 @@ void LoadTape(int level_nr)
     }
   }
 
-  tape.random_seed =
-    (fgetc(file)<<24) | (fgetc(file)<<16) | (fgetc(file)<<8) | fgetc(file);
-  tape.date =
-    (fgetc(file)<<24) | (fgetc(file)<<16) | (fgetc(file)<<8) | fgetc(file);
-  tape.length =
-    (fgetc(file)<<24) | (fgetc(file)<<16) | (fgetc(file)<<8) | fgetc(file);
+  tape.random_seed = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+  tape.date        = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
+  tape.length      = getFile32BitInteger(file, BYTE_ORDER_BIG_ENDIAN);
 
   /* read header fields that are new since version 1.2 */
   if (file_version >= FILE_VERSION_1_2)
@@ -677,10 +806,7 @@ void LoadTape(int level_nr)
   /* read chunk "BODY" */
   if (file_version >= FILE_VERSION_1_2)
   {
-    /* next check body chunk identifier and chunk length */
-    fgets(chunk, CHUNK_ID_LEN + 1, file);
-    chunk_length =
-      (fgetc(file)<<24) | (fgetc(file)<<16) | (fgetc(file)<<8) | fgetc(file);
+    getFileChunk(file, chunk, &chunk_length, BYTE_ORDER_BIG_ENDIAN);
     if (strcmp(chunk, "BODY") ||
 	chunk_length != (num_participating_players + 1) * tape.length)
     {
@@ -753,9 +879,8 @@ void SaveTape(int level_nr)
   boolean new_tape = TRUE;
   byte store_participating_players;
   int num_participating_players;
-  int chunk_length;
 
-  InitTapeDirectory(leveldir[leveldir_nr].filename);
+  InitTapeDirectory(leveldir_current->filename);
 
   /* if a tape still exists, ask to overwrite it */
   if (access(filename, F_OK) == 0)
@@ -786,42 +911,19 @@ void SaveTape(int level_nr)
   fputs(TAPE_COOKIE, file);		/* file identifier */
   fputc('\n', file);
 
-  fputs("HEAD", file);			/* chunk identifier for file header */
+  putFileChunk(file, "HEAD", TAPE_HEADER_SIZE, BYTE_ORDER_BIG_ENDIAN);
 
-  chunk_length = TAPE_HEADER_SIZE;
-
-  fputc((chunk_length >>  24) & 0xff, file);
-  fputc((chunk_length >>  16) & 0xff, file);
-  fputc((chunk_length >>   8) & 0xff, file);
-  fputc((chunk_length >>   0) & 0xff, file);
-
-  fputc((tape.random_seed >> 24) & 0xff, file);
-  fputc((tape.random_seed >> 16) & 0xff, file);
-  fputc((tape.random_seed >>  8) & 0xff, file);
-  fputc((tape.random_seed >>  0) & 0xff, file);
-
-  fputc((tape.date >>  24) & 0xff, file);
-  fputc((tape.date >>  16) & 0xff, file);
-  fputc((tape.date >>   8) & 0xff, file);
-  fputc((tape.date >>   0) & 0xff, file);
-
-  fputc((tape.length >>  24) & 0xff, file);
-  fputc((tape.length >>  16) & 0xff, file);
-  fputc((tape.length >>   8) & 0xff, file);
-  fputc((tape.length >>   0) & 0xff, file);
+  putFile32BitInteger(file, tape.random_seed, BYTE_ORDER_BIG_ENDIAN);
+  putFile32BitInteger(file, tape.date, BYTE_ORDER_BIG_ENDIAN);
+  putFile32BitInteger(file, tape.length, BYTE_ORDER_BIG_ENDIAN);
 
   fputc(store_participating_players, file);
 
   for(i=0; i<TAPE_HEADER_UNUSED; i++)	/* set unused header bytes to zero */
     fputc(0, file);
 
-  fputs("BODY", file);			/* chunk identifier for file body */
-  chunk_length = (num_participating_players + 1) * tape.length;
-
-  fputc((chunk_length >>  24) & 0xff, file);
-  fputc((chunk_length >>  16) & 0xff, file);
-  fputc((chunk_length >>   8) & 0xff, file);
-  fputc((chunk_length >>   0) & 0xff, file);
+  putFileChunk(file, "BODY", (num_participating_players + 1) * tape.length,
+	       BYTE_ORDER_BIG_ENDIAN);
 
   for(i=0; i<tape.length; i++)
   {
@@ -880,15 +982,15 @@ void LoadScore(int level_nr)
     fscanf(file, "%d", &highscore[i].Score);
     fgets(line, MAX_LINE_LEN, file);
 
-    if (line[strlen(line)-1] == '\n')
-      line[strlen(line)-1] = '\0';
+    if (line[strlen(line) - 1] == '\n')
+      line[strlen(line) - 1] = '\0';
 
     for (line_ptr = line; *line_ptr; line_ptr++)
     {
       if (*line_ptr != ' ' && *line_ptr != '\t' && *line_ptr != '\0')
       {
-	strncpy(highscore[i].Name, line_ptr, MAX_NAMELEN - 1);
-	highscore[i].Name[MAX_NAMELEN - 1] = '\0';
+	strncpy(highscore[i].Name, line_ptr, MAX_PLAYER_NAME_LEN);
+	highscore[i].Name[MAX_PLAYER_NAME_LEN] = '\0';
 	break;
       }
     }
@@ -903,7 +1005,7 @@ void SaveScore(int level_nr)
   char *filename = getScoreFilename(level_nr);
   FILE *file;
 
-  InitScoreDirectory(leveldir[leveldir_nr].filename);
+  InitScoreDirectory(leveldir_current->filename);
 
   if (!(file = fopen(filename, "w")))
   {
@@ -923,6 +1025,8 @@ void SaveScore(int level_nr)
 
 #define TOKEN_STR_FILE_IDENTIFIER	"file_identifier"
 #define TOKEN_STR_LAST_LEVEL_SERIES	"last_level_series"
+#define TOKEN_STR_LAST_PLAYED_LEVEL	"last_played_level"
+#define TOKEN_STR_HANDICAP_LEVEL	"handicap_level"
 #define TOKEN_STR_PLAYER_PREFIX		"player_"
 
 #define TOKEN_VALUE_POSITION		30
@@ -933,14 +1037,20 @@ void SaveScore(int level_nr)
 #define SETUP_TOKEN_SOUND_LOOPS		2
 #define SETUP_TOKEN_SOUND_MUSIC		3
 #define SETUP_TOKEN_SOUND_SIMPLE	4
+
+#if 0
 #define SETUP_TOKEN_TOONS		5
 #define SETUP_TOKEN_DOUBLE_BUFFERING	6
-#define SETUP_TOKEN_SCROLL_DELAY	7
-#define SETUP_TOKEN_SOFT_SCROLLING	8
-#define SETUP_TOKEN_FADING		9
-#define SETUP_TOKEN_AUTORECORD		10
-#define SETUP_TOKEN_QUICK_DOORS		11
-#define SETUP_TOKEN_TEAM_MODE		12
+#endif
+
+#define SETUP_TOKEN_SCROLL_DELAY	5
+#define SETUP_TOKEN_SOFT_SCROLLING	6
+#define SETUP_TOKEN_FADING		7
+#define SETUP_TOKEN_AUTORECORD		8
+#define SETUP_TOKEN_QUICK_DOORS		9
+#define SETUP_TOKEN_TEAM_MODE		10
+#define SETUP_TOKEN_HANDICAP		11
+#define SETUP_TOKEN_TIME_LIMIT		12
 
 /* player setup */
 #define SETUP_TOKEN_USE_JOYSTICK	13
@@ -962,14 +1072,18 @@ void SaveScore(int level_nr)
 
 /* level directory info */
 #define LEVELINFO_TOKEN_NAME		29
-#define LEVELINFO_TOKEN_AUTHOR		30
-#define LEVELINFO_TOKEN_LEVELS		31
-#define LEVELINFO_TOKEN_FIRST_LEVEL	32
-#define LEVELINFO_TOKEN_SORT_PRIORITY	33
-#define LEVELINFO_TOKEN_READONLY	34
+#define LEVELINFO_TOKEN_NAME_SHORT	30
+#define LEVELINFO_TOKEN_NAME_SORTING	31
+#define LEVELINFO_TOKEN_AUTHOR		32
+#define LEVELINFO_TOKEN_IMPORTED_FROM	33
+#define LEVELINFO_TOKEN_LEVELS		34
+#define LEVELINFO_TOKEN_FIRST_LEVEL	35
+#define LEVELINFO_TOKEN_SORT_PRIORITY	36
+#define LEVELINFO_TOKEN_LEVEL_GROUP	37
+#define LEVELINFO_TOKEN_READONLY	38
 
 #define FIRST_GLOBAL_SETUP_TOKEN	SETUP_TOKEN_PLAYER_NAME
-#define LAST_GLOBAL_SETUP_TOKEN		SETUP_TOKEN_TEAM_MODE
+#define LAST_GLOBAL_SETUP_TOKEN		SETUP_TOKEN_TIME_LIMIT
 
 #define FIRST_PLAYER_SETUP_TOKEN	SETUP_TOKEN_USE_JOYSTICK
 #define LAST_PLAYER_SETUP_TOKEN		SETUP_TOKEN_KEY_BOMB
@@ -999,14 +1113,20 @@ static struct
   { TYPE_SWITCH,  &si.sound_loops,	"repeating_sound_loops"		},
   { TYPE_SWITCH,  &si.sound_music,	"background_music"		},
   { TYPE_SWITCH,  &si.sound_simple,	"simple_sound_effects"		},
+
+#if 0
   { TYPE_SWITCH,  &si.toons,		"toons"				},
   { TYPE_SWITCH,  &si.double_buffering,	"double_buffering"		},
+#endif
+
   { TYPE_SWITCH,  &si.scroll_delay,	"scroll_delay"			},
   { TYPE_SWITCH,  &si.soft_scrolling,	"soft_scrolling"		},
   { TYPE_SWITCH,  &si.fading,		"screen_fading"			},
   { TYPE_SWITCH,  &si.autorecord,	"automatic_tape_recording"	},
   { TYPE_SWITCH,  &si.quick_doors,	"quick_doors"			},
   { TYPE_SWITCH,  &si.team_mode,	"team_mode"			},
+  { TYPE_SWITCH,  &si.handicap,		"handicap"			},
+  { TYPE_SWITCH,  &si.time_limit,	"time_limit"			},
 
   /* player setup */
   { TYPE_BOOLEAN, &sii.use_joystick,	".use_joystick"			},
@@ -1028,10 +1148,14 @@ static struct
 
   /* level directory info */
   { TYPE_STRING,  &ldi.name,		"name"				},
+  { TYPE_STRING,  &ldi.name_short,	"name_short"			},
+  { TYPE_STRING,  &ldi.name_sorting,	"name_sorting"			},
   { TYPE_STRING,  &ldi.author,		"author"			},
+  { TYPE_STRING,  &ldi.imported_from,	"imported_from"			},
   { TYPE_INTEGER, &ldi.levels,		"levels"			},
   { TYPE_INTEGER, &ldi.first_level,	"first_level"			},
   { TYPE_INTEGER, &ldi.sort_priority,	"sort_priority"			},
+  { TYPE_BOOLEAN, &ldi.level_group,	"level_group"			},
   { TYPE_BOOLEAN, &ldi.readonly,	"readonly"			}
 };
 
@@ -1292,12 +1416,67 @@ static void checkSetupFileListIdentifier(struct SetupFileList *setup_file_list,
 
 static void setLevelDirInfoToDefaults(struct LevelDirInfo *ldi)
 {
+  ldi->filename = NULL;
+  ldi->fullpath = NULL;
+  ldi->basepath = NULL;
   ldi->name = getStringCopy(ANONYMOUS_NAME);
+  ldi->name_short = NULL;
+  ldi->name_sorting = NULL;
   ldi->author = getStringCopy(ANONYMOUS_NAME);
+  ldi->imported_from = NULL;
   ldi->levels = 0;
   ldi->first_level = 0;
+  ldi->last_level = 0;
   ldi->sort_priority = LEVELCLASS_UNDEFINED;	/* default: least priority */
+  ldi->level_group = FALSE;
+  ldi->parent_link = FALSE;
+  ldi->user_defined = FALSE;
   ldi->readonly = TRUE;
+  ldi->color = 0;
+  ldi->class_desc = NULL;
+  ldi->handicap_level = 0;
+  ldi->cl_first = -1;
+  ldi->cl_cursor = -1;
+
+  ldi->node_parent = NULL;
+  ldi->node_group = NULL;
+  ldi->next = NULL;
+}
+
+static void setLevelDirInfoToDefaultsFromParent(struct LevelDirInfo *ldi,
+						struct LevelDirInfo *parent)
+{
+  if (parent == NULL)
+  {
+    setLevelDirInfoToDefaults(ldi);
+    return;
+  }
+
+  /* first copy all values from the parent structure ... */
+  *ldi = *parent;
+
+  /* ... then set all fields to default that cannot be inherited from parent.
+     This is especially important for all those fields that can be set from
+     the 'levelinfo.conf' config file, because the function 'setSetupInfo()'
+     calls 'free()' for all already set token values which requires that no
+     other structure's pointer may point to them!
+  */
+
+  ldi->filename = NULL;
+  ldi->fullpath = NULL;
+  ldi->basepath = NULL;
+  ldi->name = getStringCopy(ANONYMOUS_NAME);
+  ldi->name_short = NULL;
+  ldi->name_sorting = NULL;
+  ldi->author = getStringCopy(parent->author);
+  ldi->imported_from = getStringCopy(parent->imported_from);
+
+  ldi->level_group = FALSE;
+  ldi->parent_link = FALSE;
+
+  ldi->node_parent = parent;
+  ldi->node_group = NULL;
+  ldi->next = NULL;
 }
 
 static void setSetupInfoToDefaults(struct SetupInfo *si)
@@ -1318,6 +1497,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->fading = FALSE;
   si->autorecord = TRUE;
   si->quick_doors = FALSE;
+  si->team_mode = FALSE;
+  si->handicap = TRUE;
+  si->time_limit = TRUE;
 
   for (i=0; i<MAX_PLAYERS; i++)
   {
@@ -1407,163 +1589,196 @@ static void decodeSetupFileList(struct SetupFileList *setup_file_list)
   }
 }
 
-int getLevelSeriesNrFromLevelSeriesName(char *level_series_name)
-{
-  int i;
-
-  if (!level_series_name)
-    return 0;
-
-  for (i=0; i<num_leveldirs; i++)
-    if (strcmp(level_series_name, leveldir[i].filename) == 0)
-      return i;
-
-  return 0;
-}
-
-int getLastPlayedLevelOfLevelSeries(char *level_series_name)
-{
-  char *token_value;
-  int level_series_nr = getLevelSeriesNrFromLevelSeriesName(level_series_name);
-  int last_level_nr = leveldir[level_series_nr].first_level;
-
-  if (!level_series_name)
-    return 0;
-
-  token_value = getTokenValue(level_setup_list, level_series_name);
-
-  if (token_value)
-  {
-    last_level_nr = atoi(token_value);
-
-    if (last_level_nr < leveldir[level_series_nr].first_level)
-      last_level_nr = leveldir[level_series_nr].first_level;
-    if (last_level_nr > leveldir[level_series_nr].last_level)
-      last_level_nr = leveldir[level_series_nr].last_level;
-  }
-
-  return last_level_nr;
-}
-
 static int compareLevelDirInfoEntries(const void *object1, const void *object2)
 {
-  const struct LevelDirInfo *entry1 = object1;
-  const struct LevelDirInfo *entry2 = object2;
+  const struct LevelDirInfo *entry1 = *((struct LevelDirInfo **)object1);
+  const struct LevelDirInfo *entry2 = *((struct LevelDirInfo **)object2);
   int compare_result;
 
-  if (entry1->sort_priority != entry2->sort_priority)
-    compare_result = entry1->sort_priority - entry2->sort_priority;
-  else
+  if (entry1->parent_link || entry2->parent_link)
+    compare_result = (entry1->parent_link ? -1 : +1);
+  else if (entry1->sort_priority == entry2->sort_priority)
   {
-    char *name1 = getStringToLower(entry1->name);
-    char *name2 = getStringToLower(entry2->name);
+    char *name1 = getStringToLower(entry1->name_sorting);
+    char *name2 = getStringToLower(entry2->name_sorting);
 
     compare_result = strcmp(name1, name2);
 
     free(name1);
     free(name2);
   }
+  else if (LEVELSORTING(entry1) == LEVELSORTING(entry2))
+    compare_result = entry1->sort_priority - entry2->sort_priority;
+  else
+    compare_result = LEVELSORTING(entry1) - LEVELSORTING(entry2);
 
   return compare_result;
 }
 
-static int LoadLevelInfoFromLevelDir(char *level_directory, int start_entry)
+static void createParentLevelDirNode(struct LevelDirInfo *node_parent)
+{
+  struct LevelDirInfo *leveldir_new = newLevelDirInfo();
+
+  setLevelDirInfoToDefaults(leveldir_new);
+
+  leveldir_new->node_parent = node_parent;
+  leveldir_new->parent_link = TRUE;
+
+  leveldir_new->name = ".. (parent directory)";
+  leveldir_new->name_short = getStringCopy(leveldir_new->name);
+  leveldir_new->name_sorting = getStringCopy(leveldir_new->name);
+
+  leveldir_new->filename = "..";
+  leveldir_new->fullpath = getStringCopy(node_parent->fullpath);
+
+  leveldir_new->sort_priority = node_parent->sort_priority;
+  leveldir_new->class_desc = getLevelClassDescription(leveldir_new);
+
+  pushLevelDirInfo(&node_parent->node_group, leveldir_new);
+}
+
+static void LoadLevelInfoFromLevelDir(struct LevelDirInfo **node_first,
+				      struct LevelDirInfo *node_parent,
+				      char *level_directory)
 {
   DIR *dir;
-  struct stat file_status;
-  char *directory = NULL;
-  char *filename = NULL;
-  struct SetupFileList *setup_file_list = NULL;
   struct dirent *dir_entry;
-  int i, current_entry = start_entry;
+  boolean valid_entry_found = FALSE;
 
   if ((dir = opendir(level_directory)) == NULL)
   {
     Error(ERR_WARN, "cannot read level directory '%s'", level_directory);
-    return current_entry;
+    return;
   }
 
-  while (current_entry < MAX_LEVDIR_ENTRIES)
+  while ((dir_entry = readdir(dir)) != NULL)	/* loop until last dir entry */
   {
-    if ((dir_entry = readdir(dir)) == NULL)	/* last directory entry */
-      break;
+    struct SetupFileList *setup_file_list = NULL;
+    struct stat file_status;
+    char *directory_name = dir_entry->d_name;
+    char *directory_path = getPath2(level_directory, directory_name);
+    char *filename = NULL;
 
     /* skip entries for current and parent directory */
-    if (strcmp(dir_entry->d_name, ".")  == 0 ||
-	strcmp(dir_entry->d_name, "..") == 0)
-      continue;
-
-    /* find out if directory entry is itself a directory */
-    directory = getPath2(level_directory, dir_entry->d_name);
-    if (stat(directory, &file_status) != 0 ||		/* cannot stat file */
-	(file_status.st_mode & S_IFMT) != S_IFDIR)	/* not a directory */
+    if (strcmp(directory_name, ".")  == 0 ||
+	strcmp(directory_name, "..") == 0)
     {
-      free(directory);
+      free(directory_path);
       continue;
     }
 
-    filename = getPath2(directory, LEVELINFO_FILENAME);
+    /* find out if directory entry is itself a directory */
+    if (stat(directory_path, &file_status) != 0 ||	/* cannot stat file */
+	(file_status.st_mode & S_IFMT) != S_IFDIR)	/* not a directory */
+    {
+      free(directory_path);
+      continue;
+    }
+
+    filename = getPath2(directory_path, LEVELINFO_FILENAME);
     setup_file_list = loadSetupFileList(filename);
 
     if (setup_file_list)
     {
-      checkSetupFileListIdentifier(setup_file_list, LEVELINFO_COOKIE);
-      setLevelDirInfoToDefaults(&leveldir[current_entry]);
+      struct LevelDirInfo *leveldir_new = newLevelDirInfo();
+      int i;
 
-      ldi = leveldir[current_entry];
+      checkSetupFileListIdentifier(setup_file_list, LEVELINFO_COOKIE);
+      setLevelDirInfoToDefaultsFromParent(leveldir_new, node_parent);
+
+      /* set all structure fields according to the token/value pairs */
+      ldi = *leveldir_new;
       for (i=FIRST_LEVELINFO_TOKEN; i<=LAST_LEVELINFO_TOKEN; i++)
 	setSetupInfo(i, getTokenValue(setup_file_list, token_info[i].text));
-      leveldir[current_entry] = ldi;
+      *leveldir_new = ldi;
 
-      leveldir[current_entry].filename = getStringCopy(dir_entry->d_name);
-      leveldir[current_entry].last_level =
-	leveldir[current_entry].first_level +
-	leveldir[current_entry].levels - 1;
-      leveldir[current_entry].user_defined =
-	(level_directory == options.level_directory ? FALSE : TRUE);
-      leveldir[current_entry].color = LEVELCOLOR(current_entry);
+      DrawInitText(leveldir_new->name, 150, FC_YELLOW);
+
+      if (leveldir_new->name_short == NULL)
+	leveldir_new->name_short = getStringCopy(leveldir_new->name);
+
+      if (leveldir_new->name_sorting == NULL)
+	leveldir_new->name_sorting = getStringCopy(leveldir_new->name);
+
+      leveldir_new->filename = getStringCopy(directory_name);
+
+      if (node_parent == NULL)		/* top level group */
+      {
+	leveldir_new->basepath = level_directory;
+	leveldir_new->fullpath = leveldir_new->filename;
+      }
+      else				/* sub level group */
+      {
+	leveldir_new->basepath = node_parent->basepath;
+	leveldir_new->fullpath = getPath2(node_parent->fullpath,
+					  directory_name);
+      }
+
+      if (leveldir_new->levels < 1)
+	leveldir_new->levels = 1;
+
+      leveldir_new->last_level =
+	leveldir_new->first_level + leveldir_new->levels - 1;
+
+      leveldir_new->user_defined =
+	(leveldir_new->basepath == options.level_directory ? FALSE : TRUE);
+
+      leveldir_new->color = LEVELCOLOR(leveldir_new);
+      leveldir_new->class_desc = getLevelClassDescription(leveldir_new);
+
+      leveldir_new->handicap_level =	/* set handicap to default value */
+	(leveldir_new->user_defined ?
+	 leveldir_new->last_level :
+	 leveldir_new->first_level);
+
+      pushLevelDirInfo(node_first, leveldir_new);
 
       freeSetupFileList(setup_file_list);
-      current_entry++;
+      valid_entry_found = TRUE;
+
+      if (leveldir_new->level_group)
+      {
+	/* create node to link back to current level directory */
+	createParentLevelDirNode(leveldir_new);
+
+	/* step into sub-directory and look for more level series */
+	LoadLevelInfoFromLevelDir(&leveldir_new->node_group,
+				  leveldir_new, directory_path);
+      }
     }
     else
-      Error(ERR_WARN, "ignoring level directory '%s'", directory);
+      Error(ERR_WARN, "ignoring level directory '%s'", directory_path);
 
-    free(directory);
+    free(directory_path);
     free(filename);
   }
 
-  if (current_entry == MAX_LEVDIR_ENTRIES)
-    Error(ERR_WARN, "using %d level directories -- ignoring the rest",
-	  current_entry);
-
   closedir(dir);
 
-  if (current_entry == start_entry)
+  if (!valid_entry_found)
     Error(ERR_WARN, "cannot find any valid level series in directory '%s'",
 	  level_directory);
-
-  return current_entry;
 }
 
 void LoadLevelInfo()
 {
   InitUserLevelDirectory(getLoginName());
 
-  num_leveldirs = 0;
-  leveldir_nr = 0;
+  DrawInitText("Loading level series:", 120, FC_GREEN);
 
-  num_leveldirs = LoadLevelInfoFromLevelDir(options.level_directory,
-					    num_leveldirs);
-  num_leveldirs = LoadLevelInfoFromLevelDir(getUserLevelDir(""),
-					    num_leveldirs);
+  LoadLevelInfoFromLevelDir(&leveldir_first, NULL, options.level_directory);
+  LoadLevelInfoFromLevelDir(&leveldir_first, NULL, getUserLevelDir(""));
 
-  if (num_leveldirs == 0)
+  leveldir_current = getFirstValidLevelSeries(leveldir_first);
+
+  if (leveldir_first == NULL)
     Error(ERR_EXIT, "cannot find any valid level series in any directory");
 
-  if (num_leveldirs > 1)
-    qsort(leveldir, num_leveldirs, sizeof(struct LevelDirInfo),
-	  compareLevelDirInfoEntries);
+  sortLevelDirInfo(&leveldir_first, compareLevelDirInfoEntries);
+
+#if 0
+  dumpLevelDirInfo(leveldir_first, 0);
+#endif
 }
 
 static void SaveUserLevelInfo()
@@ -1595,7 +1810,10 @@ static void SaveUserLevelInfo()
 	  getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER, LEVELINFO_COOKIE));
 
   for (i=FIRST_LEVELINFO_TOKEN; i<=LAST_LEVELINFO_TOKEN; i++)
-    fprintf(file, "%s\n", getSetupLine("", i));
+    if (i != LEVELINFO_TOKEN_NAME_SHORT &&
+	i != LEVELINFO_TOKEN_NAME_SORTING &&
+	i != LEVELINFO_TOKEN_IMPORTED_FROM)
+      fprintf(file, "%s\n", getSetupLine("", i));
 
   fclose(file);
   free(filename);
@@ -1625,11 +1843,11 @@ void LoadSetup()
     freeSetupFileList(setup_file_list);
 
     /* needed to work around problems with fixed length strings */
-    if (strlen(setup.player_name) >= MAX_NAMELEN)
-      setup.player_name[MAX_NAMELEN - 1] = '\0';
-    else if (strlen(setup.player_name) < MAX_NAMELEN - 1)
+    if (strlen(setup.player_name) > MAX_PLAYER_NAME_LEN)
+      setup.player_name[MAX_PLAYER_NAME_LEN] = '\0';
+    else if (strlen(setup.player_name) < MAX_PLAYER_NAME_LEN)
     {
-      char *new_name = checked_malloc(MAX_NAMELEN);
+      char *new_name = checked_malloc(MAX_PLAYER_NAME_LEN + 1);
 
       strcpy(new_name, setup.player_name);
       free(setup.player_name);
@@ -1756,54 +1974,50 @@ void SaveSetup()
   chmod(filename, SETUP_PERMS);
 }
 
-void LoadLevelSetup()
+void LoadLevelSetup_LastSeries()
 {
   char *filename;
+  struct SetupFileList *level_setup_list = NULL;
 
   /* always start with reliable default values */
-  leveldir_nr = 0;
-  level_nr = 0;
+  leveldir_current = leveldir_first;
+
+  /* ----------------------------------------------------------------------- */
+  /* ~/.rocksndiamonds/levelsetup.conf                                       */
+  /* ----------------------------------------------------------------------- */
 
   filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
 
-  if (level_setup_list)
-    freeSetupFileList(level_setup_list);
-
-  level_setup_list = loadSetupFileList(filename);
-
-  if (level_setup_list)
+  if ((level_setup_list = loadSetupFileList(filename)))
   {
     char *last_level_series =
       getTokenValue(level_setup_list, TOKEN_STR_LAST_LEVEL_SERIES);
 
-    leveldir_nr = getLevelSeriesNrFromLevelSeriesName(last_level_series);
-    level_nr = getLastPlayedLevelOfLevelSeries(last_level_series);
+    leveldir_current = getLevelDirInfoFromFilename(last_level_series);
+    if (leveldir_current == NULL)
+      leveldir_current = leveldir_first;
 
     checkSetupFileListIdentifier(level_setup_list, LEVELSETUP_COOKIE);
+
+    freeSetupFileList(level_setup_list);
   }
   else
-  {
-    level_setup_list = newSetupFileList(TOKEN_STR_FILE_IDENTIFIER,
-					LEVELSETUP_COOKIE);
     Error(ERR_WARN, "using default setup values");
-  }
 
   free(filename);
 }
 
-void SaveLevelSetup()
+void SaveLevelSetup_LastSeries()
 {
   char *filename;
-  struct SetupFileList *list_entry = level_setup_list;
+  char *level_subdir = leveldir_current->filename;
   FILE *file;
 
+  /* ----------------------------------------------------------------------- */
+  /* ~/.rocksndiamonds/levelsetup.conf                                       */
+  /* ----------------------------------------------------------------------- */
+
   InitUserDataDirectory();
-
-  setTokenValue(level_setup_list,
-		TOKEN_STR_LAST_LEVEL_SERIES, leveldir[leveldir_nr].filename);
-
-  setTokenValue(level_setup_list,
-		leveldir[leveldir_nr].filename, int2str(level_nr, 0));
 
   filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
 
@@ -1816,18 +2030,155 @@ void SaveLevelSetup()
 
   fprintf(file, "%s\n\n", getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER,
 						 LEVELSETUP_COOKIE));
-  while (list_entry)
+  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_LAST_LEVEL_SERIES,
+					       level_subdir));
+
+  fclose(file);
+  free(filename);
+
+  chmod(filename, SETUP_PERMS);
+}
+
+static void checkSeriesInfo()
+{
+  static char *level_directory = NULL;
+  DIR *dir;
+  struct dirent *dir_entry;
+
+  /* check for more levels besides the 'levels' field of 'levelinfo.conf' */
+
+  level_directory = getPath2((leveldir_current->user_defined ?
+			      getUserLevelDir("") :
+			      options.level_directory),
+			     leveldir_current->filename);
+
+  if ((dir = opendir(level_directory)) == NULL)
   {
-    if (strcmp(list_entry->token, TOKEN_STR_FILE_IDENTIFIER) != 0)
-      fprintf(file, "%s\n",
-	      getFormattedSetupEntry(list_entry->token, list_entry->value));
-
-    /* just to make things nicer :) */
-    if (strcmp(list_entry->token, TOKEN_STR_LAST_LEVEL_SERIES) == 0)
-      fprintf(file, "\n");
-
-    list_entry = list_entry->next;
+    Error(ERR_WARN, "cannot read level directory '%s'", level_directory);
+    return;
   }
+
+  while ((dir_entry = readdir(dir)) != NULL)	/* last directory entry */
+  {
+    if (strlen(dir_entry->d_name) > 4 &&
+	dir_entry->d_name[3] == '.' &&
+	strcmp(&dir_entry->d_name[4], LEVELFILE_EXTENSION) == 0)
+    {
+      char levelnum_str[4];
+      int levelnum_value;
+
+      strncpy(levelnum_str, dir_entry->d_name, 3);
+      levelnum_str[3] = '\0';
+
+      levelnum_value = atoi(levelnum_str);
+
+      if (levelnum_value < leveldir_current->first_level)
+      {
+	Error(ERR_WARN, "additional level %d found", levelnum_value);
+	leveldir_current->first_level = levelnum_value;
+      }
+      else if (levelnum_value > leveldir_current->last_level)
+      {
+	Error(ERR_WARN, "additional level %d found", levelnum_value);
+	leveldir_current->last_level = levelnum_value;
+      }
+    }
+  }
+
+  closedir(dir);
+}
+
+void LoadLevelSetup_SeriesInfo()
+{
+  char *filename;
+  struct SetupFileList *level_setup_list = NULL;
+  char *level_subdir = leveldir_current->filename;
+
+  /* always start with reliable default values */
+  level_nr = leveldir_current->first_level;
+
+  checkSeriesInfo(leveldir_current);
+
+  /* ----------------------------------------------------------------------- */
+  /* ~/.rocksndiamonds/levelsetup/<level series>/levelsetup.conf             */
+  /* ----------------------------------------------------------------------- */
+
+  level_subdir = leveldir_current->filename;
+
+  filename = getPath2(getLevelSetupDir(level_subdir), LEVELSETUP_FILENAME);
+
+  if ((level_setup_list = loadSetupFileList(filename)))
+  {
+    char *token_value;
+
+    token_value = getTokenValue(level_setup_list, TOKEN_STR_LAST_PLAYED_LEVEL);
+
+    if (token_value)
+    {
+      level_nr = atoi(token_value);
+
+      if (level_nr < leveldir_current->first_level)
+	level_nr = leveldir_current->first_level;
+      if (level_nr > leveldir_current->last_level)
+	level_nr = leveldir_current->last_level;
+    }
+
+    token_value = getTokenValue(level_setup_list, TOKEN_STR_HANDICAP_LEVEL);
+
+    if (token_value)
+    {
+      int level_nr = atoi(token_value);
+
+      if (level_nr < leveldir_current->first_level)
+	level_nr = leveldir_current->first_level;
+      if (level_nr > leveldir_current->last_level + 1)
+	level_nr = leveldir_current->last_level;
+
+      if (leveldir_current->user_defined)
+	level_nr = leveldir_current->last_level;
+
+      leveldir_current->handicap_level = level_nr;
+    }
+
+    checkSetupFileListIdentifier(level_setup_list, LEVELSETUP_COOKIE);
+
+    freeSetupFileList(level_setup_list);
+  }
+  else
+    Error(ERR_WARN, "using default setup values");
+
+  free(filename);
+}
+
+void SaveLevelSetup_SeriesInfo()
+{
+  char *filename;
+  char *level_subdir = leveldir_current->filename;
+  char *level_nr_str = int2str(level_nr, 0);
+  char *handicap_level_str = int2str(leveldir_current->handicap_level, 0);
+  FILE *file;
+
+  /* ----------------------------------------------------------------------- */
+  /* ~/.rocksndiamonds/levelsetup/<level series>/levelsetup.conf             */
+  /* ----------------------------------------------------------------------- */
+
+  InitLevelSetupDirectory(level_subdir);
+
+  filename = getPath2(getLevelSetupDir(level_subdir), LEVELSETUP_FILENAME);
+
+  if (!(file = fopen(filename, "w")))
+  {
+    Error(ERR_WARN, "cannot write setup file '%s'", filename);
+    free(filename);
+    return;
+  }
+
+  fprintf(file, "%s\n\n", getFormattedSetupEntry(TOKEN_STR_FILE_IDENTIFIER,
+						 LEVELSETUP_COOKIE));
+  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_LAST_PLAYED_LEVEL,
+					       level_nr_str));
+  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_HANDICAP_LEVEL,
+					       handicap_level_str));
 
   fclose(file);
   free(filename);
@@ -1836,38 +2187,21 @@ void SaveLevelSetup()
 }
 
 #ifdef MSDOS
-static boolean initErrorFile()
+void initErrorFile()
 {
   char *filename;
-  FILE *error_file;
 
   InitUserDataDirectory();
 
   filename = getPath2(getUserDataDir(), ERROR_FILENAME);
-  error_file = fopen(filename, "w");
+  unlink(filename);
   free(filename);
-
-  if (error_file == NULL)
-    return FALSE;
-
-  fclose(error_file);
-
-  return TRUE;
 }
 
 FILE *openErrorFile()
 {
-  static boolean first_access = TRUE;
   char *filename;
   FILE *error_file;
-
-  if (first_access)
-  {
-    if (!initErrorFile())
-      return NULL;
-
-    first_access = FALSE;
-  }
 
   filename = getPath2(getUserDataDir(), ERROR_FILENAME);
   error_file = fopen(filename, "a");

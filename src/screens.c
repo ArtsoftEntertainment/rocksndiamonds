@@ -28,18 +28,32 @@
 
 /* for DrawSetupScreen(), HandleSetupScreen() */
 #define SETUP_SCREEN_POS_START		2
-#define SETUP_SCREEN_POS_END		16
+#define SETUP_SCREEN_POS_END		(SCR_FIELDY - 1)
 #define SETUP_SCREEN_POS_EMPTY1		(SETUP_SCREEN_POS_END - 2)
 #define SETUP_SCREEN_POS_EMPTY2		(SETUP_SCREEN_POS_END - 2)
 
 /* for HandleSetupInputScreen() */
 #define SETUPINPUT_SCREEN_POS_START	2
-#define SETUPINPUT_SCREEN_POS_END	15
+#define SETUPINPUT_SCREEN_POS_END	(SCR_FIELDY - 2)
 #define SETUPINPUT_SCREEN_POS_EMPTY1	(SETUPINPUT_SCREEN_POS_START + 3)
 #define SETUPINPUT_SCREEN_POS_EMPTY2	(SETUPINPUT_SCREEN_POS_END - 1)
 
 /* for HandleChooseLevel() */
-#define MAX_LEVEL_SERIES_ON_SCREEN	15
+#define MAX_LEVEL_SERIES_ON_SCREEN	(SCR_FIELDY - 2)
+
+/* buttons and scrollbars identifiers */
+#define SCREEN_CTRL_ID_SCROLL_UP	0
+#define SCREEN_CTRL_ID_SCROLL_DOWN	1
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL	2
+
+#define NUM_SCREEN_SCROLLBUTTONS	2
+#define NUM_SCREEN_SCROLLBARS		1
+#define NUM_SCREEN_GADGETS		3
+
+/* forward declaration for internal use */
+static void HandleScreenGadgets(struct GadgetInfo *);
+
+static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 
 #ifdef MSDOS
 extern unsigned char get_ascii(KeySym);
@@ -55,6 +69,7 @@ void DrawHeadline()
 
 void DrawMainMenu()
 {
+  static struct LevelDirInfo *leveldir_last_valid = NULL;
   int i;
   char *name_text = (!options.network && setup.team_mode ? "Team:" : "Name:");
 
@@ -70,8 +85,22 @@ void DrawMainMenu()
     return;
   }
 
+  /* needed if last screen was the editor screen */
+  UndrawSpecialEditorDoor();
+
   /* map gadgets for main menu screen */
   MapTapeButtons();
+
+  /* leveldir_current may be invalid (level group, parent link) */
+  if (!validLevelSeries(leveldir_current))
+    leveldir_current = getFirstValidLevelSeries(leveldir_last_valid);
+
+  /* store valid level series information */
+  leveldir_last_valid = leveldir_current;
+
+  /* level_nr may have been set to value over handicap with level editor */
+  if (setup.handicap && level_nr > leveldir_current->handicap_level)
+    level_nr = leveldir_current->handicap_level;
 
   GetPlayerConfig();
   LoadLevel(level_nr);
@@ -82,7 +111,7 @@ void DrawMainMenu()
   DrawText(SX + 6*32,  SY + 2*32, setup.player_name, FS_BIG, FC_RED);
   DrawText(SX + 32,    SY + 3*32, "Level:", FS_BIG, FC_GREEN);
   DrawText(SX + 11*32, SY + 3*32, int2str(level_nr,3), FS_BIG,
-	   (leveldir[leveldir_nr].readonly ? FC_RED : FC_YELLOW));
+	   (leveldir_current->readonly ? FC_RED : FC_YELLOW));
   DrawText(SX + 32,    SY + 4*32, "Hall Of Fame", FS_BIG, FC_GREEN);
   DrawText(SX + 32,    SY + 5*32, "Level Creator", FS_BIG, FC_GREEN);
   DrawText(SY + 32,    SY + 6*32, "Info Screen", FS_BIG, FC_GREEN);
@@ -93,10 +122,10 @@ void DrawMainMenu()
   DrawMicroLevel(MICROLEV_XPOS, MICROLEV_YPOS, TRUE);
 
   DrawTextF(7*32 + 6, 3*32 + 9, FC_RED, "%d-%d",
-	    leveldir[leveldir_nr].first_level,
-	    leveldir[leveldir_nr].last_level);
+	    leveldir_current->first_level,
+	    leveldir_current->last_level);
 
-  if (leveldir[leveldir_nr].readonly)
+  if (leveldir_current->readonly)
   {
     DrawTextF(15*32 + 6, 3*32 + 9 - 7, FC_RED, "READ");
     DrawTextF(15*32 + 6, 3*32 + 9 + 7, FC_RED, "ONLY");
@@ -104,19 +133,19 @@ void DrawMainMenu()
 
   for(i=2; i<10; i++)
     DrawGraphic(0, i, GFX_KUGEL_BLAU);
-  DrawGraphic(10, 3, GFX_PFEIL_L);
-  DrawGraphic(14, 3, GFX_PFEIL_R);
+  DrawGraphic(10, 3, GFX_ARROW_BLUE_LEFT);
+  DrawGraphic(14, 3, GFX_ARROW_BLUE_RIGHT);
 
   DrawText(SX + 56, SY + 326, "A Game by Artsoft Entertainment",
 	   FS_SMALL, FC_RED);
 
-  if (leveldir[leveldir_nr].name)
+  if (leveldir_current->name)
   {
-    int len = strlen(leveldir[leveldir_nr].name);
+    int len = strlen(leveldir_current->name);
     int lxpos = SX + (SXSIZE - len * FONT4_XSIZE) / 2;
     int lypos = SY + 352;
 
-    DrawText(lxpos, lypos, leveldir[leveldir_nr].name, FS_SMALL, FC_SPECIAL2);
+    DrawText(lxpos, lypos, leveldir_current->name, FS_SMALL, FC_SPECIAL2);
   }
 
   FadeToFront();
@@ -130,7 +159,39 @@ void DrawMainMenu()
 
   OpenDoor(DOOR_CLOSE_1 | DOOR_OPEN_2);
 
+#if 0
   ClearEventQueue();
+#endif
+
+}
+
+static void gotoTopLevelDir()
+{
+  /* move upwards to top level directory */
+  while (leveldir_current->node_parent)
+  {
+    /* write a "path" into level tree for easy navigation to last level */
+    if (leveldir_current->node_parent->node_group->cl_first == -1)
+    {
+      int num_leveldirs = numLevelDirInfoInGroup(leveldir_current);
+      int leveldir_pos = posLevelDirInfo(leveldir_current);
+      int num_page_entries;
+      int cl_first, cl_cursor;
+
+      if (num_leveldirs <= MAX_LEVEL_SERIES_ON_SCREEN)
+	num_page_entries = num_leveldirs;
+      else
+	num_page_entries = MAX_LEVEL_SERIES_ON_SCREEN - 1;
+
+      cl_first = MAX(0, leveldir_pos - num_page_entries + 1);
+      cl_cursor = leveldir_pos - cl_first + 3;
+
+      leveldir_current->node_parent->node_group->cl_first = cl_first;
+      leveldir_current->node_parent->node_group->cl_cursor = cl_cursor;
+    }
+
+    leveldir_current = leveldir_current->node_parent;
+  }
 }
 
 void HandleMainMenu(int mx, int my, int dx, int dy, int button)
@@ -175,20 +236,23 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
     y = choice;
   }
 
-  if (y == 4 && ((x == 11 && level_nr > leveldir[leveldir_nr].first_level) ||
-		 (x == 15 && level_nr < leveldir[leveldir_nr].last_level)) &&
+  if (y == 4 && ((x == 11 && level_nr > leveldir_current->first_level) ||
+		 (x == 15 && level_nr < leveldir_current->last_level)) &&
       button)
   {
     static unsigned long level_delay = 0;
     int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
     int new_level_nr, old_level_nr = level_nr;
-    int font_color = (leveldir[leveldir_nr].readonly ? FC_RED : FC_YELLOW);
+    int font_color = (leveldir_current->readonly ? FC_RED : FC_YELLOW);
 
     new_level_nr = level_nr + (x == 11 ? -step : +step);
-    if (new_level_nr < leveldir[leveldir_nr].first_level)
-      new_level_nr = leveldir[leveldir_nr].first_level;
-    if (new_level_nr > leveldir[leveldir_nr].last_level)
-      new_level_nr = leveldir[leveldir_nr].last_level;
+    if (new_level_nr < leveldir_current->first_level)
+      new_level_nr = leveldir_current->first_level;
+    if (new_level_nr > leveldir_current->last_level)
+      new_level_nr = leveldir_current->last_level;
+
+    if (setup.handicap && new_level_nr > leveldir_current->handicap_level)
+      new_level_nr = leveldir_current->handicap_level;
 
     if (old_level_nr == new_level_nr ||
 	!DelayReached(&level_delay, GADGET_FRAME_DELAY))
@@ -219,7 +283,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
     {
       if (y != choice)
       {
-	DrawGraphic(0, y-1, GFX_KUGEL_ROT);
+	DrawGraphic(0, y - 1, GFX_KUGEL_ROT);
 	DrawGraphic(0, choice - 1, GFX_KUGEL_BLAU);
 	choice = y;
       }
@@ -233,10 +297,14 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       }
       else if (y == 4)
       {
-	if (num_leveldirs)
+	if (leveldir_first)
 	{
 	  game_status = CHOOSELEVEL;
-	  SaveLevelSetup();
+	  SaveLevelSetup_LastSeries();
+	  SaveLevelSetup_SeriesInfo();
+
+	  gotoTopLevelDir();
+
 	  DrawChooseLevel();
 	}
       }
@@ -247,7 +315,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       }
       else if (y == 6)
       {
-	if (leveldir[leveldir_nr].readonly &&
+	if (leveldir_current->readonly &&
 	    strcmp(setup.player_name, "Artsoft") != 0)
 	  Request("This level is read only !", REQ_CONFIRM);
 	game_status = LEVELED;
@@ -270,6 +338,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 #endif
 	{
 	  game_status = PLAYING;
+	  StopAnimation();
 	  InitGame();
 	}
       }
@@ -280,7 +349,8 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       }
       else if (y == 10)
       {
-	SaveLevelSetup();
+	SaveLevelSetup_LastSeries();
+	SaveLevelSetup_SeriesInfo();
         if (Request("Do you really want to quit ?", REQ_ASK | REQ_STAY_CLOSED))
 	  game_status = EXITGAME;
       }
@@ -374,10 +444,10 @@ static int helpscreen_action[] =
   GFX_MAMPFER2+1,1,1, GFX_MAMPFER2+0,1,1,			HA_NEXT,
   GFX_ROBOT+0,4,1, GFX_ROBOT+3,1,1, GFX_ROBOT+2,1,1,
   GFX_ROBOT+1,1,1, GFX_ROBOT+0,1,1,				HA_NEXT,
-  GFX_MAULWURF_DOWN,4,2,
-  GFX_MAULWURF_UP,4,2,
-  GFX_MAULWURF_LEFT,4,2,
-  GFX_MAULWURF_RIGHT,4,2,					HA_NEXT,
+  GFX_MOLE_DOWN,4,2,
+  GFX_MOLE_UP,4,2,
+  GFX_MOLE_LEFT,4,2,
+  GFX_MOLE_RIGHT,4,2,						HA_NEXT,
   GFX_PINGUIN_DOWN,4,2,
   GFX_PINGUIN_UP,4,2,
   GFX_PINGUIN_LEFT,4,2,
@@ -402,8 +472,8 @@ static int helpscreen_action[] =
   GFX_DIAMANT,1,10,						HA_NEXT,
   GFX_LIFE,1,100,						HA_NEXT,
   GFX_LIFE_ASYNC,1,100,						HA_NEXT,
-  GFX_SIEB_INAKTIV,4,2,						HA_NEXT,
-  GFX_SIEB2_INAKTIV,4,2,					HA_NEXT,
+  GFX_MAGIC_WALL_OFF,4,2,					HA_NEXT,
+  GFX_MAGIC_WALL_BD_OFF,4,2,					HA_NEXT,
   GFX_AUSGANG_ZU,1,100, GFX_AUSGANG_ACT,4,2,
   GFX_AUSGANG_AUF+0,4,2, GFX_AUSGANG_AUF+3,1,2,
   GFX_AUSGANG_AUF+2,1,2, GFX_AUSGANG_AUF+1,1,2,			HA_NEXT,
@@ -455,7 +525,7 @@ static char *helpscreen_eltext[][2] =
  {"Cruncher: Eats diamonds and you,",	"if you're not careful"},
  {"Cruncher (BD style):",		"Eats almost everything"},
  {"Robot: Tries to kill the player",	""},
- {"The mole: You must guide him savely","to the exit; he will follow you"},
+ {"The mole: Eats the amoeba and turns","empty space into normal sand"},
  {"The penguin: Guide him to the exit,","but keep him away from monsters!"},
  {"The Pig: Harmless, but eats all",	"gems it can get"},
  {"The Dragon: Breathes fire,",		"especially to some monsters"},
@@ -757,7 +827,7 @@ void HandleTypeName(int newxpos, KeySym key)
   }
 
   if (((key >= XK_A && key <= XK_Z) || (key >= XK_a && key <= XK_z)) && 
-      xpos < MAX_NAMELEN - 1)
+      xpos < MAX_PLAYER_NAME_LEN)
   {
     char ascii;
 
@@ -794,48 +864,120 @@ void HandleTypeName(int newxpos, KeySym key)
   BackToFront();
 }
 
+static void drawCursorExt(int ypos, int color, int graphic)
+{
+  static int cursor_array[SCR_FIELDY];
+
+  if (graphic)
+    cursor_array[ypos] = graphic;
+
+  graphic = cursor_array[ypos];
+
+  if (color == FC_RED)
+    graphic = (graphic == GFX_ARROW_BLUE_LEFT  ? GFX_ARROW_RED_LEFT  :
+	       graphic == GFX_ARROW_BLUE_RIGHT ? GFX_ARROW_RED_RIGHT :
+	       GFX_KUGEL_ROT);
+
+  DrawGraphic(0, ypos, graphic);
+}
+
+static void initCursor(int ypos, int graphic)
+{
+  drawCursorExt(ypos, FC_BLUE, graphic);
+}
+
+static void drawCursor(int ypos, int color)
+{
+  drawCursorExt(ypos, color, 0);
+}
+
 void DrawChooseLevel()
 {
   UnmapAllGadgets();
   CloseDoor(DOOR_CLOSE_2);
 
+  ClearWindow();
+  HandleChooseLevel(0,0, 0,0, MB_MENU_INITIALIZE);
+  MapChooseLevelGadgets();
+
   FadeToFront();
   InitAnimation();
-  HandleChooseLevel(0,0, 0,0, MB_MENU_INITIALIZE);
+}
+
+static void AdjustChooseLevelScrollbar(int id, int first_entry)
+{
+  struct GadgetInfo *gi = screen_gadget[id];
+  int items_max, items_visible, item_position;
+
+  items_max = numLevelDirInfoInGroup(leveldir_current);
+  items_visible = MAX_LEVEL_SERIES_ON_SCREEN - 1;
+  item_position = first_entry;
+
+  if (item_position > items_max - items_visible)
+    item_position = items_max - items_visible;
+
+  ModifyGadget(gi, GDI_SCROLLBAR_ITEMS_MAX, items_max,
+	       GDI_SCROLLBAR_ITEM_POSITION, item_position, GDI_END);
 }
 
 static void drawChooseLevelList(int first_entry, int num_page_entries)
 {
   int i;
-  char buffer[SCR_FIELDX];
+  char buffer[SCR_FIELDX * 2];
+  int max_buffer_len = (SCR_FIELDX - 2) * 2;
+  int num_leveldirs = numLevelDirInfoInGroup(leveldir_current);
 
-  ClearWindow();
+  XFillRectangle(display, backbuffer, gc, SX, SY, SXSIZE - 32, SYSIZE);
+  redraw_mask |= REDRAW_FIELD;
+
   DrawText(SX, SY, "Level Directories", FS_BIG, FC_GREEN);
 
   for(i=0; i<num_page_entries; i++)
   {
-    strncpy(buffer, leveldir[first_entry + i].name , SCR_FIELDX - 1);
-    buffer[SCR_FIELDX - 1] = '\0';
-    DrawText(SX + 32, SY + (i + 2) * 32, buffer,
-	     FS_BIG, leveldir[first_entry + i].color);
-    DrawGraphic(0, i + 2, GFX_KUGEL_BLAU);
+    struct LevelDirInfo *node, *node_first;
+    int leveldir_pos = first_entry + i;
+    int ypos = i + 2;
+
+    node_first = getLevelDirInfoFirstGroupEntry(leveldir_current);
+    node = getLevelDirInfoFromPos(node_first, leveldir_pos);
+
+    strncpy(buffer, node->name , max_buffer_len);
+    buffer[max_buffer_len] = '\0';
+
+    DrawText(SX + 32, SY + ypos * 32, buffer, FS_MEDIUM, node->color);
+
+    if (node->parent_link)
+      initCursor(ypos, GFX_ARROW_BLUE_LEFT);
+    else if (node->level_group)
+      initCursor(ypos, GFX_ARROW_BLUE_RIGHT);
+    else
+      initCursor(ypos, GFX_KUGEL_BLAU);
   }
 
   if (first_entry > 0)
-    DrawGraphic(0, 1, GFX_PFEIL_O);
+    DrawGraphic(0, 1, GFX_ARROW_BLUE_UP);
 
   if (first_entry + num_page_entries < num_leveldirs)
-    DrawGraphic(0, MAX_LEVEL_SERIES_ON_SCREEN + 1, GFX_PFEIL_U);
+    DrawGraphic(0, MAX_LEVEL_SERIES_ON_SCREEN + 1, GFX_ARROW_BLUE_DOWN);
 }
 
-static void drawChooseLevelInfo(int leveldir_nr)
+static void drawChooseLevelInfo(int leveldir_pos)
 {
+  struct LevelDirInfo *node, *node_first;
   int x, last_redraw_mask = redraw_mask;
 
-  XFillRectangle(display, drawto, gc, SX + 32, SY + 32, SXSIZE - 32, 32);
-  DrawTextFCentered(40, FC_RED, "%3d levels (%s)",
-		    leveldir[leveldir_nr].levels,
-		    leveldir[leveldir_nr].readonly ? "readonly" : "writable");
+  node_first = getLevelDirInfoFirstGroupEntry(leveldir_current);
+  node = getLevelDirInfoFromPos(node_first, leveldir_pos);
+
+  XFillRectangle(display, drawto, gc, SX + 32, SY + 32, SXSIZE - 64, 32);
+
+  if (node->parent_link)
+    DrawTextFCentered(40, FC_RED, "leave group \"%s\"", node->class_desc);
+  else if (node->level_group)
+    DrawTextFCentered(40, FC_RED, "enter group \"%s\"", node->class_desc);
+  else
+    DrawTextFCentered(40, FC_RED, "%3d levels (%s)",
+		      node->levels, node->class_desc);
 
   /* let BackToFront() redraw only what is needed */
   redraw_mask = last_redraw_mask | REDRAW_TILES;
@@ -845,12 +987,11 @@ static void drawChooseLevelInfo(int leveldir_nr)
 
 void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
 {
-  static int choice = 3;
-  static int first_entry = 0;
   static unsigned long choose_delay = 0;
   static int redraw = TRUE;
   int x = (mx + 32 - SX) / 32, y = (my + 32 - SY) / 32;
   int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
+  int num_leveldirs = numLevelDirInfoInGroup(leveldir_current);
   int num_page_entries;
 
   if (num_leveldirs <= MAX_LEVEL_SERIES_ON_SCREEN)
@@ -860,22 +1001,29 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
 
   if (button == MB_MENU_INITIALIZE)
   {
-    redraw = TRUE;
-    choice = leveldir_nr + 3 - first_entry;
+    int leveldir_pos = posLevelDirInfo(leveldir_current);
 
-    if (choice > num_page_entries + 2)
+    if (leveldir_current->cl_first == -1)
     {
-      choice = num_page_entries + 2;
-      first_entry = num_leveldirs - num_page_entries;
+      leveldir_current->cl_first = MAX(0, leveldir_pos - num_page_entries + 1);
+      leveldir_current->cl_cursor =
+	leveldir_pos - leveldir_current->cl_first + 3;
     }
 
-    drawChooseLevelList(first_entry, num_page_entries);
-    drawChooseLevelInfo(leveldir_nr);
+    if (dx == 999)	/* first entry is set by scrollbar position */
+      leveldir_current->cl_first = dy;
+    else
+      AdjustChooseLevelScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL,
+				 leveldir_current->cl_first);
+
+    drawChooseLevelList(leveldir_current->cl_first, num_page_entries);
+    drawChooseLevelInfo(leveldir_pos);
+    redraw = TRUE;
   }
 
   if (redraw)
   {
-    DrawGraphic(0, choice - 1, GFX_KUGEL_ROT);
+    drawCursor(leveldir_current->cl_cursor - 1, FC_RED);
     redraw = FALSE;
   }
 
@@ -887,45 +1035,53 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
     if (dy)
     {
       x = 1;
-      y = choice + dy;
+      y = leveldir_current->cl_cursor + dy;
     }
     else
-      x = y = 0;
+      x = y = 0;	/* no action */
+
+    if (ABS(dy) == SCR_FIELDY)	/* handle XK_Page_Up, XK_Page_Down */
+    {
+      dy = SIGN(dy);
+      step = num_page_entries - 1;
+      x = 1;
+      y = (dy < 0 ? 2 : num_page_entries + 3);
+    }
   }
 
   if (x == 1 && y == 2)
   {
-    if (first_entry > 0 &&
+    if (leveldir_current->cl_first > 0 &&
 	(dy || DelayReached(&choose_delay, GADGET_FRAME_DELAY)))
     {
-#if 0
-      first_entry--;
-#else
-      first_entry -= step;
-      if (first_entry < 0)
-	first_entry = 0;
-#endif
-      drawChooseLevelList(first_entry, num_page_entries);
-      drawChooseLevelInfo(first_entry);
-      DrawGraphic(0, choice - 1, GFX_KUGEL_ROT);
+      leveldir_current->cl_first -= step;
+      if (leveldir_current->cl_first < 0)
+	leveldir_current->cl_first = 0;
+
+      drawChooseLevelList(leveldir_current->cl_first, num_page_entries);
+      drawChooseLevelInfo(leveldir_current->cl_first +
+			  leveldir_current->cl_cursor - 3);
+      drawCursor(leveldir_current->cl_cursor - 1, FC_RED);
+      AdjustChooseLevelScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL,
+				 leveldir_current->cl_first);
       return;
     }
   }
   else if (x == 1 && y > num_page_entries + 2)
   {
-    if (first_entry + num_page_entries < num_leveldirs &&
+    if (leveldir_current->cl_first + num_page_entries < num_leveldirs &&
 	(dy || DelayReached(&choose_delay, GADGET_FRAME_DELAY)))
     {
-#if 0
-      first_entry++;
-#else
-      first_entry += step;
-      if (first_entry + num_page_entries > num_leveldirs)
-	first_entry = num_leveldirs - num_page_entries;
-#endif
-      drawChooseLevelList(first_entry, num_page_entries);
-      drawChooseLevelInfo(first_entry + num_page_entries - 1);
-      DrawGraphic(0, choice - 1, GFX_KUGEL_ROT);
+      leveldir_current->cl_first += step;
+      if (leveldir_current->cl_first + num_page_entries > num_leveldirs)
+	leveldir_current->cl_first = MAX(0, num_leveldirs - num_page_entries);
+
+      drawChooseLevelList(leveldir_current->cl_first, num_page_entries);
+      drawChooseLevelInfo(leveldir_current->cl_first +
+			  leveldir_current->cl_cursor - 3);
+      drawCursor(leveldir_current->cl_cursor - 1, FC_RED);
+      AdjustChooseLevelScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL,
+				 leveldir_current->cl_first);
       return;
     }
   }
@@ -933,33 +1089,77 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
   if (!mx && !my && !dx && !dy)
   {
     x = 1;
-    y = choice;
+    y = leveldir_current->cl_cursor;
+  }
+
+  if (dx == 1)
+  {
+    struct LevelDirInfo *node_first, *node_cursor;
+    int leveldir_pos =
+      leveldir_current->cl_first + leveldir_current->cl_cursor - 3;
+
+    node_first = getLevelDirInfoFirstGroupEntry(leveldir_current);
+    node_cursor = getLevelDirInfoFromPos(node_first, leveldir_pos);
+
+    if (node_cursor->node_group)
+    {
+      node_cursor->cl_first = leveldir_current->cl_first;
+      node_cursor->cl_cursor = leveldir_current->cl_cursor;
+      leveldir_current = node_cursor->node_group;
+      DrawChooseLevel();
+    }
+  }
+  else if (dx == -1 && leveldir_current->node_parent)
+  {
+    leveldir_current = leveldir_current->node_parent;
+    DrawChooseLevel();
   }
 
   if (x == 1 && y >= 3 && y <= num_page_entries + 2)
   {
     if (button)
     {
-      if (y != choice)
+      if (y != leveldir_current->cl_cursor)
       {
-        DrawGraphic(0, y - 1, GFX_KUGEL_ROT);
-        DrawGraphic(0, choice - 1, GFX_KUGEL_BLAU);
-	drawChooseLevelInfo(first_entry + y - 3);
-	choice = y;
+	drawCursor(y - 1, FC_RED);
+	drawCursor(leveldir_current->cl_cursor - 1, FC_BLUE);
+	drawChooseLevelInfo(leveldir_current->cl_first + y - 3);
+	leveldir_current->cl_cursor = y;
       }
     }
     else
     {
-      leveldir_nr = first_entry + y - 3;
-      level_nr =
-	getLastPlayedLevelOfLevelSeries(leveldir[leveldir_nr].filename);
+      struct LevelDirInfo *node_first, *node_cursor;
+      int leveldir_pos = leveldir_current->cl_first + y - 3;
 
-      SaveLevelSetup();
-      TapeErase();
+      node_first = getLevelDirInfoFirstGroupEntry(leveldir_current);
+      node_cursor = getLevelDirInfoFromPos(node_first, leveldir_pos);
 
-      game_status = MAINMENU;
-      DrawMainMenu();
-      redraw = TRUE;
+      if (node_cursor->node_group)
+      {
+	node_cursor->cl_first = leveldir_current->cl_first;
+	node_cursor->cl_cursor = leveldir_current->cl_cursor;
+	leveldir_current = node_cursor->node_group;
+	DrawChooseLevel();
+      }
+      else if (node_cursor->parent_link)
+      {
+	leveldir_current = node_cursor->node_parent;
+	DrawChooseLevel();
+      }
+      else
+      {
+	leveldir_current = node_cursor;
+
+	LoadLevelSetup_SeriesInfo();
+
+	SaveLevelSetup_LastSeries();
+	SaveLevelSetup_SeriesInfo();
+	TapeErase();
+
+	game_status = MAINMENU;
+	DrawMainMenu();
+      }
     }
   }
 
@@ -971,47 +1171,101 @@ void HandleChooseLevel(int mx, int my, int dx, int dy, int button)
 
 void DrawHallOfFame(int highlight_position)
 {
-  int i;
-
   UnmapAllGadgets();
   CloseDoor(DOOR_CLOSE_2);
 
   if (highlight_position < 0) 
     LoadScore(level_nr);
 
-  ClearWindow();
+  FadeToFront();
+  InitAnimation();
+  HandleHallOfFame(highlight_position,0, 0,0, MB_MENU_INITIALIZE);
+  PlaySound(SND_HALLOFFAME);
+}
 
+static void drawHallOfFameList(int first_entry, int highlight_position)
+{
+  int i;
+
+  ClearWindow();
   DrawText(SX + 80, SY + 8, "Hall Of Fame", FS_BIG, FC_YELLOW);
   DrawTextFCentered(46, FC_RED, "HighScores of Level %d", level_nr);
 
   for(i=0; i<MAX_LEVEL_SERIES_ON_SCREEN; i++)
   {
-    DrawText(SX, SY + 64 + i * 32, ".................", FS_BIG,
-	     (i == highlight_position ? FC_RED : FC_GREEN));
-    DrawText(SX, SY + 64 + i * 32, highscore[i].Name, FS_BIG,
-	     (i == highlight_position ? FC_RED : FC_GREEN));
-    DrawText(SX + 12 * 32, SY + 64 + i * 32,
-	     int2str(highscore[i].Score, 5), FS_BIG,
-	     (i == highlight_position ? FC_RED : FC_GREEN));
-  }
+    int entry = first_entry + i;
+    int color = (entry == highlight_position ? FC_RED : FC_GREEN);
 
-  FadeToFront();
-  InitAnimation();
-  PlaySound(SND_HALLOFFAME);
+#if 0
+    DrawText(SX, SY + 64 + i * 32, ".................", FS_BIG, color);
+    DrawText(SX, SY + 64 + i * 32, highscore[i].Name, FS_BIG, color);
+    DrawText(SX + 12 * 32, SY + 64 + i * 32,
+	     int2str(highscore[i].Score, 5), FS_BIG, color);
+#else
+    DrawText(SX, SY + 64 + i * 32, "..................................",
+	     FS_MEDIUM, FC_YELLOW);
+    DrawText(SX, SY + 64 + i * 32, int2str(entry + 1, 3),
+	     FS_MEDIUM, FC_YELLOW);
+    DrawText(SX + 64, SY + 64 + i * 32, highscore[entry].Name, FS_BIG, color);
+    DrawText(SX + 14 * 32 + 16, SY + 64 + i * 32,
+	     int2str(highscore[entry].Score, 5), FS_MEDIUM, color);
+#endif
+  }
 }
 
-void HandleHallOfFame(int button)
+void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 {
+  static int first_entry = 0;
+  static int highlight_position = 0;
+  int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
   int button_released = !button;
+
+  if (button == MB_MENU_INITIALIZE)
+  {
+    first_entry = 0;
+    highlight_position = mx;
+    drawHallOfFameList(first_entry, highlight_position);
+    return;
+  }
+
+  if (ABS(dy) == SCR_FIELDY)	/* handle XK_Page_Up, XK_Page_Down */
+    step = MAX_LEVEL_SERIES_ON_SCREEN - 1;
+
+  if (dy < 0)
+  {
+    if (first_entry > 0)
+    {
+      first_entry -= step;
+      if (first_entry < 0)
+	first_entry = 0;
+
+      drawHallOfFameList(first_entry, highlight_position);
+      return;
+    }
+  }
+  else if (dy > 0)
+  {
+    if (first_entry + MAX_LEVEL_SERIES_ON_SCREEN < MAX_SCORE_ENTRIES)
+    {
+      first_entry += step;
+      if (first_entry + MAX_LEVEL_SERIES_ON_SCREEN > MAX_SCORE_ENTRIES)
+	first_entry = MAX(0, MAX_SCORE_ENTRIES - MAX_LEVEL_SERIES_ON_SCREEN);
+
+      drawHallOfFameList(first_entry, highlight_position);
+      return;
+    }
+  }
 
   if (button_released)
   {
     FadeSound(SND_HALLOFFAME);
     game_status = MAINMENU;
     DrawMainMenu();
-    BackToFront();
   }
-  else
+
+  BackToFront();
+
+  if (game_status == HALLOFFAME)
     DoAnimation();
 }
 
@@ -1027,14 +1281,18 @@ void DrawSetupScreen()
     { &setup.sound,		"Sound:",	},
     { &setup.sound_loops,	" Sound Loops:"	},
     { &setup.sound_music,	" Game Music:"	},
+#if 0
     { &setup.toons,		"Toons:"	},
     { &setup.double_buffering,	"Buffered gfx:"	},
+#endif
     { &setup.scroll_delay,	"Scroll Delay:"	},
     { &setup.soft_scrolling,	"Soft Scroll.:"	},
     { &setup.fading,		"Fading:"	},
     { &setup.quick_doors,	"Quick Doors:"	},
     { &setup.autorecord,	"Auto-Record:"	},
     { &setup.team_mode,		"Team-Mode:"	},
+    { &setup.handicap,		"Handicap:"	},
+    { &setup.time_limit,	"Timelimit:"	},
     { NULL,			"Input Devices"	},
     { NULL,			""		},
     { NULL,			"Exit"		},
@@ -1053,8 +1311,12 @@ void DrawSetupScreen()
 
     if (!(i >= SETUP_SCREEN_POS_EMPTY1 && i <= SETUP_SCREEN_POS_EMPTY2))
     {
-      DrawGraphic(0,i,GFX_KUGEL_BLAU);
       DrawText(SX+32,SY+i*32, setup_info[base].text, FS_BIG,FC_GREEN);
+
+      if (strcmp(setup_info[base].text, "Input Devices") == 0)
+	initCursor(i, GFX_ARROW_BLUE_RIGHT);
+      else
+	initCursor(i, GFX_KUGEL_BLAU);
     }
 
     if (setup_info[base].value)
@@ -1086,7 +1348,7 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 
   if (redraw)
   {
-    DrawGraphic(0,choice-1,GFX_KUGEL_ROT);
+    drawCursor(choice - 1, FC_RED);
     redraw = FALSE;
   }
 
@@ -1118,6 +1380,13 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
     y = choice;
   }
 
+  if (dx == 1 && choice == 14)
+  {
+    game_status = SETUPINPUT;
+    DrawSetupInputScreen();
+    redraw = TRUE;
+  }
+
   if (x==1 && y >= pos_start && y <= pos_end &&
       !(y >= pos_empty1 && y <= pos_empty2))
   {
@@ -1125,8 +1394,8 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
     {
       if (y!=choice)
       {
-	DrawGraphic(0,y-1,GFX_KUGEL_ROT);
-	DrawGraphic(0,choice-1,GFX_KUGEL_BLAU);
+	drawCursor(y - 1, FC_RED);
+	drawCursor(choice - 1, FC_BLUE);
       }
       choice = y;
     }
@@ -1172,6 +1441,8 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 	}
 	setup.sound_music = !setup.sound_music;
       }
+
+#if 0
       else if (y==6)
       {
 	if (setup.toons)
@@ -1195,7 +1466,9 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 	setup.direct_draw = !setup.double_buffering;
 #endif
       }
-      else if (y==8)
+#endif
+
+      else if (y==6)
       {
 	if (setup.scroll_delay)
 	  DrawText(SX+14*32, SY+yy*32,"off",FS_BIG,FC_BLUE);
@@ -1203,7 +1476,7 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 	  DrawText(SX+14*32, SY+yy*32,"on ",FS_BIG,FC_YELLOW);
 	setup.scroll_delay = !setup.scroll_delay;
       }
-      else if (y==9)
+      else if (y==7)
       {
 	if (setup.soft_scrolling)
 	  DrawText(SX+14*32, SY+yy*32,"off",FS_BIG,FC_BLUE);
@@ -1211,7 +1484,7 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 	  DrawText(SX+14*32, SY+yy*32,"on ",FS_BIG,FC_YELLOW);
 	setup.soft_scrolling = !setup.soft_scrolling;
       }
-      else if (y==10)
+      else if (y==8)
       {
 	if (setup.fading)
 	  DrawText(SX+14*32, SY+yy*32,"off",FS_BIG,FC_BLUE);
@@ -1219,7 +1492,7 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 	  DrawText(SX+14*32, SY+yy*32,"on ",FS_BIG,FC_YELLOW);
 	setup.fading = !setup.fading;
       }
-      else if (y==11)
+      else if (y==9)
       {
 	if (setup.quick_doors)
 	  DrawText(SX+14*32, SY+yy*32,"off",FS_BIG,FC_BLUE);
@@ -1227,7 +1500,7 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 	  DrawText(SX+14*32, SY+yy*32,"on ",FS_BIG,FC_YELLOW);
 	setup.quick_doors = !setup.quick_doors;
       }
-      else if (y==12)
+      else if (y==10)
       {
 	if (setup.autorecord)
 	  DrawText(SX+14*32, SY+yy*32,"off",FS_BIG,FC_BLUE);
@@ -1235,13 +1508,29 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 	  DrawText(SX+14*32, SY+yy*32,"on ",FS_BIG,FC_YELLOW);
 	setup.autorecord = !setup.autorecord;
       }
-      else if (y==13)
+      else if (y==11)
       {
 	if (setup.team_mode)
 	  DrawText(SX+14*32, SY+yy*32,"off",FS_BIG,FC_BLUE);
 	else
 	  DrawText(SX+14*32, SY+yy*32,"on ",FS_BIG,FC_YELLOW);
 	setup.team_mode = !setup.team_mode;
+      }
+      else if (y==12)
+      {
+	if (setup.handicap)
+	  DrawText(SX+14*32, SY+yy*32,"off",FS_BIG,FC_BLUE);
+	else
+	  DrawText(SX+14*32, SY+yy*32,"on ",FS_BIG,FC_YELLOW);
+	setup.handicap = !setup.handicap;
+      }
+      else if (y==13)
+      {
+	if (setup.time_limit)
+	  DrawText(SX+14*32, SY+yy*32,"off",FS_BIG,FC_BLUE);
+	else
+	  DrawText(SX+14*32, SY+yy*32,"on ",FS_BIG,FC_YELLOW);
+	setup.time_limit = !setup.time_limit;
       }
       else if (y==14)
       {
@@ -1283,12 +1572,13 @@ void DrawSetupInputScreen()
   ClearWindow();
   DrawText(SX+16, SY+16, "SETUP INPUT", FS_BIG, FC_YELLOW);
 
-  DrawGraphic(0, 2, GFX_KUGEL_BLAU);
-  DrawGraphic(0, 3, GFX_KUGEL_BLAU);
-  DrawGraphic(0, 4, GFX_KUGEL_BLAU);
-  DrawGraphic(0, 15, GFX_KUGEL_BLAU);
-  DrawGraphic(10, 2, GFX_PFEIL_L);
-  DrawGraphic(12, 2, GFX_PFEIL_R);
+  initCursor(2, GFX_KUGEL_BLAU);
+  initCursor(3, GFX_KUGEL_BLAU);
+  initCursor(4, GFX_ARROW_BLUE_RIGHT);
+  initCursor(15, GFX_KUGEL_BLAU);
+
+  DrawGraphic(10, 2, GFX_ARROW_BLUE_LEFT);
+  DrawGraphic(12, 2, GFX_ARROW_BLUE_RIGHT);
 
   DrawText(SX+32, SY+2*32, "Player:", FS_BIG, FC_GREEN);
   DrawText(SX+32, SY+3*32, "Device:", FS_BIG, FC_GREEN);
@@ -1368,10 +1658,10 @@ static void drawPlayerSetupInputInfo(int player_nr)
   }
 
   DrawText(SX+32, SY+5*32, "Actual Settings:", FS_BIG, FC_GREEN);
-  DrawGraphic(1, 6, GFX_PFEIL_L);
-  DrawGraphic(1, 7, GFX_PFEIL_R);
-  DrawGraphic(1, 8, GFX_PFEIL_O);
-  DrawGraphic(1, 9, GFX_PFEIL_U);
+  DrawGraphic(1, 6, GFX_ARROW_BLUE_LEFT);
+  DrawGraphic(1, 7, GFX_ARROW_BLUE_RIGHT);
+  DrawGraphic(1, 8, GFX_ARROW_BLUE_UP);
+  DrawGraphic(1, 9, GFX_ARROW_BLUE_DOWN);
   DrawText(SX+2*32, SY+6*32, ":", FS_BIG, FC_BLUE);
   DrawText(SX+2*32, SY+7*32, ":", FS_BIG, FC_BLUE);
   DrawText(SX+2*32, SY+8*32, ":", FS_BIG, FC_BLUE);
@@ -1412,7 +1702,7 @@ void HandleSetupInputScreen(int mx, int my, int dx, int dy, int button)
 
   if (redraw)
   {
-    DrawGraphic(0,choice-1,GFX_KUGEL_ROT);
+    drawCursor(choice - 1, FC_RED);
     redraw = FALSE;
   }
 
@@ -1473,8 +1763,8 @@ void HandleSetupInputScreen(int mx, int my, int dx, int dy, int button)
     {
       if (y != choice)
       {
-	DrawGraphic(0, y-1, GFX_KUGEL_ROT);
-	DrawGraphic(0, choice-1, GFX_KUGEL_BLAU);
+	drawCursor(y - 1, FC_RED);
+	drawCursor(choice - 1, FC_BLUE);
       }
       choice = y;
     }
@@ -1928,186 +2218,6 @@ void CalibrateJoystick(int player_nr)
   DrawSetupInputScreen();
 }
 
-
-
-#if 0
-
-void CalibrateJoystick_OLD()
-{
-#ifdef __FreeBSD__
-  struct joystick joy_ctrl;
-#else
-  struct joystick_control
-  {
-    int buttons;
-    int x;
-    int y;
-  } joy_ctrl;
-#endif
-
-#ifdef MSDOS
-  char joy_nr[4];
-#endif
-
-  int joystick_nr = setup.input[0].joystick_nr;
-  int new_joystick_xleft, new_joystick_xright, new_joystick_xmiddle;
-  int new_joystick_yupper, new_joystick_ylower, new_joystick_ymiddle;
-
-  if (joystick_status == JOYSTICK_OFF)
-    goto error_out;
-
-#ifndef MSDOS
-  ClearWindow();
-  DrawText(SX+16, SY+7*32, "MOVE JOYSTICK TO",FS_BIG,FC_YELLOW);
-  DrawText(SX+16, SY+8*32, " THE UPPER LEFT ",FS_BIG,FC_YELLOW);
-  DrawText(SX+16, SY+9*32, "AND PRESS BUTTON",FS_BIG,FC_YELLOW);
-  BackToFront();
-
-#ifdef __FreeBSD__
-  joy_ctrl.b1 = joy_ctrl.b2 = 0;
-#else
-  joy_ctrl.buttons = 0;
-#endif
-  while(Joystick() & JOY_BUTTON);
-#ifdef __FreeBSD__
-  while(!(joy_ctrl.b1 || joy_ctrl.b2))
-#else
-  while(!joy_ctrl.buttons)
-#endif
-  {
-    if (read(joystick_device, &joy_ctrl, sizeof(joy_ctrl)) != sizeof(joy_ctrl))
-    {
-      joystick_status=JOYSTICK_OFF;
-      goto error_out;
-    }
-    Delay(10);
-  }
-
-  new_joystick_xleft = joy_ctrl.x;
-  new_joystick_yupper = joy_ctrl.y;
-
-  ClearWindow();
-  DrawText(SX+16, SY+7*32, "MOVE JOYSTICK TO",FS_BIG,FC_YELLOW);
-  DrawText(SX+32, SY+8*32, "THE LOWER RIGHT",FS_BIG,FC_YELLOW);
-  DrawText(SX+16, SY+9*32, "AND PRESS BUTTON",FS_BIG,FC_YELLOW);
-  BackToFront();
-
-#ifdef __FreeBSD__
-  joy_ctrl.b1 = joy_ctrl.b2 = 0;
-#else
-  joy_ctrl.buttons = 0;
-#endif
-  while(Joystick() & JOY_BUTTON);
-#ifdef __FreeBSD__
-  while(!(joy_ctrl.b1 || joy_ctrl.b2))
-#else
-  while(!joy_ctrl.buttons)
-#endif
-  {
-    if (read(joystick_device, &joy_ctrl, sizeof(joy_ctrl)) != sizeof(joy_ctrl))
-    {
-      joystick_status=JOYSTICK_OFF;
-      goto error_out;
-    }
-    Delay(10);
-  }
-
-  new_joystick_xright = joy_ctrl.x;
-  new_joystick_ylower = joy_ctrl.y;
-
-  ClearWindow();
-  DrawText(SX+32, SY+16+7*32, "CENTER JOYSTICK",FS_BIG,FC_YELLOW);
-  DrawText(SX+16, SY+16+8*32, "AND PRESS BUTTON",FS_BIG,FC_YELLOW);
-  BackToFront();
-
-#ifdef __FreeBSD__
-  joy_ctrl.b1 = joy_ctrl.b2 = 0;
-#else
-  joy_ctrl.buttons = 0;
-#endif
-  while(Joystick() & JOY_BUTTON);
-#ifdef __FreeBSD__
-  while(!(joy_ctrl.b1 || joy_ctrl.b2))
-#else
-  while(!joy_ctrl.buttons)
-#endif
-  {
-    if (read(joystick_device, &joy_ctrl, sizeof(joy_ctrl)) != sizeof(joy_ctrl))
-    {
-      joystick_status=JOYSTICK_OFF;
-      goto error_out;
-    }
-    Delay(10);
-  }
-
-  new_joystick_xmiddle = joy_ctrl.x;
-  new_joystick_ymiddle = joy_ctrl.y;
-
-  setup.input[player_nr].joy.xleft = new_joystick_xleft;
-  setup.input[player_nr].joy.yupper = new_joystick_yupper;
-  setup.input[player_nr].joy.xright = new_joystick_xright;
-  setup.input[player_nr].joy.ylower = new_joystick_ylower;
-  setup.input[player_nr].joy.xmiddle = new_joystick_xmiddle;
-  setup.input[player_nr].joy.ymiddle = new_joystick_ymiddle;
-
-  CheckJoystickData();
-
-  DrawSetupScreen();
-  while(Joystick() & JOY_BUTTON);
-  return;
-
-#endif
-  error_out:
-
-#ifdef MSDOS
-  joy_nr[0] = '#';
-  joy_nr[1] = SETUP_2ND_JOYSTICK_ON(local_player->setup)+49;
-  joy_nr[2] = '\0';
-
-  remove_joystick();
-  ClearWindow();
-  DrawText(SX+32, SY+7*32, "CENTER JOYSTICK",FS_BIG,FC_YELLOW);
-  DrawText(SX+16+7*32, SY+8*32, joy_nr, FS_BIG,FC_YELLOW);
-  DrawText(SX+32, SY+9*32, "AND PRESS A KEY",FS_BIG,FC_YELLOW);
-  BackToFront();
-
-  for(clear_keybuf();!keypressed(););
-  install_joystick(JOY_TYPE_2PADS);
-
-  ClearWindow();
-  DrawText(SX+16, SY+7*32, "MOVE JOYSTICK TO",FS_BIG,FC_YELLOW);
-  DrawText(SX+16, SY+8*32, " THE UPPER LEFT ",FS_BIG,FC_YELLOW);
-  DrawText(SX+32, SY+9*32, "AND PRESS A KEY",FS_BIG,FC_YELLOW);
-  BackToFront();
-
-  for(clear_keybuf();!keypressed(););
-  calibrate_joystick(SETUP_2ND_JOYSTICK_ON(local_player->setup));
-
-  ClearWindow();
-  DrawText(SX+16, SY+7*32, "MOVE JOYSTICK TO",FS_BIG,FC_YELLOW);
-  DrawText(SX+32, SY+8*32, "THE LOWER RIGHT",FS_BIG,FC_YELLOW);
-  DrawText(SX+32, SY+9*32, "AND PRESS A KEY",FS_BIG,FC_YELLOW);
-  BackToFront();
-
-  for(clear_keybuf();!keypressed(););
-  calibrate_joystick(SETUP_2ND_JOYSTICK_ON(local_player->setup));
-
-  DrawSetupScreen();
-  return;
-#endif
-
-  ClearWindow();
-  DrawText(SX+16, SY+16, "NO JOYSTICK",FS_BIG,FC_YELLOW);
-  DrawText(SX+16, SY+48, " AVAILABLE ",FS_BIG,FC_YELLOW);
-  BackToFront();
-  Delay(3000);
-  DrawSetupScreen();
-}
-
-#endif
-
-
-
 void HandleGameActions()
 {
   if (game_status != PLAYING)
@@ -2124,255 +2234,229 @@ void HandleGameActions()
   BackToFront();
 }
 
-void HandleVideoButtons(int mx, int my, int button)
+/* ---------- new screen button stuff -------------------------------------- */
+
+/* graphic position and size values for buttons and scrollbars */
+#define SC_SCROLLBUTTON_XPOS		64
+#define SC_SCROLLBUTTON_YPOS		0
+#define SC_SCROLLBAR_XPOS		0
+#define SC_SCROLLBAR_YPOS		64
+
+#define SC_SCROLLBUTTON_XSIZE		32
+#define SC_SCROLLBUTTON_YSIZE		32
+
+#define SC_SCROLL_UP_XPOS		(SXSIZE - SC_SCROLLBUTTON_XSIZE)
+#define SC_SCROLL_UP_YPOS		SC_SCROLLBUTTON_YSIZE
+#define SC_SCROLL_DOWN_XPOS		SC_SCROLL_UP_XPOS
+#define SC_SCROLL_DOWN_YPOS		(SYSIZE - SC_SCROLLBUTTON_YSIZE)
+#define SC_SCROLL_VERTICAL_XPOS		SC_SCROLL_UP_XPOS
+#define SC_SCROLL_VERTICAL_YPOS	  (SC_SCROLL_UP_YPOS + SC_SCROLLBUTTON_YSIZE)
+#define SC_SCROLL_VERTICAL_XSIZE	SC_SCROLLBUTTON_XSIZE
+#define SC_SCROLL_VERTICAL_YSIZE	(SYSIZE - 3 * SC_SCROLLBUTTON_YSIZE)
+
+#define SC_BORDER_SIZE			14
+
+static struct
 {
-  return;
-
-
-
-
-  if (game_status != MAINMENU && game_status != PLAYING)
-    return;
-
-  switch(CheckVideoButtons(mx,my,button))
+  int xpos, ypos;
+  int x, y;
+  int gadget_id;
+  char *infotext;
+} scrollbutton_info[NUM_SCREEN_SCROLLBUTTONS] =
+{
   {
-    case BUTTON_VIDEO_EJECT:
-      TapeStop();
-      if (TAPE_IS_EMPTY(tape))
-      {
-	LoadTape(level_nr);
-	if (TAPE_IS_EMPTY(tape))
-	  Request("No tape for this level !",REQ_CONFIRM);
-      }
-      else
-      {
-	if (tape.changed)
-	  SaveTape(tape.level_nr);
-	TapeErase();
-      }
-      DrawCompleteVideoDisplay();
-      break;
-
-    case BUTTON_VIDEO_STOP:
-      TapeStop();
-      break;
-
-    case BUTTON_VIDEO_PAUSE:
-      TapeTogglePause();
-      break;
-
-    case BUTTON_VIDEO_REC:
-      if (TAPE_IS_STOPPED(tape))
-      {
-	TapeStartRecording();
-
-#ifndef MSDOS
-	if (options.network)
-	  SendToServer_StartPlaying();
-	else
-#endif
-	{
-	  game_status = PLAYING;
-	  InitGame();
-	}
-      }
-      else if (tape.pausing)
-      {
-	if (tape.playing)	/* PLAYING -> PAUSING -> RECORDING */
-	{
-	  tape.pos[tape.counter].delay = tape.delay_played;
-	  tape.playing = FALSE;
-	  tape.recording = TRUE;
-	  tape.changed = TRUE;
-
-	  DrawVideoDisplay(VIDEO_STATE_PLAY_OFF | VIDEO_STATE_REC_ON,0);
-	}
-	else
-	  TapeTogglePause();
-      }
-      break;
-
-    case BUTTON_VIDEO_PLAY:
-      if (TAPE_IS_EMPTY(tape))
-	break;
-
-      if (TAPE_IS_STOPPED(tape))
-      {
-	TapeStartPlaying();
-
-	game_status = PLAYING;
-	InitGame();
-      }
-      else if (tape.playing)
-      {
-	if (tape.pausing)			/* PAUSE -> PLAY */
-	  TapeTogglePause();
-	else if (!tape.fast_forward)		/* PLAY -> FAST FORWARD PLAY */
-	{
-	  tape.fast_forward = TRUE;
-	  DrawVideoDisplay(VIDEO_STATE_FFWD_ON, 0);
-	}
-	else if (!tape.pause_before_death)	/* FFWD PLAY -> + AUTO PAUSE */
-	{
-	  tape.pause_before_death = TRUE;
-	  DrawVideoDisplay(VIDEO_STATE_PBEND_ON, VIDEO_DISPLAY_LABEL_ONLY);
-	}
-	else					/* -> NORMAL PLAY */
-	{
-	  tape.fast_forward = FALSE;
-	  tape.pause_before_death = FALSE;
-	  DrawVideoDisplay(VIDEO_STATE_FFWD_OFF | VIDEO_STATE_PBEND_OFF, 0);
-	}
-      }
-      break;
-
-    default:
-      break;
+    SC_SCROLLBUTTON_XPOS + 0 * SC_SCROLLBUTTON_XSIZE,   SC_SCROLLBUTTON_YPOS,
+    SC_SCROLL_UP_XPOS,					SC_SCROLL_UP_YPOS,
+    SCREEN_CTRL_ID_SCROLL_UP,
+    "scroll level series up"
+  },
+  {
+    SC_SCROLLBUTTON_XPOS + 1 * SC_SCROLLBUTTON_XSIZE,   SC_SCROLLBUTTON_YPOS,
+    SC_SCROLL_DOWN_XPOS,				SC_SCROLL_DOWN_YPOS,
+    SCREEN_CTRL_ID_SCROLL_DOWN,
+    "scroll level series down"
   }
+};
 
-  BackToFront();
+static struct
+{
+  int xpos, ypos;
+  int x, y;
+  int width, height;
+  int type;
+  int gadget_id;
+  char *infotext;
+} scrollbar_info[NUM_SCREEN_SCROLLBARS] =
+{
+  {
+    SC_SCROLLBAR_XPOS,			SC_SCROLLBAR_YPOS,
+    SX + SC_SCROLL_VERTICAL_XPOS,	SY + SC_SCROLL_VERTICAL_YPOS,
+    SC_SCROLL_VERTICAL_XSIZE,		SC_SCROLL_VERTICAL_YSIZE,
+    GD_TYPE_SCROLLBAR_VERTICAL,
+    SCREEN_CTRL_ID_SCROLL_VERTICAL,
+    "scroll level series vertically"
+  }
+};
+
+static void CreateScreenScrollbuttons()
+{
+  Pixmap gd_pixmap = pix[PIX_MORE];
+  struct GadgetInfo *gi;
+  unsigned long event_mask;
+  int i;
+
+  for (i=0; i<NUM_SCREEN_SCROLLBUTTONS; i++)
+  {
+    int id = scrollbutton_info[i].gadget_id;
+    int x, y, width, height;
+    int gd_x1, gd_x2, gd_y1, gd_y2;
+
+    x = scrollbutton_info[i].x;
+    y = scrollbutton_info[i].y;
+
+    event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
+
+    x += SX;
+    y += SY;
+    width = SC_SCROLLBUTTON_XSIZE;
+    height = SC_SCROLLBUTTON_YSIZE;
+    gd_x1 = scrollbutton_info[i].xpos;
+    gd_y1 = scrollbutton_info[i].ypos;
+    gd_x2 = gd_x1;
+    gd_y2 = gd_y1 + SC_SCROLLBUTTON_YSIZE;
+
+    gi = CreateGadget(GDI_CUSTOM_ID, id,
+		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_INFO_TEXT, scrollbutton_info[i].infotext,
+		      GDI_X, x,
+		      GDI_Y, y,
+		      GDI_WIDTH, width,
+		      GDI_HEIGHT, height,
+		      GDI_TYPE, GD_TYPE_NORMAL_BUTTON,
+		      GDI_STATE, GD_BUTTON_UNPRESSED,
+		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y1,
+		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y2,
+		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_ACTION, HandleScreenGadgets,
+		      GDI_END);
+
+    if (gi == NULL)
+      Error(ERR_EXIT, "cannot create gadget");
+
+    screen_gadget[id] = gi;
+  }
 }
 
-void HandleSoundButtons(int mx, int my, int button)
+static void CreateScreenScrollbars()
 {
+  int i;
 
-
-
-  return;
-
-
-
-  if (game_status != PLAYING)
-    return;
-
-  switch(CheckSoundButtons(mx,my,button))
+  for (i=0; i<NUM_SCREEN_SCROLLBARS; i++)
   {
-    case BUTTON_SOUND_MUSIC:
-      if (setup.sound_music)
-      { 
-	setup.sound_music = FALSE;
-	FadeSound(background_loop[level_nr % num_bg_loops]);
-	DrawSoundDisplay(BUTTON_SOUND_MUSIC_OFF);
-      }
-      else if (sound_loops_allowed)
-      { 
-	setup.sound = setup.sound_music = TRUE;
-	PlaySoundLoop(background_loop[level_nr % num_bg_loops]);
-	DrawSoundDisplay(BUTTON_SOUND_MUSIC_ON);
-      }
-      else
-	DrawSoundDisplay(BUTTON_SOUND_MUSIC_OFF);
-      break;
+    int id = scrollbar_info[i].gadget_id;
+    Pixmap gd_pixmap = pix[PIX_MORE];
+    int gd_x1, gd_x2, gd_y1, gd_y2;
+    struct GadgetInfo *gi;
+    int items_max, items_visible, item_position;
+    unsigned long event_mask;
+    int num_page_entries = MAX_LEVEL_SERIES_ON_SCREEN - 1;
 
-    case BUTTON_SOUND_LOOPS:
-      if (setup.sound_loops)
-      { 
-	setup.sound_loops = FALSE;
-	DrawSoundDisplay(BUTTON_SOUND_LOOPS_OFF);
-      }
-      else if (sound_loops_allowed)
-      { 
-	setup.sound = setup.sound_loops = TRUE;
-	DrawSoundDisplay(BUTTON_SOUND_LOOPS_ON);
-      }
-      else
-	DrawSoundDisplay(BUTTON_SOUND_LOOPS_OFF);
-      break;
+#if 0
+    if (num_leveldirs <= MAX_LEVEL_SERIES_ON_SCREEN)
+      num_page_entries = num_leveldirs;
+    else
+      num_page_entries = MAX_LEVEL_SERIES_ON_SCREEN - 1;
 
-    case BUTTON_SOUND_SIMPLE:
-      if (setup.sound_simple)
-      { 
-	setup.sound_simple = FALSE;
-	DrawSoundDisplay(BUTTON_SOUND_SIMPLE_OFF);
-      }
-      else if (sound_status==SOUND_AVAILABLE)
-      { 
-	setup.sound = setup.sound_simple = TRUE;
-	DrawSoundDisplay(BUTTON_SOUND_SIMPLE_ON);
-      }
-      else
-	DrawSoundDisplay(BUTTON_SOUND_SIMPLE_OFF);
-      break;
+    items_max = MAX(num_leveldirs, num_page_entries);
+    items_visible = num_page_entries;
+    item_position = 0;
+#else
+    items_max = num_page_entries;
+    items_visible = num_page_entries;
+    item_position = 0;
+#endif
 
-    default:
-      break;
+    event_mask = GD_EVENT_MOVING | GD_EVENT_OFF_BORDERS;
+
+    gd_x1 = scrollbar_info[i].xpos;
+    gd_x2 = gd_x1 + scrollbar_info[i].width;
+    gd_y1 = scrollbar_info[i].ypos;
+    gd_y2 = scrollbar_info[i].ypos;
+
+    gi = CreateGadget(GDI_CUSTOM_ID, id,
+		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_INFO_TEXT, scrollbar_info[i].infotext,
+		      GDI_X, scrollbar_info[i].x,
+		      GDI_Y, scrollbar_info[i].y,
+		      GDI_WIDTH, scrollbar_info[i].width,
+		      GDI_HEIGHT, scrollbar_info[i].height,
+		      GDI_TYPE, scrollbar_info[i].type,
+		      GDI_SCROLLBAR_ITEMS_MAX, items_max,
+		      GDI_SCROLLBAR_ITEMS_VISIBLE, items_visible,
+		      GDI_SCROLLBAR_ITEM_POSITION, item_position,
+		      GDI_STATE, GD_BUTTON_UNPRESSED,
+		      GDI_DESIGN_UNPRESSED, gd_pixmap, gd_x1, gd_y1,
+		      GDI_DESIGN_PRESSED, gd_pixmap, gd_x2, gd_y2,
+		      GDI_BORDER_SIZE, SC_BORDER_SIZE,
+		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_ACTION, HandleScreenGadgets,
+		      GDI_END);
+
+    if (gi == NULL)
+      Error(ERR_EXIT, "cannot create gadget");
+
+    screen_gadget[id] = gi;
   }
-
-  BackToFront();
 }
 
-void HandleGameButtons(int mx, int my, int button)
+void CreateScreenGadgets()
 {
+  CreateScreenScrollbuttons();
+  CreateScreenScrollbars();
+}
 
+void MapChooseLevelGadgets()
+{
+  int num_leveldirs = numLevelDirInfoInGroup(leveldir_current);
+  int i;
 
-
-  return;
-
-
-
-  if (game_status != PLAYING)
+  if (num_leveldirs <= MAX_LEVEL_SERIES_ON_SCREEN)
     return;
 
-  switch(CheckGameButtons(mx,my,button))
+  for (i=0; i<NUM_SCREEN_GADGETS; i++)
+    MapGadget(screen_gadget[i]);
+}
+
+void UnmapChooseLevelGadgets()
+{
+  int i;
+
+  for (i=0; i<NUM_SCREEN_GADGETS; i++)
+    UnmapGadget(screen_gadget[i]);
+}
+
+static void HandleScreenGadgets(struct GadgetInfo *gi)
+{
+  int id = gi->custom_id;
+
+  if (game_status != CHOOSELEVEL)
+    return;
+
+  switch (id)
   {
-    case BUTTON_GAME_STOP:
-      if (AllPlayersGone)
-      {
-	CloseDoor(DOOR_CLOSE_1);
-	game_status = MAINMENU;
-	DrawMainMenu();
-	break;
-      }
-
-      if (Request("Do you really want to quit the game ?",
-		  REQ_ASK | REQ_STAY_CLOSED))
-      { 
-#ifndef MSDOS
-	if (options.network)
-	  SendToServer_StopPlaying();
-	else
-#endif
-	{
-	  game_status = MAINMENU;
-	  DrawMainMenu();
-	}
-      }
-      else
-	OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
+    case SCREEN_CTRL_ID_SCROLL_UP:
+      HandleChooseLevel(SX,SY + 32, 0,0, MB_MENU_MARK);
       break;
 
-    case BUTTON_GAME_PAUSE:
-      if (options.network)
-      {
-#ifndef MSDOS
-	if (tape.pausing)
-	  SendToServer_ContinuePlaying();
-	else
-	  SendToServer_PausePlaying();
-#endif
-      }
-      else
-	TapeTogglePause();
+    case SCREEN_CTRL_ID_SCROLL_DOWN:
+      HandleChooseLevel(SX,SY + SYSIZE - 32, 0,0, MB_MENU_MARK);
       break;
 
-    case BUTTON_GAME_PLAY:
-      if (tape.pausing)
-      {
-#ifndef MSDOS
-	if (options.network)
-	  SendToServer_ContinuePlaying();
-	else
-#endif
-	{
-	  tape.pausing = FALSE;
-	  DrawVideoDisplay(VIDEO_STATE_PAUSE_OFF,0);
-	}
-      }
+    case SCREEN_CTRL_ID_SCROLL_VERTICAL:
+      HandleChooseLevel(0,0, 999,gi->event.item_position, MB_MENU_INITIALIZE);
       break;
 
     default:
       break;
   }
-
-  BackToFront();
 }

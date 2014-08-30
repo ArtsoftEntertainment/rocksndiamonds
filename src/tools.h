@@ -62,6 +62,9 @@ void SetDrawtoField(int);
 void BackToFront();
 void FadeToFront();
 void ClearWindow();
+int getFontWidth(int, int);
+int getFontHeight(int, int);
+void DrawInitText(char *, int, int);
 void DrawTextF(int, int, int, char *, ...);
 void DrawTextFCentered(int, int, char *, ...);
 void DrawText(int, int, char *, int, int);
@@ -105,6 +108,8 @@ unsigned int OpenDoor(unsigned int);
 unsigned int CloseDoor(unsigned int);
 unsigned int GetDoorState(void);
 unsigned int MoveDoor(unsigned int);
+void DrawSpecialEditorDoor();
+void UndrawSpecialEditorDoor();
 int ReadPixel(Drawable, int, int);
 
 void CreateToolButtons();

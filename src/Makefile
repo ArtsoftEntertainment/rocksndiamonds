@@ -1,9 +1,9 @@
 #=============================================================================#
-# Makefile for Rocks'n'Diamonds 1.2                                           #
-# (c) 1995-98 Holger Schemel, aeglos@valinor.owl.de                           #
+# Makefile for Rocks'n'Diamonds 1.4.0                                         #
+# (c) 1995-1999 Holger Schemel, aeglos@valinor.owl.de                         #
 #=============================================================================#
 
-ifndef PLATFORM			# platform not defined -- try auto detection
+ifndef PLATFORM			# platform not specified -- try auto detection
 ifdef COMSPEC
 PLATFORM = dos
 else
@@ -18,29 +18,12 @@ X11_INCL = -I$(XINC_PATH)
 X11_LIBS = -L$(XLIB_PATH)
 endif
 
-ifndef GAME_DIR			# path to game data not defined -- try '.'
-GAME_DIR = .
-endif
-
-ifndef SCORE_ENTRIES		# number of score entries per player undefined
-SCORE_ENTRIES = MANY_PER_NAME
-endif
-
-
-# The Xpm library is no longer needed to build this program,
-# but is used to load graphics if XPM_INCLUDE_FILE is defined.
-# If you want to use the Xpm library, convert the PCX files to XPM
-# files (and you need corresponding mask files in X11 Bitmap format).
-
-# XPM_INCLUDE_FILE = -DXPM_INCLUDE_FILE="<X11/xpm.h>"
-# EXTRA_X11_LIBS = -lXpm
-
 
 ifeq ($(PLATFORM),dos)		# DOS / Windows
 
 RM = del
-PROGNAME = ..\rocks.exe
-LIBS = -lm -lalleg
+PROGNAME = ../rocks.exe
+LIBS = -s -lm -lalleg
 
 else				# Unix
 
@@ -52,21 +35,35 @@ EXTRA_LIBS = -lnsl -lsocket -R$(XLIB_PATH)
 endif
 
 INCL = $(X11_INCL)
-LIBS = $(X11_LIBS) $(EXTRA_X11_LIBS) -lX11 -lm $(EXTRA_LIBS)
+LIBS = $(X11_LIBS) -lX11 -lm $(EXTRA_LIBS)
 
 endif
 
 
-CONFIG_GAME_DIR = -DGAME_DIR="\"$(GAME_DIR)\""
+ifdef RO_GAME_DIR		# path to read-only game data specified
+CONFIG_RO_GAME_DIR = -DRO_GAME_DIR="\"$(RO_GAME_DIR)\""
+endif
+
+ifdef RW_GAME_DIR		# path to writable game data specified
+CONFIG_RW_GAME_DIR = -DRW_GAME_DIR="\"$(RW_GAME_DIR)\""
+endif
+
+ifdef SCORE_ENTRIES		# number of score entries per player specified
 CONFIG_SCORE_ENTRIES = -D$(SCORE_ENTRIES)
+endif
 
-CONFIG = $(CONFIG_GAME_DIR) $(SOUNDS) $(JOYSTICK)	\
-	 $(CONFIG_SCORE_ENTRIES) $(XPM_INCLUDE_FILE)
+CONFIG_GAME_DIR = $(CONFIG_RO_GAME_DIR) $(CONFIG_RW_GAME_DIR)
 
-# OPTIONS = -DDEBUG -g -Wall	# only for debugging purposes
+
+CONFIG = $(CONFIG_GAME_DIR) $(CONFIG_SCORE_ENTRIES) $(SOUNDS) $(JOYSTICK)
+
+# OPTIONS = -DDEBUG -g -Wall -ansi -pedantic	# only for debugging purposes
+# OPTIONS = -DDEBUG -g -Wall			# only for debugging purposes
+# OPTIONS = -O3 -Wall -ansi -pedantic
+# OPTIONS = -O3 -Wall
 OPTIONS = -O3
 
-# SYSTEM = -DSYSV -Ae		# maybe needed for HP-UX
+# SYSTEM = -DSYSV -Ae		# may be needed for HP-UX
 
 CFLAGS = $(OPTIONS) $(SYSTEM) $(INCL) $(CONFIG)
 

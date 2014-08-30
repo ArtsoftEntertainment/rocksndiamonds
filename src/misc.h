@@ -16,23 +16,30 @@
 
 #include "main.h"
 
-#define INIT_COUNTER		0
-#define READ_COUNTER		1
+/* values for InitCounter() and Counter() */
+#define INIT_COUNTER			0
+#define READ_COUNTER			1
 
-#define NEW_RANDOMIZE		-1
+/* values for InitRND() */
+#define NEW_RANDOMIZE			-1
 
-#define ERR_RETURN		0
-#define ERR_WARN		(1 << 0)
-#define ERR_EXIT		(1 << 1)
-#define ERR_HELP		(1 << 2)
-#define ERR_SOUND_SERVER	(1 << 3)
-#define ERR_NETWORK_SERVER	(1 << 4)
-#define ERR_NETWORK_CLIENT	(1 << 5)
-#define ERR_FROM_SERVER		(ERR_SOUND_SERVER | ERR_NETWORK_SERVER)
-#define ERR_EXIT_HELP		(ERR_EXIT | ERR_HELP)
-#define ERR_EXIT_SOUND_SERVER	(ERR_EXIT | ERR_SOUND_SERVER)
-#define ERR_EXIT_NETWORK_SERVER	(ERR_EXIT | ERR_NETWORK_SERVER)
-#define ERR_EXIT_NETWORK_CLIENT	(ERR_EXIT | ERR_NETWORK_CLIENT)
+/* values for Error() */
+#define ERR_RETURN			0
+#define ERR_WARN			(1 << 0)
+#define ERR_EXIT			(1 << 1)
+#define ERR_HELP			(1 << 2)
+#define ERR_SOUND_SERVER		(1 << 3)
+#define ERR_NETWORK_SERVER		(1 << 4)
+#define ERR_NETWORK_CLIENT		(1 << 5)
+#define ERR_FROM_SERVER			(ERR_SOUND_SERVER | ERR_NETWORK_SERVER)
+#define ERR_EXIT_HELP			(ERR_EXIT | ERR_HELP)
+#define ERR_EXIT_SOUND_SERVER		(ERR_EXIT | ERR_SOUND_SERVER)
+#define ERR_EXIT_NETWORK_SERVER		(ERR_EXIT | ERR_NETWORK_SERVER)
+#define ERR_EXIT_NETWORK_CLIENT		(ERR_EXIT | ERR_NETWORK_CLIENT)
+
+/* values for getFile...() and putFile...() */
+#define BYTE_ORDER_BIG_ENDIAN		0
+#define BYTE_ORDER_LITTLE_ENDIAN	1
 
 void InitCounter(void);
 unsigned long Counter(void);
@@ -57,6 +64,12 @@ void GetOptions(char **);
 void Error(int, char *, ...);
 void *checked_malloc(unsigned long);
 void *checked_calloc(unsigned long);
+short getFile16BitInteger(FILE *, int);
+void putFile16BitInteger(FILE *, short, int);
+int getFile32BitInteger(FILE *, int);
+void putFile32BitInteger(FILE *, int, int);
+void getFileChunk(FILE *, char *, int *, int);
+void putFileChunk(FILE *, char *, int, int);
 char *getKeyNameFromKeySym(KeySym);
 char *getX11KeyNameFromKeySym(KeySym);
 KeySym getKeySymFromX11KeyName(char *);
@@ -65,7 +78,20 @@ char *getJoyNameFromJoySymbol(int);
 int getJoySymbolFromJoyName(char *);
 int getJoystickNrFromDeviceName(char *);
 
+struct LevelDirInfo *newLevelDirInfo();
+void pushLevelDirInfo(struct LevelDirInfo **, struct LevelDirInfo *);
+int numLevelDirInfo(struct LevelDirInfo *);
+boolean validLevelSeries(struct LevelDirInfo *);
+struct LevelDirInfo *getFirstValidLevelSeries(struct LevelDirInfo *);
+struct LevelDirInfo *getLevelDirInfoFirstGroupEntry(struct LevelDirInfo *);
+int numLevelDirInfoInGroup(struct LevelDirInfo *);
+int posLevelDirInfo(struct LevelDirInfo *);
+struct LevelDirInfo *getLevelDirInfoFromPos(struct LevelDirInfo *, int);
+struct LevelDirInfo *getLevelDirInfoFromFilename(char *);
+void dumpLevelDirInfo(struct LevelDirInfo *, int);
+void sortLevelDirInfo(struct LevelDirInfo **,
+		      int (*compare_function)(const void *, const void *));
+
 void debug_print_timestamp(int, char *);
-void print_debug(char *);
 
 #endif /* MISC_H */

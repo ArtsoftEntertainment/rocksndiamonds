@@ -15,6 +15,8 @@
 #include "image.h"
 #include "misc.h"
 
+#define PCX_DEBUG		FALSE
+
 #define PCX_MAGIC		0x0a	/* first byte in a PCX image file    */
 #define PCX_LAST_VERSION	5	/* last acceptable version number    */
 #define PCX_ENCODING		1	/* PCX encoding method               */
@@ -44,6 +46,9 @@ struct PCX_Header
   unsigned short palette_type;	/* 0 = undef, 1 = color, 2 = grayscale */
   unsigned char filler[58];	/* fill to struct size of 128          */
 };
+
+/* global PCX error value */
+int errno_pcx = PCX_Success;
 
 static byte *PCX_ReadBitmap(Image *image, byte *buffer_ptr, byte *buffer_last)
 {
@@ -127,12 +132,18 @@ Image *Read_PCX_to_Image(char *filename)
   int width, height, depth;
   int i;
 
+  errno_pcx = PCX_Success;
+
   if (!(file = fopen(filename, "r")))
+  {
+    errno_pcx = PCX_OpenFailed;
     return NULL;
+  }
 
   if (fseek(file, 0, SEEK_END) == -1)
   {
     fclose(file);
+    errno_pcx = PCX_ReadFailed;
     return NULL;
   }
 
@@ -143,6 +154,8 @@ Image *Read_PCX_to_Image(char *filename)
   {
     /* PCX file is too short to contain a valid PCX header */
     fclose(file);
+
+    errno_pcx = PCX_FileInvalid;
     return NULL;
   }
 
@@ -151,6 +164,7 @@ Image *Read_PCX_to_Image(char *filename)
   if (fread(file_buffer, 1, file_length, file) != file_length)
   {
     fclose(file);
+    errno_pcx = PCX_ReadFailed;
     return NULL;
   }
 
@@ -177,13 +191,16 @@ Image *Read_PCX_to_Image(char *filename)
       width < 0 || height < 0)
   {
     free(file_buffer);
+
+    errno_pcx = PCX_FileInvalid;
     return NULL;
   }
 
+#if PCX_DEBUG
   if (options.verbose)
   {
     printf("%s is a %dx%d PC Paintbrush image with %d bitplanes\n",
-	   filename, pcx.xmax, pcx.ymax,
+	   filename, width, height,
 	   pcx.color_planes);
     printf("depth: %d\n", pcx.bits_per_pixel);
     printf("color_planes: %d\n", pcx.color_planes);
@@ -192,6 +209,7 @@ Image *Read_PCX_to_Image(char *filename)
 	   (pcx.palette_type == 1 ? "color" :
 	    pcx.palette_type == 2 ? "grayscale" : "undefined"));
   }
+#endif
 
   /* allocate new image structure */
   image = newImage(width, height, depth);
@@ -204,6 +222,8 @@ Image *Read_PCX_to_Image(char *filename)
   {
     free(file_buffer);
     freeImage(image);
+
+    errno_pcx = PCX_FileInvalid;
     return NULL;
   }
 
@@ -211,6 +231,7 @@ Image *Read_PCX_to_Image(char *filename)
   {
     /* PCX file is too short to contain a valid 256 colors colormap */
     fclose(file);
+    errno_pcx = PCX_ColorFailed;
     return NULL;
   }
 
@@ -219,6 +240,7 @@ Image *Read_PCX_to_Image(char *filename)
   {
     free(file_buffer);
     freeImage(image);
+    errno_pcx = PCX_ColorFailed;
     return NULL;
   }
 
@@ -230,8 +252,10 @@ Image *Read_PCX_to_Image(char *filename)
     if (image->rgb.color_used[i])
       image->rgb.used++;
 
+#if PCX_DEBUG
   if (options.verbose)
     printf("Read_PCX_to_Image: %d colors found\n", image->rgb.used);
+#endif
 
   return image;
 }

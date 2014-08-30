@@ -1,6 +1,6 @@
 #=============================================================================#
-# Makefile for Rocks'n'Diamonds 1.2                                           #
-# (c) 1995-98 Holger Schemel, aeglos@valinor.owl.de                           #
+# Makefile for Rocks'n'Diamonds 1.4.0                                         #
+# (c) 1995-1999 Holger Schemel, aeglos@valinor.owl.de                         #
 #=============================================================================#
 
 #-----------------------------------------------------------------------------#
@@ -17,12 +17,16 @@ CC = gcc
 # PLATFORM = dos
 
 # specify path to X11 on your system
-# if undefined, use system defaults (works fine with Linux/gcc)
-# X11_PATH = /usr/X11
+# if undefined, use system defaults (works with Linux/gcc/libc5)
+X11_PATH = /usr/X11
 
-# specify path to install game data (graphics, sounds, levels, scores)
+# specify directory for read-only game data (like graphics, sounds, levels)
 # default is '.', so you can play without installing game data somewhere
-# GAME_DIR = /usr/local/games
+# RO_GAME_DIR = /usr/games
+
+# specify directory for writable game data (like highscore files)
+# default is '.', so you can play without installing game data somewhere
+# RW_GAME_DIR = /var/games
 
 # uncomment this if your system has no joystick include file
 # JOYSTICK = -DNO_JOYSTICK
@@ -47,7 +51,6 @@ MAKE = make
 
 SRC_DIR = src
 MAKE_CMD = @$(MAKE) -C $(SRC_DIR)
-
 
 all:
 	$(MAKE_CMD)

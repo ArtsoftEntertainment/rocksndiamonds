@@ -167,9 +167,20 @@ void WaitUntilDelayReached(unsigned long *counter_var, unsigned long delay)
   *counter_var = actual_counter;
 }
 
+/* int2str() returns a number converted to a string;
+   the used memory is static, but will be overwritten by later calls,
+   so if you want to save the result, copy it to a private string buffer;
+   there can be 10 local calls of int2str() without buffering the result --
+   the 11th call will then destroy the result from the first call and so on.
+*/
+
 char *int2str(int number, int size)
 {
-  static char s[40];
+  static char shift_array[10][40];
+  static int shift_counter = 0;
+  char *s = shift_array[shift_counter];
+
+  shift_counter = (shift_counter + 1) % 10;
 
   if (size > 20)
     size = 20;
@@ -323,7 +334,12 @@ char *getPath3(char *path1, char *path2, char *path3)
 
 char *getStringCopy(char *s)
 {
-  char *s_copy = checked_malloc(strlen(s) + 1);
+  char *s_copy;
+
+  if (s == NULL)
+    return NULL;
+
+  s_copy = checked_malloc(strlen(s) + 1);
 
   strcpy(s_copy, s);
   return s_copy;
@@ -336,6 +352,7 @@ char *getStringToLower(char *s)
 
   while (*s)
     *s_ptr++ = tolower(*s++);
+  *s_ptr = '\0';
 
   return s_copy;
 }
@@ -379,8 +396,9 @@ void GetOptions(char *argv[])
   options.display_name = NULL;
   options.server_host = NULL;
   options.server_port = 0;
-  options.base_directory = BASE_PATH;
-  options.level_directory = BASE_PATH "/" LEVELS_DIRECTORY;
+  options.ro_base_directory = RO_BASE_PATH;
+  options.rw_base_directory = RW_BASE_PATH;
+  options.level_directory = RO_BASE_PATH "/" LEVELS_DIRECTORY;
   options.serveronly = FALSE;
   options.network = FALSE;
   options.verbose = FALSE;
@@ -425,7 +443,7 @@ void GetOptions(char *argv[])
 	     "Options:\n"
 	     "  -d, --display machine:0       X server display\n"
 	     "  -b, --basepath directory      alternative base directory\n"
-	     "  -l, --levels directory        alternative level directory\n"
+	     "  -l, --level directory        alternative level directory\n"
 	     "  -s, --serveronly              only start network server\n"
 	     "  -n, --network                 network multiplayer game\n"
 	     "  -v, --verbose                 verbose mode\n",
@@ -446,13 +464,15 @@ void GetOptions(char *argv[])
       if (option_arg == NULL)
 	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
 
-      options.base_directory = option_arg;
+      /* this should be extended to separate options for ro and rw data */
+      options.ro_base_directory = option_arg;
+      options.rw_base_directory = option_arg;
       if (option_arg == next_option)
 	options_left++;
 
       /* adjust path for level directory accordingly */
       options.level_directory =
-	getPath2(options.base_directory, LEVELS_DIRECTORY);
+	getPath2(options.ro_base_directory, LEVELS_DIRECTORY);
     }
     else if (strncmp(option, "-levels", option_len) == 0)
     {
@@ -577,6 +597,84 @@ void *checked_calloc(unsigned long size)
     Error(ERR_EXIT, "cannot allocate %d bytes -- out of memory", size);
 
   return ptr;
+}
+
+short getFile16BitInteger(FILE *file, int byte_order)
+{
+  if (byte_order == BYTE_ORDER_BIG_ENDIAN)
+    return ((fgetc(file) <<  8) |
+	    (fgetc(file) <<  0));
+  else		 /* BYTE_ORDER_LITTLE_ENDIAN */
+    return ((fgetc(file) <<  0) |
+	    (fgetc(file) <<  8));
+}
+
+void putFile16BitInteger(FILE *file, short value, int byte_order)
+{
+  if (byte_order == BYTE_ORDER_BIG_ENDIAN)
+  {
+    fputc((value >>  8) & 0xff, file);
+    fputc((value >>  0) & 0xff, file);
+  }
+  else		 /* BYTE_ORDER_LITTLE_ENDIAN */
+  {
+    fputc((value >>  0) & 0xff, file);
+    fputc((value >>  8) & 0xff, file);
+  }
+}
+
+int getFile32BitInteger(FILE *file, int byte_order)
+{
+  if (byte_order == BYTE_ORDER_BIG_ENDIAN)
+    return ((fgetc(file) << 24) |
+	    (fgetc(file) << 16) |
+	    (fgetc(file) <<  8) |
+	    (fgetc(file) <<  0));
+  else		 /* BYTE_ORDER_LITTLE_ENDIAN */
+    return ((fgetc(file) <<  0) |
+	    (fgetc(file) <<  8) |
+	    (fgetc(file) << 16) |
+	    (fgetc(file) << 24));
+}
+
+void putFile32BitInteger(FILE *file, int value, int byte_order)
+{
+  if (byte_order == BYTE_ORDER_BIG_ENDIAN)
+  {
+    fputc((value >> 24) & 0xff, file);
+    fputc((value >> 16) & 0xff, file);
+    fputc((value >>  8) & 0xff, file);
+    fputc((value >>  0) & 0xff, file);
+  }
+  else		 /* BYTE_ORDER_LITTLE_ENDIAN */
+  {
+    fputc((value >>  0) & 0xff, file);
+    fputc((value >>  8) & 0xff, file);
+    fputc((value >> 16) & 0xff, file);
+    fputc((value >> 24) & 0xff, file);
+  }
+}
+
+void getFileChunk(FILE *file, char *chunk_buffer, int *chunk_length,
+		  int byte_order)
+{
+  const int chunk_identifier_length = 4;
+
+  /* read chunk identifier */
+  fgets(chunk_buffer, chunk_identifier_length + 1, file);
+
+  /* read chunk length */
+  *chunk_length = getFile32BitInteger(file, byte_order);
+}
+
+void putFileChunk(FILE *file, char *chunk_name, int chunk_length,
+		  int byte_order)
+{
+  /* write chunk identifier */
+  fputs(chunk_name, file);
+
+  /* write chunk length */
+  putFile32BitInteger(file, chunk_length, byte_order);
 }
 
 #define TRANSLATE_KEYSYM_TO_KEYNAME	0
@@ -974,9 +1072,211 @@ int getJoystickNrFromDeviceName(char *device_name)
   return joystick_nr;
 }
 
-/* ----------------------------------------------------------------- */
-/* the following is only for debugging purpose and normally not used */
-/* ----------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
+/* some functions to handle lists of level directories                       */
+/* ------------------------------------------------------------------------- */
+
+struct LevelDirInfo *newLevelDirInfo()
+{
+  return checked_calloc(sizeof(struct LevelDirInfo));
+}
+
+void pushLevelDirInfo(struct LevelDirInfo **node_first,
+		      struct LevelDirInfo *node_new)
+{
+  node_new->next = *node_first;
+  *node_first = node_new;
+}
+
+int numLevelDirInfo(struct LevelDirInfo *node)
+{
+  int num = 0;
+
+  while (node)
+  {
+    num++;
+    node = node->next;
+  }
+
+  return num;
+}
+
+boolean validLevelSeries(struct LevelDirInfo *node)
+{
+  return (node != NULL && !node->node_group && !node->parent_link);
+}
+
+struct LevelDirInfo *getFirstValidLevelSeries(struct LevelDirInfo *node)
+{
+  if (node == NULL)		/* start with first level directory entry */
+    return getFirstValidLevelSeries(leveldir_first);
+  else if (node->node_group)	/* enter level group (step down into tree) */
+    return getFirstValidLevelSeries(node->node_group);
+  else if (node->parent_link)	/* skip start entry of level group */
+  {
+    if (node->next)		/* get first real level series entry */
+      return getFirstValidLevelSeries(node->next);
+    else			/* leave empty level group and go on */
+      return getFirstValidLevelSeries(node->node_parent->next);
+  }
+  else				/* this seems to be a regular level series */
+    return node;
+}
+
+struct LevelDirInfo *getLevelDirInfoFirstGroupEntry(struct LevelDirInfo *node)
+{
+  if (node == NULL)
+    return NULL;
+
+  if (node->node_parent == NULL)		/* top level group */
+    return leveldir_first;
+  else						/* sub level group */
+    return node->node_parent->node_group;
+}
+
+int numLevelDirInfoInGroup(struct LevelDirInfo *node)
+{
+  return numLevelDirInfo(getLevelDirInfoFirstGroupEntry(node));
+}
+
+int posLevelDirInfo(struct LevelDirInfo *node)
+{
+  struct LevelDirInfo *node_cmp = getLevelDirInfoFirstGroupEntry(node);
+  int pos = 0;
+
+  while (node_cmp)
+  {
+    if (node_cmp == node)
+      return pos;
+
+    pos++;
+    node_cmp = node_cmp->next;
+  }
+
+  return 0;
+}
+
+struct LevelDirInfo *getLevelDirInfoFromPos(struct LevelDirInfo *node, int pos)
+{
+  struct LevelDirInfo *node_default = node;
+  int pos_cmp = 0;
+
+  while (node)
+  {
+    if (pos_cmp == pos)
+      return node;
+
+    pos_cmp++;
+    node = node->next;
+  }
+
+  return node_default;
+}
+
+struct LevelDirInfo *getLevelDirInfoFromFilenameExt(struct LevelDirInfo *node,
+						    char *filename)
+{
+  if (filename == NULL)
+    return NULL;
+
+  while (node)
+  {
+    if (node->node_group)
+    {
+      struct LevelDirInfo *node_group;
+
+      node_group = getLevelDirInfoFromFilenameExt(node->node_group, filename);
+
+      if (node_group)
+	return node_group;
+    }
+    else if (!node->parent_link)
+    {
+      if (strcmp(filename, node->filename) == 0)
+	return node;
+    }
+
+    node = node->next;
+  }
+
+  return NULL;
+}
+
+struct LevelDirInfo *getLevelDirInfoFromFilename(char *filename)
+{
+  return getLevelDirInfoFromFilenameExt(leveldir_first, filename);
+}
+
+void dumpLevelDirInfo(struct LevelDirInfo *node, int depth)
+{
+  int i;
+
+  while (node)
+  {
+    for (i=0; i<depth * 3; i++)
+      printf(" ");
+
+    printf("filename == '%s'\n", node->filename);
+
+    if (node->node_group != NULL)
+      dumpLevelDirInfo(node->node_group, depth + 1);
+
+    node = node->next;
+  }
+}
+
+void sortLevelDirInfo(struct LevelDirInfo **node_first,
+		      int (*compare_function)(const void *, const void *))
+{
+  int num_nodes = numLevelDirInfo(*node_first);
+  struct LevelDirInfo **sort_array;
+  struct LevelDirInfo *node = *node_first;
+  int i = 0;
+
+  if (num_nodes == 0)
+    return;
+
+  /* allocate array for sorting structure pointers */
+  sort_array = checked_calloc(num_nodes * sizeof(struct LevelDirInfo *));
+
+  /* writing structure pointers to sorting array */
+  while (i < num_nodes && node)		/* double boundary check... */
+  {
+    sort_array[i] = node;
+
+    i++;
+    node = node->next;
+  }
+
+  /* sorting the structure pointers in the sorting array */
+  qsort(sort_array, num_nodes, sizeof(struct LevelDirInfo *),
+	compare_function);
+
+  /* update the linkage of list elements with the sorted node array */
+  for (i=0; i<num_nodes - 1; i++)
+    sort_array[i]->next = sort_array[i + 1];
+  sort_array[num_nodes - 1]->next = NULL;
+
+  /* update the linkage of the main list anchor pointer */
+  *node_first = sort_array[0];
+
+  free(sort_array);
+
+  /* now recursively sort the level group structures */
+  node = *node_first;
+  while (node)
+  {
+    if (node->node_group != NULL)
+      sortLevelDirInfo(&node->node_group, compare_function);
+
+    node = node->next;
+  }
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* the following is only for debugging purpose and normally not used         */
+/* ------------------------------------------------------------------------- */
 
 #define DEBUG_NUM_TIMESTAMPS	3
 
