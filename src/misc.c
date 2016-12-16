@@ -24,7 +24,7 @@
 #include <sys/param.h>
 #include <sys/types.h>
 
-void microsleep(unsigned long usec)
+void microsleep(unsigned int usec)
 {
   struct timeval delay;
 
@@ -36,7 +36,7 @@ void microsleep(unsigned long usec)
 	    progname);
 }
 
-unsigned long be2long(unsigned long *be)	/* big-endian -> longword */
+unsigned int be2int(unsigned int *be)	/* big-endian -> longword */
 {
   unsigned char *ptr = (unsigned char *)be;
 
@@ -56,7 +56,7 @@ unsigned int RND(unsigned int max)
   return(rand() % max);
 }
 
-unsigned int InitRND(long seed)
+unsigned int InitRND(int seed)
 {
   struct timeval current_time;
 
@@ -157,8 +157,8 @@ void DoAnimation()
 
 void HandleAnimation(int mode)
 {
-  static long animstart_delay = -1;
-  static long animstart_delay_value = 0;
+  static int animstart_delay = -1;
+  static int animstart_delay_value = 0;
   static BOOL anim_restart = TRUE;
   static BOOL reset_delay = TRUE;
   static int toon_nr = 0;
@@ -208,7 +208,7 @@ BOOL AnimateToon(int toon_nr, BOOL restart)
   static delta_x = 0, delta_y = 0;
   static int frame = 0, frame_step = 1;
   static BOOL horiz_move, vert_move;
-  static long anim_delay = 0;
+  static int anim_delay = 0;
   static int anim_delay_value = 0;
   struct AnimInfo *anim = &toon[toon_nr];
   static int width,height;

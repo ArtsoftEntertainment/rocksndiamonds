@@ -36,7 +36,7 @@ char	       *sound_device_name = SOUND_DEVICE;
 int		joystick_device = 0;
 char	       *joystick_device_name[2] = { DEV_JOYSTICK_0, DEV_JOYSTICK_1 };
 int     	width, height;
-unsigned long	pen_fg, pen_bg;
+unsigned int	pen_fg, pen_bg;
 
 int		game_status = MAINMENU;
 int		button_status = MB_NOT_PRESSED, motion_status = FALSE;

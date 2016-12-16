@@ -26,7 +26,7 @@
 #define VOXWARE
 #endif
 /* where is the right declaration for 'ioctl'? */
-extern void ioctl(long, long, void *);
+extern void ioctl(int, int, void *);
 #endif
 
 #define SND_BLOCKSIZE 4096
@@ -89,48 +89,8 @@ extern void ioctl(long, long, void *);
 #define SOUND_STATUS	SOUND_AVAILABLE
 #endif
 
-struct SoundHeader_SUN
-{
-  unsigned long magic;
-  unsigned long hdr_size;
-  unsigned long data_size;
-  unsigned long encoding;
-  unsigned long sample_rate;
-  unsigned long channels;
-};
-
-struct SoundHeader_8SVX
-{
-  char magic_FORM[4];
-  unsigned long chunk_size;
-  char magic_8SVX[4];
-};
-
-struct SoundInfo
-{ 
-  char *name;
-  char *file_ptr, *data_ptr;
-  long file_len, data_len;
-};
-
-struct SoundControl
-{
-  int nr;
-  int volume;
-  int stereo;
-  BOOL active;
-  BOOL loop;
-  BOOL fade_sound;
-  BOOL stop_sound;
-  BOOL stop_all_sounds;
-  int playingtime;
-  long playingpos;
-  long data_len;
-  char *data_ptr;
-};
-
 /* function from "misc.c" */
-unsigned long be2long(unsigned long *);
+unsigned int be2int(unsigned int *);
 
 /* sound server functions */
 void SoundServer(void);

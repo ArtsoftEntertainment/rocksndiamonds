@@ -94,10 +94,10 @@ int TapePlayAction(void);
 BOOL TapePlayDelay(void);
 void TapeStop(void);
 void TapeErase(void);
-void DrawVideoDisplay(unsigned long, unsigned long);
-void DrawSoundDisplay(unsigned long);
-void DrawGameButton(unsigned long);
-void DrawChooseButton(unsigned long);
-void DrawConfirmButton(unsigned long);
+void DrawVideoDisplay(unsigned int, unsigned int);
+void DrawSoundDisplay(unsigned int);
+void DrawGameButton(unsigned int);
+void DrawChooseButton(unsigned int);
+void DrawConfirmButton(unsigned int);
 
 #endif

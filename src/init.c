@@ -187,10 +187,10 @@ void InitWindow(int argc, char *argv[])
   XClassHint class_hints;
   XTextProperty windowName, iconName;
   XGCValues gc_values;
-  unsigned long gc_valuemask;
+  unsigned int gc_valuemask;
   char *window_name = "Rocks'n'Diamonds";
   char *icon_name = "Rocks'n'Diamonds";
-  long window_event_mask;
+  int window_event_mask;
 
   width = WIN_XSIZE;
   height = WIN_YSIZE;
@@ -276,9 +276,9 @@ void InitGfx()
   unsigned int width,height;
   int hot_x,hot_y;
   XGCValues gc_values;
-  unsigned long gc_valuemask;
+  unsigned int gc_valuemask;
   XGCValues clip_gc_values;
-  unsigned long clip_gc_valuemask;
+  unsigned int clip_gc_valuemask;
   char filename[256];
   Pixmap shapemask;
 

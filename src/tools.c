@@ -112,7 +112,7 @@ void BackToFront()
 
 void FadeToFront()
 {
-  long fading_delay = 300000;
+  int fading_delay = 300000;
 
   if (fading_on && (redraw_mask & REDRAW_FIELD))
   {
@@ -901,7 +901,7 @@ BOOL AreYouSure(char *text, unsigned int ays_state)
       ty--; 
       continue; 
     }
-    sprintf(txt,text); 
+    sprintf(txt,"%s",text); 
     txt[tl]=0;
     DrawTextExt(pix[PIX_DB_DOOR],gc,
 		DOOR_GFX_PAGEX1+51-(tl*14)/2,SY+ty*16,txt,FS_SMALL,FC_YELLOW);
@@ -1185,11 +1185,11 @@ void MoveDoor(unsigned int door_state)
     door2 = door_state & DOOR_ACTION_2;
 }
 
-long mainCounter(int mode)
+int mainCounter(int mode)
 {
   static struct timeval base_time = { 0, 0 };
   struct timeval current_time;
-  long counter_ms;
+  int counter_ms;
 
   gettimeofday(&current_time,NULL);
   if (mode==0 || current_time.tv_sec<base_time.tv_sec)
@@ -1209,40 +1209,40 @@ void InitCounter() /* set counter back to zero */
   mainCounter(0);
 }
 
-long Counter()	/* returns 1/100 secs since last call of InitCounter() */
+int Counter()	/* returns 1/100 secs since last call of InitCounter() */
 {
   return(mainCounter(1));
 }
 
-long Counter2()	/* returns 1/1000 secs since last call of InitCounter() */
+int Counter2()	/* returns 1/1000 secs since last call of InitCounter() */
 {
   return(mainCounter(2));
 }
 
-void WaitCounter(long value) 	/* wait for counter to reach value */
+void WaitCounter(int value) 	/* wait for counter to reach value */
 {
-  long wait;
+  int wait;
 
   while((wait=value-Counter())>0)
     microsleep(wait*10000);
 }
 
-void WaitCounter2(long value) 	/* wait for counter to reach value */
+void WaitCounter2(int value) 	/* wait for counter to reach value */
 {
-  long wait;
+  int wait;
 
   while((wait=value-Counter2())>0)
     microsleep(wait*1000);
 }
 
-void Delay(long value)
+void Delay(int value)
 {
   microsleep(value);
 }
 
-BOOL DelayReached(long *counter_var, int delay)
+BOOL DelayReached(int *counter_var, int delay)
 {
-  long actual_counter = Counter();
+  int actual_counter = Counter();
 
   if (actual_counter>*counter_var+delay || actual_counter<*counter_var)
   {
@@ -1275,6 +1275,7 @@ void LoadJoystickData()
   int i;
   char cookie[256];
   FILE *file;
+  int ignored;
 
   if (joystick_status==JOYSTICK_OFF)
     return;
@@ -1282,7 +1283,7 @@ void LoadJoystickData()
   if (!(file=fopen(JOYDAT_FILE,"r")))
     return;
 
-  fscanf(file,"%s",cookie);
+  ignored = fscanf(file,"%s",cookie);
   if (strcmp(cookie,JOYSTICK_COOKIE))	/* ungültiges Format? */
   {
     fprintf(stderr,"%s: wrong format of joystick file!\n",progname);
@@ -1292,11 +1293,13 @@ void LoadJoystickData()
 
   for(i=0;i<2;i++)
   {
-    fscanf(file,"%s",cookie);
-    fscanf(file, "%d %d %d \n",
-	   &joystick[i].xleft, &joystick[i].xmiddle, &joystick[i].xright);
-    fscanf(file, "%d %d %d \n",
-	   &joystick[i].yupper, &joystick[i].ymiddle, &joystick[i].ylower);
+    ignored = fscanf(file,"%s",cookie);
+    ignored =
+      fscanf(file, "%d %d %d \n",
+	     &joystick[i].xleft, &joystick[i].xmiddle, &joystick[i].xright);
+    ignored =
+      fscanf(file, "%d %d %d \n",
+	     &joystick[i].yupper, &joystick[i].ymiddle, &joystick[i].ylower);
   }
   fclose(file);
 
@@ -1359,7 +1362,7 @@ void CheckJoystickData()
 
 int JoystickPosition(int middle, int margin, int actual)
 {
-  long range, pos;
+  int range, pos;
   int percentage;
 
   if (margin<middle && actual>middle)

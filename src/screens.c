@@ -116,7 +116,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	       (x==15 && level_nr<LEVELDIR_SIZE(leveldir[leveldir_nr]))) &&
       button)
   {
-    static long level_delay = 0;
+    static int level_delay = 0;
     int step = (button==1 ? 1 : button==2 ? 5 : 10);
 
     if (!DelayReached(&level_delay,20))
@@ -227,7 +227,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 #define HA_NEXT			-999
 #define HA_END			-1000
 
-static long helpscreen_state;
+static int helpscreen_state;
 static int helpscreen_step[MAX_HELPSCREEN_ELS];
 static int helpscreen_frame[MAX_HELPSCREEN_ELS];
 static int helpscreen_delay[MAX_HELPSCREEN_ELS];
@@ -496,7 +496,7 @@ void DrawHelpScreen()
 
 void HandleHelpScreen(int button)
 {
-  static long hs_delay = 0;
+  static int hs_delay = 0;
   int num_helpscreen_els_pages =
     (num_helpscreen_els + MAX_HELPSCREEN_ELS-1) / MAX_HELPSCREEN_ELS;
   int button_released = !button;

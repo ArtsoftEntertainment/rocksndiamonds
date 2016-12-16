@@ -84,11 +84,11 @@ struct AnimInfo
 
 #define NEW_RANDOMIZE	-1
 
-void microsleep(unsigned long);
-unsigned long be2long(unsigned long *);
+void microsleep(unsigned int);
+unsigned int be2int(unsigned int *);
 char *int2str(int, int);
 unsigned int RND(unsigned int);
-unsigned int InitRND(long);
+unsigned int InitRND(int);
 char *GetLoginName(void);
 
 void InitAnimation(void);

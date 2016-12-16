@@ -604,7 +604,7 @@ void HandleJoystick()
     case SETUP:
     {
       int dx = 0, dy = 0;
-      static long joystickmove_delay = 0;
+      static int joystickmove_delay = 0;
 
       if (DelayReached(&joystickmove_delay,15) || button)
       {

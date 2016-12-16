@@ -82,6 +82,7 @@ void LoadLevelInfo()
   char filename[MAX_FILENAME];
   char cookie[MAX_FILENAME];
   FILE *file;
+  int ignored;
 
   sprintf(filename,"%s/%s",LEVEL_PATH,LEVDIR_FILENAME);
 
@@ -91,7 +92,7 @@ void LoadLevelInfo()
     CloseAll();
   }
 
-  fscanf(file,"%s\n",cookie);
+  ignored = fscanf(file,"%s\n",cookie);
   if (strcmp(cookie,LEVELDIR_COOKIE))	/* ungültiges Format? */
   {
     fprintf(stderr,"%s: wrong format of level info file!\n",progname);
@@ -103,10 +104,10 @@ void LoadLevelInfo()
   leveldir_nr = 0;
   for(i=0;i<MAX_LEVDIR_ENTRIES;i++)
   {
-    fscanf(file,"%s",leveldir[i].filename);
-    fscanf(file,"%s",leveldir[i].name);
-    fscanf(file,"%d",&leveldir[i].num_ready);
-    fscanf(file,"%d",&leveldir[i].num_free);
+    ignored = fscanf(file,"%s",leveldir[i].filename);
+    ignored = fscanf(file,"%s",leveldir[i].name);
+    ignored = fscanf(file,"%d",&leveldir[i].num_ready);
+    ignored = fscanf(file,"%d",&leveldir[i].num_free);
     if (feof(file))
       break;
 
@@ -126,6 +127,7 @@ void LoadLevel(int level_nr)
   char filename[MAX_FILENAME];
   char cookie[MAX_FILENAME];
   FILE *file;
+  char *ignored;
 
   sprintf(filename,"%s/%s/%d",
 	  LEVEL_PATH,leveldir[leveldir_nr].filename,level_nr);
@@ -138,7 +140,7 @@ void LoadLevel(int level_nr)
   }
   else
   {
-    fgets(cookie,LEVEL_COOKIE_LEN,file);
+    ignored = fgets(cookie,LEVEL_COOKIE_LEN,file);
     fgetc(file);
     if (strcmp(cookie,LEVEL_COOKIE))	/* ungültiges Format? */
     {
@@ -213,13 +215,14 @@ void LoadLevelTape(int level_nr)
   char filename[MAX_FILENAME];
   char cookie[MAX_FILENAME];
   FILE *file;
+  char *ignored;
 
   sprintf(filename,"%s/%s/%d.tape",
 	  LEVEL_PATH,leveldir[leveldir_nr].filename,level_nr);
 
   if ((file=fopen(filename,"r")))
   {
-    fgets(cookie,LEVELREC_COOKIE_LEN,file);
+    ignored = fgets(cookie,LEVELREC_COOKIE_LEN,file);
     fgetc(file);
     if (strcmp(cookie,LEVELREC_COOKIE))	/* ungültiges Format? */
     {
@@ -271,6 +274,7 @@ void LoadScore(int level_nr)
   char filename[MAX_FILENAME];
   char cookie[MAX_FILENAME];
   FILE *file;
+  char *ignored;
 
   sprintf(filename,"%s/%s/%s",
 	  SCORE_PATH,leveldir[leveldir_nr].filename,SCORE_FILENAME);
@@ -291,7 +295,7 @@ void LoadScore(int level_nr)
 
   if (file)
   {
-    fgets(cookie,SCORE_COOKIE_LEN,file);
+    ignored = fgets(cookie,SCORE_COOKIE_LEN,file);
     if (strcmp(cookie,SCORE_COOKIE))	/* ungültiges Format? */
     {
       fprintf(stderr,"%s: wrong format of score file!\n",progname);
@@ -331,6 +335,7 @@ void LoadPlayerInfo(int mode)
   FILE *file;
   char *login_name = GetLoginName();
   struct PlayerInfo default_player, new_player;
+  char *ignored;
 
   if (mode==PLAYER_LEVEL)
     sprintf(filename,"%s/%s/%s",
@@ -364,7 +369,7 @@ void LoadPlayerInfo(int mode)
 
   if (file)
   {
-    fgets(cookie,NAMES_COOKIE_LEN,file);
+    ignored = fgets(cookie,NAMES_COOKIE_LEN,file);
     if (strcmp(cookie,NAMES_COOKIE))	/* ungültiges Format? */
     {
       fprintf(stderr,"%s: wrong format of names file '%s'!\n",
@@ -580,6 +585,7 @@ void SavePlayerInfo(int mode)
   char cookie[MAX_FILENAME];
   FILE *file;
   struct PlayerInfo default_player;
+  char *ignored;
 
   if (mode==PLAYER_LEVEL)
     sprintf(filename,"%s/%s/%s",
@@ -594,7 +600,7 @@ void SavePlayerInfo(int mode)
     return;
   }
 
-  fgets(cookie,NAMES_COOKIE_LEN,file);
+  ignored = fgets(cookie,NAMES_COOKIE_LEN,file);
   if (strcmp(cookie,NAMES_COOKIE))	/* ungültiges Format? */
   {
     fprintf(stderr,"%s: wrong format of names file '%s'!\n",
@@ -953,7 +959,7 @@ BOOL NewHiScore()
 #ifdef ONE_PER_NAME
       put_into_list:
 #endif
-      sprintf(highscore[k].Name,player.alias_name);
+      sprintf(highscore[k].Name,"%s",player.alias_name);
       highscore[k].Score = Score; 
       position = k;
       break;
@@ -1818,7 +1824,7 @@ void ContinueMoving(int x, int y)
 
 void AmoebeWaechst(int x, int y)
 {
-  static long sound_delay = 0;
+  static int sound_delay = 0;
   static int sound_delay_value = 0;
 
   CheckExploding=TRUE;
@@ -2170,7 +2176,7 @@ void AusgangstuerOeffnen(int x, int y)
 
 int GameActions(int mx, int my, int button)
 {
-  static long time_delay=0, action_delay=0;
+  static int time_delay=0, action_delay=0;
   int Action;
 
   if (TimeLeft>0 && DelayReached(&time_delay,100) && !tape.pausing)
@@ -2343,7 +2349,7 @@ BOOL MoveFigureOneStep(int dx, int dy)
 
 BOOL MoveFigure(int dx, int dy)
 {
-  static long move_delay = 0;
+  static int move_delay = 0;
   int moved = MF_NO_ACTION;
 
   if (GameOver || (!dx && !dy))
@@ -2490,7 +2496,7 @@ int DigField(int x, int y, int mode)
 {
   int dx=x-JX, dy=y-JY;
   int element;
-  static long push_delay = 0;
+  static int push_delay = 0;
   static int push_delay_value = 20;
 
   if (mode==DF_NO_PUSH)
@@ -2898,7 +2904,7 @@ void TapeErase()
   tape.length = 0;
 }
 
-void DrawVideoDisplay(unsigned long state, unsigned long value)
+void DrawVideoDisplay(unsigned int state, unsigned int value)
 {
   int i;
   int part1 = 0, part2 = 1;
@@ -3024,7 +3030,7 @@ void DrawVideoDisplay(unsigned long state, unsigned long value)
     redraw_mask |= REDRAW_VIDEO_3;
 }
 
-void DrawSoundDisplay(unsigned long state)
+void DrawSoundDisplay(unsigned int state)
 {
   int pos, cx = DOOR_GFX_PAGEX4, cy = 0;
 
@@ -3046,7 +3052,7 @@ void DrawSoundDisplay(unsigned long state)
   redraw_mask |= REDRAW_DOOR_1;
 }
 
-void DrawGameButton(unsigned long state)
+void DrawGameButton(unsigned int state)
 {
   int pos, cx = DOOR_GFX_PAGEX4, cy = -GAME_BUTTON_YSIZE;
 
@@ -3065,7 +3071,7 @@ void DrawGameButton(unsigned long state)
   redraw_mask |= REDRAW_DOOR_1;
 }
 
-void DrawChooseButton(unsigned long state)
+void DrawChooseButton(unsigned int state)
 {
   int pos, cx = DOOR_GFX_PAGEX4, cy = 0;
 
@@ -3082,7 +3088,7 @@ void DrawChooseButton(unsigned long state)
   redraw_mask |= REDRAW_DOOR_1;
 }
 
-void DrawConfirmButton(unsigned long state)
+void DrawConfirmButton(unsigned int state)
 {
   int cx = DOOR_GFX_PAGEX4, cy = 0;
 

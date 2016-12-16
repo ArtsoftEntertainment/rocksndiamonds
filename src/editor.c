@@ -727,7 +727,7 @@ void LevelEd(int mx, int my, int button)
     }
     else			/********** KONTROLL-FENSTER **********/
     {
-      static long choice_delay = 0;
+      static int choice_delay = 0;
       int choice = CheckCountButtons(mx,my,button);
       int step = (button==1 ? 1 : button==2 ? 5 : button==3 ? 10 : 0);
 
@@ -1085,7 +1085,7 @@ void LevelNameTyping(KeySym key)
   }
 }
 
-void DrawEditButton(unsigned long state)
+void DrawEditButton(unsigned int state)
 {
   int i;
   int xpos = 0, ypos = 1, xsize = 2, ysize = 3;
@@ -1129,7 +1129,7 @@ void DrawEditButton(unsigned long state)
   redraw_mask |= REDRAW_DOOR_2;
 }
 
-void DrawCtrlButton(unsigned long state)
+void DrawCtrlButton(unsigned int state)
 {
   int i;
   int xpos = 0, ypos = 1, xsize = 2, ysize = 3;

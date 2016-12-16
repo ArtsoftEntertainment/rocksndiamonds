@@ -108,9 +108,10 @@ void SoundServer()
     {
       struct timeval delay = { 0, 0 };
       char *sample_ptr;
-      long sample_size, max_sample_size;
-      long fragment_size;
+      int sample_size, max_sample_size;
+      int fragment_size;
       BOOL stereo;
+      ssize_t ignored;
 
       if (playing_sounds || (sound_device=open(sound_device_name,O_WRONLY))>=0)
       {
@@ -231,7 +232,7 @@ void SoundServer()
 	  }
 
 	  /* finally play the sound fragment */
-	  write(sound_device,playing_buffer,fragment_size);
+	  ignored = write(sound_device,playing_buffer,fragment_size);
 	}
 
 	/* if no sounds playing, free device for other sound programs */
@@ -246,8 +247,8 @@ void SoundServer()
     {
       struct timeval delay = { 0, 0 };
       char *sample_ptr;
-      long sample_size, max_sample_size = SND_BLOCKSIZE;
-      long sample_rate = 8000;	/* standard "/dev/audio" sampling rate */
+      int sample_size, max_sample_size = SND_BLOCKSIZE;
+      int sample_rate = 8000;	/* standard "/dev/audio" sampling rate */
       int wait_percent = 90;	/* wait 90% of the real playing time */
       int i;
 
@@ -614,7 +615,7 @@ BOOL LoadSound(struct SoundInfo *snd_info)
   snd_hdr = (struct SoundHeader_8SVX *)snd_info->file_ptr;
 
   if (strncmp(snd_hdr->magic_FORM,"FORM",4) ||
-      snd_info->file_len!=be2long(&snd_hdr->chunk_size)+8 ||
+      snd_info->file_len!=be2int(&snd_hdr->chunk_size)+8 ||
       strncmp(snd_hdr->magic_8SVX,"8SVX",4))
   {
     fprintf(stderr,"%s: '%s' is not an IFF/8SVX file or broken- no sounds\n",
@@ -628,20 +629,20 @@ BOOL LoadSound(struct SoundInfo *snd_info)
   {
     if (!strncmp(ptr,"VHDR",4))
     {
-      ptr+=be2long((unsigned long *)(ptr+4));
+      ptr+=be2int((unsigned int *)(ptr+4));
     }
     if (!strncmp(ptr,"ANNO",4))
     {
-      ptr+=be2long((unsigned long *)(ptr+4));
+      ptr+=be2int((unsigned int *)(ptr+4));
     }
     if (!strncmp(ptr,"CHAN",4))
     {
-      ptr+=be2long((unsigned long *)(ptr+4));
+      ptr+=be2int((unsigned int *)(ptr+4));
     }
     if (!strncmp(ptr,"BODY",4))
     {
       snd_info->data_ptr = ptr+8;
-      snd_info->data_len = be2long((unsigned long *)(ptr+4));
+      snd_info->data_len = be2int((unsigned int *)(ptr+4));
       return(TRUE);
     }
     ptr++;

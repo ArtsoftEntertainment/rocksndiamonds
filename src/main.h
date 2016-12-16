@@ -187,9 +187,9 @@ struct RecordingInfo
 {
   int level_nr;
   unsigned int random_seed;
-  unsigned long date;
-  unsigned long counter;
-  unsigned long length;
+  unsigned int date;
+  unsigned int counter;
+  unsigned int length;
   BOOL recording, playing, pausing;
   struct
   {
@@ -202,6 +202,46 @@ struct JoystickInfo
 {
   int xleft, xright, xmiddle;
   int yupper, ylower, ymiddle;
+};
+
+struct SoundHeader_SUN
+{
+  unsigned int magic;
+  unsigned int hdr_size;
+  unsigned int data_size;
+  unsigned int encoding;
+  unsigned int sample_rate;
+  unsigned int channels;
+};
+
+struct SoundHeader_8SVX
+{
+  char magic_FORM[4];
+  unsigned int chunk_size;
+  char magic_8SVX[4];
+};
+
+struct SoundInfo
+{ 
+  char *name;
+  char *file_ptr, *data_ptr;
+  int file_len, data_len;
+};
+
+struct SoundControl
+{
+  int nr;
+  int volume;
+  int stereo;
+  BOOL active;
+  BOOL loop;
+  BOOL fade_sound;
+  BOOL stop_sound;
+  BOOL stop_all_sounds;
+  int playingtime;
+  int playingpos;
+  int data_len;
+  char *data_ptr;
 };
 
 extern Display	       *display;
@@ -222,7 +262,7 @@ extern char	       *sound_device_name;
 extern int		joystick_device;
 extern char	       *joystick_device_name[2];
 extern int     		width, height;
-extern unsigned long	pen_fg, pen_bg;
+extern unsigned int	pen_fg, pen_bg;
 
 extern int		game_status;
 extern int		button_status, motion_status;
