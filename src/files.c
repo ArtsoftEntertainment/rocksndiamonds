@@ -11,7 +11,6 @@
 
 #include <ctype.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <math.h>
 
 #include "libgame/libgame.h"
@@ -1948,7 +1947,7 @@ static int getFileTypeFromBasename(char *basename)
   /* !!! ALSO SEE COMMENT IN checkForPackageFromBasename() !!! */
 
   static char *filename = NULL;
-  struct stat file_status;
+  struct _stat file_status;
 
   /* ---------- try to determine file type from filename ---------- */
 
@@ -1971,7 +1970,7 @@ static int getFileTypeFromBasename(char *basename)
   checked_free(filename);
   filename = getPath2(getCurrentLevelDir(), basename);
 
-  if (stat(filename, &file_status) == 0)
+  if (_stat(filename, &file_status) == 0)
   {
     /* check for typical filesize of a Supaplex level package file */
     if (file_status.st_size == 170496)

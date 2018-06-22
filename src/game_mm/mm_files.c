@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <ctype.h>
-#include <dirent.h>
+
 
 #include "main_mm.h"
 

@@ -1,7 +1,13 @@
 # ignore temporary development files
 *.o
 *.a
+*.scc
+*.dll
 .depend
+
+# ignore directories
+cpl/
+runtime/
 
 # ignore automatically generated files
 src/conftime.h
@@ -26,3 +32,4 @@ src/conf_act.c
 # ignore compiled executable files
 rocksndiamonds
 rocksndiamonds.exe
+rndTest*.exe

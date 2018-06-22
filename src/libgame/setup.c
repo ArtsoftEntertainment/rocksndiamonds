@@ -11,9 +11,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 
 #include "platform.h"
@@ -21,6 +19,10 @@
 #if !defined(PLATFORM_WIN32)
 #include <pwd.h>
 #include <sys/param.h>
+#include <dirent.h>
+#include <unistd.h>
+#else
+#include "rndapi.h"		/*#HAG#INCLUDE#*/
 #endif
 
 #include "setup.h"
@@ -1499,7 +1501,7 @@ static mode_t posix_umask(mode_t mask)
 static int posix_mkdir(const char *pathname, mode_t mode)
 {
 #if defined(PLATFORM_WIN32)
-  return mkdir(pathname);
+  return _mkdir(pathname);
 #else
   return mkdir(pathname, mode);
 #endif
@@ -1543,7 +1545,7 @@ void createDirectory(char *dir, char *text, int permission_class)
 	  text, dir, strerror(errno));
 
   if (permission_class == PERMS_PUBLIC && !running_setgid)
-    chmod(dir, dir_mode);
+    _chmod(dir, dir_mode);
 
   posix_umask(last_umask);		/* restore previous umask */
 }
@@ -1562,7 +1564,7 @@ void SetFilePermissions(char *filename, int permission_class)
   if (permission_class == PERMS_PUBLIC && !running_setgid)
     perms = FILE_PERMS_PUBLIC_ALL;
 
-  chmod(filename, perms);
+  _chmod(filename, perms);
 }
 
 char *getCookie(char *file_type)
@@ -2808,12 +2810,12 @@ static char *getFileTimestampString(char *filename)
 
 static boolean modifiedFileTimestamp(char *filename, char *timestamp_string)
 {
-  struct stat file_status;
+  struct _stat file_status;
 
   if (timestamp_string == NULL)
     return TRUE;
 
-  if (stat(filename, &file_status) != 0)	/* cannot stat file */
+  if (_stat(filename, &file_status) != 0)	/* cannot stat file */
     return TRUE;
 
   return (file_status.st_mtime != atoi(timestamp_string));

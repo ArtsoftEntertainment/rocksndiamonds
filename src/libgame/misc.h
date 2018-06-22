@@ -14,9 +14,16 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <dirent.h>
 
+
+#include "platform.h"		/*#HAG#DIRENT#*/
 #include "system.h"
+
+#ifdef VISUAL_CPP               /*#HAG#DIRENT#*/
+#include "direntWindows.h"	    /*#HAG#DIRENT# windows have no dirent.h | use own */
+#else
+#include <dirent.h>             /*#HAG#DIRENT# mingw .. and other */
+#endif
 
 
 /* values for InitCounter() and Counter() */
