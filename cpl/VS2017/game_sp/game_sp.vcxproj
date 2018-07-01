@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2D40CA7F-018F-40A7-A738-89E0A64F4237}</ProjectGuid>
+    <RootNamespace>game_sp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_DEBUG;_LIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_USE_64BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_DEBUG;_LIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_NDEBUG;_LIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_USE_64BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_DEBUG;_LIB;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\game_sp\ASM.c" />
+    <ClCompile Include="..\..\..\src\game_sp\BugsTerminals.c" />
+    <ClCompile Include="..\..\..\src\game_sp\DDScrollBuffer.c" />
+    <ClCompile Include="..\..\..\src\game_sp\DDSpriteBuffer.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Display.c" />
+    <ClCompile Include="..\..\..\src\game_sp\DoGameStuff.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Electrons.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Explosions.c" />
+    <ClCompile Include="..\..\..\src\game_sp\file.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Globals.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Infotrons.c" />
+    <ClCompile Include="..\..\..\src\game_sp\init.c" />
+    <ClCompile Include="..\..\..\src\game_sp\InitGameConditions.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Input.c" />
+    <ClCompile Include="..\..\..\src\game_sp\main.c" />
+    <ClCompile Include="..\..\..\src\game_sp\MainForm.c" />
+    <ClCompile Include="..\..\..\src\game_sp\MainGameLoop.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Murphy.c" />
+    <ClCompile Include="..\..\..\src\game_sp\OrangeDisk.c" />
+    <ClCompile Include="..\..\..\src\game_sp\SnikSnaks.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Sound.c" />
+    <ClCompile Include="..\..\..\src\game_sp\vb_lib.c" />
+    <ClCompile Include="..\..\..\src\game_sp\Zonk.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\game_sp\ASM.h" />
+    <ClInclude Include="..\..\..\src\game_sp\BugsTerminals.h" />
+    <ClInclude Include="..\..\..\src\game_sp\DDScrollBuffer.h" />
+    <ClInclude Include="..\..\..\src\game_sp\DDSpriteBuffer.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Display.h" />
+    <ClInclude Include="..\..\..\src\game_sp\DoGameStuff.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Electrons.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Explosions.h" />
+    <ClInclude Include="..\..\..\src\game_sp\export.h" />
+    <ClInclude Include="..\..\..\src\game_sp\game_sp.h" />
+    <ClInclude Include="..\..\..\src\game_sp\global.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Globals.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Infotrons.h" />
+    <ClInclude Include="..\..\..\src\game_sp\InitGameConditions.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Input.h" />
+    <ClInclude Include="..\..\..\src\game_sp\MainForm.h" />
+    <ClInclude Include="..\..\..\src\game_sp\MainGameLoop.h" />
+    <ClInclude Include="..\..\..\src\game_sp\main_sp.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Murphy.h" />
+    <ClInclude Include="..\..\..\src\game_sp\OrangeDisk.h" />
+    <ClInclude Include="..\..\..\src\game_sp\SnikSnaks.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Sound.h" />
+    <ClInclude Include="..\..\..\src\game_sp\vb_lib.h" />
+    <ClInclude Include="..\..\..\src\game_sp\Zonk.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

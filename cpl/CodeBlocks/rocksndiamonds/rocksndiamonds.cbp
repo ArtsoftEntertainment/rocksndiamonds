@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="rocksndiamonds" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="../rndTestVC_x86/Debug/rocksndiamonds" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug/" />
+				<Option deps_output="../rndTestVC_x86/Debug/" />
+				<Option external_deps="../rndTestVC_x86/Debug/libgame_em.a;../rndTestVC_x86/Debug/libgame_sp.a;../rndTestVC_x86/Debug/libgame_mm.a;../rndTestVC_x86/Debug/libgame.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-D_USE_32BIT_TIME_T" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-DVISUAL_CPP" />
+					<Add option="-DTARGET_SDL2" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_MBCS" />
+					<Add directory="P:/runtime/SDL/current/include/" />
+				</Compiler>
+				<Linker>
+					<Add library="../rndTestVC_x86/Debug/libgame_em.a" />
+					<Add library="../rndTestVC_x86/Debug/libgame_sp.a" />
+					<Add library="../rndTestVC_x86/Debug/libgame_mm.a" />
+					<Add library="../rndTestVC_x86/Debug/libgame.a" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2_image.lib" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2_mixer.lib" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2_net.lib" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2main.lib" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2.lib" />
+					<Add library="../../../runtime/windows/lib/AdvAPI32.Lib" />
+					<Add library="../../../runtime/windows/lib/ComCtl32.Lib" />
+					<Add library="../../../runtime/windows/lib/ComDlg32.Lib" />
+					<Add library="../../../runtime/windows/lib/Gdi32.Lib" />
+					<Add library="../../../runtime/windows/lib/Imm32.Lib" />
+					<Add library="../../../runtime/windows/lib/kernel32.Lib" />
+					<Add library="../../../runtime/windows/lib/msvcrt.lib" />
+					<Add library="../../../runtime/windows/lib/odbc32.lib" />
+					<Add library="../../../runtime/windows/lib/odbccp32.lib" />
+					<Add library="../../../runtime/windows/lib/Ole32.Lib" />
+					<Add library="../../../runtime/windows/lib/OleAut32.Lib" />
+					<Add library="../../../runtime/windows/lib/shell32.lib" />
+					<Add library="../../../runtime/windows/lib/User32.Lib" />
+					<Add library="../../../runtime/windows/lib/Uuid.Lib" />
+					<Add library="../../../runtime/windows/lib/WinMM.Lib" />
+					<Add library="../../../runtime/windows/lib/WinSpool.Lib" />
+				</Linker>
+			</Target>
+			<Target title="Debug x64">
+				<Option output="../rndTestVC_x86/Debug/rocksndiamonds" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug/" />
+				<Option deps_output="../rndTestVC_x86/Debug/" />
+				<Option external_deps="../rndTestVC_x86/Debug/libgame_em.a;../rndTestVC_x86/Debug/libgame_sp.a;../rndTestVC_x86/Debug/libgame_mm.a;../rndTestVC_x86/Debug/libgame.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add library="../rndTestVC_x86/Debug/libgame_em.a" />
+					<Add library="../rndTestVC_x86/Debug/libgame_sp.a" />
+					<Add library="../rndTestVC_x86/Debug/libgame_mm.a" />
+					<Add library="../rndTestVC_x86/Debug/libgame.a" />
+					<Add library="../../runtime/SDL/current/lib/SDL2_image.lib" />
+					<Add library="../../runtime/SDL/current/lib/SDL2_mixer.lib" />
+					<Add library="../../runtime/SDL/current/lib/SDL2_net.lib" />
+					<Add library="../../runtime/SDL/current/lib/SDL2main.lib" />
+					<Add library="../../runtime/SDL/current/lib/SDL2.lib" />
+					<Add library="../../runtime/windows/lib/AdvAPI32.Lib" />
+					<Add library="../../runtime/windows/lib/ComCtl32.Lib" />
+					<Add library="../../runtime/windows/lib/ComDlg32.Lib" />
+					<Add library="../../runtime/windows/lib/Gdi32.Lib" />
+					<Add library="../../runtime/windows/lib/Imm32.Lib" />
+					<Add library="../../runtime/windows/lib/kernel32.Lib" />
+					<Add library="../../runtime/windows/lib/msvcrt.lib" />
+					<Add library="../../runtime/windows/lib/odbc32.lib" />
+					<Add library="../../runtime/windows/lib/odbccp32.lib" />
+					<Add library="../../runtime/windows/lib/Ole32.Lib" />
+					<Add library="../../runtime/windows/lib/OleAut32.Lib" />
+					<Add library="../../runtime/windows/lib/shell32.lib" />
+					<Add library="../../runtime/windows/lib/User32.Lib" />
+					<Add library="../../runtime/windows/lib/Uuid.Lib" />
+					<Add library="../../runtime/windows/lib/WinMM.Lib" />
+					<Add library="../../runtime/windows/lib/WinSpool.Lib" />
+				</Linker>
+			</Target>
+			<Target title="Release x64">
+				<Option output="../rndTestVC_x86/Release/rocksndiamonds" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release/" />
+				<Option deps_output="../rndTestVC_x86/Release/" />
+				<Option external_deps="../rndTestVC_x86/Release/libgame_em.a;../rndTestVC_x86/Release/libgame_sp.a;../rndTestVC_x86/Release/libgame_mm.a;../rndTestVC_x86/Release/libgame.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O1" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+					<Add library="../rndTestVC_x86/Release/libgame_em.a" />
+					<Add library="../rndTestVC_x86/Release/libgame_sp.a" />
+					<Add library="../rndTestVC_x86/Release/libgame_mm.a" />
+					<Add library="../rndTestVC_x86/Release/libgame.a" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="../rndTestVC_x86/Release/rocksndiamonds" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release/" />
+				<Option deps_output="../rndTestVC_x86/Release/" />
+				<Option external_deps="../rndTestVC_x86/Release/libgame_em.a;../rndTestVC_x86/Release/libgame_sp.a;../rndTestVC_x86/Release/libgame_mm.a;../rndTestVC_x86/Release/libgame.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O1" />
+					<Add option="-Wall" />
+					<Add option="-D_USE_32BIT_TIME_T" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-DVISUAL_CPP" />
+					<Add option="-DTARGET_SDL2" />
+					<Add option="-DWIN32" />
+					<Add option="-D_NDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_MBCS" />
+					<Add directory="P:/runtime/SDL/current/include/" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="../rndTestVC_x86/Release/libgame_em.a" />
+					<Add library="../rndTestVC_x86/Release/libgame_sp.a" />
+					<Add library="../rndTestVC_x86/Release/libgame_mm.a" />
+					<Add library="../rndTestVC_x86/Release/libgame.a" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2_image.lib" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2_mixer.lib" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2_net.lib" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2main.lib" />
+					<Add library="../../../runtime/SDL/current/lib/SDL2.lib" />
+					<Add library="../../../runtime/windows/lib/AdvAPI32.Lib" />
+					<Add library="../../../runtime/windows/lib/ComCtl32.Lib" />
+					<Add library="../../../runtime/windows/lib/ComDlg32.Lib" />
+					<Add library="../../../runtime/windows/lib/Gdi32.Lib" />
+					<Add library="../../../runtime/windows/lib/Imm32.Lib" />
+					<Add library="../../../runtime/windows/lib/kernel32.Lib" />
+					<Add library="../../../runtime/windows/lib/msvcrt.lib" />
+					<Add library="../../../runtime/windows/lib/odbc32.lib" />
+					<Add library="../../../runtime/windows/lib/odbccp32.lib" />
+					<Add library="../../../runtime/windows/lib/Ole32.Lib" />
+					<Add library="../../../runtime/windows/lib/OleAut32.Lib" />
+					<Add library="../../../runtime/windows/lib/shell32.lib" />
+					<Add library="../../../runtime/windows/lib/User32.Lib" />
+					<Add library="../../../runtime/windows/lib/Uuid.Lib" />
+					<Add library="../../../runtime/windows/lib/WinMM.Lib" />
+					<Add library="../../../runtime/windows/lib/WinSpool.Lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../../../src/anim.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/anim.h" />
+		<Unit filename="../../../src/conf_gfx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/conf_hlp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/conf_mus.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/conf_snd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/config.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/config.h" />
+		<Unit filename="../../../src/conftime.h" />
+		<Unit filename="../../../src/editor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/editor.h" />
+		<Unit filename="../../../src/engines.h" />
+		<Unit filename="../../../src/events.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/events.h" />
+		<Unit filename="../../../src/files.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/files.h" />
+		<Unit filename="../../../src/game.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game.h" />
+		<Unit filename="../../../src/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/init.h" />
+		<Unit filename="../../../src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/main.h" />
+		<Unit filename="../../../src/netserv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/netserv.h" />
+		<Unit filename="../../../src/network.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/network.h" />
+		<Unit filename="../../../src/screens.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/screens.h" />
+		<Unit filename="../../../src/tape.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/tape.h" />
+		<Unit filename="../../../src/tools.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/tools.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

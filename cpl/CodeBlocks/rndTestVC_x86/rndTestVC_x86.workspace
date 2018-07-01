@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="rndTestVC_x86">
+		<Project filename="../rocksndiamonds/rocksndiamonds.cbp">
+			<Depends filename="../game_em/game_em.cbp" />
+			<Depends filename="../game_mm/game_mm.cbp" />
+			<Depends filename="../game_sp/game_sp.cbp" />
+			<Depends filename="../libgame/libgame.cbp" />
+		</Project>
+		<Project filename="../game_em/game_em.cbp" />
+		<Project filename="../game_mm/game_mm.cbp" />
+		<Project filename="../game_sp/game_sp.cbp" />
+		<Project filename="../libgame/libgame.cbp" />
+		<Project filename="rndTestVC_x86.cbp">
+			<Depends filename="../rocksndiamonds/rocksndiamonds.cbp" />
+			<Depends filename="../game_em/game_em.cbp" />
+			<Depends filename="../game_mm/game_mm.cbp" />
+			<Depends filename="../game_sp/game_sp.cbp" />
+			<Depends filename="../libgame/libgame.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

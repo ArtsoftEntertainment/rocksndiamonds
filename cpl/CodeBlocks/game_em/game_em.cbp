@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="game_em" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="../rndTestVC_x86/Debug/game_em" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="Debug/" />
+				<Option deps_output="../rndTestVC_x86/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-D_USE_32BIT_TIME_T" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-DVISUAL_CPP" />
+					<Add option="-DTARGET_SDL2" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_LIB" />
+					<Add option="-D_MBCS" />
+					<Add option="-O0" />
+					<Add option="-Wall" />
+					<Add directory="P:/runtime/SDL/current/include/" />
+				</Compiler>
+			</Target>
+			<Target title="Debug x64">
+				<Option output="../rndTestVC_x86/Debug/game_em" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="Debug/" />
+				<Option deps_output="../rndTestVC_x86/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-Wall" />
+				</Compiler>
+			</Target>
+			<Target title="Release x64">
+				<Option output="../rndTestVC_x86/Release/game_em" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="Release/" />
+				<Option deps_output="../rndTestVC_x86/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O1" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="../rndTestVC_x86/Release/game_em" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="Release/" />
+				<Option deps_output="../rndTestVC_x86/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-D_USE_32BIT_TIME_T" />
+					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-DVISUAL_CPP" />
+					<Add option="-DTARGET_SDL2" />
+					<Add option="-DWIN32" />
+					<Add option="-D_NDEBUG" />
+					<Add option="-D_LIB" />
+					<Add option="-D_MBCS" />
+					<Add option="-O1" />
+					<Add option="-Wall" />
+					<Add directory="P:/runtime/SDL/current/include/" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../../../src/game_em/cave.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/convert.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/export.h" />
+		<Unit filename="../../../src/game_em/game_em.h" />
+		<Unit filename="../../../src/game_em/global.h" />
+		<Unit filename="../../../src/game_em/graphics.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/input.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/main_em.h" />
+		<Unit filename="../../../src/game_em/sample.h" />
+		<Unit filename="../../../src/game_em/sound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/synchro_1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/synchro_2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/synchro_3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/tab_generate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/game_em/tile.h" />
+		<Unit filename="../../../src/game_em/ulaw_generate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

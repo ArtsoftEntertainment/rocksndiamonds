@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\libgame\gadgets.c" />
+    <ClCompile Include="..\..\..\src\libgame\hash.c" />
+    <ClCompile Include="..\..\..\src\libgame\image.c" />
+    <ClCompile Include="..\..\..\src\libgame\joystick.c" />
+    <ClCompile Include="..\..\..\src\libgame\misc.c" />
+    <ClCompile Include="..\..\..\src\libgame\random.c" />
+    <ClCompile Include="..\..\..\src\libgame\sdl.c" />
+    <ClCompile Include="..\..\..\src\libgame\setup.c" />
+    <ClCompile Include="..\..\..\src\libgame\snapshot.c" />
+    <ClCompile Include="..\..\..\src\libgame\sound.c" />
+    <ClCompile Include="..\..\..\src\libgame\system.c" />
+    <ClCompile Include="..\..\..\src\libgame\text.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\libgame\gadgets.h" />
+    <ClInclude Include="..\..\..\src\libgame\hash.h" />
+    <ClInclude Include="..\..\..\src\libgame\image.h" />
+    <ClInclude Include="..\..\..\src\libgame\joystick.h" />
+    <ClInclude Include="..\..\..\src\libgame\libgame.h" />
+    <ClInclude Include="..\..\..\src\libgame\macosx.h" />
+    <ClInclude Include="..\..\..\src\libgame\misc.h" />
+    <ClInclude Include="..\..\..\src\libgame\platform.h" />
+    <ClInclude Include="..\..\..\src\libgame\random.h" />
+    <ClInclude Include="..\..\..\src\libgame\sdl.h" />
+    <ClInclude Include="..\..\..\src\libgame\setup.h" />
+    <ClInclude Include="..\..\..\src\libgame\snapshot.h" />
+    <ClInclude Include="..\..\..\src\libgame\sound.h" />
+    <ClInclude Include="..\..\..\src\libgame\system.h" />
+    <ClInclude Include="..\..\..\src\libgame\text.h" />
+    <ClInclude Include="..\..\..\src\libgame\types.h" />
+    <ClInclude Include="..\..\..\src\libgame\windows.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{b9768e83-9228-4e8f-af5d-d17e5dd3e5b0}</ProjectGuid>
+    <Keyword>Clang</Keyword>
+    <RootNamespace>libgame</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderCompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</PrecompiledHeaderCompileAs>
+      <CLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c99</CLanguageStandard>
+      <CppLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c++11</CppLanguageStandard>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c99</CLanguageStandard>
+      <CppLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c++11</CppLanguageStandard>
+      <PrecompiledHeaderCompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</PrecompiledHeaderCompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

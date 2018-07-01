@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3093d354-08dc-4cf9-9d2a-cac9d52ace37}</ProjectGuid>
+    <Keyword>Clang</Keyword>
+    <RootNamespace>rocksndiamonds</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c99</CLanguageStandard>
+      <CppLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c++11</CppLanguageStandard>
+      <PrecompiledHeaderCompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</PrecompiledHeaderCompileAs>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderCompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</PrecompiledHeaderCompileAs>
+      <CLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c99</CLanguageStandard>
+      <CppLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c++11</CppLanguageStandard>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <Culture>0x0407</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreSpecificDefaultLibraries>libcd.lib;msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\anim.c" />
+    <ClCompile Include="..\..\..\src\config.c" />
+    <ClCompile Include="..\..\..\src\conf_gfx.c" />
+    <ClCompile Include="..\..\..\src\conf_hlp.c" />
+    <ClCompile Include="..\..\..\src\conf_mus.c" />
+    <ClCompile Include="..\..\..\src\conf_snd.c" />
+    <ClCompile Include="..\..\..\src\editor.c" />
+    <ClCompile Include="..\..\..\src\events.c" />
+    <ClCompile Include="..\..\..\src\files.c" />
+    <ClCompile Include="..\..\..\src\game.c" />
+    <ClCompile Include="..\..\..\src\init.c" />
+    <ClCompile Include="..\..\..\src\main.c" />
+    <ClCompile Include="..\..\..\src\netserv.c" />
+    <ClCompile Include="..\..\..\src\network.c" />
+    <ClCompile Include="..\..\..\src\screens.c" />
+    <ClCompile Include="..\..\..\src\tape.c" />
+    <ClCompile Include="..\..\..\src\tools.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\anim.h" />
+    <ClInclude Include="..\..\..\src\config.h" />
+    <ClInclude Include="..\..\..\src\conftime.h" />
+    <ClInclude Include="..\..\..\src\editor.h" />
+    <ClInclude Include="..\..\..\src\engines.h" />
+    <ClInclude Include="..\..\..\src\events.h" />
+    <ClInclude Include="..\..\..\src\files.h" />
+    <ClInclude Include="..\..\..\src\game.h" />
+    <ClInclude Include="..\..\..\src\init.h" />
+    <ClInclude Include="..\..\..\src\main.h" />
+    <ClInclude Include="..\..\..\src\netserv.h" />
+    <ClInclude Include="..\..\..\src\network.h" />
+    <ClInclude Include="..\..\..\src\screens.h" />
+    <ClInclude Include="..\..\..\src\tape.h" />
+    <ClInclude Include="..\..\..\src\tools.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2.lib" />
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2main.lib" />
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_image.lib" />
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_mixer.lib" />
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_net.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\game_em\game_em.vcxproj">
+      <Project>{aeb72f34-7c83-470d-bd13-8da0c10ad395}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\game_mm\game_mm.vcxproj">
+      <Project>{da52e7a5-e325-4486-ba35-417546a9e6df}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\game_sp\game_sp.vcxproj">
+      <Project>{1b3b3535-c559-4fe6-ada8-380a10e54123}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libgame\libgame.vcxproj">
+      <Project>{b9768e83-9228-4e8f-af5d-d17e5dd3e5b0}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

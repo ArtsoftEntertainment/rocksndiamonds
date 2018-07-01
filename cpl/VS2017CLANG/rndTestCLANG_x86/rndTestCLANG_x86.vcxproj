@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{84A89543-4F38-47FB-ACE1-1EF8A5AAF093}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeBuildCommandLine>nmake RTPATH=P:\ OBJPATH=P:\ PROJCONF=Debug /f "rndTestCLANG_x86.mak</NMakeBuildCommandLine>
+    <NMakeOutput>rndTestCLANG_x86.exe</NMakeOutput>
+    <NMakeReBuildCommandLine>nmake RTPATH=P:\ OBJPATH=P:\ PROJCONF=Debug /f "rndTestCLANG_x86.mak" /a</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;;WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <ExecutablePath>$(VCClangBinDir)\x86;$(VCClangBinDir);$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
+    <IncludePath>$(VCClangInstallDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(VCClangInstallDir)lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NMakeBuildCommandLine>nmake RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestCLANG_x86.mak</NMakeBuildCommandLine>
+    <NMakeOutput>rndTestCLANG_x86.exe</NMakeOutput>
+    <NMakeCleanCommandLine>nmake CLEAN=clean RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestVC_x86.mak" /a</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestCLANG_x86.mak" /a</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>CLANG;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>nmake RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestCLANG_x86.mak</NMakeBuildCommandLine>
+    <NMakeOutput>rndTestCLANG_x86.exe</NMakeOutput>
+    <NMakeCleanCommandLine>nmake CLEAN=clean RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestVC_x86.mak" /a</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestCLANG_x86.mak" /a</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>CLANG;WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NMakeBuildCommandLine>nmake RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestCLANG_x86.mak</NMakeBuildCommandLine>
+    <NMakeOutput>rndTestCLANG_x86.exe</NMakeOutput>
+    <NMakeCleanCommandLine>nmake CLEAN=clean RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestVC_x86.mak" /a</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake RTPATH=P:\ OBJPATH=P:\ PROJCONF=Release /f "rndTestCLANG_x86.mak" /a</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>CLANG;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="rndTestCLANG_x86.mak" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

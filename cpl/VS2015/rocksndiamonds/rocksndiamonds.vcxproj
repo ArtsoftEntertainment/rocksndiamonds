@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A73DD8E0-852B-4B6C-A619-1C2482C46679}</ProjectGuid>
+    <RootNamespace>rocksndiamonds</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_DEBUG;_CONSOLE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <IgnoreSpecificDefaultLibraries>libcd.lib;msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_NDEBUG;_CONSOLE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\anim.c" />
+    <ClCompile Include="..\..\..\src\config.c" />
+    <ClCompile Include="..\..\..\src\conf_gfx.c" />
+    <ClCompile Include="..\..\..\src\conf_hlp.c" />
+    <ClCompile Include="..\..\..\src\conf_mus.c" />
+    <ClCompile Include="..\..\..\src\conf_snd.c" />
+    <ClCompile Include="..\..\..\src\editor.c" />
+    <ClCompile Include="..\..\..\src\events.c" />
+    <ClCompile Include="..\..\..\src\files.c" />
+    <ClCompile Include="..\..\..\src\game.c" />
+    <ClCompile Include="..\..\..\src\init.c" />
+    <ClCompile Include="..\..\..\src\main.c" />
+    <ClCompile Include="..\..\..\src\netserv.c" />
+    <ClCompile Include="..\..\..\src\network.c" />
+    <ClCompile Include="..\..\..\src\screens.c" />
+    <ClCompile Include="..\..\..\src\tape.c" />
+    <ClCompile Include="..\..\..\src\tools.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2.lib" />
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2main.lib" />
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_image.lib" />
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_mixer.lib" />
+    <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_net.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\anim.h" />
+    <ClInclude Include="..\..\..\src\config.h" />
+    <ClInclude Include="..\..\..\src\conftime.h" />
+    <ClInclude Include="..\..\..\src\editor.h" />
+    <ClInclude Include="..\..\..\src\engines.h" />
+    <ClInclude Include="..\..\..\src\events.h" />
+    <ClInclude Include="..\..\..\src\files.h" />
+    <ClInclude Include="..\..\..\src\game.h" />
+    <ClInclude Include="..\..\..\src\init.h" />
+    <ClInclude Include="..\..\..\src\main.h" />
+    <ClInclude Include="..\..\..\src\netserv.h" />
+    <ClInclude Include="..\..\..\src\network.h" />
+    <ClInclude Include="..\..\..\src\screens.h" />
+    <ClInclude Include="..\..\..\src\tape.h" />
+    <ClInclude Include="..\..\..\src\tools.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\game_em\game_em.vcxproj">
+      <Project>{299babdd-87d4-46ff-8482-a093657aa2d2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\game_mm\game_mm.vcxproj">
+      <Project>{75556ca1-af67-4bd2-a313-53a883aaf95d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\game_sp\game_sp.vcxproj">
+      <Project>{2d40ca7f-018f-40a7-a738-89e0a64f4237}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libgame\libgame.vcxproj">
+      <Project>{ac3432c6-cf24-4c5f-965a-6d5c6e823aee}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
