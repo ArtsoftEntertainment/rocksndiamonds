@@ -61,6 +61,7 @@
 
 struct GlobalInfo_MM
 {
+  char dummy;	/*#HAG#EMPTYSTRUCT#*/
 };
 
 struct CycleList
@@ -180,6 +181,7 @@ struct LevelInfo_MM
 
 struct GraphicInfo_MM
 {
+  char dummy;	/*#HAG#EMPTYSTRUCT#*/
 };
 
 struct EngineSnapshotInfo_MM

@@ -11,7 +11,6 @@
 
 #include <ctype.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <math.h>
 
 #include "libgame/libgame.h"
@@ -1870,7 +1869,8 @@ static void ActivateLevelTemplate()
     if (level.fieldx < level_template.fieldx ||
 	level.fieldy < level_template.fieldy)
     {
-      short field[level.fieldx][level.fieldy];
+      // short field[level.fieldx][level.fieldy];   /*#HAG#VLA#*/
+      short *field = (short*)checked_calloc(level.fieldx * level.fieldy * sizeof(short));   /*#HAG#VLA#*/
       int new_fieldx = MAX(level.fieldx, level_template.fieldx);
       int new_fieldy = MAX(level.fieldy, level_template.fieldy);
       int pos_fieldx = (new_fieldx - level.fieldx) / 2;
@@ -1878,7 +1878,7 @@ static void ActivateLevelTemplate()
 
       /* copy old playfield (which is smaller than the visible area) */
       for (y = 0; y < level.fieldy; y++) for (x = 0; x < level.fieldx; x++)
-	field[x][y] = level.field[x][y];
+	field[x*level.fieldx + y] = level.field[x][y];	  /*#HAG#VLA#*/
 
       /* fill new, larger playfield with "beyond border wall" elements */
       for (y = 0; y < new_fieldy; y++) for (x = 0; x < new_fieldx; x++)
@@ -1886,7 +1886,7 @@ static void ActivateLevelTemplate()
 
       /* copy the old playfield to the middle of the new playfield */
       for (y = 0; y < level.fieldy; y++) for (x = 0; x < level.fieldx; x++)
-	level.field[pos_fieldx + x][pos_fieldy + y] = field[x][y];
+	level.field[pos_fieldx + x][pos_fieldy + y] = field[x*level.fieldx + y];    /*#HAG#VLA#*/
 
       level.fieldx = new_fieldx;
       level.fieldy = new_fieldy;
@@ -1948,7 +1948,7 @@ static int getFileTypeFromBasename(char *basename)
   /* !!! ALSO SEE COMMENT IN checkForPackageFromBasename() !!! */
 
   static char *filename = NULL;
-  struct stat file_status;
+  struct _stat file_status;
 
   /* ---------- try to determine file type from filename ---------- */
 
@@ -1971,7 +1971,7 @@ static int getFileTypeFromBasename(char *basename)
   checked_free(filename);
   filename = getPath2(getCurrentLevelDir(), basename);
 
-  if (stat(filename, &file_status) == 0)
+  if (_stat(filename, &file_status) == 0)
   {
     /* check for typical filesize of a Supaplex level package file */
     if (file_status.st_size == 170496)
@@ -5700,7 +5700,8 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
   char *filename = level_file_info->filename;
   File *file;
   int num_magic_bytes = 8;
-  char magic_bytes[num_magic_bytes + 1];
+  // char magic_bytes[num_magic_bytes + 1];   /*#HAG#VLA#*/
+  char magic_bytes[8 + 1];		      /*#HAG#VLA#*//* use constant */
   int num_levels_to_skip = level_file_info->nr - leveldir_current->first_level;
 
   if (!(file = openFile(filename, MODE_READ)))
@@ -6049,7 +6050,7 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
 	 y == 0 || y == level->fieldy - 1) &&
 	level->field[x][y] == getMappedElement_SB(' ', load_xsb_to_ces))
       FloodFillLevel(x, y, getMappedElement_SB('_', load_xsb_to_ces),
-		     level->field, level->fieldx, level->fieldy);
+		     &level->field[0][0], level->fieldx, level->fieldy);    /*#HAG#VLA#*/
   }
 
   /* set special level settings for Sokoban levels */
@@ -8898,8 +8899,12 @@ static char *getHideSetupToken(void *setup_value)
 
 static void setHideSetupEntry(void *setup_value_raw)
 {
+  /*#HAG#COMPERROR#*//* dirty workaround | ugly conversion */
+  int spch = sizeof(char*);
+  int spvoid = sizeof(void*);
   /* !!! DIRTY WORKAROUND; TO BE FIXED AFTER THE MM ENGINE RELEASE !!! */
-  void *setup_value = setup_value_raw - (void *)&si + (void *)&setup;
+  // void *setup_value = setup_value_raw - (void *)&si + (void *)&setup;      /*#HAG#COMPERROR#*//* void* unknown size */
+  char *setup_value = (char*)setup_value_raw - (char *)&si + (char *)&setup;  /*#HAG#COMPERROR#*/
 
   char *hide_setup_token = getHideSetupToken(setup_value);
 

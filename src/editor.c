@@ -6301,7 +6301,8 @@ static void CreateCounterButtons()
       struct GraphicInfo *gd;
       int gd_x1, gd_x2, gd_y1, gd_y2;
       unsigned int event_mask;
-      char infotext[max_infotext_len + 1];
+      // char infotext[max_infotext_len + 1];	/*#HAG#VLA#*/
+      char *infotext = (char*)checked_calloc(max_infotext_len + 1);   /*#HAG#VLA#*/
 
       event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
 
@@ -6356,6 +6357,8 @@ static void CreateCounterButtons()
 			GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 			GDI_CALLBACK_ACTION, HandleCounterButtons,
 			GDI_END);
+
+      checked_free(infotext);	/*#HAG#VLA#*/
 
       if (gi == NULL)
 	Error(ERR_EXIT, "cannot create gadget");
@@ -10097,7 +10100,8 @@ static void DrawEditorElementName(int x, int y, int font_nr)
   int font_height = getFontHeight(font_nr);
   int max_text_width = SXSIZE - x - ED_ELEMENT_SETTINGS_X(0);
   int max_chars_per_line = max_text_width / font_width;
-  char buffer[max_chars_per_line + 1];
+  // char buffer[max_chars_per_line + 1];   /*#HAG#VLA#*/
+  char *buffer = (char*)checked_calloc(max_chars_per_line + 1);  /*#HAG#VLA#*/
 
   if (strlen(element_name) <= max_chars_per_line)
     DrawTextS(x, y, font_nr, element_name);
@@ -10132,6 +10136,8 @@ static void DrawEditorElementName(int x, int y, int font_nr)
 
     DrawTextS(x, y + font_height / 2, font_nr, buffer);
   }
+
+  checked_free(buffer);   /*#HAG#VLA#*/
 }
 
 static void DrawPropertiesWindow()
@@ -11993,7 +11999,7 @@ void DumpBrush_Small()
 
 static void FloodFill(int from_x, int from_y, int fill_element)
 {
-  FloodFillLevel(from_x, from_y, fill_element, Feld, lev_fieldx, lev_fieldy);
+  FloodFillLevel(from_x, from_y, fill_element, &Feld[0][0], lev_fieldx, lev_fieldy);  /*#HAG#VLA#*/
 }
 
 static void FloodFillWall_MM(int from_sx2, int from_sy2, int fill_element)
@@ -12002,20 +12008,21 @@ static void FloodFillWall_MM(int from_sx2, int from_sy2, int fill_element)
   int from_y = from_sy2 + 2 * level_ypos;
   int max_fillx = lev_fieldx * 2;
   int max_filly = lev_fieldy * 2;
-  short FillFeld[max_fillx][max_filly];
+  // short FillFeld[max_fillx][max_filly];    /*#HAG#VLA#*/
+  short *FillFeld = checked_calloc(max_fillx * max_filly * sizeof(short));    /*#HAG#VLA#*/
   int x, y;
 
   for (x = 0; x < max_fillx; x++)
     for (y = 0; y < max_filly; y++)
-      FillFeld[x][y] = getLevelElementHiRes(x, y);
+      FillFeld[x*max_fillx + y] = getLevelElementHiRes(x, y);	  /*#HAG#VLA#*/
 
   FloodFillLevelExt(from_x, from_y, fill_element, max_fillx, max_filly,
 		    FillFeld, max_fillx, max_filly);
 
   for (x = 0; x < max_fillx; x++)
     for (y = 0; y < max_filly; y++)
-      if (FillFeld[x][y] == fill_element)
-	SetLevelElementHiRes(x, y, FillFeld[x][y]);
+      if (FillFeld[x*max_fillx + y] == fill_element)	/*#HAG#VLA#*/
+	SetLevelElementHiRes(x, y, FillFeld[x*max_fillx + y]);	  /*#HAG#VLA#*/
 }
 
 /* values for DrawLevelText() modes */

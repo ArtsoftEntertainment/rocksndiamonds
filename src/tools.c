@@ -592,7 +592,7 @@ static void DrawMaskedBorderExt(int redraw_mask, int draw_target)
   }
 }
 
-void DrawMaskedBorder_FIELD()
+void DrawMaskedBorder_FIELD(void)   /*#HAG#COMPWARN#*//* use as callback */
 {
   DrawMaskedBorderExt_FIELD(DRAW_TO_BACKBUFFER);
 }
@@ -1465,7 +1465,8 @@ void SetBorderElement()
 
 void FloodFillLevelExt(int from_x, int from_y, int fill_element,
 		       int max_array_fieldx, int max_array_fieldy,
-		       short field[max_array_fieldx][max_array_fieldy],
+		       // short field[max_array_fieldx][max_array_fieldy],  /*#HAG#VLA#*/
+		       short *field,					    /*#HAG#VLA#*/
 		       int max_fieldx, int max_fieldy)
 {
   int i,x,y;
@@ -1474,7 +1475,7 @@ void FloodFillLevelExt(int from_x, int from_y, int fill_element,
   static int safety = 0;
 
   /* check if starting field still has the desired content */
-  if (field[from_x][from_y] == fill_element)
+  if (field[from_x*max_array_fieldx+from_y] == fill_element)		    /*#HAG#VLA#*/
     return;
 
   safety++;
@@ -1482,15 +1483,15 @@ void FloodFillLevelExt(int from_x, int from_y, int fill_element,
   if (safety > max_fieldx * max_fieldy)
     Error(ERR_EXIT, "Something went wrong in 'FloodFill()'. Please debug.");
 
-  old_element = field[from_x][from_y];
-  field[from_x][from_y] = fill_element;
+  old_element = field[from_x*max_array_fieldx + from_y];		    /*#HAG#VLA#*/
+  field[from_x*max_array_fieldx + from_y] = fill_element;		    /*#HAG#VLA#*/
 
   for (i = 0; i < 4; i++)
   {
     x = from_x + check[i][0];
     y = from_y + check[i][1];
 
-    if (IN_FIELD(x, y, max_fieldx, max_fieldy) && field[x][y] == old_element)
+    if (IN_FIELD(x, y, max_fieldx, max_fieldy) && field[x * max_array_fieldx + y] == old_element)   /*#HAG#VLA#*/
       FloodFillLevelExt(x, y, fill_element, max_array_fieldx, max_array_fieldy,
 			field, max_fieldx, max_fieldy);
   }
@@ -1499,7 +1500,8 @@ void FloodFillLevelExt(int from_x, int from_y, int fill_element,
 }
 
 void FloodFillLevel(int from_x, int from_y, int fill_element,
-		    short field[MAX_LEV_FIELDX][MAX_LEV_FIELDY],
+		    // short field[MAX_LEV_FIELDX][MAX_LEV_FIELDY],   /*#HAG#VLA#*/
+		    short *field,				      /*#HAG#VLA#*/
 		    int max_fieldx, int max_fieldy)
 {
   FloodFillLevelExt(from_x, from_y, fill_element,
@@ -4340,7 +4342,8 @@ static boolean RequestDoor(char *text, unsigned int req_state)
   /* write text for request */
   for (text_ptr = text, ty = 0; ty < MAX_REQUEST_LINES; ty++)
   {
-    char text_line[max_request_line_len + 1];
+    // char text_line[max_request_line_len + 1];	/*#HAG#VLA#*/
+    char text_line[MAX_REQUEST_LINE_FONT2_LEN + 1] = { 0 };  /*#HAG#VLA#*//* greater as MAX_REQUEST_LINE_FONT1_LEN */
     int tx, tl, tc = 0;
 
     if (!*text_ptr)
@@ -8948,14 +8951,14 @@ void FadeMenuSoundsAndMusic()
   FadeMenuMusic();
 }
 
-void PlaySoundActivating()
+void PlaySoundActivating(void)	/*#HAG#COMPWARN#*//* use as callback */
 {
 #if 0
   PlaySound(SND_MENU_ITEM_ACTIVATING);
 #endif
 }
 
-void PlaySoundSelecting()
+void PlaySoundSelecting(void)	/*#HAG#COMPWARN#*//* use as callback */
 {
 #if 0
   PlaySound(SND_MENU_ITEM_SELECTING);

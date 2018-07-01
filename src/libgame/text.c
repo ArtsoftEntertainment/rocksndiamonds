@@ -484,7 +484,8 @@ int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
 		   int line_spacing, int mask_mode, boolean autowrap,
 		   boolean centered, boolean parse_comments)
 {
-  char buffer[line_length + 1];
+  // char buffer[line_length + 1];  /*#HAG#VLA#*/
+  char *buffer = (char*)checked_calloc(line_length + 1);  /*#HAG#VLA#*/
   int buffer_len;
   int font_height = getFontHeight(font_nr);
   int line_height = font_height + line_spacing;
@@ -492,11 +493,15 @@ int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
   int current_ypos = 0;
   int max_ysize = max_lines * line_height;
 
-  if (text_buffer == NULL || *text_buffer == '\0')
+  if (text_buffer == NULL || *text_buffer == '\0') {
+    checked_free(buffer);
     return 0;
+  }
 
-  if (current_line >= max_lines)
+  if (current_line >= max_lines) {
+    checked_free(buffer);
     return 0;
+  }
 
   if (cut_length == -1)
     cut_length = line_length;
@@ -624,6 +629,8 @@ int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
     current_ypos += line_height;
     current_line++;
   }
+
+  checked_free(buffer);	  /*#HAG#VLA#*/
 
   return current_line;
 }

@@ -10,13 +10,11 @@
 // ============================================================================
 
 #include <time.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 
 #include "platform.h"
@@ -24,6 +22,10 @@
 #if !defined(PLATFORM_WIN32)
 #include <pwd.h>
 #include <sys/param.h>
+#include <sys/time.h>
+#include <unistd.h>
+#else
+#include "rndapi.h"		/*#HAG#INCLUDE#*/
 #endif
 
 #include "misc.h"
@@ -622,9 +624,9 @@ char *getRealName()
 
 time_t getFileTimestampEpochSeconds(char *filename)
 {
-  struct stat file_status;
+  struct _stat file_status;
 
-  if (stat(filename, &file_status) != 0)	/* cannot stat file */
+  if (_stat(filename, &file_status) != 0)	/* cannot stat file */
     return 0;
 
   return file_status.st_mtime;
@@ -1471,7 +1473,7 @@ int putFileVersion(FILE *file, int version)
 
 void ReadBytesFromFile(File *file, byte *buffer, unsigned int bytes)
 {
-  int i;
+  unsigned int i;   /*#HAG#COMPWARN#*/
 
   for (i = 0; i < bytes && !checkEndOfFile(file); i++)
     buffer[i] = getByteFromFile(file);
@@ -1479,7 +1481,7 @@ void ReadBytesFromFile(File *file, byte *buffer, unsigned int bytes)
 
 void WriteBytesToFile(FILE *file, byte *buffer, unsigned int bytes)
 {
-  int i;
+  unsigned int i;   /*#HAG#COMPWARN#*/
 
   for(i = 0; i < bytes; i++)
     fputc(buffer[i], file);
@@ -2440,10 +2442,10 @@ DirectoryEntry *readDirectory(Directory *dir)
   dir->dir_entry->basename = getStringCopy(dir_entry->d_name);
   dir->dir_entry->filename = getPath2(dir->filename, dir_entry->d_name);
 
-  struct stat file_status;
+  struct _stat file_status;
 
   dir->dir_entry->is_directory =
-    (stat(dir->dir_entry->filename, &file_status) == 0 &&
+    (_stat(dir->dir_entry->filename, &file_status) == 0 &&
      S_ISDIR(file_status.st_mode));
 
   return dir->dir_entry;
@@ -2469,8 +2471,8 @@ boolean directoryExists(char *dir_name)
   if (dir_name == NULL)
     return FALSE;
 
-  struct stat file_status;
-  boolean success = (stat(dir_name, &file_status) == 0 &&
+  struct _stat file_status;
+  boolean success = (_stat(dir_name, &file_status) == 0 &&
 		     S_ISDIR(file_status.st_mode));
 
 #if defined(PLATFORM_ANDROID)
@@ -2497,7 +2499,7 @@ boolean fileExists(char *filename)
   if (filename == NULL)
     return FALSE;
 
-  boolean success = (access(filename, F_OK) == 0);
+  boolean success = (_access(filename, F_OK) == 0);
 
 #if defined(PLATFORM_ANDROID)
   if (!success)

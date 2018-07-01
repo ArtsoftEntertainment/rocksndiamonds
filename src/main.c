@@ -7588,7 +7588,7 @@ struct MusicPrefixInfo music_prefix_info[NUM_MUSIC_PREFIXES + 1] =
 /* main()                                                                    */
 /* ========================================================================= */
 
-static void print_usage()
+static void print_usage(void)	/*#HAG#COMPWARN#*//* use as callback */
 {
   Print("\n"
 	"Usage: %s [OPTION]... [HOSTNAME [PORT]]\n"
@@ -7627,7 +7627,7 @@ static void print_usage()
 	program.command_basename);
 }
 
-static void print_version()
+static void print_version(void)	    /*#HAG#COMPWARN#*//* use as callback */
 {
   Print("%s", getProgramInitString());
 

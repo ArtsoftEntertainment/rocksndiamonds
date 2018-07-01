@@ -132,7 +132,7 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
     int bytes_y = screen->pitch;
 
     SDL_UpdateTexture(sdl_texture, rect,
-		      screen->pixels + rect->x * bytes_x + rect->y * bytes_y,
+		      ((Uint8 *)screen->pixels + rect->x * bytes_x + rect->y * bytes_y),  /*#HAG#VOIDPTR#*//* ?? Uint8 ?? */
 		      screen->pitch);
   }
   else
@@ -1192,7 +1192,8 @@ void SDLFadeRectangle(int x, int y, int width, int height,
     boolean done = FALSE;
     int melt_pixels = 2;
     int melt_columns = width / melt_pixels;
-    int ypos[melt_columns];
+    // int ypos[melt_columns];	/*#HAG#VLA#*/
+    int *ypos = (int*)checked_calloc(melt_columns * sizeof(int));   /*#HAG#VLA#*/
     int max_steps = height / 8 + 32;
     int steps_done = 0;
     float steps = 0;
@@ -1202,7 +1203,7 @@ void SDLFadeRectangle(int x, int y, int width, int height,
 
     SDLSetAlpha(surface_target, FALSE, 0);	/* disable alpha blending */
 
-    ypos[0] = -GetSimpleRandom(16);
+    ypos[0] = -1 * GetSimpleRandom(16);  /*#HAG#UNARYMINUS#*/
 
     for (i = 1 ; i < melt_columns; i++)
     {
@@ -1305,6 +1306,8 @@ void SDLFadeRectangle(int x, int y, int width, int height,
 	UpdateScreen_WithFrameDelay(&dst_rect2);
       }
     }
+
+    checked_free(ypos);	  /*#HAG#VLA#*/
   }
   else if (fade_mode == FADE_MODE_CURTAIN)
   {

@@ -14,7 +14,12 @@
 #if defined(NETWORK_AVALIABLE)
 
 #include <signal.h>
-#include <sys/time.h>
+
+#if !defined(PLATFORM_WIN32)
+#include <sys/time.h>    /*#HAG#INCLUDE#*/
+#else
+#include "libgame/rndapi.h"
+#endif
 
 #include "main.h"
 

@@ -2131,7 +2131,7 @@ static int getMenuTextFont(int type)
 }
 
 static struct TokenInfo *setup_info;
-static struct TokenInfo setup_info_input[];
+static struct TokenInfo setup_info_input[ 15 ];	    /*#HAG#EMPTYARRAY#*//* forward declaration | see below */
 
 static struct TokenInfo *menu_info;
 
@@ -3944,7 +3944,8 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
     int startx_scrollbar = mSX + SC_SCROLLBAR_XPOS + menu.scrollbar_xoffset;
     int text_size = startx_scrollbar - startx_text;
     int max_buffer_len = text_size / getFontWidth(font_nr);
-    char buffer[max_buffer_len + 1];
+    // char buffer[max_buffer_len + 1];	  /*#HAG#VLA#*/
+    char *buffer = (char*)checked_calloc(max_buffer_len + 1);	/*#HAG#VLA#*/
 
     node_first = getTreeInfoFirstGroupEntry(ti);
     node = getTreeInfoFromPos(node_first, entry_pos);
@@ -3960,6 +3961,8 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
       initCursor(i, IMG_MENU_BUTTON_ENTER_MENU);
     else
       initCursor(i, IMG_MENU_BUTTON);
+
+    checked_free(buffer);   /*#HAG#VLA#*/
   }
 
   redraw_mask |= REDRAW_FIELD;

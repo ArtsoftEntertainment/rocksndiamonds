@@ -121,8 +121,8 @@ void RedrawGlobalBorder();
 
 void MarkTileDirty(int, int);
 void SetBorderElement();
-void FloodFillLevel(int, int, int, short[][MAX_LEV_FIELDY], int, int);
-void FloodFillLevelExt(int, int, int, int, int y, short field[][y], int, int);
+void FloodFillLevel(int, int, int, short*, int, int);			    /*#HAG#VLA#*/
+void FloodFillLevelExt(int, int, int, int, int, short*, int, int);	    /*#HAG#VLA#*/
 
 void SetRandomAnimationValue(int, int);
 int getGraphicAnimationFrame(int, int);
@@ -267,8 +267,8 @@ void PlayMenuMusicExt(int);
 void PlayMenuMusic();
 void PlayMenuSoundsAndMusic();
 void FadeMenuSoundsAndMusic();
-void PlaySoundActivating();
-void PlaySoundSelecting();
+void PlaySoundActivating(void);	  /*#HAG#COMPWARN#*//* use as callback */
+void PlaySoundSelecting(void);	  /*#HAG#COMPWARN#*//* use as callback */
 
 void SetAnimStatus(int);
 void SetGameStatus(int);

@@ -12291,7 +12291,9 @@ static void CheckGravityMovement(struct PlayerInfo *player)
 
 static void CheckGravityMovementWhenNotMoving(struct PlayerInfo *player)
 {
-  return CheckGravityMovement(player);
+  // return CheckGravityMovement(player);   /*#HAG#COMPWARN#*//* void returning a value */
+  CheckGravityMovement(player);		    /*#HAG#COMPWARN#*/
+  return;
 
   if (player->gravity && !player->programmed_action)
   {

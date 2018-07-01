@@ -88,7 +88,7 @@ static int copy_properties[][5] =
 static int get_graphic_parameter_value(char *, char *, int);
 
 
-void DrawInitAnim()
+void DrawInitAnim(void)	  /*#HAG#COMPWARN#*//* use as callback */
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
   int graphic = 0;
@@ -5031,7 +5031,7 @@ void Execute_Command(char *command)
   {
     global.create_images_dir = getStringCopy(&command[14]);
 
-    if (access(global.create_images_dir, W_OK) != 0)
+    if (_access(global.create_images_dir, W_OK) != 0)
       Error(ERR_EXIT, "image target directory '%s' not found or not writable",
 	    global.create_images_dir);
   }

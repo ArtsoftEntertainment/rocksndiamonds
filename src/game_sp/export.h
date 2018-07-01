@@ -87,6 +87,7 @@ typedef struct
 
 struct GlobalInfo_SP
 {
+  char dummy;	/*#HAG#EMPTYSTRUCT#*/
 };
 
 struct GameInfo_SP
