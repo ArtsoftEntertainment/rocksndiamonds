@@ -82,12 +82,21 @@
 #define	S_IRUSR		_S_IRUSR
 #endif
 
+#if !defined(S_ISDIR)
 #define	S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
+#endif
+#if !defined(S_ISFIFO)
 #define	S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
+#endif
+#if !defined(S_ISCHR)
 #define	S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
+#endif
+#if !defined(S_ISBLK)
 #define	S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
+#endif
+#if !defined(S_ISREG)
 #define	S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
-
+#endif
 
 
 /*
