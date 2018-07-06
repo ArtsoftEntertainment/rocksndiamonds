@@ -132,7 +132,7 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
     int bytes_y = screen->pitch;
 
     SDL_UpdateTexture(sdl_texture, rect,
-		      screen->pixels + rect->x * bytes_x + rect->y * bytes_y,
+	    ((Uint8 *)screen->pixels + rect->x * bytes_x + rect->y * bytes_y),   /*#HAG#VC#VOIDPTR# ?? Uint8 ?? */
 		      screen->pitch);
   }
   else

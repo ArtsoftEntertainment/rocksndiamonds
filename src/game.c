@@ -12291,7 +12291,9 @@ static void CheckGravityMovement(struct PlayerInfo *player)
 
 static void CheckGravityMovementWhenNotMoving(struct PlayerInfo *player)
 {
-  return CheckGravityMovement(player);
+  // return CheckGravityMovement(player);
+  CheckGravityMovement(player);		/*#HAG#VOIDFKT#*/
+  return;				/*#HAG#VOIDFKT#*/
 
   if (player->gravity && !player->programmed_action)
   {

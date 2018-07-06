@@ -144,23 +144,27 @@ void InitElementProperties_MM()
 
   static int ep_reflecting[] =
   {
+	0	/*#HAG#EMPTYARR#*/
   };
-  static int ep_reflecting_num = sizeof(ep_reflecting) / sizeof(int);
+  static int ep_reflecting_num = 0;	/*#HAG#EMPTYARR#*//* sizeof(ep_reflecting) / sizeof(int); */
 
   static int ep_absorbing[] =
   {
+	  0	/*#HAG#EMPTYARR#*/
   };
-  static int ep_absorbing_num = sizeof(ep_absorbing) / sizeof(int);
+  static int ep_absorbing_num = 0;	/*#HAG#EMPTYARR#*//* sizeof(ep_absorbing) / sizeof(int); */
 
   static int ep_inactive[] =
   {
+	  0	/*#HAG#EMPTYARR#*/
   };
-  static int ep_inactive_num = sizeof(ep_inactive) / sizeof(int);
+  static int ep_inactive_num = 0;	/*#HAG#EMPTYARR#*//* sizeof(ep_inactive) / sizeof(int); */
 
   static int ep_wall[] =
   {
+	  0	/*#HAG#EMPTYARR#*/
   };
-  static int ep_wall_num = sizeof(ep_wall) / sizeof(int);
+  static int ep_wall_num = 0;		/*#HAG#EMPTYARR#*//* sizeof(ep_wall) / sizeof(int); */
 
   static int ep_pacman[] =
   {

@@ -8897,8 +8897,12 @@ static char *getHideSetupToken(void *setup_value)
 
 static void setHideSetupEntry(void *setup_value_raw)
 {
+  /*#HAG#VC#COMPERROR# dirty workaround | ugly conversion */
+  int spch = sizeof(char*);
+  int spvoid = sizeof(void*);
   /* !!! DIRTY WORKAROUND; TO BE FIXED AFTER THE MM ENGINE RELEASE !!! */
-  void *setup_value = setup_value_raw - (void *)&si + (void *)&setup;
+  // void *setup_value = setup_value_raw - (void *)&si + (void *)&setup;  /*#HAG#VC#COMPERROR# void* unknown size */
+  char *setup_value = (char*)setup_value_raw - (char *)&si + (char *)&setup;  /*#HAG#VC#COMPERROR#*/
 
   char *hide_setup_token = getHideSetupToken(setup_value);
 
