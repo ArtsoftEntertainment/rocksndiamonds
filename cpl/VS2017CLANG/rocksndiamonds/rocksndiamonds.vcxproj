@@ -117,6 +117,7 @@
     <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_image.lib" />
     <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_mixer.lib" />
     <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_net.lib" />
+    <Library Include="..\..\..\runtime\ZLIB\current\lib\zdll.lib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\game_em\game_em.vcxproj">
@@ -127,6 +128,9 @@
     </ProjectReference>
     <ProjectReference Include="..\game_sp\game_sp.vcxproj">
       <Project>{1b3b3535-c559-4fe6-ada8-380a10e54123}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lib7zip\lib7zip.vcxproj">
+      <Project>{3f7ac07b-071a-45bf-a73b-7cc26d643e9e}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libgame\libgame.vcxproj">
       <Project>{b9768e83-9228-4e8f-af5d-d17e5dd3e5b0}</Project>

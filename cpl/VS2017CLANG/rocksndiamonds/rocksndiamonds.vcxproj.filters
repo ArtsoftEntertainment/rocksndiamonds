@@ -120,5 +120,6 @@
     <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_mixer.lib" />
     <Library Include="..\..\..\runtime\SDL\current\lib\SDL2_net.lib" />
     <Library Include="..\..\..\runtime\SDL\current\lib\SDL2main.lib" />
+    <Library Include="..\..\..\runtime\ZLIB\current\lib\zdll.lib" />
   </ItemGroup>
 </Project>

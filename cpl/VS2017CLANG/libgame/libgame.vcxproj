@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\..\src\libgame\gadgets.c" />
     <ClCompile Include="..\..\..\src\libgame\hash.c" />
     <ClCompile Include="..\..\..\src\libgame\image.c" />
+    <ClCompile Include="..\..\..\src\libgame\ioapi.c" />
     <ClCompile Include="..\..\..\src\libgame\joystick.c" />
     <ClCompile Include="..\..\..\src\libgame\misc.c" />
     <ClCompile Include="..\..\..\src\libgame\random.c" />
@@ -31,11 +32,16 @@
     <ClCompile Include="..\..\..\src\libgame\sound.c" />
     <ClCompile Include="..\..\..\src\libgame\system.c" />
     <ClCompile Include="..\..\..\src\libgame\text.c" />
+    <ClCompile Include="..\..\..\src\libgame\unzip.c" />
+    <ClCompile Include="..\..\..\src\libgame\util.c" />
+    <ClCompile Include="..\..\..\src\libgame\zfile.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\libgame\crypt.h" />
     <ClInclude Include="..\..\..\src\libgame\gadgets.h" />
     <ClInclude Include="..\..\..\src\libgame\hash.h" />
     <ClInclude Include="..\..\..\src\libgame\image.h" />
+    <ClInclude Include="..\..\..\src\libgame\ioapi.h" />
     <ClInclude Include="..\..\..\src\libgame\joystick.h" />
     <ClInclude Include="..\..\..\src\libgame\libgame.h" />
     <ClInclude Include="..\..\..\src\libgame\macosx.h" />
@@ -49,7 +55,10 @@
     <ClInclude Include="..\..\..\src\libgame\system.h" />
     <ClInclude Include="..\..\..\src\libgame\text.h" />
     <ClInclude Include="..\..\..\src\libgame\types.h" />
+    <ClInclude Include="..\..\..\src\libgame\unzip.h" />
+    <ClInclude Include="..\..\..\src\libgame\util.h" />
     <ClInclude Include="..\..\..\src\libgame\windows.h" />
+    <ClInclude Include="..\..\..\src\libgame\zfile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{b9768e83-9228-4e8f-af5d-d17e5dd3e5b0}</ProjectGuid>
@@ -80,11 +89,11 @@
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;USE_RWOPS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;VISUAL_CPP;TARGET_SDL2;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">P:\runtime\SDL\current\include;P:\runtime\ZLIB\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderCompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</PrecompiledHeaderCompileAs>
       <CLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c99</CLanguageStandard>
       <CppLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c++11</CppLanguageStandard>
@@ -93,7 +102,7 @@
       <CppLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c++11</CppLanguageStandard>
       <PrecompiledHeaderCompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</PrecompiledHeaderCompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">P:\runtime\SDL\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">P:\runtime\SDL\current\include;P:\runtime\ZLIB\current\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
