@@ -22,6 +22,7 @@
 #include "misc.h"
 #include "setup.h"
 #include "text.h"
+#include "sdl.h"
 
 #if !defined(PLATFORM_WIN32)
 #include <sys/time.h>
@@ -534,7 +535,19 @@ static void *Load_WAV(char *filename)
 
   snd_info = checked_calloc(sizeof(SoundInfo));
 
-  if ((snd_info->data_ptr = Mix_LoadWAV(filename)) == NULL)
+  /*--#HAG#ZIP#-->*/
+  snd_info->data_ptr = NULL;
+  if (zfile_wasZip(filename)) {
+#ifdef USE_RWOPS
+    snd_info->data_ptr = Mix_LoadWAV_RW(SDL_RWFromZFILE(filename, "rb"),1);  /*#HAG#ZIP# try with 1 (SDL1  have only one param) */
+#endif 
+  }
+  else {
+    snd_info->data_ptr = Mix_LoadWAV(filename);
+  }
+  /*<--#HAG#ZIP#--*/
+
+  if (snd_info->data_ptr == NULL)  /*#HAG#ZIP#*/
   {
     Error(ERR_WARN, "cannot read sound file '%s': %s", filename, Mix_GetError());
     free(snd_info);
@@ -558,7 +571,19 @@ static void *Load_MOD(char *filename)
 
   mod_info = checked_calloc(sizeof(MusicInfo));
 
-  if ((mod_info->data_ptr = Mix_LoadMUS(filename)) == NULL)
+  /*--#HAG#ZIP#-->*/
+  mod_info->data_ptr = NULL;
+  if (zfile_wasZip(filename)) {
+#ifdef USE_RWOPS
+    mod_info->data_ptr = Mix_LoadMUS_RW(SDL_RWFromZFILE(filename, "rb"),1);  /*#HAG#ZIP# try with 1 (SDL1  have only one param) */
+#endif 
+  }
+  else {
+    mod_info->data_ptr = Mix_LoadMUS(filename);
+  }
+  /*<--#HAG#ZIP#--*/
+
+  if (mod_info->data_ptr == NULL)  /*#HAG#ZIP#*/
   {
     Error(ERR_WARN, "cannot read music file '%s': %s", filename, Mix_GetError());
     free(mod_info);
@@ -603,7 +628,7 @@ void LoadCustomMusic_NoConf(void)
 
   FreeAllMusic_NoConf();
 
-  if ((dir = openDirectory(music_directory)) == NULL)
+  if ((dir = openDirectory(music_directory,FALSE,FALSE)) == NULL)    /*#HAG#ZIP#*/
   {
     Error(ERR_WARN, "cannot read music directory '%s'", music_directory);
 
