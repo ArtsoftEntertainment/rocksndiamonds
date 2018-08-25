@@ -2821,7 +2821,7 @@ static boolean modifiedFileTimestamp(char *filename, char *timestamp_string)
   if (timestamp_string == NULL)
     return TRUE;
 
-  if (_stat(filename, &file_status) != 0)	/* cannot stat file */
+  if (zfile_stat(filename, &file_status) != 0)	/* cannot _stat file *//*#HAG#ZIP# zfile_stat -> st_mtime */
     return TRUE;
 
   return (file_status.st_mtime != atoi(timestamp_string));

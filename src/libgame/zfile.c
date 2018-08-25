@@ -42,6 +42,7 @@
 #include "../lib7zip/7zIn.h"
 #include "../lib7zip/7zExtract.h"
 
+#include <time.h>
 //#define ZFILEDEBUG 1
 
 
@@ -58,8 +59,9 @@ static char *archive_ext[] = { "zip", "7z", NULL };
 // files in zip are in dirZipEntry_t
 typedef struct dirZipEntry_s {
   char    *filename;
-  int     st_size;                // size of file
-  int     st_pos;                 // pos, offset in file
+  unsigned long     st_size;      // size of file
+  unsigned int      st_pos;       // pos, offset in file
+  time_t            st_mtime;     // modification time
 } dirZipEntry_t;
 
 // real zip files are in zipFileEntry_t 
@@ -215,6 +217,50 @@ void zfile_freeZipFileList(void)
 /* fill lists (directory related)                                       */
 /*----------------------------------------------------------------------*/
 
+
+/*--------------------------------------------------------------------
+--> wFatDate
+The MS-DOS date. The date is a packed value with the following format.
+Bits Description
+
+0-4 Day of the month (1–31)
+5-8 Month (1 = January, 2 = February, and so on)
+9-15 Year offset from 1980 (add 1980 to get actual year)
+
+--> wFatTime
+The MS-DOS time. The time is a packed value with the following format.
+Bits Description
+
+0-4 Second divided by 2
+5-10 Minute (0–59)
+11-15 Hour (0–23 on a 24-hour clock)
+
+*-------------------------------------------------------------------*/
+static void DosDateToTmDate(uLong ulDosDate, struct tm *ptm)
+{
+      uLong uDate;
+      uDate = (uLong)(ulDosDate >> 16);
+      ptm->tm_mday = (uInt)(uDate & 0x1f);							// 0-4   // 0x1f
+      ptm->tm_mon  = (uInt)(((uDate & 0x1E0) / 0x20) - 1);			// 5-8   // 0x1E0
+      ptm->tm_year = (uInt)(((uDate & 0xFE00) / 0x0200) + 1980);    // 9-15  // 0xFE00
+
+
+      ptm->tm_hour = (uInt)((ulDosDate & 0xF800) / 0x800);          // 11-15 // 0xF800
+      ptm->tm_min  = (uInt)((ulDosDate & 0x7E0) / 0x20);            // 5-10  // 0x7E0
+      ptm->tm_sec  = (uInt)(2 * (ulDosDate & 0x1f));				// 0-4   // 0x1f
+}
+
+static time_t ConvertZipFileTimeToTime(const uLong *dt)
+{
+	struct tm mtm = { 0 };
+	DosDateToTmDate(*dt, &mtm);
+	mtm.tm_year  = mtm.tm_year - 1900;
+	mtm.tm_isdst = -1;
+	time_t v32 = mktime(&mtm);
+	return v32;
+}
+
+
 /*--------------------------------------------------------------------
 * function: zipScanDir2_zip
 * descr   : scan the zip file and fill dirZipList (dirZipEntry_t)
@@ -262,6 +308,13 @@ static int zipScanDir2_zip (zipFileEntry_t *zfep,
         dze.filename = strNew(filename_inzip);
         dze.st_pos   = 0;
         dze.st_size  = file_info.uncompressed_size;
+		dze.st_mtime = ConvertZipFileTimeToTime(&file_info.dosDate);
+		/*--> only test
+		struct tm *ltm = localtime(&dze.st_mtime);
+		char buf[20] = { 0 };
+		strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", ltm);
+		//<-- only test */
+
         if (!listEnter (dirZipList,
                         &dze,
                         sizeof(dirZipEntry_t),
@@ -291,6 +344,25 @@ static int zipScanDir2_zip (zipFileEntry_t *zfep,
     objectDelete ((Pointer_t *)&dirName);
     return (listLength(dirZipList));
 } // zipScanDir2_zip
+
+
+
+#define TICKS_PER_SECOND 10000000
+#define EPOCH_DIFFERENCE 11644473600LL
+time_t convertWindowsTimeToUnixTime(UInt64 input) {
+	UInt64 temp;
+	temp = input / TICKS_PER_SECOND; //convert from 100ns intervals to seconds;
+	temp = temp - EPOCH_DIFFERENCE;  //subtract number of seconds between epochs
+	return (time_t)temp;
+}
+
+/*--------------------------------------------------------------------
+*-------------------------------------------------------------------*/
+static time_t Convert7zFileTimeToTime(const CNtfsFileTime *nt)
+{
+	UInt64 v64 = nt->Low | ((UInt64)nt->High << 32);
+	return convertWindowsTimeToUnixTime(v64);
+}
 
 
 /*--------------------------------------------------------------------
@@ -365,6 +437,13 @@ static int zipScanDir2_7zip (zipFileEntry_t *zfep,
           dze.filename = strNew(f->Name);
           dze.st_pos   = i;   // file_index !!
           dze.st_size  = f->Size;  // uncompressed size
+		  dze.st_mtime = Convert7zFileTimeToTime(&f->MTime);
+		  /*--> only test
+		  struct tm *ltm = localtime(&dze.st_mtime);  
+		  char buf[20] = { 0 };
+		  strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", ltm);
+		  //<-- only test */
+
           if (!listEnter (dirZipList,
                           &dze,
                           sizeof(dirZipEntry_t),
@@ -590,7 +669,7 @@ static bool_t sdirfind2(const void *searchData,
 * return  : TRUE if all ok
 * 
 *-------------------------------------------------------------------*/
-static FILE *openzip (char *name, char *zippath, int seamode)
+static FILE *openzip (char *name, char *zippath, int seamode, dirZipEntry_t **dze)
 {
     int i, j;
     char v;
@@ -622,7 +701,9 @@ static FILE *openzip (char *name, char *zippath, int seamode)
                                        sdirfind1);
                   }
                   if (found) {
+					  if (listGet(&zfep->dirZipList, (void**)dze)) {
                     return f;
+                  }
                   }
                   fclose(f);
 #ifdef ZFILEDEBUG
@@ -1203,13 +1284,15 @@ static struct zfile *zfile_fopen_2 (const char *name, const char *mode)
 {
     struct  zfile *l;
     FILE    *f;
+	dirZipEntry_t *dze = NULL;
     char    zipname[1000];
 
     if( name == NULL || *name == '\0' )
       return NULL;
+
     l = zfile_create ();
     l->name = _strdup (name);
-    f = openzip (l->name, zipname, 0);
+    f = openzip (l->name, zipname, 0, &dze);
     if (f) {
       /* not "rb", cant write in zip */
       if (UTILstrCaseCmp (mode, "rb") && !strchr(mode,'r') && !strchr(mode,'R')) {
@@ -1305,12 +1388,51 @@ struct zfile *zfile_dup (struct zfile *zf)
 }
 
 
+int zfile_stat (const char *name, struct _stat *fileStatus)
+{
+	if (_stat(name, fileStatus) == 0) {		/*#HAG#ZIP# zfile_stat */
+		return 0;
+	} else {
+		char fname[2000] = { 0 };
+		char zipname[1000] = { 0 };
+		FILE *f;
+		int  seamode;
+		dirZipEntry_t *dze = NULL;
+
+		if (strlen(name) == 0)
+			return 0;
+		if (strstr(name, "/.") == (name + strlen(name) - 2)) {
+			seamode = 2;
+		}
+		else {
+			seamode = 1;
+		}
+		manglefilename(fname, name);
+		f = openzip(fname, zipname, seamode, &dze);
+		if (!f)
+			return -1;
+		fclose(f);
+#ifdef ZFILEDEBUG
+		write_log("-I- %ld fclose '%s' '%s'\n", errno, fname, zipname);
+#endif
+		if (dze == NULL || fileStatus == NULL) {
+			return -1;
+		}
+		fileStatus->st_size = dze->st_size;
+		fileStatus->st_mtime = dze->st_mtime;
+
+		return 0;
+	}
+}
+
+
 int zfile_exists (const char *name)
 {
     char fname[2000]   = {0};
     char zipname[1000] = {0};
     FILE *f;
     int  seamode;
+	dirZipEntry_t *dze = NULL;
 
     if (strlen (name) == 0)
       return 0;
@@ -1320,7 +1442,7 @@ int zfile_exists (const char *name)
       seamode = 1;
     }
     manglefilename(fname, name);
-    f = openzip (fname, zipname, seamode);
+    f = openzip (fname, zipname, seamode, &dze);
     if (!f) {
       manglefilename(fname, name);
       f = fopen(fname,"rb");
@@ -1349,6 +1471,7 @@ int zfile_direxists(const char *name)
     char zipname[1000] = {0};
     FILE *f;
     int  seamode;
+	dirZipEntry_t *dze = NULL;
 
     if (strlen(name) == 0)
         return 0;
@@ -1359,7 +1482,7 @@ int zfile_direxists(const char *name)
         seamode = 2;   /*#HAG#ZIP# for dir always 2 */
     }
     manglefilename(fname, name);
-    f = openzip(fname, zipname, seamode);
+    f = openzip(fname, zipname, seamode, &dze);
     if (!f) {
         manglefilename(fname, name);
         f = fopen(fname, "rb");

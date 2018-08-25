@@ -47,8 +47,16 @@ CFileSize SzFolderGetUnPackSize(CFolder *folder);
 
 /* #define CArchiveFileTime UInt64 */
 
+typedef struct
+{
+   UInt32 Low;
+   UInt32 High;
+} CNtfsFileTime;
+
 typedef struct _CFileItem
 {
+  CNtfsFileTime MTime;
+  Byte MTimeDefined;
   /*
   CArchiveFileTime LastWriteTime;
   CFileSize StartPos;

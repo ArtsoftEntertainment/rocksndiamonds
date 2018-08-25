@@ -1970,7 +1970,7 @@ static int getFileTypeFromBasename(char *basename)
   checked_free(filename);
   filename = getPath2(getCurrentLevelDir(), basename);
 
-  if (_stat(filename, &file_status) == 0)
+  if (zfile_stat(filename, &file_status) == 0)  /* can _stat file *//*#HAG#ZIP# zfile_stat -> st_size */
   {
     /* check for typical filesize of a Supaplex level package file */
     if (file_status.st_size == 170496)

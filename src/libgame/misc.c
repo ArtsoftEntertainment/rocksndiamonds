@@ -682,7 +682,7 @@ time_t getFileTimestampEpochSeconds(char *filename)
 {
   struct _stat file_status;
 
-  if (_stat(filename, &file_status) != 0)	/* cannot stat file */
+  if (zfile_stat(filename, &file_status) != 0)	/* cannot _stat file *//*#HAG#ZIP# zfile_stat -> st_mtime */
     return 0;
 
   return file_status.st_mtime;
@@ -2531,7 +2531,7 @@ DirectoryEntry *readDirectory(Directory *dir)
   struct _stat file_status;
 
   dir->dir_entry->is_directory =
-    (_stat(dir->dir_entry->filename, &file_status) == 0 &&
+    (_stat(dir->dir_entry->filename, &file_status) == 0 &&   /*#HAG#ZIP# normal _stat -- only used as NOT is_directory */
      S_ISDIR(file_status.st_mode));
 
   return dir->dir_entry;
@@ -2562,7 +2562,7 @@ boolean directoryExists(char *dir_name)
   if (zfile_direxists(dir_name)) {
     success = TRUE; 
   } else {
-    success = (_stat(dir_name, &file_status) == 0 &&
+    success = (_stat(dir_name, &file_status) == 0 &&		/*#HAG#ZIP# directoryExists -- call's zfile_direxists first */
 		     S_ISDIR(file_status.st_mode));
   }
 

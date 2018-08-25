@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <sys/stat.h>
+
 #include "util.h"
 
 #define MAX_DPATH 1000
@@ -64,6 +66,7 @@ typedef int (*zfile_callback)(struct zfile*, void*);
 
 extern struct zfile *zfile_fopen (const char *name, const char *mode);
 extern struct zfile *zfile_fopen_empty (const char *name, int size);
+extern int zfile_stat(const char *name, struct _stat *fileStatus);
 extern int zfile_exists (const char *name);
 extern int zfile_direxists(const char *name);
 extern int zfile_fclose (struct zfile *);

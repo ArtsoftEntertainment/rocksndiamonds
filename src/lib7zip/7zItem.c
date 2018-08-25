@@ -97,6 +97,9 @@ void SzFileInit(CFileItem *fileItem)
   fileItem->IsDirectory = 0;
   fileItem->IsAnti = 0;
   fileItem->Name = 0;
+  fileItem->MTimeDefined = 0;
+  fileItem->MTime.High = 0;
+  fileItem->MTime.Low  = 0;
 }
 
 void SzFileFree(CFileItem *fileItem, void (*freeFunc)(void *p))

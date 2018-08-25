@@ -933,6 +933,7 @@ SZ_RESULT SzReadHeader2(
     UInt32 **digests,         /* allocTemp */
     Byte **emptyStreamVector, /* allocTemp */
     Byte **emptyFileVector,   /* allocTemp */
+    Byte **lwtVector,         /* allocTemp */
     ISzAlloc *allocMain, 
     ISzAlloc *allocTemp)
 {
@@ -987,7 +988,8 @@ SZ_RESULT SzReadHeader2(
     if (type == k7zIdEnd)
       break;
     RINOK(SzReadNumber(sd, &size));
-
+    if (size > sd->Size)
+      return SZE_ARCHIVE_ERROR;
     if ((UInt64)(int)type != type)
     {
       RINOK(SzSkeepDataSize(sd, size));
@@ -1015,6 +1017,27 @@ SZ_RESULT SzReadHeader2(
         RINOK(SzReadBoolVector(sd, numEmptyStreams, emptyFileVector, allocTemp->Alloc));
         break;
       }
+      case k7zIdLastWriteTime:
+      {
+        RINOK(SzReadBoolVector2(sd, numFiles, lwtVector, allocTemp->Alloc));
+        RINOK(SzReadSwitch(sd));
+        for (i = 0; i < numFiles; i++)
+        {
+          CFileItem *f = &files[i];
+          Byte defined = (*lwtVector)[i];
+          f->MTimeDefined = defined;
+          f->MTime.Low = f->MTime.High = 0;
+          if (defined)
+          {
+            RINOK(SzReadUInt32(sd, &f->MTime.Low));
+            RINOK(SzReadUInt32(sd, &f->MTime.High));
+          }
+        }
+        allocTemp->Free(*lwtVector);
+        *lwtVector = NULL;
+        break;
+      }
+
       default:
       {
         RINOK(SzSkeepDataSize(sd, size));
@@ -1067,15 +1090,19 @@ SZ_RESULT SzReadHeader(
   UInt32 *digests = 0;
   Byte *emptyStreamVector = 0;
   Byte *emptyFileVector = 0;
+  Byte      *lwtVector = 0;
   SZ_RESULT res = SzReadHeader2(sd, db, 
       &unPackSizes, &digestsDefined, &digests,
-      &emptyStreamVector, &emptyFileVector,
+      &emptyStreamVector, &emptyFileVector, &lwtVector,
       allocMain, allocTemp);
   allocTemp->Free(unPackSizes);
   allocTemp->Free(digestsDefined);
   allocTemp->Free(digests);
   allocTemp->Free(emptyStreamVector);
   allocTemp->Free(emptyFileVector);
+  if (lwtVector != 0) {
+      allocTemp->Free(lwtVector);
+  }
   return res;
 } 
 
