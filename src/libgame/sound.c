@@ -10,11 +10,8 @@
 // ============================================================================
 
 #include <sys/types.h>
-#include <sys/time.h>
 #include <string.h>
-#include <unistd.h>
 #include <fcntl.h>
-#include <dirent.h>
 #include <signal.h>
 #include <math.h>
 #include <errno.h>
@@ -26,6 +23,13 @@
 #include "setup.h"
 #include "text.h"
 
+#if !defined(PLATFORM_WIN32)
+#include <sys/time.h>
+#include <unistd.h>
+#include <dirent.h>
+#else
+#include "rndapi.h"	/*#HAG#VC#INCLUDE#*/
+#endif
 
 // expiration time (in milliseconds) for sound loops
 #define SOUND_LOOP_EXPIRATION_TIME	200

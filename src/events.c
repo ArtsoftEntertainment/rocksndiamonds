@@ -1852,6 +1852,7 @@ boolean HandleKeysDebug(Key key, int key_status)
 
   return FALSE;
 #endif
+  return FALSE;
 }
 
 void HandleKey(Key key, int key_status)
