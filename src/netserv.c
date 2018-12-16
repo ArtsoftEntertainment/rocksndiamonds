@@ -10,11 +10,16 @@
 // ============================================================================
 
 #include <fcntl.h>
-#include <sys/time.h>
 #include <signal.h>
 #include <errno.h>
 
 #include "libgame/libgame.h"
+
+#if !defined(PLATFORM_WIN32)
+#include <sys/time.h>    /*#HAG#INCLUDE#*/
+#else
+#include "libgame/rndapi.h"
+#endif
 
 #include "netserv.h"
 #include "main.h"

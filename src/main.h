@@ -13,12 +13,17 @@
 #define MAIN_H
 
 #include <time.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include <unistd.h>
 #include <fcntl.h>
+
+#if !defined(PLATFORM_WIN32)
+#include <sys/time.h>    /*#HAG#INCLUDE#*/
+#include <unistd.h>      /*#HAG#INCLUDE#*/
+#else
+#include "libgame/rndapi.h"
+#endif
 
 #include "libgame/libgame.h"
 #include "game_em/game_em.h"

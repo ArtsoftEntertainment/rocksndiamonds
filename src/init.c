@@ -5076,7 +5076,7 @@ static void Execute_Command(char *command)
   {
     global.create_images_dir = getStringCopy(&command[14]);
 
-    if (access(global.create_images_dir, W_OK) != 0)
+    if (_access(global.create_images_dir, W_OK) != 0)
       Error(ERR_EXIT, "image target directory '%s' not found or not writable",
 	    global.create_images_dir);
   }
