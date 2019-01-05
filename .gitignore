@@ -30,4 +30,8 @@ src/conf_act.c
 # ignore compiled executable files
 rocksndiamonds
 rocksndiamonds.exe
+rocksndiamonds*.exe
 rndTest.exe
+
+# ignore transparent files
+/src/-transparent

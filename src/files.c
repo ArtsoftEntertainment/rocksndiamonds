@@ -1997,7 +1997,7 @@ static int getFileTypeFromBasename(char *basename)
   checked_free(filename);
   filename = getPath2(getCurrentLevelDir(), basename);
 
-  if (_stat(filename, &file_status) == 0)
+  if (zfile_stat(filename, &file_status) == 0)  /* can _stat file *//*#HAG#ZIP# zfile_stat -> st_size */
   {
     // check for typical filesize of a Supaplex level package file
     if (file_status.st_size == 170496)
@@ -2061,7 +2061,7 @@ static char *getPackedLevelBasename(int type)
 
   strcpy(basename, UNDEFINED_FILENAME);		// default: undefined file
 
-  if ((dir = openDirectory(directory)) == NULL)
+  if ((dir = openDirectory(directory, FALSE, FALSE)) == NULL)    /*#HAG#ZIP#*/
   {
     Error(ERR_WARN, "cannot read current level directory '%s'", directory);
 
@@ -2070,6 +2070,11 @@ static char *getPackedLevelBasename(int type)
 
   while ((dir_entry = readDirectory(dir)) != NULL)	// loop all entries
   {
+
+    if ((strcmp(dir_entry->basename, "." ) == 0) ||  /*#HAG#ZIP#*/
+        (strcmp(dir_entry->basename, "..") == 0))    /*#HAG#ZIP#*/
+      continue;
+
     char *entry_basename = dir_entry->basename;
     int entry_type = getFileTypeFromBasename(entry_basename);
 
@@ -2079,7 +2084,6 @@ static char *getPackedLevelBasename(int type)
 	  type == entry_type)
       {
 	strcpy(basename, entry_basename);
-
 	break;
       }
     }
@@ -10794,7 +10798,7 @@ void LoadMusicInfo(void)
     }
   }
 
-  if ((dir = openDirectory(music_directory)) == NULL)
+  if ((dir = openDirectory(music_directory, FALSE, FALSE)) == NULL)    /*#HAG#ZIP#*/
   {
     Error(ERR_WARN, "cannot read music directory '%s'", music_directory);
     return;

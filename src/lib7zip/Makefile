@@ -1,75 +1,66 @@
 # =============================================================================
-# Rocks'n'Diamonds - McDuffin Strikes Back!
+# Rocks'n'Diamonds Makefile (lib7zip)
 # -----------------------------------------------------------------------------
-# (c) 1995-2014 by Artsoft Entertainment
-#                  Holger Schemel
-#                  info@artsoft.org
-#                  http://www.artsoft.org/
-# -----------------------------------------------------------------------------
-# src/libgame/Makefile
+# (c) 1995-2005 Holger Schemel <info@artsoft.org>
 # =============================================================================
-
+##
 # -----------------------------------------------------------------------------
 # configuration
 # -----------------------------------------------------------------------------
 
-SRCS =	system.c	\
-	gadgets.c	\
-	text.c		\
-	sound.c		\
-	joystick.c	\
-	snapshot.c	\
-	image.c		\
-	random.c	\
-	hash.c		\
-	setup.c		\
-	misc.c		\
-	sdl.c       \
-	ioapi.c     \
-	unzip.c		\
-	zfile.c     \
-	util.c      
-	
-	
-
-OBJS =	system.o	\
-	gadgets.o	\
-	text.o		\
-	sound.o		\
-	snapshot.o	\
-	joystick.o	\
-	image.o		\
-	random.o	\
-	hash.o		\
-	setup.o		\
-	misc.o		\
-	sdl.o		\
-	ioapi.o 	\
-	unzip.o 	\
-	zfile.o 	\
-	util.o 		
-	
+SRCS =	7zAlloc.c	\
+	7zBuffer.c	\
+	7zCrc.c		\
+	7zDecode.c	\
+	7zExtract.c	\
+	7zHeader.c	\
+	7zIn.c		\
+	7zItem.c	\
+	7zMethodID.c	\
+	LzmaDecode.c	\
+	7zAlloc.h	\
+	7zBuffer.h	\
+	7zCrc.h		\
+	7zDecode.h	\
+	7zExtract.h	\
+	7zHeader.h	\
+	7zIn.h		\
+	7zItem.h	\
+	7zMethodID.h	\
+	7zTypes.h	\
+	LzmaDecode.h
 	
 
-LIBGAME = libgame.a
+OBJS =	7zAlloc.o	\
+	7zBuffer.o	\
+	7zCrc.o		\
+	7zDecode.o	\
+	7zExtract.o	\
+	7zHeader.o	\
+	7zIn.o		\
+	7zItem.o	\
+	7zMethodID.o	\
+	LzmaDecode.o
+
+LIB7ZIP = lib7zip.a
 
 
 # -----------------------------------------------------------------------------
 # build targets
 # -----------------------------------------------------------------------------
 
-all: $(LIBGAME)
+all: $(LIB7ZIP)
 
-$(LIBGAME): $(OBJS)
-	$(AR) cru $(LIBGAME) $(OBJS)
-	$(RANLIB) $(LIBGAME)
+$(LIB7ZIP): $(OBJS)
+	$(AR) cru $(LIB7ZIP) $(OBJS)
+	$(RANLIB) $(LIB7ZIP)
 
 .c.o:
 	$(CC) $(PROFILING) $(CFLAGS) -c $*.c
 
 clean:
 	$(RM) $(OBJS)
-	$(RM) $(LIBGAME)
+	$(RM) $(LIB7ZIP)
 
 
 # -----------------------------------------------------------------------------

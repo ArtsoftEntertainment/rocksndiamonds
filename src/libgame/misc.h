@@ -15,14 +15,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
 #include "platform.h"		/*#HAG#DIRENT#*/
 #include "system.h"
+#include "zfile.h"		/*#HAG#ZIP#*/
 
-#ifdef VISUAL_CPP               /*#HAG#DIRENT#*/
-#include "direntWindows.h"	    /*#HAG#DIRENT# windows have no dirent.h | use own */
-#else
-#include <dirent.h>             /*#HAG#DIRENT# mingw .. and other */
-#endif
+//#ifdef VISUAL_CPP               /*#HAG#DIRENT#*/
+//#include "direntWindows.h"      /*#HAG#DIRENT# windows have no dirent.h | use own */
+//#else
+//#include <dirent.h>             /*#HAG#DIRENT# mingw .. and other */
+//#endif
 
 
 // values for InitCounter() and Counter()
@@ -87,7 +89,7 @@
 typedef struct
 {
   char *filename;
-  FILE *file;
+  struct zfile *zfile;		/*#HAG#ZIP#*/
   boolean end_of_file;
 
 #if defined(PLATFORM_ANDROID)
@@ -105,8 +107,10 @@ typedef struct
 
 typedef struct
 {
+  List_t	 dirList;	/*#HAG#ZIP#*/
+  long           actCnt;        /*#HAG#ZIP#*/
+  //  DIR *dir;
   char *filename;
-  DIR *dir;
   DirectoryEntry *dir_entry;
 
 #if defined(PLATFORM_ANDROID)
@@ -259,7 +263,7 @@ int getByteFromFile(File *);
 char *getStringFromFile(File *, char *, int);
 int copyFile(char *, char *);
 
-Directory *openDirectory(char *);
+Directory *openDirectory(char *dir_name, boolean onlyDir, boolean doExtendPath);  /*#HAG#ZIP#*/
 int closeDirectory(Directory *);
 DirectoryEntry *readDirectory(Directory *);
 void freeDirectoryEntry(DirectoryEntry *);

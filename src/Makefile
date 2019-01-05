@@ -75,7 +75,7 @@ endif
 
 ifeq ($(TARGET),sdl2)			# compiling for SDL2 target
 SYS_CFLAGS = -DTARGET_SDL2 $(shell sdl2-config --cflags)
-SDL_LIBS = -lSDL2_image -lSDL2_mixer -lSDL2_net
+SDL_LIBS = -lSDL2_image -lSDL2_mixer -lSDL2_net -lz
 SYS_LDFLAGS = $(SDL_LIBS) $(shell sdl2-config --libs)
 endif
 
@@ -100,8 +100,8 @@ DEBUG = -DDEBUG -g
 
 # OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
 # OPTIONS = $(DEBUG) -O3 -Wall			# only for debugging purposes
-# OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
-OPTIONS = $(DEBUG) -Wall -Wstrict-prototypes -Wmissing-prototypes
+OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
+# OPTIONS = $(DEBUG) -Wall -Wstrict-prototypes -Wmissing-prototypes
 # OPTIONS = $(DEBUG) -Wall -ansi -pedantic	# only for debugging purposes
 # OPTIONS = -O3 -Wall -ansi -pedantic
 # OPTIONS = -O3 -Wall
@@ -182,6 +182,9 @@ SOURCE_DATE_EPOCH ?= $(shell test -d ../.git && test `git ls-files -m | wc -l` -
 # get source date string from either GNU / Linux or BSD / Mac OS X style "date"
 SOURCE_DATE_STRING := $(shell date -u -d "@$(SOURCE_DATE_EPOCH)" "+$(TIMESTAMP_FORMAT)"  2>/dev/null || date -u -r "$(SOURCE_DATE_EPOCH)" "+$(TIMESTAMP_FORMAT)" 2>/dev/null || date -u "+$(TIMESTAMP_FORMAT)")
 
+LIB7ZIP_DIR = lib7zip
+LIB7ZIP = $(LIB7ZIP_DIR)/lib7zip.a
+
 LIBGAME_DIR = libgame
 LIBGAME = $(LIBGAME_DIR)/libgame.a
 
@@ -194,7 +197,7 @@ GAME_SP = $(GAME_SP_DIR)/game_sp.a
 GAME_MM_DIR = game_mm
 GAME_MM = $(GAME_MM_DIR)/game_mm.a
 
-RNDLIBS = $(LIBGAME) $(GAME_EM) $(GAME_SP) $(GAME_MM)
+RNDLIBS = $(LIBGAME) $(LIB7ZIP) $(GAME_EM) $(GAME_SP) $(GAME_MM)
 AUTOCONF = conf_gfx.h conf_snd.h conf_mus.h
 
 ICONBASE = windows_icon
@@ -212,13 +215,18 @@ GRAPHICS_DIR = ../graphics
 # build targets
 # -----------------------------------------------------------------------------
 
-all: $(AUTOCONF) libgame_dir game_em_dir game_sp_dir game_mm_dir $(PROGNAME) graphics_dir
+all: $(AUTOCONF) lib7zip_dir libgame_dir game_em_dir game_sp_dir game_mm_dir $(PROGNAME) graphics_dir
 
 $(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(OBJS) $(ICON)
 	$(CC) $(PROFILING) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
 ifdef BUILD_DIST
 	strip $(PROGNAME)
 endif
+
+lib7zip_dir:
+	@$(MAKE) -C $(LIB7ZIP_DIR)
+$(LIB7ZIP):
+	@$(MAKE) -C $(LIB7ZIP_DIR)
 
 libgame_dir:
 	@$(MAKE) -C $(LIBGAME_DIR)
@@ -277,6 +285,7 @@ graphics_dir:
 	@test -f $(GRAPHICS_DIR)/Makefile && $(MAKE) -C $(GRAPHICS_DIR) || true
 
 clean-obj:
+	$(MAKE) -C $(LIB7ZIP_DIR) clean
 	$(MAKE) -C $(LIBGAME_DIR) clean
 	$(MAKE) -C $(GAME_EM_DIR) clean
 	$(MAKE) -C $(GAME_SP_DIR) clean
@@ -319,9 +328,10 @@ valgrind:
 # -----------------------------------------------------------------------------
 
 tags:
-	$(ETAGS) *.[ch] $(LIBGAME_DIR)/*.[ch] $(GAME_EM_DIR)/*.[ch] $(GAME_SP_DIR)/*.[ch] $(GAME_MM_DIR)/*.[ch]
+	$(ETAGS) *.[ch] $(LIB7ZIP_DIR)/*.[ch] $(LIBGAME_DIR)/*.[ch] $(GAME_EM_DIR)/*.[ch] $(GAME_SP_DIR)/*.[ch] $(GAME_MM_DIR)/*.[ch]
 
 depend:
+	$(MAKE) -C $(LIB7ZIP_DIR) depend
 	$(MAKE) -C $(LIBGAME_DIR) depend
 	$(MAKE) -C $(GAME_EM_DIR) depend
 	$(MAKE) -C $(GAME_SP_DIR) depend

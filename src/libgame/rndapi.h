@@ -24,8 +24,8 @@
 #   include <sys/types.h>
 #   include <dirent.h>
 # else
-///#   include <sys/types.h>
-///#   include <dirent.h>
+#   include <sys/types.h>
+#   include <dirent.h>
 # endif
 
 #include <unistd.h>
