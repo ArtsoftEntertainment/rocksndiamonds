@@ -501,24 +501,40 @@ char *getProgramConfigFilename(char *command_filename)
 
   char *ro_base_path = getProgramMainDataPath(command_filename, RO_BASE_PATH);
   char *conf_directory = getPath2(ro_base_path, CONF_DIRECTORY);
+  free(ro_base_path);
 
   char *command_basepath = getBasePath(command_filename);
   char *command_basename = getBaseNameNoSuffix(command_filename);
   char *command_filename_2 = getPath2(command_basepath, command_basename);
+  free(command_basepath);
+  free(command_basename);
 
   char *config_filename_1 = getStringCat2(command_filename_1, ".conf");
+  free(command_filename_1);
   char *config_filename_2 = getStringCat2(command_filename_2, ".conf");
+  free(command_filename_2);
   char *config_filename_3 = getPath2(conf_directory, SETUP_FILENAME);
+  free(conf_directory);
 
   // 1st try: look for config file that exactly matches the binary filename
   if (fileExists(config_filename_1))
+  {
+    free(config_filename_2);
+    free(config_filename_3);
     return config_filename_1;
+  }
 
   // 2nd try: look for config file that matches binary filename without suffix
   if (fileExists(config_filename_2))
+  {
+    free(config_filename_1);
+    free(config_filename_3);
     return config_filename_2;
+  }
 
   // 3rd try: return setup config filename in global program config directory
+  free(config_filename_1);
+  free(config_filename_2);
   return config_filename_3;
 }
 
