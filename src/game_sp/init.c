@@ -64,6 +64,12 @@ void sp_open_all(void)
 
 void sp_close_all(void)
 {
+  if (PlayField16)
+    free(PlayField16 - game_sp.preceding_buffer_size);
+  if (PlayField8)
+    free(PlayField8 - SP_MAX_PLAYFIELD_WIDTH);
+  PlayField16 = NULL;
+  PlayField8 = NULL;
 }
 
 void InitPrecedingPlayfieldMemory(void)
