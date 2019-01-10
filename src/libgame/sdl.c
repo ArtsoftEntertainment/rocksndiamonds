@@ -14,15 +14,78 @@
 #include "joystick.h"
 #include "misc.h"
 #include "setup.h"
+#include "zfile.h"  /*#HAG#ZIP#*/
+
 
 #define ENABLE_UNUSED_CODE	0	// currently unused functions
 
 #define DEBUG_JOYSTICKS		0
 
 
-// ============================================================================
-// video functions
-// ============================================================================
+#if defined(TARGET_SDL2)
+
+/*--#HAG#ZIP#-->*/
+/* ========================================================================= */
+/* zip functions                                                           */
+/* ========================================================================= */
+
+
+static Sint64 _zfile_fseek(SDL_RWops *context, Sint64 offset, int whence)
+{
+	return zfile_fseek(SDL_RWOPS_ZFILE_FILE(context), offset, whence);
+}
+
+static size_t _zfile_fread(SDL_RWops *context, void *ptr, size_t size, size_t maxnum)
+{
+	return zfile_fread(ptr, 1, size*maxnum, SDL_RWOPS_ZFILE_FILE(context)) / size;
+}
+
+static size_t _zfile_fwrite(SDL_RWops *context, const void *ptr, size_t size, size_t num)
+{
+	return 0; /* ignored */
+}
+
+static int _zfile_fclose(SDL_RWops *context)
+{
+	if (!context) return 0; /* may be SDL_RWclose is called by atexit */
+
+	zfile_fclose(SDL_RWOPS_ZFILE_FILE(context));
+	SDL_FreeRW(context);
+	return 0;
+}
+
+SDL_RWops *SDL_RWFromZFILE(const char* file, const char* mode)
+{
+	register SDL_RWops* rwops;
+	register struct zfile* zf;
+
+	if (!strchr(mode, 'r'))
+		return SDL_RWFromFile(file, mode);
+
+	zf = zfile_fopen(file, mode);
+	if (!zf) return 0;
+
+	rwops = SDL_AllocRW();
+	if (!rwops) {
+		errno = ENOMEM;
+		zfile_fclose(zf);
+		return 0;
+	}
+
+	SDL_RWOPS_ZFILE_DATA(rwops) = zf;
+	rwops->read = _zfile_fread;
+	rwops->write = _zfile_fwrite;
+	rwops->seek = _zfile_fseek;
+	rwops->close = _zfile_fclose;
+	return rwops;
+}
+/*<--#HAG#ZIP#--*/
+#endif
+
+
+/* ========================================================================= */
+/* video functions                                                           */
+/* ========================================================================= */
 
 // SDL internal variables
 static SDL_Window *sdl_window = NULL;
@@ -262,7 +325,16 @@ static void SDLSetWindowIcon(char *basename)
     return;
   }
 
-  if ((surface = IMG_Load(filename)) == NULL)
+  /*--#HAG#ZIP#-->*/
+  if (zfile_wasZip(filename)) {
+    surface = IMG_Load_RW(SDL_RWFromZFILE(filename, "rb"), 1);
+  }
+  else {
+    surface = IMG_Load(filename);
+  }
+  /*<--#HAG#ZIP#--*/
+
+  if (surface == NULL)  /*#HAG#ZIP#*/
   {
     Error(ERR_WARN, "IMG_Load() failed: %s", SDL_GetError());
 
@@ -2254,9 +2326,18 @@ Bitmap *SDLLoadImage(char *filename)
 
   print_timestamp_time(getBaseNamePtr(filename));
 
-  // load image to temporary surface
-  if ((sdl_image_tmp = IMG_Load(filename)) == NULL)
+  /* load image to temporary surface */
+  /*--#HAG#ZIP#-->*/
+  if (zfile_wasZip(filename)) {
+    sdl_image_tmp = IMG_Load_RW(SDL_RWFromZFILE(filename, "rb"), 1);
+  }
+  else {
+    sdl_image_tmp = IMG_Load(filename);
+  }
+  /*<--#HAG#ZIP#--*/
+  if (sdl_image_tmp == NULL) {  /*#HAG#ZIP#*/
     Error(ERR_EXIT, "IMG_Load() failed: %s", SDL_GetError());
+  }
 
   print_timestamp_time("IMG_Load");
 
@@ -2999,8 +3080,17 @@ static void DrawTouchInputOverlay(void)
 
     SDL_Surface *surface;
 
-    if ((surface = IMG_Load(filename)) == NULL)
+    /*--#HAG#ZIP#-->*/
+    if (zfile_wasZip(filename)) {
+      surface = IMG_Load_RW(SDL_RWFromZFILE(filename, "rb"), 1);
+    } 
+    else {
+      surface = IMG_Load(filename);  /*#HAG#ZIP#*/
+    }
+    /*<--#HAG#ZIP#--*/
+    if (surface == NULL) {  /*#HAG#ZIP#*/
       Error(ERR_EXIT, "IMG_Load() failed: %s", SDL_GetError());
+    }
 
     width  = surface->w;
     height = surface->h;

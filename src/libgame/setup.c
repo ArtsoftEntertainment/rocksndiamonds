@@ -11,9 +11,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 
 #include "platform.h"
@@ -21,6 +19,10 @@
 #if !defined(PLATFORM_WIN32)
 #include <pwd.h>
 #include <sys/param.h>
+#include <dirent.h>
+#include <unistd.h>
+#else
+#include "rndapi.h"		/*#HAG#INCLUDE#*/
 #endif
 
 #include "setup.h"
@@ -187,6 +189,12 @@ static char *getLevelDirFromTreeInfo(TreeInfo *node)
   checked_free(level_dir);
 
   level_dir = getPath2((node->in_user_dir ? getUserLevelDir(NULL) :
+      /*--#HAG#ZIP#-->*/
+      zfile_isZip(node->basepath) ? node->basepath :
+      (node->node_parent != NULL) ?
+      (zfile_isZip(node->node_parent->basepath) ?
+          node->node_parent->basepath : options.level_directory) :
+      /*<--#HAG#ZIP#--*/
 			options.level_directory), node->fullpath);
 
   return level_dir;
@@ -1539,7 +1547,7 @@ static mode_t posix_umask(mode_t mask)
 static int posix_mkdir(const char *pathname, mode_t mode)
 {
 #if defined(PLATFORM_WIN32)
-  return mkdir(pathname);
+  return _mkdir(pathname);
 #else
   return mkdir(pathname, mode);
 #endif
@@ -1583,7 +1591,7 @@ void createDirectory(char *dir, char *text, int permission_class)
 	  text, dir, strerror(errno));
 
   if (permission_class == PERMS_PUBLIC && !running_setgid)
-    chmod(dir, dir_mode);
+    _chmod(dir, dir_mode);
 
   posix_umask(last_umask);		// restore previous umask
 }
@@ -1602,7 +1610,7 @@ void SetFilePermissions(char *filename, int permission_class)
   if (permission_class == PERMS_PUBLIC && !running_setgid)
     perms = FILE_PERMS_PUBLIC_ALL;
 
-  chmod(filename, perms);
+  _chmod(filename, perms);
 }
 
 char *getCookie(char *file_type)
@@ -2854,12 +2862,12 @@ static char *getFileTimestampString(char *filename)
 
 static boolean modifiedFileTimestamp(char *filename, char *timestamp_string)
 {
-  struct stat file_status;
+  struct _stat file_status;
 
   if (timestamp_string == NULL)
     return TRUE;
 
-  if (stat(filename, &file_status) != 0)	// cannot stat file
+  if (zfile_stat(filename, &file_status) != 0)	/* cannot _stat file *//*#HAG#ZIP# zfile_stat -> st_mtime */
     return TRUE;
 
   return (file_status.st_mtime != atoi(timestamp_string));
@@ -3058,7 +3066,11 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
     leveldir_new->first_level + leveldir_new->levels - 1;
 
   leveldir_new->in_user_dir =
-    (!strEqual(leveldir_new->basepath, options.level_directory));
+	  !((strEqual(leveldir_new->basepath, options.level_directory)) ||
+	  /*--#HAG#ZIP#-->*/
+	    (zfile_isZip(leveldir_new->basepath)) ||
+	    (zfile_wasZip(leveldir_new->basepath)) );
+	  /*<--#HAG#ZIP#--*/
 
   // adjust some settings if user's private level directory was detected
   if (leveldir_new->sort_priority == LEVELCLASS_UNDEFINED &&
@@ -3111,37 +3123,68 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
   Directory *dir;
   DirectoryEntry *dir_entry;
   boolean valid_entry_found = FALSE;
+  char              *levDir = getStringCopy(level_directory);  /*#HAG#ZIP#*/
+  long              dcnt = -1;    /*#HAG#ZIP# only for better debugging */
 
-  if ((dir = openDirectory(level_directory)) == NULL)
+  if ((dir = openDirectory(levDir, TRUE, FALSE)) == NULL)    /*#HAG#ZIP#*/
   {
     Error(ERR_WARN, "cannot read level directory '%s'", level_directory);
-
+    free(levDir);  /*#HAG#ZIP#*/
     return;
   }
 
-  while ((dir_entry = readDirectory(dir)) != NULL)	// loop all entries
+  dcnt = listLength(&dir->dirList);   /*#HAG#ZIP#*/
+
+  while ((dir_entry = readDirectory(dir)) != NULL)	/* loop all entries */
   {
     char *directory_name = dir_entry->basename;
-    char *directory_path = getPath2(level_directory, directory_name);
+    char *directory_path = getPath2(levDir, directory_name);  /*#HAG#ZIP#*/
 
     // skip entries for current and parent directory
     if (strEqual(directory_name, ".") ||
 	strEqual(directory_name, ".."))
     {
       free(directory_path);
-
       continue;
     }
 
-    // find out if directory entry is itself a directory
-    if (!dir_entry->is_directory)			// not a directory
+    /* find out if directory entry is itself a directory */
+    /*--#HAG#ZIP#-->*/
+    if (!dir_entry->is_directory)  /* not a directory  *//*#HAG#ZIP# NOT is_directory */
     {
+	/*--#HAG#ZIP#-->*/
+	/* find out if directory entry is from a zipfile   */
+	/* if yes then read the directory into dirNameList */
+	if (zfile_isZip(directory_name)) {
+	    if (zfile_checkZip(directory_path, &dir->dirList, TRUE, TRUE)) {
+	        dcnt = listLength(&dir->dirList);
+	    }
       free(directory_path);
-
       continue;
     }
+	if (zfile_wasZip(level_directory) ||
+	    zfile_wasZip(directory_name)) {
+	    // nothing to do
+	} else {
+	    free(directory_path);  /*#HAG#ZIP#*/
+	    continue;
+	}
+    }
+    /*<--#HAG#ZIP#--*/
 
     free(directory_path);
+
+    /*--#HAG#ZIP#-->*/
+    /* handle zip dirs */
+    char *pc = NULL;
+    if ((pc = strrchr(directory_name, '/')) ||
+        (pc = strrchr(directory_name, '\\'))) {
+        *pc = 0;
+        checked_free(levDir);
+        levDir = getPath2(level_directory, directory_name);
+        directory_name = pc + 1;
+    }
+    /*<--#HAG#ZIP#--*/
 
     if (strEqual(directory_name, GRAPHICS_DIRECTORY) ||
 	strEqual(directory_name, SOUNDS_DIRECTORY) ||
@@ -3149,7 +3192,7 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
       continue;
 
     valid_entry_found |= LoadLevelInfoFromLevelConf(node_first, node_parent,
-						    level_directory,
+						    levDir,    /*#HAG#ZIP#*/
 						    directory_name);
   }
 
@@ -3160,12 +3203,14 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
   {
     // check if this directory directly contains a file "levelinfo.conf"
     valid_entry_found |= LoadLevelInfoFromLevelConf(node_first, node_parent,
-						    level_directory, ".");
+						    levDir, ".");    /*#HAG#ZIP#*/
   }
 
   if (!valid_entry_found)
     Error(ERR_WARN, "cannot find any valid level series in directory '%s'",
-	  level_directory);
+	  levDir);    /*#HAG#ZIP#*/
+
+  free(levDir);    /*#HAG#ZIP#*/
 }
 
 boolean AdjustGraphicsForEMC(void)
@@ -3230,15 +3275,17 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
     Directory *dir;
     DirectoryEntry *dir_entry;
     boolean valid_file_found = FALSE;
+    long dcnt = 0;    /*#HAG#ZIP# only for better debugging */
 
-    if ((dir = openDirectory(directory_path)) != NULL)
+    if ((dir = openDirectory(directory_path, FALSE, FALSE)) != NULL)    /*#HAG#ZIP#*/
     {
+      dcnt = listLength(&dir->dirList);    /*#HAG#ZIP#*/
+
       while ((dir_entry = readDirectory(dir)) != NULL)
       {
 	if (FileIsArtworkType(dir_entry->filename, type))
 	{
 	  valid_file_found = TRUE;
-
 	  break;
 	}
       }
@@ -3300,7 +3347,11 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
   }
 
   artwork_new->in_user_dir =
-    (!strEqual(artwork_new->basepath, OPTIONS_ARTWORK_DIRECTORY(type)));
+	  !((strEqual(artwork_new->basepath, OPTIONS_ARTWORK_DIRECTORY(type))) ||
+	    /*--#HAG#ZIP#-->*/
+	    (zfile_isZip(artwork_new->basepath)) ||
+	    (zfile_wasZip(artwork_new->basepath)) );
+	    /*<--#HAG#ZIP#--*/
 
   // (may use ".sort_priority" from "setup_file_hash" above)
   artwork_new->color = ARTWORKCOLOR(artwork_new);
@@ -3354,43 +3405,76 @@ static void LoadArtworkInfoFromArtworkDir(TreeInfo **node_first,
   Directory *dir;
   DirectoryEntry *dir_entry;
   boolean valid_entry_found = FALSE;
+  char              *baseDir = getStringCopy(base_directory);    /*#HAG#ZIP#*/
+  long              dcnt = -1;    /*#HAG#ZIP# only for better debugging */
 
-  if ((dir = openDirectory(base_directory)) == NULL)
+  if ((dir = openDirectory(baseDir, TRUE, FALSE)) == NULL)    /*#HAG#ZIP#*/
   {
-    // display error if directory is main "options.graphics_directory" etc.
-    if (base_directory == OPTIONS_ARTWORK_DIRECTORY(type))
+    /* display error if directory is main "options.graphics_directory" etc. */
+    if (base_directory == OPTIONS_ARTWORK_DIRECTORY(type)) {
       Error(ERR_WARN, "cannot read directory '%s'", base_directory);
-
+    }
+    free(baseDir);  /*#HAG#ZIP#*/
     return;
   }
 
-  while ((dir_entry = readDirectory(dir)) != NULL)	// loop all entries
+  dcnt = listLength(&dir->dirList);   /*#HAG#ZIP#*/
+
+  while ((dir_entry = readDirectory(dir)) != NULL)	/* loop all entries */
   {
     char *directory_name = dir_entry->basename;
-    char *directory_path = getPath2(base_directory, directory_name);
+    char *directory_path = getPath2(baseDir, directory_name);
 
     // skip directory entries for current and parent directory
     if (strEqual(directory_name, ".") ||
 	strEqual(directory_name, ".."))
     {
       free(directory_path);
-
       continue;
     }
 
-    // skip directory entries which are not a directory
-    if (!dir_entry->is_directory)			// not a directory
+    /* skip directory entries which are not a directory */
+    /*--#HAG#ZIP#-->*/
+    if (!dir_entry->is_directory)  /* not a directory  *//*#HAG#ZIP# NOT is_directory */
     {
+        /*--#HAG#ZIP#-->*/
+        /* find out if directory entry is from a zipfile   */
+        /* if yes then read the directory into dirNameList */
+        if (zfile_isZip(directory_name)) {
+            if (zfile_checkZip(directory_path, &dir->dirList, TRUE, TRUE)) {
+	        dcnt = listLength(&dir->dirList);
+	    }
       free(directory_path);
-
       continue;
     }
+	if (zfile_wasZip(base_directory) ||
+	    zfile_wasZip(directory_name)) {
+	    // nothing to do
+	} else {
+	    free(directory_path);  //#HAG#
+	    continue;
+	}
+	/*<--#HAG#ZIP#--*/
+    }
+    /*<--#HAG#ZIP#--*/
 
     free(directory_path);
 
-    // check if this directory contains artwork with or without config file
+    /*--#HAG#ZIP#-->*/
+    /* handle zip dirs */
+    char *pc = NULL;
+    if ((pc = strrchr(directory_name, '/')) ||
+	(pc = strrchr(directory_name, '\\'))) {
+	    *pc = 0;
+	    checked_free(baseDir);
+	    baseDir = getPath2(base_directory, directory_name);
+	    directory_name = pc + 1;
+    }
+    /*<--#HAG#ZIP#--*/
+
+    /* check if this directory contains artwork with or without config file */
     valid_entry_found |= LoadArtworkInfoFromArtworkConf(node_first, node_parent,
-							base_directory,
+							baseDir,    /*#HAG#ZIP#*/
 							directory_name, type);
   }
 
@@ -3398,11 +3482,14 @@ static void LoadArtworkInfoFromArtworkDir(TreeInfo **node_first,
 
   // check if this directory directly contains artwork itself
   valid_entry_found |= LoadArtworkInfoFromArtworkConf(node_first, node_parent,
-						      base_directory, ".",
+						      baseDir, ".",    /*#HAG#ZIP#*/
 						      type);
-  if (!valid_entry_found)
+  if (!valid_entry_found) {
     Error(ERR_WARN, "cannot find any valid artwork in directory '%s'",
-	  base_directory);
+	  baseDir);    /*#HAG#ZIP#*/
+  }
+
+  free(baseDir);    /*#HAG#ZIP#*/
 }
 
 static TreeInfo *getDummyArtworkInfo(int type)
@@ -4072,12 +4159,16 @@ static void checkSeriesInfo(void)
 
   // check for more levels besides the 'levels' field of 'levelinfo.conf'
 
-  level_directory = getPath2((leveldir_current->in_user_dir ?
-			      getUserLevelDir(NULL) :
-			      options.level_directory),
-			     leveldir_current->fullpath);
+  level_directory = getPath2((leveldir_current->in_user_dir ? getUserLevelDir(NULL) :
+			      /*--#HAG#ZIP#-->*/
+			      zfile_isZip(leveldir_current->basepath) ? leveldir_current->basepath :
+			      (leveldir_current->node_parent != NULL) ?
+			      (zfile_isZip(leveldir_current->node_parent->basepath) ?
+			      leveldir_current->node_parent->basepath : options.level_directory) :
+			      /*<--#HAG#ZIP#--*/
+			      options.level_directory), leveldir_current->fullpath);
 
-  if ((dir = openDirectory(level_directory)) == NULL)
+  if ((dir = openDirectory(level_directory, FALSE, FALSE)) == NULL)    /*#HAG#ZIP#*/
   {
     Error(ERR_WARN, "cannot read level directory '%s'", level_directory);
 

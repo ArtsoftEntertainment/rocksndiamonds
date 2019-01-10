@@ -10,13 +10,11 @@
 // ============================================================================
 
 #include <time.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 
 #include "platform.h"
@@ -24,6 +22,10 @@
 #if !defined(PLATFORM_WIN32)
 #include <pwd.h>
 #include <sys/param.h>
+#include <sys/time.h>
+#include <unistd.h>
+#else
+#include "rndapi.h"		/*#HAG#INCLUDE#*/
 #endif
 
 #include "misc.h"
@@ -31,6 +33,62 @@
 #include "random.h"
 #include "text.h"
 #include "image.h"
+
+/*--#HAG#ZIP#-->*/
+#include "zfile.h"
+
+#define FFILE   FILE   /* direct FILE access stderr */
+#define ZFILE   struct zfile
+
+#define FGETC(f)            zfile_fgetc(f)
+#define FPUTC(c,f)          zfile_fputc(c,f)
+#define FGETS(cp,s,f)       zfile_fgets(cp,s,f)
+#define FPUTS(cp,f)         zfile_fputs(cp,f)
+#define FEOF(f)             zfile_feof(f)
+#define FERROR(f)           zfile_ferror(f)
+#define FSEEK(f,l,p)        zfile_fseek(f,l,p)
+#define FOPEN(fn,mo)        zfile_fopen(fn,mo)
+#define FCLOSE(f)           zfile_fclose(f)
+#define FREAD               zfile_fread
+#define FPRINTF             zfile_fprintf
+#define FWRITE              zfile_fwrite
+
+/*--*/
+#define FFPRINTF(f,o,p)     fprintf(f,o,p)
+#define FFPUTC(c,f)         fputc(c,f)
+#define FFPUTS(s,f)         fputs(s,f)
+#define FFGETC(f)           fgetc(f)
+#define FFOPEN(fn,m)        fopen(fn,m)
+#define FFEOF(f)            feof(f)
+#define FFCLOSE(f)          fclose(f)
+/*--*/
+/*--
+#define FFPRINTF(f,o,p)     printf(o,p)
+#define FFPUTC(c,f)         putc(c,f)
+#define FFPUTS(s,f)         puts(s)
+#define FFGETC(f)           getc(f)
+#define FFOPEN(fn,m)        NULL
+#define FFEOF(f)            0
+#define FFCLOSE(f)          0
+--*/
+/*--
+#undef feof
+#undef ferror
+
+#define fgetc               x
+#define fputc               x
+#define fgets               x
+#define fputs               x
+#define feof                x
+#define ferror              x
+#define fseek               x
+#define fopen               x
+#define fclose              x
+#define fread               x
+#define fprintf             x
+--*/
+
+/*<--#HAG#ZIP#--*/
 
 
 // ============================================================================
@@ -123,14 +181,14 @@ static void vprintf_log(char *format, va_list ap)
     va_copy(ap2, ap);
 
     vfprintf(program.log_file_default[LOG_ERR_ID], format, ap2);
-    fprintf(program.log_file_default[LOG_ERR_ID], "%s", newline);
+    FFPRINTF(program.log_file_default[LOG_ERR_ID], "%s", newline);
 
     va_end(ap2);
   }
 #endif
 
   vfprintf(file, format, ap);
-  fprintf(file, "%s", newline);
+  FFPRINTF(file, "%s", newline);
 }
 #endif
 
@@ -172,15 +230,15 @@ void fprintf_line(FILE *file, char *line_chars, int line_length)
   int i;
 
   for (i = 0; i < line_length; i++)
-    fprintf(file, "%s", line_chars);
+    FFPRINTF(file, "%s", line_chars);
 
-  fprintf(file, "\n");
+  FFPRINTF(file, "%s", "\n");  /*#HAG#ZIP#*//* FFPRINTF(file, "\n"); */
 }
 
 void fprintf_line_with_prefix(FILE *file, char *prefix, char *line_chars,
 			      int line_length)
 {
-  fprintf(file, "%s", prefix);
+  FFPRINTF(file, "%s", prefix);
   fprintf_line(file, line_chars, line_length);
 }
 
@@ -621,9 +679,9 @@ char *getRealName(void)
 
 time_t getFileTimestampEpochSeconds(char *filename)
 {
-  struct stat file_status;
+  struct _stat file_status;
 
-  if (stat(filename, &file_status) != 0)	// cannot stat file
+  if (zfile_stat(filename, &file_status) != 0)	/* cannot _stat file *//*#HAG#ZIP# zfile_stat -> st_mtime */
     return 0;
 
   return file_status.st_mtime;
@@ -1327,7 +1385,7 @@ int getFile8BitInteger(File *file)
 int putFile8BitInteger(FILE *file, int value)
 {
   if (file != NULL)
-    fputc(value, file);
+    FFPUTC(value, file);
 
   return 1;
 }
@@ -1348,13 +1406,13 @@ int putFile16BitInteger(FILE *file, int value, int byte_order)
   {
     if (byte_order == BYTE_ORDER_BIG_ENDIAN)
     {
-      fputc((value >> 8) & 0xff, file);
-      fputc((value >> 0) & 0xff, file);
+      FFPUTC((value >> 8) & 0xff, file);
+      FFPUTC((value >> 0) & 0xff, file);
     }
     else	   // BYTE_ORDER_LITTLE_ENDIAN
     {
-      fputc((value >> 0) & 0xff, file);
-      fputc((value >> 8) & 0xff, file);
+      FFPUTC((value >> 0) & 0xff, file);
+      FFPUTC((value >> 8) & 0xff, file);
     }
   }
 
@@ -1381,17 +1439,17 @@ int putFile32BitInteger(FILE *file, int value, int byte_order)
   {
     if (byte_order == BYTE_ORDER_BIG_ENDIAN)
     {
-      fputc((value >> 24) & 0xff, file);
-      fputc((value >> 16) & 0xff, file);
-      fputc((value >>  8) & 0xff, file);
-      fputc((value >>  0) & 0xff, file);
+      FFPUTC((value >> 24) & 0xff, file);
+      FFPUTC((value >> 16) & 0xff, file);
+      FFPUTC((value >>  8) & 0xff, file);
+      FFPUTC((value >>  0) & 0xff, file);
     }
     else	   // BYTE_ORDER_LITTLE_ENDIAN
     {
-      fputc((value >>  0) & 0xff, file);
-      fputc((value >>  8) & 0xff, file);
-      fputc((value >> 16) & 0xff, file);
-      fputc((value >> 24) & 0xff, file);
+      FFPUTC((value >>  0) & 0xff, file);
+      FFPUTC((value >>  8) & 0xff, file);
+      FFPUTC((value >> 16) & 0xff, file);
+      FFPUTC((value >> 24) & 0xff, file);
     }
   }
 
@@ -1423,7 +1481,7 @@ int putFileChunk(FILE *file, char *chunk_name, int chunk_size,
 
   // write chunk name
   if (file != NULL)
-    fputs(chunk_name, file);
+    FFPUTS(chunk_name, file);
 
   num_bytes += strlen(chunk_name);
 
@@ -1459,10 +1517,10 @@ int putFileVersion(FILE *file, int version)
     int version_minor = VERSION_MINOR(version);
     int version_patch = VERSION_PATCH(version);
 
-    fputc(version_super, file);
-    fputc(version_major, file);
-    fputc(version_minor, file);
-    fputc(version_patch, file);
+    FFPUTC(version_super, file);
+    FFPUTC(version_major, file);
+    FFPUTC(version_minor, file);
+    FFPUTC(version_patch, file);
   }
 
   return 4;
@@ -1481,7 +1539,7 @@ void WriteBytesToFile(FILE *file, byte *buffer, unsigned int bytes)
   int i;
 
   for(i = 0; i < bytes; i++)
-    fputc(buffer[i], file);
+    FFPUTC(buffer[i], file);
 }
 
 void ReadUnusedBytesFromFile(File *file, unsigned int bytes)
@@ -1493,7 +1551,7 @@ void ReadUnusedBytesFromFile(File *file, unsigned int bytes)
 void WriteUnusedBytesToFile(FILE *file, unsigned int bytes)
 {
   while (bytes--)
-    fputc(0, file);
+    FFPUTC(0, file);
 }
 
 
@@ -2144,9 +2202,9 @@ File *openFile(char *filename, char *mode)
 {
   File *file = checked_calloc(sizeof(File));
 
-  file->file = fopen(filename, mode);
+  file->zfile = FOPEN(filename, mode);
 
-  if (file->file != NULL)
+  if (file->zfile != NULL)
   {
     file->filename = getStringCopy(filename);
 
@@ -2182,8 +2240,8 @@ int closeFile(File *file)
     result = SDL_RWclose(file->asset_file);
 #endif
 
-  if (file->file)
-    result = fclose(file->file);
+  if (file->zfile)
+    result = FCLOSE(file->zfile);
 
   checked_free(file->filename);
   checked_free(file);
@@ -2198,7 +2256,7 @@ int checkEndOfFile(File *file)
     return file->end_of_file;
 #endif
 
-  return feof(file->file);
+  return FEOF(file->zfile);
 }
 
 size_t readFile(File *file, void *buffer, size_t item_size, size_t num_items)
@@ -2219,12 +2277,12 @@ size_t readFile(File *file, void *buffer, size_t item_size, size_t num_items)
   }
 #endif
 
-  return fread(buffer, item_size, num_items, file->file);
+  return FREAD(buffer, item_size, num_items, file->zfile);
 }
 
 size_t writeFile(File *file, void *buffer, size_t item_size, size_t num_items)
 {
-  return fwrite(buffer, item_size, num_items, file->file);
+  return FWRITE(buffer, item_size, num_items, file->zfile);
 }
 
 int seekFile(File *file, long offset, int whence)
@@ -2240,7 +2298,7 @@ int seekFile(File *file, long offset, int whence)
   }
 #endif
 
-  return fseek(file->file, offset, whence);
+  return FSEEK(file->zfile, offset, whence);
 }
 
 int getByteFromFile(File *file)
@@ -2261,7 +2319,7 @@ int getByteFromFile(File *file)
   }
 #endif
 
-  return fgetc(file->file);
+  return FGETC(file->zfile);
 }
 
 char *getStringFromFile(File *file, char *line, int size)
@@ -2293,7 +2351,7 @@ char *getStringFromFile(File *file, char *line, int size)
   }
 #endif
 
-  return fgets(line, size, file->file);
+  return FGETS(line, size, file->zfile);
 }
 
 int copyFile(char *filename_from, char *filename_to)
@@ -2331,13 +2389,28 @@ int copyFile(char *filename_from, char *filename_to)
 // functions for directory handling
 // ----------------------------------------------------------------------------
 
-Directory *openDirectory(char *dir_name)
+Directory *openDirectory(char *dir_name, boolean onlyDir, boolean doExtendPath)  /*#HAG#ZIP#*/
 {
   Directory *dir = checked_calloc(sizeof(Directory));
+  long      dcnt = 0;           /*#HAG#ZIP#*/
 
-  dir->dir = opendir(dir_name);
+  listInit(&dir->dirList);	/*#HAG#ZIP#*/
+  dir->actCnt = 0;              /*#HAG#ZIP#*/
 
-  if (dir->dir != NULL)
+  // dir->dir = opendir(dir_name);
+  if (!zfile_wasZip(dir_name)) {
+    dcnt = fileScanDir(dir_name, &dir->dirList, NULL);
+  }
+  else { /* zip without DIR, without append PATH */
+    if (zfile_checkZip(dir_name, &dir->dirList, onlyDir, doExtendPath)) {
+       dcnt = listLength(&dir->dirList);
+    }
+    else {
+       dcnt = -1;
+    }
+  }
+
+  if (dcnt >= 0)  /*#HAG#ZIP#*/
   {
     dir->filename = getStringCopy(dir_name);
 
@@ -2360,6 +2433,8 @@ Directory *openDirectory(char *dir_name)
   }
 #endif
 
+  listFree(&dir->dirList);	/*#HAG#ZIP#*/
+  dir->actCnt = 0;              /*#HAG#ZIP#*/
   checked_free(dir);
 
   return NULL;
@@ -2377,8 +2452,11 @@ int closeDirectory(Directory *dir)
     result = SDL_RWclose(dir->asset_toc_file);
 #endif
 
-  if (dir->dir)
-    result = closedir(dir->dir);
+  // if (dir->dir)
+  //  result = closedir(dir->dir);
+  listFree(&dir->dirList);   /*#HAG#ZIP#*/
+  listInit(&dir->dirList);   /*#HAG#ZIP#*/
+  dir->actCnt = 0;           /*#HAG#ZIP#*/
 
   if (dir->dir_entry)
     freeDirectoryEntry(dir->dir_entry);
@@ -2391,6 +2469,8 @@ int closeDirectory(Directory *dir)
 
 DirectoryEntry *readDirectory(Directory *dir)
 {
+  char  *dirNameEntry = NULL;  /*#HAG#ZIP#*/
+
   if (dir->dir_entry)
     freeDirectoryEntry(dir->dir_entry);
 
@@ -2433,20 +2513,28 @@ DirectoryEntry *readDirectory(Directory *dir)
   }
 #endif
 
-  struct dirent *dir_entry = readdir(dir->dir);
+  // struct dirent *dir_entry = readdir(dir->dir);
+  if (listLength(&dir->dirList) <= 0) {				/*#HAG#ZIP#*/
+    return NULL;
+  }
+  if (!listPosition(&dir->dirList, dir->actCnt++) ||		/*#HAG#ZIP#*/
+      !listGet(&dir->dirList, (void**)&dirNameEntry)) {		/*#HAG#ZIP#*/
+    return NULL;
+  }
 
-  if (dir_entry == NULL)
+  if (dirNameEntry == NULL)	/*#HAG#ZIP#*/
     return NULL;
 
   dir->dir_entry = checked_calloc(sizeof(DirectoryEntry));
 
-  dir->dir_entry->basename = getStringCopy(dir_entry->d_name);
-  dir->dir_entry->filename = getPath2(dir->filename, dir_entry->d_name);
+  dir->dir_entry->basename = getStringCopy(dirNameEntry);		/*#HAG#ZIP#*/
+  dir->dir_entry->filename = getPath2(dir->filename, dirNameEntry);	/*#HAG#ZIP#*/
 
-  struct stat file_status;
+  /*#HAG#ZIP# @@HINT@@ is_directory -- only used as NOT is_directory */
+  struct _stat file_status;
 
   dir->dir_entry->is_directory =
-    (stat(dir->dir_entry->filename, &file_status) == 0 &&
+    (_stat(dir->dir_entry->filename, &file_status) == 0 &&   /*#HAG#ZIP# normal _stat -- only used as NOT is_directory */
      S_ISDIR(file_status.st_mode));
 
   return dir->dir_entry;
@@ -2472,9 +2560,14 @@ boolean directoryExists(char *dir_name)
   if (dir_name == NULL)
     return FALSE;
 
-  struct stat file_status;
-  boolean success = (stat(dir_name, &file_status) == 0 &&
+  struct _stat file_status;
+  boolean success = FALSE;  /*#HAG#ZIP#*/
+  if (zfile_direxists(dir_name)) {
+    success = TRUE; 
+  } else {
+    success = (_stat(dir_name, &file_status) == 0 &&		/*#HAG#ZIP# directoryExists -- call's zfile_direxists first */
 		     S_ISDIR(file_status.st_mode));
+  }
 
 #if defined(PLATFORM_ANDROID)
   if (!success)
@@ -2500,7 +2593,13 @@ boolean fileExists(char *filename)
   if (filename == NULL)
     return FALSE;
 
-  boolean success = (access(filename, F_OK) == 0);
+  boolean success = FALSE;  /*#HAG#ZIP#*/
+  if (zfile_exists(filename)) {
+    success = TRUE;
+  }
+  else {
+    success = (_access(filename, F_OK) == 0);
+  }
 
 #if defined(PLATFORM_ANDROID)
   if (!success)
@@ -3873,7 +3972,7 @@ void OpenLogFiles(void)
 
   for (i = 0; i < NUM_LOGS; i++)
   {
-    if ((program.log_file[i] = fopen(program.log_filename[i], MODE_WRITE))
+    if ((program.log_file[i] = FFOPEN(program.log_filename[i], MODE_WRITE))
 	== NULL)
     {
       program.log_file[i] = program.log_file_default[i];   // reset to default
@@ -3893,20 +3992,20 @@ void CloseLogFiles(void)
 
   for (i = 0; i < NUM_LOGS; i++)
     if (program.log_file[i] != program.log_file_default[i])
-      fclose(program.log_file[i]);
+      FFCLOSE(program.log_file[i]);
 }
 
 void DumpLogFile(int nr)
 {
-  FILE *log_file = fopen(program.log_filename[nr], MODE_READ);
+  FILE *log_file = FFOPEN(program.log_filename[nr], MODE_READ);
 
   if (log_file == NULL)
     return;
 
-  while (!feof(log_file))
-    fputc(fgetc(log_file), stdout);
+  while (!FFEOF(log_file))
+    FFPUTC(FFGETC(log_file), stdout);
 
-  fclose(log_file);
+  FFCLOSE(log_file);
 }
 
 void NotifyUserAboutErrorFile(void)

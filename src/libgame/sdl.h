@@ -21,7 +21,18 @@
 #include <SDL_syswm.h>
 #endif
 
-// definitions needed for "system.c"
+/*#HAG#ZIP#-->*/
+/* definitions for rwops */
+#define SDL_RWOPS_ZFILE_DATA(_context) \
+             ((_context)->hidden.unknown.data1)
+#define SDL_RWOPS_ZFILE_FILE(_context)  (struct zfile *) \
+             ((_context)->hidden.unknown.data1)
+
+SDL_RWops *SDL_RWFromZFILE(const char* file, const char* mode);
+/*<--#HAG#ZIP#*/
+
+
+/* definitions needed for "system.c" */
 
 #define SURFACE_FLAGS		(0)
 
