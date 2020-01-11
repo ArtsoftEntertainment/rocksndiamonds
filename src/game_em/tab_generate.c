@@ -2,7 +2,7 @@
  *
  * construct some tables to be included directly in emerald mine source.
  * i made this because dynamically building the tables every time sucks and i
- * need to be able to easily modify tile.h.
+ * need to be able to easily modify tile definitions.
  *
  * this is key data which almost everything depends on.
  *

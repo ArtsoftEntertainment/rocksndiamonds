@@ -94,7 +94,6 @@ void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
   if (frame == 6)
   {
     synchro_3();
-    sound_play();
 
     UpdateGameDoorValues_EM();
   }

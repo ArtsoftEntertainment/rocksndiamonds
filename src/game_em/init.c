@@ -13,16 +13,8 @@ Bitmap *sprBitmap;
 
 Bitmap *screenBitmap;
 
-char play[SAMPLE_MAX];
-int play_x[SAMPLE_MAX];
-int play_y[SAMPLE_MAX];
-int play_element[SAMPLE_MAX];
-
 struct GlobalInfo_EM global_em_info;
 struct GameInfo_EM game_em;
-
-char *progname;
-char *arg_basedir;
 
 int open_all(void)
 {
@@ -47,8 +39,6 @@ void em_open_all(void)
 {
   /* pre-calculate some data */
   tab_generate();
-
-  progname = "emerald mine";
 
   if (open_all() != 0)
     Error(ERR_EXIT, "em_open_all(): open_all() failed");
@@ -76,10 +66,6 @@ void play_element_sound(int x, int y, int sample, int element)
 void play_sound(int x, int y, int sample)
 {
   play_element_sound(x, y, sample, -1);
-}
-
-void sound_play(void)
-{
 }
 
 unsigned int InitEngineRandom_EM(int seed)
