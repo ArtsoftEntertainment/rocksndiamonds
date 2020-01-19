@@ -438,6 +438,8 @@ enum
   Xexit_2,
   Xexit_3,
 
+  Xpause,
+
   Xwall_1,
   Xwall_2,
   Xwall_3,

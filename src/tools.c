@@ -7086,6 +7086,11 @@ em_object_mapping_list[] =
   },
 
   {
+    Xpause,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+
+  {
     Xwall_1,				TRUE,	FALSE,
     EL_WALL,				-1, -1
   },

@@ -4566,6 +4566,12 @@ void synchro_2(void)
 
     /* --------------------------------------------------------------------- */
 
+    case Xpause:
+      Next[y][x] = Xblank;
+      goto loop;
+
+    /* --------------------------------------------------------------------- */
+
     case Xdynamite_1:
       play_element_sound(x, y, SOUND_tick, Xdynamite_1);
       Next[y][x] = Xdynamite_2;
