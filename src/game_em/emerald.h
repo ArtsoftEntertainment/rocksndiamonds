@@ -81,6 +81,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 enum
 {
   Xblank = 0,
+
   Xacid_splash_e,
   Xacid_splash_w,
 
@@ -108,6 +109,7 @@ enum
   Ystone_eB,
   Ystone_w,
   Ystone_wB,
+
   Xnut,
   Xnut_pause,
   Xnut_fall,
@@ -117,6 +119,7 @@ enum
   Ynut_eB,
   Ynut_w,
   Ynut_wB,
+
   Xbug_1_n,
   Xbug_1_e,
   Xbug_1_s,
@@ -143,6 +146,7 @@ enum
   Ybug_n_w,
   Ybug_stone,
   Ybug_spring,
+
   Xtank_1_n,
   Xtank_1_e,
   Xtank_1_s,
@@ -169,6 +173,7 @@ enum
   Ytank_n_w,
   Ytank_stone,
   Ytank_spring,
+
   Xandroid,
   Xandroid_1_n,
   Xandroid_2_n,
@@ -194,6 +199,7 @@ enum
   Yandroid_wB,
   Yandroid_nw,
   Yandroid_nwB,
+
   Xspring,
   Xspring_pause,
   Xspring_e,
@@ -209,6 +215,7 @@ enum
   Yspring_alien_eB,
   Yspring_alien_w,
   Yspring_alien_wB,
+
   Xeater_n,
   Xeater_e,
   Xeater_w,
@@ -223,6 +230,7 @@ enum
   Yeater_wB,
   Yeater_stone,
   Yeater_spring,
+
   Xalien,
   Xalien_pause,
   Yalien_n,
@@ -235,6 +243,7 @@ enum
   Yalien_wB,
   Yalien_stone,
   Yalien_spring,
+
   Xemerald,
   Xemerald_pause,
   Xemerald_fall,
@@ -247,6 +256,7 @@ enum
   Yemerald_wB,
   Yemerald_blank,
   Ynut_stone,
+
   Xdiamond,
   Xdiamond_pause,
   Xdiamond_fall,
@@ -259,6 +269,7 @@ enum
   Ydiamond_wB,
   Ydiamond_blank,
   Ydiamond_stone,
+
   Xdrip_fall,
   Xdrip_stretch,
   Xdrip_stretchB,
@@ -267,6 +278,7 @@ enum
   Ydrip_1_sB,
   Ydrip_2_s,
   Ydrip_2_sB,
+
   Xbomb,
   Xbomb_pause,
   Xbomb_fall,
@@ -277,6 +289,7 @@ enum
   Ybomb_w,
   Ybomb_wB,
   Ybomb_blank,
+
   Xballoon,
   Yballoon_n,
   Yballoon_nB,
@@ -286,16 +299,19 @@ enum
   Yballoon_sB,
   Yballoon_w,
   Yballoon_wB,
+
   Xgrass,
   Ygrass_nB,
   Ygrass_eB,
   Ygrass_sB,
   Ygrass_wB,
+
   Xdirt,
   Ydirt_nB,
   Ydirt_eB,
   Ydirt_sB,
   Ydirt_wB,
+
   Xacid_ne,
   Xacid_se,
   Xacid_s,
@@ -309,6 +325,7 @@ enum
   Xacid_6,
   Xacid_7,
   Xacid_8,
+
   Xball_1,
   Yball_1,
   Xball_2,
@@ -334,8 +351,10 @@ enum
   Yslidewall_ns_blank,
   Xslidewall_ew,
   Yslidewall_ew_blank,
+
   Xwonderwall,
   XwonderwallB,
+
   Xamoeba_1,
   Xamoeba_2,
   Xamoeba_3,
@@ -344,6 +363,7 @@ enum
   Xamoeba_6,
   Xamoeba_7,
   Xamoeba_8,
+
   Xdoor_1,
   Xdoor_2,
   Xdoor_3,
@@ -352,6 +372,7 @@ enum
   Xdoor_6,
   Xdoor_7,
   Xdoor_8,
+
   Xkey_1,
   Xkey_2,
   Xkey_3,
@@ -360,28 +381,35 @@ enum
   Xkey_6,
   Xkey_7,
   Xkey_8,
+
   Xwind_n,
   Xwind_e,
   Xwind_s,
   Xwind_w,
   Xwind_any,
   Xwind_stop,
+
   Xexit,
   Xexit_1,
   Xexit_2,
   Xexit_3,
+
   Xdynamite,
   Ydynamite_blank,
   Xdynamite_1,
   Xdynamite_2,
   Xdynamite_3,
   Xdynamite_4,
+
   Xbumper,
   XbumperB,
+
   Xwheel,
   XwheelB,
+
   Xswitch,
   XswitchB,
+
   Xsand,
   Xsand_stone,
   Xsand_stonein_1,
@@ -404,16 +432,23 @@ enum
   Xsand_sandstone_2,
   Xsand_sandstone_3,
   Xsand_sandstone_4,
+
   Xplant,
   Yplant,
+
   Xlenses,
+
   Xmagnify,
+
   Xfake_amoeba,		/* dripper */
   Xfake_amoebaB,
+
   Xfake_blank,
   Xfake_blankB,
+
   Xfake_grass,
   Xfake_grassB,
+
   Xfake_door_1,
   Xfake_door_2,
   Xfake_door_3,
@@ -438,14 +473,17 @@ enum
   Xsteel_2,
   Xsteel_3,
   Xsteel_4,
+
   Xwall_1,
   Xwall_2,
   Xwall_3,
   Xwall_4,
+
   Xroundwall_1,
   Xroundwall_2,
   Xroundwall_3,
   Xroundwall_4,
+
   Xdecor_1,
   Xdecor_2,
   Xdecor_3,
@@ -458,6 +496,7 @@ enum
   Xdecor_10,
   Xdecor_11,
   Xdecor_12,
+
   Xalpha_0,
   Xalpha_1,
   Xalpha_2,
@@ -532,14 +571,17 @@ enum
 enum
 {
   PLY_still = 0,
+
   PLY_walk_n,
   PLY_walk_e,
   PLY_walk_s,
   PLY_walk_w,
+
   PLY_push_n,
   PLY_push_e,
   PLY_push_s,
   PLY_push_w,
+
   PLY_shoot_n,
   PLY_shoot_e,
   PLY_shoot_s,
