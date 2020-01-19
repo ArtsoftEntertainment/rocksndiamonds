@@ -85,10 +85,6 @@ typedef struct
 #define HAS_LevelInfoType
 #endif
 
-struct GlobalInfo_SP
-{
-};
-
 struct GameInfo_SP
 {
   boolean level_solved;
@@ -168,11 +164,8 @@ struct EngineSnapshotInfo_SP
 // exported functions
 // ----------------------------------------------------------------------------
 
-extern struct GlobalInfo_SP global_sp_info;
 extern struct GameInfo_SP game_sp;
 extern struct LevelInfo_SP native_sp_level;
-extern struct GraphicInfo_SP graphic_info_sp_object[TILE_MAX][8];
-extern struct GraphicInfo_SP graphic_info_sp_player[MAX_PLAYERS][SPR_MAX][8];
 extern struct EngineSnapshotInfo_SP engine_snapshot_sp;
 
 void sp_open_all(void);
