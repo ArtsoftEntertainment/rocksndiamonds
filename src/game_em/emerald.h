@@ -1,7 +1,48 @@
+/*
+
+This program "Emerald Mine for X11"
+is copyright © 2009 David Tritscher.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. The origin of this software must not be misrepresented; you must
+   not claim that you wrote the original software.  If you use this
+   software in a product, an acknowledgment in the product
+   documentation would be appreciated but is not required.
+
+3. Altered source versions must be plainly marked as such, and must
+   not be misrepresented as being the original software.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+/* 2007-03-31 06:22:47
+ *
+ * emerald mine game engine defines
+ */
+
+// ----------------------------------------------------------------------------
+// EM game engine source code was altered for integration in Rocks'n'Diamonds
+// ----------------------------------------------------------------------------
+
 #ifndef EMERALD_H
 #define EMERALD_H
 
-/* 2000-07-30T11:06:03Z */
 
 // ----------------------------------------------------------------------------
 // constant definitions
@@ -23,7 +64,7 @@
 #define BAD_SPRING
 #endif
 
-/* one border for ZBORDER elements, one border for steelwall, if needed */
+/* one border for Zborder elements, one border for steelwall, if needed */
 #define EM_MAX_CAVE_WIDTH		(MAX_PLAYFIELD_WIDTH  + 2 + 2)
 #define EM_MAX_CAVE_HEIGHT		(MAX_PLAYFIELD_HEIGHT + 2 + 2)
 
@@ -39,23 +80,23 @@
 
 enum
 {
-  Xblank = 0,		/* still */
-  Yacid_splash_eB,	/* hmm */
-  Yacid_splash_wB,	/* hmm */
+  Xblank = 0,
+  Xacid_splash_e,
+  Xacid_splash_w,
 
 #ifdef EM_ENGINE_BAD_ROLL
-  Xstone_force_e,	/* only use these in eater */
-  Xstone_force_w,
-  Xnut_force_e,
-  Xnut_force_w,
-  Xspring_force_e,
-  Xspring_force_w,
-  Xemerald_force_e,
-  Xemerald_force_w,
-  Xdiamond_force_e,
-  Xdiamond_force_w,
-  Xbomb_force_e,
-  Xbomb_force_w,
+  Xpush_stone_e,
+  Xpush_stone_w,
+  Xpush_nut_e,
+  Xpush_nut_w,
+  Xpush_spring_e,
+  Xpush_spring_w,
+  Xpush_emerald_e,
+  Xpush_emerald_w,
+  Xpush_diamond_e,
+  Xpush_diamond_w,
+  Xpush_bomb_e,
+  Xpush_bomb_w,
 #endif
 
   Xstone,
@@ -76,14 +117,14 @@ enum
   Ynut_eB,
   Ynut_w,
   Ynut_wB,
-  Xbug_n,
-  Xbug_e,
-  Xbug_s,
-  Xbug_w,
-  Xbug_gon,
-  Xbug_goe,
-  Xbug_gos,
-  Xbug_gow,
+  Xbug_1_n,
+  Xbug_1_e,
+  Xbug_1_s,
+  Xbug_1_w,
+  Xbug_2_n,
+  Xbug_2_e,
+  Xbug_2_s,
+  Xbug_2_w,
   Ybug_n,
   Ybug_nB,
   Ybug_e,
@@ -102,14 +143,14 @@ enum
   Ybug_n_w,
   Ybug_stone,
   Ybug_spring,
-  Xtank_n,
-  Xtank_e,
-  Xtank_s,
-  Xtank_w,
-  Xtank_gon,
-  Xtank_goe,
-  Xtank_gos,
-  Xtank_gow,
+  Xtank_1_n,
+  Xtank_1_e,
+  Xtank_1_s,
+  Xtank_1_w,
+  Xtank_2_n,
+  Xtank_2_e,
+  Xtank_2_s,
+  Xtank_2_w,
   Ytank_n,
   Ytank_nB,
   Ytank_e,
@@ -164,10 +205,10 @@ enum
   Yspring_eB,
   Yspring_w,
   Yspring_wB,
-  Yspring_kill_e,
-  Yspring_kill_eB,
-  Yspring_kill_w,
-  Yspring_kill_wB,
+  Yspring_alien_e,
+  Yspring_alien_eB,
+  Yspring_alien_w,
+  Yspring_alien_wB,
   Xeater_n,
   Xeater_e,
   Xeater_w,
@@ -204,8 +245,8 @@ enum
   Yemerald_eB,
   Yemerald_w,
   Yemerald_wB,
-  Yemerald_eat,
-  Yemerald_stone,
+  Yemerald_blank,
+  Ynut_stone,
   Xdiamond,
   Xdiamond_pause,
   Xdiamond_fall,
@@ -216,16 +257,16 @@ enum
   Ydiamond_eB,
   Ydiamond_w,
   Ydiamond_wB,
-  Ydiamond_eat,
+  Ydiamond_blank,
   Ydiamond_stone,
   Xdrip_fall,
   Xdrip_stretch,
   Xdrip_stretchB,
-  Xdrip_eat,
-  Ydrip_s1,
-  Ydrip_s1B,
-  Ydrip_s2,
-  Ydrip_s2B,
+  Xdrip,
+  Ydrip_1_s,
+  Ydrip_1_sB,
+  Ydrip_2_s,
+  Ydrip_2_sB,
   Xbomb,
   Xbomb_pause,
   Xbomb_fall,
@@ -235,7 +276,7 @@ enum
   Ybomb_eB,
   Ybomb_w,
   Ybomb_wB,
-  Ybomb_eat,
+  Ybomb_blank,
   Xballoon,
   Yballoon_n,
   Yballoon_nB,
@@ -269,30 +310,30 @@ enum
   Xacid_7,
   Xacid_8,
   Xball_1,
-  Xball_1B,
+  Yball_1,
   Xball_2,
-  Xball_2B,
-  Yball_eat,
+  Yball_2,
+  Yball_blank,
 
 #ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
-  Ykey_1_eat,
-  Ykey_2_eat,
-  Ykey_3_eat,
-  Ykey_4_eat,
-  Ykey_5_eat,
-  Ykey_6_eat,
-  Ykey_7_eat,
-  Ykey_8_eat,
-  Ylenses_eat,
-  Ymagnify_eat,
-  Ygrass_eat,
-  Ydirt_eat,
+  Ykey_1_blank,
+  Ykey_2_blank,
+  Ykey_3_blank,
+  Ykey_4_blank,
+  Ykey_5_blank,
+  Ykey_6_blank,
+  Ykey_7_blank,
+  Ykey_8_blank,
+  Ylenses_blank,
+  Ymagnify_blank,
+  Ygrass_blank,
+  Ydirt_blank,
 #endif
 
-  Xgrow_ns,
-  Ygrow_ns_eat,
-  Xgrow_ew,
-  Ygrow_ew_eat,
+  Xslidewall_ns,	/* growing wall */
+  Yslidewall_ns_blank,
+  Xslidewall_ew,
+  Yslidewall_ew_blank,
   Xwonderwall,
   XwonderwallB,
   Xamoeba_1,
@@ -323,14 +364,14 @@ enum
   Xwind_e,
   Xwind_s,
   Xwind_w,
-  Xwind_nesw,
+  Xwind_any,
   Xwind_stop,
   Xexit,
   Xexit_1,
   Xexit_2,
   Xexit_3,
   Xdynamite,
-  Ydynamite_eat,
+  Ydynamite_blank,
   Xdynamite_1,
   Xdynamite_2,
   Xdynamite_3,
@@ -367,8 +408,8 @@ enum
   Yplant,
   Xlenses,
   Xmagnify,
-  Xdripper,
-  XdripperB,
+  Xfake_amoeba,		/* dripper */
+  Xfake_amoebaB,
   Xfake_blank,
   Xfake_blankB,
   Xfake_grass,
@@ -401,10 +442,10 @@ enum
   Xwall_2,
   Xwall_3,
   Xwall_4,
-  Xround_wall_1,
-  Xround_wall_2,
-  Xround_wall_3,
-  Xround_wall_4,
+  Xroundwall_1,
+  Xroundwall_2,
+  Xroundwall_3,
+  Xroundwall_4,
   Xdecor_1,
   Xdecor_2,
   Xdecor_3,
@@ -480,7 +521,7 @@ enum
 			   no picture */
   Zplayer,		/* special code to indicate player;
 			   no picture */
-  ZBORDER,		/* special code to indicate border;
+  Zborder,		/* special code to indicate border;
 			   no picture */
 
   TILE_MAX
@@ -490,53 +531,62 @@ enum
 
 enum
 {
-  SPR_still = 0,
-  SPR_walk  = 1,
-  SPR_push  = 5,
-  SPR_spray = 9,
+  PLY_still = 0,
+  PLY_walk_n,
+  PLY_walk_e,
+  PLY_walk_s,
+  PLY_walk_w,
+  PLY_push_n,
+  PLY_push_e,
+  PLY_push_s,
+  PLY_push_w,
+  PLY_shoot_n,
+  PLY_shoot_e,
+  PLY_shoot_s,
+  PLY_shoot_w,
 
-  SPR_MAX   = 13
+  PLY_MAX
 };
 
 enum
 {
-  SAMPLE_blank = 0,	/* player walks on blank */
-  SAMPLE_roll,		/* player pushes stone/bomb/nut/spring */
-  SAMPLE_stone,		/* stone hits ground */
-  SAMPLE_nut,		/* nut hits ground */
-  SAMPLE_crack,		/* stone hits nut */
-  SAMPLE_bug,		/* bug moves */
-  SAMPLE_tank,		/* tank moves */
-  SAMPLE_android_clone,	/* android places something */
-  SAMPLE_android_move,	/* android moves */
-  SAMPLE_spring,	/* spring hits ground/wall/bumper, stone hits spring */
-  SAMPLE_slurp,		/* spring kills alien */
-  SAMPLE_eater,		/* eater sits */
-  SAMPLE_eater_eat,	/* eater eats diamond */
-  SAMPLE_alien,		/* alien moves */
-  SAMPLE_collect,	/* player collects object */
-  SAMPLE_diamond,	/* diamond/emerald hits ground */
-  SAMPLE_squash,	/* stone squashes diamond */
-  SAMPLE_wonderfall,	/* object falls thru wonderwall */
-  SAMPLE_drip,		/* drip hits ground */
-  SAMPLE_push,		/* player pushes balloon/android */
-  SAMPLE_dirt,		/* player walks on dirt */
-  SAMPLE_acid,		/* acid splashes */
-  SAMPLE_ball,		/* ball places something */
-  SAMPLE_grow,		/* growing wall grows */
-  SAMPLE_wonder,	/* wonderwall is active */
-  SAMPLE_door,		/* player goes thru door (gate) */
-  SAMPLE_exit_open,	/* exit opens */
-  SAMPLE_exit_leave,	/* player goes into exit */
-  SAMPLE_dynamite,	/* player places dynamite */
-  SAMPLE_tick,		/* dynamite ticks */
-  SAMPLE_press,		/* player presses wheel/wind/switch */
-  SAMPLE_wheel,		/* wheel moves */
-  SAMPLE_boom,		/* explosion */
-  SAMPLE_time,		/* time runs out */
-  SAMPLE_die,		/* player dies */
+  SOUND_blank = 0,	/* player walks on blank */
+  SOUND_roll,		/* player pushes stone/bomb/nut/spring */
+  SOUND_stone,		/* stone hits ground */
+  SOUND_nut,		/* nut hits ground */
+  SOUND_crack,		/* stone hits nut */
+  SOUND_bug,		/* bug moves */
+  SOUND_tank,		/* tank moves */
+  SOUND_android_clone,	/* android places something */
+  SOUND_android_move,	/* android moves */
+  SOUND_spring,		/* spring hits ground/wall/bumper, stone hits spring */
+  SOUND_slurp,		/* spring kills alien */
+  SOUND_eater,		/* eater sits */
+  SOUND_eater_eat,	/* eater eats diamond */
+  SOUND_alien,		/* alien moves */
+  SOUND_collect,	/* player collects object */
+  SOUND_diamond,	/* diamond/emerald hits ground */
+  SOUND_squash,		/* stone squashes diamond */
+  SOUND_wonderfall,	/* object falls thru wonderwall */
+  SOUND_drip,		/* drip hits ground */
+  SOUND_push,		/* player pushes spring/balloon/android */
+  SOUND_dirt,		/* player digs into dirt */
+  SOUND_acid,		/* acid splashes */
+  SOUND_ball,		/* ball places something */
+  SOUND_slidewall,	/* slide wall grows */
+  SOUND_wonder,		/* wonderwall is active */
+  SOUND_door,		/* player goes thru door (gate) */
+  SOUND_exit_open,	/* exit opens */
+  SOUND_exit_leave,	/* player goes into exit */
+  SOUND_dynamite,	/* player places dynamite */
+  SOUND_tick,		/* dynamite ticks */
+  SOUND_press,		/* player presses wheel/wind/switch */
+  SOUND_wheel,		/* wheel moves */
+  SOUND_boom,		/* explosion */
+  SOUND_time,		/* time runs out */
+  SOUND_die,		/* player dies */
 
-  SAMPLE_MAX
+  SOUND_MAX
 };
 
 

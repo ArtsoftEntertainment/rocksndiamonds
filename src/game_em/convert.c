@@ -523,13 +523,13 @@ static unsigned short remap_emerald[256] =
 {
   Xstone,		Xstone,		Xdiamond,	Xdiamond,
   Xalien,		Xalien,		Xblank,		Xblank,
-  Xtank_n,		Xtank_e,	Xtank_s,	Xtank_w,
-  Xtank_gon,		Xtank_goe,	Xtank_gos,	Xtank_gow,
+  Xtank_1_n,		Xtank_1_e,	Xtank_1_s,	Xtank_1_w,
+  Xtank_2_n,		Xtank_2_e,	Xtank_2_s,	Xtank_2_w,
 
   Xbomb,		Xbomb,		Xemerald,	Xemerald,
-  Xbug_n,		Xbug_e,		Xbug_s,		Xbug_w,
-  Xbug_gon,		Xbug_goe,	Xbug_gos,	Xbug_gow,
-  Xdrip_eat,		Xdrip_eat,	Xdrip_eat,	Xdrip_eat,
+  Xbug_1_n,		Xbug_1_e,	Xbug_1_s,	Xbug_1_w,
+  Xbug_2_n,		Xbug_2_e,	Xbug_2_s,	Xbug_2_w,
+  Xdrip,		Xdrip,		Xdrip,		Xdrip,
 
   Xstone,		Xbomb,		Xdiamond,	Xemerald,
   Xwonderwall,		Xnut,		Xnut,		Xnut,
@@ -538,7 +538,7 @@ static unsigned short remap_emerald[256] =
 
   Xblank,		Xsand,		Xsand,		Xsand,
   Xsand_stone,		Xsand_stone,	Xsand_stone,	Xsand,
-  Xstone,		Xgrow_ew,	Xgrow_ns,	Xdynamite_1,
+  Xstone,		Xslidewall_ew,	Xslidewall_ns,	Xdynamite_1,
   Xdynamite_2,		Xdynamite_3,	Xdynamite_4,	Xacid_s,
 
 #ifdef ALLOW_ROLLING_SPRING
@@ -560,14 +560,14 @@ static unsigned short remap_emerald[256] =
 
 #ifdef BAD_ROLL
 
-  Xblank,		Xblank,		Xblank,		Xspring_force_w,
-  Xspring_force_e,	Xacid_1,	Xacid_2,	Xacid_3,
+  Xblank,		Xblank,		Xblank,		Xpush_spring_w,
+  Xpush_spring_e,	Xacid_1,	Xacid_2,	Xacid_3,
   Xacid_4,		Xacid_5,	Xacid_6,	Xacid_7,
   Xacid_8,		Xblank,		Xblank,		Xblank,
 
-  Xblank,		Xblank,		Xnut_force_w,	Xnut_force_e,
-  Xsteel_1,		Xblank,		Xblank,		Xbomb_force_w,
-  Xbomb_force_e,	Xstone_force_w,	Xstone_force_e,	Xblank,
+  Xblank,		Xblank,		Xpush_nut_w,	Xpush_nut_e,
+  Xsteel_1,		Xblank,		Xblank,		Xpush_bomb_w,
+  Xpush_bomb_e,		Xpush_stone_w,	Xpush_stone_e,	Xblank,
   Xblank,		Xblank,		Xblank,		Xblank,
 
 #else
@@ -584,10 +584,10 @@ static unsigned short remap_emerald[256] =
 
 #endif
 
-  Xblank,		Xround_wall_1,	Xgrass,		Xsteel_1,
+  Xblank,		Xroundwall_1,	Xgrass,		Xsteel_1,
   Xwall_1,		Xkey_1,		Xkey_2,		Xkey_3,
   Xkey_4,		Xdoor_1,	Xdoor_2,	Xdoor_3,
-  Xdoor_4,		Xdripper,	Xfake_door_1,	Xfake_door_2,
+  Xdoor_4,		Xfake_amoeba,	Xfake_door_1,	Xfake_door_2,
 
   Xfake_door_3,		Xfake_door_4,	Xwonderwall,	Xwheel,
   Xsand,		Xacid_nw,	Xacid_ne,	Xacid_sw,
@@ -600,8 +600,8 @@ static unsigned short remap_emerald[256] =
   Xalpha_comma,		Xalpha_quote,	Xalpha_minus,	Xdynamite,
 
   Xsteel_3,		Xdecor_6,	Xdecor_7,	Xsteel_2,
-  Xround_wall_2,	Xdecor_2,	Xdecor_4,	Xdecor_3,
-  Xwind_nesw,		Xwind_e,	Xwind_s,	Xwind_w,
+  Xroundwall_2,		Xdecor_2,	Xdecor_4,	Xdecor_3,
+  Xwind_any,		Xwind_e,	Xwind_s,	Xwind_w,
   Xwind_n,		Xdirt,		Xplant,		Xkey_5,
 
   Xkey_6,		Xkey_7,		Xkey_8,		Xdoor_5,
@@ -791,29 +791,29 @@ void convert_em_level(unsigned char *src, int file_version)
 
   if (temp & 32)
   {
-    lev.android_array[Xtank_n]		= Xtank_n;
-    lev.android_array[Xtank_gon]	= Xtank_n;
-    lev.android_array[Ytank_nB]		= Xtank_n;
-    lev.android_array[Ytank_n_e]	= Xtank_n;
-    lev.android_array[Ytank_n_w]	= Xtank_n;
+    lev.android_array[Xtank_1_n]	= Xtank_1_n;
+    lev.android_array[Xtank_2_n]	= Xtank_1_n;
+    lev.android_array[Ytank_nB]		= Xtank_1_n;
+    lev.android_array[Ytank_n_e]	= Xtank_1_n;
+    lev.android_array[Ytank_n_w]	= Xtank_1_n;
 
-    lev.android_array[Xtank_e]		= Xtank_e;
-    lev.android_array[Xtank_goe]	= Xtank_e;
-    lev.android_array[Ytank_eB]		= Xtank_e;
-    lev.android_array[Ytank_e_s]	= Xtank_e;
-    lev.android_array[Ytank_e_n]	= Xtank_e;
+    lev.android_array[Xtank_1_e]	= Xtank_1_e;
+    lev.android_array[Xtank_2_e]	= Xtank_1_e;
+    lev.android_array[Ytank_eB]		= Xtank_1_e;
+    lev.android_array[Ytank_e_s]	= Xtank_1_e;
+    lev.android_array[Ytank_e_n]	= Xtank_1_e;
 
-    lev.android_array[Xtank_s]		= Xtank_s;
-    lev.android_array[Xtank_gos]	= Xtank_s;
-    lev.android_array[Ytank_sB]		= Xtank_s;
-    lev.android_array[Ytank_s_w]	= Xtank_s;
-    lev.android_array[Ytank_s_e]	= Xtank_s;
+    lev.android_array[Xtank_1_s]	= Xtank_1_s;
+    lev.android_array[Xtank_2_s]	= Xtank_1_s;
+    lev.android_array[Ytank_sB]		= Xtank_1_s;
+    lev.android_array[Ytank_s_w]	= Xtank_1_s;
+    lev.android_array[Ytank_s_e]	= Xtank_1_s;
 
-    lev.android_array[Xtank_w]		= Xtank_w;
-    lev.android_array[Xtank_gow]	= Xtank_w;
-    lev.android_array[Ytank_wB]		= Xtank_w;
-    lev.android_array[Ytank_w_n]	= Xtank_w;
-    lev.android_array[Ytank_w_s]	= Xtank_w;
+    lev.android_array[Xtank_1_w]	= Xtank_1_w;
+    lev.android_array[Xtank_2_w]	= Xtank_1_w;
+    lev.android_array[Ytank_wB]		= Xtank_1_w;
+    lev.android_array[Ytank_w_n]	= Xtank_1_w;
+    lev.android_array[Ytank_w_s]	= Xtank_1_w;
   }
 
   if (temp & 64)
@@ -833,29 +833,29 @@ void convert_em_level(unsigned char *src, int file_version)
 
   if (temp & 128)
   {
-    lev.android_array[Xbug_n]		= Xbug_gon;
-    lev.android_array[Xbug_gon]		= Xbug_gon;
-    lev.android_array[Ybug_nB]		= Xbug_gon;
-    lev.android_array[Ybug_n_e]		= Xbug_gon;
-    lev.android_array[Ybug_n_w]		= Xbug_gon;
+    lev.android_array[Xbug_1_n]		= Xbug_2_n;
+    lev.android_array[Xbug_2_n]		= Xbug_2_n;
+    lev.android_array[Ybug_nB]		= Xbug_2_n;
+    lev.android_array[Ybug_n_e]		= Xbug_2_n;
+    lev.android_array[Ybug_n_w]		= Xbug_2_n;
 
-    lev.android_array[Xbug_e]		= Xbug_goe;
-    lev.android_array[Xbug_goe]		= Xbug_goe;
-    lev.android_array[Ybug_eB]		= Xbug_goe;
-    lev.android_array[Ybug_e_s]		= Xbug_goe;
-    lev.android_array[Ybug_e_n]		= Xbug_goe;
+    lev.android_array[Xbug_1_e]		= Xbug_2_e;
+    lev.android_array[Xbug_2_e]		= Xbug_2_e;
+    lev.android_array[Ybug_eB]		= Xbug_2_e;
+    lev.android_array[Ybug_e_s]		= Xbug_2_e;
+    lev.android_array[Ybug_e_n]		= Xbug_2_e;
 
-    lev.android_array[Xbug_s]		= Xbug_gos;
-    lev.android_array[Xbug_gos]		= Xbug_gos;
-    lev.android_array[Ybug_sB]		= Xbug_gos;
-    lev.android_array[Ybug_s_w]		= Xbug_gos;
-    lev.android_array[Ybug_s_e]		= Xbug_gos;
+    lev.android_array[Xbug_1_s]		= Xbug_2_s;
+    lev.android_array[Xbug_2_s]		= Xbug_2_s;
+    lev.android_array[Ybug_sB]		= Xbug_2_s;
+    lev.android_array[Ybug_s_w]		= Xbug_2_s;
+    lev.android_array[Ybug_s_e]		= Xbug_2_s;
 
-    lev.android_array[Xbug_w]		= Xbug_gow;
-    lev.android_array[Xbug_gow]		= Xbug_gow;
-    lev.android_array[Ybug_wB]		= Xbug_gow;
-    lev.android_array[Ybug_w_n]		= Xbug_gow;
-    lev.android_array[Ybug_w_s]		= Xbug_gow;
+    lev.android_array[Xbug_1_w]		= Xbug_2_w;
+    lev.android_array[Xbug_2_w]		= Xbug_2_w;
+    lev.android_array[Ybug_wB]		= Xbug_2_w;
+    lev.android_array[Ybug_w_n]		= Xbug_2_w;
+    lev.android_array[Ybug_w_s]		= Xbug_2_w;
   }
 
   if (temp & 256)
@@ -874,10 +874,10 @@ void convert_em_level(unsigned char *src, int file_version)
     lev.android_array[Xspring_pause]	= Xspring;
     lev.android_array[Xspring_e]	= Xspring;
     lev.android_array[Yspring_eB]	= Xspring;
-    lev.android_array[Yspring_kill_eB]	= Xspring;
+    lev.android_array[Yspring_alien_eB]	= Xspring;
     lev.android_array[Xspring_w]	= Xspring;
     lev.android_array[Yspring_wB]	= Xspring;
-    lev.android_array[Yspring_kill_wB]	= Xspring;
+    lev.android_array[Yspring_alien_wB]	= Xspring;
     lev.android_array[Xspring_fall]	= Xspring;
     lev.android_array[Yspring_sB]	= Xspring;
   }
@@ -893,16 +893,16 @@ void convert_em_level(unsigned char *src, int file_version)
 
   if (temp & 2048)
   {
-    lev.android_array[Xdripper]		= Xdrip_eat;
-    lev.android_array[XdripperB]	= Xdrip_eat;
-    lev.android_array[Xamoeba_1]	= Xdrip_eat;
-    lev.android_array[Xamoeba_2]	= Xdrip_eat;
-    lev.android_array[Xamoeba_3]	= Xdrip_eat;
-    lev.android_array[Xamoeba_4]	= Xdrip_eat;
-    lev.android_array[Xamoeba_5]	= Xdrip_eat;
-    lev.android_array[Xamoeba_6]	= Xdrip_eat;
-    lev.android_array[Xamoeba_7]	= Xdrip_eat;
-    lev.android_array[Xamoeba_8]	= Xdrip_eat;
+    lev.android_array[Xfake_amoeba]	= Xdrip;
+    lev.android_array[Xfake_amoebaB]	= Xdrip;
+    lev.android_array[Xamoeba_1]	= Xdrip;
+    lev.android_array[Xamoeba_2]	= Xdrip;
+    lev.android_array[Xamoeba_3]	= Xdrip;
+    lev.android_array[Xamoeba_4]	= Xdrip;
+    lev.android_array[Xamoeba_5]	= Xdrip;
+    lev.android_array[Xamoeba_6]	= Xdrip;
+    lev.android_array[Xamoeba_7]	= Xdrip;
+    lev.android_array[Xamoeba_8]	= Xdrip;
   }
 
   if (temp & 4096)
@@ -980,7 +980,7 @@ void convert_em_level(unsigned char *src, int file_version)
   /* first fill the complete playfield with the default border element */
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      native_em_level.cave[x][y] = ZBORDER;
+      native_em_level.cave[x][y] = Zborder;
 
   /* then copy the real level contents from level file into the playfield */
   temp = 0;

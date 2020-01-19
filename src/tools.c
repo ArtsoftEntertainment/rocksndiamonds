@@ -5745,61 +5745,61 @@ em_object_mapping_list[] =
     EL_EMPTY,				-1, -1
   },
   {
-    Yacid_splash_eB,			FALSE,	FALSE,
+    Xacid_splash_e,			FALSE,	FALSE,
     EL_ACID_SPLASH_RIGHT,		-1, -1
   },
   {
-    Yacid_splash_wB,			FALSE,	FALSE,
+    Xacid_splash_w,			FALSE,	FALSE,
     EL_ACID_SPLASH_LEFT,		-1, -1
   },
 
 #ifdef EM_ENGINE_BAD_ROLL
   {
-    Xstone_force_e,			FALSE,	FALSE,
+    Xpush_stone_e,			FALSE,	FALSE,
     EL_ROCK,				-1, MV_BIT_RIGHT
   },
   {
-    Xstone_force_w,			FALSE,	FALSE,
+    Xpush_stone_w,			FALSE,	FALSE,
     EL_ROCK,				-1, MV_BIT_LEFT
   },
   {
-    Xnut_force_e,			FALSE,	FALSE,
+    Xpush_nut_e,			FALSE,	FALSE,
     EL_NUT,				-1, MV_BIT_RIGHT
   },
   {
-    Xnut_force_w,			FALSE,	FALSE,
+    Xpush_nut_w,			FALSE,	FALSE,
     EL_NUT,				-1, MV_BIT_LEFT
   },
   {
-    Xspring_force_e,			FALSE,	FALSE,
+    Xpush_spring_e,			FALSE,	FALSE,
     EL_SPRING,				-1, MV_BIT_RIGHT
   },
   {
-    Xspring_force_w,			FALSE,	FALSE,
+    Xpush_spring_w,			FALSE,	FALSE,
     EL_SPRING,				-1, MV_BIT_LEFT
   },
   {
-    Xemerald_force_e,			FALSE,	FALSE,
+    Xpush_emerald_e,			FALSE,	FALSE,
     EL_EMERALD,				-1, MV_BIT_RIGHT
   },
   {
-    Xemerald_force_w,			FALSE,	FALSE,
+    Xpush_emerald_w,			FALSE,	FALSE,
     EL_EMERALD,				-1, MV_BIT_LEFT
   },
   {
-    Xdiamond_force_e,			FALSE,	FALSE,
+    Xpush_diamond_e,			FALSE,	FALSE,
     EL_DIAMOND,				-1, MV_BIT_RIGHT
   },
   {
-    Xdiamond_force_w,			FALSE,	FALSE,
+    Xpush_diamond_w,			FALSE,	FALSE,
     EL_DIAMOND,				-1, MV_BIT_LEFT
   },
   {
-    Xbomb_force_e,			FALSE,	FALSE,
+    Xpush_bomb_e,			FALSE,	FALSE,
     EL_BOMB,				-1, MV_BIT_RIGHT
   },
   {
-    Xbomb_force_w,			FALSE,	FALSE,
+    Xpush_bomb_w,			FALSE,	FALSE,
     EL_BOMB,				-1, MV_BIT_LEFT
   },
 #endif	// EM_ENGINE_BAD_ROLL
@@ -5877,35 +5877,35 @@ em_object_mapping_list[] =
     EL_NUT,				ACTION_MOVING, MV_BIT_LEFT
   },
   {
-    Xbug_n,				TRUE,	FALSE,
+    Xbug_1_n,				TRUE,	FALSE,
     EL_BUG_UP,				-1, -1
   },
   {
-    Xbug_e,				TRUE,	FALSE,
+    Xbug_1_e,				TRUE,	FALSE,
     EL_BUG_RIGHT,			-1, -1
   },
   {
-    Xbug_s,				TRUE,	FALSE,
+    Xbug_1_s,				TRUE,	FALSE,
     EL_BUG_DOWN,			-1, -1
   },
   {
-    Xbug_w,				TRUE,	FALSE,
+    Xbug_1_w,				TRUE,	FALSE,
     EL_BUG_LEFT,			-1, -1
   },
   {
-    Xbug_gon,				FALSE,	FALSE,
+    Xbug_2_n,				FALSE,	FALSE,
     EL_BUG_UP,				-1, -1
   },
   {
-    Xbug_goe,				FALSE,	FALSE,
+    Xbug_2_e,				FALSE,	FALSE,
     EL_BUG_RIGHT,			-1, -1
   },
   {
-    Xbug_gos,				FALSE,	FALSE,
+    Xbug_2_s,				FALSE,	FALSE,
     EL_BUG_DOWN,			-1, -1
   },
   {
-    Xbug_gow,				FALSE,	FALSE,
+    Xbug_2_w,				FALSE,	FALSE,
     EL_BUG_LEFT,			-1, -1
   },
   {
@@ -5981,35 +5981,35 @@ em_object_mapping_list[] =
     EL_BUG,				ACTION_SMASHED_BY_SPRING, -1
   },
   {
-    Xtank_n,				TRUE,	FALSE,
+    Xtank_1_n,				TRUE,	FALSE,
     EL_SPACESHIP_UP,			-1, -1
   },
   {
-    Xtank_e,				TRUE,	FALSE,
+    Xtank_1_e,				TRUE,	FALSE,
     EL_SPACESHIP_RIGHT,			-1, -1
   },
   {
-    Xtank_s,				TRUE,	FALSE,
+    Xtank_1_s,				TRUE,	FALSE,
     EL_SPACESHIP_DOWN,			-1, -1
   },
   {
-    Xtank_w,				TRUE,	FALSE,
+    Xtank_1_w,				TRUE,	FALSE,
     EL_SPACESHIP_LEFT,			-1, -1
   },
   {
-    Xtank_gon,				FALSE,	FALSE,
+    Xtank_2_n,				FALSE,	FALSE,
     EL_SPACESHIP_UP,			-1, -1
   },
   {
-    Xtank_goe,				FALSE,	FALSE,
+    Xtank_2_e,				FALSE,	FALSE,
     EL_SPACESHIP_RIGHT,			-1, -1
   },
   {
-    Xtank_gos,				FALSE,	FALSE,
+    Xtank_2_s,				FALSE,	FALSE,
     EL_SPACESHIP_DOWN,			-1, -1
   },
   {
-    Xtank_gow,				FALSE,	FALSE,
+    Xtank_2_w,				FALSE,	FALSE,
     EL_SPACESHIP_LEFT,			-1, -1
   },
   {
@@ -6229,19 +6229,19 @@ em_object_mapping_list[] =
     EL_SPRING,				ACTION_MOVING, MV_BIT_LEFT
   },
   {
-    Yspring_kill_e,			FALSE,	FALSE,
+    Yspring_alien_e,			FALSE,	FALSE,
     EL_SPRING,				ACTION_EATING, MV_BIT_RIGHT
   },
   {
-    Yspring_kill_eB,			FALSE,	TRUE,
+    Yspring_alien_eB,			FALSE,	TRUE,
     EL_SPRING,				ACTION_EATING, MV_BIT_RIGHT
   },
   {
-    Yspring_kill_w,			FALSE,	FALSE,
+    Yspring_alien_w,			FALSE,	FALSE,
     EL_SPRING,				ACTION_EATING, MV_BIT_LEFT
   },
   {
-    Yspring_kill_wB,			FALSE,	TRUE,
+    Yspring_alien_wB,			FALSE,	TRUE,
     EL_SPRING,				ACTION_EATING, MV_BIT_LEFT
   },
   {
@@ -6389,11 +6389,11 @@ em_object_mapping_list[] =
     EL_EMERALD,				ACTION_MOVING, MV_BIT_LEFT
   },
   {
-    Yemerald_eat,			FALSE,	FALSE,
+    Yemerald_blank,			FALSE,	FALSE,
     EL_EMERALD,				ACTION_COLLECTING, -1
   },
   {
-    Yemerald_stone,			FALSE,	FALSE,
+    Ynut_stone,				FALSE,	FALSE,
     EL_NUT,				ACTION_BREAKING, -1
   },
   {
@@ -6437,7 +6437,7 @@ em_object_mapping_list[] =
     EL_DIAMOND,				ACTION_MOVING, MV_BIT_LEFT
   },
   {
-    Ydiamond_eat,			FALSE,	FALSE,
+    Ydiamond_blank,			FALSE,	FALSE,
     EL_DIAMOND,				ACTION_COLLECTING, -1
   },
   {
@@ -6457,23 +6457,23 @@ em_object_mapping_list[] =
     EL_AMOEBA_DROP,			ACTION_FALLING, -1
   },
   {
-    Xdrip_eat,				FALSE,	FALSE,
+    Xdrip,				FALSE,	FALSE,
     EL_AMOEBA_DROP,			ACTION_GROWING, -1
   },
   {
-    Ydrip_s1,				FALSE,	FALSE,
+    Ydrip_1_s,				FALSE,	FALSE,
     EL_AMOEBA_DROP,			ACTION_FALLING, -1
   },
   {
-    Ydrip_s1B,				FALSE,	TRUE,
+    Ydrip_1_sB,				FALSE,	TRUE,
     EL_AMOEBA_DROP,			ACTION_FALLING, -1
   },
   {
-    Ydrip_s2,				FALSE,	FALSE,
+    Ydrip_2_s,				FALSE,	FALSE,
     EL_AMOEBA_DROP,			ACTION_FALLING, -1
   },
   {
-    Ydrip_s2B,				FALSE,	TRUE,
+    Ydrip_2_sB,				FALSE,	TRUE,
     EL_AMOEBA_DROP,			ACTION_FALLING, -1
   },
   {
@@ -6513,7 +6513,7 @@ em_object_mapping_list[] =
     EL_BOMB,				ACTION_MOVING, MV_BIT_LEFT
   },
   {
-    Ybomb_eat,				FALSE,	FALSE,
+    Ybomb_blank,			FALSE,	FALSE,
     EL_BOMB,				ACTION_ACTIVATING, -1
   },
   {
@@ -6649,7 +6649,7 @@ em_object_mapping_list[] =
     EL_EMC_MAGIC_BALL,			-1, -1
   },
   {
-    Xball_1B,				FALSE,	FALSE,
+    Yball_1,				FALSE,	FALSE,
     EL_EMC_MAGIC_BALL,			ACTION_ACTIVE, -1
   },
   {
@@ -6657,75 +6657,75 @@ em_object_mapping_list[] =
     EL_EMC_MAGIC_BALL,			ACTION_ACTIVE, -1
   },
   {
-    Xball_2B,				FALSE,	FALSE,
+    Yball_2,				FALSE,	FALSE,
     EL_EMC_MAGIC_BALL,			ACTION_ACTIVE, -1
   },
   {
-    Yball_eat,				FALSE,	FALSE,
+    Yball_blank,			FALSE,	FALSE,
     EL_EMC_MAGIC_BALL,			ACTION_DROPPING, -1
   },
   {
-    Ykey_1_eat,				FALSE,	FALSE,
+    Ykey_1_blank,			FALSE,	FALSE,
     EL_EM_KEY_1,			ACTION_COLLECTING, -1
   },
   {
-    Ykey_2_eat,				FALSE,	FALSE,
+    Ykey_2_blank,			FALSE,	FALSE,
     EL_EM_KEY_2,			ACTION_COLLECTING, -1
   },
   {
-    Ykey_3_eat,				FALSE,	FALSE,
+    Ykey_3_blank,			FALSE,	FALSE,
     EL_EM_KEY_3,			ACTION_COLLECTING, -1
   },
   {
-    Ykey_4_eat,				FALSE,	FALSE,
+    Ykey_4_blank,			FALSE,	FALSE,
     EL_EM_KEY_4,			ACTION_COLLECTING, -1
   },
   {
-    Ykey_5_eat,				FALSE,	FALSE,
+    Ykey_5_blank,			FALSE,	FALSE,
     EL_EMC_KEY_5,			ACTION_COLLECTING, -1
   },
   {
-    Ykey_6_eat,				FALSE,	FALSE,
+    Ykey_6_blank,			FALSE,	FALSE,
     EL_EMC_KEY_6,			ACTION_COLLECTING, -1
   },
   {
-    Ykey_7_eat,				FALSE,	FALSE,
+    Ykey_7_blank,			FALSE,	FALSE,
     EL_EMC_KEY_7,			ACTION_COLLECTING, -1
   },
   {
-    Ykey_8_eat,				FALSE,	FALSE,
+    Ykey_8_blank,			FALSE,	FALSE,
     EL_EMC_KEY_8,			ACTION_COLLECTING, -1
   },
   {
-    Ylenses_eat,			FALSE,	FALSE,
+    Ylenses_blank,			FALSE,	FALSE,
     EL_EMC_LENSES,			ACTION_COLLECTING, -1
   },
   {
-    Ymagnify_eat,			FALSE,	FALSE,
+    Ymagnify_blank,			FALSE,	FALSE,
     EL_EMC_MAGNIFIER,			ACTION_COLLECTING, -1
   },
   {
-    Ygrass_eat,				FALSE,	FALSE,
+    Ygrass_blank,			FALSE,	FALSE,
     EL_EMC_GRASS,			ACTION_SNAPPING, -1
   },
   {
-    Ydirt_eat,				FALSE,	FALSE,
+    Ydirt_blank,			FALSE,	FALSE,
     EL_SAND,				ACTION_SNAPPING, -1
   },
   {
-    Xgrow_ns,				TRUE,	FALSE,
+    Xslidewall_ns,			TRUE,	FALSE,
     EL_EXPANDABLE_WALL_VERTICAL,	-1, -1
   },
   {
-    Ygrow_ns_eat,			FALSE,	FALSE,
+    Yslidewall_ns_blank,		FALSE,	FALSE,
     EL_EXPANDABLE_WALL_VERTICAL,	ACTION_GROWING, -1
   },
   {
-    Xgrow_ew,				TRUE,	FALSE,
+    Xslidewall_ew,			TRUE,	FALSE,
     EL_EXPANDABLE_WALL_HORIZONTAL,	-1, -1
   },
   {
-    Ygrow_ew_eat,			FALSE,	FALSE,
+    Yslidewall_ew_blank,		FALSE,	FALSE,
     EL_EXPANDABLE_WALL_HORIZONTAL,	ACTION_GROWING, -1
   },
   {
@@ -6849,7 +6849,7 @@ em_object_mapping_list[] =
     EL_BALLOON_SWITCH_LEFT,		-1, -1
   },
   {
-    Xwind_nesw,				TRUE,	FALSE,
+    Xwind_any,				TRUE,	FALSE,
     EL_BALLOON_SWITCH_ANY,		-1, -1
   },
   {
@@ -6877,7 +6877,7 @@ em_object_mapping_list[] =
     EL_EM_DYNAMITE,			-1, -1
   },
   {
-    Ydynamite_eat,			FALSE,	FALSE,
+    Ydynamite_blank,			FALSE,	FALSE,
     EL_EM_DYNAMITE,			ACTION_COLLECTING, -1
   },
   {
@@ -7009,11 +7009,11 @@ em_object_mapping_list[] =
     EL_EMC_MAGNIFIER,			-1, -1
   },
   {
-    Xdripper,				TRUE,	FALSE,
+    Xfake_amoeba,			TRUE,	FALSE,
     EL_EMC_DRIPPER,			-1, -1
   },
   {
-    XdripperB,				FALSE,	FALSE,
+    Xfake_amoebaB,			FALSE,	FALSE,
     EL_EMC_DRIPPER,			ACTION_ACTIVE, -1
   },
   {
@@ -7129,19 +7129,19 @@ em_object_mapping_list[] =
     EL_EMC_WALL_16,			-1, -1
   },
   {
-    Xround_wall_1,			TRUE,	FALSE,
+    Xroundwall_1,			TRUE,	FALSE,
     EL_WALL_SLIPPERY,			-1, -1
   },
   {
-    Xround_wall_2,			TRUE,	FALSE,
+    Xroundwall_2,			TRUE,	FALSE,
     EL_EMC_WALL_SLIPPERY_2,		-1, -1
   },
   {
-    Xround_wall_3,			TRUE,	FALSE,
+    Xroundwall_3,			TRUE,	FALSE,
     EL_EMC_WALL_SLIPPERY_3,		-1, -1
   },
   {
-    Xround_wall_4,			TRUE,	FALSE,
+    Xroundwall_4,			TRUE,	FALSE,
     EL_EMC_WALL_SLIPPERY_4,		-1, -1
   },
   {
@@ -7410,7 +7410,7 @@ em_object_mapping_list[] =
     EL_EMPTY,				-1, -1
   },
   {
-    ZBORDER,				FALSE,	FALSE,
+    Zborder,				FALSE,	FALSE,
     EL_EMPTY,				-1, -1
   },
 
@@ -7432,211 +7432,211 @@ static struct Mapping_EM_to_RND_player
 em_player_mapping_list[] =
 {
   {
-    SPR_walk + 0,			0,
+    PLY_walk_n,				0,
     EL_PLAYER_1,			ACTION_MOVING, MV_BIT_UP,
   },
   {
-    SPR_walk + 1,			0,
+    PLY_walk_e,				0,
     EL_PLAYER_1,			ACTION_MOVING, MV_BIT_RIGHT,
   },
   {
-    SPR_walk + 2,			0,
+    PLY_walk_s,				0,
     EL_PLAYER_1,			ACTION_MOVING, MV_BIT_DOWN,
   },
   {
-    SPR_walk + 3,			0,
+    PLY_walk_w,				0,
     EL_PLAYER_1,			ACTION_MOVING, MV_BIT_LEFT,
   },
   {
-    SPR_push + 0,			0,
+    PLY_push_n,				0,
     EL_PLAYER_1,			ACTION_PUSHING, MV_BIT_UP,
   },
   {
-    SPR_push + 1,			0,
+    PLY_push_e,				0,
     EL_PLAYER_1,			ACTION_PUSHING, MV_BIT_RIGHT,
   },
   {
-    SPR_push + 2,			0,
+    PLY_push_s,				0,
     EL_PLAYER_1,			ACTION_PUSHING, MV_BIT_DOWN,
   },
   {
-    SPR_push + 3,			0,
+    PLY_push_w,				0,
     EL_PLAYER_1,			ACTION_PUSHING, MV_BIT_LEFT,
   },
   {
-    SPR_spray + 0,			0,
+    PLY_shoot_n,			0,
     EL_PLAYER_1,			ACTION_SNAPPING, MV_BIT_UP,
   },
   {
-    SPR_spray + 1,			0,
+    PLY_shoot_e,			0,
     EL_PLAYER_1,			ACTION_SNAPPING, MV_BIT_RIGHT,
   },
   {
-    SPR_spray + 2,			0,
+    PLY_shoot_s,			0,
     EL_PLAYER_1,			ACTION_SNAPPING, MV_BIT_DOWN,
   },
   {
-    SPR_spray + 3,			0,
+    PLY_shoot_w,			0,
     EL_PLAYER_1,			ACTION_SNAPPING, MV_BIT_LEFT,
   },
   {
-    SPR_walk + 0,			1,
+    PLY_walk_n,				1,
     EL_PLAYER_2,			ACTION_MOVING, MV_BIT_UP,
   },
   {
-    SPR_walk + 1,			1,
+    PLY_walk_e,				1,
     EL_PLAYER_2,			ACTION_MOVING, MV_BIT_RIGHT,
   },
   {
-    SPR_walk + 2,			1,
+    PLY_walk_s,				1,
     EL_PLAYER_2,			ACTION_MOVING, MV_BIT_DOWN,
   },
   {
-    SPR_walk + 3,			1,
+    PLY_walk_w,				1,
     EL_PLAYER_2,			ACTION_MOVING, MV_BIT_LEFT,
   },
   {
-    SPR_push + 0,			1,
+    PLY_push_n,				1,
     EL_PLAYER_2,			ACTION_PUSHING, MV_BIT_UP,
   },
   {
-    SPR_push + 1,			1,
+    PLY_push_e,				1,
     EL_PLAYER_2,			ACTION_PUSHING, MV_BIT_RIGHT,
   },
   {
-    SPR_push + 2,			1,
+    PLY_push_s,				1,
     EL_PLAYER_2,			ACTION_PUSHING, MV_BIT_DOWN,
   },
   {
-    SPR_push + 3,			1,
+    PLY_push_w,				1,
     EL_PLAYER_2,			ACTION_PUSHING, MV_BIT_LEFT,
   },
   {
-    SPR_spray + 0,			1,
+    PLY_shoot_n,			1,
     EL_PLAYER_2,			ACTION_SNAPPING, MV_BIT_UP,
   },
   {
-    SPR_spray + 1,			1,
+    PLY_shoot_e,			1,
     EL_PLAYER_2,			ACTION_SNAPPING, MV_BIT_RIGHT,
   },
   {
-    SPR_spray + 2,			1,
+    PLY_shoot_s,			1,
     EL_PLAYER_2,			ACTION_SNAPPING, MV_BIT_DOWN,
   },
   {
-    SPR_spray + 3,			1,
+    PLY_shoot_w,			1,
     EL_PLAYER_2,			ACTION_SNAPPING, MV_BIT_LEFT,
   },
   {
-    SPR_still,				0,
+    PLY_still,				0,
     EL_PLAYER_1,			ACTION_DEFAULT, -1,
   },
   {
-    SPR_still,				1,
+    PLY_still,				1,
     EL_PLAYER_2,			ACTION_DEFAULT, -1,
   },
   {
-    SPR_walk + 0,			2,
+    PLY_walk_n,				2,
     EL_PLAYER_3,			ACTION_MOVING, MV_BIT_UP,
   },
   {
-    SPR_walk + 1,			2,
+    PLY_walk_e,				2,
     EL_PLAYER_3,			ACTION_MOVING, MV_BIT_RIGHT,
   },
   {
-    SPR_walk + 2,			2,
+    PLY_walk_s,				2,
     EL_PLAYER_3,			ACTION_MOVING, MV_BIT_DOWN,
   },
   {
-    SPR_walk + 3,			2,
+    PLY_walk_w,				2,
     EL_PLAYER_3,			ACTION_MOVING, MV_BIT_LEFT,
   },
   {
-    SPR_push + 0,			2,
+    PLY_push_n,				2,
     EL_PLAYER_3,			ACTION_PUSHING, MV_BIT_UP,
   },
   {
-    SPR_push + 1,			2,
+    PLY_push_e,				2,
     EL_PLAYER_3,			ACTION_PUSHING, MV_BIT_RIGHT,
   },
   {
-    SPR_push + 2,			2,
+    PLY_push_s,				2,
     EL_PLAYER_3,			ACTION_PUSHING, MV_BIT_DOWN,
   },
   {
-    SPR_push + 3,			2,
+    PLY_push_w,				2,
     EL_PLAYER_3,			ACTION_PUSHING, MV_BIT_LEFT,
   },
   {
-    SPR_spray + 0,			2,
+    PLY_shoot_n,			2,
     EL_PLAYER_3,			ACTION_SNAPPING, MV_BIT_UP,
   },
   {
-    SPR_spray + 1,			2,
+    PLY_shoot_e,			2,
     EL_PLAYER_3,			ACTION_SNAPPING, MV_BIT_RIGHT,
   },
   {
-    SPR_spray + 2,			2,
+    PLY_shoot_s,			2,
     EL_PLAYER_3,			ACTION_SNAPPING, MV_BIT_DOWN,
   },
   {
-    SPR_spray + 3,			2,
+    PLY_shoot_w,			2,
     EL_PLAYER_3,			ACTION_SNAPPING, MV_BIT_LEFT,
   },
   {
-    SPR_walk + 0,			3,
+    PLY_walk_n,				3,
     EL_PLAYER_4,			ACTION_MOVING, MV_BIT_UP,
   },
   {
-    SPR_walk + 1,			3,
+    PLY_walk_e,				3,
     EL_PLAYER_4,			ACTION_MOVING, MV_BIT_RIGHT,
   },
   {
-    SPR_walk + 2,			3,
+    PLY_walk_s,				3,
     EL_PLAYER_4,			ACTION_MOVING, MV_BIT_DOWN,
   },
   {
-    SPR_walk + 3,			3,
+    PLY_walk_w,				3,
     EL_PLAYER_4,			ACTION_MOVING, MV_BIT_LEFT,
   },
   {
-    SPR_push + 0,			3,
+    PLY_push_n,				3,
     EL_PLAYER_4,			ACTION_PUSHING, MV_BIT_UP,
   },
   {
-    SPR_push + 1,			3,
+    PLY_push_e,				3,
     EL_PLAYER_4,			ACTION_PUSHING, MV_BIT_RIGHT,
   },
   {
-    SPR_push + 2,			3,
+    PLY_push_s,				3,
     EL_PLAYER_4,			ACTION_PUSHING, MV_BIT_DOWN,
   },
   {
-    SPR_push + 3,			3,
+    PLY_push_w,				3,
     EL_PLAYER_4,			ACTION_PUSHING, MV_BIT_LEFT,
   },
   {
-    SPR_spray + 0,			3,
+    PLY_shoot_n,			3,
     EL_PLAYER_4,			ACTION_SNAPPING, MV_BIT_UP,
   },
   {
-    SPR_spray + 1,			3,
+    PLY_shoot_e,			3,
     EL_PLAYER_4,			ACTION_SNAPPING, MV_BIT_RIGHT,
   },
   {
-    SPR_spray + 2,			3,
+    PLY_shoot_s,			3,
     EL_PLAYER_4,			ACTION_SNAPPING, MV_BIT_DOWN,
   },
   {
-    SPR_spray + 3,			3,
+    PLY_shoot_w,			3,
     EL_PLAYER_4,			ACTION_SNAPPING, MV_BIT_LEFT,
   },
   {
-    SPR_still,				2,
+    PLY_still,				2,
     EL_PLAYER_3,			ACTION_DEFAULT, -1,
   },
   {
-    SPR_still,				3,
+    PLY_still,				3,
     EL_PLAYER_4,			ACTION_DEFAULT, -1,
   },
 
@@ -8202,7 +8202,7 @@ unsigned int InitRND(int seed)
 }
 
 static struct Mapping_EM_to_RND_object object_mapping[TILE_MAX];
-static struct Mapping_EM_to_RND_player player_mapping[MAX_PLAYERS][SPR_MAX];
+static struct Mapping_EM_to_RND_player player_mapping[MAX_PLAYERS][PLY_MAX];
 
 static int get_effective_element_EM(int tile, int frame_em)
 {
@@ -8217,8 +8217,8 @@ static int get_effective_element_EM(int tile, int frame_em)
   {
     switch (tile)
     {
-      case Yacid_splash_eB:
-      case Yacid_splash_wB:
+      case Xacid_splash_e:
+      case Xacid_splash_w:
 	return (frame_em > 5 ? EL_EMPTY : element);
 
       default:
@@ -8229,11 +8229,11 @@ static int get_effective_element_EM(int tile, int frame_em)
   {
     switch (tile)
     {
-      case Yacid_splash_eB:
-      case Yacid_splash_wB:
+      case Xacid_splash_e:
+      case Xacid_splash_w:
 	return EL_EMPTY;
 
-      case Yemerald_stone:
+      case Ynut_stone:
 	return EL_EMERALD;
 
       case Ydiamond_stone:
@@ -8241,24 +8241,24 @@ static int get_effective_element_EM(int tile, int frame_em)
 
       case Xdrip_stretch:
       case Xdrip_stretchB:
-      case Ydrip_s1:
-      case Ydrip_s1B:
-      case Xball_1B:
+      case Ydrip_1_s:
+      case Ydrip_1_sB:
+      case Yball_1:
       case Xball_2:
-      case Xball_2B:
-      case Yball_eat:
-      case Ykey_1_eat:
-      case Ykey_2_eat:
-      case Ykey_3_eat:
-      case Ykey_4_eat:
-      case Ykey_5_eat:
-      case Ykey_6_eat:
-      case Ykey_7_eat:
-      case Ykey_8_eat:
-      case Ylenses_eat:
-      case Ymagnify_eat:
-      case Ygrass_eat:
-      case Ydirt_eat:
+      case Yball_2:
+      case Yball_blank:
+      case Ykey_1_blank:
+      case Ykey_2_blank:
+      case Ykey_3_blank:
+      case Ykey_4_blank:
+      case Ykey_5_blank:
+      case Ykey_6_blank:
+      case Ykey_7_blank:
+      case Ykey_8_blank:
+      case Ylenses_blank:
+      case Ymagnify_blank:
+      case Ygrass_blank:
+      case Ydirt_blank:
       case Xsand_stonein_1:
       case Xsand_stonein_2:
       case Xsand_stonein_3:
@@ -8298,9 +8298,9 @@ static boolean check_linear_animation_EM(int tile)
     case Ytank_s_e:
     case Ytank_w_s:
     case Ytank_n_w:
-    case Yacid_splash_eB:
-    case Yacid_splash_wB:
-    case Yemerald_stone:
+    case Xacid_splash_e:
+    case Xacid_splash_w:
+    case Ynut_stone:
       return TRUE;
   }
 
@@ -8571,7 +8571,7 @@ void InitGraphicInfo_EM(void)
   // always start with reliable default values
   for (p = 0; p < MAX_PLAYERS; p++)
   {
-    for (i = 0; i < SPR_MAX; i++)
+    for (i = 0; i < PLY_MAX; i++)
     {
       player_mapping[p][i].element_rnd = EL_UNKNOWN;
       player_mapping[p][i].action = ACTION_DEFAULT;
@@ -8628,24 +8628,24 @@ void InitGraphicInfo_EM(void)
       int effective_action = (j < 7 ? action :
 			      i == Xdrip_stretch ? action :
 			      i == Xdrip_stretchB ? action :
-			      i == Ydrip_s1 ? action :
-			      i == Ydrip_s1B ? action :
-			      i == Xball_1B ? action :
+			      i == Ydrip_1_s ? action :
+			      i == Ydrip_1_sB ? action :
+			      i == Yball_1 ? action :
 			      i == Xball_2 ? action :
-			      i == Xball_2B ? action :
-			      i == Yball_eat ? action :
-			      i == Ykey_1_eat ? action :
-			      i == Ykey_2_eat ? action :
-			      i == Ykey_3_eat ? action :
-			      i == Ykey_4_eat ? action :
-			      i == Ykey_5_eat ? action :
-			      i == Ykey_6_eat ? action :
-			      i == Ykey_7_eat ? action :
-			      i == Ykey_8_eat ? action :
-			      i == Ylenses_eat ? action :
-			      i == Ymagnify_eat ? action :
-			      i == Ygrass_eat ? action :
-			      i == Ydirt_eat ? action :
+			      i == Yball_2 ? action :
+			      i == Yball_blank ? action :
+			      i == Ykey_1_blank ? action :
+			      i == Ykey_2_blank ? action :
+			      i == Ykey_3_blank ? action :
+			      i == Ykey_4_blank ? action :
+			      i == Ykey_5_blank ? action :
+			      i == Ykey_6_blank ? action :
+			      i == Ykey_7_blank ? action :
+			      i == Ykey_8_blank ? action :
+			      i == Ylenses_blank ? action :
+			      i == Ymagnify_blank ? action :
+			      i == Ygrass_blank ? action :
+			      i == Ydirt_blank ? action :
 			      i == Xsand_stonein_1 ? action :
 			      i == Xsand_stonein_2 ? action :
 			      i == Xsand_stonein_3 ? action :
@@ -8676,8 +8676,8 @@ void InitGraphicInfo_EM(void)
 				   g->anim_mode & ANIM_LINEAR);
       int sync_frame = (i == Xdrip_stretch ? 7 :
 			i == Xdrip_stretchB ? 7 :
-			i == Ydrip_s2 ? j + 8 :
-			i == Ydrip_s2B ? j + 8 :
+			i == Ydrip_2_s ? j + 8 :
+			i == Ydrip_2_sB ? j + 8 :
 			i == Xacid_1 ? 0 :
 			i == Xacid_2 ? 10 :
 			i == Xacid_3 ? 20 :
@@ -8695,20 +8695,20 @@ void InitGraphicInfo_EM(void)
 			i == Xfake_acid_7 ? 60 :
 			i == Xfake_acid_8 ? 70 :
 			i == Xball_2 ? 7 :
-			i == Xball_2B ? j + 8 :
-			i == Yball_eat ? j + 1 :
-			i == Ykey_1_eat ? j + 1 :
-			i == Ykey_2_eat ? j + 1 :
-			i == Ykey_3_eat ? j + 1 :
-			i == Ykey_4_eat ? j + 1 :
-			i == Ykey_5_eat ? j + 1 :
-			i == Ykey_6_eat ? j + 1 :
-			i == Ykey_7_eat ? j + 1 :
-			i == Ykey_8_eat ? j + 1 :
-			i == Ylenses_eat ? j + 1 :
-			i == Ymagnify_eat ? j + 1 :
-			i == Ygrass_eat ? j + 1 :
-			i == Ydirt_eat ? j + 1 :
+			i == Yball_2 ? j + 8 :
+			i == Yball_blank ? j + 1 :
+			i == Ykey_1_blank ? j + 1 :
+			i == Ykey_2_blank ? j + 1 :
+			i == Ykey_3_blank ? j + 1 :
+			i == Ykey_4_blank ? j + 1 :
+			i == Ykey_5_blank ? j + 1 :
+			i == Ykey_6_blank ? j + 1 :
+			i == Ykey_7_blank ? j + 1 :
+			i == Ykey_8_blank ? j + 1 :
+			i == Ylenses_blank ? j + 1 :
+			i == Ymagnify_blank ? j + 1 :
+			i == Ygrass_blank ? j + 1 :
+			i == Ydirt_blank ? j + 1 :
 			i == Xamoeba_1 ? 0 :
 			i == Xamoeba_2 ? 1 :
 			i == Xamoeba_3 ? 2 :
@@ -8820,10 +8820,10 @@ void InitGraphicInfo_EM(void)
 	   effective_action == ACTION_EMPTYING ? MV_DOWN : direction);
 	int dx = (move_dir == MV_LEFT ? -1 : move_dir == MV_RIGHT ? 1 : 0);
 	int dy = (move_dir == MV_UP   ? -1 : move_dir == MV_DOWN  ? 1 : 0);
-	int num_steps = (i == Ydrip_s1  ? 16 :
-			 i == Ydrip_s1B ? 16 :
-			 i == Ydrip_s2  ? 16 :
-			 i == Ydrip_s2B ? 16 :
+	int num_steps = (i == Ydrip_1_s  ? 16 :
+			 i == Ydrip_1_sB ? 16 :
+			 i == Ydrip_2_s  ? 16 :
+			 i == Ydrip_2_sB ? 16 :
 			 i == Xsand_stonein_1 ? 32 :
 			 i == Xsand_stonein_2 ? 32 :
 			 i == Xsand_stonein_3 ? 32 :
@@ -8832,8 +8832,8 @@ void InitGraphicInfo_EM(void)
 			 i == Xsand_stoneout_2 ? 16 : 8);
 	int cx = ABS(dx) * (TILEX / num_steps);
 	int cy = ABS(dy) * (TILEY / num_steps);
-	int step_frame = (i == Ydrip_s2         ? j + 8 :
-			  i == Ydrip_s2B        ? j + 8 :
+	int step_frame = (i == Ydrip_2_s        ? j + 8 :
+			  i == Ydrip_2_sB       ? j + 8 :
 			  i == Xsand_stonein_2  ? j + 8 :
 			  i == Xsand_stonein_3  ? j + 16 :
 			  i == Xsand_stonein_4  ? j + 24 :
@@ -8994,7 +8994,7 @@ void InitGraphicInfo_EM(void)
 
   for (p = 0; p < MAX_PLAYERS; p++)
   {
-    for (i = 0; i < SPR_MAX; i++)
+    for (i = 0; i < PLY_MAX; i++)
     {
       int element = player_mapping[p][i].element_rnd;
       int action = player_mapping[p][i].action;

@@ -39,7 +39,7 @@ void synchro_3(void)
     lev.wonderwall_time--;
 
   if (lev.wheel_cnt)
-    play_element_sound(lev.wheel_x, lev.wheel_y, SAMPLE_wheel, Xwheel);
+    play_element_sound(lev.wheel_x, lev.wheel_y, SOUND_wheel, Xwheel);
 
   /* grow amoeba */
 
@@ -52,8 +52,8 @@ void synchro_3(void)
     switch (Cave[y][x])
     {
       case Xblank:
-      case Yacid_splash_eB:
-      case Yacid_splash_wB:
+      case Xacid_splash_e:
+      case Xacid_splash_w:
       case Xgrass:
       case Xdirt:
       case Xsand:
@@ -63,7 +63,7 @@ void synchro_3(void)
 	    tab_amoeba[Cave[y][x+1]] ||
 	    tab_amoeba[Cave[y+1][x]] ||
 	    tab_amoeba[Cave[y][x-1]])
-	  Cave[y][x] = Xdrip_eat;
+	  Cave[y][x] = Xdrip;
     }
 
     random = random * 129 + 1;

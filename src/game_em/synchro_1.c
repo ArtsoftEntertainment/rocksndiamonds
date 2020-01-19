@@ -36,7 +36,7 @@ void synchro_1(void)
   {
     ply[i].oldx = ply[i].x;
     ply[i].oldy = ply[i].y;
-    ply[i].anim = SPR_still;
+    ply[i].anim = PLY_still;
   }
 
   start_check_nr = (RandomEM & 128 ? 0 : 1) * 2 + (RandomEM & 256 ? 0 : 1);
@@ -81,93 +81,93 @@ static boolean player_killed(struct PLAYER *ply)
 
   switch(Cave[y-1][x])
   {
-    case Xbug_n:
-    case Xbug_e:
-    case Xbug_s:
-    case Xbug_w:
-    case Xbug_gon:
-    case Xbug_goe:
-    case Xbug_gos:
-    case Xbug_gow:
-    case Xtank_n:
-    case Xtank_e:
-    case Xtank_s:
-    case Xtank_w:
-    case Xtank_gon:
-    case Xtank_goe:
-    case Xtank_gos:
-    case Xtank_gow:
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
       return TRUE;
   }
 
   switch(Cave[y][x+1])
   {
-    case Xbug_n:
-    case Xbug_e:
-    case Xbug_s:
-    case Xbug_w:
-    case Xbug_gon:
-    case Xbug_goe:
-    case Xbug_gos:
-    case Xbug_gow:
-    case Xtank_n:
-    case Xtank_e:
-    case Xtank_s:
-    case Xtank_w:
-    case Xtank_gon:
-    case Xtank_goe:
-    case Xtank_gos:
-    case Xtank_gow:
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
       return TRUE;
   }
 
   switch(Cave[y+1][x])
   {
-    case Xbug_n:
-    case Xbug_e:
-    case Xbug_s:
-    case Xbug_w:
-    case Xbug_gon:
-    case Xbug_goe:
-    case Xbug_gos:
-    case Xbug_gow:
-    case Xtank_n:
-    case Xtank_e:
-    case Xtank_s:
-    case Xtank_w:
-    case Xtank_gon:
-    case Xtank_goe:
-    case Xtank_gos:
-    case Xtank_gow:
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
       return TRUE;
   }
 
   switch(Cave[y][x-1])
   {
-    case Xbug_n:
-    case Xbug_e:
-    case Xbug_s:
-    case Xbug_w:
-    case Xbug_gon:
-    case Xbug_goe:
-    case Xbug_gos:
-    case Xbug_gow:
-    case Xtank_n:
-    case Xtank_e:
-    case Xtank_s:
-    case Xtank_w:
-    case Xtank_gon:
-    case Xtank_goe:
-    case Xtank_gos:
-    case Xtank_gow:
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
       return TRUE;
   }
 
   switch(Cave[y][x])
   {
     case Xblank:
-    case Yacid_splash_eB:
-    case Yacid_splash_wB:
+    case Xacid_splash_e:
+    case Xacid_splash_w:
     case Zplayer:
     case Xdynamite_1:
     case Xdynamite_2:
@@ -198,100 +198,100 @@ static void kill_player(struct PLAYER *ply)
 
   switch(Cave[y-1][x])
   {
-    case Xbug_n:
-    case Xbug_e:
-    case Xbug_s:
-    case Xbug_w:
-    case Xbug_gon:
-    case Xbug_goe:
-    case Xbug_gos:
-    case Xbug_gow:
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
       Cave[y-1][x] = Xboom_bug;
       break;
 
-    case Xtank_n:
-    case Xtank_e:
-    case Xtank_s:
-    case Xtank_w:
-    case Xtank_gon:
-    case Xtank_goe:
-    case Xtank_gos:
-    case Xtank_gow:
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
       Cave[y-1][x] = Xboom_bomb;
       break;
   }
 
   switch(Cave[y][x+1])
   {
-    case Xbug_n:
-    case Xbug_e:
-    case Xbug_s:
-    case Xbug_w:
-    case Xbug_gon:
-    case Xbug_goe:
-    case Xbug_gos:
-    case Xbug_gow:
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
       Cave[y][x+1] = Xboom_bug;
       break;
 
-    case Xtank_n:
-    case Xtank_e:
-    case Xtank_s:
-    case Xtank_w:
-    case Xtank_gon:
-    case Xtank_goe:
-    case Xtank_gos:
-    case Xtank_gow:
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
       Cave[y][x+1] = Xboom_bomb;
       break;
   }
 
   switch(Cave[y+1][x])
   {
-    case Xbug_n:
-    case Xbug_e:
-    case Xbug_s:
-    case Xbug_w:
-    case Xbug_gon:
-    case Xbug_goe:
-    case Xbug_gos:
-    case Xbug_gow:
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
       Cave[y+1][x] = Xboom_bug;
       break;
 
-    case Xtank_n:
-    case Xtank_e:
-    case Xtank_s:
-    case Xtank_w:
-    case Xtank_gon:
-    case Xtank_goe:
-    case Xtank_gos:
-    case Xtank_gow:
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
       Cave[y+1][x] = Xboom_bomb;
       break;
   }
 
   switch(Cave[y][x-1])
   {
-    case Xbug_n:
-    case Xbug_e:
-    case Xbug_s:
-    case Xbug_w:
-    case Xbug_gon:
-    case Xbug_goe:
-    case Xbug_gos:
-    case Xbug_gow:
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
       Cave[y][x-1] = Xboom_bug;
       break;
 
-    case Xtank_n:
-    case Xtank_e:
-    case Xtank_s:
-    case Xtank_w:
-    case Xtank_gon:
-    case Xtank_goe:
-    case Xtank_gos:
-    case Xtank_gow:
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
       Cave[y][x-1] = Xboom_bomb;
       break;
   }
@@ -303,11 +303,11 @@ static void kill_player(struct PLAYER *ply)
     case Xexit_3:
       lev.exit_x = x;
       lev.exit_y = y;
-      play_element_sound(x, y, SAMPLE_exit_leave, Xexit_1);
+      play_element_sound(x, y, SOUND_exit_leave, Xexit_1);
       break;
 
     default:
-      play_element_sound(x, y, SAMPLE_die, Zplayer);
+      play_element_sound(x, y, SOUND_die, Zplayer);
       break;
   }
 
@@ -411,7 +411,7 @@ static void check_player(struct PLAYER *ply)
       if (++ply->dynamite_cnt == 5 && ply->dynamite)
       {
 	Cave[y][x] = Xdynamite_1;
-	play_element_sound(x, y, SAMPLE_dynamite, Xdynamite_1);
+	play_element_sound(x, y, SOUND_dynamite, Xdynamite_1);
 	ply->dynamite--;
       }
     }
@@ -486,8 +486,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
     {
       /* fire is released */
       case Xblank:
-      case Yacid_splash_eB:
-      case Yacid_splash_wB:
+      case Xacid_splash_e:
+      case Xacid_splash_w:
 	Cave[y][x] = Zplayer;
 	Next[y][x] = Zplayer;
 #if 1
@@ -500,8 +500,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xfake_acid_7:
       case Xfake_acid_8:
 #endif
-	play_element_sound(x, y, SAMPLE_blank, Xblank);
-	ply->anim = SPR_walk + anim;
+	play_element_sound(x, y, SOUND_blank, Xblank);
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
@@ -516,30 +516,30 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xacid_7:
       case Xacid_8:
 	if (Cave[y-1][x+1] == Xblank)
-	  Cave[y-1][x+1] = Yacid_splash_eB;
+	  Cave[y-1][x+1] = Xacid_splash_e;
 	if (Cave[y-1][x-1] == Xblank)
-	  Cave[y-1][x-1] = Yacid_splash_wB;
-	play_element_sound(x, y, SAMPLE_acid, Xacid_1);
+	  Cave[y-1][x-1] = Xacid_splash_w;
+	play_element_sound(x, y, SOUND_acid, Xacid_1);
 #endif
 
       case Xboom_android:
       case Xboom_1:
-      case Xbug_n:
-      case Xbug_e:
-      case Xbug_s:
-      case Xbug_w:
-      case Xbug_gon:
-      case Xbug_goe:
-      case Xbug_gos:
-      case Xbug_gow:
-      case Xtank_n:
-      case Xtank_e:
-      case Xtank_s:
-      case Xtank_w:
-      case Xtank_gon:
-      case Xtank_goe:
-      case Xtank_gos:
-      case Xtank_gow:
+      case Xbug_1_n:
+      case Xbug_1_e:
+      case Xbug_1_s:
+      case Xbug_1_w:
+      case Xbug_2_n:
+      case Xbug_2_e:
+      case Xbug_2_s:
+      case Xbug_2_w:
+      case Xtank_1_n:
+      case Xtank_1_e:
+      case Xtank_1_s:
+      case Xtank_1_w:
+      case Xtank_2_n:
+      case Xtank_2_e:
+      case Xtank_2_s:
+      case Xtank_2_w:
 
 #if !USE_CHANGED_ACID_STUFF
       case Xacid_1:
@@ -551,7 +551,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xacid_7:
       case Xacid_8:
 #endif
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
@@ -560,8 +560,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	Cave[y][x] = (dy ? (dy < 0 ? Ygrass_nB : Ygrass_sB) :
 		      (dx > 0 ? Ygrass_eB : Ygrass_wB));
 	Next[y][x] = Zplayer;
-	play_element_sound(x, y, SAMPLE_dirt, Xgrass);
-	ply->anim = SPR_walk + anim;
+	play_element_sound(x, y, SOUND_dirt, Xgrass);
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
@@ -570,117 +570,117 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	Cave[y][x] = (dy ? (dy < 0 ? Ydirt_nB : Ydirt_sB) :
 		      (dx > 0 ? Ydirt_eB : Ydirt_wB));
 	Next[y][x] = Zplayer;
-	play_element_sound(x, y, SAMPLE_dirt, Xdirt);
-	ply->anim = SPR_walk + anim;
+	play_element_sound(x, y, SOUND_dirt, Xdirt);
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
 
       case Xdiamond:
       case Xdiamond_pause:
-	Cave[y][x] = Ydiamond_eat;
+	Cave[y][x] = Ydiamond_blank;
 	Next[y][x] = Zplayer;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.diamond_score;
 	lev.required = lev.required < 3 ? 0 : lev.required - 3;
 	game.snapshot.collected_item = TRUE;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
 
       case Xemerald:
       case Xemerald_pause:
-	Cave[y][x] = Yemerald_eat;
+	Cave[y][x] = Yemerald_blank;
 	Next[y][x] = Zplayer;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.emerald_score;
 	lev.required = lev.required < 1 ? 0 : lev.required - 1;
 	game.snapshot.collected_item = TRUE;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
 
       case Xdynamite:
-	Cave[y][x] = Ydynamite_eat;
+	Cave[y][x] = Ydynamite_blank;
 	Next[y][x] = Zplayer;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.dynamite_score;
 	ply->dynamite = ply->dynamite > 9998 ? 9999 : ply->dynamite + 1;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
 
       case Xkey_1:
 	ply->keys |= 0x01;
-	Cave[y][x] = Ykey_1_eat;
+	Cave[y][x] = Ykey_1_blank;
 	goto key_walk;
 
       case Xkey_2:
 	ply->keys |= 0x02;
-	Cave[y][x] = Ykey_2_eat;
+	Cave[y][x] = Ykey_2_blank;
 	goto key_walk;
 
       case Xkey_3:
 	ply->keys |= 0x04;
-	Cave[y][x] = Ykey_3_eat;
+	Cave[y][x] = Ykey_3_blank;
 	goto key_walk;
 
       case Xkey_4:
 	ply->keys |= 0x08;
-	Cave[y][x] = Ykey_4_eat;
+	Cave[y][x] = Ykey_4_blank;
 	goto key_walk;
 
       case Xkey_5:
 	ply->keys |= 0x10;
-	Cave[y][x] = Ykey_5_eat;
+	Cave[y][x] = Ykey_5_blank;
 	goto key_walk;
 
       case Xkey_6:
 	ply->keys |= 0x20;
-	Cave[y][x] = Ykey_6_eat;
+	Cave[y][x] = Ykey_6_blank;
 	goto key_walk;
 
       case Xkey_7:
 	ply->keys |= 0x40;
-	Cave[y][x] = Ykey_7_eat;
+	Cave[y][x] = Ykey_7_blank;
 	goto key_walk;
 
       case Xkey_8:
 	ply->keys |= 0x80;
-	Cave[y][x] = Ykey_8_eat;
+	Cave[y][x] = Ykey_8_blank;
 	goto key_walk;
 
       key_walk:
 
 	Next[y][x] = Zplayer;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.key_score;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
 
       case Xlenses:
-	Cave[y][x] = Ylenses_eat;
+	Cave[y][x] = Ylenses_blank;
 	Next[y][x] = Zplayer;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.lenses_score;
 	lev.lenses_cnt = lev.lenses_time;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
 
       case Xmagnify:
-	Cave[y][x] = Ymagnify_eat;
+	Cave[y][x] = Ymagnify_blank;
 	Next[y][x] = Zplayer;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.magnify_score;
 	lev.magnify_cnt = lev.magnify_time;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
@@ -700,15 +700,15 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_7:
           case Xacid_8:
 	    if (Cave[y-1][x+dx+1] == Xblank)
-	      Cave[y-1][x+dx+1] = Yacid_splash_eB;
+	      Cave[y-1][x+dx+1] = Xacid_splash_e;
 	    if (Cave[y-1][x+dx-1] == Xblank)
-	      Cave[y-1][x+dx-1] = Yacid_splash_wB;
-	    play_element_sound(x, y, SAMPLE_acid, Xacid_1);
+	      Cave[y-1][x+dx-1] = Xacid_splash_w;
+	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 	    goto stone_walk;
 
           case Xblank:
-          case Yacid_splash_eB:
-          case Yacid_splash_wB:
+          case Xacid_splash_e:
+          case Xacid_splash_w:
 	    Cave[y][x+dx] = dx > 0 ? Ystone_e : Ystone_w;
 	    Next[y][x+dx] = Xstone_pause;
 
@@ -716,11 +716,11 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
 	    Cave[y][x] = dx > 0 ? Ystone_eB : Ystone_wB;
 	    Next[y][x] = Zplayer;
-	    play_element_sound(x, y, SAMPLE_roll, Xstone);
+	    play_element_sound(x, y, SOUND_roll, Xstone);
 	    ply->x = x;
 	}
 
-	ply->anim = SPR_push + anim;
+	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xbomb:
@@ -738,15 +738,15 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_7:
           case Xacid_8:
 	    if (Cave[y-1][x+dx+1] == Xblank)
-	      Cave[y-1][x+dx+1] = Yacid_splash_eB;
+	      Cave[y-1][x+dx+1] = Xacid_splash_e;
 	    if (Cave[y-1][x+dx-1] == Xblank)
-	      Cave[y-1][x+dx-1] = Yacid_splash_wB;
-	    play_element_sound(x, y, SAMPLE_acid, Xacid_1);
+	      Cave[y-1][x+dx-1] = Xacid_splash_w;
+	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 	    goto bomb_walk;
 
 	  case Xblank:
-          case Yacid_splash_eB:
-          case Yacid_splash_wB:
+          case Xacid_splash_e:
+          case Xacid_splash_w:
 	    Cave[y][x+dx] = dx > 0 ? Ybomb_e : Ybomb_w;
 	    Next[y][x+dx] = Xbomb_pause;
 
@@ -754,11 +754,11 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
 	    Cave[y][x] = dx > 0 ? Ybomb_eB : Ybomb_wB;
 	    Next[y][x] = Zplayer;
-	    play_element_sound(x, y, SAMPLE_roll, Xbomb);
+	    play_element_sound(x, y, SOUND_roll, Xbomb);
 	    ply->x = x;
 	}
 
-	ply->anim = SPR_push + anim;
+	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xnut:
@@ -776,15 +776,15 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_7:
           case Xacid_8:
 	    if (Cave[y-1][x+dx+1] == Xblank)
-	      Cave[y-1][x+dx+1] = Yacid_splash_eB;
+	      Cave[y-1][x+dx+1] = Xacid_splash_e;
 	    if (Cave[y-1][x+dx-1] == Xblank)
-	      Cave[y-1][x+dx-1] = Yacid_splash_wB;
-	    play_element_sound(x, y, SAMPLE_acid, Xacid_1);
+	      Cave[y-1][x+dx-1] = Xacid_splash_w;
+	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 	    goto nut_walk;
 
           case Xblank:
-          case Yacid_splash_eB:
-          case Yacid_splash_wB:
+          case Xacid_splash_e:
+          case Xacid_splash_w:
 	    Cave[y][x+dx] = dx > 0 ? Ynut_e : Ynut_w;
 	    Next[y][x+dx] = Xnut_pause;
 
@@ -792,11 +792,11 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
 	    Cave[y][x] = dx > 0 ? Ynut_eB : Ynut_wB;
 	    Next[y][x] = Zplayer;
-	    play_element_sound(x, y, SAMPLE_roll, Xnut);
+	    play_element_sound(x, y, SOUND_roll, Xnut);
 	    ply->x = x;
 	}
 
-	ply->anim = SPR_push + anim;
+	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xspring:
@@ -807,11 +807,11 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	{
           case Xalien:
           case Xalien_pause:
-	    Cave[y][x] = dx > 0 ? Yspring_kill_eB : Yspring_kill_wB;
-	    Cave[y][x+dx] = dx > 0 ? Yspring_kill_e : Yspring_kill_w;
+	    Cave[y][x] = dx > 0 ? Yspring_alien_eB : Yspring_alien_wB;
+	    Cave[y][x+dx] = dx > 0 ? Yspring_alien_e : Yspring_alien_w;
 	    Next[y][x] = Zplayer;
 	    Next[y][x+dx] = dx > 0 ? Xspring_e : Xspring_w;
-	    play_element_sound(x, y, SAMPLE_slurp, Xalien);
+	    play_element_sound(x, y, SOUND_slurp, Xalien);
 	    lev.score += lev.slurp_score;
 	    ply->x = x;
 	    break;
@@ -825,26 +825,26 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_7:
           case Xacid_8:
 	    if (Cave[y-1][x+dx+1] == Xblank)
-	      Cave[y-1][x+dx+1] = Yacid_splash_eB;
+	      Cave[y-1][x+dx+1] = Xacid_splash_e;
 	    if (Cave[y-1][x+dx-1] == Xblank)
-	      Cave[y-1][x+dx-1] = Yacid_splash_wB;
-	    play_element_sound(x, y, SAMPLE_acid, Xacid_1);
+	      Cave[y-1][x+dx-1] = Xacid_splash_w;
+	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 	    goto spring_walk;
 
           case Xblank:
-          case Yacid_splash_eB:
-          case Yacid_splash_wB:
+          case Xacid_splash_e:
+          case Xacid_splash_w:
 	    Cave[y][x+dx] = dx > 0 ? Yspring_e : Yspring_w;
 	    Next[y][x+dx] = dx > 0 ? Xspring_e : Xspring_w;
 
 	  spring_walk:
 	    Cave[y][x] = dx > 0 ? Yspring_eB : Yspring_wB;
 	    Next[y][x] = Zplayer;
-	    play_element_sound(x, y, SAMPLE_roll, Xspring);
+	    play_element_sound(x, y, SOUND_roll, Xspring);
 	    ply->x = x;
 	}
 
-	ply->anim = SPR_push + anim;
+	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xspring_pause:
@@ -858,7 +858,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	ply->anim = SPR_push + anim;
+	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xballoon:
@@ -873,15 +873,15 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_7:
           case Xacid_8:
 	    if (Cave[y+dy-1][x+dx+1] == Xblank)
-	      Cave[y+dy-1][x+dx+1] = Yacid_splash_eB;
+	      Cave[y+dy-1][x+dx+1] = Xacid_splash_e;
 	    if (Cave[y+dy-1][x+dx-1] == Xblank)
-	      Cave[y+dy-1][x+dx-1] = Yacid_splash_wB;
-	    play_element_sound(x, y, SAMPLE_acid, Xacid_1);
+	      Cave[y+dy-1][x+dx-1] = Xacid_splash_w;
+	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 	    goto balloon_walk;
 
           case Xblank:
-          case Yacid_splash_eB:
-          case Yacid_splash_wB:
+          case Xacid_splash_e:
+          case Xacid_splash_w:
 	    Cave[y+dy][x+dx] = (dy ? (dy < 0 ? Yballoon_n : Yballoon_s) :
 				(dx > 0 ? Yballoon_e : Yballoon_w));
 	    Next[y+dy][x+dx] = Xballoon;
@@ -890,12 +890,12 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	    Cave[y][x] = (dy ? (dy < 0 ? Yballoon_nB : Yballoon_sB) :
 			  (dx > 0 ? Yballoon_eB : Yballoon_wB));
 	    Next[y][x] = Zplayer;
-	    play_element_sound(x, y, SAMPLE_push, Xballoon);
+	    play_element_sound(x, y, SOUND_push, Xballoon);
 	    ply->x = x;
 	    ply->y = y;
 	}
 
-	ply->anim = SPR_push + anim;
+	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xandroid:
@@ -918,15 +918,15 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_7:
           case Xacid_8:
 	    if (Cave[y+dy-1][x+dx+1] == Xblank)
-	      Cave[y+dy-1][x+dx+1] = Yacid_splash_eB;
+	      Cave[y+dy-1][x+dx+1] = Xacid_splash_e;
 	    if (Cave[y+dy-1][x+dx-1] == Xblank)
-	      Cave[y+dy-1][x+dx-1] = Yacid_splash_wB;
-	    play_element_sound(x, y, SAMPLE_acid, Xacid_1);
+	      Cave[y+dy-1][x+dx-1] = Xacid_splash_w;
+	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 	    goto android_walk;
 
           case Xblank:
-          case Yacid_splash_eB:
-          case Yacid_splash_wB:
+          case Xacid_splash_e:
+          case Xacid_splash_w:
 	    Cave[y+dy][x+dx] = (dy ? (dy < 0 ? Yandroid_n : Yandroid_s) :
 				(dx > 0 ? Yandroid_e : Yandroid_w));
 	    Next[y+dy][x+dx] = (dy ? (dy < 0 ? Xandroid_2_n : Xandroid_2_s) :
@@ -936,12 +936,12 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	    Cave[y][x] = (dy ? (dy < 0 ? Yandroid_nB : Yandroid_sB) :
 			  (dx > 0 ? Yandroid_eB : Yandroid_wB));
 	    Next[y][x] = Zplayer;
-	    play_element_sound(x, y, SAMPLE_push, Xandroid);
+	    play_element_sound(x, y, SOUND_push, Xandroid);
 	    ply->x = x;
 	    ply->y = y;
 	}
 
-	ply->anim = SPR_push + anim;
+	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xdoor_1:
@@ -1006,14 +1006,14 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
 	Cave[y+dy][x+dx] = Zplayer;
 	Next[y+dy][x+dx] = Zplayer;
-	play_element_sound(x, y, SAMPLE_door, element);
-	ply->anim = SPR_walk + anim;
+	play_element_sound(x, y, SOUND_door, element);
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x + dx;
 	ply->y = y + dy;
 	break;
 
       case Xwheel:
-	play_element_sound(x, y, SAMPLE_press, element);
+	play_element_sound(x, y, SOUND_press, element);
 	lev.wheel_cnt = lev.wheel_time;
 	lev.wheel_x = x;
 	lev.wheel_y = y;
@@ -1035,22 +1035,22 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	lev.wind_direction = 3;
 	goto wind_walk;
 
-      case Xwind_nesw:
+      case Xwind_any:
 	lev.wind_direction = dy ? (dy < 0 ? 0 : 2) : (dx > 0 ? 1 : 3);
 	goto wind_walk;
 
       wind_walk:
-	play_element_sound(x, y, SAMPLE_press, element);
+	play_element_sound(x, y, SOUND_press, element);
 	lev.wind_cnt = lev.wind_time;
 	break;
 
       case Xwind_stop:
-	play_element_sound(x, y, SAMPLE_press, element);
+	play_element_sound(x, y, SOUND_press, element);
 	lev.wind_cnt = 0;
 	break;
 
       case Xswitch:
-	play_element_sound(x, y, SAMPLE_press, element);
+	play_element_sound(x, y, SOUND_press, element);
 	lev.ball_cnt = lev.ball_time;
 	lev.ball_state = !lev.ball_state;
 	break;
@@ -1058,8 +1058,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xplant:
 	Cave[y][x] = Yplant;
 	Next[y][x] = Xplant;
-	play_element_sound(x, y, SAMPLE_blank, Xplant);
-	ply->anim = SPR_walk + anim;
+	play_element_sound(x, y, SOUND_blank, Xplant);
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 	break;
@@ -1072,7 +1072,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (lev.home == 0)
 	  game_em.level_solved = TRUE;
 
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
 
@@ -1091,113 +1091,113 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       /* fire is pressed */
 
       case Xgrass:
-	Cave[y][x] = Ygrass_eat;
+	Cave[y][x] = Ygrass_blank;
 	Next[y][x] = Xblank;
-	play_element_sound(x, y, SAMPLE_dirt, element);
-	ply->anim = SPR_spray + anim;
+	play_element_sound(x, y, SOUND_dirt, element);
+	ply->anim = PLY_shoot_n + anim;
 	break;
 
       case Xdirt:
-	Cave[y][x] = Ydirt_eat;
+	Cave[y][x] = Ydirt_blank;
 	Next[y][x] = Xblank;
-	play_element_sound(x, y, SAMPLE_dirt, element);
-	ply->anim = SPR_spray + anim;
+	play_element_sound(x, y, SOUND_dirt, element);
+	ply->anim = PLY_shoot_n + anim;
 	break;
 
       case Xdiamond:
       case Xdiamond_pause:
-	Cave[y][x] = Ydiamond_eat;
+	Cave[y][x] = Ydiamond_blank;
 	Next[y][x] = Xblank;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.diamond_score;
 	lev.required = lev.required < 3 ? 0 : lev.required - 3;
 	game.snapshot.collected_item = TRUE;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	break;
 
       case Xemerald:
       case Xemerald_pause:
-	Cave[y][x] = Yemerald_eat;
+	Cave[y][x] = Yemerald_blank;
 	Next[y][x] = Xblank;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.emerald_score;
 	lev.required = lev.required < 1 ? 0 : lev.required - 1;
 	game.snapshot.collected_item = TRUE;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	break;
 
       case Xdynamite:
-	Cave[y][x] = Ydynamite_eat;
+	Cave[y][x] = Ydynamite_blank;
 	Next[y][x] = Xblank;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.dynamite_score;
 	ply->dynamite = ply->dynamite > 9998 ? 9999 : ply->dynamite + 1;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	break;
 
       case Xkey_1:
 	ply->keys |= 0x01;
-	Cave[y][x] = Ykey_1_eat;
+	Cave[y][x] = Ykey_1_blank;
 	goto key_shoot;
 
       case Xkey_2:
 	ply->keys |= 0x02;
-	Cave[y][x] = Ykey_2_eat;
+	Cave[y][x] = Ykey_2_blank;
 	goto key_shoot;
 
       case Xkey_3:
 	ply->keys |= 0x04;
-	Cave[y][x] = Ykey_3_eat;
+	Cave[y][x] = Ykey_3_blank;
 	goto key_shoot;
 
       case Xkey_4:
 	ply->keys |= 0x08;
-	Cave[y][x] = Ykey_4_eat;
+	Cave[y][x] = Ykey_4_blank;
 	goto key_shoot;
 
       case Xkey_5:
 	ply->keys |= 0x10;
-	Cave[y][x] = Ykey_5_eat;
+	Cave[y][x] = Ykey_5_blank;
 	goto key_shoot;
 
       case Xkey_6:
 	ply->keys |= 0x20;
-	Cave[y][x] = Ykey_6_eat;
+	Cave[y][x] = Ykey_6_blank;
 	goto key_shoot;
 
       case Xkey_7:
 	ply->keys |= 0x40;
-	Cave[y][x] = Ykey_7_eat;
+	Cave[y][x] = Ykey_7_blank;
 	goto key_shoot;
 
       case Xkey_8:
 	ply->keys |= 0x80;
-	Cave[y][x] = Ykey_8_eat;
+	Cave[y][x] = Ykey_8_blank;
 	goto key_shoot;
 
       key_shoot:
 	Next[y][x] = Xblank;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.key_score;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	break;
 
       case Xlenses:
-	Cave[y][x] = Ylenses_eat;
+	Cave[y][x] = Ylenses_blank;
 	Next[y][x] = Xblank;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.lenses_score;
 	lev.lenses_cnt = lev.lenses_time;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	break;
 
       case Xmagnify:
-	Cave[y][x] = Ymagnify_eat;
+	Cave[y][x] = Ymagnify_blank;
 	Next[y][x] = Xblank;
-	play_element_sound(x, y, SAMPLE_collect, element);
+	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.magnify_score;
 	lev.magnify_cnt = lev.magnify_time;
-	ply->anim = SPR_walk + anim;
+	ply->anim = PLY_walk_n + anim;
 	break;
 
       default:

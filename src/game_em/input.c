@@ -32,13 +32,13 @@ void game_init_vars(void)
 
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[0][y][x] = ZBORDER;
+      Array[0][y][x] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[1][y][x] = ZBORDER;
+      Array[1][y][x] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[2][y][x] = ZBORDER;
+      Array[2][y][x] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
       Array[3][y][x] = Xblank;

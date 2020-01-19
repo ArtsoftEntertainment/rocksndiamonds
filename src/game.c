@@ -14708,71 +14708,71 @@ void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
 
   switch (sample)
   {
-    case SAMPLE_blank:
+    case SOUND_blank:
       PlayLevelSoundElementAction(x, y, element, ACTION_WALKING);
       break;
 
-    case SAMPLE_roll:
+    case SOUND_roll:
       PlayLevelSoundElementAction(x, y, element, ACTION_PUSHING);
       break;
 
-    case SAMPLE_stone:
+    case SOUND_stone:
       PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
       break;
 
-    case SAMPLE_nut:
+    case SOUND_nut:
       PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
       break;
 
-    case SAMPLE_crack:
+    case SOUND_crack:
       PlayLevelSoundElementAction(x, y, element, ACTION_BREAKING);
       break;
 
-    case SAMPLE_bug:
+    case SOUND_bug:
       PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
       break;
 
-    case SAMPLE_tank:
+    case SOUND_tank:
       PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
       break;
 
-    case SAMPLE_android_clone:
+    case SOUND_android_clone:
       PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
       break;
 
-    case SAMPLE_android_move:
+    case SOUND_android_move:
       PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
       break;
 
-    case SAMPLE_spring:
+    case SOUND_spring:
       PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
       break;
 
-    case SAMPLE_slurp:
+    case SOUND_slurp:
       PlayLevelSoundElementAction(x, y, element, ACTION_EATING);
       break;
 
-    case SAMPLE_eater:
+    case SOUND_eater:
       PlayLevelSoundElementAction(x, y, element, ACTION_WAITING);
       break;
 
-    case SAMPLE_eater_eat:
+    case SOUND_eater_eat:
       PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
       break;
 
-    case SAMPLE_alien:
+    case SOUND_alien:
       PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
       break;
 
-    case SAMPLE_collect:
+    case SOUND_collect:
       PlayLevelSoundElementAction(x, y, element, ACTION_COLLECTING);
       break;
 
-    case SAMPLE_diamond:
+    case SOUND_diamond:
       PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
       break;
 
-    case SAMPLE_squash:
+    case SOUND_squash:
       // !!! CHECK THIS !!!
 #if 1
       PlayLevelSoundElementAction(x, y, element, ACTION_BREAKING);
@@ -14781,75 +14781,75 @@ void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
 #endif
       break;
 
-    case SAMPLE_wonderfall:
+    case SOUND_wonderfall:
       PlayLevelSoundElementAction(x, y, element, ACTION_FILLING);
       break;
 
-    case SAMPLE_drip:
+    case SOUND_drip:
       PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
       break;
 
-    case SAMPLE_push:
+    case SOUND_push:
       PlayLevelSoundElementAction(x, y, element, ACTION_PUSHING);
       break;
 
-    case SAMPLE_dirt:
+    case SOUND_dirt:
       PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
       break;
 
-    case SAMPLE_acid:
+    case SOUND_acid:
       PlayLevelSoundElementAction(x, y, element, ACTION_SPLASHING);
       break;
 
-    case SAMPLE_ball:
+    case SOUND_ball:
       PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
       break;
 
-    case SAMPLE_grow:
+    case SOUND_slidewall:
       PlayLevelSoundElementAction(x, y, element, ACTION_GROWING);
       break;
 
-    case SAMPLE_wonder:
+    case SOUND_wonder:
       PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
       break;
 
-    case SAMPLE_door:
+    case SOUND_door:
       PlayLevelSoundElementAction(x, y, element, ACTION_PASSING);
       break;
 
-    case SAMPLE_exit_open:
+    case SOUND_exit_open:
       PlayLevelSoundElementAction(x, y, element, ACTION_OPENING);
       break;
 
-    case SAMPLE_exit_leave:
+    case SOUND_exit_leave:
       PlayLevelSoundElementAction(x, y, element, ACTION_PASSING);
       break;
 
-    case SAMPLE_dynamite:
+    case SOUND_dynamite:
       PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
       break;
 
-    case SAMPLE_tick:
+    case SOUND_tick:
       PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
       break;
 
-    case SAMPLE_press:
+    case SOUND_press:
       PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVATING);
       break;
 
-    case SAMPLE_wheel:
+    case SOUND_wheel:
       PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
       break;
 
-    case SAMPLE_boom:
+    case SOUND_boom:
       PlayLevelSoundElementAction(x, y, element, ACTION_EXPLODING);
       break;
 
-    case SAMPLE_die:
+    case SOUND_die:
       PlayLevelSoundElementAction(x, y, element, ACTION_DYING);
       break;
 
-    case SAMPLE_time:
+    case SOUND_time:
       PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
       break;
 

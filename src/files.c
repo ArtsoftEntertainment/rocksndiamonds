@@ -3576,7 +3576,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   // first fill the complete playfield with the default border element
   for (y = 0; y < EM_MAX_CAVE_HEIGHT; y++)
     for (x = 0; x < EM_MAX_CAVE_WIDTH; x++)
-      level_em->cave[x][y] = ZBORDER;
+      level_em->cave[x][y] = Zborder;
 
   if (BorderElement == EL_STEELWALL)
   {
