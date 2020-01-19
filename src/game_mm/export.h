@@ -59,10 +59,6 @@
 // data structure definitions
 // ----------------------------------------------------------------------------
 
-struct GlobalInfo_MM
-{
-};
-
 struct CycleList
 {
   int x, y;
@@ -178,10 +174,6 @@ struct LevelInfo_MM
   short field[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
 };
 
-struct GraphicInfo_MM
-{
-};
-
 struct EngineSnapshotInfo_MM
 {
   struct GameInfo_MM game_mm;
@@ -212,7 +204,6 @@ struct EngineSnapshotInfo_MM
 // exported functions
 // ----------------------------------------------------------------------------
 
-extern struct GlobalInfo_MM global_mm_info;
 extern struct GameInfo_MM game_mm;
 extern struct LevelInfo_MM native_mm_level;
 extern struct EngineSnapshotInfo_MM engine_snapshot_mm;
