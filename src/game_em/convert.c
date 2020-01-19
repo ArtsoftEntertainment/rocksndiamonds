@@ -11,8 +11,6 @@
 #include "main_em.h"
 
 
-#define ALLOW_ROLLING_SPRING
-
 static unsigned char remap_v6[256] =
 {
   /* filter crap for v6 */
@@ -22,11 +20,7 @@ static unsigned char remap_v6[256] =
   0,16,2,18,       36,37,37,37,     40,41,42,43,     44,45,128,128,
   128,148,148,     148,45,45,45,    148,0,57,58,     59,60,61,62,63,
 
-#ifdef ALLOW_ROLLING_SPRING
   64,65,66,67,     68,69,69,71,     72,73,74,75,     118,75,75,75,
-#else
-  64,65,66,67,     68,69,69,69,     69,73,74,75,     118,75,75,75,
-#endif
   75,75,75,75,     75,153,153,153,  153,153,153,153, 153,153,153,153,
   153,153,153,99,  100,68,68,68,    68,68,68,68,     68,118,118,118,
   118,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,
@@ -517,6 +511,10 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
  * - introduced ALLOW_ROLLING_SPRING; if defined, do NOT turn rolling spring
  *   into regular spring, because this breaks at least E.M.C. Mine 3, level 79
  *   (see comment directly above)
+ *
+ * 2020-01-19
+ * - always use BAD_ROLL and ALLOW_ROLLING_SPRING code when converting caves
+ *   (that is, always allow initial rolling objects in caves now)
  */
 
 static unsigned short remap_emerald[256] =
@@ -541,24 +539,15 @@ static unsigned short remap_emerald[256] =
   Xstone,		Xslidewall_ew,	Xslidewall_ns,	Xdynamite_1,
   Xdynamite_2,		Xdynamite_3,	Xdynamite_4,	Xacid_s,
 
-#ifdef ALLOW_ROLLING_SPRING
   Xexit_1,		Xexit_2,	Xexit_3,	Xballoon,
   Xplant,		Xspring,	Xspring_fall,	Xspring_w,
   Xspring_e,		Xball_1,	Xball_2,	Xandroid,
   Xblank,		Xandroid,	Xandroid,	Xandroid,
-#else
-  Xexit_1,		Xexit_2,	Xexit_3,	Xballoon,
-  Xplant,		Xspring,	Xspring,	Xspring,
-  Xspring,		Xball_1,	Xball_2,	Xandroid,
-  Xblank,		Xandroid,	Xandroid,	Xandroid,
-#endif
 
   Xandroid,		Xandroid,	Xandroid,	Xandroid,
   Xandroid,		Xblank,		Xblank,		Xblank,
   Xblank,		Xblank,		Xblank,		Xblank,
   Xblank,		Xblank,		Xblank,		Xblank,
-
-#ifdef BAD_ROLL
 
   Xblank,		Xblank,		Xblank,		Xpush_spring_w,
   Xpush_spring_e,	Xacid_1,	Xacid_2,	Xacid_3,
@@ -569,20 +558,6 @@ static unsigned short remap_emerald[256] =
   Xsteel_1,		Xblank,		Xblank,		Xpush_bomb_w,
   Xpush_bomb_e,		Xpush_stone_w,	Xpush_stone_e,	Xblank,
   Xblank,		Xblank,		Xblank,		Xblank,
-
-#else
-
-  Xblank,		Xblank,		Xblank,		Xspring,
-  Xspring,		Xacid_1,	Xacid_2,	Xacid_3,
-  Xacid_4,		Xacid_5,	Xacid_6,	Xacid_7,
-  Xacid_8,		Xblank,		Xblank,		Xblank,
-
-  Xblank,		Xblank,		Xnut,		Xnut,
-  Xsteel_1,		Xblank,		Xblank,		Xbomb,
-  Xbomb,		Xstone,		Xstone,		Xblank,
-  Xblank,		Xblank,		Xblank,		Xblank,
-
-#endif
 
   Xblank,		Xroundwall_1,	Xgrass,		Xsteel_1,
   Xwall_1,		Xkey_1,		Xkey_2,		Xkey_3,
@@ -924,48 +899,6 @@ void convert_em_level(unsigned char *src, int file_version)
 	lev.wheel_y_initial = temp >> 6;
 	lev.wheel_cnt_initial = lev.wheel_time;
 	break;
-
-#ifndef BAD_ROLL
-      case 0x63:				/* spring roll left */
-	src[temp - 1] = 0x45;
-	src[temp] = 0x80;
-	break;
-
-      case 0x64:				/* spring roll right */
-	src[temp + 1] = 0x45;
-	src[temp] = 0x80;
-	break;
-
-      case 0x72:				/* nut roll left */
-	src[temp - 1] = 0x25;
-	src[temp] = 0x80;
-	break;
-
-      case 0x73:				/* nut roll right */
-	src[temp + 1] = 0x25;
-	src[temp] = 0x80;
-	break;
-
-      case 0x77:				/* bomb roll left */
-	src[temp - 1] = 0x10;
-	src[temp] = 0x80;
-	break;
-
-      case 0x78:				/* bomb roll right */
-	src[temp + 1] = 0x10;
-	src[temp] = 0x80;
-	break;
-
-      case 0x79:				/* stone roll left */
-	src[temp - 1] = 0x00;
-	src[temp] = 0x80;
-	break;
-
-      case 0x7A:				/* stone roll right */
-	src[temp + 1] = 0x00;
-	src[temp] = 0x80;
-	break;
-#endif
 
       case 0xA3:				/* fake blank */
 	lev.lenses_cnt_initial = 9999;

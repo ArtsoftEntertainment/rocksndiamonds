@@ -243,8 +243,6 @@ int obj_map[] =
   Xstone_fall, 5,
   Xstone_fall, 6,
   Xstone_fall, 7,
-
-#ifdef BAD_ROLL
   Xpush_stone_e, 0,
   Xpush_stone_e, 1,
   Xpush_stone_e, 2,
@@ -261,8 +259,6 @@ int obj_map[] =
   Xpush_stone_w, 5,
   Xpush_stone_w, 6,
   Xpush_stone_w, 7,
-#endif
-
   Ystone_s, 7,
   Xsand_stoneout_2, 7,
   Xsand_stonein_1, 0,
@@ -363,8 +359,6 @@ int obj_map[] =
   Xnut_fall, 5,
   Xnut_fall, 6,
   Xnut_fall, 7,
-
-#ifdef BAD_ROLL
   Xpush_nut_e, 0,
   Xpush_nut_e, 1,
   Xpush_nut_e, 2,
@@ -381,8 +375,6 @@ int obj_map[] =
   Xpush_nut_w, 5,
   Xpush_nut_w, 6,
   Xpush_nut_w, 7,
-#endif
-
   -1,
   -1,
   Ynut_s, 6,
@@ -1457,8 +1449,6 @@ int obj_map[] =
   Xspring_fall, 5,
   Xspring_fall, 6,
   Xspring_fall, 7,
-
-#ifdef BAD_ROLL
   Xpush_spring_e, 0,
   Xpush_spring_e, 1,
   Xpush_spring_e, 2,
@@ -1475,8 +1465,6 @@ int obj_map[] =
   Xpush_spring_w, 5,
   Xpush_spring_w, 6,
   Xpush_spring_w, 7,
-#endif
-
   -1,
   Yspring_sB, 6,
   -1,
@@ -1919,8 +1907,6 @@ int obj_map[] =
   Xemerald_fall, 5,
   Xemerald_fall, 6,
   Xemerald_fall, 7,
-
-#ifdef BAD_ROLL
   Xpush_emerald_e, 0,
   Xpush_emerald_e, 1,
   Xpush_emerald_e, 2,
@@ -1937,8 +1923,6 @@ int obj_map[] =
   Xpush_emerald_w, 5,
   Xpush_emerald_w, 6,
   Xpush_emerald_w, 7,
-#endif
-
   Xemerald_shine, 0,
   Xemerald_shine, 7,
   Ynut_stone, 7,
@@ -2078,8 +2062,6 @@ int obj_map[] =
   Xdiamond_fall, 5,
   Xdiamond_fall, 6,
   Xdiamond_fall, 7,
-
-#ifdef BAD_ROLL
   Xpush_diamond_e, 0,
   Xpush_diamond_e, 1,
   Xpush_diamond_e, 2,
@@ -2096,8 +2078,6 @@ int obj_map[] =
   Xpush_diamond_w, 5,
   Xpush_diamond_w, 6,
   Xpush_diamond_w, 7,
-#endif
-
   Xdiamond_shine, 0,
   Xdiamond_shine, 7,
   Ydiamond_s, 7,
@@ -2338,8 +2318,6 @@ int obj_map[] =
   Xbomb_fall, 5,
   Xbomb_fall, 6,
   Xbomb_fall, 7,
-
-#ifdef BAD_ROLL
   Xpush_bomb_e, 0,
   Xpush_bomb_e, 1,
   Xpush_bomb_e, 2,
@@ -2356,8 +2334,6 @@ int obj_map[] =
   Xpush_bomb_w, 5,
   Xpush_bomb_w, 6,
   Xpush_bomb_w, 7,
-#endif
-
   Ybomb_s, 7,
   Ybomb_e, 7,
   Ybomb_w, 7,

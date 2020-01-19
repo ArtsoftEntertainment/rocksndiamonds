@@ -5752,8 +5752,6 @@ em_object_mapping_list[] =
     Xacid_splash_w,			FALSE,	FALSE,
     EL_ACID_SPLASH_LEFT,		-1, -1
   },
-
-#ifdef EM_ENGINE_BAD_ROLL
   {
     Xpush_stone_e,			FALSE,	FALSE,
     EL_ROCK,				-1, MV_BIT_RIGHT
@@ -5802,8 +5800,6 @@ em_object_mapping_list[] =
     Xpush_bomb_w,			FALSE,	FALSE,
     EL_BOMB,				-1, MV_BIT_LEFT
   },
-#endif	// EM_ENGINE_BAD_ROLL
-
   {
     Xstone,				TRUE,	FALSE,
     EL_ROCK,				-1, -1

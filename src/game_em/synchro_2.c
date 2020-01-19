@@ -11,6 +11,8 @@
 #include "main_em.h"
 
 
+#define SPRING_ROLL	/* spring rolling off round things continues to roll */
+
 #define RANDOM (random = random << 31 | random >> 1)
 
 static void set_nearest_player_xy(int x, int y, int *dx, int *dy)
@@ -63,7 +65,6 @@ void synchro_2(void)
 
     /* --------------------------------------------------------------------- */
 
-#ifdef BAD_ROLL
     case Xpush_stone_e:
       switch (Cave[y][x+1])
       {
@@ -175,12 +176,7 @@ void synchro_2(void)
 	  Cave[y][x] = Yspring_eB;
 	  Cave[y][x+1] = Yspring_e;
 	  Next[y][x] = Xblank;
-
-#ifdef BAD_SPRING
 	  Next[y][x+1] = Xspring_e;
-#else
-	  Next[y][x+1] = Xspring_pause;
-#endif
 
 	  goto loop;
       }
@@ -204,12 +200,7 @@ void synchro_2(void)
 	  Cave[y][x] = Yspring_wB;
 	  Cave[y][x-1] = Yspring_w;
 	  Next[y][x] = Xblank;
-
-#ifdef BAD_SPRING
 	  Next[y][x-1] = Xspring_w;
-#else	
-	  Next[y][x-1] = Xspring_pause;
-#endif	
 	  goto loop;
 	}
 
@@ -350,7 +341,6 @@ void synchro_2(void)
 	  Next[y][x-1] = Xbomb_pause;
 	  goto loop;
 	}
-#endif	/* BAD_ROLL */
 
     /* --------------------------------------------------------------------- */
 
@@ -2461,7 +2451,7 @@ void synchro_2(void)
 		Cave[y+1][x] = XbumperB;
 	      Next[y][x] = Xblank;
 
-#ifdef BAD_SPRING
+#ifdef SPRING_ROLL
 	      Next[y][x+1] = Xspring_e;
 #else	
 	      Next[y][x+1] = Xspring_pause;
@@ -2478,7 +2468,7 @@ void synchro_2(void)
 		Cave[y+1][x] = XbumperB;
 	      Next[y][x] = Xblank;
 
-#ifdef BAD_SPRING
+#ifdef SPRING_ROLL
 	      Next[y][x-1] = Xspring_w;
 #else
 	      Next[y][x-1] = Xspring_pause;
@@ -2497,7 +2487,7 @@ void synchro_2(void)
 		Cave[y+1][x] = XbumperB;
 	      Next[y][x] = Xblank;
 
-#ifdef BAD_SPRING
+#ifdef SPRING_ROLL
 	      Next[y][x-1] = Xspring_w;
 #else
 	      Next[y][x-1] = Xspring_pause;
@@ -2514,7 +2504,7 @@ void synchro_2(void)
 		Cave[y+1][x] = XbumperB;
 	      Next[y][x] = Xblank;
 
-#ifdef BAD_SPRING
+#ifdef SPRING_ROLL
 	      Next[y][x+1] = Xspring_e;
 #else
 	      Next[y][x+1] = Xspring_pause;

@@ -48,21 +48,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // constant definitions
 // ----------------------------------------------------------------------------
 
-/* define these for backwards compatibility */
-#define EM_ENGINE_BAD_ROLL
-#define EM_ENGINE_BAD_SPRING
-
 /* define these to use additional elements */
 #define EM_ENGINE_USE_ADDITIONAL_ELEMENTS
-
-/* internal definitions for EM engine */
-#ifdef EM_ENGINE_BAD_ROLL
-#define BAD_ROLL
-#endif
-
-#ifdef EM_ENGINE_BAD_SPRING
-#define BAD_SPRING
-#endif
 
 /* one border for Zborder elements, one border for steelwall, if needed */
 #define EM_MAX_CAVE_WIDTH		(MAX_PLAYFIELD_WIDTH  + 2 + 2)
@@ -85,7 +72,6 @@ enum
   Xacid_splash_e,
   Xacid_splash_w,
 
-#ifdef EM_ENGINE_BAD_ROLL
   Xpush_stone_e,
   Xpush_stone_w,
   Xpush_nut_e,
@@ -98,7 +84,6 @@ enum
   Xpush_diamond_w,
   Xpush_bomb_e,
   Xpush_bomb_w,
-#endif
 
   Xstone,
   Xstone_pause,
