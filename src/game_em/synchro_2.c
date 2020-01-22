@@ -13,9 +13,10 @@
 
 #define SPRING_ROLL	/* spring rolling off round things continues to roll */
 
-#define RANDOM (random_em = random_em << 31 | random_em >> 1)
+#define RANDOM_RAW	(seed = seed << 31 | seed >> 1)
+#define RANDOM(x)	(RANDOM_RAW & (x - 1))
 
-static unsigned int random_em;
+static unsigned int seed;
 static int score;
 
 static void set_nearest_player_xy(int x, int y, int *dx, int *dy)
@@ -95,7 +96,7 @@ static void Landroid(int x, int y)
 	Cave[y+1][x+1] != Xblank)
       goto android_move;
 
-    switch (RANDOM & 7)
+    switch (RANDOM(8))
     {
       /* randomly find an object to clone */
 
@@ -191,7 +192,7 @@ static void Landroid(int x, int y)
     Next[y][x] = temp;	/* the item we chose to clone */
     play_element_sound(x, y, SOUND_android_clone, temp);
 
-    switch (RANDOM & 7)
+    switch (RANDOM(8))
     {
       /* randomly find a direction to move */
 
@@ -303,7 +304,7 @@ static void Landroid(int x, int y)
     Next[y][x] = Xblank;	/* assume we will move */
     temp = ((x < dx) + 1 - (x > dx)) + ((y < dy) + 1 - (y > dy)) * 3;
 
-    if (RANDOM & 1)
+    if (RANDOM(2))
     {
       switch (temp)
       {
@@ -844,7 +845,7 @@ static void Leater_n(int x, int y)
       return;
 
     default:
-      Next[y][x] = RANDOM & 1 ? Xeater_e : Xeater_w;
+      Next[y][x] = RANDOM(2) ? Xeater_e : Xeater_w;
       play_element_sound(x, y, SOUND_eater, Xeater_n);
       return;
   }
@@ -916,7 +917,7 @@ static void Leater_e(int x, int y)
       return;
 
     default:
-      Next[y][x] = RANDOM & 1 ? Xeater_n : Xeater_s;
+      Next[y][x] = RANDOM(2) ? Xeater_n : Xeater_s;
       play_element_sound(x, y, SOUND_eater, Xeater_e);
       return;
   }
@@ -988,7 +989,7 @@ static void Leater_s(int x, int y)
       return;
 
     default:
-      Next[y][x] = RANDOM & 1 ? Xeater_e : Xeater_w;
+      Next[y][x] = RANDOM(2) ? Xeater_e : Xeater_w;
       play_element_sound(x, y, SOUND_eater, Xeater_s);
       return;
   }
@@ -1060,7 +1061,7 @@ static void Leater_w(int x, int y)
       return;
 
     default:
-      Next[y][x] = RANDOM & 1 ? Xeater_n : Xeater_s;
+      Next[y][x] = RANDOM(2) ? Xeater_n : Xeater_s;
       play_element_sound(x, y, SOUND_eater, Xeater_w);
       return;
   }
@@ -1080,7 +1081,7 @@ static void Lalien(int x, int y)
     set_nearest_player_xy(x, y, &dx, &dy);
   }
 
-  if (RANDOM & 1)
+  if (RANDOM(2))
   {
     if (y > dy)
     {
@@ -2084,7 +2085,7 @@ static void Lemerald(int x, int y)
     case Xroundwall_2:
     case Xroundwall_3:
     case Xroundwall_4:
-      if (RANDOM & 1)
+      if (RANDOM(2))
       {
 	if (tab_blank[Cave[y][x+1]] && tab_acid[Cave[y+1][x+1]])
 	{
@@ -2128,7 +2129,7 @@ static void Lemerald(int x, int y)
     default:
       if (++lev.shine_cnt > 50)
       {
-	lev.shine_cnt = RANDOM & 7;
+	lev.shine_cnt = RANDOM(8);
 	Cave[y][x] = Xemerald_shine;
       }
 
@@ -2311,7 +2312,7 @@ static void Ldiamond(int x, int y)
     case Xroundwall_2:
     case Xroundwall_3:
     case Xroundwall_4:
-      if (RANDOM & 1)
+      if (RANDOM(2))
       {
 	if (tab_blank[Cave[y][x+1]] && tab_acid[Cave[y+1][x+1]])
 	{
@@ -2355,7 +2356,7 @@ static void Ldiamond(int x, int y)
     default:
       if (++lev.shine_cnt > 50)
       {
-	lev.shine_cnt = RANDOM & 7;
+	lev.shine_cnt = RANDOM(8);
 	Cave[y][x] = Xdiamond_shine;
       }
 
@@ -2550,7 +2551,7 @@ static void Lstone(int x, int y)
     case Xroundwall_2:
     case Xroundwall_3:
     case Xroundwall_4:
-      if (RANDOM & 1)
+      if (RANDOM(2))
       {
 	if (tab_blank[Cave[y][x+1]] && tab_acid[Cave[y+1][x+1]])
 	{
@@ -2743,7 +2744,7 @@ static void Lstone_fall(int x, int y)
       return;
 
     case Xspring:
-      if (RANDOM & 1)
+      if (RANDOM(2))
       {
 	switch (Cave[y+1][x+1])
 	{
@@ -3002,7 +3003,7 @@ static void Lbomb(int x, int y)
     case Xroundwall_2:
     case Xroundwall_3:
     case Xroundwall_4:
-      if (RANDOM & 1)
+      if (RANDOM(2))
       {
 	if (tab_blank[Cave[y][x+1]] && tab_acid[Cave[y+1][x+1]])
 	{
@@ -3205,7 +3206,7 @@ static void Lnut(int x, int y)
     case Xroundwall_2:
     case Xroundwall_3:
     case Xroundwall_4:
-      if (RANDOM & 1)
+      if (RANDOM(2))
       {
 	if (tab_blank[Cave[y][x+1]] && tab_acid[Cave[y+1][x+1]])
 	{
@@ -3400,7 +3401,7 @@ static void Lspring(int x, int y)
     case Xroundwall_2:
     case Xroundwall_3:
     case Xroundwall_4:
-      if (RANDOM & 1)
+      if (RANDOM(2))
       {
 	if (tab_blank[Cave[y][x+1]] && tab_acid[Cave[y+1][x+1]])
 	{
@@ -4289,7 +4290,7 @@ static void Lball_common(int x, int y)
 
   if (lev.ball_random)
   {
-    switch (RANDOM & 7)
+    switch (RANDOM(8))
     {
       case 0:
 	if (lev.ball_array[lev.ball_pos][0] != Xblank &&
@@ -4493,7 +4494,7 @@ static void Ldrip_fall(int x, int y)
       return;
 
     default:
-      switch (RANDOM & 7)
+      switch (RANDOM(8))
       {
 	case 0:
 	  temp = Xamoeba_1;
@@ -4716,7 +4717,7 @@ static void Lexit(int x, int y)
   if (lev.required > 0)
     return;
 
-  int temp = RANDOM & 63;
+  int temp = RANDOM(64);
 
   if (temp < 21)
   {
@@ -4982,7 +4983,7 @@ void synchro_2(void)
   short *cave_cache = Cave[y];	/* might be a win */
   int element;
 
-  random_em = RandomEM;
+  seed = RandomEM;
   score = 0;
 
  loop:
@@ -5177,7 +5178,7 @@ void synchro_2(void)
   else
     game_em.game_over = TRUE;
 
-  RandomEM = random_em;
+  RandomEM = seed;
 
   {
     void *temp = Cave;
