@@ -49,7 +49,7 @@ void synchro_3(void)
   {
     x = (random >> 10) % (WIDTH - 2);
     y = (random >> 20) % (HEIGHT - 2);
-    switch (Cave[y][x])
+    switch (Cave[x][y])
     {
       case Xblank:
       case Xacid_splash_e:
@@ -59,11 +59,11 @@ void synchro_3(void)
       case Xsand:
       case Xplant:
       case Yplant:
-	if (tab_amoeba[Cave[y-1][x]] ||
-	    tab_amoeba[Cave[y][x+1]] ||
-	    tab_amoeba[Cave[y+1][x]] ||
-	    tab_amoeba[Cave[y][x-1]])
-	  Cave[y][x] = Xdrip;
+	if (tab_amoeba[Cave[x][y-1]] ||
+	    tab_amoeba[Cave[x+1][y]] ||
+	    tab_amoeba[Cave[x][y+1]] ||
+	    tab_amoeba[Cave[x-1][y]])
+	  Cave[x][y] = Xdrip;
     }
 
     random = random * 129 + 1;
@@ -76,30 +76,30 @@ void synchro_3(void)
   for (y = 1; y < HEIGHT - 1; y++)
     for (x = 1; x < WIDTH - 1; x++)
     {
-      switch (Cave[y][x])
+      switch (Cave[x][y])
       {
         case Znormal:
-	  Cave[y][x] = Xboom_1;
-	  Cave[y-1][x] = tab_explode_normal[Cave[y-1][x]];
-	  Cave[y][x-1] = tab_explode_normal[Cave[y][x-1]];
-	  Cave[y][x+1] = tab_explode_normal[Cave[y][x+1]];
-	  Cave[y+1][x] = tab_explode_normal[Cave[y+1][x]];
-	  Cave[y-1][x-1] = tab_explode_normal[Cave[y-1][x-1]];
-	  Cave[y-1][x+1] = tab_explode_normal[Cave[y-1][x+1]];
-	  Cave[y+1][x-1] = tab_explode_normal[Cave[y+1][x-1]];
-	  Cave[y+1][x+1] = tab_explode_normal[Cave[y+1][x+1]];
+	  Cave[x][y] = Xboom_1;
+	  Cave[x][y-1] = tab_explode_normal[Cave[x][y-1]];
+	  Cave[x-1][y] = tab_explode_normal[Cave[x-1][y]];
+	  Cave[x+1][y] = tab_explode_normal[Cave[x+1][y]];
+	  Cave[x][y+1] = tab_explode_normal[Cave[x][y+1]];
+	  Cave[x-1][y-1] = tab_explode_normal[Cave[x-1][y-1]];
+	  Cave[x+1][y-1] = tab_explode_normal[Cave[x+1][y-1]];
+	  Cave[x-1][y+1] = tab_explode_normal[Cave[x-1][y+1]];
+	  Cave[x+1][y+1] = tab_explode_normal[Cave[x+1][y+1]];
 	  break;
 
         case Zdynamite:
-	  Cave[y][x] = Xboom_1;
-	  Cave[y-1][x] = tab_explode_dynamite[Cave[y-1][x]];
-	  Cave[y][x-1] = tab_explode_dynamite[Cave[y][x-1]];
-	  Cave[y][x+1] = tab_explode_dynamite[Cave[y][x+1]];
-	  Cave[y+1][x] = tab_explode_dynamite[Cave[y+1][x]];
-	  Cave[y-1][x-1] = tab_explode_dynamite[Cave[y-1][x-1]];
-	  Cave[y-1][x+1] = tab_explode_dynamite[Cave[y-1][x+1]];
-	  Cave[y+1][x-1] = tab_explode_dynamite[Cave[y+1][x-1]];
-	  Cave[y+1][x+1] = tab_explode_dynamite[Cave[y+1][x+1]];
+	  Cave[x][y] = Xboom_1;
+	  Cave[x][y-1] = tab_explode_dynamite[Cave[x][y-1]];
+	  Cave[x-1][y] = tab_explode_dynamite[Cave[x-1][y]];
+	  Cave[x+1][y] = tab_explode_dynamite[Cave[x+1][y]];
+	  Cave[x][y+1] = tab_explode_dynamite[Cave[x][y+1]];
+	  Cave[x-1][y-1] = tab_explode_dynamite[Cave[x-1][y-1]];
+	  Cave[x+1][y-1] = tab_explode_dynamite[Cave[x+1][y-1]];
+	  Cave[x-1][y+1] = tab_explode_dynamite[Cave[x-1][y+1]];
+	  Cave[x+1][y+1] = tab_explode_dynamite[Cave[x+1][y+1]];
 	  break;
       }
     }
@@ -108,5 +108,5 @@ void synchro_3(void)
 
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Next[y][x] = Cave[y][x];
+      Next[x][y] = Cave[x][y];
 }

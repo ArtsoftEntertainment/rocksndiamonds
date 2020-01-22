@@ -34,8 +34,8 @@ int frame;				/* current screen frame */
 int screen_x, screen_y;			/* current scroll position */
 
 /* tiles currently on screen */
-static int screentiles[MAX_PLAYFIELD_HEIGHT + 2][MAX_PLAYFIELD_WIDTH + 2];
-static int crumbled_state[MAX_PLAYFIELD_HEIGHT + 2][MAX_PLAYFIELD_WIDTH + 2];
+static int screentiles[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
+static int crumbled_state[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
 
 int getFieldbufferOffsetX_EM(void)
 {
@@ -109,7 +109,7 @@ void BackToFront_EM(void)
 
 static struct GraphicInfo_EM *getObjectGraphic(int x, int y)
 {
-  int tile = Draw[y][x];
+  int tile = Draw[x][y];
   struct GraphicInfo_EM *g = &graphic_info_em_object[tile][frame];
 
   if (!game.use_native_emc_graphics_engine)
@@ -302,8 +302,8 @@ static void animscreen(void)
   if (!game.use_native_emc_graphics_engine)
     for (y = 2; y < EM_MAX_CAVE_HEIGHT - 2; y++)
       for (x = 2; x < EM_MAX_CAVE_WIDTH - 2; x++)
-	SetGfxAnimation_EM(&graphic_info_em_object[Draw[y][x]][frame],
-			   Draw[y][x], 7 - frame, x - 2, y - 2);
+	SetGfxAnimation_EM(&graphic_info_em_object[Draw[x][y]][frame],
+			   Draw[x][y], 7 - frame, x - 2, y - 2);
 
   for (y = top; y < top + MAX_BUF_YSIZE; y++)
   {
@@ -311,7 +311,7 @@ static void animscreen(void)
     {
       int sx = x % MAX_BUF_XSIZE;
       int sy = y % MAX_BUF_YSIZE;    
-      int tile = Draw[y][x];
+      int tile = Draw[x][y];
       struct GraphicInfo_EM *g = &graphic_info_em_object[tile][frame];
       int obj = g->unique_identifier;
       int crm = 0;
@@ -330,15 +330,15 @@ static void animscreen(void)
 	      yy < 0 || yy >= EM_MAX_CAVE_HEIGHT)
 	    continue;
 
-	  tile_next = Draw[yy][xx];
+	  tile_next = Draw[xx][yy];
 
 	  if (!graphic_info_em_object[tile_next][frame].has_crumbled_graphics)
 	    crm |= (1 << i);
 	}
       }
 
-      redraw_screen_tile = (screentiles[sy][sx]    != obj ||
-			    crumbled_state[sy][sx] != crm);
+      redraw_screen_tile = (screentiles[sx][sy]    != obj ||
+			    crumbled_state[sx][sy] != crm);
 
       /* only redraw screen tiles if they (or their crumbled state) changed */
       if (redraw_screen_tile)
@@ -346,8 +346,8 @@ static void animscreen(void)
 	DrawLevelField_EM(x, y, sx, sy, FALSE);
 	DrawLevelFieldCrumbled_EM(x, y, sx, sy, crm, FALSE);
 
-	screentiles[sy][sx] = obj;
-	crumbled_state[sy][sx] = crm;
+	screentiles[sx][sy] = obj;
+	crumbled_state[sx][sy] = crm;
       }
     }
   }
@@ -386,7 +386,7 @@ static void blitplayer(struct PLAYER *ply)
     int old_sy = old_y % MAX_BUF_YSIZE;
     int new_sx = new_x % MAX_BUF_XSIZE;
     int new_sy = new_y % MAX_BUF_YSIZE;
-    int new_crm = crumbled_state[new_sy][new_sx];
+    int new_crm = crumbled_state[new_sx][new_sy];
 
     /* only diggable elements can be crumbled in the classic EM engine */
     boolean player_is_digging = (new_crm != 0);
@@ -416,8 +416,8 @@ static void blitplayer(struct PLAYER *ply)
     }
 
     /* redraw screen tiles in the next frame (player may have left the tiles) */
-    screentiles[old_sy][old_sx] = -1;
-    screentiles[new_sy][new_sx] = -1;
+    screentiles[old_sx][old_sy] = -1;
+    screentiles[new_sx][new_sy] = -1;
   }
 }
 
@@ -437,8 +437,8 @@ void game_initscreen(void)
   {
     for (x = 0; x < MAX_BUF_XSIZE; x++)
     {
-      screentiles[y][x] = -1;
-      crumbled_state[y][x] = 0;
+      screentiles[x][y] = -1;
+      crumbled_state[x][y] = 0;
     }
   }
 }
@@ -691,8 +691,8 @@ void RedrawPlayfield_EM(boolean force_redraw)
     {
       for (x = 0; x < MAX_BUF_XSIZE; x++)
       {
-	screentiles[y][x] = -1;
-	crumbled_state[y][x] = 0;
+	screentiles[x][y] = -1;
+	crumbled_state[x][y] = 0;
       }
     }
   }

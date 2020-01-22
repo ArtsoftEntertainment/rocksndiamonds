@@ -940,15 +940,15 @@ void prepare_em_level(void)
 
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Cave[y][x] = native_em_level.cave[x][y];
+      Cave[x][y] = native_em_level.cave[x][y];
 
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Next[y][x] = Cave[y][x];
+      Next[x][y] = Cave[x][y];
 
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Draw[y][x] = Cave[y][x];
+      Draw[x][y] = Cave[x][y];
 
   lev.time_initial = lev.time_seconds;
   lev.time = lev.time_initial;
@@ -1021,7 +1021,7 @@ void prepare_em_level(void)
 
 	native_em_level.cave[x][y] = Xblank;
 
-	Cave[y][x] = Next[y][x] = Draw[y][x] = Xblank;
+	Cave[x][y] = Next[x][y] = Draw[x][y] = Xblank;
       }
     }
   }

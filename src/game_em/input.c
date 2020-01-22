@@ -16,8 +16,8 @@ short **Cave;
 short **Next;
 short **Draw;
 
-static short *Index[4][HEIGHT];
-static short Array[4][HEIGHT][WIDTH];
+static short *Index[4][WIDTH];
+static short Array[4][WIDTH][HEIGHT];
 
 extern int screen_x;
 extern int screen_y;
@@ -32,25 +32,25 @@ void game_init_vars(void)
 
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[0][y][x] = Zborder;
+      Array[0][x][y] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[1][y][x] = Zborder;
+      Array[1][x][y] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[2][y][x] = Zborder;
+      Array[2][x][y] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[3][y][x] = Xblank;
+      Array[3][x][y] = Xblank;
 
-  for (y = 0; y < HEIGHT; y++)
-    Index[0][y] = Array[0][y];
-  for (y = 0; y < HEIGHT; y++)
-    Index[1][y] = Array[1][y];
-  for (y = 0; y < HEIGHT; y++)
-    Index[2][y] = Array[2][y];
-  for (y = 0; y < HEIGHT; y++)
-    Index[3][y] = Array[3][y];
+  for (x = 0; x < WIDTH; x++)
+    Index[0][x] = Array[0][x];
+  for (x = 0; x < WIDTH; x++)
+    Index[1][x] = Array[1][x];
+  for (x = 0; x < WIDTH; x++)
+    Index[2][x] = Array[2][x];
+  for (x = 0; x < WIDTH; x++)
+    Index[3][x] = Array[3][x];
 
   Cave = Index[0];
   Next = Index[1];
@@ -190,7 +190,7 @@ void SaveEngineSnapshotValues_EM(void)
   for (i = 0; i < 4; i++)
     for (j = 0; j < HEIGHT; j++)
       for (k = 0; k < WIDTH; k++)
-	engine_snapshot_em.Array[i][j][k] = Array[i][j][k];
+	engine_snapshot_em.Array[i][k][j] = Array[i][k][j];
 }
 
 void LoadEngineSnapshotValues_EM(void)
@@ -217,5 +217,5 @@ void LoadEngineSnapshotValues_EM(void)
   for (i = 0; i < 4; i++)
     for (j = 0; j < HEIGHT; j++)
       for (k = 0; k < WIDTH; k++)
-	Array[i][j][k] = engine_snapshot_em.Array[i][j][k];
+	Array[i][k][j] = engine_snapshot_em.Array[i][k][j];
 }

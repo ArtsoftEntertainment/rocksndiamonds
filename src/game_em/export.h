@@ -70,7 +70,7 @@ struct EngineSnapshotInfo_EM
   unsigned int RandomEM;
   struct LEVEL lev;
   struct PLAYER ply[MAX_PLAYERS];
-  short Array[4][EM_MAX_CAVE_HEIGHT][EM_MAX_CAVE_WIDTH];
+  short Array[4][EM_MAX_CAVE_WIDTH][EM_MAX_CAVE_HEIGHT];
   int screen_x;
   int screen_y;
   int frame;
