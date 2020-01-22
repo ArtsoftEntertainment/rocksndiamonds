@@ -4496,37 +4496,14 @@ static void Ldrip_fall(int x, int y)
     default:
       switch (RANDOM(8))
       {
-	case 0:
-	  temp = Xamoeba_1;
-	  break;
-
-	case 1:
-	  temp = Xamoeba_2;
-	  break;
-
-	case 2:
-	  temp = Xamoeba_3;
-	  break;
-
-	case 3:
-	  temp = Xamoeba_4;
-	  break;
-
-	case 4:
-	  temp = Xamoeba_5;
-	  break;
-
-	case 5:
-	  temp = Xamoeba_6;
-	  break;
-
-	case 6:
-	  temp = Xamoeba_7;
-	  break;
-
-	case 7:
-	  temp = Xamoeba_8;
-	  break;
+	case 0: temp = Xamoeba_1; break;
+	case 1: temp = Xamoeba_2; break;
+	case 2: temp = Xamoeba_3; break;
+	case 3: temp = Xamoeba_4; break;
+	case 4: temp = Xamoeba_5; break;
+	case 5: temp = Xamoeba_6; break;
+	case 6: temp = Xamoeba_7; break;
+	case 7: temp = Xamoeba_8; break;
       }
 
       Cave[y][x] = temp;
@@ -4717,22 +4694,22 @@ static void Lexit(int x, int y)
   if (lev.required > 0)
     return;
 
-  int temp = RANDOM(64);
+  switch (RANDOM(64) / 21)
+  {
+    case 0:
+      Cave[y][x] = Xexit_1;
+      Next[y][x] = Xexit_2;
+      break;
 
-  if (temp < 21)
-  {
-    Cave[y][x] = Xexit_1;
-    Next[y][x] = Xexit_2;
-  }
-  else if (temp < 42)
-  {
-    Cave[y][x] = Xexit_2;
-    Next[y][x] = Xexit_3;
-  }
-  else
-  {
-    Cave[y][x] = Xexit_3;
-    Next[y][x] = Xexit_1;
+    case 1:
+      Cave[y][x] = Xexit_2;
+      Next[y][x] = Xexit_3;
+      break;
+
+    default:
+      Cave[y][x] = Xexit_3;
+      Next[y][x] = Xexit_1;
+      break;
   }
 
   play_element_sound(x, y, SOUND_exit_open, Xexit);
