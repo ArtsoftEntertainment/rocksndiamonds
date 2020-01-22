@@ -173,7 +173,7 @@ static boolean player_killed(struct PLAYER *ply)
     case Xdynamite_2:
     case Xdynamite_3:
     case Xdynamite_4:
-#if 1
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -490,7 +490,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xacid_splash_w:
 	Cave[y][x] = Zplayer;
 	Next[y][x] = Zplayer;
-#if 1
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
       case Xfake_acid_1:
       case Xfake_acid_2:
       case Xfake_acid_3:

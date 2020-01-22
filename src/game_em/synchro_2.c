@@ -2481,7 +2481,7 @@ static void Lstone(int x, int y)
     case Xacid_splash_w:
     case Xplant:
     case Yplant:
-#if 1
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2617,7 +2617,7 @@ static void Lstone_pause(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#if 1
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2665,7 +2665,7 @@ static void Lstone_fall(int x, int y)
     case Xacid_splash_e:
     case Xacid_splash_w:
     case Zplayer:
-#if 1
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4635,7 +4635,7 @@ static void Lsand_stonesand_4(int x, int y)
   Next[y][x] = Xsand;
 }
 
-#if 1
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 static void Lsand_stonesand_quickout_1(int x, int y)
 {
   Next[y][x] = Xsand_stonesand_quickout_2;
@@ -4792,6 +4792,7 @@ static void Lacid_8(int x, int y)
   Next[y][x] = Xacid_1;
 }
 
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 static void Lfake_acid_1(int x, int y)
 {
   Next[y][x] = Xfake_acid_2;
@@ -4831,6 +4832,7 @@ static void Lfake_acid_8(int x, int y)
 {
   Next[y][x] = Xfake_acid_1;
 }
+#endif
 
 static void Lpause(int x, int y)
 {
@@ -4998,6 +5000,7 @@ void synchro_2(void)
     case Xacid_7:		Lacid_7(x, y);			goto loop;
     case Xacid_8:		Lacid_8(x, y);			goto loop;
 
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:		Lfake_acid_1(x, y);		goto loop;
     case Xfake_acid_2:		Lfake_acid_2(x, y);		goto loop;
     case Xfake_acid_3:		Lfake_acid_3(x, y);		goto loop;
@@ -5006,6 +5009,7 @@ void synchro_2(void)
     case Xfake_acid_6:		Lfake_acid_6(x, y);		goto loop;
     case Xfake_acid_7:		Lfake_acid_7(x, y);		goto loop;
     case Xfake_acid_8:		Lfake_acid_8(x, y);		goto loop;
+#endif
 
     case Xandroid:		Landroid(x, y);			goto loop;
     case Xandroid_1_n:		Landroid_1_n(x, y);		goto loop;
@@ -5131,7 +5135,7 @@ void synchro_2(void)
     case Xsand_stonesand_4:	Lsand_stonesand_4(x, y);	goto loop;
     case Xsand_stoneout_1:	Lsand_stoneout_1(x, y);		goto loop;
     case Xsand_stoneout_2:	Lsand_stoneout_2(x, y);		goto loop;
-#if 1
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xsand_stonesand_quickout_1:Lsand_stonesand_quickout_1(x, y);goto loop;
     case Xsand_stonesand_quickout_2:Lsand_stonesand_quickout_2(x, y);goto loop;
 #endif
@@ -5165,10 +5169,6 @@ void synchro_2(void)
     default:
       goto loop;
   }
-
-#undef RANDOM
-#undef PLAY
-#undef PLAY_FORCE
 
  done:
 
