@@ -4992,655 +4992,168 @@ void synchro_2(void)
     default:
       goto loop;
 
-    /* --------------------------------------------------------------------- */
-
-    case Xpush_stone_e:
-      Lpush_stone_e(x, y);
-      goto loop;
-
-    case Xpush_stone_w:
-      Lpush_stone_w(x, y);
-      goto loop;
-
-    case Xpush_nut_e:
-      Lpush_nut_e(x, y);
-      goto loop;
-
-    case Xpush_nut_w:
-      Lpush_nut_w(x, y);
-      goto loop;
-
-    case Xpush_spring_e:
-      Lpush_spring_e(x, y);
-      goto loop;
-
-    case Xpush_spring_w:
-      Lpush_spring_w(x, y);
-      goto loop;
-
-    case Xpush_emerald_e:
-      Lpush_emerald_e(x, y);
-      goto loop;
-
-    case Xpush_emerald_w:
-      Lpush_emerald_w(x, y);
-      goto loop;
-
-    case Xpush_diamond_e:
-      Lpush_diamond_e(x, y);
-      goto loop;
-
-    case Xpush_diamond_w:
-      Lpush_diamond_w(x, y);
-      goto loop;
-
-    case Xpush_bomb_e:
-      Lpush_bomb_e(x, y);
-      goto loop;
-
-    case Xpush_bomb_w:
-      Lpush_bomb_w(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xstone:
-      Lstone(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xstone_pause:
-      Lstone_pause(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xstone_fall:
-      Lstone_fall(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xnut:
-      Lnut(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xnut_pause:
-      Lnut_pause(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xnut_fall:
-      Lnut_fall(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xbug_1_n:
-      Lbug_1_n(x, y);
-      goto loop;
-
-    case Xbug_2_n:
-      Lbug_2_n(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xbug_1_e:
-      Lbug_1_e(x, y);
-      goto loop;
-
-    case Xbug_2_e:
-      Lbug_2_e(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xbug_1_s:
-      Lbug_1_s(x, y);
-      goto loop;
-
-    case Xbug_2_s:
-      Lbug_2_s(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xbug_1_w:
-      Lbug_1_w(x, y);
-      goto loop;
-
-    case Xbug_2_w:
-      Lbug_2_w(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xtank_1_n:
-      Ltank_1_n(x, y);
-      goto loop;
-
-    case Xtank_2_n:
-      Ltank_2_n(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xtank_1_e:
-      Ltank_1_e(x, y);
-      goto loop;
-
-    case Xtank_2_e:
-      Ltank_2_e(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xtank_1_s:
-      Ltank_1_s(x, y);
-      goto loop;
-
-    case Xtank_2_s:
-      Ltank_2_s(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xtank_1_w:
-      Ltank_1_w(x, y);
-      goto loop;
-
-    case Xtank_2_w:
-      Ltank_2_w(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xandroid:
-      Landroid(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xandroid_1_n:
-      Landroid_1_n(x, y);
-      goto loop;
-
-    case Xandroid_2_n:
-      Landroid_2_n(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xandroid_1_e:
-      Landroid_1_e(x, y);
-      goto loop;
-
-    case Xandroid_2_e:
-      Landroid_2_e(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xandroid_1_s:
-      Landroid_1_s(x, y);
-      goto loop;
-
-    case Xandroid_2_s:
-      Landroid_2_s(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xandroid_1_w:
-      Landroid_1_w(x, y);
-      goto loop;
-
-    case Xandroid_2_w:
-      Landroid_2_w(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xspring:
-      Lspring(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xspring_pause:
-      Lspring_pause(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xspring_e:
-      Lspring_e(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xspring_w:
-      Lspring_w(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xspring_fall:
-      Lspring_fall(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xeater_n:
-      Leater_n(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xeater_e:
-      Leater_e(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xeater_s:
-      Leater_s(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xeater_w:
-      Leater_w(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xalien:
-      Lalien(x, y);
-      goto loop;
-
-    case Xalien_pause:
-      Lalien_pause(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xemerald:
-      Lemerald(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xemerald_pause:
-      Lemerald_pause(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xemerald_fall:
-      Lemerald_fall(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xdiamond:
-      Ldiamond(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xdiamond_pause:
-      Ldiamond_pause(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xdiamond_fall:
-      Ldiamond_fall(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xdrip_fall:
-      Ldrip_fall(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xdrip_stretch:
-      Ldrip_stretch(x, y);
-      goto loop;
-
-    case Xdrip_stretchB:
-      Ldrip_stretchB(x, y);
-      goto loop;
-
-    case Xdrip:
-      Ldrip(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xbomb:
-      Lbomb(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xbomb_pause:
-      Lbomb_pause(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xbomb_fall:
-      Lbomb_fall(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xballoon:
-      Lballoon(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xacid_1:
-      Lacid_1(x, y);
-      goto loop;
-
-    case Xacid_2:
-      Lacid_2(x, y);
-      goto loop;
-
-    case Xacid_3:
-      Lacid_3(x, y);
-      goto loop;
-
-    case Xacid_4:
-      Lacid_4(x, y);
-      goto loop;
-
-    case Xacid_5:
-      Lacid_5(x, y);
-      goto loop;
-
-    case Xacid_6:
-      Lacid_6(x, y);
-      goto loop;
-
-    case Xacid_7:
-      Lacid_7(x, y);
-      goto loop;
-
-    case Xacid_8:
-      Lacid_8(x, y);
-      goto loop;
-
-    case Xfake_acid_1:
-      Lfake_acid_1(x, y);
-      goto loop;
-
-    case Xfake_acid_2:
-      Lfake_acid_2(x, y);
-      goto loop;
-
-    case Xfake_acid_3:
-      Lfake_acid_3(x, y);
-      goto loop;
-
-    case Xfake_acid_4:
-      Lfake_acid_4(x, y);
-      goto loop;
-
-    case Xfake_acid_5:
-      Lfake_acid_5(x, y);
-      goto loop;
-
-    case Xfake_acid_6:
-      Lfake_acid_6(x, y);
-      goto loop;
-
-    case Xfake_acid_7:
-      Lfake_acid_7(x, y);
-      goto loop;
-
-    case Xfake_acid_8:
-      Lfake_acid_8(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xball_1:
-      Lball_1(x, y);
-      goto loop;
-
-    case Xball_2:
-      Lball_2(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xslidewall_ns:
-      Lslidewall_ns(x, y);
-      goto loop;
-
-    case Xslidewall_ew:
-      Lslidewall_ew(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xwonderwall:
-      Lwonderwall(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xexit:
-      Lexit(x, y);
-      goto loop;
-
-    case Xexit_1:
-      Lexit_1(x, y);
-      goto loop;
-
-    case Xexit_2:
-      Lexit_2(x, y);
-      goto loop;
-
-    case Xexit_3:
-      Lexit_3(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xpause:
-      Lpause(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xdynamite_1:
-      Ldynamite_1(x, y);
-      goto loop;
-
-    case Xdynamite_2:
-      Ldynamite_2(x, y);
-      goto loop;
-
-    case Xdynamite_3:
-      Ldynamite_3(x, y);
-      goto loop;
-
-    case Xdynamite_4:
-      Ldynamite_4(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xwheel:
-      Lwheel(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xswitch:
-      Lswitch(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xsand_stone:
-      Lsand_stone(x, y);
-      goto loop;
-
-    case Xsand_stonein_1:
-      Lsand_stonein_1(x, y);
-      goto loop;
-
-    case Xsand_stonein_2:
-      Lsand_stonein_2(x, y);
-      goto loop;
-
-    case Xsand_stonein_3:
-      Lsand_stonein_3(x, y);
-      goto loop;
-
-    case Xsand_stonein_4:
-      Lsand_stonein_4(x, y);
-      goto loop;
-
-    case Xsand_stonesand_1:
-      Lsand_stonesand_1(x, y);
-      goto loop;
-
-    case Xsand_stonesand_2:
-      Lsand_stonesand_2(x, y);
-      goto loop;
-
-    case Xsand_stonesand_3:
-      Lsand_stonesand_3(x, y);
-      goto loop;
-
-    case Xsand_stonesand_4:
-      Lsand_stonesand_4(x, y);
-      goto loop;
-
+    case Xpush_stone_e:		Lpush_stone_e(x, y);		goto loop;
+    case Xpush_stone_w:		Lpush_stone_w(x, y);		goto loop;
+    case Xpush_nut_e:		Lpush_nut_e(x, y);		goto loop;
+    case Xpush_nut_w:		Lpush_nut_w(x, y);		goto loop;
+    case Xpush_spring_e:	Lpush_spring_e(x, y);		goto loop;
+    case Xpush_spring_w:	Lpush_spring_w(x, y);		goto loop;
+    case Xpush_emerald_e:	Lpush_emerald_e(x, y);		goto loop;
+    case Xpush_emerald_w:	Lpush_emerald_w(x, y);		goto loop;
+    case Xpush_diamond_e:	Lpush_diamond_e(x, y);		goto loop;
+    case Xpush_diamond_w:	Lpush_diamond_w(x, y);		goto loop;
+    case Xpush_bomb_e:		Lpush_bomb_e(x, y);		goto loop;
+    case Xpush_bomb_w:		Lpush_bomb_w(x, y);		goto loop;
+
+    case Xstone:		Lstone(x, y);			goto loop;
+    case Xstone_pause:		Lstone_pause(x, y);		goto loop;
+    case Xstone_fall:		Lstone_fall(x, y);		goto loop;
+
+    case Xnut:			Lnut(x, y);			goto loop;
+    case Xnut_pause:		Lnut_pause(x, y);		goto loop;
+    case Xnut_fall:		Lnut_fall(x, y);		goto loop;
+
+    case Xbug_1_n:		Lbug_1_n(x, y);			goto loop;
+    case Xbug_2_n:		Lbug_2_n(x, y);			goto loop;
+    case Xbug_1_e:		Lbug_1_e(x, y);			goto loop;
+    case Xbug_2_e:		Lbug_2_e(x, y);			goto loop;
+    case Xbug_1_s:		Lbug_1_s(x, y);			goto loop;
+    case Xbug_2_s:		Lbug_2_s(x, y);			goto loop;
+    case Xbug_1_w:		Lbug_1_w(x, y);			goto loop;
+    case Xbug_2_w:		Lbug_2_w(x, y);			goto loop;
+
+    case Xtank_1_n:		Ltank_1_n(x, y);		goto loop;
+    case Xtank_2_n:		Ltank_2_n(x, y);		goto loop;
+    case Xtank_1_e:		Ltank_1_e(x, y);		goto loop;
+    case Xtank_2_e:		Ltank_2_e(x, y);		goto loop;
+    case Xtank_1_s:		Ltank_1_s(x, y);		goto loop;
+    case Xtank_2_s:		Ltank_2_s(x, y);		goto loop;
+    case Xtank_1_w:		Ltank_1_w(x, y);		goto loop;
+    case Xtank_2_w:		Ltank_2_w(x, y);		goto loop;
+
+    case Xandroid:		Landroid(x, y);			goto loop;
+    case Xandroid_1_n:		Landroid_1_n(x, y);		goto loop;
+    case Xandroid_2_n:		Landroid_2_n(x, y);		goto loop;
+    case Xandroid_1_e:		Landroid_1_e(x, y);		goto loop;
+    case Xandroid_2_e:		Landroid_2_e(x, y);		goto loop;
+    case Xandroid_1_s:		Landroid_1_s(x, y);		goto loop;
+    case Xandroid_2_s:		Landroid_2_s(x, y);		goto loop;
+    case Xandroid_1_w:		Landroid_1_w(x, y);		goto loop;
+    case Xandroid_2_w:		Landroid_2_w(x, y);		goto loop;
+
+    case Xspring:		Lspring(x, y);			goto loop;
+    case Xspring_pause:		Lspring_pause(x, y);		goto loop;
+    case Xspring_e:		Lspring_e(x, y);		goto loop;
+    case Xspring_w:		Lspring_w(x, y);		goto loop;
+    case Xspring_fall:		Lspring_fall(x, y);		goto loop;
+
+    case Xeater_n:		Leater_n(x, y);			goto loop;
+    case Xeater_e:		Leater_e(x, y);			goto loop;
+    case Xeater_s:		Leater_s(x, y);			goto loop;
+    case Xeater_w:		Leater_w(x, y);			goto loop;
+
+    case Xalien:		Lalien(x, y);			goto loop;
+    case Xalien_pause:		Lalien_pause(x, y);		goto loop;
+
+    case Xemerald:		Lemerald(x, y);			goto loop;
+    case Xemerald_pause:	Lemerald_pause(x, y);		goto loop;
+    case Xemerald_fall:		Lemerald_fall(x, y);		goto loop;
+
+    case Xdiamond:		Ldiamond(x, y);			goto loop;
+    case Xdiamond_pause:	Ldiamond_pause(x, y);		goto loop;
+    case Xdiamond_fall:		Ldiamond_fall(x, y);		goto loop;
+
+    case Xdrip_fall:		Ldrip_fall(x, y);		goto loop;
+    case Xdrip_stretch:		Ldrip_stretch(x, y);		goto loop;
+    case Xdrip_stretchB:	Ldrip_stretchB(x, y);		goto loop;
+    case Xdrip:			Ldrip(x, y);			goto loop;
+
+    case Xbomb:			Lbomb(x, y);			goto loop;
+    case Xbomb_pause:		Lbomb_pause(x, y);		goto loop;
+    case Xbomb_fall:		Lbomb_fall(x, y);		goto loop;
+
+    case Xballoon:		Lballoon(x, y);			goto loop;
+
+    case Xacid_1:		Lacid_1(x, y);			goto loop;
+    case Xacid_2:		Lacid_2(x, y);			goto loop;
+    case Xacid_3:		Lacid_3(x, y);			goto loop;
+    case Xacid_4:		Lacid_4(x, y);			goto loop;
+    case Xacid_5:		Lacid_5(x, y);			goto loop;
+    case Xacid_6:		Lacid_6(x, y);			goto loop;
+    case Xacid_7:		Lacid_7(x, y);			goto loop;
+    case Xacid_8:		Lacid_8(x, y);			goto loop;
+
+    case Xfake_acid_1:		Lfake_acid_1(x, y);		goto loop;
+    case Xfake_acid_2:		Lfake_acid_2(x, y);		goto loop;
+    case Xfake_acid_3:		Lfake_acid_3(x, y);		goto loop;
+    case Xfake_acid_4:		Lfake_acid_4(x, y);		goto loop;
+    case Xfake_acid_5:		Lfake_acid_5(x, y);		goto loop;
+    case Xfake_acid_6:		Lfake_acid_6(x, y);		goto loop;
+    case Xfake_acid_7:		Lfake_acid_7(x, y);		goto loop;
+    case Xfake_acid_8:		Lfake_acid_8(x, y);		goto loop;
+
+    case Xball_1:		Lball_1(x, y);			goto loop;
+    case Xball_2:		Lball_2(x, y);			goto loop;
+
+    case Xslidewall_ns:		Lslidewall_ns(x, y);		goto loop;
+    case Xslidewall_ew:		Lslidewall_ew(x, y);		goto loop;
+
+    case Xwonderwall:		Lwonderwall(x, y);		goto loop;
+
+    case Xexit:			Lexit(x, y);			goto loop;
+    case Xexit_1:		Lexit_1(x, y);			goto loop;
+    case Xexit_2:		Lexit_2(x, y);			goto loop;
+    case Xexit_3:		Lexit_3(x, y);			goto loop;
+
+    case Xpause:		Lpause(x, y);			goto loop;
+
+    case Xdynamite_1:		Ldynamite_1(x, y);		goto loop;
+    case Xdynamite_2:		Ldynamite_2(x, y);		goto loop;
+    case Xdynamite_3:		Ldynamite_3(x, y);		goto loop;
+    case Xdynamite_4:		Ldynamite_4(x, y);		goto loop;
+
+    case Xwheel:		Lwheel(x, y);			goto loop;
+
+    case Xswitch:		Lswitch(x, y);			goto loop;
+
+    case Xsand_stone:		Lsand_stone(x, y);		goto loop;
+    case Xsand_stonein_1:	Lsand_stonein_1(x, y);		goto loop;
+    case Xsand_stonein_2:	Lsand_stonein_2(x, y);		goto loop;
+    case Xsand_stonein_3:	Lsand_stonein_3(x, y);		goto loop;
+    case Xsand_stonein_4:	Lsand_stonein_4(x, y);		goto loop;
+    case Xsand_stonesand_1:	Lsand_stonesand_1(x, y);	goto loop;
+    case Xsand_stonesand_2:	Lsand_stonesand_2(x, y);	goto loop;
+    case Xsand_stonesand_3:	Lsand_stonesand_3(x, y);	goto loop;
+    case Xsand_stonesand_4:	Lsand_stonesand_4(x, y);	goto loop;
 #if 1
-    case Xsand_stonesand_quickout_1:
-      Lsand_stonesand_quickout_1(x, y);
-      goto loop;
-
-    case Xsand_stonesand_quickout_2:
-      Lsand_stonesand_quickout_2(x, y);
-      goto loop;
+    case Xsand_stonesand_quickout_1:Lsand_stonesand_quickout_1(x, y);goto loop;
+    case Xsand_stonesand_quickout_2:Lsand_stonesand_quickout_2(x, y);goto loop;
 #endif
+    case Xsand_stoneout_1:	Lsand_stoneout_1(x, y);		goto loop;
+    case Xsand_stoneout_2:	Lsand_stoneout_2(x, y);		goto loop;
+    case Xsand_sandstone_1:	Lsand_sandstone_1(x, y);	goto loop;
+    case Xsand_sandstone_2:	Lsand_sandstone_2(x, y);	goto loop;
+    case Xsand_sandstone_3:	Lsand_sandstone_3(x, y);	goto loop;
+    case Xsand_sandstone_4:	Lsand_sandstone_4(x, y);	goto loop;
 
-    case Xsand_stoneout_1:
-      Lsand_stoneout_1(x, y);
-      goto loop;
+    case Xfake_amoeba:		Lfake_amoeba(x, y);		goto loop;
+    case Xfake_blank:		Lfake_blank(x, y);		goto loop;
+    case Xfake_grass:		Lfake_grass(x, y);		goto loop;
 
-    case Xsand_stoneout_2:
-      Lsand_stoneout_2(x, y);
-      goto loop;
+    case Xfake_door_1:		Lfake_door_1(x, y);		goto loop;
+    case Xfake_door_2:		Lfake_door_2(x, y);		goto loop;
+    case Xfake_door_3:		Lfake_door_3(x, y);		goto loop;
+    case Xfake_door_4:		Lfake_door_4(x, y);		goto loop;
+    case Xfake_door_5:		Lfake_door_5(x, y);		goto loop;
+    case Xfake_door_6:		Lfake_door_6(x, y);		goto loop;
+    case Xfake_door_7:		Lfake_door_7(x, y);		goto loop;
+    case Xfake_door_8:		Lfake_door_8(x, y);		goto loop;
 
-    case Xsand_sandstone_1:
-      Lsand_sandstone_1(x, y);
-      goto loop;
-
-    case Xsand_sandstone_2:
-      Lsand_sandstone_2(x, y);
-      goto loop;
-
-    case Xsand_sandstone_3:
-      Lsand_sandstone_3(x, y);
-      goto loop;
-
-    case Xsand_sandstone_4:
-      Lsand_sandstone_4(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xfake_amoeba:
-      Lfake_amoeba(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xfake_blank:
-      Lfake_blank(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xfake_grass:
-      Lfake_grass(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xfake_door_1:
-      Lfake_door_1(x, y);
-      goto loop;
-
-    case Xfake_door_2:
-      Lfake_door_2(x, y);
-      goto loop;
-
-    case Xfake_door_3:
-      Lfake_door_3(x, y);
-      goto loop;
-
-    case Xfake_door_4:
-      Lfake_door_4(x, y);
-      goto loop;
-
-    case Xfake_door_5:
-      Lfake_door_5(x, y);
-      goto loop;
-
-    case Xfake_door_6:
-      Lfake_door_6(x, y);
-      goto loop;
-
-    case Xfake_door_7:
-      Lfake_door_7(x, y);
-      goto loop;
-
-    case Xfake_door_8:
-      Lfake_door_8(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
-
-    case Xboom_bug:
-      Lboom_bug(x, y);
-      goto loop;
-
-    case Xboom_bomb:
-      Lboom_tank(x, y);
-      goto loop;
-
-    case Xboom_android:
-      Lboom_android(x, y);
-      goto loop;
-
-    case Xboom_1:
-      Lboom_1(x, y);
-      goto loop;
-
-    case Xboom_2:
-      Lboom_2(x, y);
-      goto loop;
-
-    /* --------------------------------------------------------------------- */
+    case Xboom_bug:		Lboom_bug(x, y);		goto loop;
+    case Xboom_bomb:		Lboom_tank(x, y);		goto loop;
+    case Xboom_android:		Lboom_android(x, y);		goto loop;
+    case Xboom_1:		Lboom_1(x, y);			goto loop;
+    case Xboom_2:		Lboom_2(x, y);			goto loop;
 
     case Zborder:
       if (++y < HEIGHT - 1)
