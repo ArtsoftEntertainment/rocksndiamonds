@@ -87,13 +87,13 @@ void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
 
   if (frame == 7)
   {
-    synchro_1();
-    synchro_2();
+    logic_1();
+    logic_2();
   }
 
   if (frame == 6)
   {
-    synchro_3();
+    logic_3();
 
     UpdateGameDoorValues_EM();
   }

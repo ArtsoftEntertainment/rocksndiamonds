@@ -21,9 +21,7 @@ SRCS =	cave.c		\
 	graphics.c	\
 	init.c		\
 	input.c		\
-	synchro_1.c	\
-	synchro_2.c	\
-	synchro_3.c	\
+	logic.c		\
 	tab_generate.c
 
 OBJS =	cave.o		\
@@ -31,9 +29,7 @@ OBJS =	cave.o		\
 	graphics.o	\
 	init.o		\
 	input.o		\
-	synchro_1.o	\
-	synchro_2.o	\
-	synchro_3.o	\
+	logic.o		\
 	tab_generate.o
 
 GAME_EM = game_em.a

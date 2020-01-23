@@ -18,9 +18,9 @@ void game_init_vars(void);
 void play_sound(int, int, int);
 void play_element_sound(int, int, int, int);
 
-void synchro_1(void);
-void synchro_2(void);
-void synchro_3(void);
+void logic_1(void);
+void logic_2(void);
+void logic_3(void);
 
 int  cleanup_em_level(unsigned char *, int, char *);
 void convert_em_level(unsigned char *, int);

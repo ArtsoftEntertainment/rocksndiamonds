@@ -56,9 +56,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
 	game_em/graphics.c		\
 	game_em/init.c			\
 	game_em/input.c			\
-	game_em/synchro_1.c		\
-	game_em/synchro_2.c		\
-	game_em/synchro_3.c		\
+	game_em/logic.c			\
 	game_em/tab_generate.c		\
 	game_sp/init.c			\
 	game_sp/file.c			\
