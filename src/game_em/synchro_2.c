@@ -19,32 +19,6 @@
 static unsigned int seed;
 static int score;
 
-static void set_nearest_player_xy(int x, int y, int *dx, int *dy)
-{
-  int distance, distance_shortest = EM_MAX_CAVE_WIDTH + EM_MAX_CAVE_HEIGHT;
-  int i;
-
-  /* default values if no players are alive anymore */
-  *dx = 0;
-  *dy = 0;
-
-  for (i = 0; i < MAX_PLAYERS; i++)
-  {
-    if (!ply[i].alive)
-      continue;
-
-    distance = ABS(ply[i].x - x) + ABS(ply[i].y - y);
-
-    if (distance < distance_shortest)
-    {
-      *dx = ply[i].x;
-      *dy = ply[i].y;
-
-      distance_shortest = distance;
-    }
-  }
-}
-
 static void Lboom_bug(int x, int y)
 {
   Next[x][y] = Znormal;
@@ -79,6 +53,114 @@ static void Lboom_tank(int x, int y)
   play_element_sound(x, y, SOUND_boom, element);
 #endif
 }
+
+static void set_nearest_player_xy(int x, int y, int *dx, int *dy)
+{
+  int distance, distance_shortest = EM_MAX_CAVE_WIDTH + EM_MAX_CAVE_HEIGHT;
+  int i;
+
+  /* default values if no players are alive anymore */
+  *dx = 0;
+  *dy = 0;
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    if (!ply[i].alive)
+      continue;
+
+    distance = ABS(ply[i].x - x) + ABS(ply[i].y - y);
+
+    if (distance < distance_shortest)
+    {
+      *dx = ply[i].x;
+      *dy = ply[i].y;
+
+      distance_shortest = distance;
+    }
+  }
+}
+
+static void Lacid_1(int x, int y)
+{
+  Next[x][y] = Xacid_2;
+}
+
+static void Lacid_2(int x, int y)
+{
+  Next[x][y] = Xacid_3;
+}
+
+static void Lacid_3(int x, int y)
+{
+  Next[x][y] = Xacid_4;
+}
+
+static void Lacid_4(int x, int y)
+{
+  Next[x][y] = Xacid_5;
+}
+
+static void Lacid_5(int x, int y)
+{
+  Next[x][y] = Xacid_6;
+}
+
+static void Lacid_6(int x, int y)
+{
+  Next[x][y] = Xacid_7;
+}
+
+static void Lacid_7(int x, int y)
+{
+  Next[x][y] = Xacid_8;
+}
+
+static void Lacid_8(int x, int y)
+{
+  Next[x][y] = Xacid_1;
+}
+
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
+static void Lfake_acid_1(int x, int y)
+{
+  Next[x][y] = Xfake_acid_2;
+}
+
+static void Lfake_acid_2(int x, int y)
+{
+  Next[x][y] = Xfake_acid_3;
+}
+
+static void Lfake_acid_3(int x, int y)
+{
+  Next[x][y] = Xfake_acid_4;
+}
+
+static void Lfake_acid_4(int x, int y)
+{
+  Next[x][y] = Xfake_acid_5;
+}
+
+static void Lfake_acid_5(int x, int y)
+{
+  Next[x][y] = Xfake_acid_6;
+}
+
+static void Lfake_acid_6(int x, int y)
+{
+  Next[x][y] = Xfake_acid_7;
+}
+
+static void Lfake_acid_7(int x, int y)
+{
+  Next[x][y] = Xfake_acid_8;
+}
+
+static void Lfake_acid_8(int x, int y)
+{
+  Next[x][y] = Xfake_acid_1;
+}
+#endif
 
 static void Landroid(int x, int y)
 {
@@ -4151,6 +4233,87 @@ static void Lpush_spring_w(int x, int y)
   }
 }
 
+static void Ldynamite_1(int x, int y)
+{
+  play_element_sound(x, y, SOUND_tick, Xdynamite_1);
+  Next[x][y] = Xdynamite_2;
+}
+
+static void Ldynamite_2(int x, int y)
+{
+  play_element_sound(x, y, SOUND_tick, Xdynamite_2);
+  Next[x][y] = Xdynamite_3;
+}
+
+static void Ldynamite_3(int x, int y)
+{
+  play_element_sound(x, y, SOUND_tick, Xdynamite_3);
+  Next[x][y] = Xdynamite_4;
+}
+
+static void Ldynamite_4(int x, int y)
+{
+  play_element_sound(x, y, SOUND_tick, Xdynamite_4);
+  Next[x][y] = Zdynamite;
+  Boom[x-1][y-1] = Xblank;
+  Boom[x][y-1] = Xblank;
+  Boom[x+1][y-1] = Xblank;
+  Boom[x-1][y] = Xblank;
+  Boom[x][y] = Xblank;
+  Boom[x+1][y] = Xblank;
+  Boom[x-1][y+1] = Xblank;
+  Boom[x][y+1] = Xblank;
+  Boom[x+1][y+1] = Xblank;
+}
+
+static void Lfake_door_1(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xdoor_1;
+}
+
+static void Lfake_door_2(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xdoor_2;
+}
+
+static void Lfake_door_3(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xdoor_3;
+}
+
+static void Lfake_door_4(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xdoor_4;
+}
+
+static void Lfake_door_5(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xdoor_5;
+}
+
+static void Lfake_door_6(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xdoor_6;
+}
+
+static void Lfake_door_7(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xdoor_7;
+}
+
+static void Lfake_door_8(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xdoor_8;
+}
+
 static void Lballoon(int x, int y)
 {
   if (lev.wind_cnt == 0)
@@ -4534,6 +4697,36 @@ static void Lwonderwall(int x, int y)
   }
 }
 
+static void Lwheel(int x, int y)
+{
+  if (lev.wheel_cnt && x == lev.wheel_x && y == lev.wheel_y)
+    Cave[x][y] = XwheelB;
+}
+
+static void Lswitch(int x, int y)
+{
+  if (lev.ball_state)
+    Cave[x][y] = XswitchB;
+}
+
+static void Lfake_blank(int x, int y)
+{
+  if (lev.lenses_cnt)
+    Cave[x][y] = Xfake_blankB;
+}
+
+static void Lfake_grass(int x, int y)
+{
+  if (lev.magnify_cnt)
+    Cave[x][y] = Xfake_grassB;
+}
+
+static void Lfake_amoeba(int x, int y)
+{
+  if (lev.lenses_cnt)
+    Cave[x][y] = Xfake_amoebaB;
+}
+
 static void Lsand_stone(int x, int y)
 {
   switch (Cave[x][y+1])
@@ -4593,6 +4786,26 @@ static void Lsand_stonein_4(int x, int y)
   Next[x][y] = Xblank;
 }
 
+static void Lsand_sandstone_1(int x, int y)
+{
+  Next[x][y] = Xsand_sandstone_2;
+}
+
+static void Lsand_sandstone_2(int x, int y)
+{
+  Next[x][y] = Xsand_sandstone_3;
+}
+
+static void Lsand_sandstone_3(int x, int y)
+{
+  Next[x][y] = Xsand_sandstone_4;
+}
+
+static void Lsand_sandstone_4(int x, int y)
+{
+  Next[x][y] = Xsand_stone;
+}
+
 static void Lsand_stonesand_1(int x, int y)
 {
   Next[x][y] = Xsand_stonesand_2;
@@ -4613,6 +4826,16 @@ static void Lsand_stonesand_4(int x, int y)
   Next[x][y] = Xsand;
 }
 
+static void Lsand_stoneout_1(int x, int y)
+{
+  Next[x][y] = Xsand_stoneout_2;
+}
+
+static void Lsand_stoneout_2(int x, int y)
+{
+  Next[x][y] = Xstone_fall;
+}
+
 #ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 static void Lsand_stonesand_quickout_1(int x, int y)
 {
@@ -4624,36 +4847,6 @@ static void Lsand_stonesand_quickout_2(int x, int y)
   Next[x][y] = Xsand;
 }
 #endif
-
-static void Lsand_stoneout_1(int x, int y)
-{
-  Next[x][y] = Xsand_stoneout_2;
-}
-
-static void Lsand_stoneout_2(int x, int y)
-{
-  Next[x][y] = Xstone_fall;
-}
-
-static void Lsand_sandstone_1(int x, int y)
-{
-  Next[x][y] = Xsand_sandstone_2;
-}
-
-static void Lsand_sandstone_2(int x, int y)
-{
-  Next[x][y] = Xsand_sandstone_3;
-}
-
-static void Lsand_sandstone_3(int x, int y)
-{
-  Next[x][y] = Xsand_sandstone_4;
-}
-
-static void Lsand_sandstone_4(int x, int y)
-{
-  Next[x][y] = Xsand_stone;
-}
 
 static void Lslidewall_ns(int x, int y)
 {
@@ -4730,202 +4923,9 @@ static void Lexit_3(int x, int y)
   Next[x][y] = Xexit_1;
 }
 
-static void Lacid_1(int x, int y)
-{
-  Next[x][y] = Xacid_2;
-}
-
-static void Lacid_2(int x, int y)
-{
-  Next[x][y] = Xacid_3;
-}
-
-static void Lacid_3(int x, int y)
-{
-  Next[x][y] = Xacid_4;
-}
-
-static void Lacid_4(int x, int y)
-{
-  Next[x][y] = Xacid_5;
-}
-
-static void Lacid_5(int x, int y)
-{
-  Next[x][y] = Xacid_6;
-}
-
-static void Lacid_6(int x, int y)
-{
-  Next[x][y] = Xacid_7;
-}
-
-static void Lacid_7(int x, int y)
-{
-  Next[x][y] = Xacid_8;
-}
-
-static void Lacid_8(int x, int y)
-{
-  Next[x][y] = Xacid_1;
-}
-
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
-static void Lfake_acid_1(int x, int y)
-{
-  Next[x][y] = Xfake_acid_2;
-}
-
-static void Lfake_acid_2(int x, int y)
-{
-  Next[x][y] = Xfake_acid_3;
-}
-
-static void Lfake_acid_3(int x, int y)
-{
-  Next[x][y] = Xfake_acid_4;
-}
-
-static void Lfake_acid_4(int x, int y)
-{
-  Next[x][y] = Xfake_acid_5;
-}
-
-static void Lfake_acid_5(int x, int y)
-{
-  Next[x][y] = Xfake_acid_6;
-}
-
-static void Lfake_acid_6(int x, int y)
-{
-  Next[x][y] = Xfake_acid_7;
-}
-
-static void Lfake_acid_7(int x, int y)
-{
-  Next[x][y] = Xfake_acid_8;
-}
-
-static void Lfake_acid_8(int x, int y)
-{
-  Next[x][y] = Xfake_acid_1;
-}
-#endif
-
 static void Lpause(int x, int y)
 {
   Next[x][y] = Xblank;
-}
-
-static void Ldynamite_1(int x, int y)
-{
-  play_element_sound(x, y, SOUND_tick, Xdynamite_1);
-  Next[x][y] = Xdynamite_2;
-}
-
-static void Ldynamite_2(int x, int y)
-{
-  play_element_sound(x, y, SOUND_tick, Xdynamite_2);
-  Next[x][y] = Xdynamite_3;
-}
-
-static void Ldynamite_3(int x, int y)
-{
-  play_element_sound(x, y, SOUND_tick, Xdynamite_3);
-  Next[x][y] = Xdynamite_4;
-}
-
-static void Ldynamite_4(int x, int y)
-{
-  play_element_sound(x, y, SOUND_tick, Xdynamite_4);
-  Next[x][y] = Zdynamite;
-  Boom[x-1][y-1] = Xblank;
-  Boom[x][y-1] = Xblank;
-  Boom[x+1][y-1] = Xblank;
-  Boom[x-1][y] = Xblank;
-  Boom[x][y] = Xblank;
-  Boom[x+1][y] = Xblank;
-  Boom[x-1][y+1] = Xblank;
-  Boom[x][y+1] = Xblank;
-  Boom[x+1][y+1] = Xblank;
-}
-
-static void Lwheel(int x, int y)
-{
-  if (lev.wheel_cnt && x == lev.wheel_x && y == lev.wheel_y)
-    Cave[x][y] = XwheelB;
-}
-
-static void Lswitch(int x, int y)
-{
-  if (lev.ball_state)
-    Cave[x][y] = XswitchB;
-}
-
-static void Lfake_amoeba(int x, int y)
-{
-  if (lev.lenses_cnt)
-    Cave[x][y] = Xfake_amoebaB;
-}
-
-static void Lfake_blank(int x, int y)
-{
-  if (lev.lenses_cnt)
-    Cave[x][y] = Xfake_blankB;
-}
-
-static void Lfake_grass(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xfake_grassB;
-}
-
-static void Lfake_door_1(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_1;
-}
-
-static void Lfake_door_2(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_2;
-}
-
-static void Lfake_door_3(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_3;
-}
-
-static void Lfake_door_4(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_4;
-}
-
-static void Lfake_door_5(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_5;
-}
-
-static void Lfake_door_6(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_6;
-}
-
-static void Lfake_door_7(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_7;
-}
-
-static void Lfake_door_8(int x, int y)
-{
-  if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_8;
 }
 
 static void Lboom_1(int x, int y)
