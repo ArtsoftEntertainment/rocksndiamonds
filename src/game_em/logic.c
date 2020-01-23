@@ -6066,6 +6066,56 @@ static void Lpause(int x, int y)
   Next[x][y] = Xblank;
 }
 
+static void Lamoeba(int x, int y)
+{
+  switch (Cave[x][y])
+  {
+    case Xblank:
+    case Xacid_splash_e:
+    case Xacid_splash_w:
+    case Xgrass:
+    case Xdirt:
+    case Xsand:
+    case Xplant:
+    case Yplant:
+      if (tab_amoeba[Cave[x][y-1]] ||
+	  tab_amoeba[Cave[x+1][y]] ||
+	  tab_amoeba[Cave[x][y+1]] ||
+	  tab_amoeba[Cave[x-1][y]])
+	Cave[x][y] = Xdrip;
+  }
+}
+
+static void Lexplode(int x, int y)
+{
+  switch (Cave[x][y])
+  {
+    case Znormal:
+      Cave[x][y] = Xboom_1;
+      Cave[x][y-1] = tab_explode_normal[Cave[x][y-1]];
+      Cave[x-1][y] = tab_explode_normal[Cave[x-1][y]];
+      Cave[x+1][y] = tab_explode_normal[Cave[x+1][y]];
+      Cave[x][y+1] = tab_explode_normal[Cave[x][y+1]];
+      Cave[x-1][y-1] = tab_explode_normal[Cave[x-1][y-1]];
+      Cave[x+1][y-1] = tab_explode_normal[Cave[x+1][y-1]];
+      Cave[x-1][y+1] = tab_explode_normal[Cave[x-1][y+1]];
+      Cave[x+1][y+1] = tab_explode_normal[Cave[x+1][y+1]];
+      break;
+
+    case Zdynamite:
+      Cave[x][y] = Xboom_1;
+      Cave[x][y-1] = tab_explode_dynamite[Cave[x][y-1]];
+      Cave[x-1][y] = tab_explode_dynamite[Cave[x-1][y]];
+      Cave[x+1][y] = tab_explode_dynamite[Cave[x+1][y]];
+      Cave[x][y+1] = tab_explode_dynamite[Cave[x][y+1]];
+      Cave[x-1][y-1] = tab_explode_dynamite[Cave[x-1][y-1]];
+      Cave[x+1][y-1] = tab_explode_dynamite[Cave[x+1][y-1]];
+      Cave[x-1][y+1] = tab_explode_dynamite[Cave[x-1][y+1]];
+      Cave[x+1][y+1] = tab_explode_dynamite[Cave[x+1][y+1]];
+      break;
+  }
+}
+
 static void Lboom_1(int x, int y)
 {
   Next[x][y] = Xboom_2;
@@ -6381,22 +6431,8 @@ void logic_3(void)
   {
     x = (random >> 10) % (WIDTH - 2);
     y = (random >> 20) % (HEIGHT - 2);
-    switch (Cave[x][y])
-    {
-      case Xblank:
-      case Xacid_splash_e:
-      case Xacid_splash_w:
-      case Xgrass:
-      case Xdirt:
-      case Xsand:
-      case Xplant:
-      case Yplant:
-	if (tab_amoeba[Cave[x][y-1]] ||
-	    tab_amoeba[Cave[x+1][y]] ||
-	    tab_amoeba[Cave[x][y+1]] ||
-	    tab_amoeba[Cave[x-1][y]])
-	  Cave[x][y] = Xdrip;
-    }
+
+    Lamoeba(x, y);
 
     random = random * 129 + 1;
   }
@@ -6407,34 +6443,7 @@ void logic_3(void)
 
   for (y = 1; y < HEIGHT - 1; y++)
     for (x = 1; x < WIDTH - 1; x++)
-    {
-      switch (Cave[x][y])
-      {
-        case Znormal:
-	  Cave[x][y] = Xboom_1;
-	  Cave[x][y-1] = tab_explode_normal[Cave[x][y-1]];
-	  Cave[x-1][y] = tab_explode_normal[Cave[x-1][y]];
-	  Cave[x+1][y] = tab_explode_normal[Cave[x+1][y]];
-	  Cave[x][y+1] = tab_explode_normal[Cave[x][y+1]];
-	  Cave[x-1][y-1] = tab_explode_normal[Cave[x-1][y-1]];
-	  Cave[x+1][y-1] = tab_explode_normal[Cave[x+1][y-1]];
-	  Cave[x-1][y+1] = tab_explode_normal[Cave[x-1][y+1]];
-	  Cave[x+1][y+1] = tab_explode_normal[Cave[x+1][y+1]];
-	  break;
-
-        case Zdynamite:
-	  Cave[x][y] = Xboom_1;
-	  Cave[x][y-1] = tab_explode_dynamite[Cave[x][y-1]];
-	  Cave[x-1][y] = tab_explode_dynamite[Cave[x-1][y]];
-	  Cave[x+1][y] = tab_explode_dynamite[Cave[x+1][y]];
-	  Cave[x][y+1] = tab_explode_dynamite[Cave[x][y+1]];
-	  Cave[x-1][y-1] = tab_explode_dynamite[Cave[x-1][y-1]];
-	  Cave[x+1][y-1] = tab_explode_dynamite[Cave[x+1][y-1]];
-	  Cave[x-1][y+1] = tab_explode_dynamite[Cave[x-1][y+1]];
-	  Cave[x+1][y+1] = tab_explode_dynamite[Cave[x+1][y+1]];
-	  break;
-      }
-    }
+      Lexplode(x, y);
 
   /* triple buffering */
 
