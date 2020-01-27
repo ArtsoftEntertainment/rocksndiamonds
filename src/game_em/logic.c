@@ -14,25 +14,26 @@
 #define RANDOM_RAW	(seed = seed << 31 | seed >> 1)
 #define RANDOM(x)	(RANDOM_RAW & (x - 1))
 
+static short **cave, **next, **boom;
 static unsigned int seed;
 static int score;
 
 static void Lboom_generic(int x, int y, int element, int element_middle)
 {
-  Boom[x-1][y-1] = element;
-  Boom[x][y-1]   = element;
-  Boom[x+1][y-1] = element;
-  Boom[x-1][y]   = element;
-  Boom[x][y]     = element_middle;
-  Boom[x+1][y]   = element;
-  Boom[x-1][y+1] = element;
-  Boom[x][y+1]   = element;
-  Boom[x+1][y+1] = element;
+  boom[x-1][y-1] = element;
+  boom[x][y-1]   = element;
+  boom[x+1][y-1] = element;
+  boom[x-1][y]   = element;
+  boom[x][y]     = element_middle;
+  boom[x+1][y]   = element;
+  boom[x-1][y+1] = element;
+  boom[x][y+1]   = element;
+  boom[x+1][y+1] = element;
 }
 
 static void Lboom_bug(int x, int y, int by_element)
 {
-  Next[x][y] = Znormal;
+  next[x][y] = Znormal;
 
   Lboom_generic(x, y, Xemerald, Xdiamond);
 
@@ -43,7 +44,7 @@ static void Lboom_bug(int x, int y, int by_element)
 
 static void Lboom_tank(int x, int y, int by_element)
 {
-  Next[x][y] = Znormal;
+  next[x][y] = Znormal;
 
   Lboom_generic(x, y, Xblank, Xblank);
 
@@ -54,17 +55,17 @@ static void Lboom_tank(int x, int y, int by_element)
 
 static void Lboom_eater(int x, int y, int by_element)
 {
-  Next[x][y] = Znormal;
+  next[x][y] = Znormal;
 
-  Boom[x-1][y-1] = lev.eater_array[lev.eater_pos][0];
-  Boom[x][y-1]   = lev.eater_array[lev.eater_pos][1];
-  Boom[x+1][y-1] = lev.eater_array[lev.eater_pos][2];
-  Boom[x-1][y]   = lev.eater_array[lev.eater_pos][3];
-  Boom[x][y]     = lev.eater_array[lev.eater_pos][4];
-  Boom[x+1][y]   = lev.eater_array[lev.eater_pos][5];
-  Boom[x-1][y+1] = lev.eater_array[lev.eater_pos][6];
-  Boom[x][y+1]   = lev.eater_array[lev.eater_pos][7];
-  Boom[x+1][y+1] = lev.eater_array[lev.eater_pos][8];
+  boom[x-1][y-1] = lev.eater_array[lev.eater_pos][0];
+  boom[x][y-1]   = lev.eater_array[lev.eater_pos][1];
+  boom[x+1][y-1] = lev.eater_array[lev.eater_pos][2];
+  boom[x-1][y]   = lev.eater_array[lev.eater_pos][3];
+  boom[x][y]     = lev.eater_array[lev.eater_pos][4];
+  boom[x+1][y]   = lev.eater_array[lev.eater_pos][5];
+  boom[x-1][y+1] = lev.eater_array[lev.eater_pos][6];
+  boom[x][y+1]   = lev.eater_array[lev.eater_pos][7];
+  boom[x+1][y+1] = lev.eater_array[lev.eater_pos][8];
 
   lev.eater_pos = (lev.eater_pos + 1) & 7;
 
@@ -84,7 +85,7 @@ static boolean player_killed(struct PLAYER *ply)
   if (lev.killed_out_of_time && setup.time_limit)
     return TRUE;
 
-  switch(Cave[x][y-1])
+  switch(cave[x][y-1])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -105,7 +106,7 @@ static boolean player_killed(struct PLAYER *ply)
       return TRUE;
   }
 
-  switch(Cave[x+1][y])
+  switch(cave[x+1][y])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -126,7 +127,7 @@ static boolean player_killed(struct PLAYER *ply)
       return TRUE;
   }
 
-  switch(Cave[x][y+1])
+  switch(cave[x][y+1])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -147,7 +148,7 @@ static boolean player_killed(struct PLAYER *ply)
       return TRUE;
   }
 
-  switch(Cave[x-1][y])
+  switch(cave[x-1][y])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -168,7 +169,7 @@ static boolean player_killed(struct PLAYER *ply)
       return TRUE;
   }
 
-  switch(Cave[x][y])
+  switch(cave[x][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -201,7 +202,7 @@ static void kill_player(struct PLAYER *ply)
 
   ply->alive = 0;
 
-  switch(Cave[x][y-1])
+  switch(cave[x][y-1])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -211,7 +212,7 @@ static void kill_player(struct PLAYER *ply)
     case Xbug_2_e:
     case Xbug_2_s:
     case Xbug_2_w:
-      Cave[x][y-1] = Xboom_bug;
+      cave[x][y-1] = Xboom_bug;
       break;
 
     case Xtank_1_n:
@@ -222,11 +223,11 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      Cave[x][y-1] = Xboom_bomb;
+      cave[x][y-1] = Xboom_bomb;
       break;
   }
 
-  switch(Cave[x+1][y])
+  switch(cave[x+1][y])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -236,7 +237,7 @@ static void kill_player(struct PLAYER *ply)
     case Xbug_2_e:
     case Xbug_2_s:
     case Xbug_2_w:
-      Cave[x+1][y] = Xboom_bug;
+      cave[x+1][y] = Xboom_bug;
       break;
 
     case Xtank_1_n:
@@ -247,11 +248,11 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      Cave[x+1][y] = Xboom_bomb;
+      cave[x+1][y] = Xboom_bomb;
       break;
   }
 
-  switch(Cave[x][y+1])
+  switch(cave[x][y+1])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -261,7 +262,7 @@ static void kill_player(struct PLAYER *ply)
     case Xbug_2_e:
     case Xbug_2_s:
     case Xbug_2_w:
-      Cave[x][y+1] = Xboom_bug;
+      cave[x][y+1] = Xboom_bug;
       break;
 
     case Xtank_1_n:
@@ -272,11 +273,11 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      Cave[x][y+1] = Xboom_bomb;
+      cave[x][y+1] = Xboom_bomb;
       break;
   }
 
-  switch(Cave[x-1][y])
+  switch(cave[x-1][y])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -286,7 +287,7 @@ static void kill_player(struct PLAYER *ply)
     case Xbug_2_e:
     case Xbug_2_s:
     case Xbug_2_w:
-      Cave[x-1][y] = Xboom_bug;
+      cave[x-1][y] = Xboom_bug;
       break;
 
     case Xtank_1_n:
@@ -297,11 +298,11 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      Cave[x-1][y] = Xboom_bomb;
+      cave[x-1][y] = Xboom_bomb;
       break;
   }
 
-  switch(Cave[x][y])
+  switch(cave[x][y])
   {
     case Xexit_1:
     case Xexit_2:
@@ -316,7 +317,7 @@ static void kill_player(struct PLAYER *ply)
       break;
   }
 
-  switch(Cave[x][y])
+  switch(cave[x][y])
   {
 #ifdef USE_CHANGED_ACID_STUFF
     case Xacid_1:
@@ -331,8 +332,8 @@ static void kill_player(struct PLAYER *ply)
 #endif
 
     default:
-      Cave[x][y] = Xboom_1;
-      Boom[x][y] = Xblank;
+      cave[x][y] = Xboom_1;
+      boom[x][y] = Xblank;
       break;
   }
 }
@@ -354,16 +355,16 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
   if (ply->joy_snap == 0)		/* player wants to move */
   {
-    int element = Cave[x][y];
+    int element = cave[x][y];
 
-    switch(Cave[x][y])
+    switch(cave[x][y])
     {
       /* fire is released */
       case Xblank:
       case Xacid_splash_e:
       case Xacid_splash_w:
-	Cave[x][y] = Zplayer;
-	Next[x][y] = Zplayer;
+	cave[x][y] = Zplayer;
+	next[x][y] = Zplayer;
 #ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
       case Xfake_acid_1:
       case Xfake_acid_2:
@@ -389,10 +390,10 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xacid_6:
       case Xacid_7:
       case Xacid_8:
-	if (Cave[x+1][y-1] == Xblank)
-	  Cave[x+1][y-1] = Xacid_splash_e;
-	if (Cave[x-1][y-1] == Xblank)
-	  Cave[x-1][y-1] = Xacid_splash_w;
+	if (cave[x+1][y-1] == Xblank)
+	  cave[x+1][y-1] = Xacid_splash_e;
+	if (cave[x-1][y-1] == Xblank)
+	  cave[x-1][y-1] = Xacid_splash_w;
 	play_element_sound(x, y, SOUND_acid, Xacid_1);
 #endif
 
@@ -431,9 +432,9 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xgrass:
-	Cave[x][y] = (dy ? (dy < 0 ? Ygrass_nB : Ygrass_sB) :
+	cave[x][y] = (dy ? (dy < 0 ? Ygrass_nB : Ygrass_sB) :
 		      (dx > 0 ? Ygrass_eB : Ygrass_wB));
-	Next[x][y] = Zplayer;
+	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_dirt, Xgrass);
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
@@ -441,9 +442,9 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xdirt:
-	Cave[x][y] = (dy ? (dy < 0 ? Ydirt_nB : Ydirt_sB) :
+	cave[x][y] = (dy ? (dy < 0 ? Ydirt_nB : Ydirt_sB) :
 		      (dx > 0 ? Ydirt_eB : Ydirt_wB));
-	Next[x][y] = Zplayer;
+	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_dirt, Xdirt);
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
@@ -452,8 +453,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
       case Xdiamond:
       case Xdiamond_pause:
-	Cave[x][y] = Ydiamond_blank;
-	Next[x][y] = Zplayer;
+	cave[x][y] = Ydiamond_blank;
+	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.diamond_score;
 	lev.required = lev.required < 3 ? 0 : lev.required - 3;
@@ -465,8 +466,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
       case Xemerald:
       case Xemerald_pause:
-	Cave[x][y] = Yemerald_blank;
-	Next[x][y] = Zplayer;
+	cave[x][y] = Yemerald_blank;
+	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.emerald_score;
 	lev.required = lev.required < 1 ? 0 : lev.required - 1;
@@ -477,8 +478,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xdynamite:
-	Cave[x][y] = Ydynamite_blank;
-	Next[x][y] = Zplayer;
+	cave[x][y] = Ydynamite_blank;
+	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.dynamite_score;
 	ply->dynamite = ply->dynamite > 9998 ? 9999 : ply->dynamite + 1;
@@ -489,47 +490,47 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
       case Xkey_1:
 	ply->keys |= 0x01;
-	Cave[x][y] = Ykey_1_blank;
+	cave[x][y] = Ykey_1_blank;
 	goto key_walk;
 
       case Xkey_2:
 	ply->keys |= 0x02;
-	Cave[x][y] = Ykey_2_blank;
+	cave[x][y] = Ykey_2_blank;
 	goto key_walk;
 
       case Xkey_3:
 	ply->keys |= 0x04;
-	Cave[x][y] = Ykey_3_blank;
+	cave[x][y] = Ykey_3_blank;
 	goto key_walk;
 
       case Xkey_4:
 	ply->keys |= 0x08;
-	Cave[x][y] = Ykey_4_blank;
+	cave[x][y] = Ykey_4_blank;
 	goto key_walk;
 
       case Xkey_5:
 	ply->keys |= 0x10;
-	Cave[x][y] = Ykey_5_blank;
+	cave[x][y] = Ykey_5_blank;
 	goto key_walk;
 
       case Xkey_6:
 	ply->keys |= 0x20;
-	Cave[x][y] = Ykey_6_blank;
+	cave[x][y] = Ykey_6_blank;
 	goto key_walk;
 
       case Xkey_7:
 	ply->keys |= 0x40;
-	Cave[x][y] = Ykey_7_blank;
+	cave[x][y] = Ykey_7_blank;
 	goto key_walk;
 
       case Xkey_8:
 	ply->keys |= 0x80;
-	Cave[x][y] = Ykey_8_blank;
+	cave[x][y] = Ykey_8_blank;
 	goto key_walk;
 
       key_walk:
 
-	Next[x][y] = Zplayer;
+	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.key_score;
 	ply->anim = PLY_walk_n + anim;
@@ -538,8 +539,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xlenses:
-	Cave[x][y] = Ylenses_blank;
-	Next[x][y] = Zplayer;
+	cave[x][y] = Ylenses_blank;
+	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.lenses_score;
 	lev.lenses_cnt = lev.lenses_time;
@@ -549,8 +550,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xmagnify:
-	Cave[x][y] = Ymagnify_blank;
-	Next[x][y] = Zplayer;
+	cave[x][y] = Ymagnify_blank;
+	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.magnify_score;
 	lev.magnify_cnt = lev.magnify_time;
@@ -563,13 +564,13 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	switch(Cave[x+dx][y])
+	switch(cave[x+dx][y])
 	{
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-	    Cave[x+dx][y] = dx > 0 ? Ystone_e : Ystone_w;
-	    Next[x+dx][y] = Xstone_pause;
+	    cave[x+dx][y] = dx > 0 ? Ystone_e : Ystone_w;
+	    next[x+dx][y] = Xstone_pause;
 	    goto stone_walk;
 
           case Xacid_1:
@@ -580,16 +581,16 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_6:
           case Xacid_7:
           case Xacid_8:
-	    if (Cave[x+dx+1][y-1] == Xblank)
-	      Cave[x+dx+1][y-1] = Xacid_splash_e;
-	    if (Cave[x+dx-1][y-1] == Xblank)
-	      Cave[x+dx-1][y-1] = Xacid_splash_w;
+	    if (cave[x+dx+1][y-1] == Xblank)
+	      cave[x+dx+1][y-1] = Xacid_splash_e;
+	    if (cave[x+dx-1][y-1] == Xblank)
+	      cave[x+dx-1][y-1] = Xacid_splash_w;
 	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 
           stone_walk:
 
-	    Cave[x][y] = dx > 0 ? Ystone_eB : Ystone_wB;
-	    Next[x][y] = Zplayer;
+	    cave[x][y] = dx > 0 ? Ystone_eB : Ystone_wB;
+	    next[x][y] = Zplayer;
 	    play_element_sound(x, y, SOUND_roll, Xstone);
 	    ply->x = x;
 	    break;
@@ -602,13 +603,13 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	switch(Cave[x+dx][y])
+	switch(cave[x+dx][y])
 	{
 	  case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-	    Cave[x+dx][y] = dx > 0 ? Ybomb_e : Ybomb_w;
-	    Next[x+dx][y] = Xbomb_pause;
+	    cave[x+dx][y] = dx > 0 ? Ybomb_e : Ybomb_w;
+	    next[x+dx][y] = Xbomb_pause;
 	    goto bomb_walk;
 
           case Xacid_1:
@@ -619,16 +620,16 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_6:
           case Xacid_7:
           case Xacid_8:
-	    if (Cave[x+dx+1][y-1] == Xblank)
-	      Cave[x+dx+1][y-1] = Xacid_splash_e;
-	    if (Cave[x+dx-1][y-1] == Xblank)
-	      Cave[x+dx-1][y-1] = Xacid_splash_w;
+	    if (cave[x+dx+1][y-1] == Xblank)
+	      cave[x+dx+1][y-1] = Xacid_splash_e;
+	    if (cave[x+dx-1][y-1] == Xblank)
+	      cave[x+dx-1][y-1] = Xacid_splash_w;
 	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 
           bomb_walk:
 
-	    Cave[x][y] = dx > 0 ? Ybomb_eB : Ybomb_wB;
-	    Next[x][y] = Zplayer;
+	    cave[x][y] = dx > 0 ? Ybomb_eB : Ybomb_wB;
+	    next[x][y] = Zplayer;
 	    play_element_sound(x, y, SOUND_roll, Xbomb);
 	    ply->x = x;
 	    break;
@@ -641,13 +642,13 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	switch(Cave[x+dx][y])
+	switch(cave[x+dx][y])
 	{
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-	    Cave[x+dx][y] = dx > 0 ? Ynut_e : Ynut_w;
-	    Next[x+dx][y] = Xnut_pause;
+	    cave[x+dx][y] = dx > 0 ? Ynut_e : Ynut_w;
+	    next[x+dx][y] = Xnut_pause;
 	    goto nut_walk;
 
           case Xacid_1:
@@ -658,16 +659,16 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_6:
           case Xacid_7:
           case Xacid_8:
-	    if (Cave[x+dx+1][y-1] == Xblank)
-	      Cave[x+dx+1][y-1] = Xacid_splash_e;
-	    if (Cave[x+dx-1][y-1] == Xblank)
-	      Cave[x+dx-1][y-1] = Xacid_splash_w;
+	    if (cave[x+dx+1][y-1] == Xblank)
+	      cave[x+dx+1][y-1] = Xacid_splash_e;
+	    if (cave[x+dx-1][y-1] == Xblank)
+	      cave[x+dx-1][y-1] = Xacid_splash_w;
 	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 
           nut_walk:
 
-	    Cave[x][y] = dx > 0 ? Ynut_eB : Ynut_wB;
-	    Next[x][y] = Zplayer;
+	    cave[x][y] = dx > 0 ? Ynut_eB : Ynut_wB;
+	    next[x][y] = Zplayer;
 	    play_element_sound(x, y, SOUND_roll, Xnut);
 	    ply->x = x;
 	    break;
@@ -680,13 +681,13 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	switch(Cave[x+dx][y])
+	switch(cave[x+dx][y])
 	{
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-	    Cave[x+dx][y] = dx > 0 ? Yspring_e : Yspring_w;
-	    Next[x+dx][y] = dx > 0 ? Xspring_e : Xspring_w;
+	    cave[x+dx][y] = dx > 0 ? Yspring_e : Yspring_w;
+	    next[x+dx][y] = dx > 0 ? Xspring_e : Xspring_w;
 	    goto spring_walk;
 
           case Xacid_1:
@@ -697,26 +698,26 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_6:
           case Xacid_7:
           case Xacid_8:
-	    if (Cave[x+dx+1][y-1] == Xblank)
-	      Cave[x+dx+1][y-1] = Xacid_splash_e;
-	    if (Cave[x+dx-1][y-1] == Xblank)
-	      Cave[x+dx-1][y-1] = Xacid_splash_w;
+	    if (cave[x+dx+1][y-1] == Xblank)
+	      cave[x+dx+1][y-1] = Xacid_splash_e;
+	    if (cave[x+dx-1][y-1] == Xblank)
+	      cave[x+dx-1][y-1] = Xacid_splash_w;
 	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 
 	  spring_walk:
 
-	    Cave[x][y] = dx > 0 ? Yspring_eB : Yspring_wB;
-	    Next[x][y] = Zplayer;
+	    cave[x][y] = dx > 0 ? Yspring_eB : Yspring_wB;
+	    next[x][y] = Zplayer;
 	    play_element_sound(x, y, SOUND_roll, Xspring);
 	    ply->x = x;
 	    break;
 
           case Xalien:
           case Xalien_pause:
-	    Cave[x][y] = dx > 0 ? Yspring_alien_eB : Yspring_alien_wB;
-	    Cave[x+dx][y] = dx > 0 ? Yspring_alien_e : Yspring_alien_w;
-	    Next[x][y] = Zplayer;
-	    Next[x+dx][y] = dx > 0 ? Xspring_e : Xspring_w;
+	    cave[x][y] = dx > 0 ? Yspring_alien_eB : Yspring_alien_wB;
+	    cave[x+dx][y] = dx > 0 ? Yspring_alien_e : Yspring_alien_w;
+	    next[x][y] = Zplayer;
+	    next[x+dx][y] = dx > 0 ? Xspring_e : Xspring_w;
 	    play_element_sound(x, y, SOUND_slurp, Xalien);
 	    lev.score += lev.slurp_score;
 	    ply->x = x;
@@ -741,14 +742,14 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xballoon:
-	switch(Cave[x+dx][y+dy])
+	switch(cave[x+dx][y+dy])
 	{
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-	    Cave[x+dx][y+dy] = (dy ? (dy < 0 ? Yballoon_n : Yballoon_s) :
+	    cave[x+dx][y+dy] = (dy ? (dy < 0 ? Yballoon_n : Yballoon_s) :
 				(dx > 0 ? Yballoon_e : Yballoon_w));
-	    Next[x+dx][y+dy] = Xballoon;
+	    next[x+dx][y+dy] = Xballoon;
 	    goto balloon_walk;
 
           case Xacid_1:
@@ -759,17 +760,17 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_6:
           case Xacid_7:
           case Xacid_8:
-	    if (Cave[x+dx+1][y+dy-1] == Xblank)
-	      Cave[x+dx+1][y+dy-1] = Xacid_splash_e;
-	    if (Cave[x+dx-1][y+dy-1] == Xblank)
-	      Cave[x+dx-1][y+dy-1] = Xacid_splash_w;
+	    if (cave[x+dx+1][y+dy-1] == Xblank)
+	      cave[x+dx+1][y+dy-1] = Xacid_splash_e;
+	    if (cave[x+dx-1][y+dy-1] == Xblank)
+	      cave[x+dx-1][y+dy-1] = Xacid_splash_w;
 	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 
 	  balloon_walk:
 
-	    Cave[x][y] = (dy ? (dy < 0 ? Yballoon_nB : Yballoon_sB) :
+	    cave[x][y] = (dy ? (dy < 0 ? Yballoon_nB : Yballoon_sB) :
 			  (dx > 0 ? Yballoon_eB : Yballoon_wB));
-	    Next[x][y] = Zplayer;
+	    next[x][y] = Zplayer;
 	    play_element_sound(x, y, SOUND_push, Xballoon);
 	    ply->x = x;
 	    ply->y = y;
@@ -788,14 +789,14 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xandroid_2_s:
       case Xandroid_1_w:
       case Xandroid_2_w:
-	switch(Cave[x+dx][y+dy])
+	switch(cave[x+dx][y+dy])
 	{
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-	    Cave[x+dx][y+dy] = (dy ? (dy < 0 ? Yandroid_n : Yandroid_s) :
+	    cave[x+dx][y+dy] = (dy ? (dy < 0 ? Yandroid_n : Yandroid_s) :
 				(dx > 0 ? Yandroid_e : Yandroid_w));
-	    Next[x+dx][y+dy] = (dy ? (dy < 0 ? Xandroid_2_n : Xandroid_2_s) :
+	    next[x+dx][y+dy] = (dy ? (dy < 0 ? Xandroid_2_n : Xandroid_2_s) :
 				(dx > 0 ? Xandroid_2_e : Xandroid_2_w));
 	    goto android_walk;
 
@@ -807,17 +808,17 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xacid_6:
           case Xacid_7:
           case Xacid_8:
-	    if (Cave[x+dx+1][y+dy-1] == Xblank)
-	      Cave[x+dx+1][y+dy-1] = Xacid_splash_e;
-	    if (Cave[x+dx-1][y+dy-1] == Xblank)
-	      Cave[x+dx-1][y+dy-1] = Xacid_splash_w;
+	    if (cave[x+dx+1][y+dy-1] == Xblank)
+	      cave[x+dx+1][y+dy-1] = Xacid_splash_e;
+	    if (cave[x+dx-1][y+dy-1] == Xblank)
+	      cave[x+dx-1][y+dy-1] = Xacid_splash_w;
 	    play_element_sound(x, y, SOUND_acid, Xacid_1);
 
 	  android_walk:
 
-	    Cave[x][y] = (dy ? (dy < 0 ? Yandroid_nB : Yandroid_sB) :
+	    cave[x][y] = (dy ? (dy < 0 ? Yandroid_nB : Yandroid_sB) :
 			  (dx > 0 ? Yandroid_eB : Yandroid_wB));
-	    Next[x][y] = Zplayer;
+	    next[x][y] = Zplayer;
 	    play_element_sound(x, y, SOUND_push, Xandroid);
 	    ply->x = x;
 	    ply->y = y;
@@ -885,11 +886,11 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
       door_walk:
 
-	if (!tab_blank[Cave[x+dx][y+dy]])
+	if (!tab_blank[cave[x+dx][y+dy]])
 	  break;
 
-	Cave[x+dx][y+dy] = Zplayer;
-	Next[x+dx][y+dy] = Zplayer;
+	cave[x+dx][y+dy] = Zplayer;
+	next[x+dx][y+dy] = Zplayer;
 	play_element_sound(x, y, SOUND_door, element);
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x + dx;
@@ -941,8 +942,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xplant:
-	Cave[x][y] = Yplant;
-	Next[x][y] = Xplant;
+	cave[x][y] = Yplant;
+	next[x][y] = Xplant;
 	play_element_sound(x, y, SOUND_blank, Xplant);
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
@@ -969,30 +970,30 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
   }
   else					/* player wants to snap */
   {
-    int element = Cave[x][y];
+    int element = cave[x][y];
 
-    switch(Cave[x][y])
+    switch(cave[x][y])
     {
       /* fire is pressed */
 
       case Xgrass:
-	Cave[x][y] = Ygrass_blank;
-	Next[x][y] = Xblank;
+	cave[x][y] = Ygrass_blank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_dirt, element);
 	ply->anim = PLY_shoot_n + anim;
 	break;
 
       case Xdirt:
-	Cave[x][y] = Ydirt_blank;
-	Next[x][y] = Xblank;
+	cave[x][y] = Ydirt_blank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_dirt, element);
 	ply->anim = PLY_shoot_n + anim;
 	break;
 
       case Xdiamond:
       case Xdiamond_pause:
-	Cave[x][y] = Ydiamond_blank;
-	Next[x][y] = Xblank;
+	cave[x][y] = Ydiamond_blank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.diamond_score;
 	lev.required = lev.required < 3 ? 0 : lev.required - 3;
@@ -1002,8 +1003,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
       case Xemerald:
       case Xemerald_pause:
-	Cave[x][y] = Yemerald_blank;
-	Next[x][y] = Xblank;
+	cave[x][y] = Yemerald_blank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.emerald_score;
 	lev.required = lev.required < 1 ? 0 : lev.required - 1;
@@ -1012,8 +1013,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xdynamite:
-	Cave[x][y] = Ydynamite_blank;
-	Next[x][y] = Xblank;
+	cave[x][y] = Ydynamite_blank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.dynamite_score;
 	ply->dynamite = ply->dynamite > 9998 ? 9999 : ply->dynamite + 1;
@@ -1022,55 +1023,55 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
       case Xkey_1:
 	ply->keys |= 0x01;
-	Cave[x][y] = Ykey_1_blank;
+	cave[x][y] = Ykey_1_blank;
 	goto key_shoot;
 
       case Xkey_2:
 	ply->keys |= 0x02;
-	Cave[x][y] = Ykey_2_blank;
+	cave[x][y] = Ykey_2_blank;
 	goto key_shoot;
 
       case Xkey_3:
 	ply->keys |= 0x04;
-	Cave[x][y] = Ykey_3_blank;
+	cave[x][y] = Ykey_3_blank;
 	goto key_shoot;
 
       case Xkey_4:
 	ply->keys |= 0x08;
-	Cave[x][y] = Ykey_4_blank;
+	cave[x][y] = Ykey_4_blank;
 	goto key_shoot;
 
       case Xkey_5:
 	ply->keys |= 0x10;
-	Cave[x][y] = Ykey_5_blank;
+	cave[x][y] = Ykey_5_blank;
 	goto key_shoot;
 
       case Xkey_6:
 	ply->keys |= 0x20;
-	Cave[x][y] = Ykey_6_blank;
+	cave[x][y] = Ykey_6_blank;
 	goto key_shoot;
 
       case Xkey_7:
 	ply->keys |= 0x40;
-	Cave[x][y] = Ykey_7_blank;
+	cave[x][y] = Ykey_7_blank;
 	goto key_shoot;
 
       case Xkey_8:
 	ply->keys |= 0x80;
-	Cave[x][y] = Ykey_8_blank;
+	cave[x][y] = Ykey_8_blank;
 	goto key_shoot;
 
       key_shoot:
 
-	Next[x][y] = Xblank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.key_score;
 	ply->anim = PLY_walk_n + anim;
 	break;
 
       case Xlenses:
-	Cave[x][y] = Ylenses_blank;
-	Next[x][y] = Xblank;
+	cave[x][y] = Ylenses_blank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.lenses_score;
 	lev.lenses_cnt = lev.lenses_time;
@@ -1078,8 +1079,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xmagnify:
-	Cave[x][y] = Ymagnify_blank;
-	Next[x][y] = Xblank;
+	cave[x][y] = Ymagnify_blank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.magnify_score;
 	lev.magnify_cnt = lev.magnify_time;
@@ -1172,7 +1173,7 @@ static void check_player(struct PLAYER *ply)
     {
       if (++ply->dynamite_cnt == 5 && ply->dynamite)
       {
-	Cave[x][y] = Xdynamite_1;
+	cave[x][y] = Xdynamite_1;
 	play_element_sound(x, y, SOUND_dynamite, Xdynamite_1);
 	ply->dynamite--;
       }
@@ -1253,83 +1254,83 @@ static void set_nearest_player_xy(int x, int y, int *dx, int *dy)
 
 static void Lacid_1(int x, int y)
 {
-  Next[x][y] = Xacid_2;
+  next[x][y] = Xacid_2;
 }
 
 static void Lacid_2(int x, int y)
 {
-  Next[x][y] = Xacid_3;
+  next[x][y] = Xacid_3;
 }
 
 static void Lacid_3(int x, int y)
 {
-  Next[x][y] = Xacid_4;
+  next[x][y] = Xacid_4;
 }
 
 static void Lacid_4(int x, int y)
 {
-  Next[x][y] = Xacid_5;
+  next[x][y] = Xacid_5;
 }
 
 static void Lacid_5(int x, int y)
 {
-  Next[x][y] = Xacid_6;
+  next[x][y] = Xacid_6;
 }
 
 static void Lacid_6(int x, int y)
 {
-  Next[x][y] = Xacid_7;
+  next[x][y] = Xacid_7;
 }
 
 static void Lacid_7(int x, int y)
 {
-  Next[x][y] = Xacid_8;
+  next[x][y] = Xacid_8;
 }
 
 static void Lacid_8(int x, int y)
 {
-  Next[x][y] = Xacid_1;
+  next[x][y] = Xacid_1;
 }
 
 #ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 static void Lfake_acid_1(int x, int y)
 {
-  Next[x][y] = Xfake_acid_2;
+  next[x][y] = Xfake_acid_2;
 }
 
 static void Lfake_acid_2(int x, int y)
 {
-  Next[x][y] = Xfake_acid_3;
+  next[x][y] = Xfake_acid_3;
 }
 
 static void Lfake_acid_3(int x, int y)
 {
-  Next[x][y] = Xfake_acid_4;
+  next[x][y] = Xfake_acid_4;
 }
 
 static void Lfake_acid_4(int x, int y)
 {
-  Next[x][y] = Xfake_acid_5;
+  next[x][y] = Xfake_acid_5;
 }
 
 static void Lfake_acid_5(int x, int y)
 {
-  Next[x][y] = Xfake_acid_6;
+  next[x][y] = Xfake_acid_6;
 }
 
 static void Lfake_acid_6(int x, int y)
 {
-  Next[x][y] = Xfake_acid_7;
+  next[x][y] = Xfake_acid_7;
 }
 
 static void Lfake_acid_7(int x, int y)
 {
-  Next[x][y] = Xfake_acid_8;
+  next[x][y] = Xfake_acid_8;
 }
 
 static void Lfake_acid_8(int x, int y)
 {
-  Next[x][y] = Xfake_acid_1;
+  next[x][y] = Xfake_acid_1;
 }
 #endif
 
@@ -1339,14 +1340,14 @@ static void Landroid(int x, int y)
 
   if (lev.android_clone_cnt == 0)
   {
-    if (Cave[x-1][y-1] != Xblank &&
-	Cave[x][y-1]   != Xblank &&
-	Cave[x+1][y-1] != Xblank &&
-	Cave[x-1][y]   != Xblank &&
-	Cave[x+1][y]   != Xblank &&
-	Cave[x-1][y+1] != Xblank &&
-	Cave[x][y+1]   != Xblank &&
-	Cave[x+1][y+1] != Xblank)
+    if (cave[x-1][y-1] != Xblank &&
+	cave[x][y-1]   != Xblank &&
+	cave[x+1][y-1] != Xblank &&
+	cave[x-1][y]   != Xblank &&
+	cave[x+1][y]   != Xblank &&
+	cave[x-1][y+1] != Xblank &&
+	cave[x][y+1]   != Xblank &&
+	cave[x+1][y+1] != Xblank)
       goto android_move;
 
     switch (RANDOM(8))
@@ -1354,95 +1355,95 @@ static void Landroid(int x, int y)
       /* randomly find an object to clone */
 
       case 0: /* S,NE,W,NW,SE,E,SW,N */
-	temp = lev.android_array[Cave[x][y+1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y-1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y+1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y-1]];   if (temp != Xblank) break;
 	goto android_move;
 
       case 1: /* NW,SE,N,S,NE,SW,E,W */
-	temp = lev.android_array[Cave[x-1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y-1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y+1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y-1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y+1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y]];   if (temp != Xblank) break;
 	goto android_move;
 
       case 2: /* SW,E,S,W,N,NW,SE,NE */
-	temp = lev.android_array[Cave[x-1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y+1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y-1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y+1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y-1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y-1]]; if (temp != Xblank) break;
 	goto android_move;
 
       case 3: /* N,SE,NE,E,W,S,NW,SW */
-	temp = lev.android_array[Cave[x][y-1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y+1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y-1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y+1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y+1]]; if (temp != Xblank) break;
 	goto android_move;
 
       case 4: /* SE,NW,E,NE,SW,W,N,S */
-	temp = lev.android_array[Cave[x+1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y-1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y+1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y-1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y+1]];   if (temp != Xblank) break;
 	goto android_move;
 
       case 5: /* NE,W,SE,SW,S,N,E,NW */
-	temp = lev.android_array[Cave[x+1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y+1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y-1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y+1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y-1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y-1]]; if (temp != Xblank) break;
 	goto android_move;
 
       case 6: /* E,N,SW,S,NW,NE,SE,W */
-	temp = lev.android_array[Cave[x+1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y-1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y+1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y-1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y+1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y]];   if (temp != Xblank) break;
 	goto android_move;
 
       case 7: /* W,SW,NW,N,E,SE,NE,S */
-	temp = lev.android_array[Cave[x-1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x-1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y-1]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y]];   if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y+1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x+1][y-1]]; if (temp != Xblank) break;
-	temp = lev.android_array[Cave[x][y+1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x-1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y-1]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y]];   if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y+1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x+1][y-1]]; if (temp != Xblank) break;
+	temp = lev.android_array[cave[x][y+1]];   if (temp != Xblank) break;
 	goto android_move;
     }
 
-    Next[x][y] = temp;	/* the item we chose to clone */
+    next[x][y] = temp;	/* the item we chose to clone */
     play_element_sound(x, y, SOUND_android_clone, temp);
 
     switch (RANDOM(8))
@@ -1450,91 +1451,91 @@ static void Landroid(int x, int y)
       /* randomly find a direction to move */
 
       case 0: /* S,NE,W,NW,SE,E,SW,N */
-	if (Cave[x][y+1] == Xblank)   goto android_s;
-	if (Cave[x+1][y-1] == Xblank) goto android_ne;
-	if (Cave[x-1][y] == Xblank)   goto android_w;
-	if (Cave[x-1][y-1] == Xblank) goto android_nw;
-	if (Cave[x+1][y+1] == Xblank) goto android_se;
-	if (Cave[x+1][y] == Xblank)   goto android_e;
-	if (Cave[x-1][y+1] == Xblank) goto android_sw;
-	if (Cave[x][y-1] == Xblank)   goto android_n;
+	if (cave[x][y+1] == Xblank)   goto android_s;
+	if (cave[x+1][y-1] == Xblank) goto android_ne;
+	if (cave[x-1][y] == Xblank)   goto android_w;
+	if (cave[x-1][y-1] == Xblank) goto android_nw;
+	if (cave[x+1][y+1] == Xblank) goto android_se;
+	if (cave[x+1][y] == Xblank)   goto android_e;
+	if (cave[x-1][y+1] == Xblank) goto android_sw;
+	if (cave[x][y-1] == Xblank)   goto android_n;
 	goto android_move;
 
       case 1: /* NW,SE,N,S,NE,SW,E,W */
-	if (Cave[x-1][y-1] == Xblank) goto android_nw;
-	if (Cave[x+1][y+1] == Xblank) goto android_se;
-	if (Cave[x][y-1] == Xblank)   goto android_n;
-	if (Cave[x][y+1] == Xblank)   goto android_s;
-	if (Cave[x+1][y-1] == Xblank) goto android_ne;
-	if (Cave[x-1][y+1] == Xblank) goto android_sw;
-	if (Cave[x+1][y] == Xblank)   goto android_e;
-	if (Cave[x-1][y] == Xblank)   goto android_w;
+	if (cave[x-1][y-1] == Xblank) goto android_nw;
+	if (cave[x+1][y+1] == Xblank) goto android_se;
+	if (cave[x][y-1] == Xblank)   goto android_n;
+	if (cave[x][y+1] == Xblank)   goto android_s;
+	if (cave[x+1][y-1] == Xblank) goto android_ne;
+	if (cave[x-1][y+1] == Xblank) goto android_sw;
+	if (cave[x+1][y] == Xblank)   goto android_e;
+	if (cave[x-1][y] == Xblank)   goto android_w;
 	goto android_move;
 
       case 2: /* SW,E,S,W,N,NW,SE,NE */
-	if (Cave[x-1][y+1] == Xblank) goto android_sw;
-	if (Cave[x+1][y] == Xblank)   goto android_e;
-	if (Cave[x][y+1] == Xblank)   goto android_s;
-	if (Cave[x-1][y] == Xblank)   goto android_w;
-	if (Cave[x][y-1] == Xblank)   goto android_n;
-	if (Cave[x-1][y-1] == Xblank) goto android_nw;
-	if (Cave[x+1][y+1] == Xblank) goto android_se;
-	if (Cave[x+1][y-1] == Xblank) goto android_ne;
+	if (cave[x-1][y+1] == Xblank) goto android_sw;
+	if (cave[x+1][y] == Xblank)   goto android_e;
+	if (cave[x][y+1] == Xblank)   goto android_s;
+	if (cave[x-1][y] == Xblank)   goto android_w;
+	if (cave[x][y-1] == Xblank)   goto android_n;
+	if (cave[x-1][y-1] == Xblank) goto android_nw;
+	if (cave[x+1][y+1] == Xblank) goto android_se;
+	if (cave[x+1][y-1] == Xblank) goto android_ne;
 	goto android_move;
 
       case 3: /* N,SE,NE,E,W,S,NW,SW */
-	if (Cave[x][y-1] == Xblank)   goto android_n;
-	if (Cave[x+1][y+1] == Xblank) goto android_se;
-	if (Cave[x+1][y-1] == Xblank) goto android_ne;
-	if (Cave[x+1][y] == Xblank)   goto android_e;
-	if (Cave[x-1][y] == Xblank)   goto android_w;
-	if (Cave[x][y+1] == Xblank)   goto android_s;
-	if (Cave[x-1][y-1] == Xblank) goto android_nw;
-	if (Cave[x-1][y+1] == Xblank) goto android_sw;
+	if (cave[x][y-1] == Xblank)   goto android_n;
+	if (cave[x+1][y+1] == Xblank) goto android_se;
+	if (cave[x+1][y-1] == Xblank) goto android_ne;
+	if (cave[x+1][y] == Xblank)   goto android_e;
+	if (cave[x-1][y] == Xblank)   goto android_w;
+	if (cave[x][y+1] == Xblank)   goto android_s;
+	if (cave[x-1][y-1] == Xblank) goto android_nw;
+	if (cave[x-1][y+1] == Xblank) goto android_sw;
 	goto android_move;
 
       case 4: /* SE,NW,E,NE,SW,W,N,S */
-	if (Cave[x+1][y+1] == Xblank) goto android_se;
-	if (Cave[x-1][y-1] == Xblank) goto android_nw;
-	if (Cave[x+1][y] == Xblank)   goto android_e;
-	if (Cave[x+1][y-1] == Xblank) goto android_ne;
-	if (Cave[x-1][y+1] == Xblank) goto android_sw;
-	if (Cave[x-1][y] == Xblank)   goto android_w;
-	if (Cave[x][y-1] == Xblank)   goto android_n;
-	if (Cave[x][y+1] == Xblank)   goto android_s;
+	if (cave[x+1][y+1] == Xblank) goto android_se;
+	if (cave[x-1][y-1] == Xblank) goto android_nw;
+	if (cave[x+1][y] == Xblank)   goto android_e;
+	if (cave[x+1][y-1] == Xblank) goto android_ne;
+	if (cave[x-1][y+1] == Xblank) goto android_sw;
+	if (cave[x-1][y] == Xblank)   goto android_w;
+	if (cave[x][y-1] == Xblank)   goto android_n;
+	if (cave[x][y+1] == Xblank)   goto android_s;
 	goto android_move;
 
       case 5: /* NE,W,SE,SW,S,N,E,NW */
-	if (Cave[x+1][y-1] == Xblank) goto android_ne;
-	if (Cave[x-1][y] == Xblank)   goto android_w;
-	if (Cave[x+1][y+1] == Xblank) goto android_se;
-	if (Cave[x-1][y+1] == Xblank) goto android_sw;
-	if (Cave[x][y+1] == Xblank)   goto android_s;
-	if (Cave[x][y-1] == Xblank)   goto android_n;
-	if (Cave[x+1][y] == Xblank)   goto android_e;
-	if (Cave[x-1][y-1] == Xblank) goto android_nw;
+	if (cave[x+1][y-1] == Xblank) goto android_ne;
+	if (cave[x-1][y] == Xblank)   goto android_w;
+	if (cave[x+1][y+1] == Xblank) goto android_se;
+	if (cave[x-1][y+1] == Xblank) goto android_sw;
+	if (cave[x][y+1] == Xblank)   goto android_s;
+	if (cave[x][y-1] == Xblank)   goto android_n;
+	if (cave[x+1][y] == Xblank)   goto android_e;
+	if (cave[x-1][y-1] == Xblank) goto android_nw;
 	goto android_move;
 
       case 6: /* E,N,SW,S,NW,NE,SE,W */
-	if (Cave[x+1][y] == Xblank)   goto android_e;
-	if (Cave[x][y-1] == Xblank)   goto android_n;
-	if (Cave[x-1][y+1] == Xblank) goto android_sw;
-	if (Cave[x][y+1] == Xblank)   goto android_s;
-	if (Cave[x-1][y-1] == Xblank) goto android_nw;
-	if (Cave[x+1][y-1] == Xblank) goto android_ne;
-	if (Cave[x+1][y+1] == Xblank) goto android_se;
-	if (Cave[x-1][y] == Xblank)   goto android_w;
+	if (cave[x+1][y] == Xblank)   goto android_e;
+	if (cave[x][y-1] == Xblank)   goto android_n;
+	if (cave[x-1][y+1] == Xblank) goto android_sw;
+	if (cave[x][y+1] == Xblank)   goto android_s;
+	if (cave[x-1][y-1] == Xblank) goto android_nw;
+	if (cave[x+1][y-1] == Xblank) goto android_ne;
+	if (cave[x+1][y+1] == Xblank) goto android_se;
+	if (cave[x-1][y] == Xblank)   goto android_w;
 	goto android_move;
 
       case 7: /* W,SW,NW,N,E,SE,NE,S */
-	if (Cave[x-1][y] == Xblank)   goto android_w;
-	if (Cave[x-1][y+1] == Xblank) goto android_sw;
-	if (Cave[x-1][y-1] == Xblank) goto android_nw;
-	if (Cave[x][y-1] == Xblank)   goto android_n;
-	if (Cave[x+1][y] == Xblank)   goto android_e;
-	if (Cave[x+1][y+1] == Xblank) goto android_se;
-	if (Cave[x+1][y-1] == Xblank) goto android_ne;
-	if (Cave[x][y+1] == Xblank)   goto android_s;
+	if (cave[x-1][y] == Xblank)   goto android_w;
+	if (cave[x-1][y+1] == Xblank) goto android_sw;
+	if (cave[x-1][y-1] == Xblank) goto android_nw;
+	if (cave[x][y-1] == Xblank)   goto android_n;
+	if (cave[x+1][y] == Xblank)   goto android_e;
+	if (cave[x+1][y+1] == Xblank) goto android_se;
+	if (cave[x+1][y-1] == Xblank) goto android_ne;
+	if (cave[x][y+1] == Xblank)   goto android_s;
 	goto android_move;
     }
   }
@@ -1542,19 +1543,19 @@ static void Landroid(int x, int y)
  android_move:
   if (lev.android_move_cnt == 0)
   {
-    if (Cave[x-1][y-1] == Zplayer ||
-	Cave[x][y-1]   == Zplayer ||
-	Cave[x+1][y-1] == Zplayer ||
-	Cave[x-1][y]   == Zplayer ||
-	Cave[x+1][y]   == Zplayer ||
-	Cave[x-1][y+1] == Zplayer ||
-	Cave[x][y+1]   == Zplayer ||
-	Cave[x+1][y+1] == Zplayer)
+    if (cave[x-1][y-1] == Zplayer ||
+	cave[x][y-1]   == Zplayer ||
+	cave[x+1][y-1] == Zplayer ||
+	cave[x-1][y]   == Zplayer ||
+	cave[x+1][y]   == Zplayer ||
+	cave[x-1][y+1] == Zplayer ||
+	cave[x][y+1]   == Zplayer ||
+	cave[x+1][y+1] == Zplayer)
       goto android_still;
 
     set_nearest_player_xy(x, y, &dx, &dy);
 
-    Next[x][y] = Xblank;	/* assume we will move */
+    next[x][y] = Xblank;	/* assume we will move */
     temp = ((x < dx) + 1 - (x > dx)) + ((y < dy) + 1 - (y > dy)) * 3;
 
     if (RANDOM(2))
@@ -1564,54 +1565,54 @@ static void Landroid(int x, int y)
 	/* attempt clockwise move first if direct path is blocked */
 
 	case 0: /* north west */
-	  if (tab_android_move[Cave[x-1][y-1]]) goto android_nw;
-	  if (tab_android_move[Cave[x][y-1]])   goto android_n;
-	  if (tab_android_move[Cave[x-1][y]])   goto android_w;
+	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
+	  if (tab_android_move[cave[x][y-1]])   goto android_n;
+	  if (tab_android_move[cave[x-1][y]])   goto android_w;
 	  break;
 
 	case 1: /* north */
-	  if (tab_android_move[Cave[x][y-1]])   goto android_n;
-	  if (tab_android_move[Cave[x+1][y-1]]) goto android_ne;
-	  if (tab_android_move[Cave[x-1][y-1]]) goto android_nw;
+	  if (tab_android_move[cave[x][y-1]])   goto android_n;
+	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
+	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
 	  break;
 
 	case 2: /* north east */
-	  if (tab_android_move[Cave[x+1][y-1]]) goto android_ne;
-	  if (tab_android_move[Cave[x+1][y]])   goto android_e;
-	  if (tab_android_move[Cave[x][y-1]])   goto android_n;
+	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
+	  if (tab_android_move[cave[x+1][y]])   goto android_e;
+	  if (tab_android_move[cave[x][y-1]])   goto android_n;
 	  break;
 
 	case 3: /* west */
-	  if (tab_android_move[Cave[x-1][y]])   goto android_w;
-	  if (tab_android_move[Cave[x-1][y-1]]) goto android_nw;
-	  if (tab_android_move[Cave[x-1][y+1]]) goto android_sw;
+	  if (tab_android_move[cave[x-1][y]])   goto android_w;
+	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
+	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
 	  break;
 
 	case 4: /* nowhere */
 	  break;
 
 	case 5: /* east */
-	  if (tab_android_move[Cave[x+1][y]])   goto android_e;
-	  if (tab_android_move[Cave[x+1][y+1]]) goto android_se;
-	  if (tab_android_move[Cave[x+1][y-1]]) goto android_ne;
+	  if (tab_android_move[cave[x+1][y]])   goto android_e;
+	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
+	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
 	  break;
 
 	case 6: /* south west */
-	  if (tab_android_move[Cave[x-1][y+1]]) goto android_sw;
-	  if (tab_android_move[Cave[x-1][y]])   goto android_w;
-	  if (tab_android_move[Cave[x][y+1]])   goto android_s;
+	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
+	  if (tab_android_move[cave[x-1][y]])   goto android_w;
+	  if (tab_android_move[cave[x][y+1]])   goto android_s;
 	  break;
 
 	case 7: /* south */
-	  if (tab_android_move[Cave[x][y+1]])   goto android_s;
-	  if (tab_android_move[Cave[x-1][y+1]]) goto android_sw;
-	  if (tab_android_move[Cave[x+1][y+1]]) goto android_se;
+	  if (tab_android_move[cave[x][y+1]])   goto android_s;
+	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
+	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
 	  break;
 
 	case 8: /* south east */
-	  if (tab_android_move[Cave[x+1][y+1]]) goto android_se;
-	  if (tab_android_move[Cave[x][y+1]])   goto android_s;
-	  if (tab_android_move[Cave[x+1][y]])   goto android_e;
+	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
+	  if (tab_android_move[cave[x][y+1]])   goto android_s;
+	  if (tab_android_move[cave[x+1][y]])   goto android_e;
 	  break;
       }
     }
@@ -1622,131 +1623,131 @@ static void Landroid(int x, int y)
 	/* attempt counterclockwise move first if direct path is blocked */
 
 	case 0: /* north west */
-	  if (tab_android_move[Cave[x-1][y-1]]) goto android_nw;
-	  if (tab_android_move[Cave[x-1][y]])   goto android_w;
-	  if (tab_android_move[Cave[x][y-1]])   goto android_n;
+	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
+	  if (tab_android_move[cave[x-1][y]])   goto android_w;
+	  if (tab_android_move[cave[x][y-1]])   goto android_n;
 	  break;
 
 	case 1: /* north */
-	  if (tab_android_move[Cave[x][y-1]])   goto android_n;
-	  if (tab_android_move[Cave[x-1][y-1]]) goto android_nw;
-	  if (tab_android_move[Cave[x+1][y-1]]) goto android_ne;
+	  if (tab_android_move[cave[x][y-1]])   goto android_n;
+	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
+	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
 	  break;
 
 	case 2: /* north east */
-	  if (tab_android_move[Cave[x+1][y-1]]) goto android_ne;
-	  if (tab_android_move[Cave[x][y-1]])   goto android_n;
-	  if (tab_android_move[Cave[x+1][y]])   goto android_e;
+	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
+	  if (tab_android_move[cave[x][y-1]])   goto android_n;
+	  if (tab_android_move[cave[x+1][y]])   goto android_e;
 	  break;
 
 	case 3: /* west */
-	  if (tab_android_move[Cave[x-1][y]])   goto android_w;
-	  if (tab_android_move[Cave[x-1][y+1]]) goto android_sw;
-	  if (tab_android_move[Cave[x-1][y-1]]) goto android_nw;
+	  if (tab_android_move[cave[x-1][y]])   goto android_w;
+	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
+	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
 	  break;
 
 	case 4: /* nowhere */
 	  break;
 
 	case 5: /* east */
-	  if (tab_android_move[Cave[x+1][y]])   goto android_e;
-	  if (tab_android_move[Cave[x+1][y-1]]) goto android_ne;
-	  if (tab_android_move[Cave[x+1][y+1]]) goto android_se;
+	  if (tab_android_move[cave[x+1][y]])   goto android_e;
+	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
+	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
 	  break;
 
 	case 6: /* south west */
-	  if (tab_android_move[Cave[x-1][y+1]]) goto android_sw;
-	  if (tab_android_move[Cave[x][y+1]])   goto android_s;
-	  if (tab_android_move[Cave[x-1][y]])   goto android_w;
+	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
+	  if (tab_android_move[cave[x][y+1]])   goto android_s;
+	  if (tab_android_move[cave[x-1][y]])   goto android_w;
 	  break;
 
 	case 7: /* south */
-	  if (tab_android_move[Cave[x][y+1]])   goto android_s;
-	  if (tab_android_move[Cave[x+1][y+1]]) goto android_se;
-	  if (tab_android_move[Cave[x-1][y+1]]) goto android_sw;
+	  if (tab_android_move[cave[x][y+1]])   goto android_s;
+	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
+	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
 	  break;
 
 	case 8: /* south east */
-	  if (tab_android_move[Cave[x+1][y+1]]) goto android_se;
-	  if (tab_android_move[Cave[x+1][y]])   goto android_e;
-	  if (tab_android_move[Cave[x][y+1]])   goto android_s;
+	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
+	  if (tab_android_move[cave[x+1][y]])   goto android_e;
+	  if (tab_android_move[cave[x][y+1]])   goto android_s;
 	  break;
       }
     }
   }
 
  android_still:
-  Next[x][y] = Xandroid;
+  next[x][y] = Xandroid;
   return;
 
  android_n:
-  Cave[x][y] = Yandroid_nB;
-  Cave[x][y-1] = Yandroid_n;
-  Next[x][y-1] = Xandroid;
+  cave[x][y] = Yandroid_nB;
+  cave[x][y-1] = Yandroid_n;
+  next[x][y-1] = Xandroid;
   play_element_sound(x, y, SOUND_android_move, Xandroid);
   return;
 
  android_ne:
-  Cave[x][y] = Yandroid_neB;
-  Cave[x+1][y-1] = Yandroid_ne;
-  Next[x+1][y-1] = Xandroid;
+  cave[x][y] = Yandroid_neB;
+  cave[x+1][y-1] = Yandroid_ne;
+  next[x+1][y-1] = Xandroid;
   play_element_sound(x, y, SOUND_android_move, Xandroid);
   return;
 
  android_e:
-  Cave[x][y] = Yandroid_eB;
-  Cave[x+1][y] = Yandroid_e;
-  Next[x+1][y] = Xandroid;
+  cave[x][y] = Yandroid_eB;
+  cave[x+1][y] = Yandroid_e;
+  next[x+1][y] = Xandroid;
   play_element_sound(x, y, SOUND_android_move, Xandroid);
   return;
 
  android_se:
-  Cave[x][y] = Yandroid_seB;
-  Cave[x+1][y+1] = Yandroid_se;
-  Next[x+1][y+1] = Xandroid;
+  cave[x][y] = Yandroid_seB;
+  cave[x+1][y+1] = Yandroid_se;
+  next[x+1][y+1] = Xandroid;
   play_element_sound(x, y, SOUND_android_move, Xandroid);
   return;
 
  android_s:
-  Cave[x][y] = Yandroid_sB;
-  Cave[x][y+1] = Yandroid_s;
-  Next[x][y+1] = Xandroid;
+  cave[x][y] = Yandroid_sB;
+  cave[x][y+1] = Yandroid_s;
+  next[x][y+1] = Xandroid;
   play_element_sound(x, y, SOUND_android_move, Xandroid);
   return;
 
  android_sw:
-  Cave[x][y] = Yandroid_swB;
-  Cave[x-1][y+1] = Yandroid_sw;
-  Next[x-1][y+1] = Xandroid;
+  cave[x][y] = Yandroid_swB;
+  cave[x-1][y+1] = Yandroid_sw;
+  next[x-1][y+1] = Xandroid;
   play_element_sound(x, y, SOUND_android_move, Xandroid);
   return;
 
  android_w:
-  Cave[x][y] = Yandroid_wB;
-  Cave[x-1][y] = Yandroid_w;
-  Next[x-1][y] = Xandroid;
+  cave[x][y] = Yandroid_wB;
+  cave[x-1][y] = Yandroid_w;
+  next[x-1][y] = Xandroid;
   play_element_sound(x, y, SOUND_android_move, Xandroid);
   return;
 
  android_nw:
-  Cave[x][y] = Yandroid_nwB;
-  Cave[x-1][y-1] = Yandroid_nw;
-  Next[x-1][y-1] = Xandroid;
+  cave[x][y] = Yandroid_nwB;
+  cave[x-1][y-1] = Yandroid_nw;
+  next[x-1][y-1] = Xandroid;
   play_element_sound(x, y, SOUND_android_move, Xandroid);
   return;
 }
 
 static void Landroid_1_n(int x, int y)
 {
-  switch (Cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yandroid_nB;
-      Next[x][y] = Xblank;
-      Cave[x][y-1] = Yandroid_n;
-      Next[x][y-1] = Xandroid;
+      cave[x][y] = Yandroid_nB;
+      next[x][y] = Xblank;
+      cave[x][y-1] = Yandroid_n;
+      next[x][y-1] = Xandroid;
       play_element_sound(x, y, SOUND_android_move, Xandroid_1_n);
       return;
 
@@ -1758,12 +1759,12 @@ static void Landroid_1_n(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yandroid_nB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y-2] == Xblank)
-	Cave[x+1][y-2] = Xacid_splash_e;
-      if (Cave[x-1][y-2] == Xblank)
-	Cave[x-1][y-2] = Xacid_splash_w;
+      cave[x][y] = Yandroid_nB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y-2] == Xblank)
+	cave[x+1][y-2] = Xacid_splash_e;
+      if (cave[x-1][y-2] == Xblank)
+	cave[x-1][y-2] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -1775,15 +1776,15 @@ static void Landroid_1_n(int x, int y)
 
 static void Landroid_2_n(int x, int y)
 {
-  switch (Cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yandroid_nB;
-      Next[x][y] = Xblank;
-      Cave[x][y-1] = Yandroid_n;
-      Next[x][y-1] = Xandroid_1_n;
+      cave[x][y] = Yandroid_nB;
+      next[x][y] = Xblank;
+      cave[x][y-1] = Yandroid_n;
+      next[x][y-1] = Xandroid_1_n;
       play_element_sound(x, y, SOUND_android_move, Xandroid_2_n);
       return;
 
@@ -1795,12 +1796,12 @@ static void Landroid_2_n(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yandroid_nB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y-2] == Xblank)
-	Cave[x+1][y-2] = Xacid_splash_e;
-      if (Cave[x-1][y-2] == Xblank)
-	Cave[x-1][y-2] = Xacid_splash_w;
+      cave[x][y] = Yandroid_nB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y-2] == Xblank)
+	cave[x+1][y-2] = Xacid_splash_e;
+      if (cave[x-1][y-2] == Xblank)
+	cave[x-1][y-2] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -1812,15 +1813,15 @@ static void Landroid_2_n(int x, int y)
 
 static void Landroid_1_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yandroid_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Yandroid_e;
-      Next[x+1][y] = Xandroid;
+      cave[x][y] = Yandroid_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Yandroid_e;
+      next[x+1][y] = Xandroid;
       play_element_sound(x, y, SOUND_android_move, Xandroid_1_e);
       return;
 
@@ -1832,12 +1833,12 @@ static void Landroid_1_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yandroid_eB;
-      Next[x][y] = Xblank;
-      if (Cave[x+2][y-1] == Xblank)
-	Cave[x+2][y-1] = Xacid_splash_e;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_w;
+      cave[x][y] = Yandroid_eB;
+      next[x][y] = Xblank;
+      if (cave[x+2][y-1] == Xblank)
+	cave[x+2][y-1] = Xacid_splash_e;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -1849,15 +1850,15 @@ static void Landroid_1_e(int x, int y)
 
 static void Landroid_2_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yandroid_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Yandroid_e;
-      Next[x+1][y] = Xandroid_1_e;
+      cave[x][y] = Yandroid_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Yandroid_e;
+      next[x+1][y] = Xandroid_1_e;
       play_element_sound(x, y, SOUND_android_move, Xandroid_2_e);
       return;
 
@@ -1869,12 +1870,12 @@ static void Landroid_2_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yandroid_eB;
-      Next[x][y] = Xblank;
-      if (Cave[x+2][y-1] == Xblank)
-	Cave[x+2][y-1] = Xacid_splash_e;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_w;
+      cave[x][y] = Yandroid_eB;
+      next[x][y] = Xblank;
+      if (cave[x+2][y-1] == Xblank)
+	cave[x+2][y-1] = Xacid_splash_e;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -1886,15 +1887,15 @@ static void Landroid_2_e(int x, int y)
 
 static void Landroid_1_s(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yandroid_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yandroid_s;
-      Next[x][y+1] = Xandroid;
+      cave[x][y] = Yandroid_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yandroid_s;
+      next[x][y+1] = Xandroid;
       play_element_sound(x, y, SOUND_android_move, Xandroid_1_s);
       return;
 
@@ -1906,12 +1907,12 @@ static void Landroid_1_s(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yandroid_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yandroid_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -1923,15 +1924,15 @@ static void Landroid_1_s(int x, int y)
 
 static void Landroid_2_s(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yandroid_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yandroid_s;
-      Next[x][y+1] = Xandroid_1_s;
+      cave[x][y] = Yandroid_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yandroid_s;
+      next[x][y+1] = Xandroid_1_s;
       play_element_sound(x, y, SOUND_android_move, Xandroid_2_s);
       return;
 
@@ -1943,12 +1944,12 @@ static void Landroid_2_s(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yandroid_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yandroid_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -1960,15 +1961,15 @@ static void Landroid_2_s(int x, int y)
 
 static void Landroid_1_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yandroid_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Yandroid_w;
-      Next[x-1][y] = Xandroid;
+      cave[x][y] = Yandroid_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Yandroid_w;
+      next[x-1][y] = Xandroid;
       play_element_sound(x, y, SOUND_android_move, Xandroid_1_w);
       return;
 
@@ -1980,12 +1981,12 @@ static void Landroid_1_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yandroid_wB;
-      Next[x][y] = Xblank;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_e;
-      if (Cave[x-2][y-1] == Xblank)
-	Cave[x-2][y-1] = Xacid_splash_w;
+      cave[x][y] = Yandroid_wB;
+      next[x][y] = Xblank;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_e;
+      if (cave[x-2][y-1] == Xblank)
+	cave[x-2][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -1997,15 +1998,15 @@ static void Landroid_1_w(int x, int y)
 
 static void Landroid_2_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yandroid_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Yandroid_w;
-      Next[x-1][y] = Xandroid_1_w;
+      cave[x][y] = Yandroid_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Yandroid_w;
+      next[x-1][y] = Xandroid_1_w;
       play_element_sound(x, y, SOUND_android_move, Xandroid_1_w);
       return;
 
@@ -2017,12 +2018,12 @@ static void Landroid_2_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yandroid_wB;
-      Next[x][y] = Xblank;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_e;
-      if (Cave[x-2][y-1] == Xblank)
-	Cave[x-2][y-1] = Xacid_splash_w;
+      cave[x][y] = Yandroid_wB;
+      next[x][y] = Xblank;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_e;
+      if (cave[x-2][y-1] == Xblank)
+	cave[x-2][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -2034,39 +2035,39 @@ static void Landroid_2_w(int x, int y)
 
 static void Leater_n(int x, int y)
 {
-  if (Cave[x+1][y] == Xdiamond)
+  if (cave[x+1][y] == Xdiamond)
   {
-    Cave[x+1][y] = Ydiamond_blank;
-    Next[x+1][y] = Xblank;
+    cave[x+1][y] = Ydiamond_blank;
+    next[x+1][y] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_n);
     return;
   }
 
-  if (Cave[x][y+1] == Xdiamond)
+  if (cave[x][y+1] == Xdiamond)
   {
-    Cave[x][y+1] = Ydiamond_blank;
-    Next[x][y+1] = Xblank;
+    cave[x][y+1] = Ydiamond_blank;
+    next[x][y+1] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_n);
     return;
   }
 
-  if (Cave[x-1][y] == Xdiamond)
+  if (cave[x-1][y] == Xdiamond)
   {
-    Cave[x-1][y] = Ydiamond_blank;
-    Next[x-1][y] = Xblank;
+    cave[x-1][y] = Ydiamond_blank;
+    next[x-1][y] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_n);
     return;
   }
 
-  if (Cave[x][y-1] == Xdiamond)
+  if (cave[x][y-1] == Xdiamond)
   {
-    Cave[x][y-1] = Ydiamond_blank;
-    Next[x][y-1] = Xblank;
+    cave[x][y-1] = Ydiamond_blank;
+    next[x][y-1] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_n);
     return;
   }
 
-  switch (Cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2074,10 +2075,10 @@ static void Leater_n(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Yeater_nB;
-      Next[x][y] = Xblank;
-      Cave[x][y-1] = Yeater_n;
-      Next[x][y-1] = Xeater_n;
+      cave[x][y] = Yeater_nB;
+      next[x][y] = Xblank;
+      cave[x][y-1] = Yeater_n;
+      next[x][y-1] = Xeater_n;
       return;
 
     case Xacid_1:
@@ -2088,17 +2089,17 @@ static void Leater_n(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yeater_nB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y-2] == Xblank)
-	Cave[x+1][y-2] = Xacid_splash_e;
-      if (Cave[x-1][y-2] == Xblank)
-	Cave[x-1][y-2] = Xacid_splash_w;
+      cave[x][y] = Yeater_nB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y-2] == Xblank)
+	cave[x+1][y-2] = Xacid_splash_e;
+      if (cave[x-1][y-2] == Xblank)
+	cave[x-1][y-2] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Next[x][y] = RANDOM(2) ? Xeater_e : Xeater_w;
+      next[x][y] = RANDOM(2) ? Xeater_e : Xeater_w;
       play_element_sound(x, y, SOUND_eater, Xeater_n);
       return;
   }
@@ -2106,39 +2107,39 @@ static void Leater_n(int x, int y)
 
 static void Leater_e(int x, int y)
 {
-  if (Cave[x][y+1] == Xdiamond)
+  if (cave[x][y+1] == Xdiamond)
   {
-    Cave[x][y+1] = Ydiamond_blank;
-    Next[x][y+1] = Xblank;
+    cave[x][y+1] = Ydiamond_blank;
+    next[x][y+1] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_e);
     return;
   }
 
-  if (Cave[x-1][y] == Xdiamond)
+  if (cave[x-1][y] == Xdiamond)
   {
-    Cave[x-1][y] = Ydiamond_blank;
-    Next[x-1][y] = Xblank;
+    cave[x-1][y] = Ydiamond_blank;
+    next[x-1][y] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_e);
     return;
   }
 
-  if (Cave[x][y-1] == Xdiamond)
+  if (cave[x][y-1] == Xdiamond)
   {
-    Cave[x][y-1] = Ydiamond_blank;
-    Next[x][y-1] = Xblank;
+    cave[x][y-1] = Ydiamond_blank;
+    next[x][y-1] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_e);
     return;
   }
 
-  if (Cave[x+1][y] == Xdiamond)
+  if (cave[x+1][y] == Xdiamond)
   {
-    Cave[x+1][y] = Ydiamond_blank;
-    Next[x+1][y] = Xblank;
+    cave[x+1][y] = Ydiamond_blank;
+    next[x+1][y] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_e);
     return;
   }
 
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2146,10 +2147,10 @@ static void Leater_e(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Yeater_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Yeater_e;
-      Next[x+1][y] = Xeater_e;
+      cave[x][y] = Yeater_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Yeater_e;
+      next[x+1][y] = Xeater_e;
       return;
 
     case Xacid_1:
@@ -2160,17 +2161,17 @@ static void Leater_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yeater_eB;
-      Next[x][y] = Xblank;
-      if (Cave[x+2][y-1] == Xblank)
-	Cave[x+2][y-1] = Xacid_splash_e;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_w;
+      cave[x][y] = Yeater_eB;
+      next[x][y] = Xblank;
+      if (cave[x+2][y-1] == Xblank)
+	cave[x+2][y-1] = Xacid_splash_e;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Next[x][y] = RANDOM(2) ? Xeater_n : Xeater_s;
+      next[x][y] = RANDOM(2) ? Xeater_n : Xeater_s;
       play_element_sound(x, y, SOUND_eater, Xeater_e);
       return;
   }
@@ -2178,39 +2179,39 @@ static void Leater_e(int x, int y)
 
 static void Leater_s(int x, int y)
 {
-  if (Cave[x-1][y] == Xdiamond)
+  if (cave[x-1][y] == Xdiamond)
   {
-    Cave[x-1][y] = Ydiamond_blank;
-    Next[x-1][y] = Xblank;
+    cave[x-1][y] = Ydiamond_blank;
+    next[x-1][y] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_s);
     return;
   }
 
-  if (Cave[x][y-1] == Xdiamond)
+  if (cave[x][y-1] == Xdiamond)
   {
-    Cave[x][y-1] = Ydiamond_blank;
-    Next[x][y-1] = Xblank;
+    cave[x][y-1] = Ydiamond_blank;
+    next[x][y-1] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_s);
     return;
   }
 
-  if (Cave[x+1][y] == Xdiamond)
+  if (cave[x+1][y] == Xdiamond)
   {
-    Cave[x+1][y] = Ydiamond_blank;
-    Next[x+1][y] = Xblank;
+    cave[x+1][y] = Ydiamond_blank;
+    next[x+1][y] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_s);
     return;
   }
 
-  if (Cave[x][y+1] == Xdiamond)
+  if (cave[x][y+1] == Xdiamond)
   {
-    Cave[x][y+1] = Ydiamond_blank;
-    Next[x][y+1] = Xblank;
+    cave[x][y+1] = Ydiamond_blank;
+    next[x][y+1] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_s);
     return;
   }
 
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2218,10 +2219,10 @@ static void Leater_s(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Yeater_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yeater_s;
-      Next[x][y+1] = Xeater_s;
+      cave[x][y] = Yeater_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yeater_s;
+      next[x][y+1] = Xeater_s;
       return;
 
     case Xacid_1:
@@ -2232,17 +2233,17 @@ static void Leater_s(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yeater_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yeater_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Next[x][y] = RANDOM(2) ? Xeater_e : Xeater_w;
+      next[x][y] = RANDOM(2) ? Xeater_e : Xeater_w;
       play_element_sound(x, y, SOUND_eater, Xeater_s);
       return;
   }
@@ -2250,39 +2251,39 @@ static void Leater_s(int x, int y)
 
 static void Leater_w(int x, int y)
 {
-  if (Cave[x][y-1] == Xdiamond)
+  if (cave[x][y-1] == Xdiamond)
   {
-    Cave[x][y-1] = Ydiamond_blank;
-    Next[x][y-1] = Xblank;
+    cave[x][y-1] = Ydiamond_blank;
+    next[x][y-1] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_w);
     return;
   }
 
-  if (Cave[x+1][y] == Xdiamond)
+  if (cave[x+1][y] == Xdiamond)
   {
-    Cave[x+1][y] = Ydiamond_blank;
-    Next[x+1][y] = Xblank;
+    cave[x+1][y] = Ydiamond_blank;
+    next[x+1][y] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_w);
     return;
   }
 
-  if (Cave[x][y+1] == Xdiamond)
+  if (cave[x][y+1] == Xdiamond)
   {
-    Cave[x][y+1] = Ydiamond_blank;
-    Next[x][y+1] = Xblank;
+    cave[x][y+1] = Ydiamond_blank;
+    next[x][y+1] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_w);
     return;
   }
 
-  if (Cave[x-1][y] == Xdiamond)
+  if (cave[x-1][y] == Xdiamond)
   {
-    Cave[x-1][y] = Ydiamond_blank;
-    Next[x-1][y] = Xblank;
+    cave[x-1][y] = Ydiamond_blank;
+    next[x-1][y] = Xblank;
     play_element_sound(x, y, SOUND_eater_eat, Xeater_w);
     return;
   }
 
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2290,10 +2291,10 @@ static void Leater_w(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Yeater_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Yeater_w;
-      Next[x-1][y] = Xeater_w;
+      cave[x][y] = Yeater_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Yeater_w;
+      next[x-1][y] = Xeater_w;
       return;
 
     case Xacid_1:
@@ -2304,17 +2305,17 @@ static void Leater_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yeater_wB;
-      Next[x][y] = Xblank;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_e;
-      if (Cave[x-2][y-1] == Xblank)
-	Cave[x-2][y-1] = Xacid_splash_w;
+      cave[x][y] = Yeater_wB;
+      next[x][y] = Xblank;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_e;
+      if (cave[x-2][y-1] == Xblank)
+	cave[x-2][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Next[x][y] = RANDOM(2) ? Xeater_n : Xeater_s;
+      next[x][y] = RANDOM(2) ? Xeater_n : Xeater_s;
       play_element_sound(x, y, SOUND_eater, Xeater_w);
       return;
   }
@@ -2338,7 +2339,7 @@ static void Lalien(int x, int y)
   {
     if (y > dy)
     {
-      switch (Cave[x][y-1])
+      switch (cave[x][y-1])
       {
 	case Xblank:
 	case Xacid_splash_e:
@@ -2346,10 +2347,10 @@ static void Lalien(int x, int y)
 	case Xplant:
 	case Yplant:
 	case Zplayer:
-	  Cave[x][y] = Yalien_nB;
-	  Next[x][y] = Xblank;
-	  Cave[x][y-1] = Yalien_n;
-	  Next[x][y-1] = Xalien_pause;
+	  cave[x][y] = Yalien_nB;
+	  next[x][y] = Xblank;
+	  cave[x][y-1] = Yalien_n;
+	  next[x][y-1] = Xalien_pause;
 	  play_element_sound(x, y, SOUND_alien, Xalien);
 	  return;
 
@@ -2361,19 +2362,19 @@ static void Lalien(int x, int y)
 	case Xacid_6:
 	case Xacid_7:
 	case Xacid_8:
-	  Cave[x][y] = Yalien_nB;
-	  Next[x][y] = Xblank;
-	  if (Cave[x+1][y-2] == Xblank)
-	    Cave[x+1][y-2] = Xacid_splash_e;
-	  if (Cave[x-1][y-2] == Xblank)
-	    Cave[x-1][y-2] = Xacid_splash_w;
+	  cave[x][y] = Yalien_nB;
+	  next[x][y] = Xblank;
+	  if (cave[x+1][y-2] == Xblank)
+	    cave[x+1][y-2] = Xacid_splash_e;
+	  if (cave[x-1][y-2] == Xblank)
+	    cave[x-1][y-2] = Xacid_splash_w;
 	  play_element_sound(x, y, SOUND_acid, Xacid_1);
 	  return;
       }
     }
     else if (y < dy)
     {
-      switch (Cave[x][y+1])
+      switch (cave[x][y+1])
       {
 	case Xblank:
 	case Xacid_splash_e:
@@ -2381,10 +2382,10 @@ static void Lalien(int x, int y)
 	case Xplant:
 	case Yplant:
 	case Zplayer:
-	  Cave[x][y] = Yalien_sB;
-	  Next[x][y] = Xblank;
-	  Cave[x][y+1] = Yalien_s;
-	  Next[x][y+1] = Xalien_pause;
+	  cave[x][y] = Yalien_sB;
+	  next[x][y] = Xblank;
+	  cave[x][y+1] = Yalien_s;
+	  next[x][y+1] = Xalien_pause;
 	  play_element_sound(x, y, SOUND_alien, Xalien);
 	  return;
 
@@ -2396,12 +2397,12 @@ static void Lalien(int x, int y)
 	case Xacid_6:
 	case Xacid_7:
 	case Xacid_8:
-	  Cave[x][y] = Yalien_sB;
-	  Next[x][y] = Xblank;
-	  if (Cave[x+1][y] == Xblank)
-	    Cave[x+1][y] = Xacid_splash_e;
-	  if (Cave[x-1][y] == Xblank)
-	    Cave[x-1][y] = Xacid_splash_w;
+	  cave[x][y] = Yalien_sB;
+	  next[x][y] = Xblank;
+	  if (cave[x+1][y] == Xblank)
+	    cave[x+1][y] = Xacid_splash_e;
+	  if (cave[x-1][y] == Xblank)
+	    cave[x-1][y] = Xacid_splash_w;
 	  play_element_sound(x, y, SOUND_acid, Xacid_1);
 	  return;
       }
@@ -2411,7 +2412,7 @@ static void Lalien(int x, int y)
   {
     if (x < dx)
     {
-      switch (Cave[x+1][y])
+      switch (cave[x+1][y])
       {
 	case Xblank:
 	case Xacid_splash_e:
@@ -2419,10 +2420,10 @@ static void Lalien(int x, int y)
 	case Xplant:
 	case Yplant:
 	case Zplayer:
-	  Cave[x][y] = Yalien_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Yalien_e;
-	  Next[x+1][y] = Xalien_pause;
+	  cave[x][y] = Yalien_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Yalien_e;
+	  next[x+1][y] = Xalien_pause;
 	  play_element_sound(x, y, SOUND_alien, Xalien);
 	  return;
 
@@ -2434,19 +2435,19 @@ static void Lalien(int x, int y)
 	case Xacid_6:
 	case Xacid_7:
 	case Xacid_8:
-	  Cave[x][y] = Yalien_eB;
-	  Next[x][y] = Xblank;
-	  if (Cave[x+2][y-1] == Xblank)
-	    Cave[x+2][y-1] = Xacid_splash_e;
-	  if (Cave[x][y-1] == Xblank)
-	    Cave[x][y-1] = Xacid_splash_w;
+	  cave[x][y] = Yalien_eB;
+	  next[x][y] = Xblank;
+	  if (cave[x+2][y-1] == Xblank)
+	    cave[x+2][y-1] = Xacid_splash_e;
+	  if (cave[x][y-1] == Xblank)
+	    cave[x][y-1] = Xacid_splash_w;
 	  play_element_sound(x, y, SOUND_acid, Xacid_1);
 	  return;
       }
     }
     else if (x > dx)
     {
-      switch (Cave[x-1][y])
+      switch (cave[x-1][y])
       {
 	case Xblank:
 	case Xacid_splash_e:
@@ -2454,10 +2455,10 @@ static void Lalien(int x, int y)
 	case Xplant:
 	case Yplant:
 	case Zplayer:
-	  Cave[x][y] = Yalien_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Yalien_w;
-	  Next[x-1][y] = Xalien_pause;
+	  cave[x][y] = Yalien_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Yalien_w;
+	  next[x-1][y] = Xalien_pause;
 	  play_element_sound(x, y, SOUND_alien, Xalien);
 	  return;
 
@@ -2469,12 +2470,12 @@ static void Lalien(int x, int y)
 	case Xacid_6:
 	case Xacid_7:
 	case Xacid_8:
-	  Cave[x][y] = Yalien_wB;
-	  Next[x][y] = Xblank;
-	  if (Cave[x][y-1] == Xblank)
-	    Cave[x][y-1] = Xacid_splash_e;
-	  if (Cave[x-2][y-1] == Xblank)
-	    Cave[x-2][y-1] = Xacid_splash_w;
+	  cave[x][y] = Yalien_wB;
+	  next[x][y] = Xblank;
+	  if (cave[x][y-1] == Xblank)
+	    cave[x][y-1] = Xacid_splash_e;
+	  if (cave[x-2][y-1] == Xblank)
+	    cave[x-2][y-1] = Xacid_splash_w;
 	  play_element_sound(x, y, SOUND_acid, Xacid_1);
 	  return;
       }
@@ -2484,12 +2485,12 @@ static void Lalien(int x, int y)
 
 static void Lalien_pause(int x, int y)
 {
-  Next[x][y] = Xalien;
+  next[x][y] = Xalien;
 }
 
 static void Lbug_n(int x, int y)
 {
-  switch (Cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2497,10 +2498,10 @@ static void Lbug_n(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ybug_nB;
-      Next[x][y] = Xblank;
-      Cave[x][y-1] = Ybug_n;
-      Next[x][y-1] = Xbug_1_n;
+      cave[x][y] = Ybug_nB;
+      next[x][y] = Xblank;
+      cave[x][y-1] = Ybug_n;
+      next[x][y-1] = Xbug_1_n;
       play_element_sound(x, y, SOUND_bug, Xbug_1_n);
       return;
 
@@ -2512,18 +2513,18 @@ static void Lbug_n(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ybug_nB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y-2] == Xblank)
-	Cave[x+1][y-2] = Xacid_splash_e;
-      if (Cave[x-1][y-2] == Xblank)
-	Cave[x-1][y-2] = Xacid_splash_w;
+      cave[x][y] = Ybug_nB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y-2] == Xblank)
+	cave[x+1][y-2] = Xacid_splash_e;
+      if (cave[x-1][y-2] == Xblank)
+	cave[x-1][y-2] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ybug_n_w;
-      Next[x][y] = Xbug_2_w;
+      cave[x][y] = Ybug_n_w;
+      next[x][y] = Xbug_2_w;
       play_element_sound(x, y, SOUND_bug, Xbug_1_n);
       return;
   }
@@ -2531,17 +2532,17 @@ static void Lbug_n(int x, int y)
 
 static void Lbug_1_n(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_1_n);
 
     return;
   }
 
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2557,8 +2558,8 @@ static void Lbug_1_n(int x, int y)
     case Xacid_7:
     case Xacid_8:
     case Zplayer:
-      Cave[x][y] = Ybug_n_e;
-      Next[x][y] = Xbug_2_e;
+      cave[x][y] = Ybug_n_e;
+      next[x][y] = Xbug_2_e;
       play_element_sound(x, y, SOUND_bug, Xbug_1_n);
       return;
 
@@ -2570,10 +2571,10 @@ static void Lbug_1_n(int x, int y)
 
 static void Lbug_2_n(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_2_n);
 
@@ -2585,7 +2586,7 @@ static void Lbug_2_n(int x, int y)
 
 static void Lbug_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2593,10 +2594,10 @@ static void Lbug_e(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ybug_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Ybug_e;
-      Next[x+1][y] = Xbug_1_e;
+      cave[x][y] = Ybug_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Ybug_e;
+      next[x+1][y] = Xbug_1_e;
       play_element_sound(x, y, SOUND_bug, Xbug_1_e);
       return;
 
@@ -2608,18 +2609,18 @@ static void Lbug_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ybug_eB;
-      Next[x][y] = Xblank;
-      if (Cave[x+2][y-1] == Xblank)
-	Cave[x+2][y-1] = Xacid_splash_e;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_w;
+      cave[x][y] = Ybug_eB;
+      next[x][y] = Xblank;
+      if (cave[x+2][y-1] == Xblank)
+	cave[x+2][y-1] = Xacid_splash_e;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ybug_e_n;
-      Next[x][y] = Xbug_2_n;
+      cave[x][y] = Ybug_e_n;
+      next[x][y] = Xbug_2_n;
       play_element_sound(x, y, SOUND_bug, Xbug_1_e);
       return;
   }
@@ -2627,17 +2628,17 @@ static void Lbug_e(int x, int y)
 
 static void Lbug_1_e(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_1_e);
 
     return;
   }
 
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2653,8 +2654,8 @@ static void Lbug_1_e(int x, int y)
     case Xacid_7:
     case Xacid_8:
     case Zplayer:
-      Cave[x][y] = Ybug_e_s;
-      Next[x][y] = Xbug_2_s;
+      cave[x][y] = Ybug_e_s;
+      next[x][y] = Xbug_2_s;
       play_element_sound(x, y, SOUND_bug, Xbug_1_e);
       return;
 
@@ -2666,10 +2667,10 @@ static void Lbug_1_e(int x, int y)
 
 static void Lbug_2_e(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_2_e);
 
@@ -2681,7 +2682,7 @@ static void Lbug_2_e(int x, int y)
 
 static void Lbug_s(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2689,10 +2690,10 @@ static void Lbug_s(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ybug_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ybug_s;
-      Next[x][y+1] = Xbug_1_s;
+      cave[x][y] = Ybug_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ybug_s;
+      next[x][y+1] = Xbug_1_s;
       play_element_sound(x, y, SOUND_bug, Xbug_1_s);
       return;
 
@@ -2704,18 +2705,18 @@ static void Lbug_s(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ybug_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ybug_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ybug_s_e;
-      Next[x][y] = Xbug_2_e;
+      cave[x][y] = Ybug_s_e;
+      next[x][y] = Xbug_2_e;
       play_element_sound(x, y, SOUND_bug, Xbug_1_s);
       return;
   }
@@ -2723,17 +2724,17 @@ static void Lbug_s(int x, int y)
 
 static void Lbug_1_s(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_1_s);
 
     return;
   }
 
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2749,8 +2750,8 @@ static void Lbug_1_s(int x, int y)
     case Xacid_7:
     case Xacid_8:
     case Zplayer:
-      Cave[x][y] = Ybug_s_w;
-      Next[x][y] = Xbug_2_w;
+      cave[x][y] = Ybug_s_w;
+      next[x][y] = Xbug_2_w;
       play_element_sound(x, y, SOUND_bug, Xbug_1_s);
       return;
 
@@ -2762,10 +2763,10 @@ static void Lbug_1_s(int x, int y)
 
 static void Lbug_2_s(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_2_s);
 
@@ -2777,7 +2778,7 @@ static void Lbug_2_s(int x, int y)
 
 static void Lbug_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2785,10 +2786,10 @@ static void Lbug_w(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ybug_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Ybug_w;
-      Next[x-1][y] = Xbug_1_w;
+      cave[x][y] = Ybug_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Ybug_w;
+      next[x-1][y] = Xbug_1_w;
       play_element_sound(x, y, SOUND_bug, Xbug_1_w);
       return;
 
@@ -2800,18 +2801,18 @@ static void Lbug_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ybug_wB;
-      Next[x][y] = Xblank;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_e;
-      if (Cave[x-2][y-1] == Xblank)
-	Cave[x-2][y-1] = Xacid_splash_w;
+      cave[x][y] = Ybug_wB;
+      next[x][y] = Xblank;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_e;
+      if (cave[x-2][y-1] == Xblank)
+	cave[x-2][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ybug_w_s;
-      Next[x][y] = Xbug_2_s;
+      cave[x][y] = Ybug_w_s;
+      next[x][y] = Xbug_2_s;
       play_element_sound(x, y, SOUND_bug, Xbug_1_w);
       return;
   }
@@ -2819,17 +2820,17 @@ static void Lbug_w(int x, int y)
 
 static void Lbug_1_w(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_1_w);
 
     return;
   }
 
-  switch (Cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2845,8 +2846,8 @@ static void Lbug_1_w(int x, int y)
     case Xacid_7:
     case Xacid_8:
     case Zplayer:
-      Cave[x][y] = Ybug_w_n;
-      Next[x][y] = Xbug_2_n;
+      cave[x][y] = Ybug_w_n;
+      next[x][y] = Xbug_2_n;
       play_element_sound(x, y, SOUND_bug, Xbug_1_w);
       return;
 
@@ -2858,10 +2859,10 @@ static void Lbug_1_w(int x, int y)
 
 static void Lbug_2_w(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_2_w);
 
@@ -2873,7 +2874,7 @@ static void Lbug_2_w(int x, int y)
 
 static void Ltank_n(int x, int y)
 {
-  switch (Cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2881,10 +2882,10 @@ static void Ltank_n(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ytank_nB;
-      Next[x][y] = Xblank;
-      Cave[x][y-1] = Ytank_n;
-      Next[x][y-1] = Xtank_1_n;
+      cave[x][y] = Ytank_nB;
+      next[x][y] = Xblank;
+      cave[x][y-1] = Ytank_n;
+      next[x][y-1] = Xtank_1_n;
       play_element_sound(x, y, SOUND_tank, Xtank_1_n);
       return;
 
@@ -2896,18 +2897,18 @@ static void Ltank_n(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ytank_nB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y-2] == Xblank)
-	Cave[x+1][y-2] = Xacid_splash_e;
-      if (Cave[x-1][y-2] == Xblank)
-	Cave[x-1][y-2] = Xacid_splash_w;
+      cave[x][y] = Ytank_nB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y-2] == Xblank)
+	cave[x+1][y-2] = Xacid_splash_e;
+      if (cave[x-1][y-2] == Xblank)
+	cave[x-1][y-2] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ytank_n_e;
-      Next[x][y] = Xtank_2_e;
+      cave[x][y] = Ytank_n_e;
+      next[x][y] = Xtank_2_e;
       play_element_sound(x, y, SOUND_tank, Xtank_1_n);
       return;
   }
@@ -2915,17 +2916,17 @@ static void Ltank_n(int x, int y)
 
 static void Ltank_1_n(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_1_n);
 
     return;
   }
 
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2941,8 +2942,8 @@ static void Ltank_1_n(int x, int y)
     case Xacid_7:
     case Xacid_8:
     case Zplayer:
-      Cave[x][y] = Ytank_n_w;
-      Next[x][y] = Xtank_2_w;
+      cave[x][y] = Ytank_n_w;
+      next[x][y] = Xtank_2_w;
       play_element_sound(x, y, SOUND_tank, Xtank_1_n);
       return;
 
@@ -2954,10 +2955,10 @@ static void Ltank_1_n(int x, int y)
 
 static void Ltank_2_n(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_2_n);
 
@@ -2969,7 +2970,7 @@ static void Ltank_2_n(int x, int y)
 
 static void Ltank_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -2977,10 +2978,10 @@ static void Ltank_e(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ytank_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Ytank_e;
-      Next[x+1][y] = Xtank_1_e;
+      cave[x][y] = Ytank_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Ytank_e;
+      next[x+1][y] = Xtank_1_e;
       play_element_sound(x, y, SOUND_tank, Xtank_1_e);
       return;
 
@@ -2992,18 +2993,18 @@ static void Ltank_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ytank_eB;
-      Next[x][y] = Xblank;
-      if (Cave[x+2][y-1] == Xblank)
-	Cave[x+2][y-1] = Xacid_splash_e;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_w;
+      cave[x][y] = Ytank_eB;
+      next[x][y] = Xblank;
+      if (cave[x+2][y-1] == Xblank)
+	cave[x+2][y-1] = Xacid_splash_e;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ytank_e_s;
-      Next[x][y] = Xtank_2_s;
+      cave[x][y] = Ytank_e_s;
+      next[x][y] = Xtank_2_s;
       play_element_sound(x, y, SOUND_tank, Xtank_1_e);
       return;
   }
@@ -3011,17 +3012,17 @@ static void Ltank_e(int x, int y)
 
 static void Ltank_1_e(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_1_e);
 
     return;
   }
 
-  switch (Cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -3037,8 +3038,8 @@ static void Ltank_1_e(int x, int y)
     case Xacid_7:
     case Xacid_8:
     case Zplayer:
-      Cave[x][y] = Ytank_e_n;
-      Next[x][y] = Xtank_2_n;
+      cave[x][y] = Ytank_e_n;
+      next[x][y] = Xtank_2_n;
       play_element_sound(x, y, SOUND_tank, Xtank_1_e);
       return;
 
@@ -3050,10 +3051,10 @@ static void Ltank_1_e(int x, int y)
 
 static void Ltank_2_e(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_2_e);
 
@@ -3065,7 +3066,7 @@ static void Ltank_2_e(int x, int y)
 
 static void Ltank_s(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -3073,10 +3074,10 @@ static void Ltank_s(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ytank_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ytank_s;
-      Next[x][y+1] = Xtank_1_s;
+      cave[x][y] = Ytank_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ytank_s;
+      next[x][y+1] = Xtank_1_s;
       play_element_sound(x, y, SOUND_tank, Xtank_1_s);
       return;
 
@@ -3088,18 +3089,18 @@ static void Ltank_s(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ytank_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ytank_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ytank_s_w;
-      Next[x][y] = Xtank_2_w;
+      cave[x][y] = Ytank_s_w;
+      next[x][y] = Xtank_2_w;
       play_element_sound(x, y, SOUND_tank, Xtank_1_s);
       return;
   }
@@ -3107,17 +3108,17 @@ static void Ltank_s(int x, int y)
 
 static void Ltank_1_s(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_1_s);
 
     return;
   }
 
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -3133,8 +3134,8 @@ static void Ltank_1_s(int x, int y)
     case Xacid_7:
     case Xacid_8:
     case Zplayer:
-      Cave[x][y] = Ytank_s_e;
-      Next[x][y] = Xtank_2_e;
+      cave[x][y] = Ytank_s_e;
+      next[x][y] = Xtank_2_e;
       play_element_sound(x, y, SOUND_tank, Xtank_1_s);
       return;
 
@@ -3146,10 +3147,10 @@ static void Ltank_1_s(int x, int y)
 
 static void Ltank_2_s(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_2_s);
 
@@ -3161,7 +3162,7 @@ static void Ltank_2_s(int x, int y)
 
 static void Ltank_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -3169,10 +3170,10 @@ static void Ltank_w(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ytank_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Ytank_w;
-      Next[x-1][y] = Xtank_1_w;
+      cave[x][y] = Ytank_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Ytank_w;
+      next[x-1][y] = Xtank_1_w;
       play_element_sound(x, y, SOUND_tank, Xtank_1_w);
       return;
 
@@ -3184,18 +3185,18 @@ static void Ltank_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ytank_wB;
-      Next[x][y] = Xblank;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_e;
-      if (Cave[x-2][y-1] == Xblank)
-	Cave[x-2][y-1] = Xacid_splash_w;
+      cave[x][y] = Ytank_wB;
+      next[x][y] = Xblank;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_e;
+      if (cave[x-2][y-1] == Xblank)
+	cave[x-2][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ytank_w_n;
-      Next[x][y] = Xtank_2_n;
+      cave[x][y] = Ytank_w_n;
+      next[x][y] = Xtank_2_n;
       play_element_sound(x, y, SOUND_tank, Xtank_1_w);
       return;
   }
@@ -3203,17 +3204,17 @@ static void Ltank_w(int x, int y)
 
 static void Ltank_1_w(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_1_w);
 
     return;
   }
 
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -3229,8 +3230,8 @@ static void Ltank_1_w(int x, int y)
     case Xacid_7:
     case Xacid_8:
     case Zplayer:
-      Cave[x][y] = Ytank_w_s;
-      Next[x][y] = Xtank_2_s;
+      cave[x][y] = Ytank_w_s;
+      next[x][y] = Xtank_2_s;
       play_element_sound(x, y, SOUND_tank, Xtank_1_w);
       return;
 
@@ -3242,10 +3243,10 @@ static void Ltank_1_w(int x, int y)
 
 static void Ltank_2_w(int x, int y)
 {
-  if (tab_amoeba[Cave[x][y-1]] ||
-      tab_amoeba[Cave[x+1][y]] ||
-      tab_amoeba[Cave[x][y+1]] ||
-      tab_amoeba[Cave[x-1][y]])
+  if (tab_amoeba[cave[x][y-1]] ||
+      tab_amoeba[cave[x+1][y]] ||
+      tab_amoeba[cave[x][y+1]] ||
+      tab_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_2_w);
 
@@ -3257,15 +3258,15 @@ static void Ltank_2_w(int x, int y)
 
 static void Lemerald(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yemerald_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yemerald_s;
-      Next[x][y+1] = Xemerald_fall;
+      cave[x][y] = Yemerald_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yemerald_s;
+      next[x][y+1] = Xemerald_fall;
       return;
 
     case Xacid_1:
@@ -3276,12 +3277,12 @@ static void Lemerald(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yemerald_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yemerald_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -3340,41 +3341,41 @@ static void Lemerald(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Yemerald_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Yemerald_e;
-	  Next[x+1][y] = Xemerald_pause;
+	  cave[x][y] = Yemerald_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Yemerald_e;
+	  next[x+1][y] = Xemerald_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Yemerald_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Yemerald_w;
-	  Next[x-1][y] = Xemerald_pause;
+	  cave[x][y] = Yemerald_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Yemerald_w;
+	  next[x-1][y] = Xemerald_pause;
 	  return;
 	}
       }
       else
       {
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Yemerald_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Yemerald_w;
-	  Next[x-1][y] = Xemerald_pause;
+	  cave[x][y] = Yemerald_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Yemerald_w;
+	  next[x-1][y] = Xemerald_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Yemerald_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Yemerald_e;
-	  Next[x+1][y] = Xemerald_pause;
+	  cave[x][y] = Yemerald_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Yemerald_e;
+	  next[x+1][y] = Xemerald_pause;
 	  return;
 	}
       }
@@ -3383,7 +3384,7 @@ static void Lemerald(int x, int y)
       if (++lev.shine_cnt > 50)
       {
 	lev.shine_cnt = RANDOM(8);
-	Cave[x][y] = Xemerald_shine;
+	cave[x][y] = Xemerald_shine;
       }
 
       return;
@@ -3392,15 +3393,15 @@ static void Lemerald(int x, int y)
 
 static void Lemerald_pause(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yemerald_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yemerald_s;
-      Next[x][y+1] = Xemerald_fall;
+      cave[x][y] = Yemerald_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yemerald_s;
+      next[x][y+1] = Xemerald_fall;
       return;
 
     case Xacid_1:
@@ -3411,34 +3412,34 @@ static void Lemerald_pause(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yemerald_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yemerald_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Xemerald;
-      Next[x][y] = Xemerald;
+      cave[x][y] = Xemerald;
+      next[x][y] = Xemerald;
       return;
   }
 }
 
 static void Lemerald_fall(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
     case Zplayer:
-      Cave[x][y] = Yemerald_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yemerald_s;
-      Next[x][y+1] = Xemerald_fall;
+      cave[x][y] = Yemerald_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yemerald_s;
+      next[x][y+1] = Xemerald_fall;
       return;
 
     case Xacid_1:
@@ -3449,12 +3450,12 @@ static void Lemerald_fall(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yemerald_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yemerald_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -3462,21 +3463,21 @@ static void Lemerald_fall(int x, int y)
       if (lev.wonderwall_time)
       {
 	lev.wonderwall_state = 1;
-	Cave[x][y] = Yemerald_sB;
-	if (tab_blank[Cave[x][y+2]])
+	cave[x][y] = Yemerald_sB;
+	if (tab_blank[cave[x][y+2]])
 	{
-	  Cave[x][y+2] = Ydiamond_s;
-	  Next[x][y+2] = Xdiamond_fall;
+	  cave[x][y+2] = Ydiamond_s;
+	  next[x][y+2] = Xdiamond_fall;
 	}
 
-	Next[x][y] = Xblank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_wonderfall, Xwonderwall);
 	return;
       }
 
     default:
-      Cave[x][y] = Xemerald;
-      Next[x][y] = Xemerald;
+      cave[x][y] = Xemerald;
+      next[x][y] = Xemerald;
       play_element_sound(x, y, SOUND_diamond, Xemerald);
       return;
   }
@@ -3484,15 +3485,15 @@ static void Lemerald_fall(int x, int y)
 
 static void Ldiamond(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Ydiamond_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ydiamond_s;
-      Next[x][y+1] = Xdiamond_fall;
+      cave[x][y] = Ydiamond_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ydiamond_s;
+      next[x][y+1] = Xdiamond_fall;
       return;
 
     case Xacid_1:
@@ -3503,12 +3504,12 @@ static void Ldiamond(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ydiamond_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ydiamond_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -3567,41 +3568,41 @@ static void Ldiamond(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Ydiamond_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Ydiamond_e;
-	  Next[x+1][y] = Xdiamond_pause;
+	  cave[x][y] = Ydiamond_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Ydiamond_e;
+	  next[x+1][y] = Xdiamond_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Ydiamond_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Ydiamond_w;
-	  Next[x-1][y] = Xdiamond_pause;
+	  cave[x][y] = Ydiamond_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Ydiamond_w;
+	  next[x-1][y] = Xdiamond_pause;
 	  return;
 	}
       }
       else
       {
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Ydiamond_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Ydiamond_w;
-	  Next[x-1][y] = Xdiamond_pause;
+	  cave[x][y] = Ydiamond_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Ydiamond_w;
+	  next[x-1][y] = Xdiamond_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Ydiamond_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Ydiamond_e;
-	  Next[x+1][y] = Xdiamond_pause;
+	  cave[x][y] = Ydiamond_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Ydiamond_e;
+	  next[x+1][y] = Xdiamond_pause;
 	  return;
 	}
       }
@@ -3610,7 +3611,7 @@ static void Ldiamond(int x, int y)
       if (++lev.shine_cnt > 50)
       {
 	lev.shine_cnt = RANDOM(8);
-	Cave[x][y] = Xdiamond_shine;
+	cave[x][y] = Xdiamond_shine;
       }
 
       return;
@@ -3619,15 +3620,15 @@ static void Ldiamond(int x, int y)
 
 static void Ldiamond_pause(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Ydiamond_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ydiamond_s;
-      Next[x][y+1] = Xdiamond_fall;
+      cave[x][y] = Ydiamond_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ydiamond_s;
+      next[x][y+1] = Xdiamond_fall;
       return;
 
     case Xacid_1:
@@ -3638,34 +3639,34 @@ static void Ldiamond_pause(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ydiamond_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ydiamond_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Xdiamond;
-      Next[x][y] = Xdiamond;
+      cave[x][y] = Xdiamond;
+      next[x][y] = Xdiamond;
       return;
   }
 }
 
 static void Ldiamond_fall(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
     case Zplayer:
-      Cave[x][y] = Ydiamond_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ydiamond_s;
-      Next[x][y+1] = Xdiamond_fall;
+      cave[x][y] = Ydiamond_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ydiamond_s;
+      next[x][y+1] = Xdiamond_fall;
       return;
 
     case Xacid_1:
@@ -3676,12 +3677,12 @@ static void Ldiamond_fall(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ydiamond_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ydiamond_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -3689,21 +3690,21 @@ static void Ldiamond_fall(int x, int y)
       if (lev.wonderwall_time)
       {
 	lev.wonderwall_state = 1;
-	Cave[x][y] = Ydiamond_sB;
-	if (tab_blank[Cave[x][y+2]])
+	cave[x][y] = Ydiamond_sB;
+	if (tab_blank[cave[x][y+2]])
 	{
-	  Cave[x][y+2] = Ystone_s;
-	  Next[x][y+2] = Xstone_fall;
+	  cave[x][y+2] = Ystone_s;
+	  next[x][y+2] = Xstone_fall;
 	}
 
-	Next[x][y] = Xblank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_wonderfall, Xwonderwall);
 	return;
       }
 
     default:
-      Cave[x][y] = Xdiamond;
-      Next[x][y] = Xdiamond;
+      cave[x][y] = Xdiamond;
+      next[x][y] = Xdiamond;
       play_element_sound(x, y, SOUND_diamond, Xdiamond);
       return;
   }
@@ -3711,7 +3712,7 @@ static void Ldiamond_fall(int x, int y)
 
 static void Lstone(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -3728,10 +3729,10 @@ static void Lstone(int x, int y)
     case Xfake_acid_7:
     case Xfake_acid_8:
 #endif
-      Cave[x][y] = Ystone_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ystone_s;
-      Next[x][y+1] = Xstone_fall;
+      cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ystone_s;
+      next[x][y+1] = Xstone_fall;
       return;
 
     case Xacid_1:
@@ -3742,20 +3743,20 @@ static void Lstone(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ystone_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     case Xsand:
-      Cave[x][y] = Xsand_stonein_1;
-      Next[x][y] = Xsand_stonein_2;
-      Cave[x][y+1] = Xsand_sandstone_1;
-      Next[x][y+1] = Xsand_sandstone_2;
+      cave[x][y] = Xsand_stonein_1;
+      next[x][y] = Xsand_stonein_2;
+      cave[x][y+1] = Xsand_sandstone_1;
+      next[x][y+1] = Xsand_sandstone_2;
       return;
 
     case Xspring:
@@ -3806,41 +3807,41 @@ static void Lstone(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Ystone_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Ystone_e;
-	  Next[x+1][y] = Xstone_pause;
+	  cave[x][y] = Ystone_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Ystone_e;
+	  next[x+1][y] = Xstone_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Ystone_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Ystone_w;
-	  Next[x-1][y] = Xstone_pause;
+	  cave[x][y] = Ystone_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Ystone_w;
+	  next[x-1][y] = Xstone_pause;
 	  return;
 	}
       }
       else
       {
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Ystone_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Ystone_w;
-	  Next[x-1][y] = Xstone_pause;
+	  cave[x][y] = Ystone_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Ystone_w;
+	  next[x-1][y] = Xstone_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Ystone_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Ystone_e;
-	  Next[x+1][y] = Xstone_pause;
+	  cave[x][y] = Ystone_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Ystone_e;
+	  next[x+1][y] = Xstone_pause;
 	  return;
 	}
       }
@@ -3849,7 +3850,7 @@ static void Lstone(int x, int y)
 
 static void Lstone_pause(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -3864,10 +3865,10 @@ static void Lstone_pause(int x, int y)
     case Xfake_acid_7:
     case Xfake_acid_8:
 #endif
-      Cave[x][y] = Ystone_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ystone_s;
-      Next[x][y+1] = Xstone_fall;
+      cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ystone_s;
+      next[x][y+1] = Xstone_fall;
       return;
 
     case Xacid_1:
@@ -3878,25 +3879,25 @@ static void Lstone_pause(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ystone_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Xstone;
-      Next[x][y] = Xstone;
+      cave[x][y] = Xstone;
+      next[x][y] = Xstone;
       return;
   }
 }
 
 static void Lstone_fall(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -3912,10 +3913,10 @@ static void Lstone_fall(int x, int y)
     case Xfake_acid_7:
     case Xfake_acid_8:
 #endif
-      Cave[x][y] = Ystone_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ystone_s;
-      Next[x][y+1] = Xstone_fall;
+      cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ystone_s;
+      next[x][y+1] = Xstone_fall;
       return;
 
     case Xacid_1:
@@ -3926,20 +3927,20 @@ static void Lstone_fall(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ystone_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     case Xnut:
     case Xnut_pause:
-      Next[x][y] = Xstone;
-      Cave[x][y+1] = Ynut_stone;
-      Next[x][y+1] = Xemerald;
+      next[x][y] = Xstone;
+      cave[x][y+1] = Ynut_stone;
+      next[x][y+1] = Xemerald;
       play_element_sound(x, y, SOUND_crack, Xnut);
       score += lev.nut_score;
       return;
@@ -3952,8 +3953,8 @@ static void Lstone_fall(int x, int y)
     case Xbug_2_e:
     case Xbug_2_s:
     case Xbug_2_w:
-      Cave[x][y] = Ystone_sB;
-      Cave[x][y+1] = Ybug_stone;
+      cave[x][y] = Ystone_sB;
+      cave[x][y+1] = Ybug_stone;
       Lboom_bug(x, y+1, Xstone_fall);
       score += lev.bug_score;
       return;
@@ -3966,8 +3967,8 @@ static void Lstone_fall(int x, int y)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      Cave[x][y] = Ystone_sB;
-      Cave[x][y+1] = Ytank_stone;
+      cave[x][y] = Ystone_sB;
+      cave[x][y+1] = Ytank_stone;
       Lboom_tank(x, y+1, Xstone_fall);
       score += lev.tank_score;
       return;
@@ -3975,62 +3976,62 @@ static void Lstone_fall(int x, int y)
     case Xspring:
       if (RANDOM(2))
       {
-	switch (Cave[x+1][y+1])
+	switch (cave[x+1][y+1])
 	{
 	  case Xblank:
 	  case Xacid_splash_e:
 	  case Xacid_splash_w:
 	  case Xalien:
 	  case Xalien_pause:
-	    Cave[x][y+1] = Xspring_e;
+	    cave[x][y+1] = Xspring_e;
 	    break;
 
 	  default:
-	    Cave[x][y+1] = Xspring_w;
+	    cave[x][y+1] = Xspring_w;
 	    break;
 	}
       }
       else
       {
-	switch (Cave[x-1][y+1])
+	switch (cave[x-1][y+1])
 	{
 	  case Xblank:
 	  case Xacid_splash_e:
 	  case Xacid_splash_w:
 	  case Xalien:
 	  case Xalien_pause:
-	    Cave[x][y+1] = Xspring_w;
+	    cave[x][y+1] = Xspring_w;
 	    break;
 	  default:
-	    Cave[x][y+1] = Xspring_e;
+	    cave[x][y+1] = Xspring_e;
 	    break;
 	}
       }
 
-      Next[x][y] = Xstone;
+      next[x][y] = Xstone;
       return;
 
     case Xeater_n:
     case Xeater_e:
     case Xeater_s:
     case Xeater_w:
-      Cave[x][y] = Ystone_sB;
-      Cave[x][y+1] = Yeater_stone;
+      cave[x][y] = Ystone_sB;
+      cave[x][y+1] = Yeater_stone;
       Lboom_eater(x, y+1, Xstone_fall);
       score += lev.eater_score;
       return;
 
     case Xalien:
     case Xalien_pause:
-      Cave[x][y] = Ystone_sB;
-      Cave[x][y+1] = Yalien_stone;
+      cave[x][y] = Ystone_sB;
+      cave[x][y+1] = Yalien_stone;
       Lboom_tank(x, y+1, Xstone_fall);
       score += lev.alien_score;
       return;
 
     case Xdiamond:
     case Xdiamond_pause:
-      switch (Cave[x][y+2])
+      switch (cave[x][y+2])
       {
 	case Xblank:
 	case Xacid_splash_e:
@@ -4078,21 +4079,21 @@ static void Lstone_fall(int x, int y)
 	case Xnut_fall:
 	case Xplant:
 	case Yplant:
-	  Next[x][y] = Xstone;
+	  next[x][y] = Xstone;
 	  play_element_sound(x, y, SOUND_stone, Xstone);
 	  return;
       }
 
-      Cave[x][y] = Ystone_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ydiamond_stone;
-      Next[x][y+1] = Xstone_pause;
+      cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ydiamond_stone;
+      next[x][y+1] = Xstone_pause;
       play_element_sound(x, y, SOUND_squash, Xdiamond);
       return;
 
     case Xbomb:
     case Xbomb_pause:
-      Cave[x][y+1] = Ybomb_blank;
+      cave[x][y+1] = Ybomb_blank;
       Lboom_tank(x, y+1, Xstone_fall);
       return;
 
@@ -4100,22 +4101,22 @@ static void Lstone_fall(int x, int y)
       if (lev.wonderwall_time)
       {
 	lev.wonderwall_state = 1;
-	Cave[x][y] = Ystone_sB;
+	cave[x][y] = Ystone_sB;
 
-	if (tab_blank[Cave[x][y+2]])
+	if (tab_blank[cave[x][y+2]])
 	{
-	  Cave[x][y+2] = Yemerald_s;
-	  Next[x][y+2] = Xemerald_fall;
+	  cave[x][y+2] = Yemerald_s;
+	  next[x][y+2] = Xemerald_fall;
 	}
 
-	Next[x][y] = Xblank;
+	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_wonderfall, Xwonderwall);
 	return;
       }
 
     default:
-      Cave[x][y] = Xstone;
-      Next[x][y] = Xstone;
+      cave[x][y] = Xstone;
+      next[x][y] = Xstone;
       play_element_sound(x, y, SOUND_stone, Xstone);
       return;
   }
@@ -4123,15 +4124,15 @@ static void Lstone_fall(int x, int y)
 
 static void Lbomb(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Ybomb_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ybomb_s;
-      Next[x][y+1] = Xbomb_fall;
+      cave[x][y] = Ybomb_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ybomb_s;
+      next[x][y+1] = Xbomb_fall;
       return;
 
     case Xacid_1:
@@ -4142,12 +4143,12 @@ static void Lbomb(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ybomb_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ybomb_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -4197,41 +4198,41 @@ static void Lbomb(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Ybomb_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Ybomb_e;
-	  Next[x+1][y] = Xbomb_pause;
+	  cave[x][y] = Ybomb_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Ybomb_e;
+	  next[x+1][y] = Xbomb_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Ybomb_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Ybomb_w;
-	  Next[x-1][y] = Xbomb_pause;
+	  cave[x][y] = Ybomb_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Ybomb_w;
+	  next[x-1][y] = Xbomb_pause;
 	  return;
 	}
       }
       else
       {
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Ybomb_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Ybomb_w;
-	  Next[x-1][y] = Xbomb_pause;
+	  cave[x][y] = Ybomb_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Ybomb_w;
+	  next[x-1][y] = Xbomb_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Ybomb_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Ybomb_e;
-	  Next[x+1][y] = Xbomb_pause;
+	  cave[x][y] = Ybomb_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Ybomb_e;
+	  next[x+1][y] = Xbomb_pause;
 	  return;
 	}
       }
@@ -4240,15 +4241,15 @@ static void Lbomb(int x, int y)
 
 static void Lbomb_pause(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Ybomb_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ybomb_s;
-      Next[x][y+1] = Xbomb_fall;
+      cave[x][y] = Ybomb_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ybomb_s;
+      next[x][y+1] = Xbomb_fall;
       return;
 
     case Xacid_1:
@@ -4259,33 +4260,33 @@ static void Lbomb_pause(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ybomb_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ybomb_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Xbomb;
-      Next[x][y] = Xbomb;
+      cave[x][y] = Xbomb;
+      next[x][y] = Xbomb;
       return;
   }
 }
 
 static void Lbomb_fall(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Ybomb_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ybomb_s;
-      Next[x][y+1] = Xbomb_fall;
+      cave[x][y] = Ybomb_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ybomb_s;
+      next[x][y+1] = Xbomb_fall;
       return;
 
     case Xacid_1:
@@ -4296,17 +4297,17 @@ static void Lbomb_fall(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ybomb_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ybomb_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Ybomb_blank;
+      cave[x][y] = Ybomb_blank;
       Lboom_tank(x, y, Xbomb_fall);
       return;
   }
@@ -4314,15 +4315,15 @@ static void Lbomb_fall(int x, int y)
 
 static void Lnut(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Ynut_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ynut_s;
-      Next[x][y+1] = Xnut_fall;
+      cave[x][y] = Ynut_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ynut_s;
+      next[x][y+1] = Xnut_fall;
       return;
 
     case Xacid_1:
@@ -4333,12 +4334,12 @@ static void Lnut(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ynut_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ynut_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -4388,41 +4389,41 @@ static void Lnut(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Ynut_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Ynut_e;
-	  Next[x+1][y] = Xnut_pause;
+	  cave[x][y] = Ynut_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Ynut_e;
+	  next[x+1][y] = Xnut_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Ynut_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Ynut_w;
-	  Next[x-1][y] = Xnut_pause;
+	  cave[x][y] = Ynut_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Ynut_w;
+	  next[x-1][y] = Xnut_pause;
 	  return;
 	}
       }
       else
       {
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Ynut_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Ynut_w;
-	  Next[x-1][y] = Xnut_pause;
+	  cave[x][y] = Ynut_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Ynut_w;
+	  next[x-1][y] = Xnut_pause;
 	  return;
 	}
 
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Ynut_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Ynut_e;
-	  Next[x+1][y] = Xnut_pause;
+	  cave[x][y] = Ynut_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Ynut_e;
+	  next[x+1][y] = Xnut_pause;
 	  return;
 	}
       }
@@ -4431,15 +4432,15 @@ static void Lnut(int x, int y)
 
 static void Lnut_pause(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Ynut_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ynut_s;
-      Next[x][y+1] = Xnut_fall;
+      cave[x][y] = Ynut_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ynut_s;
+      next[x][y+1] = Xnut_fall;
       return;
 
     case Xacid_1:
@@ -4450,34 +4451,34 @@ static void Lnut_pause(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ynut_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ynut_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Xnut;
-      Next[x][y] = Xnut;
+      cave[x][y] = Xnut;
+      next[x][y] = Xnut;
       return;
   }
 }
 
 static void Lnut_fall(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
     case Zplayer:
-      Cave[x][y] = Ynut_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Ynut_s;
-      Next[x][y+1] = Xnut_fall;
+      cave[x][y] = Ynut_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ynut_s;
+      next[x][y+1] = Xnut_fall;
       return;
 
     case Xacid_1:
@@ -4488,18 +4489,18 @@ static void Lnut_fall(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ynut_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ynut_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Xnut;
-      Next[x][y] = Xnut;
+      cave[x][y] = Xnut;
+      next[x][y] = Xnut;
       play_element_sound(x, y, SOUND_nut, Xnut);
       return;
   }
@@ -4507,17 +4508,17 @@ static void Lnut_fall(int x, int y)
 
 static void Lspring(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
     case Xplant:
     case Yplant:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yspring_s;
-      Next[x][y+1] = Xspring_fall;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yspring_s;
+      next[x][y+1] = Xspring_fall;
       return;
 
     case Xacid_1:
@@ -4528,12 +4529,12 @@ static void Lspring(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -4583,68 +4584,68 @@ static void Lspring(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Yspring_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Yspring_e;
-	  if (Cave[x][y+1] == Xbumper)
-	    Cave[x][y+1] = XbumperB;
+	  cave[x][y] = Yspring_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Yspring_e;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = XbumperB;
 
 #ifdef SPRING_ROLL
-	  Next[x+1][y] = Xspring_e;
+	  next[x+1][y] = Xspring_e;
 #else
-	  Next[x+1][y] = Xspring_pause;
+	  next[x+1][y] = Xspring_pause;
 #endif
 	  return;
 	}
 
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Yspring_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Yspring_w;
-	  if (Cave[x][y+1] == Xbumper)
-	    Cave[x][y+1] = XbumperB;
+	  cave[x][y] = Yspring_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Yspring_w;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = XbumperB;
 
 #ifdef SPRING_ROLL
-	  Next[x-1][y] = Xspring_w;
+	  next[x-1][y] = Xspring_w;
 #else
-	  Next[x-1][y] = Xspring_pause;
+	  next[x-1][y] = Xspring_pause;
 #endif
 	  return;
 	}
       }
       else
       {
-	if (tab_blank[Cave[x-1][y]] && tab_acid[Cave[x-1][y+1]])
+	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
 	{
-	  Cave[x][y] = Yspring_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Yspring_w;
-	  if (Cave[x][y+1] == Xbumper)
-	    Cave[x][y+1] = XbumperB;
+	  cave[x][y] = Yspring_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Yspring_w;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = XbumperB;
 
 #ifdef SPRING_ROLL
-	  Next[x-1][y] = Xspring_w;
+	  next[x-1][y] = Xspring_w;
 #else
-	  Next[x-1][y] = Xspring_pause;
+	  next[x-1][y] = Xspring_pause;
 #endif
 	  return;
 	}
 
-	if (tab_blank[Cave[x+1][y]] && tab_acid[Cave[x+1][y+1]])
+	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
 	{
-	  Cave[x][y] = Yspring_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Yspring_e;
-	  if (Cave[x][y+1] == Xbumper)
-	    Cave[x][y+1] = XbumperB;
+	  cave[x][y] = Yspring_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Yspring_e;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = XbumperB;
 
 #ifdef SPRING_ROLL
-	  Next[x+1][y] = Xspring_e;
+	  next[x+1][y] = Xspring_e;
 #else
-	  Next[x+1][y] = Xspring_pause;
+	  next[x+1][y] = Xspring_pause;
 #endif
 	  return;
 	}
@@ -4654,15 +4655,15 @@ static void Lspring(int x, int y)
 
 static void Lspring_pause(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yspring_s;
-      Next[x][y+1] = Xspring_fall;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yspring_s;
+      next[x][y+1] = Xspring_fall;
       return;
 
     case Xacid_1:
@@ -4673,33 +4674,33 @@ static void Lspring_pause(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     default:
-      Cave[x][y] = Xspring;
-      Next[x][y] = Xspring;
+      cave[x][y] = Xspring;
+      next[x][y] = Xspring;
       return;
   }
 }
 
 static void Lspring_e(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yspring_s;
-      Next[x][y+1] = Xspring_fall;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yspring_s;
+      next[x][y+1] = Xspring_fall;
       return;
 
     case Xacid_1:
@@ -4710,20 +4711,20 @@ static void Lspring_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     case Xbumper:
-      Cave[x][y+1] = XbumperB;
+      cave[x][y+1] = XbumperB;
   }
 
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -4732,10 +4733,10 @@ static void Lspring_e(int x, int y)
     case Yalien_eB:
     case Yalien_sB:
     case Yalien_wB:
-      Cave[x][y] = Yspring_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Yspring_e;
-      Next[x+1][y] = Xspring_e;
+      cave[x][y] = Yspring_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Yspring_e;
+      next[x+1][y] = Xspring_e;
       return;
 
     case Xacid_1:
@@ -4746,12 +4747,12 @@ static void Lspring_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yspring_eB;
-      Next[x][y] = Xblank;
-      if (Cave[x+2][y-1] == Xblank)
-	Cave[x+2][y-1] = Xacid_splash_e;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_w;
+      cave[x][y] = Yspring_eB;
+      next[x][y] = Xblank;
+      if (cave[x+2][y-1] == Xblank)
+	cave[x+2][y-1] = Xacid_splash_e;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -4761,24 +4762,24 @@ static void Lspring_e(int x, int y)
     case Yalien_e:
     case Yalien_s:
     case Yalien_w:
-      Cave[x][y] = Yspring_alien_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Yspring_alien_e;
-      Next[x+1][y] = Xspring_e;
+      cave[x][y] = Yspring_alien_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Yspring_alien_e;
+      next[x+1][y] = Xspring_e;
       play_element_sound(x, y, SOUND_slurp, Xalien);
       score += lev.slurp_score;
       return;
 
     case Xbumper:
     case XbumperB:
-      Cave[x+1][y] = XbumperB;
-      Next[x][y] = Xspring_w;
+      cave[x+1][y] = XbumperB;
+      next[x][y] = Xspring_w;
       play_element_sound(x, y, SOUND_spring, Xspring);
       return;
 
     default:
-      Cave[x][y] = Xspring;
-      Next[x][y] = Xspring;
+      cave[x][y] = Xspring;
+      next[x][y] = Xspring;
       play_element_sound(x, y, SOUND_spring, Xspring);
       return;
   }
@@ -4786,15 +4787,15 @@ static void Lspring_e(int x, int y)
 
 static void Lspring_w(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yspring_s;
-      Next[x][y+1] = Xspring_fall;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yspring_s;
+      next[x][y+1] = Xspring_fall;
       return;
 
     case Xacid_1:
@@ -4805,20 +4806,20 @@ static void Lspring_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     case Xbumper:
-      Cave[x][y+1] = XbumperB;
+      cave[x][y+1] = XbumperB;
   }
 
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -4827,10 +4828,10 @@ static void Lspring_w(int x, int y)
     case Yalien_eB:
     case Yalien_sB:
     case Yalien_wB:
-      Cave[x][y] = Yspring_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Yspring_w;
-      Next[x-1][y] = Xspring_w;
+      cave[x][y] = Yspring_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Yspring_w;
+      next[x-1][y] = Xspring_w;
       return;
 
     case Xacid_1:
@@ -4841,12 +4842,12 @@ static void Lspring_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yspring_wB;
-      Next[x][y] = Xblank;
-      if (Cave[x][y-1] == Xblank)
-	Cave[x][y-1] = Xacid_splash_e;
-      if (Cave[x-2][y-1] == Xblank)
-	Cave[x-2][y-1] = Xacid_splash_w;
+      cave[x][y] = Yspring_wB;
+      next[x][y] = Xblank;
+      if (cave[x][y-1] == Xblank)
+	cave[x][y-1] = Xacid_splash_e;
+      if (cave[x-2][y-1] == Xblank)
+	cave[x-2][y-1] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -4856,24 +4857,24 @@ static void Lspring_w(int x, int y)
     case Yalien_e:
     case Yalien_s:
     case Yalien_w:
-      Cave[x][y] = Yspring_alien_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Yspring_alien_w;
-      Next[x-1][y] = Xspring_w;
+      cave[x][y] = Yspring_alien_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Yspring_alien_w;
+      next[x-1][y] = Xspring_w;
       play_element_sound(x, y, SOUND_slurp, Xalien);
       score += lev.slurp_score;
       return;
 
     case Xbumper:
     case XbumperB:
-      Cave[x-1][y] = XbumperB;
-      Next[x][y] = Xspring_e;
+      cave[x-1][y] = XbumperB;
+      next[x][y] = Xspring_e;
       play_element_sound(x, y, SOUND_spring, Xspring);
       return;
 
     default:
-      Cave[x][y] = Xspring;
-      Next[x][y] = Xspring;
+      cave[x][y] = Xspring;
+      next[x][y] = Xspring;
       play_element_sound(x, y, SOUND_spring, Xspring);
       return;
   }
@@ -4881,16 +4882,16 @@ static void Lspring_w(int x, int y)
 
 static void Lspring_fall(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
     case Zplayer:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      Cave[x][y+1] = Yspring_s;
-      Next[x][y+1] = Xspring_fall;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Yspring_s;
+      next[x][y+1] = Xspring_fall;
       return;
 
     case Xacid_1:
@@ -4901,18 +4902,18 @@ static void Lspring_fall(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Yspring_sB;
-      Next[x][y] = Xblank;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     case Xbomb:
     case Xbomb_pause:
-      Cave[x][y+1] = Ybomb_blank;
+      cave[x][y+1] = Ybomb_blank;
       Lboom_tank(x, y+1, Xspring_fall);
       return;
 
@@ -4924,8 +4925,8 @@ static void Lspring_fall(int x, int y)
     case Xbug_2_e:
     case Xbug_2_s:
     case Xbug_2_w:
-      Cave[x][y] = Yspring_sB;
-      Cave[x][y+1] = Ybug_spring;
+      cave[x][y] = Yspring_sB;
+      cave[x][y+1] = Ybug_spring;
       Lboom_bug(x, y+1, Xspring_fall);
       score += lev.bug_score;
       return;
@@ -4938,8 +4939,8 @@ static void Lspring_fall(int x, int y)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      Cave[x][y] = Yspring_sB;
-      Cave[x][y+1] = Ytank_spring;
+      cave[x][y] = Yspring_sB;
+      cave[x][y+1] = Ytank_spring;
       Lboom_tank(x, y+1, Xspring_fall);
       score += lev.tank_score;
       return;
@@ -4948,23 +4949,23 @@ static void Lspring_fall(int x, int y)
     case Xeater_e:
     case Xeater_s:
     case Xeater_w:
-      Cave[x][y] = Yspring_sB;
-      Cave[x][y+1] = Yeater_spring;
+      cave[x][y] = Yspring_sB;
+      cave[x][y+1] = Yeater_spring;
       Lboom_eater(x, y+1, Xspring_fall);
       score += lev.eater_score;
       return;
 
     case Xalien:
     case Xalien_pause:
-      Cave[x][y] = Yspring_sB;
-      Cave[x][y+1] = Yalien_spring;
+      cave[x][y] = Yspring_sB;
+      cave[x][y+1] = Yalien_spring;
       Lboom_tank(x, y+1, Xspring_fall);
       score += lev.alien_score;
       return;
 
     default:
-      Cave[x][y] = Xspring;
-      Next[x][y] = Xspring;
+      cave[x][y] = Xspring;
+      next[x][y] = Xspring;
       play_element_sound(x, y, SOUND_spring, Xspring);
       return;
   }
@@ -4972,7 +4973,7 @@ static void Lspring_fall(int x, int y)
 
 static void Lpush_emerald_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Zborder:
     case Znormal:
@@ -4982,22 +4983,22 @@ static void Lpush_emerald_e(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xemerald;
-      Next[x][y] = Xemerald;
+      cave[x][y] = Xemerald;
+      next[x][y] = Xemerald;
       return;
 
     default:
-      Cave[x][y] = Yemerald_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Yemerald_e;
-      Next[x+1][y] = Xemerald_pause;
+      cave[x][y] = Yemerald_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Yemerald_e;
+      next[x+1][y] = Xemerald_pause;
       return;
   }
 }
 
 static void Lpush_emerald_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Zborder:
     case Znormal:
@@ -5007,22 +5008,22 @@ static void Lpush_emerald_w(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xemerald;
-      Next[x][y] = Xemerald;
+      cave[x][y] = Xemerald;
+      next[x][y] = Xemerald;
       return;
 
     default:
-      Cave[x][y] = Yemerald_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Yemerald_w;
-      Next[x-1][y] = Xemerald_pause;
+      cave[x][y] = Yemerald_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Yemerald_w;
+      next[x-1][y] = Xemerald_pause;
       return;
   }
 }
 
 static void Lpush_diamond_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Zborder:
     case Znormal:
@@ -5032,22 +5033,22 @@ static void Lpush_diamond_e(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xdiamond;
-      Next[x][y] = Xdiamond;
+      cave[x][y] = Xdiamond;
+      next[x][y] = Xdiamond;
       return;
 
     default:
-      Cave[x][y] = Ydiamond_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Ydiamond_e;
-      Next[x+1][y] = Xdiamond_pause;
+      cave[x][y] = Ydiamond_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Ydiamond_e;
+      next[x+1][y] = Xdiamond_pause;
       return;
   }
 }
 
 static void Lpush_diamond_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Zborder:
     case Znormal:
@@ -5057,22 +5058,22 @@ static void Lpush_diamond_w(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xdiamond;
-      Next[x][y] = Xdiamond;
+      cave[x][y] = Xdiamond;
+      next[x][y] = Xdiamond;
       return;
 
     default:
-      Cave[x][y] = Ydiamond_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Ydiamond_w;
-      Next[x-1][y] = Xdiamond_pause;
+      cave[x][y] = Ydiamond_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Ydiamond_w;
+      next[x-1][y] = Xdiamond_pause;
       return;
   }
 }
 
 static void Lpush_stone_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Zborder:
     case Znormal:
@@ -5082,22 +5083,22 @@ static void Lpush_stone_e(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xstone;
-      Next[x][y] = Xstone;
+      cave[x][y] = Xstone;
+      next[x][y] = Xstone;
       return;
 
     default:
-      Cave[x][y] = Ystone_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Ystone_e;
-      Next[x+1][y] = Xstone_pause;
+      cave[x][y] = Ystone_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Ystone_e;
+      next[x+1][y] = Xstone_pause;
       return;
   }
 }
 
 static void Lpush_stone_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Zborder:
     case Znormal:
@@ -5107,22 +5108,22 @@ static void Lpush_stone_w(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xstone;
-      Next[x][y] = Xstone;
+      cave[x][y] = Xstone;
+      next[x][y] = Xstone;
       return;
 
     default:
-      Cave[x][y] = Ystone_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Ystone_w;
-      Next[x-1][y] = Xstone_pause;
+      cave[x][y] = Ystone_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Ystone_w;
+      next[x-1][y] = Xstone_pause;
       return;
   }
 }
 
 static void Lpush_bomb_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Zborder:
     case Znormal:
@@ -5132,22 +5133,22 @@ static void Lpush_bomb_e(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xbomb;
-      Next[x][y] = Xbomb;
+      cave[x][y] = Xbomb;
+      next[x][y] = Xbomb;
       return;
 
     default:
-      Cave[x][y] = Ybomb_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Ybomb_e;
-      Next[x+1][y] = Xbomb_pause;
+      cave[x][y] = Ybomb_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Ybomb_e;
+      next[x+1][y] = Xbomb_pause;
       return;
   }
 }
 
 static void Lpush_bomb_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Zborder:
     case Znormal:
@@ -5157,22 +5158,22 @@ static void Lpush_bomb_w(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xbomb;
-      Next[x][y] = Xbomb;
+      cave[x][y] = Xbomb;
+      next[x][y] = Xbomb;
       return;
 
     default:
-      Cave[x][y] = Ybomb_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Ybomb_w;
-      Next[x-1][y] = Xbomb_pause;
+      cave[x][y] = Ybomb_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Ybomb_w;
+      next[x-1][y] = Xbomb_pause;
       return;
   }
 }
 
 static void Lpush_nut_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Zborder:
     case Znormal:
@@ -5182,22 +5183,22 @@ static void Lpush_nut_e(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xnut;
-      Next[x][y] = Xnut;
+      cave[x][y] = Xnut;
+      next[x][y] = Xnut;
       return;
 
     default:
-      Cave[x][y] = Ynut_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Ynut_e;
-      Next[x+1][y] = Xnut_pause;
+      cave[x][y] = Ynut_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Ynut_e;
+      next[x+1][y] = Xnut_pause;
       return;
   }
 }
 
 static void Lpush_nut_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Zborder:
     case Znormal:
@@ -5207,22 +5208,22 @@ static void Lpush_nut_w(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xnut;
-      Next[x][y] = Xnut;
+      cave[x][y] = Xnut;
+      next[x][y] = Xnut;
       return;
 
     default:
-      Cave[x][y] = Ynut_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Ynut_w;
-      Next[x-1][y] = Xnut_pause;
+      cave[x][y] = Ynut_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Ynut_w;
+      next[x-1][y] = Xnut_pause;
       return;
   }
 }
 
 static void Lpush_spring_e(int x, int y)
 {
-  switch (Cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Zborder:
     case Znormal:
@@ -5232,22 +5233,22 @@ static void Lpush_spring_e(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xspring;
-      Next[x][y] = Xspring;
+      cave[x][y] = Xspring;
+      next[x][y] = Xspring;
       return;
 
     default:
-      Cave[x][y] = Yspring_eB;
-      Next[x][y] = Xblank;
-      Cave[x+1][y] = Yspring_e;
-      Next[x+1][y] = Xspring_e;
+      cave[x][y] = Yspring_eB;
+      next[x][y] = Xblank;
+      cave[x+1][y] = Yspring_e;
+      next[x+1][y] = Xspring_e;
       return;
   }
 }
 
 static void Lpush_spring_w(int x, int y)
 {
-  switch (Cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Zborder:
     case Znormal:
@@ -5257,15 +5258,15 @@ static void Lpush_spring_w(int x, int y)
     case Xboom_android:
     case Xboom_1:
     case Zplayer:
-      Cave[x][y] = Xspring;
-      Next[x][y] = Xspring;
+      cave[x][y] = Xspring;
+      next[x][y] = Xspring;
       return;
 
     default:
-      Cave[x][y] = Yspring_wB;
-      Next[x][y] = Xblank;
-      Cave[x-1][y] = Yspring_w;
-      Next[x-1][y] = Xspring_w;
+      cave[x][y] = Yspring_wB;
+      next[x][y] = Xblank;
+      cave[x-1][y] = Yspring_w;
+      next[x-1][y] = Xspring_w;
       return;
   }
 }
@@ -5273,25 +5274,25 @@ static void Lpush_spring_w(int x, int y)
 static void Ldynamite_1(int x, int y)
 {
   play_element_sound(x, y, SOUND_tick, Xdynamite_1);
-  Next[x][y] = Xdynamite_2;
+  next[x][y] = Xdynamite_2;
 }
 
 static void Ldynamite_2(int x, int y)
 {
   play_element_sound(x, y, SOUND_tick, Xdynamite_2);
-  Next[x][y] = Xdynamite_3;
+  next[x][y] = Xdynamite_3;
 }
 
 static void Ldynamite_3(int x, int y)
 {
   play_element_sound(x, y, SOUND_tick, Xdynamite_3);
-  Next[x][y] = Xdynamite_4;
+  next[x][y] = Xdynamite_4;
 }
 
 static void Ldynamite_4(int x, int y)
 {
   play_element_sound(x, y, SOUND_tick, Xdynamite_4);
-  Next[x][y] = Zdynamite;
+  next[x][y] = Zdynamite;
 
   Lboom_generic(x, y, Xblank, Xblank);
 }
@@ -5299,49 +5300,49 @@ static void Ldynamite_4(int x, int y)
 static void Lfake_door_1(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_1;
+    cave[x][y] = Xdoor_1;
 }
 
 static void Lfake_door_2(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_2;
+    cave[x][y] = Xdoor_2;
 }
 
 static void Lfake_door_3(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_3;
+    cave[x][y] = Xdoor_3;
 }
 
 static void Lfake_door_4(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_4;
+    cave[x][y] = Xdoor_4;
 }
 
 static void Lfake_door_5(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_5;
+    cave[x][y] = Xdoor_5;
 }
 
 static void Lfake_door_6(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_6;
+    cave[x][y] = Xdoor_6;
 }
 
 static void Lfake_door_7(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_7;
+    cave[x][y] = Xdoor_7;
 }
 
 static void Lfake_door_8(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xdoor_8;
+    cave[x][y] = Xdoor_8;
 }
 
 static void Lballoon(int x, int y)
@@ -5352,15 +5353,15 @@ static void Lballoon(int x, int y)
   switch (lev.wind_direction)
   {
     case 0: /* north */
-      switch (Cave[x][y-1])
+      switch (cave[x][y-1])
       {
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-	  Cave[x][y] = Yballoon_nB;
-	  Next[x][y] = Xblank;
-	  Cave[x][y-1] = Yballoon_n;
-	  Next[x][y-1] = Xballoon;
+	  cave[x][y] = Yballoon_nB;
+	  next[x][y] = Xblank;
+	  cave[x][y-1] = Yballoon_n;
+	  next[x][y-1] = Xballoon;
 	  return;
 
 	case Xacid_1:
@@ -5371,27 +5372,27 @@ static void Lballoon(int x, int y)
 	case Xacid_6:
 	case Xacid_7:
 	case Xacid_8:
-	  Cave[x][y] = Yballoon_nB;
-	  Next[x][y] = Xblank;
-	  if (Cave[x+1][y-2] == Xblank)
-	    Cave[x+1][y-2] = Xacid_splash_e;
-	  if (Cave[x-1][y-2] == Xblank)
-	    Cave[x-1][y-2] = Xacid_splash_w;
+	  cave[x][y] = Yballoon_nB;
+	  next[x][y] = Xblank;
+	  if (cave[x+1][y-2] == Xblank)
+	    cave[x+1][y-2] = Xacid_splash_e;
+	  if (cave[x-1][y-2] == Xblank)
+	    cave[x-1][y-2] = Xacid_splash_w;
 	  play_element_sound(x, y, SOUND_acid, Xacid_1);
 	  return;
       }
       break;
 
     case 1: /* east */
-      switch (Cave[x+1][y])
+      switch (cave[x+1][y])
       {
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-	  Cave[x][y] = Yballoon_eB;
-	  Next[x][y] = Xblank;
-	  Cave[x+1][y] = Yballoon_e;
-	  Next[x+1][y] = Xballoon;
+	  cave[x][y] = Yballoon_eB;
+	  next[x][y] = Xblank;
+	  cave[x+1][y] = Yballoon_e;
+	  next[x+1][y] = Xballoon;
 	  return;
 
 	case Xacid_1:
@@ -5402,27 +5403,27 @@ static void Lballoon(int x, int y)
 	case Xacid_6:
 	case Xacid_7:
 	case Xacid_8:
-	  Cave[x][y] = Yballoon_eB;
-	  Next[x][y] = Xblank;
-	  if (Cave[x+2][y-1] == Xblank)
-	    Cave[x+2][y-1] = Xacid_splash_e;
-	  if (Cave[x][y-1] == Xblank)
-	    Cave[x][y-1] = Xacid_splash_w;
+	  cave[x][y] = Yballoon_eB;
+	  next[x][y] = Xblank;
+	  if (cave[x+2][y-1] == Xblank)
+	    cave[x+2][y-1] = Xacid_splash_e;
+	  if (cave[x][y-1] == Xblank)
+	    cave[x][y-1] = Xacid_splash_w;
 	  play_element_sound(x, y, SOUND_acid, Xacid_1);
 	  return;
       }
       break;
 
     case 2: /* south */
-      switch (Cave[x][y+1])
+      switch (cave[x][y+1])
       {
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-	  Cave[x][y] = Yballoon_sB;
-	  Next[x][y] = Xblank;
-	  Cave[x][y+1] = Yballoon_s;
-	  Next[x][y+1] = Xballoon;
+	  cave[x][y] = Yballoon_sB;
+	  next[x][y] = Xblank;
+	  cave[x][y+1] = Yballoon_s;
+	  next[x][y+1] = Xballoon;
 	  return;
 
 	case Xacid_1:
@@ -5433,27 +5434,27 @@ static void Lballoon(int x, int y)
 	case Xacid_6:
 	case Xacid_7:
 	case Xacid_8:
-	  Cave[x][y] = Yballoon_sB;
-	  Next[x][y] = Xblank;
-	  if (Cave[x+1][y] == Xblank)
-	    Cave[x+1][y] = Xacid_splash_e;
-	  if (Cave[x-1][y] == Xblank)
-	    Cave[x-1][y] = Xacid_splash_w;
+	  cave[x][y] = Yballoon_sB;
+	  next[x][y] = Xblank;
+	  if (cave[x+1][y] == Xblank)
+	    cave[x+1][y] = Xacid_splash_e;
+	  if (cave[x-1][y] == Xblank)
+	    cave[x-1][y] = Xacid_splash_w;
 	  play_element_sound(x, y, SOUND_acid, Xacid_1);
 	  return;
       }
       break;
 
     case 3: /* west */
-      switch (Cave[x-1][y])
+      switch (cave[x-1][y])
       {
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-	  Cave[x][y] = Yballoon_wB;
-	  Next[x][y] = Xblank;
-	  Cave[x-1][y] = Yballoon_w;
-	  Next[x-1][y] = Xballoon;
+	  cave[x][y] = Yballoon_wB;
+	  next[x][y] = Xblank;
+	  cave[x-1][y] = Yballoon_w;
+	  next[x-1][y] = Xballoon;
 	  return;
 
 	case Xacid_1:
@@ -5464,12 +5465,12 @@ static void Lballoon(int x, int y)
 	case Xacid_6:
 	case Xacid_7:
 	case Xacid_8:
-	  Cave[x][y] = Yballoon_wB;
-	  Next[x][y] = Xblank;
-	  if (Cave[x][y-1] == Xblank)
-	    Cave[x][y-1] = Xacid_splash_e;
-	  if (Cave[x-2][y-1] == Xblank)
-	    Cave[x-2][y-1] = Xacid_splash_w;
+	  cave[x][y] = Yballoon_wB;
+	  next[x][y] = Xblank;
+	  if (cave[x][y-1] == Xblank)
+	    cave[x][y-1] = Xacid_splash_e;
+	  if (cave[x-2][y-1] == Xblank)
+	    cave[x-2][y-1] = Xacid_splash_w;
 	  play_element_sound(x, y, SOUND_acid, Xacid_1);
 	  return;
       }
@@ -5487,73 +5488,73 @@ static void Lball_common(int x, int y)
     {
       case 0:
 	if (lev.ball_array[lev.ball_pos][0] != Xblank &&
-	    tab_blank[Cave[x-1][y-1]])
+	    tab_blank[cave[x-1][y-1]])
 	{
-	  Cave[x-1][y-1] = Yball_blank;
-	  Next[x-1][y-1] = lev.ball_array[lev.ball_pos][0];
+	  cave[x-1][y-1] = Yball_blank;
+	  next[x-1][y-1] = lev.ball_array[lev.ball_pos][0];
 	}
 	break;
 
       case 1:
 	if (lev.ball_array[lev.ball_pos][1] != Xblank &&
-	    tab_blank[Cave[x][y-1]])
+	    tab_blank[cave[x][y-1]])
 	{
-	  Cave[x][y-1] = Yball_blank;
-	  Next[x][y-1] = lev.ball_array[lev.ball_pos][1];
+	  cave[x][y-1] = Yball_blank;
+	  next[x][y-1] = lev.ball_array[lev.ball_pos][1];
 	}
 	break;
 
       case 2:
 	if (lev.ball_array[lev.ball_pos][2] != Xblank &&
-	    tab_blank[Cave[x+1][y-1]])
+	    tab_blank[cave[x+1][y-1]])
 	{
-	  Cave[x+1][y-1] = Yball_blank;
-	  Next[x+1][y-1] = lev.ball_array[lev.ball_pos][2];
+	  cave[x+1][y-1] = Yball_blank;
+	  next[x+1][y-1] = lev.ball_array[lev.ball_pos][2];
 	}
 	break;
 
       case 3:
 	if (lev.ball_array[lev.ball_pos][3] != Xblank &&
-	    tab_blank[Cave[x-1][y]])
+	    tab_blank[cave[x-1][y]])
 	{
-	  Cave[x-1][y] = Yball_blank;
-	  Next[x-1][y] = lev.ball_array[lev.ball_pos][3];
+	  cave[x-1][y] = Yball_blank;
+	  next[x-1][y] = lev.ball_array[lev.ball_pos][3];
 	}
 	break;
 
       case 4:
 	if (lev.ball_array[lev.ball_pos][4] != Xblank &&
-	    tab_blank[Cave[x+1][y]])
+	    tab_blank[cave[x+1][y]])
 	{
-	  Cave[x+1][y] = Yball_blank;
-	  Next[x+1][y] = lev.ball_array[lev.ball_pos][4];
+	  cave[x+1][y] = Yball_blank;
+	  next[x+1][y] = lev.ball_array[lev.ball_pos][4];
 	}
 	break;
 
       case 5:
 	if (lev.ball_array[lev.ball_pos][5] != Xblank &&
-	    tab_blank[Cave[x-1][y+1]])
+	    tab_blank[cave[x-1][y+1]])
 	{
-	  Cave[x-1][y+1] = Yball_blank;
-	  Next[x-1][y+1] = lev.ball_array[lev.ball_pos][5];
+	  cave[x-1][y+1] = Yball_blank;
+	  next[x-1][y+1] = lev.ball_array[lev.ball_pos][5];
 	}
 	break;
 
       case 6:
 	if (lev.ball_array[lev.ball_pos][6] != Xblank &&
-	    tab_blank[Cave[x][y+1]])
+	    tab_blank[cave[x][y+1]])
 	{
-	  Cave[x][y+1] = Yball_blank;
-	  Next[x][y+1] = lev.ball_array[lev.ball_pos][6];
+	  cave[x][y+1] = Yball_blank;
+	  next[x][y+1] = lev.ball_array[lev.ball_pos][6];
 	}
 	break;
 
       case 7:
 	if (lev.ball_array[lev.ball_pos][7] != Xblank &&
-	    tab_blank[Cave[x+1][y+1]])
+	    tab_blank[cave[x+1][y+1]])
 	{
-	  Cave[x+1][y+1] = Yball_blank;
-	  Next[x+1][y+1] = lev.ball_array[lev.ball_pos][7];
+	  cave[x+1][y+1] = Yball_blank;
+	  next[x+1][y+1] = lev.ball_array[lev.ball_pos][7];
 	}
 	break;
     }
@@ -5561,59 +5562,59 @@ static void Lball_common(int x, int y)
   else
   {
     if (lev.ball_array[lev.ball_pos][0] != Xblank &&
-	tab_blank[Cave[x-1][y-1]])
+	tab_blank[cave[x-1][y-1]])
     {
-      Cave[x-1][y-1] = Yball_blank;
-      Next[x-1][y-1] = lev.ball_array[lev.ball_pos][0];
+      cave[x-1][y-1] = Yball_blank;
+      next[x-1][y-1] = lev.ball_array[lev.ball_pos][0];
     }
 
     if (lev.ball_array[lev.ball_pos][1] != Xblank &&
-	tab_blank[Cave[x][y-1]])
+	tab_blank[cave[x][y-1]])
     {
-      Cave[x][y-1] = Yball_blank;
-      Next[x][y-1] = lev.ball_array[lev.ball_pos][1];
+      cave[x][y-1] = Yball_blank;
+      next[x][y-1] = lev.ball_array[lev.ball_pos][1];
     }
 
     if (lev.ball_array[lev.ball_pos][2] != Xblank &&
-	tab_blank[Cave[x+1][y-1]])
+	tab_blank[cave[x+1][y-1]])
     {
-      Cave[x+1][y-1] = Yball_blank;
-      Next[x+1][y-1] = lev.ball_array[lev.ball_pos][2];
+      cave[x+1][y-1] = Yball_blank;
+      next[x+1][y-1] = lev.ball_array[lev.ball_pos][2];
     }
 
     if (lev.ball_array[lev.ball_pos][3] != Xblank &&
-	tab_blank[Cave[x-1][y]])
+	tab_blank[cave[x-1][y]])
     {
-      Cave[x-1][y] = Yball_blank;
-      Next[x-1][y] = lev.ball_array[lev.ball_pos][3];
+      cave[x-1][y] = Yball_blank;
+      next[x-1][y] = lev.ball_array[lev.ball_pos][3];
     }
 
     if (lev.ball_array[lev.ball_pos][4] != Xblank &&
-	tab_blank[Cave[x+1][y]])
+	tab_blank[cave[x+1][y]])
     {
-      Cave[x+1][y] = Yball_blank;
-      Next[x+1][y] = lev.ball_array[lev.ball_pos][4];
+      cave[x+1][y] = Yball_blank;
+      next[x+1][y] = lev.ball_array[lev.ball_pos][4];
     }
 
     if (lev.ball_array[lev.ball_pos][5] != Xblank &&
-	tab_blank[Cave[x-1][y+1]])
+	tab_blank[cave[x-1][y+1]])
     {
-      Cave[x-1][y+1] = Yball_blank;
-      Next[x-1][y+1] = lev.ball_array[lev.ball_pos][5];
+      cave[x-1][y+1] = Yball_blank;
+      next[x-1][y+1] = lev.ball_array[lev.ball_pos][5];
     }
 
     if (lev.ball_array[lev.ball_pos][6] != Xblank &&
-	tab_blank[Cave[x][y+1]])
+	tab_blank[cave[x][y+1]])
     {
-      Cave[x][y+1] = Yball_blank;
-      Next[x][y+1] = lev.ball_array[lev.ball_pos][6];
+      cave[x][y+1] = Yball_blank;
+      next[x][y+1] = lev.ball_array[lev.ball_pos][6];
     }
 
     if (lev.ball_array[lev.ball_pos][7] != Xblank &&
-	tab_blank[Cave[x+1][y+1]])
+	tab_blank[cave[x+1][y+1]])
     {
-      Cave[x+1][y+1] = Yball_blank;
-      Next[x+1][y+1] = lev.ball_array[lev.ball_pos][7];
+      cave[x+1][y+1] = Yball_blank;
+      next[x+1][y+1] = lev.ball_array[lev.ball_pos][7];
     }
   }
 
@@ -5625,8 +5626,8 @@ static void Lball_1(int x, int y)
   if (lev.ball_state == 0)
     return;
 
-  Cave[x][y] = Yball_1;
-  Next[x][y] = Xball_2;
+  cave[x][y] = Yball_1;
+  next[x][y] = Xball_2;
   if (lev.ball_cnt)
     return;
 
@@ -5638,8 +5639,8 @@ static void Lball_2(int x, int y)
   if (lev.ball_state == 0)
     return;
 
-  Cave[x][y] = Yball_2;
-  Next[x][y] = Xball_1;
+  cave[x][y] = Yball_2;
+  next[x][y] = Xball_1;
   if (lev.ball_cnt)
     return;
 
@@ -5648,14 +5649,14 @@ static void Lball_2(int x, int y)
 
 static void Ldrip(int x, int y)
 {
-  Next[x][y] = Xdrip_fall;
+  next[x][y] = Xdrip_fall;
 }
 
 static void Ldrip_fall(int x, int y)
 {
   int temp;
 
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -5663,10 +5664,10 @@ static void Ldrip_fall(int x, int y)
     case Xplant:
     case Yplant:
     case Zplayer:
-      Cave[x][y] = Ydrip_1_sB;
-      Next[x][y] = Xdrip_stretchB;
-      Cave[x][y+1] = Ydrip_1_s;
-      Next[x][y+1] = Xdrip_stretch;
+      cave[x][y] = Ydrip_1_sB;
+      next[x][y] = Xdrip_stretchB;
+      cave[x][y+1] = Ydrip_1_s;
+      next[x][y+1] = Xdrip_stretch;
       return;
 
     case Xacid_1:
@@ -5677,12 +5678,12 @@ static void Ldrip_fall(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Ydrip_1_sB;
-      Next[x][y] = Xdrip_stretchB;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Ydrip_1_sB;
+      next[x][y] = Xdrip_stretchB;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
@@ -5699,8 +5700,8 @@ static void Ldrip_fall(int x, int y)
 	case 7: temp = Xamoeba_8; break;
       }
 
-      Cave[x][y] = temp;
-      Next[x][y] = temp;
+      cave[x][y] = temp;
+      next[x][y] = temp;
       play_element_sound(x, y, SOUND_drip, Xdrip_fall);
       return;
   }
@@ -5708,21 +5709,21 @@ static void Ldrip_fall(int x, int y)
 
 static void Ldrip_stretch(int x, int y)
 {
-  Cave[x][y] = Ydrip_2_s;
-  Next[x][y] = Xdrip_fall;
+  cave[x][y] = Ydrip_2_s;
+  next[x][y] = Xdrip_fall;
 }
 
 static void Ldrip_stretchB(int x, int y)
 {
-  Cave[x][y] = Ydrip_2_sB;
-  Next[x][y] = Xblank;
+  cave[x][y] = Ydrip_2_sB;
+  next[x][y] = Xblank;
 }
 
 static void Lwonderwall(int x, int y)
 {
   if (lev.wonderwall_time && lev.wonderwall_state)
   {
-    Cave[x][y] = XwonderwallB;
+    cave[x][y] = XwonderwallB;
     play_element_sound(x, y, SOUND_wonder, Xwonderwall);
   }
 }
@@ -5730,44 +5731,44 @@ static void Lwonderwall(int x, int y)
 static void Lwheel(int x, int y)
 {
   if (lev.wheel_cnt && x == lev.wheel_x && y == lev.wheel_y)
-    Cave[x][y] = XwheelB;
+    cave[x][y] = XwheelB;
 }
 
 static void Lswitch(int x, int y)
 {
   if (lev.ball_state)
-    Cave[x][y] = XswitchB;
+    cave[x][y] = XswitchB;
 }
 
 static void Lfake_blank(int x, int y)
 {
   if (lev.lenses_cnt)
-    Cave[x][y] = Xfake_blankB;
+    cave[x][y] = Xfake_blankB;
 }
 
 static void Lfake_grass(int x, int y)
 {
   if (lev.magnify_cnt)
-    Cave[x][y] = Xfake_grassB;
+    cave[x][y] = Xfake_grassB;
 }
 
 static void Lfake_amoeba(int x, int y)
 {
   if (lev.lenses_cnt)
-    Cave[x][y] = Xfake_amoebaB;
+    cave[x][y] = Xfake_amoebaB;
 }
 
 static void Lsand_stone(int x, int y)
 {
-  switch (Cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-      Cave[x][y] = Xsand_stonesand_quickout_1;
-      Next[x][y] = Xsand_stonesand_quickout_2;
-      Cave[x][y+1] = Xsand_stoneout_1;
-      Next[x][y+1] = Xsand_stoneout_2;
+      cave[x][y] = Xsand_stonesand_quickout_1;
+      next[x][y] = Xsand_stonesand_quickout_2;
+      cave[x][y+1] = Xsand_stoneout_1;
+      next[x][y+1] = Xsand_stoneout_2;
       return;
 
     case Xacid_1:
@@ -5778,136 +5779,136 @@ static void Lsand_stone(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-      Cave[x][y] = Xsand_stonesand_quickout_1;
-      Next[x][y] = Xsand_stonesand_quickout_2;
-      if (Cave[x+1][y] == Xblank)
-	Cave[x+1][y] = Xacid_splash_e;
-      if (Cave[x-1][y] == Xblank)
-	Cave[x-1][y] = Xacid_splash_w;
+      cave[x][y] = Xsand_stonesand_quickout_1;
+      next[x][y] = Xsand_stonesand_quickout_2;
+      if (cave[x+1][y] == Xblank)
+	cave[x+1][y] = Xacid_splash_e;
+      if (cave[x-1][y] == Xblank)
+	cave[x-1][y] = Xacid_splash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
     case Xsand:
-      Cave[x][y] = Xsand_stonesand_1;
-      Next[x][y] = Xsand_stonesand_2;
-      Cave[x][y+1] = Xsand_sandstone_1;
-      Next[x][y+1] = Xsand_sandstone_2;
+      cave[x][y] = Xsand_stonesand_1;
+      next[x][y] = Xsand_stonesand_2;
+      cave[x][y+1] = Xsand_sandstone_1;
+      next[x][y+1] = Xsand_sandstone_2;
       return;
   }
 }
 
 static void Lsand_stonein_1(int x, int y)
 {
-  Next[x][y] = Xsand_stonein_2;
+  next[x][y] = Xsand_stonein_2;
 }
 
 static void Lsand_stonein_2(int x, int y)
 {
-  Next[x][y] = Xsand_stonein_3;
+  next[x][y] = Xsand_stonein_3;
 }
 
 static void Lsand_stonein_3(int x, int y)
 {
-  Next[x][y] = Xsand_stonein_4;
+  next[x][y] = Xsand_stonein_4;
 }
 
 static void Lsand_stonein_4(int x, int y)
 {
-  Next[x][y] = Xblank;
+  next[x][y] = Xblank;
 }
 
 static void Lsand_sandstone_1(int x, int y)
 {
-  Next[x][y] = Xsand_sandstone_2;
+  next[x][y] = Xsand_sandstone_2;
 }
 
 static void Lsand_sandstone_2(int x, int y)
 {
-  Next[x][y] = Xsand_sandstone_3;
+  next[x][y] = Xsand_sandstone_3;
 }
 
 static void Lsand_sandstone_3(int x, int y)
 {
-  Next[x][y] = Xsand_sandstone_4;
+  next[x][y] = Xsand_sandstone_4;
 }
 
 static void Lsand_sandstone_4(int x, int y)
 {
-  Next[x][y] = Xsand_stone;
+  next[x][y] = Xsand_stone;
 }
 
 static void Lsand_stonesand_1(int x, int y)
 {
-  Next[x][y] = Xsand_stonesand_2;
+  next[x][y] = Xsand_stonesand_2;
 }
 
 static void Lsand_stonesand_2(int x, int y)
 {
-  Next[x][y] = Xsand_stonesand_3;
+  next[x][y] = Xsand_stonesand_3;
 }
 
 static void Lsand_stonesand_3(int x, int y)
 {
-  Next[x][y] = Xsand_stonesand_4;
+  next[x][y] = Xsand_stonesand_4;
 }
 
 static void Lsand_stonesand_4(int x, int y)
 {
-  Next[x][y] = Xsand;
+  next[x][y] = Xsand;
 }
 
 static void Lsand_stoneout_1(int x, int y)
 {
-  Next[x][y] = Xsand_stoneout_2;
+  next[x][y] = Xsand_stoneout_2;
 }
 
 static void Lsand_stoneout_2(int x, int y)
 {
-  Next[x][y] = Xstone_fall;
+  next[x][y] = Xstone_fall;
 }
 
 #ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 static void Lsand_stonesand_quickout_1(int x, int y)
 {
-  Next[x][y] = Xsand_stonesand_quickout_2;
+  next[x][y] = Xsand_stonesand_quickout_2;
 }
 
 static void Lsand_stonesand_quickout_2(int x, int y)
 {
-  Next[x][y] = Xsand;
+  next[x][y] = Xsand;
 }
 #endif
 
 static void Lslidewall_ns(int x, int y)
 {
-  if (tab_blank[Cave[x][y-1]])
+  if (tab_blank[cave[x][y-1]])
   {
-    Cave[x][y-1] = Yslidewall_ns_blank;
-    Next[x][y-1] = Xslidewall_ns;
+    cave[x][y-1] = Yslidewall_ns_blank;
+    next[x][y-1] = Xslidewall_ns;
     play_element_sound(x, y, SOUND_slidewall, Xslidewall_ns);
   }
 
-  if (tab_blank[Cave[x][y+1]])
+  if (tab_blank[cave[x][y+1]])
   {
-    Cave[x][y+1] = Yslidewall_ns_blank;
-    Next[x][y+1] = Xslidewall_ns;
+    cave[x][y+1] = Yslidewall_ns_blank;
+    next[x][y+1] = Xslidewall_ns;
     play_element_sound(x, y, SOUND_slidewall, Xslidewall_ns);
   }
 }
 
 static void Lslidewall_ew(int x, int y)
 {
-  if (tab_blank[Cave[x+1][y]])
+  if (tab_blank[cave[x+1][y]])
   {
-    Cave[x+1][y] = Yslidewall_ew_blank;
-    Next[x+1][y] = Xslidewall_ew;
+    cave[x+1][y] = Yslidewall_ew_blank;
+    next[x+1][y] = Xslidewall_ew;
     play_element_sound(x, y, SOUND_slidewall, Xslidewall_ew);
   }
 
-  if (tab_blank[Cave[x-1][y]])
+  if (tab_blank[cave[x-1][y]])
   {
-    Cave[x-1][y] = Yslidewall_ew_blank;
-    Next[x-1][y] = Xslidewall_ew;
+    cave[x-1][y] = Yslidewall_ew_blank;
+    next[x-1][y] = Xslidewall_ew;
     play_element_sound(x, y, SOUND_slidewall, Xslidewall_ew);
   }
 }
@@ -5920,18 +5921,18 @@ static void Lexit(int x, int y)
   switch (RANDOM(64) / 21)
   {
     case 0:
-      Cave[x][y] = Xexit_1;
-      Next[x][y] = Xexit_2;
+      cave[x][y] = Xexit_1;
+      next[x][y] = Xexit_2;
       break;
 
     case 1:
-      Cave[x][y] = Xexit_2;
-      Next[x][y] = Xexit_3;
+      cave[x][y] = Xexit_2;
+      next[x][y] = Xexit_3;
       break;
 
     default:
-      Cave[x][y] = Xexit_3;
-      Next[x][y] = Xexit_1;
+      cave[x][y] = Xexit_3;
+      next[x][y] = Xexit_1;
       break;
   }
 
@@ -5940,27 +5941,27 @@ static void Lexit(int x, int y)
 
 static void Lexit_1(int x, int y)
 {
-  Next[x][y] = Xexit_2;
+  next[x][y] = Xexit_2;
 }
 
 static void Lexit_2(int x, int y)
 {
-  Next[x][y] = Xexit_3;
+  next[x][y] = Xexit_3;
 }
 
 static void Lexit_3(int x, int y)
 {
-  Next[x][y] = Xexit_1;
+  next[x][y] = Xexit_1;
 }
 
 static void Lpause(int x, int y)
 {
-  Next[x][y] = Xblank;
+  next[x][y] = Xblank;
 }
 
 static void Lamoeba(int x, int y)
 {
-  switch (Cave[x][y])
+  switch (cave[x][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -5970,47 +5971,47 @@ static void Lamoeba(int x, int y)
     case Xsand:
     case Xplant:
     case Yplant:
-      if (tab_amoeba[Cave[x][y-1]] ||
-	  tab_amoeba[Cave[x+1][y]] ||
-	  tab_amoeba[Cave[x][y+1]] ||
-	  tab_amoeba[Cave[x-1][y]])
-	Cave[x][y] = Xdrip;
+      if (tab_amoeba[cave[x][y-1]] ||
+	  tab_amoeba[cave[x+1][y]] ||
+	  tab_amoeba[cave[x][y+1]] ||
+	  tab_amoeba[cave[x-1][y]])
+	cave[x][y] = Xdrip;
   }
 }
 
 static void Lexplode(int x, int y)
 {
-  switch (Cave[x][y])
+  switch (cave[x][y])
   {
     case Znormal:
-      Cave[x][y]     = Xboom_1;
-      Cave[x][y-1]   = tab_explode_normal[Cave[x][y-1]];
-      Cave[x-1][y]   = tab_explode_normal[Cave[x-1][y]];
-      Cave[x+1][y]   = tab_explode_normal[Cave[x+1][y]];
-      Cave[x][y+1]   = tab_explode_normal[Cave[x][y+1]];
-      Cave[x-1][y-1] = tab_explode_normal[Cave[x-1][y-1]];
-      Cave[x+1][y-1] = tab_explode_normal[Cave[x+1][y-1]];
-      Cave[x-1][y+1] = tab_explode_normal[Cave[x-1][y+1]];
-      Cave[x+1][y+1] = tab_explode_normal[Cave[x+1][y+1]];
+      cave[x][y]     = Xboom_1;
+      cave[x][y-1]   = tab_explode_normal[cave[x][y-1]];
+      cave[x-1][y]   = tab_explode_normal[cave[x-1][y]];
+      cave[x+1][y]   = tab_explode_normal[cave[x+1][y]];
+      cave[x][y+1]   = tab_explode_normal[cave[x][y+1]];
+      cave[x-1][y-1] = tab_explode_normal[cave[x-1][y-1]];
+      cave[x+1][y-1] = tab_explode_normal[cave[x+1][y-1]];
+      cave[x-1][y+1] = tab_explode_normal[cave[x-1][y+1]];
+      cave[x+1][y+1] = tab_explode_normal[cave[x+1][y+1]];
       break;
 
     case Zdynamite:
-      Cave[x][y]     = Xboom_1;
-      Cave[x][y-1]   = tab_explode_dynamite[Cave[x][y-1]];
-      Cave[x-1][y]   = tab_explode_dynamite[Cave[x-1][y]];
-      Cave[x+1][y]   = tab_explode_dynamite[Cave[x+1][y]];
-      Cave[x][y+1]   = tab_explode_dynamite[Cave[x][y+1]];
-      Cave[x-1][y-1] = tab_explode_dynamite[Cave[x-1][y-1]];
-      Cave[x+1][y-1] = tab_explode_dynamite[Cave[x+1][y-1]];
-      Cave[x-1][y+1] = tab_explode_dynamite[Cave[x-1][y+1]];
-      Cave[x+1][y+1] = tab_explode_dynamite[Cave[x+1][y+1]];
+      cave[x][y]     = Xboom_1;
+      cave[x][y-1]   = tab_explode_dynamite[cave[x][y-1]];
+      cave[x-1][y]   = tab_explode_dynamite[cave[x-1][y]];
+      cave[x+1][y]   = tab_explode_dynamite[cave[x+1][y]];
+      cave[x][y+1]   = tab_explode_dynamite[cave[x][y+1]];
+      cave[x-1][y-1] = tab_explode_dynamite[cave[x-1][y-1]];
+      cave[x+1][y-1] = tab_explode_dynamite[cave[x+1][y-1]];
+      cave[x-1][y+1] = tab_explode_dynamite[cave[x-1][y+1]];
+      cave[x+1][y+1] = tab_explode_dynamite[cave[x+1][y+1]];
       break;
   }
 }
 
 static void Lboom_1(int x, int y)
 {
-  Next[x][y] = Xboom_2;
+  next[x][y] = Xboom_2;
 #if !PLAY_ELEMENT_SOUND
   if (x != lev.exit_x && y != lev.exit_y)
     play_sound(x, y, SOUND_boom);
@@ -6021,7 +6022,7 @@ static void Lboom_1(int x, int y)
 
 static void Lboom_2(int x, int y)
 {
-  Next[x][y] = Boom[x][y];
+  next[x][y] = boom[x][y];
 }
 
 static void Lboom_android(int x, int y)
@@ -6035,7 +6036,7 @@ static void Lboom_android(int x, int y)
 
 static void handle_tile(int x, int y)
 {
-  switch (Cave[x][y])
+  switch (cave[x][y])
   {
     case Xacid_1:		Lacid_1(x, y);			break;
     case Xacid_2:		Lacid_2(x, y);			break;
@@ -6209,6 +6210,10 @@ void logic_1(void)
   int start_check_nr;
   int i;
 
+  cave = Cave;
+  next = Next;
+  boom = Boom;
+
   game_em.any_player_moving = FALSE;
   game_em.any_player_snapping = FALSE;
 
@@ -6243,16 +6248,16 @@ void logic_1(void)
     if (!ply[i].alive)
       continue;
 
-    if (Cave[ply[i].oldx][ply[i].oldy] == Zplayer)
+    if (cave[ply[i].oldx][ply[i].oldy] == Zplayer)
     {
-      Cave[ply[i].oldx][ply[i].oldy] = Xblank;
-      Next[ply[i].oldx][ply[i].oldy] = Xblank;
+      cave[ply[i].oldx][ply[i].oldy] = Xblank;
+      next[ply[i].oldx][ply[i].oldy] = Xblank;
     }
 
-    if (Cave[ply[i].x][ply[i].y] == Xblank)
+    if (cave[ply[i].x][ply[i].y] == Xblank)
     {
-      Cave[ply[i].x][ply[i].y] = Zplayer;
-      Next[ply[i].x][ply[i].y] = Zplayer;
+      cave[ply[i].x][ply[i].y] = Zplayer;
+      next[ply[i].x][ply[i].y] = Zplayer;
     }
   }
 }
@@ -6260,6 +6265,10 @@ void logic_1(void)
 void logic_2(void)
 {
   int x, y;
+
+  cave = Cave;
+  next = Next;
+  boom = Boom;
 
   seed = RandomEM;
   score = 0;
@@ -6288,6 +6297,10 @@ void logic_3(void)
   int y;
   int count;
   unsigned int random;
+
+  cave = Cave;
+  next = Next;
+  boom = Boom;
 
   /* update variables */
 
