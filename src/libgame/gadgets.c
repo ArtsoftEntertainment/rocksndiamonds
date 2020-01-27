@@ -884,7 +884,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 
   while (tag != GDI_END)
   {
-    switch(tag)
+    switch (tag)
     {
       case GDI_IMAGE_ID:
 	gi->image_id = va_arg(ap, int);

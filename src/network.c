@@ -221,7 +221,7 @@ boolean ConnectToServer(char *hostname, int port)
       Error(ERR_EXIT, "SDLNet_AllocSocketSet() failed: %s"), SDLNet_GetError();
 
     udp = SDLNet_UDP_Open(0);
-    if(!udp)
+    if (!udp)
       Error(ERR_EXIT, "SDLNet_UDP_Open() failed: %s", SDLNet_GetError());
 
     if (SDLNet_UDP_AddSocket(udp_socket_set, udp) == -1)

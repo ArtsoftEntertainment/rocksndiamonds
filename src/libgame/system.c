@@ -1692,7 +1692,7 @@ KeyMod HandleKeyModState(Key key, int key_status)
   {
     KeyMod new_modifier = KMOD_None;
 
-    switch(key)
+    switch (key)
     {
       case KSYM_Shift_L:
 	new_modifier = KMOD_Shift_L;

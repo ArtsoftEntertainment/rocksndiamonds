@@ -613,8 +613,8 @@ void DrawMiniLevel_MM(int size_x, int size_y, int scroll_x, int scroll_y)
 {
   int x, y;
 
-  for(x = 0; x < size_x; x++)
-    for(y = 0; y < size_y; y++)
+  for (x = 0; x < size_x; x++)
+    for (y = 0; y < size_y; y++)
       DrawMiniElementOrWall_MM(x, y, scroll_x, scroll_y);
 
   redraw_mask |= REDRAW_FIELD;

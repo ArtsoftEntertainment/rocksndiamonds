@@ -85,7 +85,7 @@ static boolean player_killed(struct PLAYER *ply)
   if (lev.killed_out_of_time && setup.time_limit)
     return TRUE;
 
-  switch(cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -106,7 +106,7 @@ static boolean player_killed(struct PLAYER *ply)
       return TRUE;
   }
 
-  switch(cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -127,7 +127,7 @@ static boolean player_killed(struct PLAYER *ply)
       return TRUE;
   }
 
-  switch(cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -148,7 +148,7 @@ static boolean player_killed(struct PLAYER *ply)
       return TRUE;
   }
 
-  switch(cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -169,7 +169,7 @@ static boolean player_killed(struct PLAYER *ply)
       return TRUE;
   }
 
-  switch(cave[x][y])
+  switch (cave[x][y])
   {
     case Xblank:
     case Xacid_splash_e:
@@ -202,7 +202,7 @@ static void kill_player(struct PLAYER *ply)
 
   ply->alive = 0;
 
-  switch(cave[x][y-1])
+  switch (cave[x][y-1])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -227,7 +227,7 @@ static void kill_player(struct PLAYER *ply)
       break;
   }
 
-  switch(cave[x+1][y])
+  switch (cave[x+1][y])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -252,7 +252,7 @@ static void kill_player(struct PLAYER *ply)
       break;
   }
 
-  switch(cave[x][y+1])
+  switch (cave[x][y+1])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -277,7 +277,7 @@ static void kill_player(struct PLAYER *ply)
       break;
   }
 
-  switch(cave[x-1][y])
+  switch (cave[x-1][y])
   {
     case Xbug_1_n:
     case Xbug_1_e:
@@ -302,7 +302,7 @@ static void kill_player(struct PLAYER *ply)
       break;
   }
 
-  switch(cave[x][y])
+  switch (cave[x][y])
   {
     case Xexit_1:
     case Xexit_2:
@@ -317,7 +317,7 @@ static void kill_player(struct PLAYER *ply)
       break;
   }
 
-  switch(cave[x][y])
+  switch (cave[x][y])
   {
 #ifdef USE_CHANGED_ACID_STUFF
     case Xacid_1:
@@ -357,7 +357,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
   {
     int element = cave[x][y];
 
-    switch(cave[x][y])
+    switch (cave[x][y])
     {
       /* fire is released */
       case Xblank:
@@ -564,7 +564,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	switch(cave[x+dx][y])
+	switch (cave[x+dx][y])
 	{
           case Xblank:
           case Xacid_splash_e:
@@ -603,7 +603,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	switch(cave[x+dx][y])
+	switch (cave[x+dx][y])
 	{
 	  case Xblank:
           case Xacid_splash_e:
@@ -642,7 +642,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	switch(cave[x+dx][y])
+	switch (cave[x+dx][y])
 	{
           case Xblank:
           case Xacid_splash_e:
@@ -681,7 +681,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
-	switch(cave[x+dx][y])
+	switch (cave[x+dx][y])
 	{
           case Xblank:
           case Xacid_splash_e:
@@ -742,7 +742,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xballoon:
-	switch(cave[x+dx][y+dy])
+	switch (cave[x+dx][y+dy])
 	{
           case Xblank:
           case Xacid_splash_e:
@@ -789,7 +789,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xandroid_2_s:
       case Xandroid_1_w:
       case Xandroid_2_w:
-	switch(cave[x+dx][y+dy])
+	switch (cave[x+dx][y+dy])
 	{
           case Xblank:
           case Xacid_splash_e:
@@ -972,7 +972,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
   {
     int element = cave[x][y];
 
-    switch(cave[x][y])
+    switch (cave[x][y])
     {
       /* fire is pressed */
 

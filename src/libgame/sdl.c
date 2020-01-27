@@ -2529,7 +2529,7 @@ static void setJoystickButton(int nr, int button_id_raw, int button_state)
 
 void HandleJoystickEvent(Event *event)
 {
-  switch(event->type)
+  switch (event->type)
   {
     case SDL_CONTROLLERDEVICEADDED:
 #if DEBUG_JOYSTICKS

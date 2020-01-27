@@ -1480,7 +1480,7 @@ void WriteBytesToFile(FILE *file, byte *buffer, unsigned int bytes)
 {
   int i;
 
-  for(i = 0; i < bytes; i++)
+  for (i = 0; i < bytes; i++)
     fputc(buffer[i], file);
 }
 

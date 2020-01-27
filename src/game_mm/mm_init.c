@@ -221,17 +221,17 @@ void InitElementProperties_MM(void)
   };
   static int num_properties = sizeof(ep_num) / sizeof(int *);
 
-  for(i = 0; i < MAX_ELEMENTS; i++)
+  for (i = 0; i < MAX_ELEMENTS; i++)
     Elementeigenschaften[i] = 0;
 
-  for(i = 0; i < num_properties; i++)
-    for(j = 0; j < *(ep_num[i]); j++)
+  for (i = 0; i < num_properties; i++)
+    for (j = 0; j < *(ep_num[i]); j++)
       Elementeigenschaften[(ep_array[i])[j]] |= ep_bit[i];
 
-  for(i = EL_CHAR_START; i <= EL_CHAR_END; i++)
+  for (i = EL_CHAR_START; i <= EL_CHAR_END; i++)
     Elementeigenschaften[i] |= (EP_BIT_CHAR | EP_BIT_INACTIVE);
 
-  for(i = EL_WALL_START; i <= EL_WALL_END; i++)
+  for (i = EL_WALL_START; i <= EL_WALL_END; i++)
     Elementeigenschaften[i] |= EP_BIT_WALL;
 }
 

@@ -421,7 +421,7 @@ static void InitMovDir_MM(int x, int y)
     { MV_LEFT,  MV_RIGHT, MV_UP,    MV_DOWN }
   };
 
-  switch(element)
+  switch (element)
   {
     case EL_PACMAN_RIGHT:
     case EL_PACMAN_UP:
@@ -2519,7 +2519,7 @@ static void Bang_MM(int x, int y)
   DrawLaser(0, DL_LASER_ENABLED);
 #endif
 
-  switch(element)
+  switch (element)
   {
     case EL_KETTLE:
       mode = EX_KETTLE;
@@ -4152,7 +4152,7 @@ static void RaiseScore_MM(int value)
 
 void RaiseScoreElement_MM(int element)
 {
-  switch(element)
+  switch (element)
   {
     case EL_PACMAN:
     case EL_PACMAN_RIGHT:
