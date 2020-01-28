@@ -109,7 +109,7 @@ void BackToFront_EM(void)
 
 static struct GraphicInfo_EM *getObjectGraphic(int x, int y)
 {
-  int tile = Draw[x][y];
+  int tile = lev.draw[x][y];
   struct GraphicInfo_EM *g = &graphic_info_em_object[tile][frame];
 
   if (!game.use_native_emc_graphics_engine)
@@ -302,8 +302,8 @@ static void animscreen(void)
   if (!game.use_native_emc_graphics_engine)
     for (y = 2; y < EM_MAX_CAVE_HEIGHT - 2; y++)
       for (x = 2; x < EM_MAX_CAVE_WIDTH - 2; x++)
-	SetGfxAnimation_EM(&graphic_info_em_object[Draw[x][y]][frame],
-			   Draw[x][y], 7 - frame, x - 2, y - 2);
+	SetGfxAnimation_EM(&graphic_info_em_object[lev.draw[x][y]][frame],
+			   lev.draw[x][y], 7 - frame, x - 2, y - 2);
 
   for (y = top; y < top + MAX_BUF_YSIZE; y++)
   {
@@ -311,7 +311,7 @@ static void animscreen(void)
     {
       int sx = x % MAX_BUF_XSIZE;
       int sy = y % MAX_BUF_YSIZE;    
-      int tile = Draw[x][y];
+      int tile = lev.draw[x][y];
       struct GraphicInfo_EM *g = &graphic_info_em_object[tile][frame];
       int obj = g->unique_identifier;
       int crm = 0;
@@ -330,7 +330,7 @@ static void animscreen(void)
 	      yy < 0 || yy >= EM_MAX_CAVE_HEIGHT)
 	    continue;
 
-	  tile_next = Draw[xx][yy];
+	  tile_next = lev.draw[xx][yy];
 
 	  if (!graphic_info_em_object[tile_next][frame].has_crumbled_graphics)
 	    crm |= (1 << i);

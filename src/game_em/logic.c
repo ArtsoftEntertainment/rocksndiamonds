@@ -6210,9 +6210,9 @@ void logic_1(void)
   int start_check_nr;
   int i;
 
-  cave = Cave;
-  next = Next;
-  boom = Boom;
+  cave = lev.cave;
+  next = lev.next;
+  boom = lev.boom;
 
   game_em.any_player_moving = FALSE;
   game_em.any_player_snapping = FALSE;
@@ -6266,9 +6266,9 @@ void logic_2(void)
 {
   int x, y;
 
-  cave = Cave;
-  next = Next;
-  boom = Boom;
+  cave = lev.cave;
+  next = lev.next;
+  boom = lev.boom;
 
   seed = RandomEM;
   score = 0;
@@ -6285,10 +6285,10 @@ void logic_2(void)
   RandomEM = seed;
 
   /* triple buffering */
-  void *temp = Cave;
-  Cave = Next;
-  Next = Draw;
-  Draw = temp;
+  void *temp = lev.cave;
+  lev.cave = lev.next;
+  lev.next = lev.draw;
+  lev.draw = temp;
 }
 
 void logic_3(void)
@@ -6298,9 +6298,9 @@ void logic_3(void)
   int count;
   unsigned int random;
 
-  cave = Cave;
-  next = Next;
-  boom = Boom;
+  cave = lev.cave;
+  next = lev.next;
+  boom = lev.boom;
 
   /* update variables */
 
@@ -6354,5 +6354,5 @@ void logic_3(void)
 
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Next[x][y] = Cave[x][y];
+      next[x][y] = cave[x][y];
 }

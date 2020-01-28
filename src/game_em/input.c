@@ -11,14 +11,6 @@ unsigned int RandomEM;
 struct LEVEL lev;
 struct PLAYER ply[MAX_PLAYERS];
 
-short **Boom;
-short **Cave;
-short **Next;
-short **Draw;
-
-static short *Index[4][WIDTH];
-static short Array[4][WIDTH][HEIGHT];
-
 extern int screen_x;
 extern int screen_y;
 
@@ -32,30 +24,30 @@ void game_init_vars(void)
 
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[0][x][y] = Zborder;
+      lev.cavebuf[x][y] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[1][x][y] = Zborder;
+      lev.nextbuf[x][y] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[2][x][y] = Zborder;
+      lev.drawbuf[x][y] = Zborder;
   for (y = 0; y < HEIGHT; y++)
     for (x = 0; x < WIDTH; x++)
-      Array[3][x][y] = Xblank;
+      lev.boombuf[x][y] = Xblank;
 
   for (x = 0; x < WIDTH; x++)
-    Index[0][x] = Array[0][x];
+    lev.cavecol[x] = lev.cavebuf[x];
   for (x = 0; x < WIDTH; x++)
-    Index[1][x] = Array[1][x];
+    lev.nextcol[x] = lev.nextbuf[x];
   for (x = 0; x < WIDTH; x++)
-    Index[2][x] = Array[2][x];
+    lev.drawcol[x] = lev.drawbuf[x];
   for (x = 0; x < WIDTH; x++)
-    Index[3][x] = Array[3][x];
+    lev.boomcol[x] = lev.boombuf[x];
 
-  Cave = Index[0];
-  Next = Index[1];
-  Draw = Index[2];
-  Boom = Index[3];
+  lev.cave = lev.cavecol;
+  lev.next = lev.nextcol;
+  lev.draw = lev.drawcol;
+  lev.boom = lev.boomcol;
 }
 
 void InitGameEngine_EM(void)
@@ -168,7 +160,7 @@ void readjoy(byte action, struct PLAYER *ply)
 
 void SaveEngineSnapshotValues_EM(void)
 {
-  int i, j, k;
+  int i;
 
   engine_snapshot_em.game_em = game_em;
   engine_snapshot_em.lev = lev;
@@ -179,23 +171,13 @@ void SaveEngineSnapshotValues_EM(void)
   engine_snapshot_em.screen_x = screen_x;
   engine_snapshot_em.screen_y = screen_y;
 
-  engine_snapshot_em.Boom = Boom;
-  engine_snapshot_em.Cave = Cave;
-  engine_snapshot_em.Next = Next;
-  engine_snapshot_em.Draw = Draw;
-
   for (i = 0; i < 4; i++)
     engine_snapshot_em.ply[i] = ply[i];
-
-  for (i = 0; i < 4; i++)
-    for (j = 0; j < HEIGHT; j++)
-      for (k = 0; k < WIDTH; k++)
-	engine_snapshot_em.Array[i][k][j] = Array[i][k][j];
 }
 
 void LoadEngineSnapshotValues_EM(void)
 {
-  int i, j, k;
+  int i;
 
   game_em = engine_snapshot_em.game_em;
   lev = engine_snapshot_em.lev;
@@ -206,16 +188,6 @@ void LoadEngineSnapshotValues_EM(void)
   screen_x = engine_snapshot_em.screen_x;
   screen_y = engine_snapshot_em.screen_y;
 
-  Boom = engine_snapshot_em.Boom;
-  Cave = engine_snapshot_em.Cave;
-  Next = engine_snapshot_em.Next;
-  Draw = engine_snapshot_em.Draw;
-
   for (i = 0; i < 4; i++)
     ply[i] = engine_snapshot_em.ply[i];
-
-  for (i = 0; i < 4; i++)
-    for (j = 0; j < HEIGHT; j++)
-      for (k = 0; k < WIDTH; k++)
-	Array[i][k][j] = engine_snapshot_em.Array[i][k][j];
 }

@@ -700,6 +700,21 @@ struct LEVEL
   int num_ball_arrays;		/* number of ball data arrays used */
 
   int exit_x, exit_y;		/* kludge for playing player exit sound */
+
+  short cavebuf[EM_MAX_CAVE_WIDTH][EM_MAX_CAVE_HEIGHT];
+  short nextbuf[EM_MAX_CAVE_WIDTH][EM_MAX_CAVE_HEIGHT];
+  short drawbuf[EM_MAX_CAVE_WIDTH][EM_MAX_CAVE_HEIGHT];
+  short boombuf[EM_MAX_CAVE_WIDTH][EM_MAX_CAVE_HEIGHT];
+
+  short *cavecol[EM_MAX_CAVE_WIDTH];
+  short *nextcol[EM_MAX_CAVE_WIDTH];
+  short *drawcol[EM_MAX_CAVE_WIDTH];
+  short *boomcol[EM_MAX_CAVE_WIDTH];
+
+  short **cave;
+  short **next;
+  short **draw;
+  short **boom;
 };
 
 struct PLAYER
