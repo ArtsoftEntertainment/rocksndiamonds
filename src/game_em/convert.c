@@ -938,22 +938,20 @@ void prepare_em_level(void)
 
   /* reset all runtime variables to their initial values */
 
+  game_init_cave_buffers();
+
   lev.left = CAVE_BUFFER_XOFFSET;
   lev.top  = CAVE_BUFFER_YOFFSET;
   lev.right = lev.left + lev.width;
   lev.bottom = lev.top + lev.height;
 
-  for (y = 0; y < CAVE_HEIGHT; y++)
-    for (x = 0; x < CAVE_WIDTH; x++)
+  for (x = 0; x < lev.width; x++)
+    for (y = 0; y < lev.height; y++)
       lev.cave[lev.left + x][lev.top + y] = native_em_level.cave[x][y];
 
-  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
-    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
-      lev.next[x][y] = lev.cave[x][y];
-
-  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
-    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
-      lev.draw[x][y] = lev.cave[x][y];
+  for (x = lev.left; x < lev.right; x++)
+    for (y = lev.top; y < lev.bottom; y++)
+      lev.next[x][y] = lev.draw[x][y] = lev.cave[x][y];
 
   lev.time_initial = lev.time_seconds;
   lev.time = lev.time_initial;
