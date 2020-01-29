@@ -23,8 +23,8 @@ void setLevelInfoToDefaults_EM(void)
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    ply[i].x_initial = 0;
-    ply[i].y_initial = 0;
+    ply[i].x_initial = -1;
+    ply[i].y_initial = -1;
   }
 
   lev.lenses_cnt_initial = 0;

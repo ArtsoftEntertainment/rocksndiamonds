@@ -643,8 +643,8 @@ void convert_em_level(unsigned char *src, int file_version)
   for (i = 0; i < 2; i++)
   {
     temp = src[0x830 + i * 2] << 8 | src[0x831 + i * 2];
-    ply[i].x_initial = (temp & 63) + 1;
-    ply[i].y_initial = (temp >> 6 & 31) + 1;
+    ply[i].x_initial = (temp & 63);
+    ply[i].y_initial = (temp >> 6 & 31);
   }
 
   temp = (src[0x834] << 8 | src[0x835]) * 28;
@@ -911,15 +911,15 @@ void convert_em_level(unsigned char *src, int file_version)
   }
 
   /* first fill the complete playfield with the default border element */
-  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
-    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
+  for (y = 0; y < CAVE_HEIGHT; y++)
+    for (x = 0; x < CAVE_WIDTH; x++)
       native_em_level.cave[x][y] = Zborder;
 
   /* then copy the real level contents from level file into the playfield */
   temp = 0;
   for (y = 0; y < lev.height; y++)
     for (x = 0; x < lev.width; x++)
-      native_em_level.cave[x + 1][y + 1] =
+      native_em_level.cave[x][y] =
 	get_em_element(src[temp++], file_version);
 
   /* at last, set the two players at their positions in the playfield */
@@ -938,9 +938,10 @@ void prepare_em_level(void)
 
   /* reset all runtime variables to their initial values */
 
-  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
-    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
-      lev.cave[x][y] = native_em_level.cave[x][y];
+  for (y = 0; y < CAVE_HEIGHT; y++)
+    for (x = 0; x < CAVE_WIDTH; x++)
+      lev.cave[x + CAVE_BUFFER_XOFFSET][y + CAVE_BUFFER_YOFFSET] =
+	native_em_level.cave[x][y];
 
   for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
     for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
@@ -989,7 +990,7 @@ void prepare_em_level(void)
     ply[i].exists = 0;
     ply[i].alive_initial = FALSE;
 
-    if (ply[i].x_initial > 0 && ply[i].y_initial > 0)
+    if (ply[i].x_initial != -1 && ply[i].y_initial != -1)
     {
       ply[i].exists = 1;
 
@@ -1021,7 +1022,9 @@ void prepare_em_level(void)
 
 	native_em_level.cave[x][y] = Xblank;
 
-	lev.cave[x][y] = lev.next[x][y] = lev.draw[x][y] = Xblank;
+	lev.cave[x + CAVE_BUFFER_XOFFSET][y + CAVE_BUFFER_YOFFSET] = Xblank;
+	lev.next[x + CAVE_BUFFER_XOFFSET][y + CAVE_BUFFER_YOFFSET] = Xblank;
+	lev.draw[x + CAVE_BUFFER_XOFFSET][y + CAVE_BUFFER_YOFFSET] = Xblank;
       }
     }
   }
@@ -1034,8 +1037,8 @@ void prepare_em_level(void)
     ply[i].dynamite_cnt = 0;
     ply[i].keys = 0;
     ply[i].anim = 0;
-    ply[i].oldx = ply[i].x = ply[i].x_initial;
-    ply[i].oldy = ply[i].y = ply[i].y_initial;
+    ply[i].oldx = ply[i].x = ply[i].x_initial + CAVE_BUFFER_XOFFSET;
+    ply[i].oldy = ply[i].y = ply[i].y_initial + CAVE_BUFFER_YOFFSET;
     ply[i].last_move_dir = MV_NONE;
     ply[i].joy_n = ply[i].joy_e = ply[i].joy_s = ply[i].joy_w = 0;
     ply[i].joy_snap  = ply[i].joy_drop = 0;
