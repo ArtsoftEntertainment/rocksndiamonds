@@ -6334,8 +6334,8 @@ void logic_3(void)
 
   for (count = lev.amoeba_time; count--;)
   {
-    x = CAVE_BUFFER_XOFFSET - 1 + (random >> 10) % CAVE_WIDTH;
-    y = CAVE_BUFFER_YOFFSET - 1 + (random >> 20) % CAVE_HEIGHT;
+    x = lev.left - 1 + (random >> 10) % CAVE_WIDTH;
+    y = lev.top  - 1 + (random >> 20) % CAVE_HEIGHT;
 
     Lamoeba(x, y);
 

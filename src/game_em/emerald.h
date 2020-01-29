@@ -637,6 +637,11 @@ struct LEVEL
   int width;			/* playfield width */
   int height;			/* playfield height */
 
+  int left;			/* playfield left edge */
+  int top;			/* playfield top edge */
+  int right;			/* playfield right edge */
+  int bottom;			/* playfield bottom edge */
+
   int time_seconds;		/* available time (seconds) */
   int time_initial;		/* available time (initial) */
   int time;			/* time remaining (runtime) */

@@ -938,10 +938,14 @@ void prepare_em_level(void)
 
   /* reset all runtime variables to their initial values */
 
+  lev.left = CAVE_BUFFER_XOFFSET;
+  lev.top  = CAVE_BUFFER_YOFFSET;
+  lev.right = lev.left + lev.width;
+  lev.bottom = lev.top + lev.height;
+
   for (y = 0; y < CAVE_HEIGHT; y++)
     for (x = 0; x < CAVE_WIDTH; x++)
-      lev.cave[x + CAVE_BUFFER_XOFFSET][y + CAVE_BUFFER_YOFFSET] =
-	native_em_level.cave[x][y];
+      lev.cave[lev.left + x][lev.top + y] = native_em_level.cave[x][y];
 
   for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
     for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
@@ -1022,9 +1026,9 @@ void prepare_em_level(void)
 
 	native_em_level.cave[x][y] = Xblank;
 
-	lev.cave[x + CAVE_BUFFER_XOFFSET][y + CAVE_BUFFER_YOFFSET] = Xblank;
-	lev.next[x + CAVE_BUFFER_XOFFSET][y + CAVE_BUFFER_YOFFSET] = Xblank;
-	lev.draw[x + CAVE_BUFFER_XOFFSET][y + CAVE_BUFFER_YOFFSET] = Xblank;
+	lev.cave[lev.left + x][lev.top + y] = Xblank;
+	lev.next[lev.left + x][lev.top + y] = Xblank;
+	lev.draw[lev.left + x][lev.top + y] = Xblank;
       }
     }
   }
@@ -1037,8 +1041,8 @@ void prepare_em_level(void)
     ply[i].dynamite_cnt = 0;
     ply[i].keys = 0;
     ply[i].anim = 0;
-    ply[i].oldx = ply[i].x = ply[i].x_initial + CAVE_BUFFER_XOFFSET;
-    ply[i].oldy = ply[i].y = ply[i].y_initial + CAVE_BUFFER_YOFFSET;
+    ply[i].oldx = ply[i].x = ply[i].x_initial + lev.left;
+    ply[i].oldy = ply[i].y = ply[i].y_initial + lev.top;
     ply[i].last_move_dir = MV_NONE;
     ply[i].joy_n = ply[i].joy_e = ply[i].joy_s = ply[i].joy_w = 0;
     ply[i].joy_snap  = ply[i].joy_drop = 0;
