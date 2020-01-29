@@ -13,7 +13,8 @@ void close_all(void);
 void readjoy(byte, struct PLAYER *);
 
 void game_initscreen(void);
-void game_init_vars(void);
+void game_init_random(void);
+void game_init_cave_buffers(void);
 
 void play_sound(int, int, int);
 void play_element_sound(int, int, int, int);

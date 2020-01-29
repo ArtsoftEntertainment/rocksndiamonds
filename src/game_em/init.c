@@ -46,7 +46,8 @@ void em_open_all(void)
   /* after "open_all()", because we need the graphic bitmaps to be defined */
   tab_generate_graphics_info_em();
 
-  game_init_vars();
+  game_init_random();
+  game_init_cave_buffers();
 }
 
 void em_close_all(void)

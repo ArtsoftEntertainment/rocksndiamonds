@@ -16,11 +16,14 @@ extern int screen_y;
 
 struct EngineSnapshotInfo_EM engine_snapshot_em;
 
-void game_init_vars(void)
+void game_init_random(void)
+{
+  RandomEM = 1684108901;
+}
+
+void game_init_cave_buffers(void)
 {
   int x, y;
-
-  RandomEM = 1684108901;
 
   for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
     for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
