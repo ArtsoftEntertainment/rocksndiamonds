@@ -51,9 +51,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* define these to use additional elements */
 #define EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 
-/* one border for Zborder elements, one border for steelwall, if needed */
-#define CAVE_WIDTH			(MAX_PLAYFIELD_WIDTH  + 2 + 2)
-#define CAVE_HEIGHT			(MAX_PLAYFIELD_HEIGHT + 2 + 2)
+/* with border for steelwall, if needed (when converted from R'n'D level) */
+#define CAVE_WIDTH			(MAX_PLAYFIELD_WIDTH  + 2)
+#define CAVE_HEIGHT			(MAX_PLAYFIELD_HEIGHT + 2)
+
+/* with border for Zborder elements (surrounding the visible playfield) */
+#define CAVE_BUFFER_XOFFSET		1
+#define CAVE_BUFFER_YOFFSET		1
+#define CAVE_BUFFER_WIDTH		(CAVE_WIDTH  + 2 * CAVE_BUFFER_XOFFSET)
+#define CAVE_BUFFER_HEIGHT		(CAVE_HEIGHT + 2 * CAVE_BUFFER_YOFFSET)
 
 /*
   -----------------------------------------------------------------------------
@@ -701,15 +707,15 @@ struct LEVEL
 
   int exit_x, exit_y;		/* kludge for playing player exit sound */
 
-  short cavebuf[CAVE_WIDTH][CAVE_HEIGHT];
-  short nextbuf[CAVE_WIDTH][CAVE_HEIGHT];
-  short drawbuf[CAVE_WIDTH][CAVE_HEIGHT];
-  short boombuf[CAVE_WIDTH][CAVE_HEIGHT];
+  short cavebuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
+  short nextbuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
+  short drawbuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
+  short boombuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
 
-  short *cavecol[CAVE_WIDTH];
-  short *nextcol[CAVE_WIDTH];
-  short *drawcol[CAVE_WIDTH];
-  short *boomcol[CAVE_WIDTH];
+  short *cavecol[CAVE_BUFFER_WIDTH];
+  short *nextcol[CAVE_BUFFER_WIDTH];
+  short *drawcol[CAVE_BUFFER_WIDTH];
+  short *boomcol[CAVE_BUFFER_WIDTH];
 
   short **cave;
   short **next;

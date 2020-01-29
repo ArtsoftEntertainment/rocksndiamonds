@@ -911,8 +911,8 @@ void convert_em_level(unsigned char *src, int file_version)
   }
 
   /* first fill the complete playfield with the default border element */
-  for (y = 0; y < CAVE_HEIGHT; y++)
-    for (x = 0; x < CAVE_WIDTH; x++)
+  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
+    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
       native_em_level.cave[x][y] = Zborder;
 
   /* then copy the real level contents from level file into the playfield */
@@ -938,16 +938,16 @@ void prepare_em_level(void)
 
   /* reset all runtime variables to their initial values */
 
-  for (y = 0; y < CAVE_HEIGHT; y++)
-    for (x = 0; x < CAVE_WIDTH; x++)
+  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
+    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
       lev.cave[x][y] = native_em_level.cave[x][y];
 
-  for (y = 0; y < CAVE_HEIGHT; y++)
-    for (x = 0; x < CAVE_WIDTH; x++)
+  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
+    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
       lev.next[x][y] = lev.cave[x][y];
 
-  for (y = 0; y < CAVE_HEIGHT; y++)
-    for (x = 0; x < CAVE_WIDTH; x++)
+  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
+    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
       lev.draw[x][y] = lev.cave[x][y];
 
   lev.time_initial = lev.time_seconds;

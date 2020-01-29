@@ -12,8 +12,8 @@
 // constant definitions
 // ----------------------------------------------------------------------------
 
-#define EM_MAX_CAVE_WIDTH		CAVE_WIDTH
-#define EM_MAX_CAVE_HEIGHT		CAVE_HEIGHT
+#define EM_MAX_CAVE_BUFFER_WIDTH	CAVE_BUFFER_WIDTH
+#define EM_MAX_CAVE_BUFFER_HEIGHT	CAVE_BUFFER_HEIGHT
 
 
 // ----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ struct LevelInfo_EM
 {
   int file_version;
 
-  short cave[CAVE_WIDTH][CAVE_HEIGHT];
+  short cave[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
 
   struct LEVEL *lev;
   struct PLAYER *ply[MAX_PLAYERS];

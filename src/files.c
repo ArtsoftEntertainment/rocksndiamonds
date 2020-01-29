@@ -3519,8 +3519,8 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   struct PLAYER **ply = level_em->ply;
   int i, j, x, y;
 
-  lev->width  = MIN(level->fieldx, EM_MAX_CAVE_WIDTH);
-  lev->height = MIN(level->fieldy, EM_MAX_CAVE_HEIGHT);
+  lev->width  = MIN(level->fieldx, EM_MAX_CAVE_BUFFER_WIDTH);
+  lev->height = MIN(level->fieldy, EM_MAX_CAVE_BUFFER_HEIGHT);
 
   lev->time_seconds     = level->time;
   lev->required_initial = level->gems_needed;
@@ -3574,8 +3574,8 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   map_android_clone_elements_RND_to_EM(level);
 
   // first fill the complete playfield with the default border element
-  for (y = 0; y < EM_MAX_CAVE_HEIGHT; y++)
-    for (x = 0; x < EM_MAX_CAVE_WIDTH; x++)
+  for (y = 0; y < EM_MAX_CAVE_BUFFER_HEIGHT; y++)
+    for (x = 0; x < EM_MAX_CAVE_BUFFER_WIDTH; x++)
       level_em->cave[x][y] = Zborder;
 
   if (BorderElement == EL_STEELWALL)

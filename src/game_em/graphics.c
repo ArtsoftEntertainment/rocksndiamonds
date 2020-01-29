@@ -300,8 +300,8 @@ static void animscreen(void)
   };
 
   if (!game.use_native_emc_graphics_engine)
-    for (y = 2; y < CAVE_HEIGHT - 2; y++)
-      for (x = 2; x < CAVE_WIDTH - 2; x++)
+    for (y = 2; y < CAVE_BUFFER_HEIGHT - 2; y++)
+      for (x = 2; x < CAVE_BUFFER_WIDTH - 2; x++)
 	SetGfxAnimation_EM(&graphic_info_em_object[lev.draw[x][y]][frame],
 			   lev.draw[x][y], 7 - frame, x - 2, y - 2);
 
@@ -326,8 +326,8 @@ static void animscreen(void)
 	  int yy = y + xy[i][1];
 	  int tile_next;
 
-	  if (xx < 0 || xx >= CAVE_WIDTH ||
-	      yy < 0 || yy >= CAVE_HEIGHT)
+	  if (xx < 0 || xx >= CAVE_BUFFER_WIDTH ||
+	      yy < 0 || yy >= CAVE_BUFFER_HEIGHT)
 	    continue;
 
 	  tile_next = lev.draw[xx][yy];

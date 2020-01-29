@@ -6273,8 +6273,8 @@ void logic_2(void)
   seed = RandomEM;
   score = 0;
 
-  for (y = 1; y < CAVE_HEIGHT - 1; y++)
-    for (x = 0; x < CAVE_WIDTH; x++)
+  for (y = 1; y < CAVE_BUFFER_HEIGHT - 1; y++)
+    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
       handle_tile(x, y);
 
   if (ply[0].alive || ply[1].alive || ply[2].alive || ply[3].alive)
@@ -6334,8 +6334,8 @@ void logic_3(void)
 
   for (count = lev.amoeba_time; count--;)
   {
-    x = (random >> 10) % (CAVE_WIDTH - 2);
-    y = (random >> 20) % (CAVE_HEIGHT - 2);
+    x = (random >> 10) % (CAVE_BUFFER_WIDTH - 2);
+    y = (random >> 20) % (CAVE_BUFFER_HEIGHT - 2);
 
     Lamoeba(x, y);
 
@@ -6346,13 +6346,13 @@ void logic_3(void)
 
   /* handle explosions */
 
-  for (y = 1; y < CAVE_HEIGHT - 1; y++)
-    for (x = 1; x < CAVE_WIDTH - 1; x++)
+  for (y = 1; y < CAVE_BUFFER_HEIGHT - 1; y++)
+    for (x = 1; x < CAVE_BUFFER_WIDTH - 1; x++)
       Lexplode(x, y);
 
   /* triple buffering */
 
-  for (y = 0; y < CAVE_HEIGHT; y++)
-    for (x = 0; x < CAVE_WIDTH; x++)
+  for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
+    for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
       next[x][y] = cave[x][y];
 }
