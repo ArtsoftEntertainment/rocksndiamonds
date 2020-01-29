@@ -37,11 +37,6 @@
 
 #define FILE_VERSION_EM_ACTUAL	FILE_VERSION_EM_V6
 
-/* level sizes and positions for EM engine */
-
-#define WIDTH			EM_MAX_CAVE_WIDTH
-#define HEIGHT			EM_MAX_CAVE_HEIGHT
-
 /* screen sizes and positions for EM engine */
 
 #define TILESIZE		32

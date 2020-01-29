@@ -22,26 +22,26 @@ void game_init_vars(void)
 
   RandomEM = 1684108901;
 
-  for (y = 0; y < HEIGHT; y++)
-    for (x = 0; x < WIDTH; x++)
+  for (y = 0; y < CAVE_HEIGHT; y++)
+    for (x = 0; x < CAVE_WIDTH; x++)
       lev.cavebuf[x][y] = Zborder;
-  for (y = 0; y < HEIGHT; y++)
-    for (x = 0; x < WIDTH; x++)
+  for (y = 0; y < CAVE_HEIGHT; y++)
+    for (x = 0; x < CAVE_WIDTH; x++)
       lev.nextbuf[x][y] = Zborder;
-  for (y = 0; y < HEIGHT; y++)
-    for (x = 0; x < WIDTH; x++)
+  for (y = 0; y < CAVE_HEIGHT; y++)
+    for (x = 0; x < CAVE_WIDTH; x++)
       lev.drawbuf[x][y] = Zborder;
-  for (y = 0; y < HEIGHT; y++)
-    for (x = 0; x < WIDTH; x++)
+  for (y = 0; y < CAVE_HEIGHT; y++)
+    for (x = 0; x < CAVE_WIDTH; x++)
       lev.boombuf[x][y] = Xblank;
 
-  for (x = 0; x < WIDTH; x++)
+  for (x = 0; x < CAVE_WIDTH; x++)
     lev.cavecol[x] = lev.cavebuf[x];
-  for (x = 0; x < WIDTH; x++)
+  for (x = 0; x < CAVE_WIDTH; x++)
     lev.nextcol[x] = lev.nextbuf[x];
-  for (x = 0; x < WIDTH; x++)
+  for (x = 0; x < CAVE_WIDTH; x++)
     lev.drawcol[x] = lev.drawbuf[x];
-  for (x = 0; x < WIDTH; x++)
+  for (x = 0; x < CAVE_WIDTH; x++)
     lev.boomcol[x] = lev.boombuf[x];
 
   lev.cave = lev.cavecol;
