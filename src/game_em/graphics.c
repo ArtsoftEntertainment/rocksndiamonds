@@ -118,7 +118,7 @@ static struct GraphicInfo_EM *getObjectGraphic(int x, int y)
   struct GraphicInfo_EM *g = &graphic_info_em_object[tile][frame];
 
   if (!game.use_native_emc_graphics_engine)
-    getGraphicSourceObjectExt_EM(g, tile, 7 - frame, x - 2, y - 2);
+    getGraphicSourceObjectExt_EM(g, tile, 7 - frame, x - lev.left, y - lev.top);
 
   return g;
 }
@@ -305,10 +305,11 @@ static void animscreen(void)
   };
 
   if (!game.use_native_emc_graphics_engine)
-    for (y = 2; y < CAVE_BUFFER_HEIGHT - 2; y++)
-      for (x = 2; x < CAVE_BUFFER_WIDTH - 2; x++)
+    for (y = lev.top; y < lev.bottom; y++)
+      for (x = lev.left; x < lev.right; x++)
 	SetGfxAnimation_EM(&graphic_info_em_object[lev.draw[x][y]][frame],
-			   lev.draw[x][y], 7 - frame, x - 2, y - 2);
+			   lev.draw[x][y], 7 - frame,
+			   x - lev.left, y - lev.top);
 
   for (y = top; y < top + MAX_BUF_YSIZE; y++)
   {
