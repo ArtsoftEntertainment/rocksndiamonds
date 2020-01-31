@@ -185,7 +185,7 @@ void UpdatePlayfield(boolean force_redraw)
     {
       int element = LowByte(PlayField16[GetSI(x, y)]);
       int graphic = GfxGraphic[x][y];
-      int sync_frame = GfxFrame[x][y];
+      int sync_frame = GfxFrameSP[x][y];
       boolean redraw = force_redraw;
 
       if (graphic < 0)
@@ -212,7 +212,7 @@ void UpdatePlayfield(boolean force_redraw)
 
 	GfxElementLast[x][y] = element;
 	GfxGraphicLast[x][y] = GfxGraphic[x][y];
-	sync_frame = GfxFrame[x][y] = 0;
+	sync_frame = GfxFrameSP[x][y] = 0;
       }
       else if (isNextAnimationFrame_SP(graphic, sync_frame))	// new frame
       {

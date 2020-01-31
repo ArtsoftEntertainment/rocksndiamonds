@@ -9,7 +9,7 @@ struct LevelInfo_SP native_sp_level;
 int GfxElementLast[SP_MAX_PLAYFIELD_WIDTH][SP_MAX_PLAYFIELD_HEIGHT];
 int GfxGraphicLast[SP_MAX_PLAYFIELD_WIDTH][SP_MAX_PLAYFIELD_HEIGHT];
 int GfxGraphic[SP_MAX_PLAYFIELD_WIDTH][SP_MAX_PLAYFIELD_HEIGHT];
-int GfxFrame[SP_MAX_PLAYFIELD_WIDTH][SP_MAX_PLAYFIELD_HEIGHT];
+int GfxFrameSP[SP_MAX_PLAYFIELD_WIDTH][SP_MAX_PLAYFIELD_HEIGHT];
 
 
 void InitGameEngine_SP(void)
@@ -43,7 +43,7 @@ void InitGameEngine_SP(void)
       GfxElementLast[x][y] = -1;
       GfxGraphicLast[x][y] = -1;
       GfxGraphic[x][y] = -1;
-      GfxFrame[x][y] = 0;
+      GfxFrameSP[x][y] = 0;
     }
   }
 
@@ -91,7 +91,7 @@ void GameActions_SP(byte action[MAX_PLAYERS], boolean warp_mode)
 
   for (x = DisplayMinX; x <= DisplayMaxX; x++)
     for (y = DisplayMinY; y <= DisplayMaxY; y++)
-      GfxFrame[x][y]++;
+      GfxFrameSP[x][y]++;
 }
 
 int getRedDiskReleaseFlag_SP(void)

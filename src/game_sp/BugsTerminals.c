@@ -77,7 +77,7 @@ void subAnimateTerminals(int si)
 
   // use native frame handling (undo frame incrementation in main loop)
   if (game.use_native_sp_graphics_engine)
-    GfxFrame[lx][ly]--;
+    GfxFrameSP[lx][ly]--;
 
   // get last random animation delay
   bl = SgnHighByte(PlayField16[si]);
@@ -108,7 +108,7 @@ void subAnimateTerminals(int si)
   graphic = (bl < 8 ? aniTerminal : aniTerminalActive);
 
   if (game.use_native_sp_graphics_engine)
-    GfxFrame[lx][ly] += getGraphicInfo_Delay(graphic);
+    GfxFrameSP[lx][ly] += getGraphicInfo_Delay(graphic);
 
   GfxGraphic[lx][ly] = (bl < 8 ? aniTerminal : aniTerminalActive);
 

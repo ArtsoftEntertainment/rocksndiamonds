@@ -178,7 +178,7 @@ void SaveEngineSnapshotValues_SP(ListNode **buffers)
   SaveSnapshotBuffer(buffers, ARGS_ADDRESS_AND_SIZEOF(GfxElementLast));
   SaveSnapshotBuffer(buffers, ARGS_ADDRESS_AND_SIZEOF(GfxGraphicLast));
   SaveSnapshotBuffer(buffers, ARGS_ADDRESS_AND_SIZEOF(GfxGraphic));
-  SaveSnapshotBuffer(buffers, ARGS_ADDRESS_AND_SIZEOF(GfxFrame));
+  SaveSnapshotBuffer(buffers, ARGS_ADDRESS_AND_SIZEOF(GfxFrameSP));
 
   SaveSnapshotBuffer(buffers, ARGS_ADDRESS_AND_SIZEOF(ScrollMinX));
   SaveSnapshotBuffer(buffers, ARGS_ADDRESS_AND_SIZEOF(ScrollMinY));
