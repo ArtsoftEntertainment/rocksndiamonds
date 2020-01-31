@@ -226,11 +226,8 @@ extern int		TimeFrames, TimePlayed, TimeLeft;
 
 extern struct LevelInfo_MM	native_mm_level;
 extern struct HiScore_MM	highscore[];
-extern struct TapeInfo		tape;
-extern struct SetupInfo		setup;
 extern struct GameInfo_MM	game_mm;
 extern struct LaserInfo		laser;
-extern struct GlobalInfo	global;
 
 extern short 		LX, LY, XS, YS, ELX, ELY;
 extern short 		CT, Ct;
