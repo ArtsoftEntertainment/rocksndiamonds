@@ -132,7 +132,6 @@ struct LevelInfo	level, level_template;
 struct PlayerInfo	stored_player[MAX_PLAYERS], *local_player = NULL;
 struct HiScore		highscore[MAX_SCORE_ENTRIES];
 struct TapeInfo		tape;
-struct SetupInfo	setup;
 struct GameInfo		game;
 struct GlobalInfo	global;
 struct BorderInfo	border;
