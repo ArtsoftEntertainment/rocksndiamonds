@@ -3578,25 +3578,15 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
     for (x = 0; x < EM_MAX_CAVE_WIDTH; x++)
       level_em->cave[x][y] = Zborder;
 
-  if (BorderElement == EL_STEELWALL)
-  {
-    for (y = 0; y < lev->height + 2; y++)
-      for (x = 0; x < lev->width + 2; x++)
-	level_em->cave[x][y] = map_element_RND_to_EM(EL_STEELWALL);
-  }
-
   // then copy the real level contents from level file into the playfield
   for (y = 0; y < lev->height; y++) for (x = 0; x < lev->width; x++)
   {
     int new_element = map_element_RND_to_EM(level->field[x][y]);
-    int offset = (BorderElement == EL_STEELWALL ? 1 : 0);
-    int xx = x + offset;
-    int yy = y + offset;
 
     if (level->field[x][y] == EL_AMOEBA_DEAD)
       new_element = map_element_RND_to_EM(EL_AMOEBA_WET);
 
-    level_em->cave[xx][yy] = new_element;
+    level_em->cave[x][y] = new_element;
   }
 
   for (i = 0; i < MAX_PLAYERS; i++)
@@ -3611,21 +3601,12 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
     if (ELEM_IS_PLAYER(level->field[x][y]))
     {
       int player_nr = GET_PLAYER_NR(level->field[x][y]);
-      int offset = (BorderElement == EL_STEELWALL ? 1 : 0);
-      int xx = x + offset;
-      int yy = y + offset;
 
-      ply[player_nr]->x_initial = xx;
-      ply[player_nr]->y_initial = yy;
+      ply[player_nr]->x_initial = x;
+      ply[player_nr]->y_initial = y;
 
-      level_em->cave[xx][yy] = map_element_RND_to_EM(EL_EMPTY);
+      level_em->cave[x][y] = map_element_RND_to_EM(EL_EMPTY);
     }
-  }
-
-  if (BorderElement == EL_STEELWALL)
-  {
-    lev->width  += 2;
-    lev->height += 2;
   }
 }
 

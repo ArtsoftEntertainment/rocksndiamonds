@@ -51,11 +51,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* define these to use additional elements */
 #define EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 
-/* with border for steelwall, if needed (when converted from R'n'D level) */
-#define CAVE_WIDTH			(MAX_PLAYFIELD_WIDTH  + 2)
-#define CAVE_HEIGHT			(MAX_PLAYFIELD_HEIGHT + 2)
+#define CAVE_WIDTH			MAX_PLAYFIELD_WIDTH
+#define CAVE_HEIGHT			MAX_PLAYFIELD_HEIGHT
 
-/* with border for Zborder elements (surrounding the visible playfield) */
+/* additional padding for Zborder elements and linked cave buffer columns */
 #define CAVE_BUFFER_XOFFSET		4
 #define CAVE_BUFFER_YOFFSET		2
 #define CAVE_BUFFER_WIDTH		(CAVE_WIDTH  + 2 * CAVE_BUFFER_XOFFSET)

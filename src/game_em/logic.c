@@ -6344,8 +6344,8 @@ void logic_3(void)
 
   for (count = lev.amoeba_time; count--;)
   {
-    x = lev.left - 1 + (random >> 10) % CAVE_WIDTH;
-    y = lev.top  - 1 + (random >> 20) % CAVE_HEIGHT;
+    x = lev.left - 1 + (random >> 10) % (CAVE_WIDTH  + 2);
+    y = lev.top  - 1 + (random >> 20) % (CAVE_HEIGHT + 2);
 
     if (x >= lev.left && x < lev.right &&
 	y >= lev.top  && y < lev.bottom)
