@@ -622,8 +622,6 @@ void RedrawPlayfield_EM(boolean force_redraw)
 
   if (draw_new_player_location && !quick_relocation)
   {
-    unsigned int game_frame_delay_value = getGameFrameDelay_EM(20);
-    int wait_delay_value = game_frame_delay_value;
     int screen_xx = VALID_SCREEN_X(sx);
     int screen_yy = VALID_SCREEN_Y(sy);
 
@@ -670,8 +668,6 @@ void RedrawPlayfield_EM(boolean force_redraw)
       BlitScreenToBitmap_EM(backbuffer);
       BackToFront_EM();
 
-      Delay(wait_delay_value);
-
       /* scroll second step to align at full tile size */
       screen_x -= dxx;
       screen_y -= dyy;
@@ -683,8 +679,6 @@ void RedrawPlayfield_EM(boolean force_redraw)
 
       BlitScreenToBitmap_EM(backbuffer);
       BackToFront_EM();
-
-      Delay(wait_delay_value);
     }
 
     screen_x_old = screen_x;
