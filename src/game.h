@@ -237,6 +237,7 @@ struct GameInfo
   int centered_player_nr;
   int centered_player_nr_next;
   boolean set_centered_player;
+  boolean set_centered_player_fast;
 
   // values for random number generator initialization after snapshot
   unsigned int num_random_calls;

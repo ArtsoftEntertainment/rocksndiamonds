@@ -3933,6 +3933,7 @@ void InitGame(void)
   game.centered_player_nr = (network_playing ? local_player->index_nr : -1);
   game.centered_player_nr_next = game.centered_player_nr;
   game.set_centered_player = FALSE;
+  game.set_centered_player_fast = FALSE;
 
   if (network_playing && tape.recording)
   {

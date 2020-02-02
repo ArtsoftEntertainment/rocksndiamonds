@@ -551,6 +551,7 @@ static boolean checkIfAllPlayersAreVisible(int center_x, int center_y)
 void RedrawPlayfield_EM(boolean force_redraw)
 {
   boolean draw_new_player_location = FALSE;
+  boolean draw_new_player_location_fast = FALSE;
   boolean quick_relocation = setup.quick_switch;
   int max_center_distance_player_nr =
     getMaxCenterDistancePlayerNr(screen_x, screen_y);
@@ -589,9 +590,11 @@ void RedrawPlayfield_EM(boolean force_redraw)
     game.centered_player_nr = game.centered_player_nr_next;
 
     draw_new_player_location = TRUE;
+    draw_new_player_location_fast = game.set_centered_player_fast;
     force_redraw = TRUE;
 
     game.set_centered_player = FALSE;
+    game.set_centered_player_fast = FALSE;
   }
 
   if (game.centered_player_nr == -1)
@@ -622,8 +625,15 @@ void RedrawPlayfield_EM(boolean force_redraw)
 
   if (draw_new_player_location && !quick_relocation)
   {
+    unsigned int frame_delay_value_old = GetVideoFrameDelay();
+    int wait_delay_value = frame_delay_value_old;
     int screen_xx = VALID_SCREEN_X(sx);
     int screen_yy = VALID_SCREEN_Y(sy);
+
+    if (draw_new_player_location_fast)
+      wait_delay_value /= 4;
+
+    SetVideoFrameDelay(wait_delay_value);
 
     while (screen_x != screen_xx || screen_y != screen_yy)
     {
@@ -680,6 +690,8 @@ void RedrawPlayfield_EM(boolean force_redraw)
       BlitScreenToBitmap_EM(backbuffer);
       BackToFront_EM();
     }
+
+    SetVideoFrameDelay(frame_delay_value_old);
 
     screen_x_old = screen_x;
     screen_y_old = screen_y;
