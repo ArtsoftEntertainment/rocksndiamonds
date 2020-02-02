@@ -29,7 +29,6 @@ void SetBitmaps_EM(Bitmap **);
 void UpdateEngineValues(int, int, int, int);
 
 boolean getTeamMode_EM(void);
-int getGameFrameDelay_EM(int);
 
 void PlayLevelSound_EM(int, int, int, int);
 void InitGraphicInfo_EM(void);

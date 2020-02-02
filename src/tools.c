@@ -8221,21 +8221,6 @@ boolean getTeamMode_EM(void)
   return game.team_mode || network_playing;
 }
 
-int getGameFrameDelay_EM(int native_em_game_frame_delay)
-{
-  int game_frame_delay_value;
-
-  game_frame_delay_value =
-    (tape.playing && tape.fast_forward ? FfwdFrameDelay :
-     GameFrameDelay == GAME_FRAME_DELAY ? native_em_game_frame_delay :
-     GameFrameDelay);
-
-  if (tape.playing && tape.warp_forward && !tape.pausing)
-    game_frame_delay_value = 0;
-
-  return game_frame_delay_value;
-}
-
 unsigned int InitRND(int seed)
 {
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
