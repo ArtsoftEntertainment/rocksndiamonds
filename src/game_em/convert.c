@@ -945,6 +945,20 @@ void prepare_em_level(void)
   lev.right = lev.left + lev.width;
   lev.bottom = lev.top + lev.height;
 
+  /* add linked cave buffer columns for wrap-around movement */
+  for (x = 0; x < lev.left; x++)
+  {
+    lev.cavecol[x] = lev.cavecol[lev.width + x];
+    lev.nextcol[x] = lev.nextcol[lev.width + x];
+    lev.drawcol[x] = lev.drawcol[lev.width + x];
+    lev.boomcol[x] = lev.boomcol[lev.width + x];
+
+    lev.cavecol[lev.right + x] = lev.cavecol[lev.left + x];
+    lev.nextcol[lev.right + x] = lev.nextcol[lev.left + x];
+    lev.drawcol[lev.right + x] = lev.drawcol[lev.left + x];
+    lev.boomcol[lev.right + x] = lev.boomcol[lev.left + x];
+  }
+
   for (x = 0; x < lev.width; x++)
     for (y = 0; y < lev.height; y++)
       lev.cave[lev.left + x][lev.top + y] = native_em_level.cave[x][y];

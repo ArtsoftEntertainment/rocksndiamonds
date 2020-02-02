@@ -6228,6 +6228,16 @@ void logic_1(void)
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
+    /* check for wrap-around movement */
+    if (ply[i].x < lev.left ||
+	ply[i].x > lev.right - 1)
+    {
+      ply[i].x = (ply[i].x < lev.left ? lev.right - 1 : lev.left);
+
+      game.centered_player_nr_next = i;
+      game.set_centered_player = TRUE;
+    }
+
     ply[i].oldx = ply[i].x;
     ply[i].oldy = ply[i].y;
     ply[i].anim = PLY_still;
