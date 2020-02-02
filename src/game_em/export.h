@@ -111,7 +111,6 @@ boolean LoadNativeLevel_EM(char *, boolean);
 int getFieldbufferOffsetX_EM(void);
 int getFieldbufferOffsetY_EM(void);
 
-void BackToFront_EM(void);
 void BlitScreenToBitmap_EM(Bitmap *);
 void RedrawPlayfield_EM(boolean);
 

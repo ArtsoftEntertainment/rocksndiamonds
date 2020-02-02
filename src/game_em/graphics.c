@@ -107,7 +107,7 @@ void BlitScreenToBitmap_EM(Bitmap *target_bitmap)
   }
 }
 
-void BackToFront_EM(void)
+static void BackToFront_EM(void)
 {
   BlitBitmap(backbuffer, window, SX, SY, SXSIZE, SYSIZE, SX, SY);
 }
