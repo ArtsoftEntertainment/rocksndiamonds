@@ -22,6 +22,16 @@ int tile_blank[] =
   Xblank, 1,
   Xacid_splash_e, 1,
   Xacid_splash_w, 1,
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
+  Xfake_acid_1, 1,
+  Xfake_acid_2, 1,
+  Xfake_acid_3, 1,
+  Xfake_acid_4, 1,
+  Xfake_acid_5, 1,
+  Xfake_acid_6, 1,
+  Xfake_acid_7, 1,
+  Xfake_acid_8, 1,
+#endif
   TILE_MAX
 };
 
@@ -31,6 +41,16 @@ int tile_acid[] =
   Xblank, 1,
   Xacid_splash_e, 1,
   Xacid_splash_w, 1,
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
+  Xfake_acid_1, 1,
+  Xfake_acid_2, 1,
+  Xfake_acid_3, 1,
+  Xfake_acid_4, 1,
+  Xfake_acid_5, 1,
+  Xfake_acid_6, 1,
+  Xfake_acid_7, 1,
+  Xfake_acid_8, 1,
+#endif
   Xacid_1, 1,
   Xacid_2, 1,
   Xacid_3, 1,
@@ -39,6 +59,22 @@ int tile_acid[] =
   Xacid_6, 1,
   Xacid_7, 1,
   Xacid_8, 1,
+  TILE_MAX
+};
+
+/* 0=stop 1=fake_acid */
+int tile_fake_acid[] =
+{
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
+  Xfake_acid_1, 1,
+  Xfake_acid_2, 1,
+  Xfake_acid_3, 1,
+  Xfake_acid_4, 1,
+  Xfake_acid_5, 1,
+  Xfake_acid_6, 1,
+  Xfake_acid_7, 1,
+  Xfake_acid_8, 1,
+#endif
   TILE_MAX
 };
 
@@ -64,6 +100,16 @@ int tile_android_move[] =
   Xblank, 1,
   Xacid_splash_e, 1,
   Xacid_splash_w, 1,
+#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
+  Xfake_acid_1, 1,
+  Xfake_acid_2, 1,
+  Xfake_acid_3, 1,
+  Xfake_acid_4, 1,
+  Xfake_acid_5, 1,
+  Xfake_acid_6, 1,
+  Xfake_acid_7, 1,
+  Xfake_acid_8, 1,
+#endif
   Xplant, 1,
   TILE_MAX
 };
@@ -4387,6 +4433,9 @@ unsigned char tab_blank[TILE_MAX];
 /* 0=stop 1=acid */
 unsigned char tab_acid[TILE_MAX];
 
+/* 0=stop 1=fake_acid */
+unsigned char tab_fake_acid[TILE_MAX];
+
 /* 0=stop 1=amoeba */
 unsigned char tab_amoeba[TILE_MAX];
 
@@ -4579,6 +4628,7 @@ void tab_generate(void)
 {
   create_tab(tile_blank, tab_blank);
   create_tab(tile_acid, tab_acid);
+  create_tab(tile_fake_acid, tab_fake_acid);
   create_tab(tile_amoeba, tab_amoeba);
   create_tab(tile_android_move, tab_android_move);
   create_explode();
