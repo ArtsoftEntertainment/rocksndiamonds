@@ -215,12 +215,6 @@ unsigned short tab_explode_normal[TILE_MAX];
 /* dynamite explosion */
 unsigned short tab_explode_dynamite[TILE_MAX];
 
-/* map tiles and frames to graphic info */
-struct GraphicInfo_EM graphic_info_em_object[TILE_MAX][8];
-
-/* map player number, frames and action to graphic info */
-struct GraphicInfo_EM graphic_info_em_player[MAX_PLAYERS][PLY_MAX][8];
-
 static void create_tab(int *invert, unsigned char *array)
 {
   int i;
