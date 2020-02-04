@@ -103,10 +103,6 @@ extern unsigned char tab_android_move[TILE_MAX];
 extern unsigned short tab_explode_normal[TILE_MAX];
 extern unsigned short tab_explode_dynamite[TILE_MAX];
 
-extern unsigned short map_obj[8][TILE_MAX];
-extern unsigned short map_ply[2][8][PLY_MAX];
-extern unsigned short map_ttl[128];
-
 extern Bitmap *screenBitmap;
 
 
