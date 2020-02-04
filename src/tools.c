@@ -5746,11 +5746,11 @@ em_object_mapping_list[] =
   },
 
   {
-    Xacid_splash_e,			FALSE,	FALSE,
+    Xsplash_e,				FALSE,	FALSE,
     EL_ACID_SPLASH_RIGHT,		-1, -1
   },
   {
-    Xacid_splash_w,			FALSE,	FALSE,
+    Xsplash_w,				FALSE,	FALSE,
     EL_ACID_SPLASH_LEFT,		-1, -1
   },
 
@@ -7027,19 +7027,19 @@ em_object_mapping_list[] =
   },
 
   {
-    Xslidewall_ns,			TRUE,	FALSE,
+    Xslide_ns,				TRUE,	FALSE,
     EL_EXPANDABLE_WALL_VERTICAL,	-1, -1
   },
   {
-    Yslidewall_ns_blank,		FALSE,	FALSE,
+    Yslide_ns_blank,			FALSE,	FALSE,
     EL_EXPANDABLE_WALL_VERTICAL,	ACTION_GROWING, -1
   },
   {
-    Xslidewall_ew,			TRUE,	FALSE,
+    Xslide_ew,				TRUE,	FALSE,
     EL_EXPANDABLE_WALL_HORIZONTAL,	-1, -1
   },
   {
-    Yslidewall_ew_blank,		FALSE,	FALSE,
+    Yslide_ew_blank,			FALSE,	FALSE,
     EL_EXPANDABLE_WALL_HORIZONTAL,	ACTION_GROWING, -1
   },
 
@@ -8249,8 +8249,8 @@ static int get_effective_element_EM(int tile, int frame_em)
   {
     switch (tile)
     {
-      case Xacid_splash_e:
-      case Xacid_splash_w:
+      case Xsplash_e:
+      case Xsplash_w:
 	return (frame_em > 5 ? EL_EMPTY : element);
 
       default:
@@ -8261,8 +8261,8 @@ static int get_effective_element_EM(int tile, int frame_em)
   {
     switch (tile)
     {
-      case Xacid_splash_e:
-      case Xacid_splash_w:
+      case Xsplash_e:
+      case Xsplash_w:
 	return EL_EMPTY;
 
       case Ynut_stone:
@@ -8330,8 +8330,8 @@ static boolean check_linear_animation_EM(int tile)
     case Ytank_s_e:
     case Ytank_w_s:
     case Ytank_n_w:
-    case Xacid_splash_e:
-    case Xacid_splash_w:
+    case Xsplash_e:
+    case Xsplash_w:
     case Ynut_stone:
       return TRUE;
   }

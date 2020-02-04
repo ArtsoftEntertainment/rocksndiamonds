@@ -71,8 +71,8 @@ enum
 {
   Xblank = 0,
 
-  Xacid_splash_e,
-  Xacid_splash_w,
+  Xsplash_e,
+  Xsplash_w,
 
   Xplant,
   Yplant,
@@ -419,10 +419,10 @@ enum
   Xsand_stonesand_quickout_1,	/* newly added to EM engine */
   Xsand_stonesand_quickout_2,
 
-  Xslidewall_ns,		/* growing wall */
-  Yslidewall_ns_blank,
-  Xslidewall_ew,
-  Yslidewall_ew_blank,
+  Xslide_ns,			/* growing wall */
+  Yslide_ns_blank,
+  Xslide_ew,
+  Yslide_ew_blank,
 
   Xwind_n,
   Xwind_e,
@@ -597,7 +597,7 @@ enum
   SOUND_dirt,		/* player digs into dirt */
   SOUND_acid,		/* acid splashes */
   SOUND_ball,		/* ball places something */
-  SOUND_slidewall,	/* slide wall grows */
+  SOUND_slide,		/* slide wall grows */
   SOUND_wonder,		/* wonderwall is active */
   SOUND_door,		/* player goes thru door (gate) */
   SOUND_exit_open,	/* exit opens */

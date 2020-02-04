@@ -536,7 +536,7 @@ static unsigned short remap_emerald[256] =
 
   Xblank,		Xsand,		Xsand,		Xsand,
   Xsand_stone,		Xsand_stone,	Xsand_stone,	Xsand,
-  Xstone,		Xslidewall_ew,	Xslidewall_ns,	Xdynamite_1,
+  Xstone,		Xslide_ew,	Xslide_ns,	Xdynamite_1,
   Xdynamite_2,		Xdynamite_3,	Xdynamite_4,	Xacid_s,
 
   Xexit_1,		Xexit_2,	Xexit_3,	Xballoon,

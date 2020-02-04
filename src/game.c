@@ -14806,7 +14806,7 @@ void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
       PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
       break;
 
-    case SOUND_slidewall:
+    case SOUND_slide:
       PlayLevelSoundElementAction(x, y, element, ACTION_GROWING);
       break;
 
