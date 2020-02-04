@@ -5654,22 +5654,6 @@ struct ConfigInfo image_config[] =
 
   // keyword to stop parser: "NO_MORE_ELEMENT_IMAGES" <-- do not change!
 
-#if 1
-  // !!! TEMPORARILY STORED HERE -- PROBABLY TO BE CHANGED !!!
-
-  // (for testing, change filename back to "emc_objects dot png")
-  { "emc_object",				"RocksEMC.png"		},
-#if 0
-  { "emc_object.scale_up_factor",		"2"			},
-#endif
-
-  // (for testing, change filename back to "emc_players dot png")
-  { "emc_sprite",				"RocksEMC.png"		},
-#if 0
-  { "emc_sprite.scale_up_factor",		"2"			},
-#endif
-#endif
-
   { "sp_frame_horizontal",			"RocksSP.png"		},
   { "sp_frame_horizontal.xpos",			"7"			},
   { "sp_frame_horizontal.ypos",			"14"			},

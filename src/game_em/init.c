@@ -18,12 +18,8 @@ struct GameInfo_EM game_em;
 
 int open_all(void)
 {
-  Bitmap *emc_bitmaps[2];
-
-  SetBitmaps_EM(emc_bitmaps);
-
-  objBitmap = emc_bitmaps[0];
-  sprBitmap = emc_bitmaps[1];
+  objBitmap = NULL;
+  sprBitmap = NULL;
 
   return 0;
 }

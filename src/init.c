@@ -318,23 +318,6 @@ void InitImageTextures(void)
     CreateImageTextures(texture_graphics[i]);
 }
 
-#if 1
-// !!! FIX THIS (CHANGE TO USING NORMAL ELEMENT GRAPHIC DEFINITIONS) !!!
-void SetBitmaps_EM(Bitmap **em_bitmap)
-{
-  em_bitmap[0] = graphic_info[IMG_EMC_OBJECT].bitmap;
-  em_bitmap[1] = graphic_info[IMG_EMC_SPRITE].bitmap;
-}
-#endif
-
-#if 0
-// !!! FIX THIS (CHANGE TO USING NORMAL ELEMENT GRAPHIC DEFINITIONS) !!!
-void SetBitmaps_SP(Bitmap **sp_bitmap)
-{
-  *sp_bitmap = graphic_info[IMG_SP_OBJECTS].bitmap;
-}
-#endif
-
 static int getFontBitmapID(int font_nr)
 {
   int special = -1;

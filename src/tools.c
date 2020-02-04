@@ -23,8 +23,6 @@
 #include "screens.h"
 
 
-// select level set with EMC X11 graphics before activating EM GFX debugging
-#define DEBUG_EM_GFX		FALSE
 #define DEBUG_FRAME_TIME	FALSE
 
 // tool button identifiers
@@ -8578,19 +8576,6 @@ void InitGraphicInfo_EM(void)
 {
   int i, j, p;
 
-#if DEBUG_EM_GFX
-  int num_em_gfx_errors = 0;
-
-  if (graphic_info_em_object[0][0].bitmap == NULL)
-  {
-    // EM graphics not yet initialized in em_open_all()
-
-    return;
-  }
-
-  printf("::: [4 errors can be ignored (1 x 'bomb', 3 x 'em_dynamite']\n");
-#endif
-
   // always start with reliable default values
   for (i = 0; i < TILE_MAX; i++)
   {
@@ -8808,13 +8793,6 @@ void InitGraphicInfo_EM(void)
 			special_animation && j == 4 ? 3 :
 			effective_action != action ? 0 :
 			j);
-
-#if DEBUG_EM_GFX
-      Bitmap *debug_bitmap = g_em->bitmap;
-      int debug_src_x = g_em->src_x;
-      int debug_src_y = g_em->src_y;
-#endif
-
       int frame = getAnimationFrame(g->anim_frames,
 				    g->anim_delay,
 				    g->anim_mode,
@@ -8910,74 +8888,6 @@ void InitGraphicInfo_EM(void)
 	 bit  5 -  0 ( 6 bit): graphic height */
       g_em->unique_identifier =
 	(graphic << 16) | (frame << 12) | (g_em->width << 6) | g_em->height;
-
-#if DEBUG_EM_GFX
-
-      // skip check for EMC elements not contained in original EMC artwork
-      if (element == EL_EMC_FAKE_ACID)
-	continue;
-
-      if (g_em->bitmap != debug_bitmap ||
-	  g_em->src_x != debug_src_x ||
-	  g_em->src_y != debug_src_y ||
-	  g_em->src_offset_x != 0 ||
-	  g_em->src_offset_y != 0 ||
-	  g_em->dst_offset_x != 0 ||
-	  g_em->dst_offset_y != 0 ||
-	  g_em->width != TILEX ||
-	  g_em->height != TILEY)
-      {
-	static int last_i = -1;
-
-	if (i != last_i)
-	{
-	  printf("\n");
-	  last_i = i;
-	}
-
-	printf("::: EMC GFX ERROR for element %d -> %d ('%s', '%s', %d)",
-	       i, element, element_info[element].token_name,
-	       element_action_info[effective_action].suffix, direction);
-
-	if (element != effective_element)
-	  printf(" [%d ('%s')]",
-		 effective_element,
-		 element_info[effective_element].token_name);
-
-	printf("\n");
-
-	if (g_em->bitmap != debug_bitmap)
-	  printf("    %d (%d): different bitmap! (0x%08x != 0x%08x)\n",
-		 j, is_backside, (int)(g_em->bitmap), (int)(debug_bitmap));
-
-	if (g_em->src_x != debug_src_x ||
-	    g_em->src_y != debug_src_y)
-	  printf("    frame %d (%c): %d,%d (%d,%d) should be %d,%d (%d,%d)\n",
-		 j, (is_backside ? 'B' : 'F'),
-		 g_em->src_x, g_em->src_y,
-		 g_em->src_x / 32, g_em->src_y / 32,
-		 debug_src_x, debug_src_y,
-		 debug_src_x / 32, debug_src_y / 32);
-
-	if (g_em->src_offset_x != 0 ||
-	    g_em->src_offset_y != 0 ||
-	    g_em->dst_offset_x != 0 ||
-	    g_em->dst_offset_y != 0)
-	  printf("    %d (%d): offsets %d,%d and %d,%d should be all 0\n",
-		 j, is_backside,
-		 g_em->src_offset_x, g_em->src_offset_y,
-		 g_em->dst_offset_x, g_em->dst_offset_y);
-
-	if (g_em->width != TILEX ||
-	    g_em->height != TILEY)
-	  printf("    %d (%d): size %d,%d should be %d,%d\n",
-		 j, is_backside,
-		 g_em->width, g_em->height, TILEX, TILEY);
-
-	num_em_gfx_errors++;
-      }
-#endif
-
     }
   }
 
@@ -9045,13 +8955,6 @@ void InitGraphicInfo_EM(void)
 	Bitmap *src_bitmap;
 	int src_x, src_y;
 	int sync_frame = j;
-
-#if DEBUG_EM_GFX
-	Bitmap *debug_bitmap = g_em->bitmap;
-	int debug_src_x = g_em->src_x;
-	int debug_src_y = g_em->src_y;
-#endif
-
 	int frame = getAnimationFrame(g->anim_frames,
 				      g->anim_delay,
 				      g->anim_mode,
@@ -9069,64 +8972,9 @@ void InitGraphicInfo_EM(void)
 	g_em->dst_offset_y = 0;
 	g_em->width  = TILEX;
 	g_em->height = TILEY;
-
-#if DEBUG_EM_GFX
-
-	// skip check for EMC elements not contained in original EMC artwork
-	if (element == EL_PLAYER_3 ||
-	    element == EL_PLAYER_4)
-	  continue;
-
-	if (g_em->bitmap != debug_bitmap ||
-	    g_em->src_x != debug_src_x ||
-	    g_em->src_y != debug_src_y)
-	{
-	  static int last_i = -1;
-
-	  if (i != last_i)
-	  {
-	    printf("\n");
-	    last_i = i;
-	  }
-
-	  printf("::: EMC GFX ERROR for p/a %d/%d -> %d ('%s', '%s', %d)",
-		 p, i, element, element_info[element].token_name,
-		 element_action_info[effective_action].suffix, direction);
-
-	  if (element != effective_element)
-	    printf(" [%d ('%s')]",
-		   effective_element,
-		   element_info[effective_element].token_name);
-
-	  printf("\n");
-
-	  if (g_em->bitmap != debug_bitmap)
-	    printf("    %d: different bitmap! (0x%08x != 0x%08x)\n",
-		   j, (int)(g_em->bitmap), (int)(debug_bitmap));
-
-	  if (g_em->src_x != debug_src_x ||
-	      g_em->src_y != debug_src_y)
-	    printf("    frame %d: %d,%d (%d,%d) should be %d,%d (%d,%d)\n",
-		   j,
-		   g_em->src_x, g_em->src_y,
-		   g_em->src_x / 32, g_em->src_y / 32,
-		   debug_src_x, debug_src_y,
-		   debug_src_x / 32, debug_src_y / 32);
-
-	  num_em_gfx_errors++;
-	}
-#endif
-
       }
     }
   }
-
-#if DEBUG_EM_GFX
-  printf("\n");
-  printf("::: [%d errors found]\n", num_em_gfx_errors);
-
-  exit(0);
-#endif
 }
 
 static void CheckSaveEngineSnapshot_EM(byte action[MAX_PLAYERS], int frame,

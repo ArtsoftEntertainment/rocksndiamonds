@@ -25,7 +25,6 @@
 // functions and definitions exported from main program to game_em
 // ============================================================================
 
-void SetBitmaps_EM(Bitmap **);
 void UpdateEngineValues(int, int, int, int);
 
 boolean getTeamMode_EM(void);
