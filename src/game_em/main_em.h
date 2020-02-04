@@ -108,12 +108,6 @@ extern unsigned short map_ply[2][8][PLY_MAX];
 extern unsigned short map_ttl[128];
 
 extern Bitmap *screenBitmap;
-extern Bitmap *scoreBitmap;
-
-extern Bitmap *objBitmap;
-extern Bitmap *sprBitmap;
-extern Bitmap *ttlBitmap;
-extern Bitmap *botBitmap;
 
 
 // ----------------------------------------------------------------------------

@@ -8,9 +8,6 @@
 #include <signal.h>
 
 
-Bitmap *objBitmap;
-Bitmap *sprBitmap;
-
 Bitmap *screenBitmap;
 
 struct GlobalInfo_EM global_em_info;
@@ -18,9 +15,6 @@ struct GameInfo_EM game_em;
 
 int open_all(void)
 {
-  objBitmap = NULL;
-  sprBitmap = NULL;
-
   return 0;
 }
 

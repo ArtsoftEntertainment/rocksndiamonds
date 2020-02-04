@@ -4535,7 +4535,7 @@ static void create_obj_graphics_info_em(void)
       struct GraphicInfo_EM *g = &graphic_info_em_object[i][j];
       int obj = map_obj[j][i];
 
-      g->bitmap = objBitmap;
+      g->bitmap = NULL;
       g->src_x = (obj / 512) * TILEX;
       g->src_y = (obj % 512) * TILEY / 16;
       g->src_offset_x = 0;
@@ -4594,7 +4594,7 @@ static void create_ply_graphics_info_em(void)
 	struct GraphicInfo_EM *g = &graphic_info_em_player[i][j][k];
 	int spr = map_ply[i % 2][k][j];
 
-	g->bitmap = sprBitmap;
+	g->bitmap = NULL;
 	g->src_x = (spr / 8) * TILEX;
 	g->src_y = (spr % 8) * TILEY;
 	g->src_offset_x = 0;
