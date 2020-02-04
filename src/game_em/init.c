@@ -36,9 +36,6 @@ void em_close_all(void)
 
 /* ---------------------------------------------------------------------- */
 
-extern int screen_x;
-extern int screen_y;
-
 void play_element_sound(int x, int y, int sample, int element)
 {
   PlayLevelSound_EM(x, y, element, sample);
