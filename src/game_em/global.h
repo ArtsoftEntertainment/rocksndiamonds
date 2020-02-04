@@ -18,9 +18,9 @@ void game_init_cave_buffers(void);
 void play_sound(int, int, int);
 void play_element_sound(int, int, int, int);
 
-void logic_1(void);
-void logic_2(void);
-void logic_3(void);
+void logic_players(void);
+void logic_objects(void);
+void logic_globals(void);
 
 int  cleanup_em_level(unsigned char *, int, char *);
 void convert_em_level(unsigned char *, int);

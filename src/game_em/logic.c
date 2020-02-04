@@ -6727,7 +6727,7 @@ static void handle_tile(int x, int y)
   }
 }
 
-void logic_1(void)
+void logic_players(void)
 {
   int start_check_nr;
   int i;
@@ -6795,7 +6795,7 @@ void logic_1(void)
   }
 }
 
-void logic_2(void)
+void logic_objects(void)
 {
   int x, y;
 
@@ -6824,7 +6824,7 @@ void logic_2(void)
   lev.draw = temp;
 }
 
-void logic_3(void)
+void logic_globals(void)
 {
   int x;
   int y;
