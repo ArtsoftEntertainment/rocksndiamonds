@@ -22,7 +22,6 @@ int tile_blank[] =
   Xblank, 1,
   Xacid_splash_e, 1,
   Xacid_splash_w, 1,
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
   Xfake_acid_1, 1,
   Xfake_acid_2, 1,
   Xfake_acid_3, 1,
@@ -31,7 +30,6 @@ int tile_blank[] =
   Xfake_acid_6, 1,
   Xfake_acid_7, 1,
   Xfake_acid_8, 1,
-#endif
   TILE_MAX
 };
 
@@ -41,7 +39,6 @@ int tile_acid[] =
   Xblank, 1,
   Xacid_splash_e, 1,
   Xacid_splash_w, 1,
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
   Xfake_acid_1, 1,
   Xfake_acid_2, 1,
   Xfake_acid_3, 1,
@@ -50,7 +47,6 @@ int tile_acid[] =
   Xfake_acid_6, 1,
   Xfake_acid_7, 1,
   Xfake_acid_8, 1,
-#endif
   Xacid_1, 1,
   Xacid_2, 1,
   Xacid_3, 1,
@@ -65,7 +61,6 @@ int tile_acid[] =
 /* 0=stop 1=fake_acid */
 int tile_fake_acid[] =
 {
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
   Xfake_acid_1, 1,
   Xfake_acid_2, 1,
   Xfake_acid_3, 1,
@@ -74,7 +69,6 @@ int tile_fake_acid[] =
   Xfake_acid_6, 1,
   Xfake_acid_7, 1,
   Xfake_acid_8, 1,
-#endif
   TILE_MAX
 };
 
@@ -100,7 +94,6 @@ int tile_android_move[] =
   Xblank, 1,
   Xacid_splash_e, 1,
   Xacid_splash_w, 1,
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
   Xfake_acid_1, 1,
   Xfake_acid_2, 1,
   Xfake_acid_3, 1,
@@ -109,7 +102,6 @@ int tile_android_move[] =
   Xfake_acid_6, 1,
   Xfake_acid_7, 1,
   Xfake_acid_8, 1,
-#endif
   Xplant, 1,
   TILE_MAX
 };

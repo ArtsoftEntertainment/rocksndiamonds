@@ -48,9 +48,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // constant definitions
 // ----------------------------------------------------------------------------
 
-/* define these to use additional elements */
-#define EM_ENGINE_USE_ADDITIONAL_ELEMENTS
-
 #define CAVE_WIDTH			MAX_PLAYFIELD_WIDTH
 #define CAVE_HEIGHT			MAX_PLAYFIELD_HEIGHT
 
@@ -89,8 +86,7 @@ enum
   Xacid_7,
   Xacid_8,
 
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
-  Xfake_acid_1,
+  Xfake_acid_1,			/* newly added to EM engine */
   Xfake_acid_2,
   Xfake_acid_3,
   Xfake_acid_4,
@@ -98,7 +94,6 @@ enum
   Xfake_acid_6,
   Xfake_acid_7,
   Xfake_acid_8,
-#endif
 
   Xgrass,
   Ygrass_nB,
@@ -398,7 +393,7 @@ enum
   Xfake_grass,
   Xfake_grassB,
 
-  Xfake_amoeba,		/* dripper */
+  Xfake_amoeba,			/* dripper */
   Xfake_amoebaB,
 
   Xlenses,
@@ -421,12 +416,10 @@ enum
   Xsand_stonesand_4,
   Xsand_stoneout_1,
   Xsand_stoneout_2,
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
-  Xsand_stonesand_quickout_1,
+  Xsand_stonesand_quickout_1,	/* newly added to EM engine */
   Xsand_stonesand_quickout_2,
-#endif
 
-  Xslidewall_ns,	/* growing wall */
+  Xslidewall_ns,		/* growing wall */
   Yslidewall_ns_blank,
   Xslidewall_ew,
   Yslidewall_ew_blank,
@@ -520,8 +513,7 @@ enum
   Xalpha_arrow_w,
   Xalpha_copyr,
 
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
-  Ykey_1_blank,
+  Ykey_1_blank,			/* newly added to EM engine */
   Ykey_2_blank,
   Ykey_3_blank,
   Ykey_4_blank,
@@ -533,7 +525,6 @@ enum
   Ymagnify_blank,
   Ygrass_blank,
   Ydirt_blank,
-#endif
 
   Xboom_bug,		/* passed from explode to synchro (linked explosion);
 			   transition to explode_normal */

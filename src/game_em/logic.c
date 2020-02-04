@@ -174,7 +174,6 @@ static boolean player_killed(struct PLAYER *ply)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -183,7 +182,6 @@ static boolean player_killed(struct PLAYER *ply)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Zplayer:
     case Xdynamite_1:
     case Xdynamite_2:
@@ -365,7 +363,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xacid_splash_w:
 	cave[x][y] = Zplayer;
 	next[x][y] = Zplayer;
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
       case Xfake_acid_1:
       case Xfake_acid_2:
       case Xfake_acid_3:
@@ -374,7 +371,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xfake_acid_6:
       case Xfake_acid_7:
       case Xfake_acid_8:
-#endif
 	play_element_sound(x, y, SOUND_blank, Xblank);
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
@@ -569,7 +565,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	  case Xfake_acid_1:
 	  case Xfake_acid_2:
 	  case Xfake_acid_3:
@@ -578,7 +573,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	  case Xfake_acid_6:
 	  case Xfake_acid_7:
 	  case Xfake_acid_8:
-#endif
 	    cave[x+dx][y] = dx > 0 ? Ystone_e : Ystone_w;
 	    next[x+dx][y] = Xstone_pause;
 	    goto stone_walk;
@@ -618,7 +612,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	  case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	  case Xfake_acid_1:
 	  case Xfake_acid_2:
 	  case Xfake_acid_3:
@@ -627,7 +620,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	  case Xfake_acid_6:
 	  case Xfake_acid_7:
 	  case Xfake_acid_8:
-#endif
 	    cave[x+dx][y] = dx > 0 ? Ybomb_e : Ybomb_w;
 	    next[x+dx][y] = Xbomb_pause;
 	    goto bomb_walk;
@@ -667,7 +659,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	  case Xfake_acid_1:
 	  case Xfake_acid_2:
 	  case Xfake_acid_3:
@@ -676,7 +667,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	  case Xfake_acid_6:
 	  case Xfake_acid_7:
 	  case Xfake_acid_8:
-#endif
 	    cave[x+dx][y] = dx > 0 ? Ynut_e : Ynut_w;
 	    next[x+dx][y] = Xnut_pause;
 	    goto nut_walk;
@@ -716,7 +706,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	  case Xfake_acid_1:
 	  case Xfake_acid_2:
 	  case Xfake_acid_3:
@@ -725,7 +714,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	  case Xfake_acid_6:
 	  case Xfake_acid_7:
 	  case Xfake_acid_8:
-#endif
 	    cave[x+dx][y] = dx > 0 ? Yspring_e : Yspring_w;
 	    next[x+dx][y] = dx > 0 ? Xspring_e : Xspring_w;
 	    goto spring_walk;
@@ -787,7 +775,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	  case Xfake_acid_1:
 	  case Xfake_acid_2:
 	  case Xfake_acid_3:
@@ -796,7 +783,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	  case Xfake_acid_6:
 	  case Xfake_acid_7:
 	  case Xfake_acid_8:
-#endif
 	    cave[x+dx][y+dy] = (dy ? (dy < 0 ? Yballoon_n : Yballoon_s) :
 				(dx > 0 ? Yballoon_e : Yballoon_w));
 	    next[x+dx][y+dy] = Xballoon;
@@ -844,7 +830,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
           case Xblank:
           case Xacid_splash_e:
           case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	  case Xfake_acid_1:
 	  case Xfake_acid_2:
 	  case Xfake_acid_3:
@@ -853,7 +838,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	  case Xfake_acid_6:
 	  case Xfake_acid_7:
 	  case Xfake_acid_8:
-#endif
 	    cave[x+dx][y+dy] = (dy ? (dy < 0 ? Yandroid_n : Yandroid_s) :
 				(dx > 0 ? Yandroid_e : Yandroid_w));
 	    next[x+dx][y+dy] = (dy ? (dy < 0 ? Xandroid_2_n : Xandroid_2_s) :
@@ -1356,7 +1340,6 @@ static void Lacid_8(int x, int y)
   next[x][y] = Xacid_1;
 }
 
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 static void Lfake_acid_1(int x, int y)
 {
   next[x][y] = Xfake_acid_2;
@@ -1396,7 +1379,6 @@ static void Lfake_acid_8(int x, int y)
 {
   next[x][y] = Xfake_acid_1;
 }
-#endif
 
 static void Landroid(int x, int y)
 {
@@ -1808,7 +1790,6 @@ static void Landroid_1_n(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -1817,7 +1798,6 @@ static void Landroid_1_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yandroid_nB;
       next[x][y] = Xblank;
       cave[x][y-1] = Yandroid_n;
@@ -1855,7 +1835,6 @@ static void Landroid_2_n(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -1864,7 +1843,6 @@ static void Landroid_2_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yandroid_nB;
       next[x][y] = Xblank;
       cave[x][y-1] = Yandroid_n;
@@ -1902,7 +1880,6 @@ static void Landroid_1_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -1911,7 +1888,6 @@ static void Landroid_1_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yandroid_eB;
       next[x][y] = Xblank;
       cave[x+1][y] = Yandroid_e;
@@ -1949,7 +1925,6 @@ static void Landroid_2_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -1958,7 +1933,6 @@ static void Landroid_2_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yandroid_eB;
       next[x][y] = Xblank;
       cave[x+1][y] = Yandroid_e;
@@ -1996,7 +1970,6 @@ static void Landroid_1_s(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2005,7 +1978,6 @@ static void Landroid_1_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yandroid_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yandroid_s;
@@ -2043,7 +2015,6 @@ static void Landroid_2_s(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2052,7 +2023,6 @@ static void Landroid_2_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yandroid_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yandroid_s;
@@ -2090,7 +2060,6 @@ static void Landroid_1_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2099,7 +2068,6 @@ static void Landroid_1_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yandroid_wB;
       next[x][y] = Xblank;
       cave[x-1][y] = Yandroid_w;
@@ -2137,7 +2105,6 @@ static void Landroid_2_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2146,7 +2113,6 @@ static void Landroid_2_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yandroid_wB;
       next[x][y] = Xblank;
       cave[x-1][y] = Yandroid_w;
@@ -2216,7 +2182,6 @@ static void Leater_n(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2225,7 +2190,6 @@ static void Leater_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -2298,7 +2262,6 @@ static void Leater_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2307,7 +2270,6 @@ static void Leater_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -2380,7 +2342,6 @@ static void Leater_s(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2389,7 +2350,6 @@ static void Leater_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -2462,7 +2422,6 @@ static void Leater_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2471,7 +2430,6 @@ static void Leater_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -2528,7 +2486,6 @@ static void Lalien(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -2537,7 +2494,6 @@ static void Lalien(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	case Xplant:
 	case Yplant:
 	case Zplayer:
@@ -2573,7 +2529,6 @@ static void Lalien(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -2582,7 +2537,6 @@ static void Lalien(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	case Xplant:
 	case Yplant:
 	case Zplayer:
@@ -2621,7 +2575,6 @@ static void Lalien(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -2630,7 +2583,6 @@ static void Lalien(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	case Xplant:
 	case Yplant:
 	case Zplayer:
@@ -2666,7 +2618,6 @@ static void Lalien(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -2675,7 +2626,6 @@ static void Lalien(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	case Xplant:
 	case Yplant:
 	case Zplayer:
@@ -2719,7 +2669,6 @@ static void Lbug_n(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2728,7 +2677,6 @@ static void Lbug_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -2781,7 +2729,6 @@ static void Lbug_1_n(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2790,7 +2737,6 @@ static void Lbug_1_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -2835,7 +2781,6 @@ static void Lbug_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2844,7 +2789,6 @@ static void Lbug_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -2897,7 +2841,6 @@ static void Lbug_1_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2906,7 +2849,6 @@ static void Lbug_1_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -2951,7 +2893,6 @@ static void Lbug_s(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -2960,7 +2901,6 @@ static void Lbug_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -3013,7 +2953,6 @@ static void Lbug_1_s(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3022,7 +2961,6 @@ static void Lbug_1_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3067,7 +3005,6 @@ static void Lbug_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3076,7 +3013,6 @@ static void Lbug_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -3129,7 +3065,6 @@ static void Lbug_1_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3138,7 +3073,6 @@ static void Lbug_1_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3183,7 +3117,6 @@ static void Ltank_n(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3192,7 +3125,6 @@ static void Ltank_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -3245,7 +3177,6 @@ static void Ltank_1_n(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3254,7 +3185,6 @@ static void Ltank_1_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3299,7 +3229,6 @@ static void Ltank_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3308,7 +3237,6 @@ static void Ltank_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -3361,7 +3289,6 @@ static void Ltank_1_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3370,7 +3297,6 @@ static void Ltank_1_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3415,7 +3341,6 @@ static void Ltank_s(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3424,7 +3349,6 @@ static void Ltank_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -3477,7 +3401,6 @@ static void Ltank_1_s(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3486,7 +3409,6 @@ static void Ltank_1_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3531,7 +3453,6 @@ static void Ltank_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3540,7 +3461,6 @@ static void Ltank_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -3593,7 +3513,6 @@ static void Ltank_1_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3602,7 +3521,6 @@ static void Ltank_1_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3647,7 +3565,6 @@ static void Lemerald(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3656,7 +3573,6 @@ static void Lemerald(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yemerald_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yemerald_s;
@@ -3792,7 +3708,6 @@ static void Lemerald_pause(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3801,7 +3716,6 @@ static void Lemerald_pause(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yemerald_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yemerald_s;
@@ -3839,7 +3753,6 @@ static void Lemerald_fall(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3848,7 +3761,6 @@ static void Lemerald_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Zplayer:
       cave[x][y] = Yemerald_sB;
       next[x][y] = Xblank;
@@ -3904,7 +3816,6 @@ static void Ldiamond(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -3913,7 +3824,6 @@ static void Ldiamond(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Ydiamond_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ydiamond_s;
@@ -4049,7 +3959,6 @@ static void Ldiamond_pause(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4058,7 +3967,6 @@ static void Ldiamond_pause(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Ydiamond_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ydiamond_s;
@@ -4096,7 +4004,6 @@ static void Ldiamond_fall(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4105,7 +4012,6 @@ static void Ldiamond_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Zplayer:
       cave[x][y] = Ydiamond_sB;
       next[x][y] = Xblank;
@@ -4161,7 +4067,6 @@ static void Lstone(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4170,7 +4075,6 @@ static void Lstone(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
       cave[x][y] = Ystone_sB;
@@ -4299,7 +4203,6 @@ static void Lstone_pause(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4308,7 +4211,6 @@ static void Lstone_pause(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Ystone_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ystone_s;
@@ -4346,7 +4248,6 @@ static void Lstone_fall(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4355,7 +4256,6 @@ static void Lstone_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Zplayer:
       cave[x][y] = Ystone_sB;
       next[x][y] = Xblank;
@@ -4425,7 +4325,6 @@ static void Lstone_fall(int x, int y)
 	  case Xblank:
 	  case Xacid_splash_e:
 	  case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	  case Xfake_acid_1:
 	  case Xfake_acid_2:
 	  case Xfake_acid_3:
@@ -4434,7 +4333,6 @@ static void Lstone_fall(int x, int y)
 	  case Xfake_acid_6:
 	  case Xfake_acid_7:
 	  case Xfake_acid_8:
-#endif
 	  case Xalien:
 	  case Xalien_pause:
 	    cave[x][y+1] = Xspring_e;
@@ -4452,7 +4350,6 @@ static void Lstone_fall(int x, int y)
 	  case Xblank:
 	  case Xacid_splash_e:
 	  case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	  case Xfake_acid_1:
 	  case Xfake_acid_2:
 	  case Xfake_acid_3:
@@ -4461,7 +4358,6 @@ static void Lstone_fall(int x, int y)
 	  case Xfake_acid_6:
 	  case Xfake_acid_7:
 	  case Xfake_acid_8:
-#endif
 	  case Xalien:
 	  case Xalien_pause:
 	    cave[x][y+1] = Xspring_w;
@@ -4500,7 +4396,6 @@ static void Lstone_fall(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -4509,7 +4404,6 @@ static void Lstone_fall(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	case Zplayer:
 	case Xbug_1_n:
 	case Xbug_1_e:
@@ -4603,7 +4497,6 @@ static void Lbomb(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4612,7 +4505,6 @@ static void Lbomb(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Ybomb_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ybomb_s;
@@ -4730,7 +4622,6 @@ static void Lbomb_pause(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4739,7 +4630,6 @@ static void Lbomb_pause(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Ybomb_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ybomb_s;
@@ -4777,7 +4667,6 @@ static void Lbomb_fall(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4786,7 +4675,6 @@ static void Lbomb_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Ybomb_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ybomb_s;
@@ -4824,7 +4712,6 @@ static void Lnut(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4833,7 +4720,6 @@ static void Lnut(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Ynut_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ynut_s;
@@ -4951,7 +4837,6 @@ static void Lnut_pause(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -4960,7 +4845,6 @@ static void Lnut_pause(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Ynut_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ynut_s;
@@ -4998,7 +4882,6 @@ static void Lnut_fall(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -5007,7 +4890,6 @@ static void Lnut_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Zplayer:
       cave[x][y] = Ynut_sB;
       next[x][y] = Xblank;
@@ -5047,7 +4929,6 @@ static void Lspring(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -5056,7 +4937,6 @@ static void Lspring(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
       cave[x][y] = Yspring_sB;
@@ -5204,7 +5084,6 @@ static void Lspring_pause(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -5213,7 +5092,6 @@ static void Lspring_pause(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yspring_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yspring_s;
@@ -5251,7 +5129,6 @@ static void Lspring_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -5260,7 +5137,6 @@ static void Lspring_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yspring_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yspring_s;
@@ -5293,7 +5169,6 @@ static void Lspring_e(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -5302,7 +5177,6 @@ static void Lspring_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Yalien_nB:
     case Yalien_eB:
     case Yalien_sB:
@@ -5366,7 +5240,6 @@ static void Lspring_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -5375,7 +5248,6 @@ static void Lspring_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Yspring_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yspring_s;
@@ -5408,7 +5280,6 @@ static void Lspring_w(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -5417,7 +5288,6 @@ static void Lspring_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Yalien_nB:
     case Yalien_eB:
     case Yalien_sB:
@@ -5481,7 +5351,6 @@ static void Lspring_fall(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -5490,7 +5359,6 @@ static void Lspring_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Zplayer:
       cave[x][y] = Yspring_sB;
       next[x][y] = Xblank;
@@ -5962,7 +5830,6 @@ static void Lballoon(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -5971,7 +5838,6 @@ static void Lballoon(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	  cave[x][y] = Yballoon_nB;
 	  next[x][y] = Xblank;
 	  cave[x][y-1] = Yballoon_n;
@@ -6003,7 +5869,6 @@ static void Lballoon(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -6012,7 +5877,6 @@ static void Lballoon(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	  cave[x][y] = Yballoon_eB;
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Yballoon_e;
@@ -6044,7 +5908,6 @@ static void Lballoon(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -6053,7 +5916,6 @@ static void Lballoon(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	  cave[x][y] = Yballoon_sB;
 	  next[x][y] = Xblank;
 	  cave[x][y+1] = Yballoon_s;
@@ -6085,7 +5947,6 @@ static void Lballoon(int x, int y)
 	case Xblank:
 	case Xacid_splash_e:
 	case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 	case Xfake_acid_1:
 	case Xfake_acid_2:
 	case Xfake_acid_3:
@@ -6094,7 +5955,6 @@ static void Lballoon(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-#endif
 	  cave[x][y] = Yballoon_wB;
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Yballoon_w;
@@ -6305,7 +6165,6 @@ static void Ldrip_fall(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -6314,7 +6173,6 @@ static void Ldrip_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xplant:
     case Yplant:
     case Zplayer:
@@ -6419,7 +6277,6 @@ static void Lsand_stone(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -6428,7 +6285,6 @@ static void Lsand_stone(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
       cave[x][y] = Xsand_stonesand_quickout_1;
       next[x][y] = Xsand_stonesand_quickout_2;
       cave[x][y+1] = Xsand_stoneout_1;
@@ -6531,7 +6387,6 @@ static void Lsand_stoneout_2(int x, int y)
   next[x][y] = Xstone_fall;
 }
 
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
 static void Lsand_stonesand_quickout_1(int x, int y)
 {
   next[x][y] = Xsand_stonesand_quickout_2;
@@ -6541,7 +6396,6 @@ static void Lsand_stonesand_quickout_2(int x, int y)
 {
   next[x][y] = Xsand;
 }
-#endif
 
 static void Lslidewall_ns(int x, int y)
 {
@@ -6630,7 +6484,6 @@ static void Lamoeba(int x, int y)
     case Xblank:
     case Xacid_splash_e:
     case Xacid_splash_w:
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:
     case Xfake_acid_2:
     case Xfake_acid_3:
@@ -6639,7 +6492,6 @@ static void Lamoeba(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-#endif
     case Xgrass:
     case Xdirt:
     case Xsand:
@@ -6721,7 +6573,6 @@ static void handle_tile(int x, int y)
     case Xacid_7:		Lacid_7(x, y);			break;
     case Xacid_8:		Lacid_8(x, y);			break;
 
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xfake_acid_1:		Lfake_acid_1(x, y);		break;
     case Xfake_acid_2:		Lfake_acid_2(x, y);		break;
     case Xfake_acid_3:		Lfake_acid_3(x, y);		break;
@@ -6730,7 +6581,6 @@ static void handle_tile(int x, int y)
     case Xfake_acid_6:		Lfake_acid_6(x, y);		break;
     case Xfake_acid_7:		Lfake_acid_7(x, y);		break;
     case Xfake_acid_8:		Lfake_acid_8(x, y);		break;
-#endif
 
     case Xandroid:		Landroid(x, y);			break;
     case Xandroid_1_n:		Landroid_1_n(x, y);		break;
@@ -6856,10 +6706,8 @@ static void handle_tile(int x, int y)
     case Xsand_stonesand_4:	Lsand_stonesand_4(x, y);	break;
     case Xsand_stoneout_1:	Lsand_stoneout_1(x, y);		break;
     case Xsand_stoneout_2:	Lsand_stoneout_2(x, y);		break;
-#ifdef EM_ENGINE_USE_ADDITIONAL_ELEMENTS
     case Xsand_stonesand_quickout_1: Lsand_stonesand_quickout_1(x, y); break;
     case Xsand_stonesand_quickout_2: Lsand_stonesand_quickout_2(x, y); break;
-#endif
 
     case Xslidewall_ns:		Lslidewall_ns(x, y);		break;
     case Xslidewall_ew:		Lslidewall_ew(x, y);		break;
