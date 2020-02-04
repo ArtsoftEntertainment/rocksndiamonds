@@ -5,18 +5,11 @@
 
 #include "main_em.h"
 
-#include <signal.h>
-
 
 Bitmap *screenBitmap;
 
 struct GlobalInfo_EM global_em_info;
 struct GameInfo_EM game_em;
-
-int open_all(void)
-{
-  return 0;
-}
 
 void InitGfxBuffers_EM(void)
 {
@@ -30,11 +23,8 @@ void em_open_all(void)
   /* pre-calculate some data */
   tab_generate();
 
-  if (open_all() != 0)
-    Error(ERR_EXIT, "em_open_all(): open_all() failed");
-
-  /* after "open_all()", because we need the graphic bitmaps to be defined */
-  tab_generate_graphics_info_em();
+  /* initialize graphics */
+  InitGraphicInfo_EM();
 
   game_init_random();
   game_init_cave_buffers();

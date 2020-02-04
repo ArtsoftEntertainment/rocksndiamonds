@@ -268,8 +268,3 @@ void tab_generate(void)
   create_tab(tile_android_move, tab_android_move);
   create_explode();
 }
-
-void tab_generate_graphics_info_em(void)
-{
-  InitGraphicInfo_EM();
-}

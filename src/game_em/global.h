@@ -7,10 +7,9 @@ extern int frame;
 
 /* all global function prototypes */
 
-int open_all(void);
-void close_all(void);
-
 void readjoy(byte, struct PLAYER *);
+
+void tab_generate(void);
 
 void game_initscreen(void);
 void game_init_random(void);

@@ -119,7 +119,4 @@ void SaveEngineSnapshotValues_EM(void);
 
 boolean checkIfAllPlayersFitToScreen(void);
 
-void tab_generate(void);
-void tab_generate_graphics_info_em(void);
-
 #endif	// EXPORT_H
