@@ -18,6 +18,86 @@ static short **cave, **next, **boom;
 static unsigned int seed;
 static int score;
 
+static const byte is_blank[TILE_MAX] =
+{
+  [Xblank]		= 1,
+  [Xsplash_e]		= 1,
+  [Xsplash_w]		= 1,
+  [Xfake_acid_1]	= 1,
+  [Xfake_acid_2]	= 1,
+  [Xfake_acid_3]	= 1,
+  [Xfake_acid_4]	= 1,
+  [Xfake_acid_5]	= 1,
+  [Xfake_acid_6]	= 1,
+  [Xfake_acid_7]	= 1,
+  [Xfake_acid_8]	= 1
+};
+
+static const byte is_blank_or_acid[TILE_MAX] =
+{
+  [Xblank]		= 1,
+  [Xsplash_e]		= 1,
+  [Xsplash_w]		= 1,
+  [Xfake_acid_1]	= 1,
+  [Xfake_acid_2]	= 1,
+  [Xfake_acid_3]	= 1,
+  [Xfake_acid_4]	= 1,
+  [Xfake_acid_5]	= 1,
+  [Xfake_acid_6]	= 1,
+  [Xfake_acid_7]	= 1,
+  [Xfake_acid_8]	= 1,
+  [Xacid_1]		= 1,
+  [Xacid_2]		= 1,
+  [Xacid_3]		= 1,
+  [Xacid_4]		= 1,
+  [Xacid_5]		= 1,
+  [Xacid_6]		= 1,
+  [Xacid_7]		= 1,
+  [Xacid_8]		= 1
+};
+
+static const byte is_fake_acid[TILE_MAX] =
+{
+  [Xfake_acid_1]	= 1,
+  [Xfake_acid_2]	= 1,
+  [Xfake_acid_3]	= 1,
+  [Xfake_acid_4]	= 1,
+  [Xfake_acid_5]	= 1,
+  [Xfake_acid_6]	= 1,
+  [Xfake_acid_7]	= 1,
+  [Xfake_acid_8]	= 1
+};
+
+static const byte is_amoeba[TILE_MAX] =
+{
+  [Xfake_amoeba]	= 1,
+  [Xfake_amoebaB]	= 1,
+  [Xamoeba_1]		= 1,
+  [Xamoeba_2]		= 1,
+  [Xamoeba_3]		= 1,
+  [Xamoeba_4]		= 1,
+  [Xamoeba_5]		= 1,
+  [Xamoeba_6]		= 1,
+  [Xamoeba_7]		= 1,
+  [Xamoeba_8]		= 1
+};
+
+static const byte is_android_walkable[TILE_MAX] =
+{
+  [Xblank]		= 1,
+  [Xsplash_e]		= 1,
+  [Xsplash_w]		= 1,
+  [Xfake_acid_1]	= 1,
+  [Xfake_acid_2]	= 1,
+  [Xfake_acid_3]	= 1,
+  [Xfake_acid_4]	= 1,
+  [Xfake_acid_5]	= 1,
+  [Xfake_acid_6]	= 1,
+  [Xfake_acid_7]	= 1,
+  [Xfake_acid_8]	= 1,
+  [Xplant]		= 1
+};
+
 static void Lboom_generic(int x, int y, int element, int element_middle)
 {
   boom[x-1][y-1] = element;
@@ -930,10 +1010,10 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 
       door_walk:
 
-	if (!tab_blank[cave[x+dx][y+dy]])
+	if (!is_blank[cave[x+dx][y+dy]])
 	  break;
 
-	if (!tab_fake_acid[cave[x+dx][y+dy]])
+	if (!is_fake_acid[cave[x+dx][y+dy]])
 	{
 	  cave[x+dx][y+dy] = Zplayer;
 	  next[x+dx][y+dy] = Zplayer;
@@ -1611,54 +1691,54 @@ static void Landroid(int x, int y)
 	/* attempt clockwise move first if direct path is blocked */
 
 	case 0: /* north west */
-	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
-	  if (tab_android_move[cave[x][y-1]])   goto android_n;
-	  if (tab_android_move[cave[x-1][y]])   goto android_w;
+	  if (is_android_walkable[cave[x-1][y-1]]) goto android_nw;
+	  if (is_android_walkable[cave[x][y-1]])   goto android_n;
+	  if (is_android_walkable[cave[x-1][y]])   goto android_w;
 	  break;
 
 	case 1: /* north */
-	  if (tab_android_move[cave[x][y-1]])   goto android_n;
-	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
-	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
+	  if (is_android_walkable[cave[x][y-1]])   goto android_n;
+	  if (is_android_walkable[cave[x+1][y-1]]) goto android_ne;
+	  if (is_android_walkable[cave[x-1][y-1]]) goto android_nw;
 	  break;
 
 	case 2: /* north east */
-	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
-	  if (tab_android_move[cave[x+1][y]])   goto android_e;
-	  if (tab_android_move[cave[x][y-1]])   goto android_n;
+	  if (is_android_walkable[cave[x+1][y-1]]) goto android_ne;
+	  if (is_android_walkable[cave[x+1][y]])   goto android_e;
+	  if (is_android_walkable[cave[x][y-1]])   goto android_n;
 	  break;
 
 	case 3: /* west */
-	  if (tab_android_move[cave[x-1][y]])   goto android_w;
-	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
-	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
+	  if (is_android_walkable[cave[x-1][y]])   goto android_w;
+	  if (is_android_walkable[cave[x-1][y-1]]) goto android_nw;
+	  if (is_android_walkable[cave[x-1][y+1]]) goto android_sw;
 	  break;
 
 	case 4: /* nowhere */
 	  break;
 
 	case 5: /* east */
-	  if (tab_android_move[cave[x+1][y]])   goto android_e;
-	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
-	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
+	  if (is_android_walkable[cave[x+1][y]])   goto android_e;
+	  if (is_android_walkable[cave[x+1][y+1]]) goto android_se;
+	  if (is_android_walkable[cave[x+1][y-1]]) goto android_ne;
 	  break;
 
 	case 6: /* south west */
-	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
-	  if (tab_android_move[cave[x-1][y]])   goto android_w;
-	  if (tab_android_move[cave[x][y+1]])   goto android_s;
+	  if (is_android_walkable[cave[x-1][y+1]]) goto android_sw;
+	  if (is_android_walkable[cave[x-1][y]])   goto android_w;
+	  if (is_android_walkable[cave[x][y+1]])   goto android_s;
 	  break;
 
 	case 7: /* south */
-	  if (tab_android_move[cave[x][y+1]])   goto android_s;
-	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
-	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
+	  if (is_android_walkable[cave[x][y+1]])   goto android_s;
+	  if (is_android_walkable[cave[x-1][y+1]]) goto android_sw;
+	  if (is_android_walkable[cave[x+1][y+1]]) goto android_se;
 	  break;
 
 	case 8: /* south east */
-	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
-	  if (tab_android_move[cave[x][y+1]])   goto android_s;
-	  if (tab_android_move[cave[x+1][y]])   goto android_e;
+	  if (is_android_walkable[cave[x+1][y+1]]) goto android_se;
+	  if (is_android_walkable[cave[x][y+1]])   goto android_s;
+	  if (is_android_walkable[cave[x+1][y]])   goto android_e;
 	  break;
       }
     }
@@ -1669,54 +1749,54 @@ static void Landroid(int x, int y)
 	/* attempt counterclockwise move first if direct path is blocked */
 
 	case 0: /* north west */
-	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
-	  if (tab_android_move[cave[x-1][y]])   goto android_w;
-	  if (tab_android_move[cave[x][y-1]])   goto android_n;
+	  if (is_android_walkable[cave[x-1][y-1]]) goto android_nw;
+	  if (is_android_walkable[cave[x-1][y]])   goto android_w;
+	  if (is_android_walkable[cave[x][y-1]])   goto android_n;
 	  break;
 
 	case 1: /* north */
-	  if (tab_android_move[cave[x][y-1]])   goto android_n;
-	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
-	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
+	  if (is_android_walkable[cave[x][y-1]])   goto android_n;
+	  if (is_android_walkable[cave[x-1][y-1]]) goto android_nw;
+	  if (is_android_walkable[cave[x+1][y-1]]) goto android_ne;
 	  break;
 
 	case 2: /* north east */
-	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
-	  if (tab_android_move[cave[x][y-1]])   goto android_n;
-	  if (tab_android_move[cave[x+1][y]])   goto android_e;
+	  if (is_android_walkable[cave[x+1][y-1]]) goto android_ne;
+	  if (is_android_walkable[cave[x][y-1]])   goto android_n;
+	  if (is_android_walkable[cave[x+1][y]])   goto android_e;
 	  break;
 
 	case 3: /* west */
-	  if (tab_android_move[cave[x-1][y]])   goto android_w;
-	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
-	  if (tab_android_move[cave[x-1][y-1]]) goto android_nw;
+	  if (is_android_walkable[cave[x-1][y]])   goto android_w;
+	  if (is_android_walkable[cave[x-1][y+1]]) goto android_sw;
+	  if (is_android_walkable[cave[x-1][y-1]]) goto android_nw;
 	  break;
 
 	case 4: /* nowhere */
 	  break;
 
 	case 5: /* east */
-	  if (tab_android_move[cave[x+1][y]])   goto android_e;
-	  if (tab_android_move[cave[x+1][y-1]]) goto android_ne;
-	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
+	  if (is_android_walkable[cave[x+1][y]])   goto android_e;
+	  if (is_android_walkable[cave[x+1][y-1]]) goto android_ne;
+	  if (is_android_walkable[cave[x+1][y+1]]) goto android_se;
 	  break;
 
 	case 6: /* south west */
-	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
-	  if (tab_android_move[cave[x][y+1]])   goto android_s;
-	  if (tab_android_move[cave[x-1][y]])   goto android_w;
+	  if (is_android_walkable[cave[x-1][y+1]]) goto android_sw;
+	  if (is_android_walkable[cave[x][y+1]])   goto android_s;
+	  if (is_android_walkable[cave[x-1][y]])   goto android_w;
 	  break;
 
 	case 7: /* south */
-	  if (tab_android_move[cave[x][y+1]])   goto android_s;
-	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
-	  if (tab_android_move[cave[x-1][y+1]]) goto android_sw;
+	  if (is_android_walkable[cave[x][y+1]])   goto android_s;
+	  if (is_android_walkable[cave[x+1][y+1]]) goto android_se;
+	  if (is_android_walkable[cave[x-1][y+1]]) goto android_sw;
 	  break;
 
 	case 8: /* south east */
-	  if (tab_android_move[cave[x+1][y+1]]) goto android_se;
-	  if (tab_android_move[cave[x+1][y]])   goto android_e;
-	  if (tab_android_move[cave[x][y+1]])   goto android_s;
+	  if (is_android_walkable[cave[x+1][y+1]]) goto android_se;
+	  if (is_android_walkable[cave[x+1][y]])   goto android_e;
+	  if (is_android_walkable[cave[x][y+1]])   goto android_s;
 	  break;
       }
     }
@@ -2714,10 +2794,10 @@ static void Lbug_n(int x, int y)
 
 static void Lbug_1_n(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_1_n);
 
@@ -2761,10 +2841,10 @@ static void Lbug_1_n(int x, int y)
 
 static void Lbug_2_n(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_2_n);
 
@@ -2826,10 +2906,10 @@ static void Lbug_e(int x, int y)
 
 static void Lbug_1_e(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_1_e);
 
@@ -2873,10 +2953,10 @@ static void Lbug_1_e(int x, int y)
 
 static void Lbug_2_e(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_2_e);
 
@@ -2938,10 +3018,10 @@ static void Lbug_s(int x, int y)
 
 static void Lbug_1_s(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_1_s);
 
@@ -2985,10 +3065,10 @@ static void Lbug_1_s(int x, int y)
 
 static void Lbug_2_s(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_2_s);
 
@@ -3050,10 +3130,10 @@ static void Lbug_w(int x, int y)
 
 static void Lbug_1_w(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_1_w);
 
@@ -3097,10 +3177,10 @@ static void Lbug_1_w(int x, int y)
 
 static void Lbug_2_w(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_bug(x, y, Xbug_2_w);
 
@@ -3162,10 +3242,10 @@ static void Ltank_n(int x, int y)
 
 static void Ltank_1_n(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_1_n);
 
@@ -3209,10 +3289,10 @@ static void Ltank_1_n(int x, int y)
 
 static void Ltank_2_n(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_2_n);
 
@@ -3274,10 +3354,10 @@ static void Ltank_e(int x, int y)
 
 static void Ltank_1_e(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_1_e);
 
@@ -3321,10 +3401,10 @@ static void Ltank_1_e(int x, int y)
 
 static void Ltank_2_e(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_2_e);
 
@@ -3386,10 +3466,10 @@ static void Ltank_s(int x, int y)
 
 static void Ltank_1_s(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_1_s);
 
@@ -3433,10 +3513,10 @@ static void Ltank_1_s(int x, int y)
 
 static void Ltank_2_s(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_2_s);
 
@@ -3498,10 +3578,10 @@ static void Ltank_w(int x, int y)
 
 static void Ltank_1_w(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_1_w);
 
@@ -3545,10 +3625,10 @@ static void Ltank_1_w(int x, int y)
 
 static void Ltank_2_w(int x, int y)
 {
-  if (tab_amoeba[cave[x][y-1]] ||
-      tab_amoeba[cave[x+1][y]] ||
-      tab_amoeba[cave[x][y+1]] ||
-      tab_amoeba[cave[x-1][y]])
+  if (is_amoeba[cave[x][y-1]] ||
+      is_amoeba[cave[x+1][y]] ||
+      is_amoeba[cave[x][y+1]] ||
+      is_amoeba[cave[x-1][y]])
   {
     Lboom_tank(x, y, Xtank_2_w);
 
@@ -3651,7 +3731,7 @@ static void Lemerald(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Yemerald_eB;
 	  next[x][y] = Xblank;
@@ -3660,7 +3740,7 @@ static void Lemerald(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Yemerald_wB;
 	  next[x][y] = Xblank;
@@ -3671,7 +3751,7 @@ static void Lemerald(int x, int y)
       }
       else
       {
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Yemerald_wB;
 	  next[x][y] = Xblank;
@@ -3680,7 +3760,7 @@ static void Lemerald(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Yemerald_eB;
 	  next[x][y] = Xblank;
@@ -3790,7 +3870,7 @@ static void Lemerald_fall(int x, int y)
       {
 	lev.wonderwall_state = 1;
 	cave[x][y] = Yemerald_sB;
-	if (tab_blank[cave[x][y+2]])
+	if (is_blank[cave[x][y+2]])
 	{
 	  cave[x][y+2] = Ydiamond_s;
 	  next[x][y+2] = Xdiamond_fall;
@@ -3902,7 +3982,7 @@ static void Ldiamond(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Ydiamond_eB;
 	  next[x][y] = Xblank;
@@ -3911,7 +3991,7 @@ static void Ldiamond(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Ydiamond_wB;
 	  next[x][y] = Xblank;
@@ -3922,7 +4002,7 @@ static void Ldiamond(int x, int y)
       }
       else
       {
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Ydiamond_wB;
 	  next[x][y] = Xblank;
@@ -3931,7 +4011,7 @@ static void Ldiamond(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Ydiamond_eB;
 	  next[x][y] = Xblank;
@@ -4041,7 +4121,7 @@ static void Ldiamond_fall(int x, int y)
       {
 	lev.wonderwall_state = 1;
 	cave[x][y] = Ydiamond_sB;
-	if (tab_blank[cave[x][y+2]])
+	if (is_blank[cave[x][y+2]])
 	{
 	  cave[x][y+2] = Ystone_s;
 	  next[x][y+2] = Xstone_fall;
@@ -4155,7 +4235,7 @@ static void Lstone(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Ystone_eB;
 	  next[x][y] = Xblank;
@@ -4164,7 +4244,7 @@ static void Lstone(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Ystone_wB;
 	  next[x][y] = Xblank;
@@ -4175,7 +4255,7 @@ static void Lstone(int x, int y)
       }
       else
       {
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Ystone_wB;
 	  next[x][y] = Xblank;
@@ -4184,7 +4264,7 @@ static void Lstone(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Ystone_eB;
 	  next[x][y] = Xblank;
@@ -4471,7 +4551,7 @@ static void Lstone_fall(int x, int y)
 	lev.wonderwall_state = 1;
 	cave[x][y] = Ystone_sB;
 
-	if (tab_blank[cave[x][y+2]])
+	if (is_blank[cave[x][y+2]])
 	{
 	  cave[x][y+2] = Yemerald_s;
 	  next[x][y+2] = Xemerald_fall;
@@ -4574,7 +4654,7 @@ static void Lbomb(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Ybomb_eB;
 	  next[x][y] = Xblank;
@@ -4583,7 +4663,7 @@ static void Lbomb(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Ybomb_wB;
 	  next[x][y] = Xblank;
@@ -4594,7 +4674,7 @@ static void Lbomb(int x, int y)
       }
       else
       {
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Ybomb_wB;
 	  next[x][y] = Xblank;
@@ -4603,7 +4683,7 @@ static void Lbomb(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Ybomb_eB;
 	  next[x][y] = Xblank;
@@ -4789,7 +4869,7 @@ static void Lnut(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Ynut_eB;
 	  next[x][y] = Xblank;
@@ -4798,7 +4878,7 @@ static void Lnut(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Ynut_wB;
 	  next[x][y] = Xblank;
@@ -4809,7 +4889,7 @@ static void Lnut(int x, int y)
       }
       else
       {
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Ynut_wB;
 	  next[x][y] = Xblank;
@@ -4818,7 +4898,7 @@ static void Lnut(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Ynut_eB;
 	  next[x][y] = Xblank;
@@ -5008,7 +5088,7 @@ static void Lspring(int x, int y)
     case Xroundwall_4:
       if (RANDOM(2))
       {
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Yspring_eB;
 	  next[x][y] = Xblank;
@@ -5024,7 +5104,7 @@ static void Lspring(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Yspring_wB;
 	  next[x][y] = Xblank;
@@ -5042,7 +5122,7 @@ static void Lspring(int x, int y)
       }
       else
       {
-	if (tab_blank[cave[x-1][y]] && tab_acid[cave[x-1][y+1]])
+	if (is_blank[cave[x-1][y]] && is_blank_or_acid[cave[x-1][y+1]])
 	{
 	  cave[x][y] = Yspring_wB;
 	  next[x][y] = Xblank;
@@ -5058,7 +5138,7 @@ static void Lspring(int x, int y)
 	  return;
 	}
 
-	if (tab_blank[cave[x+1][y]] && tab_acid[cave[x+1][y+1]])
+	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
 	{
 	  cave[x][y] = Yspring_eB;
 	  next[x][y] = Xblank;
@@ -5992,7 +6072,7 @@ static void Lball_common(int x, int y)
     {
       case 0:
 	if (lev.ball_array[lev.ball_pos][0] != Xblank &&
-	    tab_blank[cave[x-1][y-1]])
+	    is_blank[cave[x-1][y-1]])
 	{
 	  cave[x-1][y-1] = Yball_blank;
 	  next[x-1][y-1] = lev.ball_array[lev.ball_pos][0];
@@ -6001,7 +6081,7 @@ static void Lball_common(int x, int y)
 
       case 1:
 	if (lev.ball_array[lev.ball_pos][1] != Xblank &&
-	    tab_blank[cave[x][y-1]])
+	    is_blank[cave[x][y-1]])
 	{
 	  cave[x][y-1] = Yball_blank;
 	  next[x][y-1] = lev.ball_array[lev.ball_pos][1];
@@ -6010,7 +6090,7 @@ static void Lball_common(int x, int y)
 
       case 2:
 	if (lev.ball_array[lev.ball_pos][2] != Xblank &&
-	    tab_blank[cave[x+1][y-1]])
+	    is_blank[cave[x+1][y-1]])
 	{
 	  cave[x+1][y-1] = Yball_blank;
 	  next[x+1][y-1] = lev.ball_array[lev.ball_pos][2];
@@ -6019,7 +6099,7 @@ static void Lball_common(int x, int y)
 
       case 3:
 	if (lev.ball_array[lev.ball_pos][3] != Xblank &&
-	    tab_blank[cave[x-1][y]])
+	    is_blank[cave[x-1][y]])
 	{
 	  cave[x-1][y] = Yball_blank;
 	  next[x-1][y] = lev.ball_array[lev.ball_pos][3];
@@ -6028,7 +6108,7 @@ static void Lball_common(int x, int y)
 
       case 4:
 	if (lev.ball_array[lev.ball_pos][4] != Xblank &&
-	    tab_blank[cave[x+1][y]])
+	    is_blank[cave[x+1][y]])
 	{
 	  cave[x+1][y] = Yball_blank;
 	  next[x+1][y] = lev.ball_array[lev.ball_pos][4];
@@ -6037,7 +6117,7 @@ static void Lball_common(int x, int y)
 
       case 5:
 	if (lev.ball_array[lev.ball_pos][5] != Xblank &&
-	    tab_blank[cave[x-1][y+1]])
+	    is_blank[cave[x-1][y+1]])
 	{
 	  cave[x-1][y+1] = Yball_blank;
 	  next[x-1][y+1] = lev.ball_array[lev.ball_pos][5];
@@ -6046,7 +6126,7 @@ static void Lball_common(int x, int y)
 
       case 6:
 	if (lev.ball_array[lev.ball_pos][6] != Xblank &&
-	    tab_blank[cave[x][y+1]])
+	    is_blank[cave[x][y+1]])
 	{
 	  cave[x][y+1] = Yball_blank;
 	  next[x][y+1] = lev.ball_array[lev.ball_pos][6];
@@ -6055,7 +6135,7 @@ static void Lball_common(int x, int y)
 
       case 7:
 	if (lev.ball_array[lev.ball_pos][7] != Xblank &&
-	    tab_blank[cave[x+1][y+1]])
+	    is_blank[cave[x+1][y+1]])
 	{
 	  cave[x+1][y+1] = Yball_blank;
 	  next[x+1][y+1] = lev.ball_array[lev.ball_pos][7];
@@ -6066,56 +6146,56 @@ static void Lball_common(int x, int y)
   else
   {
     if (lev.ball_array[lev.ball_pos][0] != Xblank &&
-	tab_blank[cave[x-1][y-1]])
+	is_blank[cave[x-1][y-1]])
     {
       cave[x-1][y-1] = Yball_blank;
       next[x-1][y-1] = lev.ball_array[lev.ball_pos][0];
     }
 
     if (lev.ball_array[lev.ball_pos][1] != Xblank &&
-	tab_blank[cave[x][y-1]])
+	is_blank[cave[x][y-1]])
     {
       cave[x][y-1] = Yball_blank;
       next[x][y-1] = lev.ball_array[lev.ball_pos][1];
     }
 
     if (lev.ball_array[lev.ball_pos][2] != Xblank &&
-	tab_blank[cave[x+1][y-1]])
+	is_blank[cave[x+1][y-1]])
     {
       cave[x+1][y-1] = Yball_blank;
       next[x+1][y-1] = lev.ball_array[lev.ball_pos][2];
     }
 
     if (lev.ball_array[lev.ball_pos][3] != Xblank &&
-	tab_blank[cave[x-1][y]])
+	is_blank[cave[x-1][y]])
     {
       cave[x-1][y] = Yball_blank;
       next[x-1][y] = lev.ball_array[lev.ball_pos][3];
     }
 
     if (lev.ball_array[lev.ball_pos][4] != Xblank &&
-	tab_blank[cave[x+1][y]])
+	is_blank[cave[x+1][y]])
     {
       cave[x+1][y] = Yball_blank;
       next[x+1][y] = lev.ball_array[lev.ball_pos][4];
     }
 
     if (lev.ball_array[lev.ball_pos][5] != Xblank &&
-	tab_blank[cave[x-1][y+1]])
+	is_blank[cave[x-1][y+1]])
     {
       cave[x-1][y+1] = Yball_blank;
       next[x-1][y+1] = lev.ball_array[lev.ball_pos][5];
     }
 
     if (lev.ball_array[lev.ball_pos][6] != Xblank &&
-	tab_blank[cave[x][y+1]])
+	is_blank[cave[x][y+1]])
     {
       cave[x][y+1] = Yball_blank;
       next[x][y+1] = lev.ball_array[lev.ball_pos][6];
     }
 
     if (lev.ball_array[lev.ball_pos][7] != Xblank &&
-	tab_blank[cave[x+1][y+1]])
+	is_blank[cave[x+1][y+1]])
     {
       cave[x+1][y+1] = Yball_blank;
       next[x+1][y+1] = lev.ball_array[lev.ball_pos][7];
@@ -6399,14 +6479,14 @@ static void Lsand_stonesand_quickout_2(int x, int y)
 
 static void Lslide_ns(int x, int y)
 {
-  if (tab_blank[cave[x][y-1]])
+  if (is_blank[cave[x][y-1]])
   {
     cave[x][y-1] = Yslide_ns_blank;
     next[x][y-1] = Xslide_ns;
     play_element_sound(x, y, SOUND_slide, Xslide_ns);
   }
 
-  if (tab_blank[cave[x][y+1]])
+  if (is_blank[cave[x][y+1]])
   {
     cave[x][y+1] = Yslide_ns_blank;
     next[x][y+1] = Xslide_ns;
@@ -6416,14 +6496,14 @@ static void Lslide_ns(int x, int y)
 
 static void Lslide_ew(int x, int y)
 {
-  if (tab_blank[cave[x+1][y]])
+  if (is_blank[cave[x+1][y]])
   {
     cave[x+1][y] = Yslide_ew_blank;
     next[x+1][y] = Xslide_ew;
     play_element_sound(x, y, SOUND_slide, Xslide_ew);
   }
 
-  if (tab_blank[cave[x-1][y]])
+  if (is_blank[cave[x-1][y]])
   {
     cave[x-1][y] = Yslide_ew_blank;
     next[x-1][y] = Xslide_ew;
@@ -6497,12 +6577,109 @@ static void Lamoeba(int x, int y)
     case Xsand:
     case Xplant:
     case Yplant:
-      if (tab_amoeba[cave[x][y-1]] ||
-	  tab_amoeba[cave[x+1][y]] ||
-	  tab_amoeba[cave[x][y+1]] ||
-	  tab_amoeba[cave[x-1][y]])
+      if (is_amoeba[cave[x][y-1]] ||
+	  is_amoeba[cave[x+1][y]] ||
+	  is_amoeba[cave[x][y+1]] ||
+	  is_amoeba[cave[x-1][y]])
 	cave[x][y] = Xdrip;
   }
+}
+
+static void Lboom_one(int x, int y, boolean by_dynamite)
+{
+  switch (cave[x][y])
+  {
+    case Zborder:
+    case Znormal:
+    case Zdynamite:
+    case Xboom_bug:
+    case Xboom_bomb:
+    case Xboom_android:
+    case Xacid_1:
+    case Xacid_2:
+    case Xacid_3:
+    case Xacid_4:
+    case Xacid_5:
+    case Xacid_6:
+    case Xacid_7:
+    case Xacid_8:
+    case Xacid_ne:
+    case Xacid_nw:
+    case Xacid_s:
+    case Xacid_se:
+    case Xacid_sw:
+    case Xplant:
+    case Yplant:
+    case Xdoor_1:
+    case Xdoor_2:
+    case Xdoor_3:
+    case Xdoor_4:
+    case Xdoor_5:
+    case Xdoor_6:
+    case Xdoor_7:
+    case Xdoor_8:
+    case Xfake_door_1:
+    case Xfake_door_2:
+    case Xfake_door_3:
+    case Xfake_door_4:
+    case Xfake_door_5:
+    case Xfake_door_6:
+    case Xfake_door_7:
+    case Xfake_door_8:
+    case Xsteel_1:
+    case Xsteel_2:
+    case Xsteel_3:
+    case Xsteel_4:
+      return;
+
+    case Xandroid:
+    case Xandroid_1_n:
+    case Xandroid_2_n:
+    case Xandroid_1_e:
+    case Xandroid_2_e:
+    case Xandroid_1_s:
+    case Xandroid_2_s:
+    case Xandroid_1_w:
+    case Xandroid_2_w:
+      if (by_dynamite)
+	cave[x][y] = Xboom_android;
+      return;
+
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
+      cave[x][y] = Xboom_bug;
+      return;
+
+    case Xbomb:
+    case Xbomb_pause:
+    case Xbomb_fall:
+      cave[x][y] = Xboom_bomb;
+      return;
+
+    default:
+      cave[x][y] = Xboom_1;
+      return;
+  }
+}
+
+static void Lboom_nine(int x, int y, boolean by_dynamite)
+{
+  Lboom_one(x,   y-1, by_dynamite);
+  Lboom_one(x-1, y,   by_dynamite);
+  Lboom_one(x+1, y,   by_dynamite);
+  Lboom_one(x,   y+1, by_dynamite);
+  Lboom_one(x-1, y-1, by_dynamite);
+  Lboom_one(x+1, y-1, by_dynamite);
+  Lboom_one(x-1, y+1, by_dynamite);
+  Lboom_one(x+1, y+1, by_dynamite);
+
+  cave[x][y] = Xboom_1;
 }
 
 static void Lexplode(int x, int y)
@@ -6510,27 +6687,11 @@ static void Lexplode(int x, int y)
   switch (cave[x][y])
   {
     case Znormal:
-      cave[x][y]     = Xboom_1;
-      cave[x][y-1]   = tab_explode_normal[cave[x][y-1]];
-      cave[x-1][y]   = tab_explode_normal[cave[x-1][y]];
-      cave[x+1][y]   = tab_explode_normal[cave[x+1][y]];
-      cave[x][y+1]   = tab_explode_normal[cave[x][y+1]];
-      cave[x-1][y-1] = tab_explode_normal[cave[x-1][y-1]];
-      cave[x+1][y-1] = tab_explode_normal[cave[x+1][y-1]];
-      cave[x-1][y+1] = tab_explode_normal[cave[x-1][y+1]];
-      cave[x+1][y+1] = tab_explode_normal[cave[x+1][y+1]];
+      Lboom_nine(x, y, FALSE);
       break;
 
     case Zdynamite:
-      cave[x][y]     = Xboom_1;
-      cave[x][y-1]   = tab_explode_dynamite[cave[x][y-1]];
-      cave[x-1][y]   = tab_explode_dynamite[cave[x-1][y]];
-      cave[x+1][y]   = tab_explode_dynamite[cave[x+1][y]];
-      cave[x][y+1]   = tab_explode_dynamite[cave[x][y+1]];
-      cave[x-1][y-1] = tab_explode_dynamite[cave[x-1][y-1]];
-      cave[x+1][y-1] = tab_explode_dynamite[cave[x+1][y-1]];
-      cave[x-1][y+1] = tab_explode_dynamite[cave[x-1][y+1]];
-      cave[x+1][y+1] = tab_explode_dynamite[cave[x+1][y+1]];
+      Lboom_nine(x, y, TRUE);
       break;
   }
 }

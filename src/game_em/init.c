@@ -20,10 +20,6 @@ void InitGfxBuffers_EM(void)
 
 void em_open_all(void)
 {
-  /* pre-calculate some data */
-  tab_generate();
-
-  /* initialize graphics */
   InitGraphicInfo_EM();
 
   game_init_random();

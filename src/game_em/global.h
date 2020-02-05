@@ -9,8 +9,6 @@ extern int frame;
 
 void readjoy(byte, struct PLAYER *);
 
-void tab_generate(void);
-
 void game_initscreen(void);
 void game_init_random(void);
 void game_init_cave_buffers(void);

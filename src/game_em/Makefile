@@ -21,16 +21,14 @@ SRCS =	cave.c		\
 	graphics.c	\
 	init.c		\
 	input.c		\
-	logic.c		\
-	tab_generate.c
+	logic.c
 
 OBJS =	cave.o		\
 	convert.o	\
 	graphics.o	\
 	init.o		\
 	input.o		\
-	logic.o		\
-	tab_generate.o
+	logic.o
 
 GAME_EM = game_em.a
 
