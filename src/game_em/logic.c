@@ -3676,10 +3676,6 @@ static void Lemerald(int x, int y)
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
-    case Xspring:
-    case Xspring_pause:
-    case Xspring_e:
-    case Xspring_w:
     case Xandroid:
     case Xandroid_1_n:
     case Xandroid_2_n:
@@ -3689,24 +3685,20 @@ static void Lemerald(int x, int y)
     case Xandroid_2_s:
     case Xandroid_1_w:
     case Xandroid_2_w:
-    case Xstone:
-    case Xstone_pause:
     case Xemerald:
     case Xemerald_pause:
     case Xdiamond:
     case Xdiamond_pause:
+    case Xstone:
+    case Xstone_pause:
     case Xbomb:
     case Xbomb_pause:
-    case Xballoon:
-    case Xacid_ne:
-    case Xacid_nw:
-    case Xball_1:
-    case Xball_2:
     case Xnut:
     case Xnut_pause:
-    case Xslide_ns:
-    case Xslide_ew:
-    case Xwonderwall:
+    case Xspring:
+    case Xspring_pause:
+    case Xspring_e:
+    case Xspring_w:
     case Xkey_1:
     case Xkey_2:
     case Xkey_3:
@@ -3715,12 +3707,16 @@ static void Lemerald(int x, int y)
     case Xkey_6:
     case Xkey_7:
     case Xkey_8:
-    case Xbumper:
+    case Xballoon:
+    case Xball_1:
+    case Xball_2:
+    case Xwonderwall:
     case Xswitch:
-    case Xsteel_1:
-    case Xsteel_2:
-    case Xsteel_3:
-    case Xsteel_4:
+    case Xbumper:
+    case Xacid_ne:
+    case Xacid_nw:
+    case Xslide_ns:
+    case Xslide_ew:
     case Xwall_1:
     case Xwall_2:
     case Xwall_3:
@@ -3729,6 +3725,10 @@ static void Lemerald(int x, int y)
     case Xroundwall_2:
     case Xroundwall_3:
     case Xroundwall_4:
+    case Xsteel_1:
+    case Xsteel_2:
+    case Xsteel_3:
+    case Xsteel_4:
       if (RANDOM(2))
       {
 	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
@@ -3870,13 +3870,12 @@ static void Lemerald_fall(int x, int y)
       {
 	lev.wonderwall_state = 1;
 	cave[x][y] = Yemerald_sB;
+	next[x][y] = Xblank;
 	if (is_blank[cave[x][y+2]])
 	{
 	  cave[x][y+2] = Ydiamond_s;
 	  next[x][y+2] = Xdiamond_fall;
 	}
-
-	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_wonderfall, Xwonderwall);
 	return;
       }
@@ -3927,10 +3926,6 @@ static void Ldiamond(int x, int y)
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
-    case Xspring:
-    case Xspring_pause:
-    case Xspring_e:
-    case Xspring_w:
     case Xandroid:
     case Xandroid_1_n:
     case Xandroid_2_n:
@@ -3940,24 +3935,20 @@ static void Ldiamond(int x, int y)
     case Xandroid_2_s:
     case Xandroid_1_w:
     case Xandroid_2_w:
-    case Xstone:
-    case Xstone_pause:
     case Xemerald:
     case Xemerald_pause:
     case Xdiamond:
     case Xdiamond_pause:
+    case Xstone:
+    case Xstone_pause:
     case Xbomb:
     case Xbomb_pause:
-    case Xballoon:
-    case Xacid_ne:
-    case Xacid_nw:
-    case Xball_1:
-    case Xball_2:
     case Xnut:
     case Xnut_pause:
-    case Xslide_ns:
-    case Xslide_ew:
-    case Xwonderwall:
+    case Xspring:
+    case Xspring_pause:
+    case Xspring_e:
+    case Xspring_w:
     case Xkey_1:
     case Xkey_2:
     case Xkey_3:
@@ -3966,12 +3957,16 @@ static void Ldiamond(int x, int y)
     case Xkey_6:
     case Xkey_7:
     case Xkey_8:
-    case Xbumper:
+    case Xballoon:
+    case Xball_1:
+    case Xball_2:
+    case Xwonderwall:
     case Xswitch:
-    case Xsteel_1:
-    case Xsteel_2:
-    case Xsteel_3:
-    case Xsteel_4:
+    case Xbumper:
+    case Xacid_ne:
+    case Xacid_nw:
+    case Xslide_ns:
+    case Xslide_ew:
     case Xwall_1:
     case Xwall_2:
     case Xwall_3:
@@ -3980,6 +3975,10 @@ static void Ldiamond(int x, int y)
     case Xroundwall_2:
     case Xroundwall_3:
     case Xroundwall_4:
+    case Xsteel_1:
+    case Xsteel_2:
+    case Xsteel_3:
+    case Xsteel_4:
       if (RANDOM(2))
       {
 	if (is_blank[cave[x+1][y]] && is_blank_or_acid[cave[x+1][y+1]])
@@ -4121,13 +4120,12 @@ static void Ldiamond_fall(int x, int y)
       {
 	lev.wonderwall_state = 1;
 	cave[x][y] = Ydiamond_sB;
+	next[x][y] = Xblank;
 	if (is_blank[cave[x][y+2]])
 	{
 	  cave[x][y+2] = Ystone_s;
 	  next[x][y+2] = Xstone_fall;
 	}
-
-	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_wonderfall, Xwonderwall);
 	return;
       }
@@ -4187,10 +4185,6 @@ static void Lstone(int x, int y)
       next[x][y+1] = Xsand_sandstone_2;
       return;
 
-    case Xspring:
-    case Xspring_pause:
-    case Xspring_e:
-    case Xspring_w:
     case Xandroid:
     case Xandroid_1_n:
     case Xandroid_2_n:
@@ -4200,23 +4194,20 @@ static void Lstone(int x, int y)
     case Xandroid_2_s:
     case Xandroid_1_w:
     case Xandroid_2_w:
-    case Xstone:
-    case Xstone_pause:
     case Xemerald:
     case Xemerald_pause:
     case Xdiamond:
     case Xdiamond_pause:
+    case Xstone:
+    case Xstone_pause:
     case Xbomb:
     case Xbomb_pause:
-    case Xballoon:
-    case Xacid_ne:
-    case Xacid_nw:
-    case Xball_1:
-    case Xball_2:
     case Xnut:
     case Xnut_pause:
-    case Xslide_ns:
-    case Xslide_ew:
+    case Xspring:
+    case Xspring_pause:
+    case Xspring_e:
+    case Xspring_w:
     case Xkey_1:
     case Xkey_2:
     case Xkey_3:
@@ -4225,10 +4216,17 @@ static void Lstone(int x, int y)
     case Xkey_6:
     case Xkey_7:
     case Xkey_8:
-    case Xbumper:
+    case Xballoon:
+    case Xball_1:
+    case Xball_2:
     case Xswitch:
+    case Xbumper:
+    case Xacid_ne:
+    case Xacid_nw:
     case Xlenses:
     case Xmagnify:
+    case Xslide_ns:
+    case Xslide_ew:
     case Xroundwall_1:
     case Xroundwall_2:
     case Xroundwall_3:
@@ -4360,13 +4358,22 @@ static void Lstone_fall(int x, int y)
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
-    case Xnut:
-    case Xnut_pause:
-      next[x][y] = Xstone;
-      cave[x][y+1] = Ynut_stone;
-      next[x][y+1] = Xemerald;
-      play_element_sound(x, y, SOUND_crack, Xnut);
-      score += lev.nut_score;
+    case Xeater_n:
+    case Xeater_e:
+    case Xeater_s:
+    case Xeater_w:
+      cave[x][y] = Ystone_sB;
+      cave[x][y+1] = Yeater_stone;
+      Lboom_eater(x, y+1, Xstone_fall);
+      score += lev.eater_score;
+      return;
+
+    case Xalien:
+    case Xalien_pause:
+      cave[x][y] = Ystone_sB;
+      cave[x][y+1] = Yalien_stone;
+      Lboom_tank(x, y+1, Xstone_fall);
+      score += lev.alien_score;
       return;
 
     case Xbug_1_n:
@@ -4395,6 +4402,91 @@ static void Lstone_fall(int x, int y)
       cave[x][y+1] = Ytank_stone;
       Lboom_tank(x, y+1, Xstone_fall);
       score += lev.tank_score;
+      return;
+
+    case Xdiamond:
+    case Xdiamond_pause:
+      switch (cave[x][y+2])
+      {
+	case Xblank:
+	case Xsplash_e:
+	case Xsplash_w:
+	case Xfake_acid_1:
+	case Xfake_acid_2:
+	case Xfake_acid_3:
+	case Xfake_acid_4:
+	case Xfake_acid_5:
+	case Xfake_acid_6:
+	case Xfake_acid_7:
+	case Xfake_acid_8:
+	case Zplayer:
+	case Xplant:
+	case Yplant:
+	case Xacid_1:
+	case Xacid_2:
+	case Xacid_3:
+	case Xacid_4:
+	case Xacid_5:
+	case Xacid_6:
+	case Xacid_7:
+	case Xacid_8:
+	case Xandroid:
+	case Xandroid_1_n:
+	case Xandroid_2_n:
+	case Xandroid_1_e:
+	case Xandroid_2_e:
+	case Xandroid_1_s:
+	case Xandroid_2_s:
+	case Xandroid_1_w:
+	case Xandroid_2_w:
+	case Xbug_1_n:
+	case Xbug_1_e:
+	case Xbug_1_s:
+	case Xbug_1_w:
+	case Xbug_2_n:
+	case Xbug_2_e:
+	case Xbug_2_s:
+	case Xbug_2_w:
+	case Xtank_1_n:
+	case Xtank_1_e:
+	case Xtank_1_s:
+	case Xtank_1_w:
+	case Xtank_2_n:
+	case Xtank_2_e:
+	case Xtank_2_s:
+	case Xtank_2_w:
+	case Xemerald_fall:
+	case Xdiamond_fall:
+	case Xstone_fall:
+	case Xbomb_fall:
+	case Xnut_fall:
+	case Xspring_fall:
+	case Xacid_s:
+	  next[x][y] = Xstone;
+	  play_element_sound(x, y, SOUND_stone, Xstone);
+	  return;
+      }
+
+      cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
+      cave[x][y+1] = Ydiamond_stone;
+      next[x][y+1] = Xstone_pause;
+      play_element_sound(x, y, SOUND_squash, Xdiamond);
+      return;
+
+    case Xbomb:
+    case Xbomb_pause:
+      cave[x][y+1] = Ybomb_blank;
+      Lboom_tank(x, y+1, Xstone_fall);
+      return;
+
+    case Xnut:
+    case Xnut_pause:
+      next[x][y] = Xstone;
+      cave[x][y+1] = Ynut_stone;
+      next[x][y+1] = Xemerald;
+      play_element_sound(x, y, SOUND_crack, Xnut);
+      score += lev.nut_score;
       return;
 
     case Xspring:
@@ -4451,113 +4543,17 @@ static void Lstone_fall(int x, int y)
       next[x][y] = Xstone;
       return;
 
-    case Xeater_n:
-    case Xeater_e:
-    case Xeater_s:
-    case Xeater_w:
-      cave[x][y] = Ystone_sB;
-      cave[x][y+1] = Yeater_stone;
-      Lboom_eater(x, y+1, Xstone_fall);
-      score += lev.eater_score;
-      return;
-
-    case Xalien:
-    case Xalien_pause:
-      cave[x][y] = Ystone_sB;
-      cave[x][y+1] = Yalien_stone;
-      Lboom_tank(x, y+1, Xstone_fall);
-      score += lev.alien_score;
-      return;
-
-    case Xdiamond:
-    case Xdiamond_pause:
-      switch (cave[x][y+2])
-      {
-	case Xblank:
-	case Xsplash_e:
-	case Xsplash_w:
-	case Xfake_acid_1:
-	case Xfake_acid_2:
-	case Xfake_acid_3:
-	case Xfake_acid_4:
-	case Xfake_acid_5:
-	case Xfake_acid_6:
-	case Xfake_acid_7:
-	case Xfake_acid_8:
-	case Zplayer:
-	case Xbug_1_n:
-	case Xbug_1_e:
-	case Xbug_1_s:
-	case Xbug_1_w:
-	case Xbug_2_n:
-	case Xbug_2_e:
-	case Xbug_2_s:
-	case Xbug_2_w:
-	case Xtank_1_n:
-	case Xtank_1_e:
-	case Xtank_1_s:
-	case Xtank_1_w:
-	case Xtank_2_n:
-	case Xtank_2_e:
-	case Xtank_2_s:
-	case Xtank_2_w:
-	case Xspring_fall:
-	case Xandroid:
-	case Xandroid_1_n:
-	case Xandroid_2_n:
-	case Xandroid_1_e:
-	case Xandroid_2_e:
-	case Xandroid_1_s:
-	case Xandroid_2_s:
-	case Xandroid_1_w:
-	case Xandroid_2_w:
-	case Xstone_fall:
-	case Xemerald_fall:
-	case Xdiamond_fall:
-	case Xbomb_fall:
-	case Xacid_s:
-	case Xacid_1:
-	case Xacid_2:
-	case Xacid_3:
-	case Xacid_4:
-	case Xacid_5:
-	case Xacid_6:
-	case Xacid_7:
-	case Xacid_8:
-	case Xnut_fall:
-	case Xplant:
-	case Yplant:
-	  next[x][y] = Xstone;
-	  play_element_sound(x, y, SOUND_stone, Xstone);
-	  return;
-      }
-
-      cave[x][y] = Ystone_sB;
-      next[x][y] = Xblank;
-      cave[x][y+1] = Ydiamond_stone;
-      next[x][y+1] = Xstone_pause;
-      play_element_sound(x, y, SOUND_squash, Xdiamond);
-      return;
-
-    case Xbomb:
-    case Xbomb_pause:
-      cave[x][y+1] = Ybomb_blank;
-      Lboom_tank(x, y+1, Xstone_fall);
-      return;
-
     case Xwonderwall:
       if (lev.wonderwall_time)
       {
 	lev.wonderwall_state = 1;
 	cave[x][y] = Ystone_sB;
-
+	next[x][y] = Xblank;
 	if (is_blank[cave[x][y+2]])
 	{
 	  cave[x][y+2] = Yemerald_s;
 	  next[x][y+2] = Xemerald_fall;
 	}
-
-	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_wonderfall, Xwonderwall);
 	return;
       }
@@ -4608,10 +4604,6 @@ static void Lbomb(int x, int y)
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
-    case Xspring:
-    case Xspring_pause:
-    case Xspring_e:
-    case Xspring_w:
     case Xandroid:
     case Xandroid_1_n:
     case Xandroid_2_n:
@@ -4621,23 +4613,20 @@ static void Lbomb(int x, int y)
     case Xandroid_2_s:
     case Xandroid_1_w:
     case Xandroid_2_w:
-    case Xstone:
-    case Xstone_pause:
     case Xemerald:
     case Xemerald_pause:
     case Xdiamond:
     case Xdiamond_pause:
+    case Xstone:
+    case Xstone_pause:
     case Xbomb:
     case Xbomb_pause:
-    case Xballoon:
-    case Xacid_ne:
-    case Xacid_nw:
-    case Xball_1:
-    case Xball_2:
     case Xnut:
     case Xnut_pause:
-    case Xslide_ns:
-    case Xslide_ew:
+    case Xspring:
+    case Xspring_pause:
+    case Xspring_e:
+    case Xspring_w:
     case Xkey_1:
     case Xkey_2:
     case Xkey_3:
@@ -4646,8 +4635,15 @@ static void Lbomb(int x, int y)
     case Xkey_6:
     case Xkey_7:
     case Xkey_8:
-    case Xbumper:
+    case Xballoon:
+    case Xball_1:
+    case Xball_2:
     case Xswitch:
+    case Xbumper:
+    case Xacid_ne:
+    case Xacid_nw:
+    case Xslide_ns:
+    case Xslide_ew:
     case Xroundwall_1:
     case Xroundwall_2:
     case Xroundwall_3:
@@ -4823,10 +4819,6 @@ static void Lnut(int x, int y)
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
-    case Xspring:
-    case Xspring_pause:
-    case Xspring_e:
-    case Xspring_w:
     case Xandroid:
     case Xandroid_1_n:
     case Xandroid_2_n:
@@ -4836,23 +4828,20 @@ static void Lnut(int x, int y)
     case Xandroid_2_s:
     case Xandroid_1_w:
     case Xandroid_2_w:
-    case Xstone:
-    case Xstone_pause:
     case Xemerald:
     case Xemerald_pause:
     case Xdiamond:
     case Xdiamond_pause:
+    case Xstone:
+    case Xstone_pause:
     case Xbomb:
     case Xbomb_pause:
-    case Xballoon:
-    case Xacid_ne:
-    case Xacid_nw:
-    case Xball_1:
-    case Xball_2:
     case Xnut:
     case Xnut_pause:
-    case Xslide_ns:
-    case Xslide_ew:
+    case Xspring:
+    case Xspring_pause:
+    case Xspring_e:
+    case Xspring_w:
     case Xkey_1:
     case Xkey_2:
     case Xkey_3:
@@ -4861,8 +4850,15 @@ static void Lnut(int x, int y)
     case Xkey_6:
     case Xkey_7:
     case Xkey_8:
-    case Xbumper:
+    case Xballoon:
+    case Xball_1:
+    case Xball_2:
     case Xswitch:
+    case Xbumper:
+    case Xacid_ne:
+    case Xacid_nw:
+    case Xslide_ns:
+    case Xslide_ew:
     case Xroundwall_1:
     case Xroundwall_2:
     case Xroundwall_3:
@@ -5042,10 +5038,6 @@ static void Lspring(int x, int y)
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
-    case Xspring:
-    case Xspring_pause:
-    case Xspring_e:
-    case Xspring_w:
     case Xandroid:
     case Xandroid_1_n:
     case Xandroid_2_n:
@@ -5055,23 +5047,20 @@ static void Lspring(int x, int y)
     case Xandroid_2_s:
     case Xandroid_1_w:
     case Xandroid_2_w:
-    case Xstone:
-    case Xstone_pause:
     case Xemerald:
     case Xemerald_pause:
     case Xdiamond:
     case Xdiamond_pause:
+    case Xstone:
+    case Xstone_pause:
     case Xbomb:
     case Xbomb_pause:
-    case Xballoon:
-    case Xacid_ne:
-    case Xacid_nw:
-    case Xball_1:
-    case Xball_2:
     case Xnut:
     case Xnut_pause:
-    case Xslide_ns:
-    case Xslide_ew:
+    case Xspring:
+    case Xspring_pause:
+    case Xspring_e:
+    case Xspring_w:
     case Xkey_1:
     case Xkey_2:
     case Xkey_3:
@@ -5080,8 +5069,15 @@ static void Lspring(int x, int y)
     case Xkey_6:
     case Xkey_7:
     case Xkey_8:
-    case Xbumper:
+    case Xballoon:
+    case Xball_1:
+    case Xball_2:
     case Xswitch:
+    case Xbumper:
+    case Xacid_ne:
+    case Xacid_nw:
+    case Xslide_ns:
+    case Xslide_ew:
     case Xroundwall_1:
     case Xroundwall_2:
     case Xroundwall_3:
@@ -5463,10 +5459,22 @@ static void Lspring_fall(int x, int y)
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
-    case Xbomb:
-    case Xbomb_pause:
-      cave[x][y+1] = Ybomb_blank;
+    case Xeater_n:
+    case Xeater_e:
+    case Xeater_s:
+    case Xeater_w:
+      cave[x][y] = Yspring_sB;
+      cave[x][y+1] = Yeater_spring;
+      Lboom_eater(x, y+1, Xspring_fall);
+      score += lev.eater_score;
+      return;
+
+    case Xalien:
+    case Xalien_pause:
+      cave[x][y] = Yspring_sB;
+      cave[x][y+1] = Yalien_spring;
       Lboom_tank(x, y+1, Xspring_fall);
+      score += lev.alien_score;
       return;
 
     case Xbug_1_n:
@@ -5497,22 +5505,10 @@ static void Lspring_fall(int x, int y)
       score += lev.tank_score;
       return;
 
-    case Xeater_n:
-    case Xeater_e:
-    case Xeater_s:
-    case Xeater_w:
-      cave[x][y] = Yspring_sB;
-      cave[x][y+1] = Yeater_spring;
-      Lboom_eater(x, y+1, Xspring_fall);
-      score += lev.eater_score;
-      return;
-
-    case Xalien:
-    case Xalien_pause:
-      cave[x][y] = Yspring_sB;
-      cave[x][y+1] = Yalien_spring;
+    case Xbomb:
+    case Xbomb_pause:
+      cave[x][y+1] = Ybomb_blank;
       Lboom_tank(x, y+1, Xspring_fall);
-      score += lev.alien_score;
       return;
 
     default:
@@ -6572,11 +6568,11 @@ static void Lamoeba(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xplant:
+    case Yplant:
     case Xgrass:
     case Xdirt:
     case Xsand:
-    case Xplant:
-    case Yplant:
       if (is_amoeba[cave[x][y-1]] ||
 	  is_amoeba[cave[x+1][y]] ||
 	  is_amoeba[cave[x][y+1]] ||
@@ -6603,11 +6599,6 @@ static void Lboom_one(int x, int y, boolean by_dynamite)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Xacid_ne:
-    case Xacid_nw:
-    case Xacid_s:
-    case Xacid_se:
-    case Xacid_sw:
     case Xplant:
     case Yplant:
     case Xdoor_1:
@@ -6626,6 +6617,11 @@ static void Lboom_one(int x, int y, boolean by_dynamite)
     case Xfake_door_6:
     case Xfake_door_7:
     case Xfake_door_8:
+    case Xacid_ne:
+    case Xacid_nw:
+    case Xacid_s:
+    case Xacid_se:
+    case Xacid_sw:
     case Xsteel_1:
     case Xsteel_2:
     case Xsteel_3:
