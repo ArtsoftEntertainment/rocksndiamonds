@@ -869,7 +869,7 @@ void convert_em_level(unsigned char *src, int file_version)
   if (temp & 2048)
   {
     lev.android_array[Xfake_amoeba]	= Xdrip;
-    lev.android_array[Xfake_amoebaB]	= Xdrip;
+    lev.android_array[Yfake_amoeba]	= Xdrip;
     lev.android_array[Xamoeba_1]	= Xdrip;
     lev.android_array[Xamoeba_2]	= Xdrip;
     lev.android_array[Xamoeba_3]	= Xdrip;

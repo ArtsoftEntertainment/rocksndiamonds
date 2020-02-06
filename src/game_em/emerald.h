@@ -60,9 +60,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
   -----------------------------------------------------------------------------
   definition of elements used in the Emerald Mine Club engine;
-  the element names have the following properties:
+  the element names (mostly) have the following properties:
   - elements that start with 'X' can be stored in a level file
-  - elements that start with 'Y' indicate moving elements
+  - elements that start with 'Y' indicate moving or active elements
   - elements that end with 'B' are the "backside" of moving elements
   -----------------------------------------------------------------------------
 */
@@ -370,16 +370,16 @@ enum
   Ydrip_2_sB,
 
   Xwonderwall,
-  XwonderwallB,
+  Ywonderwall,
 
   Xwheel,
-  XwheelB,
+  Ywheel,
 
   Xswitch,
-  XswitchB,
+  Yswitch,
 
   Xbumper,
-  XbumperB,
+  Ybumper,
 
   Xacid_nw,
   Xacid_ne,
@@ -388,13 +388,13 @@ enum
   Xacid_se,
 
   Xfake_blank,
-  Xfake_blankB,
+  Yfake_blank,
 
   Xfake_grass,
-  Xfake_grassB,
+  Yfake_grass,
 
   Xfake_amoeba,			/* dripper */
-  Xfake_amoebaB,
+  Yfake_amoeba,
 
   Xlenses,
 

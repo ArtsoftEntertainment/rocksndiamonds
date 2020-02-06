@@ -71,7 +71,7 @@ static const byte is_fake_acid[TILE_MAX] =
 static const byte is_amoeba[TILE_MAX] =
 {
   [Xfake_amoeba]	= 1,
-  [Xfake_amoebaB]	= 1,
+  [Yfake_amoeba]	= 1,
   [Xamoeba_1]		= 1,
   [Xamoeba_2]		= 1,
   [Xamoeba_3]		= 1,
@@ -5090,7 +5090,7 @@ static void Lspring(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Yspring_e;
 	  if (cave[x][y+1] == Xbumper)
-	    cave[x][y+1] = XbumperB;
+	    cave[x][y+1] = Ybumper;
 
 #ifdef SPRING_ROLL
 	  next[x+1][y] = Xspring_e;
@@ -5106,7 +5106,7 @@ static void Lspring(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Yspring_w;
 	  if (cave[x][y+1] == Xbumper)
-	    cave[x][y+1] = XbumperB;
+	    cave[x][y+1] = Ybumper;
 
 #ifdef SPRING_ROLL
 	  next[x-1][y] = Xspring_w;
@@ -5124,7 +5124,7 @@ static void Lspring(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Yspring_w;
 	  if (cave[x][y+1] == Xbumper)
-	    cave[x][y+1] = XbumperB;
+	    cave[x][y+1] = Ybumper;
 
 #ifdef SPRING_ROLL
 	  next[x-1][y] = Xspring_w;
@@ -5140,7 +5140,7 @@ static void Lspring(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Yspring_e;
 	  if (cave[x][y+1] == Xbumper)
-	    cave[x][y+1] = XbumperB;
+	    cave[x][y+1] = Ybumper;
 
 #ifdef SPRING_ROLL
 	  next[x+1][y] = Xspring_e;
@@ -5237,7 +5237,7 @@ static void Lspring_e(int x, int y)
       return;
 
     case Xbumper:
-      cave[x][y+1] = XbumperB;
+      cave[x][y+1] = Ybumper;
   }
 
   switch (cave[x+1][y])
@@ -5295,8 +5295,8 @@ static void Lspring_e(int x, int y)
       return;
 
     case Xbumper:
-    case XbumperB:
-      cave[x+1][y] = XbumperB;
+    case Ybumper:
+      cave[x+1][y] = Ybumper;
       next[x][y] = Xspring_w;
       play_element_sound(x, y, SOUND_spring, Xspring);
       return;
@@ -5348,7 +5348,7 @@ static void Lspring_w(int x, int y)
       return;
 
     case Xbumper:
-      cave[x][y+1] = XbumperB;
+      cave[x][y+1] = Ybumper;
   }
 
   switch (cave[x-1][y])
@@ -5406,8 +5406,8 @@ static void Lspring_w(int x, int y)
       return;
 
     case Xbumper:
-    case XbumperB:
-      cave[x-1][y] = XbumperB;
+    case Ybumper:
+      cave[x-1][y] = Ybumper;
       next[x][y] = Xspring_e;
       play_element_sound(x, y, SOUND_spring, Xspring);
       return;
@@ -6311,7 +6311,7 @@ static void Lwonderwall(int x, int y)
 {
   if (lev.wonderwall_time && lev.wonderwall_state)
   {
-    cave[x][y] = XwonderwallB;
+    cave[x][y] = Ywonderwall;
     play_element_sound(x, y, SOUND_wonder, Xwonderwall);
   }
 }
@@ -6319,31 +6319,31 @@ static void Lwonderwall(int x, int y)
 static void Lwheel(int x, int y)
 {
   if (lev.wheel_cnt && x == lev.wheel_x && y == lev.wheel_y)
-    cave[x][y] = XwheelB;
+    cave[x][y] = Ywheel;
 }
 
 static void Lswitch(int x, int y)
 {
   if (lev.ball_state)
-    cave[x][y] = XswitchB;
+    cave[x][y] = Yswitch;
 }
 
 static void Lfake_blank(int x, int y)
 {
   if (lev.lenses_cnt)
-    cave[x][y] = Xfake_blankB;
+    cave[x][y] = Yfake_blank;
 }
 
 static void Lfake_grass(int x, int y)
 {
   if (lev.magnify_cnt)
-    cave[x][y] = Xfake_grassB;
+    cave[x][y] = Yfake_grass;
 }
 
 static void Lfake_amoeba(int x, int y)
 {
   if (lev.lenses_cnt)
-    cave[x][y] = Xfake_amoebaB;
+    cave[x][y] = Yfake_amoeba;
 }
 
 static void Lsand_stone(int x, int y)

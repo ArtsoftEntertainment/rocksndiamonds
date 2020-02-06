@@ -6862,7 +6862,7 @@ em_object_mapping_list[] =
     EL_MAGIC_WALL,			-1, -1
   },
   {
-    XwonderwallB,			FALSE,	FALSE,
+    Ywonderwall,			FALSE,	FALSE,
     EL_MAGIC_WALL,			ACTION_ACTIVE, -1
   },
 
@@ -6871,7 +6871,7 @@ em_object_mapping_list[] =
     EL_ROBOT_WHEEL,			-1, -1
   },
   {
-    XwheelB,				FALSE,	FALSE,
+    Ywheel,				FALSE,	FALSE,
     EL_ROBOT_WHEEL,			ACTION_ACTIVE, -1
   },
 
@@ -6880,7 +6880,7 @@ em_object_mapping_list[] =
     EL_EMC_MAGIC_BALL_SWITCH,		-1, -1
   },
   {
-    XswitchB,				FALSE,	FALSE,
+    Yswitch,				FALSE,	FALSE,
     EL_EMC_MAGIC_BALL_SWITCH,		ACTION_ACTIVE, -1
   },
 
@@ -6889,7 +6889,7 @@ em_object_mapping_list[] =
     EL_EMC_SPRING_BUMPER,		-1, -1
   },
   {
-    XbumperB,				FALSE,	FALSE,
+    Ybumper,				FALSE,	FALSE,
     EL_EMC_SPRING_BUMPER,		ACTION_ACTIVE, -1
   },
 
@@ -6919,7 +6919,7 @@ em_object_mapping_list[] =
     EL_INVISIBLE_WALL,			-1, -1
   },
   {
-    Xfake_blankB,			FALSE,	FALSE,
+    Yfake_blank,			FALSE,	FALSE,
     EL_INVISIBLE_WALL,			ACTION_ACTIVE, -1
   },
 
@@ -6928,7 +6928,7 @@ em_object_mapping_list[] =
     EL_EMC_FAKE_GRASS,			-1, -1
   },
   {
-    Xfake_grassB,			FALSE,	FALSE,
+    Yfake_grass,			FALSE,	FALSE,
     EL_EMC_FAKE_GRASS,			ACTION_ACTIVE, -1
   },
 
@@ -6937,7 +6937,7 @@ em_object_mapping_list[] =
     EL_EMC_DRIPPER,			-1, -1
   },
   {
-    Xfake_amoebaB,			FALSE,	FALSE,
+    Yfake_amoeba,			FALSE,	FALSE,
     EL_EMC_DRIPPER,			ACTION_ACTIVE, -1
   },
 
