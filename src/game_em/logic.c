@@ -3713,6 +3713,7 @@ static void Lemerald(int x, int y)
     case Xwonderwall:
     case Xswitch:
     case Xbumper:
+    case Ybumper:
     case Xacid_ne:
     case Xacid_nw:
     case Xslide_ns:
@@ -3737,6 +3738,8 @@ static void Lemerald(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Yemerald_e;
 	  next[x+1][y] = Xemerald_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -3746,6 +3749,8 @@ static void Lemerald(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Yemerald_w;
 	  next[x-1][y] = Xemerald_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -3757,6 +3762,8 @@ static void Lemerald(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Yemerald_w;
 	  next[x-1][y] = Xemerald_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -3766,6 +3773,8 @@ static void Lemerald(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Yemerald_e;
 	  next[x+1][y] = Xemerald_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -3963,6 +3972,7 @@ static void Ldiamond(int x, int y)
     case Xwonderwall:
     case Xswitch:
     case Xbumper:
+    case Ybumper:
     case Xacid_ne:
     case Xacid_nw:
     case Xslide_ns:
@@ -3987,6 +3997,8 @@ static void Ldiamond(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Ydiamond_e;
 	  next[x+1][y] = Xdiamond_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -3996,6 +4008,8 @@ static void Ldiamond(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Ydiamond_w;
 	  next[x-1][y] = Xdiamond_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -4007,6 +4021,8 @@ static void Ldiamond(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Ydiamond_w;
 	  next[x-1][y] = Xdiamond_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -4016,6 +4032,8 @@ static void Ldiamond(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Ydiamond_e;
 	  next[x+1][y] = Xdiamond_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -4221,6 +4239,7 @@ static void Lstone(int x, int y)
     case Xball_2:
     case Xswitch:
     case Xbumper:
+    case Ybumper:
     case Xacid_ne:
     case Xacid_nw:
     case Xlenses:
@@ -4239,6 +4258,8 @@ static void Lstone(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Ystone_e;
 	  next[x+1][y] = Xstone_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -4248,6 +4269,8 @@ static void Lstone(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Ystone_w;
 	  next[x-1][y] = Xstone_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -4259,6 +4282,8 @@ static void Lstone(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Ystone_w;
 	  next[x-1][y] = Xstone_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -4268,6 +4293,8 @@ static void Lstone(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Ystone_e;
 	  next[x+1][y] = Xstone_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -4640,6 +4667,7 @@ static void Lbomb(int x, int y)
     case Xball_2:
     case Xswitch:
     case Xbumper:
+    case Ybumper:
     case Xacid_ne:
     case Xacid_nw:
     case Xslide_ns:
@@ -4656,6 +4684,8 @@ static void Lbomb(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Ybomb_e;
 	  next[x+1][y] = Xbomb_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -4665,6 +4695,8 @@ static void Lbomb(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Ybomb_w;
 	  next[x-1][y] = Xbomb_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -4676,6 +4708,8 @@ static void Lbomb(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Ybomb_w;
 	  next[x-1][y] = Xbomb_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -4685,6 +4719,8 @@ static void Lbomb(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Ybomb_e;
 	  next[x+1][y] = Xbomb_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -4855,6 +4891,7 @@ static void Lnut(int x, int y)
     case Xball_2:
     case Xswitch:
     case Xbumper:
+    case Ybumper:
     case Xacid_ne:
     case Xacid_nw:
     case Xslide_ns:
@@ -4871,6 +4908,8 @@ static void Lnut(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Ynut_e;
 	  next[x+1][y] = Xnut_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -4880,6 +4919,8 @@ static void Lnut(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Ynut_w;
 	  next[x-1][y] = Xnut_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -4891,6 +4932,8 @@ static void Lnut(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Ynut_w;
 	  next[x-1][y] = Xnut_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -4900,6 +4943,8 @@ static void Lnut(int x, int y)
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Ynut_e;
 	  next[x+1][y] = Xnut_pause;
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -5074,6 +5119,7 @@ static void Lspring(int x, int y)
     case Xball_2:
     case Xswitch:
     case Xbumper:
+    case Ybumper:
     case Xacid_ne:
     case Xacid_nw:
     case Xslide_ns:
@@ -5089,14 +5135,13 @@ static void Lspring(int x, int y)
 	  cave[x][y] = Yspring_eB;
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Yspring_e;
-	  if (cave[x][y+1] == Xbumper)
-	    cave[x][y+1] = Ybumper;
-
 #ifdef SPRING_ROLL
 	  next[x+1][y] = Xspring_e;
 #else
 	  next[x+1][y] = Xspring_pause;
 #endif
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -5105,14 +5150,13 @@ static void Lspring(int x, int y)
 	  cave[x][y] = Yspring_wB;
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Yspring_w;
-	  if (cave[x][y+1] == Xbumper)
-	    cave[x][y+1] = Ybumper;
-
 #ifdef SPRING_ROLL
 	  next[x-1][y] = Xspring_w;
 #else
 	  next[x-1][y] = Xspring_pause;
 #endif
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
@@ -5123,14 +5167,13 @@ static void Lspring(int x, int y)
 	  cave[x][y] = Yspring_wB;
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Yspring_w;
-	  if (cave[x][y+1] == Xbumper)
-	    cave[x][y+1] = Ybumper;
-
 #ifdef SPRING_ROLL
 	  next[x-1][y] = Xspring_w;
 #else
 	  next[x-1][y] = Xspring_pause;
 #endif
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
 
@@ -5139,14 +5182,13 @@ static void Lspring(int x, int y)
 	  cave[x][y] = Yspring_eB;
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Yspring_e;
-	  if (cave[x][y+1] == Xbumper)
-	    cave[x][y+1] = Ybumper;
-
 #ifdef SPRING_ROLL
 	  next[x+1][y] = Xspring_e;
 #else
 	  next[x+1][y] = Xspring_pause;
 #endif
+	  if (cave[x][y+1] == Xbumper)
+	    cave[x][y+1] = Ybumper;
 	  return;
 	}
       }
