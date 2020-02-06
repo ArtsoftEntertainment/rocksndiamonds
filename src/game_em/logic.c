@@ -251,6 +251,7 @@ static boolean player_killed(struct PLAYER *ply)
 
   switch (cave[x][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -262,7 +263,6 @@ static boolean player_killed(struct PLAYER *ply)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-    case Zplayer:
     case Xdynamite_1:
     case Xdynamite_2:
     case Xdynamite_3:
@@ -2259,6 +2259,7 @@ static void Leater_n(int x, int y)
 
   switch (cave[x][y-1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2272,7 +2273,6 @@ static void Leater_n(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Yeater_nB;
       next[x][y] = Xblank;
       cave[x][y-1] = Yeater_n;
@@ -2339,6 +2339,7 @@ static void Leater_e(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2352,7 +2353,6 @@ static void Leater_e(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Yeater_eB;
       next[x][y] = Xblank;
       cave[x+1][y] = Yeater_e;
@@ -2419,6 +2419,7 @@ static void Leater_s(int x, int y)
 
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2432,7 +2433,6 @@ static void Leater_s(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Yeater_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yeater_s;
@@ -2499,6 +2499,7 @@ static void Leater_w(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2512,7 +2513,6 @@ static void Leater_w(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Yeater_wB;
       next[x][y] = Xblank;
       cave[x-1][y] = Yeater_w;
@@ -2563,6 +2563,7 @@ static void Lalien(int x, int y)
     {
       switch (cave[x][y-1])
       {
+	case Zplayer:
 	case Xblank:
 	case Xsplash_e:
 	case Xsplash_w:
@@ -2576,7 +2577,6 @@ static void Lalien(int x, int y)
 	case Xfake_acid_8:
 	case Xplant:
 	case Yplant:
-	case Zplayer:
 	  cave[x][y] = Yalien_nB;
 	  next[x][y] = Xblank;
 	  cave[x][y-1] = Yalien_n;
@@ -2606,6 +2606,7 @@ static void Lalien(int x, int y)
     {
       switch (cave[x][y+1])
       {
+	case Zplayer:
 	case Xblank:
 	case Xsplash_e:
 	case Xsplash_w:
@@ -2619,7 +2620,6 @@ static void Lalien(int x, int y)
 	case Xfake_acid_8:
 	case Xplant:
 	case Yplant:
-	case Zplayer:
 	  cave[x][y] = Yalien_sB;
 	  next[x][y] = Xblank;
 	  cave[x][y+1] = Yalien_s;
@@ -2652,6 +2652,7 @@ static void Lalien(int x, int y)
     {
       switch (cave[x+1][y])
       {
+	case Zplayer:
 	case Xblank:
 	case Xsplash_e:
 	case Xsplash_w:
@@ -2665,7 +2666,6 @@ static void Lalien(int x, int y)
 	case Xfake_acid_8:
 	case Xplant:
 	case Yplant:
-	case Zplayer:
 	  cave[x][y] = Yalien_eB;
 	  next[x][y] = Xblank;
 	  cave[x+1][y] = Yalien_e;
@@ -2695,6 +2695,7 @@ static void Lalien(int x, int y)
     {
       switch (cave[x-1][y])
       {
+	case Zplayer:
 	case Xblank:
 	case Xsplash_e:
 	case Xsplash_w:
@@ -2708,7 +2709,6 @@ static void Lalien(int x, int y)
 	case Xfake_acid_8:
 	case Xplant:
 	case Yplant:
-	case Zplayer:
 	  cave[x][y] = Yalien_wB;
 	  next[x][y] = Xblank;
 	  cave[x-1][y] = Yalien_w;
@@ -2746,6 +2746,7 @@ static void Lbug_n(int x, int y)
 {
   switch (cave[x][y-1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2759,7 +2760,6 @@ static void Lbug_n(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ybug_nB;
       next[x][y] = Xblank;
       cave[x][y-1] = Ybug_n;
@@ -2806,6 +2806,7 @@ static void Lbug_1_n(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2827,7 +2828,6 @@ static void Lbug_1_n(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Zplayer:
       cave[x][y] = Ybug_n_e;
       next[x][y] = Xbug_2_e;
       play_element_sound(x, y, SOUND_bug, Xbug_1_n);
@@ -2858,6 +2858,7 @@ static void Lbug_e(int x, int y)
 {
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2871,7 +2872,6 @@ static void Lbug_e(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ybug_eB;
       next[x][y] = Xblank;
       cave[x+1][y] = Ybug_e;
@@ -2918,6 +2918,7 @@ static void Lbug_1_e(int x, int y)
 
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2939,7 +2940,6 @@ static void Lbug_1_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Zplayer:
       cave[x][y] = Ybug_e_s;
       next[x][y] = Xbug_2_s;
       play_element_sound(x, y, SOUND_bug, Xbug_1_e);
@@ -2970,6 +2970,7 @@ static void Lbug_s(int x, int y)
 {
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -2983,7 +2984,6 @@ static void Lbug_s(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ybug_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ybug_s;
@@ -3030,6 +3030,7 @@ static void Lbug_1_s(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3051,7 +3052,6 @@ static void Lbug_1_s(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Zplayer:
       cave[x][y] = Ybug_s_w;
       next[x][y] = Xbug_2_w;
       play_element_sound(x, y, SOUND_bug, Xbug_1_s);
@@ -3082,6 +3082,7 @@ static void Lbug_w(int x, int y)
 {
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3095,7 +3096,6 @@ static void Lbug_w(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ybug_wB;
       next[x][y] = Xblank;
       cave[x-1][y] = Ybug_w;
@@ -3142,6 +3142,7 @@ static void Lbug_1_w(int x, int y)
 
   switch (cave[x][y-1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3163,7 +3164,6 @@ static void Lbug_1_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Zplayer:
       cave[x][y] = Ybug_w_n;
       next[x][y] = Xbug_2_n;
       play_element_sound(x, y, SOUND_bug, Xbug_1_w);
@@ -3194,6 +3194,7 @@ static void Ltank_n(int x, int y)
 {
   switch (cave[x][y-1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3207,7 +3208,6 @@ static void Ltank_n(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ytank_nB;
       next[x][y] = Xblank;
       cave[x][y-1] = Ytank_n;
@@ -3254,6 +3254,7 @@ static void Ltank_1_n(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3275,7 +3276,6 @@ static void Ltank_1_n(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Zplayer:
       cave[x][y] = Ytank_n_w;
       next[x][y] = Xtank_2_w;
       play_element_sound(x, y, SOUND_tank, Xtank_1_n);
@@ -3306,6 +3306,7 @@ static void Ltank_e(int x, int y)
 {
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3319,7 +3320,6 @@ static void Ltank_e(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ytank_eB;
       next[x][y] = Xblank;
       cave[x+1][y] = Ytank_e;
@@ -3366,6 +3366,7 @@ static void Ltank_1_e(int x, int y)
 
   switch (cave[x][y-1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3387,7 +3388,6 @@ static void Ltank_1_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Zplayer:
       cave[x][y] = Ytank_e_n;
       next[x][y] = Xtank_2_n;
       play_element_sound(x, y, SOUND_tank, Xtank_1_e);
@@ -3418,6 +3418,7 @@ static void Ltank_s(int x, int y)
 {
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3431,7 +3432,6 @@ static void Ltank_s(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ytank_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ytank_s;
@@ -3478,6 +3478,7 @@ static void Ltank_1_s(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3499,7 +3500,6 @@ static void Ltank_1_s(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Zplayer:
       cave[x][y] = Ytank_s_e;
       next[x][y] = Xtank_2_e;
       play_element_sound(x, y, SOUND_tank, Xtank_1_s);
@@ -3530,6 +3530,7 @@ static void Ltank_w(int x, int y)
 {
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3543,7 +3544,6 @@ static void Ltank_w(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ytank_wB;
       next[x][y] = Xblank;
       cave[x-1][y] = Ytank_w;
@@ -3590,6 +3590,7 @@ static void Ltank_1_w(int x, int y)
 
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3611,7 +3612,6 @@ static void Ltank_1_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
-    case Zplayer:
       cave[x][y] = Ytank_w_s;
       next[x][y] = Xtank_2_s;
       play_element_sound(x, y, SOUND_tank, Xtank_1_w);
@@ -3830,6 +3830,7 @@ static void Lemerald_fall(int x, int y)
 {
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -3841,7 +3842,6 @@ static void Lemerald_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-    case Zplayer:
       cave[x][y] = Yemerald_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yemerald_s;
@@ -4080,6 +4080,7 @@ static void Ldiamond_fall(int x, int y)
 {
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -4091,7 +4092,6 @@ static void Ldiamond_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-    case Zplayer:
       cave[x][y] = Ydiamond_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ydiamond_s;
@@ -4323,6 +4323,7 @@ static void Lstone_fall(int x, int y)
 {
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -4334,7 +4335,6 @@ static void Lstone_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-    case Zplayer:
       cave[x][y] = Ystone_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ystone_s;
@@ -4408,6 +4408,7 @@ static void Lstone_fall(int x, int y)
     case Xdiamond_pause:
       switch (cave[x][y+2])
       {
+	case Zplayer:
 	case Xblank:
 	case Xsplash_e:
 	case Xsplash_w:
@@ -4419,7 +4420,6 @@ static void Lstone_fall(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
-	case Zplayer:
 	case Xplant:
 	case Yplant:
 	case Xacid_1:
@@ -4955,6 +4955,7 @@ static void Lnut_fall(int x, int y)
 {
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -4966,7 +4967,6 @@ static void Lnut_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-    case Zplayer:
       cave[x][y] = Ynut_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ynut_s;
@@ -5424,6 +5424,7 @@ static void Lspring_fall(int x, int y)
 {
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -5435,7 +5436,6 @@ static void Lspring_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
-    case Zplayer:
       cave[x][y] = Yspring_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yspring_s;
@@ -5523,6 +5523,7 @@ static void Lpush_emerald_e(int x, int y)
 {
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5530,7 +5531,6 @@ static void Lpush_emerald_e(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xemerald;
       next[x][y] = Xemerald;
       return;
@@ -5548,6 +5548,7 @@ static void Lpush_emerald_w(int x, int y)
 {
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5555,7 +5556,6 @@ static void Lpush_emerald_w(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xemerald;
       next[x][y] = Xemerald;
       return;
@@ -5573,6 +5573,7 @@ static void Lpush_diamond_e(int x, int y)
 {
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5580,7 +5581,6 @@ static void Lpush_diamond_e(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xdiamond;
       next[x][y] = Xdiamond;
       return;
@@ -5598,6 +5598,7 @@ static void Lpush_diamond_w(int x, int y)
 {
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5605,7 +5606,6 @@ static void Lpush_diamond_w(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xdiamond;
       next[x][y] = Xdiamond;
       return;
@@ -5623,6 +5623,7 @@ static void Lpush_stone_e(int x, int y)
 {
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5630,7 +5631,6 @@ static void Lpush_stone_e(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xstone;
       next[x][y] = Xstone;
       return;
@@ -5648,6 +5648,7 @@ static void Lpush_stone_w(int x, int y)
 {
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5655,7 +5656,6 @@ static void Lpush_stone_w(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xstone;
       next[x][y] = Xstone;
       return;
@@ -5673,6 +5673,7 @@ static void Lpush_bomb_e(int x, int y)
 {
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5680,7 +5681,6 @@ static void Lpush_bomb_e(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xbomb;
       next[x][y] = Xbomb;
       return;
@@ -5698,6 +5698,7 @@ static void Lpush_bomb_w(int x, int y)
 {
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5705,7 +5706,6 @@ static void Lpush_bomb_w(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xbomb;
       next[x][y] = Xbomb;
       return;
@@ -5723,6 +5723,7 @@ static void Lpush_nut_e(int x, int y)
 {
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5730,7 +5731,6 @@ static void Lpush_nut_e(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xnut;
       next[x][y] = Xnut;
       return;
@@ -5748,6 +5748,7 @@ static void Lpush_nut_w(int x, int y)
 {
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5755,7 +5756,6 @@ static void Lpush_nut_w(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xnut;
       next[x][y] = Xnut;
       return;
@@ -5773,6 +5773,7 @@ static void Lpush_spring_e(int x, int y)
 {
   switch (cave[x+1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5780,7 +5781,6 @@ static void Lpush_spring_e(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xspring;
       next[x][y] = Xspring;
       return;
@@ -5798,6 +5798,7 @@ static void Lpush_spring_w(int x, int y)
 {
   switch (cave[x-1][y])
   {
+    case Zplayer:
     case Zborder:
     case Znormal:
     case Zdynamite:
@@ -5805,7 +5806,6 @@ static void Lpush_spring_w(int x, int y)
     case Xboom_bomb:
     case Xboom_android:
     case Xboom_1:
-    case Zplayer:
       cave[x][y] = Xspring;
       next[x][y] = Xspring;
       return;
@@ -6238,6 +6238,7 @@ static void Ldrip_fall(int x, int y)
 
   switch (cave[x][y+1])
   {
+    case Zplayer:
     case Xblank:
     case Xsplash_e:
     case Xsplash_w:
@@ -6251,7 +6252,6 @@ static void Ldrip_fall(int x, int y)
     case Xfake_acid_8:
     case Xplant:
     case Yplant:
-    case Zplayer:
       cave[x][y] = Ydrip_1_sB;
       next[x][y] = Xdrip_stretchB;
       cave[x][y+1] = Ydrip_1_s;
