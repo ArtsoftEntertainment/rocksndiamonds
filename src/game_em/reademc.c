@@ -225,176 +225,19 @@ void convert_em_level(unsigned char *src, int file_version)
 
   temp = src[0x878] << 8 | src[0x879];
 
-  if (temp & 1)
-  {
-    lev.android_array[Xemerald]		= Xemerald;
-    lev.android_array[Xemerald_pause]	= Xemerald;
-    lev.android_array[Xemerald_fall]	= Xemerald;
-    lev.android_array[Yemerald_sB]	= Xemerald;
-    lev.android_array[Yemerald_eB]	= Xemerald;
-    lev.android_array[Yemerald_wB]	= Xemerald;
-  }
-
-  if (temp & 2)
-  {
-    lev.android_array[Xdiamond]		= Xdiamond;
-    lev.android_array[Xdiamond_pause]	= Xdiamond;
-    lev.android_array[Xdiamond_fall]	= Xdiamond;
-    lev.android_array[Ydiamond_sB]	= Xdiamond;
-    lev.android_array[Ydiamond_eB]	= Xdiamond;
-    lev.android_array[Ydiamond_wB]	= Xdiamond;
-  }
-
-  if (temp & 4)
-  {
-    lev.android_array[Xstone]		= Xstone;
-    lev.android_array[Xstone_pause]	= Xstone;
-    lev.android_array[Xstone_fall]	= Xstone;
-    lev.android_array[Ystone_sB]	= Xstone;
-    lev.android_array[Ystone_eB]	= Xstone;
-    lev.android_array[Ystone_wB]	= Xstone;
-  }
-
-  if (temp & 8)
-  {
-    lev.android_array[Xbomb]		= Xbomb;
-    lev.android_array[Xbomb_pause]	= Xbomb;
-    lev.android_array[Xbomb_fall]	= Xbomb;
-    lev.android_array[Ybomb_sB]		= Xbomb;
-    lev.android_array[Ybomb_eB]		= Xbomb;
-    lev.android_array[Ybomb_wB]		= Xbomb;
-  }
-
-  if (temp & 16)
-  {
-    lev.android_array[Xnut]		= Xnut;
-    lev.android_array[Xnut_pause]	= Xnut;
-    lev.android_array[Xnut_fall]	= Xnut;
-    lev.android_array[Ynut_sB]		= Xnut;
-    lev.android_array[Ynut_eB]		= Xnut;
-    lev.android_array[Ynut_wB]		= Xnut;
-  }
-
-  if (temp & 32)
-  {
-    lev.android_array[Xtank_1_n]	= Xtank_1_n;
-    lev.android_array[Xtank_2_n]	= Xtank_1_n;
-    lev.android_array[Ytank_nB]		= Xtank_1_n;
-    lev.android_array[Ytank_n_e]	= Xtank_1_n;
-    lev.android_array[Ytank_n_w]	= Xtank_1_n;
-
-    lev.android_array[Xtank_1_e]	= Xtank_1_e;
-    lev.android_array[Xtank_2_e]	= Xtank_1_e;
-    lev.android_array[Ytank_eB]		= Xtank_1_e;
-    lev.android_array[Ytank_e_s]	= Xtank_1_e;
-    lev.android_array[Ytank_e_n]	= Xtank_1_e;
-
-    lev.android_array[Xtank_1_s]	= Xtank_1_s;
-    lev.android_array[Xtank_2_s]	= Xtank_1_s;
-    lev.android_array[Ytank_sB]		= Xtank_1_s;
-    lev.android_array[Ytank_s_w]	= Xtank_1_s;
-    lev.android_array[Ytank_s_e]	= Xtank_1_s;
-
-    lev.android_array[Xtank_1_w]	= Xtank_1_w;
-    lev.android_array[Xtank_2_w]	= Xtank_1_w;
-    lev.android_array[Ytank_wB]		= Xtank_1_w;
-    lev.android_array[Ytank_w_n]	= Xtank_1_w;
-    lev.android_array[Ytank_w_s]	= Xtank_1_w;
-  }
-
-  if (temp & 64)
-  {
-    lev.android_array[Xeater_n]		= Xeater_n;
-    lev.android_array[Yeater_nB]	= Xeater_n;
-
-    lev.android_array[Xeater_e]		= Xeater_e;
-    lev.android_array[Yeater_eB]	= Xeater_e;
-
-    lev.android_array[Xeater_s]		= Xeater_s;
-    lev.android_array[Yeater_sB]	= Xeater_s;
-
-    lev.android_array[Xeater_w]		= Xeater_w;
-    lev.android_array[Yeater_wB]	= Xeater_w;
-  }
-
-  if (temp & 128)
-  {
-    lev.android_array[Xbug_1_n]		= Xbug_2_n;
-    lev.android_array[Xbug_2_n]		= Xbug_2_n;
-    lev.android_array[Ybug_nB]		= Xbug_2_n;
-    lev.android_array[Ybug_n_e]		= Xbug_2_n;
-    lev.android_array[Ybug_n_w]		= Xbug_2_n;
-
-    lev.android_array[Xbug_1_e]		= Xbug_2_e;
-    lev.android_array[Xbug_2_e]		= Xbug_2_e;
-    lev.android_array[Ybug_eB]		= Xbug_2_e;
-    lev.android_array[Ybug_e_s]		= Xbug_2_e;
-    lev.android_array[Ybug_e_n]		= Xbug_2_e;
-
-    lev.android_array[Xbug_1_s]		= Xbug_2_s;
-    lev.android_array[Xbug_2_s]		= Xbug_2_s;
-    lev.android_array[Ybug_sB]		= Xbug_2_s;
-    lev.android_array[Ybug_s_w]		= Xbug_2_s;
-    lev.android_array[Ybug_s_e]		= Xbug_2_s;
-
-    lev.android_array[Xbug_1_w]		= Xbug_2_w;
-    lev.android_array[Xbug_2_w]		= Xbug_2_w;
-    lev.android_array[Ybug_wB]		= Xbug_2_w;
-    lev.android_array[Ybug_w_n]		= Xbug_2_w;
-    lev.android_array[Ybug_w_s]		= Xbug_2_w;
-  }
-
-  if (temp & 256)
-  {
-    lev.android_array[Xalien]		= Xalien;
-    lev.android_array[Xalien_pause]	= Xalien;
-    lev.android_array[Yalien_nB]	= Xalien;
-    lev.android_array[Yalien_eB]	= Xalien;
-    lev.android_array[Yalien_sB]	= Xalien;
-    lev.android_array[Yalien_wB]	= Xalien;
-  }
-
-  if (temp & 512)
-  {
-    lev.android_array[Xspring]		= Xspring;
-    lev.android_array[Xspring_pause]	= Xspring;
-    lev.android_array[Xspring_e]	= Xspring;
-    lev.android_array[Yspring_eB]	= Xspring;
-    lev.android_array[Yspring_alien_eB]	= Xspring;
-    lev.android_array[Xspring_w]	= Xspring;
-    lev.android_array[Yspring_wB]	= Xspring;
-    lev.android_array[Yspring_alien_wB]	= Xspring;
-    lev.android_array[Xspring_fall]	= Xspring;
-    lev.android_array[Yspring_sB]	= Xspring;
-  }
-
-  if (temp & 1024)
-  {
-    lev.android_array[Yballoon_nB]	= Xballoon;
-    lev.android_array[Yballoon_eB]	= Xballoon;
-    lev.android_array[Yballoon_sB]	= Xballoon;
-    lev.android_array[Yballoon_wB]	= Xballoon;
-    lev.android_array[Xballoon]		= Xballoon;
-  }
-
-  if (temp & 2048)
-  {
-    lev.android_array[Xfake_amoeba]	= Xdrip;
-    lev.android_array[Yfake_amoeba]	= Xdrip;
-    lev.android_array[Xamoeba_1]	= Xdrip;
-    lev.android_array[Xamoeba_2]	= Xdrip;
-    lev.android_array[Xamoeba_3]	= Xdrip;
-    lev.android_array[Xamoeba_4]	= Xdrip;
-    lev.android_array[Xamoeba_5]	= Xdrip;
-    lev.android_array[Xamoeba_6]	= Xdrip;
-    lev.android_array[Xamoeba_7]	= Xdrip;
-    lev.android_array[Xamoeba_8]	= Xdrip;
-  }
-
-  if (temp & 4096)
-  {
-    lev.android_array[Xdynamite]	= Xdynamite;
-  }
+  lev.android_emerald	= (temp & 1)	!= 0;
+  lev.android_diamond	= (temp & 2)	!= 0;
+  lev.android_stone	= (temp & 4)	!= 0;
+  lev.android_bomb	= (temp & 8)	!= 0;
+  lev.android_nut	= (temp & 16)	!= 0;
+  lev.android_tank	= (temp & 32)	!= 0;
+  lev.android_eater	= (temp & 64)	!= 0;
+  lev.android_bug	= (temp & 128)	!= 0;
+  lev.android_alien	= (temp & 256)	!= 0;
+  lev.android_spring	= (temp & 512)	!= 0;
+  lev.android_balloon	= (temp & 1024)	!= 0;
+  lev.android_amoeba	= (temp & 2048)	!= 0;
+  lev.android_dynamite	= (temp & 4096)	!= 0;
 
   for (temp = 1; temp < 2047; temp++)
   {

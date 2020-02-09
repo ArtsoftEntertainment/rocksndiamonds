@@ -702,6 +702,20 @@ struct LEVEL
 
   int exit_x, exit_y;		/* kludge for playing player exit sound */
 
+  boolean android_eater;	/* android clone data */
+  boolean android_alien;
+  boolean android_bug;
+  boolean android_tank;
+  boolean android_emerald;
+  boolean android_diamond;
+  boolean android_stone;
+  boolean android_bomb;
+  boolean android_nut;
+  boolean android_spring;
+  boolean android_dynamite;
+  boolean android_balloon;
+  boolean android_amoeba;
+
   short cavebuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
   short nextbuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
   short drawbuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
