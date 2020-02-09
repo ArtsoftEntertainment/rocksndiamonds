@@ -141,89 +141,91 @@ void convert_em_level(unsigned char *src, int file_version)
 {
   static int eater_offset[8] =
   {
-    0x800, 0x809, 0x812, 0x81B, 0x840, 0x849, 0x852, 0x85B
+    2048, 2057, 2066, 2075,
+    2112, 2121, 2130, 2139
   };
   int i, x, y, temp;
 
-  lev.time_seconds = src[0x83E] << 8 | src[0x83F];
+  lev.time_seconds = src[2110] << 8 | src[2111];
   if (lev.time_seconds > 9999)
     lev.time_seconds = 9999;
 
-  lev.required_initial = src[0x82F];
+  lev.required_initial = src[2095];
 
   for (i = 0; i < 2; i++)
   {
-    temp = src[0x830 + i * 2] << 8 | src[0x831 + i * 2];
+    temp = src[2096 + i * 2] << 8 | src[2097 + i * 2];
     ply[i].x_initial = (temp & 63);
     ply[i].y_initial = (temp >> 6 & 31);
   }
 
-  temp = (src[0x834] << 8 | src[0x835]) * 28;
+  temp = (src[2100] << 8 | src[2101]) * 28;
   if (temp > 9999)
     temp = 9999;
   lev.amoeba_time = temp;
 
-  lev.android_move_time = src[0x874] << 8 | src[0x875];
-  lev.android_clone_time = src[0x876] << 8 | src[0x877];
+  lev.android_move_time  = src[2164] << 8 | src[2165];
+  lev.android_clone_time = src[2166] << 8 | src[2167];
 
-  lev.ball_random = src[0x872] & 1 ? 1 : 0;
-  lev.ball_state_initial = src[0x872] & 128 ? 1 : 0;
-  lev.ball_time = src[0x870] << 8 | src[0x871];
+  lev.ball_random	 = src[2162] & 1 ? 1 : 0;
+  lev.ball_state_initial = src[2162] & 128 ? 1 : 0;
+  lev.ball_time		 = src[2160] << 8 | src[2161];
 
-  lev.emerald_score = src[0x824];
-  lev.diamond_score = src[0x825];
-  lev.alien_score = src[0x826];
-  lev.tank_score = src[0x827];
-  lev.bug_score = src[0x828];
-  lev.eater_score = src[0x829];
-  lev.nut_score = src[0x82A];
-  lev.dynamite_score = src[0x82B];
-  lev.key_score = src[0x82C];
-  lev.exit_score = src[0x82D] * 8 / 5;
-  lev.lenses_score = src[0x867];
-  lev.magnify_score = src[0x868];
-  lev.slurp_score = src[0x869];
+  lev.emerald_score	= src[2084];
+  lev.diamond_score	= src[2085];
+  lev.alien_score	= src[2086];
+  lev.tank_score	= src[2087];
+  lev.bug_score		= src[2088];
+  lev.eater_score	= src[2089];
+  lev.nut_score		= src[2090];
+  lev.dynamite_score	= src[2091];
+  lev.key_score		= src[2092];
+  lev.exit_score	= src[2093] * 8 / 5;
 
-  lev.lenses_time = src[0x86A] << 8 | src[0x86B];
-  lev.magnify_time = src[0x86C] << 8 | src[0x86D];
-  lev.wheel_time = src[0x838] << 8 | src[0x839];
+  lev.lenses_score	= src[2151];
+  lev.magnify_score	= src[2152];
+  lev.slurp_score	= src[2153];
 
-  lev.wind_cnt_initial = src[0x865] & 15 ? lev.wind_time : 0;
-  temp = src[0x865];
+  lev.lenses_time	= src[2154] << 8 | src[2155];
+  lev.magnify_time	= src[2156] << 8 | src[2157];
+  lev.wheel_time	= src[2104] << 8 | src[2105];
+
+  lev.wind_cnt_initial = src[2149] & 15 ? lev.wind_time : 0;
+  temp = src[2149];
   lev.wind_direction_initial = (temp & 8 ? 0 :
 				temp & 1 ? 1 :
 				temp & 2 ? 2 :
 				temp & 4 ? 3 : 0);
 
-  lev.wonderwall_time_initial = src[0x836] << 8 | src[0x837];
+  lev.wonderwall_time_initial = src[2102] << 8 | src[2103];
 
   for (i = 0; i < 8; i++)
     for (x = 0; x < 9; x++)
       lev.eater_array[i][x] =
 	get_em_element(src[eater_offset[i] + x], file_version);
 
-  temp = get_em_element(src[0x86F], file_version);
+  temp = get_em_element(src[2159], file_version);
   for (y = 0; y < 8; y++)
   {
-    if (src[0x872] & 1)
+    if (src[2162] & 1)
     {
       for (x = 0; x < 8; x++)
 	lev.ball_array[y][x] = temp;
     }
     else
     {
-      lev.ball_array[y][1] = (src[0x873] & 1)  ? temp : Xblank; /* north */
-      lev.ball_array[y][6] = (src[0x873] & 2)  ? temp : Xblank; /* south */
-      lev.ball_array[y][3] = (src[0x873] & 4)  ? temp : Xblank; /* west */
-      lev.ball_array[y][4] = (src[0x873] & 8)  ? temp : Xblank; /* east */
-      lev.ball_array[y][7] = (src[0x873] & 16) ? temp : Xblank; /* southeast */
-      lev.ball_array[y][5] = (src[0x873] & 32) ? temp : Xblank; /* southwest */
-      lev.ball_array[y][2] = (src[0x873] & 64) ? temp : Xblank; /* northeast */
-      lev.ball_array[y][0] = (src[0x873] & 128)? temp : Xblank; /* northwest */
+      lev.ball_array[y][1] = (src[2163] & 1)  ? temp : Xblank; /* north */
+      lev.ball_array[y][6] = (src[2163] & 2)  ? temp : Xblank; /* south */
+      lev.ball_array[y][3] = (src[2163] & 4)  ? temp : Xblank; /* west */
+      lev.ball_array[y][4] = (src[2163] & 8)  ? temp : Xblank; /* east */
+      lev.ball_array[y][7] = (src[2163] & 16) ? temp : Xblank; /* southeast */
+      lev.ball_array[y][5] = (src[2163] & 32) ? temp : Xblank; /* southwest */
+      lev.ball_array[y][2] = (src[2163] & 64) ? temp : Xblank; /* northeast */
+      lev.ball_array[y][0] = (src[2163] & 128)? temp : Xblank; /* northwest */
     }
   }
 
-  temp = src[0x878] << 8 | src[0x879];
+  temp = src[2168] << 8 | src[2169];
 
   lev.android_emerald	= (temp & 1)	!= 0;
   lev.android_diamond	= (temp & 2)	!= 0;
@@ -243,22 +245,22 @@ void convert_em_level(unsigned char *src, int file_version)
   {
     switch (src[temp])
     {
-      case 0x24:				/* wonderwall */
+      case 36:					/* wonderwall */
 	lev.wonderwall_state_initial = 1;
 	lev.wonderwall_time_initial = 9999;
 	break;
 
-      case 0x28:				/* wheel */
+      case 40:					/* wheel */
 	lev.wheel_x_initial = temp & 63;
 	lev.wheel_y_initial = temp >> 6;
 	lev.wheel_cnt_initial = lev.wheel_time;
 	break;
 
-      case 0xA3:				/* fake blank */
+      case 163:					/* fake blank */
 	lev.lenses_cnt_initial = 9999;
 	break;
 
-      case 0xA4:				/* fake grass */
+      case 164:					/* fake grass */
 	lev.magnify_cnt_initial = 9999;
 	break;
     }
