@@ -149,30 +149,15 @@ void convert_em_level(unsigned char *src, int file_version)
   };
   int i, x, y, temp;
 
+  /* common to all emc caves */
+
   lev.time_seconds = GET_BE16(src[2110]);
   if (lev.time_seconds > 9999)
     lev.time_seconds = 9999;
 
   lev.required_initial = src[2095];
 
-  for (i = 0; i < 2; i++)
-  {
-    temp = GET_BE16(src[2096 + i * 2]);
-    ply[i].x_initial = (temp & 63);
-    ply[i].y_initial = (temp >> 6 & 31);
-  }
-
-  temp = GET_BE16(src[2100]) * 28;
-  if (temp > 9999)
-    temp = 9999;
-  lev.amoeba_time = temp;
-
-  lev.android_move_time  = GET_BE16(src[2164]);
-  lev.android_clone_time = GET_BE16(src[2166]);
-
-  lev.ball_random	 = src[2162] & 1   ? 1 : 0;
-  lev.ball_state_initial = src[2162] & 128 ? 1 : 0;
-  lev.ball_time		 = GET_BE16(src[2160]);
+  /* scores */
 
   lev.emerald_score	= src[2084];
   lev.diamond_score	= src[2085];
@@ -189,9 +174,22 @@ void convert_em_level(unsigned char *src, int file_version)
   lev.magnify_score	= src[2152];
   lev.slurp_score	= src[2153];
 
+  /* times */
+
+  lev.android_move_time  = GET_BE16(src[2164]);
+  lev.android_clone_time = GET_BE16(src[2166]);
+  lev.ball_time		 = GET_BE16(src[2160]);
+
   lev.lenses_time	= GET_BE16(src[2154]);
   lev.magnify_time	= GET_BE16(src[2156]);
   lev.wheel_time	= GET_BE16(src[2104]);
+
+  temp = GET_BE16(src[2100]) * 28;
+  if (temp > 9999)
+    temp = 9999;
+  lev.amoeba_time = temp;
+
+  lev.wonderwall_time_initial = GET_BE16(src[2102]);
 
   lev.wind_cnt_initial = src[2149] & 15 ? lev.wind_time : 0;
   temp = src[2149];
@@ -199,50 +197,10 @@ void convert_em_level(unsigned char *src, int file_version)
 				temp & 1 ? 1 :
 				temp & 2 ? 2 :
 				temp & 4 ? 3 : 0);
+  /* global flags */
 
-  lev.wonderwall_time_initial = GET_BE16(src[2102]);
-
-  for (i = 0; i < 8; i++)
-    for (x = 0; x < 9; x++)
-      lev.eater_array[i][x] =
-	get_em_element(src[eater_offset[i] + x], file_version);
-
-  temp = get_em_element(src[2159], file_version);
-  for (y = 0; y < 8; y++)
-  {
-    if (src[2162] & 1)
-    {
-      for (x = 0; x < 8; x++)
-	lev.ball_array[y][x] = temp;
-    }
-    else
-    {
-      lev.ball_array[y][1] = (src[2163] & 1)  ? temp : Xblank; /* north */
-      lev.ball_array[y][6] = (src[2163] & 2)  ? temp : Xblank; /* south */
-      lev.ball_array[y][3] = (src[2163] & 4)  ? temp : Xblank; /* west */
-      lev.ball_array[y][4] = (src[2163] & 8)  ? temp : Xblank; /* east */
-      lev.ball_array[y][7] = (src[2163] & 16) ? temp : Xblank; /* southeast */
-      lev.ball_array[y][5] = (src[2163] & 32) ? temp : Xblank; /* southwest */
-      lev.ball_array[y][2] = (src[2163] & 64) ? temp : Xblank; /* northeast */
-      lev.ball_array[y][0] = (src[2163] & 128)? temp : Xblank; /* northwest */
-    }
-  }
-
-  temp = GET_BE16(src[2168]);
-
-  lev.android_emerald	= (temp & 1)	!= 0;
-  lev.android_diamond	= (temp & 2)	!= 0;
-  lev.android_stone	= (temp & 4)	!= 0;
-  lev.android_bomb	= (temp & 8)	!= 0;
-  lev.android_nut	= (temp & 16)	!= 0;
-  lev.android_tank	= (temp & 32)	!= 0;
-  lev.android_eater	= (temp & 64)	!= 0;
-  lev.android_bug	= (temp & 128)	!= 0;
-  lev.android_alien	= (temp & 256)	!= 0;
-  lev.android_spring	= (temp & 512)	!= 0;
-  lev.android_balloon	= (temp & 1024)	!= 0;
-  lev.android_amoeba	= (temp & 2048)	!= 0;
-  lev.android_dynamite	= (temp & 4096)	!= 0;
+  lev.ball_random	 = src[2162] & 1   ? 1 : 0;
+  lev.ball_state_initial = src[2162] & 128 ? 1 : 0;
 
   for (temp = 1; temp < 2047; temp++)
   {
@@ -268,6 +226,67 @@ void convert_em_level(unsigned char *src, int file_version)
 	break;
     }
   }
+
+  /* android */
+
+  temp = GET_BE16(src[2168]);
+
+  lev.android_emerald	= (temp & 1)	!= 0;
+  lev.android_diamond	= (temp & 2)	!= 0;
+  lev.android_stone	= (temp & 4)	!= 0;
+  lev.android_bomb	= (temp & 8)	!= 0;
+  lev.android_nut	= (temp & 16)	!= 0;
+  lev.android_tank	= (temp & 32)	!= 0;
+  lev.android_eater	= (temp & 64)	!= 0;
+  lev.android_bug	= (temp & 128)	!= 0;
+  lev.android_alien	= (temp & 256)	!= 0;
+  lev.android_spring	= (temp & 512)	!= 0;
+  lev.android_balloon	= (temp & 1024)	!= 0;
+  lev.android_amoeba	= (temp & 2048)	!= 0;
+  lev.android_dynamite	= (temp & 4096)	!= 0;
+
+  /* eaters */
+
+  for (i = 0; i < 8; i++)
+    for (x = 0; x < 9; x++)
+      lev.eater_array[i][x] =
+	get_em_element(src[eater_offset[i] + x], file_version);
+
+  /* ball */
+
+  temp = get_em_element(src[2159], file_version);
+
+  for (y = 0; y < 8; y++)
+  {
+    if (src[2162] & 1)
+    {
+      for (x = 0; x < 8; x++)
+	lev.ball_array[y][x] = temp;
+    }
+    else
+    {
+      lev.ball_array[y][1] = (src[2163] & 1)  ? temp : Xblank; /* north */
+      lev.ball_array[y][6] = (src[2163] & 2)  ? temp : Xblank; /* south */
+      lev.ball_array[y][3] = (src[2163] & 4)  ? temp : Xblank; /* west */
+      lev.ball_array[y][4] = (src[2163] & 8)  ? temp : Xblank; /* east */
+      lev.ball_array[y][7] = (src[2163] & 16) ? temp : Xblank; /* southeast */
+      lev.ball_array[y][5] = (src[2163] & 32) ? temp : Xblank; /* southwest */
+      lev.ball_array[y][2] = (src[2163] & 64) ? temp : Xblank; /* northeast */
+      lev.ball_array[y][0] = (src[2163] & 128)? temp : Xblank; /* northwest */
+    }
+  }
+
+  /* players */
+
+  for (i = 0; i < 2; i++)
+  {
+    temp = GET_BE16(src[2096 + i * 2]);
+
+    ply[i].x_initial = (temp & 63);
+    ply[i].y_initial = (temp >> 6 & 31);
+  }
+
+  /* cave */
 
   /* first fill the complete playfield with the default border element */
   for (y = 0; y < CAVE_HEIGHT; y++)
