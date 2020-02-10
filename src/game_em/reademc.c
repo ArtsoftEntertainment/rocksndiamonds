@@ -40,6 +40,9 @@
  * behaviour.
  */
 
+#define GET_BE16(x)		((&x)[0] << 8 | (&x)[1])
+#define PUT_BE16(x, y)		{(&x)[0] = (y) >> 8; (&x)[1] = (y) & 0xff;}
+
 static const short map_emc[256] =
 {
   Xstone,		Xstone,		Xdiamond,	Xdiamond,
@@ -146,7 +149,7 @@ void convert_em_level(unsigned char *src, int file_version)
   };
   int i, x, y, temp;
 
-  lev.time_seconds = src[2110] << 8 | src[2111];
+  lev.time_seconds = GET_BE16(src[2110]);
   if (lev.time_seconds > 9999)
     lev.time_seconds = 9999;
 
@@ -154,22 +157,22 @@ void convert_em_level(unsigned char *src, int file_version)
 
   for (i = 0; i < 2; i++)
   {
-    temp = src[2096 + i * 2] << 8 | src[2097 + i * 2];
+    temp = GET_BE16(src[2096 + i * 2]);
     ply[i].x_initial = (temp & 63);
     ply[i].y_initial = (temp >> 6 & 31);
   }
 
-  temp = (src[2100] << 8 | src[2101]) * 28;
+  temp = GET_BE16(src[2100]) * 28;
   if (temp > 9999)
     temp = 9999;
   lev.amoeba_time = temp;
 
-  lev.android_move_time  = src[2164] << 8 | src[2165];
-  lev.android_clone_time = src[2166] << 8 | src[2167];
+  lev.android_move_time  = GET_BE16(src[2164]);
+  lev.android_clone_time = GET_BE16(src[2166]);
 
-  lev.ball_random	 = src[2162] & 1 ? 1 : 0;
+  lev.ball_random	 = src[2162] & 1   ? 1 : 0;
   lev.ball_state_initial = src[2162] & 128 ? 1 : 0;
-  lev.ball_time		 = src[2160] << 8 | src[2161];
+  lev.ball_time		 = GET_BE16(src[2160]);
 
   lev.emerald_score	= src[2084];
   lev.diamond_score	= src[2085];
@@ -186,9 +189,9 @@ void convert_em_level(unsigned char *src, int file_version)
   lev.magnify_score	= src[2152];
   lev.slurp_score	= src[2153];
 
-  lev.lenses_time	= src[2154] << 8 | src[2155];
-  lev.magnify_time	= src[2156] << 8 | src[2157];
-  lev.wheel_time	= src[2104] << 8 | src[2105];
+  lev.lenses_time	= GET_BE16(src[2154]);
+  lev.magnify_time	= GET_BE16(src[2156]);
+  lev.wheel_time	= GET_BE16(src[2104]);
 
   lev.wind_cnt_initial = src[2149] & 15 ? lev.wind_time : 0;
   temp = src[2149];
@@ -197,7 +200,7 @@ void convert_em_level(unsigned char *src, int file_version)
 				temp & 2 ? 2 :
 				temp & 4 ? 3 : 0);
 
-  lev.wonderwall_time_initial = src[2102] << 8 | src[2103];
+  lev.wonderwall_time_initial = GET_BE16(src[2102]);
 
   for (i = 0; i < 8; i++)
     for (x = 0; x < 9; x++)
@@ -225,7 +228,7 @@ void convert_em_level(unsigned char *src, int file_version)
     }
   }
 
-  temp = src[2168] << 8 | src[2169];
+  temp = GET_BE16(src[2168]);
 
   lev.android_emerald	= (temp & 1)	!= 0;
   lev.android_diamond	= (temp & 2)	!= 0;
@@ -624,32 +627,23 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
 
   /* player 1 pos */
   src[2096] &= 7;
-  src[src[2096] << 8 | src[2097]] = 128;
+  src[GET_BE16(src[2096])] = 128;
 
   /* player 2 pos */
   src[2098] &= 7;
-  src[src[2098] << 8 | src[2099]] = 128;
+  src[GET_BE16(src[2098])] = 128;
 
   /* amoeba speed */
-  if ((src[2100] << 8 | src[2101]) > 9999)
-  {
-    src[2100] = 39;
-    src[2101] = 15;
-  }
+  if (GET_BE16(src[2100]) > 9999)
+    PUT_BE16(src[2100], 9999);
 
   /* time wonderwall */
-  if ((src[2102] << 8 | src[2103]) > 9999)
-  {
-    src[2102] = 39;
-    src[2103] = 15;
-  }
+  if (GET_BE16(src[2102]) > 9999)
+    PUT_BE16(src[2102], 9999);
 
   /* time */
-  if ((src[2110] << 8 | src[2111]) > 9999)
-  {
-    src[2110] = 39;
-    src[2111] = 15;
-  }
+  if (GET_BE16(src[2110]) > 9999)
+    PUT_BE16(src[2110], 9999);
 
   /* wind direction */
   i = src[2149];
@@ -658,29 +652,20 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
   src[2149] = i;
 
   /* time lenses */
-  if ((src[2154] << 8 | src[2155]) > 9999)
-  {
-    src[2154] = 39;
-    src[2155] = 15;
-  }
+  if (GET_BE16(src[2154]) > 9999)
+    PUT_BE16(src[2154], 9999);
 
   /* time magnify */
-  if ((src[2156] << 8 | src[2157]) > 9999)
-  {
-    src[2156] = 39;
-    src[2157] = 15;
-  }
+  if (GET_BE16(src[2156]) > 9999)
+    PUT_BE16(src[2156], 9999);
 
   /* ball object */
   src[2158] = 0;
   src[2159] = map_v6[src[2159]];
 
   /* ball pause */
-  if ((src[2160] << 8 | src[2161]) > 9999)
-  {
-    src[2160] = 39;
-    src[2161] = 15;
-  }
+  if (GET_BE16(src[2160]) > 9999)
+    PUT_BE16(src[2160], 9999);
 
   /* ball data */
   src[2162] &= 129;
@@ -688,18 +673,12 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     src[2163] = 0;
 
   /* android move pause */
-  if ((src[2164] << 8 | src[2165]) > 9999)
-  {
-    src[2164] = 39;
-    src[2165] = 15;
-  }
+  if (GET_BE16(src[2164]) > 9999)
+    PUT_BE16(src[2164], 9999);
 
   /* android clone pause */
-  if ((src[2166] << 8 | src[2167]) > 9999)
-  {
-    src[2166] = 39;
-    src[2167] = 15;
-  }
+  if (GET_BE16(src[2166]) > 9999)
+    PUT_BE16(src[2166], 9999);
 
   /* android data */
   src[2168] &= 31;
