@@ -126,20 +126,6 @@ static const short map_emc[256] =
   Xblank,		Xblank,		Xalpha_copyr,	Xfake_acid_1
 };
 
-static int get_em_element(unsigned short em_element_raw, int file_version)
-{
-  int em_element = map_emc[em_element_raw];
-
-  if (file_version < FILE_VERSION_EM_V5)
-  {
-    /* versions below V5 had no grass, but only sand/dirt */
-    if (em_element == Xgrass)
-      em_element = Xdirt;
-  }
-
-  return em_element;
-}
-
 void convert_em_level(unsigned char *src, int file_version)
 {
   static int eater_offset[8] =
@@ -249,12 +235,11 @@ void convert_em_level(unsigned char *src, int file_version)
 
   for (i = 0; i < 8; i++)
     for (x = 0; x < 9; x++)
-      lev.eater_array[i][x] =
-	get_em_element(src[eater_offset[i] + x], file_version);
+      lev.eater_array[i][x] = map_emc[src[eater_offset[i] + x]];
 
   /* ball */
 
-  temp = get_em_element(src[2159], file_version);
+  temp = map_emc[src[2159]];
 
   for (y = 0; y < 8; y++)
   {
@@ -297,8 +282,7 @@ void convert_em_level(unsigned char *src, int file_version)
   temp = 0;
   for (y = 0; y < lev.height; y++)
     for (x = 0; x < lev.width; x++)
-      native_em_level.cave[x][y] =
-	get_em_element(src[temp++], file_version);
+      native_em_level.cave[x][y] = map_emc[src[temp++]];
 
   /* at last, set the two players at their positions in the playfield */
   /* (native EM[C] levels always have exactly two players in a level) */
@@ -329,6 +313,14 @@ void convert_em_level(unsigned char *src, int file_version)
  *
  * note: emc v6 converter has an error in converting v4 eaters to the
  * wrong bug(24 instead of 20) and tank(12 instead of 8).
+ */
+
+/* changes for game engine integration in Rocks'n'Diamonds:
+ *
+ * cave versions below V5 had no grass, but only sand/dirt
+ * - object code 130 (V6 grass) is changed to 189 (V6 dirt)
+ * - object codes are changed in both cave and eater arrays
+ * - only graphical change, as both objects behave the same
  */
 
 static const unsigned char map_v6[256] =
@@ -395,7 +387,7 @@ static const unsigned char map_v4[256] =
   153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153,
   153,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,
 
-  128,129,130,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,
+  128,129,189,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,
   144,145,146,147, 148,149,150,151, 152,68,154,155,  156,157,158,160,
   160,160,160,160, 160,160,160,160, 160,160,160,160, 160,160,160,175,
   153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,68,153,
@@ -410,7 +402,7 @@ static const unsigned char map_v4_eater[32] =
 {
   /* filter for v4 eater */
 
-  128,18,2,0,      4,8,16,20,       28,37,41,45,     130,129,131,132,
+  128,18,2,0,      4,8,16,20,       28,37,41,45,     189,129,131,132,
   133,134,135,136, 146,147,175,65,  66,64,2,18,      128,128,128,128
 };
 
