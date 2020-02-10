@@ -7715,6 +7715,17 @@ static boolean PrepareSavingIntoPersonalLevelSet(void)
   leveldir_current =
     getTreeInfoFromIdentifier(leveldir_first, getLoginName());
 
+  // this may happen if "setup.internal.create_user_levelset" is FALSE
+  // or if file "levelinfo.conf" is missing in personal user level set
+  if (leveldir_current == NULL)
+  {
+    Request("Cannot find personal level set?!", REQ_CONFIRM);
+
+    leveldir_current = leveldir_former;
+
+    return FALSE;
+  }
+
   // find unused level number
   for (new_level_nr = leveldir_current->first_level; ; new_level_nr++)
   {

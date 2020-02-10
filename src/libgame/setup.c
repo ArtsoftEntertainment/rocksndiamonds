@@ -3889,6 +3889,11 @@ static boolean AddTreeSetToTreeInfoExt(TreeInfo *tree_node_old, char *tree_dir,
     {
       // get level info tree node of personal user level set
       tree_node_old = getTreeInfoFromIdentifier(leveldir_first, getLoginName());
+
+      // this may happen if "setup.internal.create_user_levelset" is FALSE
+      // or if file "levelinfo.conf" is missing in personal user level set
+      if (tree_node_old == NULL)
+	tree_node_old = leveldir_first->node_group;
     }
     else
     {
