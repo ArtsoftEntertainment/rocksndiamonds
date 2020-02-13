@@ -620,10 +620,6 @@ enum
 
 struct LEVEL
 {
-  int home_initial;		/* number of players (initial) */
-  int home;			/* number of players not yet at home */
-				/* 0 == all players at home */
-
   int width;			/* playfield width */
   int height;			/* playfield height */
 
@@ -638,8 +634,6 @@ struct LEVEL
   int time_seconds;		/* available time (seconds) */
   int time_initial;		/* available time (initial) */
   int time;			/* time remaining (runtime) */
-
-  boolean killed_out_of_time;	/* kill player due to time out */
 
   int required_initial;		/* emeralds needed (initial) */
   int required;			/* emeralds needed (runtime) */
@@ -698,12 +692,20 @@ struct LEVEL
   int wonderwall_state;		/* wonderwall active flag */
   int wonderwall_time_initial;	/* wonderwall time (initial) */
   int wonderwall_time;		/* wonderwall time */
-  short eater_array[8][9];	/* eater data */
-  short ball_array[8][8];	/* ball data */
-  short android_array[TILE_MAX];/* android clone table */
+
   int num_ball_arrays;		/* number of ball data arrays used */
 
+  int home_initial;		/* number of players (initial) */
+  int home;			/* number of players not yet at home */
+				/* 0 == all players at home */
+
+  boolean killed_out_of_time;	/* kill player due to time out */
+
   int exit_x, exit_y;		/* kludge for playing player exit sound */
+
+  short eater_array[8][9];		/* eater data */
+  short ball_array[8][8];		/* ball data */
+  short android_array[TILE_MAX];	/* android clone table */
 
   short cavebuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
   short nextbuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
