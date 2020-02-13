@@ -47,8 +47,6 @@ struct LevelInfo_EM
 {
   int file_version;
 
-  short cave[CAVE_WIDTH][CAVE_HEIGHT];
-
   struct LEVEL *cav;
 };
 

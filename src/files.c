@@ -3575,7 +3575,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   // first fill the complete playfield with the default border element
   for (y = 0; y < EM_MAX_CAVE_HEIGHT; y++)
     for (x = 0; x < EM_MAX_CAVE_WIDTH; x++)
-      level_em->cave[x][y] = Zborder;
+      cav->cave_raw[x][y] = Zborder;
 
   // then copy the real level contents from level file into the playfield
   for (y = 0; y < cav->height; y++) for (x = 0; x < cav->width; x++)
@@ -3585,7 +3585,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
     if (level->field[x][y] == EL_AMOEBA_DEAD)
       new_element = map_element_RND_to_EM(EL_AMOEBA_WET);
 
-    level_em->cave[x][y] = new_element;
+    cav->cave_raw[x][y] = new_element;
   }
 
   for (i = 0; i < MAX_PLAYERS; i++)
@@ -3604,7 +3604,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
       cav->player_x[player_nr] = x;
       cav->player_y[player_nr] = y;
 
-      level_em->cave[x][y] = map_element_RND_to_EM(EL_EMPTY);
+      cav->cave_raw[x][y] = map_element_RND_to_EM(EL_EMPTY);
     }
   }
 }
@@ -3684,7 +3684,7 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   // convert the playfield (some elements need special treatment)
   for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
   {
-    int new_element = map_element_EM_to_RND(level_em->cave[x][y]);
+    int new_element = map_element_EM_to_RND(cav->cave_raw[x][y]);
 
     if (new_element == EL_AMOEBA_WET && level->amoeba_speed == 0)
       new_element = EL_AMOEBA_DEAD;

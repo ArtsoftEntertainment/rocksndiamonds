@@ -456,18 +456,18 @@ void convert_em_level(unsigned char *src, int file_version)
   /* first fill the complete playfield with the default border element */
   for (y = 0; y < CAVE_HEIGHT; y++)
     for (x = 0; x < CAVE_WIDTH; x++)
-      native_em_level.cave[x][y] = Zborder;
+      lev.cave_raw[x][y] = Zborder;
 
   /* then copy the real level contents from level file into the playfield */
   temp = 0;
   for (y = 0; y < lev.height; y++)
     for (x = 0; x < lev.width; x++)
-      native_em_level.cave[x][y] = map_emc[src[temp++]];
+      lev.cave_raw[x][y] = map_emc[src[temp++]];
 
   /* at last, set the two players at their positions in the playfield */
   /* (native EM[C] levels always have exactly two players in a level) */
   for (i = 0; i < 2; i++)
-    native_em_level.cave[lev.player_x[i]][lev.player_y[i]] = Zplayer;
+    lev.cave_raw[lev.player_x[i]][lev.player_y[i]] = Zplayer;
 
   native_em_level.file_version = file_version;
 }

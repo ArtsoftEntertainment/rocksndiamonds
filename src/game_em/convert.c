@@ -38,7 +38,7 @@ void prepare_em_level(void)
 
   for (x = 0; x < lev.width; x++)
     for (y = 0; y < lev.height; y++)
-      lev.cave[lev.left + x][lev.top + y] = native_em_level.cave[x][y];
+      lev.cave[lev.left + x][lev.top + y] = lev.cave_raw[x][y];
 
   for (x = lev.left; x < lev.right; x++)
     for (y = lev.top; y < lev.bottom; y++)
@@ -114,7 +114,7 @@ void prepare_em_level(void)
 	int x = lev.player_x[i];
 	int y = lev.player_y[i];
 
-	native_em_level.cave[x][y] = Xblank;
+	lev.cave_raw[x][y] = Xblank;
 
 	lev.cave[lev.left + x][lev.top + y] = Xblank;
 	lev.next[lev.left + x][lev.top + y] = Xblank;

@@ -707,6 +707,8 @@ struct LEVEL
   short ball_array[8][8];		/* ball data */
   short android_array[TILE_MAX];	/* android clone table */
 
+  short cave_raw[CAVE_WIDTH][CAVE_HEIGHT];
+
   short cavebuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
   short nextbuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
   short drawbuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
