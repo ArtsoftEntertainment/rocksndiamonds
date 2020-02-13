@@ -2126,9 +2126,9 @@ static int compareGamePanelOrderInfo(const void *object1, const void *object2)
 int getPlayerInventorySize(int player_nr)
 {
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-    return level.native_em_level->ply[player_nr]->dynamite;
+    return game_em.ply[player_nr]->dynamite;
   else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
-    return level.native_sp_level->game_sp->red_disk_count;
+    return game_sp.red_disk_count;
   else
     return stored_player[player_nr].inventory_size;
 }
@@ -2212,32 +2212,32 @@ static void UpdateGameControlValues(void)
   int time = (game.LevelSolved ?
 	      game.LevelSolved_CountingTime :
 	      level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-	      level.native_em_level->lev->time :
+	      game_em.lev->time :
 	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
-	      level.native_sp_level->game_sp->time_played :
+	      game_sp.time_played :
 	      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 	      game_mm.energy_left :
 	      game.no_time_limit ? TimePlayed : TimeLeft);
   int score = (game.LevelSolved ?
 	       game.LevelSolved_CountingScore :
 	       level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-	       level.native_em_level->lev->score :
+	       game_em.lev->score :
 	       level.game_engine_type == GAME_ENGINE_TYPE_SP ?
-	       level.native_sp_level->game_sp->score :
+	       game_sp.score :
 	       level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 	       game_mm.score :
 	       game.score);
   int gems = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-	      level.native_em_level->lev->required :
+	      game_em.lev->required :
 	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
-	      level.native_sp_level->game_sp->infotrons_still_needed :
+	      game_sp.infotrons_still_needed :
 	      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 	      game_mm.kettles_still_needed :
 	      game.gems_still_needed);
   int exit_closed = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-		     level.native_em_level->lev->required > 0 :
+		     game_em.lev->required > 0 :
 		     level.game_engine_type == GAME_ENGINE_TYPE_SP ?
-		     level.native_sp_level->game_sp->infotrons_still_needed > 0 :
+		     game_sp.infotrons_still_needed > 0 :
 		     level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 		     game_mm.kettles_still_needed > 0 ||
 		     game_mm.lights_still_needed > 0 :
@@ -2277,7 +2277,7 @@ static void UpdateGameControlValues(void)
       {
 	if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
 	{
-	  if (level.native_em_level->ply[i]->keys & (1 << k))
+	  if (game_em.ply[i]->keys & (1 << k))
 	    game_panel_controls[GAME_PANEL_KEY_1 + k].value =
 	      get_key_element_from_nr(k);
 	}
@@ -2305,7 +2305,7 @@ static void UpdateGameControlValues(void)
     {
       if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
       {
-	if (level.native_em_level->ply[player_nr]->keys & (1 << k))
+	if (game_em.ply[player_nr]->keys & (1 << k))
 	  game_panel_controls[GAME_PANEL_KEY_1 + k].value =
 	    get_key_element_from_nr(k);
       }
@@ -4492,7 +4492,7 @@ static void LevelSolved(void)
   game.GameOver = TRUE;
 
   game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-		      level.native_em_level->lev->score :
+		      game_em.lev->score :
 		      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 		      game_mm.score :
 		      game.score);
@@ -11240,7 +11240,7 @@ static void CheckLevelTime(void)
 	if (!TimeLeft && setup.time_limit)
 	{
 	  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-	    level.native_em_level->lev->killed_out_of_time = TRUE;
+	    game_em.lev->killed_out_of_time = TRUE;
 	  else
 	    for (i = 0; i < MAX_PLAYERS; i++)
 	      KillPlayer(&stored_player[i]);
@@ -11251,8 +11251,7 @@ static void CheckLevelTime(void)
 	game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
       }
 
-      level.native_em_level->lev->time =
-	(game.no_time_limit ? TimePlayed : TimeLeft);
+      game_em.lev->time = (game.no_time_limit ? TimePlayed : TimeLeft);
     }
 
     if (tape.recording || tape.playing)

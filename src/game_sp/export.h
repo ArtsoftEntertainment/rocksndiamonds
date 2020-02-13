@@ -123,9 +123,6 @@ struct LevelInfo_SP
   byte playfield[SP_MAX_PLAYFIELD_WIDTH][SP_MAX_PLAYFIELD_HEIGHT];
 
   struct DemoInfo_SP demo;
-
-  // used for runtime values
-  struct GameInfo_SP *game_sp;
 };
 
 struct GraphicInfo_SP

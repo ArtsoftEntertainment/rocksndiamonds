@@ -38,6 +38,9 @@ struct GameInfo_EM
 
   int last_moving_player;
   int last_player_direction[MAX_PLAYERS];
+
+  struct LEVEL *lev;
+  struct PLAYER *ply[MAX_PLAYERS];
 };
 
 struct LevelInfo_EM
@@ -48,9 +51,6 @@ struct LevelInfo_EM
 
   struct LEVEL *lev;
   struct PLAYER *ply[MAX_PLAYERS];
-
-  /* used for runtime values */
-  struct GameInfo_EM *game_em;
 };
 
 struct GraphicInfo_EM

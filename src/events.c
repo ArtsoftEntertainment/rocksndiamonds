@@ -1275,7 +1275,7 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
       int last_move_dir = (ABS(dx) > ABS(dy) ? MV_VERTICAL : MV_HORIZONTAL);
 
       if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-	level.native_em_level->ply[0]->last_move_dir = last_move_dir;
+	game_em.ply[0]->last_move_dir = last_move_dir;
       else
 	local_player->last_move_dir = last_move_dir;
 

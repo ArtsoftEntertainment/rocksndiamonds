@@ -18,6 +18,10 @@ void setLevelInfoToDefaults_EM(void)
   for (i = 0; i < MAX_PLAYERS; i++)
     native_em_level.ply[i] = &ply[i];
 
+  game_em.lev = &lev;
+  for (i = 0; i < MAX_PLAYERS; i++)
+    game_em.ply[i] = &ply[i];
+
   lev.width = 64;
   lev.height = 32;
 
