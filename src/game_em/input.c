@@ -8,6 +8,7 @@
 
 unsigned int RandomEM;
 
+struct LEVEL cav;
 struct LEVEL lev;
 struct PLAYER ply[MAX_PLAYERS];
 

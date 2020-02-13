@@ -87,6 +87,7 @@ extern int			SX, SY;
 
 extern unsigned int RandomEM;
 
+extern struct LEVEL cav;
 extern struct LEVEL lev;
 extern struct PLAYER ply[MAX_PLAYERS];
 

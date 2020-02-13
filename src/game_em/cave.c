@@ -13,41 +13,41 @@ void setLevelInfoToDefaults_EM(void)
   int i;
 
   native_em_level.file_version = FILE_VERSION_EM_ACTUAL;
-  native_em_level.cav = &lev;
+  native_em_level.cav = &cav;
 
   game_em.lev = &lev;
   for (i = 0; i < MAX_PLAYERS; i++)
     game_em.ply[i] = &ply[i];
 
-  lev.width = 64;
-  lev.height = 32;
+  cav.width = 64;
+  cav.height = 32;
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    lev.player_x[i] = -1;
-    lev.player_y[i] = -1;
+    cav.player_x[i] = -1;
+    cav.player_y[i] = -1;
   }
 
-  lev.lenses_cnt_initial = 0;
-  lev.magnify_cnt_initial = 0;
+  cav.lenses_cnt_initial = 0;
+  cav.magnify_cnt_initial = 0;
 
-  lev.wheel_cnt_initial = 0;
-  lev.wheel_x_initial = 1;
-  lev.wheel_y_initial = 1;
+  cav.wheel_cnt_initial = 0;
+  cav.wheel_x_initial = 1;
+  cav.wheel_y_initial = 1;
 
-  lev.wind_time = 9999;
-  lev.wind_cnt_initial = 0;
+  cav.wind_time = 9999;
+  cav.wind_cnt_initial = 0;
 
-  lev.wonderwall_state_initial = 0;
-  lev.wonderwall_time_initial = 0;
+  cav.wonderwall_state_initial = 0;
+  cav.wonderwall_time_initial = 0;
 
-  lev.num_ball_arrays = 8;
+  cav.num_ball_arrays = 8;
 
   for (i = 0; i < TILE_MAX; i++)
-    lev.android_array[i] = Xblank;
+    cav.android_array[i] = Xblank;
 
   /* initial number of players in this level */
-  lev.home_initial = 0;
+  cav.home_initial = 0;
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {

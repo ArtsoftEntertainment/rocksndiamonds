@@ -144,177 +144,177 @@ static void init_android_clone_table(short android_clone_bits)
   int i;
 
   for (i = 0; i < TILE_MAX; i++)
-    lev.android_array[i] = Xblank;
+    cav.android_array[i] = Xblank;
 
   if (android_eater)
   {
-    lev.android_array[Xeater_n]		= Xeater_n;
-    lev.android_array[Yeater_nB]	= Xeater_n;
+    cav.android_array[Xeater_n]		= Xeater_n;
+    cav.android_array[Yeater_nB]	= Xeater_n;
 
-    lev.android_array[Xeater_e]		= Xeater_e;
-    lev.android_array[Yeater_eB]	= Xeater_e;
+    cav.android_array[Xeater_e]		= Xeater_e;
+    cav.android_array[Yeater_eB]	= Xeater_e;
 
-    lev.android_array[Xeater_s]		= Xeater_s;
-    lev.android_array[Yeater_sB]	= Xeater_s;
+    cav.android_array[Xeater_s]		= Xeater_s;
+    cav.android_array[Yeater_sB]	= Xeater_s;
 
-    lev.android_array[Xeater_w]		= Xeater_w;
-    lev.android_array[Yeater_wB]	= Xeater_w;
+    cav.android_array[Xeater_w]		= Xeater_w;
+    cav.android_array[Yeater_wB]	= Xeater_w;
   }
 
   if (android_alien)
   {
-    lev.android_array[Xalien]		= Xalien;
-    lev.android_array[Xalien_pause]	= Xalien;
-    lev.android_array[Yalien_nB]	= Xalien;
-    lev.android_array[Yalien_eB]	= Xalien;
-    lev.android_array[Yalien_sB]	= Xalien;
-    lev.android_array[Yalien_wB]	= Xalien;
+    cav.android_array[Xalien]		= Xalien;
+    cav.android_array[Xalien_pause]	= Xalien;
+    cav.android_array[Yalien_nB]	= Xalien;
+    cav.android_array[Yalien_eB]	= Xalien;
+    cav.android_array[Yalien_sB]	= Xalien;
+    cav.android_array[Yalien_wB]	= Xalien;
   }
 
   if (android_bug)
   {
-    lev.android_array[Xbug_1_n]		= Xbug_2_n;
-    lev.android_array[Xbug_2_n]		= Xbug_2_n;
-    lev.android_array[Ybug_nB]		= Xbug_2_n;
-    lev.android_array[Ybug_n_e]		= Xbug_2_n;
-    lev.android_array[Ybug_n_w]		= Xbug_2_n;
+    cav.android_array[Xbug_1_n]		= Xbug_2_n;
+    cav.android_array[Xbug_2_n]		= Xbug_2_n;
+    cav.android_array[Ybug_nB]		= Xbug_2_n;
+    cav.android_array[Ybug_n_e]		= Xbug_2_n;
+    cav.android_array[Ybug_n_w]		= Xbug_2_n;
 
-    lev.android_array[Xbug_1_e]		= Xbug_2_e;
-    lev.android_array[Xbug_2_e]		= Xbug_2_e;
-    lev.android_array[Ybug_eB]		= Xbug_2_e;
-    lev.android_array[Ybug_e_s]		= Xbug_2_e;
-    lev.android_array[Ybug_e_n]		= Xbug_2_e;
+    cav.android_array[Xbug_1_e]		= Xbug_2_e;
+    cav.android_array[Xbug_2_e]		= Xbug_2_e;
+    cav.android_array[Ybug_eB]		= Xbug_2_e;
+    cav.android_array[Ybug_e_s]		= Xbug_2_e;
+    cav.android_array[Ybug_e_n]		= Xbug_2_e;
 
-    lev.android_array[Xbug_1_s]		= Xbug_2_s;
-    lev.android_array[Xbug_2_s]		= Xbug_2_s;
-    lev.android_array[Ybug_sB]		= Xbug_2_s;
-    lev.android_array[Ybug_s_w]		= Xbug_2_s;
-    lev.android_array[Ybug_s_e]		= Xbug_2_s;
+    cav.android_array[Xbug_1_s]		= Xbug_2_s;
+    cav.android_array[Xbug_2_s]		= Xbug_2_s;
+    cav.android_array[Ybug_sB]		= Xbug_2_s;
+    cav.android_array[Ybug_s_w]		= Xbug_2_s;
+    cav.android_array[Ybug_s_e]		= Xbug_2_s;
 
-    lev.android_array[Xbug_1_w]		= Xbug_2_w;
-    lev.android_array[Xbug_2_w]		= Xbug_2_w;
-    lev.android_array[Ybug_wB]		= Xbug_2_w;
-    lev.android_array[Ybug_w_n]		= Xbug_2_w;
-    lev.android_array[Ybug_w_s]		= Xbug_2_w;
+    cav.android_array[Xbug_1_w]		= Xbug_2_w;
+    cav.android_array[Xbug_2_w]		= Xbug_2_w;
+    cav.android_array[Ybug_wB]		= Xbug_2_w;
+    cav.android_array[Ybug_w_n]		= Xbug_2_w;
+    cav.android_array[Ybug_w_s]		= Xbug_2_w;
   }
 
   if (android_tank)
   {
-    lev.android_array[Xtank_1_n]	= Xtank_1_n;
-    lev.android_array[Xtank_2_n]	= Xtank_1_n;
-    lev.android_array[Ytank_nB]		= Xtank_1_n;
-    lev.android_array[Ytank_n_e]	= Xtank_1_n;
-    lev.android_array[Ytank_n_w]	= Xtank_1_n;
+    cav.android_array[Xtank_1_n]	= Xtank_1_n;
+    cav.android_array[Xtank_2_n]	= Xtank_1_n;
+    cav.android_array[Ytank_nB]		= Xtank_1_n;
+    cav.android_array[Ytank_n_e]	= Xtank_1_n;
+    cav.android_array[Ytank_n_w]	= Xtank_1_n;
 
-    lev.android_array[Xtank_1_e]	= Xtank_1_e;
-    lev.android_array[Xtank_2_e]	= Xtank_1_e;
-    lev.android_array[Ytank_eB]		= Xtank_1_e;
-    lev.android_array[Ytank_e_s]	= Xtank_1_e;
-    lev.android_array[Ytank_e_n]	= Xtank_1_e;
+    cav.android_array[Xtank_1_e]	= Xtank_1_e;
+    cav.android_array[Xtank_2_e]	= Xtank_1_e;
+    cav.android_array[Ytank_eB]		= Xtank_1_e;
+    cav.android_array[Ytank_e_s]	= Xtank_1_e;
+    cav.android_array[Ytank_e_n]	= Xtank_1_e;
 
-    lev.android_array[Xtank_1_s]	= Xtank_1_s;
-    lev.android_array[Xtank_2_s]	= Xtank_1_s;
-    lev.android_array[Ytank_sB]		= Xtank_1_s;
-    lev.android_array[Ytank_s_w]	= Xtank_1_s;
-    lev.android_array[Ytank_s_e]	= Xtank_1_s;
+    cav.android_array[Xtank_1_s]	= Xtank_1_s;
+    cav.android_array[Xtank_2_s]	= Xtank_1_s;
+    cav.android_array[Ytank_sB]		= Xtank_1_s;
+    cav.android_array[Ytank_s_w]	= Xtank_1_s;
+    cav.android_array[Ytank_s_e]	= Xtank_1_s;
 
-    lev.android_array[Xtank_1_w]	= Xtank_1_w;
-    lev.android_array[Xtank_2_w]	= Xtank_1_w;
-    lev.android_array[Ytank_wB]		= Xtank_1_w;
-    lev.android_array[Ytank_w_n]	= Xtank_1_w;
-    lev.android_array[Ytank_w_s]	= Xtank_1_w;
+    cav.android_array[Xtank_1_w]	= Xtank_1_w;
+    cav.android_array[Xtank_2_w]	= Xtank_1_w;
+    cav.android_array[Ytank_wB]		= Xtank_1_w;
+    cav.android_array[Ytank_w_n]	= Xtank_1_w;
+    cav.android_array[Ytank_w_s]	= Xtank_1_w;
   }
 
   if (android_emerald)
   {
-    lev.android_array[Xemerald]		= Xemerald;
-    lev.android_array[Xemerald_pause]	= Xemerald;
-    lev.android_array[Xemerald_fall]	= Xemerald;
-    lev.android_array[Yemerald_sB]	= Xemerald;
-    lev.android_array[Yemerald_eB]	= Xemerald;
-    lev.android_array[Yemerald_wB]	= Xemerald;
+    cav.android_array[Xemerald]		= Xemerald;
+    cav.android_array[Xemerald_pause]	= Xemerald;
+    cav.android_array[Xemerald_fall]	= Xemerald;
+    cav.android_array[Yemerald_sB]	= Xemerald;
+    cav.android_array[Yemerald_eB]	= Xemerald;
+    cav.android_array[Yemerald_wB]	= Xemerald;
   }
 
   if (android_diamond)
   {
-    lev.android_array[Xdiamond]		= Xdiamond;
-    lev.android_array[Xdiamond_pause]	= Xdiamond;
-    lev.android_array[Xdiamond_fall]	= Xdiamond;
-    lev.android_array[Ydiamond_sB]	= Xdiamond;
-    lev.android_array[Ydiamond_eB]	= Xdiamond;
-    lev.android_array[Ydiamond_wB]	= Xdiamond;
+    cav.android_array[Xdiamond]		= Xdiamond;
+    cav.android_array[Xdiamond_pause]	= Xdiamond;
+    cav.android_array[Xdiamond_fall]	= Xdiamond;
+    cav.android_array[Ydiamond_sB]	= Xdiamond;
+    cav.android_array[Ydiamond_eB]	= Xdiamond;
+    cav.android_array[Ydiamond_wB]	= Xdiamond;
   }
 
   if (android_stone)
   {
-    lev.android_array[Xstone]		= Xstone;
-    lev.android_array[Xstone_pause]	= Xstone;
-    lev.android_array[Xstone_fall]	= Xstone;
-    lev.android_array[Ystone_sB]	= Xstone;
-    lev.android_array[Ystone_eB]	= Xstone;
-    lev.android_array[Ystone_wB]	= Xstone;
+    cav.android_array[Xstone]		= Xstone;
+    cav.android_array[Xstone_pause]	= Xstone;
+    cav.android_array[Xstone_fall]	= Xstone;
+    cav.android_array[Ystone_sB]	= Xstone;
+    cav.android_array[Ystone_eB]	= Xstone;
+    cav.android_array[Ystone_wB]	= Xstone;
   }
 
   if (android_bomb)
   {
-    lev.android_array[Xbomb]		= Xbomb;
-    lev.android_array[Xbomb_pause]	= Xbomb;
-    lev.android_array[Xbomb_fall]	= Xbomb;
-    lev.android_array[Ybomb_sB]		= Xbomb;
-    lev.android_array[Ybomb_eB]		= Xbomb;
-    lev.android_array[Ybomb_wB]		= Xbomb;
+    cav.android_array[Xbomb]		= Xbomb;
+    cav.android_array[Xbomb_pause]	= Xbomb;
+    cav.android_array[Xbomb_fall]	= Xbomb;
+    cav.android_array[Ybomb_sB]		= Xbomb;
+    cav.android_array[Ybomb_eB]		= Xbomb;
+    cav.android_array[Ybomb_wB]		= Xbomb;
   }
 
   if (android_nut)
   {
-    lev.android_array[Xnut]		= Xnut;
-    lev.android_array[Xnut_pause]	= Xnut;
-    lev.android_array[Xnut_fall]	= Xnut;
-    lev.android_array[Ynut_sB]		= Xnut;
-    lev.android_array[Ynut_eB]		= Xnut;
-    lev.android_array[Ynut_wB]		= Xnut;
+    cav.android_array[Xnut]		= Xnut;
+    cav.android_array[Xnut_pause]	= Xnut;
+    cav.android_array[Xnut_fall]	= Xnut;
+    cav.android_array[Ynut_sB]		= Xnut;
+    cav.android_array[Ynut_eB]		= Xnut;
+    cav.android_array[Ynut_wB]		= Xnut;
   }
 
   if (android_spring)
   {
-    lev.android_array[Xspring]		= Xspring;
-    lev.android_array[Xspring_pause]	= Xspring;
-    lev.android_array[Xspring_fall]	= Xspring;
-    lev.android_array[Xspring_e]	= Xspring;
-    lev.android_array[Xspring_w]	= Xspring;
-    lev.android_array[Yspring_sB]	= Xspring;
-    lev.android_array[Yspring_eB]	= Xspring;
-    lev.android_array[Yspring_wB]	= Xspring;
-    lev.android_array[Yspring_alien_eB]	= Xspring;
-    lev.android_array[Yspring_alien_wB]	= Xspring;
+    cav.android_array[Xspring]		= Xspring;
+    cav.android_array[Xspring_pause]	= Xspring;
+    cav.android_array[Xspring_fall]	= Xspring;
+    cav.android_array[Xspring_e]	= Xspring;
+    cav.android_array[Xspring_w]	= Xspring;
+    cav.android_array[Yspring_sB]	= Xspring;
+    cav.android_array[Yspring_eB]	= Xspring;
+    cav.android_array[Yspring_wB]	= Xspring;
+    cav.android_array[Yspring_alien_eB]	= Xspring;
+    cav.android_array[Yspring_alien_wB]	= Xspring;
   }
 
   if (android_dynamite)
   {
-    lev.android_array[Xdynamite]	= Xdynamite;
+    cav.android_array[Xdynamite]	= Xdynamite;
   }
 
   if (android_balloon)
   {
-    lev.android_array[Xballoon]		= Xballoon;
-    lev.android_array[Yballoon_nB]	= Xballoon;
-    lev.android_array[Yballoon_eB]	= Xballoon;
-    lev.android_array[Yballoon_sB]	= Xballoon;
-    lev.android_array[Yballoon_wB]	= Xballoon;
+    cav.android_array[Xballoon]		= Xballoon;
+    cav.android_array[Yballoon_nB]	= Xballoon;
+    cav.android_array[Yballoon_eB]	= Xballoon;
+    cav.android_array[Yballoon_sB]	= Xballoon;
+    cav.android_array[Yballoon_wB]	= Xballoon;
   }
 
   if (android_amoeba)
   {
-    lev.android_array[Xfake_amoeba]	= Xdrip;
-    lev.android_array[Yfake_amoeba]	= Xdrip;
-    lev.android_array[Xamoeba_1]	= Xdrip;
-    lev.android_array[Xamoeba_2]	= Xdrip;
-    lev.android_array[Xamoeba_3]	= Xdrip;
-    lev.android_array[Xamoeba_4]	= Xdrip;
-    lev.android_array[Xamoeba_5]	= Xdrip;
-    lev.android_array[Xamoeba_6]	= Xdrip;
-    lev.android_array[Xamoeba_7]	= Xdrip;
-    lev.android_array[Xamoeba_8]	= Xdrip;
+    cav.android_array[Xfake_amoeba]	= Xdrip;
+    cav.android_array[Yfake_amoeba]	= Xdrip;
+    cav.android_array[Xamoeba_1]	= Xdrip;
+    cav.android_array[Xamoeba_2]	= Xdrip;
+    cav.android_array[Xamoeba_3]	= Xdrip;
+    cav.android_array[Xamoeba_4]	= Xdrip;
+    cav.android_array[Xamoeba_5]	= Xdrip;
+    cav.android_array[Xamoeba_6]	= Xdrip;
+    cav.android_array[Xamoeba_7]	= Xdrip;
+    cav.android_array[Xamoeba_8]	= Xdrip;
   }
 }
 
@@ -329,78 +329,78 @@ void convert_em_level(unsigned char *src, int file_version)
 
   /* common to all emc caves */
 
-  lev.time_seconds = GET_BE16(src[2110]);
-  if (lev.time_seconds > 9999)
-    lev.time_seconds = 9999;
+  cav.time_seconds = GET_BE16(src[2110]);
+  if (cav.time_seconds > 9999)
+    cav.time_seconds = 9999;
 
-  lev.required_initial = src[2095];
+  cav.required_initial = src[2095];
 
   /* scores */
 
-  lev.emerald_score	= src[2084];
-  lev.diamond_score	= src[2085];
-  lev.alien_score	= src[2086];
-  lev.tank_score	= src[2087];
-  lev.bug_score		= src[2088];
-  lev.eater_score	= src[2089];
-  lev.nut_score		= src[2090];
-  lev.dynamite_score	= src[2091];
-  lev.key_score		= src[2092];
-  lev.exit_score	= src[2093] * 8 / 5;
+  cav.emerald_score	= src[2084];
+  cav.diamond_score	= src[2085];
+  cav.alien_score	= src[2086];
+  cav.tank_score	= src[2087];
+  cav.bug_score		= src[2088];
+  cav.eater_score	= src[2089];
+  cav.nut_score		= src[2090];
+  cav.dynamite_score	= src[2091];
+  cav.key_score		= src[2092];
+  cav.exit_score	= src[2093] * 8 / 5;
 
-  lev.lenses_score	= src[2151];
-  lev.magnify_score	= src[2152];
-  lev.slurp_score	= src[2153];
+  cav.lenses_score	= src[2151];
+  cav.magnify_score	= src[2152];
+  cav.slurp_score	= src[2153];
 
   /* times */
 
-  lev.android_move_time  = GET_BE16(src[2164]);
-  lev.android_clone_time = GET_BE16(src[2166]);
-  lev.ball_time		 = GET_BE16(src[2160]);
+  cav.android_move_time  = GET_BE16(src[2164]);
+  cav.android_clone_time = GET_BE16(src[2166]);
+  cav.ball_time		 = GET_BE16(src[2160]);
 
-  lev.lenses_time	= GET_BE16(src[2154]);
-  lev.magnify_time	= GET_BE16(src[2156]);
-  lev.wheel_time	= GET_BE16(src[2104]);
+  cav.lenses_time	= GET_BE16(src[2154]);
+  cav.magnify_time	= GET_BE16(src[2156]);
+  cav.wheel_time	= GET_BE16(src[2104]);
 
   temp = GET_BE16(src[2100]) * 28;
   if (temp > 9999)
     temp = 9999;
-  lev.amoeba_time = temp;
+  cav.amoeba_time = temp;
 
-  lev.wonderwall_time_initial = GET_BE16(src[2102]);
+  cav.wonderwall_time_initial = GET_BE16(src[2102]);
 
-  lev.wind_cnt_initial = src[2149] & 15 ? lev.wind_time : 0;
+  cav.wind_cnt_initial = src[2149] & 15 ? cav.wind_time : 0;
   temp = src[2149];
-  lev.wind_direction_initial = (temp & 8 ? 0 :
+  cav.wind_direction_initial = (temp & 8 ? 0 :
 				temp & 1 ? 1 :
 				temp & 2 ? 2 :
 				temp & 4 ? 3 : 0);
   /* global flags */
 
-  lev.ball_random	 = src[2162] & 1   ? 1 : 0;
-  lev.ball_state_initial = src[2162] & 128 ? 1 : 0;
+  cav.ball_random	 = src[2162] & 1   ? 1 : 0;
+  cav.ball_state_initial = src[2162] & 128 ? 1 : 0;
 
   for (temp = 1; temp < 2047; temp++)
   {
     switch (src[temp])
     {
       case 36:					/* wonderwall */
-	lev.wonderwall_state_initial = 1;
-	lev.wonderwall_time_initial = 9999;
+	cav.wonderwall_state_initial = 1;
+	cav.wonderwall_time_initial = 9999;
 	break;
 
       case 40:					/* wheel */
-	lev.wheel_x_initial = temp & 63;
-	lev.wheel_y_initial = temp >> 6;
-	lev.wheel_cnt_initial = lev.wheel_time;
+	cav.wheel_x_initial = temp & 63;
+	cav.wheel_y_initial = temp >> 6;
+	cav.wheel_cnt_initial = cav.wheel_time;
 	break;
 
       case 163:					/* fake blank */
-	lev.lenses_cnt_initial = 9999;
+	cav.lenses_cnt_initial = 9999;
 	break;
 
       case 164:					/* fake grass */
-	lev.magnify_cnt_initial = 9999;
+	cav.magnify_cnt_initial = 9999;
 	break;
     }
   }
@@ -415,7 +415,7 @@ void convert_em_level(unsigned char *src, int file_version)
 
   for (i = 0; i < 8; i++)
     for (x = 0; x < 9; x++)
-      lev.eater_array[i][x] = map_emc[src[eater_offset[i] + x]];
+      cav.eater_array[i][x] = map_emc[src[eater_offset[i] + x]];
 
   /* ball */
 
@@ -426,18 +426,18 @@ void convert_em_level(unsigned char *src, int file_version)
     if (src[2162] & 1)
     {
       for (x = 0; x < 8; x++)
-	lev.ball_array[y][x] = temp;
+	cav.ball_array[y][x] = temp;
     }
     else
     {
-      lev.ball_array[y][1] = (src[2163] & 1)  ? temp : Xblank; /* north */
-      lev.ball_array[y][6] = (src[2163] & 2)  ? temp : Xblank; /* south */
-      lev.ball_array[y][3] = (src[2163] & 4)  ? temp : Xblank; /* west */
-      lev.ball_array[y][4] = (src[2163] & 8)  ? temp : Xblank; /* east */
-      lev.ball_array[y][7] = (src[2163] & 16) ? temp : Xblank; /* southeast */
-      lev.ball_array[y][5] = (src[2163] & 32) ? temp : Xblank; /* southwest */
-      lev.ball_array[y][2] = (src[2163] & 64) ? temp : Xblank; /* northeast */
-      lev.ball_array[y][0] = (src[2163] & 128)? temp : Xblank; /* northwest */
+      cav.ball_array[y][1] = (src[2163] & 1)  ? temp : Xblank; /* north */
+      cav.ball_array[y][6] = (src[2163] & 2)  ? temp : Xblank; /* south */
+      cav.ball_array[y][3] = (src[2163] & 4)  ? temp : Xblank; /* west */
+      cav.ball_array[y][4] = (src[2163] & 8)  ? temp : Xblank; /* east */
+      cav.ball_array[y][7] = (src[2163] & 16) ? temp : Xblank; /* southeast */
+      cav.ball_array[y][5] = (src[2163] & 32) ? temp : Xblank; /* southwest */
+      cav.ball_array[y][2] = (src[2163] & 64) ? temp : Xblank; /* northeast */
+      cav.ball_array[y][0] = (src[2163] & 128)? temp : Xblank; /* northwest */
     }
   }
 
@@ -447,8 +447,8 @@ void convert_em_level(unsigned char *src, int file_version)
   {
     temp = GET_BE16(src[2096 + i * 2]);
 
-    lev.player_x[i] = (temp & 63);
-    lev.player_y[i] = (temp >> 6 & 31);
+    cav.player_x[i] = (temp & 63);
+    cav.player_y[i] = (temp >> 6 & 31);
   }
 
   /* cave */
@@ -456,18 +456,18 @@ void convert_em_level(unsigned char *src, int file_version)
   /* first fill the complete playfield with the default border element */
   for (y = 0; y < CAVE_HEIGHT; y++)
     for (x = 0; x < CAVE_WIDTH; x++)
-      lev.cave_raw[x][y] = Zborder;
+      cav.cave_raw[x][y] = Zborder;
 
   /* then copy the real level contents from level file into the playfield */
   temp = 0;
-  for (y = 0; y < lev.height; y++)
-    for (x = 0; x < lev.width; x++)
-      lev.cave_raw[x][y] = map_emc[src[temp++]];
+  for (y = 0; y < cav.height; y++)
+    for (x = 0; x < cav.width; x++)
+      cav.cave_raw[x][y] = map_emc[src[temp++]];
 
   /* at last, set the two players at their positions in the playfield */
   /* (native EM[C] levels always have exactly two players in a level) */
   for (i = 0; i < 2; i++)
-    lev.cave_raw[lev.player_x[i]][lev.player_y[i]] = Zplayer;
+    cav.cave_raw[cav.player_x[i]][cav.player_y[i]] = Zplayer;
 
   native_em_level.file_version = file_version;
 }

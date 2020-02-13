@@ -13,6 +13,9 @@ void prepare_em_level(void)
   int players_left;
   boolean team_mode;
 
+  /* initialize runtime level structure */
+  lev = cav;
+
   /* reset all runtime variables to their initial values */
 
   game_init_cave_buffers();
