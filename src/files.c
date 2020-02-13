@@ -3515,58 +3515,58 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
     { 2, 2 },
   };
   struct LevelInfo_EM *level_em = level->native_em_level;
-  struct LEVEL *lev = level_em->lev;
+  struct LEVEL *cav = level_em->cav;
   int i, j, x, y;
 
-  lev->width  = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
-  lev->height = MIN(level->fieldy, MAX_PLAYFIELD_HEIGHT);
+  cav->width  = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
+  cav->height = MIN(level->fieldy, MAX_PLAYFIELD_HEIGHT);
 
-  lev->time_seconds     = level->time;
-  lev->required_initial = level->gems_needed;
+  cav->time_seconds     = level->time;
+  cav->required_initial = level->gems_needed;
 
-  lev->emerald_score	= level->score[SC_EMERALD];
-  lev->diamond_score	= level->score[SC_DIAMOND];
-  lev->alien_score	= level->score[SC_ROBOT];
-  lev->tank_score	= level->score[SC_SPACESHIP];
-  lev->bug_score	= level->score[SC_BUG];
-  lev->eater_score	= level->score[SC_YAMYAM];
-  lev->nut_score	= level->score[SC_NUT];
-  lev->dynamite_score	= level->score[SC_DYNAMITE];
-  lev->key_score	= level->score[SC_KEY];
-  lev->exit_score	= level->score[SC_TIME_BONUS];
+  cav->emerald_score	= level->score[SC_EMERALD];
+  cav->diamond_score	= level->score[SC_DIAMOND];
+  cav->alien_score	= level->score[SC_ROBOT];
+  cav->tank_score	= level->score[SC_SPACESHIP];
+  cav->bug_score	= level->score[SC_BUG];
+  cav->eater_score	= level->score[SC_YAMYAM];
+  cav->nut_score	= level->score[SC_NUT];
+  cav->dynamite_score	= level->score[SC_DYNAMITE];
+  cav->key_score	= level->score[SC_KEY];
+  cav->exit_score	= level->score[SC_TIME_BONUS];
 
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
-	lev->eater_array[i][y * 3 + x] =
+	cav->eater_array[i][y * 3 + x] =
 	  map_element_RND_to_EM(level->yamyam_content[i].e[x][y]);
 
-  lev->amoeba_time		= level->amoeba_speed;
-  lev->wonderwall_time_initial	= level->time_magic_wall;
-  lev->wheel_time		= level->time_wheel;
+  cav->amoeba_time		= level->amoeba_speed;
+  cav->wonderwall_time_initial	= level->time_magic_wall;
+  cav->wheel_time		= level->time_wheel;
 
-  lev->android_move_time	= level->android_move_time;
-  lev->android_clone_time	= level->android_clone_time;
-  lev->ball_random		= level->ball_random;
-  lev->ball_state_initial	= level->ball_state_initial;
-  lev->ball_time		= level->ball_time;
-  lev->num_ball_arrays		= level->num_ball_contents;
+  cav->android_move_time	= level->android_move_time;
+  cav->android_clone_time	= level->android_clone_time;
+  cav->ball_random		= level->ball_random;
+  cav->ball_state_initial	= level->ball_state_initial;
+  cav->ball_time		= level->ball_time;
+  cav->num_ball_arrays		= level->num_ball_contents;
 
-  lev->lenses_score		= level->lenses_score;
-  lev->magnify_score		= level->magnify_score;
-  lev->slurp_score		= level->slurp_score;
+  cav->lenses_score		= level->lenses_score;
+  cav->magnify_score		= level->magnify_score;
+  cav->slurp_score		= level->slurp_score;
 
-  lev->lenses_time		= level->lenses_time;
-  lev->magnify_time		= level->magnify_time;
+  cav->lenses_time		= level->lenses_time;
+  cav->magnify_time		= level->magnify_time;
 
-  lev->wind_direction_initial =
+  cav->wind_direction_initial =
     map_direction_RND_to_EM(level->wind_direction_initial);
-  lev->wind_cnt_initial = (level->wind_direction_initial != MV_NONE ?
-			   lev->wind_time : 0);
+  cav->wind_cnt_initial = (level->wind_direction_initial != MV_NONE ?
+			   cav->wind_time : 0);
 
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (j = 0; j < 8; j++)
-      lev->ball_array[i][j] =
+      cav->ball_array[i][j] =
 	map_element_RND_to_EM(level->
 			      ball_content[i].e[ball_xy[j][0]][ball_xy[j][1]]);
 
@@ -3578,7 +3578,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
       level_em->cave[x][y] = Zborder;
 
   // then copy the real level contents from level file into the playfield
-  for (y = 0; y < lev->height; y++) for (x = 0; x < lev->width; x++)
+  for (y = 0; y < cav->height; y++) for (x = 0; x < cav->width; x++)
   {
     int new_element = map_element_RND_to_EM(level->field[x][y]);
 
@@ -3590,19 +3590,19 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    lev->player_x[i] = -1;
-    lev->player_y[i] = -1;
+    cav->player_x[i] = -1;
+    cav->player_y[i] = -1;
   }
 
   // initialize player positions and delete players from the playfield
-  for (y = 0; y < lev->height; y++) for (x = 0; x < lev->width; x++)
+  for (y = 0; y < cav->height; y++) for (x = 0; x < cav->width; x++)
   {
     if (ELEM_IS_PLAYER(level->field[x][y]))
     {
       int player_nr = GET_PLAYER_NR(level->field[x][y]);
 
-      lev->player_x[player_nr] = x;
-      lev->player_y[player_nr] = y;
+      cav->player_x[player_nr] = x;
+      cav->player_y[player_nr] = y;
 
       level_em->cave[x][y] = map_element_RND_to_EM(EL_EMPTY);
     }
@@ -3623,27 +3623,27 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
     { 2, 2 },
   };
   struct LevelInfo_EM *level_em = level->native_em_level;
-  struct LEVEL *lev = level_em->lev;
+  struct LEVEL *cav = level_em->cav;
   int i, j, x, y;
 
-  level->fieldx = MIN(lev->width,  MAX_LEV_FIELDX);
-  level->fieldy = MIN(lev->height, MAX_LEV_FIELDY);
+  level->fieldx = MIN(cav->width,  MAX_LEV_FIELDX);
+  level->fieldy = MIN(cav->height, MAX_LEV_FIELDY);
 
-  level->time        = lev->time_seconds;
-  level->gems_needed = lev->required_initial;
+  level->time        = cav->time_seconds;
+  level->gems_needed = cav->required_initial;
 
   sprintf(level->name, "Level %d", level->file_info.nr);
 
-  level->score[SC_EMERALD]	= lev->emerald_score;
-  level->score[SC_DIAMOND]	= lev->diamond_score;
-  level->score[SC_ROBOT]	= lev->alien_score;
-  level->score[SC_SPACESHIP]	= lev->tank_score;
-  level->score[SC_BUG]		= lev->bug_score;
-  level->score[SC_YAMYAM]	= lev->eater_score;
-  level->score[SC_NUT]		= lev->nut_score;
-  level->score[SC_DYNAMITE]	= lev->dynamite_score;
-  level->score[SC_KEY]		= lev->key_score;
-  level->score[SC_TIME_BONUS]	= lev->exit_score;
+  level->score[SC_EMERALD]	= cav->emerald_score;
+  level->score[SC_DIAMOND]	= cav->diamond_score;
+  level->score[SC_ROBOT]	= cav->alien_score;
+  level->score[SC_SPACESHIP]	= cav->tank_score;
+  level->score[SC_BUG]		= cav->bug_score;
+  level->score[SC_YAMYAM]	= cav->eater_score;
+  level->score[SC_NUT]		= cav->nut_score;
+  level->score[SC_DYNAMITE]	= cav->dynamite_score;
+  level->score[SC_KEY]		= cav->key_score;
+  level->score[SC_TIME_BONUS]	= cav->exit_score;
 
   level->num_yamyam_contents = MAX_ELEMENT_CONTENTS;
 
@@ -3651,33 +3651,33 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
 	level->yamyam_content[i].e[x][y] =
-	  map_element_EM_to_RND(lev->eater_array[i][y * 3 + x]);
+	  map_element_EM_to_RND(cav->eater_array[i][y * 3 + x]);
 
-  level->amoeba_speed		= lev->amoeba_time;
-  level->time_magic_wall	= lev->wonderwall_time_initial;
-  level->time_wheel		= lev->wheel_time;
+  level->amoeba_speed		= cav->amoeba_time;
+  level->time_magic_wall	= cav->wonderwall_time_initial;
+  level->time_wheel		= cav->wheel_time;
 
-  level->android_move_time	= lev->android_move_time;
-  level->android_clone_time	= lev->android_clone_time;
-  level->ball_random		= lev->ball_random;
-  level->ball_state_initial	= lev->ball_state_initial;
-  level->ball_time		= lev->ball_time;
-  level->num_ball_contents	= lev->num_ball_arrays;
+  level->android_move_time	= cav->android_move_time;
+  level->android_clone_time	= cav->android_clone_time;
+  level->ball_random		= cav->ball_random;
+  level->ball_state_initial	= cav->ball_state_initial;
+  level->ball_time		= cav->ball_time;
+  level->num_ball_contents	= cav->num_ball_arrays;
 
-  level->lenses_score		= lev->lenses_score;
-  level->magnify_score		= lev->magnify_score;
-  level->slurp_score		= lev->slurp_score;
+  level->lenses_score		= cav->lenses_score;
+  level->magnify_score		= cav->magnify_score;
+  level->slurp_score		= cav->slurp_score;
 
-  level->lenses_time		= lev->lenses_time;
-  level->magnify_time		= lev->magnify_time;
+  level->lenses_time		= cav->lenses_time;
+  level->magnify_time		= cav->magnify_time;
 
   level->wind_direction_initial =
-    map_direction_EM_to_RND(lev->wind_direction_initial);
+    map_direction_EM_to_RND(cav->wind_direction_initial);
 
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (j = 0; j < 8; j++)
       level->ball_content[i].e[ball_xy[j][0]][ball_xy[j][1]] =
-	map_element_EM_to_RND(lev->ball_array[i][j]);
+	map_element_EM_to_RND(cav->ball_array[i][j]);
 
   map_android_clone_elements_EM_to_RND(level);
 
@@ -3696,8 +3696,8 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   {
     // in case of all players set to the same field, use the first player
     int nr = MAX_PLAYERS - i - 1;
-    int jx = lev->player_x[nr];
-    int jy = lev->player_y[nr];
+    int jx = cav->player_x[nr];
+    int jy = cav->player_y[nr];
 
     if (jx != -1 && jy != -1)
       level->field[jx][jy] = EL_PLAYER_1 + nr;

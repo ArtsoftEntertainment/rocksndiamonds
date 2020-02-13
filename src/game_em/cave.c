@@ -13,7 +13,7 @@ void setLevelInfoToDefaults_EM(void)
   int i;
 
   native_em_level.file_version = FILE_VERSION_EM_ACTUAL;
-  native_em_level.lev = &lev;
+  native_em_level.cav = &lev;
 
   game_em.lev = &lev;
   for (i = 0; i < MAX_PLAYERS; i++)

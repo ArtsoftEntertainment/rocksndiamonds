@@ -297,7 +297,7 @@ static int getLevelFromScreenY_RND(int sy)
 
 static int getLevelFromScreenX_EM(int sx)
 {
-  int level_xsize = level.native_em_level->lev->width;
+  int level_xsize = level.native_em_level->cav->width;
   int full_xsize = level_xsize * TILESIZE_VAR;
 
   sx -= (full_xsize < SXSIZE ? (SXSIZE - full_xsize) / 2 : 0);
@@ -314,7 +314,7 @@ static int getLevelFromScreenX_EM(int sx)
 
 static int getLevelFromScreenY_EM(int sy)
 {
-  int level_ysize = level.native_em_level->lev->height;
+  int level_ysize = level.native_em_level->cav->height;
   int full_ysize = level_ysize * TILESIZE_VAR;
 
   sy -= (full_ysize < SYSIZE ? (SYSIZE - full_ysize) / 2 : 0);
@@ -7751,11 +7751,11 @@ int map_element_EM_to_RND(int element_em)
 void map_android_clone_elements_RND_to_EM(struct LevelInfo *level)
 {
   struct LevelInfo_EM *level_em = level->native_em_level;
-  struct LEVEL *lev = level_em->lev;
+  struct LEVEL *cav = level_em->cav;
   int i, j;
 
   for (i = 0; i < TILE_MAX; i++)
-    lev->android_array[i] = Xblank;
+    cav->android_array[i] = Xblank;
 
   for (i = 0; i < level->num_android_clone_elements; i++)
   {
@@ -7764,21 +7764,21 @@ void map_android_clone_elements_RND_to_EM(struct LevelInfo *level)
 
     for (j = 0; em_object_mapping_list[j].element_em != -1; j++)
       if (em_object_mapping_list[j].element_rnd == element_rnd)
-	lev->android_array[em_object_mapping_list[j].element_em] = element_em;
+	cav->android_array[em_object_mapping_list[j].element_em] = element_em;
   }
 }
 
 void map_android_clone_elements_EM_to_RND(struct LevelInfo *level)
 {
   struct LevelInfo_EM *level_em = level->native_em_level;
-  struct LEVEL *lev = level_em->lev;
+  struct LEVEL *cav = level_em->cav;
   int i, j;
 
   level->num_android_clone_elements = 0;
 
   for (i = 0; i < TILE_MAX; i++)
   {
-    int element_em = lev->android_array[i];
+    int element_em = cav->android_array[i];
     int element_rnd;
     boolean element_found = FALSE;
 

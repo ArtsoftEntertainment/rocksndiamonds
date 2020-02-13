@@ -49,7 +49,7 @@ struct LevelInfo_EM
 
   short cave[CAVE_WIDTH][CAVE_HEIGHT];
 
-  struct LEVEL *lev;
+  struct LEVEL *cav;
 };
 
 struct GraphicInfo_EM
