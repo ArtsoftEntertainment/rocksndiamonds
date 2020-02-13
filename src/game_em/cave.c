@@ -10,7 +10,7 @@ struct LevelInfo_EM native_em_level;
 
 void setLevelInfoToDefaults_EM(void)
 {
-  int i;
+  int i, j, x, y;
 
   native_em_level.file_version = FILE_VERSION_EM_ACTUAL;
   native_em_level.cav = &cav;
@@ -19,7 +19,7 @@ void setLevelInfoToDefaults_EM(void)
   for (i = 0; i < MAX_PLAYERS; i++)
     game_em.ply[i] = &ply[i];
 
-  cav.width = 64;
+  cav.width  = 64;
   cav.height = 32;
 
   for (i = 0; i < MAX_PLAYERS; i++)
@@ -28,23 +28,60 @@ void setLevelInfoToDefaults_EM(void)
     cav.player_y[i] = -1;
   }
 
-  cav.lenses_cnt = 0;
-  cav.magnify_cnt = 0;
+  cav.time_seconds	= 0;
+  cav.required		= 0;
 
-  cav.wheel_cnt = 0;
-  cav.wheel_x = 1;
-  cav.wheel_y = 1;
+  cav.eater_score	= 0;
+  cav.alien_score	= 0;
+  cav.bug_score		= 0;
+  cav.tank_score	= 0;
+  cav.emerald_score	= 0;
+  cav.diamond_score	= 0;
+  cav.nut_score		= 0;
+  cav.slurp_score	= 0;
+  cav.dynamite_score	= 0;
+  cav.key_score		= 0;
+  cav.lenses_score	= 0;
+  cav.magnify_score	= 0;
+  cav.exit_score	= 0;
 
-  cav.wind_time = 9999;
-  cav.wind_cnt = 0;
+  cav.android_move_time	= 0;
+  cav.android_clone_time= 0;
+  cav.ball_time		= 0;
+  cav.amoeba_time	= 0;
+  cav.wonderwall_time	= 0;
+  cav.wheel_time	= 0;
+  cav.wheel_x		= 1;
+  cav.wheel_y		= 1;
+  cav.lenses_time	= 0;
+  cav.magnify_time	= 0;
+  cav.wind_time		= 9999;
+  cav.wind_direction	= 0;
 
-  cav.wonderwall_state = 0;
-  cav.wonderwall_time = 0;
+  cav.ball_random	= 0;
+  cav.ball_state	= 0;
+  cav.wonderwall_state	= 0;
+  cav.wheel_cnt		= 0;
+  cav.lenses_cnt	= 0;
+  cav.magnify_cnt	= 0;
+  cav.wind_cnt		= 0;
 
   cav.num_ball_arrays = 8;
 
+  for (i = 0; i < 8; i++)
+    for (j = 0; j < 9; j++)
+      cav.eater_array[i][j] = Xblank;
+
+  for (i = 0; i < 8; i++)
+    for (j = 0; j < 8; j++)
+      cav.ball_array[i][j] = Xblank;
+
   for (i = 0; i < TILE_MAX; i++)
     cav.android_array[i] = Xblank;
+
+  for (x = 0; x < CAVE_WIDTH; x++)
+    for (y = 0; y < CAVE_HEIGHT; y++)
+      cav.cave[x][y] = Zborder;
 }
 
 
