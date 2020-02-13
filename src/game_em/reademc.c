@@ -447,8 +447,8 @@ void convert_em_level(unsigned char *src, int file_version)
   {
     temp = GET_BE16(src[2096 + i * 2]);
 
-    ply[i].x_initial = (temp & 63);
-    ply[i].y_initial = (temp >> 6 & 31);
+    lev.player_x[i] = (temp & 63);
+    lev.player_y[i] = (temp >> 6 & 31);
   }
 
   /* cave */
@@ -467,7 +467,7 @@ void convert_em_level(unsigned char *src, int file_version)
   /* at last, set the two players at their positions in the playfield */
   /* (native EM[C] levels always have exactly two players in a level) */
   for (i = 0; i < 2; i++)
-    native_em_level.cave[ply[i].x_initial][ply[i].y_initial] = Zplayer;
+    native_em_level.cave[lev.player_x[i]][lev.player_y[i]] = Zplayer;
 
   native_em_level.file_version = file_version;
 }

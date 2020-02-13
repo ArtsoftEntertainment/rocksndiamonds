@@ -13,10 +13,7 @@ void setLevelInfoToDefaults_EM(void)
   int i;
 
   native_em_level.file_version = FILE_VERSION_EM_ACTUAL;
-
   native_em_level.lev = &lev;
-  for (i = 0; i < MAX_PLAYERS; i++)
-    native_em_level.ply[i] = &ply[i];
 
   game_em.lev = &lev;
   for (i = 0; i < MAX_PLAYERS; i++)
@@ -27,8 +24,8 @@ void setLevelInfoToDefaults_EM(void)
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    ply[i].x_initial = -1;
-    ply[i].y_initial = -1;
+    lev.player_x[i] = -1;
+    lev.player_y[i] = -1;
   }
 
   lev.lenses_cnt_initial = 0;

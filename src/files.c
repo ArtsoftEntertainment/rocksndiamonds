@@ -3516,7 +3516,6 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   };
   struct LevelInfo_EM *level_em = level->native_em_level;
   struct LEVEL *lev = level_em->lev;
-  struct PLAYER **ply = level_em->ply;
   int i, j, x, y;
 
   lev->width  = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
@@ -3591,8 +3590,8 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    ply[i]->x_initial = -1;
-    ply[i]->y_initial = -1;
+    lev->player_x[i] = -1;
+    lev->player_y[i] = -1;
   }
 
   // initialize player positions and delete players from the playfield
@@ -3602,8 +3601,8 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
     {
       int player_nr = GET_PLAYER_NR(level->field[x][y]);
 
-      ply[player_nr]->x_initial = x;
-      ply[player_nr]->y_initial = y;
+      lev->player_x[player_nr] = x;
+      lev->player_y[player_nr] = y;
 
       level_em->cave[x][y] = map_element_RND_to_EM(EL_EMPTY);
     }
@@ -3625,7 +3624,6 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   };
   struct LevelInfo_EM *level_em = level->native_em_level;
   struct LEVEL *lev = level_em->lev;
-  struct PLAYER **ply = level_em->ply;
   int i, j, x, y;
 
   level->fieldx = MIN(lev->width,  MAX_LEV_FIELDX);
@@ -3698,8 +3696,8 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   {
     // in case of all players set to the same field, use the first player
     int nr = MAX_PLAYERS - i - 1;
-    int jx = ply[nr]->x_initial;
-    int jy = ply[nr]->y_initial;
+    int jx = lev->player_x[nr];
+    int jy = lev->player_y[nr];
 
     if (jx != -1 && jy != -1)
       level->field[jx][jy] = EL_PLAYER_1 + nr;

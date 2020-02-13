@@ -50,7 +50,6 @@ struct LevelInfo_EM
   short cave[CAVE_WIDTH][CAVE_HEIGHT];
 
   struct LEVEL *lev;
-  struct PLAYER *ply[MAX_PLAYERS];
 };
 
 struct GraphicInfo_EM

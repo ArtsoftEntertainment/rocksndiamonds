@@ -83,7 +83,8 @@ void prepare_em_level(void)
     ply[i].exists = 0;
     ply[i].alive_initial = FALSE;
 
-    if (ply[i].x_initial != -1 && ply[i].y_initial != -1)
+    if (lev.player_x[i] != -1 &&
+	lev.player_y[i] != -1)
     {
       ply[i].exists = 1;
 
@@ -110,8 +111,8 @@ void prepare_em_level(void)
       }
       else
       {
-	int x = ply[i].x_initial;
-	int y = ply[i].y_initial;
+	int x = lev.player_x[i];
+	int y = lev.player_y[i];
 
 	native_em_level.cave[x][y] = Xblank;
 
@@ -130,8 +131,8 @@ void prepare_em_level(void)
     ply[i].dynamite_cnt = 0;
     ply[i].keys = 0;
     ply[i].anim = 0;
-    ply[i].oldx = ply[i].x = ply[i].x_initial + lev.left;
-    ply[i].oldy = ply[i].y = ply[i].y_initial + lev.top;
+    ply[i].oldx = ply[i].x = lev.player_x[i] + lev.left;
+    ply[i].oldy = ply[i].y = lev.player_y[i] + lev.top;
     ply[i].last_move_dir = MV_NONE;
     ply[i].joy_n = ply[i].joy_e = ply[i].joy_s = ply[i].joy_w = 0;
     ply[i].joy_snap  = ply[i].joy_drop = 0;

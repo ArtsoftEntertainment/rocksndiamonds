@@ -632,6 +632,9 @@ struct LEVEL
   int right;			/* playfield right edge */
   int bottom;			/* playfield bottom edge */
 
+  int player_x[MAX_PLAYERS];	/* player x pos */
+  int player_y[MAX_PLAYERS];	/* player y pos */
+
   int time_seconds;		/* available time (seconds) */
   int time_initial;		/* available time (initial) */
   int time;			/* time remaining (runtime) */
@@ -730,8 +733,6 @@ struct PLAYER
   int keys;
   int anim;
 
-  int x_initial;
-  int y_initial;
   int x;
   int y;
   int oldx;
