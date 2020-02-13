@@ -6,6 +6,7 @@
 // ============================================================================
 
 #include "emerald.h"
+#include "cave.h"
 
 
 // ----------------------------------------------------------------------------
@@ -39,7 +40,7 @@ struct GameInfo_EM
   int last_moving_player;
   int last_player_direction[MAX_PLAYERS];
 
-  struct LEVEL *lev;
+  struct LOGIC *lev;
   struct PLAYER *ply[MAX_PLAYERS];
 };
 
@@ -47,7 +48,7 @@ struct LevelInfo_EM
 {
   int file_version;
 
-  struct LEVEL *cav;
+  struct CAVE *cav;
 };
 
 struct GraphicInfo_EM
@@ -73,7 +74,7 @@ struct EngineSnapshotInfo_EM
 {
   struct GameInfo_EM game_em;
   unsigned int RandomEM;
-  struct LEVEL lev;
+  struct LOGIC lev;
   struct PLAYER ply[MAX_PLAYERS];
   int screen_x;
   int screen_y;

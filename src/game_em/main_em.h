@@ -87,8 +87,8 @@ extern int			SX, SY;
 
 extern unsigned int RandomEM;
 
-extern struct LEVEL cav;
-extern struct LEVEL lev;
+extern struct CAVE cav;
+extern struct LOGIC lev;
 extern struct PLAYER ply[MAX_PLAYERS];
 
 extern struct LevelInfo_EM native_em_level;

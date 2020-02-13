@@ -8,8 +8,8 @@
 
 unsigned int RandomEM;
 
-struct LEVEL cav;
-struct LEVEL lev;
+struct CAVE cav;
+struct LOGIC lev;
 struct PLAYER ply[MAX_PLAYERS];
 
 extern int screen_x;

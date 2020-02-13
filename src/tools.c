@@ -7751,7 +7751,7 @@ int map_element_EM_to_RND(int element_em)
 void map_android_clone_elements_RND_to_EM(struct LevelInfo *level)
 {
   struct LevelInfo_EM *level_em = level->native_em_level;
-  struct LEVEL *cav = level_em->cav;
+  struct CAVE *cav = level_em->cav;
   int i, j;
 
   for (i = 0; i < TILE_MAX; i++)
@@ -7771,7 +7771,7 @@ void map_android_clone_elements_RND_to_EM(struct LevelInfo *level)
 void map_android_clone_elements_EM_to_RND(struct LevelInfo *level)
 {
   struct LevelInfo_EM *level_em = level->native_em_level;
-  struct LEVEL *cav = level_em->cav;
+  struct CAVE *cav = level_em->cav;
   int i, j;
 
   level->num_android_clone_elements = 0;

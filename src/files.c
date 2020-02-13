@@ -3515,7 +3515,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
     { 2, 2 },
   };
   struct LevelInfo_EM *level_em = level->native_em_level;
-  struct LEVEL *cav = level_em->cav;
+  struct CAVE *cav = level_em->cav;
   int i, j, x, y;
 
   cav->width  = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
@@ -3623,7 +3623,7 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
     { 2, 2 },
   };
   struct LevelInfo_EM *level_em = level->native_em_level;
-  struct LEVEL *cav = level_em->cav;
+  struct CAVE *cav = level_em->cav;
   int i, j, x, y;
 
   level->fieldx = MIN(cav->width,  MAX_LEV_FIELDX);
