@@ -46,9 +46,6 @@ void setLevelInfoToDefaults_EM(void)
   for (i = 0; i < TILE_MAX; i++)
     cav.android_array[i] = Xblank;
 
-  /* initial number of players in this level */
-  cav.home_initial = 0;
-
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     ply[i].exists = 0;

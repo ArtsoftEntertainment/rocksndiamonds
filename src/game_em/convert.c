@@ -41,40 +41,40 @@ void prepare_em_level(void)
 
   for (x = 0; x < lev.width; x++)
     for (y = 0; y < lev.height; y++)
-      lev.cave[lev.left + x][lev.top + y] = lev.cave_raw[x][y];
+      lev.cave[lev.left + x][lev.top + y] = cav.cave_raw[x][y];
 
   for (x = lev.left; x < lev.right; x++)
     for (y = lev.top; y < lev.bottom; y++)
       lev.next[x][y] = lev.draw[x][y] = lev.cave[x][y];
 
-  lev.time_initial = lev.time_seconds;
-  lev.time = lev.time_initial;
+  lev.time_initial = cav.time_seconds;
+  lev.time = cav.time_initial;
 
-  lev.required = lev.required_initial;
+  lev.required = cav.required_initial;
   lev.score = 0;
 
-  lev.android_move_cnt  = lev.android_move_time;
-  lev.android_clone_cnt = lev.android_clone_time;
+  lev.android_move_cnt  = cav.android_move_time;
+  lev.android_clone_cnt = cav.android_clone_time;
 
   lev.ball_pos = 0;
-  lev.ball_state = lev.ball_state_initial;
-  lev.ball_cnt = lev.ball_time;
+  lev.ball_state = cav.ball_state_initial;
+  lev.ball_cnt = cav.ball_time;
 
   lev.eater_pos = 0;
   lev.shine_cnt = 0;
 
-  lev.lenses_cnt = lev.lenses_cnt_initial;
-  lev.magnify_cnt = lev.magnify_cnt_initial;
+  lev.lenses_cnt = cav.lenses_cnt_initial;
+  lev.magnify_cnt = cav.magnify_cnt_initial;
 
-  lev.wheel_cnt = lev.wheel_cnt_initial;
-  lev.wheel_x   = lev.wheel_x_initial;
-  lev.wheel_y   = lev.wheel_y_initial;
+  lev.wheel_cnt = cav.wheel_cnt_initial;
+  lev.wheel_x   = cav.wheel_x_initial;
+  lev.wheel_y   = cav.wheel_y_initial;
 
-  lev.wind_direction = lev.wind_direction_initial;
-  lev.wind_cnt       = lev.wind_cnt_initial;
+  lev.wind_direction = cav.wind_direction_initial;
+  lev.wind_cnt       = cav.wind_cnt_initial;
 
-  lev.wonderwall_state = lev.wonderwall_state_initial;
-  lev.wonderwall_time  = lev.wonderwall_time_initial;
+  lev.wonderwall_state = cav.wonderwall_state_initial;
+  lev.wonderwall_time  = cav.wonderwall_time_initial;
 
   lev.killed_out_of_time = FALSE;
 
@@ -86,8 +86,8 @@ void prepare_em_level(void)
     ply[i].exists = 0;
     ply[i].alive_initial = FALSE;
 
-    if (lev.player_x[i] != -1 &&
-	lev.player_y[i] != -1)
+    if (cav.player_x[i] != -1 &&
+	cav.player_y[i] != -1)
     {
       ply[i].exists = 1;
 
@@ -114,10 +114,8 @@ void prepare_em_level(void)
       }
       else
       {
-	int x = lev.player_x[i];
-	int y = lev.player_y[i];
-
-	lev.cave_raw[x][y] = Xblank;
+	int x = cav.player_x[i];
+	int y = cav.player_y[i];
 
 	lev.cave[lev.left + x][lev.top + y] = Xblank;
 	lev.next[lev.left + x][lev.top + y] = Xblank;
@@ -134,8 +132,8 @@ void prepare_em_level(void)
     ply[i].dynamite_cnt = 0;
     ply[i].keys = 0;
     ply[i].anim = 0;
-    ply[i].oldx = ply[i].x = lev.player_x[i] + lev.left;
-    ply[i].oldy = ply[i].y = lev.player_y[i] + lev.top;
+    ply[i].oldx = ply[i].x = cav.player_x[i] + lev.left;
+    ply[i].oldy = ply[i].y = cav.player_y[i] + lev.top;
     ply[i].last_move_dir = MV_NONE;
     ply[i].joy_n = ply[i].joy_e = ply[i].joy_s = ply[i].joy_w = 0;
     ply[i].joy_snap  = ply[i].joy_drop = 0;
