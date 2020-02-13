@@ -9,16 +9,16 @@
 
 void prepare_em_level(void)
 {
-  int i, x, y;
+  int i, j, x, y;
   int players_left;
   boolean team_mode;
-
-  /* initialize runtime level structure */
-  lev = cav;
 
   /* reset all runtime variables to their initial values */
 
   game_init_cave_buffers();
+
+  lev.width  = cav.width;
+  lev.height = cav.height;
 
   lev.left = CAVE_BUFFER_XOFFSET;
   lev.top  = CAVE_BUFFER_YOFFSET;
@@ -47,36 +47,74 @@ void prepare_em_level(void)
     for (y = lev.top; y < lev.bottom; y++)
       lev.next[x][y] = lev.draw[x][y] = lev.cave[x][y];
 
-  lev.time_initial = cav.time_seconds;
-  lev.time = cav.time_initial;
+  lev.time = cav.time_seconds;
 
   lev.required = cav.required_initial;
   lev.score = 0;
 
-  lev.android_move_cnt  = cav.android_move_time;
-  lev.android_clone_cnt = cav.android_clone_time;
+  lev.eater_score	= cav.eater_score;
+  lev.alien_score	= cav.alien_score;
+  lev.bug_score		= cav.bug_score;
+  lev.tank_score	= cav.tank_score;
+  lev.emerald_score	= cav.emerald_score;
+  lev.diamond_score	= cav.diamond_score;
+  lev.nut_score		= cav.nut_score;
+  lev.slurp_score	= cav.slurp_score;
+  lev.dynamite_score	= cav.dynamite_score;
+  lev.key_score		= cav.key_score;
+  lev.lenses_score	= cav.lenses_score;
+  lev.magnify_score	= cav.magnify_score;
+  lev.exit_score	= cav.exit_score;
 
-  lev.ball_pos = 0;
-  lev.ball_state = cav.ball_state_initial;
-  lev.ball_cnt = cav.ball_time;
+  lev.amoeba_time = cav.amoeba_time;
+
+  lev.android_move_time = cav.android_move_time;
+  lev.android_move_cnt  = cav.android_move_time;
+
+  lev.android_clone_time = cav.android_clone_time;
+  lev.android_clone_cnt  = cav.android_clone_time;
+
+  lev.ball_time   = cav.ball_time;
+  lev.ball_cnt    = cav.ball_time;
+  lev.ball_state  = cav.ball_state_initial;
+  lev.ball_random = cav.ball_random;
+  lev.ball_pos    = 0;
 
   lev.eater_pos = 0;
   lev.shine_cnt = 0;
 
-  lev.lenses_cnt = cav.lenses_cnt_initial;
-  lev.magnify_cnt = cav.magnify_cnt_initial;
+  lev.lenses_time = cav.lenses_time;
+  lev.lenses_cnt  = cav.lenses_cnt_initial;
 
-  lev.wheel_cnt = cav.wheel_cnt_initial;
-  lev.wheel_x   = cav.wheel_x_initial;
-  lev.wheel_y   = cav.wheel_y_initial;
+  lev.magnify_time = cav.magnify_time;
+  lev.magnify_cnt  = cav.magnify_cnt_initial;
 
-  lev.wind_direction = cav.wind_direction_initial;
+  lev.wheel_time = cav.wheel_time;
+  lev.wheel_cnt  = cav.wheel_cnt_initial;
+  lev.wheel_x    = cav.wheel_x_initial;
+  lev.wheel_y    = cav.wheel_y_initial;
+
+  lev.wind_time      = cav.wind_time;
   lev.wind_cnt       = cav.wind_cnt_initial;
+  lev.wind_direction = cav.wind_direction_initial;
 
-  lev.wonderwall_state = cav.wonderwall_state_initial;
   lev.wonderwall_time  = cav.wonderwall_time_initial;
+  lev.wonderwall_state = cav.wonderwall_state_initial;
 
   lev.killed_out_of_time = FALSE;
+
+  lev.num_ball_arrays = cav.num_ball_arrays;
+
+  for (i = 0; i < 8; i++)
+    for (j = 0; j < 9; j++)
+      lev.eater_array[i][j] = cav.eater_array[i][j];
+
+  for (i = 0; i < 8; i++)
+    for (j = 0; j < 8; j++)
+      lev.ball_array[i][j] = cav.ball_array[i][j];
+
+  for (i = 0; i < TILE_MAX; i++)
+    lev.android_array[i] = cav.android_array[i];
 
   /* determine number of players in this level */
   lev.home_initial = 0;
