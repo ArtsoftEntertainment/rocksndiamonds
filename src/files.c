@@ -3521,8 +3521,8 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   cav->width  = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
   cav->height = MIN(level->fieldy, MAX_PLAYFIELD_HEIGHT);
 
-  cav->time_seconds     = level->time;
-  cav->required_initial = level->gems_needed;
+  cav->time_seconds	= level->time;
+  cav->required		= level->gems_needed;
 
   cav->emerald_score	= level->score[SC_EMERALD];
   cav->diamond_score	= level->score[SC_DIAMOND];
@@ -3542,13 +3542,13 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
 	  map_element_RND_to_EM(level->yamyam_content[i].e[x][y]);
 
   cav->amoeba_time		= level->amoeba_speed;
-  cav->wonderwall_time_initial	= level->time_magic_wall;
+  cav->wonderwall_time		= level->time_magic_wall;
   cav->wheel_time		= level->time_wheel;
 
   cav->android_move_time	= level->android_move_time;
   cav->android_clone_time	= level->android_clone_time;
   cav->ball_random		= level->ball_random;
-  cav->ball_state_initial	= level->ball_state_initial;
+  cav->ball_state		= level->ball_state_initial;
   cav->ball_time		= level->ball_time;
   cav->num_ball_arrays		= level->num_ball_contents;
 
@@ -3559,10 +3559,10 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   cav->lenses_time		= level->lenses_time;
   cav->magnify_time		= level->magnify_time;
 
-  cav->wind_direction_initial =
+  cav->wind_direction =
     map_direction_RND_to_EM(level->wind_direction_initial);
-  cav->wind_cnt_initial = (level->wind_direction_initial != MV_NONE ?
-			   cav->wind_time : 0);
+  cav->wind_cnt = (level->wind_direction_initial != MV_NONE ?
+		   cav->wind_time : 0);
 
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (j = 0; j < 8; j++)
@@ -3575,7 +3575,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   // first fill the complete playfield with the default border element
   for (y = 0; y < EM_MAX_CAVE_HEIGHT; y++)
     for (x = 0; x < EM_MAX_CAVE_WIDTH; x++)
-      cav->cave_raw[x][y] = Zborder;
+      cav->cave[x][y] = Zborder;
 
   // then copy the real level contents from level file into the playfield
   for (y = 0; y < cav->height; y++) for (x = 0; x < cav->width; x++)
@@ -3585,7 +3585,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
     if (level->field[x][y] == EL_AMOEBA_DEAD)
       new_element = map_element_RND_to_EM(EL_AMOEBA_WET);
 
-    cav->cave_raw[x][y] = new_element;
+    cav->cave[x][y] = new_element;
   }
 
   for (i = 0; i < MAX_PLAYERS; i++)
@@ -3604,7 +3604,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
       cav->player_x[player_nr] = x;
       cav->player_y[player_nr] = y;
 
-      cav->cave_raw[x][y] = map_element_RND_to_EM(EL_EMPTY);
+      cav->cave[x][y] = map_element_RND_to_EM(EL_EMPTY);
     }
   }
 }
@@ -3630,7 +3630,7 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   level->fieldy = MIN(cav->height, MAX_LEV_FIELDY);
 
   level->time        = cav->time_seconds;
-  level->gems_needed = cav->required_initial;
+  level->gems_needed = cav->required;
 
   sprintf(level->name, "Level %d", level->file_info.nr);
 
@@ -3654,13 +3654,13 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
 	  map_element_EM_to_RND(cav->eater_array[i][y * 3 + x]);
 
   level->amoeba_speed		= cav->amoeba_time;
-  level->time_magic_wall	= cav->wonderwall_time_initial;
+  level->time_magic_wall	= cav->wonderwall_time;
   level->time_wheel		= cav->wheel_time;
 
   level->android_move_time	= cav->android_move_time;
   level->android_clone_time	= cav->android_clone_time;
   level->ball_random		= cav->ball_random;
-  level->ball_state_initial	= cav->ball_state_initial;
+  level->ball_state_initial	= cav->ball_state;
   level->ball_time		= cav->ball_time;
   level->num_ball_contents	= cav->num_ball_arrays;
 
@@ -3672,7 +3672,7 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   level->magnify_time		= cav->magnify_time;
 
   level->wind_direction_initial =
-    map_direction_EM_to_RND(cav->wind_direction_initial);
+    map_direction_EM_to_RND(cav->wind_direction);
 
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (j = 0; j < 8; j++)
@@ -3684,7 +3684,7 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   // convert the playfield (some elements need special treatment)
   for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
   {
-    int new_element = map_element_EM_to_RND(cav->cave_raw[x][y]);
+    int new_element = map_element_EM_to_RND(cav->cave[x][y]);
 
     if (new_element == EL_AMOEBA_WET && level->amoeba_speed == 0)
       new_element = EL_AMOEBA_DEAD;

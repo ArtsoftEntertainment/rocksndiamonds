@@ -333,7 +333,7 @@ void convert_em_level(unsigned char *src, int file_version)
   if (cav.time_seconds > 9999)
     cav.time_seconds = 9999;
 
-  cav.required_initial = src[2095];
+  cav.required = src[2095];
 
   /* scores */
 
@@ -367,40 +367,40 @@ void convert_em_level(unsigned char *src, int file_version)
     temp = 9999;
   cav.amoeba_time = temp;
 
-  cav.wonderwall_time_initial = GET_BE16(src[2102]);
+  cav.wonderwall_time = GET_BE16(src[2102]);
 
-  cav.wind_cnt_initial = src[2149] & 15 ? cav.wind_time : 0;
+  cav.wind_cnt = src[2149] & 15 ? cav.wind_time : 0;
   temp = src[2149];
-  cav.wind_direction_initial = (temp & 8 ? 0 :
-				temp & 1 ? 1 :
-				temp & 2 ? 2 :
-				temp & 4 ? 3 : 0);
+  cav.wind_direction = (temp & 8 ? 0 :
+			temp & 1 ? 1 :
+			temp & 2 ? 2 :
+			temp & 4 ? 3 : 0);
   /* global flags */
 
-  cav.ball_random	 = src[2162] & 1   ? 1 : 0;
-  cav.ball_state_initial = src[2162] & 128 ? 1 : 0;
+  cav.ball_random = src[2162] & 1   ? 1 : 0;
+  cav.ball_state  = src[2162] & 128 ? 1 : 0;
 
   for (temp = 1; temp < 2047; temp++)
   {
     switch (src[temp])
     {
       case 36:					/* wonderwall */
-	cav.wonderwall_state_initial = 1;
-	cav.wonderwall_time_initial = 9999;
+	cav.wonderwall_state = 1;
+	cav.wonderwall_time = 9999;
 	break;
 
       case 40:					/* wheel */
-	cav.wheel_x_initial = temp & 63;
-	cav.wheel_y_initial = temp >> 6;
-	cav.wheel_cnt_initial = cav.wheel_time;
+	cav.wheel_x = temp & 63;
+	cav.wheel_y = temp >> 6;
+	cav.wheel_cnt = cav.wheel_time;
 	break;
 
       case 163:					/* fake blank */
-	cav.lenses_cnt_initial = 9999;
+	cav.lenses_cnt = 9999;
 	break;
 
       case 164:					/* fake grass */
-	cav.magnify_cnt_initial = 9999;
+	cav.magnify_cnt = 9999;
 	break;
     }
   }
@@ -456,18 +456,18 @@ void convert_em_level(unsigned char *src, int file_version)
   /* first fill the complete playfield with the default border element */
   for (y = 0; y < CAVE_HEIGHT; y++)
     for (x = 0; x < CAVE_WIDTH; x++)
-      cav.cave_raw[x][y] = Zborder;
+      cav.cave[x][y] = Zborder;
 
   /* then copy the real level contents from level file into the playfield */
   temp = 0;
   for (y = 0; y < cav.height; y++)
     for (x = 0; x < cav.width; x++)
-      cav.cave_raw[x][y] = map_emc[src[temp++]];
+      cav.cave[x][y] = map_emc[src[temp++]];
 
   /* at last, set the two players at their positions in the playfield */
   /* (native EM[C] levels always have exactly two players in a level) */
   for (i = 0; i < 2; i++)
-    cav.cave_raw[cav.player_x[i]][cav.player_y[i]] = Zplayer;
+    cav.cave[cav.player_x[i]][cav.player_y[i]] = Zplayer;
 
   native_em_level.file_version = file_version;
 }

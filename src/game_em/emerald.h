@@ -620,13 +620,13 @@ enum
 
 struct LOGIC
 {
-  int width;			/* playfield width */
-  int height;			/* playfield height */
+  int width;			/* cave width */
+  int height;			/* cave height */
 
-  int left;			/* playfield left edge */
-  int top;			/* playfield top edge */
-  int right;			/* playfield right edge */
-  int bottom;			/* playfield bottom edge */
+  int left;			/* cave left edge */
+  int top;			/* cave top edge */
+  int right;			/* cave right edge */
+  int bottom;			/* cave bottom edge */
 
   int time;			/* time remaining */
   int required;			/* emeralds needed */

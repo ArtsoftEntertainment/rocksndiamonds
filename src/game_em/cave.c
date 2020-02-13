@@ -28,29 +28,23 @@ void setLevelInfoToDefaults_EM(void)
     cav.player_y[i] = -1;
   }
 
-  cav.lenses_cnt_initial = 0;
-  cav.magnify_cnt_initial = 0;
+  cav.lenses_cnt = 0;
+  cav.magnify_cnt = 0;
 
-  cav.wheel_cnt_initial = 0;
-  cav.wheel_x_initial = 1;
-  cav.wheel_y_initial = 1;
+  cav.wheel_cnt = 0;
+  cav.wheel_x = 1;
+  cav.wheel_y = 1;
 
   cav.wind_time = 9999;
-  cav.wind_cnt_initial = 0;
+  cav.wind_cnt = 0;
 
-  cav.wonderwall_state_initial = 0;
-  cav.wonderwall_time_initial = 0;
+  cav.wonderwall_state = 0;
+  cav.wonderwall_time = 0;
 
   cav.num_ball_arrays = 8;
 
   for (i = 0; i < TILE_MAX; i++)
     cav.android_array[i] = Xblank;
-
-  for (i = 0; i < MAX_PLAYERS; i++)
-  {
-    ply[i].exists = 0;
-    ply[i].alive_initial = FALSE;
-  }
 }
 
 

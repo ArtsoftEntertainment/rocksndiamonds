@@ -41,7 +41,7 @@ void prepare_em_level(void)
 
   for (x = 0; x < lev.width; x++)
     for (y = 0; y < lev.height; y++)
-      lev.cave[lev.left + x][lev.top + y] = cav.cave_raw[x][y];
+      lev.cave[lev.left + x][lev.top + y] = cav.cave[x][y];
 
   for (x = lev.left; x < lev.right; x++)
     for (y = lev.top; y < lev.bottom; y++)
@@ -49,7 +49,7 @@ void prepare_em_level(void)
 
   lev.time = cav.time_seconds;
 
-  lev.required = cav.required_initial;
+  lev.required = cav.required;
   lev.score = 0;
 
   lev.eater_score	= cav.eater_score;
@@ -76,7 +76,7 @@ void prepare_em_level(void)
 
   lev.ball_time   = cav.ball_time;
   lev.ball_cnt    = cav.ball_time;
-  lev.ball_state  = cav.ball_state_initial;
+  lev.ball_state  = cav.ball_state;
   lev.ball_random = cav.ball_random;
   lev.ball_pos    = 0;
 
@@ -84,22 +84,22 @@ void prepare_em_level(void)
   lev.shine_cnt = 0;
 
   lev.lenses_time = cav.lenses_time;
-  lev.lenses_cnt  = cav.lenses_cnt_initial;
+  lev.lenses_cnt  = cav.lenses_cnt;
 
   lev.magnify_time = cav.magnify_time;
-  lev.magnify_cnt  = cav.magnify_cnt_initial;
+  lev.magnify_cnt  = cav.magnify_cnt;
 
   lev.wheel_time = cav.wheel_time;
-  lev.wheel_cnt  = cav.wheel_cnt_initial;
-  lev.wheel_x    = cav.wheel_x_initial;
-  lev.wheel_y    = cav.wheel_y_initial;
+  lev.wheel_cnt  = cav.wheel_cnt;
+  lev.wheel_x    = cav.wheel_x;
+  lev.wheel_y    = cav.wheel_y;
 
   lev.wind_time      = cav.wind_time;
-  lev.wind_cnt       = cav.wind_cnt_initial;
-  lev.wind_direction = cav.wind_direction_initial;
+  lev.wind_cnt       = cav.wind_cnt;
+  lev.wind_direction = cav.wind_direction;
 
-  lev.wonderwall_time  = cav.wonderwall_time_initial;
-  lev.wonderwall_state = cav.wonderwall_state_initial;
+  lev.wonderwall_time  = cav.wonderwall_time;
+  lev.wonderwall_state = cav.wonderwall_state;
 
   lev.killed_out_of_time = FALSE;
 
