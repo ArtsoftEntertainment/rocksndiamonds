@@ -3522,7 +3522,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   cav->height = MIN(level->fieldy, MAX_PLAYFIELD_HEIGHT);
 
   cav->time_seconds	= level->time;
-  cav->required		= level->gems_needed;
+  cav->gems_needed	= level->gems_needed;
 
   cav->emerald_score	= level->score[SC_EMERALD];
   cav->diamond_score	= level->score[SC_DIAMOND];
@@ -3630,7 +3630,7 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   level->fieldy = MIN(cav->height, MAX_LEV_FIELDY);
 
   level->time        = cav->time_seconds;
-  level->gems_needed = cav->required;
+  level->gems_needed = cav->gems_needed;
 
   sprintf(level->name, "Level %d", level->file_info.nr);
 

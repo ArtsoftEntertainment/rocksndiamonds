@@ -533,7 +533,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.diamond_score;
-	lev.required = lev.required < 3 ? 0 : lev.required - 3;
+	lev.gems_needed = lev.gems_needed < 3 ? 0 : lev.gems_needed - 3;
 	game.snapshot.collected_item = TRUE;
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
@@ -546,7 +546,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	next[x][y] = Zplayer;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.emerald_score;
-	lev.required = lev.required < 1 ? 0 : lev.required - 1;
+	lev.gems_needed = lev.gems_needed < 1 ? 0 : lev.gems_needed - 1;
 	game.snapshot.collected_item = TRUE;
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
@@ -1124,7 +1124,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.diamond_score;
-	lev.required = lev.required < 3 ? 0 : lev.required - 3;
+	lev.gems_needed = lev.gems_needed < 3 ? 0 : lev.gems_needed - 3;
 	game.snapshot.collected_item = TRUE;
 	ply->anim = PLY_walk_n + anim;
 	break;
@@ -1135,7 +1135,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	next[x][y] = Xblank;
 	play_element_sound(x, y, SOUND_collect, element);
 	lev.score += lev.emerald_score;
-	lev.required = lev.required < 1 ? 0 : lev.required - 1;
+	lev.gems_needed = lev.gems_needed < 1 ? 0 : lev.gems_needed - 1;
 	game.snapshot.collected_item = TRUE;
 	ply->anim = PLY_walk_n + anim;
 	break;
@@ -6551,7 +6551,7 @@ static void Lslide_ew(int x, int y)
 
 static void Lexit(int x, int y)
 {
-  if (lev.required > 0)
+  if (lev.gems_needed > 0)
     return;
 
   switch (RANDOM(64) / 21)

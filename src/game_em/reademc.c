@@ -333,7 +333,7 @@ void convert_em_level(unsigned char *src, int file_version)
   if (cav.time_seconds > 9999)
     cav.time_seconds = 9999;
 
-  cav.required = src[2095];
+  cav.gems_needed = src[2095];
 
   /* scores */
 

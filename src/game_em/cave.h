@@ -15,16 +15,16 @@ struct CAVE
   int player_y[MAX_PLAYERS];	/* player y pos */
 
   int time_seconds;		/* available time (seconds) */
-  int required;			/* emeralds needed */
+  int gems_needed;		/* emeralds needed */
 
   int eater_score;		/* score for killing eater */
   int alien_score;		/* score for killing alien */
   int bug_score;		/* score for killing bug */
   int tank_score;		/* score for killing tank */
+  int slurp_score;		/* score for slurping alien with spring */
+  int nut_score;		/* score for cracking nut to emerald */
   int emerald_score;		/* score for collecting emerald */
   int diamond_score;		/* score for collecting diamond */
-  int nut_score;		/* score for cracking nut */
-  int slurp_score;		/* score for slurping alien with spring */
   int dynamite_score;		/* score for collecting dynamite */
   int key_score;		/* score for colleting key */
   int lenses_score;		/* score for collecting lenses */

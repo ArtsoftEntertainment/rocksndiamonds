@@ -29,16 +29,16 @@ void setLevelInfoToDefaults_EM(void)
   }
 
   cav.time_seconds	= 0;
-  cav.required		= 0;
+  cav.gems_needed	= 0;
 
   cav.eater_score	= 0;
   cav.alien_score	= 0;
   cav.bug_score		= 0;
   cav.tank_score	= 0;
+  cav.slurp_score	= 0;
+  cav.nut_score		= 0;
   cav.emerald_score	= 0;
   cav.diamond_score	= 0;
-  cav.nut_score		= 0;
-  cav.slurp_score	= 0;
   cav.dynamite_score	= 0;
   cav.key_score		= 0;
   cav.lenses_score	= 0;

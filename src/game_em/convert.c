@@ -48,8 +48,7 @@ void prepare_em_level(void)
       lev.next[x][y] = lev.draw[x][y] = lev.cave[x][y];
 
   lev.time = cav.time_seconds;
-
-  lev.required = cav.required;
+  lev.gems_needed = cav.gems_needed;
   lev.score = 0;
 
   lev.eater_score	= cav.eater_score;

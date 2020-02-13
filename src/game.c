@@ -2228,14 +2228,14 @@ static void UpdateGameControlValues(void)
 	       game_mm.score :
 	       game.score);
   int gems = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-	      game_em.lev->required :
+	      game_em.lev->gems_needed :
 	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
 	      game_sp.infotrons_still_needed :
 	      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 	      game_mm.kettles_still_needed :
 	      game.gems_still_needed);
   int exit_closed = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-		     game_em.lev->required > 0 :
+		     game_em.lev->gems_needed > 0 :
 		     level.game_engine_type == GAME_ENGINE_TYPE_SP ?
 		     game_sp.infotrons_still_needed > 0 :
 		     level.game_engine_type == GAME_ENGINE_TYPE_MM ?
