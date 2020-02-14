@@ -41,7 +41,6 @@
  */
 
 #define GET_BE16(x)		((&x)[0] << 8 | (&x)[1])
-#define PUT_BE16(x, y)		{(&x)[0] = (y) >> 8; (&x)[1] = (y) & 0xff;}
 
 static const short map_emc[256] =
 {
@@ -329,10 +328,7 @@ void convert_em_level(unsigned char *src, int file_version)
 
   /* common to all emc caves */
 
-  cav.time_seconds = GET_BE16(src[2110]);
-  if (cav.time_seconds > 9999)
-    cav.time_seconds = 9999;
-
+  cav.time_seconds = MIN(GET_BE16(src[2110]), 9999);
   cav.gems_needed = src[2095];
 
   /* scores */
@@ -354,20 +350,16 @@ void convert_em_level(unsigned char *src, int file_version)
 
   /* times */
 
-  cav.android_move_time  = GET_BE16(src[2164]);
-  cav.android_clone_time = GET_BE16(src[2166]);
-  cav.ball_time		 = GET_BE16(src[2160]);
+  cav.android_move_time  = MIN(GET_BE16(src[2164]), 9999);
+  cav.android_clone_time = MIN(GET_BE16(src[2166]), 9999);
+  cav.ball_time		 = MIN(GET_BE16(src[2160]), 9999);
 
-  cav.lenses_time	= GET_BE16(src[2154]);
-  cav.magnify_time	= GET_BE16(src[2156]);
-  cav.wheel_time	= GET_BE16(src[2104]);
+  cav.lenses_time	= MIN(GET_BE16(src[2154]), 9999);
+  cav.magnify_time	= MIN(GET_BE16(src[2156]), 9999);
+  cav.wheel_time	= MIN(GET_BE16(src[2104]), 9999);
 
-  temp = GET_BE16(src[2100]) * 28;
-  if (temp > 9999)
-    temp = 9999;
-  cav.amoeba_time = temp;
-
-  cav.wonderwall_time = GET_BE16(src[2102]);
+  cav.amoeba_time	= MIN(GET_BE16(src[2100]) * 28, 9999);
+  cav.wonderwall_time	= MIN(GET_BE16(src[2102]), 9999);
 
   cav.wind_cnt = src[2149] & 15 ? cav.wind_time : 0;
   temp = src[2149];
@@ -375,6 +367,7 @@ void convert_em_level(unsigned char *src, int file_version)
 			temp & 1 ? 1 :
 			temp & 2 ? 2 :
 			temp & 4 ? 3 : 0);
+
   /* global flags */
 
   cav.ball_random = src[2162] & 1   ? 1 : 0;
@@ -407,9 +400,7 @@ void convert_em_level(unsigned char *src, int file_version)
 
   /* android */
 
-  temp = GET_BE16(src[2168]);
-
-  init_android_clone_table(temp);
+  init_android_clone_table(GET_BE16(src[2168]));
 
   /* eaters */
 
@@ -824,52 +815,20 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
   src[2098] &= 7;
   src[GET_BE16(src[2098])] = 128;
 
-  /* amoeba speed */
-  if (GET_BE16(src[2100]) > 9999)
-    PUT_BE16(src[2100], 9999);
-
-  /* time wonderwall */
-  if (GET_BE16(src[2102]) > 9999)
-    PUT_BE16(src[2102], 9999);
-
-  /* time */
-  if (GET_BE16(src[2110]) > 9999)
-    PUT_BE16(src[2110], 9999);
-
   /* wind direction */
   i = src[2149];
   i &= 15;
   i &= -i;
   src[2149] = i;
 
-  /* time lenses */
-  if (GET_BE16(src[2154]) > 9999)
-    PUT_BE16(src[2154], 9999);
-
-  /* time magnify */
-  if (GET_BE16(src[2156]) > 9999)
-    PUT_BE16(src[2156], 9999);
-
   /* ball object */
   src[2158] = 0;
   src[2159] = map_v6[src[2159]];
-
-  /* ball pause */
-  if (GET_BE16(src[2160]) > 9999)
-    PUT_BE16(src[2160], 9999);
 
   /* ball data */
   src[2162] &= 129;
   if (src[2162] & 1)
     src[2163] = 0;
-
-  /* android move pause */
-  if (GET_BE16(src[2164]) > 9999)
-    PUT_BE16(src[2164], 9999);
-
-  /* android clone pause */
-  if (GET_BE16(src[2166]) > 9999)
-    PUT_BE16(src[2166], 9999);
 
   /* android data */
   src[2168] &= 31;
