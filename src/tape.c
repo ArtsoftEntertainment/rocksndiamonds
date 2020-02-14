@@ -1251,12 +1251,13 @@ void AutoPlayTape(void)
   PrintLine("=", 79);
   Print("Number of levels played: %d\n", num_levels_played);
   Print("Number of levels solved: %d (%d%%)\n", num_levels_solved,
-	 (num_levels_played ? num_levels_solved * 100 / num_levels_played :0));
+	(num_levels_played ? num_levels_solved * 100 / num_levels_played : 0));
   PrintLine("-", 79);
   Print("Summary (for automatic parsing by scripts):\n");
-  Print("LEVELDIR '%s', SOLVED %d/%d (%d%%)",
-	 autoplay_leveldir->identifier, num_levels_solved, num_levels_played,
-	 (num_levels_played ? num_levels_solved * 100 / num_levels_played :0));
+  Print("LEVELDIR [%s] '%s', SOLVED %d/%d (%d%%)",
+	(num_levels_played == num_levels_solved ? " OK " : "WARN"),
+	autoplay_leveldir->identifier, num_levels_solved, num_levels_played,
+	(num_levels_played ? num_levels_solved * 100 / num_levels_played : 0));
 
   if (num_levels_played != num_levels_solved)
   {
