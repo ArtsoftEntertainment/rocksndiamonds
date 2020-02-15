@@ -115,7 +115,7 @@ static void Lboom_generic(int x, int y, int element, int element_middle)
 
 static void Lboom_bug(int x, int y, int by_element)
 {
-  next[x][y] = Znormal;
+  next[x][y] = Zbug;
 
   Lboom_generic(x, y, Xemerald, Xdiamond);
 
@@ -126,7 +126,7 @@ static void Lboom_bug(int x, int y, int by_element)
 
 static void Lboom_tank(int x, int y, int by_element)
 {
-  next[x][y] = Znormal;
+  next[x][y] = Ztank;
 
   Lboom_generic(x, y, Xblank, Xblank);
 
@@ -137,7 +137,7 @@ static void Lboom_tank(int x, int y, int by_element)
 
 static void Lboom_eater(int x, int y, int by_element)
 {
-  next[x][y] = Znormal;
+  next[x][y] = Zeater;
 
   boom[x-1][y-1] = lev.eater_array[lev.eater_pos][0];
   boom[x][y-1]   = lev.eater_array[lev.eater_pos][1];
@@ -5571,7 +5571,9 @@ static void Lpush_emerald_e(int x, int y)
   switch (cave[x+1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5609,7 +5611,9 @@ static void Lpush_emerald_w(int x, int y)
   switch (cave[x-1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5647,7 +5651,9 @@ static void Lpush_diamond_e(int x, int y)
   switch (cave[x+1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5685,7 +5691,9 @@ static void Lpush_diamond_w(int x, int y)
   switch (cave[x-1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5723,7 +5731,9 @@ static void Lpush_stone_e(int x, int y)
   switch (cave[x+1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5761,7 +5771,9 @@ static void Lpush_stone_w(int x, int y)
   switch (cave[x-1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5799,7 +5811,9 @@ static void Lpush_bomb_e(int x, int y)
   switch (cave[x+1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5837,7 +5851,9 @@ static void Lpush_bomb_w(int x, int y)
   switch (cave[x-1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5875,7 +5891,9 @@ static void Lpush_nut_e(int x, int y)
   switch (cave[x+1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5913,7 +5931,9 @@ static void Lpush_nut_w(int x, int y)
   switch (cave[x-1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5951,7 +5971,9 @@ static void Lpush_spring_e(int x, int y)
   switch (cave[x+1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -5989,7 +6011,9 @@ static void Lpush_spring_w(int x, int y)
   switch (cave[x-1][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -6786,7 +6810,9 @@ static void Lboom_one(int x, int y, boolean by_dynamite)
   switch (cave[x][y])
   {
     case Zborder:
-    case Znormal:
+    case Zbug:
+    case Ztank:
+    case Zeater:
     case Zdynamite:
     case Xboom_bug:
     case Xboom_bomb:
@@ -6882,7 +6908,15 @@ static void Lexplode(int x, int y)
 {
   switch (cave[x][y])
   {
-    case Znormal:
+    case Zbug:
+      Lboom_nine(x, y, FALSE);
+      break;
+
+    case Ztank:
+      Lboom_nine(x, y, FALSE);
+      break;
+
+    case Zeater:
       Lboom_nine(x, y, FALSE);
       break;
 

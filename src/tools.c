@@ -7443,7 +7443,15 @@ em_object_mapping_list[] =
     EL_DEFAULT,				ACTION_EXPLODING, -1
   },
   {
-    Znormal,				FALSE,	FALSE,
+    Zbug,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+  {
+    Ztank,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+  {
+    Zeater,				FALSE,	FALSE,
     EL_EMPTY,				-1, -1
   },
   {

@@ -536,7 +536,11 @@ enum
 			   transition to boom_2 */
   Xboom_2,		/* transition to boom[] */
 
-  Znormal,		/* passed from synchro to explode, only in next[];
+  Zbug,			/* passed from synchro to explode, only in next[];
+			   no picture */
+  Ztank,		/* passed from synchro to explode, only in next[];
+			   no picture */
+  Zeater,		/* passed from synchro to explode, only in next[];
 			   no picture */
   Zdynamite,		/* passed from synchro to explode, only in next[];
 			   no picture */
