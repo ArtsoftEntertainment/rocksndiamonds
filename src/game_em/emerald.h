@@ -63,6 +63,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   the element names (mostly) have the following properties:
   - elements that start with 'X' can be stored in a level file
   - elements that start with 'Y' indicate moving or active elements
+  - elements that start with 'Z' are internal elements without graphics
   - elements that end with 'B' are the "backside" of moving elements
   -----------------------------------------------------------------------------
 */
@@ -526,28 +527,18 @@ enum
   Ygrass_blank,
   Ydirt_blank,
 
-  Xboom_bug,		/* passed from explode to synchro (linked explosion);
-			   transition to explode_normal */
-  Xboom_bomb,		/* passed from explode to synchro (linked explosion);
-			   transition to explode_normal */
-  Xboom_android,	/* passed from explode to synchro;
-			   transition to boom_2 */
-  Xboom_1,		/* passed from explode to synchro;
-			   transition to boom_2 */
+  Xboom_bug,		/* bug explosion; transition to Zbug */
+  Xboom_bomb,		/* tank/alien/bomb explosion; transition to Ztank */
+  Xboom_android,	/* android explosion; transition to Xboom_2 */
+  Xboom_1,		/* tile explosion; transition to Xboom_2 */
   Xboom_2,		/* transition to boom[] */
 
-  Zbug,			/* passed from synchro to explode, only in next[];
-			   no picture */
-  Ztank,		/* passed from synchro to explode, only in next[];
-			   no picture */
-  Zeater,		/* passed from synchro to explode, only in next[];
-			   no picture */
-  Zdynamite,		/* passed from synchro to explode, only in next[];
-			   no picture */
-  Zplayer,		/* special code to indicate player;
-			   no picture */
-  Zborder,		/* special code to indicate border;
-			   no picture */
+  Zbug,			/* internal bug explosion */
+  Ztank,		/* internal tank/alien/bomb explosion */
+  Zeater,		/* internal eater explosion */
+  Zdynamite,		/* internal dynamite explosion */
+  Zplayer,		/* special code to indicate player */
+  Zborder,		/* special code to indicate border */
 
   TILE_MAX
 };
