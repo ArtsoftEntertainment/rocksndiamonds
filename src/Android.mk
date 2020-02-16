@@ -55,7 +55,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
 	game_em/convert.c		\
 	game_em/graphics.c		\
 	game_em/init.c			\
-	game_em/input.c			\
+	game_em/game.c			\
 	game_em/logic.c			\
 	game_em/reademc.c		\
 	game_sp/init.c			\

@@ -1,6 +1,6 @@
-/* 2000-08-10T18:03:54Z
+/* 2000-01-06 06:43:39
  *
- * open X11 display and sound
+ * set everything up and close everything down
  */
 
 #include "main_em.h"
@@ -18,6 +18,37 @@ void InitGfxBuffers_EM(void)
   global_em_info.screenbuffer = screenBitmap;
 }
 
+void game_init_random(void)
+{
+  game_em.random = 1684108901;	/* what a nice seed */
+}
+
+void game_init_cave_buffers(void)
+{
+  int x, y;
+
+  for (x = 0; x < CAVE_BUFFER_WIDTH; x++)
+  {
+    for (y = 0; y < CAVE_BUFFER_HEIGHT; y++)
+    {
+      lev.cavebuf[x][y] = Zborder;
+      lev.nextbuf[x][y] = Zborder;
+      lev.drawbuf[x][y] = Zborder;
+      lev.boombuf[x][y] = Xblank;
+    }
+
+    lev.cavecol[x] = lev.cavebuf[x];
+    lev.nextcol[x] = lev.nextbuf[x];
+    lev.drawcol[x] = lev.drawbuf[x];
+    lev.boomcol[x] = lev.boombuf[x];
+  }
+
+  lev.cave = lev.cavecol;
+  lev.next = lev.nextcol;
+  lev.draw = lev.drawcol;
+  lev.boom = lev.boomcol;
+}
+
 void em_open_all(void)
 {
   InitGraphicInfo_EM();
@@ -29,8 +60,6 @@ void em_open_all(void)
 void em_close_all(void)
 {
 }
-
-/* ---------------------------------------------------------------------- */
 
 void play_element_sound(int x, int y, int sample, int element)
 {

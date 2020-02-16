@@ -20,7 +20,7 @@ SRCS =	cave.c		\
 	convert.c	\
 	graphics.c	\
 	init.c		\
-	input.c		\
+	game.c		\
 	logic.c		\
 	reademc.c
 
@@ -28,7 +28,7 @@ OBJS =	cave.o		\
 	convert.o	\
 	graphics.o	\
 	init.o		\
-	input.o		\
+	game.o		\
 	logic.o		\
 	reademc.o
 

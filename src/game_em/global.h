@@ -12,8 +12,6 @@ extern int screen_x, screen_y;
 
 /* global function prototypes */
 
-void readjoy(byte, struct PLAYER *);
-
 void game_initscreen(void);
 void game_init_random(void);
 void game_init_cave_buffers(void);
