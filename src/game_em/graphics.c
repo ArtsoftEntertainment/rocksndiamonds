@@ -39,7 +39,7 @@ int frame;				/* current screen frame */
 int screen_x, screen_y;			/* current scroll position */
 
 /* tiles currently on screen */
-static int screentiles[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
+static int screen_tiles[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
 static int crumbled_state[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
 
 /* graphic info for game objects/frames and players/actions/frames */
@@ -347,7 +347,7 @@ static void animscreen(void)
 	}
       }
 
-      redraw_screen_tile = (screentiles[sx][sy]    != obj ||
+      redraw_screen_tile = (screen_tiles[sx][sy]   != obj ||
 			    crumbled_state[sx][sy] != crm);
 
       /* only redraw screen tiles if they (or their crumbled state) changed */
@@ -356,7 +356,7 @@ static void animscreen(void)
 	DrawLevelField_EM(x, y, sx, sy, FALSE);
 	DrawLevelFieldCrumbled_EM(x, y, sx, sy, crm, FALSE);
 
-	screentiles[sx][sy] = obj;
+	screen_tiles[sx][sy] = obj;
 	crumbled_state[sx][sy] = crm;
       }
     }
@@ -426,8 +426,8 @@ static void blitplayer(struct PLAYER *ply)
     }
 
     /* redraw screen tiles in the next frame (player may have left the tiles) */
-    screentiles[old_sx][old_sy] = -1;
-    screentiles[new_sx][new_sy] = -1;
+    screen_tiles[old_sx][old_sy] = -1;
+    screen_tiles[new_sx][new_sy] = -1;
   }
 }
 
@@ -447,7 +447,7 @@ void game_initscreen(void)
   {
     for (x = 0; x < MAX_BUF_XSIZE; x++)
     {
-      screentiles[x][y] = -1;
+      screen_tiles[x][y] = -1;
       crumbled_state[x][y] = 0;
     }
   }
@@ -707,7 +707,7 @@ void RedrawPlayfield_EM(boolean force_redraw)
     {
       for (x = 0; x < MAX_BUF_XSIZE; x++)
       {
-	screentiles[x][y] = -1;
+	screen_tiles[x][y] = -1;
 	crumbled_state[x][y] = 0;
       }
     }
