@@ -48,6 +48,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // constant definitions
 // ----------------------------------------------------------------------------
 
+/* maximum cave size */
 #define CAVE_WIDTH			MAX_PLAYFIELD_WIDTH
 #define CAVE_HEIGHT			MAX_PLAYFIELD_HEIGHT
 
@@ -57,20 +58,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CAVE_BUFFER_WIDTH		(CAVE_WIDTH  + 2 * CAVE_BUFFER_XOFFSET)
 #define CAVE_BUFFER_HEIGHT		(CAVE_HEIGHT + 2 * CAVE_BUFFER_YOFFSET)
 
-/*
-  -----------------------------------------------------------------------------
-  definition of elements used in the Emerald Mine Club engine;
-  the element names (mostly) have the following properties:
-  - elements that start with 'X' can be stored in a level file
-  - elements that start with 'Y' indicate moving or active elements
-  - elements that start with 'Z' are internal elements without graphics
-  - elements that end with 'B' are the "backside" of moving elements
-  -----------------------------------------------------------------------------
-*/
+
+// ----------------------------------------------------------------------------
+// definition of elements used in the Emerald Mine Club engine;
+// the element names (mostly) have the following properties:
+// - elements that start with 'X' can be stored in a level file
+// - elements that start with 'Y' indicate moving or active elements
+// - elements that start with 'Z' are internal elements without graphics
+// - elements that end with 'B' are the "backside" of moving elements
+// ----------------------------------------------------------------------------
 
 enum
 {
-  Xblank = 0,
+  Zborder,		/* special code to indicate border */
+  Zplayer,		/* special code to indicate player */
+
+  Zbug,			/* internal bug explosion */
+  Ztank,		/* internal tank/alien/bomb explosion */
+  Zeater,		/* internal eater explosion */
+  Zdynamite,		/* internal dynamite explosion */
+
+  Xboom_bug,		/* bug explosion; transition to Zbug */
+  Xboom_bomb,		/* tank/alien/bomb explosion; transition to Ztank */
+  Xboom_android,	/* android explosion; transition to Xboom_2 */
+  Xboom_1,		/* tile explosion; transition to Xboom_2 */
+  Xboom_2,		/* transition to boom[] */
+
+  Xblank,
 
   Xsplash_e,
   Xsplash_w,
@@ -526,19 +540,6 @@ enum
   Ymagnify_blank,
   Ygrass_blank,
   Ydirt_blank,
-
-  Xboom_bug,		/* bug explosion; transition to Zbug */
-  Xboom_bomb,		/* tank/alien/bomb explosion; transition to Ztank */
-  Xboom_android,	/* android explosion; transition to Xboom_2 */
-  Xboom_1,		/* tile explosion; transition to Xboom_2 */
-  Xboom_2,		/* transition to boom[] */
-
-  Zbug,			/* internal bug explosion */
-  Ztank,		/* internal tank/alien/bomb explosion */
-  Zeater,		/* internal eater explosion */
-  Zdynamite,		/* internal dynamite explosion */
-  Zplayer,		/* special code to indicate player */
-  Zborder,		/* special code to indicate border */
 
   TILE_MAX
 };
