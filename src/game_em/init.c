@@ -49,13 +49,13 @@ unsigned int InitEngineRandom_EM(int seed)
     int simple_rnd = GetSimpleRandom(1000);
     int i;
 
-    for (i = 0; i < simple_rnd || RandomEM == NEW_RANDOMIZE; i++)
-      RandomEM = RandomEM * 129 + 1;
+    for (i = 0; i < simple_rnd || game_em.random == NEW_RANDOMIZE; i++)
+      game_em.random = game_em.random * 129 + 1;
 
-    seed = RandomEM;
+    seed = game_em.random;
   }
 
-  RandomEM = seed;
+  game_em.random = seed;
 
-  return (unsigned int) seed;
+  return (unsigned int)seed;
 }

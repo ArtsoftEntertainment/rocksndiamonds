@@ -6,20 +6,15 @@
 #include "main_em.h"
 
 
-unsigned int RandomEM;
-
 struct CAVE cav;
 struct LOGIC lev;
 struct PLAYER ply[MAX_PLAYERS];
-
-extern int screen_x;
-extern int screen_y;
 
 struct EngineSnapshotInfo_EM engine_snapshot_em;
 
 void game_init_random(void)
 {
-  RandomEM = 1684108901;
+  game_em.random = 1684108901;
 }
 
 void game_init_cave_buffers(void)
@@ -72,7 +67,7 @@ void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
   int i;
   boolean any_player_dropping = FALSE;
 
-  RandomEM = RandomEM * 129 + 1;
+  game_em.random = game_em.random * 129 + 1;
 
   frame = (frame - 1) & 7;
 
@@ -169,9 +164,7 @@ void SaveEngineSnapshotValues_EM(void)
   engine_snapshot_em.game_em = game_em;
   engine_snapshot_em.lev = lev;
 
-  engine_snapshot_em.RandomEM = RandomEM;
   engine_snapshot_em.frame = frame;
-
   engine_snapshot_em.screen_x = screen_x;
   engine_snapshot_em.screen_y = screen_y;
 
@@ -186,9 +179,7 @@ void LoadEngineSnapshotValues_EM(void)
   game_em = engine_snapshot_em.game_em;
   lev = engine_snapshot_em.lev;
 
-  RandomEM = engine_snapshot_em.RandomEM;
   frame = engine_snapshot_em.frame;
-
   screen_x = engine_snapshot_em.screen_x;
   screen_y = engine_snapshot_em.screen_y;
 

@@ -3,9 +3,14 @@
 
 #include "main_em.h"
 
-extern int frame;
 
-/* all global function prototypes */
+/* global variables */
+
+extern int frame;
+extern int screen_x, screen_y;
+
+
+/* global function prototypes */
 
 void readjoy(byte, struct PLAYER *);
 

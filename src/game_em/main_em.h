@@ -85,8 +85,6 @@ extern int			SX, SY;
 // exported variables
 // ----------------------------------------------------------------------------
 
-extern unsigned int RandomEM;
-
 extern struct CAVE cav;
 extern struct LOGIC lev;
 extern struct PLAYER ply[MAX_PLAYERS];

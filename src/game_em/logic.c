@@ -1313,7 +1313,8 @@ static void check_player(struct PLAYER *ply)
       ply->dynamite_cnt = 0;
     }
 
-    RandomEM += 7;	/* be a bit more random if the player doesn't move */
+    /* be a bit more random if the player doesn't move */
+    game_em.random += 7;
 
     return;
   }
@@ -7157,7 +7158,8 @@ void logic_players(void)
     ply[i].anim = PLY_still;
   }
 
-  start_check_nr = (RandomEM & 128 ? 0 : 1) * 2 + (RandomEM & 256 ? 0 : 1);
+  start_check_nr = ((game_em.random & 128 ? 0 : 1) * 2 +
+		    (game_em.random & 256 ? 0 : 1));
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
@@ -7194,7 +7196,7 @@ void logic_objects(void)
   next = lev.next;
   boom = lev.boom;
 
-  seed = RandomEM;
+  seed = game_em.random;
   score = 0;
 
   for (y = lev.top; y < lev.bottom; y++)
@@ -7206,7 +7208,7 @@ void logic_objects(void)
   else
     game_em.game_over = TRUE;
 
-  RandomEM = seed;
+  game_em.random = seed;
 
   /* triple buffering */
   void *temp = lev.cave;
@@ -7254,7 +7256,7 @@ void logic_globals(void)
 
   /* grow amoeba */
 
-  random = RandomEM;
+  random = game_em.random;
 
   for (count = lev.amoeba_time; count--;)
   {
@@ -7268,7 +7270,7 @@ void logic_globals(void)
     random = random * 129 + 1;
   }
 
-  RandomEM = random;
+  game_em.random = random;
 
   /* handle explosions */
 

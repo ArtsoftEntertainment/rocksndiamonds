@@ -28,6 +28,8 @@ struct GlobalInfo_EM
 
 struct GameInfo_EM
 {
+  unsigned int random;
+
   boolean level_solved;
   boolean game_over;
 
@@ -73,12 +75,12 @@ struct GraphicInfo_EM
 struct EngineSnapshotInfo_EM
 {
   struct GameInfo_EM game_em;
-  unsigned int RandomEM;
   struct LOGIC lev;
   struct PLAYER ply[MAX_PLAYERS];
+
+  int frame;
   int screen_x;
   int screen_y;
-  int frame;
 };
 
 
