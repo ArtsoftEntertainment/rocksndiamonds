@@ -62,10 +62,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ----------------------------------------------------------------------------
 // definition of elements used in the Emerald Mine Club engine;
 // the element names (mostly) have the following properties:
-// - elements that start with 'X' can be stored in a level file
-// - elements that start with 'Y' indicate moving or active elements
-// - elements that start with 'Z' are internal elements without graphics
-// - elements that end with 'B' are the "backside" of moving elements
+// - elements that start with 'X' are not animated (more or less)
+// - elements that start with 'Y' are animated elements
+// - elements that start with 'Z' are internal elements (without graphics)
+// - elements that end with 'B' or '_blank' change to the "Xblank" element
 // ----------------------------------------------------------------------------
 
 enum
