@@ -369,16 +369,16 @@ static void animscreen(void)
  * handles transparency and movement
  */
 
-static void blitplayer(struct PLAYER *ply)
+static void blitplayer(int nr)
 {
   int x1, y1, x2, y2;
 
-  if (!ply->alive)
+  if (!ply[nr].alive)
     return;
 
   /* x1/y1 are left/top and x2/y2 are right/down part of the player movement */
-  x1 = ((7 - frame) * ply->oldx + (1 + frame) * ply->x) * TILEX / 8;
-  y1 = ((7 - frame) * ply->oldy + (1 + frame) * ply->y) * TILEY / 8;
+  x1 = ((7 - frame) * ply[nr].oldx + (1 + frame) * ply[nr].x) * TILEX / 8;
+  y1 = ((7 - frame) * ply[nr].oldy + (1 + frame) * ply[nr].y) * TILEY / 8;
   x2 = x1 + TILEX - 1;
   y2 = y1 + TILEY - 1;
 
@@ -386,10 +386,10 @@ static void blitplayer(struct PLAYER *ply)
       (int)(y2 - screen_y) < ((MAX_BUF_YSIZE - 1) * TILEY - 1))
   {
     /* some casts to "int" are needed because of negative calculation values */
-    int dx = (int)ply->x - (int)ply->oldx;
-    int dy = (int)ply->y - (int)ply->oldy;
-    int old_x = (int)ply->oldx + (int)frame * dx / 8;
-    int old_y = (int)ply->oldy + (int)frame * dy / 8;
+    int dx = (int)ply[nr].x - (int)ply[nr].oldx;
+    int dy = (int)ply[nr].y - (int)ply[nr].oldy;
+    int old_x = (int)ply[nr].oldx + (int)frame * dx / 8;
+    int old_y = (int)ply[nr].oldy + (int)frame * dy / 8;
     int new_x = old_x + SIGN(dx);
     int new_y = old_y + SIGN(dy);
     int old_sx = old_x % MAX_BUF_XSIZE;
@@ -408,7 +408,7 @@ static void blitplayer(struct PLAYER *ply)
       DrawLevelFieldCrumbled_EM(new_x, new_y, new_sx, new_sy, new_crm, FALSE);
 
       /* draw the player (masked) over the element he is just digging away */
-      DrawLevelPlayer_EM(x1, y1, ply->num, ply->anim, TRUE);
+      DrawLevelPlayer_EM(x1, y1, ply[nr].num, ply[nr].anim, TRUE);
 
       /* draw the field the player is moving from (masked over the player) */
       DrawLevelField_EM(old_x, old_y, old_sx, old_sy, TRUE);
@@ -416,7 +416,7 @@ static void blitplayer(struct PLAYER *ply)
     else
     {
       /* draw the player under the element which is on the same field */
-      DrawLevelPlayer_EM(x1, y1, ply->num, ply->anim, FALSE);
+      DrawLevelPlayer_EM(x1, y1, ply[nr].num, ply[nr].anim, FALSE);
 
       /* draw the field the player is moving from (masked over the player) */
       DrawLevelField_EM(old_x, old_y, old_sx, old_sy, TRUE);
@@ -677,7 +677,7 @@ void RedrawPlayfield_EM(boolean force_redraw)
       animscreen();
 
       for (i = 0; i < MAX_PLAYERS; i++)
-	blitplayer(&ply[i]);
+	blitplayer(i);
 
       BlitScreenToBitmap_EM(backbuffer);
       BackToFront_EM();
@@ -689,7 +689,7 @@ void RedrawPlayfield_EM(boolean force_redraw)
       animscreen();
 
       for (i = 0; i < MAX_PLAYERS; i++)
-	blitplayer(&ply[i]);
+	blitplayer(i);
 
       BlitScreenToBitmap_EM(backbuffer);
       BackToFront_EM();
@@ -783,5 +783,5 @@ void RedrawPlayfield_EM(boolean force_redraw)
   animscreen();
 
   for (i = 0; i < MAX_PLAYERS; i++)
-    blitplayer(&ply[i]);
+    blitplayer(i);
 }
