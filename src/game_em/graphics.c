@@ -25,12 +25,15 @@
 #define VALID_SCREEN_Y(y)	((y) < MIN_SCREEN_Y ? MIN_SCREEN_Y :	\
 				 (y) > MAX_SCREEN_Y ? MAX_SCREEN_Y : (y))
 
-#define PLAYER_SCREEN_X(p)	(((7 - frame) * ply[p].oldx +		\
-				  (1 + frame) * ply[p].x) * TILEX / 8	\
-				 - ((SCR_FIELDX - 1) * TILEX) / 2)
-#define PLAYER_SCREEN_Y(p)	(((7 - frame) * ply[p].oldy +		\
-				  (1 + frame) * ply[p].y) * TILEY / 8	\
-				 - ((SCR_FIELDY - 1) * TILEY) / 2)
+#define PLAYER_POS_X(nr)	(((7 - frame) * ply[nr].oldx +		\
+				  (1 + frame) * ply[nr].x) * TILEX / 8)
+#define PLAYER_POS_Y(nr)	(((7 - frame) * ply[nr].oldy +		\
+				  (1 + frame) * ply[nr].y) * TILEY / 8)
+
+#define PLAYER_SCREEN_X(nr)	(PLAYER_POS_X(nr) -			\
+				 (SCR_FIELDX - 1) * TILEX / 2)
+#define PLAYER_SCREEN_Y(nr)	(PLAYER_POS_Y(nr) -			\
+				 (SCR_FIELDY - 1) * TILEY / 2)
 
 #define USE_EXTENDED_GRAPHICS_ENGINE		1
 
@@ -377,8 +380,8 @@ static void blitplayer(int nr)
     return;
 
   /* x1/y1 are left/top and x2/y2 are right/down part of the player movement */
-  x1 = ((7 - frame) * ply[nr].oldx + (1 + frame) * ply[nr].x) * TILEX / 8;
-  y1 = ((7 - frame) * ply[nr].oldy + (1 + frame) * ply[nr].y) * TILEY / 8;
+  x1 = PLAYER_POS_X(nr);
+  y1 = PLAYER_POS_Y(nr);
   x2 = x1 + TILEX - 1;
   y2 = y1 + TILEY - 1;
 
