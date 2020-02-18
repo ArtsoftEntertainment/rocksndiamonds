@@ -115,7 +115,8 @@ static void Lboom_generic(int x, int y, int element, int element_middle)
 
 static void Lboom_bug(int x, int y)
 {
-  next[x][y] = Zbug;
+  if (game_em.use_old_explosions)
+    next[x][y] = Zbug;
 
   Lboom_generic(x, y, Xemerald, Xdiamond);
 
@@ -126,7 +127,8 @@ static void Lboom_bug(int x, int y)
 
 static void Lboom_tank(int x, int y)
 {
-  next[x][y] = Ztank;
+  if (game_em.use_old_explosions)
+    next[x][y] = Ztank;
 
   Lboom_generic(x, y, Xblank, Xblank);
 
@@ -137,7 +139,8 @@ static void Lboom_tank(int x, int y)
 
 static void Lboom_eater(int x, int y)
 {
-  next[x][y] = Zeater;
+  if (game_em.use_old_explosions)
+    next[x][y] = Zeater;
 
   boom[x-1][y-1] = lev.eater_array[lev.eater_pos][0];
   boom[x][y-1]   = lev.eater_array[lev.eater_pos][1];
@@ -154,6 +157,63 @@ static void Lboom_eater(int x, int y)
 #if PLAY_ELEMENT_SOUND
   play_element_sound(x, y, SOUND_boom, Xeater_n);
 #endif
+}
+
+static void Lboom_bug_old(int x, int y)
+{
+  if (!game_em.use_old_explosions)
+    return;
+
+  Lboom_bug(x, y);
+}
+
+static void Lboom_tank_old(int x, int y)
+{
+  if (!game_em.use_old_explosions)
+    return;
+
+  Lboom_tank(x, y);
+}
+
+static void Lboom_eater_old(int x, int y)
+{
+  if (!game_em.use_old_explosions)
+    return;
+
+  Lboom_eater(x, y);
+}
+
+static void Lboom_bug_new(int x, int y, boolean chain_explosion)
+{
+  if (game_em.use_old_explosions)
+    return;
+
+  if (chain_explosion)
+    cave[x][y] = Xchain;
+
+  Lboom_bug(x, y);
+}
+
+static void Lboom_tank_new(int x, int y, boolean chain_explosion)
+{
+  if (game_em.use_old_explosions)
+    return;
+
+  if (chain_explosion)
+    cave[x][y] = Xchain;
+
+  Lboom_tank(x, y);
+}
+
+static void Lboom_eater_new(int x, int y, boolean chain_explosion)
+{
+  if (game_em.use_old_explosions)
+    return;
+
+  if (chain_explosion)
+    cave[x][y] = Xchain;
+
+  Lboom_eater(x, y);
 }
 
 static boolean player_killed(struct PLAYER *ply)
@@ -293,6 +353,7 @@ static void kill_player(struct PLAYER *ply)
     case Xbug_2_s:
     case Xbug_2_w:
       cave[x][y-1] = Xboom_bug;
+      Lboom_bug_new(x, y-1, TRUE);
       break;
 
     case Xtank_1_n:
@@ -304,6 +365,7 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_s:
     case Xtank_2_w:
       cave[x][y-1] = Xboom_tank;
+      Lboom_tank_new(x, y-1, TRUE);
       break;
   }
 
@@ -318,6 +380,7 @@ static void kill_player(struct PLAYER *ply)
     case Xbug_2_s:
     case Xbug_2_w:
       cave[x+1][y] = Xboom_bug;
+      Lboom_bug_new(x+1, y, TRUE);
       break;
 
     case Xtank_1_n:
@@ -329,6 +392,7 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_s:
     case Xtank_2_w:
       cave[x+1][y] = Xboom_tank;
+      Lboom_tank_new(x+1, y, TRUE);
       break;
   }
 
@@ -343,6 +407,7 @@ static void kill_player(struct PLAYER *ply)
     case Xbug_2_s:
     case Xbug_2_w:
       cave[x][y+1] = Xboom_bug;
+      Lboom_bug_new(x, y+1, TRUE);
       break;
 
     case Xtank_1_n:
@@ -354,6 +419,7 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_s:
     case Xtank_2_w:
       cave[x][y+1] = Xboom_tank;
+      Lboom_tank_new(x, y+1, TRUE);
       break;
   }
 
@@ -368,6 +434,7 @@ static void kill_player(struct PLAYER *ply)
     case Xbug_2_s:
     case Xbug_2_w:
       cave[x-1][y] = Xboom_bug;
+      Lboom_bug_new(x-1, y, TRUE);
       break;
 
     case Xtank_1_n:
@@ -379,6 +446,7 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_s:
     case Xtank_2_w:
       cave[x-1][y] = Xboom_tank;
+      Lboom_tank_new(x-1, y, TRUE);
       break;
   }
 
@@ -2802,6 +2870,7 @@ static void Lbug_1_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_bug(x, y);
 
     return;
@@ -2849,6 +2918,7 @@ static void Lbug_2_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_bug(x, y);
 
     return;
@@ -2914,6 +2984,7 @@ static void Lbug_1_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_bug(x, y);
 
     return;
@@ -2961,6 +3032,7 @@ static void Lbug_2_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_bug(x, y);
 
     return;
@@ -3026,6 +3098,7 @@ static void Lbug_1_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_bug(x, y);
 
     return;
@@ -3073,6 +3146,7 @@ static void Lbug_2_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_bug(x, y);
 
     return;
@@ -3138,6 +3212,7 @@ static void Lbug_1_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_bug(x, y);
 
     return;
@@ -3185,6 +3260,7 @@ static void Lbug_2_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_bug(x, y);
 
     return;
@@ -3250,6 +3326,7 @@ static void Ltank_1_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_tank(x, y);
 
     return;
@@ -3297,6 +3374,7 @@ static void Ltank_2_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_tank(x, y);
 
     return;
@@ -3362,6 +3440,7 @@ static void Ltank_1_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_tank(x, y);
 
     return;
@@ -3409,6 +3488,7 @@ static void Ltank_2_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_tank(x, y);
 
     return;
@@ -3474,6 +3554,7 @@ static void Ltank_1_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_tank(x, y);
 
     return;
@@ -3521,6 +3602,7 @@ static void Ltank_2_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_tank(x, y);
 
     return;
@@ -3586,6 +3668,7 @@ static void Ltank_1_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_tank(x, y);
 
     return;
@@ -3633,6 +3716,7 @@ static void Ltank_2_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
     Lboom_tank(x, y);
 
     return;
@@ -4393,16 +4477,20 @@ static void Lstone_fall(int x, int y)
     case Xeater_s:
     case Xeater_w:
       cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
       cave[x][y+1] = Yeater_stone;
-      Lboom_eater(x, y+1);
+      next[x][y+1] = Zeater;
+      Lboom_eater_old(x, y+1);
       score += lev.eater_score;
       return;
 
     case Xalien:
     case Xalien_pause:
       cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
       cave[x][y+1] = Yalien_stone;
-      Lboom_tank(x, y+1);
+      next[x][y+1] = Ztank;
+      Lboom_tank_old(x, y+1);
       score += lev.alien_score;
       return;
 
@@ -4415,8 +4503,10 @@ static void Lstone_fall(int x, int y)
     case Xbug_2_s:
     case Xbug_2_w:
       cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
       cave[x][y+1] = Ybug_stone;
-      Lboom_bug(x, y+1);
+      next[x][y+1] = Zbug;
+      Lboom_bug_old(x, y+1);
       score += lev.bug_score;
       return;
 
@@ -4429,8 +4519,10 @@ static void Lstone_fall(int x, int y)
     case Xtank_2_s:
     case Xtank_2_w:
       cave[x][y] = Ystone_sB;
+      next[x][y] = Xblank;
       cave[x][y+1] = Ytank_stone;
-      Lboom_tank(x, y+1);
+      next[x][y+1] = Ztank;
+      Lboom_tank_old(x, y+1);
       score += lev.tank_score;
       return;
 
@@ -4506,8 +4598,11 @@ static void Lstone_fall(int x, int y)
 
     case Xbomb:
     case Xbomb_pause:
+      cave[x][y] = Xstone;
+      next[x][y] = Xstone;
       cave[x][y+1] = Ybomb_blank;
-      Lboom_tank(x, y+1);
+      next[x][y+1] = Ztank;
+      Lboom_tank_old(x, y+1);
       return;
 
     case Xnut:
@@ -4815,7 +4910,8 @@ static void Lbomb_fall(int x, int y)
 
     default:
       cave[x][y] = Ybomb_blank;
-      Lboom_tank(x, y);
+      next[x][y] = Ztank;
+      Lboom_tank_old(x, y);
       return;
   }
 }
@@ -5509,16 +5605,20 @@ static void Lspring_fall(int x, int y)
     case Xeater_s:
     case Xeater_w:
       cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
       cave[x][y+1] = Yeater_spring;
-      Lboom_eater(x, y+1);
+      next[x][y+1] = Zeater;
+      Lboom_eater_old(x, y+1);
       score += lev.eater_score;
       return;
 
     case Xalien:
     case Xalien_pause:
       cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
       cave[x][y+1] = Yalien_spring;
-      Lboom_tank(x, y+1);
+      next[x][y+1] = Ztank;
+      Lboom_tank_old(x, y+1);
       score += lev.alien_score;
       return;
 
@@ -5531,8 +5631,10 @@ static void Lspring_fall(int x, int y)
     case Xbug_2_s:
     case Xbug_2_w:
       cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
       cave[x][y+1] = Ybug_spring;
-      Lboom_bug(x, y+1);
+      next[x][y+1] = Zbug;
+      Lboom_bug_old(x, y+1);
       score += lev.bug_score;
       return;
 
@@ -5545,15 +5647,20 @@ static void Lspring_fall(int x, int y)
     case Xtank_2_s:
     case Xtank_2_w:
       cave[x][y] = Yspring_sB;
+      next[x][y] = Xblank;
       cave[x][y+1] = Ytank_spring;
-      Lboom_tank(x, y+1);
+      next[x][y+1] = Ztank;
+      Lboom_tank_old(x, y+1);
       score += lev.tank_score;
       return;
 
     case Xbomb:
     case Xbomb_pause:
+      cave[x][y] = Xspring;
+      next[x][y] = Xspring;
       cave[x][y+1] = Ybomb_blank;
-      Lboom_tank(x, y+1);
+      next[x][y+1] = Ztank;
+      Lboom_tank_old(x, y+1);
       return;
 
     default:
@@ -5576,6 +5683,8 @@ static void Lpush_emerald_e(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5616,6 +5725,8 @@ static void Lpush_emerald_w(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5656,6 +5767,8 @@ static void Lpush_diamond_e(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5696,6 +5809,8 @@ static void Lpush_diamond_w(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5736,6 +5851,8 @@ static void Lpush_stone_e(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5776,6 +5893,8 @@ static void Lpush_stone_w(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5816,6 +5935,8 @@ static void Lpush_bomb_e(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5856,6 +5977,8 @@ static void Lpush_bomb_w(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5896,6 +6019,8 @@ static void Lpush_nut_e(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5936,6 +6061,8 @@ static void Lpush_nut_w(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -5976,6 +6103,8 @@ static void Lpush_spring_e(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -6016,6 +6145,8 @@ static void Lpush_spring_w(int x, int y)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -6815,6 +6946,8 @@ static void Lboom_one(int x, int y, boolean by_dynamite)
     case Ztank:
     case Zeater:
     case Zdynamite:
+    case Zboom:
+    case Xchain:
     case Xboom_bug:
     case Xboom_tank:
     case Xboom_android:
@@ -6877,12 +7010,14 @@ static void Lboom_one(int x, int y, boolean by_dynamite)
     case Xbug_2_s:
     case Xbug_2_w:
       cave[x][y] = Xboom_bug;
+      Lboom_bug_new(x, y, TRUE);
       return;
 
     case Xbomb:
     case Xbomb_pause:
     case Xbomb_fall:
       cave[x][y] = Xboom_tank;
+      Lboom_tank_new(x, y, TRUE);
       return;
 
     default:
@@ -6910,19 +7045,26 @@ static void Lexplode(int x, int y)
   switch (cave[x][y])
   {
     case Zbug:
+      Lboom_bug_new(x, y, FALSE);
       Lboom_nine(x, y, FALSE);
       break;
 
     case Ztank:
+      Lboom_tank_new(x, y, FALSE);
       Lboom_nine(x, y, FALSE);
       break;
 
     case Zeater:
+      Lboom_eater_new(x, y, FALSE);
       Lboom_nine(x, y, FALSE);
       break;
 
     case Zdynamite:
       Lboom_nine(x, y, TRUE);
+      break;
+
+    case Zboom:
+      Lboom_nine(x, y, FALSE);
       break;
   }
 }
@@ -6950,6 +7092,11 @@ static void Lboom_android(int x, int y)
 #endif
 
   Lboom_1(x, y);
+}
+
+static void Lchain(int x, int y)
+{
+  next[x][y] = Zboom;
 }
 
 static void handle_tile(int x, int y)
@@ -7111,6 +7258,7 @@ static void handle_tile(int x, int y)
 
     case Xpause:		Lpause(x, y);			break;
 
+    case Xchain:		Lchain(x, y);			break;
     case Xboom_bug:		Lboom_bug(x, y);		break;
     case Xboom_tank:		Lboom_tank(x, y);		break;
     case Xboom_android:		Lboom_android(x, y);		break;

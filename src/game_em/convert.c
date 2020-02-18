@@ -182,6 +182,7 @@ void prepare_em_level(void)
   //
   // - game_em.use_single_button (default: TRUE)
   // - game_em.use_snap_key_bug (default: FALSE)
+  // - game_em.use_old_explosions (default: FALSE)
 
   game_em.level_solved = FALSE;
   game_em.game_over = FALSE;

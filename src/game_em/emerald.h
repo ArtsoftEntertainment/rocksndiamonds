@@ -77,7 +77,9 @@ enum
   Ztank,		/* internal tank/alien/bomb explosion */
   Zeater,		/* internal eater explosion */
   Zdynamite,		/* internal dynamite explosion */
+  Zboom,		/* explosion */
 
+  Xchain,		/* chain explosion; transition to Zboom */
   Xboom_bug,		/* bug explosion; transition to Zbug */
   Xboom_tank,		/* tank/alien/bomb explosion; transition to Ztank */
   Xboom_android,	/* android explosion; transition to Xboom_2 */

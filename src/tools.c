@@ -5763,7 +5763,15 @@ em_object_mapping_list[] =
     Zdynamite,				FALSE,	FALSE,
     EL_EMPTY,				-1, -1
   },
+  {
+    Zboom,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
 
+  {
+    Xchain,				FALSE,	FALSE,
+    EL_DEFAULT,				ACTION_EXPLODING, -1
+  },
   {
     Xboom_bug,				FALSE,	FALSE,
     EL_BUG,				ACTION_EXPLODING, -1

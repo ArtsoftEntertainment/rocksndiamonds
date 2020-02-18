@@ -36,14 +36,16 @@ struct GameInfo_EM
   boolean any_player_moving;
   boolean any_player_snapping;
 
-  boolean use_single_button;
-  boolean use_snap_key_bug;
-
   int last_moving_player;
   int last_player_direction[MAX_PLAYERS];
 
   struct LOGIC *lev;
   struct PLAYER *ply[MAX_PLAYERS];
+
+  // flags to handle bugs in and changes between different engine versions
+  boolean use_single_button;
+  boolean use_snap_key_bug;
+  boolean use_old_explosions;
 };
 
 struct LevelInfo_EM

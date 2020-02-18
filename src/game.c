@@ -2906,11 +2906,16 @@ static void InitGameEngine(void)
   game.use_block_last_field_bug =
     (game.engine_version < VERSION_IDENT(3,1,1,0));
 
+  /* various special flags and settings for native Emerald Mine game engine */
+
   game_em.use_single_button =
     (game.engine_version > VERSION_IDENT(4,0,0,2));
 
   game_em.use_snap_key_bug =
     (game.engine_version < VERSION_IDENT(4,0,1,0));
+
+  game_em.use_old_explosions =
+    (game.engine_version < VERSION_IDENT(4,1,4,2));
 
   // --------------------------------------------------------------------------
 
