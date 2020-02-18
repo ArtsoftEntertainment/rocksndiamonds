@@ -7267,7 +7267,7 @@ static void handle_tile(int x, int y)
   }
 }
 
-void logic_players(void)
+static void logic_players(void)
 {
   int start_check_nr;
   int i;
@@ -7336,7 +7336,7 @@ void logic_players(void)
   }
 }
 
-void logic_objects(void)
+static void logic_objects(void)
 {
   int x, y;
 
@@ -7365,7 +7365,7 @@ void logic_objects(void)
   lev.draw = temp;
 }
 
-void logic_globals(void)
+static void logic_globals(void)
 {
   int x;
   int y;
@@ -7431,4 +7431,18 @@ void logic_globals(void)
   for (y = lev.top; y < lev.bottom; y++)
     for (x = lev.left; x < lev.right; x++)
       next[x][y] = cave[x][y];
+}
+
+void logic(void)
+{
+  if (frame == 7)
+  {
+    logic_players();
+    logic_objects();
+  }
+
+  if (frame == 6)
+  {
+    logic_globals();
+  }
 }

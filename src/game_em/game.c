@@ -90,16 +90,7 @@ void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
 
   UpdateEngineValues(screen_x / TILEX, screen_y / TILEY, ply[0].x, ply[0].y);
 
-  if (frame == 7)
-  {
-    logic_players();
-    logic_objects();
-  }
-
-  if (frame == 6)
-  {
-    logic_globals();
-  }
+  logic();
 
   for (i = 0; i < MAX_PLAYERS; i++)
     if (ply[i].joy_drop &&
