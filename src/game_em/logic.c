@@ -7290,6 +7290,9 @@ static void logic_players(void)
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
+    if (!ply[i].alive)
+      continue;
+
     /* check for wrap-around movement */
     if (ply[i].x < lev.left ||
 	ply[i].x > lev.right - 1)
