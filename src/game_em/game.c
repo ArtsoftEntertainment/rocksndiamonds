@@ -76,10 +76,6 @@ void InitGameEngine_EM(void)
   RedrawPlayfield_EM(FALSE);
 }
 
-static void UpdateGameDoorValues_EM(void)
-{
-}
-
 void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
 {
   int i;
@@ -103,8 +99,6 @@ void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
   if (frame == 6)
   {
     logic_globals();
-
-    UpdateGameDoorValues_EM();
   }
 
   for (i = 0; i < MAX_PLAYERS; i++)
