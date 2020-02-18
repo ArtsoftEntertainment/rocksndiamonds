@@ -5739,6 +5739,53 @@ static struct Mapping_EM_to_RND_object
 em_object_mapping_list[] =
 {
   {
+    Zborder,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+  {
+    Zplayer,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+
+  {
+    Zbug,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+  {
+    Ztank,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+  {
+    Zeater,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+  {
+    Zdynamite,				FALSE,	FALSE,
+    EL_EMPTY,				-1, -1
+  },
+
+  {
+    Xboom_bug,				FALSE,	FALSE,
+    EL_BUG,				ACTION_EXPLODING, -1
+  },
+  {
+    Xboom_tank,				FALSE,	FALSE,
+    EL_SPACESHIP,			ACTION_EXPLODING, -1
+  },
+  {
+    Xboom_android,			FALSE,	FALSE,
+    EL_EMC_ANDROID,			ACTION_OTHER, -1
+  },
+  {
+    Xboom_1,				FALSE,	FALSE,
+    EL_DEFAULT,				ACTION_EXPLODING, -1
+  },
+  {
+    Xboom_2,				FALSE,	FALSE,
+    EL_DEFAULT,				ACTION_EXPLODING, -1
+  },
+
+  {
     Xblank,				TRUE,	FALSE,
     EL_EMPTY,				-1, -1
   },
@@ -7423,51 +7470,6 @@ em_object_mapping_list[] =
   },
 
   {
-    Xboom_bug,				FALSE,	FALSE,
-    EL_BUG,				ACTION_EXPLODING, -1
-  },
-  {
-    Xboom_bomb,				FALSE,	FALSE,
-    EL_BOMB,				ACTION_EXPLODING, -1
-  },
-  {
-    Xboom_android,			FALSE,	FALSE,
-    EL_EMC_ANDROID,			ACTION_OTHER, -1
-  },
-  {
-    Xboom_1,				FALSE,	FALSE,
-    EL_DEFAULT,				ACTION_EXPLODING, -1
-  },
-  {
-    Xboom_2,				FALSE,	FALSE,
-    EL_DEFAULT,				ACTION_EXPLODING, -1
-  },
-  {
-    Zbug,				FALSE,	FALSE,
-    EL_EMPTY,				-1, -1
-  },
-  {
-    Ztank,				FALSE,	FALSE,
-    EL_EMPTY,				-1, -1
-  },
-  {
-    Zeater,				FALSE,	FALSE,
-    EL_EMPTY,				-1, -1
-  },
-  {
-    Zdynamite,				FALSE,	FALSE,
-    EL_EMPTY,				-1, -1
-  },
-  {
-    Zplayer,				FALSE,	FALSE,
-    EL_EMPTY,				-1, -1
-  },
-  {
-    Zborder,				FALSE,	FALSE,
-    EL_EMPTY,				-1, -1
-  },
-
-  {
     -1,					FALSE,	FALSE,
     -1,					-1, -1
   }
@@ -8775,13 +8777,13 @@ void InitGraphicInfo_EM(void)
 			i == Xboom_bug && j == 5 ? 2 :
 			i == Xboom_bug && j == 6 ? 2 :
 			i == Xboom_bug && j == 7 ? 0 :
-			i == Xboom_bomb && j == 1 ? 2 :
-			i == Xboom_bomb && j == 2 ? 2 :
-			i == Xboom_bomb && j == 3 ? 4 :
-			i == Xboom_bomb && j == 4 ? 4 :
-			i == Xboom_bomb && j == 5 ? 2 :
-			i == Xboom_bomb && j == 6 ? 2 :
-			i == Xboom_bomb && j == 7 ? 0 :
+			i == Xboom_tank && j == 1 ? 2 :
+			i == Xboom_tank && j == 2 ? 2 :
+			i == Xboom_tank && j == 3 ? 4 :
+			i == Xboom_tank && j == 4 ? 4 :
+			i == Xboom_tank && j == 5 ? 2 :
+			i == Xboom_tank && j == 6 ? 2 :
+			i == Xboom_tank && j == 7 ? 0 :
 			i == Xboom_android && j == 7 ? 6 :
 			i == Xboom_1 && j == 1 ? 2 :
 			i == Xboom_1 && j == 2 ? 2 :

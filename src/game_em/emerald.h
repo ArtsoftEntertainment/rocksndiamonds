@@ -79,7 +79,7 @@ enum
   Zdynamite,		/* internal dynamite explosion */
 
   Xboom_bug,		/* bug explosion; transition to Zbug */
-  Xboom_bomb,		/* tank/alien/bomb explosion; transition to Ztank */
+  Xboom_tank,		/* tank/alien/bomb explosion; transition to Ztank */
   Xboom_android,	/* android explosion; transition to Xboom_2 */
   Xboom_1,		/* tile explosion; transition to Xboom_2 */
   Xboom_2,		/* transition to boom[] */

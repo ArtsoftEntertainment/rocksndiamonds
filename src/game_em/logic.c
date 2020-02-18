@@ -303,7 +303,7 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      cave[x][y-1] = Xboom_bomb;
+      cave[x][y-1] = Xboom_tank;
       break;
   }
 
@@ -328,7 +328,7 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      cave[x+1][y] = Xboom_bomb;
+      cave[x+1][y] = Xboom_tank;
       break;
   }
 
@@ -353,7 +353,7 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      cave[x][y+1] = Xboom_bomb;
+      cave[x][y+1] = Xboom_tank;
       break;
   }
 
@@ -378,7 +378,7 @@ static void kill_player(struct PLAYER *ply)
     case Xtank_2_e:
     case Xtank_2_s:
     case Xtank_2_w:
-      cave[x-1][y] = Xboom_bomb;
+      cave[x-1][y] = Xboom_tank;
       break;
   }
 
@@ -5577,7 +5577,7 @@ static void Lpush_emerald_e(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5617,7 +5617,7 @@ static void Lpush_emerald_w(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5657,7 +5657,7 @@ static void Lpush_diamond_e(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5697,7 +5697,7 @@ static void Lpush_diamond_w(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5737,7 +5737,7 @@ static void Lpush_stone_e(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5777,7 +5777,7 @@ static void Lpush_stone_w(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5817,7 +5817,7 @@ static void Lpush_bomb_e(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5857,7 +5857,7 @@ static void Lpush_bomb_w(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5897,7 +5897,7 @@ static void Lpush_nut_e(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5937,7 +5937,7 @@ static void Lpush_nut_w(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -5977,7 +5977,7 @@ static void Lpush_spring_e(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -6017,7 +6017,7 @@ static void Lpush_spring_w(int x, int y)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
       return;
@@ -6816,7 +6816,7 @@ static void Lboom_one(int x, int y, boolean by_dynamite)
     case Zeater:
     case Zdynamite:
     case Xboom_bug:
-    case Xboom_bomb:
+    case Xboom_tank:
     case Xboom_android:
     case Xacid_1:
     case Xacid_2:
@@ -6882,7 +6882,7 @@ static void Lboom_one(int x, int y, boolean by_dynamite)
     case Xbomb:
     case Xbomb_pause:
     case Xbomb_fall:
-      cave[x][y] = Xboom_bomb;
+      cave[x][y] = Xboom_tank;
       return;
 
     default:
@@ -7112,7 +7112,7 @@ static void handle_tile(int x, int y)
     case Xpause:		Lpause(x, y);			break;
 
     case Xboom_bug:		Lboom_bug(x, y, Xboom_bug);	break;
-    case Xboom_bomb:		Lboom_tank(x, y, Xboom_bomb);	break;
+    case Xboom_tank:		Lboom_tank(x, y, Xboom_tank);	break;
     case Xboom_android:		Lboom_android(x, y);		break;
     case Xboom_1:		Lboom_1(x, y);			break;
     case Xboom_2:		Lboom_2(x, y);			break;
