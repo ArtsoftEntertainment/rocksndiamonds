@@ -113,29 +113,29 @@ static void Lboom_generic(int x, int y, int element, int element_middle)
   boom[x+1][y+1] = element;
 }
 
-static void Lboom_bug(int x, int y, int by_element)
+static void Lboom_bug(int x, int y)
 {
   next[x][y] = Zbug;
 
   Lboom_generic(x, y, Xemerald, Xdiamond);
 
 #if PLAY_ELEMENT_SOUND
-  play_element_sound(x, y, SOUND_boom, by_element);
+  play_element_sound(x, y, SOUND_boom, Xbug_1_n);
 #endif
 }
 
-static void Lboom_tank(int x, int y, int by_element)
+static void Lboom_tank(int x, int y)
 {
   next[x][y] = Ztank;
 
   Lboom_generic(x, y, Xblank, Xblank);
 
 #if PLAY_ELEMENT_SOUND
-  play_element_sound(x, y, SOUND_boom, by_element);
+  play_element_sound(x, y, SOUND_boom, Xtank_1_n);
 #endif
 }
 
-static void Lboom_eater(int x, int y, int by_element)
+static void Lboom_eater(int x, int y)
 {
   next[x][y] = Zeater;
 
@@ -152,7 +152,7 @@ static void Lboom_eater(int x, int y, int by_element)
   lev.eater_pos = (lev.eater_pos + 1) & 7;
 
 #if PLAY_ELEMENT_SOUND
-  play_element_sound(x, y, SOUND_boom, by_element);
+  play_element_sound(x, y, SOUND_boom, Xeater_n);
 #endif
 }
 
@@ -2802,7 +2802,7 @@ static void Lbug_1_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_bug(x, y, Xbug_1_n);
+    Lboom_bug(x, y);
 
     return;
   }
@@ -2849,7 +2849,7 @@ static void Lbug_2_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_bug(x, y, Xbug_2_n);
+    Lboom_bug(x, y);
 
     return;
   }
@@ -2914,7 +2914,7 @@ static void Lbug_1_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_bug(x, y, Xbug_1_e);
+    Lboom_bug(x, y);
 
     return;
   }
@@ -2961,7 +2961,7 @@ static void Lbug_2_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_bug(x, y, Xbug_2_e);
+    Lboom_bug(x, y);
 
     return;
   }
@@ -3026,7 +3026,7 @@ static void Lbug_1_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_bug(x, y, Xbug_1_s);
+    Lboom_bug(x, y);
 
     return;
   }
@@ -3073,7 +3073,7 @@ static void Lbug_2_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_bug(x, y, Xbug_2_s);
+    Lboom_bug(x, y);
 
     return;
   }
@@ -3138,7 +3138,7 @@ static void Lbug_1_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_bug(x, y, Xbug_1_w);
+    Lboom_bug(x, y);
 
     return;
   }
@@ -3185,7 +3185,7 @@ static void Lbug_2_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_bug(x, y, Xbug_2_w);
+    Lboom_bug(x, y);
 
     return;
   }
@@ -3250,7 +3250,7 @@ static void Ltank_1_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_tank(x, y, Xtank_1_n);
+    Lboom_tank(x, y);
 
     return;
   }
@@ -3297,7 +3297,7 @@ static void Ltank_2_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_tank(x, y, Xtank_2_n);
+    Lboom_tank(x, y);
 
     return;
   }
@@ -3362,7 +3362,7 @@ static void Ltank_1_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_tank(x, y, Xtank_1_e);
+    Lboom_tank(x, y);
 
     return;
   }
@@ -3409,7 +3409,7 @@ static void Ltank_2_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_tank(x, y, Xtank_2_e);
+    Lboom_tank(x, y);
 
     return;
   }
@@ -3474,7 +3474,7 @@ static void Ltank_1_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_tank(x, y, Xtank_1_s);
+    Lboom_tank(x, y);
 
     return;
   }
@@ -3521,7 +3521,7 @@ static void Ltank_2_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_tank(x, y, Xtank_2_s);
+    Lboom_tank(x, y);
 
     return;
   }
@@ -3586,7 +3586,7 @@ static void Ltank_1_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_tank(x, y, Xtank_1_w);
+    Lboom_tank(x, y);
 
     return;
   }
@@ -3633,7 +3633,7 @@ static void Ltank_2_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
-    Lboom_tank(x, y, Xtank_2_w);
+    Lboom_tank(x, y);
 
     return;
   }
@@ -4394,7 +4394,7 @@ static void Lstone_fall(int x, int y)
     case Xeater_w:
       cave[x][y] = Ystone_sB;
       cave[x][y+1] = Yeater_stone;
-      Lboom_eater(x, y+1, Xstone_fall);
+      Lboom_eater(x, y+1);
       score += lev.eater_score;
       return;
 
@@ -4402,7 +4402,7 @@ static void Lstone_fall(int x, int y)
     case Xalien_pause:
       cave[x][y] = Ystone_sB;
       cave[x][y+1] = Yalien_stone;
-      Lboom_tank(x, y+1, Xstone_fall);
+      Lboom_tank(x, y+1);
       score += lev.alien_score;
       return;
 
@@ -4416,7 +4416,7 @@ static void Lstone_fall(int x, int y)
     case Xbug_2_w:
       cave[x][y] = Ystone_sB;
       cave[x][y+1] = Ybug_stone;
-      Lboom_bug(x, y+1, Xstone_fall);
+      Lboom_bug(x, y+1);
       score += lev.bug_score;
       return;
 
@@ -4430,7 +4430,7 @@ static void Lstone_fall(int x, int y)
     case Xtank_2_w:
       cave[x][y] = Ystone_sB;
       cave[x][y+1] = Ytank_stone;
-      Lboom_tank(x, y+1, Xstone_fall);
+      Lboom_tank(x, y+1);
       score += lev.tank_score;
       return;
 
@@ -4507,7 +4507,7 @@ static void Lstone_fall(int x, int y)
     case Xbomb:
     case Xbomb_pause:
       cave[x][y+1] = Ybomb_blank;
-      Lboom_tank(x, y+1, Xstone_fall);
+      Lboom_tank(x, y+1);
       return;
 
     case Xnut:
@@ -4815,7 +4815,7 @@ static void Lbomb_fall(int x, int y)
 
     default:
       cave[x][y] = Ybomb_blank;
-      Lboom_tank(x, y, Xbomb_fall);
+      Lboom_tank(x, y);
       return;
   }
 }
@@ -5510,7 +5510,7 @@ static void Lspring_fall(int x, int y)
     case Xeater_w:
       cave[x][y] = Yspring_sB;
       cave[x][y+1] = Yeater_spring;
-      Lboom_eater(x, y+1, Xspring_fall);
+      Lboom_eater(x, y+1);
       score += lev.eater_score;
       return;
 
@@ -5518,7 +5518,7 @@ static void Lspring_fall(int x, int y)
     case Xalien_pause:
       cave[x][y] = Yspring_sB;
       cave[x][y+1] = Yalien_spring;
-      Lboom_tank(x, y+1, Xspring_fall);
+      Lboom_tank(x, y+1);
       score += lev.alien_score;
       return;
 
@@ -5532,7 +5532,7 @@ static void Lspring_fall(int x, int y)
     case Xbug_2_w:
       cave[x][y] = Yspring_sB;
       cave[x][y+1] = Ybug_spring;
-      Lboom_bug(x, y+1, Xspring_fall);
+      Lboom_bug(x, y+1);
       score += lev.bug_score;
       return;
 
@@ -5546,14 +5546,14 @@ static void Lspring_fall(int x, int y)
     case Xtank_2_w:
       cave[x][y] = Yspring_sB;
       cave[x][y+1] = Ytank_spring;
-      Lboom_tank(x, y+1, Xspring_fall);
+      Lboom_tank(x, y+1);
       score += lev.tank_score;
       return;
 
     case Xbomb:
     case Xbomb_pause:
       cave[x][y+1] = Ybomb_blank;
-      Lboom_tank(x, y+1, Xspring_fall);
+      Lboom_tank(x, y+1);
       return;
 
     default:
@@ -7111,8 +7111,8 @@ static void handle_tile(int x, int y)
 
     case Xpause:		Lpause(x, y);			break;
 
-    case Xboom_bug:		Lboom_bug(x, y, Xboom_bug);	break;
-    case Xboom_tank:		Lboom_tank(x, y, Xboom_tank);	break;
+    case Xboom_bug:		Lboom_bug(x, y);		break;
+    case Xboom_tank:		Lboom_tank(x, y);		break;
     case Xboom_android:		Lboom_android(x, y);		break;
     case Xboom_1:		Lboom_1(x, y);			break;
     case Xboom_2:		Lboom_2(x, y);			break;
