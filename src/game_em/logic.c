@@ -7435,13 +7435,13 @@ static void logic_globals(void)
 
 void logic(void)
 {
-  if (frame == 7)
+  if (frame == 0)
   {
     logic_players();
     logic_objects();
   }
 
-  if (frame == 6)
+  if (frame == 1)
   {
     logic_globals();
   }

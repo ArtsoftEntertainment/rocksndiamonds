@@ -8701,7 +8701,7 @@ void InitGraphicInfo_EM(void)
       boolean has_action_graphics = (graphic != base_graphic);
       boolean has_crumbled_graphics = (base_crumbled != base_graphic);
       struct GraphicInfo *g = &graphic_info[graphic];
-      struct GraphicInfo_EM *g_em = &graphic_info_em_object[i][7 - j];
+      struct GraphicInfo_EM *g_em = &graphic_info_em_object[i][j];
       Bitmap *src_bitmap;
       int src_x, src_y;
       // ensure to get symmetric 3-frame, 2-delay animations as used in EM
@@ -8932,8 +8932,8 @@ void InitGraphicInfo_EM(void)
 		 Xspring);
 
 	// no separate animation for "smashed by rock" -- use rock instead
-	struct GraphicInfo_EM *g_em = &graphic_info_em_object[i][7 - j];
-	struct GraphicInfo_EM *g_xx = &graphic_info_em_object[e][7 - j];
+	struct GraphicInfo_EM *g_em = &graphic_info_em_object[i][j];
+	struct GraphicInfo_EM *g_xx = &graphic_info_em_object[e][j];
 
 	g_em->bitmap		= g_xx->bitmap;
 	g_em->src_x		= g_xx->src_x;
@@ -8969,7 +8969,7 @@ void InitGraphicInfo_EM(void)
 		       el_act_dir2img(effective_element, effective_action,
 				      direction));
 	struct GraphicInfo *g = &graphic_info[graphic];
-	struct GraphicInfo_EM *g_em = &graphic_info_em_player[p][i][7 - j];
+	struct GraphicInfo_EM *g_em = &graphic_info_em_player[p][i][j];
 	Bitmap *src_bitmap;
 	int src_x, src_y;
 	int sync_frame = j;

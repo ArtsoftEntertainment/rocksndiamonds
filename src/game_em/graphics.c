@@ -25,11 +25,11 @@
 #define VALID_SCREEN_Y(y)	((y) < MIN_SCREEN_Y ? MIN_SCREEN_Y :	\
 				 (y) > MAX_SCREEN_Y ? MAX_SCREEN_Y : (y))
 
-#define PLAYER_SCREEN_X(p)	(((    frame) * ply[p].oldx +		\
-				  (8 - frame) * ply[p].x) * TILEX / 8	\
+#define PLAYER_SCREEN_X(p)	(((7 - frame) * ply[p].oldx +		\
+				  (1 + frame) * ply[p].x) * TILEX / 8	\
 				 - ((SCR_FIELDX - 1) * TILEX) / 2)
-#define PLAYER_SCREEN_Y(p)	(((    frame) * ply[p].oldy +		\
-				  (8 - frame) * ply[p].y) * TILEY / 8	\
+#define PLAYER_SCREEN_Y(p)	(((7 - frame) * ply[p].oldy +		\
+				  (1 + frame) * ply[p].y) * TILEY / 8	\
 				 - ((SCR_FIELDY - 1) * TILEY) / 2)
 
 #define USE_EXTENDED_GRAPHICS_ENGINE		1
@@ -122,7 +122,7 @@ static struct GraphicInfo_EM *getObjectGraphic(int x, int y)
   struct GraphicInfo_EM *g = &graphic_info_em_object[tile][frame];
 
   if (!game.use_native_emc_graphics_engine)
-    getGraphicSourceObjectExt_EM(g, tile, 7 - frame, x - lev.left, y - lev.top);
+    getGraphicSourceObjectExt_EM(g, tile, frame, x - lev.left, y - lev.top);
 
   return g;
 }
@@ -132,7 +132,7 @@ static struct GraphicInfo_EM *getPlayerGraphic(int player_nr, int anim)
   struct GraphicInfo_EM *g = &graphic_info_em_player[player_nr][anim][frame];
 
   if (!game.use_native_emc_graphics_engine)
-    getGraphicSourcePlayerExt_EM(g, player_nr, anim, 7 - frame);
+    getGraphicSourcePlayerExt_EM(g, player_nr, anim, frame);
 
   return g;
 }
@@ -312,7 +312,7 @@ static void animscreen(void)
     for (y = lev.top; y < lev.bottom; y++)
       for (x = lev.left; x < lev.right; x++)
 	SetGfxAnimation_EM(&graphic_info_em_object[lev.draw[x][y]][frame],
-			   lev.draw[x][y], 7 - frame,
+			   lev.draw[x][y], frame,
 			   x - lev.left, y - lev.top);
 
   for (y = top; y < top + MAX_BUF_YSIZE; y++)
@@ -377,8 +377,8 @@ static void blitplayer(struct PLAYER *ply)
     return;
 
   /* x1/y1 are left/top and x2/y2 are right/down part of the player movement */
-  x1 = (frame * ply->oldx + (8 - frame) * ply->x) * TILEX / 8;
-  y1 = (frame * ply->oldy + (8 - frame) * ply->y) * TILEY / 8;
+  x1 = ((7 - frame) * ply->oldx + (1 + frame) * ply->x) * TILEX / 8;
+  y1 = ((7 - frame) * ply->oldy + (1 + frame) * ply->y) * TILEY / 8;
   x2 = x1 + TILEX - 1;
   y2 = y1 + TILEY - 1;
 
@@ -388,8 +388,8 @@ static void blitplayer(struct PLAYER *ply)
     /* some casts to "int" are needed because of negative calculation values */
     int dx = (int)ply->x - (int)ply->oldx;
     int dy = (int)ply->y - (int)ply->oldy;
-    int old_x = (int)ply->oldx + (7 - (int)frame) * dx / 8;
-    int old_y = (int)ply->oldy + (7 - (int)frame) * dy / 8;
+    int old_x = (int)ply->oldx + (int)frame * dx / 8;
+    int old_y = (int)ply->oldy + (int)frame * dy / 8;
     int new_x = old_x + SIGN(dx);
     int new_y = old_y + SIGN(dy);
     int old_sx = old_x % MAX_BUF_XSIZE;
@@ -436,7 +436,7 @@ void game_initscreen(void)
   int player_nr;
   int x,y;
 
-  frame = 6;
+  frame = 1;
 
   player_nr = (game.centered_player_nr != -1 ? game.centered_player_nr : 0);
 

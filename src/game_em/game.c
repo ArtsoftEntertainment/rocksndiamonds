@@ -83,7 +83,7 @@ void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
 
   game_em.random = game_em.random * 129 + 1;
 
-  frame = (frame - 1) & 7;
+  frame = (frame + 1) % 8;
 
   for (i = 0; i < MAX_PLAYERS; i++)
     readjoy(action[i], &ply[i]);
