@@ -543,7 +543,7 @@ enum
   Ygrass_blank,
   Ydirt_blank,
 
-  TILE_MAX
+  GAME_TILE_MAX
 };
 
 /* other definitions */
@@ -684,7 +684,7 @@ struct LOGIC
 
   short eater_array[8][9];		/* eater data */
   short ball_array[8][8];		/* ball data */
-  short android_array[TILE_MAX];	/* android clone data */
+  short android_array[GAME_TILE_MAX];	/* android clone data */
 
   short cavebuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];
   short nextbuf[CAVE_BUFFER_WIDTH][CAVE_BUFFER_HEIGHT];

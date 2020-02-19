@@ -262,7 +262,7 @@ struct CAVE
 
   short eater_array[8][9];		/* eater data */
   short ball_array[8][8];		/* ball data */
-  short android_array[TILE_MAX];	/* android clone data */
+  short android_array[GAME_TILE_MAX];	/* android clone data */
 
   short cave[CAVE_WIDTH][CAVE_HEIGHT];	/* cave data */
 };

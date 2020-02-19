@@ -90,7 +90,7 @@ extern struct LOGIC lev;
 extern struct PLAYER ply[MAX_PLAYERS];
 
 extern struct LevelInfo_EM native_em_level;
-extern struct GraphicInfo_EM graphic_info_em_object[TILE_MAX][8];
+extern struct GraphicInfo_EM graphic_info_em_object[GAME_TILE_MAX][8];
 extern struct GraphicInfo_EM graphic_info_em_player[MAX_PLAYERS][PLY_MAX][8];
 extern struct GameInfo_EM game_em;
 

@@ -5736,7 +5736,7 @@ static struct Mapping_EM_to_RND_object
   int action;
   int direction;
 }
-em_object_mapping_list[TILE_MAX + 1] =
+em_object_mapping_list[GAME_TILE_MAX + 1] =
 {
   {
     Zborder,				FALSE,	FALSE,
@@ -7740,7 +7740,7 @@ int map_element_RND_to_EM_cave(int element_rnd)
 
 int map_element_EM_to_RND_cave(int element_em_cave)
 {
-  static unsigned short mapping_EM_to_RND[TILE_MAX];
+  static unsigned short mapping_EM_to_RND[GAME_TILE_MAX];
   static boolean mapping_initialized = FALSE;
 
   if (!mapping_initialized)
@@ -7748,7 +7748,7 @@ int map_element_EM_to_RND_cave(int element_em_cave)
     int i;
 
     // return "EL_UNKNOWN" for all undefined elements in mapping array
-    for (i = 0; i < TILE_MAX; i++)
+    for (i = 0; i < GAME_TILE_MAX; i++)
       mapping_EM_to_RND[i] = EL_UNKNOWN;
 
     for (i = 0; em_object_mapping_list[i].element_em != -1; i++)
@@ -7768,7 +7768,7 @@ int map_element_EM_to_RND_cave(int element_em_cave)
 
 int map_element_EM_to_RND_game(int element_em_game)
 {
-  static unsigned short mapping_EM_to_RND[TILE_MAX];
+  static unsigned short mapping_EM_to_RND[GAME_TILE_MAX];
   static boolean mapping_initialized = FALSE;
 
   if (!mapping_initialized)
@@ -7776,7 +7776,7 @@ int map_element_EM_to_RND_game(int element_em_game)
     int i;
 
     // return "EL_UNKNOWN" for all undefined elements in mapping array
-    for (i = 0; i < TILE_MAX; i++)
+    for (i = 0; i < GAME_TILE_MAX; i++)
       mapping_EM_to_RND[i] = EL_UNKNOWN;
 
     for (i = 0; em_object_mapping_list[i].element_em != -1; i++)
@@ -7786,7 +7786,7 @@ int map_element_EM_to_RND_game(int element_em_game)
     mapping_initialized = TRUE;
   }
 
-  if (element_em_game >= 0 && element_em_game < TILE_MAX)
+  if (element_em_game >= 0 && element_em_game < GAME_TILE_MAX)
     return mapping_EM_to_RND[element_em_game];
 
   Error(ERR_WARN, "invalid EM game element %d", element_em_game);
@@ -7800,7 +7800,7 @@ void map_android_clone_elements_RND_to_EM(struct LevelInfo *level)
   struct CAVE *cav = level_em->cav;
   int i, j;
 
-  for (i = 0; i < TILE_MAX; i++)
+  for (i = 0; i < GAME_TILE_MAX; i++)
     cav->android_array[i] = Cblank;
 
   for (i = 0; i < level->num_android_clone_elements; i++)
@@ -7823,7 +7823,7 @@ void map_android_clone_elements_EM_to_RND(struct LevelInfo *level)
 
   level->num_android_clone_elements = 0;
 
-  for (i = 0; i < TILE_MAX; i++)
+  for (i = 0; i < GAME_TILE_MAX; i++)
   {
     int element_em_cave = cav->android_array[i];
     int element_rnd;
@@ -8278,7 +8278,7 @@ unsigned int InitRND(int seed)
     return InitEngineRandom_RND(seed);
 }
 
-static struct Mapping_EM_to_RND_object object_mapping[TILE_MAX];
+static struct Mapping_EM_to_RND_object object_mapping[GAME_TILE_MAX];
 static struct Mapping_EM_to_RND_player player_mapping[MAX_PLAYERS][PLY_MAX];
 
 static int get_effective_element_EM(int tile, int frame_em)
@@ -8624,7 +8624,7 @@ void InitGraphicInfo_EM(void)
   int i, j, p;
 
   // always start with reliable default values
-  for (i = 0; i < TILE_MAX; i++)
+  for (i = 0; i < GAME_TILE_MAX; i++)
   {
     object_mapping[i].element_rnd = EL_UNKNOWN;
     object_mapping[i].is_backside = FALSE;
@@ -8673,7 +8673,7 @@ void InitGraphicInfo_EM(void)
 	MV_DIR_FROM_BIT(em_player_mapping_list[i].direction);
   }
 
-  for (i = 0; i < TILE_MAX; i++)
+  for (i = 0; i < GAME_TILE_MAX; i++)
   {
     int element = object_mapping[i].element_rnd;
     int action = object_mapping[i].action;
@@ -8938,7 +8938,7 @@ void InitGraphicInfo_EM(void)
     }
   }
 
-  for (i = 0; i < TILE_MAX; i++)
+  for (i = 0; i < GAME_TILE_MAX; i++)
   {
     for (j = 0; j < 8; j++)
     {

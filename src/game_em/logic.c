@@ -20,7 +20,7 @@ static short **cave, **next, **boom;
 static unsigned int seed;
 static int score;
 
-static const byte is_blank[TILE_MAX] =
+static const byte is_blank[GAME_TILE_MAX] =
 {
   [Xblank]		= 1,
   [Xsplash_e]		= 1,
@@ -35,7 +35,7 @@ static const byte is_blank[TILE_MAX] =
   [Xfake_acid_8]	= 1
 };
 
-static const byte is_blank_or_acid[TILE_MAX] =
+static const byte is_blank_or_acid[GAME_TILE_MAX] =
 {
   [Xblank]		= 1,
   [Xsplash_e]		= 1,
@@ -58,7 +58,7 @@ static const byte is_blank_or_acid[TILE_MAX] =
   [Xacid_8]		= 1
 };
 
-static const byte is_fake_acid[TILE_MAX] =
+static const byte is_fake_acid[GAME_TILE_MAX] =
 {
   [Xfake_acid_1]	= 1,
   [Xfake_acid_2]	= 1,
@@ -70,7 +70,7 @@ static const byte is_fake_acid[TILE_MAX] =
   [Xfake_acid_8]	= 1
 };
 
-static const byte is_amoeba[TILE_MAX] =
+static const byte is_amoeba[GAME_TILE_MAX] =
 {
   [Xfake_amoeba]	= 1,
   [Yfake_amoeba]	= 1,
@@ -84,7 +84,7 @@ static const byte is_amoeba[TILE_MAX] =
   [Xamoeba_8]		= 1
 };
 
-static const byte is_android_walkable[TILE_MAX] =
+static const byte is_android_walkable[GAME_TILE_MAX] =
 {
   [Xblank]		= 1,
   [Xsplash_e]		= 1,

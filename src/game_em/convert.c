@@ -223,7 +223,7 @@ int map_em_element_C_to_X(int element_em_cave)
 
 int map_em_element_X_to_C(int element_em_game)
 {
-  static unsigned short map_reverse[TILE_MAX];
+  static unsigned short map_reverse[GAME_TILE_MAX];
   static boolean map_reverse_initialized = FALSE;
 
   if (!map_reverse_initialized)
@@ -231,7 +231,7 @@ int map_em_element_X_to_C(int element_em_game)
     int i;
 
     // return "Cblank" for all undefined elements in mapping array
-    for (i = 0; i < TILE_MAX; i++)
+    for (i = 0; i < GAME_TILE_MAX; i++)
       map_reverse[i] = Cblank;
 
     for (i = 0; i < CAVE_TILE_MAX; i++)
@@ -240,7 +240,7 @@ int map_em_element_X_to_C(int element_em_game)
     map_reverse_initialized = TRUE;
   }
 
-  if (element_em_game >= 0 && element_em_game < TILE_MAX)
+  if (element_em_game >= 0 && element_em_game < GAME_TILE_MAX)
   {
     int element_em_cave = map_reverse[element_em_game];
 
@@ -360,7 +360,7 @@ void prepare_em_level(void)
     for (j = 0; j < 8; j++)
       lev.ball_array[i][j] = map[cav.ball_array[i][j]];
 
-  for (i = 0; i < TILE_MAX; i++)
+  for (i = 0; i < GAME_TILE_MAX; i++)
     lev.android_array[i] = map[cav.android_array[i]];
 
   /* determine number of players in this level */

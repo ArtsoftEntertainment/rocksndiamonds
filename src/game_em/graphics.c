@@ -46,7 +46,7 @@ static int screen_tiles[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
 static int crumbled_state[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
 
 /* graphic info for game objects/frames and players/actions/frames */
-struct GraphicInfo_EM graphic_info_em_object[TILE_MAX][8];
+struct GraphicInfo_EM graphic_info_em_object[GAME_TILE_MAX][8];
 struct GraphicInfo_EM graphic_info_em_player[MAX_PLAYERS][PLY_MAX][8];
 
 int getFieldbufferOffsetX_EM(void)

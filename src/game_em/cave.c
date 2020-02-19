@@ -76,7 +76,7 @@ void setLevelInfoToDefaults_EM(void)
     for (j = 0; j < 8; j++)
       cav.ball_array[i][j] = Cblank;
 
-  for (i = 0; i < TILE_MAX; i++)
+  for (i = 0; i < GAME_TILE_MAX; i++)
     cav.android_array[i] = Cblank;
 
   for (x = 0; x < CAVE_WIDTH; x++)

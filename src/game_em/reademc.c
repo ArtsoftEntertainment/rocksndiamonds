@@ -142,7 +142,7 @@ static void init_android_clone_table(short android_clone_bits)
   boolean android_dynamite	= (android_clone_bits & 4096)	!= 0;
   int i;
 
-  for (i = 0; i < TILE_MAX; i++)
+  for (i = 0; i < GAME_TILE_MAX; i++)
     cav.android_array[i] = Cblank;
 
   if (android_eater)
