@@ -65,8 +65,8 @@ static const short map_emc[256] =
   Xdynamite_2,		Xdynamite_3,	Xdynamite_4,	Xacid_s,
 
   Xexit_1,		Xexit_2,	Xexit_3,	Xballoon,
-  Xplant,		Xspring,	Xspring_fall,	Xspring_w,
-  Xspring_e,		Xball_1,	Xball_2,	Xandroid,
+  Xplant,		Xspring,	Xspring,	Xpush_spring_w,
+  Xpush_spring_e,	Xball_1,	Xball_2,	Xandroid,
   Xblank,		Xandroid,	Xandroid,	Xandroid,
 
   Xandroid,		Xandroid,	Xandroid,	Xandroid,
