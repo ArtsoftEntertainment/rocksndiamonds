@@ -3462,7 +3462,7 @@ static struct
   int gadget_id_align;
   int *value;
   int area_xsize, area_ysize;
-  char *text_left, *text_right, *text_below, *infotext;
+  char *text_left, *text_right, *text_above, *text_below, *infotext;
 } drawingarea_info[ED_NUM_DRAWING_AREAS] =
 {
   // ---------- level playfield content ---------------------------------------
@@ -3473,7 +3473,7 @@ static struct
     GADGET_ID_DRAWING_LEVEL,		GADGET_ID_NONE,
     NULL,
     -1, -1,	// these values are not constant, but can change at runtime
-    NULL, NULL, NULL,			NULL
+    NULL, NULL, NULL, NULL,		NULL
   },
 
   // ---------- yam yam content -----------------------------------------------
@@ -3483,56 +3483,56 @@ static struct
     ED_AREA_YAMYAM_CONTENT_XOFF(0),	ED_AREA_YAMYAM_CONTENT_YOFF(0),
     GADGET_ID_YAMYAM_CONTENT_0,		GADGET_ID_NONE,
     &level.yamyam_content[0].e[0][0],	3, 3,
-    NULL, NULL, "1",			NULL
+    NULL, NULL, NULL, "1",		NULL
   },
   {
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(1),	ED_AREA_YAMYAM_CONTENT_YOFF(1),
     GADGET_ID_YAMYAM_CONTENT_1,		GADGET_ID_NONE,
     &level.yamyam_content[1].e[0][0],	3, 3,
-    NULL, NULL, "2",			NULL
+    NULL, NULL, NULL, "2",		NULL
   },
   {
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(2),	ED_AREA_YAMYAM_CONTENT_YOFF(2),
     GADGET_ID_YAMYAM_CONTENT_2,		GADGET_ID_NONE,
     &level.yamyam_content[2].e[0][0],	3, 3,
-    NULL, NULL, "3",			NULL
+    NULL, NULL, NULL, "3",		NULL
   },
   {
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(3),	ED_AREA_YAMYAM_CONTENT_YOFF(3),
     GADGET_ID_YAMYAM_CONTENT_3,		GADGET_ID_NONE,
     &level.yamyam_content[3].e[0][0],	3, 3,
-    NULL, NULL, "4",			NULL
+    NULL, NULL, NULL, "4",		NULL
   },
   {
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(4),	ED_AREA_YAMYAM_CONTENT_YOFF(4),
     GADGET_ID_YAMYAM_CONTENT_4,		GADGET_ID_NONE,
     &level.yamyam_content[4].e[0][0],	3, 3,
-    NULL, NULL, "5",			NULL
+    NULL, NULL, NULL, "5",		NULL
   },
   {
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(5),	ED_AREA_YAMYAM_CONTENT_YOFF(5),
     GADGET_ID_YAMYAM_CONTENT_5,		GADGET_ID_NONE,
     &level.yamyam_content[5].e[0][0],	3, 3,
-    NULL, NULL, "6",			NULL
+    NULL, NULL, NULL, "6",		NULL
   },
   {
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(6),	ED_AREA_YAMYAM_CONTENT_YOFF(6),
     GADGET_ID_YAMYAM_CONTENT_6,		GADGET_ID_NONE,
     &level.yamyam_content[6].e[0][0],	3, 3,
-    NULL, NULL, "7",			NULL
+    NULL, NULL, NULL, "7",		NULL
   },
   {
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(7),	ED_AREA_YAMYAM_CONTENT_YOFF(7),
     GADGET_ID_YAMYAM_CONTENT_7,		GADGET_ID_NONE,
     &level.yamyam_content[7].e[0][0],	3, 3,
-    NULL, NULL, "8",			NULL
+    NULL, NULL, NULL, "8",		NULL
   },
 
   // ---------- magic ball content --------------------------------------------
@@ -3542,56 +3542,56 @@ static struct
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(0),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(0),
     GADGET_ID_MAGIC_BALL_CONTENT_0,	GADGET_ID_NONE,
     &level.ball_content[0].e[0][0],	3, 3,
-    NULL, NULL, "1",			NULL
+    NULL, NULL, NULL, "1",		NULL
   },
   {
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(1),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(1),
     GADGET_ID_MAGIC_BALL_CONTENT_1,	GADGET_ID_NONE,
     &level.ball_content[1].e[0][0],	3, 3,
-    NULL, NULL, "2",			NULL
+    NULL, NULL, NULL, "2",		NULL
   },
   {
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(2),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(2),
     GADGET_ID_MAGIC_BALL_CONTENT_2,	GADGET_ID_NONE,
     &level.ball_content[2].e[0][0],	3, 3,
-    NULL, NULL, "3",			NULL
+    NULL, NULL, NULL, "3",		NULL
   },
   {
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(3),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(3),
     GADGET_ID_MAGIC_BALL_CONTENT_3,	GADGET_ID_NONE,
     &level.ball_content[3].e[0][0],	3, 3,
-    NULL, NULL, "4",			NULL
+    NULL, NULL, NULL, "4",		NULL
   },
   {
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(4),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(4),
     GADGET_ID_MAGIC_BALL_CONTENT_4,	GADGET_ID_NONE,
     &level.ball_content[4].e[0][0],	3, 3,
-    NULL, NULL, "5",			NULL
+    NULL, NULL, NULL, "5",		NULL
   },
   {
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(5),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(5),
     GADGET_ID_MAGIC_BALL_CONTENT_5,	GADGET_ID_NONE,
     &level.ball_content[5].e[0][0],	3, 3,
-    NULL, NULL, "6",			NULL
+    NULL, NULL, NULL, "6",		NULL
   },
   {
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(6),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(6),
     GADGET_ID_MAGIC_BALL_CONTENT_6,	GADGET_ID_NONE,
     &level.ball_content[6].e[0][0],	3, 3,
-    NULL, NULL, "7",			NULL
+    NULL, NULL, NULL, "7",		NULL
   },
   {
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(7),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(7),
     GADGET_ID_MAGIC_BALL_CONTENT_7,	GADGET_ID_NONE,
     &level.ball_content[7].e[0][0],	3, 3,
-    NULL, NULL, "8",			NULL
+    NULL, NULL, NULL, "8",		NULL
   },
 
   // ---------- android content -----------------------------------------------
@@ -3601,7 +3601,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_ANDROID_CONTENT,		GADGET_ID_NONE,
     &level.android_clone_element[0],	MAX_ANDROID_ELEMENTS, 1,
-    "elements:", NULL, NULL,		"elements android can clone"
+    "elements:", NULL, NULL, NULL,	"elements android can clone"
   },
 
   // ---------- amoeba content ------------------------------------------------
@@ -3611,7 +3611,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_AMOEBA_CONTENT,		GADGET_ID_NONE,
     &level.amoeba_content,		1, 1,
-    "content:", NULL, NULL,		"amoeba content"
+    "content:", NULL, NULL, NULL,	"amoeba content"
   },
 
   // ---------- level start element -------------------------------------------
@@ -3621,7 +3621,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_START_ELEMENT,		GADGET_ID_USE_START_ELEMENT,
     &level.start_element[0],		1, 1,
-    NULL, NULL, NULL,			"level start element"
+    NULL, NULL, NULL, NULL,		"level start element"
   },
 
   // ---------- player artwork element ----------------------------------------
@@ -3631,7 +3631,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_ARTWORK_ELEMENT,		GADGET_ID_USE_ARTWORK_ELEMENT,
     &level.artwork_element[0],		1, 1,
-    NULL, NULL, NULL,			"element for player artwork"
+    NULL, NULL, NULL, NULL,		"element for player artwork"
   },
 
   // ---------- player explosion element --------------------------------------
@@ -3641,7 +3641,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_EXPLOSION_ELEMENT,	GADGET_ID_USE_EXPLOSION_ELEMENT,
     &level.explosion_element[0],	1, 1,
-    NULL, NULL, NULL,			"element for player explosion"
+    NULL, NULL, NULL, NULL,		"element for player explosion"
   },
 
   // ---------- player initial inventory --------------------------------------
@@ -3651,7 +3651,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_INVENTORY_CONTENT,	GADGET_ID_USE_INITIAL_INVENTORY,
     &level.initial_inventory_content[0][0], MAX_INITIAL_INVENTORY_SIZE, 1,
-    NULL, NULL, NULL,			"content for initial inventory"
+    NULL, NULL, NULL, NULL,		"content for initial inventory"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -3663,7 +3663,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_GRAPHIC,		GADGET_ID_CUSTOM_USE_GRAPHIC,
     &custom_element.gfx_element_initial,1, 1,
-    NULL, NULL, NULL,			"custom graphic element"
+    NULL, NULL, NULL, NULL,		"custom graphic element"
   },
 
   // ---------- element settings: configure 2 (custom elements) ---------------
@@ -3675,7 +3675,7 @@ static struct
     0,					ED_AREA_3X3_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CONTENT,		GADGET_ID_NONE,	// align three rows
     &custom_element.content.e[0][0],	3, 3,
-    "content:", NULL, NULL,		NULL
+    "content:", NULL, NULL, NULL,	NULL
   },
 
   // ---------- custom enter and leave element (when moving) ------------------
@@ -3685,14 +3685,14 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_MOVE_ENTER,	GADGET_ID_NONE,
     &custom_element.move_enter_element,	1, 1,
-    "can dig:", " ", NULL,		"element that can be digged/collected"
+    "can dig:", " ", NULL, NULL,	"element that can be digged/collected"
   },
   {
     -1,					ED_AREA_1X1_SETTINGS_YPOS(3),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_MOVE_LEAVE,	GADGET_ID_CUSTOM_MOVE_LEAVE_TYPE,
     &custom_element.move_leave_element,	1, 1,
-    NULL, NULL, NULL,			"element that will be left behind"
+    NULL, NULL, NULL, NULL,		"element that will be left behind"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
@@ -3704,7 +3704,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_TARGET,	GADGET_ID_CUSTOM_CAN_CHANGE,
     &custom_element_change.target_element, 1, 1,
-    NULL, "after/when:", NULL,		"new target element after change"
+    NULL, "after/when:", NULL, NULL,	"new target element after change"
   },
 
   // ---------- custom change content (extended change target) ----------------
@@ -3714,7 +3714,7 @@ static struct
     0,					ED_AREA_3X3_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_CONTENT,	GADGET_ID_NONE,	// align three rows
     &custom_element_change.target_content.e[0][0], 3, 3,
-    NULL, NULL, NULL,			"new extended elements after change"
+    NULL, NULL, NULL, NULL,		"new extended elements after change"
   },
 
   // ---------- custom change trigger (element causing change) ----------------
@@ -3724,7 +3724,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_TRIGGER,	GADGET_ID_CHANGE_OTHER_ACTION,
     &custom_element_change.initial_trigger_element, 1, 1,
-    NULL, NULL, NULL,			"other element triggering change"
+    NULL, NULL, NULL, NULL,		"other element triggering change"
   },
 
   // ---------- custom change action (element used for action) ----------------
@@ -3734,7 +3734,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_ACTION,	GADGET_ID_ACTION_ARG,
     &custom_element_change.action_element, 1, 1,
-    NULL, NULL, NULL,			"element used as action parameter"
+    NULL, NULL, NULL, NULL,		"element used as action parameter"
   },
 
   // ---------- group element content -----------------------------------------
@@ -3744,7 +3744,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_GROUP_CONTENT,		GADGET_ID_NONE,
     &group_element_info.element[0],	MAX_ELEMENTS_IN_GROUP, 1,
-    "content:", NULL, NULL,		NULL
+    "content:", NULL, NULL, NULL,	NULL
   },
 
   // ---------- random background (for random painting) -----------------------
@@ -3754,7 +3754,7 @@ static struct
     0,					ED_AREA_1X1_LSETTINGS_YOFF,
     GADGET_ID_RANDOM_BACKGROUND,	GADGET_ID_RANDOM_RESTRICTED,
     &random_placement_background_element, 1, 1,
-    NULL, NULL, NULL,			"random placement background"
+    NULL, NULL, NULL, NULL,		"random placement background"
   },
 };
 
@@ -7293,8 +7293,10 @@ static void MapDrawingArea(int id)
   int xoffset_below = getTextWidth(drawingarea_info[id].text_below, font_nr);
   int x_left  = gi->x - xoffset_left;
   int x_right = gi->x + gi->width + ED_DRAWINGAREA_TEXT_DISTANCE;
+  int x_above = gi->x - ED_DRAWINGAREA_BORDER_SIZE;
   int x_below = gi->x + (gi->width - xoffset_below) / 2;
   int y_side  = gi->y + (gi->height - font_height) / 2;
+  int y_above = gi->y - font_height - ED_DRAWINGAREA_TEXT_DISTANCE;
   int y_below = gi->y + gi->height + ED_DRAWINGAREA_TEXT_DISTANCE;
 
   if (drawingarea_info[id].text_left)
@@ -7302,6 +7304,9 @@ static void MapDrawingArea(int id)
 
   if (drawingarea_info[id].text_right)
     DrawText(x_right, y_side, drawingarea_info[id].text_right, font_nr);
+
+  if (drawingarea_info[id].text_above)
+    DrawText(x_above, y_above, drawingarea_info[id].text_above, font_nr);
 
   if (drawingarea_info[id].text_below)
     DrawText(x_below, y_below, drawingarea_info[id].text_below, font_nr);
