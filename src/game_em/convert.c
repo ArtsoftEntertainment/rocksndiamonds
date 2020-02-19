@@ -213,12 +213,14 @@ static const short map[CAVE_TILE_MAX] =
 
 int map_em_element_C_to_X(int element_em_cave)
 {
-  if (element_em_cave >= 0 && element_em_cave < CAVE_TILE_MAX)
-    return map[element_em_cave];
+  if (element_em_cave < 0 || element_em_cave >= CAVE_TILE_MAX)
+  {
+    Error(ERR_WARN, "invalid EM cave element %d", element_em_cave);
 
-  Error(ERR_WARN, "invalid EM cave element %d", element_em_cave);
+    return Xblank;
+  }
 
-  return Xblank;
+  return map[element_em_cave];
 }
 
 int map_em_element_X_to_C(int element_em_game)
@@ -240,19 +242,19 @@ int map_em_element_X_to_C(int element_em_game)
     map_reverse_initialized = TRUE;
   }
 
-  if (element_em_game >= 0 && element_em_game < GAME_TILE_MAX)
+  if (element_em_game < 0 || element_em_game >= GAME_TILE_MAX)
   {
-    int element_em_cave = map_reverse[element_em_game];
+    Error(ERR_WARN, "invalid EM game element %d", element_em_game);
 
-    if (element_em_cave == Cblank && element_em_game != Xblank)
-      Error(ERR_WARN, "unknown EM game element %d", element_em_game);
-
-    return element_em_cave;
+    return Cblank;
   }
 
-  Error(ERR_WARN, "invalid EM game element %d", element_em_game);
+  int element_em_cave = map_reverse[element_em_game];
 
-  return Cblank;
+  if (element_em_cave == Cblank && element_em_game != Xblank)
+    Error(ERR_WARN, "unknown EM game element %d", element_em_game);
+
+  return element_em_cave;
 }
 
 void prepare_em_level(void)

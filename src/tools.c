@@ -7730,12 +7730,14 @@ int map_element_RND_to_EM_cave(int element_rnd)
     mapping_initialized = TRUE;
   }
 
-  if (element_rnd >= 0 && element_rnd < NUM_FILE_ELEMENTS)
-    return map_em_element_X_to_C(mapping_RND_to_EM[element_rnd]);
+  if (element_rnd < 0 || element_rnd >= NUM_FILE_ELEMENTS)
+  {
+    Error(ERR_WARN, "invalid RND level element %d", element_rnd);
 
-  Error(ERR_WARN, "invalid RND level element %d", element_rnd);
+    return EL_UNKNOWN;
+  }
 
-  return EL_UNKNOWN;
+  return map_em_element_X_to_C(mapping_RND_to_EM[element_rnd]);
 }
 
 int map_element_EM_to_RND_cave(int element_em_cave)
@@ -7758,12 +7760,14 @@ int map_element_EM_to_RND_cave(int element_em_cave)
     mapping_initialized = TRUE;
   }
 
-  if (element_em_cave >= 0 && element_em_cave < CAVE_TILE_MAX)
-    return mapping_EM_to_RND[map_em_element_C_to_X(element_em_cave)];
+  if (element_em_cave < 0 || element_em_cave >= CAVE_TILE_MAX)
+  {
+    Error(ERR_WARN, "invalid EM cave element %d", element_em_cave);
 
-  Error(ERR_WARN, "invalid EM cave element %d", element_em_cave);
+    return EL_UNKNOWN;
+  }
 
-  return EL_UNKNOWN;
+  return mapping_EM_to_RND[map_em_element_C_to_X(element_em_cave)];
 }
 
 int map_element_EM_to_RND_game(int element_em_game)
@@ -7786,12 +7790,14 @@ int map_element_EM_to_RND_game(int element_em_game)
     mapping_initialized = TRUE;
   }
 
-  if (element_em_game >= 0 && element_em_game < GAME_TILE_MAX)
-    return mapping_EM_to_RND[element_em_game];
+  if (element_em_game < 0 || element_em_game >= GAME_TILE_MAX)
+  {
+    Error(ERR_WARN, "invalid EM game element %d", element_em_game);
 
-  Error(ERR_WARN, "invalid EM game element %d", element_em_game);
+    return EL_UNKNOWN;
+  }
 
-  return EL_UNKNOWN;
+  return mapping_EM_to_RND[element_em_game];
 }
 
 void map_android_clone_elements_RND_to_EM(struct LevelInfo *level)
