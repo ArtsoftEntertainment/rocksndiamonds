@@ -94,14 +94,6 @@ extern struct GraphicInfo_EM graphic_info_em_object[TILE_MAX][8];
 extern struct GraphicInfo_EM graphic_info_em_player[MAX_PLAYERS][PLY_MAX][8];
 extern struct GameInfo_EM game_em;
 
-extern unsigned char tab_blank[TILE_MAX];
-extern unsigned char tab_acid[TILE_MAX];
-extern unsigned char tab_fake_acid[TILE_MAX];
-extern unsigned char tab_amoeba[TILE_MAX];
-extern unsigned char tab_android_move[TILE_MAX];
-extern unsigned short tab_explode_normal[TILE_MAX];
-extern unsigned short tab_explode_dynamite[TILE_MAX];
-
 extern Bitmap *screenBitmap;
 
 
