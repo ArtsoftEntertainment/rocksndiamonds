@@ -121,4 +121,7 @@ void SaveEngineSnapshotValues_EM(void);
 
 boolean checkIfAllPlayersFitToScreen(void);
 
+int map_em_element_C_to_X(int);
+int map_em_element_X_to_C(int);
+
 #endif	// EXPORT_H

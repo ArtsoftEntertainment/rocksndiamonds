@@ -44,85 +44,85 @@
 
 static const short map_emc[256] =
 {
-  Xstone,		Xstone,		Xdiamond,	Xdiamond,
-  Xalien,		Xalien,		Xblank,		Xblank,
-  Xtank_1_n,		Xtank_1_e,	Xtank_1_s,	Xtank_1_w,
-  Xtank_2_n,		Xtank_2_e,	Xtank_2_s,	Xtank_2_w,
+  Cstone,		Cstone,		Cdiamond,	Cdiamond,
+  Calien,		Calien,		Cblank,		Cblank,
+  Ctank_1_n,		Ctank_1_e,	Ctank_1_s,	Ctank_1_w,
+  Ctank_2_n,		Ctank_2_e,	Ctank_2_s,	Ctank_2_w,
 
-  Xbomb,		Xbomb,		Xemerald,	Xemerald,
-  Xbug_1_n,		Xbug_1_e,	Xbug_1_s,	Xbug_1_w,
-  Xbug_2_n,		Xbug_2_e,	Xbug_2_s,	Xbug_2_w,
-  Xdrip,		Xdrip,		Xdrip,		Xdrip,
+  Cbomb,		Cbomb,		Cemerald,	Cemerald,
+  Cbug_1_n,		Cbug_1_e,	Cbug_1_s,	Cbug_1_w,
+  Cbug_2_n,		Cbug_2_e,	Cbug_2_s,	Cbug_2_w,
+  Cdrip,		Cdrip,		Cdrip,		Cdrip,
 
-  Xstone,		Xbomb,		Xdiamond,	Xemerald,
-  Xwonderwall,		Xnut,		Xnut,		Xnut,
-  Xwheel,		Xeater_n,	Xeater_s,	Xeater_w,
-  Xeater_e,		Xsand_stone,	Xblank,		Xblank,
+  Cstone,		Cbomb,		Cdiamond,	Cemerald,
+  Cwonderwall,		Cnut,		Cnut,		Cnut,
+  Cwheel,		Ceater_n,	Ceater_s,	Ceater_w,
+  Ceater_e,		Csand_stone,	Cblank,		Cblank,
 
-  Xblank,		Xsand,		Xsand,		Xsand,
-  Xsand_stone,		Xsand_stone,	Xsand_stone,	Xsand,
-  Xstone,		Xslide_ew,	Xslide_ns,	Xdynamite_1,
-  Xdynamite_2,		Xdynamite_3,	Xdynamite_4,	Xacid_s,
+  Cblank,		Csand,		Csand,		Csand,
+  Csand_stone,		Csand_stone,	Csand_stone,	Csand,
+  Cstone,		Cslide_ew,	Cslide_ns,	Cdynamite_1,
+  Cdynamite_2,		Cdynamite_3,	Cdynamite_4,	Cacid_s,
 
-  Xexit_1,		Xexit_2,	Xexit_3,	Xballoon,
-  Xplant,		Xspring,	Xspring,	Xpush_spring_w,
-  Xpush_spring_e,	Xball_1,	Xball_2,	Xandroid,
-  Xblank,		Xandroid,	Xandroid,	Xandroid,
+  Cexit_1,		Cexit_2,	Cexit_3,	Cballoon,
+  Cplant,		Cspring,	Cspring,	Cpush_spring_w,
+  Cpush_spring_e,	Cball_1,	Cball_2,	Candroid,
+  Cblank,		Candroid,	Candroid,	Candroid,
 
-  Xandroid,		Xandroid,	Xandroid,	Xandroid,
-  Xandroid,		Xblank,		Xblank,		Xblank,
-  Xblank,		Xblank,		Xblank,		Xblank,
-  Xblank,		Xblank,		Xblank,		Xblank,
+  Candroid,		Candroid,	Candroid,	Candroid,
+  Candroid,		Cblank,		Cblank,		Cblank,
+  Cblank,		Cblank,		Cblank,		Cblank,
+  Cblank,		Cblank,		Cblank,		Cblank,
 
-  Xblank,		Xblank,		Xblank,		Xpush_spring_w,
-  Xpush_spring_e,	Xacid_1,	Xacid_2,	Xacid_3,
-  Xacid_4,		Xacid_5,	Xacid_6,	Xacid_7,
-  Xacid_8,		Xblank,		Xblank,		Xblank,
+  Cblank,		Cblank,		Cblank,		Cpush_spring_w,
+  Cpush_spring_e,	Cacid_1,	Cacid_2,	Cacid_3,
+  Cacid_4,		Cacid_5,	Cacid_6,	Cacid_7,
+  Cacid_8,		Cblank,		Cblank,		Cblank,
 
-  Xblank,		Xblank,		Xpush_nut_w,	Xpush_nut_e,
-  Xsteel_1,		Xblank,		Xblank,		Xpush_bomb_w,
-  Xpush_bomb_e,		Xpush_stone_w,	Xpush_stone_e,	Xblank,
-  Xblank,		Xblank,		Xblank,		Xblank,
+  Cblank,		Cblank,		Cpush_nut_w,	Cpush_nut_e,
+  Csteel_1,		Cblank,		Cblank,		Cpush_bomb_w,
+  Cpush_bomb_e,		Cpush_stone_w,	Cpush_stone_e,	Cblank,
+  Cblank,		Cblank,		Cblank,		Cblank,
 
-  Xblank,		Xroundwall_1,	Xgrass,		Xsteel_1,
-  Xwall_1,		Xkey_1,		Xkey_2,		Xkey_3,
-  Xkey_4,		Xdoor_1,	Xdoor_2,	Xdoor_3,
-  Xdoor_4,		Xfake_amoeba,	Xfake_door_1,	Xfake_door_2,
+  Cblank,		Croundwall_1,	Cgrass,		Csteel_1,
+  Cwall_1,		Ckey_1,		Ckey_2,		Ckey_3,
+  Ckey_4,		Cdoor_1,	Cdoor_2,	Cdoor_3,
+  Cdoor_4,		Cfake_amoeba,	Cfake_door_1,	Cfake_door_2,
 
-  Xfake_door_3,		Xfake_door_4,	Xwonderwall,	Xwheel,
-  Xsand,		Xacid_nw,	Xacid_ne,	Xacid_sw,
-  Xacid_se,		Xfake_blank,	Xamoeba_1,	Xamoeba_2,
-  Xamoeba_3,		Xamoeba_4,	Xexit,		Xalpha_arrow_w,
+  Cfake_door_3,		Cfake_door_4,	Cwonderwall,	Cwheel,
+  Csand,		Cacid_nw,	Cacid_ne,	Cacid_sw,
+  Cacid_se,		Cfake_blank,	Camoeba_1,	Camoeba_2,
+  Camoeba_3,		Camoeba_4,	Cexit,		Calpha_arrow_w,
 
-  Xfake_grass,		Xlenses,	Xmagnify,	Xfake_blank,
-  Xfake_grass,		Xswitch,	Xswitch,	Xblank,
-  Xdecor_8,		Xdecor_9,	Xdecor_10,	Xdecor_5,
-  Xalpha_comma,		Xalpha_apost,	Xalpha_minus,	Xdynamite,
+  Cfake_grass,		Clenses,	Cmagnify,	Cfake_blank,
+  Cfake_grass,		Cswitch,	Cswitch,	Cblank,
+  Cdecor_8,		Cdecor_9,	Cdecor_10,	Cdecor_5,
+  Calpha_comma,		Calpha_apost,	Calpha_minus,	Cdynamite,
 
-  Xsteel_3,		Xdecor_6,	Xdecor_7,	Xsteel_2,
-  Xroundwall_2,		Xdecor_2,	Xdecor_4,	Xdecor_3,
-  Xwind_any,		Xwind_e,	Xwind_s,	Xwind_w,
-  Xwind_n,		Xdirt,		Xplant,		Xkey_5,
+  Csteel_3,		Cdecor_6,	Cdecor_7,	Csteel_2,
+  Croundwall_2,		Cdecor_2,	Cdecor_4,	Cdecor_3,
+  Cwind_any,		Cwind_e,	Cwind_s,	Cwind_w,
+  Cwind_n,		Cdirt,		Cplant,		Ckey_5,
 
-  Xkey_6,		Xkey_7,		Xkey_8,		Xdoor_5,
-  Xdoor_6,		Xdoor_7,	Xdoor_8,	Xbumper,
-  Xalpha_a,		Xalpha_b,	Xalpha_c,	Xalpha_d,
-  Xalpha_e,		Xalpha_f,	Xalpha_g,	Xalpha_h,
+  Ckey_6,		Ckey_7,		Ckey_8,		Cdoor_5,
+  Cdoor_6,		Cdoor_7,	Cdoor_8,	Cbumper,
+  Calpha_a,		Calpha_b,	Calpha_c,	Calpha_d,
+  Calpha_e,		Calpha_f,	Calpha_g,	Calpha_h,
 
-  Xalpha_i,		Xalpha_j,	Xalpha_k,	Xalpha_l,
-  Xalpha_m,		Xalpha_n,	Xalpha_o,	Xalpha_p,
-  Xalpha_q,		Xalpha_r,	Xalpha_s,	Xalpha_t,
-  Xalpha_u,		Xalpha_v,	Xalpha_w,	Xalpha_x,
+  Calpha_i,		Calpha_j,	Calpha_k,	Calpha_l,
+  Calpha_m,		Calpha_n,	Calpha_o,	Calpha_p,
+  Calpha_q,		Calpha_r,	Calpha_s,	Calpha_t,
+  Calpha_u,		Calpha_v,	Calpha_w,	Calpha_x,
 
-  Xalpha_y,		Xalpha_z,	Xalpha_0,	Xalpha_1,
-  Xalpha_2,		Xalpha_3,	Xalpha_4,	Xalpha_5,
-  Xalpha_6,		Xalpha_7,	Xalpha_8,	Xalpha_9,
-  Xalpha_perio,		Xalpha_excla,	Xalpha_colon,	Xalpha_quest,
+  Calpha_y,		Calpha_z,	Calpha_0,	Calpha_1,
+  Calpha_2,		Calpha_3,	Calpha_4,	Calpha_5,
+  Calpha_6,		Calpha_7,	Calpha_8,	Calpha_9,
+  Calpha_perio,		Calpha_excla,	Calpha_colon,	Calpha_quest,
 
-  Xalpha_arrow_e,	Xdecor_1,	Xfake_door_5,	Xfake_door_6,
-  Xfake_door_7,		Xfake_door_8,	Xblank,		Xblank,
-  Xblank,		Xblank,		Xblank,		Xblank,
-  Xblank,		Xblank,		Xalpha_copyr,	Xfake_acid_1
+  Calpha_arrow_e,	Cdecor_1,	Cfake_door_5,	Cfake_door_6,
+  Cfake_door_7,		Cfake_door_8,	Cblank,		Cblank,
+  Cblank,		Cblank,		Cblank,		Cblank,
+  Cblank,		Cblank,		Calpha_copyr,	Cfake_acid_1
 };
 
 static void init_android_clone_table(short android_clone_bits)
@@ -143,177 +143,177 @@ static void init_android_clone_table(short android_clone_bits)
   int i;
 
   for (i = 0; i < TILE_MAX; i++)
-    cav.android_array[i] = Xblank;
+    cav.android_array[i] = Cblank;
 
   if (android_eater)
   {
-    cav.android_array[Xeater_n]		= Xeater_n;
-    cav.android_array[Yeater_nB]	= Xeater_n;
+    cav.android_array[Xeater_n]		= Ceater_n;
+    cav.android_array[Yeater_nB]	= Ceater_n;
 
-    cav.android_array[Xeater_e]		= Xeater_e;
-    cav.android_array[Yeater_eB]	= Xeater_e;
+    cav.android_array[Xeater_e]		= Ceater_e;
+    cav.android_array[Yeater_eB]	= Ceater_e;
 
-    cav.android_array[Xeater_s]		= Xeater_s;
-    cav.android_array[Yeater_sB]	= Xeater_s;
+    cav.android_array[Xeater_s]		= Ceater_s;
+    cav.android_array[Yeater_sB]	= Ceater_s;
 
-    cav.android_array[Xeater_w]		= Xeater_w;
-    cav.android_array[Yeater_wB]	= Xeater_w;
+    cav.android_array[Xeater_w]		= Ceater_w;
+    cav.android_array[Yeater_wB]	= Ceater_w;
   }
 
   if (android_alien)
   {
-    cav.android_array[Xalien]		= Xalien;
-    cav.android_array[Xalien_pause]	= Xalien;
-    cav.android_array[Yalien_nB]	= Xalien;
-    cav.android_array[Yalien_eB]	= Xalien;
-    cav.android_array[Yalien_sB]	= Xalien;
-    cav.android_array[Yalien_wB]	= Xalien;
+    cav.android_array[Xalien]		= Calien;
+    cav.android_array[Xalien_pause]	= Calien;
+    cav.android_array[Yalien_nB]	= Calien;
+    cav.android_array[Yalien_eB]	= Calien;
+    cav.android_array[Yalien_sB]	= Calien;
+    cav.android_array[Yalien_wB]	= Calien;
   }
 
   if (android_bug)
   {
-    cav.android_array[Xbug_1_n]		= Xbug_2_n;
-    cav.android_array[Xbug_2_n]		= Xbug_2_n;
-    cav.android_array[Ybug_nB]		= Xbug_2_n;
-    cav.android_array[Ybug_n_e]		= Xbug_2_n;
-    cav.android_array[Ybug_n_w]		= Xbug_2_n;
+    cav.android_array[Xbug_1_n]		= Cbug_2_n;
+    cav.android_array[Xbug_2_n]		= Cbug_2_n;
+    cav.android_array[Ybug_nB]		= Cbug_2_n;
+    cav.android_array[Ybug_n_e]		= Cbug_2_n;
+    cav.android_array[Ybug_n_w]		= Cbug_2_n;
 
-    cav.android_array[Xbug_1_e]		= Xbug_2_e;
-    cav.android_array[Xbug_2_e]		= Xbug_2_e;
-    cav.android_array[Ybug_eB]		= Xbug_2_e;
-    cav.android_array[Ybug_e_s]		= Xbug_2_e;
-    cav.android_array[Ybug_e_n]		= Xbug_2_e;
+    cav.android_array[Xbug_1_e]		= Cbug_2_e;
+    cav.android_array[Xbug_2_e]		= Cbug_2_e;
+    cav.android_array[Ybug_eB]		= Cbug_2_e;
+    cav.android_array[Ybug_e_s]		= Cbug_2_e;
+    cav.android_array[Ybug_e_n]		= Cbug_2_e;
 
-    cav.android_array[Xbug_1_s]		= Xbug_2_s;
-    cav.android_array[Xbug_2_s]		= Xbug_2_s;
-    cav.android_array[Ybug_sB]		= Xbug_2_s;
-    cav.android_array[Ybug_s_w]		= Xbug_2_s;
-    cav.android_array[Ybug_s_e]		= Xbug_2_s;
+    cav.android_array[Xbug_1_s]		= Cbug_2_s;
+    cav.android_array[Xbug_2_s]		= Cbug_2_s;
+    cav.android_array[Ybug_sB]		= Cbug_2_s;
+    cav.android_array[Ybug_s_w]		= Cbug_2_s;
+    cav.android_array[Ybug_s_e]		= Cbug_2_s;
 
-    cav.android_array[Xbug_1_w]		= Xbug_2_w;
-    cav.android_array[Xbug_2_w]		= Xbug_2_w;
-    cav.android_array[Ybug_wB]		= Xbug_2_w;
-    cav.android_array[Ybug_w_n]		= Xbug_2_w;
-    cav.android_array[Ybug_w_s]		= Xbug_2_w;
+    cav.android_array[Xbug_1_w]		= Cbug_2_w;
+    cav.android_array[Xbug_2_w]		= Cbug_2_w;
+    cav.android_array[Ybug_wB]		= Cbug_2_w;
+    cav.android_array[Ybug_w_n]		= Cbug_2_w;
+    cav.android_array[Ybug_w_s]		= Cbug_2_w;
   }
 
   if (android_tank)
   {
-    cav.android_array[Xtank_1_n]	= Xtank_1_n;
-    cav.android_array[Xtank_2_n]	= Xtank_1_n;
-    cav.android_array[Ytank_nB]		= Xtank_1_n;
-    cav.android_array[Ytank_n_e]	= Xtank_1_n;
-    cav.android_array[Ytank_n_w]	= Xtank_1_n;
+    cav.android_array[Xtank_1_n]	= Ctank_1_n;
+    cav.android_array[Xtank_2_n]	= Ctank_1_n;
+    cav.android_array[Ytank_nB]		= Ctank_1_n;
+    cav.android_array[Ytank_n_e]	= Ctank_1_n;
+    cav.android_array[Ytank_n_w]	= Ctank_1_n;
 
-    cav.android_array[Xtank_1_e]	= Xtank_1_e;
-    cav.android_array[Xtank_2_e]	= Xtank_1_e;
-    cav.android_array[Ytank_eB]		= Xtank_1_e;
-    cav.android_array[Ytank_e_s]	= Xtank_1_e;
-    cav.android_array[Ytank_e_n]	= Xtank_1_e;
+    cav.android_array[Xtank_1_e]	= Ctank_1_e;
+    cav.android_array[Xtank_2_e]	= Ctank_1_e;
+    cav.android_array[Ytank_eB]		= Ctank_1_e;
+    cav.android_array[Ytank_e_s]	= Ctank_1_e;
+    cav.android_array[Ytank_e_n]	= Ctank_1_e;
 
-    cav.android_array[Xtank_1_s]	= Xtank_1_s;
-    cav.android_array[Xtank_2_s]	= Xtank_1_s;
-    cav.android_array[Ytank_sB]		= Xtank_1_s;
-    cav.android_array[Ytank_s_w]	= Xtank_1_s;
-    cav.android_array[Ytank_s_e]	= Xtank_1_s;
+    cav.android_array[Xtank_1_s]	= Ctank_1_s;
+    cav.android_array[Xtank_2_s]	= Ctank_1_s;
+    cav.android_array[Ytank_sB]		= Ctank_1_s;
+    cav.android_array[Ytank_s_w]	= Ctank_1_s;
+    cav.android_array[Ytank_s_e]	= Ctank_1_s;
 
-    cav.android_array[Xtank_1_w]	= Xtank_1_w;
-    cav.android_array[Xtank_2_w]	= Xtank_1_w;
-    cav.android_array[Ytank_wB]		= Xtank_1_w;
-    cav.android_array[Ytank_w_n]	= Xtank_1_w;
-    cav.android_array[Ytank_w_s]	= Xtank_1_w;
+    cav.android_array[Xtank_1_w]	= Ctank_1_w;
+    cav.android_array[Xtank_2_w]	= Ctank_1_w;
+    cav.android_array[Ytank_wB]		= Ctank_1_w;
+    cav.android_array[Ytank_w_n]	= Ctank_1_w;
+    cav.android_array[Ytank_w_s]	= Ctank_1_w;
   }
 
   if (android_emerald)
   {
-    cav.android_array[Xemerald]		= Xemerald;
-    cav.android_array[Xemerald_pause]	= Xemerald;
-    cav.android_array[Xemerald_fall]	= Xemerald;
-    cav.android_array[Yemerald_sB]	= Xemerald;
-    cav.android_array[Yemerald_eB]	= Xemerald;
-    cav.android_array[Yemerald_wB]	= Xemerald;
+    cav.android_array[Xemerald]		= Cemerald;
+    cav.android_array[Xemerald_pause]	= Cemerald;
+    cav.android_array[Xemerald_fall]	= Cemerald;
+    cav.android_array[Yemerald_sB]	= Cemerald;
+    cav.android_array[Yemerald_eB]	= Cemerald;
+    cav.android_array[Yemerald_wB]	= Cemerald;
   }
 
   if (android_diamond)
   {
-    cav.android_array[Xdiamond]		= Xdiamond;
-    cav.android_array[Xdiamond_pause]	= Xdiamond;
-    cav.android_array[Xdiamond_fall]	= Xdiamond;
-    cav.android_array[Ydiamond_sB]	= Xdiamond;
-    cav.android_array[Ydiamond_eB]	= Xdiamond;
-    cav.android_array[Ydiamond_wB]	= Xdiamond;
+    cav.android_array[Xdiamond]		= Cdiamond;
+    cav.android_array[Xdiamond_pause]	= Cdiamond;
+    cav.android_array[Xdiamond_fall]	= Cdiamond;
+    cav.android_array[Ydiamond_sB]	= Cdiamond;
+    cav.android_array[Ydiamond_eB]	= Cdiamond;
+    cav.android_array[Ydiamond_wB]	= Cdiamond;
   }
 
   if (android_stone)
   {
-    cav.android_array[Xstone]		= Xstone;
-    cav.android_array[Xstone_pause]	= Xstone;
-    cav.android_array[Xstone_fall]	= Xstone;
-    cav.android_array[Ystone_sB]	= Xstone;
-    cav.android_array[Ystone_eB]	= Xstone;
-    cav.android_array[Ystone_wB]	= Xstone;
+    cav.android_array[Xstone]		= Cstone;
+    cav.android_array[Xstone_pause]	= Cstone;
+    cav.android_array[Xstone_fall]	= Cstone;
+    cav.android_array[Ystone_sB]	= Cstone;
+    cav.android_array[Ystone_eB]	= Cstone;
+    cav.android_array[Ystone_wB]	= Cstone;
   }
 
   if (android_bomb)
   {
-    cav.android_array[Xbomb]		= Xbomb;
-    cav.android_array[Xbomb_pause]	= Xbomb;
-    cav.android_array[Xbomb_fall]	= Xbomb;
-    cav.android_array[Ybomb_sB]		= Xbomb;
-    cav.android_array[Ybomb_eB]		= Xbomb;
-    cav.android_array[Ybomb_wB]		= Xbomb;
+    cav.android_array[Xbomb]		= Cbomb;
+    cav.android_array[Xbomb_pause]	= Cbomb;
+    cav.android_array[Xbomb_fall]	= Cbomb;
+    cav.android_array[Ybomb_sB]		= Cbomb;
+    cav.android_array[Ybomb_eB]		= Cbomb;
+    cav.android_array[Ybomb_wB]		= Cbomb;
   }
 
   if (android_nut)
   {
-    cav.android_array[Xnut]		= Xnut;
-    cav.android_array[Xnut_pause]	= Xnut;
-    cav.android_array[Xnut_fall]	= Xnut;
-    cav.android_array[Ynut_sB]		= Xnut;
-    cav.android_array[Ynut_eB]		= Xnut;
-    cav.android_array[Ynut_wB]		= Xnut;
+    cav.android_array[Xnut]		= Cnut;
+    cav.android_array[Xnut_pause]	= Cnut;
+    cav.android_array[Xnut_fall]	= Cnut;
+    cav.android_array[Ynut_sB]		= Cnut;
+    cav.android_array[Ynut_eB]		= Cnut;
+    cav.android_array[Ynut_wB]		= Cnut;
   }
 
   if (android_spring)
   {
-    cav.android_array[Xspring]		= Xspring;
-    cav.android_array[Xspring_pause]	= Xspring;
-    cav.android_array[Xspring_fall]	= Xspring;
-    cav.android_array[Xspring_e]	= Xspring;
-    cav.android_array[Xspring_w]	= Xspring;
-    cav.android_array[Yspring_sB]	= Xspring;
-    cav.android_array[Yspring_eB]	= Xspring;
-    cav.android_array[Yspring_wB]	= Xspring;
-    cav.android_array[Yspring_alien_eB]	= Xspring;
-    cav.android_array[Yspring_alien_wB]	= Xspring;
+    cav.android_array[Xspring]		= Cspring;
+    cav.android_array[Xspring_pause]	= Cspring;
+    cav.android_array[Xspring_fall]	= Cspring;
+    cav.android_array[Xspring_e]	= Cspring;
+    cav.android_array[Xspring_w]	= Cspring;
+    cav.android_array[Yspring_sB]	= Cspring;
+    cav.android_array[Yspring_eB]	= Cspring;
+    cav.android_array[Yspring_wB]	= Cspring;
+    cav.android_array[Yspring_alien_eB]	= Cspring;
+    cav.android_array[Yspring_alien_wB]	= Cspring;
   }
 
   if (android_dynamite)
   {
-    cav.android_array[Xdynamite]	= Xdynamite;
+    cav.android_array[Xdynamite]	= Cdynamite;
   }
 
   if (android_balloon)
   {
-    cav.android_array[Xballoon]		= Xballoon;
-    cav.android_array[Yballoon_nB]	= Xballoon;
-    cav.android_array[Yballoon_eB]	= Xballoon;
-    cav.android_array[Yballoon_sB]	= Xballoon;
-    cav.android_array[Yballoon_wB]	= Xballoon;
+    cav.android_array[Xballoon]		= Cballoon;
+    cav.android_array[Yballoon_nB]	= Cballoon;
+    cav.android_array[Yballoon_eB]	= Cballoon;
+    cav.android_array[Yballoon_sB]	= Cballoon;
+    cav.android_array[Yballoon_wB]	= Cballoon;
   }
 
   if (android_amoeba)
   {
-    cav.android_array[Xfake_amoeba]	= Xdrip;
-    cav.android_array[Yfake_amoeba]	= Xdrip;
-    cav.android_array[Xamoeba_1]	= Xdrip;
-    cav.android_array[Xamoeba_2]	= Xdrip;
-    cav.android_array[Xamoeba_3]	= Xdrip;
-    cav.android_array[Xamoeba_4]	= Xdrip;
-    cav.android_array[Xamoeba_5]	= Xdrip;
-    cav.android_array[Xamoeba_6]	= Xdrip;
-    cav.android_array[Xamoeba_7]	= Xdrip;
-    cav.android_array[Xamoeba_8]	= Xdrip;
+    cav.android_array[Xfake_amoeba]	= Cdrip;
+    cav.android_array[Yfake_amoeba]	= Cdrip;
+    cav.android_array[Xamoeba_1]	= Cdrip;
+    cav.android_array[Xamoeba_2]	= Cdrip;
+    cav.android_array[Xamoeba_3]	= Cdrip;
+    cav.android_array[Xamoeba_4]	= Cdrip;
+    cav.android_array[Xamoeba_5]	= Cdrip;
+    cav.android_array[Xamoeba_6]	= Cdrip;
+    cav.android_array[Xamoeba_7]	= Cdrip;
+    cav.android_array[Xamoeba_8]	= Cdrip;
   }
 }
 
@@ -421,14 +421,14 @@ void convert_em_level(unsigned char *src, int file_version)
     }
     else
     {
-      cav.ball_array[y][1] = (src[2163] & 1)  ? temp : Xblank; /* north */
-      cav.ball_array[y][6] = (src[2163] & 2)  ? temp : Xblank; /* south */
-      cav.ball_array[y][3] = (src[2163] & 4)  ? temp : Xblank; /* west */
-      cav.ball_array[y][4] = (src[2163] & 8)  ? temp : Xblank; /* east */
-      cav.ball_array[y][7] = (src[2163] & 16) ? temp : Xblank; /* southeast */
-      cav.ball_array[y][5] = (src[2163] & 32) ? temp : Xblank; /* southwest */
-      cav.ball_array[y][2] = (src[2163] & 64) ? temp : Xblank; /* northeast */
-      cav.ball_array[y][0] = (src[2163] & 128)? temp : Xblank; /* northwest */
+      cav.ball_array[y][1] = (src[2163] & 1)  ? temp : Cblank; /* north */
+      cav.ball_array[y][6] = (src[2163] & 2)  ? temp : Cblank; /* south */
+      cav.ball_array[y][3] = (src[2163] & 4)  ? temp : Cblank; /* west */
+      cav.ball_array[y][4] = (src[2163] & 8)  ? temp : Cblank; /* east */
+      cav.ball_array[y][7] = (src[2163] & 16) ? temp : Cblank; /* southeast */
+      cav.ball_array[y][5] = (src[2163] & 32) ? temp : Cblank; /* southwest */
+      cav.ball_array[y][2] = (src[2163] & 64) ? temp : Cblank; /* northeast */
+      cav.ball_array[y][0] = (src[2163] & 128)? temp : Cblank; /* northwest */
     }
   }
 
@@ -444,21 +444,16 @@ void convert_em_level(unsigned char *src, int file_version)
 
   /* cave */
 
-  /* first fill the complete playfield with the default border element */
+  /* first fill the complete playfield with the empty space element */
   for (y = 0; y < CAVE_HEIGHT; y++)
     for (x = 0; x < CAVE_WIDTH; x++)
-      cav.cave[x][y] = Zborder;
+      cav.cave[x][y] = Cblank;
 
   /* then copy the real level contents from level file into the playfield */
   temp = 0;
   for (y = 0; y < cav.height; y++)
     for (x = 0; x < cav.width; x++)
       cav.cave[x][y] = map_emc[src[temp++]];
-
-  /* at last, set the two players at their positions in the playfield */
-  /* (native EM[C] levels always have exactly two players in a level) */
-  for (i = 0; i < 2; i++)
-    cav.cave[cav.player_x[i]][cav.player_y[i]] = Zplayer;
 
   native_em_level.file_version = file_version;
 }
@@ -695,7 +690,7 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     {
       for (i = 0; i < 2048; i++)
 	if (src[i] == 241)
-	  src[i] = 254;		/* replace 'Xdecor_1' with 'Xalpha_copyr' */
+	  src[i] = 254;		/* replace 'Cdecor_1' with 'Calpha_copyr' */
     }
   }
   else
@@ -747,8 +742,8 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
 
   /* fix acid */
   for (i = 64; i < 2048; i++)
-    if (src[i] == 63)		/* replace element above 'Xacid_s' ... */
-      src[i - 64] = 101;	/* ... with 'Xacid_1' */
+    if (src[i] == 63)		/* replace element above 'Cacid_s' ... */
+      src[i - 64] = 101;	/* ... with 'Cacid_1' */
 
   /* fix acid with no base beneath it (see below for details (*)) */
   for (i = 64; i < 2048 - 1; i++)
@@ -758,9 +753,9 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     {
       if (src[i - 1] == 101 ||			/* remove acid over acid row */
 	  src[i + 1] == 101)
-	src[i - 64] = 6;	/* replace element above with 'Xblank' */
+	src[i - 64] = 6;	/* replace element above with 'Cblank' */
       else
-	src[i - 64] = 255;	/* replace element above with 'Xfake_acid_1' */
+	src[i - 64] = 255;	/* replace element above with 'Cfake_acid_1' */
     }
   }
 

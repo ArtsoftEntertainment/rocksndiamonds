@@ -70,18 +70,18 @@ void setLevelInfoToDefaults_EM(void)
 
   for (i = 0; i < 8; i++)
     for (j = 0; j < 9; j++)
-      cav.eater_array[i][j] = Xblank;
+      cav.eater_array[i][j] = Cblank;
 
   for (i = 0; i < 8; i++)
     for (j = 0; j < 8; j++)
-      cav.ball_array[i][j] = Xblank;
+      cav.ball_array[i][j] = Cblank;
 
   for (i = 0; i < TILE_MAX; i++)
-    cav.android_array[i] = Xblank;
+    cav.android_array[i] = Cblank;
 
   for (x = 0; x < CAVE_WIDTH; x++)
     for (y = 0; y < CAVE_HEIGHT; y++)
-      cav.cave[x][y] = Zborder;
+      cav.cave[x][y] = Cblank;
 }
 
 

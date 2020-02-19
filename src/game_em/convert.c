@@ -7,6 +7,254 @@
 #include "main_em.h"
 
 
+static const short map[CAVE_TILE_MAX] =
+{
+  [Cblank]		= Xblank,
+  [Cgrass]		= Xgrass,
+  [Cdirt]		= Xdirt,
+  [Cplant]		= Xplant,
+  [Cwall_1]		= Xwall_1,
+  [Cwall_2]		= Xwall_2,
+  [Cwall_3]		= Xwall_3,
+  [Cwall_4]		= Xwall_4,
+  [Croundwall_1]	= Xroundwall_1,
+  [Croundwall_2]	= Xroundwall_2,
+  [Croundwall_3]	= Xroundwall_3,
+  [Croundwall_4]	= Xroundwall_4,
+  [Csteel_1]		= Xsteel_1,
+  [Csteel_2]		= Xsteel_2,
+  [Csteel_3]		= Xsteel_3,
+  [Csteel_4]		= Xsteel_4,
+  [Candroid]		= Xandroid,
+  [Ceater_n]		= Xeater_n,
+  [Ceater_e]		= Xeater_e,
+  [Ceater_s]		= Xeater_s,
+  [Ceater_w]		= Xeater_w,
+  [Calien]		= Xalien,
+  [Cbug_1_n]		= Xbug_1_n,
+  [Cbug_1_e]		= Xbug_1_e,
+  [Cbug_1_s]		= Xbug_1_s,
+  [Cbug_1_w]		= Xbug_1_w,
+  [Cbug_2_n]		= Xbug_2_n,
+  [Cbug_2_e]		= Xbug_2_e,
+  [Cbug_2_s]		= Xbug_2_s,
+  [Cbug_2_w]		= Xbug_2_w,
+  [Ctank_1_n]		= Xtank_1_n,
+  [Ctank_1_e]		= Xtank_1_e,
+  [Ctank_1_s]		= Xtank_1_s,
+  [Ctank_1_w]		= Xtank_1_w,
+  [Ctank_2_n]		= Xtank_2_n,
+  [Ctank_2_e]		= Xtank_2_e,
+  [Ctank_2_s]		= Xtank_2_s,
+  [Ctank_2_w]		= Xtank_2_w,
+  [Cemerald]		= Xemerald,
+  [Cdiamond]		= Xdiamond,
+  [Cstone]		= Xstone,
+  [Cbomb]		= Xbomb,
+  [Cnut]		= Xnut,
+  [Cspring]		= Xspring,
+  [Cpush_emerald_e]	= Xpush_emerald_e,
+  [Cpush_emerald_w]	= Xpush_emerald_w,
+  [Cpush_diamond_e]	= Xpush_diamond_e,
+  [Cpush_diamond_w]	= Xpush_diamond_w,
+  [Cpush_stone_e]	= Xpush_stone_e,
+  [Cpush_stone_w]	= Xpush_stone_w,
+  [Cpush_bomb_e]	= Xpush_bomb_e,
+  [Cpush_bomb_w]	= Xpush_bomb_w,
+  [Cpush_nut_e]		= Xpush_nut_e,
+  [Cpush_nut_w]		= Xpush_nut_w,
+  [Cpush_spring_e]	= Xpush_spring_e,
+  [Cpush_spring_w]	= Xpush_spring_w,
+  [Cdynamite]		= Xdynamite,
+  [Cdynamite_1]		= Xdynamite_1,
+  [Cdynamite_2]		= Xdynamite_2,
+  [Cdynamite_3]		= Xdynamite_3,
+  [Cdynamite_4]		= Xdynamite_4,
+  [Ckey_1]		= Xkey_1,
+  [Ckey_2]		= Xkey_2,
+  [Ckey_3]		= Xkey_3,
+  [Ckey_4]		= Xkey_4,
+  [Ckey_5]		= Xkey_5,
+  [Ckey_6]		= Xkey_6,
+  [Ckey_7]		= Xkey_7,
+  [Ckey_8]		= Xkey_8,
+  [Cdoor_1]		= Xdoor_1,
+  [Cdoor_2]		= Xdoor_2,
+  [Cdoor_3]		= Xdoor_3,
+  [Cdoor_4]		= Xdoor_4,
+  [Cdoor_5]		= Xdoor_5,
+  [Cdoor_6]		= Xdoor_6,
+  [Cdoor_7]		= Xdoor_7,
+  [Cdoor_8]		= Xdoor_8,
+  [Cfake_door_1]	= Xfake_door_1,
+  [Cfake_door_2]	= Xfake_door_2,
+  [Cfake_door_3]	= Xfake_door_3,
+  [Cfake_door_4]	= Xfake_door_4,
+  [Cfake_door_5]	= Xfake_door_5,
+  [Cfake_door_6]	= Xfake_door_6,
+  [Cfake_door_7]	= Xfake_door_7,
+  [Cfake_door_8]	= Xfake_door_8,
+  [Cballoon]		= Xballoon,
+  [Cball_1]		= Xball_1,
+  [Cball_2]		= Xball_2,
+  [Camoeba_1]		= Xamoeba_1,
+  [Camoeba_2]		= Xamoeba_2,
+  [Camoeba_3]		= Xamoeba_3,
+  [Camoeba_4]		= Xamoeba_4,
+  [Camoeba_5]		= Xamoeba_5,
+  [Camoeba_6]		= Xamoeba_6,
+  [Camoeba_7]		= Xamoeba_7,
+  [Camoeba_8]		= Xamoeba_8,
+  [Cdrip]		= Xdrip,
+  [Cwonderwall]		= Xwonderwall,
+  [Cwheel]		= Xwheel,
+  [Cswitch]		= Xswitch,
+  [Cbumper]		= Xbumper,
+  [Cacid_nw]		= Xacid_nw,
+  [Cacid_ne]		= Xacid_ne,
+  [Cacid_sw]		= Xacid_sw,
+  [Cacid_s]		= Xacid_s,
+  [Cacid_se]		= Xacid_se,
+  [Cacid_1]		= Xacid_1,
+  [Cacid_2]		= Xacid_2,
+  [Cacid_3]		= Xacid_3,
+  [Cacid_4]		= Xacid_4,
+  [Cacid_5]		= Xacid_5,
+  [Cacid_6]		= Xacid_6,
+  [Cacid_7]		= Xacid_7,
+  [Cacid_8]		= Xacid_8,
+  [Cfake_acid_1]	= Xfake_acid_1,
+  [Cfake_acid_2]	= Xfake_acid_2,
+  [Cfake_acid_3]	= Xfake_acid_3,
+  [Cfake_acid_4]	= Xfake_acid_4,
+  [Cfake_acid_5]	= Xfake_acid_5,
+  [Cfake_acid_6]	= Xfake_acid_6,
+  [Cfake_acid_7]	= Xfake_acid_7,
+  [Cfake_acid_8]	= Xfake_acid_8,
+  [Cfake_blank]		= Xfake_blank,
+  [Cfake_grass]		= Xfake_grass,
+  [Cfake_amoeba]	= Xfake_amoeba,
+  [Clenses]		= Xlenses,
+  [Cmagnify]		= Xmagnify,
+  [Csand]		= Xsand,
+  [Csand_stone]		= Xsand_stone,
+  [Cslide_ns]		= Xslide_ns,
+  [Cslide_ew]		= Xslide_ew,
+  [Cwind_n]		= Xwind_n,
+  [Cwind_e]		= Xwind_e,
+  [Cwind_s]		= Xwind_s,
+  [Cwind_w]		= Xwind_w,
+  [Cwind_any]		= Xwind_any,
+  [Cwind_stop]		= Xwind_stop,
+  [Cexit]		= Xexit,
+  [Cexit_1]		= Xexit_1,
+  [Cexit_2]		= Xexit_2,
+  [Cexit_3]		= Xexit_3,
+  [Cpause]		= Xpause,
+  [Cdecor_1]		= Xdecor_1,
+  [Cdecor_2]		= Xdecor_2,
+  [Cdecor_3]		= Xdecor_3,
+  [Cdecor_4]		= Xdecor_4,
+  [Cdecor_5]		= Xdecor_5,
+  [Cdecor_6]		= Xdecor_6,
+  [Cdecor_7]		= Xdecor_7,
+  [Cdecor_8]		= Xdecor_8,
+  [Cdecor_9]		= Xdecor_9,
+  [Cdecor_10]		= Xdecor_10,
+  [Cdecor_11]		= Xdecor_11,
+  [Cdecor_12]		= Xdecor_12,
+  [Calpha_0]		= Xalpha_0,
+  [Calpha_1]		= Xalpha_1,
+  [Calpha_2]		= Xalpha_2,
+  [Calpha_3]		= Xalpha_3,
+  [Calpha_4]		= Xalpha_4,
+  [Calpha_5]		= Xalpha_5,
+  [Calpha_6]		= Xalpha_6,
+  [Calpha_7]		= Xalpha_7,
+  [Calpha_8]		= Xalpha_8,
+  [Calpha_9]		= Xalpha_9,
+  [Calpha_excla]	= Xalpha_excla,
+  [Calpha_apost]	= Xalpha_apost,
+  [Calpha_comma]	= Xalpha_comma,
+  [Calpha_minus]	= Xalpha_minus,
+  [Calpha_perio]	= Xalpha_perio,
+  [Calpha_colon]	= Xalpha_colon,
+  [Calpha_quest]	= Xalpha_quest,
+  [Calpha_a]		= Xalpha_a,
+  [Calpha_b]		= Xalpha_b,
+  [Calpha_c]		= Xalpha_c,
+  [Calpha_d]		= Xalpha_d,
+  [Calpha_e]		= Xalpha_e,
+  [Calpha_f]		= Xalpha_f,
+  [Calpha_g]		= Xalpha_g,
+  [Calpha_h]		= Xalpha_h,
+  [Calpha_i]		= Xalpha_i,
+  [Calpha_j]		= Xalpha_j,
+  [Calpha_k]		= Xalpha_k,
+  [Calpha_l]		= Xalpha_l,
+  [Calpha_m]		= Xalpha_m,
+  [Calpha_n]		= Xalpha_n,
+  [Calpha_o]		= Xalpha_o,
+  [Calpha_p]		= Xalpha_p,
+  [Calpha_q]		= Xalpha_q,
+  [Calpha_r]		= Xalpha_r,
+  [Calpha_s]		= Xalpha_s,
+  [Calpha_t]		= Xalpha_t,
+  [Calpha_u]		= Xalpha_u,
+  [Calpha_v]		= Xalpha_v,
+  [Calpha_w]		= Xalpha_w,
+  [Calpha_x]		= Xalpha_x,
+  [Calpha_y]		= Xalpha_y,
+  [Calpha_z]		= Xalpha_z,
+  [Calpha_arrow_e]	= Xalpha_arrow_e,
+  [Calpha_arrow_w]	= Xalpha_arrow_w,
+  [Calpha_copyr]	= Xalpha_copyr
+};
+
+int map_em_element_C_to_X(int element_em_cave)
+{
+  if (element_em_cave >= 0 && element_em_cave < CAVE_TILE_MAX)
+    return map[element_em_cave];
+
+  Error(ERR_WARN, "invalid EM cave element %d", element_em_cave);
+
+  return Xblank;
+}
+
+int map_em_element_X_to_C(int element_em_game)
+{
+  static unsigned short map_reverse[TILE_MAX];
+  static boolean map_reverse_initialized = FALSE;
+
+  if (!map_reverse_initialized)
+  {
+    int i;
+
+    // return "Cblank" for all undefined elements in mapping array
+    for (i = 0; i < TILE_MAX; i++)
+      map_reverse[i] = Cblank;
+
+    for (i = 0; i < CAVE_TILE_MAX; i++)
+      map_reverse[map[i]] = i;
+
+    map_reverse_initialized = TRUE;
+  }
+
+  if (element_em_game >= 0 && element_em_game < TILE_MAX)
+  {
+    int element_em_cave = map_reverse[element_em_game];
+
+    if (element_em_cave == Cblank && element_em_game != Xblank)
+      Error(ERR_WARN, "unknown EM game element %d", element_em_game);
+
+    return element_em_cave;
+  }
+
+  Error(ERR_WARN, "invalid EM game element %d", element_em_game);
+
+  return Cblank;
+}
+
 void prepare_em_level(void)
 {
   int i, j, x, y;
@@ -41,7 +289,7 @@ void prepare_em_level(void)
 
   for (x = 0; x < lev.width; x++)
     for (y = 0; y < lev.height; y++)
-      lev.cave[lev.left + x][lev.top + y] = cav.cave[x][y];
+      lev.cave[lev.left + x][lev.top + y] = map[cav.cave[x][y]];
 
   for (x = lev.left; x < lev.right; x++)
     for (y = lev.top; y < lev.bottom; y++)
@@ -106,14 +354,14 @@ void prepare_em_level(void)
 
   for (i = 0; i < 8; i++)
     for (j = 0; j < 9; j++)
-      lev.eater_array[i][j] = cav.eater_array[i][j];
+      lev.eater_array[i][j] = map[cav.eater_array[i][j]];
 
   for (i = 0; i < 8; i++)
     for (j = 0; j < 8; j++)
-      lev.ball_array[i][j] = cav.ball_array[i][j];
+      lev.ball_array[i][j] = map[cav.ball_array[i][j]];
 
   for (i = 0; i < TILE_MAX; i++)
-    lev.android_array[i] = cav.android_array[i];
+    lev.android_array[i] = map[cav.android_array[i]];
 
   /* determine number of players in this level */
   lev.home_initial = 0;
