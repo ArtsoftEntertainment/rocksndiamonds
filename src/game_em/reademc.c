@@ -125,197 +125,139 @@ static const short map_emc[256] =
   Cblank,		Cblank,		Calpha_copyr,	Cfake_acid_1
 };
 
-static void init_android_clone_table(short android_clone_bits)
+static struct
 {
-  boolean android_emerald	= (android_clone_bits & 1)	!= 0;
-  boolean android_diamond	= (android_clone_bits & 2)	!= 0;
-  boolean android_stone		= (android_clone_bits & 4)	!= 0;
-  boolean android_bomb		= (android_clone_bits & 8)	!= 0;
-  boolean android_nut		= (android_clone_bits & 16)	!= 0;
-  boolean android_tank		= (android_clone_bits & 32)	!= 0;
-  boolean android_eater		= (android_clone_bits & 64)	!= 0;
-  boolean android_bug		= (android_clone_bits & 128)	!= 0;
-  boolean android_alien		= (android_clone_bits & 256)	!= 0;
-  boolean android_spring	= (android_clone_bits & 512)	!= 0;
-  boolean android_balloon	= (android_clone_bits & 1024)	!= 0;
-  boolean android_amoeba	= (android_clone_bits & 2048)	!= 0;
-  boolean android_dynamite	= (android_clone_bits & 4096)	!= 0;
-  int i;
-
-  for (i = 0; i < GAME_TILE_MAX; i++)
-    cav.android_array[i] = Cblank;
-
-  if (android_eater)
-  {
-    cav.android_array[Xeater_n]		= Ceater_n;
-    cav.android_array[Yeater_nB]	= Ceater_n;
-
-    cav.android_array[Xeater_e]		= Ceater_e;
-    cav.android_array[Yeater_eB]	= Ceater_e;
-
-    cav.android_array[Xeater_s]		= Ceater_s;
-    cav.android_array[Yeater_sB]	= Ceater_s;
-
-    cav.android_array[Xeater_w]		= Ceater_w;
-    cav.android_array[Yeater_wB]	= Ceater_w;
-  }
-
-  if (android_alien)
-  {
-    cav.android_array[Xalien]		= Calien;
-    cav.android_array[Xalien_pause]	= Calien;
-    cav.android_array[Yalien_nB]	= Calien;
-    cav.android_array[Yalien_eB]	= Calien;
-    cav.android_array[Yalien_sB]	= Calien;
-    cav.android_array[Yalien_wB]	= Calien;
-  }
-
-  if (android_bug)
-  {
-    cav.android_array[Xbug_1_n]		= Cbug_2_n;
-    cav.android_array[Xbug_2_n]		= Cbug_2_n;
-    cav.android_array[Ybug_nB]		= Cbug_2_n;
-    cav.android_array[Ybug_n_e]		= Cbug_2_n;
-    cav.android_array[Ybug_n_w]		= Cbug_2_n;
-
-    cav.android_array[Xbug_1_e]		= Cbug_2_e;
-    cav.android_array[Xbug_2_e]		= Cbug_2_e;
-    cav.android_array[Ybug_eB]		= Cbug_2_e;
-    cav.android_array[Ybug_e_s]		= Cbug_2_e;
-    cav.android_array[Ybug_e_n]		= Cbug_2_e;
-
-    cav.android_array[Xbug_1_s]		= Cbug_2_s;
-    cav.android_array[Xbug_2_s]		= Cbug_2_s;
-    cav.android_array[Ybug_sB]		= Cbug_2_s;
-    cav.android_array[Ybug_s_w]		= Cbug_2_s;
-    cav.android_array[Ybug_s_e]		= Cbug_2_s;
-
-    cav.android_array[Xbug_1_w]		= Cbug_2_w;
-    cav.android_array[Xbug_2_w]		= Cbug_2_w;
-    cav.android_array[Ybug_wB]		= Cbug_2_w;
-    cav.android_array[Ybug_w_n]		= Cbug_2_w;
-    cav.android_array[Ybug_w_s]		= Cbug_2_w;
-  }
-
-  if (android_tank)
-  {
-    cav.android_array[Xtank_1_n]	= Ctank_1_n;
-    cav.android_array[Xtank_2_n]	= Ctank_1_n;
-    cav.android_array[Ytank_nB]		= Ctank_1_n;
-    cav.android_array[Ytank_n_e]	= Ctank_1_n;
-    cav.android_array[Ytank_n_w]	= Ctank_1_n;
-
-    cav.android_array[Xtank_1_e]	= Ctank_1_e;
-    cav.android_array[Xtank_2_e]	= Ctank_1_e;
-    cav.android_array[Ytank_eB]		= Ctank_1_e;
-    cav.android_array[Ytank_e_s]	= Ctank_1_e;
-    cav.android_array[Ytank_e_n]	= Ctank_1_e;
-
-    cav.android_array[Xtank_1_s]	= Ctank_1_s;
-    cav.android_array[Xtank_2_s]	= Ctank_1_s;
-    cav.android_array[Ytank_sB]		= Ctank_1_s;
-    cav.android_array[Ytank_s_w]	= Ctank_1_s;
-    cav.android_array[Ytank_s_e]	= Ctank_1_s;
-
-    cav.android_array[Xtank_1_w]	= Ctank_1_w;
-    cav.android_array[Xtank_2_w]	= Ctank_1_w;
-    cav.android_array[Ytank_wB]		= Ctank_1_w;
-    cav.android_array[Ytank_w_n]	= Ctank_1_w;
-    cav.android_array[Ytank_w_s]	= Ctank_1_w;
-  }
-
-  if (android_emerald)
-  {
-    cav.android_array[Xemerald]		= Cemerald;
-    cav.android_array[Xemerald_pause]	= Cemerald;
-    cav.android_array[Xemerald_fall]	= Cemerald;
-    cav.android_array[Yemerald_sB]	= Cemerald;
-    cav.android_array[Yemerald_eB]	= Cemerald;
-    cav.android_array[Yemerald_wB]	= Cemerald;
-  }
-
-  if (android_diamond)
-  {
-    cav.android_array[Xdiamond]		= Cdiamond;
-    cav.android_array[Xdiamond_pause]	= Cdiamond;
-    cav.android_array[Xdiamond_fall]	= Cdiamond;
-    cav.android_array[Ydiamond_sB]	= Cdiamond;
-    cav.android_array[Ydiamond_eB]	= Cdiamond;
-    cav.android_array[Ydiamond_wB]	= Cdiamond;
-  }
-
-  if (android_stone)
-  {
-    cav.android_array[Xstone]		= Cstone;
-    cav.android_array[Xstone_pause]	= Cstone;
-    cav.android_array[Xstone_fall]	= Cstone;
-    cav.android_array[Ystone_sB]	= Cstone;
-    cav.android_array[Ystone_eB]	= Cstone;
-    cav.android_array[Ystone_wB]	= Cstone;
-  }
-
-  if (android_bomb)
-  {
-    cav.android_array[Xbomb]		= Cbomb;
-    cav.android_array[Xbomb_pause]	= Cbomb;
-    cav.android_array[Xbomb_fall]	= Cbomb;
-    cav.android_array[Ybomb_sB]		= Cbomb;
-    cav.android_array[Ybomb_eB]		= Cbomb;
-    cav.android_array[Ybomb_wB]		= Cbomb;
-  }
-
-  if (android_nut)
-  {
-    cav.android_array[Xnut]		= Cnut;
-    cav.android_array[Xnut_pause]	= Cnut;
-    cav.android_array[Xnut_fall]	= Cnut;
-    cav.android_array[Ynut_sB]		= Cnut;
-    cav.android_array[Ynut_eB]		= Cnut;
-    cav.android_array[Ynut_wB]		= Cnut;
-  }
-
-  if (android_spring)
-  {
-    cav.android_array[Xspring]		= Cspring;
-    cav.android_array[Xspring_pause]	= Cspring;
-    cav.android_array[Xspring_fall]	= Cspring;
-    cav.android_array[Xspring_e]	= Cspring;
-    cav.android_array[Xspring_w]	= Cspring;
-    cav.android_array[Yspring_sB]	= Cspring;
-    cav.android_array[Yspring_eB]	= Cspring;
-    cav.android_array[Yspring_wB]	= Cspring;
-    cav.android_array[Yspring_alien_eB]	= Cspring;
-    cav.android_array[Yspring_alien_wB]	= Cspring;
-  }
-
-  if (android_dynamite)
-  {
-    cav.android_array[Xdynamite]	= Cdynamite;
-  }
-
-  if (android_balloon)
-  {
-    cav.android_array[Xballoon]		= Cballoon;
-    cav.android_array[Yballoon_nB]	= Cballoon;
-    cav.android_array[Yballoon_eB]	= Cballoon;
-    cav.android_array[Yballoon_sB]	= Cballoon;
-    cav.android_array[Yballoon_wB]	= Cballoon;
-  }
-
-  if (android_amoeba)
-  {
-    cav.android_array[Xfake_amoeba]	= Cdrip;
-    cav.android_array[Yfake_amoeba]	= Cdrip;
-    cav.android_array[Xamoeba_1]	= Cdrip;
-    cav.android_array[Xamoeba_2]	= Cdrip;
-    cav.android_array[Xamoeba_3]	= Cdrip;
-    cav.android_array[Xamoeba_4]	= Cdrip;
-    cav.android_array[Xamoeba_5]	= Cdrip;
-    cav.android_array[Xamoeba_6]	= Cdrip;
-    cav.android_array[Xamoeba_7]	= Cdrip;
-    cav.android_array[Xamoeba_8]	= Cdrip;
-  }
+  int bit_nr;
+  int clone_from;
+  int clone_to;
 }
+android_clone_table[] =
+{
+  { 0,	Xemerald,		Cemerald	},
+  { 0,	Xemerald_pause,		Cemerald	},
+  { 0,	Xemerald_fall,		Cemerald	},
+  { 0,	Yemerald_sB,		Cemerald	},
+  { 0,	Yemerald_eB,		Cemerald	},
+  { 0,	Yemerald_wB,		Cemerald	},
+
+  { 1,	Xdiamond,		Cdiamond	},
+  { 1,	Xdiamond_pause,		Cdiamond	},
+  { 1,	Xdiamond_fall,		Cdiamond	},
+  { 1,	Ydiamond_sB,		Cdiamond	},
+  { 1,	Ydiamond_eB,		Cdiamond	},
+  { 1,	Ydiamond_wB,		Cdiamond	},
+
+  { 2,	Xstone,			Cstone		},
+  { 2,	Xstone_pause,		Cstone		},
+  { 2,	Xstone_fall,		Cstone		},
+  { 2,	Ystone_sB,		Cstone		},
+  { 2,	Ystone_eB,		Cstone		},
+  { 2,	Ystone_wB,		Cstone		},
+
+  { 3,	Xbomb,			Cbomb		},
+  { 3,	Xbomb_pause,		Cbomb		},
+  { 3,	Xbomb_fall,		Cbomb		},
+  { 3,	Ybomb_sB,		Cbomb		},
+  { 3,	Ybomb_eB,		Cbomb		},
+  { 3,	Ybomb_wB,		Cbomb		},
+
+  { 4,	Xnut,			Cnut		},
+  { 4,	Xnut_pause,		Cnut		},
+  { 4,	Xnut_fall,		Cnut		},
+  { 4,	Ynut_sB,		Cnut		},
+  { 4,	Ynut_eB,		Cnut		},
+  { 4,	Ynut_wB,		Cnut		},
+
+  { 5,	Xtank_1_n,		Ctank_1_n	},
+  { 5,	Xtank_2_n,		Ctank_1_n	},
+  { 5,	Ytank_nB,		Ctank_1_n	},
+  { 5,	Ytank_n_e,		Ctank_1_n	},
+  { 5,	Ytank_n_w,		Ctank_1_n	},
+  { 5,	Xtank_1_e,		Ctank_1_e	},
+  { 5,	Xtank_2_e,		Ctank_1_e	},
+  { 5,	Ytank_eB,		Ctank_1_e	},
+  { 5,	Ytank_e_s,		Ctank_1_e	},
+  { 5,	Ytank_e_n,		Ctank_1_e	},
+  { 5,	Xtank_1_s,		Ctank_1_s	},
+  { 5,	Xtank_2_s,		Ctank_1_s	},
+  { 5,	Ytank_sB,		Ctank_1_s	},
+  { 5,	Ytank_s_w,		Ctank_1_s	},
+  { 5,	Ytank_s_e,		Ctank_1_s	},
+  { 5,	Xtank_1_w,		Ctank_1_w	},
+  { 5,	Xtank_2_w,		Ctank_1_w	},
+  { 5,	Ytank_wB,		Ctank_1_w	},
+  { 5,	Ytank_w_n,		Ctank_1_w	},
+  { 5,	Ytank_w_s,		Ctank_1_w	},
+
+  { 6,	Xeater_n,		Ceater_n	},
+  { 6,	Yeater_nB,		Ceater_n	},
+  { 6,	Xeater_e,		Ceater_e	},
+  { 6,	Yeater_eB,		Ceater_e	},
+  { 6,	Xeater_s,		Ceater_s	},
+  { 6,	Yeater_sB,		Ceater_s	},
+  { 6,	Xeater_w,		Ceater_w	},
+  { 6,	Yeater_wB,		Ceater_w	},
+
+  { 7,	Xbug_1_n,		Cbug_2_n	},
+  { 7,	Xbug_2_n,		Cbug_2_n	},
+  { 7,	Ybug_nB,		Cbug_2_n	},
+  { 7,	Ybug_n_e,		Cbug_2_n	},
+  { 7,	Ybug_n_w,		Cbug_2_n	},
+  { 7,	Xbug_1_e,		Cbug_2_e	},
+  { 7,	Xbug_2_e,		Cbug_2_e	},
+  { 7,	Ybug_eB,		Cbug_2_e	},
+  { 7,	Ybug_e_s,		Cbug_2_e	},
+  { 7,	Ybug_e_n,		Cbug_2_e	},
+  { 7,	Xbug_1_s,		Cbug_2_s	},
+  { 7,	Xbug_2_s,		Cbug_2_s	},
+  { 7,	Ybug_sB,		Cbug_2_s	},
+  { 7,	Ybug_s_w,		Cbug_2_s	},
+  { 7,	Ybug_s_e,		Cbug_2_s	},
+  { 7,	Xbug_1_w,		Cbug_2_w	},
+  { 7,	Xbug_2_w,		Cbug_2_w	},
+  { 7,	Ybug_wB,		Cbug_2_w	},
+  { 7,	Ybug_w_n,		Cbug_2_w	},
+  { 7,	Ybug_w_s,		Cbug_2_w	},
+
+  { 8,	Xalien,			Calien		},
+  { 8,	Xalien_pause,		Calien		},
+  { 8,	Yalien_nB,		Calien		},
+  { 8,	Yalien_eB,		Calien		},
+  { 8,	Yalien_sB,		Calien		},
+  { 8,	Yalien_wB,		Calien		},
+
+  { 9,	Xspring,		Cspring		},
+  { 9,	Xspring_pause,		Cspring		},
+  { 9,	Xspring_fall,		Cspring		},
+  { 9,	Xspring_e,		Cspring		},
+  { 9,	Xspring_w,		Cspring		},
+  { 9,	Yspring_sB,		Cspring		},
+  { 9,	Yspring_eB,		Cspring		},
+  { 9,	Yspring_wB,		Cspring		},
+  { 9,	Yspring_alien_eB,	Cspring		},
+  { 9,	Yspring_alien_wB,	Cspring		},
+
+  { 10,	Xballoon,		Cballoon	},
+  { 10,	Yballoon_nB,		Cballoon	},
+  { 10,	Yballoon_eB,		Cballoon	},
+  { 10,	Yballoon_sB,		Cballoon	},
+  { 10,	Yballoon_wB,		Cballoon	},
+
+  { 11,	Xfake_amoeba,		Cdrip		},
+  { 11,	Yfake_amoeba,		Cdrip		},
+  { 11,	Xamoeba_1,		Cdrip		},
+  { 11,	Xamoeba_2,		Cdrip		},
+  { 11,	Xamoeba_3,		Cdrip		},
+  { 11,	Xamoeba_4,		Cdrip		},
+  { 11,	Xamoeba_5,		Cdrip		},
+  { 11,	Xamoeba_6,		Cdrip		},
+  { 11,	Xamoeba_7,		Cdrip		},
+  { 11,	Xamoeba_8,		Cdrip		},
+
+  { 12,	Xdynamite,		Cdynamite	},
+
+  { -1,		-1,		-1		},
+};
 
 void convert_em_level(unsigned char *src, int file_version)
 {
@@ -400,7 +342,15 @@ void convert_em_level(unsigned char *src, int file_version)
 
   /* android */
 
-  init_android_clone_table(GET_BE16(src[2168]));
+  temp = GET_BE16(src[2168]);
+
+  for (i = 0; i < GAME_TILE_MAX; i++)
+    cav.android_array[i] = Cblank;
+
+  for (i = 0; android_clone_table[i].bit_nr != -1; i++)
+    if (temp & (1 << android_clone_table[i].bit_nr))
+      cav.android_array[android_clone_table[i].clone_from] =
+	android_clone_table[i].clone_to;
 
   /* eaters */
 
