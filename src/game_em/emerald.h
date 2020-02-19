@@ -494,7 +494,7 @@ enum
   Xalpha_8,
   Xalpha_9,
   Xalpha_excla,
-  Xalpha_quote,
+  Xalpha_apost,
   Xalpha_comma,
   Xalpha_minus,
   Xalpha_perio,

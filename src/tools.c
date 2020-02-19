@@ -7288,8 +7288,8 @@ em_object_mapping_list[] =
     EL_CHAR('!'),			-1, -1
   },
   {
-    Xalpha_quote,			TRUE,	FALSE,
-    EL_CHAR('"'),			-1, -1
+    Xalpha_apost,			TRUE,	FALSE,
+    EL_CHAR('\''),			-1, -1
   },
   {
     Xalpha_comma,			TRUE,	FALSE,

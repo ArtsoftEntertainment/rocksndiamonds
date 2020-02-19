@@ -97,7 +97,7 @@ static const short map_emc[256] =
   Xfake_grass,		Xlenses,	Xmagnify,	Xfake_blank,
   Xfake_grass,		Xswitch,	Xswitch,	Xblank,
   Xdecor_8,		Xdecor_9,	Xdecor_10,	Xdecor_5,
-  Xalpha_comma,		Xalpha_quote,	Xalpha_minus,	Xdynamite,
+  Xalpha_comma,		Xalpha_apost,	Xalpha_minus,	Xdynamite,
 
   Xsteel_3,		Xdecor_6,	Xdecor_7,	Xsteel_2,
   Xroundwall_2,		Xdecor_2,	Xdecor_4,	Xdecor_3,
