@@ -7301,7 +7301,7 @@ static void logic_players(void)
 
       game.centered_player_nr_next = i;
       game.set_centered_player = TRUE;
-      game.set_centered_player_fast = TRUE;
+      game.set_centered_player_wrap = TRUE;
     }
 
     ply[i].oldx = ply[i].x;

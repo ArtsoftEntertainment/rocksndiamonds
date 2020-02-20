@@ -554,7 +554,7 @@ static boolean checkIfAllPlayersAreVisible(int center_x, int center_y)
 void RedrawPlayfield_EM(boolean force_redraw)
 {
   boolean draw_new_player_location = FALSE;
-  boolean draw_new_player_location_fast = FALSE;
+  boolean draw_new_player_location_wrap = FALSE;
   boolean quick_relocation = setup.quick_switch;
   int max_center_distance_player_nr =
     getMaxCenterDistancePlayerNr(screen_x, screen_y);
@@ -593,11 +593,11 @@ void RedrawPlayfield_EM(boolean force_redraw)
     game.centered_player_nr = game.centered_player_nr_next;
 
     draw_new_player_location = TRUE;
-    draw_new_player_location_fast = game.set_centered_player_fast;
+    draw_new_player_location_wrap = game.set_centered_player_wrap;
     force_redraw = TRUE;
 
     game.set_centered_player = FALSE;
-    game.set_centered_player_fast = FALSE;
+    game.set_centered_player_wrap = FALSE;
   }
 
   if (game.centered_player_nr == -1)
@@ -633,7 +633,7 @@ void RedrawPlayfield_EM(boolean force_redraw)
     int screen_xx = VALID_SCREEN_X(sx);
     int screen_yy = VALID_SCREEN_Y(sy);
 
-    if (draw_new_player_location_fast)
+    if (draw_new_player_location_wrap)
       wait_delay_value /= 4;
 
     SetVideoFrameDelay(wait_delay_value);
