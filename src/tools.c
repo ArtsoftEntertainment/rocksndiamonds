@@ -1462,8 +1462,8 @@ void SetBorderElement(void)
 
   BorderElement = EL_EMPTY;
 
-  // the MM game engine does not use a visible border element
-  if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
+  // only the R'n'D game engine may use an additional steelwall border
+  if (level.game_engine_type != GAME_ENGINE_TYPE_RND)
     return;
 
   for (y = 0; y < lev_fieldy && BorderElement == EL_EMPTY; y++)
