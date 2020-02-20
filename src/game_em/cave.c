@@ -68,6 +68,10 @@ void setLevelInfoToDefaults_EM(void)
 
   cav.num_ball_arrays = 8;
 
+  cav.testmode = FALSE;
+  cav.teamwork = FALSE;
+  cav.infinite = FALSE;
+
   for (i = 0; i < 8; i++)
     for (j = 0; j < 9; j++)
       cav.eater_array[i][j] = Cblank;

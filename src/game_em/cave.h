@@ -260,6 +260,10 @@ struct CAVE
 
   int num_ball_arrays;		/* number of ball data arrays used */
 
+  boolean testmode;		/* test mode */
+  boolean teamwork;		/* two player mode */
+  boolean infinite;		/* cave is infinitely wide */
+
   short eater_array[8][9];		/* eater data */
   short ball_array[8][8];		/* ball data */
   short android_array[GAME_TILE_MAX];	/* android clone data */

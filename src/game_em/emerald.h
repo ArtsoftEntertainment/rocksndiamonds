@@ -678,6 +678,7 @@ struct LOGIC
   int home;			/* number of players not yet at home */
 				/* 0 == all players at home */
 
+  boolean testmode;		/* test mode */
   boolean killed_out_of_time;	/* kill player due to time out */
 
   int exit_x, exit_y;		/* kludge for playing player exit sound */

@@ -275,18 +275,21 @@ void prepare_em_level(void)
   lev.right = lev.left + lev.width;
   lev.bottom = lev.top + lev.height;
 
-  /* add linked cave buffer columns for wrap-around movement */
-  for (x = 0; x < lev.left; x++)
+  if (cav.infinite)
   {
-    lev.cavecol[x] = lev.cavecol[lev.width + x];
-    lev.nextcol[x] = lev.nextcol[lev.width + x];
-    lev.drawcol[x] = lev.drawcol[lev.width + x];
-    lev.boomcol[x] = lev.boomcol[lev.width + x];
+    /* add linked cave buffer columns for wrap-around movement */
+    for (x = 0; x < lev.left; x++)
+    {
+      lev.cavecol[x] = lev.cavecol[lev.width + x];
+      lev.nextcol[x] = lev.nextcol[lev.width + x];
+      lev.drawcol[x] = lev.drawcol[lev.width + x];
+      lev.boomcol[x] = lev.boomcol[lev.width + x];
 
-    lev.cavecol[lev.right + x] = lev.cavecol[lev.left + x];
-    lev.nextcol[lev.right + x] = lev.nextcol[lev.left + x];
-    lev.drawcol[lev.right + x] = lev.drawcol[lev.left + x];
-    lev.boomcol[lev.right + x] = lev.boomcol[lev.left + x];
+      lev.cavecol[lev.right + x] = lev.cavecol[lev.left + x];
+      lev.nextcol[lev.right + x] = lev.nextcol[lev.left + x];
+      lev.drawcol[lev.right + x] = lev.drawcol[lev.left + x];
+      lev.boomcol[lev.right + x] = lev.boomcol[lev.left + x];
+    }
   }
 
   for (x = 0; x < lev.width; x++)
@@ -300,6 +303,14 @@ void prepare_em_level(void)
   lev.time = cav.time_seconds;
   lev.gems_needed = cav.gems_needed;
   lev.score = 0;
+
+  lev.testmode = cav.testmode;
+
+  if (lev.testmode)
+  {
+    lev.time = 0;
+    lev.gems_needed = 0;
+  }
 
   lev.eater_score	= cav.eater_score;
   lev.alien_score	= cav.alien_score;

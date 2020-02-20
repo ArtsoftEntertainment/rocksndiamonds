@@ -273,6 +273,10 @@ void convert_em_level(unsigned char *src, int file_version)
   cav.time_seconds = MIN(GET_BE16(src[2110]), 9999);
   cav.gems_needed = src[2095];
 
+  cav.infinite = TRUE;
+  cav.testmode = FALSE;
+  cav.teamwork = (src[2150] & 128) ? TRUE : FALSE;
+
   /* scores */
 
   cav.emerald_score	= src[2084];
