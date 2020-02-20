@@ -634,7 +634,13 @@ void RedrawPlayfield_EM(boolean force_redraw)
     int screen_yy = VALID_SCREEN_Y(sy);
 
     if (draw_new_player_location_wrap)
+    {
+      // when wrapping around (horizontally), keep vertical player position
+      screen_yy = screen_y;
+
+      // scrolling for wrapping should be faster than for switching players
       wait_delay_value /= 4;
+    }
 
     SetVideoFrameDelay(wait_delay_value);
 
