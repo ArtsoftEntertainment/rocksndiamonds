@@ -572,7 +572,7 @@ enum
 
 enum
 {
-  SOUND_blank = 0,	/* player walks on blank */
+  SOUND_blank,		/* player walks on blank */
   SOUND_roll,		/* player pushes stone/bomb/nut/spring */
   SOUND_stone,		/* stone hits ground */
   SOUND_nut,		/* nut hits ground */
@@ -615,6 +615,37 @@ enum
 // ----------------------------------------------------------------------------
 // data structure definitions
 // ----------------------------------------------------------------------------
+
+/* structure used by logic() for gameplay */
+
+struct PLAYER
+{
+  int num;
+  int exists;
+  int alive_initial;
+  int alive;
+
+  int dynamite;
+  int dynamite_cnt;
+  int keys;
+  int anim;
+
+  int x;
+  int y;
+  int oldx;
+  int oldy;
+
+  int last_move_dir;
+
+  int joy_n:1;
+  int joy_e:1;
+  int joy_s:1;
+  int joy_w:1;
+  int joy_snap:1;
+  int joy_drop:1;
+  int joy_stick:1;
+  int joy_spin:1;
+};
 
 struct LOGIC
 {
@@ -701,35 +732,6 @@ struct LOGIC
   short **next;
   short **draw;
   short **boom;
-};
-
-struct PLAYER
-{
-  int num;
-  int exists;
-  int alive_initial;
-  int alive;
-
-  int dynamite;
-  int dynamite_cnt;
-  int keys;
-  int anim;
-
-  int x;
-  int y;
-  int oldx;
-  int oldy;
-
-  int last_move_dir;
-
-  int joy_n:1;
-  int joy_e:1;
-  int joy_s:1;
-  int joy_w:1;
-  int joy_snap:1;
-  int joy_drop:1;
-  int joy_stick:1;
-  int joy_spin:1;
 };
 
 #endif	// EMERALD_H
