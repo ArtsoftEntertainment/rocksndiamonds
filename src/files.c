@@ -8368,6 +8368,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.scroll_delay,			"scroll_delay"
   },
   {
+    TYPE_SWITCH,
+    &setup.forced_scroll_delay,			"forced_scroll_delay"
+  },
+  {
     TYPE_INTEGER,
     &setup.scroll_delay_value,			"scroll_delay_value"
   },
@@ -9112,6 +9116,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->sound_simple = TRUE;
   si->toons = TRUE;
   si->scroll_delay = TRUE;
+  si->forced_scroll_delay = FALSE;
   si->scroll_delay_value = STD_SCROLL_DELAY;
   si->engine_snapshot_mode = getStringCopy(STR_SNAPSHOT_MODE_DEFAULT);
   si->engine_snapshot_memory = SNAPSHOT_MEMORY_DEFAULT;

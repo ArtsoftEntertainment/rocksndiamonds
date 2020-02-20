@@ -1359,6 +1359,7 @@ struct SetupInfo
   boolean sound_simple;
   boolean toons;
   boolean scroll_delay;
+  boolean forced_scroll_delay;
   int scroll_delay_value;
   char *engine_snapshot_mode;
   int engine_snapshot_memory;

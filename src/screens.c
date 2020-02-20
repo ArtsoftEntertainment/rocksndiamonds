@@ -6255,6 +6255,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_ENTER_LIST,	execSetupChooseScrollDelay, "Scroll Delay:"	},
   { TYPE_STRING,	&scroll_delay_text,	""			},
 #endif
+  { TYPE_SWITCH,	&setup.forced_scroll_delay,"Scroll Delay in EM engine:" },
   { TYPE_ENTER_LIST, execSetupChooseSnapshotMode,"Game Engine Snapshot Mode:" },
   { TYPE_STRING,	&snapshot_mode_text,	""			},
   { TYPE_SWITCH,	&setup.show_snapshot_buttons,"Show Snapshot Buttons:" },
