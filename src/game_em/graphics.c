@@ -73,44 +73,40 @@ void BlitScreenToBitmap_EM(Bitmap *target_bitmap)
   int sy = SY + (full_ysize < ysize ? (ysize - full_ysize) / 2 : 0);
   int sxsize = (full_xsize < xsize ? full_xsize : xsize);
   int sysize = (full_ysize < ysize ? full_ysize : ysize);
+  int xxsize = MAX_BUF_XSIZE * TILEX - x;
+  int yysize = MAX_BUF_YSIZE * TILEY - y;
+  int xoffset = 2 * TILEX;
+  int yoffset = 2 * TILEY;
 
-  if (x < 2 * TILEX && y < 2 * TILEY)
+  if (x < xoffset && y < yoffset)
   {
-    BlitBitmap(screenBitmap, target_bitmap, x, y,
-	       sxsize, sysize, sx, sy);
-  }
-  else if (x < 2 * TILEX && y >= 2 * TILEY)
-  {
-    BlitBitmap(screenBitmap, target_bitmap, x, y,
-	       sxsize, MAX_BUF_YSIZE * TILEY - y,
+    BlitBitmap(screenBitmap, target_bitmap, x, y, sxsize, sysize,
 	       sx, sy);
-    BlitBitmap(screenBitmap, target_bitmap, x, 0,
-	       sxsize, y - 2 * TILEY,
-	       sx, sy + MAX_BUF_YSIZE * TILEY - y);
   }
-  else if (x >= 2 * TILEX && y < 2 * TILEY)
+  else if (x < xoffset && y >= yoffset)
   {
-    BlitBitmap(screenBitmap, target_bitmap, x, y,
-	       MAX_BUF_XSIZE * TILEX - x, sysize,
+    BlitBitmap(screenBitmap, target_bitmap, x, y, sxsize, yysize,
 	       sx, sy);
-    BlitBitmap(screenBitmap, target_bitmap, 0, y,
-	       x - 2 * TILEX, sysize,
-	       sx + MAX_BUF_XSIZE * TILEX - x, sy);
+    BlitBitmap(screenBitmap, target_bitmap, x, 0, sxsize, y - yoffset,
+	       sx, sy + yysize);
+  }
+  else if (x >= xoffset && y < yoffset)
+  {
+    BlitBitmap(screenBitmap, target_bitmap, x, y, xxsize, sysize,
+	       sx, sy);
+    BlitBitmap(screenBitmap, target_bitmap, 0, y, x - xoffset, sysize,
+	       sx + xxsize, sy);
   }
   else
   {
-    BlitBitmap(screenBitmap, target_bitmap, x, y,
-	       MAX_BUF_XSIZE * TILEX - x, MAX_BUF_YSIZE * TILEY - y,
+    BlitBitmap(screenBitmap, target_bitmap, x, y, xxsize, yysize,
 	       sx, sy);
-    BlitBitmap(screenBitmap, target_bitmap, 0, y,
-	       x - 2 * TILEX, MAX_BUF_YSIZE * TILEY - y,
-	       sx + MAX_BUF_XSIZE * TILEX - x, sy);
-    BlitBitmap(screenBitmap, target_bitmap, x, 0,
-	       MAX_BUF_XSIZE * TILEX - x, y - 2 * TILEY,
-	       sx, sy + MAX_BUF_YSIZE * TILEY - y);
-    BlitBitmap(screenBitmap, target_bitmap, 0, 0,
-	       x - 2 * TILEX, y - 2 * TILEY,
-	       sx + MAX_BUF_XSIZE * TILEX - x, sy + MAX_BUF_YSIZE * TILEY - y);
+    BlitBitmap(screenBitmap, target_bitmap, 0, y, x - xoffset, yysize,
+	       sx + xxsize, sy);
+    BlitBitmap(screenBitmap, target_bitmap, x, 0, xxsize, y - yoffset,
+	       sx, sy + yysize);
+    BlitBitmap(screenBitmap, target_bitmap, 0, 0, x - xoffset, y - yoffset,
+	       sx + xxsize, sy + yysize);
   }
 }
 
