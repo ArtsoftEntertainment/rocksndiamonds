@@ -48,8 +48,8 @@ extern int			TILESIZE_VAR;
 
 extern int			SCR_FIELDX, SCR_FIELDY;
 
-#define MAX_BUF_XSIZE		(SCR_FIELDX + 2)
-#define MAX_BUF_YSIZE		(SCR_FIELDY + 2)
+#define MAX_BUF_XSIZE		(SCR_FIELDX + 2 * CAVE_BUFFER_XOFFSET)
+#define MAX_BUF_YSIZE		(SCR_FIELDY + 2 * CAVE_BUFFER_YOFFSET)
 
 /* often used screen positions */
 

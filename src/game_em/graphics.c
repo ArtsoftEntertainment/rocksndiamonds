@@ -75,8 +75,8 @@ void BlitScreenToBitmap_EM(Bitmap *target_bitmap)
   int sysize = (full_ysize < ysize ? full_ysize : ysize);
   int xxsize = MAX_BUF_XSIZE * TILEX - x;
   int yysize = MAX_BUF_YSIZE * TILEY - y;
-  int xoffset = 2 * TILEX;
-  int yoffset = 2 * TILEY;
+  int xoffset = 2 * CAVE_BUFFER_XOFFSET * TILEX;
+  int yoffset = 2 * CAVE_BUFFER_YOFFSET * TILEY;
 
   if (x < xoffset && y < yoffset)
   {
