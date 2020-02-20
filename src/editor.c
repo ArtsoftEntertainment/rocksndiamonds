@@ -3597,11 +3597,11 @@ static struct
   // ---------- android content -----------------------------------------------
 
   {
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(5),
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(6),
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_ANDROID_CONTENT,		GADGET_ID_NONE,
     &level.android_clone_element[0],	MAX_ANDROID_ELEMENTS, 1,
-    "elements:", NULL, NULL, NULL,	"elements android can clone"
+    NULL, NULL, "elements:", NULL,	"elements android can clone"
   },
 
   // ---------- amoeba content ------------------------------------------------

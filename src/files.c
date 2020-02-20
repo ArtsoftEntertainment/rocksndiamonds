@@ -768,8 +768,14 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.android_clone_time,		10
   },
   {
-    EL_EMC_ANDROID,			-1,
+    EL_EMC_ANDROID,			SAVE_CONF_NEVER,
     TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
+    &li.android_clone_element[0],	EL_EMPTY, NULL,
+    &li.num_android_clone_elements,	1, MAX_ANDROID_ELEMENTS_OLD
+  },
+  {
+    EL_EMC_ANDROID,			-1,
+    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(2),
     &li.android_clone_element[0],	EL_EMPTY, NULL,
     &li.num_android_clone_elements,	1, MAX_ANDROID_ELEMENTS
   },
