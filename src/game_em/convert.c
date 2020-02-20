@@ -381,13 +381,13 @@ void prepare_em_level(void)
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    ply[i].exists = 0;
-    ply[i].alive_initial = FALSE;
+    ply[i].exists = FALSE;
+    ply[i].alive = FALSE;
 
     if (cav.player_x[i] != -1 &&
 	cav.player_y[i] != -1)
     {
-      ply[i].exists = 1;
+      ply[i].exists = TRUE;
 
       lev.home_initial++;
     }
@@ -407,7 +407,7 @@ void prepare_em_level(void)
     {
       if (players_left)
       {
-	ply[i].alive_initial = TRUE;
+	ply[i].alive = TRUE;
 	players_left--;
       }
       else
@@ -425,17 +425,17 @@ void prepare_em_level(void)
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     ply[i].num = i;
-    ply[i].alive = ply[i].alive_initial;
     ply[i].dynamite = 0;
     ply[i].dynamite_cnt = 0;
     ply[i].keys = 0;
     ply[i].anim = 0;
-    ply[i].oldx = ply[i].x = cav.player_x[i] + lev.left;
-    ply[i].oldy = ply[i].y = cav.player_y[i] + lev.top;
+    ply[i].prev_x = ply[i].x = cav.player_x[i] + lev.left;
+    ply[i].prev_y = ply[i].y = cav.player_y[i] + lev.top;
     ply[i].last_move_dir = MV_NONE;
     ply[i].joy_n = ply[i].joy_e = ply[i].joy_s = ply[i].joy_w = 0;
-    ply[i].joy_snap  = ply[i].joy_drop = 0;
-    ply[i].joy_stick = ply[i].joy_spin = 0;
+    ply[i].joy_snap = 0;
+    ply[i].joy_drop = 0;
+    ply[i].joy_stick = 0;
   }
 
   // the following engine variables are initialized to version-specific values

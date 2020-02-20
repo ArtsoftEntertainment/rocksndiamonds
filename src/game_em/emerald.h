@@ -620,20 +620,20 @@ enum
 
 struct PLAYER
 {
-  int num;
-  int exists;
-  int alive_initial;
-  int alive;
-
-  int dynamite;
-  int dynamite_cnt;
-  int keys;
   int anim;
-
   int x;
   int y;
-  int oldx;
-  int oldy;
+  int prev_x;
+  int prev_y;
+
+  int num;			/* player number */
+
+  boolean exists;		/* flag if player exists in cave */
+  boolean alive;		/* flag if player is alive */
+
+  int dynamite;			/* number of pieces of collected dynamite */
+  int dynamite_cnt;		/* how long the player has held down fire */
+  int keys;			/* keys the player has collected */
 
   int last_move_dir;
 
@@ -644,7 +644,6 @@ struct PLAYER
   int joy_snap:1;
   int joy_drop:1;
   int joy_stick:1;
-  int joy_spin:1;
 };
 
 struct LOGIC

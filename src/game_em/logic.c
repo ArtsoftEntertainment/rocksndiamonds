@@ -340,7 +340,7 @@ static void kill_player(struct PLAYER *ply)
   int x = ply->x;
   int y = ply->y;
 
-  ply->alive = 0;
+  ply->alive = FALSE;
 
   switch (cave[x][y-1])
   {
@@ -1390,7 +1390,6 @@ static void check_player(struct PLAYER *ply)
   ply->joy_stick = 1;
   ply->joy_n = ply->joy_e = ply->joy_s = ply->joy_w = 0;
   ply->dynamite_cnt = 0;	/* reset dynamite timer if we move */
-  ply->joy_spin = !ply->joy_spin;
 
   if (ply->joy_snap == 0)		/* player wants to move */
   {
@@ -7304,8 +7303,8 @@ static void logic_players(void)
       game.set_centered_player_wrap = TRUE;
     }
 
-    ply[i].oldx = ply[i].x;
-    ply[i].oldy = ply[i].y;
+    ply[i].prev_x = ply[i].x;
+    ply[i].prev_y = ply[i].y;
     ply[i].anim = PLY_still;
   }
 
@@ -7325,10 +7324,10 @@ static void logic_players(void)
     if (!ply[i].alive)
       continue;
 
-    if (cave[ply[i].oldx][ply[i].oldy] == Zplayer)
+    if (cave[ply[i].prev_x][ply[i].prev_y] == Zplayer)
     {
-      cave[ply[i].oldx][ply[i].oldy] = Xblank;
-      next[ply[i].oldx][ply[i].oldy] = Xblank;
+      cave[ply[i].prev_x][ply[i].prev_y] = Xblank;
+      next[ply[i].prev_x][ply[i].prev_y] = Xblank;
     }
 
     if (cave[ply[i].x][ply[i].y] == Xblank)

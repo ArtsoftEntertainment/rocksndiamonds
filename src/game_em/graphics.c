@@ -25,9 +25,9 @@
 #define VALID_SCREEN_Y(y)	((y) < MIN_SCREEN_Y ? MIN_SCREEN_Y :	\
 				 (y) > MAX_SCREEN_Y ? MAX_SCREEN_Y : (y))
 
-#define PLAYER_POS_X(nr)	(((7 - frame) * ply[nr].oldx +		\
+#define PLAYER_POS_X(nr)	(((7 - frame) * ply[nr].prev_x +	\
 				  (1 + frame) * ply[nr].x) * TILEX / 8)
-#define PLAYER_POS_Y(nr)	(((7 - frame) * ply[nr].oldy +		\
+#define PLAYER_POS_Y(nr)	(((7 - frame) * ply[nr].prev_y +	\
 				  (1 + frame) * ply[nr].y) * TILEY / 8)
 
 #define PLAYER_SCREEN_X(nr)	(PLAYER_POS_X(nr) -			\
@@ -385,10 +385,10 @@ static void blitplayer(int nr)
       (int)(y2 - screen_y) < ((MAX_BUF_YSIZE - 1) * TILEY - 1))
   {
     /* some casts to "int" are needed because of negative calculation values */
-    int dx = (int)ply[nr].x - (int)ply[nr].oldx;
-    int dy = (int)ply[nr].y - (int)ply[nr].oldy;
-    int old_x = (int)ply[nr].oldx + (int)frame * dx / 8;
-    int old_y = (int)ply[nr].oldy + (int)frame * dy / 8;
+    int dx = (int)ply[nr].x - (int)ply[nr].prev_x;
+    int dy = (int)ply[nr].y - (int)ply[nr].prev_y;
+    int old_x = (int)ply[nr].prev_x + (int)frame * dx / 8;
+    int old_y = (int)ply[nr].prev_y + (int)frame * dy / 8;
     int new_x = old_x + SIGN(dx);
     int new_y = old_y + SIGN(dy);
     int old_sx = old_x % MAX_BUF_XSIZE;
