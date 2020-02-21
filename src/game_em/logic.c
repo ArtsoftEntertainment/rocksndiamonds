@@ -10,8 +10,7 @@
 
 #define SPRING_ROLL	/* spring rolling off round things continues to roll */
 #define ACID_ROLL	/* rolling objects go into acid rather than remove it */
-
-#define USE_CHANGED_ACID_STUFF
+#define ACID_PLAYER	/* player gets killed by acid, but without explosion */
 
 #define RANDOM_RAW	(seed = seed << 31 | seed >> 1)
 #define RANDOM(x)	(RANDOM_RAW & (x - 1))
@@ -467,7 +466,7 @@ static void kill_player(struct PLAYER *ply)
 
   switch (cave[x][y])
   {
-#ifdef USE_CHANGED_ACID_STUFF
+#ifdef ACID_PLAYER
     case Xacid_1:
     case Xacid_2:
     case Xacid_3:
@@ -513,6 +512,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xsplash_w:
 	cave[x][y] = Zplayer;
 	next[x][y] = Zplayer;
+	// FALL THROUGH
+
       case Xfake_acid_1:
       case Xfake_acid_2:
       case Xfake_acid_3:
@@ -527,7 +528,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	ply->y = y;
 	break;
 
-#ifdef USE_CHANGED_ACID_STUFF
       case Xacid_1:
       case Xacid_2:
       case Xacid_3:
@@ -536,13 +536,14 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xacid_6:
       case Xacid_7:
       case Xacid_8:
+#ifdef ACID_PLAYER
 	if (cave[x+1][y-1] == Xblank)
 	  cave[x+1][y-1] = Xsplash_e;
 	if (cave[x-1][y-1] == Xblank)
 	  cave[x-1][y-1] = Xsplash_w;
 	play_element_sound(x, y, SOUND_acid, Xacid_1);
+	// FALL THROUGH
 #endif
-
       case Xboom_android:
       case Xboom_1:
       case Xbug_1_n:
@@ -561,17 +562,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xtank_2_e:
       case Xtank_2_s:
       case Xtank_2_w:
-
-#ifndef USE_CHANGED_ACID_STUFF
-      case Xacid_1:
-      case Xacid_2:
-      case Xacid_3:
-      case Xacid_4:
-      case Xacid_5:
-      case Xacid_6:
-      case Xacid_7:
-      case Xacid_8:
-#endif
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
 	ply->y = y;
