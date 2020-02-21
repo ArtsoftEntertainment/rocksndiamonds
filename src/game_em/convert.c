@@ -425,22 +425,26 @@ void prepare_em_level(void)
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     ply[i].num = i;
-    ply[i].dynamite = 0;
-    ply[i].dynamite_cnt = 0;
-    ply[i].keys = 0;
     ply[i].anim = PLY_still;
+
     ply[i].x = cav.player_x[i] + lev.left;
     ply[i].y = cav.player_y[i] + lev.top;
     ply[i].prev_x = ply[i].x;
     ply[i].prev_y = ply[i].y;
+
+    ply[i].dynamite	= 0;
+    ply[i].dynamite_cnt	= 0;
+    ply[i].keys		= 0;
+
     ply[i].last_move_dir = MV_NONE;
-    ply[i].joy_n = 0;
-    ply[i].joy_e = 0;
-    ply[i].joy_s = 0;
-    ply[i].joy_w = 0;
-    ply[i].joy_snap = 0;
-    ply[i].joy_drop = 0;
-    ply[i].joy_stick = 0;
+
+    ply[i].joy_n	= FALSE;
+    ply[i].joy_e	= FALSE;
+    ply[i].joy_s	= FALSE;
+    ply[i].joy_w	= FALSE;
+    ply[i].joy_snap	= FALSE;
+    ply[i].joy_drop	= FALSE;
+    ply[i].joy_stick	= FALSE;
   }
 
   // the following engine variables are initialized to version-specific values

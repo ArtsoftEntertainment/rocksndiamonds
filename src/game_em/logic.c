@@ -501,7 +501,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
   if (dx && dy && ply->joy_snap)	/* more than one direction specified */
     return FALSE;
 
-  if (ply->joy_snap == 0)		/* player wants to move */
+  if (!ply->joy_snap)			/* player wants to move */
   {
     int element = cave[x][y];
 
@@ -1357,7 +1357,10 @@ static void check_player(struct PLAYER *ply)
 
     if (!can_move)
     {
-      ply->joy_n = ply->joy_e = ply->joy_s = ply->joy_w = 0;
+      ply->joy_n = FALSE;
+      ply->joy_e = FALSE;
+      ply->joy_s = FALSE;
+      ply->joy_w = FALSE;
 
       return;
     }
@@ -1365,7 +1368,7 @@ static void check_player(struct PLAYER *ply)
 
   if (dx == 0 && dy == 0)
   {
-    ply->joy_stick = 0;
+    ply->joy_stick = FALSE;
 
     if (ply->joy_drop)
     {
@@ -1387,11 +1390,15 @@ static void check_player(struct PLAYER *ply)
     return;
   }
 
-  ply->joy_stick = 1;
-  ply->joy_n = ply->joy_e = ply->joy_s = ply->joy_w = 0;
+  ply->joy_stick = TRUE;
+  ply->joy_n = FALSE;
+  ply->joy_e = FALSE;
+  ply->joy_s = FALSE;
+  ply->joy_w = FALSE;
+
   ply->dynamite_cnt = 0;	/* reset dynamite timer if we move */
 
-  if (ply->joy_snap == 0)		/* player wants to move */
+  if (!ply->joy_snap)		/* player wants to move */
   {
     boolean moved = FALSE;
 

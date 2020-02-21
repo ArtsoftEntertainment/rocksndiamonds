@@ -620,13 +620,13 @@ enum
 
 struct PLAYER
 {
+  int num;			/* player number */
   int anim;
+
   int x;
   int y;
   int prev_x;
   int prev_y;
-
-  int num;			/* player number */
 
   boolean exists;		/* flag if player exists in cave */
   boolean alive;		/* flag if player is alive */
@@ -637,13 +637,13 @@ struct PLAYER
 
   int last_move_dir;
 
-  int joy_n:1;
-  int joy_e:1;
-  int joy_s:1;
-  int joy_w:1;
-  int joy_snap:1;
-  int joy_drop:1;
-  int joy_stick:1;
+  boolean joy_n;
+  boolean joy_e;
+  boolean joy_s;
+  boolean joy_w;
+  boolean joy_snap;
+  boolean joy_drop;
+  boolean joy_stick;
 };
 
 struct LOGIC
