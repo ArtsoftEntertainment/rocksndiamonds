@@ -259,13 +259,14 @@ android_clone_table[] =
   { -1,		-1,		-1		},
 };
 
+static int eater_offset[8] =
+{
+  2048, 2057, 2066, 2075,
+  2112, 2121, 2130, 2139
+};
+
 void convert_em_level(unsigned char *src, int file_version)
 {
-  static int eater_offset[8] =
-  {
-    2048, 2057, 2066, 2075,
-    2112, 2121, 2130, 2139
-  };
   int i, x, y, temp;
 
   /* common to all emc caves */
@@ -449,6 +450,9 @@ void convert_em_level(unsigned char *src, int file_version)
  * - object code 130 (V6 grass) is changed to 189 (V6 dirt)
  * - object codes are changed in both cave and eater arrays
  * - only graphical change, as both objects behave the same
+ *
+ * acid with no base beneath it is converted to fake acid
+ * - required for downunder mine 16, level 0 (and others)
  */
 
 static const unsigned char map_v6[256] =
@@ -547,7 +551,7 @@ static boolean filename_has_v1_format(char *filename)
 int cleanup_em_level(unsigned char *src, int length, char *filename)
 {
   int file_version = FILE_VERSION_EM_UNKNOWN;
-  int i;
+  int i, j;
 
   if (length >= 2172 &&
       src[2106] == 255 &&		/* version id: */
@@ -559,11 +563,11 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     file_version = FILE_VERSION_EM_V6;
 
     /* remap elements to internal EMC level format */
-    for (i = 0; i < 2048; i++)
+    for (i = 0; i < 2048; i++)		/* cave */
       src[i] = map_v6[src[i]];
-    for (i = 2048; i < 2084; i++)
+    for (i = 2048; i < 2084; i++)	/* eaters */
       src[i] = map_v6[src[i]];
-    for (i = 2112; i < 2148; i++)
+    for (i = 2112; i < 2148; i++)	/* eaters */
       src[i] = map_v6[src[i]];
   }
   else if (length >= 2110 &&
@@ -576,11 +580,11 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     file_version = FILE_VERSION_EM_V5;
 
     /* remap elements to internal EMC level format */
-    for (i = 0; i < 2048; i++)
+    for (i = 0; i < 2048; i++)		/* cave */
       src[i] = map_v5[src[i]];
-    for (i = 2048; i < 2084; i++)
+    for (i = 2048; i < 2084; i++)	/* eaters */
       src[i] = map_v5[src[i]];
-    for (i = 2112; i < 2148; i++)
+    for (i = 2112; i < 2148; i++)	/* eaters */
       src[i] = src[i - 64];
   }
   else if (length >= 2106 &&
@@ -641,11 +645,11 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     }
 
     /* remap elements to internal EMC level format */
-    for (i = 0; i < 2048; i++)
+    for (i = 0; i < 2048; i++)		/* cave */
       src[i] = map_v4[src[i]];
-    for (i = 2048; i < 2084; i++)
-      src[i] = map_v4_eater[src[i] >= 28 ? 0 : src[i]];
-    for (i = 2112; i < 2148; i++)
+    for (i = 2048; i < 2084; i++)	/* eaters */
+      src[i] = map_v4_eater[src[i] % 32];
+    for (i = 2112; i < 2148; i++)	/* eaters */
       src[i] = src[i - 64];
 
     if (fix_copyright)		/* fix "(c)" sign in Emerald Mine II levels */
@@ -707,7 +711,7 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     if (src[i] == 63)		/* replace element above 'Cacid_s' ... */
       src[i - 64] = 101;	/* ... with 'Cacid_1' */
 
-  /* fix acid with no base beneath it (see below for details (*)) */
+  /* fix acid with no base beneath it (see comment above for details) */
   for (i = 64; i < 2048 - 1; i++)
   {
     if (file_version <= FILE_VERSION_EM_V2 &&
@@ -721,56 +725,18 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     }
   }
 
-  /* fix acid in eater 1 */
-  for (i = 2051; i < 2057; i++)
-    if (src[i] == 63)
-      src[i - 3] = 101;
-
-  /* fix acid in eater 2 */
-  for (i = 2060; i < 2066; i++)
-    if (src[i] == 63)
-      src[i - 3] = 101;
-
-  /* fix acid in eater 3 */
-  for (i = 2069; i < 2075; i++)
-    if (src[i] == 63)
-      src[i - 3] = 101;
-
-  /* fix acid in eater 4 */
-  for (i = 2078; i < 2084; i++)
-    if (src[i] == 63)
-      src[i - 3] = 101;
-
-  /* fix acid in eater 5 */
-  for (i = 2115; i < 2121; i++)
-    if (src[i] == 63)
-      src[i - 3] = 101;
-
-  /* fix acid in eater 6 */
-  for (i = 2124; i < 2130; i++)
-    if (src[i] == 63)
-      src[i - 3] = 101;
-
-  /* fix acid in eater 7 */
-  for (i = 2133; i < 2139; i++)
-    if (src[i] == 63)
-      src[i - 3] = 101;
-
-  /* fix acid in eater 8 */
-  for (i = 2142; i < 2148; i++)
-    if (src[i] == 63)
-      src[i - 3] = 101;
+  /* fix acid in eaters */
+  for (i = 0; i < 8; i++)
+    for (j = 0; j < 6; j++)
+      if (src[eater_offset[i] + j + 3] == 63)
+	src[eater_offset[i] + j] = 101;
 
   /* old style time */
   src[2094] = 0;
 
-  /* player 1 pos */
-  src[2096] &= 7;
-  src[GET_BE16(src[2096])] = 128;
-
-  /* player 2 pos */
-  src[2098] &= 7;
-  src[GET_BE16(src[2098])] = 128;
+  /* set cave tile at player position to blank */
+  for (i = 0; i < 2; i++)
+    src[GET_BE16(src[2096 + i * 2]) % 2048] = 128;
 
   /* wind direction */
   i = src[2149];
