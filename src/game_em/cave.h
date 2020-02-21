@@ -217,8 +217,8 @@ struct CAVE
   int width;			/* cave width */
   int height;			/* cave height */
 
-  int player_x[MAX_PLAYERS];	/* player x pos */
-  int player_y[MAX_PLAYERS];	/* player y pos */
+  int player_x[MAX_PLAYERS];	/* player x position */
+  int player_y[MAX_PLAYERS];	/* player y position */
 
   int time_seconds;		/* available time (seconds) */
   int gems_needed;		/* emeralds needed */
@@ -237,32 +237,30 @@ struct CAVE
   int magnify_score;		/* score for collecting magnifier */
   int exit_score;		/* score for entering exit */
 
-  int android_move_time;	/* android move reset time */
-  int android_clone_time;	/* android clone reset time */
-  int ball_time;		/* ball reset time */
-  int amoeba_time;		/* amoeba speed */
-  int wonderwall_time;		/* wonderwall time */
-  int wheel_time;		/* wheel reset time */
-  int wheel_x;			/* wheel x pos */
-  int wheel_y;			/* wheel y pos */
-  int lenses_time;		/* lenses reset time */
-  int magnify_time;		/* magnify reset time */
-  int wind_time;		/* wind reset time */
+  int android_move_time;	/* reset time for android movement */
+  int android_clone_time;	/* reset time for android cloning */
+  int ball_time;		/* reset time for ball activity */
+  int amoeba_time;		/* amoeba growth speed */
+  int wonderwall_time;		/* reset time for wonderwall activity */
+  int wheel_time;		/* reset time for wheel activity */
+  int wheel_x;			/* wheel x position */
+  int wheel_y;			/* wheel y position */
+  int lenses_time;		/* reset time for lenses activity */
+  int magnify_time;		/* reset time for magnifier activity */
+  int wind_time;		/* reset time for wind activity */
   int wind_direction;		/* wind direction */
-
-  int ball_random;		/* ball is random flag */
-  int ball_state;		/* ball active flag */
-  int wonderwall_state;		/* wonderwall active flag */
-  int wheel_cnt;		/* wheel counter */
-  int lenses_cnt;		/* lenses counter */
-  int magnify_cnt;		/* magnify counter */
-  int wind_cnt;			/* wind time counter */
 
   int num_ball_arrays;		/* number of ball data arrays used */
 
-  boolean testmode;		/* test mode */
-  boolean teamwork;		/* two player mode */
-  boolean infinite;		/* cave is infinitely wide */
+  boolean testmode;		/* flag for test mode */
+  boolean teamwork;		/* flag for two player mode */
+  boolean infinite;		/* flag for infinitely wide cave */
+  boolean ball_random;		/* flag if ball is random */
+  boolean ball_active;		/* flag if ball is already active */
+  boolean wonderwall_active;	/* flag if wonderwall is already active */
+  boolean wheel_active;		/* flag if wheel is already active */
+  boolean lenses_active;	/* flag if lenses are already active */
+  boolean magnify_active;	/* flag if magnifier is already active */
 
   short eater_array[8][9];		/* eater data */
   short ball_array[8][8];		/* ball data */

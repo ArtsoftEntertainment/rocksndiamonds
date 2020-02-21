@@ -215,7 +215,7 @@ struct GameInfo
   // values for the new EMC elements
   int lenses_time_left;
   int magnify_time_left;
-  boolean ball_state;
+  boolean ball_active;
   int ball_content_nr;
 
   // values for player idle animation (no effect on engine)

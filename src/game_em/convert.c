@@ -336,7 +336,7 @@ void prepare_em_level(void)
 
   lev.ball_time   = cav.ball_time;
   lev.ball_cnt    = cav.ball_time;
-  lev.ball_state  = cav.ball_state;
+  lev.ball_active = cav.ball_active;
   lev.ball_random = cav.ball_random;
   lev.ball_pos    = 0;
 
@@ -344,22 +344,22 @@ void prepare_em_level(void)
   lev.shine_cnt = 0;
 
   lev.lenses_time = cav.lenses_time;
-  lev.lenses_cnt  = cav.lenses_cnt;
+  lev.lenses_cnt  = cav.lenses_active ? cav.lenses_time : 0;
 
   lev.magnify_time = cav.magnify_time;
-  lev.magnify_cnt  = cav.magnify_cnt;
+  lev.magnify_cnt  = cav.magnify_active ? cav.magnify_time : 0;
 
   lev.wheel_time = cav.wheel_time;
-  lev.wheel_cnt  = cav.wheel_cnt;
+  lev.wheel_cnt  = cav.wheel_active ? cav.wheel_time : 0;
   lev.wheel_x    = cav.wheel_x;
   lev.wheel_y    = cav.wheel_y;
 
   lev.wind_time      = cav.wind_time;
-  lev.wind_cnt       = cav.wind_cnt;
+  lev.wind_cnt       = cav.wind_time;
   lev.wind_direction = cav.wind_direction;
 
-  lev.wonderwall_time  = cav.wonderwall_time;
-  lev.wonderwall_state = cav.wonderwall_state;
+  lev.wonderwall_time   = cav.wonderwall_time;
+  lev.wonderwall_active = cav.wonderwall_active;
 
   lev.killed_out_of_time = FALSE;
 

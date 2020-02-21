@@ -674,33 +674,33 @@ struct LOGIC
   int magnify_score;		/* score for collecting magnifier */
   int exit_score;		/* score for entering exit */
 
-  int android_move_time;	/* android move reset time */
-  int android_clone_time;	/* android clone reset time */
-  int ball_time;		/* ball reset time */
-  int amoeba_time;		/* amoeba speed */
-  int wonderwall_time;		/* wonderwall time */
-  int wheel_time;		/* wheel reset time */
-  int wheel_x;			/* wheel x pos */
-  int wheel_y;			/* wheel y pos */
-  int lenses_time;		/* lenses reset time */
-  int magnify_time;		/* magnify reset time */
-  int wind_time;		/* wind reset time */
+  int android_move_time;	/* reset time for android movement */
+  int android_clone_time;	/* reset time for android cloning */
+  int ball_time;		/* reset time for ball activity */
+  int amoeba_time;		/* amoeba growth speed */
+  int wonderwall_time;		/* reset time for wonderwall activity */
+  int wheel_time;		/* reset time for wheel activity */
+  int wheel_x;			/* wheel x position */
+  int wheel_y;			/* wheel y position */
+  int lenses_time;		/* reset time for lenses activity */
+  int magnify_time;		/* reset time for magnifier activity */
+  int wind_time;		/* reset time for wind activity */
   int wind_direction;		/* wind direction */
 
-  int ball_random;		/* ball is random flag */
-  int ball_state;		/* ball active flag */
-  int wonderwall_state;		/* wonderwall active flag */
-  int wheel_cnt;		/* wheel counter */
-  int lenses_cnt;		/* lenses counter */
-  int magnify_cnt;		/* magnify counter */
-  int wind_cnt;			/* wind time counter */
+  boolean ball_random;		/* flag if ball is random */
+  boolean ball_active;		/* flag if ball is already active */
+  boolean wonderwall_active;	/* flag if wonderwall is already active */
 
-  int android_move_cnt;		/* android move counter */
-  int android_clone_cnt;	/* android clone counter */
-  int ball_cnt;			/* ball counter */
-  int ball_pos;			/* ball array pos counter */
-  int eater_pos;		/* eater array pos */
-  int shine_cnt;		/* shine counter for emerald/diamond */
+  int wheel_cnt;		/* counter for wheel activity */
+  int lenses_cnt;		/* counter for lenses activity */
+  int magnify_cnt;		/* counter for magnifier activity */
+  int wind_cnt;			/* counter for wind activity */
+  int android_move_cnt;		/* counter for android movement */
+  int android_clone_cnt;	/* counter for android cloning */
+  int ball_cnt;			/* counter for ball activity */
+  int ball_pos;			/* counter for ball array position */
+  int eater_pos;		/* counter for eater array position */
+  int shine_cnt;		/* counter for emerald/diamond shining */
 
   int num_ball_arrays;		/* number of ball data arrays used */
 

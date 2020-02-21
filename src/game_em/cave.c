@@ -51,26 +51,24 @@ void setLevelInfoToDefaults_EM(void)
   cav.amoeba_time	= 0;
   cav.wonderwall_time	= 0;
   cav.wheel_time	= 0;
-  cav.wheel_x		= 1;
-  cav.wheel_y		= 1;
+  cav.wheel_x		= 0;
+  cav.wheel_y		= 0;
   cav.lenses_time	= 0;
   cav.magnify_time	= 0;
-  cav.wind_time		= 9999;
+  cav.wind_time		= 0;
   cav.wind_direction	= 0;
 
-  cav.ball_random	= 0;
-  cav.ball_state	= 0;
-  cav.wonderwall_state	= 0;
-  cav.wheel_cnt		= 0;
-  cav.lenses_cnt	= 0;
-  cav.magnify_cnt	= 0;
-  cav.wind_cnt		= 0;
+  cav.num_ball_arrays	= 8;
 
-  cav.num_ball_arrays = 8;
-
-  cav.testmode = FALSE;
-  cav.teamwork = FALSE;
-  cav.infinite = FALSE;
+  cav.testmode		= FALSE;
+  cav.teamwork		= FALSE;
+  cav.infinite		= FALSE;
+  cav.ball_random	= FALSE;
+  cav.ball_active	= FALSE;
+  cav.wonderwall_active	= FALSE;
+  cav.wheel_active	= FALSE;
+  cav.lenses_active	= FALSE;
+  cav.magnify_active	= FALSE;
 
   for (i = 0; i < 8; i++)
     for (j = 0; j < 9; j++)

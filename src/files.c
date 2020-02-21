@@ -815,7 +815,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_EMC_MAGIC_BALL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.ball_state_initial,		FALSE
+    &li.ball_active_initial,		FALSE
   },
   {
     EL_EMC_MAGIC_BALL,			-1,
@@ -3554,7 +3554,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   cav->android_move_time	= level->android_move_time;
   cav->android_clone_time	= level->android_clone_time;
   cav->ball_random		= level->ball_random;
-  cav->ball_state		= level->ball_state_initial;
+  cav->ball_active		= level->ball_active_initial;
   cav->ball_time		= level->ball_time;
   cav->num_ball_arrays		= level->num_ball_contents;
 
@@ -3567,8 +3567,6 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
 
   cav->wind_direction =
     map_direction_RND_to_EM(level->wind_direction_initial);
-  cav->wind_cnt = (level->wind_direction_initial != MV_NONE ?
-		   cav->wind_time : 0);
 
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (j = 0; j < 8; j++)
@@ -3666,7 +3664,7 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   level->android_move_time	= cav->android_move_time;
   level->android_clone_time	= cav->android_clone_time;
   level->ball_random		= cav->ball_random;
-  level->ball_state_initial	= cav->ball_state;
+  level->ball_active_initial	= cav->ball_active;
   level->ball_time		= cav->ball_time;
   level->num_ball_contents	= cav->num_ball_arrays;
 

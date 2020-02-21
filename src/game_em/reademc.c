@@ -270,12 +270,15 @@ void convert_em_level(unsigned char *src, int file_version)
 
   /* common to all emc caves */
 
+  cav.width = 64;
+  cav.height = 32;
+
   cav.time_seconds = MIN(GET_BE16(src[2110]), 9999);
   cav.gems_needed = src[2095];
 
   cav.infinite = TRUE;
   cav.testmode = FALSE;
-  cav.teamwork = (src[2150] & 128) ? TRUE : FALSE;
+  cav.teamwork = (src[2150] & 128) != 0;
 
   /* scores */
 
@@ -307,39 +310,44 @@ void convert_em_level(unsigned char *src, int file_version)
   cav.amoeba_time	= MIN(GET_BE16(src[2100]) * 28, 9999);
   cav.wonderwall_time	= MIN(GET_BE16(src[2102]), 9999);
 
-  cav.wind_cnt = src[2149] & 15 ? cav.wind_time : 0;
+  cav.wind_time		= 9999;
   temp = src[2149];
   cav.wind_direction = (temp & 8 ? 0 :
 			temp & 1 ? 1 :
 			temp & 2 ? 2 :
-			temp & 4 ? 3 : 0);
+			temp & 4 ? 3 : 4);
 
   /* global flags */
 
-  cav.ball_random = src[2162] & 1   ? 1 : 0;
-  cav.ball_state  = src[2162] & 128 ? 1 : 0;
+  cav.ball_random = (src[2162] & 1)   != 0;
+  cav.ball_active = (src[2162] & 128) != 0;
+
+  cav.wonderwall_active	= FALSE;
+  cav.wheel_active	= FALSE;
+  cav.lenses_active	= FALSE;
+  cav.magnify_active	= FALSE;
 
   for (temp = 1; temp < 2047; temp++)
   {
     switch (src[temp])
     {
       case 36:					/* wonderwall */
-	cav.wonderwall_state = 1;
+	cav.wonderwall_active = TRUE;
 	cav.wonderwall_time = 9999;
 	break;
 
       case 40:					/* wheel */
-	cav.wheel_x = temp & 63;
-	cav.wheel_y = temp >> 6;
-	cav.wheel_cnt = cav.wheel_time;
+	cav.wheel_active = TRUE;
+	cav.wheel_x = temp % 64;
+	cav.wheel_y = temp / 64;
 	break;
 
       case 163:					/* fake blank */
-	cav.lenses_cnt = 9999;
+	cav.lenses_active = TRUE;
 	break;
 
       case 164:					/* fake grass */
-	cav.magnify_cnt = 9999;
+	cav.magnify_active = TRUE;
 	break;
     }
   }

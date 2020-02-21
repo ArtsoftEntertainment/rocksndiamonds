@@ -1963,12 +1963,12 @@ static void InitField(int x, int y, boolean init_game)
       break;
 
     case EL_EMC_MAGIC_BALL:
-      if (game.ball_state)
+      if (game.ball_active)
 	Feld[x][y] = EL_EMC_MAGIC_BALL_ACTIVE;
       break;
 
     case EL_EMC_MAGIC_BALL_SWITCH:
-      if (game.ball_state)
+      if (game.ball_active)
 	Feld[x][y] = EL_EMC_MAGIC_BALL_SWITCH_ACTIVE;
       break;
 
@@ -2366,9 +2366,9 @@ static void UpdateGameControlValues(void)
     (exit_closed ? EL_EXIT_CLOSED : EL_EXIT_OPEN);
 
   game_panel_controls[GAME_PANEL_EMC_MAGIC_BALL].value =
-    (game.ball_state ? EL_EMC_MAGIC_BALL_ACTIVE : EL_EMC_MAGIC_BALL);
+    (game.ball_active ? EL_EMC_MAGIC_BALL_ACTIVE : EL_EMC_MAGIC_BALL);
   game_panel_controls[GAME_PANEL_EMC_MAGIC_BALL_SWITCH].value =
-    (game.ball_state ? EL_EMC_MAGIC_BALL_SWITCH_ACTIVE :
+    (game.ball_active ? EL_EMC_MAGIC_BALL_SWITCH_ACTIVE :
      EL_EMC_MAGIC_BALL_SWITCH);
 
   game_panel_controls[GAME_PANEL_LIGHT_SWITCH].value =
@@ -3619,7 +3619,7 @@ void InitGame(void)
   game.lenses_time_left = 0;
   game.magnify_time_left = 0;
 
-  game.ball_state = level.ball_state_initial;
+  game.ball_active = level.ball_active_initial;
   game.ball_content_nr = 0;
 
   game.explosions_delayed = TRUE;
@@ -14225,13 +14225,13 @@ static int DigField(struct PlayerInfo *player,
     {
       int xx, yy;
 
-      game.ball_state = !game.ball_state;
+      game.ball_active = !game.ball_active;
 
       SCAN_PLAYFIELD(xx, yy)
       {
 	int e = Feld[xx][yy];
 
-	if (game.ball_state)
+	if (game.ball_active)
 	{
 	  if (e == EL_EMC_MAGIC_BALL)
 	    CreateField(xx, yy, EL_EMC_MAGIC_BALL_ACTIVE);

@@ -3116,7 +3116,7 @@ struct LevelInfo
   int android_move_time;
   int android_clone_time;
   boolean ball_random;
-  boolean ball_state_initial;
+  boolean ball_active_initial;
   int ball_time;
   int lenses_score;
   int magnify_score;

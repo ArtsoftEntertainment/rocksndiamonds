@@ -1136,7 +1136,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xswitch:
 	play_element_sound(x, y, SOUND_press, element);
 	lev.ball_cnt = lev.ball_time;
-	lev.ball_state = !lev.ball_state;
+	lev.ball_active = !lev.ball_active;
 	break;
 
       case Xplant:
@@ -3961,9 +3961,9 @@ static void Lemerald_fall(int x, int y)
       return;
 
     case Xwonderwall:
-      if (lev.wonderwall_time)
+      if (lev.wonderwall_time > 0)
       {
-	lev.wonderwall_state = 1;
+	lev.wonderwall_active = TRUE;
 	cave[x][y] = Yemerald_sB;
 	next[x][y] = Xblank;
 	if (is_blank[cave[x][y+2]])
@@ -4220,9 +4220,9 @@ static void Ldiamond_fall(int x, int y)
       return;
 
     case Xwonderwall:
-      if (lev.wonderwall_time)
+      if (lev.wonderwall_time > 0)
       {
-	lev.wonderwall_state = 1;
+	lev.wonderwall_active = TRUE;
 	cave[x][y] = Ydiamond_sB;
 	next[x][y] = Xblank;
 	if (is_blank[cave[x][y+2]])
@@ -4668,9 +4668,9 @@ static void Lstone_fall(int x, int y)
       return;
 
     case Xwonderwall:
-      if (lev.wonderwall_time)
+      if (lev.wonderwall_time > 0)
       {
-	lev.wonderwall_state = 1;
+	lev.wonderwall_active = TRUE;
 	cave[x][y] = Ystone_sB;
 	next[x][y] = Xblank;
 	if (is_blank[cave[x][y+2]])
@@ -6558,7 +6558,7 @@ static void Lball_common(int x, int y)
 
 static void Lball_1(int x, int y)
 {
-  if (lev.ball_state == 0)
+  if (!lev.ball_active)
     return;
 
   cave[x][y] = Yball_1;
@@ -6571,7 +6571,7 @@ static void Lball_1(int x, int y)
 
 static void Lball_2(int x, int y)
 {
-  if (lev.ball_state == 0)
+  if (!lev.ball_active)
     return;
 
   cave[x][y] = Yball_2;
@@ -6664,7 +6664,7 @@ static void Ldrip_stretchB(int x, int y)
 
 static void Lwonderwall(int x, int y)
 {
-  if (lev.wonderwall_time && lev.wonderwall_state)
+  if (lev.wonderwall_time > 0 && lev.wonderwall_active)
   {
     cave[x][y] = Ywonderwall;
     play_element_sound(x, y, SOUND_wonder, Xwonderwall);
@@ -6679,7 +6679,7 @@ static void Lwheel(int x, int y)
 
 static void Lswitch(int x, int y)
 {
-  if (lev.ball_state)
+  if (lev.ball_active)
     cave[x][y] = Yswitch;
 }
 
@@ -7387,7 +7387,7 @@ static void logic_globals(void)
     lev.android_move_cnt = lev.android_move_time;
   if (lev.android_clone_cnt-- == 0)
     lev.android_clone_cnt = lev.android_clone_time;
-  if (lev.ball_state)
+  if (lev.ball_active)
     if (lev.ball_cnt-- == 0)
       lev.ball_cnt = lev.ball_time;
   if (lev.lenses_cnt)
@@ -7398,7 +7398,7 @@ static void logic_globals(void)
     lev.wheel_cnt--;
   if (lev.wind_cnt)
     lev.wind_cnt--;
-  if (lev.wonderwall_time && lev.wonderwall_state)
+  if (lev.wonderwall_time > 0 && lev.wonderwall_active)
     lev.wonderwall_time--;
 
   if (lev.wheel_cnt)
