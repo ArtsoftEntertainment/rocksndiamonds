@@ -45,20 +45,17 @@
 static const short map_emc[256] =
 {
   Cstone,		Cstone,		Cdiamond,	Cdiamond,	//   0
-  Calien,		Calien,		Cblank,		Cblank,		//   4
+  Calien,		Calien,		Cpause,		Cpause,		//   4
   Ctank_1_n,		Ctank_1_e,	Ctank_1_s,	Ctank_1_w,	//   8
   Ctank_2_n,		Ctank_2_e,	Ctank_2_s,	Ctank_2_w,	//  12
-
   Cbomb,		Cbomb,		Cemerald,	Cemerald,	//  16
   Cbug_1_n,		Cbug_1_e,	Cbug_1_s,	Cbug_1_w,	//  20
   Cbug_2_n,		Cbug_2_e,	Cbug_2_s,	Cbug_2_w,	//  24
-  Cdrip,		Cdrip,		Cdrip,		Cdrip,		//  28
-
+  Cdrip,		Cdrip,		Cblank,		Cdrip,		//  28
   Cstone,		Cbomb,		Cdiamond,	Cemerald,	//  32
   Cwonderwall,		Cnut,		Cnut,		Cnut,		//  36
   Cwheel,		Ceater_n,	Ceater_s,	Ceater_w,	//  40
   Ceater_e,		Csand_stone,	Cblank,		Cblank,		//  44
-
   Cblank,		Csand,		Csand,		Csand,		//  48
   Csand_stone,		Csand_stone,	Csand_stone,	Csand,		//  52
   Cstone,		Cslide_ew,	Cslide_ns,	Cdynamite_1,	//  56
@@ -67,38 +64,32 @@ static const short map_emc[256] =
   Cexit_1,		Cexit_2,	Cexit_3,	Cballoon,	//  64
   Cplant,		Cspring,	Cspring,	Cpush_spring_w,	//  68
   Cpush_spring_e,	Cball_1,	Cball_2,	Candroid,	//  72
-  Cblank,		Candroid,	Candroid,	Candroid,	//  76
-
+  Cpause,		Candroid,	Candroid,	Candroid,	//  76
   Candroid,		Candroid,	Candroid,	Candroid,	//  80
   Candroid,		Cblank,		Cblank,		Cblank,		//  84
   Cblank,		Cblank,		Cblank,		Cblank,		//  88
   Cblank,		Cblank,		Cblank,		Cblank,		//  92
-
   Cblank,		Cblank,		Cblank,		Cpush_spring_w,	//  96
   Cpush_spring_e,	Cacid_1,	Cacid_2,	Cacid_3,	// 100
   Cacid_4,		Cacid_5,	Cacid_6,	Cacid_7,	// 104
-  Cacid_8,		Cblank,		Cblank,		Cblank,		// 108
-
-  Cblank,		Cblank,		Cpush_nut_w,	Cpush_nut_e,	// 112
-  Csteel_1,		Cblank,		Cblank,		Cpush_bomb_w,	// 116
-  Cpush_bomb_e,		Cpush_stone_w,	Cpush_stone_e,	Cblank,		// 120
-  Cblank,		Cblank,		Cblank,		Cblank,		// 124
+  Cacid_8,		Cpause,		Cpause,		Cpause,		// 108
+  Cpause,		Cpause,		Cpush_nut_w,	Cpush_nut_e,	// 112
+  Csteel_1,		Cdynamite_4,	Cblank,		Cpush_bomb_w,	// 116
+  Cpush_bomb_e,		Cpush_stone_w,	Cpush_stone_e,	Cpause,		// 120
+  Cpause,		Cpause,		Cpause,		Cpause,		// 124
 
   Cblank,		Croundwall_2,	Cgrass,		Csteel_2,	// 128
   Cwall_2,		Ckey_1,		Ckey_2,		Ckey_3,		// 132
   Ckey_4,		Cdoor_1,	Cdoor_2,	Cdoor_3,	// 136
   Cdoor_4,		Cfake_amoeba,	Cfake_door_1,	Cfake_door_2,	// 140
-
   Cfake_door_3,		Cfake_door_4,	Cwonderwall,	Cwheel,		// 144
   Csand,		Cacid_nw,	Cacid_ne,	Cacid_sw,	// 148
   Cacid_se,		Cfake_blank,	Camoeba_1,	Camoeba_2,	// 152
   Camoeba_3,		Camoeba_4,	Cexit,		Calpha_arrow_w,	// 156
-
   Cfake_grass,		Clenses,	Cmagnify,	Cfake_blank,	// 160
-  Cfake_grass,		Cswitch,	Cswitch,	Cblank,		// 164
+  Cfake_grass,		Cswitch,	Cswitch,	Cpause,		// 164
   Cdecor_8,		Cdecor_9,	Cdecor_10,	Cdecor_5,	// 168
   Calpha_comma,		Calpha_apost,	Calpha_minus,	Cdynamite,	// 172
-
   Csteel_3,		Cdecor_6,	Cdecor_7,	Csteel_1,	// 176
   Croundwall_1,		Cdecor_2,	Cdecor_4,	Cdecor_3,	// 180
   Cwind_any,		Cwind_e,	Cwind_s,	Cwind_w,	// 184
@@ -108,20 +99,17 @@ static const short map_emc[256] =
   Cdoor_6,		Cdoor_7,	Cdoor_8,	Cbumper,	// 196
   Calpha_a,		Calpha_b,	Calpha_c,	Calpha_d,	// 200
   Calpha_e,		Calpha_f,	Calpha_g,	Calpha_h,	// 204
-
   Calpha_i,		Calpha_j,	Calpha_k,	Calpha_l,	// 208
   Calpha_m,		Calpha_n,	Calpha_o,	Calpha_p,	// 212
   Calpha_q,		Calpha_r,	Calpha_s,	Calpha_t,	// 216
   Calpha_u,		Calpha_v,	Calpha_w,	Calpha_x,	// 220
-
   Calpha_y,		Calpha_z,	Calpha_0,	Calpha_1,	// 224
   Calpha_2,		Calpha_3,	Calpha_4,	Calpha_5,	// 228
   Calpha_6,		Calpha_7,	Calpha_8,	Calpha_9,	// 232
   Calpha_perio,		Calpha_excla,	Calpha_colon,	Calpha_quest,	// 236
-
   Calpha_arrow_e,	Cdecor_1,	Cfake_door_5,	Cfake_door_6,	// 240
   Cfake_door_7,		Cfake_door_8,	Cblank,		Cblank,		// 244
-  Cblank,		Cblank,		Cblank,		Cblank,		// 248
+  Camoeba_5,		Camoeba_6,	Camoeba_7,	Camoeba_8,	// 248
   Cwall_1,		Cblank,		Calpha_copyr,	Cfake_acid_1	// 252
 };
 
