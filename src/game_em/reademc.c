@@ -84,8 +84,8 @@ static const short map_emc[256] =
   Cpush_bomb_e,		Cpush_stone_w,	Cpush_stone_e,	Cblank,		// 120
   Cblank,		Cblank,		Cblank,		Cblank,		// 124
 
-  Cblank,		Croundwall_1,	Cgrass,		Csteel_1,	// 128
-  Cwall_1,		Ckey_1,		Ckey_2,		Ckey_3,		// 132
+  Cblank,		Croundwall_2,	Cgrass,		Csteel_2,	// 128
+  Cwall_2,		Ckey_1,		Ckey_2,		Ckey_3,		// 132
   Ckey_4,		Cdoor_1,	Cdoor_2,	Cdoor_3,	// 136
   Cdoor_4,		Cfake_amoeba,	Cfake_door_1,	Cfake_door_2,	// 140
 
@@ -99,8 +99,8 @@ static const short map_emc[256] =
   Cdecor_8,		Cdecor_9,	Cdecor_10,	Cdecor_5,	// 168
   Calpha_comma,		Calpha_apost,	Calpha_minus,	Cdynamite,	// 172
 
-  Csteel_3,		Cdecor_6,	Cdecor_7,	Csteel_2,	// 176
-  Croundwall_2,		Cdecor_2,	Cdecor_4,	Cdecor_3,	// 180
+  Csteel_3,		Cdecor_6,	Cdecor_7,	Csteel_1,	// 176
+  Croundwall_1,		Cdecor_2,	Cdecor_4,	Cdecor_3,	// 180
   Cwind_any,		Cwind_e,	Cwind_s,	Cwind_w,	// 184
   Cwind_n,		Cdirt,		Cplant,		Ckey_5,		// 188
 
@@ -122,7 +122,7 @@ static const short map_emc[256] =
   Calpha_arrow_e,	Cdecor_1,	Cfake_door_5,	Cfake_door_6,	// 240
   Cfake_door_7,		Cfake_door_8,	Cblank,		Cblank,		// 244
   Cblank,		Cblank,		Cblank,		Cblank,		// 248
-  Cblank,		Cblank,		Calpha_copyr,	Cfake_acid_1	// 252
+  Cwall_1,		Cblank,		Calpha_copyr,	Cfake_acid_1	// 252
 };
 
 static struct
@@ -446,10 +446,13 @@ void convert_em_level(unsigned char *src, int file_version)
 
 /* changes for game engine integration in Rocks'n'Diamonds:
  *
- * cave versions below V5 had no grass, but only sand/dirt
+ * cave versions below V5 used different objects than later versions
+ * - steel/wall/roundwall of type 1 was used instead of type 2
+ * - dirt was used instead of grass
+ * - wall codes 129, 131 and 132 are changed to 180, 179 and 252
  * - object code 130 (V6 grass) is changed to 189 (V6 dirt)
  * - object codes are changed in both cave and eater arrays
- * - only graphical change, as both objects behave the same
+ * - only graphical change, as changed objects behave the same
  *
  * acid with no base beneath it is converted to fake acid
  * - required for downunder mine 16, level 0 (and others)
@@ -519,7 +522,7 @@ static const unsigned char map_v4[256] =
   153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153,	//  96
   153,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,	// 112
 
-  128,129,189,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,	// 128
+  128,180,189,179, 252,133,134,135, 136,137,138,139, 140,141,142,143,	// 128
   144,145,146,147, 148,149,150,151, 152,68,154,155,  156,157,158,160,	// 144
   160,160,160,160, 160,160,160,160, 160,160,160,160, 160,160,160,175,	// 160
   153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,68,153,	// 176
@@ -534,7 +537,7 @@ static const unsigned char map_v4_eater[32] =
 {
   /* filter for v4 eater */
 
-  128,18,2,0,      4,8,16,20,       28,37,41,45,     189,129,131,132,	//   0
+  128,18,2,0,      4,8,16,20,       28,37,41,45,     189,180,179,252,	//   0
   133,134,135,136, 146,147,175,65,  66,64,2,18,      128,128,128,128	//  16
 };
 
