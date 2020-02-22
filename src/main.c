@@ -547,7 +547,8 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_butterfly.right",
     "bd_butterfly",
-    "butterfly (starts moving right)"},
+    "butterfly (starts moving right)"
+  },
   {
     "bd_butterfly.up",
     "bd_butterfly",
@@ -556,11 +557,13 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_butterfly.left",
     "bd_butterfly",
-    "butterfly (starts moving left)"},
+    "butterfly (starts moving left)"
+  },
   {
     "bd_butterfly.down",
     "bd_butterfly",
-    "butterfly (starts moving down)"},
+    "butterfly (starts moving down)"
+  },
   {
     "bd_firefly.right",
     "bd_firefly",
@@ -634,7 +637,8 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "spaceship.right",
     "spaceship",
-    "spaceship (starts moving right)"},
+    "spaceship (starts moving right)"
+  },
   {
     "spaceship.up",
     "spaceship",
@@ -643,11 +647,13 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "spaceship.left",
     "spaceship",
-    "spaceship (starts moving left)"},
+    "spaceship (starts moving left)"
+  },
   {
     "spaceship.down",
     "spaceship",
-    "spaceship (starts moving down)"},
+    "spaceship (starts moving down)"
+  },
   {
     "pacman.right",
     "pacman",
@@ -1851,62 +1857,62 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "emc_steelwall_1",
     "steelwall",
-    "steel wall"
+    "steel wall 1 (EMC style)"
   },
   {
     "emc_steelwall_2",
     "steelwall",
-    "steel wall"
+    "steel wall 2 (EMC style)"
   },
   {
     "emc_steelwall_3",
     "steelwall",
-    "steel wall"
+    "steel wall 3 (EMC style)"
   },
   {
     "emc_steelwall_4",
     "steelwall",
-    "steel wall"
+    "steel wall 4 (EMC style)"
   },
   {
     "emc_wall_1",
     "wall",
-    "normal wall"
+    "normal wall 1 (EMC style)"
   },
   {
     "emc_wall_2",
     "wall",
-    "normal wall"
+    "normal wall 2 (EMC style)"
   },
   {
     "emc_wall_3",
     "wall",
-    "normal wall"
+    "normal wall 3 (EMC style)"
   },
   {
     "emc_wall_4",
     "wall",
-    "normal wall"
+    "normal wall 4 (EMC style)"
   },
   {
     "emc_wall_5",
     "wall",
-    "normal wall"
+    "normal wall 5 (EMC style)"
   },
   {
     "emc_wall_6",
     "wall",
-    "normal wall"
+    "normal wall 6 (EMC style)"
   },
   {
     "emc_wall_7",
     "wall",
-    "normal wall"
+    "normal wall 7 (EMC style)"
   },
   {
     "emc_wall_8",
     "wall",
-    "normal wall"
+    "normal wall 8 (EMC style)"
   },
   {
     "tube_any",
@@ -3641,62 +3647,62 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "emc_wall_9",
     "wall",
-    "normal wall"
+    "normal wall 9 (EMC style)"
   },
   {
     "emc_wall_10",
     "wall",
-    "normal wall"
+    "normal wall 10 (EMC style)"
   },
   {
     "emc_wall_11",
     "wall",
-    "normal wall"
+    "normal wall 11 (EMC style)"
   },
   {
     "emc_wall_12",
     "wall",
-    "normal wall"
+    "normal wall 12 (EMC style)"
   },
   {
     "emc_wall_13",
     "wall",
-    "normal wall"
+    "normal wall 13 (EMC style)"
   },
   {
     "emc_wall_14",
     "wall",
-    "normal wall"
+    "normal wall 14 (EMC style)"
   },
   {
     "emc_wall_15",
     "wall",
-    "normal wall"
+    "normal wall 15 (EMC style)"
   },
   {
     "emc_wall_16",
     "wall",
-    "normal wall"
+    "normal wall 16 (EMC style)"
   },
   {
     "emc_wall_slippery_1",
     "wall",
-    "slippery wall"
+    "slippery wall 1 (EMC style)"
   },
   {
     "emc_wall_slippery_2",
     "wall",
-    "slippery wall"
+    "slippery wall 2 (EMC style)"
   },
   {
     "emc_wall_slippery_3",
     "wall",
-    "slippery wall"
+    "slippery wall 3 (EMC style)"
   },
   {
     "emc_wall_slippery_4",
     "wall",
-    "slippery wall"
+    "slippery wall 4 (EMC style)"
   },
   {
     "emc_fake_grass",
@@ -4311,112 +4317,112 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "dc_steelwall_1_left",
     "steelwall",
-    "steel wall (left)"
+    "steel wall 1 (left)"
   },
   {
     "dc_steelwall_1_right",
     "steelwall",
-    "steel wall (right)"
+    "steel wall 1 (right)"
   },
   {
     "dc_steelwall_1_top",
     "steelwall",
-    "steel wall (top)"
+    "steel wall 1 (top)"
   },
   {
     "dc_steelwall_1_bottom",
     "steelwall",
-    "steel wall (bottom)"
+    "steel wall 1 (bottom)"
   },
   {
     "dc_steelwall_1_horizontal",
     "steelwall",
-    "steel wall (top/bottom)"
+    "steel wall 1 (top/bottom)"
   },
   {
     "dc_steelwall_1_vertical",
     "steelwall",
-    "steel wall (left/right)"
+    "steel wall 1 (left/right)"
   },
   {
     "dc_steelwall_1_topleft",
     "steelwall",
-    "steel wall (top/left)"
+    "steel wall 1 (top/left)"
   },
   {
     "dc_steelwall_1_topright",
     "steelwall",
-    "steel wall (top/right)"
+    "steel wall 1 (top/right)"
   },
   {
     "dc_steelwall_1_bottomleft",
     "steelwall",
-    "steel wall (bottom/left)"
+    "steel wall 1 (bottom/left)"
   },
   {
     "dc_steelwall_1_bottomright",
     "steelwall",
-    "steel wall (bottom/right)"
+    "steel wall 1 (bottom/right)"
   },
   {
     "dc_steelwall_1_topleft_2",
     "steelwall",
-    "steel wall (top/left corner)"
+    "steel wall 1 (top/left corner)"
   },
   {
     "dc_steelwall_1_topright_2",
     "steelwall",
-    "steel wall (top/right corner)"
+    "steel wall 1 (top/right corner)"
   },
   {
     "dc_steelwall_1_bottomleft_2",
     "steelwall",
-    "steel wall (bottom/left corner)"
+    "steel wall 1 (bottom/left corner)"
   },
   {
     "dc_steelwall_1_bottomright_2",
     "steelwall",
-    "steel wall (bottom/right corner)"
+    "steel wall 1 (bottom/right corner)"
   },
   {
     "dc_steelwall_2_left",
     "steelwall",
-    "steel wall (left)"
+    "steel wall 2 (left)"
   },
   {
     "dc_steelwall_2_right",
     "steelwall",
-    "steel wall (right)"
+    "steel wall 2 (right)"
   },
   {
     "dc_steelwall_2_top",
     "steelwall",
-    "steel wall (top)"
+    "steel wall 2 (top)"
   },
   {
     "dc_steelwall_2_bottom",
     "steelwall",
-    "steel wall (bottom)"
+    "steel wall 2 (bottom)"
   },
   {
     "dc_steelwall_2_horizontal",
     "steelwall",
-    "steel wall (horizontal)"
+    "steel wall 2 (horizontal)"
   },
   {
     "dc_steelwall_2_vertical",
     "steelwall",
-    "steel wall (vertical)"
+    "steel wall 2 (vertical)"
   },
   {
     "dc_steelwall_2_middle",
     "steelwall",
-    "steel wall (middle)"
+    "steel wall 2 (middle)"
   },
   {
     "dc_steelwall_2_single",
     "steelwall",
-    "steel wall (single)"
+    "steel wall 2 (single)"
   },
   {
     "dc_switchgate_switch_up",
@@ -4671,322 +4677,322 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "mm_steel_wall_1",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 1 (MM style)"
   },
   {
     "mm_steel_wall_2",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 2 (MM style)"
   },
   {
     "mm_steel_wall_3",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 3 (MM style)"
   },
   {
     "mm_steel_wall_4",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 4 (MM style)"
   },
   {
     "mm_steel_wall_5",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 5 (MM style)"
   },
   {
     "mm_steel_wall_6",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 6 (MM style)"
   },
   {
     "mm_steel_wall_7",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 7 (MM style)"
   },
   {
     "mm_steel_wall_8",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 8 (MM style)"
   },
   {
     "mm_steel_wall_9",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 9 (MM style)"
   },
   {
     "mm_steel_wall_10",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 10 (MM style)"
   },
   {
     "mm_steel_wall_11",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 11 (MM style)"
   },
   {
     "mm_steel_wall_12",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 12 (MM style)"
   },
   {
     "mm_steel_wall_13",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 13 (MM style)"
   },
   {
     "mm_steel_wall_14",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 14 (MM style)"
   },
   {
     "mm_steel_wall_15",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 15 (MM style)"
   },
   {
     "mm_steel_wall_16",
     "mm_steel_wall",
-    "steel wall"
+    "steel wall 16 (MM style)"
   },
   {
     "mm_wooden_wall_1",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 1 (MM style)"
   },
   {
     "mm_wooden_wall_2",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 2 (MM style)"
   },
   {
     "mm_wooden_wall_3",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 3 (MM style)"
   },
   {
     "mm_wooden_wall_4",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 4 (MM style)"
   },
   {
     "mm_wooden_wall_5",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 5 (MM style)"
   },
   {
     "mm_wooden_wall_6",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 6 (MM style)"
   },
   {
     "mm_wooden_wall_7",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 7 (MM style)"
   },
   {
     "mm_wooden_wall_8",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 8 (MM style)"
   },
   {
     "mm_wooden_wall_9",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 9 (MM style)"
   },
   {
     "mm_wooden_wall_10",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 10 (MM style)"
   },
   {
     "mm_wooden_wall_11",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 11 (MM style)"
   },
   {
     "mm_wooden_wall_12",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 12 (MM style)"
   },
   {
     "mm_wooden_wall_13",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 13 (MM style)"
   },
   {
     "mm_wooden_wall_14",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 14 (MM style)"
   },
   {
     "mm_wooden_wall_15",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 15 (MM style)"
   },
   {
     "mm_wooden_wall_16",
     "mm_wooden_wall",
-    "wooden wall"
+    "wooden wall 16 (MM style)"
   },
   {
     "mm_ice_wall_1",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 1"
   },
   {
     "mm_ice_wall_2",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 2"
   },
   {
     "mm_ice_wall_3",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 3"
   },
   {
     "mm_ice_wall_4",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 4"
   },
   {
     "mm_ice_wall_5",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 5"
   },
   {
     "mm_ice_wall_6",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 6"
   },
   {
     "mm_ice_wall_7",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 7"
   },
   {
     "mm_ice_wall_8",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 8"
   },
   {
     "mm_ice_wall_9",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 9"
   },
   {
     "mm_ice_wall_10",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 10"
   },
   {
     "mm_ice_wall_11",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 11"
   },
   {
     "mm_ice_wall_12",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 12"
   },
   {
     "mm_ice_wall_13",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 13"
   },
   {
     "mm_ice_wall_14",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 14"
   },
   {
     "mm_ice_wall_15",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 15"
   },
   {
     "mm_ice_wall_16",
     "mm_ice_wall",
-    "ice wall"
+    "ice wall 16"
   },
   {
     "mm_amoeba_wall_1",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 1"
   },
   {
     "mm_amoeba_wall_2",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 2"
   },
   {
     "mm_amoeba_wall_3",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 3"
   },
   {
     "mm_amoeba_wall_4",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 4"
   },
   {
     "mm_amoeba_wall_5",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 5"
   },
   {
     "mm_amoeba_wall_6",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 6"
   },
   {
     "mm_amoeba_wall_7",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 7"
   },
   {
     "mm_amoeba_wall_8",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 8"
   },
   {
     "mm_amoeba_wall_9",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 9"
   },
   {
     "mm_amoeba_wall_10",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 10"
   },
   {
     "mm_amoeba_wall_11",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 11"
   },
   {
     "mm_amoeba_wall_12",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 12"
   },
   {
     "mm_amoeba_wall_13",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 13"
   },
   {
     "mm_amoeba_wall_14",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 14"
   },
   {
     "mm_amoeba_wall_15",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 15"
   },
   {
     "mm_amoeba_wall_16",
     "mm_amoeba_wall",
-    "amoeba wall"
+    "amoeba wall 16"
   },
   {
     "mm_wooden_block",
@@ -5471,162 +5477,162 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "df_wooden_wall_1",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 1 (DF style)"
   },
   {
     "df_wooden_wall_2",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 2 (DF style)"
   },
   {
     "df_wooden_wall_3",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 3 (DF style)"
   },
   {
     "df_wooden_wall_4",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 4 (DF style)"
   },
   {
     "df_wooden_wall_5",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 5 (DF style)"
   },
   {
     "df_wooden_wall_6",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 6 (DF style)"
   },
   {
     "df_wooden_wall_7",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 7 (DF style)"
   },
   {
     "df_wooden_wall_8",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 8 (DF style)"
   },
   {
     "df_wooden_wall_9",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 9 (DF style)"
   },
   {
     "df_wooden_wall_10",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 10 (DF style)"
   },
   {
     "df_wooden_wall_11",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 11 (DF style)"
   },
   {
     "df_wooden_wall_12",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 12 (DF style)"
   },
   {
     "df_wooden_wall_13",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 13 (DF style)"
   },
   {
     "df_wooden_wall_14",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 14 (DF style)"
   },
   {
     "df_wooden_wall_15",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 15 (DF style)"
   },
   {
     "df_wooden_wall_16",
     "df_wooden_wall",
-    "wooden wall (DF style)"
+    "wooden wall 16 (DF style)"
   },
   {
     "df_steel_wall_1",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 1 (DF style)"
   },
   {
     "df_steel_wall_2",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 2 (DF style)"
   },
   {
     "df_steel_wall_3",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 3 (DF style)"
   },
   {
     "df_steel_wall_4",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 4 (DF style)"
   },
   {
     "df_steel_wall_5",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 5 (DF style)"
   },
   {
     "df_steel_wall_6",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 6 (DF style)"
   },
   {
     "df_steel_wall_7",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 7 (DF style)"
   },
   {
     "df_steel_wall_8",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 8 (DF style)"
   },
   {
     "df_steel_wall_9",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 9 (DF style)"
   },
   {
     "df_steel_wall_10",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 10 (DF style)"
   },
   {
     "df_steel_wall_11",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 11 (DF style)"
   },
   {
     "df_steel_wall_12",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 12 (DF style)"
   },
   {
     "df_steel_wall_13",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 13 (DF style)"
   },
   {
     "df_steel_wall_14",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 14 (DF style)"
   },
   {
     "df_steel_wall_15",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 15 (DF style)"
   },
   {
     "df_steel_wall_16",
     "df_steel_wall",
-    "steel wall (DF style)"
+    "steel wall 16 (DF style)"
   },
   {
     "df_empty_space",
@@ -6226,12 +6232,12 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "mm_steel_wall",
     "mm_steel_wall",
-    "steel wall",
+    "steel wall (MM style)",
   },
   {
     "mm_wooden_wall",
     "mm_wooden_wall",
-    "wooden wall",
+    "wooden wall (MM style)",
   },
   {
     "mm_ice_wall",
