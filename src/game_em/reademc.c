@@ -44,85 +44,85 @@
 
 static const short map_emc[256] =
 {
-  Cstone,		Cstone,		Cdiamond,	Cdiamond,
-  Calien,		Calien,		Cblank,		Cblank,
-  Ctank_1_n,		Ctank_1_e,	Ctank_1_s,	Ctank_1_w,
-  Ctank_2_n,		Ctank_2_e,	Ctank_2_s,	Ctank_2_w,
+  Cstone,		Cstone,		Cdiamond,	Cdiamond,	//   0
+  Calien,		Calien,		Cblank,		Cblank,		//   4
+  Ctank_1_n,		Ctank_1_e,	Ctank_1_s,	Ctank_1_w,	//   8
+  Ctank_2_n,		Ctank_2_e,	Ctank_2_s,	Ctank_2_w,	//  12
 
-  Cbomb,		Cbomb,		Cemerald,	Cemerald,
-  Cbug_1_n,		Cbug_1_e,	Cbug_1_s,	Cbug_1_w,
-  Cbug_2_n,		Cbug_2_e,	Cbug_2_s,	Cbug_2_w,
-  Cdrip,		Cdrip,		Cdrip,		Cdrip,
+  Cbomb,		Cbomb,		Cemerald,	Cemerald,	//  16
+  Cbug_1_n,		Cbug_1_e,	Cbug_1_s,	Cbug_1_w,	//  20
+  Cbug_2_n,		Cbug_2_e,	Cbug_2_s,	Cbug_2_w,	//  24
+  Cdrip,		Cdrip,		Cdrip,		Cdrip,		//  28
 
-  Cstone,		Cbomb,		Cdiamond,	Cemerald,
-  Cwonderwall,		Cnut,		Cnut,		Cnut,
-  Cwheel,		Ceater_n,	Ceater_s,	Ceater_w,
-  Ceater_e,		Csand_stone,	Cblank,		Cblank,
+  Cstone,		Cbomb,		Cdiamond,	Cemerald,	//  32
+  Cwonderwall,		Cnut,		Cnut,		Cnut,		//  36
+  Cwheel,		Ceater_n,	Ceater_s,	Ceater_w,	//  40
+  Ceater_e,		Csand_stone,	Cblank,		Cblank,		//  44
 
-  Cblank,		Csand,		Csand,		Csand,
-  Csand_stone,		Csand_stone,	Csand_stone,	Csand,
-  Cstone,		Cslide_ew,	Cslide_ns,	Cdynamite_1,
-  Cdynamite_2,		Cdynamite_3,	Cdynamite_4,	Cacid_s,
+  Cblank,		Csand,		Csand,		Csand,		//  48
+  Csand_stone,		Csand_stone,	Csand_stone,	Csand,		//  52
+  Cstone,		Cslide_ew,	Cslide_ns,	Cdynamite_1,	//  56
+  Cdynamite_2,		Cdynamite_3,	Cdynamite_4,	Cacid_s,	//  60
 
-  Cexit_1,		Cexit_2,	Cexit_3,	Cballoon,
-  Cplant,		Cspring,	Cspring,	Cpush_spring_w,
-  Cpush_spring_e,	Cball_1,	Cball_2,	Candroid,
-  Cblank,		Candroid,	Candroid,	Candroid,
+  Cexit_1,		Cexit_2,	Cexit_3,	Cballoon,	//  64
+  Cplant,		Cspring,	Cspring,	Cpush_spring_w,	//  68
+  Cpush_spring_e,	Cball_1,	Cball_2,	Candroid,	//  72
+  Cblank,		Candroid,	Candroid,	Candroid,	//  76
 
-  Candroid,		Candroid,	Candroid,	Candroid,
-  Candroid,		Cblank,		Cblank,		Cblank,
-  Cblank,		Cblank,		Cblank,		Cblank,
-  Cblank,		Cblank,		Cblank,		Cblank,
+  Candroid,		Candroid,	Candroid,	Candroid,	//  80
+  Candroid,		Cblank,		Cblank,		Cblank,		//  84
+  Cblank,		Cblank,		Cblank,		Cblank,		//  88
+  Cblank,		Cblank,		Cblank,		Cblank,		//  92
 
-  Cblank,		Cblank,		Cblank,		Cpush_spring_w,
-  Cpush_spring_e,	Cacid_1,	Cacid_2,	Cacid_3,
-  Cacid_4,		Cacid_5,	Cacid_6,	Cacid_7,
-  Cacid_8,		Cblank,		Cblank,		Cblank,
+  Cblank,		Cblank,		Cblank,		Cpush_spring_w,	//  96
+  Cpush_spring_e,	Cacid_1,	Cacid_2,	Cacid_3,	// 100
+  Cacid_4,		Cacid_5,	Cacid_6,	Cacid_7,	// 104
+  Cacid_8,		Cblank,		Cblank,		Cblank,		// 108
 
-  Cblank,		Cblank,		Cpush_nut_w,	Cpush_nut_e,
-  Csteel_1,		Cblank,		Cblank,		Cpush_bomb_w,
-  Cpush_bomb_e,		Cpush_stone_w,	Cpush_stone_e,	Cblank,
-  Cblank,		Cblank,		Cblank,		Cblank,
+  Cblank,		Cblank,		Cpush_nut_w,	Cpush_nut_e,	// 112
+  Csteel_1,		Cblank,		Cblank,		Cpush_bomb_w,	// 116
+  Cpush_bomb_e,		Cpush_stone_w,	Cpush_stone_e,	Cblank,		// 120
+  Cblank,		Cblank,		Cblank,		Cblank,		// 124
 
-  Cblank,		Croundwall_1,	Cgrass,		Csteel_1,
-  Cwall_1,		Ckey_1,		Ckey_2,		Ckey_3,
-  Ckey_4,		Cdoor_1,	Cdoor_2,	Cdoor_3,
-  Cdoor_4,		Cfake_amoeba,	Cfake_door_1,	Cfake_door_2,
+  Cblank,		Croundwall_1,	Cgrass,		Csteel_1,	// 128
+  Cwall_1,		Ckey_1,		Ckey_2,		Ckey_3,		// 132
+  Ckey_4,		Cdoor_1,	Cdoor_2,	Cdoor_3,	// 136
+  Cdoor_4,		Cfake_amoeba,	Cfake_door_1,	Cfake_door_2,	// 140
 
-  Cfake_door_3,		Cfake_door_4,	Cwonderwall,	Cwheel,
-  Csand,		Cacid_nw,	Cacid_ne,	Cacid_sw,
-  Cacid_se,		Cfake_blank,	Camoeba_1,	Camoeba_2,
-  Camoeba_3,		Camoeba_4,	Cexit,		Calpha_arrow_w,
+  Cfake_door_3,		Cfake_door_4,	Cwonderwall,	Cwheel,		// 144
+  Csand,		Cacid_nw,	Cacid_ne,	Cacid_sw,	// 148
+  Cacid_se,		Cfake_blank,	Camoeba_1,	Camoeba_2,	// 152
+  Camoeba_3,		Camoeba_4,	Cexit,		Calpha_arrow_w,	// 156
 
-  Cfake_grass,		Clenses,	Cmagnify,	Cfake_blank,
-  Cfake_grass,		Cswitch,	Cswitch,	Cblank,
-  Cdecor_8,		Cdecor_9,	Cdecor_10,	Cdecor_5,
-  Calpha_comma,		Calpha_apost,	Calpha_minus,	Cdynamite,
+  Cfake_grass,		Clenses,	Cmagnify,	Cfake_blank,	// 160
+  Cfake_grass,		Cswitch,	Cswitch,	Cblank,		// 164
+  Cdecor_8,		Cdecor_9,	Cdecor_10,	Cdecor_5,	// 168
+  Calpha_comma,		Calpha_apost,	Calpha_minus,	Cdynamite,	// 172
 
-  Csteel_3,		Cdecor_6,	Cdecor_7,	Csteel_2,
-  Croundwall_2,		Cdecor_2,	Cdecor_4,	Cdecor_3,
-  Cwind_any,		Cwind_e,	Cwind_s,	Cwind_w,
-  Cwind_n,		Cdirt,		Cplant,		Ckey_5,
+  Csteel_3,		Cdecor_6,	Cdecor_7,	Csteel_2,	// 176
+  Croundwall_2,		Cdecor_2,	Cdecor_4,	Cdecor_3,	// 180
+  Cwind_any,		Cwind_e,	Cwind_s,	Cwind_w,	// 184
+  Cwind_n,		Cdirt,		Cplant,		Ckey_5,		// 188
 
-  Ckey_6,		Ckey_7,		Ckey_8,		Cdoor_5,
-  Cdoor_6,		Cdoor_7,	Cdoor_8,	Cbumper,
-  Calpha_a,		Calpha_b,	Calpha_c,	Calpha_d,
-  Calpha_e,		Calpha_f,	Calpha_g,	Calpha_h,
+  Ckey_6,		Ckey_7,		Ckey_8,		Cdoor_5,	// 192
+  Cdoor_6,		Cdoor_7,	Cdoor_8,	Cbumper,	// 196
+  Calpha_a,		Calpha_b,	Calpha_c,	Calpha_d,	// 200
+  Calpha_e,		Calpha_f,	Calpha_g,	Calpha_h,	// 204
 
-  Calpha_i,		Calpha_j,	Calpha_k,	Calpha_l,
-  Calpha_m,		Calpha_n,	Calpha_o,	Calpha_p,
-  Calpha_q,		Calpha_r,	Calpha_s,	Calpha_t,
-  Calpha_u,		Calpha_v,	Calpha_w,	Calpha_x,
+  Calpha_i,		Calpha_j,	Calpha_k,	Calpha_l,	// 208
+  Calpha_m,		Calpha_n,	Calpha_o,	Calpha_p,	// 212
+  Calpha_q,		Calpha_r,	Calpha_s,	Calpha_t,	// 216
+  Calpha_u,		Calpha_v,	Calpha_w,	Calpha_x,	// 220
 
-  Calpha_y,		Calpha_z,	Calpha_0,	Calpha_1,
-  Calpha_2,		Calpha_3,	Calpha_4,	Calpha_5,
-  Calpha_6,		Calpha_7,	Calpha_8,	Calpha_9,
-  Calpha_perio,		Calpha_excla,	Calpha_colon,	Calpha_quest,
+  Calpha_y,		Calpha_z,	Calpha_0,	Calpha_1,	// 224
+  Calpha_2,		Calpha_3,	Calpha_4,	Calpha_5,	// 228
+  Calpha_6,		Calpha_7,	Calpha_8,	Calpha_9,	// 232
+  Calpha_perio,		Calpha_excla,	Calpha_colon,	Calpha_quest,	// 236
 
-  Calpha_arrow_e,	Cdecor_1,	Cfake_door_5,	Cfake_door_6,
-  Cfake_door_7,		Cfake_door_8,	Cblank,		Cblank,
-  Cblank,		Cblank,		Cblank,		Cblank,
-  Cblank,		Cblank,		Calpha_copyr,	Cfake_acid_1
+  Calpha_arrow_e,	Cdecor_1,	Cfake_door_5,	Cfake_door_6,	// 240
+  Cfake_door_7,		Cfake_door_8,	Cblank,		Cblank,		// 244
+  Cblank,		Cblank,		Cblank,		Cblank,		// 248
+  Cblank,		Cblank,		Calpha_copyr,	Cfake_acid_1	// 252
 };
 
 static struct
@@ -459,83 +459,83 @@ static const unsigned char map_v6[256] =
 {
   /* filter for v6 */
 
-  0,0,2,2,         4,4,118,118,     8,9,10,11,       12,13,14,15,
-  16,16,18,18,     20,21,22,23,     24,25,26,27,     28,28,118,28,
-  0,16,2,18,       36,37,37,37,     40,41,42,43,     44,45,128,128,
-  128,148,148,     148,45,45,45,    148,0,57,58,     59,60,61,62,63,
+  0,0,2,2,         4,4,118,118,     8,9,10,11,       12,13,14,15,	//   0
+  16,16,18,18,     20,21,22,23,     24,25,26,27,     28,28,118,28,	//  16
+  0,16,2,18,       36,37,37,37,     40,41,42,43,     44,45,128,128,	//  32
+  128,148,148,     148,45,45,45,    148,0,57,58,     59,60,61,62,63,	//  48
 
-  64,65,66,67,     68,69,69,71,     72,73,74,75,     118,75,75,75,
-  75,75,75,75,     75,153,153,153,  153,153,153,153, 153,153,153,153,
-  153,153,153,99,  100,68,68,68,    68,68,68,68,     68,118,118,118,
-  118,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,
+  64,65,66,67,     68,69,69,71,     72,73,74,75,     118,75,75,75,	//  64
+  75,75,75,75,     75,153,153,153,  153,153,153,153, 153,153,153,153,	//  80
+  153,153,153,99,  100,68,68,68,    68,68,68,68,     68,118,118,118,	//  96
+  118,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,	// 112
 
-  128,129,130,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,
-  144,145,146,147, 148,149,150,151, 152,153,154,155, 156,157,158,159,
-  160,161,162,163, 164,165,165,118, 168,169,170,171, 172,173,174,175,
-  176,177,178,179, 180,181,182,183, 184,185,186,187, 188,189,68,191,
+  128,129,130,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,	// 128
+  144,145,146,147, 148,149,150,151, 152,153,154,155, 156,157,158,159,	// 144
+  160,161,162,163, 164,165,165,118, 168,169,170,171, 172,173,174,175,	// 160
+  176,177,178,179, 180,181,182,183, 184,185,186,187, 188,189,68,191,	// 176
 
-  192,193,194,195, 196,197,198,199, 200,201,202,203, 204,205,206,207,
-  208,209,210,211, 212,213,214,215, 216,217,218,219, 220,221,222,223,
-  224,225,226,227, 228,229,230,231, 232,233,234,235, 236,237,238,239,
-  240,241,242,243, 244,245,153,153, 153,153,153,153, 153,153,153,153
+  192,193,194,195, 196,197,198,199, 200,201,202,203, 204,205,206,207,	// 192
+  208,209,210,211, 212,213,214,215, 216,217,218,219, 220,221,222,223,	// 208
+  224,225,226,227, 228,229,230,231, 232,233,234,235, 236,237,238,239,	// 224
+  240,241,242,243, 244,245,153,153, 153,153,153,153, 153,153,153,153	// 240
 };
 
 static const unsigned char map_v5[256] =
 {
   /* filter for v5 */
 
-  0,0,2,2,         4,4,118,118,     8,9,10,11,       12,13,14,15,
-  16,16,18,18,     20,21,22,23,     24,25,26,27,     28,28,118,28,
-  0,16,2,18,       36,37,37,37,     147,41,42,43,    44,45,128,128,
-  128,148,148,148, 45,45,45,148,    0,57,58,59,      60,61,62,63,
+  0,0,2,2,         4,4,118,118,     8,9,10,11,       12,13,14,15,	//   0
+  16,16,18,18,     20,21,22,23,     24,25,26,27,     28,28,118,28,	//  16
+  0,16,2,18,       36,37,37,37,     147,41,42,43,    44,45,128,128,	//  32
+  128,148,148,148, 45,45,45,148,    0,57,58,59,      60,61,62,63,	//  48
 
-  64,65,66,67,     68,153,153,153,  153,153,153,153, 153,153,153,153,
-  153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153,
-  153,153,153,153, 153,68,68,68,    68,68,68,68,     68,118,118,118,
-  118,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,
+  64,65,66,67,     68,153,153,153,  153,153,153,153, 153,153,153,153,	//  64
+  153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153,	//  80
+  153,153,153,153, 153,68,68,68,    68,68,68,68,     68,118,118,118,	//  96
+  118,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,	// 112
 
-  128,129,130,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,
-  144,145,146,147, 148,149,150,151, 152,153,154,155, 156,157,158,159,
-  160,153,153,153, 153,153,153,118, 168,169,170,171, 172,173,174,175,
-  176,177,178,179, 180,181,182,183, 184,185,186,187, 188,189,68,153,
+  128,129,130,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,	// 128
+  144,145,146,147, 148,149,150,151, 152,153,154,155, 156,157,158,159,	// 144
+  160,153,153,153, 153,153,153,118, 168,169,170,171, 172,173,174,175,	// 160
+  176,177,178,179, 180,181,182,183, 184,185,186,187, 188,189,68,153,	// 176
 
-  153,153,153,153, 153,153,153,153, 200,201,202,203, 204,205,206,207,
-  208,209,210,211, 212,213,214,215, 216,217,218,219, 220,221,222,223,
-  224,225,226,227, 228,229,230,231, 232,233,234,235, 236,237,238,239,
-  240,241,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153
+  153,153,153,153, 153,153,153,153, 200,201,202,203, 204,205,206,207,	// 192
+  208,209,210,211, 212,213,214,215, 216,217,218,219, 220,221,222,223,	// 208
+  224,225,226,227, 228,229,230,231, 232,233,234,235, 236,237,238,239,	// 224
+  240,241,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153	// 240
 };
 
 static const unsigned char map_v4[256] =
 {
   /* filter for v4 */
 
-  0,0,2,2,         4,4,118,118,     8,9,10,11,       12,13,14,15,
-  16,16,18,18,     20,21,22,23,     24,25,26,27,     28,28,118,28,
-  0,16,2,18,       36,37,37,37,     147,41,42,43,    44,45,128,128,
-  128,148,148,148, 45,45,45,148,    0,153,153,59,    60,61,62,63,
+  0,0,2,2,         4,4,118,118,     8,9,10,11,       12,13,14,15,	//   0
+  16,16,18,18,     20,21,22,23,     24,25,26,27,     28,28,118,28,	//  16
+  0,16,2,18,       36,37,37,37,     147,41,42,43,    44,45,128,128,	//  32
+  128,148,148,148, 45,45,45,148,    0,153,153,59,    60,61,62,63,	//  48
 
-  64,65,66,153,    153,153,153,153, 153,153,153,153, 153,153,153,153,
-  153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153,
-  153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153,
-  153,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,
+  64,65,66,153,    153,153,153,153, 153,153,153,153, 153,153,153,153,	//  64
+  153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153,	//  80
+  153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153,	//  96
+  153,118,114,115, 131,118,118,119, 120,121,122,118, 118,118,118,118,	// 112
 
-  128,129,189,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,
-  144,145,146,147, 148,149,150,151, 152,68,154,155,  156,157,158,160,
-  160,160,160,160, 160,160,160,160, 160,160,160,160, 160,160,160,175,
-  153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,68,153,
+  128,129,189,131, 132,133,134,135, 136,137,138,139, 140,141,142,143,	// 128
+  144,145,146,147, 148,149,150,151, 152,68,154,155,  156,157,158,160,	// 144
+  160,160,160,160, 160,160,160,160, 160,160,160,160, 160,160,160,175,	// 160
+  153,153,153,153, 153,153,153,153, 153,153,153,153, 153,153,68,153,	// 176
 
-  153,153,153,153, 153,153,153,153, 200,201,202,203, 204,205,206,207,
-  208,209,210,211, 212,213,214,215, 216,217,218,219, 220,221,222,223,
-  224,225,226,227, 228,229,230,231, 232,233,234,235, 236,237,238,239,
-  240,241,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153
+  153,153,153,153, 153,153,153,153, 200,201,202,203, 204,205,206,207,	// 192
+  208,209,210,211, 212,213,214,215, 216,217,218,219, 220,221,222,223,	// 208
+  224,225,226,227, 228,229,230,231, 232,233,234,235, 236,237,238,239,	// 224
+  240,241,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153	// 240
 };
 
 static const unsigned char map_v4_eater[32] =
 {
   /* filter for v4 eater */
 
-  128,18,2,0,      4,8,16,20,       28,37,41,45,     189,129,131,132,
-  133,134,135,136, 146,147,175,65,  66,64,2,18,      128,128,128,128
+  128,18,2,0,      4,8,16,20,       28,37,41,45,     189,129,131,132,	//   0
+  133,134,135,136, 146,147,175,65,  66,64,2,18,      128,128,128,128	//  16
 };
 
 static boolean filename_has_v1_format(char *filename)
