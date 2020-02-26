@@ -62,7 +62,8 @@ void setLevelInfoToDefaults_EM(void)
 
   cav.testmode		= FALSE;
   cav.teamwork		= FALSE;
-  cav.infinite		= FALSE;
+  cav.infinite		= TRUE;
+
   cav.ball_random	= FALSE;
   cav.ball_active	= FALSE;
   cav.wonderwall_active	= FALSE;
