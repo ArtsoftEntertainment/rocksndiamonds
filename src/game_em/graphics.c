@@ -368,7 +368,7 @@ static void animscreen(void)
  * handles transparency and movement
  */
 
-static void blitplayer(int nr)
+static void blitplayer_ext(int nr)
 {
   int x1, y1, x2, y2;
 
@@ -427,6 +427,28 @@ static void blitplayer(int nr)
     /* redraw screen tiles in the next frame (player may have left the tiles) */
     screen_tiles[old_sx][old_sy] = -1;
     screen_tiles[new_sx][new_sy] = -1;
+  }
+}
+
+static void blitplayer(int nr)
+{
+  blitplayer_ext(nr);
+
+  /* check for wrap-around movement ... */
+  if (ply[nr].x < lev.left ||
+      ply[nr].x > lev.right - 1)
+  {
+    struct PLAYER ply_last = ply[nr];
+    int dx = ply[nr].x - ply[nr].prev_x;
+
+    ply[nr].x = (ply[nr].x < lev.left ? lev.right - 1 : lev.left);
+    ply[nr].prev_x = ply[nr].x - dx;
+
+    /* draw player entering playfield from the opposite side */
+    blitplayer_ext(nr);
+
+    /* ... but keep the old player position until game logic */
+    ply[nr] = ply_last;
   }
 }
 
