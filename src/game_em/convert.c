@@ -404,7 +404,7 @@ void prepare_em_level(void)
   /* assign active players */
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    if (ply[i].exists)
+    if (ply[i].exists && isActivePlayer_EM(i))
     {
       if (players_left)
       {

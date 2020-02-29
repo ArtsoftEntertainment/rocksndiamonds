@@ -8272,6 +8272,11 @@ boolean getTeamMode_EM(void)
   return game.team_mode || network_playing;
 }
 
+boolean isActivePlayer_EM(int player_nr)
+{
+  return stored_player[player_nr].active;
+}
+
 unsigned int InitRND(int seed)
 {
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)

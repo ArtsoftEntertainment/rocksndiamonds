@@ -28,6 +28,7 @@
 void UpdateEngineValues(int, int, int, int);
 
 boolean getTeamMode_EM(void);
+boolean isActivePlayer_EM(int);
 
 void PlayLevelSound_EM(int, int, int, int);
 void InitGraphicInfo_EM(void);
