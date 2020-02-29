@@ -12472,7 +12472,7 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
     int original_move_delay_value = player->move_delay_value;
 
 #if DEBUG
-    printf("THIS SHOULD ONLY HAPPEN WITH PRE-1.2 LEVEL TAPES. [%d]\n",
+    printf("THIS SHOULD ONLY HAPPEN WITH PRE-1.2 LEVEL TAPES. [%u]\n",
 	   tape.counter);
 #endif
 
