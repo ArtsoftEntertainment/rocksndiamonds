@@ -3753,12 +3753,13 @@ void InitGame(void)
   // use preferred player also in local single-player mode
   if (!network.enabled && !game.team_mode)
   {
-    int old_index_nr = local_player->index_nr;
     int new_index_nr = setup.network_player_nr;
 
     if (new_index_nr >= 0 && new_index_nr < MAX_PLAYERS)
     {
-      stored_player[old_index_nr].connected_locally = FALSE;
+      for (i = 0; i < MAX_PLAYERS; i++)
+	stored_player[i].connected_locally = FALSE;
+
       stored_player[new_index_nr].connected_locally = TRUE;
     }
   }
