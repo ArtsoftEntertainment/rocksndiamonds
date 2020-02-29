@@ -376,9 +376,9 @@ void prepare_em_level(void)
   for (i = 0; i < GAME_TILE_MAX; i++)
     lev.android_array[i] = map[cav.android_array[i]];
 
-  /* determine number of players in this level */
   lev.home_initial = 0;
 
+  /* check for players in this level */
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     ply[i].exists = FALSE;
@@ -401,6 +401,7 @@ void prepare_em_level(void)
   lev.home = lev.home_initial;
   players_left = lev.home_initial;
 
+  /* assign active players */
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     if (ply[i].exists)
@@ -410,15 +411,20 @@ void prepare_em_level(void)
 	ply[i].alive = TRUE;
 	players_left--;
       }
-      else
-      {
-	int x = cav.player_x[i];
-	int y = cav.player_y[i];
+    }
+  }
 
-	lev.cave[lev.left + x][lev.top + y] = Xblank;
-	lev.next[lev.left + x][lev.top + y] = Xblank;
-	lev.draw[lev.left + x][lev.top + y] = Xblank;
-      }
+  /* remove inactive players */
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    if (ply[i].exists && !ply[i].alive)
+    {
+      int x = cav.player_x[i];
+      int y = cav.player_y[i];
+
+      lev.cave[lev.left + x][lev.top + y] = Xblank;
+      lev.next[lev.left + x][lev.top + y] = Xblank;
+      lev.draw[lev.left + x][lev.top + y] = Xblank;
     }
   }
 
