@@ -300,7 +300,7 @@ char *i_to_a(unsigned int i)
 
   a = checked_malloc(10 + 1);
 
-  sprintf(a, "%d", i);
+  sprintf(a, "%u", i);
 
   return a;
 }

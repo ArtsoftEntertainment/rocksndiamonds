@@ -263,7 +263,7 @@ static voidpf ZCALLBACK win32_opendisk64_file_funcW(voidpf opaque, voidpf stream
     {
         if (diskFilename[i] != L'.')
             continue;
-        _snwprintf(&diskFilename[i], (iowin->filenameLength + 10) - i, L".z%02d", number_disk + 1);
+        _snwprintf(&diskFilename[i], (iowin->filenameLength + 10) - i, L".z%02u", number_disk + 1);
         break;
     }
     if (i >= 0)
@@ -288,7 +288,7 @@ static voidpf ZCALLBACK win32_opendisk64_file_funcA(voidpf opaque, voidpf stream
     {
         if (diskFilename[i] != '.')
             continue;
-        _snprintf(&diskFilename[i], iowin->filenameLength - i, ".z%02d", number_disk + 1);
+        _snprintf(&diskFilename[i], iowin->filenameLength - i, ".z%02u", number_disk + 1);
         break;
     }
     if (i >= 0)

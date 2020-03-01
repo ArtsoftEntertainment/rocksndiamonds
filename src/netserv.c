@@ -385,9 +385,9 @@ void dumpNetworkBuffer(struct NetworkBuffer *nb)
 {
   int i;
 
-  printf("::: network buffer maximum size: %d\n", nb->max_size);
-  printf("::: network buffer size:         %d\n", nb->size);
-  printf("::: network buffer position    : %d\n", nb->pos);
+  printf("::: network buffer maximum size: %u\n", nb->max_size);
+  printf("::: network buffer size:         %u\n", nb->size);
+  printf("::: network buffer position    : %u\n", nb->pos);
 
   for (i = 0; i < nb->size; i++)
   {
