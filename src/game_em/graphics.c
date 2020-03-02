@@ -49,6 +49,8 @@ static int crumbled_state[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
 struct GraphicInfo_EM graphic_info_em_object[GAME_TILE_MAX][8];
 struct GraphicInfo_EM graphic_info_em_player[MAX_PLAYERS][PLY_MAX][8];
 
+static void setScreenCenteredToAllPlayers(int *, int *);
+
 int getFieldbufferOffsetX_EM(void)
 {
   return screen_x % TILEX;
@@ -454,15 +456,22 @@ static void blitplayer(int nr)
 
 void game_initscreen(void)
 {
-  int player_nr;
-  int x,y;
+  int x, y, sx, sy;
 
   frame = 1;
 
-  player_nr = (game.centered_player_nr != -1 ? game.centered_player_nr : 0);
+  if (game.centered_player_nr == -1)
+  {
+    setScreenCenteredToAllPlayers(&sx, &sy);
+  }
+  else
+  {
+    sx = PLAYER_SCREEN_X(game.centered_player_nr);
+    sy = PLAYER_SCREEN_Y(game.centered_player_nr);
+  }
 
-  screen_x = VALID_SCREEN_X(PLAYER_SCREEN_X(player_nr));
-  screen_y = VALID_SCREEN_Y(PLAYER_SCREEN_Y(player_nr));
+  screen_x = VALID_SCREEN_X(sx);
+  screen_y = VALID_SCREEN_Y(sy);
 
   for (y = 0; y < MAX_BUF_YSIZE; y++)
   {
