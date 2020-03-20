@@ -2321,8 +2321,9 @@ SetupFileHash *loadSetupFileHash(char *filename)
 #define LEVELINFO_TOKEN_SPECIAL_FLAGS		24
 #define LEVELINFO_TOKEN_HANDICAP		25
 #define LEVELINFO_TOKEN_SKIP_LEVELS		26
+#define LEVELINFO_TOKEN_USE_EMC_TILES		27
 
-#define NUM_LEVELINFO_TOKENS			27
+#define NUM_LEVELINFO_TOKENS			28
 
 static LevelDirTree ldi;
 
@@ -2355,7 +2356,8 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.level_filetype,	"filetype"		},
   { TYPE_STRING,	&ldi.special_flags,	"special_flags"		},
   { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"		},
-  { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"		}
+  { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"		},
+  { TYPE_BOOLEAN,	&ldi.use_emc_tiles,	"use_emc_tiles"		}
 };
 
 static struct TokenInfo artworkinfo_tokens[] =
@@ -2447,6 +2449,8 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
     ti->readonly = TRUE;
     ti->handicap = TRUE;
     ti->skip_levels = FALSE;
+
+    ti->use_emc_tiles = FALSE;
   }
 }
 
@@ -2524,6 +2528,8 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
     ti->readonly = parent->readonly;
     ti->handicap = parent->handicap;
     ti->skip_levels = parent->skip_levels;
+
+    ti->use_emc_tiles = parent->use_emc_tiles;
   }
 }
 
@@ -2588,6 +2594,8 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->readonly		= ti->readonly;
   ti_copy->handicap		= ti->handicap;
   ti_copy->skip_levels		= ti->skip_levels;
+
+  ti_copy->use_emc_tiles	= ti->use_emc_tiles;
 
   ti_copy->color		= ti->color;
   ti_copy->class_desc		= getStringCopy(ti->class_desc);

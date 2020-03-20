@@ -8267,6 +8267,11 @@ int getBeltSwitchElementFromBeltNrAndBeltDir(int belt_nr, int belt_dir)
   return getBeltSwitchElementFromBeltNrAndBeltDirNr(belt_nr, belt_dir_nr);
 }
 
+boolean swapTiles_EM(boolean is_pre_emc_cave)
+{
+  return is_pre_emc_cave && leveldir_current->use_emc_tiles;
+}
+
 boolean getTeamMode_EM(void)
 {
   return game.team_mode || network_playing;

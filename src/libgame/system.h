@@ -1479,6 +1479,8 @@ struct TreeInfo
   boolean handicap;	// level set has no handicap when set to "false"
   boolean skip_levels;	// levels can be skipped when set to "true"
 
+  boolean use_emc_tiles;// use (swapped) V5/V6 EMC tiles when set to "true"
+
   int color;		// color to use on selection screen for this level
   char *class_desc;	// description of level series class
   int handicap_level;	// number of the lowest unsolved level

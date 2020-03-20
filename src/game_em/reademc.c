@@ -42,7 +42,7 @@
 
 #define GET_BE16(x)		((&x)[0] << 8 | (&x)[1])
 
-static const short map_emc[256] =
+static const short map_emc_raw[256] =
 {
   Cstone,		Cstone,		Cdiamond,	Cdiamond,	//   0
   Calien,		Calien,		Cpause,		Cpause,		//   4
@@ -111,6 +111,21 @@ static const short map_emc[256] =
   Cfake_door_7,		Cfake_door_8,	Cblank,		Cblank,		// 244
   Camoeba_5,		Camoeba_6,	Camoeba_7,	Camoeba_8,	// 248
   Cwall_1,		Cblank,		Calpha_copyr,	Cfake_acid_1	// 252
+};
+
+static const short swap_emc[CAVE_TILE_MAX] =
+{
+  [Cdirt]		= Cgrass,
+  [Cgrass]		= Cdirt,
+
+  [Csteel_1]		= Csteel_2,
+  [Csteel_2]		= Csteel_1,
+
+  [Cwall_1]		= Cwall_2,
+  [Cwall_2]		= Cwall_1,
+
+  [Croundwall_1]	= Croundwall_2,
+  [Croundwall_2]	= Croundwall_1
 };
 
 static struct
@@ -256,6 +271,19 @@ static int eater_offset[8] =
 void convert_em_level(unsigned char *src, int file_version)
 {
   int i, x, y, temp;
+  short map_emc[256];
+
+  /* initialize element mapping */
+
+  for (i = 0; i < 256; i++)
+    map_emc[i] = map_emc_raw[i];
+
+  /* swap tiles for pre-EMC caves (older than V5/V6), if needed */
+
+  if (swapTiles_EM(file_version < FILE_VERSION_EM_V5))
+    for (i = 0; i < 256; i++)
+      if (swap_emc[map_emc[i]] != 0)
+	map_emc[i] = swap_emc[map_emc[i]];
 
   /* common to all emc caves */
 

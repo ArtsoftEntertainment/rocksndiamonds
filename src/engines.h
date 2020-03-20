@@ -27,6 +27,7 @@
 
 void UpdateEngineValues(int, int, int, int);
 
+boolean swapTiles_EM(boolean);
 boolean getTeamMode_EM(void);
 boolean isActivePlayer_EM(int);
 
