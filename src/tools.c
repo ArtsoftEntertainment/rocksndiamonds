@@ -9040,7 +9040,7 @@ static void CheckSaveEngineSnapshot_EM(byte action[MAX_PLAYERS], int frame,
 				       boolean any_player_snapping,
 				       boolean any_player_dropping)
 {
-  if (frame == 0 && !any_player_dropping)
+  if (frame == 7 && !any_player_dropping)
   {
     if (!local_player->was_waiting)
     {
@@ -9098,7 +9098,7 @@ void CheckSingleStepMode_EM(byte action[MAX_PLAYERS], int frame,
 			    boolean any_player_dropping)
 {
   if (tape.single_step && tape.recording && !tape.pausing)
-    if (frame == 0 && !any_player_dropping)
+    if (frame == 7 && !any_player_dropping)
       TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
 
   CheckSaveEngineSnapshot_EM(action, frame, any_player_moving,
