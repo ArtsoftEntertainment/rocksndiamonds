@@ -1302,16 +1302,21 @@ static boolean adjustTreeGraphicsForEMC(TreeInfo *node)
 
   while (node)
   {
-    if (node->graphics_set_ecs && !setup.prefer_aga_graphics &&
-	!strEqual(node->graphics_set, node->graphics_set_ecs))
+    boolean want_ecs = (setup.prefer_aga_graphics == FALSE);
+    boolean want_aga = (setup.prefer_aga_graphics == TRUE);
+    boolean has_only_ecs = (!node->graphics_set && !node->graphics_set_aga);
+    boolean has_only_aga = (!node->graphics_set && !node->graphics_set_ecs);
+    char *graphics_set = NULL;
+
+    if (node->graphics_set_ecs && (want_ecs || has_only_ecs))
+      graphics_set = node->graphics_set_ecs;
+
+    if (node->graphics_set_aga && (want_aga || has_only_aga))
+      graphics_set = node->graphics_set_aga;
+
+    if (graphics_set && !strEqual(node->graphics_set, graphics_set))
     {
-      setString(&node->graphics_set, node->graphics_set_ecs);
-      settings_changed = TRUE;
-    }
-    else if (node->graphics_set_aga && setup.prefer_aga_graphics &&
-	     !strEqual(node->graphics_set, node->graphics_set_aga))
-    {
-      setString(&node->graphics_set, node->graphics_set_aga);
+      setString(&node->graphics_set, graphics_set);
       settings_changed = TRUE;
     }
 
