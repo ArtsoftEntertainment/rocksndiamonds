@@ -108,6 +108,7 @@ struct GlobalAnimPartControlInfo
   int step_xoffset, step_yoffset;
 
   unsigned int initial_anim_sync_frame;
+  unsigned int anim_random_frame;
   unsigned int step_delay, step_delay_value;
 
   int init_delay_counter;
@@ -412,6 +413,7 @@ static void InitToonControls(void)
     part->control_info.y = ARG_UNDEFINED_VALUE;
 
     part->initial_anim_sync_frame = 0;
+    part->anim_random_frame = -1;
 
     part->step_delay = 0;
     part->step_delay_value = graphic_info[control].step_delay;
@@ -516,6 +518,7 @@ static void InitGlobalAnimControls(void)
 	part->control_info = graphic_info[control];
 
 	part->initial_anim_sync_frame = 0;
+	part->anim_random_frame = -1;
 
 	part->step_delay = 0;
 	part->step_delay_value = graphic_info[control].step_delay;
@@ -767,6 +770,7 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 	  (g->draw_masked ? BlitBitmapMasked : BlitBitmap);
 	void (*blit_screen)(Bitmap *, int, int, int, int, int, int) =
 	  (g->draw_masked ? BlitToScreenMasked : BlitToScreen);
+	int last_anim_random_frame = gfx.anim_random_frame;
 
 	if (!(part->state & ANIM_STATE_RUNNING))
 	  continue;
@@ -799,9 +803,20 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 	dst_y += part->viewport_y;
 
 	sync_frame = anim_sync_frame - part->initial_anim_sync_frame;
+
+	// re-initialize random animation frame after animation delay
+	if (g->anim_mode == ANIM_RANDOM &&
+	    sync_frame % g->anim_delay == 0 &&
+	    sync_frame > 0)
+	  part->anim_random_frame = GetSimpleRandom(g->anim_frames);
+
+	gfx.anim_random_frame = part->anim_random_frame;
+
 	frame = getAnimationFrame(g->anim_frames, g->anim_delay,
 				  g->anim_mode, g->anim_start_frame,
 				  sync_frame);
+
+	gfx.anim_random_frame = last_anim_random_frame;
 
 	getFixedGraphicSource(part->graphic, frame, &src_bitmap,
 			      &src_x, &src_y);
@@ -1262,6 +1277,10 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
 
     part->initial_anim_sync_frame =
       (g->anim_global_sync ? 0 : anim_sync_frame + part->init_delay_counter);
+
+    // do not re-initialize random animation frame after fade-in
+    if (part->anim_random_frame == -1)
+      part->anim_random_frame = GetSimpleRandom(g->anim_frames);
 
     if (c->direction & MV_HORIZONTAL)
     {
