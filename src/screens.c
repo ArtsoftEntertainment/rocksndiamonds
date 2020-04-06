@@ -8380,6 +8380,7 @@ static struct
 {
   int gfx_unpressed, gfx_pressed;
   struct MenuPosInfo *pos;
+  boolean *check_value;
   int gadget_id;
   int screen_mask;
   unsigned int event_mask;
@@ -8389,7 +8390,7 @@ static struct
 {
   {
     IMG_MENU_BUTTON_PREV_LEVEL, IMG_MENU_BUTTON_PREV_LEVEL_ACTIVE,
-    &menu.main.button.prev_level,
+    &menu.main.button.prev_level, NULL,
     SCREEN_CTRL_ID_PREV_LEVEL,
     SCREEN_MASK_MAIN,
     GD_EVENT_PRESSED | GD_EVENT_REPEATED,
@@ -8397,7 +8398,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_NEXT_LEVEL, IMG_MENU_BUTTON_NEXT_LEVEL_ACTIVE,
-    &menu.main.button.next_level,
+    &menu.main.button.next_level, NULL,
     SCREEN_CTRL_ID_NEXT_LEVEL,
     SCREEN_MASK_MAIN,
     GD_EVENT_PRESSED | GD_EVENT_REPEATED,
@@ -8405,7 +8406,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_FIRST_LEVEL, IMG_MENU_BUTTON_FIRST_LEVEL_ACTIVE,
-    &menu.main.button.first_level,
+    &menu.main.button.first_level, NULL,
     SCREEN_CTRL_ID_FIRST_LEVEL,
     SCREEN_MASK_MAIN,
     GD_EVENT_RELEASED,
@@ -8413,7 +8414,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_LAST_LEVEL, IMG_MENU_BUTTON_LAST_LEVEL_ACTIVE,
-    &menu.main.button.last_level,
+    &menu.main.button.last_level, NULL,
     SCREEN_CTRL_ID_LAST_LEVEL,
     SCREEN_MASK_MAIN,
     GD_EVENT_RELEASED,
@@ -8421,7 +8422,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_LEVEL_NUMBER, IMG_MENU_BUTTON_LEVEL_NUMBER_ACTIVE,
-    &menu.main.button.level_number,
+    &menu.main.button.level_number, NULL,
     SCREEN_CTRL_ID_LEVEL_NUMBER,
     SCREEN_MASK_MAIN,
     GD_EVENT_RELEASED,
@@ -8429,7 +8430,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_LEFT, IMG_MENU_BUTTON_LEFT_ACTIVE,
-    &menu.setup.button.prev_player,
+    &menu.setup.button.prev_player, NULL,
     SCREEN_CTRL_ID_PREV_PLAYER,
     SCREEN_MASK_INPUT,
     GD_EVENT_PRESSED | GD_EVENT_REPEATED,
@@ -8437,7 +8438,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_RIGHT, IMG_MENU_BUTTON_RIGHT_ACTIVE,
-    &menu.setup.button.next_player,
+    &menu.setup.button.next_player, NULL,
     SCREEN_CTRL_ID_NEXT_PLAYER,
     SCREEN_MASK_INPUT,
     GD_EVENT_PRESSED | GD_EVENT_REPEATED,
@@ -8445,7 +8446,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_INSERT_SOLUTION, IMG_MENU_BUTTON_INSERT_SOLUTION_ACTIVE,
-    &menu.main.button.insert_solution,
+    &menu.main.button.insert_solution, NULL,
     SCREEN_CTRL_ID_INSERT_SOLUTION,
     SCREEN_MASK_MAIN_HAS_SOLUTION,
     GD_EVENT_RELEASED,
@@ -8453,7 +8454,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_PLAY_SOLUTION, IMG_MENU_BUTTON_PLAY_SOLUTION_ACTIVE,
-    &menu.main.button.play_solution,
+    &menu.main.button.play_solution, NULL,
     SCREEN_CTRL_ID_PLAY_SOLUTION,
     SCREEN_MASK_MAIN_HAS_SOLUTION,
     GD_EVENT_RELEASED,
@@ -8461,7 +8462,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_TOUCH_BACK, IMG_MENU_BUTTON_TOUCH_BACK,
-    &menu.setup.button.touch_back,
+    &menu.setup.button.touch_back, NULL,
     SCREEN_CTRL_ID_TOUCH_PREV_PAGE,
     SCREEN_MASK_TOUCH,
     GD_EVENT_RELEASED,
@@ -8469,7 +8470,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_TOUCH_NEXT, IMG_MENU_BUTTON_TOUCH_NEXT,
-    &menu.setup.button.touch_next,
+    &menu.setup.button.touch_next, NULL,
     SCREEN_CTRL_ID_TOUCH_NEXT_PAGE,
     SCREEN_MASK_TOUCH,
     GD_EVENT_RELEASED,
@@ -8477,7 +8478,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_TOUCH_BACK2, IMG_MENU_BUTTON_TOUCH_BACK2,
-    &menu.setup.button.touch_back2,
+    &menu.setup.button.touch_back2, NULL,
     SCREEN_CTRL_ID_TOUCH_PREV_PAGE2,
     SCREEN_MASK_TOUCH2,
     GD_EVENT_RELEASED,
@@ -8485,7 +8486,7 @@ static struct
   },
   {
     IMG_MENU_BUTTON_TOUCH_NEXT2, IMG_MENU_BUTTON_TOUCH_NEXT2,
-    &menu.setup.button.touch_next2,
+    &menu.setup.button.touch_next2, NULL,
     SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2,
     SCREEN_MASK_TOUCH2,
     GD_EVENT_RELEASED,
@@ -8565,11 +8566,15 @@ static void CreateScreenMenubuttons(void)
   {
     struct MenuPosInfo *pos = menubutton_info[i].pos;
     boolean is_touch_button = menubutton_info[i].is_touch_button;
+    boolean is_check_button = menubutton_info[i].check_value != NULL;
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
     int gfx_unpressed, gfx_pressed;
     int x, y, width, height;
     int gd_x1, gd_x2, gd_y1, gd_y2;
+    int gd_x1a, gd_x2a, gd_y1a, gd_y2a;
     int id = menubutton_info[i].gadget_id;
+    int type = GD_TYPE_NORMAL_BUTTON;
+    boolean checked = FALSE;
 
     event_mask = menubutton_info[i].event_mask;
 
@@ -8587,11 +8592,26 @@ static void CreateScreenMenubuttons(void)
     gd_y1 = graphic_info[gfx_unpressed].src_y;
     gd_x2 = graphic_info[gfx_pressed].src_x;
     gd_y2 = graphic_info[gfx_pressed].src_y;
+    gd_x1a = gd_x1;
+    gd_y1a = gd_y1;
+    gd_x2a = gd_x2;
+    gd_y2a = gd_y2;
 
     if (is_touch_button)
     {
       gd_x2 += graphic_info[gfx_pressed].pressed_xoffset;
       gd_y2 += graphic_info[gfx_pressed].pressed_yoffset;
+    }
+
+    if (is_check_button)
+    {
+      gd_x1a += graphic_info[gfx_unpressed].active_xoffset;
+      gd_y1a += graphic_info[gfx_unpressed].active_yoffset;
+      gd_x2a += graphic_info[gfx_pressed].active_xoffset;
+      gd_y2a += graphic_info[gfx_pressed].active_yoffset;
+
+      type = GD_TYPE_CHECK_BUTTON;
+      checked = *menubutton_info[i].check_value;
     }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
@@ -8602,10 +8622,13 @@ static void CreateScreenMenubuttons(void)
 		      GDI_Y, y,
 		      GDI_WIDTH, width,
 		      GDI_HEIGHT, height,
-		      GDI_TYPE, GD_TYPE_NORMAL_BUTTON,
+		      GDI_TYPE, type,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
+		      GDI_CHECKED, checked,
 		      GDI_DESIGN_UNPRESSED, gd_bitmap_unpressed, gd_x1, gd_y1,
 		      GDI_DESIGN_PRESSED, gd_bitmap_pressed, gd_x2, gd_y2,
+                      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap_unpressed, gd_x1a, gd_y1a,
+                      GDI_ALT_DESIGN_PRESSED, gd_bitmap_pressed, gd_x2a, gd_y2a,
 		      GDI_DIRECT_DRAW, FALSE,
 		      GDI_OVERLAY_TOUCH_BUTTON, is_touch_button,
 		      GDI_EVENT_MASK, event_mask,
