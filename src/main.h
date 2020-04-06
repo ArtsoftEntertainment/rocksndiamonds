@@ -2681,6 +2681,8 @@ struct MenuMainButtonInfo
 
   struct MenuPosInfo insert_solution;
   struct MenuPosInfo play_solution;
+
+  struct MenuPosInfo switch_ecs_aga;
 };
 
 struct MenuMainTextInfo

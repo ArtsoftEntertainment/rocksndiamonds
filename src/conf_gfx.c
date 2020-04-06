@@ -6039,6 +6039,9 @@ struct ConfigInfo image_config[] =
   { "menu.button_play_solution",		UNDEFINED_FILENAME	},
   { "menu.button_play_solution.active",		UNDEFINED_FILENAME	},
 
+  { "menu.button_switch_ecs_aga",		UNDEFINED_FILENAME	},
+  { "menu.button_switch_ecs_aga.active",	UNDEFINED_FILENAME	},
+
   { "menu.button_touch_back",			"RocksTouch.png"	},
   { "menu.button_touch_back.x",			"210"			},
   { "menu.button_touch_back.y",			"180"			},
@@ -7964,6 +7967,9 @@ struct ConfigInfo image_config[] =
   { "main.button.insert_solution.y",		"-1"			},
   { "main.button.play_solution.x",		"-1"			},
   { "main.button.play_solution.y",		"-1"			},
+
+  { "main.button.switch_ecs_aga.x",		"-1"			},
+  { "main.button.switch_ecs_aga.y",		"-1"			},
 
   { "main.text.name.x",				"-1"			},
   { "main.text.name.y",				"-1"			},
