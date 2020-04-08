@@ -1146,6 +1146,11 @@ static boolean isClickedPart(struct GlobalAnimPartControlInfo *part,
   return TRUE;
 }
 
+static boolean clickBlocked(struct GlobalAnimPartControlInfo *part)
+{
+  return (part->control_info.style & STYLE_BLOCK ? TRUE : FALSE);
+}
+
 static boolean clickConsumed(struct GlobalAnimPartControlInfo *part)
 {
   return (part->control_info.style & STYLE_PASSTHROUGH ? FALSE : TRUE);
@@ -1873,6 +1878,9 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
 	    anything_clicked = part->clicked = TRUE;
 	    click_consumed |= clickConsumed(part);
 	  }
+
+	  // determine if mouse clicks should be blocked by this animation
+	  click_consumed |= clickBlocked(part);
 
 	  // check if this click is defined to trigger other animations
 	  InitGlobalAnim_Triggered(part, &click_consumed, &any_event_action,

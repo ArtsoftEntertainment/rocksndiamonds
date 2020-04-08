@@ -347,8 +347,9 @@
 #define STYLE_REVERSE		(1 << 2)
 
 // values for special event handling style (used for global animation)
-#define STYLE_PASSTHROUGH	(1 << 3)
-#define STYLE_MULTIPLE_ACTIONS	(1 << 4)
+#define STYLE_BLOCK		(1 << 3)
+#define STYLE_PASSTHROUGH	(1 << 4)
+#define STYLE_MULTIPLE_ACTIONS	(1 << 5)
 
 #define STYLE_DEFAULT		STYLE_NONE
 

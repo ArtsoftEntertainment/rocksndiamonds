@@ -10309,6 +10309,9 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
     if (string_has_parameter(value, "reverse"))
       result |= STYLE_REVERSE;
 
+    if (string_has_parameter(value, "block_clicks"))
+      result |= STYLE_BLOCK;
+
     if (string_has_parameter(value, "passthrough_clicks"))
       result |= STYLE_PASSTHROUGH;
 
