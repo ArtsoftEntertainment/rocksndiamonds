@@ -971,19 +971,13 @@ static void FadeExt(int fade_mask, int fade_mode, int fade_type)
     height = WIN_YSIZE;
   }
 
-  if (!setup.fade_screens ||
-      fade_delay == 0 ||
-      fading.fade_mode == FADE_MODE_NONE)
-  {
-    if (fade_mode == FADE_MODE_FADE_OUT)
-      return;
+  // when switching screens without fading, set fade delay to zero
+  if (!setup.fade_screens || fading.fade_mode == FADE_MODE_NONE)
+    fade_delay = 0;
 
-    BlitBitmap(backbuffer, window, x, y, width, height, x, y);
-
-    redraw_mask &= ~fade_mask;
-
+  // do not display black frame when fading out without fade delay
+  if (fade_mode == FADE_MODE_FADE_OUT && fade_delay == 0)
     return;
-  }
 
   FadeRectangle(x, y, width, height, fade_mode, fade_delay, post_delay,
 		draw_border_function);

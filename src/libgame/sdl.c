@@ -1033,6 +1033,17 @@ void SDLFadeRectangle(int x, int y, int width, int height,
 
   time_current = SDL_GetTicks();
 
+  if (fade_delay <= 0)
+  {
+    // immediately draw final target frame without delay
+    fade_mode &= (FADE_MODE_FADE | FADE_MODE_TRANSFORM);
+    fade_delay = 1;
+    time_current -= 1;
+
+    // when fading without delay, also skip post delay
+    post_delay = 0;
+  }
+
   if (fade_mode == FADE_MODE_MELT)
   {
     boolean done = FALSE;
