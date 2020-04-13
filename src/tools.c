@@ -993,8 +993,7 @@ static void SetScreenStates_BeforeFadingIn(void)
   global.anim_status = global.anim_status_next;
 
   // store backbuffer with all animations that will be started after fading in
-  if (fade_type_skip != FADE_MODE_SKIP_FADE_IN)
-    PrepareFadeBitmap(DRAW_TO_FADE_TARGET);
+  PrepareFadeBitmap(DRAW_TO_FADE_TARGET);
 
   // set screen mode for animations back to fading
   global.anim_status = GAME_MODE_PSEUDO_FADING;
@@ -1017,8 +1016,7 @@ static void SetScreenStates_BeforeFadingOut(void)
   global.anim_status = GAME_MODE_PSEUDO_FADING;
 
   // store backbuffer with all animations that will be stopped for fading out
-  if (fade_type_skip != FADE_MODE_SKIP_FADE_OUT)
-    PrepareFadeBitmap(DRAW_TO_FADE_SOURCE);
+  PrepareFadeBitmap(DRAW_TO_FADE_SOURCE);
 }
 
 static void SetScreenStates_AfterFadingOut(void)
