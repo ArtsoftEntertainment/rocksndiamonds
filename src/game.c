@@ -10160,6 +10160,9 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
 
 	if (CustomValue[x][y] == 0)
 	{
+	  // reset change counter (else CE_VALUE_GETS_ZERO would not work)
+	  ChangeCount[x][y] = 0;	// allow at least one more change
+
 	  CheckElementChange(x, y, element, EL_UNDEFINED, CE_VALUE_GETS_ZERO);
 	  CheckTriggeredElementChange(x, y, element, CE_VALUE_GETS_ZERO_OF_X);
 	}
@@ -10182,6 +10185,9 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
 	if (ei->collect_score == 0)
 	{
 	  int xx, yy;
+
+	  // reset change counter (else CE_SCORE_GETS_ZERO would not work)
+	  ChangeCount[x][y] = 0;	// allow at least one more change
 
 	  CheckElementChange(x, y, element, EL_UNDEFINED, CE_SCORE_GETS_ZERO);
 	  CheckTriggeredElementChange(x, y, element, CE_SCORE_GETS_ZERO_OF_X);
