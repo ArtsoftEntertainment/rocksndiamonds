@@ -9880,11 +9880,14 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
     // ---------- player actions  ---------------------------------------------
 
     case CA_MOVE_PLAYER:
+    case CA_MOVE_PLAYER_NEW:
     {
       // automatically move to the next field in specified direction
       for (i = 0; i < MAX_PLAYERS; i++)
 	if (trigger_player_bits & (1 << i))
-	  stored_player[i].programmed_action = action_arg_direction;
+	  if (action_type == CA_MOVE_PLAYER ||
+	      stored_player[i].MovPos == 0)
+	    stored_player[i].programmed_action = action_arg_direction;
 
       break;
     }
