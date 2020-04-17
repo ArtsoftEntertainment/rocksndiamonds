@@ -252,10 +252,17 @@
 #define CE_VALUE_CHANGES_OF_X		41
 #define CE_SCORE_CHANGES		42
 #define CE_SCORE_CHANGES_OF_X		43
+#define CE_CLICKED_BY_MOUSE		44
+#define CE_PRESSED_BY_MOUSE		45
+#define CE_MOUSE_CLICKED_ON_X		46
+#define CE_MOUSE_PRESSED_ON_X		47
 
-#define NUM_CHANGE_EVENTS		44
+#define NUM_CHANGE_EVENTS		48
 
 #define NUM_CE_BITFIELDS		((NUM_CHANGE_EVENTS + 31) / 32)
+
+#define CE_HEADLINE_SPECIAL_EVENTS	250
+#define CE_UNDEFINED			255
 
 #define CE_BITMASK_DEFAULT		0
 
@@ -3187,6 +3194,9 @@ struct LevelInfo
 
   // runtime flags to handle bugs in old levels (not stored in level file)
   boolean use_action_after_change_bug;
+
+  // runtime flags to indicate level properties (not stored in level file)
+  boolean has_mouse_events;
 };
 
 struct NetworkLevelInfo

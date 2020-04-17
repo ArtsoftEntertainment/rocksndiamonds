@@ -94,6 +94,25 @@ static int FilterEvents(const Event *event)
     ((MotionEvent *)event)->y -= video.screen_yoffset;
   }
 
+  if (event->type == EVENT_BUTTONPRESS ||
+      event->type == EVENT_BUTTONRELEASE ||
+      event->type == EVENT_MOTIONNOTIFY)
+  {
+    // do not reset mouse cursor before all pending events have been processed
+    if (gfx.cursor_mode == cursor_mode_last &&
+	((game_status == GAME_MODE_TITLE &&
+	  gfx.cursor_mode == CURSOR_NONE) ||
+	 (game_status == GAME_MODE_PLAYING &&
+	  gfx.cursor_mode == CURSOR_PLAYFIELD)))
+    {
+      SetMouseCursor(CURSOR_DEFAULT);
+
+      DelayReached(&special_cursor_delay, 0);
+
+      cursor_mode_last = CURSOR_DEFAULT;
+    }
+  }
+
   // non-motion events are directly passed to event handler functions
   if (event->type != EVENT_MOTIONNOTIFY)
     return 1;
@@ -110,20 +129,6 @@ static int FilterEvents(const Event *event)
   // but only accessible as integer, which may lead to rounding errors)
   gfx.mouse_x = motion->x;
   gfx.mouse_y = motion->y;
-
-  // do no reset mouse cursor before all pending events have been processed
-  if (gfx.cursor_mode == cursor_mode_last &&
-      ((game_status == GAME_MODE_TITLE &&
-	gfx.cursor_mode == CURSOR_NONE) ||
-       (game_status == GAME_MODE_PLAYING &&
-	gfx.cursor_mode == CURSOR_PLAYFIELD)))
-  {
-    SetMouseCursor(CURSOR_DEFAULT);
-
-    DelayReached(&special_cursor_delay, 0);
-
-    cursor_mode_last = CURSOR_DEFAULT;
-  }
 
   // skip mouse motion events without pressed button outside level editor
   if (button_status == MB_RELEASED &&
@@ -321,6 +326,10 @@ static void HandleMouseCursor(void)
 						tape.single_step))
   {
     // when playing, display a special mouse pointer inside the playfield
+
+    // display normal pointer if mouse pressed
+    if (button_status != MB_RELEASED)
+      DelayReached(&special_cursor_delay, 0);
 
     if (gfx.cursor_mode != CURSOR_PLAYFIELD &&
 	cursor_inside_playfield &&
@@ -1348,6 +1357,8 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
 
 static void HandleButtonOrFinger(int mx, int my, int button)
 {
+  boolean valid_mouse_event = (mx != -1 && my != -1 && button != -1);
+
   if (game_status != GAME_MODE_PLAYING)
     return;
 
@@ -1364,6 +1375,8 @@ static void HandleButtonOrFinger(int mx, int my, int button)
   {
     if (strEqual(setup.touch.control_type, TOUCH_CONTROL_FOLLOW_FINGER))
       HandleButtonOrFinger_FollowFinger(mx, my, button);
+    else if (level.has_mouse_events && valid_mouse_event)
+      SetPlayerMouseAction(mx, my, button);
   }
 }
 

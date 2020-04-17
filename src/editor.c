@@ -1965,6 +1965,10 @@ static struct ValueTextInfo options_change_direct_action[] =
 #endif
   { CE_VALUE_GETS_ZERO,		"CE value gets 0"		},
   { CE_SCORE_GETS_ZERO,		"CE score gets 0"		},
+  { CE_UNDEFINED,		" "				},
+  { CE_HEADLINE_SPECIAL_EVENTS,	"[mouse events]"		},
+  { CE_CLICKED_BY_MOUSE,	"clicked by mouse"		},
+  { CE_PRESSED_BY_MOUSE,	"pressed by mouse"		},
 
   { -1,				NULL				}
 };
@@ -1994,6 +1998,10 @@ static struct ValueTextInfo options_change_other_action[] =
   { CE_SCORE_CHANGES_OF_X,	"CE score changes of"		},
   { CE_VALUE_GETS_ZERO_OF_X,	"CE value gets 0 of"		},
   { CE_SCORE_GETS_ZERO_OF_X,	"CE score gets 0 of"		},
+  { CE_UNDEFINED,		" "				},
+  { CE_HEADLINE_SPECIAL_EVENTS,	"[mouse events]"		},
+  { CE_MOUSE_CLICKED_ON_X,	"mouse clicked on"		},
+  { CE_MOUSE_PRESSED_ON_X,	"mouse pressed on"		},
 
   { -1,				NULL				}
 };
@@ -8144,6 +8152,8 @@ static void CopyCustomElementPropertiesToEditor(int element)
      HAS_CHANGE_EVENT(element, CE_SCORE_CHANGES) ? CE_SCORE_CHANGES :
      HAS_CHANGE_EVENT(element, CE_VALUE_GETS_ZERO) ? CE_VALUE_GETS_ZERO :
      HAS_CHANGE_EVENT(element, CE_SCORE_GETS_ZERO) ? CE_SCORE_GETS_ZERO :
+     HAS_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ? CE_CLICKED_BY_MOUSE :
+     HAS_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE) ? CE_PRESSED_BY_MOUSE :
      custom_element_change.direct_action);
 
   // set "change by other element action" selectbox help value
@@ -8171,6 +8181,8 @@ static void CopyCustomElementPropertiesToEditor(int element)
      HAS_CHANGE_EVENT(element, CE_SCORE_CHANGES_OF_X) ? CE_SCORE_CHANGES_OF_X :
      HAS_CHANGE_EVENT(element, CE_VALUE_GETS_ZERO_OF_X) ? CE_VALUE_GETS_ZERO_OF_X :
      HAS_CHANGE_EVENT(element, CE_SCORE_GETS_ZERO_OF_X) ? CE_SCORE_GETS_ZERO_OF_X :
+     HAS_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X) ? CE_MOUSE_CLICKED_ON_X :
+     HAS_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X) ? CE_MOUSE_PRESSED_ON_X :
      custom_element_change.other_action);
 }
 
@@ -8302,6 +8314,8 @@ static void CopyCustomElementPropertiesToGame(int element)
   custom_element_change_events[CE_SCORE_CHANGES] = FALSE;
   custom_element_change_events[CE_VALUE_GETS_ZERO] = FALSE;
   custom_element_change_events[CE_SCORE_GETS_ZERO] = FALSE;
+  custom_element_change_events[CE_CLICKED_BY_MOUSE] = FALSE;
+  custom_element_change_events[CE_PRESSED_BY_MOUSE] = FALSE;
   custom_element_change_events[custom_element_change.direct_action] =
     custom_element_change_events[CE_BY_DIRECT_ACTION];
 
@@ -8329,6 +8343,8 @@ static void CopyCustomElementPropertiesToGame(int element)
   custom_element_change_events[CE_SCORE_CHANGES_OF_X] = FALSE;
   custom_element_change_events[CE_VALUE_GETS_ZERO_OF_X] = FALSE;
   custom_element_change_events[CE_SCORE_GETS_ZERO_OF_X] = FALSE;
+  custom_element_change_events[CE_MOUSE_CLICKED_ON_X] = FALSE;
+  custom_element_change_events[CE_MOUSE_PRESSED_ON_X] = FALSE;
   custom_element_change_events[custom_element_change.other_action] =
     custom_element_change_events[CE_BY_OTHER_ACTION];
 

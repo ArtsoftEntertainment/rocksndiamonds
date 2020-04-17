@@ -11687,6 +11687,8 @@ void GameActions_RND_Main(void)
 
 void GameActions_RND(void)
 {
+  static struct MouseActionInfo mouse_action_last = { 0 };
+  struct MouseActionInfo mouse_action = local_player->effective_mouse_action;
   int magic_wall_x = 0, magic_wall_y = 0;
   int i, x, y, element, graphic, last_gfx_frame;
 
@@ -11871,6 +11873,24 @@ void GameActions_RND(void)
       }
     }
 #endif
+  }
+
+  if (mouse_action.button)
+  {
+    int new_button = (mouse_action.button && mouse_action_last.button == 0);
+
+    x = local_player->mouse_action.lx;
+    y = local_player->mouse_action.ly;
+    element = Feld[x][y];
+
+    if (new_button)
+    {
+      CheckElementChange(x, y, element, EL_UNDEFINED, CE_CLICKED_BY_MOUSE);
+      CheckTriggeredElementChange(x, y, element, CE_MOUSE_CLICKED_ON_X);
+    }
+
+    CheckElementChange(x, y, element, EL_UNDEFINED, CE_PRESSED_BY_MOUSE);
+    CheckTriggeredElementChange(x, y, element, CE_MOUSE_PRESSED_ON_X);
   }
 
   SCAN_PLAYFIELD(x, y)
@@ -12214,6 +12234,8 @@ void GameActions_RND(void)
   // use random number generator in every frame to make it less predictable
   if (game.engine_version >= VERSION_IDENT(3,1,1,0))
     RND(1);
+
+  mouse_action_last = mouse_action;
 }
 
 static boolean AllPlayersInSight(struct PlayerInfo *player, int x, int y)

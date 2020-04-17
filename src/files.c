@@ -1733,6 +1733,9 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
   // set all bug compatibility flags to "false" => do not emulate this bug
   level->use_action_after_change_bug = FALSE;
 
+  // other flags that may be set due to certain level properties
+  level->has_mouse_events = FALSE;
+
   if (leveldir_current)
   {
     // try to determine better author name than 'anonymous'
@@ -6560,6 +6563,18 @@ static void LoadLevel_InitCustomElements(struct LevelInfo *level)
       element_info[element].explosion_delay = 17;
       element_info[element].ignition_delay = 8;
     }
+  }
+
+  // check for custom elements which have mouse click events defined
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    int element = EL_CUSTOM_START + i;
+
+    if (HAS_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ||
+	HAS_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE) ||
+	HAS_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X) ||
+	HAS_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X))
+      level->has_mouse_events = TRUE;
   }
 }
 
