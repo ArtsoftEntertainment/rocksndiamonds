@@ -1375,7 +1375,7 @@ static void HandleButtonOrFinger(int mx, int my, int button)
   {
     if (strEqual(setup.touch.control_type, TOUCH_CONTROL_FOLLOW_FINGER))
       HandleButtonOrFinger_FollowFinger(mx, my, button);
-    else if (level.has_mouse_events && valid_mouse_event)
+    else if (game.use_mouse_events && valid_mouse_event)
       SetPlayerMouseAction(mx, my, button);
   }
 }

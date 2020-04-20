@@ -3279,6 +3279,23 @@ static void InitGameEngine(void)
   // Supaplex levels with time limit currently unsupported -- should be added
   if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
     level.time = 0;
+
+  // ----------initialize flag for handling mouse events ---------------------
+
+  // set flag to default value: do not handle mouse events
+  game.use_mouse_events = FALSE;
+
+  // now check for custom elements which have mouse click events defined
+  for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+  {
+    int element = EL_CUSTOM_START + i;
+
+    if (HAS_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ||
+	HAS_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE) ||
+	HAS_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X) ||
+	HAS_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X))
+      game.use_mouse_events = TRUE;
+  }
 }
 
 static int get_num_special_action(int element, int action_first,

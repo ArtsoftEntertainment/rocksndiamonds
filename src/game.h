@@ -178,6 +178,9 @@ struct GameInfo
   boolean max_num_changes_per_frame;
   boolean use_reverse_scan_direction;
 
+  // flag to indicate if mouse events are processed by game engine
+  boolean use_mouse_events;
+
   // variable within running game
   int yamyam_content_nr;
   boolean robot_wheel_active;

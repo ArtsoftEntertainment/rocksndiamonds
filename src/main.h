@@ -3195,9 +3195,6 @@ struct LevelInfo
 
   // runtime flags to handle bugs in old levels (not stored in level file)
   boolean use_action_after_change_bug;
-
-  // runtime flags to indicate level properties (not stored in level file)
-  boolean has_mouse_events;
 };
 
 struct NetworkLevelInfo
