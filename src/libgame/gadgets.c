@@ -1479,6 +1479,10 @@ static void MapGadgetExt(struct GadgetInfo *gi, boolean redraw)
   if (gi == NULL || gi->deactivated || gi->mapped)
     return;
 
+  // do not map overlay touch buttons if touch screen is not used
+  if (gi->overlay_touch_button && !runtime.uses_touch_device)
+    return;
+
   gi->mapped = TRUE;
 
   if (redraw)
