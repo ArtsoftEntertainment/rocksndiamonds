@@ -8105,7 +8105,6 @@ void SaveTape(int nr)
 {
   char *filename = getTapeFilename(nr);
   FILE *file;
-  int num_participating_players = 0;
   int tape_pos_size;
   int info_chunk_size;
   int body_chunk_size;
@@ -8122,12 +8121,14 @@ void SaveTape(int nr)
   tape.file_version = FILE_VERSION_ACTUAL;
   tape.game_version = GAME_VERSION_ACTUAL;
 
+  tape.num_participating_players = 0;
+
   // count number of participating players
   for (i = 0; i < MAX_PLAYERS; i++)
     if (tape.player_participates[i])
-      num_participating_players++;
+      tape.num_participating_players++;
 
-  tape_pos_size = (tape.use_mouse ? 3 : num_participating_players) + 1;
+  tape_pos_size = (tape.use_mouse ? 3 : tape.num_participating_players) + 1;
 
   info_chunk_size = 2 + (strlen(tape.level_identifier) + 1) + 2;
   body_chunk_size = tape_pos_size * tape.length;
