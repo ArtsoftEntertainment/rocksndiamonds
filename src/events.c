@@ -2098,42 +2098,45 @@ void HandleKey(Key key, int key_status)
       if (stored_player[pnr].snap_action)
 	stored_player[pnr].action |= JOY_BUTTON_SNAP;
 
-      if (tape.single_step && tape.recording && tape.pausing && !tape.use_mouse)
+      if (tape.recording && tape.pausing && !tape.use_mouse)
       {
-	if (key_status == KEY_PRESSED && key_action & KEY_MOTION)
+	if (tape.single_step)
 	{
-	  TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
-
-	  // if snap key already pressed, keep pause mode when releasing
-	  if (stored_player[pnr].action & KEY_BUTTON_SNAP)
-	    has_snapped[pnr] = TRUE;
-	}
-	else if (key_status == KEY_PRESSED && key_action & KEY_BUTTON_DROP)
-	{
-	  TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
-
-	  if (level.game_engine_type == GAME_ENGINE_TYPE_SP &&
-	      getRedDiskReleaseFlag_SP() == 0)
+	  if (key_status == KEY_PRESSED && key_action & KEY_MOTION)
 	  {
-	    // add a single inactive frame before dropping starts
-	    stored_player[pnr].action &= ~KEY_BUTTON_DROP;
-	    stored_player[pnr].force_dropping = TRUE;
-	  }
-	}
-	else if (key_status == KEY_RELEASED && key_action & KEY_BUTTON_SNAP)
-	{
-	  // if snap key was pressed without direction, leave pause mode
-	  if (!has_snapped[pnr])
 	    TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
 
-	  has_snapped[pnr] = FALSE;
+	    // if snap key already pressed, keep pause mode when releasing
+	    if (stored_player[pnr].action & KEY_BUTTON_SNAP)
+	      has_snapped[pnr] = TRUE;
+	  }
+	  else if (key_status == KEY_PRESSED && key_action & KEY_BUTTON_DROP)
+	  {
+	    TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+
+	    if (level.game_engine_type == GAME_ENGINE_TYPE_SP &&
+		getRedDiskReleaseFlag_SP() == 0)
+	    {
+	      // add a single inactive frame before dropping starts
+	      stored_player[pnr].action &= ~KEY_BUTTON_DROP;
+	      stored_player[pnr].force_dropping = TRUE;
+	    }
+	  }
+	  else if (key_status == KEY_RELEASED && key_action & KEY_BUTTON_SNAP)
+	  {
+	    // if snap key was pressed without direction, leave pause mode
+	    if (!has_snapped[pnr])
+	      TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+
+	    has_snapped[pnr] = FALSE;
+	  }
 	}
-      }
-      else if (tape.recording && tape.pausing && !tape.use_mouse)
-      {
-	// prevent key release events from un-pausing a paused game
-	if (key_status == KEY_PRESSED && key_action & KEY_ACTION)
-	  TapeTogglePause(TAPE_TOGGLE_MANUAL);
+	else
+	{
+	  // prevent key release events from un-pausing a paused game
+	  if (key_status == KEY_PRESSED && key_action & KEY_ACTION)
+	    TapeTogglePause(TAPE_TOGGLE_MANUAL);
+	}
       }
 
       // for MM style levels, handle in-game keyboard input in HandleJoystick()
@@ -2630,15 +2633,18 @@ void HandleJoystick(void)
 	return;
       }
 
-      if (tape.single_step && tape.recording && tape.pausing && !tape.use_mouse)
+      if (tape.recording && tape.pausing && !tape.use_mouse)
       {
-	if (joystick & JOY_ACTION)
-	  TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
-      }
-      else if (tape.recording && tape.pausing && !tape.use_mouse)
-      {
-	if (joystick & JOY_ACTION)
-	  TapeTogglePause(TAPE_TOGGLE_MANUAL);
+	if (tape.single_step)
+	{
+	  if (joystick & JOY_ACTION)
+	    TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+	}
+	else
+	{
+	  if (joystick & JOY_ACTION)
+	    TapeTogglePause(TAPE_TOGGLE_MANUAL);
+	}
       }
 
       if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
