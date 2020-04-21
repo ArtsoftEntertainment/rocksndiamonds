@@ -3986,7 +3986,7 @@ static void CopyNativeTape_SP_to_RND(struct LevelInfo *level)
     int demo_repeat = (demo->data[i] & 0xf0) >> 4;
     int tape_action = map_key_SP_to_RND(demo_action);
     int tape_repeat = demo_repeat + 1;
-    byte action[MAX_PLAYERS] = { tape_action, 0, 0, 0 };
+    byte action[MAX_TAPE_ACTIONS] = { tape_action };
     boolean success = 0;
     int j;
 

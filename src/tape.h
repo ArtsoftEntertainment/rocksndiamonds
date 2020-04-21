@@ -27,6 +27,8 @@
 #define TAPE_ACTION_BUTTON	2
 #define TAPE_ACTION_UNUSED	3
 
+#define MAX_TAPE_ACTIONS	4
+
 // some positions in the video tape control window
 #define VIDEO_DISPLAY1_XPOS	5
 #define VIDEO_DISPLAY1_YPOS	5
@@ -194,7 +196,7 @@ struct TapeInfo
 
   struct
   {
-    byte action[MAX_PLAYERS];
+    byte action[MAX_TAPE_ACTIONS];
     byte delay;
   } pos[MAX_TAPE_LEN];
 

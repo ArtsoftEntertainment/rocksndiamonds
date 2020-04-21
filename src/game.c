@@ -11374,7 +11374,7 @@ static void GameActionsExt(void)
   unsigned int game_frame_delay_value;
   byte *recorded_player_action;
   byte summarized_player_action = 0;
-  byte tape_action[MAX_PLAYERS];
+  byte tape_action[MAX_TAPE_ACTIONS] = { 0 };
   int i;
 
   // detect endless loops, caused by custom element programming

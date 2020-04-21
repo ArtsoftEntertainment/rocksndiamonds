@@ -660,7 +660,7 @@ void TapeStopRecording(void)
   MapTapeEjectButton();
 }
 
-boolean TapeAddAction(byte action[MAX_PLAYERS])
+boolean TapeAddAction(byte action[MAX_TAPE_ACTIONS])
 {
   int i;
 
@@ -668,7 +668,7 @@ boolean TapeAddAction(byte action[MAX_PLAYERS])
   {
     boolean changed_events = FALSE;
 
-    for (i = 0; i < MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_TAPE_ACTIONS; i++)
       if (tape.pos[tape.counter].action[i] != action[i])
 	changed_events = TRUE;
 
@@ -686,7 +686,7 @@ boolean TapeAddAction(byte action[MAX_PLAYERS])
 
   if (tape.pos[tape.counter].delay == 0)	// store new action
   {
-    for (i = 0; i < MAX_PLAYERS; i++)
+    for (i = 0; i < MAX_TAPE_ACTIONS; i++)
       tape.pos[tape.counter].action[i] = action[i];
 
     tape.pos[tape.counter].delay++;
@@ -695,15 +695,15 @@ boolean TapeAddAction(byte action[MAX_PLAYERS])
   return TRUE;
 }
 
-void TapeRecordAction(byte action_raw[MAX_PLAYERS])
+void TapeRecordAction(byte action_raw[MAX_TAPE_ACTIONS])
 {
-  byte action[MAX_PLAYERS];
+  byte action[MAX_TAPE_ACTIONS];
   int i;
 
   if (!tape.recording)		// (record action even when tape is paused)
     return;
 
-  for (i = 0; i < MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_TAPE_ACTIONS; i++)
     action[i] = action_raw[i];
 
   if (!tape.use_mouse && tape.set_centered_player)
@@ -825,7 +825,7 @@ byte *TapePlayAction(void)
   int update_delay = FRAMES_PER_SECOND / 2;
   boolean update_video_display = (FrameCounter % update_delay == 0);
   boolean update_draw_label_on = ((FrameCounter / update_delay) % 2 == 1);
-  static byte action[MAX_PLAYERS];
+  static byte action[MAX_TAPE_ACTIONS];
   int i;
 
   if (!tape.playing || tape.pausing)
@@ -874,12 +874,12 @@ byte *TapePlayAction(void)
     DrawVideoDisplaySymbol(state);
   }
 
-  for (i = 0; i < MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_TAPE_ACTIONS; i++)
     action[i] = tape.pos[tape.counter].action[i];
 
 #if DEBUG_TAPE_WHEN_PLAYING
   printf("%05d", FrameCounter);
-  for (i = 0; i < MAX_PLAYERS; i++)
+  for (i = 0; i < MAX_TAPE_ACTIONS; i++)
     printf("   %08x", action[i]);
   printf("\n");
 #endif
