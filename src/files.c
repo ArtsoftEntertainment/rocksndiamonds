@@ -7723,7 +7723,7 @@ static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
 
       // tape too large; read and ignore remaining tape data from this chunk
       for (;i < tape->length; i++)
-	ReadUnusedBytesFromFile(file, tape->num_participating_players + 1);
+	ReadUnusedBytesFromFile(file, tape_pos_size);
 
       break;
     }
