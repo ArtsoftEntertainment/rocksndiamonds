@@ -3300,7 +3300,7 @@ static void InitGameEngine(void)
 	  HAS_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE) ||
 	  HAS_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X) ||
 	  HAS_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X))
-	game.event_mask = GAME_EVENTS_MOUSE;
+	game.event_mask = GAME_EVENTS_KEYS | GAME_EVENTS_MOUSE;
     }
   }
 }
@@ -11176,7 +11176,7 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
 static void SetMouseActionFromTapeAction(struct MouseActionInfo *mouse_action,
 					 byte *tape_action)
 {
-  if (tape.event_mask != GAME_EVENTS_MOUSE)
+  if (!(tape.event_mask & GAME_EVENTS_MOUSE))
     return;
 
   mouse_action->lx     = tape_action[TAPE_ACTION_LX];
@@ -11187,7 +11187,7 @@ static void SetMouseActionFromTapeAction(struct MouseActionInfo *mouse_action,
 static void SetTapeActionFromMouseAction(byte *tape_action,
 					 struct MouseActionInfo *mouse_action)
 {
-  if (tape.event_mask != GAME_EVENTS_MOUSE)
+  if (!(tape.event_mask & GAME_EVENTS_MOUSE))
     return;
 
   tape_action[TAPE_ACTION_LX]     = mouse_action->lx;
@@ -11910,8 +11910,8 @@ void GameActions_RND(void)
   {
     int new_button = (mouse_action.button && mouse_action_last.button == 0);
 
-    x = local_player->mouse_action.lx;
-    y = local_player->mouse_action.ly;
+    x = mouse_action.lx;
+    y = mouse_action.ly;
     element = Feld[x][y];
 
     if (new_button)

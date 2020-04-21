@@ -22,12 +22,11 @@
 #define MAX_TAPE_LEN		(1000 * FRAMES_PER_SECOND) // max.time x fps
 
 // values for tape mouse actions
-#define TAPE_ACTION_LX		0
-#define TAPE_ACTION_LY		1
-#define TAPE_ACTION_BUTTON	2
-#define TAPE_ACTION_UNUSED	3
+#define TAPE_ACTION_LX		(MAX_PLAYERS + 0)
+#define TAPE_ACTION_LY		(MAX_PLAYERS + 1)
+#define TAPE_ACTION_BUTTON	(MAX_PLAYERS + 2)
 
-#define MAX_TAPE_ACTIONS	4
+#define MAX_TAPE_ACTIONS	(MAX_PLAYERS + 3)
 
 // values for tape action events stored in tape file
 #define TAPE_EVENTS_KEYS_ONLY		0

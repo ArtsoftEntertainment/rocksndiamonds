@@ -7623,9 +7623,10 @@ static int getTapePosSize(struct TapeInfo *tape)
 {
   int tape_pos_size = 0;
 
-  if (tape->event_mask == GAME_EVENTS_KEYS)
+  if (tape->event_mask & GAME_EVENTS_KEYS)
     tape_pos_size += tape->num_participating_players;
-  else
+
+  if (tape->event_mask & GAME_EVENTS_MOUSE)
     tape_pos_size += 3;		// x and y position and mouse button mask
 
   tape_pos_size += 1;		// tape action delay value
@@ -7764,15 +7765,7 @@ static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
       break;
     }
 
-    if (tape->event_mask == GAME_EVENTS_MOUSE)
-    {
-      tape->pos[i].action[TAPE_ACTION_LX]     = getFile8Bit(file);
-      tape->pos[i].action[TAPE_ACTION_LY]     = getFile8Bit(file);
-      tape->pos[i].action[TAPE_ACTION_BUTTON] = getFile8Bit(file);
-
-      tape->pos[i].action[TAPE_ACTION_UNUSED] = 0;
-    }
-    else
+    if (tape->event_mask & GAME_EVENTS_KEYS)
     {
       for (j = 0; j < MAX_PLAYERS; j++)
       {
@@ -7781,6 +7774,13 @@ static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
 	if (tape->player_participates[j])
 	  tape->pos[i].action[j] = getFile8Bit(file);
       }
+    }
+
+    if (tape->event_mask & GAME_EVENTS_MOUSE)
+    {
+      tape->pos[i].action[TAPE_ACTION_LX]     = getFile8Bit(file);
+      tape->pos[i].action[TAPE_ACTION_LY]     = getFile8Bit(file);
+      tape->pos[i].action[TAPE_ACTION_BUTTON] = getFile8Bit(file);
     }
 
     tape->pos[i].delay = getFile8Bit(file);
@@ -8133,17 +8133,18 @@ static void SaveTape_BODY(FILE *file, struct TapeInfo *tape)
 
   for (i = 0; i < tape->length; i++)
   {
-    if (tape->event_mask == GAME_EVENTS_MOUSE)
-    {
-      putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_LX]);
-      putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_LY]);
-      putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_BUTTON]);
-    }
-    else
+    if (tape->event_mask & GAME_EVENTS_KEYS)
     {
       for (j = 0; j < MAX_PLAYERS; j++)
 	if (tape->player_participates[j])
 	  putFile8Bit(file, tape->pos[i].action[j]);
+    }
+
+    if (tape->event_mask & GAME_EVENTS_MOUSE)
+    {
+      putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_LX]);
+      putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_LY]);
+      putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_BUTTON]);
     }
 
     putFile8Bit(file, tape->pos[i].delay);

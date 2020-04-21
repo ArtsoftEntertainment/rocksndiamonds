@@ -706,7 +706,7 @@ void TapeRecordAction(byte action_raw[MAX_TAPE_ACTIONS])
   for (i = 0; i < MAX_TAPE_ACTIONS; i++)
     action[i] = action_raw[i];
 
-  if (tape.event_mask == GAME_EVENTS_KEYS && tape.set_centered_player)
+  if ((tape.event_mask & GAME_EVENTS_KEYS) && tape.set_centered_player)
   {
     for (i = 0; i < MAX_PLAYERS; i++)
       if (tape.centered_player_nr_next == i ||
@@ -887,7 +887,7 @@ byte *TapePlayAction(void)
   tape.set_centered_player = FALSE;
   tape.centered_player_nr_next = -999;
 
-  if (tape.event_mask == GAME_EVENTS_KEYS)
+  if (tape.event_mask & GAME_EVENTS_KEYS)
   {
     for (i = 0; i < MAX_PLAYERS; i++)
     {
