@@ -29,6 +29,13 @@
 
 #define MAX_TAPE_ACTIONS	4
 
+// values for tape action events stored in tape file
+#define TAPE_EVENTS_KEYS_ONLY		0
+#define TAPE_EVENTS_MOUSE_ONLY		1
+#define TAPE_EVENTS_KEYS_AND_MOUSE	2
+
+#define TAPE_EVENTS_DEFAULT		TAPE_EVENTS_KEYS_ONLY
+
 // some positions in the video tape control window
 #define VIDEO_DISPLAY1_XPOS	5
 #define VIDEO_DISPLAY1_YPOS	5
@@ -192,7 +199,7 @@ struct TapeInfo
   int centered_player_nr_next;
   boolean set_centered_player;
 
-  boolean use_mouse;
+  int event_mask;	// game action events stored in tape actions
 
   struct
   {

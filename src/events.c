@@ -464,7 +464,7 @@ static void SetPlayerMouseAction(int mx, int my, int button)
   local_player->mouse_action.ly = ly;
   local_player->mouse_action.button = button;
 
-  if (tape.recording && tape.pausing && tape.use_mouse)
+  if (tape.recording && tape.pausing && tape.event_mask == GAME_EVENTS_MOUSE)
   {
     // un-pause a paused game only if mouse button was newly pressed down
     if (new_button)
@@ -1375,7 +1375,7 @@ static void HandleButtonOrFinger(int mx, int my, int button)
   {
     if (strEqual(setup.touch.control_type, TOUCH_CONTROL_FOLLOW_FINGER))
       HandleButtonOrFinger_FollowFinger(mx, my, button);
-    else if (game.use_mouse_events && valid_mouse_event)
+    else if (game.event_mask == GAME_EVENTS_MOUSE && valid_mouse_event)
       SetPlayerMouseAction(mx, my, button);
   }
 }
@@ -2098,7 +2098,7 @@ void HandleKey(Key key, int key_status)
       if (stored_player[pnr].snap_action)
 	stored_player[pnr].action |= JOY_BUTTON_SNAP;
 
-      if (tape.recording && tape.pausing && !tape.use_mouse)
+      if (tape.recording && tape.pausing && tape.event_mask == GAME_EVENTS_KEYS)
       {
 	if (tape.single_step)
 	{
@@ -2633,7 +2633,7 @@ void HandleJoystick(void)
 	return;
       }
 
-      if (tape.recording && tape.pausing && !tape.use_mouse)
+      if (tape.recording && tape.pausing && tape.event_mask == GAME_EVENTS_KEYS)
       {
 	if (tape.single_step)
 	{

@@ -7623,7 +7623,7 @@ static int getTapePosSize(struct TapeInfo *tape)
 {
   int tape_pos_size = 0;
 
-  if (!tape->use_mouse)
+  if (tape->event_mask == GAME_EVENTS_KEYS)
     tape_pos_size += tape->num_participating_players;
   else
     tape_pos_size += 3;		// x and y position and mouse button mask
@@ -7631,6 +7631,42 @@ static int getTapePosSize(struct TapeInfo *tape)
   tape_pos_size += 1;		// tape action delay value
 
   return tape_pos_size;
+}
+
+static int getGameEventMaskFromTapeEventValue(int value)
+{
+  switch (value)
+  {
+    case TAPE_EVENTS_KEYS_ONLY:
+      return GAME_EVENTS_KEYS;
+
+    case TAPE_EVENTS_MOUSE_ONLY:
+      return GAME_EVENTS_MOUSE;
+
+    case TAPE_EVENTS_KEYS_AND_MOUSE:
+      return GAME_EVENTS_KEYS | GAME_EVENTS_MOUSE;
+
+    default:
+      return GAME_EVENTS_DEFAULT;
+  }
+}
+
+static int getTapeEventValueFromGameEventMask(int mask)
+{
+  switch (mask)
+  {
+    case GAME_EVENTS_KEYS:
+      return TAPE_EVENTS_KEYS_ONLY;
+
+    case GAME_EVENTS_MOUSE:
+      return TAPE_EVENTS_MOUSE_ONLY;
+
+    case GAME_EVENTS_KEYS | GAME_EVENTS_MOUSE:
+      return TAPE_EVENTS_KEYS_AND_MOUSE;
+
+    default:
+      return TAPE_EVENTS_DEFAULT;
+  }
 }
 
 static int LoadTape_VERS(File *file, int chunk_size, struct TapeInfo *tape)
@@ -7668,7 +7704,7 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
       }
     }
 
-    tape->use_mouse = (getFile8Bit(file) == 1 ? TRUE : FALSE);
+    tape->event_mask = getGameEventMaskFromTapeEventValue(getFile8Bit(file));
 
     ReadUnusedBytesFromFile(file, TAPE_CHUNK_HEAD_UNUSED);
 
@@ -7728,7 +7764,7 @@ static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
       break;
     }
 
-    if (tape->use_mouse)
+    if (tape->event_mask == GAME_EVENTS_MOUSE)
     {
       tape->pos[i].action[TAPE_ACTION_LX]     = getFile8Bit(file);
       tape->pos[i].action[TAPE_ACTION_LY]     = getFile8Bit(file);
@@ -8070,7 +8106,7 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
 
   putFile8Bit(file, store_participating_players);
 
-  putFile8Bit(file, (tape->use_mouse ? 1 : 0));
+  putFile8Bit(file, getTapeEventValueFromGameEventMask(tape->event_mask));
 
   // unused bytes not at the end here for 4-byte alignment of engine_version
   WriteUnusedBytesToFile(file, TAPE_CHUNK_HEAD_UNUSED);
@@ -8097,7 +8133,7 @@ static void SaveTape_BODY(FILE *file, struct TapeInfo *tape)
 
   for (i = 0; i < tape->length; i++)
   {
-    if (tape->use_mouse)
+    if (tape->event_mask == GAME_EVENTS_MOUSE)
     {
       putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_LX]);
       putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_LY]);
