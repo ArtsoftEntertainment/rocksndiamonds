@@ -7619,6 +7619,20 @@ static void setTapeInfoToDefaults(void)
   tape.no_valid_file = FALSE;
 }
 
+static int getTapePosSize(struct TapeInfo *tape)
+{
+  int tape_pos_size = 0;
+
+  if (!tape->use_mouse)
+    tape_pos_size += tape->num_participating_players;
+  else
+    tape_pos_size += 3;		// x and y position and mouse button mask
+
+  tape_pos_size += 1;		// tape action delay value
+
+  return tape_pos_size;
+}
+
 static int LoadTape_VERS(File *file, int chunk_size, struct TapeInfo *tape)
 {
   tape->file_version = getFileVersion(file);
@@ -7691,8 +7705,7 @@ static int LoadTape_INFO(File *file, int chunk_size, struct TapeInfo *tape)
 static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
 {
   int i, j;
-  int tape_pos_size =
-    (tape->use_mouse ? 3 : tape->num_participating_players) + 1;
+  int tape_pos_size = getTapePosSize(tape);
   int chunk_size_expected = tape_pos_size * tape->length;
 
   if (chunk_size_expected != chunk_size)
@@ -8128,7 +8141,7 @@ void SaveTape(int nr)
     if (tape.player_participates[i])
       tape.num_participating_players++;
 
-  tape_pos_size = (tape.use_mouse ? 3 : tape.num_participating_players) + 1;
+  tape_pos_size = getTapePosSize(&tape);
 
   info_chunk_size = 2 + (strlen(tape.level_identifier) + 1) + 2;
   body_chunk_size = tape_pos_size * tape.length;
