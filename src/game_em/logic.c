@@ -13,7 +13,7 @@
 #define ACID_PLAYER	/* player gets killed by acid, but without explosion */
 
 #define RANDOM_RAW	(seed = seed << 31 | seed >> 1)
-#define RANDOM(x)	(RANDOM_RAW & (x - 1))
+#define RANDOM(x)	(RANDOM_RAW % x)
 
 static short **cave, **next, **boom;
 static unsigned int seed;
@@ -151,7 +151,7 @@ static void Lboom_eater(int x, int y)
   boom[x][y+1]   = lev.eater_array[lev.eater_pos][7];
   boom[x+1][y+1] = lev.eater_array[lev.eater_pos][8];
 
-  lev.eater_pos = (lev.eater_pos + 1) & 7;
+  lev.eater_pos = (lev.eater_pos + 1) % 8;
 
 #if PLAY_ELEMENT_SOUND
   play_element_sound(x, y, SOUND_boom, Xeater_n);
