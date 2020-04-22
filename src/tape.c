@@ -547,7 +547,9 @@ void TapeErase(void)
   tape.centered_player_nr_next = -1;
   tape.set_centered_player = FALSE;
 
-  tape.event_mask = GAME_EVENTS_DEFAULT;
+  // set flags for game actions to default values (may be overwritten later)
+  tape.use_key_actions = TRUE;
+  tape.use_mouse_actions = FALSE;
 }
 
 static void TapeRewind(void)
@@ -706,7 +708,7 @@ void TapeRecordAction(byte action_raw[MAX_TAPE_ACTIONS])
   for (i = 0; i < MAX_TAPE_ACTIONS; i++)
     action[i] = action_raw[i];
 
-  if ((tape.event_mask & GAME_EVENTS_KEYS) && tape.set_centered_player)
+  if (tape.use_key_actions && tape.set_centered_player)
   {
     for (i = 0; i < MAX_PLAYERS; i++)
       if (tape.centered_player_nr_next == i ||
@@ -887,7 +889,7 @@ byte *TapePlayAction(void)
   tape.set_centered_player = FALSE;
   tape.centered_player_nr_next = -999;
 
-  if (tape.event_mask & GAME_EVENTS_KEYS)
+  if (tape.use_key_actions)
   {
     for (i = 0; i < MAX_PLAYERS; i++)
     {

@@ -7623,10 +7623,10 @@ static int getTapePosSize(struct TapeInfo *tape)
 {
   int tape_pos_size = 0;
 
-  if (tape->event_mask & GAME_EVENTS_KEYS)
+  if (tape->use_key_actions)
     tape_pos_size += tape->num_participating_players;
 
-  if (tape->event_mask & GAME_EVENTS_MOUSE)
+  if (tape->use_mouse_actions)
     tape_pos_size += 3;		// x and y position and mouse button mask
 
   tape_pos_size += 1;		// tape action delay value
@@ -7634,40 +7634,25 @@ static int getTapePosSize(struct TapeInfo *tape)
   return tape_pos_size;
 }
 
-static int getGameEventMaskFromTapeEventValue(int value)
+static void setTapeActionFlags(struct TapeInfo *tape, int value)
 {
-  switch (value)
-  {
-    case TAPE_EVENTS_KEYS_ONLY:
-      return GAME_EVENTS_KEYS;
+  tape->use_key_actions = FALSE;
+  tape->use_mouse_actions = FALSE;
 
-    case TAPE_EVENTS_MOUSE_ONLY:
-      return GAME_EVENTS_MOUSE;
+  if (value != TAPE_USE_MOUSE_ACTIONS_ONLY)
+    tape->use_key_actions = TRUE;
 
-    case TAPE_EVENTS_KEYS_AND_MOUSE:
-      return GAME_EVENTS_KEYS | GAME_EVENTS_MOUSE;
-
-    default:
-      return GAME_EVENTS_DEFAULT;
-  }
+  if (value != TAPE_USE_KEY_ACTIONS_ONLY)
+    tape->use_mouse_actions = TRUE;
 }
 
-static int getTapeEventValueFromGameEventMask(int mask)
+static int getTapeActionValue(struct TapeInfo *tape)
 {
-  switch (mask)
-  {
-    case GAME_EVENTS_KEYS:
-      return TAPE_EVENTS_KEYS_ONLY;
-
-    case GAME_EVENTS_MOUSE:
-      return TAPE_EVENTS_MOUSE_ONLY;
-
-    case GAME_EVENTS_KEYS | GAME_EVENTS_MOUSE:
-      return TAPE_EVENTS_KEYS_AND_MOUSE;
-
-    default:
-      return TAPE_EVENTS_DEFAULT;
-  }
+  return (tape->use_key_actions &&
+	  tape->use_mouse_actions ? TAPE_USE_KEY_AND_MOUSE_ACTIONS :
+	  tape->use_key_actions   ? TAPE_USE_KEY_ACTIONS_ONLY :
+	  tape->use_mouse_actions ? TAPE_USE_MOUSE_ACTIONS_ONLY :
+	  TAPE_ACTIONS_DEFAULT);
 }
 
 static int LoadTape_VERS(File *file, int chunk_size, struct TapeInfo *tape)
@@ -7705,7 +7690,7 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
       }
     }
 
-    tape->event_mask = getGameEventMaskFromTapeEventValue(getFile8Bit(file));
+    setTapeActionFlags(tape, getFile8Bit(file));
 
     ReadUnusedBytesFromFile(file, TAPE_CHUNK_HEAD_UNUSED);
 
@@ -7765,7 +7750,7 @@ static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
       break;
     }
 
-    if (tape->event_mask & GAME_EVENTS_KEYS)
+    if (tape->use_key_actions)
     {
       for (j = 0; j < MAX_PLAYERS; j++)
       {
@@ -7776,7 +7761,7 @@ static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
       }
     }
 
-    if (tape->event_mask & GAME_EVENTS_MOUSE)
+    if (tape->use_mouse_actions)
     {
       tape->pos[i].action[TAPE_ACTION_LX]     = getFile8Bit(file);
       tape->pos[i].action[TAPE_ACTION_LY]     = getFile8Bit(file);
@@ -8106,7 +8091,7 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
 
   putFile8Bit(file, store_participating_players);
 
-  putFile8Bit(file, getTapeEventValueFromGameEventMask(tape->event_mask));
+  putFile8Bit(file, getTapeActionValue(tape));
 
   // unused bytes not at the end here for 4-byte alignment of engine_version
   WriteUnusedBytesToFile(file, TAPE_CHUNK_HEAD_UNUSED);
@@ -8133,14 +8118,14 @@ static void SaveTape_BODY(FILE *file, struct TapeInfo *tape)
 
   for (i = 0; i < tape->length; i++)
   {
-    if (tape->event_mask & GAME_EVENTS_KEYS)
+    if (tape->use_key_actions)
     {
       for (j = 0; j < MAX_PLAYERS; j++)
 	if (tape->player_participates[j])
 	  putFile8Bit(file, tape->pos[i].action[j]);
     }
 
-    if (tape->event_mask & GAME_EVENTS_MOUSE)
+    if (tape->use_mouse_actions)
     {
       putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_LX]);
       putFile8Bit(file, tape->pos[i].action[TAPE_ACTION_LY]);

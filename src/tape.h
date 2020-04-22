@@ -21,19 +21,19 @@
 // values for tape properties
 #define MAX_TAPE_LEN		(1000 * FRAMES_PER_SECOND) // max.time x fps
 
-// values for tape mouse actions
+// values for tape action array positions
 #define TAPE_ACTION_LX		(MAX_PLAYERS + 0)
 #define TAPE_ACTION_LY		(MAX_PLAYERS + 1)
 #define TAPE_ACTION_BUTTON	(MAX_PLAYERS + 2)
 
 #define MAX_TAPE_ACTIONS	(MAX_PLAYERS + 3)
 
-// values for tape action events stored in tape file
-#define TAPE_EVENTS_KEYS_ONLY		0
-#define TAPE_EVENTS_MOUSE_ONLY		1
-#define TAPE_EVENTS_KEYS_AND_MOUSE	2
+// values for tape actions stored in tape file
+#define TAPE_USE_KEY_ACTIONS_ONLY	0
+#define TAPE_USE_MOUSE_ACTIONS_ONLY	1
+#define TAPE_USE_KEY_AND_MOUSE_ACTIONS	2
 
-#define TAPE_EVENTS_DEFAULT		TAPE_EVENTS_KEYS_ONLY
+#define TAPE_ACTIONS_DEFAULT		TAPE_USE_KEY_ACTIONS_ONLY
 
 // some positions in the video tape control window
 #define VIDEO_DISPLAY1_XPOS	5
@@ -198,7 +198,9 @@ struct TapeInfo
   int centered_player_nr_next;
   boolean set_centered_player;
 
-  int event_mask;	// game action events stored in tape actions
+  // flags to indicate which game actions are stored in this tape
+  boolean use_key_actions;
+  boolean use_mouse_actions;
 
   struct
   {

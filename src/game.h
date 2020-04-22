@@ -42,13 +42,6 @@
 #define SNAPSHOT_MODE_EVERY_COLLECT	3
 #define SNAPSHOT_MODE_DEFAULT		SNAPSHOT_MODE_OFF
 
-// values for game action events handled by game engine
-#define GAME_EVENTS_NONE		0
-#define GAME_EVENTS_KEYS		(1 << 0)
-#define GAME_EVENTS_MOUSE		(1 << 1)
-
-#define GAME_EVENTS_DEFAULT		GAME_EVENTS_KEYS
-
 
 struct GamePanelInfo
 {
@@ -185,8 +178,9 @@ struct GameInfo
   boolean max_num_changes_per_frame;
   boolean use_reverse_scan_direction;
 
-  // bit mask to indicate game action events handled by game engine
-  int event_mask;
+  // flags to indicate which game actions are used in this game
+  boolean use_key_actions;
+  boolean use_mouse_actions;
 
   // variable within running game
   int yamyam_content_nr;

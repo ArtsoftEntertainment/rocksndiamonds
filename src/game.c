@@ -3280,14 +3280,18 @@ static void InitGameEngine(void)
   if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
     level.time = 0;
 
-  // ---------- initialize mask for handling game action events ---------------
+  // ---------- initialize flags for handling game actions --------------------
 
-  // set game action events mask to default value
-  game.event_mask = GAME_EVENTS_DEFAULT;
+  // set flags for game actions to default values
+  game.use_key_actions = TRUE;
+  game.use_mouse_actions = FALSE;
 
   // when using Mirror Magic game engine, handle mouse events only
   if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
-    game.event_mask = GAME_EVENTS_MOUSE;
+  {
+    game.use_key_actions = FALSE;
+    game.use_mouse_actions = TRUE;
+  }
 
   // check for custom elements with mouse click events
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
@@ -3300,7 +3304,7 @@ static void InitGameEngine(void)
 	  HAS_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE) ||
 	  HAS_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X) ||
 	  HAS_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X))
-	game.event_mask = GAME_EVENTS_KEYS | GAME_EVENTS_MOUSE;
+	game.use_mouse_actions = TRUE;
     }
   }
 }
@@ -3415,9 +3419,12 @@ void InitGame(void)
   InitGameEngine();
   InitGameControlValues();
 
-  // initialize tape action events from game when recording tape
+  // initialize tape actions from game when recording tape
   if (tape.recording)
-    tape.event_mask = game.event_mask;
+  {
+    tape.use_key_actions   = game.use_key_actions;
+    tape.use_mouse_actions = game.use_mouse_actions;
+  }
 
   // don't play tapes over network
   network_playing = (network.enabled && !tape.playing);
@@ -11176,7 +11183,7 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
 static void SetMouseActionFromTapeAction(struct MouseActionInfo *mouse_action,
 					 byte *tape_action)
 {
-  if (!(tape.event_mask & GAME_EVENTS_MOUSE))
+  if (!tape.use_mouse_actions)
     return;
 
   mouse_action->lx     = tape_action[TAPE_ACTION_LX];
@@ -11187,7 +11194,7 @@ static void SetMouseActionFromTapeAction(struct MouseActionInfo *mouse_action,
 static void SetTapeActionFromMouseAction(byte *tape_action,
 					 struct MouseActionInfo *mouse_action)
 {
-  if (!(tape.event_mask & GAME_EVENTS_MOUSE))
+  if (!tape.use_mouse_actions)
     return;
 
   tape_action[TAPE_ACTION_LX]     = mouse_action->lx;
