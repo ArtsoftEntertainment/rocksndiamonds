@@ -12,8 +12,7 @@
 #define ACID_ROLL	/* rolling objects go into acid rather than remove it */
 #define ACID_PLAYER	/* player gets killed by acid, but without explosion */
 
-#define RANDOM_RAW	(seed = seed << 31 | seed >> 1)
-#define RANDOM(x)	(RANDOM_RAW % x)
+#define RANDOM(x)	((seed = seed << 31 | seed >> 1) % x)
 
 static short **cave, **next, **boom;
 static unsigned int seed;
