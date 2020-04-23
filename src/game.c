@@ -2846,6 +2846,37 @@ static void InitGameEngine(void)
 
   /*
     Summary of bugfix/change:
+    Fixed move speed of elements entering or leaving magic wall.
+
+    Fixed/changed in version:
+    2.0.1
+
+    Description:
+    Before 2.0.1, move speed of elements entering or leaving magic wall was
+    twice as fast as it is now.
+    Since 2.0.1, this is set to a lower value by using move_stepsize_list[].
+
+    Affected levels/tapes:
+    The first condition is generally needed for all levels/tapes before version
+    2.0.1, which might use the old behaviour before it was changed; known tapes
+    that are affected: Tape 014 from the level set "rnd_conor_mancone".
+    The second condition is an exception from the above case and is needed for
+    the special case of tapes recorded with game (not engine!) version 2.0.1 or
+    above, but before it was known that this change would break tapes like the
+    above and was fixed in 4.1.4.2, so that the changed behaviour was active
+    although the engine version while recording maybe was before 2.0.1. There
+    are a lot of tapes that are affected by this exception, like tape 006 from
+    the level set "rnd_conor_mancone".
+  */
+
+  boolean use_old_move_stepsize_for_magic_wall =
+    (game.engine_version < VERSION_IDENT(2,0,1,0) &&
+     !(tape.playing &&
+       tape.game_version >= VERSION_IDENT(2,0,1,0) &&
+       tape.game_version <  VERSION_IDENT(4,1,4,2)));
+
+  /*
+    Summary of bugfix/change:
     Fixed handling for custom elements that change when pushed by the player.
 
     Fixed/changed in version:
@@ -3181,6 +3212,16 @@ static void InitGameEngine(void)
     int e = move_stepsize_list[i].element;
 
     element_info[e].move_stepsize = move_stepsize_list[i].move_stepsize;
+
+    // set move stepsize value for certain elements for older engine versions
+    if (use_old_move_stepsize_for_magic_wall)
+    {
+      if (e == EL_MAGIC_WALL_FILLING ||
+	  e == EL_MAGIC_WALL_EMPTYING ||
+	  e == EL_BD_MAGIC_WALL_FILLING ||
+	  e == EL_BD_MAGIC_WALL_EMPTYING)
+	element_info[e].move_stepsize *= 2;
+    }
   }
 
   // ---------- initialize collect score --------------------------------------
