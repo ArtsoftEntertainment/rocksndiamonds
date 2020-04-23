@@ -6792,8 +6792,8 @@ static int SaveLevel_BODY(FILE *file, struct LevelInfo *level)
   int chunk_size = 0;
   int x, y;
 
-  for (y = 0; y < level->fieldy; y++) 
-    for (x = 0; x < level->fieldx; x++) 
+  for (y = 0; y < level->fieldy; y++)
+    for (x = 0; x < level->fieldx; x++)
       if (level->encoding_16bit_field)
 	chunk_size += putFile16BitBE(file, level->field[x][y]);
       else
