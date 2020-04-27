@@ -2840,6 +2840,19 @@ static void InitGameEngine(void)
     game.team_mode = (num_players > 1);
   }
 
+#if 0
+  printf("level %d: level.game_version  == %06d\n", level_nr,
+	 level.game_version);
+  printf("          tape.file_version   == %06d\n",
+	 tape.file_version);
+  printf("          tape.game_version   == %06d\n",
+	 tape.game_version);
+  printf("          tape.engine_version == %06d\n",
+	 tape.engine_version);
+  printf("       => game.engine_version == %06d [tape mode: %s]\n",
+	 game.engine_version, (tape.playing ? "PLAYING" : "RECORDING"));
+#endif
+
   // --------------------------------------------------------------------------
   // set flags for bugs and changes according to active game engine version
   // --------------------------------------------------------------------------
@@ -2994,14 +3007,6 @@ static void InitGameEngine(void)
   // "EL_AMOEBA_DROPPING" missed property "can fall" between 2.0.1 and 4.1.4.1
   if (use_amoeba_dropping_cannot_fall_bug)
     SET_PROPERTY(EL_AMOEBA_DROPPING, EP_CAN_FALL, FALSE);
-
-#if 0
-  printf("level %d: level version == %06d\n", level_nr, level.game_version);
-  printf("          tape version == %06d [%s] [file: %06d]\n",
-	 tape.engine_version, (tape.playing ? "PLAYING" : "RECORDING"),
-	 tape.file_version);
-  printf("       => game.engine_version == %06d\n", game.engine_version);
-#endif
 
   // ---------- initialize player's initial move delay ------------------------
 
