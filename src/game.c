@@ -2845,6 +2845,36 @@ static void InitGameEngine(void)
   // --------------------------------------------------------------------------
 
   /*
+    Summary of bugfix:
+    Fixed property "can fall" for run-time element "EL_AMOEBA_DROPPING"
+
+    Bug was introduced in version:
+    2.0.1
+
+    Bug was fixed in version:
+    4.1.4.2
+
+    Description:
+    In version 2.0.1, a new run-time element "EL_AMOEBA_DROPPING" was added,
+    but the property "can fall" was missing, which caused some levels to be
+    unsolvable. This was fixed in version 4.1.4.2.
+
+    Affected levels/tapes:
+    An example for a tape that was fixed by this bugfix is tape 029 from the
+    level set "rnd_sam_bateman".
+    The wrong behaviour will still be used for all levels or tapes that were
+    created/recorded with it. An example for this is tape 023 from the level
+    set "rnd_gerhard_haeusler", which was recorded with a buggy game engine.
+  */
+
+  boolean use_amoeba_dropping_cannot_fall_bug =
+    ((game.engine_version >= VERSION_IDENT(2,0,1,0) &&
+      game.engine_version <= VERSION_IDENT(4,1,4,1)) ||
+     (tape.playing &&
+      tape.game_version >= VERSION_IDENT(2,0,1,0) &&
+      tape.game_version <= VERSION_IDENT(4,1,4,1)));
+
+  /*
     Summary of bugfix/change:
     Fixed move speed of elements entering or leaving magic wall.
 
@@ -2958,6 +2988,12 @@ static void InitGameEngine(void)
 
   // dynamically adjust element properties according to game engine version
   InitElementPropertiesEngine(game.engine_version);
+
+  // ---------- initialize special element properties -------------------------
+
+  // "EL_AMOEBA_DROPPING" missed property "can fall" between 2.0.1 and 4.1.4.1
+  if (use_amoeba_dropping_cannot_fall_bug)
+    SET_PROPERTY(EL_AMOEBA_DROPPING, EP_CAN_FALL, FALSE);
 
 #if 0
   printf("level %d: level version == %06d\n", level_nr, level.game_version);

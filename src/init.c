@@ -2862,6 +2862,7 @@ void InitElementPropertiesStatic(void)
     EL_BOMB,
     EL_NUT,
     EL_AMOEBA_DROP,
+    EL_AMOEBA_DROPPING,
     EL_QUICKSAND_FULL,
     EL_QUICKSAND_FAST_FULL,
     EL_MAGIC_WALL_FULL,
