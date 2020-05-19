@@ -353,6 +353,11 @@ SDL_Surface *SDLGetNativeSurface(SDL_Surface *surface)
   if (new_surface == NULL)
     Error(ERR_EXIT, "SDL_ConvertSurface() failed: %s", SDL_GetError());
 
+  // workaround for a bug in SDL 2.0.12 (which does not convert the color key)
+  if (SDLHasColorKey(surface) && !SDLHasColorKey(new_surface))
+    SDL_SetColorKey(new_surface, SET_TRANSPARENT_PIXEL,
+		    SDLGetColorKey(surface));
+
   return new_surface;
 }
 
