@@ -14859,8 +14859,11 @@ void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
 {
   int element = (element_em > -1 ? map_element_EM_to_RND_game(element_em) : 0);
   int offset = 0;
-  int x = xx - 1 - offset;
-  int y = yy - 1 - offset;
+  int x = xx - offset;
+  int y = yy - offset;
+
+  x = correctLevelPosX_EM(x);
+  y = correctLevelPosY_EM(y);
 
   switch (sample)
   {
