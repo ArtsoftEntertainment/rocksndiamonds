@@ -71,6 +71,20 @@ void play_sound(int x, int y, int sample)
   play_element_sound(x, y, sample, -1);
 }
 
+int correctLevelPosX_EM(int lx)
+{
+  lx -= 1;
+
+  return lx;
+}
+
+int correctLevelPosY_EM(int ly)
+{
+  ly -= 1;
+
+  return ly;
+}
+
 unsigned int InitEngineRandom_EM(int seed)
 {
   if (seed == NEW_RANDOMIZE)

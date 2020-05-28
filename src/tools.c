@@ -193,20 +193,6 @@ static char *print_if_not_empty(int element)
   return s;
 }
 
-int correctLevelPosX_EM(int lx)
-{
-  lx -= 1;
-
-  return lx;
-}
-
-int correctLevelPosY_EM(int ly)
-{
-  ly -= 1;
-
-  return ly;
-}
-
 int getFieldbufferOffsetX_RND(int dir, int pos)
 {
   int full_lev_fieldx = lev_fieldx + (BorderElement != EL_EMPTY ? 2 : 0);

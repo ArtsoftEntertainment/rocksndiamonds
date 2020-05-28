@@ -69,9 +69,6 @@
 int getFieldbufferOffsetX_RND(int, int);
 int getFieldbufferOffsetY_RND(int, int);
 
-int correctLevelPosX_EM(int);
-int correctLevelPosY_EM(int);
-
 int getLevelFromScreenX(int);
 int getLevelFromScreenY(int);
 
