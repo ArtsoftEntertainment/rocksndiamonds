@@ -1279,6 +1279,11 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
     }
   }
 
+  /* check for wrap-around movement */
+  if (ply->x < lev.left ||
+      ply->x > lev.right - 1)
+    play_element_sound(oldx, oldy, SOUND_door, Xdoor_1);
+
   return result;
 }
 
