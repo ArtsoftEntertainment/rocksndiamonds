@@ -4396,6 +4396,9 @@ void UpdateEngineValues(int actual_scroll_x, int actual_scroll_y,
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
+    actual_scroll_x = correctLevelPosX_EM(actual_scroll_x);
+    actual_scroll_y = correctLevelPosY_EM(actual_scroll_y);
+
     actual_player_x = correctLevelPosX_EM(actual_player_x);
     actual_player_y = correctLevelPosY_EM(actual_player_y);
   }

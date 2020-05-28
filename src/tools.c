@@ -291,8 +291,6 @@ static int getLevelFromScreenX_EM(int sx)
   int px = sx - SX;
   int lx = LEVELX((px + dx) / TILESIZE_VAR);
 
-  lx = correctLevelPosX_EM(lx);
-
   return lx;
 }
 
@@ -307,8 +305,6 @@ static int getLevelFromScreenY_EM(int sy)
   int dy = fy;
   int py = sy - SY;
   int ly = LEVELY((py + dy) / TILESIZE_VAR);
-
-  ly = correctLevelPosY_EM(ly);
 
   return ly;
 }
