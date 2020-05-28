@@ -76,6 +76,9 @@ extern int			SX, SY;
 
 #define DISPLAY_TIME(x)		ROUNDED_DIVIDE(x, FRAMES_PER_SECOND)
 
+#define CAVE_POS_X(x)		((x) - lev.left)
+#define CAVE_POS_Y(x)		((x) - lev.top)
+
 
 // ----------------------------------------------------------------------------
 // data structure definitions

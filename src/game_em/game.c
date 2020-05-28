@@ -92,7 +92,10 @@ void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
   for (i = 0; i < MAX_PLAYERS; i++)
     readjoy(action[i], &ply[i]);
 
-  UpdateEngineValues(screen_x / TILEX, screen_y / TILEY, ply[0].x, ply[0].y);
+  UpdateEngineValues(CAVE_POS_X(screen_x / TILEX),
+		     CAVE_POS_Y(screen_y / TILEY),
+		     CAVE_POS_X(ply[0].x),
+		     CAVE_POS_Y(ply[0].y));
 
   logic();
 

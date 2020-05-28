@@ -4394,15 +4394,6 @@ void UpdateEngineValues(int actual_scroll_x, int actual_scroll_y,
 {
   // this is used for non-R'n'D game engines to update certain engine values
 
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-  {
-    actual_scroll_x = correctLevelPosX_EM(actual_scroll_x);
-    actual_scroll_y = correctLevelPosY_EM(actual_scroll_y);
-
-    actual_player_x = correctLevelPosX_EM(actual_player_x);
-    actual_player_y = correctLevelPosY_EM(actual_player_y);
-  }
-
   // needed to determine if sounds are played within the visible screen area
   scroll_x = actual_scroll_x;
   scroll_y = actual_scroll_y;
