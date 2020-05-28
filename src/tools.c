@@ -196,7 +196,6 @@ static char *print_if_not_empty(int element)
 int correctLevelPosX_EM(int lx)
 {
   lx -= 1;
-  lx -= (BorderElement != EL_EMPTY ? 1 : 0);
 
   return lx;
 }
@@ -204,7 +203,6 @@ int correctLevelPosX_EM(int lx)
 int correctLevelPosY_EM(int ly)
 {
   ly -= 1;
-  ly -= (BorderElement != EL_EMPTY ? 1 : 0);
 
   return ly;
 }
