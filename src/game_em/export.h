@@ -105,9 +105,6 @@ void InitGfxBuffers_EM(void);
 void InitGameEngine_EM(void);
 void GameActions_EM(byte *, boolean);
 
-int correctLevelPosX_EM(int);
-int correctLevelPosY_EM(int);
-
 unsigned int InitEngineRandom_EM(int);
 
 void setLevelInfoToDefaults_EM(void);
