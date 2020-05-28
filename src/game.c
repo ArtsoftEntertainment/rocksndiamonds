@@ -14856,9 +14856,6 @@ void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
   int x = xx - offset;
   int y = yy - offset;
 
-  x = correctLevelPosX_EM(x);
-  y = correctLevelPosY_EM(y);
-
   switch (sample)
   {
     case SOUND_blank:

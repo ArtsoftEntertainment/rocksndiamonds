@@ -63,7 +63,7 @@ void em_close_all(void)
 
 void play_element_sound(int x, int y, int sample, int element)
 {
-  PlayLevelSound_EM(x, y, element, sample);
+  PlayLevelSound_EM(CAVE_POS_X(x), CAVE_POS_Y(y), element, sample);
 }
 
 void play_sound(int x, int y, int sample)
