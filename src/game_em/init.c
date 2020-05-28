@@ -73,14 +73,14 @@ void play_sound(int x, int y, int sample)
 
 int correctLevelPosX_EM(int lx)
 {
-  lx -= 1;
+  lx -= lev.left;
 
   return lx;
 }
 
 int correctLevelPosY_EM(int ly)
 {
-  ly -= 1;
+  ly -= lev.top;
 
   return ly;
 }
