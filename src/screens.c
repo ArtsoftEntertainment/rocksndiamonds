@@ -6279,11 +6279,11 @@ static struct TokenInfo setup_info_game[] =
 
 static struct TokenInfo setup_info_engines[] =
 {
-  { TYPE_EMPTY,	NULL,				"Emerald Mine"		},
+  { TYPE_HEADLINE,	NULL,			"Emerald Mine"		},
   { TYPE_SWITCH,	&setup.forced_scroll_delay, "Scroll Delay:"	},
   { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,"EMC graphics preference:" },
   { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_EMPTY,	NULL,				"Supaplex"		},
+  { TYPE_HEADLINE,	NULL,			"Supaplex"		},
   { TYPE_SWITCH, &setup.sp_show_border_elements,"Supaplex Border Elements:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},

@@ -42,15 +42,16 @@
 #define TYPE_EMPTY			(1 << 20)
 #define TYPE_SKIPPABLE			(1 << 21)
 #define TYPE_KEYTEXT			(1 << 22)
+#define TYPE_HEADLINE			(1 << 23)
 
-#define TYPE_GHOSTED			(1 << 23)
-#define TYPE_QUERY			(1 << 24)
+#define TYPE_GHOSTED			(1 << 24)
+#define TYPE_QUERY			(1 << 25)
 
 // additional values for internal purposes
-#define TYPE_BITFIELD			(1 << 25)
-#define TYPE_CONTENT			(1 << 26)
-#define TYPE_ELEMENT_LIST		(1 << 27)
-#define TYPE_CONTENT_LIST		(1 << 28)
+#define TYPE_BITFIELD			(1 << 26)
+#define TYPE_CONTENT			(1 << 27)
+#define TYPE_ELEMENT_LIST		(1 << 28)
+#define TYPE_CONTENT_LIST		(1 << 29)
 
 // derived values for setup file handling
 #define TYPE_BOOLEAN_STYLE		(TYPE_BOOLEAN | \
@@ -74,6 +75,7 @@
 					 TYPE_SKIPPABLE		| \
 					 TYPE_KEY		| \
 					 TYPE_STRING		| \
+					 TYPE_HEADLINE		| \
 					 TYPE_GHOSTED)
 
 #define TYPE_ENTER			(TYPE_ENTER_SCREEN	| \
