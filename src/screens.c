@@ -6281,10 +6281,10 @@ static struct TokenInfo setup_info_engines[] =
 {
   { TYPE_HEADLINE,	NULL,			"Emerald Mine"		},
   { TYPE_SWITCH,	&setup.forced_scroll_delay, "Scroll Delay:"	},
-  { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,"EMC graphics preference:" },
+  { TYPE_ECS_AGA,	&setup.prefer_aga_graphics, "Graphics preference:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_HEADLINE,	NULL,			"Supaplex"		},
-  { TYPE_SWITCH, &setup.sp_show_border_elements,"Supaplex Border Elements:" },
+  { TYPE_SWITCH, &setup.sp_show_border_elements,"Border Elements:"	},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
 
