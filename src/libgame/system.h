@@ -1330,6 +1330,7 @@ struct SetupInternalInfo
   boolean create_user_levelset;
 
   boolean menu_game;
+  boolean menu_engines;
   boolean menu_editor;
   boolean menu_graphics;
   boolean menu_sound;

@@ -44,54 +44,56 @@
 // (should also match corresponding entries in src/conf_gfx.c)
 #define SETUP_MODE_MAIN			0
 #define SETUP_MODE_GAME			1
-#define SETUP_MODE_EDITOR		2
-#define SETUP_MODE_GRAPHICS		3
-#define SETUP_MODE_SOUND		4
-#define SETUP_MODE_ARTWORK		5
-#define SETUP_MODE_INPUT		6
-#define SETUP_MODE_TOUCH		7
-#define SETUP_MODE_SHORTCUTS		8
-#define SETUP_MODE_SHORTCUTS_1		9
-#define SETUP_MODE_SHORTCUTS_2		10
-#define SETUP_MODE_SHORTCUTS_3		11
-#define SETUP_MODE_SHORTCUTS_4		12
-#define SETUP_MODE_SHORTCUTS_5		13
+#define SETUP_MODE_ENGINES		2
+#define SETUP_MODE_EDITOR		3
+#define SETUP_MODE_GRAPHICS		4
+#define SETUP_MODE_SOUND		5
+#define SETUP_MODE_ARTWORK		6
+#define SETUP_MODE_INPUT		7
+#define SETUP_MODE_TOUCH		8
+#define SETUP_MODE_SHORTCUTS		9
+#define SETUP_MODE_SHORTCUTS_1		10
+#define SETUP_MODE_SHORTCUTS_2		11
+#define SETUP_MODE_SHORTCUTS_3		12
+#define SETUP_MODE_SHORTCUTS_4		13
+#define SETUP_MODE_SHORTCUTS_5		14
 
 // sub-screens on the setup screen (generic)
-#define SETUP_MODE_CHOOSE_ARTWORK	14
-#define SETUP_MODE_CHOOSE_OTHER		15
+#define SETUP_MODE_CHOOSE_ARTWORK	15
+#define SETUP_MODE_CHOOSE_OTHER		16
 
 // sub-screens on the setup screen (specific)
-#define SETUP_MODE_CHOOSE_GAME_SPEED	16
-#define SETUP_MODE_CHOOSE_SCROLL_DELAY	17
-#define SETUP_MODE_CHOOSE_SNAPSHOT_MODE	18
-#define SETUP_MODE_CHOOSE_WINDOW_SIZE	19
-#define SETUP_MODE_CHOOSE_SCALING_TYPE	20
-#define SETUP_MODE_CHOOSE_RENDERING	21
-#define SETUP_MODE_CHOOSE_VSYNC		22
-#define SETUP_MODE_CHOOSE_GRAPHICS	23
-#define SETUP_MODE_CHOOSE_SOUNDS	24
-#define SETUP_MODE_CHOOSE_MUSIC		25
-#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE	26
-#define SETUP_MODE_CHOOSE_VOLUME_LOOPS	27
-#define SETUP_MODE_CHOOSE_VOLUME_MUSIC	28
-#define SETUP_MODE_CHOOSE_TOUCH_CONTROL	29
-#define SETUP_MODE_CHOOSE_MOVE_DISTANCE	30
-#define SETUP_MODE_CHOOSE_DROP_DISTANCE	31
-#define SETUP_MODE_CHOOSE_TRANSPARENCY	32
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_0	33
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_0	34
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_1	35
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_1	36
-#define SETUP_MODE_CONFIG_VIRT_BUTTONS	37
+#define SETUP_MODE_CHOOSE_GAME_SPEED	17
+#define SETUP_MODE_CHOOSE_SCROLL_DELAY	18
+#define SETUP_MODE_CHOOSE_SNAPSHOT_MODE	19
+#define SETUP_MODE_CHOOSE_WINDOW_SIZE	20
+#define SETUP_MODE_CHOOSE_SCALING_TYPE	21
+#define SETUP_MODE_CHOOSE_RENDERING	22
+#define SETUP_MODE_CHOOSE_VSYNC		23
+#define SETUP_MODE_CHOOSE_GRAPHICS	24
+#define SETUP_MODE_CHOOSE_SOUNDS	25
+#define SETUP_MODE_CHOOSE_MUSIC		26
+#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE	27
+#define SETUP_MODE_CHOOSE_VOLUME_LOOPS	28
+#define SETUP_MODE_CHOOSE_VOLUME_MUSIC	29
+#define SETUP_MODE_CHOOSE_TOUCH_CONTROL	30
+#define SETUP_MODE_CHOOSE_MOVE_DISTANCE	31
+#define SETUP_MODE_CHOOSE_DROP_DISTANCE	32
+#define SETUP_MODE_CHOOSE_TRANSPARENCY	33
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_0	34
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_0	35
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_1	36
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_1	37
+#define SETUP_MODE_CONFIG_VIRT_BUTTONS	38
 
-#define MAX_SETUP_MODES			38
+#define MAX_SETUP_MODES			39
 
 #define MAX_MENU_MODES			MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
 // setup screen titles
 #define STR_SETUP_MAIN			"Setup"
 #define STR_SETUP_GAME			"Game & Menu"
+#define STR_SETUP_ENGINES		"Game Engines"
 #define STR_SETUP_EDITOR		"Editor"
 #define STR_SETUP_GRAPHICS		"Graphics"
 #define STR_SETUP_SOUND			"Sound & Music"
@@ -239,6 +241,7 @@ static void CustomizeKeyboard(int);
 static void ConfigureJoystick(int);
 static void ConfigureVirtualButtons(void);
 static void execSetupGame(void);
+static void execSetupEngines(void);
 static void execSetupGraphics(void);
 static void execSetupSound(void);
 static void execSetupTouch(void);
@@ -5017,6 +5020,13 @@ static void execSetupChooseSnapshotMode(void)
   DrawSetupScreen();
 }
 
+static void execSetupEngines(void)
+{
+  setup_mode = SETUP_MODE_ENGINES;
+
+  DrawSetupScreen();
+}
+
 static void execSetupEditor(void)
 {
   setup_mode = SETUP_MODE_EDITOR;
@@ -6194,6 +6204,7 @@ static struct
   { &setup.touch.grid_ysize[1],		&grid_size_text[1][1]		},
 
   { &setup.internal.menu_game,		execSetupGame			},
+  { &setup.internal.menu_engines,	execSetupEngines		},
   { &setup.internal.menu_editor,	execSetupEditor			},
   { &setup.internal.menu_graphics,	execSetupGraphics		},
   { &setup.internal.menu_sound,		execSetupSound			},
@@ -6219,6 +6230,7 @@ void setHideRelatedSetupEntries(void)
 static struct TokenInfo setup_info_main[] =
 {
   { TYPE_ENTER_MENU,	execSetupGame,		STR_SETUP_GAME		},
+  { TYPE_ENTER_MENU,	execSetupEngines,	STR_SETUP_ENGINES	},
   { TYPE_ENTER_MENU,	execSetupEditor,	STR_SETUP_EDITOR	},
   { TYPE_ENTER_MENU,	execSetupGraphics,	STR_SETUP_GRAPHICS	},
   { TYPE_ENTER_MENU,	execSetupSound,		STR_SETUP_SOUND		},
@@ -6256,10 +6268,23 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_ENTER_LIST,	execSetupChooseScrollDelay, "Scroll Delay:"	},
   { TYPE_STRING,	&scroll_delay_text,	""			},
 #endif
-  { TYPE_SWITCH,	&setup.forced_scroll_delay,"Scroll Delay in EM engine:" },
   { TYPE_ENTER_LIST, execSetupChooseSnapshotMode,"Game Engine Snapshot Mode:" },
   { TYPE_STRING,	&snapshot_mode_text,	""			},
   { TYPE_SWITCH,	&setup.show_snapshot_buttons,"Show Snapshot Buttons:" },
+  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+
+  { 0,			NULL,			NULL			}
+};
+
+static struct TokenInfo setup_info_engines[] =
+{
+  { TYPE_EMPTY,	NULL,				"Emerald Mine"		},
+  { TYPE_SWITCH,	&setup.forced_scroll_delay, "Scroll Delay:"	},
+  { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,"EMC graphics preference:" },
+  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_EMPTY,	NULL,				"Supaplex"		},
+  { TYPE_SWITCH, &setup.sp_show_border_elements,"Supaplex Border Elements:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
 
@@ -6322,8 +6347,6 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_SWITCH,	&setup.quick_doors,	"Quick Menu Doors:"	},
   { TYPE_SWITCH,	&setup.show_titlescreen,"Show Title Screens:"	},
   { TYPE_SWITCH,	&setup.toons,		"Show Menu Animations:"	},
-  { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,"EMC graphics preference:" },
-  { TYPE_SWITCH, &setup.sp_show_border_elements,"Supaplex Border Elements:" },
   { TYPE_SWITCH,	&setup.small_game_graphics, "Small Game Graphics:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
@@ -6893,6 +6916,11 @@ static void DrawSetupScreen_Generic(void)
   {
     setup_info = setup_info_game;
     title_string = STR_SETUP_GAME;
+  }
+  else if (setup_mode == SETUP_MODE_ENGINES)
+  {
+    setup_info = setup_info_engines;
+    title_string = STR_SETUP_ENGINES;
   }
   else if (setup_mode == SETUP_MODE_EDITOR)
   {

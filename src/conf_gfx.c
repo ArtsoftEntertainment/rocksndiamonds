@@ -7802,6 +7802,8 @@ struct ConfigInfo image_config[] =
   { "menu.draw_yoffset.SETUP",			"0"			},
   { "menu.draw_xoffset.SETUP[GAME]",		"0"			},
   { "menu.draw_yoffset.SETUP[GAME]",		"0"			},
+  { "menu.draw_xoffset.SETUP[ENGINES]",		"0"			},
+  { "menu.draw_yoffset.SETUP[ENGINES]",		"0"			},
   { "menu.draw_xoffset.SETUP[EDITOR]",		"0"			},
   { "menu.draw_yoffset.SETUP[EDITOR]",		"0"			},
   { "menu.draw_xoffset.SETUP[GRAPHICS]",	"0"			},
