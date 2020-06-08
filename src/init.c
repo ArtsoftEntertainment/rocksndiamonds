@@ -5909,6 +5909,7 @@ void ReloadCustomArtwork(int force_reload)
   InitOverrideArtwork();
 
   force_reload_gfx |= AdjustGraphicsForEMC();
+  force_reload_snd |= AdjustSoundsForEMC();
 
   gfx_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_GRAPHICS);
   snd_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_SOUNDS);

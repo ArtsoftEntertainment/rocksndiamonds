@@ -1329,6 +1329,39 @@ static boolean adjustTreeGraphicsForEMC(TreeInfo *node)
   return settings_changed;
 }
 
+static boolean adjustTreeSoundsForEMC(TreeInfo *node)
+{
+  boolean settings_changed = FALSE;
+
+  while (node)
+  {
+    boolean want_default = (setup.prefer_lowpass_sounds == FALSE);
+    boolean want_lowpass = (setup.prefer_lowpass_sounds == TRUE);
+    boolean has_only_default = (!node->sounds_set && !node->sounds_set_lowpass);
+    boolean has_only_lowpass = (!node->sounds_set && !node->sounds_set_default);
+    char *sounds_set = NULL;
+
+    if (node->sounds_set_default && (want_default || has_only_default))
+      sounds_set = node->sounds_set_default;
+
+    if (node->sounds_set_lowpass && (want_lowpass || has_only_lowpass))
+      sounds_set = node->sounds_set_lowpass;
+
+    if (sounds_set && !strEqual(node->sounds_set, sounds_set))
+    {
+      setString(&node->sounds_set, sounds_set);
+      settings_changed = TRUE;
+    }
+
+    if (node->node_group != NULL)
+      settings_changed |= adjustTreeSoundsForEMC(node->node_group);
+
+    node = node->next;
+  }
+
+  return settings_changed;
+}
+
 void dumpTreeInfo(TreeInfo *node, int depth)
 {
   int i;
@@ -2319,16 +2352,18 @@ SetupFileHash *loadSetupFileHash(char *filename)
 #define LEVELINFO_TOKEN_GRAPHICS_SET_ECS	17
 #define LEVELINFO_TOKEN_GRAPHICS_SET_AGA	18
 #define LEVELINFO_TOKEN_GRAPHICS_SET		19
-#define LEVELINFO_TOKEN_SOUNDS_SET		20
-#define LEVELINFO_TOKEN_MUSIC_SET		21
-#define LEVELINFO_TOKEN_FILENAME		22
-#define LEVELINFO_TOKEN_FILETYPE		23
-#define LEVELINFO_TOKEN_SPECIAL_FLAGS		24
-#define LEVELINFO_TOKEN_HANDICAP		25
-#define LEVELINFO_TOKEN_SKIP_LEVELS		26
-#define LEVELINFO_TOKEN_USE_EMC_TILES		27
+#define LEVELINFO_TOKEN_SOUNDS_SET_DEFAULT	20
+#define LEVELINFO_TOKEN_SOUNDS_SET_LOWPASS	21
+#define LEVELINFO_TOKEN_SOUNDS_SET		22
+#define LEVELINFO_TOKEN_MUSIC_SET		23
+#define LEVELINFO_TOKEN_FILENAME		24
+#define LEVELINFO_TOKEN_FILETYPE		25
+#define LEVELINFO_TOKEN_SPECIAL_FLAGS		26
+#define LEVELINFO_TOKEN_HANDICAP		27
+#define LEVELINFO_TOKEN_SKIP_LEVELS		28
+#define LEVELINFO_TOKEN_USE_EMC_TILES		29
 
-#define NUM_LEVELINFO_TOKENS			28
+#define NUM_LEVELINFO_TOKENS			30
 
 static LevelDirTree ldi;
 
@@ -2355,6 +2390,8 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.graphics_set_ecs,	"graphics_set.ecs"	},
   { TYPE_STRING,	&ldi.graphics_set_aga,	"graphics_set.aga"	},
   { TYPE_STRING,	&ldi.graphics_set,	"graphics_set"		},
+  { TYPE_STRING,	&ldi.sounds_set_default,"sounds_set.default"	},
+  { TYPE_STRING,	&ldi.sounds_set_lowpass,"sounds_set.lowpass"	},
   { TYPE_STRING,	&ldi.sounds_set,	"sounds_set"		},
   { TYPE_STRING,	&ldi.music_set,		"music_set"		},
   { TYPE_STRING,	&ldi.level_filename,	"filename"		},
@@ -2435,6 +2472,8 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
     ti->graphics_set_ecs = NULL;
     ti->graphics_set_aga = NULL;
     ti->graphics_set = NULL;
+    ti->sounds_set_default = NULL;
+    ti->sounds_set_lowpass = NULL;
     ti->sounds_set = NULL;
     ti->music_set = NULL;
     ti->graphics_path = getStringCopy(UNDEFINED_FILENAME);
@@ -2514,6 +2553,8 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
     ti->graphics_set_ecs = getStringCopy(parent->graphics_set_ecs);
     ti->graphics_set_aga = getStringCopy(parent->graphics_set_aga);
     ti->graphics_set = getStringCopy(parent->graphics_set);
+    ti->sounds_set_default = getStringCopy(parent->sounds_set_default);
+    ti->sounds_set_lowpass = getStringCopy(parent->sounds_set_lowpass);
     ti->sounds_set = getStringCopy(parent->sounds_set);
     ti->music_set = getStringCopy(parent->music_set);
     ti->graphics_path = getStringCopy(UNDEFINED_FILENAME);
@@ -2574,6 +2615,8 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->graphics_set_ecs	= getStringCopy(ti->graphics_set_ecs);
   ti_copy->graphics_set_aga	= getStringCopy(ti->graphics_set_aga);
   ti_copy->graphics_set		= getStringCopy(ti->graphics_set);
+  ti_copy->sounds_set_default	= getStringCopy(ti->sounds_set_default);
+  ti_copy->sounds_set_lowpass	= getStringCopy(ti->sounds_set_lowpass);
   ti_copy->sounds_set		= getStringCopy(ti->sounds_set);
   ti_copy->music_set		= getStringCopy(ti->music_set);
   ti_copy->graphics_path	= getStringCopy(ti->graphics_path);
@@ -2643,6 +2686,8 @@ void freeTreeInfo(TreeInfo *ti)
     checked_free(ti->graphics_set_ecs);
     checked_free(ti->graphics_set_aga);
     checked_free(ti->graphics_set);
+    checked_free(ti->sounds_set_default);
+    checked_free(ti->sounds_set_lowpass);
     checked_free(ti->sounds_set);
     checked_free(ti->music_set);
 
@@ -3435,6 +3480,16 @@ boolean AdjustGraphicsForEMC(void)
   return settings_changed;
 }
 
+boolean AdjustSoundsForEMC(void)
+{
+  boolean settings_changed = FALSE;
+
+  settings_changed |= adjustTreeSoundsForEMC(leveldir_first_all);
+  settings_changed |= adjustTreeSoundsForEMC(leveldir_first);
+
+  return settings_changed;
+}
+
 void LoadLevelInfo(void)
 {
   InitUserLevelDirectory(getLoginName());
@@ -3454,6 +3509,7 @@ void LoadLevelInfo(void)
   cloneTree(&leveldir_first, leveldir_first_all, TRUE);
 
   AdjustGraphicsForEMC();
+  AdjustSoundsForEMC();
 
   // before sorting, the first entries will be from the user directory
   leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);

@@ -8507,6 +8507,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.prefer_lowpass_sounds,		"prefer_lowpass_sounds"
+  },
+  {
+    TYPE_SWITCH,
     &setup.game_speed_extended,			"game_speed_extended"
   },
   {
@@ -9176,6 +9180,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->quick_switch = FALSE;
   si->input_on_focus = FALSE;
   si->prefer_aga_graphics = TRUE;
+  si->prefer_lowpass_sounds = FALSE;
   si->game_speed_extended = FALSE;
   si->game_frame_delay = GAME_FRAME_DELAY;
   si->sp_show_border_elements = FALSE;

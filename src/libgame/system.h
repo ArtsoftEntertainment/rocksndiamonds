@@ -1387,6 +1387,7 @@ struct SetupInfo
   boolean quick_switch;
   boolean input_on_focus;
   boolean prefer_aga_graphics;
+  boolean prefer_lowpass_sounds;
   boolean game_speed_extended;
   int game_frame_delay;
   boolean sp_show_border_elements;
@@ -1455,6 +1456,8 @@ struct TreeInfo
   char *graphics_set_ecs; // special EMC custom graphics set (ECS graphics)
   char *graphics_set_aga; // special EMC custom graphics set (AGA graphics)
   char *graphics_set;	// optional custom graphics set (level tree only)
+  char *sounds_set_default; // default EMC custom sounds set
+  char *sounds_set_lowpass; // special EMC custom sounds set (lowpass filter)
   char *sounds_set;	// optional custom sounds set (level tree only)
   char *music_set;	// optional custom music set (level tree only)
   char *graphics_path;	// path to optional custom graphics set (level only)

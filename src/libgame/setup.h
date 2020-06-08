@@ -324,6 +324,7 @@ int GetZipFileTreeType(char *);
 char *ExtractZipFileIntoDirectory(char *, char *, int);
 
 boolean AdjustGraphicsForEMC(void);
+boolean AdjustSoundsForEMC(void);
 
 void LoadLevelInfo(void);
 void LoadArtworkInfo(void);
