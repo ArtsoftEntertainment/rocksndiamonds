@@ -2428,6 +2428,9 @@ static void HandleMenuScreen(int mx, int my, int dx, int dy, int button,
   static int num_page_entries_all_last[NUM_SPECIAL_GFX_ARGS][MAX_MENU_MODES];
   static int choice_stores[NUM_SPECIAL_GFX_ARGS][MAX_MENU_MODES];
   static int first_entry_stores[NUM_SPECIAL_GFX_ARGS][MAX_MENU_MODES];
+  boolean has_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->mapped;
+  int mx_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x;
+  int mx_right_border = (has_scrollbar ? mx_scrollbar : SX + SXSIZE);
   int *num_page_entries_last = num_page_entries_all_last[game_status];
   int *choice_store = choice_stores[game_status];
   int *first_entry_store = first_entry_stores[game_status];
@@ -2649,7 +2652,7 @@ static void HandleMenuScreen(int mx, int my, int dx, int dy, int button,
 
   if (!anyScrollbarGadgetActive() &&
       IN_VIS_MENU(x, y) &&
-      mx < screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x &&
+      mx < mx_right_border &&
       y >= 0 && y < num_page_entries)
   {
     if (button)
@@ -4203,6 +4206,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 			     TreeInfo **ti_ptr)
 {
   TreeInfo *ti = *ti_ptr;
+  boolean has_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->mapped;
+  int mx_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x;
+  int mx_right_border = (has_scrollbar ? mx_scrollbar : SX + SXSIZE);
   int x = 0;
   int y = ti->cl_cursor;
   int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
@@ -4397,7 +4403,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
   if (!anyScrollbarGadgetActive() &&
       IN_VIS_MENU(x, y) &&
-      mx < screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x &&
+      mx < mx_right_border &&
       y >= 0 && y < num_page_entries)
   {
     if (button)
