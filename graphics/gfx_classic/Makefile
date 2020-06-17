@@ -57,10 +57,14 @@ all: $(FILES)
 %.png: %.ilbm
 	ilbmtoppm $< | pnmtopng > $@
 
-RocksCE.ilbm: RocksCE-template.ilbm
+RocksCE.png: RocksCE-template.ilbm
+ifneq ("$(wildcard RocksCE-template.ilbm)","")
 	$(RND) -e "create CE image ."
-	bmptoppm RocksCE.bmp | ppmtoilbm > RocksCE.ilbm
+	bmptoppm RocksCE.bmp | pnmtopng > $@
 	$(RM) RocksCE.bmp
+endif
+
+RocksCE-template.ilbm:
 
 clean:
 	@for i in $(FILES); do			\
