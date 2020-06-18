@@ -117,7 +117,11 @@ void InitNetworkInfo(boolean enabled, boolean connected, boolean serveronly,
 
 void InitRuntimeInfo()
 {
+#if defined(HAS_TOUCH_DEVICE)
+  runtime.uses_touch_device = TRUE;
+#else
   runtime.uses_touch_device = FALSE;
+#endif
 }
 
 void InitScoresInfo(void)

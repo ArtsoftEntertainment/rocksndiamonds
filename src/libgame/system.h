@@ -112,6 +112,7 @@
 
 // values for special settings for mobile devices
 #if defined(PLATFORM_ANDROID)
+#define HAS_TOUCH_DEVICE
 #define USE_TOUCH_INPUT_OVERLAY
 #define USE_COMPLETE_DISPLAY
 #define HAS_SCREEN_KEYBOARD
