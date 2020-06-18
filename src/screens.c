@@ -7992,6 +7992,8 @@ static boolean ConfigureVirtualButtonsMain(void)
 
   overlay.grid_button_highlight = grid_button[step_nr];
 
+  UnmapAllGadgets();
+
   FadeSetEnterMenu();
   FadeOut(REDRAW_FIELD);
 
