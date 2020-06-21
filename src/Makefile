@@ -19,6 +19,15 @@ ifndef PLATFORM				# unknown platform -- default to Unix
 PLATFORM = unix
 endif
 
+PLATFORM_BASE = $(PLATFORM)
+
+ifeq ($(PLATFORM),cross-win32)
+PLATFORM_BASE = cross-win
+endif
+ifeq ($(PLATFORM),cross-win64)
+PLATFORM_BASE = cross-win
+endif
+
 AR = ar
 RANLIB = ranlib
 ETAGS = etags
@@ -48,7 +57,7 @@ ifeq ($(PLATFORM),unix)			# compiling on Unix/Linux (generic)
 PROFILING_FLAGS = -pg
 endif
 
-ifeq ($(PLATFORM),cross-win32)		# cross-compiling to Windows
+ifeq ($(PLATFORM_BASE),cross-win)	# cross-compiling to Windows
 PROGNAME = ../$(PROGBASE).exe
 EXTRA_LDFLAGS = -lshfolder -lwsock32
 endif
@@ -200,7 +209,7 @@ AUTOCONF = conf_gfx.h conf_snd.h conf_mus.h
 ICONBASE = windows_icon
 ICON_BASEPATH = ../Special/Icons/windows_icons
 
-ifeq ($(PLATFORM),cross-win32)
+ifeq ($(PLATFORM_BASE),cross-win)
 ICON_PATH = $(ICON_BASEPATH)/$(EDITION)
 ICON = $(ICONBASE).o
 endif

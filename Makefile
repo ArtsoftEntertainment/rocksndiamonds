@@ -39,7 +39,8 @@ MAKE = make
 # JOYSTICK = -DNO_JOYSTICK
 
 # path for cross-compiling (only needed for non-native Windows build)
-CROSS_PATH_WIN32 = /usr/local/cross-tools/i386-mingw32msvc
+CROSS_PATH_WIN32 = /usr/local/cross-tools/i686-w64-mingw32
+CROSS_PATH_WIN64 = /usr/local/cross-tools/x86_64-w64-mingw32
 
 
 # -----------------------------------------------------------------------------
@@ -73,6 +74,9 @@ mac:
 
 cross-win32:
 	@PATH=$(CROSS_PATH_WIN32)/bin:${PATH} $(MAKE_CMD) PLATFORM=cross-win32
+
+cross-win64:
+	@PATH=$(CROSS_PATH_WIN64)/bin:${PATH} $(MAKE_CMD) PLATFORM=cross-win64
 
 android-compile:
 	@$(MAKE_CMD_ANDROID) compile
@@ -162,6 +166,9 @@ dist-build-unix:
 dist-build-win32:
 	@BUILD_DIST=TRUE $(MAKE) cross-win32
 
+dist-build-win64:
+	@BUILD_DIST=TRUE $(MAKE) cross-win64
+
 dist-build-macosx:
 	@BUILD_DIST=TRUE $(MAKE)
 
@@ -172,7 +179,10 @@ dist-package-unix:
 	$(MAKE_DIST) package unix
 
 dist-package-win32:
-	$(MAKE_DIST) package win
+	$(MAKE_DIST) package win32
+
+dist-package-win64:
+	$(MAKE_DIST) package win64
 
 dist-package-macosx:
 	$(MAKE_DIST) package mac
@@ -184,7 +194,10 @@ dist-copy-package-unix:
 	$(MAKE_DIST) copy-package unix
 
 dist-copy-package-win32:
-	$(MAKE_DIST) copy-package win
+	$(MAKE_DIST) copy-package win32
+
+dist-copy-package-win64:
+	$(MAKE_DIST) copy-package win64
 
 dist-copy-package-macosx:
 	$(MAKE_DIST) copy-package mac
@@ -196,7 +209,10 @@ dist-upload-unix:
 	$(MAKE_DIST) upload unix
 
 dist-upload-win32:
-	$(MAKE_DIST) upload win
+	$(MAKE_DIST) upload win32
+
+dist-upload-win64:
+	$(MAKE_DIST) upload win64
 
 dist-upload-macosx:
 	$(MAKE_DIST) upload mac
@@ -207,18 +223,21 @@ dist-upload-android:
 dist-package-all:
 	$(MAKE) dist-package-unix
 	$(MAKE) dist-package-win32
+	$(MAKE) dist-package-win64
 	$(MAKE) dist-package-macosx
 	$(MAKE) dist-package-android
 
 dist-copy-package-all:
 	$(MAKE) dist-copy-package-unix
 	$(MAKE) dist-copy-package-win32
+	$(MAKE) dist-copy-package-win64
 	$(MAKE) dist-copy-package-macosx
 	$(MAKE) dist-copy-package-android
 
 dist-upload-all:
 	$(MAKE) dist-upload-unix
 	$(MAKE) dist-upload-win32
+	$(MAKE) dist-upload-win64
 	$(MAKE) dist-upload-macosx
 	$(MAKE) dist-upload-android
 
