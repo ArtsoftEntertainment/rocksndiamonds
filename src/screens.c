@@ -3684,7 +3684,9 @@ static void DrawInfoScreen_Version(void)
   }
 
   DrawTextF(xstart1, ystart, font_head, "Platform");
-  DrawTextF(xstart2, ystart, font_text, PLATFORM_STRING);
+  DrawTextF(xstart2, ystart, font_text, "%s (%s)",
+	    PLATFORM_STRING,
+	    PLATFORM_XX_BIT_STRING);
   ystart += ystep_line;
 
   DrawTextF(xstart1, ystart, font_head, "Target");

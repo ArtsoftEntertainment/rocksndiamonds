@@ -155,6 +155,19 @@
 
 
 // ============================================================================
+// define additional platform keywords for CPU architecture
+// ============================================================================
+
+#if defined(__x86_64__) || defined(__LP64__) || defined(_LP64)
+#define PLATFORM_64_BIT
+#define PLATFORM_XX_BIT_STRING "64-bit"
+#else
+#define PLATFORM_32_BIT
+#define PLATFORM_XX_BIT_STRING "32-bit"
+#endif
+
+
+// ============================================================================
 // define additional target keywords
 // ============================================================================
 
