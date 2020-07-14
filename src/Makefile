@@ -48,11 +48,6 @@ EDITION ?= default
 # configuring platform
 # -----------------------------------------------------------------------------
 
-ifeq ($(PLATFORM),macosx)		# compiling on Mac OS X
-EXTRA_LDFLAGS = -lstdc++
-override PLATFORM = unix
-endif
-
 ifeq ($(PLATFORM),unix)			# compiling on Unix/Linux (generic)
 PROFILING_FLAGS = -pg
 endif
@@ -77,10 +72,6 @@ ifndef TARGET				# auto-detect compiling for SDL2
 endif
 
 # $(info Using SDL version $(SDL_VERSION) [TARGET == $(TARGET)])
-
-ifeq ($(TARGET),sdl)			# compiling for SDL target
-  $(error SDL library version 1.2 not supported anymore)
-endif
 
 ifeq ($(TARGET),sdl2)			# compiling for SDL2 target
 SYS_CFLAGS = -DTARGET_SDL2 $(shell sdl2-config --cflags)

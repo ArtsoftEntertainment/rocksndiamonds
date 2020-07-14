@@ -63,15 +63,6 @@ MAKE_CMD_ANDROID = $(MAKE) -C $(ANDROID_DIR)
 all:
 	@$(MAKE_CMD)
 
-sdl:
-	@$(MAKE_CMD) TARGET=sdl
-
-sdl2:
-	@$(MAKE_CMD) TARGET=sdl2
-
-mac:
-	@$(MAKE_CMD) PLATFORM=macosx
-
 cross-win32:
 	@PATH=$(CROSS_PATH_WIN32)/bin:${PATH} $(MAKE_CMD) PLATFORM=cross-win32
 
