@@ -23,7 +23,7 @@
 
 // definitions needed for "system.c"
 
-#define SURFACE_FLAGS		(0)
+#define SURFACE_FLAGS		(SDL_WINDOW_RESIZABLE)
 
 #define SET_TRANSPARENT_PIXEL	(SDL_TRUE)
 #define UNSET_TRANSPARENT_PIXEL	(SDL_FALSE)

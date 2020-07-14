@@ -497,7 +497,7 @@ static boolean SDLCreateScreen(boolean fullscreen)
 {
   SDL_Surface *new_surface = NULL;
 
-  int surface_flags_window     = SURFACE_FLAGS | SDL_WINDOW_RESIZABLE;
+  int surface_flags_window     = SURFACE_FLAGS;
   int surface_flags_fullscreen = SURFACE_FLAGS | SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 #if 1
