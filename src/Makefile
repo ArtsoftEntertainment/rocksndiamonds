@@ -57,6 +57,16 @@ PROGNAME = ../$(PROGBASE).exe
 EXTRA_LDFLAGS = -lshfolder -lwsock32
 endif
 
+ifdef BUILD_DIST			# distribution build
+ifeq ($(shell uname -s),Darwin)		# compiling on Mac OS X
+MAC_TARGET_VERSION_MIN = 10.7
+EXTRA_FLAGS_MAC = -mmacosx-version-min=$(MAC_TARGET_VERSION_MIN)
+EXTRA_CFLAGS = $(EXTRA_FLAGS_MAC)
+EXTRA_LDFLAGS = $(EXTRA_FLAGS_MAC)
+MACOSX_DEPLOYMENT_TARGET = $MAC_TARGET_VERSION_MIN
+endif
+endif
+
 
 # -----------------------------------------------------------------------------
 # configuring target
