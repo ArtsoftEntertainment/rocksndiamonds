@@ -57,6 +57,7 @@ int			button_status = MB_NOT_PRESSED;
 boolean			motion_status = FALSE;
 int			wheel_steps = DEFAULT_WHEEL_STEPS;
 boolean			keyrepeat_status = TRUE;
+boolean			textinput_status = FALSE;
 
 int			redraw_mask = REDRAW_NONE;
 
@@ -1753,6 +1754,8 @@ KeyMod GetKeyModStateFromEvents(void)
 
 void StartTextInput(int x, int y, int width, int height)
 {
+  textinput_status = TRUE;
+
 #if defined(HAS_SCREEN_KEYBOARD)
   SDL_StartTextInput();
 
@@ -1767,6 +1770,8 @@ void StartTextInput(int x, int y, int width, int height)
 
 void StopTextInput(void)
 {
+  textinput_status = FALSE;
+
 #if defined(HAS_SCREEN_KEYBOARD)
   SDL_StopTextInput();
 

@@ -1760,6 +1760,7 @@ extern int			button_status;
 extern boolean			motion_status;
 extern int			wheel_steps;
 extern boolean			keyrepeat_status;
+extern boolean			textinput_status;
 
 extern int			redraw_mask;
 

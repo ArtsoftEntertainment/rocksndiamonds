@@ -1380,13 +1380,9 @@ static void HandleButtonOrFinger(int mx, int my, int button)
   }
 }
 
-static boolean checkTextInputKeyModState(void)
+static boolean checkTextInputKey(Key key)
 {
-  // when playing, only handle raw key events and ignore text input
-  if (game_status == GAME_MODE_PLAYING)
-    return FALSE;
-
-  return ((GetKeyModState() & KMOD_TextInput) != KMOD_None);
+  return (textinput_status && KSYM_PRINTABLE(key));
 }
 
 void HandleTextEvent(TextEvent *event)
@@ -1404,16 +1400,12 @@ void HandleTextEvent(TextEvent *event)
 	GetKeyModState());
 #endif
 
-#if !defined(HAS_SCREEN_KEYBOARD)
-  // non-mobile devices: only handle key input with modifier keys pressed here
-  // (every other key input is handled directly as physical key input event)
-  if (!checkTextInputKeyModState())
-    return;
-#endif
-
-  // process text input as "classic" (with uppercase etc.) key input event
-  HandleKey(key, KEY_PRESSED);
-  HandleKey(key, KEY_RELEASED);
+  if (checkTextInputKey(key))
+  {
+    // process printable keys (with uppercase etc.) in text input mode
+    HandleKey(key, KEY_PRESSED);
+    HandleKey(key, KEY_RELEASED);
+  }
 }
 
 void HandlePauseResumeEvent(PauseResumeEvent *event)
@@ -1470,8 +1462,8 @@ void HandleKeyEvent(KeyEvent *event)
 
   HandleKeyModState(keymod, key_status);
 
-  // only handle raw key input without text modifier keys pressed
-  if (!checkTextInputKeyModState())
+  // process all keys if not in text input mode or if non-printable keys
+  if (!checkTextInputKey(key))
     HandleKey(key, key_status);
 }
 

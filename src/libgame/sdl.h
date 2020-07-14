@@ -350,6 +350,15 @@ typedef struct UserEventInfo	UserEvent;
 #define KSYM_FKEY_LAST		KSYM_F12
 #define KSYM_NUM_FKEYS		(KSYM_FKEY_LAST - KSYM_FKEY_FIRST + 1)
 
+#define KSYM_PRINTABLE(k)	(((k) >= KSYM_space &&			\
+				  (k) <= KSYM_z)        ||		\
+				 (k) == KSYM_Adiaeresis ||		\
+				 (k) == KSYM_Odiaeresis ||		\
+				 (k) == KSYM_Udiaeresis ||		\
+				 (k) == KSYM_adiaeresis ||		\
+				 (k) == KSYM_odiaeresis ||		\
+				 (k) == KSYM_udiaeresis)
+
 #define KMOD_None		KMOD_NONE
 #define KMOD_Shift_L		KMOD_LSHIFT
 #define KMOD_Shift_R		KMOD_RSHIFT
@@ -370,8 +379,6 @@ typedef struct UserEventInfo	UserEvent;
 				 KMOD_Control |	\
 				 KMOD_Meta    |	\
 				 KMOD_Alt)
-
-#define KMOD_TextInput		(KMOD_Shift | KMOD_Alt_R)
 
 // SDL function definitions
 
