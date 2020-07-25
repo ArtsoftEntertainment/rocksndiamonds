@@ -510,8 +510,6 @@ static boolean SDLCreateScreen(boolean fullscreen)
   int renderer_flags = SDL_RENDERER_SOFTWARE;
 #endif
 
-  SDLSetScreenSizeAndOffsets(video.width, video.height);
-
   int width  = video.width;
   int height = video.height;
   int screen_width  = video.screen_width;
@@ -573,7 +571,6 @@ static boolean SDLCreateScreen(boolean fullscreen)
 
     if (sdl_renderer != NULL)
     {
-      SDL_RenderSetLogicalSize(sdl_renderer, screen_width, screen_height);
       // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
       SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, setup.window_scaling_quality);
 
@@ -612,6 +609,8 @@ static boolean SDLCreateScreen(boolean fullscreen)
   {
     Error(ERR_WARN, "SDL_CreateWindow() failed: %s", SDL_GetError());
   }
+
+  SDLSetScreenProperties();
 
   // store fullscreen state ("video.fullscreen_enabled" may not reflect this!)
   if (new_surface != NULL)
@@ -767,17 +766,34 @@ void SDLSetWindowFullscreen(boolean fullscreen)
 
 void SDLSetDisplaySize(void)
 {
-  SDL_Rect display_bounds;
+  if (sdl_renderer != NULL)
+  {
+    int w, h;
 
-  SDL_GetDisplayBounds(0, &display_bounds);
+    SDL_GetRendererOutputSize(sdl_renderer, &w, &h);
 
-  video.display_width  = display_bounds.w;
-  video.display_height = display_bounds.h;
+    video.display_width  = w;
+    video.display_height = h;
 
 #if 0
-  Error(ERR_DEBUG, "SDL real screen size: %d x %d",
-	video.display_width, video.display_height);
+    Error(ERR_DEBUG, "SDL renderer size: %d x %d",
+	  video.display_width, video.display_height);
 #endif
+  }
+  else
+  {
+    SDL_Rect display_bounds;
+
+    SDL_GetDisplayBounds(0, &display_bounds);
+
+    video.display_width  = display_bounds.w;
+    video.display_height = display_bounds.h;
+
+#if 0
+    Error(ERR_DEBUG, "SDL display size: %d x %d",
+	  video.display_width, video.display_height);
+#endif
+  }
 }
 
 void SDLSetScreenSizeAndOffsets(int width, int height)
@@ -821,6 +837,7 @@ void SDLSetScreenSizeForRenderer(int width, int height)
 
 void SDLSetScreenProperties(void)
 {
+  SDLSetDisplaySize();
   SDLSetScreenSizeAndOffsets(video.width, video.height);
   SDLSetScreenSizeForRenderer(video.screen_width, video.screen_height);
 }
