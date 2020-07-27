@@ -271,9 +271,12 @@ conf_snd.h: conf_snd.c $(CNFS_CMD)
 conf_mus.h: conf_mus.c $(CNFS_CMD)
 	@$(MAKE) auto-conf
 
-$(TIMESTAMP_FILE): $(SRCS) $(RNDLIBS)
+conf-time:
 	@echo '#define SOURCE_DATE_STRING "$(SOURCE_DATE_STRING)"' \
 	> $(TIMESTAMP_FILE)
+
+$(TIMESTAMP_FILE): $(SRCS) $(RNDLIBS)
+	@$(MAKE) conf-time
 
 $(ICON):
 #	$(CONVERT) $(ICON32X32) $(CONVERT_ICON_ARGS) $(ICONBASE).ico

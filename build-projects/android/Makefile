@@ -1,56 +1,50 @@
-# -----------------------------------------------------------------------------
+# =============================================================================
 # Rocks'n'Diamonds for Android
 # -----------------------------------------------------------------------------
-
-# debugging C/ASM:
-# arm-linux-androideabi-objdump -S obj/local/armeabi-v7a/libmain.so
+# (c) 1995-2020 by Artsoft Entertainment
+#                  Holger Schemel
+#                  info@artsoft.org
+#                  http://www.artsoft.org/
+# -----------------------------------------------------------------------------
+# build-projects/android/Makefile
+# =============================================================================
 
 PROGBASE = rocksndiamonds
 
-ANDROID_SDK_PATH := ${HOME}/projects/Android/SDK/android-sdk
-ANDROID_NDK_PATH := ${HOME}/projects/Android/SDK/android-ndk
+AUTO_GENERATED_BUILD_DIRS = .gradle app/.externalNativeBuild app/build
+AUTO_GENERATED_OTHER_DIRS = app/jni/SDL2* app/src/main/assets .prepared
 
-SDK_TOOLS_PATH := ${ANDROID_SDK_PATH}/tools
-SDK_PLATFORM_TOOLS_PATH := ${ANDROID_SDK_PATH}/platform-tools
-NDK_PATH := ${ANDROID_NDK_PATH}
-
-PATH := ${PATH}:${SDK_TOOLS_PATH}:${SDK_PLATFORM_TOOLS_PATH}:${NDK_PATH}
-
-AUTO_GENERATED_DIRS = bin gen obj
+export ANDROID_HOME := $(HOME)/projects/Android/SDK
 
 
 all: package
 
+sdl:
+	./build-scripts/create_sdl.sh
+
 manifest:
 	./build-scripts/create_manifest.sh
 
-compile: manifest
-	ndk-build NDK_DEBUG=1
-
-verbose: manifest
-	ndk-build V=1
-
-package: compile
-	ANDROID_AAPT_IGNORE="__IGNORE_NOTHING__" ant debug
-
-install: package
-	adb install -r bin/$(PROGBASE)-debug.apk
-
-ant-init:
-	android update project --name $(PROGBASE) --path .
+assets:
+	./build-scripts/create_assets.sh
 
 assets-toc:
-	./build-scripts/create_asset_tocs.sh assets
+	./build-scripts/create_asset_tocs.sh app/src/main/assets
+
+.prepared: sdl manifest assets assets-toc
+	make -C ../.. auto-conf conf-time
+
+prepare: .prepared
+
+package: prepare
+	./gradlew assembleDebug
 
 clean-build:
-	ndk-build clean
+	./gradlew clean
 
 clean-auto-generated:
-	rm -rf $(AUTO_GENERATED_DIRS)
+	rm -rf $(AUTO_GENERATED_BUILD_DIRS) $(AUTO_GENERATED_OTHER_DIRS)
 
-clean: clean-build clean-auto-generated
+clean: clean-build
 
-dist-clean: clean
-
-coredump:
-	adb logcat -d | ndk-stack -sym obj/local/armeabi-v7a
+dist-clean: clean-build clean-auto-generated

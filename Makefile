@@ -69,17 +69,11 @@ cross-win32:
 cross-win64:
 	@PATH=$(CROSS_PATH_WIN64)/bin:${PATH} $(MAKE_CMD) PLATFORM=cross-win64
 
-android-compile:
-	@$(MAKE_CMD_ANDROID) compile
+android-prepare:
+	@$(MAKE_CMD_ANDROID) prepare
 
 android-package:
 	@$(MAKE_CMD_ANDROID) package
-
-android-install:
-	@$(MAKE_CMD_ANDROID) install
-
-android-assets-toc:
-	@$(MAKE_CMD_ANDROID) assets-toc
 
 android-clean:
 	@$(MAKE_CMD_ANDROID) clean
@@ -104,6 +98,9 @@ MAKE_LEVELSKETCH = ./Scripts/make_levelsketch_images.sh
 
 auto-conf:
 	@$(MAKE_CMD) auto-conf
+
+conf-time:
+	@$(MAKE_CMD) conf-time
 
 run: all
 	@$(MAKE_CMD) run
