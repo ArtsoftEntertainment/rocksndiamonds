@@ -2557,6 +2557,9 @@ static void setJoystickButton(int nr, int button_id_raw, int button_state)
 
 void HandleJoystickEvent(Event *event)
 {
+  // when using joystick, disable overlay touch buttons
+  runtime.uses_touch_device = FALSE;
+
   switch (event->type)
   {
     case SDL_CONTROLLERDEVICEADDED:
