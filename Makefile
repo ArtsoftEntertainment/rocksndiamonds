@@ -148,7 +148,7 @@ dist-clean:
 dist-clean-android:
 	@$(MAKE_CMD_ANDROID) dist-clean
 
-dist-build-unix:
+dist-build-linux:
 	@BUILD_DIST=TRUE $(MAKE)
 
 dist-build-win32:
@@ -157,14 +157,14 @@ dist-build-win32:
 dist-build-win64:
 	@BUILD_DIST=TRUE $(MAKE) cross-win64
 
-dist-build-macosx:
+dist-build-mac:
 	@BUILD_DIST=TRUE $(MAKE)
 
 dist-build-android:
 	@BUILD_DIST=TRUE $(MAKE) android
 
-dist-package-unix:
-	$(MAKE_DIST) package unix
+dist-package-linux:
+	$(MAKE_DIST) package linux
 
 dist-package-win32:
 	$(MAKE_DIST) package win32
@@ -172,14 +172,14 @@ dist-package-win32:
 dist-package-win64:
 	$(MAKE_DIST) package win64
 
-dist-package-macosx:
+dist-package-mac:
 	$(MAKE_DIST) package mac
 
 dist-package-android:
 	$(MAKE_DIST) package android
 
-dist-copy-package-unix:
-	$(MAKE_DIST) copy-package unix
+dist-copy-package-linux:
+	$(MAKE_DIST) copy-package linux
 
 dist-copy-package-win32:
 	$(MAKE_DIST) copy-package win32
@@ -187,14 +187,14 @@ dist-copy-package-win32:
 dist-copy-package-win64:
 	$(MAKE_DIST) copy-package win64
 
-dist-copy-package-macosx:
+dist-copy-package-mac:
 	$(MAKE_DIST) copy-package mac
 
 dist-copy-package-android:
 	$(MAKE_DIST) copy-package android
 
-dist-upload-unix:
-	$(MAKE_DIST) upload unix
+dist-upload-linux:
+	$(MAKE_DIST) upload linux
 
 dist-upload-win32:
 	$(MAKE_DIST) upload win32
@@ -202,31 +202,31 @@ dist-upload-win32:
 dist-upload-win64:
 	$(MAKE_DIST) upload win64
 
-dist-upload-macosx:
+dist-upload-mac:
 	$(MAKE_DIST) upload mac
 
 dist-upload-android:
 	$(MAKE_DIST) upload android
 
 dist-package-all:
-	$(MAKE) dist-package-unix
+	$(MAKE) dist-package-linux
 	$(MAKE) dist-package-win32
 	$(MAKE) dist-package-win64
-	$(MAKE) dist-package-macosx
+	$(MAKE) dist-package-mac
 	$(MAKE) dist-package-android
 
 dist-copy-package-all:
-	$(MAKE) dist-copy-package-unix
+	$(MAKE) dist-copy-package-linux
 	$(MAKE) dist-copy-package-win32
 	$(MAKE) dist-copy-package-win64
-	$(MAKE) dist-copy-package-macosx
+	$(MAKE) dist-copy-package-mac
 	$(MAKE) dist-copy-package-android
 
 dist-upload-all:
-	$(MAKE) dist-upload-unix
+	$(MAKE) dist-upload-linux
 	$(MAKE) dist-upload-win32
 	$(MAKE) dist-upload-win64
-	$(MAKE) dist-upload-macosx
+	$(MAKE) dist-upload-mac
 	$(MAKE) dist-upload-android
 
 dist-release-all: dist-package-all dist-copy-package-all dist-upload-all
