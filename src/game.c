@@ -1785,7 +1785,7 @@ static void InitPlayerField(int x, int y, int element, boolean init_game)
     player->jy = player->last_jy = y;
   }
 
-  if (!init_game)
+  // always check if player was just killed and should be reanimated
   {
     int player_nr = GET_PLAYER_NR(element);
     struct PlayerInfo *player = &stored_player[player_nr];
