@@ -1382,7 +1382,12 @@ static void HandleButtonOrFinger(int mx, int my, int button)
 
 static boolean checkTextInputKey(Key key)
 {
-  return (textinput_status && KSYM_PRINTABLE(key));
+  // when playing, only handle raw key events and ignore text input
+  if (game_status == GAME_MODE_PLAYING)
+    return FALSE;
+
+  // else handle all printable keys as text input
+  return KSYM_PRINTABLE(key);
 }
 
 void HandleTextEvent(TextEvent *event)
