@@ -6269,6 +6269,16 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "df_wooden_wall",
     "wooden wall (DF style)",
   },
+  {
+    "spring.left",
+    "spring",
+    "spring (starts moving left)"
+  },
+  {
+    "spring.right",
+    "spring",
+    "spring (starts moving right)"
+  },
 
   // --------------------------------------------------------------------------
   // "real" (and therefore drawable) runtime elements

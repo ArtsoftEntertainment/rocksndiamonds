@@ -1877,6 +1877,8 @@ static void InitField(int x, int y, boolean init_game)
     case EL_MOLE_RIGHT:
     case EL_MOLE_UP:
     case EL_MOLE_DOWN:
+    case EL_SPRING_LEFT:
+    case EL_SPRING_RIGHT:
       InitMovDir(x, y);
       break;
 
@@ -4487,6 +4489,12 @@ void InitMovDir(int x, int y)
     case EL_MOLE_DOWN:
       Feld[x][y] = EL_MOLE;
       MovDir[x][y] = direction[2][element - EL_MOLE_LEFT];
+      break;
+
+    case EL_SPRING_LEFT:
+    case EL_SPRING_RIGHT:
+      Feld[x][y] = EL_SPRING;
+      MovDir[x][y] = direction[2][element - EL_SPRING_LEFT];
       break;
 
     default:

@@ -1898,7 +1898,10 @@
 #define EL_MM_END_2			(EL_DF_START2 + 430)
 #define EL_MM_END			EL_MM_END_2
 
-#define NUM_FILE_ELEMENTS		1215
+#define EL_SPRING_LEFT			1215
+#define EL_SPRING_RIGHT			1216
+
+#define NUM_FILE_ELEMENTS		1217
 
 
 // "real" (and therefore drawable) runtime elements

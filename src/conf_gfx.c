@@ -1764,6 +1764,11 @@ struct ConfigInfo image_config[] =
   { "spring.ypos",				"13"			},
   { "spring.frames",				"1"			},
 
+  { "spring.left",				UNDEFINED_FILENAME	},
+  { "spring.left.clone_from",			"spring"		},
+  { "spring.right",				UNDEFINED_FILENAME	},
+  { "spring.right.clone_from",			"spring"		},
+
   { "emc_steelwall_1",				"RocksDC.png"		},
   { "emc_steelwall_1.xpos",			"14"			},
   { "emc_steelwall_1.ypos",			"0"			},

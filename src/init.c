@@ -78,6 +78,11 @@ static int copy_properties[][5] =
     EL_MOLE_UP,			EL_MOLE_DOWN
   },
   {
+    EL_SPRING,
+    EL_SPRING_LEFT,		EL_SPRING_RIGHT,
+    EL_SPRING_LEFT,		EL_SPRING_RIGHT,	// (to match array size)
+  },
+  {
     -1,
     -1, -1, -1, -1
   }
@@ -2357,6 +2362,8 @@ static int get_special_property_bit(int element, int property_bit_nr)
     { EL_SP_ELECTRON,		15	},
     { EL_BALLOON,		16	},
     { EL_SPRING,	        17	},
+    { EL_SPRING_LEFT,	        17	},
+    { EL_SPRING_RIGHT,	        17	},
     { EL_EMC_ANDROID,	        18	},
 
     { -1,			-1	},

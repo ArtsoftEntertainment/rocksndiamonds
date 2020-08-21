@@ -4056,13 +4056,13 @@ static int editor_el_emerald_mine_club[] =
 
   EL_EMC_MAGIC_BALL,
   EL_EMC_MAGIC_BALL_SWITCH,
-  EL_SPRING,
-  EL_EMC_SPRING_BUMPER,
-
   EL_EMC_LENSES,
   EL_EMC_MAGNIFIER,
-  EL_EMPTY,
-  EL_EMPTY,
+
+  EL_SPRING_LEFT,
+  EL_SPRING,
+  EL_SPRING_RIGHT,
+  EL_EMC_SPRING_BUMPER,
 
   EL_BALLOON,
   EL_YAMYAM_UP,
@@ -9741,6 +9741,8 @@ static struct
   { EL_EMC_LENSES,	&level.lenses_score,		TEXT_COLLECTING	},
   { EL_EMC_MAGNIFIER,	&level.magnify_score,		TEXT_COLLECTING	},
   { EL_SPRING,		&level.slurp_score,		TEXT_SLURPING	},
+  { EL_SPRING_LEFT,	&level.slurp_score,		TEXT_SLURPING	},
+  { EL_SPRING_RIGHT,	&level.slurp_score,		TEXT_SLURPING	},
   { EL_EMC_LENSES,	&level.lenses_time,		TEXT_DURATION	},
   { EL_EMC_MAGNIFIER,	&level.magnify_time,		TEXT_DURATION	},
   { EL_MM_FUSE_ACTIVE,	&level.mm_time_fuse,		TEXT_DELAY_OFF	},
@@ -10016,7 +10018,9 @@ static void DrawPropertiesConfig(void)
   if (MAYBE_DONT_COLLIDE_WITH(properties_element))
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH);
 
-  if (properties_element == EL_SPRING)
+  if (properties_element == EL_SPRING ||
+      properties_element == EL_SPRING_LEFT ||
+      properties_element == EL_SPRING_RIGHT)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_SPRING_BUG);
 
   if (properties_element == EL_TIME_ORB_FULL)
