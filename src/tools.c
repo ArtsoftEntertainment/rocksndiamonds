@@ -6535,11 +6535,11 @@ em_object_mapping_list[GAME_TILE_MAX + 1] =
     EL_SPRING,				-1, -1
   },
   {
-    Xspring_e,				FALSE,	FALSE,
+    Xspring_e,				TRUE,	FALSE,
     EL_SPRING_RIGHT,			-1, -1
   },
   {
-    Xspring_w,				FALSE,	FALSE,
+    Xspring_w,				TRUE,	FALSE,
     EL_SPRING_LEFT,			-1, -1
   },
   {
@@ -6628,11 +6628,11 @@ em_object_mapping_list[GAME_TILE_MAX + 1] =
     EL_NUT,				-1, MV_BIT_LEFT
   },
   {
-    Xpush_spring_e,			TRUE,	FALSE,
+    Xpush_spring_e,			FALSE,	FALSE,
     EL_SPRING_RIGHT,			-1, MV_BIT_RIGHT
   },
   {
-    Xpush_spring_w,			TRUE,	FALSE,
+    Xpush_spring_w,			FALSE,	FALSE,
     EL_SPRING_LEFT,			-1, MV_BIT_LEFT
   },
 

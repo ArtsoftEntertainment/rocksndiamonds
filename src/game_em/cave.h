@@ -52,6 +52,8 @@ enum
   Cbomb,
   Cnut,
   Cspring,
+  Cspring_e,
+  Cspring_w,
   Cpush_emerald_e,
   Cpush_emerald_w,
   Cpush_diamond_e,

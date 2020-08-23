@@ -40,6 +40,12 @@
  * behaviour.
  */
 
+/* changes for game engine integration in Rocks'n'Diamonds:
+ *
+ * added support for rolling spring (not mapped to pushed spring)
+ * - required for Elvis Mine 8, levels 3, 23, 48 and 73
+ */
+
 #define GET_BE16(x)		((&x)[0] << 8 | (&x)[1])
 
 static const short map_emc_raw[256] =
@@ -62,8 +68,8 @@ static const short map_emc_raw[256] =
   Cdynamite_2,		Cdynamite_3,	Cdynamite_4,	Cacid_s,	//  60
 
   Cexit_1,		Cexit_2,	Cexit_3,	Cballoon,	//  64
-  Cplant,		Cspring,	Cspring,	Cpush_spring_w,	//  68
-  Cpush_spring_e,	Cball_1,	Cball_2,	Candroid,	//  72
+  Cplant,		Cspring,	Cspring,	Cspring_w,	//  68
+  Cspring_e,		Cball_1,	Cball_2,	Candroid,	//  72
   Cpause,		Candroid,	Candroid,	Candroid,	//  76
   Candroid,		Candroid,	Candroid,	Candroid,	//  80
   Candroid,		Cblank,		Cblank,		Cblank,		//  84
