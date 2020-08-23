@@ -6852,11 +6852,11 @@ em_object_mapping_list[GAME_TILE_MAX + 1] =
   },
 
   {
-    Xdrip,				FALSE,	FALSE,
+    Xdrip,				TRUE,	FALSE,
     EL_AMOEBA_DROP,			ACTION_GROWING, -1
   },
   {
-    Xdrip_fall,				TRUE,	FALSE,
+    Xdrip_fall,				FALSE,	FALSE,
     EL_AMOEBA_DROP,			-1, -1
   },
   {
