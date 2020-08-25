@@ -2999,6 +2999,9 @@ static void InitGameEngine(void)
   game_em.use_old_push_elements =
     (game.engine_version < VERSION_IDENT(4,1,4,2));
 
+  game_em.use_old_push_into_acid =
+    (game.engine_version < VERSION_IDENT(4,1,4,2));
+
   game_em.use_wrap_around =
     (game.engine_version > VERSION_IDENT(4,1,4,1));
 

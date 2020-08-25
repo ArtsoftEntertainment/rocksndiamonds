@@ -48,6 +48,7 @@ struct GameInfo_EM
   boolean use_old_explosions;
   boolean use_old_android;
   boolean use_old_push_elements;
+  boolean use_old_push_into_acid;
   boolean use_wrap_around;
 };
 

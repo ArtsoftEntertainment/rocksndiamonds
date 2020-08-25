@@ -5744,6 +5744,8 @@ static void Lpush_emerald_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x+2][y-1] == Xblank)
 	cave[x+2][y-1] = Xsplash_e;
       if (cave[x][y-1] == Xblank)
@@ -5790,6 +5792,8 @@ static void Lpush_emerald_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x][y-1] == Xblank)
 	cave[x][y-1] = Xsplash_e;
       if (cave[x-2][y-1] == Xblank)
@@ -5836,6 +5840,8 @@ static void Lpush_diamond_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x+2][y-1] == Xblank)
 	cave[x+2][y-1] = Xsplash_e;
       if (cave[x][y-1] == Xblank)
@@ -5882,6 +5888,8 @@ static void Lpush_diamond_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x][y-1] == Xblank)
 	cave[x][y-1] = Xsplash_e;
       if (cave[x-2][y-1] == Xblank)
@@ -5928,6 +5936,8 @@ static void Lpush_stone_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x+2][y-1] == Xblank)
 	cave[x+2][y-1] = Xsplash_e;
       if (cave[x][y-1] == Xblank)
@@ -5974,6 +5984,8 @@ static void Lpush_stone_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x][y-1] == Xblank)
 	cave[x][y-1] = Xsplash_e;
       if (cave[x-2][y-1] == Xblank)
@@ -6020,6 +6032,8 @@ static void Lpush_bomb_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x+2][y-1] == Xblank)
 	cave[x+2][y-1] = Xsplash_e;
       if (cave[x][y-1] == Xblank)
@@ -6066,6 +6080,8 @@ static void Lpush_bomb_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x][y-1] == Xblank)
 	cave[x][y-1] = Xsplash_e;
       if (cave[x-2][y-1] == Xblank)
@@ -6112,6 +6128,8 @@ static void Lpush_nut_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x+2][y-1] == Xblank)
 	cave[x+2][y-1] = Xsplash_e;
       if (cave[x][y-1] == Xblank)
@@ -6158,6 +6176,8 @@ static void Lpush_nut_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x][y-1] == Xblank)
 	cave[x][y-1] = Xsplash_e;
       if (cave[x-2][y-1] == Xblank)
@@ -6204,6 +6224,8 @@ static void Lpush_spring_e(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x+2][y-1] == Xblank)
 	cave[x+2][y-1] = Xsplash_e;
       if (cave[x][y-1] == Xblank)
@@ -6250,6 +6272,8 @@ static void Lpush_spring_w(int x, int y)
     case Xacid_6:
     case Xacid_7:
     case Xacid_8:
+      if (game_em.use_old_push_into_acid)
+	break;
       if (cave[x][y-1] == Xblank)
 	cave[x][y-1] = Xsplash_e;
       if (cave[x-2][y-1] == Xblank)
