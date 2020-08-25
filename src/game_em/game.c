@@ -75,6 +75,8 @@ void InitGameEngine_EM(void)
 {
   prepare_em_level();
 
+  logic_init();
+
   game_initscreen();
 
   RedrawPlayfield_EM(FALSE);

@@ -82,6 +82,21 @@ static const byte is_amoeba[GAME_TILE_MAX] =
   [Xamoeba_8]		= 1
 };
 
+static byte is_android_blank[GAME_TILE_MAX] =
+{
+  [Xblank]		= 1,
+  [Xsplash_e]		= 1,
+  [Xsplash_w]		= 1,
+  [Xfake_acid_1]	= 1,
+  [Xfake_acid_2]	= 1,
+  [Xfake_acid_3]	= 1,
+  [Xfake_acid_4]	= 1,
+  [Xfake_acid_5]	= 1,
+  [Xfake_acid_6]	= 1,
+  [Xfake_acid_7]	= 1,
+  [Xfake_acid_8]	= 1
+};
+
 static const byte is_android_walkable[GAME_TILE_MAX] =
 {
   [Xblank]		= 1,
@@ -1553,14 +1568,14 @@ static void Landroid(int x, int y)
 
   if (lev.android_clone_cnt == 0)
   {
-    if (!is_blank[cave[x-1][y-1]] &&
-	!is_blank[cave[x][y-1]]   &&
-	!is_blank[cave[x+1][y-1]] &&
-	!is_blank[cave[x-1][y]]   &&
-	!is_blank[cave[x+1][y]]   &&
-	!is_blank[cave[x-1][y+1]] &&
-	!is_blank[cave[x][y+1]]   &&
-	!is_blank[cave[x+1][y+1]])
+    if (!is_android_blank[cave[x-1][y-1]] &&
+	!is_android_blank[cave[x][y-1]]   &&
+	!is_android_blank[cave[x+1][y-1]] &&
+	!is_android_blank[cave[x-1][y]]   &&
+	!is_android_blank[cave[x+1][y]]   &&
+	!is_android_blank[cave[x-1][y+1]] &&
+	!is_android_blank[cave[x][y+1]]   &&
+	!is_android_blank[cave[x+1][y+1]])
       goto android_move;
 
     switch (RANDOM(8))
@@ -1664,91 +1679,91 @@ static void Landroid(int x, int y)
       /* randomly find a direction to move */
 
       case 0: /* S,NE,W,NW,SE,E,SW,N */
-	if (is_blank[cave[x][y+1]])   goto android_s;
-	if (is_blank[cave[x+1][y-1]]) goto android_ne;
-	if (is_blank[cave[x-1][y]])   goto android_w;
-	if (is_blank[cave[x-1][y-1]]) goto android_nw;
-	if (is_blank[cave[x+1][y+1]]) goto android_se;
-	if (is_blank[cave[x+1][y]])   goto android_e;
-	if (is_blank[cave[x-1][y+1]]) goto android_sw;
-	if (is_blank[cave[x][y-1]])   goto android_n;
+	if (is_android_blank[cave[x][y+1]])   goto android_s;
+	if (is_android_blank[cave[x+1][y-1]]) goto android_ne;
+	if (is_android_blank[cave[x-1][y]])   goto android_w;
+	if (is_android_blank[cave[x-1][y-1]]) goto android_nw;
+	if (is_android_blank[cave[x+1][y+1]]) goto android_se;
+	if (is_android_blank[cave[x+1][y]])   goto android_e;
+	if (is_android_blank[cave[x-1][y+1]]) goto android_sw;
+	if (is_android_blank[cave[x][y-1]])   goto android_n;
 	goto android_move;
 
       case 1: /* NW,SE,N,S,NE,SW,E,W */
-	if (is_blank[cave[x-1][y-1]]) goto android_nw;
-	if (is_blank[cave[x+1][y+1]]) goto android_se;
-	if (is_blank[cave[x][y-1]])   goto android_n;
-	if (is_blank[cave[x][y+1]])   goto android_s;
-	if (is_blank[cave[x+1][y-1]]) goto android_ne;
-	if (is_blank[cave[x-1][y+1]]) goto android_sw;
-	if (is_blank[cave[x+1][y]])   goto android_e;
-	if (is_blank[cave[x-1][y]])   goto android_w;
+	if (is_android_blank[cave[x-1][y-1]]) goto android_nw;
+	if (is_android_blank[cave[x+1][y+1]]) goto android_se;
+	if (is_android_blank[cave[x][y-1]])   goto android_n;
+	if (is_android_blank[cave[x][y+1]])   goto android_s;
+	if (is_android_blank[cave[x+1][y-1]]) goto android_ne;
+	if (is_android_blank[cave[x-1][y+1]]) goto android_sw;
+	if (is_android_blank[cave[x+1][y]])   goto android_e;
+	if (is_android_blank[cave[x-1][y]])   goto android_w;
 	goto android_move;
 
       case 2: /* SW,E,S,W,N,NW,SE,NE */
-	if (is_blank[cave[x-1][y+1]]) goto android_sw;
-	if (is_blank[cave[x+1][y]])   goto android_e;
-	if (is_blank[cave[x][y+1]])   goto android_s;
-	if (is_blank[cave[x-1][y]])   goto android_w;
-	if (is_blank[cave[x][y-1]])   goto android_n;
-	if (is_blank[cave[x-1][y-1]]) goto android_nw;
-	if (is_blank[cave[x+1][y+1]]) goto android_se;
-	if (is_blank[cave[x+1][y-1]]) goto android_ne;
+	if (is_android_blank[cave[x-1][y+1]]) goto android_sw;
+	if (is_android_blank[cave[x+1][y]])   goto android_e;
+	if (is_android_blank[cave[x][y+1]])   goto android_s;
+	if (is_android_blank[cave[x-1][y]])   goto android_w;
+	if (is_android_blank[cave[x][y-1]])   goto android_n;
+	if (is_android_blank[cave[x-1][y-1]]) goto android_nw;
+	if (is_android_blank[cave[x+1][y+1]]) goto android_se;
+	if (is_android_blank[cave[x+1][y-1]]) goto android_ne;
 	goto android_move;
 
       case 3: /* N,SE,NE,E,W,S,NW,SW */
-	if (is_blank[cave[x][y-1]])   goto android_n;
-	if (is_blank[cave[x+1][y+1]]) goto android_se;
-	if (is_blank[cave[x+1][y-1]]) goto android_ne;
-	if (is_blank[cave[x+1][y]])   goto android_e;
-	if (is_blank[cave[x-1][y]])   goto android_w;
-	if (is_blank[cave[x][y+1]])   goto android_s;
-	if (is_blank[cave[x-1][y-1]]) goto android_nw;
-	if (is_blank[cave[x-1][y+1]]) goto android_sw;
+	if (is_android_blank[cave[x][y-1]])   goto android_n;
+	if (is_android_blank[cave[x+1][y+1]]) goto android_se;
+	if (is_android_blank[cave[x+1][y-1]]) goto android_ne;
+	if (is_android_blank[cave[x+1][y]])   goto android_e;
+	if (is_android_blank[cave[x-1][y]])   goto android_w;
+	if (is_android_blank[cave[x][y+1]])   goto android_s;
+	if (is_android_blank[cave[x-1][y-1]]) goto android_nw;
+	if (is_android_blank[cave[x-1][y+1]]) goto android_sw;
 	goto android_move;
 
       case 4: /* SE,NW,E,NE,SW,W,N,S */
-	if (is_blank[cave[x+1][y+1]]) goto android_se;
-	if (is_blank[cave[x-1][y-1]]) goto android_nw;
-	if (is_blank[cave[x+1][y]])   goto android_e;
-	if (is_blank[cave[x+1][y-1]]) goto android_ne;
-	if (is_blank[cave[x-1][y+1]]) goto android_sw;
-	if (is_blank[cave[x-1][y]])   goto android_w;
-	if (is_blank[cave[x][y-1]])   goto android_n;
-	if (is_blank[cave[x][y+1]])   goto android_s;
+	if (is_android_blank[cave[x+1][y+1]]) goto android_se;
+	if (is_android_blank[cave[x-1][y-1]]) goto android_nw;
+	if (is_android_blank[cave[x+1][y]])   goto android_e;
+	if (is_android_blank[cave[x+1][y-1]]) goto android_ne;
+	if (is_android_blank[cave[x-1][y+1]]) goto android_sw;
+	if (is_android_blank[cave[x-1][y]])   goto android_w;
+	if (is_android_blank[cave[x][y-1]])   goto android_n;
+	if (is_android_blank[cave[x][y+1]])   goto android_s;
 	goto android_move;
 
       case 5: /* NE,W,SE,SW,S,N,E,NW */
-	if (is_blank[cave[x+1][y-1]]) goto android_ne;
-	if (is_blank[cave[x-1][y]])   goto android_w;
-	if (is_blank[cave[x+1][y+1]]) goto android_se;
-	if (is_blank[cave[x-1][y+1]]) goto android_sw;
-	if (is_blank[cave[x][y+1]])   goto android_s;
-	if (is_blank[cave[x][y-1]])   goto android_n;
-	if (is_blank[cave[x+1][y]])   goto android_e;
-	if (is_blank[cave[x-1][y-1]]) goto android_nw;
+	if (is_android_blank[cave[x+1][y-1]]) goto android_ne;
+	if (is_android_blank[cave[x-1][y]])   goto android_w;
+	if (is_android_blank[cave[x+1][y+1]]) goto android_se;
+	if (is_android_blank[cave[x-1][y+1]]) goto android_sw;
+	if (is_android_blank[cave[x][y+1]])   goto android_s;
+	if (is_android_blank[cave[x][y-1]])   goto android_n;
+	if (is_android_blank[cave[x+1][y]])   goto android_e;
+	if (is_android_blank[cave[x-1][y-1]]) goto android_nw;
 	goto android_move;
 
       case 6: /* E,N,SW,S,NW,NE,SE,W */
-	if (is_blank[cave[x+1][y]])   goto android_e;
-	if (is_blank[cave[x][y-1]])   goto android_n;
-	if (is_blank[cave[x-1][y+1]]) goto android_sw;
-	if (is_blank[cave[x][y+1]])   goto android_s;
-	if (is_blank[cave[x-1][y-1]]) goto android_nw;
-	if (is_blank[cave[x+1][y-1]]) goto android_ne;
-	if (is_blank[cave[x+1][y+1]]) goto android_se;
-	if (is_blank[cave[x-1][y]])   goto android_w;
+	if (is_android_blank[cave[x+1][y]])   goto android_e;
+	if (is_android_blank[cave[x][y-1]])   goto android_n;
+	if (is_android_blank[cave[x-1][y+1]]) goto android_sw;
+	if (is_android_blank[cave[x][y+1]])   goto android_s;
+	if (is_android_blank[cave[x-1][y-1]]) goto android_nw;
+	if (is_android_blank[cave[x+1][y-1]]) goto android_ne;
+	if (is_android_blank[cave[x+1][y+1]]) goto android_se;
+	if (is_android_blank[cave[x-1][y]])   goto android_w;
 	goto android_move;
 
       case 7: /* W,SW,NW,N,E,SE,NE,S */
-	if (is_blank[cave[x-1][y]])   goto android_w;
-	if (is_blank[cave[x-1][y+1]]) goto android_sw;
-	if (is_blank[cave[x-1][y-1]]) goto android_nw;
-	if (is_blank[cave[x][y-1]])   goto android_n;
-	if (is_blank[cave[x+1][y]])   goto android_e;
-	if (is_blank[cave[x+1][y+1]]) goto android_se;
-	if (is_blank[cave[x+1][y-1]]) goto android_ne;
-	if (is_blank[cave[x][y+1]])   goto android_s;
+	if (is_android_blank[cave[x-1][y]])   goto android_w;
+	if (is_android_blank[cave[x-1][y+1]]) goto android_sw;
+	if (is_android_blank[cave[x-1][y-1]]) goto android_nw;
+	if (is_android_blank[cave[x][y-1]])   goto android_n;
+	if (is_android_blank[cave[x+1][y]])   goto android_e;
+	if (is_android_blank[cave[x+1][y+1]]) goto android_se;
+	if (is_android_blank[cave[x+1][y-1]]) goto android_ne;
+	if (is_android_blank[cave[x][y+1]])   goto android_s;
 	goto android_move;
     }
   }
@@ -7450,6 +7465,14 @@ static void logic_globals(void)
   for (y = lev.top; y < lev.bottom; y++)
     for (x = lev.left; x < lev.right; x++)
       next[x][y] = cave[x][y];
+}
+
+void logic_init(void)
+{
+  int splash_is_blank = !game_em.use_old_android;
+
+  is_android_blank[Xsplash_e] = splash_is_blank;
+  is_android_blank[Xsplash_w] = splash_is_blank;
 }
 
 void logic(void)

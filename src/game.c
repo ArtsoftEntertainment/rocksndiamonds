@@ -2993,6 +2993,9 @@ static void InitGameEngine(void)
   game_em.use_old_explosions =
     (game.engine_version < VERSION_IDENT(4,1,4,2));
 
+  game_em.use_old_android =
+    (game.engine_version < VERSION_IDENT(4,1,4,2));
+
   game_em.use_wrap_around =
     (game.engine_version > VERSION_IDENT(4,1,4,1));
 
