@@ -214,6 +214,22 @@ static void Lboom_eater_new(int x, int y, boolean chain_explosion)
   Lboom_eater(x, y);
 }
 
+static void Lboom_cave_new(int x, int y, int element)
+{
+  if (game_em.use_old_explosions)
+    return;
+
+  cave[x][y] = element;
+}
+
+static void Lboom_next_new(int x, int y, int element)
+{
+  if (game_em.use_old_explosions)
+    return;
+
+  next[x][y] = element;
+}
+
 static boolean player_killed(struct PLAYER *ply)
 {
   int x = ply->x;
@@ -4477,7 +4493,7 @@ static void Lstone_fall(int x, int y)
     case Xeater_s:
     case Xeater_w:
       cave[x][y] = Ystone_sB;
-      next[x][y] = Xblank;
+      Lboom_next_new(x, y, Xblank);
       cave[x][y+1] = Yeater_stone;
       next[x][y+1] = Zeater;
       Lboom_eater_old(x, y+1);
@@ -4487,7 +4503,7 @@ static void Lstone_fall(int x, int y)
     case Xalien:
     case Xalien_pause:
       cave[x][y] = Ystone_sB;
-      next[x][y] = Xblank;
+      Lboom_next_new(x, y, Xblank);
       cave[x][y+1] = Yalien_stone;
       next[x][y+1] = Ztank;
       Lboom_tank_old(x, y+1);
@@ -4503,7 +4519,7 @@ static void Lstone_fall(int x, int y)
     case Xbug_2_s:
     case Xbug_2_w:
       cave[x][y] = Ystone_sB;
-      next[x][y] = Xblank;
+      Lboom_next_new(x, y, Xblank);
       cave[x][y+1] = Ybug_stone;
       next[x][y+1] = Zbug;
       Lboom_bug_old(x, y+1);
@@ -4519,7 +4535,7 @@ static void Lstone_fall(int x, int y)
     case Xtank_2_s:
     case Xtank_2_w:
       cave[x][y] = Ystone_sB;
-      next[x][y] = Xblank;
+      Lboom_next_new(x, y, Xblank);
       cave[x][y+1] = Ytank_stone;
       next[x][y+1] = Ztank;
       Lboom_tank_old(x, y+1);
@@ -4598,8 +4614,8 @@ static void Lstone_fall(int x, int y)
 
     case Xbomb:
     case Xbomb_pause:
-      cave[x][y] = Xstone;
-      next[x][y] = Xstone;
+      Lboom_cave_new(x, y, Xstone);
+      Lboom_next_new(x, y, Xstone);
       cave[x][y+1] = Ybomb_blank;
       next[x][y+1] = Ztank;
       Lboom_tank_old(x, y+1);
