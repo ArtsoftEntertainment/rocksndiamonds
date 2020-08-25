@@ -245,6 +245,15 @@ static void Lboom_next_new(int x, int y, int element)
   next[x][y] = element;
 }
 
+static void Lpush_element_old(int x, int y, int element)
+{
+  if (!game_em.use_old_push_elements)
+    return;
+
+  cave[x][y] = element;
+  next[x][y] = element;
+}
+
 static boolean player_killed(struct PLAYER *ply)
 {
   int x = ply->x;
@@ -5709,6 +5718,9 @@ static void Lpush_emerald_e(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -5720,6 +5732,7 @@ static void Lpush_emerald_e(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xemerald);
       return;
 
 #ifdef ACID_ROLL
@@ -5751,6 +5764,9 @@ static void Lpush_emerald_w(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -5762,6 +5778,7 @@ static void Lpush_emerald_w(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xemerald);
       return;
 
 #ifdef ACID_ROLL
@@ -5793,6 +5810,9 @@ static void Lpush_diamond_e(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -5804,6 +5824,7 @@ static void Lpush_diamond_e(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xdiamond);
       return;
 
 #ifdef ACID_ROLL
@@ -5835,6 +5856,9 @@ static void Lpush_diamond_w(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -5846,6 +5870,7 @@ static void Lpush_diamond_w(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xdiamond);
       return;
 
 #ifdef ACID_ROLL
@@ -5877,6 +5902,9 @@ static void Lpush_stone_e(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -5888,6 +5916,7 @@ static void Lpush_stone_e(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xstone);
       return;
 
 #ifdef ACID_ROLL
@@ -5919,6 +5948,9 @@ static void Lpush_stone_w(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -5930,6 +5962,7 @@ static void Lpush_stone_w(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xstone);
       return;
 
 #ifdef ACID_ROLL
@@ -5961,6 +5994,9 @@ static void Lpush_bomb_e(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -5972,6 +6008,7 @@ static void Lpush_bomb_e(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xbomb);
       return;
 
 #ifdef ACID_ROLL
@@ -6003,6 +6040,9 @@ static void Lpush_bomb_w(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -6014,6 +6054,7 @@ static void Lpush_bomb_w(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xbomb);
       return;
 
 #ifdef ACID_ROLL
@@ -6045,6 +6086,9 @@ static void Lpush_nut_e(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -6056,6 +6100,7 @@ static void Lpush_nut_e(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xnut);
       return;
 
 #ifdef ACID_ROLL
@@ -6087,6 +6132,9 @@ static void Lpush_nut_w(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -6098,6 +6146,7 @@ static void Lpush_nut_w(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xnut);
       return;
 
 #ifdef ACID_ROLL
@@ -6129,6 +6178,9 @@ static void Lpush_spring_e(int x, int y)
 
   switch (cave[x+1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -6140,6 +6192,7 @@ static void Lpush_spring_e(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xspring);
       return;
 
 #ifdef ACID_ROLL
@@ -6171,6 +6224,9 @@ static void Lpush_spring_w(int x, int y)
 
   switch (cave[x-1][y])
   {
+    case Zplayer:
+      if (!game_em.use_old_push_elements)
+	break;
     case Zborder:
     case Zbug:
     case Ztank:
@@ -6182,6 +6238,7 @@ static void Lpush_spring_w(int x, int y)
     case Xboom_tank:
     case Xboom_android:
     case Xboom_1:
+      Lpush_element_old(x, y, Xspring);
       return;
 
 #ifdef ACID_ROLL
