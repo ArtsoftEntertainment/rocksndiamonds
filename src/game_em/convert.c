@@ -353,8 +353,8 @@ void prepare_em_level(void)
 
   lev.wheel_time = cav.wheel_time;
   lev.wheel_cnt  = cav.wheel_active ? cav.wheel_time : 0;
-  lev.wheel_x    = cav.wheel_x;
-  lev.wheel_y    = cav.wheel_y;
+  lev.wheel_x    = cav.wheel_x + lev.left;
+  lev.wheel_y    = cav.wheel_y + lev.top;
 
   lev.wind_time      = cav.wind_time;
   lev.wind_cnt       = cav.wind_time;
