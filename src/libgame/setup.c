@@ -99,6 +99,7 @@ static int token_comment_position = TOKEN_COMMENT_POSITION_DEFAULT;
 
 static SetupFileHash *artworkinfo_cache_old = NULL;
 static SetupFileHash *artworkinfo_cache_new = NULL;
+static SetupFileHash *optional_tokens_hash = NULL;
 static boolean use_artworkinfo_cache = TRUE;
 
 
@@ -2423,6 +2424,15 @@ static struct TokenInfo artworkinfo_tokens[] =
   { -1,			NULL,			NULL			},
 };
 
+static char *optional_tokens[] =
+{
+  "program_title",
+  "program_copyright",
+  "program_company",
+
+  NULL
+};
+
 static void setTreeInfoToDefaults(TreeInfo *ti, int type)
 {
   ti->type = type;
@@ -2957,6 +2967,16 @@ static TreeInfo *getArtworkInfoCacheEntry(LevelDirTree *level_node, int type)
   if (!use_artworkinfo_cache)
     return NULL;
 
+  if (optional_tokens_hash == NULL)
+  {
+    int i;
+
+    // create hash from list of optional tokens (for quick access)
+    optional_tokens_hash = newSetupFileHash();
+    for (i = 0; optional_tokens[i] != NULL; i++)
+      setHashEntry(optional_tokens_hash, optional_tokens[i], "");
+  }
+
   if (cached)
   {
     int i;
@@ -2968,16 +2988,28 @@ static TreeInfo *getArtworkInfoCacheEntry(LevelDirTree *level_node, int type)
     ldi = *artwork_info;
     for (i = 0; artworkinfo_tokens[i].type != -1; i++)
     {
-      char *token = getCacheToken(token_prefix, artworkinfo_tokens[i].text);
+      char *token_suffix = artworkinfo_tokens[i].text;
+      char *token = getCacheToken(token_prefix, token_suffix);
       char *value = getHashEntry(artworkinfo_cache_old, token);
+      boolean optional =
+	(getHashEntry(optional_tokens_hash, token_suffix) != NULL);
 
-      // if defined, use value from cache, else keep default value
-      if (value != NULL)
-	setSetupInfo(artworkinfo_tokens, i, value);
+      setSetupInfo(artworkinfo_tokens, i, value);
+
+      // check if cache entry for this item is mandatory, but missing
+      if (value == NULL && !optional)
+      {
+	Error(ERR_WARN, "missing cache entry '%s'", token);
+
+	cached = FALSE;
+      }
     }
 
     *artwork_info = ldi;
+  }
 
+  if (cached)
+  {
     char *filename_levelinfo = getPath2(getLevelDirFromTreeInfo(level_node),
 					LEVELINFO_FILENAME);
     char *filename_artworkinfo = getPath2(getSetupArtworkDir(artwork_info),
