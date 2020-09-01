@@ -393,6 +393,9 @@ void convert_em_level(unsigned char *src, int file_version)
     for (x = 0; x < 9; x++)
       cav.eater_array[i][x] = map_emc[src[eater_offset[i] + x]];
 
+  if (file_version < FILE_VERSION_EM_V6)
+    cav.num_eater_arrays = 4;
+
   /* ball */
 
   temp = map_emc[src[2159]];
