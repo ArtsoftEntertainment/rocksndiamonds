@@ -3541,6 +3541,8 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   cav->key_score	= level->score[SC_KEY];
   cav->exit_score	= level->score[SC_TIME_BONUS];
 
+  cav->num_eater_arrays	= level->num_yamyam_contents;
+
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
@@ -3649,9 +3651,9 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   level->score[SC_KEY]		= cav->key_score;
   level->score[SC_TIME_BONUS]	= cav->exit_score;
 
-  level->num_yamyam_contents = MAX_ELEMENT_CONTENTS;
+  level->num_yamyam_contents	= cav->num_eater_arrays;
 
-  for (i = 0; i < level->num_yamyam_contents; i++)
+  for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
 	level->yamyam_content[i].e[x][y] =

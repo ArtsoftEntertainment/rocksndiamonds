@@ -252,6 +252,7 @@ struct CAVE
   int wind_time;		/* reset time for wind activity */
   int wind_direction;		/* wind direction */
 
+  int num_eater_arrays;		/* number of eater data arrays used */
   int num_ball_arrays;		/* number of ball data arrays used */
 
   boolean testmode;		/* flag for test mode */

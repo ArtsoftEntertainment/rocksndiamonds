@@ -58,6 +58,7 @@ void setLevelInfoToDefaults_EM(void)
   cav.wind_time		= 0;
   cav.wind_direction	= 0;
 
+  cav.num_eater_arrays	= 8;
   cav.num_ball_arrays	= 8;
 
   cav.testmode		= FALSE;

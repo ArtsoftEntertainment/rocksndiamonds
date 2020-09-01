@@ -702,6 +702,7 @@ struct LOGIC
   int eater_pos;		/* counter for eater array position */
   int shine_cnt;		/* counter for emerald/diamond shining */
 
+  int num_eater_arrays;		/* number of eater data arrays used */
   int num_ball_arrays;		/* number of ball data arrays used */
 
   int home_initial;		/* number of players (initial) */

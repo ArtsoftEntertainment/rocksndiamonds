@@ -365,7 +365,8 @@ void prepare_em_level(void)
 
   lev.killed_out_of_time = FALSE;
 
-  lev.num_ball_arrays = cav.num_ball_arrays;
+  lev.num_eater_arrays = cav.num_eater_arrays;
+  lev.num_ball_arrays  = cav.num_ball_arrays;
 
   for (i = 0; i < 8; i++)
     for (j = 0; j < 9; j++)
