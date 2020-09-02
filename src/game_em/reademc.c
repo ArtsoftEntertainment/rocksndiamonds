@@ -558,12 +558,12 @@ static const unsigned char map_v4[256] =
   240,241,153,153, 153,153,153,153, 153,153,153,153, 153,153,153,153	// 240
 };
 
-static const unsigned char map_v4_eater[32] =
+static const unsigned char map_v4_eater[28] =
 {
   /* filter for v4 eater */
 
   128,18,2,0,      4,8,16,20,       28,37,41,45,     189,180,179,252,	//   0
-  133,134,135,136, 146,147,175,65,  66,64,2,18,      128,128,128,128	//  16
+  133,134,135,136, 146,147,175,65,  66,64,2,18				//  16
 };
 
 static boolean filename_has_v1_format(char *filename)
@@ -676,7 +676,7 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
     for (i = 0; i < 2048; i++)		/* cave */
       src[i] = map_v4[src[i]];
     for (i = 2048; i < 2084; i++)	/* eaters */
-      src[i] = map_v4_eater[src[i] % 32];
+      src[i] = map_v4_eater[src[i] < 28 ? src[i] : 0];
     for (i = 2112; i < 2148; i++)	/* eaters */
       src[i] = src[i - 64];
 
