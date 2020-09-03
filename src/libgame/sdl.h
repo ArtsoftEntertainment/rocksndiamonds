@@ -382,6 +382,7 @@ typedef struct UserEventInfo	UserEvent;
 
 // SDL function definitions
 
+const char *SDLGetRendererName(void);
 boolean SDLSetNativeSurface(SDL_Surface **);
 SDL_Surface *SDLGetNativeSurface(SDL_Surface *);
 void SDLCreateBitmapTextures(Bitmap *);

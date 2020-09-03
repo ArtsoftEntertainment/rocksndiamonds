@@ -7897,7 +7897,7 @@ struct ConfigInfo image_config[] =
   { "menu.paragraph_spacing.INFO[MUSIC]",	"-3"			},
   { "menu.paragraph_spacing.INFO[CREDITS]",	"-3"			},
   { "menu.paragraph_spacing.INFO[PROGRAM]",	"-3"			},
-  { "menu.paragraph_spacing.INFO[VERSION]",	"-3"			},
+  { "menu.paragraph_spacing.INFO[VERSION]",	"-2"			},
   { "menu.paragraph_spacing.INFO[LEVELSET]",	"-3"			},
   { "menu.paragraph_spacing.SETUP[INPUT]",	"-1"			},
 

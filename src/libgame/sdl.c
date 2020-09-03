@@ -330,6 +330,15 @@ static void SDLSetAlpha(SDL_Surface *surface, boolean set, int alpha)
   SDL_SetSurfaceAlphaMod(surface, alpha);
 }
 
+const char *SDLGetRendererName(void)
+{
+  static SDL_RendererInfo renderer_info;
+
+  SDL_GetRendererInfo(sdl_renderer, &renderer_info);
+
+  return renderer_info.name;
+}
+
 SDL_Surface *SDLGetNativeSurface(SDL_Surface *surface)
 {
   SDL_PixelFormat format;
