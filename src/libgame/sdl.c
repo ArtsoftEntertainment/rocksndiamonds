@@ -515,6 +515,14 @@ static boolean SDLCreateScreen(boolean fullscreen)
 
 #if 1
   int renderer_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE;
+
+  video.vsync_mode = VSYNC_MODE_OFF;
+
+  if (!strEqual(setup.vsync_mode, STR_VSYNC_MODE_OFF))
+  {
+    renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
+    video.vsync_mode = VSYNC_MODE_NORMAL;
+  }
 #else
   /* If SDL_CreateRenderer() is called from within a VirtualBox Windows VM
      _without_ enabling 2D/3D acceleration and/or guest additions installed,
@@ -587,6 +595,7 @@ static boolean SDLCreateScreen(boolean fullscreen)
       // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
       SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, setup.window_scaling_quality);
 
+      // required for setting adaptive vsync when using OpenGL renderer
       SDLSetScreenVsyncMode(setup.vsync_mode);
 
       sdl_texture_stream = SDL_CreateTexture(sdl_renderer,
