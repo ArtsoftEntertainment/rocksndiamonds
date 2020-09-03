@@ -4,7 +4,7 @@
 # (c) 1995-2015 by Artsoft Entertainment
 #                  Holger Schemel
 #                  info@artsoft.org
-#                  http://www.artsoft.org/
+#                  https://www.artsoft.org/
 # -----------------------------------------------------------------------------
 # src/Makefile
 # =============================================================================

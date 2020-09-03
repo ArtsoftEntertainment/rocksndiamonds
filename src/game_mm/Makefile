@@ -4,7 +4,7 @@
 # (c) 1989-2017 by Artsoft Entertainment
 #                  Holger Schemel
 #                  info@artsoft.org
-#                  http://www.artsoft.org/
+#                  https://www.artsoft.org/
 # -----------------------------------------------------------------------------
 # The native Mirror Magic game engine is based on:
 # - Mirror Magic II by Holger Schemel (Linux/DOS/Windows version, 1995)

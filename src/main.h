@@ -4,7 +4,7 @@
 // (c) 1995-2014 by Artsoft Entertainment
 //     		    Holger Schemel
 //		    info@artsoft.org
-//		    http://www.artsoft.org/
+//		    https://www.artsoft.org/
 // ----------------------------------------------------------------------------
 // main.h
 // ============================================================================
@@ -2568,7 +2568,7 @@ enum
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
 #define PROGRAM_EMAIL_STRING		"info@artsoft.org"
-#define PROGRAM_WEBSITE_STRING		"http://www.artsoft.org/"
+#define PROGRAM_WEBSITE_STRING		"https://www.artsoft.org/"
 #define PROGRAM_COPYRIGHT_STRING	"Copyright \xa9""1995-2020 by Holger Schemel"
 #define PROGRAM_COMPANY_STRING		"A Game by Artsoft Entertainment"
 
