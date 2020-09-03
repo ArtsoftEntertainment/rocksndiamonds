@@ -437,6 +437,10 @@ void SDLFreeBitmapTextures(Bitmap *bitmap)
 
 void SDLInitVideoDisplay(void)
 {
+  // set hint to select render driver as specified in setup config file
+  if (!strEqual(setup.system.sdl_renderdriver, ARG_DEFAULT))
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, setup.system.sdl_renderdriver);
+
   // initialize SDL video
   if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
     Error(ERR_EXIT, "SDL_InitSubSystem() failed: %s", SDL_GetError());

@@ -8890,6 +8890,10 @@ static struct TokenInfo system_setup_tokens[] =
 {
   {
     TYPE_STRING,
+    &setup.system.sdl_renderdriver,		"system.sdl_renderdriver"
+  },
+  {
+    TYPE_STRING,
     &setup.system.sdl_videodriver,		"system.sdl_videodriver"
   },
   {
@@ -9334,6 +9338,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
     si->input[i].key.drop  = (i == 0 ? DEFAULT_KEY_DROP  : KSYM_UNDEFINED);
   }
 
+  si->system.sdl_renderdriver = getStringCopy(ARG_DEFAULT);
   si->system.sdl_videodriver = getStringCopy(ARG_DEFAULT);
   si->system.sdl_audiodriver = getStringCopy(ARG_DEFAULT);
   si->system.audio_fragment_size = DEFAULT_AUDIO_FRAGMENT_SIZE;

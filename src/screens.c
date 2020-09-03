@@ -3768,7 +3768,7 @@ static void DrawInfoScreen_Version(void)
     getStringCopyNStatic(SDLGetRendererName(), driver_name_len);
 
   DrawTextF(xstart1, ystart, font_text, "Render Driver");
-  DrawTextF(xstart2, ystart, font_text, "%s", ARG_DEFAULT);
+  DrawTextF(xstart2, ystart, font_text, "%s", setup.system.sdl_renderdriver);
   DrawTextF(xstart3, ystart, font_text, "%s", driver_name);
   ystart += ystep_line;
 
