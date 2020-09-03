@@ -9641,6 +9641,6 @@ void ChangeViewportPropertiesIfNeeded(void)
 
   if (init_em_graphics)
   {
-      InitGraphicInfo_EM();
+    InitGraphicInfo_EM();
   }
 }
