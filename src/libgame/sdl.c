@@ -876,7 +876,16 @@ void SDLSetScreenVsyncMode(char *vsync_mode)
 
   // if adaptive vsync requested, but not supported, retry with normal vsync
   if (result == -1 && interval == VSYNC_MODE_ADAPTIVE)
-    SDL_GL_SetSwapInterval(VSYNC_MODE_NORMAL);
+  {
+    interval = VSYNC_MODE_NORMAL;
+
+    result = SDL_GL_SetSwapInterval(interval);
+  }
+
+  if (result == -1)
+    interval = VSYNC_MODE_OFF;
+
+  video.vsync_mode = interval;
 }
 
 void SDLRedrawWindow(void)
