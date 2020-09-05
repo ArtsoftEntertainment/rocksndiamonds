@@ -9245,26 +9245,28 @@ void PlaySoundSelecting(void)
 
 void ToggleFullscreenIfNeeded(void)
 {
-  if (setup.fullscreen != video.fullscreen_enabled &&
-      video.fullscreen_available)
-  {
-    SDLSetWindowFullscreen(setup.fullscreen);
+  // if setup and video fullscreen state are already matching, nothing do do
+  if (setup.fullscreen == video.fullscreen_enabled ||
+      !video.fullscreen_available)
+    return;
 
-    // set setup value according to successfully changed fullscreen mode
-    setup.fullscreen = video.fullscreen_enabled;
-  }
+  SDLSetWindowFullscreen(setup.fullscreen);
+
+  // set setup value according to successfully changed fullscreen mode
+  setup.fullscreen = video.fullscreen_enabled;
 }
 
 void ChangeWindowScalingIfNeeded(void)
 {
-  if (setup.window_scaling_percent != video.window_scaling_percent &&
-      !video.fullscreen_enabled)
-  {
-    SDLSetWindowScaling(setup.window_scaling_percent);
+  // if setup and video window scaling are already matching, nothing do do
+  if (setup.window_scaling_percent == video.window_scaling_percent ||
+      video.fullscreen_enabled)
+    return;
 
-    // set setup value according to successfully changed window scaling
-    setup.window_scaling_percent = video.window_scaling_percent;
-  }
+  SDLSetWindowScaling(setup.window_scaling_percent);
+
+  // set setup value according to successfully changed window scaling
+  setup.window_scaling_percent = video.window_scaling_percent;
 }
 
 void ChangeVsyncModeIfNeeded(void)
