@@ -5332,8 +5332,23 @@ static void execSetupGraphics(void)
   // screen rendering mode may have changed at this point
   SDLSetScreenRenderingMode(setup.screen_rendering_mode);
 
+  int setup_vsync_mode = VSYNC_MODE_STR_TO_INT(setup.vsync_mode);
+  int video_vsync_mode = video.vsync_mode;
+
   // screen vsync mode may have changed at this point
   ChangeVsyncModeIfNeeded();
+
+  // check if setting vsync mode to selected value failed
+  if (setup_vsync_mode != video_vsync_mode &&
+      setup_vsync_mode != video.vsync_mode)
+  {
+    // changing vsync mode to selected value failed -- reset displayed value
+    execSetupGraphics_setVsyncModes(TRUE);
+
+    Request("Setting VSync failed!", REQ_CONFIRM);
+
+    DrawSetupScreen();
+  }
 }
 
 static void execSetupChooseWindowSize(void)
