@@ -5302,13 +5302,21 @@ static void execSetupGraphics(void)
   if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE)
     execSetupGraphics_setWindowSizes(FALSE);
 
+  // update "setup.vsync_mode" from list selection
+  // (in this case, vsync mode was changed on setup screen)
+  if (setup_mode == SETUP_MODE_CHOOSE_VSYNC)
+    execSetupGraphics_setVsyncModes(FALSE);
+
   // update list selection from "setup.window_scaling_percent"
   // (window scaling may have changed by resizing the window)
   execSetupGraphics_setWindowSizes(TRUE);
 
+  // update list selection from "setup.vsync_mode"
+  // (vsync_mode may have changed by re-creating the renderer)
+  execSetupGraphics_setVsyncModes(TRUE);
+
   execSetupGraphics_setScalingTypes();
   execSetupGraphics_setRenderingModes();
-  execSetupGraphics_setVsyncModes(FALSE);
 
   setup_mode = SETUP_MODE_GRAPHICS;
 
