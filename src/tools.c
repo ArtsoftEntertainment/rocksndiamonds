@@ -9272,22 +9272,35 @@ void ToggleFullscreenOrChangeWindowScalingIfNeeded(void)
 
     return;
   }
+}
 
-  if (change_fullscreen ||
-      change_window_scaling_percent)
+void ChangeVsyncModeIfNeeded(void)
+{
+  int setup_vsync_mode = VSYNC_MODE_STR_TO_INT(setup.vsync_mode);
+  int video_vsync_mode = video.vsync_mode;
+
+  // if setup and video vsync mode are already matching, nothing do do
+  if (setup_vsync_mode == video_vsync_mode)
+    return;
+
+  // if renderer is using OpenGL, vsync mode can directly be changed
+  SDLSetScreenVsyncMode(setup.vsync_mode);
+
+  // if vsync mode unchanged, try re-creating renderer to set vsync mode
+  if (video.vsync_mode == video_vsync_mode)
   {
     Bitmap *tmp_backbuffer = CreateBitmap(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH);
 
-    // save backbuffer content which gets lost when toggling fullscreen mode
+    // save backbuffer content which gets lost when re-creating screen
     BlitBitmap(backbuffer, tmp_backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
 
-    if (change_window_scaling_percent)
-    {
-      // keep window mode, but change window scaling
-      video.fullscreen_enabled = TRUE;		// force new window scaling
-    }
+    // force re-creating screen and renderer to set new vsync mode
+    video.fullscreen_enabled = !setup.fullscreen;
 
-    // toggle fullscreen
+    // when creating new renderer, destroy textures linked to old renderer
+    FreeAllImageTextures();	// needs old renderer to free the textures
+
+    // re-create screen and renderer (including change of vsync mode)
     ChangeVideoModeIfNeeded(setup.fullscreen);
 
     // set setup value according to successfully changed fullscreen mode
@@ -9295,12 +9308,17 @@ void ToggleFullscreenOrChangeWindowScalingIfNeeded(void)
 
     // restore backbuffer content from temporary backbuffer backup bitmap
     BlitBitmap(tmp_backbuffer, backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
-
     FreeBitmap(tmp_backbuffer);
 
     // update visible window/screen
     BlitBitmap(backbuffer, window, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+
+    // when changing vsync mode, re-create textures for new renderer
+    InitImageTextures();
   }
+
+  // set setup value according to successfully changed vsync mode
+  setup.vsync_mode = VSYNC_MODE_INT_TO_STR(video.vsync_mode);
 }
 
 static void JoinRectangles(int *x, int *y, int *width, int *height,

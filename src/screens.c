@@ -5329,7 +5329,7 @@ static void execSetupGraphics(void)
   SDLSetScreenRenderingMode(setup.screen_rendering_mode);
 
   // screen vsync mode may have changed at this point
-  SDLSetScreenVsyncMode(setup.vsync_mode);
+  ChangeVsyncModeIfNeeded();
 }
 
 static void execSetupChooseWindowSize(void)
