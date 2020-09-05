@@ -9245,32 +9245,21 @@ void PlaySoundSelecting(void)
 
 void ToggleFullscreenOrChangeWindowScalingIfNeeded(void)
 {
-  boolean change_fullscreen = (setup.fullscreen !=
-			       video.fullscreen_enabled);
-  boolean change_window_scaling_percent = (!video.fullscreen_enabled &&
-					   setup.window_scaling_percent !=
-					   video.window_scaling_percent);
-
-  if (change_window_scaling_percent && video.fullscreen_enabled)
-    return;
-
-  if (!change_window_scaling_percent && !video.fullscreen_available)
-    return;
-
-  if (change_window_scaling_percent)
-  {
-    SDLSetWindowScaling(setup.window_scaling_percent);
-
-    return;
-  }
-  else if (change_fullscreen)
+  if (setup.fullscreen != video.fullscreen_enabled &&
+      video.fullscreen_available)
   {
     SDLSetWindowFullscreen(setup.fullscreen);
 
     // set setup value according to successfully changed fullscreen mode
     setup.fullscreen = video.fullscreen_enabled;
+  }
+  else if (setup.window_scaling_percent != video.window_scaling_percent &&
+	   !video.fullscreen_enabled)
+  {
+    SDLSetWindowScaling(setup.window_scaling_percent);
 
-    return;
+    // set setup value according to successfully changed window scaling
+    setup.window_scaling_percent = video.window_scaling_percent;
   }
 }
 
