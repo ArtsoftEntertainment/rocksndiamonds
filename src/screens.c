@@ -1580,10 +1580,6 @@ void DrawMainMenu(void)
     return;
   }
 
-  // needed if last screen was the setup screen and fullscreen state changed
-  // (moved to "execSetupGraphics()" to change fullscreen state directly)
-  // ToggleFullscreenOrChangeWindowScalingIfNeeded();
-
   // leveldir_current may be invalid (level group, parent link)
   if (!validLevelSeries(leveldir_current))
     leveldir_current = getFirstValidTreeInfoEntry(leveldir_last_valid);
@@ -5327,7 +5323,7 @@ static void execSetupGraphics(void)
     ModifyGameSpeedIfNeeded();
 
   // window scaling may have changed at this point
-  ToggleFullscreenOrChangeWindowScalingIfNeeded();
+  ChangeWindowScalingIfNeeded();
 
   // window scaling quality may have changed at this point
   if (!strEqual(setup.window_scaling_quality, video.window_scaling_quality))
@@ -6861,7 +6857,7 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
 
   // fullscreen state may have changed at this point
   if (si->value == &setup.fullscreen)
-    ToggleFullscreenOrChangeWindowScalingIfNeeded();
+    ToggleFullscreenIfNeeded();
 
   // network mode may have changed at this point
   if (si->value == &setup.network_mode)

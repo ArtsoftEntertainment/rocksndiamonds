@@ -283,7 +283,8 @@ void ResetFontStatus(void);
 
 void SetLevelSetInfo(char *, int);
 
-void ToggleFullscreenOrChangeWindowScalingIfNeeded(void);
+void ToggleFullscreenIfNeeded(void);
+void ChangeWindowScalingIfNeeded(void);
 void ChangeVsyncModeIfNeeded(void);
 void ChangeViewportPropertiesIfNeeded(void);
 

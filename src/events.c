@@ -2177,7 +2177,7 @@ void HandleKey(Key key, int key_status)
   {
     setup.fullscreen = !setup.fullscreen;
 
-    ToggleFullscreenOrChangeWindowScalingIfNeeded();
+    ToggleFullscreenIfNeeded();
 
     if (game_status == GAME_MODE_SETUP)
       RedrawSetupScreenAfterFullscreenToggle();
@@ -2210,7 +2210,7 @@ void HandleKey(Key key, int key_status)
     else if (setup.window_scaling_percent > MAX_WINDOW_SCALING_PERCENT)
       setup.window_scaling_percent = MAX_WINDOW_SCALING_PERCENT;
 
-    ToggleFullscreenOrChangeWindowScalingIfNeeded();
+    ChangeWindowScalingIfNeeded();
 
     if (game_status == GAME_MODE_SETUP)
       RedrawSetupScreenAfterFullscreenToggle();
