@@ -87,6 +87,16 @@
 
 #define VSYNC_MODE_DEFAULT		VSYNC_MODE_OFF
 
+#define VSYNC_MODE_STR_TO_INT(s)					\
+  (strEqual((s), STR_VSYNC_MODE_NORMAL)		? VSYNC_MODE_NORMAL :	\
+   strEqual((s), STR_VSYNC_MODE_ADAPTIVE)	? VSYNC_MODE_ADAPTIVE :	\
+   VSYNC_MODE_OFF)
+
+#define VSYNC_MODE_INT_TO_STR(i)					\
+  ((i) == VSYNC_MODE_NORMAL		? STR_VSYNC_MODE_NORMAL :	\
+   (i) == VSYNC_MODE_ADAPTIVE		? STR_VSYNC_MODE_ADAPTIVE :	\
+   STR_VSYNC_MODE_OFF)
+
 // values for network server settings
 #define STR_NETWORK_AUTO_DETECT		"auto_detect_network_server"
 #define STR_NETWORK_AUTO_DETECT_SETUP	"(auto detect network server)"

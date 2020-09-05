@@ -877,10 +877,7 @@ void SDLSetScreenRenderingMode(char *screen_rendering_mode)
 
 void SDLSetScreenVsyncMode(char *vsync_mode)
 {
-  int interval =
-    (strEqual(vsync_mode, STR_VSYNC_MODE_NORMAL)   ? VSYNC_MODE_NORMAL :
-     strEqual(vsync_mode, STR_VSYNC_MODE_ADAPTIVE) ? VSYNC_MODE_ADAPTIVE :
-     VSYNC_MODE_OFF);
+  int interval = VSYNC_MODE_STR_TO_INT(vsync_mode);
   int result = SDL_GL_SetSwapInterval(interval);
 
   // if adaptive vsync requested, but not supported, retry with normal vsync
