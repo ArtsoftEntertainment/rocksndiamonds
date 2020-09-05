@@ -877,6 +877,10 @@ void SDLSetScreenRenderingMode(char *screen_rendering_mode)
 
 void SDLSetScreenVsyncMode(char *vsync_mode)
 {
+  // changing vsync mode without re-creating renderer only supported by OpenGL
+  if (!strPrefixLower((char *)SDLGetRendererName(), "opengl"))
+    return;
+
   int interval = VSYNC_MODE_STR_TO_INT(vsync_mode);
   int result = SDL_GL_SetSwapInterval(interval);
 
