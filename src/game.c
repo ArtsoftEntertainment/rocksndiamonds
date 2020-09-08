@@ -2867,12 +2867,12 @@ static void InitGameEngine(void)
     2.0.1
 
     Bug was fixed in version:
-    4.1.4.2
+    4.2.0.0
 
     Description:
     In version 2.0.1, a new run-time element "EL_AMOEBA_DROPPING" was added,
     but the property "can fall" was missing, which caused some levels to be
-    unsolvable. This was fixed in version 4.1.4.2.
+    unsolvable. This was fixed in version 4.2.0.0.
 
     Affected levels/tapes:
     An example for a tape that was fixed by this bugfix is tape 029 from the
@@ -2884,10 +2884,10 @@ static void InitGameEngine(void)
 
   boolean use_amoeba_dropping_cannot_fall_bug =
     ((game.engine_version >= VERSION_IDENT(2,0,1,0) &&
-      game.engine_version <= VERSION_IDENT(4,1,4,1)) ||
+      game.engine_version <  VERSION_IDENT(4,2,0,0)) ||
      (tape.playing &&
       tape.game_version >= VERSION_IDENT(2,0,1,0) &&
-      tape.game_version <= VERSION_IDENT(4,1,4,1)));
+      tape.game_version <  VERSION_IDENT(4,2,0,0)));
 
   /*
     Summary of bugfix/change:
@@ -2908,7 +2908,7 @@ static void InitGameEngine(void)
     The second condition is an exception from the above case and is needed for
     the special case of tapes recorded with game (not engine!) version 2.0.1 or
     above, but before it was known that this change would break tapes like the
-    above and was fixed in 4.1.4.2, so that the changed behaviour was active
+    above and was fixed in 4.2.0.0, so that the changed behaviour was active
     although the engine version while recording maybe was before 2.0.1. There
     are a lot of tapes that are affected by this exception, like tape 006 from
     the level set "rnd_conor_mancone".
@@ -2918,7 +2918,7 @@ static void InitGameEngine(void)
     (game.engine_version < VERSION_IDENT(2,0,1,0) &&
      !(tape.playing &&
        tape.game_version >= VERSION_IDENT(2,0,1,0) &&
-       tape.game_version <  VERSION_IDENT(4,1,4,2)));
+       tape.game_version <  VERSION_IDENT(4,2,0,0)));
 
   /*
     Summary of bugfix/change:
@@ -2990,20 +2990,14 @@ static void InitGameEngine(void)
   game_em.use_snap_key_bug =
     (game.engine_version < VERSION_IDENT(4,0,1,0));
 
-  game_em.use_old_explosions =
-    (game.engine_version < VERSION_IDENT(4,1,4,2));
+  boolean use_old_em_engine = (game.engine_version < VERSION_IDENT(4,2,0,0));
 
-  game_em.use_old_android =
-    (game.engine_version < VERSION_IDENT(4,1,4,2));
+  game_em.use_old_explosions		= use_old_em_engine;
+  game_em.use_old_android		= use_old_em_engine;
+  game_em.use_old_push_elements		= use_old_em_engine;
+  game_em.use_old_push_into_acid	= use_old_em_engine;
 
-  game_em.use_old_push_elements =
-    (game.engine_version < VERSION_IDENT(4,1,4,2));
-
-  game_em.use_old_push_into_acid =
-    (game.engine_version < VERSION_IDENT(4,1,4,2));
-
-  game_em.use_wrap_around =
-    (game.engine_version > VERSION_IDENT(4,1,4,1));
+  game_em.use_wrap_around		= !use_old_em_engine;
 
   // --------------------------------------------------------------------------
 
@@ -3018,7 +3012,7 @@ static void InitGameEngine(void)
 
   // ---------- initialize special element properties -------------------------
 
-  // "EL_AMOEBA_DROPPING" missed property "can fall" between 2.0.1 and 4.1.4.1
+  // "EL_AMOEBA_DROPPING" missed property "can fall" in older game versions
   if (use_amoeba_dropping_cannot_fall_bug)
     SET_PROPERTY(EL_AMOEBA_DROPPING, EP_CAN_FALL, FALSE);
 

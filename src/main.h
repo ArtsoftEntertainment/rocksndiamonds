@@ -963,7 +963,7 @@
 #define MAX_ELEMENTS_IN_GROUP	16
 #define MIN_ANDROID_ELEMENTS	1
 #define MAX_ANDROID_ELEMENTS	32
-#define MAX_ANDROID_ELEMENTS_OLD 16	// (extended after version 4.1.4.1)
+#define MAX_ANDROID_ELEMENTS_OLD 16	// (extended since version 4.2.0.0)
 
 // values for elements with content
 #define MIN_ELEMENT_CONTENTS	1
