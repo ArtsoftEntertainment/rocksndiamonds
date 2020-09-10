@@ -2990,6 +2990,9 @@ static void InitGameEngine(void)
   game_em.use_snap_key_bug =
     (game.engine_version < VERSION_IDENT(4,0,1,0));
 
+  game_em.use_random_bug =
+    (tape.property_bits & TAPE_PROPERTY_EM_RANDOM_BUG);
+
   boolean use_old_em_engine = (game.engine_version < VERSION_IDENT(4,2,0,0));
 
   game_em.use_old_explosions		= use_old_em_engine;

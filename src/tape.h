@@ -37,6 +37,7 @@
 
 // values for tape properties stored in tape file
 #define TAPE_PROPERTY_NONE		0
+#define TAPE_PROPERTY_EM_RANDOM_BUG	(1 << 0)
 
 // some positions in the video tape control window
 #define VIDEO_DISPLAY1_XPOS	5

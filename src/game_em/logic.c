@@ -12,6 +12,8 @@
 #define ACID_ROLL	/* rolling objects go into acid rather than remove it */
 #define ACID_PLAYER	/* player gets killed by acid, but without explosion */
 
+#define RANDOM_BUG	/* handle problem with old tapes using 64-bit random */
+
 #define RANDOM(x)	((seed = seed << 31 | seed >> 1) % x)
 
 static short **cave, **next, **boom;
@@ -7485,7 +7487,11 @@ static void logic_globals(void)
   int x;
   int y;
   int count;
-  unsigned int random;
+#ifdef RANDOM_BUG
+  uint64_t random;
+#else
+  uint32_t random;
+#endif
 
   cave = lev.cave;
   next = lev.next;
@@ -7531,6 +7537,11 @@ static void logic_globals(void)
       Lamoeba(x, y);
 
     random = random * 129 + 1;
+
+#ifdef RANDOM_BUG
+    if (!game_em.use_random_bug)
+      random = (uint32_t)random;
+#endif
   }
 
   game_em.random = random;
