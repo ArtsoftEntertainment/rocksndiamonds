@@ -35,6 +35,9 @@
 
 #define TAPE_ACTIONS_DEFAULT		TAPE_USE_KEY_ACTIONS_ONLY
 
+// values for tape properties stored in tape file
+#define TAPE_PROPERTY_NONE		0
+
 // some positions in the video tape control window
 #define VIDEO_DISPLAY1_XPOS	5
 #define VIDEO_DISPLAY1_YPOS	5
@@ -201,6 +204,9 @@ struct TapeInfo
   // flags to indicate which game actions are stored in this tape
   boolean use_key_actions;
   boolean use_mouse_actions;
+
+  // bits to indicate which tape properties are stored in this tape
+  byte property_bits;
 
   struct
   {

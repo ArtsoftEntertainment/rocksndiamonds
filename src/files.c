@@ -58,7 +58,7 @@
 
 #define TAPE_CHUNK_VERS_SIZE	8	// size of file version chunk
 #define TAPE_CHUNK_HEAD_SIZE	20	// size of tape file header
-#define TAPE_CHUNK_HEAD_UNUSED	2	// unused tape header bytes
+#define TAPE_CHUNK_HEAD_UNUSED	1	// unused tape header bytes
 
 #define LEVEL_CHUNK_CNT3_SIZE(x)	 (LEVEL_CHUNK_CNT3_HEADER + (x))
 #define LEVEL_CHUNK_CUS3_SIZE(x)	 (2 + (x) * LEVEL_CPART_CUS3_SIZE)
@@ -7610,6 +7610,8 @@ static void setTapeInfoToDefaults(void)
   // at least one (default: the first) player participates in every tape
   tape.num_participating_players = 1;
 
+  tape.property_bits = TAPE_PROPERTY_NONE;
+
   tape.level_nr = level_nr;
   tape.counter = 0;
   tape.changed = FALSE;
@@ -7693,6 +7695,8 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
     }
 
     setTapeActionFlags(tape, getFile8Bit(file));
+
+    tape->property_bits = getFile8Bit(file);
 
     ReadUnusedBytesFromFile(file, TAPE_CHUNK_HEAD_UNUSED);
 
@@ -8094,6 +8098,8 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
   putFile8Bit(file, store_participating_players);
 
   putFile8Bit(file, getTapeActionValue(tape));
+
+  putFile8Bit(file, tape->property_bits);
 
   // unused bytes not at the end here for 4-byte alignment of engine_version
   WriteUnusedBytesToFile(file, TAPE_CHUNK_HEAD_UNUSED);
