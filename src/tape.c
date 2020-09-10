@@ -1276,6 +1276,166 @@ void AutoPlayTape(void)
 }
 
 
+// ----------------------------------------------------------------------------
+// tape patch functions
+// ----------------------------------------------------------------------------
+
+static boolean PatchTape(struct TapeInfo *tape, char *mode)
+{
+  Print("[%d.%d.%d.%d]: ",
+	(tape->engine_version / 1000000) % 100,
+	(tape->engine_version / 10000  ) % 100,
+	(tape->engine_version / 100    ) % 100,
+	(tape->engine_version          ) % 100);
+
+  if (strEqual(mode, "info"))
+  {
+    Print("property bits == 0x%02x\n", tape->property_bits);
+
+    return FALSE;
+  }
+
+  byte property_bits = tape->property_bits;
+  byte property_bitmask = 0;
+  boolean set_property_bit = TRUE;
+
+  if (strSuffix(mode, ":0") ||
+      strSuffix(mode, ":off") ||
+      strSuffix(mode, ":clear"))
+    set_property_bit = FALSE;
+
+  if (strEqual(mode, "em_random_bug") || strPrefix(mode, "em_random_bug:"))
+  {
+    // this bug was introduced in version 3.3.1.0 and fixed in version 4.0.1.2
+    if (tape->engine_version <  VERSION_IDENT(3,3,1,0) ||
+	tape->engine_version >= VERSION_IDENT(4,0,1,2))
+    {
+      Print("This tape version cannot be patched against EM random bug!\n");
+
+      return FALSE;
+    }
+
+    property_bitmask = TAPE_PROPERTY_EM_RANDOM_BUG;
+  }
+  else
+  {
+    Print("Unknown patch mode '%s'!\n", mode);
+
+    return FALSE;
+  }
+
+  if (set_property_bit)
+    property_bits |= property_bitmask;
+  else
+    property_bits &= ~property_bitmask;
+
+  if (property_bits == tape->property_bits)
+  {
+    Print("Tape already patched for '%s'!\n", mode);
+
+    return FALSE;
+  }
+
+  Print("Patching for '%s' ... ", mode);
+
+  tape->property_bits = property_bits;
+
+  return TRUE;
+}
+
+void PatchTapes(void)
+{
+  static LevelDirTree *patchtapes_leveldir = NULL;
+  static int num_tapes_found = 0;
+  static int num_tapes_patched = 0;
+  char *mode = global.patchtapes_mode;
+  int i;
+
+  if (strEqual(mode, "help"))
+  {
+    PrintLine("=", 79);
+    Print("Supported patch modes:\n");
+    Print("- \"em_random_bug\"   - use 64-bit random value bug for EM engine\n");
+    PrintLine("-", 79);
+    Print("Supported modifiers:\n");
+    Print("- add \":0\", \":off\" or \":clear\" to patch mode to un-patch tape file\n");
+    PrintLine("=", 79);
+
+    CloseAllAndExit(0);
+  }
+
+  patchtapes_leveldir = getTreeInfoFromIdentifier(leveldir_first,
+						  global.patchtapes_leveldir);
+
+  if (patchtapes_leveldir == NULL)
+    Error(ERR_EXIT, "no such level identifier: '%s'",
+	  global.patchtapes_leveldir);
+
+  leveldir_current = patchtapes_leveldir;
+
+  if (patchtapes_leveldir->first_level < 0)
+    patchtapes_leveldir->first_level = 0;
+  if (patchtapes_leveldir->last_level >= MAX_TAPES_PER_SET)
+    patchtapes_leveldir->last_level = MAX_TAPES_PER_SET - 1;
+
+  PrintLine("=", 79);
+  Print("Patching level tapes for patch mode '%s'\n", mode);
+  PrintLine("-", 79);
+  Print("Level series identifier: '%s'\n", patchtapes_leveldir->identifier);
+  Print("Level series name:       '%s'\n", patchtapes_leveldir->name);
+  Print("Level series author:     '%s'\n", patchtapes_leveldir->author);
+  Print("Number of levels:        %d\n",   patchtapes_leveldir->levels);
+  PrintLine("=", 79);
+  Print("\n");
+
+  int first_level = patchtapes_leveldir->first_level;
+  int last_level = patchtapes_leveldir->last_level;
+
+  for (i = first_level; i <= last_level; i++)
+  {
+    if (!global.patchtapes_all && !global.patchtapes_level[i])
+      continue;
+
+    Print("Tape %03d: ", i);
+
+    TapeErase();
+    LoadTape(i);
+
+    if (tape.no_valid_file)
+    {
+      Print("(not found)\n");
+
+      continue;
+    }
+
+    num_tapes_found++;
+
+    if (PatchTape(&tape, mode))
+    {
+      char *filename = getTapeFilename(i);
+      char *filename_orig = getStringCat2(filename, ".orig");
+
+      if (!fileExists(filename_orig))
+	rename(filename, filename_orig);
+
+      SaveTapeToFilename(filename);
+
+      Print("patched tape saved.\n");
+
+      num_tapes_patched++;
+    }
+  }
+
+  Print("\n");
+  PrintLine("=", 79);
+  Print("Number of tapes found: %d\n", num_tapes_found);
+  Print("Number of tapes patched: %d\n", num_tapes_patched);
+  PrintLine("=", 79);
+
+  CloseAllAndExit(0);
+}
+
+
 // ---------- new tape button stuff -------------------------------------------
 
 static struct

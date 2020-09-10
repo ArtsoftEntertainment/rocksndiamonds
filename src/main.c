@@ -7637,6 +7637,7 @@ static void print_usage(void)
 	"  \"autoplay LEVELDIR [NR ...]\"     play level tapes for LEVELDIR\n"
 	"  \"autoffwd LEVELDIR [NR ...]\"     ffwd level tapes for LEVELDIR\n"
 	"  \"autowarp LEVELDIR [NR ...]\"     warp level tapes for LEVELDIR\n"
+	"  \"patch tapes MODE LEVELDIR [NR]\" patch level tapes for LEVELDIR\n"
 	"  \"convert LEVELDIR [NR]\"          convert levels in LEVELDIR\n"
 	"  \"create images DIRECTORY\"        write BMP images to DIRECTORY\n"
 	"  \"create CE image DIRECTORY\"      write BMP image to DIRECTORY\n"

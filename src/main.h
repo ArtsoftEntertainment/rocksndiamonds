@@ -3219,6 +3219,11 @@ struct GlobalInfo
   boolean autoplay_all;
   boolean autoplay_mode;
 
+  char *patchtapes_mode;
+  char *patchtapes_leveldir;
+  int patchtapes_level[MAX_TAPES_PER_SET];
+  boolean patchtapes_all;
+
   char *convert_leveldir;
   int convert_level_nr;
 

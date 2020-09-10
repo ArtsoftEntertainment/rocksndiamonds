@@ -4900,6 +4900,7 @@ static void InitGlobal(void)
   }
 
   global.autoplay_leveldir = NULL;
+  global.patchtapes_leveldir = NULL;
   global.convert_leveldir = NULL;
   global.create_images_dir = NULL;
 
@@ -5079,6 +5080,65 @@ static void Execute_Command(char *command)
 
     if (global.autoplay_mode == AUTOPLAY_MODE_TEST)
       program.headless = TRUE;
+  }
+  else if (strPrefix(command, "patch tapes "))
+  {
+    char *str_ptr = getStringCopy(&command[12]); // read command parameters
+
+    // skip leading whitespace
+    while (*str_ptr == ' ' || *str_ptr == '\t')
+      str_ptr++;
+
+    if (*str_ptr == '\0')
+      Error(ERR_EXIT, "cannot find MODE in command '%s'", command);
+
+    global.patchtapes_mode = str_ptr;		// store patch mode
+
+    // advance to next whitespace (or end of string)
+    while (*str_ptr != ' ' && *str_ptr != '\t' && *str_ptr != '\0')
+      str_ptr++;
+
+    while (*str_ptr != '\0')			// continue parsing string
+    {
+      // cut leading whitespace from string, replace it by string terminator
+      while (*str_ptr == ' ' || *str_ptr == '\t')
+	*str_ptr++ = '\0';
+
+      if (*str_ptr == '\0')			// end of string reached
+	break;
+
+      if (global.patchtapes_leveldir == NULL)	// read level set string
+      {
+	global.patchtapes_leveldir = str_ptr;
+	global.patchtapes_all = TRUE;		// default: patch all tapes
+
+	for (i = 0; i < MAX_TAPES_PER_SET; i++)
+	  global.patchtapes_level[i] = FALSE;
+      }
+      else					// read level number string
+      {
+	int level_nr = atoi(str_ptr);		// get level_nr value
+
+	if (level_nr >= 0 && level_nr < MAX_TAPES_PER_SET)
+	  global.patchtapes_level[level_nr] = TRUE;
+
+	global.patchtapes_all = FALSE;
+      }
+
+      // advance string pointer to the next whitespace (or end of string)
+      while (*str_ptr != ' ' && *str_ptr != '\t' && *str_ptr != '\0')
+	str_ptr++;
+    }
+
+    if (global.patchtapes_leveldir == NULL)
+    {
+      if (strEqual(global.patchtapes_mode, "help"))
+	global.patchtapes_leveldir = UNDEFINED_LEVELSET;
+      else
+	Error(ERR_EXIT, "cannot find LEVELDIR in command '%s'", command);
+    }
+
+    program.headless = TRUE;
   }
   else if (strPrefix(command, "convert "))
   {
@@ -6165,6 +6225,11 @@ void OpenAll(void)
   if (global.autoplay_leveldir)
   {
     AutoPlayTape();
+    return;
+  }
+  else if (global.patchtapes_leveldir)
+  {
+    PatchTapes();
     return;
   }
   else if (global.convert_leveldir)
