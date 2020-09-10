@@ -8144,32 +8144,18 @@ static void SaveTape_BODY(FILE *file, struct TapeInfo *tape)
   }
 }
 
-void SaveTape(int nr)
+void SaveTapeToFilename(char *filename)
 {
-  char *filename = getTapeFilename(nr);
   FILE *file;
   int tape_pos_size;
   int info_chunk_size;
   int body_chunk_size;
-  int i;
-
-  InitTapeDirectory(leveldir_current->subdir);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
     Error(ERR_WARN, "cannot save level recording file '%s'", filename);
     return;
   }
-
-  tape.file_version = FILE_VERSION_ACTUAL;
-  tape.game_version = GAME_VERSION_ACTUAL;
-
-  tape.num_participating_players = 0;
-
-  // count number of participating players
-  for (i = 0; i < MAX_PLAYERS; i++)
-    if (tape.player_participates[i])
-      tape.num_participating_players++;
 
   tape_pos_size = getTapePosSize(&tape);
 
@@ -8194,6 +8180,26 @@ void SaveTape(int nr)
   fclose(file);
 
   SetFilePermissions(filename, PERMS_PRIVATE);
+}
+
+void SaveTape(int nr)
+{
+  char *filename = getTapeFilename(nr);
+  int i;
+
+  InitTapeDirectory(leveldir_current->subdir);
+
+  tape.file_version = FILE_VERSION_ACTUAL;
+  tape.game_version = GAME_VERSION_ACTUAL;
+
+  tape.num_participating_players = 0;
+
+  // count number of participating players
+  for (i = 0; i < MAX_PLAYERS; i++)
+    if (tape.player_participates[i])
+      tape.num_participating_players++;
+
+  SaveTapeToFilename(filename);
 
   tape.changed = FALSE;
 }
