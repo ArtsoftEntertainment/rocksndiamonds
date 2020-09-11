@@ -5032,18 +5032,20 @@ static void Execute_Command(char *command)
 
     exit(0);
   }
-  else if (strPrefix(command, "autotest ") ||
-	   strPrefix(command, "autoplay ") ||
+  else if (strPrefix(command, "autoplay ") ||
 	   strPrefix(command, "autoffwd ") ||
-	   strPrefix(command, "autowarp "))
+	   strPrefix(command, "autowarp ") ||
+	   strPrefix(command, "autotest ") ||
+	   strPrefix(command, "autofix "))
   {
-    char *str_ptr = getStringCopy(&command[9]);	// read command parameters
+    char *str_ptr = getStringCopy(&command[8]);	// read command parameters
 
     global.autoplay_mode =
-      (strPrefix(command, "autotest") ? AUTOPLAY_MODE_TEST :
-       strPrefix(command, "autoplay") ? AUTOPLAY_MODE_PLAY :
+      (strPrefix(command, "autoplay") ? AUTOPLAY_MODE_PLAY :
        strPrefix(command, "autoffwd") ? AUTOPLAY_MODE_FFWD :
        strPrefix(command, "autowarp") ? AUTOPLAY_MODE_WARP :
+       strPrefix(command, "autotest") ? AUTOPLAY_MODE_TEST :
+       strPrefix(command, "autofix")  ? AUTOPLAY_MODE_FIX :
        AUTOPLAY_MODE_NONE);
 
     while (*str_ptr != '\0')			// continue parsing string
@@ -5078,7 +5080,7 @@ static void Execute_Command(char *command)
 	str_ptr++;
     }
 
-    if (global.autoplay_mode == AUTOPLAY_MODE_TEST)
+    if (global.autoplay_mode & AUTOPLAY_MODE_WARP_NO_DISPLAY)
       program.headless = TRUE;
   }
   else if (strPrefix(command, "patch tapes "))

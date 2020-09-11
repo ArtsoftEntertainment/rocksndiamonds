@@ -194,6 +194,8 @@ struct TapeInfo
   boolean deactivate_display;
   boolean auto_play;
   boolean auto_play_level_solved;
+  boolean auto_play_level_fixed;
+  boolean auto_play_level_not_fixable;
   boolean quick_resume;
   boolean single_step;
   boolean changed;
