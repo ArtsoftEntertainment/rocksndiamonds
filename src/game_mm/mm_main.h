@@ -123,10 +123,10 @@
 				 IS_WALL_AMOEBA(e))
 
 #define CAN_MOVE(e)		((e) == EL_PACMAN)
-#define IS_FREE(x,y)            (Feld[x][y] == EL_EMPTY)
+#define IS_FREE(x,y)            (Tile[x][y] == EL_EMPTY)
 
 #define IS_MOVING(x,y)          (MovPos[x][y] != 0)
-#define IS_BLOCKED(x,y)         (Feld[x][y] == EL_BLOCKED)
+#define IS_BLOCKED(x,y)         (Tile[x][y] == EL_BLOCKED)
 #define IS_DRAWABLE(e)          ((e) < EL_BLOCKED)
 #define IS_NOT_DRAWABLE(e)      ((e) >= EL_BLOCKED)
 
@@ -194,7 +194,7 @@ extern boolean		level_editor_test_game;
 extern boolean		redraw[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int		redraw_x1, redraw_y1;
 
-extern short		Feld[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern short		Tile[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		Ur[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		Hit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		Box[MAX_LEV_FIELDX][MAX_LEV_FIELDY];

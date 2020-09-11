@@ -319,7 +319,7 @@ void DrawLevelElementThruMask_MM(int x, int y, int element)
 
 void DrawLevelFieldThruMask_MM(int x, int y)
 {
-  DrawLevelElementExt_MM(x, y, 0, 0, Feld[x][y], NO_CUTTING, USE_MASKING);
+  DrawLevelElementExt_MM(x, y, 0, 0, Tile[x][y], NO_CUTTING, USE_MASKING);
 }
 
 void DrawScreenElement_MM(int x, int y, int element)
@@ -335,7 +335,7 @@ void DrawLevelElement_MM(int x, int y, int element)
 
 void DrawScreenField_MM(int x, int y)
 {
-  int element = Feld[x][y];
+  int element = Tile[x][y];
 
   if (!IN_LEV_FIELD(x, y))
     return;
@@ -366,7 +366,7 @@ void DrawScreenField_MM(int x, int y)
 
     DrawScreenElement_MM(x, y, EL_EMPTY);
 
-    element = Feld[oldx][oldy];
+    element = Tile[oldx][oldy];
 
     if (horiz_move)
       DrawScreenElementShifted_MM(sx, sy, MovPos[oldx][oldy], 0, element,
@@ -413,12 +413,12 @@ void DrawMiniElementOrWall_MM(int sx, int sy, int scroll_x, int scroll_y)
   if (x < -1 || x > lev_fieldx || y < -1 || y > lev_fieldy)
     DrawMiniElement_MM(sx, sy, EL_EMPTY);
   else if (x > -1 && x < lev_fieldx && y > -1 && y < lev_fieldy)
-    DrawMiniElement_MM(sx, sy, Feld[x][y]);
+    DrawMiniElement_MM(sx, sy, Tile[x][y]);
 }
 
 void DrawField_MM(int x, int y)
 {
-  int element = Feld[x][y];
+  int element = Tile[x][y];
 
   DrawElement_MM(x, y, element);
 }
@@ -533,9 +533,9 @@ void DrawElement_MM(int x, int y, int element)
   else if (IS_WALL(element))
     DrawWalls_MM(x, y, element);
 #if 0
-  else if (IS_WALL_CHANGING(element) && IS_WALL_CHANGING(Feld[x][y]))
+  else if (IS_WALL_CHANGING(element) && IS_WALL_CHANGING(Tile[x][y]))
   {
-    int wall_element = Feld[x][y] - EL_WALL_CHANGING + Store[x][y];
+    int wall_element = Tile[x][y] - EL_WALL_CHANGING + Store[x][y];
 
     DrawWalls_MM(x, y, wall_element);
   }

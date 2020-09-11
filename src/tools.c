@@ -409,9 +409,9 @@ void DumpTile(int x, int y)
     return;
   }
 
-  token_name = element_info[Feld[x][y]].token_name;
+  token_name = element_info[Tile[x][y]].token_name;
 
-  printf("  Feld:        %d\t['%s']\n", Feld[x][y], token_name);
+  printf("  Tile:        %d\t['%s']\n", Tile[x][y], token_name);
   printf("  Back:        %s\n", print_if_not_empty(Back[x][y]));
   printf("  Store:       %s\n", print_if_not_empty(Store[x][y]));
   printf("  Store2:      %s\n", print_if_not_empty(Store2[x][y]));
@@ -1442,7 +1442,7 @@ void SetBorderElement(void)
   {
     for (x = 0; x < lev_fieldx; x++)
     {
-      if (!IS_INDESTRUCTIBLE(Feld[x][y]))
+      if (!IS_INDESTRUCTIBLE(Tile[x][y]))
 	BorderElement = EL_STEELWALL;
 
       if (y != 0 && y != lev_fieldy - 1 && x != lev_fieldx - 1)
@@ -1997,9 +1997,9 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
   {
     boolean left_stopped = FALSE, right_stopped = FALSE;
 
-    if (!IN_LEV_FIELD(lx - 1, ly) || IS_WALL(Feld[lx - 1][ly]))
+    if (!IN_LEV_FIELD(lx - 1, ly) || IS_WALL(Tile[lx - 1][ly]))
       left_stopped = TRUE;
-    if (!IN_LEV_FIELD(lx + 1, ly) || IS_WALL(Feld[lx + 1][ly]))
+    if (!IN_LEV_FIELD(lx + 1, ly) || IS_WALL(Tile[lx + 1][ly]))
       right_stopped = TRUE;
 
     if (left_stopped && right_stopped)
@@ -2051,7 +2051,7 @@ void DrawLevelElementThruMask(int x, int y, int element)
 
 void DrawLevelFieldThruMask(int x, int y)
 {
-  DrawLevelElementExt(x, y, 0, 0, Feld[x][y], NO_CUTTING, USE_MASKING);
+  DrawLevelElementExt(x, y, 0, 0, Tile[x][y], NO_CUTTING, USE_MASKING);
 }
 
 // !!! implementation of quicksand is totally broken !!!
@@ -2258,8 +2258,8 @@ static void DrawLevelFieldCrumbledExt(int x, int y, int graphic, int frame)
 	continue;
 
       // do not crumble fields that are being digged or snapped
-      if (Feld[xx][yy] == EL_EMPTY ||
-	  Feld[xx][yy] == EL_ELEMENT_SNAPPING)
+      if (Tile[xx][yy] == EL_EMPTY ||
+	  Tile[xx][yy] == EL_ELEMENT_SNAPPING)
 	continue;
 
       element = TILE_GFX_ELEMENT(xx, yy);
@@ -2288,7 +2288,7 @@ static void DrawLevelFieldCrumbledExt(int x, int y, int graphic, int frame)
 	  !IN_SCR_FIELD(sxx, syy))
 	continue;
 
-      if (Feld[xx][yy] == EL_ELEMENT_SNAPPING)
+      if (Tile[xx][yy] == EL_ELEMENT_SNAPPING)
 	continue;
 
       element = TILE_GFX_ELEMENT(xx, yy);
@@ -2314,7 +2314,7 @@ void DrawLevelFieldCrumbled(int x, int y)
   if (!IN_LEV_FIELD(x, y))
     return;
 
-  if (Feld[x][y] == EL_ELEMENT_SNAPPING &&
+  if (Tile[x][y] == EL_ELEMENT_SNAPPING &&
       GfxElement[x][y] != EL_UNDEFINED &&
       GFX_CRUMBLED(GfxElement[x][y]))
   {
@@ -2363,7 +2363,7 @@ void DrawLevelFieldCrumbledNeighbours(int x, int y)
 
     if (!IN_LEV_FIELD(xx, yy) ||
 	!IN_SCR_FIELD(sxx, syy) ||
-	!GFX_CRUMBLED(Feld[xx][yy]) ||
+	!GFX_CRUMBLED(Tile[xx][yy]) ||
 	IS_MOVING(xx, yy))
       continue;
 
@@ -2382,7 +2382,7 @@ void DrawLevelFieldCrumbledNeighbours(int x, int y)
 
     if (!IN_LEV_FIELD(xx, yy) ||
 	!IN_SCR_FIELD(sxx, syy) ||
-	!GFX_CRUMBLED(Feld[xx][yy]) ||
+	!GFX_CRUMBLED(Tile[xx][yy]) ||
 	IS_MOVING(xx, yy))
       continue;
 
@@ -2447,7 +2447,7 @@ void DrawScreenField(int x, int y)
     return;
   }
 
-  element = Feld[lx][ly];
+  element = Tile[lx][ly];
   content = Store[lx][ly];
 
   if (IS_MOVING(lx, ly))
@@ -2514,7 +2514,7 @@ void DrawScreenField(int x, int y)
     horiz_move = (MovDir[oldx][oldy] == MV_LEFT ||
 		  MovDir[oldx][oldy] == MV_RIGHT);
 
-    element_old = Feld[oldx][oldy];
+    element_old = Tile[oldx][oldy];
     content_old = Store[oldx][oldy];
 
     if (element_old == EL_QUICKSAND_EMPTYING ||
@@ -2667,7 +2667,7 @@ void DrawSizedElementOrWall(int sx, int sy, int scroll_x, int scroll_y,
   if (x < -1 || x > lev_fieldx || y < -1 || y > lev_fieldy)
     DrawSizedElement(sx, sy, EL_EMPTY, tilesize);
   else if (x > -1 && x < lev_fieldx && y > -1 && y < lev_fieldy)
-    DrawSizedElement(sx, sy, Feld[x][y], tilesize);
+    DrawSizedElement(sx, sy, Tile[x][y], tilesize);
   else
     DrawSizedGraphic(sx, sy, el2edimg(getBorderElement(x, y)), 0, tilesize);
 }
@@ -2679,7 +2679,7 @@ void DrawMiniElementOrWall(int sx, int sy, int scroll_x, int scroll_y)
   if (x < -1 || x > lev_fieldx || y < -1 || y > lev_fieldy)
     DrawMiniElement(sx, sy, EL_EMPTY);
   else if (x > -1 && x < lev_fieldx && y > -1 && y < lev_fieldy)
-    DrawMiniElement(sx, sy, Feld[x][y]);
+    DrawMiniElement(sx, sy, Tile[x][y]);
   else
     DrawMiniGraphic(sx, sy, el2edimg(getBorderElement(x, y)));
 }
@@ -3765,7 +3765,7 @@ void DrawLevelGraphicAnimationIfNeeded(int x, int y, int graphic)
   if (GFX_CRUMBLED(TILE_GFX_ELEMENT(x, y)))
     DrawLevelFieldCrumbled(x, y);
 #else
-  if (GFX_CRUMBLED(Feld[x][y]))
+  if (GFX_CRUMBLED(Tile[x][y]))
     DrawLevelFieldCrumbled(x, y);
 #endif
 }
@@ -3896,8 +3896,8 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
   int sy = SCREENY(jy);
   int sxx = (move_dir == MV_LEFT || move_dir == MV_RIGHT ? player->GfxPos : 0);
   int syy = (move_dir == MV_UP   || move_dir == MV_DOWN  ? player->GfxPos : 0);
-  int element = Feld[jx][jy];
-  int last_element = Feld[last_jx][last_jy];
+  int element = Tile[jx][jy];
+  int last_element = Tile[last_jx][last_jy];
   int action = (player->is_pushing    ? ACTION_PUSHING         :
 		player->is_digging    ? ACTION_DIGGING         :
 		player->is_collecting ? ACTION_COLLECTING      :
@@ -4023,7 +4023,7 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
 
     if (!IS_MOVING(jx, jy))		// push movement already finished
     {
-      element = Feld[next_jx][next_jy];
+      element = Tile[next_jx][next_jy];
       gfx_frame = GfxFrame[next_jx][next_jy];
     }
 
@@ -4057,7 +4057,7 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
     // do not draw (EM style) pushing animation when pushing is finished
     // (two-tile animations usually do not contain start and end frame)
     if (graphic_info[graphic].double_movement && !IS_MOVING(jx, jy))
-      DrawLevelElement(next_jx, next_jy, Feld[next_jx][next_jy]);
+      DrawLevelElement(next_jx, next_jy, Tile[next_jx][next_jy]);
     else
       DrawGraphicShiftedThruMask(px, py, pxx, pyy, graphic, frame, NO_CUTTING);
 #else

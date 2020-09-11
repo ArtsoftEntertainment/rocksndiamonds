@@ -817,13 +817,13 @@
 #if 1
 #define TILE_GFX_ELEMENT(x, y)						\
 		   (GfxElement[x][y] != EL_UNDEFINED &&			\
-		    Feld[x][y] != EL_EXPLOSION ?			\
-		    GfxElement[x][y] : Feld[x][y])
+		    Tile[x][y] != EL_EXPLOSION ?			\
+		    GfxElement[x][y] : Tile[x][y])
 #else
 #define TILE_GFX_ELEMENT(x, y)						\
 	GFX_ELEMENT(GfxElement[x][y] != EL_UNDEFINED &&			\
-		    Feld[x][y] != EL_EXPLOSION ?			\
-		    GfxElement[x][y] : Feld[x][y])
+		    Tile[x][y] != EL_EXPLOSION ?			\
+		    GfxElement[x][y] : Tile[x][y])
 #endif
 
 // !!! "use sound" deactivated due to problems with level "bug machine" !!!
@@ -844,12 +844,12 @@
 
 #define IS_PLAYER(x, y)		(ELEM_IS_PLAYER(StorePlayer[x][y]))
 
-#define IS_FREE(x, y)		(Feld[x][y] == EL_EMPTY && !IS_PLAYER(x, y))
-#define IS_FREE_OR_PLAYER(x, y)	(Feld[x][y] == EL_EMPTY)
+#define IS_FREE(x, y)		(Tile[x][y] == EL_EMPTY && !IS_PLAYER(x, y))
+#define IS_FREE_OR_PLAYER(x, y)	(Tile[x][y] == EL_EMPTY)
 
 #define IS_MOVING(x,y)		(MovPos[x][y] != 0)
 #define IS_FALLING(x,y)		(MovPos[x][y] != 0 && MovDir[x][y] == MV_DOWN)
-#define IS_BLOCKED(x,y)		(Feld[x][y] == EL_BLOCKED)
+#define IS_BLOCKED(x,y)		(Tile[x][y] == EL_BLOCKED)
 
 #define IS_MV_DIAGONAL(x)	((x) & MV_HORIZONTAL && (x) & MV_VERTICAL)
 
@@ -880,9 +880,9 @@
 #define PLAYERINFO(x,y)		(&stored_player[StorePlayer[x][y]-EL_PLAYER_1])
 #define SHIELD_ON(p)		((p)->shield_normal_time_left > 0)
 
-#define ENEMY_PROTECTED_FIELD(x,y)	(IS_PROTECTED(Feld[x][y]) ||       \
+#define ENEMY_PROTECTED_FIELD(x,y)	(IS_PROTECTED(Tile[x][y]) ||       \
 					 IS_PROTECTED(Back[x][y]))
-#define EXPLOSION_PROTECTED_FIELD(x,y)  (IS_EXPLOSION_PROOF(Feld[x][y]))
+#define EXPLOSION_PROTECTED_FIELD(x,y)  (IS_EXPLOSION_PROOF(Tile[x][y]))
 #define PLAYER_ENEMY_PROTECTED(x,y)     (SHIELD_ON(PLAYERINFO(x, y)) ||	   \
 					 ENEMY_PROTECTED_FIELD(x, y))
 #define PLAYER_EXPLOSION_PROTECTED(x,y) (SHIELD_ON(PLAYERINFO(x, y)) ||	   \
@@ -3642,7 +3642,7 @@ extern SDL_Thread	       *server_thread;
 
 extern int			key_joystick_mapping;
 
-extern short			Feld[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern short			Tile[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			Last[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			MovPos[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short			MovDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];

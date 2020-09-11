@@ -38,7 +38,7 @@ SDL_Thread	       *server_thread;
 
 int			key_joystick_mapping = 0;
 
-short			Feld[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+short			Tile[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			Last[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			MovPos[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 short			MovDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];

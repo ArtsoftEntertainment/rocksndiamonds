@@ -375,19 +375,19 @@ static void CheckExitMM(void)
   {
     for (x = 0; x < lev_fieldx; x++)
     {
-      if (Feld[x][y] == EL_EXIT_CLOSED)
+      if (Tile[x][y] == EL_EXIT_CLOSED)
       {
 	// initiate opening animation of exit door
-	Feld[x][y] = EL_EXIT_OPENING;
+	Tile[x][y] = EL_EXIT_OPENING;
 
 	exit_element = EL_EXIT_OPEN;
 	exit_x = x;
 	exit_y = y;
       }
-      else if (IS_RECEIVER(Feld[x][y]))
+      else if (IS_RECEIVER(Tile[x][y]))
       {
 	// remove field that blocks receiver
-	int phase = Feld[x][y] - EL_RECEIVER_START;
+	int phase = Tile[x][y] - EL_RECEIVER_START;
 	int blocking_x, blocking_y;
 
 	blocking_x = x + xy[phase][0];
@@ -395,7 +395,7 @@ static void CheckExitMM(void)
 
 	if (IN_LEV_FIELD(blocking_x, blocking_y))
 	{
-	  Feld[blocking_x][blocking_y] = EL_EMPTY;
+	  Tile[blocking_x][blocking_y] = EL_EMPTY;
 
 	  DrawField_MM(blocking_x, blocking_y);
 	}
@@ -413,7 +413,7 @@ static void CheckExitMM(void)
 
 static void InitMovDir_MM(int x, int y)
 {
-  int element = Feld[x][y];
+  int element = Tile[x][y];
   static int direction[3][4] =
   {
     { MV_RIGHT, MV_UP,    MV_LEFT,  MV_DOWN },
@@ -427,7 +427,7 @@ static void InitMovDir_MM(int x, int y)
     case EL_PACMAN_UP:
     case EL_PACMAN_LEFT:
     case EL_PACMAN_DOWN:
-      Feld[x][y] = EL_PACMAN;
+      Tile[x][y] = EL_PACMAN;
       MovDir[x][y] = direction[0][element - EL_PACMAN_RIGHT];
       break;
 
@@ -438,12 +438,12 @@ static void InitMovDir_MM(int x, int y)
 
 static void InitField(int x, int y, boolean init_game)
 {
-  int element = Feld[x][y];
+  int element = Tile[x][y];
 
   switch (element)
   {
     case EL_DF_EMPTY:
-      Feld[x][y] = EL_EMPTY;
+      Tile[x][y] = EL_EMPTY;
       break;
 
     case EL_KETTLE:
@@ -470,8 +470,8 @@ static void InitField(int x, int y, boolean init_game)
       {
 	if (IS_BEAMER_OLD(element))
 	{
-	  Feld[x][y] = EL_BEAMER_BLUE_START + (element - EL_BEAMER_START);
-	  element = Feld[x][y];
+	  Tile[x][y] = EL_BEAMER_BLUE_START + (element - EL_BEAMER_START);
+	  element = Tile[x][y];
 	}
 
 	if (!IS_FIBRE_OPTIC(element))
@@ -529,13 +529,13 @@ static void InitCycleElements_RotateSingleStep(void)
     int x = game_mm.cycle[i].x;
     int y = game_mm.cycle[i].y;
     int step = SIGN(game_mm.cycle[i].steps);
-    int last_element = Feld[x][y];
+    int last_element = Tile[x][y];
     int next_element = get_rotated_element(last_element, step);
 
     if (!game_mm.cycle[i].steps)
       continue;
 
-    Feld[x][y] = next_element;
+    Tile[x][y] = next_element;
 
     DrawField_MM(x, y);
     game_mm.cycle[i].steps -= step;
@@ -544,7 +544,7 @@ static void InitCycleElements_RotateSingleStep(void)
 
 static void InitLaser(void)
 {
-  int start_element = Feld[laser.start_edge.x][laser.start_edge.y];
+  int start_element = Tile[laser.start_edge.x][laser.start_edge.y];
   int step = (IS_LASER(start_element) ? 4 : 0);
 
   LX = laser.start_edge.x * TILEX;
@@ -648,7 +648,7 @@ void InitGameEngine_MM(void)
   {
     for (y = 0; y < lev_fieldy; y++)
     {
-      Feld[x][y] = Ur[x][y];
+      Tile[x][y] = Ur[x][y];
       Hit[x][y] = Box[x][y] = 0;
       Angle[x][y] = 0;
       MovPos[x][y] = MovDir[x][y] = MovDelay[x][y] = 0;
@@ -803,7 +803,7 @@ static int ScanPixel(void)
 
       if (IN_LEV_FIELD(lx, ly))
       {
-	int element = Feld[lx][ly];
+	int element = Tile[lx][ly];
 
 	if (element == EL_EMPTY || element == EL_EXPLODING_TRANSP)
 	{
@@ -923,7 +923,7 @@ void ScanLaser(void)
 	   hit_mask, LX, LY, ELX, ELY);
 #endif
 
-    element = Feld[ELX][ELY];
+    element = Tile[ELX][ELY];
     laser.dest_element = element;
 
 #if 0
@@ -1000,10 +1000,10 @@ void ScanLaser(void)
   }
 
 #if 0
-  if (laser.dest_element != Feld[ELX][ELY])
+  if (laser.dest_element != Tile[ELX][ELY])
   {
-    printf("ALARM: laser.dest_element == %d, Feld[ELX][ELY] == %d\n",
-	   laser.dest_element, Feld[ELX][ELY]);
+    printf("ALARM: laser.dest_element == %d, Tile[ELX][ELY] == %d\n",
+	   laser.dest_element, Tile[ELX][ELY]);
   }
 #endif
 
@@ -1094,7 +1094,7 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
     {
       int lx = laser.damage[i].x;
       int ly = laser.damage[i].y;
-      int element = Feld[lx][ly];
+      int element = Tile[lx][ly];
 
       if (Hit[lx][ly] == laser.damage[i].edge)
 	if (!((IS_BEAMER(element) || IS_FIBRE_OPTIC(element)) &&
@@ -1109,7 +1109,7 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
 
     elx = laser.damage[damage_start].x;
     ely = laser.damage[damage_start].y;
-    element = Feld[elx][ely];
+    element = Tile[elx][ely];
 
 #if 0
     if (IS_BEAMER(element))
@@ -1148,7 +1148,7 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
 
     elx = laser.start_edge.x;
     ely = laser.start_edge.y;
-    element = Feld[elx][ely];
+    element = Tile[elx][ely];
   }
 
   laser.num_edges = start_edge + 1;
@@ -1534,14 +1534,14 @@ boolean HitElement(int element, int hit_mask)
 
     DrawLaser(0, DL_LASER_ENABLED);
 
-    if (Feld[ELX][ELY] == EL_LIGHTBULB_OFF)
+    if (Tile[ELX][ELY] == EL_LIGHTBULB_OFF)
     {
-      Feld[ELX][ELY] = EL_LIGHTBULB_ON;
+      Tile[ELX][ELY] = EL_LIGHTBULB_ON;
       game_mm.lights_still_needed--;
     }
     else
     {
-      Feld[ELX][ELY] = EL_LIGHTBULB_OFF;
+      Tile[ELX][ELY] = EL_LIGHTBULB_OFF;
       game_mm.lights_still_needed++;
     }
 
@@ -1599,7 +1599,7 @@ boolean HitElement(int element, int hit_mask)
 
       if (IS_BEAMER(element))
       {
-	laser.current_angle = get_element_angle(Feld[ELX][ELY]);
+	laser.current_angle = get_element_angle(Tile[ELX][ELY]);
 	XS = 2 * Step[laser.current_angle].x;
 	YS = 2 * Step[laser.current_angle].y;
       }
@@ -2220,7 +2220,7 @@ boolean HitAbsorbingWalls(int element, int hit_mask)
   {
     int elx = (LX - 2 * XS) / TILEX;
     int ely = (LY - 2 * YS) / TILEY;
-    int element2 = Feld[elx][ely];
+    int element2 = Tile[elx][ely];
     int mask;
 
     if (element2 != EL_EMPTY && !IS_WALL_AMOEBA(element2))
@@ -2266,7 +2266,7 @@ static void OpenExit(int x, int y)
 
     if (!MovDelay[x][y])
     {
-      Feld[x][y] = EL_EXIT_OPEN;
+      Tile[x][y] = EL_EXIT_OPEN;
       DrawField_MM(x, y);
     }
   }
@@ -2300,7 +2300,7 @@ static void OpenSurpriseBall(int x, int y)
 
     if (!MovDelay[x][y])
     {
-      Feld[x][y] = Store[x][y];
+      Tile[x][y] = Store[x][y];
       Store[x][y] = 0;
       DrawField_MM(x, y);
 
@@ -2321,7 +2321,7 @@ static void MeltIce(int x, int y)
   {
     int phase;
     int wall_mask = Store2[x][y];
-    int real_element = Feld[x][y] - EL_WALL_CHANGING + EL_WALL_ICE;
+    int real_element = Tile[x][y] - EL_WALL_CHANGING + EL_WALL_ICE;
 
     MovDelay[x][y]--;
     phase = frames - MovDelay[x][y] / delay - 1;
@@ -2330,13 +2330,13 @@ static void MeltIce(int x, int y)
     {
       int i;
 
-      Feld[x][y] = real_element & (wall_mask ^ 0xFF);
+      Tile[x][y] = real_element & (wall_mask ^ 0xFF);
       Store[x][y] = Store2[x][y] = 0;
 
-      DrawWalls_MM(x, y, Feld[x][y]);
+      DrawWalls_MM(x, y, Tile[x][y]);
 
-      if (Feld[x][y] == EL_WALL_ICE)
-	Feld[x][y] = EL_EMPTY;
+      if (Tile[x][y] == EL_WALL_ICE)
+	Tile[x][y] = EL_EMPTY;
 
       for (i = (laser.num_damages > 0 ? laser.num_damages - 1 : 0); i >= 0; i--)
 	if (laser.damage[i].is_mirror)
@@ -2370,17 +2370,17 @@ static void GrowAmoeba(int x, int y)
   {
     int phase;
     int wall_mask = Store2[x][y];
-    int real_element = Feld[x][y] - EL_WALL_CHANGING + EL_WALL_AMOEBA;
+    int real_element = Tile[x][y] - EL_WALL_CHANGING + EL_WALL_AMOEBA;
 
     MovDelay[x][y]--;
     phase = MovDelay[x][y] / delay;
 
     if (!MovDelay[x][y])
     {
-      Feld[x][y] = real_element;
+      Tile[x][y] = real_element;
       Store[x][y] = Store2[x][y] = 0;
 
-      DrawWalls_MM(x, y, Feld[x][y]);
+      DrawWalls_MM(x, y, Tile[x][y]);
       DrawLaser(0, DL_LASER_ENABLED);
     }
     else if (!(MovDelay[x][y] % delay) && IN_SCR_FIELD(x, y))
@@ -2400,7 +2400,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
   if (phase == EX_PHASE_START)		// initialize 'Store[][]' field
   {
-    int center_element = Feld[x][y];
+    int center_element = Tile[x][y];
 
     if (IS_MOVING(x, y) || IS_BLOCKED(x, y))
     {
@@ -2408,7 +2408,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
       center_element = MovingOrBlocked2Element_MM(x, y);
       RemoveMovingField_MM(x, y);
 
-      Feld[x][y] = center_element;
+      Tile[x][y] = center_element;
     }
 
     if (center_element == EL_BOMB || IS_MCDUFFIN(center_element))
@@ -2417,7 +2417,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
       Store[x][y] = EL_EMPTY;
 
     Store2[x][y] = mode;
-    Feld[x][y] = EL_EXPLODING_OPAQUE;
+    Tile[x][y] = EL_EXPLODING_OPAQUE;
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
     Frame[x][y] = 1;
 
@@ -2428,7 +2428,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
   if (phase == half_phase)
   {
-    Feld[x][y] = EL_EXPLODING_TRANSP;
+    Tile[x][y] = EL_EXPLODING_TRANSP;
 
     if (x == ELX && y == ELY)
       ScanLaser();
@@ -2458,7 +2458,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
       game.restart_game_message = "Bomb killed Mc Duffin! Play it again?";
     }
 
-    Feld[x][y] = Store[x][y];
+    Tile[x][y] = Store[x][y];
     Store[x][y] = Store2[x][y] = 0;
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
 
@@ -2512,7 +2512,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
 static void Bang_MM(int x, int y)
 {
-  int element = Feld[x][y];
+  int element = Tile[x][y];
   int mode = EX_NORMAL;
 
 #if 0
@@ -2576,7 +2576,7 @@ void TurnRound(int x, int y)
     { MV_RIGHT,	MV_LEFT,	MV_UP }
   };
 
-  int element = Feld[x][y];
+  int element = Tile[x][y];
   int old_move_dir = MovDir[x][y];
   int right_dir = turn[old_move_dir].right;
   int back_dir = turn[old_move_dir].back;
@@ -2588,7 +2588,7 @@ void TurnRound(int x, int y)
     boolean can_turn_right = FALSE;
 
     if (IN_LEV_FIELD(right_x, right_y) &&
-	IS_EATABLE4PACMAN(Feld[right_x][right_y]))
+	IS_EATABLE4PACMAN(Tile[right_x][right_y]))
       can_turn_right = TRUE;
 
     if (can_turn_right)
@@ -2602,7 +2602,7 @@ void TurnRound(int x, int y)
 
 static void StartMoving_MM(int x, int y)
 {
-  int element = Feld[x][y];
+  int element = Tile[x][y];
 
   if (Stop[x][y])
     return;
@@ -2624,11 +2624,11 @@ static void StartMoving_MM(int x, int y)
     Moving2Blocked_MM(x, y, &newx, &newy);	// get next screen position
 
     if (element == EL_PACMAN &&
-	IN_LEV_FIELD(newx, newy) && IS_EATABLE4PACMAN(Feld[newx][newy]) &&
+	IN_LEV_FIELD(newx, newy) && IS_EATABLE4PACMAN(Tile[newx][newy]) &&
 	!ObjHit(newx, newy, HIT_POS_CENTER))
     {
-      Store[newx][newy] = Feld[newx][newy];
-      Feld[newx][newy] = EL_EMPTY;
+      Store[newx][newy] = Tile[newx][newy];
+      Tile[newx][newy] = EL_EMPTY;
 
       DrawField_MM(newx, newy);
     }
@@ -2651,7 +2651,7 @@ static void StartMoving_MM(int x, int y)
 
 static void ContinueMoving_MM(int x, int y)
 {
-  int element = Feld[x][y];
+  int element = Tile[x][y];
   int direction = MovDir[x][y];
   int dx = (direction == MV_LEFT ? -1 : direction == MV_RIGHT ? +1 : 0);
   int dy = (direction == MV_UP   ? -1 : direction == MV_DOWN  ? +1 : 0);
@@ -2663,8 +2663,8 @@ static void ContinueMoving_MM(int x, int y)
 
   if (ABS(MovPos[x][y]) >= TILEX)	// object reached its destination
   {
-    Feld[x][y] = EL_EMPTY;
-    Feld[newx][newy] = element;
+    Tile[x][y] = EL_EMPTY;
+    Tile[newx][newy] = element;
 
     MovPos[x][y] = MovDir[x][y] = MovDelay[x][y] = 0;
     MovDelay[newx][newy] = 0;
@@ -2741,10 +2741,10 @@ boolean ClickElement(int x, int y, int button)
   if (!IN_LEV_FIELD(x, y))
     return FALSE;
 
-  if (Feld[x][y] == EL_EMPTY)
+  if (Tile[x][y] == EL_EMPTY)
     return FALSE;
 
-  element = Feld[x][y];
+  element = Tile[x][y];
 
   if (IS_MIRROR(element) ||
       IS_BEAMER(element) ||
@@ -2773,7 +2773,7 @@ boolean ClickElement(int x, int y, int button)
 
     InitLaser();
 
-    Feld[x][y] = element;
+    Tile[x][y] = element;
     DrawField_MM(x, y);
 
     /*
@@ -2836,17 +2836,17 @@ void RotateMirror(int x, int y, int button)
     return;
   }
 
-  if (IS_MIRROR(Feld[x][y]) ||
-      IS_POLAR_CROSS(Feld[x][y]) ||
-      IS_POLAR(Feld[x][y]) ||
-      IS_BEAMER(Feld[x][y]) ||
-      IS_DF_MIRROR(Feld[x][y]) ||
-      IS_GRID_STEEL_AUTO(Feld[x][y]) ||
-      IS_GRID_WOOD_AUTO(Feld[x][y]))
+  if (IS_MIRROR(Tile[x][y]) ||
+      IS_POLAR_CROSS(Tile[x][y]) ||
+      IS_POLAR(Tile[x][y]) ||
+      IS_BEAMER(Tile[x][y]) ||
+      IS_DF_MIRROR(Tile[x][y]) ||
+      IS_GRID_STEEL_AUTO(Tile[x][y]) ||
+      IS_GRID_WOOD_AUTO(Tile[x][y]))
   {
-    Feld[x][y] = get_rotated_element(Feld[x][y], BUTTON_ROTATION(button));
+    Tile[x][y] = get_rotated_element(Tile[x][y], BUTTON_ROTATION(button));
   }
-  else if (IS_DF_MIRROR_AUTO(Feld[x][y]))
+  else if (IS_DF_MIRROR_AUTO(Tile[x][y]))
   {
     if (button == MB_LEFTBUTTON)
     {
@@ -2857,11 +2857,11 @@ void RotateMirror(int x, int y, int button)
     }
     else if (button == MB_RIGHTBUTTON && (hold_x != x || hold_y != y))
     {
-      Feld[x][y] = get_rotated_element(Feld[x][y], ROTATE_RIGHT);
+      Tile[x][y] = get_rotated_element(Tile[x][y], ROTATE_RIGHT);
     }
   }
 
-  if (IS_GRID_STEEL_AUTO(Feld[x][y]) || IS_GRID_WOOD_AUTO(Feld[x][y]))
+  if (IS_GRID_STEEL_AUTO(Tile[x][y]) || IS_GRID_WOOD_AUTO(Tile[x][y]))
   {
     int edge = Hit[x][y];
 
@@ -2895,13 +2895,13 @@ void RotateMirror(int x, int y, int button)
 
     DrawField_MM(x, y);
 
-    if ((IS_BEAMER(Feld[x][y]) ||
-	 IS_POLAR(Feld[x][y]) ||
-	 IS_POLAR_CROSS(Feld[x][y])) && x == ELX && y == ELY)
+    if ((IS_BEAMER(Tile[x][y]) ||
+	 IS_POLAR(Tile[x][y]) ||
+	 IS_POLAR_CROSS(Tile[x][y])) && x == ELX && y == ELY)
     {
       check = 0;
 
-      if (IS_BEAMER(Feld[x][y]))
+      if (IS_BEAMER(Tile[x][y]))
       {
 #if 0
 	printf("TEST (%d, %d) [%d] [%d]\n",
@@ -2931,7 +2931,7 @@ static void AutoRotateMirrors(void)
   {
     for (y = 0; y < lev_fieldy; y++)
     {
-      int element = Feld[x][y];
+      int element = Tile[x][y];
 
       // do not rotate objects hit by the laser after the game was solved
       if (game_mm.level_solved && Hit[x][y])
@@ -3061,7 +3061,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 
   for (y = 0; y < lev_fieldy; y++) for (x = 0; x < lev_fieldx; x++)
   {
-    element = Feld[x][y];
+    element = Tile[x][y];
 
     if (!IS_MOVING(x, y) && CAN_MOVE(element))
       StartMoving_MM(x, y);
@@ -3163,10 +3163,10 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
   element = laser.dest_element;
 
 #if 0
-  if (element != Feld[ELX][ELY])
+  if (element != Tile[ELX][ELY])
   {
-    printf("element == %d, Feld[ELX][ELY] == %d\n",
-	   element, Feld[ELX][ELY]);
+    printf("element == %d, Tile[ELX][ELY] == %d\n",
+	   element, Tile[ELX][ELY]);
   }
 #endif
 
@@ -3363,7 +3363,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
     int new_element = new_elements[RND(num_new_elements)];
 
     Store[ELX][ELY] = new_element + RND(get_num_elements(new_element));
-    Feld[ELX][ELY] = EL_GRAY_BALL_OPENING;
+    Tile[ELX][ELY] = EL_GRAY_BALL_OPENING;
 
     // !!! CHECK AGAIN: Laser on Polarizer !!!
     ScanLaser();
@@ -3420,7 +3420,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
       Delay_WithScreenUpdates(50);
     }
 
-    Feld[ELX][ELY] = element;
+    Tile[ELX][ELY] = element;
     DrawField_MM(ELX, ELY);
 
 #if 0
@@ -3458,7 +3458,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
     ScanLaser();
 
     /*
-    printf("TEST ELEMENT: %d\n", Feld[0][0]);
+    printf("TEST ELEMENT: %d\n", Tile[0][0]);
     */
 #endif
 
@@ -3470,11 +3470,11 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
     PlayLevelSound_MM(ELX, ELY, element, MM_ACTION_SHRINKING);
 
     {
-      Feld[ELX][ELY] = Feld[ELX][ELY] - EL_WALL_ICE + EL_WALL_CHANGING;
+      Tile[ELX][ELY] = Tile[ELX][ELY] - EL_WALL_ICE + EL_WALL_CHANGING;
       Store[ELX][ELY] = EL_WALL_ICE;
       Store2[ELX][ELY] = laser.wall_mask;
 
-      laser.dest_element = Feld[ELX][ELY];
+      laser.dest_element = Tile[ELX][ELY];
 
       return;
     }
@@ -3485,17 +3485,17 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 
       if (i == 4)
       {
-	Feld[ELX][ELY] &= (laser.wall_mask ^ 0xFF);
+	Tile[ELX][ELY] &= (laser.wall_mask ^ 0xFF);
 	phase = 0;
       }
 
-      DrawWallsAnimation_MM(ELX, ELY, Feld[ELX][ELY], phase, laser.wall_mask);
+      DrawWallsAnimation_MM(ELX, ELY, Tile[ELX][ELY], phase, laser.wall_mask);
       BackToFront();
       Delay_WithScreenUpdates(100);
     }
 
-    if (Feld[ELX][ELY] == EL_WALL_ICE)
-      Feld[ELX][ELY] = EL_EMPTY;
+    if (Tile[ELX][ELY] == EL_WALL_ICE)
+      Tile[ELX][ELY] = EL_EMPTY;
 
 /*
     laser.num_edges--;
@@ -3520,7 +3520,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
   if (IS_WALL_AMOEBA(element) && CT > 60)
   {
     int k1, k2, k3, dx, dy, de, dm;
-    int element2 = Feld[ELX][ELY];
+    int element2 = Tile[ELX][ELY];
 
     if (element2 != EL_EMPTY && !IS_WALL_AMOEBA(element))
       return;
@@ -3588,11 +3588,11 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
       DrawLaser(0, DL_LASER_DISABLED);
     }
 
-    Feld[ELX][ELY] = element | laser.wall_mask;
+    Tile[ELX][ELY] = element | laser.wall_mask;
 
     dx = ELX;
     dy = ELY;
-    de = Feld[ELX][ELY];
+    de = Tile[ELX][ELY];
     dm = laser.wall_mask;
 
 #if 1
@@ -3605,7 +3605,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 
       PlayLevelSound_MM(dx, dy, element, MM_ACTION_GROWING);
 
-      Feld[x][y] = Feld[x][y] - EL_WALL_AMOEBA + EL_WALL_CHANGING;
+      Tile[x][y] = Tile[x][y] - EL_WALL_AMOEBA + EL_WALL_CHANGING;
       Store[x][y] = EL_WALL_AMOEBA;
       Store2[x][y] = wall_mask;
 
@@ -3655,7 +3655,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
       x = ELX + Step[k * 4].x;
       y = ELY + Step[k * 4].y;
 
-      if (!IN_LEV_FIELD(x, y) || Feld[x][y] != EL_EMPTY)
+      if (!IN_LEV_FIELD(x, y) || Tile[x][y] != EL_EMPTY)
 	continue;
 
       if (ObjHit(x, y, HIT_POS_CENTER | HIT_POS_EDGE | HIT_POS_BETWEEN))
@@ -3673,8 +3673,8 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 
     PlayLevelSound_MM(ELX, ELY, element, MM_ACTION_PUSHING);
 
-    Feld[ELX][ELY] = 0;
-    Feld[x][y] = element;
+    Tile[ELX][ELY] = 0;
+    Tile[x][y] = element;
 
     DrawGraphic_MM(ELX, ELY, IMG_EMPTY);
     DrawField_MM(x, y);
@@ -3709,7 +3709,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
     }
 
     game_mm.energy_left = MAX_LASER_ENERGY;
-    Feld[ELX][ELY] = EL_FUEL_EMPTY;
+    Tile[ELX][ELY] = EL_FUEL_EMPTY;
     DrawField_MM(ELX, ELY);
 
     DrawLaser(0, DL_LASER_ENABLED);
@@ -3763,7 +3763,7 @@ void MovePacMen(void)
     oy = game_mm.pacman[pacman_nr].y;
     nx = ox + mx;
     ny = oy + my;
-    element = Feld[nx][ny];
+    element = Tile[nx][ny];
 
     if (nx < 0 || nx > 15 || ny < 0 || ny > 11)
       continue;
@@ -3774,8 +3774,8 @@ void MovePacMen(void)
     if (ObjHit(nx, ny, HIT_POS_CENTER))
       continue;
 
-    Feld[ox][oy] = EL_EMPTY;
-    Feld[nx][ny] =
+    Tile[ox][oy] = EL_EMPTY;
+    Tile[nx][ny] =
       EL_PACMAN_RIGHT - 1 +
       (game_mm.pacman[pacman_nr].dir - 1 +
        (game_mm.pacman[pacman_nr].dir % 2) * 2);
@@ -3787,7 +3787,7 @@ void MovePacMen(void)
 
     if (element != EL_EMPTY)
     {
-      int graphic = el2gfx(Feld[nx][ny]);
+      int graphic = el2gfx(Tile[nx][ny]);
       Bitmap *bitmap;
       int src_x, src_y;
       int i;
@@ -4019,8 +4019,8 @@ static void InitMovingField_MM(int x, int y, int direction)
   MovDir[x][y] = direction;
   MovDir[newx][newy] = direction;
 
-  if (Feld[newx][newy] == EL_EMPTY)
-    Feld[newx][newy] = EL_BLOCKED;
+  if (Tile[newx][newy] == EL_EMPTY)
+    Tile[newx][newy] = EL_BLOCKED;
 }
 
 static void Moving2Blocked_MM(int x, int y, int *goes_to_x, int *goes_to_y)
@@ -4054,7 +4054,7 @@ static void Blocked2Moving_MM(int x, int y,
 
 static int MovingOrBlocked2Element_MM(int x, int y)
 {
-  int element = Feld[x][y];
+  int element = Tile[x][y];
 
   if (element == EL_BLOCKED)
   {
@@ -4062,7 +4062,7 @@ static int MovingOrBlocked2Element_MM(int x, int y)
 
     Blocked2Moving_MM(x, y, &oldx, &oldy);
 
-    return Feld[oldx][oldy];
+    return Tile[oldx][oldy];
   }
 
   return element;
@@ -4071,7 +4071,7 @@ static int MovingOrBlocked2Element_MM(int x, int y)
 #if 0
 static void RemoveField(int x, int y)
 {
-  Feld[x][y] = EL_EMPTY;
+  Tile[x][y] = EL_EMPTY;
   MovPos[x][y] = 0;
   MovDir[x][y] = 0;
   MovDelay[x][y] = 0;
@@ -4082,24 +4082,24 @@ static void RemoveMovingField_MM(int x, int y)
 {
   int oldx = x, oldy = y, newx = x, newy = y;
 
-  if (Feld[x][y] != EL_BLOCKED && !IS_MOVING(x, y))
+  if (Tile[x][y] != EL_BLOCKED && !IS_MOVING(x, y))
     return;
 
   if (IS_MOVING(x, y))
   {
     Moving2Blocked_MM(x, y, &newx, &newy);
-    if (Feld[newx][newy] != EL_BLOCKED)
+    if (Tile[newx][newy] != EL_BLOCKED)
       return;
   }
-  else if (Feld[x][y] == EL_BLOCKED)
+  else if (Tile[x][y] == EL_BLOCKED)
   {
     Blocked2Moving_MM(x, y, &oldx, &oldy);
     if (!IS_MOVING(oldx, oldy))
       return;
   }
 
-  Feld[oldx][oldy] = EL_EMPTY;
-  Feld[newx][newy] = EL_EMPTY;
+  Tile[oldx][oldy] = EL_EMPTY;
+  Tile[newx][newy] = EL_EMPTY;
   MovPos[oldx][oldy] = MovDir[oldx][oldy] = MovDelay[oldx][oldy] = 0;
   MovPos[newx][newy] = MovDir[newx][newy] = MovDelay[newx][newy] = 0;
 
@@ -4299,7 +4299,7 @@ int getButtonFromTouchPosition(int x, int y, int dst_mx, int dst_my)
   if (!IN_LEV_FIELD(x, y))
     return 0;
 
-  element = Feld[x][y];
+  element = Tile[x][y];
 
   if (!IS_MCDUFFIN(element) &&
       !IS_MIRROR(element) &&

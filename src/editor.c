@@ -3856,7 +3856,7 @@ static int last_drawing_function = GADGET_ID_SINGLE_ITEMS;
 static boolean draw_with_brush = FALSE;
 static int properties_element = 0;
 
-static short FieldBackup[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+static short TileBackup[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 static short UndoBuffer[NUM_UNDO_STEPS][MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 static short IntelliDrawBuffer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 static int undo_buffer_position = 0;
@@ -5556,8 +5556,8 @@ static void InitDynamicEditorElementList(int **elements, int *num_elements)
   // find all elements used in current level
   for (y = 0; y < lev_fieldy; y++)
     for (x = 0; x < lev_fieldx; x++)
-      if (Feld[x][y] < NUM_FILE_ELEMENTS)	// should always be true
-	element_found[Feld[x][y]] = TRUE;
+      if (Tile[x][y] < NUM_FILE_ELEMENTS)	// should always be true
+	element_found[Tile[x][y]] = TRUE;
 
   *num_elements = 0;
 
@@ -7694,7 +7694,7 @@ static boolean LevelChanged(void)
 
   for (y = 0; y < lev_fieldy; y++) 
     for (x = 0; x < lev_fieldx; x++)
-      if (Feld[x][y] != level.field[x][y])
+      if (Tile[x][y] != level.field[x][y])
 	field_changed = TRUE;
 
   return (level.changed || field_changed);
@@ -7959,8 +7959,8 @@ static void replace_custom_element_in_playfield(int element_from,
 
   for (x = 0; x < lev_fieldx; x++)
     for (y = 0; y < lev_fieldy; y++)
-      if (Feld[x][y] == element_from)
-	Feld[x][y] = element_to;
+      if (Tile[x][y] == element_from)
+	Tile[x][y] = element_to;
 }
 
 static boolean CopyCustomElement(int element_old, int element_new,
@@ -8609,8 +8609,8 @@ void DrawLevelEd(void)
 
   if (level_editor_test_game)
   {
-    CopyPlayfield(level.field, Feld);
-    CopyPlayfield(FieldBackup, level.field);
+    CopyPlayfield(level.field, Tile);
+    CopyPlayfield(TileBackup, level.field);
 
     level_editor_test_game = FALSE;
   }
@@ -9555,7 +9555,7 @@ static void DrawPropertiesInfo(void)
   num_elements_in_level = 0;
   for (y = 0; y < lev_fieldy; y++) 
     for (x = 0; x < lev_fieldx; x++)
-      if (Feld[x][y] == properties_element)
+      if (Tile[x][y] == properties_element)
 	num_elements_in_level++;
   percentage = num_elements_in_level * 100.0 / (lev_fieldx * lev_fieldy);
 
@@ -9795,7 +9795,7 @@ static void SetAutomaticNumberOfGemsNeeded(void)
   {
     for (y = 0; y < lev_fieldy; y++)
     {
-      int element = Feld[x][y];
+      int element = Tile[x][y];
 
       switch (element)
       {
@@ -10849,7 +10849,7 @@ static void SetElementSimpleExt(int x, int y, int dx, int dy, int element,
 {
   int sx = x - level_xpos;
   int sy = y - level_ypos;
-  int old_element = Feld[x][y];
+  int old_element = Tile[x][y];
   int new_element = element;
   unsigned int new_bitmask = (getDrawModeHiRes() ? (dx + 1) << (dy * 2) : 0x0f);
   boolean draw_masked = FALSE;
@@ -10875,7 +10875,7 @@ static void SetElementSimpleExt(int x, int y, int dx, int dy, int element,
   IntelliDrawBuffer[x][y] = element;
 
   if (change_level)
-    Feld[x][y] = element;
+    Tile[x][y] = element;
 
   if (IN_ED_FIELD(sx, sy))
   {
@@ -11701,7 +11701,7 @@ static void ResetIntelliDraw(void)
 
   for (x = 0; x < lev_fieldx; x++)
     for (y = 0; y < lev_fieldy; y++)
-      IntelliDrawBuffer[x][y] = Feld[x][y];
+      IntelliDrawBuffer[x][y] = Tile[x][y];
 
   SetElementIntelliDraw(-1, -1, EL_UNDEFINED, FALSE, -1);
 }
@@ -11744,7 +11744,7 @@ static void SetElementExt(int x, int y, int dx, int dy, int element,
 			  boolean change_level, int button)
 {
   if (element < 0)
-    SetElementSimple(x, y, Feld[x][y], change_level);
+    SetElementSimple(x, y, Tile[x][y], change_level);
   else if (GetKeyModState() & KMOD_Shift && !IS_MM_WALL_EDITOR(element))
     SetElementIntelliDraw(x, y, element, change_level, button);
   else
@@ -11788,7 +11788,7 @@ static int getLevelElementHiRes(int lx2, int ly2)
   int ly = ly2 / 2;
   int dx = lx2 % 2;
   int dy = ly2 % 2;
-  int element = Feld[lx][ly];
+  int element = Tile[lx][ly];
   unsigned int bitmask = (dx + 1) << (dy * 2);
 
   if (IS_MM_WALL(element))
@@ -12044,14 +12044,14 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 
     for (y = 0; y < height; y++)
       for (x = 0; x < width; x++)
-	if ((draw_with_brush ? brush_buffer[x][y] : Feld[x][y]) > 999)
+	if ((draw_with_brush ? brush_buffer[x][y] : Tile[x][y]) > 999)
 	  format = "%s%04d";
 
     for (y = 0; y < height; y++)
     {
       for (x = 0; x < width; x++)
       {
-	int element = (draw_with_brush ? brush_buffer[x][y] : Feld[x][y]);
+	int element = (draw_with_brush ? brush_buffer[x][y] : Tile[x][y]);
 	char *prefix = (mode == CB_DUMP_BRUSH ||
 			mode == CB_BRUSH_TO_CLIPBOARD ? "`" : "¸");
 
@@ -12233,7 +12233,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 
       for (x = 0; x < MAX_LEV_FIELDX; x++)
 	for (y = 0; y < MAX_LEV_FIELDY; y++)
-	  Feld[x][y] = brush_buffer[x][y];
+	  Tile[x][y] = brush_buffer[x][y];
 
       lev_fieldx = level.fieldx = brush_width;
       lev_fieldy = level.fieldy = brush_height;
@@ -12270,7 +12270,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
     {
       for (x = 0; x < brush_width; x++)
       {
-	brush_buffer[x][y] = Feld[from_lx + x][from_ly + y];
+	brush_buffer[x][y] = Tile[from_lx + x][from_ly + y];
 
 	if (button != 1)
 	  DrawBrushElement(from_x + x, from_y + y, new_element, TRUE);
@@ -12411,7 +12411,7 @@ void RedoLevelEditorOperation(void)
 
 static void FloodFill(int from_x, int from_y, int fill_element)
 {
-  FloodFillLevel(from_x, from_y, fill_element, Feld, lev_fieldx, lev_fieldy);
+  FloodFillLevel(from_x, from_y, fill_element, Tile, lev_fieldx, lev_fieldy);
 }
 
 static void FloodFillWall_MM(int from_sx2, int from_sy2, int fill_element)
@@ -12420,20 +12420,20 @@ static void FloodFillWall_MM(int from_sx2, int from_sy2, int fill_element)
   int from_y = from_sy2 + 2 * level_ypos;
   int max_fillx = lev_fieldx * 2;
   int max_filly = lev_fieldy * 2;
-  short FillFeld[max_fillx][max_filly];
+  short Fill[max_fillx][max_filly];
   int x, y;
 
   for (x = 0; x < max_fillx; x++)
     for (y = 0; y < max_filly; y++)
-      FillFeld[x][y] = getLevelElementHiRes(x, y);
+      Fill[x][y] = getLevelElementHiRes(x, y);
 
   FloodFillLevelExt(from_x, from_y, fill_element, max_fillx, max_filly,
-		    FillFeld, max_fillx, max_filly);
+		    Fill, max_fillx, max_filly);
 
   for (x = 0; x < max_fillx; x++)
     for (y = 0; y < max_filly; y++)
-      if (FillFeld[x][y] == fill_element)
-	SetLevelElementHiRes(x, y, FillFeld[x][y]);
+      if (Fill[x][y] == fill_element)
+	SetLevelElementHiRes(x, y, Fill[x][y]);
 }
 
 // values for DrawLevelText() modes
@@ -12497,7 +12497,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
       break;
 
     case TEXT_SETCURSOR:
-      DrawEditorElement(last_sx, last_sy, Feld[lx][ly]);
+      DrawEditorElement(last_sx, last_sy, Tile[lx][ly]);
       DrawAreaBorder(sx, sy, sx, sy);
       StartTextInput(SX + sx * ed_tilesize, SY + sy * ed_tilesize,
 		     ed_tilesize, ed_tilesize);
@@ -12512,8 +12512,8 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 	    new_element1 <= EL_STEEL_CHAR_END)
 	  letter_element = letter_element - EL_CHAR_START + EL_STEEL_CHAR_START;
 
-	delete_buffer[sx - start_sx] = Feld[lx][ly];
-	Feld[lx][ly] = letter_element;
+	delete_buffer[sx - start_sx] = Tile[lx][ly];
+	Tile[lx][ly] = letter_element;
 
 	if (sx + 1 < ed_fieldx && lx + 1 < lev_fieldx)
 	  DrawLevelText(sx + 1, sy, 0, TEXT_SETCURSOR);
@@ -12529,8 +12529,8 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
     case TEXT_BACKSPACE:
       if (sx > start_sx)
       {
-	Feld[lx - 1][ly] = delete_buffer[sx - start_sx - 1];
-	DrawEditorElement(sx - 1, sy, Feld[lx - 1][ly]);
+	Tile[lx - 1][ly] = delete_buffer[sx - start_sx - 1];
+	DrawEditorElement(sx - 1, sy, Tile[lx - 1][ly]);
 	DrawLevelText(sx - 1, sy, 0, TEXT_SETCURSOR);
       }
       break;
@@ -12544,7 +12544,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 
     case TEXT_END:
       CopyLevelToUndoBuffer(UNDO_IMMEDIATE);
-      DrawEditorElement(sx, sy, Feld[lx][ly]);
+      DrawEditorElement(sx, sy, Tile[lx][ly]);
       StopTextInput();
       typing = FALSE;
       break;
@@ -12566,7 +12566,7 @@ static void SetTextCursor(int unused_sx, int unused_sy, int sx, int sy,
   int ly = sy + level_ypos;
 
   if (element == -1)
-    DrawEditorElement(sx, sy, Feld[lx][ly]);
+    DrawEditorElement(sx, sy, Tile[lx][ly]);
   else
     DrawAreaBorder(sx, sy, sx, sy);
 }
@@ -12620,7 +12620,7 @@ static void CopyLevelToUndoBuffer(int mode)
 
   for (x = 0; x < lev_fieldx; x++)
     for (y = 0; y < lev_fieldy; y++)
-      UndoBuffer[undo_buffer_position][x][y] = Feld[x][y];
+      UndoBuffer[undo_buffer_position][x][y] = Tile[x][y];
 
   // check if drawing operation forces change of border style
   CheckLevelBorderElement(TRUE);
@@ -12642,8 +12642,8 @@ static void RandomPlacement(int new_element)
   {
     free_position[x][y] =
       (random_placement_background_restricted ?
-       Feld[x][y] == random_placement_background_element :
-       Feld[x][y] != new_element);
+       Tile[x][y] == random_placement_background_element :
+       Tile[x][y] != new_element);
 
     if (free_position[x][y])
       num_free_positions++;
@@ -12691,12 +12691,12 @@ static void WrapLevel(int dx, int dy)
 
   for (x = 0; x < lev_fieldx; x++)
     for (y = 0; y < lev_fieldy; y++)
-      FieldBackup[x][y] = Feld[x][y];
+      TileBackup[x][y] = Tile[x][y];
 
   for (x = 0; x < lev_fieldx; x++)
     for (y = 0; y < lev_fieldy; y++)
-      Feld[x][y] =
-	FieldBackup[(x + wrap_dx) % lev_fieldx][(y + wrap_dy) % lev_fieldy];
+      Tile[x][y] =
+	TileBackup[(x + wrap_dx) % lev_fieldx][(y + wrap_dy) % lev_fieldy];
 
   DrawEditorLevel(ed_fieldx, ed_fieldy, level_xpos, level_ypos);
   CopyLevelToUndoBuffer(UNDO_ACCUMULATE);
@@ -12788,7 +12788,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
   }
   else if (!button_press_event)
   {
-    int old_element = (IN_LEV_FIELD(lx, ly) ? Feld[lx][ly] : EL_UNDEFINED);
+    int old_element = (IN_LEV_FIELD(lx, ly) ? Tile[lx][ly] : EL_UNDEFINED);
     boolean hires_drawing = (level.game_engine_type == GAME_ENGINE_TYPE_MM &&
 			     isHiresTileElement(old_element) &&
 			     isHiresDrawElement(new_element));
@@ -12871,7 +12871,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	    {
 	      for (x = 0; x < lev_fieldx; x++)
 	      {
-		int old_element = Feld[x][y];
+		int old_element = Tile[x][y];
 
 		if (ELEM_IS_PLAYER(old_element))
 		{
@@ -13030,7 +13030,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
       break;
 
     case GADGET_ID_FLOOD_FILL:
-      if (button_press_event && Feld[lx][ly] != new_element)
+      if (button_press_event && Tile[lx][ly] != new_element)
       {
 	if (IS_MM_WALL_EDITOR(new_element))
 	  FloodFillWall_MM(sx2, sy2, new_element);
@@ -13047,7 +13047,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	ClickOnGadget(level_editor_gadget[last_drawing_function],
 		      MB_LEFTBUTTON);
       else if (draw_level)
-	PickDrawingElement(button, Feld[lx][ly]);
+	PickDrawingElement(button, Tile[lx][ly]);
       else
       {
 	int pos = sx * drawingarea_info[type_id].area_ysize + sy;
@@ -13291,10 +13291,10 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
     boolean new_template = !fileExists(getLocalLevelTemplateFilename());
 
     // backup original "level.field" (needed to track playfield changes)
-    CopyPlayfield(level.field, FieldBackup);
+    CopyPlayfield(level.field, TileBackup);
 
     // "SaveLevelTemplate()" uses "level.field", so copy editor playfield
-    CopyPlayfield(Feld, level.field);
+    CopyPlayfield(Tile, level.field);
 
     if (new_template ||
 	Request("Save this template and kill the old?", REQ_ASK))
@@ -13304,7 +13304,7 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
       Request("Template saved!", REQ_CONFIRM);
 
     // restore original "level.field" (needed to track playfield changes)
-    CopyPlayfield(FieldBackup, level.field);
+    CopyPlayfield(TileBackup, level.field);
   }
   else if (type_id == ED_TEXTBUTTON_ID_SAVE_LEVELSET)
   {
@@ -13921,7 +13921,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
       for (x = 0; x < lev_fieldx; x++)
 	for (y = 0; y < lev_fieldy; y++)
-	  Feld[x][y] = UndoBuffer[undo_buffer_position][x][y];
+	  Tile[x][y] = UndoBuffer[undo_buffer_position][x][y];
 
       // check if undo operation forces change of border style
       CheckLevelBorderElement(FALSE);
@@ -13949,7 +13949,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
       for (x = 0; x < MAX_LEV_FIELDX; x++)
 	for (y = 0; y < MAX_LEV_FIELDY; y++)
-	  Feld[x][y] = (button == 1 ? EL_EMPTY : new_element);
+	  Tile[x][y] = (button == 1 ? EL_EMPTY : new_element);
 
       CopyLevelToUndoBuffer(GADGET_ID_CLEAR);
 
@@ -13980,7 +13980,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
 	SetAutomaticNumberOfGemsNeeded();
 
-	CopyPlayfield(Feld, level.field);
+	CopyPlayfield(Tile, level.field);
 	SaveLevel(level_nr);
 
 	level.changed = FALSE;
@@ -14011,8 +14011,8 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       if (LevelChanged())
 	level.game_version = GAME_VERSION_ACTUAL;
 
-      CopyPlayfield(level.field, FieldBackup);
-      CopyPlayfield(Feld, level.field);
+      CopyPlayfield(level.field, TileBackup);
+      CopyPlayfield(Tile, level.field);
 
       CopyNativeLevel_RND_to_Native(&level);
 
@@ -14477,7 +14477,7 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
 		  ABS(lx - start_lx) + 1, ABS(ly - start_ly) + 1);
       }
       else if (actual_drawing_function == GADGET_ID_PICK_ELEMENT)
-	strncpy(infotext, getElementInfoText(Feld[lx][ly]), max_infotext_len);
+	strncpy(infotext, getElementInfoText(Tile[lx][ly]), max_infotext_len);
       else
 	sprintf(infotext, "Level position: %d, %d", lx, ly);
     }
