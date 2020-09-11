@@ -478,7 +478,7 @@ static void PrintTapeReplayProgress(boolean replay_finished)
     if (counter > counter_last + counter_delay)
     {
       PrintNoLog("\r");
-      PrintNoLog("Level %03d [%02d:%02d]: [%02d:%02d] - playing tape ... ",
+      PrintNoLog("Tape %03d [%02d:%02d]: [%02d:%02d] - playing tape ... ",
 		 level_nr, tape.length_seconds / 60, tape.length_seconds % 60,
 		 TapeTime / 60, TapeTime % 60);
 
@@ -490,7 +490,7 @@ static void PrintTapeReplayProgress(boolean replay_finished)
     float tape_length_seconds = GetTapeLengthSecondsFloat();
 
     PrintNoLog("\r");
-    Print("Level %03d [%02d:%02d]: (%02d:%02d.%03d / %.2f %%) - %s.\n",
+    Print("Tape %03d [%02d:%02d]: (%02d:%02d.%03d / %.2f %%) - %s.\n",
 	  level_nr, tape.length_seconds / 60, tape.length_seconds % 60,
 	  counter_seconds / 60, counter_seconds % 60, counter % 1000,
 	  (float)counter / tape_length_seconds / 10,
@@ -1210,20 +1210,22 @@ void AutoPlayTapes(void)
     if (!global.autoplay_all && !global.autoplay_level[level_nr])
       continue;
 
+    Print("Tape %03d: ", level_nr);
+
     TapeErase();
 
     LoadLevel(level_nr);
 
     if (level.no_level_file || level.no_valid_file)
     {
-      Print("Level %03d: (no level)\n", level_nr);
+      Print("(no level)\n");
 
       continue;
     }
 
 #if 0
     // ACTIVATE THIS FOR LOADING/TESTING OF LEVELS ONLY
-    Print("Level %03d: (only testing level)\n", level_nr);
+    Print("(only testing level)\n");
     continue;
 #endif
 
@@ -1236,7 +1238,7 @@ void AutoPlayTapes(void)
     {
       num_tape_missing++;
 
-      Print("Level %03d: (no tape)\n", level_nr);
+      Print("(not found)\n");
 
       continue;
     }
