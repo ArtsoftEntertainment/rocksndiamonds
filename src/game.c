@@ -1092,8 +1092,8 @@ static void FadeLevelSoundsAndMusic(void);
 
 static void HandleGameButtons(struct GadgetInfo *);
 
-int AmoebeNachbarNr(int, int);
-void AmoebeUmwandeln(int, int);
+int AmoebaNeighbourNr(int, int);
+void AmoebaToDiamond(int, int);
 void ContinueMoving(int, int);
 void Bang(int, int);
 void InitMovDir(int, int);
@@ -4599,7 +4599,7 @@ void InitMovDir(int x, int y)
 void InitAmoebaNr(int x, int y)
 {
   int i;
-  int group_nr = AmoebeNachbarNr(x, y);
+  int group_nr = AmoebaNeighbourNr(x, y);
 
   if (group_nr == 0)
   {
@@ -5769,7 +5769,7 @@ static void Explode(int ex, int ey, int phase, int mode)
     }
     else if (border_element == EL_AMOEBA_TO_DIAMOND)
     {
-      AmoebeUmwandeln(x, y);
+      AmoebaToDiamond(x, y);
       Store2[x][y] = 0;
       border_explosion = TRUE;
     }
@@ -8690,7 +8690,7 @@ void ContinueMoving(int x, int y)
 			     MV_DIR_OPPOSITE(direction));
 }
 
-int AmoebeNachbarNr(int ax, int ay)
+int AmoebaNeighbourNr(int ax, int ay)
 {
   int i;
   int element = Feld[ax][ay];
@@ -8718,7 +8718,7 @@ int AmoebeNachbarNr(int ax, int ay)
   return group_nr;
 }
 
-static void AmoebenVereinigen(int ax, int ay)
+static void AmoebaMerge(int ax, int ay)
 {
   int i, x, y, xx, yy;
   int new_group_nr = AmoebaNr[ax][ay];
@@ -8765,7 +8765,7 @@ static void AmoebenVereinigen(int ax, int ay)
   }
 }
 
-void AmoebeUmwandeln(int ax, int ay)
+void AmoebaToDiamond(int ax, int ay)
 {
   int i, x, y;
 
@@ -8776,8 +8776,8 @@ void AmoebeUmwandeln(int ax, int ay)
 #ifdef DEBUG
     if (group_nr == 0)
     {
-      printf("AmoebeUmwandeln(): ax = %d, ay = %d\n", ax, ay);
-      printf("AmoebeUmwandeln(): This should never happen!\n");
+      printf("AmoebaToDiamond(): ax = %d, ay = %d\n", ax, ay);
+      printf("AmoebaToDiamond(): This should never happen!\n");
       return;
     }
 #endif
@@ -8825,7 +8825,7 @@ void AmoebeUmwandeln(int ax, int ay)
   }
 }
 
-static void AmoebeUmwandelnBD(int ax, int ay, int new_element)
+static void AmoebaToDiamondBD(int ax, int ay, int new_element)
 {
   int x, y;
   int group_nr = AmoebaNr[ax][ay];
@@ -8834,8 +8834,8 @@ static void AmoebeUmwandelnBD(int ax, int ay, int new_element)
 #ifdef DEBUG
   if (group_nr == 0)
   {
-    printf("AmoebeUmwandelnBD(): ax = %d, ay = %d\n", ax, ay);
-    printf("AmoebeUmwandelnBD(): This should never happen!\n");
+    printf("AmoebaToDiamondBD(): ax = %d, ay = %d\n", ax, ay);
+    printf("AmoebaToDiamondBD(): This should never happen!\n");
     return;
   }
 #endif
@@ -8861,7 +8861,7 @@ static void AmoebeUmwandelnBD(int ax, int ay, int new_element)
 			    SND_BD_AMOEBA_TURNING_TO_GEM));
 }
 
-static void AmoebeWaechst(int x, int y)
+static void AmoebaGrowing(int x, int y)
 {
   static unsigned int sound_delay = 0;
   static unsigned int sound_delay_value = 0;
@@ -8897,7 +8897,7 @@ static void AmoebeWaechst(int x, int y)
   }
 }
 
-static void AmoebaDisappearing(int x, int y)
+static void AmoebaShrinking(int x, int y)
 {
   static unsigned int sound_delay = 0;
   static unsigned int sound_delay_value = 0;
@@ -8933,7 +8933,7 @@ static void AmoebaDisappearing(int x, int y)
   }
 }
 
-static void AmoebeAbleger(int ax, int ay)
+static void AmoebaReproduce(int ax, int ay)
 {
   int i;
   int element = Feld[ax][ay];
@@ -9027,9 +9027,9 @@ static void AmoebeAbleger(int ax, int ay)
 	if (AmoebaCnt[AmoebaNr[ax][ay]] <= 0)	// amoeba is completely dead
 	{
 	  if (element == EL_AMOEBA_FULL)
-	    AmoebeUmwandeln(ax, ay);
+	    AmoebaToDiamond(ax, ay);
 	  else if (element == EL_BD_AMOEBA)
-	    AmoebeUmwandelnBD(ax, ay, level.amoeba_content);
+	    AmoebaToDiamondBD(ax, ay, level.amoeba_content);
 	}
       }
       return;
@@ -9043,8 +9043,8 @@ static void AmoebeAbleger(int ax, int ay)
 #ifdef DEBUG
   if (new_group_nr == 0)
   {
-    printf("AmoebeAbleger(): newax = %d, neway = %d\n", newax, neway);
-    printf("AmoebeAbleger(): This should never happen!\n");
+    printf("AmoebaReproduce(): newax = %d, neway = %d\n", newax, neway);
+    printf("AmoebaReproduce(): This should never happen!\n");
     return;
   }
 #endif
@@ -9054,11 +9054,11 @@ static void AmoebeAbleger(int ax, int ay)
       AmoebaCnt2[new_group_nr]++;
 
       // if amoeba touches other amoeba(s) after growing, unify them
-      AmoebenVereinigen(newax, neway);
+      AmoebaMerge(newax, neway);
 
       if (element == EL_BD_AMOEBA && AmoebaCnt2[new_group_nr] >= 200)
       {
-	AmoebeUmwandelnBD(newax, neway, EL_BD_ROCK);
+	AmoebaToDiamondBD(newax, neway, EL_BD_ROCK);
 	return;
       }
     }
@@ -12100,13 +12100,13 @@ void GameActions_RND(void)
     else if (IS_ACTIVE_BOMB(element))
       CheckDynamite(x, y);
     else if (element == EL_AMOEBA_GROWING)
-      AmoebeWaechst(x, y);
+      AmoebaGrowing(x, y);
     else if (element == EL_AMOEBA_SHRINKING)
-      AmoebaDisappearing(x, y);
+      AmoebaShrinking(x, y);
 
 #if !USE_NEW_AMOEBA_CODE
     else if (IS_AMOEBALIVE(element))
-      AmoebeAbleger(x, y);
+      AmoebaReproduce(x, y);
 #endif
 
     else if (element == EL_GAME_OF_LIFE || element == EL_BIOMAZE)
