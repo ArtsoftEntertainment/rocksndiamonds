@@ -255,7 +255,7 @@ boolean hasSolutionTape(void);
 boolean InsertSolutionTape(void);
 boolean PlaySolutionTape(void);
 
-void AutoPlayTape(void);
+void AutoPlayTapes(void);
 void PatchTapes(void);
 
 void CreateTapeButtons(void);

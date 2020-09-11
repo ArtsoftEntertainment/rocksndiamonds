@@ -6224,7 +6224,7 @@ void OpenAll(void)
 
   if (global.autoplay_leveldir)
   {
-    AutoPlayTape();
+    AutoPlayTapes();
     return;
   }
   else if (global.patchtapes_leveldir)

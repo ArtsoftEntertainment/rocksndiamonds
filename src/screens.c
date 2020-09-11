@@ -8439,7 +8439,7 @@ void HandleGameActions(void)
   GameActions();	// main game loop
 
   if (tape.auto_play && !tape.playing)
-    AutoPlayTape();	// continue automatically playing next tape
+    AutoPlayTapes();	// continue automatically playing next tape
 }
 
 

@@ -1141,7 +1141,7 @@ boolean PlaySolutionTape(void)
 // tape autoplay functions
 // ----------------------------------------------------------------------------
 
-void AutoPlayTape(void)
+void AutoPlayTapes(void)
 {
   static LevelDirTree *autoplay_leveldir = NULL;
   static boolean autoplay_initialized = FALSE;
