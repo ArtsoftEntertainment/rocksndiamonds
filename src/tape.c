@@ -1304,22 +1304,20 @@ void AutoPlayTapes(void)
     if (!global.autoplay_all && !global.autoplay_level[level_nr])
       continue;
 
-    Print("Tape %03d: ", level_nr);
-
     TapeErase();
 
     LoadLevel(level_nr);
 
     if (level.no_level_file || level.no_valid_file)
     {
-      Print("(no level found)\n");
+      Print("Tape %03d: (no level found)\n", level_nr);
 
       continue;
     }
 
 #if 0
     // ACTIVATE THIS FOR LOADING/TESTING OF LEVELS ONLY
-    Print("(only testing level)\n");
+    Print("Tape %03d: (only testing level)\n", level_nr);
     continue;
 #endif
 
@@ -1332,7 +1330,7 @@ void AutoPlayTapes(void)
     {
       num_tape_missing++;
 
-      Print("(no tape found)\n");
+      Print("Tape %03d: (no tape found)\n", level_nr);
 
       continue;
     }
@@ -1342,15 +1340,14 @@ void AutoPlayTapes(void)
       if (tape.engine_version < patch_version_first[patch_nr] ||
 	  tape.engine_version > patch_version_last[patch_nr])
       {
-	PrintNoLog("\r");
-	PrintNoLog("Tape %03d %s[%02d:%02d]: (%s %d.%d.%d.%d) - skipped.\n",
-		   level_nr,  tape_patch_info,
-		   tape.length_seconds / 60, tape.length_seconds % 60,
-		   "not suitable for version",
-		   (tape.engine_version / 1000000) % 100,
-		   (tape.engine_version / 10000  ) % 100,
-		   (tape.engine_version / 100    ) % 100,
-		   (tape.engine_version          ) % 100);
+	Print("Tape %03d %s[%02d:%02d]: (%s %d.%d.%d.%d) - skipped.\n",
+	      level_nr,  tape_patch_info,
+	      tape.length_seconds / 60, tape.length_seconds % 60,
+	      "not suitable for version",
+	      (tape.engine_version / 1000000) % 100,
+	      (tape.engine_version / 10000  ) % 100,
+	      (tape.engine_version / 100    ) % 100,
+	      (tape.engine_version          ) % 100);
 
 	if (patch_name[patch_nr + 1] != NULL)
 	{
