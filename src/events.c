@@ -1386,6 +1386,10 @@ static boolean checkTextInputKey(Key key)
   if (game_status == GAME_MODE_PLAYING)
     return FALSE;
 
+  // ignore raw keys as text input when not in text input mode
+  if (KSYM_RAW(key) && !textinput_status)
+    return FALSE;
+
   // else handle all printable keys as text input
   return KSYM_PRINTABLE(key);
 }

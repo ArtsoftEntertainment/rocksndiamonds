@@ -350,6 +350,12 @@ typedef struct UserEventInfo	UserEvent;
 #define KSYM_FKEY_LAST		KSYM_F12
 #define KSYM_NUM_FKEYS		(KSYM_FKEY_LAST - KSYM_FKEY_FIRST + 1)
 
+#define KSYM_RAW(k)		(((k) >= KSYM_a &&			\
+				  (k) <= KSYM_z)        ||		\
+				 ((k) >= KSYM_0 &&			\
+				  (k) <= KSYM_9)        ||		\
+				 (k) == KSYM_space)
+
 #define KSYM_PRINTABLE(k)	(((k) >= KSYM_space &&			\
 				  (k) <= KSYM_z)        ||		\
 				 (k) == KSYM_Adiaeresis ||		\
