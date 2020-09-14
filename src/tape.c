@@ -1145,6 +1145,22 @@ boolean PlaySolutionTape(void)
   return TRUE;
 }
 
+void FixTape_ForceSinglePlayer(void)
+{
+  int i;
+
+  /* fix single-player tapes that contain player input for more than one
+     player (due to a bug in 3.3.1.2 and earlier versions), which results
+     in playing levels with more than one player in multi-player mode,
+     even though the tape was originally recorded in single-player mode */
+
+  // remove player input actions for all players but the first one
+  for (i = 1; i < MAX_PLAYERS; i++)
+    tape.player_participates[i] = FALSE;
+
+  tape.changed = TRUE;
+}
+
 
 // ----------------------------------------------------------------------------
 // tape autoplay functions
