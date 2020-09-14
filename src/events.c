@@ -1780,17 +1780,6 @@ void HandleButton(int mx, int my, int button, int button_nr)
   }
 }
 
-static boolean is_string_suffix(char *string, char *suffix)
-{
-  int string_len = strlen(string);
-  int suffix_len = strlen(suffix);
-
-  if (suffix_len > string_len)
-    return FALSE;
-
-  return (strEqual(&string[string_len - suffix_len], suffix));
-}
-
 #define MAX_CHEAT_INPUT_LEN	32
 
 static void HandleKeysSpecial(Key key)
@@ -1820,54 +1809,54 @@ static void HandleKeysSpecial(Key key)
 
   if (game_status == GAME_MODE_MAIN)
   {
-    if (is_string_suffix(cheat_input, ":insert-solution-tape") ||
-	is_string_suffix(cheat_input, ":ist"))
+    if (strSuffix(cheat_input, ":insert-solution-tape") ||
+	strSuffix(cheat_input, ":ist"))
     {
       InsertSolutionTape();
     }
-    else if (is_string_suffix(cheat_input, ":play-solution-tape") ||
-	     is_string_suffix(cheat_input, ":pst"))
+    else if (strSuffix(cheat_input, ":play-solution-tape") ||
+	     strSuffix(cheat_input, ":pst"))
     {
       PlaySolutionTape();
     }
-    else if (is_string_suffix(cheat_input, ":reload-graphics") ||
-	     is_string_suffix(cheat_input, ":rg"))
+    else if (strSuffix(cheat_input, ":reload-graphics") ||
+	     strSuffix(cheat_input, ":rg"))
     {
       ReloadCustomArtwork(1 << ARTWORK_TYPE_GRAPHICS);
       DrawMainMenu();
     }
-    else if (is_string_suffix(cheat_input, ":reload-sounds") ||
-	     is_string_suffix(cheat_input, ":rs"))
+    else if (strSuffix(cheat_input, ":reload-sounds") ||
+	     strSuffix(cheat_input, ":rs"))
     {
       ReloadCustomArtwork(1 << ARTWORK_TYPE_SOUNDS);
       DrawMainMenu();
     }
-    else if (is_string_suffix(cheat_input, ":reload-music") ||
-	     is_string_suffix(cheat_input, ":rm"))
+    else if (strSuffix(cheat_input, ":reload-music") ||
+	     strSuffix(cheat_input, ":rm"))
     {
       ReloadCustomArtwork(1 << ARTWORK_TYPE_MUSIC);
       DrawMainMenu();
     }
-    else if (is_string_suffix(cheat_input, ":reload-artwork") ||
-	     is_string_suffix(cheat_input, ":ra"))
+    else if (strSuffix(cheat_input, ":reload-artwork") ||
+	     strSuffix(cheat_input, ":ra"))
     {
       ReloadCustomArtwork(1 << ARTWORK_TYPE_GRAPHICS |
 			  1 << ARTWORK_TYPE_SOUNDS |
 			  1 << ARTWORK_TYPE_MUSIC);
       DrawMainMenu();
     }
-    else if (is_string_suffix(cheat_input, ":dump-level") ||
-	     is_string_suffix(cheat_input, ":dl"))
+    else if (strSuffix(cheat_input, ":dump-level") ||
+	     strSuffix(cheat_input, ":dl"))
     {
       DumpLevel(&level);
     }
-    else if (is_string_suffix(cheat_input, ":dump-tape") ||
-	     is_string_suffix(cheat_input, ":dt"))
+    else if (strSuffix(cheat_input, ":dump-tape") ||
+	     strSuffix(cheat_input, ":dt"))
     {
       DumpTape(&tape);
     }
-    else if (is_string_suffix(cheat_input, ":fix-tape") ||
-	     is_string_suffix(cheat_input, ":ft"))
+    else if (strSuffix(cheat_input, ":fix-tape") ||
+	     strSuffix(cheat_input, ":ft"))
     {
       /* fix single-player tapes that contain player input for more than one
 	 player (due to a bug in 3.3.1.2 and earlier versions), which results
@@ -1880,13 +1869,13 @@ static void HandleKeysSpecial(Key key)
 
       tape.changed = TRUE;
     }
-    else if (is_string_suffix(cheat_input, ":save-native-level") ||
-	     is_string_suffix(cheat_input, ":snl"))
+    else if (strSuffix(cheat_input, ":save-native-level") ||
+	     strSuffix(cheat_input, ":snl"))
     {
       SaveNativeLevel(&level);
     }
-    else if (is_string_suffix(cheat_input, ":frames-per-second") ||
-	     is_string_suffix(cheat_input, ":fps"))
+    else if (strSuffix(cheat_input, ":frames-per-second") ||
+	     strSuffix(cheat_input, ":fps"))
     {
       global.show_frames_per_second = !global.show_frames_per_second;
     }
@@ -1894,18 +1883,18 @@ static void HandleKeysSpecial(Key key)
   else if (game_status == GAME_MODE_PLAYING)
   {
 #ifdef DEBUG
-    if (is_string_suffix(cheat_input, ".q"))
+    if (strSuffix(cheat_input, ".q"))
       DEBUG_SetMaximumDynamite();
 #endif
   }
   else if (game_status == GAME_MODE_EDITOR)
   {
-    if (is_string_suffix(cheat_input, ":dump-brush") ||
-	is_string_suffix(cheat_input, ":DB"))
+    if (strSuffix(cheat_input, ":dump-brush") ||
+	strSuffix(cheat_input, ":DB"))
     {
       DumpBrush();
     }
-    else if (is_string_suffix(cheat_input, ":DDB"))
+    else if (strSuffix(cheat_input, ":DDB"))
     {
       DumpBrush_Small();
     }
@@ -1935,9 +1924,9 @@ static void HandleKeysSpecial(Key key)
   }
 
   // special key shortcuts for all game modes
-  if (is_string_suffix(cheat_input, ":dump-event-actions") ||
-      is_string_suffix(cheat_input, ":dea") ||
-      is_string_suffix(cheat_input, ":DEA"))
+  if (strSuffix(cheat_input, ":dump-event-actions") ||
+      strSuffix(cheat_input, ":dea") ||
+      strSuffix(cheat_input, ":DEA"))
   {
     DumpGadgetIdentifiers();
     DumpScreenIdentifiers();
