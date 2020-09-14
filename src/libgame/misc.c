@@ -876,7 +876,7 @@ boolean strSuffix(char *s, char *suffix)
 	  s == NULL && suffix != NULL ? FALSE :
 	  s != NULL && suffix == NULL ? FALSE :
 	  strlen(s) < strlen(suffix)  ? FALSE :
-	  strncmp(&s[strlen(s) - strlen(suffix)], suffix, strlen(suffix)) == 0);
+	  strcmp(&s[strlen(s) - strlen(suffix)], suffix) == 0);
 }
 
 boolean strPrefixLower(char *s, char *prefix)
