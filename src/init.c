@@ -5080,7 +5080,7 @@ static void Execute_Command(char *command)
 	str_ptr++;
     }
 
-    if (global.autoplay_mode & AUTOPLAY_MODE_WARP_NO_DISPLAY)
+    if (global.autoplay_mode & AUTOPLAY_WARP_NO_DISPLAY)
       program.headless = TRUE;
   }
   else if (strPrefix(command, "patch tapes "))
