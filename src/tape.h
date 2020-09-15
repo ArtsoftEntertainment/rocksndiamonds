@@ -257,6 +257,7 @@ boolean hasSolutionTape(void);
 boolean InsertSolutionTape(void);
 boolean PlaySolutionTape(void);
 
+void UndoTape(void);
 void FixTape_ForceSinglePlayer(void);
 
 void AutoPlayTapes(void);

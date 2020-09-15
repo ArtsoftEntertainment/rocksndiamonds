@@ -1859,6 +1859,11 @@ static void HandleKeysSpecial(Key key)
     {
       DumpTape(&tape);
     }
+    else if (strSuffix(cheat_input, ":undo-tape") ||
+	     strSuffix(cheat_input, ":ut"))
+    {
+      UndoTape();
+    }
     else if (strSuffix(cheat_input, ":fix-tape") ||
 	     strSuffix(cheat_input, ":ft"))
     {

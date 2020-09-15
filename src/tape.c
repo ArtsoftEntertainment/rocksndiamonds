@@ -35,13 +35,16 @@
 
 // values for tape handling
 #define TAPE_PAUSE_SECONDS_BEFORE_DEATH		5
+#define TAPE_MIN_SECONDS_FOR_UNDO_BUFFER	20
 
 // forward declaration for internal use
 static void HandleTapeButtons(struct GadgetInfo *);
 static void TapeStopWarpForward(void);
 static float GetTapeLengthSecondsFloat(void);
+static void CopyTapeToUndoBuffer(void);
 
 static struct GadgetInfo *tape_gadget[NUM_TAPE_BUTTONS];
+static struct TapeInfo tape_undo_buffer;
 
 
 // ============================================================================
@@ -527,6 +530,8 @@ void TapeSetDateFromNow(void)
 void TapeErase(void)
 {
   int i;
+
+  CopyTapeToUndoBuffer();
 
   tape.counter = 0;
   tape.length = 0;
@@ -1143,6 +1148,57 @@ boolean PlaySolutionTape(void)
   TapeStartGamePlaying();
 
   return TRUE;
+}
+
+static boolean checkTapesFromSameLevel(struct TapeInfo *t1, struct TapeInfo *t2)
+{
+  return (strEqual(t1->level_identifier, t2->level_identifier) &&
+	  t1->level_nr == t2->level_nr);
+}
+
+static void CopyTape(struct TapeInfo *tape_from, struct TapeInfo *tape_to)
+{
+  if (tape_to->level_identifier != NULL)
+    checked_free(tape_to->level_identifier);
+
+  *tape_to = *tape_from;
+
+  tape_to->level_identifier = getStringCopy(tape_from->level_identifier);
+}
+
+static void SwapTapes(struct TapeInfo *t1, struct TapeInfo *t2)
+{
+  struct TapeInfo tmp = *t1;
+
+  *t1 = *t2;
+  *t2 = tmp;
+}
+
+static void CopyTapeToUndoBuffer(void)
+{
+  // copy tapes to undo buffer if large enough (or larger than last undo tape)
+  // or if the last undo tape is from a different level set or level number
+  if (tape.length_seconds >= TAPE_MIN_SECONDS_FOR_UNDO_BUFFER ||
+      tape.length_seconds >= tape_undo_buffer.length_seconds ||
+      !checkTapesFromSameLevel(&tape, &tape_undo_buffer))
+  {
+    CopyTape(&tape, &tape_undo_buffer);
+  }
+}
+
+void UndoTape(void)
+{
+  // only undo tapes from same level set and with same level number
+  if (!checkTapesFromSameLevel(&tape, &tape_undo_buffer))
+    return;
+
+  if (!TAPE_IS_STOPPED(tape))
+    TapeStop();
+
+  // swap last recorded tape with undo buffer, so undo can be reversed
+  SwapTapes(&tape, &tape_undo_buffer);
+
+  DrawCompleteVideoDisplay();
 }
 
 void FixTape_ForceSinglePlayer(void)
