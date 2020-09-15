@@ -10246,6 +10246,10 @@ static int get_anim_parameter_values(char *s)
 
 static int get_anim_action_parameter_value(char *token)
 {
+  // check most common default case first to massively speed things up
+  if (strEqual(token, ARG_UNDEFINED))
+    return ANIM_EVENT_ACTION_NONE;
+
   int result = getImageIDFromToken(token);
 
   if (result == -1)
