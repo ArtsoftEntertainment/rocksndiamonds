@@ -1002,8 +1002,8 @@ void GetOptions(int argc, char *argv[],
 	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
 
       // this should be extended to separate options for ro and rw data
-      options.ro_base_directory = ro_base_path = option_arg;
-      options.rw_base_directory = rw_base_path = option_arg;
+      options.ro_base_directory = ro_base_path = getStringCopy(option_arg);
+      options.rw_base_directory = rw_base_path = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
 
@@ -1020,7 +1020,7 @@ void GetOptions(int argc, char *argv[],
       if (option_arg == NULL)
 	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
 
-      options.level_directory = option_arg;
+      options.level_directory = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
     }
@@ -1029,7 +1029,7 @@ void GetOptions(int argc, char *argv[],
       if (option_arg == NULL)
 	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
 
-      options.graphics_directory = option_arg;
+      options.graphics_directory = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
     }
@@ -1038,7 +1038,7 @@ void GetOptions(int argc, char *argv[],
       if (option_arg == NULL)
 	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
 
-      options.sounds_directory = option_arg;
+      options.sounds_directory = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
     }
@@ -1047,7 +1047,7 @@ void GetOptions(int argc, char *argv[],
       if (option_arg == NULL)
 	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
 
-      options.music_directory = option_arg;
+      options.music_directory = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
     }
@@ -1087,7 +1087,7 @@ void GetOptions(int argc, char *argv[],
       if (option_arg == NULL)
 	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
 
-      options.execute_command = option_arg;
+      options.execute_command = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
 
