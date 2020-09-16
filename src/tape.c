@@ -894,10 +894,10 @@ byte *TapePlayAction(void)
     action[i] = tape.pos[tape.counter].action[i];
 
 #if DEBUG_TAPE_WHEN_PLAYING
-  printf("%05d", FrameCounter);
+  Print("%05d", FrameCounter);
   for (i = 0; i < MAX_TAPE_ACTIONS; i++)
-    printf("   %08x", action[i]);
-  printf("\n");
+    Print("   %08x", action[i]);
+  Print("\n");
 #endif
 
   tape.set_centered_player = FALSE;

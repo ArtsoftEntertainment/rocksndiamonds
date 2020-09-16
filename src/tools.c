@@ -5348,7 +5348,7 @@ unsigned int MoveDoor(unsigned int door_state)
 	  if (width > door_rect->width)
 	    width = door_rect->width;
 
-	  // printf("::: k == %d [%d] \n", k, start_step);
+	  // Debug("tools:MoveDoor", "k == %d [%d]", k, start_step);
 	}
 
 	if (pos->step_yoffset < 0)	// door part on bottom side
@@ -9508,7 +9508,7 @@ void ChangeViewportPropertiesIfNeeded(void)
     init_gfx_buffers = TRUE;
     init_gadgets_and_anims = TRUE;
 
-    // printf("::: video: init_video_buffer, init_gfx_buffers\n");
+    // Debug("tools:viewport", "video: init_video_buffer, init_gfx_buffers");
   }
 
   if (new_scr_fieldx != SCR_FIELDX ||
@@ -9519,7 +9519,7 @@ void ChangeViewportPropertiesIfNeeded(void)
     SCR_FIELDX = new_scr_fieldx;
     SCR_FIELDY = new_scr_fieldy;
 
-    // printf("::: new_scr_fieldx != SCR_FIELDX ...\n");
+    // Debug("tools:viewport", "new_scr_fieldx != SCR_FIELDX ...");
   }
 
   if (new_sx != SX ||
@@ -9589,7 +9589,7 @@ void ChangeViewportPropertiesIfNeeded(void)
 
     if (new_tilesize_var != TILESIZE_VAR)
     {
-      // printf("::: new_tilesize_var != TILESIZE_VAR\n");
+      // Debug("tools:viewport", "new_tilesize_var != TILESIZE_VAR");
 
       // changing tile size invalidates scroll values of engine snapshots
       FreeEngineSnapshotSingle();
@@ -9623,13 +9623,13 @@ void ChangeViewportPropertiesIfNeeded(void)
     init_gfx_buffers = TRUE;
     init_gadgets_and_anims = TRUE;
 
-    // printf("::: viewports: init_gfx_buffers\n");
-    // printf("::: viewports: init_gadgets_and_anims\n");
+    // Debug("tools:viewport", "viewports: init_gfx_buffers");
+    // Debug("tools:viewport", "viewports: init_gadgets_and_anims");
   }
 
   if (init_gfx_buffers)
   {
-    // printf("::: init_gfx_buffers\n");
+    // Debug("tools:viewport", "init_gfx_buffers");
 
     SCR_FIELDX = new_scr_fieldx_buffers;
     SCR_FIELDY = new_scr_fieldy_buffers;
@@ -9645,7 +9645,7 @@ void ChangeViewportPropertiesIfNeeded(void)
 
   if (init_video_buffer)
   {
-    // printf("::: init_video_buffer\n");
+    // Debug("tools:viewport", "init_video_buffer");
 
     FreeAllImageTextures();	// needs old renderer to free the textures
 
@@ -9655,7 +9655,7 @@ void ChangeViewportPropertiesIfNeeded(void)
 
   if (init_gadgets_and_anims)
   {
-    // printf("::: init_gadgets_and_anims\n");
+    // Debug("tools:viewport", "init_gadgets_and_anims");
 
     InitGadgets();
     InitGlobalAnimations();

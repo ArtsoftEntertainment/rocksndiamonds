@@ -1879,7 +1879,10 @@ static void InitGraphicCompatibilityInfo(void)
 	// process all images which default to same image as "global.door"
 	if (strEqual(fi->default_filename, fi_global_door->default_filename))
 	{
-	  // printf("::: special treatment needed for token '%s'\n", fi->token);
+#if 0
+	  Debug("init:InitGraphicCompatibilityInfo",
+		"special treatment needed for token '%s'", fi->token);
+#endif
 
 	  graphic_info[i].bitmaps = graphic_info[IMG_GLOBAL_DOOR].bitmaps;
 	  graphic_info[i].bitmap  = graphic_info[IMG_GLOBAL_DOOR].bitmap;
@@ -6008,11 +6011,12 @@ void ReloadCustomArtwork(int force_reload)
   if (gfx_new_identifier != NULL || force_reload_gfx)
   {
 #if 0
-    printf("RELOADING GRAPHICS '%s' -> '%s' ['%s', '%s']\n",
-	   artwork.gfx_current_identifier,
-	   gfx_new_identifier,
-	   artwork.gfx_current->identifier,
-	   leveldir_current->graphics_set);
+    Debug("init:ReloadCustomArtwork",
+	  "RELOADING GRAPHICS '%s' -> '%s' ['%s', '%s']",
+	  artwork.gfx_current_identifier,
+	  gfx_new_identifier,
+	  artwork.gfx_current->identifier,
+	  leveldir_current->graphics_set);
 #endif
 
     InitImages();

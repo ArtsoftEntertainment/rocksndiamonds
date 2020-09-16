@@ -2635,7 +2635,10 @@ static void DisplayGameControlValues(void)
 	element = value;
 	graphic = el2panelimg(value);
 
-	// printf("::: %d, '%s' [%d]\n", element, EL_NAME(element), size);
+#if 0
+	Debug("game:DisplayGameControlValues", "%d, '%s' [%d]",
+	      element, EL_NAME(element), size);
+#endif
 
 	if (element >= EL_GRAPHIC_1 && element <= EL_GRAPHIC_8 && size == 0)
 	  size = TILESIZE;
@@ -11657,9 +11660,9 @@ static void GameActionsExt(void)
     byte mapped_action[MAX_PLAYERS];
 
 #if DEBUG_PLAYER_ACTIONS
-    printf(":::");
+    Print(":::");
     for (i = 0; i < MAX_PLAYERS; i++)
-      printf(" %d, ", stored_player[i].effective_action);
+      Print(" %d, ", stored_player[i].effective_action);
 #endif
 
     for (i = 0; i < MAX_PLAYERS; i++)
@@ -11669,19 +11672,19 @@ static void GameActionsExt(void)
       stored_player[i].effective_action = mapped_action[i];
 
 #if DEBUG_PLAYER_ACTIONS
-    printf(" =>");
+    Print(" =>");
     for (i = 0; i < MAX_PLAYERS; i++)
-      printf(" %d, ", stored_player[i].effective_action);
-    printf("\n");
+      Print(" %d, ", stored_player[i].effective_action);
+    Print("\n");
 #endif
   }
 #if DEBUG_PLAYER_ACTIONS
   else
   {
-    printf(":::");
+    Print(":::");
     for (i = 0; i < MAX_PLAYERS; i++)
-      printf(" %d, ", stored_player[i].effective_action);
-    printf("\n");
+      Print(" %d, ", stored_player[i].effective_action);
+    Print("\n");
   }
 #endif
 #endif

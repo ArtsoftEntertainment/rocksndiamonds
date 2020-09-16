@@ -99,7 +99,7 @@ void subCalculateScreenScrollPos(void)
   {
     subGetRandomNumber();
 
-    // printf("::: ExplosionShake [%d]\n", FrameCounter);
+    // Debug("game:playing:SP", "ExplosionShake [%d]", FrameCounter);
   }
 
   ScreenScrollXPos = MurphyScreenXPos - (SCR_FIELDX / 2) * TILESIZE;

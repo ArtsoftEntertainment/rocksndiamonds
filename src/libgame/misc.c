@@ -2255,12 +2255,12 @@ static void dumpList(ListNode *node_first)
 
   while (node)
   {
-    printf("['%s' (%d)]\n", node->key,
-	   ((struct ListNodeInfo *)node->content)->num_references);
+    Debug("internal:dumpList", "['%s' (%d)]", node->key,
+	  ((struct ListNodeInfo *)node->content)->num_references);
     node = node->next;
   }
 
-  printf("[%d nodes]\n", getNumNodes(node_first));
+  Debug("internal:dumpList", "[%d nodes]", getNumNodes(node_first));
 }
 #endif
 
@@ -3861,12 +3861,12 @@ void debug_print_timestamp(int counter_nr, char *message)
   counter[counter_nr][1] = counter[counter_nr][0];
 
   if (message)
-    Error(ERR_DEBUG, "%s%s%s %.3f %s",
-	   debug_print_timestamp_get_padding(counter_nr * indent_size),
-	   message,
-	   debug_print_timestamp_get_padding(padding_size - strlen(message)),
-	   timestamp_interval / 1000,
-	   unit);
+    Debug("time", "%s%s%s %.3f %s",
+	  debug_print_timestamp_get_padding(counter_nr * indent_size),
+	  message,
+	  debug_print_timestamp_get_padding(padding_size - strlen(message)),
+	  timestamp_interval / 1000,
+	  unit);
 }
 
 #if 0

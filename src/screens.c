@@ -928,10 +928,10 @@ static int getTitleSound(struct TitleControlInfo *tci)
   int sound_local = base + nr;
 
 #if 0
-  printf("::: %d, %d, %d: %d ['%s'], %d ['%s']\n",
-	 nr, initial, is_image,
-	 sound_global, getSoundListEntry(sound_global)->filename,
-	 sound_local, getSoundListEntry(sound_local)->filename);
+  Debug("screens:getTitleSound", "%d, %d, %d: %d ['%s'], %d ['%s']",
+	nr, initial, is_image,
+	sound_global, getSoundListEntry(sound_global)->filename,
+	sound_local, getSoundListEntry(sound_local)->filename);
 #endif
 
   if (!strEqual(getSoundListEntry(sound_local)->filename, UNDEFINED_FILENAME))
@@ -958,10 +958,10 @@ static int getTitleMusic(struct TitleControlInfo *tci)
   int music_local = base + nr;
 
 #if 0
-  printf("::: %d, %d, %d: %d ['%s'], %d ['%s']\n",
-	 nr, initial, is_image,
-	 music_global, getMusicListEntry(music_global)->filename,
-	 music_local, getMusicListEntry(music_local)->filename);
+  Debug("screens:getTitleMusic", "%d, %d, %d: %d ['%s'], %d ['%s']",
+	nr, initial, is_image,
+	music_global, getMusicListEntry(music_global)->filename,
+	music_local, getMusicListEntry(music_local)->filename);
 #endif
 
   if (!strEqual(getMusicListEntry(music_local)->filename, UNDEFINED_FILENAME))
@@ -1326,10 +1326,11 @@ static boolean insideTextPosRect(struct TextPosInfo *rect, int x, int y)
   int rect_y = ALIGNED_TEXT_YPOS(rect);
 
 #if 0
-  printf("::: insideTextPosRect: (%d, %d), (%d, %d) [%d, %d] (%d, %d) => %d\n",
-	 x, y, rect_x, rect_y, rect->x, rect->y, rect->width, rect->height,
-	 (x >= rect_x && x < rect_x + rect->width &&
-	  y >= rect_y && y < rect_y + rect->height));
+  Debug("screens:insideTextPosRect",
+	"(%d, %d), (%d, %d) [%d, %d] (%d, %d) => %d",
+	x, y, rect_x, rect_y, rect->x, rect->y, rect->width, rect->height,
+	(x >= rect_x && x < rect_x + rect->width &&
+	 y >= rect_y && y < rect_y + rect->height));
 #endif
 
   return (x >= rect_x && x < rect_x + rect->width &&
@@ -5951,10 +5952,10 @@ static void execSetupTouch(void)
 static void execSetupArtwork(void)
 {
 #if 0
-  printf("::: '%s', '%s', '%s'\n",
-	 artwork.gfx_current->subdir,
-	 artwork.gfx_current->fullpath,
-	 artwork.gfx_current->basepath);
+  Debug("screens:execSetupArtwork", "'%s', '%s', '%s'",
+	artwork.gfx_current->subdir,
+	artwork.gfx_current->fullpath,
+	artwork.gfx_current->basepath);
 #endif
 
   setup.graphics_set = artwork.gfx_current->identifier;

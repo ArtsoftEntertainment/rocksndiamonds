@@ -1361,19 +1361,19 @@ void dumpTreeInfo(TreeInfo *node, int depth)
 {
   int i;
 
-  printf("Dumping TreeInfo:\n");
+  Print("Dumping TreeInfo:\n");
 
   while (node)
   {
     for (i = 0; i < (depth + 1) * 3; i++)
-      printf(" ");
+      Print(" ");
 
-    printf("'%s' / '%s'\n", node->identifier, node->name);
+    Print("'%s' / '%s'\n", node->identifier, node->name);
 
     /*
     // use for dumping artwork info tree
-    printf("subdir == '%s' ['%s', '%s'] [%d])\n",
-	   node->subdir, node->fullpath, node->basepath, node->in_user_dir);
+    Print("subdir == '%s' ['%s', '%s'] [%d])\n",
+	  node->subdir, node->fullpath, node->basepath, node->in_user_dir);
     */
 
     if (node->node_group != NULL)

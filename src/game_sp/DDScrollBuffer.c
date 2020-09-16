@@ -234,7 +234,7 @@ void UpdatePlayfield(boolean force_redraw)
   }
 
 #if DEBUG_REDRAW
-  printf("::: FRAME %d: %d redrawn\n", FrameCounter, num_redrawn);
+  Debug("game:playing:SP", "FRAME %d: %d redrawn", FrameCounter, num_redrawn);
 #endif
 }
 

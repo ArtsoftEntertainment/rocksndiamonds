@@ -84,8 +84,8 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
     static int LastFrameCounter = 0;
     boolean changed = (FrameCounter != LastFrameCounter);
 
-    printf("::: FrameCounter == %d [%s]\n", FrameCounter,
-	   (changed ? "-" : "SAME FRAME UPDATED"));
+    Debug("internal:frame", "FrameCounter == %d [%s]", FrameCounter,
+	  (changed ? "-" : "SAME FRAME UPDATED"));
 
     LastFrameCounter = FrameCounter;
 
