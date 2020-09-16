@@ -340,6 +340,9 @@ void Debug(char *mode, char *format, ...)
 {
   va_list ap;
 
+  if (!options.debug)
+    return;
+
   // if optional debug mode specified, limit debug output accordingly
   if (options.debug_mode != NULL &&
       !strEqual(options.debug_mode, mode))
