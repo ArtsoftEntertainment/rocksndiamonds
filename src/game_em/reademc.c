@@ -786,8 +786,7 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
   /* size of v6 cave */
   length = 2172;
 
-  if (options.debug)
-    Debug("level:native:EM", "EM level file version: %d", file_version);
+  Debug("level:native:EM", "EM level file version: %d", file_version);
 
   return file_version;
 }
