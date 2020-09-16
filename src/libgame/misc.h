@@ -123,6 +123,10 @@ void PrintNoLog(char *, ...);
 void PrintLine(char *, int);
 void PrintLineWithPrefix(char *, char *, int);
 
+void Debug(char *, char *, ...);
+void Info(char *, ...);
+void Warn(char *, ...);
+
 char *int2str(int, int);
 char *i_to_a(unsigned int);
 int log_2(unsigned int);

@@ -252,6 +252,110 @@ void PrintLineWithPrefix(char *prefix, char *line_chars, int line_length)
 
 
 // ----------------------------------------------------------------------------
+// generic logging functions
+// ----------------------------------------------------------------------------
+
+enum log_levels
+{
+  LOG_UNKNOWN = 0,
+  LOG_DEBUG,
+  LOG_INFO,
+  LOG_WARN,
+  LOG_ERROR,
+  LOG_FATAL
+};
+
+static char *log_tokens[] =
+{
+  "UNKNOWN",
+  "DEBUG",
+  "INFO",
+  "WARN",
+  "ERROR",
+  "FATAL"
+};
+
+static void printf_log_prefix(int log_level, char *mode)
+{
+  if (log_level < 0 || log_level > LOG_FATAL)
+    return;
+
+  char *log_token = log_tokens[log_level];
+
+  if (log_level == LOG_DEBUG)
+    printf_log_nonewline("[%s] [%s] ", log_token, mode);
+  else
+    printf_log_nonewline("[%s] ", log_token);
+}
+
+static void Log(int log_level, char *mode, char *format, va_list ap)
+{
+  if (log_level < 0 || log_level > LOG_FATAL)
+    return;
+
+  static boolean last_line_was_separator = FALSE;
+  char *log_token = log_tokens[log_level];
+
+  if (strEqual(format, "===") ||
+      strEqual(format, "---"))
+  {
+    static char *mode_last = NULL;
+    char line_char[2] = { format[0], '\0' };
+    int line_length = 80 - strlen(log_token) - 3;
+
+    if (log_level == LOG_DEBUG)
+      line_length -= strlen(mode) + 3;
+
+    if (last_line_was_separator && strEqual(mode, mode_last))
+      return;
+
+    printf_log_prefix(log_level, mode);
+    printf_log_line(line_char, line_length);
+
+    if (!strEqual(mode, mode_last))
+      setString(&mode_last, mode);
+
+    last_line_was_separator = TRUE;
+
+    return;
+  }
+
+  last_line_was_separator = FALSE;
+
+  printf_log_prefix(log_level, mode);
+
+  vprintf_log(format, ap);
+}
+
+void Debug(char *mode, char *format, ...)
+{
+  va_list ap;
+
+  va_start(ap, format);
+  Log(LOG_DEBUG, mode, format, ap);
+  va_end(ap);
+}
+
+void Info(char *format, ...)
+{
+  va_list ap;
+
+  va_start(ap, format);
+  Log(LOG_INFO, NULL, format, ap);
+  va_end(ap);
+}
+
+void Warn(char *format, ...)
+{
+  va_list ap;
+
+  va_start(ap, format);
+  Log(LOG_WARN, NULL, format, ap);
+  va_end(ap);
+}
+
+
+// ----------------------------------------------------------------------------
 // string functions
 // ----------------------------------------------------------------------------
 
