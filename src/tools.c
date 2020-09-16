@@ -397,35 +397,35 @@ void DumpTile(int x, int y)
   int sy = SCREENY(y);
   char *token_name;
 
-  printf_line("-", 79);
-  printf("Field Info: SCREEN(%d, %d), LEVEL(%d, %d)\n", sx, sy, x, y);
-  printf_line("-", 79);
+  Info("---");
+  Info("Field Info: SCREEN(%d, %d), LEVEL(%d, %d)", sx, sy, x, y);
+  Info("---");
 
   if (!IN_LEV_FIELD(x, y))
   {
-    printf("(not in level field)\n");
-    printf("\n");
+    Info("(not in level field)");
+    Info("");
 
     return;
   }
 
   token_name = element_info[Tile[x][y]].token_name;
 
-  printf("  Tile:        %d\t['%s']\n", Tile[x][y], token_name);
-  printf("  Back:        %s\n", print_if_not_empty(Back[x][y]));
-  printf("  Store:       %s\n", print_if_not_empty(Store[x][y]));
-  printf("  Store2:      %s\n", print_if_not_empty(Store2[x][y]));
-  printf("  StorePlayer: %s\n", print_if_not_empty(StorePlayer[x][y]));
-  printf("  MovPos:      %d\n", MovPos[x][y]);
-  printf("  MovDir:      %d\n", MovDir[x][y]);
-  printf("  MovDelay:    %d\n", MovDelay[x][y]);
-  printf("  ChangeDelay: %d\n", ChangeDelay[x][y]);
-  printf("  CustomValue: %d\n", CustomValue[x][y]);
-  printf("  GfxElement:  %d\n", GfxElement[x][y]);
-  printf("  GfxAction:   %d\n", GfxAction[x][y]);
-  printf("  GfxFrame:    %d [%d]\n", GfxFrame[x][y], FrameCounter);
-  printf("  Player x/y:  %d, %d\n", local_player->jx, local_player->jy);
-  printf("\n");
+  Info("Tile:        %d\t['%s']",	Tile[x][y], token_name);
+  Info("Back:        %s",		print_if_not_empty(Back[x][y]));
+  Info("Store:       %s",		print_if_not_empty(Store[x][y]));
+  Info("Store2:      %s",		print_if_not_empty(Store2[x][y]));
+  Info("StorePlayer: %s",		print_if_not_empty(StorePlayer[x][y]));
+  Info("MovPos:      %d",		MovPos[x][y]);
+  Info("MovDir:      %d",		MovDir[x][y]);
+  Info("MovDelay:    %d",		MovDelay[x][y]);
+  Info("ChangeDelay: %d",		ChangeDelay[x][y]);
+  Info("CustomValue: %d",		CustomValue[x][y]);
+  Info("GfxElement:  %d",		GfxElement[x][y]);
+  Info("GfxAction:   %d",		GfxAction[x][y]);
+  Info("GfxFrame:    %d [%d]",		GfxFrame[x][y], FrameCounter);
+  Info("Player x/y:  %d, %d",		local_player->jx, local_player->jy);
+  Info("");
 }
 
 void DumpTileFromScreen(int sx, int sy)
