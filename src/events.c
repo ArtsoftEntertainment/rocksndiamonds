@@ -1386,6 +1386,10 @@ static boolean checkTextInputKey(Key key)
   if (game_status == GAME_MODE_PLAYING)
     return FALSE;
 
+  // if Shift or right Alt key is pressed, handle key as text input
+  if ((GetKeyModState() & KMOD_TextInput) != KMOD_None)
+    return TRUE;
+
   // ignore raw keys as text input when not in text input mode
   if (KSYM_RAW(key) && !textinput_status)
     return FALSE;

@@ -386,6 +386,9 @@ typedef struct UserEventInfo	UserEvent;
 				 KMOD_Meta    |	\
 				 KMOD_Alt)
 
+#define KMOD_TextInput		(KMOD_Shift | KMOD_Alt_R)
+
+
 // SDL function definitions
 
 const char *SDLGetRendererName(void);
