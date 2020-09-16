@@ -1001,6 +1001,7 @@ struct OptionInfo
   char *execute_command;
 
   char *special_flags;
+  char *debug_mode;
 
   boolean mytapes;
   boolean serveronly;

@@ -7621,7 +7621,7 @@ static void print_usage(void)
 	"      --serveronly                 only start network server\n"
 	"  -v, --verbose                    verbose mode\n"
 	"  -V, --version                    show program version\n"
-	"      --debug                      display debugging information\n"
+	"      --debug[=MODE]               show (and limit) debug output\n"
 	"  -e, --execute COMMAND            execute batch COMMAND\n"
 	"\n"
 	"Valid commands for '--execute' option:\n"

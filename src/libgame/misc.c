@@ -331,6 +331,11 @@ void Debug(char *mode, char *format, ...)
 {
   va_list ap;
 
+  // if optional debug mode specified, limit debug output accordingly
+  if (options.debug_mode != NULL &&
+      !strEqual(options.debug_mode, mode))
+    return;
+
   va_start(ap, format);
   Log(LOG_DEBUG, mode, format, ap);
   va_end(ap);
@@ -1036,6 +1041,7 @@ void GetOptions(int argc, char *argv[],
 
   options.execute_command = NULL;
   options.special_flags = NULL;
+  options.debug_mode = NULL;
 
   options.mytapes = FALSE;
   options.serveronly = FALSE;
@@ -1170,6 +1176,10 @@ void GetOptions(int argc, char *argv[],
     else if (strncmp(option, "-debug", option_len) == 0)
     {
       options.debug = TRUE;
+
+      // optionally, debug output can be limited to a specific debug mode
+      if (option_arg != next_option)
+	options.debug_mode = getStringCopy(option_arg);
     }
     else if (strncmp(option, "-verbose", option_len) == 0)
     {
