@@ -12071,7 +12071,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 	mode == CB_BRUSH_TO_CLIPBOARD_SMALL)
       SDL_SetClipboardText(text);
     else
-      printf("%s", text);	// print brush data to console
+      Print("%s", text);	// print brush data to console and log file
 
     return;
   }
