@@ -5749,10 +5749,10 @@ static void ReinitializeElementList(void)
       int element = (*editor_elements_info[i].element_list)[j];
 
       if (element >= NUM_FILE_ELEMENTS)
-	Error(ERR_WARN, "editor element %d is runtime element", element);
+	Warn("editor element %d is runtime element", element);
 
       if (strEqual(getElementInfoText(element), INFOTEXT_UNKNOWN_ELEMENT))
-	Error(ERR_WARN, "no element description text for element %d", element);
+	Warn("no element description text for element %d", element);
     }
   }
 
@@ -8408,8 +8408,7 @@ static void CheckElementDescriptions(void)
 
   for (i = 0; i < NUM_FILE_ELEMENTS; i++)
     if (getElementDescriptionFilename(i) == NULL && !IS_OBSOLETE(i))
-      Error(ERR_WARN, "no element description file for element '%s'",
-	    EL_NAME(i));
+      Warn("no element description file for element '%s'", EL_NAME(i));
 }
 #endif
 

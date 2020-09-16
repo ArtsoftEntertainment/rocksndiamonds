@@ -1224,13 +1224,13 @@ static int get_graphic_parameter_value(char *value_raw, char *suffix, int type)
 
     if (value == NULL)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_INFO, "warning: error found in config file:");
-      Error(ERR_INFO, "- config file: '%s'", getImageConfigFilename());
-      Error(ERR_INFO, "error: invalid element token '%s'", value_raw);
-      Error(ERR_INFO, "custom graphic rejected for this element/action");
-      Error(ERR_INFO, "fallback done to undefined element for this graphic");
-      Error(ERR_INFO_LINE, "-");
+      Warn("---");
+      Warn("error found in config file:");
+      Warn("- config file: '%s'", getImageConfigFilename());
+      Warn("error: invalid element token '%s'", value_raw);
+      Warn("custom graphic rejected for this element/action");
+      Warn("fallback done to undefined element for this graphic");
+      Warn("---");
     }
 
     return (value != NULL ? atoi(value) : EL_UNDEFINED);
@@ -1242,13 +1242,13 @@ static int get_graphic_parameter_value(char *value_raw, char *suffix, int type)
 
     if (value == NULL)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_INFO, "warning: error found in config file:");
-      Error(ERR_INFO, "- config file: '%s'", getImageConfigFilename());
-      Error(ERR_INFO, "error: invalid graphic token '%s'", value_raw);
-      Error(ERR_INFO, "custom graphic rejected for this element/action");
-      Error(ERR_INFO, "fallback done to 'char_exclam' for this graphic");
-      Error(ERR_INFO_LINE, "-");
+      Warn("---");
+      Warn("error found in config file:");
+      Warn("- config file: '%s'", getImageConfigFilename());
+      Warn("error: invalid graphic token '%s'", value_raw);
+      Warn("custom graphic rejected for this element/action");
+      Warn("fallback done to 'char_exclam' for this graphic");
+      Warn("---");
     }
 
     return (value != NULL ? atoi(value) : fallback_graphic);
@@ -1379,20 +1379,20 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   {
     if (g->width <= 0)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_WARN, "invalid value %d for '%s.width' (fallback done to %d)",
-	    g->width, getTokenFromImageID(graphic), TILEX);
-      Error(ERR_INFO_LINE, "-");
+      Warn("---");
+      Warn("invalid value %d for '%s.width' (fallback done to %d)",
+	   g->width, getTokenFromImageID(graphic), TILEX);
+      Warn("---");
 
       g->width = TILEX;		// will be checked to be inside bitmap later
     }
 
     if (g->height <= 0)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_WARN, "invalid value %d for '%s.height' (fallback done to %d)",
-	    g->height, getTokenFromImageID(graphic), TILEY);
-      Error(ERR_INFO_LINE, "-");
+      Warn("---");
+      Warn("invalid value %d for '%s.height' (fallback done to %d)",
+	   g->height, getTokenFromImageID(graphic), TILEY);
+      Warn("---");
 
       g->height = TILEY;	// will be checked to be inside bitmap later
     }
@@ -1650,18 +1650,18 @@ static void set_cloned_graphic_parameters(int graphic)
 
   if (num_references_followed >= max_num_images)
   {
-    Error(ERR_INFO_LINE, "-");
-    Error(ERR_INFO, "warning: error found in config file:");
-    Error(ERR_INFO, "- config file: '%s'", getImageConfigFilename());
-    Error(ERR_INFO, "- config token: '%s'", getTokenFromImageID(graphic));
-    Error(ERR_INFO, "error: loop discovered when resolving cloned graphics");
-    Error(ERR_INFO, "custom graphic rejected for this element/action");
+    Warn("---");
+    Warn("error found in config file:");
+    Warn("- config file: '%s'", getImageConfigFilename());
+    Warn("- config token: '%s'", getTokenFromImageID(graphic));
+    Warn("error: loop discovered when resolving cloned graphics");
+    Warn("custom graphic rejected for this element/action");
 
     if (graphic == fallback_graphic)
       Error(ERR_EXIT, "no fallback graphic available");
 
-    Error(ERR_INFO, "fallback done to 'char_exclam' for this graphic");
-    Error(ERR_INFO_LINE, "-");
+    Warn("fallback done to 'char_exclam' for this graphic");
+    Warn("---");
 
     graphic_info[graphic] = graphic_info[fallback_graphic];
   }
@@ -1800,22 +1800,21 @@ static void InitGraphicInfo(void)
 	src_x + width  > src_bitmap_width ||
 	src_y + height > src_bitmap_height)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_INFO, "warning: error found in config file:");
-      Error(ERR_INFO, "- config file: '%s'", getImageConfigFilename());
-      Error(ERR_INFO, "- config token: '%s'", getTokenFromImageID(i));
-      Error(ERR_INFO, "- image file: '%s'", src_bitmap->source_filename);
-      Error(ERR_INFO, "- frame size: %d, %d", width, height);
-      Error(ERR_INFO,
-	    "error: first animation frame out of bounds (%d, %d) [%d, %d]",
-	    src_x, src_y, src_bitmap_width, src_bitmap_height);
-      Error(ERR_INFO, "custom graphic rejected for this element/action");
+      Warn("---");
+      Warn("error found in config file:");
+      Warn("- config file: '%s'", getImageConfigFilename());
+      Warn("- config token: '%s'", getTokenFromImageID(i));
+      Warn("- image file: '%s'", src_bitmap->source_filename);
+      Warn("- frame size: %d, %d", width, height);
+      Warn("error: first animation frame out of bounds (%d, %d) [%d, %d]",
+	   src_x, src_y, src_bitmap_width, src_bitmap_height);
+      Warn("custom graphic rejected for this element/action");
 
       if (i == fallback_graphic)
 	Error(ERR_EXIT, "no fallback graphic available");
 
-      Error(ERR_INFO, "fallback done to 'char_exclam' for this graphic");
-      Error(ERR_INFO_LINE, "-");
+      Warn("fallback done to 'char_exclam' for this graphic");
+      Warn("---");
 
       graphic_info[i] = graphic_info[fallback_graphic];
 
@@ -1832,22 +1831,21 @@ static void InitGraphicInfo(void)
 	src_x + width  > src_bitmap_width ||
 	src_y + height > src_bitmap_height)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_INFO, "warning: error found in config file:");
-      Error(ERR_INFO, "- config file: '%s'", getImageConfigFilename());
-      Error(ERR_INFO, "- config token: '%s'", getTokenFromImageID(i));
-      Error(ERR_INFO, "- image file: '%s'", src_bitmap->source_filename);
-      Error(ERR_INFO, "- frame size: %d, %d", width, height);
-      Error(ERR_INFO,
-	    "error: last animation frame (%d) out of bounds (%d, %d) [%d, %d]",
-	    last_frame, src_x, src_y, src_bitmap_width, src_bitmap_height);
-      Error(ERR_INFO, "custom graphic rejected for this element/action");
+      Warn("---");
+      Warn("error found in config file:");
+      Warn("- config file: '%s'", getImageConfigFilename());
+      Warn("- config token: '%s'", getTokenFromImageID(i));
+      Warn("- image file: '%s'", src_bitmap->source_filename);
+      Warn("- frame size: %d, %d", width, height);
+      Warn("error: last animation frame (%d) out of bounds (%d, %d) [%d, %d]",
+	   last_frame, src_x, src_y, src_bitmap_width, src_bitmap_height);
+      Warn("custom graphic rejected for this element/action");
 
       if (i == fallback_graphic)
 	Error(ERR_EXIT, "no fallback graphic available");
 
-      Error(ERR_INFO, "fallback done to 'char_exclam' for this graphic");
-      Error(ERR_INFO_LINE, "-");
+      Warn("fallback done to 'char_exclam' for this graphic");
+      Warn("---");
 
       graphic_info[i] = graphic_info[fallback_graphic];
     }
@@ -2442,7 +2440,7 @@ static void ResolveGroupElementExt(int group_element, int recursion_depth)
 
   if (recursion_depth > NUM_GROUP_ELEMENTS)	// recursion too deep
   {
-    Error(ERR_WARN, "recursion too deep when resolving group element %d",
+    Warn("recursion too deep when resolving group element %d",
 	  group_element - EL_GROUP_START + 1);
 
     // replace element which caused too deep recursion by question mark
@@ -6155,7 +6153,7 @@ void OpenAll(void)
 #if defined(PLATFORM_UNIX)
     NetworkServer(network.server_port, TRUE);
 #else
-    Error(ERR_WARN, "networking only supported in Unix version");
+    Warn("networking only supported in Unix version");
 #endif
 
     exit(0);			// never reached, server loops forever
@@ -6260,16 +6258,16 @@ void OpenAll(void)
   DrawMainMenu();
 
 #if 0
-  Error(ERR_DEBUG, "::: SDL_GetBasePath() == '%s'",
+  Debug("internal:path", "SDL_GetBasePath() == '%s'",
 	SDL_GetBasePath());
-  Error(ERR_DEBUG, "::: SDL_GetPrefPath() == '%s'",
+  Debug("internal:path", "SDL_GetPrefPath() == '%s'",
 	SDL_GetPrefPath("artsoft", "rocksndiamonds"));
 #if defined(PLATFORM_ANDROID)
-  Error(ERR_DEBUG, "::: SDL_AndroidGetInternalStoragePath() == '%s'",
+  Debug("internal:path", "SDL_AndroidGetInternalStoragePath() == '%s'",
 	SDL_AndroidGetInternalStoragePath());
-  Error(ERR_DEBUG, "::: SDL_AndroidGetExternalStoragePath() == '%s'",
+  Debug("internal:path", "SDL_AndroidGetExternalStoragePath() == '%s'",
 	SDL_AndroidGetExternalStoragePath());
-  Error(ERR_DEBUG, "::: SDL_AndroidGetExternalStorageState() == '%s'",
+  Debug("internal:path", "SDL_AndroidGetExternalStorageState() == '%s'",
 	(SDL_AndroidGetExternalStorageState() &
 	 SDL_ANDROID_EXTERNAL_STORAGE_WRITE ? "writable" :
 	 SDL_AndroidGetExternalStorageState() &

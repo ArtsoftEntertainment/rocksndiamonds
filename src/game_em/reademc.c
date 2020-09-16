@@ -693,8 +693,7 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
 
     /* if file has length of old-style level file, print (wrong) magic byte */
     if (length < 2110)
-      Error(ERR_WARN, "unknown magic byte 0x%02x at position 0x%04x",
-	    src[1983], 1983);
+      Warn("unknown magic byte 0x%02x at position 0x%04x", src[1983], 1983);
 
     return FILE_VERSION_EM_UNKNOWN;
   }
@@ -788,7 +787,7 @@ int cleanup_em_level(unsigned char *src, int length, char *filename)
   length = 2172;
 
   if (options.debug)
-    Error(ERR_DEBUG, "EM level file version: %d", file_version);
+    Debug("level:native:EM", "EM level file version: %d", file_version);
 
   return file_version;
 }

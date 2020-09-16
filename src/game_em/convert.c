@@ -217,7 +217,7 @@ int map_em_element_C_to_X(int element_em_cave)
 {
   if (element_em_cave < 0 || element_em_cave >= CAVE_TILE_MAX)
   {
-    Error(ERR_WARN, "invalid EM cave element %d", element_em_cave);
+    Warn("invalid EM cave element %d", element_em_cave);
 
     return Xblank;
   }
@@ -246,7 +246,7 @@ int map_em_element_X_to_C(int element_em_game)
 
   if (element_em_game < 0 || element_em_game >= GAME_TILE_MAX)
   {
-    Error(ERR_WARN, "invalid EM game element %d", element_em_game);
+    Warn("invalid EM game element %d", element_em_game);
 
     return Cblank;
   }
@@ -254,7 +254,7 @@ int map_em_element_X_to_C(int element_em_game)
   int element_em_cave = map_reverse[element_em_game];
 
   if (element_em_cave == Cblank && element_em_game != Xblank)
-    Error(ERR_WARN, "unknown EM game element %d", element_em_game);
+    Warn("unknown EM game element %d", element_em_game);
 
   return element_em_cave;
 }

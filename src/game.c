@@ -11495,8 +11495,8 @@ static void GameActionsExt(void)
 				  EL_NAME(recursion_loop_element),
 				  " caused endless loop! Quit the game?");
 
-    Error(ERR_WARN, "element '%s' caused endless loop in game engine",
-	  EL_NAME(recursion_loop_element));
+    Warn("element '%s' caused endless loop in game engine",
+	 EL_NAME(recursion_loop_element));
 
     RequestQuitGameExt(FALSE, level_editor_test_game, message);
 

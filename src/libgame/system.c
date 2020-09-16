@@ -137,14 +137,14 @@ void InitScoresInfo(void)
   {
     if (program.global_scores)
     {
-      Error(ERR_DEBUG, "Using global, multi-user scores directory '%s'.",
+      Debug("internal:path", "Using global, multi-user scores directory '%s'.",
 	    global_scores_dir);
-      Error(ERR_DEBUG, "Remove to enable single-user scores directory.");
-      Error(ERR_DEBUG, "(This enables multipe score entries per user.)");
+      Debug("internal:path", "Remove to enable single-user scores directory.");
+      Debug("internal:path", "(This enables multipe score entries per user.)");
     }
     else
     {
-      Error(ERR_DEBUG, "Using private, single-user scores directory.");
+      Debug("internal:path", "Using private, single-user scores directory.");
     }
   }
 #endif
@@ -1169,7 +1169,8 @@ void ReloadCustomImage(Bitmap *bitmap, char *basename)
 
   if (filename == NULL)		// (should never happen)
   {
-    Error(ERR_WARN, "ReloadCustomImage(): cannot find file '%s'", basename);
+    Warn("ReloadCustomImage(): cannot find file '%s'", basename);
+
     return;
   }
 
@@ -1184,16 +1185,19 @@ void ReloadCustomImage(Bitmap *bitmap, char *basename)
 
   if ((new_bitmap = LoadImage(filename)) == NULL)
   {
-    Error(ERR_WARN, "LoadImage('%s') failed: %s", basename, GetError());
+    Warn("LoadImage('%s') failed: %s", basename, GetError());
+
     return;
   }
 
   if (bitmap->width != new_bitmap->width ||
       bitmap->height != new_bitmap->height)
   {
-    Error(ERR_WARN, "ReloadCustomImage: new image '%s' has wrong dimensions",
+    Warn("ReloadCustomImage: new image '%s' has wrong dimensions",
 	  filename);
+
     FreeBitmap(new_bitmap);
+
     return;
   }
 

@@ -256,7 +256,7 @@ static void LoadNativeLevelFromFileStream_SP(File *file, int width, int height,
     }
 
     if (i >= SP_MAX_TAPE_LEN)
-      Error(ERR_WARN, "SP demo truncated: size exceeds maximum SP demo size %d",
+      Warn("SP demo truncated: size exceeds maximum SP demo size %d",
 	    SP_MAX_TAPE_LEN);
 
     native_sp_level.demo.length = i;
@@ -292,7 +292,7 @@ boolean LoadNativeLevel_SP(char *filename, int level_pos,
   if (!(file = openFile(filename, MODE_READ)))
   {
     if (!level_info_only)
-      Error(ERR_WARN, "cannot open file '%s' -- using empty level", filename);
+      Warn("cannot open file '%s' -- using empty level", filename);
 
     return FALSE;
   }
@@ -308,8 +308,7 @@ boolean LoadNativeLevel_SP(char *filename, int level_pos,
 
     if (!strEqual(mpx_chunk_name, "MPX "))
     {
-      Error(ERR_WARN, "cannot find MPX ID in file '%s' -- using empty level",
-	    filename);
+      Warn("cannot find MPX ID in file '%s' -- using empty level", filename);
 
       return FALSE;
     }
@@ -318,8 +317,7 @@ boolean LoadNativeLevel_SP(char *filename, int level_pos,
 
     if (mpx_version != 1)
     {
-      Error(ERR_WARN, "unknown MPX version in file '%s' -- using empty level",
-	    filename);
+      Warn("unknown MPX version in file '%s' -- using empty level", filename);
 
       return FALSE;
     }
@@ -328,16 +326,14 @@ boolean LoadNativeLevel_SP(char *filename, int level_pos,
 
     if (mpx_level_count < 1)
     {
-      Error(ERR_WARN, "no MPX levels found in file '%s' -- using empty level",
-	    filename);
+      Warn("no MPX levels found in file '%s' -- using empty level", filename);
 
       return FALSE;
     }
 
     if (level_pos >= mpx_level_count)
     {
-      Error(ERR_WARN, "MPX level not found in file '%s' -- using empty level",
-	    filename);
+      Warn("MPX level not found in file '%s' -- using empty level", filename);
 
       return FALSE;
     }
@@ -363,7 +359,7 @@ boolean LoadNativeLevel_SP(char *filename, int level_pos,
   // position file stream to the requested level (in case of level package)
   if (seekFile(file, file_seek_pos, SEEK_SET) != 0)
   {
-    Error(ERR_WARN, "cannot fseek in file '%s' -- using empty level", filename);
+    Warn("cannot fseek in file '%s' -- using empty level", filename);
 
     return FALSE;
   }
@@ -475,7 +471,7 @@ boolean LoadNativeLevel_SP(char *filename, int level_pos,
     if (multipart_xpos * SP_STD_PLAYFIELD_WIDTH  > SP_MAX_PLAYFIELD_WIDTH ||
 	multipart_ypos * SP_STD_PLAYFIELD_HEIGHT > SP_MAX_PLAYFIELD_HEIGHT)
     {
-      Error(ERR_WARN, "multi-part level is too big -- ignoring part of it");
+      Warn("multi-part level is too big -- ignoring part of it");
 
       break;
     }
@@ -505,7 +501,7 @@ boolean LoadNativeLevel_SP(char *filename, int level_pos,
   {
     setLevelInfoToDefaults_SP();
 
-    Error(ERR_WARN, "single part of multi-part level -- using empty level");
+    Warn("single part of multi-part level -- using empty level");
   }
 
   if (reading_multipart_level)
@@ -524,7 +520,7 @@ void SaveNativeLevel_SP(char *filename)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot save native level file '%s'", filename);
+    Warn("cannot save native level file '%s'", filename);
 
     return;
   }

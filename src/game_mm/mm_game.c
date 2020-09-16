@@ -717,7 +717,7 @@ void AddLaserEdge(int lx, int ly)
 
   if (clx < -2 || cly < -2 || clx >= SXSIZE + 2 || cly >= SYSIZE + 2)
   {
-    Error(ERR_WARN, "AddLaserEdge: out of bounds: %d, %d", lx, ly);
+    Warn("AddLaserEdge: out of bounds: %d, %d", lx, ly);
 
     return;
   }
@@ -1042,14 +1042,14 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
 
   if (start_edge < 0)
   {
-    Error(ERR_WARN, "DrawLaserExt: start_edge < 0");
+    Warn("DrawLaserExt: start_edge < 0");
 
     return;
   }
 
   if (num_edges < 0)
   {
-    Error(ERR_WARN, "DrawLaserExt: num_edges < 0");
+    Warn("DrawLaserExt: num_edges < 0");
 
     return;
   }
@@ -1224,7 +1224,7 @@ void DrawLaser(int start_edge, int mode)
 {
   if (laser.num_edges - start_edge < 0)
   {
-    Error(ERR_WARN, "DrawLaser: laser.num_edges - start_edge < 0");
+    Warn("DrawLaser: laser.num_edges - start_edge < 0");
 
     return;
   }
@@ -2879,7 +2879,8 @@ void RotateMirror(int x, int y, int button)
 
     if (edge == 0)
     {
-      Error(ERR_WARN, "RotateMirror: inconsistent field Hit[][]!\n");
+      Warn("RotateMirror: inconsistent field Hit[][]!\n");
+
       edge = 1;
     }
 

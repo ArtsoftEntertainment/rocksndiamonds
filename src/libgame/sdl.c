@@ -266,14 +266,14 @@ static void SDLSetWindowIcon(char *basename)
 
   if (filename == NULL)
   {
-    Error(ERR_WARN, "SDLSetWindowIcon(): cannot find file '%s'", basename);
+    Warn("SDLSetWindowIcon(): cannot find file '%s'", basename);
 
     return;
   }
 
   if ((surface = IMG_Load(filename)) == NULL)
   {
-    Error(ERR_WARN, "IMG_Load('%s') failed: %s", basename, SDL_GetError());
+    Warn("IMG_Load('%s') failed: %s", basename, SDL_GetError());
 
     return;
   }
@@ -615,21 +615,21 @@ static boolean SDLCreateScreen(boolean fullscreen)
 	new_surface = SDL_CreateRGBSurface(0, width, height, 32, 0,0,0, 0);
 
 	if (new_surface == NULL)
-	  Error(ERR_WARN, "SDL_CreateRGBSurface() failed: %s", SDL_GetError());
+	  Warn("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
       }
       else
       {
-	Error(ERR_WARN, "SDL_CreateTexture() failed: %s", SDL_GetError());
+	Warn("SDL_CreateTexture() failed: %s", SDL_GetError());
       }
     }
     else
     {
-      Error(ERR_WARN, "SDL_CreateRenderer() failed: %s", SDL_GetError());
+      Warn("SDL_CreateRenderer() failed: %s", SDL_GetError());
     }
   }
   else
   {
-    Error(ERR_WARN, "SDL_CreateWindow() failed: %s", SDL_GetError());
+    Warn("SDL_CreateWindow() failed: %s", SDL_GetError());
   }
 
   SDLSetScreenProperties();
@@ -798,7 +798,7 @@ void SDLSetDisplaySize(void)
     video.display_height = h;
 
 #if 0
-    Error(ERR_DEBUG, "SDL renderer size: %d x %d",
+    Debug("video", "SDL renderer size: %d x %d",
 	  video.display_width, video.display_height);
 #endif
   }
@@ -812,7 +812,7 @@ void SDLSetDisplaySize(void)
     video.display_height = display_bounds.h;
 
 #if 0
-    Error(ERR_DEBUG, "SDL display size: %d x %d",
+    Debug("video", "SDL display size: %d x %d",
 	  video.display_width, video.display_height);
 #endif
   }
@@ -843,7 +843,7 @@ void SDLSetScreenSizeAndOffsets(int width, int height)
     video.screen_yoffset = (video.screen_height - height) / 2;
 
 #if 0
-    Error(ERR_DEBUG, "Changing screen from %dx%d to %dx%d (%.2f to %.2f)",
+    Debug("video", "Changing screen from %dx%d to %dx%d (%.2f to %.2f)",
 	  width, height,
 	  video.screen_width, video.screen_height,
 	  ratio_video, ratio_display);
@@ -2393,7 +2393,8 @@ void SDLOpenAudio(void)
 
   if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
   {
-    Error(ERR_WARN, "SDL_InitSubSystem() failed: %s", SDL_GetError());
+    Warn("SDL_InitSubSystem() failed: %s", SDL_GetError());
+
     return;
   }
 
@@ -2401,7 +2402,8 @@ void SDLOpenAudio(void)
 		    AUDIO_NUM_CHANNELS_STEREO,
 		    setup.system.audio_fragment_size) < 0)
   {
-    Error(ERR_WARN, "Mix_OpenAudio() failed: %s", SDL_GetError());
+    Warn("Mix_OpenAudio() failed: %s", SDL_GetError());
+
     return;
   }
 
@@ -2492,7 +2494,7 @@ boolean SDLOpenJoystick(int nr)
   sdl_is_controller[nr] = SDL_IsGameController(nr);
 
 #if DEBUG_JOYSTICKS
-  Error(ERR_DEBUG, "opening joystick %d (%s)",
+  Debug("joystick", "opening joystick %d (%s)",
 	nr, (sdl_is_controller[nr] ? "game controller" : "joystick"));
 #endif
 
@@ -2510,7 +2512,7 @@ void SDLCloseJoystick(int nr)
     return;
 
 #if DEBUG_JOYSTICKS
-  Error(ERR_DEBUG, "closing joystick %d", nr);
+  Debug("joystick", "closing joystick %d", nr);
 #endif
 
   if (sdl_is_controller[nr])
@@ -2596,7 +2598,7 @@ void HandleJoystickEvent(Event *event)
   {
     case SDL_CONTROLLERDEVICEADDED:
 #if DEBUG_JOYSTICKS
-      Error(ERR_DEBUG, "SDL_CONTROLLERDEVICEADDED: device %d added",
+      Debug("joystick", "SDL_CONTROLLERDEVICEADDED: device %d added",
 	    event->cdevice.which);
 #endif
       InitJoysticks();
@@ -2604,7 +2606,7 @@ void HandleJoystickEvent(Event *event)
 
     case SDL_CONTROLLERDEVICEREMOVED:
 #if DEBUG_JOYSTICKS
-      Error(ERR_DEBUG, "SDL_CONTROLLERDEVICEREMOVED: device %d removed",
+      Debug("joystick", "SDL_CONTROLLERDEVICEREMOVED: device %d removed",
 	    event->cdevice.which);
 #endif
       InitJoysticks();
@@ -2612,7 +2614,7 @@ void HandleJoystickEvent(Event *event)
 
     case SDL_CONTROLLERAXISMOTION:
 #if DEBUG_JOYSTICKS
-      Error(ERR_DEBUG, "SDL_CONTROLLERAXISMOTION: device %d, axis %d: %d",
+      Debug("joystick", "SDL_CONTROLLERAXISMOTION: device %d, axis %d: %d",
 	    event->caxis.which, event->caxis.axis, event->caxis.value);
 #endif
       setJoystickAxis(event->caxis.which,
@@ -2622,7 +2624,7 @@ void HandleJoystickEvent(Event *event)
 
     case SDL_CONTROLLERBUTTONDOWN:
 #if DEBUG_JOYSTICKS
-      Error(ERR_DEBUG, "SDL_CONTROLLERBUTTONDOWN: device %d, button %d",
+      Debug("joystick", "SDL_CONTROLLERBUTTONDOWN: device %d, button %d",
 	    event->cbutton.which, event->cbutton.button);
 #endif
       setJoystickButton(event->cbutton.which,
@@ -2632,7 +2634,7 @@ void HandleJoystickEvent(Event *event)
 
     case SDL_CONTROLLERBUTTONUP:
 #if DEBUG_JOYSTICKS
-      Error(ERR_DEBUG, "SDL_CONTROLLERBUTTONUP: device %d, button %d",
+      Debug("joystick", "SDL_CONTROLLERBUTTONUP: device %d, button %d",
 	    event->cbutton.which, event->cbutton.button);
 #endif
       setJoystickButton(event->cbutton.which,
@@ -2645,7 +2647,7 @@ void HandleJoystickEvent(Event *event)
 	break;
 
 #if DEBUG_JOYSTICKS
-      Error(ERR_DEBUG, "SDL_JOYAXISMOTION: device %d, axis %d: %d",
+      Debug("joystick", "SDL_JOYAXISMOTION: device %d, axis %d: %d",
 	    event->jaxis.which, event->jaxis.axis, event->jaxis.value);
 #endif
       if (event->jaxis.axis < 4)
@@ -2659,7 +2661,7 @@ void HandleJoystickEvent(Event *event)
 	break;
 
 #if DEBUG_JOYSTICKS
-      Error(ERR_DEBUG, "SDL_JOYBUTTONDOWN: device %d, button %d",
+      Debug("joystick", "SDL_JOYBUTTONDOWN: device %d, button %d",
 	    event->jbutton.which, event->jbutton.button);
 #endif
       if (event->jbutton.button < 4)
@@ -2673,7 +2675,7 @@ void HandleJoystickEvent(Event *event)
 	break;
 
 #if DEBUG_JOYSTICKS
-      Error(ERR_DEBUG, "SDL_JOYBUTTONUP: device %d, button %d",
+      Debug("joystick", "SDL_JOYBUTTONUP: device %d, button %d",
 	    event->jbutton.which, event->jbutton.button);
 #endif
       if (event->jbutton.button < 4)
@@ -2707,6 +2709,7 @@ void SDLInitJoysticks(void)
     if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
     {
       Error(ERR_EXIT, "SDL_Init() failed: %s", SDL_GetError());
+
       return;
     }
 
@@ -2714,10 +2717,11 @@ void SDLInitJoysticks(void)
 
     // the included game controller base mappings should always be found
     if (num_mappings == -1)
-      Error(ERR_WARN, "no game controller base mappings found");
+      Warn("no game controller base mappings found");
 #if DEBUG_JOYSTICKS
     else
-      Error(ERR_INFO, "%d game controller base mapping(s) added", num_mappings);
+      Debug("joystick", "%d game controller base mapping(s) added",
+	    num_mappings);
 #endif
 
     num_mappings = SDL_GameControllerAddMappingsFromFile(mappings_file_user);
@@ -2725,11 +2729,12 @@ void SDLInitJoysticks(void)
 #if DEBUG_JOYSTICKS
     // the personal game controller user mappings may or may not be found
     if (num_mappings == -1)
-      Error(ERR_WARN, "no game controller user mappings found");
+      Warn("no game controller user mappings found");
     else
-      Error(ERR_INFO, "%d game controller user mapping(s) added", num_mappings);
+      Debug("joystick", , "%d game controller user mapping(s) added",
+	    num_mappings);
 
-    Error(ERR_INFO, "%d joystick(s) found:", SDL_NumJoysticks());
+    Debug("joystick", "%d joystick(s) found:", SDL_NumJoysticks());
 #endif
 
     checked_free(mappings_file_base);
@@ -2751,7 +2756,7 @@ void SDLInitJoysticks(void)
 	type = "joystick";
       }
 
-      Error(ERR_INFO, "- joystick %d (%s): '%s'",
+      Debug("joystick", "- joystick %d (%s): '%s'",
 	    i, type, (name ? name : "(Unknown)"));
     }
 #endif
@@ -2767,7 +2772,7 @@ void SDLInitJoysticks(void)
     if (joystick_nr >= SDL_NumJoysticks())
     {
       if (setup.input[i].use_joystick && print_warning)
-	Error(ERR_WARN, "cannot find joystick %d", joystick_nr);
+	Warn("cannot find joystick %d", joystick_nr);
 
       joystick_nr = -1;
     }
@@ -2786,7 +2791,7 @@ void SDLInitJoysticks(void)
     if (SDLOpenJoystick(i))
       joystick.status = JOYSTICK_ACTIVATED;
     else if (print_warning)
-      Error(ERR_WARN, "cannot open joystick %d", i);
+      Warn("cannot open joystick %d", i);
   }
 
   SDLClearJoystickState();

@@ -503,7 +503,7 @@ static boolean CheckVirtualButtonPressed(int mx, int my, int button)
 void HandleButtonEvent(ButtonEvent *event)
 {
 #if DEBUG_EVENTS_BUTTON
-  Error(ERR_DEBUG, "BUTTON EVENT: button %d %s, x/y %d/%d\n",
+  Debug("event:button", "button %d %s, x/y %d/%d\n",
 	event->button,
 	event->type == EVENT_BUTTONPRESS ? "pressed" : "released",
 	event->x, event->y);
@@ -535,7 +535,7 @@ void HandleMotionEvent(MotionEvent *event)
   motion_status = TRUE;
 
 #if DEBUG_EVENTS_MOTION
-  Error(ERR_DEBUG, "MOTION EVENT: button %d moved, x/y %d/%d\n",
+  Debug("event:motion", "button %d moved, x/y %d/%d\n",
 	button_status, event->x, event->y);
 #endif
 
@@ -548,11 +548,11 @@ void HandleWheelEvent(WheelEvent *event)
 
 #if DEBUG_EVENTS_WHEEL
 #if 1
-  Error(ERR_DEBUG, "WHEEL EVENT: mouse == %d, x/y == %d/%d\n",
+  Debug("event:wheel", "mouse == %d, x/y == %d/%d\n",
 	event->which, event->x, event->y);
 #else
   // (SDL_MOUSEWHEEL_NORMAL/SDL_MOUSEWHEEL_FLIPPED needs SDL 2.0.4 or newer)
-  Error(ERR_DEBUG, "WHEEL EVENT: mouse == %d, x/y == %d/%d, direction == %s\n",
+  Debug("event:wheel", "mouse == %d, x/y == %d/%d, direction == %s\n",
 	event->which, event->x, event->y,
 	(event->direction == SDL_MOUSEWHEEL_NORMAL ? "SDL_MOUSEWHEEL_NORMAL" :
 	 "SDL_MOUSEWHEEL_FLIPPED"));
@@ -603,7 +603,7 @@ void HandleWindowEvent(WindowEvent *event)
      subtype == SDL_WINDOWEVENT_CLOSE ? "SDL_WINDOWEVENT_CLOSE" :
      "(UNKNOWN)");
 
-  Error(ERR_DEBUG, "WINDOW EVENT: '%s', %ld, %ld",
+  Debug("event:window", "name: '%s', data1: %ld, data2: %ld",
 	event_name, event->data1, event->data2);
 #endif
 
@@ -714,7 +714,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
   // for any touch input event, enable overlay buttons (if activated)
   SetOverlayEnabled(TRUE);
 
-  Error(ERR_DEBUG, "::: key '%s' was '%s' [fingerId: %lld]",
+  Debug("event:finger", "key '%s' was '%s' [fingerId: %lld]",
 	getKeyNameFromKey(key), key_status_name, event->fingerId);
 
   if (key_status == KEY_PRESSED)
@@ -728,7 +728,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
     if (touch_info[i].touched &&
 	touch_info[i].finger_id == event->fingerId)
     {
-      // Error(ERR_DEBUG, "MARK 1: %d", i);
+      // Debug("event:finger", "MARK 1: %d", i);
 
       break;
     }
@@ -748,12 +748,12 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
 	  oldest_pos = i;
 	  oldest_counter = touch_info[i].counter;
 
-	  // Error(ERR_DEBUG, "MARK 2: %d", i);
+	  // Debug("event:finger", "MARK 2: %d", i);
 	}
 
 	if (!touch_info[i].touched)
 	{
-	  // Error(ERR_DEBUG, "MARK 3: %d", i);
+	  // Debug("event:finger", "MARK 3: %d", i);
 
 	  break;
 	}
@@ -764,7 +764,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
 	// all slots allocated -- use oldest slot
 	i = oldest_pos;
 
-	// Error(ERR_DEBUG, "MARK 4: %d", i);
+	// Debug("event:finger", "MARK 4: %d", i);
       }
     }
     else
@@ -775,7 +775,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
       {
 	HandleKey(key, KEY_RELEASED);
 
-	Error(ERR_DEBUG, "=> key == '%s', key_status == '%s' [slot %d] [1]",
+	Debug("event:finger", "key == '%s', key_status == '%s' [slot %d] [1]",
 	      getKeyNameFromKey(key), "KEY_RELEASED", i);
       }
     }
@@ -794,7 +794,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
 	  // undraw previous grid button when moving finger away
 	  overlay.grid_button_action &= ~touch_info[i].action;
 
-	  Error(ERR_DEBUG, "=> key == '%s', key_status == '%s' [slot %d] [2]",
+	  Debug("event:finger", "key == '%s', key_status == '%s' [slot %d] [2]",
 		getKeyNameFromKey(touch_info[i].key), "KEY_RELEASED", i);
 	}
 
@@ -802,7 +802,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
 	{
 	  HandleKey(key, KEY_PRESSED);
 
-	  Error(ERR_DEBUG, "=> key == '%s', key_status == '%s' [slot %d] [3]",
+	  Debug("event:finger", "key == '%s', key_status == '%s' [slot %d] [3]",
 		getKeyNameFromKey(key), "KEY_PRESSED", i);
 	}
       }
@@ -819,7 +819,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
       {
 	HandleKey(touch_info[i].key, KEY_RELEASED);
 
-	Error(ERR_DEBUG, "=> key == '%s', key_status == '%s' [slot %d] [4]",
+	Debug("event:finger", "key == '%s', key_status == '%s' [slot %d] [4]",
 	      getKeyNameFromKey(touch_info[i].key), "KEY_RELEASED", i);
       }
 
@@ -862,7 +862,7 @@ static void HandleFingerEvent_WipeGestures(FingerEvent *event)
       motion_key_x = KSYM_UNDEFINED;
       motion_key_y = KSYM_UNDEFINED;
 
-      Error(ERR_DEBUG, "---------- MOVE STARTED (WAIT) ----------");
+      Debug("event:finger", "---------- MOVE STARTED (WAIT) ----------");
     }
     else
     {
@@ -877,7 +877,7 @@ static void HandleFingerEvent_WipeGestures(FingerEvent *event)
 
       HandleKey(button_key, KEY_PRESSED);
 
-      Error(ERR_DEBUG, "---------- SNAP STARTED ----------");
+      Debug("event:finger", "---------- SNAP STARTED ----------");
     }
   }
   else if (event->type == EVENT_FINGERRELEASE)
@@ -894,7 +894,7 @@ static void HandleFingerEvent_WipeGestures(FingerEvent *event)
       motion_key_x = KSYM_UNDEFINED;
       motion_key_y = KSYM_UNDEFINED;
 
-      Error(ERR_DEBUG, "---------- MOVE STOPPED ----------");
+      Debug("event:finger", "---------- MOVE STOPPED ----------");
     }
     else if (event->fingerId == button_id)
     {
@@ -905,7 +905,7 @@ static void HandleFingerEvent_WipeGestures(FingerEvent *event)
 
       button_key = KSYM_UNDEFINED;
 
-      Error(ERR_DEBUG, "---------- SNAP STOPPED ----------");
+      Debug("event:finger", "---------- SNAP STOPPED ----------");
     }
   }
   else if (event->type == EVENT_FINGERMOTION)
@@ -954,7 +954,7 @@ static void HandleFingerEvent_WipeGestures(FingerEvent *event)
 	motion_key_x = new_motion_key_x;
 	motion_key_y = new_motion_key_y;
 
-	Error(ERR_DEBUG, "---------- MOVE STARTED (MOVE) ----------");
+	Debug("event:finger", "---------- MOVE STARTED (MOVE) ----------");
       }
     }
     else if (event->fingerId == button_id)
@@ -975,7 +975,7 @@ static void HandleFingerEvent_WipeGestures(FingerEvent *event)
 
 	HandleKey(button_key, KEY_PRESSED);
 
-	Error(ERR_DEBUG, "---------- DROP STARTED ----------");
+	Debug("event:finger", "---------- DROP STARTED ----------");
       }
     }
   }
@@ -984,7 +984,7 @@ static void HandleFingerEvent_WipeGestures(FingerEvent *event)
 void HandleFingerEvent(FingerEvent *event)
 {
 #if DEBUG_EVENTS_FINGER
-  Error(ERR_DEBUG, "FINGER EVENT: finger was %s, touch ID %lld, finger ID %lld, x/y %f/%f, dx/dy %f/%f, pressure %f",
+  Debug("event:finger", "finger was %s, touch ID %lld, finger ID %lld, x/y %f/%f, dx/dy %f/%f, pressure %f",
 	event->type == EVENT_FINGERPRESS ? "pressed" :
 	event->type == EVENT_FINGERRELEASE ? "released" : "moved",
 	event->touchId,
@@ -1051,7 +1051,7 @@ static void HandleButtonOrFinger_WipeGestures_MM(int mx, int my, int button)
 
       ClearPlayerMouseAction();
 
-      Error(ERR_DEBUG, "---------- TOUCH ACTION STARTED ----------");
+      Debug("event:finger", "---------- TOUCH ACTION STARTED ----------");
     }
   }
   else if (button == MB_RELEASED && touched)
@@ -1065,7 +1065,7 @@ static void HandleButtonOrFinger_WipeGestures_MM(int mx, int my, int button)
     else
       SetPlayerMouseAction(old_mx, old_my, MB_RELEASED);
 
-    Error(ERR_DEBUG, "---------- TOUCH ACTION STOPPED ----------");
+    Debug("event:finger", "---------- TOUCH ACTION STOPPED ----------");
   }
 
   if (touched)
@@ -1090,7 +1090,7 @@ static void HandleButtonOrFinger_WipeGestures_MM(int mx, int my, int button)
 
       last_button = button_nr;
 
-      Error(ERR_DEBUG, "---------- TOUCH ACTION: ROTATING ----------");
+      Debug("event:finger", "---------- TOUCH ACTION: ROTATING ----------");
     }
     else
     {
@@ -1098,7 +1098,7 @@ static void HandleButtonOrFinger_WipeGestures_MM(int mx, int my, int button)
 
       SetPlayerMouseAction(old_mx, old_my, MB_RELEASED);
 
-      Error(ERR_DEBUG, "---------- TOUCH ACTION PAUSED ----------");
+      Debug("event:finger", "---------- TOUCH ACTION PAUSED ----------");
     }
   }
 }
@@ -1137,7 +1137,7 @@ static void HandleButtonOrFinger_FollowFinger_MM(int mx, int my, int button)
 
       ClearPlayerMouseAction();
 
-      Error(ERR_DEBUG, "---------- TOUCH ACTION STARTED ----------");
+      Debug("event:finger", "---------- TOUCH ACTION STARTED ----------");
     }
   }
   else if (button == MB_RELEASED && touched)
@@ -1151,7 +1151,7 @@ static void HandleButtonOrFinger_FollowFinger_MM(int mx, int my, int button)
     else
       SetPlayerMouseAction(old_mx, old_my, MB_RELEASED);
 
-    Error(ERR_DEBUG, "---------- TOUCH ACTION STOPPED ----------");
+    Debug("event:finger", "---------- TOUCH ACTION STOPPED ----------");
   }
 
   if (touched)
@@ -1180,7 +1180,7 @@ static void HandleButtonOrFinger_FollowFinger_MM(int mx, int my, int button)
 
       tapped = FALSE;
 
-      Error(ERR_DEBUG, "---------- TOUCH ACTION: ROTATING ----------");
+      Debug("event:finger", "---------- TOUCH ACTION: ROTATING ----------");
     }
     else
     {
@@ -1188,7 +1188,7 @@ static void HandleButtonOrFinger_FollowFinger_MM(int mx, int my, int button)
 
       SetPlayerMouseAction(old_mx, old_my, MB_RELEASED);
 
-      Error(ERR_DEBUG, "---------- TOUCH ACTION PAUSED ----------");
+      Debug("event:finger", "---------- TOUCH ACTION PAUSED ----------");
     }
   }
 }
@@ -1223,7 +1223,7 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
       motion_key_x = KSYM_UNDEFINED;
       motion_key_y = KSYM_UNDEFINED;
 
-      Error(ERR_DEBUG, "---------- TOUCH ACTION STARTED ----------");
+      Debug("event:finger", "---------- TOUCH ACTION STARTED ----------");
     }
   }
   else if (button == MB_RELEASED && touched)
@@ -1242,13 +1242,13 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
     {
       if (player_is_dropping)
       {
-	Error(ERR_DEBUG, "---------- DROP STOPPED ----------");
+	Debug("event:finger", "---------- DROP STOPPED ----------");
 
 	HandleKey(setup.input[0].key.drop, KEY_RELEASED);
       }
       else
       {
-	Error(ERR_DEBUG, "---------- SNAP STOPPED ----------");
+	Debug("event:finger", "---------- SNAP STOPPED ----------");
 
 	HandleKey(setup.input[0].key.snap, KEY_RELEASED);
       }
@@ -1257,7 +1257,7 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
     motion_key_x = KSYM_UNDEFINED;
     motion_key_y = KSYM_UNDEFINED;
 
-    Error(ERR_DEBUG, "---------- TOUCH ACTION STOPPED ----------");
+    Debug("event:finger", "---------- TOUCH ACTION STOPPED ----------");
   }
 
   if (touched)
@@ -1301,13 +1301,13 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
 
       if (player_is_dropping)
       {
-	Error(ERR_DEBUG, "---------- DROP STARTED ----------");
+	Debug("event:finger", "---------- DROP STARTED ----------");
 
 	HandleKey(setup.input[0].key.drop, KEY_PRESSED);
       }
       else
       {
-	Error(ERR_DEBUG, "---------- SNAP STARTED ----------");
+	Debug("event:finger", "---------- SNAP STARTED ----------");
 
 	HandleKey(setup.input[0].key.snap, KEY_PRESSED);
       }
@@ -1317,7 +1317,7 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
       if (player_is_dropping &&
 	  player_drop_count == getPlayerInventorySize(0))
       {
-	Error(ERR_DEBUG, "---------- DROP -> SNAP ----------");
+	Debug("event:finger", "---------- DROP -> SNAP ----------");
 
 	HandleKey(setup.input[0].key.drop, KEY_RELEASED);
 	HandleKey(setup.input[0].key.snap, KEY_PRESSED);
@@ -1328,7 +1328,7 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
 
     if (new_motion_key_x != motion_key_x)
     {
-      Error(ERR_DEBUG, "---------- %s %s ----------",
+      Debug("event:finger", "---------- %s %s ----------",
 	    started_on_player && !player_is_dropping ? "SNAPPING" : "MOVING",
 	    dx < 0 ? "LEFT" : dx > 0 ? "RIGHT" : "PAUSED");
 
@@ -1340,7 +1340,7 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
 
     if (new_motion_key_y != motion_key_y)
     {
-      Error(ERR_DEBUG, "---------- %s %s ----------",
+      Debug("event:finger", "---------- %s %s ----------",
 	    started_on_player && !player_is_dropping ? "SNAPPING" : "MOVING",
 	    dy < 0 ? "UP" : dy > 0 ? "DOWN" : "PAUSED");
 
@@ -1400,7 +1400,7 @@ void HandleTextEvent(TextEvent *event)
   Key key = getKeyFromKeyName(text);
 
 #if DEBUG_EVENTS_TEXT
-  Error(ERR_DEBUG, "TEXT EVENT: text == '%s' [%d byte(s), '%c'/%d], resulting key == %d (%s) [%04x]",
+  Debug("event:text", "text == '%s' [%d byte(s), '%c'/%d], resulting key == %d (%s) [%04x]",
 	text,
 	strlen(text),
 	text[0], (int)(text[0]),
@@ -1437,7 +1437,7 @@ void HandleKeyEvent(KeyEvent *event)
   Key keymod = (with_modifiers ? GetEventKey(event, FALSE) : key);
 
 #if DEBUG_EVENTS_KEY
-  Error(ERR_DEBUG, "KEY EVENT: key was %s, keysym.scancode == %d, keysym.sym == %d, keymod = %d, GetKeyModState() = 0x%04x, resulting key == %d (%s)",
+  Debug("event:key", "key was %s, keysym.scancode == %d, keysym.sym == %d, keymod = %d, GetKeyModState() = 0x%04x, resulting key == %d (%s)",
 	event->type == EVENT_KEYPRESS ? "pressed" : "released",
 	event->keysym.scancode,
 	event->keysym.sym,
@@ -1478,12 +1478,12 @@ void HandleKeyEvent(KeyEvent *event)
 
 static int HandleDropFileEvent(char *filename)
 {
-  Error(ERR_DEBUG, "DROP FILE EVENT: '%s'", filename);
+  Debug("event:dropfile", "filename == '%s'", filename);
 
   // check and extract dropped zip files into correct user data directory
   if (!strSuffixLower(filename, ".zip"))
   {
-    Error(ERR_WARN, "file '%s' not supported", filename);
+    Warn("file '%s' not supported", filename);
 
     return TREE_TYPE_UNDEFINED;
   }
@@ -1494,7 +1494,7 @@ static int HandleDropFileEvent(char *filename)
 
   if (directory == NULL)
   {
-    Error(ERR_WARN, "zip file '%s' has invalid content!", filename);
+    Warn("zip file '%s' has invalid content!", filename);
 
     return TREE_TYPE_UNDEFINED;
   }
@@ -1536,7 +1536,7 @@ static int HandleDropFileEvent(char *filename)
 
 static void HandleDropTextEvent(char *text)
 {
-  Error(ERR_DEBUG, "DROP TEXT EVENT: '%s'", text);
+  Debug("event:droptext", "text == '%s'", text);
 }
 
 static void HandleDropCompleteEvent(int num_level_sets_succeeded,
@@ -1808,7 +1808,7 @@ static void HandleKeysSpecial(Key key)
   cheat_input[cheat_input_len] = '\0';
 
 #if DEBUG_EVENTS_KEY
-  Error(ERR_DEBUG, "SPECIAL KEY '%s' [%d]\n", cheat_input, cheat_input_len);
+  Debug("event:key:special", "'%s' [%d]\n", cheat_input, cheat_input_len);
 #endif
 
   if (game_status == GAME_MODE_MAIN)
@@ -1959,13 +1959,13 @@ boolean HandleKeysDebug(Key key, int key_status)
 	SetVideoFrameDelay(GameFrameDelay);
 
 	if (GameFrameDelay > ONE_SECOND_DELAY)
-	  Error(ERR_INFO, "frame delay == %d ms", GameFrameDelay);
+	  Debug("event:key:debug", "frame delay == %d ms", GameFrameDelay);
 	else if (GameFrameDelay != 0)
-	  Error(ERR_INFO, "frame delay == %d ms (max. %d fps / %d %%)",
+	  Debug("event:key:debug", "frame delay == %d ms (max. %d fps / %d %%)",
 		GameFrameDelay, ONE_SECOND_DELAY / GameFrameDelay,
 		GAME_FRAME_DELAY * 100 / GameFrameDelay);
 	else
-	  Error(ERR_INFO, "frame delay == 0 ms (maximum speed)");
+	  Debug("event:key:debug", "frame delay == 0 ms (maximum speed)");
 
 	return TRUE;
       }
@@ -1978,14 +1978,14 @@ boolean HandleKeysDebug(Key key, int key_status)
     {
       options.debug = !options.debug;
 
-      Error(ERR_INFO, "debug mode %s",
+      Debug("event:key:debug", "debug mode %s",
 	    (options.debug ? "enabled" : "disabled"));
 
       return TRUE;
     }
     else if (key == KSYM_v)
     {
-      Error(ERR_INFO, "currently using game engine version %d",
+      Debug("event:key:debug", "currently using game engine version %d",
 	    game.engine_version);
 
       return TRUE;

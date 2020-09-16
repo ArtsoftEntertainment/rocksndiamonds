@@ -136,7 +136,8 @@ static int checkLevelElement(int element)
 {
   if (element >= EL_FIRST_RUNTIME_EL)
   {
-    Error(ERR_WARN, "invalid level element %d", element);
+    Warn("invalid level element %d", element);
+
     element = EL_CHAR_FRAGE;
   }
 
@@ -270,7 +271,7 @@ boolean LoadNativeLevel_MM(char *filename, boolean level_info_only)
   if (!(file = openFile(filename, MODE_READ)))
   {
     if (!level_info_only)
-      Error(ERR_WARN, "cannot read level '%s' - creating new level", filename);
+      Warn("cannot read level '%s' - creating new level", filename);
 
     return FALSE;
   }
@@ -283,7 +284,7 @@ boolean LoadNativeLevel_MM(char *filename, boolean level_info_only)
     getFileChunk(file, chunk_name, NULL, BYTE_ORDER_BIG_ENDIAN);
     if (strcmp(chunk_name, "CAVE") != 0)
     {
-      Error(ERR_WARN, "unknown format of level file '%s'", filename);
+      Warn("unknown format of level file '%s'", filename);
 
       closeFile(file);
 
@@ -299,7 +300,7 @@ boolean LoadNativeLevel_MM(char *filename, boolean level_info_only)
 
     if (!checkCookieString(cookie, LEVEL_COOKIE_TMPL))
     {
-      Error(ERR_WARN, "unknown format of level file '%s'", filename);
+      Warn("unknown format of level file '%s'", filename);
 
       closeFile(file);
 
@@ -309,7 +310,7 @@ boolean LoadNativeLevel_MM(char *filename, boolean level_info_only)
     if ((native_mm_level.file_version = getFileVersionFromCookieString(cookie))
 	== -1)
     {
-      Error(ERR_WARN, "unsupported version of level file '%s'", filename);
+      Warn("unsupported version of level file '%s'", filename);
 
       closeFile(file);
 
@@ -327,7 +328,7 @@ boolean LoadNativeLevel_MM(char *filename, boolean level_info_only)
 
     if (chunk_info[i].name == NULL)
     {
-      Error(ERR_WARN, "unknown chunk '%s' in level file '%s'",
+      Warn("unknown chunk '%s' in level file '%s'",
 	    chunk_name, filename);
 
       ReadUnusedBytesFromFile(file, chunk_size);
@@ -335,7 +336,7 @@ boolean LoadNativeLevel_MM(char *filename, boolean level_info_only)
     else if (chunk_info[i].size != -1 &&
 	     chunk_info[i].size != chunk_size)
     {
-      Error(ERR_WARN, "wrong size (%d) of chunk '%s' in level file '%s'",
+      Warn("wrong size (%d) of chunk '%s' in level file '%s'",
 	    chunk_size, chunk_name, filename);
 
       ReadUnusedBytesFromFile(file, chunk_size);
@@ -350,7 +351,7 @@ boolean LoadNativeLevel_MM(char *filename, boolean level_info_only)
       // chunks first (like "HEAD" and "BODY") that contain some header
       // information, so check them here
       if (chunk_size_expected != chunk_size)
-	Error(ERR_WARN, "wrong size (%d) of chunk '%s' in level file '%s'",
+	Warn("wrong size (%d) of chunk '%s' in level file '%s'",
 	      chunk_size, chunk_name, filename);
     }
   }
@@ -419,7 +420,7 @@ void SaveNativeLevel_MM(char *filename)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot save level file '%s'", filename);
+    Warn("cannot save level file '%s'", filename);
 
     return;
   }

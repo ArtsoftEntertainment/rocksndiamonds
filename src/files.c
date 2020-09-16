@@ -2070,7 +2070,7 @@ static char *getPackedLevelBasename(int type)
 
   if ((dir = openDirectory(directory)) == NULL)
   {
-    Error(ERR_WARN, "cannot read current level directory '%s'", directory);
+    Warn("cannot read current level directory '%s'", directory);
 
     return basename;
   }
@@ -2375,7 +2375,7 @@ static int getMappedElement(int element)
     default:
       if (element >= NUM_FILE_ELEMENTS)
       {
-	Error(ERR_WARN, "invalid level element %d", element);
+	Warn("invalid level element %d", element);
 
 	element = EL_UNKNOWN;
       }
@@ -2623,7 +2623,7 @@ static int LoadLevel_CNT2(File *file, int chunk_size, struct LevelInfo *level)
   }
   else
   {
-    Error(ERR_WARN, "cannot load content for element '%d'", element);
+    Warn("cannot load content for element '%d'", element);
   }
 
   return chunk_size;
@@ -2683,7 +2683,7 @@ static int LoadLevel_CUS1(File *file, int chunk_size, struct LevelInfo *level)
     if (IS_CUSTOM_ELEMENT(element))
       element_info[element].properties[EP_BITFIELD_BASE_NR] = properties;
     else
-      Error(ERR_WARN, "invalid custom element number %d", element);
+      Warn("invalid custom element number %d", element);
 
     // older game versions that wrote level files with CUS1 chunks used
     // different default push delay values (not yet stored in level file)
@@ -2716,7 +2716,7 @@ static int LoadLevel_CUS2(File *file, int chunk_size, struct LevelInfo *level)
     if (IS_CUSTOM_ELEMENT(element))
       element_info[element].change->target_element = custom_target_element;
     else
-      Error(ERR_WARN, "invalid custom element number %d", element);
+      Warn("invalid custom element number %d", element);
   }
 
   level->file_has_custom_elements = TRUE;
@@ -2744,7 +2744,7 @@ static int LoadLevel_CUS3(File *file, int chunk_size, struct LevelInfo *level)
 
     if (!IS_CUSTOM_ELEMENT(element))
     {
-      Error(ERR_WARN, "invalid custom element number %d", element);
+      Warn("invalid custom element number %d", element);
 
       element = EL_INTERNAL_DUMMY;
     }
@@ -2830,9 +2830,10 @@ static int LoadLevel_CUS4(File *file, int chunk_size, struct LevelInfo *level)
 
   if (!IS_CUSTOM_ELEMENT(element))
   {
-    Error(ERR_WARN, "invalid custom element number %d", element);
+    Warn("invalid custom element number %d", element);
 
     ReadUnusedBytesFromFile(file, chunk_size - 2);
+
     return chunk_size;
   }
 
@@ -2978,9 +2979,10 @@ static int LoadLevel_GRP1(File *file, int chunk_size, struct LevelInfo *level)
 
   if (!IS_GROUP_ELEMENT(element))
   {
-    Error(ERR_WARN, "invalid group element number %d", element);
+    Warn("invalid group element number %d", element);
 
     ReadUnusedBytesFromFile(file, chunk_size - 2);
+
     return chunk_size;
   }
 
@@ -3042,9 +3044,8 @@ static int LoadLevel_MicroChunk(File *file, struct LevelFileConfigInfo *conf,
 
 	if (num_entities > max_num_entities)
 	{
-	  Error(ERR_WARN,
-		"truncating number of entities for element %d from %d to %d",
-		element, num_entities, max_num_entities);
+	  Warn("truncating number of entities for element %d from %d to %d",
+	       element, num_entities, max_num_entities);
 
 	  num_entities = max_num_entities;
 	}
@@ -3053,8 +3054,7 @@ static int LoadLevel_MicroChunk(File *file, struct LevelFileConfigInfo *conf,
 				  data_type == TYPE_CONTENT_LIST))
 	{
 	  // for element and content lists, zero entities are not allowed
-	  Error(ERR_WARN, "found empty list of entities for element %d",
-		element);
+	  Warn("found empty list of entities for element %d", element);
 
 	  // do not set "num_entities" here to prevent reading behind buffer
 
@@ -3145,9 +3145,9 @@ static int LoadLevel_MicroChunk(File *file, struct LevelFileConfigInfo *conf,
     int error_conf_chunk_token = conf_type & CONF_MASK_TOKEN;
     int error_element = real_element;
 
-    Error(ERR_WARN, "cannot load micro chunk '%s(%d)' value for element %d ['%s']",
-	  error_conf_chunk_bytes, error_conf_chunk_token,
-	  error_element, EL_NAME(error_element));
+    Warn("cannot load micro chunk '%s(%d)' value for element %d ['%s']",
+	 error_conf_chunk_bytes, error_conf_chunk_token,
+	 error_element, EL_NAME(error_element));
   }
 
   return micro_chunk_size;
@@ -3264,8 +3264,8 @@ static int LoadLevel_CUSX(File *file, int chunk_size, struct LevelInfo *level)
 
   if (ei->num_change_pages == -1)
   {
-    Error(ERR_WARN, "LoadLevel_CUSX(): missing 'num_change_pages' for '%s'",
-	  EL_NAME(element));
+    Warn("LoadLevel_CUSX(): missing 'num_change_pages' for '%s'",
+	 EL_NAME(element));
 
     ei->num_change_pages = 1;
 
@@ -3352,7 +3352,7 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
     if (level_info_only)
       return;
 
-    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+    Warn("cannot read level '%s' -- using empty level", filename);
 
     if (!setup.editor.use_template_for_new_levels)
       return;
@@ -3379,7 +3379,7 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
     {
       level->no_valid_file = TRUE;
 
-      Error(ERR_WARN, "unknown format of level file '%s'", filename);
+      Warn("unknown format of level file '%s'", filename);
 
       closeFile(file);
 
@@ -3398,7 +3398,7 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
     {
       level->no_valid_file = TRUE;
 
-      Error(ERR_WARN, "unknown format of level file '%s'", filename);
+      Warn("unknown format of level file '%s'", filename);
 
       closeFile(file);
 
@@ -3409,7 +3409,7 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
     {
       level->no_valid_file = TRUE;
 
-      Error(ERR_WARN, "unsupported version of level file '%s'", filename);
+      Warn("unsupported version of level file '%s'", filename);
 
       closeFile(file);
 
@@ -3470,15 +3470,17 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 
       if (chunk_info[i].name == NULL)
       {
-	Error(ERR_WARN, "unknown chunk '%s' in level file '%s'",
-	      chunk_name, filename);
+	Warn("unknown chunk '%s' in level file '%s'",
+	     chunk_name, filename);
+
 	ReadUnusedBytesFromFile(file, chunk_size);
       }
       else if (chunk_info[i].size != -1 &&
 	       chunk_info[i].size != chunk_size)
       {
-	Error(ERR_WARN, "wrong size (%d) of chunk '%s' in level file '%s'",
-	      chunk_size, chunk_name, filename);
+	Warn("wrong size (%d) of chunk '%s' in level file '%s'",
+	     chunk_size, chunk_name, filename);
+
 	ReadUnusedBytesFromFile(file, chunk_size);
       }
       else
@@ -3492,8 +3494,8 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 	// information, so check them here
 	if (chunk_size_expected != chunk_size)
 	{
-	  Error(ERR_WARN, "wrong size (%d) of chunk '%s' in level file '%s'",
-		chunk_size, chunk_name, filename);
+	  Warn("wrong size (%d) of chunk '%s' in level file '%s'",
+	       chunk_size, chunk_name, filename);
 	}
       }
     }
@@ -3820,7 +3822,7 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
       {
 	num_invalid_elements++;
 
-	Error(ERR_DEBUG, "invalid element %d at position %d, %d",
+	Debug("level:native:SP", "invalid element %d at position %d, %d",
 	      element_old, x, y);
       }
 
@@ -3829,8 +3831,8 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
   }
 
   if (num_invalid_elements > 0)
-    Error(ERR_WARN, "found %d invalid elements%s", num_invalid_elements,
-	  (!options.debug ? " (use '--debug' for more details)" : ""));
+    Warn("found %d invalid elements%s", num_invalid_elements,
+	 (!options.debug ? " (use '--debug' for more details)" : ""));
 
   for (i = 0; i < MAX_PLAYERS; i++)
     level->initial_player_gravity[i] =
@@ -3866,8 +3868,7 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
     if (port_x < 0 || port_x >= level->fieldx ||
 	port_y < 0 || port_y >= level->fieldy)
     {
-      Error(ERR_WARN, "special port position (%d, %d) out of bounds",
-	    port_x, port_y);
+      Warn("special port position (%d, %d) out of bounds", port_x, port_y);
 
       continue;
     }
@@ -3877,7 +3878,7 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
     if (port_element < EL_SP_GRAVITY_PORT_RIGHT ||
 	port_element > EL_SP_GRAVITY_PORT_UP)
     {
-      Error(ERR_WARN, "no special port at position (%d, %d)", port_x, port_y);
+      Warn("no special port at position (%d, %d)", port_x, port_y);
 
       continue;
     }
@@ -3943,8 +3944,8 @@ static void CopyNativeTape_RND_to_SP(struct LevelInfo *level)
 
     if (demo->length + demo_entries >= SP_MAX_TAPE_LEN)
     {
-      Error(ERR_WARN, "tape truncated: size exceeds maximum SP demo size %d",
-	    SP_MAX_TAPE_LEN);
+      Warn("tape truncated: size exceeds maximum SP demo size %d",
+	   SP_MAX_TAPE_LEN);
 
       break;
     }
@@ -3997,8 +3998,8 @@ static void CopyNativeTape_SP_to_RND(struct LevelInfo *level)
 
     if (!success)
     {
-      Error(ERR_WARN, "SP demo truncated: size exceeds maximum tape size %d",
-	    MAX_TAPE_LEN);
+      Warn("SP demo truncated: size exceeds maximum tape size %d",
+	   MAX_TAPE_LEN);
 
       break;
     }
@@ -5554,7 +5555,8 @@ static int getMappedElement_DC(int element)
 	element = EL_INVISIBLE_SAND;
       else
       {
-	Error(ERR_WARN, "unknown Diamond Caves element 0x%04x", element);
+	Warn("unknown Diamond Caves element 0x%04x", element);
+
 	element = EL_UNKNOWN;
       }
       break;
@@ -5602,7 +5604,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level,
   {
     level->no_valid_file = TRUE;
 
-    Error(ERR_WARN, "cannot decode level from stream -- using empty level");
+    Warn("cannot decode level from stream -- using empty level");
 
     return;
   }
@@ -5735,7 +5737,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
     level->no_valid_file = TRUE;
 
     if (!level_info_only)
-      Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+      Warn("cannot read level '%s' -- using empty level", filename);
 
     return;
   }
@@ -5753,8 +5755,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
     {
       level->no_valid_file = TRUE;
 
-      Error(ERR_WARN, "unknown DC level file '%s' -- using empty level",
-	    filename);
+      Warn("unknown DC level file '%s' -- using empty level", filename);
 
       return;
     }
@@ -5780,8 +5781,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 	{
 	  level->no_valid_file = TRUE;
 
-	  Error(ERR_WARN, "cannot fseek in file '%s' -- using empty level",
-		filename);
+	  Warn("cannot fseek in file '%s' -- using empty level", filename);
 
 	  return;
 	}
@@ -5799,8 +5799,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
     {
       level->no_valid_file = TRUE;
 
-      Error(ERR_WARN, "unknown DC2 level file '%s' -- using empty level",
-	    filename);
+      Warn("unknown DC2 level file '%s' -- using empty level", filename);
 
       return;
     }
@@ -5875,7 +5874,7 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
     level->no_valid_file = TRUE;
 
     if (!level_info_only)
-      Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+      Warn("cannot read level '%s' -- using empty level", filename);
 
     return;
   }
@@ -6049,7 +6048,7 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
   {
     level->no_valid_file = TRUE;
 
-    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+    Warn("cannot read level '%s' -- using empty level", filename);
 
     return;
   }
@@ -6631,7 +6630,7 @@ void LoadLevelTemplate(int nr)
 {
   if (!fileExists(getGlobalLevelTemplateFilename()))
   {
-    Error(ERR_WARN, "no level template found for this level");
+    Warn("no level template found for this level");
 
     return;
   }
@@ -6872,7 +6871,8 @@ static void SaveLevel_CNT2(FILE *file, struct LevelInfo *level, int element)
     // chunk header already written -- write empty chunk data
     WriteUnusedBytesToFile(file, LEVEL_CHUNK_CNT2_SIZE);
 
-    Error(ERR_WARN, "cannot save content for element '%d'", element);
+    Warn("cannot save content for element '%d'", element);
+
     return;
   }
 
@@ -6940,7 +6940,7 @@ static void SaveLevel_CUS1(FILE *file, struct LevelInfo *level,
   }
 
   if (check != num_changed_custom_elements)	// should not happen
-    Error(ERR_WARN, "inconsistent number of custom element properties");
+    Warn("inconsistent number of custom element properties");
 }
 #endif
 
@@ -6969,7 +6969,7 @@ static void SaveLevel_CUS2(FILE *file, struct LevelInfo *level,
   }
 
   if (check != num_changed_custom_elements)	// should not happen
-    Error(ERR_WARN, "inconsistent number of custom target elements");
+    Warn("inconsistent number of custom target elements");
 }
 #endif
 
@@ -7052,7 +7052,7 @@ static void SaveLevel_CUS3(FILE *file, struct LevelInfo *level,
   }
 
   if (check != num_changed_custom_elements)	// should not happen
-    Error(ERR_WARN, "inconsistent number of custom element properties");
+    Warn("inconsistent number of custom element properties");
 }
 #endif
 
@@ -7430,7 +7430,8 @@ static void SaveLevelFromFilename(struct LevelInfo *level, char *filename,
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot save level file '%s'", filename);
+    Warn("cannot save level file '%s'", filename);
+
     return;
   }
 
@@ -7555,7 +7556,7 @@ void DumpLevel(struct LevelInfo *level)
 {
   if (level->no_level_file || level->no_valid_file)
   {
-    Error(ERR_WARN, "cannot dump -- no valid level file found");
+    Warn("cannot dump -- no valid level file found");
 
     return;
   }
@@ -7746,7 +7747,7 @@ static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
   {
     if (i >= MAX_TAPE_LEN)
     {
-      Error(ERR_WARN, "tape truncated -- size exceeds maximum tape size %d",
+      Warn("tape truncated -- size exceeds maximum tape size %d",
 	    MAX_TAPE_LEN);
 
       // tape too large; read and ignore remaining tape data from this chunk
@@ -7892,7 +7893,7 @@ static void LoadTape_SokobanSolution(char *filename)
       default:
 	tape.no_valid_file = TRUE;
 
-	Error(ERR_WARN, "unsupported Sokoban solution file '%s' ['%d']", filename, c);
+	Warn("unsupported Sokoban solution file '%s' ['%d']", filename, c);
 
 	break;
     }
@@ -7941,7 +7942,7 @@ void LoadTapeFromFilename(char *filename)
     {
       tape.no_valid_file = TRUE;
 
-      Error(ERR_WARN, "unknown format of tape file '%s'", filename);
+      Warn("unknown format of tape file '%s'", filename);
 
       closeFile(file);
 
@@ -7960,7 +7961,7 @@ void LoadTapeFromFilename(char *filename)
     {
       tape.no_valid_file = TRUE;
 
-      Error(ERR_WARN, "unknown format of tape file '%s'", filename);
+      Warn("unknown format of tape file '%s'", filename);
 
       closeFile(file);
 
@@ -7971,7 +7972,7 @@ void LoadTapeFromFilename(char *filename)
     {
       tape.no_valid_file = TRUE;
 
-      Error(ERR_WARN, "unsupported version of tape file '%s'", filename);
+      Warn("unsupported version of tape file '%s'", filename);
 
       closeFile(file);
 
@@ -8015,15 +8016,17 @@ void LoadTapeFromFilename(char *filename)
 
       if (chunk_info[i].name == NULL)
       {
-	Error(ERR_WARN, "unknown chunk '%s' in tape file '%s'",
+	Warn("unknown chunk '%s' in tape file '%s'",
 	      chunk_name, filename);
+
 	ReadUnusedBytesFromFile(file, chunk_size);
       }
       else if (chunk_info[i].size != -1 &&
 	       chunk_info[i].size != chunk_size)
       {
-	Error(ERR_WARN, "wrong size (%d) of chunk '%s' in tape file '%s'",
+	Warn("wrong size (%d) of chunk '%s' in tape file '%s'",
 	      chunk_size, chunk_name, filename);
+
 	ReadUnusedBytesFromFile(file, chunk_size);
       }
       else
@@ -8037,7 +8040,7 @@ void LoadTapeFromFilename(char *filename)
 	// information, so check them here
 	if (chunk_size_expected != chunk_size)
 	{
-	  Error(ERR_WARN, "wrong size (%d) of chunk '%s' in tape file '%s'",
+	  Warn("wrong size (%d) of chunk '%s' in tape file '%s'",
 		chunk_size, chunk_name, filename);
 	}
       }
@@ -8153,7 +8156,8 @@ void SaveTapeToFilename(char *filename)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot save level recording file '%s'", filename);
+    Warn("cannot save level recording file '%s'", filename);
+
     return;
   }
 
@@ -8242,7 +8246,7 @@ void DumpTape(struct TapeInfo *tape)
 
   if (tape->no_valid_file)
   {
-    Error(ERR_WARN, "cannot dump -- no valid tape file found");
+    Warn("cannot dump -- no valid tape file found");
 
     return;
   }
@@ -8322,15 +8326,18 @@ void LoadScore(int nr)
 
   if (!checkCookieString(cookie, SCORE_COOKIE))
   {
-    Error(ERR_WARN, "unknown format of score file '%s'", filename);
+    Warn("unknown format of score file '%s'", filename);
+
     fclose(file);
+
     return;
   }
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
     if (fscanf(file, "%d", &highscore[i].Score) == EOF)
-      Error(ERR_WARN, "fscanf() failed; %s", strerror(errno));
+      Warn("fscanf() failed; %s", strerror(errno));
+
     if (fgets(line, MAX_LINE_LEN, file) == NULL)
       line[0] = '\0';
 
@@ -8363,7 +8370,8 @@ void SaveScore(int nr)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot save score for level %d", nr);
+    Warn("cannot save score for level %d", nr);
+
     return;
   }
 
@@ -9622,7 +9630,7 @@ void LoadSetupFromFilename(char *filename)
   }
   else
   {
-    Error(ERR_DEBUG, "using default setup values");
+    Debug("setup", "using default setup values");
   }
 }
 
@@ -9739,7 +9747,7 @@ static void LoadSetup_ReadGameControllerMappings(SetupFileHash *mappings_hash,
 
   if (!(file = fopen(filename, MODE_READ)))
   {
-    Error(ERR_WARN, "cannot read game controller mappings file '%s'", filename);
+    Warn("cannot read game controller mappings file '%s'", filename);
 
     return;
   }
@@ -9767,7 +9775,8 @@ void SaveSetup(void)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write setup file '%s'", filename);
+    Warn("cannot write setup file '%s'", filename);
+
     return;
   }
 
@@ -9865,8 +9874,10 @@ void SaveSetup_AutoSetup(void)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write auto setup file '%s'", filename);
+    Warn("cannot write auto setup file '%s'", filename);
+
     free(filename);
+
     return;
   }
 
@@ -9892,8 +9903,10 @@ void SaveSetup_EditorCascade(void)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write editor cascade state file '%s'", filename);
+    Warn("cannot write editor cascade state file '%s'", filename);
+
     free(filename);
+
     return;
   }
 
@@ -9916,7 +9929,7 @@ static void SaveSetup_WriteGameControllerMappings(SetupFileHash *mappings_hash,
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write game controller mappings file '%s'",filename);
+    Warn("cannot write game controller mappings file '%s'", filename);
 
     return;
   }
@@ -9989,7 +10002,7 @@ static int getElementFromToken(char *token)
   if (value != NULL)
     return atoi(value);
 
-  Error(ERR_WARN, "unknown element token '%s'", token);
+  Warn("unknown element token '%s'", token);
 
   return EL_UNDEFINED;
 }
@@ -11342,19 +11355,19 @@ void LoadUserDefinedEditorElementList(int **elements, int *num_elements)
     {
       if (num_unknown_tokens == 0)
       {
-	Error(ERR_INFO_LINE, "-");
-	Error(ERR_INFO, "warning: unknown token(s) found in config file:");
-	Error(ERR_INFO, "- config file: '%s'", filename);
+	Warn("---");
+	Warn("unknown token(s) found in config file:");
+	Warn("- config file: '%s'", filename);
 
 	num_unknown_tokens++;
       }
 
-      Error(ERR_INFO, "- token: '%s'", list->token);
+      Warn("- token: '%s'", list->token);
     }
   }
 
   if (num_unknown_tokens > 0)
-    Error(ERR_INFO_LINE, "-");
+    Warn("---");
 
   while (*num_elements % 4)	// pad with empty elements, if needed
     (*elements)[(*num_elements)++] = EL_EMPTY;
@@ -11364,8 +11377,8 @@ void LoadUserDefinedEditorElementList(int **elements, int *num_elements)
 
 #if 0
   for (i = 0; i < *num_elements; i++)
-    printf("editor: element '%s' [%d]\n",
-	   element_info[(*elements)[i]].token_name, (*elements)[i]);
+    Debug("editor", "element '%s' [%d]\n",
+	  element_info[(*elements)[i]].token_name, (*elements)[i]);
 #endif
 }
 
@@ -11544,7 +11557,8 @@ void LoadMusicInfo(void)
 
   if ((dir = openDirectory(music_directory)) == NULL)
   {
-    Error(ERR_WARN, "cannot read music directory '%s'", music_directory);
+    Warn("cannot read music directory '%s'", music_directory);
+
     return;
   }
 
@@ -11632,18 +11646,18 @@ static void print_unknown_token(char *filename, char *token, int token_nr)
 {
   if (token_nr == 0)
   {
-    Error(ERR_INFO_LINE, "-");
-    Error(ERR_INFO, "warning: unknown token(s) found in config file:");
-    Error(ERR_INFO, "- config file: '%s'", filename);
+    Warn("---");
+    Warn("unknown token(s) found in config file:");
+    Warn("- config file: '%s'", filename);
   }
 
-  Error(ERR_INFO, "- token: '%s'", token);
+  Warn("- token: '%s'", token);
 }
 
 static void print_unknown_token_end(int token_nr)
 {
   if (token_nr > 0)
-    Error(ERR_INFO_LINE, "-");
+    Warn("---");
 }
 
 void LoadHelpAnimInfo(void)
@@ -12071,7 +12085,7 @@ void CreateLevelSketchImages(void)
   if (options.debug)
     fprintf(stderr, "\n");
 
-  Error(ERR_INFO, "%d normal and small images created", NUM_FILE_ELEMENTS);
+  Info("%d normal and small images created", NUM_FILE_ELEMENTS);
 
   CloseAllAndExit(0);
 }

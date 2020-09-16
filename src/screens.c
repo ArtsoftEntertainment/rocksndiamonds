@@ -7605,9 +7605,9 @@ static boolean ConfigureJoystickMapButtonsAndAxes(SDL_Joystick *joystick)
 
 #if DEBUG_JOYSTICKS
   // print info about the joystick we are watching
-  Error(ERR_DEBUG, "watching joystick %d: (%s)\n",
+  Debug("joystick", "watching joystick %d: (%s)",
 	SDL_JoystickInstanceID(joystick), name);
-  Error(ERR_DEBUG, "joystick has %d axes, %d hats, %d balls, and %d buttons\n",
+  Debug("joystick", "joystick has %d axes, %d hats, %d balls, and %d buttons",
 	SDL_JoystickNumAxes(joystick), SDL_JoystickNumHats(joystick),
 	SDL_JoystickNumBalls(joystick), SDL_JoystickNumButtons(joystick));
 #endif
@@ -7864,7 +7864,7 @@ static boolean ConfigureJoystickMapButtonsAndAxes(SDL_Joystick *joystick)
   if (success)
   {
 #if DEBUG_JOYSTICKS
-    Error(ERR_DEBUG, "New game controller mapping:\n\n%s\n\n", mapping);
+    Debug("joystick", "New game controller mapping:\n\n%s\n\n", mapping);
 #endif
 
     // activate mapping for this game

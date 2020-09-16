@@ -752,7 +752,7 @@ static void PrintFrameTimeDebugging(void)
 
   diff_bar[pos++] = '\0';
 
-  Error(ERR_INFO, "%06d [%02d] [%c%02d] %s",
+  Debug("time:frame", "%06d [%02d] [%c%02d] %s",
 	counter,
 	diff_1,
 	(diff_2 < 0 ? '-' : diff_2 > 0 ? '+' : ' '), ABS(diff_2),
@@ -7704,7 +7704,7 @@ int map_element_RND_to_EM_cave(int element_rnd)
 
   if (element_rnd < 0 || element_rnd >= NUM_FILE_ELEMENTS)
   {
-    Error(ERR_WARN, "invalid RND level element %d", element_rnd);
+    Warn("invalid RND level element %d", element_rnd);
 
     return EL_UNKNOWN;
   }
@@ -7734,7 +7734,7 @@ int map_element_EM_to_RND_cave(int element_em_cave)
 
   if (element_em_cave < 0 || element_em_cave >= CAVE_TILE_MAX)
   {
-    Error(ERR_WARN, "invalid EM cave element %d", element_em_cave);
+    Warn("invalid EM cave element %d", element_em_cave);
 
     return EL_UNKNOWN;
   }
@@ -7764,7 +7764,7 @@ int map_element_EM_to_RND_game(int element_em_game)
 
   if (element_em_game < 0 || element_em_game >= GAME_TILE_MAX)
   {
-    Error(ERR_WARN, "invalid EM game element %d", element_em_game);
+    Warn("invalid EM game element %d", element_em_game);
 
     return EL_UNKNOWN;
   }

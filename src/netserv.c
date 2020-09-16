@@ -328,7 +328,7 @@ int getNetworkBufferFile(struct NetworkBuffer *nb, char *filename)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write file '%s' from network buffer", filename);
+    Warn("cannot write file '%s' from network buffer", filename);
 
     return 0;
   }
@@ -356,7 +356,7 @@ int putNetworkBufferFile(struct NetworkBuffer *nb, char *filename)
 
   if (!(file = openFile(filename, MODE_READ)))
   {
-    Error(ERR_WARN, "cannot read file '%s' to network buffer", filename);
+    Warn("cannot read file '%s' to network buffer", filename);
 
     return 0;
   }
@@ -919,7 +919,7 @@ void NetworkServer(int port, int serveronly)
     // accept incoming TCP connections
     if (SDLNet_SocketReady(lfd))
     {
-      Error(ERR_DEBUG, "got TCP packet");
+      Debug("network:server", "got TCP packet");
 
       TCPsocket newsock;
 
@@ -932,7 +932,7 @@ void NetworkServer(int port, int serveronly)
     // accept incoming UDP packets
     if (SDLNet_SocketReady(udp))
     {
-      Error(ERR_DEBUG, "got UDP packet");
+      Debug("network:server", "got UDP packet");
 
       static UDPpacket packet;
 

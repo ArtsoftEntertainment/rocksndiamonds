@@ -820,9 +820,7 @@ char *getCustomImageFilename(char *basename)
   {
     free(filename);
 
-    if (options.debug)
-      Error(ERR_WARN, "cannot find artwork file '%s' (using fallback)",
-	    basename);
+    Warn("cannot find artwork file '%s' (using fallback)", basename);
 
     // 6th try: look for fallback artwork in old default artwork directory
     // (needed to prevent errors when trying to access unused artwork files)
@@ -893,9 +891,7 @@ char *getCustomSoundFilename(char *basename)
   {
     free(filename);
 
-    if (options.debug)
-      Error(ERR_WARN, "cannot find artwork file '%s' (using fallback)",
-	    basename);
+    Warn("cannot find artwork file '%s' (using fallback)", basename);
 
     // 6th try: look for fallback artwork in old default artwork directory
     // (needed to prevent errors when trying to access unused artwork files)
@@ -966,9 +962,7 @@ char *getCustomMusicFilename(char *basename)
   {
     free(filename);
 
-    if (options.debug)
-      Error(ERR_WARN, "cannot find artwork file '%s' (using fallback)",
-	    basename);
+    Warn("cannot find artwork file '%s' (using fallback)", basename);
 
     // 6th try: look for fallback artwork in old default artwork directory
     // (needed to prevent errors when trying to access unused artwork files)
@@ -1639,8 +1633,7 @@ void createDirectory(char *dir, char *text, int permission_class)
   }
 
   if (posix_mkdir(dir, dir_mode) != 0)
-    Error(ERR_WARN, "cannot create %s directory '%s': %s",
-	  text, dir, strerror(errno));
+    Warn("cannot create %s directory '%s': %s", text, dir, strerror(errno));
 
   if (permission_class == PERMS_PUBLIC && !running_setgid)
     chmod(dir, dir_mode);
@@ -2054,25 +2047,25 @@ static boolean getTokenValueFromSetupLineExt(char *line,
     {
       if (!token_value_separator_warning)
       {
-	Error(ERR_INFO_LINE, "-");
+	Debug("setup", "---");
 
 	if (filename != NULL)
 	{
-	  Error(ERR_WARN, "missing token/value separator(s) in config file:");
-	  Error(ERR_INFO, "- config file: '%s'", filename);
+	  Debug("setup", "missing token/value separator(s) in config file:");
+	  Debug("setup", "- config file: '%s'", filename);
 	}
 	else
 	{
-	  Error(ERR_WARN, "missing token/value separator(s):");
+	  Debug("setup", "missing token/value separator(s):");
 	}
 
 	token_value_separator_warning = TRUE;
       }
 
       if (filename != NULL)
-	Error(ERR_INFO, "- line %d: '%s'", line_nr, line_raw);
+	Debug("setup", "- line %d: '%s'", line_nr, line_raw);
       else
-	Error(ERR_INFO, "- line: '%s'", line_raw);
+	Debug("setup", "- line: '%s'", line_raw);
     }
 #endif
   }
@@ -2125,7 +2118,7 @@ static boolean loadSetupFileData(void *setup_file_data, char *filename,
   if (!(file = openFile(filename, MODE_READ)))
   {
 #if DEBUG_NO_CONFIG_FILE
-    Error(ERR_DEBUG, "cannot open configuration file '%s'", filename);
+    Debug("setup", "cannot open configuration file '%s'", filename);
 #endif
 
     return FALSE;
@@ -2206,7 +2199,7 @@ static boolean loadSetupFileData(void *setup_file_data, char *filename,
 	}
 	else
 	{
-	  Error(ERR_WARN, "ignoring already processed file '%s'", value);
+	  Warn("ignoring already processed file '%s'", value);
 	}
       }
       else
@@ -2221,16 +2214,16 @@ static boolean loadSetupFileData(void *setup_file_data, char *filename,
 	  {
 	    if (!token_already_exists_warning)
 	    {
-	      Error(ERR_INFO_LINE, "-");
-	      Error(ERR_WARN, "duplicate token(s) found in config file:");
-	      Error(ERR_INFO, "- config file: '%s'", filename);
+	      Debug("setup", "---");
+	      Debug("setup", "duplicate token(s) found in config file:");
+	      Debug("setup", "- config file: '%s'", filename);
 
 	      token_already_exists_warning = TRUE;
 	    }
 
-	    Error(ERR_INFO, "- token: '%s' (in line %d)", token, line_nr);
-	    Error(ERR_INFO, "  old value: '%s'", old_value);
-	    Error(ERR_INFO, "  new value: '%s'", value);
+	    Debug("setup", "- token: '%s' (in line %d)", token, line_nr);
+	    Debug("setup", "  old value: '%s'", old_value);
+	    Debug("setup", "  new value: '%s'", value);
 	  }
 #endif
 
@@ -2250,16 +2243,16 @@ static boolean loadSetupFileData(void *setup_file_data, char *filename,
 
 #if CHECK_TOKEN_VALUE_SEPARATOR__WARN_IF_MISSING
   if (token_value_separator_warning)
-    Error(ERR_INFO_LINE, "-");
+    Debug("setup", "---");
 #endif
 
 #if CHECK_TOKEN__WARN_IF_ALREADY_EXISTS_IN_HASH
   if (token_already_exists_warning)
-    Error(ERR_INFO_LINE, "-");
+    Debug("setup", "---");
 #endif
 
   if (token_count == 0 && include_count == 0)
-    Error(ERR_WARN, "configuration file '%s' is empty", filename);
+    Warn("configuration file '%s' is empty", filename);
 
   if (top_recursion_level)
     freeSetupFileHash(include_filename_hash);
@@ -2273,7 +2266,7 @@ static void saveSetupFileHash(SetupFileHash *hash, char *filename)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write configuration file '%s'", filename);
+    Warn("cannot write configuration file '%s'", filename);
 
     return;
   }
@@ -2512,7 +2505,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
 {
   if (parent == NULL)
   {
-    Error(ERR_WARN, "setTreeInfoToDefaultsFromParent(): parent == NULL");
+    Warn("setTreeInfoToDefaultsFromParent(): parent == NULL");
 
     setTreeInfoToDefaults(ti, TREE_TYPE_UNDEFINED);
 
@@ -2999,7 +2992,7 @@ static TreeInfo *getArtworkInfoCacheEntry(LevelDirTree *level_node, int type)
       // check if cache entry for this item is mandatory, but missing
       if (value == NULL && !optional)
       {
-	Error(ERR_WARN, "missing cache entry '%s'", token);
+	Warn("missing cache entry '%s'", token);
 
 	cached = FALSE;
       }
@@ -3236,7 +3229,7 @@ char *ExtractZipFileIntoDirectory(char *zip_filename, char *directory,
 
   if (!zip_file_valid)
   {
-    Error(ERR_WARN, "zip file '%s' rejected!", zip_filename);
+    Warn("zip file '%s' rejected!", zip_filename);
 
     return NULL;
   }
@@ -3245,12 +3238,12 @@ char *ExtractZipFileIntoDirectory(char *zip_filename, char *directory,
 
   if (zip_entries == NULL)
   {
-    Error(ERR_WARN, "zip file '%s' could not be extracted!", zip_filename);
+    Warn("zip file '%s' could not be extracted!", zip_filename);
 
     return NULL;
   }
 
-  Error(ERR_INFO, "zip file '%s' successfully extracted!", zip_filename);
+  Info("zip file '%s' successfully extracted!", zip_filename);
 
   // first zip file entry contains top level directory
   char *top_dir = zip_entries[0];
@@ -3271,7 +3264,7 @@ static void ProcessZipFilesInDirectory(char *directory, int tree_type)
     // display error if directory is main "options.graphics_directory" etc.
     if (tree_type == TREE_TYPE_LEVEL_DIR ||
 	directory == OPTIONS_ARTWORK_DIRECTORY(tree_type))
-      Error(ERR_WARN, "cannot read directory '%s'", directory);
+      Warn("cannot read directory '%s'", directory);
 
     return;
   }
@@ -3337,7 +3330,7 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
   if (setup_file_hash == NULL)
   {
 #if DEBUG_NO_CONFIG_FILE
-    Error(ERR_WARN, "ignoring level directory '%s'", directory_path);
+    Debug("setup", "ignoring level directory '%s'", directory_path);
 #endif
 
     free(directory_path);
@@ -3448,7 +3441,7 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
 
   if ((dir = openDirectory(level_directory)) == NULL)
   {
-    Error(ERR_WARN, "cannot read level directory '%s'", level_directory);
+    Warn("cannot read level directory '%s'", level_directory);
 
     return;
   }
@@ -3498,7 +3491,7 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
   }
 
   if (!valid_entry_found)
-    Error(ERR_WARN, "cannot find any valid level series in directory '%s'",
+    Warn("cannot find any valid level series in directory '%s'",
 	  level_directory);
 }
 
@@ -3595,7 +3588,7 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
     {
 #if DEBUG_NO_CONFIG_FILE
       if (!strEqual(directory_name, "."))
-	Error(ERR_WARN, "ignoring artwork directory '%s'", directory_path);
+	Debug("setup", "ignoring artwork directory '%s'", directory_path);
 #endif
 
       free(directory_path);
@@ -3710,7 +3703,7 @@ static void LoadArtworkInfoFromArtworkDir(TreeInfo **node_first,
   {
     // display error if directory is main "options.graphics_directory" etc.
     if (base_directory == OPTIONS_ARTWORK_DIRECTORY(type))
-      Error(ERR_WARN, "cannot read directory '%s'", base_directory);
+      Warn("cannot read directory '%s'", base_directory);
 
     return;
   }
@@ -3752,8 +3745,7 @@ static void LoadArtworkInfoFromArtworkDir(TreeInfo **node_first,
 						      base_directory, ".",
 						      type);
   if (!valid_entry_found)
-    Error(ERR_WARN, "cannot find any valid artwork in directory '%s'",
-	  base_directory);
+    Warn("cannot find any valid artwork in directory '%s'", base_directory);
 }
 
 static TreeInfo *getDummyArtworkInfo(int type)
@@ -4200,7 +4192,8 @@ boolean CreateUserLevelSet(char *level_subdir, char *level_name,
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write level info file '%s'", filename);
+    Warn("cannot write level info file '%s'", filename);
+
     free(filename);
 
     return FALSE;
@@ -4411,7 +4404,7 @@ void LoadLevelSetup_LastSeries(void)
   }
   else
   {
-    Error(ERR_DEBUG, "using default setup values");
+    Debug("setup", "using default setup values");
   }
 
   free(filename);
@@ -4435,7 +4428,7 @@ static void SaveLevelSetup_LastSeries_Ext(boolean deactivate_last_level_series)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write setup file '%s'", filename);
+    Warn("cannot write setup file '%s'", filename);
 
     free(filename);
 
@@ -4486,7 +4479,7 @@ static void checkSeriesInfo(void)
 
   if ((dir = openDirectory(level_directory)) == NULL)
   {
-    Error(ERR_WARN, "cannot read level directory '%s'", level_directory);
+    Warn("cannot read level directory '%s'", level_directory);
 
     return;
   }
@@ -4508,12 +4501,14 @@ static void checkSeriesInfo(void)
 
       if (levelnum_value < leveldir_current->first_level)
       {
-	Error(ERR_WARN, "additional level %d found", levelnum_value);
+	Warn("additional level %d found", levelnum_value);
+
 	leveldir_current->first_level = levelnum_value;
       }
       else if (levelnum_value > leveldir_current->last_level)
       {
-	Error(ERR_WARN, "additional level %d found", levelnum_value);
+	Warn("additional level %d found", levelnum_value);
+
 	leveldir_current->last_level = levelnum_value;
       }
     }
@@ -4615,7 +4610,7 @@ void LoadLevelSetup_SeriesInfo(void)
   }
   else
   {
-    Error(ERR_DEBUG, "using default setup values");
+    Debug("setup", "using default setup values");
   }
 
   free(filename);
@@ -4640,8 +4635,10 @@ void SaveLevelSetup_SeriesInfo(void)
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
-    Error(ERR_WARN, "cannot write setup file '%s'", filename);
+    Warn("cannot write setup file '%s'", filename);
+
     free(filename);
+
     return;
   }
 

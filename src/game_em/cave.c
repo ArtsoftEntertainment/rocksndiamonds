@@ -109,7 +109,7 @@ boolean LoadNativeLevel_EM(char *filename, boolean level_info_only)
   if (!(file = openFile(filename, MODE_READ)))
   {
     if (!level_info_only)
-      Error(ERR_WARN, "cannot open level '%s' -- using empty level", filename);
+      Warn("cannot open level '%s' -- using empty level", filename);
 
     return FALSE;
   }
@@ -120,7 +120,7 @@ boolean LoadNativeLevel_EM(char *filename, boolean level_info_only)
 
   if (raw_leveldata_length <= 0)
   {
-    Error(ERR_WARN, "cannot read level '%s' -- using empty level", filename);
+    Warn("cannot read level '%s' -- using empty level", filename);
 
     return FALSE;
   }
@@ -129,7 +129,7 @@ boolean LoadNativeLevel_EM(char *filename, boolean level_info_only)
 
   if (file_version == FILE_VERSION_EM_UNKNOWN)
   {
-    Error(ERR_WARN, "unknown EM level '%s' -- using empty level", filename);
+    Warn("unknown EM level '%s' -- using empty level", filename);
 
     return FALSE;
   }

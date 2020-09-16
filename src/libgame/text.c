@@ -639,7 +639,7 @@ int DrawTextBufferVA(int x, int y, char *format, va_list ap, int font_nr,
   int text_length = vsnprintf(text_buffer, MAX_OUTPUT_LINESIZE, format, ap);
 
   if (text_length >= MAX_OUTPUT_LINESIZE)
-    Error(ERR_WARN, "string too long in DrawTextBufferVA() -- truncated");
+    Warn("string too long in DrawTextBufferVA() -- truncated");
 
   int num_lines_printed = DrawTextBuffer(x, y, text_buffer, font_nr,
 					 line_length, cut_length, max_lines,

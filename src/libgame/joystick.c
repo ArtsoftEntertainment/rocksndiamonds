@@ -211,10 +211,11 @@ int JoystickExt(int player_nr, boolean use_as_joystick_nr)
 
   if (!ReadJoystick(joystick_nr, &js_x, &js_y, &js_b1, &js_b2))
   {
-    Error(ERR_WARN, "cannot read joystick device '%s'",
-	  setup.input[player_nr].joy.device_name);
+    Warn("cannot read joystick device '%s'",
+	 setup.input[player_nr].joy.device_name);
 
     joystick.status = JOYSTICK_NOT_AVAILABLE;
+
     return JOY_NO_ACTION;
   }
 

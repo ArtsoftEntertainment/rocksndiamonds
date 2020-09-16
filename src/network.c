@@ -90,7 +90,7 @@ static void DrawNetworkTextExt(char *message, int font_nr, boolean initialize)
       ypos = SY + ypos_2;
     }
 
-    Error(ERR_DEBUG, "========== %s ==========", message);
+    Debug("network:client", "========== %s ==========", message);
   }
   else
   {
@@ -104,7 +104,7 @@ static void DrawNetworkTextExt(char *message, int font_nr, boolean initialize)
 
     ypos += (num_lines_printed + num_lines_spacing) * font_height;
 
-    Error(ERR_DEBUG, "%s", message);
+    Debug("network:client", "%s", message);
   }
 
   BackToFront();
@@ -332,7 +332,7 @@ boolean ConnectToServer(char *hostname, int port)
     SDLNet_Write16(port,        &ip.port);
   }
 
-  Error(ERR_DEBUG, "trying to connect to network server at %d.%d.%d.%d ...",
+  Debug("network:client", "trying to connect to network server at %d.%d.%d.%d ...",
         (server_host >> 24) & 0xff,
         (server_host >> 16) & 0xff,
         (server_host >>  8) & 0xff,
@@ -505,8 +505,8 @@ static void Handle_OP_BAD_PROTOCOL_VERSION(void)
   int protocol_version_major = getNetworkBuffer8BitInteger(read_buffer);
   int protocol_version_minor = getNetworkBuffer8BitInteger(read_buffer);
 
-  Error(ERR_WARN, "protocol version mismatch");
-  Error(ERR_WARN, "server expects %d.%d.x instead of %d.%d.%d",
+  Warn("protocol version mismatch");
+  Warn("server expects %d.%d.x instead of %d.%d.%d",
 	protocol_version_major,
 	protocol_version_minor,
 	PROTOCOL_VERSION_MAJOR,
@@ -702,7 +702,7 @@ static void Handle_OP_START_PLAYING(void)
 
   if (!strEqual(new_leveldir_identifier, network_level.leveldir_identifier))
   {
-    Error(ERR_WARN, "no such level identifier: '%s'", new_leveldir_identifier);
+    Warn("no such level identifier: '%s'", new_leveldir_identifier);
 
     stop_network_game = TRUE;
 
@@ -808,11 +808,10 @@ static void Handle_OP_MOVE_PLAYER(void)
 
   if (server_frame_counter != FrameCounter)
   {
-    Error(ERR_INFO, "frame counters of client %d and server out of sync",
-	  player_nr);
-    Error(ERR_INFO, "frame counter of client is %d", FrameCounter);
-    Error(ERR_INFO, "frame counter of server is %d", server_frame_counter);
-    Error(ERR_INFO, "this should not happen -- please debug");
+    Warn("frame counters of client %d and server out of sync", player_nr);
+    Warn("frame counter of client is %d", FrameCounter);
+    Warn("frame counter of server is %d", server_frame_counter);
+    Warn("this should not happen -- please debug");
 
     stop_network_game = TRUE;
 

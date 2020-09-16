@@ -1870,7 +1870,7 @@ static void translate_keyname(Key *keysym, char **x11name, char **name, int mode
     }
 
     if (key == KSYM_UNDEFINED)
-      Error(ERR_WARN, "getKeyFromKeyName(): not completely implemented");
+      Warn("getKeyFromKeyName(): not completely implemented");
 
     *keysym = key;
   }
@@ -3389,53 +3389,53 @@ static void LoadArtworkConfigFromFilename(struct ArtworkListInfo *artwork_info,
 
     if (options.debug && dynamic_tokens_found)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_INFO, "dynamic token(s) found in config file:");
-      Error(ERR_INFO, "- config file: '%s'", filename);
+      Debug("config", "---");
+      Debug("config", "dynamic token(s) found in config file:");
+      Debug("config", "- config file: '%s'", filename);
 
       for (list = setup_file_list; list != NULL; list = list->next)
       {
 	char *value = getHashEntry(extra_file_hash, list->token);
 
 	if (value != NULL && strEqual(value, known_token_value))
-	  Error(ERR_INFO, "- dynamic token: '%s'", list->token);
+	  Debug("config", "- dynamic token: '%s'", list->token);
       }
 
-      Error(ERR_INFO_LINE, "-");
+      Debug("config", "---");
     }
 
     if (unknown_tokens_found)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_INFO, "warning: unknown token(s) found in config file:");
-      Error(ERR_INFO, "- config file: '%s'", filename);
+      Warn("---");
+      Warn("unknown token(s) found in config file:");
+      Warn("- config file: '%s'", filename);
 
       for (list = setup_file_list; list != NULL; list = list->next)
       {
 	char *value = getHashEntry(extra_file_hash, list->token);
 
 	if (value != NULL && !strEqual(value, known_token_value))
-	  Error(ERR_INFO, "- dynamic token: '%s'", list->token);
+	  Warn("- dynamic token: '%s'", list->token);
       }
 
-      Error(ERR_INFO_LINE, "-");
+      Warn("---");
     }
 
     if (undefined_values_found)
     {
-      Error(ERR_INFO_LINE, "-");
-      Error(ERR_INFO, "warning: undefined values found in config file:");
-      Error(ERR_INFO, "- config file: '%s'", filename);
+      Warn("---");
+      Warn("undefined values found in config file:");
+      Warn("- config file: '%s'", filename);
 
       for (list = setup_file_list; list != NULL; list = list->next)
       {
 	char *value = getHashEntry(empty_file_hash, list->token);
 
 	if (value != NULL)
-	  Error(ERR_INFO, "- undefined value for token: '%s'", list->token);
+	  Warn("- undefined value for token: '%s'", list->token);
       }
 
-      Error(ERR_INFO_LINE, "-");
+      Warn("---");
     }
 
     freeSetupFileList(setup_file_list);
@@ -3541,7 +3541,7 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
 
   if (filename == NULL)
   {
-    Error(ERR_WARN, "cannot find artwork file '%s'", basename);
+    Warn("cannot find artwork file '%s'", basename);
 
     basename = file_list_entry->default_filename;
 
@@ -3567,7 +3567,7 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
 
     file_list_entry->fallback_to_default = TRUE;
 
-    Error(ERR_WARN, "trying default artwork file '%s'", basename);
+    Warn("trying default artwork file '%s'", basename);
 
     filename = getCustomArtworkFilename(basename, artwork_info->type);
 
@@ -3725,8 +3725,8 @@ void OpenLogFiles(void)
     {
       program.log_file[i] = program.log_file_default[i];   // reset to default
 
-      Error(ERR_WARN, "cannot open file '%s' for writing: %s",
-	    program.log_filename[i], strerror(errno));
+      Warn("cannot open file '%s' for writing: %s",
+	   program.log_filename[i], strerror(errno));
     }
 
     // output should be unbuffered so it is not truncated in a crash

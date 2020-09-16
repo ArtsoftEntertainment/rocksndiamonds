@@ -409,8 +409,8 @@ static void Mixer_InsertSound(SoundControl snd_ctrl)
     {
       if (!mixer[i].active)
       {
-	Error(ERR_INFO, "Mixer_InsertSound: Channel %d inactive", i);
-	Error(ERR_INFO, "Mixer_InsertSound: This should never happen!");
+	Debug("audio", "Mixer_InsertSound: Channel %d inactive", i);
+	Debug("audio", "Mixer_InsertSound: This should never happen!");
 
 	mixer_active_channels--;
       }
@@ -538,8 +538,10 @@ static void *Load_WAV(char *filename)
 
   if ((snd_info->data_ptr = Mix_LoadWAV(filename)) == NULL)
   {
-    Error(ERR_WARN, "cannot read sound file '%s': %s", filename, Mix_GetError());
+    Warn("cannot read sound file '%s': %s", filename, Mix_GetError());
+
     free(snd_info);
+
     return NULL;
   }
 
@@ -562,8 +564,10 @@ static void *Load_MOD(char *filename)
 
   if ((mod_info->data_ptr = Mix_LoadMUS(filename)) == NULL)
   {
-    Error(ERR_WARN, "cannot read music file '%s': %s", filename, Mix_GetError());
+    Warn("cannot read music file '%s': %s", filename, Mix_GetError());
+
     free(mod_info);
+
     return NULL;
   }
 
@@ -607,7 +611,7 @@ static void LoadCustomMusic_NoConf(void)
 
   if ((dir = openDirectory(music_directory)) == NULL)
   {
-    Error(ERR_WARN, "cannot read music directory '%s'", music_directory);
+    Warn("cannot read music directory '%s'", music_directory);
 
     audio.music_available = FALSE;
 
