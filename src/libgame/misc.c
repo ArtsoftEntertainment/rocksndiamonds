@@ -293,6 +293,15 @@ static void Log(int log_level, char *mode, char *format, va_list ap)
   if (log_level < 0 || log_level > LOG_FATAL)
     return;
 
+#if defined(PLATFORM_ANDROID)
+  android_log_prio = (log_level == LOG_DEBUG ? ANDROID_LOG_DEBUG :
+		      log_level == LOG_INFO  ? ANDROID_LOG_INFO :
+		      log_level == LOG_WARN  ? ANDROID_LOG_WARN :
+		      log_level == LOG_ERROR ? ANDROID_LOG_ERROR :
+		      log_level == LOG_FATAL ? ANDROID_LOG_FATAL :
+		      ANDROID_LOG_UNKNOWN);
+#endif
+
   static boolean last_line_was_separator = FALSE;
   char *log_token = log_tokens[log_level];
 
