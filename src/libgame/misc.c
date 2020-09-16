@@ -574,10 +574,15 @@ void SkipUntilDelayReached(unsigned int *counter_var, unsigned int delay,
 
 #if 0
 #if DEBUG
-  printf("::: %d: %d ms", *loop_var, delay);
   if (skip_frames)
-    printf(" -> SKIP %d FRAME(S) [%d ms]", skip_frames, skip_frames * delay);
-  printf("\n");
+    Debug("internal:SkipUntilDelayReached",
+	  "%d: %d ms -> SKIP %d FRAME(S) [%d ms]",
+	  *loop_var, delay,
+	  skip_frames, skip_frames * delay);
+  else
+    Debug("internal:SkipUntilDelayReached",
+	  "%d: %d ms",
+	  *loop_var, delay);
 #endif
 #endif
 

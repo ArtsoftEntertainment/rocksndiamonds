@@ -1769,13 +1769,11 @@ static void InitPlayerField(int x, int y, int element, boolean init_game)
       StorePlayer[x][y] = Tile[x][y];
 
 #if DEBUG_INIT_PLAYER
-      if (options.debug)
-      {
-	printf("- player element %d activated", player->element_nr);
-	printf(" (local player is %d and currently %s)\n",
-	       local_player->element_nr,
-	       local_player->active ? "active" : "not active");
-      }
+      Debug("game:init:player", "- player element %d activated",
+	    player->element_nr);
+      Debug("game:init:player", "  (local player is %d and currently %s)",
+	    local_player->element_nr,
+	    local_player->active ? "active" : "not active");
     }
 #endif
 
@@ -2843,16 +2841,16 @@ static void InitGameEngine(void)
   }
 
 #if 0
-  printf("level %d: level.game_version  == %06d\n", level_nr,
-	 level.game_version);
-  printf("          tape.file_version   == %06d\n",
-	 tape.file_version);
-  printf("          tape.game_version   == %06d\n",
-	 tape.game_version);
-  printf("          tape.engine_version == %06d\n",
-	 tape.engine_version);
-  printf("       => game.engine_version == %06d [tape mode: %s]\n",
-	 game.engine_version, (tape.playing ? "PLAYING" : "RECORDING"));
+  Debug("game:init:level", "level %d: level.game_version  == %06d", level_nr,
+	level.game_version);
+  Debug("game:init:level", "          tape.file_version   == %06d",
+	tape.file_version);
+  Debug("game:init:level", "          tape.game_version   == %06d",
+	tape.game_version);
+  Debug("game:init:level", "          tape.engine_version == %06d",
+	tape.engine_version);
+  Debug("game:init:level", "       => game.engine_version == %06d [tape mode: %s]",
+	game.engine_version, (tape.playing ? "PLAYING" : "RECORDING"));
 #endif
 
   // --------------------------------------------------------------------------
@@ -3441,24 +3439,21 @@ static void DebugPrintPlayerStatus(char *message)
   if (!options.debug)
     return;
 
-  printf("%s:\n", message);
+  Debug("game:init:player", "%s:", message);
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     struct PlayerInfo *player = &stored_player[i];
 
-    printf("- player %d: present == %d, connected == %d [%d/%d], active == %d",
-	   i + 1,
-	   player->present,
-	   player->connected,
-	   player->connected_locally,
-	   player->connected_network,
-	   player->active);
-
-    if (local_player == player)
-      printf(" (local player)");
-
-    printf("\n");
+    Debug("game:init:player",
+	  "- player %d: present == %d, connected == %d [%d/%d], active == %d%s",
+	  i + 1,
+	  player->present,
+	  player->connected,
+	  player->connected_locally,
+	  player->connected_network,
+	  player->active,
+	  (local_player == player ? " (local player)" : ""));
   }
 }
 #endif
@@ -3934,8 +3929,7 @@ void InitGame(void)
 #endif
 
 #if DEBUG_INIT_PLAYER
-  if (options.debug)
-    printf("Reassigning players ...\n");
+  Debug("game:init:player", "Reassigning players ...");
 #endif
 
   // check if any connected player was not found in playfield
@@ -3948,8 +3942,8 @@ void InitGame(void)
       struct PlayerInfo *field_player = NULL;
 
 #if DEBUG_INIT_PLAYER
-      if (options.debug)
-	printf("- looking for field player for player %d ...\n", i + 1);
+      Debug("game:init:player",
+	    "- looking for field player for player %d ...", i + 1);
 #endif
 
       // assign first free player found that is present in the playfield
@@ -3974,8 +3968,8 @@ void InitGame(void)
 	int jx = field_player->jx, jy = field_player->jy;
 
 #if DEBUG_INIT_PLAYER
-	if (options.debug)
-	  printf("- found player %d\n", field_player->index_nr + 1);
+	Debug("game:init:player", "- found player %d",
+	      field_player->index_nr + 1);
 #endif
 
 	player->present = FALSE;
@@ -4005,9 +3999,8 @@ void InitGame(void)
 	field_player->mapped = TRUE;
 
 #if DEBUG_INIT_PLAYER
-	if (options.debug)
-	  printf("- map_player_action[%d] == %d\n",
-		 field_player->index_nr + 1, i + 1);
+	Debug("game:init:player", "- map_player_action[%d] == %d",
+	      field_player->index_nr + 1, i + 1);
 #endif
       }
     }
@@ -4062,7 +4055,8 @@ void InitGame(void)
 #endif
 
 #if 0
-  printf("::: local_player->present == %d\n", local_player->present);
+  Debug("game:init:player", "local_player->present == %d",
+	local_player->present);
 #endif
 
   // set focus to local player for network games, else to all players
@@ -4095,8 +4089,8 @@ void InitGame(void)
 	  int jx = player->jx, jy = player->jy;
 
 #if DEBUG_INIT_PLAYER
-	  if (options.debug)
-	    printf("Removing player %d at (%d, %d)\n", i + 1, jx, jy);
+	  Debug("game:init:player", "Removing player %d at (%d, %d)",
+		i + 1, jx, jy);
 #endif
 
 	  player->active = FALSE;
@@ -8776,8 +8770,9 @@ void AmoebaToDiamond(int ax, int ay)
 #ifdef DEBUG
     if (group_nr == 0)
     {
-      printf("AmoebaToDiamond(): ax = %d, ay = %d\n", ax, ay);
-      printf("AmoebaToDiamond(): This should never happen!\n");
+      Debug("game:playing:AmoebaToDiamond", "ax = %d, ay = %d", ax, ay);
+      Debug("game:playing:AmoebaToDiamond", "This should never happen!");
+
       return;
     }
 #endif
@@ -8834,8 +8829,9 @@ static void AmoebaToDiamondBD(int ax, int ay, int new_element)
 #ifdef DEBUG
   if (group_nr == 0)
   {
-    printf("AmoebaToDiamondBD(): ax = %d, ay = %d\n", ax, ay);
-    printf("AmoebaToDiamondBD(): This should never happen!\n");
+    Debug("game:playing:AmoebaToDiamondBD", "ax = %d, ay = %d", ax, ay);
+    Debug("game:playing:AmoebaToDiamondBD", "This should never happen!");
+
     return;
   }
 #endif
@@ -9043,8 +9039,10 @@ static void AmoebaReproduce(int ax, int ay)
 #ifdef DEBUG
   if (new_group_nr == 0)
   {
-    printf("AmoebaReproduce(): newax = %d, neway = %d\n", newax, neway);
-    printf("AmoebaReproduce(): This should never happen!\n");
+    Debug("game:playing:AmoebaReproduce", "newax = %d, neway = %d",
+	  newax, neway);
+    Debug("game:playing:AmoebaReproduce", "This should never happen!");
+
     return;
   }
 #endif
@@ -10660,11 +10658,9 @@ static void HandleElementChange(int x, int y, int page)
   if (!CAN_CHANGE_OR_HAS_ACTION(element) &&
       !CAN_CHANGE_OR_HAS_ACTION(Back[x][y]))
   {
-    printf("\n\n");
-    printf("HandleElementChange(): %d,%d: element = %d ('%s')\n",
-	   x, y, element, element_info[element].token_name);
-    printf("HandleElementChange(): This should never happen!\n");
-    printf("\n\n");
+    Debug("game:playing:HandleElementChange", "%d,%d: element = %d ('%s')",
+	  x, y, element, element_info[element].token_name);
+    Debug("game:playing:HandleElementChange", "This should never happen!");
   }
 #endif
 
@@ -11544,7 +11540,7 @@ static void GameActionsExt(void)
 
   int skip = WaitUntilDelayReached(&game_frame_delay, game_frame_delay_value);
 
-  printf("::: skip == %d\n", skip);
+  Debug("game:playing:skip", "skip == %d", skip);
 
 #else
   // ---------- main game synchronization point ----------
@@ -11962,8 +11958,9 @@ void GameActions_RND(void)
 #if DEBUG
     if (ChangePage[x][y] != -1 && ChangeDelay[x][y] != 1)
     {
-      printf("GameActions(): x = %d, y = %d: ChangePage != -1\n", x, y);
-      printf("GameActions(): This should never happen!\n");
+      Debug("game:playing:GameActions_RND", "x = %d, y = %d: ChangePage != -1",
+	    x, y);
+      Debug("game:playing:GameActions_RND", "This should never happen!");
 
       ChangePage[x][y] = -1;
     }
@@ -11997,10 +11994,10 @@ void GameActions_RND(void)
       Blocked2Moving(x, y, &oldx, &oldy);
       if (!IS_MOVING(oldx, oldy))
       {
-	printf("GameActions(): (BLOCKED => MOVING) context corrupted!\n");
-	printf("GameActions(): BLOCKED: x = %d, y = %d\n", x, y);
-	printf("GameActions(): !MOVING: oldx = %d, oldy = %d\n", oldx, oldy);
-	printf("GameActions(): This should never happen!\n");
+	Debug("game:playing:GameActions_RND", "(BLOCKED => MOVING) context corrupted!");
+	Debug("game:playing:GameActions_RND", "BLOCKED: x = %d, y = %d", x, y);
+	Debug("game:playing:GameActions_RND", "!MOVING: oldx = %d, oldy = %d", oldx, oldy);
+	Debug("game:playing:GameActions_RND", "This should never happen!");
       }
     }
 #endif
@@ -12641,8 +12638,9 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
     int original_move_delay_value = player->move_delay_value;
 
 #if DEBUG
-    printf("THIS SHOULD ONLY HAPPEN WITH PRE-1.2 LEVEL TAPES. [%d]\n",
-	   tape.counter);
+    Debug("game:playing:MovePlayer",
+	  "THIS SHOULD ONLY HAPPEN WITH PRE-1.2 LEVEL TAPES. [%d]",
+	  tape.counter);
 #endif
 
     // scroll remaining steps with finest movement resolution
@@ -13567,8 +13565,9 @@ void KillPlayer(struct PlayerInfo *player)
     return;
 
 #if 0
-  printf("::: 0: killed == %d, active == %d, reanimated == %d\n",
-	 player->killed, player->active, player->reanimated);
+  Debug("game:playing:KillPlayer",
+	"0: killed == %d, active == %d, reanimated == %d",
+	player->killed, player->active, player->reanimated);
 #endif
 
   /* the following code was introduced to prevent an infinite loop when calling
@@ -13596,15 +13595,17 @@ void KillPlayer(struct PlayerInfo *player)
   player->shield_deadly_time_left = 0;
 
 #if 0
-  printf("::: 1: killed == %d, active == %d, reanimated == %d\n",
-	 player->killed, player->active, player->reanimated);
+  Debug("game:playing:KillPlayer",
+	"1: killed == %d, active == %d, reanimated == %d",
+	player->killed, player->active, player->reanimated);
 #endif
 
   Bang(jx, jy);
 
 #if 0
-  printf("::: 2: killed == %d, active == %d, reanimated == %d\n",
-	 player->killed, player->active, player->reanimated);
+  Debug("game:playing:KillPlayer",
+	"2: killed == %d, active == %d, reanimated == %d",
+	player->killed, player->active, player->reanimated);
 #endif
 
   if (player->reanimated)	// killed player may have been reanimated
@@ -15536,7 +15537,8 @@ static ListNode *SaveEngineSnapshotBuffers(void)
     node = node->next;
   }
 
-  printf("::: size of engine snapshot: %d bytes\n", num_bytes);
+  Debug("game:playing:SaveEngineSnapshotBuffers",
+	"size of engine snapshot: %d bytes", num_bytes);
 #endif
 
   return buffers;

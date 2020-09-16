@@ -100,8 +100,8 @@ static void FreeSnapshotList_UpToNode(ListNode *node)
   while (snapshot_list != node)
   {
 #if DEBUG_SNAPSHOTS
-    printf("::: FreeSnapshotList_*() [%s, %d, %d]\n",
-	   snapshot_list->key, num_snapshot_buffers, num_snapshot_bytes);
+    Debug("snapshot:FreeSnapshotList_UpToNode", "[%s, %d, %d]",
+	  snapshot_list->key, num_snapshot_buffers, num_snapshot_bytes);
 #endif
 
     deleteNodeFromList(&snapshot_list, snapshot_list->key, FreeSnapshot);
@@ -114,7 +114,7 @@ static void FreeSnapshotList_UpToNode(ListNode *node)
 void FreeSnapshotList(void)
 {
 #if DEBUG_SNAPSHOTS
-  printf("::: FreeSnapshotList()\n");
+  Debug("snapshot:FreeSnapshotList", "");
 #endif
 
   FreeSnapshotList_UpToNode(NULL);
@@ -130,8 +130,7 @@ void FreeSnapshotList(void)
 static void ReduceSnapshotList(void)
 {
 #if DEBUG_SNAPSHOTS
-  printf("::: (Reducing number of snapshots from %d ",
-	 num_snapshots);
+  int num_snapshots_last = num_snapshots;
 #endif
 
   // maximum number of snapshots exceeded -- thin out list of snapshots
@@ -158,13 +157,16 @@ static void ReduceSnapshotList(void)
   }
 
 #if DEBUG_SNAPSHOTS
-  printf("to %d.)\n", num_snapshots);
+  Debug("snapshot:ReduceSnapshotList",
+	"(Reducing number of snapshots from %d to %d.)",
+	num_snapshots_last, num_snapshots);
 
 #if 0
   node = snapshot_list;
   while (node)
   {
-    printf("::: key: %s\n", node->key);
+    Debug("snapshot:ReduceSnapshotList", "key: %s", node->key);
+
     node = node->next;
   }
 #endif
@@ -185,9 +187,10 @@ void SaveSnapshotToList(ListNode *snapshot_buffers)
     FreeSnapshotList_UpToNode(snapshot_current);
 
 #if DEBUG_SNAPSHOTS
-  printf("::: SaveSnapshotToList() [%d] [%d snapshots, %d buffers, %d bytes]\n",
-	 next_snapshot_key, num_snapshots,
-	 num_snapshot_buffers, num_snapshot_bytes);
+  Debug("snapshot:SaveSnapshotToList",
+ 	"[%d] [%d snapshots, %d buffers, %d bytes]",
+	next_snapshot_key, num_snapshots,
+	num_snapshot_buffers, num_snapshot_bytes);
 #endif
 
   addNodeToList(&snapshot_list, i_to_a(next_snapshot_key),
@@ -224,7 +227,7 @@ boolean LoadSnapshotFromList_Older(int steps)
     LoadSnapshotBuffers(snapshot_current->content);
 
 #if DEBUG_SNAPSHOTS
-    printf("::: LoadSnapshotFromList_Older() [%s]\n", snapshot_current->key);
+    Debug("snapshot:LoadSnapshotFromList_Older", "[%s]", snapshot_current->key);
 #endif
 
     return TRUE;
@@ -243,7 +246,7 @@ boolean LoadSnapshotFromList_Newer(int steps)
     LoadSnapshotBuffers(snapshot_current->content);
 
 #if DEBUG_SNAPSHOTS
-    printf("::: LoadSnapshotFromList_Newer() [%s]\n", snapshot_current->key);
+    Debug("snapshot:LoadSnapshotFromList_Newer", "[%s]", snapshot_current->key);
 #endif
 
     return TRUE;

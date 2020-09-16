@@ -8053,9 +8053,12 @@ void LoadTapeFromFilename(char *filename)
   tape.length_seconds = GetTapeLengthSeconds();
 
 #if 0
-  printf("::: tape file version: %d\n",   tape.file_version);
-  printf("::: tape game version: %d\n",   tape.game_version);
-  printf("::: tape engine version: %d\n", tape.engine_version);
+  Debug("files:LoadTapeFromFilename", "tape file version: %d",
+	tape.file_version);
+  Debug("files:LoadTapeFromFilename", "tape game version: %d",
+	tape.game_version);
+  Debug("files:LoadTapeFromFilename", "tape engine version: %d",
+	tape.engine_version);
 #endif
 }
 
@@ -11861,12 +11864,12 @@ void LoadHelpAnimInfo(void)
 
 #if 0
   for (i = 0; i < num_list_entries; i++)
-    printf("::: '%s': %d, %d, %d => %d\n",
-	   EL_NAME(helpanim_info[i].element),
-	   helpanim_info[i].element,
-	   helpanim_info[i].action,
-	   helpanim_info[i].direction,
-	   helpanim_info[i].delay);
+    Debug("files:LoadHelpAnimInfo", "'%s': %d, %d, %d => %d",
+	  EL_NAME(helpanim_info[i].element),
+	  helpanim_info[i].element,
+	  helpanim_info[i].action,
+	  helpanim_info[i].direction,
+	  helpanim_info[i].delay);
 #endif
 }
 
@@ -11898,8 +11901,8 @@ void LoadHelpTextInfo(void)
 #if 0
   BEGIN_HASH_ITERATION(helptext_info, itr)
   {
-    printf("::: '%s' => '%s'\n",
-	   HASH_ITERATION_TOKEN(itr), HASH_ITERATION_VALUE(itr));
+    Debug("files:LoadHelpTextInfo", "'%s' => '%s'",
+	  HASH_ITERATION_TOKEN(itr), HASH_ITERATION_VALUE(itr));
   }
   END_HASH_ITERATION(hash, itr)
 #endif

@@ -1830,8 +1830,8 @@ static void printSetupFileList(SetupFileList *list)
   if (!list)
     return;
 
-  printf("token: '%s'\n", list->token);
-  printf("value: '%s'\n", list->value);
+  Debug("setup:printSetupFileList", "token: '%s'", list->token);
+  Debug("setup:printSetupFileList", "value: '%s'", list->value);
 
   printSetupFileList(list->next);
 }
@@ -1941,8 +1941,8 @@ static void printSetupFileHash(SetupFileHash *hash)
 {
   BEGIN_HASH_ITERATION(hash, itr)
   {
-    printf("token: '%s'\n", HASH_ITERATION_TOKEN(itr));
-    printf("value: '%s'\n", HASH_ITERATION_VALUE(itr));
+    Debug("setup:printSetupFileHash", "token: '%s'", HASH_ITERATION_TOKEN(itr));
+    Debug("setup:printSetupFileHash", "value: '%s'", HASH_ITERATION_VALUE(itr));
   }
   END_HASH_ITERATION(hash, itr)
 }
@@ -3830,9 +3830,12 @@ void LoadArtworkInfo(void)
   artwork.mus_current_identifier = artwork.mus_current->identifier;
 
 #if ENABLE_UNUSED_CODE
-  printf("graphics set == %s\n\n", artwork.gfx_current_identifier);
-  printf("sounds set == %s\n\n", artwork.snd_current_identifier);
-  printf("music set == %s\n\n", artwork.mus_current_identifier);
+  Debug("setup:LoadArtworkInfo", "graphics set == %s",
+	artwork.gfx_current_identifier);
+  Debug("setup:LoadArtworkInfo", "sounds set == %s",
+	artwork.snd_current_identifier);
+  Debug("setup:LoadArtworkInfo", "music set == %s",
+	artwork.mus_current_identifier);
 #endif
 
   sortTreeInfo(&artwork.gfx_first);

@@ -1808,7 +1808,7 @@ static void HandleKeysSpecial(Key key)
   cheat_input[cheat_input_len] = '\0';
 
 #if DEBUG_EVENTS_KEY
-  Debug("event:key:special", "'%s' [%d]\n", cheat_input, cheat_input_len);
+  Debug("event:key:special", "'%s' [%d]", cheat_input, cheat_input_len);
 #endif
 
   if (game_status == GAME_MODE_MAIN)

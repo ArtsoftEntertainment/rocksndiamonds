@@ -494,13 +494,15 @@ static void InitGlobalAnimControls(void)
 	  continue;
 
 #if 0
-	printf("::: mode == %d, anim = %d, part = %d [%d, %d, %d] [%d]\n",
-	       m, a, p, mode_nr, anim_nr, part_nr, control);
+	Debug("anim:InitGlobalAnimControls",
+	      "mode == %d, anim = %d, part = %d [%d, %d, %d] [%d]",
+	      m, a, p, mode_nr, anim_nr, part_nr, control);
 #endif
 
 #if 0
-	printf("::: mode == %d, anim = %d, part = %d [%d, %d, %d] [%d]\n",
-	       m, a, p, mode_nr, anim_nr, part_nr, sound);
+	Debug("anim:InitGlobalAnimControls",
+	      "mode == %d, anim = %d, part = %d [%d, %d, %d] [%d]",
+	      m, a, p, mode_nr, anim_nr, part_nr, sound);
 #endif
 
 	part->old_nr = p;
@@ -981,7 +983,7 @@ static void PlayGlobalAnimSound(struct GlobalAnimPartControlInfo *part)
     PlaySound(sound);
 
 #if 0
-  printf("::: PLAY SOUND %d.%d.%d: %d\n",
+  Debug("anim:PlayGlobalAnimSound", "PLAY SOUND %d.%d.%d: %d",
 	 part->anim_nr, part->nr, part->mode_nr, sound);
 #endif
 }
@@ -996,8 +998,8 @@ static void StopGlobalAnimSound(struct GlobalAnimPartControlInfo *part)
   StopSound(sound);
 
 #if 0
-  printf("::: STOP SOUND %d.%d.%d: %d\n",
-	 part->anim_nr, part->nr, part->mode_nr, sound);
+  Debug("anim:StopGlobalAnimSound", "STOP SOUND %d.%d.%d: %d",
+	part->anim_nr, part->nr, part->mode_nr, sound);
 #endif
 }
 
@@ -1017,8 +1019,8 @@ static void PlayGlobalAnimMusic(struct GlobalAnimPartControlInfo *part)
     PlayMusic(music);
 
 #if 0
-  printf("::: PLAY MUSIC %d.%d.%d: %d\n",
-	 part->anim_nr, part->nr, part->mode_nr, music);
+  Debug("anim:PlayGlobalAnimMusic", "PLAY MUSIC %d.%d.%d: %d",
+	part->anim_nr, part->nr, part->mode_nr, music);
 #endif
 }
 
@@ -1032,8 +1034,8 @@ static void StopGlobalAnimMusic(struct GlobalAnimPartControlInfo *part)
   StopMusic();
 
 #if 0
-  printf("::: STOP MUSIC %d.%d.%d: %d\n",
-	 part->anim_nr, part->nr, part->mode_nr, music);
+  Debug("anim:StopGlobalAnimMusic", "STOP MUSIC %d.%d.%d: %d",
+	part->anim_nr, part->nr, part->mode_nr, music);
 #endif
 }
 
@@ -1190,13 +1192,15 @@ static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
 	*click_consumed |= clickConsumed(part); 	// click was on "part"!
 
 #if DEBUG_ANIM_EVENTS
-	printf("::: => %d.%d TRIGGERED BY %s OF %d.%d\n",
-	       part2->old_anim_nr + 1, part2->old_nr + 1, info_text,
-	       part->old_anim_nr + 1, part->old_nr + 1);
+	Debug("anim:InitGlobalAnim_Triggered",
+	      "%d.%d TRIGGERED BY %s OF %d.%d",
+	      part2->old_anim_nr + 1, part2->old_nr + 1, info_text,
+	      part->old_anim_nr + 1, part->old_nr + 1);
 #endif
 #if 0
-	printf("::: %d.%d TRIGGER CLICKED [%d]\n", anim2_nr, part2_nr,
-	       part2->control_info.anim_event_action);
+	Debug("anim:InitGlobalAnim_Triggered",
+	      "%d.%d TRIGGER CLICKED [%d]", anim2_nr, part2_nr,
+	      part2->control_info.anim_event_action);
 #endif
 
 	// after executing event action, ignore any further actions
@@ -1207,14 +1211,15 @@ static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
 #if 0
       struct GraphicInfo *c = &part2->control_info;
 
-      printf("::: - %d.%d: 0x%08x, 0x%08x [0x%08x]",
-	     anim2_nr, part2_nr, c->init_event, c->anim_event, mask);
-
       if (isClickablePart(part2, mask))
-	printf(" <--- TRIGGERED BY %d.%d",
-	       anim_nr, part_nr);
-
-      printf("\n");
+	Debug("anim:InitGlobalAnim_Triggered",
+	      "%d.%d: 0x%08x, 0x%08x [0x%08x] <--- TRIGGERED BY %d.%d",
+	      anim2_nr, part2_nr, c->init_event, c->anim_event, mask,
+	      anim_nr, part_nr);
+      else
+	Debug("anim:InitGlobalAnim_Triggered",
+	      "%d.%d: 0x%08x, 0x%08x [0x%08x]",
+	      anim2_nr, part2_nr, c->init_event, c->anim_event, mask);
 #endif
     }
   }
@@ -1224,7 +1229,8 @@ static void HandleGlobalAnimDelay(struct GlobalAnimPartControlInfo *part,
 				  int delay_type, char *info_text)
 {
 #if DEBUG_ANIM_DELAY
-  printf("::: %d.%d %s\n", part->old_anim_nr + 1, part->old_nr + 1, info_text);
+  Debug("anim:HandleGlobalAnimDelay", "%d.%d %s",
+	part->old_anim_nr + 1, part->old_nr + 1, info_text);
 #endif
 
   DoGlobalAnim_DelayAction(part, delay_type);
@@ -1234,7 +1240,8 @@ static void HandleGlobalAnimEvent(struct GlobalAnimPartControlInfo *part,
 				  int event_value, char *info_text)
 {
 #if DEBUG_ANIM_EVENTS
-  printf("::: %d.%d %s\n", part->old_anim_nr + 1, part->old_nr + 1, info_text);
+  Debug("anim:HandleGlobalAnimEvent", "%d.%d %s",
+	part->old_anim_nr + 1, part->old_nr + 1, info_text);
 #endif
 
   boolean click_consumed = FALSE;
@@ -1508,8 +1515,8 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
     static unsigned int last_counter = -1;
     unsigned int counter = Counter();
 
-    printf("::: NEXT ANIM PART [%d, %d]\n",
-	   anim_sync_frame, counter - last_counter);
+    Debug("anim:HandleGlobalAnim_Part", "NEXT ANIM PART [%d, %d]",
+	  anim_sync_frame, counter - last_counter);
 
     last_counter = counter;
   }
@@ -1534,21 +1541,22 @@ static void HandleGlobalAnim_Main(struct GlobalAnimMainControlInfo *anim,
   int i;
 
 #if 0
-  printf("::: HandleGlobalAnim_Main: %d, %d => %d\n",
+  Debug("anim:HandleGlobalAnim_Main", "%d, %d => %d",
 	 anim->mode_nr, anim->nr, anim->num_parts);
-  printf("::: %d, %d, %d\n", global.num_toons, setup.toons, num_toons);
+  Debug("anim:HandleGlobalAnim_Main",
+	"%d, %d, %d", global.num_toons, setup.toons, num_toons);
 #endif
 
 #if 0
-  printf("::: %s(%d): %d, %d, %d [%d]\n",
-	 (action == ANIM_START ? "ANIM_START" :
-	  action == ANIM_CONTINUE ? "ANIM_CONTINUE" :
-	  action == ANIM_STOP ? "ANIM_STOP" : "(should not happen)"),
-	 anim->nr,
-	 anim->state & ANIM_STATE_RESTART,
-	 anim->state & ANIM_STATE_WAITING,
-	 anim->state & ANIM_STATE_RUNNING,
-	 anim->num_parts);
+  Debug("anim:HandleGlobalAnim_Main", "%s(%d): %d, %d, %d [%d]",
+	(action == ANIM_START ? "ANIM_START" :
+	 action == ANIM_CONTINUE ? "ANIM_CONTINUE" :
+	 action == ANIM_STOP ? "ANIM_STOP" : "(should not happen)"),
+	anim->nr,
+	anim->state & ANIM_STATE_RESTART,
+	anim->state & ANIM_STATE_WAITING,
+	anim->state & ANIM_STATE_RUNNING,
+	anim->num_parts);
 #endif
 
   switch (action)
@@ -1584,8 +1592,8 @@ static void HandleGlobalAnim_Main(struct GlobalAnimMainControlInfo *anim,
   if (c->anim_mode & ANIM_ALL || anim->num_parts == 0)
   {
 #if 0
-    printf("::: HandleGlobalAnim_Main: %d, %d => %d\n",
-	   anim->mode_nr, anim->nr, num_parts);
+    Debug("anim:HandleGlobalAnim_Main", "%d, %d => %d",
+	  anim->mode_nr, anim->nr, num_parts);
 #endif
 
     for (i = 0; i < num_parts; i++)
@@ -1682,8 +1690,7 @@ static void HandleGlobalAnim_Mode(struct GlobalAnimControlInfo *ctrl, int action
   int i;
 
 #if 0
-  printf("::: HandleGlobalAnim_Mode: %d => %d\n",
-	 ctrl->nr, ctrl->num_anims);
+  Debug("anim:HandleGlobalAnim_Mode", "%d => %d", ctrl->nr, ctrl->num_anims);
 #endif
 
   for (i = 0; i < ctrl->num_anims; i++)
@@ -1693,7 +1700,7 @@ static void HandleGlobalAnim_Mode(struct GlobalAnimControlInfo *ctrl, int action
 static void HandleGlobalAnim(int action, int game_mode)
 {
 #if 0
-  printf("::: HandleGlobalAnim [mode == %d]\n", game_status);
+  Debug("anim:HandleGlobalAnim", "mode == %d", game_status);
 #endif
 
   HandleGlobalAnim_Mode(&global_anim_ctrl[game_mode], action);
@@ -1704,7 +1711,7 @@ static void DoAnimationExt(void)
   int i;
 
 #if 0
-  printf("::: DoAnimation [%d, %d]\n", anim_sync_frame, Counter());
+  Debug("anim:DoAnimationExt", "%d, %d", anim_sync_frame, Counter());
 #endif
 
   // global animations now synchronized with frame delay of screen update
@@ -1828,8 +1835,8 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
 	    isClickablePart(part, ANIM_EVENT_ANY))
 	{
 #if DEBUG_ANIM_EVENTS
-	  printf("::: => %d.%d TRIGGERED BY ANY\n",
-		 part->old_anim_nr + 1, part->old_nr + 1);
+	  Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY ANY",
+		part->old_anim_nr + 1, part->old_nr + 1);
 #endif
 
 	  anything_clicked = part->clicked = TRUE;
@@ -1841,8 +1848,8 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
 	    isClickablePart(part, ANIM_EVENT_UNCLICK_ANY))
 	{
 #if DEBUG_ANIM_EVENTS
-	  printf("::: => %d.%d TRIGGERED BY UNCLICK:ANY\n",
-		 part->old_anim_nr + 1, part->old_nr + 1);
+	  Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY UNCLICK:ANY",
+		part->old_anim_nr + 1, part->old_nr + 1);
 #endif
 
 	  anything_clicked = part->clicked = TRUE;
@@ -1857,8 +1864,8 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
 	    isClickedPart(part, mx, my, TRUE))
 	{
 #if 0
-	  printf("::: %d.%d CLICKED [%d]\n", anim_nr, part_nr,
-		 part->control_info.anim_event_action);
+	  Debug("anim:InitGlobalAnim_Clicked", "%d.%d CLICKED [%d]",
+		anim_nr, part_nr, part->control_info.anim_event_action);
 #endif
 
 	  // after executing event action, ignore any further actions
@@ -1871,8 +1878,8 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
 	  if (isClickablePart(part, ANIM_EVENT_SELF))
 	  {
 #if DEBUG_ANIM_EVENTS
-	    printf("::: => %d.%d TRIGGERED BY SELF\n",
-		   part->old_anim_nr + 1, part->old_nr + 1);
+	    Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY SELF",
+		  part->old_anim_nr + 1, part->old_nr + 1);
 #endif
 
 	    anything_clicked = part->clicked = TRUE;

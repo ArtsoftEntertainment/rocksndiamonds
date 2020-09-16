@@ -771,8 +771,8 @@ static int ScanPixel(void)
   int hit_mask = 0;
 
 #if 0
-  printf("ScanPixel: start scanning at (%d, %d) [%d, %d] [%d, %d]\n",
-	 LX, LY, LX / TILEX, LY / TILEY, LX % TILEX, LY % TILEY);
+  Debug("game:mm:ScanPixel", "start scanning at (%d, %d) [%d, %d] [%d, %d]",
+	LX, LY, LX / TILEX, LY / TILEY, LX % TILEX, LY % TILEY);
 #endif
 
   // follow laser beam until it hits something (at least the screen border)
@@ -785,7 +785,7 @@ static int ScanPixel(void)
     if (SX + LX < REAL_SX || SX + LX >= REAL_SX + FULL_SXSIZE ||
 	SY + LY < REAL_SY || SY + LY >= REAL_SY + FULL_SYSIZE)
     {
-      printf("ScanPixel: touched screen border!\n");
+      Debug("game:mm:ScanPixel", "touched screen border!");
 
       return HIT_MASK_ALL;
     }
@@ -858,8 +858,9 @@ void ScanLaser(void)
   DrawLaser(0, DL_LASER_ENABLED);
 
 #if 0
-  printf("Start scanning with LX == %d, LY == %d, XS == %d, YS == %d\n",
-	 LX, LY, XS, YS);
+  Debug("game:mm:ScanLaser",
+	"Start scanning with LX == %d, LY == %d, XS == %d, YS == %d",
+	LX, LY, XS, YS);
 #endif
 
   while (1)
@@ -877,8 +878,9 @@ void ScanLaser(void)
     hit_mask = ScanPixel();
 
 #if 0
-    printf("Hit something at LX == %d, LY == %d, XS == %d, YS == %d\n",
-	   LX, LY, XS, YS);
+    Debug("game:mm:ScanLaser",
+	  "Hit something at LX == %d, LY == %d, XS == %d, YS == %d",
+	  LX, LY, XS, YS);
 #endif
 
     // hit something -- check out what it was
@@ -886,8 +888,8 @@ void ScanLaser(void)
     ELY = (LY + YS) / TILEY;
 
 #if 0
-    printf("hit_mask (1) == '%x' (%d, %d) (%d, %d)\n",
-	   hit_mask, LX, LY, ELX, ELY);
+    Debug("game:mm:ScanLaser", "hit_mask (1) == '%x' (%d, %d) (%d, %d)",
+	  hit_mask, LX, LY, ELX, ELY);
 #endif
 
     if (!IN_LEV_FIELD(ELX, ELY) || !IN_PIX_FIELD(LX, LY))
@@ -919,24 +921,26 @@ void ScanLaser(void)
     }
 
 #if 0
-    printf("hit_mask (2) == '%x' (%d, %d) (%d, %d)\n",
-	   hit_mask, LX, LY, ELX, ELY);
+    Debug("game:mm:ScanLaser", "hit_mask (2) == '%x' (%d, %d) (%d, %d)",
+	  hit_mask, LX, LY, ELX, ELY);
 #endif
 
     element = Tile[ELX][ELY];
     laser.dest_element = element;
 
 #if 0
-    printf("Hit element %d at (%d, %d) [%d, %d] [%d, %d] [%d]\n",
-	   element, ELX, ELY,
-	   LX, LY,
-	   LX % TILEX, LY % TILEY,
-	   hit_mask);
+    Debug("game:mm:ScanLaser",
+	  "Hit element %d at (%d, %d) [%d, %d] [%d, %d] [%d]",
+	  element, ELX, ELY,
+	  LX, LY,
+	  LX % TILEX, LY % TILEY,
+	  hit_mask);
 #endif
 
 #if 0
     if (!IN_LEV_FIELD(ELX, ELY))
-      printf("WARNING! (1) %d, %d (%d)\n", ELX, ELY, element);
+      Debug("game:mm:ScanLaser", "WARNING! (1) %d, %d (%d)",
+	    ELX, ELY, element);
 #endif
 
     if (element == EL_EMPTY)
@@ -1002,15 +1006,16 @@ void ScanLaser(void)
 #if 0
   if (laser.dest_element != Tile[ELX][ELY])
   {
-    printf("ALARM: laser.dest_element == %d, Tile[ELX][ELY] == %d\n",
-	   laser.dest_element, Tile[ELX][ELY]);
+    Debug("game:mm:ScanLaser",
+	  "ALARM: laser.dest_element == %d, Tile[ELX][ELY] == %d",
+	  laser.dest_element, Tile[ELX][ELY]);
   }
 #endif
 
   if (!end && !laser.stops_inside_element && !StepBehind())
   {
 #if 0
-    printf("ScanLaser: Go one step back\n");
+    Debug("game:mm:ScanLaser", "Go one step back");
 #endif
 
     LX -= XS;
@@ -1026,7 +1031,7 @@ void ScanLaser(void)
 
 #if 0
     if (!IN_LEV_FIELD(ELX, ELY))
-      printf("WARNING! (2) %d, %d\n", ELX, ELY);
+      Debug("game:mm:ScanLaser", "WARNING! (2) %d, %d", ELX, ELY);
 #endif
 }
 
@@ -1036,8 +1041,8 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
   int elx, ely;
 
 #if 0
-  printf("DrawLaserExt: start_edge, num_edges, mode == %d, %d, %d\n",
-	 start_edge, num_edges, mode);
+  Debug("game:mm:DrawLaserExt", "start_edge, num_edges, mode == %d, %d, %d",
+	start_edge, num_edges, mode);
 #endif
 
   if (start_edge < 0)
@@ -1057,7 +1062,7 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
 #if 0
   if (mode == DL_LASER_DISABLED)
   {
-    printf("DrawLaser: Delete laser from edge %d\n", start_edge);
+    Debug("game:mm:DrawLaserExt", "Delete laser from edge %d", start_edge);
   }
 #endif
 
@@ -1117,11 +1122,12 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
       int i;
 
       for (i = 0; i < laser.num_beamers; i++)
-	printf("-> %d\n", laser.beamer_edge[i]);
-      printf("DrawLaserExt: IS_BEAMER: [%d]: Hit[%d][%d] == %d [%d]\n",
-	     mode, elx, ely, Hit[elx][ely], start_edge);
-      printf("DrawLaserExt: IS_BEAMER: %d / %d\n",
-	     get_element_angle(element), laser.damage[damage_start].angle);
+	Debug("game:mm:DrawLaserExt", "-> %d", laser.beamer_edge[i]);
+
+      Debug("game:mm:DrawLaserExt", "IS_BEAMER: [%d]: Hit[%d][%d] == %d [%d]",
+	    mode, elx, ely, Hit[elx][ely], start_edge);
+      Debug("game:mm:DrawLaserExt", "IS_BEAMER: %d / %d",
+	    get_element_angle(element), laser.damage[damage_start].angle);
     }
 #endif
 
@@ -1161,8 +1167,8 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
   YS = 2 * Step[laser.current_angle].y;
 
 #if 0
-  printf("DrawLaser: Set (LX, LY) to (%d, %d) [%d]\n",
-	 LX, LY, element);
+  Debug("game:mm:DrawLaserExt", "Set (LX, LY) to (%d, %d) [%d]",
+	LX, LY, element);
 #endif
 
   if (start_edge > 0)
@@ -1177,7 +1183,7 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
       int step_size;
 
 #if 0
-      printf("element == %d\n", element);
+      Debug("game:mm:DrawLaserExt", "element == %d", element);
 #endif
 
       if (IS_22_5_ANGLE(laser.current_angle))	// neither 90° nor 45° angle
@@ -1197,10 +1203,9 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
 
 #if 0
       if (IS_BEAMER(element))
-      {
-	printf("start_edge == %d, laser.beamer_edge == %d\n",
-	       start_edge, laser.beamer_edge);
-      }
+	Debug("game:mm:DrawLaserExt",
+	      "start_edge == %d, laser.beamer_edge == %d",
+	      start_edge, laser.beamer_edge);
 #endif
 
       LX += step_size * XS;
@@ -1215,8 +1220,8 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
   }
 
 #if 0
-  printf("DrawLaser: Finally: (LX, LY) to (%d, %d) [%d]\n",
-	 LX, LY, element);
+  Debug("game:mm:DrawLaserExt", "Finally: (LX, LY) to (%d, %d) [%d]",
+	LX, LY, element);
 #endif
 }
 
@@ -1247,8 +1252,8 @@ void DrawLaser(int start_edge, int mode)
 	  continue;
 
 #if 0
-	printf("DrawLaser: DL_LASER_ENABLED: i==%d: %d, %d\n",
-	       i, laser.beamer_edge[i], tmp_start_edge);
+	Debug("game:mm:DrawLaser", "DL_LASER_ENABLED: i==%d: %d, %d",
+	      i, laser.beamer_edge[i], tmp_start_edge);
 #endif
 
 	DrawLaserExt(tmp_start_edge, tmp_num_edges, DL_LASER_ENABLED);
@@ -1282,8 +1287,8 @@ void DrawLaser(int start_edge, int mode)
 
 #if 0
       if (last_num_edges - start_edge <= 0)
-	printf("DrawLaser: DL_LASER_DISABLED: %d, %d\n",
-	       last_num_edges, start_edge);
+	Debug("game:mm:DrawLaser", "DL_LASER_DISABLED: %d, %d",
+	      last_num_edges, start_edge);
 #endif
 
       // special case when rotating first beamer: delete laser edge on beamer
@@ -1317,14 +1322,16 @@ boolean HitElement(int element, int hit_mask)
     element = MovingOrBlocked2Element_MM(ELX, ELY);
 
 #if 0
-  printf("HitElement (1): element == %d\n", element);
+  Debug("game:mm:HitElement", "(1): element == %d", element);
 #endif
 
 #if 0
   if ((ELX * TILEX + 14 - LX) * YS == (ELY * TILEY + 14 - LY) * XS)
-    printf("HitElement (%d): EXACT MATCH @ (%d, %d)\n", element, ELX, ELY);
+    Debug("game:mm:HitElement", "(%d): EXACT MATCH @ (%d, %d)",
+	  element, ELX, ELY);
   else
-    printf("HitElement (%d): FUZZY MATCH @ (%d, %d)\n", element, ELX, ELY);
+    Debug("game:mm:HitElement", "(%d): FUZZY MATCH @ (%d, %d)",
+	  element, ELX, ELY);
 #endif
 
   AddDamagedField(ELX, ELY);
@@ -1355,7 +1362,7 @@ boolean HitElement(int element, int hit_mask)
   }
 
 #if 0
-  printf("HitElement (2): element == %d\n", element);
+  Debug("game:mm:HitElement", "(2): element == %d", element);
 #endif
 
   if (LX + 5 * XS < 0 ||
@@ -1368,7 +1375,7 @@ boolean HitElement(int element, int hit_mask)
   }
 
 #if 0
-  printf("HitElement (3): element == %d\n", element);
+  Debug("game:mm:HitElement", "(3): element == %d", element);
 #endif
 
   if (IS_POLAR(element) &&
@@ -1399,9 +1406,9 @@ boolean HitElement(int element, int hit_mask)
   {
 #if 0
     if ((ELX * TILEX + 14 - LX) * YS == (ELY * TILEY + 14 - LY) * XS)
-      printf("EXACT MATCH @ (%d, %d)\n", ELX, ELY);
+      Debug("game:mm:HitElement", "EXACT MATCH @ (%d, %d)", ELX, ELY);
     else
-      printf("FUZZY MATCH @ (%d, %d)\n", ELX, ELY);
+      Debug("game:mm:HitElement", "FUZZY MATCH @ (%d, %d)", ELX, ELY);
 #endif
 
     LX = ELX * TILEX + 14;
@@ -1557,7 +1564,7 @@ boolean HitElement(int element, int hit_mask)
   }
 
 #if 0
-  printf("HitElement (4): element == %d\n", element);
+  Debug("game:mm:HitElement", "(4): element == %d", element);
 #endif
 
   if ((IS_BEAMER(element) || IS_FIBRE_OPTIC(element)) &&
@@ -1569,7 +1576,7 @@ boolean HitElement(int element, int hit_mask)
     int step_size;
 
 #if 0
-  printf("HitElement (BEAMER): element == %d\n", element);
+    Debug("game:mm:HitElement", "(BEAMER): element == %d", element);
 #endif
 
     laser.num_damages--;
@@ -1636,7 +1643,8 @@ boolean HitOnlyAnEdge(int element, int hit_mask)
   // check if the laser hit only the edge of an element and, if so, go on
 
 #if 0
-  printf("LX, LY, hit_mask == %d, %d, %d\n", LX, LY, hit_mask);
+  Debug("game:mm:HitOnlyAnEdge", "LX, LY, hit_mask == %d, %d, %d",
+	LX, LY, hit_mask);
 #endif
 
   if ((hit_mask == HIT_MASK_TOPLEFT ||
@@ -1674,14 +1682,14 @@ boolean HitOnlyAnEdge(int element, int hit_mask)
     LY += YS;
 
 #if 0
-    printf("[HitOnlyAnEdge() == TRUE]\n");
+    Debug("game:mm:HitOnlyAnEdge", "[HitOnlyAnEdge() == TRUE]");
 #endif
 
     return TRUE;
   }
 
 #if 0
-    printf("[HitOnlyAnEdge() == FALSE]\n");
+  Debug("game:mm:HitOnlyAnEdge", "[HitOnlyAnEdge() == FALSE]");
 #endif
 
   return FALSE;
@@ -1697,8 +1705,8 @@ boolean HitPolarizer(int element, int hit_mask)
     int grid_angle = get_element_angle(element);
 
 #if 0
-    printf("HitPolarizer: angle: grid == %d, laser == %d\n",
-	   grid_angle, laser.current_angle);
+    Debug("game:mm:HitPolarizer", "angle: grid == %d, laser == %d",
+	  grid_angle, laser.current_angle);
 #endif
 
     AddLaserEdge(LX, LY);
@@ -1735,10 +1743,10 @@ boolean HitPolarizer(int element, int hit_mask)
       LY += YS;
 
 #if 0
-      printf("HitPolarizer: LX, LY == %d, %d [%d, %d] [%d, %d]\n",
-	     LX, LY,
-	     LX / TILEX, LY / TILEY,
-	     LX % TILEX, LY % TILEY);
+      Debug("game:mm:HitPolarizer", "LX, LY == %d, %d [%d, %d] [%d, %d]",
+	    LX, LY,
+	    LX / TILEX, LY / TILEY,
+	    LX % TILEX, LY % TILEY);
 #endif
 
       return FALSE;
@@ -2905,9 +2913,8 @@ void RotateMirror(int x, int y, int button)
       if (IS_BEAMER(Tile[x][y]))
       {
 #if 0
-	printf("TEST (%d, %d) [%d] [%d]\n",
-	       LX, LY,
-	       laser.beamer_edge, laser.beamer[1].num);
+	Debug("game:mm:RotateMirror", "TEST (%d, %d) [%d] [%d]",
+	      LX, LY, laser.beamer_edge, laser.beamer[1].num);
 #endif
 
 	laser.num_edges--;
@@ -3166,8 +3173,8 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 #if 0
   if (element != Tile[ELX][ELY])
   {
-    printf("element == %d, Tile[ELX][ELY] == %d\n",
-	   element, Tile[ELX][ELY]);
+    Debug("game:mm:GameActions_MM_Ext", "element == %d, Tile[ELX][ELY] == %d",
+	  element, Tile[ELX][ELY]);
   }
 #endif
 
@@ -3425,7 +3432,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
     DrawField_MM(ELX, ELY);
 
 #if 0
-    printf("NEW ELEMENT: (%d, %d)\n", ELX, ELY);
+    Debug("game:mm:GameActions_MM_Ext", "NEW ELEMENT: (%d, %d)", ELX, ELY);
 #endif
 
     // above stuff: GRAY BALL -> PRISM !!!
@@ -3457,10 +3464,6 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 #endif
 
     ScanLaser();
-
-    /*
-    printf("TEST ELEMENT: %d\n", Tile[0][0]);
-    */
 #endif
 
     return;

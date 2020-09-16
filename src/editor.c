@@ -7151,7 +7151,7 @@ void CreateLevelEditorGadgets(void)
 
   num_editor_gadgets = NUM_EDITOR_GADGETS;
 
-  // printf("::: allocating %d gadgets ...\n", num_editor_gadgets);
+  // Debug("editor", "allocating %d gadgets ...\n", num_editor_gadgets);
 
   level_editor_gadget =
     checked_calloc(num_editor_gadgets * sizeof(struct GadgetInfo *));
@@ -7189,7 +7189,7 @@ void FreeLevelEditorGadgets(void)
 {
   int i;
 
-  // printf("::: freeing %d gadgets ...\n", num_editor_gadgets);
+  // Debug("editor", "freeing %d gadgets ...\n", num_editor_gadgets);
 
   for (i = 0; i < num_editor_gadgets; i++)
   {
@@ -12071,7 +12071,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 	mode == CB_BRUSH_TO_CLIPBOARD_SMALL)
       SDL_SetClipboardText(text);
     else
-      printf("%s", text);
+      printf("%s", text);	// print brush data to console
 
     return;
   }
@@ -14111,13 +14111,13 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       }
 #ifdef DEBUG
       else if (gi->event.type == GD_EVENT_PRESSED)
-	printf("default: HandleControlButtons: GD_EVENT_PRESSED(%d)\n", id);
+	Debug("editor", "default: HandleControlButtons: GD_EVENT_PRESSED(%d)", id);
       else if (gi->event.type == GD_EVENT_RELEASED)
-	printf("default: HandleControlButtons: GD_EVENT_RELEASED(%d)\n", id);
+	Debug("editor", "default: HandleControlButtons: GD_EVENT_RELEASED(%d)", id);
       else if (gi->event.type == GD_EVENT_MOVING)
-	printf("default: HandleControlButtons: GD_EVENT_MOVING(%d)\n", id);
+	Debug("editor", "default: HandleControlButtons: GD_EVENT_MOVING(%d)", id);
       else
-	printf("default: HandleControlButtons: ? (id == %d)\n", id);
+	Debug("editor", "default: HandleControlButtons: ? (id == %d)", id);
 #endif
       break;
   }

@@ -65,8 +65,10 @@ void DrawGraphic_MM(int x, int y, int graphic)
 #if DEBUG
   if (!IN_SCR_FIELD(x,y))
   {
-    printf("DrawGraphic_MM(): x = %d, y = %d, graphic = %d\n",x,y,graphic);
-    printf("DrawGraphic_MM(): This should never happen!\n");
+    Debug("game:mm:DrawGraphic_MM", "x = %d, y = %d, graphic = %d",
+	  x, y, graphic);
+    Debug("game:mm:DrawGraphic_MM", "This should never happen!");
+
     return;
   }
 #endif
@@ -91,8 +93,10 @@ void DrawGraphicThruMask_MM(int x, int y, int graphic)
 #if DEBUG
   if (!IN_SCR_FIELD(x,y))
   {
-    printf("DrawGraphicThruMask_MM(): x = %d,y = %d, graphic = %d\n",x,y,graphic);
-    printf("DrawGraphicThruMask_MM(): This should never happen!\n");
+    Debug("game:mm:DrawGraphicThruMask_MM", "x = %d,y = %d, graphic = %d",
+	  x, y, graphic);
+    Debug("game:mm:DrawGraphicThruMask_MM", "This should never happen!");
+
     return;
   }
 #endif
@@ -236,8 +240,10 @@ void DrawGraphicShifted_MM(int x,int y, int dx,int dy, int graphic,
 #if DEBUG
   if (!IN_SCR_FIELD(x,y))
   {
-    printf("DrawGraphicShifted_MM(): x = %d, y = %d, graphic = %d\n",x,y,graphic);
-    printf("DrawGraphicShifted_MM(): This should never happen!\n");
+    Debug("game:mm:DrawGraphicShifted_MM", "x = %d, y = %d, graphic = %d",
+	  x, y, graphic);
+    Debug("game:mm:DrawGraphicShifted_MM", "This should never happen!");
+
     return;
   }
 #endif

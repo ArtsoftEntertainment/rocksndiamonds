@@ -650,15 +650,14 @@ static void InitGlobalAnimGraphicInfo(void)
   }
 
 #if 0
-  printf("::: InitGlobalAnimGraphicInfo\n");
-
   for (i = 0; i < NUM_GLOBAL_ANIMS; i++)
     for (j = 0; j < NUM_GLOBAL_ANIM_PARTS_ALL; j++)
       for (k = 0; k < NUM_SPECIAL_GFX_ARGS; k++)
 	if (global_anim_info[i].graphic[j][k] != IMG_UNDEFINED &&
 	    graphic_info[global_anim_info[i].graphic[j][k]].bitmap != NULL)
-	  printf("::: - anim %d, part %d, mode %d => %d\n",
-		 i, j, k, global_anim_info[i].graphic[j][k]);
+	  Debug("init:InitGlobalAnimGraphicInfo",
+		"anim %d, part %d, mode %d => %d",
+		i, j, k, global_anim_info[i].graphic[j][k]);
 #endif
 }
 
@@ -700,14 +699,13 @@ static void InitGlobalAnimSoundInfo(void)
   }
 
 #if 0
-  printf("::: InitGlobalAnimSoundInfo\n");
-
   for (i = 0; i < NUM_GLOBAL_ANIMS; i++)
     for (j = 0; j < NUM_GLOBAL_ANIM_PARTS_ALL; j++)
       for (k = 0; k < NUM_SPECIAL_GFX_ARGS; k++)
 	if (global_anim_info[i].sound[j][k] != SND_UNDEFINED)
-	  printf("::: - anim %d, part %d, mode %d => %d\n",
-		 i, j, k, global_anim_info[i].sound[j][k]);
+	  Debug("init:InitGlobalAnimSoundInfo",
+		"anim %d, part %d, mode %d => %d",
+		i, j, k, global_anim_info[i].sound[j][k]);
 #endif
 }
 
@@ -749,14 +747,13 @@ static void InitGlobalAnimMusicInfo(void)
   }
 
 #if 0
-  printf("::: InitGlobalAnimMusicInfo\n");
-
   for (i = 0; i < NUM_GLOBAL_ANIMS; i++)
     for (j = 0; j < NUM_GLOBAL_ANIM_PARTS_ALL; j++)
       for (k = 0; k < NUM_SPECIAL_GFX_ARGS; k++)
 	if (global_anim_info[i].music[j][k] != MUS_UNDEFINED)
-	  printf("::: - anim %d, part %d, mode %d => %d\n",
-		 i, j, k, global_anim_info[i].music[j][k]);
+	  Debug("init:InitGlobalAnimMusicInfo",
+		"anim %d, part %d, mode %d => %d",
+		i, j, k, global_anim_info[i].music[j][k]);
 #endif
 }
 
@@ -5621,36 +5618,36 @@ static void InitImages(void)
   print_timestamp_init("InitImages");
 
 #if 0
-  printf("::: leveldir_current->identifier == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
-  printf("::: leveldir_current->graphics_path == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
-  printf("::: leveldir_current->graphics_set == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_set);
-  printf("::: getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : LEVELDIR_ARTWORK_SET(leveldir_current, ARTWORK_TYPE_GRAPHICS));
+  Debug("init:InitImages", "leveldir_current->identifier == '%s'",
+	leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
+  Debug("init:InitImages", "leveldir_current->graphics_path == '%s'",
+	leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
+  Debug("init:InitImages", "leveldir_current->graphics_set == '%s'",
+	leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_set);
+  Debug("init:InitImages", "getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'",
+	leveldir_current == NULL ? "[NULL]" : LEVELDIR_ARTWORK_SET(leveldir_current, ARTWORK_TYPE_GRAPHICS));
 #endif
 
   setLevelArtworkDir(artwork.gfx_first);
 
 #if 0
-  printf("::: leveldir_current->identifier == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
-  printf("::: leveldir_current->graphics_path == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
-  printf("::: leveldir_current->graphics_set == '%s'\n",
+  Debug("init:InitImages", "leveldir_current->identifier == '%s'",
+	leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
+  Debug("init:InitImages", "leveldir_current->graphics_path == '%s'",
+	leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
+  Debug("init:InitImages", "leveldir_current->graphics_set == '%s'",
 	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_set);
-  printf("::: getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : LEVELDIR_ARTWORK_SET(leveldir_current, ARTWORK_TYPE_GRAPHICS));
+  Debug("init:InitImages", "getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'",
+	leveldir_current == NULL ? "[NULL]" : LEVELDIR_ARTWORK_SET(leveldir_current, ARTWORK_TYPE_GRAPHICS));
 #endif
 
 #if 0
-  printf("::: InitImages for '%s' ['%s', '%s'] ['%s', '%s']\n",
-	 leveldir_current->identifier,
-	 artwork.gfx_current_identifier,
-	 artwork.gfx_current->identifier,
-	 leveldir_current->graphics_set,
-	 leveldir_current->graphics_path);
+  Debug("init:InitImages", "InitImages for '%s' ['%s', '%s'] ['%s', '%s']",
+	leveldir_current->identifier,
+	artwork.gfx_current_identifier,
+	artwork.gfx_current->identifier,
+	leveldir_current->graphics_set,
+	leveldir_current->graphics_path);
 #endif
 
   UPDATE_BUSY_STATE();
@@ -5809,22 +5806,27 @@ static boolean CheckArtworkTypeForRedefinedCustomElements(int type)
   setLevelArtworkDir(ARTWORK_FIRST_NODE(artwork, type));
 
 #if 0
-  printf("::: leveldir_current->identifier == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
-  printf("::: leveldir_current->graphics_path == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
-  printf("::: leveldir_current->graphics_set == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_set);
-  printf("::: getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'\n",
-	 leveldir_current == NULL ? "[NULL]" :
-	 LEVELDIR_ARTWORK_SET(leveldir_current, type));
+  Debug("init:CheckArtworkTypeForRedefinedCustomElements",
+	"leveldir_current->identifier == '%s'",
+	leveldir_current == NULL ? "[NULL]" : leveldir_current->identifier);
+  Debug("init:CheckArtworkTypeForRedefinedCustomElements",
+	"leveldir_current->graphics_path == '%s'",
+	leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_path);
+  Debug("init:CheckArtworkTypeForRedefinedCustomElements",
+	"leveldir_current->graphics_set == '%s'",
+	leveldir_current == NULL ? "[NULL]" : leveldir_current->graphics_set);
+  Debug("init:CheckArtworkTypeForRedefinedCustomElements",
+	"getLevelArtworkSet(ARTWORK_TYPE_GRAPHICS) == '%s'",
+	leveldir_current == NULL ? "[NULL]" :
+	LEVELDIR_ARTWORK_SET(leveldir_current, type));
 #endif
 
   // first look for special artwork configured in level series config
   filename_base = getCustomArtworkLevelConfigFilename(type);
 
 #if 0
-  printf("::: filename_base == '%s'\n", filename_base);
+  Debug("init:CheckArtworkTypeForRedefinedCustomElements",
+	"filename_base == '%s'", filename_base);
 #endif
 
   if (fileExists(filename_base))
@@ -5833,14 +5835,16 @@ static boolean CheckArtworkTypeForRedefinedCustomElements(int type)
   filename_local = getCustomArtworkConfigFilename(type);
 
 #if 0
-  printf("::: filename_local == '%s'\n", filename_local);
+  Debug("init:CheckArtworkTypeForRedefinedCustomElements",
+	"filename_local == '%s'", filename_local);
 #endif
 
   if (filename_local != NULL && !strEqual(filename_base, filename_local))
     redefined_ce_found |= CheckArtworkConfigForCustomElements(filename_local);
 
 #if 0
-  printf("::: redefined_ce_found == %d\n", redefined_ce_found);
+  Debug("init:CheckArtworkTypeForRedefinedCustomElements",
+	"redefined_ce_found == %d", redefined_ce_found);
 #endif
 
   return redefined_ce_found;
@@ -5865,7 +5869,8 @@ static void InitOverrideArtwork(void)
        CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_MUSIC));
 
 #if 0
-  printf("::: redefined_ce_found == %d\n", redefined_ce_found);
+  Debug("init:InitOverrideArtwork", "redefined_ce_found == %d",
+	redefined_ce_found);
 #endif
 
   if (redefined_ce_found)
@@ -5884,10 +5889,10 @@ static void InitOverrideArtwork(void)
   }
 
 #if 0
-  printf("::: => %d, %d, %d\n",
-	 gfx.override_level_graphics,
-	 gfx.override_level_sounds,
-	 gfx.override_level_music);
+  Debug("init:InitOverrideArtwork", "%d, %d, %d",
+	gfx.override_level_graphics,
+	gfx.override_level_sounds,
+	gfx.override_level_music);
 #endif
 }
 

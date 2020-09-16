@@ -355,7 +355,7 @@ boolean ConnectToServer(char *hostname, int port)
     else
       DrawNetworkText_Failed("No local network server found!");
 
-    printf("SDLNet_TCP_Open(): %s\n", SDLNet_GetError());
+    Debug("network:client", "SDLNet_TCP_Open(): %s", SDLNet_GetError());
   }
 
   if (hostname)			// connect to specified server failed
@@ -394,7 +394,7 @@ void SendToServer_PlayerName(char *player_name)
 
   SendNetworkBufferToServer(write_buffer);
 
-  Error(ERR_NETWORK_CLIENT, "you set your player name to \"%s\"", player_name);
+  Debug("network:client", "you set your player name to \"%s\"", player_name);
 }
 
 void SendToServer_ProtocolVersion(void)
@@ -443,15 +443,15 @@ void SendToServer_LevelFile(void)
   network_level.use_network_level_files = FALSE;
 
 #if 0
-  printf("::: '%s'\n", leveldir_current->identifier);
-  printf("::: '%d'\n", level.file_info.nr);
-  printf("::: '%d'\n", level.file_info.type);
-  printf("::: '%d'\n", level.file_info.packed);
-  printf("::: '%s'\n", level.file_info.basename);
-  printf("::: '%s'\n", level.file_info.filename);
+  Debug("network:client", "'%s'", leveldir_current->identifier);
+  Debug("network:client", "'%d'", level.file_info.nr);
+  Debug("network:client", "'%d'", level.file_info.type);
+  Debug("network:client", "'%d'", level.file_info.packed);
+  Debug("network:client", "'%s'", level.file_info.basename);
+  Debug("network:client", "'%s'", level.file_info.filename);
 
   if (level.use_custom_template)
-    printf("::: '%s'\n", level_template.file_info.filename);
+    Debug("network:client", "'%s'", level_template.file_info.filename);
 #endif
 }
 
@@ -531,7 +531,8 @@ static void Handle_OP_YOUR_NUMBER(void)
   struct PlayerInfo *old_local_player = local_player;
   struct PlayerInfo *new_local_player = &stored_player[new_index_nr];
 
-  printf("OP_YOUR_NUMBER: %d\n", old_client_nr);
+  Debug("network:client", "OP_YOUR_NUMBER: %d", old_client_nr);
+
   first_player.nr = new_client_nr;
 
   if (old_local_player != new_local_player)
@@ -550,7 +551,7 @@ static void Handle_OP_YOUR_NUMBER(void)
   if (first_player.nr > MAX_PLAYERS)
     Error(ERR_EXIT, "sorry, more than %d players not allowed", MAX_PLAYERS);
 
-  Error(ERR_NETWORK_CLIENT, "you get client # %d", new_client_nr);
+  Debug("network:client", "you get client # %d", new_client_nr);
 
   stored_player[new_index_nr].connected_network = TRUE;
 }
@@ -566,17 +567,17 @@ static void Handle_OP_NUMBER_WANTED(void)
   struct PlayerInfo *old_player = &stored_player[old_index_nr];
   struct PlayerInfo *new_player = &stored_player[new_index_nr];
 
-  printf("OP_NUMBER_WANTED: %d\n", old_client_nr);
+  Debug("network:client", "OP_NUMBER_WANTED: %d", old_client_nr);
 
   if (new_client_nr == client_nr_wanted)	// switching succeeded
   {
     struct NetworkClientPlayerInfo *player;
 
     if (old_client_nr != client_nr_wanted)	// client's nr has changed
-      Error(ERR_NETWORK_CLIENT, "client %d switches to # %d",
+      Debug("network:client", "client %d switches to # %d",
 	    old_client_nr, new_client_nr);
     else if (old_client_nr == first_player.nr)	// local player keeps his nr
-      Error(ERR_NETWORK_CLIENT, "keeping client # %d", new_client_nr);
+      Debug("network:client", "keeping client # %d", new_client_nr);
 
     if (old_client_nr != new_client_nr)
     {
@@ -606,7 +607,7 @@ static void Handle_OP_NUMBER_WANTED(void)
 
     Request(request, REQ_CONFIRM);
 
-    Error(ERR_NETWORK_CLIENT, "cannot switch -- you keep client # %d",
+    Debug("network:client", "cannot switch -- you keep client # %d",
 	  new_client_nr);
   }
 
@@ -620,12 +621,12 @@ static void Handle_OP_PLAYER_NAME(void)
   char *player_name = getNetworkBufferString(read_buffer);
   struct NetworkClientPlayerInfo *player = getNetworkPlayer(player_nr);
 
-  printf("OP_PLAYER_NAME: %d\n", player_nr);
+  Debug("network:client", "OP_PLAYER_NAME: %d", player_nr);
 
   strncpy(player->name, player_name, MAX_PLAYER_NAME_LEN);
   player->name[MAX_PLAYER_NAME_LEN] = '\0';
 
-  Error(ERR_NETWORK_CLIENT, "client %d calls itself \"%s\"",
+  Debug("network:client", "client %d calls itself \"%s\"",
 	player_nr, player->name);
 }
 
@@ -635,8 +636,8 @@ static void Handle_OP_PLAYER_CONNECTED(void)
   int new_client_nr = getNetworkBuffer8BitInteger(read_buffer);
   int new_index_nr = new_client_nr - 1;
 
-  printf("OP_PLAYER_CONNECTED: %d\n", new_client_nr);
-  Error(ERR_NETWORK_CLIENT, "new client %d connected", new_client_nr);
+  Debug("network:client", "OP_PLAYER_CONNECTED: %d", new_client_nr);
+  Debug("network:client", "new client %d connected", new_client_nr);
 
   for (player = &first_player; player; player = player->next)
   {
@@ -661,10 +662,11 @@ static void Handle_OP_PLAYER_DISCONNECTED(void)
   int player_nr = getNetworkBuffer8BitInteger(read_buffer);
   int index_nr = player_nr - 1;
 
-  printf("OP_PLAYER_DISCONNECTED: %d\n", player_nr);
-  player_disconnected = getNetworkPlayer(player_nr);
-  Error(ERR_NETWORK_CLIENT, "client %d (%s) disconnected",
+  Debug("network:client", "OP_PLAYER_DISCONNECTED: %d", player_nr);
+  Debug("network:client", "client %d (%s) disconnected",
 	player_nr, getNetworkPlayerName(player_nr));
+
+  player_disconnected = getNetworkPlayer(player_nr);
 
   for (player = &first_player; player; player = player->next)
     if (player->next == player_disconnected)
@@ -709,9 +711,9 @@ static void Handle_OP_START_PLAYING(void)
     return;
   }
 
-  printf("OP_START_PLAYING: %d\n", player_nr);
-  Error(ERR_NETWORK_CLIENT,
-	"client %d starts game [level %d from level identifier '%s']\n",
+  Debug("network:client", "OP_START_PLAYING: %d", player_nr);
+  Debug("network:client",
+	"client %d starts game [level %d from level identifier '%s']",
 	player_nr, new_level_nr, new_leveldir_identifier);
 
   LevelDirTree *new_leveldir =
@@ -740,8 +742,8 @@ static void Handle_OP_PAUSE_PLAYING(void)
 {
   int player_nr = getNetworkBuffer8BitInteger(read_buffer);
 
-  printf("OP_PAUSE_PLAYING: %d\n", player_nr);
-  Error(ERR_NETWORK_CLIENT, "client %d pauses game", player_nr);
+  Debug("network:client", "OP_PAUSE_PLAYING: %d", player_nr);
+  Debug("network:client", "client %d pauses game", player_nr);
 
   if (game_status == GAME_MODE_PLAYING)
   {
@@ -754,8 +756,8 @@ static void Handle_OP_CONTINUE_PLAYING(void)
 {
   int player_nr = getNetworkBuffer8BitInteger(read_buffer);
 
-  printf("OP_CONTINUE_PLAYING: %d\n", player_nr);
-  Error(ERR_NETWORK_CLIENT, "client %d continues game", player_nr);
+  Debug("network:client", "OP_CONTINUE_PLAYING: %d", player_nr);
+  Debug("network:client", "client %d continues game", player_nr);
 
   if (game_status == GAME_MODE_PLAYING)
   {
@@ -769,8 +771,9 @@ static void Handle_OP_STOP_PLAYING(void)
   int client_nr = getNetworkBuffer8BitInteger(read_buffer);
   int cause_for_stopping = getNetworkBuffer8BitInteger(read_buffer);
 
-  printf("OP_STOP_PLAYING: %d [%d]\n", client_nr, cause_for_stopping);
-  Error(ERR_NETWORK_CLIENT, "client %d stops game [%d]",
+  Debug("network:client", "OP_STOP_PLAYING: %d [%d]",
+	client_nr, cause_for_stopping);
+  Debug("network:client", "client %d stops game [%d]",
 	client_nr, cause_for_stopping);
 
   if (game_status == GAME_MODE_PLAYING)
@@ -830,8 +833,8 @@ static void Handle_OP_BROADCAST_MESSAGE(void)
 {
   int player_nr = getNetworkBuffer8BitInteger(read_buffer);
 
-  printf("OP_BROADCAST_MESSAGE: %d\n", player_nr);
-  Error(ERR_NETWORK_CLIENT, "client %d sends message", player_nr);
+  Debug("network:client", "OP_BROADCAST_MESSAGE: %d", player_nr);
+  Debug("network:client", "client %d sends message", player_nr);
 }
 
 static void Handle_OP_LEVEL_FILE(void)
@@ -849,7 +852,7 @@ static void Handle_OP_LEVEL_FILE(void)
   setString(&network_level.tmpl_info.basename,  NULL);
   setString(&network_level.tmpl_info.filename,  NULL);
 
-  printf("OP_LEVEL_FILE: %d\n", player_nr);
+  Debug("network:client", "OP_LEVEL_FILE: %d", player_nr);
 
   leveldir_identifier = getStringCopy(getNetworkBufferString(read_buffer));
 
@@ -900,15 +903,15 @@ static void Handle_OP_LEVEL_FILE(void)
   network_level.use_network_level_files = TRUE;
 
 #if 0
-  printf("::: '%s'\n", leveldir_identifier);
-  printf("::: '%d'\n", file_info->nr);
-  printf("::: '%d'\n", file_info->type);
-  printf("::: '%d'\n", file_info->packed);
-  printf("::: '%s'\n", file_info->basename);
-  printf("::: '%s'\n", file_info->filename);
+  Debug("network:client", "'%s'", leveldir_identifier);
+  Debug("network:client", "'%d'", file_info->nr);
+  Debug("network:client", "'%d'", file_info->type);
+  Debug("network:client", "'%d'", file_info->packed);
+  Debug("network:client", "'%s'", file_info->basename);
+  Debug("network:client", "'%s'", file_info->filename);
 
   if (use_custom_template)
-    printf("::: '%s'\n", tmpl_info->filename);
+    Debug("network:client", "'%s'", tmpl_info->filename);
 #endif
 }
 
@@ -975,9 +978,7 @@ static void HandleNetworkingMessage(void)
       break;
 
     default:
-      if (options.verbose)
-	Error(ERR_NETWORK_CLIENT,
-	      "unknown opcode %d from server", message_type);
+      Debug("network:client", "unknown opcode %d from server", message_type);
   }
 
   fflush(stdout);

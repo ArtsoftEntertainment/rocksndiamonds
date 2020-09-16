@@ -1611,8 +1611,9 @@ void DrawGraphic(int x, int y, int graphic, int frame)
 #if DEBUG
   if (!IN_SCR_FIELD(x, y))
   {
-    printf("DrawGraphic(): x = %d, y = %d, graphic = %d\n", x, y, graphic);
-    printf("DrawGraphic(): This should never happen!\n");
+    Debug("draw:DrawGraphic", "x = %d, y = %d, graphic = %d", x, y, graphic);
+    Debug("draw:DrawGraphic", "This should never happen!");
+
     return;
   }
 #endif
@@ -1628,8 +1629,10 @@ void DrawFixedGraphic(int x, int y, int graphic, int frame)
 #if DEBUG
   if (!IN_SCR_FIELD(x, y))
   {
-    printf("DrawGraphic(): x = %d, y = %d, graphic = %d\n", x, y, graphic);
-    printf("DrawGraphic(): This should never happen!\n");
+    Debug("draw:DrawFixedGraphic", "x = %d, y = %d, graphic = %d",
+	  x, y, graphic);
+    Debug("draw:DrawFixedGraphic", "This should never happen!");
+
     return;
   }
 #endif
@@ -1665,8 +1668,10 @@ void DrawGraphicThruMask(int x, int y, int graphic, int frame)
 #if DEBUG
   if (!IN_SCR_FIELD(x, y))
   {
-    printf("DrawGraphicThruMask(): x = %d,y = %d, graphic = %d\n",x,y,graphic);
-    printf("DrawGraphicThruMask(): This should never happen!\n");
+    Debug("draw:DrawGraphicThruMask", "x = %d,y = %d, graphic = %d",
+	  x, y, graphic);
+    Debug("draw:DrawGraphicThruMask", "This should never happen!");
+
     return;
   }
 #endif
@@ -1682,8 +1687,10 @@ void DrawFixedGraphicThruMask(int x, int y, int graphic, int frame)
 #if DEBUG
   if (!IN_SCR_FIELD(x, y))
   {
-    printf("DrawGraphicThruMask(): x = %d,y = %d, graphic = %d\n",x,y,graphic);
-    printf("DrawGraphicThruMask(): This should never happen!\n");
+    Debug("draw:DrawFixedGraphicThruMask", "x = %d,y = %d, graphic = %d",
+	  x, y, graphic);
+    Debug("draw:DrawFixedGraphicThruMask", "This should never happen!");
+
     return;
   }
 #endif
@@ -1844,8 +1851,10 @@ static void DrawGraphicShiftedNormal(int x, int y, int dx, int dy,
 #if DEBUG
   if (!IN_SCR_FIELD(x, y))
   {
-    printf("DrawGraphicShifted(): x = %d, y = %d, graphic = %d\n",x,y,graphic);
-    printf("DrawGraphicShifted(): This should never happen!\n");
+    Debug("draw:DrawGraphicShiftedNormal", "x = %d, y = %d, graphic = %d",
+	  x, y, graphic);
+    Debug("draw:DrawGraphicShiftedNormal", "This should never happen!");
+
     return;
   }
 #endif
@@ -3869,8 +3878,8 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
 #if DEBUG
   if (!IN_LEV_FIELD(player->jx, player->jy))
   {
-    printf("DrawPlayerField(): x = %d, y = %d\n", player->jx, player->jy);
-    printf("DrawPlayerField(): This should never happen!\n");
+    Debug("draw:DrawPlayerExt", "x = %d, y = %d", player->jx, player->jy);
+    Debug("draw:DrawPlayerExt", "This should never happen!");
 
     draw_player[pnr] = FALSE;
 

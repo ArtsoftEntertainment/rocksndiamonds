@@ -189,7 +189,7 @@ int receiveNetworkBufferBytes(struct NetworkBuffer *nb, TCPsocket socket,
 {
   if (num_bytes > MAX_PACKET_SIZE)
   {
-    Error(ERR_NETWORK_SERVER, "protocol error: invalid packet size %d",
+    Debug("network:server", "protocol error: invalid packet size %d",
 	  num_bytes);
 
     return -1;
@@ -435,9 +435,8 @@ static void SendNetworkBufferToClient(struct NetworkBuffer *nb,
 
 static void RemovePlayer(struct NetworkServerPlayerInfo *player)
 {
-  if (options.verbose)
-    Error(ERR_NETWORK_SERVER, "dropping client %d (%s)",
-	  player->number, player->player_name);
+  Debug("network:server", "dropping client %d (%s)",
+	player->number, player->player_name);
 
   SDLNet_TCP_DelSocket(fds, player->fd);
   SDLNet_TCP_Close(player->fd);
@@ -475,11 +474,8 @@ static void RemovePlayer(struct NetworkServerPlayerInfo *player)
 #if 0	// do not terminate network server if last player disconnected
   if (run_server_only_once && num_clients == 0)
   {
-    if (options.verbose)
-    {
-      Error(ERR_NETWORK_SERVER, "no clients left");
-      Error(ERR_NETWORK_SERVER, "aborting");
-    }
+    Debug("network:server", "no clients left");
+    Debug("network:server", "aborting");
 
     exit(0);
   }
@@ -545,13 +541,12 @@ static void Handle_OP_PROTOCOL_VERSION(struct NetworkServerPlayerInfo *player)
   if (protocol_version_major != PROTOCOL_VERSION_MAJOR ||
       protocol_version_minor != PROTOCOL_VERSION_MINOR)
   {
-    if (options.verbose)
-      Error(ERR_NETWORK_SERVER,
-	    "client %d (%s) has wrong protocol version %d.%d.%d",
-	    player->number, player->player_name,
-	    protocol_version_major,
-	    protocol_version_minor,
-	    protocol_version_patch);
+    Debug("network:server",
+	  "client %d (%s) has wrong protocol version %d.%d.%d",
+	  player->number, player->player_name,
+	  protocol_version_major,
+	  protocol_version_minor,
+	  protocol_version_patch);
 
     initNetworkBufferForWriting(write_buffer, OP_BAD_PROTOCOL_VERSION, 0);
 
@@ -565,13 +560,12 @@ static void Handle_OP_PROTOCOL_VERSION(struct NetworkServerPlayerInfo *player)
   }
   else
   {
-    if (options.verbose)
-      Error(ERR_NETWORK_SERVER,
-	    "client %d (%s) uses protocol version %d.%d.%d",
-	    player->number, player->player_name,
-	    protocol_version_major,
-	    protocol_version_minor,
-	    protocol_version_patch);
+    Debug("network:server",
+	  "client %d (%s) uses protocol version %d.%d.%d",
+	  player->number, player->player_name,
+	  protocol_version_major,
+	  protocol_version_minor,
+	  protocol_version_patch);
   }
 }
 
@@ -582,9 +576,8 @@ static void Handle_OP_NUMBER_WANTED(struct NetworkServerPlayerInfo *player)
   boolean nr_is_free = TRUE;
   struct NetworkServerPlayerInfo *p;
 
-  if (options.verbose)
-      Error(ERR_NETWORK_SERVER, "client %d (%s) wants to switch to # %d",
-	    player->number, player->player_name, nr_wanted);
+  Debug("network:server", "client %d (%s) wants to switch to # %d",
+	player->number, player->player_name, nr_wanted);
 
   for (p = first_player; p != NULL; p = p->next)
   {
@@ -596,19 +589,16 @@ static void Handle_OP_NUMBER_WANTED(struct NetworkServerPlayerInfo *player)
     }
   }
 
-  if (options.verbose)
-  {
-    if (nr_is_free)
-      Error(ERR_NETWORK_SERVER, "client %d (%s) switches to # %d",
-	    player->number, player->player_name, nr_wanted);
-    else if (player->number == nr_wanted)
-      Error(ERR_NETWORK_SERVER, "client %d (%s) already has # %d",
-	    player->number, player->player_name, nr_wanted);
-    else
-      Error(ERR_NETWORK_SERVER,
-	    "client %d (%s) cannot switch (client %d already exists)",
-	    player->number, player->player_name, nr_wanted);
-  }
+  if (nr_is_free)
+    Debug("network:server", "client %d (%s) switches to # %d",
+	  player->number, player->player_name, nr_wanted);
+  else if (player->number == nr_wanted)
+    Debug("network:server", "client %d (%s) already has # %d",
+	  player->number, player->player_name, nr_wanted);
+  else
+    Debug("network:server",
+	  "client %d (%s) cannot switch (client %d already exists)",
+	  player->number, player->player_name, nr_wanted);
 
   if (nr_is_free)
     player->number = nr_wanted;
@@ -649,9 +639,8 @@ static void Handle_OP_PLAYER_NAME(struct NetworkServerPlayerInfo *player)
     SendNetworkBufferToAllButOne(write_buffer, player);
   }
 	      
-  if (options.verbose)
-    Error(ERR_NETWORK_SERVER, "client %d calls itself \"%s\"",
-	  player->number, player->player_name);
+  Debug("network:server", "client %d calls itself \"%s\"",
+	player->number, player->player_name);
 
   copyNetworkBufferForWriting(read_buffer, write_buffer, player->number);
 
@@ -687,18 +676,17 @@ static void Handle_OP_START_PLAYING(struct NetworkServerPlayerInfo *player)
   char *new_leveldir_identifier = getNetworkBufferString(read_buffer);
   int level_nr = getNetworkBuffer16BitInteger(read_buffer);
 
-  if (options.verbose)
-    Error(ERR_NETWORK_SERVER,
-	  "client %d (%s) starts game [level %d from level set '%s']",
-	  player->number, player->player_name, level_nr,
-	  new_leveldir_identifier);
+  Debug("network:server",
+	"client %d (%s) starts game [level %d from level set '%s']",
+	player->number, player->player_name, level_nr,
+	new_leveldir_identifier);
 
   struct NetworkServerPlayerInfo *p;
 
   // reset frame counter
   ServerFrameCounter = 0;
 
-  Error(ERR_NETWORK_SERVER, "resetting ServerFrameCounter to 0");
+  Debug("network:server", "resetting ServerFrameCounter to 0");
 
   // reset player actions
   for (p = first_player; p != NULL; p = p->next)
@@ -717,9 +705,8 @@ static void Handle_OP_START_PLAYING(struct NetworkServerPlayerInfo *player)
 
 static void Handle_OP_PAUSE_PLAYING(struct NetworkServerPlayerInfo *player)
 {
-  if (options.verbose)
-    Error(ERR_NETWORK_SERVER, "client %d (%s) pauses game",
-	  player->number, player->player_name);
+  Debug("network:server", "client %d (%s) pauses game",
+	player->number, player->player_name);
 
   copyNetworkBufferForWriting(read_buffer, write_buffer, player->number);
 
@@ -728,9 +715,8 @@ static void Handle_OP_PAUSE_PLAYING(struct NetworkServerPlayerInfo *player)
 
 static void Handle_OP_CONTINUE_PLAYING(struct NetworkServerPlayerInfo *player)
 {
-  if (options.verbose)
-    Error(ERR_NETWORK_SERVER, "client %d (%s) continues game",
-	  player->number, player->player_name);
+  Debug("network:server", "client %d (%s) continues game",
+	player->number, player->player_name);
 
   copyNetworkBufferForWriting(read_buffer, write_buffer, player->number);
 
@@ -741,9 +727,8 @@ static void Handle_OP_STOP_PLAYING(struct NetworkServerPlayerInfo *player)
 {
   int cause_for_stopping = getNetworkBuffer8BitInteger(read_buffer);
 
-  if (options.verbose)
-    Error(ERR_NETWORK_SERVER, "client %d (%s) stops game [%d]",
-	  player->number, player->player_name, cause_for_stopping);
+  Debug("network:server", "client %d (%s) stops game [%d]",
+	player->number, player->player_name, cause_for_stopping);
 
   copyNetworkBufferForWriting(read_buffer, write_buffer, player->number);
 
@@ -808,9 +793,8 @@ static void Handle_OP_BROADCAST_MESSAGE(struct NetworkServerPlayerInfo *player)
 {
   char *message = getNetworkBufferString(read_buffer);
 
-  if (options.verbose)
-    Error(ERR_NETWORK_SERVER, "client %d (%s) sends message: %s",
-	  player->number, player->player_name, message);
+  Debug("network:server", "client %d (%s) sends message: %s",
+	player->number, player->player_name, message);
 
   copyNetworkBufferForWriting(read_buffer, write_buffer, player->number);
 
@@ -826,7 +810,7 @@ static void Handle_OP_LEVEL_FILE(struct NetworkServerPlayerInfo *player)
 
 static void ExitNetworkServer(int exit_value)
 {
-  Error(ERR_NETWORK_SERVER, "exiting network server");
+  Debug("network:server", "exiting network server");
 
   exit(exit_value);
 }
@@ -901,14 +885,11 @@ void NetworkServer(int port, int serveronly)
     Error(ERR_EXIT_NETWORK_SERVER, "SDLNet_TCP_AddSocket() failed: %s"),
       SDLNet_GetError();
 
-  if (options.verbose)
-  {
-    Error(ERR_NETWORK_SERVER, "started up, listening on port %d", port);
-    Error(ERR_NETWORK_SERVER, "using protocol version %d.%d.%d",
-	  PROTOCOL_VERSION_MAJOR,
-	  PROTOCOL_VERSION_MINOR,
-	  PROTOCOL_VERSION_PATCH);
-  }
+  Debug("network:server", "started up, listening on port %d", port);
+  Debug("network:server", "using protocol version %d.%d.%d",
+	PROTOCOL_VERSION_MAJOR,
+	PROTOCOL_VERSION_MINOR,
+	PROTOCOL_VERSION_PATCH);
 
   while (1)
   {
@@ -956,9 +937,8 @@ void NetworkServer(int port, int serveronly)
 
       if (num_bytes <= 0)
       {
-	if (options.verbose)
-	  Error(ERR_NETWORK_SERVER, "EOF from client %d (%s)",
-		player->number, player->player_name);
+	Debug("network:server", "EOF from client %d (%s)",
+	      player->number, player->player_name);
 
 	RemovePlayer(player);
 
@@ -976,8 +956,7 @@ void NetworkServer(int port, int serveronly)
 	  message_type != OP_PLAYER_NAME &&
 	  message_type != OP_PROTOCOL_VERSION)
       {
-	if (options.verbose)
-	  Error(ERR_NETWORK_SERVER, "got opcode %d for client %d which is not introduced yet (expected OP_PLAYER_NAME or OP_PROTOCOL_VERSION)", message_type, player->number);
+	Debug("network:server", "got opcode %d for client %d which is not introduced yet (expected OP_PLAYER_NAME or OP_PROTOCOL_VERSION)", message_type, player->number);
 
 	RemovePlayer(player);
 
@@ -1027,10 +1006,8 @@ void NetworkServer(int port, int serveronly)
 	  break;
 
 	default:
-	  if (options.verbose)
-	    Error(ERR_NETWORK_SERVER,
-		  "unknown opcode %d from client %d (%s)",
-		  message_type, player->number, player->player_name);
+	  Debug("network:server", "unknown opcode %d from client %d (%s)",
+		message_type, player->number, player->player_name);
       }
     }
   }
