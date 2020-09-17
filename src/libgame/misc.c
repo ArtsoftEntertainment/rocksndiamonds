@@ -300,7 +300,7 @@ static void Log(int log_level, char *mode, char *format, va_list ap)
 
     // if optional debug mode specified, limit debug output accordingly
     if (options.debug_mode != NULL &&
-	!strEqual(options.debug_mode, mode))
+	strstr(mode, options.debug_mode) == NULL)
       return;
   }
 
