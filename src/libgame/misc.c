@@ -293,6 +293,17 @@ static void Log(int log_level, char *mode, char *format, va_list ap)
   if (log_level < 0 || log_level > LOG_FATAL)
     return;
 
+  if (log_level == LOG_DEBUG)
+  {
+    if (!options.debug)
+      return;
+
+    // if optional debug mode specified, limit debug output accordingly
+    if (options.debug_mode != NULL &&
+	!strEqual(options.debug_mode, mode))
+      return;
+  }
+
 #if defined(PLATFORM_ANDROID)
   android_log_prio = (log_level == LOG_DEBUG ? ANDROID_LOG_DEBUG :
 		      log_level == LOG_INFO  ? ANDROID_LOG_INFO :
@@ -339,14 +350,6 @@ static void Log(int log_level, char *mode, char *format, va_list ap)
 void Debug(char *mode, char *format, ...)
 {
   va_list ap;
-
-  if (!options.debug)
-    return;
-
-  // if optional debug mode specified, limit debug output accordingly
-  if (options.debug_mode != NULL &&
-      !strEqual(options.debug_mode, mode))
-    return;
 
   va_start(ap, format);
   Log(LOG_DEBUG, mode, format, ap);
