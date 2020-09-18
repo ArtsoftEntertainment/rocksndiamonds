@@ -106,6 +106,7 @@ void PrintNoLog(char *, ...);
 void PrintLine(char *, int);
 void PrintLineWithPrefix(char *, char *, int);
 
+void DebugContinued(char *, char *, ...);
 void Debug(char *, char *, ...);
 void Info(char *, ...);
 void Warn(char *, ...);

@@ -363,6 +363,38 @@ static void Log(int log_level, char *mode, char *format, ...)
   va_end(ap);
 }
 
+void DebugContinued(char *mode, char *format, ...)
+{
+  static char message[MAX_LINE_LEN] = { 0 };
+
+  // initialize message (optional)
+  if (strEqual(format, ""))
+  {
+    message[0] = '\0';
+
+    return;
+  }
+
+  char *message_ptr = message + strlen(message);
+  int size_left = MAX_LINE_LEN - strlen(message);
+  va_list ap;
+
+  // append message
+  va_start(ap, format);
+  vsnprintf(message_ptr, size_left, format, ap);
+  va_end(ap);
+
+  // finalize message
+  if (strSuffix(format, "\n"))
+  {
+    message[strlen(message) - 1] = '\0';
+
+    Debug(mode, message);
+
+    message[0] = '\0';
+  }
+}
+
 void Debug(char *mode, char *format, ...)
 {
   va_list ap;

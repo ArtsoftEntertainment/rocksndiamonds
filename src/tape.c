@@ -894,10 +894,10 @@ byte *TapePlayAction(void)
     action[i] = tape.pos[tape.counter].action[i];
 
 #if DEBUG_TAPE_WHEN_PLAYING
-  Print("%05d", FrameCounter);
+  DebugContinued("", "%05d", FrameCounter);
   for (i = 0; i < MAX_TAPE_ACTIONS; i++)
-    Print("   %08x", action[i]);
-  Print("\n");
+    DebugContinued("", "   %08x", action[i]);
+  DebugContinued("tape:play", "\n");
 #endif
 
   tape.set_centered_player = FALSE;

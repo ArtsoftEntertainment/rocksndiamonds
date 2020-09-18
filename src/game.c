@@ -11661,9 +11661,8 @@ static void GameActionsExt(void)
     byte mapped_action[MAX_PLAYERS];
 
 #if DEBUG_PLAYER_ACTIONS
-    Print(":::");
     for (i = 0; i < MAX_PLAYERS; i++)
-      Print(" %d, ", stored_player[i].effective_action);
+      DebugContinued("", "%d, ", stored_player[i].effective_action);
 #endif
 
     for (i = 0; i < MAX_PLAYERS; i++)
@@ -11673,19 +11672,18 @@ static void GameActionsExt(void)
       stored_player[i].effective_action = mapped_action[i];
 
 #if DEBUG_PLAYER_ACTIONS
-    Print(" =>");
+    DebugContinued("", "=> ");
     for (i = 0; i < MAX_PLAYERS; i++)
-      Print(" %d, ", stored_player[i].effective_action);
-    Print("\n");
+      DebugContinued("", "%d, ", stored_player[i].effective_action);
+    DebugContinued("game:playing:player", "\n");
 #endif
   }
 #if DEBUG_PLAYER_ACTIONS
   else
   {
-    Print(":::");
     for (i = 0; i < MAX_PLAYERS; i++)
-      Print(" %d, ", stored_player[i].effective_action);
-    Print("\n");
+      DebugContinued("", "%d, ", stored_player[i].effective_action);
+    DebugContinued("game:playing:player", "\n");
   }
 #endif
 #endif

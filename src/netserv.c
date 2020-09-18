@@ -385,19 +385,19 @@ void dumpNetworkBuffer(struct NetworkBuffer *nb)
 {
   int i;
 
-  Print("::: network buffer maximum size: %d\n", nb->max_size);
-  Print("::: network buffer size:         %d\n", nb->size);
-  Print("::: network buffer position    : %d\n", nb->pos);
+  Debug("network:buffer", "network buffer maximum size: %d\n", nb->max_size);
+  Debug("network:buffer", "network buffer size:         %d\n", nb->size);
+  Debug("network:buffer", "network buffer position    : %d\n", nb->pos);
 
   for (i = 0; i < nb->size; i++)
   {
     if ((i % 16) == 0)
-      Print("\n::: ");
+      DebugContinued("network:buffer", "\n");
 
-    Print("%02x ", nb->buffer[i]);
+    DebugContinued("", "%02x ", nb->buffer[i]);
   }
 
-  Print("\n");
+  DebugContinued("network:buffer", "\n");
 }
 
 static void SendNetworkBufferToAllButOne(struct NetworkBuffer *nb,
