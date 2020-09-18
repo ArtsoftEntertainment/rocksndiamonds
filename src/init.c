@@ -6302,8 +6302,8 @@ void CloseAllAndExit(int exit_value)
   // using SDL_WaitThread()
   //
   // Code used with SDL 1.2:
-  // if (network_server)	// terminate network server
-  //   SDL_KillThread(server_thread);
+  // if (network.server_thread)	// terminate network server
+  //   SDL_KillThread(network.server_thread);
 
   CloseVideoDisplay();
   ClosePlatformDependentStuff();

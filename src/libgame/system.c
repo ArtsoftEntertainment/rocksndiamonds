@@ -114,6 +114,9 @@ void InitNetworkInfo(boolean enabled, boolean connected, boolean serveronly,
 
   network.server_host = server_host;
   network.server_port = server_port;
+
+  network.server_thread = NULL;
+  network.is_server_thread = FALSE;
 }
 
 void InitRuntimeInfo()

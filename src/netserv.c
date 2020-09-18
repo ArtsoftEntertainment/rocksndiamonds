@@ -819,6 +819,8 @@ static void ExitNetworkServer(int exit_value)
 // the pointer points to an integer containing the port-number
 int NetworkServerThread(void *ptr)
 {
+  network.is_server_thread = TRUE;
+
   NetworkServer(*((int *) ptr), 0);
 
   // should never be reached

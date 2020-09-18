@@ -189,9 +189,8 @@ static void StartNetworkServer(int port)
 
   p = port;
 
-  server_thread = SDL_CreateThread(NetworkServerThread,
-				   "NetworkServerThread", &p);
-  network_server = TRUE;
+  network.server_thread = SDL_CreateThread(NetworkServerThread,
+					   "NetworkServerThread", &p);
 }
 
 boolean ConnectToServer(char *hostname, int port)

@@ -977,6 +977,8 @@ struct NetworkInfo
   char *server_host;
   int server_port;
 
+  SDL_Thread *server_thread;
+  boolean is_server_thread;
 };
 
 struct RuntimeInfo
