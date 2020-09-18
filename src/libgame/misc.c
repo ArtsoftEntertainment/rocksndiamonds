@@ -288,7 +288,7 @@ static void printf_log_prefix(int log_level, char *mode)
     printf_log_nonewline("[%s] ", log_token);
 }
 
-static void Log(int log_level, char *mode, char *format, va_list ap)
+static void vLog(int log_level, char *mode, char *format, va_list ap)
 {
   if (log_level < 0 || log_level > LOG_FATAL)
     return;
@@ -352,7 +352,7 @@ void Debug(char *mode, char *format, ...)
   va_list ap;
 
   va_start(ap, format);
-  Log(LOG_DEBUG, mode, format, ap);
+  vLog(LOG_DEBUG, mode, format, ap);
   va_end(ap);
 }
 
@@ -361,7 +361,7 @@ void Info(char *format, ...)
   va_list ap;
 
   va_start(ap, format);
-  Log(LOG_INFO, NULL, format, ap);
+  vLog(LOG_INFO, NULL, format, ap);
   va_end(ap);
 }
 
@@ -370,7 +370,7 @@ void Warn(char *format, ...)
   va_list ap;
 
   va_start(ap, format);
-  Log(LOG_WARN, NULL, format, ap);
+  vLog(LOG_WARN, NULL, format, ap);
   va_end(ap);
 }
 
