@@ -1160,7 +1160,7 @@ Bitmap *LoadCustomImage(char *basename)
     Fail("LoadCustomImage(): cannot find file '%s'", basename);
 
   if ((new_bitmap = LoadImage(filename)) == NULL)
-    Fail("LoadImage('%s') failed: %s", basename, GetError());
+    Fail("LoadImage('%s') failed", basename);
 
   return new_bitmap;
 }
@@ -1188,7 +1188,7 @@ void ReloadCustomImage(Bitmap *bitmap, char *basename)
 
   if ((new_bitmap = LoadImage(filename)) == NULL)
   {
-    Warn("LoadImage('%s') failed: %s", basename, GetError());
+    Warn("LoadImage('%s') failed", basename);
 
     return;
   }

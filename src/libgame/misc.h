@@ -168,9 +168,6 @@ void GetOptions(int, char **,
 		void (*print_usage_function)(void),
 		void (*print_version_function)(void));
 
-void SetError(char *, ...);
-char *GetError(void);
-
 void *checked_malloc(unsigned int);
 void *checked_calloc(unsigned int);
 void *checked_realloc(void *, unsigned int);

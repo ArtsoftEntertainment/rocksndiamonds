@@ -1322,30 +1322,6 @@ void GetOptions(int argc, char *argv[],
 
 
 // ----------------------------------------------------------------------------
-// error handling functions
-// ----------------------------------------------------------------------------
-
-#define MAX_INTERNAL_ERROR_SIZE		1024
-
-// used by SetError() and GetError() to store internal error messages
-static char internal_error[MAX_INTERNAL_ERROR_SIZE];
-
-void SetError(char *format, ...)
-{
-  va_list ap;
-
-  va_start(ap, format);
-  vsnprintf(internal_error, MAX_INTERNAL_ERROR_SIZE, format, ap);
-  va_end(ap);
-}
-
-char *GetError(void)
-{
-  return internal_error;
-}
-
-
-// ----------------------------------------------------------------------------
 // checked memory allocation and freeing functions
 // ----------------------------------------------------------------------------
 

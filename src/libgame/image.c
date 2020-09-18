@@ -43,8 +43,7 @@ static void *Load_Image(char *filename)
 
   if ((img_info->bitmaps[IMG_BITMAP_STANDARD] = LoadImage(filename)) == NULL)
   {
-    Warn("cannot load image file '%s': LoadImage() failed: %s",
-	 filename, GetError());
+    Warn("cannot load image file '%s': LoadImage() failed", filename);
 
     free(img_info);
 
