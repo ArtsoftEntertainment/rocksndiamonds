@@ -34,23 +34,6 @@
 #define GetEngineRandom(max)		get_random_number(RANDOM_ENGINE, max)
 #define GetSimpleRandom(max)		get_random_number(RANDOM_SIMPLE, max)
 
-// values for Error()
-#define ERR_UNKNOWN			0
-#define ERR_DEBUG			(1 << 0)
-#define ERR_INFO			(1 << 1)
-#define ERR_INFO_LINE			(1 << 2)
-#define ERR_WARN			(1 << 3)
-#define ERR_EXIT			(1 << 4)
-#define ERR_HELP			(1 << 5)
-#define ERR_SOUND_SERVER		(1 << 6)
-#define ERR_NETWORK_SERVER		(1 << 7)
-#define ERR_NETWORK_CLIENT		(1 << 8)
-#define ERR_FROM_SERVER			(ERR_SOUND_SERVER | ERR_NETWORK_SERVER)
-#define ERR_EXIT_HELP			(ERR_EXIT | ERR_HELP)
-#define ERR_EXIT_SOUND_SERVER		(ERR_EXIT | ERR_SOUND_SERVER)
-#define ERR_EXIT_NETWORK_SERVER		(ERR_EXIT | ERR_NETWORK_SERVER)
-#define ERR_EXIT_NETWORK_CLIENT		(ERR_EXIT | ERR_NETWORK_CLIENT)
-
 // values for getFile...() and putFile...()
 #define BYTE_ORDER_BIG_ENDIAN		0
 #define BYTE_ORDER_LITTLE_ENDIAN	1
@@ -126,6 +109,7 @@ void PrintLineWithPrefix(char *, char *, int);
 void Debug(char *, char *, ...);
 void Info(char *, ...);
 void Warn(char *, ...);
+void Error(char *, ...);
 void Fail(char *, ...);
 void FailWithHelp(char *, ...);
 
@@ -186,7 +170,6 @@ void GetOptions(int, char **,
 
 void SetError(char *, ...);
 char *GetError(void);
-void Error(int, char *, ...);
 
 void *checked_malloc(unsigned int);
 void *checked_calloc(unsigned int);

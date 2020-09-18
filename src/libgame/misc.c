@@ -252,7 +252,7 @@ void PrintLineWithPrefix(char *prefix, char *line_chars, int line_length)
 
 
 // ----------------------------------------------------------------------------
-// generic logging functions
+// generic logging and error handling functions
 // ----------------------------------------------------------------------------
 
 enum log_levels
@@ -295,12 +295,19 @@ static void vLog(int log_level, char *mode, char *format, va_list ap)
 
   if (log_level == LOG_DEBUG)
   {
+    // only show debug messages when in debug mode
     if (!options.debug)
       return;
 
     // if optional debug mode specified, limit debug output accordingly
     if (options.debug_mode != NULL &&
 	strstr(mode, options.debug_mode) == NULL)
+      return;
+  }
+  else if (log_level == LOG_WARN)
+  {
+    // only show warning messages when in verbose mode
+    if (!options.verbose)
       return;
   }
 
@@ -380,6 +387,15 @@ void Warn(char *format, ...)
 
   va_start(ap, format);
   vLog(LOG_WARN, NULL, format, ap);
+  va_end(ap);
+}
+
+void Error(char *format, ...)
+{
+  va_list ap;
+
+  va_start(ap, format);
+  vLog(LOG_ERROR, NULL, format, ap);
   va_end(ap);
 }
 
@@ -1326,91 +1342,6 @@ void SetError(char *format, ...)
 char *GetError(void)
 {
   return internal_error;
-}
-
-void Error(int mode, char *format, ...)
-{
-  static boolean last_line_was_separator = FALSE;
-  char *process_name = "";
-
-  if (program.log_file[LOG_ERR_ID] == NULL)
-    return;
-
-#if defined(PLATFORM_ANDROID)
-  android_log_prio = (mode & ERR_DEBUG ? ANDROID_LOG_DEBUG :
-		      mode & ERR_INFO ? ANDROID_LOG_INFO :
-		      mode & ERR_WARN ? ANDROID_LOG_WARN :
-		      mode & ERR_EXIT ? ANDROID_LOG_FATAL :
-		      ANDROID_LOG_UNKNOWN);
-#endif
-
-  // display debug messages only when running in debug mode
-  if (mode & ERR_DEBUG && !options.debug)
-    return;
-
-  // display warnings only when running in verbose mode
-  if (mode & ERR_WARN && !options.verbose)
-    return;
-
-  if (mode == ERR_INFO_LINE)
-  {
-    if (!last_line_was_separator)
-      printf_log_line(format, 79);
-
-    last_line_was_separator = TRUE;
-
-    return;
-  }
-
-  last_line_was_separator = FALSE;
-
-  if (mode & ERR_SOUND_SERVER)
-    process_name = " sound server";
-  else if (mode & ERR_NETWORK_SERVER)
-    process_name = " network server";
-  else if (mode & ERR_NETWORK_CLIENT)
-    process_name = " network client **";
-
-  if (format)
-  {
-#if !defined(PLATFORM_ANDROID)
-    printf_log_nonewline("%s%s: ", program.command_basename, process_name);
-#endif
-
-    if (mode & ERR_WARN)
-      printf_log_nonewline("warning: ");
-
-    if (mode & ERR_EXIT)
-      printf_log_nonewline("fatal error: ");
-
-    va_list ap;
-
-    va_start(ap, format);
-    vprintf_log(format, ap);
-    va_end(ap);
-
-    if ((mode & ERR_EXIT) && !(mode & ERR_FROM_SERVER))
-    {
-      va_start(ap, format);
-      program.exit_message_function(format, ap);
-      va_end(ap);
-    }
-  }
-  
-  if (mode & ERR_HELP)
-    printf_log("%s: Try option '--help' for more information.",
-	       program.command_basename);
-
-  if (mode & ERR_EXIT)
-    printf_log("%s%s: aborting", program.command_basename, process_name);
-
-  if (mode & ERR_EXIT)
-  {
-    if (mode & ERR_FROM_SERVER)
-      exit(1);				// child process: normal exit
-    else
-      program.exit_function(1);		// main process: clean up stuff
-  }
 }
 
 
@@ -3001,13 +2932,14 @@ struct FileInfo *getFileListFromConfigList(struct ConfigInfo *config_list,
   num_file_list_entries_found = list_pos + 1;
   if (num_file_list_entries_found != num_file_list_entries)
   {
-    Error(ERR_INFO_LINE, "-");
-    Error(ERR_INFO, "inconsistant config list information:");
-    Error(ERR_INFO, "- should be:   %d (according to 'src/conf_xxx.h')",
+    Error("---");
+    Error("inconsistant config list information:");
+    Error("- should be:   %d (according to 'src/conf_xxx.h')",
 	  num_file_list_entries);
-    Error(ERR_INFO, "- found to be: %d (according to 'src/conf_xxx.c')",
+    Error("- found to be: %d (according to 'src/conf_xxx.c')",
 	  num_file_list_entries_found);
-    Error(ERR_EXIT,   "please fix");
+
+    Fail("please fix");
   }
 
   freeSetupFileHash(ignore_tokens_hash);
@@ -3618,14 +3550,14 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
     if (file_list_entry->default_is_cloned &&
 	strEqual(basename, UNDEFINED_FILENAME))
     {
-      int error_mode = ERR_WARN;
+      void (*error_func)(char *, ...) = Warn;
 
       // we can get away without sounds and music, but not without graphics
       if (*listnode == NULL && artwork_info->type == ARTWORK_TYPE_GRAPHICS)
-	error_mode = ERR_EXIT;
+	error_func = Fail;
 
-      Error(error_mode, "token '%s' was cloned and has no default filename",
-	    file_list_entry->token);
+      error_func("token '%s' was cloned and has no default filename",
+		 file_list_entry->token);
 
       return;
     }
@@ -3642,13 +3574,13 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
 
     if (filename == NULL)
     {
-      int error_mode = ERR_WARN;
+      void (*error_func)(char *, ...) = Warn;
 
       // we can get away without sounds and music, but not without graphics
       if (*listnode == NULL && artwork_info->type == ARTWORK_TYPE_GRAPHICS)
-	error_mode = ERR_EXIT;
+	error_func = Fail;
 
-      Error(error_mode, "cannot find default artwork file '%s'", basename);
+      error_func("cannot find default artwork file '%s'", basename);
 
       return;
     }
@@ -3688,13 +3620,13 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
   }
   else
   {
-    int error_mode = ERR_WARN;
+    void (*error_func)(char *, ...) = Warn;
 
     // we can get away without sounds and music, but not without graphics
     if (artwork_info->type == ARTWORK_TYPE_GRAPHICS)
-      error_mode = ERR_EXIT;
+      error_func = Fail;
 
-    Error(error_mode, "cannot load artwork file '%s'", basename);
+    error_func("cannot load artwork file '%s'", basename);
 
     return;
   }

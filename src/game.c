@@ -2147,8 +2147,9 @@ static void InitGameControlValues(void)
 
     if (nr != i)
     {
-      Error(ERR_INFO, "'game_panel_controls' structure corrupted at %d", i);
-      Error(ERR_EXIT, "this should not happen -- please debug");
+      Error("'game_panel_controls' structure corrupted at %d", i);
+
+      Fail("this should not happen -- please debug");
     }
 
     // force update of game controls after initialization
@@ -15424,10 +15425,11 @@ static void LoadEngineSnapshotValues_RND(void)
 
   if (game.num_random_calls != num_random_calls)
   {
-    Error(ERR_INFO, "number of random calls out of sync");
-    Error(ERR_INFO, "number of random calls should be %d", num_random_calls);
-    Error(ERR_INFO, "number of random calls is %d", game.num_random_calls);
-    Error(ERR_EXIT, "this should not happen -- please debug");
+    Error("number of random calls out of sync");
+    Error("number of random calls should be %d", num_random_calls);
+    Error("number of random calls is %d", game.num_random_calls);
+
+    Fail("this should not happen -- please debug");
   }
 }
 
