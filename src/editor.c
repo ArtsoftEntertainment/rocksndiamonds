@@ -6218,7 +6218,7 @@ static void CreateControlButtons(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
   }
@@ -6284,7 +6284,7 @@ static void CreateControlButtons(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
   }
@@ -6337,7 +6337,7 @@ static void CreateControlButtons(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
   }
@@ -6431,7 +6431,7 @@ static void CreateCounterButtons(void)
 			GDI_END);
 
       if (gi == NULL)
-	Error(ERR_EXIT, "cannot create gadget");
+	Fail("cannot create gadget");
 
       level_editor_gadget[id] = gi;
       right_gadget_border[id] =
@@ -6493,7 +6493,7 @@ static void CreateCounterButtons(void)
 			  GDI_END);
 
 	if (gi == NULL)
-	  Error(ERR_EXIT, "cannot create gadget");
+	  Fail("cannot create gadget");
 
 	level_editor_gadget[id] = gi;
 	right_gadget_border[id] =
@@ -6551,7 +6551,7 @@ static void CreateDrawingAreas(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
     right_gadget_border[id] =
@@ -6624,7 +6624,7 @@ static void CreateTextInputGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
   }
@@ -6673,7 +6673,7 @@ static void CreateTextAreaGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
   }
@@ -6752,7 +6752,7 @@ static void CreateSelectboxGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
     right_gadget_border[id] =
@@ -6836,7 +6836,7 @@ static void CreateTextbuttonGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
     right_gadget_border[id] =
@@ -6892,7 +6892,7 @@ static void CreateGraphicbuttonGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
     right_gadget_border[id] =
@@ -7007,7 +7007,7 @@ static void CreateScrollbarGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
   }
@@ -7067,7 +7067,7 @@ static void CreateCheckbuttonGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
     right_gadget_border[id] =
@@ -7132,7 +7132,7 @@ static void CreateRadiobuttonGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
     right_gadget_border[id] =

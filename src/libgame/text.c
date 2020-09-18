@@ -169,7 +169,7 @@ void DrawTextF(int x, int y, int font_nr, char *format, ...)
   va_end(ap);
 
   if (strlen(buffer) > MAX_OUTPUT_LINESIZE)
-    Error(ERR_EXIT, "string too long in DrawTextF() -- aborting");
+    Fail("string too long in DrawTextF() -- aborting");
 
   DrawText(gfx.sx + x, gfx.sy + y, buffer, font_nr);
 }
@@ -184,7 +184,7 @@ void DrawTextFCentered(int y, int font_nr, char *format, ...)
   va_end(ap);
 
   if (strlen(buffer) > MAX_OUTPUT_LINESIZE)
-    Error(ERR_EXIT, "string too long in DrawTextFCentered() -- aborting");
+    Fail("string too long in DrawTextFCentered() -- aborting");
 
   DrawText(gfx.sx + (gfx.sxsize - getTextWidth(buffer, font_nr)) / 2,
 	   gfx.sy + y, buffer, font_nr);

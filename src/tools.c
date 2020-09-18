@@ -1468,7 +1468,7 @@ void FloodFillLevelExt(int from_x, int from_y, int fill_element,
   safety++;
 
   if (safety > max_fieldx * max_fieldy)
-    Error(ERR_EXIT, "Something went wrong in 'FloodFill()'. Please debug.");
+    Fail("Something went wrong in 'FloodFill()'. Please debug.");
 
   old_element = field[from_x][from_y];
   field[from_x][from_y] = fill_element;
@@ -5680,7 +5680,7 @@ void CreateToolButtons(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     tool_gadget[id] = gi;
   }

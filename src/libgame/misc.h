@@ -126,6 +126,8 @@ void PrintLineWithPrefix(char *, char *, int);
 void Debug(char *, char *, ...);
 void Info(char *, ...);
 void Warn(char *, ...);
+void Fail(char *, ...);
+void FailWithHelp(char *, ...);
 
 char *int2str(int, int);
 char *i_to_a(unsigned int);

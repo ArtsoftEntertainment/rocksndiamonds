@@ -8714,7 +8714,7 @@ static void CreateScreenMenubuttons(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     screen_gadget[id] = gi;
   }
@@ -8782,7 +8782,7 @@ static void CreateScreenScrollbuttons(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     screen_gadget[id] = gi;
   }
@@ -8863,7 +8863,7 @@ static void CreateScreenScrollbars(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     screen_gadget[id] = gi;
   }
@@ -8909,7 +8909,7 @@ static void CreateScreenTextInputGadgets(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     screen_gadget[id] = gi;
   }

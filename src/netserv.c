@@ -864,28 +864,22 @@ void NetworkServer(int port, int serveronly)
 #endif
 
   if (SDLNet_ResolveHost(&ip, NULL, port) == -1)
-    Error(ERR_EXIT_NETWORK_SERVER, "SDLNet_ResolveHost() failed: %s",
-          SDLNet_GetError());
+    Fail("SDLNet_ResolveHost() failed: %s", SDLNet_GetError());
 
   if ((fds = SDLNet_AllocSocketSet(MAX_PLAYERS + 1 + 1)) == NULL)
-    Error(ERR_EXIT_NETWORK_SERVER, "SDLNet_AllocSocketSet() failed: %s"),
-      SDLNet_GetError();
+    Fail("SDLNet_AllocSocketSet() failed: %s"), SDLNet_GetError();
 
   if ((lfd = SDLNet_TCP_Open(&ip)) == NULL)
-    Error(ERR_EXIT_NETWORK_SERVER, "SDLNet_TCP_Open() failed: %s"),
-      SDLNet_GetError();
+    Fail("SDLNet_TCP_Open() failed: %s"), SDLNet_GetError();
 
   if (SDLNet_TCP_AddSocket(fds, lfd) == -1)
-    Error(ERR_EXIT_NETWORK_SERVER, "SDLNet_TCP_AddSocket() failed: %s"),
-      SDLNet_GetError();
+    Fail("SDLNet_TCP_AddSocket() failed: %s"), SDLNet_GetError();
 
   if ((udp = SDLNet_UDP_Open(port)) == NULL)
-    Error(ERR_EXIT_NETWORK_SERVER, "SDLNet_UDP_Open() failed: %s",
-          SDLNet_GetError());
+    Fail("SDLNet_UDP_Open() failed: %s", SDLNet_GetError());
 
   if (SDLNet_UDP_AddSocket(fds, udp) == -1)
-    Error(ERR_EXIT_NETWORK_SERVER, "SDLNet_TCP_AddSocket() failed: %s"),
-      SDLNet_GetError();
+    Fail("SDLNet_TCP_AddSocket() failed: %s"), SDLNet_GetError();
 
   Debug("network:server", "started up, listening on port %d", port);
   Debug("network:server", "using protocol version %d.%d.%d",

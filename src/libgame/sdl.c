@@ -360,7 +360,7 @@ SDL_Surface *SDLGetNativeSurface(SDL_Surface *surface)
   new_surface = SDL_ConvertSurface(surface, &format, 0);
 
   if (new_surface == NULL)
-    Error(ERR_EXIT, "SDL_ConvertSurface() failed: %s", SDL_GetError());
+    Fail("SDL_ConvertSurface() failed: %s", SDL_GetError());
 
   // workaround for a bug in SDL 2.0.12 (which does not convert the color key)
   if (SDLHasColorKey(surface) && !SDLHasColorKey(new_surface))
@@ -401,8 +401,7 @@ static SDL_Texture *SDLCreateTextureFromSurface(SDL_Surface *surface)
   SDL_Texture *texture = SDL_CreateTextureFromSurface(sdl_renderer, surface);
 
   if (texture == NULL)
-    Error(ERR_EXIT, "SDL_CreateTextureFromSurface() failed: %s",
-	  SDL_GetError());
+    Fail("SDL_CreateTextureFromSurface() failed: %s", SDL_GetError());
 
   return texture;
 }
@@ -443,7 +442,7 @@ void SDLInitVideoDisplay(void)
 
   // initialize SDL video
   if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
-    Error(ERR_EXIT, "SDL_InitSubSystem() failed: %s", SDL_GetError());
+    Fail("SDL_InitSubSystem() failed: %s", SDL_GetError());
 
   // set default SDL depth
   video.default_depth = 32;	// (how to determine video depth in SDL2?)
@@ -467,7 +466,7 @@ static void SDLInitVideoBuffer_VideoBuffer(boolean fullscreen)
 
   // open SDL video output device (window or fullscreen mode)
   if (!SDLSetVideoMode(fullscreen))
-    Error(ERR_EXIT, "setting video mode failed");
+    Fail("setting video mode failed");
 
   // !!! SDL2 can only set the window icon if the window already exists !!!
   // set window icon
@@ -913,7 +912,7 @@ void SDLCreateBitmapContent(Bitmap *bitmap, int width, int height,
     SDL_CreateRGBSurface(SURFACE_FLAGS, width, height, depth, 0,0,0, 0);
 
   if (surface == NULL)
-    Error(ERR_EXIT, "SDL_CreateRGBSurface() failed: %s", SDL_GetError());
+    Fail("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
 
   SDLSetNativeSurface(&surface);
 
@@ -2237,7 +2236,7 @@ static SDL_Surface *SDLGetOpaqueSurface(SDL_Surface *surface)
     return NULL;
 
   if ((new_surface = SDLGetNativeSurface(surface)) == NULL)
-    Error(ERR_EXIT, "SDLGetNativeSurface() failed");
+    Fail("SDLGetNativeSurface() failed");
 
   // remove alpha channel from native non-transparent surface, if defined
   SDLSetAlpha(new_surface, FALSE, 0);
@@ -2304,8 +2303,7 @@ Bitmap *SDLLoadImage(char *filename)
 
   // load image to temporary surface
   if ((sdl_image_tmp = IMG_Load(filename)) == NULL)
-    Error(ERR_EXIT, "IMG_Load('%s') failed: %s", getBaseNamePtr(filename),
-	  SDL_GetError());
+    Fail("IMG_Load('%s') failed: %s", getBaseNamePtr(filename), SDL_GetError());
 
   print_timestamp_time("IMG_Load");
 
@@ -2313,7 +2311,7 @@ Bitmap *SDLLoadImage(char *filename)
 
   // create native non-transparent surface for current image
   if ((new_bitmap->surface = SDLGetOpaqueSurface(sdl_image_tmp)) == NULL)
-    Error(ERR_EXIT, "SDLGetOpaqueSurface() failed");
+    Fail("SDLGetOpaqueSurface() failed");
 
   print_timestamp_time("SDLGetNativeSurface (opaque)");
 
@@ -2327,7 +2325,7 @@ Bitmap *SDLLoadImage(char *filename)
 
   // create native transparent surface for current image
   if ((new_bitmap->surface_masked = SDLGetNativeSurface(sdl_image_tmp)) == NULL)
-    Error(ERR_EXIT, "SDLGetNativeSurface() failed");
+    Fail("SDLGetNativeSurface() failed");
 
   print_timestamp_time("SDLGetNativeSurface (masked)");
 
@@ -2707,11 +2705,7 @@ void SDLInitJoysticks(void)
     SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0");
 
     if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
-    {
-      Error(ERR_EXIT, "SDL_Init() failed: %s", SDL_GetError());
-
-      return;
-    }
+      Fail("SDL_Init() failed: %s", SDL_GetError());
 
     num_mappings = SDL_GameControllerAddMappingsFromFile(mappings_file_base);
 

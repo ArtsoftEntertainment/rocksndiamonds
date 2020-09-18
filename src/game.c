@@ -15836,7 +15836,7 @@ void CreateGameButtons(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     game_gadget[id] = gi;
   }

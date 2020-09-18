@@ -347,6 +347,15 @@ static void vLog(int log_level, char *mode, char *format, va_list ap)
   vprintf_log(format, ap);
 }
 
+static void Log(int log_level, char *mode, char *format, ...)
+{
+  va_list ap;
+
+  va_start(ap, format);
+  vLog(log_level, mode, format, ap);
+  va_end(ap);
+}
+
 void Debug(char *mode, char *format, ...)
 {
   va_list ap;
@@ -372,6 +381,46 @@ void Warn(char *format, ...)
   va_start(ap, format);
   vLog(LOG_WARN, NULL, format, ap);
   va_end(ap);
+}
+
+void Fail(char *format, ...)
+{
+  va_list ap;
+
+  va_start(ap, format);
+  vLog(LOG_FATAL, NULL, format, ap);
+  va_end(ap);
+
+  if (!network.is_server_thread)
+  {
+    va_start(ap, format);
+    program.exit_message_function(format, ap);
+    va_end(ap);
+  }
+
+  Log(LOG_FATAL, NULL, "aborting");
+
+  // network server thread: normal exit
+  if (network.is_server_thread)
+    exit(1);
+
+  // main process: clean up stuff
+  program.exit_function(1);
+}
+
+void FailWithHelp(char *format, ...)
+{
+  va_list ap;
+
+  va_start(ap, format);
+  vLog(LOG_FATAL, NULL, format, ap);
+  va_end(ap);
+
+  Log(LOG_FATAL, NULL, "try option '--help' for more information");
+  Log(LOG_FATAL, NULL, "aborting");
+
+  // main process: clean up stuff
+  program.exit_function(1);
 }
 
 
@@ -1093,7 +1142,7 @@ void GetOptions(int argc, char *argv[],
     int option_len = strlen(option);
 
     if (option_len >= MAX_OPTION_LEN)
-      Error(ERR_EXIT_HELP, "unrecognized option '%s'", option);
+      FailWithHelp("unrecognized option '%s'", option);
 
     strcpy(option_str, option);			// copy argument into buffer
     option = option_str;
@@ -1111,14 +1160,14 @@ void GetOptions(int argc, char *argv[],
     {
       *option_arg++ = '\0';			// cut argument from option
       if (*option_arg == '\0')			// no argument after '='
-	Error(ERR_EXIT_HELP, "option '%s' has invalid argument", option_str);
+	FailWithHelp("option '%s' has invalid argument", option_str);
     }
 
     option_len = strlen(option);
 
     if (strEqual(option, "-"))
     {
-      Error(ERR_EXIT_HELP, "unrecognized option '%s'", option);
+      FailWithHelp("unrecognized option '%s'", option);
     }
     else if (strncmp(option, "-help", option_len) == 0)
     {
@@ -1129,7 +1178,7 @@ void GetOptions(int argc, char *argv[],
     else if (strncmp(option, "-basepath", option_len) == 0)
     {
       if (option_arg == NULL)
-	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+	FailWithHelp("option '%s' requires an argument", option_str);
 
       // this should be extended to separate options for ro and rw data
       options.ro_base_directory = ro_base_path = getStringCopy(option_arg);
@@ -1148,7 +1197,7 @@ void GetOptions(int argc, char *argv[],
     else if (strncmp(option, "-levels", option_len) == 0)
     {
       if (option_arg == NULL)
-	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+	FailWithHelp("option '%s' requires an argument", option_str);
 
       options.level_directory = getStringCopy(option_arg);
       if (option_arg == next_option)
@@ -1157,7 +1206,7 @@ void GetOptions(int argc, char *argv[],
     else if (strncmp(option, "-graphics", option_len) == 0)
     {
       if (option_arg == NULL)
-	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+	FailWithHelp("option '%s' requires an argument", option_str);
 
       options.graphics_directory = getStringCopy(option_arg);
       if (option_arg == next_option)
@@ -1166,7 +1215,7 @@ void GetOptions(int argc, char *argv[],
     else if (strncmp(option, "-sounds", option_len) == 0)
     {
       if (option_arg == NULL)
-	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+	FailWithHelp("option '%s' requires an argument", option_str);
 
       options.sounds_directory = getStringCopy(option_arg);
       if (option_arg == next_option)
@@ -1175,7 +1224,7 @@ void GetOptions(int argc, char *argv[],
     else if (strncmp(option, "-music", option_len) == 0)
     {
       if (option_arg == NULL)
-	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+	FailWithHelp("option '%s' requires an argument", option_str);
 
       options.music_directory = getStringCopy(option_arg);
       if (option_arg == next_option)
@@ -1219,7 +1268,7 @@ void GetOptions(int argc, char *argv[],
     else if (strncmp(option, "-execute", option_len) == 0)
     {
       if (option_arg == NULL)
-	Error(ERR_EXIT_HELP, "option '%s' requires an argument", option_str);
+	FailWithHelp("option '%s' requires an argument", option_str);
 
       options.execute_command = getStringCopy(option_arg);
       if (option_arg == next_option)
@@ -1236,7 +1285,7 @@ void GetOptions(int argc, char *argv[],
 #endif
     else if (*option == '-')
     {
-      Error(ERR_EXIT_HELP, "unrecognized option '%s'", option_str);
+      FailWithHelp("unrecognized option '%s'", option_str);
     }
     else if (options.server_host == NULL)
     {
@@ -1246,10 +1295,10 @@ void GetOptions(int argc, char *argv[],
     {
       options.server_port = atoi(*options_left);
       if (options.server_port < 1024)
-	Error(ERR_EXIT_HELP, "bad port number '%d'", options.server_port);
+	FailWithHelp("bad port number '%d'", options.server_port);
     }
     else
-      Error(ERR_EXIT_HELP, "too many arguments");
+      FailWithHelp("too many arguments");
 
     options_left++;
   }
@@ -1376,7 +1425,7 @@ void *checked_malloc(unsigned int size)
   ptr = malloc(size);
 
   if (ptr == NULL)
-    Error(ERR_EXIT, "cannot allocate %d bytes -- out of memory", size);
+    Fail("cannot allocate %d bytes -- out of memory", size);
 
   return ptr;
 }
@@ -1388,7 +1437,7 @@ void *checked_calloc(unsigned int size)
   ptr = calloc(1, size);
 
   if (ptr == NULL)
-    Error(ERR_EXIT, "cannot allocate %d bytes -- out of memory", size);
+    Fail("cannot allocate %d bytes -- out of memory", size);
 
   return ptr;
 }
@@ -1398,7 +1447,7 @@ void *checked_realloc(void *ptr, unsigned int size)
   ptr = realloc(ptr, size);
 
   if (ptr == NULL)
-    Error(ERR_EXIT, "cannot allocate %d bytes -- out of memory", size);
+    Fail("cannot allocate %d bytes -- out of memory", size);
 
   return ptr;
 }
@@ -3844,9 +3893,9 @@ void debug_print_timestamp(int counter_nr, char *message)
   float timestamp_interval;
 
   if (counter_nr < 0)
-    Error(ERR_EXIT, "debugging: invalid negative counter");
+    Fail("debugging: invalid negative counter");
   else if (counter_nr >= DEBUG_NUM_TIMESTAMPS)
-    Error(ERR_EXIT, "debugging: increase DEBUG_NUM_TIMESTAMPS in misc.c");
+    Fail("debugging: increase DEBUG_NUM_TIMESTAMPS in misc.c");
 
 #if DEBUG_TIME_IN_MICROSECONDS
   static double counter[DEBUG_NUM_TIMESTAMPS][2];

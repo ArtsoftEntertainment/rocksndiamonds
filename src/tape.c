@@ -1324,8 +1324,7 @@ void AutoPlayTapes(void)
 						  global.autoplay_leveldir);
 
     if (autoplay_leveldir == NULL)
-      Error(ERR_EXIT, "no such level identifier: '%s'",
-	    global.autoplay_leveldir);
+      Fail("no such level identifier: '%s'", global.autoplay_leveldir);
 
     leveldir_current = autoplay_leveldir;
 
@@ -1567,8 +1566,7 @@ void PatchTapes(void)
 						  global.patchtapes_leveldir);
 
   if (patchtapes_leveldir == NULL)
-    Error(ERR_EXIT, "no such level identifier: '%s'",
-	  global.patchtapes_leveldir);
+    Fail("no such level identifier: '%s'", global.patchtapes_leveldir);
 
   leveldir_current = patchtapes_leveldir;
 
@@ -1713,7 +1711,7 @@ void CreateTapeButtons(void)
 		      GDI_END);
 
     if (gi == NULL)
-      Error(ERR_EXIT, "cannot create gadget");
+      Fail("cannot create gadget");
 
     tape_gadget[id] = gi;
   }

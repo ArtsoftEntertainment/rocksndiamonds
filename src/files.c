@@ -11928,8 +11928,7 @@ void ConvertLevels(void)
 					       global.convert_leveldir);
 
   if (convert_leveldir == NULL)
-    Error(ERR_EXIT, "no such level identifier: '%s'",
-	  global.convert_leveldir);
+    Fail("no such level identifier: '%s'", global.convert_leveldir);
 
   leveldir_current = convert_leveldir;
 
@@ -12056,13 +12055,13 @@ void CreateLevelSketchImages(void)
     BlitBitmap(drawto, bitmap1, SX, SY, TILEX, TILEY, 0, 0);
 
     if (SDL_SaveBMP(bitmap1->surface, filename1) != 0)
-      Error(ERR_EXIT, "cannot save level sketch image file '%s'", filename1);
+      Fail("cannot save level sketch image file '%s'", filename1);
 
     DrawSizedElement(0, 0, element, MINI_TILESIZE);
     BlitBitmap(drawto, bitmap2, SX, SY, MINI_TILEX, MINI_TILEY, 0, 0);
 
     if (SDL_SaveBMP(bitmap2->surface, filename2) != 0)
-      Error(ERR_EXIT, "cannot save level sketch image file '%s'", filename2);
+      Fail("cannot save level sketch image file '%s'", filename2);
 
     free(filename1);
     free(filename2);
@@ -12186,7 +12185,7 @@ void CreateCustomElementImages(char *directory)
   }
 
   if (SDL_SaveBMP(bitmap->surface, dst_filename) != 0)
-    Error(ERR_EXIT, "cannot save CE graphics file '%s'", dst_filename);
+    Fail("cannot save CE graphics file '%s'", dst_filename);
 
   FreeBitmap(bitmap);
 

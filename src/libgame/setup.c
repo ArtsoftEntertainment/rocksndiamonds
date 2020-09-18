@@ -1891,7 +1891,7 @@ SetupFileHash *newSetupFileHash(void)
     create_hashtable(16, 0.75, get_hash_from_key, keys_are_equal);
 
   if (new_hash == NULL)
-    Error(ERR_EXIT, "create_hashtable() failed -- out of memory");
+    Fail("create_hashtable() failed -- out of memory");
 
   return new_hash;
 }
@@ -1924,7 +1924,7 @@ void setHashEntry(SetupFileHash *hash, char *token, char *value)
   // change value; if it does not exist, insert it as new
   if (!change_hash_entry(hash, token, value_copy))
     if (!insert_hash_entry(hash, getStringCopy(token), value_copy))
-      Error(ERR_EXIT, "cannot insert into hash -- aborting");
+      Fail("cannot insert into hash -- aborting");
 }
 
 char *removeHashEntry(SetupFileHash *hash, char *token)
@@ -3540,7 +3540,7 @@ void LoadLevelInfo(void)
   leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
 
   if (leveldir_first == NULL)
-    Error(ERR_EXIT, "cannot find any valid level series in any directory");
+    Fail("cannot find any valid level series in any directory");
 
   sortTreeInfo(&leveldir_first);
 
@@ -4053,7 +4053,7 @@ void AddTreeSetToTreeInfo(TreeInfo *tree_node, char *tree_dir,
 			  char *tree_subdir_new, int type)
 {
   if (!AddTreeSetToTreeInfoExt(tree_node, tree_dir, tree_subdir_new, type))
-    Error(ERR_EXIT, "internal tree info structure corrupted -- aborting");
+    Fail("internal tree info structure corrupted -- aborting");
 }
 
 void AddUserLevelSetToLevelInfo(char *level_subdir_new)
@@ -4095,7 +4095,7 @@ TreeInfo *getArtworkTreeInfoForUserLevelSet(int type)
     ti = getTreeInfoFromIdentifier(artwork_first_node,
 				   ARTWORK_DEFAULT_SUBDIR(type));
     if (ti == NULL)
-      Error(ERR_EXIT, "cannot find default graphics -- should not happen");
+      Fail("cannot find default graphics -- should not happen");
   }
 
   return ti;

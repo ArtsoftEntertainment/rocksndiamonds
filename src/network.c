@@ -151,8 +151,7 @@ static struct NetworkClientPlayerInfo *getNetworkPlayer(int player_nr)
       break;
 
   if (player == NULL)	// should not happen
-    Error(ERR_EXIT, "protocol error: reference to non-existing player %d",
-	  player_nr);
+    Fail("protocol error: reference to non-existing player %d", player_nr);
 
   return player;
 }
@@ -217,15 +216,14 @@ boolean ConnectToServer(char *hostname, int port)
 
     SDLNet_SocketSet udp_socket_set = SDLNet_AllocSocketSet(1);
     if (!udp_socket_set)
-      Error(ERR_EXIT, "SDLNet_AllocSocketSet() failed: %s"), SDLNet_GetError();
+      Fail("SDLNet_AllocSocketSet() failed: %s"), SDLNet_GetError();
 
     udp = SDLNet_UDP_Open(0);
     if (!udp)
-      Error(ERR_EXIT, "SDLNet_UDP_Open() failed: %s", SDLNet_GetError());
+      Fail("SDLNet_UDP_Open() failed: %s", SDLNet_GetError());
 
     if (SDLNet_UDP_AddSocket(udp_socket_set, udp) == -1)
-      Error(ERR_EXIT_NETWORK_SERVER, "SDLNet_TCP_AddSocket() failed: %s"),
-        SDLNet_GetError();
+      Fail("SDLNet_TCP_AddSocket() failed: %s"), SDLNet_GetError();
 
     char *data_ptr = "network server UDB broadcast";
     int data_len = strlen(data_ptr) + 1;
@@ -548,7 +546,7 @@ static void Handle_OP_YOUR_NUMBER(void)
   }
 
   if (first_player.nr > MAX_PLAYERS)
-    Error(ERR_EXIT, "sorry, more than %d players not allowed", MAX_PLAYERS);
+    Fail("sorry, more than %d players not allowed", MAX_PLAYERS);
 
   Debug("network:client", "you get client # %d", new_client_nr);
 
@@ -641,7 +639,7 @@ static void Handle_OP_PLAYER_CONNECTED(void)
   for (player = &first_player; player; player = player->next)
   {
     if (player->nr == new_client_nr)
-      Error(ERR_EXIT, "multiplayer server sent duplicate player id");
+      Fail("multiplayer server sent duplicate player id");
 
     last_player = player;
   }
@@ -856,7 +854,7 @@ static void Handle_OP_LEVEL_FILE(void)
   leveldir_identifier = getStringCopy(getNetworkBufferString(read_buffer));
 
   if (hasPathSeparator(leveldir_identifier))
-    Error(ERR_EXIT, "protocol error: invalid filename from network client");
+    Fail("protocol error: invalid filename from network client");
 
   InitNetworkLevelDirectory(leveldir_identifier);
 
@@ -869,7 +867,7 @@ static void Handle_OP_LEVEL_FILE(void)
   file_info->filename = getPath2(network_level_dir, file_info->basename);
 
   if (hasPathSeparator(file_info->basename))
-    Error(ERR_EXIT, "protocol error: invalid filename from network client");
+    Fail("protocol error: invalid filename from network client");
 
   int num_bytes = getNetworkBufferFile(read_buffer, file_info->filename);
 
@@ -886,7 +884,7 @@ static void Handle_OP_LEVEL_FILE(void)
     tmpl_info->filename = getPath2(network_level_dir, tmpl_info->basename);
 
     if (hasPathSeparator(tmpl_info->basename))
-      Error(ERR_EXIT, "protocol error: invalid filename from network client");
+      Fail("protocol error: invalid filename from network client");
 
     getNetworkBufferFile(read_buffer, tmpl_info->filename);
 

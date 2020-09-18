@@ -1655,7 +1655,7 @@ static void set_cloned_graphic_parameters(int graphic)
     Warn("custom graphic rejected for this element/action");
 
     if (graphic == fallback_graphic)
-      Error(ERR_EXIT, "no fallback graphic available");
+      Fail("no fallback graphic available");
 
     Warn("fallback done to 'char_exclam' for this graphic");
     Warn("---");
@@ -1808,7 +1808,7 @@ static void InitGraphicInfo(void)
       Warn("custom graphic rejected for this element/action");
 
       if (i == fallback_graphic)
-	Error(ERR_EXIT, "no fallback graphic available");
+	Fail("no fallback graphic available");
 
       Warn("fallback done to 'char_exclam' for this graphic");
       Warn("---");
@@ -1839,7 +1839,7 @@ static void InitGraphicInfo(void)
       Warn("custom graphic rejected for this element/action");
 
       if (i == fallback_graphic)
-	Error(ERR_EXIT, "no fallback graphic available");
+	Fail("no fallback graphic available");
 
       Warn("fallback done to 'char_exclam' for this graphic");
       Warn("---");
@@ -4782,7 +4782,7 @@ static void InitGlobal(void)
   {
     // check if element_name_info entry defined for each element in "main.h"
     if (i < MAX_NUM_ELEMENTS && element_name_info[i].token_name == NULL)
-      Error(ERR_EXIT, "undefined 'element_name_info' entry for element %d", i);
+      Fail("undefined 'element_name_info' entry for element %d", i);
 
     element_info[i].token_name = element_name_info[i].token_name;
     element_info[i].class_name = element_name_info[i].class_name;
@@ -4794,7 +4794,7 @@ static void InitGlobal(void)
     // check if global_anim_name_info defined for each entry in "main.h"
     if (i < NUM_GLOBAL_ANIM_TOKENS &&
 	global_anim_name_info[i].token_name == NULL)
-      Error(ERR_EXIT, "undefined 'global_anim_name_info' entry for anim %d", i);
+      Fail("undefined 'global_anim_name_info' entry for anim %d", i);
 
     global_anim_info[i].token_name = global_anim_name_info[i].token_name;
   }
@@ -5011,7 +5011,7 @@ static void Execute_Command(char *command)
     char *filename = &command[11];
 
     if (!fileExists(filename))
-      Error(ERR_EXIT, "cannot open file '%s'", filename);
+      Fail("cannot open file '%s'", filename);
 
     LoadLevelFromFilename(&level, filename);
     DumpLevel(&level);
@@ -5023,7 +5023,7 @@ static void Execute_Command(char *command)
     char *filename = &command[10];
 
     if (!fileExists(filename))
-      Error(ERR_EXIT, "cannot open file '%s'", filename);
+      Fail("cannot open file '%s'", filename);
 
     LoadTapeFromFilename(filename);
     DumpTape(&tape);
@@ -5090,7 +5090,7 @@ static void Execute_Command(char *command)
       str_ptr++;
 
     if (*str_ptr == '\0')
-      Error(ERR_EXIT, "cannot find MODE in command '%s'", command);
+      Fail("cannot find MODE in command '%s'", command);
 
     global.patchtapes_mode = str_ptr;		// store patch mode
 
@@ -5135,7 +5135,7 @@ static void Execute_Command(char *command)
       if (strEqual(global.patchtapes_mode, "help"))
 	global.patchtapes_leveldir = UNDEFINED_LEVELSET;
       else
-	Error(ERR_EXIT, "cannot find LEVELDIR in command '%s'", command);
+	Fail("cannot find LEVELDIR in command '%s'", command);
     }
 
     program.headless = TRUE;
@@ -5161,8 +5161,8 @@ static void Execute_Command(char *command)
     global.create_images_dir = getStringCopy(&command[14]);
 
     if (access(global.create_images_dir, W_OK) != 0)
-      Error(ERR_EXIT, "image target directory '%s' not found or not writable",
-	    global.create_images_dir);
+      Fail("image target directory '%s' not found or not writable",
+	   global.create_images_dir);
   }
   else if (strPrefix(command, "create CE image "))
   {
@@ -5172,7 +5172,7 @@ static void Execute_Command(char *command)
   }
   else
   {
-    Error(ERR_EXIT_HELP, "unrecognized command '%s'", command);
+    FailWithHelp("unrecognized command '%s'", command);
   }
 
   // disable networking if any valid command was recognized
@@ -5463,7 +5463,7 @@ static void InitGfx(void)
   }
 
   if (filename_font_initial == NULL)	// should not happen
-    Error(ERR_EXIT, "cannot get filename for '%s'", CONFIG_TOKEN_FONT_INITIAL);
+    Fail("cannot get filename for '%s'", CONFIG_TOKEN_FONT_INITIAL);
 
   InitGfxBuffers();
   InitGfxCustomArtworkInfo();
@@ -5549,7 +5549,7 @@ static void InitGfx(void)
   }
 
   if (filename_anim_initial == NULL)	// should not happen
-    Error(ERR_EXIT, "cannot get filename for '%s'", CONFIG_TOKEN_GLOBAL_BUSY);
+    Fail("cannot get filename for '%s'", CONFIG_TOKEN_GLOBAL_BUSY);
 
   anim_initial.bitmaps =
     checked_calloc(sizeof(Bitmap *) * NUM_IMG_BITMAP_POINTERS);

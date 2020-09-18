@@ -78,7 +78,7 @@ static int getNewGadgetID(void)
   }
 
   if (next_free_gadget_id <= 0)		// cannot get new gadget id
-    Error(ERR_EXIT, "too much gadgets -- this should not happen");
+    Fail("too much gadgets -- this should not happen");
 
   return id;
 }
@@ -1207,7 +1207,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	break;
 
       default:
-	Error(ERR_EXIT, "HandleGadgetTags(): unknown tag %d", tag);
+	Fail("HandleGadgetTags(): unknown tag %d", tag);
     }
 
     tag = va_arg(ap, int);	// read next tag
@@ -1268,7 +1268,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     gi->height = 2 * border_ysize + font_height;
 
     if (gi->selectbox.options == NULL)
-      Error(ERR_EXIT, "selectbox gadget incomplete (missing options array)");
+      Fail("selectbox gadget incomplete (missing options array)");
 
     gi->selectbox.num_values = 0;
     while (gi->selectbox.options[gi->selectbox.num_values].text != NULL)
@@ -1330,7 +1330,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 
     if (gi->width == 0 || gi->height == 0 ||
 	gs->items_max == 0 || gs->items_visible == 0)
-      Error(ERR_EXIT, "scrollbar gadget incomplete (missing tags)");
+      Fail("scrollbar gadget incomplete (missing tags)");
 
     // calculate internal scrollbar values
     gs->size_min = (gi->type == GD_TYPE_SCROLLBAR_VERTICAL ?

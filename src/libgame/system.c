@@ -194,7 +194,7 @@ void InitPlatformDependentStuff(void)
   int sdl_init_flags = SDL_INIT_EVENTS | SDL_INIT_NOPARACHUTE;
 
   if (SDL_Init(sdl_init_flags) < 0)
-    Error(ERR_EXIT, "SDL_Init() failed: %s", SDL_GetError());
+    Fail("SDL_Init() failed: %s", SDL_GetError());
 
   SDLNet_Init();
 }
@@ -1157,10 +1157,10 @@ Bitmap *LoadCustomImage(char *basename)
   Bitmap *new_bitmap;
 
   if (filename == NULL)
-    Error(ERR_EXIT, "LoadCustomImage(): cannot find file '%s'", basename);
+    Fail("LoadCustomImage(): cannot find file '%s'", basename);
 
   if ((new_bitmap = LoadImage(filename)) == NULL)
-    Error(ERR_EXIT, "LoadImage('%s') failed: %s", basename, GetError());
+    Fail("LoadImage('%s') failed: %s", basename, GetError());
 
   return new_bitmap;
 }
