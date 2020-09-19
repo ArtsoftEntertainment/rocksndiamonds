@@ -5,6 +5,7 @@
 
 # ignore automatically generated files
 src/conftime.h
+src/confhash.h
 src/conf_gfx.h
 src/conf_snd.h
 src/conf_mus.h

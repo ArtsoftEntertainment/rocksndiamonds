@@ -102,6 +102,9 @@ auto-conf:
 conf-time:
 	@$(MAKE_CMD) conf-time
 
+conf-hash:
+	@$(MAKE_CMD) conf-hash
+
 run: all
 	@$(MAKE_CMD) run
 

@@ -15,6 +15,7 @@
 #include "main.h"
 
 char *getSourceDateString(void);
+char *getSourceHashString(void);
 char *getProgramTitleString(void);
 char *getProgramRealVersionString(void);
 char *getProgramVersionString(void);

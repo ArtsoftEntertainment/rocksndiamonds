@@ -13,11 +13,17 @@
 
 #include "config.h"
 #include "conftime.h"
+#include "confhash.h"
 
 
 char *getSourceDateString(void)
 {
   return SOURCE_DATE_STRING;
+}
+
+char *getSourceHashString(void)
+{
+  return SOURCE_HASH_STRING;
 }
 
 char *getProgramTitleString(void)

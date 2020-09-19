@@ -3692,6 +3692,10 @@ static void DrawInfoScreen_Version(void)
 
   DrawTextF(xstart1, ystart, font_head, "Source date");
   DrawTextF(xstart2, ystart, font_text, getSourceDateString());
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Commit hash");
+  DrawTextF(xstart2, ystart, font_text, getSourceHashString());
   ystart += ystep_para;
 
   DrawTextF(xstart1, ystart, font_head, "Library");

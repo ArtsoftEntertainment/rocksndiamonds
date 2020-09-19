@@ -192,6 +192,12 @@ SOURCE_DATE_EPOCH ?= $(shell test -d ../.git && test `git ls-files -m | wc -l` -
 # get source date string from either GNU / Linux or BSD / Mac OS X style "date"
 SOURCE_DATE_STRING := $(shell date -u -d "@$(SOURCE_DATE_EPOCH)" "+$(TIMESTAMP_FORMAT)"  2>/dev/null || date -u -r "$(SOURCE_DATE_EPOCH)" "+$(TIMESTAMP_FORMAT)" 2>/dev/null || date -u "+$(TIMESTAMP_FORMAT)")
 
+COMMIT_HASH_FILE = confhash.h
+COMMIT_HASH_NONE = "[changed files]"
+
+# get last Git commit hash, if no files were changed
+SOURCE_HASH_STRING ?= $(shell test -d ../.git && test `git ls-files -m | wc -l` -eq 0 && git show -s --format=%h || echo "$(COMMIT_HASH_NONE)")
+
 LIBGAME_DIR = libgame
 LIBGAME = $(LIBGAME_DIR)/libgame.a
 
@@ -224,7 +230,7 @@ GRAPHICS_DIR = ../graphics
 
 all: $(AUTOCONF) libgame_dir game_em_dir game_sp_dir game_mm_dir $(PROGNAME) graphics_dir
 
-$(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(OBJS) $(ICON)
+$(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(COMMIT_HASH_FILE) $(OBJS) $(ICON)
 	$(CC) $(PROFILING) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
 ifdef BUILD_DIST
 	strip $(PROGNAME)
@@ -275,8 +281,15 @@ conf-time:
 	@echo '#define SOURCE_DATE_STRING "$(SOURCE_DATE_STRING)"' \
 	> $(TIMESTAMP_FILE)
 
+conf-hash:
+	@echo '#define SOURCE_HASH_STRING "$(SOURCE_HASH_STRING)"' \
+	> $(COMMIT_HASH_FILE)
+
 $(TIMESTAMP_FILE): $(SRCS) $(RNDLIBS)
 	@$(MAKE) conf-time
+
+$(COMMIT_HASH_FILE): $(SRCS) $(RNDLIBS)
+	@$(MAKE) conf-hash
 
 $(ICON):
 #	$(CONVERT) $(ICON32X32) $(CONVERT_ICON_ARGS) $(ICONBASE).ico
