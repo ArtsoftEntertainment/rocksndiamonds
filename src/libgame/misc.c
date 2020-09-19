@@ -3785,7 +3785,7 @@ void NotifyUserAboutErrorFile(void)
 
 #if DEBUG
 
-#define DEBUG_PRINT_INIT_TIMESTAMPS		FALSE
+#define DEBUG_PRINT_INIT_TIMESTAMPS		TRUE
 #define DEBUG_PRINT_INIT_TIMESTAMPS_DEPTH	10
 
 #define DEBUG_NUM_TIMESTAMPS			10
@@ -3853,7 +3853,7 @@ void debug_print_timestamp(int counter_nr, char *message)
   counter[counter_nr][1] = counter[counter_nr][0];
 
   if (message)
-    Debug("time", "%s%s%s %.3f %s",
+    Debug("time:init", "%s%s%s %.3f %s",
 	  debug_print_timestamp_get_padding(counter_nr * indent_size),
 	  message,
 	  debug_print_timestamp_get_padding(padding_size - strlen(message)),
