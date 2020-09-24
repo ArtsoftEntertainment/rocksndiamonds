@@ -277,7 +277,9 @@ void prepare_em_level(void)
   lev.right = lev.left + lev.width;
   lev.bottom = lev.top + lev.height;
 
-  if (cav.infinite)
+  lev.infinite = game_em.use_wrap_around;
+
+  if (lev.infinite)
   {
     /* add linked cave buffer columns for wrap-around movement */
     for (x = 0; x < lev.left; x++)

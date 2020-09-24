@@ -710,6 +710,7 @@ struct LOGIC
 				/* 0 == all players at home */
 
   boolean testmode;		/* test mode */
+  boolean infinite;		/* flag for infinitely wide cave */
   boolean killed_out_of_time;	/* kill player due to time out */
 
   int exit_x, exit_y;		/* kludge for playing player exit sound */
