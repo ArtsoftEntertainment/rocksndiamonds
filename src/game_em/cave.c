@@ -64,6 +64,7 @@ void setLevelInfoToDefaults_EM(void)
   cav.testmode		= FALSE;
   cav.teamwork		= FALSE;
   cav.infinite		= TRUE;
+  cav.infinite_true	= FALSE;	// default: use original EMC behaviour
 
   cav.ball_random	= FALSE;
   cav.ball_active	= FALSE;

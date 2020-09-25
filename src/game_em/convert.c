@@ -278,21 +278,24 @@ void prepare_em_level(void)
   lev.bottom = lev.top + lev.height;
 
   lev.infinite = game_em.use_wrap_around;
+  lev.infinite_true = cav.infinite_true;
 
   if (lev.infinite)
   {
     /* add linked cave buffer columns for wrap-around movement */
     for (x = 0; x < lev.left; x++)
     {
-      lev.cavecol[x] = lev.cavecol[lev.width + x];
-      lev.nextcol[x] = lev.nextcol[lev.width + x];
-      lev.drawcol[x] = lev.drawcol[lev.width + x];
-      lev.boomcol[x] = lev.boomcol[lev.width + x];
+      int offset = (lev.infinite_true ? 0 : 1);
 
-      lev.cavecol[lev.right + x] = lev.cavecol[lev.left + x];
-      lev.nextcol[lev.right + x] = lev.nextcol[lev.left + x];
-      lev.drawcol[lev.right + x] = lev.drawcol[lev.left + x];
-      lev.boomcol[lev.right + x] = lev.boomcol[lev.left + x];
+      lev.cavecol[x] = &lev.cavecol[lev.width + x][-offset];
+      lev.nextcol[x] = &lev.nextcol[lev.width + x][-offset];
+      lev.drawcol[x] = &lev.drawcol[lev.width + x][-offset];
+      lev.boomcol[x] = &lev.boomcol[lev.width + x][-offset];
+
+      lev.cavecol[lev.right + x] = &lev.cavecol[lev.left + x][offset];
+      lev.nextcol[lev.right + x] = &lev.nextcol[lev.left + x][offset];
+      lev.drawcol[lev.right + x] = &lev.drawcol[lev.left + x][offset];
+      lev.boomcol[lev.right + x] = &lev.boomcol[lev.left + x][offset];
     }
   }
 

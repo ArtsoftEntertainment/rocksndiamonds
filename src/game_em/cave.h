@@ -258,6 +258,7 @@ struct CAVE
   boolean testmode;		/* flag for test mode */
   boolean teamwork;		/* flag for two player mode */
   boolean infinite;		/* flag for infinitely wide cave */
+  boolean infinite_true;	/* flag for truely infinitely wide cave */
 
   boolean ball_random;		/* flag if ball is random */
   boolean ball_active;		/* flag if ball is already active */

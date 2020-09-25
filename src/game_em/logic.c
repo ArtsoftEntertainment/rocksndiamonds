@@ -7413,6 +7413,9 @@ static void logic_players(void)
     {
       ply[i].x = (ply[i].x < lev.left ? lev.right - 1 : lev.left);
 
+      if (!lev.infinite_true)
+	ply[i].y += (ply[i].x == lev.left ? 1 : -1);
+
       game.centered_player_nr_next = i;
       game.set_centered_player = TRUE;
       game.set_centered_player_wrap = TRUE;

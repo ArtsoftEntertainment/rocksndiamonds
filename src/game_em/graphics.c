@@ -446,6 +446,14 @@ static void blitplayer(int nr)
     ply[nr].x = (ply[nr].x < lev.left ? lev.right - 1 : lev.left);
     ply[nr].prev_x = ply[nr].x - dx;
 
+    if (!lev.infinite_true)
+    {
+      int dy = ply[nr].y - ply[nr].prev_y;
+
+      ply[nr].y += (ply[nr].x == lev.left ? 1 : -1);
+      ply[nr].prev_y = ply[nr].y - dy;
+    }
+
     /* draw player entering playfield from the opposite side */
     blitplayer_ext(nr);
 
@@ -666,8 +674,11 @@ void RedrawPlayfield_EM(boolean force_redraw)
 
     if (draw_new_player_location_wrap)
     {
-      // when wrapping around (horizontally), keep vertical player position
-      screen_yy = screen_y;
+      if (lev.infinite_true)
+      {
+	// when wrapping around (horizontally), keep vertical player position
+	screen_yy = screen_y;
+      }
 
       // scrolling for wrapping should be faster than for switching players
       wait_delay_value /= 4;
