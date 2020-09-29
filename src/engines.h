@@ -33,7 +33,7 @@ boolean isActivePlayer_EM(int);
 
 void PlayLevelSound_EM(int, int, int, int);
 void InitGraphicInfo_EM(void);
-void CheckSingleStepMode_EM(byte action[], int, boolean, boolean, boolean);
+boolean CheckSingleStepMode_EM(byte action[], int, boolean, boolean, boolean);
 
 void SetGfxAnimation_EM(struct GraphicInfo_EM *, int, int, int, int);
 void getGraphicSourceObjectExt_EM(struct GraphicInfo_EM *, int, int, int, int);

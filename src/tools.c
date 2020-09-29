@@ -9078,10 +9078,10 @@ static void CheckSaveEngineSnapshot_MM(boolean element_clicked,
   }
 }
 
-void CheckSingleStepMode_EM(byte action[MAX_PLAYERS], int frame,
-			    boolean any_player_moving,
-			    boolean any_player_snapping,
-			    boolean any_player_dropping)
+boolean CheckSingleStepMode_EM(byte action[MAX_PLAYERS], int frame,
+			       boolean any_player_moving,
+			       boolean any_player_snapping,
+			       boolean any_player_dropping)
 {
   if (tape.single_step && tape.recording && !tape.pausing)
     if (frame == 7 && !any_player_dropping)
@@ -9089,6 +9089,8 @@ void CheckSingleStepMode_EM(byte action[MAX_PLAYERS], int frame,
 
   CheckSaveEngineSnapshot_EM(action, frame, any_player_moving,
 			     any_player_snapping, any_player_dropping);
+
+  return tape.pausing;
 }
 
 void CheckSingleStepMode_SP(boolean murphy_is_waiting,

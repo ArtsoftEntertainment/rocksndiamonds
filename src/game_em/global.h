@@ -19,6 +19,8 @@ void game_init_cave_buffers(void);
 void play_sound(int, int, int);
 void play_element_sound(int, int, int, int);
 
+boolean logic_check_wrap(void);
+void logic_move(void);
 void logic_init(void);
 void logic(void);
 

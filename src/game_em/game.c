@@ -108,8 +108,13 @@ void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
 	ply[i].dynamite_cnt < 5)
       any_player_dropping = TRUE;
 
-  CheckSingleStepMode_EM(action, frame, game_em.any_player_moving,
-			 game_em.any_player_snapping, any_player_dropping);
+  boolean single_step_mode_paused =
+    CheckSingleStepMode_EM(action, frame, game_em.any_player_moving,
+			   game_em.any_player_snapping, any_player_dropping);
+
+  // draw wrapping around before going to single step pause mode
+  if (single_step_mode_paused && logic_check_wrap())
+    logic_move();
 
   RedrawPlayfield_EM(FALSE);
 }

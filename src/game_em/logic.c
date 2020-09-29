@@ -7381,26 +7381,27 @@ static void handle_tile(int x, int y)
   }
 }
 
-static void logic_players(void)
+boolean logic_check_wrap(void)
 {
-  int start_check_nr;
   int i;
 
-  cave = lev.cave;
-  next = lev.next;
-  boom = lev.boom;
-
-  game_em.any_player_moving = FALSE;
-  game_em.any_player_snapping = FALSE;
-
-  /* must test for death and actually kill separately */
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    boolean ply_kill = player_killed(&ply[i]);
+    if (!ply[i].alive)
+      continue;
 
-    if (ply[i].alive && ply_kill)
-      kill_player(&ply[i]);
+    /* check for wrap-around movement */
+    if (ply[i].x < lev.left ||
+	ply[i].x > lev.right - 1)
+      return TRUE;
   }
+
+  return FALSE;
+}
+
+void logic_move(void)
+{
+  int i;
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
@@ -7425,6 +7426,30 @@ static void logic_players(void)
     ply[i].prev_y = ply[i].y;
     ply[i].anim = PLY_still;
   }
+}
+
+static void logic_players(void)
+{
+  int start_check_nr;
+  int i;
+
+  cave = lev.cave;
+  next = lev.next;
+  boom = lev.boom;
+
+  game_em.any_player_moving = FALSE;
+  game_em.any_player_snapping = FALSE;
+
+  /* must test for death and actually kill separately */
+  for (i = 0; i < MAX_PLAYERS; i++)
+  {
+    boolean ply_kill = player_killed(&ply[i]);
+
+    if (ply[i].alive && ply_kill)
+      kill_player(&ply[i]);
+  }
+
+  logic_move();
 
   start_check_nr = ((game_em.random & 128 ? 0 : 1) * 2 +
 		    (game_em.random & 256 ? 0 : 1));
