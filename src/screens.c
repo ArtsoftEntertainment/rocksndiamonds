@@ -541,7 +541,9 @@ static int align_yoffset = 0;
 #define DRAW_MODE(s)		((s) >= GAME_MODE_MAIN &&		\
 				 (s) <= GAME_MODE_SETUP ? (s) :		\
 				 (s) == GAME_MODE_PSEUDO_TYPENAME ?	\
-				 GAME_MODE_MAIN : GAME_MODE_DEFAULT)
+				 GAME_MODE_MAIN :			\
+				 (s) == GAME_MODE_PSEUDO_TYPENAMES ?	\
+				 GAME_MODE_NAMES : GAME_MODE_DEFAULT)
 
 // (there are no draw offset definitions needed for INFO_MODE_TITLE)
 #define DRAW_MODE_INFO(i)	((i) >= INFO_MODE_TITLE &&		\

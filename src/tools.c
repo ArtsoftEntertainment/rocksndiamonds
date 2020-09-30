@@ -9351,6 +9351,8 @@ void SetAnimStatus(int anim_status_new)
 {
   if (anim_status_new == GAME_MODE_MAIN)
     anim_status_new = GAME_MODE_PSEUDO_MAINONLY;
+  else if (anim_status_new == GAME_MODE_NAMES)
+    anim_status_new = GAME_MODE_PSEUDO_NAMESONLY;
   else if (anim_status_new == GAME_MODE_SCORES)
     anim_status_new = GAME_MODE_PSEUDO_SCORESOLD;
 
@@ -9360,7 +9362,11 @@ void SetAnimStatus(int anim_status_new)
   if ((global.anim_status      == GAME_MODE_PSEUDO_MAINONLY &&
        global.anim_status_next == GAME_MODE_PSEUDO_TYPENAME) ||
       (global.anim_status      == GAME_MODE_PSEUDO_TYPENAME &&
-       global.anim_status_next == GAME_MODE_PSEUDO_MAINONLY))
+       global.anim_status_next == GAME_MODE_PSEUDO_MAINONLY) ||
+      (global.anim_status      == GAME_MODE_PSEUDO_NAMESONLY &&
+       global.anim_status_next == GAME_MODE_PSEUDO_TYPENAMES) ||
+      (global.anim_status      == GAME_MODE_PSEUDO_TYPENAMES &&
+       global.anim_status_next == GAME_MODE_PSEUDO_NAMESONLY))
     global.anim_status = global.anim_status_next;
 }
 

@@ -30,6 +30,7 @@ struct ConfigInfo music_config[] =
   { "background.TITLE_INITIAL",		UNDEFINED_FILENAME		},
   { "background.TITLE",			UNDEFINED_FILENAME		},
   { "background.MAIN",			UNDEFINED_FILENAME		},
+  { "background.NAMES",			UNDEFINED_FILENAME		},
   { "background.LEVELS",		UNDEFINED_FILENAME		},
   { "background.LEVELNR",		UNDEFINED_FILENAME		},
   { "background.SCORES",		UNDEFINED_FILENAME		},

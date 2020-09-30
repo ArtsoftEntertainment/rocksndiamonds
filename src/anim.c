@@ -178,10 +178,13 @@ struct GameModeAnimClass
   { GAME_MODE_TITLE_3,			ANIM_CLASS_TITLE		},
   { GAME_MODE_TITLE_4,			ANIM_CLASS_TITLE		},
   { GAME_MODE_TITLE_5,			ANIM_CLASS_TITLE		},
+  { GAME_MODE_NAMES, 			ANIM_CLASS_TOONS_MENU_SUBMENU	},
   { GAME_MODE_LEVELS, 			ANIM_CLASS_TOONS_MENU_SUBMENU	},
   { GAME_MODE_LEVELNR,			ANIM_CLASS_TOONS_MENU_SUBMENU	},
   { GAME_MODE_INFO,			ANIM_CLASS_TOONS_MENU_SUBMENU	},
   { GAME_MODE_SETUP,			ANIM_CLASS_TOONS_MENU_SUBMENU	},
+  { GAME_MODE_PSEUDO_NAMESONLY,		ANIM_CLASS_TOONS_MENU_SUBMENU	},
+  { GAME_MODE_PSEUDO_TYPENAMES,		ANIM_CLASS_TOONS_MENU_SUBMENU	},
   { GAME_MODE_PSEUDO_MAINONLY,		ANIM_CLASS_TOONS_MENU_MAIN	},
   { GAME_MODE_PSEUDO_TYPENAME,		ANIM_CLASS_TOONS_MENU_MAIN	},
   { GAME_MODE_PSEUDO_SCORESOLD,		ANIM_CLASS_TOONS_SCORES		},
@@ -642,9 +645,11 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
     if (drawing_target == DRAW_TO_FADE_TARGET)
       after_fading = TRUE;
 
-    // special case: changing from/to this screen is done without fading
-    if (global.anim_status == GAME_MODE_PSEUDO_TYPENAME ||
-	anim_status_last   == GAME_MODE_PSEUDO_TYPENAME)
+    // special case: changing from/to these screens is done without fading
+    if (global.anim_status == GAME_MODE_PSEUDO_TYPENAME  ||
+	global.anim_status == GAME_MODE_PSEUDO_TYPENAMES ||
+	anim_status_last   == GAME_MODE_PSEUDO_TYPENAME  ||
+	anim_status_last   == GAME_MODE_PSEUDO_TYPENAMES)
       after_fading = TRUE;
 
     // ---------- part 1 ------------------------------------------------------

@@ -2547,6 +2547,7 @@ void HandleJoystick(void)
   }
 
   if (newbutton && (game_status == GAME_MODE_PSEUDO_TYPENAME ||
+		    game_status == GAME_MODE_PSEUDO_TYPENAMES ||
 		    anyTextGadgetActive()))
   {
     // leave name input in main menu or text input gadget
