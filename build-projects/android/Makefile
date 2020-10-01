@@ -32,7 +32,7 @@ assets-toc:
 	./build-scripts/create_asset_tocs.sh app/src/main/assets
 
 .prepared: sdl manifest assets assets-toc
-	make -C ../.. auto-conf conf-time
+	make -C ../.. auto-conf conf-time conf-hash
 
 prepare: .prepared
 
