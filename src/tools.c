@@ -1337,6 +1337,9 @@ static void RedrawGlobalBorderIfNeeded(void)
 
 #if ONLY_REDRAW_GLOBAL_BORDER_IF_NEEDED
   if (CheckIfGlobalBorderRedrawIsNeeded())
+#else
+  // determine and store new global border bitmap for current game status
+  global_border_bitmap = getGlobalBorderBitmapFromStatus(game_status);
 #endif
   {
     // redraw global screen border (or clear, if defined to be empty)
