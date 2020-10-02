@@ -28,9 +28,11 @@ LOCAL_C_INCLUDES :=				\
 
 DEBUG = -DDEBUG -g
 OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
-# OPTIONS = -O2 -Wall				# distribution build
 
-# LOCAL_CFLAGS := -DTARGET_SDL2
+ifdef BUILD_DIST				# distribution build
+OPTIONS = -O2 -Wall
+endif
+
 LOCAL_CFLAGS := -DTARGET_SDL2 $(OPTIONS)
 
 # application source code files
