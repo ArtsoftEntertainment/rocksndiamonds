@@ -109,18 +109,18 @@ DEBUG = -DDEBUG -g
 # PROFILING = $(PROFILING_FLAGS)
 
 # OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
-# OPTIONS = $(DEBUG) -O3 -Wall			# only for debugging purposes
+# OPTIONS = $(DEBUG) -O2 -Wall			# only for debugging purposes
 # OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
 OPTIONS = $(DEBUG) -Wall -Wstrict-prototypes -Wmissing-prototypes
 # OPTIONS = $(DEBUG) -Wall -ansi -pedantic	# only for debugging purposes
-# OPTIONS = -O3 -Wall -ansi -pedantic
-# OPTIONS = -O3 -Wall
-# OPTIONS = -O3
+# OPTIONS = -O2 -Wall -ansi -pedantic
+# OPTIONS = -O2 -Wall
+# OPTIONS = -O2
 
 ifdef BUILD_DIST			# distribution build
 SYS_LDFLAGS := $(shell echo $(SYS_LDFLAGS) |	\
 		       sed -e "s%-rpath,[^ ]*%-rpath,'\$$ORIGIN/lib'%")
-OPTIONS = -O3 -Wall
+OPTIONS = -O2 -Wall
 endif
 
 CFLAGS = $(OPTIONS) $(SYS_CFLAGS)  $(EXTRA_CFLAGS) $(CONFIG)
