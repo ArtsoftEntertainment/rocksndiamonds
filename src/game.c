@@ -11210,7 +11210,8 @@ static void CheckSingleStepMode(struct PlayerInfo *player)
        player stopped moving after one tile (or never starts moving at all) */
     if (!player->is_moving &&
 	!player->is_pushing &&
-	!player->is_dropping_pressed)
+	!player->is_dropping_pressed &&
+	!player->effective_mouse_action.button)
       TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
   }
 
