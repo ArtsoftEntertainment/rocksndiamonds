@@ -11200,6 +11200,15 @@ static void CheckSaveEngineSnapshot(struct PlayerInfo *player)
     if (!player->is_dropping)
       player->was_dropping = FALSE;
   }
+
+  static struct MouseActionInfo mouse_action_last = { 0 };
+  struct MouseActionInfo mouse_action = player->effective_mouse_action;
+  boolean new_released = (!mouse_action.button && mouse_action_last.button);
+
+  if (new_released)
+    CheckSaveEngineSnapshotToList();
+
+  mouse_action_last = mouse_action;
 }
 
 static void CheckSingleStepMode(struct PlayerInfo *player)
