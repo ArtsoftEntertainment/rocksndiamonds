@@ -698,6 +698,16 @@ static struct
   byte action;
 } touch_info[NUM_TOUCH_FINGERS];
 
+static void SetTouchInfo(int pos, SDL_FingerID finger_id, int counter,
+			 Key key, byte action)
+{
+  touch_info[pos].touched = (action != JOY_NO_ACTION);
+  touch_info[pos].finger_id = finger_id;
+  touch_info[pos].counter = counter;
+  touch_info[pos].key = key;
+  touch_info[pos].action = action;
+}
+
 static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
 {
   int x = event->x * overlay.grid_xsize;
@@ -807,11 +817,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
 	}
       }
 
-      touch_info[i].touched = TRUE;
-      touch_info[i].finger_id = event->fingerId;
-      touch_info[i].counter = Counter();
-      touch_info[i].key = key;
-      touch_info[i].action = grid_button_action;
+      SetTouchInfo(i, event->fingerId, Counter(), key, grid_button_action);
     }
     else
     {
@@ -823,11 +829,7 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
 	      getKeyNameFromKey(touch_info[i].key), "KEY_RELEASED", i);
       }
 
-      touch_info[i].touched = FALSE;
-      touch_info[i].finger_id = 0;
-      touch_info[i].counter = 0;
-      touch_info[i].key = 0;
-      touch_info[i].action = JOY_NO_ACTION;
+      SetTouchInfo(i, 0, 0, 0, JOY_NO_ACTION);
     }
   }
 }
