@@ -12,6 +12,10 @@ for i in $SDL_VERSIONS; do
     SDL_SUBDIR=`echo $i | sed -e "s/-.*//"`
     SDL_SUBURL=`echo $SDL_SUBDIR | tr -d '2'`
 
+    if [ -d "$JNI_DIR/$SDL_SUBDIR" ]; then
+	continue;
+    fi
+
     if [ "$SDL_SUBURL" = "SDL" ]; then
 	SDL_RELEASE_DIR="release"
     else
