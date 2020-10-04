@@ -443,6 +443,9 @@ void ClearPlayerAction(void)
     stored_player[i].snap_action = 0;
   }
 
+  // simulate finger release events for still pressed virtual buttons
+  overlay.grid_button_action = JOY_NO_ACTION;
+
   ClearTouchInfo();
   ClearJoystickState();
   ClearPlayerMouseAction();
