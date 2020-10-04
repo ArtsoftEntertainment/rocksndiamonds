@@ -43,6 +43,7 @@ static boolean stop_processing_events = FALSE;
 
 
 // forward declarations for internal use
+static void ClearTouchInfo(void);
 static void HandleNoEvent(void);
 static void HandleEventActions(void);
 
@@ -442,6 +443,7 @@ void ClearPlayerAction(void)
     stored_player[i].snap_action = 0;
   }
 
+  ClearTouchInfo();
   ClearJoystickState();
   ClearPlayerMouseAction();
 }
@@ -706,6 +708,14 @@ static void SetTouchInfo(int pos, SDL_FingerID finger_id, int counter,
   touch_info[pos].counter = counter;
   touch_info[pos].key = key;
   touch_info[pos].action = action;
+}
+
+static void ClearTouchInfo(void)
+{
+  int i;
+
+  for (i = 0; i < NUM_TOUCH_FINGERS; i++)
+    SetTouchInfo(i, 0, 0, 0, JOY_NO_ACTION);
 }
 
 static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
