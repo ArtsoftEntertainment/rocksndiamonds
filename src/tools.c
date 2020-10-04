@@ -4245,7 +4245,8 @@ void WaitForEventToContinue(void)
       still_wait = FALSE;
     }
 
-    BackToFront();
+    if (!PendingEvent())
+      BackToFront();
   }
 }
 
