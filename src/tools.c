@@ -4208,6 +4208,7 @@ void WaitForEventToContinue(void)
   button_status = MB_RELEASED;
 
   ClearEventQueue();
+  ClearPlayerAction();
 
   while (still_wait)
   {
@@ -4222,10 +4223,6 @@ void WaitForEventToContinue(void)
         case SDL_CONTROLLERBUTTONDOWN:
         case SDL_JOYBUTTONDOWN:
 	  still_wait = FALSE;
-	  break;
-
-	case EVENT_KEYRELEASE:
-	  ClearPlayerAction();
 	  break;
 
 	default:
