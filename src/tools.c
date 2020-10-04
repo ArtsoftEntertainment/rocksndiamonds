@@ -2820,8 +2820,12 @@ void ShowEnvelope(int envelope_nr)
   int anim_mode = graphic_info[graphic].anim_mode;
   int main_anim_mode = (anim_mode == ANIM_NONE ? ANIM_VERTICAL|ANIM_HORIZONTAL:
 			anim_mode == ANIM_DEFAULT ? ANIM_VERTICAL : anim_mode);
+  boolean overlay_enabled = GetOverlayEnabled();
 
   game.envelope_active = TRUE;	// needed for RedrawPlayfield() events
+
+  SetOverlayEnabled(FALSE);
+  UnmapAllGadgets();
 
   PlayMenuSoundStereo(sound_opening, SOUND_MIDDLE);
 
@@ -2834,6 +2838,9 @@ void ShowEnvelope(int envelope_nr)
     Delay_WithScreenUpdates(wait_delay_value);
   else
     WaitForEventToContinue();
+
+  RemapAllGadgets();
+  SetOverlayEnabled(overlay_enabled);
 
   PlayMenuSoundStereo(sound_closing, SOUND_MIDDLE);
 
