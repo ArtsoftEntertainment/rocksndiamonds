@@ -4196,6 +4196,7 @@ void DrawPlayerField(int x, int y)
 
 void WaitForEventToContinue(void)
 {
+  boolean first_wait = TRUE;
   boolean still_wait = TRUE;
 
   if (program.headless)
@@ -4218,7 +4219,16 @@ void WaitForEventToContinue(void)
     {
       switch (event.type)
       {
-	case EVENT_BUTTONRELEASE:
+	case EVENT_BUTTONPRESS:
+        case EVENT_FINGERPRESS:
+	  first_wait = FALSE;
+	  break;
+
+        case EVENT_BUTTONRELEASE:
+        case EVENT_FINGERRELEASE:
+	  still_wait = first_wait;
+	  break;
+
 	case EVENT_KEYPRESS:
         case SDL_CONTROLLERBUTTONDOWN:
         case SDL_JOYBUTTONDOWN:
