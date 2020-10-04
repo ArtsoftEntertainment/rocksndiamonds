@@ -4450,6 +4450,7 @@ static int RequestHandleEvents(unsigned int req_state)
 	    break;
 	  }
 
+	  case EVENT_FINGERRELEASE:
 	  case EVENT_KEYRELEASE:
 	    ClearPlayerAction();
 	    break;

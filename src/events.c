@@ -408,6 +408,7 @@ void ClearEventQueue(void)
 	button_status = MB_RELEASED;
 	break;
 
+      case EVENT_FINGERRELEASE:
       case EVENT_KEYRELEASE:
 	ClearPlayerAction();
 	break;
