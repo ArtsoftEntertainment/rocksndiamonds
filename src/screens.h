@@ -35,7 +35,7 @@ void HandleChooseLevelNr(int, int, int, int, int);
 void HandleHallOfFame(int, int, int, int, int);
 void HandleInfoScreen(int, int, int, int, int);
 void HandleSetupScreen(int, int, int, int, int);
-void HandleTypeName(int, Key);
+void HandleTypeName(Key);
 void HandleGameActions(void);
 
 void CreateScreenGadgets(void);

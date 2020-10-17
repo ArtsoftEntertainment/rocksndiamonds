@@ -252,6 +252,7 @@ static void DrawChooseLevelSet(void);
 static void DrawChooseLevelNr(void);
 static void DrawInfoScreen(void);
 static void DrawSetupScreen(void);
+static void DrawTypeName(void);
 
 static void DrawInfoScreen_NotAvailable(char *, char *);
 static void DrawInfoScreen_HelpAnim(int, int, boolean);
@@ -2080,7 +2081,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	{
 	  SetGameStatus(GAME_MODE_PSEUDO_TYPENAME);
 
-	  HandleTypeName(strlen(setup.player_name), 0);
+	  DrawTypeName();
 	}
       }
       else if (pos == MAIN_CONTROL_LEVELS)
@@ -3960,7 +3961,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 // type name functions
 // ============================================================================
 
-void HandleTypeName(int newxpos, Key key)
+static void HandleTypeNameExt(boolean initialize, Key key)
 {
   static char last_player_name[MAX_PLAYER_NAME_LEN + 1];
   struct MainControlInfo *mci = getMainControlInfo(MAIN_CONTROL_NAME);
@@ -3977,11 +3978,11 @@ void HandleTypeName(int newxpos, Key key)
 
   DrawBackgroundForFont(startx,starty, pos->width, pos->height, font_active_nr);
 
-  if (newxpos)
+  if (initialize)
   {
     strcpy(last_player_name, setup.player_name);
 
-    xpos = newxpos;
+    xpos = strlen(setup.player_name);
 
     StartTextInput(startx, starty, pos->width, pos->height);
   }
@@ -4032,6 +4033,16 @@ void HandleTypeName(int newxpos, Key key)
 
     StopTextInput();
   }
+}
+
+static void DrawTypeName(void)
+{
+  HandleTypeNameExt(TRUE, 0);
+}
+
+void HandleTypeName(Key key)
+{
+  HandleTypeNameExt(FALSE, key);
 }
 
 
