@@ -866,6 +866,20 @@
 				 (artwork).snd_first :			\
 				 (artwork).mus_first)
 
+#define ARTWORK_CURRENT_PTR(artwork, type)				\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 &(artwork).gfx_current :		\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 &(artwork).snd_current :		\
+				 &(artwork).mus_current)
+
+#define ARTWORK_CURRENT(artwork, type)					\
+				((type) == ARTWORK_TYPE_GRAPHICS ?	\
+				 (artwork).gfx_current :		\
+				 (type) == ARTWORK_TYPE_SOUNDS ?	\
+				 (artwork).snd_current :		\
+				 (artwork).mus_current)
+
 #define ARTWORK_CURRENT_IDENTIFIER_PTR(artwork, type)			\
 				((type) == ARTWORK_TYPE_GRAPHICS ?	\
 				 &(artwork).gfx_current_identifier :	\

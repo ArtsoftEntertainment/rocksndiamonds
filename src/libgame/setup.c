@@ -3761,6 +3761,34 @@ static TreeInfo *getDummyArtworkInfo(int type)
   return artwork_new;
 }
 
+void SetCurrentArtwork(int type)
+{
+  ArtworkDirTree **current_ptr = ARTWORK_CURRENT_PTR(artwork, type);
+  ArtworkDirTree *first_node = ARTWORK_FIRST_NODE(artwork, type);
+  char *setup_set = SETUP_ARTWORK_SET(setup, type);
+  char *default_subdir = ARTWORK_DEFAULT_SUBDIR(type);
+
+  // set current artwork to artwork configured in setup menu
+  *current_ptr = getTreeInfoFromIdentifier(first_node, setup_set);
+
+  // if not found, set current artwork to default artwork
+  if (*current_ptr == NULL)
+    *current_ptr = getTreeInfoFromIdentifier(first_node, default_subdir);
+
+  // if not found, set current artwork to first artwork in tree
+  if (*current_ptr == NULL)
+    *current_ptr = getFirstValidTreeInfoEntry(first_node);
+}
+
+void ChangeCurrentArtworkIfNeeded(int type)
+{
+  char *current_identifier = ARTWORK_CURRENT_IDENTIFIER(artwork, type);
+  char *setup_set = SETUP_ARTWORK_SET(setup, type);
+
+  if (!strEqual(current_identifier, setup_set))
+    SetCurrentArtwork(type);
+}
+
 void LoadArtworkInfo(void)
 {
   LoadArtworkInfoCache();
@@ -3796,29 +3824,9 @@ void LoadArtworkInfo(void)
     artwork.mus_first = getDummyArtworkInfo(TREE_TYPE_MUSIC_DIR);
 
   // before sorting, the first entries will be from the user directory
-  artwork.gfx_current =
-    getTreeInfoFromIdentifier(artwork.gfx_first, setup.graphics_set);
-  if (artwork.gfx_current == NULL)
-    artwork.gfx_current =
-      getTreeInfoFromIdentifier(artwork.gfx_first, GFX_DEFAULT_SUBDIR);
-  if (artwork.gfx_current == NULL)
-    artwork.gfx_current = getFirstValidTreeInfoEntry(artwork.gfx_first);
-
-  artwork.snd_current =
-    getTreeInfoFromIdentifier(artwork.snd_first, setup.sounds_set);
-  if (artwork.snd_current == NULL)
-    artwork.snd_current =
-      getTreeInfoFromIdentifier(artwork.snd_first, SND_DEFAULT_SUBDIR);
-  if (artwork.snd_current == NULL)
-    artwork.snd_current = getFirstValidTreeInfoEntry(artwork.snd_first);
-
-  artwork.mus_current =
-    getTreeInfoFromIdentifier(artwork.mus_first, setup.music_set);
-  if (artwork.mus_current == NULL)
-    artwork.mus_current =
-      getTreeInfoFromIdentifier(artwork.mus_first, MUS_DEFAULT_SUBDIR);
-  if (artwork.mus_current == NULL)
-    artwork.mus_current = getFirstValidTreeInfoEntry(artwork.mus_first);
+  SetCurrentArtwork(ARTWORK_TYPE_GRAPHICS);
+  SetCurrentArtwork(ARTWORK_TYPE_SOUNDS);
+  SetCurrentArtwork(ARTWORK_TYPE_MUSIC);
 
   artwork.gfx_current_identifier = artwork.gfx_current->identifier;
   artwork.snd_current_identifier = artwork.snd_current->identifier;
@@ -3920,39 +3928,9 @@ void LoadLevelArtworkInfo(void)
   print_timestamp_time("SaveArtworkInfoCache");
 
   // needed for reloading level artwork not known at ealier stage
-
-  if (!strEqual(artwork.gfx_current_identifier, setup.graphics_set))
-  {
-    artwork.gfx_current =
-      getTreeInfoFromIdentifier(artwork.gfx_first, setup.graphics_set);
-    if (artwork.gfx_current == NULL)
-      artwork.gfx_current =
-	getTreeInfoFromIdentifier(artwork.gfx_first, GFX_DEFAULT_SUBDIR);
-    if (artwork.gfx_current == NULL)
-      artwork.gfx_current = getFirstValidTreeInfoEntry(artwork.gfx_first);
-  }
-
-  if (!strEqual(artwork.snd_current_identifier, setup.sounds_set))
-  {
-    artwork.snd_current =
-      getTreeInfoFromIdentifier(artwork.snd_first, setup.sounds_set);
-    if (artwork.snd_current == NULL)
-      artwork.snd_current =
-	getTreeInfoFromIdentifier(artwork.snd_first, SND_DEFAULT_SUBDIR);
-    if (artwork.snd_current == NULL)
-      artwork.snd_current = getFirstValidTreeInfoEntry(artwork.snd_first);
-  }
-
-  if (!strEqual(artwork.mus_current_identifier, setup.music_set))
-  {
-    artwork.mus_current =
-      getTreeInfoFromIdentifier(artwork.mus_first, setup.music_set);
-    if (artwork.mus_current == NULL)
-      artwork.mus_current =
-	getTreeInfoFromIdentifier(artwork.mus_first, MUS_DEFAULT_SUBDIR);
-    if (artwork.mus_current == NULL)
-      artwork.mus_current = getFirstValidTreeInfoEntry(artwork.mus_first);
-  }
+  ChangeCurrentArtworkIfNeeded(ARTWORK_TYPE_GRAPHICS);
+  ChangeCurrentArtworkIfNeeded(ARTWORK_TYPE_SOUNDS);
+  ChangeCurrentArtworkIfNeeded(ARTWORK_TYPE_MUSIC);
 
   print_timestamp_time("getTreeInfoFromIdentifier");
 

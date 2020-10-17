@@ -326,6 +326,9 @@ char *ExtractZipFileIntoDirectory(char *, char *, int);
 boolean AdjustGraphicsForEMC(void);
 boolean AdjustSoundsForEMC(void);
 
+void SetCurrentArtwork(int);
+void ChangeCurrentArtworkIfNeeded(int);
+
 void LoadLevelInfo(void);
 void LoadArtworkInfo(void);
 void LoadLevelArtworkInfo(void);
