@@ -8411,6 +8411,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.multiple_users,			"multiple_users"
+  },
+  {
+    TYPE_SWITCH,
     &setup.sound,				"sound"
   },
   {
@@ -9192,6 +9196,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->player_name = get_corrected_login_name(getLoginName());
 
+  si->multiple_users = TRUE;
+
   si->sound = TRUE;
   si->sound_loops = TRUE;
   si->sound_music = TRUE;
@@ -9818,7 +9824,8 @@ void SaveSetup(void)
   for (i = 0; i < ARRAY_SIZE(global_setup_tokens); i++)
   {
     // just to make things nicer :)
-    if (global_setup_tokens[i].value == &setup.sound			||
+    if (global_setup_tokens[i].value == &setup.multiple_users		||
+	global_setup_tokens[i].value == &setup.sound			||
 	global_setup_tokens[i].value == &setup.graphics_set		||
 	global_setup_tokens[i].value == &setup.volume_simple		||
 	global_setup_tokens[i].value == &setup.network_mode		||

@@ -1390,6 +1390,8 @@ struct SetupInfo
 {
   char *player_name;
 
+  boolean multiple_users;
+
   boolean sound;
   boolean sound_loops;
   boolean sound_music;
