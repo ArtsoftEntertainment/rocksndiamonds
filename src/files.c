@@ -9526,6 +9526,8 @@ static void setSetupInfoFromTokenText(SetupFileHash *setup_file_hash,
   // check if this setup option should be hidden in the setup menu
   if (token_hide_value != NULL && get_boolean_from_string(token_hide_value))
     setHideSetupEntry(token_info[token_nr].value);
+
+  free(token_hide_text);
 }
 
 static void setSetupInfoFromTokenInfo(SetupFileHash *setup_file_hash,
