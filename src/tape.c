@@ -955,7 +955,7 @@ unsigned int GetTapeLengthFrames(void)
   int i;
 
   if (TAPE_IS_EMPTY(tape))
-    return(0);
+    return 0;
 
   for (i = 0; i < tape.length; i++)
     tape_length_frames += tape.pos[i].delay;

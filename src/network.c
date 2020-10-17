@@ -161,15 +161,15 @@ char *getNetworkPlayerName(int player_nr)
   struct NetworkClientPlayerInfo *player;
 
   if (player_nr == 0)
-    return("the network game server");
+    return "the network game server";
   else if (player_nr == first_player.nr)
-    return("you");
+    return "you";
   else
     for (player = &first_player; player; player = player->next)
       if (player->nr == player_nr && strlen(player->name) > 0)
-	return(player->name);
+	return player->name;
 
-  return(EMPTY_PLAYER_NAME);
+  return EMPTY_PLAYER_NAME;
 }
 
 boolean hasStartedNetworkGame(void)
