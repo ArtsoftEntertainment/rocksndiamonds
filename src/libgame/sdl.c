@@ -2709,7 +2709,7 @@ void SDLInitJoysticks(void)
   boolean print_warning = !sdl_joystick_subsystem_initialized;
   char *mappings_file_base = getPath2(options.conf_directory,
 				      GAMECONTROLLER_BASENAME);
-  char *mappings_file_user = getPath2(getUserGameDataDir(),
+  char *mappings_file_user = getPath2(getMainUserGameDataDir(),
 				      GAMECONTROLLER_BASENAME);
   int num_mappings;
   int i;

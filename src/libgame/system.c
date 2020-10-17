@@ -80,7 +80,7 @@ void InitProgramInfo(char *argv0, char *config_filename, char *userdata_subdir,
   program.config_filename = config_filename;
 
   program.userdata_subdir = userdata_subdir;
-  program.userdata_path = getUserGameDataDir();
+  program.userdata_path = getMainUserGameDataDir();
 
   program.program_title = program_title;
   program.window_title = "(undefined)";

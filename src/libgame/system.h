@@ -627,6 +627,7 @@
 #define CACHE_DIRECTORY		"cache"
 #define CONF_DIRECTORY		"conf"
 #define NETWORK_DIRECTORY	"network"
+#define USERS_DIRECTORY		"users"
 
 #define GFX_CLASSIC_SUBDIR	"gfx_classic"
 #define SND_CLASSIC_SUBDIR	"snd_classic"

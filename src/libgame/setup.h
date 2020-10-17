@@ -280,6 +280,7 @@ void freeTreeInfo(TreeInfo *);
 char *getHomeDir(void);
 char *getCommonDataDir(void);
 char *getPersonalDataDir(void);
+char *getMainUserGameDataDir(void);
 char *getUserGameDataDir(void);
 char *getSetupDir(void);
 char *getLevelDirFromTreeInfo(TreeInfo *);
@@ -289,6 +290,7 @@ char *getCurrentLevelDir(void);
 char *getNewUserLevelSubdir(void);
 
 void createDirectory(char *, char *, int);
+void InitMainUserDataDirectory(void);
 void InitUserDataDirectory(void);
 void SetFilePermissions(char *, int);
 

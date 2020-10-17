@@ -121,9 +121,9 @@ static char *getScoreDir(char *level_subdir)
   if (score_dir == NULL)
   {
     if (program.global_scores)
-      score_dir = getPath2(getCommonDataDir(),   score_subdir);
+      score_dir = getPath2(getCommonDataDir(),       score_subdir);
     else
-      score_dir = getPath2(getUserGameDataDir(), score_subdir);
+      score_dir = getPath2(getMainUserGameDataDir(), score_subdir);
   }
 
   if (level_subdir != NULL)
@@ -136,6 +136,32 @@ static char *getScoreDir(char *level_subdir)
   }
 
   return score_dir;
+}
+
+static char *getUserSubdir(int nr)
+{
+  static char user_subdir[16] = { 0 };
+
+  sprintf(user_subdir, "%03d", nr);
+
+  return user_subdir;
+}
+
+static char *getUserDir(int nr)
+{
+  static char *user_dir = NULL;
+  char *main_data_dir = getMainUserGameDataDir();
+  char *users_subdir = USERS_DIRECTORY;
+  char *user_subdir = getUserSubdir(nr);
+
+  checked_free(user_dir);
+
+  if (nr != -1)
+    user_dir = getPath3(main_data_dir, users_subdir, user_subdir);
+  else
+    user_dir = getPath2(main_data_dir, users_subdir);
+
+  return user_dir;
 }
 
 static char *getLevelSetupDir(char *level_subdir)
@@ -159,7 +185,7 @@ static char *getCacheDir(void)
   static char *cache_dir = NULL;
 
   if (cache_dir == NULL)
-    cache_dir = getPath2(getUserGameDataDir(), CACHE_DIRECTORY);
+    cache_dir = getPath2(getMainUserGameDataDir(), CACHE_DIRECTORY);
 
   return cache_dir;
 }
@@ -169,7 +195,7 @@ static char *getNetworkDir(void)
   static char *network_dir = NULL;
 
   if (network_dir == NULL)
-    network_dir = getPath2(getUserGameDataDir(), NETWORK_DIRECTORY);
+    network_dir = getPath2(getMainUserGameDataDir(), NETWORK_DIRECTORY);
 
   return network_dir;
 }
@@ -192,7 +218,7 @@ char *getLevelDirFromTreeInfo(TreeInfo *node)
 char *getUserLevelDir(char *level_subdir)
 {
   static char *userlevel_dir = NULL;
-  char *data_dir = getUserGameDataDir();
+  char *data_dir = getMainUserGameDataDir();
   char *userlevel_subdir = LEVELS_DIRECTORY;
 
   checked_free(userlevel_dir);
@@ -341,7 +367,7 @@ char *getUserGraphicsDir(void)
   static char *usergraphics_dir = NULL;
 
   if (usergraphics_dir == NULL)
-    usergraphics_dir = getPath2(getUserGameDataDir(), GRAPHICS_DIRECTORY);
+    usergraphics_dir = getPath2(getMainUserGameDataDir(), GRAPHICS_DIRECTORY);
 
   return usergraphics_dir;
 }
@@ -351,7 +377,7 @@ char *getUserSoundsDir(void)
   static char *usersounds_dir = NULL;
 
   if (usersounds_dir == NULL)
-    usersounds_dir = getPath2(getUserGameDataDir(), SOUNDS_DIRECTORY);
+    usersounds_dir = getPath2(getMainUserGameDataDir(), SOUNDS_DIRECTORY);
 
   return usersounds_dir;
 }
@@ -361,7 +387,7 @@ char *getUserMusicDir(void)
   static char *usermusic_dir = NULL;
 
   if (usermusic_dir == NULL)
-    usermusic_dir = getPath2(getUserGameDataDir(), MUSIC_DIRECTORY);
+    usermusic_dir = getPath2(getMainUserGameDataDir(), MUSIC_DIRECTORY);
 
   return usermusic_dir;
 }
@@ -1067,7 +1093,7 @@ void InitScoreDirectory(char *level_subdir)
   if (program.global_scores)
     createDirectory(getCommonDataDir(), "common data", permissions);
   else
-    createDirectory(getUserGameDataDir(), "user data", permissions);
+    createDirectory(getMainUserGameDataDir(), "main user data", permissions);
 
   createDirectory(getScoreDir(NULL), "main score", permissions);
   createDirectory(getScoreDir(level_subdir), "level score", permissions);
@@ -1079,7 +1105,7 @@ void InitUserLevelDirectory(char *level_subdir)
 {
   if (!directoryExists(getUserLevelDir(level_subdir)))
   {
-    createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
+    createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
     createDirectory(getUserLevelDir(NULL), "main user level", PERMS_PRIVATE);
     createDirectory(getUserLevelDir(level_subdir), "user level", PERMS_PRIVATE);
 
@@ -1092,7 +1118,7 @@ void InitNetworkLevelDirectory(char *level_subdir)
 {
   if (!directoryExists(getNetworkLevelDir(level_subdir)))
   {
-    createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
+    createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
     createDirectory(getNetworkDir(), "network data", PERMS_PRIVATE);
     createDirectory(getNetworkLevelDir(NULL), "main network level", PERMS_PRIVATE);
     createDirectory(getNetworkLevelDir(level_subdir), "network level", PERMS_PRIVATE);
@@ -1108,7 +1134,7 @@ void InitLevelSetupDirectory(char *level_subdir)
 
 static void InitCacheDirectory(void)
 {
-  createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
+  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
   createDirectory(getCacheDir(), "cache data", PERMS_PRIVATE);
 }
 
@@ -1552,23 +1578,31 @@ char *getPersonalDataDir(void)
   return personal_data_dir;
 }
 
-char *getUserGameDataDir(void)
+char *getMainUserGameDataDir(void)
 {
-  static char *user_game_data_dir = NULL;
+  static char *main_user_data_dir = NULL;
 
 #if defined(PLATFORM_ANDROID)
-  if (user_game_data_dir == NULL)
-    user_game_data_dir = (char *)(SDL_AndroidGetExternalStorageState() &
+  if (main_user_data_dir == NULL)
+    main_user_data_dir = (char *)(SDL_AndroidGetExternalStorageState() &
 				  SDL_ANDROID_EXTERNAL_STORAGE_WRITE ?
 				  SDL_AndroidGetExternalStoragePath() :
 				  SDL_AndroidGetInternalStoragePath());
 #else
-  if (user_game_data_dir == NULL)
-    user_game_data_dir = getPath2(getPersonalDataDir(),
+  if (main_user_data_dir == NULL)
+    main_user_data_dir = getPath2(getPersonalDataDir(),
 				  program.userdata_subdir);
 #endif
 
-  return user_game_data_dir;
+  return main_user_data_dir;
+}
+
+char *getUserGameDataDir(void)
+{
+  if (user.nr == 0)
+    return getMainUserGameDataDir();
+  else
+    return getUserDir(user.nr);
 }
 
 char *getSetupDir(void)
@@ -1636,9 +1670,20 @@ void createDirectory(char *dir, char *text, int permission_class)
   posix_umask(last_umask);		// restore previous umask
 }
 
+void InitMainUserDataDirectory(void)
+{
+  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
+}
+
 void InitUserDataDirectory(void)
 {
-  createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
+  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
+
+  if (user.nr != 0)
+  {
+    createDirectory(getUserDir(-1), "users", PERMS_PRIVATE);
+    createDirectory(getUserDir(user.nr), "user data", PERMS_PRIVATE);
+  }
 }
 
 void SetFilePermissions(char *filename, int permission_class)

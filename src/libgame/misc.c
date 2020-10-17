@@ -3761,14 +3761,14 @@ void FreeCustomArtworkLists(struct ArtworkListInfo *artwork_info)
 
 char *getLogFilename(char *basename)
 {
-  return getPath2(getUserGameDataDir(), basename);
+  return getPath2(getMainUserGameDataDir(), basename);
 }
 
 void OpenLogFiles(void)
 {
   int i;
 
-  InitUserDataDirectory();
+  InitMainUserDataDirectory();
 
   for (i = 0; i < NUM_LOGS; i++)
   {
