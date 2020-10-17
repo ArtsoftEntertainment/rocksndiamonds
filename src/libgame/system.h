@@ -1459,6 +1459,11 @@ struct SetupInfo
   struct OptionInfo options;
 };
 
+struct UserInfo
+{
+  int nr;
+};
+
 struct TreeInfo
 {
   struct TreeInfo **node_top;		// topmost node in tree
@@ -1779,6 +1784,7 @@ extern struct AnimInfo		anim;
 extern struct ArtworkInfo	artwork;
 extern struct JoystickInfo	joystick;
 extern struct SetupInfo		setup;
+extern struct UserInfo		user;
 
 extern LevelDirTree	       *leveldir_first_all;
 extern LevelDirTree	       *leveldir_first;
