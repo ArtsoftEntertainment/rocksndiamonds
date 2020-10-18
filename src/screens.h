@@ -30,6 +30,7 @@ void RedrawSetupScreenAfterScreenRotation(int);
 
 void HandleTitleScreen(int, int, int, int, int);
 void HandleMainMenu(int, int, int, int, int);
+void HandleChoosePlayerName(int, int, int, int, int);
 void HandleChooseLevelSet(int, int, int, int, int);
 void HandleChooseLevelNr(int, int, int, int, int);
 void HandleHallOfFame(int, int, int, int, int);

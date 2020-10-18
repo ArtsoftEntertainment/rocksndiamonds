@@ -248,6 +248,7 @@ static void execSetupTouch(void);
 static void execSetupArtwork(void);
 static void HandleChooseTree(int, int, int, int, int, TreeInfo **);
 
+static void DrawChoosePlayerName(void);
 static void DrawChooseLevelSet(void);
 static void DrawChooseLevelNr(void);
 static void DrawInfoScreen(void);
@@ -326,6 +327,9 @@ static TreeInfo *transparency_current = NULL;
 
 static TreeInfo *grid_sizes[2][2] = { { NULL, NULL }, { NULL, NULL } };
 static TreeInfo *grid_size_current[2][2] = { { NULL, NULL }, { NULL, NULL } };
+
+static TreeInfo *player_name = NULL;
+static TreeInfo *player_name_current = NULL;
 
 static TreeInfo *level_number = NULL;
 static TreeInfo *level_number_current = NULL;
@@ -2081,9 +2085,20 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	}
 	else
 	{
-	  SetGameStatus(GAME_MODE_PSEUDO_TYPENAME);
+	  if (0 && setup.multiple_users)	// (not used yet)
+	  {
+	    CloseDoor(DOOR_CLOSE_2);
 
-	  DrawTypeName();
+	    SetGameStatus(GAME_MODE_NAMES);
+
+	    DrawChoosePlayerName();
+	  }
+	  else
+	  {
+	    SetGameStatus(GAME_MODE_PSEUDO_TYPENAME);
+
+	    DrawTypeName();
+	  }
 	}
       }
       else if (pos == MAIN_CONTROL_LEVELS)
@@ -4123,7 +4138,9 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   // needed if different viewport properties defined for choosing level (set)
   ChangeViewportPropertiesIfNeeded();
 
-  if (game_status == GAME_MODE_LEVELNR)
+  if (game_status == GAME_MODE_NAMES)
+    SetMainBackgroundImage(IMG_BACKGROUND_NAMES);
+  else if (game_status == GAME_MODE_LEVELNR)
     SetMainBackgroundImage(IMG_BACKGROUND_LEVELNR);
   else if (game_status == GAME_MODE_LEVELS)
     SetMainBackgroundImage(IMG_BACKGROUND_LEVELS);
@@ -4563,6 +4580,65 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       }
     }
   }
+}
+
+void DrawChoosePlayerName(void)
+{
+  int i;
+
+  FadeMenuSoundsAndMusic();
+
+  if (player_name != NULL)
+  {
+    freeTreeInfo(player_name);
+
+    player_name = NULL;
+  }
+
+  for (i = 0; i < MAX_PLAYER_NAMES; i++)
+  {
+    boolean team_mode = (!network.enabled && setup.team_mode);
+    int tree_type = (team_mode ? TREE_TYPE_PLAYER_TEAM : TREE_TYPE_PLAYER_NAME);
+    TreeInfo *ti = newTreeInfo_setDefaults(tree_type);
+    char identifier[32], name[MAX_PLAYER_NAME_LEN + 1];
+    int value = i;
+
+    ti->node_top = &player_name;
+    ti->sort_priority = 10000 + value;
+    ti->color = FC_RED;
+
+    if (strEqual(global.user_names[i], EMPTY_PLAYER_NAME))
+      ti->color = FC_BLUE;
+
+    snprintf(identifier, sizeof(identifier), "%d", value);
+    snprintf(name, sizeof(name), "%s", global.user_names[i]);
+
+    setString(&ti->identifier, identifier);
+    setString(&ti->name, name);
+    setString(&ti->name_sorting, name);
+
+    pushTreeInfo(&player_name, ti);
+  }
+
+  // sort player entries by player number
+  sortTreeInfo(&player_name);
+
+  // set current player entry to selected player entry
+  player_name_current =
+    getTreeInfoFromIdentifier(player_name, i_to_a(user.nr));
+
+  // if that fails, set current player name to first available name
+  if (player_name_current == NULL)
+    player_name_current = player_name;
+
+  DrawChooseTree(&player_name_current);
+
+  PlayMenuSoundsAndMusic();
+}
+
+void HandleChoosePlayerName(int mx, int my, int dx, int dy, int button)
+{
+  HandleChooseTree(mx, my, dx, dy, button, &player_name_current);
 }
 
 void DrawChooseLevelSet(void)
@@ -9074,7 +9150,9 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
       break;
 
     case SCREEN_CTRL_ID_SCROLL_UP:
-      if (game_status == GAME_MODE_LEVELS)
+      if (game_status == GAME_MODE_NAMES)
+	HandleChoosePlayerName(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_LEVELS)
 	HandleChooseLevelSet(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_LEVELNR)
 	HandleChooseLevelNr(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
@@ -9085,7 +9163,9 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
       break;
 
     case SCREEN_CTRL_ID_SCROLL_DOWN:
-      if (game_status == GAME_MODE_LEVELS)
+      if (game_status == GAME_MODE_NAMES)
+	HandleChoosePlayerName(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_LEVELS)
 	HandleChooseLevelSet(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_LEVELNR)
 	HandleChooseLevelNr(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
@@ -9096,7 +9176,9 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
       break;
 
     case SCREEN_CTRL_ID_SCROLL_VERTICAL:
-      if (game_status == GAME_MODE_LEVELS)
+      if (game_status == GAME_MODE_NAMES)
+	HandleChoosePlayerName(0,0,999,gi->event.item_position,MB_MENU_INITIALIZE);
+      else if (game_status == GAME_MODE_LEVELS)
 	HandleChooseLevelSet(0,0,999,gi->event.item_position,MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_LEVELNR)
 	HandleChooseLevelNr(0,0,999,gi->event.item_position,MB_MENU_INITIALIZE);
