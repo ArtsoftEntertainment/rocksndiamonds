@@ -9192,9 +9192,10 @@ static char *get_corrected_login_name(char *login_name)
 
 static void setSetupInfoToDefaults(struct SetupInfo *si)
 {
+  char *player_name = (user.nr == 0 ? getLoginName() : EMPTY_PLAYER_NAME);
   int i;
 
-  si->player_name = get_corrected_login_name(getLoginName());
+  si->player_name = get_corrected_login_name(player_name);
 
   si->multiple_users = TRUE;
 
