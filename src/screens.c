@@ -3978,15 +3978,53 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 // type name functions
 // ============================================================================
 
+static char type_name_last[MAX_PLAYER_NAME_LEN + 1] = { 0 };
+
+static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
+{
+  struct MainControlInfo *mci = getMainControlInfo(MAIN_CONTROL_NAME);
+
+  *pos = *mci->pos_input;
+
+  strcpy(name, setup.player_name);
+  strcpy(type_name_last, name);
+
+  if (strEqual(name, EMPTY_PLAYER_NAME))
+    strcpy(name, "");
+
+  *xpos = strlen(name);
+}
+
+static void setTypeNameValues(char *name, int *font, boolean success)
+{
+  if (!success)
+    strcpy(name, type_name_last);
+
+  if (strEqual(name, ""))
+    strcpy(name, EMPTY_PLAYER_NAME);
+
+  if (!success)
+    return;
+
+  // change name of edited user in setup structure
+  strcpy(setup.player_name, name);
+
+  // save setup of edited user
+  SaveSetup();
+}
+
 static void HandleTypeNameExt(boolean initialize, Key key)
 {
-  static char name[MAX_PLAYER_NAME_LEN + 1];
-  static char last_player_name[MAX_PLAYER_NAME_LEN + 1];
-  struct MainControlInfo *mci = getMainControlInfo(MAIN_CONTROL_NAME);
-  struct TextPosInfo *pos = mci->pos_input;
+  static struct TextPosInfo pos_name = { 0 };
+  static char name[MAX_PLAYER_NAME_LEN + 1] = { 0 };
+  static int xpos = 0;
+
+  if (initialize)
+    getTypeNameValues(name, &pos_name, &xpos);
+
+  struct TextPosInfo *pos = &pos_name;
   int sx = mSX + ALIGNED_TEXT_XPOS(pos);
   int sy = mSY + ALIGNED_TEXT_YPOS(pos);
-  static int xpos = 0;
   int font_nr = pos->font;
   int font_active_nr = FONT_ACTIVE(font_nr);
   int font_width = getFontWidth(font_active_nr);
@@ -3998,11 +4036,6 @@ static void HandleTypeNameExt(boolean initialize, Key key)
 
   if (initialize)
   {
-    strcpy(name, setup.player_name);
-    strcpy(last_player_name, name);
-
-    xpos = strlen(name);
-
     StartTextInput(sx, sy, pos->width, pos->height);
   }
   else if (is_valid_key_char && xpos < MAX_PLAYER_NAME_LEN)
@@ -4018,17 +4051,15 @@ static void HandleTypeNameExt(boolean initialize, Key key)
 
     name[xpos] = 0;
   }
-  else if (key == KSYM_Return && xpos > 0)
+  else if (key == KSYM_Return)
   {
-    strcpy(setup.player_name, name);
-
-    SaveSetup();
+    setTypeNameValues(name, &font_nr, TRUE);
 
     is_active = FALSE;
   }
   else if (key == KSYM_Escape)
   {
-    strcpy(name, last_player_name);
+    setTypeNameValues(name, &font_nr, FALSE);
 
     is_active = FALSE;
   }
