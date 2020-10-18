@@ -3983,8 +3983,8 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   static char last_player_name[MAX_PLAYER_NAME_LEN + 1];
   struct MainControlInfo *mci = getMainControlInfo(MAIN_CONTROL_NAME);
   struct TextPosInfo *pos = mci->pos_input;
-  int startx = mSX + ALIGNED_TEXT_XPOS(pos);
-  int starty = mSY + ALIGNED_TEXT_YPOS(pos);
+  int sx = mSX + ALIGNED_TEXT_XPOS(pos);
+  int sy = mSY + ALIGNED_TEXT_YPOS(pos);
   static int xpos = 0;
   int font_nr = pos->font;
   int font_active_nr = FONT_ACTIVE(font_nr);
@@ -3993,7 +3993,7 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   boolean is_valid_key_char = (key_char != 0 && (key_char != ' ' || xpos > 0));
   boolean is_active = TRUE;
 
-  DrawBackgroundForFont(startx,starty, pos->width, pos->height, font_active_nr);
+  DrawBackgroundForFont(sx, sy, pos->width, pos->height, font_active_nr);
 
   if (initialize)
   {
@@ -4001,7 +4001,7 @@ static void HandleTypeNameExt(boolean initialize, Key key)
 
     xpos = strlen(setup.player_name);
 
-    StartTextInput(startx, starty, pos->width, pos->height);
+    StartTextInput(sx, sy, pos->width, pos->height);
   }
   else if (is_valid_key_char && xpos < MAX_PLAYER_NAME_LEN)
   {
@@ -4036,17 +4036,17 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   if (is_active)
   {
     pos->width = (strlen(setup.player_name) + 1) * font_width;
-    startx = mSX + ALIGNED_TEXT_XPOS(pos);
+    sx = mSX + ALIGNED_TEXT_XPOS(pos);
 
-    DrawText(startx, starty, setup.player_name, font_active_nr);
-    DrawText(startx + xpos * font_width, starty, "_", font_active_nr);
+    DrawText(sx, sy, setup.player_name, font_active_nr);
+    DrawText(sx + xpos * font_width, sy, "_", font_active_nr);
   }
   else
   {
     pos->width = strlen(setup.player_name) * font_width;
-    startx = mSX + ALIGNED_TEXT_XPOS(pos);
+    sx = mSX + ALIGNED_TEXT_XPOS(pos);
 
-    DrawText(startx, starty, setup.player_name, font_nr);
+    DrawText(sx, sy, setup.player_name, font_nr);
 
     StopTextInput();
   }
