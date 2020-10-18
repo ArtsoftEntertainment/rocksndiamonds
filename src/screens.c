@@ -3978,6 +3978,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 // type name functions
 // ============================================================================
 
+static TreeInfo *type_name_node = NULL;
 static char type_name_last[MAX_PLAYER_NAME_LEN + 1] = { 0 };
 
 static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
@@ -3986,7 +3987,27 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
 
   *pos = *mci->pos_input;
 
-  strcpy(name, setup.player_name);
+  if (0 && setup.multiple_users)	// (not used yet)
+  {
+    TreeInfo *ti = player_name_current;
+    int first_entry = ti->cl_first;
+    int entry_pos = first_entry + ti->cl_cursor;
+    TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
+    int xpos = MENU_SCREEN_START_XPOS;
+    int ypos = MENU_SCREEN_START_YPOS + ti->cl_cursor;
+
+    type_name_node = getTreeInfoFromPos(node_first, entry_pos);
+
+    strcpy(name, type_name_node->name);
+
+    pos->x = xpos * 32;
+    pos->y = ypos * 32;
+  }
+  else
+  {
+    strcpy(name, setup.player_name);
+  }
+
   strcpy(type_name_last, name);
 
   if (strEqual(name, EMPTY_PLAYER_NAME))
@@ -4003,14 +4024,62 @@ static void setTypeNameValues(char *name, int *font, boolean success)
   if (strEqual(name, ""))
     strcpy(name, EMPTY_PLAYER_NAME);
 
+  if (0 && setup.multiple_users)	// (not used yet)
+  {
+    if (type_name_node == NULL)		// should not happen
+      return;
+
+    if (success)
+    {
+      type_name_node->color = FC_RED;
+
+      if (strEqual(name, EMPTY_PLAYER_NAME))
+	type_name_node->color = FC_BLUE;
+    }
+
+    *font = FONT_TEXT_1 + type_name_node->color;
+  }
+
   if (!success)
     return;
+
+  int last_user_nr = user.nr;
+
+  if (0 && setup.multiple_users)	// (not used yet)
+  {
+    int edit_user_nr = posTreeInfo(type_name_node);
+
+    // change name of edited user in global list of user names
+    setString(&global.user_names[edit_user_nr], name);
+
+    // change name of edited user in local menu tree structure
+    setString(&type_name_node->name, name);
+    setString(&type_name_node->name_sorting, name);
+
+    // save setup of currently active user (may differ from edited user)
+    SaveSetup();
+
+    // temporarily change active user to edited user
+    user.nr = edit_user_nr;
+
+    // load setup of edited user
+    LoadSetup();
+  }
 
   // change name of edited user in setup structure
   strcpy(setup.player_name, name);
 
   // save setup of edited user
   SaveSetup();
+
+  if (0 && setup.multiple_users)	// (not used yet)
+  {
+    // restore currently active user
+    user.nr = last_user_nr;
+
+    // restore setup of currently active user
+    LoadSetup();
+  }
 }
 
 static void HandleTypeNameExt(boolean initialize, Key key)
