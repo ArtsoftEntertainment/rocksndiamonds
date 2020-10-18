@@ -5909,7 +5909,7 @@ static void InitOverrideArtwork(void)
 
 static char *getNewArtworkIdentifier(int type)
 {
-  static char *leveldir_current_identifier[3] = { NULL, NULL, NULL };
+  static char *last_leveldir_identifier[3] = { NULL, NULL, NULL };
   static boolean last_override_level_artwork[3] = { FALSE, FALSE, FALSE };
   static boolean last_has_level_artwork_set[3] = { FALSE, FALSE, FALSE };
   static boolean initialized[3] = { FALSE, FALSE, FALSE };
@@ -5948,11 +5948,11 @@ static char *getNewArtworkIdentifier(int type)
      ------------------------------------------------------------ */
 
   // ---------- reload if level set and also artwork set has changed ----------
-  if (leveldir_current_identifier[type] != leveldir_identifier &&
+  if (last_leveldir_identifier[type] != leveldir_identifier &&
       (last_has_level_artwork_set[type] || has_level_artwork_set))
     artwork_new_identifier = artwork_current_identifier;
 
-  leveldir_current_identifier[type] = leveldir_identifier;
+  last_leveldir_identifier[type] = leveldir_identifier;
   last_has_level_artwork_set[type] = has_level_artwork_set;
 
   // ---------- reload if "override artwork" setting has changed --------------
