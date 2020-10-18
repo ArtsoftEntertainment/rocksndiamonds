@@ -5944,7 +5944,6 @@ static char *getNewArtworkIdentifier(int type)
   else
     artwork_current_identifier = setup_artwork_set;
 
-
   /* 2nd step: check if it is really needed to reload artwork set
      ------------------------------------------------------------ */
 
@@ -5967,7 +5966,7 @@ static char *getNewArtworkIdentifier(int type)
 		artwork_current_identifier))
     artwork_new_identifier = artwork_current_identifier;
 
-  *(ARTWORK_CURRENT_IDENTIFIER_PTR(artwork, type))= artwork_current_identifier;
+  *(ARTWORK_CURRENT_IDENTIFIER_PTR(artwork, type)) = artwork_current_identifier;
 
   // ---------- do not reload directly after starting -------------------------
   if (!initialized[type])
