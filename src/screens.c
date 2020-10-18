@@ -4021,16 +4021,12 @@ static void HandleTypeNameExt(boolean initialize, Key key)
     SaveSetup();
 
     is_active = FALSE;
-
-    SetGameStatus(GAME_MODE_MAIN);
   }
   else if (key == KSYM_Escape)
   {
     strcpy(setup.player_name, last_player_name);
 
     is_active = FALSE;
-
-    SetGameStatus(GAME_MODE_MAIN);
   }
 
   if (is_active)
@@ -4043,6 +4039,8 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   }
   else
   {
+    SetGameStatus(GAME_MODE_MAIN);
+
     pos->width = strlen(setup.player_name) * font_width;
     sx = mSX + ALIGNED_TEXT_XPOS(pos);
 
