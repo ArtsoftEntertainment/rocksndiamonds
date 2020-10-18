@@ -9657,6 +9657,43 @@ static void decodeSetupFileHash_EditorCascade(SetupFileHash *setup_file_hash)
 			      editor_cascade_setup_tokens[i].text));
 }
 
+void LoadUserNames(void)
+{
+  int last_user_nr = user.nr;
+  int i;
+
+  if (global.user_names != NULL)
+  {
+    for (i = 0; i < MAX_PLAYER_NAMES; i++)
+      checked_free(global.user_names[i]);
+
+    checked_free(global.user_names);
+  }
+
+  global.user_names = checked_calloc(MAX_PLAYER_NAMES * sizeof(char *));
+
+  for (i = 0; i < MAX_PLAYER_NAMES; i++)
+  {
+    user.nr = i;
+
+    SetupFileHash *setup_file_hash = loadSetupFileHash(getSetupFilename());
+
+    if (setup_file_hash)
+    {
+      char *player_name = getHashEntry(setup_file_hash, "player_name");
+
+      global.user_names[i] = get_corrected_login_name(player_name);
+
+      freeSetupFileHash(setup_file_hash);
+    }
+
+    if (global.user_names[i] == NULL)
+      global.user_names[i] = getStringCopy(EMPTY_PLAYER_NAME);
+  }
+
+  user.nr = last_user_nr;
+}
+
 void LoadSetupFromFilename(char *filename)
 {
   SetupFileHash *setup_file_hash = loadSetupFileHash(filename);

@@ -3253,6 +3253,8 @@ struct GlobalInfo
   int anim_status_next;
 
   boolean use_envelope_request;
+
+  char **user_names;
 };
 
 struct ElementChangeInfo

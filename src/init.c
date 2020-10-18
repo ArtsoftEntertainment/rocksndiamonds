@@ -4912,6 +4912,8 @@ static void InitGlobal(void)
   global.anim_status = global.anim_status_next = GAME_MODE_LOADING;
 
   global.use_envelope_request = FALSE;
+
+  global.user_names = NULL;
 }
 
 static void Execute_Command(char *command)
@@ -5184,6 +5186,7 @@ static void Execute_Command(char *command)
 
 static void InitSetup(void)
 {
+  LoadUserNames();				// global user names
   LoadUserSetup();				// global user number
 
   LoadSetup();					// global setup info
