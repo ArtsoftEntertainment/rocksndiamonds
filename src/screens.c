@@ -4074,7 +4074,7 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   }
   else
   {
-    SetGameStatus(GAME_MODE_MAIN);
+    SetGameStatus(game_status_last_screen);
 
     pos->width = strlen(name) * font_width;
     sx = mSX + ALIGNED_TEXT_XPOS(pos);
