@@ -510,6 +510,9 @@
 // maximum number of parallel players supported by libgame functions
 #define MAX_PLAYERS		4
 
+// maximum number of player names
+#define MAX_PLAYER_NAMES	10
+
 // maximum allowed length of player name
 #define MAX_PLAYER_NAME_LEN	10
 
@@ -646,6 +649,7 @@
 // file names and filename extensions
 #define LEVELSETUP_DIRECTORY	"levelsetup"
 #define SETUP_FILENAME		"setup.conf"
+#define USERSETUP_FILENAME	"usersetup.conf"
 #define AUTOSETUP_FILENAME	"autosetup.conf"
 #define LEVELSETUP_FILENAME	"levelsetup.conf"
 #define EDITORSETUP_FILENAME	"editorsetup.conf"

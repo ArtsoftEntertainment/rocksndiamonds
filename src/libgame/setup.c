@@ -2364,6 +2364,7 @@ SetupFileHash *loadSetupFileHash(char *filename)
 #define TOKEN_STR_LAST_LEVEL_SERIES		"last_level_series"
 #define TOKEN_STR_LAST_PLAYED_LEVEL		"last_played_level"
 #define TOKEN_STR_HANDICAP_LEVEL		"handicap_level"
+#define TOKEN_STR_LAST_USER			"last_user"
 
 // level directory info
 #define LEVELINFO_TOKEN_IDENTIFIER		0
@@ -4725,4 +4726,67 @@ void LevelStats_incSolved(int nr)
 {
   if (nr >= 0 && nr < MAX_LEVELS)
     level_stats[nr].solved++;
+}
+
+void LoadUserSetup(void)
+{
+  // --------------------------------------------------------------------------
+  // ~/.<program>/usersetup.conf
+  // --------------------------------------------------------------------------
+
+  char *filename = getPath2(getMainUserGameDataDir(), USERSETUP_FILENAME);
+  SetupFileHash *user_setup_hash = NULL;
+
+  // always start with reliable default values
+  user.nr = 0;
+
+  if ((user_setup_hash = loadSetupFileHash(filename)))
+  {
+    char *token_value;
+
+    // get last selected user number
+    token_value = getHashEntry(user_setup_hash, TOKEN_STR_LAST_USER);
+
+    if (token_value)
+      user.nr = MIN(MAX(0, atoi(token_value)), MAX_PLAYER_NAMES - 1);
+
+    freeSetupFileHash(user_setup_hash);
+  }
+  else
+  {
+    Debug("setup", "using default setup values");
+  }
+
+  free(filename);
+}
+
+void SaveUserSetup(void)
+{
+  // --------------------------------------------------------------------------
+  // ~/.<program>/usersetup.conf
+  // --------------------------------------------------------------------------
+
+  char *filename = getPath2(getMainUserGameDataDir(), USERSETUP_FILENAME);
+  FILE *file;
+
+  InitMainUserDataDirectory();
+
+  if (!(file = fopen(filename, MODE_WRITE)))
+  {
+    Warn("cannot write setup file '%s'", filename);
+
+    free(filename);
+
+    return;
+  }
+
+  fprintFileHeader(file, USERSETUP_FILENAME);
+
+  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_LAST_USER,
+					       i_to_a(user.nr)));
+  fclose(file);
+
+  SetFilePermissions(filename, PERMS_PRIVATE);
+
+  free(filename);
 }

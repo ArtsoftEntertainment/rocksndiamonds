@@ -356,4 +356,7 @@ void LevelStats_setSolved(int, int);
 void LevelStats_incPlayed(int);
 void LevelStats_incSolved(int);
 
+void LoadUserSetup(void);
+void SaveUserSetup(void);
+
 #endif // MISC_H
