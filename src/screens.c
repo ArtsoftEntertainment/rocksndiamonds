@@ -3980,6 +3980,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 
 static void HandleTypeNameExt(boolean initialize, Key key)
 {
+  static char name[MAX_PLAYER_NAME_LEN + 1];
   static char last_player_name[MAX_PLAYER_NAME_LEN + 1];
   struct MainControlInfo *mci = getMainControlInfo(MAIN_CONTROL_NAME);
   struct TextPosInfo *pos = mci->pos_input;
@@ -3997,16 +3998,17 @@ static void HandleTypeNameExt(boolean initialize, Key key)
 
   if (initialize)
   {
-    strcpy(last_player_name, setup.player_name);
+    strcpy(name, setup.player_name);
+    strcpy(last_player_name, name);
 
-    xpos = strlen(setup.player_name);
+    xpos = strlen(name);
 
     StartTextInput(sx, sy, pos->width, pos->height);
   }
   else if (is_valid_key_char && xpos < MAX_PLAYER_NAME_LEN)
   {
-    setup.player_name[xpos] = key_char;
-    setup.player_name[xpos + 1] = 0;
+    name[xpos] = key_char;
+    name[xpos + 1] = 0;
 
     xpos++;
   }
@@ -4014,37 +4016,39 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   {
     xpos--;
 
-    setup.player_name[xpos] = 0;
+    name[xpos] = 0;
   }
   else if (key == KSYM_Return && xpos > 0)
   {
+    strcpy(setup.player_name, name);
+
     SaveSetup();
 
     is_active = FALSE;
   }
   else if (key == KSYM_Escape)
   {
-    strcpy(setup.player_name, last_player_name);
+    strcpy(name, last_player_name);
 
     is_active = FALSE;
   }
 
   if (is_active)
   {
-    pos->width = (strlen(setup.player_name) + 1) * font_width;
+    pos->width = (strlen(name) + 1) * font_width;
     sx = mSX + ALIGNED_TEXT_XPOS(pos);
 
-    DrawText(sx, sy, setup.player_name, font_active_nr);
+    DrawText(sx, sy, name, font_active_nr);
     DrawText(sx + xpos * font_width, sy, "_", font_active_nr);
   }
   else
   {
     SetGameStatus(GAME_MODE_MAIN);
 
-    pos->width = strlen(setup.player_name) * font_width;
+    pos->width = strlen(name) * font_width;
     sx = mSX + ALIGNED_TEXT_XPOS(pos);
 
-    DrawText(sx, sy, setup.player_name, font_nr);
+    DrawText(sx, sy, name, font_nr);
 
     StopTextInput();
   }
