@@ -4182,8 +4182,8 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
 
   OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
 
-  HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, ti_ptr);
   MapScreenTreeGadgets(*ti_ptr);
+  HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, ti_ptr);
 
   DrawMaskedBorder(fade_mask);
 
