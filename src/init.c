@@ -5910,6 +5910,7 @@ static void InitOverrideArtwork(void)
 static char *getNewArtworkIdentifier(int type)
 {
   static char *last_leveldir_identifier[3] = { NULL, NULL, NULL };
+  static char *last_artwork_identifier[3] = { NULL, NULL, NULL };
   static boolean last_override_level_artwork[3] = { FALSE, FALSE, FALSE };
   static boolean last_has_level_artwork_set[3] = { FALSE, FALSE, FALSE };
   static boolean initialized[3] = { FALSE, FALSE, FALSE };
@@ -5962,9 +5963,11 @@ static char *getNewArtworkIdentifier(int type)
   last_override_level_artwork[type] = setup_override_artwork;
 
   // ---------- reload if current artwork identifier has changed --------------
-  if (!strEqual(ARTWORK_CURRENT_IDENTIFIER(artwork, type),
-		artwork_current_identifier))
+  if (!strEqual(last_artwork_identifier[type], artwork_current_identifier))
     artwork_new_identifier = artwork_current_identifier;
+
+  // (we cannot compare string pointers here, so copy string content itself)
+  setString(&last_artwork_identifier[type], artwork_current_identifier);
 
   *(ARTWORK_CURRENT_IDENTIFIER_PTR(artwork, type)) = artwork_current_identifier;
 
@@ -5990,8 +5993,8 @@ void ReloadCustomArtwork(int force_reload)
 
   InitOverrideArtwork();
 
-  force_reload_gfx |= AdjustGraphicsForEMC();
-  force_reload_snd |= AdjustSoundsForEMC();
+  AdjustGraphicsForEMC();
+  AdjustSoundsForEMC();
 
   gfx_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_GRAPHICS);
   snd_new_identifier = getNewArtworkIdentifier(ARTWORK_TYPE_SOUNDS);
