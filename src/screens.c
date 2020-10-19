@@ -4075,7 +4075,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
     if (success)
       node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
 
-    pos->font = FONT_TEXT_1 + node->color;
+    pos->font = (node->color == FC_RED ? FONT_INPUT_1 : FONT_VALUE_OLD);
   }
 
   if (!success)
