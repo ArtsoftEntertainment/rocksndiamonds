@@ -4083,6 +4083,9 @@ static void setTypeNameValues(char *name, int *font, boolean success)
   if (!success)
     return;
 
+  if (strEqual(name, type_name_last))
+    return;
+
   int last_user_nr = user.nr;
 
   if (setup.multiple_users)
