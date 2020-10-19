@@ -4058,6 +4058,8 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
 
 static void setTypeNameValues(char *name, int *font, boolean success)
 {
+  TreeInfo *node = type_name_node;
+
   if (!success)
     strcpy(name, type_name_last);
 
@@ -4066,18 +4068,18 @@ static void setTypeNameValues(char *name, int *font, boolean success)
 
   if (setup.multiple_users)
   {
-    if (type_name_node == NULL)		// should not happen
+    if (node == NULL)		// should not happen
       return;
 
     if (success)
     {
-      type_name_node->color = FC_RED;
+      node->color = FC_RED;
 
       if (strEqual(name, EMPTY_PLAYER_NAME))
-	type_name_node->color = FC_BLUE;
+	node->color = FC_BLUE;
     }
 
-    *font = FONT_TEXT_1 + type_name_node->color;
+    *font = FONT_TEXT_1 + node->color;
   }
 
   if (!success)
@@ -4090,14 +4092,14 @@ static void setTypeNameValues(char *name, int *font, boolean success)
 
   if (setup.multiple_users)
   {
-    int edit_user_nr = posTreeInfo(type_name_node);
+    int edit_user_nr = posTreeInfo(node);
 
     // change name of edited user in global list of user names
     setString(&global.user_names[edit_user_nr], name);
 
     // change name of edited user in local menu tree structure
-    setString(&type_name_node->name, name);
-    setString(&type_name_node->name_sorting, name);
+    setString(&node->name, name);
+    setString(&node->name_sorting, name);
 
     // save setup of currently active user (may differ from edited user)
     SaveSetup();
