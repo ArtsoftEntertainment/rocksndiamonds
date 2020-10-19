@@ -4072,12 +4072,7 @@ static void setTypeNameValues(char *name, int *font, boolean success)
       return;
 
     if (success)
-    {
-      node->color = FC_RED;
-
-      if (strEqual(name, EMPTY_PLAYER_NAME))
-	node->color = FC_BLUE;
-    }
+      node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
 
     *font = FONT_TEXT_1 + node->color;
   }
