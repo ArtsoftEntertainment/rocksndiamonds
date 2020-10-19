@@ -4735,7 +4735,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  {
 	    if (mx >= sx1_edit_name && mx <= sx2_edit_name)
 	    {
-	      SetGameStatus(GAME_MODE_PSEUDO_TYPENAME);
+	      SetGameStatus(GAME_MODE_PSEUDO_TYPENAMES);
 
 	      DrawTypeName();
 

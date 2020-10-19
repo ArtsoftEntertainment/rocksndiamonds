@@ -1749,6 +1749,7 @@ void HandleButton(int mx, int my, int button, int button_nr)
       break;
 
     case GAME_MODE_PSEUDO_TYPENAME:
+    case GAME_MODE_PSEUDO_TYPENAMES:
       HandleTypeName(KSYM_Return);
       break;
 
@@ -2301,6 +2302,7 @@ void HandleKey(Key key, int key_status)
   switch (game_status)
   {
     case GAME_MODE_PSEUDO_TYPENAME:
+    case GAME_MODE_PSEUDO_TYPENAMES:
       HandleTypeName(key);
       break;
 

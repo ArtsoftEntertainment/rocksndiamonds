@@ -6621,7 +6621,7 @@ struct ConfigInfo image_config[] =
   { "font.input_1.active.MAIN.width",		"32"			},
   { "font.input_1.active.MAIN.height",		"32"			},
   { "font.input_1.active.NAMES",		UNDEFINED_FILENAME	},
-  { "font.input_1.active.NAMES.clone_from",	"font.input_1.MAIN"	},
+  { "font.input_1.active.NAMES.clone_from",	"font.input_1.active.MAIN" },
   { "font.input_1.active.SETUP",		"RocksFontBig.png"	},
   { "font.input_1.active.SETUP.x",		"0"			},
   { "font.input_1.active.SETUP.y",		"0"			},
