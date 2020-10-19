@@ -123,6 +123,9 @@
 #define STR_SETUP_CHOOSE_GRID_XSIZE_1	"Horiz. Buttons"
 #define STR_SETUP_CHOOSE_GRID_YSIZE_1	"Vert. Buttons"
 
+// other screen text constants
+#define STR_CHOOSE_TREE_EDIT		"Edit"
+
 // for input setup functions
 #define SETUPINPUT_SCREEN_POS_START	0
 #define SETUPINPUT_SCREEN_POS_EMPTY1	3
@@ -138,6 +141,7 @@
 #define MENU_SCREEN_START_XPOS		1
 #define MENU_SCREEN_START_YPOS		2
 #define MENU_SCREEN_VALUE_XPOS		(SCR_FIELDX - 3)
+#define MENU_SCREEN_TEXT2_XPOS		(SCR_FIELDX - 2)
 #define MENU_SCREEN_MAX_XPOS		(SCR_FIELDX - 1)
 #define MENU_TITLE1_YPOS		8
 #define MENU_TITLE2_YPOS		46
@@ -1430,6 +1434,40 @@ static void drawChooseTreeCursor(int ypos, boolean active)
   drawCursorExt(0, ypos, active, -1);
 }
 
+static int getChooseTreeEditFont(boolean active)
+{
+  return (active ? FONT_MENU_2_ACTIVE : FONT_MENU_2);
+}
+
+static int getChooseTreeEditXPos(int pos)
+{
+  boolean has_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->mapped;
+  int xoffset = (has_scrollbar ? -1 : 0);
+  int xpos = MENU_SCREEN_TEXT2_XPOS + xoffset;
+  int sx = amSX + xpos * TILEX;
+  int font_nr = getChooseTreeEditFont(FALSE);
+  int width = getTextWidth(STR_CHOOSE_TREE_EDIT, font_nr);
+
+  return (pos == POS_RIGHT ? sx + width - 1 : sx);
+}
+
+static int getChooseTreeEditYPos(int ypos_raw)
+{
+  int ypos = MENU_SCREEN_START_YPOS + ypos_raw;
+  int sy = amSY + ypos * TILEY;
+
+  return sy;
+}
+
+static void drawChooseTreeEdit(int ypos_raw, boolean active)
+{
+  int sx = getChooseTreeEditXPos(POS_LEFT);
+  int sy = getChooseTreeEditYPos(ypos_raw);
+  int font_nr = getChooseTreeEditFont(active);
+
+  DrawText(sx, sy, STR_CHOOSE_TREE_EDIT, font_nr);
+}
+
 static void DrawHeadline(void)
 {
   DrawTextSCentered(MENU_TITLE1_YPOS, FONT_TITLE_1, main_text_title_1);
@@ -2085,7 +2123,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	}
 	else
 	{
-	  if (0 && setup.multiple_users)	// (not used yet)
+	  if (setup.multiple_users)
 	  {
 	    CloseDoor(DOOR_CLOSE_2);
 
@@ -3987,7 +4025,7 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
 
   *pos = *mci->pos_input;
 
-  if (0 && setup.multiple_users)	// (not used yet)
+  if (setup.multiple_users)
   {
     TreeInfo *ti = player_name_current;
     int first_entry = ti->cl_first;
@@ -3995,13 +4033,15 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
     TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
     int xpos = MENU_SCREEN_START_XPOS;
     int ypos = MENU_SCREEN_START_YPOS + ti->cl_cursor;
+    int font_width = getFontWidth(pos->font);
 
     type_name_node = getTreeInfoFromPos(node_first, entry_pos);
 
     strcpy(name, type_name_node->name);
 
-    pos->x = xpos * 32;
-    pos->y = ypos * 32;
+    pos->x = xpos * font_width;
+    pos->y = ypos * font_width;
+    pos->width = MAX_PLAYER_NAME_LEN * font_width;
   }
   else
   {
@@ -4024,7 +4064,7 @@ static void setTypeNameValues(char *name, int *font, boolean success)
   if (strEqual(name, ""))
     strcpy(name, EMPTY_PLAYER_NAME);
 
-  if (0 && setup.multiple_users)	// (not used yet)
+  if (setup.multiple_users)
   {
     if (type_name_node == NULL)		// should not happen
       return;
@@ -4045,7 +4085,7 @@ static void setTypeNameValues(char *name, int *font, boolean success)
 
   int last_user_nr = user.nr;
 
-  if (0 && setup.multiple_users)	// (not used yet)
+  if (setup.multiple_users)
   {
     int edit_user_nr = posTreeInfo(type_name_node);
 
@@ -4072,7 +4112,7 @@ static void setTypeNameValues(char *name, int *font, boolean success)
   // save setup of edited user
   SaveSetup();
 
-  if (0 && setup.multiple_users)	// (not used yet)
+  if (setup.multiple_users)
   {
     // restore currently active user
     user.nr = last_user_nr;
@@ -4309,6 +4349,9 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
       initCursor(i, IMG_MENU_BUTTON_ENTER_MENU);
     else
       initCursor(i, IMG_MENU_BUTTON);
+
+    if (game_status == GAME_MODE_NAMES)
+      drawChooseTreeEdit(i, FALSE);
   }
 
   redraw_mask |= REDRAW_FIELD;
@@ -4356,6 +4399,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   boolean has_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->mapped;
   int mx_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x;
   int mx_right_border = (has_scrollbar ? mx_scrollbar : SX + SXSIZE);
+  int sx1_edit_name = getChooseTreeEditXPos(POS_LEFT);
+  int sx2_edit_name = getChooseTreeEditXPos(POS_RIGHT);
   int x = 0;
   int y = ti->cl_cursor;
   int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
@@ -4457,6 +4502,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   {
     x = (mx - amSX) / 32;
     y = (my - amSY) / 32 - MENU_SCREEN_START_YPOS;
+
+    if (game_status == GAME_MODE_NAMES)
+      drawChooseTreeEdit(ti->cl_cursor, FALSE);
   }
   else if (dx || dy)	// keyboard or scrollbar/scrollbutton input
   {
@@ -4555,6 +4603,12 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   {
     if (button)
     {
+      if (game_status == GAME_MODE_NAMES)
+      {
+	if (mx >= sx1_edit_name && mx <= sx2_edit_name)
+	  drawChooseTreeEdit(y, TRUE);
+      }
+
       if (y != ti->cl_cursor)
       {
 	PlaySound(SND_MENU_ITEM_ACTIVATING);
@@ -4673,6 +4727,39 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	    int new_level_nr = atoi(level_number_current->identifier);
 
 	    HandleMainMenu_SelectLevel(0, 0, new_level_nr);
+	  }
+	  else if (game_status == GAME_MODE_NAMES)
+	  {
+	    if (mx >= sx1_edit_name && mx <= sx2_edit_name)
+	    {
+	      SetGameStatus(GAME_MODE_PSEUDO_TYPENAME);
+
+	      DrawTypeName();
+
+	      return;
+	    }
+
+	    // change active user to selected user
+	    user.nr = entry_pos;
+
+	    // save number of new active user
+	    SaveUserSetup();
+
+	    // load setup of new active user
+	    LoadSetup();
+
+	    // load last level set of new active user
+	    LoadLevelSetup_LastSeries();
+	    LoadLevelSetup_SeriesInfo();
+
+	    TapeErase();
+
+	    ToggleFullscreenIfNeeded();
+	    ChangeWindowScalingIfNeeded();
+
+	    ChangeCurrentArtworkIfNeeded(ARTWORK_TYPE_GRAPHICS);
+	    ChangeCurrentArtworkIfNeeded(ARTWORK_TYPE_SOUNDS);
+	    ChangeCurrentArtworkIfNeeded(ARTWORK_TYPE_MUSIC);
 	  }
 
 	  SetGameStatus(GAME_MODE_MAIN);
