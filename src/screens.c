@@ -4076,11 +4076,11 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
 }
 
 static void setTypeNameValues(char *name, struct TextPosInfo *pos,
-			      boolean success)
+			      boolean changed)
 {
   TreeInfo *node = type_name_node;
 
-  if (!success)
+  if (!changed)
     strcpy(name, type_name_last);
 
   if (strEqual(name, ""))
@@ -4091,13 +4091,13 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
     if (node == NULL)		// should not happen
       return;
 
-    if (success)
+    if (changed)
       node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
 
     pos->font = (node->color == FC_RED ? FONT_INPUT_1 : FONT_VALUE_OLD);
   }
 
-  if (!success)
+  if (!changed)
     return;
 
   if (strEqual(name, type_name_last))
@@ -4150,7 +4150,7 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   struct TextPosInfo *pos = &pos_name;
   char key_char = getValidConfigValueChar(getCharFromKey(key));
   boolean is_valid_key_char = (key_char != 0 && (key_char != ' ' || xpos > 0));
-  boolean is_active = TRUE;
+  boolean active = TRUE;
 
   if (initialize)
   {
@@ -4178,18 +4178,18 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   {
     setTypeNameValues(name, pos, TRUE);
 
-    is_active = FALSE;
+    active = FALSE;
   }
   else if (key == KSYM_Escape)
   {
     setTypeNameValues(name, pos, FALSE);
 
-    is_active = FALSE;
+    active = FALSE;
   }
 
-  drawTypeNameText(name, pos, is_active);
+  drawTypeNameText(name, pos, active);
 
-  if (!is_active)
+  if (!active)
   {
     StopTextInput();
 
