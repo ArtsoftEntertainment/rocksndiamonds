@@ -4147,19 +4147,18 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   static struct TextPosInfo pos_name = { 0 };
   static char name[MAX_PLAYER_NAME_LEN + 1] = { 0 };
   static int xpos = 0;
-
-  if (initialize)
-    getTypeNameValues(name, &pos_name, &xpos);
-
   struct TextPosInfo *pos = &pos_name;
-  int sx = mSX + ALIGNED_TEXT_XPOS(pos);
-  int sy = mSY + ALIGNED_TEXT_YPOS(pos);
   char key_char = getValidConfigValueChar(getCharFromKey(key));
   boolean is_valid_key_char = (key_char != 0 && (key_char != ' ' || xpos > 0));
   boolean is_active = TRUE;
 
   if (initialize)
   {
+    getTypeNameValues(name, pos, &xpos);
+
+    int sx = mSX + ALIGNED_TEXT_XPOS(pos);
+    int sy = mSY + ALIGNED_TEXT_YPOS(pos);
+
     StartTextInput(sx, sy, pos->width, pos->height);
   }
   else if (is_valid_key_char && xpos < MAX_PLAYER_NAME_LEN)
