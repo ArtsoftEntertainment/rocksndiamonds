@@ -4097,9 +4097,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
     pos->font = (node->color == FC_RED ? FONT_INPUT_1 : FONT_VALUE_OLD);
   }
 
-  if (!changed)
-    return;
-
+  // if player name not changed, no further action required
   if (strEqual(name, type_name_last))
     return;
 
