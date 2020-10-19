@@ -4056,7 +4056,8 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
   *xpos = strlen(name);
 }
 
-static void setTypeNameValues(char *name, int *font, boolean success)
+static void setTypeNameValues(char *name, struct TextPosInfo *pos,
+			      boolean success)
 {
   TreeInfo *node = type_name_node;
 
@@ -4074,7 +4075,7 @@ static void setTypeNameValues(char *name, int *font, boolean success)
     if (success)
       node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
 
-    *font = FONT_TEXT_1 + node->color;
+    pos->font = FONT_TEXT_1 + node->color;
   }
 
   if (!success)
@@ -4162,13 +4163,13 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   }
   else if (key == KSYM_Return)
   {
-    setTypeNameValues(name, &font_nr, TRUE);
+    setTypeNameValues(name, pos, TRUE);
 
     is_active = FALSE;
   }
   else if (key == KSYM_Escape)
   {
-    setTypeNameValues(name, &font_nr, FALSE);
+    setTypeNameValues(name, pos, FALSE);
 
     is_active = FALSE;
   }
@@ -4188,7 +4189,7 @@ static void HandleTypeNameExt(boolean initialize, Key key)
     pos->width = strlen(name) * font_width;
     sx = mSX + ALIGNED_TEXT_XPOS(pos);
 
-    DrawText(sx, sy, name, font_nr);
+    DrawText(sx, sy, name, pos->font);
 
     StopTextInput();
   }
