@@ -4019,6 +4019,25 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 static TreeInfo *type_name_node = NULL;
 static char type_name_last[MAX_PLAYER_NAME_LEN + 1] = { 0 };
 
+static void drawTypeNameText(char *name, struct TextPosInfo *pos,
+			      boolean active)
+{
+  char text[MAX_PLAYER_NAME_LEN + 2] = { 0 };
+  int sx = mSX + ALIGNED_TEXT_XPOS(pos);
+  int sy = mSY + ALIGNED_TEXT_YPOS(pos);
+  int font_nr = (active ? FONT_ACTIVE(pos->font) : pos->font);
+  int font_width = getFontWidth(font_nr);
+
+  DrawBackgroundForFont(sx, sy, pos->width, pos->height, font_nr);
+
+  sprintf(text, "%s%c", name, (active ? '_' : '\0'));
+
+  pos->width = strlen(text) * font_width;
+  sx = mSX + ALIGNED_TEXT_XPOS(pos);
+
+  DrawText(sx, sy, text, font_nr);
+}
+
 static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
 {
   struct MainControlInfo *mci = getMainControlInfo(MAIN_CONTROL_NAME);
@@ -4135,14 +4154,9 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   struct TextPosInfo *pos = &pos_name;
   int sx = mSX + ALIGNED_TEXT_XPOS(pos);
   int sy = mSY + ALIGNED_TEXT_YPOS(pos);
-  int font_nr = pos->font;
-  int font_active_nr = FONT_ACTIVE(font_nr);
-  int font_width = getFontWidth(font_active_nr);
   char key_char = getValidConfigValueChar(getCharFromKey(key));
   boolean is_valid_key_char = (key_char != 0 && (key_char != ' ' || xpos > 0));
   boolean is_active = TRUE;
-
-  DrawBackgroundForFont(sx, sy, pos->width, pos->height, font_active_nr);
 
   if (initialize)
   {
@@ -4174,24 +4188,13 @@ static void HandleTypeNameExt(boolean initialize, Key key)
     is_active = FALSE;
   }
 
-  if (is_active)
+  drawTypeNameText(name, pos, is_active);
+
+  if (!is_active)
   {
-    pos->width = (strlen(name) + 1) * font_width;
-    sx = mSX + ALIGNED_TEXT_XPOS(pos);
-
-    DrawText(sx, sy, name, font_active_nr);
-    DrawText(sx + xpos * font_width, sy, "_", font_active_nr);
-  }
-  else
-  {
-    SetGameStatus(game_status_last_screen);
-
-    pos->width = strlen(name) * font_width;
-    sx = mSX + ALIGNED_TEXT_XPOS(pos);
-
-    DrawText(sx, sy, name, pos->font);
-
     StopTextInput();
+
+    SetGameStatus(game_status_last_screen);
   }
 }
 
