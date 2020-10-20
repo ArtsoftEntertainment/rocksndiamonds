@@ -9177,10 +9177,9 @@ static struct TokenInfo options_setup_tokens[] =
 
 static void setSetupInfoToDefaults(struct SetupInfo *si)
 {
-  char *player_name = (user.nr == 0 ? getLoginName() : EMPTY_PLAYER_NAME);
   int i;
 
-  si->player_name = getFixedUserName(player_name);
+  si->player_name = getStringCopy(getDefaultUserName(user.nr));
 
   si->multiple_users = TRUE;
 

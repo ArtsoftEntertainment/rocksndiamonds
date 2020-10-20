@@ -903,6 +903,21 @@ char *getFixedUserName(char *name)
   return name_new;
 }
 
+char *getDefaultUserName(int nr)
+{
+  static char *user_name[MAX_PLAYER_NAMES] = { NULL };
+
+  nr = MIN(MAX(0, nr), MAX_PLAYER_NAMES - 1);
+
+  if (user_name[nr] == NULL)
+  {
+    user_name[nr] = (nr == 0 ? getLoginName() : EMPTY_PLAYER_NAME);
+    user_name[nr] = getFixedUserName(user_name[nr]);
+  }
+
+  return user_name[nr];
+}
+
 time_t getFileTimestampEpochSeconds(char *filename)
 {
   struct stat file_status;
