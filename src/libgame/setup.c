@@ -1215,7 +1215,7 @@ int numTreeInfoInGroup(TreeInfo *node)
   return numTreeInfo(getTreeInfoFirstGroupEntry(node));
 }
 
-int posTreeInfo(TreeInfo *node)
+int getPosFromTreeInfo(TreeInfo *node)
 {
   TreeInfo *node_cmp = getTreeInfoFirstGroupEntry(node);
   int pos = 0;

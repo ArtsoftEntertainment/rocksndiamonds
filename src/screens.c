@@ -1745,7 +1745,7 @@ static void gotoTopLevelDir(void)
     if (leveldir_current->node_parent->node_group->cl_first == -1)
     {
       int num_leveldirs = numTreeInfoInGroup(leveldir_current);
-      int leveldir_pos = posTreeInfo(leveldir_current);
+      int leveldir_pos = getPosFromTreeInfo(leveldir_current);
       int num_page_entries = MIN(num_leveldirs, NUM_MENU_ENTRIES_ON_SCREEN);
       int cl_first, cl_cursor;
 
@@ -4417,7 +4417,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   if (button == MB_MENU_INITIALIZE)
   {
     int num_entries = numTreeInfoInGroup(ti);
-    int entry_pos = posTreeInfo(ti);
+    int entry_pos = getPosFromTreeInfo(ti);
 
     align_xoffset = getAlignXOffsetFromTreeInfo(ti);
     align_yoffset = getAlignYOffsetFromTreeInfo(ti);

@@ -267,7 +267,7 @@ boolean validLevelSeries(TreeInfo *);
 TreeInfo *getFirstValidTreeInfoEntry(TreeInfo *);
 TreeInfo *getTreeInfoFirstGroupEntry(TreeInfo *);
 int numTreeInfoInGroup(TreeInfo *);
-int posTreeInfo(TreeInfo *);
+int getPosFromTreeInfo(TreeInfo *);
 TreeInfo *getTreeInfoFromPos(TreeInfo *, int);
 TreeInfo *getTreeInfoFromIdentifier(TreeInfo *, char *);
 void dumpTreeInfo(TreeInfo *, int);
