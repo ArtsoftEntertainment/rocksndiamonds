@@ -4056,6 +4056,7 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
     int font_width = getFontWidth(pos->font);
 
     type_name_node = getTreeInfoFromPos(node_first, entry_pos);
+    type_name_nr = entry_pos;
 
     strcpy(name, type_name_node->name);
 
@@ -4065,6 +4066,8 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
   }
   else
   {
+    type_name_nr = user.nr;
+
     strcpy(name, setup.player_name);
   }
 
@@ -4104,13 +4107,11 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 
   int last_user_nr = user.nr;
 
+  // change name of edited user in global list of user names
+  setString(&global.user_names[type_name_nr], name);
+
   if (setup.multiple_users)
   {
-    type_name_nr = posTreeInfo(node);
-
-    // change name of edited user in global list of user names
-    setString(&global.user_names[type_name_nr], name);
-
     // change name of edited user in local menu tree structure
     setString(&node->name, name);
     setString(&node->name_sorting, name);
