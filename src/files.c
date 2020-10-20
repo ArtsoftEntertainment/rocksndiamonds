@@ -9175,27 +9175,12 @@ static struct TokenInfo options_setup_tokens[] =
   },
 };
 
-static char *get_corrected_player_name(char *login_name)
-{
-  // needed because player name must be a fixed length string
-  char *login_name_new = checked_malloc(MAX_PLAYER_NAME_LEN + 1);
-
-  strncpy(login_name_new, login_name, MAX_PLAYER_NAME_LEN);
-  login_name_new[MAX_PLAYER_NAME_LEN] = '\0';
-
-  if (strlen(login_name) > MAX_PLAYER_NAME_LEN)		// name has been cut
-    if (strchr(login_name_new, ' '))
-      *strchr(login_name_new, ' ') = '\0';
-
-  return login_name_new;
-}
-
 static void setSetupInfoToDefaults(struct SetupInfo *si)
 {
   char *player_name = (user.nr == 0 ? getLoginName() : EMPTY_PLAYER_NAME);
   int i;
 
-  si->player_name = get_corrected_player_name(player_name);
+  si->player_name = getFixedUserName(player_name);
 
   si->multiple_users = TRUE;
 
@@ -9683,7 +9668,7 @@ void LoadUserNames(void)
     {
       char *player_name = getHashEntry(setup_file_hash, "player_name");
 
-      global.user_names[i] = get_corrected_player_name(player_name);
+      global.user_names[i] = getFixedUserName(player_name);
 
       freeSetupFileHash(setup_file_hash);
     }
@@ -9716,7 +9701,7 @@ static void LoadSetup_SpecialPostProcessing(void)
   char *player_name_new;
 
   // needed to work around problems with fixed length strings
-  player_name_new = get_corrected_player_name(setup.player_name);
+  player_name_new = getFixedUserName(setup.player_name);
   free(setup.player_name);
   setup.player_name = player_name_new;
 

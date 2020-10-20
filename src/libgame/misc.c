@@ -888,6 +888,21 @@ char *getRealName(void)
   return real_name;
 }
 
+char *getFixedUserName(char *name)
+{
+  // needed because player name must be a fixed length string
+  char *name_new = checked_malloc(MAX_PLAYER_NAME_LEN + 1);
+
+  strncpy(name_new, name, MAX_PLAYER_NAME_LEN);
+  name_new[MAX_PLAYER_NAME_LEN] = '\0';
+
+  if (strlen(name) > MAX_PLAYER_NAME_LEN)		// name has been cut
+    if (strchr(name_new, ' '))
+      *strchr(name_new, ' ') = '\0';
+
+  return name_new;
+}
+
 time_t getFileTimestampEpochSeconds(char *filename)
 {
   struct stat file_status;

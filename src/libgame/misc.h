@@ -143,6 +143,7 @@ char *getUnixHomeDir(void);
 
 char *getLoginName(void);
 char *getRealName(void);
+char *getFixedUserName(char *);
 
 time_t getFileTimestampEpochSeconds(char *);
 
