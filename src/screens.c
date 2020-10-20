@@ -4192,6 +4192,9 @@ static void HandleTypeNameExt(boolean initialize, Key key)
     StopTextInput();
 
     SetGameStatus(game_status_last_screen);
+
+    if (game_status == GAME_MODE_MAIN)
+      InitializeMainControls();
   }
 }
 
