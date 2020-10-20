@@ -4018,6 +4018,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 
 static TreeInfo *type_name_node = NULL;
 static char type_name_last[MAX_PLAYER_NAME_LEN + 1] = { 0 };
+static int type_name_nr = 0;
 
 static void drawTypeNameText(char *name, struct TextPosInfo *pos,
 			      boolean active)
@@ -4105,10 +4106,10 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 
   if (setup.multiple_users)
   {
-    int edit_user_nr = posTreeInfo(node);
+    type_name_nr = posTreeInfo(node);
 
     // change name of edited user in global list of user names
-    setString(&global.user_names[edit_user_nr], name);
+    setString(&global.user_names[type_name_nr], name);
 
     // change name of edited user in local menu tree structure
     setString(&node->name, name);
@@ -4118,7 +4119,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
     SaveSetup();
 
     // temporarily change active user to edited user
-    user.nr = edit_user_nr;
+    user.nr = type_name_nr;
 
     // load setup of edited user
     LoadSetup();
