@@ -9673,7 +9673,7 @@ void LoadUserNames(void)
     }
 
     if (global.user_names[i] == NULL)
-      global.user_names[i] = getStringCopy(EMPTY_PLAYER_NAME);
+      global.user_names[i] = getStringCopy(getDefaultUserName(i));
   }
 
   user.nr = last_user_nr;
