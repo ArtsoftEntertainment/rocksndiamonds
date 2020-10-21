@@ -4045,7 +4045,7 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
 
   *pos = *mci->pos_input;
 
-  if (setup.multiple_users)
+  if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
   {
     TreeInfo *ti = player_name_current;
     int first_entry = ti->cl_first;
@@ -4090,7 +4090,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
   if (strEqual(name, ""))
     strcpy(name, EMPTY_PLAYER_NAME);
 
-  if (setup.multiple_users)
+  if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
   {
     if (node == NULL)		// should not happen
       return;
@@ -4110,7 +4110,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
   // change name of edited user in global list of user names
   setString(&global.user_names[type_name_nr], name);
 
-  if (setup.multiple_users)
+  if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
   {
     // change name of edited user in local menu tree structure
     setString(&node->name, name);
@@ -4132,7 +4132,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
   // save setup of edited user
   SaveSetup();
 
-  if (setup.multiple_users)
+  if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
   {
     // restore currently active user
     user.nr = last_user_nr;
