@@ -4079,43 +4079,43 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
   *xpos = strlen(name);
 }
 
+static void setTypeNameValues_Name(char *name, struct TextPosInfo *pos)
+{
+  // change name of edited user in global list of user names
+  setString(&global.user_names[type_name_nr], name);
+
+  if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
+  {
+    TreeInfo *node = type_name_node;
+
+    // change name of edited user in local menu tree structure
+    setString(&node->name, name);
+    setString(&node->name_sorting, name);
+
+    node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
+    pos->font = (node->color == FC_RED ? FONT_INPUT_1 : FONT_VALUE_OLD);
+  }
+}
+
 static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 			      boolean changed)
 {
-  TreeInfo *node = type_name_node;
-
   if (!changed)
     strcpy(name, type_name_last);
 
   if (strEqual(name, ""))
     strcpy(name, EMPTY_PLAYER_NAME);
 
-  if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
-  {
-    if (node == NULL)		// should not happen
-      return;
-
-    if (changed)
-      node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
-
-    pos->font = (node->color == FC_RED ? FONT_INPUT_1 : FONT_VALUE_OLD);
-  }
-
   // if player name not changed, no further action required
   if (strEqual(name, type_name_last))
     return;
 
-  int last_user_nr = user.nr;
+  setTypeNameValues_Name(name, pos);
 
-  // change name of edited user in global list of user names
-  setString(&global.user_names[type_name_nr], name);
+  int last_user_nr = user.nr;
 
   if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
   {
-    // change name of edited user in local menu tree structure
-    setString(&node->name, name);
-    setString(&node->name_sorting, name);
-
     // save setup of currently active user (may differ from edited user)
     SaveSetup();
 
