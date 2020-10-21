@@ -146,6 +146,9 @@ char *getRealName(void);
 char *getFixedUserName(char *);
 char *getDefaultUserName(int);
 
+char *getTimestampFromEpoch(time_t);
+char *getCurrentTimestamp(void);
+
 time_t getFileTimestampEpochSeconds(char *);
 
 char *getBasePath(char *);

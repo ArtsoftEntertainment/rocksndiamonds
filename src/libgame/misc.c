@@ -918,6 +918,23 @@ char *getDefaultUserName(int nr)
   return user_name[nr];
 }
 
+char *getTimestampFromEpoch(time_t epoch_seconds)
+{
+  struct tm *now = localtime(&epoch_seconds);
+  static char timestamp[20];
+
+  sprintf(timestamp, "%04d%02d%02d-%02d%02d%02d",
+	  now->tm_year + 1900, now->tm_mon + 1, now->tm_mday,
+	  now->tm_hour, now->tm_min, now->tm_sec);
+
+  return timestamp;
+}
+
+char *getCurrentTimestamp(void)
+{
+  return getTimestampFromEpoch(time(NULL));
+}
+
 time_t getFileTimestampEpochSeconds(char *filename)
 {
   struct stat file_status;
