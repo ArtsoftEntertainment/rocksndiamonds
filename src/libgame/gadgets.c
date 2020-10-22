@@ -2230,7 +2230,11 @@ boolean HandleGadgetsKeyInput(Key key)
     {
       // restore previous text (before activating text gadget)
       if (gi->type & GD_TYPE_TEXT_INPUT)
+      {
 	strcpy(gi->textinput.value, gi->textinput.last_value);
+
+	CheckRangeOfNumericInputGadget(gi);
+      }
 
       DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
 
