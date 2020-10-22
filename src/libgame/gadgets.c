@@ -1711,13 +1711,22 @@ boolean HandleGadgets(int mx, int my, int button)
     struct GadgetInfo *gi = last_gi;
     boolean gadget_changed = ((gi->event_mask & GD_EVENT_TEXT_LEAVING) != 0);
 
-    // check if text gadget has changed its value
+    // check if text input gadget has changed its value
     if (gi->type & GD_TYPE_TEXT_INPUT)
     {
       CheckRangeOfNumericInputGadget(gi);
 
       if (!strEqual(gi->textinput.last_value, gi->textinput.value))
 	strcpy(gi->textinput.last_value, gi->textinput.value);
+      else
+	gadget_changed = FALSE;
+    }
+
+    // check if text area gadget has changed its value
+    if (gi->type & GD_TYPE_TEXT_AREA)
+    {
+      if (!strEqual(gi->textarea.last_value, gi->textarea.value))
+	strcpy(gi->textarea.last_value, gi->textarea.value);
       else
 	gadget_changed = FALSE;
     }
