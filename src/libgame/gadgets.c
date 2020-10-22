@@ -2228,6 +2228,8 @@ boolean HandleGadgetsKeyInput(Key key)
   {
     if (anyTextGadgetActive())
     {
+      boolean gadget_changed = ((gi->event_mask & GD_EVENT_TEXT_LEAVING) != 0);
+
       // restore previous text (before activating text gadget)
       if (gi->type & GD_TYPE_TEXT_INPUT)
       {
@@ -2236,7 +2238,23 @@ boolean HandleGadgetsKeyInput(Key key)
 	CheckRangeOfNumericInputGadget(gi);
       }
 
+      // store current text for text area gadgets when pressing "Escape" key
+      if (gi->type & GD_TYPE_TEXT_AREA)
+      {
+	if (!strEqual(gi->textarea.last_value, gi->textarea.value))
+	  strcpy(gi->textarea.last_value, gi->textarea.value);
+	else
+	  gadget_changed = FALSE;
+      }
+
       DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
+
+      if (gi->type & GD_TYPE_TEXT_AREA)
+      {
+	gi->event.type = GD_EVENT_TEXT_LEAVING;
+
+	DoGadgetCallbackAction(gi, gadget_changed);
+      }
 
       last_gi = NULL;
 
