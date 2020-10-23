@@ -4100,6 +4100,9 @@ static void setTypeNameValues_Name(char *name, struct TextPosInfo *pos)
 static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 			      boolean changed)
 {
+  boolean reset_setup = strEqual(name, "");
+  boolean remove_user = strEqual(name, EMPTY_PLAYER_NAME);
+
   if (!changed)
     strcpy(name, type_name_last);
 
@@ -4132,8 +4135,46 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
   // save setup of edited user
   SaveSetup();
 
-  if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
+  if (game_status == GAME_MODE_PSEUDO_TYPENAMES || reset_setup)
   {
+    drawTypeNameText(name, pos, FALSE);
+
+    if (reset_setup)
+    {
+      if (Request("Reset setup values for this player?", REQ_ASK))
+      {
+	// remove setup config file
+	unlink(getSetupFilename());
+
+	// set player name to default player name
+	LoadSetup();
+
+	// update player name used by name typing functions
+	strcpy(name, setup.player_name);
+
+	setTypeNameValues_Name(name, pos);
+
+	Request("Setup values reset to default values!", REQ_CONFIRM);
+      }
+    }
+    else if (remove_user && type_name_nr != 0)
+    {
+      if (Request("Remove settings and tapes for deleted player?", REQ_ASK))
+      {
+	char *user_dir = getUserGameDataDir();
+	char *user_dir_removed =
+	  getStringCat3WithSeparator(user_dir, "REMOVED",
+				     getCurrentTimestamp(), ".");
+
+	if (rename(user_dir, user_dir_removed) == 0)
+	  Request("Player settings and tapes removed!", REQ_CONFIRM);
+	else
+	  Request("Removing settings and tapes failed!", REQ_CONFIRM);
+
+	checked_free(user_dir_removed);
+      }
+    }
+
     // restore currently active user
     user.nr = last_user_nr;
 
