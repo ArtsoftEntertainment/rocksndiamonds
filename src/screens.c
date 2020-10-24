@@ -4157,8 +4157,6 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 	strcpy(name, setup.player_name);
 
 	setTypeNameValues_Name(name, pos);
-
-	Request("Setup values reset to default values!", REQ_CONFIRM);
       }
     }
     else if (remove_user && type_name_nr != 0)
@@ -4170,9 +4168,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 	  getStringCat3WithSeparator(user_dir, "REMOVED",
 				     getCurrentTimestamp(), ".");
 
-	if (rename(user_dir, user_dir_removed) == 0)
-	  Request("Player settings and tapes removed!", REQ_CONFIRM);
-	else
+	if (rename(user_dir, user_dir_removed) != 0)
 	  Request("Removing settings and tapes failed!", REQ_CONFIRM);
 
 	checked_free(user_dir_removed);
