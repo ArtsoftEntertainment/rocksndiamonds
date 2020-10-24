@@ -33,6 +33,8 @@ char *getDefaultLevelFilename(int);
 char *getLocalLevelTemplateFilename(void);
 char *getGlobalLevelTemplateFilename(void);
 
+int getMappedElement(int);
+
 void LoadLevelFromFilename(struct LevelInfo *, char *);
 void LoadLevel(int);
 void LoadLevelTemplate(int);

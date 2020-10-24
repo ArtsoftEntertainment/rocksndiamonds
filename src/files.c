@@ -2334,7 +2334,7 @@ static void copyLevelFileInfo(struct LevelFileInfo *lfi_from,
 // functions for loading R'n'D level
 // ----------------------------------------------------------------------------
 
-static int getMappedElement(int element)
+int getMappedElement(int element)
 {
   // remap some (historic, now obsolete) elements
 

@@ -12162,6 +12162,9 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 	  ptr++;
 	}
 
+	// remap some (historic, now obsolete) elements
+	element = getMappedElement(element);
+
 	if (element >= NUM_FILE_ELEMENTS)
 	  element = EL_UNKNOWN;
 
@@ -12236,6 +12239,36 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 
       lev_fieldx = level.fieldx = brush_width;
       lev_fieldy = level.fieldy = brush_height;
+
+      boolean use_em_engine = TRUE;
+      boolean use_sp_engine = TRUE;
+      boolean use_mm_engine = TRUE;
+
+      for (x = 0; x < MAX_LEV_FIELDX; x++)
+      {
+	for (y = 0; y < MAX_LEV_FIELDY; y++)
+	{
+	  int element = Tile[x][y];
+
+	  if (!IS_EM_ELEMENT(element) && !ELEM_IS_PLAYER(element))
+	    use_em_engine = FALSE;
+
+	  if (!IS_SP_ELEMENT(element))
+	    use_sp_engine = FALSE;
+
+	  if (!IS_MM_ELEMENT(element) && element != EL_EMPTY)
+	    use_mm_engine = FALSE;
+	}
+      }
+
+      level.game_engine_type = (use_em_engine ? GAME_ENGINE_TYPE_EM :
+				use_sp_engine ? GAME_ENGINE_TYPE_SP :
+				use_mm_engine ? GAME_ENGINE_TYPE_MM :
+				GAME_ENGINE_TYPE_RND);
+
+      // update element selection list
+      ReinitializeElementList();
+      ModifyEditorElementList();
 
       SetBorderElement();
 

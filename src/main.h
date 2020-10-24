@@ -808,6 +808,9 @@
 #define IS_DC_STEELWALL_2(e)	((e) >= EL_DC_STEELWALL_2_LEFT &&	\
 				 (e) <= EL_DC_STEELWALL_2_SINGLE)
 
+// !!! IMPROVE THIS !!!
+#define IS_EM_ELEMENT(e)	(map_element_EM_to_RND_cave(map_element_RND_to_EM_cave(e)) == (e))
+
 #define MM_WALL_BASE(e)		((e) & 0xfff0)
 #define MM_WALL_BITS(e)		((e) & 0x000f)
 
