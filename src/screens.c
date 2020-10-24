@@ -4115,6 +4115,9 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 
   setTypeNameValues_Name(name, pos);
 
+  // redraw player name before (possibly) opening request dialogs
+  drawTypeNameText(name, pos, FALSE);
+
   int last_user_nr = user.nr;
 
   if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
@@ -4137,8 +4140,6 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 
   if (game_status == GAME_MODE_PSEUDO_TYPENAMES || reset_setup)
   {
-    drawTypeNameText(name, pos, FALSE);
-
     if (reset_setup)
     {
       if (Request("Reset setup values for this player?", REQ_ASK))
