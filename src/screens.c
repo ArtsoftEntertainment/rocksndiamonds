@@ -4102,6 +4102,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 {
   boolean reset_setup = strEqual(name, "");
   boolean remove_user = strEqual(name, EMPTY_PLAYER_NAME);
+  boolean create_user = strEqual(type_name_last, EMPTY_PLAYER_NAME);
 
   if (!changed)
     strcpy(name, type_name_last);
@@ -4128,8 +4129,10 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
     // temporarily change active user to edited user
     user.nr = type_name_nr;
 
-    // load setup of edited user
-    LoadSetup();
+    // load setup of edited user (unless creating user with current setup)
+    if (!create_user ||
+	!Request("Use current setup values for the new player?", REQ_ASK))
+      LoadSetup();
   }
 
   // change name of edited user in setup structure
