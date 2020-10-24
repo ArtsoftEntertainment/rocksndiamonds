@@ -4135,6 +4135,9 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
       LoadSetup();
   }
 
+  char *setup_filename = getSetupFilename();
+  boolean setup_exists = fileExists(setup_filename);
+
   // change name of edited user in setup structure
   strcpy(setup.player_name, name);
 
@@ -4148,7 +4151,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
       if (Request("Reset setup values for this player?", REQ_ASK))
       {
 	// remove setup config file
-	unlink(getSetupFilename());
+	unlink(setup_filename);
 
 	// set player name to default player name
 	LoadSetup();
@@ -4174,12 +4177,46 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 	checked_free(user_dir_removed);
       }
     }
+    else if (create_user && type_name_nr != 0 && !setup_exists)
+    {
+      if (Request("Create empty level set for the new player?", REQ_ASK))
+      {
+	char *levelset_subdir = getNewUserLevelSubdir();
+
+	if (CreateUserLevelSet(levelset_subdir, name, name, 100, FALSE))
+	{
+	  AddUserLevelSetToLevelInfo(levelset_subdir);
+
+	  LevelDirTree *leveldir_current_last = leveldir_current;
+
+	  leveldir_current = getTreeInfoFromIdentifier(leveldir_first,
+						       levelset_subdir);
+
+	  // set level number of newly created level set to default value
+	  LoadLevelSetup_SeriesInfo();
+
+	  // set newly created level set as current level set for new user
+	  SaveLevelSetup_LastSeries();
+	  SaveLevelSetup_SeriesInfo();
+
+	  leveldir_current = leveldir_current_last;
+	}
+	else
+	{
+	  Request("Creating new level set failed!", REQ_CONFIRM);
+	}
+      }
+    }
 
     // restore currently active user
     user.nr = last_user_nr;
 
     // restore setup of currently active user
     LoadSetup();
+
+    // restore last level set of currently active user
+    LoadLevelSetup_LastSeries();
+    LoadLevelSetup_SeriesInfo();
   }
 }
 
