@@ -297,18 +297,6 @@ static boolean equalSDLPixelFormat(SDL_PixelFormat *format1,
 	  format1->Bmask	 == format2->Bmask);
 }
 
-#if 0
-static Pixel SDLGetColorKey(SDL_Surface *surface)
-{
-  Pixel color_key;
-
-  if (SDL_GetColorKey(surface, &color_key) != 0)
-    return -1;
-
-  return color_key;
-}
-#endif
-
 static void SDLCopyColorKey(SDL_Surface *src_surface, SDL_Surface *dst_surface)
 {
   Pixel color_key;
