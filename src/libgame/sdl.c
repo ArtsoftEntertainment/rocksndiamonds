@@ -309,7 +309,9 @@ static Pixel SDLGetColorKey(SDL_Surface *surface)
 
 static boolean SDLHasColorKey(SDL_Surface *surface)
 {
-  return (SDLGetColorKey(surface) != -1);
+  Pixel color_key;
+
+  return (SDL_GetColorKey(surface, &color_key) == 0);
 }
 
 static boolean SDLHasAlpha(SDL_Surface *surface)
