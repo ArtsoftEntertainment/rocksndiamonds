@@ -297,6 +297,7 @@ static boolean equalSDLPixelFormat(SDL_PixelFormat *format1,
 	  format1->Bmask	 == format2->Bmask);
 }
 
+#if 0
 static Pixel SDLGetColorKey(SDL_Surface *surface)
 {
   Pixel color_key;
@@ -305,6 +306,31 @@ static Pixel SDLGetColorKey(SDL_Surface *surface)
     return -1;
 
   return color_key;
+}
+#endif
+
+static void SDLCopyColorKey(SDL_Surface *src_surface, SDL_Surface *dst_surface)
+{
+  Pixel color_key;
+  Uint8 r, g, b;
+
+  // check if source surface has a color key
+  if (SDL_GetColorKey(src_surface, &color_key) == 0)
+  {
+    // get RGB values of color key of source surface
+    SDL_GetRGB(color_key, src_surface->format, &r, &g, &b);
+
+    // get color key from RGB values in destination surface format
+    color_key = SDL_MapRGB(dst_surface->format, r, g, b);
+
+    // set color key in destination surface
+    SDL_SetColorKey(dst_surface, SET_TRANSPARENT_PIXEL, color_key);
+  }
+  else
+  {
+    // unset color key in destination surface
+    SDL_SetColorKey(dst_surface, UNSET_TRANSPARENT_PIXEL, 0);
+  }
 }
 
 static boolean SDLHasColorKey(SDL_Surface *surface)
@@ -366,8 +392,7 @@ SDL_Surface *SDLGetNativeSurface(SDL_Surface *surface)
 
   // workaround for a bug in SDL 2.0.12 (which does not convert the color key)
   if (SDLHasColorKey(surface) && !SDLHasColorKey(new_surface))
-    SDL_SetColorKey(new_surface, SET_TRANSPARENT_PIXEL,
-		    SDLGetColorKey(surface));
+    SDLCopyColorKey(surface, new_surface);
 
   return new_surface;
 }
@@ -2269,8 +2294,7 @@ Bitmap *SDLZoomBitmap(Bitmap *src_bitmap, int dst_width, int dst_height)
 
   // set color key for zoomed surface from source surface, if defined
   if (SDLHasColorKey(src_surface))
-    SDL_SetColorKey(dst_surface, SET_TRANSPARENT_PIXEL,
-		    SDLGetColorKey(src_surface));
+    SDLCopyColorKey(src_surface, dst_surface);
 
   // create native non-transparent surface for opaque blitting
   dst_bitmap->surface = SDLGetOpaqueSurface(dst_surface);
