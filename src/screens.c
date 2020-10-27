@@ -4024,8 +4024,9 @@ static void drawTypeNameText(char *name, struct TextPosInfo *pos,
 			      boolean active)
 {
   char text[MAX_PLAYER_NAME_LEN + 2] = { 0 };
-  int sx = mSX + ALIGNED_TEXT_XPOS(pos);
-  int sy = mSY + ALIGNED_TEXT_YPOS(pos);
+  boolean multiple_users = (game_status == GAME_MODE_PSEUDO_TYPENAMES);
+  int sx = (multiple_users ? amSX + pos->x : mSX + ALIGNED_TEXT_XPOS(pos));
+  int sy = (multiple_users ? amSY + pos->y : mSY + ALIGNED_TEXT_YPOS(pos));
   int font_nr = (active ? FONT_ACTIVE(pos->font) : pos->font);
   int font_width = getFontWidth(font_nr);
 
@@ -4034,7 +4035,7 @@ static void drawTypeNameText(char *name, struct TextPosInfo *pos,
   sprintf(text, "%s%c", name, (active ? '_' : '\0'));
 
   pos->width = strlen(text) * font_width;
-  sx = mSX + ALIGNED_TEXT_XPOS(pos);
+  sx = (multiple_users ? amSX + pos->x : mSX + ALIGNED_TEXT_XPOS(pos));
 
   DrawText(sx, sy, text, font_nr);
 }
@@ -4053,16 +4054,15 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
     TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
     int xpos = MENU_SCREEN_START_XPOS;
     int ypos = MENU_SCREEN_START_YPOS + ti->cl_cursor;
-    int font_width = getFontWidth(pos->font);
 
     type_name_node = getTreeInfoFromPos(node_first, entry_pos);
     type_name_nr = entry_pos;
 
     strcpy(name, type_name_node->name);
 
-    pos->x = xpos * font_width;
-    pos->y = ypos * font_width;
-    pos->width = MAX_PLAYER_NAME_LEN * font_width;
+    pos->x = xpos * 32;
+    pos->y = ypos * 32;
+    pos->width = MAX_PLAYER_NAME_LEN * 32;
   }
   else
   {
@@ -4093,7 +4093,7 @@ static void setTypeNameValues_Name(char *name, struct TextPosInfo *pos)
     setString(&node->name_sorting, name);
 
     node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
-    pos->font = (node->color == FC_RED ? FONT_INPUT_1 : FONT_VALUE_OLD);
+    pos->font = FONT_TEXT_1 + node->color;
   }
 }
 
