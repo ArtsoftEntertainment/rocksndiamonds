@@ -125,6 +125,7 @@
 
 // other screen text constants
 #define STR_CHOOSE_TREE_EDIT		"Edit"
+#define MENU_CHOOSE_TREE_FONT(x)	(FONT_TEXT_1 + (x))
 
 // for input setup functions
 #define SETUPINPUT_SCREEN_POS_START	0
@@ -4093,7 +4094,7 @@ static void setTypeNameValues_Name(char *name, struct TextPosInfo *pos)
     setString(&node->name_sorting, name);
 
     node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
-    pos->font = FONT_TEXT_1 + node->color;
+    pos->font = MENU_CHOOSE_TREE_FONT(node->color);
   }
 }
 
@@ -4307,7 +4308,8 @@ static int getAlignXOffsetFromTreeInfo(TreeInfo *ti)
 
   int num_entries = numTreeInfoInGroup(ti);
   boolean scrollbar_needed = (num_entries > NUM_MENU_ENTRIES_ON_SCREEN);
-  int text_width = max_text_size * getFontWidth(FONT_TEXT_1);
+  int font_nr = MENU_CHOOSE_TREE_FONT(FC_RED);
+  int text_width = max_text_size * getFontWidth(font_nr);
   int button_width = SC_MENUBUTTON_XSIZE;
   int scrollbar_xpos = SC_SCROLLBAR_XPOS + menu.scrollbar_xoffset;
   int screen_width = (scrollbar_needed ? scrollbar_xpos : SXSIZE);
@@ -4327,7 +4329,8 @@ static int getAlignYOffsetFromTreeInfo(TreeInfo *ti)
 
   int num_entries = numTreeInfoInGroup(ti);
   int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
-  int font_height = getFontHeight(FONT_TEXT_1);
+  int font_nr = MENU_CHOOSE_TREE_FONT(FC_RED);
+  int font_height = getFontHeight(font_nr);
   int text_height = font_height * num_page_entries;
   int page_height = font_height * NUM_MENU_ENTRIES_ON_SCREEN;
   int align = menu.list_setup[SETUP_MODE_CHOOSE_OTHER].valign;
@@ -4390,8 +4393,6 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
   boolean scrollbar_needed = (num_entries > NUM_MENU_ENTRIES_ON_SCREEN);
   int scrollbar_xpos = SC_SCROLLBAR_XPOS + menu.scrollbar_xoffset;
   int screen_width = (scrollbar_needed ? scrollbar_xpos : SXSIZE);
-  int font_nr = FONT_TEXT_1;
-  int font_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
   int i;
   char *title_string = NULL;
   int yoffset_sets = MENU_TITLE1_YPOS;
@@ -4409,6 +4410,12 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
   {
     TreeInfo *node, *node_first;
     int entry_pos = first_entry + i;
+
+    node_first = getTreeInfoFirstGroupEntry(ti);
+    node = getTreeInfoFromPos(node_first, entry_pos);
+
+    int font_nr = MENU_CHOOSE_TREE_FONT(node->color);
+    int font_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
     int xpos = MENU_SCREEN_START_XPOS;
     int ypos = MENU_SCREEN_START_YPOS + i;
     int startx = amSX + xpos * 32;
@@ -4419,13 +4426,10 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
     int max_buffer_len = max_text_size / getFontWidth(font_nr);
     char buffer[max_buffer_len + 1];
 
-    node_first = getTreeInfoFirstGroupEntry(ti);
-    node = getTreeInfoFromPos(node_first, entry_pos);
-
     strncpy(buffer, node->name, max_buffer_len);
     buffer[max_buffer_len] = '\0';
 
-    DrawText(startx, starty, buffer, font_nr + node->color);
+    DrawText(startx, starty, buffer, font_nr);
 
     if (node->parent_link)
       initCursor(i, IMG_MENU_BUTTON_LEAVE_MENU);
