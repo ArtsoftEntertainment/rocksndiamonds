@@ -4110,11 +4110,11 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
   if (strEqual(name, ""))
     strcpy(name, EMPTY_PLAYER_NAME);
 
+  setTypeNameValues_Name(name, pos);
+
   // if player name not changed, no further action required
   if (strEqual(name, type_name_last))
     return;
-
-  setTypeNameValues_Name(name, pos);
 
   // redraw player name before (possibly) opening request dialogs
   drawTypeNameText(name, pos, FALSE);
