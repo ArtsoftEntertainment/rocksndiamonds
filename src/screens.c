@@ -4021,6 +4021,11 @@ static TreeInfo *type_name_node = NULL;
 static char type_name_last[MAX_PLAYER_NAME_LEN + 1] = { 0 };
 static int type_name_nr = 0;
 
+static int getPlayerNameColor(char *name)
+{
+  return (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
+}
+
 static void drawTypeNameText(char *name, struct TextPosInfo *pos,
 			      boolean active)
 {
@@ -4093,7 +4098,7 @@ static void setTypeNameValues_Name(char *name, struct TextPosInfo *pos)
     setString(&node->name, name);
     setString(&node->name_sorting, name);
 
-    node->color = (strEqual(name, EMPTY_PLAYER_NAME) ? FC_BLUE : FC_RED);
+    node->color = getPlayerNameColor(name);
     pos->font = MENU_CHOOSE_TREE_FONT(node->color);
   }
 }
@@ -4882,10 +4887,7 @@ void DrawChoosePlayerName(void)
 
     ti->node_top = &player_name;
     ti->sort_priority = 10000 + value;
-    ti->color = FC_RED;
-
-    if (strEqual(global.user_names[i], EMPTY_PLAYER_NAME))
-      ti->color = FC_BLUE;
+    ti->color = getPlayerNameColor(global.user_names[i]);
 
     snprintf(identifier, sizeof(identifier), "%d", value);
     snprintf(name, sizeof(name), "%s", global.user_names[i]);
