@@ -13806,7 +13806,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       }
       else
       {
-	ChangeEditModeWindow(last_edit_mode);
+	ChangeEditModeWindow(ED_MODE_DRAWING);
 
 	ClickOnGadget(level_editor_gadget[last_level_drawing_function],
 		      MB_LEFTBUTTON);
@@ -13971,7 +13971,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       }
       else
       {
-	ChangeEditModeWindow(last_edit_mode);
+	ChangeEditModeWindow(ED_MODE_DRAWING);
       }
       break;
 
