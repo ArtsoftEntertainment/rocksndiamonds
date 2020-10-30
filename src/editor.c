@@ -12734,6 +12734,43 @@ static void WrapLevel(int dx, int dy)
   CopyLevelToUndoBuffer(UNDO_ACCUMULATE);
 }
 
+static void DrawAreaElementHighlight(boolean highlighted)
+{
+  DrawEditorLevel(ed_fieldx, ed_fieldy, level_xpos, level_ypos);
+
+  if (!highlighted)
+    return;
+
+  int x, y;
+
+  for (x = 0; x < ed_fieldx; x++)
+  {
+    for (y = 0; y < ed_fieldy; y++)
+    {
+      int lx = x + level_xpos;
+      int ly = y + level_ypos;
+
+      if (!IN_LEV_FIELD(lx, ly))
+	continue;
+
+      if (Tile[lx][ly] != new_element1)
+	continue;
+
+      int sx = SX + x * ed_tilesize;
+      int sy = SY + y * ed_tilesize;
+      int from_sx = sx;
+      int from_sy = sy;
+      int to_sx = sx + ed_tilesize - 1;
+      int to_sy = sy + ed_tilesize - 1;
+
+      DrawSimpleWhiteLine(drawto, from_sx, from_sy, to_sx,   from_sy);
+      DrawSimpleWhiteLine(drawto, to_sx,   from_sy, to_sx,   to_sy);
+      DrawSimpleWhiteLine(drawto, to_sx,   to_sy,   from_sx, to_sy);
+      DrawSimpleWhiteLine(drawto, from_sx, to_sy,   from_sx, from_sy);
+    }
+  }
+}
+
 static void CopyLevelTemplateToUserLevelSet(char *levelset_subdir)
 {
   char *template_filename_old = getLocalLevelTemplateFilename();
@@ -14308,7 +14345,7 @@ void HandleLevelEditorKeyInput(Key key)
 	  ClickOnGadget(level_editor_gadget[i], button);
 }
 
-void HandleLevelEditorIdle(void)
+static void HandleLevelEditorIdle_Properties(void)
 {
   int element_border = graphic_info[IMG_EDITOR_ELEMENT_BORDER].border_size;
   int x = editor.settings.element_graphic.x + element_border;
@@ -14316,9 +14353,6 @@ void HandleLevelEditorIdle(void)
   static unsigned int action_delay = 0;
   unsigned int action_delay_value = GameFrameDelay;
   int i;
-
-  if (edit_mode != ED_MODE_PROPERTIES)
-    return;
 
   if (!DelayReached(&action_delay, action_delay_value))
     return;
@@ -14336,6 +14370,29 @@ void HandleLevelEditorIdle(void)
   redraw_mask |= REDRAW_FIELD;
 
   FrameCounter++;	// increase animation frame counter
+}
+
+static void HandleLevelEditorIdle_Drawing(void)
+{
+  static boolean last_highlighted = FALSE;
+  boolean highlighted = (GetKeyModState() & KMOD_Alt);
+
+  if (highlighted != last_highlighted)
+  {
+    DrawAreaElementHighlight(highlighted);
+
+    last_highlighted = highlighted;
+
+    redraw_mask |= REDRAW_FIELD;
+  }
+}
+
+void HandleLevelEditorIdle(void)
+{
+  if (edit_mode == ED_MODE_PROPERTIES)
+    HandleLevelEditorIdle_Properties();
+  else if (edit_mode == ED_MODE_DRAWING)
+    HandleLevelEditorIdle_Drawing();
 }
 
 static void ClearEditorGadgetInfoText(void)
