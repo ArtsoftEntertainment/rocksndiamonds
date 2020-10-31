@@ -19,7 +19,7 @@
 #define	TAPE_TOGGLE_PLAY_PAUSE	(1 << 1)
 
 // values for tape properties
-#define MAX_TAPE_LEN		(1000 * FRAMES_PER_SECOND) // max.time x fps
+#define MAX_TAPE_LEN		(10000 * FRAMES_PER_SECOND) // max.time x fps
 
 // values for tape action array positions
 #define TAPE_ACTION_LX		(MAX_PLAYERS + 0)
