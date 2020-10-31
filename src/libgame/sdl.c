@@ -876,6 +876,8 @@ void SDLSetScreenProperties(void)
   SDLSetDisplaySize();
   SDLSetScreenSizeAndOffsets(video.width, video.height);
   SDLSetScreenSizeForRenderer(video.screen_width, video.screen_height);
+
+  SetOverlayGridSizeAndButtons();
 }
 
 void SDLSetScreenRenderingMode(char *screen_rendering_mode)
