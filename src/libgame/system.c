@@ -352,13 +352,26 @@ void InitTileCursorInfo(void)
 
 void InitOverlayInfo(void)
 {
-  int nr = GRID_ACTIVE_NR();
-  int x, y;
-
   overlay.enabled = FALSE;
   overlay.active = FALSE;
 
   overlay.show_grid = FALSE;
+
+  overlay.grid_button_highlight = CHAR_GRID_BUTTON_NONE;
+  overlay.grid_button_action = JOY_NO_ACTION;
+
+  SetOverlayGridSizeAndButtons();
+
+#if defined(USE_TOUCH_INPUT_OVERLAY)
+  if (strEqual(setup.touch.control_type, TOUCH_CONTROL_VIRTUAL_BUTTONS))
+    overlay.enabled = TRUE;
+#endif
+}
+
+void SetOverlayGridSizeAndButtons(void)
+{
+  int nr = GRID_ACTIVE_NR();
+  int x, y;
 
   overlay.grid_xsize = setup.touch.grid_xsize[nr];
   overlay.grid_ysize = setup.touch.grid_ysize[nr];
@@ -366,14 +379,6 @@ void InitOverlayInfo(void)
   for (x = 0; x < MAX_GRID_XSIZE; x++)
     for (y = 0; y < MAX_GRID_YSIZE; y++)
       overlay.grid_button[x][y] = setup.touch.grid_button[nr][x][y];
-
-  overlay.grid_button_highlight = CHAR_GRID_BUTTON_NONE;
-  overlay.grid_button_action = JOY_NO_ACTION;
-
-#if defined(USE_TOUCH_INPUT_OVERLAY)
-  if (strEqual(setup.touch.control_type, TOUCH_CONTROL_VIRTUAL_BUTTONS))
-    overlay.enabled = TRUE;
-#endif
 }
 
 void SetTileCursorEnabled(boolean enabled)

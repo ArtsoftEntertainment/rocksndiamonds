@@ -673,19 +673,10 @@ void HandleWindowEvent(WindowEvent *event)
 	// check if screen orientation has changed (should always be true here)
 	if (nr != GRID_ACTIVE_NR())
 	{
-	  int x, y;
-
 	  if (game_status == GAME_MODE_SETUP)
 	    RedrawSetupScreenAfterScreenRotation(nr);
 
-	  nr = GRID_ACTIVE_NR();
-
-	  overlay.grid_xsize = setup.touch.grid_xsize[nr];
-	  overlay.grid_ysize = setup.touch.grid_ysize[nr];
-
-	  for (x = 0; x < MAX_GRID_XSIZE; x++)
-	    for (y = 0; y < MAX_GRID_YSIZE; y++)
-	      overlay.grid_button[x][y] = setup.touch.grid_button[nr][x][y];
+	  SetOverlayGridSizeAndButtons();
 	}
       }
     }

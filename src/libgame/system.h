@@ -1813,6 +1813,7 @@ void InitGfxCustomArtworkInfo(void);
 void InitGfxOtherSettings(void);
 void InitTileCursorInfo(void);
 void InitOverlayInfo(void);
+void SetOverlayGridSizeAndButtons(void);
 void SetTileCursorEnabled(boolean);
 void SetTileCursorActive(boolean);
 void SetTileCursorTargetXY(int, int);
