@@ -13997,6 +13997,10 @@ static int DigField(struct PlayerInfo *player,
     CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_DIGS_X,
 					player->index_bit, dig_side);
 
+    // if digging triggered player relocation, finish digging tile
+    if (mode == DF_DIG && (player->jx != jx || player->jy != jy))
+      setFieldForSnapping(x, y, element, move_direction);
+
     if (mode == DF_SNAP)
     {
       if (level.block_snap_field)
@@ -14118,8 +14122,14 @@ static int DigField(struct PlayerInfo *player,
     PlayLevelSoundElementAction(x, y, element, ACTION_COLLECTING);
 
     if (is_player)
+    {
       CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_COLLECTS_X,
 					  player->index_bit, dig_side);
+
+      // if collecting triggered player relocation, finish collecting tile
+      if (mode == DF_DIG && (player->jx != jx || player->jy != jy))
+	setFieldForSnapping(x, y, element, move_direction);
+    }
 
     if (mode == DF_SNAP)
     {
