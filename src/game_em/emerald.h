@@ -112,6 +112,15 @@ enum
   Xfake_acid_7,
   Xfake_acid_8,
 
+  Xfake_acid_1_player,		/* newly added to EM engine */
+  Xfake_acid_2_player,
+  Xfake_acid_3_player,
+  Xfake_acid_4_player,
+  Xfake_acid_5_player,
+  Xfake_acid_6_player,
+  Xfake_acid_7_player,
+  Xfake_acid_8_player,
+
   Xgrass,
   Ygrass_nB,
   Ygrass_eB,

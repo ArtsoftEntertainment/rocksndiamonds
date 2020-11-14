@@ -5883,6 +5883,39 @@ em_object_mapping_list[GAME_TILE_MAX + 1] =
   },
 
   {
+    Xfake_acid_1_player,		FALSE,	FALSE,
+    EL_EMC_FAKE_ACID,			-1, -1
+  },
+  {
+    Xfake_acid_2_player,		FALSE,	FALSE,
+    EL_EMC_FAKE_ACID,			-1, -1
+  },
+  {
+    Xfake_acid_3_player,		FALSE,	FALSE,
+    EL_EMC_FAKE_ACID,			-1, -1
+  },
+  {
+    Xfake_acid_4_player,		FALSE,	FALSE,
+    EL_EMC_FAKE_ACID,			-1, -1
+  },
+  {
+    Xfake_acid_5_player,		FALSE,	FALSE,
+    EL_EMC_FAKE_ACID,			-1, -1
+  },
+  {
+    Xfake_acid_6_player,		FALSE,	FALSE,
+    EL_EMC_FAKE_ACID,			-1, -1
+  },
+  {
+    Xfake_acid_7_player,		FALSE,	FALSE,
+    EL_EMC_FAKE_ACID,			-1, -1
+  },
+  {
+    Xfake_acid_8_player,		FALSE,	FALSE,
+    EL_EMC_FAKE_ACID,			-1, -1
+  },
+
+  {
     Xgrass,				TRUE,	FALSE,
     EL_EMC_GRASS,			-1, -1
   },
@@ -8774,6 +8807,14 @@ void InitGraphicInfo_EM(void)
 			i == Xfake_acid_6 ? 50 :
 			i == Xfake_acid_7 ? 60 :
 			i == Xfake_acid_8 ? 70 :
+			i == Xfake_acid_1_player ? 0 :
+			i == Xfake_acid_2_player ? 10 :
+			i == Xfake_acid_3_player ? 20 :
+			i == Xfake_acid_4_player ? 30 :
+			i == Xfake_acid_5_player ? 40 :
+			i == Xfake_acid_6_player ? 50 :
+			i == Xfake_acid_7_player ? 60 :
+			i == Xfake_acid_8_player ? 70 :
 			i == Xball_2 ? 7 :
 			i == Yball_2 ? j + 8 :
 			i == Yball_blank ? j + 1 :

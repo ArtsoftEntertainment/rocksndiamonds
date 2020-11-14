@@ -70,6 +70,47 @@ static const byte is_fake_acid[GAME_TILE_MAX] =
   [Xfake_acid_8]	= 1
 };
 
+static const byte is_player[GAME_TILE_MAX] =
+{
+  [Zplayer]		= 1,
+  [Xfake_acid_1_player]	= 1,
+  [Xfake_acid_2_player]	= 1,
+  [Xfake_acid_3_player]	= 1,
+  [Xfake_acid_4_player]	= 1,
+  [Xfake_acid_5_player]	= 1,
+  [Xfake_acid_6_player]	= 1,
+  [Xfake_acid_7_player]	= 1,
+  [Xfake_acid_8_player]	= 1
+};
+
+static const byte add_player[GAME_TILE_MAX] =
+{
+  [Xblank]		= Zplayer,
+  [Xsplash_e]		= Zplayer,
+  [Xsplash_w]		= Zplayer,
+  [Xfake_acid_1]	= Xfake_acid_1_player,
+  [Xfake_acid_2]	= Xfake_acid_2_player,
+  [Xfake_acid_3]	= Xfake_acid_3_player,
+  [Xfake_acid_4]	= Xfake_acid_4_player,
+  [Xfake_acid_5]	= Xfake_acid_5_player,
+  [Xfake_acid_6]	= Xfake_acid_6_player,
+  [Xfake_acid_7]	= Xfake_acid_7_player,
+  [Xfake_acid_8]	= Xfake_acid_8_player
+};
+
+static const byte remove_player[GAME_TILE_MAX] =
+{
+  [Zplayer]		= Xblank,
+  [Xfake_acid_1_player]	= Xfake_acid_1,
+  [Xfake_acid_2_player]	= Xfake_acid_2,
+  [Xfake_acid_3_player]	= Xfake_acid_3,
+  [Xfake_acid_4_player]	= Xfake_acid_4,
+  [Xfake_acid_5_player]	= Xfake_acid_5,
+  [Xfake_acid_6_player]	= Xfake_acid_6,
+  [Xfake_acid_7_player]	= Xfake_acid_7,
+  [Xfake_acid_8_player]	= Xfake_acid_8
+};
+
 static const byte is_amoeba[GAME_TILE_MAX] =
 {
   [Xfake_amoeba]	= 1,
@@ -365,6 +406,14 @@ static boolean player_killed(struct PLAYER *ply)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xdynamite_1:
     case Xdynamite_2:
     case Xdynamite_3:
@@ -551,10 +600,6 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xblank:
       case Xsplash_e:
       case Xsplash_w:
-	cave[x][y] = Zplayer;
-	next[x][y] = Zplayer;
-	// FALL THROUGH
-
       case Xfake_acid_1:
       case Xfake_acid_2:
       case Xfake_acid_3:
@@ -563,6 +608,9 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
       case Xfake_acid_6:
       case Xfake_acid_7:
       case Xfake_acid_8:
+	cave[x][y] = add_player[element];
+	next[x][y] = add_player[element];
+
 	play_element_sound(x, y, SOUND_blank, Xblank);
 	ply->anim = PLY_walk_n + anim;
 	ply->x = x;
@@ -1114,11 +1162,10 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (!is_blank[cave[x+dx][y+dy]])
 	  break;
 
-	if (!is_fake_acid[cave[x+dx][y+dy]])
-	{
-	  cave[x+dx][y+dy] = Zplayer;
-	  next[x+dx][y+dy] = Zplayer;
-	}
+	int element_next = cave[x+dx][y+dy];
+
+	cave[x+dx][y+dy] = add_player[element_next];
+	next[x+dx][y+dy] = add_player[element_next];
 
 	play_element_sound(x, y, SOUND_door, element);
 	ply->anim = PLY_walk_n + anim;
@@ -1782,14 +1829,14 @@ static void Landroid(int x, int y)
  android_move:
   if (lev.android_move_cnt == 0)
   {
-    if (cave[x-1][y-1] == Zplayer ||
-	cave[x][y-1]   == Zplayer ||
-	cave[x+1][y-1] == Zplayer ||
-	cave[x-1][y]   == Zplayer ||
-	cave[x+1][y]   == Zplayer ||
-	cave[x-1][y+1] == Zplayer ||
-	cave[x][y+1]   == Zplayer ||
-	cave[x+1][y+1] == Zplayer)
+    if (is_player[cave[x-1][y-1]] ||
+	is_player[cave[x][y-1]]   ||
+	is_player[cave[x+1][y-1]] ||
+	is_player[cave[x-1][y]]   ||
+	is_player[cave[x+1][y]]   ||
+	is_player[cave[x-1][y+1]] ||
+	is_player[cave[x][y+1]]   ||
+	is_player[cave[x+1][y+1]])
       goto android_still;
 
     set_nearest_player_xy(x, y, &dx, &dy);
@@ -2384,6 +2431,14 @@ static void Leater_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Yeater_nB;
@@ -2464,6 +2519,14 @@ static void Leater_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Yeater_eB;
@@ -2544,6 +2607,14 @@ static void Leater_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Yeater_sB;
@@ -2624,6 +2695,14 @@ static void Leater_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Yeater_wB;
@@ -2688,6 +2767,14 @@ static void Lalien(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
+	case Xfake_acid_1_player:
+	case Xfake_acid_2_player:
+	case Xfake_acid_3_player:
+	case Xfake_acid_4_player:
+	case Xfake_acid_5_player:
+	case Xfake_acid_6_player:
+	case Xfake_acid_7_player:
+	case Xfake_acid_8_player:
 	case Xplant:
 	case Yplant:
 	  cave[x][y] = Yalien_nB;
@@ -2731,6 +2818,14 @@ static void Lalien(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
+	case Xfake_acid_1_player:
+	case Xfake_acid_2_player:
+	case Xfake_acid_3_player:
+	case Xfake_acid_4_player:
+	case Xfake_acid_5_player:
+	case Xfake_acid_6_player:
+	case Xfake_acid_7_player:
+	case Xfake_acid_8_player:
 	case Xplant:
 	case Yplant:
 	  cave[x][y] = Yalien_sB;
@@ -2777,6 +2872,14 @@ static void Lalien(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
+	case Xfake_acid_1_player:
+	case Xfake_acid_2_player:
+	case Xfake_acid_3_player:
+	case Xfake_acid_4_player:
+	case Xfake_acid_5_player:
+	case Xfake_acid_6_player:
+	case Xfake_acid_7_player:
+	case Xfake_acid_8_player:
 	case Xplant:
 	case Yplant:
 	  cave[x][y] = Yalien_eB;
@@ -2820,6 +2923,14 @@ static void Lalien(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
+	case Xfake_acid_1_player:
+	case Xfake_acid_2_player:
+	case Xfake_acid_3_player:
+	case Xfake_acid_4_player:
+	case Xfake_acid_5_player:
+	case Xfake_acid_6_player:
+	case Xfake_acid_7_player:
+	case Xfake_acid_8_player:
 	case Xplant:
 	case Yplant:
 	  cave[x][y] = Yalien_wB;
@@ -2871,6 +2982,14 @@ static void Lbug_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ybug_nB;
@@ -2932,6 +3051,14 @@ static void Lbug_1_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -2985,6 +3112,14 @@ static void Lbug_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ybug_eB;
@@ -3046,6 +3181,14 @@ static void Lbug_1_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3099,6 +3242,14 @@ static void Lbug_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ybug_sB;
@@ -3160,6 +3311,14 @@ static void Lbug_1_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3213,6 +3372,14 @@ static void Lbug_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ybug_wB;
@@ -3274,6 +3441,14 @@ static void Lbug_1_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3327,6 +3502,14 @@ static void Ltank_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ytank_nB;
@@ -3388,6 +3571,14 @@ static void Ltank_1_n(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3441,6 +3632,14 @@ static void Ltank_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ytank_eB;
@@ -3502,6 +3701,14 @@ static void Ltank_1_e(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3555,6 +3762,14 @@ static void Ltank_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ytank_sB;
@@ -3616,6 +3831,14 @@ static void Ltank_1_s(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3669,6 +3892,14 @@ static void Ltank_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ytank_wB;
@@ -3730,6 +3961,14 @@ static void Ltank_1_w(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
     case Xacid_1:
@@ -3980,6 +4219,14 @@ static void Lemerald_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
       cave[x][y] = Yemerald_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yemerald_s;
@@ -4239,6 +4486,14 @@ static void Ldiamond_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
       cave[x][y] = Ydiamond_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ydiamond_s;
@@ -4491,6 +4746,14 @@ static void Lstone_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
       cave[x][y] = Ystone_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ystone_s;
@@ -4584,6 +4847,14 @@ static void Lstone_fall(int x, int y)
 	case Xfake_acid_6:
 	case Xfake_acid_7:
 	case Xfake_acid_8:
+	case Xfake_acid_1_player:
+	case Xfake_acid_2_player:
+	case Xfake_acid_3_player:
+	case Xfake_acid_4_player:
+	case Xfake_acid_5_player:
+	case Xfake_acid_6_player:
+	case Xfake_acid_7_player:
+	case Xfake_acid_8_player:
 	case Xplant:
 	case Yplant:
 	case Xacid_1:
@@ -5153,6 +5424,14 @@ static void Lnut_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
       cave[x][y] = Ynut_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Ynut_s;
@@ -5619,6 +5898,14 @@ static void Lspring_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
       cave[x][y] = Yspring_sB;
       next[x][y] = Xblank;
       cave[x][y+1] = Yspring_s;
@@ -6720,6 +7007,14 @@ static void Ldrip_fall(int x, int y)
     case Xfake_acid_6:
     case Xfake_acid_7:
     case Xfake_acid_8:
+    case Xfake_acid_1_player:
+    case Xfake_acid_2_player:
+    case Xfake_acid_3_player:
+    case Xfake_acid_4_player:
+    case Xfake_acid_5_player:
+    case Xfake_acid_6_player:
+    case Xfake_acid_7_player:
+    case Xfake_acid_8_player:
     case Xplant:
     case Yplant:
       cave[x][y] = Ydrip_1_sB;
@@ -7467,16 +7762,20 @@ static void logic_players(void)
     if (!ply[i].alive)
       continue;
 
-    if (cave[ply[i].prev_x][ply[i].prev_y] == Zplayer)
+    if (is_player[cave[ply[i].prev_x][ply[i].prev_y]])
     {
-      cave[ply[i].prev_x][ply[i].prev_y] = Xblank;
-      next[ply[i].prev_x][ply[i].prev_y] = Xblank;
+      int element = cave[ply[i].prev_x][ply[i].prev_y];
+
+      cave[ply[i].prev_x][ply[i].prev_y] = remove_player[element];
+      next[ply[i].prev_x][ply[i].prev_y] = remove_player[element];
     }
 
-    if (cave[ply[i].x][ply[i].y] == Xblank)
+    if (is_blank[cave[ply[i].x][ply[i].y]])
     {
-      cave[ply[i].x][ply[i].y] = Zplayer;
-      next[ply[i].x][ply[i].y] = Zplayer;
+      int element = cave[ply[i].x][ply[i].y];
+
+      cave[ply[i].x][ply[i].y] = add_player[element];
+      next[ply[i].x][ply[i].y] = add_player[element];
     }
   }
 }
