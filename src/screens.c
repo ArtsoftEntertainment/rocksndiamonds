@@ -7547,7 +7547,7 @@ static boolean ConfigureJoystickMapButtonsAndAxes(SDL_Joystick *joystick)
   Event event;
   int alpha = 200, alpha_step = -1;
   int alpha_ticks = 0;
-  char mapping[4096], temp[4096];
+  char mapping[4096], temp[256];
   int font_name = MENU_SETUP_FONT_TITLE;
   int font_info = MENU_SETUP_FONT_TEXT;
   int spacing_name = menu.line_spacing_setup[SETUP_MODE_INPUT];
