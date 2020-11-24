@@ -58,18 +58,6 @@ static const byte is_blank_or_acid[GAME_TILE_MAX] =
   [Xacid_8]		= 1
 };
 
-static const byte is_fake_acid[GAME_TILE_MAX] =
-{
-  [Xfake_acid_1]	= 1,
-  [Xfake_acid_2]	= 1,
-  [Xfake_acid_3]	= 1,
-  [Xfake_acid_4]	= 1,
-  [Xfake_acid_5]	= 1,
-  [Xfake_acid_6]	= 1,
-  [Xfake_acid_7]	= 1,
-  [Xfake_acid_8]	= 1
-};
-
 static const byte is_player[GAME_TILE_MAX] =
 {
   [Zplayer]		= 1,
