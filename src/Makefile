@@ -84,9 +84,9 @@ endif
 # $(info Using SDL version $(SDL_VERSION) [TARGET == $(TARGET)])
 
 ifeq ($(TARGET),sdl2)			# compiling for SDL2 target
-SYS_CFLAGS = -DTARGET_SDL2 $(shell sdl2-config --cflags)
 SDL_LIBS = -lSDL2_image -lSDL2_mixer -lSDL2_net
-SYS_LDFLAGS = $(SDL_LIBS) $(shell sdl2-config --libs)
+SYS_CFLAGS := -DTARGET_SDL2 $(shell sdl2-config --cflags)
+SYS_LDFLAGS := $(SDL_LIBS) $(shell sdl2-config --libs)
 endif
 
 
