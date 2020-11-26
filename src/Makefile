@@ -31,6 +31,7 @@ endif
 AR = ar
 RANLIB = ranlib
 ETAGS = etags
+STRIP = strip
 RM = rm -f
 
 CONVERT = convert
@@ -86,7 +87,7 @@ endif
 ifeq ($(TARGET),sdl2)			# compiling for SDL2 target
 SDL_LIBS = -lSDL2_image -lSDL2_mixer -lSDL2_net
 SYS_CFLAGS := -DTARGET_SDL2 $(shell sdl2-config --cflags)
-SYS_LDFLAGS := $(SDL_LIBS) $(shell sdl2-config --libs)
+SYS_LDFLAGS := $(SDL_LIBS) $(shell sdl2-config --libs) -lm -lz
 endif
 
 
@@ -124,7 +125,7 @@ OPTIONS = -O2 -Wall
 endif
 
 CFLAGS = $(OPTIONS) $(SYS_CFLAGS)  $(EXTRA_CFLAGS) $(CONFIG)
-LDFLAGS =           $(SYS_LDFLAGS) $(EXTRA_LDFLAGS) -lm -lz
+LDFLAGS =           $(SYS_LDFLAGS) $(EXTRA_LDFLAGS)
 
 
 SRCS =	main.c		\
@@ -233,7 +234,7 @@ all: $(AUTOCONF) libgame_dir game_em_dir game_sp_dir game_mm_dir $(PROGNAME) gra
 $(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(COMMIT_HASH_FILE) $(OBJS) $(ICON)
 	$(CC) $(PROFILING) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
 ifdef BUILD_DIST
-	strip $(PROGNAME)
+	$(STRIP) $(PROGNAME)
 endif
 
 libgame_dir:
