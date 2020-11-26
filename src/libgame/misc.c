@@ -786,7 +786,12 @@ static char *get_corrected_real_name(char *real_name)
 #if defined(PLATFORM_UNIX)
 static struct passwd *getPasswdEntry(void)
 {
+#if defined(PLATFORM_EMSCRIPTEN)
+  // currently not fully supported; force fallback to default values
+  return NULL;
+#else
   return getpwuid(getuid());
+#endif
 }
 
 char *getUnixLoginName(void)

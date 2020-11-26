@@ -80,6 +80,9 @@ android-clean:
 
 android: android-package
 
+emscripten:
+	@emmake $(MAKE_CMD) PLATFORM=emscripten
+
 clean:
 	@$(MAKE_CMD) clean
 
@@ -165,6 +168,9 @@ dist-build-mac:
 
 dist-build-android:
 	@BUILD_DIST=TRUE $(MAKE) android
+
+dist-build-emscripten:
+	@BUILD_DIST=TRUE $(MAKE) emscripten
 
 dist-package-linux:
 	$(MAKE_DIST) package linux

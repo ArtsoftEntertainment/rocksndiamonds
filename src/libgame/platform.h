@@ -153,6 +153,12 @@
 #define PLATFORM_STRING "Android"
 #endif
 
+#if defined(__EMSCRIPTEN__)
+#define PLATFORM_EMSCRIPTEN
+#undef  PLATFORM_STRING
+#define PLATFORM_STRING "Emscripten"
+#endif
+
 
 // ============================================================================
 // define additional platform keywords for CPU architecture

@@ -58,6 +58,14 @@ PROGNAME = ../$(PROGBASE).exe
 EXTRA_LDFLAGS = -lshfolder -lwsock32
 endif
 
+ifeq ($(PLATFORM),emscripten)		# compiling with Emscripten
+PROGNAME = ../$(PROGBASE).js
+CC = emcc
+AR = emar
+RANLIB = emranlib
+STRIP = true
+endif
+
 ifdef BUILD_DIST			# distribution build
 ifeq ($(shell uname -s),Darwin)		# compiling on Mac OS X
 MAC_TARGET_VERSION_MIN = 10.7
@@ -85,7 +93,15 @@ endif
 # $(info Using SDL version $(SDL_VERSION) [TARGET == $(TARGET)])
 
 ifeq ($(TARGET),sdl2)			# compiling for SDL2 target
+ifeq ($(PLATFORM),emscripten)
+SDL_LIBS = -s USE_SDL_IMAGE=2 -s USE_SDL_MIXER=2 -s USE_SDL_NET=2 -s USE_ZLIB=1
+SDL_FMTS = -s SDL2_IMAGE_FORMATS='["bmp","png","pcx","xpm"]'
+EXTRA_CFLAGS = $(SDL_LIBS)
+EXTRA_LDFLAGS = $(SDL_FMTS) -s INITIAL_MEMORY=65536000 -s ALLOW_MEMORY_GROWTH=1 --preload-file ../graphics/ --preload-file ../sounds/ --preload-file ../levels/ --preload-file ../music/ -s NO_EXIT_RUNTIME=0 -s ASYNCIFY -O2
+else
 SDL_LIBS = -lSDL2_image -lSDL2_mixer -lSDL2_net
+endif
+
 SYS_CFLAGS := -DTARGET_SDL2 $(shell sdl2-config --cflags)
 SYS_LDFLAGS := $(SDL_LIBS) $(shell sdl2-config --libs) -lm -lz
 endif
@@ -317,7 +333,10 @@ clean-ico:
 
 clean-bin:
 	$(RM) $(PROGNAME)
-	$(RM) ../*.exe
+	$(RM) $(PROGNAME).exe
+	$(RM) $(PROGNAME).js
+	$(RM) $(PROGNAME).wasm
+	$(RM) $(PROGNAME).data
 
 clean: clean-obj clean-ico clean-bin
 
