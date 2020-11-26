@@ -72,8 +72,6 @@
 #define SPECIAL_RENDERING_TARGET	2
 #define SPECIAL_RENDERING_DOUBLE	3
 
-#define SPECIAL_RENDERING_DEFAULT	SPECIAL_RENDERING_DOUBLE
-
 // values for vertical screen retrace synchronization (vsync)
 #define STR_VSYNC_MODE_OFF		"off"
 #define STR_VSYNC_MODE_NORMAL		"normal"
