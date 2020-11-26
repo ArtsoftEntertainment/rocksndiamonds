@@ -135,6 +135,12 @@ void SkipUntilDelayReached(unsigned int *, unsigned int, int *, int);
 unsigned int init_random_number(int, int);
 unsigned int get_random_number(int, int);
 
+#if defined(PLATFORM_UNIX)
+char *getUnixLoginName(void);
+char *getUnixRealName(void);
+char *getUnixHomeDir(void);
+#endif
+
 char *getLoginName(void);
 char *getRealName(void);
 

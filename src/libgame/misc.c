@@ -21,7 +21,7 @@
 
 #include "platform.h"
 
-#if !defined(PLATFORM_WIN32)
+#if defined(PLATFORM_UNIX)
 #include <pwd.h>
 #include <sys/param.h>
 #endif
@@ -783,6 +783,43 @@ static char *get_corrected_real_name(char *real_name)
 }
 #endif
 
+#if defined(PLATFORM_UNIX)
+static struct passwd *getPasswdEntry(void)
+{
+  return getpwuid(getuid());
+}
+
+char *getUnixLoginName(void)
+{
+  struct passwd *pwd = getPasswdEntry();
+
+  if (pwd != NULL && strlen(pwd->pw_name) != 0)
+    return pwd->pw_name;
+
+  return NULL;
+}
+
+char *getUnixRealName(void)
+{
+  struct passwd *pwd = getPasswdEntry();
+
+  if (pwd != NULL && strlen(pwd->pw_gecos) != 0)
+    return pwd->pw_gecos;
+
+  return NULL;
+}
+
+char *getUnixHomeDir(void)
+{
+  struct passwd *pwd = getPasswdEntry();
+
+  if (pwd != NULL && strlen(pwd->pw_dir) != 0)
+    return pwd->pw_dir;
+
+  return NULL;
+}
+#endif
+
 char *getLoginName(void)
 {
   static char *login_name = NULL;
@@ -791,6 +828,7 @@ char *getLoginName(void)
   if (login_name == NULL)
   {
     unsigned long buffer_size = MAX_USERNAME_LEN + 1;
+
     login_name = checked_malloc(buffer_size);
 
     if (GetUserName(login_name, &buffer_size) == 0)
@@ -799,12 +837,12 @@ char *getLoginName(void)
 #elif defined(PLATFORM_UNIX) && !defined(PLATFORM_ANDROID)
   if (login_name == NULL)
   {
-    struct passwd *pwd;
+    char *name = getUnixLoginName();
 
-    if ((pwd = getpwuid(getuid())) == NULL)
-      login_name = ANONYMOUS_NAME;
+    if (name != NULL)
+      login_name = getStringCopy(name);
     else
-      login_name = getStringCopy(pwd->pw_name);
+      login_name = ANONYMOUS_NAME;
   }
 #else
   login_name = ANONYMOUS_NAME;
@@ -831,10 +869,10 @@ char *getRealName(void)
 #elif defined(PLATFORM_UNIX) && !defined(PLATFORM_ANDROID)
   if (real_name == NULL)
   {
-    struct passwd *pwd;
+    char *name = getUnixRealName();
 
-    if ((pwd = getpwuid(getuid())) != NULL && strlen(pwd->pw_gecos) != 0)
-      real_name = get_corrected_real_name(pwd->pw_gecos);
+    if (name != NULL)
+      real_name = get_corrected_real_name(name);
     else
       real_name = ANONYMOUS_NAME;
   }

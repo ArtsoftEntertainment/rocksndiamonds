@@ -18,11 +18,6 @@
 
 #include "platform.h"
 
-#if !defined(PLATFORM_WIN32)
-#include <pwd.h>
-#include <sys/param.h>
-#endif
-
 #include "setup.h"
 #include "joystick.h"
 #include "text.h"
@@ -1504,10 +1499,10 @@ char *getHomeDir(void)
   {
     if ((dir = getenv("HOME")) == NULL)
     {
-      struct passwd *pwd;
+      dir = getUnixHomeDir();
 
-      if ((pwd = getpwuid(getuid())) != NULL)
-	dir = getStringCopy(pwd->pw_dir);
+      if (dir != NULL)
+	dir = getStringCopy(dir);
       else
 	dir = ".";
     }
