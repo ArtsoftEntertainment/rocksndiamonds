@@ -441,16 +441,17 @@ static void blitplayer(int nr)
       ply[nr].x > lev.right - 1)
   {
     struct PLAYER ply_last = ply[nr];
+    int direction = (ply[nr].x < lev.left ? -1 : 1);
     int dx = ply[nr].x - ply[nr].prev_x;
 
-    ply[nr].x = (ply[nr].x < lev.left ? lev.right - 1 : lev.left);
+    ply[nr].x += -direction * lev.width;
     ply[nr].prev_x = ply[nr].x - dx;
 
     if (!lev.infinite_true)
     {
       int dy = ply[nr].y - ply[nr].prev_y;
 
-      ply[nr].y += (ply[nr].x == lev.left ? 1 : -1);
+      ply[nr].y += direction;
       ply[nr].prev_y = ply[nr].y - dy;
     }
 

@@ -7695,10 +7695,12 @@ void logic_move(void)
     if (ply[i].x < lev.left ||
 	ply[i].x > lev.right - 1)
     {
-      ply[i].x = (ply[i].x < lev.left ? lev.right - 1 : lev.left);
+      int direction = (ply[i].x < lev.left ? -1 : 1);
+
+      ply[i].x += -direction * lev.width;
 
       if (!lev.infinite_true)
-	ply[i].y += (ply[i].x == lev.left ? 1 : -1);
+	ply[i].y += direction;
 
       game.centered_player_nr_next = i;
       game.set_centered_player = TRUE;
