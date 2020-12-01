@@ -7768,6 +7768,18 @@ static void logic_players(void)
       next[ply[i].x][ply[i].y] = add_player[element];
     }
   }
+
+  /* check for wheel at wrap-around position */
+  if (lev.wheel_x < lev.left ||
+      lev.wheel_x > lev.right - 1)
+  {
+    int direction = (lev.wheel_x < lev.left ? -1 : 1);
+
+    lev.wheel_x += -direction * lev.width;
+
+    if (!lev.infinite_true)
+      lev.wheel_y += direction;
+  }
 }
 
 static void logic_objects(void)
