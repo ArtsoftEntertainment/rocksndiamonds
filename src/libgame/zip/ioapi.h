@@ -33,7 +33,7 @@
 #  define ftello64 ftell
 #  define fseeko64 fseek
 #else
-#  if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__) || defined(__APPLE__) || defined(__ANDROID__) || defined(__linux__) || defined(__EMSCRIPTEN__)
+#  if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__) || defined(__APPLE__) || defined(__ANDROID__) || defined(__linux__) || defined(__EMSCRIPTEN__) || defined(__OS2__)
 #    define fopen64 fopen
 #    define ftello64 ftello
 #    define fseeko64 fseeko
