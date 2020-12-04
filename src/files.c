@@ -4274,7 +4274,7 @@ static int getMappedElement_DC(int element)
       break;
 
     case 0x13f5:
-      element = EL_YAMYAM;
+      element = EL_YAMYAM_UP;
       break;
 
     case 0x1425:
@@ -5300,7 +5300,7 @@ static int getMappedElement_DC(int element)
       break;
 
     case 0x1682:	// secret gate (red)
-      element = EL_GATE_1_GRAY;
+      element = EL_EM_GATE_1_GRAY;
       break;
 
     case 0x1683:	// gate (yellow)
@@ -5308,7 +5308,7 @@ static int getMappedElement_DC(int element)
       break;
 
     case 0x1684:	// secret gate (yellow)
-      element = EL_GATE_2_GRAY;
+      element = EL_EM_GATE_2_GRAY;
       break;
 
     case 0x1685:	// gate (blue)
@@ -5316,7 +5316,7 @@ static int getMappedElement_DC(int element)
       break;
 
     case 0x1686:	// secret gate (blue)
-      element = EL_GATE_4_GRAY;
+      element = EL_EM_GATE_4_GRAY;
       break;
 
     case 0x1687:	// gate (green)
@@ -5324,7 +5324,7 @@ static int getMappedElement_DC(int element)
       break;
 
     case 0x1688:	// secret gate (green)
-      element = EL_GATE_3_GRAY;
+      element = EL_EM_GATE_3_GRAY;
       break;
 
     case 0x1689:	// gate (white)
