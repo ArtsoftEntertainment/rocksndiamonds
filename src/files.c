@@ -5721,6 +5721,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level,
   level->score[SC_SHIELD]	= 0;
   level->extra_time_score	= 0;
 
+  // set time for normal and deadly shields to the same value
+  level->shield_deadly_time	= level->shield_normal_time;
+
   // Diamond Caves has the same (strange) behaviour as Emerald Mine that gems
   // can slip down from flat walls, like normal walls and steel walls
   level->em_slippery_gems = TRUE;
