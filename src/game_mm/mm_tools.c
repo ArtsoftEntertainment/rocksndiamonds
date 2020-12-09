@@ -626,6 +626,62 @@ void DrawMiniLevel_MM(int size_x, int size_y, int scroll_x, int scroll_y)
   redraw_mask |= REDRAW_FIELD;
 }
 
+void DrawTileCursor_MM(int draw_target, boolean tile_cursor_active)
+{
+  Bitmap *fade_bitmap;
+  Bitmap *src_bitmap;
+  int src_x, src_y;
+  int dst_x, dst_y;
+  int graphic = IMG_GLOBAL_TILE_CURSOR;
+  int frame = 0;
+  int tilesize = TILESIZE_VAR;
+  int width = tilesize;
+  int height = tilesize;
+
+  if (!tile_cursor.enabled ||
+      !tile_cursor.active ||
+      !tile_cursor_active)
+    return;
+
+  if (tile_cursor.moving)
+  {
+    int step = TILESIZE_VAR / 4;
+    int dx = tile_cursor.target_x - tile_cursor.x;
+    int dy = tile_cursor.target_y - tile_cursor.y;
+
+    if (ABS(dx) < step)
+      tile_cursor.x = tile_cursor.target_x;
+    else
+      tile_cursor.x += SIGN(dx) * step;
+
+    if (ABS(dy) < step)
+      tile_cursor.y = tile_cursor.target_y;
+    else
+      tile_cursor.y += SIGN(dy) * step;
+
+    if (tile_cursor.x == tile_cursor.target_x &&
+	tile_cursor.y == tile_cursor.target_y)
+      tile_cursor.moving = FALSE;
+  }
+
+  dst_x = tile_cursor.x;
+  dst_y = tile_cursor.y;
+
+  frame = getGraphicAnimationFrame(graphic, -1);
+
+  getSizedGraphicSource(graphic, frame, tilesize, &src_bitmap, &src_x, &src_y);
+
+  fade_bitmap =
+    (draw_target == DRAW_TO_FADE_SOURCE ? gfx.fade_bitmap_source :
+     draw_target == DRAW_TO_FADE_TARGET ? gfx.fade_bitmap_target : NULL);
+
+  if (draw_target == DRAW_TO_SCREEN)
+    BlitToScreenMasked(src_bitmap, src_x, src_y, width, height, dst_x, dst_y);
+  else
+    BlitBitmapMasked(src_bitmap, fade_bitmap, src_x, src_y, width, height,
+		     dst_x, dst_y);
+}
+
 #if 0
 static int REQ_in_range(int x, int y)
 {

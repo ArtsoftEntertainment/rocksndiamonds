@@ -222,6 +222,7 @@ void InitGameActions_MM(void);
 void GameActions_MM(struct MouseActionInfo, boolean);
 
 void DrawLaser_MM(void);
+void DrawTileCursor_MM(int, boolean);
 
 boolean ClickElement(int, int, int);
 
