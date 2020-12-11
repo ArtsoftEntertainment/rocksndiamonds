@@ -338,7 +338,7 @@ static boolean SDLHasAlpha(SDL_Surface *surface)
   return (blend_mode == SDL_BLENDMODE_BLEND);
 }
 
-static void SDLSetAlpha(SDL_Surface *surface, boolean set, int alpha)
+void SDLSetAlpha(SDL_Surface *surface, boolean set, int alpha)
 {
   SDL_BlendMode blend_mode = (set ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
 
