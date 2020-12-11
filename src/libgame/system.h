@@ -1161,6 +1161,8 @@ struct TileCursorInfo
   int target_x, target_y;	// tile cursor target screen position
 
   int sx, sy;			// tile cursor screen start position
+
+  boolean xsn_debug;		// enable or disable XSN debugging
 };
 
 struct OverlayInfo

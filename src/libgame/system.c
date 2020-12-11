@@ -348,6 +348,8 @@ void InitTileCursorInfo(void)
 
   tile_cursor.sx = 0;
   tile_cursor.sy = 0;
+
+  tile_cursor.xsn_debug = FALSE;
 }
 
 void InitOverlayInfo(void)

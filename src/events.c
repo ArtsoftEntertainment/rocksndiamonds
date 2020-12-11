@@ -1890,6 +1890,10 @@ static void HandleKeysSpecial(Key key)
     {
       global.show_frames_per_second = !global.show_frames_per_second;
     }
+    else if (strSuffix(cheat_input, ":xsn"))
+    {
+      tile_cursor.xsn_debug = TRUE;
+    }
   }
   else if (game_status == GAME_MODE_PLAYING)
   {

@@ -9,6 +9,8 @@
 // mm_tools.c
 // ============================================================================
 
+#include <time.h>
+
 #include "main_mm.h"
 
 #include "mm_main.h"
@@ -626,8 +628,477 @@ void DrawMiniLevel_MM(int size_x, int size_y, int scroll_x, int scroll_y)
   redraw_mask |= REDRAW_FIELD;
 }
 
+
+// ----------------------------------------------------------------------------
+// XSN
+// ----------------------------------------------------------------------------
+
+#define XSN_RND(x)		((x) != 0 ? rand() % (x) : 0)
+#define XSN_ALPHA_VALUE(x)	(SDL_ALPHA_OPAQUE * (x) / 100)
+
+#define XSN_MAX_ITEMS		100
+#define XSN_MAX_HEIGHT		40
+#define XSN_MAX_DX		2
+#define XSN_MAX_DY		10
+#define XSN_CHECK_DELAY		3
+#define XSN_START_DELAY		60
+#define XSN_UPDATE_DELAY	50
+#define XSN_GROWTH_DELAY	3
+#define XSN_GROWTH_RATE		3
+#define XSN_CHANGE_DELAY	30
+#define XSN_CHANGE_FACTOR	3
+#define XSN_ALPHA_DEFAULT	XSN_ALPHA_VALUE(95)
+#define XSN_DEBUG_STEPS		5
+
+static byte xsn_bits_0[] = { 0x05, 0x02, 0x05 };
+static byte xsn_bits_1[] = { 0x22, 0x6b, 0x14, 0x2a, 0x14, 0x6b, 0x22 };
+static byte xsn_bits_2[] = { 0x14, 0x08, 0x49, 0x36, 0x49, 0x08, 0x14 };
+
+static struct
+{
+  int size;
+  byte *bits;
+  Bitmap *bitmap;
+}
+xsn_data[] =
+{
+  { ARRAY_SIZE(xsn_bits_0), xsn_bits_0 },
+  { ARRAY_SIZE(xsn_bits_1), xsn_bits_1 },
+  { ARRAY_SIZE(xsn_bits_2), xsn_bits_2 },
+  { ARRAY_SIZE(xsn_bits_2), xsn_bits_2 },
+  { ARRAY_SIZE(xsn_bits_1), xsn_bits_1 },
+  { ARRAY_SIZE(xsn_bits_2), xsn_bits_2 },
+  { ARRAY_SIZE(xsn_bits_0), xsn_bits_0 },
+};
+static int num_xsn_data = ARRAY_SIZE(xsn_data);
+
+struct XsnItem
+{
+  int x;
+  int y;
+  int dx;
+  int dy;
+  int type;
+  int active;
+};
+
+struct Xsn
+{
+  int area_xsize;
+  int area_ysize;
+
+  int num_items;
+  int max_items;
+  int max_height;
+  int max_dx;
+  int max_dy;
+
+  int change_delay;
+  int change_type;
+  int change_dir;
+
+  int *height;
+
+  struct XsnItem items[XSN_MAX_ITEMS];
+
+  Bitmap *bitmap;
+};
+
+static struct Xsn xsn = { 0 };
+
+static int xsn_percent(void)
+{
+  int xsn_m0 = -3;
+  int xsn_m1 = xsn_m0 + 10;
+  int xsn_m2 = xsn_m1 + 10;
+  int xsn_m3 = xsn_m2 + 10;
+  time_t xsn_e0 = time(NULL);
+  struct tm *xsn_t0 = localtime(&xsn_e0);
+  struct tm xsn_t1 = { 0,0,0, xsn_m2*3, xsn_m3/3, xsn_t0->tm_year, 0,0,-1 };
+  time_t xsn_e1 = mktime(&xsn_t1);
+  int xsn_c0 = (25 * xsn_m3) << xsn_m1;
+  int xsn_c1 = (xsn_t1.tm_wday - xsn_m1) * !!xsn_t1.tm_wday;
+
+  for (xsn_m0 = 5; xsn_m0 > 0; xsn_m0--)
+  {
+    int xsn_c2 = (xsn_m0 > 4 ? 0 : xsn_c1) - xsn_m1 * xsn_m0;
+    int xsn_off = (xsn_m0 > 4 ? xsn_c0 : 0);
+    time_t xsn_e3 = xsn_e1 - xsn_c2 * xsn_c0;
+
+    if (xsn_e0 > xsn_e3 - xsn_off &&
+        xsn_e0 < xsn_e3 + xsn_off + xsn_c0)
+      return xsn_m0 * (xsn_m3 - xsn_m1);
+  }
+
+  return xsn_m0;
+}
+
+static void xsn_init_item(int nr)
+{
+  struct XsnItem *item = &xsn.items[nr];
+
+  item->type = XSN_RND(num_xsn_data);
+
+  if (xsn.change_type != 0)
+  {
+    int new_x = XSN_RND(xsn.area_xsize / 3);
+
+    item->x = (xsn.change_dir == 1 ? new_x : xsn.area_xsize - new_x);
+    item->y = XSN_RND(xsn.area_ysize);
+  }
+  else
+  {
+    item->x = XSN_RND(xsn.area_xsize - xsn_data[item->type].size);
+    item->y = XSN_RND(xsn.area_ysize / 10);
+  }
+
+  item->dy = XSN_RND(xsn.max_dy + 1) + 1;
+  item->dx = XSN_RND(item->dy / 4 + 1) * (XSN_RND(1000) > 500 ? -1 : 1);
+
+  item->active = 1;
+}
+
+static void xsn_update_item(int nr)
+{
+  struct XsnItem *item = &xsn.items[nr];
+
+  if (!item->active)
+    xsn_init_item(nr);
+
+  if (xsn.change_type != 0)
+  {
+    int dx_new = ABS(item->dx) +
+      (xsn.change_type == 1 ?
+       XSN_RND(XSN_CHANGE_FACTOR + 1) - XSN_CHANGE_FACTOR / 2 :
+       XSN_RND(20));
+
+    item->dx = MIN(MAX(-50, dx_new * xsn.change_dir), 50);
+  }
+
+  int new_x = item->x + item->dx;
+  int new_y = item->y + item->dy;
+
+  item->active = (new_y < xsn.area_ysize);
+
+  if (xsn.change_type != 0)
+    item->active = (item->active && new_x > 0 && new_x < xsn.area_xsize);
+
+  int item_size = xsn_data[item->type].size;
+  int half_item_size = item_size / 2;
+  int mid_x = new_x + half_item_size;
+  int mid_y = new_y + half_item_size;
+  int upper_border = xsn.area_ysize - xsn.max_height;
+
+  if (item->active &&
+      new_y >= upper_border &&
+      new_x >= 0 &&
+      new_x <= xsn.area_xsize - item_size &&
+      mid_y >= xsn.height[mid_x] &&
+      mid_y < xsn.area_ysize)
+  {
+    Bitmap *item_bitmap = xsn_data[item->type].bitmap;
+    SDL_Surface *surface = xsn.bitmap->surface;
+    SDL_Surface *surface_masked = xsn.bitmap->surface_masked;
+    int item_alpha = XSN_ALPHA_VALUE(81 + XSN_RND(20));
+    int shrink = 1;
+    int i;
+
+    xsn.bitmap->surface = surface_masked;
+
+    SDLSetAlpha(item_bitmap->surface_masked, TRUE, item_alpha);
+
+    // blit to masked surface instead of opaque surface
+    BlitBitmapMasked(item_bitmap, xsn.bitmap, 0, 0, item_size, item_size,
+		     new_x, new_y - upper_border);
+
+    SDLSetAlpha(item_bitmap->surface_masked, TRUE, XSN_ALPHA_DEFAULT);
+
+    for (i = -half_item_size; i <= half_item_size; i++)
+    {
+      int xpos = mid_x + i;
+
+      if (xpos >= 0 && xpos < xsn.area_xsize)
+	xsn.height[xpos] = MIN(new_y + ABS(i), xsn.height[xpos]);
+    }
+
+    if (xsn.height[mid_x] <= upper_border + shrink)
+    {
+      int xpos1 = MAX(0, new_x - half_item_size);
+      int xpos2 = MIN(new_x + 3 * half_item_size, xsn.area_xsize);
+      int xsize = xpos2 - xpos1;
+      int ysize1 = XSN_RND(xsn.max_height - shrink);
+      int ysize2 = xsn.max_height - ysize1;
+
+      SDLSetAlpha(surface_masked, FALSE, 0);
+
+      FillRectangle(xsn.bitmap, xpos1, xsn.max_height, xsize, xsn.max_height,
+		    BLACK_PIXEL);
+      BlitBitmapMasked(xsn.bitmap, xsn.bitmap, xpos1, 0, xsize, ysize1,
+		       xpos1, xsn.max_height + shrink);
+      BlitBitmapMasked(xsn.bitmap, xsn.bitmap, xpos1, ysize1, xsize, ysize2,
+		       xpos1, xsn.max_height + ysize1);
+      FillRectangle(xsn.bitmap, xpos1, 0, xsize, xsn.max_height,
+		    BLACK_PIXEL);
+      BlitBitmapMasked(xsn.bitmap, xsn.bitmap, xpos1, xsn.max_height,
+		       xsize, xsn.max_height, xpos1, 0);
+
+      SDLSetAlpha(surface_masked, TRUE, XSN_ALPHA_DEFAULT);
+
+      for (i = xpos1; i < xpos2; i++)
+	xsn.height[i] = MIN(xsn.height[i] + shrink, xsn.area_ysize - 1);
+    }
+
+    SDLFreeBitmapTextures(xsn.bitmap);
+    SDLCreateBitmapTextures(xsn.bitmap);
+
+    xsn.bitmap->surface = surface;
+
+    item->active = 0;
+  }
+
+  item->dx += XSN_RND(XSN_CHANGE_FACTOR) * (XSN_RND(1000) > 500 ? -1 : 1);
+
+  if (xsn.change_type == 0)
+    item->dx = MIN(MAX(-xsn.max_dx, item->dx), xsn.max_dx);
+
+  item->x = new_x;
+  item->y = new_y;
+}
+
+static void xsn_update_change(void)
+{
+  if (XSN_RND(100) > 65)
+  {
+    xsn.change_dir = (XSN_RND(10) > 4 ? 1 : -1);
+    xsn.change_delay = XSN_RND(5) + 1;
+    xsn.change_type = 2;
+  }
+  else if (xsn.change_type == 2)
+  {
+    xsn.change_delay = XSN_RND(3) + 1;
+    xsn.change_type = 1;
+  }
+  else
+  {
+    xsn.change_delay = XSN_CHANGE_DELAY;
+    xsn.change_type = 0;
+  }
+}
+
+static void DrawTileCursor_Xsn(int draw_target)
+{
+  static boolean initialized = FALSE;
+  static boolean started = FALSE;
+  static boolean active = FALSE;
+  static boolean debug = FALSE;
+  static unsigned int check_delay = 0;
+  static unsigned int start_delay = 0;
+  static unsigned int growth_delay = 0;
+  static unsigned int update_delay = 0;
+  static unsigned int change_delay = 0;
+  static unsigned int check_delay_value = XSN_CHECK_DELAY * 1000;
+  static unsigned int start_delay_value = 0;
+  static unsigned int growth_delay_value = 0;
+  static unsigned int update_delay_value = 0;
+  static unsigned int change_delay_value = 0;
+  static int percent = 0;
+  static int debug_value = 0;
+  boolean reinitialize = FALSE;
+  boolean active_last = active;
+  int i, x, y;
+
+  if (draw_target != DRAW_TO_SCREEN)
+    return;
+
+  if (DelayReached(&check_delay, check_delay_value))
+  {
+    percent = (debug ? debug_value * 100 / XSN_DEBUG_STEPS : xsn_percent());
+    active = (percent > 0);
+  }
+  else if (tile_cursor.xsn_debug)
+  {
+    debug_value = (active ? 0 : MIN(debug_value + 1, XSN_DEBUG_STEPS));
+    debug = TRUE;
+    active = FALSE;
+
+    DelayReached(&check_delay, 0);
+
+    tile_cursor.xsn_debug = FALSE;
+  }
+
+  if (!active)
+    return;
+
+  if (!active_last)
+  {
+    start_delay_value = (debug ? 0 : XSN_RND(XSN_START_DELAY * 2) * 1000);
+    started = FALSE;
+
+    DelayReached(&start_delay, 0);
+
+    reinitialize = TRUE;
+  }
+
+  if (!initialized)
+  {
+    xsn.area_xsize = gfx.win_xsize;
+    xsn.area_ysize = gfx.win_ysize;
+
+    for (i = 0; i < num_xsn_data; i++)
+    {
+      int size = xsn_data[i].size;
+      byte *bits = xsn_data[i].bits;
+      Bitmap *bitmap = CreateBitmap(size, size, DEFAULT_DEPTH);
+
+      FillRectangle(bitmap, 0, 0, size, size, BLACK_PIXEL);
+
+      for (y = 0; y < size; y++)
+	for (x = 0; x < size; x++)
+	  if ((bits[y] >> x) & 0x01)
+	    SDLPutPixel(bitmap, x, y, WHITE_PIXEL);
+
+      SDL_Surface *surface = bitmap->surface;
+
+      if ((bitmap->surface_masked = SDLGetNativeSurface(surface)) == NULL)
+	Fail("SDLGetNativeSurface() failed");
+
+      SDL_Surface *surface_masked = bitmap->surface_masked;
+
+      SDL_SetColorKey(surface_masked, SET_TRANSPARENT_PIXEL,
+		      SDL_MapRGB(surface_masked->format, 0x00, 0x00, 0x00));
+
+      SDLSetAlpha(surface, TRUE, XSN_ALPHA_DEFAULT);
+      SDLSetAlpha(surface_masked, TRUE, XSN_ALPHA_DEFAULT);
+
+      xsn_data[i].bitmap = bitmap;
+    }
+
+    srand((unsigned int)time(NULL));
+
+    initialized = TRUE;
+  }
+
+  if (reinitialize)
+  {
+    xsn.num_items  = 0;
+    xsn.max_items  = percent * XSN_MAX_ITEMS / 100;
+    xsn.max_height = percent * XSN_MAX_HEIGHT / 100;
+
+    xsn.max_dx = XSN_MAX_DX;
+    xsn.max_dy = XSN_MAX_DY;
+
+    xsn.change_delay = XSN_CHANGE_DELAY;
+    xsn.change_type  = 0;
+    xsn.change_dir   = 0;
+
+    for (i = 0; i < xsn.max_items; i++)
+      xsn_init_item(i);
+  }
+
+  if (xsn.area_xsize != gfx.win_xsize ||
+      xsn.area_ysize != gfx.win_ysize ||
+      reinitialize)
+  {
+    xsn.area_xsize = gfx.win_xsize;
+    xsn.area_ysize = gfx.win_ysize;
+
+    if (xsn.bitmap != NULL)
+      FreeBitmap(xsn.bitmap);
+
+    xsn.bitmap = CreateBitmap(xsn.area_xsize, xsn.max_height * 2,
+			      DEFAULT_DEPTH);
+
+    FillRectangle(xsn.bitmap, 0, 0, xsn.area_xsize, xsn.max_height,
+		  BLACK_PIXEL);
+
+    SDL_Surface *surface = xsn.bitmap->surface;
+
+    if ((xsn.bitmap->surface_masked = SDLGetNativeSurface(surface)) == NULL)
+      Fail("SDLGetNativeSurface() failed");
+
+    SDL_Surface *surface_masked = xsn.bitmap->surface_masked;
+
+    SDL_SetColorKey(surface_masked, SET_TRANSPARENT_PIXEL,
+		    SDL_MapRGB(surface_masked->format, 0x00, 0x00, 0x00));
+
+    SDLSetAlpha(surface, TRUE, XSN_ALPHA_DEFAULT);
+    SDLSetAlpha(surface_masked, TRUE, XSN_ALPHA_DEFAULT);
+
+    SDLCreateBitmapTextures(xsn.bitmap);
+
+    for (i = 0; i < num_xsn_data; i++)
+    {
+      SDLFreeBitmapTextures(xsn_data[i].bitmap);
+      SDLCreateBitmapTextures(xsn_data[i].bitmap);
+    }
+
+    if (xsn.height != NULL)
+      checked_free(xsn.height);
+
+    xsn.height = checked_calloc(xsn.area_xsize * sizeof(int));
+
+    for (i = 0; i < xsn.area_xsize; i++)
+      xsn.height[i] = xsn.area_ysize - 1;
+  }
+
+  if (!started)
+  {
+    if (!DelayReached(&start_delay, start_delay_value))
+      return;
+
+    update_delay_value = XSN_UPDATE_DELAY;
+    growth_delay_value = XSN_GROWTH_DELAY * 1000;
+    change_delay_value = XSN_CHANGE_DELAY * 1000;
+
+    DelayReached(&growth_delay, 0);
+    DelayReached(&update_delay, 0);
+    DelayReached(&change_delay, 0);
+
+    started = TRUE;
+  }
+
+  if (xsn.num_items < xsn.max_items)
+  {
+    if (DelayReached(&growth_delay, growth_delay_value))
+    {
+      xsn.num_items += XSN_RND(XSN_GROWTH_RATE * 2);
+      xsn.num_items = MIN(xsn.num_items, xsn.max_items);
+    }
+  }
+
+  if (DelayReached(&update_delay, update_delay_value))
+  {
+    for (i = 0; i < xsn.num_items; i++)
+      xsn_update_item(i);
+  }
+
+  if (DelayReached(&change_delay, change_delay_value))
+  {
+    xsn_update_change();
+
+    change_delay_value = xsn.change_delay * 1000;
+  }
+
+  BlitToScreenMasked(xsn.bitmap, 0, 0, xsn.area_xsize, xsn.max_height,
+		     0, xsn.area_ysize - xsn.max_height);
+
+  for (i = 0; i < xsn.num_items; i++)
+  {
+    int dst_x = xsn.items[i].x;
+    int dst_y = xsn.items[i].y;
+    int type = xsn.items[i].type;
+    int size = xsn_data[type].size;
+    Bitmap *bitmap = xsn_data[type].bitmap;
+
+    BlitToScreenMasked(bitmap, 0, 0, size, size, dst_x, dst_y);
+  }
+}
+
 void DrawTileCursor_MM(int draw_target, boolean tile_cursor_active)
 {
+  if (program.headless)
+    return;
+
   Bitmap *fade_bitmap;
   Bitmap *src_bitmap;
   int src_x, src_y;
@@ -637,6 +1108,8 @@ void DrawTileCursor_MM(int draw_target, boolean tile_cursor_active)
   int tilesize = TILESIZE_VAR;
   int width = tilesize;
   int height = tilesize;
+
+  DrawTileCursor_Xsn(draw_target);
 
   if (!tile_cursor.enabled ||
       !tile_cursor.active ||
