@@ -6761,6 +6761,10 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
 
     if (startx + font_xoffset < text_startx + text_width + text_font_xoffset)
     {
+      // when using narrow font, left-shifting text "auto" not needed
+      if (type & TYPE_YES_NO_AUTO)
+	xpos += 1;
+
       xpos += 1;
       startx = mSX + xpos * 32;
 
