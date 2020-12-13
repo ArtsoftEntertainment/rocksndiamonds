@@ -952,18 +952,6 @@ static void DrawTileCursor_Xsn(int draw_target)
   if (!active)
     return;
 
-  if (!active_last)
-  {
-    boolean no_delay = (debug || setup.debug.xsn_mode == TRUE);
-
-    start_delay_value = (no_delay ? 0 : XSN_RND(XSN_START_DELAY * 2) * 1000);
-    started = FALSE;
-
-    DelayReached(&start_delay, 0);
-
-    reinitialize = TRUE;
-  }
-
   if (!initialized)
   {
     xsn.area_xsize = gfx.win_xsize;
@@ -1001,6 +989,17 @@ static void DrawTileCursor_Xsn(int draw_target)
     srand((unsigned int)time(NULL));
 
     initialized = TRUE;
+  }
+
+  if (!active_last)
+  {
+    start_delay_value = (debug || setup.debug.xsn_mode == TRUE ? 0 :
+			 (XSN_START_DELAY + XSN_RND(XSN_START_DELAY)) * 1000);
+    started = FALSE;
+
+    DelayReached(&start_delay, 0);
+
+    reinitialize = TRUE;
   }
 
   if (reinitialize)
