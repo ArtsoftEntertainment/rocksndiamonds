@@ -9477,6 +9477,9 @@ void setHideSetupEntry(void *setup_value)
 {
   char *hide_setup_token = getHideSetupToken(setup_value);
 
+  if (hide_setup_hash == NULL)
+    hide_setup_hash = newSetupFileHash();
+
   if (setup_value != NULL)
     setHashEntry(hide_setup_hash, hide_setup_token, "");
 }
@@ -9518,9 +9521,6 @@ static void decodeSetupFileHash(SetupFileHash *setup_file_hash)
 
   if (!setup_file_hash)
     return;
-
-  if (hide_setup_hash == NULL)
-    hide_setup_hash = newSetupFileHash();
 
   for (i = 0; i < ARRAY_SIZE(global_setup_tokens); i++)
     setSetupInfoFromTokenInfo(setup_file_hash, global_setup_tokens, i);
