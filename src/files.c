@@ -9484,6 +9484,14 @@ void setHideSetupEntry(void *setup_value)
     setHashEntry(hide_setup_hash, hide_setup_token, "");
 }
 
+void removeHideSetupEntry(void *setup_value)
+{
+  char *hide_setup_token = getHideSetupToken(setup_value);
+
+  if (setup_value != NULL)
+    removeHashEntry(hide_setup_hash, hide_setup_token);
+}
+
 boolean hideSetupEntry(void *setup_value)
 {
   char *hide_setup_token = getHideSetupToken(setup_value);
