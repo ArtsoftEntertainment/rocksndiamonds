@@ -9153,6 +9153,14 @@ static struct TokenInfo debug_setup_tokens[] =
     TYPE_BOOLEAN,
     &setup.debug.show_frames_per_second,	"debug.show_frames_per_second"
   },
+  {
+    TYPE_SWITCH3,
+    &setup.debug.xsn_mode,			"debug.xsn_mode"
+  },
+  {
+    TYPE_INTEGER,
+    &setup.debug.xsn_percent,			"debug.xsn_percent"
+  },
 };
 
 static struct TokenInfo options_setup_tokens[] =
@@ -9426,11 +9434,16 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->debug.show_frames_per_second = FALSE;
 
+  si->debug.xsn_mode = AUTO;
+  si->debug.xsn_percent = 0;
+
   si->options.verbose = FALSE;
 
 #if defined(PLATFORM_ANDROID)
   si->fullscreen = TRUE;
 #endif
+
+  setHideSetupEntry(&setup.debug.xsn_mode);
 }
 
 static void setSetupInfoToDefaults_AutoSetup(struct SetupInfo *si)
@@ -9871,7 +9884,9 @@ void SaveSetup(void)
 
   fprintf(file, "\n");
   for (i = 0; i < ARRAY_SIZE(debug_setup_tokens); i++)
-    fprintf(file, "%s\n", getSetupLine(debug_setup_tokens, "", i));
+    if (!strPrefix(debug_setup_tokens[i].text, "debug.xsn_") ||
+	setup.debug.xsn_mode != AUTO)
+      fprintf(file, "%s\n", getSetupLine(debug_setup_tokens, "", i));
 
   fprintf(file, "\n");
   for (i = 0; i < ARRAY_SIZE(options_setup_tokens); i++)
