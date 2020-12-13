@@ -654,6 +654,11 @@ static byte xsn_bits_0[] = { 0x05, 0x02, 0x05 };
 static byte xsn_bits_1[] = { 0x22, 0x6b, 0x14, 0x2a, 0x14, 0x6b, 0x22 };
 static byte xsn_bits_2[] = { 0x14, 0x08, 0x49, 0x36, 0x49, 0x08, 0x14 };
 
+char debug_xsn_mode[] = { 76,101,116,32,105,116,32,115,110,111,119,33,0 };
+
+void setHideSetupEntry(void *);
+void removeHideSetupEntry(void *);
+
 static struct
 {
   int size;
@@ -913,7 +918,24 @@ static void DrawTileCursor_Xsn(int draw_target)
   if (DelayReached(&check_delay, check_delay_value))
   {
     percent = (debug ? debug_value * 100 / XSN_DEBUG_STEPS : xsn_percent());
+
+    if (debug)
+      setup.debug.xsn_percent = percent;
+
+    if (setup.debug.xsn_mode != AUTO)
+      percent = setup.debug.xsn_percent;
+
+    setup.debug.xsn_percent = percent;
+
     active = (percent > 0);
+
+    if ((active && !active_last) || setup.debug.xsn_mode != AUTO)
+      removeHideSetupEntry(&setup.debug.xsn_mode);
+    else if (!active && active_last)
+      setHideSetupEntry(&setup.debug.xsn_mode);
+
+    if (setup.debug.xsn_mode == FALSE)
+      active = FALSE;
   }
   else if (tile_cursor.xsn_debug)
   {
@@ -923,6 +945,7 @@ static void DrawTileCursor_Xsn(int draw_target)
 
     DelayReached(&check_delay, 0);
 
+    setup.debug.xsn_mode = (debug_value > 0);
     tile_cursor.xsn_debug = FALSE;
   }
 
@@ -931,7 +954,9 @@ static void DrawTileCursor_Xsn(int draw_target)
 
   if (!active_last)
   {
-    start_delay_value = (debug ? 0 : XSN_RND(XSN_START_DELAY * 2) * 1000);
+    boolean no_delay = (debug || setup.debug.xsn_mode == TRUE);
+
+    start_delay_value = (no_delay ? 0 : XSN_RND(XSN_START_DELAY * 2) * 1000);
     started = FALSE;
 
     DelayReached(&start_delay, 0);

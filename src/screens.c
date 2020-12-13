@@ -680,6 +680,8 @@ static char *main_text_title_1			= NULL;
 static char *main_text_title_2			= NULL;
 static char *main_text_title_3			= NULL;
 
+extern char debug_xsn_mode[];
+
 struct MainControlInfo
 {
   int nr;
@@ -6391,6 +6393,7 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_SWITCH,	&setup.show_titlescreen,"Show Title Screens:"	},
   { TYPE_SWITCH,	&setup.toons,		"Show Menu Animations:"	},
   { TYPE_SWITCH,	&setup.small_game_graphics, "Small Game Graphics:" },
+  { TYPE_YES_NO_AUTO,	&setup.debug.xsn_mode,	debug_xsn_mode		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
 
