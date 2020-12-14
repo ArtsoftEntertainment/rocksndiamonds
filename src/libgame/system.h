@@ -511,7 +511,7 @@
 #define MAX_PLAYERS		4
 
 // maximum number of player names
-#define MAX_PLAYER_NAMES	10
+#define MAX_PLAYER_NAMES	12
 
 // maximum allowed length of player name
 #define MAX_PLAYER_NAME_LEN	10
