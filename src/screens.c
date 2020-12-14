@@ -4879,9 +4879,7 @@ void DrawChoosePlayerName(void)
 
   for (i = 0; i < MAX_PLAYER_NAMES; i++)
   {
-    boolean team_mode = (!network.enabled && setup.team_mode);
-    int tree_type = (team_mode ? TREE_TYPE_PLAYER_TEAM : TREE_TYPE_PLAYER_NAME);
-    TreeInfo *ti = newTreeInfo_setDefaults(tree_type);
+    TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_PLAYER_NAME);
     char identifier[32], name[MAX_PLAYER_NAME_LEN + 1];
     int value = i;
 

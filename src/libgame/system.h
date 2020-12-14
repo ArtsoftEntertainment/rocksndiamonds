@@ -762,10 +762,9 @@
 #define TREE_TYPE_LEVEL_DIR	3
 #define TREE_TYPE_LEVEL_NR	4
 #define TREE_TYPE_PLAYER_NAME	5
-#define TREE_TYPE_PLAYER_TEAM	6
 
 #define NUM_BASE_TREE_TYPES	4
-#define NUM_TREE_TYPES		7
+#define NUM_TREE_TYPES		6
 
 #define INFOTEXT_UNDEFINED	""
 #define INFOTEXT_GRAPHICS_DIR	"Custom Graphics"
@@ -773,13 +772,10 @@
 #define INFOTEXT_MUSIC_DIR	"Custom Music"
 #define INFOTEXT_LEVEL_DIR	"Level Sets"
 #define INFOTEXT_LEVEL_NR	"Levels"
-#define INFOTEXT_PLAYER_NAME	"Player Names"
-#define INFOTEXT_PLAYER_TEAM	"Player Teams"
+#define INFOTEXT_PLAYER_NAME	"Players & Teams"
 
 #define TREE_INFOTEXT(t)	((t) == TREE_TYPE_PLAYER_NAME ?		\
 				 INFOTEXT_PLAYER_NAME :			\
-				 (t) == TREE_TYPE_PLAYER_TEAM ?		\
-				 INFOTEXT_PLAYER_TEAM :			\
 				 (t) == TREE_TYPE_LEVEL_NR ?		\
 				 INFOTEXT_LEVEL_NR :			\
 				 (t) == TREE_TYPE_LEVEL_DIR ?		\
