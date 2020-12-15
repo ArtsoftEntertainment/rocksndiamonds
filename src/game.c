@@ -2325,6 +2325,43 @@ static void UpdateGameControlValues(void)
       stored_player[player_nr].num_white_keys;
   }
 
+  // try to display as many collected keys as possible in the default game panel
+  for (i = STD_NUM_KEYS; i < MAX_NUM_KEYS + 1; i++)	// EMC keys + white key
+  {
+    int nr = GAME_PANEL_KEY_1 + i;
+    int emc_key = get_key_element_from_nr(i);
+    int element = (i < MAX_NUM_KEYS ? emc_key : EL_DC_KEY_WHITE);
+    struct GamePanelControlInfo *gpc = &game_panel_controls[nr];
+    struct TextPosInfo *pos = gpc->pos;
+
+    // check if panel position is undefined for a certain EMC key or white key
+    if (gpc->value != EL_EMPTY && pos->x == -1 && pos->y == -1)
+    {
+      int nr_new = GAME_PANEL_KEY_1 + i % STD_NUM_KEYS;
+
+      // 1st try: display key at the same position as normal or EM keys
+      if (game_panel_controls[nr_new].value == EL_EMPTY)
+      {
+	game_panel_controls[nr_new].value = element;
+      }
+      else
+      {
+	// 2nd try: display key at the next free position in the key panel
+	for (k = 0; k < STD_NUM_KEYS; k++)
+	{
+	  nr_new = GAME_PANEL_KEY_1 + k;
+
+	  if (game_panel_controls[nr_new].value == EL_EMPTY)
+	  {
+	    game_panel_controls[nr_new].value = element;
+
+	    break;
+	  }
+	}
+      }
+    }
+  }
+
   for (i = 0; i < NUM_PANEL_INVENTORY; i++)
   {
     game_panel_controls[GAME_PANEL_INVENTORY_FIRST_1 + i].value =
