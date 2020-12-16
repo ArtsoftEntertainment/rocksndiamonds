@@ -15252,6 +15252,9 @@ void RequestRestartGame(char *message)
   }
   else
   {
+    // needed in case of envelope request to close game panel
+    CloseDoor(DOOR_CLOSE_1);
+
     SetGameStatus(GAME_MODE_MAIN);
 
     DrawMainMenu();
