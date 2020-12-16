@@ -85,6 +85,7 @@ void DrawMaskedBorderToTarget(int);
 void DrawTileCursor(int);
 
 void SetDrawtoField(int);
+int GetDrawtoField(void);
 void RedrawPlayfield(void);
 void BlitScreenToBitmapExt_RND(Bitmap *, int, int);
 void BlitScreenToBitmap_RND(Bitmap *);

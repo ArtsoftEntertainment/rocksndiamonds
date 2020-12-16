@@ -462,6 +462,11 @@ void SetDrawtoField(int mode)
   }
 }
 
+int GetDrawtoField(void)
+{
+  return (drawto_field == fieldbuffer ? DRAW_TO_FIELDBUFFER : DRAW_TO_BACKBUFFER);
+}
+
 static void RedrawPlayfield_RND(void)
 {
   if (game.envelope_active)
@@ -4212,6 +4217,7 @@ static int RequestHandleEvents(unsigned int req_state)
 {
   boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
 			     checkGameEnded());
+  int draw_buffer_last = GetDrawtoField();
   int width  = request.width;
   int height = request.height;
   int sx, sy;
@@ -4234,9 +4240,7 @@ static int RequestHandleEvents(unsigned int req_state)
   {
     if (game_just_ended)
     {
-      // the MM game engine does not use a special (scrollable) field buffer
-      if (level.game_engine_type != GAME_ENGINE_TYPE_MM)
-	SetDrawtoField(DRAW_TO_FIELDBUFFER);
+      SetDrawtoField(draw_buffer_last);
 
       HandleGameActions();
 
@@ -4520,6 +4524,8 @@ static int RequestHandleEvents(unsigned int req_state)
 
     BackToFront();
   }
+
+  SetDrawtoField(draw_buffer_last);
 
   game.request_active = FALSE;
 
