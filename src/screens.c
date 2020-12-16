@@ -6694,6 +6694,7 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_SWITCH,	&setup.forced_scroll_delay, "Scroll Delay:"	},
   { TYPE_ECS_AGA,	&setup.prefer_aga_graphics, "Amiga Graphics Chipset:" },
   { TYPE_SWITCH,	&setup.prefer_lowpass_sounds,"Low-Pass Filter Sounds:" },
+  { TYPE_SWITCH,	&setup.prefer_extra_panel_items,"Show Dynamite and Keys:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_HEADLINE,	NULL,			"Supaplex"		},
   { TYPE_SWITCH,	&setup.sp_show_border_elements, "Border Elements:" },

@@ -2626,6 +2626,10 @@ static void DisplayGameControlValues(void)
     if (PANEL_DEACTIVATED(pos))
       continue;
 
+    if (pos->class == get_hash_from_key("extra_panel_items") &&
+	!setup.prefer_extra_panel_items)
+      continue;
+
     gpc->last_value = value;
     gpc->last_frame = frame;
 
