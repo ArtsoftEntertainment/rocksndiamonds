@@ -2251,6 +2251,7 @@ static void UpdateGameControlValues(void)
 		level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 		MM_HEALTH(game_mm.laser_overload_value) :
 		game.health);
+  int sync_random_frame = INIT_GFX_RANDOM();	// random, but synchronized
 
   UpdatePlayfieldElementCount();
 
@@ -2515,11 +2516,13 @@ static void UpdateGameControlValues(void)
 	int last_anim_random_frame = gfx.anim_random_frame;
 	int element = gpc->value;
 	int graphic = el2panelimg(element);
+	int init_gfx_random = (graphic_info[graphic].anim_global_sync ?
+			       sync_random_frame : INIT_GFX_RANDOM());
 
 	if (gpc->value != gpc->last_value)
 	{
 	  gpc->gfx_frame = 0;
-	  gpc->gfx_random = INIT_GFX_RANDOM();
+	  gpc->gfx_random = init_gfx_random;
 	}
 	else
 	{
@@ -2527,7 +2530,7 @@ static void UpdateGameControlValues(void)
 
 	  if (ANIM_MODE(graphic) == ANIM_RANDOM &&
 	      IS_NEXT_FRAME(gpc->gfx_frame, graphic))
-	    gpc->gfx_random = INIT_GFX_RANDOM();
+	    gpc->gfx_random = init_gfx_random;
 	}
 
 	if (ANIM_MODE(graphic) == ANIM_RANDOM)
@@ -2548,11 +2551,13 @@ static void UpdateGameControlValues(void)
       {
 	int last_anim_random_frame = gfx.anim_random_frame;
 	int graphic = gpc->graphic;
+	int init_gfx_random = (graphic_info[graphic].anim_global_sync ?
+			       sync_random_frame : INIT_GFX_RANDOM());
 
 	if (gpc->value != gpc->last_value)
 	{
 	  gpc->gfx_frame = 0;
-	  gpc->gfx_random = INIT_GFX_RANDOM();
+	  gpc->gfx_random = init_gfx_random;
 	}
 	else
 	{
@@ -2560,7 +2565,7 @@ static void UpdateGameControlValues(void)
 
 	  if (ANIM_MODE(graphic) == ANIM_RANDOM &&
 	      IS_NEXT_FRAME(gpc->gfx_frame, graphic))
-	    gpc->gfx_random = INIT_GFX_RANDOM();
+	    gpc->gfx_random = init_gfx_random;
 	}
 
 	if (ANIM_MODE(graphic) == ANIM_RANDOM)
