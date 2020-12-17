@@ -10455,6 +10455,9 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
     if (string_has_parameter(value, "reverse"))
       result |= STYLE_REVERSE;
 
+    if (string_has_parameter(value, "leftmost_position"))
+      result |= STYLE_LEFTMOST_POSITION;
+
     if (string_has_parameter(value, "block_clicks"))
       result |= STYLE_BLOCK;
 

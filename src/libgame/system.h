@@ -353,16 +353,21 @@
 
 #define ANIM_DEFAULT		ANIM_LOOP
 
-// values for special drawing styles (currently only for crumbled graphics)
+// values for special drawing styles and event handling
 #define STYLE_NONE		0
+
+// values used for crumbled graphics
 #define STYLE_ACCURATE_BORDERS	(1 << 0)
 #define STYLE_INNER_CORNERS	(1 << 1)
-#define STYLE_REVERSE		(1 << 2)
 
-// values for special event handling style (used for global animation)
-#define STYLE_BLOCK		(1 << 3)
-#define STYLE_PASSTHROUGH	(1 << 4)
-#define STYLE_MULTIPLE_ACTIONS	(1 << 5)
+// values used for game panel graphics
+#define STYLE_REVERSE		(1 << 2)
+#define STYLE_LEFTMOST_POSITION	(1 << 3)
+
+// values used for global animations
+#define STYLE_BLOCK		(1 << 4)
+#define STYLE_PASSTHROUGH	(1 << 5)
+#define STYLE_MULTIPLE_ACTIONS	(1 << 6)
 
 #define STYLE_DEFAULT		STYLE_NONE
 
