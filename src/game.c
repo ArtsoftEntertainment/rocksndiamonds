@@ -2536,8 +2536,7 @@ static void UpdateGameControlValues(void)
 	if (ANIM_MODE(graphic) == ANIM_CE_SCORE)
 	  gpc->gfx_frame = element_info[element].collect_score;
 
-	gpc->frame = getGraphicAnimationFrame(el2panelimg(gpc->value),
-					      gpc->gfx_frame);
+	gpc->frame = getGraphicAnimationFrame(graphic, gpc->gfx_frame);
 
 	if (ANIM_MODE(graphic) == ANIM_RANDOM)
 	  gfx.anim_random_frame = last_anim_random_frame;
