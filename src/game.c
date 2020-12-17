@@ -2326,6 +2326,34 @@ static void UpdateGameControlValues(void)
       stored_player[player_nr].num_white_keys;
   }
 
+  // move keys to leftmost position in game panel, if defined by style settings
+  for (i = 0; i < MAX_NUM_KEYS + 1; i++)	// all normal keys + white key
+  {
+    int nr = GAME_PANEL_KEY_1 + i;
+    struct GamePanelControlInfo *gpc = &game_panel_controls[nr];
+    struct TextPosInfo *pos = gpc->pos;
+
+    if (gpc->value == EL_EMPTY)
+      continue;
+
+    if (pos->style != STYLE_LEFTMOST_POSITION)
+      continue;
+
+    // check previous key positions (left from current key)
+    for (k = 0; k < i; k++)
+    {
+      int nr_new = GAME_PANEL_KEY_1 + k;
+
+      if (game_panel_controls[nr_new].value == EL_EMPTY)
+      {
+	game_panel_controls[nr_new].value = gpc->value;
+	gpc->value = EL_EMPTY;
+
+	break;
+      }
+    }
+  }
+
   // try to display as many collected keys as possible in the default game panel
   for (i = STD_NUM_KEYS; i < MAX_NUM_KEYS + 1; i++)	// EMC keys + white key
   {
