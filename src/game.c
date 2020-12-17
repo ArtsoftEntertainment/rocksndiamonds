@@ -2326,52 +2326,44 @@ static void UpdateGameControlValues(void)
       stored_player[player_nr].num_white_keys;
   }
 
-  // move keys to leftmost position in game panel, if defined by style settings
+  // re-arrange keys on game panel, if needed or if defined by style settings
   for (i = 0; i < MAX_NUM_KEYS + 1; i++)	// all normal keys + white key
   {
     int nr = GAME_PANEL_KEY_1 + i;
     struct GamePanelControlInfo *gpc = &game_panel_controls[nr];
     struct TextPosInfo *pos = gpc->pos;
 
+    // skip check if key is not in the player's inventory
     if (gpc->value == EL_EMPTY)
       continue;
 
-    if (pos->style != STYLE_LEFTMOST_POSITION)
-      continue;
-
-    // check previous key positions (left from current key)
-    for (k = 0; k < i; k++)
+    // check if keys should be arranged on panel from left to right
+    if (pos->style == STYLE_LEFTMOST_POSITION)
     {
-      int nr_new = GAME_PANEL_KEY_1 + k;
-
-      if (game_panel_controls[nr_new].value == EL_EMPTY)
+      // check previous key positions (left from current key)
+      for (k = 0; k < i; k++)
       {
-	game_panel_controls[nr_new].value = gpc->value;
-	gpc->value = EL_EMPTY;
+	int nr_new = GAME_PANEL_KEY_1 + k;
 
-	break;
+	if (game_panel_controls[nr_new].value == EL_EMPTY)
+	{
+	  game_panel_controls[nr_new].value = gpc->value;
+	  gpc->value = EL_EMPTY;
+
+	  break;
+	}
       }
     }
-  }
 
-  // try to display as many collected keys as possible in the default game panel
-  for (i = STD_NUM_KEYS; i < MAX_NUM_KEYS + 1; i++)	// EMC keys + white key
-  {
-    int nr = GAME_PANEL_KEY_1 + i;
-    int emc_key = get_key_element_from_nr(i);
-    int element = (i < MAX_NUM_KEYS ? emc_key : EL_DC_KEY_WHITE);
-    struct GamePanelControlInfo *gpc = &game_panel_controls[nr];
-    struct TextPosInfo *pos = gpc->pos;
-
-    // check if panel position is undefined for a certain EMC key or white key
-    if (gpc->value != EL_EMPTY && pos->x == -1 && pos->y == -1)
+    // check if "undefined" keys can be placed at some other position
+    if (pos->x == -1 && pos->y == -1)
     {
       int nr_new = GAME_PANEL_KEY_1 + i % STD_NUM_KEYS;
 
       // 1st try: display key at the same position as normal or EM keys
       if (game_panel_controls[nr_new].value == EL_EMPTY)
       {
-	game_panel_controls[nr_new].value = element;
+	game_panel_controls[nr_new].value = gpc->value;
       }
       else
       {
@@ -2382,7 +2374,7 @@ static void UpdateGameControlValues(void)
 
 	  if (game_panel_controls[nr_new].value == EL_EMPTY)
 	  {
-	    game_panel_controls[nr_new].value = element;
+	    game_panel_controls[nr_new].value = gpc->value;
 
 	    break;
 	  }
