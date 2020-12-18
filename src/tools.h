@@ -191,7 +191,8 @@ void DrawMiniElement(int, int, int);
 void DrawMiniElementOrWall(int, int, int, int);
 
 void ShowEnvelope(int);
-void ShowEnvelopeDoor(char *text, int);
+void ShowEnvelopeDoor(char *, int);
+void DrawEnvelopeRequestToScreen(int, int);
 
 void DrawLevel(int);
 void DrawSizedLevel(int, int, int, int, int);
