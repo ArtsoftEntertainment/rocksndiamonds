@@ -2890,6 +2890,7 @@ struct RequestInfo
   int anim_mode;
   int align;
   int valign;
+  int sort_priority;
   boolean autowrap;
   boolean centered;
   boolean wrap_single_words;

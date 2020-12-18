@@ -9739,6 +9739,7 @@ struct ConfigInfo image_config[] =
   { "request.anim_mode",			"default"		},
   { "request.align",				"center"		},
   { "request.valign",				"middle"		},
+  { "request.draw_order",			"0"			},
   { "request.autowrap",				"false"			},
   { "request.centered",				"true"			},
   { "request.wrap_single_words",		"true"			},
