@@ -4804,6 +4804,8 @@ boolean Request(char *text, unsigned int req_state)
   boolean overlay_enabled = GetOverlayEnabled();
   boolean result;
 
+  game.request_active_or_moving = TRUE;
+
   SetOverlayEnabled(FALSE);
 
   if (global.use_envelope_request)
@@ -4812,6 +4814,8 @@ boolean Request(char *text, unsigned int req_state)
     result = RequestDoor(text, req_state);
 
   SetOverlayEnabled(overlay_enabled);
+
+  game.request_active_or_moving = FALSE;
 
   return result;
 }

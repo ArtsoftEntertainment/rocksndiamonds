@@ -236,6 +236,7 @@ struct GameInfo
 
   // values for special request dialog control
   boolean request_active;
+  boolean request_active_or_moving;
 
   // values for special game control
   int centered_player_nr;

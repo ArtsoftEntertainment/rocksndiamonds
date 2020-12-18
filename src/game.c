@@ -4447,7 +4447,9 @@ void InitGame(void)
 
   game.restart_level = FALSE;
   game.restart_game_message = NULL;
+
   game.request_active = FALSE;
+  game.request_active_or_moving = FALSE;
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
     InitGameActions_MM();
