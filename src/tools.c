@@ -4238,6 +4238,8 @@ static int RequestHandleEvents(unsigned int req_state)
 
   while (result < 0)
   {
+    boolean event_handled = FALSE;
+
     if (game_just_ended)
     {
       SetDrawtoField(draw_buffer_last);
@@ -4259,6 +4261,8 @@ static int RequestHandleEvents(unsigned int req_state)
 
       while (NextValidEvent(&event))
       {
+	event_handled = TRUE;
+
 	switch (event.type)
 	{
 	  case EVENT_BUTTONPRESS:
@@ -4513,12 +4517,15 @@ static int RequestHandleEvents(unsigned int req_state)
       }
     }
 
-    if (game_just_ended)
+    if (event_handled)
     {
-      if (global.use_envelope_request)
+      if (game_just_ended)
       {
-	// copy back current state of pressed buttons inside request area
-	BlitBitmap(drawto, bitmap_db_store_2, sx, sy, width, height, sx, sy);
+	if (global.use_envelope_request)
+	{
+	  // copy back current state of pressed buttons inside request area
+	  BlitBitmap(drawto, bitmap_db_store_2, sx, sy, width, height, sx, sy);
+	}
       }
     }
 
