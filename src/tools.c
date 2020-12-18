@@ -2810,6 +2810,40 @@ void ShowEnvelope(int envelope_nr)
   BackToFront();
 }
 
+static void PrepareEnvelopeRequestToScreen(Bitmap *bitmap, int sx, int sy,
+					   int xsize, int ysize)
+{
+  if (!global.use_envelope_request ||
+      request.sort_priority <= 0)
+    return;
+
+  if (request.bitmap == NULL ||
+      xsize > request.xsize ||
+      ysize > request.ysize)
+  {
+    if (request.bitmap != NULL)
+      FreeBitmap(request.bitmap);
+
+    request.bitmap = CreateBitmap(xsize, ysize, DEFAULT_DEPTH);
+
+    SDL_Surface *surface = request.bitmap->surface;
+
+    if ((request.bitmap->surface_masked = SDLGetNativeSurface(surface)) == NULL)
+      Fail("SDLGetNativeSurface() failed");
+  }
+
+  BlitBitmap(bitmap, request.bitmap, sx, sy, xsize, ysize, 0, 0);
+
+  SDLFreeBitmapTextures(request.bitmap);
+  SDLCreateBitmapTextures(request.bitmap);
+
+  // set envelope request run-time values
+  request.sx = sx;
+  request.sy = sy;
+  request.xsize = xsize;
+  request.ysize = ysize;
+}
+
 static void setRequestBasePosition(int *x, int *y)
 {
   int sx_base, sy_base;
@@ -2960,6 +2994,8 @@ static void DrawEnvelopeRequest(char *text)
   // store readily prepared envelope request for later use when animating
   BlitBitmap(backbuffer, bitmap_db_store_2, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
 
+  PrepareEnvelopeRequestToScreen(bitmap_db_store_2, sx, sy, width, height);
+
   if (text_door_style)
     free(text_door_style);
 }
@@ -3040,6 +3076,8 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
 		     src_xx, src_yy, xx_size, yy_size, dst_xx, dst_yy);
       }
     }
+
+    PrepareEnvelopeRequestToScreen(backbuffer, dst_x, dst_y, width, height);
 
     redraw_mask |= REDRAW_FIELD;
 
@@ -4527,6 +4565,8 @@ static int RequestHandleEvents(unsigned int req_state)
 	  BlitBitmap(drawto, bitmap_db_store_2, sx, sy, width, height, sx, sy);
 	}
       }
+
+      PrepareEnvelopeRequestToScreen(drawto, sx, sy, width, height);
     }
 
     BackToFront();

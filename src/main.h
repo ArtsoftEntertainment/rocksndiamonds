@@ -2894,6 +2894,11 @@ struct RequestInfo
   boolean autowrap;
   boolean centered;
   boolean wrap_single_words;
+
+  // run-time values
+  Bitmap *bitmap;
+  int sx, sy;
+  int xsize, ysize;
 };
 
 struct PreviewInfo
