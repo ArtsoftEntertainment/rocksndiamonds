@@ -214,6 +214,8 @@ static void HandleEvents(void)
 
   while (NextValidEvent(&event))
   {
+    int game_status_last = game_status;
+
     switch (event.type)
     {
       case EVENT_BUTTONPRESS:
@@ -263,6 +265,10 @@ static void HandleEvents(void)
 	HandleOtherEvents(&event);
 	break;
     }
+
+    // always handle events within delay period if game status has changed
+    if (game_status != game_status_last)
+      ResetDelayCounter(&event_frame_delay);
 
     // do not handle events for longer than standard frame delay period
     if (DelayReached(&event_frame_delay, event_frame_delay_value))
