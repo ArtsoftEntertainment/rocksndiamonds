@@ -648,6 +648,7 @@ void DrawMiniLevel_MM(int size_x, int size_y, int scroll_x, int scroll_y)
 #define XSN_CHANGE_DELAY	30
 #define XSN_CHANGE_FACTOR	3
 #define XSN_ALPHA_DEFAULT	XSN_ALPHA_VALUE(95)
+#define XSN_ALPHA_VISIBLE	XSN_ALPHA_VALUE(50)
 #define XSN_DEBUG_STEPS		5
 
 static byte xsn_bits_0[] = { 0x05, 0x02, 0x05 };
@@ -707,6 +708,8 @@ struct Xsn
   struct XsnItem items[XSN_MAX_ITEMS];
 
   Bitmap *bitmap;
+
+  int alpha;
 };
 
 static struct Xsn xsn = { 0 };
@@ -847,7 +850,7 @@ static void xsn_update_item(int nr)
       BlitBitmapMasked(xsn.bitmap, xsn.bitmap, xpos1, xsn.max_height,
 		       xsize, xsn.max_height, xpos1, 0);
 
-      SDLSetAlpha(surface_masked, TRUE, XSN_ALPHA_DEFAULT);
+      SDLSetAlpha(surface_masked, TRUE, xsn.alpha);
 
       for (i = xpos1; i < xpos2; i++)
 	xsn.height[i] = MIN(xsn.height[i] + shrink, xsn.area_ysize - 1);
@@ -1015,6 +1018,8 @@ static void DrawTileCursor_Xsn(int draw_target)
     xsn.change_type  = 0;
     xsn.change_dir   = 0;
 
+    xsn.alpha = XSN_ALPHA_DEFAULT;
+
     for (i = 0; i < xsn.max_items; i++)
       xsn_init_item(i);
   }
@@ -1045,8 +1050,8 @@ static void DrawTileCursor_Xsn(int draw_target)
     SDL_SetColorKey(surface_masked, SET_TRANSPARENT_PIXEL,
 		    SDL_MapRGB(surface_masked->format, 0x00, 0x00, 0x00));
 
-    SDLSetAlpha(surface, TRUE, XSN_ALPHA_DEFAULT);
-    SDLSetAlpha(surface_masked, TRUE, XSN_ALPHA_DEFAULT);
+    SDLSetAlpha(surface, TRUE, xsn.alpha);
+    SDLSetAlpha(surface_masked, TRUE, xsn.alpha);
 
     SDLCreateBitmapTextures(xsn.bitmap);
 
@@ -1101,6 +1106,20 @@ static void DrawTileCursor_Xsn(int draw_target)
     xsn_update_change();
 
     change_delay_value = xsn.change_delay * 1000;
+  }
+
+  int xsn_alpha_dx = (gfx.mouse_y > xsn.area_ysize - xsn.max_height ?
+		      (xsn.alpha > XSN_ALPHA_VISIBLE ? -1 : 0) :
+		      (xsn.alpha < XSN_ALPHA_DEFAULT ? +1 : 0));
+
+  if (xsn_alpha_dx != 0)
+  {
+    xsn.alpha += xsn_alpha_dx;
+
+    SDLSetAlpha(xsn.bitmap->surface_masked, TRUE, xsn.alpha);
+
+    SDLFreeBitmapTextures(xsn.bitmap);
+    SDLCreateBitmapTextures(xsn.bitmap);
   }
 
   BlitToScreenMasked(xsn.bitmap, 0, 0, xsn.area_xsize, xsn.max_height,
