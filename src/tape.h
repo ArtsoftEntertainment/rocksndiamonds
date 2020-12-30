@@ -211,6 +211,10 @@ struct TapeInfo
   // bits to indicate which tape properties are stored in this tape
   byte property_bits;
 
+  // visible playfield size when recording this tape (for team mode)
+  int scr_fieldx;
+  int scr_fieldy;
+
   struct
   {
     byte action[MAX_TAPE_ACTIONS];

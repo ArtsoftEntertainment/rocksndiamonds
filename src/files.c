@@ -7628,6 +7628,9 @@ static void setTapeInfoToDefaults(void)
   tape.playing = FALSE;
   tape.pausing = FALSE;
 
+  tape.scr_fieldx = SCR_FIELDX_DEFAULT;
+  tape.scr_fieldy = SCR_FIELDY_DEFAULT;
+
   tape.no_valid_file = FALSE;
 }
 

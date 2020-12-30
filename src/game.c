@@ -3576,11 +3576,15 @@ void InitGame(void)
   InitGameEngine();
   InitGameControlValues();
 
-  // initialize tape actions from game when recording tape
   if (tape.recording)
   {
+    // initialize tape actions from game when recording tape
     tape.use_key_actions   = game.use_key_actions;
     tape.use_mouse_actions = game.use_mouse_actions;
+
+    // initialize visible playfield size when recording tape (for team mode)
+    tape.scr_fieldx = SCR_FIELDX;
+    tape.scr_fieldy = SCR_FIELDY;
   }
 
   // don't play tapes over network
