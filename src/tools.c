@@ -391,6 +391,16 @@ int getLevelFromScreenY(int y)
     return getLevelFromScreenY_RND(y);
 }
 
+int getScreenFieldSizeX(void)
+{
+  return (tape.playing ? tape.scr_fieldx : SCR_FIELDX);
+}
+
+int getScreenFieldSizeY(void)
+{
+  return (tape.playing ? tape.scr_fieldy : SCR_FIELDY);
+}
+
 void DumpTile(int x, int y)
 {
   int sx = SCREENX(x);

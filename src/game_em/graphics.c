@@ -553,11 +553,13 @@ static void setMinimalPlayerBoundaries(int *sx1, int *sy1, int *sx2, int *sy2)
 boolean checkIfAllPlayersFitToScreen(void)
 {
   int sx1 = 0, sy1 = 0, sx2 = 0, sy2 = 0;
+  int scr_fieldx = getScreenFieldSizeX();
+  int scr_fieldy = getScreenFieldSizeY();
 
   setMinimalPlayerBoundaries(&sx1, &sy1, &sx2, &sy2);
 
-  return (sx2 - sx1 <= SCR_FIELDX * TILEX &&
-	  sy2 - sy1 <= SCR_FIELDY * TILEY);
+  return (sx2 - sx1 <= scr_fieldx * TILEX &&
+	  sy2 - sy1 <= scr_fieldy * TILEY);
 }
 
 static void setScreenCenteredToAllPlayers(int *sx, int *sy)

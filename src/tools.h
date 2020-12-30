@@ -72,6 +72,9 @@ int getFieldbufferOffsetY_RND(int, int);
 int getLevelFromScreenX(int);
 int getLevelFromScreenY(int);
 
+int getScreenFieldSizeX(void);
+int getScreenFieldSizeY(void);
+
 void DumpTile(int, int);
 void DumpTileFromScreen(int, int);
 

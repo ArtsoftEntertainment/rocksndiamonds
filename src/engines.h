@@ -31,6 +31,9 @@ boolean swapTiles_EM(boolean);
 boolean getTeamMode_EM(void);
 boolean isActivePlayer_EM(int);
 
+int getScreenFieldSizeX(void);
+int getScreenFieldSizeY(void);
+
 void PlayLevelSound_EM(int, int, int, int);
 void InitGraphicInfo_EM(void);
 boolean CheckSingleStepMode_EM(byte action[], int, boolean, boolean, boolean);

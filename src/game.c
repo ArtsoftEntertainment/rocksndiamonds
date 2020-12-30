@@ -12452,6 +12452,8 @@ void GameActions_RND(void)
 static boolean AllPlayersInSight(struct PlayerInfo *player, int x, int y)
 {
   int min_x = x, min_y = y, max_x = x, max_y = y;
+  int scr_fieldx = getScreenFieldSizeX();
+  int scr_fieldy = getScreenFieldSizeY();
   int i;
 
   for (i = 0; i < MAX_PLAYERS; i++)
@@ -12467,7 +12469,7 @@ static boolean AllPlayersInSight(struct PlayerInfo *player, int x, int y)
     max_y = MAX(max_y, jy);
   }
 
-  return (max_x - min_x < SCR_FIELDX && max_y - min_y < SCR_FIELDY);
+  return (max_x - min_x < scr_fieldx && max_y - min_y < scr_fieldy);
 }
 
 static boolean AllPlayersInVisibleScreen(void)
