@@ -59,6 +59,7 @@
 #define TAPE_CHUNK_VERS_SIZE	8	// size of file version chunk
 #define TAPE_CHUNK_HEAD_SIZE	20	// size of tape file header
 #define TAPE_CHUNK_HEAD_UNUSED	1	// unused tape header bytes
+#define TAPE_CHUNK_SCRN_SIZE	2	// size of screen size chunk
 
 #define LEVEL_CHUNK_CNT3_SIZE(x)	 (LEVEL_CHUNK_CNT3_HEADER + (x))
 #define LEVEL_CHUNK_CUS3_SIZE(x)	 (2 + (x) * LEVEL_CPART_CUS3_SIZE)
@@ -7721,6 +7722,14 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
   return chunk_size;
 }
 
+static int LoadTape_SCRN(File *file, int chunk_size, struct TapeInfo *tape)
+{
+  tape->scr_fieldx = getFile8Bit(file);
+  tape->scr_fieldy = getFile8Bit(file);
+
+  return chunk_size;
+}
+
 static int LoadTape_INFO(File *file, int chunk_size, struct TapeInfo *tape)
 {
   int level_identifier_size;
@@ -8011,6 +8020,7 @@ void LoadTapeFromFilename(char *filename)
     {
       { "VERS", TAPE_CHUNK_VERS_SIZE,	LoadTape_VERS },
       { "HEAD", TAPE_CHUNK_HEAD_SIZE,	LoadTape_HEAD },
+      { "SCRN", TAPE_CHUNK_SCRN_SIZE,	LoadTape_SCRN },
       { "INFO", -1,			LoadTape_INFO },
       { "BODY", -1,			LoadTape_BODY },
       {  NULL,  0,			NULL }
@@ -8091,6 +8101,14 @@ void LoadSolutionTape(int nr)
     CopyNativeTape_SP_to_RND(&level);
 }
 
+static boolean checkSaveTape_SCRN(struct TapeInfo *tape)
+{
+  // chunk required for team mode tapes with non-default screen size
+  return (tape->num_participating_players > 1 &&
+	  (tape->scr_fieldx != SCR_FIELDX_DEFAULT ||
+	   tape->scr_fieldy != SCR_FIELDY_DEFAULT));
+}
+
 static void SaveTape_VERS(FILE *file, struct TapeInfo *tape)
 {
   putFileVersion(file, tape->file_version);
@@ -8121,6 +8139,12 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
   WriteUnusedBytesToFile(file, TAPE_CHUNK_HEAD_UNUSED);
 
   putFileVersion(file, tape->engine_version);
+}
+
+static void SaveTape_SCRN(FILE *file, struct TapeInfo *tape)
+{
+  putFile8Bit(file, tape->scr_fieldx);
+  putFile8Bit(file, tape->scr_fieldy);
 }
 
 static void SaveTape_INFO(FILE *file, struct TapeInfo *tape)
@@ -8187,6 +8211,12 @@ void SaveTapeToFilename(char *filename)
 
   putFileChunkBE(file, "HEAD", TAPE_CHUNK_HEAD_SIZE);
   SaveTape_HEAD(file, &tape);
+
+  if (checkSaveTape_SCRN(&tape))
+  {
+    putFileChunkBE(file, "SCRN", TAPE_CHUNK_SCRN_SIZE);
+    SaveTape_SCRN(file, &tape);
+  }
 
   putFileChunkBE(file, "INFO", info_chunk_size);
   SaveTape_INFO(file, &tape);
