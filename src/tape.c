@@ -1237,6 +1237,7 @@ void AutoPlayTapes(void)
   {
     "original tape",
     "em_random_bug",
+    "screen_34x34",
 
     NULL
   };
@@ -1244,6 +1245,7 @@ void AutoPlayTapes(void)
   {
     VERSION_IDENT(0,0,0,0),
     VERSION_IDENT(3,3,1,0),
+    VERSION_IDENT(0,0,0,0),
 
     -1
   };
@@ -1251,6 +1253,7 @@ void AutoPlayTapes(void)
   {
     VERSION_IDENT(9,9,9,9),
     VERSION_IDENT(4,0,1,1),
+    VERSION_IDENT(4,2,2,0),
 
     -1
   };
@@ -1258,6 +1261,7 @@ void AutoPlayTapes(void)
   {
     TAPE_PROPERTY_NONE,
     TAPE_PROPERTY_EM_RANDOM_BUG,
+    TAPE_PROPERTY_NONE,
 
     -1
   };
@@ -1408,6 +1412,8 @@ void AutoPlayTapes(void)
 
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
     {
+      boolean skip_patch = FALSE;
+
       if (tape.engine_version < patch_version_first[patch_nr] ||
 	  tape.engine_version > patch_version_last[patch_nr])
       {
@@ -1420,6 +1426,22 @@ void AutoPlayTapes(void)
 	      (tape.engine_version / 100    ) % 100,
 	      (tape.engine_version          ) % 100);
 
+	skip_patch = TRUE;
+      }
+
+      if (strEqual(patch_name[patch_nr], "screen_34x34") &&
+	  tape.num_participating_players == 1)
+      {
+	Print("Tape %03d %s[%02d:%02d]: (%s) - skipped.\n",
+	      level_nr,  tape_patch_info,
+	      tape.length_seconds / 60, tape.length_seconds % 60,
+	      "not suitable for single player tapes");
+
+	skip_patch = TRUE;
+      }
+
+      if (skip_patch)
+      {
 	if (patch_name[patch_nr + 1] != NULL)
 	{
 	  // continue with next patch
@@ -1434,7 +1456,15 @@ void AutoPlayTapes(void)
 	continue;
       }
 
-      tape.property_bits |= patch_property_bit[patch_nr];
+      if (strEqual(patch_name[patch_nr], "screen_34x34"))
+      {
+	tape.scr_fieldx = SCR_FIELDX_DEFAULT * 2;
+	tape.scr_fieldy = SCR_FIELDY_DEFAULT * 2;
+      }
+      else
+      {
+	tape.property_bits |= patch_property_bit[patch_nr];
+      }
     }
 
     InitCounter();
