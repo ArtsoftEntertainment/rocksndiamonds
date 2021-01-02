@@ -1517,6 +1517,39 @@ static boolean PatchTape(struct TapeInfo *tape, char *mode)
 
     use_property_bit = TRUE;
   }
+  else if (strEqual(mode, "screen_34x34") || strPrefix(mode, "screen_34x34:"))
+  {
+    // this bug only affects team mode tapes
+    if (tape->num_participating_players == 1)
+    {
+      Print("Only team mode tapes can be patched against screen size bug!\n");
+
+      return FALSE;
+    }
+
+    // this bug (that always existed before) was fixed in version 4.2.2.1
+    if (tape->engine_version >= VERSION_IDENT(4,2,2,1))
+    {
+      Print("This tape version cannot be patched against screen size bug!\n");
+
+      return FALSE;
+    }
+
+    int factor = (unpatch_tape ? 1 : 2);
+    int scr_fieldx_new = SCR_FIELDX_DEFAULT * factor;
+    int scr_fieldy_new = SCR_FIELDY_DEFAULT * factor;
+
+    if (scr_fieldx_new == tape->scr_fieldx &&
+	scr_fieldy_new == tape->scr_fieldy)
+    {
+      Print("Tape already patched for '%s'!\n", mode);
+
+      return FALSE;
+    }
+
+    tape->scr_fieldx = scr_fieldx_new;
+    tape->scr_fieldy = scr_fieldy_new;
+  }
   else
   {
     Print("Unknown patch mode '%s'!\n", mode);
@@ -1563,6 +1596,7 @@ void PatchTapes(void)
     PrintLine("=", 79);
     Print("Supported patch modes:\n");
     Print("- \"em_random_bug\"   - use 64-bit random value bug for EM engine\n");
+    Print("- \"screen_34x34\"    - force visible playfield size of 34 x 34\n");
     PrintLine("-", 79);
     Print("Supported modifiers:\n");
     Print("- add \":0\", \":off\" or \":clear\" to patch mode to un-patch tape file\n");
