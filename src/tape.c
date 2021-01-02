@@ -1493,14 +1493,14 @@ static boolean PatchTape(struct TapeInfo *tape, char *mode)
     return FALSE;
   }
 
-  byte property_bits = tape->property_bits;
+  boolean unpatch_tape = FALSE;
+  boolean use_property_bit = FALSE;
   byte property_bitmask = 0;
-  boolean set_property_bit = TRUE;
 
   if (strSuffix(mode, ":0") ||
       strSuffix(mode, ":off") ||
       strSuffix(mode, ":clear"))
-    set_property_bit = FALSE;
+    unpatch_tape = TRUE;
 
   if (strEqual(mode, "em_random_bug") || strPrefix(mode, "em_random_bug:"))
   {
@@ -1514,6 +1514,8 @@ static boolean PatchTape(struct TapeInfo *tape, char *mode)
     }
 
     property_bitmask = TAPE_PROPERTY_EM_RANDOM_BUG;
+
+    use_property_bit = TRUE;
   }
   else
   {
@@ -1522,21 +1524,28 @@ static boolean PatchTape(struct TapeInfo *tape, char *mode)
     return FALSE;
   }
 
-  if (set_property_bit)
-    property_bits |= property_bitmask;
-  else
-    property_bits &= ~property_bitmask;
-
-  if (property_bits == tape->property_bits)
+  // patching tapes using property bits may be used for several patch modes
+  if (use_property_bit)
   {
-    Print("Tape already patched for '%s'!\n", mode);
+    byte property_bits = tape->property_bits;
+    boolean set_property_bit = (unpatch_tape ? FALSE : TRUE);
 
-    return FALSE;
+    if (set_property_bit)
+      property_bits |= property_bitmask;
+    else
+      property_bits &= ~property_bitmask;
+
+    if (property_bits == tape->property_bits)
+    {
+      Print("Tape already patched for '%s'!\n", mode);
+
+      return FALSE;
+    }
+
+    tape->property_bits = property_bits;
   }
 
   Print("Patching for '%s' ... ", mode);
-
-  tape->property_bits = property_bits;
 
   return TRUE;
 }
