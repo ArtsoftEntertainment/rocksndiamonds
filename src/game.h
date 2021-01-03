@@ -244,6 +244,9 @@ struct GameInfo
   boolean set_centered_player;
   boolean set_centered_player_wrap;
 
+  // values for single step mode control
+  boolean enter_single_step_mode;
+
   // values for random number generator initialization after snapshot
   unsigned int num_random_calls;
 
