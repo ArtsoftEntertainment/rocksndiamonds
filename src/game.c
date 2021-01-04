@@ -1119,6 +1119,8 @@ void ExitPlayer(struct PlayerInfo *);
 static int getInvisibleActiveFromInvisibleElement(int);
 static int getInvisibleFromInvisibleActiveElement(int);
 
+static void TestFieldAfterSnapping(int, int, int, int, int);
+
 static struct GadgetInfo *game_gadget[NUM_GAME_BUTTONS];
 
 // for detection of endless loops, caused by custom element programming
@@ -3716,6 +3718,8 @@ void InitGame(void)
 
     player->shield_normal_time_left = 0;
     player->shield_deadly_time_left = 0;
+
+    player->last_removed_element = EL_UNDEFINED;
 
     player->inventory_infinite_element = EL_UNDEFINED;
     player->inventory_size = 0;
@@ -12040,10 +12044,17 @@ void GameActions_RND(void)
       MovDelay[x][y]--;
       if (MovDelay[x][y] <= 0)
       {
+	int element = Store[x][y];
+	int move_direction = MovDir[x][y];
+	int player_index_bit = Store2[x][y];
+
+	Store[x][y] = 0;
+	Store2[x][y] = 0;
+
 	RemoveField(x, y);
 	TEST_DrawLevelField(x, y);
 
-	TestIfElementTouchesCustomElement(x, y);	// for empty space
+	TestFieldAfterSnapping(x, y, element, move_direction, player_index_bit);
       }
     }
 
@@ -13044,6 +13055,21 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
       if (!player->is_pushing)
 	TestIfElementTouchesCustomElement(jx, jy);	// for empty space
 
+      if (level.finish_dig_collect &&
+	  (player->is_digging || player->is_collecting))
+      {
+	int last_element = player->last_removed_element;
+	int move_direction = player->MovDir;
+	int enter_side = MV_DIR_OPPOSITE(move_direction);
+	int change_event = (player->is_digging ? CE_PLAYER_DIGS_X :
+			    CE_PLAYER_COLLECTS_X);
+
+	CheckTriggeredElementChangeByPlayer(jx, jy, last_element, change_event,
+					    player->index_bit, enter_side);
+
+	player->last_removed_element = EL_UNDEFINED;
+      }
+
       if (!player->active)
 	RemovePlayer(player);
     }
@@ -13778,7 +13804,8 @@ void ExitPlayer(struct PlayerInfo *player)
     game.players_still_needed--;
 }
 
-static void setFieldForSnapping(int x, int y, int element, int direction)
+static void SetFieldForSnapping(int x, int y, int element, int direction,
+				int player_index_bit)
 {
   struct ElementInfo *ei = &element_info[element];
   int direction_bit = MV_DIR_TO_BIT(direction);
@@ -13788,6 +13815,9 @@ static void setFieldForSnapping(int x, int y, int element, int direction)
 
   Tile[x][y] = EL_ELEMENT_SNAPPING;
   MovDelay[x][y] = MOVE_DELAY_NORMAL_SPEED + 1 - 1;
+  MovDir[x][y] = direction;
+  Store[x][y] = element;
+  Store2[x][y] = player_index_bit;
 
   ResetGfxAnimation(x, y);
 
@@ -13795,6 +13825,20 @@ static void setFieldForSnapping(int x, int y, int element, int direction)
   GfxAction[x][y] = action;
   GfxDir[x][y] = direction;
   GfxFrame[x][y] = -1;
+}
+
+static void TestFieldAfterSnapping(int x, int y, int element, int direction,
+				   int player_index_bit)
+{
+  TestIfElementTouchesCustomElement(x, y);	// for empty space
+
+  if (level.finish_dig_collect)
+  {
+    int dig_side = MV_DIR_OPPOSITE(direction);
+
+    CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_SNAPS_X,
+					player_index_bit, dig_side);
+  }
 }
 
 /*
@@ -14076,22 +14120,28 @@ static int DigField(struct PlayerInfo *player,
 
     PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
 
-    CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_DIGS_X,
-					player->index_bit, dig_side);
+    // use old behaviour for old levels (digging)
+    if (!level.finish_dig_collect)
+    {
+      CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_DIGS_X,
+					  player->index_bit, dig_side);
 
-    // if digging triggered player relocation, finish digging tile
-    if (mode == DF_DIG && (player->jx != jx || player->jy != jy))
-      setFieldForSnapping(x, y, element, move_direction);
+      // if digging triggered player relocation, finish digging tile
+      if (mode == DF_DIG && (player->jx != jx || player->jy != jy))
+	SetFieldForSnapping(x, y, element, move_direction, player->index_bit);
+    }
 
     if (mode == DF_SNAP)
     {
       if (level.block_snap_field)
-	setFieldForSnapping(x, y, element, move_direction);
+	SetFieldForSnapping(x, y, element, move_direction, player->index_bit);
       else
-	TestIfElementTouchesCustomElement(x, y);	// for empty space
+	TestFieldAfterSnapping(x, y, element, move_direction, player->index_bit);
 
-      CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_SNAPS_X,
-					  player->index_bit, dig_side);
+      // use old behaviour for old levels (snapping)
+      if (!level.finish_dig_collect)
+	CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_SNAPS_X,
+					    player->index_bit, dig_side);
     }
   }
   else if (player_can_move_or_snap && IS_COLLECTIBLE(element))
@@ -14203,25 +14253,28 @@ static int DigField(struct PlayerInfo *player,
     RaiseScoreElement(element);
     PlayLevelSoundElementAction(x, y, element, ACTION_COLLECTING);
 
-    if (is_player)
+    // use old behaviour for old levels (collecting)
+    if (!level.finish_dig_collect && is_player)
     {
       CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_COLLECTS_X,
 					  player->index_bit, dig_side);
 
       // if collecting triggered player relocation, finish collecting tile
       if (mode == DF_DIG && (player->jx != jx || player->jy != jy))
-	setFieldForSnapping(x, y, element, move_direction);
+	SetFieldForSnapping(x, y, element, move_direction, player->index_bit);
     }
 
     if (mode == DF_SNAP)
     {
       if (level.block_snap_field)
-	setFieldForSnapping(x, y, element, move_direction);
+	SetFieldForSnapping(x, y, element, move_direction, player->index_bit);
       else
-	TestIfElementTouchesCustomElement(x, y);	// for empty space
+	TestFieldAfterSnapping(x, y, element, move_direction, player->index_bit);
 
-      CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_SNAPS_X,
-					  player->index_bit, dig_side);
+      // use old behaviour for old levels (snapping)
+      if (!level.finish_dig_collect)
+	CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_SNAPS_X,
+					    player->index_bit, dig_side);
     }
   }
   else if (player_can_move_or_snap && IS_PUSHABLE(element))
@@ -14559,6 +14612,8 @@ static int DigField(struct PlayerInfo *player,
     {
       player->is_collecting = !player->is_digging;
       player->is_active = TRUE;
+
+      player->last_removed_element = element;
     }
   }
 

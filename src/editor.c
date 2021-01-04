@@ -648,6 +648,7 @@ enum
   GADGET_ID_SB_OBJECTS_NEEDED,
   GADGET_ID_AUTO_EXIT_SOKOBAN,
   GADGET_ID_SOLVED_BY_ONE_PLAYER,
+  GADGET_ID_FINISH_DIG_COLLECT,
   GADGET_ID_CONTINUOUS_SNAPPING,
   GADGET_ID_BLOCK_SNAP_FIELD,
   GADGET_ID_BLOCK_LAST_FIELD,
@@ -953,6 +954,7 @@ enum
   ED_CHECKBUTTON_ID_SB_OBJECTS_NEEDED,
   ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN,
   ED_CHECKBUTTON_ID_SOLVED_BY_ONE_PLAYER,
+  ED_CHECKBUTTON_ID_FINISH_DIG_COLLECT,
   ED_CHECKBUTTON_ID_CONTINUOUS_SNAPPING,
   ED_CHECKBUTTON_ID_BLOCK_SNAP_FIELD,
   ED_CHECKBUTTON_ID_BLOCK_LAST_FIELD,
@@ -3109,6 +3111,13 @@ static struct
     &level.solved_by_one_player,
     NULL, NULL,
     "only one player must enter exit",	"level solved by first player in exit"
+  },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_FINISH_DIG_COLLECT,	GADGET_ID_NONE,
+    &level.finish_dig_collect,
+    NULL, NULL,
+    "CE action on finished dig/collect", "only finished dig/collect triggers CE"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
@@ -9983,6 +9992,7 @@ static void DrawPropertiesConfig(void)
 
       // draw checkbutton gadgets
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_INITIAL_INVENTORY);
+      MapCheckbuttonGadget(ED_CHECKBUTTON_ID_FINISH_DIG_COLLECT);
 
       // draw counter gadgets
       MapCounterButtons(ED_COUNTER_ID_INVENTORY_SIZE);

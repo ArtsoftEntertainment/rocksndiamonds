@@ -3186,6 +3186,7 @@ struct LevelInfo
   boolean sb_objects_needed;	// all Sokoban objects must be solved
   boolean auto_exit_sokoban;	// automatically finish solved Sokoban levels
   boolean solved_by_one_player;	// level is solved if one player enters exit
+  boolean finish_dig_collect;	// only finished dig/collect triggers ce action
 
   boolean continuous_snapping;	// repeated snapping without releasing key
   boolean block_snap_field;	// snapping blocks field to show animation

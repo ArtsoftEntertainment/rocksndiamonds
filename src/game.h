@@ -381,6 +381,8 @@ struct PlayerInfo
   int shield_normal_time_left;
   int shield_deadly_time_left;
 
+  int last_removed_element;
+
   int inventory_element[MAX_INVENTORY_SIZE];
   int inventory_infinite_element;
   int inventory_size;

@@ -308,6 +308,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(15),
     &li.lazy_relocation,		FALSE
   },
+  {
+    EL_PLAYER_1,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(16),
+    &li.finish_dig_collect,		TRUE
+  },
 
   // (these values are different for each player)
   {
@@ -6423,6 +6428,10 @@ static void LoadLevel_InitVersion(struct LevelInfo *level)
   // only Sokoban fields (but not objects) had to be solved before 4.1.1.1
   if (level->game_version < VERSION_IDENT(4,1,1,1))
     level->sb_objects_needed = FALSE;
+
+  // CE actions were triggered by unfinished digging/collecting up to 4.2.2.0
+  if (level->game_version <= VERSION_IDENT(4,2,2,0))
+    level->finish_dig_collect = FALSE;
 }
 
 static void LoadLevel_InitStandardElements(struct LevelInfo *level)
