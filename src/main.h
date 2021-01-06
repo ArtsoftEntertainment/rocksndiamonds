@@ -3204,6 +3204,8 @@ struct LevelInfo
   // ('int' instead of 'boolean' because used as selectbox value in editor)
   int use_step_counter;		// count steps instead of seconds for level
 
+  int time_score_base;		// use time score for 1 or 10 seconds/steps
+
   short field[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
   boolean use_custom_template;	// use custom properties from template file

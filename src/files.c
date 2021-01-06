@@ -260,6 +260,12 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(12),
+    &li.time_score_base,		1
+  },
+
+  {
+    -1,					-1,
     -1,					-1,
     NULL,				-1
   }
