@@ -559,6 +559,7 @@ enum
   // selectbox identifiers
 
   GADGET_ID_TIME_OR_STEPS,
+  GADGET_ID_TIME_SCORE_BASE,
   GADGET_ID_GAME_ENGINE_TYPE,
   GADGET_ID_LEVELSET_SAVE_MODE,
   GADGET_ID_WIND_DIRECTION,
@@ -840,6 +841,7 @@ enum
 enum
 {
   ED_SELECTBOX_ID_TIME_OR_STEPS,
+  ED_SELECTBOX_ID_TIME_SCORE_BASE,
   ED_SELECTBOX_ID_GAME_ENGINE_TYPE,
   ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
   ED_SELECTBOX_ID_WIND_DIRECTION,
@@ -1410,7 +1412,7 @@ static struct
     GADGET_ID_LEVEL_TIMESCORE_DOWN,	GADGET_ID_LEVEL_TIMESCORE_UP,
     GADGET_ID_LEVEL_TIMESCORE_TEXT,	GADGET_ID_NONE,
     &level.score[SC_TIME_BONUS],
-    "score for each second/step left:",	NULL, NULL
+    "score for time or steps left:",	NULL, NULL
   },
   {
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(12),
@@ -1729,6 +1731,14 @@ static struct ValueTextInfo options_time_or_steps[] =
 {
   { 0,				"seconds"			},
   { 1,				"steps"				},
+
+  { -1,				NULL				}
+};
+
+static struct ValueTextInfo options_time_score_base[] =
+{
+  { 1,				"per second/step"		},
+  { 10,				"per 10 seconds/steps"		},
 
   { -1,				NULL				}
 };
@@ -2466,6 +2476,14 @@ static struct
     options_time_or_steps,
     &level.use_step_counter,
     NULL, NULL, "(0 => no limit)",	"time or step limit"
+  },
+  {
+    -1,					ED_LEVEL_SETTINGS_YPOS(10),
+    GADGET_ID_TIME_SCORE_BASE,		GADGET_ID_LEVEL_TIMESCORE_UP,
+    -1,
+    options_time_score_base,
+    &level.time_score_base,
+    NULL, NULL, NULL,			"time score for 1 or 10 seconds/steps"
   },
   {
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(11),
