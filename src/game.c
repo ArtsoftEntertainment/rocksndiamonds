@@ -4726,6 +4726,8 @@ void GameWon(void)
   int game_over_delay_value_1 = 50;
   int game_over_delay_value_2 = 25;
   int game_over_delay_value_3 = 50;
+  int time_score_base = MIN(MAX(1, level.time_score_base), 10);
+  float time_score = (float)level.score[SC_TIME_BONUS] / time_score_base;
 
   if (!game.LevelSolved_GameWon)
   {
@@ -4759,17 +4761,17 @@ void GameWon(void)
     score = score_final = game.score_final;
     health = health_final = game.health_final;
 
-    if (level.score[SC_TIME_BONUS] > 0)
+    if (time_score > 0)
     {
       if (TimeLeft > 0)
       {
 	time_final = 0;
-	score_final += TimeLeft * level.score[SC_TIME_BONUS];
+	score_final += TimeLeft * time_score;
       }
       else if (game.no_time_limit && TimePlayed < 999)
       {
 	time_final = 999;
-	score_final += (999 - TimePlayed) * level.score[SC_TIME_BONUS];
+	score_final += (999 - TimePlayed) * time_score;
       }
 
       time_count_steps = MAX(1, ABS(time_final - time) / 100);
@@ -4779,7 +4781,7 @@ void GameWon(void)
       if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
       {
 	health_final = 0;
-	score_final += health * level.score[SC_TIME_BONUS];
+	score_final += health * time_score;
 
 	game_over_delay_2 = game_over_delay_value_2;
       }
@@ -4868,7 +4870,7 @@ void GameWon(void)
       time_count_steps = 1;
 
     time  += time_count_steps * time_count_dir;
-    score += time_count_steps * level.score[SC_TIME_BONUS];
+    score += time_count_steps * time_score;
 
     game.LevelSolved_CountingTime = time;
     game.LevelSolved_CountingScore = score;
@@ -4900,7 +4902,7 @@ void GameWon(void)
     int health_count_dir = (health < health_final ? +1 : -1);
 
     health += health_count_dir;
-    score  += level.score[SC_TIME_BONUS];
+    score  += time_score;
 
     game.LevelSolved_CountingHealth = health;
     game.LevelSolved_CountingScore = score;
