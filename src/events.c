@@ -1476,7 +1476,7 @@ void HandleKeyEvent(KeyEvent *event)
     if (key_status == KEY_PRESSED)
       SetOverlayEnabled(!GetOverlayEnabled());
   }
-  else
+  else if (!textinput_status)
   {
     // for any other "real" key event, disable virtual buttons
     SetOverlayEnabled(FALSE);
