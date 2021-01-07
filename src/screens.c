@@ -4258,19 +4258,13 @@ static void HandleTypeNameExt(boolean initialize, Key key)
 
     name[xpos] = 0;
   }
-  else if (key == KSYM_Return)
+  else if (key == KSYM_Return || key == KSYM_Escape)
   {
+    boolean changed = (key == KSYM_Return);
+
     StopTextInput();
 
-    setTypeNameValues(name, pos, TRUE);
-
-    active = FALSE;
-  }
-  else if (key == KSYM_Escape)
-  {
-    StopTextInput();
-
-    setTypeNameValues(name, pos, FALSE);
+    setTypeNameValues(name, pos, changed);
 
     active = FALSE;
   }
