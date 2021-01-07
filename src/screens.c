@@ -4260,12 +4260,16 @@ static void HandleTypeNameExt(boolean initialize, Key key)
   }
   else if (key == KSYM_Return)
   {
+    StopTextInput();
+
     setTypeNameValues(name, pos, TRUE);
 
     active = FALSE;
   }
   else if (key == KSYM_Escape)
   {
+    StopTextInput();
+
     setTypeNameValues(name, pos, FALSE);
 
     active = FALSE;
@@ -4275,8 +4279,6 @@ static void HandleTypeNameExt(boolean initialize, Key key)
 
   if (!active)
   {
-    StopTextInput();
-
     SetGameStatus(game_status_last_screen);
 
     if (game_status == GAME_MODE_MAIN)
