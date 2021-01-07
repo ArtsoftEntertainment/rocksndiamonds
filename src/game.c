@@ -4718,7 +4718,7 @@ void GameWon(void)
 {
   static int time_count_steps;
   static int time, time_final;
-  static int score, score_final;
+  static float score, score_final; // needed for time score < 10 for 10 seconds
   static int health, health_final;
   static int game_over_delay_1 = 0;
   static int game_over_delay_2 = 0;
@@ -4763,16 +4763,20 @@ void GameWon(void)
 
     if (time_score > 0)
     {
+      int time_frames = 0;
+
       if (TimeLeft > 0)
       {
 	time_final = 0;
-	score_final += TimeLeft * time_score;
+	time_frames = TimeLeft * FRAMES_PER_SECOND - TimeFrames;
       }
       else if (game.no_time_limit && TimePlayed < 999)
       {
 	time_final = 999;
-	score_final += (999 - TimePlayed) * time_score;
+	time_frames = (999 - TimePlayed) * FRAMES_PER_SECOND - TimeFrames;
       }
+
+      score_final += time_score * time_frames / FRAMES_PER_SECOND + 0.5;
 
       time_count_steps = MAX(1, ABS(time_final - time) / 100);
 
@@ -4871,6 +4875,10 @@ void GameWon(void)
 
     time  += time_count_steps * time_count_dir;
     score += time_count_steps * time_score;
+
+    // set final score to correct rounding differences after counting score
+    if (time == time_final)
+      score = score_final;
 
     game.LevelSolved_CountingTime = time;
     game.LevelSolved_CountingScore = score;
