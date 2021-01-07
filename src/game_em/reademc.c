@@ -312,7 +312,7 @@ void convert_em_level(unsigned char *src, int file_version)
   cav.nut_score		= src[2090];
   cav.dynamite_score	= src[2091];
   cav.key_score		= src[2092];
-  cav.exit_score	= src[2093] * 8 / 5;
+  cav.exit_score	= src[2093];
 
   cav.lenses_score	= src[2151];
   cav.magnify_score	= src[2152];

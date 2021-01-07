@@ -3722,6 +3722,9 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
     if (jx != -1 && jy != -1)
       level->field[jx][jy] = EL_PLAYER_1 + nr;
   }
+
+  // time score is counted for each 10 seconds left in Emerald Mine levels
+  level->time_score_base = 10;
 }
 
 
@@ -5739,6 +5742,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level,
   // Diamond Caves has the same (strange) behaviour as Emerald Mine that gems
   // can slip down from flat walls, like normal walls and steel walls
   level->em_slippery_gems = TRUE;
+
+  // time score is counted for each 10 seconds left in Diamond Caves levels
+  level->time_score_base = 10;
 }
 
 static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
@@ -6262,7 +6268,7 @@ static void LoadLevel_InitVersion(struct LevelInfo *level)
   if (level->game_version < VERSION_IDENT(3,2,0,5))
   {
     // time bonus score was given for 10 s instead of 1 s before 3.2.0-5
-    level->score[SC_TIME_BONUS] /= 10;
+    level->time_score_base = 10;
   }
 
   if (leveldir_current->latest_engine)
