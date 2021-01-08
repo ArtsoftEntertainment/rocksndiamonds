@@ -2169,9 +2169,9 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       {
 	if (leveldir_current->readonly &&
 	    setup.editor.show_read_only_warning)
-	  Request("This level is read-only!", REQ_CONFIRM);
+	  Request("This level is read-only!", REQ_CONFIRM | REQ_STAY_OPEN);
 
-	CloseDoor(DOOR_CLOSE_2);
+	CloseDoor(DOOR_CLOSE_ALL);
 
 	SetGameStatus(GAME_MODE_EDITOR);
 
