@@ -8747,6 +8747,10 @@ static struct TokenInfo editor_setup_tokens[] =
     TYPE_SWITCH,
     &setup.editor.show_element_token,		"editor.show_element_token"
   },
+  {
+    TYPE_SWITCH,
+    &setup.editor.show_read_only_warning,	"editor.show_read_only_warning"
+  },
 };
 
 static struct TokenInfo editor_cascade_setup_tokens[] =
@@ -9377,6 +9381,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->editor.el_headlines		= TRUE;
 
   si->editor.show_element_token		= FALSE;
+
+  si->editor.show_read_only_warning	= TRUE;
 
   si->editor.use_template_for_new_levels = TRUE;
 

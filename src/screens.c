@@ -2168,7 +2168,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       else if (pos == MAIN_CONTROL_EDITOR)
       {
 	if (leveldir_current->readonly &&
-	    !strEqual(setup.player_name, "Artsoft"))
+	    setup.editor.show_read_only_warning)
 	  Request("This level is read-only!", REQ_CONFIRM);
 
 	CloseDoor(DOOR_CLOSE_2);
@@ -6728,6 +6728,8 @@ static struct TokenInfo setup_info_editor[] =
   { TYPE_EMPTY,		NULL,			""			},
 #endif
   { TYPE_SWITCH, &setup.editor.show_element_token,	"Show element token:" },
+  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_SWITCH, &setup.editor.show_read_only_warning,	"Show read-only warning:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
 

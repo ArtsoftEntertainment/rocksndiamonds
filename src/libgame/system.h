@@ -1284,6 +1284,8 @@ struct SetupEditorInfo
 
   boolean show_element_token;
 
+  boolean show_read_only_warning;
+
   boolean use_template_for_new_levels;
 };
 
