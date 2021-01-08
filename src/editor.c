@@ -7749,7 +7749,7 @@ static boolean PrepareSavingIntoPersonalLevelSet(void)
     return TRUE;
   }
 
-  if (!Request("This level is read only! "
+  if (!Request("This level is read-only! "
 	       "Save into personal level set?", REQ_ASK))
     return FALSE;
 
@@ -13410,7 +13410,7 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
     if (levelset_save_mode == LEVELSET_SAVE_MODE_UPDATE &&
 	leveldir_current->readonly)
     {
-      Request("This level set is read only!", REQ_CONFIRM);
+      Request("This level set is read-only!", REQ_CONFIRM);
 
       return;
     }

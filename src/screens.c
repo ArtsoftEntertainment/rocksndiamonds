@@ -2169,7 +2169,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       {
 	if (leveldir_current->readonly &&
 	    !strEqual(setup.player_name, "Artsoft"))
-	  Request("This level is read only!", REQ_CONFIRM);
+	  Request("This level is read-only!", REQ_CONFIRM);
 
 	CloseDoor(DOOR_CLOSE_2);
 
