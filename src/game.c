@@ -4721,9 +4721,6 @@ void GameWon(void)
   static int game_over_delay_1 = 0;
   static int game_over_delay_2 = 0;
   static int game_over_delay_3 = 0;
-  int game_over_delay_value_1 = 50;
-  int game_over_delay_value_2 = 25;
-  int game_over_delay_value_3 = 50;
   int time_score_base = MIN(MAX(1, level.time_score_base), 10);
   float time_score = (float)level.score[SC_TIME_BONUS] / time_score_base;
 
@@ -4751,9 +4748,9 @@ void GameWon(void)
 
     TapeStop();
 
-    game_over_delay_1 = game_over_delay_value_1;
-    game_over_delay_2 = game_over_delay_value_2;
-    game_over_delay_3 = game_over_delay_value_3;
+    game_over_delay_1 = FRAMES_PER_SECOND;	// delay before counting time
+    game_over_delay_2 = FRAMES_PER_SECOND / 2;	// delay before counting health
+    game_over_delay_3 = FRAMES_PER_SECOND;	// delay before ending the game
 
     time = time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
     score = score_final = game.score_final;
