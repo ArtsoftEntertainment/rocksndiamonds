@@ -8545,7 +8545,7 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
-    &setup.skip_scores_after_game,		"skip_scores_after_game"
+    &setup.show_scores_after_game,		"show_scores_after_game"
   },
   {
     TYPE_SWITCH,
@@ -9264,7 +9264,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->skip_levels = TRUE;
   si->increment_levels = TRUE;
   si->auto_play_next_level = TRUE;
-  si->skip_scores_after_game = FALSE;
+  si->show_scores_after_game = TRUE;
   si->time_limit = TRUE;
   si->fullscreen = FALSE;
   si->window_scaling_percent = STD_WINDOW_SCALING_PERCENT;

@@ -5002,7 +5002,7 @@ void GameEnd(void)
 
   hi_pos = NewHiScore(last_level_nr);
 
-  if (hi_pos >= 0 && !setup.skip_scores_after_game)
+  if (hi_pos >= 0 && setup.show_scores_after_game)
   {
     SetGameStatus(GAME_MODE_SCORES);
 
