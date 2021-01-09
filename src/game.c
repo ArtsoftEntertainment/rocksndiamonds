@@ -2869,12 +2869,10 @@ void UpdateAndDisplayGameControlValues(void)
   DisplayGameControlValues();
 }
 
-#if 0
-static void UpdateGameDoorValues(void)
+void UpdateGameDoorValues(void)
 {
   UpdateGameControlValues();
 }
-#endif
 
 void DrawGameDoorValues(void)
 {

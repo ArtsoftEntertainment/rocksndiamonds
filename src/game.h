@@ -401,6 +401,7 @@ int GetElementFromGroupElement(int);
 
 int getPlayerInventorySize(int);
 
+void UpdateGameDoorValues(void);
 void DrawGameDoorValues(void);
 
 void UpdateAndDisplayGameControlValues(void);
