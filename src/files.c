@@ -8545,6 +8545,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.count_score_after_game,		"count_score_after_game"
+  },
+  {
+    TYPE_SWITCH,
     &setup.show_scores_after_game,		"show_scores_after_game"
   },
   {
@@ -9264,6 +9268,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->skip_levels = TRUE;
   si->increment_levels = TRUE;
   si->auto_play_next_level = TRUE;
+  si->count_score_after_game = TRUE;
   si->show_scores_after_game = TRUE;
   si->time_limit = TRUE;
   si->fullscreen = FALSE;

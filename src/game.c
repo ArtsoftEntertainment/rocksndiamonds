@@ -4792,7 +4792,7 @@ void GameWon(void)
       game.health_final = health_final;
     }
 
-    if (level_editor_test_game)
+    if (level_editor_test_game || !setup.count_score_after_game)
     {
       time = time_final;
       score = score_final;
@@ -4856,76 +4856,79 @@ void GameWon(void)
     PlaySound(SND_GAME_WINNING);
   }
 
-  if (game_over_delay_1 > 0)
+  if (setup.count_score_after_game)
   {
-    game_over_delay_1--;
+    if (game_over_delay_1 > 0)
+    {
+      game_over_delay_1--;
 
-    return;
-  }
+      return;
+    }
 
-  if (time != time_final)
-  {
-    int time_to_go = ABS(time_final - time);
-    int time_count_dir = (time < time_final ? +1 : -1);
+    if (time != time_final)
+    {
+      int time_to_go = ABS(time_final - time);
+      int time_count_dir = (time < time_final ? +1 : -1);
 
-    if (time_to_go < time_count_steps)
-      time_count_steps = 1;
+      if (time_to_go < time_count_steps)
+	time_count_steps = 1;
 
-    time  += time_count_steps * time_count_dir;
-    score += time_count_steps * time_score;
+      time  += time_count_steps * time_count_dir;
+      score += time_count_steps * time_score;
 
-    // set final score to correct rounding differences after counting score
-    if (time == time_final)
-      score = score_final;
+      // set final score to correct rounding differences after counting score
+      if (time == time_final)
+	score = score_final;
 
-    game.LevelSolved_CountingTime = time;
-    game.LevelSolved_CountingScore = score;
+      game.LevelSolved_CountingTime = time;
+      game.LevelSolved_CountingScore = score;
 
-    game_panel_controls[GAME_PANEL_TIME].value = time;
-    game_panel_controls[GAME_PANEL_SCORE].value = score;
+      game_panel_controls[GAME_PANEL_TIME].value = time;
+      game_panel_controls[GAME_PANEL_SCORE].value = score;
 
-    DisplayGameControlValues();
+      DisplayGameControlValues();
 
-    if (time == time_final)
-      StopSound(SND_GAME_LEVELTIME_BONUS);
-    else if (setup.sound_loops)
-      PlaySoundLoop(SND_GAME_LEVELTIME_BONUS);
-    else
-      PlaySound(SND_GAME_LEVELTIME_BONUS);
+      if (time == time_final)
+	StopSound(SND_GAME_LEVELTIME_BONUS);
+      else if (setup.sound_loops)
+	PlaySoundLoop(SND_GAME_LEVELTIME_BONUS);
+      else
+	PlaySound(SND_GAME_LEVELTIME_BONUS);
 
-    return;
-  }
+      return;
+    }
 
-  if (game_over_delay_2 > 0)
-  {
-    game_over_delay_2--;
+    if (game_over_delay_2 > 0)
+    {
+      game_over_delay_2--;
 
-    return;
-  }
+      return;
+    }
 
-  if (health != health_final)
-  {
-    int health_count_dir = (health < health_final ? +1 : -1);
+    if (health != health_final)
+    {
+      int health_count_dir = (health < health_final ? +1 : -1);
 
-    health += health_count_dir;
-    score  += time_score;
+      health += health_count_dir;
+      score  += time_score;
 
-    game.LevelSolved_CountingHealth = health;
-    game.LevelSolved_CountingScore = score;
+      game.LevelSolved_CountingHealth = health;
+      game.LevelSolved_CountingScore = score;
 
-    game_panel_controls[GAME_PANEL_HEALTH].value = health;
-    game_panel_controls[GAME_PANEL_SCORE].value = score;
+      game_panel_controls[GAME_PANEL_HEALTH].value = health;
+      game_panel_controls[GAME_PANEL_SCORE].value = score;
 
-    DisplayGameControlValues();
+      DisplayGameControlValues();
 
-    if (health == health_final)
-      StopSound(SND_GAME_LEVELTIME_BONUS);
-    else if (setup.sound_loops)
-      PlaySoundLoop(SND_GAME_LEVELTIME_BONUS);
-    else
-      PlaySound(SND_GAME_LEVELTIME_BONUS);
+      if (health == health_final)
+	StopSound(SND_GAME_LEVELTIME_BONUS);
+      else if (setup.sound_loops)
+	PlaySoundLoop(SND_GAME_LEVELTIME_BONUS);
+      else
+	PlaySound(SND_GAME_LEVELTIME_BONUS);
 
-    return;
+      return;
+    }
   }
 
   game.panel.active = FALSE;

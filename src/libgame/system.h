@@ -1427,6 +1427,7 @@ struct SetupInfo
   boolean skip_levels;
   boolean increment_levels;
   boolean auto_play_next_level;
+  boolean count_score_after_game;
   boolean show_scores_after_game;
   boolean time_limit;
   boolean fullscreen;

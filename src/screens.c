@@ -6671,6 +6671,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_SWITCH,	&setup.skip_levels,	"Skip Unsolved Levels:"	},
   { TYPE_SWITCH,	&setup.increment_levels,"Increment Solved Levels:" },
   { TYPE_SWITCH,	&setup.auto_play_next_level,"Auto-play Next Level:" },
+  { TYPE_SWITCH,	&setup.count_score_after_game,"Count Score After Game:" },
   { TYPE_SWITCH,	&setup.show_scores_after_game,"Show Scores After Game:" },
   { TYPE_YES_NO,	&setup.ask_on_game_over, "Ask on Game Over:"	},
   { TYPE_SWITCH,	&setup.autorecord,	"Auto-Record Tapes:"	},
