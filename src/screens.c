@@ -5080,8 +5080,14 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
   if (button == MB_MENU_INITIALIZE)
   {
     level_nr = mx;
-    first_entry = 0;
     highlight_position = my;
+
+    first_entry = highlight_position - (NUM_MENU_ENTRIES_ON_SCREEN + 1) / 2 + 1;
+
+    if (first_entry < 0)
+      first_entry = 0;
+    else if (first_entry + NUM_MENU_ENTRIES_ON_SCREEN > MAX_SCORE_ENTRIES)
+      first_entry = MAX(0, MAX_SCORE_ENTRIES - NUM_MENU_ENTRIES_ON_SCREEN);
 
     drawHallOfFameList(level_nr, first_entry, highlight_position);
 
