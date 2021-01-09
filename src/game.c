@@ -4751,8 +4751,8 @@ void GameWon(void)
 
     TapeStop();
 
-    game_over_delay_1 = 0;
-    game_over_delay_2 = 0;
+    game_over_delay_1 = game_over_delay_value_1;
+    game_over_delay_2 = game_over_delay_value_2;
     game_over_delay_3 = game_over_delay_value_3;
 
     time = time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
@@ -4778,14 +4778,10 @@ void GameWon(void)
 
       time_count_steps = MAX(1, ABS(time_final - time) / 100);
 
-      game_over_delay_1 = game_over_delay_value_1;
-
       if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
       {
 	health_final = 0;
 	score_final += health * time_score;
-
-	game_over_delay_2 = game_over_delay_value_2;
       }
 
       game.score_final = score_final;
@@ -4858,15 +4854,15 @@ void GameWon(void)
 
   if (setup.count_score_after_game)
   {
-    if (game_over_delay_1 > 0)
-    {
-      game_over_delay_1--;
-
-      return;
-    }
-
     if (time != time_final)
     {
+      if (game_over_delay_1 > 0)
+      {
+	game_over_delay_1--;
+
+	return;
+      }
+
       int time_to_go = ABS(time_final - time);
       int time_count_dir = (time < time_final ? +1 : -1);
 
@@ -4898,15 +4894,15 @@ void GameWon(void)
       return;
     }
 
-    if (game_over_delay_2 > 0)
-    {
-      game_over_delay_2--;
-
-      return;
-    }
-
     if (health != health_final)
     {
+      if (game_over_delay_2 > 0)
+      {
+	game_over_delay_2--;
+
+	return;
+      }
+
       int health_count_dir = (health < health_final ? +1 : -1);
 
       health += health_count_dir;
