@@ -4274,7 +4274,7 @@ void WaitForEventToContinue(void)
 #define MAX_REQUEST_LINE_FONT1_LEN	7
 #define MAX_REQUEST_LINE_FONT2_LEN	10
 
-static int RequestHandleEvents(unsigned int req_state)
+static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 {
   boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
 			     checkGameEnded());
@@ -4303,7 +4303,7 @@ static int RequestHandleEvents(unsigned int req_state)
 
     if (game_just_ended)
     {
-      SetDrawtoField(draw_buffer_last);
+      SetDrawtoField(draw_buffer_game);
 
       HandleGameActions();
 
@@ -4604,6 +4604,7 @@ static int RequestHandleEvents(unsigned int req_state)
 
 static boolean RequestDoor(char *text, unsigned int req_state)
 {
+  int draw_buffer_last = GetDrawtoField();
   unsigned int old_door_state;
   int max_request_line_len = MAX_REQUEST_LINE_FONT1_LEN;
   int font_nr = FONT_TEXT_2;
@@ -4745,7 +4746,7 @@ static boolean RequestDoor(char *text, unsigned int req_state)
   SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
 
   // ---------- handle request buttons ----------
-  result = RequestHandleEvents(req_state);
+  result = RequestHandleEvents(req_state, draw_buffer_last);
 
   UnmapToolButtons();
 
@@ -4786,6 +4787,7 @@ static boolean RequestDoor(char *text, unsigned int req_state)
 
 static boolean RequestEnvelope(char *text, unsigned int req_state)
 {
+  int draw_buffer_last = GetDrawtoField();
   int result;
 
   if (game_status == GAME_MODE_PLAYING)
@@ -4837,7 +4839,7 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
   SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
 
   // ---------- handle request buttons ----------
-  result = RequestHandleEvents(req_state);
+  result = RequestHandleEvents(req_state, draw_buffer_last);
 
   UnmapToolButtons();
 
