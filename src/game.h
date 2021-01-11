@@ -156,6 +156,7 @@ struct GameInfo
   boolean use_native_emc_graphics_engine;
   boolean use_native_sp_graphics_engine;
   boolean use_masked_pushing;
+  boolean use_masked_elements;
   int forced_scroll_delay_value;
   int scroll_delay_value;
   int tile_size;

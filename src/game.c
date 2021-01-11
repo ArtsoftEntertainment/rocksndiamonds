@@ -5349,13 +5349,15 @@ void DrawDynamite(int x, int y)
     return;
 
   if (Back[x][y])
-    DrawGraphic(sx, sy, el2img(Back[x][y]), 0);
+    DrawLevelElement(x, y, Back[x][y]);
   else if (Store[x][y])
-    DrawGraphic(sx, sy, el2img(Store[x][y]), 0);
+    DrawLevelElement(x, y, Store[x][y]);
+  else if (game.use_masked_elements)
+    DrawLevelElement(x, y, EL_EMPTY);
 
   frame = getGraphicAnimationFrame(graphic, GfxFrame[x][y]);
 
-  if (Back[x][y] || Store[x][y])
+  if (Back[x][y] || Store[x][y] || game.use_masked_elements)
     DrawGraphicThruMask(sx, sy, graphic, frame);
   else
     DrawGraphic(sx, sy, graphic, frame);
@@ -5928,7 +5930,7 @@ static void Explode(int ex, int ey, int phase, int mode)
       DrawLevelElementThruMask(x, y, Back[x][y]);
     }
     else if (!IS_WALKABLE_INSIDE(Back[x][y]))
-      DrawGraphic(SCREENX(x), SCREENY(y), graphic, frame);
+      DrawScreenGraphic(SCREENX(x), SCREENY(y), graphic, frame);
   }
 }
 

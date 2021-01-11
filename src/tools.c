@@ -1960,6 +1960,9 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
       graphic = el_act_dir2img(element, ACTION_DEFAULT, GfxDir[lx][ly]);
       frame = getGraphicAnimationFrame(graphic, GfxFrame[lx][ly]);
     }
+
+    if (game.use_masked_elements && (dx || dy))
+      mask_mode = USE_MASKING;
   }
   else	// border element
   {
@@ -2078,8 +2081,27 @@ static void DrawLevelFieldCrumbledInnerCorners(int x, int y, int dx, int dy,
   cx = (dx > 0 ? TILESIZE_VAR - width  : 0);
   cy = (dy > 0 ? TILESIZE_VAR - height : 0);
 
-  BlitBitmap(src_bitmap, drawto_field, src_x + cx, src_y + cy,
-	     width, height, FX + sx * TILEX_VAR + cx, FY + sy * TILEY_VAR + cy);
+  if (game.use_masked_elements)
+  {
+    int graphic0 = el2img(EL_EMPTY);
+    int frame0 = getGraphicAnimationFrame(graphic0, GfxFrame[x][y]);
+    Bitmap *src_bitmap0;
+    int src_x0, src_y0;
+
+    getGraphicSource(graphic0, frame0, &src_bitmap0, &src_x0, &src_y0);
+
+    BlitBitmap(src_bitmap0, drawto_field, src_x0 + cx, src_y0 + cy,
+	       width, height,
+	       FX + sx * TILEX_VAR + cx, FY + sy * TILEY_VAR + cy);
+
+    BlitBitmapMasked(src_bitmap, drawto_field, src_x + cx, src_y + cy,
+		     width, height,
+		     FX + sx * TILEX_VAR + cx, FY + sy * TILEY_VAR + cy);
+  }
+  else
+    BlitBitmap(src_bitmap, drawto_field, src_x + cx, src_y + cy,
+	       width, height,
+	       FX + sx * TILEX_VAR + cx, FY + sy * TILEY_VAR + cy);
 }
 
 static void DrawLevelFieldCrumbledBorders(int x, int y, int graphic, int frame,
@@ -2098,6 +2120,15 @@ static void DrawLevelFieldCrumbledBorders(int x, int y, int graphic, int frame,
 
   getGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
 
+  // only needed when using masked elements
+  int graphic0 = el2img(EL_EMPTY);
+  int frame0 = getGraphicAnimationFrame(graphic0, GfxFrame[x][y]);
+  Bitmap *src_bitmap0;
+  int src_x0, src_y0;
+
+  if (game.use_masked_elements)
+    getGraphicSource(graphic0, frame0, &src_bitmap0, &src_x0, &src_y0);
+
   // draw simple, sloppy, non-corner-accurate crumbled border
 
   width  = (dir == 1 || dir == 2 ? crumbled_border_size_var : TILESIZE_VAR);
@@ -2105,9 +2136,23 @@ static void DrawLevelFieldCrumbledBorders(int x, int y, int graphic, int frame,
   cx = (dir == 2 ? crumbled_border_pos_var : 0);
   cy = (dir == 3 ? crumbled_border_pos_var : 0);
 
-  BlitBitmap(src_bitmap, drawto_field, src_x + cx, src_y + cy, width, height,
-	     FX + sx * TILEX_VAR + cx,
-	     FY + sy * TILEY_VAR + cy);
+  if (game.use_masked_elements)
+  {
+    BlitBitmap(src_bitmap0, drawto_field, src_x0 + cx, src_y0 + cy,
+	       width, height,
+	       FX + sx * TILEX_VAR + cx,
+	       FY + sy * TILEY_VAR + cy);
+
+    BlitBitmapMasked(src_bitmap, drawto_field, src_x + cx, src_y + cy,
+		     width, height,
+		     FX + sx * TILEX_VAR + cx,
+		     FY + sy * TILEY_VAR + cy);
+  }
+  else
+    BlitBitmap(src_bitmap, drawto_field, src_x + cx, src_y + cy,
+	       width, height,
+	       FX + sx * TILEX_VAR + cx,
+	       FY + sy * TILEY_VAR + cy);
 
   // (remaining middle border part must be at least as big as corner part)
   if (!(graphic_info[graphic].style & STYLE_ACCURATE_BORDERS) ||
@@ -2153,10 +2198,23 @@ static void DrawLevelFieldCrumbledBorders(int x, int y, int graphic, int frame,
 	by = cy;
       }
 
-      BlitBitmap(src_bitmap, drawto_field, src_x + bx, src_y + by,
-		 width, height,
-		 FX + sx * TILEX_VAR + cx,
-		 FY + sy * TILEY_VAR + cy);
+      if (game.use_masked_elements)
+      {
+	BlitBitmap(src_bitmap0, drawto_field, src_x0 + bx, src_y0 + by,
+		   width, height,
+		   FX + sx * TILEX_VAR + cx,
+		   FY + sy * TILEY_VAR + cy);
+
+	BlitBitmapMasked(src_bitmap, drawto_field, src_x + bx, src_y + by,
+			 width, height,
+			 FX + sx * TILEX_VAR + cx,
+			 FY + sy * TILEY_VAR + cy);
+      }
+      else
+	BlitBitmap(src_bitmap, drawto_field, src_x + bx, src_y + by,
+		   width, height,
+		   FX + sx * TILEX_VAR + cx,
+		   FY + sy * TILEY_VAR + cy);
     }
   }
 }
@@ -2311,7 +2369,7 @@ void DrawLevelFieldCrumbledDigging(int x, int y, int direction,
   int frame2 = getGraphicAnimationFrame(graphic2, step_frame);
   int sx = SCREENX(x), sy = SCREENY(y);
 
-  DrawGraphic(sx, sy, graphic1, frame1);
+  DrawScreenGraphic(sx, sy, graphic1, frame1);
   DrawLevelFieldCrumbledExt(x, y, graphic2, frame2);
 }
 
@@ -2392,9 +2450,38 @@ static int getBorderElement(int x, int y)
   return border[steel_position][steel_type];
 }
 
+void DrawScreenGraphic(int x, int y, int graphic, int frame)
+{
+  if (game.use_masked_elements)
+  {
+    if (graphic != el2img(EL_EMPTY))
+      DrawScreenElementExt(x, y, 0, 0, EL_EMPTY, NO_CUTTING, NO_MASKING);
+
+    DrawGraphicThruMask(x, y, graphic, frame);
+  }
+  else
+  {
+    DrawGraphic(x, y, graphic, frame);
+  }
+}
+
 void DrawScreenElement(int x, int y, int element)
 {
-  DrawScreenElementExt(x, y, 0, 0, element, NO_CUTTING, NO_MASKING);
+  int mask_mode = NO_MASKING;
+
+  if (game.use_masked_elements)
+  {
+    int lx = LEVELX(x), ly = LEVELY(y);
+
+    if (IN_LEV_FIELD(lx, ly) && element != EL_EMPTY)
+    {
+      DrawScreenElementExt(x, y, 0, 0, EL_EMPTY, NO_CUTTING, NO_MASKING);
+
+      mask_mode = USE_MASKING;
+    }
+  }
+
+  DrawScreenElementExt(x, y, 0, 0, element, NO_CUTTING, mask_mode);
   DrawLevelFieldCrumbled(LEVELX(x), LEVELY(y));
 }
 
@@ -3747,12 +3834,23 @@ void DrawFixedGraphicAnimationExt(DrawBuffer *dst_bitmap, int x, int y,
 static void DrawGraphicAnimation(int x, int y, int graphic)
 {
   int lx = LEVELX(x), ly = LEVELY(y);
+  int mask_mode = NO_MASKING;
 
   if (!IN_SCR_FIELD(x, y))
     return;
 
+  if (game.use_masked_elements)
+  {
+    if (Tile[lx][ly] != EL_EMPTY)
+    {
+      DrawScreenElementExt(x, y, 0, 0, EL_EMPTY, NO_CUTTING, NO_MASKING);
+
+      mask_mode = USE_MASKING;
+    }
+  }
+
   DrawGraphicAnimationExt(drawto_field, FX + x * TILEX_VAR, FY + y * TILEY_VAR,
-			  graphic, GfxFrame[lx][ly], NO_MASKING);
+			  graphic, GfxFrame[lx][ly], mask_mode);
 
   MarkTileDirty(x, y);
 }
@@ -3760,12 +3858,24 @@ static void DrawGraphicAnimation(int x, int y, int graphic)
 void DrawFixedGraphicAnimation(int x, int y, int graphic)
 {
   int lx = LEVELX(x), ly = LEVELY(y);
+  int mask_mode = NO_MASKING;
 
   if (!IN_SCR_FIELD(x, y))
     return;
 
+  if (game.use_masked_elements)
+  {
+    if (Tile[lx][ly] != EL_EMPTY)
+    {
+      DrawScreenElementExt(x, y, 0, 0, EL_EMPTY, NO_CUTTING, NO_MASKING);
+
+      mask_mode = USE_MASKING;
+    }
+  }
+
   DrawGraphicAnimationExt(drawto_field, FX + x * TILEX, FY + y * TILEY,
-			  graphic, GfxFrame[lx][ly], NO_MASKING);
+			  graphic, GfxFrame[lx][ly], mask_mode);
+
   MarkTileDirty(x, y);
 }
 
@@ -4024,7 +4134,7 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
       if (GFX_CRUMBLED(old_element))
 	DrawLevelFieldCrumbledDigging(jx, jy, move_dir, player->StepFrame);
       else
-	DrawGraphic(sx, sy, old_graphic, frame);
+	DrawScreenGraphic(sx, sy, old_graphic, frame);
 
       if (graphic_info[old_graphic].anim_mode & ANIM_OPAQUE_PLAYER)
 	static_player_is_opaque[pnr] = TRUE;
