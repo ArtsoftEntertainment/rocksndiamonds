@@ -581,6 +581,9 @@
 					 JOY_BUTTON_2 :			 \
 					 JOY_NO_ACTION)
 
+// maximum number of level sets in the level set history
+#define MAX_LEVELDIR_HISTORY	12
+
 // default name for empty highscore entry
 #define EMPTY_PLAYER_NAME	"no name"
 
@@ -1294,6 +1297,11 @@ struct SetupAutoSetupInfo
   int editor_zoom_tilesize;
 };
 
+struct SetupLevelSetupInfo
+{
+  char *last_level_series[MAX_LEVELDIR_HISTORY + 1];
+};
+
 struct SetupEditorCascadeInfo
 {
   boolean el_bd;
@@ -1465,6 +1473,8 @@ struct SetupInfo
   char *network_server_hostname;
 
   struct SetupAutoSetupInfo auto_setup;
+  struct SetupLevelSetupInfo level_setup;
+
   struct SetupEditorInfo editor;
   struct SetupEditorCascadeInfo editor_cascade;
   struct SetupShortcutInfo shortcut;

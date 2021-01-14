@@ -343,6 +343,8 @@ void AddTreeSetToTreeInfo(TreeInfo *, char *, char *, int);
 boolean UpdateUserLevelSet(char *, char *, char *, int);
 boolean CreateUserLevelSet(char *, char *, char *, int, boolean);
 
+void UpdateLastPlayedLevels_TreeInfo(void);
+
 void LoadLevelSetup_LastSeries(void);
 void SaveLevelSetup_LastSeries(void);
 void SaveLevelSetup_LastSeries_Deactivate(void);

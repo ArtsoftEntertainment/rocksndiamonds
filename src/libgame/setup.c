@@ -1249,7 +1249,8 @@ TreeInfo *getTreeInfoFromPos(TreeInfo *node, int pos)
   return node_default;
 }
 
-TreeInfo *getTreeInfoFromIdentifier(TreeInfo *node, char *identifier)
+static TreeInfo *getTreeInfoFromIdentifierExt(TreeInfo *node, char *identifier,
+					      boolean include_node_groups)
 {
   if (identifier == NULL)
     return NULL;
@@ -1258,10 +1259,12 @@ TreeInfo *getTreeInfoFromIdentifier(TreeInfo *node, char *identifier)
   {
     if (node->node_group)
     {
-      TreeInfo *node_group;
+      if (include_node_groups && strEqual(identifier, node->identifier))
+	return node;
 
-      node_group = getTreeInfoFromIdentifier(node->node_group, identifier);
-
+      TreeInfo *node_group = getTreeInfoFromIdentifierExt(node->node_group,
+							  identifier,
+							  include_node_groups);
       if (node_group)
 	return node_group;
     }
@@ -1275,6 +1278,11 @@ TreeInfo *getTreeInfoFromIdentifier(TreeInfo *node, char *identifier)
   }
 
   return NULL;
+}
+
+TreeInfo *getTreeInfoFromIdentifier(TreeInfo *node, char *identifier)
+{
+  return getTreeInfoFromIdentifierExt(node, identifier, FALSE);
 }
 
 static TreeInfo *cloneTreeNode(TreeInfo **node_top, TreeInfo *node_parent,
@@ -4392,6 +4400,99 @@ char *getSetupLine(struct TokenInfo *token_info, char *prefix, int token_nr)
   return line;
 }
 
+static void InitLastPlayedLevels_ParentNode(void)
+{
+  LevelDirTree **leveldir_top = &leveldir_first->node_group->next;
+  LevelDirTree *leveldir_new = NULL;
+
+  // check if parent node for last played levels already exists
+  if (strEqual((*leveldir_top)->identifier, TOKEN_STR_LAST_LEVEL_SERIES))
+    return;
+
+  leveldir_new = newTreeInfo();
+
+  setTreeInfoToDefaultsFromParent(leveldir_new, leveldir_first);
+
+  leveldir_new->level_group = TRUE;
+
+  setString(&leveldir_new->identifier, TOKEN_STR_LAST_LEVEL_SERIES);
+  setString(&leveldir_new->name, "<< (last played level sets)");
+
+  pushTreeInfo(leveldir_top, leveldir_new);
+
+  /* create node to link back to current level directory */
+  createParentTreeInfoNode(leveldir_new);
+}
+
+void UpdateLastPlayedLevels_TreeInfo(void)
+{
+  char **last_level_series = setup.level_setup.last_level_series;
+  boolean reset_leveldir_current = FALSE;
+  LevelDirTree *leveldir_last;
+  TreeInfo **node_new = NULL;
+  int i;
+
+  if (last_level_series[0] == NULL)
+    return;
+
+  InitLastPlayedLevels_ParentNode();
+
+  // check if current level set is from "last played" sub-tree to be rebuilt
+  reset_leveldir_current = strEqual(leveldir_current->node_parent->identifier,
+				    TOKEN_STR_LAST_LEVEL_SERIES);
+
+  leveldir_last = getTreeInfoFromIdentifierExt(leveldir_first,
+					       TOKEN_STR_LAST_LEVEL_SERIES,
+					       TRUE);
+  if (leveldir_last == NULL)
+    return;
+
+  node_new = &leveldir_last->node_group->next;
+
+  freeTreeInfo(*node_new);
+
+  for (i = 0; last_level_series[i] != NULL; i++)
+  {
+    LevelDirTree *node_last = getTreeInfoFromIdentifier(leveldir_first,
+							last_level_series[i]);
+
+    *node_new = getTreeInfoCopy(node_last);	// copy complete node
+
+    (*node_new)->node_top = &leveldir_first;	// correct top node link
+    (*node_new)->node_parent = leveldir_last;	// correct parent node link
+
+    (*node_new)->node_group = NULL;
+    (*node_new)->next = NULL;
+
+    (*node_new)->cl_first = -1;			// force setting tree cursor
+
+    node_new = &((*node_new)->next);
+  }
+
+  if (reset_leveldir_current)
+    leveldir_current = getTreeInfoFromIdentifier(leveldir_first,
+                                                 last_level_series[0]);
+}
+
+static void UpdateLastPlayedLevels_List(void)
+{
+  char **last_level_series = setup.level_setup.last_level_series;
+  int pos = MAX_LEVELDIR_HISTORY - 1;
+  int i;
+
+  // search for potentially already existing entry in list of level sets
+  for (i = 0; last_level_series[i] != NULL; i++)
+    if (strEqual(last_level_series[i], leveldir_current->identifier))
+      pos = i;
+
+  // move list of level sets one entry down (using potentially free entry)
+  for (i = pos; i > 0; i--)
+    setString(&last_level_series[i], last_level_series[i - 1]);
+
+  // put last played level set at top position
+  setString(&last_level_series[0], leveldir_current->identifier);
+}
+
 void LoadLevelSetup_LastSeries(void)
 {
   // --------------------------------------------------------------------------
@@ -4400,9 +4501,14 @@ void LoadLevelSetup_LastSeries(void)
 
   char *filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
   SetupFileHash *level_setup_hash = NULL;
+  int pos = 0;
+  int i;
 
   // always start with reliable default values
   leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
+
+  // start with empty history of last played level sets
+  setup.level_setup.last_level_series[0] = NULL;
 
   if (!strEqual(DEFAULT_LEVELSET, UNDEFINED_LEVELSET))
   {
@@ -4421,6 +4527,24 @@ void LoadLevelSetup_LastSeries(void)
 						 last_level_series);
     if (leveldir_current == NULL)
       leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
+
+    for (i = 0; i < MAX_LEVELDIR_HISTORY; i++)
+    {
+      char token[strlen(TOKEN_STR_LAST_LEVEL_SERIES) + 10];
+      LevelDirTree *leveldir_last;
+
+      sprintf(token, "%s.%03d", TOKEN_STR_LAST_LEVEL_SERIES, i);
+
+      last_level_series = getHashEntry(level_setup_hash, token);
+
+      leveldir_last = getTreeInfoFromIdentifier(leveldir_first,
+						last_level_series);
+      if (leveldir_last != NULL)
+	setup.level_setup.last_level_series[pos++] =
+	  getStringCopy(last_level_series);
+    }
+
+    setup.level_setup.last_level_series[pos] = NULL;
 
     freeSetupFileHash(level_setup_hash);
   }
@@ -4442,11 +4566,14 @@ static void SaveLevelSetup_LastSeries_Ext(boolean deactivate_last_level_series)
   if (leveldir_current == NULL)
     return;
 
+  char **last_level_series = setup.level_setup.last_level_series;
   char *filename = getPath2(getSetupDir(), LEVELSETUP_FILENAME);
-  char *level_subdir = leveldir_current->subdir;
   FILE *file;
+  int i;
 
   InitUserDataDirectory();
+
+  UpdateLastPlayedLevels_List();
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
@@ -4462,8 +4589,17 @@ static void SaveLevelSetup_LastSeries_Ext(boolean deactivate_last_level_series)
   if (deactivate_last_level_series)
     fprintf(file, "# %s\n# ", "the following level set may have caused a problem and was deactivated");
 
-  fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_LAST_LEVEL_SERIES,
-					       level_subdir));
+  fprintf(file, "%s\n\n", getFormattedSetupEntry(TOKEN_STR_LAST_LEVEL_SERIES,
+					       leveldir_current->identifier));
+
+  for (i = 0; last_level_series[i] != NULL; i++)
+  {
+    char token[strlen(TOKEN_STR_LAST_LEVEL_SERIES) + 10];
+
+    sprintf(token, "%s.%03d", TOKEN_STR_LAST_LEVEL_SERIES, i);
+
+    fprintf(file, "%s\n", getFormattedSetupEntry(token, last_level_series[i]));
+  }
 
   fclose(file);
 

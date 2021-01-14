@@ -1634,7 +1634,11 @@ void DrawMainMenu(void)
     leveldir_current = getFirstValidTreeInfoEntry(leveldir_last_valid);
 
   if (leveldir_current != leveldir_last_valid)
+  {
+    UpdateLastPlayedLevels_TreeInfo();
+
     levelset_has_changed = TRUE;
+  }
 
   // store valid level series information
   leveldir_last_valid = leveldir_current;
