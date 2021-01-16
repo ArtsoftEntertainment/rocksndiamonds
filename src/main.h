@@ -2578,7 +2578,7 @@ enum
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
 #define PROGRAM_EMAIL_STRING		"info@artsoft.org"
 #define PROGRAM_WEBSITE_STRING		"https://www.artsoft.org/"
-#define PROGRAM_COPYRIGHT_STRING	"Copyright \xa9""1995-2020 by Holger Schemel"
+#define PROGRAM_COPYRIGHT_STRING	"Copyright \xa9""1995-2021 by Holger Schemel"
 #define PROGRAM_COMPANY_STRING		"A Game by Artsoft Entertainment"
 
 #define PROGRAM_ICON_FILENAME		"RocksIcon32x32.png"
