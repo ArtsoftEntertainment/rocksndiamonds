@@ -1075,6 +1075,18 @@ static struct LevelFileConfigInfo chunk_config_CUSX_base[] =
     &xx_ei.move_delay_random,		0,
     &yy_ei.move_delay_random
   },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(16),
+    &xx_ei.step_delay_fixed,		0,
+    &yy_ei.step_delay_fixed
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(17),
+    &xx_ei.step_delay_random,		0,
+    &yy_ei.step_delay_random
+  },
 
   {
     -1,					-1,

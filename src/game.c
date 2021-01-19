@@ -879,6 +879,10 @@ static struct GamePanelControlInfo game_panel_controls[] =
 				 RND(element_info[e].move_delay_random))
 #define GET_MAX_MOVE_DELAY(e)	(   (element_info[e].move_delay_fixed) + \
 				    (element_info[e].move_delay_random))
+#define GET_NEW_STEP_DELAY(e)	(   (element_info[e].step_delay_fixed) + \
+				 RND(element_info[e].step_delay_random))
+#define GET_MAX_STEP_DELAY(e)	(   (element_info[e].step_delay_fixed) + \
+				    (element_info[e].step_delay_random))
 #define GET_NEW_CE_VALUE(e)	(   (element_info[e].ce_value_fixed_initial) +\
 				 RND(element_info[e].ce_value_random_initial))
 #define GET_CE_SCORE(e)		(   (element_info[e].collect_score))
@@ -8505,11 +8509,33 @@ void ContinueMoving(int x, int y)
   boolean pushed_by_player   = (Pushed[x][y] && IS_PLAYER(x, y));
   boolean pushed_by_conveyor = (Pushed[x][y] && !IS_PLAYER(x, y));
   boolean last_line = (newy == lev_fieldy - 1);
+  boolean use_step_delay = (GET_MAX_STEP_DELAY(element) != 0);
 
-  MovPos[x][y] += getElementMoveStepsize(x, y);
-
-  if (pushed_by_player)	// special case: moving object pushed by player
+  if (pushed_by_player)		// special case: moving object pushed by player
+  {
     MovPos[x][y] = SIGN(MovPos[x][y]) * (TILEX - ABS(PLAYERINFO(x,y)->MovPos));
+  }
+  else if (use_step_delay)	// special case: moving object has step delay
+  {
+    if (!MovDelay[x][y])
+      MovPos[x][y] += getElementMoveStepsize(x, y);
+
+    if (MovDelay[x][y])
+      MovDelay[x][y]--;
+    else
+      MovDelay[x][y] = GET_NEW_STEP_DELAY(element);
+
+    if (MovDelay[x][y])
+    {
+      TEST_DrawLevelField(x, y);
+
+      return;	// element is still waiting
+    }
+  }
+  else				// normal case: generically moving object
+  {
+    MovPos[x][y] += getElementMoveStepsize(x, y);
+  }
 
   if (ABS(MovPos[x][y]) < TILEX)
   {

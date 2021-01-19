@@ -3397,6 +3397,8 @@ struct ElementInfo
   int drop_delay_random;	// additional random delay after dropping
   int move_delay_fixed;		// constant delay after moving
   int move_delay_random;	// additional random delay after moving
+  int step_delay_fixed;		// constant delay while moving
+  int step_delay_random;	// additional random delay while moving
 
   int move_pattern;		// direction movable element moves to
   int move_direction_initial;	// initial direction element moves to

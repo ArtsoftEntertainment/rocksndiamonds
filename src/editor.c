@@ -489,6 +489,12 @@ enum
   GADGET_ID_MOVE_DELAY_RND_DOWN,
   GADGET_ID_MOVE_DELAY_RND_TEXT,
   GADGET_ID_MOVE_DELAY_RND_UP,
+  GADGET_ID_STEP_DELAY_FIX_DOWN,
+  GADGET_ID_STEP_DELAY_FIX_TEXT,
+  GADGET_ID_STEP_DELAY_FIX_UP,
+  GADGET_ID_STEP_DELAY_RND_DOWN,
+  GADGET_ID_STEP_DELAY_RND_TEXT,
+  GADGET_ID_STEP_DELAY_RND_UP,
   GADGET_ID_EXPLOSION_DELAY_DOWN,
   GADGET_ID_EXPLOSION_DELAY_TEXT,
   GADGET_ID_EXPLOSION_DELAY_UP,
@@ -752,6 +758,8 @@ enum
   ED_COUNTER_ID_DROP_DELAY_RND,
   ED_COUNTER_ID_MOVE_DELAY_FIX,
   ED_COUNTER_ID_MOVE_DELAY_RND,
+  ED_COUNTER_ID_STEP_DELAY_FIX,
+  ED_COUNTER_ID_STEP_DELAY_RND,
   ED_COUNTER_ID_EXPLOSION_DELAY,
   ED_COUNTER_ID_IGNITION_DELAY,
   ED_COUNTER_ID_GROUP_CONTENT,
@@ -1608,7 +1616,23 @@ static struct
     NULL,				"+random", NULL
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(12),
+    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(6),
+    0,					999,
+    GADGET_ID_STEP_DELAY_FIX_DOWN,	GADGET_ID_STEP_DELAY_FIX_UP,
+    GADGET_ID_STEP_DELAY_FIX_TEXT,	GADGET_ID_NONE,
+    &custom_element.step_delay_fixed,
+    NULL,				"step delay", NULL
+  },
+  {
+    -1,					ED_ELEMENT_SETTINGS_YPOS(6),
+    0,					999,
+    GADGET_ID_STEP_DELAY_RND_DOWN,	GADGET_ID_STEP_DELAY_RND_UP,
+    GADGET_ID_STEP_DELAY_RND_TEXT,	GADGET_ID_STEP_DELAY_FIX_UP,
+    &custom_element.step_delay_random,
+    NULL,				"+random", NULL
+  },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(13),
     0,					999,
     GADGET_ID_EXPLOSION_DELAY_DOWN,	GADGET_ID_EXPLOSION_DELAY_UP,
     GADGET_ID_EXPLOSION_DELAY_TEXT,	GADGET_ID_NONE,
@@ -1616,7 +1640,7 @@ static struct
     NULL,				"explosion delay", NULL
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(13),
+    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(14),
     0,					999,
     GADGET_ID_IGNITION_DELAY_DOWN,	GADGET_ID_IGNITION_DELAY_UP,
     GADGET_ID_IGNITION_DELAY_TEXT,	GADGET_ID_NONE,
@@ -2602,7 +2626,7 @@ static struct
     NULL, "            can", ":",	"leave behind or change element"
   },
   {
-    -1,					ED_ELEMENT_SETTINGS_YPOS(7),
+    -1,					ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CUSTOM_SMASH_TARGETS,	GADGET_ID_CUSTOM_CAN_SMASH,
     -1,
     options_smash_targets,
@@ -2610,7 +2634,7 @@ static struct
     NULL, "can smash", NULL,		"elements that can be smashed"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(8),
+    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CUSTOM_SLIPPERY_TYPE,	GADGET_ID_NONE,
     -1,
     options_slippery_type,
@@ -2618,7 +2642,7 @@ static struct
     NULL, "slippery", NULL,		"where other elements fall down"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(9),
+    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_CUSTOM_DEADLINESS,	GADGET_ID_NONE,
     -1,
     options_deadliness,
@@ -2626,7 +2650,7 @@ static struct
     NULL, "deadly when", NULL,		"deadliness of element"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(10),
+    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CUSTOM_EXPLOSION_TYPE,	GADGET_ID_NONE,
     -1,
     options_explosion_type,
@@ -3368,56 +3392,56 @@ static struct
     NULL,				"element can move with some pattern"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(7),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CUSTOM_CAN_FALL,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_FALL],
     NULL, NULL,
     "can fall",				"element can fall down"
   },
   {
-    -1,					ED_ELEMENT_SETTINGS_YPOS(7),
+    -1,					ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CUSTOM_CAN_SMASH,		GADGET_ID_CUSTOM_CAN_FALL,
     &custom_element_properties[EP_CAN_SMASH],
     NULL, " ",
     NULL,				"element can smash other elements"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CUSTOM_SLIPPERY,		GADGET_ID_NONE,
     &custom_element_properties[EP_SLIPPERY],
     NULL, NULL,
     NULL,				"other elements can fall down from it"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_CUSTOM_DEADLY,		GADGET_ID_NONE,
     &custom_element_properties[EP_DEADLY],
     NULL, NULL,
     NULL,				"element can kill the player"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CUSTOM_CAN_EXPLODE,	GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_EXPLODE],
     NULL, NULL,
     NULL,				"element can explode"
   },
   {
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(11),
+    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_CUSTOM_EXPLODE_FIRE,	GADGET_ID_NONE,
     &custom_element_properties[EP_EXPLODES_BY_FIRE],
     NULL, NULL,
     "by fire",				"element can explode by fire/explosion"
   },
   {
-    -1,					ED_ELEMENT_SETTINGS_YPOS(11),
+    -1,					ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_CUSTOM_EXPLODE_SMASH,	GADGET_ID_CUSTOM_EXPLODE_FIRE,
     &custom_element_properties[EP_EXPLODES_SMASHED],
     NULL, " ",
     "smashed",				"element can explode when smashed"
   },
   {
-    -1,					ED_ELEMENT_SETTINGS_YPOS(11),
+    -1,					ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_CUSTOM_EXPLODE_IMPACT,	GADGET_ID_CUSTOM_EXPLODE_SMASH,
     &custom_element_properties[EP_EXPLODES_IMPACT],
     NULL, " ",
@@ -3708,7 +3732,7 @@ static struct
   // ---------- custom content (when exploding) -------------------------------
 
   {
-    -1,					ED_AREA_3X3_SETTINGS_YPOS(10),
+    -1,					ED_AREA_3X3_SETTINGS_YPOS(11),
     0,					ED_AREA_3X3_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CONTENT,		GADGET_ID_NONE,	// align three rows
     &custom_element.content.e[0][0],	3, 3,
@@ -10035,7 +10059,7 @@ static void DrawPropertiesConfig(void)
     checkbutton_info[ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID].x =
       ED_ELEMENT_SETTINGS_XPOS(IS_CUSTOM_ELEMENT(properties_element) ? 1 : 0);
     checkbutton_info[ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID].y =
-      ED_ELEMENT_SETTINGS_YPOS(IS_CUSTOM_ELEMENT(properties_element) ? 6 :
+      ED_ELEMENT_SETTINGS_YPOS(IS_CUSTOM_ELEMENT(properties_element) ? 7 :
 			       IS_BALLOON_ELEMENT(properties_element) ||
 			       HAS_EDITOR_CONTENT(properties_element) ? 1 : 0);
 
