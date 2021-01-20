@@ -4508,7 +4508,7 @@ void LoadLevelSetup_LastSeries(void)
   leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
 
   // start with empty history of last played level sets
-  setup.level_setup.last_level_series[0] = NULL;
+  setString(&setup.level_setup.last_level_series[0], NULL);
 
   if (!strEqual(DEFAULT_LEVELSET, UNDEFINED_LEVELSET))
   {
@@ -4540,11 +4540,11 @@ void LoadLevelSetup_LastSeries(void)
       leveldir_last = getTreeInfoFromIdentifier(leveldir_first,
 						last_level_series);
       if (leveldir_last != NULL)
-	setup.level_setup.last_level_series[pos++] =
-	  getStringCopy(last_level_series);
+	setString(&setup.level_setup.last_level_series[pos++],
+		  last_level_series);
     }
 
-    setup.level_setup.last_level_series[pos] = NULL;
+    setString(&setup.level_setup.last_level_series[pos], NULL);
 
     freeSetupFileHash(level_setup_hash);
   }
