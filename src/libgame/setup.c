@@ -4420,7 +4420,7 @@ static void InitLastPlayedLevels_ParentNode(void)
 
   pushTreeInfo(leveldir_top, leveldir_new);
 
-  /* create node to link back to current level directory */
+  // create node to link back to current level directory
   createParentTreeInfoNode(leveldir_new);
 }
 
