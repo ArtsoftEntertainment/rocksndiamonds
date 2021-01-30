@@ -1388,16 +1388,23 @@ static boolean adjustTreeSoundsForEMC(TreeInfo *node)
 
 void dumpTreeInfo(TreeInfo *node, int depth)
 {
+  char bullet_list[] = { '-', '*', 'o' };
   int i;
 
-  Debug("tree", "Dumping TreeInfo:");
+  if (depth == 0)
+    Debug("tree", "Dumping TreeInfo:");
 
   while (node)
   {
-    for (i = 0; i < (depth + 1) * 3; i++)
+    char bullet = bullet_list[depth % ARRAY_SIZE(bullet_list)];
+
+    for (i = 0; i < depth * 2; i++)
       DebugContinued("", " ");
 
-    DebugContinued("tree", "'%s' / '%s'\n", node->identifier, node->name);
+    DebugContinued("tree", "%c '%s' ['%s] [PARENT: '%s'] %s\n",
+		   bullet, node->name, node->identifier,
+		   (node->node_parent ? node->node_parent->identifier : "-"),
+		   (node->node_group ? "[GROUP]" : ""));
 
     /*
     // use for dumping artwork info tree
