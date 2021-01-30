@@ -2912,7 +2912,7 @@ static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
   ti_new->parent_link = FALSE;
 
   setString(&ti_new->identifier, node_first->identifier);
-  setString(&ti_new->name, "level sets");
+  setString(&ti_new->name, INFOTEXT_LEVEL_DIR);
   setString(&ti_new->name_sorting, ti_new->name);
 
   setString(&ti_new->subdir, STRING_TOP_DIRECTORY);
@@ -2921,7 +2921,7 @@ static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
   ti_new->sort_priority = node_first->sort_priority;;
   ti_new->latest_engine = node_first->latest_engine;
 
-  setString(&ti_new->class_desc, "level sets");
+  setString(&ti_new->class_desc, INFOTEXT_LEVEL_DIR);
 
   ti_new->node_group = node_first;
   ti_new->level_group = TRUE;
