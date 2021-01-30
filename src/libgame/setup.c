@@ -1163,6 +1163,16 @@ void pushTreeInfo(TreeInfo **node_first, TreeInfo *node_new)
   *node_first = node_new;
 }
 
+void removeTreeInfo(TreeInfo **node_first)
+{
+  TreeInfo *node_old = *node_first;
+
+  *node_first = node_old->next;
+  node_old->next = NULL;
+
+  freeTreeInfo(node_old);
+}
+
 int numTreeInfo(TreeInfo *node)
 {
   int num = 0;
@@ -3989,12 +3999,7 @@ static void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
 
       // if sub-tree has no custom artwork at all, remove it
       if (artwork_new->node_group->next == NULL)
-      {
-	*artwork_node = artwork_new->next;
-	artwork_new->next = NULL;
-
-	freeTreeInfo(artwork_new);
-      }
+	removeTreeInfo(artwork_node);
     }
 
     level_node = level_node->next;

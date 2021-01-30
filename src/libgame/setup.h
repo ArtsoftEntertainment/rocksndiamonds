@@ -262,6 +262,7 @@ void InitLevelSetupDirectory(char *);
 TreeInfo *newTreeInfo(void);
 TreeInfo *newTreeInfo_setDefaults(int);
 void pushTreeInfo(TreeInfo **, TreeInfo *);
+void removeTreeInfo(TreeInfo **);
 int numTreeInfo(TreeInfo *);
 boolean validLevelSeries(TreeInfo *);
 TreeInfo *getFirstValidTreeInfoEntry(TreeInfo *);
