@@ -3914,6 +3914,7 @@ void LoadArtworkInfo(void)
 }
 
 static void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
+					 ArtworkDirTree *node_parent,
 					 LevelDirTree *level_node)
 {
   int type = (*artwork_node)->type;
@@ -3963,7 +3964,38 @@ static void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node,
     DrawInitText(level_node->name, 150, FC_YELLOW);
 
     if (level_node->node_group != NULL)
-      LoadArtworkInfoFromLevelInfo(artwork_node, level_node->node_group);
+    {
+      TreeInfo *artwork_new = newTreeInfo();
+
+      if (node_parent)
+	setTreeInfoToDefaultsFromParent(artwork_new, node_parent);
+      else
+	setTreeInfoToDefaults(artwork_new, type);
+
+      artwork_new->level_group = TRUE;
+
+      setString(&artwork_new->identifier,   level_node->subdir);
+      setString(&artwork_new->name,         level_node->name);
+      setString(&artwork_new->name_sorting, level_node->name_sorting);
+
+      pushTreeInfo(artwork_node, artwork_new);
+
+      // create node to link back to current custom artwork directory
+      createParentTreeInfoNode(artwork_new);
+
+      // recursively step into sub-directory and look for more custom artwork
+      LoadArtworkInfoFromLevelInfo(&artwork_new->node_group, artwork_new,
+				   level_node->node_group);
+
+      // if sub-tree has no custom artwork at all, remove it
+      if (artwork_new->node_group->next == NULL)
+      {
+	*artwork_node = artwork_new->next;
+	artwork_new->next = NULL;
+
+	freeTreeInfo(artwork_new);
+      }
+    }
 
     level_node = level_node->next;
   }
@@ -3977,11 +4009,11 @@ void LoadLevelArtworkInfo(void)
 
   print_timestamp_time("DrawTimeText");
 
-  LoadArtworkInfoFromLevelInfo(&artwork.gfx_first, leveldir_first_all);
+  LoadArtworkInfoFromLevelInfo(&artwork.gfx_first, NULL, leveldir_first_all);
   print_timestamp_time("LoadArtworkInfoFromLevelInfo (gfx)");
-  LoadArtworkInfoFromLevelInfo(&artwork.snd_first, leveldir_first_all);
+  LoadArtworkInfoFromLevelInfo(&artwork.snd_first, NULL, leveldir_first_all);
   print_timestamp_time("LoadArtworkInfoFromLevelInfo (snd)");
-  LoadArtworkInfoFromLevelInfo(&artwork.mus_first, leveldir_first_all);
+  LoadArtworkInfoFromLevelInfo(&artwork.mus_first, NULL, leveldir_first_all);
   print_timestamp_time("LoadArtworkInfoFromLevelInfo (mus)");
 
   SaveArtworkInfoCache();

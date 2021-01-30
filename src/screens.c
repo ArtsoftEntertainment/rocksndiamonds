@@ -6329,6 +6329,23 @@ static void execSetupTouch(void)
 
 static void execSetupArtwork(void)
 {
+  static ArtworkDirTree *gfx_last_valid = NULL;
+  static ArtworkDirTree *snd_last_valid = NULL;
+  static ArtworkDirTree *mus_last_valid = NULL;
+
+  // current artwork directory may be invalid (level group, parent link)
+  if (!validLevelSeries(artwork.gfx_current))
+    artwork.gfx_current = getFirstValidTreeInfoEntry(gfx_last_valid);
+  if (!validLevelSeries(artwork.snd_current))
+    artwork.snd_current = getFirstValidTreeInfoEntry(snd_last_valid);
+  if (!validLevelSeries(artwork.mus_current))
+    artwork.mus_current = getFirstValidTreeInfoEntry(mus_last_valid);
+
+  // store valid artwork directory information
+  gfx_last_valid = artwork.gfx_current;
+  snd_last_valid = artwork.snd_current;
+  mus_last_valid = artwork.mus_current;
+
 #if 0
   Debug("screens:execSetupArtwork", "'%s', '%s', '%s'",
 	artwork.gfx_current->subdir,
