@@ -3925,7 +3925,8 @@ void LoadArtworkInfo(void)
 
 static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 					    ArtworkDirTree *node_parent,
-					    LevelDirTree *level_node)
+					    LevelDirTree *level_node,
+					    boolean empty_level_set_mode)
 {
   int type = (*artwork_node)->type;
 
@@ -3933,8 +3934,10 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 
   while (level_node)
   {
+    boolean empty_level_set = (level_node->levels == 0);
+
     // check all tree entries for artwork, but skip parent link entries
-    if (!level_node->parent_link)
+    if (!level_node->parent_link && empty_level_set == empty_level_set_mode)
     {
       TreeInfo *artwork_new = getArtworkInfoCacheEntry(level_node, type);
       boolean cached = (artwork_new != NULL);
@@ -3985,8 +3988,21 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
       artwork_new->level_group = TRUE;
 
       setString(&artwork_new->identifier,   level_node->subdir);
-      setString(&artwork_new->name,         level_node->name);
-      setString(&artwork_new->name_sorting, level_node->name_sorting);
+
+      if (node_parent == NULL)		// check for top tree node
+      {
+	char *top_node_name = (empty_level_set_mode ?
+			       "artwork-only level sets" :
+			       "artwork from level sets");
+
+	setString(&artwork_new->name,         top_node_name);
+	setString(&artwork_new->name_sorting, top_node_name);
+      }
+      else
+      {
+	setString(&artwork_new->name,         level_node->name);
+	setString(&artwork_new->name_sorting, level_node->name_sorting);
+      }
 
       pushTreeInfo(artwork_node, artwork_new);
 
@@ -3995,7 +4011,8 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 
       // recursively step into sub-directory and look for more custom artwork
       LoadArtworkInfoFromLevelInfoExt(&artwork_new->node_group, artwork_new,
-				      level_node->node_group);
+				      level_node->node_group,
+				      empty_level_set_mode);
 
       // if sub-tree has no custom artwork at all, remove it
       if (artwork_new->node_group->next == NULL)
@@ -4008,7 +4025,8 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 
 static void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node)
 {
-  LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all);
+  LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all, TRUE);
+  LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all, FALSE);
 }
 
 void LoadLevelArtworkInfo(void)
