@@ -783,6 +783,7 @@
 #define INFOTEXT_PLAYER_NAME	"Players & Teams"
 
 #define BACKLINK_TEXT_MAIN	".. (main menu)"
+#define BACKLINK_TEXT_SETUP	".. (setup menu)"
 #define BACKLINK_TEXT_PARENT	".. (parent directory)"
 
 #define TREE_INFOTEXT(t)	((t) == TREE_TYPE_PLAYER_NAME ?		\
@@ -798,6 +799,10 @@
 				 (t) == TREE_TYPE_MUSIC_DIR ?		\
 				 INFOTEXT_MUSIC_DIR :			\
 				 INFOTEXT_UNDEFINED)
+
+#define TREE_BACKLINK_TEXT(t)	((t) == TREE_TYPE_LEVEL_DIR ?		\
+				 BACKLINK_TEXT_MAIN :			\
+				 BACKLINK_TEXT_SETUP)
 
 #define TREE_USERDIR(t)		((t) == TREE_TYPE_LEVEL_DIR ?		\
 				 getUserLevelDir(NULL) :		\

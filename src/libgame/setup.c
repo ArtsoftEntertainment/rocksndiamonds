@@ -2928,7 +2928,7 @@ static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
 
   TreeInfo *ti_new2 = createParentTreeInfoNode(ti_new);
 
-  setString(&ti_new2->name, BACKLINK_TEXT_MAIN);
+  setString(&ti_new2->name, TREE_BACKLINK_TEXT(type));
   setString(&ti_new2->name_sorting, ti_new2->name);
 
   return ti_new;
