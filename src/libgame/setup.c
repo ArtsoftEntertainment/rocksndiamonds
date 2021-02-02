@@ -3923,6 +3923,29 @@ void LoadArtworkInfo(void)
 #endif
 }
 
+static void MoveArtworkInfoIntoSubTree(ArtworkDirTree **artwork_node)
+{
+  ArtworkDirTree *artwork_new = newTreeInfo();
+  char *top_node_name = "dedicated custom artwork";
+
+  setTreeInfoToDefaults(artwork_new, (*artwork_node)->type);
+
+  artwork_new->level_group = TRUE;
+
+  setString(&artwork_new->identifier,   top_node_name);
+  setString(&artwork_new->name,         top_node_name);
+  setString(&artwork_new->name_sorting, top_node_name);
+
+  // create node to link back to current custom artwork directory
+  createParentTreeInfoNode(artwork_new);
+
+  // move existing custom artwork tree into newly created sub-tree
+  artwork_new->node_group->next = *artwork_node;
+
+  // change custom artwork tree to contain only newly created node
+  *artwork_node = artwork_new;
+}
+
 static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 					    ArtworkDirTree *node_parent,
 					    LevelDirTree *level_node,
@@ -4025,6 +4048,8 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 
 static void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node)
 {
+  MoveArtworkInfoIntoSubTree(artwork_node);
+
   LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all, TRUE);
   LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all, FALSE);
 }
