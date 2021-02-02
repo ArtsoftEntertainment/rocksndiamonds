@@ -2900,12 +2900,11 @@ static TreeInfo *createParentTreeInfoNode(TreeInfo *node_parent)
 
 static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
 {
-  TreeInfo *ti_new, *ti_new2;
-
   if (node_first == NULL)
     return NULL;
 
-  ti_new = newTreeInfo();
+  TreeInfo *ti_new = newTreeInfo();
+
   setTreeInfoToDefaults(ti_new, TREE_TYPE_LEVEL_DIR);
 
   ti_new->node_parent = NULL;
@@ -2926,7 +2925,7 @@ static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
   ti_new->node_group = node_first;
   ti_new->level_group = TRUE;
 
-  ti_new2 = createParentTreeInfoNode(ti_new);
+  TreeInfo *ti_new2 = createParentTreeInfoNode(ti_new);
 
   setString(&ti_new2->name, ".. (main menu)");
   setString(&ti_new2->name_sorting, ti_new2->name);
