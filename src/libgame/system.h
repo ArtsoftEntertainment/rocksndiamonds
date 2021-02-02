@@ -782,6 +782,9 @@
 #define INFOTEXT_LEVEL_NR	"Levels"
 #define INFOTEXT_PLAYER_NAME	"Players & Teams"
 
+#define BACKLINK_TEXT_MAIN	".. (main menu)"
+#define BACKLINK_TEXT_PARENT	".. (parent directory)"
+
 #define TREE_INFOTEXT(t)	((t) == TREE_TYPE_PLAYER_NAME ?		\
 				 INFOTEXT_PLAYER_NAME :			\
 				 (t) == TREE_TYPE_LEVEL_NR ?		\

@@ -2882,7 +2882,7 @@ static TreeInfo *createParentTreeInfoNode(TreeInfo *node_parent)
   ti_new->parent_link = TRUE;
 
   setString(&ti_new->identifier, node_parent->identifier);
-  setString(&ti_new->name, ".. (parent directory)");
+  setString(&ti_new->name, BACKLINK_TEXT_PARENT);
   setString(&ti_new->name_sorting, ti_new->name);
 
   setString(&ti_new->subdir, STRING_PARENT_DIRECTORY);
@@ -2928,7 +2928,7 @@ static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
 
   TreeInfo *ti_new2 = createParentTreeInfoNode(ti_new);
 
-  setString(&ti_new2->name, ".. (main menu)");
+  setString(&ti_new2->name, BACKLINK_TEXT_MAIN);
   setString(&ti_new2->name_sorting, ti_new2->name);
 
   return ti_new;
