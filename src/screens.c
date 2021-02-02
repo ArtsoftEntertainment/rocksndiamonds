@@ -4355,9 +4355,16 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
 
   if (strEqual((*ti_ptr)->subdir, STRING_TOP_DIRECTORY))
   {
-    SetGameStatus(GAME_MODE_MAIN);
+    if (game_status == GAME_MODE_SETUP)
+    {
+      execSetupArtwork();
+    }
+    else	// GAME_MODE_LEVELS
+    {
+      SetGameStatus(GAME_MODE_MAIN);
 
-    DrawMainMenu();
+      DrawMainMenu();
+    }
 
     return;
   }

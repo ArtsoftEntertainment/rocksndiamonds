@@ -4068,6 +4068,9 @@ static void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node)
   LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all, TRUE);
   LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all, FALSE);
 
+  // add top tree node over all three separate sub-trees
+  *artwork_node = createTopTreeInfoNode(*artwork_node);
+
   // set all parent links (back links) in complete artwork tree
   setTreeInfoParentNodes(*artwork_node, NULL);
 }
