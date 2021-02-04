@@ -3974,7 +3974,7 @@ void LoadArtworkInfo(void)
 static void MoveArtworkInfoIntoSubTree(ArtworkDirTree **artwork_node)
 {
   ArtworkDirTree *artwork_new = newTreeInfo();
-  char *top_node_name = "dedicated custom artwork";
+  char *top_node_name = "standalone artwork";
 
   setTreeInfoToDefaults(artwork_new, (*artwork_node)->type);
 
@@ -4065,8 +4065,8 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
       if (node_parent == NULL)		// check for top tree node
       {
 	char *top_node_name = (empty_level_set_mode ?
-			       "artwork-only level sets" :
-			       "artwork from level sets");
+			       "artwork for certain level sets" :
+			       "artwork included in level sets");
 
 	setString(&artwork_new->name,         top_node_name);
 	setString(&artwork_new->name_sorting, top_node_name);
