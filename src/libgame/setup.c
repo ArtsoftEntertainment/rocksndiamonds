@@ -3026,6 +3026,9 @@ static boolean modifiedFileTimestamp(char *filename, char *timestamp_string)
   if (timestamp_string == NULL)
     return TRUE;
 
+  if (!fileExists(filename))			// file does not exist
+    return (atoi(timestamp_string) != 0);
+
   if (stat(filename, &file_status) != 0)	// cannot stat file
     return TRUE;
 
