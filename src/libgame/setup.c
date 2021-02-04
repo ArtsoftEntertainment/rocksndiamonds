@@ -96,6 +96,7 @@ static SetupFileHash *artworkinfo_cache_old = NULL;
 static SetupFileHash *artworkinfo_cache_new = NULL;
 static SetupFileHash *optional_tokens_hash = NULL;
 static boolean use_artworkinfo_cache = TRUE;
+static boolean update_artworkinfo_cache = FALSE;
 
 
 // ----------------------------------------------------------------------------
@@ -2972,10 +2973,15 @@ static void LoadArtworkInfoCache(void)
 
   if (artworkinfo_cache_new == NULL)
     artworkinfo_cache_new = newSetupFileHash();
+
+  update_artworkinfo_cache = FALSE;
 }
 
 static void SaveArtworkInfoCache(void)
 {
+  if (!update_artworkinfo_cache)
+    return;
+
   char *filename = getPath2(getCacheDir(), ARTWORKINFO_CACHE_FILE);
 
   InitCacheDirectory();
@@ -4000,6 +4006,8 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 
 	  artwork_new->sort_priority = level_node->sort_priority;
 	  artwork_new->color = LEVELCOLOR(artwork_new);
+
+	  update_artworkinfo_cache = TRUE;
 	}
 
 	free(path);
