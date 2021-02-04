@@ -2326,9 +2326,37 @@ static boolean loadSetupFileData(void *setup_file_data, char *filename,
   return TRUE;
 }
 
+static int compareSetupFileData(const void *object1, const void *object2)
+{
+  const struct ConfigInfo *entry1 = (struct ConfigInfo *)object1;
+  const struct ConfigInfo *entry2 = (struct ConfigInfo *)object2;
+
+  return strcmp(entry1->token, entry2->token);
+}
+
 static void saveSetupFileHash(SetupFileHash *hash, char *filename)
 {
+  int item_count = hashtable_count(hash);
+  int item_size = sizeof(struct ConfigInfo);
+  struct ConfigInfo *sort_array = checked_malloc(item_count * item_size);
   FILE *file;
+  int i = 0;
+
+  // copy string pointers from hash to array
+  BEGIN_HASH_ITERATION(hash, itr)
+  {
+    sort_array[i].token = HASH_ITERATION_TOKEN(itr);
+    sort_array[i].value = HASH_ITERATION_VALUE(itr);
+
+    i++;
+
+    if (i > item_count)		// should never happen
+      break;
+  }
+  END_HASH_ITERATION(hash, itr)
+
+  // sort string pointers from hash in array
+  qsort(sort_array, item_count, item_size, compareSetupFileData);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
@@ -2337,14 +2365,12 @@ static void saveSetupFileHash(SetupFileHash *hash, char *filename)
     return;
   }
 
-  BEGIN_HASH_ITERATION(hash, itr)
-  {
-    fprintf(file, "%s\n", getFormattedSetupEntry(HASH_ITERATION_TOKEN(itr),
-						 HASH_ITERATION_VALUE(itr)));
-  }
-  END_HASH_ITERATION(hash, itr)
-
+  for (i = 0; i < item_count; i++)
+    fprintf(file, "%s\n", getFormattedSetupEntry(sort_array[i].token,
+						 sort_array[i].value));
   fclose(file);
+
+  checked_free(sort_array);
 }
 
 SetupFileList *loadSetupFileList(char *filename)
