@@ -2878,15 +2878,7 @@ static int compareTreeInfoEntries(const void *object1, const void *object2)
   if (entry1->parent_link || entry2->parent_link)
     compare_result = (entry1->parent_link ? -1 : +1);
   else if (entry1->sort_priority == entry2->sort_priority)
-  {
-    char *name1 = getStringToLower(entry1->name_sorting);
-    char *name2 = getStringToLower(entry2->name_sorting);
-
-    compare_result = strcmp(name1, name2);
-
-    free(name1);
-    free(name2);
-  }
+    compare_result = strcasecmp(entry1->name_sorting, entry2->name_sorting);
   else if (class_sorting1 == class_sorting2)
     compare_result = entry1->sort_priority - entry2->sort_priority;
   else
