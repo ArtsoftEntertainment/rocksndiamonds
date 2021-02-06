@@ -4503,6 +4503,12 @@ static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
     MarkTileDirty(x, 1);
 }
 
+static void drawChooseTreeCursorAndText(int y, boolean active, TreeInfo *ti)
+{
+  drawChooseTreeCursor(y, active);
+  drawChooseTreeText(y, active, ti);
+}
+
 static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 			     TreeInfo **ti_ptr)
 {
@@ -4550,7 +4556,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
     drawChooseTreeList(ti->cl_first, num_page_entries, ti);
     drawChooseTreeInfo(ti->cl_first + ti->cl_cursor, ti);
-    drawChooseTreeCursor(ti->cl_cursor, TRUE);
+    drawChooseTreeCursorAndText(ti->cl_cursor, TRUE, ti);
 
     return;
   }
@@ -4660,7 +4666,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       {
 	drawChooseTreeList(ti->cl_first, num_page_entries, ti);
 	drawChooseTreeInfo(ti->cl_first + ti->cl_cursor, ti);
-	drawChooseTreeCursor(ti->cl_cursor, TRUE);
+	drawChooseTreeCursorAndText(ti->cl_cursor, TRUE, ti);
 
 	AdjustChooseTreeScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL,
 				  ti->cl_first, ti);
@@ -4724,8 +4730,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       {
 	PlaySound(SND_MENU_ITEM_ACTIVATING);
 
-	drawChooseTreeCursor(ti->cl_cursor, FALSE);
-	drawChooseTreeCursor(y, TRUE);
+	drawChooseTreeCursorAndText(ti->cl_cursor, FALSE, ti);
+	drawChooseTreeCursorAndText(y, TRUE, ti);
 	drawChooseTreeInfo(ti->cl_first + y, ti);
 
 	ti->cl_cursor = y;
