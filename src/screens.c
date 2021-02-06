@@ -4398,13 +4398,39 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   FadeIn(fade_mask);
 }
 
-static void drawChooseTreeList(int first_entry, int num_page_entries,
-			       TreeInfo *ti)
+static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
 {
   int num_entries = numTreeInfoInGroup(ti);
   boolean scrollbar_needed = (num_entries > NUM_MENU_ENTRIES_ON_SCREEN);
   int scrollbar_xpos = SC_SCROLLBAR_XPOS + menu.scrollbar_xoffset;
   int screen_width = (scrollbar_needed ? scrollbar_xpos : SXSIZE);
+  int first_entry = ti->cl_first;
+  int entry_pos = first_entry + y;
+  TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
+  TreeInfo *node = getTreeInfoFromPos(node_first, entry_pos);
+  int node_color = (node->color == FC_YELLOW ? FC_GREEN : node->color);
+  int color = (active ? FC_YELLOW : node_color);
+  int font_nr = MENU_CHOOSE_TREE_FONT(color);
+  int font_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
+  int xpos = MENU_SCREEN_START_XPOS;
+  int ypos = MENU_SCREEN_START_YPOS + y;
+  int startx = amSX + xpos * 32;
+  int starty = amSY + ypos * 32;
+  int startx_text = startx + font_xoffset;
+  int endx_text = amSX + screen_width;
+  int max_text_size = endx_text - startx_text;
+  int max_buffer_len = max_text_size / getFontWidth(font_nr);
+  char buffer[max_buffer_len + 1];
+
+  strncpy(buffer, node->name, max_buffer_len);
+  buffer[max_buffer_len] = '\0';
+
+  DrawText(startx, starty, buffer, font_nr);
+}
+
+static void drawChooseTreeList(int first_entry, int num_page_entries,
+			       TreeInfo *ti)
+{
   int i;
   char *title_string = NULL;
   int yoffset_sets = MENU_TITLE1_YPOS;
@@ -4426,22 +4452,7 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
     node_first = getTreeInfoFirstGroupEntry(ti);
     node = getTreeInfoFromPos(node_first, entry_pos);
 
-    int font_nr = MENU_CHOOSE_TREE_FONT(node->color);
-    int font_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
-    int xpos = MENU_SCREEN_START_XPOS;
-    int ypos = MENU_SCREEN_START_YPOS + i;
-    int startx = amSX + xpos * 32;
-    int starty = amSY + ypos * 32;
-    int startx_text = startx + font_xoffset;
-    int endx_text = amSX + screen_width;
-    int max_text_size = endx_text - startx_text;
-    int max_buffer_len = max_text_size / getFontWidth(font_nr);
-    char buffer[max_buffer_len + 1];
-
-    strncpy(buffer, node->name, max_buffer_len);
-    buffer[max_buffer_len] = '\0';
-
-    DrawText(startx, starty, buffer, font_nr);
+    drawChooseTreeText(i, FALSE, ti);
 
     if (node->parent_link)
       initCursor(i, IMG_MENU_BUTTON_LEAVE_MENU);
