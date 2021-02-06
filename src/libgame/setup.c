@@ -43,14 +43,13 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
   "DX Boulderdash"
 };
 
-
 #define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		FC_BLUE :    \
 			 IS_LEVELCLASS_CLASSICS(n) ?		FC_RED :     \
-			 IS_LEVELCLASS_BD(n) ?			FC_YELLOW :  \
-			 IS_LEVELCLASS_EM(n) ?			FC_YELLOW :  \
-			 IS_LEVELCLASS_SP(n) ?			FC_YELLOW :  \
-			 IS_LEVELCLASS_DX(n) ?			FC_YELLOW :  \
-			 IS_LEVELCLASS_SB(n) ?			FC_YELLOW :  \
+			 IS_LEVELCLASS_BD(n) ?			FC_GREEN :   \
+			 IS_LEVELCLASS_EM(n) ?			FC_GREEN :   \
+			 IS_LEVELCLASS_SP(n) ?			FC_GREEN :   \
+			 IS_LEVELCLASS_DX(n) ?			FC_GREEN :   \
+			 IS_LEVELCLASS_SB(n) ?			FC_GREEN :   \
 			 IS_LEVELCLASS_CONTRIB(n) ?		FC_GREEN :   \
 			 IS_LEVELCLASS_PRIVATE(n) ?		FC_RED :     \
 			 FC_BLUE)
@@ -69,7 +68,7 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 #define ARTWORKCOLOR(n)	(IS_ARTWORKCLASS_CLASSICS(n) ?		FC_RED :     \
 			 IS_ARTWORKCLASS_CONTRIB(n) ?		FC_GREEN :   \
 			 IS_ARTWORKCLASS_PRIVATE(n) ?		FC_RED :     \
-			 IS_ARTWORKCLASS_LEVEL(n) ?		FC_YELLOW :  \
+			 IS_ARTWORKCLASS_LEVEL(n) ?		FC_GREEN :   \
 			 FC_BLUE)
 
 #define ARTWORKSORTING(n) (IS_ARTWORKCLASS_CLASSICS(n) ?	0 :	\
