@@ -4027,6 +4027,7 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 	  setString(&artwork_new->name_sorting, level_node->name_sorting);
 
 	  artwork_new->sort_priority = level_node->sort_priority;
+	  artwork_new->in_user_dir = level_node->in_user_dir;
 	  artwork_new->color = LEVELCOLOR(artwork_new);
 
 	  update_artworkinfo_cache = TRUE;
