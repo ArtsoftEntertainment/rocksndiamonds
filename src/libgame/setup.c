@@ -2858,34 +2858,13 @@ static int compareTreeInfoEntries(const void *object1, const void *object2)
 {
   const TreeInfo *entry1 = *((TreeInfo **)object1);
   const TreeInfo *entry2 = *((TreeInfo **)object2);
-  int class_sorting1 = 0, class_sorting2 = 0;
-  int compare_result;
+  int tree_sorting1 = TREE_SORTING(entry1);
+  int tree_sorting2 = TREE_SORTING(entry2);
 
-  if (entry1->type == TREE_TYPE_LEVEL_DIR)
-  {
-    class_sorting1 = LEVELSORTING(entry1);
-    class_sorting2 = LEVELSORTING(entry2);
-  }
-  else if (entry1->type == TREE_TYPE_GRAPHICS_DIR ||
-	   entry1->type == TREE_TYPE_SOUNDS_DIR ||
-	   entry1->type == TREE_TYPE_MUSIC_DIR)
-  {
-    class_sorting1 = ARTWORKSORTING(entry1);
-    class_sorting2 = ARTWORKSORTING(entry2);
-  }
-
-  if (entry1->parent_link || entry2->parent_link)
-    compare_result = (entry1->parent_link ? -1 : +1);
-  else if (entry1->level_group != entry2->level_group)
-    compare_result = (entry1->level_group ? -1 : +1);
-  else if (entry1->sort_priority == entry2->sort_priority)
-    compare_result = strcasecmp(entry1->name_sorting, entry2->name_sorting);
-  else if (class_sorting1 == class_sorting2)
-    compare_result = entry1->sort_priority - entry2->sort_priority;
+  if (tree_sorting1 != tree_sorting2)
+    return (tree_sorting1 - tree_sorting2);
   else
-    compare_result = class_sorting1 - class_sorting2;
-
-  return compare_result;
+    return strcasecmp(entry1->name_sorting, entry2->name_sorting);
 }
 
 static TreeInfo *createParentTreeInfoNode(TreeInfo *node_parent)

@@ -227,6 +227,28 @@ typedef struct hashtable     SetupFileHash;
 			 IS_ARTWORKCLASS_LEVEL(n) ? ARTWORKCLASS_LEVEL :      \
 			 ARTWORKCLASS_UNDEFINED)
 
+#define TREE_SORTING_DIR(ti)						\
+	(((ti)->parent_link					? 0 :	\
+	  (ti)->in_user_dir					? 8 :	\
+	  (ti)->sort_priority >= LEVELCLASS_CLASSICS_START	? 6 :	\
+	  (ti)->sort_priority >= LEVELCLASS_TUTORIAL_START	? 4 :	\
+	  2) +								\
+	 ((ti)->level_group ? 0 : 1))
+
+#define TREE_COLOR_DIR(ti, active)					\
+	((active)			? FC_YELLOW :			\
+	 TREE_SORTING(ti) / 2 == 4	? FC_GREEN :			\
+	 TREE_SORTING(ti) / 2 == 2	? FC_BLUE :			\
+	 FC_RED)
+
+#define TREE_SORTING(ti)						\
+	(TREE_TYPE_IS_DIR((ti)->type) ? TREE_SORTING_DIR(ti) :		\
+	 (ti)->sort_priority)
+
+#define TREE_COLOR(ti, active)						\
+	(TREE_TYPE_IS_DIR((ti)->type) ? TREE_COLOR_DIR(ti, active) :	\
+	 (ti)->color)
+
 
 char *getUserGraphicsDir(void);
 char *getUserSoundsDir(void);

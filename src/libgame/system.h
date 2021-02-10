@@ -774,6 +774,11 @@
 #define NUM_BASE_TREE_TYPES	4
 #define NUM_TREE_TYPES		6
 
+#define TREE_TYPE_IS_DIR(type)	((type) == TREE_TYPE_GRAPHICS_DIR ||	\
+				 (type) == TREE_TYPE_SOUNDS_DIR ||	\
+				 (type) == TREE_TYPE_MUSIC_DIR ||	\
+				 (type) == TREE_TYPE_LEVEL_DIR)
+
 #define INFOTEXT_UNDEFINED	""
 #define INFOTEXT_GRAPHICS_DIR	"Custom Graphics"
 #define INFOTEXT_SOUNDS_DIR	"Custom Sounds"

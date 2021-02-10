@@ -126,6 +126,7 @@
 // other screen text constants
 #define STR_CHOOSE_TREE_EDIT		"Edit"
 #define MENU_CHOOSE_TREE_FONT(x)	(FONT_TEXT_1 + (x))
+#define MENU_CHOOSE_TREE_COLOR(ti, a)	TREE_COLOR(ti, a)
 
 // for input setup functions
 #define SETUPINPUT_SCREEN_POS_START	0
@@ -4408,9 +4409,8 @@ static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
   int entry_pos = first_entry + y;
   TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
   TreeInfo *node = getTreeInfoFromPos(node_first, entry_pos);
-  int node_color = (node->color == FC_YELLOW ? FC_GREEN : node->color);
-  int color = (active ? FC_YELLOW : node_color);
-  int font_nr = MENU_CHOOSE_TREE_FONT(color);
+  int font_color = MENU_CHOOSE_TREE_COLOR(node, active);
+  int font_nr = MENU_CHOOSE_TREE_FONT(font_color);
   int font_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
   int xpos = MENU_SCREEN_START_XPOS;
   int ypos = MENU_SCREEN_START_YPOS + y;
