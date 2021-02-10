@@ -43,40 +43,6 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
   "DX Boulderdash"
 };
 
-#define LEVELCOLOR(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		FC_BLUE :    \
-			 IS_LEVELCLASS_CLASSICS(n) ?		FC_RED :     \
-			 IS_LEVELCLASS_BD(n) ?			FC_GREEN :   \
-			 IS_LEVELCLASS_EM(n) ?			FC_GREEN :   \
-			 IS_LEVELCLASS_SP(n) ?			FC_GREEN :   \
-			 IS_LEVELCLASS_DX(n) ?			FC_GREEN :   \
-			 IS_LEVELCLASS_SB(n) ?			FC_GREEN :   \
-			 IS_LEVELCLASS_CONTRIB(n) ?		FC_GREEN :   \
-			 IS_LEVELCLASS_PRIVATE(n) ?		FC_RED :     \
-			 FC_BLUE)
-
-#define LEVELSORTING(n)	(IS_LEVELCLASS_TUTORIAL(n) ?		0 :	\
-			 IS_LEVELCLASS_CLASSICS(n) ?		1 :	\
-			 IS_LEVELCLASS_BD(n) ?			2 :	\
-			 IS_LEVELCLASS_EM(n) ?			3 :	\
-			 IS_LEVELCLASS_SP(n) ?			4 :	\
-			 IS_LEVELCLASS_DX(n) ?			5 :	\
-			 IS_LEVELCLASS_SB(n) ?			6 :	\
-			 IS_LEVELCLASS_CONTRIB(n) ?		7 :	\
-			 IS_LEVELCLASS_PRIVATE(n) ?		8 :	\
-			 9)
-
-#define ARTWORKCOLOR(n)	(IS_ARTWORKCLASS_CLASSICS(n) ?		FC_RED :     \
-			 IS_ARTWORKCLASS_CONTRIB(n) ?		FC_GREEN :   \
-			 IS_ARTWORKCLASS_PRIVATE(n) ?		FC_RED :     \
-			 IS_ARTWORKCLASS_LEVEL(n) ?		FC_GREEN :   \
-			 FC_BLUE)
-
-#define ARTWORKSORTING(n) (IS_ARTWORKCLASS_CLASSICS(n) ?	0 :	\
-			   IS_ARTWORKCLASS_LEVEL(n) ?		1 :	\
-			   IS_ARTWORKCLASS_CONTRIB(n) ?		2 :	\
-			   IS_ARTWORKCLASS_PRIVATE(n) ?		3 :	\
-			   9)
-
 #define TOKEN_VALUE_POSITION_SHORT		32
 #define TOKEN_VALUE_POSITION_DEFAULT		40
 #define TOKEN_COMMENT_POSITION_DEFAULT		60
@@ -2503,7 +2469,6 @@ static struct TokenInfo artworkinfo_tokens[] =
   { TYPE_STRING,	&ldi.basepath,		"basepath"		},
   { TYPE_STRING,	&ldi.fullpath,		"fullpath"		},
   { TYPE_BOOLEAN,	&ldi.in_user_dir,	"in_user_dir"		},
-  { TYPE_INTEGER,	&ldi.color,		"color"			},
   { TYPE_STRING,	&ldi.class_desc,	"class_desc"		},
 
   { -1,			NULL,			NULL			},
@@ -3481,8 +3446,6 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
   leveldir_new->user_defined =
     (leveldir_new->in_user_dir && IS_LEVELCLASS_PRIVATE(leveldir_new));
 
-  leveldir_new->color = LEVELCOLOR(leveldir_new);
-
   setString(&leveldir_new->class_desc, getLevelClassDescription(leveldir_new));
 
   leveldir_new->handicap_level =	// set handicap to default value
@@ -3726,9 +3689,6 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
   artwork_new->in_user_dir =
     (!strEqual(artwork_new->basepath, OPTIONS_ARTWORK_DIRECTORY(type)));
 
-  // (may use ".sort_priority" from "setup_file_hash" above)
-  artwork_new->color = ARTWORKCOLOR(artwork_new);
-
   setString(&artwork_new->class_desc, getLevelClassDescription(artwork_new));
 
   if (setup_file_hash == NULL)	// (after determining ".user_defined")
@@ -3745,9 +3705,6 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
 	setString(&artwork_new->identifier, "classic");
 	artwork_new->sort_priority = ARTWORKCLASS_CLASSICS;
       }
-
-      // set to new values after changing ".sort_priority"
-      artwork_new->color = ARTWORKCOLOR(artwork_new);
 
       setString(&artwork_new->class_desc,
 		getLevelClassDescription(artwork_new));
@@ -4007,7 +3964,6 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 
 	  artwork_new->sort_priority = level_node->sort_priority;
 	  artwork_new->in_user_dir = level_node->in_user_dir;
-	  artwork_new->color = LEVELCOLOR(artwork_new);
 
 	  update_artworkinfo_cache = TRUE;
 	}
