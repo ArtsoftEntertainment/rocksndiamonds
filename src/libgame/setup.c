@@ -2330,6 +2330,8 @@ static void saveSetupFileHash(SetupFileHash *hash, char *filename)
     return;
   }
 
+  fprintf(file, "%s\n\n", getFormattedSetupEntry("program.version",
+						 program.version_string));
   for (i = 0; i < item_count; i++)
     fprintf(file, "%s\n", getFormattedSetupEntry(sort_array[i].token,
 						 sort_array[i].value));
@@ -2926,6 +2928,17 @@ static void LoadArtworkInfoCache(void)
 
     // try to load artwork info hash from already existing cache file
     artworkinfo_cache_old = loadSetupFileHash(filename);
+
+    // try to get program version that artwork info cache was written with
+    char *version = getHashEntry(artworkinfo_cache_old, "program.version");
+
+    // check program version of artwork info cache against current version
+    if (!strEqual(version, program.version_string))
+    {
+      freeSetupFileHash(artworkinfo_cache_old);
+
+      artworkinfo_cache_old = NULL;
+    }
 
     // if no artwork info cache file was found, start with empty hash
     if (artworkinfo_cache_old == NULL)
