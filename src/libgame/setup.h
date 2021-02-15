@@ -229,10 +229,10 @@ typedef struct hashtable     SetupFileHash;
 
 #define TREE_SORTING_DIR(ti)						\
 	(((ti)->parent_link					? 0 :	\
-	  (ti)->in_user_dir					? 8 :	\
-	  (ti)->sort_priority >= LEVELCLASS_CLASSICS_START	? 6 :	\
-	  (ti)->sort_priority >= LEVELCLASS_TUTORIAL_START	? 4 :	\
-	  2) +								\
+	  (ti)->in_user_dir					? 4 :	\
+	  (ti)->sort_priority >= LEVELCLASS_CLASSICS_START	? 3 :	\
+	  (ti)->sort_priority >= LEVELCLASS_TUTORIAL_START	? 2 :	\
+	  1) * 2 +							\
 	 ((ti)->level_group ? 0 : 1))
 
 #define TREE_COLOR_DIR(ti, active)					\
