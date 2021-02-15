@@ -1511,6 +1511,8 @@ char *getHomeDir(void)
     if (!SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, dir)))
       strcpy(dir, ".");
   }
+#elif defined(PLATFORM_EMSCRIPTEN)
+  dir = "/persistent";
 #elif defined(PLATFORM_UNIX)
   if (dir == NULL)
   {

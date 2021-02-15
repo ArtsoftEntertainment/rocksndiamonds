@@ -22,6 +22,8 @@
 #include "windows.h"
 #elif defined(PLATFORM_ANDROID)
 #include "android.h"
+#elif defined(PLATFORM_EMSCRIPTEN)
+#include "emscripten.h"
 #endif
 
 #include "sdl.h"

@@ -104,6 +104,25 @@ void InitProgramInfo(char *argv0, char *config_filename, char *userdata_subdir,
   program.log_file[LOG_ERR_ID] = program.log_file_default[LOG_ERR_ID] = stderr;
 
   program.headless = FALSE;
+
+#if defined(PLATFORM_EMSCRIPTEN)
+  EM_ASM
+  (
+    Module.sync_done = 0;
+
+    FS.mkdir('/persistent');		// create persistent data directory
+    FS.mount(IDBFS, {}, '/persistent');	// mount with IDBFS filesystem type
+    FS.syncfs(true, function(err)	// sync persistent data into memory
+    {
+      assert(!err);
+      Module.sync_done = 1;
+    });
+  );
+
+  // wait for persistent data to be synchronized to memory
+  while (emscripten_run_script_int("Module.sync_done") == 0)
+    Delay(20);
+#endif
 }
 
 void InitNetworkInfo(boolean enabled, boolean connected, boolean serveronly,
