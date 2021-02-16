@@ -331,6 +331,11 @@
 #define CH_SIDE_TOP_BOTTOM		MV_VERTICAL
 #define CH_SIDE_ANY			MV_ANY_DIRECTION
 
+#define CH_SIDE_FROM_BUTTON(b)	((b) == MB_LEFTBUTTON   ? CH_SIDE_LEFT :       \
+				 (b) == MB_RIGHTBUTTON  ? CH_SIDE_RIGHT :      \
+				 (b) == MB_MIDDLEBUTTON ? CH_SIDE_TOP_BOTTOM : \
+				 CH_SIDE_NONE)
+
 // values for change player for custom elements
 #define CH_PLAYER_NONE			PLAYER_BITS_NONE
 #define CH_PLAYER_1			PLAYER_BITS_1

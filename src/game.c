@@ -1075,6 +1075,8 @@ static boolean CheckTriggeredElementChangeExt(int, int, int, int, int,int,int);
 	CheckTriggeredElementChangeExt(x, y, e, ev, CH_PLAYER_ANY, s, -1)
 #define CheckTriggeredElementChangeByPage(x, y, e, ev, p)		\
 	CheckTriggeredElementChangeExt(x,y,e,ev, CH_PLAYER_ANY, CH_SIDE_ANY, p)
+#define CheckTriggeredElementChangeByMouse(x, y, e, ev, s)		\
+	CheckTriggeredElementChangeExt(x, y, e, ev, CH_PLAYER_ANY, s, -1)
 
 static boolean CheckElementChangeExt(int, int, int, int, int, int, int);
 #define CheckElementChange(x, y, e, te, ev)				\
@@ -1083,6 +1085,8 @@ static boolean CheckElementChangeExt(int, int, int, int, int, int, int);
 	CheckElementChangeExt(x, y, e, EL_EMPTY, ev, p, s)
 #define CheckElementChangeBySide(x, y, e, te, ev, s)			\
 	CheckElementChangeExt(x, y, e, te, ev, CH_PLAYER_ANY, s)
+#define CheckElementChangeByMouse(x, y, e, ev, s)			\
+	CheckElementChangeExt(x, y, e, EL_UNDEFINED, ev, CH_PLAYER_ANY, s)
 
 static void PlayLevelSound(int, int, int);
 static void PlayLevelSoundNearest(int, int, int);
@@ -12141,6 +12145,7 @@ void GameActions_RND(void)
   if (mouse_action.button)
   {
     int new_button = (mouse_action.button && mouse_action_last.button == 0);
+    int ch_button = CH_SIDE_FROM_BUTTON(mouse_action.button);
 
     x = mouse_action.lx;
     y = mouse_action.ly;
@@ -12148,12 +12153,14 @@ void GameActions_RND(void)
 
     if (new_button)
     {
-      CheckElementChange(x, y, element, EL_UNDEFINED, CE_CLICKED_BY_MOUSE);
-      CheckTriggeredElementChange(x, y, element, CE_MOUSE_CLICKED_ON_X);
+      CheckElementChangeByMouse(x, y, element, CE_CLICKED_BY_MOUSE, ch_button);
+      CheckTriggeredElementChangeByMouse(x, y, element, CE_MOUSE_CLICKED_ON_X,
+					 ch_button);
     }
 
-    CheckElementChange(x, y, element, EL_UNDEFINED, CE_PRESSED_BY_MOUSE);
-    CheckTriggeredElementChange(x, y, element, CE_MOUSE_PRESSED_ON_X);
+    CheckElementChangeByMouse(x, y, element, CE_PRESSED_BY_MOUSE, ch_button);
+    CheckTriggeredElementChangeByMouse(x, y, element, CE_MOUSE_PRESSED_ON_X,
+				       ch_button);
   }
 
   SCAN_PLAYFIELD(x, y)
