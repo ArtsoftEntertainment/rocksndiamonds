@@ -228,17 +228,19 @@ typedef struct hashtable     SetupFileHash;
 			 ARTWORKCLASS_UNDEFINED)
 
 #define TREE_SORTING_DIR(ti)						\
-	(((ti)->parent_link					? 0 :	\
-	  (ti)->in_user_dir					? 4 :	\
-	  (ti)->sort_priority >= LEVELCLASS_CLASSICS_START	? 3 :	\
-	  (ti)->sort_priority >= LEVELCLASS_TUTORIAL_START	? 2 :	\
-	  1) * 2 +							\
-	 ((ti)->level_group ? 0 : 1))
+	(((ti)->parent_link				   ? 0 :	\
+	  (ti)->in_user_dir				   ? 4 * 200 :	\
+	  (ti)->sort_priority >= LEVELCLASS_CLASSICS_START ? 3 * 200 +	\
+	  (ti)->sort_priority % 100 :					\
+	  (ti)->sort_priority >= LEVELCLASS_TUTORIAL_START ? 2 * 200 +	\
+	  (ti)->sort_priority % 100 :					\
+	  1 * 200) +							\
+	 ((ti)->level_group ? 0 : 100))
 
 #define TREE_COLOR_DIR(ti, active)					\
 	((active)			? FC_YELLOW :			\
-	 TREE_SORTING(ti) / 2 == 4	? FC_GREEN :			\
-	 TREE_SORTING(ti) / 2 == 2	? FC_BLUE :			\
+	 TREE_SORTING(ti) / 200 == 4	? FC_GREEN :			\
+	 TREE_SORTING(ti) / 200 == 2	? FC_BLUE :			\
 	 FC_RED)
 
 #define TREE_SORTING(ti)						\
