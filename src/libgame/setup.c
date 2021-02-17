@@ -4511,6 +4511,7 @@ static void InitLastPlayedLevels_ParentNode(void)
 
   setString(&leveldir_new->identifier, TOKEN_STR_LAST_LEVEL_SERIES);
   setString(&leveldir_new->name, "<< (last played level sets)");
+  setString(&leveldir_new->name_sorting, leveldir_new->name);
 
   pushTreeInfo(leveldir_top, leveldir_new);
 
