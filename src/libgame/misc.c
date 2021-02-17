@@ -1178,6 +1178,22 @@ boolean strEqualN(char *s1, char *s2, int n)
 	  strncmp(s1, s2, n) == 0);
 }
 
+boolean strEqualCase(char *s1, char *s2)
+{
+  return (s1 == NULL && s2 == NULL ? TRUE  :
+	  s1 == NULL && s2 != NULL ? FALSE :
+	  s1 != NULL && s2 == NULL ? FALSE :
+	  strcasecmp(s1, s2) == 0);
+}
+
+boolean strEqualCaseN(char *s1, char *s2, int n)
+{
+  return (s1 == NULL && s2 == NULL ? TRUE  :
+	  s1 == NULL && s2 != NULL ? FALSE :
+	  s1 != NULL && s2 == NULL ? FALSE :
+	  strncasecmp(s1, s2, n) == 0);
+}
+
 boolean strPrefix(char *s, char *prefix)
 {
   return (s == NULL && prefix == NULL ? TRUE  :

@@ -171,6 +171,8 @@ char *getStringToLower(const char *);
 void setString(char **, char *);
 boolean strEqual(char *, char *);
 boolean strEqualN(char *, char *, int);
+boolean strEqualCase(char *, char *);
+boolean strEqualCaseN(char *, char *, int);
 boolean strPrefix(char *, char *);
 boolean strSuffix(char *, char *);
 boolean strPrefixLower(char *, char *);
