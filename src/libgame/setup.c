@@ -2856,7 +2856,7 @@ static TreeInfo *createParentTreeInfoNode(TreeInfo *node_parent)
   setString(&ti_new->subdir, STRING_PARENT_DIRECTORY);
   setString(&ti_new->fullpath, node_parent->fullpath);
 
-  ti_new->sort_priority = node_parent->sort_priority;
+  ti_new->sort_priority = LEVELCLASS_PARENT;
   ti_new->latest_engine = node_parent->latest_engine;
 
   setString(&ti_new->class_desc, getLevelClassDescription(ti_new));
@@ -2879,14 +2879,14 @@ static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
   ti_new->node_parent = NULL;
   ti_new->parent_link = FALSE;
 
-  setString(&ti_new->identifier, node_first->identifier);
+  setString(&ti_new->identifier, "top_tree_node");
   setString(&ti_new->name, TREE_INFOTEXT(type));
   setString(&ti_new->name_sorting, ti_new->name);
 
   setString(&ti_new->subdir, STRING_TOP_DIRECTORY);
   setString(&ti_new->fullpath, ".");
 
-  ti_new->sort_priority = node_first->sort_priority;;
+  ti_new->sort_priority = LEVELCLASS_TOP;
   ti_new->latest_engine = node_first->latest_engine;
 
   setString(&ti_new->class_desc, TREE_INFOTEXT(type));
@@ -4508,6 +4508,7 @@ static void InitLastPlayedLevels_ParentNode(void)
   setTreeInfoToDefaultsFromParent(leveldir_new, leveldir_first);
 
   leveldir_new->level_group = TRUE;
+  leveldir_new->sort_priority = LEVELCLASS_LAST_PLAYED_LEVEL;
 
   setString(&leveldir_new->identifier, TOKEN_STR_LAST_LEVEL_SERIES);
   setString(&leveldir_new->name, "<< (last played level sets)");

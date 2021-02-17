@@ -114,6 +114,11 @@ typedef struct hashtable     SetupFileHash;
   }								\
 
 
+// sort priorities of special tree entries
+#define LEVELCLASS_TOP			0
+#define LEVELCLASS_PARENT		1
+#define LEVELCLASS_LAST_PLAYED_LEVEL	2
+
 // sort priorities of level series (also used as level series classes)
 #define LEVELCLASS_TUTORIAL_START	10
 #define LEVELCLASS_TUTORIAL_END		99
