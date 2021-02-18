@@ -541,7 +541,11 @@ void TapeErase(void)
   tape.length_seconds = 0;
 
   if (leveldir_current)
-    setString(&tape.level_identifier, leveldir_current->identifier);
+  {
+    strncpy(tape.level_identifier, leveldir_current->identifier,
+	    MAX_FILENAME_LEN);
+    tape.level_identifier[MAX_FILENAME_LEN] = '\0';
+  }
 
   tape.level_nr = level_nr;
   tape.pos[tape.counter].delay = 0;
@@ -1160,12 +1164,7 @@ static boolean checkTapesFromSameLevel(struct TapeInfo *t1, struct TapeInfo *t2)
 
 static void CopyTape(struct TapeInfo *tape_from, struct TapeInfo *tape_to)
 {
-  if (tape_to->level_identifier != NULL)
-    checked_free(tape_to->level_identifier);
-
   *tape_to = *tape_from;
-
-  tape_to->level_identifier = getStringCopy(tape_from->level_identifier);
 }
 
 static void SwapTapes(struct TapeInfo *t1, struct TapeInfo *t2)

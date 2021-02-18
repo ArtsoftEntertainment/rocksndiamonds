@@ -178,7 +178,7 @@ struct TapeInfo
   int game_version;	// game release version the tape was created with
   int engine_version;	// game engine version the tape was recorded with
 
-  char *level_identifier;
+  char level_identifier[MAX_FILENAME_LEN + 1];
   int level_nr;
   unsigned int random_seed;
   unsigned int date;

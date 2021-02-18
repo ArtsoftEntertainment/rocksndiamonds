@@ -7765,16 +7765,21 @@ static int LoadTape_SCRN(File *file, int chunk_size, struct TapeInfo *tape)
 
 static int LoadTape_INFO(File *file, int chunk_size, struct TapeInfo *tape)
 {
+  char *level_identifier = NULL;
   int level_identifier_size;
   int i;
 
   level_identifier_size = getFile16BitBE(file);
 
-  tape->level_identifier =
-    checked_realloc(tape->level_identifier, level_identifier_size);
+  level_identifier = checked_malloc(level_identifier_size);
 
   for (i = 0; i < level_identifier_size; i++)
-    tape->level_identifier[i] = getFile8Bit(file);
+    level_identifier[i] = getFile8Bit(file);
+
+  strncpy(tape->level_identifier, level_identifier, MAX_FILENAME_LEN);
+  tape->level_identifier[MAX_FILENAME_LEN] = '\0';
+
+  checked_free(level_identifier);
 
   tape->level_nr = getFile16BitBE(file);
 
