@@ -4879,6 +4879,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	    LoadLevelSetup_LastSeries();
 	    LoadLevelSetup_SeriesInfo();
 
+	    // update list of last played level sets
+	    UpdateLastPlayedLevels_TreeInfo();
+
 	    TapeErase();
 
 	    ToggleFullscreenIfNeeded();
