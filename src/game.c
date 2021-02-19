@@ -15373,12 +15373,12 @@ void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
 {
   if (skip_request || Request(message, REQ_ASK | REQ_STAY_CLOSED))
   {
-    // closing door required in case of envelope style request dialogs
-    if (!skip_request)
+    if (!quick_quit)
     {
       // prevent short reactivation of overlay buttons while closing door
       SetOverlayActive(FALSE);
 
+      // door may still be open due to skipped or envelope style request
       CloseDoor(DOOR_CLOSE_1);
     }
 
@@ -15408,9 +15408,11 @@ void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
 
 void RequestQuitGame(boolean escape_key_pressed)
 {
-  boolean quick_quit = ((escape_key_pressed && !setup.ask_on_escape) ||
+  boolean ask_on_escape = (setup.ask_on_escape && setup.ask_on_quit_game);
+  boolean quick_quit = ((escape_key_pressed && !ask_on_escape) ||
 			level_editor_test_game);
-  boolean skip_request = game.all_players_gone || quick_quit;
+  boolean skip_request = (game.all_players_gone || !setup.ask_on_quit_game ||
+			  quick_quit);
 
   RequestQuitGameExt(skip_request, quick_quit,
 		     "Do you really want to quit the game?");

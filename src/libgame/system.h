@@ -1461,6 +1461,8 @@ struct SetupInfo
   boolean ask_on_escape;
   boolean ask_on_escape_editor;
   boolean ask_on_game_over;
+  boolean ask_on_quit_game;
+  boolean ask_on_quit_program;
   boolean quick_switch;
   boolean input_on_focus;
   boolean prefer_aga_graphics;

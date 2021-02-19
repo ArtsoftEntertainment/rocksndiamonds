@@ -2223,7 +2223,8 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	SaveLevelSetup_LastSeries();
 	SaveLevelSetup_SeriesInfo();
 
-        if (Request("Do you really want to quit?", REQ_ASK | REQ_STAY_CLOSED))
+	if (!setup.ask_on_quit_program ||
+	    Request("Do you really want to quit?", REQ_ASK | REQ_STAY_CLOSED))
 	  SetGameStatus(GAME_MODE_QUIT);
       }
     }
@@ -6732,6 +6733,8 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_SWITCH,	&setup.count_score_after_game,"Count Score After Game:" },
   { TYPE_SWITCH,	&setup.show_scores_after_game,"Show Scores After Game:" },
   { TYPE_YES_NO,	&setup.ask_on_game_over, "Ask on Game Over:"	},
+  { TYPE_YES_NO,	&setup.ask_on_quit_game, "Ask on Quit Game:"	},
+  { TYPE_YES_NO,	&setup.ask_on_quit_program, "Ask on Quit Program:" },
   { TYPE_SWITCH,	&setup.autorecord,	"Auto-Record Tapes:"	},
   { TYPE_ENTER_LIST,	execSetupChooseGameSpeed, "Game Speed:"		},
   { TYPE_STRING,	&game_speed_text,	""			},

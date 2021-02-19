@@ -8606,6 +8606,14 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.ask_on_quit_game,			"ask_on_quit_game"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.ask_on_quit_program,			"ask_on_quit_program"
+  },
+  {
+    TYPE_SWITCH,
     &setup.quick_switch,			"quick_player_switch"
   },
   {
@@ -9296,6 +9304,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->ask_on_escape = TRUE;
   si->ask_on_escape_editor = TRUE;
   si->ask_on_game_over = TRUE;
+  si->ask_on_quit_game = TRUE;
+  si->ask_on_quit_program = TRUE;
   si->quick_switch = FALSE;
   si->input_on_focus = FALSE;
   si->prefer_aga_graphics = TRUE;
