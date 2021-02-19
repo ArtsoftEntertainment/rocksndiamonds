@@ -15406,9 +15406,10 @@ void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
   }
 }
 
-void RequestQuitGame(boolean ask_if_really_quit)
+void RequestQuitGame(boolean escape_key_pressed)
 {
-  boolean quick_quit = (!ask_if_really_quit || level_editor_test_game);
+  boolean quick_quit = ((escape_key_pressed && !setup.ask_on_escape) ||
+			level_editor_test_game);
   boolean skip_request = game.all_players_gone || quick_quit;
 
   RequestQuitGameExt(skip_request, quick_quit,
@@ -16271,7 +16272,7 @@ static void HandleGameButtonsExt(int id, int button)
       if (tape.playing)
 	TapeStop();
       else
-	RequestQuitGame(TRUE);
+	RequestQuitGame(FALSE);
 
       break;
 

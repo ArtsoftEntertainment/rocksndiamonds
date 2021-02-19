@@ -2411,7 +2411,7 @@ void HandleKey(Key key, int key_status)
       switch (key)
       {
         case KSYM_Escape:
-	  RequestQuitGame(setup.ask_on_escape);
+	  RequestQuitGame(TRUE);
 	  break;
 
 	default:
