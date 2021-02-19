@@ -39,6 +39,8 @@ WINDRES = windres
 
 CONVERT_ICON_ARGS = -transparent black -background transparent
 
+DEBUGGER = gdb -batch -ex "run" -ex "bt"
+
 PROGBASE = rocksndiamonds
 PROGNAME = ../$(PROGBASE)
 
@@ -66,8 +68,9 @@ RANLIB = emranlib
 STRIP = true
 endif
 
-ifdef BUILD_DIST			# distribution build
 ifeq ($(shell uname -s),Darwin)		# compiling on Mac OS X
+DEBUGGER = lldb --batch -o "run" -k "bt" -k "quit"
+ifdef BUILD_DIST			# distribution build
 MAC_TARGET_VERSION_MIN = 10.7
 EXTRA_FLAGS_MAC = -mmacosx-version-min=$(MAC_TARGET_VERSION_MIN)
 EXTRA_CFLAGS = $(EXTRA_FLAGS_MAC)
@@ -354,7 +357,7 @@ run:
 	cd .. && ./$(PROGBASE) --verbose
 
 gdb:
-	cd .. && gdb -batch -x GDB_COMMANDS ./$(PROGBASE)
+	cd .. && $(DEBUGGER) $(PROGBASE)
 
 valgrind:
 	cd .. && valgrind -v --leak-check=yes ./$(PROGBASE) 2> valgrind.out
