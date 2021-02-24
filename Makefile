@@ -187,6 +187,9 @@ dist-package-mac:
 dist-package-android:
 	$(MAKE_DIST) package android
 
+dist-package-emscripten:
+	$(MAKE_DIST) package emscripten
+
 dist-copy-package-linux:
 	$(MAKE_DIST) copy-package linux
 
@@ -201,6 +204,9 @@ dist-copy-package-mac:
 
 dist-copy-package-android:
 	$(MAKE_DIST) copy-package android
+
+dist-copy-package-emscripten:
+	$(MAKE_DIST) copy-package emscripten
 
 dist-upload-linux:
 	$(MAKE_DIST) upload linux
@@ -217,12 +223,19 @@ dist-upload-mac:
 dist-upload-android:
 	$(MAKE_DIST) upload android
 
+dist-upload-emscripten:
+	$(MAKE_DIST) upload emscripten
+
+dist-deploy-emscripten:
+	$(MAKE_DIST) deploy emscripten
+
 dist-package-all:
 	$(MAKE) dist-package-linux
 	$(MAKE) dist-package-win32
 	$(MAKE) dist-package-win64
 	$(MAKE) dist-package-mac
 	$(MAKE) dist-package-android
+	$(MAKE) dist-package-emscripten
 
 dist-copy-package-all:
 	$(MAKE) dist-copy-package-linux
@@ -230,6 +243,7 @@ dist-copy-package-all:
 	$(MAKE) dist-copy-package-win64
 	$(MAKE) dist-copy-package-mac
 	$(MAKE) dist-copy-package-android
+	$(MAKE) dist-copy-package-emscripten
 
 dist-upload-all:
 	$(MAKE) dist-upload-linux
@@ -237,6 +251,10 @@ dist-upload-all:
 	$(MAKE) dist-upload-win64
 	$(MAKE) dist-upload-mac
 	$(MAKE) dist-upload-android
+	$(MAKE) dist-upload-emscripten
+
+dist-deploy-all:
+	$(MAKE) dist-deploy-emscripten
 
 dist-release-all: dist-package-all dist-copy-package-all dist-upload-all
 
@@ -245,5 +263,7 @@ package-all: dist-package-all
 copy-package-all: dist-copy-package-all
 
 upload-all: dist-upload-all
+
+deploy-all: dist-deploy-all
 
 release-all: dist-release-all
