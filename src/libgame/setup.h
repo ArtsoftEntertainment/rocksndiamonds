@@ -294,6 +294,7 @@ void pushTreeInfo(TreeInfo **, TreeInfo *);
 void removeTreeInfo(TreeInfo **);
 int numTreeInfo(TreeInfo *);
 boolean validLevelSeries(TreeInfo *);
+TreeInfo *getValidLevelSeries(TreeInfo *, TreeInfo *);
 TreeInfo *getFirstValidTreeInfoEntry(TreeInfo *);
 TreeInfo *getTreeInfoFirstGroupEntry(TreeInfo *);
 int numTreeInfoInGroup(TreeInfo *);

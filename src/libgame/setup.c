@@ -1154,7 +1154,21 @@ int numTreeInfo(TreeInfo *node)
 
 boolean validLevelSeries(TreeInfo *node)
 {
-  return (node != NULL && !node->node_group && !node->parent_link);
+  // in a number of cases, tree node is no valid level set
+  if (node == NULL || node->node_group || node->parent_link || node->is_copy)
+    return FALSE;
+
+  return TRUE;
+}
+
+TreeInfo *getValidLevelSeries(TreeInfo *node, TreeInfo *default_node)
+{
+  if (validLevelSeries(node))
+    return node;
+  else if (node->is_copy)
+    return getTreeInfoFromIdentifier(leveldir_first, node->identifier);
+  else
+    return getFirstValidTreeInfoEntry(default_node);
 }
 
 TreeInfo *getFirstValidTreeInfoEntry(TreeInfo *node)
@@ -1244,7 +1258,7 @@ static TreeInfo *getTreeInfoFromIdentifierExt(TreeInfo *node, char *identifier,
       if (node_group)
 	return node_group;
     }
-    else if (!node->parent_link)
+    else if (!node->parent_link && !node->is_copy)
     {
       if (strEqual(identifier, node->identifier))
 	return node;

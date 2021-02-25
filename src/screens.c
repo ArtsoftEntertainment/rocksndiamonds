@@ -1630,9 +1630,8 @@ void DrawMainMenu(void)
     return;
   }
 
-  // leveldir_current may be invalid (level group, parent link)
-  if (!validLevelSeries(leveldir_current))
-    leveldir_current = getFirstValidTreeInfoEntry(leveldir_last_valid);
+  // leveldir_current may be invalid (level group, parent link, node copy)
+  leveldir_current = getValidLevelSeries(leveldir_current, leveldir_last_valid);
 
   if (leveldir_current != leveldir_last_valid)
   {
