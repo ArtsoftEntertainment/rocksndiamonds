@@ -1565,6 +1565,7 @@ struct TreeInfo
 
   boolean level_group;	// directory contains more level series directories
   boolean parent_link;	// entry links back to parent directory
+  boolean is_copy;	// this entry is a copy of another entry in the tree
   boolean in_user_dir;	// user defined levels are stored in home directory
   boolean user_defined;	// levels in user directory and marked as "private"
   boolean readonly;	// readonly levels can not be changed with editor

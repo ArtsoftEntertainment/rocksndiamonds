@@ -2520,6 +2520,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
   ti->sort_priority = LEVELCLASS_UNDEFINED;	// default: least priority
   ti->latest_engine = FALSE;			// default: get from level
   ti->parent_link = FALSE;
+  ti->is_copy = FALSE;
   ti->in_user_dir = FALSE;
   ti->user_defined = FALSE;
   ti->color = 0;
@@ -2601,6 +2602,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
   ti->sort_priority = parent->sort_priority;
   ti->latest_engine = parent->latest_engine;
   ti->parent_link = FALSE;
+  ti->is_copy = FALSE;
   ti->in_user_dir = parent->in_user_dir;
   ti->user_defined = parent->user_defined;
   ti->color = parent->color;
@@ -2701,6 +2703,7 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
 
   ti_copy->level_group		= ti->level_group;
   ti_copy->parent_link		= ti->parent_link;
+  ti_copy->is_copy		= ti->is_copy;
   ti_copy->in_user_dir		= ti->in_user_dir;
   ti_copy->user_defined		= ti->user_defined;
   ti_copy->readonly		= ti->readonly;
@@ -4560,6 +4563,8 @@ void UpdateLastPlayedLevels_TreeInfo(void)
 
     (*node_new)->node_top = &leveldir_first;	// correct top node link
     (*node_new)->node_parent = leveldir_last;	// correct parent node link
+
+    (*node_new)->is_copy = TRUE;		// mark entry as node copy
 
     (*node_new)->node_group = NULL;
     (*node_new)->next = NULL;
