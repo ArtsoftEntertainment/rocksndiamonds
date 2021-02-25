@@ -4547,6 +4547,8 @@ void UpdateLastPlayedLevels_TreeInfo(void)
 
   freeTreeInfo(*node_new);
 
+  *node_new = NULL;
+
   for (i = 0; last_level_series[i] != NULL; i++)
   {
     LevelDirTree *node_last = getTreeInfoFromIdentifier(leveldir_first,
