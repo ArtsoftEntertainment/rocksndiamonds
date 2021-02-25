@@ -4553,6 +4553,8 @@ void UpdateLastPlayedLevels_TreeInfo(void)
   {
     LevelDirTree *node_last = getTreeInfoFromIdentifier(leveldir_first,
 							last_level_series[i]);
+    if (node_last == NULL)
+      continue;
 
     *node_new = getTreeInfoCopy(node_last);	// copy complete node
 
