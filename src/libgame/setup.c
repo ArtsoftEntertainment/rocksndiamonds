@@ -49,6 +49,16 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 
 #define MAX_COOKIE_LEN				256
 
+#define TREE_NODE_TYPE_DEFAULT			0
+#define TREE_NODE_TYPE_PARENT			1
+#define TREE_NODE_TYPE_GROUP			2
+#define TREE_NODE_TYPE_COPY			3
+
+#define TREE_NODE_TYPE(ti)	(ti->node_group  ? TREE_NODE_TYPE_GROUP  : \
+				 ti->parent_link ? TREE_NODE_TYPE_PARENT : \
+				 ti->is_copy     ? TREE_NODE_TYPE_COPY   : \
+				 TREE_NODE_TYPE_DEFAULT)
+
 
 static void setTreeInfoToDefaults(TreeInfo *, int);
 static TreeInfo *getTreeInfoCopy(TreeInfo *ti);
@@ -1240,28 +1250,24 @@ TreeInfo *getTreeInfoFromPos(TreeInfo *node, int pos)
 }
 
 static TreeInfo *getTreeInfoFromIdentifierExt(TreeInfo *node, char *identifier,
-					      boolean include_node_groups)
+					      int node_type_wanted)
 {
   if (identifier == NULL)
     return NULL;
 
   while (node)
   {
+    if (TREE_NODE_TYPE(node) == node_type_wanted &&
+	strEqual(identifier, node->identifier))
+      return node;
+
     if (node->node_group)
     {
-      if (include_node_groups && strEqual(identifier, node->identifier))
-	return node;
-
       TreeInfo *node_group = getTreeInfoFromIdentifierExt(node->node_group,
 							  identifier,
-							  include_node_groups);
+							  node_type_wanted);
       if (node_group)
 	return node_group;
-    }
-    else if (!node->parent_link && !node->is_copy)
-    {
-      if (strEqual(identifier, node->identifier))
-	return node;
     }
 
     node = node->next;
@@ -1272,7 +1278,7 @@ static TreeInfo *getTreeInfoFromIdentifierExt(TreeInfo *node, char *identifier,
 
 TreeInfo *getTreeInfoFromIdentifier(TreeInfo *node, char *identifier)
 {
-  return getTreeInfoFromIdentifierExt(node, identifier, FALSE);
+  return getTreeInfoFromIdentifierExt(node, identifier, TREE_NODE_TYPE_DEFAULT);
 }
 
 static TreeInfo *cloneTreeNode(TreeInfo **node_top, TreeInfo *node_parent,
@@ -4556,7 +4562,7 @@ void UpdateLastPlayedLevels_TreeInfo(void)
 
   leveldir_last = getTreeInfoFromIdentifierExt(leveldir_first,
 					       TOKEN_STR_LAST_LEVEL_SERIES,
-					       TRUE);
+					       TREE_NODE_TYPE_GROUP);
   if (leveldir_last == NULL)
     return;
 
