@@ -4546,7 +4546,6 @@ static void InitLastPlayedLevels_ParentNode(void)
 void UpdateLastPlayedLevels_TreeInfo(void)
 {
   char **last_level_series = setup.level_setup.last_level_series;
-  boolean reset_leveldir_current = FALSE;
   LevelDirTree *leveldir_last;
   TreeInfo **node_new = NULL;
   int i;
@@ -4555,10 +4554,6 @@ void UpdateLastPlayedLevels_TreeInfo(void)
     return;
 
   InitLastPlayedLevels_ParentNode();
-
-  // check if current level set is from "last played" sub-tree to be rebuilt
-  reset_leveldir_current = strEqual(leveldir_current->node_parent->identifier,
-				    TOKEN_STR_LAST_LEVEL_SERIES);
 
   leveldir_last = getTreeInfoFromIdentifierExt(leveldir_first,
 					       TOKEN_STR_LAST_LEVEL_SERIES,
@@ -4593,10 +4588,6 @@ void UpdateLastPlayedLevels_TreeInfo(void)
 
     node_new = &((*node_new)->next);
   }
-
-  if (reset_leveldir_current)
-    leveldir_current = getTreeInfoFromIdentifier(leveldir_first,
-                                                 last_level_series[0]);
 }
 
 static void UpdateLastPlayedLevels_List(void)
