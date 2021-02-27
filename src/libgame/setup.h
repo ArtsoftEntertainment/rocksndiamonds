@@ -375,6 +375,8 @@ boolean UpdateUserLevelSet(char *, char *, char *, int);
 boolean CreateUserLevelSet(char *, char *, char *, int, boolean);
 
 void UpdateLastPlayedLevels_TreeInfo(void);
+void StoreLastPlayedLevels(TreeInfo *);
+void RestoreLastPlayedLevels(TreeInfo **);
 
 void LoadLevelSetup_LastSeries(void);
 void SaveLevelSetup_LastSeries(void);

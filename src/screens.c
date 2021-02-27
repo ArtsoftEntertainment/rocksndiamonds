@@ -2165,6 +2165,9 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	  SaveLevelSetup_LastSeries();
 	  SaveLevelSetup_SeriesInfo();
 
+	  // restore level set if chosen from "last played level set" menu
+	  RestoreLastPlayedLevels(&leveldir_current);
+
 	  if (setup.internal.choose_from_top_leveldir)
 	    gotoTopLevelDir();
 
@@ -4854,6 +4857,11 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	    int new_level_nr = atoi(level_number_current->identifier);
 
 	    HandleMainMenu_SelectLevel(0, 0, new_level_nr);
+	  }
+	  else if (game_status == GAME_MODE_LEVELS)
+	  {
+	    // store level set if chosen from "last played level set" menu
+	    StoreLastPlayedLevels(leveldir_current);
 	  }
 	  else if (game_status == GAME_MODE_NAMES)
 	  {

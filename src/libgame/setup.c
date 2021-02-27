@@ -4609,6 +4609,35 @@ static void UpdateLastPlayedLevels_List(void)
   setString(&last_level_series[0], leveldir_current->identifier);
 }
 
+static TreeInfo *StoreOrRestoreLastPlayedLevels(TreeInfo *node, boolean store)
+{
+  static char *identifier = NULL;
+
+  if (store)
+  {
+    setString(&identifier, (node && node->is_copy ? node->identifier : NULL));
+
+    return NULL;	// not used
+  }
+  else
+  {
+    TreeInfo *node_new = getTreeInfoFromIdentifierExt(leveldir_first,
+						      identifier,
+						      TREE_NODE_TYPE_COPY);
+    return (node_new != NULL ? node_new : node);
+  }
+}
+
+void StoreLastPlayedLevels(TreeInfo *node)
+{
+  StoreOrRestoreLastPlayedLevels(node, TRUE);
+}
+
+void RestoreLastPlayedLevels(TreeInfo **node)
+{
+  *node = StoreOrRestoreLastPlayedLevels(*node, FALSE);
+}
+
 void LoadLevelSetup_LastSeries(void)
 {
   // --------------------------------------------------------------------------
