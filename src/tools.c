@@ -2535,6 +2535,16 @@ void DrawScreenField(int x, int y)
     else
       DrawScreenElement(x, y, EL_EMPTY);
 
+    if (cut_mode != CUT_BELOW && game.use_masked_elements)
+    {
+      int dir = MovDir[lx][ly];
+      int newx = x + (dir == MV_LEFT ? -1 : dir == MV_RIGHT ? +1 : 0);
+      int newy = y + (dir == MV_UP   ? -1 : dir == MV_DOWN  ? +1 : 0);
+
+      if (IN_SCR_FIELD(newx, newy))
+	DrawScreenElement(newx, newy, EL_EMPTY);
+    }
+
     if (horiz_move)
       DrawScreenElementShifted(x, y, MovPos[lx][ly], 0, element, NO_CUTTING);
     else if (cut_mode == NO_CUTTING)
