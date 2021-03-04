@@ -1244,7 +1244,23 @@ void ReCreateGameTileSizeBitmap(Bitmap **bitmaps)
 {
   if (bitmaps[IMG_BITMAP_CUSTOM])
   {
-    FreeBitmap(bitmaps[IMG_BITMAP_CUSTOM]);
+    // check if original sized bitmap points to custom sized bitmap
+    if (bitmaps[IMG_BITMAP_PTR_ORIGINAL] == bitmaps[IMG_BITMAP_CUSTOM])
+    {
+      SDLFreeBitmapTextures(bitmaps[IMG_BITMAP_PTR_ORIGINAL]);
+
+      // keep pointer of previous custom size bitmap
+      bitmaps[IMG_BITMAP_OTHER] = bitmaps[IMG_BITMAP_CUSTOM];
+
+      // set original bitmap pointer to scaled original bitmap of other size
+      bitmaps[IMG_BITMAP_PTR_ORIGINAL] = bitmaps[IMG_BITMAP_OTHER];
+
+      SDLCreateBitmapTextures(bitmaps[IMG_BITMAP_PTR_ORIGINAL]);
+    }
+    else
+    {
+      FreeBitmap(bitmaps[IMG_BITMAP_CUSTOM]);
+    }
 
     bitmaps[IMG_BITMAP_CUSTOM] = NULL;
   }
@@ -1417,6 +1433,30 @@ static void CreateScaledBitmaps(Bitmap **bitmaps, int zoom_factor,
     else
       bitmaps[IMG_BITMAP_PTR_GAME] = bitmaps[IMG_BITMAP_STANDARD];
 
+    // store the "final" (up-scaled) original bitmap, if not already stored
+
+    int tmp_bitmap_final_nr = -1;
+
+    for (i = 0; i < NUM_IMG_BITMAPS; i++)
+      if (bitmaps[i] == tmp_bitmap_final)
+	tmp_bitmap_final_nr = i;
+
+    if (tmp_bitmap_final_nr == -1)	// scaled original bitmap not stored
+    {
+      // store pointer of scaled original bitmap (not used for any other size)
+      bitmaps[IMG_BITMAP_OTHER] = tmp_bitmap_final;
+
+      // set original bitmap pointer to scaled original bitmap of other size
+      bitmaps[IMG_BITMAP_PTR_ORIGINAL] = bitmaps[IMG_BITMAP_OTHER];
+    }
+    else
+    {
+      // set original bitmap pointer to corresponding sized bitmap
+      bitmaps[IMG_BITMAP_PTR_ORIGINAL] = bitmaps[tmp_bitmap_final_nr];
+    }
+
+    // free the "old" (unscaled) original bitmap, if not already stored
+
     boolean free_old_bitmap = TRUE;
 
     for (i = 0; i < NUM_IMG_BITMAPS; i++)
@@ -1435,6 +1475,9 @@ static void CreateScaledBitmaps(Bitmap **bitmaps, int zoom_factor,
   else
   {
     bitmaps[IMG_BITMAP_32x32] = tmp_bitmap_1;
+
+    // set original bitmap pointer to corresponding sized bitmap
+    bitmaps[IMG_BITMAP_PTR_ORIGINAL] = bitmaps[IMG_BITMAP_32x32];
   }
 
   UPDATE_BUSY_STATE();

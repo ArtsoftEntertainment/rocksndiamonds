@@ -15,7 +15,20 @@
 #include "system.h"
 
 
-// these bitmap pointers either point to allocated bitmaps or are NULL
+// bitmap array positions for various element sizes, if available
+//
+// for any loaded image, the "standard" size (which represents the 32x32 pixel
+// size for game elements) is always defined; other bitmap sizes may be NULL
+//
+// formats from 32x32 down to 1x1 are standard bitmap sizes for game elements
+// (used in the game, in the level editor, in the level preview etc.)
+//
+// "CUSTOM" sizes for game elements (like 64x64) may be additionally created;
+// all "OTHER" image sizes are stored if different from all other bitmap sizes,
+// which may be used "as is" by global animations (as the "standard" size used
+// normally may be wrong due to being scaled up or down to a different size if
+// the same image contains game elements in a non-standard size)
+
 #define IMG_BITMAP_32x32	0
 #define IMG_BITMAP_16x16	1
 #define IMG_BITMAP_8x8		2
@@ -23,13 +36,15 @@
 #define IMG_BITMAP_2x2		4
 #define IMG_BITMAP_1x1		5
 #define IMG_BITMAP_CUSTOM	6
+#define IMG_BITMAP_OTHER	7
 
-#define NUM_IMG_BITMAPS		7
+#define NUM_IMG_BITMAPS		8
 
-// this bitmap pointer points to one of the above bitmaps (do not free it)
-#define IMG_BITMAP_PTR_GAME	7
+// these bitmap pointers point to one of the above bitmaps (do not free them)
+#define IMG_BITMAP_PTR_GAME	8
+#define IMG_BITMAP_PTR_ORIGINAL	9
 
-#define NUM_IMG_BITMAP_POINTERS	8
+#define NUM_IMG_BITMAP_POINTERS	10
 
 // this bitmap pointer points to the bitmap with default image size
 #define IMG_BITMAP_STANDARD	IMG_BITMAP_32x32
