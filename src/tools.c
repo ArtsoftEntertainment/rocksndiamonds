@@ -1486,7 +1486,7 @@ void getGraphicSourceBitmap(int graphic, int tilesize, Bitmap **bitmap)
   if (tilesize == gfx.standard_tile_size)
     *bitmap = g->bitmaps[IMG_BITMAP_STANDARD];
   else if (tilesize == game.tile_size)
-    *bitmap = g->bitmaps[IMG_BITMAP_GAME];
+    *bitmap = g->bitmaps[IMG_BITMAP_PTR_GAME];
   else
     *bitmap = g->bitmaps[IMG_BITMAP_1x1 - log_2(tilesize_capped)];
 }
@@ -1532,7 +1532,7 @@ void getSizedGraphicSourceExt(int graphic, int frame, int tilesize,
     *g = graphic_info[IMG_CHAR_EXCLAM];
 
   // if no in-game graphics defined, always use standard graphic size
-  if (g->bitmaps[IMG_BITMAP_GAME] == NULL)
+  if (g->bitmaps[IMG_BITMAP_PTR_GAME] == NULL)
     tilesize = TILESIZE;
 
   getGraphicSourceBitmap(graphic, tilesize, bitmap);

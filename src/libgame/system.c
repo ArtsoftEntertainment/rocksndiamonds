@@ -1251,7 +1251,7 @@ void ReCreateGameTileSizeBitmap(Bitmap **bitmaps)
 
   if (gfx.game_tile_size == gfx.standard_tile_size)
   {
-    bitmaps[IMG_BITMAP_GAME] = bitmaps[IMG_BITMAP_STANDARD];
+    bitmaps[IMG_BITMAP_PTR_GAME] = bitmaps[IMG_BITMAP_STANDARD];
 
     return;
   }
@@ -1263,7 +1263,7 @@ void ReCreateGameTileSizeBitmap(Bitmap **bitmaps)
   Bitmap *bitmap_new = ZoomBitmap(bitmap, width, height);
 
   bitmaps[IMG_BITMAP_CUSTOM] = bitmap_new;
-  bitmaps[IMG_BITMAP_GAME]   = bitmap_new;
+  bitmaps[IMG_BITMAP_PTR_GAME] = bitmap_new;
 }
 
 static void CreateScaledBitmaps(Bitmap **bitmaps, int zoom_factor,
@@ -1413,9 +1413,9 @@ static void CreateScaledBitmaps(Bitmap **bitmaps, int zoom_factor,
       bitmaps[IMG_BITMAP_CUSTOM] = tmp_bitmap_0;
 
     if (bitmaps[IMG_BITMAP_CUSTOM])
-      bitmaps[IMG_BITMAP_GAME] = bitmaps[IMG_BITMAP_CUSTOM];
+      bitmaps[IMG_BITMAP_PTR_GAME] = bitmaps[IMG_BITMAP_CUSTOM];
     else
-      bitmaps[IMG_BITMAP_GAME] = bitmaps[IMG_BITMAP_STANDARD];
+      bitmaps[IMG_BITMAP_PTR_GAME] = bitmaps[IMG_BITMAP_STANDARD];
 
     boolean free_old_bitmap = TRUE;
 

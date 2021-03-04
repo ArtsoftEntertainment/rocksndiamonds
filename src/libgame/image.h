@@ -27,7 +27,7 @@
 #define NUM_IMG_BITMAPS		7
 
 // this bitmap pointer points to one of the above bitmaps (do not free it)
-#define IMG_BITMAP_GAME		7
+#define IMG_BITMAP_PTR_GAME	7
 
 #define NUM_IMG_BITMAP_POINTERS	8
 
