@@ -825,8 +825,8 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 
 	gfx.anim_random_frame = last_anim_random_frame;
 
-	getFixedGraphicSource(part->graphic, frame, &src_bitmap,
-			      &src_x, &src_y);
+	getGlobalAnimGraphicSource(part->graphic, frame, &src_bitmap,
+				   &src_x, &src_y);
 
 	src_x += cut_x;
 	src_y += cut_y;

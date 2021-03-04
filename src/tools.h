@@ -150,6 +150,7 @@ void getSizedGraphicSourceExt(int, int, int, Bitmap **, int *, int *, boolean);
 void getSizedGraphicSource(int, int, int, Bitmap **, int *, int *);
 void getFixedGraphicSource(int, int, Bitmap **, int *, int *);
 void getMiniGraphicSource(int, Bitmap **, int *, int *);
+void getGlobalAnimGraphicSource(int, int, Bitmap **, int *, int *);
 void getGraphicSource(int, int, Bitmap **, int *, int *);
 
 void DrawGraphic(int, int, int, int);

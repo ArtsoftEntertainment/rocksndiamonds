@@ -1493,12 +1493,18 @@ void CreateBitmapWithSmallBitmaps(Bitmap **bitmaps, int zoom_factor,
 
 void CreateBitmapTextures(Bitmap **bitmaps)
 {
-  SDLCreateBitmapTextures(bitmaps[IMG_BITMAP_STANDARD]);
+  if (bitmaps[IMG_BITMAP_PTR_ORIGINAL] != NULL)
+    SDLCreateBitmapTextures(bitmaps[IMG_BITMAP_PTR_ORIGINAL]);
+  else
+    SDLCreateBitmapTextures(bitmaps[IMG_BITMAP_STANDARD]);
 }
 
 void FreeBitmapTextures(Bitmap **bitmaps)
 {
-  SDLFreeBitmapTextures(bitmaps[IMG_BITMAP_STANDARD]);
+  if (bitmaps[IMG_BITMAP_PTR_ORIGINAL] != NULL)
+    SDLFreeBitmapTextures(bitmaps[IMG_BITMAP_PTR_ORIGINAL]);
+  else
+    SDLFreeBitmapTextures(bitmaps[IMG_BITMAP_STANDARD]);
 }
 
 void ScaleBitmap(Bitmap **bitmaps, int zoom_factor)

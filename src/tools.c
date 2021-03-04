@@ -1559,6 +1559,24 @@ void getMiniGraphicSource(int graphic, Bitmap **bitmap, int *x, int *y)
   getSizedGraphicSource(graphic, 0, MINI_TILESIZE, bitmap, x, y);
 }
 
+void getGlobalAnimGraphicSource(int graphic, int frame,
+				Bitmap **bitmap, int *x, int *y)
+{
+  struct GraphicInfo *g = &graphic_info[graphic];
+
+  // if no graphics defined at all, use fallback graphics
+  if (g->bitmaps == NULL)
+    *g = graphic_info[IMG_CHAR_EXCLAM];
+
+  // use original size graphics, if existing, else use standard size graphics
+  if (g->bitmaps[IMG_BITMAP_PTR_ORIGINAL])
+    *bitmap = g->bitmaps[IMG_BITMAP_PTR_ORIGINAL];
+  else
+    *bitmap = g->bitmaps[IMG_BITMAP_STANDARD];
+
+  getGraphicSourceXY(graphic, frame, x, y, FALSE);
+}
+
 static void getGraphicSourceExt(int graphic, int frame, Bitmap **bitmap,
 				int *x, int *y, boolean get_backside)
 {
