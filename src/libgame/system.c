@@ -1479,6 +1479,9 @@ static void CreateScaledBitmaps(Bitmap **bitmaps, int zoom_factor,
 
     // set original bitmap pointer to corresponding sized bitmap
     bitmaps[IMG_BITMAP_PTR_ORIGINAL] = bitmaps[IMG_BITMAP_32x32];
+
+    if (old_bitmap != tmp_bitmap_1)
+      FreeBitmap(old_bitmap);
   }
 
   UPDATE_BUSY_STATE();
