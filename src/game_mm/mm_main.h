@@ -180,12 +180,6 @@
 #define LEVEL_SCORE_ELEMENTS	16	// level elements with score
 
 
-struct HiScore_MM
-{
-  char Name[MAX_PLAYER_NAME_LEN + 1];
-  int Score;
-};
-
 extern DrawBuffer      *drawto_field;
 
 extern int		game_status;
@@ -225,7 +219,6 @@ extern int		SBY_Upper, SBY_Lower;
 extern int		TimeFrames, TimePlayed, TimeLeft;
 
 extern struct LevelInfo_MM	native_mm_level;
-extern struct HiScore_MM	highscore[];
 extern struct GameInfo_MM	game_mm;
 extern struct LaserInfo		laser;
 
@@ -1111,22 +1104,6 @@ extern int		num_element_info;
 #define GAME_OVER_NO_ENERGY	1
 #define GAME_OVER_OVERLOADED	2
 #define GAME_OVER_BOMB		3
-
-// values for game_status
-#define EXITGAME		0
-#define MAINMENU		1
-#define PLAYING			2
-#define LEVELED			3
-#define HELPSCREEN		4
-#define CHOOSELEVEL		5
-#define TYPENAME		6
-#define HALLOFFAME		7
-#define SETUP			8
-
-// return values for GameActions
-#define ACT_GO_ON		0
-#define ACT_GAME_OVER		1
-#define ACT_NEW_GAME		2
 
 // values for color_status
 #define STATIC_COLORS		0

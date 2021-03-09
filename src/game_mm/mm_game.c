@@ -3151,19 +3151,6 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 
       game.restart_game_message = "Out of magic energy! Play it again?";
 
-#if 0
-      if (Request("Out of magic energy! Play it again?",
-		  REQ_ASK | REQ_STAY_CLOSED))
-      {
-	InitGame();
-      }
-      else
-      {
-	game_status = MAINMENU;
-	DrawMainMenu();
-      }
-#endif
-
       return;
     }
   }
@@ -3284,19 +3271,6 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 
       game.restart_game_message = "Magic spell hit Mc Duffin! Play it again?";
 
-#if 0
-      if (Request("Magic spell hit Mc Duffin! Play it again?",
-		  REQ_ASK | REQ_STAY_CLOSED))
-      {
-	InitGame();
-      }
-      else
-      {
-	game_status = MAINMENU;
-	DrawMainMenu();
-      }
-#endif
-
       return;
     }
   }
@@ -3311,35 +3285,9 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
     if (game_mm.cheat_no_explosion)
       return;
 
-#if 0
-    laser.num_damages--;
-    DrawLaser(0, DL_LASER_DISABLED);
-    laser.num_edges = 0;
-#endif
-
     Bang_MM(ELX, ELY);
 
     laser.dest_element = EL_EXPLODING_OPAQUE;
-
-#if 0
-    Bang_MM(ELX, ELY);
-    laser.num_damages--;
-    DrawLaser(0, DL_LASER_DISABLED);
-
-    laser.num_edges = 0;
-    Bang_MM(laser.start_edge.x, laser.start_edge.y);
-
-    if (Request("Bomb killed Mc Duffin! Play it again?",
-		REQ_ASK | REQ_STAY_CLOSED))
-    {
-      InitGame();
-    }
-    else
-    {
-      game_status = MAINMENU;
-      DrawMainMenu();
-    }
-#endif
 
     return;
   }
@@ -3837,182 +3785,6 @@ void MovePacMen(void)
 
     break;
   }
-}
-
-void GameWon_MM(void)
-{
-  int hi_pos;
-  boolean raise_level = FALSE;
-
-#if 0
-  if (local_player->MovPos)
-    return;
-
-  local_player->LevelSolved = FALSE;
-#endif
-
-  if (game_mm.energy_left)
-  {
-    if (setup.sound_loops)
-      PlaySoundExt(SND_SIRR, SOUND_MAX_VOLUME, SOUND_MAX_RIGHT,
-		   SND_CTRL_PLAY_LOOP);
-
-    while (game_mm.energy_left > 0)
-    {
-      if (!setup.sound_loops)
-	PlaySoundStereo(SND_SIRR, SOUND_MAX_RIGHT);
-
-      /*
-      if (game_mm.energy_left > 0 && !(game_mm.energy_left % 10))
-	RaiseScore_MM(native_mm_level.score[SC_ZEITBONUS]);
-      */
-
-      RaiseScore_MM(5);
-
-      game_mm.energy_left--;
-      if (game_mm.energy_left >= 0)
-      {
-#if 0
-	BlitBitmap(pix[PIX_DOOR], drawto,
-		   DOOR_GFX_PAGEX5 + XX_ENERGY, DOOR_GFX_PAGEY1 + YY_ENERGY,
-		   ENERGY_XSIZE, ENERGY_YSIZE - game_mm.energy_left,
-		   DX_ENERGY, DY_ENERGY);
-#endif
-	redraw_mask |= REDRAW_DOOR_1;
-      }
-
-      BackToFront();
-      Delay_WithScreenUpdates(10);
-    }
-
-    if (setup.sound_loops)
-      StopSound(SND_SIRR);
-  }
-  else if (native_mm_level.time == 0)		// level without time limit
-  {
-    if (setup.sound_loops)
-      PlaySoundExt(SND_SIRR, SOUND_MAX_VOLUME, SOUND_MAX_RIGHT,
-		   SND_CTRL_PLAY_LOOP);
-
-    while (TimePlayed < 999)
-    {
-      if (!setup.sound_loops)
-	PlaySoundStereo(SND_SIRR, SOUND_MAX_RIGHT);
-      if (TimePlayed < 999 && !(TimePlayed % 10))
-	RaiseScore_MM(native_mm_level.score[SC_TIME_BONUS]);
-      if (TimePlayed < 900 && !(TimePlayed % 10))
-	TimePlayed += 10;
-      else
-	TimePlayed++;
-
-      /*
-      DrawText(DX_TIME, DY_TIME, int2str(TimePlayed, 3), FONT_TEXT_2);
-      */
-
-      BackToFront();
-      Delay_WithScreenUpdates(10);
-    }
-
-    if (setup.sound_loops)
-      StopSound(SND_SIRR);
-  }
-
-  CloseDoor(DOOR_CLOSE_1);
-
-  Request("Level solved!", REQ_CONFIRM);
-
-  if (level_nr == leveldir_current->handicap_level)
-  {
-    leveldir_current->handicap_level++;
-    SaveLevelSetup_SeriesInfo();
-  }
-
-  if (level_editor_test_game)
-    game_mm.score = -1;		// no highscore when playing from editor
-  else if (level_nr < leveldir_current->last_level)
-    raise_level = TRUE;		// advance to next level
-
-  if ((hi_pos = NewHiScore_MM()) >= 0)
-  {
-    game_status = HALLOFFAME;
-
-    // DrawHallOfFame(hi_pos);
-
-    if (raise_level)
-      level_nr++;
-  }
-  else
-  {
-    game_status = MAINMENU;
-
-    if (raise_level)
-      level_nr++;
-
-    // DrawMainMenu();
-  }
-
-  BackToFront();
-}
-
-int NewHiScore_MM(void)
-{
-  int k, l;
-  int position = -1;
-
-  // LoadScore(level_nr);
-
-  if (strcmp(setup.player_name, EMPTY_PLAYER_NAME) == 0 ||
-      game_mm.score < highscore[MAX_SCORE_ENTRIES - 1].Score)
-    return -1;
-
-  for (k = 0; k < MAX_SCORE_ENTRIES; k++)
-  {
-    if (game_mm.score > highscore[k].Score)
-    {
-      // player has made it to the hall of fame
-
-      if (k < MAX_SCORE_ENTRIES - 1)
-      {
-	int m = MAX_SCORE_ENTRIES - 1;
-
-#ifdef ONE_PER_NAME
-	for (l = k; l < MAX_SCORE_ENTRIES; l++)
-	  if (!strcmp(setup.player_name, highscore[l].Name))
-	    m = l;
-	if (m == k)	// player's new highscore overwrites his old one
-	  goto put_into_list;
-#endif
-
-	for (l = m; l>k; l--)
-	{
-	  strcpy(highscore[l].Name, highscore[l - 1].Name);
-	  highscore[l].Score = highscore[l - 1].Score;
-	}
-      }
-
-#ifdef ONE_PER_NAME
-      put_into_list:
-#endif
-      strncpy(highscore[k].Name, setup.player_name, MAX_PLAYER_NAME_LEN);
-      highscore[k].Name[MAX_PLAYER_NAME_LEN] = '\0';
-      highscore[k].Score = game_mm.score;
-      position = k;
-
-      break;
-    }
-
-#ifdef ONE_PER_NAME
-    else if (!strncmp(setup.player_name, highscore[k].Name,
-		      MAX_PLAYER_NAME_LEN))
-      break;	// player already there with a higher score
-#endif
-
-  }
-
-  // if (position >= 0)
-  //   SaveScore(level_nr);
-
-  return position;
 }
 
 static void InitMovingField_MM(int x, int y, int direction)

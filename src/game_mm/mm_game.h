@@ -15,9 +15,6 @@
 #include "main_mm.h"
 
 
-void GameWon_MM(void);
-int NewHiScore_MM(void);
-
 void TurnRound(int, int);
 
 void PlaySoundLevel(int, int, int);
