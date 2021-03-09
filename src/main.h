@@ -3044,6 +3044,17 @@ struct HiScore
   int Score;
 };
 
+struct ScoreInfo
+{
+  int file_version;	// file format version the score is stored with
+  int game_version;	// game release version the score was created with
+
+  char level_identifier[MAX_FILENAME_LEN + 1];
+  int level_nr;
+
+  int num_entries;
+};
+
 struct Content
 {
   int e[3][3];
@@ -3750,6 +3761,7 @@ extern int			graphics_action_mapping[];
 
 extern struct LevelInfo		level, level_template;
 extern struct HiScore		highscore[];
+extern struct ScoreInfo		scores;
 extern struct TapeInfo		tape;
 extern struct GlobalInfo	global;
 extern struct BorderInfo	border;

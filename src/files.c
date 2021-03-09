@@ -61,6 +61,8 @@
 #define TAPE_CHUNK_HEAD_UNUSED	1	// unused tape header bytes
 #define TAPE_CHUNK_SCRN_SIZE	2	// size of screen size chunk
 
+#define SCORE_CHUNK_VERS_SIZE	8	// size of file version chunk
+
 #define LEVEL_CHUNK_CNT3_SIZE(x)	 (LEVEL_CHUNK_CNT3_HEADER + (x))
 #define LEVEL_CHUNK_CUS3_SIZE(x)	 (2 + (x) * LEVEL_CPART_CUS3_SIZE)
 #define LEVEL_CHUNK_CUS4_SIZE(x)	 (96 + (x) * 48)
@@ -68,7 +70,7 @@
 // file identifier strings
 #define LEVEL_COOKIE_TMPL		"ROCKSNDIAMONDS_LEVEL_FILE_VERSION_x.x"
 #define TAPE_COOKIE_TMPL		"ROCKSNDIAMONDS_TAPE_FILE_VERSION_x.x"
-#define SCORE_COOKIE			"ROCKSNDIAMONDS_SCORE_FILE_VERSION_1.2"
+#define SCORE_COOKIE_TMPL		"ROCKSNDIAMONDS_SCORE_FILE_VERSION_x.x"
 
 // values for deciding when (not) to save configuration data
 #define SAVE_CONF_NEVER			0
@@ -8380,7 +8382,18 @@ void DumpTape(struct TapeInfo *tape)
 // score file functions
 // ============================================================================
 
-void LoadScore(int nr)
+static void setScoreInfoToDefaults(void)
+{
+  int i;
+
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
+  {
+    strcpy(highscore[i].Name, EMPTY_PLAYER_NAME);
+    highscore[i].Score = 0;
+  }
+}
+
+static void LoadScore_OLD(int nr)
 {
   int i;
   char *filename = getScoreFilename(nr);
@@ -8388,13 +8401,6 @@ void LoadScore(int nr)
   char line[MAX_LINE_LEN];
   char *line_ptr;
   FILE *file;
-
-  // always start with reliable default values
-  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
-  {
-    strcpy(highscore[i].Name, EMPTY_PLAYER_NAME);
-    highscore[i].Score = 0;
-  }
 
   if (!(file = fopen(filename, MODE_READ)))
     return;
@@ -8405,7 +8411,7 @@ void LoadScore(int nr)
   if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
     cookie[strlen(cookie) - 1] = '\0';
 
-  if (!checkCookieString(cookie, SCORE_COOKIE))
+  if (!checkCookieString(cookie, SCORE_COOKIE_TMPL))
   {
     Warn("unknown format of score file '%s'", filename);
 
@@ -8439,7 +8445,188 @@ void LoadScore(int nr)
   fclose(file);
 }
 
-void SaveScore(int nr)
+static int LoadScore_VERS(File *file, int chunk_size, struct ScoreInfo *scores)
+{
+  scores->file_version = getFileVersion(file);
+  scores->game_version = getFileVersion(file);
+
+  return chunk_size;
+}
+
+static int LoadScore_INFO(File *file, int chunk_size, struct ScoreInfo *scores)
+{
+  char *level_identifier = NULL;
+  int level_identifier_size;
+  int i;
+
+  level_identifier_size = getFile16BitBE(file);
+
+  level_identifier = checked_malloc(level_identifier_size);
+
+  for (i = 0; i < level_identifier_size; i++)
+    level_identifier[i] = getFile8Bit(file);
+
+  strncpy(scores->level_identifier, level_identifier, MAX_FILENAME_LEN);
+  scores->level_identifier[MAX_FILENAME_LEN] = '\0';
+
+  checked_free(level_identifier);
+
+  scores->level_nr = getFile16BitBE(file);
+  scores->num_entries = getFile16BitBE(file);
+
+  chunk_size = 2 + level_identifier_size + 2 + 2;
+
+  return chunk_size;
+}
+
+static int LoadScore_NAME(File *file, int chunk_size, struct ScoreInfo *scores)
+{
+  int i, j;
+
+  for (i = 0; i < scores->num_entries; i++)
+  {
+    for (j = 0; j < MAX_PLAYER_NAME_LEN; j++)
+      highscore[i].Name[j] = getFile8Bit(file);
+
+    highscore[i].Name[MAX_PLAYER_NAME_LEN] = '\0';
+  }
+
+  chunk_size = scores->num_entries * MAX_PLAYER_NAME_LEN;
+
+  return chunk_size;
+}
+
+static int LoadScore_SCOR(File *file, int chunk_size, struct ScoreInfo *scores)
+{
+  int i;
+
+  for (i = 0; i < scores->num_entries; i++)
+    highscore[i].Score = getFile16BitBE(file);
+
+  chunk_size = scores->num_entries * 2;
+
+  return chunk_size;
+}
+
+void LoadScore(int nr)
+{
+  char *filename = getScoreFilename(nr);
+  char cookie[MAX_LINE_LEN];
+  char chunk_name[CHUNK_ID_LEN + 1];
+  int chunk_size;
+  boolean old_score_file_format = FALSE;
+  File *file;
+
+  // always start with reliable default values
+  setScoreInfoToDefaults();
+
+  if (!(file = openFile(filename, MODE_READ)))
+    return;
+
+  getFileChunkBE(file, chunk_name, NULL);
+  if (strEqual(chunk_name, "RND1"))
+  {
+    getFile32BitBE(file);		// not used
+
+    getFileChunkBE(file, chunk_name, NULL);
+    if (!strEqual(chunk_name, "SCOR"))
+    {
+      Warn("unknown format of score file '%s'", filename);
+
+      closeFile(file);
+
+      return;
+    }
+  }
+  else	// check for old file format with cookie string
+  {
+    strcpy(cookie, chunk_name);
+    if (getStringFromFile(file, &cookie[4], MAX_LINE_LEN - 4) == NULL)
+      cookie[4] = '\0';
+    if (strlen(cookie) > 0 && cookie[strlen(cookie) - 1] == '\n')
+      cookie[strlen(cookie) - 1] = '\0';
+
+    if (!checkCookieString(cookie, SCORE_COOKIE_TMPL))
+    {
+      Warn("unknown format of score file '%s'", filename);
+
+      closeFile(file);
+
+      return;
+    }
+
+    old_score_file_format = TRUE;
+  }
+
+  if (old_score_file_format)
+  {
+    // score files from versions before 4.2.4.0 without chunk structure
+    LoadScore_OLD(nr);
+  }
+  else
+  {
+    static struct
+    {
+      char *name;
+      int size;
+      int (*loader)(File *, int, struct ScoreInfo *);
+    }
+    chunk_info[] =
+    {
+      { "VERS", SCORE_CHUNK_VERS_SIZE,	LoadScore_VERS },
+      { "INFO", -1,			LoadScore_INFO },
+      { "NAME", -1,			LoadScore_NAME },
+      { "SCOR", -1,			LoadScore_SCOR },
+
+      {  NULL,  0,			NULL }
+    };
+
+    while (getFileChunkBE(file, chunk_name, &chunk_size))
+    {
+      int i = 0;
+
+      while (chunk_info[i].name != NULL &&
+	     !strEqual(chunk_name, chunk_info[i].name))
+	i++;
+
+      if (chunk_info[i].name == NULL)
+      {
+	Warn("unknown chunk '%s' in score file '%s'",
+	      chunk_name, filename);
+
+	ReadUnusedBytesFromFile(file, chunk_size);
+      }
+      else if (chunk_info[i].size != -1 &&
+	       chunk_info[i].size != chunk_size)
+      {
+	Warn("wrong size (%d) of chunk '%s' in score file '%s'",
+	      chunk_size, chunk_name, filename);
+
+	ReadUnusedBytesFromFile(file, chunk_size);
+      }
+      else
+      {
+	// call function to load this score chunk
+	int chunk_size_expected =
+	  (chunk_info[i].loader)(file, chunk_size, &scores);
+
+	// the size of some chunks cannot be checked before reading other
+	// chunks first (like "HEAD" and "BODY") that contain some header
+	// information, so check them here
+	if (chunk_size_expected != chunk_size)
+	{
+	  Warn("wrong size (%d) of chunk '%s' in score file '%s'",
+		chunk_size, chunk_name, filename);
+	}
+      }
+    }
+  }
+
+  closeFile(file);
+}
+
+#if ENABLE_HISTORIC_CHUNKS
+void SaveScore_OLD(int nr)
 {
   int i;
   int permissions = (program.global_scores ? PERMS_PUBLIC : PERMS_PRIVATE);
@@ -8464,6 +8651,115 @@ void SaveScore(int nr)
   fclose(file);
 
   SetFilePermissions(filename, permissions);
+}
+#endif
+
+static void SaveScore_VERS(FILE *file, struct ScoreInfo *scores)
+{
+  putFileVersion(file, scores->file_version);
+  putFileVersion(file, scores->game_version);
+}
+
+static void SaveScore_INFO(FILE *file, struct ScoreInfo *scores)
+{
+  int level_identifier_size = strlen(scores->level_identifier) + 1;
+  int i;
+
+  putFile16BitBE(file, level_identifier_size);
+
+  for (i = 0; i < level_identifier_size; i++)
+    putFile8Bit(file, scores->level_identifier[i]);
+
+  putFile16BitBE(file, scores->level_nr);
+  putFile16BitBE(file, scores->num_entries);
+}
+
+static void SaveScore_NAME(FILE *file, struct ScoreInfo *scores)
+{
+  int i, j;
+
+  for (i = 0; i < scores->num_entries; i++)
+  {
+    int name_size = strlen(highscore[i].Name);
+
+    for (j = 0; j < MAX_PLAYER_NAME_LEN; j++)
+      putFile8Bit(file, (j < name_size ? highscore[i].Name[j] : 0));
+  }
+}
+
+static void SaveScore_SCOR(FILE *file, struct ScoreInfo *scores)
+{
+  int i;
+
+  for (i = 0; i < scores->num_entries; i++)
+    putFile16BitBE(file, highscore[i].Score);
+}
+
+static void SaveScoreToFilename(char *filename)
+{
+  FILE *file;
+  int permissions = (program.global_scores ? PERMS_PUBLIC : PERMS_PRIVATE);
+  int info_chunk_size;
+  int name_chunk_size;
+  int scor_chunk_size;
+
+  if (!(file = fopen(filename, MODE_WRITE)))
+  {
+    Warn("cannot save score file '%s'", filename);
+
+    return;
+  }
+
+  info_chunk_size = 2 + (strlen(scores.level_identifier) + 1) + 2 + 2;
+  name_chunk_size = scores.num_entries * MAX_PLAYER_NAME_LEN;
+  scor_chunk_size = scores.num_entries * 2;
+
+  putFileChunkBE(file, "RND1", CHUNK_SIZE_UNDEFINED);
+  putFileChunkBE(file, "SCOR", CHUNK_SIZE_NONE);
+
+  putFileChunkBE(file, "VERS", SCORE_CHUNK_VERS_SIZE);
+  SaveScore_VERS(file, &scores);
+
+  putFileChunkBE(file, "INFO", info_chunk_size);
+  SaveScore_INFO(file, &scores);
+
+  putFileChunkBE(file, "NAME", name_chunk_size);
+  SaveScore_NAME(file, &scores);
+
+  putFileChunkBE(file, "SCOR", scor_chunk_size);
+  SaveScore_SCOR(file, &scores);
+
+  fclose(file);
+
+  SetFilePermissions(filename, permissions);
+}
+
+void SaveScore(int nr)
+{
+  char *filename = getScoreFilename(nr);
+  int i;
+
+  // used instead of "leveldir_current->subdir" (for network games)
+  InitScoreDirectory(levelset.identifier);
+
+  scores.file_version = FILE_VERSION_ACTUAL;
+  scores.game_version = GAME_VERSION_ACTUAL;
+
+  strncpy(scores.level_identifier, levelset.identifier, MAX_FILENAME_LEN);
+  scores.level_identifier[MAX_FILENAME_LEN] = '\0';
+  scores.level_nr = level_nr;
+
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
+    if (highscore[i].Score == 0 &&
+        strEqual(highscore[i].Name, EMPTY_PLAYER_NAME))
+      break;
+
+  scores.num_entries = i;
+
+  if (scores.num_entries == 0)
+    return;
+
+  SaveScoreToFilename(filename);
 }
 
 
