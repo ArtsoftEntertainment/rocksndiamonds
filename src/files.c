@@ -8388,8 +8388,8 @@ static void setScoreInfoToDefaults(void)
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
-    strcpy(highscore[i].Name, EMPTY_PLAYER_NAME);
-    highscore[i].Score = 0;
+    strcpy(scores.entry[i].name, EMPTY_PLAYER_NAME);
+    scores.entry[i].score = 0;
   }
 }
 
@@ -8422,7 +8422,7 @@ static void LoadScore_OLD(int nr)
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
-    if (fscanf(file, "%d", &highscore[i].Score) == EOF)
+    if (fscanf(file, "%d", &scores.entry[i].score) == EOF)
       Warn("fscanf() failed; %s", strerror(errno));
 
     if (fgets(line, MAX_LINE_LEN, file) == NULL)
@@ -8435,8 +8435,8 @@ static void LoadScore_OLD(int nr)
     {
       if (*line_ptr != ' ' && *line_ptr != '\t' && *line_ptr != '\0')
       {
-	strncpy(highscore[i].Name, line_ptr, MAX_PLAYER_NAME_LEN);
-	highscore[i].Name[MAX_PLAYER_NAME_LEN] = '\0';
+	strncpy(scores.entry[i].name, line_ptr, MAX_PLAYER_NAME_LEN);
+	scores.entry[i].name[MAX_PLAYER_NAME_LEN] = '\0';
 	break;
       }
     }
@@ -8486,9 +8486,9 @@ static int LoadScore_NAME(File *file, int chunk_size, struct ScoreInfo *scores)
   for (i = 0; i < scores->num_entries; i++)
   {
     for (j = 0; j < MAX_PLAYER_NAME_LEN; j++)
-      highscore[i].Name[j] = getFile8Bit(file);
+      scores->entry[i].name[j] = getFile8Bit(file);
 
-    highscore[i].Name[MAX_PLAYER_NAME_LEN] = '\0';
+    scores->entry[i].name[MAX_PLAYER_NAME_LEN] = '\0';
   }
 
   chunk_size = scores->num_entries * MAX_PLAYER_NAME_LEN;
@@ -8501,7 +8501,7 @@ static int LoadScore_SCOR(File *file, int chunk_size, struct ScoreInfo *scores)
   int i;
 
   for (i = 0; i < scores->num_entries; i++)
-    highscore[i].Score = getFile16BitBE(file);
+    scores->entry[i].score = getFile16BitBE(file);
 
   chunk_size = scores->num_entries * 2;
 
@@ -8646,7 +8646,7 @@ void SaveScore_OLD(int nr)
   fprintf(file, "%s\n\n", SCORE_COOKIE);
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
-    fprintf(file, "%d %s\n", highscore[i].Score, highscore[i].Name);
+    fprintf(file, "%d %s\n", scores.entry[i].score, scores.entry[i].name);
 
   fclose(file);
 
@@ -8680,10 +8680,10 @@ static void SaveScore_NAME(FILE *file, struct ScoreInfo *scores)
 
   for (i = 0; i < scores->num_entries; i++)
   {
-    int name_size = strlen(highscore[i].Name);
+    int name_size = strlen(scores->entry[i].name);
 
     for (j = 0; j < MAX_PLAYER_NAME_LEN; j++)
-      putFile8Bit(file, (j < name_size ? highscore[i].Name[j] : 0));
+      putFile8Bit(file, (j < name_size ? scores->entry[i].name[j] : 0));
   }
 }
 
@@ -8692,7 +8692,7 @@ static void SaveScore_SCOR(FILE *file, struct ScoreInfo *scores)
   int i;
 
   for (i = 0; i < scores->num_entries; i++)
-    putFile16BitBE(file, highscore[i].Score);
+    putFile16BitBE(file, scores->entry[i].score);
 }
 
 static void SaveScoreToFilename(char *filename)
@@ -8750,8 +8750,8 @@ void SaveScore(int nr)
   scores.level_nr = level_nr;
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
-    if (highscore[i].Score == 0 &&
-        strEqual(highscore[i].Name, EMPTY_PLAYER_NAME))
+    if (scores.entry[i].score == 0 &&
+        strEqual(scores.entry[i].name, EMPTY_PLAYER_NAME))
       break;
 
   scores.num_entries = i;

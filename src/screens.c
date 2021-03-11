@@ -5110,10 +5110,10 @@ static void drawHallOfFameList(int level_nr, int first_entry,
     for (j = 0; j < num_dots; j++)
       DrawText(mSX + dx2 + j * getFontWidth(font_nr3), sy, ".", font_nr3);
 
-    if (!strEqual(highscore[entry].Name, EMPTY_PLAYER_NAME))
-      DrawText(mSX + dx2, sy, highscore[entry].Name, font_nr2);
+    if (!strEqual(scores.entry[entry].name, EMPTY_PLAYER_NAME))
+      DrawText(mSX + dx2, sy, scores.entry[entry].name, font_nr2);
 
-    DrawText(mSX + dx3, sy, int2str(highscore[entry].Score, 5), font_nr4);
+    DrawText(mSX + dx3, sy, int2str(scores.entry[entry].score, 5), font_nr4);
   }
 
   redraw_mask |= REDRAW_FIELD;

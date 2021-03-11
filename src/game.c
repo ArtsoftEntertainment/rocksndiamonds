@@ -2402,7 +2402,7 @@ static void UpdateGameControlValues(void)
   }
 
   game_panel_controls[GAME_PANEL_SCORE].value = score;
-  game_panel_controls[GAME_PANEL_HIGHSCORE].value = highscore[0].Score;
+  game_panel_controls[GAME_PANEL_HIGHSCORE].value = scores.entry[0].score;
 
   game_panel_controls[GAME_PANEL_TIME].value = time;
 
@@ -5035,12 +5035,12 @@ int NewHiScore(int level_nr)
   LoadScore(level_nr);
 
   if (strEqual(setup.player_name, EMPTY_PLAYER_NAME) ||
-      game.score_final < highscore[MAX_SCORE_ENTRIES - 1].Score)
+      game.score_final < scores.entry[MAX_SCORE_ENTRIES - 1].score)
     return -1;
 
   for (k = 0; k < MAX_SCORE_ENTRIES; k++)
   {
-    if (game.score_final > highscore[k].Score)
+    if (game.score_final > scores.entry[k].score)
     {
       // player has made it to the hall of fame
 
@@ -5051,7 +5051,7 @@ int NewHiScore(int level_nr)
 	if (one_score_entry_per_name)
 	{
 	  for (l = k; l < MAX_SCORE_ENTRIES; l++)
-	    if (strEqual(setup.player_name, highscore[l].Name))
+	    if (strEqual(setup.player_name, scores.entry[l].name))
 	      m = l;
 
 	  if (m == k)	// player's new highscore overwrites his old one
@@ -5060,22 +5060,22 @@ int NewHiScore(int level_nr)
 
 	for (l = m; l > k; l--)
 	{
-	  strcpy(highscore[l].Name, highscore[l - 1].Name);
-	  highscore[l].Score = highscore[l - 1].Score;
+	  strcpy(scores.entry[l].name, scores.entry[l - 1].name);
+	  scores.entry[l].score = scores.entry[l - 1].score;
 	}
       }
 
       put_into_list:
 
-      strncpy(highscore[k].Name, setup.player_name, MAX_PLAYER_NAME_LEN);
-      highscore[k].Name[MAX_PLAYER_NAME_LEN] = '\0';
-      highscore[k].Score = game.score_final;
+      strncpy(scores.entry[k].name, setup.player_name, MAX_PLAYER_NAME_LEN);
+      scores.entry[k].name[MAX_PLAYER_NAME_LEN] = '\0';
+      scores.entry[k].score = game.score_final;
       position = k;
 
       break;
     }
     else if (one_score_entry_per_name &&
-	     !strncmp(setup.player_name, highscore[k].Name,
+	     !strncmp(setup.player_name, scores.entry[k].name,
 		      MAX_PLAYER_NAME_LEN))
       break;	// player already there with a higher score
   }

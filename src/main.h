@@ -3038,10 +3038,10 @@ struct ViewportInfo
   struct RectWithBorder door_2[NUM_SPECIAL_GFX_ARGS];
 };
 
-struct HiScore
+struct ScoreEntry
 {
-  char Name[MAX_PLAYER_NAME_LEN + 1];
-  int Score;
+  char name[MAX_PLAYER_NAME_LEN + 1];
+  int score;
 };
 
 struct ScoreInfo
@@ -3053,6 +3053,8 @@ struct ScoreInfo
   int level_nr;
 
   int num_entries;
+
+  struct ScoreEntry entry[MAX_SCORE_ENTRIES];
 };
 
 struct Content
@@ -3760,7 +3762,6 @@ extern boolean			network_player_action_received;
 extern int			graphics_action_mapping[];
 
 extern struct LevelInfo		level, level_template;
-extern struct HiScore		highscore[];
 extern struct ScoreInfo		scores;
 extern struct TapeInfo		tape;
 extern struct GlobalInfo	global;
