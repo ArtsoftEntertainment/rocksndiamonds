@@ -3810,6 +3810,7 @@ void InitGame(void)
   game.wind_direction = level.wind_direction_initial;
 
   game.time_final = 0;
+  game.score_time_final = 0;
 
   game.score = 0;
   game.score_final = 0;
@@ -4709,11 +4710,15 @@ static void LevelSolved(void)
   game.GameOver = TRUE;
 
   game.time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
+  game.score_time_final = (level.use_step_counter ? TimePlayed :
+			   TimePlayed * FRAMES_PER_SECOND + TimeFrames);
+
   game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 		      game_em.lev->score :
 		      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 		      game_mm.score :
 		      game.score);
+
   game.health_final = (level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 		       MM_HEALTH(game_mm.laser_overload_value) :
 		       game.health);
@@ -5047,7 +5052,11 @@ int NewHiScore(int level_nr)
 
   for (k = 0; k < MAX_SCORE_ENTRIES; k++)
   {
-    if (game.score_final > scores.entry[k].score)
+    boolean score_is_better = (game.score_final >      scores.entry[k].score);
+    boolean score_is_equal  = (game.score_final ==     scores.entry[k].score);
+    boolean time_is_better  = (game.score_time_final < scores.entry[k].time);
+
+    if (score_is_better || (score_is_equal && time_is_better))
     {
       // player has made it to the hall of fame
 
@@ -5069,6 +5078,7 @@ int NewHiScore(int level_nr)
 	{
 	  strcpy(scores.entry[l].name, scores.entry[l - 1].name);
 	  scores.entry[l].score = scores.entry[l - 1].score;
+	  scores.entry[l].time  = scores.entry[l - 1].time;
 	}
       }
 
@@ -5077,6 +5087,7 @@ int NewHiScore(int level_nr)
       strncpy(scores.entry[k].name, setup.player_name, MAX_PLAYER_NAME_LEN);
       scores.entry[k].name[MAX_PLAYER_NAME_LEN] = '\0';
       scores.entry[k].score = game.score_final;
+      scores.entry[k].time = game.score_time_final;
       position = k;
 
       break;
