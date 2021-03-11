@@ -8390,6 +8390,7 @@ static void setScoreInfoToDefaults(void)
   {
     strcpy(scores.entry[i].name, EMPTY_PLAYER_NAME);
     scores.entry[i].score = 0;
+    scores.entry[i].time = 0;
   }
 }
 
@@ -8508,6 +8509,18 @@ static int LoadScore_SCOR(File *file, int chunk_size, struct ScoreInfo *scores)
   return chunk_size;
 }
 
+static int LoadScore_TIME(File *file, int chunk_size, struct ScoreInfo *scores)
+{
+  int i;
+
+  for (i = 0; i < scores->num_entries; i++)
+    scores->entry[i].time = getFile32BitBE(file);
+
+  chunk_size = scores->num_entries * 4;
+
+  return chunk_size;
+}
+
 void LoadScore(int nr)
 {
   char *filename = getScoreFilename(nr);
@@ -8577,6 +8590,7 @@ void LoadScore(int nr)
       { "INFO", -1,			LoadScore_INFO },
       { "NAME", -1,			LoadScore_NAME },
       { "SCOR", -1,			LoadScore_SCOR },
+      { "TIME", -1,			LoadScore_TIME },
 
       {  NULL,  0,			NULL }
     };
@@ -8695,6 +8709,14 @@ static void SaveScore_SCOR(FILE *file, struct ScoreInfo *scores)
     putFile16BitBE(file, scores->entry[i].score);
 }
 
+static void SaveScore_TIME(FILE *file, struct ScoreInfo *scores)
+{
+  int i;
+
+  for (i = 0; i < scores->num_entries; i++)
+    putFile32BitBE(file, scores->entry[i].time);
+}
+
 static void SaveScoreToFilename(char *filename)
 {
   FILE *file;
@@ -8702,6 +8724,7 @@ static void SaveScoreToFilename(char *filename)
   int info_chunk_size;
   int name_chunk_size;
   int scor_chunk_size;
+  int time_chunk_size;
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
@@ -8713,6 +8736,7 @@ static void SaveScoreToFilename(char *filename)
   info_chunk_size = 2 + (strlen(scores.level_identifier) + 1) + 2 + 2;
   name_chunk_size = scores.num_entries * MAX_PLAYER_NAME_LEN;
   scor_chunk_size = scores.num_entries * 2;
+  time_chunk_size = scores.num_entries * 4;
 
   putFileChunkBE(file, "RND1", CHUNK_SIZE_UNDEFINED);
   putFileChunkBE(file, "SCOR", CHUNK_SIZE_NONE);
@@ -8728,6 +8752,9 @@ static void SaveScoreToFilename(char *filename)
 
   putFileChunkBE(file, "SCOR", scor_chunk_size);
   SaveScore_SCOR(file, &scores);
+
+  putFileChunkBE(file, "TIME", time_chunk_size);
+  SaveScore_TIME(file, &scores);
 
   fclose(file);
 
@@ -8751,6 +8778,7 @@ void SaveScore(int nr)
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
     if (scores.entry[i].score == 0 &&
+        scores.entry[i].time == 0 &&
         strEqual(scores.entry[i].name, EMPTY_PLAYER_NAME))
       break;
 
