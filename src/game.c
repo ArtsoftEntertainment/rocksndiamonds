@@ -3809,6 +3809,8 @@ void InitGame(void)
   game.switchgate_pos = 0;
   game.wind_direction = level.wind_direction_initial;
 
+  game.time_final = 0;
+
   game.score = 0;
   game.score_final = 0;
 
@@ -4706,6 +4708,7 @@ static void LevelSolved(void)
   game.LevelSolved = TRUE;
   game.GameOver = TRUE;
 
+  game.time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
   game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 		      game_em.lev->score :
 		      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
@@ -4715,7 +4718,7 @@ static void LevelSolved(void)
 		       MM_HEALTH(game_mm.laser_overload_value) :
 		       game.health);
 
-  game.LevelSolved_CountingTime = (game.no_time_limit ? TimePlayed : TimeLeft);
+  game.LevelSolved_CountingTime = game.time_final;
   game.LevelSolved_CountingScore = game.score_final;
   game.LevelSolved_CountingHealth = game.health_final;
 }
@@ -4760,23 +4763,27 @@ void GameWon(void)
     game_over_delay_2 = FRAMES_PER_SECOND / 2;	// delay before counting health
     game_over_delay_3 = FRAMES_PER_SECOND;	// delay before ending the game
 
-    time = time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
+    time = time_final = game.time_final;
     score = score_final = game.score_final;
     health = health_final = game.health_final;
 
     if (time_score > 0)
     {
+      int time_final_max = 999;
+      int time_frames_final_max = time_final_max * FRAMES_PER_SECOND;
       int time_frames = 0;
+      int time_frames_left = TimeLeft * FRAMES_PER_SECOND - TimeFrames;
+      int time_frames_played = TimePlayed * FRAMES_PER_SECOND + TimeFrames;
 
       if (TimeLeft > 0)
       {
 	time_final = 0;
-	time_frames = TimeLeft * FRAMES_PER_SECOND - TimeFrames;
+	time_frames = time_frames_left;
       }
-      else if (game.no_time_limit && TimePlayed < 999)
+      else if (game.no_time_limit && TimePlayed < time_final_max)
       {
-	time_final = 999;
-	time_frames = (999 - TimePlayed) * FRAMES_PER_SECOND - TimeFrames;
+	time_final = time_final_max;
+	time_frames = time_frames_final_max - time_frames_played;
       }
 
       score_final += time_score * time_frames / FRAMES_PER_SECOND + 0.5;
