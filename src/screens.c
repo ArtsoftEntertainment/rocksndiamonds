@@ -1739,15 +1739,7 @@ void DrawMainMenu(void)
 
   OpenDoor(DOOR_CLOSE_1 | DOOR_OPEN_2);
 
-#if defined(PLATFORM_EMSCRIPTEN)
-  EM_ASM
-  (
-    FS.syncfs(function(err)
-    {
-      assert(!err);
-    });
-  );
-#endif
+  SyncEmscriptenFilesystem();
 }
 
 static void gotoTopLevelDir(void)

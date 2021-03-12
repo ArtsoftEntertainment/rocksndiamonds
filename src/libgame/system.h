@@ -1984,4 +1984,7 @@ boolean ReadJoystick(int, int *, int *, boolean *, boolean *);
 boolean CheckJoystickOpened(int);
 void ClearJoystickState(void);
 
+void InitEmscriptenFilesystem(void);
+void SyncEmscriptenFilesystem(void);
+
 #endif // SYSTEM_H
