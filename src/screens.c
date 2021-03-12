@@ -5069,6 +5069,31 @@ void DrawHallOfFame(int level_nr, int highlight_position)
   FadeIn(fade_mask);
 }
 
+static char *getHallOfFameScoreText(int nr)
+{
+  // use playing time instead of score for Supaplex levels
+  if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+  {
+    static char score_text[10];
+    int time_final_max = 999;
+    int time_seconds = scores.entry[nr].time / FRAMES_PER_SECOND;
+    int score = scores.entry[nr].score;
+
+    // convert old score file entries without playing time
+    if (time_seconds == 0 && score > 0 && score < time_final_max)
+      time_seconds = time_final_max - score - 1;
+
+    int mm = (time_seconds / 60) % 60;
+    int ss = (time_seconds % 60);
+
+    sprintf(score_text, "%02d:%02d", mm, ss);
+
+    return score_text;
+  }
+
+  return int2str(scores.entry[nr].score, 5);
+}
+
 static void drawHallOfFameList(int level_nr, int first_entry,
 			       int highlight_position)
 {
@@ -5105,7 +5130,7 @@ static void drawHallOfFameList(int level_nr, int first_entry,
     if (!strEqual(scores.entry[entry].name, EMPTY_PLAYER_NAME))
       DrawText(mSX + dx2, sy, scores.entry[entry].name, font_nr2);
 
-    DrawText(mSX + dx3, sy, int2str(scores.entry[entry].score, 5), font_nr4);
+    DrawText(mSX + dx3, sy, getHallOfFameScoreText(entry), font_nr4);
   }
 
   redraw_mask |= REDRAW_FIELD;
