@@ -5072,8 +5072,12 @@ void DrawHallOfFame(int level_nr, int highlight_position)
 static char *getHallOfFameScoreText(int nr)
 {
   // use playing time instead of score for Supaplex levels
-  if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+  if (level.rate_time_over_score ||
+      level.game_engine_type == GAME_ENGINE_TYPE_SP)
   {
+    if (level.use_step_counter)
+      return int2str(scores.entry[nr].time, 5);
+
     static char score_text[10];
     int time_final_max = 999;
     int time_seconds = scores.entry[nr].time / FRAMES_PER_SECOND;

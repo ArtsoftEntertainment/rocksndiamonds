@@ -5052,11 +5052,20 @@ int NewHiScore(int level_nr)
 
   for (k = 0; k < MAX_SCORE_ENTRIES; k++)
   {
-    boolean score_is_better = (game.score_final >      scores.entry[k].score);
-    boolean score_is_equal  = (game.score_final ==     scores.entry[k].score);
-    boolean time_is_better  = (game.score_time_final < scores.entry[k].time);
+    boolean score_is_better = (game.score_final      >  scores.entry[k].score);
+    boolean score_is_equal  = (game.score_final      == scores.entry[k].score);
+    boolean time_is_better  = (game.score_time_final <  scores.entry[k].time);
+    boolean time_is_equal   = (game.score_time_final == scores.entry[k].time);
+    boolean better_by_score = (score_is_better ||
+			       (score_is_equal && time_is_better));
+    boolean better_by_time  = (time_is_better ||
+			       (time_is_equal && score_is_better));
+    boolean is_better = (level.rate_time_over_score ? better_by_time :
+			 better_by_score);
+    boolean entry_is_empty = (scores.entry[k].score == 0 &&
+			      scores.entry[k].time == 0);
 
-    if (score_is_better || (score_is_equal && time_is_better))
+    if (is_better || entry_is_empty)
     {
       // player has made it to the hall of fame
 
