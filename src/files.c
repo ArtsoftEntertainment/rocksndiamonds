@@ -8451,6 +8451,25 @@ static void LoadScore_OLD(int nr)
   fclose(file);
 }
 
+static void ConvertScore_OLD(void)
+{
+  // only convert score to time for levels that rate playing time over score
+  if (!level.rate_time_over_score)
+    return;
+
+  // convert old score to playing time for score-less levels (like Supaplex)
+  int time_final_max = 999;
+  int i;
+
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
+  {
+    int score = scores.entry[i].score;
+
+    if (score > 0 && score < time_final_max)
+      scores.entry[i].time = (time_final_max - score - 1) * FRAMES_PER_SECOND;
+  }
+}
+
 static int LoadScore_VERS(File *file, int chunk_size, struct ScoreInfo *scores)
 {
   scores->file_version = getFileVersion(file);
@@ -8580,6 +8599,9 @@ void LoadScore(int nr)
   {
     // score files from versions before 4.2.4.0 without chunk structure
     LoadScore_OLD(nr);
+
+    // convert score to time, if possible (mainly for Supaplex levels)
+    ConvertScore_OLD();
   }
   else
   {

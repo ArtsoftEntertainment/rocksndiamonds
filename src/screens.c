@@ -5079,14 +5079,7 @@ static char *getHallOfFameScoreText(int nr)
       return int2str(scores.entry[nr].time, 5);
 
     static char score_text[10];
-    int time_final_max = 999;
     int time_seconds = scores.entry[nr].time / FRAMES_PER_SECOND;
-    int score = scores.entry[nr].score;
-
-    // convert old score file entries without playing time
-    if (time_seconds == 0 && score > 0 && score < time_final_max)
-      time_seconds = time_final_max - score - 1;
-
     int mm = (time_seconds / 60) % 60;
     int ss = (time_seconds % 60);
 
