@@ -4708,24 +4708,6 @@ static void LevelSolved(void)
 
   game.LevelSolved = TRUE;
   game.GameOver = TRUE;
-
-  game.time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
-  game.score_time_final = (level.use_step_counter ? TimePlayed :
-			   TimePlayed * FRAMES_PER_SECOND + TimeFrames);
-
-  game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-		      game_em.lev->score :
-		      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
-		      game_mm.score :
-		      game.score);
-
-  game.health_final = (level.game_engine_type == GAME_ENGINE_TYPE_MM ?
-		       MM_HEALTH(game_mm.laser_overload_value) :
-		       game.health);
-
-  game.LevelSolved_CountingTime = game.time_final;
-  game.LevelSolved_CountingScore = game.score_final;
-  game.LevelSolved_CountingHealth = game.health_final;
 }
 
 void GameWon(void)
@@ -4747,6 +4729,24 @@ void GameWon(void)
     // do not start end game actions before the player stops moving (to exit)
     if (local_player->active && local_player->MovPos)
       return;
+
+    game.time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
+    game.score_time_final = (level.use_step_counter ? TimePlayed :
+			     TimePlayed * FRAMES_PER_SECOND + TimeFrames);
+
+    game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+			game_em.lev->score :
+			level.game_engine_type == GAME_ENGINE_TYPE_MM ?
+			game_mm.score :
+			game.score);
+
+    game.health_final = (level.game_engine_type == GAME_ENGINE_TYPE_MM ?
+			 MM_HEALTH(game_mm.laser_overload_value) :
+			 game.health);
+
+    game.LevelSolved_CountingTime = game.time_final;
+    game.LevelSolved_CountingScore = game.score_final;
+    game.LevelSolved_CountingHealth = game.health_final;
 
     game.LevelSolved_GameWon = TRUE;
     game.LevelSolved_SaveTape = tape.recording;
