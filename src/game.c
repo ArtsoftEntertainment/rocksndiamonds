@@ -13140,7 +13140,7 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 	RemovePlayer(player);
     }
 
-    if (!game.LevelSolved && level.use_step_counter)
+    if (level.use_step_counter)
     {
       int i;
 
@@ -13150,14 +13150,14 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
       {
 	TimeLeft--;
 
-	if (TimeLeft <= 10 && setup.time_limit)
+	if (TimeLeft <= 10 && setup.time_limit && !game.LevelSolved)
 	  PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
 
 	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
 
 	DisplayGameControlValues();
 
-	if (!TimeLeft && setup.time_limit)
+	if (!TimeLeft && setup.time_limit && !game.LevelSolved)
 	  for (i = 0; i < MAX_PLAYERS; i++)
 	    KillPlayer(&stored_player[i]);
       }
