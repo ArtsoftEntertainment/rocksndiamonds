@@ -5071,24 +5071,20 @@ void DrawHallOfFame(int level_nr, int highlight_position)
 
 static char *getHallOfFameScoreText(int nr)
 {
-  // use playing time instead of score for Supaplex levels
-  if (level.rate_time_over_score ||
-      level.game_engine_type == GAME_ENGINE_TYPE_SP)
-  {
-    if (level.use_step_counter)
-      return int2str(scores.entry[nr].time, 5);
+  if (!level.rate_time_over_score)
+    return int2str(scores.entry[nr].score, 5);
 
-    static char score_text[10];
-    int time_seconds = scores.entry[nr].time / FRAMES_PER_SECOND;
-    int mm = (time_seconds / 60) % 60;
-    int ss = (time_seconds % 60);
+  if (level.use_step_counter)
+    return int2str(scores.entry[nr].time, 5);
 
-    sprintf(score_text, "%02d:%02d", mm, ss);
+  static char score_text[10];
+  int time_seconds = scores.entry[nr].time / FRAMES_PER_SECOND;
+  int mm = (time_seconds / 60) % 60;
+  int ss = (time_seconds % 60);
 
-    return score_text;
-  }
+  sprintf(score_text, "%02d:%02d", mm, ss);
 
-  return int2str(scores.entry[nr].score, 5);
+  return score_text;
 }
 
 static void drawHallOfFameList(int level_nr, int first_entry,
