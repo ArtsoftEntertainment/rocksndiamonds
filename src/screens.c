@@ -5072,17 +5072,17 @@ void DrawHallOfFame(int level_nr, int highlight_position)
 static char *getHallOfFameScoreText(int nr)
 {
   if (!level.rate_time_over_score)
-    return int2str(scores.entry[nr].score, 5);
+    return int2str(scores.entry[nr].score, 5);	// show normal score
 
   if (level.use_step_counter)
-    return int2str(scores.entry[nr].time, 5);
+    return int2str(scores.entry[nr].time, 5);	// show number of steps
 
   static char score_text[10];
   int time_seconds = scores.entry[nr].time / FRAMES_PER_SECOND;
   int mm = (time_seconds / 60) % 60;
   int ss = (time_seconds % 60);
 
-  sprintf(score_text, "%02d:%02d", mm, ss);
+  sprintf(score_text, "%02d:%02d", mm, ss);	// show playing time
 
   return score_text;
 }
