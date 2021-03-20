@@ -3938,12 +3938,11 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
   level->time_wheel = 0;
   level->amoeba_content = EL_EMPTY;
 
-#if 1
-  // original Supaplex does not use score values -- use default values
-#else
+  // original Supaplex does not use score values -- rate by playing time
   for (i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
     level->score[i] = 0;
-#endif
+
+  level->rate_time_over_score = TRUE;
 
   // there are no yamyams in supaplex levels
   for (i = 0; i < level->num_yamyam_contents; i++)
