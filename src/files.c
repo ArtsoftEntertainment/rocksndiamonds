@@ -6610,6 +6610,27 @@ static void LoadLevel_InitCustomElements(struct LevelInfo *level)
       element_info[element].ignition_delay = 8;
     }
   }
+
+  // set mouse click change events to work for left/middle/right mouse button
+  if (level->game_version < VERSION_IDENT(4,2,3,0))
+  {
+    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+    {
+      int element = EL_CUSTOM_START + i;
+      struct ElementInfo *ei = &element_info[element];
+
+      for (j = 0; j < ei->num_change_pages; j++)
+      {
+	struct ElementChangeInfo *change = &ei->change_page[j];
+
+	if (change->has_event[CE_CLICKED_BY_MOUSE] ||
+	    change->has_event[CE_PRESSED_BY_MOUSE] ||
+	    change->has_event[CE_MOUSE_CLICKED_ON_X] ||
+	    change->has_event[CE_MOUSE_PRESSED_ON_X])
+	  change->trigger_side = CH_SIDE_ANY;
+      }
+    }
+  }
 }
 
 static void LoadLevel_InitElements(struct LevelInfo *level)
