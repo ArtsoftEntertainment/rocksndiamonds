@@ -5052,18 +5052,19 @@ int NewHiScore(int level_nr)
 
   for (k = 0; k < MAX_SCORE_ENTRIES; k++)
   {
-    boolean score_is_better = (game.score_final      >  scores.entry[k].score);
-    boolean score_is_equal  = (game.score_final      == scores.entry[k].score);
-    boolean time_is_better  = (game.score_time_final <  scores.entry[k].time);
-    boolean time_is_equal   = (game.score_time_final == scores.entry[k].time);
+    struct ScoreEntry *entry = &scores.entry[k];
+    boolean score_is_better = (game.score_final      >  entry->score);
+    boolean score_is_equal  = (game.score_final      == entry->score);
+    boolean time_is_better  = (game.score_time_final <  entry->time);
+    boolean time_is_equal   = (game.score_time_final == entry->time);
     boolean better_by_score = (score_is_better ||
 			       (score_is_equal && time_is_better));
     boolean better_by_time  = (time_is_better ||
 			       (time_is_equal && score_is_better));
     boolean is_better = (level.rate_time_over_score ? better_by_time :
 			 better_by_score);
-    boolean entry_is_empty = (scores.entry[k].score == 0 &&
-			      scores.entry[k].time == 0);
+    boolean entry_is_empty = (entry->score == 0 &&
+			      entry->time == 0);
 
     if (is_better || entry_is_empty)
     {
@@ -5093,17 +5094,16 @@ int NewHiScore(int level_nr)
 
       put_into_list:
 
-      strncpy(scores.entry[k].name, setup.player_name, MAX_PLAYER_NAME_LEN);
-      scores.entry[k].name[MAX_PLAYER_NAME_LEN] = '\0';
-      scores.entry[k].score = game.score_final;
-      scores.entry[k].time = game.score_time_final;
+      strncpy(entry->name, setup.player_name, MAX_PLAYER_NAME_LEN);
+      entry->name[MAX_PLAYER_NAME_LEN] = '\0';
+      entry->score = game.score_final;
+      entry->time = game.score_time_final;
       position = k;
 
       break;
     }
     else if (one_score_entry_per_name &&
-	     !strncmp(setup.player_name, scores.entry[k].name,
-		      MAX_PLAYER_NAME_LEN))
+	     !strncmp(setup.player_name, entry->name, MAX_PLAYER_NAME_LEN))
       break;	// player already there with a higher score
   }
 
