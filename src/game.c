@@ -5110,7 +5110,7 @@ int NewHiScore(int level_nr)
       break;	// player already there with a higher score
   }
 
-  if (position >= 0) 
+  if (position >= 0)
   {
     SaveScoreTape(level_nr);
     SaveScore(level_nr);
