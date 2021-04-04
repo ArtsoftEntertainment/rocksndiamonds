@@ -5097,6 +5097,7 @@ int NewHiScore(int level_nr)
 
       put_into_list:
 
+      strcpy(entry->tape_basename, tape.score_tape_basename);
       strncpy(entry->name, setup.player_name, MAX_PLAYER_NAME_LEN);
       entry->name[MAX_PLAYER_NAME_LEN] = '\0';
       entry->score = game.score_final;

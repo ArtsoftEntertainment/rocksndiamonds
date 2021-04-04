@@ -8430,6 +8430,7 @@ static void setScoreInfoToDefaults(void)
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
+    strcpy(scores.entry[i].tape_basename, UNDEFINED_FILENAME);
     strcpy(scores.entry[i].name, EMPTY_PLAYER_NAME);
     scores.entry[i].score = 0;
     scores.entry[i].time = 0;
@@ -8582,6 +8583,23 @@ static int LoadScore_TIME(File *file, int chunk_size, struct ScoreInfo *scores)
   return chunk_size;
 }
 
+static int LoadScore_TAPE(File *file, int chunk_size, struct ScoreInfo *scores)
+{
+  int i, j;
+
+  for (i = 0; i < scores->num_entries; i++)
+  {
+    for (j = 0; j < MAX_SCORE_TAPE_BASENAME_LEN; j++)
+      scores->entry[i].tape_basename[j] = getFile8Bit(file);
+
+    scores->entry[i].tape_basename[MAX_SCORE_TAPE_BASENAME_LEN] = '\0';
+  }
+
+  chunk_size = scores->num_entries * MAX_SCORE_TAPE_BASENAME_LEN;
+
+  return chunk_size;
+}
+
 void LoadScore(int nr)
 {
   char *filename = getScoreFilename(nr);
@@ -8655,6 +8673,7 @@ void LoadScore(int nr)
       { "NAME", -1,			LoadScore_NAME },
       { "SCOR", -1,			LoadScore_SCOR },
       { "TIME", -1,			LoadScore_TIME },
+      { "TAPE", -1,			LoadScore_TAPE },
 
       {  NULL,  0,			NULL }
     };
@@ -8781,6 +8800,19 @@ static void SaveScore_TIME(FILE *file, struct ScoreInfo *scores)
     putFile32BitBE(file, scores->entry[i].time);
 }
 
+static void SaveScore_TAPE(FILE *file, struct ScoreInfo *scores)
+{
+  int i, j;
+
+  for (i = 0; i < scores->num_entries; i++)
+  {
+    int size = strlen(scores->entry[i].tape_basename);
+
+    for (j = 0; j < MAX_SCORE_TAPE_BASENAME_LEN; j++)
+      putFile8Bit(file, (j < size ? scores->entry[i].tape_basename[j] : 0));
+  }
+}
+
 static void SaveScoreToFilename(char *filename)
 {
   FILE *file;
@@ -8789,6 +8821,7 @@ static void SaveScoreToFilename(char *filename)
   int name_chunk_size;
   int scor_chunk_size;
   int time_chunk_size;
+  int tape_chunk_size;
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
@@ -8801,6 +8834,7 @@ static void SaveScoreToFilename(char *filename)
   name_chunk_size = scores.num_entries * MAX_PLAYER_NAME_LEN;
   scor_chunk_size = scores.num_entries * 2;
   time_chunk_size = scores.num_entries * 4;
+  tape_chunk_size = scores.num_entries * MAX_SCORE_TAPE_BASENAME_LEN;
 
   putFileChunkBE(file, "RND1", CHUNK_SIZE_UNDEFINED);
   putFileChunkBE(file, "SCOR", CHUNK_SIZE_NONE);
@@ -8819,6 +8853,9 @@ static void SaveScoreToFilename(char *filename)
 
   putFileChunkBE(file, "TIME", time_chunk_size);
   SaveScore_TIME(file, &scores);
+
+  putFileChunkBE(file, "TAPE", tape_chunk_size);
+  SaveScore_TAPE(file, &scores);
 
   fclose(file);
 

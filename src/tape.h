@@ -39,6 +39,9 @@
 #define TAPE_PROPERTY_NONE		0
 #define TAPE_PROPERTY_EM_RANDOM_BUG	(1 << 0)
 
+// values for score tape basename length (date, time, name hash, no extension)
+#define MAX_SCORE_TAPE_BASENAME_LEN	24
+
 // some positions in the video tape control window
 #define VIDEO_DISPLAY1_XPOS	5
 #define VIDEO_DISPLAY1_YPOS	5

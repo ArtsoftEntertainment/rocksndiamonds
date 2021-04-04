@@ -3040,6 +3040,7 @@ struct ViewportInfo
 
 struct ScoreEntry
 {
+  char tape_basename[MAX_FILENAME_LEN + 1];
   char name[MAX_PLAYER_NAME_LEN + 1];
   int score;
   int time;		// time (in frames) or steps played
