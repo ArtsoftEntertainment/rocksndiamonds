@@ -4971,6 +4971,9 @@ void GameEnd(void)
       CloseDoor(DOOR_CLOSE_1);
 
     SaveTapeChecked_LevelSolved(tape.level_nr);		// ask to save tape
+
+    // set unique basename for score tape (also saved in high score table)
+    strcpy(tape.score_tape_basename, getScoreTapeBasename(setup.player_name));
   }
 
   // if no tape is to be saved, close both doors simultaneously
@@ -5108,7 +5111,10 @@ int NewHiScore(int level_nr)
   }
 
   if (position >= 0) 
+  {
+    SaveScoreTape(level_nr);
     SaveScore(level_nr);
+  }
 
   return position;
 }

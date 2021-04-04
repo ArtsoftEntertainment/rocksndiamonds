@@ -8295,12 +8295,9 @@ void SaveTapeToFilename(char *filename)
   SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
-void SaveTape(int nr)
+static void SaveTapeExt(char *filename)
 {
-  char *filename = getTapeFilename(nr);
   int i;
-
-  InitTapeDirectory(leveldir_current->subdir);
 
   tape.file_version = FILE_VERSION_ACTUAL;
   tape.game_version = GAME_VERSION_ACTUAL;
@@ -8315,6 +8312,25 @@ void SaveTape(int nr)
   SaveTapeToFilename(filename);
 
   tape.changed = FALSE;
+}
+
+void SaveTape(int nr)
+{
+  char *filename = getTapeFilename(nr);
+
+  InitTapeDirectory(leveldir_current->subdir);
+
+  SaveTapeExt(filename);
+}
+
+void SaveScoreTape(int nr)
+{
+  char *filename = getScoreTapeFilename(tape.score_tape_basename, nr);
+
+  // used instead of "leveldir_current->subdir" (for network games)
+  InitScoreTapeDirectory(levelset.identifier, nr);
+
+  SaveTapeExt(filename);
 }
 
 static boolean SaveTapeCheckedExt(int nr, char *msg_replace, char *msg_saved,

@@ -540,6 +540,8 @@ void TapeErase(void)
   tape.length_frames = 0;
   tape.length_seconds = 0;
 
+  tape.score_tape_basename[0] = '\0';
+
   if (leveldir_current)
   {
     strncpy(tape.level_identifier, leveldir_current->identifier,
