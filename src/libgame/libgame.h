@@ -26,6 +26,7 @@
 #include "image.h"
 #include "setup.h"
 #include "misc.h"
+#include "base64.h"
 #include "zip/miniunz.h"
 
 #endif // LIBGAME_H
