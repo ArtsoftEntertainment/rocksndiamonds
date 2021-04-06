@@ -22,6 +22,7 @@ SRCS =	system.c	\
 	image.c		\
 	random.c	\
 	hash.c		\
+	base64.c	\
 	setup.c		\
 	misc.c		\
 	sdl.c		\
@@ -39,6 +40,7 @@ OBJS =	system.o	\
 	image.o		\
 	random.o	\
 	hash.o		\
+	base64.o	\
 	setup.o		\
 	misc.o		\
 	sdl.o		\
