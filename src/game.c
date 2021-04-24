@@ -5122,8 +5122,10 @@ int NewHighScore(int level_nr)
 
   if (position >= 0)
   {
-    SaveScoreTape(level_nr);
     SaveScore(level_nr);
+
+    if (game.LevelSolved_SaveTape)
+      SaveScoreTape(level_nr);
   }
 
   return position;
