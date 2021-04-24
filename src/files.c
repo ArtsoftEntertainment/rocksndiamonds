@@ -8424,21 +8424,25 @@ void DumpTape(struct TapeInfo *tape)
 // score file functions
 // ============================================================================
 
-static void setScoreInfoToDefaults(void)
+static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
 {
   int i;
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
-    strcpy(scores.entry[i].tape_basename, UNDEFINED_FILENAME);
-    strcpy(scores.entry[i].name, EMPTY_PLAYER_NAME);
-    scores.entry[i].score = 0;
-    scores.entry[i].time = 0;
+    strcpy(scores->entry[i].tape_basename, UNDEFINED_FILENAME);
+    strcpy(scores->entry[i].name, EMPTY_PLAYER_NAME);
+    scores->entry[i].score = 0;
+    scores->entry[i].time = 0;
   }
 
-  scores.num_entries = 0;
-  scores.last_added = -1;
+  scores->num_entries = 0;
+  scores->last_added = -1;
+}
 
+static void setScoreInfoToDefaults(void)
+{
+  setScoreInfoToDefaultsExt(&scores);
 }
 
 static void LoadScore_OLD(int nr)
