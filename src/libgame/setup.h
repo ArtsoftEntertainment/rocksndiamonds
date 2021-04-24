@@ -266,6 +266,7 @@ char *getProgramConfigFilename(char *);
 char *getTapeFilename(int);
 char *getSolutionTapeFilename(int);
 char *getScoreFilename(int);
+char *getScoreCacheFilename(int);
 char *getScoreTapeBasename(char *);
 char *getScoreTapeFilename(char *, int);
 char *getSetupFilename(void);
@@ -286,6 +287,7 @@ char *getCustomMusicDirectory(void);
 
 void InitTapeDirectory(char *);
 void InitScoreDirectory(char *);
+void InitScoreCacheDirectory(char *);
 void InitScoreTapeDirectory(char *, int);
 void InitUserLevelDirectory(char *);
 void InitNetworkLevelDirectory(char *);

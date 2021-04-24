@@ -88,6 +88,16 @@ static char *getLevelClassDescription(TreeInfo *ti)
     return "Unknown Level Class";
 }
 
+static char *getCacheDir(void)
+{
+  static char *cache_dir = NULL;
+
+  if (cache_dir == NULL)
+    cache_dir = getPath2(getMainUserGameDataDir(), CACHE_DIRECTORY);
+
+  return cache_dir;
+}
+
 static char *getScoreDir(char *level_subdir)
 {
   static char *score_dir = NULL;
@@ -101,6 +111,27 @@ static char *getScoreDir(char *level_subdir)
     else
       score_dir = getPath2(getMainUserGameDataDir(), score_subdir);
   }
+
+  if (level_subdir != NULL)
+  {
+    checked_free(score_level_dir);
+
+    score_level_dir = getPath2(score_dir, level_subdir);
+
+    return score_level_dir;
+  }
+
+  return score_dir;
+}
+
+static char *getScoreCacheDir(char *level_subdir)
+{
+  static char *score_dir = NULL;
+  static char *score_level_dir = NULL;
+  char *score_subdir = SCORES_DIRECTORY;
+
+  if (score_dir == NULL)
+    score_dir = getPath2(getCacheDir(), score_subdir);
 
   if (level_subdir != NULL)
   {
@@ -167,16 +198,6 @@ static char *getLevelSetupDir(char *level_subdir)
     levelsetup_dir = getPath2(data_dir, levelsetup_subdir);
 
   return levelsetup_dir;
-}
-
-static char *getCacheDir(void)
-{
-  static char *cache_dir = NULL;
-
-  if (cache_dir == NULL)
-    cache_dir = getPath2(getMainUserGameDataDir(), CACHE_DIRECTORY);
-
-  return cache_dir;
 }
 
 static char *getNetworkDir(void)
@@ -603,6 +624,21 @@ char *getScoreFilename(int nr)
 
   // used instead of "leveldir_current->subdir" (for network games)
   filename = getPath2(getScoreDir(levelset.identifier), basename);
+
+  return filename;
+}
+
+char *getScoreCacheFilename(int nr)
+{
+  static char *filename = NULL;
+  char basename[MAX_FILENAME_LEN];
+
+  checked_free(filename);
+
+  sprintf(basename, "%03d.%s", nr, SCOREFILE_EXTENSION);
+
+  // used instead of "leveldir_current->subdir" (for network games)
+  filename = getPath2(getScoreCacheDir(levelset.identifier), basename);
 
   return filename;
 }
@@ -1114,6 +1150,14 @@ void InitScoreDirectory(char *level_subdir)
 
   createDirectory(getScoreDir(NULL), "main score", permissions);
   createDirectory(getScoreDir(level_subdir), "level score", permissions);
+}
+
+void InitScoreCacheDirectory(char *level_subdir)
+{
+  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
+  createDirectory(getCacheDir(), "cache data", PERMS_PRIVATE);
+  createDirectory(getScoreCacheDir(NULL), "main score", PERMS_PRIVATE);
+  createDirectory(getScoreCacheDir(level_subdir), "level score", PERMS_PRIVATE);
 }
 
 void InitScoreTapeDirectory(char *level_subdir, int nr)
