@@ -5004,6 +5004,9 @@ void GameEnd(void)
     SaveLevelSetup_SeriesInfo();
   }
 
+  // save score and score tape before potentially erasing tape below
+  highlight_position = NewHighScore(last_level_nr);
+
   if (setup.increment_levels &&
       level_nr < leveldir_current->last_level &&
       !network_playing)
@@ -5018,8 +5021,6 @@ void GameEnd(void)
       SaveLevelSetup_SeriesInfo();
     }
   }
-
-  highlight_position = NewHighScore(last_level_nr);
 
   if (highlight_position >= 0 && setup.show_scores_after_game)
   {
