@@ -1106,7 +1106,7 @@ void ContinueMoving(int, int);
 void Bang(int, int);
 void InitMovDir(int, int);
 void InitAmoebaNr(int, int);
-int NewHiScore(int);
+int NewHighScore(int);
 
 void TestIfGoodThingHitsBadThing(int, int, int);
 void TestIfBadThingHitsGoodThing(int, int, int);
@@ -5019,7 +5019,7 @@ void GameEnd(void)
     }
   }
 
-  highlight_position = NewHiScore(last_level_nr);
+  highlight_position = NewHighScore(last_level_nr);
 
   if (highlight_position >= 0 && setup.show_scores_after_game)
   {
@@ -5041,7 +5041,7 @@ void GameEnd(void)
   }
 }
 
-int NewHiScore(int level_nr)
+int NewHighScore(int level_nr)
 {
   int i, l;
   int position = -1;
