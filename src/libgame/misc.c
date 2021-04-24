@@ -1726,6 +1726,124 @@ void WriteUnusedBytesToFile(FILE *file, unsigned int bytes)
 
 
 // ----------------------------------------------------------------------------
+// functions to convert between ISO-8859-1 and UTF-8
+// ----------------------------------------------------------------------------
+
+char *getUTF8FromLatin1(char *latin1)
+{
+  int max_utf8_size = 2 * strlen(latin1) + 1;
+  char *utf8 = checked_calloc(max_utf8_size);
+  unsigned char *src = (unsigned char *)latin1;
+  unsigned char *dst = (unsigned char *)utf8;
+
+  while (*src)
+  {
+    if (*src < 128)		// pure 7-bit ASCII
+    {
+      *dst++ = *src;
+    }
+    else if (*src >= 160)	// non-ASCII characters
+    {
+      *dst++ = 194 + (*src >= 192);
+      *dst++ = 128 + (*src & 63);
+    }
+    else			// undefined in ISO-8859-1
+    {
+      *dst++ = '?';
+    }
+
+    src++;
+  }
+
+  // only use the smallest possible string buffer size
+  utf8 = checked_realloc(utf8, strlen(utf8) + 1);
+
+  return utf8;
+}
+
+char *getLatin1FromUTF8(char *utf8)
+{
+  int max_latin1_size = strlen(utf8) + 1;
+  char *latin1 = checked_calloc(max_latin1_size);
+  unsigned char *src = (unsigned char *)utf8;
+  unsigned char *dst = (unsigned char *)latin1;
+
+  while (*src)
+  {
+    if (*src < 128)				// pure 7-bit ASCII
+    {
+      *dst++ = *src++;
+    }
+    else if (src[0] == 194 &&
+	     src[1] >= 128 && src[1] < 192)	// non-ASCII characters
+    {
+      *dst++ = src[1];
+      src += 2;
+    }
+    else if (src[0] == 195 &&
+	     src[1] >= 128 && src[1] < 192)	// non-ASCII characters
+    {
+      *dst++ = src[1] + 64;
+      src += 2;
+    }
+
+    // all other UTF-8 characters are undefined in ISO-8859-1
+
+    else if (src[0] >= 192 && src[0] < 224 &&
+	     src[1] >= 128 && src[1] < 192)
+    {
+      *dst++ = '?';
+      src += 2;
+    }
+    else if (src[0] >= 224 && src[0] < 240 &&
+	     src[1] >= 128 && src[1] < 192 &&
+	     src[2] >= 128 && src[2] < 192)
+    {
+      *dst++ = '?';
+      src += 3;
+    }
+    else if (src[0] >= 240 && src[0] < 248 &&
+	     src[1] >= 128 && src[1] < 192 &&
+	     src[2] >= 128 && src[2] < 192 &&
+	     src[3] >= 128 && src[3] < 192)
+    {
+      *dst++ = '?';
+      src += 4;
+    }
+    else if (src[0] >= 248 && src[0] < 252 &&
+	     src[1] >= 128 && src[1] < 192 &&
+	     src[2] >= 128 && src[2] < 192 &&
+	     src[3] >= 128 && src[3] < 192 &&
+	     src[4] >= 128 && src[4] < 192)
+    {
+      *dst++ = '?';
+      src += 5;
+    }
+    else if (src[0] >= 252 && src[0] < 254 &&
+	     src[1] >= 128 && src[1] < 192 &&
+	     src[2] >= 128 && src[2] < 192 &&
+	     src[3] >= 128 && src[3] < 192 &&
+	     src[4] >= 128 && src[4] < 192 &&
+	     src[5] >= 128 && src[5] < 192)
+    {
+      *dst++ = '?';
+      src += 6;
+    }
+    else
+    {
+      *dst++ = '?';
+      src++;
+    }
+  }
+
+  // only use the smallest possible string buffer size
+  latin1 = checked_realloc(latin1, strlen(latin1) + 1);
+
+  return latin1;
+}
+
+
+// ----------------------------------------------------------------------------
 // functions to translate key identifiers between different format
 // ----------------------------------------------------------------------------
 

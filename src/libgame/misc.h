@@ -225,6 +225,9 @@ void WriteUnusedBytesToFile(FILE *, unsigned int);
 #define putFileChunkBE(f,s,x) putFileChunk(f,s,x,BYTE_ORDER_BIG_ENDIAN)
 #define putFileChunkLE(f,s,x) putFileChunk(f,s,x,BYTE_ORDER_LITTLE_ENDIAN)
 
+char *getUTF8FromLatin1(char *);
+char *getLatin1FromUTF8(char *);
+
 char *getKeyNameFromKey(Key);
 char *getX11KeyNameFromKey(Key);
 Key getKeyFromKeyName(char *);
