@@ -5041,13 +5041,11 @@ void GameEnd(void)
   }
 }
 
-int NewHighScore(int level_nr)
+static int addScoreEntry(void)
 {
   int i, l;
   int position = -1;
   boolean one_score_entry_per_name = !program.many_scores_per_name;
-
-  LoadScore(level_nr);
 
   if (strEqual(setup.player_name, EMPTY_PLAYER_NAME) ||
       game.score_final < scores.entry[MAX_SCORE_ENTRIES - 1].score)
@@ -5110,6 +5108,15 @@ int NewHighScore(int level_nr)
 	     !strncmp(setup.player_name, entry->name, MAX_PLAYER_NAME_LEN))
       break;	// player already there with a higher score
   }
+
+  return position;
+}
+
+int NewHighScore(int level_nr)
+{
+  LoadScore(level_nr);
+
+  int position = addScoreEntry();
 
   if (position >= 0)
   {
