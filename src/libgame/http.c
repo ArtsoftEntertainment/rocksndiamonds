@@ -33,6 +33,24 @@ char *GetHttpError(void)
   return http_error;
 }
 
+void ConvertHttpRequestBodyToServerEncoding(struct HttpRequest *request)
+{
+  char *body_utf8 = getUTF8FromLatin1(request->body);
+
+  strcpy(request->body, body_utf8);
+  checked_free(body_utf8);
+}
+
+void ConvertHttpResponseBodyToClientEncoding(struct HttpResponse *response)
+{
+  char *body_latin1 = getLatin1FromUTF8(response->body);
+
+  strcpy(response->body, body_latin1);
+  checked_free(body_latin1);
+
+  response->body_size = strlen(response->body);
+}
+
 static void SetHttpResponseToDefaults(struct HttpResponse *response)
 {
   response->head[0] = '\0';
