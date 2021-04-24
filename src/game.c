@@ -5043,7 +5043,7 @@ void GameEnd(void)
 
 int NewHiScore(int level_nr)
 {
-  int k, l;
+  int i, l;
   int position = -1;
   boolean one_score_entry_per_name = !program.many_scores_per_name;
 
@@ -5053,9 +5053,9 @@ int NewHiScore(int level_nr)
       game.score_final < scores.entry[MAX_SCORE_ENTRIES - 1].score)
     return -1;
 
-  for (k = 0; k < MAX_SCORE_ENTRIES; k++)
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
-    struct ScoreEntry *entry = &scores.entry[k];
+    struct ScoreEntry *entry = &scores.entry[i];
     boolean score_is_better = (game.score_final      >  entry->score);
     boolean score_is_equal  = (game.score_final      == entry->score);
     boolean time_is_better  = (game.score_time_final <  entry->time);
@@ -5073,21 +5073,21 @@ int NewHiScore(int level_nr)
     {
       // player has made it to the hall of fame
 
-      if (k < MAX_SCORE_ENTRIES - 1)
+      if (i < MAX_SCORE_ENTRIES - 1)
       {
 	int m = MAX_SCORE_ENTRIES - 1;
 
 	if (one_score_entry_per_name)
 	{
-	  for (l = k; l < MAX_SCORE_ENTRIES; l++)
+	  for (l = i; l < MAX_SCORE_ENTRIES; l++)
 	    if (strEqual(setup.player_name, scores.entry[l].name))
 	      m = l;
 
-	  if (m == k)	// player's new highscore overwrites his old one
+	  if (m == i)	// player's new highscore overwrites his old one
 	    goto put_into_list;
 	}
 
-	for (l = m; l > k; l--)
+	for (l = m; l > i; l--)
 	{
 	  strcpy(scores.entry[l].name, scores.entry[l - 1].name);
 	  scores.entry[l].score = scores.entry[l - 1].score;
@@ -5102,7 +5102,7 @@ int NewHiScore(int level_nr)
       entry->name[MAX_PLAYER_NAME_LEN] = '\0';
       entry->score = game.score_final;
       entry->time = game.score_time_final;
-      position = k;
+      position = i;
 
       break;
     }
