@@ -5041,23 +5041,21 @@ void GameEnd(void)
   }
 }
 
-static int addScoreEntry(void)
+static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry)
 {
-  int i, l;
-  int position = -1;
   boolean one_score_entry_per_name = !program.many_scores_per_name;
+  int i;
 
-  if (strEqual(setup.player_name, EMPTY_PLAYER_NAME) ||
-      game.score_final < scores.entry[MAX_SCORE_ENTRIES - 1].score)
+  if (strEqual(setup.player_name, EMPTY_PLAYER_NAME))
     return -1;
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
-    struct ScoreEntry *entry = &scores.entry[i];
-    boolean score_is_better = (game.score_final      >  entry->score);
-    boolean score_is_equal  = (game.score_final      == entry->score);
-    boolean time_is_better  = (game.score_time_final <  entry->time);
-    boolean time_is_equal   = (game.score_time_final == entry->time);
+    struct ScoreEntry *entry = &list->entry[i];
+    boolean score_is_better = (new_entry->score >  entry->score);
+    boolean score_is_equal  = (new_entry->score == entry->score);
+    boolean time_is_better  = (new_entry->time  <  entry->time);
+    boolean time_is_equal   = (new_entry->time  == entry->time);
     boolean better_by_score = (score_is_better ||
 			       (score_is_equal && time_is_better));
     boolean better_by_time  = (time_is_better ||
@@ -5074,11 +5072,12 @@ static int addScoreEntry(void)
       if (i < MAX_SCORE_ENTRIES - 1)
       {
 	int m = MAX_SCORE_ENTRIES - 1;
+	int l;
 
 	if (one_score_entry_per_name)
 	{
 	  for (l = i; l < MAX_SCORE_ENTRIES; l++)
-	    if (strEqual(setup.player_name, scores.entry[l].name))
+	    if (strEqual(list->entry[l].name, setup.player_name))
 	      m = l;
 
 	  if (m == i)	// player's new highscore overwrites his old one
@@ -5086,37 +5085,40 @@ static int addScoreEntry(void)
 	}
 
 	for (l = m; l > i; l--)
-	{
-	  strcpy(scores.entry[l].name, scores.entry[l - 1].name);
-	  scores.entry[l].score = scores.entry[l - 1].score;
-	  scores.entry[l].time  = scores.entry[l - 1].time;
-	}
+	  list->entry[l] = list->entry[l - 1];
       }
 
       put_into_list:
 
-      strcpy(entry->tape_basename, tape.score_tape_basename);
-      strncpy(entry->name, setup.player_name, MAX_PLAYER_NAME_LEN);
-      entry->name[MAX_PLAYER_NAME_LEN] = '\0';
-      entry->score = game.score_final;
-      entry->time = game.score_time_final;
-      position = i;
+      *entry = *new_entry;
 
-      break;
+      return i;
     }
     else if (one_score_entry_per_name &&
-	     !strncmp(setup.player_name, entry->name, MAX_PLAYER_NAME_LEN))
-      break;	// player already there with a higher score
+	     strEqual(entry->name, setup.player_name))
+    {
+      // player already in high score list with better score or time
+
+      return -1;
+    }
   }
 
-  return position;
+  return -1;
 }
 
 int NewHighScore(int level_nr)
 {
+  struct ScoreEntry new_entry = {{ 0 }}; // (prevent warning from GCC bug 53119)
+
+  strncpy(new_entry.tape_basename, tape.score_tape_basename, MAX_FILENAME_LEN);
+  strncpy(new_entry.name, setup.player_name, MAX_PLAYER_NAME_LEN);
+
+  new_entry.score = game.score_final;
+  new_entry.time = game.score_time_final;
+
   LoadScore(level_nr);
 
-  int position = addScoreEntry();
+  int position = addScoreEntry(&scores, &new_entry);
 
   if (position >= 0)
   {
