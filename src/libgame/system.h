@@ -105,6 +105,12 @@
 #define STR_NETWORK_AUTO_DETECT		"auto_detect_network_server"
 #define STR_NETWORK_AUTO_DETECT_SETUP	"(auto detect network server)"
 
+// values for API server settings
+#define API_SERVER_HOSTNAME		"api.artsoft.org"
+#define API_SERVER_PORT			80
+#define API_SERVER_METHOD		"POST"
+#define API_SERVER_URI_ADD		"/api/scores/add"
+
 // values for touch control
 #define TOUCH_CONTROL_OFF		"off"
 #define TOUCH_CONTROL_VIRTUAL_BUTTONS	"virtual_buttons"

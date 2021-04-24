@@ -5126,7 +5126,10 @@ int NewHighScore(int level_nr)
     SaveScore(level_nr);
 
     if (game.LevelSolved_SaveTape)
+    {
       SaveScoreTape(level_nr);
+      SaveServerScore(level_nr);
+    }
   }
 
   return scores.last_added;

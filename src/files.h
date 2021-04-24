@@ -62,6 +62,8 @@ boolean SaveTapeChecked_LevelSolved(int);
 void LoadScore(int);
 void SaveScore(int);
 
+void SaveServerScore(int);
+
 void LoadUserNames(void);
 
 void LoadSetupFromFilename(char *);

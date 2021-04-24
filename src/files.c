@@ -8899,6 +8899,144 @@ void SaveScore(int nr)
   SaveScoreToFilename(filename);
 }
 
+static char *get_file_base64(char *filename)
+{
+  struct stat file_status;
+
+  if (stat(filename, &file_status) != 0)
+  {
+    Error("cannot stat file '%s'\n", filename);
+
+    return NULL;
+  }
+
+  int buffer_size = file_status.st_size;
+  byte *buffer = checked_malloc(buffer_size);
+  FILE *file;
+  int i;
+
+  if (!(file = fopen(filename, MODE_READ)))
+  {
+    Error("cannot open file '%s'\n", filename);
+
+    checked_free(buffer);
+
+    return NULL;
+  }
+
+  for (i = 0; i < buffer_size; i++)
+  {
+    int c = fgetc(file);
+
+    if (c == EOF)
+    {
+      Error("cannot read from input file '%s'\n", filename);
+
+      fclose(file);
+      checked_free(buffer);
+
+      return NULL;
+    }
+
+    buffer[i] = (byte)c;
+  }
+
+  fclose(file);
+
+  int buffer_encoded_size = base64_encoded_size(buffer_size);
+  char *buffer_encoded = checked_malloc(buffer_encoded_size);
+
+  base64_encode(buffer_encoded, buffer, buffer_size);
+
+  checked_free(buffer);
+
+  return buffer_encoded;
+}
+
+static void UploadScoreToServerExt(struct HttpRequest *request,
+				   struct HttpResponse *response,
+				   int nr)
+{
+  struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
+
+  request->hostname = API_SERVER_HOSTNAME;
+  request->port     = API_SERVER_PORT;
+  request->method   = API_SERVER_METHOD;
+  request->uri      = API_SERVER_URI_ADD;
+
+  char *tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
+  char *tape_base64 = get_file_base64(tape_filename);
+
+  if (tape_base64 == NULL)
+  {
+    Error("loading and base64 encoding score tape file failed");
+
+    return;
+  }
+
+  snprintf(request->body, MAX_HTTP_BODY_SIZE,
+	   "{\n"
+	   "  \"game_version\":         \"%s\",\n"
+	   "  \"levelset_identifier\":  \"%s\",\n"
+	   "  \"levelset_name\":        \"%s\",\n"
+	   "  \"levelset_author\":      \"%s\",\n"
+	   "  \"levelset_num_levels\":  \"%d\",\n"
+	   "  \"levelset_first_level\": \"%d\",\n"
+	   "  \"level_nr\":             \"%d\",\n"
+	   "  \"player_name\":          \"%s\",\n"
+	   "  \"score\":                \"%d\",\n"
+	   "  \"time\":                 \"%d\",\n"
+	   "  \"tape_basename\":        \"%s\",\n"
+	   "  \"tape\":                 \"%s\"\n"
+	   "}\n",
+	   getProgramRealVersionString(),
+	   leveldir_current->identifier,
+	   leveldir_current->name,
+	   leveldir_current->author,
+	   leveldir_current->levels,
+	   leveldir_current->first_level,
+	   level_nr,
+	   score_entry->name,
+	   score_entry->score,
+	   score_entry->time,
+	   score_entry->tape_basename,
+	   tape_base64);
+
+  ConvertHttpRequestBodyToServerEncoding(request);
+
+  if (!DoHttpRequest(request, response))
+  {
+    Error("HTTP request failed: %s", GetHttpError());
+
+    return;
+  }
+
+  if (!HTTP_SUCCESS(response->status_code))
+  {
+    Error("server failed to handle request: %d %s",
+	  response->status_code,
+	  response->status_text);
+
+    return;
+  }
+}
+
+static void UploadScoreToServer(int nr)
+{
+  struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
+  struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
+
+  UploadScoreToServerExt(request, response, nr);
+
+  checked_free(request);
+  checked_free(response);
+}
+
+void SaveServerScore(int nr)
+{
+  UploadScoreToServer(nr);
+}
+
 
 // ============================================================================
 // setup file functions
