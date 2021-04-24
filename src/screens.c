@@ -5051,6 +5051,12 @@ void DrawHallOfFame(int level_nr, int highlight_position)
   else
     SetAnimStatus(GAME_MODE_PSEUDO_SCORESNEW);
 
+  LoadServerScore(level_nr);
+
+  // correct highlight position after adding server scores
+  if (highlight_position >= 0)
+    highlight_position = scores.last_added;
+
   FadeSetEnterScreen();
 
   FadeOut(fade_mask);

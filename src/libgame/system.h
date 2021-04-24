@@ -110,6 +110,7 @@
 #define API_SERVER_PORT			80
 #define API_SERVER_METHOD		"POST"
 #define API_SERVER_URI_ADD		"/api/scores/add"
+#define API_SERVER_URI_GET		"/api/scores/get"
 
 // values for touch control
 #define TOUCH_CONTROL_OFF		"off"

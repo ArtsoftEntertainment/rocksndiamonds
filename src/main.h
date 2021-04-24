@@ -3766,7 +3766,7 @@ extern boolean			network_player_action_received;
 extern int			graphics_action_mapping[];
 
 extern struct LevelInfo		level, level_template;
-extern struct ScoreInfo		scores;
+extern struct ScoreInfo		scores, server_scores;
 extern struct TapeInfo		tape;
 extern struct GlobalInfo	global;
 extern struct BorderInfo	border;

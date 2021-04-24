@@ -417,6 +417,8 @@ void UpdateEngineValues(int, int, int, int);
 void GameWon(void);
 void GameEnd(void);
 
+void MergeServerScore(void);
+
 void InitPlayerGfxAnimation(struct PlayerInfo *, int, int);
 void Moving2Blocked(int, int, int *, int *);
 void Blocked2Moving(int, int, int *, int *);

@@ -8445,6 +8445,11 @@ static void setScoreInfoToDefaults(void)
   setScoreInfoToDefaultsExt(&scores);
 }
 
+static void setServerScoreInfoToDefaults(void)
+{
+  setScoreInfoToDefaultsExt(&server_scores);
+}
+
 static void LoadScore_OLD(int nr)
 {
   int i;
@@ -8897,6 +8902,158 @@ void SaveScore(int nr)
     return;
 
   SaveScoreToFilename(filename);
+}
+
+static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
+					  struct HttpResponse *response,
+					  int nr)
+{
+  request->hostname = API_SERVER_HOSTNAME;
+  request->port     = API_SERVER_PORT;
+  request->method   = API_SERVER_METHOD;
+  request->uri      = API_SERVER_URI_GET;
+
+  snprintf(request->body, MAX_HTTP_BODY_SIZE,
+	   "{\n"
+	   "  \"levelset_identifier\":  \"%s\",\n"
+	   "  \"level_nr\":             \"%d\",\n"
+	   "  \"rate_time_over_score\": \"%d\"\n"
+	   "}\n",
+	   levelset.identifier, nr, level.rate_time_over_score);
+
+  if (!DoHttpRequest(request, response))
+  {
+    Error("HTTP request failed: %s", GetHttpError());
+
+    return;
+  }
+
+  if (!HTTP_SUCCESS(response->status_code))
+  {
+    Error("server failed to handle request: %d %s",
+	  response->status_code,
+	  response->status_text);
+
+    return;
+  }
+
+  if (response->body_size == 0)
+  {
+    // no scores available for this level
+
+    return;
+  }
+
+  ConvertHttpResponseBodyToClientEncoding(response);
+
+  char *filename = getScoreCacheFilename(nr);
+  FILE *file;
+  int i;
+
+  // used instead of "leveldir_current->subdir" (for network games)
+  InitScoreCacheDirectory(levelset.identifier);
+
+  if (!(file = fopen(filename, MODE_WRITE)))
+  {
+    Warn("cannot save score cache file '%s'", filename);
+
+    return;
+  }
+
+  for (i = 0; i < response->body_size; i++)
+    fputc(response->body[i], file);
+
+  fclose(file);
+
+  SetFilePermissions(filename, PERMS_PRIVATE);
+}
+
+static void DownloadServerScoreToCache(int nr)
+{
+  struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
+  struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
+
+  DownloadServerScoreToCacheExt(request, response, nr);
+
+  checked_free(request);
+  checked_free(response);
+}
+
+static void LoadServerScoreFromCache(int nr)
+{
+  struct ScoreEntry score_entry;
+  struct
+  {
+    void *value;
+    boolean is_string;
+    int string_size;
+  }
+  score_mapping[] =
+  {
+    { &score_entry.score,		FALSE,	0			},
+    { &score_entry.time,		FALSE,	0			},
+    { score_entry.name,			TRUE,	MAX_PLAYER_NAME_LEN	},
+    { score_entry.tape_basename,	TRUE,	MAX_FILENAME_LEN	},
+
+    { NULL,				FALSE,	0			}
+  };
+  char *filename = getScoreCacheFilename(nr);
+  SetupFileHash *score_hash = loadSetupFileHash(filename);
+  int i, j;
+
+  server_scores.num_entries = 0;
+
+  if (score_hash == NULL)
+    return;
+
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
+  {
+    score_entry = server_scores.entry[i];
+
+    for (j = 0; score_mapping[j].value != NULL; j++)
+    {
+      char token[10];
+
+      sprintf(token, "%02d.%d", i, j);
+
+      char *value = getHashEntry(score_hash, token);
+
+      if (value == NULL)
+	continue;
+
+      if (score_mapping[j].is_string)
+      {
+	char *score_value = (char *)score_mapping[j].value;
+	int value_size = score_mapping[j].string_size;
+
+	strncpy(score_value, value, value_size);
+	score_value[value_size] = '\0';
+      }
+      else
+      {
+	int *score_value = (int *)score_mapping[j].value;
+
+	*score_value = atoi(value);
+      }
+
+      server_scores.num_entries = i + 1;
+    }
+
+    server_scores.entry[i] = score_entry;
+  }
+
+  freeSetupFileHash(score_hash);
+}
+
+void LoadServerScore(int nr)
+{
+  // always start with reliable default values
+  setServerScoreInfoToDefaults();
+
+  DownloadServerScoreToCache(nr);
+  LoadServerScoreFromCache(nr);
+
+  MergeServerScore();
 }
 
 static char *get_file_base64(char *filename)

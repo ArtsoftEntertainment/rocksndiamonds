@@ -5066,6 +5066,10 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry)
     boolean entry_is_empty = (entry->score == 0 &&
 			      entry->time == 0);
 
+    // prevent adding server score entries if also existing in local score file
+    if (strEqual(new_entry->tape_basename, entry->tape_basename))
+      return -1;
+
     if (is_better || entry_is_empty)
     {
       // player has made it to the hall of fame
@@ -5133,6 +5137,22 @@ int NewHighScore(int level_nr)
   }
 
   return scores.last_added;
+}
+
+void MergeServerScore(void)
+{
+  int i;
+
+  for (i = 0; i < server_scores.num_entries; i++)
+  {
+    int pos = addScoreEntry(&scores, &server_scores.entry[i]);
+
+    if (pos >= 0 && pos <= scores.last_added)
+      scores.last_added++;
+  }
+
+  if (scores.last_added >= MAX_SCORE_ENTRIES)
+    scores.last_added = -1;
 }
 
 static int getElementMoveStepsizeExt(int x, int y, int direction)

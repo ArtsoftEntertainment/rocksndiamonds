@@ -128,7 +128,7 @@ boolean			network_player_action_received = FALSE;
 
 struct LevelInfo	level, level_template;
 struct PlayerInfo	stored_player[MAX_PLAYERS], *local_player = NULL;
-struct ScoreInfo	scores;
+struct ScoreInfo	scores, server_scores;
 struct TapeInfo		tape;
 struct GameInfo		game;
 struct GlobalInfo	global;
