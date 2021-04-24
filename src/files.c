@@ -8435,6 +8435,10 @@ static void setScoreInfoToDefaults(void)
     scores.entry[i].score = 0;
     scores.entry[i].time = 0;
   }
+
+  scores.num_entries = 0;
+  scores.last_added = -1;
+
 }
 
 static void LoadScore_OLD(int nr)

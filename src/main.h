@@ -3055,6 +3055,7 @@ struct ScoreInfo
   int level_nr;
 
   int num_entries;
+  int last_added;
 
   struct ScoreEntry entry[MAX_SCORE_ENTRIES];
 };

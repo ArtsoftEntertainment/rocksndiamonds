@@ -5119,9 +5119,9 @@ int NewHighScore(int level_nr)
 
   LoadScore(level_nr);
 
-  int position = addScoreEntry(&scores, &new_entry);
+  scores.last_added = addScoreEntry(&scores, &new_entry);
 
-  if (position >= 0)
+  if (scores.last_added >= 0)
   {
     SaveScore(level_nr);
 
@@ -5129,7 +5129,7 @@ int NewHighScore(int level_nr)
       SaveScoreTape(level_nr);
   }
 
-  return position;
+  return scores.last_added;
 }
 
 static int getElementMoveStepsizeExt(int x, int y, int direction)
