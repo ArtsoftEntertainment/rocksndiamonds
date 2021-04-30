@@ -9159,6 +9159,8 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   score_entry->tape_basename,
 	   tape_base64);
 
+  checked_free(tape_base64);
+
   ConvertHttpRequestBodyToServerEncoding(request);
 
   if (!DoHttpRequest(request, response))
