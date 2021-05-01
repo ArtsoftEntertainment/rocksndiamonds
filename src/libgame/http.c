@@ -146,8 +146,11 @@ static boolean SetHTTPResponseBody(struct HttpResponse *response, char *buffer,
   return TRUE;
 }
 
-boolean DoHttpRequest(struct HttpRequest *request,
-		      struct HttpResponse *response)
+static boolean DoHttpRequestExt(struct HttpRequest *request,
+				struct HttpResponse *response,
+				char *send_buffer,
+				char *recv_buffer,
+				int max_http_buffer_size)
 {
   SDLNet_SocketSet socket_set;
   TCPsocket socket;
@@ -213,10 +216,6 @@ boolean DoHttpRequest(struct HttpRequest *request,
 	   request->hostname,
 	   (int)strlen(request->body));
 
-  int max_http_buffer_size = MAX_HTTP_HEAD_SIZE + MAX_HTTP_BODY_SIZE;
-  char send_buffer[max_http_buffer_size + 1];
-  char recv_buffer[max_http_buffer_size + 1];
-
   snprintf(send_buffer, max_http_buffer_size,
 	   "%s\r\n%s", request->head, request->body);
 
@@ -275,4 +274,21 @@ boolean DoHttpRequest(struct HttpRequest *request,
 	response->status_text);
 
   return TRUE;
+}
+
+boolean DoHttpRequest(struct HttpRequest *request,
+		      struct HttpResponse *response)
+{
+  int max_http_buffer_size = MAX_HTTP_HEAD_SIZE + MAX_HTTP_BODY_SIZE;
+  char *send_buffer = checked_malloc(max_http_buffer_size + 1);
+  char *recv_buffer = checked_malloc(max_http_buffer_size + 1);
+
+  boolean success = DoHttpRequestExt(request, response,
+				     send_buffer, recv_buffer,
+				     max_http_buffer_size);
+
+  checked_free(send_buffer);
+  checked_free(recv_buffer);
+
+  return success;
 }
