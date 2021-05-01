@@ -5048,10 +5048,11 @@ void DrawHallOfFame(int level_nr)
 
   if (scores.last_added < 0)
     LoadScore(level_nr);
-  else
-    SetAnimStatus(GAME_MODE_PSEUDO_SCORESNEW);
 
   LoadServerScore(level_nr);
+
+  if (scores.last_added >= 0)
+    SetAnimStatus(GAME_MODE_PSEUDO_SCORESNEW);
 
   FadeSetEnterScreen();
 
