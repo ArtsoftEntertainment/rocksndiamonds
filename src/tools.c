@@ -1416,39 +1416,42 @@ void SetBorderElement(void)
   }
 }
 
-void FloodFillLevelExt(int from_x, int from_y, int fill_element,
+void FloodFillLevelExt(int start_x, int start_y, int fill_element,
 		       int max_array_fieldx, int max_array_fieldy,
 		       short field[max_array_fieldx][max_array_fieldy],
 		       int max_fieldx, int max_fieldy)
 {
-  int i,x,y;
-  int old_element;
-  static int check[4][2] = { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 } };
-  static int safety = 0;
+  static struct XY stack_buffer[MAX_LEV_FIELDX * MAX_LEV_FIELDY];
+  static struct XY check[4] = { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 } };
+  int old_element = field[start_x][start_y];
+  int stack_pos = 0;
 
-  // check if starting field still has the desired content
-  if (field[from_x][from_y] == fill_element)
+  // do nothing if start field already has the desired content
+  if (old_element == fill_element)
     return;
 
-  safety++;
+  stack_buffer[stack_pos++] = (struct XY){ start_x, start_y };
 
-  if (safety > max_fieldx * max_fieldy)
-    Fail("Something went wrong in 'FloodFill()'. Please debug.");
-
-  old_element = field[from_x][from_y];
-  field[from_x][from_y] = fill_element;
-
-  for (i = 0; i < 4; i++)
+  while (stack_pos > 0)
   {
-    x = from_x + check[i][0];
-    y = from_y + check[i][1];
+    struct XY current = stack_buffer[--stack_pos];
+    int i;
 
-    if (IN_FIELD(x, y, max_fieldx, max_fieldy) && field[x][y] == old_element)
-      FloodFillLevelExt(x, y, fill_element, max_array_fieldx, max_array_fieldy,
-			field, max_fieldx, max_fieldy);
+    field[current.x][current.y] = fill_element;
+
+    for (i = 0; i < 4; i++)
+    {
+      int x = current.x + check[i].x;
+      int y = current.y + check[i].y;
+
+      // check for stack buffer overflow (should not happen)
+      if (stack_pos >= MAX_LEV_FIELDX * MAX_LEV_FIELDY)
+	Fail("Stack buffer overflow in 'FloodFillLevelExt()'. Please debug.");
+
+      if (IN_FIELD(x, y, max_fieldx, max_fieldy) && field[x][y] == old_element)
+	stack_buffer[stack_pos++] = (struct XY){ x, y };
+    }
   }
-
-  safety--;
 }
 
 void FloodFillLevel(int from_x, int from_y, int fill_element,
