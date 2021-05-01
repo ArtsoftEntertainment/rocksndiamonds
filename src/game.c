@@ -1106,7 +1106,7 @@ void ContinueMoving(int, int);
 void Bang(int, int);
 void InitMovDir(int, int);
 void InitAmoebaNr(int, int);
-int NewHighScore(int);
+void NewHighScore(int);
 
 void TestIfGoodThingHitsBadThing(int, int, int);
 void TestIfBadThingHitsGoodThing(int, int, int);
@@ -4960,7 +4960,6 @@ void GameEnd(void)
 {
   // used instead of "level_nr" (needed for network games)
   int last_level_nr = levelset.level_nr;
-  int highlight_position;
 
   game.LevelSolved_GameEnd = TRUE;
 
@@ -5005,7 +5004,7 @@ void GameEnd(void)
   }
 
   // save score and score tape before potentially erasing tape below
-  highlight_position = NewHighScore(last_level_nr);
+  NewHighScore(last_level_nr);
 
   if (setup.increment_levels &&
       level_nr < leveldir_current->last_level &&
@@ -5022,11 +5021,11 @@ void GameEnd(void)
     }
   }
 
-  if (highlight_position >= 0 && setup.show_scores_after_game)
+  if (scores.last_added >= 0 && setup.show_scores_after_game)
   {
     SetGameStatus(GAME_MODE_SCORES);
 
-    DrawHallOfFame(last_level_nr, highlight_position);
+    DrawHallOfFame(last_level_nr, scores.last_added);
   }
   else if (setup.auto_play_next_level && setup.increment_levels &&
 	   last_level_nr < leveldir_current->last_level &&
@@ -5111,7 +5110,7 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry)
   return -1;
 }
 
-int NewHighScore(int level_nr)
+void NewHighScore(int level_nr)
 {
   struct ScoreEntry new_entry = {{ 0 }}; // (prevent warning from GCC bug 53119)
 
@@ -5135,8 +5134,6 @@ int NewHighScore(int level_nr)
       SaveServerScore(level_nr);
     }
   }
-
-  return scores.last_added;
 }
 
 void MergeServerScore(void)
