@@ -5075,6 +5075,21 @@ void DrawHallOfFame(int level_nr, int highlight_position)
   FadeIn(fade_mask);
 }
 
+static int getHallOfFameFirstEntry(int first_entry, int step)
+{
+  if (step == 0)
+    first_entry = scores.last_added - (NUM_MENU_ENTRIES_ON_SCREEN + 1) / 2 + 1;
+  else
+    first_entry += step;
+
+  if (first_entry < 0)
+    first_entry = 0;
+  else if (first_entry > MAX_SCORE_ENTRIES - NUM_MENU_ENTRIES_ON_SCREEN)
+    first_entry = MAX(0, MAX_SCORE_ENTRIES - NUM_MENU_ENTRIES_ON_SCREEN);
+
+  return first_entry;
+}
+
 static char *getHallOfFameScoreText(int nr)
 {
   if (!level.rate_time_over_score)
@@ -5147,12 +5162,7 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
     level_nr = mx;
     highlight_position = my;
 
-    first_entry = highlight_position - (NUM_MENU_ENTRIES_ON_SCREEN + 1) / 2 + 1;
-
-    if (first_entry < 0)
-      first_entry = 0;
-    else if (first_entry + NUM_MENU_ENTRIES_ON_SCREEN > MAX_SCORE_ENTRIES)
-      first_entry = MAX(0, MAX_SCORE_ENTRIES - NUM_MENU_ENTRIES_ON_SCREEN);
+    first_entry = getHallOfFameFirstEntry(0, 0);
 
     drawHallOfFameList(level_nr, first_entry, highlight_position);
 
@@ -5164,25 +5174,15 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 
   if (dy < 0)
   {
-    if (first_entry > 0)
-    {
-      first_entry -= step;
-      if (first_entry < 0)
-	first_entry = 0;
+    first_entry = getHallOfFameFirstEntry(first_entry, -step);
 
-      drawHallOfFameList(level_nr, first_entry, highlight_position);
-    }
+    drawHallOfFameList(level_nr, first_entry, highlight_position);
   }
   else if (dy > 0)
   {
-    if (first_entry + NUM_MENU_ENTRIES_ON_SCREEN < MAX_SCORE_ENTRIES)
-    {
-      first_entry += step;
-      if (first_entry + NUM_MENU_ENTRIES_ON_SCREEN > MAX_SCORE_ENTRIES)
-	first_entry = MAX(0, MAX_SCORE_ENTRIES - NUM_MENU_ENTRIES_ON_SCREEN);
+    first_entry = getHallOfFameFirstEntry(first_entry, step);
 
-      drawHallOfFameList(level_nr, first_entry, highlight_position);
-    }
+    drawHallOfFameList(level_nr, first_entry, highlight_position);
   }
   else if (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE)
   {
