@@ -8439,6 +8439,8 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
   scores->num_entries = 0;
   scores->last_added = -1;
   scores->last_added_local = -1;
+
+  scores->updated = FALSE;
 }
 
 static void setScoreInfoToDefaults(void)
@@ -8985,6 +8987,8 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
   fclose(file);
 
   SetFilePermissions(filename, PERMS_PRIVATE);
+
+  server_scores.updated = TRUE;
 }
 
 static void DownloadServerScoreToCache(int nr)

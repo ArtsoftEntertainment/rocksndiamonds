@@ -5153,6 +5153,14 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
   {
     level_nr = mx;
 
+    if (server_scores.updated)
+    {
+      // reload scores, using updated server score cache file
+      LoadLocalAndServerScore(level_nr, FALSE);
+
+      server_scores.updated = FALSE;
+    }
+
     first_entry = getHallOfFameFirstEntry(0, 0);
 
     drawHallOfFameList(level_nr, first_entry);
@@ -5195,6 +5203,17 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 
       DrawMainMenu();
     }
+  }
+  else if (server_scores.updated)
+  {
+    // reload scores, using updated server score cache file
+    LoadLocalAndServerScore(level_nr, FALSE);
+
+    server_scores.updated = FALSE;
+
+    first_entry = getHallOfFameFirstEntry(0, 0);
+
+    drawHallOfFameList(level_nr, first_entry);
   }
 
   if (game_status == GAME_MODE_SCORES)
