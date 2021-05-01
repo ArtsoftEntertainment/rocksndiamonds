@@ -5046,10 +5046,7 @@ void DrawHallOfFame(int level_nr)
   SetDrawDeactivationMask(REDRAW_NONE);
   SetDrawBackgroundMask(REDRAW_FIELD);
 
-  if (scores.last_added < 0)
-    LoadScore(level_nr);
-
-  LoadServerScore(level_nr);
+  LoadLocalAndServerScore(level_nr);
 
   if (scores.last_added >= 0)
     SetAnimStatus(GAME_MODE_PSEUDO_SCORESNEW);

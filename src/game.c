@@ -5133,6 +5133,9 @@ void NewHighScore(int level_nr)
       SaveScoreTape(level_nr);
       SaveServerScore(level_nr);
     }
+
+    // store last added local score entry (before merging server scores)
+    scores.last_added_local = scores.last_added;
   }
 }
 

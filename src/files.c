@@ -8438,6 +8438,7 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
 
   scores->num_entries = 0;
   scores->last_added = -1;
+  scores->last_added_local = -1;
 }
 
 static void setScoreInfoToDefaults(void)
@@ -9052,8 +9053,6 @@ void LoadServerScore(int nr)
 
   DownloadServerScoreToCache(nr);
   LoadServerScoreFromCache(nr);
-
-  MergeServerScore();
 }
 
 static char *get_file_base64(char *filename)
@@ -9194,6 +9193,20 @@ static void UploadScoreToServer(int nr)
 void SaveServerScore(int nr)
 {
   UploadScoreToServer(nr);
+}
+
+void LoadLocalAndServerScore(int nr)
+{
+  int last_added_local = scores.last_added_local;
+
+  LoadScore(nr);
+
+  // restore last added local score entry (before merging server scores)
+  scores.last_added = scores.last_added_local = last_added_local;
+
+  LoadServerScore(nr);
+
+  MergeServerScore();
 }
 
 

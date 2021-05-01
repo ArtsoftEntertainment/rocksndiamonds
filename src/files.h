@@ -65,6 +65,8 @@ void SaveScore(int);
 void LoadServerScore(int);
 void SaveServerScore(int);
 
+void LoadLocalAndServerScore(int);
+
 void LoadUserNames(void);
 
 void LoadSetupFromFilename(char *);
