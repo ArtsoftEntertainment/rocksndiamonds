@@ -8905,6 +8905,24 @@ void SaveScore(int nr)
   SaveScoreToFilename(filename);
 }
 
+static void ExecuteAsThread(SDL_ThreadFunction function, char *name, int data,
+			    char *error)
+{
+  static int data_static;
+
+  data_static = data;
+
+  SDL_Thread *thread = SDL_CreateThread(function, name, &data_static);
+
+  if (thread != NULL)
+    SDL_DetachThread(thread);
+  else
+    Error("Cannot create thread to %s!", error);
+
+  // nasty kludge to lower probability of intermingled thread error messages
+  Delay(1);
+}
+
 static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 					  struct HttpResponse *response,
 					  int nr)
@@ -8980,6 +8998,20 @@ static void DownloadServerScoreToCache(int nr)
   checked_free(response);
 }
 
+static int DownloadServerScoreToCacheThread(void *data)
+{
+  DownloadServerScoreToCache(*(int *)data);
+
+  return 0;
+}
+
+static void DownloadServerScoreToCacheAsThread(int nr)
+{
+  ExecuteAsThread(DownloadServerScoreToCacheThread,
+		  "DownloadServerScoreToCache", nr,
+		  "download scores from server");
+}
+
 static void LoadServerScoreFromCache(int nr)
 {
   struct ScoreEntry score_entry;
@@ -9046,13 +9078,24 @@ static void LoadServerScoreFromCache(int nr)
   freeSetupFileHash(score_hash);
 }
 
-void LoadServerScore(int nr)
+void LoadServerScore(int nr, boolean download_score)
 {
   // always start with reliable default values
   setServerScoreInfoToDefaults();
 
-  DownloadServerScoreToCache(nr);
+  // 1st step: load server scores from cache file (which may not exist)
+  // (this should prevent reading it while the thread is writing to it)
   LoadServerScoreFromCache(nr);
+
+  if (download_score)
+  {
+    // 2nd step: download server scores from score server to cache file
+    // (as thread, as it might time out if the server is not reachable)
+    DownloadServerScoreToCacheAsThread(nr);
+  }
+
+  // merge local scores with scores from server
+  MergeServerScore();
 }
 
 static char *get_file_base64(char *filename)
@@ -9190,12 +9233,26 @@ static void UploadScoreToServer(int nr)
   checked_free(response);
 }
 
-void SaveServerScore(int nr)
+static int UploadScoreToServerThread(void *data)
 {
-  UploadScoreToServer(nr);
+  UploadScoreToServer(*(int *)data);
+
+  return 0;
 }
 
-void LoadLocalAndServerScore(int nr)
+static void UploadScoreToServerAsThread(int nr)
+{
+  ExecuteAsThread(UploadScoreToServerThread,
+		  "UploadScoreToServer", nr,
+		  "upload score to server");
+}
+
+void SaveServerScore(int nr)
+{
+  UploadScoreToServerAsThread(nr);
+}
+
+void LoadLocalAndServerScore(int nr, boolean download_score)
 {
   int last_added_local = scores.last_added_local;
 
@@ -9204,7 +9261,7 @@ void LoadLocalAndServerScore(int nr)
   // restore last added local score entry (before merging server scores)
   scores.last_added = scores.last_added_local = last_added_local;
 
-  LoadServerScore(nr);
+  LoadServerScore(nr, download_score);
 
   MergeServerScore();
 }
