@@ -2172,7 +2172,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 
 	SetGameStatus(GAME_MODE_SCORES);
 
-	DrawHallOfFame(level_nr, -1);
+	DrawHallOfFame(level_nr);
       }
       else if (pos == MAIN_CONTROL_EDITOR)
       {
@@ -5029,7 +5029,7 @@ void HandleChooseLevelNr(int mx, int my, int dx, int dy, int button)
   HandleChooseTree(mx, my, dx, dy, button, &level_number_current);
 }
 
-void DrawHallOfFame(int level_nr, int highlight_position)
+void DrawHallOfFame(int level_nr)
 {
   int fade_mask = REDRAW_FIELD;
 
@@ -5046,16 +5046,12 @@ void DrawHallOfFame(int level_nr, int highlight_position)
   SetDrawDeactivationMask(REDRAW_NONE);
   SetDrawBackgroundMask(REDRAW_FIELD);
 
-  if (highlight_position < 0) 
+  if (scores.last_added < 0)
     LoadScore(level_nr);
   else
     SetAnimStatus(GAME_MODE_PSEUDO_SCORESNEW);
 
   LoadServerScore(level_nr);
-
-  // correct highlight position after adding server scores
-  if (highlight_position >= 0)
-    highlight_position = scores.last_added;
 
   FadeSetEnterScreen();
 
@@ -5068,7 +5064,7 @@ void DrawHallOfFame(int level_nr, int highlight_position)
 
   OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
 
-  HandleHallOfFame(level_nr, highlight_position, 0, 0, MB_MENU_INITIALIZE);
+  HandleHallOfFame(level_nr, scores.last_added, 0, 0, MB_MENU_INITIALIZE);
 
   DrawMaskedBorder(fade_mask);
 

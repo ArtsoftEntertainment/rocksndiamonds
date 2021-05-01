@@ -5025,7 +5025,7 @@ void GameEnd(void)
   {
     SetGameStatus(GAME_MODE_SCORES);
 
-    DrawHallOfFame(last_level_nr, scores.last_added);
+    DrawHallOfFame(last_level_nr);
   }
   else if (setup.auto_play_next_level && setup.increment_levels &&
 	   last_level_nr < leveldir_current->last_level &&
