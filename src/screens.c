@@ -5064,7 +5064,7 @@ void DrawHallOfFame(int level_nr)
 
   OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
 
-  HandleHallOfFame(level_nr, scores.last_added, 0, 0, MB_MENU_INITIALIZE);
+  HandleHallOfFame(level_nr, 0, 0, 0, MB_MENU_INITIALIZE);
 
   DrawMaskedBorder(fade_mask);
 
@@ -5104,8 +5104,7 @@ static char *getHallOfFameScoreText(int nr)
   return score_text;
 }
 
-static void drawHallOfFameList(int level_nr, int first_entry,
-			       int highlight_position)
+static void drawHallOfFameList(int level_nr, int first_entry)
 {
   int i, j;
 
@@ -5119,7 +5118,7 @@ static void drawHallOfFameList(int level_nr, int first_entry,
   for (i = 0; i < NUM_MENU_ENTRIES_ON_SCREEN; i++)
   {
     int entry = first_entry + i;
-    boolean active = (entry == highlight_position);
+    boolean active = (entry == scores.last_added);
     int font_nr1 = (active ? FONT_TEXT_1_ACTIVE : FONT_TEXT_1);
     int font_nr2 = (active ? FONT_TEXT_2_ACTIVE : FONT_TEXT_2);
     int font_nr3 = (active ? FONT_TEXT_3_ACTIVE : FONT_TEXT_3);
@@ -5150,17 +5149,15 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 {
   static int level_nr = 0;
   static int first_entry = 0;
-  static int highlight_position = 0;
   int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
 
   if (button == MB_MENU_INITIALIZE)
   {
     level_nr = mx;
-    highlight_position = my;
 
     first_entry = getHallOfFameFirstEntry(0, 0);
 
-    drawHallOfFameList(level_nr, first_entry, highlight_position);
+    drawHallOfFameList(level_nr, first_entry);
 
     return;
   }
@@ -5172,13 +5169,13 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
   {
     first_entry = getHallOfFameFirstEntry(first_entry, -step);
 
-    drawHallOfFameList(level_nr, first_entry, highlight_position);
+    drawHallOfFameList(level_nr, first_entry);
   }
   else if (dy > 0)
   {
     first_entry = getHallOfFameFirstEntry(first_entry, step);
 
-    drawHallOfFameList(level_nr, first_entry, highlight_position);
+    drawHallOfFameList(level_nr, first_entry);
   }
   else if (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE)
   {
