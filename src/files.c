@@ -9097,9 +9097,6 @@ void LoadServerScore(int nr, boolean download_score)
     // (as thread, as it might time out if the server is not reachable)
     DownloadServerScoreToCacheAsThread(nr);
   }
-
-  // merge local scores with scores from server
-  MergeServerScore();
 }
 
 static char *get_file_base64(char *filename)
