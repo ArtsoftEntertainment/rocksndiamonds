@@ -1496,6 +1496,9 @@ struct SetupInfo
   int network_player_nr;
   char *network_server_hostname;
 
+  boolean api_server;
+  char *api_server_hostname;
+
   struct SetupAutoSetupInfo auto_setup;
   struct SetupLevelSetupInfo level_setup;
 

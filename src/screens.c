@@ -6756,6 +6756,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_PLAYER,	&setup.network_player_nr,"Preferred Network Player:" },
   { TYPE_TEXT_INPUT,	execGadgetNetworkServer, "Network Server Hostname:" },
   { TYPE_STRING,	&network_server_text,	""			},
+  { TYPE_SWITCH,	&setup.api_server,	"Use Highscore Server:"	},
   { TYPE_SWITCH,	&setup.multiple_users,	"Multiple Users/Teams:"	},
   { TYPE_YES_NO,	&setup.input_on_focus,	"Only Move Focussed Player:" },
   { TYPE_SWITCH,	&setup.time_limit,	"Time Limit:"		},

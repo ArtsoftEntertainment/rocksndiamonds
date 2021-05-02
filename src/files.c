@@ -9084,6 +9084,9 @@ static void LoadServerScoreFromCache(int nr)
 
 void LoadServerScore(int nr, boolean download_score)
 {
+  if (!setup.api_server)
+    return;
+
   // always start with reliable default values
   setServerScoreInfoToDefaults();
 
@@ -9250,6 +9253,9 @@ static void UploadScoreToServerAsThread(int nr)
 
 void SaveServerScore(int nr)
 {
+  if (!setup.api_server)
+    return;
+
   UploadScoreToServerAsThread(nr);
 }
 
@@ -9262,9 +9268,14 @@ void LoadLocalAndServerScore(int nr, boolean download_score)
   // restore last added local score entry (before merging server scores)
   scores.last_added = scores.last_added_local = last_added_local;
 
-  LoadServerScore(nr, download_score);
+  if (setup.api_server)
+  {
+    // load server scores from cache file and trigger update from server
+    LoadServerScore(nr, download_score);
 
-  MergeServerScore();
+    // merge local scores with scores from server
+    MergeServerScore();
+  }
 }
 
 
@@ -9500,6 +9511,14 @@ static struct TokenInfo global_setup_tokens[] =
   {
     TYPE_STRING,
     &setup.network_server_hostname,		"network_server_hostname"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.api_server,				"api_server"
+  },
+  {
+    TYPE_STRING,
+    &setup.api_server_hostname,			"api_server_hostname"
   },
   {
     TYPE_STRING,
@@ -10134,6 +10153,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->network_player_nr = 0;		// first player
   si->network_server_hostname = getStringCopy(STR_NETWORK_AUTO_DETECT);
 
+  si->api_server = TRUE;
+  si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
+
   si->touch.control_type = getStringCopy(TOUCH_CONTROL_DEFAULT);
   si->touch.move_distance = TOUCH_MOVE_DISTANCE_DEFAULT;	// percent
   si->touch.drop_distance = TOUCH_DROP_DISTANCE_DEFAULT;	// percent
@@ -10749,6 +10771,7 @@ void SaveSetup(void)
 	global_setup_tokens[i].value == &setup.graphics_set		||
 	global_setup_tokens[i].value == &setup.volume_simple		||
 	global_setup_tokens[i].value == &setup.network_mode		||
+	global_setup_tokens[i].value == &setup.api_server		||
 	global_setup_tokens[i].value == &setup.touch.control_type	||
 	global_setup_tokens[i].value == &setup.touch.grid_xsize[0]	||
 	global_setup_tokens[i].value == &setup.touch.grid_xsize[1])
