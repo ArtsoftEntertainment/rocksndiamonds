@@ -1039,6 +1039,8 @@ struct NetworkInfo
 struct RuntimeInfo
 {
   boolean uses_touch_device;
+
+  boolean api_server;
 };
 
 struct OptionInfo

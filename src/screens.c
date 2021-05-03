@@ -7358,6 +7358,10 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
   if (si->value == &setup.network_mode)
     ToggleNetworkModeIfNeeded();
 
+  // API server mode may have changed at this point
+  if (si->value == &setup.api_server)
+    runtime.api_server = setup.api_server;
+
   // game speed list may have changed at this point
   if (si->value == &setup.game_speed_extended)
     ToggleGameSpeedsListIfNeeded();

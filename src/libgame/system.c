@@ -127,6 +127,8 @@ void InitRuntimeInfo()
 #else
   runtime.uses_touch_device = FALSE;
 #endif
+
+  runtime.api_server = setup.api_server;
 }
 
 void InitScoresInfo(void)

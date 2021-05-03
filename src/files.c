@@ -9094,7 +9094,7 @@ void LoadServerScore(int nr, boolean download_score)
   // (this should prevent reading it while the thread is writing to it)
   LoadServerScoreFromCache(nr);
 
-  if (download_score)
+  if (download_score && runtime.api_server)
   {
     // 2nd step: download server scores from score server to cache file
     // (as thread, as it might time out if the server is not reachable)
@@ -9253,7 +9253,7 @@ static void UploadScoreToServerAsThread(int nr)
 
 void SaveServerScore(int nr)
 {
-  if (!setup.api_server)
+  if (!runtime.api_server)
     return;
 
   UploadScoreToServerAsThread(nr);
