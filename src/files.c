@@ -8929,7 +8929,7 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 					  struct HttpResponse *response,
 					  int nr)
 {
-  request->hostname = API_SERVER_HOSTNAME;
+  request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
   request->method   = API_SERVER_METHOD;
   request->uri      = API_SERVER_URI_GET;
@@ -9162,7 +9162,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 {
   struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
 
-  request->hostname = API_SERVER_HOSTNAME;
+  request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
   request->method   = API_SERVER_METHOD;
   request->uri      = API_SERVER_URI_ADD;
