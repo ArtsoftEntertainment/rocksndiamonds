@@ -1235,6 +1235,7 @@ void AutoPlayTapes(void)
   static int num_tapes_patched = 0;
   static int num_tape_missing = 0;
   static boolean level_failed[MAX_TAPES_PER_SET];
+  static char *tape_filename = NULL;
   static int patch_nr = 0;
   static char *patch_name[] =
   {
@@ -1327,6 +1328,20 @@ void AutoPlayTapes(void)
     audio.sound_enabled = FALSE;
     setup.engine_snapshot_mode = getStringCopy(STR_SNAPSHOT_MODE_OFF);
 
+    if (strSuffix(global.autoplay_leveldir, ".tape"))
+    {
+      tape_filename = global.autoplay_leveldir;
+
+      LoadTapeFromFilename(tape_filename);
+
+      global.autoplay_leveldir = tape.level_identifier;
+
+      if (tape.level_nr >= 0 && tape.level_nr < MAX_TAPES_PER_SET)
+        global.autoplay_level[tape.level_nr] = TRUE;
+
+      global.autoplay_all = FALSE;
+    }
+
     autoplay_leveldir = getTreeInfoFromIdentifier(leveldir_first,
 						  global.autoplay_leveldir);
 
@@ -1399,7 +1414,9 @@ void AutoPlayTapes(void)
     continue;
 #endif
 
-    if (options.mytapes)
+    if (tape_filename)
+      LoadTapeFromFilename(tape_filename);
+    else if (options.mytapes)
       LoadTape(level_nr);
     else
       LoadSolutionTape(level_nr);
