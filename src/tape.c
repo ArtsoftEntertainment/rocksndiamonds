@@ -1505,7 +1505,8 @@ void AutoPlayTapes(void)
   PrintLine("-", 79);
   Print("Summary (for automatic parsing by scripts):\n");
   Print("LEVELDIR [%s] '%s', SOLVED %d/%d (%d%%)",
-	(num_levels_played == num_levels_solved ? " OK " : "WARN"),
+	(num_levels_played == num_levels_solved &&
+	 num_levels_played > 0 ? " OK " : "WARN"),
 	autoplay_leveldir->identifier, num_levels_solved, num_levels_played,
 	(num_levels_played ? num_levels_solved * 100 / num_levels_played : 0));
 
