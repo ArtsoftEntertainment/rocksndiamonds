@@ -1495,6 +1495,11 @@ void AutoPlayTapes(void)
     return;
   }
 
+  char *autoplay_status = (num_levels_played == num_levels_solved &&
+			   num_levels_played > 0 ? " OK " : "WARN");
+  int autoplay_percent = (num_levels_played ?
+			  num_levels_solved * 100 / num_levels_played : 0);
+
   Print("\n");
   PrintLine("=", 79);
   Print("Number of levels played: %d\n", num_levels_played);
@@ -1505,10 +1510,11 @@ void AutoPlayTapes(void)
   PrintLine("-", 79);
   Print("Summary (for automatic parsing by scripts):\n");
   Print("LEVELDIR [%s] '%s', SOLVED %d/%d (%d%%)",
-	(num_levels_played == num_levels_solved &&
-	 num_levels_played > 0 ? " OK " : "WARN"),
-	autoplay_leveldir->identifier, num_levels_solved, num_levels_played,
-	(num_levels_played ? num_levels_solved * 100 / num_levels_played : 0));
+	autoplay_status,
+	autoplay_leveldir->identifier,
+	num_levels_solved,
+	num_levels_played,
+	autoplay_percent);
 
   if (num_levels_played != num_levels_solved)
   {
