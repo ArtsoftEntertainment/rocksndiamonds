@@ -7656,6 +7656,7 @@ void DumpLevel(struct LevelInfo *level)
   Print("SP player blocks last field: %s\n", (level->sp_block_last_field ? "yes" : "no"));
   Print("use spring bug: %s\n", (level->use_spring_bug ? "yes" : "no"));
   Print("use step counter: %s\n", (level->use_step_counter ? "yes" : "no"));
+  Print("rate time over score: %s\n", (level->rate_time_over_score ? "yes" : "no"));
 
   PrintLine("-", 79);
 }
