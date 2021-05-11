@@ -4903,6 +4903,8 @@ static void InitGlobal(void)
   global.autoplay_leveldir = NULL;
   global.patchtapes_leveldir = NULL;
   global.convert_leveldir = NULL;
+  global.dumplevel_leveldir = NULL;
+  global.dumptape_leveldir = NULL;
   global.create_images_dir = NULL;
 
   global.frames_per_second = 0;
@@ -5015,25 +5017,51 @@ static void Execute_Command(char *command)
   {
     char *filename = &command[11];
 
-    if (!fileExists(filename))
+    if (fileExists(filename))
+    {
+      LoadLevelFromFilename(&level, filename);
+      DumpLevel(&level);
+
+      exit(0);
+    }
+
+    char *leveldir = getStringCopy(filename);	// read command parameters
+    char *level_nr = strchr(leveldir, ' ');
+
+    if (level_nr == NULL)
       Fail("cannot open file '%s'", filename);
 
-    LoadLevelFromFilename(&level, filename);
-    DumpLevel(&level);
+    *level_nr++ = '\0';
 
-    exit(0);
+    global.dumplevel_leveldir = leveldir;
+    global.dumplevel_level_nr = atoi(level_nr);
+
+    program.headless = TRUE;
   }
   else if (strPrefix(command, "dump tape "))
   {
     char *filename = &command[10];
 
-    if (!fileExists(filename))
+    if (fileExists(filename))
+    {
+      LoadTapeFromFilename(filename);
+      DumpTape(&tape);
+
+      exit(0);
+    }
+
+    char *leveldir = getStringCopy(filename);	// read command parameters
+    char *level_nr = strchr(leveldir, ' ');
+
+    if (level_nr == NULL)
       Fail("cannot open file '%s'", filename);
 
-    LoadTapeFromFilename(filename);
-    DumpTape(&tape);
+    *level_nr++ = '\0';
 
-    exit(0);
+    global.dumptape_leveldir = leveldir;
+    global.dumptape_level_nr = atoi(level_nr);
+
+    program.headless = TRUE;
   }
   else if (strPrefix(command, "autoplay ") ||
 	   strPrefix(command, "autoffwd ") ||
@@ -6256,6 +6284,16 @@ void OpenAll(void)
   else if (global.convert_leveldir)
   {
     ConvertLevels();
+    return;
+  }
+  else if (global.dumplevel_leveldir)
+  {
+    DumpLevels();
+    return;
+  }
+  else if (global.dumptape_leveldir)
+  {
+    DumpTapes();
     return;
   }
   else if (global.create_images_dir)

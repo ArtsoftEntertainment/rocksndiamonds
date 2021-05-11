@@ -7661,6 +7661,28 @@ void DumpLevel(struct LevelInfo *level)
   PrintLine("-", 79);
 }
 
+void DumpLevels(void)
+{
+  static LevelDirTree *dumplevel_leveldir = NULL;
+
+  dumplevel_leveldir = getTreeInfoFromIdentifier(leveldir_first,
+						 global.dumplevel_leveldir);
+
+  if (dumplevel_leveldir == NULL)
+    Fail("no such level identifier: '%s'", global.dumplevel_leveldir);
+
+  if (global.dumplevel_level_nr < dumplevel_leveldir->first_level ||
+      global.dumplevel_level_nr > dumplevel_leveldir->last_level)
+    Fail("no such level number: %d", global.dumplevel_level_nr);
+
+  leveldir_current = dumplevel_leveldir;
+
+  LoadLevel(global.dumplevel_level_nr);
+  DumpLevel(&level);
+
+  CloseAllAndExit(0);
+}
+
 
 // ============================================================================
 // tape file functions
@@ -8418,6 +8440,32 @@ void DumpTape(struct TapeInfo *tape)
   }
 
   PrintLine("-", 79);
+}
+
+void DumpTapes(void)
+{
+  static LevelDirTree *dumptape_leveldir = NULL;
+
+  dumptape_leveldir = getTreeInfoFromIdentifier(leveldir_first,
+						global.dumptape_leveldir);
+
+  if (dumptape_leveldir == NULL)
+    Fail("no such level identifier: '%s'", global.dumptape_leveldir);
+
+  if (global.dumptape_level_nr < dumptape_leveldir->first_level ||
+      global.dumptape_level_nr > dumptape_leveldir->last_level)
+    Fail("no such level number: %d", global.dumptape_level_nr);
+
+  leveldir_current = dumptape_leveldir;
+
+  if (options.mytapes)
+    LoadTape(global.dumptape_level_nr);
+  else
+    LoadSolutionTape(global.dumptape_level_nr);
+
+  DumpTape(&tape);
+
+  CloseAllAndExit(0);
 }
 
 

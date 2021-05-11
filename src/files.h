@@ -44,6 +44,7 @@ void SaveLevel(int);
 void SaveLevelTemplate(void);
 void SaveNativeLevel(struct LevelInfo *);
 void DumpLevel(struct LevelInfo *);
+void DumpLevels(void);
 boolean SaveLevelChecked(int);
 
 void CopyNativeLevel_RND_to_Native(struct LevelInfo *);
@@ -56,6 +57,7 @@ void SaveTapeToFilename(char *);
 void SaveTape(int);
 void SaveScoreTape(int);
 void DumpTape(struct TapeInfo *);
+void DumpTapes(void);
 boolean SaveTapeChecked(int);
 boolean SaveTapeChecked_LevelSolved(int);
 

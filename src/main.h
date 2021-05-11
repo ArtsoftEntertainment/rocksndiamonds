@@ -3272,6 +3272,12 @@ struct GlobalInfo
   char *convert_leveldir;
   int convert_level_nr;
 
+  char *dumplevel_leveldir;
+  int dumplevel_level_nr;
+
+  char *dumptape_leveldir;
+  int dumptape_level_nr;
+
   char *create_images_dir;
 
   int num_toons;
