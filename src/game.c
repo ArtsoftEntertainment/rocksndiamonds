@@ -5041,9 +5041,9 @@ void GameEnd(void)
   }
 }
 
-static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry)
+static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry,
+			 boolean one_score_entry_per_name)
 {
-  boolean one_score_entry_per_name = !program.many_scores_per_name;
   int i;
 
   if (strEqual(new_entry->name, EMPTY_PLAYER_NAME))
@@ -5113,6 +5113,7 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry)
 void NewHighScore(int level_nr)
 {
   struct ScoreEntry new_entry = {{ 0 }}; // (prevent warning from GCC bug 53119)
+  boolean one_per_name = !program.many_scores_per_name;
 
   strncpy(new_entry.tape_basename, tape.score_tape_basename, MAX_FILENAME_LEN);
   strncpy(new_entry.name, setup.player_name, MAX_PLAYER_NAME_LEN);
@@ -5122,7 +5123,7 @@ void NewHighScore(int level_nr)
 
   LoadScore(level_nr);
 
-  scores.last_added = addScoreEntry(&scores, &new_entry);
+  scores.last_added = addScoreEntry(&scores, &new_entry, one_per_name);
 
   if (scores.last_added >= 0)
   {
@@ -5141,11 +5142,12 @@ void NewHighScore(int level_nr)
 
 void MergeServerScore(void)
 {
+  boolean one_per_name = !program.many_scores_per_name;
   int i;
 
   for (i = 0; i < server_scores.num_entries; i++)
   {
-    int pos = addScoreEntry(&scores, &server_scores.entry[i]);
+    int pos = addScoreEntry(&scores, &server_scores.entry[i], one_per_name);
 
     if (pos >= 0 && pos <= scores.last_added)
       scores.last_added++;
