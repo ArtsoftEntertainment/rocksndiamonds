@@ -5046,7 +5046,7 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry)
   boolean one_score_entry_per_name = !program.many_scores_per_name;
   int i;
 
-  if (strEqual(setup.player_name, EMPTY_PLAYER_NAME))
+  if (strEqual(new_entry->name, EMPTY_PLAYER_NAME))
     return -1;
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
@@ -5081,7 +5081,7 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry)
 	if (one_score_entry_per_name)
 	{
 	  for (l = i; l < MAX_SCORE_ENTRIES; l++)
-	    if (strEqual(list->entry[l].name, setup.player_name))
+	    if (strEqual(list->entry[l].name, new_entry->name))
 	      m = l;
 
 	  if (m == i)	// player's new highscore overwrites his old one
@@ -5099,7 +5099,7 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry)
       return i;
     }
     else if (one_score_entry_per_name &&
-	     strEqual(entry->name, setup.player_name))
+	     strEqual(entry->name, new_entry->name))
     {
       // player already in high score list with better score or time
 
