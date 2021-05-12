@@ -5066,7 +5066,9 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry,
 			      entry->time == 0);
 
     // prevent adding server score entries if also existing in local score file
-    if (strEqual(new_entry->tape_basename, entry->tape_basename))
+    // (special case: historic score entries have an empty tape basename entry)
+    if (strEqual(new_entry->tape_basename, entry->tape_basename) &&
+	!strEqual(new_entry->tape_basename, UNDEFINED_FILENAME))
       return -1;
 
     if (is_better || entry_is_empty)
