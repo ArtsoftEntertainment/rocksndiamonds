@@ -5144,8 +5144,12 @@ void NewHighScore(int level_nr)
 
 void MergeServerScore(void)
 {
+  struct ScoreEntry last_added_entry;
   boolean one_per_name = !program.many_scores_per_name;
   int i;
+
+  if (scores.last_added >= 0)
+    last_added_entry = scores.entry[scores.last_added];
 
   for (i = 0; i < server_scores.num_entries; i++)
   {
@@ -5156,7 +5160,12 @@ void MergeServerScore(void)
   }
 
   if (scores.last_added >= MAX_SCORE_ENTRIES)
-    scores.last_added = -1;
+  {
+    scores.last_added = MAX_SCORE_ENTRIES - 1;
+    scores.force_last_added = TRUE;
+
+    scores.entry[scores.last_added] = last_added_entry;
+  }
 }
 
 static int getElementMoveStepsizeExt(int x, int y, int direction)

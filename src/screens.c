@@ -5117,6 +5117,7 @@ static void drawHallOfFameList(int level_nr, int first_entry)
   {
     int entry = first_entry + i;
     boolean active = (entry == scores.last_added);
+    boolean forced = (scores.force_last_added && active);
     int font_nr1 = (active ? FONT_TEXT_1_ACTIVE : FONT_TEXT_1);
     int font_nr2 = (active ? FONT_TEXT_2_ACTIVE : FONT_TEXT_2);
     int font_nr3 = (active ? FONT_TEXT_3_ACTIVE : FONT_TEXT_3);
@@ -5127,8 +5128,9 @@ static void drawHallOfFameList(int level_nr, int first_entry)
     int dx3 = SXSIZE - 2 * (mSX - SX + dxoff) - 5 * getFontWidth(font_nr4);
     int num_dots = (dx3 - dx2) / getFontWidth(font_nr3);
     int sy = mSY + 64 + i * 32;
+    char *pos_text = (forced ? "???" : int2str(entry + 1, 3));
 
-    DrawText(mSX, sy, int2str(entry + 1, 3), font_nr1);
+    DrawText(mSX, sy, pos_text, font_nr1);
     DrawText(mSX + dx1, sy, ".", font_nr1);
 
     for (j = 0; j < num_dots; j++)

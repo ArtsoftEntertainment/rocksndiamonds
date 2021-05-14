@@ -3059,6 +3059,7 @@ struct ScoreInfo
   int last_added_local;
 
   boolean updated;
+  boolean force_last_added;
 
   struct ScoreEntry entry[MAX_SCORE_ENTRIES];
 };

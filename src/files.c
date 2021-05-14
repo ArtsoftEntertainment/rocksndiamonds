@@ -8490,6 +8490,7 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
   scores->last_added_local = -1;
 
   scores->updated = FALSE;
+  scores->force_last_added = FALSE;
 }
 
 static void setScoreInfoToDefaults(void)
