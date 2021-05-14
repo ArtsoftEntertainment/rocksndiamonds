@@ -314,7 +314,6 @@ void sortTreeInfo(TreeInfo **);
 void freeTreeInfo(TreeInfo *);
 
 char *getHomeDir(void);
-char *getCommonDataDir(void);
 char *getPersonalDataDir(void);
 char *getMainUserGameDataDir(void);
 char *getUserGameDataDir(void);

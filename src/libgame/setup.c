@@ -1634,29 +1634,6 @@ char *getHomeDir(void)
   return dir;
 }
 
-char *getCommonDataDir(void)
-{
-  static char *common_data_dir = NULL;
-
-#if defined(PLATFORM_WIN32)
-  if (common_data_dir == NULL)
-  {
-    char *dir = checked_malloc(MAX_PATH + 1);
-
-    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_COMMON_DOCUMENTS, NULL, 0, dir))
-	&& !strEqual(dir, ""))		// empty for Windows 95/98
-      common_data_dir = getPath2(dir, program.userdata_subdir);
-    else
-      common_data_dir = options.rw_base_directory;
-  }
-#else
-  if (common_data_dir == NULL)
-    common_data_dir = options.rw_base_directory;
-#endif
-
-  return common_data_dir;
-}
-
 char *getPersonalDataDir(void)
 {
   static char *personal_data_dir = NULL;
