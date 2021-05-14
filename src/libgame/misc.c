@@ -1241,7 +1241,6 @@ void GetOptions(int argc, char *argv[],
 		void (*print_version_function)(void))
 {
   char *ro_base_path = getProgramMainDataPath(argv[0], RO_BASE_PATH);
-  char *rw_base_path = getProgramMainDataPath(argv[0], RW_BASE_PATH);
   char **argvplus = checked_calloc((argc + 1) * sizeof(char **));
   char **options_left = &argvplus[1];
 
@@ -1254,7 +1253,6 @@ void GetOptions(int argc, char *argv[],
   options.server_port = 0;
 
   options.ro_base_directory = ro_base_path;
-  options.rw_base_directory = rw_base_path;
   options.level_directory    = getPath2(ro_base_path, LEVELS_DIRECTORY);
   options.graphics_directory = getPath2(ro_base_path, GRAPHICS_DIRECTORY);
   options.sounds_directory   = getPath2(ro_base_path, SOUNDS_DIRECTORY);
@@ -1334,9 +1332,7 @@ void GetOptions(int argc, char *argv[],
       if (option_arg == NULL)
 	FailWithHelp("option '%s' requires an argument", option_str);
 
-      // this should be extended to separate options for ro and rw data
       options.ro_base_directory = ro_base_path = getStringCopy(option_arg);
-      options.rw_base_directory = rw_base_path = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
 

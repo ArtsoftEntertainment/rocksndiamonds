@@ -629,12 +629,7 @@
 #define RO_GAME_DIR		"."
 #endif
 
-#ifndef RW_GAME_DIR
-#define RW_GAME_DIR		"."
-#endif
-
 #define RO_BASE_PATH		RO_GAME_DIR
-#define RW_BASE_PATH		RW_GAME_DIR
 
 // directory names
 #define GRAPHICS_DIRECTORY	"graphics"
@@ -1046,7 +1041,6 @@ struct OptionInfo
   int server_port;
 
   char *ro_base_directory;
-  char *rw_base_directory;
   char *level_directory;
   char *graphics_directory;
   char *sounds_directory;

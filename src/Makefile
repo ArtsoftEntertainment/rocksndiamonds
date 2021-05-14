@@ -118,11 +118,7 @@ ifdef RO_GAME_DIR			# path to read-only game data specified
 CONFIG_RO_GAME_DIR = -DRO_GAME_DIR="\"$(RO_GAME_DIR)\""
 endif
 
-ifdef RW_GAME_DIR			# path to writable game data specified
-CONFIG_RW_GAME_DIR = -DRW_GAME_DIR="\"$(RW_GAME_DIR)\""
-endif
-
-CONFIG = $(CONFIG_RO_GAME_DIR) $(CONFIG_RW_GAME_DIR) $(JOYSTICK)
+CONFIG = $(CONFIG_RO_GAME_DIR) $(JOYSTICK)
 
 DEBUG = -DDEBUG -g
 

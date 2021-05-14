@@ -28,13 +28,6 @@ MAKE = make
 # use the following setting for Debian / Ubuntu installations:
 # RO_GAME_DIR = /usr/share/games/rocksndiamonds
 
-# directory for writable game data (like highscore files)
-# (if no "scores" directory exists, scores are saved in user data directory)
-# default is '.' to be able to run program without installation
-# RW_GAME_DIR = .
-# use the following setting for Debian / Ubuntu installations:
-# RW_GAME_DIR = /var/games/rocksndiamonds
-
 # uncomment if system has no joystick include file
 # JOYSTICK = -DNO_JOYSTICK
 
