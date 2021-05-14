@@ -21,12 +21,12 @@ CC = gcc
 # (this must be set to "gmake" for some systems)
 MAKE = make
 
-# directory for read-only game data (like graphics, sounds, levels)
+# directory for (read-only) game data (like graphics, sounds, levels)
 # (this directory is usually the game's installation directory)
 # default is '.' to be able to run program without installation
-# RO_GAME_DIR = .
+# BASE_PATH = .
 # use the following setting for Debian / Ubuntu installations:
-# RO_GAME_DIR = /usr/share/games/rocksndiamonds
+# BASE_PATH = /usr/share/games/rocksndiamonds
 
 # uncomment if system has no joystick include file
 # JOYSTICK = -DNO_JOYSTICK

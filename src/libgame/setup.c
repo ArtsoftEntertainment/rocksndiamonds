@@ -534,8 +534,8 @@ char *getProgramConfigFilename(char *command_filename)
     if (strSuffix(command_filename_1, ".exe"))
       command_filename_1[strlen(command_filename_1) - 4] = '\0';
 
-    char *ro_base_path = getProgramMainDataPath(command_filename, RO_BASE_PATH);
-    char *conf_directory = getPath2(ro_base_path, CONF_DIRECTORY);
+    char *base_path = getProgramMainDataPath(command_filename, BASE_PATH);
+    char *conf_directory = getPath2(base_path, CONF_DIRECTORY);
 
     char *command_basepath = getBasePath(command_filename);
     char *command_basename = getBaseNameNoSuffix(command_filename);
@@ -545,7 +545,7 @@ char *getProgramConfigFilename(char *command_filename)
     config_filename_2 = getStringCat2(command_filename_2, ".conf");
     config_filename_3 = getPath2(conf_directory, SETUP_FILENAME);
 
-    checked_free(ro_base_path);
+    checked_free(base_path);
     checked_free(conf_directory);
 
     checked_free(command_basepath);

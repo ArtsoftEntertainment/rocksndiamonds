@@ -114,11 +114,11 @@ endif
 # configuring compile-time definitions
 # -----------------------------------------------------------------------------
 
-ifdef RO_GAME_DIR			# path to read-only game data specified
-CONFIG_RO_GAME_DIR = -DRO_GAME_DIR="\"$(RO_GAME_DIR)\""
+ifdef BASE_PATH					# path to read-only game data
+CONFIG_BASE_PATH = -DBASE_PATH="\"$(BASE_PATH)\""
 endif
 
-CONFIG = $(CONFIG_RO_GAME_DIR) $(JOYSTICK)
+CONFIG = $(CONFIG_BASE_PATH) $(JOYSTICK)
 
 DEBUG = -DDEBUG -g
 

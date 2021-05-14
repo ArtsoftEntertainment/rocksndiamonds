@@ -1240,7 +1240,7 @@ void GetOptions(int argc, char *argv[],
 		void (*print_usage_function)(void),
 		void (*print_version_function)(void))
 {
-  char *ro_base_path = getProgramMainDataPath(argv[0], RO_BASE_PATH);
+  char *base_path = getProgramMainDataPath(argv[0], BASE_PATH);
   char **argvplus = checked_calloc((argc + 1) * sizeof(char **));
   char **options_left = &argvplus[1];
 
@@ -1252,13 +1252,14 @@ void GetOptions(int argc, char *argv[],
   options.server_host = NULL;
   options.server_port = 0;
 
-  options.ro_base_directory = ro_base_path;
-  options.level_directory    = getPath2(ro_base_path, LEVELS_DIRECTORY);
-  options.graphics_directory = getPath2(ro_base_path, GRAPHICS_DIRECTORY);
-  options.sounds_directory   = getPath2(ro_base_path, SOUNDS_DIRECTORY);
-  options.music_directory    = getPath2(ro_base_path, MUSIC_DIRECTORY);
-  options.docs_directory     = getPath2(ro_base_path, DOCS_DIRECTORY);
-  options.conf_directory     = getPath2(ro_base_path, CONF_DIRECTORY);
+  options.base_directory = base_path;
+
+  options.level_directory    = getPath2(base_path, LEVELS_DIRECTORY);
+  options.graphics_directory = getPath2(base_path, GRAPHICS_DIRECTORY);
+  options.sounds_directory   = getPath2(base_path, SOUNDS_DIRECTORY);
+  options.music_directory    = getPath2(base_path, MUSIC_DIRECTORY);
+  options.docs_directory     = getPath2(base_path, DOCS_DIRECTORY);
+  options.conf_directory     = getPath2(base_path, CONF_DIRECTORY);
 
   options.execute_command = NULL;
   options.special_flags = NULL;
@@ -1332,17 +1333,17 @@ void GetOptions(int argc, char *argv[],
       if (option_arg == NULL)
 	FailWithHelp("option '%s' requires an argument", option_str);
 
-      options.ro_base_directory = ro_base_path = getStringCopy(option_arg);
+      options.base_directory = base_path = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
 
       // adjust paths for sub-directories in base directory accordingly
-      options.level_directory    = getPath2(ro_base_path, LEVELS_DIRECTORY);
-      options.graphics_directory = getPath2(ro_base_path, GRAPHICS_DIRECTORY);
-      options.sounds_directory   = getPath2(ro_base_path, SOUNDS_DIRECTORY);
-      options.music_directory    = getPath2(ro_base_path, MUSIC_DIRECTORY);
-      options.docs_directory     = getPath2(ro_base_path, DOCS_DIRECTORY);
-      options.conf_directory     = getPath2(ro_base_path, CONF_DIRECTORY);
+      options.level_directory    = getPath2(base_path, LEVELS_DIRECTORY);
+      options.graphics_directory = getPath2(base_path, GRAPHICS_DIRECTORY);
+      options.sounds_directory   = getPath2(base_path, SOUNDS_DIRECTORY);
+      options.music_directory    = getPath2(base_path, MUSIC_DIRECTORY);
+      options.docs_directory     = getPath2(base_path, DOCS_DIRECTORY);
+      options.conf_directory     = getPath2(base_path, CONF_DIRECTORY);
     }
     else if (strncmp(option, "-levels", option_len) == 0)
     {

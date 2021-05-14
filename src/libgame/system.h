@@ -624,12 +624,10 @@
 // default value for off-screen positions
 #define POS_OFFSCREEN		(-1000000)
 
-// definitions for game sub-directories
-#ifndef RO_GAME_DIR
-#define RO_GAME_DIR		"."
+// definitions for game base path and sub-directories
+#ifndef BASE_PATH
+#define BASE_PATH		"."
 #endif
-
-#define RO_BASE_PATH		RO_GAME_DIR
 
 // directory names
 #define GRAPHICS_DIRECTORY	"graphics"
@@ -1040,7 +1038,7 @@ struct OptionInfo
   char *server_host;
   int server_port;
 
-  char *ro_base_directory;
+  char *base_directory;
   char *level_directory;
   char *graphics_directory;
   char *sounds_directory;
