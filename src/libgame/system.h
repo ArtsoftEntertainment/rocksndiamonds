@@ -1017,9 +1017,6 @@ struct ProgramInfo
   void (*exit_message_function)(char *, va_list);
   void (*exit_function)(int);
 
-  boolean global_scores;
-  boolean many_scores_per_name;
-
   boolean headless;
 };
 
@@ -1875,7 +1872,6 @@ void InitProgramInfo(char *, char *, char *, char *, char *, char *, char *,
 void InitNetworkInfo(boolean, boolean, boolean, char *, int);
 void InitRuntimeInfo(void);
 
-void InitScoresInfo(void);
 void SetWindowTitle(void);
 
 void InitWindowTitleFunction(char *(*window_title_function)(void));

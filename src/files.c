@@ -8792,7 +8792,6 @@ void LoadScore(int nr)
 void SaveScore_OLD(int nr)
 {
   int i;
-  int permissions = (program.global_scores ? PERMS_PUBLIC : PERMS_PRIVATE);
   char *filename = getScoreFilename(nr);
   FILE *file;
 
@@ -8813,7 +8812,7 @@ void SaveScore_OLD(int nr)
 
   fclose(file);
 
-  SetFilePermissions(filename, permissions);
+  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 #endif
 
@@ -8882,7 +8881,6 @@ static void SaveScore_TAPE(FILE *file, struct ScoreInfo *scores)
 static void SaveScoreToFilename(char *filename)
 {
   FILE *file;
-  int permissions = (program.global_scores ? PERMS_PUBLIC : PERMS_PRIVATE);
   int info_chunk_size;
   int name_chunk_size;
   int scor_chunk_size;
@@ -8925,7 +8923,7 @@ static void SaveScoreToFilename(char *filename)
 
   fclose(file);
 
-  SetFilePermissions(filename, permissions);
+  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
 void SaveScore(int nr)

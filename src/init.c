@@ -6188,8 +6188,6 @@ void OpenAll(void)
 
   print_timestamp_time("[init setup/config stuff (1)]");
 
-  InitScoresInfo();
-
   if (options.execute_command)
     Execute_Command(options.execute_command);
 

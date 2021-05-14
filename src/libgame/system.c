@@ -131,33 +131,6 @@ void InitRuntimeInfo()
   runtime.api_server = setup.api_server;
 }
 
-void InitScoresInfo(void)
-{
-  char *global_scores_dir = getPath2(getCommonDataDir(), SCORES_DIRECTORY);
-
-  program.global_scores = directoryExists(global_scores_dir);
-  program.many_scores_per_name = !program.global_scores;
-
-#if 0
-  if (options.debug)
-  {
-    if (program.global_scores)
-    {
-      Debug("internal:path", "Using global, multi-user scores directory '%s'.",
-	    global_scores_dir);
-      Debug("internal:path", "Remove to enable single-user scores directory.");
-      Debug("internal:path", "(This enables multipe score entries per user.)");
-    }
-    else
-    {
-      Debug("internal:path", "Using private, single-user scores directory.");
-    }
-  }
-#endif
-
-  free(global_scores_dir);
-}
-
 void SetWindowTitle(void)
 {
   program.window_title = program.window_title_function();

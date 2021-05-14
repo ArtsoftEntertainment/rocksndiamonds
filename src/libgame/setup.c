@@ -105,12 +105,7 @@ static char *getScoreDir(char *level_subdir)
   char *score_subdir = SCORES_DIRECTORY;
 
   if (score_dir == NULL)
-  {
-    if (program.global_scores)
-      score_dir = getPath2(getCommonDataDir(),       score_subdir);
-    else
-      score_dir = getPath2(getMainUserGameDataDir(), score_subdir);
-  }
+    score_dir = getPath2(getMainUserGameDataDir(), score_subdir);
 
   if (level_subdir != NULL)
   {
@@ -1141,15 +1136,9 @@ void InitTapeDirectory(char *level_subdir)
 
 void InitScoreDirectory(char *level_subdir)
 {
-  int permissions = (program.global_scores ? PERMS_PUBLIC : PERMS_PRIVATE);
-
-  if (program.global_scores)
-    createDirectory(getCommonDataDir(), "common data", permissions);
-  else
-    createDirectory(getMainUserGameDataDir(), "main user data", permissions);
-
-  createDirectory(getScoreDir(NULL), "main score", permissions);
-  createDirectory(getScoreDir(level_subdir), "level score", permissions);
+  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
+  createDirectory(getScoreDir(NULL), "main score", PERMS_PRIVATE);
+  createDirectory(getScoreDir(level_subdir), "level score", PERMS_PRIVATE);
 }
 
 void InitScoreCacheDirectory(char *level_subdir)
@@ -1162,11 +1151,9 @@ void InitScoreCacheDirectory(char *level_subdir)
 
 void InitScoreTapeDirectory(char *level_subdir, int nr)
 {
-  int permissions = (program.global_scores ? PERMS_PUBLIC : PERMS_PRIVATE);
-
   InitScoreDirectory(level_subdir);
 
-  createDirectory(getScoreTapeDir(level_subdir, nr), "score tape", permissions);
+  createDirectory(getScoreTapeDir(level_subdir, nr), "score tape", PERMS_PRIVATE);
 }
 
 static void SaveUserLevelInfo(void);
