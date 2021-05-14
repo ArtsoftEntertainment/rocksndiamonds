@@ -9318,7 +9318,7 @@ void LoadLocalAndServerScore(int nr, boolean download_score)
   // restore last added local score entry (before merging server scores)
   scores.last_added = scores.last_added_local = last_added_local;
 
-  if (setup.api_server)
+  if (setup.api_server && !setup.only_show_local_scores)
   {
     // load server scores from cache file and trigger update from server
     LoadServerScore(nr, download_score);
@@ -9513,6 +9513,10 @@ static struct TokenInfo global_setup_tokens[] =
   {
     TYPE_SWITCH,
     &setup.show_snapshot_buttons,		"show_snapshot_buttons"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.only_show_local_scores,		"only_show_local_scores"
   },
   {
     TYPE_STRING,
@@ -10186,6 +10190,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->sp_show_border_elements = FALSE;
   si->small_game_graphics = FALSE;
   si->show_snapshot_buttons = FALSE;
+  si->only_show_local_scores = FALSE;
 
   si->graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
   si->sounds_set   = getStringCopy(SND_CLASSIC_SUBDIR);
