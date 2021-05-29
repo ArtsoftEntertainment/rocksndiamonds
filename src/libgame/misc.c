@@ -3769,6 +3769,11 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
   char *basename = file_list_entry->filename;
   char *filename = getCustomArtworkFilename(basename, artwork_info->type);
 
+  // mark all images from non-default graphics directory as "redefined"
+  if (artwork_info->type == ARTWORK_TYPE_GRAPHICS &&
+      !strPrefix(filename, options.graphics_directory))
+    file_list_entry->redefined = TRUE;
+
   if (filename == NULL)
   {
     Warn("cannot find artwork file '%s'", basename);
