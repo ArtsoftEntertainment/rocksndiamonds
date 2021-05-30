@@ -13132,6 +13132,104 @@ void CreateLevelSketchImages(void)
 
 
 // ----------------------------------------------------------------------------
+// create and save images for element collecting animations (raw BMP format)
+// ----------------------------------------------------------------------------
+
+static boolean createCollectImage(int element)
+{
+  return (IS_COLLECTIBLE(element) && !IS_SP_ELEMENT(element));
+}
+
+void CreateCollectElementImages(void)
+{
+  int i, j;
+  int num_steps = 8;
+  int anim_frames = num_steps - 1;
+  int tile_size = TILESIZE;
+  int anim_width  = tile_size * anim_frames;
+  int anim_height = tile_size;
+  int num_collect_images = 0;
+  int pos_collect_images = 0;
+
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+    if (createCollectImage(i))
+      num_collect_images++;
+
+  Info("Creating %d element collecting animation images ...",
+       num_collect_images);
+
+  int dst_width  = anim_width * 2;
+  int dst_height = anim_height * num_collect_images / 2;
+  Bitmap *dst_bitmap = CreateBitmap(dst_width, dst_height, DEFAULT_DEPTH);
+  char *basename = "RocksCollect.bmp";
+  char *filename = getPath2(global.create_collect_images_dir, basename);
+
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+  {
+    if (!createCollectImage(i))
+      continue;
+
+    int dst_x = (pos_collect_images / (num_collect_images / 2)) * anim_width;
+    int dst_y = (pos_collect_images % (num_collect_images / 2)) * anim_height;
+    int graphic = el2img(i);
+    char *token_name = element_info[i].token_name;
+    Bitmap *tmp_bitmap = CreateBitmap(tile_size, tile_size, DEFAULT_DEPTH);
+    Bitmap *src_bitmap;
+    int src_x, src_y;
+
+    Info("- creating collecting image for '%s' ...", token_name);
+
+    getGraphicSource(graphic, 0, &src_bitmap, &src_x, &src_y);
+
+    BlitBitmap(src_bitmap, tmp_bitmap, src_x, src_y,
+	       tile_size, tile_size, 0, 0);
+
+    tmp_bitmap->surface_masked = tmp_bitmap->surface;
+
+    for (j = 0; j < anim_frames; j++)
+    {
+      int frame_size_final = tile_size * (anim_frames - j) / num_steps;
+      int frame_size = frame_size_final * num_steps;
+      int offset = (tile_size - frame_size_final) / 2;
+      Bitmap *frame_bitmap = ZoomBitmap(tmp_bitmap, frame_size, frame_size);
+
+      while (frame_size > frame_size_final)
+      {
+	frame_size /= 2;
+
+	Bitmap *half_bitmap = ZoomBitmap(frame_bitmap, frame_size, frame_size);
+
+	FreeBitmap(frame_bitmap);
+
+	frame_bitmap = half_bitmap;
+      }
+
+      BlitBitmap(frame_bitmap, dst_bitmap, 0, 0,
+		 frame_size_final, frame_size_final,
+		 dst_x + j * tile_size + offset, dst_y + offset);
+
+      FreeBitmap(frame_bitmap);
+    }
+
+    tmp_bitmap->surface_masked = NULL;
+
+    FreeBitmap(tmp_bitmap);
+
+    pos_collect_images++;
+  }
+
+  if (SDL_SaveBMP(dst_bitmap->surface, filename) != 0)
+    Fail("cannot save element collecting image file '%s'", filename);
+
+  FreeBitmap(dst_bitmap);
+
+  Info("Done.");
+
+  CloseAllAndExit(0);
+}
+
+
+// ----------------------------------------------------------------------------
 // create and save images for custom and group elements (raw BMP format)
 // ----------------------------------------------------------------------------
 

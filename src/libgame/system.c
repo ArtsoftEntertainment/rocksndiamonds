@@ -1193,7 +1193,7 @@ void ReloadCustomImage(Bitmap *bitmap, char *basename)
   free(new_bitmap);
 }
 
-static Bitmap *ZoomBitmap(Bitmap *src_bitmap, int zoom_width, int zoom_height)
+Bitmap *ZoomBitmap(Bitmap *src_bitmap, int zoom_width, int zoom_height)
 {
   return SDLZoomBitmap(src_bitmap, zoom_width, zoom_height);
 }

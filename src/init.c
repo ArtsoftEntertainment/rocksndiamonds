@@ -4906,6 +4906,7 @@ static void InitGlobal(void)
   global.dumplevel_leveldir = NULL;
   global.dumptape_leveldir = NULL;
   global.create_sketch_images_dir = NULL;
+  global.create_collect_images_dir = NULL;
 
   global.frames_per_second = 0;
   global.show_frames_per_second = FALSE;
@@ -5196,6 +5197,14 @@ static void Execute_Command(char *command)
     if (access(global.create_sketch_images_dir, W_OK) != 0)
       Fail("image target directory '%s' not found or not writable",
 	   global.create_sketch_images_dir);
+  }
+  else if (strPrefix(command, "create collect image "))
+  {
+    global.create_collect_images_dir = getStringCopy(&command[21]);
+
+    if (access(global.create_collect_images_dir, W_OK) != 0)
+      Fail("image target directory '%s' not found or not writable",
+	   global.create_collect_images_dir);
   }
   else if (strPrefix(command, "create CE image "))
   {
@@ -6297,6 +6306,11 @@ void OpenAll(void)
   else if (global.create_sketch_images_dir)
   {
     CreateLevelSketchImages();
+    return;
+  }
+  else if (global.create_collect_images_dir)
+  {
+    CreateCollectElementImages();
     return;
   }
 

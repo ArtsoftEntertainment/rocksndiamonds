@@ -7642,6 +7642,7 @@ static void print_usage(void)
 	"  \"patch tapes MODE LEVELDIR [NR]\" patch level tapes for LEVELDIR\n"
 	"  \"convert LEVELDIR [NR]\"          convert levels in LEVELDIR\n"
 	"  \"create sketch images DIRECTORY\" write BMP images to DIRECTORY\n"
+	"  \"create collect image DIRECTORY\" write BMP image to DIRECTORY\n"
 	"  \"create CE image DIRECTORY\"      write BMP image to DIRECTORY\n"
 	"\n",
 	program.command_basename);

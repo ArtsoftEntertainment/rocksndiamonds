@@ -98,6 +98,7 @@ void LoadHelpTextInfo(void);
 
 void ConvertLevels(void);
 void CreateLevelSketchImages(void);
+void CreateCollectElementImages(void);
 void CreateCustomElementImages(char *);
 
 void FreeGlobalAnimEventInfo(void);

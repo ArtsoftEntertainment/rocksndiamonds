@@ -1952,6 +1952,7 @@ Bitmap *LoadImage(char *);
 Bitmap *LoadCustomImage(char *);
 void ReloadCustomImage(Bitmap *, char *);
 
+Bitmap *ZoomBitmap(Bitmap *, int, int);
 void ReCreateGameTileSizeBitmap(Bitmap **);
 void CreateBitmapWithSmallBitmaps(Bitmap **, int, int);
 void CreateBitmapTextures(Bitmap **);
