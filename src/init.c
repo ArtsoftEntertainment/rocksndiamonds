@@ -4905,7 +4905,7 @@ static void InitGlobal(void)
   global.convert_leveldir = NULL;
   global.dumplevel_leveldir = NULL;
   global.dumptape_leveldir = NULL;
-  global.create_images_dir = NULL;
+  global.create_sketch_images_dir = NULL;
 
   global.frames_per_second = 0;
   global.show_frames_per_second = FALSE;
@@ -5189,13 +5189,13 @@ static void Execute_Command(char *command)
 
     program.headless = TRUE;
   }
-  else if (strPrefix(command, "create images "))
+  else if (strPrefix(command, "create sketch images "))
   {
-    global.create_images_dir = getStringCopy(&command[14]);
+    global.create_sketch_images_dir = getStringCopy(&command[21]);
 
-    if (access(global.create_images_dir, W_OK) != 0)
+    if (access(global.create_sketch_images_dir, W_OK) != 0)
       Fail("image target directory '%s' not found or not writable",
-	   global.create_images_dir);
+	   global.create_sketch_images_dir);
   }
   else if (strPrefix(command, "create CE image "))
   {
@@ -6294,7 +6294,7 @@ void OpenAll(void)
     DumpTapes();
     return;
   }
-  else if (global.create_images_dir)
+  else if (global.create_sketch_images_dir)
   {
     CreateLevelSketchImages();
     return;

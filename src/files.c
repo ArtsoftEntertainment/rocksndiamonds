@@ -13086,8 +13086,8 @@ void CreateLevelSketchImages(void)
     sprintf(basename1, "%04d.bmp", i);
     sprintf(basename2, "%04ds.bmp", i);
 
-    filename1 = getPath2(global.create_images_dir, basename1);
-    filename2 = getPath2(global.create_images_dir, basename2);
+    filename1 = getPath2(global.create_sketch_images_dir, basename1);
+    filename2 = getPath2(global.create_sketch_images_dir, basename2);
 
     DrawSizedElement(0, 0, element, TILESIZE);
     BlitBitmap(drawto, bitmap1, SX, SY, TILEX, TILEY, 0, 0);

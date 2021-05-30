@@ -3279,7 +3279,7 @@ struct GlobalInfo
   char *dumptape_leveldir;
   int dumptape_level_nr;
 
-  char *create_images_dir;
+  char *create_sketch_images_dir;
 
   int num_toons;
 
