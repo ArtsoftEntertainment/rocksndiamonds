@@ -12173,6 +12173,9 @@ void GameActions_RND(void)
 	TEST_DrawLevelField(x, y);
 
 	TestFieldAfterSnapping(x, y, element, move_direction, player_index_bit);
+
+	if (IS_ENVELOPE(element))
+	  local_player->show_envelope = element;
       }
     }
 
@@ -14330,7 +14333,10 @@ static int DigField(struct PlayerInfo *player,
     }
     else if (IS_ENVELOPE(element))
     {
-      player->show_envelope = element;
+      boolean wait_for_snapping = (mode == DF_SNAP && level.block_snap_field);
+
+      if (!wait_for_snapping)
+	player->show_envelope = element;
     }
     else if (element == EL_EMC_LENSES)
     {
