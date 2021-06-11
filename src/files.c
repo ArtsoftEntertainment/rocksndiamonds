@@ -327,6 +327,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(16),
     &li.finish_dig_collect,		TRUE
   },
+  {
+    EL_PLAYER_1,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(17),
+    &li.keep_walkable_ce,		FALSE
+  },
 
   // (these values are different for each player)
   {
@@ -6463,6 +6468,10 @@ static void LoadLevel_InitVersion(struct LevelInfo *level)
   // CE actions were triggered by unfinished digging/collecting up to 4.2.2.0
   if (level->game_version <= VERSION_IDENT(4,2,2,0))
     level->finish_dig_collect = FALSE;
+
+  // CE changing to player was kept under the player if walkable up to 4.2.3.1
+  if (level->game_version <= VERSION_IDENT(4,2,3,1))
+    level->keep_walkable_ce = TRUE;
 }
 
 static void LoadLevel_InitStandardElements(struct LevelInfo *level)

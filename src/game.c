@@ -10832,6 +10832,10 @@ static boolean ChangeElement(int x, int y, int element, int page)
       Store[x][y] = EL_EMPTY;
     }
 
+    // special case: element changes to player (and may be kept if walkable)
+    if (ELEM_IS_PLAYER(target_element) && !level.keep_walkable_ce)
+      CreateElementFromChange(x, y, EL_EMPTY);
+
     CreateElementFromChange(x, y, target_element);
 
     PlayLevelSoundElementAction(x, y, element, ACTION_CHANGING);
