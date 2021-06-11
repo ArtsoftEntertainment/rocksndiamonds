@@ -596,7 +596,7 @@
 #define GFX_CRUMBLED(e)		HAS_PROPERTY(GFX_ELEMENT(e), EP_GFX_CRUMBLED)
 
 // macros for pre-defined properties
-#define ELEM_IS_PLAYER(e)	HAS_PROPERTY(e, EP_PLAYER)
+#define IS_PLAYER_ELEMENT(e)	HAS_PROPERTY(e, EP_PLAYER)
 #define CAN_PASS_MAGIC_WALL(e)	HAS_PROPERTY(e, EP_CAN_PASS_MAGIC_WALL)
 #define CAN_PASS_DC_MAGIC_WALL(e) HAS_PROPERTY(e, EP_CAN_PASS_DC_MAGIC_WALL)
 #define IS_SWITCHABLE(e)	HAS_PROPERTY(e, EP_SWITCHABLE)
@@ -850,7 +850,7 @@
 	(ge == EL_ANY_ELEMENT ? TRUE :					\
 	 IS_GROUP_ELEMENT(ge) ? IS_IN_GROUP(e, GROUP_NR(ge)) : (e) == (ge))
 
-#define IS_PLAYER(x, y)		(ELEM_IS_PLAYER(StorePlayer[x][y]))
+#define IS_PLAYER(x, y)		(IS_PLAYER_ELEMENT(StorePlayer[x][y]))
 
 #define IS_FREE(x, y)		(Tile[x][y] == EL_EMPTY && !IS_PLAYER(x, y))
 #define IS_FREE_OR_PLAYER(x, y)	(Tile[x][y] == EL_EMPTY)

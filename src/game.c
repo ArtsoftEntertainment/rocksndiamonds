@@ -4310,7 +4310,7 @@ void InitGame(void)
 	{
 	  // check for player created from custom element as single target
 	  content = element_info[element].change_page[i].target_element;
-	  is_player = ELEM_IS_PLAYER(content);
+	  is_player = IS_PLAYER_ELEMENT(content);
 
 	  if (is_player && (found_rating < 3 ||
 			    (found_rating == 3 && element < found_element)))
@@ -4328,7 +4328,7 @@ void InitGame(void)
       {
 	// check for player created from custom element as explosion content
 	content = element_info[element].content.e[xx][yy];
-	is_player = ELEM_IS_PLAYER(content);
+	is_player = IS_PLAYER_ELEMENT(content);
 
 	if (is_player && (found_rating < 2 ||
 			  (found_rating == 2 && element < found_element)))
@@ -4349,7 +4349,7 @@ void InitGame(void)
 	  content =
 	    element_info[element].change_page[i].target_content.e[xx][yy];
 
-	  is_player = ELEM_IS_PLAYER(content);
+	  is_player = IS_PLAYER_ELEMENT(content);
 
 	  if (is_player && (found_rating < 1 ||
 			    (found_rating == 1 && element < found_element)))
@@ -5688,7 +5688,7 @@ static void RelocatePlayer(int jx, int jy, int el_player_raw)
      possible that the relocation target field did not contain a player element,
      but a walkable element, to which the new player was relocated -- in this
      case, restore that (already initialized!) element on the player field */
-  if (!ELEM_IS_PLAYER(element))	// player may be set on walkable element
+  if (!IS_PLAYER_ELEMENT(element))	// player may be set on walkable element
   {
     Tile[jx][jy] = element;	// restore previously existing element
   }
@@ -5858,7 +5858,7 @@ static void Explode(int ex, int ey, int phase, int mode)
 
       // !!! check this case -- currently needed for rnd_rado_negundo_v,
       // !!! levels 015 018 019 020 021 022 023 026 027 028 !!!
-      else if (ELEM_IS_PLAYER(center_element))
+      else if (IS_PLAYER_ELEMENT(center_element))
 	Store[x][y] = EL_EMPTY;
       else if (center_element == EL_YAMYAM)
 	Store[x][y] = level.yamyam_content[game.yamyam_content_nr].e[xx][yy];
@@ -5998,7 +5998,7 @@ static void Explode(int ex, int ey, int phase, int mode)
     if (IS_PLAYER(x, y) && !PLAYERINFO(x, y)->present)
       StorePlayer[x][y] = 0;
 
-    if (ELEM_IS_PLAYER(element))
+    if (IS_PLAYER_ELEMENT(element))
       RelocatePlayer(x, y, element);
   }
   else if (IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
@@ -8784,7 +8784,7 @@ void ContinueMoving(int x, int y)
     if (GFX_CRUMBLED(Tile[x][y]))
       TEST_DrawLevelFieldCrumbledNeighbours(x, y);
 
-    if (ELEM_IS_PLAYER(move_leave_element))
+    if (IS_PLAYER_ELEMENT(move_leave_element))
       RelocatePlayer(x, y, move_leave_element);
   }
 
@@ -10594,7 +10594,7 @@ static void CreateFieldExt(int x, int y, int element, boolean is_change)
   int previous_move_direction = MovDir[x][y];
   int last_ce_value = CustomValue[x][y];
   boolean player_explosion_protected = PLAYER_EXPLOSION_PROTECTED(x, y);
-  boolean new_element_is_player = ELEM_IS_PLAYER(new_element);
+  boolean new_element_is_player = IS_PLAYER_ELEMENT(new_element);
   boolean add_player_onto_element = (new_element_is_player &&
 				     new_element != EL_SOKOBAN_FIELD_PLAYER &&
 				     IS_WALKABLE(old_element));
@@ -10770,7 +10770,7 @@ static boolean ChangeElement(int x, int y, int element, int page)
 	  (change->replace_when == CP_WHEN_COLLECTIBLE  && is_collectible) ||
 	  (change->replace_when == CP_WHEN_REMOVABLE    && is_removable) ||
 	  (change->replace_when == CP_WHEN_DESTRUCTIBLE && is_destructible)) &&
-	 !(IS_PLAYER(ex, ey) && ELEM_IS_PLAYER(content_element)));
+	 !(IS_PLAYER(ex, ey) && IS_PLAYER_ELEMENT(content_element)));
 
       if (!can_replace[xx][yy])
 	complete_replace = FALSE;
@@ -10833,7 +10833,7 @@ static boolean ChangeElement(int x, int y, int element, int page)
     }
 
     // special case: element changes to player (and may be kept if walkable)
-    if (ELEM_IS_PLAYER(target_element) && !level.keep_walkable_ce)
+    if (IS_PLAYER_ELEMENT(target_element) && !level.keep_walkable_ce)
       CreateElementFromChange(x, y, EL_EMPTY);
 
     CreateElementFromChange(x, y, target_element);

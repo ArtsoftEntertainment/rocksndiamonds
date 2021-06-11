@@ -3642,7 +3642,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   // initialize player positions and delete players from the playfield
   for (y = 0; y < cav->height; y++) for (x = 0; x < cav->width; x++)
   {
-    if (ELEM_IS_PLAYER(level->field[x][y]))
+    if (IS_PLAYER_ELEMENT(level->field[x][y]))
     {
       int player_nr = GET_PLAYER_NR(level->field[x][y]);
 

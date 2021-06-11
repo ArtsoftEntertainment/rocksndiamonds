@@ -3675,7 +3675,7 @@ void DrawPreviewPlayers(void)
     {
       int element = level.field[x][y];
 
-      if (ELEM_IS_PLAYER(element))
+      if (IS_PLAYER_ELEMENT(element))
       {
 	int player_nr = GET_PLAYER_NR(element);
 

@@ -8265,7 +8265,7 @@ static void CopyGroupElementPropertiesToEditor(int element)
 
 static void CopyClassicElementPropertiesToEditor(int element)
 {
-  if (ELEM_IS_PLAYER(element) || COULD_MOVE_INTO_ACID(element))
+  if (IS_PLAYER_ELEMENT(element) || COULD_MOVE_INTO_ACID(element))
     custom_element_properties[EP_CAN_MOVE_INTO_ACID] =
       getMoveIntoAcidProperty(&level, element);
 
@@ -8451,7 +8451,7 @@ static void CopyGroupElementPropertiesToGame(int element)
 
 static void CopyClassicElementPropertiesToGame(int element)
 {
-  if (ELEM_IS_PLAYER(element) || COULD_MOVE_INTO_ACID(element))
+  if (IS_PLAYER_ELEMENT(element) || COULD_MOVE_INTO_ACID(element))
     setMoveIntoAcidProperty(&level, element,
 			    custom_element_properties[EP_CAN_MOVE_INTO_ACID]);
 
@@ -9121,7 +9121,7 @@ static void DrawPropertiesTabulatorGadgets(void)
   int i;
 
   // draw two config tabulators for player elements
-  if (ELEM_IS_PLAYER(properties_element))
+  if (IS_PLAYER_ELEMENT(properties_element))
     id_last = ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_2;
 
   // draw two config and one "change" tabulator for custom elements
@@ -9136,7 +9136,7 @@ static void DrawPropertiesTabulatorGadgets(void)
 
     // use "config 1" and "config 2" instead of "config" for players and CEs
     if (i == ED_TEXTBUTTON_ID_PROPERTIES_CONFIG &&
-	(ELEM_IS_PLAYER(properties_element) ||
+	(IS_PLAYER_ELEMENT(properties_element) ||
 	 IS_CUSTOM_ELEMENT(properties_element)))
       continue;
 
@@ -9833,7 +9833,7 @@ static boolean checkPropertiesConfig(int element)
       IS_ENVELOPE(element) ||
       IS_MM_MCDUFFIN(element) ||
       IS_DF_LASER(element) ||
-      ELEM_IS_PLAYER(element) ||
+      IS_PLAYER_ELEMENT(element) ||
       HAS_EDITOR_CONTENT(element) ||
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
@@ -9990,7 +9990,7 @@ static void DrawPropertiesConfig(void)
       DrawAndroidElementArea(properties_element);
   }
 
-  if (ELEM_IS_PLAYER(properties_element))
+  if (IS_PLAYER_ELEMENT(properties_element))
   {
     int player_nr = GET_PLAYER_NR(properties_element);
 
@@ -10070,7 +10070,7 @@ static void DrawPropertiesConfig(void)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE);
 
   if (COULD_MOVE_INTO_ACID(properties_element) &&
-      !ELEM_IS_PLAYER(properties_element) &&
+      !IS_PLAYER_ELEMENT(properties_element) &&
       (!IS_CUSTOM_ELEMENT(properties_element) ||
        edit_mode_properties == ED_MODE_PROPERTIES_CONFIG_2))
   {
@@ -10408,12 +10408,12 @@ static void DrawPropertiesWindow(void)
     edit_mode_properties = ED_MODE_PROPERTIES_CONFIG_2;
 
   if (edit_mode_properties > ED_MODE_PROPERTIES_CONFIG &&
-      !ELEM_IS_PLAYER(properties_element) &&
+      !IS_PLAYER_ELEMENT(properties_element) &&
       !IS_CUSTOM_ELEMENT(properties_element))
     edit_mode_properties = ED_MODE_PROPERTIES_CONFIG;
 
   if (edit_mode_properties == ED_MODE_PROPERTIES_CONFIG &&
-      (ELEM_IS_PLAYER(properties_element) ||
+      (IS_PLAYER_ELEMENT(properties_element) ||
        IS_CUSTOM_ELEMENT(properties_element)))
     edit_mode_properties = ED_MODE_PROPERTIES_CONFIG_1;
 
@@ -12321,7 +12321,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 	{
 	  int element = Tile[x][y];
 
-	  if (!IS_EM_ELEMENT(element) && !ELEM_IS_PLAYER(element))
+	  if (!IS_EM_ELEMENT(element) && !IS_PLAYER_ELEMENT(element))
 	    use_em_engine = FALSE;
 
 	  if (!IS_SP_ELEMENT(element))
@@ -13004,7 +13004,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	{
 	  SetDrawModeHiRes(new_element);
 
-	  if (ELEM_IS_PLAYER(new_element))
+	  if (IS_PLAYER_ELEMENT(new_element))
 	  {
 	    // remove player at old position
 	    for (y = 0; y < lev_fieldy; y++)
@@ -13013,7 +13013,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	      {
 		int old_element = Tile[x][y];
 
-		if (ELEM_IS_PLAYER(old_element))
+		if (IS_PLAYER_ELEMENT(old_element))
 		{
 		  int replaced_with_element =
 		    (old_element == EL_SOKOBAN_FIELD_PLAYER &&
