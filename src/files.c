@@ -6131,6 +6131,7 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
 
   level->time = 0;
   level->use_step_counter = TRUE;
+  level->auto_exit_sokoban = TRUE;
 
   if (load_xsb_to_ces)
   {
@@ -6490,6 +6491,7 @@ static void LoadLevel_InitSettings_SB(struct LevelInfo *level)
     // set special level settings for Sokoban levels
     level->time = 0;
     level->use_step_counter = TRUE;
+    level->auto_exit_sokoban = TRUE;
   }
 }
 

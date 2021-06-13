@@ -3542,7 +3542,6 @@ void InitGame(void)
   int fade_mask = REDRAW_FIELD;
 
   boolean emulate_bd = TRUE;	// unless non-BOULDERDASH elements found
-  boolean emulate_sb = TRUE;	// unless non-SOKOBAN     elements found
   boolean emulate_sp = TRUE;	// unless non-SUPAPLEX    elements found
   int initial_move_dir = MV_DOWN;
   int i, j, x, y;
@@ -3886,8 +3885,6 @@ void InitGame(void)
   {
     if (emulate_bd && !IS_BD_ELEMENT(Tile[x][y]))
       emulate_bd = FALSE;
-    if (emulate_sb && !IS_SB_ELEMENT(Tile[x][y]))
-      emulate_sb = FALSE;
     if (emulate_sp && !IS_SP_ELEMENT(Tile[x][y]))
       emulate_sp = FALSE;
 
@@ -3912,7 +3909,6 @@ void InitGame(void)
   }
 
   game.emulation = (emulate_bd ? EMU_BOULDERDASH :
-		    emulate_sb ? EMU_SOKOBAN :
 		    emulate_sp ? EMU_SUPAPLEX : EMU_NONE);
 
   // initialize type of slippery elements
@@ -14527,7 +14523,7 @@ static int DigField(struct PlayerInfo *player,
       if (sokoban_task_solved &&
 	  game.sokoban_fields_still_needed == 0 &&
 	  game.sokoban_objects_still_needed == 0 &&
-	  (game.emulation == EMU_SOKOBAN || level.auto_exit_sokoban))
+	  level.auto_exit_sokoban)
       {
 	game.players_still_needed = 0;
 

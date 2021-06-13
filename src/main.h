@@ -2624,7 +2624,7 @@ enum
 // values for game_emulation
 #define EMU_NONE			0
 #define EMU_BOULDERDASH			1
-#define EMU_SOKOBAN			2
+#define EMU_UNUSED_2			2
 #define EMU_SUPAPLEX			3
 
 // values for level file type identifier
