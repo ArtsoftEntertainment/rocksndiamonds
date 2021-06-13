@@ -108,7 +108,7 @@ static int FilterEvents(const Event *event)
     {
       SetMouseCursor(CURSOR_DEFAULT);
 
-      DelayReached(&special_cursor_delay, 0);
+      ResetDelayCounter(&special_cursor_delay);
 
       cursor_mode_last = CURSOR_DEFAULT;
     }
@@ -336,7 +336,7 @@ static void HandleMouseCursor(void)
 
     // display normal pointer if mouse pressed
     if (button_status != MB_RELEASED)
-      DelayReached(&special_cursor_delay, 0);
+      ResetDelayCounter(&special_cursor_delay);
 
     if (gfx.cursor_mode != CURSOR_PLAYFIELD &&
 	cursor_inside_playfield &&

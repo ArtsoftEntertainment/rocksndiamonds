@@ -946,7 +946,7 @@ static void DrawTileCursor_Xsn(int draw_target)
     debug = TRUE;
     active = FALSE;
 
-    DelayReached(&check_delay, 0);
+    ResetDelayCounter(&check_delay);
 
     setup.debug.xsn_mode = (debug_value > 0);
     tile_cursor.xsn_debug = FALSE;
@@ -1000,7 +1000,7 @@ static void DrawTileCursor_Xsn(int draw_target)
 			 (XSN_START_DELAY + XSN_RND(XSN_START_DELAY)) * 1000);
     started = FALSE;
 
-    DelayReached(&start_delay, 0);
+    ResetDelayCounter(&start_delay);
 
     reinitialize = TRUE;
   }
@@ -1079,9 +1079,9 @@ static void DrawTileCursor_Xsn(int draw_target)
     growth_delay_value = XSN_GROWTH_DELAY * 1000;
     change_delay_value = XSN_CHANGE_DELAY * 1000;
 
-    DelayReached(&growth_delay, 0);
-    DelayReached(&update_delay, 0);
-    DelayReached(&change_delay, 0);
+    ResetDelayCounter(&growth_delay);
+    ResetDelayCounter(&update_delay);
+    ResetDelayCounter(&change_delay);
 
     started = TRUE;
   }

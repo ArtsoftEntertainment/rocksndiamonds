@@ -1934,7 +1934,7 @@ boolean HandleGadgets(int mx, int my, int button)
     if (gadget_pressed)		// gadget pressed the first time
     {
       // initialize delay counter
-      DelayReached(&pressed_delay, 0);
+      ResetDelayCounter(&pressed_delay);
 
       // start gadget delay with longer delay after first click on gadget
       pressed_delay_value = GADGET_FRAME_DELAY_FIRST;

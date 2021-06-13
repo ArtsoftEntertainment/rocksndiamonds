@@ -3531,8 +3531,8 @@ static void DrawPreviewLevelExt(boolean restart)
     DrawPreviewLevelInfo(MICROLABEL_LEVEL_AUTHOR);
 
     // initialize delay counters
-    DelayReached(&scroll_delay, 0);
-    DelayReached(&label_delay, 0);
+    ResetDelayCounter(&scroll_delay);
+    ResetDelayCounter(&label_delay);
 
     if (leveldir_current->name)
     {
