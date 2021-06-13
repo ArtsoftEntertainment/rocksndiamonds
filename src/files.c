@@ -6474,6 +6474,10 @@ static void LoadLevel_InitVersion(struct LevelInfo *level)
     level->keep_walkable_ce = TRUE;
 }
 
+static void LoadLevel_InitSettings(struct LevelInfo *level)
+{
+}
+
 static void LoadLevel_InitStandardElements(struct LevelInfo *level)
 {
   int i, x, y;
@@ -6700,6 +6704,7 @@ static void LoadLevelTemplate_LoadAndInit(void)
 
   LoadLevel_InitVersion(&level_template);
   LoadLevel_InitElements(&level_template);
+  LoadLevel_InitSettings(&level_template);
 
   ActivateLevelTemplate();
 }
@@ -6740,6 +6745,7 @@ static void LoadLevel_LoadAndInit(struct NetworkLevelInfo *network_level)
   LoadLevel_InitVersion(&level);
   LoadLevel_InitElements(&level);
   LoadLevel_InitPlayfield(&level);
+  LoadLevel_InitSettings(&level);
 
   LoadLevel_InitNativeEngines(&level);
 }
