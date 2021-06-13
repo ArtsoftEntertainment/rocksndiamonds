@@ -1957,6 +1957,16 @@ void HandleTitleScreen(int mx, int my, int dx, int dy, int button)
   }
 }
 
+static void HandleMainMenu_ToggleTeamMode(void)
+{
+  setup.team_mode = !setup.team_mode;
+
+  InitializeMainControls();
+  DrawCursorAndText_Main(MAIN_CONTROL_NAME, TRUE, FALSE);
+
+  DrawPreviewPlayers();
+}
+
 static void HandleMainMenu_SelectLevel(int step, int direction,
 				       int selected_level_nr)
 {
@@ -2106,9 +2116,16 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
       }
       else if (dx != 0)
       {
-	if (choice != MAIN_CONTROL_INFO &&
-	    choice != MAIN_CONTROL_SETUP)
+	if (choice == MAIN_CONTROL_NAME)
+	{
+	  // special case: cursor left or right pressed -- toggle team mode
+	  HandleMainMenu_ToggleTeamMode();
+	}
+	else if (choice != MAIN_CONTROL_INFO &&
+		 choice != MAIN_CONTROL_SETUP)
+	{
 	  HandleMainMenu_SelectLevel(1, dx, NO_DIRECT_LEVEL_SELECT);
+	}
       }
     }
     else
@@ -2121,12 +2138,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	    insideTextPosRect(main_controls[i].pos_text, mx - mSX, my - mSY))
 	{
 	  // special case: menu text "name/team" clicked -- toggle team mode
-	  setup.team_mode = !setup.team_mode;
-
-	  InitializeMainControls();
-	  DrawCursorAndText_Main(choice, TRUE, FALSE);
-
-	  DrawPreviewPlayers();
+	  HandleMainMenu_ToggleTeamMode();
 	}
 	else
 	{
