@@ -6474,8 +6474,29 @@ static void LoadLevel_InitVersion(struct LevelInfo *level)
     level->keep_walkable_ce = TRUE;
 }
 
+static void LoadLevel_InitSettings_SB(struct LevelInfo *level)
+{
+  boolean is_sokoban_level = TRUE;    // unless non-Sokoban elements found
+  int x, y;
+
+  // check if this level is (not) a Sokoban level
+  for (y = 0; y < level->fieldy; y++)
+    for (x = 0; x < level->fieldx; x++)
+      if (!IS_SB_ELEMENT(Tile[x][y]))
+	is_sokoban_level = FALSE;
+
+  if (is_sokoban_level)
+  {
+    // set special level settings for Sokoban levels
+    level->time = 0;
+    level->use_step_counter = TRUE;
+  }
+}
+
 static void LoadLevel_InitSettings(struct LevelInfo *level)
 {
+  // adjust level settings for (non-native) Sokoban-style levels
+  LoadLevel_InitSettings_SB(level);
 }
 
 static void LoadLevel_InitStandardElements(struct LevelInfo *level)
