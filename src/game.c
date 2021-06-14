@@ -4696,6 +4696,27 @@ void InitAmoebaNr(int x, int y)
   AmoebaCnt2[group_nr]++;
 }
 
+static void LevelSolved_SetFinalGameValues(void)
+{
+  game.time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
+  game.score_time_final = (level.use_step_counter ? TimePlayed :
+			   TimePlayed * FRAMES_PER_SECOND + TimeFrames);
+
+  game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+		      game_em.lev->score :
+		      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
+		      game_mm.score :
+		      game.score);
+
+  game.health_final = (level.game_engine_type == GAME_ENGINE_TYPE_MM ?
+		       MM_HEALTH(game_mm.laser_overload_value) :
+		       game.health);
+
+  game.LevelSolved_CountingTime = game.time_final;
+  game.LevelSolved_CountingScore = game.score_final;
+  game.LevelSolved_CountingHealth = game.health_final;
+}
+
 static void LevelSolved(void)
 {
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND &&
@@ -4704,6 +4725,9 @@ static void LevelSolved(void)
 
   game.LevelSolved = TRUE;
   game.GameOver = TRUE;
+
+  // needed here to display correct panel values while player walks into exit
+  LevelSolved_SetFinalGameValues();
 }
 
 void GameWon(void)
@@ -4726,23 +4750,8 @@ void GameWon(void)
     if (local_player->active && local_player->MovPos)
       return;
 
-    game.time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
-    game.score_time_final = (level.use_step_counter ? TimePlayed :
-			     TimePlayed * FRAMES_PER_SECOND + TimeFrames);
-
-    game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-			game_em.lev->score :
-			level.game_engine_type == GAME_ENGINE_TYPE_MM ?
-			game_mm.score :
-			game.score);
-
-    game.health_final = (level.game_engine_type == GAME_ENGINE_TYPE_MM ?
-			 MM_HEALTH(game_mm.laser_overload_value) :
-			 game.health);
-
-    game.LevelSolved_CountingTime = game.time_final;
-    game.LevelSolved_CountingScore = game.score_final;
-    game.LevelSolved_CountingHealth = game.health_final;
+    // calculate final game values after player finished walking into exit
+    LevelSolved_SetFinalGameValues();
 
     game.LevelSolved_GameWon = TRUE;
     game.LevelSolved_SaveTape = tape.recording;
