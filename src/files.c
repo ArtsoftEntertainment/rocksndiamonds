@@ -6133,6 +6133,10 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
   level->use_step_counter = TRUE;
   level->auto_exit_sokoban = TRUE;
 
+  level->score[SC_TIME_BONUS] = 0;
+  level->time_score_base = 1;
+  level->rate_time_over_score = TRUE;
+
   if (load_xsb_to_ces)
   {
     // special global settings can now be set in level template
@@ -6492,6 +6496,10 @@ static void LoadLevel_InitSettings_SB(struct LevelInfo *level)
     level->time = 0;
     level->use_step_counter = TRUE;
     level->auto_exit_sokoban = TRUE;
+
+    level->score[SC_TIME_BONUS] = 0;
+    level->time_score_base = 1;
+    level->rate_time_over_score = TRUE;
   }
 }
 
