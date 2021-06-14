@@ -4790,6 +4790,9 @@ void GameWon(void)
     score = score_final = game.score_final;
     health = health_final = game.health_final;
 
+    // update game panel values before (delayed) counting of score (if any)
+    LevelSolved_DisplayFinalGameValues(time, score, health);
+
     // if level has time score defined, calculate new final game values
     if (time_score > 0)
     {
