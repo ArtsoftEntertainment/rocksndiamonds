@@ -4717,6 +4717,19 @@ static void LevelSolved_SetFinalGameValues(void)
   game.LevelSolved_CountingHealth = game.health_final;
 }
 
+static void LevelSolved_DisplayFinalGameValues(int time, int score, int health)
+{
+  game.LevelSolved_CountingTime = time;
+  game.LevelSolved_CountingScore = score;
+  game.LevelSolved_CountingHealth = health;
+
+  game_panel_controls[GAME_PANEL_TIME].value = time;
+  game_panel_controls[GAME_PANEL_SCORE].value = score;
+  game_panel_controls[GAME_PANEL_HEALTH].value = health;
+
+  DisplayGameControlValues();
+}
+
 static void LevelSolved(void)
 {
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND &&
@@ -4817,13 +4830,7 @@ void GameWon(void)
       time = time_final;
       score = score_final;
 
-      game.LevelSolved_CountingTime = time;
-      game.LevelSolved_CountingScore = score;
-
-      game_panel_controls[GAME_PANEL_TIME].value = time;
-      game_panel_controls[GAME_PANEL_SCORE].value = score;
-
-      DisplayGameControlValues();
+      LevelSolved_DisplayFinalGameValues(time, score, health);
     }
 
     if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
@@ -4900,13 +4907,7 @@ void GameWon(void)
       if (time == time_final)
 	score = score_final;
 
-      game.LevelSolved_CountingTime = time;
-      game.LevelSolved_CountingScore = score;
-
-      game_panel_controls[GAME_PANEL_TIME].value = time;
-      game_panel_controls[GAME_PANEL_SCORE].value = score;
-
-      DisplayGameControlValues();
+      LevelSolved_DisplayFinalGameValues(time, score, health);
 
       if (time == time_final)
 	StopSound(SND_GAME_LEVELTIME_BONUS);
@@ -4932,13 +4933,7 @@ void GameWon(void)
       health += health_count_dir;
       score  += time_score;
 
-      game.LevelSolved_CountingHealth = health;
-      game.LevelSolved_CountingScore = score;
-
-      game_panel_controls[GAME_PANEL_HEALTH].value = health;
-      game_panel_controls[GAME_PANEL_SCORE].value = score;
-
-      DisplayGameControlValues();
+      LevelSolved_DisplayFinalGameValues(time, score, health);
 
       if (health == health_final)
 	StopSound(SND_GAME_LEVELTIME_BONUS);
