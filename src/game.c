@@ -4777,6 +4777,7 @@ void GameWon(void)
     score = score_final = game.score_final;
     health = health_final = game.health_final;
 
+    // if level has time score defined, calculate new final game values
     if (time_score > 0)
     {
       int time_final_max = 999;
@@ -4810,6 +4811,7 @@ void GameWon(void)
       game.health_final = health_final;
     }
 
+    // if not counting score after game, immediately update game panel values
     if (level_editor_test_game || !setup.count_score_after_game)
     {
       time = time_final;
