@@ -5895,6 +5895,21 @@ int getMappedElement_SB(int element_ascii, boolean use_ces)
   return EL_UNDEFINED;
 }
 
+static void SetLevelSettings_SB(struct LevelInfo *level)
+{
+  // time settings
+  level->time = 0;
+  level->use_step_counter = TRUE;
+
+  // score settings
+  level->score[SC_TIME_BONUS] = 0;
+  level->time_score_base = 1;
+  level->rate_time_over_score = TRUE;
+
+  // game settings
+  level->auto_exit_sokoban = TRUE;
+}
+
 static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
 				     struct LevelFileInfo *level_file_info,
 				     boolean level_info_only)
@@ -6128,19 +6143,11 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
   }
 
   // set special level settings for Sokoban levels
-
-  level->time = 0;
-  level->use_step_counter = TRUE;
-  level->auto_exit_sokoban = TRUE;
-
-  level->score[SC_TIME_BONUS] = 0;
-  level->time_score_base = 1;
-  level->rate_time_over_score = TRUE;
+  SetLevelSettings_SB(level);
 
   if (load_xsb_to_ces)
   {
     // special global settings can now be set in level template
-
     level->use_custom_template = TRUE;
   }
 }
@@ -6493,13 +6500,7 @@ static void LoadLevel_InitSettings_SB(struct LevelInfo *level)
   if (is_sokoban_level)
   {
     // set special level settings for Sokoban levels
-    level->time = 0;
-    level->use_step_counter = TRUE;
-    level->auto_exit_sokoban = TRUE;
-
-    level->score[SC_TIME_BONUS] = 0;
-    level->time_score_base = 1;
-    level->rate_time_over_score = TRUE;
+    SetLevelSettings_SB(level);
   }
 }
 
