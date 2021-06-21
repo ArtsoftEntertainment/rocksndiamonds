@@ -9274,6 +9274,11 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
     return;
   }
 
+  char *levelset_identifier = getEscapedJSON(leveldir_current->identifier);
+  char *levelset_name       = getEscapedJSON(leveldir_current->name);
+  char *levelset_author     = getEscapedJSON(leveldir_current->author);
+  char *player_name         = getEscapedJSON(score_entry->name);
+
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
 	   "  \"game_version\":         \"%s\",\n"
@@ -9290,19 +9295,24 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "  \"tape\":                 \"%s\"\n"
 	   "}\n",
 	   getProgramRealVersionString(),
-	   leveldir_current->identifier,
-	   leveldir_current->name,
-	   leveldir_current->author,
+	   levelset_identifier,
+	   levelset_name,
+	   levelset_author,
 	   leveldir_current->levels,
 	   leveldir_current->first_level,
 	   level_nr,
-	   score_entry->name,
+	   player_name,
 	   score_entry->score,
 	   score_entry->time,
 	   score_entry->tape_basename,
 	   tape_base64);
 
   checked_free(tape_base64);
+
+  checked_free(levelset_identifier);
+  checked_free(levelset_name);
+  checked_free(levelset_author);
+  checked_free(player_name);
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
