@@ -227,6 +227,7 @@ void WriteUnusedBytesToFile(FILE *, unsigned int);
 
 char *getUTF8FromLatin1(char *);
 char *getLatin1FromUTF8(char *);
+char *getEscapedJSON(char *);
 
 char *getKeyNameFromKey(Key);
 char *getX11KeyNameFromKey(Key);

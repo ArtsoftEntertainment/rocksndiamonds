@@ -1841,6 +1841,49 @@ char *getLatin1FromUTF8(char *utf8)
 
 
 // ----------------------------------------------------------------------------
+// functions for JSON handling
+// ----------------------------------------------------------------------------
+
+char *getEscapedJSON(char *s)
+{
+  int max_json_size = 2 * strlen(s) + 1;
+  char *json = checked_calloc(max_json_size);
+  unsigned char *src = (unsigned char *)s;
+  unsigned char *dst = (unsigned char *)json;
+  char *escaped[256] =
+  {
+    ['\b'] = "\\b",
+    ['\f'] = "\\f",
+    ['\n'] = "\\n",
+    ['\r'] = "\\r",
+    ['\t'] = "\\t",
+    ['\"'] = "\\\"",
+    ['\\'] = "\\\\",
+  };
+
+  while (*src)
+  {
+    if (escaped[*src] != NULL)
+    {
+      char *esc = escaped[*src++];
+
+      while (*esc)
+	*dst++ = *esc++;
+    }
+    else
+    {
+      *dst++ = *src++;
+    }
+  }
+
+  // only use the smallest possible string buffer size
+  json = checked_realloc(json, strlen(json) + 1);
+
+  return json;
+}
+
+
+// ----------------------------------------------------------------------------
 // functions to translate key identifiers between different format
 // ----------------------------------------------------------------------------
 
