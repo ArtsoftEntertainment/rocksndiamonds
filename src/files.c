@@ -9037,6 +9037,8 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 	   "}\n",
 	   levelset.identifier, nr, level.rate_time_over_score);
 
+  ConvertHttpRequestBodyToServerEncoding(request);
+
   if (!DoHttpRequest(request, response))
   {
     Error("HTTP request failed: %s", GetHttpError());
