@@ -9205,7 +9205,7 @@ static char *get_file_base64(char *filename)
 
   if (stat(filename, &file_status) != 0)
   {
-    Error("cannot stat file '%s'\n", filename);
+    Error("cannot stat file '%s'", filename);
 
     return NULL;
   }
@@ -9217,7 +9217,7 @@ static char *get_file_base64(char *filename)
 
   if (!(file = fopen(filename, MODE_READ)))
   {
-    Error("cannot open file '%s'\n", filename);
+    Error("cannot open file '%s'", filename);
 
     checked_free(buffer);
 
@@ -9230,7 +9230,7 @@ static char *get_file_base64(char *filename)
 
     if (c == EOF)
     {
-      Error("cannot read from input file '%s'\n", filename);
+      Error("cannot read from input file '%s'", filename);
 
       fclose(file);
       checked_free(buffer);
