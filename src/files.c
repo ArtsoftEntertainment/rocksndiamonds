@@ -9032,10 +9032,9 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
 	   "  \"levelset_identifier\":  \"%s\",\n"
-	   "  \"level_nr\":             \"%d\",\n"
-	   "  \"rate_time_over_score\": \"%d\"\n"
+	   "  \"level_nr\":             \"%d\"\n"
 	   "}\n",
-	   levelset.identifier, nr, level.rate_time_over_score);
+	   levelset.identifier, nr);
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
