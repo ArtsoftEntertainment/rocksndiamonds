@@ -9276,6 +9276,8 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   char *levelset_identifier = getEscapedJSON(leveldir_current->identifier);
   char *levelset_name       = getEscapedJSON(leveldir_current->name);
   char *levelset_author     = getEscapedJSON(leveldir_current->author);
+  char *level_name          = getEscapedJSON(level.name);
+  char *level_author        = getEscapedJSON(level.author);
   char *player_name         = getEscapedJSON(score_entry->name);
 
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
@@ -9287,6 +9289,9 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "  \"levelset_num_levels\":  \"%d\",\n"
 	   "  \"levelset_first_level\": \"%d\",\n"
 	   "  \"level_nr\":             \"%d\",\n"
+	   "  \"level_name\":           \"%s\",\n"
+	   "  \"level_author\":         \"%s\",\n"
+	   "  \"rate_time_over_score\": \"%d\",\n"
 	   "  \"player_name\":          \"%s\",\n"
 	   "  \"score\":                \"%d\",\n"
 	   "  \"time\":                 \"%d\",\n"
@@ -9300,6 +9305,9 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   leveldir_current->levels,
 	   leveldir_current->first_level,
 	   level_nr,
+	   level_name,
+	   level_author,
+	   level.rate_time_over_score,
 	   player_name,
 	   score_entry->score,
 	   score_entry->time,
@@ -9311,6 +9319,8 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   checked_free(levelset_identifier);
   checked_free(levelset_name);
   checked_free(levelset_author);
+  checked_free(level_name);
+  checked_free(level_author);
   checked_free(player_name);
 
   ConvertHttpRequestBodyToServerEncoding(request);
