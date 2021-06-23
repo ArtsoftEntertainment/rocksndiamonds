@@ -9018,7 +9018,8 @@ static void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
 
 static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 					  struct HttpResponse *response,
-					  int nr)
+					  int level_nr,
+					  char *score_cache_filename)
 {
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
@@ -9030,7 +9031,7 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 	   "  \"levelset_identifier\":  \"%s\",\n"
 	   "  \"level_nr\":             \"%d\"\n"
 	   "}\n",
-	   levelset.identifier, nr);
+	   levelset.identifier, level_nr);
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
@@ -9059,7 +9060,7 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 
   ConvertHttpResponseBodyToClientEncoding(response);
 
-  char *filename = getScoreCacheFilename(nr);
+  char *filename = score_cache_filename;
   FILE *file;
   int i;
 
@@ -9083,12 +9084,13 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
   server_scores.updated = TRUE;
 }
 
-static void DownloadServerScoreToCache(int nr)
+static void DownloadServerScoreToCache(int level_nr, char *score_cache_filename)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  DownloadServerScoreToCacheExt(request, response, nr);
+  DownloadServerScoreToCacheExt(request, response,
+				level_nr, score_cache_filename);
 
   checked_free(request);
   checked_free(response);
@@ -9097,13 +9099,15 @@ static void DownloadServerScoreToCache(int nr)
 struct DownloadServerScoreToCacheThreadData
 {
   int level_nr;
+  char *score_cache_filename;
 };
 
 static int DownloadServerScoreToCacheThread(void *data_raw)
 {
   struct DownloadServerScoreToCacheThreadData *data = data_raw;
 
-  DownloadServerScoreToCache(data->level_nr);
+  DownloadServerScoreToCache(data->level_nr,
+			     data->score_cache_filename);
 
   return 0;
 }
@@ -9111,8 +9115,12 @@ static int DownloadServerScoreToCacheThread(void *data_raw)
 static void DownloadServerScoreToCacheAsThread(int nr)
 {
   static struct DownloadServerScoreToCacheThreadData data;
+  char *score_cache_filename = getScoreCacheFilename(nr);
+
+  checked_free(data.score_cache_filename);
 
   data.level_nr = nr;
+  data.score_cache_filename = getStringCopy(score_cache_filename);
 
   ExecuteAsThread(DownloadServerScoreToCacheThread,
 		  "DownloadServerScoreToCache", &data,
@@ -9261,17 +9269,16 @@ static char *get_file_base64(char *filename)
 
 static void UploadScoreToServerExt(struct HttpRequest *request,
 				   struct HttpResponse *response,
-				   int nr)
+				   int level_nr,
+				   char *score_tape_filename,
+				   struct ScoreEntry *score_entry)
 {
-  struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
-
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
   request->method   = API_SERVER_METHOD;
   request->uri      = API_SERVER_URI_ADD;
 
-  char *tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
-  char *tape_base64 = get_file_base64(tape_filename);
+  char *tape_base64 = get_file_base64(score_tape_filename);
 
   if (tape_base64 == NULL)
   {
@@ -9311,7 +9318,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   levelset_author,
 	   leveldir_current->levels,
 	   leveldir_current->first_level,
-	   nr,
+	   level_nr,
 	   level_name,
 	   level_author,
 	   level.rate_time_over_score,
@@ -9349,12 +9356,14 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   }
 }
 
-static void UploadScoreToServer(int nr)
+static void UploadScoreToServer(int level_nr, char *score_tape_filename,
+				struct ScoreEntry *score_entry)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  UploadScoreToServerExt(request, response, nr);
+  UploadScoreToServerExt(request, response,
+			 level_nr, score_tape_filename, score_entry);
 
   checked_free(request);
   checked_free(response);
@@ -9363,13 +9372,17 @@ static void UploadScoreToServer(int nr)
 struct UploadScoreToServerThreadData
 {
   int level_nr;
+  char *score_tape_filename;
+  struct ScoreEntry score_entry;
 };
 
 static int UploadScoreToServerThread(void *data_raw)
 {
   struct UploadScoreToServerThreadData *data = data_raw;
 
-  UploadScoreToServer(data->level_nr);
+  UploadScoreToServer(data->level_nr,
+		      data->score_tape_filename,
+		      &data->score_entry);
 
   return 0;
 }
@@ -9377,8 +9390,14 @@ static int UploadScoreToServerThread(void *data_raw)
 static void UploadScoreToServerAsThread(int nr)
 {
   static struct UploadScoreToServerThreadData data;
+  struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
+  char *score_tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
+
+  checked_free(data.score_tape_filename);
 
   data.level_nr = nr;
+  data.score_entry = *score_entry;
+  data.score_tape_filename = getStringCopy(score_tape_filename);
 
   ExecuteAsThread(UploadScoreToServerThread,
 		  "UploadScoreToServer", &data,
