@@ -9002,14 +9002,10 @@ void SaveScore(int nr)
   SaveScoreToFilename(filename);
 }
 
-static void ExecuteAsThread(SDL_ThreadFunction function, char *name, int data,
+static void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
 			    char *error)
 {
-  static int data_static;
-
-  data_static = data;
-
-  SDL_Thread *thread = SDL_CreateThread(function, name, &data_static);
+  SDL_Thread *thread = SDL_CreateThread(function, name, data);
 
   if (thread != NULL)
     SDL_DetachThread(thread);
@@ -9098,17 +9094,28 @@ static void DownloadServerScoreToCache(int nr)
   checked_free(response);
 }
 
-static int DownloadServerScoreToCacheThread(void *data)
+struct DownloadServerScoreToCacheThreadData
 {
-  DownloadServerScoreToCache(*(int *)data);
+  int level_nr;
+};
+
+static int DownloadServerScoreToCacheThread(void *data_raw)
+{
+  struct DownloadServerScoreToCacheThreadData *data = data_raw;
+
+  DownloadServerScoreToCache(data->level_nr);
 
   return 0;
 }
 
 static void DownloadServerScoreToCacheAsThread(int nr)
 {
+  static struct DownloadServerScoreToCacheThreadData data;
+
+  data.level_nr = nr;
+
   ExecuteAsThread(DownloadServerScoreToCacheThread,
-		  "DownloadServerScoreToCache", nr,
+		  "DownloadServerScoreToCache", &data,
 		  "download scores from server");
 }
 
@@ -9353,17 +9360,28 @@ static void UploadScoreToServer(int nr)
   checked_free(response);
 }
 
-static int UploadScoreToServerThread(void *data)
+struct UploadScoreToServerThreadData
 {
-  UploadScoreToServer(*(int *)data);
+  int level_nr;
+};
+
+static int UploadScoreToServerThread(void *data_raw)
+{
+  struct UploadScoreToServerThreadData *data = data_raw;
+
+  UploadScoreToServer(data->level_nr);
 
   return 0;
 }
 
 static void UploadScoreToServerAsThread(int nr)
 {
+  static struct UploadScoreToServerThreadData data;
+
+  data.level_nr = nr;
+
   ExecuteAsThread(UploadScoreToServerThread,
-		  "UploadScoreToServer", nr,
+		  "UploadScoreToServer", &data,
 		  "upload score to server");
 }
 
