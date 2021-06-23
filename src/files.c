@@ -9109,21 +9109,23 @@ static int DownloadServerScoreToCacheThread(void *data_raw)
   DownloadServerScoreToCache(data->level_nr,
 			     data->score_cache_filename);
 
+  checked_free(data->score_cache_filename);
+  checked_free(data);
+
   return 0;
 }
 
 static void DownloadServerScoreToCacheAsThread(int nr)
 {
-  static struct DownloadServerScoreToCacheThreadData data;
+  struct DownloadServerScoreToCacheThreadData *data =
+    checked_malloc(sizeof(struct DownloadServerScoreToCacheThreadData));
   char *score_cache_filename = getScoreCacheFilename(nr);
 
-  checked_free(data.score_cache_filename);
-
-  data.level_nr = nr;
-  data.score_cache_filename = getStringCopy(score_cache_filename);
+  data->level_nr = nr;
+  data->score_cache_filename = getStringCopy(score_cache_filename);
 
   ExecuteAsThread(DownloadServerScoreToCacheThread,
-		  "DownloadServerScoreToCache", &data,
+		  "DownloadServerScoreToCache", data,
 		  "download scores from server");
 }
 
@@ -9384,23 +9386,25 @@ static int UploadScoreToServerThread(void *data_raw)
 		      data->score_tape_filename,
 		      &data->score_entry);
 
+  checked_free(data->score_tape_filename);
+  checked_free(data);
+
   return 0;
 }
 
 static void UploadScoreToServerAsThread(int nr)
 {
-  static struct UploadScoreToServerThreadData data;
+  struct UploadScoreToServerThreadData *data =
+    checked_malloc(sizeof(struct UploadScoreToServerThreadData));
   struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
   char *score_tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
 
-  checked_free(data.score_tape_filename);
-
-  data.level_nr = nr;
-  data.score_entry = *score_entry;
-  data.score_tape_filename = getStringCopy(score_tape_filename);
+  data->level_nr = nr;
+  data->score_entry = *score_entry;
+  data->score_tape_filename = getStringCopy(score_tape_filename);
 
   ExecuteAsThread(UploadScoreToServerThread,
-		  "UploadScoreToServer", &data,
+		  "UploadScoreToServer", data,
 		  "upload score to server");
 }
 
