@@ -614,6 +614,9 @@
 // default value for undefined levelset
 #define UNDEFINED_LEVELSET	"[NONE]"
 
+// default value for undefined password
+#define UNDEFINED_PASSWORD	"[undefined]"
+
 // default value for undefined parameter
 #define ARG_DEFAULT		"[DEFAULT]"
 
@@ -1490,6 +1493,7 @@ struct SetupInfo
 
   boolean api_server;
   char *api_server_hostname;
+  char *api_server_password;
 
   struct SetupAutoSetupInfo auto_setup;
   struct SetupLevelSetupInfo level_setup;

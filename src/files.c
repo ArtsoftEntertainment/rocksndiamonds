@@ -9016,6 +9016,26 @@ static void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
   Delay(1);
 }
 
+static char *getPasswordJSON(char *password)
+{
+  static char password_json[MAX_FILENAME_LEN] = "";
+  static boolean initialized = FALSE;
+
+  if (!initialized)
+  {
+    if (password != NULL &&
+	!strEqual(password, "") &&
+	!strEqual(password, UNDEFINED_PASSWORD))
+      snprintf(password_json, MAX_FILENAME_LEN,
+	       "  \"password\":             \"%s\",\n",
+	       setup.api_server_password);
+
+    initialized = TRUE;
+  }
+
+  return password_json;
+}
+
 static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 					  struct HttpResponse *response,
 					  int level_nr,
@@ -9028,9 +9048,11 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
+	   "%s"
 	   "  \"levelset_identifier\":  \"%s\",\n"
 	   "  \"level_nr\":             \"%d\"\n"
 	   "}\n",
+	   getPasswordJSON(setup.api_server_password),
 	   levelset.identifier, level_nr);
 
   ConvertHttpRequestBodyToServerEncoding(request);
@@ -9298,6 +9320,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
+	   "%s"
 	   "  \"game_version\":         \"%s\",\n"
 	   "  \"levelset_identifier\":  \"%s\",\n"
 	   "  \"levelset_name\":        \"%s\",\n"
@@ -9314,6 +9337,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "  \"tape_basename\":        \"%s\",\n"
 	   "  \"tape\":                 \"%s\"\n"
 	   "}\n",
+	   getPasswordJSON(setup.api_server_password),
 	   getProgramRealVersionString(),
 	   levelset_identifier,
 	   levelset_name,
@@ -9680,6 +9704,10 @@ static struct TokenInfo global_setup_tokens[] =
   {
     TYPE_STRING,
     &setup.api_server_hostname,			"api_server_hostname"
+  },
+  {
+    TYPE_STRING,
+    &setup.api_server_password,			"api_server_password"
   },
   {
     TYPE_STRING,
@@ -10317,6 +10345,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->api_server = TRUE;
   si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
+  si->api_server_password = getStringCopy(UNDEFINED_PASSWORD);
 
   si->touch.control_type = getStringCopy(TOUCH_CONTROL_DEFAULT);
   si->touch.move_distance = TOUCH_MOVE_DISTANCE_DEFAULT;	// percent
