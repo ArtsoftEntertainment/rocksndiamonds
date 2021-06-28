@@ -8537,6 +8537,7 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
   scores->last_added_local = -1;
 
   scores->updated = FALSE;
+  scores->uploaded = FALSE;
   scores->force_last_added = FALSE;
 }
 
@@ -9380,6 +9381,8 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 
     return;
   }
+
+  server_scores.uploaded = TRUE;
 }
 
 static void UploadScoreToServer(int level_nr, char *score_tape_filename,

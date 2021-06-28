@@ -2655,7 +2655,8 @@ enum
 #define AUTOPLAY_FFWD			(1 << 1)
 #define AUTOPLAY_WARP			(1 << 2)
 #define AUTOPLAY_TEST			(1 << 3)
-#define AUTOPLAY_FIX			(1 << 4)
+#define AUTOPLAY_SAVE			(1 << 4)
+#define AUTOPLAY_FIX			(1 << 5)
 #define AUTOPLAY_WARP_NO_DISPLAY	AUTOPLAY_TEST
 
 #define AUTOPLAY_MODE_NONE		0
@@ -2663,6 +2664,7 @@ enum
 #define AUTOPLAY_MODE_FFWD		(AUTOPLAY_MODE_PLAY | AUTOPLAY_FFWD)
 #define AUTOPLAY_MODE_WARP		(AUTOPLAY_MODE_FFWD | AUTOPLAY_WARP)
 #define AUTOPLAY_MODE_TEST		(AUTOPLAY_MODE_WARP | AUTOPLAY_TEST)
+#define AUTOPLAY_MODE_SAVE		(AUTOPLAY_MODE_TEST | AUTOPLAY_SAVE)
 #define AUTOPLAY_MODE_FIX		(AUTOPLAY_MODE_TEST | AUTOPLAY_FIX)
 #define AUTOPLAY_MODE_WARP_NO_DISPLAY	AUTOPLAY_MODE_TEST
 
@@ -3059,6 +3061,7 @@ struct ScoreInfo
   int last_added_local;
 
   boolean updated;
+  boolean uploaded;
   boolean force_last_added;
 
   struct ScoreEntry entry[MAX_SCORE_ENTRIES];

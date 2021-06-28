@@ -5068,6 +5068,7 @@ static void Execute_Command(char *command)
 	   strPrefix(command, "autoffwd ") ||
 	   strPrefix(command, "autowarp ") ||
 	   strPrefix(command, "autotest ") ||
+	   strPrefix(command, "autosave ") ||
 	   strPrefix(command, "autofix "))
   {
     char *str_ptr = getStringCopy(&command[8]);	// read command parameters
@@ -5077,6 +5078,7 @@ static void Execute_Command(char *command)
        strPrefix(command, "autoffwd") ? AUTOPLAY_MODE_FFWD :
        strPrefix(command, "autowarp") ? AUTOPLAY_MODE_WARP :
        strPrefix(command, "autotest") ? AUTOPLAY_MODE_TEST :
+       strPrefix(command, "autosave") ? AUTOPLAY_MODE_SAVE :
        strPrefix(command, "autofix")  ? AUTOPLAY_MODE_FIX :
        AUTOPLAY_MODE_NONE);
 
