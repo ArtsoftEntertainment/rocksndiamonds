@@ -1262,6 +1262,7 @@ void GetOptions(int argc, char *argv[],
   options.conf_directory     = getPath2(base_path, CONF_DIRECTORY);
 
   options.execute_command = NULL;
+  options.tape_log_filename = NULL;
   options.special_flags = NULL;
   options.debug_mode = NULL;
 
@@ -1427,6 +1428,15 @@ void GetOptions(int argc, char *argv[],
 
       // when doing batch processing, always enable verbose mode (warnings)
       options.verbose = TRUE;
+    }
+    else if (strncmp(option, "-tape_logfile", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	FailWithHelp("option '%s' requires an argument", option_str);
+
+      options.tape_log_filename = getStringCopy(option_arg);
+      if (option_arg == next_option)
+	options_left++;
     }
 #if defined(PLATFORM_MACOSX)
     else if (strPrefix(option, "-psn"))

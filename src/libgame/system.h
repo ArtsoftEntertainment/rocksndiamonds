@@ -1050,6 +1050,7 @@ struct OptionInfo
   char *conf_directory;
 
   char *execute_command;
+  char *tape_log_filename;
 
   char *special_flags;
   char *debug_mode;

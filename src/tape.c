@@ -512,6 +512,27 @@ static void PrintTapeReplayProgress(boolean replay_finished)
   }
 }
 
+static FILE *tape_log_file;
+
+static void OpenTapeLogfile(void)
+{
+  if (!(tape_log_file = fopen(options.tape_log_filename, MODE_WRITE)))
+    Warn("cannot write tape logfile '%s'", options.tape_log_filename);
+}
+
+static void WriteTapeLogfile(byte action[MAX_TAPE_ACTIONS])
+{
+  int i;
+
+  for (i = 0; i < MAX_TAPE_ACTIONS; i++)
+    putFile8Bit(tape_log_file, action[i]);
+}
+
+static void CloseTapeLogfile(void)
+{
+  fclose(tape_log_file);
+}
+
 
 // ============================================================================
 // tape control functions
@@ -936,6 +957,9 @@ byte *TapePlayAction(void)
   if (tape.auto_play)
     PrintTapeReplayProgress(FALSE);
 
+  if (options.tape_log_filename != NULL)
+    WriteTapeLogfile(action);
+
   return action;
 }
 
@@ -1313,6 +1337,9 @@ void AutoPlayTapes(void)
     // just finished auto-playing tape
     PrintTapeReplayProgress(TRUE);
 
+    if (options.tape_log_filename != NULL)
+      CloseTapeLogfile();
+
     if (global.autoplay_mode == AUTOPLAY_MODE_SAVE &&
 	tape.auto_play_level_solved)
     {
@@ -1548,6 +1575,9 @@ void AutoPlayTapes(void)
     }
 
     InitCounter();
+
+    if (options.tape_log_filename != NULL)
+      OpenTapeLogfile();
 
     TapeStartGamePlaying();
     TapeStartWarpForward(global.autoplay_mode);
