@@ -312,7 +312,8 @@ static void DrawVideoDisplay_DateTime(unsigned int state, unsigned int value)
       char s[MAX_DATETIME_STRING_SIZE];
       int year2 = value / 10000;
       int year4 = (year2 < 70 ? 2000 + year2 : 1900 + year2);
-      int month_index = (value / 100) % 100;
+      int month_index_raw = (value / 100) % 100;
+      int month_index = month_index_raw % 12;	// prevent invalid index
       int month = month_index + 1;
       int day = value % 100;
 
