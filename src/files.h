@@ -66,6 +66,7 @@ void SaveScore(int);
 
 void LoadServerScore(int, boolean);
 void SaveServerScore(int);
+void SaveServerScoreFromFile(int, char *);
 
 void LoadLocalAndServerScore(int, boolean);
 

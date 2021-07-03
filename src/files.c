@@ -9419,12 +9419,14 @@ static int UploadScoreToServerThread(void *data_raw)
   return 0;
 }
 
-static void UploadScoreToServerAsThread(int nr)
+static void UploadScoreToServerAsThread(int nr, char *score_tape_filename)
 {
   struct UploadScoreToServerThreadData *data =
     checked_malloc(sizeof(struct UploadScoreToServerThreadData));
   struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
-  char *score_tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
+
+  if (score_tape_filename == NULL)
+    score_tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
 
   data->level_nr = nr;
   data->score_entry = *score_entry;
@@ -9440,7 +9442,15 @@ void SaveServerScore(int nr)
   if (!runtime.api_server)
     return;
 
-  UploadScoreToServerAsThread(nr);
+  UploadScoreToServerAsThread(nr, NULL);
+}
+
+void SaveServerScoreFromFile(int nr, char *score_tape_filename)
+{
+  if (!runtime.api_server)
+    return;
+
+  UploadScoreToServerAsThread(nr, score_tape_filename);
 }
 
 void LoadLocalAndServerScore(int nr, boolean download_score)
