@@ -1250,6 +1250,52 @@ void FixTape_ForceSinglePlayer(void)
 // tape autoplay functions
 // ----------------------------------------------------------------------------
 
+static void AutoPlayTapes_SetScoreEntry(int score, int time)
+{
+  // set unique basename for score tape (for uploading to score server)
+  strcpy(tape.score_tape_basename, getScoreTapeBasename(setup.player_name));
+
+  // store score in first score entry
+  scores.last_added = 0;
+
+  struct ScoreEntry *entry = &scores.entry[scores.last_added];
+
+  strncpy(entry->tape_basename, tape.score_tape_basename, MAX_FILENAME_LEN);
+  strncpy(entry->name, setup.player_name, MAX_PLAYER_NAME_LEN);
+
+  entry->score = score;
+  entry->time = time;
+
+  PrintNoLog("- uploading score tape to score server ... ");
+
+  server_scores.uploaded = FALSE;
+}
+
+static void AutoPlayTapes_WaitForUpload(void)
+{
+  unsigned int upload_delay = 0;
+  unsigned int upload_delay_value = 10000;
+
+  ResetDelayCounter(&upload_delay);
+
+  // wait for score tape to be successfully uploaded (and fail on timeout)
+  while (!server_scores.uploaded)
+  {
+    if (DelayReached(&upload_delay, upload_delay_value))
+    {
+      PrintNoLog("\r");
+      Print("- uploading score tape to score server - TIMEOUT.\n");
+
+      Fail("cannot upload score tape to score server");
+    }
+
+    Delay(20);
+  }
+
+  PrintNoLog("\r");
+  Print("- uploading score tape to score server - uploaded.\n");
+}
+
 void AutoPlayTapes(void)
 {
   static LevelDirTree *autoplay_leveldir = NULL;
@@ -1344,19 +1390,7 @@ void AutoPlayTapes(void)
     if (global.autoplay_mode == AUTOPLAY_MODE_SAVE &&
 	tape.auto_play_level_solved)
     {
-      // set unique basename for score tape (for uploading to score server)
-      strcpy(tape.score_tape_basename, getScoreTapeBasename(setup.player_name));
-
-      // store score in first score entry
-      scores.last_added = 0;
-
-      struct ScoreEntry *entry = &scores.entry[scores.last_added];
-
-      strncpy(entry->tape_basename, tape.score_tape_basename, MAX_FILENAME_LEN);
-      strncpy(entry->name, setup.player_name, MAX_PLAYER_NAME_LEN);
-
-      entry->score = game.score_final;
-      entry->time = game.score_time_final;
+      AutoPlayTapes_SetScoreEntry(game.score_final, game.score_time_final);
 
       if (leveldir_current)
       {
@@ -1369,10 +1403,6 @@ void AutoPlayTapes(void)
 	tape.level_nr = level_nr;
       }
 
-      PrintNoLog("- uploading score tape to score server ... ");
-
-      server_scores.uploaded = FALSE;
-
       // save score tape to upload to server; may be required for some reasons:
       // * level set identifier in solution tapes may differ from level set
       // * solution tape may have native format (like Supaplex solution files)
@@ -1380,27 +1410,7 @@ void AutoPlayTapes(void)
       SaveScoreTape(level_nr);
       SaveServerScore(level_nr);
 
-      unsigned int upload_delay = 0;
-      unsigned int upload_delay_value = 10000;
-
-      ResetDelayCounter(&upload_delay);
-
-      // wait for score tape to be successfully uploaded (and fail on timeout)
-      while (!server_scores.uploaded)
-      {
-	if (DelayReached(&upload_delay, upload_delay_value))
-	{
-	  PrintNoLog("\r");
-	  Print("- uploading score tape to score server - TIMEOUT.\n");
-
-	  Fail("cannot upload score tape to score server");
-	}
-
-	Delay(20);
-      }
-
-      PrintNoLog("\r");
-      Print("- uploading score tape to score server - uploaded.\n");
+      AutoPlayTapes_WaitForUpload();
     }
 
     if (patch_nr == 0)
@@ -1590,24 +1600,9 @@ void AutoPlayTapes(void)
 
     if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
     {
-      // set unique basename for score tape (for uploading to score server)
-      strcpy(tape.score_tape_basename, getScoreTapeBasename(setup.player_name));
-
-      // store score in first score entry
-      scores.last_added = 0;
-
-      struct ScoreEntry *entry = &scores.entry[scores.last_added];
-
-      strncpy(entry->tape_basename, tape.score_tape_basename, MAX_FILENAME_LEN);
-      strncpy(entry->name, setup.player_name, MAX_PLAYER_NAME_LEN);
-
-      entry->score = 0;
-      entry->time = 0;
-
       Print("Tape %03d:\n", level_nr);
-      PrintNoLog("- uploading score tape to score server ... ");
 
-      server_scores.uploaded = FALSE;
+      AutoPlayTapes_SetScoreEntry(0, 0);
 
       if (tape_filename == NULL)
 	tape_filename = (options.mytapes ? getTapeFilename(level_nr) :
@@ -1615,30 +1610,10 @@ void AutoPlayTapes(void)
 
       SaveServerScoreFromFile(level_nr, tape_filename);
 
+      AutoPlayTapes_WaitForUpload();
+
       // required for uploading multiple tapes
       tape_filename = NULL;
-
-      unsigned int upload_delay = 0;
-      unsigned int upload_delay_value = 10000;
-
-      ResetDelayCounter(&upload_delay);
-
-      // wait for score tape to be successfully uploaded (and fail on timeout)
-      while (!server_scores.uploaded)
-      {
-	if (DelayReached(&upload_delay, upload_delay_value))
-	{
-	  PrintNoLog("\r");
-	  Print("- uploading score tape to score server - TIMEOUT.\n");
-
-	  Fail("cannot upload score tape to score server");
-	}
-
-	Delay(20);
-      }
-
-      PrintNoLog("\r");
-      Print("- uploading score tape to score server - uploaded.\n");
 
       continue;
     }
