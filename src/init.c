@@ -5071,7 +5071,8 @@ static void Execute_Command(char *command)
 	   strPrefix(command, "autosave ") ||
 	   strPrefix(command, "autofix "))
   {
-    char *str_ptr = getStringCopy(&command[8]);	// read command parameters
+    char *arg_ptr = strchr(command, ' ');
+    char *str_ptr = getStringCopy(arg_ptr);	// read command parameters
 
     global.autoplay_mode =
       (strPrefix(command, "autoplay") ? AUTOPLAY_MODE_PLAY :
