@@ -1425,6 +1425,14 @@ void AutoPlayTapes(void)
 
       LoadTapeFromFilename(tape_filename);
 
+      if (tape.no_valid_file)
+      {
+	if (!fileExists(tape_filename))
+	  Fail("tape file '%s' does not exist", tape_filename);
+	else
+	  Fail("cannot load tape file '%s'", tape_filename);
+      }
+
       global.autoplay_leveldir = tape.level_identifier;
 
       if (tape.level_nr >= 0 && tape.level_nr < MAX_TAPES_PER_SET)
