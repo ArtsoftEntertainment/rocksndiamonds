@@ -1459,6 +1459,8 @@ void AutoPlayTapes(void)
     PrintLine("=", 79);
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
       Print("Automatically fixing level tapes\n");
+    else if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
+      Print("Automatically uploading level tapes\n");
     else
       Print("Automatically playing level tapes\n");
     PrintLine("-", 79);
@@ -1584,6 +1586,61 @@ void AutoPlayTapes(void)
       {
 	tape.property_bits |= patch_property_bit[patch_nr];
       }
+    }
+
+    if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
+    {
+      // set unique basename for score tape (for uploading to score server)
+      strcpy(tape.score_tape_basename, getScoreTapeBasename(setup.player_name));
+
+      // store score in first score entry
+      scores.last_added = 0;
+
+      struct ScoreEntry *entry = &scores.entry[scores.last_added];
+
+      strncpy(entry->tape_basename, tape.score_tape_basename, MAX_FILENAME_LEN);
+      strncpy(entry->name, setup.player_name, MAX_PLAYER_NAME_LEN);
+
+      entry->score = 0;
+      entry->time = 0;
+
+      Print("Tape %03d:\n", level_nr);
+      PrintNoLog("- uploading score tape to score server ... ");
+
+      server_scores.uploaded = FALSE;
+
+      if (tape_filename == NULL)
+	tape_filename = (options.mytapes ? getTapeFilename(level_nr) :
+			 getSolutionTapeFilename(level_nr));
+
+      SaveServerScoreFromFile(level_nr, tape_filename);
+
+      // required for uploading multiple tapes
+      tape_filename = NULL;
+
+      unsigned int upload_delay = 0;
+      unsigned int upload_delay_value = 10000;
+
+      ResetDelayCounter(&upload_delay);
+
+      // wait for score tape to be successfully uploaded (and fail on timeout)
+      while (!server_scores.uploaded)
+      {
+	if (DelayReached(&upload_delay, upload_delay_value))
+	{
+	  PrintNoLog("\r");
+	  Print("- uploading score tape to score server - TIMEOUT.\n");
+
+	  Fail("cannot upload score tape to score server");
+	}
+
+	Delay(20);
+      }
+
+      PrintNoLog("\r");
+      Print("- uploading score tape to score server - uploaded.\n");
+
+      continue;
     }
 
     InitCounter();

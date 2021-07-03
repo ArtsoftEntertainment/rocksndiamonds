@@ -5069,6 +5069,7 @@ static void Execute_Command(char *command)
 	   strPrefix(command, "autowarp ") ||
 	   strPrefix(command, "autotest ") ||
 	   strPrefix(command, "autosave ") ||
+	   strPrefix(command, "autoupload ") ||
 	   strPrefix(command, "autofix "))
   {
     char *arg_ptr = strchr(command, ' ');
@@ -5080,6 +5081,7 @@ static void Execute_Command(char *command)
        strPrefix(command, "autowarp") ? AUTOPLAY_MODE_WARP :
        strPrefix(command, "autotest") ? AUTOPLAY_MODE_TEST :
        strPrefix(command, "autosave") ? AUTOPLAY_MODE_SAVE :
+       strPrefix(command, "autoupload") ? AUTOPLAY_MODE_UPLOAD :
        strPrefix(command, "autofix")  ? AUTOPLAY_MODE_FIX :
        AUTOPLAY_MODE_NONE);
 
