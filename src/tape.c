@@ -1373,7 +1373,10 @@ void AutoPlayTapes(void)
 
       server_scores.uploaded = FALSE;
 
-      // temporarily save score tape (as the tape filename is unknown here)
+      // save score tape to upload to server; may be required for some reasons:
+      // * level set identifier in solution tapes may differ from level set
+      // * solution tape may have native format (like Supaplex solution files)
+
       SaveScoreTape(level_nr);
       SaveServerScore(level_nr);
 
