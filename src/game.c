@@ -16334,7 +16334,11 @@ static void GameUndo(int steps)
   if (!CheckEngineSnapshotList())
     return;
 
+  int tape_property_bits = tape.property_bits;
+
   LoadEngineSnapshot_Undo(steps);
+
+  tape.property_bits |= tape_property_bits | TAPE_PROPERTY_SNAPSHOT;
 
   GameUndoRedoExt();
 }
@@ -16344,7 +16348,11 @@ static void GameRedo(int steps)
   if (!CheckEngineSnapshotList())
     return;
 
+  int tape_property_bits = tape.property_bits;
+
   LoadEngineSnapshot_Redo(steps);
+
+  tape.property_bits |= tape_property_bits | TAPE_PROPERTY_SNAPSHOT;
 
   GameUndoRedoExt();
 }

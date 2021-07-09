@@ -581,6 +581,8 @@ void TapeErase(void)
   tape.game_version = GAME_VERSION_ACTUAL;
   tape.engine_version = level.game_version;
 
+  tape.property_bits = TAPE_PROPERTY_NONE;
+
   TapeSetDateFromNow();
 
   for (i = 0; i < MAX_PLAYERS; i++)
@@ -672,6 +674,8 @@ static void TapeAppendRecording(void)
   // set current delay (for last played move)
   tape.pos[tape.counter].delay = tape.delay_played;
 
+  tape.property_bits |= TAPE_PROPERTY_REPLAYED;
+
   // set current date
   TapeSetDateFromNow();
 
@@ -762,6 +766,12 @@ void TapeRecordAction(byte action_raw[MAX_TAPE_ACTIONS])
     tape.set_centered_player = FALSE;
   }
 
+  if (GameFrameDelay != GAME_FRAME_DELAY)
+    tape.property_bits |= TAPE_PROPERTY_GAME_SPEED;
+
+  if (setup.small_game_graphics || SCR_FIELDX >= 2 * SCR_FIELDX_DEFAULT)
+    tape.property_bits |= TAPE_PROPERTY_SMALL_GRAPHICS;
+
   if (!TapeAddAction(action))
     TapeStopRecording();
 }
@@ -782,6 +792,12 @@ void TapeTogglePause(boolean toggle_mode)
 
   if (tape.single_step && (toggle_mode & TAPE_TOGGLE_MANUAL))
     tape.single_step = FALSE;
+
+  if (tape.single_step)
+    tape.property_bits |= TAPE_PROPERTY_SINGLE_STEP;
+
+  if (tape.pausing)
+    tape.property_bits |= TAPE_PROPERTY_PAUSE_MODE;
 
   DrawVideoDisplayCurrentState();
 
@@ -1068,6 +1084,8 @@ void TapeQuickSave(void)
     return;
   }
 
+  tape.property_bits |= TAPE_PROPERTY_SNAPSHOT;
+
   if (SaveTapeChecked(tape.level_nr))
     SaveEngineSnapshotSingle();
 }
@@ -1126,6 +1144,7 @@ void TapeQuickLoad(void)
     TapeStartWarpForward(AUTOPLAY_MODE_WARP_NO_DISPLAY);
 
     tape.quick_resume = TRUE;
+    tape.property_bits |= TAPE_PROPERTY_SNAPSHOT;
   }
   else	// this should not happen (basically checked above)
   {

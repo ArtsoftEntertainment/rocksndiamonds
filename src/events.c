@@ -2091,6 +2091,8 @@ void HandleKey(Key key, int key_status)
 	  {
 	    key_action      |= key_info[i].action | JOY_BUTTON_SNAP;
 	    key_snap_action |= key_info[i].action;
+
+	    tape.property_bits |= TAPE_PROPERTY_TAS_KEYS;
 	  }
 	}
       }

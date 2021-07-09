@@ -38,6 +38,13 @@
 // values for tape properties stored in tape file
 #define TAPE_PROPERTY_NONE		0
 #define TAPE_PROPERTY_EM_RANDOM_BUG	(1 << 0)
+#define TAPE_PROPERTY_GAME_SPEED	(1 << 1)
+#define TAPE_PROPERTY_PAUSE_MODE	(1 << 2)
+#define TAPE_PROPERTY_SINGLE_STEP	(1 << 3)
+#define TAPE_PROPERTY_SNAPSHOT		(1 << 4)
+#define TAPE_PROPERTY_REPLAYED		(1 << 5)
+#define TAPE_PROPERTY_TAS_KEYS		(1 << 6)
+#define TAPE_PROPERTY_SMALL_GRAPHICS	(1 << 7)
 
 // values for score tape basename length (date, time, name hash, no extension)
 #define MAX_SCORE_TAPE_BASENAME_LEN	24

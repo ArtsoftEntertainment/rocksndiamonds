@@ -8447,11 +8447,34 @@ void DumpTape(struct TapeInfo *tape)
   }
 
   PrintLine("-", 79);
+
   Print("Tape of Level %03d (file version %08d, game version %08d)\n",
 	tape->level_nr, tape->file_version, tape->game_version);
   Print("                  (effective engine version %08d)\n",
 	tape->engine_version);
   Print("Level series identifier: '%s'\n", tape->level_identifier);
+
+  Print("Special tape properties: ");
+  if (tape->property_bits == TAPE_PROPERTY_NONE)
+    Print("[none]");
+  if (tape->property_bits & TAPE_PROPERTY_EM_RANDOM_BUG)
+    Print("[em_random_bug]");
+  if (tape->property_bits & TAPE_PROPERTY_GAME_SPEED)
+    Print("[game_speed]");
+  if (tape->property_bits & TAPE_PROPERTY_PAUSE_MODE)
+    Print("[pause]");
+  if (tape->property_bits & TAPE_PROPERTY_SINGLE_STEP)
+    Print("[single_step]");
+  if (tape->property_bits & TAPE_PROPERTY_SNAPSHOT)
+    Print("[snapshot]");
+  if (tape->property_bits & TAPE_PROPERTY_REPLAYED)
+    Print("[replayed]");
+  if (tape->property_bits & TAPE_PROPERTY_TAS_KEYS)
+    Print("[tas_keys]");
+  if (tape->property_bits & TAPE_PROPERTY_SMALL_GRAPHICS)
+    Print("[small_graphics]");
+
+  Print("\n");
   PrintLine("-", 79);
 
   tape_frame_counter = 0;
