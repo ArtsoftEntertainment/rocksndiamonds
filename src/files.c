@@ -9679,7 +9679,7 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
-    &setup.show_snapshot_buttons,		"show_snapshot_buttons"
+    &setup.show_load_save_buttons,		"show_load_save_buttons"
   },
   {
     TYPE_SWITCH,
@@ -10364,7 +10364,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->game_frame_delay = GAME_FRAME_DELAY;
   si->sp_show_border_elements = FALSE;
   si->small_game_graphics = FALSE;
-  si->show_snapshot_buttons = FALSE;
+  si->show_load_save_buttons = FALSE;
   si->show_undo_redo_buttons = FALSE;
   si->only_show_local_scores = FALSE;
 

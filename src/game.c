@@ -16162,7 +16162,7 @@ static void UnmapGameButtonsAtSamePosition(int id)
 
 static void UnmapGameButtonsAtSamePosition_All(void)
 {
-  if (setup.show_snapshot_buttons)
+  if (setup.show_load_save_buttons)
   {
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_SAVE);
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PAUSE2);

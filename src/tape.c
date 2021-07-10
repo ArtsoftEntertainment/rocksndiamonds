@@ -828,7 +828,7 @@ void TapeTogglePause(boolean toggle_mode)
 
   if (game_status == GAME_MODE_PLAYING)
   {
-    if (setup.show_snapshot_buttons &&
+    if (setup.show_load_save_buttons &&
 	setup.show_undo_redo_buttons &&
 	CheckEngineSnapshotList())
     {

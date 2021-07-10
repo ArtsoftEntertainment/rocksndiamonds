@@ -1474,7 +1474,7 @@ struct SetupInfo
   int game_frame_delay;
   boolean sp_show_border_elements;
   boolean small_game_graphics;
-  boolean show_snapshot_buttons;
+  boolean show_load_save_buttons;
   boolean show_undo_redo_buttons;
   boolean only_show_local_scores;
 
