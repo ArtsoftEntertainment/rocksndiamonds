@@ -16199,6 +16199,15 @@ static void MapGameButtonsAtSamePosition(int id)
   UnmapGameButtonsAtSamePosition_All();
 }
 
+void MapLoadSaveButtons(void)
+{
+  UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_LOAD);
+  UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_SAVE);
+
+  MapGadget(game_gadget[GAME_CTRL_ID_LOAD]);
+  MapGadget(game_gadget[GAME_CTRL_ID_SAVE]);
+}
+
 void MapUndoRedoButtons(void)
 {
   UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_UNDO);
@@ -16206,15 +16215,6 @@ void MapUndoRedoButtons(void)
 
   MapGadget(game_gadget[GAME_CTRL_ID_UNDO]);
   MapGadget(game_gadget[GAME_CTRL_ID_REDO]);
-}
-
-void UnmapUndoRedoButtons(void)
-{
-  UnmapGadget(game_gadget[GAME_CTRL_ID_UNDO]);
-  UnmapGadget(game_gadget[GAME_CTRL_ID_REDO]);
-
-  MapGameButtonsAtSamePosition(GAME_CTRL_ID_UNDO);
-  MapGameButtonsAtSamePosition(GAME_CTRL_ID_REDO);
 }
 
 void ModifyPauseButtons(void)

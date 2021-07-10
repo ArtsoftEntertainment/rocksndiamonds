@@ -835,7 +835,7 @@ void TapeTogglePause(boolean toggle_mode)
       if (tape.pausing)
 	MapUndoRedoButtons();
       else if (!tape.single_step)
-	UnmapUndoRedoButtons();
+	MapLoadSaveButtons();
     }
 
     ModifyPauseButtons();

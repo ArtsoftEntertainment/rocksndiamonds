@@ -470,8 +470,8 @@ boolean CheckEngineSnapshotList(void);
 
 void CreateGameButtons(void);
 void FreeGameButtons(void);
+void MapLoadSaveButtons(void);
 void MapUndoRedoButtons(void);
-void UnmapUndoRedoButtons(void);
 void ModifyPauseButtons(void);
 void MapGameButtons(void);
 void UnmapGameButtons(void);
