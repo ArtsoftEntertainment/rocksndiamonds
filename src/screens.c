@@ -6795,6 +6795,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_ENTER_LIST, execSetupChooseSnapshotMode,"Game Engine Snapshot Mode:" },
   { TYPE_STRING,	&snapshot_mode_text,	""			},
   { TYPE_SWITCH,	&setup.show_snapshot_buttons,"Show Snapshot Buttons:" },
+  { TYPE_SWITCH,	&setup.show_undo_redo_buttons,"Show Undo/Redo Buttons:" },
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
 

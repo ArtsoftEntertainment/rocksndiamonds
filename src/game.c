@@ -16168,6 +16168,12 @@ static void UnmapGameButtonsAtSamePosition_All(void)
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PAUSE2);
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_LOAD);
   }
+  else if (setup.show_undo_redo_buttons)
+  {
+    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_UNDO);
+    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PAUSE2);
+    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_REDO);
+  }
   else
   {
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_STOP);
@@ -16232,9 +16238,7 @@ static void MapGameButtonsExt(boolean on_tape)
   int i;
 
   for (i = 0; i < NUM_GAME_BUTTONS; i++)
-    if ((!on_tape || gamebutton_info[i].allowed_on_tape) &&
-	i != GAME_CTRL_ID_UNDO &&
-	i != GAME_CTRL_ID_REDO)
+    if (!on_tape || gamebutton_info[i].allowed_on_tape)
       MapGadget(game_gadget[i]);
 
   UnmapGameButtonsAtSamePosition_All();
@@ -16325,6 +16329,8 @@ static void GameUndoRedoExt(void)
   DrawVideoDisplay(VIDEO_STATE_TIME_ON, TapeTime);
   DrawVideoDisplay(VIDEO_STATE_FRAME_ON, FrameCounter);
   DrawVideoDisplay(VIDEO_STATE_1STEP(tape.single_step), 0);
+
+  ModifyPauseButtons();
 
   BackToFront();
 }

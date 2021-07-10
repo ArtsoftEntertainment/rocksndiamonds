@@ -9683,6 +9683,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.show_undo_redo_buttons,		"show_undo_redo_buttons"
+  },
+  {
+    TYPE_SWITCH,
     &setup.only_show_local_scores,		"only_show_local_scores"
   },
   {
@@ -10361,6 +10365,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->sp_show_border_elements = FALSE;
   si->small_game_graphics = FALSE;
   si->show_snapshot_buttons = FALSE;
+  si->show_undo_redo_buttons = FALSE;
   si->only_show_local_scores = FALSE;
 
   si->graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
