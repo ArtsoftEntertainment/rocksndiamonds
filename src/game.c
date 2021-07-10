@@ -16186,19 +16186,6 @@ static void UnmapGameButtonsAtSamePosition_All(void)
   }
 }
 
-static void MapGameButtonsAtSamePosition(int id)
-{
-  int i;
-
-  for (i = 0; i < NUM_GAME_BUTTONS; i++)
-    if (i != id &&
-	gamebutton_info[i].pos->x == gamebutton_info[id].pos->x &&
-	gamebutton_info[i].pos->y == gamebutton_info[id].pos->y)
-      MapGadget(game_gadget[i]);
-
-  UnmapGameButtonsAtSamePosition_All();
-}
-
 void MapLoadSaveButtons(void)
 {
   UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_LOAD);
