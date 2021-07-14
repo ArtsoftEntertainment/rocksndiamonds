@@ -13188,6 +13188,11 @@ void ConvertLevels(void)
 
     Print("converting level ... ");
 
+#if 0
+    // special case: conversion of some EMC levels as requested by ACME
+    level.game_engine_type = GAME_ENGINE_TYPE_RND;
+#endif
+
     level_filename = getDefaultLevelFilename(level_nr);
     new_level = !fileExists(level_filename);
 
