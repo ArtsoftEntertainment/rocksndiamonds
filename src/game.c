@@ -13968,7 +13968,11 @@ static void TestFieldAfterSnapping(int x, int y, int element, int direction,
   if (level.finish_dig_collect)
   {
     int dig_side = MV_DIR_OPPOSITE(direction);
+    int change_event = (IS_DIGGABLE(element) ? CE_PLAYER_DIGS_X :
+			CE_PLAYER_COLLECTS_X);
 
+    CheckTriggeredElementChangeByPlayer(x, y, element, change_event,
+					player_index_bit, dig_side);
     CheckTriggeredElementChangeByPlayer(x, y, element, CE_PLAYER_SNAPS_X,
 					player_index_bit, dig_side);
   }
