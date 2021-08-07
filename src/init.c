@@ -6196,6 +6196,9 @@ void OpenAll(void)
 
   InitGlobal();			// initialize some global variables
 
+  InitRND(NEW_RANDOMIZE);
+  InitSimpleRandom(NEW_RANDOMIZE);
+
   print_timestamp_time("[init global stuff]");
 
   InitSetup();
@@ -6230,9 +6233,6 @@ void OpenAll(void)
   print_timestamp_time("[init setup/config stuff (5)]");
   InitMixer();
   print_timestamp_time("[init setup/config stuff (6)]");
-
-  InitRND(NEW_RANDOMIZE);
-  InitSimpleRandom(NEW_RANDOMIZE);
 
   InitJoysticks();
 
