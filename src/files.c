@@ -9510,6 +9510,14 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.player_name,				"player_name"
   },
   {
+    TYPE_STRING,
+    &setup.player_uuid,				"player_uuid"
+  },
+  {
+    TYPE_STRING,
+    &setup.system_uuid,				"system_uuid"
+  },
+  {
     TYPE_SWITCH,
     &setup.multiple_users,			"multiple_users"
   },
@@ -10321,6 +10329,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->player_name = getStringCopy(getDefaultUserName(user.nr));
 
+  si->player_uuid = NULL;	// (will be set later)
+  si->system_uuid = NULL;	// (will be set later)
+
   si->multiple_users = TRUE;
 
   si->sound = TRUE;
@@ -10866,6 +10877,20 @@ static void LoadSetup_SpecialPostProcessing(void)
   // make sure that scroll delay value stays inside valid range
   setup.scroll_delay_value =
     MIN(MAX(MIN_SCROLL_DELAY, setup.scroll_delay_value), MAX_SCROLL_DELAY);
+
+  if (setup.player_uuid == NULL ||
+      setup.system_uuid == NULL)
+  {
+    if (setup.player_uuid == NULL)
+      setup.player_uuid = getStringCopy(GetPlayerUUID());
+
+    if (setup.system_uuid == NULL)
+      setup.system_uuid = getStringCopy(GetSystemUUID());
+
+    SaveSetup();
+  }
+
+  SetSystemUUID(setup.system_uuid);
 }
 
 void LoadSetup(void)
@@ -10998,7 +11023,8 @@ void SaveSetup(void)
   for (i = 0; i < ARRAY_SIZE(global_setup_tokens); i++)
   {
     // just to make things nicer :)
-    if (global_setup_tokens[i].value == &setup.multiple_users		||
+    if (global_setup_tokens[i].value == &setup.player_uuid		||
+	global_setup_tokens[i].value == &setup.multiple_users		||
 	global_setup_tokens[i].value == &setup.sound			||
 	global_setup_tokens[i].value == &setup.graphics_set		||
 	global_setup_tokens[i].value == &setup.volume_simple		||

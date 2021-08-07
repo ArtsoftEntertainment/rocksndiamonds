@@ -550,6 +550,61 @@ boolean getTokenValueFromString(char *string, char **token, char **value)
 
 
 // ----------------------------------------------------------------------------
+// UUID functions
+// ----------------------------------------------------------------------------
+
+#define UUID_BYTES		16
+#define UUID_CHARS		(UUID_BYTES * 2)
+#define UUID_LENGTH		(UUID_CHARS + 4)
+
+static char *getUUID(void)
+{
+  static char uuid[UUID_LENGTH + 1];
+  int data[UUID_BYTES];
+  int count = 0;
+  int i;
+
+  for (i = 0; i < UUID_BYTES; i++)
+    data[i] = GetSimpleRandom(256);
+
+  data[6] = 0x40 | (data[6] & 0x0f);
+  data[8] = 0x80 | (data[8] & 0x3f);
+
+  for (i = 0; i < UUID_BYTES; i++)
+  {
+    sprintf(&uuid[count], "%02x", data[i]);
+    count += 2;
+
+    if (i == 3 || i == 5 || i == 7 || i == 9)
+      strcat(&uuid[count++], "-");
+  }
+
+  return uuid;
+}
+
+char *GetPlayerUUID(void)
+{
+  return getUUID();
+}
+
+char *GetSystemUUID(void)
+{
+  if (program.system_uuid != NULL)
+    return program.system_uuid;
+
+  return getUUID();
+}
+
+void SetSystemUUID(char *uuid)
+{
+  if (program.system_uuid != NULL)
+    checked_free(program.system_uuid);
+
+  program.system_uuid = getStringCopy(uuid);
+}
+
+
+// ----------------------------------------------------------------------------
 // counter functions
 // ----------------------------------------------------------------------------
 

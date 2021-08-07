@@ -120,6 +120,10 @@ int log_2(unsigned int);
 
 boolean getTokenValueFromString(char *, char **, char **);
 
+char *GetPlayerUUID(void);
+char *GetSystemUUID(void);
+void SetSystemUUID(char *);
+
 void InitCounter(void);
 unsigned int Counter(void);
 void Delay(unsigned int);

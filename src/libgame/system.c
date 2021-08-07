@@ -103,6 +103,8 @@ void InitProgramInfo(char *argv0, char *config_filename, char *userdata_subdir,
   program.log_file[LOG_OUT_ID] = program.log_file_default[LOG_OUT_ID] = stdout;
   program.log_file[LOG_ERR_ID] = program.log_file_default[LOG_ERR_ID] = stderr;
 
+  program.system_uuid = NULL;
+
   program.headless = FALSE;
 }
 
