@@ -3160,7 +3160,7 @@ static int LoadLevel_MicroChunk(File *file, struct LevelFileConfigInfo *conf,
 	  value = getMappedElement(value);
 
 	if (data_type == TYPE_BOOLEAN)
-	  *(boolean *)(conf[i].value) = value;
+	  *(boolean *)(conf[i].value) = (value ? TRUE : FALSE);
 	else
 	  *(int *)    (conf[i].value) = value;
 
