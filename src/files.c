@@ -9341,6 +9341,8 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   char *level_name          = getEscapedJSON(level.name);
   char *level_author        = getEscapedJSON(level.author);
   char *player_name         = getEscapedJSON(score_entry->name);
+  char *player_uuid         = getEscapedJSON(setup.player_uuid);
+  char *system_uuid         = getEscapedJSON(setup.system_uuid);
 
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
@@ -9356,6 +9358,8 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "  \"level_author\":         \"%s\",\n"
 	   "  \"rate_time_over_score\": \"%d\",\n"
 	   "  \"player_name\":          \"%s\",\n"
+	   "  \"player_uuid\":          \"%s\",\n"
+	   "  \"system_uuid\":          \"%s\",\n"
 	   "  \"score\":                \"%d\",\n"
 	   "  \"time\":                 \"%d\",\n"
 	   "  \"tape_basename\":        \"%s\",\n"
@@ -9373,6 +9377,8 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   level_author,
 	   level.rate_time_over_score,
 	   player_name,
+	   player_uuid,
+	   system_uuid,
 	   score_entry->score,
 	   score_entry->time,
 	   score_entry->tape_basename,
@@ -9386,6 +9392,8 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   checked_free(level_name);
   checked_free(level_author);
   checked_free(player_name);
+  checked_free(player_uuid);
+  checked_free(system_uuid);
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
