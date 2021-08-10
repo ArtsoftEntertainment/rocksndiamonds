@@ -1013,8 +1013,6 @@ struct ProgramInfo
   void (*exit_message_function)(char *, va_list);
   void (*exit_function)(int);
 
-  char *system_uuid;		// initialized when reading first setup file
-
   boolean headless;
 };
 
@@ -1432,9 +1430,7 @@ struct SetupDebugInfo
 struct SetupInfo
 {
   char *player_name;
-
   char *player_uuid;
-  char *system_uuid;
 
   boolean multiple_users;
 

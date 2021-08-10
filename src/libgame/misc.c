@@ -557,7 +557,7 @@ boolean getTokenValueFromString(char *string, char **token, char **value)
 #define UUID_CHARS		(UUID_BYTES * 2)
 #define UUID_LENGTH		(UUID_CHARS + 4)
 
-static char *getUUID(void)
+char *getUUID(void)
 {
   static char uuid[UUID_LENGTH + 1];
   int data[UUID_BYTES];
@@ -580,27 +580,6 @@ static char *getUUID(void)
   }
 
   return uuid;
-}
-
-char *GetPlayerUUID(void)
-{
-  return getUUID();
-}
-
-char *GetSystemUUID(void)
-{
-  if (program.system_uuid != NULL)
-    return program.system_uuid;
-
-  return getUUID();
-}
-
-void SetSystemUUID(char *uuid)
-{
-  if (program.system_uuid != NULL)
-    checked_free(program.system_uuid);
-
-  program.system_uuid = getStringCopy(uuid);
 }
 
 

@@ -9342,7 +9342,6 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   char *level_author        = getEscapedJSON(level.author);
   char *player_name         = getEscapedJSON(score_entry->name);
   char *player_uuid         = getEscapedJSON(setup.player_uuid);
-  char *system_uuid         = getEscapedJSON(setup.system_uuid);
 
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
@@ -9359,7 +9358,6 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "  \"rate_time_over_score\": \"%d\",\n"
 	   "  \"player_name\":          \"%s\",\n"
 	   "  \"player_uuid\":          \"%s\",\n"
-	   "  \"system_uuid\":          \"%s\",\n"
 	   "  \"score\":                \"%d\",\n"
 	   "  \"time\":                 \"%d\",\n"
 	   "  \"tape_basename\":        \"%s\",\n"
@@ -9378,7 +9376,6 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   level.rate_time_over_score,
 	   player_name,
 	   player_uuid,
-	   system_uuid,
 	   score_entry->score,
 	   score_entry->time,
 	   score_entry->tape_basename,
@@ -9393,7 +9390,6 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   checked_free(level_author);
   checked_free(player_name);
   checked_free(player_uuid);
-  checked_free(system_uuid);
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
@@ -9520,10 +9516,6 @@ static struct TokenInfo global_setup_tokens[] =
   {
     TYPE_STRING,
     &setup.player_uuid,				"player_uuid"
-  },
-  {
-    TYPE_STRING,
-    &setup.system_uuid,				"system_uuid"
   },
   {
     TYPE_SWITCH,
@@ -10336,9 +10328,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   int i;
 
   si->player_name = getStringCopy(getDefaultUserName(user.nr));
-
   si->player_uuid = NULL;	// (will be set later)
-  si->system_uuid = NULL;	// (will be set later)
 
   si->multiple_users = TRUE;
 
@@ -10886,19 +10876,13 @@ static void LoadSetup_SpecialPostProcessing(void)
   setup.scroll_delay_value =
     MIN(MAX(MIN_SCROLL_DELAY, setup.scroll_delay_value), MAX_SCROLL_DELAY);
 
-  if (setup.player_uuid == NULL ||
-      setup.system_uuid == NULL)
+  if (setup.player_uuid == NULL)
   {
-    if (setup.player_uuid == NULL)
-      setup.player_uuid = getStringCopy(GetPlayerUUID());
-
-    if (setup.system_uuid == NULL)
-      setup.system_uuid = getStringCopy(GetSystemUUID());
+    // player UUID does not yet exist in setup file
+    setup.player_uuid = getStringCopy(getUUID());
 
     SaveSetup();
   }
-
-  SetSystemUUID(setup.system_uuid);
 }
 
 void LoadSetup(void)
@@ -11031,8 +11015,7 @@ void SaveSetup(void)
   for (i = 0; i < ARRAY_SIZE(global_setup_tokens); i++)
   {
     // just to make things nicer :)
-    if (global_setup_tokens[i].value == &setup.player_uuid		||
-	global_setup_tokens[i].value == &setup.multiple_users		||
+    if (global_setup_tokens[i].value == &setup.multiple_users		||
 	global_setup_tokens[i].value == &setup.sound			||
 	global_setup_tokens[i].value == &setup.graphics_set		||
 	global_setup_tokens[i].value == &setup.volume_simple		||
