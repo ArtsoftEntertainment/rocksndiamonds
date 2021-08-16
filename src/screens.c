@@ -4036,6 +4036,99 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 
 
 // ============================================================================
+// change name functions
+// ============================================================================
+
+static void RenamePlayerOnServerExt(struct HttpRequest *request,
+				    struct HttpResponse *response,
+				    char *player_name_raw,
+				    char *player_uuid_raw)
+{
+  request->hostname = setup.api_server_hostname;
+  request->port     = API_SERVER_PORT;
+  request->method   = API_SERVER_METHOD;
+  request->uri      = API_SERVER_URI_RENAME;
+
+  char *player_name = getEscapedJSON(player_name_raw);
+  char *player_uuid = getEscapedJSON(player_uuid_raw);
+
+  snprintf(request->body, MAX_HTTP_BODY_SIZE,
+	   "{\n"
+	   "%s"
+	   "  \"name\":                 \"%s\",\n"
+	   "  \"uuid\":                 \"%s\"\n"
+	   "}\n",
+	   getPasswordJSON(setup.api_server_password),
+	   player_name,
+	   player_uuid);
+
+  checked_free(player_name);
+  checked_free(player_uuid);
+
+  ConvertHttpRequestBodyToServerEncoding(request);
+
+  if (!DoHttpRequest(request, response))
+  {
+    Error("HTTP request failed: %s", GetHttpError());
+
+    return;
+  }
+
+  if (!HTTP_SUCCESS(response->status_code))
+  {
+    Error("server failed to handle request: %d %s",
+	  response->status_code,
+	  response->status_text);
+
+    return;
+  }
+}
+
+static void RenamePlayerOnServer(char *player_name, char *player_uuid)
+{
+  struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
+  struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
+
+  RenamePlayerOnServerExt(request, response, player_name, player_uuid);
+
+  checked_free(request);
+  checked_free(response);
+}
+
+struct RenamePlayerOnServerThreadData
+{
+  char *player_name;
+  char *player_uuid;
+};
+
+static int RenamePlayerOnServerThread(void *data_raw)
+{
+  struct RenamePlayerOnServerThreadData *data = data_raw;
+
+  RenamePlayerOnServer(data->player_name, data->player_uuid);
+
+  checked_free(data->player_name);
+  checked_free(data->player_uuid);
+  checked_free(data);
+
+  return 0;
+}
+
+static void RenamePlayerOnServerAsThread(void)
+{
+  struct RenamePlayerOnServerThreadData *data =
+    checked_malloc(sizeof(struct RenamePlayerOnServerThreadData));
+
+  data->player_name = getStringCopy(setup.player_name);
+  data->player_uuid = getStringCopy(setup.player_uuid);
+
+  ExecuteAsThread(RenamePlayerOnServerThread,
+		  "RenamePlayerOnServer", data,
+		  "rename player on server");
+}
+
+
+// ============================================================================
 // type name functions
 // ============================================================================
 
@@ -4171,6 +4264,9 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
 
   // save setup of edited user
   SaveSetup();
+
+  // change name of edited user on score server
+  RenamePlayerOnServerAsThread();
 
   if (game_status == GAME_MODE_PSEUDO_TYPENAMES || reset_setup)
   {

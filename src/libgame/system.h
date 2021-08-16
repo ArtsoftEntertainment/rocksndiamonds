@@ -111,6 +111,7 @@
 #define API_SERVER_METHOD		"POST"
 #define API_SERVER_URI_ADD		"/api/scores/add"
 #define API_SERVER_URI_GET		"/api/scores/get"
+#define API_SERVER_URI_RENAME		"/api/players/rename"
 
 // values for touch control
 #define TOUCH_CONTROL_OFF		"off"
