@@ -9026,8 +9026,8 @@ void SaveScore(int nr)
   SaveScoreToFilename(filename);
 }
 
-static void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
-			    char *error)
+void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
+		     char *error)
 {
   SDL_Thread *thread = SDL_CreateThread(function, name, data);
 
@@ -9040,7 +9040,7 @@ static void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
   Delay(1);
 }
 
-static char *getPasswordJSON(char *password)
+char *getPasswordJSON(char *password)
 {
   static char password_json[MAX_FILENAME_LEN] = "";
   static boolean initialized = FALSE;
