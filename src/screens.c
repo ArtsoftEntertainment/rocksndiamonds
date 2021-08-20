@@ -4055,10 +4055,12 @@ static void RenamePlayerOnServerExt(struct HttpRequest *request,
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
 	   "%s"
+	   "  \"game_version\":         \"%s\",\n"
 	   "  \"name\":                 \"%s\",\n"
 	   "  \"uuid\":                 \"%s\"\n"
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
+	   getProgramRealVersionString(),
 	   player_name,
 	   player_uuid);
 

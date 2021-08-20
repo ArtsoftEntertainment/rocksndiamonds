@@ -9073,10 +9073,12 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
 	   "%s"
+	   "  \"game_version\":         \"%s\",\n"
 	   "  \"levelset_identifier\":  \"%s\",\n"
 	   "  \"level_nr\":             \"%d\"\n"
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
+	   getProgramRealVersionString(),
 	   levelset.identifier, level_nr);
 
   ConvertHttpRequestBodyToServerEncoding(request);
