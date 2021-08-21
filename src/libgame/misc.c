@@ -1299,6 +1299,7 @@ void GetOptions(int argc, char *argv[],
   options.tape_log_filename = NULL;
   options.special_flags = NULL;
   options.debug_mode = NULL;
+  options.player_name = NULL;
 
   options.mytapes = FALSE;
   options.serveronly = FALSE;
@@ -1435,6 +1436,15 @@ void GetOptions(int argc, char *argv[],
       // optionally, debug output can be limited to a specific debug mode
       if (option_arg != next_option)
 	options.debug_mode = getStringCopy(option_arg);
+    }
+    else if (strncmp(option, "-player-name", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	FailWithHelp("option '%s' requires an argument", option_str);
+
+      options.player_name = getStringCopy(option_arg);
+      if (option_arg == next_option)
+	options_left++;
     }
     else if (strncmp(option, "-verbose", option_len) == 0)
     {

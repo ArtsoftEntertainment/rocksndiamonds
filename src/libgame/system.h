@@ -1056,6 +1056,8 @@ struct OptionInfo
   char *special_flags;
   char *debug_mode;
 
+  char *player_name;
+
   boolean mytapes;
   boolean serveronly;
   boolean network;

@@ -9337,13 +9337,22 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
     return;
   }
 
+  char *player_name_raw = score_entry->name;
+  char *player_uuid_raw = setup.player_uuid;
+
+  if (options.player_name != NULL)
+  {
+    player_name_raw = options.player_name;
+    player_uuid_raw = "";
+  }
+
   char *levelset_identifier = getEscapedJSON(leveldir_current->identifier);
   char *levelset_name       = getEscapedJSON(leveldir_current->name);
   char *levelset_author     = getEscapedJSON(leveldir_current->author);
   char *level_name          = getEscapedJSON(level.name);
   char *level_author        = getEscapedJSON(level.author);
-  char *player_name         = getEscapedJSON(score_entry->name);
-  char *player_uuid         = getEscapedJSON(setup.player_uuid);
+  char *player_name         = getEscapedJSON(player_name_raw);
+  char *player_uuid         = getEscapedJSON(player_uuid_raw);
 
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
