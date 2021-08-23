@@ -582,6 +582,19 @@ char *getTapeFilename(int nr)
   return filename;
 }
 
+char *getTemporaryTapeFilename(void)
+{
+  static char *filename = NULL;
+  char basename[MAX_FILENAME_LEN];
+
+  checked_free(filename);
+
+  sprintf(basename, "tmp.%s", TAPEFILE_EXTENSION);
+  filename = getPath2(getTapeDir(NULL), basename);
+
+  return filename;
+}
+
 char *getDefaultSolutionTapeFilename(int nr)
 {
   static char *filename = NULL;

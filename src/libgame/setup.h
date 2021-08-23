@@ -264,6 +264,7 @@ char *setLevelArtworkDir(TreeInfo *);
 char *getProgramMainDataPath(char *, char *);
 char *getProgramConfigFilename(char *);
 char *getTapeFilename(int);
+char *getTemporaryTapeFilename(void);
 char *getDefaultSolutionTapeFilename(int);
 char *getSokobanSolutionTapeFilename(int);
 char *getSolutionTapeFilename(int);
