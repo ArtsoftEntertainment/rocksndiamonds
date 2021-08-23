@@ -582,7 +582,7 @@ char *getTapeFilename(int nr)
   return filename;
 }
 
-char *getSolutionTapeFilename(int nr)
+char *getDefaultSolutionTapeFilename(int nr)
 {
   static char *filename = NULL;
   char basename[MAX_FILENAME_LEN];
@@ -592,17 +592,32 @@ char *getSolutionTapeFilename(int nr)
   sprintf(basename, "%03d.%s", nr, TAPEFILE_EXTENSION);
   filename = getPath2(getSolutionTapeDir(), basename);
 
+  return filename;
+}
+
+char *getSokobanSolutionTapeFilename(int nr)
+{
+  static char *filename = NULL;
+  char basename[MAX_FILENAME_LEN];
+
+  checked_free(filename);
+
+  sprintf(basename, "%03d.sln", nr);
+  filename = getPath2(getSolutionTapeDir(), basename);
+
+  return filename;
+}
+
+char *getSolutionTapeFilename(int nr)
+{
+  char *filename = getDefaultSolutionTapeFilename(nr);
+
   if (!fileExists(filename))
   {
-    static char *filename_sln = NULL;
+    char *filename2 = getSokobanSolutionTapeFilename(nr);
 
-    checked_free(filename_sln);
-
-    sprintf(basename, "%03d.sln", nr);
-    filename_sln = getPath2(getSolutionTapeDir(), basename);
-
-    if (fileExists(filename_sln))
-      return filename_sln;
+    if (fileExists(filename2))
+      return filename2;
   }
 
   return filename;
