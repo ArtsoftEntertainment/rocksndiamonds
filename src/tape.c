@@ -1445,6 +1445,14 @@ void AutoPlayTapes(void)
   }
   else
   {
+    if ((global.autoplay_mode == AUTOPLAY_MODE_SAVE ||
+	 global.autoplay_mode == AUTOPLAY_MODE_UPLOAD) &&
+	!options.mytapes &&
+	options.player_name == NULL)
+    {
+      Fail("specify player name when uploading solution tapes");
+    }
+
     DrawCompleteVideoDisplay();
 
     audio.sound_enabled = FALSE;
