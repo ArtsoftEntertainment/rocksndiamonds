@@ -1629,17 +1629,34 @@ void AutoPlayTapes(void)
 
     if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
     {
+      boolean use_temporary_tape_file = FALSE;
+
       Print("Tape %03d:\n", level_nr);
 
       AutoPlayTapes_SetScoreEntry(0, 0);
 
       if (tape_filename == NULL)
+      {
 	tape_filename = (options.mytapes ? getTapeFilename(level_nr) :
-			 getSolutionTapeFilename(level_nr));
+			 getDefaultSolutionTapeFilename(level_nr));
+
+	if (!fileExists(tape_filename))
+	{
+	  // non-standard solution tape -- save to temporary file
+	  tape_filename = getTemporaryTapeFilename();
+
+	  SaveTapeToFilename(tape_filename);
+
+	  use_temporary_tape_file = TRUE;
+	}
+      }
 
       SaveServerScoreFromFile(level_nr, tape_filename);
 
       AutoPlayTapes_WaitForUpload();
+
+      if (use_temporary_tape_file)
+        unlink(tape_filename);
 
       // required for uploading multiple tapes
       tape_filename = NULL;
