@@ -1491,9 +1491,10 @@ static boolean adjustTreeSoundsForEMC(TreeInfo *node)
   return settings_changed;
 }
 
-void dumpTreeInfo(TreeInfo *node, int depth)
+int dumpTreeInfo(TreeInfo *node, int depth)
 {
   char bullet_list[] = { '-', '*', 'o' };
+  int num_leaf_nodes = 0;
   int i;
 
   if (depth == 0)
@@ -1511,6 +1512,9 @@ void dumpTreeInfo(TreeInfo *node, int depth)
 		   (node->node_parent ? node->node_parent->identifier : "-"),
 		   (node->node_group ? "[GROUP]" : ""));
 
+    if (!node->node_group && !node->parent_link)
+      num_leaf_nodes++;
+
     /*
     // use for dumping artwork info tree
     Debug("tree", "subdir == '%s' ['%s', '%s'] [%d])",
@@ -1518,10 +1522,15 @@ void dumpTreeInfo(TreeInfo *node, int depth)
     */
 
     if (node->node_group != NULL)
-      dumpTreeInfo(node->node_group, depth + 1);
+      num_leaf_nodes += dumpTreeInfo(node->node_group, depth + 1);
 
     node = node->next;
   }
+
+  if (depth == 0)
+    Debug("tree", "Summary: %d leaf nodes found", num_leaf_nodes);
+
+  return num_leaf_nodes;
 }
 
 void sortTreeInfoBySortFunction(TreeInfo **node_first,

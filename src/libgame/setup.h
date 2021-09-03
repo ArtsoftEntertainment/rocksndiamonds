@@ -309,7 +309,7 @@ int numTreeInfoInGroup(TreeInfo *);
 int getPosFromTreeInfo(TreeInfo *);
 TreeInfo *getTreeInfoFromPos(TreeInfo *, int);
 TreeInfo *getTreeInfoFromIdentifier(TreeInfo *, char *);
-void dumpTreeInfo(TreeInfo *, int);
+int dumpTreeInfo(TreeInfo *, int);
 void sortTreeInfoBySortFunction(TreeInfo **,
 				int (*compare_function)(const void *,
 							const void *));
