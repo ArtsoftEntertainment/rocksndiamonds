@@ -1297,15 +1297,17 @@ TreeInfo *getFirstValidTreeInfoEntry(TreeInfo *node)
 
   if (node->node_group)		// enter level group (step down into tree)
     return getFirstValidTreeInfoEntry(node->node_group);
-  else if (node->parent_link)	// skip start entry of level group
+
+  if (node->parent_link)	// skip start entry of level group
   {
     if (node->next)		// get first real level series entry
       return getFirstValidTreeInfoEntry(node->next);
     else			// leave empty level group and go on
       return getFirstValidTreeInfoEntry(node->node_parent->next);
   }
-  else				// this seems to be a regular level series
-    return node;
+
+  // this seems to be a regular level series
+  return node;
 }
 
 TreeInfo *getTreeInfoFirstGroupEntry(TreeInfo *node)
