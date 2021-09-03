@@ -1301,17 +1301,14 @@ static TreeInfo *getValidTreeInfoEntryExt(TreeInfo *node, boolean get_next_node)
   if (node->parent_link)	// skip first node (back link) of node group
     get_next_node = TRUE;
 
-  if (get_next_node)
-  {
-    // get next regular tree node, or step up until one is found
-    while (node->next == NULL && node->node_parent != NULL)
-      node = node->node_parent;
+  if (!get_next_node)		// get current regular tree node
+    return node;
 
-    return getFirstValidTreeInfoEntry(node->next);
-  }
+  // get next regular tree node, or step up until one is found
+  while (node->next == NULL && node->node_parent != NULL)
+    node = node->node_parent;
 
-  // this is a regular tree node
-  return node;
+  return getFirstValidTreeInfoEntry(node->next);
 }
 
 TreeInfo *getFirstValidTreeInfoEntry(TreeInfo *node)
