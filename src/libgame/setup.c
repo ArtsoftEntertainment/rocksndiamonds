@@ -1300,10 +1300,11 @@ TreeInfo *getFirstValidTreeInfoEntry(TreeInfo *node)
 
   if (node->parent_link)	// skip first node (back link) of node group
   {
-    if (node->next)		// get next regular node
-      return getFirstValidTreeInfoEntry(node->next);
-    else			// leave empty node group and go on
-      return getFirstValidTreeInfoEntry(node->node_parent->next);
+    // get next regular tree node, or step up until one is found
+    while (node->next == NULL && node->node_parent != NULL)
+      node = node->node_parent;
+
+    return getFirstValidTreeInfoEntry(node->next);
   }
 
   // this is a regular tree node
