@@ -1295,18 +1295,18 @@ TreeInfo *getFirstValidTreeInfoEntry(TreeInfo *node)
   if (node == NULL)
     return NULL;
 
-  if (node->node_group)		// enter level group (step down into tree)
+  if (node->node_group)		// enter node group (step down into tree)
     return getFirstValidTreeInfoEntry(node->node_group);
 
-  if (node->parent_link)	// skip start entry of level group
+  if (node->parent_link)	// skip first node (back link) of node group
   {
-    if (node->next)		// get first real level series entry
+    if (node->next)		// get next regular node
       return getFirstValidTreeInfoEntry(node->next);
-    else			// leave empty level group and go on
+    else			// leave empty node group and go on
       return getFirstValidTreeInfoEntry(node->node_parent->next);
   }
 
-  // this seems to be a regular level series
+  // this is a regular tree node
   return node;
 }
 
