@@ -1439,6 +1439,7 @@ void AutoPlayTapes(void)
 
     -1
   };
+  boolean init_level_set = FALSE;
   int i;
 
   if (autoplay.initialized)
@@ -1563,29 +1564,36 @@ void AutoPlayTapes(void)
     if (autoplay.leveldir == NULL)
       Fail("no such level identifier: '%s'", global.autoplay_leveldir);
 
-    leveldir_current = autoplay.leveldir;
-
-    if (autoplay.leveldir->first_level < 0)
-      autoplay.leveldir->first_level = 0;
-    if (autoplay.leveldir->last_level >= MAX_TAPES_PER_SET)
-      autoplay.leveldir->last_level = MAX_TAPES_PER_SET - 1;
-
-    autoplay.level_nr = autoplay.leveldir->first_level;
-
-    PrintTapeReplayHeader(&autoplay);
-
-    for (i = 0; i < MAX_TAPES_PER_SET; i++)
-      autoplay.level_failed[i] = FALSE;
-
     // only private tapes may be modified
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
       options.mytapes = TRUE;
+
+    init_level_set = TRUE;
 
     autoplay.initialized = TRUE;
   }
 
   while (1)
   {
+    if (init_level_set)
+    {
+      leveldir_current = autoplay.leveldir;
+
+      if (autoplay.leveldir->first_level < 0)
+	autoplay.leveldir->first_level = 0;
+      if (autoplay.leveldir->last_level >= MAX_TAPES_PER_SET)
+	autoplay.leveldir->last_level = MAX_TAPES_PER_SET - 1;
+
+      autoplay.level_nr = autoplay.leveldir->first_level;
+
+      PrintTapeReplayHeader(&autoplay);
+
+      for (i = 0; i < MAX_TAPES_PER_SET; i++)
+	autoplay.level_failed[i] = FALSE;
+
+      init_level_set = FALSE;
+    }
+
     if (global.autoplay_mode != AUTOPLAY_MODE_FIX || patch_nr == 0)
       level_nr = autoplay.level_nr++;
 
