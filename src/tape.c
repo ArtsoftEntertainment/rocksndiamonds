@@ -475,6 +475,7 @@ struct AutoPlayInfo
 {
   LevelDirTree *leveldir;
   boolean initialized;
+  boolean all_levelsets;
   int last_level_nr;
   int level_nr;
   int num_levels_played;
@@ -1523,6 +1524,15 @@ void AutoPlayTapes(void)
   }
   else
   {
+    if (strEqual(global.autoplay_leveldir, "ALL"))
+    {
+      autoplay.all_levelsets = TRUE;
+
+      // tape mass-uploading only allowed for private tapes
+      if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
+	options.mytapes = TRUE;
+    }
+
     if ((global.autoplay_mode == AUTOPLAY_MODE_SAVE ||
 	 global.autoplay_mode == AUTOPLAY_MODE_UPLOAD) &&
 	!options.mytapes &&
@@ -1558,8 +1568,18 @@ void AutoPlayTapes(void)
       global.autoplay_all = FALSE;
     }
 
-    autoplay.leveldir = getTreeInfoFromIdentifier(leveldir_first,
-						  global.autoplay_leveldir);
+    if (autoplay.all_levelsets)
+    {
+      // start auto-playing first level set
+      autoplay.leveldir = getFirstValidTreeInfoEntry(leveldir_first);
+    }
+    else
+    {
+      // auto-play selected level set
+      autoplay.leveldir = getTreeInfoFromIdentifier(leveldir_first,
+						    global.autoplay_leveldir);
+
+    }
 
     if (autoplay.leveldir == NULL)
       Fail("no such level identifier: '%s'", global.autoplay_leveldir);
@@ -1586,6 +1606,11 @@ void AutoPlayTapes(void)
 
       autoplay.level_nr = autoplay.leveldir->first_level;
 
+      autoplay.num_levels_played = 0;
+      autoplay.num_levels_solved = 0;
+      autoplay.num_tapes_patched = 0;
+      autoplay.num_tape_missing = 0;
+
       for (i = 0; i < MAX_TAPES_PER_SET; i++)
 	autoplay.level_failed[i] = FALSE;
 
@@ -1597,11 +1622,24 @@ void AutoPlayTapes(void)
     if (global.autoplay_mode != AUTOPLAY_MODE_FIX || patch_nr == 0)
       level_nr = autoplay.level_nr++;
 
+    // check if all tapes for this level set have been processed
     if (level_nr > autoplay.leveldir->last_level)
     {
       PrintTapeReplaySummary(&autoplay);
 
-      break;
+      if (!autoplay.all_levelsets)
+	break;
+
+      // continue with next level set
+      autoplay.leveldir = getNextValidTreeInfoEntry(autoplay.leveldir);
+
+      // all level sets processed
+      if (autoplay.leveldir == NULL)
+	break;
+
+      init_level_set = TRUE;
+
+      continue;
     }
 
     // set patch info (required for progress output)
@@ -1614,6 +1652,7 @@ void AutoPlayTapes(void)
       continue;
 
     TapeErase();
+    TapeRewind();	// needed to reset "tape.auto_play_level_solved"
 
     LoadLevel(level_nr);
 
