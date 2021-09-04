@@ -1586,10 +1586,10 @@ void AutoPlayTapes(void)
 
       autoplay.level_nr = autoplay.leveldir->first_level;
 
-      PrintTapeReplayHeader(&autoplay);
-
       for (i = 0; i < MAX_TAPES_PER_SET; i++)
 	autoplay.level_failed[i] = FALSE;
+
+      PrintTapeReplayHeader(&autoplay);
 
       init_level_set = FALSE;
     }
@@ -1598,7 +1598,11 @@ void AutoPlayTapes(void)
       level_nr = autoplay.level_nr++;
 
     if (level_nr > autoplay.leveldir->last_level)
+    {
+      PrintTapeReplaySummary(&autoplay);
+
       break;
+    }
 
     // set patch info (required for progress output)
     strcpy(tape_patch_info, "");
@@ -1748,8 +1752,6 @@ void AutoPlayTapes(void)
 
     return;
   }
-
-  PrintTapeReplaySummary(&autoplay);
 
   CloseAllAndExit(0);
 }
