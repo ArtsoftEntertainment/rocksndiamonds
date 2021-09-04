@@ -3268,8 +3268,8 @@ struct GlobalInfo
 {
   char *autoplay_leveldir;
   int autoplay_level[MAX_TAPES_PER_SET];
+  int autoplay_mode;
   boolean autoplay_all;
-  boolean autoplay_mode;
 
   char *patchtapes_mode;
   char *patchtapes_leveldir;
