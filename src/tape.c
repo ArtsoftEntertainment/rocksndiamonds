@@ -487,6 +487,26 @@ struct AutoPlayInfo
 
 static char tape_patch_info[MAX_OUTPUT_LINESIZE];
 
+static void PrintTapeReplayHeader(struct AutoPlayInfo *autoplay)
+{
+  PrintLine("=", 79);
+
+  if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
+    Print("Automatically fixing level tapes\n");
+  else if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
+    Print("Automatically uploading level tapes\n");
+  else
+    Print("Automatically playing level tapes\n");
+
+  PrintLine("-", 79);
+  Print("Level series identifier: '%s'\n", autoplay->leveldir->identifier);
+  Print("Level series name:       '%s'\n", autoplay->leveldir->name);
+  Print("Level series author:     '%s'\n", autoplay->leveldir->author);
+  Print("Number of levels:        %d\n",   autoplay->leveldir->levels);
+  PrintLine("=", 79);
+  Print("\n");
+}
+
 static void PrintTapeReplayProgress(boolean replay_finished)
 {
   static unsigned int counter_last = -1;
@@ -525,6 +545,58 @@ static void PrintTapeReplayProgress(boolean replay_finished)
 
     counter_last = -1;
   }
+}
+
+static void PrintTapeReplaySummary(struct AutoPlayInfo *autoplay)
+{
+  char *autoplay_status =
+    (autoplay->num_levels_played == autoplay->num_levels_solved &&
+     autoplay->num_levels_played > 0 ? " OK " : "WARN");
+  int autoplay_percent =
+    (autoplay->num_levels_played ?
+     autoplay->num_levels_solved * 100 / autoplay->num_levels_played : 0);
+  int i;
+
+  Print("\n");
+  PrintLine("=", 79);
+  Print("Number of levels played: %d\n", autoplay->num_levels_played);
+  Print("Number of levels solved: %d (%d%%)\n", autoplay->num_levels_solved,
+	(autoplay->num_levels_played ?
+	 autoplay->num_levels_solved * 100 / autoplay->num_levels_played : 0));
+  if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
+    Print("Number of tapes fixed: %d\n", autoplay->num_tapes_patched);
+  PrintLine("-", 79);
+  Print("Summary (for automatic parsing by scripts):\n");
+
+  if (autoplay->tape_filename)
+  {
+    Print("TAPEFILE [%s] '%s', %d, %d, %d",
+	  autoplay_status,
+	  autoplay->leveldir->identifier,
+	  autoplay->last_level_nr,
+	  game.score_final,
+	  game.score_time_final);
+  }
+  else
+  {
+    Print("LEVELDIR [%s] '%s', SOLVED %d/%d (%d%%)",
+	  autoplay_status,
+	  autoplay->leveldir->identifier,
+	  autoplay->num_levels_solved,
+	  autoplay->num_levels_played,
+	  autoplay_percent);
+
+    if (autoplay->num_levels_played != autoplay->num_levels_solved)
+    {
+      Print(", FAILED:");
+      for (i = 0; i < MAX_TAPES_PER_SET; i++)
+	if (autoplay->level_failed[i])
+	  Print(" %03d", i);
+    }
+  }
+
+  Print("\n");
+  PrintLine("=", 79);
 }
 
 static FILE *tape_log_file;
@@ -1500,20 +1572,7 @@ void AutoPlayTapes(void)
 
     autoplay.level_nr = autoplay.leveldir->first_level;
 
-    PrintLine("=", 79);
-    if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
-      Print("Automatically fixing level tapes\n");
-    else if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
-      Print("Automatically uploading level tapes\n");
-    else
-      Print("Automatically playing level tapes\n");
-    PrintLine("-", 79);
-    Print("Level series identifier: '%s'\n", autoplay.leveldir->identifier);
-    Print("Level series name:       '%s'\n", autoplay.leveldir->name);
-    Print("Level series author:     '%s'\n", autoplay.leveldir->author);
-    Print("Number of levels:        %d\n",   autoplay.leveldir->levels);
-    PrintLine("=", 79);
-    Print("\n");
+    PrintTapeReplayHeader(&autoplay);
 
     for (i = 0; i < MAX_TAPES_PER_SET; i++)
       autoplay.level_failed[i] = FALSE;
@@ -1682,53 +1741,7 @@ void AutoPlayTapes(void)
     return;
   }
 
-  char *autoplay_status =
-    (autoplay.num_levels_played == autoplay.num_levels_solved &&
-     autoplay.num_levels_played > 0 ? " OK " : "WARN");
-  int autoplay_percent =
-    (autoplay.num_levels_played ?
-     autoplay.num_levels_solved * 100 / autoplay.num_levels_played : 0);
-
-  Print("\n");
-  PrintLine("=", 79);
-  Print("Number of levels played: %d\n", autoplay.num_levels_played);
-  Print("Number of levels solved: %d (%d%%)\n", autoplay.num_levels_solved,
-	(autoplay.num_levels_played ?
-	 autoplay.num_levels_solved * 100 / autoplay.num_levels_played : 0));
-  if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
-    Print("Number of tapes fixed: %d\n", autoplay.num_tapes_patched);
-  PrintLine("-", 79);
-  Print("Summary (for automatic parsing by scripts):\n");
-
-  if (autoplay.tape_filename)
-  {
-    Print("TAPEFILE [%s] '%s', %d, %d, %d",
-	  autoplay_status,
-	  autoplay.leveldir->identifier,
-	  autoplay.last_level_nr,
-	  game.score_final,
-	  game.score_time_final);
-  }
-  else
-  {
-    Print("LEVELDIR [%s] '%s', SOLVED %d/%d (%d%%)",
-	  autoplay_status,
-	  autoplay.leveldir->identifier,
-	  autoplay.num_levels_solved,
-	  autoplay.num_levels_played,
-	  autoplay_percent);
-
-    if (autoplay.num_levels_played != autoplay.num_levels_solved)
-    {
-      Print(", FAILED:");
-      for (i = 0; i < MAX_TAPES_PER_SET; i++)
-	if (autoplay.level_failed[i])
-	  Print(" %03d", i);
-    }
-  }
-
-  Print("\n");
-  PrintLine("=", 79);
+  PrintTapeReplaySummary(&autoplay);
 
   CloseAllAndExit(0);
 }
