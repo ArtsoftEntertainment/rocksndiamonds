@@ -471,6 +471,20 @@ void TapeDeactivateDisplayOff(boolean redraw_display)
 // tape logging functions
 // ============================================================================
 
+struct AutoPlayInfo
+{
+  LevelDirTree *leveldir;
+  boolean initialized;
+  int last_level_nr;
+  int level_nr;
+  int num_levels_played;
+  int num_levels_solved;
+  int num_tapes_patched;
+  int num_tape_missing;
+  boolean level_failed[MAX_TAPES_PER_SET];
+  char *tape_filename;
+};
+
 static char tape_patch_info[MAX_OUTPUT_LINESIZE];
 
 static void PrintTapeReplayProgress(boolean replay_finished)
@@ -1319,16 +1333,7 @@ static void AutoPlayTapes_WaitForUpload(void)
 
 void AutoPlayTapes(void)
 {
-  static LevelDirTree *autoplay_leveldir = NULL;
-  static boolean autoplay_initialized = FALSE;
-  static int autoplay_last_level_nr = -1;
-  static int autoplay_level_nr = -1;
-  static int num_levels_played = 0;
-  static int num_levels_solved = 0;
-  static int num_tapes_patched = 0;
-  static int num_tape_missing = 0;
-  static boolean level_failed[MAX_TAPES_PER_SET];
-  static char *tape_filename = NULL;
+  static struct AutoPlayInfo autoplay;
   static int patch_nr = 0;
   static char *patch_name[] =
   {
@@ -1364,7 +1369,7 @@ void AutoPlayTapes(void)
   };
   int i;
 
-  if (autoplay_initialized)
+  if (autoplay.initialized)
   {
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
     {
@@ -1383,7 +1388,7 @@ void AutoPlayTapes(void)
 	  SaveTapeToFilename(filename);
 
 	  tape.auto_play_level_fixed = TRUE;
-	  num_tapes_patched++;
+	  autoplay.num_tapes_patched++;
 	}
 
 	// continue with next tape
@@ -1435,13 +1440,13 @@ void AutoPlayTapes(void)
     }
 
     if (patch_nr == 0)
-      num_levels_played++;
+      autoplay.num_levels_played++;
 
     if (tape.auto_play_level_solved)
-      num_levels_solved++;
+      autoplay.num_levels_solved++;
 
     if (level_nr >= 0 && level_nr < MAX_TAPES_PER_SET)
-      level_failed[level_nr] = !tape.auto_play_level_solved;
+      autoplay.level_failed[level_nr] = !tape.auto_play_level_solved;
   }
   else
   {
@@ -1460,16 +1465,16 @@ void AutoPlayTapes(void)
 
     if (strSuffix(global.autoplay_leveldir, ".tape"))
     {
-      tape_filename = global.autoplay_leveldir;
+      autoplay.tape_filename = global.autoplay_leveldir;
 
-      LoadTapeFromFilename(tape_filename);
+      LoadTapeFromFilename(autoplay.tape_filename);
 
       if (tape.no_valid_file)
       {
-	if (!fileExists(tape_filename))
-	  Fail("tape file '%s' does not exist", tape_filename);
+	if (!fileExists(autoplay.tape_filename))
+	  Fail("tape file '%s' does not exist", autoplay.tape_filename);
 	else
-	  Fail("cannot load tape file '%s'", tape_filename);
+	  Fail("cannot load tape file '%s'", autoplay.tape_filename);
       }
 
       global.autoplay_leveldir = tape.level_identifier;
@@ -1480,20 +1485,20 @@ void AutoPlayTapes(void)
       global.autoplay_all = FALSE;
     }
 
-    autoplay_leveldir = getTreeInfoFromIdentifier(leveldir_first,
+    autoplay.leveldir = getTreeInfoFromIdentifier(leveldir_first,
 						  global.autoplay_leveldir);
 
-    if (autoplay_leveldir == NULL)
+    if (autoplay.leveldir == NULL)
       Fail("no such level identifier: '%s'", global.autoplay_leveldir);
 
-    leveldir_current = autoplay_leveldir;
+    leveldir_current = autoplay.leveldir;
 
-    if (autoplay_leveldir->first_level < 0)
-      autoplay_leveldir->first_level = 0;
-    if (autoplay_leveldir->last_level >= MAX_TAPES_PER_SET)
-      autoplay_leveldir->last_level = MAX_TAPES_PER_SET - 1;
+    if (autoplay.leveldir->first_level < 0)
+      autoplay.leveldir->first_level = 0;
+    if (autoplay.leveldir->last_level >= MAX_TAPES_PER_SET)
+      autoplay.leveldir->last_level = MAX_TAPES_PER_SET - 1;
 
-    autoplay_level_nr = autoplay_leveldir->first_level;
+    autoplay.level_nr = autoplay.leveldir->first_level;
 
     PrintLine("=", 79);
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
@@ -1503,29 +1508,29 @@ void AutoPlayTapes(void)
     else
       Print("Automatically playing level tapes\n");
     PrintLine("-", 79);
-    Print("Level series identifier: '%s'\n", autoplay_leveldir->identifier);
-    Print("Level series name:       '%s'\n", autoplay_leveldir->name);
-    Print("Level series author:     '%s'\n", autoplay_leveldir->author);
-    Print("Number of levels:        %d\n",   autoplay_leveldir->levels);
+    Print("Level series identifier: '%s'\n", autoplay.leveldir->identifier);
+    Print("Level series name:       '%s'\n", autoplay.leveldir->name);
+    Print("Level series author:     '%s'\n", autoplay.leveldir->author);
+    Print("Number of levels:        %d\n",   autoplay.leveldir->levels);
     PrintLine("=", 79);
     Print("\n");
 
     for (i = 0; i < MAX_TAPES_PER_SET; i++)
-      level_failed[i] = FALSE;
+      autoplay.level_failed[i] = FALSE;
 
     // only private tapes may be modified
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
       options.mytapes = TRUE;
 
-    autoplay_initialized = TRUE;
+    autoplay.initialized = TRUE;
   }
 
   while (1)
   {
     if (global.autoplay_mode != AUTOPLAY_MODE_FIX || patch_nr == 0)
-      level_nr = autoplay_level_nr++;
+      level_nr = autoplay.level_nr++;
 
-    if (level_nr > autoplay_leveldir->last_level)
+    if (level_nr > autoplay.leveldir->last_level)
       break;
 
     // set patch info (required for progress output)
@@ -1554,8 +1559,8 @@ void AutoPlayTapes(void)
     continue;
 #endif
 
-    if (tape_filename)
-      LoadTapeFromFilename(tape_filename);
+    if (autoplay.tape_filename)
+      LoadTapeFromFilename(autoplay.tape_filename);
     else if (options.mytapes)
       LoadTape(level_nr);
     else
@@ -1563,7 +1568,7 @@ void AutoPlayTapes(void)
 
     if (tape.no_valid_file)
     {
-      num_tape_missing++;
+      autoplay.num_tape_missing++;
 
       Print("Tape %03d: (no tape found)\n", level_nr);
 
@@ -1635,31 +1640,31 @@ void AutoPlayTapes(void)
 
       AutoPlayTapes_SetScoreEntry(0, 0);
 
-      if (tape_filename == NULL)
+      if (autoplay.tape_filename == NULL)
       {
-	tape_filename = (options.mytapes ? getTapeFilename(level_nr) :
-			 getDefaultSolutionTapeFilename(level_nr));
+	autoplay.tape_filename = (options.mytapes ? getTapeFilename(level_nr) :
+				  getDefaultSolutionTapeFilename(level_nr));
 
-	if (!fileExists(tape_filename))
+	if (!fileExists(autoplay.tape_filename))
 	{
 	  // non-standard solution tape -- save to temporary file
-	  tape_filename = getTemporaryTapeFilename();
+	  autoplay.tape_filename = getTemporaryTapeFilename();
 
-	  SaveTapeToFilename(tape_filename);
+	  SaveTapeToFilename(autoplay.tape_filename);
 
 	  use_temporary_tape_file = TRUE;
 	}
       }
 
-      SaveServerScoreFromFile(level_nr, tape_filename);
+      SaveServerScoreFromFile(level_nr, autoplay.tape_filename);
 
       AutoPlayTapes_WaitForUpload();
 
       if (use_temporary_tape_file)
-        unlink(tape_filename);
+        unlink(autoplay.tape_filename);
 
       // required for uploading multiple tapes
-      tape_filename = NULL;
+      autoplay.tape_filename = NULL;
 
       continue;
     }
@@ -1672,32 +1677,35 @@ void AutoPlayTapes(void)
     TapeStartGamePlaying();
     TapeStartWarpForward(global.autoplay_mode);
 
-    autoplay_last_level_nr = level_nr;
+    autoplay.last_level_nr = level_nr;
 
     return;
   }
 
-  char *autoplay_status = (num_levels_played == num_levels_solved &&
-			   num_levels_played > 0 ? " OK " : "WARN");
-  int autoplay_percent = (num_levels_played ?
-			  num_levels_solved * 100 / num_levels_played : 0);
+  char *autoplay_status =
+    (autoplay.num_levels_played == autoplay.num_levels_solved &&
+     autoplay.num_levels_played > 0 ? " OK " : "WARN");
+  int autoplay_percent =
+    (autoplay.num_levels_played ?
+     autoplay.num_levels_solved * 100 / autoplay.num_levels_played : 0);
 
   Print("\n");
   PrintLine("=", 79);
-  Print("Number of levels played: %d\n", num_levels_played);
-  Print("Number of levels solved: %d (%d%%)\n", num_levels_solved,
-	(num_levels_played ? num_levels_solved * 100 / num_levels_played : 0));
+  Print("Number of levels played: %d\n", autoplay.num_levels_played);
+  Print("Number of levels solved: %d (%d%%)\n", autoplay.num_levels_solved,
+	(autoplay.num_levels_played ?
+	 autoplay.num_levels_solved * 100 / autoplay.num_levels_played : 0));
   if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
-    Print("Number of tapes fixed: %d\n", num_tapes_patched);
+    Print("Number of tapes fixed: %d\n", autoplay.num_tapes_patched);
   PrintLine("-", 79);
   Print("Summary (for automatic parsing by scripts):\n");
 
-  if (tape_filename)
+  if (autoplay.tape_filename)
   {
     Print("TAPEFILE [%s] '%s', %d, %d, %d",
 	  autoplay_status,
-	  autoplay_leveldir->identifier,
-	  autoplay_last_level_nr,
+	  autoplay.leveldir->identifier,
+	  autoplay.last_level_nr,
 	  game.score_final,
 	  game.score_time_final);
   }
@@ -1705,16 +1713,16 @@ void AutoPlayTapes(void)
   {
     Print("LEVELDIR [%s] '%s', SOLVED %d/%d (%d%%)",
 	  autoplay_status,
-	  autoplay_leveldir->identifier,
-	  num_levels_solved,
-	  num_levels_played,
+	  autoplay.leveldir->identifier,
+	  autoplay.num_levels_solved,
+	  autoplay.num_levels_played,
 	  autoplay_percent);
 
-    if (num_levels_played != num_levels_solved)
+    if (autoplay.num_levels_played != autoplay.num_levels_solved)
     {
       Print(", FAILED:");
       for (i = 0; i < MAX_TAPES_PER_SET; i++)
-	if (level_failed[i])
+	if (autoplay.level_failed[i])
 	  Print(" %03d", i);
     }
   }
