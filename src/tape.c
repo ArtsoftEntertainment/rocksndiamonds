@@ -474,7 +474,6 @@ void TapeDeactivateDisplayOff(boolean redraw_display)
 struct AutoPlayInfo
 {
   LevelDirTree *leveldir;
-  boolean initialized;
   boolean all_levelsets;
   int last_level_nr;
   int level_nr;
@@ -1404,7 +1403,7 @@ static void AutoPlayTapes_WaitForUpload(void)
   Print("- uploading score tape to score server - uploaded.\n");
 }
 
-void AutoPlayTapes(void)
+static void AutoPlayTapesExt(boolean initialize)
 {
   static struct AutoPlayInfo autoplay;
   static int patch_nr = 0;
@@ -1443,7 +1442,7 @@ void AutoPlayTapes(void)
   boolean init_level_set = FALSE;
   int i;
 
-  if (autoplay.initialized)
+  if (!initialize)
   {
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
     {
@@ -1578,7 +1577,6 @@ void AutoPlayTapes(void)
       // auto-play selected level set
       autoplay.leveldir = getTreeInfoFromIdentifier(leveldir_first,
 						    global.autoplay_leveldir);
-
     }
 
     if (autoplay.leveldir == NULL)
@@ -1589,8 +1587,6 @@ void AutoPlayTapes(void)
       options.mytapes = TRUE;
 
     init_level_set = TRUE;
-
-    autoplay.initialized = TRUE;
   }
 
   while (1)
@@ -1793,6 +1789,16 @@ void AutoPlayTapes(void)
   }
 
   CloseAllAndExit(0);
+}
+
+void AutoPlayTapes(void)
+{
+  AutoPlayTapesExt(TRUE);
+}
+
+void AutoPlayTapesContinue(void)
+{
+  AutoPlayTapesExt(FALSE);
 }
 
 

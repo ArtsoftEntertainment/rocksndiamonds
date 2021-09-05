@@ -9034,10 +9034,10 @@ void HandleGameActions(void)
   if (game_status != GAME_MODE_PLAYING)
     return;
 
-  GameActions();	// main game loop
+  GameActions();		// main game loop
 
   if (tape.auto_play && !tape.playing)
-    AutoPlayTapes();	// continue automatically playing next tape
+    AutoPlayTapesContinue();	// continue automatically playing next tape
 }
 
 
