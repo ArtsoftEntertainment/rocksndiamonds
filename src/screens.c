@@ -9829,7 +9829,7 @@ void DrawScreenAfterAddingSet(char *tree_subdir_new, int tree_type)
   }
 }
 
-static void UploadTapes(void)
+static int UploadTapes(void)
 {
   SetGameStatus(GAME_MODE_LOADING);
 
@@ -9846,7 +9846,7 @@ static void UploadTapes(void)
   global.autoplay_leveldir = "ALL";
   global.autoplay_all = TRUE;
 
-  AutoPlayTapes();
+  int num_tapes_uploaded = AutoPlayTapes();
 
   global.autoplay_mode = AUTOPLAY_MODE_NONE;
   global.autoplay_leveldir = NULL;
@@ -9855,6 +9855,8 @@ static void UploadTapes(void)
   SetGameStatus(GAME_MODE_MAIN);
 
   DrawMainMenu();
+
+  return num_tapes_uploaded;
 }
 
 void CheckUploadTapes(void)
@@ -9866,9 +9868,12 @@ void CheckUploadTapes(void)
   {
     if (Request("Upload all your tapes to the high score server now?", REQ_ASK))
     {
-      UploadTapes();
+      int num_tapes_uploaded = UploadTapes();
+      char message[100];
 
-      Request("All tapes uploaded!", REQ_CONFIRM);
+      sprintf(message, "%d tapes uploaded!", num_tapes_uploaded);
+
+      Request(message, REQ_CONFIRM);
     }
     else
     {

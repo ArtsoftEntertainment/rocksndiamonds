@@ -1427,9 +1427,10 @@ static void AutoPlayTapes_WaitForUpload(void)
   Print("- uploading score tape to score server - uploaded.\n");
 }
 
-static void AutoPlayTapesExt(boolean initialize)
+static int AutoPlayTapesExt(boolean initialize)
 {
   static struct AutoPlayInfo autoplay;
+  static int num_tapes = 0;
   static int patch_nr = 0;
   static char *patch_name[] =
   {
@@ -1614,6 +1615,8 @@ static void AutoPlayTapesExt(boolean initialize)
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
       options.mytapes = TRUE;
 
+    num_tapes = 0;
+
     init_level_set = TRUE;
   }
 
@@ -1768,6 +1771,8 @@ static void AutoPlayTapesExt(boolean initialize)
       }
     }
 
+    num_tapes++;
+
     if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
     {
       boolean use_temporary_tape_file = FALSE;
@@ -1815,21 +1820,23 @@ static void AutoPlayTapesExt(boolean initialize)
 
     autoplay.last_level_nr = level_nr;
 
-    return;
+    return num_tapes;
   }
 
   if (program.headless)
     CloseAllAndExit(0);
+
+  return num_tapes;
 }
 
-void AutoPlayTapes(void)
+int AutoPlayTapes(void)
 {
-  AutoPlayTapesExt(TRUE);
+  return AutoPlayTapesExt(TRUE);
 }
 
-void AutoPlayTapesContinue(void)
+int AutoPlayTapesContinue(void)
 {
-  AutoPlayTapesExt(FALSE);
+  return AutoPlayTapesExt(FALSE);
 }
 
 
