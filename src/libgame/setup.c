@@ -1523,7 +1523,8 @@ int dumpTreeInfo(TreeInfo *node, int depth)
     DebugContinued("tree", "%c '%s' ['%s] [PARENT: '%s'] %s\n",
 		   bullet, node->name, node->identifier,
 		   (node->node_parent ? node->node_parent->identifier : "-"),
-		   (node->node_group ? "[GROUP]" : ""));
+		   (node->node_group ? "[GROUP]" :
+		    node->is_copy ? "[COPY]" : ""));
 
     if (!node->node_group && !node->parent_link)
       num_leaf_nodes++;
