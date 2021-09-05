@@ -159,6 +159,16 @@ void DrawInitText(char *text, int ypos, int font_nr)
   }
 }
 
+void DrawInitTextHead(char *text)
+{
+  DrawInitText(text, 120, FC_GREEN);
+}
+
+void DrawInitTextItem(char *text)
+{
+  DrawInitText(text, 150, FC_YELLOW);
+}
+
 void DrawTextF(int x, int y, int font_nr, char *format, ...)
 {
   char buffer[MAX_OUTPUT_LINESIZE + 1];

@@ -619,7 +619,7 @@ static void LoadCustomMusic_NoConf(void)
   }
 
   if (draw_init_text)
-    DrawInitText("Loading music", 120, FC_GREEN);
+    DrawInitTextHead("Loading music");
 
   while ((dir_entry = readDirectory(dir)) != NULL)	// loop all entries
   {
@@ -644,7 +644,7 @@ static void LoadCustomMusic_NoConf(void)
       continue;
 
     if (draw_init_text)
-      DrawInitText(basename, 150, FC_YELLOW);
+      DrawInitTextItem(basename);
 
     if (FileIsMusic(dir_entry->filename))
       mus_info = Load_WAV_or_MOD(dir_entry->filename);

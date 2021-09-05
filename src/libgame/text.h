@@ -92,6 +92,8 @@ void getFontCharSource(int, char, Bitmap **, int *, int *);
 int maxWordLengthInRequestString(char *);
 
 void DrawInitText(char *, int, int);
+void DrawInitTextHead(char *);
+void DrawInitTextItem(char *);
 
 void DrawTextF(int, int, int, char *, ...);
 void DrawTextFCentered(int, int, char *, ...);

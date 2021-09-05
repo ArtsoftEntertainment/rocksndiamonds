@@ -5530,7 +5530,7 @@ static void InitGfx(void)
 
   DrawProgramInfo();
 
-  DrawInitText("Loading graphics", 120, FC_GREEN);
+  DrawInitTextHead("Loading graphics");
 
   // initialize settings for busy animation with default values
   int parameter[NUM_GFX_ARGS];

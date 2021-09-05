@@ -3598,7 +3598,7 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
     (leveldir_new->user_defined || !leveldir_new->handicap ?
      leveldir_new->last_level : leveldir_new->first_level);
 
-  DrawInitText(leveldir_new->name, 150, FC_YELLOW);
+  DrawInitTextItem(leveldir_new->name);
 
   pushTreeInfo(node_first, leveldir_new);
 
@@ -3714,7 +3714,7 @@ void LoadLevelInfo(void)
 {
   InitUserLevelDirectory(getLoginName());
 
-  DrawInitText("Loading level series", 120, FC_GREEN);
+  DrawInitTextHead("Loading level series");
 
   LoadLevelInfoFromLevelDir(&leveldir_first, NULL, options.level_directory);
   LoadLevelInfoFromLevelDir(&leveldir_first, NULL, getUserLevelDir(NULL));
@@ -3987,7 +3987,7 @@ void LoadArtworkInfo(void)
 {
   LoadArtworkInfoCache();
 
-  DrawInitText("Looking for custom artwork", 120, FC_GREEN);
+  DrawInitTextHead("Looking for custom artwork");
 
   LoadArtworkInfoFromArtworkDir(&artwork.gfx_first, NULL,
 				options.graphics_directory,
@@ -4122,7 +4122,7 @@ static void LoadArtworkInfoFromLevelInfoExt(ArtworkDirTree **artwork_node,
 	setArtworkInfoCacheEntry(artwork_new, level_node, type);
     }
 
-    DrawInitText(level_node->name, 150, FC_YELLOW);
+    DrawInitTextItem(level_node->name);
 
     if (level_node->node_group != NULL)
     {
@@ -4191,7 +4191,7 @@ void LoadLevelArtworkInfo(void)
 {
   print_timestamp_init("LoadLevelArtworkInfo");
 
-  DrawInitText("Looking for custom level artwork", 120, FC_GREEN);
+  DrawInitTextHead("Looking for custom level artwork");
 
   print_timestamp_time("DrawTimeText");
 

@@ -3780,8 +3780,8 @@ void LoadArtworkConfig(struct ArtworkListInfo *artwork_info)
   char *filename_base = UNDEFINED_FILENAME, *filename_local;
   int i, j;
 
-  DrawInitText("Loading artwork config", 120, FC_GREEN);
-  DrawInitText(ARTWORKINFO_FILENAME(artwork_info->type), 150, FC_YELLOW);
+  DrawInitTextHead("Loading artwork config");
+  DrawInitTextItem(ARTWORKINFO_FILENAME(artwork_info->type));
 
   // always start with reliable default values
   for (i = 0; i < num_file_list_entries; i++)
@@ -3939,8 +3939,8 @@ static void replaceArtworkListEntry(struct ArtworkListInfo *artwork_info,
       return;
   }
 
-  DrawInitText(init_text[artwork_info->type], 120, FC_GREEN);
-  DrawInitText(basename, 150, FC_YELLOW);
+  DrawInitTextHead(init_text[artwork_info->type]);
+  DrawInitTextItem(basename);
 
   if ((*listnode = artwork_info->load_artwork(filename)) != NULL)
   {
