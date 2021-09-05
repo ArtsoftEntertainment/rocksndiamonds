@@ -138,10 +138,6 @@ int maxWordLengthInRequestString(char *text)
 
 void DrawInitText(char *text, int ypos, int font_nr)
 {
-  LimitScreenUpdates(TRUE);
-
-  UPDATE_BUSY_STATE();
-
   if (window != NULL &&
       gfx.draw_init_text &&
       gfx.num_fonts > 0 &&
@@ -161,11 +157,21 @@ void DrawInitText(char *text, int ypos, int font_nr)
 
 void DrawInitTextHead(char *text)
 {
+  // always draw headlines when loading initial stuff
+  LimitScreenUpdates(FALSE);
+
+  UPDATE_BUSY_STATE();
+
   DrawInitText(text, 120, FC_GREEN);
 }
 
 void DrawInitTextItem(char *text)
 {
+  // limit drawing (potentially many) loading items
+  LimitScreenUpdates(TRUE);
+
+  UPDATE_BUSY_STATE();
+
   DrawInitText(text, 150, FC_YELLOW);
 }
 
