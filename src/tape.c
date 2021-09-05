@@ -505,6 +505,8 @@ static void PrintTapeReplayHeader(struct AutoPlayInfo *autoplay)
   Print("Number of levels:        %d\n",   autoplay->leveldir->levels);
   PrintLine("=", 79);
   Print("\n");
+
+  DrawInitTextItem(autoplay->leveldir->name);
 }
 
 static void PrintTapeReplayProgress(boolean replay_finished)
@@ -1357,6 +1359,26 @@ void FixTape_ForceSinglePlayer(void)
 // tape autoplay functions
 // ----------------------------------------------------------------------------
 
+static TreeInfo *getNextValidAutoPlayEntry(TreeInfo *node)
+{
+  node = getNextValidTreeInfoEntry(node);
+
+  while (node && node->is_copy)
+    node = getNextValidTreeInfoEntry(node);
+
+  return node;
+}
+
+static TreeInfo *getFirstValidAutoPlayEntry(TreeInfo *node)
+{
+  node = getFirstValidTreeInfoEntry(node);
+
+  if (node && node->is_copy)
+    return getNextValidAutoPlayEntry(node);
+
+  return node;
+}
+
 static void AutoPlayTapes_SetScoreEntry(int score, int time)
 {
   // set unique basename for score tape (for uploading to score server)
@@ -1395,6 +1417,8 @@ static void AutoPlayTapes_WaitForUpload(void)
 
       Fail("cannot upload score tape to score server");
     }
+
+    UPDATE_BUSY_STATE();
 
     Delay(20);
   }
@@ -1540,10 +1564,14 @@ static void AutoPlayTapesExt(boolean initialize)
       Fail("specify player name when uploading solution tapes");
     }
 
-    DrawCompleteVideoDisplay();
+    if (global.autoplay_mode != AUTOPLAY_MODE_UPLOAD)
+      DrawCompleteVideoDisplay();
 
-    audio.sound_enabled = FALSE;
-    setup.engine_snapshot_mode = getStringCopy(STR_SNAPSHOT_MODE_OFF);
+    if (program.headless)
+    {
+      audio.sound_enabled = FALSE;
+      setup.engine_snapshot_mode = getStringCopy(STR_SNAPSHOT_MODE_OFF);
+    }
 
     if (strSuffix(global.autoplay_leveldir, ".tape"))
     {
@@ -1570,7 +1598,7 @@ static void AutoPlayTapesExt(boolean initialize)
     if (autoplay.all_levelsets)
     {
       // start auto-playing first level set
-      autoplay.leveldir = getFirstValidTreeInfoEntry(leveldir_first);
+      autoplay.leveldir = getFirstValidAutoPlayEntry(leveldir_first);
     }
     else
     {
@@ -1618,6 +1646,8 @@ static void AutoPlayTapesExt(boolean initialize)
     if (global.autoplay_mode != AUTOPLAY_MODE_FIX || patch_nr == 0)
       level_nr = autoplay.level_nr++;
 
+    UPDATE_BUSY_STATE();
+
     // check if all tapes for this level set have been processed
     if (level_nr > autoplay.leveldir->last_level)
     {
@@ -1627,7 +1657,7 @@ static void AutoPlayTapesExt(boolean initialize)
 	break;
 
       // continue with next level set
-      autoplay.leveldir = getNextValidTreeInfoEntry(autoplay.leveldir);
+      autoplay.leveldir = getNextValidAutoPlayEntry(autoplay.leveldir);
 
       // all level sets processed
       if (autoplay.leveldir == NULL)
@@ -1788,7 +1818,8 @@ static void AutoPlayTapesExt(boolean initialize)
     return;
   }
 
-  CloseAllAndExit(0);
+  if (program.headless)
+    CloseAllAndExit(0);
 }
 
 void AutoPlayTapes(void)

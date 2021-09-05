@@ -6333,6 +6333,8 @@ void OpenAll(void)
 
   DrawMainMenu();
 
+  CheckUploadTapes();
+
 #if 0
   Debug("internal:path", "SDL_GetBasePath() == '%s'",
 	SDL_GetBasePath());

@@ -9828,3 +9828,55 @@ void DrawScreenAfterAddingSet(char *tree_subdir_new, int tree_type)
     }
   }
 }
+
+static void UploadTapes(void)
+{
+  SetGameStatus(GAME_MODE_LOADING);
+
+  FadeSetEnterScreen();
+  FadeOut(REDRAW_ALL);
+
+  ClearRectangle(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
+
+  FadeIn(REDRAW_ALL);
+
+  DrawInitTextHead("Uploading tapes");
+
+  global.autoplay_mode = AUTOPLAY_MODE_UPLOAD;
+  global.autoplay_leveldir = "ALL";
+  global.autoplay_all = TRUE;
+
+  AutoPlayTapes();
+
+  global.autoplay_mode = AUTOPLAY_MODE_NONE;
+  global.autoplay_leveldir = NULL;
+  global.autoplay_all = FALSE;
+
+  SetGameStatus(GAME_MODE_MAIN);
+
+  DrawMainMenu();
+}
+
+void CheckUploadTapes(void)
+{
+  if (!setup.ask_for_uploading_tapes)
+    return;
+
+  if (directoryExists(getTapeDir(NULL)))
+  {
+    if (Request("Upload all your tapes to the high score server now?", REQ_ASK))
+    {
+      UploadTapes();
+
+      Request("All tapes uploaded!", REQ_CONFIRM);
+    }
+    else
+    {
+      Request("You can upload your tapes from the setup menu later!", REQ_CONFIRM);
+    }
+  }
+
+  setup.ask_for_uploading_tapes = FALSE;
+
+  SaveSetup();
+}

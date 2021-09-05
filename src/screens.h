@@ -47,4 +47,6 @@ void setHideRelatedSetupEntries(void);
 void DumpScreenIdentifiers(void);
 boolean DoScreenAction(int);
 
+void CheckUploadTapes(void);
+
 #endif	// SCREENS_H
