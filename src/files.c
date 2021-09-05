@@ -9769,6 +9769,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.api_server_password,			"api_server_password"
   },
   {
+    TYPE_SWITCH,
+    &setup.ask_for_uploading_tapes,		"ask_for_uploading_tapes"
+  },
+  {
     TYPE_STRING,
     &setup.touch.control_type,			"touch.control_type"
   },
@@ -10407,6 +10411,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->api_server = TRUE;
   si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
   si->api_server_password = getStringCopy(UNDEFINED_PASSWORD);
+  si->ask_for_uploading_tapes = TRUE;
 
   si->touch.control_type = getStringCopy(TOUCH_CONTROL_DEFAULT);
   si->touch.move_distance = TOUCH_MOVE_DISTANCE_DEFAULT;	// percent

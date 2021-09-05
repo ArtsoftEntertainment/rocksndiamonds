@@ -1500,6 +1500,7 @@ struct SetupInfo
   boolean api_server;
   char *api_server_hostname;
   char *api_server_password;
+  boolean ask_for_uploading_tapes;
 
   struct SetupAutoSetupInfo auto_setup;
   struct SetupLevelSetupInfo level_setup;
