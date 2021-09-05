@@ -279,7 +279,7 @@ char *getNewUserLevelSubdir(void)
   return new_level_subdir;
 }
 
-static char *getTapeDir(char *level_subdir)
+char *getTapeDir(char *level_subdir)
 {
   static char *tape_dir = NULL;
   char *data_dir = getUserGameDataDir();

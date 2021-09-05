@@ -327,6 +327,7 @@ char *getUserLevelDir(char *);
 char *getNetworkLevelDir(char *);
 char *getCurrentLevelDir(void);
 char *getNewUserLevelSubdir(void);
+char *getTapeDir(char *);
 
 void createDirectory(char *, char *, int);
 void InitMainUserDataDirectory(void);
