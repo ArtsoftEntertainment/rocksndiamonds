@@ -9879,11 +9879,20 @@ static boolean OfferUploadTapes(void)
 
   Request(message, REQ_CONFIRM);
 
+  // after all tapes have been uploaded, remove entry from setup menu
+  setup.provide_uploading_tapes = FALSE;
+  setHideSetupEntry(execOfferUploadTapes);
+
+  SaveSetup();
+
   return (num_tapes_uploaded > 0);
 }
 
 void CheckUploadTapes(void)
 {
+  if (!setup.provide_uploading_tapes)
+    setHideSetupEntry(execOfferUploadTapes);
+
   if (!setup.ask_for_uploading_tapes)
     return;
 
@@ -9895,7 +9904,14 @@ void CheckUploadTapes(void)
       Request("You can upload your tapes from the setup menu later!",
 	      REQ_CONFIRM);
   }
+  else
+  {
+    // if tapes directory does not exist yet, never offer uploading all tapes
+    setup.provide_uploading_tapes = FALSE;
+    setHideSetupEntry(execOfferUploadTapes);
+  }
 
+  // after asking for uploading all tapes once, do not ask again
   setup.ask_for_uploading_tapes = FALSE;
 
   SaveSetup();
