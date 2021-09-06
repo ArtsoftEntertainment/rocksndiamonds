@@ -6875,7 +6875,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_PLAYER,	&setup.network_player_nr,"Preferred Network Player:" },
   { TYPE_TEXT_INPUT,	execGadgetNetworkServer, "Network Server Hostname:" },
   { TYPE_STRING,	&network_server_text,	""			},
-  { TYPE_SWITCH,	&setup.api_server,	"Use Highscore Server:"	},
+  { TYPE_SWITCH,	&setup.use_api_server,	"Use Highscore Server:"	},
   { TYPE_SWITCH,	&setup.only_show_local_scores, "Only Show Local Scores:" },
   { TYPE_ENTER_LIST,	execOfferUploadTapes,	"Upload All Tapes to Server" },
   { TYPE_SWITCH,	&setup.multiple_users,	"Multiple Users/Teams:"	},
@@ -7481,8 +7481,8 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
     ToggleNetworkModeIfNeeded();
 
   // API server mode may have changed at this point
-  if (si->value == &setup.api_server)
-    runtime.api_server = setup.api_server;
+  if (si->value == &setup.use_api_server)
+    runtime.use_api_server = setup.use_api_server;
 
   // game speed list may have changed at this point
   if (si->value == &setup.game_speed_extended)

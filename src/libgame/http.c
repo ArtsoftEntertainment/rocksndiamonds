@@ -290,7 +290,7 @@ boolean DoHttpRequest(struct HttpRequest *request,
   checked_free(send_buffer);
   checked_free(recv_buffer);
 
-  runtime.api_server = success;
+  runtime.use_api_server = success;
 
   return success;
 }

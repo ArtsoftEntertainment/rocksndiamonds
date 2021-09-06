@@ -9245,7 +9245,7 @@ static void LoadServerScoreFromCache(int nr)
 
 void LoadServerScore(int nr, boolean download_score)
 {
-  if (!setup.api_server)
+  if (!setup.use_api_server)
     return;
 
   // always start with reliable default values
@@ -9255,7 +9255,7 @@ void LoadServerScore(int nr, boolean download_score)
   // (this should prevent reading it while the thread is writing to it)
   LoadServerScoreFromCache(nr);
 
-  if (download_score && runtime.api_server)
+  if (download_score && runtime.use_api_server)
   {
     // 2nd step: download server scores from score server to cache file
     // (as thread, as it might time out if the server is not reachable)
@@ -9477,7 +9477,7 @@ static void UploadScoreToServerAsThread(int nr, char *score_tape_filename)
 
 void SaveServerScore(int nr)
 {
-  if (!runtime.api_server)
+  if (!runtime.use_api_server)
     return;
 
   UploadScoreToServerAsThread(nr, NULL);
@@ -9485,7 +9485,7 @@ void SaveServerScore(int nr)
 
 void SaveServerScoreFromFile(int nr, char *score_tape_filename)
 {
-  if (!runtime.api_server)
+  if (!runtime.use_api_server)
     return;
 
   UploadScoreToServerAsThread(nr, score_tape_filename);
@@ -9500,7 +9500,7 @@ void LoadLocalAndServerScore(int nr, boolean download_score)
   // restore last added local score entry (before merging server scores)
   scores.last_added = scores.last_added_local = last_added_local;
 
-  if (setup.api_server && !setup.only_show_local_scores)
+  if (setup.use_api_server && !setup.only_show_local_scores)
   {
     // load server scores from cache file and trigger update from server
     LoadServerScore(nr, download_score);
@@ -9758,7 +9758,7 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
-    &setup.api_server,				"api_server"
+    &setup.use_api_server,			"use_api_server"
   },
   {
     TYPE_STRING,
@@ -10412,7 +10412,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->network_player_nr = 0;		// first player
   si->network_server_hostname = getStringCopy(STR_NETWORK_AUTO_DETECT);
 
-  si->api_server = TRUE;
+  si->use_api_server = TRUE;
   si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
   si->api_server_password = getStringCopy(UNDEFINED_PASSWORD);
   si->ask_for_uploading_tapes = TRUE;
@@ -11041,7 +11041,7 @@ void SaveSetup(void)
 	global_setup_tokens[i].value == &setup.graphics_set		||
 	global_setup_tokens[i].value == &setup.volume_simple		||
 	global_setup_tokens[i].value == &setup.network_mode		||
-	global_setup_tokens[i].value == &setup.api_server		||
+	global_setup_tokens[i].value == &setup.use_api_server		||
 	global_setup_tokens[i].value == &setup.touch.control_type	||
 	global_setup_tokens[i].value == &setup.touch.grid_xsize[0]	||
 	global_setup_tokens[i].value == &setup.touch.grid_xsize[1])

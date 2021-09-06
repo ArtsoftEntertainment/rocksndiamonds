@@ -128,7 +128,7 @@ void InitRuntimeInfo()
   runtime.uses_touch_device = FALSE;
 #endif
 
-  runtime.api_server = setup.api_server;
+  runtime.use_api_server = setup.use_api_server;
 }
 
 void SetWindowTitle(void)

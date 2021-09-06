@@ -1034,7 +1034,7 @@ struct RuntimeInfo
 {
   boolean uses_touch_device;
 
-  boolean api_server;
+  boolean use_api_server;
 };
 
 struct OptionInfo
@@ -1497,7 +1497,7 @@ struct SetupInfo
   int network_player_nr;
   char *network_server_hostname;
 
-  boolean api_server;
+  boolean use_api_server;
   char *api_server_hostname;
   char *api_server_password;
   boolean ask_for_uploading_tapes;
