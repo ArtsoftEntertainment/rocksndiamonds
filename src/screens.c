@@ -282,6 +282,8 @@ static void MapScreenTreeGadgets(TreeInfo *);
 
 static void UpdateScreenMenuGadgets(int, boolean);
 
+static boolean OfferUploadTapes(void);
+
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 
 static int info_mode = INFO_MODE_MAIN;
@@ -6651,6 +6653,11 @@ static void execGadgetNetworkServer(void)
   ClickOnGadget(gi, MB_LEFTBUTTON);
 }
 
+static void execOfferUploadTapes(void)
+{
+  OfferUploadTapes();
+}
+
 static void ToggleNetworkModeIfNeeded(void)
 {
   int font_title = FONT_TITLE_1;
@@ -6870,6 +6877,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_STRING,	&network_server_text,	""			},
   { TYPE_SWITCH,	&setup.api_server,	"Use Highscore Server:"	},
   { TYPE_SWITCH,	&setup.only_show_local_scores, "Only Show Local Scores:" },
+  { TYPE_ENTER_LIST,	execOfferUploadTapes,	"Upload All Tapes to Server" },
   { TYPE_SWITCH,	&setup.multiple_users,	"Multiple Users/Teams:"	},
   { TYPE_YES_NO,	&setup.input_on_focus,	"Only Move Focussed Player:" },
   { TYPE_SWITCH,	&setup.time_limit,	"Time Limit:"		},
@@ -9859,6 +9867,21 @@ static int UploadTapes(void)
   return num_tapes_uploaded;
 }
 
+static boolean OfferUploadTapes(void)
+{
+  if (!Request("Upload all your tapes to the high score server now?", REQ_ASK))
+    return FALSE;
+
+  int num_tapes_uploaded = UploadTapes();
+  char message[100];
+
+  sprintf(message, "%d tapes uploaded!", num_tapes_uploaded);
+
+  Request(message, REQ_CONFIRM);
+
+  return (num_tapes_uploaded > 0);
+}
+
 void CheckUploadTapes(void)
 {
   if (!setup.ask_for_uploading_tapes)
@@ -9866,19 +9889,11 @@ void CheckUploadTapes(void)
 
   if (directoryExists(getTapeDir(NULL)))
   {
-    if (Request("Upload all your tapes to the high score server now?", REQ_ASK))
-    {
-      int num_tapes_uploaded = UploadTapes();
-      char message[100];
+    boolean tapes_uploaded = OfferUploadTapes();
 
-      sprintf(message, "%d tapes uploaded!", num_tapes_uploaded);
-
-      Request(message, REQ_CONFIRM);
-    }
-    else
-    {
-      Request("You can upload your tapes from the setup menu later!", REQ_CONFIRM);
-    }
+    if (!tapes_uploaded)
+      Request("You can upload your tapes from the setup menu later!",
+	      REQ_CONFIRM);
   }
 
   setup.ask_for_uploading_tapes = FALSE;
