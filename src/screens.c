@@ -283,6 +283,7 @@ static void MapScreenTreeGadgets(TreeInfo *);
 static void UpdateScreenMenuGadgets(int, boolean);
 
 static boolean OfferUploadTapes(void);
+static void execOfferUploadTapes(void);
 
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 
@@ -5568,6 +5569,9 @@ static void execSetupGame(void)
 
   execSetupGame_setNetworkServerText();
 
+  if (!setup.provide_uploading_tapes)
+    setHideSetupEntry(execOfferUploadTapes);
+
   setup_mode = SETUP_MODE_GAME;
 
   DrawSetupScreen();
@@ -9881,7 +9885,6 @@ static boolean OfferUploadTapes(void)
 
   // after all tapes have been uploaded, remove entry from setup menu
   setup.provide_uploading_tapes = FALSE;
-  setHideSetupEntry(execOfferUploadTapes);
 
   SaveSetup();
 
@@ -9890,9 +9893,6 @@ static boolean OfferUploadTapes(void)
 
 void CheckUploadTapes(void)
 {
-  if (!setup.provide_uploading_tapes)
-    setHideSetupEntry(execOfferUploadTapes);
-
   if (!setup.ask_for_uploading_tapes)
     return;
 
@@ -9908,7 +9908,6 @@ void CheckUploadTapes(void)
   {
     // if tapes directory does not exist yet, never offer uploading all tapes
     setup.provide_uploading_tapes = FALSE;
-    setHideSetupEntry(execOfferUploadTapes);
   }
 
   // after asking for uploading all tapes once, do not ask again
