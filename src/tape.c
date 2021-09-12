@@ -1615,6 +1615,9 @@ static int AutoPlayTapesExt(boolean initialize)
     if (global.autoplay_mode == AUTOPLAY_MODE_FIX)
       options.mytapes = TRUE;
 
+    // set timestamp for batch tape upload
+    global.autoplay_time = time(NULL);
+
     num_tapes = 0;
 
     init_level_set = TRUE;
@@ -1822,6 +1825,9 @@ static int AutoPlayTapesExt(boolean initialize)
 
     return num_tapes;
   }
+
+  // clear timestamp for batch tape upload (required after interactive upload)
+  global.autoplay_time = 0;
 
   if (program.headless)
     CloseAllAndExit(0);

@@ -9358,6 +9358,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "{\n"
 	   "%s"
 	   "  \"game_version\":         \"%s\",\n"
+	   "  \"batch_time\":           \"%d\",\n"
 	   "  \"levelset_identifier\":  \"%s\",\n"
 	   "  \"levelset_name\":        \"%s\",\n"
 	   "  \"levelset_author\":      \"%s\",\n"
@@ -9376,6 +9377,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
 	   getProgramRealVersionString(),
+	   (int)global.autoplay_time,
 	   levelset_identifier,
 	   levelset_name,
 	   levelset_author,

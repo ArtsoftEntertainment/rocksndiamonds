@@ -3270,6 +3270,7 @@ struct GlobalInfo
   int autoplay_level[MAX_TAPES_PER_SET];
   int autoplay_mode;
   boolean autoplay_all;
+  time_t autoplay_time;
 
   char *patchtapes_mode;
   char *patchtapes_leveldir;
