@@ -1529,6 +1529,7 @@ static int AutoPlayTapesExt(boolean initialize)
 
       // save score tape to upload to server; may be required for some reasons:
       // * level set identifier in solution tapes may differ from level set
+      // * level set identifier is missing (old-style tape without INFO chunk)
       // * solution tape may have native format (like Supaplex solution files)
 
       SaveScoreTape(level_nr);
@@ -1789,9 +1790,21 @@ static int AutoPlayTapesExt(boolean initialize)
 	autoplay.tape_filename = (options.mytapes ? getTapeFilename(level_nr) :
 				  getDefaultSolutionTapeFilename(level_nr));
 
-	if (!fileExists(autoplay.tape_filename))
+	boolean correct_info_chunk =
+	  (strEqual(leveldir_current->identifier, tape.level_identifier) &&
+	   level_nr == tape.level_nr);
+
+	if (!correct_info_chunk)
 	{
-	  // non-standard solution tape -- save to temporary file
+	  strncpy(tape.level_identifier, leveldir_current->identifier,
+		  MAX_FILENAME_LEN);
+	  tape.level_identifier[MAX_FILENAME_LEN] = '\0';
+	  tape.level_nr = level_nr;
+	}
+
+	if (!fileExists(autoplay.tape_filename) || !correct_info_chunk)
+	{
+	  // non-standard or incorrect solution tape -- save to temporary file
 	  autoplay.tape_filename = getTemporaryTapeFilename();
 
 	  SaveTapeToFilename(autoplay.tape_filename);
