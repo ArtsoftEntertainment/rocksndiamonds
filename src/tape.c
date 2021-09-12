@@ -1579,15 +1579,13 @@ static int AutoPlayTapesExt(boolean initialize)
     {
       autoplay.tape_filename = global.autoplay_leveldir;
 
+      if (!fileExists(autoplay.tape_filename))
+	Fail("tape file '%s' does not exist", autoplay.tape_filename);
+
       LoadTapeFromFilename(autoplay.tape_filename);
 
       if (tape.no_valid_file)
-      {
-	if (!fileExists(autoplay.tape_filename))
-	  Fail("tape file '%s' does not exist", autoplay.tape_filename);
-	else
-	  Fail("cannot load tape file '%s'", autoplay.tape_filename);
-      }
+	Fail("cannot load tape file '%s'", autoplay.tape_filename);
 
       if (tape.no_info_chunk)
 	Fail("cannot get levelset from tape file '%s'", autoplay.tape_filename);
