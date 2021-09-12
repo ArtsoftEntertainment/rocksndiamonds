@@ -1589,6 +1589,9 @@ static int AutoPlayTapesExt(boolean initialize)
 	  Fail("cannot load tape file '%s'", autoplay.tape_filename);
       }
 
+      if (tape.no_info_chunk)
+	Fail("cannot get levelset from tape file '%s'", autoplay.tape_filename);
+
       global.autoplay_leveldir = tape.level_identifier;
 
       if (tape.level_nr >= 0 && tape.level_nr < MAX_TAPES_PER_SET)

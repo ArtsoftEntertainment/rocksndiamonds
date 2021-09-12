@@ -7763,6 +7763,7 @@ static void setTapeInfoToDefaults(void)
   tape.scr_fieldx = SCR_FIELDX_DEFAULT;
   tape.scr_fieldy = SCR_FIELDY_DEFAULT;
 
+  tape.no_info_chunk = TRUE;
   tape.no_valid_file = FALSE;
 }
 
@@ -7866,6 +7867,8 @@ static int LoadTape_INFO(File *file, int chunk_size, struct TapeInfo *tape)
   char *level_identifier = NULL;
   int level_identifier_size;
   int i;
+
+  tape->no_info_chunk = FALSE;
 
   level_identifier_size = getFile16BitBE(file);
 

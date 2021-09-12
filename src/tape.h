@@ -239,6 +239,7 @@ struct TapeInfo
 
   boolean show_game_buttons;	// show game buttons in tape viewport
 
+  boolean no_info_chunk;	// used to identify old tape file format
   boolean no_valid_file;	// set when tape file missing or invalid
 };
 
