@@ -113,6 +113,14 @@
 #define API_SERVER_URI_GET		"/api/scores/get"
 #define API_SERVER_URI_RENAME		"/api/players/rename"
 
+#if defined(TESTING)
+#undef API_SERVER_HOSTNAME
+#define API_SERVER_HOSTNAME		"api-test.artsoft.org"
+#define TEST_PREFIX			"test."
+#else
+#define TEST_PREFIX			""
+#endif
+
 // values for touch control
 #define TOUCH_CONTROL_OFF		"off"
 #define TOUCH_CONTROL_VIRTUAL_BUTTONS	"virtual_buttons"

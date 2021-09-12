@@ -133,6 +133,10 @@ OPTIONS = $(DEBUG) -Wall -Wstrict-prototypes -Wmissing-prototypes
 # OPTIONS = -O2 -Wall
 # OPTIONS = -O2
 
+ifdef BUILD_TEST			# test build
+OPTIONS := $(OPTIONS) -DTESTING
+endif
+
 ifdef BUILD_DIST			# distribution build
 SYS_LDFLAGS := $(shell echo $(SYS_LDFLAGS) |	\
 		       sed -e "s%-rpath,[^ ]*%-rpath,'\$$ORIGIN/lib'%")
