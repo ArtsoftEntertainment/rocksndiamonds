@@ -1792,7 +1792,8 @@ static int AutoPlayTapesExt(boolean initialize)
 				  getDefaultSolutionTapeFilename(level_nr));
 
 	boolean correct_info_chunk =
-	  (strEqual(leveldir_current->identifier, tape.level_identifier) &&
+	  (!tape.no_info_chunk &&
+	   strEqual(leveldir_current->identifier, tape.level_identifier) &&
 	   level_nr == tape.level_nr);
 
 	if (!correct_info_chunk)
