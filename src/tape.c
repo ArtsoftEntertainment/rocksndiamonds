@@ -1587,10 +1587,19 @@ static int AutoPlayTapesExt(boolean initialize)
       if (tape.no_valid_file)
 	Fail("cannot load tape file '%s'", autoplay.tape_filename);
 
-      if (tape.no_info_chunk)
+      if (tape.no_info_chunk && !options.identifier)
 	Fail("cannot get levelset from tape file '%s'", autoplay.tape_filename);
 
+      if (tape.no_info_chunk && !options.level_nr)
+	Fail("cannot get level nr from tape file '%s'", autoplay.tape_filename);
+
       global.autoplay_leveldir = tape.level_identifier;
+
+      if (options.identifier != NULL)
+	global.autoplay_leveldir = options.identifier;
+
+      if (options.level_nr != NULL)
+	tape.level_nr = atoi(options.level_nr);
 
       if (tape.level_nr >= 0 && tape.level_nr < MAX_TAPES_PER_SET)
         global.autoplay_level[tape.level_nr] = TRUE;
