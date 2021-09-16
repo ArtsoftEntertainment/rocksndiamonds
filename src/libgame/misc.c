@@ -1300,6 +1300,8 @@ void GetOptions(int argc, char *argv[],
   options.special_flags = NULL;
   options.debug_mode = NULL;
   options.player_name = NULL;
+  options.identifier = NULL;
+  options.level_nr = NULL;
 
   options.mytapes = FALSE;
   options.serveronly = FALSE;
@@ -1443,6 +1445,24 @@ void GetOptions(int argc, char *argv[],
 	FailWithHelp("option '%s' requires an argument", option_str);
 
       options.player_name = getStringCopy(option_arg);
+      if (option_arg == next_option)
+	options_left++;
+    }
+    else if (strncmp(option, "-identifier", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	FailWithHelp("option '%s' requires an argument", option_str);
+
+      options.identifier = getStringCopy(option_arg);
+      if (option_arg == next_option)
+	options_left++;
+    }
+    else if (strncmp(option, "-level-nr", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	FailWithHelp("option '%s' requires an argument", option_str);
+
+      options.level_nr = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
     }

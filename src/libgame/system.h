@@ -1065,6 +1065,8 @@ struct OptionInfo
   char *debug_mode;
 
   char *player_name;
+  char *identifier;
+  char *level_nr;
 
   boolean mytapes;
   boolean serveronly;
