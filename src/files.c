@@ -9343,7 +9343,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   char *player_name_raw = score_entry->name;
   char *player_uuid_raw = setup.player_uuid;
 
-  if (options.player_name != NULL)
+  if (options.player_name != NULL && global.autoplay_leveldir != NULL)
   {
     player_name_raw = options.player_name;
     player_uuid_raw = "";
