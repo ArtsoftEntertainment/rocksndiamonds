@@ -1800,20 +1800,7 @@ static int AutoPlayTapesExt(boolean initialize)
 	autoplay.tape_filename = (options.mytapes ? getTapeFilename(level_nr) :
 				  getDefaultSolutionTapeFilename(level_nr));
 
-	boolean correct_info_chunk =
-	  (!tape.no_info_chunk &&
-	   strEqual(leveldir_current->identifier, tape.level_identifier) &&
-	   level_nr == tape.level_nr);
-
-	if (!correct_info_chunk)
-	{
-	  strncpy(tape.level_identifier, leveldir_current->identifier,
-		  MAX_FILENAME_LEN);
-	  tape.level_identifier[MAX_FILENAME_LEN] = '\0';
-	  tape.level_nr = level_nr;
-	}
-
-	if (!fileExists(autoplay.tape_filename) || !correct_info_chunk)
+	if (!fileExists(autoplay.tape_filename))
 	{
 	  // non-standard or incorrect solution tape -- save to temporary file
 	  autoplay.tape_filename = getTemporaryTapeFilename();
