@@ -1694,6 +1694,19 @@ static int AutoPlayTapesExt(boolean initialize)
     if (!global.autoplay_all && !global.autoplay_level[level_nr])
       continue;
 
+    if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
+    {
+      // speed things up when uploading all existing private tapes
+      if (autoplay.all_levelsets && !fileExists(getTapeFilename(level_nr)))
+      {
+	autoplay.num_tape_missing++;
+
+	Print("Tape %03d: (no tape found)\n", level_nr);
+
+	continue;
+      }
+    }
+
     TapeErase();
     TapeRewind();	// needed to reset "tape.auto_play_level_solved"
 
