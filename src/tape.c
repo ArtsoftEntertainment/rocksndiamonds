@@ -1464,6 +1464,7 @@ static int AutoPlayTapesExt(boolean initialize)
 
     -1
   };
+  LevelDirTree *leveldir_current_last = leveldir_current;
   boolean init_level_set = FALSE;
   int i;
 
@@ -1855,6 +1856,9 @@ static int AutoPlayTapesExt(boolean initialize)
 
   if (program.headless)
     CloseAllAndExit(0);
+
+  // when running interactively, restore last selected level set
+  leveldir_current = leveldir_current_last;
 
   return num_tapes;
 }
