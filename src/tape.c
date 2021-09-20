@@ -1851,6 +1851,14 @@ static int AutoPlayTapesExt(boolean initialize)
     return num_tapes;
   }
 
+  if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
+  {
+    Print("\n");
+    PrintLine("=", 79);
+    Print("SUMMARY: %d tapes uploaded.\n", num_tapes);
+    PrintLine("=", 79);
+  }
+
   // clear timestamp for batch tape upload (required after interactive upload)
   global.autoplay_time = 0;
 
