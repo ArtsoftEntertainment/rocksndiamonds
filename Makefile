@@ -89,7 +89,7 @@ clean-android: android-clean
 # development targets
 # -----------------------------------------------------------------------------
 
-MAKE_ENGINETEST = ./Scripts/make_enginetest.sh
+MAKE_ENGINETEST = ./tests/enginetest/enginetest.sh
 MAKE_LEVELSKETCH = ./Scripts/make_levelsketch_images.sh
 
 auto-conf:
@@ -118,18 +118,6 @@ depend dep:
 
 enginetest: all
 	$(MAKE_ENGINETEST)
-
-enginetestcustom: all
-	$(MAKE_ENGINETEST) custom
-
-enginetestfast: all
-	$(MAKE_ENGINETEST) fast
-
-enginetestnew: all
-	$(MAKE_ENGINETEST) new
-
-leveltest: all
-	$(MAKE_ENGINETEST) leveltest
 
 levelsketch_images: all
 	$(MAKE_LEVELSKETCH)
