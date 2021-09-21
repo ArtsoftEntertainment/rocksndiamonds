@@ -1058,7 +1058,10 @@ static void CheckGravityMovementWhenNotMoving(struct PlayerInfo *);
 static void KillPlayerUnlessEnemyProtected(int, int);
 static void KillPlayerUnlessExplosionProtected(int, int);
 
+static void CheckNextToConditions(int, int);
+static void TestIfPlayerNextToCustomElement(int, int);
 static void TestIfPlayerTouchesCustomElement(int, int);
+static void TestIfElementNextToCustomElement(int, int);
 static void TestIfElementTouchesCustomElement(int, int);
 static void TestIfElementHitsCustomElement(int, int, int);
 
@@ -11150,7 +11153,8 @@ static boolean CheckElementChangeExt(int x, int y,
        different to element changes that affect other elements to change on the
        whole playfield (which is handeld by CheckTriggeredElementChangeExt()) */
     boolean check_trigger_element =
-      (trigger_event == CE_TOUCHING_X ||
+      (trigger_event == CE_NEXT_TO_X ||
+       trigger_event == CE_TOUCHING_X ||
        trigger_event == CE_HITTING_X ||
        trigger_event == CE_HIT_BY_X ||
        trigger_event == CE_DIGGING_X); // this one was forgotten until 3.2.3
@@ -12316,6 +12320,8 @@ void GameActions_RND(void)
       graphic = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
     }
 
+    CheckNextToConditions(x, y);
+
     if (!IS_MOVING(x, y) && (CAN_FALL(element) || CAN_MOVE(element)))
     {
       StartMoving(x, y);
@@ -13293,6 +13299,76 @@ void ScrollScreen(struct PlayerInfo *player, int mode)
     ScreenMovDir = MV_NONE;
 }
 
+void CheckNextToConditions(int x, int y)
+{
+  int element = Tile[x][y];
+
+  if (IS_PLAYER(x, y))
+    TestIfPlayerNextToCustomElement(x, y);
+
+  if (CAN_CHANGE_OR_HAS_ACTION(element) &&
+      HAS_ANY_CHANGE_EVENT(element, CE_NEXT_TO_X))
+    TestIfElementNextToCustomElement(x, y);
+}
+
+void TestIfPlayerNextToCustomElement(int x, int y)
+{
+  static int xy[4][2] =
+  {
+    { 0, -1 },
+    { -1, 0 },
+    { +1, 0 },
+    { 0, +1 }
+  };
+  static int trigger_sides[4][2] =
+  {
+    // center side       border side
+    { CH_SIDE_TOP,	CH_SIDE_BOTTOM	},	// check top
+    { CH_SIDE_LEFT,	CH_SIDE_RIGHT	},	// check left
+    { CH_SIDE_RIGHT,	CH_SIDE_LEFT	},	// check right
+    { CH_SIDE_BOTTOM,	CH_SIDE_TOP	}	// check bottom
+  };
+  int i;
+
+  if (!IS_PLAYER(x, y))
+    return;
+
+  struct PlayerInfo *player = PLAYERINFO(x, y);
+
+  if (player->is_moving)
+    return;
+
+  for (i = 0; i < NUM_DIRECTIONS; i++)
+  {
+    int xx = x + xy[i][0];
+    int yy = y + xy[i][1];
+    int border_side = trigger_sides[i][1];
+    int border_element;
+
+    if (!IN_LEV_FIELD(xx, yy))
+      continue;
+
+    if (IS_MOVING(xx, yy) || IS_BLOCKED(xx, yy))
+      continue;		// center and border element not connected
+
+    border_element = Tile[xx][yy];
+
+    CheckElementChangeByPlayer(xx, yy, border_element, CE_NEXT_TO_PLAYER,
+                               player->index_bit, border_side);
+    CheckTriggeredElementChangeByPlayer(xx, yy, border_element,
+                                        CE_PLAYER_NEXT_TO_X,
+                                        player->index_bit, border_side);
+
+    /* use player element that is initially defined in the level playfield,
+       not the player element that corresponds to the runtime player number
+       (example: a level that contains EL_PLAYER_3 as the only player would
+       incorrectly give EL_PLAYER_1 for "player->element_nr") */
+
+    CheckElementChangeBySide(xx, yy, border_element, player->initial_element,
+                             CE_NEXT_TO_X, border_side);
+  }
+}
+
 void TestIfPlayerTouchesCustomElement(int x, int y)
 {
   static int xy[4][2] =
@@ -13390,6 +13466,51 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
 
       break;
     }
+  }
+}
+
+void TestIfElementNextToCustomElement(int x, int y)
+{
+  static int xy[4][2] =
+  {
+    { 0, -1 },
+    { -1, 0 },
+    { +1, 0 },
+    { 0, +1 }
+  };
+  static int trigger_sides[4][2] =
+  {
+    // center side	border side
+    { CH_SIDE_TOP,	CH_SIDE_BOTTOM	},	// check top
+    { CH_SIDE_LEFT,	CH_SIDE_RIGHT	},	// check left
+    { CH_SIDE_RIGHT,	CH_SIDE_LEFT	},	// check right
+    { CH_SIDE_BOTTOM,	CH_SIDE_TOP	}	// check bottom
+  };
+  int center_element = Tile[x][y];	// should always be non-moving!
+  int i;
+
+  if (IS_MOVING(x, y) || IS_BLOCKED(x, y))
+    return;
+
+  for (i = 0; i < NUM_DIRECTIONS; i++)
+  {
+    int xx = x + xy[i][0];
+    int yy = y + xy[i][1];
+    int border_side = trigger_sides[i][1];
+    int border_element;
+
+    if (!IN_LEV_FIELD(xx, yy))
+      continue;
+
+    if (IS_MOVING(xx, yy) || IS_BLOCKED(xx, yy))
+      continue;			// center and border element not connected
+
+    border_element = Tile[xx][yy];
+
+    // check for change of center element (but change it only once)
+    if (CheckElementChangeBySide(x, y, center_element, border_element,
+                                 CE_NEXT_TO_X, border_side))
+      break;
   }
 }
 

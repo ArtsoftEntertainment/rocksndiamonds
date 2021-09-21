@@ -2009,6 +2009,9 @@ static struct ValueTextInfo options_change_direct_action[] =
   { CE_HEADLINE_SPECIAL_EVENTS,	"[mouse events]"		},
   { CE_CLICKED_BY_MOUSE,	"clicked by mouse"		},
   { CE_PRESSED_BY_MOUSE,	"pressed by mouse"		},
+  { CE_UNDEFINED,		" "				},
+  { CE_HEADLINE_SPECIAL_EVENTS,	"[static states]"		},
+  { CE_NEXT_TO_PLAYER,		"next to player"		},
 
   { -1,				NULL				}
 };
@@ -2042,6 +2045,10 @@ static struct ValueTextInfo options_change_other_action[] =
   { CE_HEADLINE_SPECIAL_EVENTS,	"[mouse events]"		},
   { CE_MOUSE_CLICKED_ON_X,	"mouse clicked on"		},
   { CE_MOUSE_PRESSED_ON_X,	"mouse pressed on"		},
+  { CE_UNDEFINED,		" "				},
+  { CE_HEADLINE_SPECIAL_EVENTS,	"[static states]"		},
+  { CE_PLAYER_NEXT_TO_X,	"player next to"		},
+  { CE_NEXT_TO_X,		"next to"			},
 
   { -1,				NULL				}
 };
@@ -8205,7 +8212,8 @@ static void CopyCustomElementPropertiesToEditor(int element)
 
   // set "change by direct action" selectbox help value
   custom_element_change.direct_action =
-    (HAS_CHANGE_EVENT(element, CE_TOUCHED_BY_PLAYER) ? CE_TOUCHED_BY_PLAYER :
+    (HAS_CHANGE_EVENT(element, CE_NEXT_TO_PLAYER) ? CE_NEXT_TO_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_TOUCHED_BY_PLAYER) ? CE_TOUCHED_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_PRESSED_BY_PLAYER) ? CE_PRESSED_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_SWITCHED_BY_PLAYER) ? CE_SWITCHED_BY_PLAYER :
      HAS_CHANGE_EVENT(element, CE_SNAPPED_BY_PLAYER) ? CE_SNAPPED_BY_PLAYER :
@@ -8229,7 +8237,8 @@ static void CopyCustomElementPropertiesToEditor(int element)
 
   // set "change by other element action" selectbox help value
   custom_element_change.other_action =
-    (HAS_CHANGE_EVENT(element, CE_PLAYER_TOUCHES_X) ? CE_PLAYER_TOUCHES_X :
+    (HAS_CHANGE_EVENT(element, CE_PLAYER_NEXT_TO_X) ? CE_PLAYER_NEXT_TO_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_TOUCHES_X) ? CE_PLAYER_TOUCHES_X :
      HAS_CHANGE_EVENT(element, CE_PLAYER_PRESSES_X) ? CE_PLAYER_PRESSES_X :
      HAS_CHANGE_EVENT(element, CE_PLAYER_SWITCHES_X) ? CE_PLAYER_SWITCHES_X :
      HAS_CHANGE_EVENT(element, CE_PLAYER_SNAPS_X) ? CE_PLAYER_SNAPS_X :
@@ -8239,6 +8248,7 @@ static void CopyCustomElementPropertiesToEditor(int element)
      HAS_CHANGE_EVENT(element, CE_PLAYER_DIGS_X) ? CE_PLAYER_DIGS_X :
      HAS_CHANGE_EVENT(element, CE_PLAYER_COLLECTS_X) ? CE_PLAYER_COLLECTS_X :
      HAS_CHANGE_EVENT(element, CE_PLAYER_DROPS_X) ? CE_PLAYER_DROPS_X :
+     HAS_CHANGE_EVENT(element, CE_NEXT_TO_X) ? CE_NEXT_TO_X :
      HAS_CHANGE_EVENT(element, CE_TOUCHING_X) ? CE_TOUCHING_X :
      HAS_CHANGE_EVENT(element, CE_HITTING_X) ? CE_HITTING_X :
      HAS_CHANGE_EVENT(element, CE_DIGGING_X) ? CE_DIGGING_X :
@@ -8367,6 +8377,7 @@ static void CopyCustomElementPropertiesToGame(int element)
   // ---------- element settings: advanced (custom elements) ------------------
 
   // set player change event from checkbox and selectbox
+  custom_element_change_events[CE_NEXT_TO_PLAYER] = FALSE;
   custom_element_change_events[CE_TOUCHED_BY_PLAYER] = FALSE;
   custom_element_change_events[CE_PRESSED_BY_PLAYER] = FALSE;
   custom_element_change_events[CE_SWITCHED_BY_PLAYER] = FALSE;
@@ -8391,6 +8402,7 @@ static void CopyCustomElementPropertiesToGame(int element)
     custom_element_change_events[CE_BY_DIRECT_ACTION];
 
   // set other element action change event from checkbox and selectbox
+  custom_element_change_events[CE_PLAYER_NEXT_TO_X] = FALSE;
   custom_element_change_events[CE_PLAYER_TOUCHES_X] = FALSE;
   custom_element_change_events[CE_PLAYER_PRESSES_X] = FALSE;
   custom_element_change_events[CE_PLAYER_SWITCHES_X] = FALSE;
@@ -8401,6 +8413,7 @@ static void CopyCustomElementPropertiesToGame(int element)
   custom_element_change_events[CE_PLAYER_DIGS_X] = FALSE;
   custom_element_change_events[CE_PLAYER_COLLECTS_X] = FALSE;
   custom_element_change_events[CE_PLAYER_DROPS_X] = FALSE;
+  custom_element_change_events[CE_NEXT_TO_X] = FALSE;
   custom_element_change_events[CE_TOUCHING_X] = FALSE;
   custom_element_change_events[CE_HITTING_X] = FALSE;
   custom_element_change_events[CE_DIGGING_X] = FALSE;
