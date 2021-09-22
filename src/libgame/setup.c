@@ -4848,7 +4848,7 @@ static void SaveLevelSetup_LastSeries_Ext(boolean deactivate_last_level_series)
 
   for (i = 0; last_level_series[i] != NULL; i++)
   {
-    char token[strlen(TOKEN_STR_LAST_LEVEL_SERIES) + 10];
+    char token[strlen(TOKEN_STR_LAST_LEVEL_SERIES) + 1 + 10 + 1];
 
     sprintf(token, "%s.%03d", TOKEN_STR_LAST_LEVEL_SERIES, i);
 
