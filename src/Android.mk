@@ -46,6 +46,8 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
 	libgame/image.c			\
 	libgame/random.c		\
 	libgame/hash.c			\
+	libgame/http.c			\
+	libgame/base64.c		\
 	libgame/setup.c			\
 	libgame/misc.c			\
 	libgame/sdl.c			\
