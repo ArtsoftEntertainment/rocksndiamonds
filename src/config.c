@@ -47,6 +47,11 @@ char *getProgramVersionString(void)
   return program.version_string;
 }
 
+char *getProgramPlatformString(void)
+{
+  return PLATFORM_STRING;
+}
+
 char *getProgramInitString(void)
 {
   static char *program_init_string = NULL;

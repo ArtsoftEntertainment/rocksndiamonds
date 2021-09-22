@@ -19,6 +19,7 @@ char *getSourceHashString(void);
 char *getProgramTitleString(void);
 char *getProgramRealVersionString(void);
 char *getProgramVersionString(void);
+char *getProgramPlatformString(void);
 char *getProgramInitString(void);
 char *getConfigProgramTitleString(void);
 char *getConfigProgramCopyrightString(void);

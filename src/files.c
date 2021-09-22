@@ -9077,11 +9077,13 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
 	   "{\n"
 	   "%s"
 	   "  \"game_version\":         \"%s\",\n"
+	   "  \"game_platform\":        \"%s\",\n"
 	   "  \"levelset_identifier\":  \"%s\",\n"
 	   "  \"level_nr\":             \"%d\"\n"
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
 	   getProgramRealVersionString(),
+	   getProgramPlatformString(),
 	   levelset.identifier, level_nr);
 
   ConvertHttpRequestBodyToServerEncoding(request);
@@ -9361,6 +9363,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "{\n"
 	   "%s"
 	   "  \"game_version\":         \"%s\",\n"
+	   "  \"game_platform\":        \"%s\",\n"
 	   "  \"batch_time\":           \"%d\",\n"
 	   "  \"levelset_identifier\":  \"%s\",\n"
 	   "  \"levelset_name\":        \"%s\",\n"
@@ -9380,6 +9383,7 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
 	   getProgramRealVersionString(),
+	   getProgramPlatformString(),
 	   (int)global.autoplay_time,
 	   levelset_identifier,
 	   levelset_name,
