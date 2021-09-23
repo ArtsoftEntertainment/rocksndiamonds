@@ -9032,6 +9032,10 @@ void SaveScore(int nr)
 void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
 		     char *error)
 {
+#if defined(PLATFORM_EMSCRIPTEN)
+  // threads currently not fully supported by Emscripten/SDL and some browsers
+  function(data);
+#else
   SDL_Thread *thread = SDL_CreateThread(function, name, data);
 
   if (thread != NULL)
@@ -9041,6 +9045,7 @@ void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
 
   // nasty kludge to lower probability of intermingled thread error messages
   Delay(1);
+#endif
 }
 
 char *getPasswordJSON(char *password)
