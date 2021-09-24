@@ -9096,9 +9096,12 @@ static void FreeThreadData_ApiGetScore(void *data_raw)
 
 static void ApiGetScoreExt(struct HttpRequest *request,
 			   struct HttpResponse *response,
-			   int level_nr,
-			   char *score_cache_filename)
+			   void *data_raw)
 {
+  struct ApiGetScoreThreadData *data = data_raw;
+  int level_nr = data->level_nr;
+  char *score_cache_filename = data->score_cache_filename;
+
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
   request->method   = API_SERVER_METHOD;
@@ -9168,13 +9171,13 @@ static void ApiGetScoreExt(struct HttpRequest *request,
   server_scores.updated = TRUE;
 }
 
-static void ApiGetScore(int level_nr, char *score_cache_filename)
+static void ApiGetScore(void *data_raw)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
   ApiGetScoreExt(request, response,
-		 level_nr, score_cache_filename);
+		 data_raw);
 
   checked_free(request);
   checked_free(response);
@@ -9182,10 +9185,7 @@ static void ApiGetScore(int level_nr, char *score_cache_filename)
 
 static int ApiGetScoreThread(void *data_raw)
 {
-  struct ApiGetScoreThreadData *data = data_raw;
-
-  ApiGetScore(data->level_nr,
-	      data->score_cache_filename);
+  ApiGetScore(data_raw);
 
   FreeThreadData_ApiGetScore(data_raw);
 
@@ -9374,10 +9374,13 @@ static void FreeThreadData_ApiAddScore(void *data_raw)
 
 static void ApiAddScoreExt(struct HttpRequest *request,
 			   struct HttpResponse *response,
-			   int level_nr,
-			   char *score_tape_filename,
-			   struct ScoreEntry *score_entry)
+			   void *data_raw)
 {
+  struct ApiAddScoreThreadData *data = data_raw;
+  int level_nr = data->level_nr;
+  char *score_tape_filename = data->score_tape_filename;
+  struct ScoreEntry *score_entry = &data->score_entry;
+
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
   request->method   = API_SERVER_METHOD;
@@ -9482,14 +9485,13 @@ static void ApiAddScoreExt(struct HttpRequest *request,
   server_scores.uploaded = TRUE;
 }
 
-static void ApiAddScore(int level_nr, char *score_tape_filename,
-			struct ScoreEntry *score_entry)
+static void ApiAddScore(void *data_raw)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
   ApiAddScoreExt(request, response,
-		 level_nr, score_tape_filename, score_entry);
+		 data_raw);
 
   checked_free(request);
   checked_free(response);
@@ -9497,11 +9499,7 @@ static void ApiAddScore(int level_nr, char *score_tape_filename,
 
 static int ApiAddScoreThread(void *data_raw)
 {
-  struct ApiAddScoreThreadData *data = data_raw;
-
-  ApiAddScore(data->level_nr,
-	      data->score_tape_filename,
-	      &data->score_entry);
+  ApiAddScore(data_raw);
 
   FreeThreadData_ApiAddScore(data_raw);
 

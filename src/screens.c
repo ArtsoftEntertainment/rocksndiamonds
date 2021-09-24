@@ -4070,9 +4070,12 @@ static void FreeThreadData_ApiRenamePlayer(void *data_raw)
 
 static void ApiRenamePlayerExt(struct HttpRequest *request,
 			       struct HttpResponse *response,
-			       char *player_name_raw,
-			       char *player_uuid_raw)
+			       void *data_raw)
 {
+  struct ApiRenamePlayerThreadData *data = data_raw;
+  char *player_name_raw = data->player_name;
+  char *player_uuid_raw = data->player_uuid;
+
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
   request->method   = API_SERVER_METHOD;
@@ -4117,12 +4120,12 @@ static void ApiRenamePlayerExt(struct HttpRequest *request,
   }
 }
 
-static void ApiRenamePlayer(char *player_name, char *player_uuid)
+static void ApiRenamePlayer(void *data_raw)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  ApiRenamePlayerExt(request, response, player_name, player_uuid);
+  ApiRenamePlayerExt(request, response, data_raw);
 
   checked_free(request);
   checked_free(response);
@@ -4130,9 +4133,7 @@ static void ApiRenamePlayer(char *player_name, char *player_uuid)
 
 static int ApiRenamePlayerThread(void *data_raw)
 {
-  struct ApiRenamePlayerThreadData *data = data_raw;
-
-  ApiRenamePlayer(data->player_name, data->player_uuid);
+  ApiRenamePlayer(data_raw);
 
   FreeThreadData_ApiRenamePlayer(data_raw);
 
