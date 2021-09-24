@@ -65,6 +65,22 @@ static void SetHttpResponseToDefaults(struct HttpResponse *response)
   response->status_text[0] = '\0';
 }
 
+struct HttpResponse *GetHttpResponseFromBuffer(void *buffer, int size)
+{
+  if (size > MAX_HTTP_BODY_SIZE)
+    return NULL;
+
+  struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
+
+  SetHttpResponseToDefaults(response);
+
+  strncpy(response->body, buffer, MAX_HTTP_BODY_SIZE);
+  response->body[MAX_HTTP_BODY_SIZE] = '\0';
+  response->body_size = MIN(size, MAX_HTTP_BODY_SIZE);
+
+  return response;
+}
+
 static boolean SetHTTPResponseCode(struct HttpResponse *response, char *buffer)
 {
   char *prefix = "HTTP/1.1 ";

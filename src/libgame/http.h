@@ -46,6 +46,7 @@ struct HttpResponse
 char *GetHttpError(void);
 void ConvertHttpRequestBodyToServerEncoding(struct HttpRequest *);
 void ConvertHttpResponseBodyToClientEncoding(struct HttpResponse *);
+struct HttpResponse *GetHttpResponseFromBuffer(void *, int);
 boolean DoHttpRequest(struct HttpRequest *, struct HttpResponse *);
 
 #endif
