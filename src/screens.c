@@ -4048,6 +4048,26 @@ struct ApiRenamePlayerThreadData
   char *player_uuid;
 };
 
+static void *CreateThreadData_ApiRenamePlayer(void)
+{
+  struct ApiRenamePlayerThreadData *data =
+    checked_malloc(sizeof(struct ApiRenamePlayerThreadData));
+
+  data->player_name = getStringCopy(setup.player_name);
+  data->player_uuid = getStringCopy(setup.player_uuid);
+
+  return data;
+}
+
+static void FreeThreadData_ApiRenamePlayer(void *data_raw)
+{
+  struct ApiRenamePlayerThreadData *data = data_raw;
+
+  checked_free(data->player_name);
+  checked_free(data->player_uuid);
+  checked_free(data);
+}
+
 static void ApiRenamePlayerExt(struct HttpRequest *request,
 			       struct HttpResponse *response,
 			       char *player_name_raw,
@@ -4114,9 +4134,7 @@ static int ApiRenamePlayerThread(void *data_raw)
 
   ApiRenamePlayer(data->player_name, data->player_uuid);
 
-  checked_free(data->player_name);
-  checked_free(data->player_uuid);
-  checked_free(data);
+  FreeThreadData_ApiRenamePlayer(data_raw);
 
   return 0;
 }
@@ -4124,10 +4142,7 @@ static int ApiRenamePlayerThread(void *data_raw)
 static void ApiRenamePlayerAsThread(void)
 {
   struct ApiRenamePlayerThreadData *data =
-    checked_malloc(sizeof(struct ApiRenamePlayerThreadData));
-
-  data->player_name = getStringCopy(setup.player_name);
-  data->player_uuid = getStringCopy(setup.player_uuid);
+    CreateThreadData_ApiRenamePlayer();
 
   ExecuteAsThread(ApiRenamePlayerThread,
 		  "ApiRenamePlayer", data,

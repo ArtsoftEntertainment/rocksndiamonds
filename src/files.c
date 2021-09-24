@@ -9074,6 +9074,26 @@ struct ApiGetScoreThreadData
   char *score_cache_filename;
 };
 
+static void *CreateThreadData_ApiGetScore(int nr)
+{
+  struct ApiGetScoreThreadData *data =
+    checked_malloc(sizeof(struct ApiGetScoreThreadData));
+  char *score_cache_filename = getScoreCacheFilename(nr);
+
+  data->level_nr = nr;
+  data->score_cache_filename = getStringCopy(score_cache_filename);
+
+  return data;
+}
+
+static void FreeThreadData_ApiGetScore(void *data_raw)
+{
+  struct ApiGetScoreThreadData *data = data_raw;
+
+  checked_free(data->score_cache_filename);
+  checked_free(data);
+}
+
 static void ApiGetScoreExt(struct HttpRequest *request,
 			   struct HttpResponse *response,
 			   int level_nr,
@@ -9167,20 +9187,14 @@ static int ApiGetScoreThread(void *data_raw)
   ApiGetScore(data->level_nr,
 	      data->score_cache_filename);
 
-  checked_free(data->score_cache_filename);
-  checked_free(data);
+  FreeThreadData_ApiGetScore(data_raw);
 
   return 0;
 }
 
 static void ApiGetScoreAsThread(int nr)
 {
-  struct ApiGetScoreThreadData *data =
-    checked_malloc(sizeof(struct ApiGetScoreThreadData));
-  char *score_cache_filename = getScoreCacheFilename(nr);
-
-  data->level_nr = nr;
-  data->score_cache_filename = getStringCopy(score_cache_filename);
+  struct ApiGetScoreThreadData *data = CreateThreadData_ApiGetScore(nr);
 
   ExecuteAsThread(ApiGetScoreThread,
 		  "ApiGetScore", data,
@@ -9334,6 +9348,30 @@ struct ApiAddScoreThreadData
   struct ScoreEntry score_entry;
 };
 
+static void *CreateThreadData_ApiAddScore(int nr, char *score_tape_filename)
+{
+  struct ApiAddScoreThreadData *data =
+    checked_malloc(sizeof(struct ApiAddScoreThreadData));
+  struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
+
+  if (score_tape_filename == NULL)
+    score_tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
+
+  data->level_nr = nr;
+  data->score_entry = *score_entry;
+  data->score_tape_filename = getStringCopy(score_tape_filename);
+
+  return data;
+}
+
+static void FreeThreadData_ApiAddScore(void *data_raw)
+{
+  struct ApiAddScoreThreadData *data = data_raw;
+
+  checked_free(data->score_tape_filename);
+  checked_free(data);
+}
+
 static void ApiAddScoreExt(struct HttpRequest *request,
 			   struct HttpResponse *response,
 			   int level_nr,
@@ -9465,8 +9503,7 @@ static int ApiAddScoreThread(void *data_raw)
 	      data->score_tape_filename,
 	      &data->score_entry);
 
-  checked_free(data->score_tape_filename);
-  checked_free(data);
+  FreeThreadData_ApiAddScore(data_raw);
 
   return 0;
 }
@@ -9474,15 +9511,7 @@ static int ApiAddScoreThread(void *data_raw)
 static void ApiAddScoreAsThread(int nr, char *score_tape_filename)
 {
   struct ApiAddScoreThreadData *data =
-    checked_malloc(sizeof(struct ApiAddScoreThreadData));
-  struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
-
-  if (score_tape_filename == NULL)
-    score_tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
-
-  data->level_nr = nr;
-  data->score_entry = *score_entry;
-  data->score_tape_filename = getStringCopy(score_tape_filename);
+    CreateThreadData_ApiAddScore(nr, score_tape_filename);
 
   ExecuteAsThread(ApiAddScoreThread,
 		  "ApiAddScore", data,
