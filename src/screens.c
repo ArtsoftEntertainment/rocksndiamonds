@@ -4120,22 +4120,17 @@ static void ApiRenamePlayerExt(struct HttpRequest *request,
   }
 }
 
-static void ApiRenamePlayer(void *data_raw)
+static int ApiRenamePlayerThread(void *data_raw)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
   ApiRenamePlayerExt(request, response, data_raw);
 
+  FreeThreadData_ApiRenamePlayer(data_raw);
+
   checked_free(request);
   checked_free(response);
-}
-
-static int ApiRenamePlayerThread(void *data_raw)
-{
-  ApiRenamePlayer(data_raw);
-
-  FreeThreadData_ApiRenamePlayer(data_raw);
 
   return 0;
 }
