@@ -4042,6 +4042,12 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 // change name functions
 // ============================================================================
 
+struct ApiRenamePlayerThreadData
+{
+  char *player_name;
+  char *player_uuid;
+};
+
 static void ApiRenamePlayerExt(struct HttpRequest *request,
 			       struct HttpResponse *response,
 			       char *player_name_raw,
@@ -4101,12 +4107,6 @@ static void ApiRenamePlayer(char *player_name, char *player_uuid)
   checked_free(request);
   checked_free(response);
 }
-
-struct ApiRenamePlayerThreadData
-{
-  char *player_name;
-  char *player_uuid;
-};
 
 static int ApiRenamePlayerThread(void *data_raw)
 {

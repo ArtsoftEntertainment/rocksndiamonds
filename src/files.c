@@ -9068,6 +9068,12 @@ char *getPasswordJSON(char *password)
   return password_json;
 }
 
+struct ApiGetScoreThreadData
+{
+  int level_nr;
+  char *score_cache_filename;
+};
+
 static void ApiGetScoreExt(struct HttpRequest *request,
 			   struct HttpResponse *response,
 			   int level_nr,
@@ -9153,12 +9159,6 @@ static void ApiGetScore(int level_nr, char *score_cache_filename)
   checked_free(request);
   checked_free(response);
 }
-
-struct ApiGetScoreThreadData
-{
-  int level_nr;
-  char *score_cache_filename;
-};
 
 static int ApiGetScoreThread(void *data_raw)
 {
@@ -9327,6 +9327,13 @@ static char *get_file_base64(char *filename)
   return buffer_encoded;
 }
 
+struct ApiAddScoreThreadData
+{
+  int level_nr;
+  char *score_tape_filename;
+  struct ScoreEntry score_entry;
+};
+
 static void ApiAddScoreExt(struct HttpRequest *request,
 			   struct HttpResponse *response,
 			   int level_nr,
@@ -9449,13 +9456,6 @@ static void ApiAddScore(int level_nr, char *score_tape_filename,
   checked_free(request);
   checked_free(response);
 }
-
-struct ApiAddScoreThreadData
-{
-  int level_nr;
-  char *score_tape_filename;
-  struct ScoreEntry score_entry;
-};
 
 static int ApiAddScoreThread(void *data_raw)
 {
