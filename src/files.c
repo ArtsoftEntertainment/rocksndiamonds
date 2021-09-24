@@ -9068,10 +9068,10 @@ char *getPasswordJSON(char *password)
   return password_json;
 }
 
-static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
-					  struct HttpResponse *response,
-					  int level_nr,
-					  char *score_cache_filename)
+static void ApiGetScoreExt(struct HttpRequest *request,
+			   struct HttpResponse *response,
+			   int level_nr,
+			   char *score_cache_filename)
 {
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
@@ -9142,30 +9142,30 @@ static void DownloadServerScoreToCacheExt(struct HttpRequest *request,
   server_scores.updated = TRUE;
 }
 
-static void DownloadServerScoreToCache(int level_nr, char *score_cache_filename)
+static void ApiGetScore(int level_nr, char *score_cache_filename)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  DownloadServerScoreToCacheExt(request, response,
-				level_nr, score_cache_filename);
+  ApiGetScoreExt(request, response,
+		 level_nr, score_cache_filename);
 
   checked_free(request);
   checked_free(response);
 }
 
-struct DownloadServerScoreToCacheThreadData
+struct ApiGetScoreThreadData
 {
   int level_nr;
   char *score_cache_filename;
 };
 
-static int DownloadServerScoreToCacheThread(void *data_raw)
+static int ApiGetScoreThread(void *data_raw)
 {
-  struct DownloadServerScoreToCacheThreadData *data = data_raw;
+  struct ApiGetScoreThreadData *data = data_raw;
 
-  DownloadServerScoreToCache(data->level_nr,
-			     data->score_cache_filename);
+  ApiGetScore(data->level_nr,
+	      data->score_cache_filename);
 
   checked_free(data->score_cache_filename);
   checked_free(data);
@@ -9173,17 +9173,17 @@ static int DownloadServerScoreToCacheThread(void *data_raw)
   return 0;
 }
 
-static void DownloadServerScoreToCacheAsThread(int nr)
+static void ApiGetScoreAsThread(int nr)
 {
-  struct DownloadServerScoreToCacheThreadData *data =
-    checked_malloc(sizeof(struct DownloadServerScoreToCacheThreadData));
+  struct ApiGetScoreThreadData *data =
+    checked_malloc(sizeof(struct ApiGetScoreThreadData));
   char *score_cache_filename = getScoreCacheFilename(nr);
 
   data->level_nr = nr;
   data->score_cache_filename = getStringCopy(score_cache_filename);
 
-  ExecuteAsThread(DownloadServerScoreToCacheThread,
-		  "DownloadServerScoreToCache", data,
+  ExecuteAsThread(ApiGetScoreThread,
+		  "ApiGetScore", data,
 		  "download scores from server");
 }
 
@@ -9269,7 +9269,7 @@ void LoadServerScore(int nr, boolean download_score)
   {
     // 2nd step: download server scores from score server to cache file
     // (as thread, as it might time out if the server is not reachable)
-    DownloadServerScoreToCacheAsThread(nr);
+    ApiGetScoreAsThread(nr);
   }
 }
 
@@ -9327,11 +9327,11 @@ static char *get_file_base64(char *filename)
   return buffer_encoded;
 }
 
-static void UploadScoreToServerExt(struct HttpRequest *request,
-				   struct HttpResponse *response,
-				   int level_nr,
-				   char *score_tape_filename,
-				   struct ScoreEntry *score_entry)
+static void ApiAddScoreExt(struct HttpRequest *request,
+			   struct HttpResponse *response,
+			   int level_nr,
+			   char *score_tape_filename,
+			   struct ScoreEntry *score_entry)
 {
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
@@ -9437,33 +9437,33 @@ static void UploadScoreToServerExt(struct HttpRequest *request,
   server_scores.uploaded = TRUE;
 }
 
-static void UploadScoreToServer(int level_nr, char *score_tape_filename,
-				struct ScoreEntry *score_entry)
+static void ApiAddScore(int level_nr, char *score_tape_filename,
+			struct ScoreEntry *score_entry)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  UploadScoreToServerExt(request, response,
-			 level_nr, score_tape_filename, score_entry);
+  ApiAddScoreExt(request, response,
+		 level_nr, score_tape_filename, score_entry);
 
   checked_free(request);
   checked_free(response);
 }
 
-struct UploadScoreToServerThreadData
+struct ApiAddScoreThreadData
 {
   int level_nr;
   char *score_tape_filename;
   struct ScoreEntry score_entry;
 };
 
-static int UploadScoreToServerThread(void *data_raw)
+static int ApiAddScoreThread(void *data_raw)
 {
-  struct UploadScoreToServerThreadData *data = data_raw;
+  struct ApiAddScoreThreadData *data = data_raw;
 
-  UploadScoreToServer(data->level_nr,
-		      data->score_tape_filename,
-		      &data->score_entry);
+  ApiAddScore(data->level_nr,
+	      data->score_tape_filename,
+	      &data->score_entry);
 
   checked_free(data->score_tape_filename);
   checked_free(data);
@@ -9471,10 +9471,10 @@ static int UploadScoreToServerThread(void *data_raw)
   return 0;
 }
 
-static void UploadScoreToServerAsThread(int nr, char *score_tape_filename)
+static void ApiAddScoreAsThread(int nr, char *score_tape_filename)
 {
-  struct UploadScoreToServerThreadData *data =
-    checked_malloc(sizeof(struct UploadScoreToServerThreadData));
+  struct ApiAddScoreThreadData *data =
+    checked_malloc(sizeof(struct ApiAddScoreThreadData));
   struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
 
   if (score_tape_filename == NULL)
@@ -9484,8 +9484,8 @@ static void UploadScoreToServerAsThread(int nr, char *score_tape_filename)
   data->score_entry = *score_entry;
   data->score_tape_filename = getStringCopy(score_tape_filename);
 
-  ExecuteAsThread(UploadScoreToServerThread,
-		  "UploadScoreToServer", data,
+  ExecuteAsThread(ApiAddScoreThread,
+		  "ApiAddScore", data,
 		  "upload score to server");
 }
 
@@ -9494,7 +9494,7 @@ void SaveServerScore(int nr)
   if (!runtime.use_api_server)
     return;
 
-  UploadScoreToServerAsThread(nr, NULL);
+  ApiAddScoreAsThread(nr, NULL);
 }
 
 void SaveServerScoreFromFile(int nr, char *score_tape_filename)
@@ -9502,7 +9502,7 @@ void SaveServerScoreFromFile(int nr, char *score_tape_filename)
   if (!runtime.use_api_server)
     return;
 
-  UploadScoreToServerAsThread(nr, score_tape_filename);
+  ApiAddScoreAsThread(nr, score_tape_filename);
 }
 
 void LoadLocalAndServerScore(int nr, boolean download_score)

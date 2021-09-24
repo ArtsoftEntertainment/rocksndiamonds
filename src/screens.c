@@ -4042,10 +4042,10 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 // change name functions
 // ============================================================================
 
-static void RenamePlayerOnServerExt(struct HttpRequest *request,
-				    struct HttpResponse *response,
-				    char *player_name_raw,
-				    char *player_uuid_raw)
+static void ApiRenamePlayerExt(struct HttpRequest *request,
+			       struct HttpResponse *response,
+			       char *player_name_raw,
+			       char *player_uuid_raw)
 {
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
@@ -4091,28 +4091,28 @@ static void RenamePlayerOnServerExt(struct HttpRequest *request,
   }
 }
 
-static void RenamePlayerOnServer(char *player_name, char *player_uuid)
+static void ApiRenamePlayer(char *player_name, char *player_uuid)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  RenamePlayerOnServerExt(request, response, player_name, player_uuid);
+  ApiRenamePlayerExt(request, response, player_name, player_uuid);
 
   checked_free(request);
   checked_free(response);
 }
 
-struct RenamePlayerOnServerThreadData
+struct ApiRenamePlayerThreadData
 {
   char *player_name;
   char *player_uuid;
 };
 
-static int RenamePlayerOnServerThread(void *data_raw)
+static int ApiRenamePlayerThread(void *data_raw)
 {
-  struct RenamePlayerOnServerThreadData *data = data_raw;
+  struct ApiRenamePlayerThreadData *data = data_raw;
 
-  RenamePlayerOnServer(data->player_name, data->player_uuid);
+  ApiRenamePlayer(data->player_name, data->player_uuid);
 
   checked_free(data->player_name);
   checked_free(data->player_uuid);
@@ -4121,16 +4121,16 @@ static int RenamePlayerOnServerThread(void *data_raw)
   return 0;
 }
 
-static void RenamePlayerOnServerAsThread(void)
+static void ApiRenamePlayerAsThread(void)
 {
-  struct RenamePlayerOnServerThreadData *data =
-    checked_malloc(sizeof(struct RenamePlayerOnServerThreadData));
+  struct ApiRenamePlayerThreadData *data =
+    checked_malloc(sizeof(struct ApiRenamePlayerThreadData));
 
   data->player_name = getStringCopy(setup.player_name);
   data->player_uuid = getStringCopy(setup.player_uuid);
 
-  ExecuteAsThread(RenamePlayerOnServerThread,
-		  "RenamePlayerOnServer", data,
+  ExecuteAsThread(ApiRenamePlayerThread,
+		  "ApiRenamePlayer", data,
 		  "rename player on server");
 }
 
@@ -4273,7 +4273,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
   SaveSetup();
 
   // change name of edited user on score server
-  RenamePlayerOnServerAsThread();
+  ApiRenamePlayerAsThread();
 
   if (game_status == GAME_MODE_PSEUDO_TYPENAMES || reset_setup)
   {
