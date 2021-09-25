@@ -5,7 +5,8 @@ JNI_DIR="app/jni"
 ANDROID_MK_SDL_IMAGE="$JNI_DIR/SDL2_image/Android.mk"
 ANDROID_MK_SDL_MIXER="$JNI_DIR/SDL2_mixer/Android.mk"
 
-SDL_BASE_URL="https://www.libsdl.org"
+SDL_BASE_URL_ORIGINAL="https://www.libsdl.org"
+SDL_BASE_URL_FALLBACK="https://www.artsoft.org"
 SDL_VERSIONS=`cat SDL_VERSIONS`
 
 for i in $SDL_VERSIONS; do
@@ -22,13 +23,21 @@ for i in $SDL_VERSIONS; do
 	SDL_RELEASE_DIR="projects/$SDL_SUBURL/release"
     fi
 
-    SDL_URL="$SDL_BASE_URL/$SDL_RELEASE_DIR/$i.tar.gz"
+    SDL_URL="$SDL_BASE_URL_ORIGINAL/$SDL_RELEASE_DIR/$i.tar.gz"
 
-    wget -O - "$SDL_URL" | (cd "$JNI_DIR" && tar xzf -)
+    wget --timeout=10 -O - "$SDL_URL" | (cd "$JNI_DIR" && tar xzf -)
 
     if [ "$?" != "0" ]; then
-	echo "ERROR: Installing '$i' failed!"
-	exit 10
+	echo "ERROR: Installing '$i' from main site failed -- trying fallback!"
+
+	SDL_URL="$SDL_BASE_URL_FALLBACK/RELEASES/sdl/$i.tar.gz"
+
+	wget --timeout=10 -O - "$SDL_URL" | (cd "$JNI_DIR" && tar xzf -)
+
+	if [ "$?" != "0" ]; then
+	    echo "ERROR: Installing '$i' from fallback site failed!"
+	    exit 10
+	fi
     fi
 
     mv "$JNI_DIR/$i" "$JNI_DIR/$SDL_SUBDIR"
