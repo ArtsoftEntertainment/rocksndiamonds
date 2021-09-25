@@ -4111,6 +4111,62 @@ static void HandleResponse_ApiRenamePlayer(struct HttpResponse *response,
   // nothing to do here
 }
 
+#if defined(PLATFORM_EMSCRIPTEN)
+static void Emscripten_ApiRenamePlayer_Loaded(unsigned handle, void *data_raw,
+					      void *buffer, unsigned int size)
+{
+  struct HttpResponse *response = GetHttpResponseFromBuffer(buffer, size);
+
+  if (response != NULL)
+  {
+    HandleResponse_ApiRenamePlayer(response, data_raw);
+
+    checked_free(response);
+  }
+  else
+  {
+    Error("server response too large to handle (%d bytes)", size);
+  }
+
+  FreeThreadData_ApiRenamePlayer(data_raw);
+}
+
+static void Emscripten_ApiRenamePlayer_Failed(unsigned handle, void *data_raw,
+					      int code, const char *status)
+{
+  Error("server failed to handle request: %d %s", code, status);
+
+  FreeThreadData_ApiRenamePlayer(data_raw);
+}
+
+static void Emscripten_ApiRenamePlayer_Progress(unsigned handle, void *data_raw,
+						int bytes, int size)
+{
+  // nothing to do here
+}
+
+static void Emscripten_ApiRenamePlayer_HttpRequest(struct HttpRequest *request,
+						   void *data_raw)
+{
+  if (!SetRequest_ApiRenamePlayer(request, data_raw))
+  {
+    FreeThreadData_ApiRenamePlayer(data_raw);
+
+    return;
+  }
+
+  emscripten_async_wget2_data(request->uri,
+			      request->method,
+			      request->body,
+			      data_raw,
+			      TRUE,
+			      Emscripten_ApiRenamePlayer_Loaded,
+			      Emscripten_ApiRenamePlayer_Failed,
+			      Emscripten_ApiRenamePlayer_Progress);
+}
+
+#else
+
 static void ApiRenamePlayer_HttpRequestExt(struct HttpRequest *request,
 					   struct HttpResponse *response,
 					   void *data_raw)
@@ -4145,13 +4201,18 @@ static void ApiRenamePlayer_HttpRequest(struct HttpRequest *request,
 
   FreeThreadData_ApiRenamePlayer(data_raw);
 }
+#endif
 
 static int ApiRenamePlayerThread(void *data_raw)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
+#if defined(PLATFORM_EMSCRIPTEN)
+  Emscripten_ApiRenamePlayer_HttpRequest(request, data_raw);
+#else
   ApiRenamePlayer_HttpRequest(request, response, data_raw);
+#endif
 
   checked_free(request);
   checked_free(response);

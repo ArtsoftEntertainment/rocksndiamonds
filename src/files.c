@@ -9162,6 +9162,62 @@ static void HandleResponse_ApiGetScore(struct HttpResponse *response,
   server_scores.updated = TRUE;
 }
 
+#if defined(PLATFORM_EMSCRIPTEN)
+static void Emscripten_ApiGetScore_Loaded(unsigned handle, void *data_raw,
+					  void *buffer, unsigned int size)
+{
+  struct HttpResponse *response = GetHttpResponseFromBuffer(buffer, size);
+
+  if (response != NULL)
+  {
+    HandleResponse_ApiGetScore(response, data_raw);
+
+    checked_free(response);
+  }
+  else
+  {
+    Error("server response too large to handle (%d bytes)", size);
+  }
+
+  FreeThreadData_ApiGetScore(data_raw);
+}
+
+static void Emscripten_ApiGetScore_Failed(unsigned handle, void *data_raw,
+					  int code, const char *status)
+{
+  Error("server failed to handle request: %d %s", code, status);
+
+  FreeThreadData_ApiGetScore(data_raw);
+}
+
+static void Emscripten_ApiGetScore_Progress(unsigned handle, void *data_raw,
+					    int bytes, int size)
+{
+  // nothing to do here
+}
+
+static void Emscripten_ApiGetScore_HttpRequest(struct HttpRequest *request,
+					       void *data_raw)
+{
+  if (!SetRequest_ApiGetScore(request, data_raw))
+  {
+    FreeThreadData_ApiGetScore(data_raw);
+
+    return;
+  }
+
+  emscripten_async_wget2_data(request->uri,
+			      request->method,
+			      request->body,
+			      data_raw,
+			      TRUE,
+			      Emscripten_ApiGetScore_Loaded,
+			      Emscripten_ApiGetScore_Failed,
+			      Emscripten_ApiGetScore_Progress);
+}
+
+#else
+
 static void ApiGetScore_HttpRequestExt(struct HttpRequest *request,
 				       struct HttpResponse *response,
 				       void *data_raw)
@@ -9196,13 +9252,18 @@ static void ApiGetScore_HttpRequest(struct HttpRequest *request,
 
   FreeThreadData_ApiGetScore(data_raw);
 }
+#endif
 
 static int ApiGetScoreThread(void *data_raw)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
+#if defined(PLATFORM_EMSCRIPTEN)
+  Emscripten_ApiGetScore_HttpRequest(request, data_raw);
+#else
   ApiGetScore_HttpRequest(request, response, data_raw);
+#endif
 
   checked_free(request);
   checked_free(response);
@@ -9492,6 +9553,62 @@ static void HandleResponse_ApiAddScore(struct HttpResponse *response,
   server_scores.uploaded = TRUE;
 }
 
+#if defined(PLATFORM_EMSCRIPTEN)
+static void Emscripten_ApiAddScore_Loaded(unsigned handle, void *data_raw,
+					  void *buffer, unsigned int size)
+{
+  struct HttpResponse *response = GetHttpResponseFromBuffer(buffer, size);
+
+  if (response != NULL)
+  {
+    HandleResponse_ApiAddScore(response, data_raw);
+
+    checked_free(response);
+  }
+  else
+  {
+    Error("server response too large to handle (%d bytes)", size);
+  }
+
+  FreeThreadData_ApiAddScore(data_raw);
+}
+
+static void Emscripten_ApiAddScore_Failed(unsigned handle, void *data_raw,
+					  int code, const char *status)
+{
+  Error("server failed to handle request: %d %s", code, status);
+
+  FreeThreadData_ApiAddScore(data_raw);
+}
+
+static void Emscripten_ApiAddScore_Progress(unsigned handle, void *data_raw,
+					    int bytes, int size)
+{
+  // nothing to do here
+}
+
+static void Emscripten_ApiAddScore_HttpRequest(struct HttpRequest *request,
+					       void *data_raw)
+{
+  if (!SetRequest_ApiAddScore(request, data_raw))
+  {
+    FreeThreadData_ApiAddScore(data_raw);
+
+    return;
+  }
+
+  emscripten_async_wget2_data(request->uri,
+			      request->method,
+			      request->body,
+			      data_raw,
+			      TRUE,
+			      Emscripten_ApiAddScore_Loaded,
+			      Emscripten_ApiAddScore_Failed,
+			      Emscripten_ApiAddScore_Progress);
+}
+
+#else
+
 static void ApiAddScore_HttpRequestExt(struct HttpRequest *request,
 				       struct HttpResponse *response,
 				       void *data_raw)
@@ -9526,13 +9643,18 @@ static void ApiAddScore_HttpRequest(struct HttpRequest *request,
 
   FreeThreadData_ApiAddScore(data_raw);
 }
+#endif
 
 static int ApiAddScoreThread(void *data_raw)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
+#if defined(PLATFORM_EMSCRIPTEN)
+  Emscripten_ApiAddScore_HttpRequest(request, data_raw);
+#else
   ApiAddScore_HttpRequest(request, response, data_raw);
+#endif
 
   checked_free(request);
   checked_free(response);
