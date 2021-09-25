@@ -4222,8 +4222,7 @@ static int ApiRenamePlayerThread(void *data_raw)
 
 static void ApiRenamePlayerAsThread(void)
 {
-  struct ApiRenamePlayerThreadData *data =
-    CreateThreadData_ApiRenamePlayer();
+  struct ApiRenamePlayerThreadData *data = CreateThreadData_ApiRenamePlayer();
 
   ExecuteAsThread(ApiRenamePlayerThread,
 		  "ApiRenamePlayer", data,
