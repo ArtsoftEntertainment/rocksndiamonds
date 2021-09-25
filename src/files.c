@@ -9094,9 +9094,9 @@ static void FreeThreadData_ApiGetScore(void *data_raw)
   checked_free(data);
 }
 
-static void ApiGetScoreExt(struct HttpRequest *request,
-			   struct HttpResponse *response,
-			   void *data_raw)
+static void ApiGetScore_HttpRequest(struct HttpRequest *request,
+				    struct HttpResponse *response,
+				    void *data_raw)
 {
   struct ApiGetScoreThreadData *data = data_raw;
   int level_nr = data->level_nr;
@@ -9176,8 +9176,7 @@ static int ApiGetScoreThread(void *data_raw)
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  ApiGetScoreExt(request, response,
-		 data_raw);
+  ApiGetScore_HttpRequest(request, response, data_raw);
 
   FreeThreadData_ApiGetScore(data_raw);
 
@@ -9367,9 +9366,9 @@ static void FreeThreadData_ApiAddScore(void *data_raw)
   checked_free(data);
 }
 
-static void ApiAddScoreExt(struct HttpRequest *request,
-			   struct HttpResponse *response,
-			   void *data_raw)
+static void ApiAddScore_HttpRequest(struct HttpRequest *request,
+				    struct HttpResponse *response,
+				    void *data_raw)
 {
   struct ApiAddScoreThreadData *data = data_raw;
   int level_nr = data->level_nr;
@@ -9485,8 +9484,7 @@ static int ApiAddScoreThread(void *data_raw)
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  ApiAddScoreExt(request, response,
-		 data_raw);
+  ApiAddScore_HttpRequest(request, response, data_raw);
 
   FreeThreadData_ApiAddScore(data_raw);
 

@@ -4068,9 +4068,9 @@ static void FreeThreadData_ApiRenamePlayer(void *data_raw)
   checked_free(data);
 }
 
-static void ApiRenamePlayerExt(struct HttpRequest *request,
-			       struct HttpResponse *response,
-			       void *data_raw)
+static void ApiRenamePlayer_HttpRequest(struct HttpRequest *request,
+					struct HttpResponse *response,
+					void *data_raw)
 {
   struct ApiRenamePlayerThreadData *data = data_raw;
   char *player_name_raw = data->player_name;
@@ -4125,7 +4125,7 @@ static int ApiRenamePlayerThread(void *data_raw)
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
-  ApiRenamePlayerExt(request, response, data_raw);
+  ApiRenamePlayer_HttpRequest(request, response, data_raw);
 
   FreeThreadData_ApiRenamePlayer(data_raw);
 
