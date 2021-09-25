@@ -2232,9 +2232,13 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	SaveLevelSetup_LastSeries();
 	SaveLevelSetup_SeriesInfo();
 
+#if defined(PLATFORM_EMSCRIPTEN)
+	Request("Close the browser window to quit!", REQ_CONFIRM);
+#else
 	if (!setup.ask_on_quit_program ||
 	    Request("Do you really want to quit?", REQ_ASK | REQ_STAY_CLOSED))
 	  SetGameStatus(GAME_MODE_QUIT);
+#endif
       }
     }
   }
