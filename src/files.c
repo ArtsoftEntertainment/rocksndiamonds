@@ -9094,13 +9094,11 @@ static void FreeThreadData_ApiGetScore(void *data_raw)
   checked_free(data);
 }
 
-static void ApiGetScore_HttpRequest(struct HttpRequest *request,
-				    struct HttpResponse *response,
-				    void *data_raw)
+static boolean SetRequest_ApiGetScore(struct HttpRequest *request,
+				      void *data_raw)
 {
   struct ApiGetScoreThreadData *data = data_raw;
   int level_nr = data->level_nr;
-  char *score_cache_filename = data->score_cache_filename;
 
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
@@ -9118,25 +9116,18 @@ static void ApiGetScore_HttpRequest(struct HttpRequest *request,
 	   getPasswordJSON(setup.api_server_password),
 	   getProgramRealVersionString(),
 	   getProgramPlatformString(),
-	   levelset.identifier, level_nr);
+	   levelset.identifier,
+	   level_nr);
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
-  if (!DoHttpRequest(request, response))
-  {
-    Error("HTTP request failed: %s", GetHttpError());
+  return TRUE;
+}
 
-    return;
-  }
-
-  if (!HTTP_SUCCESS(response->status_code))
-  {
-    Error("server failed to handle request: %d %s",
-	  response->status_code,
-	  response->status_text);
-
-    return;
-  }
+static void HandleResponse_ApiGetScore(struct HttpResponse *response,
+				       void *data_raw)
+{
+  struct ApiGetScoreThreadData *data = data_raw;
 
   if (response->body_size == 0)
   {
@@ -9147,7 +9138,7 @@ static void ApiGetScore_HttpRequest(struct HttpRequest *request,
 
   ConvertHttpResponseBodyToClientEncoding(response);
 
-  char *filename = score_cache_filename;
+  char *filename = data->score_cache_filename;
   FILE *file;
   int i;
 
@@ -9171,14 +9162,47 @@ static void ApiGetScore_HttpRequest(struct HttpRequest *request,
   server_scores.updated = TRUE;
 }
 
+static void ApiGetScore_HttpRequestExt(struct HttpRequest *request,
+				       struct HttpResponse *response,
+				       void *data_raw)
+{
+  if (!SetRequest_ApiGetScore(request, data_raw))
+    return;
+
+  if (!DoHttpRequest(request, response))
+  {
+    Error("HTTP request failed: %s", GetHttpError());
+
+    return;
+  }
+
+  if (!HTTP_SUCCESS(response->status_code))
+  {
+    Error("server failed to handle request: %d %s",
+	  response->status_code,
+	  response->status_text);
+
+    return;
+  }
+
+  HandleResponse_ApiGetScore(response, data_raw);
+}
+
+static void ApiGetScore_HttpRequest(struct HttpRequest *request,
+				    struct HttpResponse *response,
+				    void *data_raw)
+{
+  ApiGetScore_HttpRequestExt(request, response, data_raw);
+
+  FreeThreadData_ApiGetScore(data_raw);
+}
+
 static int ApiGetScoreThread(void *data_raw)
 {
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
   ApiGetScore_HttpRequest(request, response, data_raw);
-
-  FreeThreadData_ApiGetScore(data_raw);
 
   checked_free(request);
   checked_free(response);
@@ -9366,14 +9390,13 @@ static void FreeThreadData_ApiAddScore(void *data_raw)
   checked_free(data);
 }
 
-static void ApiAddScore_HttpRequest(struct HttpRequest *request,
-				    struct HttpResponse *response,
-				    void *data_raw)
+static boolean SetRequest_ApiAddScore(struct HttpRequest *request,
+				      void *data_raw)
 {
   struct ApiAddScoreThreadData *data = data_raw;
-  int level_nr = data->level_nr;
-  char *score_tape_filename = data->score_tape_filename;
   struct ScoreEntry *score_entry = &data->score_entry;
+  char *score_tape_filename = data->score_tape_filename;
+  int level_nr = data->level_nr;
 
   request->hostname = setup.api_server_hostname;
   request->port     = API_SERVER_PORT;
@@ -9386,7 +9409,7 @@ static void ApiAddScore_HttpRequest(struct HttpRequest *request,
   {
     Error("loading and base64 encoding score tape file failed");
 
-    return;
+    return FALSE;
   }
 
   char *player_name_raw = score_entry->name;
@@ -9460,6 +9483,22 @@ static void ApiAddScore_HttpRequest(struct HttpRequest *request,
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
+  return TRUE;
+}
+
+static void HandleResponse_ApiAddScore(struct HttpResponse *response,
+				       void *data_raw)
+{
+  server_scores.uploaded = TRUE;
+}
+
+static void ApiAddScore_HttpRequestExt(struct HttpRequest *request,
+				       struct HttpResponse *response,
+				       void *data_raw)
+{
+  if (!SetRequest_ApiAddScore(request, data_raw))
+    return;
+
   if (!DoHttpRequest(request, response))
   {
     Error("HTTP request failed: %s", GetHttpError());
@@ -9476,7 +9515,16 @@ static void ApiAddScore_HttpRequest(struct HttpRequest *request,
     return;
   }
 
-  server_scores.uploaded = TRUE;
+  HandleResponse_ApiAddScore(response, data_raw);
+}
+
+static void ApiAddScore_HttpRequest(struct HttpRequest *request,
+				    struct HttpResponse *response,
+				    void *data_raw)
+{
+  ApiAddScore_HttpRequestExt(request, response, data_raw);
+
+  FreeThreadData_ApiAddScore(data_raw);
 }
 
 static int ApiAddScoreThread(void *data_raw)
@@ -9485,8 +9533,6 @@ static int ApiAddScoreThread(void *data_raw)
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
   ApiAddScore_HttpRequest(request, response, data_raw);
-
-  FreeThreadData_ApiAddScore(data_raw);
 
   checked_free(request);
   checked_free(response);

@@ -4068,9 +4068,8 @@ static void FreeThreadData_ApiRenamePlayer(void *data_raw)
   checked_free(data);
 }
 
-static void ApiRenamePlayer_HttpRequest(struct HttpRequest *request,
-					struct HttpResponse *response,
-					void *data_raw)
+static boolean SetRequest_ApiRenamePlayer(struct HttpRequest *request,
+					  void *data_raw)
 {
   struct ApiRenamePlayerThreadData *data = data_raw;
   char *player_name_raw = data->player_name;
@@ -4103,6 +4102,22 @@ static void ApiRenamePlayer_HttpRequest(struct HttpRequest *request,
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
+  return TRUE;
+}
+
+static void HandleResponse_ApiRenamePlayer(struct HttpResponse *response,
+					   void *data_raw)
+{
+  // nothing to do here
+}
+
+static void ApiRenamePlayer_HttpRequestExt(struct HttpRequest *request,
+					   struct HttpResponse *response,
+					   void *data_raw)
+{
+  if (!SetRequest_ApiRenamePlayer(request, data_raw))
+    return;
+
   if (!DoHttpRequest(request, response))
   {
     Error("HTTP request failed: %s", GetHttpError());
@@ -4118,6 +4133,17 @@ static void ApiRenamePlayer_HttpRequest(struct HttpRequest *request,
 
     return;
   }
+
+  HandleResponse_ApiRenamePlayer(response, data_raw);
+}
+
+static void ApiRenamePlayer_HttpRequest(struct HttpRequest *request,
+				    struct HttpResponse *response,
+				    void *data_raw)
+{
+  ApiRenamePlayer_HttpRequestExt(request, response, data_raw);
+
+  FreeThreadData_ApiRenamePlayer(data_raw);
 }
 
 static int ApiRenamePlayerThread(void *data_raw)
@@ -4126,8 +4152,6 @@ static int ApiRenamePlayerThread(void *data_raw)
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
   ApiRenamePlayer_HttpRequest(request, response, data_raw);
-
-  FreeThreadData_ApiRenamePlayer(data_raw);
 
   checked_free(request);
   checked_free(response);
