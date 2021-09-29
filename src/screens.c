@@ -4360,6 +4360,8 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
     if (!create_user ||
 	!Request("Use current setup values for the new player?", REQ_ASK))
       LoadSetup();
+    else
+      setup.player_uuid = getStringCopy(getUUID());
   }
 
   char *setup_filename = getSetupFilename();
