@@ -5232,7 +5232,6 @@ static void InitSetup(void)
   LoadUserSetup();				// global user number
 
   LoadSetup();					// global setup info
-  LoadSetup_AutoSetup();			// global auto setup info
 
   // set some options from setup file
 

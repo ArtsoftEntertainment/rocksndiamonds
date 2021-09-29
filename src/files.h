@@ -76,14 +76,17 @@ void LoadLocalAndServerScore(int, boolean);
 void LoadUserNames(void);
 
 void LoadSetupFromFilename(char *);
-void LoadSetup(void);
-void SaveSetup(void);
+void LoadSetup_Default(void);
+void SaveSetup_Default(void);
 
 void LoadSetup_AutoSetup(void);
 void SaveSetup_AutoSetup(void);
 
 void LoadSetup_EditorCascade(void);
 void SaveSetup_EditorCascade(void);
+
+void LoadSetup(void);
+void SaveSetup(void);
 
 void SaveSetup_AddGameControllerMapping(char *);
 

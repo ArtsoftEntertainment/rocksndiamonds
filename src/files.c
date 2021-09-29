@@ -10908,7 +10908,7 @@ static void setSetupInfoFromTokenInfo(SetupFileHash *setup_file_hash,
 			    token_info[token_nr].text);
 }
 
-static void decodeSetupFileHash(SetupFileHash *setup_file_hash)
+static void decodeSetupFileHash_Default(SetupFileHash *setup_file_hash)
 {
   int i, pnr;
 
@@ -11064,7 +11064,7 @@ void LoadSetupFromFilename(char *filename)
 
   if (setup_file_hash)
   {
-    decodeSetupFileHash(setup_file_hash);
+    decodeSetupFileHash_Default(setup_file_hash);
 
     freeSetupFileHash(setup_file_hash);
   }
@@ -11103,7 +11103,7 @@ static void LoadSetup_SpecialPostProcessing(void)
   }
 }
 
-void LoadSetup(void)
+void LoadSetup_Default(void)
 {
   char *filename;
 
@@ -11164,6 +11164,13 @@ void LoadSetup_EditorCascade(void)
   free(filename);
 }
 
+void LoadSetup(void)
+{
+  LoadSetup_Default();
+  LoadSetup_AutoSetup();
+  LoadSetup_EditorCascade();
+}
+
 static void addGameControllerMappingToHash(SetupFileHash *mappings_hash,
 					   char *mapping_line)
 {
@@ -11213,7 +11220,7 @@ static void LoadSetup_ReadGameControllerMappings(SetupFileHash *mappings_hash,
   fclose(file);
 }
 
-void SaveSetup(void)
+void SaveSetup_Default(void)
 {
   char *filename = getSetupFilename();
   FILE *file;
@@ -11372,6 +11379,13 @@ void SaveSetup_EditorCascade(void)
   SetFilePermissions(filename, PERMS_PRIVATE);
 
   free(filename);
+}
+
+void SaveSetup(void)
+{
+  SaveSetup_Default();
+  SaveSetup_AutoSetup();
+  SaveSetup_EditorCascade();
 }
 
 static void SaveSetup_WriteGameControllerMappings(SetupFileHash *mappings_hash,
