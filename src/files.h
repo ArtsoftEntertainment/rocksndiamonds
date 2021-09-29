@@ -82,6 +82,9 @@ void SaveSetup_Default(void);
 void LoadSetup_AutoSetup(void);
 void SaveSetup_AutoSetup(void);
 
+void LoadSetup_ServerSetup(void);
+void SaveSetup_ServerSetup(void);
+
 void LoadSetup_EditorCascade(void);
 void SaveSetup_EditorCascade(void);
 

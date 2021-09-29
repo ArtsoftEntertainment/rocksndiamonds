@@ -674,6 +674,7 @@
 #define USERSETUP_FILENAME	"usersetup.conf"
 #define AUTOSETUP_FILENAME	"autosetup.conf"
 #define LEVELSETUP_FILENAME	"levelsetup.conf"
+#define SERVERSETUP_FILENAME	"serversetup.conf"
 #define EDITORSETUP_FILENAME	"editorsetup.conf"
 #define EDITORCASCADE_FILENAME	"editorcascade.conf"
 #define HELPANIM_FILENAME	"helpanim.conf"

@@ -9722,10 +9722,6 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.player_name,				"player_name"
   },
   {
-    TYPE_STRING,
-    &setup.player_uuid,				"player_uuid"
-  },
-  {
     TYPE_SWITCH,
     &setup.multiple_users,			"multiple_users"
   },
@@ -9954,26 +9950,6 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.network_server_hostname,		"network_server_hostname"
   },
   {
-    TYPE_SWITCH,
-    &setup.use_api_server,          TEST_PREFIX	"use_api_server"
-  },
-  {
-    TYPE_STRING,
-    &setup.api_server_hostname,     TEST_PREFIX	"api_server_hostname"
-  },
-  {
-    TYPE_STRING,
-    &setup.api_server_password,     TEST_PREFIX	"api_server_password"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_for_uploading_tapes, TEST_PREFIX	"ask_for_uploading_tapes"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.provide_uploading_tapes, TEST_PREFIX	"provide_uploading_tapes"
-  },
-  {
     TYPE_STRING,
     &setup.touch.control_type,			"touch.control_type"
   },
@@ -10020,6 +9996,34 @@ static struct TokenInfo auto_setup_tokens[] =
   {
     TYPE_INTEGER,
     &setup.auto_setup.editor_zoom_tilesize,	"editor.zoom_tilesize"
+  },
+};
+
+static struct TokenInfo server_setup_tokens[] =
+{
+  {
+    TYPE_STRING,
+    &setup.player_uuid,				"player_uuid"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.use_api_server,          TEST_PREFIX	"use_api_server"
+  },
+  {
+    TYPE_STRING,
+    &setup.api_server_hostname,     TEST_PREFIX	"api_server_hostname"
+  },
+  {
+    TYPE_STRING,
+    &setup.api_server_password,     TEST_PREFIX	"api_server_password"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.ask_for_uploading_tapes, TEST_PREFIX	"ask_for_uploading_tapes"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.provide_uploading_tapes, TEST_PREFIX	"provide_uploading_tapes"
   },
 };
 
@@ -10544,7 +10548,6 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   int i;
 
   si->player_name = getStringCopy(getDefaultUserName(user.nr));
-  si->player_uuid = NULL;	// (will be set later)
 
   si->multiple_users = TRUE;
 
@@ -10608,12 +10611,6 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->network_mode = FALSE;
   si->network_player_nr = 0;		// first player
   si->network_server_hostname = getStringCopy(STR_NETWORK_AUTO_DETECT);
-
-  si->use_api_server = TRUE;
-  si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
-  si->api_server_password = getStringCopy(UNDEFINED_PASSWORD);
-  si->ask_for_uploading_tapes = TRUE;
-  si->provide_uploading_tapes = TRUE;
 
   si->touch.control_type = getStringCopy(TOUCH_CONTROL_DEFAULT);
   si->touch.move_distance = TOUCH_MOVE_DISTANCE_DEFAULT;	// percent
@@ -10821,6 +10818,17 @@ static void setSetupInfoToDefaults_AutoSetup(struct SetupInfo *si)
   si->auto_setup.editor_zoom_tilesize = MINI_TILESIZE;
 }
 
+static void setSetupInfoToDefaults_ServerSetup(struct SetupInfo *si)
+{
+  si->player_uuid = NULL;	// (will be set later)
+
+  si->use_api_server = TRUE;
+  si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
+  si->api_server_password = getStringCopy(UNDEFINED_PASSWORD);
+  si->ask_for_uploading_tapes = TRUE;
+  si->provide_uploading_tapes = TRUE;
+}
+
 static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
 {
   si->editor_cascade.el_bd		= TRUE;
@@ -11008,6 +11016,19 @@ static void decodeSetupFileHash_AutoSetup(SetupFileHash *setup_file_hash)
 			      auto_setup_tokens[i].text));
 }
 
+static void decodeSetupFileHash_ServerSetup(SetupFileHash *setup_file_hash)
+{
+  int i;
+
+  if (!setup_file_hash)
+    return;
+
+  for (i = 0; i < ARRAY_SIZE(server_setup_tokens); i++)
+    setSetupInfo(server_setup_tokens, i,
+		 getHashEntry(setup_file_hash,
+			      server_setup_tokens[i].text));
+}
+
 static void decodeSetupFileHash_EditorCascade(SetupFileHash *setup_file_hash)
 {
   int i;
@@ -11093,14 +11114,6 @@ static void LoadSetup_SpecialPostProcessing(void)
   // make sure that scroll delay value stays inside valid range
   setup.scroll_delay_value =
     MIN(MAX(MIN_SCROLL_DELAY, setup.scroll_delay_value), MAX_SCROLL_DELAY);
-
-  if (setup.player_uuid == NULL)
-  {
-    // player UUID does not yet exist in setup file
-    setup.player_uuid = getStringCopy(getUUID());
-
-    SaveSetup();
-  }
 }
 
 void LoadSetup_Default(void)
@@ -11144,6 +11157,34 @@ void LoadSetup_AutoSetup(void)
   free(filename);
 }
 
+void LoadSetup_ServerSetup(void)
+{
+  char *filename = getPath2(getSetupDir(), SERVERSETUP_FILENAME);
+  SetupFileHash *setup_file_hash = NULL;
+
+  // always start with reliable default values
+  setSetupInfoToDefaults_ServerSetup(&setup);
+
+  setup_file_hash = loadSetupFileHash(filename);
+
+  if (setup_file_hash)
+  {
+    decodeSetupFileHash_ServerSetup(setup_file_hash);
+
+    freeSetupFileHash(setup_file_hash);
+  }
+
+  free(filename);
+
+  if (setup.player_uuid == NULL)
+  {
+    // player UUID does not yet exist in setup file
+    setup.player_uuid = getStringCopy(getUUID());
+
+    SaveSetup_ServerSetup();
+  }
+}
+
 void LoadSetup_EditorCascade(void)
 {
   char *filename = getPath2(getSetupDir(), EDITORCASCADE_FILENAME);
@@ -11168,6 +11209,7 @@ void LoadSetup(void)
 {
   LoadSetup_Default();
   LoadSetup_AutoSetup();
+  LoadSetup_ServerSetup();
   LoadSetup_EditorCascade();
 }
 
@@ -11245,7 +11287,6 @@ void SaveSetup_Default(void)
 	global_setup_tokens[i].value == &setup.graphics_set		||
 	global_setup_tokens[i].value == &setup.volume_simple		||
 	global_setup_tokens[i].value == &setup.network_mode		||
-	global_setup_tokens[i].value == &setup.use_api_server		||
 	global_setup_tokens[i].value == &setup.touch.control_type	||
 	global_setup_tokens[i].value == &setup.touch.grid_xsize[0]	||
 	global_setup_tokens[i].value == &setup.touch.grid_xsize[1])
@@ -11352,6 +11393,41 @@ void SaveSetup_AutoSetup(void)
   free(filename);
 }
 
+void SaveSetup_ServerSetup(void)
+{
+  char *filename = getPath2(getSetupDir(), SERVERSETUP_FILENAME);
+  FILE *file;
+  int i;
+
+  InitUserDataDirectory();
+
+  if (!(file = fopen(filename, MODE_WRITE)))
+  {
+    Warn("cannot write server setup file '%s'", filename);
+
+    free(filename);
+
+    return;
+  }
+
+  fprintFileHeader(file, SERVERSETUP_FILENAME);
+
+  for (i = 0; i < ARRAY_SIZE(server_setup_tokens); i++)
+  {
+    // just to make things nicer :)
+    if (server_setup_tokens[i].value == &setup.use_api_server)
+      fprintf(file, "\n");
+
+    fprintf(file, "%s\n", getSetupLine(server_setup_tokens, "", i));
+  }
+
+  fclose(file);
+
+  SetFilePermissions(filename, PERMS_PRIVATE);
+
+  free(filename);
+}
+
 void SaveSetup_EditorCascade(void)
 {
   char *filename = getPath2(getSetupDir(), EDITORCASCADE_FILENAME);
@@ -11385,6 +11461,7 @@ void SaveSetup(void)
 {
   SaveSetup_Default();
   SaveSetup_AutoSetup();
+  SaveSetup_ServerSetup();
   SaveSetup_EditorCascade();
 }
 
