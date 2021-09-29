@@ -38,7 +38,7 @@
 #if defined(AMIGA) || defined(__AMIGA) || defined(__amigados__)
 #define PLATFORM_AMIGA
 #undef  PLATFORM_STRING
-#define PLATFORM_STRING "AmigaOS"
+#define PLATFORM_STRING "Amiga"
 #endif
 
 #if defined(__BEOS__)
@@ -88,7 +88,7 @@
 #if defined(__APPLE__) && defined(__MACH__)
 #define PLATFORM_MACOSX
 #undef  PLATFORM_STRING
-#define PLATFORM_STRING "Mac OS X"
+#define PLATFORM_STRING "Mac"
 #endif
 
 #if defined(__NetBSD__)
