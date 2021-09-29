@@ -4356,12 +4356,17 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
     // temporarily change active user to edited user
     user.nr = type_name_nr;
 
-    // load setup of edited user (unless creating user with current setup)
-    if (!create_user ||
-	!Request("Use current setup values for the new player?", REQ_ASK))
-      LoadSetup();
-    else
+    if (create_user &&
+        Request("Use current setup values for the new player?", REQ_ASK))
+    {
+      // use current setup values for new user, but create new player UUID
       setup.player_uuid = getStringCopy(getUUID());
+    }
+    else
+    {
+      // load setup for existing user (or start with defaults for new user)
+      LoadSetup();
+    }
   }
 
   char *setup_filename = getSetupFilename();
