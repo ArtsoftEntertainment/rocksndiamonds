@@ -170,10 +170,10 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
 				struct HttpResponse *response,
 				char *send_buffer,
 				char *recv_buffer,
-				int max_http_buffer_size)
+				int max_http_buffer_size,
+				SDLNet_SocketSet socket_set,
+				TCPsocket socket)
 {
-  SDLNet_SocketSet socket_set;
-  TCPsocket socket;
   IPaddress ip;
   int server_host;
 
@@ -286,9 +286,6 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
     return FALSE;
   }
 
-  SDLNet_TCP_DelSocket(socket_set, socket);
-  SDLNet_TCP_Close(socket);
-
   Debug("network:http", "server response: %d %s",
 	response->status_code,
 	response->status_text);
@@ -302,10 +299,23 @@ boolean DoHttpRequest(struct HttpRequest *request,
   int max_http_buffer_size = MAX_HTTP_HEAD_SIZE + MAX_HTTP_BODY_SIZE;
   char *send_buffer = checked_malloc(max_http_buffer_size + 1);
   char *recv_buffer = checked_malloc(max_http_buffer_size + 1);
+  SDLNet_SocketSet socket_set = NULL;
+  TCPsocket socket = NULL;
 
   boolean success = DoHttpRequestExt(request, response,
 				     send_buffer, recv_buffer,
-				     max_http_buffer_size);
+				     max_http_buffer_size,
+				     socket_set, socket);
+  if (socket_set != NULL)
+  {
+    if (socket != NULL)
+    {
+      SDLNet_TCP_DelSocket(socket_set, socket);
+      SDLNet_TCP_Close(socket);
+    }
+
+    SDLNet_FreeSocketSet(socket_set);
+  }
 
   checked_free(send_buffer);
   checked_free(recv_buffer);
