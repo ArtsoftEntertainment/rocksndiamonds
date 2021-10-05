@@ -8476,8 +8476,17 @@ void DumpTape(struct TapeInfo *tape)
     Print("[tas_keys]");
   if (tape->property_bits & TAPE_PROPERTY_SMALL_GRAPHICS)
     Print("[small_graphics]");
-
   Print("\n");
+
+  int year2 = tape->date / 10000;
+  int year4 = (year2 < 70 ? 2000 + year2 : 1900 + year2);
+  int month_index_raw = (tape->date / 100) % 100;
+  int month_index = month_index_raw % 12;	// prevent invalid index
+  int month = month_index + 1;
+  int day = tape->date % 100;
+
+  Print("Tape date: %04d-%02d-%02d\n", year4, month, day);
+
   PrintLine("-", 79);
 
   tape_frame_counter = 0;
