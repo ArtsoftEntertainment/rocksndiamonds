@@ -1864,7 +1864,8 @@ static int AutoPlayTapesExt(boolean initialize)
   // clear timestamp for batch tape upload (required after interactive upload)
   global.autoplay_time = 0;
 
-  if (program.headless)
+  // exit if running headless or if visually auto-playing tapes
+  if (program.headless || global.autoplay_mode != AUTOPLAY_MODE_UPLOAD)
     CloseAllAndExit(0);
 
   // when running interactively, restore last selected level set and number
