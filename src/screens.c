@@ -9987,7 +9987,19 @@ static boolean OfferUploadTapes(void)
   int num_tapes_uploaded = UploadTapes();
   char message[100];
 
-  sprintf(message, "%d tapes uploaded!", num_tapes_uploaded);
+  if (num_tapes_uploaded < 0)
+  {
+    Request("Cannot upload tapes to score server!", REQ_CONFIRM);
+
+    return FALSE;
+  }
+
+  if (num_tapes_uploaded == 0)
+    sprintf(message, "No tapes uploaded!");
+  else if (num_tapes_uploaded == 1)
+    sprintf(message, "1 tape uploaded!");
+  else
+    sprintf(message, "%d tapes uploaded!", num_tapes_uploaded);
 
   Request(message, REQ_CONFIRM);
 
@@ -9996,7 +10008,7 @@ static boolean OfferUploadTapes(void)
 
   SaveSetup();
 
-  return (num_tapes_uploaded > 0);
+  return TRUE;
 }
 
 void CheckUploadTapes(void)

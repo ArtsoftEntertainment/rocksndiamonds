@@ -1400,7 +1400,7 @@ static void AutoPlayTapes_SetScoreEntry(int score, int time)
   server_scores.uploaded = FALSE;
 }
 
-static void AutoPlayTapes_WaitForUpload(void)
+static boolean AutoPlayTapes_WaitForUpload(void)
 {
   unsigned int upload_delay = 0;
   unsigned int upload_delay_value = 10000;
@@ -1415,7 +1415,10 @@ static void AutoPlayTapes_WaitForUpload(void)
       PrintNoLog("\r");
       Print("- uploading score tape to score server - TIMEOUT.\n");
 
-      Fail("cannot upload score tape to score server");
+      if (program.headless)
+	Fail("cannot upload score tape to score server");
+
+      return FALSE;
     }
 
     UPDATE_BUSY_STATE();
@@ -1425,6 +1428,8 @@ static void AutoPlayTapes_WaitForUpload(void)
 
   PrintNoLog("\r");
   Print("- uploading score tape to score server - uploaded.\n");
+
+  return TRUE;
 }
 
 static int AutoPlayTapesExt(boolean initialize)
@@ -1829,13 +1834,20 @@ static int AutoPlayTapesExt(boolean initialize)
 
       SaveServerScoreFromFile(level_nr, autoplay.tape_filename);
 
-      AutoPlayTapes_WaitForUpload();
+      boolean success = AutoPlayTapes_WaitForUpload();
 
       if (use_temporary_tape_file)
         unlink(autoplay.tape_filename);
 
       // required for uploading multiple tapes
       autoplay.tape_filename = NULL;
+
+      if (!success)
+      {
+	num_tapes = -1;
+
+	break;
+      }
 
       continue;
     }
@@ -1857,7 +1869,12 @@ static int AutoPlayTapesExt(boolean initialize)
   {
     Print("\n");
     PrintLine("=", 79);
-    Print("SUMMARY: %d tapes uploaded.\n", num_tapes);
+
+    if (num_tapes >= 0)
+      Print("SUMMARY: %d tapes uploaded.\n", num_tapes);
+    else
+      Print("SUMMARY: Uploading tapes failed.\n");
+
     PrintLine("=", 79);
   }
 
