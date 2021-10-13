@@ -6332,9 +6332,6 @@ void OpenAll(void)
 
   DrawMainMenu();
 
-  // needed once to offer uploading score tapes after starting the program
-  CheckUploadTapes();
-
 #if 0
   Debug("internal:path", "SDL_GetBasePath() == '%s'",
 	SDL_GetBasePath());

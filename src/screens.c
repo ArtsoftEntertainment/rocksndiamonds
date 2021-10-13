@@ -1743,6 +1743,9 @@ void DrawMainMenu(void)
   OpenDoor(DOOR_CLOSE_1 | DOOR_OPEN_2);
 
   SyncEmscriptenFilesystem();
+
+  // needed once to upload tapes (after program start or after user change)
+  CheckUploadTapes();
 }
 
 static void gotoTopLevelDir(void)
@@ -5116,9 +5119,6 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  SetGameStatus(GAME_MODE_MAIN);
 
 	  DrawMainMenu();
-
-	  // needed once to offer uploading score tapes after changing user
-	  CheckUploadTapes();
 	}
       }
     }
@@ -10019,6 +10019,9 @@ void CheckUploadTapes(void)
   if (!setup.ask_for_uploading_tapes)
     return;
 
+  // after asking for uploading all tapes once, do not ask again
+  setup.ask_for_uploading_tapes = FALSE;
+
   if (directoryExists(getTapeDir(NULL)))
   {
     boolean tapes_uploaded = OfferUploadTapes();
@@ -10032,9 +10035,6 @@ void CheckUploadTapes(void)
     // if tapes directory does not exist yet, never offer uploading all tapes
     setup.provide_uploading_tapes = FALSE;
   }
-
-  // after asking for uploading all tapes once, do not ask again
-  setup.ask_for_uploading_tapes = FALSE;
 
   SaveSetup();
 }
