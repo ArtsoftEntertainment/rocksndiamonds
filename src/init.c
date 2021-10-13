@@ -6332,6 +6332,7 @@ void OpenAll(void)
 
   DrawMainMenu();
 
+  // needed once to offer uploading score tapes after starting the program
   CheckUploadTapes();
 
 #if 0

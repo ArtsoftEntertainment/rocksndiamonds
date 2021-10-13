@@ -5116,6 +5116,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  SetGameStatus(GAME_MODE_MAIN);
 
 	  DrawMainMenu();
+
+	  // needed once to offer uploading score tapes after changing user
+	  CheckUploadTapes();
 	}
       }
     }
