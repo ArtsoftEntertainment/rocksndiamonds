@@ -100,7 +100,7 @@ ifeq ($(PLATFORM),emscripten)
 SDL_LIBS = -s USE_SDL_IMAGE=2 -s USE_SDL_MIXER=2 -s USE_SDL_NET=2 -s USE_ZLIB=1
 SDL_FMTS = -s SDL2_IMAGE_FORMATS='["bmp","png","pcx","xpm"]'
 EXTRA_CFLAGS = $(SDL_LIBS)
-EXTRA_LDFLAGS = $(SDL_FMTS) -s INITIAL_MEMORY=81920000 -s ALLOW_MEMORY_GROWTH=1 --preload-file ../graphics/ --preload-file ../sounds/ --preload-file ../levels/ --preload-file ../music/ -s NO_EXIT_RUNTIME=0 -s ASYNCIFY -O2 -lidbfs.js
+EXTRA_LDFLAGS = $(SDL_FMTS) -s INITIAL_MEMORY=81920000 -s ALLOW_MEMORY_GROWTH=1 --preload-file ../conf/ --preload-file ../docs/ --preload-file ../levels/ --preload-file ../graphics/ --preload-file ../sounds/ --preload-file ../music/ -s NO_EXIT_RUNTIME=0 -s ASYNCIFY -O2 -lidbfs.js
 else
 SDL_LIBS = -lSDL2_image -lSDL2_mixer -lSDL2_net
 endif
