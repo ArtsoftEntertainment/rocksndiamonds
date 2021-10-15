@@ -4479,6 +4479,8 @@ void InitGame(void)
     if (setup.sound_music)
       PlayLevelMusic();
   }
+
+  SetPlayfieldMouseCursorEnabled(!game.use_mouse_actions);
 }
 
 void UpdateEngineValues(int actual_scroll_x, int actual_scroll_y,

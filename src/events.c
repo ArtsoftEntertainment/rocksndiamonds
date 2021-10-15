@@ -38,6 +38,7 @@ static boolean cursor_inside_playfield = FALSE;
 static int cursor_mode_last = CURSOR_DEFAULT;
 static unsigned int special_cursor_delay = 0;
 static unsigned int special_cursor_delay_value = 1000;
+static boolean special_cursor_enabled = FALSE;
 
 static boolean stop_processing_events = FALSE;
 
@@ -47,6 +48,11 @@ static void ClearTouchInfo(void);
 static void HandleNoEvent(void);
 static void HandleEventActions(void);
 
+
+void SetPlayfieldMouseCursorEnabled(boolean enabled)
+{
+  special_cursor_enabled = enabled;
+}
 
 // event filter to set mouse x/y position (for pointer class global animations)
 // (this is especially required to ensure smooth global animation mouse pointer
@@ -340,11 +346,10 @@ static void HandleMouseCursor(void)
 
     if (gfx.cursor_mode != CURSOR_PLAYFIELD &&
 	cursor_inside_playfield &&
+	special_cursor_enabled &&
 	DelayReached(&special_cursor_delay, special_cursor_delay_value))
     {
-      if (level.game_engine_type != GAME_ENGINE_TYPE_MM ||
-	  tile_cursor.enabled)
-	SetMouseCursor(CURSOR_PLAYFIELD);
+      SetMouseCursor(CURSOR_PLAYFIELD);
     }
   }
   else if (gfx.cursor_mode != CURSOR_DEFAULT)
@@ -523,6 +528,10 @@ void HandleButtonEvent(ButtonEvent *event)
 
   // for any mouse button event, disable playfield tile cursor
   SetTileCursorEnabled(FALSE);
+
+  // for any mouse button event, disable playfield mouse cursor
+  if (cursor_inside_playfield)
+    SetPlayfieldMouseCursorEnabled(FALSE);
 
 #if defined(HAS_SCREEN_KEYBOARD)
   if (video.shifted_up)
@@ -2156,6 +2165,10 @@ void HandleKey(Key key, int key_status)
       // for MM style levels, handle in-game keyboard input in HandleJoystick()
       if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
 	joy |= key_action;
+
+      // for any keyboard event, enable playfield mouse cursor
+      if (key_action && key_status == KEY_PRESSED)
+	SetPlayfieldMouseCursorEnabled(TRUE);
     }
   }
   else
@@ -2598,6 +2611,10 @@ void HandleJoystick(void)
     if (dx || dy || button)
       SetTileCursorEnabled(TRUE);
   }
+
+  // for any joystick event, enable playfield mouse cursor
+  if (dx || dy || button)
+    SetPlayfieldMouseCursorEnabled(TRUE);
 
   if (joytest && !button && !DelayReached(&joytest_delay, joytest_delay_value))
   {

@@ -21,6 +21,8 @@
 #define USEREVENT_GADGET_PRESSED	3
 
 
+void SetPlayfieldMouseCursorEnabled(boolean);
+
 int FilterMouseMotionEvents(void *, Event *);
 boolean NextValidEvent(Event *);
 void StopProcessingEvents(void);
