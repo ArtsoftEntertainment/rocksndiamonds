@@ -8401,7 +8401,7 @@ void SaveScoreTape(int nr)
   char *filename = getScoreTapeFilename(tape.score_tape_basename, nr);
 
   // used instead of "leveldir_current->subdir" (for network games)
-  InitScoreTapeDirectory(levelset.identifier, nr);
+  InitScoreDirectory(levelset.identifier);
 
   SaveTapeExt(filename);
 }

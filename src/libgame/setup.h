@@ -291,7 +291,6 @@ char *getCustomMusicDirectory(void);
 void InitTapeDirectory(char *);
 void InitScoreDirectory(char *);
 void InitScoreCacheDirectory(char *);
-void InitScoreTapeDirectory(char *, int);
 void InitUserLevelDirectory(char *);
 void InitNetworkLevelDirectory(char *);
 void InitLevelSetupDirectory(char *);
