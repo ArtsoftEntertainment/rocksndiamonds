@@ -1540,7 +1540,7 @@ static int AutoPlayTapesExt(boolean initialize)
       // * solution tape may have native format (like Supaplex solution files)
 
       SaveScoreTape(level_nr);
-      SaveServerScore(level_nr);
+      SaveServerScore(level_nr, TRUE);
 
       AutoPlayTapes_WaitForUpload();
     }
@@ -1832,7 +1832,7 @@ static int AutoPlayTapesExt(boolean initialize)
 	}
       }
 
-      SaveServerScoreFromFile(level_nr, autoplay.tape_filename);
+      SaveServerScoreFromFile(level_nr, TRUE, autoplay.tape_filename);
 
       boolean success = AutoPlayTapes_WaitForUpload();
 

@@ -1106,7 +1106,7 @@ void ContinueMoving(int, int);
 void Bang(int, int);
 void InitMovDir(int, int);
 void InitAmoebaNr(int, int);
-void NewHighScore(int);
+void NewHighScore(int, boolean);
 
 void TestIfGoodThingHitsBadThing(int, int, int);
 void TestIfBadThingHitsGoodThing(int, int, int);
@@ -4965,6 +4965,7 @@ void GameEnd(void)
 {
   // used instead of "level_nr" (needed for network games)
   int last_level_nr = levelset.level_nr;
+  boolean tape_saved = FALSE;
 
   game.LevelSolved_GameEnd = TRUE;
 
@@ -4974,7 +4975,8 @@ void GameEnd(void)
     if (!global.use_envelope_request)
       CloseDoor(DOOR_CLOSE_1);
 
-    SaveTapeChecked_LevelSolved(tape.level_nr);		// ask to save tape
+    // ask to save tape
+    tape_saved = SaveTapeChecked_LevelSolved(tape.level_nr);
 
     // set unique basename for score tape (also saved in high score table)
     strcpy(tape.score_tape_basename, getScoreTapeBasename(setup.player_name));
@@ -5009,7 +5011,7 @@ void GameEnd(void)
   }
 
   // save score and score tape before potentially erasing tape below
-  NewHighScore(last_level_nr);
+  NewHighScore(last_level_nr, tape_saved);
 
   if (setup.increment_levels &&
       level_nr < leveldir_current->last_level &&
@@ -5117,7 +5119,7 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry,
   return -1;
 }
 
-void NewHighScore(int level_nr)
+void NewHighScore(int level_nr, boolean tape_saved)
 {
   struct ScoreEntry new_entry = {{ 0 }}; // (prevent warning from GCC bug 53119)
   boolean one_per_name = FALSE;
@@ -5143,7 +5145,7 @@ void NewHighScore(int level_nr)
   if (game.LevelSolved_SaveTape)
   {
     SaveScoreTape(level_nr);
-    SaveServerScore(level_nr);
+    SaveServerScore(level_nr, tape_saved);
   }
 }
 

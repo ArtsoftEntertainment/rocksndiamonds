@@ -9432,11 +9432,13 @@ static char *get_file_base64(char *filename)
 struct ApiAddScoreThreadData
 {
   int level_nr;
+  boolean tape_saved;
   char *score_tape_filename;
   struct ScoreEntry score_entry;
 };
 
-static void *CreateThreadData_ApiAddScore(int nr, char *score_tape_filename)
+static void *CreateThreadData_ApiAddScore(int nr, boolean tape_saved,
+					  char *score_tape_filename)
 {
   struct ApiAddScoreThreadData *data =
     checked_malloc(sizeof(struct ApiAddScoreThreadData));
@@ -9446,6 +9448,7 @@ static void *CreateThreadData_ApiAddScore(int nr, char *score_tape_filename)
     score_tape_filename = getScoreTapeFilename(score_entry->tape_basename, nr);
 
   data->level_nr = nr;
+  data->tape_saved = tape_saved;
   data->score_entry = *score_entry;
   data->score_tape_filename = getStringCopy(score_tape_filename);
 
@@ -9466,6 +9469,7 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request,
   struct ApiAddScoreThreadData *data = data_raw;
   struct ScoreEntry *score_entry = &data->score_entry;
   char *score_tape_filename = data->score_tape_filename;
+  boolean tape_saved = data->tape_saved;
   int level_nr = data->level_nr;
 
   request->hostname = setup.api_server_hostname;
@@ -9519,6 +9523,7 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request,
 	   "  \"score\":                \"%d\",\n"
 	   "  \"time\":                 \"%d\",\n"
 	   "  \"tape_basename\":        \"%s\",\n"
+	   "  \"tape_saved\":           \"%d\",\n"
 	   "  \"tape\":                 \"%s\"\n"
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
@@ -9539,6 +9544,7 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request,
 	   score_entry->score,
 	   score_entry->time,
 	   score_entry->tape_basename,
+	   tape_saved,
 	   tape_base64);
 
   checked_free(tape_base64);
@@ -9671,30 +9677,32 @@ static int ApiAddScoreThread(void *data_raw)
   return 0;
 }
 
-static void ApiAddScoreAsThread(int nr, char *score_tape_filename)
+static void ApiAddScoreAsThread(int nr, boolean tape_saved,
+				char *score_tape_filename)
 {
   struct ApiAddScoreThreadData *data =
-    CreateThreadData_ApiAddScore(nr, score_tape_filename);
+    CreateThreadData_ApiAddScore(nr, tape_saved, score_tape_filename);
 
   ExecuteAsThread(ApiAddScoreThread,
 		  "ApiAddScore", data,
 		  "upload score to server");
 }
 
-void SaveServerScore(int nr)
+void SaveServerScore(int nr, boolean tape_saved)
 {
   if (!runtime.use_api_server)
     return;
 
-  ApiAddScoreAsThread(nr, NULL);
+  ApiAddScoreAsThread(nr, tape_saved, NULL);
 }
 
-void SaveServerScoreFromFile(int nr, char *score_tape_filename)
+void SaveServerScoreFromFile(int nr, boolean tape_saved,
+			     char *score_tape_filename)
 {
   if (!runtime.use_api_server)
     return;
 
-  ApiAddScoreAsThread(nr, score_tape_filename);
+  ApiAddScoreAsThread(nr, tape_saved, score_tape_filename);
 }
 
 void LoadLocalAndServerScore(int nr, boolean download_score)

@@ -68,8 +68,8 @@ void LoadScore(int);
 void SaveScore(int);
 
 void LoadServerScore(int, boolean);
-void SaveServerScore(int);
-void SaveServerScoreFromFile(int, char *);
+void SaveServerScore(int, boolean);
+void SaveServerScoreFromFile(int, boolean, char *);
 
 void LoadLocalAndServerScore(int, boolean);
 
