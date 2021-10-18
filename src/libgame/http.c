@@ -171,17 +171,17 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
 				char *send_buffer,
 				char *recv_buffer,
 				int max_http_buffer_size,
-				SDLNet_SocketSet socket_set,
-				TCPsocket socket)
+				SDLNet_SocketSet *socket_set,
+				TCPsocket *socket)
 {
   IPaddress ip;
   int server_host;
 
   SetHttpResponseToDefaults(response);
 
-  socket_set = SDLNet_AllocSocketSet(1);
+  *socket_set = SDLNet_AllocSocketSet(1);
 
-  if (socket_set == NULL)
+  if (*socket_set == NULL)
   {
     SetHttpError("cannot allocate socket set");
 
@@ -205,9 +205,9 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
         (server_host >>  8) & 0xff,
         (server_host >>  0) & 0xff);
 
-  socket = SDLNet_TCP_Open(&ip);
+  *socket = SDLNet_TCP_Open(&ip);
 
-  if (socket == NULL)
+  if (*socket == NULL)
   {
     SetHttpError("cannot connect to host '%s': %s", request->hostname,
 		 SDLNet_GetError());
@@ -215,7 +215,7 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
     return FALSE;
   }
 
-  if (SDLNet_TCP_AddSocket(socket_set, socket) == -1)
+  if (SDLNet_TCP_AddSocket(*socket_set, *socket) == -1)
   {
     SetHttpError("cannot add socket to socket set");
 
@@ -242,7 +242,7 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
   Debug("network:http", "client request:\n--- snip ---\n%s\n--- snip ---",
 	send_buffer);
 
-  int send_bytes = SDLNet_TCP_Send(socket, send_buffer, strlen(send_buffer));
+  int send_bytes = SDLNet_TCP_Send(*socket, send_buffer, strlen(send_buffer));
 
   if (send_bytes != strlen(send_buffer))
   {
@@ -251,7 +251,7 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
     return FALSE;
   }
 
-  int recv_bytes = SDLNet_TCP_Recv(socket, recv_buffer, max_http_buffer_size);
+  int recv_bytes = SDLNet_TCP_Recv(*socket, recv_buffer, max_http_buffer_size);
 
   if (recv_bytes <= 0)
   {
@@ -305,7 +305,7 @@ boolean DoHttpRequest(struct HttpRequest *request,
   boolean success = DoHttpRequestExt(request, response,
 				     send_buffer, recv_buffer,
 				     max_http_buffer_size,
-				     socket_set, socket);
+				     &socket_set, &socket);
   if (socket_set != NULL)
   {
     if (socket != NULL)
