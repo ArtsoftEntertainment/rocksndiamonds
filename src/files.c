@@ -9251,6 +9251,10 @@ static void ApiGetScore_HttpRequestExt(struct HttpRequest *request,
 
   if (!HTTP_SUCCESS(response->status_code))
   {
+    // do not show error message if no scores found for this level set
+    if (response->status_code == 404)
+      return;
+
     Error("server failed to handle request: %d %s",
 	  response->status_code,
 	  response->status_text);
