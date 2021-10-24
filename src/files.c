@@ -9114,19 +9114,27 @@ static boolean SetRequest_ApiGetScore(struct HttpRequest *request,
   request->method   = API_SERVER_METHOD;
   request->uri      = API_SERVER_URI_GET;
 
+  char *levelset_identifier = getEscapedJSON(leveldir_current->identifier);
+  char *levelset_name       = getEscapedJSON(leveldir_current->name);
+
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
 	   "%s"
 	   "  \"game_version\":         \"%s\",\n"
 	   "  \"game_platform\":        \"%s\",\n"
 	   "  \"levelset_identifier\":  \"%s\",\n"
+	   "  \"levelset_name\":        \"%s\",\n"
 	   "  \"level_nr\":             \"%d\"\n"
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
 	   getProgramRealVersionString(),
 	   getProgramPlatformString(),
-	   levelset.identifier,
+	   levelset_identifier,
+	   levelset_name,
 	   level_nr);
+
+  checked_free(levelset_identifier);
+  checked_free(levelset_name);
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
