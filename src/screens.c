@@ -63,30 +63,31 @@
 #define SETUP_MODE_CHOOSE_OTHER		16
 
 // sub-screens on the setup screen (specific)
-#define SETUP_MODE_CHOOSE_GAME_SPEED	17
-#define SETUP_MODE_CHOOSE_SCROLL_DELAY	18
-#define SETUP_MODE_CHOOSE_SNAPSHOT_MODE	19
-#define SETUP_MODE_CHOOSE_WINDOW_SIZE	20
-#define SETUP_MODE_CHOOSE_SCALING_TYPE	21
-#define SETUP_MODE_CHOOSE_RENDERING	22
-#define SETUP_MODE_CHOOSE_VSYNC		23
-#define SETUP_MODE_CHOOSE_GRAPHICS	24
-#define SETUP_MODE_CHOOSE_SOUNDS	25
-#define SETUP_MODE_CHOOSE_MUSIC		26
-#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE	27
-#define SETUP_MODE_CHOOSE_VOLUME_LOOPS	28
-#define SETUP_MODE_CHOOSE_VOLUME_MUSIC	29
-#define SETUP_MODE_CHOOSE_TOUCH_CONTROL	30
-#define SETUP_MODE_CHOOSE_MOVE_DISTANCE	31
-#define SETUP_MODE_CHOOSE_DROP_DISTANCE	32
-#define SETUP_MODE_CHOOSE_TRANSPARENCY	33
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_0	34
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_0	35
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_1	36
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_1	37
-#define SETUP_MODE_CONFIG_VIRT_BUTTONS	38
+#define SETUP_MODE_CHOOSE_SCORES_TYPE	17
+#define SETUP_MODE_CHOOSE_GAME_SPEED	18
+#define SETUP_MODE_CHOOSE_SCROLL_DELAY	19
+#define SETUP_MODE_CHOOSE_SNAPSHOT_MODE	20
+#define SETUP_MODE_CHOOSE_WINDOW_SIZE	21
+#define SETUP_MODE_CHOOSE_SCALING_TYPE	22
+#define SETUP_MODE_CHOOSE_RENDERING	23
+#define SETUP_MODE_CHOOSE_VSYNC		24
+#define SETUP_MODE_CHOOSE_GRAPHICS	25
+#define SETUP_MODE_CHOOSE_SOUNDS	26
+#define SETUP_MODE_CHOOSE_MUSIC		27
+#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE	28
+#define SETUP_MODE_CHOOSE_VOLUME_LOOPS	29
+#define SETUP_MODE_CHOOSE_VOLUME_MUSIC	30
+#define SETUP_MODE_CHOOSE_TOUCH_CONTROL	31
+#define SETUP_MODE_CHOOSE_MOVE_DISTANCE	32
+#define SETUP_MODE_CHOOSE_DROP_DISTANCE	33
+#define SETUP_MODE_CHOOSE_TRANSPARENCY	34
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_0	35
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_0	36
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_1	37
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_1	38
+#define SETUP_MODE_CONFIG_VIRT_BUTTONS	39
 
-#define MAX_SETUP_MODES			39
+#define MAX_SETUP_MODES			40
 
 #define MAX_MENU_MODES			MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
@@ -104,6 +105,7 @@
 #define STR_SETUP_EXIT			"Exit"
 #define STR_SETUP_SAVE_AND_EXIT		"Save and Exit"
 
+#define STR_SETUP_CHOOSE_SCORES_TYPE	"Scores Type"
 #define STR_SETUP_CHOOSE_GAME_SPEED	"Game Speed"
 #define STR_SETUP_CHOOSE_SCROLL_DELAY	"Scroll Delay"
 #define STR_SETUP_CHOOSE_SNAPSHOT_MODE	"Snapshot Mode"
@@ -308,6 +310,9 @@ static TreeInfo *scroll_delay_current = NULL;
 static TreeInfo *snapshot_modes = NULL;
 static TreeInfo *snapshot_mode_current = NULL;
 
+static TreeInfo *scores_types = NULL;
+static TreeInfo *scores_type_current = NULL;
+
 static TreeInfo *game_speeds_normal = NULL;
 static TreeInfo *game_speeds_extended = NULL;
 static TreeInfo *game_speeds = NULL;
@@ -390,6 +395,15 @@ static struct StringValueTextInfo vsync_modes_list[] =
   {	STR_VSYNC_MODE_ADAPTIVE,	"Adaptive"	},
 
   {	NULL,				 NULL		},
+};
+
+static struct StringValueTextInfo scores_types_list[] =
+{
+  {	STR_SCORES_TYPE_LOCAL_ONLY,	    "Local scores only"		},
+  {	STR_SCORES_TYPE_SERVER_ONLY,	    "Server scores only"	},
+  {	STR_SCORES_TYPE_LOCAL_AND_SERVER,   "Local and server scores"	},
+
+  {	NULL,			 	NULL		},
 };
 
 static struct ValueTextInfo game_speeds_list_normal[] =
@@ -4802,7 +4816,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     }
     else if (game_status == GAME_MODE_SETUP)
     {
-      if (setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED ||
+      if (setup_mode == SETUP_MODE_CHOOSE_SCORES_TYPE ||
+	  setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED ||
 	  setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	  setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	execSetupGame();
@@ -4969,7 +4984,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       {
 	if (game_status == GAME_MODE_SETUP)
 	{
-	  if (setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED ||
+	  if (setup_mode == SETUP_MODE_CHOOSE_SCORES_TYPE ||
+	      setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED ||
 	      setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	      setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	    execSetupGame();
@@ -5041,7 +5057,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
 	if (game_status == GAME_MODE_SETUP)
 	{
-	  if (setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED ||
+	  if (setup_mode == SETUP_MODE_CHOOSE_SCORES_TYPE ||
+	      setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED ||
 	      setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	      setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	    execSetupGame();
@@ -5462,6 +5479,7 @@ static char *vsync_mode_text;
 static char *scroll_delay_text;
 static char *snapshot_mode_text;
 static char *game_speed_text;
+static char *scores_type_text;
 static char *network_server_text;
 static char *graphics_set_name;
 static char *sounds_set_name;
@@ -5480,6 +5498,56 @@ static void execSetupMain(void)
   setup_mode = SETUP_MODE_MAIN;
 
   DrawSetupScreen();
+}
+
+static void execSetupGame_setScoresType(void)
+{
+  if (scores_types == NULL)
+  {
+    int i;
+
+    for (i = 0; scores_types_list[i].value != NULL; i++)
+    {
+      TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_UNDEFINED);
+      char identifier[32], name[32];
+      char *value = scores_types_list[i].value;
+      char *text = scores_types_list[i].text;
+
+      ti->node_top = &scores_types;
+      ti->sort_priority = i;
+
+      sprintf(identifier, "%s", value);
+      sprintf(name, "%s", text);
+
+      setString(&ti->identifier, identifier);
+      setString(&ti->name, name);
+      setString(&ti->name_sorting, name);
+      setString(&ti->infotext, STR_SETUP_CHOOSE_SCORES_TYPE);
+
+      pushTreeInfo(&scores_types, ti);
+    }
+
+    // sort scores type values to start with lowest scores type value
+    sortTreeInfo(&scores_types);
+
+    // set current scores type value to configured scores type value
+    scores_type_current =
+      getTreeInfoFromIdentifier(scores_types, setup.scores_in_highscore_list);
+
+    // if that fails, set current scores type to reliable default value
+    if (scores_type_current == NULL)
+      scores_type_current =
+	getTreeInfoFromIdentifier(scores_types, STR_SCORES_TYPE_DEFAULT);
+
+    // if that also fails, set current scores type to first available value
+    if (scores_type_current == NULL)
+      scores_type_current = scores_types;
+  }
+
+  setup.scores_in_highscore_list = scores_type_current->identifier;
+
+  // needed for displaying scores type text instead of identifier
+  scores_type_text = scores_type_current->name;
 }
 
 static void execSetupGame_setGameSpeeds(boolean update_value)
@@ -5675,6 +5743,7 @@ static void execSetupGame(void)
   boolean check_vsync_mode = (setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED);
 
   execSetupGame_setGameSpeeds(FALSE);
+  execSetupGame_setScoresType();
   execSetupGame_setScrollDelays();
   execSetupGame_setSnapshotModes();
 
@@ -5690,6 +5759,13 @@ static void execSetupGame(void)
   // check if vsync needs to be disabled for this game speed to work
   if (check_vsync_mode)
     DisableVsyncIfNeeded();
+}
+
+static void execSetupChooseScoresType(void)
+{
+  setup_mode = SETUP_MODE_CHOOSE_SCORES_TYPE;
+
+  DrawSetupScreen();
 }
 
 static void execSetupChooseGameSpeed(void)
@@ -6878,6 +6954,9 @@ static struct
   void *related_value;
 } hide_related_entry_list[] =
 {
+  { &setup.scores_in_highscore_list,	execSetupChooseScoresType	},
+  { &setup.scores_in_highscore_list,	&scores_type_text		},
+
   { &setup.game_frame_delay,		execSetupChooseGameSpeed	},
   { &setup.game_frame_delay,		&game_speed_text		},
 
@@ -6991,7 +7070,8 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_TEXT_INPUT,	execGadgetNetworkServer, "Network Server Hostname:" },
   { TYPE_STRING,	&network_server_text,	""			},
   { TYPE_SWITCH,	&setup.use_api_server,	"Use Highscore Server:"	},
-  { TYPE_SWITCH,	&setup.only_show_local_scores, "Only Show Local Scores:" },
+  { TYPE_ENTER_LIST,	execSetupChooseScoresType,"Scores in Highscore List:" },
+  { TYPE_STRING,	&scores_type_text,	""			},
   { TYPE_ENTER_LIST,	execOfferUploadTapes,	"Upload All Tapes to Server" },
   { TYPE_SWITCH,	&setup.multiple_users,	"Multiple Users/Teams:"	},
   { TYPE_YES_NO,	&setup.input_on_focus,	"Only Move Focussed Player:" },
@@ -9014,6 +9094,8 @@ void DrawSetupScreen(void)
 
   if (setup_mode == SETUP_MODE_INPUT)
     DrawSetupScreen_Input();
+  else if (setup_mode == SETUP_MODE_CHOOSE_SCORES_TYPE)
+    DrawChooseTree(&scores_type_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED)
     DrawChooseTree(&game_speed_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY)
@@ -9096,6 +9178,8 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 {
   if (setup_mode == SETUP_MODE_INPUT)
     HandleSetupScreen_Input(mx, my, dx, dy, button);
+  else if (setup_mode == SETUP_MODE_CHOOSE_SCORES_TYPE)
+    HandleChooseTree(mx, my, dx, dy, button, &scores_type_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_GAME_SPEED)
     HandleChooseTree(mx, my, dx, dy, button, &game_speed_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY)

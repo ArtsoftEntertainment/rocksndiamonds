@@ -9721,12 +9721,17 @@ void LoadLocalAndServerScore(int nr, boolean download_score)
 {
   int last_added_local = scores.last_added_local;
 
-  LoadScore(nr);
+  // needed if only showing server scores
+  setScoreInfoToDefaults();
+
+  if (!strEqual(setup.scores_in_highscore_list, STR_SCORES_TYPE_SERVER_ONLY))
+    LoadScore(nr);
 
   // restore last added local score entry (before merging server scores)
   scores.last_added = scores.last_added_local = last_added_local;
 
-  if (setup.use_api_server && !setup.only_show_local_scores)
+  if (setup.use_api_server &&
+      !strEqual(setup.scores_in_highscore_list, STR_SCORES_TYPE_LOCAL_ONLY))
   {
     // load server scores from cache file and trigger update from server
     LoadServerScore(nr, download_score);
@@ -9927,8 +9932,8 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.show_undo_redo_buttons,		"show_undo_redo_buttons"
   },
   {
-    TYPE_SWITCH,
-    &setup.only_show_local_scores,		"only_show_local_scores"
+    TYPE_STRING,
+    &setup.scores_in_highscore_list,		"scores_in_highscore_list"
   },
   {
     TYPE_STRING,
@@ -10623,7 +10628,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->small_game_graphics = FALSE;
   si->show_load_save_buttons = FALSE;
   si->show_undo_redo_buttons = FALSE;
-  si->only_show_local_scores = FALSE;
+  si->scores_in_highscore_list = getStringCopy(STR_SCORES_TYPE_DEFAULT);
 
   si->graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
   si->sounds_set   = getStringCopy(SND_CLASSIC_SUBDIR);
