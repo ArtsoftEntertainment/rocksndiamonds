@@ -11713,7 +11713,7 @@ static void GameActionsExt(void)
     Warn("element '%s' caused endless loop in game engine",
 	 EL_NAME(recursion_loop_element));
 
-    RequestQuitGameExt(FALSE, level_editor_test_game, message);
+    RequestQuitGameExt(program.headless, level_editor_test_game, message);
 
     recursion_loop_detected = FALSE;	// if game should be continued
 
