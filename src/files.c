@@ -9529,6 +9529,7 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request,
 	   "  \"level_nr\":             \"%d\",\n"
 	   "  \"level_name\":           \"%s\",\n"
 	   "  \"level_author\":         \"%s\",\n"
+	   "  \"use_step_counter\":     \"%d\",\n"
 	   "  \"rate_time_over_score\": \"%d\",\n"
 	   "  \"player_name\":          \"%s\",\n"
 	   "  \"player_uuid\":          \"%s\",\n"
@@ -9550,6 +9551,7 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request,
 	   level_nr,
 	   level_name,
 	   level_author,
+	   level.use_step_counter,
 	   level.rate_time_over_score,
 	   player_name,
 	   player_uuid,
