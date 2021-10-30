@@ -4229,11 +4229,15 @@ static int ApiRenamePlayerThread(void *data_raw)
   struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
+  program.api_thread_count++;
+
 #if defined(PLATFORM_EMSCRIPTEN)
   Emscripten_ApiRenamePlayer_HttpRequest(request, data_raw);
 #else
   ApiRenamePlayer_HttpRequest(request, response, data_raw);
 #endif
+
+  program.api_thread_count--;
 
   checked_free(request);
   checked_free(response);

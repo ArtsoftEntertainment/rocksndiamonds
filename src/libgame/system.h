@@ -1023,6 +1023,8 @@ struct ProgramInfo
   void (*exit_message_function)(char *, va_list);
   void (*exit_function)(int);
 
+  int api_thread_count;
+
   boolean headless;
 };
 
