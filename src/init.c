@@ -6351,8 +6351,44 @@ void OpenAll(void)
 #endif
 }
 
+static boolean WaitForApiThreads(void)
+{
+  unsigned int thread_delay = 0;
+  unsigned int thread_delay_value = 10000;
+
+  if (program.api_thread_count == 0)
+    return TRUE;
+
+  // deactivate global animations (not accessible in game state "loading")
+  setup.toons = FALSE;
+
+  // set game state to "loading" to be able to show busy animation
+  SetGameStatus(GAME_MODE_LOADING);
+
+  ResetDelayCounter(&thread_delay);
+
+  // wait for threads to finish (and fail on timeout)
+  while (program.api_thread_count > 0)
+  {
+    if (DelayReached(&thread_delay, thread_delay_value))
+    {
+      Error("failed waiting for threads - TIMEOUT");
+
+      return FALSE;
+    }
+
+    UPDATE_BUSY_STATE();
+
+    Delay(20);
+  }
+
+  return TRUE;
+}
+
 void CloseAllAndExit(int exit_value)
 {
+  WaitForApiThreads();
+
   StopSounds();
   FreeAllSounds();
   FreeAllMusic();
