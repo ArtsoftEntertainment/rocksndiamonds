@@ -10124,5 +10124,5 @@ void CheckUploadTapes(void)
     setup.provide_uploading_tapes = FALSE;
   }
 
-  SaveSetup();
+  SaveSetup_ServerSetup();
 }
