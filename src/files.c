@@ -10069,6 +10069,10 @@ static struct TokenInfo server_setup_tokens[] =
     TYPE_SWITCH,
     &setup.provide_uploading_tapes, TEST_PREFIX	"provide_uploading_tapes"
   },
+  {
+    TYPE_SWITCH,
+    &setup.ask_for_using_api_server,TEST_PREFIX	"ask_for_using_api_server"
+  },
 };
 
 static struct TokenInfo editor_setup_tokens[] =
@@ -10871,6 +10875,7 @@ static void setSetupInfoToDefaults_ServerSetup(struct SetupInfo *si)
   si->api_server_password = getStringCopy(UNDEFINED_PASSWORD);
   si->ask_for_uploading_tapes = TRUE;
   si->provide_uploading_tapes = TRUE;
+  si->ask_for_using_api_server = TRUE;
 }
 
 static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
