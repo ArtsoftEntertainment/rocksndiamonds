@@ -5134,19 +5134,19 @@ void NewHighScore(int level_nr, boolean tape_saved)
 
   scores.last_added = addScoreEntry(&scores, &new_entry, one_per_name);
 
-  if (scores.last_added >= 0)
-  {
-    SaveScore(level_nr);
+  if (scores.last_added < 0)
+    return;
 
-    // store last added local score entry (before merging server scores)
-    scores.last_added_local = scores.last_added;
+  SaveScore(level_nr);
 
-    if (game.LevelSolved_SaveTape)
-    {
-      SaveScoreTape(level_nr);
-      SaveServerScore(level_nr, tape_saved);
-    }
-  }
+  // store last added local score entry (before merging server scores)
+  scores.last_added_local = scores.last_added;
+
+  if (!game.LevelSolved_SaveTape)
+    return;
+
+  SaveScoreTape(level_nr);
+  SaveServerScore(level_nr, tape_saved);
 }
 
 void MergeServerScore(void)
