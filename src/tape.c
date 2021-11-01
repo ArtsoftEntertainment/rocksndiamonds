@@ -1612,6 +1612,7 @@ static int AutoPlayTapesExt(boolean initialize)
         global.autoplay_level[tape.level_nr] = TRUE;
 
       global.autoplay_all = FALSE;
+      options.mytapes = FALSE;
     }
 
     if (autoplay.all_levelsets)
@@ -1701,12 +1702,8 @@ static int AutoPlayTapesExt(boolean initialize)
     if (!global.autoplay_all && !global.autoplay_level[level_nr])
       continue;
 
-    char *tape_filename = (autoplay.tape_filename ? autoplay.tape_filename :
-                           options.mytapes ? getTapeFilename(level_nr) :
-                           getSolutionTapeFilename(level_nr));
-
-    // speed things up in case of missing tapes (by skipping loading level)
-    if (!fileExists(tape_filename))
+    // speed things up in case of missing private tapes (skip loading level)
+    if (options.mytapes && !fileExists(getTapeFilename(level_nr)))
     {
       autoplay.num_tape_missing++;
 
@@ -1744,7 +1741,7 @@ static int AutoPlayTapesExt(boolean initialize)
     {
       autoplay.num_tape_missing++;
 
-      Print("Tape %03d: (invalid tape)\n", level_nr);
+      Print("Tape %03d: (no tape found)\n", level_nr);
 
       continue;
     }
