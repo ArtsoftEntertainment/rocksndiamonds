@@ -10097,7 +10097,7 @@ static boolean OfferUploadTapes(void)
   // after all tapes have been uploaded, remove entry from setup menu
   setup.provide_uploading_tapes = FALSE;
 
-  SaveSetup();
+  SaveSetup_ServerSetup();
 
   return TRUE;
 }
