@@ -2786,6 +2786,22 @@ int copyFile(char *filename_from, char *filename_to)
   return 0;
 }
 
+boolean touchFile(char *filename)
+{
+  FILE *file;
+
+  if (!(file = fopen(filename, MODE_WRITE)))
+  {
+    Warn("cannot touch file '%s'", filename);
+
+    return FALSE;
+  }
+
+  fclose(file);
+
+  return TRUE;
+}
+
 
 // ----------------------------------------------------------------------------
 // functions for directory handling

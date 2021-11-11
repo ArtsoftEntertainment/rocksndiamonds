@@ -9445,10 +9445,25 @@ static char *get_file_base64(char *filename)
   return buffer_encoded;
 }
 
+static void PrepareScoreTapesForUpload(char *leveldir_subdir)
+{
+  MarkTapeDirectoryUploadsAsIncomplete(leveldir_subdir);
+
+  // if score tape not uploaded, ask for uploading missing tapes later
+  if (!setup.has_remaining_tapes)
+    setup.ask_for_remaining_tapes = TRUE;
+
+  setup.provide_uploading_tapes = TRUE;
+  setup.has_remaining_tapes = TRUE;
+
+  SaveSetup_ServerSetup();
+}
+
 struct ApiAddScoreThreadData
 {
   int level_nr;
   boolean tape_saved;
+  char *leveldir_subdir;
   char *score_tape_filename;
   struct ScoreEntry score_entry;
 };
@@ -9465,8 +9480,9 @@ static void *CreateThreadData_ApiAddScore(int nr, boolean tape_saved,
 
   data->level_nr = nr;
   data->tape_saved = tape_saved;
-  data->score_entry = *score_entry;
+  data->leveldir_subdir = getStringCopy(leveldir_current->subdir);
   data->score_tape_filename = getStringCopy(score_tape_filename);
+  data->score_entry = *score_entry;
 
   return data;
 }
@@ -9475,6 +9491,7 @@ static void FreeThreadData_ApiAddScore(void *data_raw)
 {
   struct ApiAddScoreThreadData *data = data_raw;
 
+  checked_free(data->leveldir_subdir);
   checked_free(data->score_tape_filename);
   checked_free(data);
 }
@@ -9586,6 +9603,13 @@ static void HandleResponse_ApiAddScore(struct HttpResponse *response,
   server_scores.uploaded = TRUE;
 }
 
+static void HandleFailure_ApiAddScore(void *data_raw)
+{
+  struct ApiAddScoreThreadData *data = data_raw;
+
+  PrepareScoreTapesForUpload(data->leveldir_subdir);
+}
+
 #if defined(PLATFORM_EMSCRIPTEN)
 static void Emscripten_ApiAddScore_Loaded(unsigned handle, void *data_raw,
 					  void *buffer, unsigned int size)
@@ -9601,6 +9625,8 @@ static void Emscripten_ApiAddScore_Loaded(unsigned handle, void *data_raw,
   else
   {
     Error("server response too large to handle (%d bytes)", size);
+
+    HandleFailure_ApiAddScore(data_raw);
   }
 
   FreeThreadData_ApiAddScore(data_raw);
@@ -9610,6 +9636,8 @@ static void Emscripten_ApiAddScore_Failed(unsigned handle, void *data_raw,
 					  int code, const char *status)
 {
   Error("server failed to handle request: %d %s", code, status);
+
+  HandleFailure_ApiAddScore(data_raw);
 
   FreeThreadData_ApiAddScore(data_raw);
 }
@@ -9653,6 +9681,8 @@ static void ApiAddScore_HttpRequestExt(struct HttpRequest *request,
   {
     Error("HTTP request failed: %s", GetHttpError());
 
+    HandleFailure_ApiAddScore(data_raw);
+
     return;
   }
 
@@ -9661,6 +9691,8 @@ static void ApiAddScore_HttpRequestExt(struct HttpRequest *request,
     Error("server failed to handle request: %d %s",
 	  response->status_code,
 	  response->status_text);
+
+    HandleFailure_ApiAddScore(data_raw);
 
     return;
   }
@@ -9713,7 +9745,11 @@ static void ApiAddScoreAsThread(int nr, boolean tape_saved,
 void SaveServerScore(int nr, boolean tape_saved)
 {
   if (!runtime.use_api_server)
+  {
+    PrepareScoreTapesForUpload(leveldir_current->subdir);
+
     return;
+  }
 
   ApiAddScoreAsThread(nr, tape_saved, NULL);
 }
@@ -10067,11 +10103,19 @@ static struct TokenInfo server_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.ask_for_remaining_tapes, TEST_PREFIX	"ask_for_remaining_tapes"
+  },
+  {
+    TYPE_SWITCH,
     &setup.provide_uploading_tapes, TEST_PREFIX	"provide_uploading_tapes"
   },
   {
     TYPE_SWITCH,
     &setup.ask_for_using_api_server,TEST_PREFIX	"ask_for_using_api_server"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.has_remaining_tapes,     TEST_PREFIX	"has_remaining_tapes"
   },
 };
 
@@ -10874,8 +10918,10 @@ static void setSetupInfoToDefaults_ServerSetup(struct SetupInfo *si)
   si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
   si->api_server_password = getStringCopy(UNDEFINED_PASSWORD);
   si->ask_for_uploading_tapes = TRUE;
+  si->ask_for_remaining_tapes = FALSE;
   si->provide_uploading_tapes = TRUE;
   si->ask_for_using_api_server = TRUE;
+  si->has_remaining_tapes = FALSE;
 }
 
 static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)

@@ -1668,6 +1668,41 @@ static int AutoPlayTapesExt(boolean initialize)
       init_level_set = FALSE;
     }
 
+    if (autoplay.all_levelsets && global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
+    {
+      boolean skip_levelset = FALSE;
+
+      if (!directoryExists(getTapeDir(autoplay.leveldir->subdir)))
+      {
+	Print("No tape directory for this level set found -- skipping.\n");
+
+	skip_levelset = TRUE;
+      }
+
+      if (CheckTapeDirectoryUploadsComplete(autoplay.leveldir->subdir))
+      {
+	Print("All tapes for this level set already uploaded -- skipping.\n");
+
+	skip_levelset = TRUE;
+      }
+
+      if (skip_levelset)
+      {
+	PrintTapeReplaySummary(&autoplay);
+
+	// continue with next level set
+	autoplay.leveldir = getNextValidAutoPlayEntry(autoplay.leveldir);
+
+	// all level sets processed
+	if (autoplay.leveldir == NULL)
+	  break;
+
+	init_level_set = TRUE;
+
+	continue;
+      }
+    }
+
     if (global.autoplay_mode != AUTOPLAY_MODE_FIX || patch_nr == 0)
       level_nr = autoplay.level_nr++;
 
@@ -1680,6 +1715,9 @@ static int AutoPlayTapesExt(boolean initialize)
 
       if (!autoplay.all_levelsets)
 	break;
+
+      if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
+	MarkTapeDirectoryUploadsAsComplete(autoplay.leveldir->subdir);
 
       // continue with next level set
       autoplay.leveldir = getNextValidAutoPlayEntry(autoplay.leveldir);
@@ -1841,7 +1879,7 @@ static int AutoPlayTapesExt(boolean initialize)
 
       if (!success)
       {
-	num_tapes = -1;
+	num_tapes = -num_tapes;
 
 	break;
       }

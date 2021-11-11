@@ -7076,7 +7076,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_SWITCH,	&setup.use_api_server,	"Use Highscore Server:"	},
   { TYPE_ENTER_LIST,	execSetupChooseScoresType,"Scores in Highscore List:" },
   { TYPE_STRING,	&scores_type_text,	""			},
-  { TYPE_ENTER_LIST,	execOfferUploadTapes,	"Upload All Tapes to Server" },
+  { TYPE_ENTER_LIST,	execOfferUploadTapes,	"Upload Tapes to Server" },
   { TYPE_SWITCH,	&setup.multiple_users,	"Multiple Users/Teams:"	},
   { TYPE_YES_NO,	&setup.input_on_focus,	"Only Move Focussed Player:" },
   { TYPE_SWITCH,	&setup.time_limit,	"Time Limit:"		},
@@ -10072,7 +10072,9 @@ static int UploadTapes(void)
 
 static boolean OfferUploadTapes(void)
 {
-  if (!Request("Upload all your tapes to the high score server now?", REQ_ASK))
+  if (!Request(setup.has_remaining_tapes ?
+	       "Upload missing tapes to the high score server now?" :
+	       "Upload all your tapes to the high score server now?", REQ_ASK))
     return FALSE;
 
   int num_tapes_uploaded = UploadTapes();
@@ -10080,7 +10082,23 @@ static boolean OfferUploadTapes(void)
 
   if (num_tapes_uploaded < 0)
   {
-    Request("Cannot upload tapes to score server!", REQ_CONFIRM);
+    num_tapes_uploaded = -num_tapes_uploaded - 1;
+
+    if (num_tapes_uploaded == 0)
+      sprintf(message, "Upload failed! No tapes uploaded!");
+    else if (num_tapes_uploaded == 1)
+      sprintf(message, "Upload failed! Only 1 tape uploaded!");
+    else
+      sprintf(message, "Upload failed! Only %d tapes uploaded!",
+	      num_tapes_uploaded);
+
+    Request(message, REQ_CONFIRM);
+
+    // if uploading tapes failed, add tape upload entry to setup menu
+    setup.provide_uploading_tapes = TRUE;
+    setup.has_remaining_tapes = TRUE;
+
+    SaveSetup_ServerSetup();
 
     return FALSE;
   }
@@ -10094,8 +10112,12 @@ static boolean OfferUploadTapes(void)
 
   Request(message, REQ_CONFIRM);
 
+  if (num_tapes_uploaded > 0)
+    Request("New scores will be visible after a few minutes!", REQ_CONFIRM);
+
   // after all tapes have been uploaded, remove entry from setup menu
   setup.provide_uploading_tapes = FALSE;
+  setup.has_remaining_tapes = FALSE;
 
   SaveSetup_ServerSetup();
 
@@ -10107,16 +10129,21 @@ void CheckUploadTapes(void)
   if (!setup.ask_for_uploading_tapes)
     return;
 
-  // after asking for uploading all tapes once, do not ask again
+  // after asking for uploading tapes, do not ask again
   setup.ask_for_uploading_tapes = FALSE;
+  setup.ask_for_remaining_tapes = FALSE;
 
   if (directoryExists(getTapeDir(NULL)))
   {
     boolean tapes_uploaded = OfferUploadTapes();
 
     if (!tapes_uploaded)
-      Request("You can upload your tapes from the setup menu later!",
+    {
+      Request(setup.has_remaining_tapes ?
+	      "You can upload missing tapes from the setup menu later!" :
+	      "You can upload your tapes from the setup menu later!",
 	      REQ_CONFIRM);
+    }
   }
   else
   {

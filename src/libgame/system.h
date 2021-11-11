@@ -685,6 +685,7 @@
 #define MUSICINFO_FILENAME	"musicinfo.conf"
 #define ARTWORKINFO_CACHE_FILE	"artworkinfo.cache"
 #define LEVELTEMPLATE_FILENAME	"template.level"
+#define UPLOADED_FILENAME	".uploaded"
 #define LEVELFILE_EXTENSION	"level"
 #define TAPEFILE_EXTENSION	"tape"
 #define SCOREFILE_EXTENSION	"score"
@@ -1514,8 +1515,10 @@ struct SetupInfo
   char *api_server_hostname;
   char *api_server_password;
   boolean ask_for_uploading_tapes;
+  boolean ask_for_remaining_tapes;
   boolean provide_uploading_tapes;
   boolean ask_for_using_api_server;
+  boolean has_remaining_tapes;
 
   struct SetupAutoSetupInfo auto_setup;
   struct SetupLevelSetupInfo level_setup;

@@ -1155,11 +1155,44 @@ char *getCustomMusicDirectory(void)
   return NULL;		// cannot find specified artwork file anywhere
 }
 
+void MarkTapeDirectoryUploadsAsComplete(char *level_subdir)
+{
+  char *filename = getPath2(getTapeDir(level_subdir), UPLOADED_FILENAME);
+
+  touchFile(filename);
+
+  checked_free(filename);
+}
+
+void MarkTapeDirectoryUploadsAsIncomplete(char *level_subdir)
+{
+  char *filename = getPath2(getTapeDir(level_subdir), UPLOADED_FILENAME);
+
+  unlink(filename);
+
+  checked_free(filename);
+}
+
+boolean CheckTapeDirectoryUploadsComplete(char *level_subdir)
+{
+  char *filename = getPath2(getTapeDir(level_subdir), UPLOADED_FILENAME);
+  boolean success = fileExists(filename);
+
+  checked_free(filename);
+
+  return success;
+}
+
 void InitTapeDirectory(char *level_subdir)
 {
+  boolean new_tape_dir = !directoryExists(getTapeDir(level_subdir));
+
   createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
   createDirectory(getTapeDir(NULL), "main tape", PERMS_PRIVATE);
   createDirectory(getTapeDir(level_subdir), "level tape", PERMS_PRIVATE);
+
+  if (new_tape_dir)
+    MarkTapeDirectoryUploadsAsComplete(level_subdir);
 }
 
 void InitScoreDirectory(char *level_subdir)

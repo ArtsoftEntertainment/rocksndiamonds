@@ -258,6 +258,7 @@ int seekFile(File *, long, int);
 int getByteFromFile(File *);
 char *getStringFromFile(File *, char *, int);
 int copyFile(char *, char *);
+boolean touchFile(char *);
 
 Directory *openDirectory(char *);
 int closeDirectory(Directory *);

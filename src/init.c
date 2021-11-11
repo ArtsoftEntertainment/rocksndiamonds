@@ -6330,6 +6330,9 @@ void OpenAll(void)
 
   print_timestamp_done("OpenAll");
 
+  if (setup.ask_for_remaining_tapes)
+    setup.ask_for_uploading_tapes = TRUE;
+
   DrawMainMenu();
 
 #if 0

@@ -288,6 +288,10 @@ char *getCustomArtworkConfigFilename(int);
 char *getCustomArtworkLevelConfigFilename(int);
 char *getCustomMusicDirectory(void);
 
+void MarkTapeDirectoryUploadsAsComplete(char *);
+void MarkTapeDirectoryUploadsAsIncomplete(char *);
+boolean CheckTapeDirectoryUploadsComplete(char *);
+
 void InitTapeDirectory(char *);
 void InitScoreDirectory(char *);
 void InitScoreCacheDirectory(char *);
