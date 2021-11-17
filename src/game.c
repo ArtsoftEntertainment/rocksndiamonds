@@ -5475,7 +5475,7 @@ void DrawDynamite(int x, int y)
   else if (game.use_masked_elements)
     DrawLevelElement(x, y, EL_EMPTY);
 
-  frame = getGraphicAnimationFrame(graphic, GfxFrame[x][y]);
+  frame = getGraphicAnimationFrameXY(graphic, x, y);
 
   if (Back[x][y] || Store[x][y] || game.use_masked_elements)
     DrawGraphicThruMask(sx, sy, graphic, frame);
@@ -6034,7 +6034,7 @@ static void Explode(int ex, int ey, int phase, int mode)
   else if (IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
   {
     int graphic = el_act2img(GfxElement[x][y], ACTION_EXPLODING);
-    int frame = getGraphicAnimationFrame(graphic, GfxFrame[x][y]);
+    int frame = getGraphicAnimationFrameXY(graphic, x, y);
 
     if (phase == delay)
       TEST_DrawLevelFieldCrumbled(x, y);
@@ -8223,7 +8223,7 @@ static void StartMoving(int x, int y)
 		       dir == MV_RIGHT	? IMG_FLAMES_1_RIGHT :
 		       dir == MV_UP	? IMG_FLAMES_1_UP :
 		       dir == MV_DOWN	? IMG_FLAMES_1_DOWN : IMG_EMPTY);
-	int frame = getGraphicAnimationFrame(graphic, GfxFrame[x][y]);
+	int frame = getGraphicAnimationFrameXY(graphic, x, y);
 
 	GfxAction[x][y] = ACTION_ATTACKING;
 

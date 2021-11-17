@@ -1481,6 +1481,11 @@ int getGraphicAnimationFrame(int graphic, int sync_frame)
 			   sync_frame);
 }
 
+int getGraphicAnimationFrameXY(int graphic, int lx, int ly)
+{
+  return getGraphicAnimationFrame(graphic, GfxFrame[lx][ly]);
+}
+
 void getGraphicSourceBitmap(int graphic, int tilesize, Bitmap **bitmap)
 {
   struct GraphicInfo *g = &graphic_info[graphic];
@@ -1973,13 +1978,13 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
     SetRandomAnimationValue(lx, ly);
 
     graphic = el_act_dir2img(element, GfxAction[lx][ly], GfxDir[lx][ly]);
-    frame = getGraphicAnimationFrame(graphic, GfxFrame[lx][ly]);
+    frame = getGraphicAnimationFrameXY(graphic, lx, ly);
 
     // do not use double (EM style) movement graphic when not moving
     if (graphic_info[graphic].double_movement && !dx && !dy)
     {
       graphic = el_act_dir2img(element, ACTION_DEFAULT, GfxDir[lx][ly]);
-      frame = getGraphicAnimationFrame(graphic, GfxFrame[lx][ly]);
+      frame = getGraphicAnimationFrameXY(graphic, lx, ly);
     }
 
     if (game.use_masked_elements && (dx || dy))
@@ -2105,7 +2110,7 @@ static void DrawLevelFieldCrumbledInnerCorners(int x, int y, int dx, int dy,
   if (game.use_masked_elements)
   {
     int graphic0 = el2img(EL_EMPTY);
-    int frame0 = getGraphicAnimationFrame(graphic0, GfxFrame[x][y]);
+    int frame0 = getGraphicAnimationFrameXY(graphic0, x, y);
     Bitmap *src_bitmap0;
     int src_x0, src_y0;
 
@@ -2143,7 +2148,7 @@ static void DrawLevelFieldCrumbledBorders(int x, int y, int graphic, int frame,
 
   // only needed when using masked elements
   int graphic0 = el2img(EL_EMPTY);
-  int frame0 = getGraphicAnimationFrame(graphic0, GfxFrame[x][y]);
+  int frame0 = getGraphicAnimationFrameXY(graphic0, x, y);
   Bitmap *src_bitmap0;
   int src_x0, src_y0;
 
@@ -3840,10 +3845,10 @@ void ClearNetworkPlayers(void)
 }
 
 static void DrawGraphicAnimationExt(DrawBuffer *dst_bitmap, int x, int y,
-				    int graphic, int sync_frame,
+				    int graphic, int lx, int ly,
 				    int mask_mode)
 {
-  int frame = getGraphicAnimationFrame(graphic, sync_frame);
+  int frame = getGraphicAnimationFrameXY(graphic, lx, ly);
 
   if (mask_mode == USE_MASKING)
     DrawGraphicThruMaskExt(dst_bitmap, x, y, graphic, frame);
@@ -3881,7 +3886,7 @@ static void DrawGraphicAnimation(int x, int y, int graphic)
   }
 
   DrawGraphicAnimationExt(drawto_field, FX + x * TILEX_VAR, FY + y * TILEY_VAR,
-			  graphic, GfxFrame[lx][ly], mask_mode);
+			  graphic, lx, ly, mask_mode);
 
   MarkTileDirty(x, y);
 }
@@ -3905,7 +3910,7 @@ void DrawFixedGraphicAnimation(int x, int y, int graphic)
   }
 
   DrawGraphicAnimationExt(drawto_field, FX + x * TILEX, FY + y * TILEY,
-			  graphic, GfxFrame[lx][ly], mask_mode);
+			  graphic, lx, ly, mask_mode);
 
   MarkTileDirty(x, y);
 }
@@ -4277,7 +4282,7 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
     if (IS_ACTIVE_BOMB(element))
     {
       int graphic = el2img(element);
-      int frame = getGraphicAnimationFrame(graphic, GfxFrame[jx][jy]);
+      int frame = getGraphicAnimationFrameXY(graphic, jx, jy);
 
       if (game.emulation == EMU_SUPAPLEX)
 	DrawGraphic(sx, sy, IMG_SP_DISK_RED, frame);
