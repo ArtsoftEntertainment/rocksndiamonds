@@ -1483,6 +1483,20 @@ int getGraphicAnimationFrame(int graphic, int sync_frame)
 
 int getGraphicAnimationFrameXY(int graphic, int lx, int ly)
 {
+  if (graphic_info[graphic].anim_mode & ANIM_TILED)
+  {
+    struct GraphicInfo *g = &graphic_info[graphic];
+    int xsize = MAX(1, g->anim_frames_per_line);
+    int ysize = MAX(1, g->anim_frames / xsize);
+    int xoffset = g->anim_start_frame % xsize;
+    int yoffset = g->anim_start_frame % ysize;
+    int x = (lx + xoffset) % xsize;
+    int y = (ly + yoffset) % ysize;
+    int sync_frame = y * xsize + x;
+
+    return sync_frame % g->anim_frames;
+  }
+
   return getGraphicAnimationFrame(graphic, GfxFrame[lx][ly]);
 }
 

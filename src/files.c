@@ -11985,6 +11985,7 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 	      string_has_parameter(value, "vertical")	? ANIM_VERTICAL :
 	      string_has_parameter(value, "centered")	? ANIM_CENTERED :
 	      string_has_parameter(value, "all")	? ANIM_ALL :
+	      string_has_parameter(value, "tiled")	? ANIM_TILED :
 	      ANIM_DEFAULT);
 
     if (string_has_parameter(value, "once"))
