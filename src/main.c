@@ -67,6 +67,7 @@ int			PlayerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
 int			GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+int 			GfxRandomStatic[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 int 			GfxDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];

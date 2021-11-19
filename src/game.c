@@ -3878,6 +3878,7 @@ void InitGame(void)
 
     GfxFrame[x][y] = 0;
     GfxRandom[x][y] = INIT_GFX_RANDOM();
+    GfxRandomStatic[x][y] = INIT_GFX_RANDOM();
     GfxElement[x][y] = EL_UNDEFINED;
     GfxAction[x][y] = ACTION_DEFAULT;
     GfxDir[x][y] = MV_NONE;
@@ -15968,6 +15969,7 @@ static ListNode *SaveEngineSnapshotBuffers(void)
 
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(GfxFrame));
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(GfxRandom));
+  SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(GfxRandomStatic));
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(GfxElement));
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(GfxAction));
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(GfxDir));

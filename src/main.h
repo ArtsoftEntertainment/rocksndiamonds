@@ -3738,6 +3738,7 @@ extern int			PlayerVisit[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
 extern int			GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			GfxRandom[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern int			GfxRandomStatic[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int 			GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int			GfxAction[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern int 			GfxDir[MAX_LEV_FIELDX][MAX_LEV_FIELDY];

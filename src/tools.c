@@ -1496,6 +1496,15 @@ int getGraphicAnimationFrameXY(int graphic, int lx, int ly)
 
     return sync_frame % g->anim_frames;
   }
+  else if (graphic_info[graphic].anim_mode & ANIM_RANDOM_STATIC)
+  {
+    struct GraphicInfo *g = &graphic_info[graphic];
+    int x = (lx + lev_fieldx) % lev_fieldx;
+    int y = (ly + lev_fieldy) % lev_fieldy;
+    int sync_frame = GfxRandomStatic[x][y];
+
+    return sync_frame % g->anim_frames;
+  }
 
   return getGraphicAnimationFrame(graphic, GfxFrame[lx][ly]);
 }
@@ -3951,7 +3960,7 @@ void DrawLevelGraphicAnimationIfNeeded(int x, int y, int graphic)
   if (!IS_NEW_FRAME(GfxFrame[x][y], graphic))
     return;
 
-  if (ANIM_MODE(graphic) & ANIM_TILED)
+  if (ANIM_MODE(graphic) & (ANIM_TILED | ANIM_RANDOM_STATIC))
     return;
 
   DrawGraphicAnimation(sx, sy, graphic);

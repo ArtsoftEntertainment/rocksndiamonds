@@ -11978,6 +11978,7 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 	      string_has_parameter(value, "pingpong")	? ANIM_PINGPONG :
 	      string_has_parameter(value, "pingpong2")	? ANIM_PINGPONG2 :
 	      string_has_parameter(value, "random")	? ANIM_RANDOM :
+	      string_has_parameter(value, "random_static") ? ANIM_RANDOM_STATIC :
 	      string_has_parameter(value, "ce_value")	? ANIM_CE_VALUE :
 	      string_has_parameter(value, "ce_score")	? ANIM_CE_SCORE :
 	      string_has_parameter(value, "ce_delay")	? ANIM_CE_DELAY :

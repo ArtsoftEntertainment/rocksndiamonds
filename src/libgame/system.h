@@ -370,6 +370,7 @@
 #define ANIM_ALL		(1 << 14)
 #define ANIM_ONCE		(1 << 15)
 #define ANIM_TILED		(1 << 16)
+#define ANIM_RANDOM_STATIC	(1 << 17)
 
 #define ANIM_DEFAULT		ANIM_LOOP
 
