@@ -1490,8 +1490,8 @@ int getGraphicAnimationFrameXY(int graphic, int lx, int ly)
     int ysize = MAX(1, g->anim_frames / xsize);
     int xoffset = g->anim_start_frame % xsize;
     int yoffset = g->anim_start_frame % ysize;
-    int x = (lx + xoffset) % xsize;
-    int y = (ly + yoffset) % ysize;
+    int x = (lx + xoffset + xsize) % xsize;
+    int y = (ly + yoffset + ysize) % ysize;
     int sync_frame = y * xsize + x;
 
     return sync_frame % g->anim_frames;
@@ -2007,7 +2007,7 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
   else	// border element
   {
     graphic = el2img(element);
-    frame = getGraphicAnimationFrame(graphic, -1);
+    frame = getGraphicAnimationFrameXY(graphic, lx, ly);
   }
 
   if (element == EL_EXPANDABLE_WALL)
