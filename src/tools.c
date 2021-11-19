@@ -3951,6 +3951,9 @@ void DrawLevelGraphicAnimationIfNeeded(int x, int y, int graphic)
   if (!IS_NEW_FRAME(GfxFrame[x][y], graphic))
     return;
 
+  if (ANIM_MODE(graphic) & ANIM_TILED)
+    return;
+
   DrawGraphicAnimation(sx, sy, graphic);
 
 #if 1
