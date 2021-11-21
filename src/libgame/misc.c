@@ -2427,47 +2427,23 @@ char getValidConfigValueChar(char c)
 
 int get_integer_from_string(char *s)
 {
-  static char *number_text[][3] =
-  {
-    { "0",	"zero",		"null",		},
-    { "1",	"one",		"first"		},
-    { "2",	"two",		"second"	},
-    { "3",	"three",	"third"		},
-    { "4",	"four",		"fourth"	},
-    { "5",	"five",		"fifth"		},
-    { "6",	"six",		"sixth"		},
-    { "7",	"seven",	"seventh"	},
-    { "8",	"eight",	"eighth"	},
-    { "9",	"nine",		"ninth"		},
-    { "10",	"ten",		"tenth"		},
-    { "11",	"eleven",	"eleventh"	},
-    { "12",	"twelve",	"twelfth"	},
+  // check for the most common case first
+  if (s[0] >= '0' && s[0] <= '9')
+    return atoi(s);
 
-    { NULL,	NULL,		NULL		},
-  };
-
-  int i, j;
   char *s_lower = getStringToLower(s);
   int result = -1;
 
-  for (i = 0; number_text[i][0] != NULL; i++)
-    for (j = 0; j < 3; j++)
-      if (strEqual(s_lower, number_text[i][j]))
-	result = i;
-
-  if (result == -1)
-  {
-    if (strEqual(s_lower, "false") ||
-	strEqual(s_lower, "no") ||
-	strEqual(s_lower, "off"))
-      result = 0;
-    else if (strEqual(s_lower, "true") ||
-	     strEqual(s_lower, "yes") ||
-	     strEqual(s_lower, "on"))
-      result = 1;
-    else
-      result = atoi(s);
-  }
+  if (strEqual(s_lower, "false") ||
+      strEqual(s_lower, "no") ||
+      strEqual(s_lower, "off"))
+    result = 0;
+  else if (strEqual(s_lower, "true") ||
+	   strEqual(s_lower, "yes") ||
+	   strEqual(s_lower, "on"))
+    result = 1;
+  else
+    result = atoi(s);
 
   free(s_lower);
 
