@@ -2814,8 +2814,9 @@ static int LoadLevel_CUS3(File *file, int chunk_size, struct LevelInfo *level)
       for (x = 0; x < 3; x++)
 	ei->content.e[x][y] = getMappedElement(getFile16BitBE(file));
 
+    // bits 0 - 31 of "has_event[]"
     event_bits = getFile32BitBE(file);
-    for (j = 0; j < NUM_CHANGE_EVENTS; j++)
+    for (j = 0; j < MIN(NUM_CHANGE_EVENTS, 32); j++)
       if (event_bits & (1 << j))
 	ei->change->has_event[j] = TRUE;
 
