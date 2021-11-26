@@ -8314,6 +8314,11 @@ static void CopyGroupElementPropertiesToEditor(int element)
   custom_element = element_info[element];	// needed for description
 }
 
+static void CopyEmptyElementPropertiesToEditor(int element)
+{
+  custom_element = element_info[element];
+}
+
 static void CopyClassicElementPropertiesToEditor(int element)
 {
   if (IS_PLAYER_ELEMENT(element) || COULD_MOVE_INTO_ACID(element))
@@ -8331,6 +8336,8 @@ static void CopyElementPropertiesToEditor(int element)
     CopyCustomElementPropertiesToEditor(element);
   else if (IS_GROUP_ELEMENT(element))
     CopyGroupElementPropertiesToEditor(element);
+  else if (IS_EMPTY_ELEMENT(element))
+    CopyEmptyElementPropertiesToEditor(element);
   else
     CopyClassicElementPropertiesToEditor(element);
 }
@@ -8503,6 +8510,21 @@ static void CopyGroupElementPropertiesToGame(int element)
   InitElementPropertiesGfxElement();
 }
 
+static void CopyEmptyElementPropertiesToGame(int element)
+{
+  // mark that this empty element has been modified
+  custom_element.modified_settings = TRUE;
+  level.changed = TRUE;
+
+  if (level.use_custom_template)
+    AskToCopyAndModifyLevelTemplate();
+
+  element_info[element] = custom_element;
+
+  // needed here to restore runtime value "element_info[element].gfx_element"
+  InitElementPropertiesGfxElement();
+}
+
 static void CopyClassicElementPropertiesToGame(int element)
 {
   if (IS_PLAYER_ELEMENT(element) || COULD_MOVE_INTO_ACID(element))
@@ -8520,6 +8542,8 @@ static void CopyElementPropertiesToGame(int element)
     CopyCustomElementPropertiesToGame(element);
   else if (IS_GROUP_ELEMENT(element))
     CopyGroupElementPropertiesToGame(element);
+  else if (IS_EMPTY_ELEMENT(element))
+    CopyEmptyElementPropertiesToGame(element);
   else
     CopyClassicElementPropertiesToGame(element);
 }
@@ -9883,6 +9907,7 @@ static boolean checkPropertiesConfig(int element)
   if (IS_GEM(element) ||
       IS_CUSTOM_ELEMENT(element) ||
       IS_GROUP_ELEMENT(element) ||
+      IS_EMPTY_ELEMENT(element) ||
       IS_BALLOON_ELEMENT(element) ||
       IS_ENVELOPE(element) ||
       IS_MM_MCDUFFIN(element) ||
@@ -10300,6 +10325,23 @@ static void DrawPropertiesConfig(void)
 
     // draw text input gadgets
     MapTextInputGadget(ED_TEXTINPUT_ID_ELEMENT_NAME);
+
+    // draw drawing area gadgets
+    MapDrawingArea(ED_DRAWING_ID_CUSTOM_GRAPHIC);
+
+    draw_footer_line = TRUE;
+  }
+  else if (IS_EMPTY_ELEMENT(properties_element))
+  {
+    // draw stickybutton gadget
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_STICK_ELEMENT);
+
+    // draw checkbutton gadgets
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_1);
+
+    // draw textbutton gadgets
+    MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_1);
 
     // draw drawing area gadgets
     MapDrawingArea(ED_DRAWING_ID_CUSTOM_GRAPHIC);
@@ -13698,9 +13740,11 @@ static void HandleCheckbuttons(struct GadgetInfo *gi)
     boolean template_related_changes_found = FALSE;
     int i;
 
-    // check if any custom or group elements have been changed
+    // check if any custom, group or empty elements have been changed
     for (i = 0; i < NUM_FILE_ELEMENTS; i++)
-      if ((IS_CUSTOM_ELEMENT(i) || IS_GROUP_ELEMENT(i)) &&
+      if ((IS_CUSTOM_ELEMENT(i) ||
+	   IS_GROUP_ELEMENT(i) ||
+	   IS_EMPTY_ELEMENT(i)) &&
 	  element_info[i].modified_settings)
 	template_related_changes_found = TRUE;
 
