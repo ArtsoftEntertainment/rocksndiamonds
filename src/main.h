@@ -1912,7 +1912,16 @@
 #define EL_SPRING_LEFT			1215
 #define EL_SPRING_RIGHT			1216
 
-#define NUM_FILE_ELEMENTS		1217
+// ---------- begin of empty space elements section ---------------------------
+#define EL_EMPTY_SPACE_START		1217
+
+#include "conf_emp.h"	// include auto-generated data structure definitions
+
+#define NUM_EMPTY_SPACE_ELEMENTS	16
+#define EL_EMPTY_SPACE_END		1232
+// ---------- end of empty space elements section -----------------------------
+
+#define NUM_FILE_ELEMENTS		1233
 
 
 // "real" (and therefore drawable) runtime elements

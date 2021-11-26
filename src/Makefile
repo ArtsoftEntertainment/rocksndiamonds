@@ -192,6 +192,8 @@ CNFS =	conf_gfx.h	\
 	conf_cus.h	\
 	conf_grp.c	\
 	conf_grp.h	\
+	conf_emp.c	\
+	conf_emp.h	\
 	conf_e2g.c	\
 	conf_esg.c	\
 	conf_e2s.c	\

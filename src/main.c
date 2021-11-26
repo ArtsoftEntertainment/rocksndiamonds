@@ -6278,6 +6278,86 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "spring",
     "spring (starts moving right)"
   },
+  {
+    "empty_space_1",
+    "empty_space",
+    "empty space 1"
+  },
+  {
+    "empty_space_2",
+    "empty_space",
+    "empty space 2"
+  },
+  {
+    "empty_space_3",
+    "empty_space",
+    "empty space 3"
+  },
+  {
+    "empty_space_4",
+    "empty_space",
+    "empty space 4"
+  },
+  {
+    "empty_space_5",
+    "empty_space",
+    "empty space 5"
+  },
+  {
+    "empty_space_6",
+    "empty_space",
+    "empty space 6"
+  },
+  {
+    "empty_space_7",
+    "empty_space",
+    "empty space 7"
+  },
+  {
+    "empty_space_8",
+    "empty_space",
+    "empty space 8"
+  },
+  {
+    "empty_space_9",
+    "empty_space",
+    "empty space 9"
+  },
+  {
+    "empty_space_10",
+    "empty_space",
+    "empty space 10"
+  },
+  {
+    "empty_space_11",
+    "empty_space",
+    "empty space 11"
+  },
+  {
+    "empty_space_12",
+    "empty_space",
+    "empty space 12"
+  },
+  {
+    "empty_space_13",
+    "empty_space",
+    "empty space 13"
+  },
+  {
+    "empty_space_14",
+    "empty_space",
+    "empty space 14"
+  },
+  {
+    "empty_space_15",
+    "empty_space",
+    "empty space 15"
+  },
+  {
+    "empty_space_16",
+    "empty_space",
+    "empty space 16"
+  },
 
   // --------------------------------------------------------------------------
   // "real" (and therefore drawable) runtime elements

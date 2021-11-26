@@ -5788,6 +5788,7 @@ struct ConfigInfo image_config[] =
 #include "conf_chr.c"	// include auto-generated data structure definitions
 #include "conf_cus.c"	// include auto-generated data structure definitions
 #include "conf_grp.c"	// include auto-generated data structure definitions
+#include "conf_emp.c"	// include auto-generated data structure definitions
 
 
   // ==========================================================================

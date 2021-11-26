@@ -42,6 +42,8 @@ my $filename_conf_cus_c = 'conf_cus.c';
 my $filename_conf_cus_h = 'conf_cus.h';
 my $filename_conf_grp_c = 'conf_grp.c';
 my $filename_conf_grp_h = 'conf_grp.h';
+my $filename_conf_emp_c = 'conf_emp.c';
+my $filename_conf_emp_h = 'conf_emp.h';
 my $filename_conf_e2g_c = 'conf_e2g.c';
 my $filename_conf_esg_c = 'conf_esg.c';
 my $filename_conf_e2s_c = 'conf_e2s.c';
@@ -61,6 +63,8 @@ my $text_cus_c = 'values for graphics configuration (custom elements)';
 my $text_cus_h = 'values for elements configuration (custom elements)';
 my $text_grp_c = 'values for graphics configuration (group elements)';
 my $text_grp_h = 'values for elements configuration (group elements)';
+my $text_emp_c = 'values for graphics configuration (empty elements)';
+my $text_emp_h = 'values for elements configuration (empty elements)';
 my $text_e2g_c = 'values for element/graphics mapping configuration (normal)';
 my $text_esg_c = 'values for element/graphics mapping configuration (special)';
 my $text_e2s_c = 'values for element/sounds mapping configuration';
@@ -72,6 +76,7 @@ my $text_act_c = 'values for active states of elements and fonts';
 
 my $num_custom_elements = 256;
 my $num_group_elements = 32;
+my $num_empty_elements = 16;
 
 my $char_skip = '---[SKIP]---';
 
@@ -384,6 +389,28 @@ sub print_graphics_list
 		$i++;
 
 		$line = sprintf("#define IMG_GROUP_%d_EDITOR", $nr + 1);
+
+		$tabs = get_tabs($line, $max_num_tabs);
+
+		print "$line$tabs$i\n";
+
+		$i++;
+	    }
+	}
+
+	if (/^\#include "conf_emp.c"/)	# dump list of empty elements
+	{
+	    for (my $nr = 0; $nr < $num_empty_elements; $nr++)
+	    {
+		my $line = sprintf("#define IMG_EMPTY_SPACE_%d", $nr + 1);
+
+		my $tabs = get_tabs($line, $max_num_tabs);
+
+		print "$line$tabs$i\n";
+
+		$i++;
+
+		$line = sprintf("#define IMG_EMPTY_SPACE_%d_EDITOR", $nr + 1);
 
 		$tabs = get_tabs($line, $max_num_tabs);
 
@@ -727,6 +754,24 @@ sub print_group_elements_list
     print_file_footer($filename_conf_grp_c);
 }
 
+sub print_empty_elements_list
+{
+    print_file_header($filename_conf_emp_h, $text_emp_h);
+
+    for (my $i = 0; $i < $num_empty_elements; $i++)
+    {
+	my $left = sprintf("#define EL_EMPTY_SPACE_%d", $i + 1);
+
+	my $tabs_left = get_tabs($left, 5);
+
+	my $right = "(EL_EMPTY_SPACE_START + $i)";
+
+	print "$left$tabs_left$right\n";
+    }
+
+    print_file_footer($filename_conf_emp_c);
+}
+
 sub print_custom_graphics_list
 {
     my @extensions1 =
@@ -887,6 +932,89 @@ sub print_group_graphics_list
     }
 
     print_file_footer($filename_conf_grp_c);
+}
+
+sub print_empty_graphics_list
+{
+    my @extensions1 =
+	(
+	 '',
+	 '.xpos',
+	 '.ypos',
+	 '.frames',
+	 );
+    my @extensions2 =
+	(
+	 '',
+	 '.xpos',
+	 '.ypos',
+	 );
+
+    my $num_non_empty_elements = $num_custom_elements + $num_group_elements;
+
+    print_file_header($filename_conf_emp_c, $text_emp_c);
+
+    for (my $i = 0; $i < $num_empty_elements; $i++)
+    {
+	foreach my $ext (@extensions1)
+	{
+	    my $left = sprintf("  \{ \"empty_space_%d$ext\",", $i + 1);
+
+	    my $tabs_left = get_tabs($left, 6);
+
+	    # my $right = ($ext eq '' ? 'RocksDC.png' :
+	    my $right = ($ext eq '' ? 'RocksCE.png' :
+			 $ext eq '.frames' ? '1' : '0');
+
+	    if ($ext eq '.xpos')
+	    {
+		# $right = 4;
+		$right = int($i % 16);
+	    }
+	    elsif ($ext eq '.ypos')
+	    {
+		# $right = 15;
+		$right = int($i / 16) + int($num_non_empty_elements / 16);
+	    }
+
+	    $right = "\"$right\"";
+
+	    my $tabs_right = get_tabs($right, 3);
+
+	    print "$left$tabs_left$right$tabs_right},\n";
+	}
+
+	foreach my $ext (@extensions2)
+	{
+	    my $left = sprintf("  \{ \"empty_space_%d.EDITOR$ext\",", $i + 1);
+
+	    my $tabs_left = get_tabs($left, 6);
+
+	    # my $right = ($ext eq '' ? 'RocksDC.png' : '0');
+	    my $right = ($ext eq '' ? 'RocksCE.png' : '0');
+
+	    if ($ext eq '.xpos')
+	    {
+		# $right = 14;
+		$right = int($i % 16) + 16;
+	    }
+	    elsif ($ext eq '.ypos')
+	    {
+		# $right = 15;
+		$right = int($i / 16) + int($num_non_empty_elements / 16);
+	    }
+
+	    $right = "\"$right\"";
+
+	    my $tabs_right = get_tabs($right, 3);
+
+	    print "$left$tabs_left$right$tabs_right},\n";
+	}
+
+	print "\n";
+    }
+
+    print_file_footer($filename_conf_emp_c);
 }
 
 sub get_known_element_definitions_ALTERNATIVE
@@ -1644,6 +1772,15 @@ sub print_element_to_graphic_list
 	print_element_to_graphic_entry($element, '-1', '-1', '-1', $graphic);
     }
 
+    # dump list of empty elements
+    for (my $i = 0; $i < $num_empty_elements; $i++)
+    {
+	my $element = sprintf("EL_EMPTY_SPACE_%d", $i + 1);
+	my $graphic = sprintf("IMG_EMPTY_SPACE_%d", $i + 1);
+
+	print_element_to_graphic_entry($element, '-1', '-1', '-1', $graphic);
+    }
+
     print_element_to_graphic_entry('-1', '-1', '-1', '-1', '-1');
 
     print "};\n";
@@ -1809,6 +1946,17 @@ sub print_element_to_special_graphic_list
     {
 	my $element = sprintf("EL_GROUP_%d", $i + 1);
 	my $graphic = sprintf("IMG_GROUP_%d_EDITOR", $i + 1);
+
+	print_element_to_special_graphic_entry($element,
+					       'GFX_SPECIAL_ARG_EDITOR',
+					       $graphic);
+    }
+
+    # dump list of empty element editor graphics
+    for (my $i = 0; $i < $num_empty_elements; $i++)
+    {
+	my $element = sprintf("EL_EMPTY_SPACE_%d", $i + 1);
+	my $graphic = sprintf("IMG_EMPTY_SPACE_%d_EDITOR", $i + 1);
 
 	print_element_to_special_graphic_entry($element,
 					       'GFX_SPECIAL_ARG_EDITOR',
@@ -2557,6 +2705,8 @@ sub main
 	print "- '$filename_conf_cus_h'\n";
 	print "- '$filename_conf_grp_c'\n";
 	print "- '$filename_conf_grp_h'\n";
+	print "- '$filename_conf_emp_c'\n";
+	print "- '$filename_conf_emp_h'\n";
 	print "- '$filename_conf_e2g_c'\n";
 	print "- '$filename_conf_esg_c'\n";
 	print "- '$filename_conf_fnt_c'\n";
@@ -2603,6 +2753,14 @@ sub main
     elsif ($ARGV[0] eq $filename_conf_grp_h)
     {
 	print_group_elements_list();
+    }
+    elsif ($ARGV[0] eq $filename_conf_emp_c)
+    {
+	print_empty_graphics_list();
+    }
+    elsif ($ARGV[0] eq $filename_conf_emp_h)
+    {
+	print_empty_elements_list();
     }
     elsif ($ARGV[0] eq $filename_conf_e2g_c)
     {
