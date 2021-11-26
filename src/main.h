@@ -1385,7 +1385,7 @@
 
 #define NUM_GROUP_ELEMENTS		32
 #define EL_GROUP_END			655
-// ---------- end of custom elements section ----------------------------------
+// ---------- end of group elements section -----------------------------------
 
 #define EL_UNKNOWN			656
 #define EL_TRIGGER_ELEMENT		657
