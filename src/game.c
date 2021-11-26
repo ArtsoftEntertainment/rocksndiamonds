@@ -2028,6 +2028,11 @@ static void InitField(int x, int y, boolean init_game)
 
 	InitField(x, y, init_game);
       }
+      else if (IS_EMPTY_ELEMENT(element))
+      {
+	GfxElementEmpty[x][y] = element;
+	Tile[x][y] = EL_EMPTY;
+      }
 
       break;
   }
@@ -3880,6 +3885,7 @@ void InitGame(void)
     GfxRandom[x][y] = INIT_GFX_RANDOM();
     GfxRandomStatic[x][y] = INIT_GFX_RANDOM();
     GfxElement[x][y] = EL_UNDEFINED;
+    GfxElementEmpty[x][y] = EL_EMPTY;
     GfxAction[x][y] = ACTION_DEFAULT;
     GfxDir[x][y] = MV_NONE;
     GfxRedraw[x][y] = GFX_REDRAW_NONE;
@@ -14199,7 +14205,6 @@ static int DigField(struct PlayerInfo *player,
       return MP_NO_ACTION;
     }
   }
-
   if (IS_TUBE(Back[jx][jy]) && game.engine_version >= VERSION_IDENT(2,2,0,0))
     old_element = Back[jx][jy];
 

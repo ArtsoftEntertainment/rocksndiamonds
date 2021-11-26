@@ -1996,6 +1996,9 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
   int graphic;
   int frame;
 
+  if (element == EL_EMPTY)
+    element = GfxElementEmpty[lx][ly];
+
   if (IN_LEV_FIELD(lx, ly))
   {
     SetRandomAnimationValue(lx, ly);
