@@ -10216,6 +10216,10 @@ static struct TokenInfo editor_cascade_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.editor_cascade.el_es,		"editor.cascade.el_es"
+  },
+  {
+    TYPE_SWITCH,
     &setup.editor_cascade.el_ref,		"editor.cascade.el_ref"
   },
   {
@@ -10948,6 +10952,7 @@ static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
   si->editor_cascade.el_steel_chars	= FALSE;
   si->editor_cascade.el_ce		= FALSE;
   si->editor_cascade.el_ge		= FALSE;
+  si->editor_cascade.el_es		= FALSE;
   si->editor_cascade.el_ref		= FALSE;
   si->editor_cascade.el_user		= FALSE;
   si->editor_cascade.el_dynamic		= FALSE;

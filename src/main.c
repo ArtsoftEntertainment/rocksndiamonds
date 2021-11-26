@@ -7295,6 +7295,16 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "hide group elements"
   },
   {
+    "internal_cascade_es",
+    "internal",
+    "show empty space elements"
+  },
+  {
+    "internal_cascade_es.active",
+    "internal",
+    "hide empty space elements"
+  },
+  {
     "internal_cascade_ref",
     "internal",
     "show reference elements"

@@ -5272,6 +5272,41 @@ static int *editor_el_group_ptr = editor_el_group;
 static int num_editor_hl_group = ARRAY_SIZE(editor_hl_group);
 static int num_editor_el_group = ARRAY_SIZE(editor_el_group);
 
+static int editor_hl_empty_space[] =
+{
+  EL_INTERNAL_CASCADE_ES_ACTIVE,
+  EL_CHAR('E'),
+  EL_CHAR('S'),
+  EL_EMPTY,
+};
+
+static int editor_el_empty_space[] =
+{
+  EL_EMPTY_SPACE_1,
+  EL_EMPTY_SPACE_2,
+  EL_EMPTY_SPACE_3,
+  EL_EMPTY_SPACE_4,
+
+  EL_EMPTY_SPACE_5,
+  EL_EMPTY_SPACE_6,
+  EL_EMPTY_SPACE_7,
+  EL_EMPTY_SPACE_8,
+
+  EL_EMPTY_SPACE_9,
+  EL_EMPTY_SPACE_10,
+  EL_EMPTY_SPACE_11,
+  EL_EMPTY_SPACE_12,
+
+  EL_EMPTY_SPACE_13,
+  EL_EMPTY_SPACE_14,
+  EL_EMPTY_SPACE_15,
+  EL_EMPTY_SPACE_16
+};
+static int *editor_hl_empty_space_ptr = editor_hl_empty_space;
+static int *editor_el_empty_space_ptr = editor_el_empty_space;
+static int num_editor_hl_empty_space = ARRAY_SIZE(editor_hl_empty_space);
+static int num_editor_el_empty_space = ARRAY_SIZE(editor_el_empty_space);
+
 static int editor_hl_reference[] =
 {
   EL_INTERNAL_CASCADE_REF_ACTIVE,
@@ -5483,6 +5518,12 @@ editor_elements_info[] =
     &setup.editor_cascade.el_ge,
     &editor_hl_group_ptr,		&num_editor_hl_group,
     &editor_el_group_ptr,		&num_editor_el_group
+  },
+  {
+    &setup_editor_el_custom,
+    &setup.editor_cascade.el_es,
+    &editor_hl_empty_space_ptr,		&num_editor_hl_empty_space,
+    &editor_el_empty_space_ptr,		&num_editor_el_empty_space
   },
   {
     &setup_editor_el_custom,
