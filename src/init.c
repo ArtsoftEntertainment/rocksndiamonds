@@ -3297,6 +3297,29 @@ void InitElementPropertiesStatic(void)
     -1
   };
 
+  static int ep_empty_space[] =
+  {
+    EL_EMPTY_SPACE,
+    EL_EMPTY_SPACE_1,
+    EL_EMPTY_SPACE_2,
+    EL_EMPTY_SPACE_3,
+    EL_EMPTY_SPACE_4,
+    EL_EMPTY_SPACE_5,
+    EL_EMPTY_SPACE_6,
+    EL_EMPTY_SPACE_7,
+    EL_EMPTY_SPACE_8,
+    EL_EMPTY_SPACE_9,
+    EL_EMPTY_SPACE_10,
+    EL_EMPTY_SPACE_11,
+    EL_EMPTY_SPACE_12,
+    EL_EMPTY_SPACE_13,
+    EL_EMPTY_SPACE_14,
+    EL_EMPTY_SPACE_15,
+    EL_EMPTY_SPACE_16,
+
+    -1
+  };
+
   static int ep_player[] =
   {
     EL_PLAYER_1,
@@ -4430,6 +4453,7 @@ void InitElementPropertiesStatic(void)
     { ep_can_explode,			EP_CAN_EXPLODE			},
     { ep_gravity_reachable,		EP_GRAVITY_REACHABLE		},
 
+    { ep_empty_space,			EP_EMPTY_SPACE			},
     { ep_player,			EP_PLAYER			},
     { ep_can_pass_magic_wall,		EP_CAN_PASS_MAGIC_WALL		},
     { ep_can_pass_dc_magic_wall,	EP_CAN_PASS_DC_MAGIC_WALL	},

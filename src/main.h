@@ -118,80 +118,81 @@
 
 // values for pre-defined properties
 // (from here on, values can be changed by inserting new values)
-#define EP_PLAYER			32
-#define EP_CAN_PASS_MAGIC_WALL		33
-#define EP_CAN_PASS_DC_MAGIC_WALL	34
-#define EP_SWITCHABLE			35
-#define EP_BD_ELEMENT			36
-#define EP_SP_ELEMENT			37
-#define EP_SB_ELEMENT			38
-#define EP_GEM				39
-#define EP_FOOD_DARK_YAMYAM		40
-#define EP_FOOD_PENGUIN			41
-#define EP_FOOD_PIG			42
-#define EP_HISTORIC_WALL		43
-#define EP_HISTORIC_SOLID		44
-#define EP_CLASSIC_ENEMY		45
-#define EP_BELT				46
-#define EP_BELT_ACTIVE			47
-#define EP_BELT_SWITCH			48
-#define EP_TUBE				49
-#define EP_ACID_POOL			50
-#define EP_KEYGATE			51
-#define EP_AMOEBOID			52
-#define EP_AMOEBALIVE			53
-#define EP_HAS_EDITOR_CONTENT		54
-#define EP_CAN_TURN_EACH_MOVE		55
-#define EP_CAN_GROW			56
-#define EP_ACTIVE_BOMB			57
-#define EP_INACTIVE			58
+#define EP_EMPTY_SPACE			32
+#define EP_PLAYER			33
+#define EP_CAN_PASS_MAGIC_WALL		34
+#define EP_CAN_PASS_DC_MAGIC_WALL	35
+#define EP_SWITCHABLE			36
+#define EP_BD_ELEMENT			37
+#define EP_SP_ELEMENT			38
+#define EP_SB_ELEMENT			39
+#define EP_GEM				40
+#define EP_FOOD_DARK_YAMYAM		41
+#define EP_FOOD_PENGUIN			42
+#define EP_FOOD_PIG			43
+#define EP_HISTORIC_WALL		44
+#define EP_HISTORIC_SOLID		45
+#define EP_CLASSIC_ENEMY		46
+#define EP_BELT				47
+#define EP_BELT_ACTIVE			48
+#define EP_BELT_SWITCH			49
+#define EP_TUBE				50
+#define EP_ACID_POOL			51
+#define EP_KEYGATE			52
+#define EP_AMOEBOID			53
+#define EP_AMOEBALIVE			54
+#define EP_HAS_EDITOR_CONTENT		55
+#define EP_CAN_TURN_EACH_MOVE		56
+#define EP_CAN_GROW			57
+#define EP_ACTIVE_BOMB			58
+#define EP_INACTIVE			59
 
 // values for special configurable properties (depending on level settings)
-#define EP_EM_SLIPPERY_WALL		59
+#define EP_EM_SLIPPERY_WALL		60
 
 // values for special graphics properties (no effect on game engine)
-#define EP_GFX_CRUMBLED			60
+#define EP_GFX_CRUMBLED			61
 
 // values for derived properties (determined from properties above)
-#define EP_ACCESSIBLE_OVER		61
-#define EP_ACCESSIBLE_INSIDE		62
-#define EP_ACCESSIBLE_UNDER		63
-#define EP_WALKABLE			64
-#define EP_PASSABLE			65
-#define EP_ACCESSIBLE			66
-#define EP_COLLECTIBLE			67
-#define EP_SNAPPABLE			68
-#define EP_WALL				69
-#define EP_SOLID_FOR_PUSHING		70
-#define EP_DRAGONFIRE_PROOF		71
-#define EP_EXPLOSION_PROOF		72
-#define EP_CAN_SMASH			73
-#define EP_EXPLODES_3X3_OLD		74
-#define EP_CAN_EXPLODE_BY_FIRE		75
-#define EP_CAN_EXPLODE_SMASHED		76
-#define EP_CAN_EXPLODE_IMPACT		77
-#define EP_SP_PORT			78
-#define EP_CAN_EXPLODE_BY_DRAGONFIRE	79
-#define EP_CAN_EXPLODE_BY_EXPLOSION	80
-#define EP_COULD_MOVE_INTO_ACID		81
-#define EP_MAYBE_DONT_COLLIDE_WITH	82
-#define EP_CAN_BE_CLONED_BY_ANDROID	83
+#define EP_ACCESSIBLE_OVER		62
+#define EP_ACCESSIBLE_INSIDE		63
+#define EP_ACCESSIBLE_UNDER		64
+#define EP_WALKABLE			65
+#define EP_PASSABLE			66
+#define EP_ACCESSIBLE			67
+#define EP_COLLECTIBLE			68
+#define EP_SNAPPABLE			69
+#define EP_WALL				70
+#define EP_SOLID_FOR_PUSHING		71
+#define EP_DRAGONFIRE_PROOF		72
+#define EP_EXPLOSION_PROOF		73
+#define EP_CAN_SMASH			74
+#define EP_EXPLODES_3X3_OLD		75
+#define EP_CAN_EXPLODE_BY_FIRE		76
+#define EP_CAN_EXPLODE_SMASHED		77
+#define EP_CAN_EXPLODE_IMPACT		78
+#define EP_SP_PORT			79
+#define EP_CAN_EXPLODE_BY_DRAGONFIRE	80
+#define EP_CAN_EXPLODE_BY_EXPLOSION	81
+#define EP_COULD_MOVE_INTO_ACID		82
+#define EP_MAYBE_DONT_COLLIDE_WITH	83
+#define EP_CAN_BE_CLONED_BY_ANDROID	84
 
 // values for internal purpose only (level editor)
-#define EP_WALK_TO_OBJECT		84
-#define EP_DEADLY			85
-#define EP_EDITOR_CASCADE		86
-#define EP_EDITOR_CASCADE_ACTIVE	87
-#define EP_EDITOR_CASCADE_INACTIVE	88
+#define EP_WALK_TO_OBJECT		85
+#define EP_DEADLY			86
+#define EP_EDITOR_CASCADE		87
+#define EP_EDITOR_CASCADE_ACTIVE	88
+#define EP_EDITOR_CASCADE_INACTIVE	89
 
 // values for internal purpose only (game engine)
-#define EP_HAS_ACTION			89
-#define EP_CAN_CHANGE_OR_HAS_ACTION	90
+#define EP_HAS_ACTION			90
+#define EP_CAN_CHANGE_OR_HAS_ACTION	91
 
 // values for internal purpose only (other)
-#define EP_OBSOLETE			91
+#define EP_OBSOLETE			92
 
-#define NUM_ELEMENT_PROPERTIES		92
+#define NUM_ELEMENT_PROPERTIES		93
 
 #define NUM_EP_BITFIELDS		((NUM_ELEMENT_PROPERTIES + 31) / 32)
 #define EP_BITFIELD_BASE_NR		0
@@ -599,6 +600,7 @@
 #define GFX_CRUMBLED(e)		HAS_PROPERTY(GFX_ELEMENT(e), EP_GFX_CRUMBLED)
 
 // macros for pre-defined properties
+#define IS_EMPTY_SPACE(e)	HAS_PROPERTY(e, EP_EMPTY_SPACE)
 #define IS_PLAYER_ELEMENT(e)	HAS_PROPERTY(e, EP_PLAYER)
 #define CAN_PASS_MAGIC_WALL(e)	HAS_PROPERTY(e, EP_CAN_PASS_MAGIC_WALL)
 #define CAN_PASS_DC_MAGIC_WALL(e) HAS_PROPERTY(e, EP_CAN_PASS_DC_MAGIC_WALL)
