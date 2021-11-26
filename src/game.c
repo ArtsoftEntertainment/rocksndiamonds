@@ -2032,6 +2032,9 @@ static void InitField(int x, int y, boolean init_game)
       {
 	GfxElementEmpty[x][y] = element;
 	Tile[x][y] = EL_EMPTY;
+
+	if (element_info[element].use_gfx_element)
+	  game.use_masked_elements = TRUE;
       }
 
       break;
