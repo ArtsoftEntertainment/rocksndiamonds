@@ -669,6 +669,9 @@
 
 #define IS_OBSOLETE(e)		HAS_PROPERTY(e, EP_OBSOLETE)
 
+#define IS_EMPTY(e)		IS_EMPTY_SPACE(e)
+#define IS_EMPTY_ELEMENT(e)	IS_EMPTY_SPACE(e)
+
 // special macros used in game engine
 #define IS_FILE_ELEMENT(e)	((e) >= 0 &&				\
 	 			 (e) <= NUM_FILE_ELEMENTS)
@@ -913,6 +916,9 @@
 				 (e) : EL_PLAYER_1)
 
 #define GET_PLAYER_NR(e)	(GET_PLAYER_ELEMENT(e) - EL_PLAYER_1)
+
+#define GET_EMPTY_ELEMENT(i)	((i) == 0 ? EL_EMPTY_SPACE :		\
+				 EL_EMPTY_SPACE_1 + (i) - 1)
 
 #define ANIM_FRAMES(g)		(graphic_info[g].anim_frames)
 #define ANIM_DELAY(g)		(graphic_info[g].anim_delay)
@@ -1920,6 +1926,7 @@
 #include "conf_emp.h"	// include auto-generated data structure definitions
 
 #define NUM_EMPTY_SPACE_ELEMENTS	16
+#define NUM_EMPTY_ELEMENTS_ALL		(NUM_EMPTY_SPACE_ELEMENTS + 1)
 #define EL_EMPTY_SPACE_END		1232
 // ---------- end of empty space elements section -----------------------------
 
