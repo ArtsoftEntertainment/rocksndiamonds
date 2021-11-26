@@ -8420,6 +8420,9 @@ static void StartMoving(int x, int y)
 	  GfxDir[x][y] = diagonal_move_dir;
 	  ChangeDelay[x][y] = change_delay;
 
+	  if (Store[x][y] == EL_EMPTY)
+	    Store[x][y] = GfxElementEmpty[x][y];
+
 	  graphic = el_act_dir2img(GfxElement[x][y], GfxAction[x][y],
 				   GfxDir[x][y]);
 
