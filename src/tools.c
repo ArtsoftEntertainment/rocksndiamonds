@@ -3960,6 +3960,9 @@ void DrawLevelGraphicAnimationIfNeeded(int x, int y, int graphic)
   if (!IN_LEV_FIELD(x, y) || !IN_SCR_FIELD(sx, sy))
     return;
 
+  if (Tile[x][y] == EL_EMPTY)
+    graphic = el2img(GfxElementEmpty[x][y]);
+
   if (!IS_NEW_FRAME(GfxFrame[x][y], graphic))
     return;
 

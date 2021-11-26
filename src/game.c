@@ -12299,6 +12299,9 @@ void GameActions_RND(void)
     graphic = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
     last_gfx_frame = GfxFrame[x][y];
 
+    if (element == EL_EMPTY)
+      graphic = el2img(GfxElementEmpty[x][y]);
+
     ResetGfxFrame(x, y);
 
     if (GfxFrame[x][y] != last_gfx_frame && !Stop[x][y])
