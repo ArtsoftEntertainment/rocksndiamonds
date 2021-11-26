@@ -51,6 +51,7 @@
 
 // (element number only)
 #define LEVEL_CHUNK_GRPX_UNCHANGED	2
+#define LEVEL_CHUNK_EMPX_UNCHANGED	2
 #define LEVEL_CHUNK_NOTE_UNCHANGED	2
 
 // (nothing at all if unchanged)
@@ -1376,6 +1377,26 @@ static struct LevelFileConfigInfo chunk_config_GRPX[] =
   }
 };
 
+static struct LevelFileConfigInfo chunk_config_EMPX[] =
+{
+  {
+    -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &xx_ei.use_gfx_element,		FALSE
+  },
+  {
+    -1,					-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &xx_ei.gfx_element_initial,		EL_EMPTY_SPACE
+  },
+
+  {
+    -1,					-1,
+    -1,					-1,
+    NULL,				-1
+  }
+};
+
 static struct LevelFileConfigInfo chunk_config_CONF[] =		// (OBSOLETE)
 {
   {
@@ -1892,6 +1913,16 @@ static void setLevelInfoToDefaults_Elements(struct LevelInfo *level)
       setConfigToDefaultsFromConfigList(chunk_config_GRPX);
 
       *group = xx_group;
+    }
+
+    if (IS_EMPTY_ELEMENT(element) ||
+	IS_INTERNAL_ELEMENT(element))
+    {
+      xx_ei = *ei;		// copy element data into temporary buffer
+
+      setConfigToDefaultsFromConfigList(chunk_config_EMPX);
+
+      *ei = xx_ei;
     }
   }
 
@@ -3372,6 +3403,30 @@ static int LoadLevel_GRPX(File *file, int chunk_size, struct LevelInfo *level)
   return real_chunk_size;
 }
 
+static int LoadLevel_EMPX(File *file, int chunk_size, struct LevelInfo *level)
+{
+  int element = getMappedElement(getFile16BitBE(file));
+  int real_chunk_size = 2;
+  struct ElementInfo *ei = &element_info[element];
+
+  xx_ei = *ei;		// copy element data into temporary buffer
+
+  while (!checkEndOfFile(file))
+  {
+    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_EMPX,
+					    -1, element);
+
+    if (real_chunk_size >= chunk_size)
+      break;
+  }
+
+  *ei = xx_ei;
+
+  level->file_has_custom_elements = TRUE;
+
+  return real_chunk_size;
+}
+
 static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 				      struct LevelFileInfo *level_file_info,
 				      boolean level_info_only)
@@ -3494,6 +3549,7 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
       { "NOTE", -1,			LoadLevel_NOTE },
       { "CUSX", -1,			LoadLevel_CUSX },
       { "GRPX", -1,			LoadLevel_GRPX },
+      { "EMPX", -1,			LoadLevel_EMPX },
 
       {  NULL,  0,			NULL }
     };
@@ -7538,6 +7594,22 @@ static int SaveLevel_GRPX(FILE *file, struct LevelInfo *level, int element)
   return chunk_size;
 }
 
+static int SaveLevel_EMPX(FILE *file, struct LevelInfo *level, int element)
+{
+  struct ElementInfo *ei = &element_info[element];
+  int chunk_size = 0;
+  int i;
+
+  chunk_size += putFile16BitBE(file, element);
+
+  xx_ei = *ei;		// copy element data into temporary buffer
+
+  for (i = 0; chunk_config_EMPX[i].data_type != -1; i++)
+    chunk_size += SaveLevel_MicroChunk(file, &chunk_config_EMPX[i], FALSE);
+
+  return chunk_size;
+}
+
 static void SaveLevelFromFilename(struct LevelInfo *level, char *filename,
 				  boolean save_as_template)
 {
@@ -7627,6 +7699,18 @@ static void SaveLevelFromFilename(struct LevelInfo *level, char *filename,
       {
 	putFileChunkBE(file, "GRPX", chunk_size);
 	SaveLevel_GRPX(file, level, element);
+      }
+    }
+
+    for (i = 0; i < NUM_EMPTY_ELEMENTS_ALL; i++)
+    {
+      int element = GET_EMPTY_ELEMENT(i);
+
+      chunk_size = SaveLevel_EMPX(NULL, level, element);
+      if (chunk_size > LEVEL_CHUNK_EMPX_UNCHANGED)	// save if changed
+      {
+	putFileChunkBE(file, "EMPX", chunk_size);
+	SaveLevel_EMPX(file, level, element);
       }
     }
   }
