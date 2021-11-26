@@ -4747,7 +4747,7 @@ void InitElementPropertiesEngine(int engine_version)
     // ---------- CAN_BE_CLONED_BY_ANDROID ------------------------------------
     for (j = 0; j < level.num_android_clone_elements; j++)
       SET_PROPERTY(i, EP_CAN_BE_CLONED_BY_ANDROID,
-		   (i != EL_EMPTY &&
+		   (!IS_EMPTY(i) &&
 		    IS_EQUAL_OR_IN_GROUP(i, level.android_clone_element[j])));
 
     // ---------- CAN_CHANGE --------------------------------------------------
