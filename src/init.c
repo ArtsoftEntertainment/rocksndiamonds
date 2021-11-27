@@ -2236,6 +2236,13 @@ static void InitMusicInfo(void)
   }
 }
 
+
+static void InitGameInfoFromArtworkInfo(void)
+{
+  // special case: store initial value of custom artwork setting
+  game.use_masked_elements_initial = game.use_masked_elements;
+}
+
 static void ReinitializeGraphics(void)
 {
   print_timestamp_init("ReinitializeGraphics");
@@ -2278,6 +2285,8 @@ static void ReinitializeGraphics(void)
   print_timestamp_time("InitGadgets");
   InitDoors();
   print_timestamp_time("InitDoors");
+
+  InitGameInfoFromArtworkInfo();
 
   print_timestamp_done("ReinitializeGraphics");
 }
@@ -5307,6 +5316,8 @@ static void InitGameInfo(void)
 
   game.request_active = FALSE;
   game.request_active_or_moving = FALSE;
+
+  game.use_masked_elements_initial = FALSE;
 }
 
 static void InitPlayerInfo(void)

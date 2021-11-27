@@ -3845,6 +3845,9 @@ void InitGame(void)
 
   game.envelope_active = FALSE;
 
+  // special case: set custom artwork setting to initial value
+  game.use_masked_elements = game.use_masked_elements_initial;
+
   for (i = 0; i < NUM_BELTS; i++)
   {
     game.belt_dir[i] = MV_NONE;
