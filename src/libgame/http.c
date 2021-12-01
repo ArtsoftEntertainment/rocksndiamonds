@@ -166,6 +166,103 @@ static boolean SetHTTPResponseBody(struct HttpResponse *response, char *buffer,
   return TRUE;
 }
 
+static int GetHttpResponse(TCPsocket socket, char *buffer, int max_buffer_size)
+{
+  char *buffer_ptr = buffer;
+  int buffer_left = max_buffer_size;
+  int buffer_size = 0;
+  int response_size = 0;
+
+  while (1)
+  {
+    // read as many bytes to the buffer as possible
+    int bytes = SDLNet_TCP_Recv(socket, buffer_ptr, buffer_left);
+
+    if (bytes <= 0)
+    {
+      SetHttpError("receiving response from server failed");
+
+      return -1;
+    }
+
+    buffer_ptr += bytes;
+    buffer_size += bytes;
+    buffer_left -= bytes;
+
+    // check if response size was already determined
+    if (response_size > 0)
+    {
+      // check if response data was completely received
+      if (buffer_size >= response_size)
+	break;
+
+      // continue reading response body from server
+      continue;
+    }
+
+    char *separator = "\r\n\r\n";
+    char *separator_start = strstr(buffer, separator);
+    int separator_size = strlen(separator);
+
+    // check if response header was completely received
+    if (separator_start == NULL)
+    {
+      // continue reading response header from server
+      continue;
+    }
+
+    char *content_length = "Content-Length: ";
+    char *content_length_start = strstr(buffer, content_length);
+    int head_size = separator_start - buffer;
+
+    // check if response header contains content length header
+    if (content_length_start == NULL ||
+	content_length_start >= buffer + head_size)
+    {
+      SetHttpError("receiving 'Content-Length' header from server failed");
+
+      return -1;
+    }
+
+    char *content_length_value = content_length_start + strlen(content_length);
+    char *content_length_end = strstr(content_length_value, "\r\n");
+
+    // check if content length header has line termination
+    if (content_length_end == NULL)
+    {
+      SetHttpError("receiving 'Content-Length' value from server failed");
+
+      return -1;
+    }
+
+    int value_len = content_length_end - content_length_value;
+    int max_value_len = 10;
+
+    // check if content length header has valid size
+    if (value_len > max_value_len)
+    {
+      SetHttpError("received invalid 'Content-Length' value from server");
+
+      return -1;
+    }
+
+    char value_str[value_len + 1];
+
+    strncpy(value_str, content_length_value, value_len);
+    value_str[value_len] = '\0';
+
+    int body_size = atoi(value_str);
+
+    response_size = head_size + separator_size + body_size;
+
+    // check if response data was completely received
+    if (buffer_size >= response_size)
+      break;
+  }
+
+  return buffer_size;
+}
+
 static boolean DoHttpRequestExt(struct HttpRequest *request,
 				struct HttpResponse *response,
 				char *send_buffer,
@@ -251,11 +348,11 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
     return FALSE;
   }
 
-  int recv_bytes = SDLNet_TCP_Recv(*socket, recv_buffer, max_http_buffer_size);
+  int recv_bytes = GetHttpResponse(*socket, recv_buffer, max_http_buffer_size);
 
   if (recv_bytes <= 0)
   {
-    SetHttpError("receiving response from server failed");
+    // HTTP error already set in GetHttpResponse()
 
     return FALSE;
   }
