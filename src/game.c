@@ -11599,6 +11599,35 @@ static void CheckLevelSolved(void)
   }
 }
 
+static void CheckLevelTime_StepCounter(void)
+{
+  int i;
+
+  TimePlayed++;
+
+  if (TimeLeft > 0)
+  {
+    TimeLeft--;
+
+    if (TimeLeft <= 10 && setup.time_limit && !game.LevelSolved)
+      PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
+
+    game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
+
+    DisplayGameControlValues();
+
+    if (!TimeLeft && setup.time_limit && !game.LevelSolved)
+      for (i = 0; i < MAX_PLAYERS; i++)
+	KillPlayer(&stored_player[i]);
+  }
+  else if (game.no_time_limit && !game.all_players_gone)
+  {
+    game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
+
+    DisplayGameControlValues();
+  }
+}
+
 static void CheckLevelTime(void)
 {
   int i;
@@ -13255,33 +13284,7 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
     }
 
     if (level.use_step_counter)
-    {
-      int i;
-
-      TimePlayed++;
-
-      if (TimeLeft > 0)
-      {
-	TimeLeft--;
-
-	if (TimeLeft <= 10 && setup.time_limit && !game.LevelSolved)
-	  PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
-
-	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
-
-	DisplayGameControlValues();
-
-	if (!TimeLeft && setup.time_limit && !game.LevelSolved)
-	  for (i = 0; i < MAX_PLAYERS; i++)
-	    KillPlayer(&stored_player[i]);
-      }
-      else if (game.no_time_limit && !game.all_players_gone)
-      {
-	game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
-
-	DisplayGameControlValues();
-      }
-    }
+      CheckLevelTime_StepCounter();
 
     if (tape.single_step && tape.recording && !tape.pausing &&
 	!player->programmed_action)
