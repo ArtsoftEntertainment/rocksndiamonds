@@ -12326,6 +12326,25 @@ void GameActions_RND(void)
     CheckElementChangeByMouse(x, y, element, CE_PRESSED_BY_MOUSE, ch_button);
     CheckTriggeredElementChangeByMouse(x, y, element, CE_MOUSE_PRESSED_ON_X,
 				       ch_button);
+
+    if (level.use_step_counter)
+    {
+      boolean counted_click = FALSE;
+
+      // element clicked that can change when clicked/pressed
+      if (CAN_CHANGE_OR_HAS_ACTION(element) &&
+	  (HAS_ANY_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ||
+	   HAS_ANY_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE)))
+	counted_click = TRUE;
+
+      // element clicked that can trigger change when clicked/pressed
+      if (trigger_events[element][CE_MOUSE_CLICKED_ON_X] ||
+	  trigger_events[element][CE_MOUSE_PRESSED_ON_X])
+	counted_click = TRUE;
+
+      if (new_button && counted_click)
+	CheckLevelTime_StepCounter();
+    }
   }
 
   SCAN_PLAYFIELD(x, y)
