@@ -1381,8 +1381,10 @@ static TreeInfo *getFirstValidAutoPlayEntry(TreeInfo *node)
 
 static void AutoPlayTapes_SetScoreEntry(int score, int time)
 {
+  char *name = (options.mytapes ? setup.player_name : options.player_name);
+
   // set unique basename for score tape (for uploading to score server)
-  strcpy(tape.score_tape_basename, getScoreTapeBasename(setup.player_name));
+  strcpy(tape.score_tape_basename, getScoreTapeBasename(name));
 
   // store score in first score entry
   scores.last_added = 0;
