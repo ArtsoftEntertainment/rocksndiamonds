@@ -3259,7 +3259,7 @@ void HandleInfoScreen_Music(int button)
     {
       int sound = list->music;
 
-      if (sound_info[sound].loop)
+      if (IS_LOOP_SOUND(sound))
 	PlaySoundLoop(sound);
       else
 	PlaySound(sound);
@@ -3270,7 +3270,7 @@ void HandleInfoScreen_Music(int button)
     {
       int music = list->music;
 
-      if (music_info[music].loop)
+      if (IS_LOOP_MUSIC(music))
 	PlayMusicLoop(music);
       else
 	PlayMusic(music);
@@ -3338,7 +3338,7 @@ void HandleInfoScreen_Music(int button)
       FadeIn(REDRAW_FIELD);
   }
 
-  if (list != NULL && list->is_sound && sound_info[list->music].loop)
+  if (list != NULL && list->is_sound && IS_LOOP_SOUND(list->music))
     PlaySoundLoop(list->music);
 }
 
