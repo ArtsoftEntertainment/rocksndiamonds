@@ -9904,3 +9904,196 @@ void ChangeViewportPropertiesIfNeeded(void)
     InitGraphicInfo_EM();
   }
 }
+
+
+// ============================================================================
+// tests
+// ============================================================================
+
+#if defined(PLATFORM_WIN32)
+/* FILETIME of Jan 1 1970 00:00:00. */
+static const unsigned __int64 epoch = ((unsigned __int64) 116444736000000000ULL);
+
+/*
+ * timezone information is stored outside the kernel so tzp isn't used anymore.
+ *
+ * Note: this function is not for Win32 high precision timing purpose. See
+ * elapsed_time().
+ */
+int gettimeofday_windows(struct timeval * tp, struct timezone * tzp)
+{
+  FILETIME    file_time;
+  SYSTEMTIME  system_time;
+  ULARGE_INTEGER ularge;
+
+  GetSystemTime(&system_time);
+  SystemTimeToFileTime(&system_time, &file_time);
+  ularge.LowPart = file_time.dwLowDateTime;
+  ularge.HighPart = file_time.dwHighDateTime;
+
+  tp->tv_sec = (long) ((ularge.QuadPart - epoch) / 10000000L);
+  tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
+
+  return 0;
+}
+#endif
+
+static char *test_init_uuid_random_function_simple(void)
+{
+  static char seed_text[100];
+  unsigned int seed = InitSimpleRandom(NEW_RANDOMIZE);
+
+  sprintf(seed_text, "%d", seed);
+
+  return seed_text;
+}
+
+static char *test_init_uuid_random_function_better(void)
+{
+  static char seed_text[100];
+  struct timeval current_time;
+
+  gettimeofday(&current_time, NULL);
+
+  prng_seed_bytes(&current_time, sizeof(current_time));
+
+  sprintf(seed_text, "%ld.%ld",
+	  (long)current_time.tv_sec,
+	  (long)current_time.tv_usec);
+
+  return seed_text;
+}
+
+#if defined(PLATFORM_WIN32)
+static char *test_init_uuid_random_function_better_windows(void)
+{
+  static char seed_text[100];
+  struct timeval current_time;
+
+  gettimeofday_windows(&current_time, NULL);
+
+  prng_seed_bytes(&current_time, sizeof(current_time));
+
+  sprintf(seed_text, "%ld.%ld",
+	  (long)current_time.tv_sec,
+	  (long)current_time.tv_usec);
+
+  return seed_text;
+}
+#endif
+
+static unsigned int test_uuid_random_function_simple(int max)
+{
+  return GetSimpleRandom(max);
+}
+
+static unsigned int test_uuid_random_function_better(int max)
+{
+  return (max > 0 ? prng_get_uint() % max : 0);
+}
+
+#if defined(PLATFORM_WIN32)
+#define NUM_UUID_TESTS			3
+#else
+#define NUM_UUID_TESTS			2
+#endif
+
+static void TestGeneratingUUIDs_RunTest(int nr, int always_seed, int num_uuids)
+{
+  struct hashtable *hash_seeds =
+    create_hashtable(16, 0.75, get_hash_from_key, hash_keys_are_equal);
+  struct hashtable *hash_uuids =
+    create_hashtable(16, 0.75, get_hash_from_key, hash_keys_are_equal);
+  static char message[100];
+  int i;
+
+  char *random_name = (nr == 0 ? "simple" : "better");
+  char *random_type = (always_seed ? "always" : "only once");
+  char *(*init_random_function)(void) =
+    (nr == 0 ?
+     test_init_uuid_random_function_simple :
+     test_init_uuid_random_function_better);
+  unsigned int (*random_function)(int) =
+    (nr == 0 ?
+     test_uuid_random_function_simple :
+     test_uuid_random_function_better);
+  int xpos = 40;
+
+#if defined(PLATFORM_WIN32)
+  if (nr == 2)
+  {
+    random_name = "windows";
+    init_random_function = test_init_uuid_random_function_better_windows;
+  }
+#endif
+
+  ClearField();
+
+  DrawTextF(xpos, 40, FC_GREEN, "Test: Generating UUIDs");
+  DrawTextF(xpos, 80, FC_YELLOW, "Test %d.%d:", nr + 1, always_seed + 1);
+
+  DrawTextF(xpos, 100, FC_YELLOW, "Random Generator Name: %s", random_name);
+  DrawTextF(xpos, 120, FC_YELLOW, "Seeding Random Generator: %s", random_type);
+  DrawTextF(xpos, 140, FC_YELLOW, "Number of UUIDs generated: %d", num_uuids);
+
+  DrawTextF(xpos, 180, FC_GREEN, "Please wait ...");
+
+  BackToFront();
+
+  // always initialize random number generator at least once
+  init_random_function();
+
+  unsigned int time_start = SDL_GetTicks();
+
+  for (i = 0; i < num_uuids; i++)
+  {
+    if (always_seed)
+    {
+      char *seed = getStringCopy(init_random_function());
+
+      hashtable_remove(hash_seeds, seed);
+      hashtable_insert(hash_seeds, seed, "1");
+    }
+
+    char *uuid = getStringCopy(getUUIDExt(random_function));
+
+    hashtable_remove(hash_uuids, uuid);
+    hashtable_insert(hash_uuids, uuid, "1");
+  }
+
+  int num_unique_seeds = hashtable_count(hash_seeds);
+  int num_unique_uuids = hashtable_count(hash_uuids);
+
+  unsigned int time_needed = SDL_GetTicks() - time_start;
+
+  DrawTextF(xpos, 220, FC_YELLOW, "Time needed: %d ms", time_needed);
+
+  DrawTextF(xpos, 240, FC_YELLOW, "Number of unique UUIDs: %d", num_unique_uuids);
+
+  if (always_seed)
+    DrawTextF(xpos, 260, FC_YELLOW, "Number of unique seeds: %d", num_unique_seeds);
+
+  if (nr == NUM_UUID_TESTS - 1 && always_seed)
+    DrawTextF(xpos, 300, FC_GREEN, "All tests done!");
+  else
+    DrawTextF(xpos, 300, FC_GREEN, "Confirm dialog for next test ...");
+
+  sprintf(message, "Test %d.%d finished!", nr + 1, always_seed + 1);
+
+  Request(message, REQ_CONFIRM);
+
+  hashtable_destroy(hash_seeds, 0);
+  hashtable_destroy(hash_uuids, 0);
+}
+
+void TestGeneratingUUIDs(void)
+{
+  int num_uuids = 1000000;
+  int i, j;
+
+  for (i = 0; i < NUM_UUID_TESTS; i++)
+    for (j = 0; j < 2; j++)
+      TestGeneratingUUIDs_RunTest(i, j, num_uuids);
+
+  CloseAllAndExit(0);
+}

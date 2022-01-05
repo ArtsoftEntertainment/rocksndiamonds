@@ -298,4 +298,6 @@ void ChangeViewportPropertiesIfNeeded(void);
 boolean CheckIfAllViewportsHaveChanged(void);
 boolean CheckFadeAll(void);
 
+void TestGeneratingUUIDs(void);
+
 #endif	// TOOLS_H
