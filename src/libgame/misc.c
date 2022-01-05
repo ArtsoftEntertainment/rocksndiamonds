@@ -557,7 +557,12 @@ boolean getTokenValueFromString(char *string, char **token, char **value)
 #define UUID_CHARS		(UUID_BYTES * 2)
 #define UUID_LENGTH		(UUID_CHARS + 4)
 
-char *getUUID(void)
+static unsigned int uuid_random_function(int max)
+{
+  return GetSimpleRandom(max);
+}
+
+char *getUUIDExt(unsigned int (*random_function)(int max))
 {
   static char uuid[UUID_LENGTH + 1];
   int data[UUID_BYTES];
@@ -565,7 +570,7 @@ char *getUUID(void)
   int i;
 
   for (i = 0; i < UUID_BYTES; i++)
-    data[i] = GetSimpleRandom(256);
+    data[i] = random_function(256);
 
   data[6] = 0x40 | (data[6] & 0x0f);
   data[8] = 0x80 | (data[8] & 0x3f);
@@ -580,6 +585,11 @@ char *getUUID(void)
   }
 
   return uuid;
+}
+
+char *getUUID(void)
+{
+  return getUUIDExt(uuid_random_function);
 }
 
 
