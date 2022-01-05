@@ -365,6 +365,7 @@ char *getSetupValue(int, void *);
 char *getSetupLine(struct TokenInfo *, char *, int);
 
 unsigned int get_hash_from_key(void *);
+int hash_keys_are_equal(void *, void *);
 
 int GetZipFileTreeType(char *);
 char *ExtractZipFileIntoDirectory(char *, char *, int);

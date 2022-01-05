@@ -2075,7 +2075,7 @@ unsigned int get_hash_from_key(void *key)
   return hash;
 }
 
-static int keys_are_equal(void *key1, void *key2)
+int hash_keys_are_equal(void *key1, void *key2)
 {
   return (strEqual((char *)key1, (char *)key2));
 }
@@ -2083,7 +2083,7 @@ static int keys_are_equal(void *key1, void *key2)
 SetupFileHash *newSetupFileHash(void)
 {
   SetupFileHash *new_hash =
-    create_hashtable(16, 0.75, get_hash_from_key, keys_are_equal);
+    create_hashtable(16, 0.75, get_hash_from_key, hash_keys_are_equal);
 
   if (new_hash == NULL)
     Fail("create_hashtable() failed -- out of memory");
