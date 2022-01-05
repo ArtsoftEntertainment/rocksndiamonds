@@ -746,7 +746,7 @@ void SkipUntilDelayReached(unsigned int *counter_var, unsigned int delay,
 // random generator functions
 // ----------------------------------------------------------------------------
 
-unsigned int init_random_number(int nr, int seed)
+static unsigned int init_random_number_ext(int nr, int seed)
 {
   if (seed == NEW_RANDOMIZE)
   {
@@ -774,9 +774,32 @@ unsigned int init_random_number(int nr, int seed)
   return (unsigned int) seed;
 }
 
+static unsigned int prng_seed_gettimeofday(void)
+{
+  struct timeval current_time;
+
+  gettimeofday(&current_time, NULL);
+
+  prng_seed_bytes(&current_time, sizeof(current_time));
+
+  return 0;
+}
+
+unsigned int init_random_number(int nr, int seed)
+{
+  return (nr == RANDOM_BETTER ? prng_seed_gettimeofday() :
+	  init_random_number_ext(nr, seed));
+}
+
+static unsigned int get_random_number_ext(int nr)
+{
+  return (nr == RANDOM_BETTER ? prng_get_uint() :
+	  random_linux_libc(nr));
+}
+
 unsigned int get_random_number(int nr, int max)
 {
-  return (max > 0 ? random_linux_libc(nr) % max : 0);
+  return (max > 0 ? get_random_number_ext(nr) % max : 0);
 }
 
 

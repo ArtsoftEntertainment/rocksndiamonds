@@ -28,11 +28,14 @@
 
 #define RANDOM_ENGINE			0
 #define RANDOM_SIMPLE			1
+#define RANDOM_BETTER			2
 
 #define InitEngineRandom(seed)		init_random_number(RANDOM_ENGINE, seed)
 #define InitSimpleRandom(seed)		init_random_number(RANDOM_SIMPLE, seed)
+#define InitBetterRandom(seed)		init_random_number(RANDOM_BETTER, seed)
 #define GetEngineRandom(max)		get_random_number(RANDOM_ENGINE, max)
 #define GetSimpleRandom(max)		get_random_number(RANDOM_SIMPLE, max)
+#define GetBetterRandom(max)		get_random_number(RANDOM_BETTER, max)
 
 // values for getFile...() and putFile...()
 #define BYTE_ORDER_BIG_ENDIAN		0
@@ -120,6 +123,7 @@ int log_2(unsigned int);
 
 boolean getTokenValueFromString(char *, char **, char **);
 
+char *getUUIDExt(unsigned int (*function)(int));
 char *getUUID(void);
 
 void InitCounter(void);
