@@ -559,7 +559,7 @@ boolean getTokenValueFromString(char *string, char **token, char **value)
 
 static unsigned int uuid_random_function(int max)
 {
-  return GetSimpleRandom(max);
+  return GetBetterRandom(max);
 }
 
 char *getUUIDExt(unsigned int (*random_function)(int max))

@@ -6197,6 +6197,7 @@ void OpenAll(void)
 
   InitRND(NEW_RANDOMIZE);
   InitSimpleRandom(NEW_RANDOMIZE);
+  InitBetterRandom(NEW_RANDOMIZE);
 
   print_timestamp_time("[init global stuff]");
 
