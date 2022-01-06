@@ -7782,11 +7782,6 @@ int main(int argc, char *argv[])
   GetOptions(argc, argv, print_usage, print_version);
   OpenAll();
 
-#if 0
-  // test generating UUIDs and exit
-  TestGeneratingUUIDs();
-#endif
-
   EventLoop();
   CloseAllAndExit(0);
 
