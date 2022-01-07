@@ -1758,8 +1758,8 @@ void DrawMainMenu(void)
 
   SyncEmscriptenFilesystem();
 
-  // needed once to upload tapes (after program start or after user change)
-  CheckUploadTapes();
+  // needed once after program start or after user change
+  CheckApiServerTasks();
 }
 
 static void gotoTopLevelDir(void)
@@ -4060,7 +4060,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 
 
 // ============================================================================
-// change name functions
+// rename player API functions
 // ============================================================================
 
 struct ApiRenamePlayerThreadData
@@ -4252,6 +4252,216 @@ static void ApiRenamePlayerAsThread(void)
   ExecuteAsThread(ApiRenamePlayerThread,
 		  "ApiRenamePlayer", data,
 		  "rename player on server");
+}
+
+
+// ============================================================================
+// reset player UUID API functions
+// ============================================================================
+
+struct ApiResetUUIDThreadData
+{
+  char *player_name;
+  char *player_uuid_old;
+  char *player_uuid_new;
+};
+
+static void *CreateThreadData_ApiResetUUID(char *uuid_new)
+{
+  struct ApiResetUUIDThreadData *data =
+    checked_malloc(sizeof(struct ApiResetUUIDThreadData));
+
+  data->player_name     = getStringCopy(setup.player_name);
+  data->player_uuid_old = getStringCopy(setup.player_uuid);
+  data->player_uuid_new = getStringCopy(uuid_new);
+
+  return data;
+}
+
+static void FreeThreadData_ApiResetUUID(void *data_raw)
+{
+  struct ApiResetUUIDThreadData *data = data_raw;
+
+  checked_free(data->player_name);
+  checked_free(data->player_uuid_old);
+  checked_free(data->player_uuid_new);
+  checked_free(data);
+}
+
+static boolean SetRequest_ApiResetUUID(struct HttpRequest *request,
+				       void *data_raw)
+{
+  struct ApiResetUUIDThreadData *data = data_raw;
+  char *player_name_raw = data->player_name;
+  char *player_uuid_old_raw = data->player_uuid_old;
+  char *player_uuid_new_raw = data->player_uuid_new;
+
+  request->hostname = setup.api_server_hostname;
+  request->port     = API_SERVER_PORT;
+  request->method   = API_SERVER_METHOD;
+  request->uri      = API_SERVER_URI_RESETUUID;
+
+  char *player_name = getEscapedJSON(player_name_raw);
+  char *player_uuid_old = getEscapedJSON(player_uuid_old_raw);
+  char *player_uuid_new = getEscapedJSON(player_uuid_new_raw);
+
+  snprintf(request->body, MAX_HTTP_BODY_SIZE,
+	   "{\n"
+	   "%s"
+	   "  \"game_version\":         \"%s\",\n"
+	   "  \"game_platform\":        \"%s\",\n"
+	   "  \"name\":                 \"%s\",\n"
+	   "  \"uuid_old\":             \"%s\",\n"
+	   "  \"uuid_new\":             \"%s\"\n"
+	   "}\n",
+	   getPasswordJSON(setup.api_server_password),
+	   getProgramRealVersionString(),
+	   getProgramPlatformString(),
+	   player_name,
+	   player_uuid_old,
+	   player_uuid_new);
+
+  checked_free(player_name);
+  checked_free(player_uuid_old);
+  checked_free(player_uuid_new);
+
+  ConvertHttpRequestBodyToServerEncoding(request);
+
+  return TRUE;
+}
+
+static void HandleResponse_ApiResetUUID(struct HttpResponse *response,
+					void *data_raw)
+{
+  struct ApiResetUUIDThreadData *data = data_raw;
+
+  // upgrade player UUID in server setup file
+  setup.player_uuid = getStringCopy(data->player_uuid_new);
+  setup.player_version = 2;
+
+  SaveSetup_ServerSetup();
+}
+
+#if defined(PLATFORM_EMSCRIPTEN)
+static void Emscripten_ApiResetUUID_Loaded(unsigned handle, void *data_raw,
+					   void *buffer, unsigned int size)
+{
+  struct HttpResponse *response = GetHttpResponseFromBuffer(buffer, size);
+
+  if (response != NULL)
+  {
+    HandleResponse_ApiResetUUID(response, data_raw);
+
+    checked_free(response);
+  }
+  else
+  {
+    Error("server response too large to handle (%d bytes)", size);
+  }
+
+  FreeThreadData_ApiResetUUID(data_raw);
+}
+
+static void Emscripten_ApiResetUUID_Failed(unsigned handle, void *data_raw,
+					   int code, const char *status)
+{
+  Error("server failed to handle request: %d %s", code, status);
+
+  FreeThreadData_ApiResetUUID(data_raw);
+}
+
+static void Emscripten_ApiResetUUID_Progress(unsigned handle, void *data_raw,
+					     int bytes, int size)
+{
+  // nothing to do here
+}
+
+static void Emscripten_ApiResetUUID_HttpRequest(struct HttpRequest *request,
+						void *data_raw)
+{
+  if (!SetRequest_ApiResetUUID(request, data_raw))
+  {
+    FreeThreadData_ApiResetUUID(data_raw);
+
+    return;
+  }
+
+  emscripten_async_wget2_data(request->uri,
+			      request->method,
+			      request->body,
+			      data_raw,
+			      TRUE,
+			      Emscripten_ApiResetUUID_Loaded,
+			      Emscripten_ApiResetUUID_Failed,
+			      Emscripten_ApiResetUUID_Progress);
+}
+
+#else
+
+static void ApiResetUUID_HttpRequestExt(struct HttpRequest *request,
+					struct HttpResponse *response,
+					void *data_raw)
+{
+  if (!SetRequest_ApiResetUUID(request, data_raw))
+    return;
+
+  if (!DoHttpRequest(request, response))
+  {
+    Error("HTTP request failed: %s", GetHttpError());
+
+    return;
+  }
+
+  if (!HTTP_SUCCESS(response->status_code))
+  {
+    Error("server failed to handle request: %d %s",
+	  response->status_code,
+	  response->status_text);
+
+    return;
+  }
+
+  HandleResponse_ApiResetUUID(response, data_raw);
+}
+
+static void ApiResetUUID_HttpRequest(struct HttpRequest *request,
+				     struct HttpResponse *response,
+				     void *data_raw)
+{
+  ApiResetUUID_HttpRequestExt(request, response, data_raw);
+
+  FreeThreadData_ApiResetUUID(data_raw);
+}
+#endif
+
+static int ApiResetUUIDThread(void *data_raw)
+{
+  struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
+  struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
+
+  program.api_thread_count++;
+
+#if defined(PLATFORM_EMSCRIPTEN)
+  Emscripten_ApiResetUUID_HttpRequest(request, data_raw);
+#else
+  ApiResetUUID_HttpRequest(request, response, data_raw);
+#endif
+
+  program.api_thread_count--;
+
+  checked_free(request);
+  checked_free(response);
+
+  return 0;
+}
+
+static void ApiResetUUIDAsThread(char *uuid_new)
+{
+  struct ApiResetUUIDThreadData *data = CreateThreadData_ApiResetUUID(uuid_new);
+
+  ExecuteAsThread(ApiResetUUIDThread,
+		  "ApiResetUUID", data,
+		  "reset UUID on server");
 }
 
 
@@ -6911,6 +7121,17 @@ static void ToggleGameSpeedsListIfNeeded(void)
   DrawSetupScreen();
 }
 
+static void ToggleUseApiServerIfNeeded(void)
+{
+  if (runtime.use_api_server == setup.use_api_server)
+    return;
+
+  runtime.use_api_server = setup.use_api_server;
+
+  if (runtime.use_api_server)
+    CheckApiServerTasks();
+}
+
 static void ModifyGameSpeedIfNeeded(void)
 {
   if (strEqual(setup.vsync_mode, STR_VSYNC_MODE_OFF) ||
@@ -7681,7 +7902,7 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
 
   // API server mode may have changed at this point
   if (si->value == &setup.use_api_server)
-    runtime.use_api_server = setup.use_api_server;
+    ToggleUseApiServerIfNeeded();
 
   // game speed list may have changed at this point
   if (si->value == &setup.game_speed_extended)
@@ -10124,7 +10345,7 @@ static boolean OfferUploadTapes(void)
   return TRUE;
 }
 
-void CheckUploadTapes(void)
+static void CheckUploadTapes(void)
 {
   if (!setup.ask_for_uploading_tapes)
     return;
@@ -10152,4 +10373,26 @@ void CheckUploadTapes(void)
   }
 
   SaveSetup_ServerSetup();
+}
+
+static void UpgradePlayerUUID(void)
+{
+  ApiResetUUIDAsThread(getUUID());
+}
+
+static void CheckUpgradePlayerUUID(void)
+{
+  if (setup.player_version > 1)
+    return;
+
+  UpgradePlayerUUID();
+}
+
+void CheckApiServerTasks(void)
+{
+  // check if the player's UUID has to be upgraded
+  CheckUpgradePlayerUUID();
+
+  // check if there are any tapes to be uploaded
+  CheckUploadTapes();
 }

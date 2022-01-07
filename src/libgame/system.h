@@ -112,6 +112,7 @@
 #define API_SERVER_URI_ADD		"/api/scores/add"
 #define API_SERVER_URI_GET		"/api/scores/get"
 #define API_SERVER_URI_RENAME		"/api/players/rename"
+#define API_SERVER_URI_RESETUUID	"/api/players/resetuuid"
 
 #if defined(TESTING)
 #undef API_SERVER_HOSTNAME
@@ -1448,6 +1449,7 @@ struct SetupInfo
 {
   char *player_name;
   char *player_uuid;
+  int player_version;
 
   boolean multiple_users;
 

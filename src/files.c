@@ -10086,6 +10086,10 @@ static struct TokenInfo server_setup_tokens[] =
     &setup.player_uuid,				"player_uuid"
   },
   {
+    TYPE_INTEGER,
+    &setup.player_version,			"player_version"
+  },
+  {
     TYPE_SWITCH,
     &setup.use_api_server,          TEST_PREFIX	"use_api_server"
   },
@@ -10913,6 +10917,7 @@ static void setSetupInfoToDefaults_AutoSetup(struct SetupInfo *si)
 static void setSetupInfoToDefaults_ServerSetup(struct SetupInfo *si)
 {
   si->player_uuid = NULL;	// (will be set later)
+  si->player_version = 1;	// (will be set later)
 
   si->use_api_server = TRUE;
   si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
@@ -11275,6 +11280,7 @@ void LoadSetup_ServerSetup(void)
   {
     // player UUID does not yet exist in setup file
     setup.player_uuid = getStringCopy(getUUID());
+    setup.player_version = 2;
 
     SaveSetup_ServerSetup();
   }
