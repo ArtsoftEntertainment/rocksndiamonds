@@ -1244,6 +1244,59 @@ void TapeQuickLoad(void)
   }
 }
 
+static boolean checkRestartGame(char *message)
+{
+  if (game_status == GAME_MODE_MAIN)
+    return TRUE;
+
+  if (!hasStartedNetworkGame())
+    return FALSE;
+
+  if (level_editor_test_game)
+    return TRUE;
+
+  if (game.all_players_gone)
+    return TRUE;
+
+  if (!setup.ask_on_quit_game)
+    return TRUE;
+
+  if (Request(message, REQ_ASK | REQ_STAY_CLOSED))
+    return TRUE;
+
+  OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
+
+  return FALSE;
+}
+
+void TapeRestartGame(void)
+{
+  if (!checkRestartGame("Restart game?"))
+    return;
+
+  StartGameActions(network.enabled, setup.autorecord, level.random_seed);
+}
+
+void TapeReplayAndPauseBeforeEnd(void)
+{
+  if (TAPE_IS_EMPTY(tape) && !tape.recording)
+  {
+    Request("No tape for this level!", REQ_CONFIRM);
+
+    return;
+  }
+
+  if (!checkRestartGame("Replay game and pause before end?"))
+    return;
+
+  TapeStop();
+  TapeStartGamePlaying();
+  TapeStartWarpForward(AUTOPLAY_MODE_WARP_NO_DISPLAY);
+
+  tape.pause_before_end = TRUE;
+  tape.quick_resume = TRUE;
+}
+
 boolean hasSolutionTape(void)
 {
   boolean tape_file_exists = fileExists(getSolutionTapeFilename(level_nr));

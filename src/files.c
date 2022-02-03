@@ -10366,6 +10366,14 @@ static struct TokenInfo shortcut_setup_tokens[] =
   },
   {
     TYPE_KEY_X11,
+    &setup.shortcut.restart_game,		"shortcut.restart_game"
+  },
+  {
+    TYPE_KEY_X11,
+    &setup.shortcut.pause_before_end,		"shortcut.pause_before_end"
+  },
+  {
+    TYPE_KEY_X11,
     &setup.shortcut.toggle_pause,		"shortcut.toggle_pause"
   },
   {
@@ -10922,6 +10930,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->shortcut.save_game	= DEFAULT_KEY_SAVE_GAME;
   si->shortcut.load_game	= DEFAULT_KEY_LOAD_GAME;
+  si->shortcut.restart_game	= DEFAULT_KEY_RESTART_GAME;
+  si->shortcut.pause_before_end	= DEFAULT_KEY_PAUSE_BEFORE_END;
   si->shortcut.toggle_pause	= DEFAULT_KEY_TOGGLE_PAUSE;
 
   si->shortcut.focus_player[0]	= DEFAULT_KEY_FOCUS_PLAYER_1;

@@ -268,6 +268,8 @@ unsigned int GetTapeLengthFrames(void);
 unsigned int GetTapeLengthSeconds(void);
 void TapeQuickSave(void);
 void TapeQuickLoad(void);
+void TapeRestartGame(void);
+void TapeReplayAndPauseBeforeEnd(void);
 
 boolean hasSolutionTape(void);
 boolean InsertSolutionTape(void);

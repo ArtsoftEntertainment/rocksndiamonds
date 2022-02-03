@@ -175,6 +175,8 @@
 // default shortcut keys
 #define DEFAULT_KEY_SAVE_GAME		KSYM_F1
 #define DEFAULT_KEY_LOAD_GAME		KSYM_F2
+#define DEFAULT_KEY_RESTART_GAME	KSYM_F3
+#define DEFAULT_KEY_PAUSE_BEFORE_END	KSYM_F4
 #define DEFAULT_KEY_TOGGLE_PAUSE	KSYM_space
 #define DEFAULT_KEY_FOCUS_PLAYER_1	KSYM_F5
 #define DEFAULT_KEY_FOCUS_PLAYER_2	KSYM_F6
@@ -1365,6 +1367,8 @@ struct SetupShortcutInfo
 {
   Key save_game;
   Key load_game;
+  Key restart_game;
+  Key pause_before_end;
   Key toggle_pause;
 
   Key focus_player[MAX_PLAYERS];
