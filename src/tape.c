@@ -985,7 +985,7 @@ byte *TapePlayAction(void)
 
   if (tape.pause_before_end)  // stop some seconds before end of tape
   {
-    if (TapeTime > tape.length_seconds - TAPE_PAUSE_SECONDS_BEFORE_DEATH)
+    if (TapeTime > (int)tape.length_seconds - TAPE_PAUSE_SECONDS_BEFORE_DEATH)
     {
       TapeStopWarpForward();
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
