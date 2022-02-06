@@ -5094,7 +5094,14 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry,
     // (special case: historic score entries have an empty tape basename entry)
     if (strEqual(new_entry->tape_basename, entry->tape_basename) &&
 	!strEqual(new_entry->tape_basename, UNDEFINED_FILENAME))
+    {
+      // special case: use server score instead of local score value if higher
+      // (historic scores might have been truncated to 16-bit values locally)
+      if (score_is_better)
+	entry->score = new_entry->score;
+
       return -1;
+    }
 
     if (is_better || entry_is_empty)
     {
