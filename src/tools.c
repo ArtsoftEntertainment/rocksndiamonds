@@ -9957,7 +9957,7 @@ static const unsigned __int64 epoch = ((unsigned __int64) 116444736000000000ULL)
  * Note: this function is not for Win32 high precision timing purpose. See
  * elapsed_time().
  */
-int gettimeofday_windows(struct timeval * tp, struct timezone * tzp)
+static int gettimeofday_windows(struct timeval * tp, struct timezone * tzp)
 {
   FILETIME    file_time;
   SYSTEMTIME  system_time;
