@@ -2681,6 +2681,7 @@ static void DisplayGameControlValues(void)
     if (type == TYPE_INTEGER)
     {
       if (nr == GAME_PANEL_LEVEL_NUMBER ||
+	  nr == GAME_PANEL_INVENTORY_COUNT ||
 	  nr == GAME_PANEL_TIME)
       {
 	boolean use_dynamic_size = (size == -1 ? TRUE : FALSE);
