@@ -2682,15 +2682,24 @@ static void DisplayGameControlValues(void)
     {
       if (nr == GAME_PANEL_LEVEL_NUMBER ||
 	  nr == GAME_PANEL_INVENTORY_COUNT ||
+	  nr == GAME_PANEL_SCORE ||
+	  nr == GAME_PANEL_HIGHSCORE ||
 	  nr == GAME_PANEL_TIME)
       {
 	boolean use_dynamic_size = (size == -1 ? TRUE : FALSE);
 
 	if (use_dynamic_size)		// use dynamic number of digits
 	{
-	  int value_change = (nr == GAME_PANEL_LEVEL_NUMBER ? 100 : 1000);
-	  int size1 = (nr == GAME_PANEL_LEVEL_NUMBER ? 2 : 3);
-	  int size2 = size1 + 1;
+	  int value_change = (nr == GAME_PANEL_LEVEL_NUMBER ? 100 :
+			      nr == GAME_PANEL_INVENTORY_COUNT ||
+			      nr == GAME_PANEL_TIME ? 1000 : 100000);
+	  int size_add = (nr == GAME_PANEL_LEVEL_NUMBER ||
+			  nr == GAME_PANEL_INVENTORY_COUNT ||
+			  nr == GAME_PANEL_TIME ? 1 : 2);
+	  int size1 = (nr == GAME_PANEL_LEVEL_NUMBER ? 2 :
+		       nr == GAME_PANEL_INVENTORY_COUNT ||
+		       nr == GAME_PANEL_TIME ? 3 : 5);
+	  int size2 = size1 + size_add;
 	  int font1 = pos->font;
 	  int font2 = pos->font_alt;
 
