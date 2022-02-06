@@ -5993,6 +5993,10 @@ static void Explode(int ex, int ey, int phase, int mode)
       return;
   }
 
+  // this can happen if the player was just killed by an explosion
+  if (GfxElement[x][y] == EL_UNDEFINED)
+    GfxElement[x][y] = EL_EMPTY;
+
   if (phase == last_phase)
   {
     int element;
