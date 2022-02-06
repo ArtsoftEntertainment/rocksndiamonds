@@ -8805,6 +8805,18 @@ static int LoadScore_SCOR(File *file, int chunk_size, struct ScoreInfo *scores)
   return chunk_size;
 }
 
+static int LoadScore_SC4R(File *file, int chunk_size, struct ScoreInfo *scores)
+{
+  int i;
+
+  for (i = 0; i < scores->num_entries; i++)
+    scores->entry[i].score = getFile32BitBE(file);
+
+  chunk_size = scores->num_entries * 4;
+
+  return chunk_size;
+}
+
 static int LoadScore_TIME(File *file, int chunk_size, struct ScoreInfo *scores)
 {
   int i;
@@ -8906,6 +8918,7 @@ void LoadScore(int nr)
       { "INFO", -1,			LoadScore_INFO },
       { "NAME", -1,			LoadScore_NAME },
       { "SCOR", -1,			LoadScore_SCOR },
+      { "SC4R", -1,			LoadScore_SC4R },
       { "TIME", -1,			LoadScore_TIME },
       { "TAPE", -1,			LoadScore_TAPE },
 
@@ -9025,6 +9038,14 @@ static void SaveScore_SCOR(FILE *file, struct ScoreInfo *scores)
     putFile16BitBE(file, scores->entry[i].score);
 }
 
+static void SaveScore_SC4R(FILE *file, struct ScoreInfo *scores)
+{
+  int i;
+
+  for (i = 0; i < scores->num_entries; i++)
+    putFile32BitBE(file, scores->entry[i].score);
+}
+
 static void SaveScore_TIME(FILE *file, struct ScoreInfo *scores)
 {
   int i;
@@ -9052,8 +9073,11 @@ static void SaveScoreToFilename(char *filename)
   int info_chunk_size;
   int name_chunk_size;
   int scor_chunk_size;
+  int sc4r_chunk_size;
   int time_chunk_size;
   int tape_chunk_size;
+  boolean has_large_score_values;
+  int i;
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
@@ -9065,8 +9089,14 @@ static void SaveScoreToFilename(char *filename)
   info_chunk_size = 2 + (strlen(scores.level_identifier) + 1) + 2 + 2;
   name_chunk_size = scores.num_entries * MAX_PLAYER_NAME_LEN;
   scor_chunk_size = scores.num_entries * 2;
+  sc4r_chunk_size = scores.num_entries * 4;
   time_chunk_size = scores.num_entries * 4;
   tape_chunk_size = scores.num_entries * MAX_SCORE_TAPE_BASENAME_LEN;
+
+  has_large_score_values = FALSE;
+  for (i = 0; i < scores.num_entries; i++)
+    if (scores.entry[i].score > 0xffff)
+      has_large_score_values = TRUE;
 
   putFileChunkBE(file, "RND1", CHUNK_SIZE_UNDEFINED);
   putFileChunkBE(file, "SCOR", CHUNK_SIZE_NONE);
@@ -9080,8 +9110,16 @@ static void SaveScoreToFilename(char *filename)
   putFileChunkBE(file, "NAME", name_chunk_size);
   SaveScore_NAME(file, &scores);
 
-  putFileChunkBE(file, "SCOR", scor_chunk_size);
-  SaveScore_SCOR(file, &scores);
+  if (has_large_score_values)
+  {
+    putFileChunkBE(file, "SC4R", sc4r_chunk_size);
+    SaveScore_SC4R(file, &scores);
+  }
+  else
+  {
+    putFileChunkBE(file, "SCOR", scor_chunk_size);
+    SaveScore_SCOR(file, &scores);
+  }
 
   putFileChunkBE(file, "TIME", time_chunk_size);
   SaveScore_TIME(file, &scores);
