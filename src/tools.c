@@ -5381,7 +5381,6 @@ unsigned int MoveDoor(unsigned int door_state)
     int num_move_steps = 0;	// number of animation steps for all doors
     int max_move_delay_doors_only = 0;	// delay for doors only (no panel)
     int num_move_steps_doors_only = 0;	// steps for doors only (no panel)
-    int current_move_delay = 0;
     int start = 0;
     int k;
 
@@ -5640,8 +5639,6 @@ unsigned int MoveDoor(unsigned int door_state)
 	BackToFront();
 
 	SkipUntilDelayReached(&door_delay, door_delay_value, &k, last_frame);
-
-	current_move_delay += max_step_delay;
 
 	// prevent OS (Windows) from complaining about program not responding
 	CheckQuitEvent();
