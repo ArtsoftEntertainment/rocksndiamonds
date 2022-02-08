@@ -1996,11 +1996,11 @@ void DrawScreenElementExt(int x, int y, int dx, int dy, int element,
   int graphic;
   int frame;
 
-  if (element == EL_EMPTY)
-    element = GfxElementEmpty[lx][ly];
-
   if (IN_LEV_FIELD(lx, ly))
   {
+    if (element == EL_EMPTY)
+      element = GfxElementEmpty[lx][ly];
+
     SetRandomAnimationValue(lx, ly);
 
     graphic = el_act_dir2img(element, GfxAction[lx][ly], GfxDir[lx][ly]);
