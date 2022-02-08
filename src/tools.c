@@ -1507,10 +1507,12 @@ int getGraphicAnimationFrameXY(int graphic, int lx, int ly)
 
     return sync_frame % g->anim_frames;
   }
+  else
+  {
+    int sync_frame = (IN_LEV_FIELD(lx, ly) ? GfxFrame[lx][ly] : -1);
 
-  int sync_frame = (IN_LEV_FIELD(lx, ly) ? GfxFrame[lx][ly] : -1);
-
-  return getGraphicAnimationFrame(graphic, sync_frame);
+    return getGraphicAnimationFrame(graphic, sync_frame);
+  }
 }
 
 void getGraphicSourceBitmap(int graphic, int tilesize, Bitmap **bitmap)
