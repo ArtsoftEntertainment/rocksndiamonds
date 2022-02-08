@@ -1490,8 +1490,9 @@ int getGraphicAnimationFrameXY(int graphic, int lx, int ly)
     int ysize = MAX(1, g->anim_frames / xsize);
     int xoffset = g->anim_start_frame % xsize;
     int yoffset = g->anim_start_frame % ysize;
-    int x = (lx + xoffset + xsize) % xsize;
-    int y = (ly + yoffset + ysize) % ysize;
+    // may be needed if screen field is significantly larger than playfield
+    int x = (lx + xoffset + SCR_FIELDX * xsize) % xsize;
+    int y = (ly + yoffset + SCR_FIELDY * ysize) % ysize;
     int sync_frame = y * xsize + x;
 
     return sync_frame % g->anim_frames;
@@ -1499,8 +1500,9 @@ int getGraphicAnimationFrameXY(int graphic, int lx, int ly)
   else if (graphic_info[graphic].anim_mode & ANIM_RANDOM_STATIC)
   {
     struct GraphicInfo *g = &graphic_info[graphic];
-    int x = (lx + lev_fieldx) % lev_fieldx;
-    int y = (ly + lev_fieldy) % lev_fieldy;
+    // may be needed if screen field is significantly larger than playfield
+    int x = (lx + SCR_FIELDX * lev_fieldx) % lev_fieldx;
+    int y = (ly + SCR_FIELDY * lev_fieldy) % lev_fieldy;
     int sync_frame = GfxRandomStatic[x][y];
 
     return sync_frame % g->anim_frames;
