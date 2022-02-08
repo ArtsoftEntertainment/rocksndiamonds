@@ -99,8 +99,8 @@ endif
 
 ifeq ($(TARGET),sdl2)			# compiling for SDL2 target
 ifeq ($(PLATFORM),emscripten)
-SDL_LIBS = -s USE_SDL_IMAGE=2 -s USE_SDL_MIXER=2 -s USE_SDL_NET=2 -s USE_ZLIB=1
-SDL_FMTS = -s SDL2_IMAGE_FORMATS='["bmp","png","pcx","xpm"]'
+SDL_LIBS = -s USE_SDL_IMAGE=2 -s USE_SDL_MIXER=2 -s USE_SDL_NET=2 -s USE_MODPLUG=1 -s USE_MPG123=1 -s USE_ZLIB=1
+SDL_FMTS = -s SDL2_IMAGE_FORMATS='["bmp","png","pcx","xpm"]' -s SDL2_MIXER_FORMATS='["mod","mp3"]'
 EXTRA_CFLAGS = $(SDL_LIBS)
 EXTRA_LDFLAGS = $(SDL_FMTS) -s INITIAL_MEMORY=81920000 -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM -s NO_EXIT_RUNTIME=0 -s ASYNCIFY -O2 -lidbfs.js
 DATA_DIRS = conf docs levels graphics sounds music
