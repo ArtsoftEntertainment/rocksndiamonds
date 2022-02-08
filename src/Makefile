@@ -62,10 +62,12 @@ endif
 
 ifeq ($(PLATFORM),emscripten)		# compiling with Emscripten
 PROGNAME = ../$(PROGBASE).js
+DATA_FILE = $(PROGBASE).data
 CC = emcc
 AR = emar
 RANLIB = emranlib
 STRIP = true
+FILE_PACKAGER = file_packager
 endif
 
 ifeq ($(shell uname -s),Darwin)		# compiling on Mac OS X
@@ -100,7 +102,9 @@ ifeq ($(PLATFORM),emscripten)
 SDL_LIBS = -s USE_SDL_IMAGE=2 -s USE_SDL_MIXER=2 -s USE_SDL_NET=2 -s USE_ZLIB=1
 SDL_FMTS = -s SDL2_IMAGE_FORMATS='["bmp","png","pcx","xpm"]'
 EXTRA_CFLAGS = $(SDL_LIBS)
-EXTRA_LDFLAGS = $(SDL_FMTS) -s INITIAL_MEMORY=81920000 -s ALLOW_MEMORY_GROWTH=1 --preload-file ../conf/ --preload-file ../docs/ --preload-file ../levels/ --preload-file ../graphics/ --preload-file ../sounds/ --preload-file ../music/ -s NO_EXIT_RUNTIME=0 -s ASYNCIFY -O2 -lidbfs.js
+EXTRA_LDFLAGS = $(SDL_FMTS) -s INITIAL_MEMORY=81920000 -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM -s NO_EXIT_RUNTIME=0 -s ASYNCIFY -O2 -lidbfs.js
+DATA_DIRS = conf docs levels graphics sounds music
+FILE_PACKAGER_ARGS = --preload $(DATA_DIRS) --js-output=$(DATA_FILE).js
 else
 SDL_LIBS = -lSDL2_image -lSDL2_mixer -lSDL2_net
 endif
@@ -256,6 +260,9 @@ $(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(COMMIT_HASH_FILE) $(OBJS) $(ICON)
 	$(CC) $(PROFILING) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
 ifdef BUILD_DIST
 	$(STRIP) $(PROGNAME)
+endif
+ifeq ($(PLATFORM),emscripten)
+	(cd .. ; $(FILE_PACKAGER) $(DATA_FILE) $(FILE_PACKAGER_ARGS))
 endif
 
 libgame_dir:
