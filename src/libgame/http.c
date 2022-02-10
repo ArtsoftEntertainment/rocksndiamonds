@@ -393,9 +393,9 @@ static boolean DoHttpRequestExt(struct HttpRequest *request,
 boolean DoHttpRequest(struct HttpRequest *request,
 		      struct HttpResponse *response)
 {
-  int max_http_buffer_size = MAX_HTTP_HEAD_SIZE + MAX_HTTP_BODY_SIZE;
-  char *send_buffer = checked_malloc(max_http_buffer_size + 1);
-  char *recv_buffer = checked_malloc(max_http_buffer_size + 1);
+  int max_http_buffer_size = MAX_HTTP_HEAD_SIZE + 2 + MAX_HTTP_BODY_SIZE + 1;
+  char *send_buffer = checked_malloc(max_http_buffer_size);
+  char *recv_buffer = checked_malloc(max_http_buffer_size);
   SDLNet_SocketSet socket_set = NULL;
   TCPsocket socket = NULL;
 
