@@ -7311,6 +7311,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_YES_NO,	&setup.ask_on_quit_game, "Ask on Quit Game:"	},
   { TYPE_YES_NO,	&setup.ask_on_quit_program, "Ask on Quit Program:" },
   { TYPE_SWITCH,	&setup.autorecord,	"Auto-Record Tapes:"	},
+  { TYPE_SWITCH,	&setup.auto_pause_on_start, "Start Game in Pause Mode:" },
   { TYPE_ENTER_LIST,	execSetupChooseGameSpeed, "Game Speed:"		},
   { TYPE_STRING,	&game_speed_text,	""			},
   { TYPE_SWITCH,	&setup.game_speed_extended, "Game Speed Extended List:" },

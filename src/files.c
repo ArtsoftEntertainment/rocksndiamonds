@@ -9978,6 +9978,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.auto_pause_on_start,			"auto_pause_on_start"
+  },
+  {
+    TYPE_SWITCH,
     &setup.show_titlescreen,			"show_titlescreen"
   },
   {
@@ -10794,6 +10798,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->engine_snapshot_memory = SNAPSHOT_MEMORY_DEFAULT;
   si->fade_screens = TRUE;
   si->autorecord = TRUE;
+  si->auto_pause_on_start = FALSE;
   si->show_titlescreen = TRUE;
   si->quick_doors = FALSE;
   si->team_mode = FALSE;

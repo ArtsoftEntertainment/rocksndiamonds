@@ -11771,6 +11771,9 @@ void StartGameActions(boolean init_network_game, boolean record_tape,
   if (record_tape)
     TapeStartRecording(new_random_seed);
 
+  if (setup.auto_pause_on_start && !tape.pausing)
+    TapeTogglePause(TAPE_TOGGLE_MANUAL);
+
   if (init_network_game)
   {
     SendToServer_LevelFile();
