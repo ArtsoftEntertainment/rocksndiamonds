@@ -4832,6 +4832,9 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   FreeScreenGadgets();
   CreateScreenGadgets();
 
+  if (game_status != game_status_last_screen)
+    FadeMenuSoundsAndMusic();
+
   FadeOut(fade_mask);
 
   // needed if different viewport properties defined for choosing level (set)
@@ -4852,6 +4855,9 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, ti_ptr);
 
   DrawMaskedBorder(fade_mask);
+
+  if (game_status != game_status_last_screen)
+    PlayMenuSoundsAndMusic();
 
   FadeIn(fade_mask);
 }
@@ -5360,8 +5366,6 @@ void DrawChoosePlayerName(void)
 {
   int i;
 
-  FadeMenuSoundsAndMusic();
-
   if (player_name != NULL)
   {
     freeTreeInfo(player_name);
@@ -5401,8 +5405,6 @@ void DrawChoosePlayerName(void)
     player_name_current = player_name;
 
   DrawChooseTree(&player_name_current);
-
-  PlayMenuSoundsAndMusic();
 }
 
 void HandleChoosePlayerName(int mx, int my, int dx, int dy, int button)
@@ -5412,11 +5414,7 @@ void HandleChoosePlayerName(int mx, int my, int dx, int dy, int button)
 
 void DrawChooseLevelSet(void)
 {
-  FadeMenuSoundsAndMusic();
-
   DrawChooseTree(&leveldir_current);
-
-  PlayMenuSoundsAndMusic();
 }
 
 void HandleChooseLevelSet(int mx, int my, int dx, int dy, int button)
@@ -5427,8 +5425,6 @@ void HandleChooseLevelSet(int mx, int my, int dx, int dy, int button)
 void DrawChooseLevelNr(void)
 {
   int i;
-
-  FadeMenuSoundsAndMusic();
 
   if (level_number != NULL)
   {
@@ -5475,8 +5471,6 @@ void DrawChooseLevelNr(void)
     level_number_current = level_number;
 
   DrawChooseTree(&level_number_current);
-
-  PlayMenuSoundsAndMusic();
 }
 
 void HandleChooseLevelNr(int mx, int my, int dx, int dy, int button)
