@@ -4972,6 +4972,18 @@ static void drawChooseTreeCursorAndText(int y, boolean active, TreeInfo *ti)
   drawChooseTreeText(y, active, ti);
 }
 
+static void drawChooseTreeScreen(TreeInfo *ti)
+{
+  int num_entries = numTreeInfoInGroup(ti);
+  int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
+
+  drawChooseTreeList(ti->cl_first, num_page_entries, ti);
+  drawChooseTreeInfo(ti->cl_first + ti->cl_cursor, ti);
+  drawChooseTreeCursorAndText(ti->cl_cursor, TRUE, ti);
+
+  AdjustChooseTreeScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL, ti->cl_first, ti);
+}
+
 static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 			     TreeInfo **ti_ptr)
 {
@@ -5013,13 +5025,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
     if (position_set_by_scrollbar)
       ti->cl_first = dy;
-    else
-      AdjustChooseTreeScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL,
-				ti->cl_first, ti);
 
-    drawChooseTreeList(ti->cl_first, num_page_entries, ti);
-    drawChooseTreeInfo(ti->cl_first + ti->cl_cursor, ti);
-    drawChooseTreeCursorAndText(ti->cl_cursor, TRUE, ti);
+    drawChooseTreeScreen(ti);
 
     return;
   }
@@ -5127,14 +5134,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       }
 
       if (redraw)
-      {
-	drawChooseTreeList(ti->cl_first, num_page_entries, ti);
-	drawChooseTreeInfo(ti->cl_first + ti->cl_cursor, ti);
-	drawChooseTreeCursorAndText(ti->cl_cursor, TRUE, ti);
-
-	AdjustChooseTreeScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL,
-				  ti->cl_first, ti);
-      }
+	drawChooseTreeScreen(ti);
 
       return;
     }
