@@ -3080,6 +3080,17 @@ static void setTreeInfoParentNodes(TreeInfo *node, TreeInfo *node_parent)
   }
 }
 
+TreeInfo *addTopTreeInfoNode(TreeInfo *node_first)
+{
+  // add top tree node with back link node in previous tree
+  node_first = createTopTreeInfoNode(node_first);
+
+  // set all parent links (back links) in complete tree
+  setTreeInfoParentNodes(node_first, NULL);
+
+  return node_first;
+}
+
 
 // ----------------------------------------------------------------------------
 // functions for handling level and custom artwork info cache
@@ -4214,11 +4225,8 @@ static void LoadArtworkInfoFromLevelInfo(ArtworkDirTree **artwork_node)
   LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all, TRUE);
   LoadArtworkInfoFromLevelInfoExt(artwork_node, NULL, leveldir_first_all, FALSE);
 
-  // add top tree node over all three separate sub-trees
-  *artwork_node = createTopTreeInfoNode(*artwork_node);
-
-  // set all parent links (back links) in complete artwork tree
-  setTreeInfoParentNodes(*artwork_node, NULL);
+  // add top tree node over all sub-trees and set parent links
+  *artwork_node = addTopTreeInfoNode(*artwork_node);
 }
 
 void LoadLevelArtworkInfo(void)

@@ -320,6 +320,7 @@ void sortTreeInfoBySortFunction(TreeInfo **,
 							const void *));
 void sortTreeInfo(TreeInfo **);
 void freeTreeInfo(TreeInfo *);
+TreeInfo *addTopTreeInfoNode(TreeInfo *);
 
 char *getHomeDir(void);
 char *getPersonalDataDir(void);
