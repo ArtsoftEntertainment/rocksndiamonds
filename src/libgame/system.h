@@ -791,9 +791,10 @@
 #define TREE_TYPE_LEVEL_DIR	3
 #define TREE_TYPE_LEVEL_NR	4
 #define TREE_TYPE_PLAYER_NAME	5
+#define TREE_TYPE_SCORE_ENTRY	6
 
 #define NUM_BASE_TREE_TYPES	4
-#define NUM_TREE_TYPES		6
+#define NUM_TREE_TYPES		7
 
 #define TREE_TYPE_IS_DIR(type)	((type) == TREE_TYPE_GRAPHICS_DIR ||	\
 				 (type) == TREE_TYPE_SOUNDS_DIR ||	\
@@ -807,12 +808,15 @@
 #define INFOTEXT_LEVEL_DIR	"Level Sets"
 #define INFOTEXT_LEVEL_NR	"Levels"
 #define INFOTEXT_PLAYER_NAME	"Players & Teams"
+#define INFOTEXT_SCORE_ENTRY	"Hall of Fame"
 
 #define BACKLINK_TEXT_MAIN	".. (main menu)"
 #define BACKLINK_TEXT_SETUP	".. (setup menu)"
 #define BACKLINK_TEXT_PARENT	".. (parent directory)"
 
-#define TREE_INFOTEXT(t)	((t) == TREE_TYPE_PLAYER_NAME ?		\
+#define TREE_INFOTEXT(t)	((t) == TREE_TYPE_SCORE_ENTRY ?		\
+				 INFOTEXT_SCORE_ENTRY :			\
+				 (t) == TREE_TYPE_PLAYER_NAME ?		\
 				 INFOTEXT_PLAYER_NAME :			\
 				 (t) == TREE_TYPE_LEVEL_NR ?		\
 				 INFOTEXT_LEVEL_NR :			\
@@ -826,7 +830,8 @@
 				 INFOTEXT_MUSIC_DIR :			\
 				 INFOTEXT_UNDEFINED)
 
-#define TREE_BACKLINK_TEXT(t)	((t) == TREE_TYPE_LEVEL_DIR ?		\
+#define TREE_BACKLINK_TEXT(t)	((t) == TREE_TYPE_SCORE_ENTRY ||	\
+				 (t) == TREE_TYPE_LEVEL_DIR ?		\
 				 BACKLINK_TEXT_MAIN :			\
 				 BACKLINK_TEXT_SETUP)
 
