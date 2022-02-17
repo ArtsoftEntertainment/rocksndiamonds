@@ -4881,7 +4881,7 @@ static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
   TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
   TreeInfo *node = getTreeInfoFromPos(node_first, entry_pos);
   int font_nr = getChooseTreeFont(node, active);
-  int font_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
+  int font_xoffset = getFontDrawOffsetX(font_nr);
   int xpos = MENU_SCREEN_START_XPOS;
   int ypos = MENU_SCREEN_START_YPOS + y;
   int startx = amSX + xpos * 32;
@@ -7772,10 +7772,10 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   if (scrollbar_needed && xpos > MENU_SCREEN_START_XPOS)
   {
     int max_menu_text_length = 26;	// maximum text length for classic menu
-    int font_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
+    int font_xoffset = getFontDrawOffsetX(font_nr);
     int text_startx = mSX + MENU_SCREEN_START_XPOS * 32;
     int text_font_nr = getMenuTextFont(FONT_MENU_2);
-    int text_font_xoffset = getFontBitmapInfo(text_font_nr)->draw_xoffset;
+    int text_font_xoffset = getFontDrawOffsetX(text_font_nr);
     int text_width = max_menu_text_length * getFontWidth(text_font_nr);
 
     if (startx + font_xoffset < text_startx + text_width + text_font_xoffset)
@@ -7798,11 +7798,11 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
 				    MENU_SCREEN_START_XPOS);
     int max_menu_text_length_medium = max_menu_text_length_big * 2;
     int check_font_nr = FONT_OPTION_ON; // known font that needs correction
-    int font1_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
-    int font2_xoffset = getFontBitmapInfo(check_font_nr)->draw_xoffset;
+    int font1_xoffset = getFontDrawOffsetX(font_nr);
+    int font2_xoffset = getFontDrawOffsetX(check_font_nr);
     int text_startx = mSX + MENU_SCREEN_START_XPOS * 32;
     int text_font_nr = getMenuTextFont(FONT_MENU_2);
-    int text_font_xoffset = getFontBitmapInfo(text_font_nr)->draw_xoffset;
+    int text_font_xoffset = getFontDrawOffsetX(text_font_nr);
     int text_width = max_menu_text_length_medium * getFontWidth(text_font_nr);
     boolean correct_font_draw_xoffset = FALSE;
 
@@ -7818,7 +7818,7 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
     // (this can happen for extreme/wrong values for font draw offset)
     if (correct_font_draw_xoffset)
     {
-      font_draw_xoffset_old = getFontBitmapInfo(font_nr)->draw_xoffset;
+      font_draw_xoffset_old = getFontDrawOffsetX(font_nr);
       font_draw_xoffset_modified = TRUE;
 
       if (type & TYPE_KEY)
