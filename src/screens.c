@@ -4862,6 +4862,14 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   FadeIn(fade_mask);
 }
 
+static int getChooseTreeFont(TreeInfo *node, boolean active)
+{
+  int font_color = MENU_CHOOSE_TREE_COLOR(node, active);
+  int font_nr = MENU_CHOOSE_TREE_FONT(font_color);
+
+  return font_nr;
+}
+
 static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
 {
   int num_entries = numTreeInfoInGroup(ti);
@@ -4872,8 +4880,7 @@ static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
   int entry_pos = first_entry + y;
   TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
   TreeInfo *node = getTreeInfoFromPos(node_first, entry_pos);
-  int font_color = MENU_CHOOSE_TREE_COLOR(node, active);
-  int font_nr = MENU_CHOOSE_TREE_FONT(font_color);
+  int font_nr = getChooseTreeFont(node, active);
   int font_xoffset = getFontBitmapInfo(font_nr)->draw_xoffset;
   int xpos = MENU_SCREEN_START_XPOS;
   int ypos = MENU_SCREEN_START_YPOS + y;
