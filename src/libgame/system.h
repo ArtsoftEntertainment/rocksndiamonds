@@ -1606,6 +1606,7 @@ struct TreeInfo
   int first_level;	// first level number (to allow start with 0 or 1)
   int last_level;	// last level number (automatically calculated)
   int sort_priority;	// sort levels by 'sort_priority' and then by name
+  int pos;		// custom position information of node in tree
 
   boolean latest_engine;// force level set to use the latest game engine
 

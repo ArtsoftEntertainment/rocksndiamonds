@@ -287,6 +287,8 @@ static void UpdateScreenMenuGadgets(int, boolean);
 static boolean OfferUploadTapes(void);
 static void execOfferUploadTapes(void);
 
+static char *getHallOfFameScoreText(int);
+
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 
 static int info_mode = INFO_MODE_MAIN;
@@ -347,6 +349,9 @@ static TreeInfo *player_name_current = NULL;
 
 static TreeInfo *level_number = NULL;
 static TreeInfo *level_number_current = NULL;
+
+static TreeInfo *score_entries = NULL;
+static TreeInfo *score_entry_current = NULL;
 
 static struct ValueTextInfo window_sizes_list[] =
 {
@@ -4837,7 +4842,7 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
 
   FadeOut(fade_mask);
 
-  // needed if different viewport properties defined for choosing level (set)
+  // needed if different viewport properties defined for this screen
   ChangeViewportPropertiesIfNeeded();
 
   if (game_status == GAME_MODE_NAMES)
@@ -4846,6 +4851,8 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
     SetMainBackgroundImage(IMG_BACKGROUND_LEVELNR);
   else if (game_status == GAME_MODE_LEVELS)
     SetMainBackgroundImage(IMG_BACKGROUND_LEVELS);
+  else if (game_status == GAME_MODE_SCORES)
+    SetMainBackgroundImage(IMG_BACKGROUND_SCORES);
 
   ClearField();
 
@@ -4864,10 +4871,10 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
 
 static int getChooseTreeFont(TreeInfo *node, boolean active)
 {
-  int font_color = MENU_CHOOSE_TREE_COLOR(node, active);
-  int font_nr = MENU_CHOOSE_TREE_FONT(font_color);
-
-  return font_nr;
+  if (game_status == GAME_MODE_SCORES)
+    return (active ? FONT_TEXT_1_ACTIVE : FONT_TEXT_1);
+  else
+    return MENU_CHOOSE_TREE_FONT(MENU_CHOOSE_TREE_COLOR(node, active));
 }
 
 static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
@@ -4884,18 +4891,61 @@ static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
   int font_xoffset = getFontDrawOffsetX(font_nr);
   int xpos = MENU_SCREEN_START_XPOS;
   int ypos = MENU_SCREEN_START_YPOS + y;
-  int startx = amSX + xpos * 32;
-  int starty = amSY + ypos * 32;
+  int startdx = xpos * 32;
+  int startdy = ypos * 32;
+  int startx = amSX + startdx;
+  int starty = amSY + startdy;
   int startx_text = startx + font_xoffset;
   int endx_text = amSX + screen_width;
   int max_text_size = endx_text - startx_text;
   int max_buffer_len = max_text_size / getFontWidth(font_nr);
   char buffer[max_buffer_len + 1];
 
-  strncpy(buffer, node->name, max_buffer_len);
-  buffer[max_buffer_len] = '\0';
+  if (game_status == GAME_MODE_SCORES && !node->parent_link)
+  {
+    int font_nr1 = (active ? FONT_TEXT_1_ACTIVE : FONT_TEXT_1);
+    int font_nr2 = (active ? FONT_TEXT_2_ACTIVE : FONT_TEXT_2);
+    int font_nr3 = (active ? FONT_TEXT_3_ACTIVE : FONT_TEXT_3);
+    int font_nr4 = (active ? FONT_TEXT_4_ACTIVE : FONT_TEXT_4);
+    int font_size_1 = getFontWidth(font_nr1);
+    int font_size_3 = getFontWidth(font_nr3);
+    int font_size_4 = getFontWidth(font_nr4);
+    int text_size_1 = 3 * font_size_1;
+    int text_size_4 = 5 * font_size_4;
+    int border = amSX - SX + getFontDrawOffsetX(font_nr1);
+    int dx1 = 0;
+    int dx2 = text_size_1;
+    int dx3 = dx2 + font_size_1;
+    int dx4 = screen_width - startdx - 2 * border - text_size_4;
+    int num_dots = (dx4 - dx3) / font_size_3;
+    int startx1 = startx + dx1;
+    int startx2 = startx + dx2;
+    int startx3 = startx + dx3;
+    int startx4 = startx + dx4;
+    int pos = node->pos;
+    boolean forced = (scores.force_last_added && pos == scores.last_added);
+    char *pos_text = (forced ? "???" : int2str(pos + 1, 3));
+    char *dot_text = ".";
+    int i;
 
-  DrawText(startx, starty, buffer, font_nr);
+    DrawText(startx1, starty, pos_text, font_nr1);
+    DrawText(startx2, starty, dot_text, font_nr1);
+
+    for (i = 0; i < num_dots; i++)
+      DrawText(startx3 + i * font_size_3, starty, dot_text, font_nr3);
+
+    if (!strEqual(scores.entry[pos].name, EMPTY_PLAYER_NAME))
+      DrawText(startx3, starty, scores.entry[pos].name, font_nr2);
+
+    DrawText(startx4, starty, getHallOfFameScoreText(pos), font_nr4);
+  }
+  else
+  {
+    strncpy(buffer, node->name, max_buffer_len);
+    buffer[max_buffer_len] = '\0';
+
+    DrawText(startx, starty, buffer, font_nr);
+  }
 }
 
 static void drawChooseTreeList(int first_entry, int num_page_entries,
@@ -4905,7 +4955,8 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
   char *title_string = NULL;
   int yoffset_sets = MENU_TITLE1_YPOS;
   int yoffset_setup = 16;
-  int yoffset = (ti->type == TREE_TYPE_LEVEL_DIR ||
+  int yoffset = (ti->type == TREE_TYPE_SCORE_ENTRY ||
+		 ti->type == TREE_TYPE_LEVEL_DIR ||
 		 ti->type == TREE_TYPE_LEVEL_NR ? yoffset_sets : yoffset_setup);
 
   title_string = ti->infotext;
@@ -4931,6 +4982,9 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
     else
       initCursor(i, IMG_MENU_BUTTON);
 
+    if (game_status == GAME_MODE_SCORES && node->pos == scores.last_added)
+      initCursor(i, IMG_MENU_BUTTON_ENTER_MENU);
+
     if (game_status == GAME_MODE_NAMES)
       drawChooseTreeEdit(i, FALSE);
   }
@@ -4947,6 +5001,10 @@ static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
 
   if (ti->type == TREE_TYPE_LEVEL_NR)
     DrawTextFCentered(ypos, font_nr, leveldir_current->name);
+
+  if (ti->type == TREE_TYPE_SCORE_ENTRY)
+    DrawTextFCentered(ypos, font_nr, "HighScores of Level %d",
+		      scores.last_level_nr);
 
   if (ti->type != TREE_TYPE_LEVEL_DIR)
     return;
@@ -4991,6 +5049,27 @@ static void drawChooseTreeScreen(TreeInfo *ti)
   AdjustChooseTreeScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL, ti->cl_first, ti);
 }
 
+static TreeInfo *setHallOfFameActiveEntry(TreeInfo **ti_ptr)
+{
+  // set current tree entry to last added score entry
+  *ti_ptr = getTreeInfoFromIdentifier(score_entries, i_to_a(scores.last_added));
+
+  // if that fails, set current tree entry to first entry (back link)
+  if (*ti_ptr == NULL)
+    *ti_ptr = score_entries->node_group;
+
+  int num_entries = numTreeInfoInGroup(*ti_ptr);
+  int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
+  int pos_score = getPosFromTreeInfo(*ti_ptr);
+  int pos_first_raw = pos_score - (num_page_entries + 1) / 2 + 1;
+  int pos_first = MIN(MAX(0, pos_first_raw), num_entries - num_page_entries);
+
+  (*ti_ptr)->cl_first = pos_first;
+  (*ti_ptr)->cl_cursor = pos_score - pos_first;
+
+  return *ti_ptr;
+}
+
 static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 			     TreeInfo **ti_ptr)
 {
@@ -5015,11 +5094,24 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     align_xoffset = getAlignXOffsetFromTreeInfo(ti);
     align_yoffset = getAlignYOffsetFromTreeInfo(ti);
 
-    if (ti->cl_first == -1)
+    if (game_status == GAME_MODE_SCORES)
+    {
+      if (server_scores.updated)
+      {
+	// reload scores, using updated server score cache file
+	LoadLocalAndServerScore(scores.last_level_nr, FALSE);
+
+	server_scores.updated = FALSE;
+      }
+
+      ti = setHallOfFameActiveEntry(ti_ptr);
+    }
+    else if (ti->cl_first == -1)
     {
       // only on initialization
       ti->cl_first = MAX(0, entry_pos - num_page_entries + 1);
       ti->cl_cursor = entry_pos - ti->cl_first;
+
     }
     else if (ti->cl_cursor >= num_page_entries ||
 	     (num_entries > num_page_entries &&
@@ -5039,7 +5131,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   }
   else if (button == MB_MENU_LEAVE)
   {
-    FadeSetLeaveMenu();
+    if (game_status != GAME_MODE_SCORES)
+      FadeSetLeaveMenu();
 
     PlaySound(SND_MENU_ITEM_SELECTING);
 
@@ -5260,14 +5353,16 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       }
       else if (node_cursor->parent_link)
       {
-	FadeSetLeaveMenu();
+	if (game_status != GAME_MODE_SCORES)
+	  FadeSetLeaveMenu();
 
 	*ti_ptr = node_cursor->node_parent;
 	DrawChooseTree(ti_ptr);
       }
       else
       {
-	FadeSetEnterMenu();
+	if (game_status != GAME_MODE_SCORES)
+	  FadeSetEnterMenu();
 
 	node_cursor->cl_first = ti->cl_first;
 	node_cursor->cl_cursor = ti->cl_cursor;
@@ -5359,6 +5454,18 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	    ChangeCurrentArtworkIfNeeded(ARTWORK_TYPE_SOUNDS);
 	    ChangeCurrentArtworkIfNeeded(ARTWORK_TYPE_MUSIC);
 	  }
+	  else if (game_status == GAME_MODE_SCORES)
+	  {
+	    if (game_status_last_screen == GAME_MODE_PLAYING &&
+		setup.auto_play_next_level && setup.increment_levels &&
+		scores.last_level_nr < leveldir_current->last_level &&
+		!network_playing)
+	    {
+	      StartGameActions(network.enabled, setup.autorecord,
+			       level.random_seed);
+	      return;
+	    }
+	  }
 
 	  SetGameStatus(GAME_MODE_MAIN);
 
@@ -5367,6 +5474,21 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       }
     }
   }
+
+  if (game_status == GAME_MODE_SCORES && server_scores.updated)
+  {
+    // reload scores, using updated server score cache file
+    LoadLocalAndServerScore(scores.last_level_nr, FALSE);
+
+    server_scores.updated = FALSE;
+
+    ti = setHallOfFameActiveEntry(ti_ptr);
+
+    drawChooseTreeScreen(ti);
+  }
+
+  if (game_status == GAME_MODE_SCORES)
+    PlayMenuSoundIfLoop();
 }
 
 void DrawChoosePlayerName(void)
@@ -5485,15 +5607,57 @@ void HandleChooseLevelNr(int mx, int my, int dx, int dy, int button)
   HandleChooseTree(mx, my, dx, dy, button, &level_number_current);
 }
 
+static void DrawHallOfFame_setScoreEntries(void)
+{
+  int score_pos = (scores.last_added >= 0 ? scores.last_added : 0);
+  int i;
+
+  if (score_entries != NULL)
+  {
+    freeTreeInfo(score_entries);
+
+    score_entries = NULL;
+  }
+
+  for (i = 0; i < MAX_SCORE_ENTRIES; i++)
+  {
+    TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_SCORE_ENTRY);
+    char identifier[32], name[64];
+    int value = i;
+
+    ti->node_top = &score_entries;
+    ti->sort_priority = 10000 + value;
+    ti->color = FC_YELLOW;
+    ti->pos = i;
+
+    snprintf(identifier, sizeof(identifier), "%d", value);
+    snprintf(name, sizeof(name), "%03d.", value + 1);
+
+    setString(&ti->identifier, identifier);
+    setString(&ti->name, name);
+    setString(&ti->name_sorting, name);
+
+    pushTreeInfo(&score_entries, ti);
+  }
+
+  // sort score entries to start with highest score entry
+  sortTreeInfo(&score_entries);
+
+  // add top tree node to create back link to main menu
+  score_entries = addTopTreeInfoNode(score_entries);
+
+  // set current score entry to last added or highest score entry
+  score_entry_current =
+    getTreeInfoFromIdentifier(score_entries, i_to_a(score_pos));
+
+  // if that fails, set current score entry to first valid score entry
+  if (score_entry_current == NULL)
+    score_entry_current = getFirstValidTreeInfoEntry(score_entries);
+}
+
 void DrawHallOfFame(int level_nr)
 {
-  int fade_mask = REDRAW_FIELD;
-
-  if (CheckFadeAll())
-    fade_mask = REDRAW_ALL;
-
-  UnmapAllGadgets();
-  FadeMenuSoundsAndMusic();
+  scores.last_level_nr = level_nr;
 
   // (this is needed when called from GameEnd() after winning a game)
   KeyboardAutoRepeatOn();
@@ -5504,40 +5668,14 @@ void DrawHallOfFame(int level_nr)
 
   LoadLocalAndServerScore(level_nr, TRUE);
 
+  DrawHallOfFame_setScoreEntries();
+
   if (scores.last_added >= 0)
     SetAnimStatus(GAME_MODE_PSEUDO_SCORESNEW);
 
   FadeSetEnterScreen();
 
-  FadeOut(fade_mask);
-
-  // needed if different viewport properties defined for scores
-  ChangeViewportPropertiesIfNeeded();
-
-  PlayMenuSoundsAndMusic();
-
-  OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
-
-  HandleHallOfFame(level_nr, 0, 0, 0, MB_MENU_INITIALIZE);
-
-  DrawMaskedBorder(fade_mask);
-
-  FadeIn(fade_mask);
-}
-
-static int getHallOfFameFirstEntry(int first_entry, int step)
-{
-  if (step == 0)
-    first_entry = scores.last_added - (NUM_MENU_ENTRIES_ON_SCREEN + 1) / 2 + 1;
-  else
-    first_entry += step;
-
-  if (first_entry < 0)
-    first_entry = 0;
-  else if (first_entry > MAX_SCORE_ENTRIES - NUM_MENU_ENTRIES_ON_SCREEN)
-    first_entry = MAX(0, MAX_SCORE_ENTRIES - NUM_MENU_ENTRIES_ON_SCREEN);
-
-  return first_entry;
+  DrawChooseTree(&score_entry_current);
 }
 
 static char *getHallOfFameScoreText(int nr)
@@ -5558,124 +5696,9 @@ static char *getHallOfFameScoreText(int nr)
   return score_text;
 }
 
-static void drawHallOfFameList(int level_nr, int first_entry)
-{
-  int i, j;
-
-  SetMainBackgroundImage(IMG_BACKGROUND_SCORES);
-  ClearField();
-
-  DrawTextSCentered(MENU_TITLE1_YPOS, FONT_TITLE_1, "Hall Of Fame");
-  DrawTextFCentered(MENU_TITLE2_YPOS, FONT_TITLE_2,
-		    "HighScores of Level %d", level_nr);
-
-  for (i = 0; i < NUM_MENU_ENTRIES_ON_SCREEN; i++)
-  {
-    int entry = first_entry + i;
-    boolean active = (entry == scores.last_added);
-    boolean forced = (scores.force_last_added && active);
-    int font_nr1 = (active ? FONT_TEXT_1_ACTIVE : FONT_TEXT_1);
-    int font_nr2 = (active ? FONT_TEXT_2_ACTIVE : FONT_TEXT_2);
-    int font_nr3 = (active ? FONT_TEXT_3_ACTIVE : FONT_TEXT_3);
-    int font_nr4 = (active ? FONT_TEXT_4_ACTIVE : FONT_TEXT_4);
-    int dxoff = getFontDrawOffsetX(font_nr1);
-    int dx1 = 3 * getFontWidth(font_nr1);
-    int dx2 = dx1 + getFontWidth(font_nr1);
-    int dx3 = SXSIZE - 2 * (mSX - SX + dxoff) - 5 * getFontWidth(font_nr4);
-    int num_dots = (dx3 - dx2) / getFontWidth(font_nr3);
-    int sy = mSY + 64 + i * 32;
-    char *pos_text = (forced ? "???" : int2str(entry + 1, 3));
-
-    DrawText(mSX, sy, pos_text, font_nr1);
-    DrawText(mSX + dx1, sy, ".", font_nr1);
-
-    for (j = 0; j < num_dots; j++)
-      DrawText(mSX + dx2 + j * getFontWidth(font_nr3), sy, ".", font_nr3);
-
-    if (!strEqual(scores.entry[entry].name, EMPTY_PLAYER_NAME))
-      DrawText(mSX + dx2, sy, scores.entry[entry].name, font_nr2);
-
-    DrawText(mSX + dx3, sy, getHallOfFameScoreText(entry), font_nr4);
-  }
-
-  redraw_mask |= REDRAW_FIELD;
-}
-
 void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 {
-  static int level_nr = 0;
-  static int first_entry = 0;
-  int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
-
-  if (button == MB_MENU_INITIALIZE)
-  {
-    level_nr = mx;
-
-    if (server_scores.updated)
-    {
-      // reload scores, using updated server score cache file
-      LoadLocalAndServerScore(level_nr, FALSE);
-
-      server_scores.updated = FALSE;
-    }
-
-    first_entry = getHallOfFameFirstEntry(0, 0);
-
-    drawHallOfFameList(level_nr, first_entry);
-
-    return;
-  }
-
-  if (ABS(dy) == SCROLL_PAGE)		// handle scrolling one page
-    step = NUM_MENU_ENTRIES_ON_SCREEN - 1;
-
-  if (dy < 0)
-  {
-    first_entry = getHallOfFameFirstEntry(first_entry, -step);
-
-    drawHallOfFameList(level_nr, first_entry);
-  }
-  else if (dy > 0)
-  {
-    first_entry = getHallOfFameFirstEntry(first_entry, step);
-
-    drawHallOfFameList(level_nr, first_entry);
-  }
-  else if (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE)
-  {
-    PlaySound(SND_MENU_ITEM_SELECTING);
-
-    FadeSound(SND_BACKGROUND_SCORES);
-
-    if (button == MB_MENU_CHOICE &&
-	game_status_last_screen == GAME_MODE_PLAYING &&
-	setup.auto_play_next_level && setup.increment_levels &&
-	level_nr < leveldir_current->last_level &&
-	!network_playing)
-    {
-      StartGameActions(network.enabled, setup.autorecord, level.random_seed);
-    }
-    else
-    {
-      SetGameStatus(GAME_MODE_MAIN);
-
-      DrawMainMenu();
-    }
-  }
-  else if (server_scores.updated)
-  {
-    // reload scores, using updated server score cache file
-    LoadLocalAndServerScore(level_nr, FALSE);
-
-    server_scores.updated = FALSE;
-
-    first_entry = getHallOfFameFirstEntry(0, 0);
-
-    drawHallOfFameList(level_nr, first_entry);
-  }
-
-  if (game_status == GAME_MODE_SCORES)
-    PlayMenuSoundIfLoop();
+  HandleChooseTree(mx, my, dx, dy, button, &score_entry_current);
 }
 
 
@@ -10094,6 +10117,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_SCORES)
+	HandleHallOfFame(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       break;
 
     case SCREEN_CTRL_ID_SCROLL_DOWN:
@@ -10107,6 +10132,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_SCORES)
+	HandleHallOfFame(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       break;
 
     case SCREEN_CTRL_ID_SCROLL_VERTICAL:
@@ -10120,6 +10147,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0,0, 999,gi->event.item_position,MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0,0, 999,gi->event.item_position,MB_MENU_INITIALIZE);
+      else if (game_status == GAME_MODE_SCORES)
+	HandleHallOfFame(0,0, 999,gi->event.item_position,MB_MENU_INITIALIZE);
       break;
 
     case SCREEN_CTRL_ID_NETWORK_SERVER:

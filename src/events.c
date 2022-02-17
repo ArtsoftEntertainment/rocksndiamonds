@@ -1781,7 +1781,7 @@ void HandleButton(int mx, int my, int button, int button_nr)
       break;
 
     case GAME_MODE_SCORES:
-      HandleHallOfFame(0, 0, 0, 0, button);
+      HandleHallOfFame(mx, my, 0, 0, button);
       break;
 
     case GAME_MODE_EDITOR:
