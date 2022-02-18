@@ -4816,7 +4816,7 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   if (CheckFadeAll())
     fade_mask = REDRAW_ALL;
 
-  if (strEqual((*ti_ptr)->subdir, STRING_TOP_DIRECTORY))
+  if (*ti_ptr != NULL && strEqual((*ti_ptr)->subdir, STRING_TOP_DIRECTORY))
   {
     if (game_status == GAME_MODE_SETUP)
     {
@@ -5080,7 +5080,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   int sx1_edit_name = getChooseTreeEditXPos(POS_LEFT);
   int sx2_edit_name = getChooseTreeEditXPos(POS_RIGHT);
   int x = 0;
-  int y = ti->cl_cursor;
+  int y = (ti != NULL ? ti->cl_cursor : 0);
   int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
   int num_entries = numTreeInfoInGroup(ti);
   int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
