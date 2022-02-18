@@ -5093,6 +5093,24 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
   boolean position_set_by_scrollbar = (dx == 999);
 
+  if (game_status == GAME_MODE_SCORES)
+  {
+    if (server_scores.updated)
+    {
+      // reload scores, using updated server score cache file
+      LoadLocalAndServerScore(scores.last_level_nr, FALSE);
+
+      server_scores.updated = FALSE;
+
+      if (button != MB_MENU_INITIALIZE)
+      {
+	ti = setHallOfFameActiveEntry(ti_ptr);
+
+	drawChooseTreeScreen(ti);
+      }
+    }
+  }
+
   if (button == MB_MENU_INITIALIZE)
   {
     int num_entries = numTreeInfoInGroup(ti);
@@ -5103,14 +5121,6 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
     if (game_status == GAME_MODE_SCORES)
     {
-      if (server_scores.updated)
-      {
-	// reload scores, using updated server score cache file
-	LoadLocalAndServerScore(scores.last_level_nr, FALSE);
-
-	server_scores.updated = FALSE;
-      }
-
       ti = setHallOfFameActiveEntry(ti_ptr);
     }
     else if (ti->cl_first == -1)
@@ -5480,18 +5490,6 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	}
       }
     }
-  }
-
-  if (game_status == GAME_MODE_SCORES && server_scores.updated)
-  {
-    // reload scores, using updated server score cache file
-    LoadLocalAndServerScore(scores.last_level_nr, FALSE);
-
-    server_scores.updated = FALSE;
-
-    ti = setHallOfFameActiveEntry(ti_ptr);
-
-    drawChooseTreeScreen(ti);
   }
 
   if (game_status == GAME_MODE_SCORES)
