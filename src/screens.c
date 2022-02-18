@@ -4948,20 +4948,26 @@ static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
   }
 }
 
+static void drawChooseTreeHeadExt(int type, char *title_string)
+{
+  int yoffset_sets = MENU_TITLE1_YPOS;
+  int yoffset_setup = 16;
+  int yoffset = (type == TREE_TYPE_SCORE_ENTRY ||
+		 type == TREE_TYPE_LEVEL_DIR ||
+		 type == TREE_TYPE_LEVEL_NR ? yoffset_sets : yoffset_setup);
+
+  DrawTextSCentered(mSY - SY + yoffset, FONT_TITLE_1, title_string);
+}
+
+static void drawChooseTreeHead(TreeInfo *ti)
+{
+  drawChooseTreeHeadExt(ti->type, ti->infotext);
+}
+
 static void drawChooseTreeList(int first_entry, int num_page_entries,
 			       TreeInfo *ti)
 {
   int i;
-  char *title_string = NULL;
-  int yoffset_sets = MENU_TITLE1_YPOS;
-  int yoffset_setup = 16;
-  int yoffset = (ti->type == TREE_TYPE_SCORE_ENTRY ||
-		 ti->type == TREE_TYPE_LEVEL_DIR ||
-		 ti->type == TREE_TYPE_LEVEL_NR ? yoffset_sets : yoffset_setup);
-
-  title_string = ti->infotext;
-
-  DrawTextSCentered(mSY - SY + yoffset, FONT_TITLE_1, title_string);
 
   clearMenuListArea();
 
@@ -5042,6 +5048,7 @@ static void drawChooseTreeScreen(TreeInfo *ti)
   int num_entries = numTreeInfoInGroup(ti);
   int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
 
+  drawChooseTreeHead(ti);
   drawChooseTreeList(ti->cl_first, num_page_entries, ti);
   drawChooseTreeInfo(ti->cl_first + ti->cl_cursor, ti);
   drawChooseTreeCursorAndText(ti->cl_cursor, TRUE, ti);
