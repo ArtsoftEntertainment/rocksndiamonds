@@ -1403,10 +1403,10 @@ static void AdjustScrollbar(int id, int items_max, int items_visible,
 	       GDI_SCROLLBAR_ITEM_POSITION, item_position, GDI_END);
 }
 
-static void AdjustChooseTreeScrollbar(int id, int first_entry, TreeInfo *ti)
+static void AdjustChooseTreeScrollbar(TreeInfo *ti, int id)
 {
   AdjustScrollbar(id, numTreeInfoInGroup(ti), NUM_MENU_ENTRIES_ON_SCREEN,
-		  first_entry);
+		  ti->cl_first);
 }
 
 static void clearMenuListArea(void)
@@ -4882,7 +4882,7 @@ static int getChooseTreeFont(TreeInfo *node, boolean active)
     return MENU_CHOOSE_TREE_FONT(MENU_CHOOSE_TREE_COLOR(node, active));
 }
 
-static void drawChooseTreeText(int y, boolean active, TreeInfo *ti)
+static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
 {
   int num_entries = numTreeInfoInGroup(ti);
   boolean scrollbar_needed = (num_entries > NUM_MENU_ENTRIES_ON_SCREEN);
@@ -4969,9 +4969,11 @@ static void drawChooseTreeHead(TreeInfo *ti)
   drawChooseTreeHeadExt(ti->type, ti->infotext);
 }
 
-static void drawChooseTreeList(int first_entry, int num_page_entries,
-			       TreeInfo *ti)
+static void drawChooseTreeList(TreeInfo *ti)
 {
+  int first_entry = ti->cl_first;
+  int num_entries = numTreeInfoInGroup(ti);
+  int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
   int i;
 
   clearMenuListArea();
@@ -4984,7 +4986,7 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
     node_first = getTreeInfoFirstGroupEntry(ti);
     node = getTreeInfoFromPos(node_first, entry_pos);
 
-    drawChooseTreeText(i, FALSE, ti);
+    drawChooseTreeText(ti, i, FALSE);
 
     if (node->parent_link)
       initCursor(i, IMG_MENU_BUTTON_LEAVE_MENU);
@@ -5003,12 +5005,13 @@ static void drawChooseTreeList(int first_entry, int num_page_entries,
   redraw_mask |= REDRAW_FIELD;
 }
 
-static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
+static void drawChooseTreeInfo(TreeInfo *ti)
 {
-  TreeInfo *node, *node_first;
-  int x, last_redraw_mask = redraw_mask;
+  int entry_pos = ti->cl_first + ti->cl_cursor;
+  int last_redraw_mask = redraw_mask;
   int ypos = MENU_TITLE2_YPOS;
   int font_nr = FONT_TITLE_2;
+  int x;
 
   if (ti->type == TREE_TYPE_LEVEL_NR)
     DrawTextFCentered(ypos, font_nr, leveldir_current->name);
@@ -5020,8 +5023,8 @@ static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
   if (ti->type != TREE_TYPE_LEVEL_DIR)
     return;
 
-  node_first = getTreeInfoFirstGroupEntry(ti);
-  node = getTreeInfoFromPos(node_first, entry_pos);
+  TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
+  TreeInfo *node = getTreeInfoFromPos(node_first, entry_pos);
 
   DrawBackgroundForFont(SX, SY + ypos, SXSIZE, getFontHeight(font_nr), font_nr);
 
@@ -5042,23 +5045,20 @@ static void drawChooseTreeInfo(int entry_pos, TreeInfo *ti)
     MarkTileDirty(x, 1);
 }
 
-static void drawChooseTreeCursorAndText(int y, boolean active, TreeInfo *ti)
+static void drawChooseTreeCursorAndText(TreeInfo *ti, boolean active)
 {
-  drawChooseTreeCursor(y, active);
-  drawChooseTreeText(y, active, ti);
+  drawChooseTreeCursor(ti->cl_cursor, active);
+  drawChooseTreeText(ti, ti->cl_cursor, active);
 }
 
 static void drawChooseTreeScreen(TreeInfo *ti)
 {
-  int num_entries = numTreeInfoInGroup(ti);
-  int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
-
   drawChooseTreeHead(ti);
-  drawChooseTreeList(ti->cl_first, num_page_entries, ti);
-  drawChooseTreeInfo(ti->cl_first + ti->cl_cursor, ti);
-  drawChooseTreeCursorAndText(ti->cl_cursor, TRUE, ti);
+  drawChooseTreeList(ti);
+  drawChooseTreeInfo(ti);
+  drawChooseTreeCursorAndText(ti, TRUE);
 
-  AdjustChooseTreeScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL, ti->cl_first, ti);
+  AdjustChooseTreeScrollbar(ti, SCREEN_CTRL_ID_SCROLL_VERTICAL);
 
   // scroll bar and buttons may just have been added after reloading scores
   if (game_status == GAME_MODE_SCORES)
@@ -5367,11 +5367,13 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       {
 	PlaySound(SND_MENU_ITEM_ACTIVATING);
 
-	drawChooseTreeCursorAndText(ti->cl_cursor, FALSE, ti);
-	drawChooseTreeCursorAndText(y, TRUE, ti);
-	drawChooseTreeInfo(ti->cl_first + y, ti);
+	drawChooseTreeCursorAndText(ti, FALSE);
 
 	ti->cl_cursor = y;
+
+	drawChooseTreeCursorAndText(ti, TRUE);
+
+	drawChooseTreeInfo(ti);
       }
       else if (dx < 0)
       {
