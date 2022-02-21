@@ -5145,10 +5145,13 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
       DrawHallOfFame_setScoreEntries();
 
-      ti = setHallOfFameActiveEntry(ti_ptr);
+      if (score_entries != NULL)
+      {
+	ti = setHallOfFameActiveEntry(ti_ptr);
 
-      if (button != MB_MENU_INITIALIZE)
-	drawChooseTreeScreen(ti);
+	if (button != MB_MENU_INITIALIZE)
+	  drawChooseTreeScreen(ti);
+      }
     }
 
     if (score_entries == NULL)
