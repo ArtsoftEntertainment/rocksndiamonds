@@ -184,26 +184,28 @@
 // screen gadget identifiers
 #define SCREEN_CTRL_ID_PREV_LEVEL	0
 #define SCREEN_CTRL_ID_NEXT_LEVEL	1
-#define SCREEN_CTRL_ID_FIRST_LEVEL	2
-#define SCREEN_CTRL_ID_LAST_LEVEL	3
-#define SCREEN_CTRL_ID_LEVEL_NUMBER	4
-#define SCREEN_CTRL_ID_PREV_PLAYER	5
-#define SCREEN_CTRL_ID_NEXT_PLAYER	6
-#define SCREEN_CTRL_ID_INSERT_SOLUTION	7
-#define SCREEN_CTRL_ID_PLAY_SOLUTION	8
-#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	9
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	10
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	11
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	12
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	13
-#define SCREEN_CTRL_ID_SCROLL_UP	14
-#define SCREEN_CTRL_ID_SCROLL_DOWN	15
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL	16
-#define SCREEN_CTRL_ID_NETWORK_SERVER	17
+#define SCREEN_CTRL_ID_PREV_LEVEL2	2
+#define SCREEN_CTRL_ID_NEXT_LEVEL2	3
+#define SCREEN_CTRL_ID_FIRST_LEVEL	4
+#define SCREEN_CTRL_ID_LAST_LEVEL	5
+#define SCREEN_CTRL_ID_LEVEL_NUMBER	6
+#define SCREEN_CTRL_ID_PREV_PLAYER	7
+#define SCREEN_CTRL_ID_NEXT_PLAYER	8
+#define SCREEN_CTRL_ID_INSERT_SOLUTION	9
+#define SCREEN_CTRL_ID_PLAY_SOLUTION	10
+#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	11
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	12
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	13
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	14
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	15
+#define SCREEN_CTRL_ID_SCROLL_UP	16
+#define SCREEN_CTRL_ID_SCROLL_DOWN	17
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL	18
+#define SCREEN_CTRL_ID_NETWORK_SERVER	19
 
-#define NUM_SCREEN_GADGETS		18
+#define NUM_SCREEN_GADGETS		20
 
-#define NUM_SCREEN_MENUBUTTONS		14
+#define NUM_SCREEN_MENUBUTTONS		16
 #define NUM_SCREEN_SCROLLBUTTONS	2
 #define NUM_SCREEN_SCROLLBARS		1
 #define NUM_SCREEN_TEXTINPUT		1
@@ -213,6 +215,7 @@
 #define SCREEN_MASK_INPUT		(1 << 2)
 #define SCREEN_MASK_TOUCH		(1 << 3)
 #define SCREEN_MASK_TOUCH2		(1 << 4)
+#define SCREEN_MASK_SCORES		(1 << 5)
 
 // graphic position and size values for buttons and scrollbars
 #define SC_MENUBUTTON_XSIZE		TILEX
@@ -291,6 +294,7 @@ static boolean OfferUploadTapes(void);
 static void execOfferUploadTapes(void);
 
 static void DrawHallOfFame_setScoreEntries(void);
+static void HandleHallOfFame_SelectLevel(int, int);
 static char *getHallOfFameScoreText(int);
 
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
@@ -4866,7 +4870,12 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
 
   OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
 
+  // map gadgets for high score screen
+  if (game_status == GAME_MODE_SCORES)
+    MapScreenMenuGadgets(SCREEN_MASK_SCORES);
+
   MapScreenTreeGadgets(*ti_ptr);
+
   HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, ti_ptr);
 
   DrawMaskedBorder(fade_mask);
@@ -5322,7 +5331,13 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     y = ti->cl_cursor + dy;
   }
 
-  if (dx == 1)
+  if (game_status == GAME_MODE_SCORES && ABS(dx) == 1)
+  {
+    HandleHallOfFame_SelectLevel(1, dx);
+
+    return;
+  }
+  else if (dx == 1)
   {
     TreeInfo *node_first, *node_cursor;
     int entry_pos = ti->cl_first + y;
@@ -5770,6 +5785,44 @@ static char *getHallOfFameScoreText(int nr)
   sprintf(score_text, "%02d:%02d", mm, ss);	// show playing time
 
   return score_text;
+}
+
+static void HandleHallOfFame_SelectLevel(int step, int direction)
+{
+  int old_level_nr = level_nr;
+  int new_level_nr = old_level_nr + step * direction;
+
+  if (new_level_nr < leveldir_current->first_level)
+    new_level_nr = leveldir_current->first_level;
+  if (new_level_nr > leveldir_current->last_level)
+    new_level_nr = leveldir_current->last_level;
+
+  if (setup.handicap && new_level_nr > leveldir_current->handicap_level)
+    new_level_nr = leveldir_current->handicap_level;
+
+  if (new_level_nr != old_level_nr)
+  {
+    PlaySound(SND_MENU_ITEM_SELECTING);
+
+    scores.last_level_nr = level_nr = new_level_nr;
+
+    LoadLocalAndServerScore(level_nr, TRUE);
+
+    DrawHallOfFame_setScoreEntries();
+
+    // force remapping optional gadgets (especially scroll bar)
+    UnmapScreenTreeGadgets();
+
+    // redraw complete high score screen, as sub-title has changed
+    ClearField();
+
+    // redraw level selection buttons (which have just been erased)
+    RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
+
+    HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, &score_entry_current);
+
+    SaveLevelSetup_SeriesInfo();
+  }
 }
 
 void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
@@ -9609,6 +9662,22 @@ static struct
     FALSE, "next level"
   },
   {
+    IMG_MENU_BUTTON_PREV_LEVEL2, IMG_MENU_BUTTON_PREV_LEVEL2_ACTIVE,
+    &menu.scores.button.prev_level, NULL,
+    SCREEN_CTRL_ID_PREV_LEVEL2,
+    SCREEN_MASK_SCORES,
+    GD_EVENT_PRESSED | GD_EVENT_REPEATED,
+    FALSE, "previous level"
+  },
+  {
+    IMG_MENU_BUTTON_NEXT_LEVEL2, IMG_MENU_BUTTON_NEXT_LEVEL2_ACTIVE,
+    &menu.scores.button.next_level, NULL,
+    SCREEN_CTRL_ID_NEXT_LEVEL2,
+    SCREEN_MASK_SCORES,
+    GD_EVENT_PRESSED | GD_EVENT_REPEATED,
+    FALSE, "next level"
+  },
+  {
     IMG_MENU_BUTTON_FIRST_LEVEL, IMG_MENU_BUTTON_FIRST_LEVEL_ACTIVE,
     &menu.main.button.first_level, NULL,
     SCREEN_CTRL_ID_FIRST_LEVEL,
@@ -9777,8 +9846,10 @@ static void CreateScreenMenubuttons(void)
   for (i = 0; i < NUM_SCREEN_MENUBUTTONS; i++)
   {
     struct MenuPosInfo *pos = menubutton_info[i].pos;
+    int screen_mask = menubutton_info[i].screen_mask;
     boolean is_touch_button = menubutton_info[i].is_touch_button;
     boolean is_check_button = menubutton_info[i].check_value != NULL;
+    boolean is_score_button = (screen_mask == SCREEN_MASK_SCORES);
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
     int gfx_unpressed, gfx_pressed;
     int x, y, width, height;
@@ -9824,6 +9895,21 @@ static void CreateScreenMenubuttons(void)
 
       type = GD_TYPE_CHECK_BUTTON;
       checked = *menubutton_info[i].check_value;
+    }
+
+    if (is_score_button)
+    {
+      // if x/y set to -1, dynamically place buttons next to title text
+      int title_width = getTextWidth(INFOTEXT_SCORE_ENTRY, FONT_TITLE_1);
+
+      if (pos->x == -1)
+	x = (id == SCREEN_CTRL_ID_PREV_LEVEL2 ?
+	     SX + (SXSIZE - title_width) / 2 - width * 3 / 2 :
+	     id == SCREEN_CTRL_ID_NEXT_LEVEL2 ?
+	     SX + (SXSIZE + title_width) / 2 + width / 2 : 0);
+
+      if (pos->y == -1)
+	y = mSY + MENU_TITLE1_YPOS;
     }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
@@ -10163,6 +10249,14 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_NEXT_LEVEL:
       HandleMainMenu_SelectLevel(step, +1, NO_DIRECT_LEVEL_SELECT);
+      break;
+
+    case SCREEN_CTRL_ID_PREV_LEVEL2:
+      HandleHallOfFame_SelectLevel(step, -1);
+      break;
+
+    case SCREEN_CTRL_ID_NEXT_LEVEL2:
+      HandleHallOfFame_SelectLevel(step, +1);
       break;
 
     case SCREEN_CTRL_ID_FIRST_LEVEL:

@@ -2798,6 +2798,17 @@ struct MenuSetupInfo
   struct MenuSetupButtonInfo button;
 };
 
+struct MenuScoresButtonInfo
+{
+  struct MenuPosInfo prev_level;
+  struct MenuPosInfo next_level;
+};
+
+struct MenuScoresInfo
+{
+  struct MenuScoresButtonInfo button;
+};
+
 struct TitleFadingInfo
 {
   int fade_mode;
@@ -2887,6 +2898,7 @@ struct MenuInfo
 
   struct MenuMainInfo main;
   struct MenuSetupInfo setup;
+  struct MenuScoresInfo scores;
 };
 
 struct DoorInfo

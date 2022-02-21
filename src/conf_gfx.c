@@ -6137,6 +6137,15 @@ struct ConfigInfo image_config[] =
   { "menu.button_prev_level.active",		UNDEFINED_FILENAME	},
   { "menu.button_prev_level.active.clone_from",	"menu.button_left.active" },
 
+  { "menu.button_next_level2",			UNDEFINED_FILENAME	},
+  { "menu.button_next_level2.clone_from",	"menu.button_right"	},
+  { "menu.button_next_level2.active",		UNDEFINED_FILENAME	},
+  { "menu.button_next_level2.active.clone_from", "menu.button_right.active" },
+  { "menu.button_prev_level2",			UNDEFINED_FILENAME	},
+  { "menu.button_prev_level2.clone_from",	"menu.button_left"	},
+  { "menu.button_prev_level2.active",		UNDEFINED_FILENAME	},
+  { "menu.button_prev_level2.active.clone_from", "menu.button_left.active" },
+
   { "menu.button_name",				UNDEFINED_FILENAME	},
   { "menu.button_name.clone_from",		"menu.button"		},
   { "menu.button_name.active",			UNDEFINED_FILENAME	},
@@ -8310,6 +8319,11 @@ struct ConfigInfo image_config[] =
   { "setup.button.touch_back2.y",		"-60"			},
   { "setup.button.touch_next2.x",		"-60"			},
   { "setup.button.touch_next2.y",		"-60"			},
+
+  { "scores.button.prev_level.x",		"-1"			},
+  { "scores.button.prev_level.y",		"-1"			},
+  { "scores.button.next_level.x",		"-1"			},
+  { "scores.button.next_level.y",		"-1"			},
 
   { "preview.x",				"272"			},
   { "preview.y",				"380"			},
