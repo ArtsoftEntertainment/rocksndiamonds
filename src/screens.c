@@ -5869,6 +5869,8 @@ static void DrawScoreInfo(int pos)
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
 
+  UnmapAllGadgets();
+
   FadeOut(REDRAW_FIELD);
 
   ClearField();
