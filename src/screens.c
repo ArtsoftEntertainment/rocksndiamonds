@@ -5145,6 +5145,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   int num_entries = numTreeInfoInGroup(ti);
   int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
   boolean position_set_by_scrollbar = (dx == 999);
+  boolean button_action = (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE);
+  boolean button_is_valid = (mx >= 0 && my >= 0);
+  boolean button_screen_clicked = (button_action && button_is_valid);
 
   if (game_status == GAME_MODE_SCORES)
   {
@@ -5172,7 +5175,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       {
 	drawChooseTreeScreen_Scores_NotAvailable();
       }
-      else if (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE)
+      else if (button_screen_clicked)
       {
 	PlaySound(SND_MENU_ITEM_SELECTING);
 
