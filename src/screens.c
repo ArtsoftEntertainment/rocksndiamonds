@@ -5807,7 +5807,7 @@ static char *getHallOfFameScoreText(int nr)
 
 static void HandleHallOfFame_SelectLevel(int step, int direction)
 {
-  int old_level_nr = level_nr;
+  int old_level_nr = scores.last_level_nr;
   int new_level_nr = old_level_nr + step * direction;
 
   if (new_level_nr < leveldir_current->first_level)
