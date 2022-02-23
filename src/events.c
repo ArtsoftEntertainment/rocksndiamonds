@@ -1784,6 +1784,10 @@ void HandleButton(int mx, int my, int button, int button_nr)
       HandleHallOfFame(mx, my, 0, 0, button);
       break;
 
+    case GAME_MODE_SCOREINFO:
+      HandleScoreInfo(mx, my, 0, 0, button);
+      break;
+
     case GAME_MODE_EDITOR:
       HandleLevelEditorIdle();
       break;
@@ -2339,6 +2343,7 @@ void HandleKey(Key key, int key_status)
     case GAME_MODE_SETUP:
     case GAME_MODE_INFO:
     case GAME_MODE_SCORES:
+    case GAME_MODE_SCOREINFO:
 
       if (anyTextGadgetActiveOrJustFinished && key != KSYM_Escape)
 	break;
@@ -2363,6 +2368,8 @@ void HandleKey(Key key, int key_status)
 	    HandleInfoScreen(0, 0, 0, 0, MB_MENU_CHOICE);
 	  else if (game_status == GAME_MODE_SCORES)
 	    HandleHallOfFame(0, 0, 0, 0, MB_MENU_CHOICE);
+	  else if (game_status == GAME_MODE_SCOREINFO)
+	    HandleScoreInfo(0, 0, 0, 0, MB_MENU_CHOICE);
 	  break;
 
 	case KSYM_Escape:
@@ -2383,6 +2390,8 @@ void HandleKey(Key key, int key_status)
 	    HandleInfoScreen(0, 0, 0, 0, MB_MENU_LEAVE);
 	  else if (game_status == GAME_MODE_SCORES)
 	    HandleHallOfFame(0, 0, 0, 0, MB_MENU_LEAVE);
+	  else if (game_status == GAME_MODE_SCOREINFO)
+	    HandleScoreInfo(0, 0, 0, 0, MB_MENU_LEAVE);
 	  break;
 
         case KSYM_Page_Up:
@@ -2398,6 +2407,8 @@ void HandleKey(Key key, int key_status)
 	    HandleInfoScreen(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_SCORES)
 	    HandleHallOfFame(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
+	  else if (game_status == GAME_MODE_SCOREINFO)
+	    HandleScoreInfo(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  break;
 
         case KSYM_Page_Down:
@@ -2413,6 +2424,8 @@ void HandleKey(Key key, int key_status)
 	    HandleInfoScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_SCORES)
 	    HandleHallOfFame(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
+	  else if (game_status == GAME_MODE_SCOREINFO)
+	    HandleScoreInfo(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  break;
 
 	default:
@@ -2644,6 +2657,7 @@ void HandleJoystick(void)
     case GAME_MODE_SETUP:
     case GAME_MODE_INFO:
     case GAME_MODE_SCORES:
+    case GAME_MODE_SCOREINFO:
     {
       if (anyTextGadgetActive())
 	break;
@@ -2664,6 +2678,8 @@ void HandleJoystick(void)
 	HandleInfoScreen(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       else if (game_status == GAME_MODE_SCORES)
 	HandleHallOfFame(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
+      else if (game_status == GAME_MODE_SCOREINFO)
+	HandleScoreInfo(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
 
       break;
     }

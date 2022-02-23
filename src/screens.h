@@ -34,6 +34,7 @@ void HandleChoosePlayerName(int, int, int, int, int);
 void HandleChooseLevelSet(int, int, int, int, int);
 void HandleChooseLevelNr(int, int, int, int, int);
 void HandleHallOfFame(int, int, int, int, int);
+void HandleScoreInfo(int, int, int, int, int);
 void HandleInfoScreen(int, int, int, int, int);
 void HandleSetupScreen(int, int, int, int, int);
 void HandleTypeName(Key);

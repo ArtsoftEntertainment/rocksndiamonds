@@ -262,6 +262,7 @@ static void HandleChooseTree(int, int, int, int, int, TreeInfo **);
 static void DrawChoosePlayerName(void);
 static void DrawChooseLevelSet(void);
 static void DrawChooseLevelNr(void);
+static void DrawScoreInfo(int);
 static void DrawInfoScreen(void);
 static void DrawSetupScreen(void);
 static void DrawTypeName(void);
@@ -5563,6 +5564,14 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 			       level.random_seed);
 	      return;
 	    }
+	    else
+	    {
+	      SetGameStatus(GAME_MODE_SCOREINFO);
+
+	      DrawScoreInfo(node_cursor->pos);
+
+	      return;
+	    }
 	  }
 
 	  SetGameStatus(GAME_MODE_MAIN);
@@ -5834,6 +5843,86 @@ static void HandleHallOfFame_SelectLevel(int step, int direction)
 void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 {
   HandleChooseTree(mx, my, dx, dy, button, &score_entry_current);
+}
+
+static void DrawScoreInfo(int pos)
+{
+  struct ScoreEntry *entry = &scores.entry[pos];
+  int font_title = MENU_INFO_FONT_TITLE;
+  int font_head  = MENU_INFO_FONT_HEAD;
+  int font_text  = MENU_INFO_FONT_TEXT;
+  int font_foot  = MENU_INFO_FONT_FOOT;
+  int spacing_title = menu.headline1_spacing[GAME_MODE_SCOREINFO];
+  int spacing_para  = menu.paragraph_spacing[GAME_MODE_SCOREINFO];
+  int spacing_line  = menu.line_spacing[GAME_MODE_SCOREINFO];
+  int xstep = getFontWidth(font_text);
+  int ystep_title = getMenuTextStep(spacing_title, font_title);
+  int ystep_para  = getMenuTextStep(spacing_para,  font_text);
+  int ystep_line  = getMenuTextStep(spacing_line,  font_text);
+  int ystart  = mSY - SY + menu.top_spacing[GAME_MODE_SCOREINFO];
+  int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
+  int xstart1 = mSX - SX + 2 * xstep;
+  int xstart2 = mSX - SX + 14 * xstep;
+
+  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
+
+  FadeOut(REDRAW_FIELD);
+
+  ClearField();
+
+  drawChooseTreeHead(score_entries);
+  drawChooseTreeInfo(score_entries);
+
+  DrawTextSCentered(ystart, font_title, "Score Information:");
+  ystart += ystep_title;
+
+  DrawTextF(xstart1, ystart, font_head, "Level Set");
+  DrawTextF(xstart2, ystart, font_text, leveldir_current->name);
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Level Name");
+  DrawTextF(xstart2, ystart, font_text, level.name);
+  ystart += ystep_para;
+
+  DrawTextF(xstart1, ystart, font_head, "Player");
+  DrawTextF(xstart2, ystart, font_text, entry->name);
+  ystart += ystep_line;
+
+  if (level.use_step_counter)
+  {
+    DrawTextF(xstart1, ystart, font_head, "Steps");
+    DrawTextF(xstart2, ystart, font_text, int2str(entry->time, 5));
+    ystart += ystep_line;
+  }
+  else
+  {
+    DrawTextF(xstart1, ystart, font_head, "Time");
+    DrawTextF(xstart2, ystart, font_text, getHallOfFameTimeText(pos));
+    ystart += ystep_line;
+  }
+
+  if (!level.rate_time_over_score || entry->score > 0)
+  {
+    DrawTextF(xstart1, ystart, font_head, "Score");
+    DrawTextF(xstart2, ystart, font_text, int2str(entry->score, 5));
+    ystart += ystep_line;
+  }
+
+  DrawTextSCentered(ybottom, font_foot, "Press any key or button to go back");
+
+  FadeIn(REDRAW_FIELD);
+}
+
+void HandleScoreInfo(int mx, int my, int dx, int dy, int button)
+{
+  if (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE)
+  {
+    PlaySound(SND_MENU_ITEM_SELECTING);
+
+    SetGameStatus(GAME_MODE_SCORES);
+
+    DrawHallOfFame(level_nr);
+  }
 }
 
 
