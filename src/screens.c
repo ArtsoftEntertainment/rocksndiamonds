@@ -5769,14 +5769,8 @@ void DrawHallOfFame(int level_nr)
   DrawChooseTree(&score_entry_current);
 }
 
-static char *getHallOfFameScoreText(int nr)
+static char *getHallOfFameTimeText(int nr)
 {
-  if (!level.rate_time_over_score)
-    return int2str(scores.entry[nr].score, 5);	// show normal score
-
-  if (level.use_step_counter)
-    return int2str(scores.entry[nr].time, 5);	// show number of steps
-
   static char score_text[10];
   int time_seconds = scores.entry[nr].time / FRAMES_PER_SECOND;
   int mm = (time_seconds / 60) % 60;
@@ -5785,6 +5779,16 @@ static char *getHallOfFameScoreText(int nr)
   sprintf(score_text, "%02d:%02d", mm, ss);	// show playing time
 
   return score_text;
+}
+
+static char *getHallOfFameScoreText(int nr)
+{
+  if (!level.rate_time_over_score)
+    return int2str(scores.entry[nr].score, 5);	// show normal score
+  else if (level.use_step_counter)
+    return int2str(scores.entry[nr].time, 5);	// show number of steps
+  else
+    return getHallOfFameTimeText(nr);		// show playing time
 }
 
 static void HandleHallOfFame_SelectLevel(int step, int direction)
