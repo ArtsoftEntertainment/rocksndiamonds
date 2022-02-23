@@ -619,6 +619,8 @@ static int align_yoffset = 0;
 
 #define EXTRA_SPACING_SCORES(i)	(EXTRA_SPACING_INFO(i))
 
+#define EXTRA_SPACING_SCOREINFO(i) (menu.extra_spacing[GAME_MODE_SCOREINFO])
+
 #define DRAW_XOFFSET(s)		((s) == GAME_MODE_INFO ?		\
 				 DRAW_XOFFSET_INFO(info_mode) :		\
 				 (s) == GAME_MODE_SETUP ?		\

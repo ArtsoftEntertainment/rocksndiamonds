@@ -7341,6 +7341,7 @@ struct ConfigInfo image_config[] =
   { "background.LEVELS",			UNDEFINED_FILENAME	},
   { "background.LEVELNR",			UNDEFINED_FILENAME	},
   { "background.SCORES",			UNDEFINED_FILENAME	},
+  { "background.SCOREINFO",			UNDEFINED_FILENAME	},
   { "background.EDITOR",			UNDEFINED_FILENAME	},
   { "background.INFO",				UNDEFINED_FILENAME	},
   { "background.INFO[ELEMENTS]",		UNDEFINED_FILENAME	},
@@ -7865,6 +7866,7 @@ struct ConfigInfo image_config[] =
   { "border.draw_masked.LEVELS",		"false"			},
   { "border.draw_masked.LEVELNR",		"false"			},
   { "border.draw_masked.SCORES",		"false"			},
+  { "border.draw_masked.SCOREINFO",		"false"			},
   { "border.draw_masked.EDITOR",		"false"			},
   { "border.draw_masked.INFO",			"false"			},
   { "border.draw_masked.SETUP",			"false"			},
@@ -7948,6 +7950,8 @@ struct ConfigInfo image_config[] =
   { "menu.draw_yoffset.LEVELNR",		"0"			},
   { "menu.draw_xoffset.SCORES",			"0"			},
   { "menu.draw_yoffset.SCORES",			"0"			},
+  { "menu.draw_xoffset.SCOREINFO",		"0"			},
+  { "menu.draw_yoffset.SCOREINFO",		"0"			},
   { "menu.draw_xoffset.EDITOR",			"0"			},
   { "menu.draw_yoffset.EDITOR",			"0"			},
   { "menu.draw_xoffset.INFO",			"0"			},
@@ -8015,6 +8019,7 @@ struct ConfigInfo image_config[] =
   { "menu.list_size.INFO[ELEMENTS]",		"-1"			},
   { "menu.list_size.SETUP",			"-1"			},
 
+  { "menu.left_spacing.SCOREINFO",		"16"			},
   { "menu.left_spacing.INFO",			"16"			},
   { "menu.left_spacing.INFO[TITLE]",		"16"			},
   { "menu.left_spacing.INFO[ELEMENTS]",		"16"			},
@@ -8025,6 +8030,7 @@ struct ConfigInfo image_config[] =
   { "menu.left_spacing.INFO[LEVELSET]",		"16"			},
   { "menu.left_spacing.SETUP[INPUT]",		"16"			},
 
+  { "menu.right_spacing.SCOREINFO",		"16"			},
   { "menu.right_spacing.INFO",			"16"			},
   { "menu.right_spacing.INFO[TITLE]",		"16"			},
   { "menu.right_spacing.INFO[ELEMENTS]",	"16"			},
@@ -8035,6 +8041,7 @@ struct ConfigInfo image_config[] =
   { "menu.right_spacing.INFO[LEVELSET]",	"16"			},
   { "menu.right_spacing.SETUP[INPUT]",		"16"			},
 
+  { "menu.top_spacing.SCOREINFO",		"100"			},
   { "menu.top_spacing.INFO",			"100"			},
   { "menu.top_spacing.INFO[TITLE]",		"100"			},
   { "menu.top_spacing.INFO[ELEMENTS]",		"100"			},
@@ -8045,6 +8052,7 @@ struct ConfigInfo image_config[] =
   { "menu.top_spacing.INFO[LEVELSET]",		"100"			},
   { "menu.top_spacing.SETUP[INPUT]",		"100"			},
 
+  { "menu.bottom_spacing.SCOREINFO",		"20"			},
   { "menu.bottom_spacing.INFO",			"20"			},
   { "menu.bottom_spacing.INFO[TITLE]",		"20"			},
   { "menu.bottom_spacing.INFO[ELEMENTS]",	"20"			},
@@ -8055,6 +8063,7 @@ struct ConfigInfo image_config[] =
   { "menu.bottom_spacing.INFO[LEVELSET]",	"20"			},
   { "menu.bottom_spacing.SETUP[INPUT]",		"20"			},
 
+  { "menu.paragraph_spacing.SCOREINFO",		"-2"			},
   { "menu.paragraph_spacing.INFO",		"-3"			},
   { "menu.paragraph_spacing.INFO[TITLE]",	"-3"			},
   { "menu.paragraph_spacing.INFO[ELEMENTS]",	"-3"			},
@@ -8065,6 +8074,7 @@ struct ConfigInfo image_config[] =
   { "menu.paragraph_spacing.INFO[LEVELSET]",	"-3"			},
   { "menu.paragraph_spacing.SETUP[INPUT]",	"-1"			},
 
+  { "menu.headline1_spacing.SCOREINFO",		"-2"			},
   { "menu.headline1_spacing.INFO",		"-2"			},
   { "menu.headline1_spacing.INFO[TITLE]",	"-2"			},
   { "menu.headline1_spacing.INFO[ELEMENTS]",	"-2"			},
@@ -8075,6 +8085,7 @@ struct ConfigInfo image_config[] =
   { "menu.headline1_spacing.INFO[LEVELSET]",	"-2"			},
   { "menu.headline1_spacing.SETUP[INPUT]",	"-2"			},
 
+  { "menu.headline2_spacing.SCOREINFO",		"-1"			},
   { "menu.headline2_spacing.INFO",		"-1"			},
   { "menu.headline2_spacing.INFO[TITLE]",	"-1"			},
   { "menu.headline2_spacing.INFO[ELEMENTS]",	"-1"			},
@@ -8085,6 +8096,7 @@ struct ConfigInfo image_config[] =
   { "menu.headline2_spacing.INFO[LEVELSET]",	"-1"			},
   { "menu.headline2_spacing.SETUP[INPUT]",	"-1"			},
 
+  { "menu.line_spacing.SCOREINFO",		"0"			},
   { "menu.line_spacing.INFO",			"0"			},
   { "menu.line_spacing.INFO[TITLE]",		"0"			},
   { "menu.line_spacing.INFO[ELEMENTS]",		"0"			},
@@ -8095,6 +8107,7 @@ struct ConfigInfo image_config[] =
   { "menu.line_spacing.INFO[LEVELSET]",		"0"			},
   { "menu.line_spacing.SETUP[INPUT]",		"0"			},
 
+  { "menu.extra_spacing.SCOREINFO",		"2"			},
   { "menu.extra_spacing.INFO",			"2"			},
   { "menu.extra_spacing.INFO[TITLE]",		"2"			},
   { "menu.extra_spacing.INFO[ELEMENTS]",	"2"			},
