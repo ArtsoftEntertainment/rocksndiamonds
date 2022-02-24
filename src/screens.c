@@ -296,6 +296,7 @@ static void execOfferUploadTapes(void);
 
 static void DrawHallOfFame_setScoreEntries(void);
 static void HandleHallOfFame_SelectLevel(int, int);
+static void HandleHallOfFame_SelectLevelOrScore(int, int);
 static char *getHallOfFameRankText(int);
 static char *getHallOfFameScoreText(int);
 
@@ -5877,6 +5878,9 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   ClearField();
 
+  // redraw score selection buttons (which have just been erased)
+  RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
+
   drawChooseTreeHead(score_entries);
   drawChooseTreeInfo(score_entries);
 
@@ -5924,20 +5928,49 @@ static void DrawScoreInfo_Content(int entry_nr)
 
 static void DrawScoreInfo(int entry_nr)
 {
+  scores.last_entry_nr = entry_nr;
+
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
 
   UnmapAllGadgets();
 
   FadeOut(REDRAW_FIELD);
 
+  // map gadgets for score info screen
+  MapScreenMenuGadgets(SCREEN_MASK_SCORES);
+
   DrawScoreInfo_Content(entry_nr);
 
   FadeIn(REDRAW_FIELD);
 }
 
+static void HandleScoreInfo_SelectScore(int step, int direction)
+{
+  int old_entry_nr = scores.last_entry_nr;
+  int new_entry_nr = old_entry_nr + step * direction;
+  int num_nodes = numTreeInfoInGroup(score_entry_current);
+  int num_entries = num_nodes - 1;	// score nodes only, without back link
+
+  if (new_entry_nr < 0)
+    new_entry_nr = 0;
+  if (new_entry_nr > num_entries - 1)
+    new_entry_nr = num_entries - 1;
+
+  if (new_entry_nr != old_entry_nr)
+  {
+    scores.last_entry_nr = new_entry_nr;
+
+    DrawScoreInfo_Content(new_entry_nr);
+  }
+}
+
 void HandleScoreInfo(int mx, int my, int dx, int dy, int button)
 {
-  if (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE)
+  boolean button_action = (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE);
+  boolean button_is_valid = (mx >= 0 && my >= 0);
+  boolean button_screen_clicked = (button_action && button_is_valid);
+
+  if (button_screen_clicked)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
@@ -5945,6 +5978,18 @@ void HandleScoreInfo(int mx, int my, int dx, int dy, int button)
 
     DrawHallOfFame(level_nr);
   }
+  else if (dx || dy)
+  {
+    HandleScoreInfo_SelectScore(1, SIGN(dx ? dx : dy));
+  }
+}
+
+static void HandleHallOfFame_SelectLevelOrScore(int step, int direction)
+{
+  if (game_status == GAME_MODE_SCORES)
+    HandleHallOfFame_SelectLevel(step, direction);
+  else
+    HandleScoreInfo_SelectScore(step, direction);
 }
 
 
@@ -10369,11 +10414,11 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
       break;
 
     case SCREEN_CTRL_ID_PREV_LEVEL2:
-      HandleHallOfFame_SelectLevel(step, -1);
+      HandleHallOfFame_SelectLevelOrScore(step, -1);
       break;
 
     case SCREEN_CTRL_ID_NEXT_LEVEL2:
-      HandleHallOfFame_SelectLevel(step, +1);
+      HandleHallOfFame_SelectLevelOrScore(step, +1);
       break;
 
     case SCREEN_CTRL_ID_FIRST_LEVEL:

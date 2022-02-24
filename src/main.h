@@ -3099,6 +3099,7 @@ struct ScoreInfo
   int last_added;
   int last_added_local;
   int last_level_nr;
+  int last_entry_nr;
 
   boolean updated;
   boolean uploaded;
