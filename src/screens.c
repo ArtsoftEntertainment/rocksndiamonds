@@ -5851,6 +5851,8 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 static void DrawScoreInfo(int entry_nr)
 {
   struct ScoreEntry *entry = &scores.entry[entry_nr];
+  boolean forced = (scores.force_last_added && entry_nr == scores.last_added);
+  char *pos_text = (forced ? "???" : int2str(entry_nr + 1, 3));
   int font_title = MENU_INFO_FONT_TITLE;
   int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
@@ -5888,6 +5890,10 @@ static void DrawScoreInfo(int entry_nr)
   DrawTextF(xstart1, ystart, font_head, "Level Name");
   DrawTextF(xstart2, ystart, font_text, level.name);
   ystart += ystep_para;
+
+  DrawTextF(xstart1, ystart, font_head, "Rank");
+  DrawTextF(xstart2, ystart, font_text, pos_text);
+  ystart += ystep_line;
 
   DrawTextF(xstart1, ystart, font_head, "Player");
   DrawTextF(xstart2, ystart, font_text, entry->name);
