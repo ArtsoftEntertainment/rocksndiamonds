@@ -296,6 +296,7 @@ static void execOfferUploadTapes(void);
 
 static void DrawHallOfFame_setScoreEntries(void);
 static void HandleHallOfFame_SelectLevel(int, int);
+static char *getHallOfFameRankText(int);
 static char *getHallOfFameScoreText(int);
 
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
@@ -4943,8 +4944,7 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
     int startx3 = startx + dx3;
     int startx4 = startx + dx4;
     int pos = node->pos;
-    boolean forced = (scores.force_last_added && pos == scores.last_added);
-    char *pos_text = (forced ? "???" : int2str(pos + 1, 3));
+    char *pos_text = getHallOfFameRankText(pos);
     char *dot_text = ".";
     int i;
 
@@ -5783,6 +5783,13 @@ void DrawHallOfFame(int level_nr)
   DrawChooseTree(&score_entry_current);
 }
 
+static char *getHallOfFameRankText(int nr)
+{
+  boolean forced = (scores.force_last_added && nr == scores.last_added);
+
+  return (forced ? "???" : int2str(nr + 1, 3));
+}
+
 static char *getHallOfFameTimeText(int nr)
 {
   static char score_text[10];
@@ -5851,8 +5858,7 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 static void DrawScoreInfo(int entry_nr)
 {
   struct ScoreEntry *entry = &scores.entry[entry_nr];
-  boolean forced = (scores.force_last_added && entry_nr == scores.last_added);
-  char *pos_text = (forced ? "???" : int2str(entry_nr + 1, 3));
+  char *pos_text = getHallOfFameRankText(entry_nr);
   int font_title = MENU_INFO_FONT_TITLE;
   int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
