@@ -5855,7 +5855,7 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
   HandleChooseTree(mx, my, dx, dy, button, &score_entry_current);
 }
 
-static void DrawScoreInfo(int entry_nr)
+static void DrawScoreInfo_Content(int entry_nr)
 {
   struct ScoreEntry *entry = &scores.entry[entry_nr];
   char *pos_text = getHallOfFameRankText(entry_nr);
@@ -5874,12 +5874,6 @@ static void DrawScoreInfo(int entry_nr)
   int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
   int xstart1 = mSX - SX + 2 * xstep;
   int xstart2 = mSX - SX + 14 * xstep;
-
-  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
-
-  UnmapAllGadgets();
-
-  FadeOut(REDRAW_FIELD);
 
   ClearField();
 
@@ -5926,6 +5920,17 @@ static void DrawScoreInfo(int entry_nr)
   }
 
   DrawTextSCentered(ybottom, font_foot, "Press any key or button to go back");
+}
+
+static void DrawScoreInfo(int entry_nr)
+{
+  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
+
+  UnmapAllGadgets();
+
+  FadeOut(REDRAW_FIELD);
+
+  DrawScoreInfo_Content(entry_nr);
 
   FadeIn(REDRAW_FIELD);
 }
