@@ -5848,9 +5848,9 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
   HandleChooseTree(mx, my, dx, dy, button, &score_entry_current);
 }
 
-static void DrawScoreInfo(int pos)
+static void DrawScoreInfo(int entry_nr)
 {
-  struct ScoreEntry *entry = &scores.entry[pos];
+  struct ScoreEntry *entry = &scores.entry[entry_nr];
   int font_title = MENU_INFO_FONT_TITLE;
   int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
@@ -5902,7 +5902,7 @@ static void DrawScoreInfo(int pos)
   else
   {
     DrawTextF(xstart1, ystart, font_head, "Time");
-    DrawTextF(xstart2, ystart, font_text, getHallOfFameTimeText(pos));
+    DrawTextF(xstart2, ystart, font_text, getHallOfFameTimeText(entry_nr));
     ystart += ystep_line;
   }
 
