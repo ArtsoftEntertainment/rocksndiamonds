@@ -5903,6 +5903,22 @@ static void DrawScoreInfo_Content(int entry_nr)
   DrawTextF(xstart2, ystart, font_text, entry->name);
   ystart += ystep_line;
 
+  DrawTextF(xstart1, ystart, font_head, "Platform");
+  DrawTextF(xstart2, ystart, font_text, entry->platform);
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Version");
+  DrawTextF(xstart2, ystart, font_text, entry->version);
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Country");
+  DrawTextF(xstart2, ystart, font_text, entry->country_name);
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Tape Date");
+  DrawTextF(xstart2, ystart, font_text, entry->tape_date);
+  ystart += ystep_line;
+
   if (level.use_step_counter)
   {
     DrawTextF(xstart1, ystart, font_head, "Steps");

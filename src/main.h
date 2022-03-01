@@ -984,6 +984,12 @@
 #define MAX_ANDROID_ELEMENTS	32
 #define MAX_ANDROID_ELEMENTS_OLD 16	// (extended since version 4.2.0.0)
 
+#define MAX_ISO_DATE_LEN	10
+#define MAX_PLATFORM_TEXT_LEN	16
+#define MAX_VERSION_TEXT_LEN	16
+#define MAX_COUNTRY_CODE_LEN	2
+#define MAX_COUNTRY_NAME_LEN	64
+
 // values for elements with content
 #define MIN_ELEMENT_CONTENTS	1
 #define STD_ELEMENT_CONTENTS	4
@@ -3085,6 +3091,14 @@ struct ScoreEntry
   char name[MAX_PLAYER_NAME_LEN + 1];
   int score;
   int time;		// time (in frames) or steps played
+
+  // additional score information for score info screen
+  int id;
+  char tape_date[MAX_ISO_DATE_LEN + 1];
+  char platform[MAX_PLATFORM_TEXT_LEN + 1];
+  char version[MAX_VERSION_TEXT_LEN + 1];
+  char country_code[MAX_COUNTRY_CODE_LEN + 1];
+  char country_name[MAX_COUNTRY_NAME_LEN + 1];
 };
 
 struct ScoreInfo

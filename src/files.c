@@ -9443,6 +9443,12 @@ static void LoadServerScoreFromCache(int nr)
     { &score_entry.time,		FALSE,	0			},
     { score_entry.name,			TRUE,	MAX_PLAYER_NAME_LEN	},
     { score_entry.tape_basename,	TRUE,	MAX_FILENAME_LEN	},
+    { score_entry.tape_date,		TRUE,	MAX_ISO_DATE_LEN	},
+    { &score_entry.id,			FALSE,	0			},
+    { score_entry.platform,		TRUE,	MAX_PLATFORM_TEXT_LEN	},
+    { score_entry.version,		TRUE,	MAX_VERSION_TEXT_LEN	},
+    { score_entry.country_code,		TRUE,	MAX_COUNTRY_CODE_LEN	},
+    { score_entry.country_name,		TRUE,	MAX_COUNTRY_NAME_LEN	},
 
     { NULL,				FALSE,	0			}
   };
