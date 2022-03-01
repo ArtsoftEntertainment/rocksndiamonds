@@ -512,6 +512,10 @@ static void DrawMaskedBorderExt_Rect(int x, int y, int width, int height,
   Bitmap *src_bitmap = getGlobalBorderBitmapFromStatus(global.border_status);
   Bitmap *dst_bitmap = gfx.masked_border_bitmap_ptr;
 
+  // may happen for "border.draw_masked.*" with undefined "global.border.*"
+  if (src_bitmap == NULL)
+    return;
+
   if (x == -1 && y == -1)
     return;
 
