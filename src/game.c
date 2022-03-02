@@ -16437,8 +16437,15 @@ static void MapGameButtonsExt(boolean on_tape)
   int i;
 
   for (i = 0; i < NUM_GAME_BUTTONS; i++)
+  {
+    if ((i == GAME_CTRL_ID_UNDO ||
+	 i == GAME_CTRL_ID_REDO) &&
+	game_status != GAME_MODE_PLAYING)
+      continue;
+
     if (!on_tape || gamebutton_info[i].allowed_on_tape)
       MapGadget(game_gadget[i]);
+  }
 
   UnmapGameButtonsAtSamePosition_All();
 
