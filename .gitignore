@@ -15,6 +15,8 @@ src/conf_cus.c
 src/conf_cus.h
 src/conf_grp.c
 src/conf_grp.h
+src/conf_emp.c
+src/conf_emp.h
 src/conf_e2g.c
 src/conf_esg.c
 src/conf_e2s.c
