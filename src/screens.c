@@ -5876,6 +5876,13 @@ static void DrawScoreInfo_Content(int entry_nr)
   int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
   int xstart1 = mSX - SX + 2 * xstep;
   int xstart2 = mSX - SX + 14 * xstep;
+  int font_width = getFontWidth(font_text);
+  int font_height = getFontHeight(font_text);
+  int pad_left = xstart2;
+  int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
+  int max_chars_per_line = (SXSIZE - pad_left - pad_right) / font_width;
+  int max_lines_per_text = 5;
+  int lines;
 
   ClearField();
 
@@ -5889,12 +5896,16 @@ static void DrawScoreInfo_Content(int entry_nr)
   ystart += ystep_title;
 
   DrawTextF(xstart1, ystart, font_head, "Level Set");
-  DrawTextF(xstart2, ystart, font_text, leveldir_current->name);
-  ystart += ystep_line;
+  lines = DrawTextBufferS(xstart2, ystart, leveldir_current->name, font_text,
+			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
+			  TRUE, FALSE, FALSE);
+  ystart += ystep_line + (lines > 0 ? lines - 1 : 0) * font_height;
 
   DrawTextF(xstart1, ystart, font_head, "Level Name");
-  DrawTextF(xstart2, ystart, font_text, level.name);
-  ystart += ystep_para;
+  lines = DrawTextBufferS(xstart2, ystart, level.name, font_text,
+			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
+			  TRUE, FALSE, FALSE);
+  ystart += ystep_para + (lines > 0 ? lines - 1 : 0) * font_height;
 
   DrawTextF(xstart1, ystart, font_head, "Rank");
   DrawTextF(xstart2, ystart, font_text, pos_text);
@@ -5913,8 +5924,10 @@ static void DrawScoreInfo_Content(int entry_nr)
   ystart += ystep_line;
 
   DrawTextF(xstart1, ystart, font_head, "Country");
-  DrawTextF(xstart2, ystart, font_text, entry->country_name);
-  ystart += ystep_line;
+  lines = DrawTextBufferS(xstart2, ystart, entry->country_name, font_text,
+			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
+			  TRUE, FALSE, FALSE);
+  ystart += ystep_line + (lines > 0 ? lines - 1 : 0) * font_height;
 
   DrawTextF(xstart1, ystart, font_head, "Tape Date");
   DrawTextF(xstart2, ystart, font_text, entry->tape_date);
