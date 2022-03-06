@@ -5875,7 +5875,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   int ystart  = mSY - SY + menu.top_spacing[GAME_MODE_SCOREINFO];
   int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
   int xstart1 = mSX - SX + 2 * xstep;
-  int xstart2 = mSX - SX + 14 * xstep;
+  int xstart2 = mSX - SX + 13 * xstep;
   int font_width = getFontWidth(font_text);
   int font_height = getFontHeight(font_text);
   int pad_left = xstart2;
@@ -5901,7 +5901,7 @@ static void DrawScoreInfo_Content(int entry_nr)
 			  TRUE, FALSE, FALSE);
   ystart += ystep_line + (lines > 0 ? lines - 1 : 0) * font_height;
 
-  DrawTextF(xstart1, ystart, font_head, "Level Name");
+  DrawTextF(xstart1, ystart, font_head, "Level");
   lines = DrawTextBufferS(xstart2, ystart, level.name, font_text,
 			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
 			  TRUE, FALSE, FALSE);
