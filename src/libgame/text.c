@@ -646,6 +646,17 @@ int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
   return current_line;
 }
 
+int DrawTextBufferS(int x, int y, char *text_buffer, int font_nr,
+		    int line_length, int cut_length, int max_lines,
+		    int line_spacing, int mask_mode, boolean autowrap,
+		    boolean centered, boolean parse_comments)
+{
+  return DrawTextBuffer(gfx.sx + x, gfx.sy + y, text_buffer, font_nr,
+			line_length, cut_length, max_lines,
+			line_spacing, mask_mode, autowrap,
+			centered, parse_comments);
+}
+
 int DrawTextBufferVA(int x, int y, char *format, va_list ap, int font_nr,
 		     int line_length, int cut_length, int max_lines,
 		     int line_spacing, int mask_mode, boolean autowrap,
