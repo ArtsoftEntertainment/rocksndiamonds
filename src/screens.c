@@ -5832,6 +5832,7 @@ static void HandleHallOfFame_SelectLevel(int step, int direction)
 
     scores.last_level_nr = level_nr = new_level_nr;
 
+    LoadLevel(level_nr);
     LoadLocalAndServerScore(level_nr, TRUE);
 
     DrawHallOfFame_setScoreEntries();
