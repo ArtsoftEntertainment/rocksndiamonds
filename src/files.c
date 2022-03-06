@@ -8650,6 +8650,13 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
     strcpy(scores->entry[i].name, EMPTY_PLAYER_NAME);
     scores->entry[i].score = 0;
     scores->entry[i].time = 0;
+
+    scores->entry[i].id = -1;
+    strcpy(scores->entry[i].tape_date,    UNKNOWN_NAME);
+    strcpy(scores->entry[i].platform,     UNKNOWN_NAME);
+    strcpy(scores->entry[i].version,      UNKNOWN_NAME);
+    strcpy(scores->entry[i].country_name, UNKNOWN_NAME);
+    strcpy(scores->entry[i].country_code, "??");
   }
 
   scores->num_entries = 0;
