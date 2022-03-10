@@ -1837,15 +1837,15 @@ static void InitField(int x, int y, boolean init_game)
       break;
 
     case EL_STONEBLOCK:
-      if (x < lev_fieldx-1 && Tile[x+1][y] == EL_ACID)
+      if (x < lev_fieldx - 1 && Tile[x + 1][y] == EL_ACID)
 	Tile[x][y] = EL_ACID_POOL_TOPLEFT;
-      else if (x > 0 && Tile[x-1][y] == EL_ACID)
+      else if (x > 0 && Tile[x - 1][y] == EL_ACID)
 	Tile[x][y] = EL_ACID_POOL_TOPRIGHT;
-      else if (y > 0 && Tile[x][y-1] == EL_ACID_POOL_TOPLEFT)
+      else if (y > 0 && Tile[x][y - 1] == EL_ACID_POOL_TOPLEFT)
 	Tile[x][y] = EL_ACID_POOL_BOTTOMLEFT;
-      else if (y > 0 && Tile[x][y-1] == EL_ACID)
+      else if (y > 0 && Tile[x][y - 1] == EL_ACID)
 	Tile[x][y] = EL_ACID_POOL_BOTTOM;
-      else if (y > 0 && Tile[x][y-1] == EL_ACID_POOL_TOPRIGHT)
+      else if (y > 0 && Tile[x][y - 1] == EL_ACID_POOL_TOPRIGHT)
 	Tile[x][y] = EL_ACID_POOL_BOTTOMRIGHT;
       break;
 
@@ -9432,7 +9432,7 @@ static void Life(int ax, int ay)
 	  num_neighbours <= life_parameter[3])
       {
 	Tile[xx][yy] = element;
-	MovDelay[xx][yy] = (element == EL_GAME_OF_LIFE ? 0 : life_time-1);
+	MovDelay[xx][yy] = (element == EL_GAME_OF_LIFE ? 0 : life_time - 1);
 	if (Tile[xx][yy] != old_element)
 	  TEST_DrawLevelField(xx, yy);
 	Stop[xx][yy] = TRUE;
@@ -9753,13 +9753,13 @@ static void MauerAbleger(int ax, int ay)
       return;
   }
 
-  if (IN_LEV_FIELD(ax, ay-1) && IS_FREE(ax, ay-1))
+  if (IN_LEV_FIELD(ax, ay - 1) && IS_FREE(ax, ay - 1))
     oben_frei = TRUE;
-  if (IN_LEV_FIELD(ax, ay+1) && IS_FREE(ax, ay+1))
+  if (IN_LEV_FIELD(ax, ay + 1) && IS_FREE(ax, ay + 1))
     unten_frei = TRUE;
-  if (IN_LEV_FIELD(ax-1, ay) && IS_FREE(ax-1, ay))
+  if (IN_LEV_FIELD(ax - 1, ay) && IS_FREE(ax - 1, ay))
     links_frei = TRUE;
-  if (IN_LEV_FIELD(ax+1, ay) && IS_FREE(ax+1, ay))
+  if (IN_LEV_FIELD(ax + 1, ay) && IS_FREE(ax + 1, ay))
     rechts_frei = TRUE;
 
   if (element == EL_EXPANDABLE_WALL_VERTICAL ||
@@ -9767,19 +9767,19 @@ static void MauerAbleger(int ax, int ay)
   {
     if (oben_frei)
     {
-      Tile[ax][ay-1] = EL_EXPANDABLE_WALL_GROWING;
-      Store[ax][ay-1] = element;
-      GfxDir[ax][ay-1] = MovDir[ax][ay-1] = MV_UP;
-      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay-1)))
+      Tile[ax][ay - 1] = EL_EXPANDABLE_WALL_GROWING;
+      Store[ax][ay - 1] = element;
+      GfxDir[ax][ay - 1] = MovDir[ax][ay - 1] = MV_UP;
+      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay - 1)))
 	DrawLevelGraphic(ax, ay - 1, IMG_EXPANDABLE_WALL_GROWING_UP, 0);
       new_wall = TRUE;
     }
     if (unten_frei)
     {
-      Tile[ax][ay+1] = EL_EXPANDABLE_WALL_GROWING;
-      Store[ax][ay+1] = element;
-      GfxDir[ax][ay+1] = MovDir[ax][ay+1] = MV_DOWN;
-      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay+1)))
+      Tile[ax][ay + 1] = EL_EXPANDABLE_WALL_GROWING;
+      Store[ax][ay + 1] = element;
+      GfxDir[ax][ay + 1] = MovDir[ax][ay + 1] = MV_DOWN;
+      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay + 1)))
 	DrawLevelGraphic(ax, ay + 1, IMG_EXPANDABLE_WALL_GROWING_DOWN, 0);
       new_wall = TRUE;
     }
@@ -9792,20 +9792,20 @@ static void MauerAbleger(int ax, int ay)
   {
     if (links_frei)
     {
-      Tile[ax-1][ay] = EL_EXPANDABLE_WALL_GROWING;
-      Store[ax-1][ay] = element;
-      GfxDir[ax-1][ay] = MovDir[ax-1][ay] = MV_LEFT;
-      if (IN_SCR_FIELD(SCREENX(ax-1), SCREENY(ay)))
+      Tile[ax - 1][ay] = EL_EXPANDABLE_WALL_GROWING;
+      Store[ax - 1][ay] = element;
+      GfxDir[ax - 1][ay] = MovDir[ax - 1][ay] = MV_LEFT;
+      if (IN_SCR_FIELD(SCREENX(ax - 1), SCREENY(ay)))
 	DrawLevelGraphic(ax - 1, ay, IMG_EXPANDABLE_WALL_GROWING_LEFT, 0);
       new_wall = TRUE;
     }
 
     if (rechts_frei)
     {
-      Tile[ax+1][ay] = EL_EXPANDABLE_WALL_GROWING;
-      Store[ax+1][ay] = element;
-      GfxDir[ax+1][ay] = MovDir[ax+1][ay] = MV_RIGHT;
-      if (IN_SCR_FIELD(SCREENX(ax+1), SCREENY(ay)))
+      Tile[ax + 1][ay] = EL_EXPANDABLE_WALL_GROWING;
+      Store[ax + 1][ay] = element;
+      GfxDir[ax + 1][ay] = MovDir[ax + 1][ay] = MV_RIGHT;
+      if (IN_SCR_FIELD(SCREENX(ax + 1), SCREENY(ay)))
 	DrawLevelGraphic(ax + 1, ay, IMG_EXPANDABLE_WALL_GROWING_RIGHT, 0);
       new_wall = TRUE;
     }
@@ -9814,13 +9814,13 @@ static void MauerAbleger(int ax, int ay)
   if (element == EL_EXPANDABLE_WALL && (links_frei || rechts_frei))
     TEST_DrawLevelField(ax, ay);
 
-  if (!IN_LEV_FIELD(ax, ay-1) || IS_WALL(Tile[ax][ay-1]))
+  if (!IN_LEV_FIELD(ax, ay - 1) || IS_WALL(Tile[ax][ay - 1]))
     oben_massiv = TRUE;
-  if (!IN_LEV_FIELD(ax, ay+1) || IS_WALL(Tile[ax][ay+1]))
+  if (!IN_LEV_FIELD(ax, ay + 1) || IS_WALL(Tile[ax][ay + 1]))
     unten_massiv = TRUE;
-  if (!IN_LEV_FIELD(ax-1, ay) || IS_WALL(Tile[ax-1][ay]))
+  if (!IN_LEV_FIELD(ax - 1, ay) || IS_WALL(Tile[ax - 1][ay]))
     links_massiv = TRUE;
-  if (!IN_LEV_FIELD(ax+1, ay) || IS_WALL(Tile[ax+1][ay]))
+  if (!IN_LEV_FIELD(ax + 1, ay) || IS_WALL(Tile[ax + 1][ay]))
     rechts_massiv = TRUE;
 
   if (((oben_massiv && unten_massiv) ||
@@ -9857,13 +9857,13 @@ static void MauerAblegerStahl(int ax, int ay)
       return;
   }
 
-  if (IN_LEV_FIELD(ax, ay-1) && IS_FREE(ax, ay-1))
+  if (IN_LEV_FIELD(ax, ay - 1) && IS_FREE(ax, ay - 1))
     oben_frei = TRUE;
-  if (IN_LEV_FIELD(ax, ay+1) && IS_FREE(ax, ay+1))
+  if (IN_LEV_FIELD(ax, ay + 1) && IS_FREE(ax, ay + 1))
     unten_frei = TRUE;
-  if (IN_LEV_FIELD(ax-1, ay) && IS_FREE(ax-1, ay))
+  if (IN_LEV_FIELD(ax - 1, ay) && IS_FREE(ax - 1, ay))
     links_frei = TRUE;
-  if (IN_LEV_FIELD(ax+1, ay) && IS_FREE(ax+1, ay))
+  if (IN_LEV_FIELD(ax + 1, ay) && IS_FREE(ax + 1, ay))
     rechts_frei = TRUE;
 
   if (element == EL_EXPANDABLE_STEELWALL_VERTICAL ||
@@ -9871,19 +9871,19 @@ static void MauerAblegerStahl(int ax, int ay)
   {
     if (oben_frei)
     {
-      Tile[ax][ay-1] = EL_EXPANDABLE_STEELWALL_GROWING;
-      Store[ax][ay-1] = element;
-      GfxDir[ax][ay-1] = MovDir[ax][ay-1] = MV_UP;
-      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay-1)))
+      Tile[ax][ay - 1] = EL_EXPANDABLE_STEELWALL_GROWING;
+      Store[ax][ay - 1] = element;
+      GfxDir[ax][ay - 1] = MovDir[ax][ay - 1] = MV_UP;
+      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay - 1)))
 	DrawLevelGraphic(ax, ay - 1, IMG_EXPANDABLE_STEELWALL_GROWING_UP, 0);
       new_wall = TRUE;
     }
     if (unten_frei)
     {
-      Tile[ax][ay+1] = EL_EXPANDABLE_STEELWALL_GROWING;
-      Store[ax][ay+1] = element;
-      GfxDir[ax][ay+1] = MovDir[ax][ay+1] = MV_DOWN;
-      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay+1)))
+      Tile[ax][ay + 1] = EL_EXPANDABLE_STEELWALL_GROWING;
+      Store[ax][ay + 1] = element;
+      GfxDir[ax][ay + 1] = MovDir[ax][ay + 1] = MV_DOWN;
+      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay + 1)))
 	DrawLevelGraphic(ax, ay + 1, IMG_EXPANDABLE_STEELWALL_GROWING_DOWN, 0);
       new_wall = TRUE;
     }
@@ -9894,32 +9894,32 @@ static void MauerAblegerStahl(int ax, int ay)
   {
     if (links_frei)
     {
-      Tile[ax-1][ay] = EL_EXPANDABLE_STEELWALL_GROWING;
-      Store[ax-1][ay] = element;
-      GfxDir[ax-1][ay] = MovDir[ax-1][ay] = MV_LEFT;
-      if (IN_SCR_FIELD(SCREENX(ax-1), SCREENY(ay)))
+      Tile[ax - 1][ay] = EL_EXPANDABLE_STEELWALL_GROWING;
+      Store[ax - 1][ay] = element;
+      GfxDir[ax - 1][ay] = MovDir[ax - 1][ay] = MV_LEFT;
+      if (IN_SCR_FIELD(SCREENX(ax - 1), SCREENY(ay)))
 	DrawLevelGraphic(ax - 1, ay, IMG_EXPANDABLE_STEELWALL_GROWING_LEFT, 0);
       new_wall = TRUE;
     }
 
     if (rechts_frei)
     {
-      Tile[ax+1][ay] = EL_EXPANDABLE_STEELWALL_GROWING;
-      Store[ax+1][ay] = element;
-      GfxDir[ax+1][ay] = MovDir[ax+1][ay] = MV_RIGHT;
-      if (IN_SCR_FIELD(SCREENX(ax+1), SCREENY(ay)))
+      Tile[ax + 1][ay] = EL_EXPANDABLE_STEELWALL_GROWING;
+      Store[ax + 1][ay] = element;
+      GfxDir[ax + 1][ay] = MovDir[ax + 1][ay] = MV_RIGHT;
+      if (IN_SCR_FIELD(SCREENX(ax + 1), SCREENY(ay)))
 	DrawLevelGraphic(ax + 1, ay, IMG_EXPANDABLE_STEELWALL_GROWING_RIGHT, 0);
       new_wall = TRUE;
     }
   }
 
-  if (!IN_LEV_FIELD(ax, ay-1) || IS_WALL(Tile[ax][ay-1]))
+  if (!IN_LEV_FIELD(ax, ay - 1) || IS_WALL(Tile[ax][ay - 1]))
     oben_massiv = TRUE;
-  if (!IN_LEV_FIELD(ax, ay+1) || IS_WALL(Tile[ax][ay+1]))
+  if (!IN_LEV_FIELD(ax, ay + 1) || IS_WALL(Tile[ax][ay + 1]))
     unten_massiv = TRUE;
-  if (!IN_LEV_FIELD(ax-1, ay) || IS_WALL(Tile[ax-1][ay]))
+  if (!IN_LEV_FIELD(ax - 1, ay) || IS_WALL(Tile[ax - 1][ay]))
     links_massiv = TRUE;
-  if (!IN_LEV_FIELD(ax+1, ay) || IS_WALL(Tile[ax+1][ay]))
+  if (!IN_LEV_FIELD(ax + 1, ay) || IS_WALL(Tile[ax + 1][ay]))
     rechts_massiv = TRUE;
 
   if (((oben_massiv && unten_massiv) ||
@@ -12539,10 +12539,10 @@ void GameActions_RND(void)
 	   element == EL_ACID_SPLASH_LEFT ||
 	   element == EL_ACID_SPLASH_RIGHT))
       {
-	if ((IN_LEV_FIELD(x, y-1) && Tile[x][y-1] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x-1, y) && Tile[x-1][y] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x+1, y) && Tile[x+1][y] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x, y+1) && Tile[x][y+1] == EL_AMOEBA_WET))
+	if ((IN_LEV_FIELD(x, y - 1) && Tile[x][y - 1] == EL_AMOEBA_WET) ||
+	    (IN_LEV_FIELD(x - 1, y) && Tile[x - 1][y] == EL_AMOEBA_WET) ||
+	    (IN_LEV_FIELD(x + 1, y) && Tile[x + 1][y] == EL_AMOEBA_WET) ||
+	    (IN_LEV_FIELD(x, y + 1) && Tile[x][y + 1] == EL_AMOEBA_WET))
 	  Tile[x][y] = EL_AMOEBA_DROP;
       }
 
