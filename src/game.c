@@ -6080,7 +6080,7 @@ static void Explode(int ex, int ey, int phase, int mode)
     }
     else if (IS_WALKABLE_UNDER(Back[x][y]))
     {
-      DrawGraphic(SCREENX(x), SCREENY(y), graphic, frame);
+      DrawScreenGraphic(SCREENX(x), SCREENY(y), graphic, frame);
       DrawLevelElementThruMask(x, y, Back[x][y]);
     }
     else if (!IS_WALKABLE_INSIDE(Back[x][y]))
@@ -8295,7 +8295,7 @@ static void StartMoving(int x, int y)
 	    if (IN_SCR_FIELD(sx, sy))
 	    {
 	      TEST_DrawLevelFieldCrumbled(xx, yy);
-	      DrawGraphic(sx, sy, flame_graphic, frame);
+	      DrawScreenGraphic(sx, sy, flame_graphic, frame);
 	    }
 	  }
 	  else
@@ -9145,7 +9145,7 @@ static void AmoebaGrowing(int x, int y)
       int frame = getGraphicAnimationFrame(IMG_AMOEBA_GROWING,
 					   6 - MovDelay[x][y]);
 
-      DrawGraphic(SCREENX(x), SCREENY(y), IMG_AMOEBA_GROWING, frame);
+      DrawScreenGraphic(SCREENX(x), SCREENY(y), IMG_AMOEBA_GROWING, frame);
     }
 
     if (!MovDelay[x][y])
@@ -9178,7 +9178,7 @@ static void AmoebaShrinking(int x, int y)
       int frame = getGraphicAnimationFrame(IMG_AMOEBA_SHRINKING,
 					   6 - MovDelay[x][y]);
 
-      DrawGraphic(SCREENX(x), SCREENY(y), IMG_AMOEBA_SHRINKING, frame);
+      DrawScreenGraphic(SCREENX(x), SCREENY(y), IMG_AMOEBA_SHRINKING, frame);
     }
 
     if (!MovDelay[x][y])
@@ -9696,7 +9696,7 @@ static void MauerWaechst(int x, int y)
       int graphic = el_dir2img(Tile[x][y], GfxDir[x][y]);
       int frame = getGraphicAnimationFrame(graphic, 17 - MovDelay[x][y]);
 
-      DrawGraphic(SCREENX(x), SCREENY(y), graphic, frame);
+      DrawScreenGraphic(SCREENX(x), SCREENY(y), graphic, frame);
     }
 
     if (!MovDelay[x][y])
@@ -9771,8 +9771,8 @@ static void MauerAbleger(int ax, int ay)
       Store[ax][ay-1] = element;
       GfxDir[ax][ay-1] = MovDir[ax][ay-1] = MV_UP;
       if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay-1)))
-  	DrawGraphic(SCREENX(ax), SCREENY(ay - 1),
-		    IMG_EXPANDABLE_WALL_GROWING_UP, 0);
+	DrawScreenGraphic(SCREENX(ax), SCREENY(ay - 1),
+                          IMG_EXPANDABLE_WALL_GROWING_UP, 0);
       new_wall = TRUE;
     }
     if (unten_frei)
@@ -9781,8 +9781,8 @@ static void MauerAbleger(int ax, int ay)
       Store[ax][ay+1] = element;
       GfxDir[ax][ay+1] = MovDir[ax][ay+1] = MV_DOWN;
       if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay+1)))
-  	DrawGraphic(SCREENX(ax), SCREENY(ay + 1),
-		    IMG_EXPANDABLE_WALL_GROWING_DOWN, 0);
+	DrawScreenGraphic(SCREENX(ax), SCREENY(ay + 1),
+                          IMG_EXPANDABLE_WALL_GROWING_DOWN, 0);
       new_wall = TRUE;
     }
   }
@@ -9798,8 +9798,8 @@ static void MauerAbleger(int ax, int ay)
       Store[ax-1][ay] = element;
       GfxDir[ax-1][ay] = MovDir[ax-1][ay] = MV_LEFT;
       if (IN_SCR_FIELD(SCREENX(ax-1), SCREENY(ay)))
-  	DrawGraphic(SCREENX(ax - 1), SCREENY(ay),
-		    IMG_EXPANDABLE_WALL_GROWING_LEFT, 0);
+	DrawScreenGraphic(SCREENX(ax - 1), SCREENY(ay),
+                          IMG_EXPANDABLE_WALL_GROWING_LEFT, 0);
       new_wall = TRUE;
     }
 
@@ -9809,8 +9809,8 @@ static void MauerAbleger(int ax, int ay)
       Store[ax+1][ay] = element;
       GfxDir[ax+1][ay] = MovDir[ax+1][ay] = MV_RIGHT;
       if (IN_SCR_FIELD(SCREENX(ax+1), SCREENY(ay)))
-  	DrawGraphic(SCREENX(ax + 1), SCREENY(ay),
-		    IMG_EXPANDABLE_WALL_GROWING_RIGHT, 0);
+	DrawScreenGraphic(SCREENX(ax + 1), SCREENY(ay),
+                          IMG_EXPANDABLE_WALL_GROWING_RIGHT, 0);
       new_wall = TRUE;
     }
   }
@@ -9879,8 +9879,8 @@ static void MauerAblegerStahl(int ax, int ay)
       Store[ax][ay-1] = element;
       GfxDir[ax][ay-1] = MovDir[ax][ay-1] = MV_UP;
       if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay-1)))
-  	DrawGraphic(SCREENX(ax), SCREENY(ay - 1),
-		    IMG_EXPANDABLE_STEELWALL_GROWING_UP, 0);
+	DrawScreenGraphic(SCREENX(ax), SCREENY(ay - 1),
+                          IMG_EXPANDABLE_STEELWALL_GROWING_UP, 0);
       new_wall = TRUE;
     }
     if (unten_frei)
@@ -9889,8 +9889,8 @@ static void MauerAblegerStahl(int ax, int ay)
       Store[ax][ay+1] = element;
       GfxDir[ax][ay+1] = MovDir[ax][ay+1] = MV_DOWN;
       if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay+1)))
-  	DrawGraphic(SCREENX(ax), SCREENY(ay + 1),
-		    IMG_EXPANDABLE_STEELWALL_GROWING_DOWN, 0);
+	DrawScreenGraphic(SCREENX(ax), SCREENY(ay + 1),
+                          IMG_EXPANDABLE_STEELWALL_GROWING_DOWN, 0);
       new_wall = TRUE;
     }
   }
@@ -9904,8 +9904,8 @@ static void MauerAblegerStahl(int ax, int ay)
       Store[ax-1][ay] = element;
       GfxDir[ax-1][ay] = MovDir[ax-1][ay] = MV_LEFT;
       if (IN_SCR_FIELD(SCREENX(ax-1), SCREENY(ay)))
-  	DrawGraphic(SCREENX(ax - 1), SCREENY(ay),
-		    IMG_EXPANDABLE_STEELWALL_GROWING_LEFT, 0);
+	DrawScreenGraphic(SCREENX(ax - 1), SCREENY(ay),
+                          IMG_EXPANDABLE_STEELWALL_GROWING_LEFT, 0);
       new_wall = TRUE;
     }
 
@@ -9915,8 +9915,8 @@ static void MauerAblegerStahl(int ax, int ay)
       Store[ax+1][ay] = element;
       GfxDir[ax+1][ay] = MovDir[ax+1][ay] = MV_RIGHT;
       if (IN_SCR_FIELD(SCREENX(ax+1), SCREENY(ay)))
-  	DrawGraphic(SCREENX(ax + 1), SCREENY(ay),
-		    IMG_EXPANDABLE_STEELWALL_GROWING_RIGHT, 0);
+	DrawScreenGraphic(SCREENX(ax + 1), SCREENY(ay),
+                          IMG_EXPANDABLE_STEELWALL_GROWING_RIGHT, 0);
       new_wall = TRUE;
     }
   }
