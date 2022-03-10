@@ -183,6 +183,7 @@ void DrawLevelFieldCrumbled(int, int);
 void DrawLevelFieldCrumbledDigging(int, int, int, int);
 void DrawLevelFieldCrumbledNeighbours(int, int);
 void DrawScreenGraphic(int, int, int, int);
+void DrawLevelGraphic(int, int, int, int);
 void DrawScreenElement(int, int, int);
 void DrawLevelElement(int, int, int);
 void DrawScreenField(int, int);

@@ -2527,6 +2527,11 @@ void DrawScreenGraphic(int x, int y, int graphic, int frame)
   }
 }
 
+void DrawLevelGraphic(int x, int y, int graphic, int frame)
+{
+  DrawScreenGraphic(SCREENX(x), SCREENY(y), graphic, frame);
+}
+
 void DrawScreenElement(int x, int y, int element)
 {
   int mask_mode = NO_MASKING;
