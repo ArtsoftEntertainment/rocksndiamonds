@@ -297,7 +297,7 @@ static void execOfferUploadTapes(void);
 static void DrawHallOfFame_setScoreEntries(void);
 static void HandleHallOfFame_SelectLevel(int, int);
 static void HandleHallOfFame_SelectLevelOrScore(int, int);
-static char *getHallOfFameRankText(int);
+static char *getHallOfFameRankText(int, int);
 static char *getHallOfFameScoreText(int);
 
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
@@ -4932,28 +4932,24 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
     int font_size_1 = getFontWidth(font_nr1);
     int font_size_3 = getFontWidth(font_nr3);
     int font_size_4 = getFontWidth(font_nr4);
-    int text_size_1 = 3 * font_size_1;
+    int text_size_1 = 4 * font_size_1;
     int text_size_4 = 5 * font_size_4;
     int border = amSX - SX + getFontDrawOffsetX(font_nr1);
     int dx1 = 0;
-    int dx2 = text_size_1;
-    int dx3 = dx2 + font_size_1;
+    int dx3 = text_size_1;
     int dx4 = screen_width - startdx - 2 * border - text_size_4;
     int num_dots = (dx4 - dx3) / font_size_3;
     int startx1 = startx + dx1;
-    int startx2 = startx + dx2;
     int startx3 = startx + dx3;
     int startx4 = startx + dx4;
     int pos = node->pos;
-    char *pos_text = getHallOfFameRankText(pos);
-    char *dot_text = ".";
+    char *pos_text = getHallOfFameRankText(pos, 3);
     int i;
 
     DrawText(startx1, starty, pos_text, font_nr1);
-    DrawText(startx2, starty, dot_text, font_nr1);
 
     for (i = 0; i < num_dots; i++)
-      DrawText(startx3 + i * font_size_3, starty, dot_text, font_nr3);
+      DrawText(startx3 + i * font_size_3, starty, ".", font_nr3);
 
     if (!strEqual(scores.entry[pos].name, EMPTY_PLAYER_NAME))
       DrawText(startx3, starty, scores.entry[pos].name, font_nr2);
@@ -5784,11 +5780,15 @@ void DrawHallOfFame(int level_nr)
   DrawChooseTree(&score_entry_current);
 }
 
-static char *getHallOfFameRankText(int nr)
+static char *getHallOfFameRankText(int nr, int size)
 {
+  static char rank_text[10];
   boolean forced = (scores.force_last_added && nr == scores.last_added);
+  char *rank_text_raw = (forced ? "???" : int2str(nr + 1, size));
 
-  return (forced ? "???" : int2str(nr + 1, 3));
+  sprintf(rank_text, "%s%s", rank_text_raw, (size > 0 || !forced ? "." : ""));
+
+  return rank_text;
 }
 
 static char *getHallOfFameTimeText(int nr)
@@ -5860,7 +5860,7 @@ void HandleHallOfFame(int mx, int my, int dx, int dy, int button)
 static void DrawScoreInfo_Content(int entry_nr)
 {
   struct ScoreEntry *entry = &scores.entry[entry_nr];
-  char *pos_text = getHallOfFameRankText(entry_nr);
+  char *pos_text = getHallOfFameRankText(entry_nr, 0);
   int font_title = MENU_INFO_FONT_TITLE;
   int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
