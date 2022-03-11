@@ -298,7 +298,7 @@ static void DrawHallOfFame_setScoreEntries(void);
 static void HandleHallOfFame_SelectLevel(int, int);
 static void HandleHallOfFame_SelectLevelOrScore(int, int);
 static char *getHallOfFameRankText(int, int);
-static char *getHallOfFameScoreText(int);
+static char *getHallOfFameScoreText(int, int);
 
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 
@@ -4954,7 +4954,7 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
     if (!strEqual(scores.entry[pos].name, EMPTY_PLAYER_NAME))
       DrawText(startx3, starty, scores.entry[pos].name, font_nr2);
 
-    DrawText(startx4, starty, getHallOfFameScoreText(pos), font_nr4);
+    DrawText(startx4, starty, getHallOfFameScoreText(pos, 5), font_nr4);
   }
   else
   {
@@ -5803,14 +5803,14 @@ static char *getHallOfFameTimeText(int nr)
   return score_text;
 }
 
-static char *getHallOfFameScoreText(int nr)
+static char *getHallOfFameScoreText(int nr, int size)
 {
   if (!level.rate_time_over_score)
-    return int2str(scores.entry[nr].score, 5);	// show normal score
+    return int2str(scores.entry[nr].score, size);	// show normal score
   else if (level.use_step_counter)
-    return int2str(scores.entry[nr].time, 5);	// show number of steps
+    return int2str(scores.entry[nr].time, size);	// show number of steps
   else
-    return getHallOfFameTimeText(nr);		// show playing time
+    return getHallOfFameTimeText(nr);			// show playing time
 }
 
 static void HandleHallOfFame_SelectLevel(int step, int direction)
