@@ -5920,24 +5920,6 @@ static void DrawScoreInfo_Content(int entry_nr)
   DrawTextF(xstart2, ystart, font_text, entry->name);
   ystart += ystep_line;
 
-  DrawTextF(xstart1, ystart, font_head, "Platform");
-  DrawTextF(xstart2, ystart, font_text, entry->platform);
-  ystart += ystep_line;
-
-  DrawTextF(xstart1, ystart, font_head, "Version");
-  DrawTextF(xstart2, ystart, font_text, entry->version);
-  ystart += ystep_line;
-
-  DrawTextF(xstart1, ystart, font_head, "Country");
-  lines = DrawTextBufferS(xstart2, ystart, entry->country_name, font_text,
-			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
-			  TRUE, FALSE, FALSE);
-  ystart += ystep_line + (lines > 0 ? lines - 1 : 0) * font_height;
-
-  DrawTextF(xstart1, ystart, font_head, "Tape Date");
-  DrawTextF(xstart2, ystart, font_text, entry->tape_date);
-  ystart += ystep_line;
-
   if (level.use_step_counter)
   {
     DrawTextF(xstart1, ystart, font_head, "Steps");
@@ -5957,6 +5939,26 @@ static void DrawScoreInfo_Content(int entry_nr)
     DrawTextF(xstart2, ystart, font_text, int2str(entry->score, 5));
     ystart += ystep_line;
   }
+
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Tape Date");
+  DrawTextF(xstart2, ystart, font_text, entry->tape_date);
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Platform");
+  DrawTextF(xstart2, ystart, font_text, entry->platform);
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Version");
+  DrawTextF(xstart2, ystart, font_text, entry->version);
+  ystart += ystep_line;
+
+  DrawTextF(xstart1, ystart, font_head, "Country");
+  lines = DrawTextBufferS(xstart2, ystart, entry->country_name, font_text,
+			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
+			  TRUE, FALSE, FALSE);
+  ystart += ystep_line;
 
   DrawTextSCentered(ybottom, font_foot, "Press any key or button to go back");
 }
