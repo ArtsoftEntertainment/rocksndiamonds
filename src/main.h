@@ -2810,6 +2810,8 @@ struct MenuScoresButtonInfo
 {
   struct MenuPosInfo prev_level;
   struct MenuPosInfo next_level;
+  struct MenuPosInfo prev_score;
+  struct MenuPosInfo next_score;
 };
 
 struct MenuScoresInfo

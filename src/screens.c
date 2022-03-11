@@ -186,26 +186,30 @@
 #define SCREEN_CTRL_ID_NEXT_LEVEL	1
 #define SCREEN_CTRL_ID_PREV_LEVEL2	2
 #define SCREEN_CTRL_ID_NEXT_LEVEL2	3
-#define SCREEN_CTRL_ID_FIRST_LEVEL	4
-#define SCREEN_CTRL_ID_LAST_LEVEL	5
-#define SCREEN_CTRL_ID_LEVEL_NUMBER	6
-#define SCREEN_CTRL_ID_PREV_PLAYER	7
-#define SCREEN_CTRL_ID_NEXT_PLAYER	8
-#define SCREEN_CTRL_ID_INSERT_SOLUTION	9
-#define SCREEN_CTRL_ID_PLAY_SOLUTION	10
-#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	11
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	12
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	13
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	14
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	15
-#define SCREEN_CTRL_ID_SCROLL_UP	16
-#define SCREEN_CTRL_ID_SCROLL_DOWN	17
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL	18
-#define SCREEN_CTRL_ID_NETWORK_SERVER	19
+#define SCREEN_CTRL_ID_PREV_SCORE	4
+#define SCREEN_CTRL_ID_NEXT_SCORE	5
+#define SCREEN_CTRL_ID_FIRST_LEVEL	6
+#define SCREEN_CTRL_ID_LAST_LEVEL	7
+#define SCREEN_CTRL_ID_LEVEL_NUMBER	8
+#define SCREEN_CTRL_ID_PREV_PLAYER	9
+#define SCREEN_CTRL_ID_NEXT_PLAYER	10
+#define SCREEN_CTRL_ID_INSERT_SOLUTION	11
+#define SCREEN_CTRL_ID_PLAY_SOLUTION	12
+#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	13
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	14
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	15
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	16
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	17
 
-#define NUM_SCREEN_GADGETS		20
+#define NUM_SCREEN_MENUBUTTONS		18
 
-#define NUM_SCREEN_MENUBUTTONS		16
+#define SCREEN_CTRL_ID_SCROLL_UP	18
+#define SCREEN_CTRL_ID_SCROLL_DOWN	19
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL	20
+#define SCREEN_CTRL_ID_NETWORK_SERVER	21
+
+#define NUM_SCREEN_GADGETS		22
+
 #define NUM_SCREEN_SCROLLBUTTONS	2
 #define NUM_SCREEN_SCROLLBARS		1
 #define NUM_SCREEN_TEXTINPUT		1
@@ -216,6 +220,7 @@
 #define SCREEN_MASK_TOUCH		(1 << 3)
 #define SCREEN_MASK_TOUCH2		(1 << 4)
 #define SCREEN_MASK_SCORES		(1 << 5)
+#define SCREEN_MASK_SCORES_INFO		(1 << 6)
 
 // graphic position and size values for buttons and scrollbars
 #define SC_MENUBUTTON_XSIZE		TILEX
@@ -9857,7 +9862,7 @@ static struct
     IMG_MENU_BUTTON_PREV_LEVEL2, IMG_MENU_BUTTON_PREV_LEVEL2_ACTIVE,
     &menu.scores.button.prev_level, NULL,
     SCREEN_CTRL_ID_PREV_LEVEL2,
-    SCREEN_MASK_SCORES,
+    SCREEN_MASK_SCORES | SCREEN_MASK_SCORES_INFO,
     GD_EVENT_PRESSED | GD_EVENT_REPEATED,
     FALSE, "previous level"
   },
@@ -9865,9 +9870,25 @@ static struct
     IMG_MENU_BUTTON_NEXT_LEVEL2, IMG_MENU_BUTTON_NEXT_LEVEL2_ACTIVE,
     &menu.scores.button.next_level, NULL,
     SCREEN_CTRL_ID_NEXT_LEVEL2,
-    SCREEN_MASK_SCORES,
+    SCREEN_MASK_SCORES | SCREEN_MASK_SCORES_INFO,
     GD_EVENT_PRESSED | GD_EVENT_REPEATED,
     FALSE, "next level"
+  },
+  {
+    IMG_MENU_BUTTON_PREV_SCORE, IMG_MENU_BUTTON_PREV_SCORE_ACTIVE,
+    &menu.scores.button.prev_score, NULL,
+    SCREEN_CTRL_ID_PREV_SCORE,
+    SCREEN_MASK_SCORES_INFO,
+    GD_EVENT_PRESSED | GD_EVENT_REPEATED,
+    FALSE, "previous score"
+  },
+  {
+    IMG_MENU_BUTTON_NEXT_SCORE, IMG_MENU_BUTTON_NEXT_SCORE_ACTIVE,
+    &menu.scores.button.next_score, NULL,
+    SCREEN_CTRL_ID_NEXT_SCORE,
+    SCREEN_MASK_SCORES_INFO,
+    GD_EVENT_PRESSED | GD_EVENT_REPEATED,
+    FALSE, "next score"
   },
   {
     IMG_MENU_BUTTON_FIRST_LEVEL, IMG_MENU_BUTTON_FIRST_LEVEL_ACTIVE,
@@ -10041,7 +10062,7 @@ static void CreateScreenMenubuttons(void)
     int screen_mask = menubutton_info[i].screen_mask;
     boolean is_touch_button = menubutton_info[i].is_touch_button;
     boolean is_check_button = menubutton_info[i].check_value != NULL;
-    boolean is_score_button = (screen_mask == SCREEN_MASK_SCORES);
+    boolean is_score_button = (screen_mask & SCREEN_MASK_SCORES_INFO);
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
     int gfx_unpressed, gfx_pressed;
     int x, y, width, height;
@@ -10101,7 +10122,8 @@ static void CreateScreenMenubuttons(void)
 	     SX + (SXSIZE + title_width) / 2 + width / 2 : 0);
 
       if (pos->y == -1)
-	y = mSY + MENU_TITLE1_YPOS;
+	y = (id == SCREEN_CTRL_ID_PREV_LEVEL2 ||
+	     id == SCREEN_CTRL_ID_NEXT_LEVEL2 ? mSY + MENU_TITLE1_YPOS : 0);
     }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
