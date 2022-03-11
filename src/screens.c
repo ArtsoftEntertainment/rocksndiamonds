@@ -268,6 +268,7 @@ static void DrawChoosePlayerName(void);
 static void DrawChooseLevelSet(void);
 static void DrawChooseLevelNr(void);
 static void DrawScoreInfo(int);
+static void DrawScoreInfo_Content(int);
 static void DrawInfoScreen(void);
 static void DrawSetupScreen(void);
 static void DrawTypeName(void);
@@ -295,13 +296,13 @@ static void MapScreenTreeGadgets(TreeInfo *);
 static void UnmapScreenTreeGadgets(void);
 
 static void UpdateScreenMenuGadgets(int, boolean);
+static void AdjustScoreInfoButtons(int, int, int);
 
 static boolean OfferUploadTapes(void);
 static void execOfferUploadTapes(void);
 
 static void DrawHallOfFame_setScoreEntries(void);
 static void HandleHallOfFame_SelectLevel(int, int);
-static void HandleHallOfFame_SelectLevelOrScore(int, int);
 static char *getHallOfFameRankText(int, int);
 static char *getHallOfFameScoreText(int, int);
 
@@ -5842,16 +5843,25 @@ static void HandleHallOfFame_SelectLevel(int step, int direction)
 
     DrawHallOfFame_setScoreEntries();
 
-    // force remapping optional gadgets (especially scroll bar)
-    UnmapScreenTreeGadgets();
+    if (game_status == GAME_MODE_SCORES)
+    {
+      // force remapping optional gadgets (especially scroll bar)
+      UnmapScreenTreeGadgets();
 
-    // redraw complete high score screen, as sub-title has changed
-    ClearField();
+      // redraw complete high score screen, as sub-title has changed
+      ClearField();
 
-    // redraw level selection buttons (which have just been erased)
-    RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
+      // redraw level selection buttons (which have just been erased)
+      RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
 
-    HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, &score_entry_current);
+      HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, &score_entry_current);
+    }
+    else
+    {
+      scores.last_entry_nr = 0;
+
+      DrawScoreInfo_Content(scores.last_entry_nr);
+    }
 
     SaveLevelSetup_SeriesInfo();
   }
@@ -5881,6 +5891,8 @@ static void DrawScoreInfo_Content(int entry_nr)
   int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
   int xstart1 = mSX - SX + 2 * xstep;
   int xstart2 = mSX - SX + 13 * xstep;
+  int button_x = SX + xstart1;
+  int button_y1, button_y2;
   int font_width = getFontWidth(font_text);
   int font_height = getFontHeight(font_text);
   int pad_left = xstart2;
@@ -5893,6 +5905,13 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   // redraw score selection buttons (which have just been erased)
   RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
+
+  if (score_entries == NULL)
+  {
+    drawChooseTreeScreen_Scores_NotAvailable();
+
+    return;
+  }
 
   drawChooseTreeHead(score_entries);
   drawChooseTreeInfo(score_entries);
@@ -5911,6 +5930,9 @@ static void DrawScoreInfo_Content(int entry_nr)
 			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
 			  TRUE, FALSE, FALSE);
   ystart += ystep_para + (lines > 0 ? lines - 1 : 0) * font_height;
+
+  button_y1 = SY + ystart;
+  ystart += graphic_info[IMG_MENU_BUTTON_PREV_SCORE].height;
 
   DrawTextF(xstart1, ystart, font_head, "Rank");
   DrawTextF(xstart2, ystart, font_text, pos_text);
@@ -5960,7 +5982,11 @@ static void DrawScoreInfo_Content(int entry_nr)
 			  TRUE, FALSE, FALSE);
   ystart += ystep_line;
 
+  button_y2 = SY + ystart;
+
   DrawTextSCentered(ybottom, font_foot, "Press any key or button to go back");
+
+  AdjustScoreInfoButtons(button_x, button_y1, button_y2);
 }
 
 static void DrawScoreInfo(int entry_nr)
@@ -5973,10 +5999,10 @@ static void DrawScoreInfo(int entry_nr)
 
   FadeOut(REDRAW_FIELD);
 
-  // map gadgets for score info screen
-  MapScreenMenuGadgets(SCREEN_MASK_SCORES);
-
   DrawScoreInfo_Content(entry_nr);
+
+  // map gadgets for score info screen
+  MapScreenMenuGadgets(SCREEN_MASK_SCORES_INFO);
 
   FadeIn(REDRAW_FIELD);
 }
@@ -6007,6 +6033,18 @@ void HandleScoreInfo(int mx, int my, int dx, int dy, int button)
   boolean button_is_valid = (mx >= 0 && my >= 0);
   boolean button_screen_clicked = (button_action && button_is_valid);
 
+  if (server_scores.updated)
+  {
+    // reload scores, using updated server score cache file
+    LoadLocalAndServerScore(scores.last_level_nr, FALSE);
+
+    server_scores.updated = FALSE;
+
+    DrawHallOfFame_setScoreEntries();
+
+    DrawScoreInfo_Content(scores.last_entry_nr);
+  }
+
   if (button_screen_clicked)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
@@ -6015,18 +6053,14 @@ void HandleScoreInfo(int mx, int my, int dx, int dy, int button)
 
     DrawHallOfFame(level_nr);
   }
-  else if (dx || dy)
+  else if (dx)
   {
-    HandleScoreInfo_SelectScore(1, SIGN(dx ? dx : dy));
+    HandleHallOfFame_SelectLevel(1, SIGN(dx) * (ABS(dx) > 1 ? 10 : 1));
   }
-}
-
-static void HandleHallOfFame_SelectLevelOrScore(int step, int direction)
-{
-  if (game_status == GAME_MODE_SCORES)
-    HandleHallOfFame_SelectLevel(step, direction);
-  else
-    HandleScoreInfo_SelectScore(step, direction);
+  else if (dy)
+  {
+    HandleScoreInfo_SelectScore(1, SIGN(dy) * (ABS(dy) > 1 ? 10 : 1));
+  }
 }
 
 
@@ -10449,6 +10483,20 @@ static void UnmapScreenTreeGadgets(void)
   UnmapScreenGadgets();
 }
 
+static void AdjustScoreInfoButtons(int x, int y1, int y2)
+{
+  struct GadgetInfo *gi_1 = screen_gadget[SCREEN_CTRL_ID_PREV_SCORE];
+  struct GadgetInfo *gi_2 = screen_gadget[SCREEN_CTRL_ID_NEXT_SCORE];
+  struct MenuPosInfo *pos_1 = menubutton_info[SCREEN_CTRL_ID_PREV_SCORE].pos;
+  struct MenuPosInfo *pos_2 = menubutton_info[SCREEN_CTRL_ID_NEXT_SCORE].pos;
+
+  if (pos_1->x == -1 && pos_1->y == -1)
+    ModifyGadget(gi_1, GDI_X, x, GDI_Y, y1, GDI_END);
+
+  if (pos_2->x == -1 && pos_2->y == -1)
+    ModifyGadget(gi_2, GDI_X, x, GDI_Y, y2, GDI_END);
+}
+
 static void HandleScreenGadgets(struct GadgetInfo *gi)
 {
   int id = gi->custom_id;
@@ -10468,11 +10516,19 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
       break;
 
     case SCREEN_CTRL_ID_PREV_LEVEL2:
-      HandleHallOfFame_SelectLevelOrScore(step, -1);
+      HandleHallOfFame_SelectLevel(step, -1);
       break;
 
     case SCREEN_CTRL_ID_NEXT_LEVEL2:
-      HandleHallOfFame_SelectLevelOrScore(step, +1);
+      HandleHallOfFame_SelectLevel(step, +1);
+      break;
+
+    case SCREEN_CTRL_ID_PREV_SCORE:
+      HandleScoreInfo_SelectScore(step, -1);
+      break;
+
+    case SCREEN_CTRL_ID_NEXT_SCORE:
+      HandleScoreInfo_SelectScore(step, +1);
       break;
 
     case SCREEN_CTRL_ID_FIRST_LEVEL:
