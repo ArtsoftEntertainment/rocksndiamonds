@@ -5589,6 +5589,8 @@ static void InitGfx(void)
   InitGfxCustomArtworkInfo();
   InitGfxOtherSettings();
 
+  InitGfxTileSizeInfo(TILESIZE, TILESIZE);
+
   bitmap_font_initial = LoadCustomImage(filename_font_initial);
 
   for (j = 0; j < NUM_INITIAL_FONTS; j++)
