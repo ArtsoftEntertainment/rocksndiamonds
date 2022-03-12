@@ -5114,8 +5114,13 @@ static void drawChooseTreeScreen_Scores_NotAvailable(void)
 
 static TreeInfo *setHallOfFameActiveEntry(TreeInfo **ti_ptr)
 {
+  int score_pos = scores.last_added;
+
+  if (game_status_last_screen == GAME_MODE_SCOREINFO)
+    score_pos = scores.last_entry_nr;
+
   // set current tree entry to last added score entry
-  *ti_ptr = getTreeInfoFromIdentifier(score_entries, i_to_a(scores.last_added));
+  *ti_ptr = getTreeInfoFromIdentifier(score_entries, i_to_a(score_pos));
 
   // if that fails, set current tree entry to first entry (back link)
   if (*ti_ptr == NULL)
