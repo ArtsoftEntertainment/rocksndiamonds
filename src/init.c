@@ -5600,6 +5600,8 @@ static void InitGfx(void)
 
   DrawInitTextHead("Loading graphics");
 
+  InitMenuDesignSettings_Static();
+
   // initialize settings for busy animation with default values
   int parameter[NUM_GFX_ARGS];
   for (i = 0; i < NUM_GFX_ARGS; i++)
@@ -5640,6 +5642,9 @@ static void InitGfx(void)
 	    parameter[j] = get_graphic_parameter_value(value, suffix, type);
 	}
       }
+
+      // read values from custom graphics config file
+      InitMenuDesignSettings_FromHash(setup_file_hash, FALSE);
 
       freeSetupFileHash(setup_file_hash);
     }
@@ -5687,8 +5692,6 @@ static void InitGfx(void)
 
   init.busy.width  = anim_initial.width;
   init.busy.height = anim_initial.height;
-
-  InitMenuDesignSettings_Static();
 
   InitGfxDrawBusyAnimFunction(DrawInitAnim);
   InitGfxDrawGlobalAnimFunction(DrawGlobalAnimations);
