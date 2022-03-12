@@ -12250,19 +12250,29 @@ static int get_token_parameter_value(char *token, char *value_raw)
   return get_parameter_value(value_raw, suffix, TYPE_INTEGER);
 }
 
-void InitMenuDesignSettings_Static(void)
+void InitMenuDesignSettings_FromHash(SetupFileHash *setup_file_hash,
+				     boolean ignore_defaults)
 {
   int i;
 
-  // always start with reliable default values from static default config
   for (i = 0; image_config_vars[i].token != NULL; i++)
   {
-    char *value = getHashEntry(image_config_hash, image_config_vars[i].token);
+    char *value = getHashEntry(setup_file_hash, image_config_vars[i].token);
+
+    // (ignore definitions set to "[DEFAULT]" which are already initialized)
+    if (ignore_defaults && strEqual(value, ARG_DEFAULT))
+      continue;
 
     if (value != NULL)
       *image_config_vars[i].value =
 	get_token_parameter_value(image_config_vars[i].token, value);
   }
+}
+
+void InitMenuDesignSettings_Static(void)
+{
+  // always start with reliable default values from static default config
+  InitMenuDesignSettings_FromHash(image_config_hash, FALSE);
 }
 
 static void InitMenuDesignSettings_SpecialPreProcessing(void)
@@ -13063,15 +13073,7 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
       *menu_config_players[i].value = TRUE;
 
   // read (and overwrite with) values that may be specified in config file
-  for (i = 0; image_config_vars[i].token != NULL; i++)
-  {
-    char *value = getHashEntry(setup_file_hash, image_config_vars[i].token);
-
-    // (ignore definitions set to "[DEFAULT]" which are already initialized)
-    if (value != NULL && !strEqual(value, ARG_DEFAULT))
-      *image_config_vars[i].value =
-	get_token_parameter_value(image_config_vars[i].token, value);
-  }
+  InitMenuDesignSettings_FromHash(setup_file_hash, TRUE);
 
   freeSetupFileHash(setup_file_hash);
 }

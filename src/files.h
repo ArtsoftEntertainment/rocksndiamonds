@@ -98,6 +98,7 @@ void removeHideSetupEntry(void *);
 boolean hideSetupEntry(void *);
 
 void LoadCustomElementDescriptions(void);
+void InitMenuDesignSettings_FromHash(SetupFileHash *, boolean);
 void InitMenuDesignSettings_Static(void);
 void LoadMenuDesignSettings(void);
 void LoadMenuDesignSettings_AfterGraphics(void);
