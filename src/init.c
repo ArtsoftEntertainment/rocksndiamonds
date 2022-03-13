@@ -6026,8 +6026,10 @@ static void InitOverrideArtwork(void)
 
 static char *getNewArtworkIdentifier(int type)
 {
+  static char *last_leveldir_identifier[3] = { NULL, NULL, NULL };
   static char *last_artwork_identifier[3] = { NULL, NULL, NULL };
   static boolean last_override_level_artwork[3] = { FALSE, FALSE, FALSE };
+  static boolean last_has_level_artwork_set[3] = { FALSE, FALSE, FALSE };
   static boolean initialized[3] = { FALSE, FALSE, FALSE };
   TreeInfo *artwork_first_node = ARTWORK_FIRST_NODE(artwork, type);
   boolean setup_override_artwork = GFX_OVERRIDE_ARTWORK(type);
@@ -6035,6 +6037,7 @@ static char *getNewArtworkIdentifier(int type)
   char *leveldir_identifier = leveldir_current->identifier;
   // !!! setLevelArtworkDir() should be moved to an earlier stage !!!
   char *leveldir_artwork_set = setLevelArtworkDir(artwork_first_node);
+  boolean has_level_artwork_set = (leveldir_artwork_set != NULL);
   char *artwork_current_identifier;
   char *artwork_new_identifier = NULL;	// default: nothing has changed
 
@@ -6061,6 +6064,14 @@ static char *getNewArtworkIdentifier(int type)
 
   /* 2nd step: check if it is really needed to reload artwork set
      ------------------------------------------------------------ */
+
+  // ---------- reload if level set and also artwork set has changed ----------
+  if (last_leveldir_identifier[type] != leveldir_identifier &&
+      (last_has_level_artwork_set[type] || has_level_artwork_set))
+    artwork_new_identifier = artwork_current_identifier;
+
+  last_leveldir_identifier[type] = leveldir_identifier;
+  last_has_level_artwork_set[type] = has_level_artwork_set;
 
   // ---------- reload if "override artwork" setting has changed --------------
   if (last_override_level_artwork[type] != setup_override_artwork)
