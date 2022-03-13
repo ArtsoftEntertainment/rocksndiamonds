@@ -1225,6 +1225,9 @@ void SDLFadeRectangle(int x, int y, int width, int height,
 	  draw_border_function();
 
 	UpdateScreen_WithFrameDelay(&dst_rect2);
+
+	if (PendingEscapeKeyEvent())
+	  break;
       }
     }
   }
@@ -1281,6 +1284,9 @@ void SDLFadeRectangle(int x, int y, int width, int height,
 
       // only update the region of the screen that is affected from fading
       UpdateScreen_WithFrameDelay(&dst_rect2);
+
+      if (PendingEscapeKeyEvent())
+	break;
     }
   }
   else		// fading in, fading out or cross-fading
@@ -1307,6 +1313,9 @@ void SDLFadeRectangle(int x, int y, int width, int height,
 
       // only update the region of the screen that is affected from fading
       UpdateScreen_WithFrameDelay(&dst_rect);
+
+      if (PendingEscapeKeyEvent())
+	break;
     }
   }
 

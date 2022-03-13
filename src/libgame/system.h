@@ -2025,6 +2025,7 @@ KeyMod GetKeyModStateFromEvents(void);
 void StartTextInput(int, int, int, int);
 void StopTextInput(void);
 void PushUserEvent(int, int, int);
+boolean PendingEscapeKeyEvent(void);
 
 void InitJoysticks(void);
 boolean ReadJoystick(int, int *, int *, boolean *, boolean *);

@@ -1845,6 +1845,24 @@ void PushUserEvent(int code, int value1, int value2)
   SDL_PushEvent((SDL_Event *)&event);
 }
 
+boolean PendingEscapeKeyEvent(void)
+{
+  if (PendingEvent())
+  {
+    Event event;
+
+    // check if any key press event is pending
+    if (SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_KEYDOWN, SDL_KEYDOWN) != 1)
+      return FALSE;
+
+    // check if pressed key is "Escape" key
+    if (event.key.keysym.sym == KSYM_Escape)
+      return TRUE;
+  }
+
+  return FALSE;
+}
+
 
 // ============================================================================
 // joystick functions
