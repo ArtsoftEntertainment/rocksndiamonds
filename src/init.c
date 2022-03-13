@@ -36,9 +36,13 @@
 #define CONFIG_TOKEN_FONT_INITIAL		"font.initial"
 #define CONFIG_TOKEN_GLOBAL_BUSY		"global.busy"
 
+#define INITIAL_IMG_GLOBAL_BUSY			0
+
+#define NUM_INITIAL_IMAGES			1
+
 
 static struct FontBitmapInfo font_initial[NUM_INITIAL_FONTS];
-static struct GraphicInfo    anim_initial;
+static struct GraphicInfo   image_initial[NUM_INITIAL_IMAGES];
 
 static int copy_properties[][5] =
 {
@@ -108,7 +112,7 @@ static void DrawInitAnim(void)
   if (game_status != GAME_MODE_LOADING)
     return;
 
-  if (anim_initial.bitmap == NULL || window == NULL)
+  if (image_initial[INITIAL_IMG_GLOBAL_BUSY].bitmap == NULL || window == NULL)
     return;
 
   if (!DelayReached(&action_delay, action_delay_value))
@@ -122,9 +126,9 @@ static void DrawInitAnim(void)
   x = ALIGNED_TEXT_XPOS(&init_last.busy);
   y = ALIGNED_TEXT_YPOS(&init_last.busy);
 
-  graphic_info = &anim_initial;		// graphic == 0 => anim_initial
+  graphic_info = image_initial;		// graphic == 0 => image_initial
 
-  if (sync_frame % anim_initial.anim_delay == 0)
+  if (sync_frame % image_initial[INITIAL_IMG_GLOBAL_BUSY].anim_delay == 0)
   {
     Bitmap *src_bitmap;
     int src_x, src_y;
@@ -5544,9 +5548,14 @@ static void InitGfx(void)
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
   char *filename_font_initial = NULL;
-  char *filename_anim_initial = NULL;
+  char *filename_image_initial[NUM_INITIAL_IMAGES] = { NULL };
+  char *image_token[NUM_INITIAL_IMAGES] =
+  {
+    CONFIG_TOKEN_GLOBAL_BUSY
+  };
   Bitmap *bitmap_font_initial = NULL;
-  int i, j;
+  int parameter[NUM_INITIAL_IMAGES][NUM_GFX_ARGS];
+  int i, j, k;
 
   // determine settings for initial font (for displaying startup messages)
   for (i = 0; image_config[i].token != NULL; i++)
@@ -5560,7 +5569,9 @@ static void InitGfx(void)
       len_font_token = strlen(font_token);
 
       if (strEqual(image_config[i].token, font_token))
+      {
 	filename_font_initial = image_config[i].value;
+      }
       else if (strlen(image_config[i].token) > len_font_token &&
 	       strncmp(image_config[i].token, font_token, len_font_token) == 0)
       {
@@ -5604,17 +5615,15 @@ static void InitGfx(void)
 
   InitMenuDesignSettings_Static();
 
-  // initialize settings for busy animation with default values
-  int parameter[NUM_GFX_ARGS];
-  for (i = 0; i < NUM_GFX_ARGS; i++)
-    parameter[i] = get_graphic_parameter_value(image_config_suffix[i].value,
-                                               image_config_suffix[i].token,
-                                               image_config_suffix[i].type);
+  // initialize settings for initial images with default values
+  for (i = 0; i < NUM_INITIAL_IMAGES; i++)
+    for (j = 0; j < NUM_GFX_ARGS; j++)
+      parameter[i][j] =
+	get_graphic_parameter_value(image_config_suffix[j].value,
+				    image_config_suffix[j].token,
+				    image_config_suffix[j].type);
 
-  char *anim_token = CONFIG_TOKEN_GLOBAL_BUSY;
-  int len_anim_token = strlen(anim_token);
-
-  // read settings for busy animation from default custom artwork config
+  // read settings for initial images from default custom artwork config
   char *gfx_config_filename = getPath3(options.graphics_directory,
 				       GFX_DEFAULT_SUBDIR,
 				       GRAPHICSINFO_FILENAME);
@@ -5625,23 +5634,27 @@ static void InitGfx(void)
 
     if (setup_file_hash)
     {
-      char *filename = getHashEntry(setup_file_hash, anim_token);
-
-      if (filename)
+      for (i = 0; i < NUM_INITIAL_IMAGES; i++)
       {
-	filename_anim_initial = getStringCopy(filename);
+	char *filename = getHashEntry(setup_file_hash, image_token[i]);
 
-	for (j = 0; image_config_suffix[j].token != NULL; j++)
+	if (filename)
 	{
-	  int type = image_config_suffix[j].type;
-	  char *suffix = image_config_suffix[j].token;
-	  char *token = getStringCat2(anim_token, suffix);
-	  char *value = getHashEntry(setup_file_hash, token);
+	  filename_image_initial[i] = getStringCopy(filename);
 
-	  checked_free(token);
+	  for (j = 0; image_config_suffix[j].token != NULL; j++)
+	  {
+	    int type = image_config_suffix[j].type;
+	    char *suffix = image_config_suffix[j].token;
+	    char *token = getStringCat2(image_token[i], suffix);
+	    char *value = getHashEntry(setup_file_hash, token);
 
-	  if (value)
-	    parameter[j] = get_graphic_parameter_value(value, suffix, type);
+	    checked_free(token);
+
+	    if (value)
+	      parameter[i][j] =
+		get_graphic_parameter_value(value, suffix, type);
+	  }
 	}
       }
 
@@ -5652,48 +5665,60 @@ static void InitGfx(void)
     }
   }
 
-  if (filename_anim_initial == NULL)
+  for (i = 0; i < NUM_INITIAL_IMAGES; i++)
   {
-    // read settings for busy animation from static default artwork config
-    for (i = 0; image_config[i].token != NULL; i++)
+    if (filename_image_initial[i] == NULL)
     {
-      if (strEqual(image_config[i].token, anim_token))
-	filename_anim_initial = getStringCopy(image_config[i].value);
-      else if (strlen(image_config[i].token) > len_anim_token &&
-	       strncmp(image_config[i].token, anim_token, len_anim_token) == 0)
+      int len_token = strlen(image_token[i]);
+
+      // read settings for initial images from static default artwork config
+      for (j = 0; image_config[j].token != NULL; j++)
       {
-	for (j = 0; image_config_suffix[j].token != NULL; j++)
+	if (strEqual(image_config[j].token, image_token[i]))
 	{
-	  if (strEqual(&image_config[i].token[len_anim_token],
-		       image_config_suffix[j].token))
-	    parameter[j] =
-	      get_graphic_parameter_value(image_config[i].value,
-					  image_config_suffix[j].token,
-					  image_config_suffix[j].type);
+	  filename_image_initial[i] = getStringCopy(image_config[j].value);
+	}
+	else if (strlen(image_config[j].token) > len_token &&
+		 strncmp(image_config[j].token, image_token[i], len_token) == 0)
+	{
+	  for (k = 0; image_config_suffix[k].token != NULL; k++)
+	  {
+	    if (strEqual(&image_config[j].token[len_token],
+			 image_config_suffix[k].token))
+	      parameter[i][k] =
+		get_graphic_parameter_value(image_config[j].value,
+					    image_config_suffix[k].token,
+					    image_config_suffix[k].type);
+	  }
 	}
       }
     }
   }
 
-  if (filename_anim_initial == NULL)	// should not happen
-    Fail("cannot get filename for '%s'", CONFIG_TOKEN_GLOBAL_BUSY);
+  for (i = 0; i < NUM_INITIAL_IMAGES; i++)
+  {
+    if (filename_image_initial[i] == NULL)	// should not happen
+      Fail("cannot get filename for '%s'", image_token[i]);
 
-  anim_initial.bitmaps =
-    checked_calloc(sizeof(Bitmap *) * NUM_IMG_BITMAP_POINTERS);
+    image_initial[i].bitmaps =
+      checked_calloc(sizeof(Bitmap *) * NUM_IMG_BITMAP_POINTERS);
 
-  anim_initial.bitmaps[IMG_BITMAP_STANDARD] =
-    LoadCustomImage(filename_anim_initial);
+    if (!strEqual(filename_image_initial[i], UNDEFINED_FILENAME))
+      image_initial[i].bitmaps[IMG_BITMAP_STANDARD] =
+	LoadCustomImage(filename_image_initial[i]);
 
-  checked_free(filename_anim_initial);
+    checked_free(filename_image_initial[i]);
+  }
 
-  graphic_info = &anim_initial;		// graphic == 0 => anim_initial
+  graphic_info = image_initial;		// graphic == 0 => image_initial
 
-  set_graphic_parameters_ext(0, parameter, anim_initial.bitmaps);
+  for (i = 0; i < NUM_INITIAL_IMAGES; i++)
+    set_graphic_parameters_ext(i, parameter[i], image_initial[i].bitmaps);
 
   graphic_info = graphic_info_last;
 
-  init.busy.width  = anim_initial.width;
-  init.busy.height = anim_initial.height;
+  init.busy.width  = image_initial[INITIAL_IMG_GLOBAL_BUSY].width;
+  init.busy.height = image_initial[INITIAL_IMG_GLOBAL_BUSY].height;
 
   InitGfxDrawBusyAnimFunction(DrawInitAnim);
   InitGfxDrawGlobalAnimFunction(DrawGlobalAnimations);
