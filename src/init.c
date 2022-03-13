@@ -6029,7 +6029,7 @@ static char *getNewArtworkIdentifier(int type)
   static char *last_leveldir_identifier[3] = { NULL, NULL, NULL };
   static char *last_artwork_identifier[3] = { NULL, NULL, NULL };
   static boolean last_override_level_artwork[3] = { FALSE, FALSE, FALSE };
-  static boolean last_has_level_artwork_set[3] = { FALSE, FALSE, FALSE };
+  static boolean last_has_custom_artwork_set[3] = { FALSE, FALSE, FALSE };
   static boolean initialized[3] = { FALSE, FALSE, FALSE };
   TreeInfo *artwork_first_node = ARTWORK_FIRST_NODE(artwork, type);
   boolean setup_override_artwork = GFX_OVERRIDE_ARTWORK(type);
@@ -6038,6 +6038,9 @@ static char *getNewArtworkIdentifier(int type)
   // !!! setLevelArtworkDir() should be moved to an earlier stage !!!
   char *leveldir_artwork_set = setLevelArtworkDir(artwork_first_node);
   boolean has_level_artwork_set = (leveldir_artwork_set != NULL);
+  TreeInfo *custom_artwork_set =
+    getTreeInfoFromIdentifier(artwork_first_node, leveldir_identifier);
+  boolean has_custom_artwork_set = (custom_artwork_set != NULL);
   char *artwork_current_identifier;
   char *artwork_new_identifier = NULL;	// default: nothing has changed
 
@@ -6055,9 +6058,9 @@ static char *getNewArtworkIdentifier(int type)
 
   if (setup_override_artwork)
     artwork_current_identifier = setup_artwork_set;
-  else if (leveldir_artwork_set != NULL)
+  else if (has_level_artwork_set)
     artwork_current_identifier = leveldir_artwork_set;
-  else if (getTreeInfoFromIdentifier(artwork_first_node, leveldir_identifier))
+  else if (has_custom_artwork_set)
     artwork_current_identifier = leveldir_identifier;
   else
     artwork_current_identifier = setup_artwork_set;
@@ -6067,11 +6070,11 @@ static char *getNewArtworkIdentifier(int type)
 
   // ---------- reload if level set and also artwork set has changed ----------
   if (last_leveldir_identifier[type] != leveldir_identifier &&
-      (last_has_level_artwork_set[type] || has_level_artwork_set))
+      (last_has_custom_artwork_set[type] || has_custom_artwork_set))
     artwork_new_identifier = artwork_current_identifier;
 
   last_leveldir_identifier[type] = leveldir_identifier;
-  last_has_level_artwork_set[type] = has_level_artwork_set;
+  last_has_custom_artwork_set[type] = has_custom_artwork_set;
 
   // ---------- reload if "override artwork" setting has changed --------------
   if (last_override_level_artwork[type] != setup_override_artwork)
