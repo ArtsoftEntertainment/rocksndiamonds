@@ -1688,8 +1688,6 @@ void DrawMainMenu(void)
   // store valid level series information
   leveldir_last_valid = leveldir_current;
 
-  init_last = init;			// switch to new busy animation
-
   // needed if last screen (level choice) changed graphics, sounds or music
   ReloadCustomArtwork(0);
 

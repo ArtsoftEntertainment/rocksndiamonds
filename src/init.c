@@ -35,10 +35,12 @@
 
 #define CONFIG_TOKEN_FONT_INITIAL		"font.initial"
 #define CONFIG_TOKEN_GLOBAL_BUSY		"global.busy"
+#define CONFIG_TOKEN_BACKGROUND_LOADING		"background.LOADING"
 
 #define INITIAL_IMG_GLOBAL_BUSY			0
+#define INITIAL_IMG_BACKGROUND_LOADING		1
 
-#define NUM_INITIAL_IMAGES			1
+#define NUM_INITIAL_IMAGES			2
 
 
 static struct FontBitmapInfo font_initial[NUM_INITIAL_FONTS];
@@ -97,6 +99,20 @@ static int copy_properties[][5] =
 static int get_graphic_parameter_value(char *, char *, int);
 
 
+static void SetLoadingBackgroundImage(void)
+{
+  struct GraphicInfo *graphic_info_last = graphic_info;
+
+  graphic_info = image_initial;
+
+  SetDrawDeactivationMask(REDRAW_NONE);
+  SetDrawBackgroundMask(REDRAW_ALL);
+
+  SetWindowBackgroundImage(INITIAL_IMG_BACKGROUND_LOADING);
+
+  graphic_info = graphic_info_last;
+}
+
 static void DrawInitAnim(void)
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
@@ -136,8 +152,12 @@ static void DrawInitAnim(void)
     int height = graphic_info[graphic].height;
     int frame = getGraphicAnimationFrame(graphic, sync_frame);
 
+    ClearRectangleOnBackground(drawto, x, y, width, height);
+
     getFixedGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
-    BlitBitmap(src_bitmap, window, src_x, src_y, width, height, x, y);
+    BlitBitmapMasked(src_bitmap, drawto, src_x, src_y, width, height, x, y);
+
+    BlitBitmap(drawto, window, x, y, width, height, x, y);
   }
 
   graphic_info = graphic_info_last;
@@ -2279,11 +2299,6 @@ static void ReinitializeGraphics(void)
 
   InitGraphicCompatibilityInfo();
   print_timestamp_time("InitGraphicCompatibilityInfo");
-
-  SetMainBackgroundImage(IMG_BACKGROUND);
-  print_timestamp_time("SetMainBackgroundImage");
-  SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
-  print_timestamp_time("SetDoorBackgroundImage");
 
   InitGadgets();
   print_timestamp_time("InitGadgets");
@@ -5551,7 +5566,8 @@ static void InitGfx(void)
   char *filename_image_initial[NUM_INITIAL_IMAGES] = { NULL };
   char *image_token[NUM_INITIAL_IMAGES] =
   {
-    CONFIG_TOKEN_GLOBAL_BUSY
+    CONFIG_TOKEN_GLOBAL_BUSY,
+    CONFIG_TOKEN_BACKGROUND_LOADING
   };
   Bitmap *bitmap_font_initial = NULL;
   int parameter[NUM_INITIAL_IMAGES][NUM_GFX_ARGS];
@@ -5717,8 +5733,9 @@ static void InitGfx(void)
 
   graphic_info = graphic_info_last;
 
-  init.busy.width  = image_initial[INITIAL_IMG_GLOBAL_BUSY].width;
-  init.busy.height = image_initial[INITIAL_IMG_GLOBAL_BUSY].height;
+  SetLoadingBackgroundImage();
+
+  ClearRectangleOnBackground(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
   InitGfxDrawBusyAnimFunction(DrawInitAnim);
   InitGfxDrawGlobalAnimFunction(DrawGlobalAnimations);
@@ -6158,10 +6175,14 @@ void ReloadCustomArtwork(int force_reload)
 
   FadeOut(REDRAW_ALL);
 
-  ClearRectangle(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
-  print_timestamp_time("ClearRectangle");
+  SetLoadingBackgroundImage();
+
+  ClearRectangleOnBackground(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
+  print_timestamp_time("ClearRectangleOnBackground");
 
   FadeIn(REDRAW_ALL);
+
+  UPDATE_BUSY_STATE();
 
   if (gfx_new_identifier != NULL || force_reload_gfx)
   {
@@ -6193,8 +6214,6 @@ void ReloadCustomArtwork(int force_reload)
   InitArtworkDone();
 
   SetGameStatus(last_game_status);	// restore current game status
-
-  init_last = init;			// switch to new busy animation
 
   FadeOut(REDRAW_ALL);
 

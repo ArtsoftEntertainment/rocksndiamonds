@@ -152,8 +152,8 @@ static void DrawInitTextExt(char *text, int ypos, int font_nr, boolean update)
     int width = video.width;
     int height = getFontHeight(font_nr);
 
-    ClearRectangle(drawto, 0, y, width, height);
-    DrawTextExt(drawto, x, y, text, font_nr, BLIT_OPAQUE);
+    ClearRectangleOnBackground(drawto, 0, y, width, height);
+    DrawTextExt(drawto, x, y, text, font_nr, BLIT_MASKED);
 
     if (update)
       BlitBitmap(drawto, window, 0, 0, video.width, video.height, 0, 0);
