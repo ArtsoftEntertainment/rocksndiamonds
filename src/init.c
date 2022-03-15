@@ -35,12 +35,14 @@
 
 #define CONFIG_TOKEN_FONT_INITIAL		"font.initial"
 #define CONFIG_TOKEN_GLOBAL_BUSY		"global.busy"
+#define CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL	"background.LOADING_INITIAL"
 #define CONFIG_TOKEN_BACKGROUND_LOADING		"background.LOADING"
 
 #define INITIAL_IMG_GLOBAL_BUSY			0
-#define INITIAL_IMG_BACKGROUND_LOADING		1
+#define INITIAL_IMG_BACKGROUND_LOADING_INITIAL	1
+#define INITIAL_IMG_BACKGROUND_LOADING		2
 
-#define NUM_INITIAL_IMAGES			2
+#define NUM_INITIAL_IMAGES			3
 
 
 static struct FontBitmapInfo font_initial[NUM_INITIAL_FONTS];
@@ -102,13 +104,16 @@ static int get_graphic_parameter_value(char *, char *, int);
 static void SetLoadingBackgroundImage(void)
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
+  int background_image = (game_status_last_screen == -1 ?
+			  INITIAL_IMG_BACKGROUND_LOADING_INITIAL :
+			  INITIAL_IMG_BACKGROUND_LOADING);
 
   graphic_info = image_initial;
 
   SetDrawDeactivationMask(REDRAW_NONE);
   SetDrawBackgroundMask(REDRAW_ALL);
 
-  SetWindowBackgroundImage(INITIAL_IMG_BACKGROUND_LOADING);
+  SetWindowBackgroundImage(background_image);
 
   graphic_info = graphic_info_last;
 }
@@ -5567,6 +5572,7 @@ static void InitGfx(void)
   char *image_token[NUM_INITIAL_IMAGES] =
   {
     CONFIG_TOKEN_GLOBAL_BUSY,
+    CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL,
     CONFIG_TOKEN_BACKGROUND_LOADING
   };
   Bitmap *bitmap_font_initial = NULL;

@@ -7343,6 +7343,7 @@ struct ConfigInfo image_config[] =
   { "global.tile_cursor.frames",		"1"			},
 
   { "background",				UNDEFINED_FILENAME	},
+  { "background.LOADING_INITIAL",		UNDEFINED_FILENAME	},
   { "background.LOADING",			UNDEFINED_FILENAME	},
   { "background.TITLE_INITIAL",			UNDEFINED_FILENAME	},
   { "background.TITLE",				UNDEFINED_FILENAME	},
