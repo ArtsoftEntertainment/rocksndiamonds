@@ -5842,6 +5842,7 @@ static void HandleHallOfFame_SelectLevel(int step, int direction)
     PlaySound(SND_MENU_ITEM_SELECTING);
 
     scores.last_level_nr = level_nr = new_level_nr;
+    scores.last_entry_nr = 0;
 
     LoadLevel(level_nr);
     LoadLocalAndServerScore(level_nr, TRUE);
@@ -5863,8 +5864,6 @@ static void HandleHallOfFame_SelectLevel(int step, int direction)
     }
     else
     {
-      scores.last_entry_nr = 0;
-
       DrawScoreInfo_Content(scores.last_entry_nr);
     }
 
