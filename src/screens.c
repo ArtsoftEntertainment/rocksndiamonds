@@ -5713,6 +5713,7 @@ void HandleChooseLevelNr(int mx, int my, int dx, int dy, int button)
 
 static void DrawHallOfFame_setScoreEntries(void)
 {
+  int num_visible_score_entries = NUM_MENU_ENTRIES_ON_SCREEN - 1;
   int score_pos = (scores.last_added >= 0 ? scores.last_added : 0);
   int i;
 
@@ -5725,9 +5726,10 @@ static void DrawHallOfFame_setScoreEntries(void)
 
   for (i = 0; i < MAX_SCORE_ENTRIES; i++)
   {
-    // do not add empty score entries
+    // do not add empty score entries if off-screen
     if (scores.entry[i].score == 0 &&
-	scores.entry[i].time == 0)
+	scores.entry[i].time == 0 &&
+	i >= num_visible_score_entries)
       break;
 
     TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_SCORE_ENTRY);
