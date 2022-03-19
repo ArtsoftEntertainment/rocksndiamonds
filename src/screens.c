@@ -4909,10 +4909,8 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
 {
   int num_entries = numTreeInfoInGroup(ti);
   boolean scrollbar_needed = (num_entries > NUM_MENU_ENTRIES_ON_SCREEN);
-  boolean scrollbar_always = (game_status == GAME_MODE_SCORES);
-  boolean scrollbar_keep_space = (scrollbar_needed || scrollbar_always);
   int scrollbar_xpos = SC_SCROLLBAR_XPOS + menu.scrollbar_xoffset;
-  int screen_width = (scrollbar_keep_space ? scrollbar_xpos : SXSIZE);
+  int screen_width = (scrollbar_needed ? scrollbar_xpos : SXSIZE);
   int first_entry = ti->cl_first;
   int entry_pos = first_entry + y;
   TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
@@ -4945,7 +4943,7 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
     int border = amSX - SX + getFontDrawOffsetX(font_nr1);
     int dx1 = 0;
     int dx3 = text_size_1;
-    int dx4 = screen_width - startdx - 2 * border - text_size_4;
+    int dx4 = SXSIZE - 2 * startdx - 2 * border - text_size_4;
     int num_dots = (dx4 - dx3) / font_size_3;
     int startx1 = startx + dx1;
     int startx3 = startx + dx3;
