@@ -4833,6 +4833,8 @@ static int getAlignYOffsetFromTreeInfo(TreeInfo *ti)
 static void DrawChooseTree(TreeInfo **ti_ptr)
 {
   int fade_mask = REDRAW_FIELD;
+  boolean restart_music = (game_status != game_status_last_screen &&
+			   game_status_last_screen != GAME_MODE_SCOREINFO);
 
   if (CheckFadeAll())
     fade_mask = REDRAW_ALL;
@@ -4858,7 +4860,7 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   FreeScreenGadgets();
   CreateScreenGadgets();
 
-  if (game_status != game_status_last_screen)
+  if (restart_music)
     FadeMenuSoundsAndMusic();
 
   FadeOut(fade_mask);
@@ -4889,7 +4891,7 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
 
   DrawMaskedBorder(fade_mask);
 
-  if (game_status != game_status_last_screen)
+  if (restart_music)
     PlayMenuSoundsAndMusic();
 
   FadeIn(fade_mask);
