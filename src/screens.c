@@ -279,7 +279,7 @@ static void DrawInfoScreen_HelpText(int, int, int, int);
 static void HandleInfoScreen_Main(int, int, int, int, int);
 static void HandleInfoScreen_TitleScreen(int);
 static void HandleInfoScreen_Elements(int);
-static void HandleInfoScreen_Music(int);
+static void HandleInfoScreen_Music(int, int, int);
 static void HandleInfoScreen_Credits(int, int, int);
 static void HandleInfoScreen_Program(int);
 static void HandleInfoScreen_Version(int);
@@ -3199,12 +3199,12 @@ static void DrawInfoScreen_Music(void)
 
   LoadMusicInfo();
 
-  HandleInfoScreen_Music(MB_MENU_INITIALIZE);
+  HandleInfoScreen_Music(0, 0, MB_MENU_INITIALIZE);
 
   FadeIn(REDRAW_FIELD);
 }
 
-void HandleInfoScreen_Music(int button)
+void HandleInfoScreen_Music(int dx, int dy, int button)
 {
   static struct MusicFileInfo *list = NULL;
   int font_title = MENU_INFO_FONT_TITLE;
@@ -3250,14 +3250,14 @@ void HandleInfoScreen_Music(int button)
 
     return;
   }
-  else if (button == MB_MENU_CHOICE || button == MB_MENU_INITIALIZE)
+  else if (button == MB_MENU_CHOICE || button == MB_MENU_INITIALIZE || dx)
   {
     if (button != MB_MENU_INITIALIZE)
     {
       PlaySound(SND_MENU_ITEM_SELECTING);
 
       if (list != NULL)
-	list = list->next;
+	list = (dx < 0 ? list->prev : list->next);
     }
 
     if (list == NULL)
@@ -4064,7 +4064,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   else if (info_mode == INFO_MODE_ELEMENTS)
     HandleInfoScreen_Elements(button);
   else if (info_mode == INFO_MODE_MUSIC)
-    HandleInfoScreen_Music(button);
+    HandleInfoScreen_Music(dx, dy, button);
   else if (info_mode == INFO_MODE_CREDITS)
     HandleInfoScreen_Credits(dx, dy, button);
   else if (info_mode == INFO_MODE_PROGRAM)

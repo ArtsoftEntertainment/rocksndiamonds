@@ -13430,6 +13430,18 @@ void LoadMusicInfo(void)
 	new = &(*new)->next;
     }
   }
+
+  // add pointers to previous list nodes
+
+  struct MusicFileInfo *node = music_file_info;
+
+  while (node != NULL)
+  {
+    if (node->next)
+      node->next->prev = node;
+
+    node = node->next;
+  }
 }
 
 static void add_helpanim_entry(int element, int action, int direction,

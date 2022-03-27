@@ -3715,7 +3715,7 @@ struct MusicFileInfo
 
   boolean is_sound;
 
-  struct MusicFileInfo *next;
+  struct MusicFileInfo *prev, *next;
 };
 
 struct ElementActionInfo
