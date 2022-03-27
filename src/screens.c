@@ -280,7 +280,7 @@ static void HandleInfoScreen_Main(int, int, int, int, int);
 static void HandleInfoScreen_TitleScreen(int);
 static void HandleInfoScreen_Elements(int);
 static void HandleInfoScreen_Music(int);
-static void HandleInfoScreen_Credits(int);
+static void HandleInfoScreen_Credits(int, int, int);
 static void HandleInfoScreen_Program(int);
 static void HandleInfoScreen_Version(int);
 
@@ -3607,12 +3607,12 @@ static void DrawInfoScreen_Credits(void)
 
   FadeOut(REDRAW_FIELD);
 
-  HandleInfoScreen_Credits(MB_MENU_INITIALIZE);
+  HandleInfoScreen_Credits(0, 0, MB_MENU_INITIALIZE);
 
   FadeIn(REDRAW_FIELD);
 }
 
-void HandleInfoScreen_Credits(int button)
+void HandleInfoScreen_Credits(int dx, int dy, int button)
 {
   static int screen_nr = 0;
   int num_screens = 9;
@@ -3632,13 +3632,13 @@ void HandleInfoScreen_Credits(int button)
 
     return;
   }
-  else if (button == MB_MENU_CHOICE)
+  else if (button == MB_MENU_CHOICE || dx)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
-    screen_nr++;
+    screen_nr += (dx < 0 ? -1 : +1);
 
-    if (screen_nr >= num_screens)
+    if (screen_nr < 0 || screen_nr >= num_screens)
     {
       FadeMenuSoundsAndMusic();
 
@@ -3648,8 +3648,7 @@ void HandleInfoScreen_Credits(int button)
       return;
     }
 
-    if (screen_nr > 0)
-      FadeSetNextScreen();
+    FadeSetNextScreen();
 
     FadeOut(REDRAW_FIELD);
 
@@ -4067,7 +4066,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   else if (info_mode == INFO_MODE_MUSIC)
     HandleInfoScreen_Music(button);
   else if (info_mode == INFO_MODE_CREDITS)
-    HandleInfoScreen_Credits(button);
+    HandleInfoScreen_Credits(dx, dy, button);
   else if (info_mode == INFO_MODE_PROGRAM)
     HandleInfoScreen_Program(button);
   else if (info_mode == INFO_MODE_VERSION)
