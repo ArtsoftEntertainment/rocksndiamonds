@@ -277,7 +277,7 @@ static void DrawInfoScreen_NotAvailable(char *, char *);
 static void DrawInfoScreen_HelpAnim(int, int, boolean);
 static void DrawInfoScreen_HelpText(int, int, int, int);
 static void HandleInfoScreen_Main(int, int, int, int, int);
-static void HandleInfoScreen_TitleScreen(int);
+static void HandleInfoScreen_TitleScreen(int, int, int);
 static void HandleInfoScreen_Elements(int, int, int);
 static void HandleInfoScreen_Music(int, int, int);
 static void HandleInfoScreen_Credits(int, int, int);
@@ -1918,7 +1918,7 @@ void HandleTitleScreen(int mx, int my, int dx, int dy, int button)
   {
     return_to_main_menu = TRUE;
   }
-  else if (button == MB_MENU_CHOICE)
+  else if (button == MB_MENU_CHOICE || dx)
   {
     if (game_status_last_screen == GAME_MODE_INFO && num_title_screens == 0)
     {
@@ -1931,9 +1931,10 @@ void HandleTitleScreen(int mx, int my, int dx, int dy, int button)
       return;
     }
 
-    title_screen_nr++;
+    title_screen_nr +=
+      (game_status_last_screen == GAME_MODE_INFO && dx < 0 ? -1 : +1);
 
-    if (title_screen_nr < num_title_screens)
+    if (title_screen_nr >= 0 && title_screen_nr < num_title_screens)
     {
       tci = &title_controls[title_screen_nr];
 
@@ -3090,9 +3091,9 @@ static void DrawInfoScreen_TitleScreen(void)
   DrawTitleScreen();
 }
 
-void HandleInfoScreen_TitleScreen(int button)
+void HandleInfoScreen_TitleScreen(int dx, int dy, int button)
 {
-  HandleTitleScreen(0, 0, 0, 0, button);
+  HandleTitleScreen(0, 0, dx, dy, button);
 }
 
 static void DrawInfoScreen_Elements(void)
@@ -4060,7 +4061,7 @@ static void DrawInfoScreen(void)
 void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 {
   if (info_mode == INFO_MODE_TITLE)
-    HandleInfoScreen_TitleScreen(button);
+    HandleInfoScreen_TitleScreen(dx, dy, button);
   else if (info_mode == INFO_MODE_ELEMENTS)
     HandleInfoScreen_Elements(dx, dy, button);
   else if (info_mode == INFO_MODE_MUSIC)
