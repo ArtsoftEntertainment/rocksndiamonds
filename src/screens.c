@@ -3621,10 +3621,9 @@ void HandleInfoScreen_Credits(int button)
   {
     screen_nr = 0;
 
-    // DrawInfoScreen_CreditsScreen(screen_nr);
+    DrawInfoScreen_CreditsScreen(screen_nr);
   }
-
-  if (button == MB_MENU_LEAVE)
+  else if (button == MB_MENU_LEAVE)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
@@ -3633,14 +3632,11 @@ void HandleInfoScreen_Credits(int button)
 
     return;
   }
-  else if (button == MB_MENU_CHOICE || button == MB_MENU_INITIALIZE)
+  else if (button == MB_MENU_CHOICE)
   {
-    if (button != MB_MENU_INITIALIZE)
-    {
-      PlaySound(SND_MENU_ITEM_SELECTING);
+    PlaySound(SND_MENU_ITEM_SELECTING);
 
-      screen_nr++;
-    }
+    screen_nr++;
 
     if (screen_nr >= num_screens)
     {
@@ -3655,13 +3651,11 @@ void HandleInfoScreen_Credits(int button)
     if (screen_nr > 0)
       FadeSetNextScreen();
 
-    if (button != MB_MENU_INITIALIZE)
-      FadeOut(REDRAW_FIELD);
+    FadeOut(REDRAW_FIELD);
 
     DrawInfoScreen_CreditsScreen(screen_nr);
 
-    if (button != MB_MENU_INITIALIZE)
-      FadeIn(REDRAW_FIELD);
+    FadeIn(REDRAW_FIELD);
   }
   else
   {
