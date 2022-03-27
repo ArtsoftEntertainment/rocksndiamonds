@@ -278,7 +278,7 @@ static void DrawInfoScreen_HelpAnim(int, int, boolean);
 static void DrawInfoScreen_HelpText(int, int, int, int);
 static void HandleInfoScreen_Main(int, int, int, int, int);
 static void HandleInfoScreen_TitleScreen(int);
-static void HandleInfoScreen_Elements(int);
+static void HandleInfoScreen_Elements(int, int, int);
 static void HandleInfoScreen_Music(int, int, int);
 static void HandleInfoScreen_Credits(int, int, int);
 static void HandleInfoScreen_Program(int);
@@ -3104,12 +3104,12 @@ static void DrawInfoScreen_Elements(void)
   LoadHelpAnimInfo();
   LoadHelpTextInfo();
 
-  HandleInfoScreen_Elements(MB_MENU_INITIALIZE);
+  HandleInfoScreen_Elements(0, 0, MB_MENU_INITIALIZE);
 
   FadeIn(REDRAW_FIELD);
 }
 
-void HandleInfoScreen_Elements(int button)
+void HandleInfoScreen_Elements(int dx, int dy, int button)
 {
   static unsigned int info_delay = 0;
   static int num_anims;
@@ -3148,16 +3148,16 @@ void HandleInfoScreen_Elements(int button)
 
     return;
   }
-  else if (button == MB_MENU_CHOICE || button == MB_MENU_INITIALIZE)
+  else if (button == MB_MENU_CHOICE || button == MB_MENU_INITIALIZE || dx)
   {
     if (button != MB_MENU_INITIALIZE)
     {
       PlaySound(SND_MENU_ITEM_SELECTING);
 
-      page++;
+      page += (dx < 0 ? -1 : +1);
     }
 
-    if (page >= num_pages)
+    if (page < 0 || page >= num_pages)
     {
       FadeMenuSoundsAndMusic();
 
@@ -3167,7 +3167,7 @@ void HandleInfoScreen_Elements(int button)
       return;
     }
 
-    if (page > 0)
+    if (button != MB_MENU_INITIALIZE)
       FadeSetNextScreen();
 
     if (button != MB_MENU_INITIALIZE)
@@ -4062,7 +4062,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   if (info_mode == INFO_MODE_TITLE)
     HandleInfoScreen_TitleScreen(button);
   else if (info_mode == INFO_MODE_ELEMENTS)
-    HandleInfoScreen_Elements(button);
+    HandleInfoScreen_Elements(dx, dy, button);
   else if (info_mode == INFO_MODE_MUSIC)
     HandleInfoScreen_Music(dx, dy, button);
   else if (info_mode == INFO_MODE_CREDITS)
