@@ -655,6 +655,7 @@
 #define SCORES_DIRECTORY	"scores"
 #define DOCS_DIRECTORY		"docs"
 #define ELEMENTS_DIRECTORY	"elements"
+#define CREDITS_DIRECTORY	"credits"
 #define CACHE_DIRECTORY		"cache"
 #define CONF_DIRECTORY		"conf"
 #define NETWORK_DIRECTORY	"network"

@@ -853,6 +853,37 @@ char *getLevelSetTitleMessageFilename(int nr, boolean initial)
   return NULL;		// cannot find specified artwork file anywhere
 }
 
+static char *getCreditsBasename(int nr)
+{
+  static char basename[32];
+
+  sprintf(basename, "credits_%d.txt", nr + 1);
+
+  return basename;
+}
+
+char *getCreditsFilename(int nr, boolean global)
+{
+  char *basename = getCreditsBasename(nr);
+  char *basepath = NULL;
+  static char *credits_subdir = NULL;
+  static char *filename = NULL;
+
+  if (credits_subdir == NULL)
+    credits_subdir = getPath2(DOCS_DIRECTORY, CREDITS_DIRECTORY);
+
+  checked_free(filename);
+
+  // look for credits file in the game's base or current level set directory
+  basepath = (global ? options.base_directory : getCurrentLevelDir());
+
+  filename = getPath3(basepath, credits_subdir, basename);
+  if (fileExists(filename))
+    return filename;
+
+  return NULL;		// cannot find credits file
+}
+
 static char *getCorrectedArtworkBasename(char *basename)
 {
   return basename;
