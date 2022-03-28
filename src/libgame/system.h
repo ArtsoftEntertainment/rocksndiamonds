@@ -654,6 +654,7 @@
 #define TAPES_DIRECTORY		"tapes"
 #define SCORES_DIRECTORY	"scores"
 #define DOCS_DIRECTORY		"docs"
+#define ELEMENTS_DIRECTORY	"elements"
 #define CACHE_DIRECTORY		"cache"
 #define CONF_DIRECTORY		"conf"
 #define NETWORK_DIRECTORY	"network"

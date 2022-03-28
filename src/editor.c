@@ -5610,7 +5610,7 @@ static char *getElementInfoText(int element)
 
 static char *getElementDescriptionFilenameExt(char *basename)
 {
-  char *elements_subdir = "elements";
+  char *elements_subdir = ELEMENTS_DIRECTORY;
   static char *elements_subdir2 = NULL;
   static char *filename = NULL;
 
