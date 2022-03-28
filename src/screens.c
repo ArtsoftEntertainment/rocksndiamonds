@@ -683,6 +683,13 @@ struct TitleControlInfo
 
 struct TitleControlInfo title_controls[MAX_NUM_TITLE_SCREENS];
 
+
+// credits screens definitions
+
+static int num_credits_screens = 0;
+static boolean use_global_credits_screens = FALSE;
+
+
 // main menu display and control definitions
 
 #define MAIN_CONTROL_NAME			0
@@ -3372,17 +3379,11 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
 static void DrawInfoScreen_CreditsScreen(int screen_nr)
 {
   int font_title = MENU_INFO_FONT_TITLE;
-  int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
   int font_foot  = MENU_INFO_FONT_FOOT;
   int spacing_title = menu.headline1_spacing_info[info_mode];
-  int spacing_head  = menu.headline2_spacing_info[info_mode];
-  int spacing_para  = menu.paragraph_spacing_info[info_mode];
   int spacing_line  = menu.line_spacing_info[info_mode];
   int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystep_head  = getMenuTextStep(spacing_head,  font_head);
-  int ystep_para  = getMenuTextStep(spacing_para,  font_text);
-  int ystep_line  = getMenuTextStep(spacing_line,  font_text);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
@@ -3390,211 +3391,21 @@ static void DrawInfoScreen_CreditsScreen(int screen_nr)
   DrawHeadline();
 
   DrawTextSCentered(ystart, font_title, "Credits:");
-  ystart += ystep_title;
 
-  if (screen_nr == 0)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "Special thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Peter Liepa");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for creating");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "\"Boulder Dash\"");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "in the year");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "1984");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "published by");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "First Star Software");
-  }
-  else if (screen_nr == 1)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "Special thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Klaus Heinz & Volker Wertich");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for creating");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "\"Emerald Mine\"");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "in the year");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "1987");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "published by");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Kingsoft");
-  }
-  else if (screen_nr == 2)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "Special thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Michael Stopp & Philip Jespersen");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for creating");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "\"Supaplex\"");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "in the year");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "1991");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "published by");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Digital Integration");
-  }
-  else if (screen_nr == 3)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "Special thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Hiroyuki Imabayashi");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for creating");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "\"Sokoban\"");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "in the year");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "1982");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "published by");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Thinking Rabbit");
-  }
-  else if (screen_nr == 4)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "Special thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Alan Bond");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "and");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "J\xfcrgen Bonhagen");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for the continuous creation");
-    ystart += ystep_line;
-    DrawTextSCentered(ystart, font_head,
-		      "of outstanding level sets");
-  }
-  else if (screen_nr == 5)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "Thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Peter Elzner");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for ideas and inspiration by");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Diamond Caves");
-    ystart += ystep_para;
+  char *filename = getCreditsFilename(screen_nr, use_global_credits_screens);
+  int width = SXSIZE;
+  int height = MENU_SCREEN_INFO_YBOTTOM - MENU_SCREEN_INFO_YSTART1;
+  int chars = width / getFontWidth(font_text);
+  int lines = height / getFontHeight(font_text);
+  int padx = (width - chars * getFontWidth(font_text)) / 2;
+  int line_spacing = getMenuTextSpacing(spacing_line, font_text);
+  boolean autowrap = FALSE;
+  boolean centered = TRUE;
+  boolean parse_comments = TRUE;
 
-    DrawTextSCentered(ystart, font_head,
-		      "Thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Steffest");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for ideas and inspiration by");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "DX-Boulderdash");
-  }
-  else if (screen_nr == 6)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "Thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "David Tritscher");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for the code base used for the");
-    ystart += ystep_line;
-    DrawTextSCentered(ystart, font_head,
-		      "native Emerald Mine engine");
-  }
-  else if (screen_nr == 7)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "Thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Guido Schulz");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for the initial DOS port");
-    ystart += ystep_para;
-
-    DrawTextSCentered(ystart, font_head,
-		      "Thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "Karl H\xf6rnell");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "for some additional toons");
-  }
-  else if (screen_nr == 8)
-  {
-    DrawTextSCentered(ystart, font_head,
-		      "And not to forget:");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_head,
-		      "Many thanks to");
-    ystart += ystep_head;
-    DrawTextSCentered(ystart, font_text,
-		      "All those who contributed");
-    ystart += ystep_line;
-    DrawTextSCentered(ystart, font_text,
-		      "levels to this game");
-    ystart += ystep_line;
-    DrawTextSCentered(ystart, font_text,
-		      "since 1995");
-  }
+  DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART1 + ystep_title,
+	       filename, font_text, chars, -1, lines, line_spacing, -1,
+	       autowrap, centered, parse_comments);
 
   DrawTextSCentered(ybottom, font_foot,
 		    "Press any key or button for next page");
@@ -3616,10 +3427,44 @@ static void DrawInfoScreen_Credits(void)
 void HandleInfoScreen_Credits(int dx, int dy, int button)
 {
   static int screen_nr = 0;
-  int num_screens = 9;
 
   if (button == MB_MENU_INITIALIZE)
   {
+    int i;
+
+    // determine number of (global or level set specific) credits screens
+    for (i = 0; i < 2; i++)
+    {
+      num_credits_screens = 0;
+      use_global_credits_screens = i;
+
+      while (getCreditsFilename(num_credits_screens,
+				use_global_credits_screens) != NULL)
+	num_credits_screens++;
+
+      if (num_credits_screens > 0)
+	break;
+    }
+
+    if (num_credits_screens == 0)
+    {
+      int font_title = MENU_INFO_FONT_TITLE;
+      int font_foot  = MENU_INFO_FONT_FOOT;
+      int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+      int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+
+      ClearField();
+      DrawHeadline();
+
+      DrawTextSCentered(ystart, font_title,
+			"No credits for this level set.");
+
+      DrawTextSCentered(ybottom, font_foot,
+			"Press any key or button for info menu");
+
+      return;
+    }
+
     screen_nr = 0;
 
     DrawInfoScreen_CreditsScreen(screen_nr);
@@ -3639,7 +3484,7 @@ void HandleInfoScreen_Credits(int dx, int dy, int button)
 
     screen_nr += (dx < 0 ? -1 : +1);
 
-    if (screen_nr < 0 || screen_nr >= num_screens)
+    if (screen_nr < 0 || screen_nr >= num_credits_screens)
     {
       FadeMenuSoundsAndMusic();
 

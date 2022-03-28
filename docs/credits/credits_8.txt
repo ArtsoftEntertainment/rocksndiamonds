@@ -1,0 +1,19 @@
+# .font: font.text_2
+Thanks to
+
+# .font: font.text_3
+Guido Schulz
+
+# .font: font.text_2
+for the initial DOS port
+
+
+
+# .font: font.text_2
+Thanks to
+
+# .font: font.text_3
+Karl Hörnell
+
+# .font: font.text_2
+for some additional toons

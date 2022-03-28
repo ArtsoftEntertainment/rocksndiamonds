@@ -1,0 +1,9 @@
+# .font: font.text_2
+Thanks to
+
+# .font: font.text_3
+David Tritscher
+
+# .font: font.text_2
+for the code base used for the
+native Emerald Mine engine
