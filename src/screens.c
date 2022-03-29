@@ -281,7 +281,7 @@ static void HandleInfoScreen_TitleScreen(int, int, int);
 static void HandleInfoScreen_Elements(int, int, int);
 static void HandleInfoScreen_Music(int, int, int);
 static void HandleInfoScreen_Credits(int, int, int);
-static void HandleInfoScreen_Program(int);
+static void HandleInfoScreen_Program(int, int, int);
 static void HandleInfoScreen_Version(int);
 
 static void ModifyGameSpeedIfNeeded(void);
@@ -688,6 +688,11 @@ struct TitleControlInfo title_controls[MAX_NUM_TITLE_SCREENS];
 
 static int num_credits_screens = 0;
 static boolean use_global_credits_screens = FALSE;
+
+
+// program info screens definitions
+
+static int num_program_info_screens = 0;
 
 
 // main menu display and control definitions
@@ -3508,68 +3513,90 @@ void HandleInfoScreen_Credits(int dx, int dy, int button)
   }
 }
 
-static void DrawInfoScreen_Program(void)
+static void DrawInfoScreen_ProgramScreen(int screen_nr)
 {
   int font_title = MENU_INFO_FONT_TITLE;
-  int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
   int font_foot  = MENU_INFO_FONT_FOOT;
   int spacing_title = menu.headline1_spacing_info[info_mode];
-  int spacing_head  = menu.headline2_spacing_info[info_mode];
-  int spacing_para  = menu.paragraph_spacing_info[info_mode];
   int spacing_line  = menu.line_spacing_info[info_mode];
   int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystep_head  = getMenuTextStep(spacing_head,  font_head);
-  int ystep_para  = getMenuTextStep(spacing_para,  font_text);
-  int ystep_line  = getMenuTextStep(spacing_line,  font_text);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
-
-  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_PROGRAM);
-
-  FadeOut(REDRAW_FIELD);
 
   ClearField();
   DrawHeadline();
 
   DrawTextSCentered(ystart, font_title, "Program Information:");
-  ystart += ystep_title;
 
-  DrawTextSCentered(ystart, font_head,
-		    "This game is Freeware!");
-  ystart += ystep_head;
-  DrawTextSCentered(ystart, font_head,
-		    "If you like it, send e-mail to:");
-  ystart += ystep_head;
-  DrawTextSCentered(ystart, font_text,
-		    setup.internal.program_email);
-  ystart += ystep_para;
+  char *filename = getProgramInfoFilename(screen_nr);
+  int width = SXSIZE;
+  int height = MENU_SCREEN_INFO_YBOTTOM - MENU_SCREEN_INFO_YSTART1;
+  int chars = width / getFontWidth(font_text);
+  int lines = height / getFontHeight(font_text);
+  int padx = (width - chars * getFontWidth(font_text)) / 2;
+  int line_spacing = getMenuTextSpacing(spacing_line, font_text);
+  boolean autowrap = FALSE;
+  boolean centered = TRUE;
+  boolean parse_comments = TRUE;
 
-  DrawTextSCentered(ystart, font_head,
-		    "More information and levels:");
-  ystart += ystep_head;
-  DrawTextSCentered(ystart, font_text,
-		    setup.internal.program_website);
-  ystart += ystep_para;
-
-  DrawTextSCentered(ystart, font_head,
-		    "If you have created new levels,");
-  ystart += ystep_line;
-  DrawTextSCentered(ystart, font_head,
-		    "send them to me to include them!");
-  ystart += ystep_head;
-  DrawTextSCentered(ystart, font_head,
-		    ":-)");
+  DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART1 + ystep_title,
+	       filename, font_text, chars, -1, lines, line_spacing, -1,
+	       autowrap, centered, parse_comments);
 
   DrawTextSCentered(ybottom, font_foot,
-		    "Press any key or button for info menu");
+		    "Press any key or button for next page");
+}
+
+static void DrawInfoScreen_Program(void)
+{
+  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_PROGRAM);
+
+  FadeMenuSoundsAndMusic();
+
+  FadeOut(REDRAW_FIELD);
+
+  HandleInfoScreen_Program(0, 0, MB_MENU_INITIALIZE);
 
   FadeIn(REDRAW_FIELD);
 }
 
-void HandleInfoScreen_Program(int button)
+void HandleInfoScreen_Program(int dx, int dy, int button)
 {
-  if (button == MB_MENU_LEAVE)
+  static int screen_nr = 0;
+
+  if (button == MB_MENU_INITIALIZE)
+  {
+    // determine number of program info screens
+    num_program_info_screens = 0;
+
+    while (getProgramInfoFilename(num_program_info_screens) != NULL)
+      num_program_info_screens++;
+
+    if (num_program_info_screens == 0)
+    {
+      int font_title = MENU_INFO_FONT_TITLE;
+      int font_foot  = MENU_INFO_FONT_FOOT;
+      int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+      int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+
+      ClearField();
+      DrawHeadline();
+
+      DrawTextSCentered(ystart, font_title,
+			"No program info available.");
+
+      DrawTextSCentered(ybottom, font_foot,
+			"Press any key or button for info menu");
+
+      return;
+    }
+
+    screen_nr = 0;
+
+    DrawInfoScreen_ProgramScreen(screen_nr);
+  }
+  else if (button == MB_MENU_LEAVE)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
@@ -3578,14 +3605,29 @@ void HandleInfoScreen_Program(int button)
 
     return;
   }
-  else if (button == MB_MENU_CHOICE)
+  else if (button == MB_MENU_CHOICE || dx)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
-    FadeMenuSoundsAndMusic();
+    screen_nr += (dx < 0 ? -1 : +1);
 
-    info_mode = INFO_MODE_MAIN;
-    DrawInfoScreen();
+    if (screen_nr < 0 || screen_nr >= num_program_info_screens)
+    {
+      FadeMenuSoundsAndMusic();
+
+      info_mode = INFO_MODE_MAIN;
+      DrawInfoScreen();
+
+      return;
+    }
+
+    FadeSetNextScreen();
+
+    FadeOut(REDRAW_FIELD);
+
+    DrawInfoScreen_ProgramScreen(screen_nr);
+
+    FadeIn(REDRAW_FIELD);
   }
   else
   {
@@ -3914,7 +3956,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   else if (info_mode == INFO_MODE_CREDITS)
     HandleInfoScreen_Credits(dx, dy, button);
   else if (info_mode == INFO_MODE_PROGRAM)
-    HandleInfoScreen_Program(button);
+    HandleInfoScreen_Program(dx, dy, button);
   else if (info_mode == INFO_MODE_VERSION)
     HandleInfoScreen_Version(button);
   else if (info_mode == INFO_MODE_LEVELSET)
