@@ -13,7 +13,7 @@ for the initial DOS port
 Thanks to
 
 # .font: font.text_3
-Karl Hörnell
+Karl HÃ¶rnell
 
 # .font: font.text_2
 for some additional toons

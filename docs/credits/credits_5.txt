@@ -8,7 +8,7 @@ Alan Bond
 and
 
 # .font: font.text_3
-Jürgen Bonhagen
+JÃ¼rgen Bonhagen
 
 # .font: font.text_2
 for the continuous creation
