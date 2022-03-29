@@ -130,6 +130,9 @@
 #define MENU_CHOOSE_TREE_FONT(x)	(FONT_TEXT_1 + (x))
 #define MENU_CHOOSE_TREE_COLOR(ti, a)	TREE_COLOR(ti, a)
 
+#define TEXT_NEXT_PAGE			"Press any key or button for next page"
+#define TEXT_INFO_MENU			"Press any key or button for info menu"
+
 // for input setup functions
 #define SETUPINPUT_SCREEN_POS_START	0
 #define SETUPINPUT_SCREEN_POS_EMPTY1	3
@@ -2922,8 +2925,7 @@ void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
   DrawTextSCentered(ystart1, font_title, text_title);
   DrawTextSCentered(ystart2, font_error, text_error);
 
-  DrawTextSCentered(ybottom, font_foot,
-		    "Press any key or button for info menu");
+  DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
 
   FadeIn(REDRAW_FIELD);
 }
@@ -2954,9 +2956,7 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
     DrawHeadline();
 
     DrawTextSCentered(ystart1, font_title, "The Game Elements:");
-
-    DrawTextSCentered(ybottom, font_foot,
-		      "Press any key or button for next page");
+    DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_PAGE);
 
     FrameCounter = 0;
   }
@@ -3242,11 +3242,8 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       ClearField();
       DrawHeadline();
 
-      DrawTextSCentered(ystart, font_title,
-			"No music info for this level set.");
-
-      DrawTextSCentered(ybottom, font_foot,
-			"Press any key or button for info menu");
+      DrawTextSCentered(ystart, font_title, "No music info for this level set.");
+      DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
 
       return;
     }
@@ -3370,8 +3367,7 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       ystart += ystep_head;
     }
 
-    DrawTextSCentered(ybottom, FONT_TEXT_4,
-		      "Press any key or button for next page");
+    DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_PAGE);
 
     if (button != MB_MENU_INITIALIZE)
       FadeIn(REDRAW_FIELD);
@@ -3412,8 +3408,10 @@ static void DrawInfoScreen_CreditsScreen(int screen_nr)
 	       filename, font_text, chars, -1, lines, line_spacing, -1,
 	       autowrap, centered, parse_comments);
 
-  DrawTextSCentered(ybottom, font_foot,
-		    "Press any key or button for next page");
+  boolean last_screen = (screen_nr == num_credits_screens - 1);
+  char *text_foot = (last_screen ? TEXT_INFO_MENU : TEXT_NEXT_PAGE);
+
+  DrawTextSCentered(ybottom, font_foot, text_foot);
 }
 
 static void DrawInfoScreen_Credits(void)
@@ -3461,11 +3459,8 @@ void HandleInfoScreen_Credits(int dx, int dy, int button)
       ClearField();
       DrawHeadline();
 
-      DrawTextSCentered(ystart, font_title,
-			"No credits for this level set.");
-
-      DrawTextSCentered(ybottom, font_foot,
-			"Press any key or button for info menu");
+      DrawTextSCentered(ystart, font_title, "No credits for this level set.");
+      DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
 
       return;
     }
@@ -3544,8 +3539,10 @@ static void DrawInfoScreen_ProgramScreen(int screen_nr)
 	       filename, font_text, chars, -1, lines, line_spacing, -1,
 	       autowrap, centered, parse_comments);
 
-  DrawTextSCentered(ybottom, font_foot,
-		    "Press any key or button for next page");
+  boolean last_screen = (screen_nr == num_program_info_screens - 1);
+  char *text_foot = (last_screen ? TEXT_INFO_MENU : TEXT_NEXT_PAGE);
+
+  DrawTextSCentered(ybottom, font_foot, text_foot);
 }
 
 static void DrawInfoScreen_Program(void)
@@ -3583,11 +3580,8 @@ void HandleInfoScreen_Program(int dx, int dy, int button)
       ClearField();
       DrawHeadline();
 
-      DrawTextSCentered(ystart, font_title,
-			"No program info available.");
-
-      DrawTextSCentered(ybottom, font_foot,
-			"Press any key or button for info menu");
+      DrawTextSCentered(ystart, font_title, "No program info available.");
+      DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
 
       return;
     }
@@ -3800,8 +3794,7 @@ static void DrawInfoScreen_Version(void)
   DrawTextF(xstart2, ystart, font_text, "%s", setup.system.sdl_audiodriver);
   DrawTextF(xstart3, ystart, font_text, "%s", driver_name);
 
-  DrawTextSCentered(ybottom, font_foot,
-		    "Press any key or button for info menu");
+  DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
 
   FadeIn(REDRAW_FIELD);
 }
@@ -3837,6 +3830,7 @@ static void DrawInfoScreen_LevelSet(void)
   struct TitleMessageInfo *tmi = &readme;
   char *filename = getLevelSetInfoFilename();
   char *title = "Level Set Information:";
+  int font_foot = MENU_INFO_FONT_FOOT;
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
@@ -3888,8 +3882,7 @@ static void DrawInfoScreen_LevelSet(void)
 	       filename, tmi->font, tmi->chars, -1, tmi->lines, 0, -1,
 	       tmi->autowrap, tmi->centered, tmi->parse_comments);
 
-  DrawTextSCentered(ybottom, FONT_TEXT_4,
-		    "Press any key or button for info menu");
+  DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
 
   FadeIn(REDRAW_FIELD);
 }
