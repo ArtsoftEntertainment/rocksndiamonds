@@ -884,6 +884,34 @@ char *getCreditsFilename(int nr, boolean global)
   return NULL;		// cannot find credits file
 }
 
+static char *getProgramInfoBasename(int nr)
+{
+  static char basename[32];
+
+  sprintf(basename, "program_%d.txt", nr + 1);
+
+  return basename;
+}
+
+char *getProgramInfoFilename(int nr)
+{
+  char *basename = getProgramInfoBasename(nr);
+  static char *info_subdir = NULL;
+  static char *filename = NULL;
+
+  if (info_subdir == NULL)
+    info_subdir = getPath2(DOCS_DIRECTORY, INFO_DIRECTORY);
+
+  checked_free(filename);
+
+  // look for program info file in the game's base directory
+  filename = getPath3(options.base_directory, info_subdir, basename);
+  if (fileExists(filename))
+    return filename;
+
+  return NULL;		// cannot find program info file
+}
+
 static char *getCorrectedArtworkBasename(char *basename)
 {
   return basename;

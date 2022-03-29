@@ -280,6 +280,7 @@ char *getHelpTextFilename(void);
 char *getLevelSetInfoFilename(void);
 char *getLevelSetTitleMessageFilename(int, boolean);
 char *getCreditsFilename(int, boolean);
+char *getProgramInfoFilename(int);
 char *getImageFilename(char *);
 char *getCustomImageFilename(char *);
 char *getCustomSoundFilename(char *);
