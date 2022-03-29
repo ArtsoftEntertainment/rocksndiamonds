@@ -371,6 +371,15 @@ char *GetTextBufferFromFile(char *filename, int max_lines)
 
   closeFile(file);
 
+  if (getTextEncoding(buffer) == TEXT_ENCODING_UTF_8)
+  {
+    char *body_latin1 = getLatin1FromUTF8(buffer);
+
+    checked_free(buffer);
+
+    buffer = body_latin1;
+  }
+
   return buffer;
 }
 

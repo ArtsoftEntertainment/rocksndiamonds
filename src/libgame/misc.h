@@ -45,6 +45,11 @@
 #define BIT_ORDER_MSB			0
 #define BIT_ORDER_LSB			1
 
+// values for character encoding
+#define TEXT_ENCODING_UNKNOWN		0
+#define TEXT_ENCODING_ASCII		1
+#define TEXT_ENCODING_UTF_8		2
+
 // values for createDirectory()
 #define PERMS_PRIVATE			0
 #define PERMS_PUBLIC			1
@@ -233,6 +238,8 @@ void WriteUnusedBytesToFile(FILE *, unsigned int);
 
 char *getUTF8FromLatin1(char *);
 char *getLatin1FromUTF8(char *);
+int getTextEncoding(char *);
+
 char *getEscapedJSON(char *);
 
 char *getKeyNameFromKey(Key);

@@ -1946,6 +1946,64 @@ char *getLatin1FromUTF8(char *utf8)
   return latin1;
 }
 
+int getTextEncoding(char *text)
+{
+  unsigned char *src = (unsigned char *)text;
+  int encoding = TEXT_ENCODING_ASCII;	// default: assume encoding is ASCII
+
+  while (*src)
+  {
+    if (*src >= 128)
+      encoding = TEXT_ENCODING_UTF_8;	// non-ASCII character: assume UTF-8
+
+    if (*src < 128)
+    {
+      src++;
+    }
+    else if (src[0] >= 192 && src[0] < 224 &&
+	     src[1] >= 128 && src[1] < 192)
+    {
+      src += 2;
+    }
+    else if (src[0] >= 224 && src[0] < 240 &&
+	     src[1] >= 128 && src[1] < 192 &&
+	     src[2] >= 128 && src[2] < 192)
+    {
+      src += 3;
+    }
+    else if (src[0] >= 240 && src[0] < 248 &&
+	     src[1] >= 128 && src[1] < 192 &&
+	     src[2] >= 128 && src[2] < 192 &&
+	     src[3] >= 128 && src[3] < 192)
+    {
+      src += 4;
+    }
+    else if (src[0] >= 248 && src[0] < 252 &&
+	     src[1] >= 128 && src[1] < 192 &&
+	     src[2] >= 128 && src[2] < 192 &&
+	     src[3] >= 128 && src[3] < 192 &&
+	     src[4] >= 128 && src[4] < 192)
+    {
+      src += 5;
+    }
+    else if (src[0] >= 252 && src[0] < 254 &&
+	     src[1] >= 128 && src[1] < 192 &&
+	     src[2] >= 128 && src[2] < 192 &&
+	     src[3] >= 128 && src[3] < 192 &&
+	     src[4] >= 128 && src[4] < 192 &&
+	     src[5] >= 128 && src[5] < 192)
+    {
+      src += 6;
+    }
+    else
+    {
+      return TEXT_ENCODING_UNKNOWN;	// non-UTF-8 character: unknown encoding
+    }
+  }
+
+  return encoding;
+}
+
 
 // ----------------------------------------------------------------------------
 // functions for JSON handling
