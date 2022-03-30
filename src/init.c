@@ -34,15 +34,17 @@
 
 
 #define CONFIG_TOKEN_FONT_INITIAL		"font.initial"
+#define CONFIG_TOKEN_GLOBAL_BUSY_INITIAL	"global.busy_initial"
 #define CONFIG_TOKEN_GLOBAL_BUSY		"global.busy"
 #define CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL	"background.LOADING_INITIAL"
 #define CONFIG_TOKEN_BACKGROUND_LOADING		"background.LOADING"
 
-#define INITIAL_IMG_GLOBAL_BUSY			0
-#define INITIAL_IMG_BACKGROUND_LOADING_INITIAL	1
-#define INITIAL_IMG_BACKGROUND_LOADING		2
+#define INITIAL_IMG_GLOBAL_BUSY_INITIAL		0
+#define INITIAL_IMG_GLOBAL_BUSY			1
+#define INITIAL_IMG_BACKGROUND_LOADING_INITIAL	2
+#define INITIAL_IMG_BACKGROUND_LOADING		3
 
-#define NUM_INITIAL_IMAGES			3
+#define NUM_INITIAL_IMAGES			4
 
 
 static struct FontBitmapInfo font_initial[NUM_INITIAL_FONTS];
@@ -121,11 +123,17 @@ static void SetLoadingBackgroundImage(void)
 static void DrawInitAnim(void)
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
-  int graphic = 0;
+  int graphic = (game_status_last_screen == -1 ?
+		 INITIAL_IMG_GLOBAL_BUSY_INITIAL :
+		 INITIAL_IMG_GLOBAL_BUSY);
+  struct MenuPosInfo *busy = (game_status_last_screen == -1 ?
+			      &init_last.busy_initial :
+			      &init_last.busy);
   static unsigned int action_delay = 0;
   unsigned int action_delay_value = GameFrameDelay;
   int sync_frame = FrameCounter;
   int x, y;
+
 
   // prevent OS (Windows) from complaining about program not responding
   CheckQuitEvent();
@@ -133,23 +141,23 @@ static void DrawInitAnim(void)
   if (game_status != GAME_MODE_LOADING)
     return;
 
-  if (image_initial[INITIAL_IMG_GLOBAL_BUSY].bitmap == NULL || window == NULL)
+  if (image_initial[graphic].bitmap == NULL || window == NULL)
     return;
 
   if (!DelayReached(&action_delay, action_delay_value))
     return;
 
-  if (init_last.busy.x == -1)
-    init_last.busy.x = WIN_XSIZE / 2;
-  if (init_last.busy.y == -1)
-    init_last.busy.y = WIN_YSIZE / 2;
+  if (busy->x == -1)
+    busy->x = WIN_XSIZE / 2;
+  if (busy->y == -1)
+    busy->y = WIN_YSIZE / 2;
 
-  x = ALIGNED_TEXT_XPOS(&init_last.busy);
-  y = ALIGNED_TEXT_YPOS(&init_last.busy);
+  x = ALIGNED_TEXT_XPOS(busy);
+  y = ALIGNED_TEXT_YPOS(busy);
 
-  graphic_info = image_initial;		// graphic == 0 => image_initial
+  graphic_info = image_initial;
 
-  if (sync_frame % image_initial[INITIAL_IMG_GLOBAL_BUSY].anim_delay == 0)
+  if (sync_frame % image_initial[graphic].anim_delay == 0)
   {
     Bitmap *src_bitmap;
     int src_x, src_y;
@@ -5574,6 +5582,7 @@ static void InitGfx(void)
   char *filename_image_initial[NUM_INITIAL_IMAGES] = { NULL };
   char *image_token[NUM_INITIAL_IMAGES] =
   {
+    CONFIG_TOKEN_GLOBAL_BUSY_INITIAL,
     CONFIG_TOKEN_GLOBAL_BUSY,
     CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL,
     CONFIG_TOKEN_BACKGROUND_LOADING

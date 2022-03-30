@@ -7328,6 +7328,14 @@ struct ConfigInfo image_config[] =
 
   { "global.door",				"RocksDoor.png"		},
 
+  { "global.busy_initial",			"RocksBusy.png"		},
+  { "global.busy_initial.x",			"0"			},
+  { "global.busy_initial.y",			"0"			},
+  { "global.busy_initial.width",		"32"			},
+  { "global.busy_initial.height",		"32"			},
+  { "global.busy_initial.frames",		"28"			},
+  { "global.busy_initial.frames_per_line",	"7"			},
+  { "global.busy_initial.delay",		"2"			},
   { "global.busy",				"RocksBusy.png"		},
   { "global.busy.x",				"0"			},
   { "global.busy.y",				"0"			},
@@ -7886,6 +7894,10 @@ struct ConfigInfo image_config[] =
 
   { "border.draw_masked_when_fading",		"true"			},
 
+  { "init.busy_initial.x",			"-1"			},
+  { "init.busy_initial.y",			"-1"			},
+  { "init.busy_initial.align",			"center"		},
+  { "init.busy_initial.valign",			"middle"		},
   { "init.busy.x",				"-1"			},
   { "init.busy.y",				"-1"			},
   { "init.busy.align",				"center"		},
