@@ -299,7 +299,7 @@ static void MapScreenTreeGadgets(TreeInfo *);
 static void UnmapScreenTreeGadgets(void);
 
 static void UpdateScreenMenuGadgets(int, boolean);
-static void AdjustScoreInfoButtons(int, int, int);
+static void AdjustScoreInfoButtons_SelectScore(int, int, int);
 
 static boolean OfferUploadTapes(void);
 static void execOfferUploadTapes(void);
@@ -5773,8 +5773,8 @@ static void DrawScoreInfo_Content(int entry_nr)
   int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
   int xstart1 = mSX - SX + 2 * xstep;
   int xstart2 = mSX - SX + 13 * xstep;
-  int button_x = SX + xstart1;
-  int button_y1, button_y2;
+  int select_x = SX + xstart1;
+  int select_y1, select_y2;
   int font_width = getFontWidth(font_text);
   int font_height = getFontHeight(font_text);
   int pad_left = xstart2;
@@ -5813,7 +5813,7 @@ static void DrawScoreInfo_Content(int entry_nr)
 			  TRUE, FALSE, FALSE);
   ystart += ystep_para + (lines > 0 ? lines - 1 : 0) * font_height;
 
-  button_y1 = SY + ystart;
+  select_y1 = SY + ystart;
   ystart += graphic_info[IMG_MENU_BUTTON_PREV_SCORE].height;
 
   DrawTextF(xstart1, ystart, font_head, "Rank");
@@ -5864,11 +5864,11 @@ static void DrawScoreInfo_Content(int entry_nr)
 			  TRUE, FALSE, FALSE);
   ystart += ystep_line;
 
-  button_y2 = SY + ystart;
+  select_y2 = SY + ystart;
 
   DrawTextSCentered(ybottom, font_foot, "Press any key or button to go back");
 
-  AdjustScoreInfoButtons(button_x, button_y1, button_y2);
+  AdjustScoreInfoButtons_SelectScore(select_x, select_y1, select_y2);
 }
 
 static void DrawScoreInfo(int entry_nr)
@@ -10365,7 +10365,7 @@ static void UnmapScreenTreeGadgets(void)
   UnmapScreenGadgets();
 }
 
-static void AdjustScoreInfoButtons(int x, int y1, int y2)
+static void AdjustScoreInfoButtons_SelectScore(int x, int y1, int y2)
 {
   struct GadgetInfo *gi_1 = screen_gadget[SCREEN_CTRL_ID_PREV_SCORE];
   struct GadgetInfo *gi_2 = screen_gadget[SCREEN_CTRL_ID_NEXT_SCORE];
