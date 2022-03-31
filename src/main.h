@@ -2816,6 +2816,7 @@ struct MenuScoresButtonInfo
   struct MenuPosInfo next_level;
   struct MenuPosInfo prev_score;
   struct MenuPosInfo next_score;
+  struct MenuPosInfo play_tape;
 };
 
 struct MenuScoresInfo

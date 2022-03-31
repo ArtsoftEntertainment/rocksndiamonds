@@ -191,27 +191,28 @@
 #define SCREEN_CTRL_ID_NEXT_LEVEL2	3
 #define SCREEN_CTRL_ID_PREV_SCORE	4
 #define SCREEN_CTRL_ID_NEXT_SCORE	5
-#define SCREEN_CTRL_ID_FIRST_LEVEL	6
-#define SCREEN_CTRL_ID_LAST_LEVEL	7
-#define SCREEN_CTRL_ID_LEVEL_NUMBER	8
-#define SCREEN_CTRL_ID_PREV_PLAYER	9
-#define SCREEN_CTRL_ID_NEXT_PLAYER	10
-#define SCREEN_CTRL_ID_INSERT_SOLUTION	11
-#define SCREEN_CTRL_ID_PLAY_SOLUTION	12
-#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	13
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	14
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	15
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	16
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	17
+#define SCREEN_CTRL_ID_PLAY_TAPE	6
+#define SCREEN_CTRL_ID_FIRST_LEVEL	7
+#define SCREEN_CTRL_ID_LAST_LEVEL	8
+#define SCREEN_CTRL_ID_LEVEL_NUMBER	9
+#define SCREEN_CTRL_ID_PREV_PLAYER	10
+#define SCREEN_CTRL_ID_NEXT_PLAYER	11
+#define SCREEN_CTRL_ID_INSERT_SOLUTION	12
+#define SCREEN_CTRL_ID_PLAY_SOLUTION	13
+#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	14
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	15
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	16
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	17
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	18
 
-#define NUM_SCREEN_MENUBUTTONS		18
+#define NUM_SCREEN_MENUBUTTONS		19
 
-#define SCREEN_CTRL_ID_SCROLL_UP	18
-#define SCREEN_CTRL_ID_SCROLL_DOWN	19
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL	20
-#define SCREEN_CTRL_ID_NETWORK_SERVER	21
+#define SCREEN_CTRL_ID_SCROLL_UP	19
+#define SCREEN_CTRL_ID_SCROLL_DOWN	20
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL	21
+#define SCREEN_CTRL_ID_NETWORK_SERVER	22
 
-#define NUM_SCREEN_GADGETS		22
+#define NUM_SCREEN_GADGETS		23
 
 #define NUM_SCREEN_SCROLLBUTTONS	2
 #define NUM_SCREEN_SCROLLBARS		1
@@ -300,6 +301,7 @@ static void UnmapScreenTreeGadgets(void);
 
 static void UpdateScreenMenuGadgets(int, boolean);
 static void AdjustScoreInfoButtons_SelectScore(int, int, int);
+static void AdjustScoreInfoButtons_PlayTape(int, int);
 
 static boolean OfferUploadTapes(void);
 static void execOfferUploadTapes(void);
@@ -5775,8 +5777,11 @@ static void DrawScoreInfo_Content(int entry_nr)
   int xstart2 = mSX - SX + 13 * xstep;
   int select_x = SX + xstart1;
   int select_y1, select_y2;
+  int play_x, play_y;
+  int play_height = screen_gadget[SCREEN_CTRL_ID_PLAY_TAPE]->height;
   int font_width = getFontWidth(font_text);
   int font_height = getFontHeight(font_text);
+  int tape_date_width  = getTextWidth(entry->tape_date, font_text);
   int pad_left = xstart2;
   int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
   int max_chars_per_line = (SXSIZE - pad_left - pad_right) / font_width;
@@ -5846,6 +5851,9 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   ystart += ystep_line;
 
+  play_x = SX + xstart2 + tape_date_width + font_width;
+  play_y = SY + ystart + (font_height - play_height) / 2;
+
   DrawTextF(xstart1, ystart, font_head, "Tape Date");
   DrawTextF(xstart2, ystart, font_text, entry->tape_date);
   ystart += ystep_line;
@@ -5869,6 +5877,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   DrawTextSCentered(ybottom, font_foot, "Press any key or button to go back");
 
   AdjustScoreInfoButtons_SelectScore(select_x, select_y1, select_y2);
+  AdjustScoreInfoButtons_PlayTape(play_x, play_y);
 }
 
 static void DrawScoreInfo(int entry_nr)
@@ -5907,6 +5916,10 @@ static void HandleScoreInfo_SelectScore(int step, int direction)
 
     DrawScoreInfo_Content(new_entry_nr);
   }
+}
+
+static void HandleScoreInfo_PlayTape(void)
+{
 }
 
 void HandleScoreInfo(int mx, int my, int dx, int dy, int button)
@@ -9809,6 +9822,14 @@ static struct
     FALSE, "next score"
   },
   {
+    IMG_MENU_BUTTON_PLAY_TAPE, IMG_MENU_BUTTON_PLAY_TAPE,
+    &menu.scores.button.play_tape, NULL,
+    SCREEN_CTRL_ID_PLAY_TAPE,
+    SCREEN_MASK_SCORES_INFO,
+    GD_EVENT_RELEASED,
+    FALSE, "play tape"
+  },
+  {
     IMG_MENU_BUTTON_FIRST_LEVEL, IMG_MENU_BUTTON_FIRST_LEVEL_ACTIVE,
     &menu.main.button.first_level, NULL,
     SCREEN_CTRL_ID_FIRST_LEVEL,
@@ -10381,6 +10402,15 @@ static void AdjustScoreInfoButtons_SelectScore(int x, int y1, int y2)
     ModifyGadget(gi_2, GDI_X, x, GDI_Y, y2, GDI_END);
 }
 
+static void AdjustScoreInfoButtons_PlayTape(int x, int y)
+{
+  struct GadgetInfo *gi = screen_gadget[SCREEN_CTRL_ID_PLAY_TAPE];
+  struct MenuPosInfo *pos = menubutton_info[SCREEN_CTRL_ID_PLAY_TAPE].pos;
+
+  if (pos->x == -1 && pos->y == -1)
+    ModifyGadget(gi, GDI_X, x, GDI_Y, y, GDI_END);
+}
+
 static void HandleScreenGadgets(struct GadgetInfo *gi)
 {
   int id = gi->custom_id;
@@ -10413,6 +10443,10 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_NEXT_SCORE:
       HandleScoreInfo_SelectScore(step, +1);
+      break;
+
+    case SCREEN_CTRL_ID_PLAY_TAPE:
+      HandleScoreInfo_PlayTape();
       break;
 
     case SCREEN_CTRL_ID_FIRST_LEVEL:

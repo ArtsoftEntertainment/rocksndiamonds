@@ -6155,6 +6155,9 @@ struct ConfigInfo image_config[] =
   { "menu.button_prev_score.active",		UNDEFINED_FILENAME	},
   { "menu.button_prev_score.active.clone_from",	"menu.button_up.active" },
 
+  { "menu.button_play_tape",			UNDEFINED_FILENAME	},
+  { "menu.button_play_tape.clone_from",		"gfx.tape.button.play"	},
+
   { "menu.button_name",				UNDEFINED_FILENAME	},
   { "menu.button_name.clone_from",		"menu.button"		},
   { "menu.button_name.active",			UNDEFINED_FILENAME	},
@@ -8365,6 +8368,9 @@ struct ConfigInfo image_config[] =
   { "scores.button.prev_score.y",		"-1"			},
   { "scores.button.next_score.x",		"-1"			},
   { "scores.button.next_score.y",		"-1"			},
+
+  { "scores.button.play_tape.x",		"-1"			},
+  { "scores.button.play_tape.y",		"-1"			},
 
   { "preview.x",				"272"			},
   { "preview.y",				"380"			},
