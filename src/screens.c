@@ -9981,6 +9981,8 @@ static void CreateScreenMenubuttons(void)
     boolean is_touch_button = menubutton_info[i].is_touch_button;
     boolean is_check_button = menubutton_info[i].check_value != NULL;
     boolean is_score_button = (screen_mask & SCREEN_MASK_SCORES_INFO);
+    boolean has_gfx_pressed = (menubutton_info[i].gfx_pressed ==
+                               menubutton_info[i].gfx_unpressed);
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
     int gfx_unpressed, gfx_pressed;
     int x, y, width, height;
@@ -10011,7 +10013,7 @@ static void CreateScreenMenubuttons(void)
     gd_x2a = gd_x2;
     gd_y2a = gd_y2;
 
-    if (is_touch_button)
+    if (has_gfx_pressed)
     {
       gd_x2 += graphic_info[gfx_pressed].pressed_xoffset;
       gd_y2 += graphic_info[gfx_pressed].pressed_yoffset;
