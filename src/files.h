@@ -35,9 +35,6 @@ char *getGlobalLevelTemplateFilename(void);
 
 int getMappedElement(int);
 
-void ExecuteAsThread(SDL_ThreadFunction, char *, void *, char *);
-char *getPasswordJSON(char *);
-
 void LoadLevelFromFilename(struct LevelInfo *, char *);
 void LoadLevel(int);
 void LoadLevelTemplate(int);
@@ -72,6 +69,8 @@ void SaveServerScore(int, boolean);
 void SaveServerScoreFromFile(int, boolean, char *);
 
 void LoadLocalAndServerScore(int, boolean);
+
+void PrepareScoreTapesForUpload(char *);
 
 void LoadUserNames(void);
 

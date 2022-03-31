@@ -166,6 +166,7 @@ SRCS =	main.c		\
 	files.c		\
 	tape.c		\
 	anim.c		\
+	api.c		\
 	network.c	\
 	netserv.c
 
@@ -184,6 +185,7 @@ OBJS =	main.o		\
 	files.o		\
 	tape.o		\
 	anim.o		\
+	api.o		\
 	network.o	\
 	netserv.o
 

@@ -105,6 +105,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
 	files.c				\
 	tape.c				\
 	anim.c				\
+	api.c				\
 	network.c			\
 	netserv.c
 
