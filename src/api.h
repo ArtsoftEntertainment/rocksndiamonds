@@ -14,6 +14,7 @@
 
 void ApiAddScoreAsThread(int, boolean, char *);
 void ApiGetScoreAsThread(int);
+void ApiGetScoreTapeAsThread(int, int, char *);
 void ApiRenamePlayerAsThread(void);
 void ApiResetUUIDAsThread(char *);
 

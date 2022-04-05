@@ -3125,6 +3125,7 @@ struct ScoreInfo
 
   boolean updated;
   boolean uploaded;
+  boolean tape_downloaded;
   boolean force_last_added;
 
   struct ScoreEntry entry[MAX_SCORE_ENTRIES];

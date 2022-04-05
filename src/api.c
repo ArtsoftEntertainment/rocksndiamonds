@@ -636,6 +636,234 @@ void ApiGetScoreAsThread(int nr)
 
 
 // ============================================================================
+// get score tape API functions
+// ============================================================================
+
+struct ApiGetScoreTapeThreadData
+{
+  int level_nr;
+  int score_id;
+  char *score_tape_filename;
+};
+
+static void *CreateThreadData_ApiGetScoreTape(int nr, int id,
+					      char *score_tape_basename)
+{
+  struct ApiGetScoreTapeThreadData *data =
+    checked_malloc(sizeof(struct ApiGetScoreTapeThreadData));
+  char *score_tape_filename = getScoreTapeFilename(score_tape_basename, nr);
+
+  data->level_nr = nr;
+  data->score_id = id;
+  data->score_tape_filename = getStringCopy(score_tape_filename);
+
+  return data;
+}
+
+static void FreeThreadData_ApiGetScoreTape(void *data_raw)
+{
+  struct ApiGetScoreTapeThreadData *data = data_raw;
+
+  checked_free(data->score_tape_filename);
+  checked_free(data);
+}
+
+static boolean SetRequest_ApiGetScoreTape(struct HttpRequest *request,
+                                          void *data_raw)
+{
+  struct ApiGetScoreTapeThreadData *data = data_raw;
+  int score_id = data->score_id;
+
+  request->hostname = setup.api_server_hostname;
+  request->port     = API_SERVER_PORT;
+  request->method   = API_SERVER_METHOD;
+  request->uri      = API_SERVER_URI_GETTAPE;
+
+  snprintf(request->body, MAX_HTTP_BODY_SIZE,
+	   "{\n"
+	   "%s"
+	   "  \"game_version\":         \"%s\",\n"
+	   "  \"game_platform\":        \"%s\",\n"
+	   "  \"id\":                   \"%d\"\n"
+	   "}\n",
+	   getPasswordJSON(setup.api_server_password),
+	   getProgramRealVersionString(),
+	   getProgramPlatformString(),
+	   score_id);
+
+  ConvertHttpRequestBodyToServerEncoding(request);
+
+  return TRUE;
+}
+
+static void HandleResponse_ApiGetScoreTape(struct HttpResponse *response,
+                                           void *data_raw)
+{
+  struct ApiGetScoreTapeThreadData *data = data_raw;
+
+  if (response->body_size == 0)
+  {
+    // no score tape available for this level
+
+    return;
+  }
+
+  // (do not convert HTTP response body, as it contains binary data here)
+
+  int level_nr = data->level_nr;
+  char *filename = data->score_tape_filename;
+  FILE *file;
+  int i;
+
+  // used instead of "leveldir_current->subdir" (for network games)
+  InitScoreTapeDirectory(levelset.identifier, level_nr);
+
+  if (!(file = fopen(filename, MODE_WRITE)))
+  {
+    Warn("cannot save score tape file '%s'", filename);
+
+    return;
+  }
+
+  for (i = 0; i < response->body_size; i++)
+    fputc(response->body[i], file);
+
+  fclose(file);
+
+  SetFilePermissions(filename, PERMS_PRIVATE);
+
+  server_scores.tape_downloaded = TRUE;
+}
+
+#if defined(PLATFORM_EMSCRIPTEN)
+static void Emscripten_ApiGetScoreTape_Loaded(unsigned handle, void *data_raw,
+                                              void *buffer, unsigned int size)
+{
+  struct HttpResponse *response = GetHttpResponseFromBuffer(buffer, size);
+
+  if (response != NULL)
+  {
+    HandleResponse_ApiGetScoreTape(response, data_raw);
+
+    checked_free(response);
+  }
+  else
+  {
+    Error("server response too large to handle (%d bytes)", size);
+  }
+
+  FreeThreadData_ApiGetScoreTape(data_raw);
+}
+
+static void Emscripten_ApiGetScoreTape_Failed(unsigned handle, void *data_raw,
+                                              int code, const char *status)
+{
+  Error("server failed to handle request: %d %s", code, status);
+
+  FreeThreadData_ApiGetScoreTape(data_raw);
+}
+
+static void Emscripten_ApiGetScoreTape_Progress(unsigned handle, void *data_raw,
+                                                int bytes, int size)
+{
+  // nothing to do here
+}
+
+static void Emscripten_ApiGetScoreTape_HttpRequest(struct HttpRequest *request,
+                                                   void *data_raw)
+{
+  if (!SetRequest_ApiGetScoreTape(request, data_raw))
+  {
+    FreeThreadData_ApiGetScoreTape(data_raw);
+
+    return;
+  }
+
+  emscripten_async_wget2_data(request->uri,
+			      request->method,
+			      request->body,
+			      data_raw,
+			      TRUE,
+			      Emscripten_ApiGetScoreTape_Loaded,
+			      Emscripten_ApiGetScoreTape_Failed,
+			      Emscripten_ApiGetScoreTape_Progress);
+}
+
+#else
+
+static void ApiGetScoreTape_HttpRequestExt(struct HttpRequest *request,
+                                           struct HttpResponse *response,
+                                           void *data_raw)
+{
+  if (!SetRequest_ApiGetScoreTape(request, data_raw))
+    return;
+
+  if (!DoHttpRequest(request, response))
+  {
+    Error("HTTP request failed: %s", GetHttpError());
+
+    return;
+  }
+
+  if (!HTTP_SUCCESS(response->status_code))
+  {
+    // do not show error message if no scores found for this level set
+    if (response->status_code == 404)
+      return;
+
+    Error("server failed to handle request: %d %s",
+	  response->status_code,
+	  response->status_text);
+
+    return;
+  }
+
+  HandleResponse_ApiGetScoreTape(response, data_raw);
+}
+
+static void ApiGetScoreTape_HttpRequest(struct HttpRequest *request,
+                                        struct HttpResponse *response,
+                                        void *data_raw)
+{
+  ApiGetScoreTape_HttpRequestExt(request, response, data_raw);
+
+  FreeThreadData_ApiGetScoreTape(data_raw);
+}
+#endif
+
+static int ApiGetScoreTapeThread(void *data_raw)
+{
+  struct HttpRequest *request = checked_calloc(sizeof(struct HttpRequest));
+  struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
+
+  program.api_thread_count++;
+
+#if defined(PLATFORM_EMSCRIPTEN)
+  Emscripten_ApiGetScoreTape_HttpRequest(request, data_raw);
+#else
+  ApiGetScoreTape_HttpRequest(request, response, data_raw);
+#endif
+
+  program.api_thread_count--;
+
+  checked_free(request);
+  checked_free(response);
+
+  return 0;
+}
+
+void ApiGetScoreTapeAsThread(int nr, int id, char *score_tape_basename)
+{
+  struct ApiGetScoreTapeThreadData *data =
+    CreateThreadData_ApiGetScoreTape(nr, id, score_tape_basename);
+
+  ExecuteAsThread(ApiGetScoreTapeThread,
+		  "ApiGetScoreTape", data,
+		  "download score tape from server");
+}
+
+
+// ============================================================================
 // rename player API functions
 // ============================================================================
 

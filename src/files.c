@@ -8666,6 +8666,7 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
 
   scores->updated = FALSE;
   scores->uploaded = FALSE;
+  scores->tape_downloaded = FALSE;
   scores->force_last_added = FALSE;
 }
 
