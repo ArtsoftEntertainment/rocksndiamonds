@@ -8326,6 +8326,13 @@ void LoadSolutionTape(int nr)
     CopyNativeTape_SP_to_RND(&level);
 }
 
+void LoadScoreTape(char *score_tape_basename, int nr)
+{
+  char *filename = getScoreTapeFilename(score_tape_basename, nr);
+
+  LoadTapeFromFilename(filename);
+}
+
 static boolean checkSaveTape_SCRN(struct TapeInfo *tape)
 {
   // chunk required for team mode tapes with non-default screen size

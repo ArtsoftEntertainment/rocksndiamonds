@@ -53,6 +53,7 @@ void CopyNativeLevel_Native_to_RND(struct LevelInfo *);
 void LoadTapeFromFilename(char *);
 void LoadTape(int);
 void LoadSolutionTape(int);
+void LoadScoreTape(char *, int);
 void SaveTapeToFilename(char *);
 void SaveTape(int);
 void SaveScoreTape(int);
