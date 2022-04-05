@@ -879,7 +879,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 {
   int tag = first_tag;
 
-  if (gi == NULL || gi->deactivated)
+  if (gi == NULL)
     return;
 
   while (tag != GDI_END)
