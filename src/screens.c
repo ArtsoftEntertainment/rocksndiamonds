@@ -302,7 +302,7 @@ static void UnmapScreenTreeGadgets(void);
 
 static void UpdateScreenMenuGadgets(int, boolean);
 static void AdjustScoreInfoButtons_SelectScore(int, int, int);
-static void AdjustScoreInfoButtons_PlayTape(int, int);
+static void AdjustScoreInfoButtons_PlayTape(int, int, boolean);
 
 static boolean OfferUploadTapes(void);
 static void execOfferUploadTapes(void);
@@ -5374,6 +5374,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   int select_y1, select_y2;
   int play_x, play_y;
   int play_height = screen_gadget[SCREEN_CTRL_ID_PLAY_TAPE]->height;
+  boolean play_visible = (entry->id != -1);
   int font_width = getFontWidth(font_text);
   int font_height = getFontHeight(font_text);
   int tape_date_width  = getTextWidth(entry->tape_date, font_text);
@@ -5472,7 +5473,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   DrawTextSCentered(ybottom, font_foot, "Press any key or button to go back");
 
   AdjustScoreInfoButtons_SelectScore(select_x, select_y1, select_y2);
-  AdjustScoreInfoButtons_PlayTape(play_x, play_y);
+  AdjustScoreInfoButtons_PlayTape(play_x, play_y, play_visible);
 }
 
 static void DrawScoreInfo(int entry_nr)
@@ -9997,13 +9998,17 @@ static void AdjustScoreInfoButtons_SelectScore(int x, int y1, int y2)
     ModifyGadget(gi_2, GDI_X, x, GDI_Y, y2, GDI_END);
 }
 
-static void AdjustScoreInfoButtons_PlayTape(int x, int y)
+static void AdjustScoreInfoButtons_PlayTape(int x, int y, boolean visible)
 {
   struct GadgetInfo *gi = screen_gadget[SCREEN_CTRL_ID_PLAY_TAPE];
   struct MenuPosInfo *pos = menubutton_info[SCREEN_CTRL_ID_PLAY_TAPE].pos;
 
-  if (pos->x == -1 && pos->y == -1)
-    ModifyGadget(gi, GDI_X, x, GDI_Y, y, GDI_END);
+  // set gadget position dynamically, pre-defined or off-screen
+  int xx = (visible ? (pos->x == -1 ? x : pos->x) : POS_OFFSCREEN);
+  int yy = (visible ? (pos->y == -1 ? y : pos->y) : POS_OFFSCREEN);
+
+  ModifyGadget(gi, GDI_X, xx, GDI_Y, yy, GDI_END);
+  MapGadget(gi);	// (needed if deactivated on last score page)
 }
 
 static void HandleScreenGadgets(struct GadgetInfo *gi)
