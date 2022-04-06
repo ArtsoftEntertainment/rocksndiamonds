@@ -273,7 +273,7 @@ void InitGfxClipRegion(boolean enabled, int x, int y, int width, int height)
   gfx.clip_height = height;
 }
 
-void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(void))
+void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(boolean))
 {
   gfx.draw_busy_anim_function = draw_busy_anim_function;
 }

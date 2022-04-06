@@ -2856,6 +2856,7 @@ struct InitInfo
 {
   struct MenuPosInfo busy_initial;
   struct MenuPosInfo busy;
+  struct MenuPosInfo busy_playfield;
 };
 
 struct MenuInfo

@@ -998,7 +998,12 @@
 #define UPDATE_BUSY_STATE()			\
 {						\
   if (gfx.draw_busy_anim_function != NULL)	\
-    gfx.draw_busy_anim_function();		\
+    gfx.draw_busy_anim_function(TRUE);		\
+}
+#define UPDATE_BUSY_STATE_NOT_LOADING()		\
+{						\
+  if (gfx.draw_busy_anim_function != NULL)	\
+    gfx.draw_busy_anim_function(FALSE);		\
 }
 
 
@@ -1220,7 +1225,7 @@ struct GfxInfo
 
   int anim_random_frame;
 
-  void (*draw_busy_anim_function)(void);
+  void (*draw_busy_anim_function)(boolean);
   void (*draw_global_anim_function)(int, int);
   void (*draw_global_border_function)(int);
   void (*draw_tile_cursor_function)(int);
@@ -1931,7 +1936,7 @@ void InitGfxDoor3Info(int, int, int, int);
 void InitGfxWindowInfo(int, int);
 void InitGfxScrollbufferInfo(int, int);
 void InitGfxClipRegion(boolean, int, int, int, int);
-void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(void));
+void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(boolean));
 void InitGfxDrawGlobalAnimFunction(void (*draw_global_anim_function)(int, int));
 void InitGfxDrawGlobalBorderFunction(void (*draw_global_border_function)(int));
 void InitGfxDrawTileCursorFunction(void (*draw_tile_cursor_function)(int));

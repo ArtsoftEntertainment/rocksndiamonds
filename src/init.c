@@ -36,18 +36,20 @@
 #define CONFIG_TOKEN_FONT_INITIAL		"font.initial"
 #define CONFIG_TOKEN_GLOBAL_BUSY_INITIAL	"global.busy_initial"
 #define CONFIG_TOKEN_GLOBAL_BUSY		"global.busy"
+#define CONFIG_TOKEN_GLOBAL_BUSY_PLAYFIELD	"global.busy_playfield"
 #define CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL	"background.LOADING_INITIAL"
 #define CONFIG_TOKEN_BACKGROUND_LOADING		"background.LOADING"
 
 #define INITIAL_IMG_GLOBAL_BUSY_INITIAL		0
 #define INITIAL_IMG_GLOBAL_BUSY			1
+#define INITIAL_IMG_GLOBAL_BUSY_PLAYFIELD	2
 
-#define NUM_INITIAL_IMAGES_BUSY			2
+#define NUM_INITIAL_IMAGES_BUSY			3
 
-#define INITIAL_IMG_BACKGROUND_LOADING_INITIAL	2
-#define INITIAL_IMG_BACKGROUND_LOADING		3
+#define INITIAL_IMG_BACKGROUND_LOADING_INITIAL	3
+#define INITIAL_IMG_BACKGROUND_LOADING		4
 
-#define NUM_INITIAL_IMAGES			4
+#define NUM_INITIAL_IMAGES			5
 
 
 static struct FontBitmapInfo font_initial[NUM_INITIAL_FONTS];
@@ -123,25 +125,28 @@ static void SetLoadingBackgroundImage(void)
   graphic_info = graphic_info_last;
 }
 
-static void DrawInitAnim(void)
+static void DrawInitAnim(boolean only_when_loading)
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
   int graphic = (game_status_last_screen == -1 ?
 		 INITIAL_IMG_GLOBAL_BUSY_INITIAL :
-		 INITIAL_IMG_GLOBAL_BUSY);
+		 game_status == GAME_MODE_LOADING ?
+		 INITIAL_IMG_GLOBAL_BUSY :
+		 INITIAL_IMG_GLOBAL_BUSY_PLAYFIELD);
   struct MenuPosInfo *busy = (game_status_last_screen == -1 ?
 			      &init_last.busy_initial :
-			      &init_last.busy);
+			      game_status == GAME_MODE_LOADING ?
+			      &init_last.busy :
+			      &init_last.busy_playfield);
   static unsigned int action_delay = 0;
   unsigned int action_delay_value = GameFrameDelay;
   int sync_frame = FrameCounter;
   int x, y;
 
-
   // prevent OS (Windows) from complaining about program not responding
   CheckQuitEvent();
 
-  if (game_status != GAME_MODE_LOADING)
+  if (game_status != GAME_MODE_LOADING && only_when_loading)
     return;
 
   if (image_initial[graphic].bitmap == NULL || window == NULL)
@@ -151,12 +156,12 @@ static void DrawInitAnim(void)
     return;
 
   if (busy->x == -1)
-    busy->x = WIN_XSIZE / 2;
+    busy->x = (game_status == GAME_MODE_LOADING ? WIN_XSIZE / 2 : SXSIZE / 2);
   if (busy->y == -1)
-    busy->y = WIN_YSIZE / 2;
+    busy->y = (game_status == GAME_MODE_LOADING ? WIN_YSIZE / 2 : SYSIZE / 2);
 
-  x = ALIGNED_TEXT_XPOS(busy);
-  y = ALIGNED_TEXT_YPOS(busy);
+  x = (game_status == GAME_MODE_LOADING ? 0 : SX) + ALIGNED_TEXT_XPOS(busy);
+  y = (game_status == GAME_MODE_LOADING ? 0 : SY) + ALIGNED_TEXT_YPOS(busy);
 
   graphic_info = image_initial;
 
@@ -5587,13 +5592,15 @@ static void InitGfx(void)
   {
     CONFIG_TOKEN_GLOBAL_BUSY_INITIAL,
     CONFIG_TOKEN_GLOBAL_BUSY,
+    CONFIG_TOKEN_GLOBAL_BUSY_PLAYFIELD,
     CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL,
     CONFIG_TOKEN_BACKGROUND_LOADING
   };
   struct MenuPosInfo *init_busy[NUM_INITIAL_IMAGES_BUSY] =
   {
     &init.busy_initial,
-    &init.busy
+    &init.busy,
+    &init.busy_playfield
   };
   Bitmap *bitmap_font_initial = NULL;
   int parameter[NUM_INITIAL_IMAGES][NUM_GFX_ARGS];
