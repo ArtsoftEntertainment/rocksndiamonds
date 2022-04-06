@@ -41,6 +41,9 @@
 
 #define INITIAL_IMG_GLOBAL_BUSY_INITIAL		0
 #define INITIAL_IMG_GLOBAL_BUSY			1
+
+#define NUM_INITIAL_IMAGES_BUSY			2
+
 #define INITIAL_IMG_BACKGROUND_LOADING_INITIAL	2
 #define INITIAL_IMG_BACKGROUND_LOADING		3
 
@@ -5587,6 +5590,11 @@ static void InitGfx(void)
     CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL,
     CONFIG_TOKEN_BACKGROUND_LOADING
   };
+  struct MenuPosInfo *init_busy[NUM_INITIAL_IMAGES_BUSY] =
+  {
+    &init.busy_initial,
+    &init.busy
+  };
   Bitmap *bitmap_font_initial = NULL;
   int parameter[NUM_INITIAL_IMAGES][NUM_GFX_ARGS];
   int i, j, k;
@@ -5750,6 +5758,13 @@ static void InitGfx(void)
     set_graphic_parameters_ext(i, parameter[i], image_initial[i].bitmaps);
 
   graphic_info = graphic_info_last;
+
+  for (i = 0; i < NUM_INITIAL_IMAGES_BUSY; i++)
+  {
+    // set image size for busy animations
+    init_busy[i]->width  = image_initial[i].width;
+    init_busy[i]->height = image_initial[i].height;
+  }
 
   SetLoadingBackgroundImage();
 
