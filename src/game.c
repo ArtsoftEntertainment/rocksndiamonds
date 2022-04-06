@@ -4997,7 +4997,7 @@ void GameEnd(void)
 
   game.LevelSolved_GameEnd = TRUE;
 
-  if (game.LevelSolved_SaveTape)
+  if (game.LevelSolved_SaveTape && !score_info_tape_play)
   {
     // make sure that request dialog to save tape does not open door again
     if (!global.use_envelope_request)
@@ -5013,7 +5013,7 @@ void GameEnd(void)
   // if no tape is to be saved, close both doors simultaneously
   CloseDoor(DOOR_CLOSE_ALL);
 
-  if (level_editor_test_game)
+  if (level_editor_test_game || score_info_tape_play)
   {
     SetGameStatus(GAME_MODE_MAIN);
 
@@ -15679,7 +15679,7 @@ void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
       SetOverlayActive(FALSE);
 
       // door may still be open due to skipped or envelope style request
-      CloseDoor(DOOR_CLOSE_1);
+      CloseDoor(score_info_tape_play ? DOOR_CLOSE_ALL : DOOR_CLOSE_1);
     }
 
     if (network.enabled)
@@ -15712,7 +15712,7 @@ void RequestQuitGame(boolean escape_key_pressed)
   boolean quick_quit = ((escape_key_pressed && !ask_on_escape) ||
 			level_editor_test_game);
   boolean skip_request = (game.all_players_gone || !setup.ask_on_quit_game ||
-			  quick_quit);
+			  quick_quit || score_info_tape_play);
 
   RequestQuitGameExt(skip_request, quick_quit,
 		     "Do you really want to quit the game?");

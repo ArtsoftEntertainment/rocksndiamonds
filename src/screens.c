@@ -1693,6 +1693,18 @@ void DrawMainMenu(void)
     return;
   }
 
+  // needed if last screen was the playing screen, invoked from hall of fame
+  if (score_info_tape_play)
+  {
+    CloseDoor(DOOR_CLOSE_ALL);
+
+    SetGameStatus(GAME_MODE_SCOREINFO);
+
+    DrawScoreInfo(scores.last_entry_nr);
+
+    return;
+  }
+
   // leveldir_current may be invalid (level group, parent link, node copy)
   leveldir_current = getValidLevelSeries(leveldir_current, leveldir_last_valid);
 
@@ -5479,6 +5491,7 @@ static void DrawScoreInfo_Content(int entry_nr)
 static void DrawScoreInfo(int entry_nr)
 {
   scores.last_entry_nr = entry_nr;
+  score_info_tape_play = FALSE;
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
 
@@ -5516,6 +5529,12 @@ static void HandleScoreInfo_SelectScore(int step, int direction)
 
 static void HandleScoreInfo_PlayTape(void)
 {
+  if (!PlayScoreTape(scores.last_entry_nr))
+  {
+    DrawScoreInfo_Content(scores.last_entry_nr);
+
+    FadeIn(REDRAW_FIELD);
+  }
 }
 
 void HandleScoreInfo(int mx, int my, int dx, int dy, int button)

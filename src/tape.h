@@ -276,6 +276,7 @@ void TapeReplayAndPauseBeforeEnd(void);
 boolean hasSolutionTape(void);
 boolean InsertSolutionTape(void);
 boolean PlaySolutionTape(void);
+boolean PlayScoreTape(int);
 
 void UndoTape(void);
 void FixTape_ForceSinglePlayer(void);

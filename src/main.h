@@ -3762,6 +3762,7 @@ extern DrawBuffer	       *drawto_field;
 extern int			game_status;
 extern int			game_status_last_screen;
 extern boolean			level_editor_test_game;
+extern boolean			score_info_tape_play;
 extern boolean			network_playing;
 
 extern int			key_joystick_mapping;

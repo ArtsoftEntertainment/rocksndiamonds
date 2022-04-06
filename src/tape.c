@@ -18,6 +18,8 @@
 #include "files.h"
 #include "network.h"
 #include "anim.h"
+#include "api.h"
+
 
 #define DEBUG_TAPE_WHEN_PLAYING			FALSE
 
@@ -1090,7 +1092,7 @@ void TapeStop(void)
 
 static void TapeStopGameOrTape(boolean stop_game)
 {
-  if (!tape.playing && stop_game)
+  if (score_info_tape_play || (!tape.playing && stop_game))
     RequestQuitGame(FALSE);
   else
     TapeStop();
@@ -1292,6 +1294,13 @@ static boolean checkRestartGame(char *message)
 
 void TapeRestartGame(void)
 {
+  if (score_info_tape_play)
+  {
+    TapeStartGamePlaying();
+
+    return;
+  }
+
   if (!checkRestartGame("Restart game?"))
     return;
 
@@ -1300,6 +1309,9 @@ void TapeRestartGame(void)
 
 void TapeReplayAndPauseBeforeEnd(void)
 {
+  if (score_info_tape_play)
+    return;
+
   if (TAPE_IS_EMPTY(tape) && !tape.recording)
   {
     Request("No tape for this level!", REQ_CONFIRM);
@@ -1362,6 +1374,93 @@ boolean PlaySolutionTape(void)
     return FALSE;
 
   TapeStartGamePlaying();
+
+  return TRUE;
+}
+
+static void PlayScoreTape_UpdateBusyState(void)
+{
+  int game_status_last = game_status;
+
+  SetGameStatus(GAME_MODE_LOADING);
+
+  UPDATE_BUSY_STATE();
+
+  SetGameStatus(game_status_last);
+}
+
+static boolean PlayScoreTape_WaitForDownload(void)
+{
+  unsigned int download_delay = 0;
+  unsigned int download_delay_value = 10000;
+
+  ResetDelayCounter(&download_delay);
+
+  // wait for score tape to be successfully downloaded (and fail on timeout)
+  while (!server_scores.tape_downloaded)
+  {
+    if (DelayReached(&download_delay, download_delay_value))
+      return FALSE;
+
+    PlayScoreTape_UpdateBusyState();
+
+    Delay(20);
+  }
+
+  return TRUE;
+}
+
+boolean PlayScoreTape(int entry_nr)
+{
+  struct ScoreEntry *entry = &scores.entry[entry_nr];
+  char *tape_filename = getScoreTapeFilename(entry->tape_basename, level_nr);
+  boolean download_tape = (!fileExists(tape_filename));
+
+  if (entry->id == -1)
+    return FALSE;
+
+  server_scores.tape_downloaded = FALSE;
+
+  if (download_tape)
+    ApiGetScoreTapeAsThread(level_nr, entry->id, entry->tape_basename);
+
+  SetGameStatus(GAME_MODE_PLAYING);
+
+  FadeOut(REDRAW_FIELD);
+
+  if (download_tape && !PlayScoreTape_WaitForDownload())
+  {
+    SetGameStatus(GAME_MODE_SCOREINFO);
+    ClearField();
+
+    Request("Cannot download score tape from score server!", REQ_CONFIRM);
+
+    return FALSE;
+  }
+
+  if (!TAPE_IS_STOPPED(tape))
+    TapeStop();
+
+  // if tape recorder already contains a tape, remove it without asking
+  TapeErase();
+
+  LoadScoreTape(entry->tape_basename, level_nr);
+
+  if (TAPE_IS_EMPTY(tape))
+  {
+    SetGameStatus(GAME_MODE_SCOREINFO);
+    ClearField();
+
+    Request("Cannot load score tape for this level!", REQ_CONFIRM);
+
+    return FALSE;
+  }
+
+  FadeSkipNextFadeOut();
+
+  TapeStartGamePlaying();
+
+  score_info_tape_play = TRUE;
 
   return TRUE;
 }
