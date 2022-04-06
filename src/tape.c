@@ -1378,17 +1378,6 @@ boolean PlaySolutionTape(void)
   return TRUE;
 }
 
-static void PlayScoreTape_UpdateBusyState(void)
-{
-  int game_status_last = game_status;
-
-  SetGameStatus(GAME_MODE_LOADING);
-
-  UPDATE_BUSY_STATE();
-
-  SetGameStatus(game_status_last);
-}
-
 static boolean PlayScoreTape_WaitForDownload(void)
 {
   unsigned int download_delay = 0;
@@ -1402,7 +1391,7 @@ static boolean PlayScoreTape_WaitForDownload(void)
     if (DelayReached(&download_delay, download_delay_value))
       return FALSE;
 
-    PlayScoreTape_UpdateBusyState();
+    UPDATE_BUSY_STATE_NOT_LOADING();
 
     Delay(20);
   }
