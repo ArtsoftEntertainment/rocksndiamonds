@@ -16577,13 +16577,7 @@ static void HandleGameButtonsExt(int id, int button)
     case GAME_CTRL_ID_STOP:
     case GAME_CTRL_ID_PANEL_STOP:
     case GAME_CTRL_ID_TOUCH_STOP:
-      if (game_status == GAME_MODE_MAIN)
-	break;
-
-      if (tape.playing)
-	TapeStop();
-      else
-	RequestQuitGame(FALSE);
+      TapeStopGame();
 
       break;
 

@@ -263,6 +263,8 @@ void TapeStartPlaying(void);
 void TapeStopPlaying(void);
 byte *TapePlayAction(void);
 void TapeStop(void);
+void TapeStopGame(void);
+void TapeStopTape(void);
 void TapeErase(void);
 unsigned int GetTapeLengthFrames(void);
 unsigned int GetTapeLengthSeconds(void);

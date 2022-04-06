@@ -1088,6 +1088,27 @@ void TapeStop(void)
   }
 }
 
+static void TapeStopGameOrTape(boolean stop_game)
+{
+  if (!tape.playing && stop_game)
+    RequestQuitGame(FALSE);
+  else
+    TapeStop();
+}
+
+void TapeStopGame(void)
+{
+  if (game_status == GAME_MODE_MAIN)
+    return;
+
+  TapeStopGameOrTape(TRUE);
+}
+
+void TapeStopTape(void)
+{
+  TapeStopGameOrTape(FALSE);
+}
+
 unsigned int GetTapeLengthFrames(void)
 {
   unsigned int tape_length_frames = 0;
@@ -2393,7 +2414,7 @@ static void HandleTapeButtonsExt(int id)
       break;
 
     case TAPE_CTRL_ID_STOP:
-      TapeStop();
+      TapeStopTape();
 
       break;
 
