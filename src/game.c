@@ -13238,9 +13238,6 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
       }
     }
 
-    player->last_jx = jx;
-    player->last_jy = jy;
-
     if (Tile[jx][jy] == EL_EXIT_OPEN ||
 	Tile[jx][jy] == EL_EM_EXIT_OPEN ||
 	Tile[jx][jy] == EL_EM_EXIT_OPENING ||
@@ -13257,6 +13254,9 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 	   IS_SP_ELEMENT(Tile[jx][jy])))
 	LevelSolved();
     }
+
+    player->last_jx = jx;
+    player->last_jy = jy;
 
     // this breaks one level: "machine", level 000
     {
