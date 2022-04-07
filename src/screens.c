@@ -5499,6 +5499,9 @@ static void DrawScoreInfo(int entry_nr)
 
   FadeOut(REDRAW_FIELD);
 
+  // needed if different viewport properties defined after playing score tape
+  ChangeViewportPropertiesIfNeeded();
+
   DrawScoreInfo_Content(entry_nr);
 
   // map gadgets for score info screen
