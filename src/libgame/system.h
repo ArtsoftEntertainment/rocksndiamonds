@@ -1456,6 +1456,15 @@ struct SetupInternalInfo
   boolean menu_shortcuts;
   boolean menu_exit;
   boolean menu_save_and_exit;
+
+  boolean info_title;
+  boolean info_elements;
+  boolean info_music;
+  boolean info_credits;
+  boolean info_program;
+  boolean info_version;
+  boolean info_levelset;
+  boolean info_exit;
 };
 
 struct SetupDebugInfo

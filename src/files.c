@@ -10083,6 +10083,38 @@ static struct TokenInfo internal_setup_tokens[] =
     TYPE_BOOLEAN,
     &setup.internal.menu_save_and_exit,		"menu_save_and_exit"
   },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.info_title,			"info_title"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.info_elements,		"info_elements"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.info_music,			"info_music"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.info_credits,		"info_credits"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.info_program,		"info_program"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.info_version,		"info_version"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.info_levelset,		"info_levelset"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.info_exit,			"info_exit"
+  },
 };
 
 static struct TokenInfo debug_setup_tokens[] =

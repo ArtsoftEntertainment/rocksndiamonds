@@ -312,6 +312,8 @@ static void HandleHallOfFame_SelectLevel(int, int);
 static char *getHallOfFameRankText(int, int);
 static char *getHallOfFameScoreText(int, int);
 
+static struct TokenInfo *getSetupInfoFinal(struct TokenInfo *);
+
 static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 
 static int info_mode = INFO_MODE_MAIN;
@@ -2556,6 +2558,9 @@ static void DrawInfoScreen_Main(void)
   DrawTextSCentered(mSY - SY + 16, FONT_TITLE_1, "Info Screen");
 
   info_info = info_info_main;
+
+  // use modified info screen info without info screen entries marked as hidden
+  info_info = getSetupInfoFinal(info_info);
 
   // determine maximal number of info entries that can be displayed on screen
   num_info_info = 0;
@@ -7155,6 +7160,15 @@ static struct
   { &setup.internal.menu_shortcuts,	execSetupShortcuts		},
   { &setup.internal.menu_exit,		execExitSetup			},
   { &setup.internal.menu_save_and_exit,	execSaveAndExitSetup		},
+
+  { &setup.internal.info_title,		execInfoTitleScreen		},
+  { &setup.internal.info_elements,	execInfoElements		},
+  { &setup.internal.info_music,		execInfoMusic			},
+  { &setup.internal.info_credits,	execInfoCredits			},
+  { &setup.internal.info_program,	execInfoProgram			},
+  { &setup.internal.info_version,	execInfoVersion			},
+  { &setup.internal.info_levelset,	execInfoLevelSet		},
+  { &setup.internal.info_exit,		execExitInfo			},
 
   { NULL,				NULL				}
 };
