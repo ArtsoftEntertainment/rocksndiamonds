@@ -1298,6 +1298,14 @@ boolean strSuffixLower(char *s, char *suffix)
   return match;
 }
 
+boolean isURL(char *s)
+{
+  while (*s && *s >= 'a' && *s <= 'z')
+    s++;
+
+  return strPrefix(s, "://");
+}
+
 
 // ----------------------------------------------------------------------------
 // command line option handling functions

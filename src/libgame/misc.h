@@ -188,6 +188,7 @@ boolean strPrefix(char *, char *);
 boolean strSuffix(char *, char *);
 boolean strPrefixLower(char *, char *);
 boolean strSuffixLower(char *, char *);
+boolean isURL(char *);
 
 void GetOptions(int, char **,
 		void (*print_usage_function)(void),
