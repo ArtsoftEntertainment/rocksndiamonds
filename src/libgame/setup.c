@@ -2636,11 +2636,13 @@ SetupFileHash *loadSetupFileHash(char *filename)
 #define LEVELINFO_TOKEN_FILENAME		24
 #define LEVELINFO_TOKEN_FILETYPE		25
 #define LEVELINFO_TOKEN_SPECIAL_FLAGS		26
-#define LEVELINFO_TOKEN_HANDICAP		27
-#define LEVELINFO_TOKEN_SKIP_LEVELS		28
-#define LEVELINFO_TOKEN_USE_EMC_TILES		29
+#define LEVELINFO_TOKEN_EMPTY_LEVEL_NAME	27
+#define LEVELINFO_TOKEN_FORCE_LEVEL_NAME	28
+#define LEVELINFO_TOKEN_HANDICAP		29
+#define LEVELINFO_TOKEN_SKIP_LEVELS		30
+#define LEVELINFO_TOKEN_USE_EMC_TILES		31
 
-#define NUM_LEVELINFO_TOKENS			30
+#define NUM_LEVELINFO_TOKENS			32
 
 static LevelDirTree ldi;
 
@@ -2674,6 +2676,8 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.level_filename,	"filename"		},
   { TYPE_STRING,	&ldi.level_filetype,	"filetype"		},
   { TYPE_STRING,	&ldi.special_flags,	"special_flags"		},
+  { TYPE_STRING,	&ldi.empty_level_name,	"empty_level_name"	},
+  { TYPE_BOOLEAN,	&ldi.force_level_name,	"force_level_name"	},
   { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"		},
   { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"		},
   { TYPE_BOOLEAN,	&ldi.use_emc_tiles,	"use_emc_tiles"		}
@@ -2771,6 +2775,9 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
 
     ti->special_flags = NULL;
 
+    ti->empty_level_name = NULL;
+    ti->force_level_name = FALSE;
+
     ti->levels = 0;
     ti->first_level = 0;
     ti->last_level = 0;
@@ -2853,6 +2860,9 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
 
     ti->special_flags = getStringCopy(parent->special_flags);
 
+    ti->empty_level_name = getStringCopy(parent->empty_level_name);
+    ti->force_level_name = parent->force_level_name;
+
     ti->levels = parent->levels;
     ti->first_level = parent->first_level;
     ti->last_level = parent->last_level;
@@ -2914,6 +2924,9 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->level_filetype	= getStringCopy(ti->level_filetype);
 
   ti_copy->special_flags	= getStringCopy(ti->special_flags);
+
+  ti_copy->empty_level_name	= getStringCopy(ti->empty_level_name);
+  ti_copy->force_level_name	= ti->force_level_name;
 
   ti_copy->levels		= ti->levels;
   ti_copy->first_level		= ti->first_level;

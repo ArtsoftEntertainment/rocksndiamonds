@@ -1623,6 +1623,9 @@ struct TreeInfo
 
   char *special_flags;	// flags for special actions performed on level file
 
+  char *empty_level_name;   // name pattern if level title is "nameless level"
+  boolean force_level_name; // force also renaming non-nameless level titles
+
   int levels;		// number of levels in level series
   int first_level;	// first level number (to allow start with 0 or 1)
   int last_level;	// last level number (automatically calculated)

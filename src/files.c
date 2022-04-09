@@ -6566,6 +6566,13 @@ static void LoadLevel_InitSettings(struct LevelInfo *level)
 {
   // adjust level settings for (non-native) Sokoban-style levels
   LoadLevel_InitSettings_SB(level);
+
+  // rename levels with title "nameless level" or if renaming is forced
+  if (leveldir_current->empty_level_name != NULL &&
+      (strEqual(level->name, NAMELESS_LEVEL_NAME) ||
+       leveldir_current->force_level_name))
+    snprintf(level->name, MAX_LEVEL_NAME_LEN + 1,
+	     leveldir_current->empty_level_name, level_nr);
 }
 
 static void LoadLevel_InitStandardElements(struct LevelInfo *level)
