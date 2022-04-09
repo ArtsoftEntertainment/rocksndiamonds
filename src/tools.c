@@ -9954,6 +9954,16 @@ void ChangeViewportPropertiesIfNeeded(void)
   }
 }
 
+void OpenURL(char *url)
+{
+  SDL_OpenURL(url);
+}
+
+void OpenURLFromHash(SetupFileHash *hash, int hash_key)
+{
+  OpenURL(getHashEntry(hash, int2str(hash_key, 0)));
+}
+
 
 // ============================================================================
 // tests

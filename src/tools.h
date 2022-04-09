@@ -300,6 +300,9 @@ void ChangeViewportPropertiesIfNeeded(void);
 boolean CheckIfAllViewportsHaveChanged(void);
 boolean CheckFadeAll(void);
 
+void OpenURL(char *);
+void OpenURLFromHash(SetupFileHash *, int);
+
 void TestGeneratingUUIDs(void);
 
 #endif	// TOOLS_H
