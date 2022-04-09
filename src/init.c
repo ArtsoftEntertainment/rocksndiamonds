@@ -4912,6 +4912,9 @@ static void InitGlobal(void)
     global_anim_info[i].token_name = global_anim_name_info[i].token_name;
   }
 
+  // create hash to store URLs for global animations
+  anim_url_hash = newSetupFileHash();
+
   // create hash from image config list
   image_config_hash = newSetupFileHash();
   for (i = 0; image_config[i].token != NULL; i++)

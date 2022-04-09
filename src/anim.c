@@ -1766,7 +1766,10 @@ static boolean DoGlobalAnim_EventAction(struct GlobalAnimPartControlInfo *part)
   if (event_action == ANIM_EVENT_ACTION_NONE)
     return FALSE;
 
-  PushUserEvent(USEREVENT_ANIM_EVENT_ACTION, event_action, 0);
+  if (event_action < MAX_IMAGE_FILES)
+    PushUserEvent(USEREVENT_ANIM_EVENT_ACTION, event_action, 0);
+  else
+    OpenURLFromHash(anim_url_hash, event_action);
 
   // check if further actions are allowed to be executed
   if (part->control_info.style & STYLE_MULTIPLE_ACTIONS)

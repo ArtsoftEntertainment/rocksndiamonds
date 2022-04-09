@@ -3906,6 +3906,7 @@ extern SetupFileHash	       *element_token_hash;
 extern SetupFileHash	       *graphic_token_hash;
 extern SetupFileHash	       *font_token_hash;
 extern SetupFileHash	       *hide_setup_hash;
+extern SetupFileHash	       *anim_url_hash;
 extern struct ConfigTypeInfo	image_config_suffix[];
 extern struct ConfigTypeInfo	sound_config_suffix[];
 extern struct ConfigTypeInfo	music_config_suffix[];

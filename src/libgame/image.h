@@ -49,6 +49,9 @@
 // this bitmap pointer points to the bitmap with default image size
 #define IMG_BITMAP_STANDARD	IMG_BITMAP_32x32
 
+// maximum number of statically and dynamically defined image files
+#define MAX_IMAGE_FILES		1000000
+
 
 #define GET_BITMAP_ID_FROM_TILESIZE(x)	((x) ==  1 ? IMG_BITMAP_1x1   :	\
 					 (x) ==  2 ? IMG_BITMAP_2x2   :	\

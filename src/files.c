@@ -11488,6 +11488,18 @@ static int get_anim_action_parameter_value(char *token)
   }
 
   if (result == -1)
+  {
+    if (isURL(token))
+    {
+      result = get_hash_from_key(token);	// unsigned int => int
+      result = ABS(result);			// may be negative now
+      result += (result < MAX_IMAGE_FILES ? MAX_IMAGE_FILES : 0);
+
+      setHashEntry(anim_url_hash, int2str(result, 0), token);
+    }
+  }
+
+  if (result == -1)
     result = ANIM_EVENT_ACTION_NONE;
 
   return result;
