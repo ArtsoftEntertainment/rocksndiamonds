@@ -1756,7 +1756,7 @@ char *getHomeDir(void)
       strcpy(dir, ".");
   }
 #elif defined(PLATFORM_EMSCRIPTEN)
-  dir = "/persistent";
+  dir = PERSISTENT_DIRECTORY;
 #elif defined(PLATFORM_UNIX)
   if (dir == NULL)
   {

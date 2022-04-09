@@ -1908,17 +1908,19 @@ void InitEmscriptenFilesystem(void)
 {
 #if defined(PLATFORM_EMSCRIPTEN)
   EM_ASM
-  (
+  ({
+    dir = UTF8ToString($0);
+
     Module.sync_done = 0;
 
-    FS.mkdir('/persistent');		// create persistent data directory
-    FS.mount(IDBFS, {}, '/persistent');	// mount with IDBFS filesystem type
+    FS.mkdir(dir);			// create persistent data directory
+    FS.mount(IDBFS, {}, dir);		// mount with IDBFS filesystem type
     FS.syncfs(true, function(err)	// sync persistent data into memory
     {
       assert(!err);
       Module.sync_done = 1;
     });
-  );
+  }, PERSISTENT_DIRECTORY);
 
   // wait for persistent data to be synchronized to memory
   while (emscripten_run_script_int("Module.sync_done") == 0)
