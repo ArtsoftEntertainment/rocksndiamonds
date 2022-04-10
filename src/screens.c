@@ -4778,6 +4778,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
   if (mx || my)		// mouse input
   {
+    scores.was_just_playing = FALSE;
+
     x = (mx - amSX) / 32;
     y = (my - amSY) / 32 - MENU_SCREEN_START_YPOS;
 
@@ -4786,6 +4788,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   }
   else if (dx || dy)	// keyboard or scrollbar/scrollbutton input
   {
+    scores.was_just_playing = FALSE;
+
     // move cursor instead of scrolling when already at start/end of list
     if (dy == -1 * SCROLL_LINE && ti->cl_first == 0)
       dy = -1;
@@ -5054,16 +5058,16 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  }
 	  else if (game_status == GAME_MODE_SCORES)
 	  {
-	    if (game_status_last_screen == GAME_MODE_PLAYING &&
-		setup.auto_play_next_level && setup.increment_levels &&
+	    if (setup.auto_play_next_level && setup.increment_levels &&
 		scores.last_level_nr < leveldir_current->last_level &&
+		scores.was_just_playing &&
 		!network_playing)
 	    {
 	      StartGameActions(network.enabled, setup.autorecord,
 			       level.random_seed);
 	      return;
 	    }
-	    else
+	    else if (!scores.was_just_playing)
 	    {
 	      SetGameStatus(GAME_MODE_SCOREINFO);
 
@@ -5263,6 +5267,7 @@ static void DrawHallOfFame_setScoreEntries(void)
 void DrawHallOfFame(int level_nr)
 {
   scores.last_level_nr = level_nr;
+  scores.was_just_playing = (game_status_last_screen == GAME_MODE_PLAYING);
 
   // (this is needed when called from GameEnd() after winning a game)
   KeyboardAutoRepeatOn();
@@ -5569,7 +5574,7 @@ void HandleScoreInfo(int mx, int my, int dx, int dy, int button)
 
     SetGameStatus(GAME_MODE_SCORES);
 
-    DrawHallOfFame(level_nr);
+    DrawHallOfFame(scores.last_level_nr);
   }
   else if (dx)
   {

@@ -8682,6 +8682,11 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
   scores->uploaded = FALSE;
   scores->tape_downloaded = FALSE;
   scores->force_last_added = FALSE;
+
+  // The following values are intentionally not reset here:
+  // - last_level_nr
+  // - last_entry_nr
+  // - was_just_playing
 }
 
 static void setScoreInfoToDefaults(void)
