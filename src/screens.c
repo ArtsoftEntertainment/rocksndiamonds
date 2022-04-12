@@ -5526,14 +5526,16 @@ static void DrawScoreInfo(int entry_nr)
   scores.last_entry_nr = entry_nr;
   score_info_tape_play = FALSE;
 
-  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
-
   UnmapAllGadgets();
 
   FadeOut(REDRAW_FIELD);
 
   // needed if different viewport properties defined after playing score tape
   ChangeViewportPropertiesIfNeeded();
+
+  // needed if different background image defined after playing score tape
+  SetMainBackgroundImage(IMG_BACKGROUND_SCORES);
+  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
 
   DrawScoreInfo_Content(entry_nr);
 
