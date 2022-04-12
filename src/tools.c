@@ -1095,6 +1095,13 @@ void FadeSkipNextFadeOut(void)
   FadeExt(0, FADE_MODE_SKIP_FADE_OUT, FADE_TYPE_SKIP);
 }
 
+static int getGlobalGameStatus(int status)
+{
+  return (status == GAME_MODE_PSEUDO_TYPENAME ? GAME_MODE_MAIN :
+	  status == GAME_MODE_SCOREINFO       ? GAME_MODE_SCORES :
+	  status);
+}
+
 static Bitmap *getBitmapFromGraphicOrDefault(int graphic, int default_graphic)
 {
   if (graphic == IMG_UNDEFINED)
@@ -1117,15 +1124,14 @@ static Bitmap *getGlobalBorderBitmap(int graphic)
   return getBitmapFromGraphicOrDefault(graphic, IMG_GLOBAL_BORDER);
 }
 
-Bitmap *getGlobalBorderBitmapFromStatus(int status)
+Bitmap *getGlobalBorderBitmapFromStatus(int status_raw)
 {
+  int status = getGlobalGameStatus(status_raw);
   int graphic =
-    (status == GAME_MODE_MAIN ||
-     status == GAME_MODE_PSEUDO_TYPENAME	? IMG_GLOBAL_BORDER_MAIN :
-     status == GAME_MODE_SCORES ||
-     status == GAME_MODE_SCOREINFO		? IMG_GLOBAL_BORDER_SCORES :
-     status == GAME_MODE_EDITOR			? IMG_GLOBAL_BORDER_EDITOR :
-     status == GAME_MODE_PLAYING		? IMG_GLOBAL_BORDER_PLAYING :
+    (status == GAME_MODE_MAIN    ? IMG_GLOBAL_BORDER_MAIN :
+     status == GAME_MODE_SCORES  ? IMG_GLOBAL_BORDER_SCORES :
+     status == GAME_MODE_EDITOR  ? IMG_GLOBAL_BORDER_EDITOR :
+     status == GAME_MODE_PLAYING ? IMG_GLOBAL_BORDER_PLAYING :
      IMG_GLOBAL_BORDER);
 
   return getGlobalBorderBitmap(graphic);
@@ -9740,10 +9746,9 @@ void ChangeViewportPropertiesIfNeeded(void)
 {
   boolean use_mini_tilesize = (level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 			       FALSE : setup.small_game_graphics);
-  int gfx_game_mode = (game_status == GAME_MODE_SCOREINFO ? GAME_MODE_SCORES :
-		       game_status);
-  int gfx_game_mode2 = (game_status == GAME_MODE_EDITOR ? GAME_MODE_DEFAULT :
-			game_status);
+  int gfx_game_mode = getGlobalGameStatus(game_status);
+  int gfx_game_mode2 = (gfx_game_mode == GAME_MODE_EDITOR ? GAME_MODE_DEFAULT :
+			gfx_game_mode);
   struct RectWithBorder *vp_window    = &viewport.window[gfx_game_mode];
   struct RectWithBorder *vp_playfield = &viewport.playfield[gfx_game_mode];
   struct RectWithBorder *vp_door_1    = &viewport.door_1[gfx_game_mode];
