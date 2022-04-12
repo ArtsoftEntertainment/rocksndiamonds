@@ -9740,7 +9740,8 @@ void ChangeViewportPropertiesIfNeeded(void)
 {
   boolean use_mini_tilesize = (level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 			       FALSE : setup.small_game_graphics);
-  int gfx_game_mode = game_status;
+  int gfx_game_mode = (game_status == GAME_MODE_SCOREINFO ? GAME_MODE_SCORES :
+		       game_status);
   int gfx_game_mode2 = (game_status == GAME_MODE_EDITOR ? GAME_MODE_DEFAULT :
 			game_status);
   struct RectWithBorder *vp_window    = &viewport.window[gfx_game_mode];
