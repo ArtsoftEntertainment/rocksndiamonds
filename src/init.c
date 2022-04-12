@@ -1930,6 +1930,16 @@ static void InitGraphicCompatibilityInfo(void)
 	// process all images which default to same image as "global.door"
 	if (strEqual(fi->default_filename, fi_global_door->default_filename))
 	{
+	  // skip all images that are cloned from images that default to same
+	  // image as "global.door", but that are redefined to something else
+	  if (graphic_info[i].clone_from != -1)
+	  {
+	    int cloned_graphic = graphic_info[i].clone_from;
+
+	    if (getImageListEntryFromImageID(cloned_graphic)->redefined)
+	      continue;
+	  }
+
 #if 0
 	  Debug("init:InitGraphicCompatibilityInfo",
 		"special treatment needed for token '%s'", fi->token);
