@@ -5533,6 +5533,10 @@ static void DrawScoreInfo(int entry_nr)
   // needed if different viewport properties defined after playing score tape
   ChangeViewportPropertiesIfNeeded();
 
+  // set this after "ChangeViewportPropertiesIfNeeded()" (which may reset it)
+  SetDrawDeactivationMask(REDRAW_NONE);
+  SetDrawBackgroundMask(REDRAW_FIELD);
+
   // needed if different background image defined after playing score tape
   SetMainBackgroundImage(IMG_BACKGROUND_SCORES);
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
