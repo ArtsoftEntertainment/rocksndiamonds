@@ -1122,7 +1122,8 @@ Bitmap *getGlobalBorderBitmapFromStatus(int status)
   int graphic =
     (status == GAME_MODE_MAIN ||
      status == GAME_MODE_PSEUDO_TYPENAME	? IMG_GLOBAL_BORDER_MAIN :
-     status == GAME_MODE_SCORES			? IMG_GLOBAL_BORDER_SCORES :
+     status == GAME_MODE_SCORES ||
+     status == GAME_MODE_SCOREINFO		? IMG_GLOBAL_BORDER_SCORES :
      status == GAME_MODE_EDITOR			? IMG_GLOBAL_BORDER_EDITOR :
      status == GAME_MODE_PLAYING		? IMG_GLOBAL_BORDER_PLAYING :
      IMG_GLOBAL_BORDER);
