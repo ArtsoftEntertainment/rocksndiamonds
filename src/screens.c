@@ -5321,6 +5321,28 @@ static char *getHallOfFameScoreText(int nr, int size)
     return getHallOfFameTimeText(nr);			// show playing time
 }
 
+static char *getHallOfFameTapeDateText(struct ScoreEntry *entry)
+{
+  static char tape_date[MAX_ISO_DATE_LEN + 1];
+  int i, j;
+
+  if (!strEqual(entry->tape_date, UNKNOWN_NAME) ||
+      strEqual(entry->tape_basename, UNDEFINED_FILENAME))
+    return entry->tape_date;
+
+  for (i = 0, j = 0; i < 8; i++, j++)
+  {
+    tape_date[j] = entry->tape_basename[i];
+
+    if (i == 3 || i == 5)
+      tape_date[++j] = '-';
+  }
+
+  tape_date[MAX_ISO_DATE_LEN] = '\0';
+
+  return tape_date;
+}
+
 static void HandleHallOfFame_SelectLevel(int step, int direction)
 {
   int old_level_nr = scores.last_level_nr;
@@ -5377,6 +5399,7 @@ static void DrawScoreInfo_Content(int entry_nr)
 {
   struct ScoreEntry *entry = &scores.entry[entry_nr];
   char *pos_text = getHallOfFameRankText(entry_nr, 0);
+  char *tape_date = getHallOfFameTapeDateText(entry);
   int font_title = MENU_INFO_FONT_TITLE;
   int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
@@ -5396,10 +5419,10 @@ static void DrawScoreInfo_Content(int entry_nr)
   int select_y1, select_y2;
   int play_x, play_y;
   int play_height = screen_gadget[SCREEN_CTRL_ID_PLAY_TAPE]->height;
-  boolean play_visible = (entry->id != -1);
+  boolean play_visible = !strEqual(tape_date, UNKNOWN_NAME);
   int font_width = getFontWidth(font_text);
   int font_height = getFontHeight(font_text);
-  int tape_date_width  = getTextWidth(entry->tape_date, font_text);
+  int tape_date_width  = getTextWidth(tape_date, font_text);
   int pad_left = xstart2;
   int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
   int max_chars_per_line = (SXSIZE - pad_left - pad_right) / font_width;
@@ -5473,7 +5496,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   play_y = SY + ystart + (font_height - play_height) / 2;
 
   DrawTextF(xstart1, ystart, font_head, "Tape Date");
-  DrawTextF(xstart2, ystart, font_text, entry->tape_date);
+  DrawTextF(xstart2, ystart, font_text, tape_date);
   ystart += ystep_line;
 
   DrawTextF(xstart1, ystart, font_head, "Platform");

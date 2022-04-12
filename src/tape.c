@@ -1405,7 +1405,7 @@ boolean PlayScoreTape(int entry_nr)
   char *tape_filename = getScoreTapeFilename(entry->tape_basename, level_nr);
   boolean download_tape = (!fileExists(tape_filename));
 
-  if (entry->id == -1)
+  if (download_tape && entry->id == -1)
     return FALSE;
 
   server_scores.tape_downloaded = FALSE;
