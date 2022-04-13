@@ -5436,7 +5436,7 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   ClearField();
 
-  // redraw score selection buttons (which have just been erased)
+  // redraw level selection buttons (which have just been erased)
   RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
 
   if (score_entries == NULL)
@@ -9736,12 +9736,14 @@ static void CreateScreenMenubuttons(void)
       if (strPrefix(leveldir_current->identifier, "snake_bite"))
 	title_width = strlen(INFOTEXT_SCORE_ENTRY) * 32;
 
+      // use "SX" here to center buttons (ignore horizontal draw offset)
       if (pos->x == -1)
 	x = (id == SCREEN_CTRL_ID_PREV_LEVEL2 ?
 	     SX + (SXSIZE - title_width) / 2 - width * 3 / 2 :
 	     id == SCREEN_CTRL_ID_NEXT_LEVEL2 ?
 	     SX + (SXSIZE + title_width) / 2 + width / 2 : 0);
 
+      // use "mSY" here to place buttons (respect vertical draw offset)
       if (pos->y == -1)
 	y = (id == SCREEN_CTRL_ID_PREV_LEVEL2 ||
 	     id == SCREEN_CTRL_ID_NEXT_LEVEL2 ? mSY + MENU_TITLE1_YPOS : 0);
