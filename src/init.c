@@ -1964,6 +1964,56 @@ static void InitGraphicCompatibilityInfo(void)
     ClearRectangle(bitmap, 514, 66, 32, 480);
   }
 
+  // special compatibility handling for "Jue" (2007) graphics set
+  if (strPrefix(leveldir_current->graphics_set, "jue0"))
+  {
+    int font_title[] =
+    {
+      FONT_TITLE_1,
+      FONT_TITLE_2,
+
+      -1
+    };
+    int font_text[] =
+    {
+      FONT_TEXT_1,
+      FONT_TEXT_2,
+      FONT_TEXT_3,
+      FONT_TEXT_4,
+
+      -1
+    };
+    int mode_old = GAME_MODE_SCORES;
+    int mode_new = GAME_MODE_SCOREINFO;
+    int i, j;
+
+    // adjust title screens on score info page
+    for (i = 0; font_title[i] != -1; i++)
+    {
+      struct FontInfo *fi = &font_info[font_title[i]];
+
+      fi->special_graphic[mode_new]   = fi->special_graphic[mode_old];
+      fi->special_bitmap_id[mode_new] = fi->special_bitmap_id[mode_old];
+    }
+
+    // adjust vertical text and button positions on scores page
+    for (i = 0; font_text[i] != -1; i++)
+    {
+      for (j = 0; j < 2; j++)
+      {
+	int font_nr = (j == 0 ? font_text[i] : FONT_ACTIVE(font_text[i]));
+	int font_bitmap_id = font_info[font_nr].special_bitmap_id[mode_old];
+	int font_yoffset = 10;
+
+	gfx.font_bitmap_info[font_bitmap_id].draw_yoffset = font_yoffset;
+      }
+    }
+
+    // adjust page offsets on score info page
+    menu.draw_xoffset[mode_new] = menu.draw_xoffset[mode_old];
+    menu.draw_yoffset[mode_new] = menu.draw_yoffset[mode_old];
+  }
+
   InitGraphicCompatibilityInfo_Doors();
 }
 
