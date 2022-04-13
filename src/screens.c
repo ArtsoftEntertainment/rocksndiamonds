@@ -5533,6 +5533,9 @@ static void DrawScoreInfo(int entry_nr)
 
   UnmapAllGadgets();
 
+  FreeScreenGadgets();
+  CreateScreenGadgets();
+
   FadeOut(REDRAW_FIELD);
 
   // needed if different viewport properties defined after playing score tape
