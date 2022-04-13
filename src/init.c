@@ -1952,6 +1952,18 @@ static void InitGraphicCompatibilityInfo(void)
     }
   }
 
+  // special compatibility handling for "Snake Bite" graphics set
+  if (strPrefix(leveldir_current->identifier, "snake_bite"))
+  {
+    Bitmap *bitmap = graphic_info[IMG_BACKGROUND_SCORES].bitmap;
+
+    BlitBitmap(bitmap, bitmap, 18,  66, 32, 480, 50,  66);
+    BlitBitmap(bitmap, bitmap, 466, 66, 32, 480, 434, 66);
+
+    ClearRectangle(bitmap, 2,   66, 32, 480);
+    ClearRectangle(bitmap, 514, 66, 32, 480);
+  }
+
   InitGraphicCompatibilityInfo_Doors();
 }
 

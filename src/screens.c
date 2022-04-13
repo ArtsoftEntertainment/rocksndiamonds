@@ -1458,6 +1458,11 @@ static void clearMenuListArea(void)
   // clear menu list area, but not title or scrollbar
   DrawBackground(mSX, mSY + MENU_SCREEN_START_YPOS * 32,
                  scrollbar_xpos - mSX, NUM_MENU_ENTRIES_ON_SCREEN * 32);
+
+  // special compatibility handling for "Snake Bite" graphics set
+  if (strPrefix(leveldir_current->identifier, "snake_bite"))
+    ClearRectangle(drawto, mSX, mSY + MENU_SCREEN_START_YPOS * 32,
+		   scrollbar_xpos - mSX, NUM_MENU_ENTRIES_ON_SCREEN * 32);
 }
 
 static void drawCursorExt(int xpos, int ypos, boolean active, int graphic)
@@ -5540,6 +5545,11 @@ static void DrawScoreInfo(int entry_nr)
   // needed if different background image defined after playing score tape
   SetMainBackgroundImage(IMG_BACKGROUND_SCORES);
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_SCOREINFO);
+
+  // special compatibility handling for "Snake Bite" graphics set
+  if (strPrefix(leveldir_current->identifier, "snake_bite"))
+    ClearRectangle(gfx.background_bitmap, gfx.real_sx, gfx.real_sy + 64,
+		   gfx.full_sxsize, gfx.full_sysize - 64);
 
   DrawScoreInfo_Content(entry_nr);
 
@@ -9721,6 +9731,10 @@ static void CreateScreenMenubuttons(void)
     {
       // if x/y set to -1, dynamically place buttons next to title text
       int title_width = getTextWidth(INFOTEXT_SCORE_ENTRY, FONT_TITLE_1);
+
+      // special compatibility handling for "Snake Bite" graphics set
+      if (strPrefix(leveldir_current->identifier, "snake_bite"))
+	title_width = strlen(INFOTEXT_SCORE_ENTRY) * 32;
 
       if (pos->x == -1)
 	x = (id == SCREEN_CTRL_ID_PREV_LEVEL2 ?
