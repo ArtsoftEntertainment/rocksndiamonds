@@ -2299,6 +2299,11 @@ void HandleKey(Key key, int key_status)
     HandleSoundButtonKeys(key);
   }
 
+  if (game_status == GAME_MODE_SCOREINFO)
+  {
+    HandleScreenGadgetKeys(key);
+  }
+
   if (game_status == GAME_MODE_PLAYING && !network_playing)
   {
     int centered_player_nr_next = -999;
