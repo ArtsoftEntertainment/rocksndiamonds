@@ -5416,10 +5416,11 @@ static void DrawScoreInfo_Content(int entry_nr)
   int ystep_title = getMenuTextStep(spacing_title, font_title);
   int ystep_para  = getMenuTextStep(spacing_para,  font_text);
   int ystep_line  = getMenuTextStep(spacing_line,  font_text);
+  int xstart  = mSX - SX + menu.left_spacing[GAME_MODE_SCOREINFO];
   int ystart  = mSY - SY + menu.top_spacing[GAME_MODE_SCOREINFO];
   int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
-  int xstart1 = mSX - SX + 2 * xstep;
-  int xstart2 = mSX - SX + 13 * xstep;
+  int xstart1 = xstart + xstep;
+  int xstart2 = xstart + xstep * 12;
   int select_x = SX + xstart1;
   int select_y1, select_y2;
   int play_x, play_y;
@@ -5429,7 +5430,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   int font_height = getFontHeight(font_text);
   int tape_date_width  = getTextWidth(tape_date, font_text);
   int pad_left = xstart2;
-  int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
+  int pad_right = menu.right_spacing[GAME_MODE_SCOREINFO];
   int max_chars_per_line = (SXSIZE - pad_left - pad_right) / font_width;
   int max_lines_per_text = 5;
   int lines;
