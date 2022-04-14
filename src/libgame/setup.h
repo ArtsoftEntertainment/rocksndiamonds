@@ -294,6 +294,7 @@ void MarkTapeDirectoryUploadsAsComplete(char *);
 void MarkTapeDirectoryUploadsAsIncomplete(char *);
 boolean CheckTapeDirectoryUploadsComplete(char *);
 
+void InitMissingFileHash(void);
 void InitTapeDirectory(char *);
 void InitScoreDirectory(char *);
 void InitScoreCacheDirectory(char *);

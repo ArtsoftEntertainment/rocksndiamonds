@@ -70,6 +70,7 @@ static int token_comment_position = TOKEN_COMMENT_POSITION_DEFAULT;
 static SetupFileHash *artworkinfo_cache_old = NULL;
 static SetupFileHash *artworkinfo_cache_new = NULL;
 static SetupFileHash *optional_tokens_hash = NULL;
+static SetupFileHash *missing_file_hash = NULL;
 static boolean use_artworkinfo_cache = TRUE;
 static boolean update_artworkinfo_cache = FALSE;
 
@@ -77,6 +78,16 @@ static boolean update_artworkinfo_cache = FALSE;
 // ----------------------------------------------------------------------------
 // file functions
 // ----------------------------------------------------------------------------
+
+static void WarnUsingFallback(char *filename)
+{
+  if (getHashEntry(missing_file_hash, filename) == NULL)
+  {
+    setHashEntry(missing_file_hash, filename, "");
+
+    Warn("cannot find artwork file '%s' (using fallback)", filename);
+  }
+}
 
 static char *getLevelClassDescription(TreeInfo *ti)
 {
@@ -976,7 +987,7 @@ char *getCustomImageFilename(char *basename)
   {
     free(filename);
 
-    Warn("cannot find artwork file '%s' (using fallback)", basename);
+    WarnUsingFallback(basename);
 
     // 6th try: look for fallback artwork in old default artwork directory
     // (needed to prevent errors when trying to access unused artwork files)
@@ -1047,7 +1058,7 @@ char *getCustomSoundFilename(char *basename)
   {
     free(filename);
 
-    Warn("cannot find artwork file '%s' (using fallback)", basename);
+    WarnUsingFallback(basename);
 
     // 6th try: look for fallback artwork in old default artwork directory
     // (needed to prevent errors when trying to access unused artwork files)
@@ -1118,7 +1129,7 @@ char *getCustomMusicFilename(char *basename)
   {
     free(filename);
 
-    Warn("cannot find artwork file '%s' (using fallback)", basename);
+    WarnUsingFallback(basename);
 
     // 6th try: look for fallback artwork in old default artwork directory
     // (needed to prevent errors when trying to access unused artwork files)
@@ -1240,6 +1251,14 @@ boolean CheckTapeDirectoryUploadsComplete(char *level_subdir)
   checked_free(filename);
 
   return success;
+}
+
+void InitMissingFileHash(void)
+{
+  if (missing_file_hash == NULL)
+    freeSetupFileHash(missing_file_hash);
+
+  missing_file_hash = newSetupFileHash();
 }
 
 void InitTapeDirectory(char *level_subdir)

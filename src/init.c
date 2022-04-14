@@ -6301,6 +6301,8 @@ void ReloadCustomArtwork(int force_reload)
 
   UPDATE_BUSY_STATE();
 
+  InitMissingFileHash();
+
   if (gfx_new_identifier != NULL || force_reload_gfx)
   {
 #if 0
@@ -6436,6 +6438,8 @@ void OpenAll(void)
   InitRND(NEW_RANDOMIZE);
   InitSimpleRandom(NEW_RANDOMIZE);
   InitBetterRandom(NEW_RANDOMIZE);
+
+  InitMissingFileHash();
 
   print_timestamp_time("[init global stuff]");
 
