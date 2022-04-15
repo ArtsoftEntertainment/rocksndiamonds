@@ -1966,7 +1966,7 @@ static void InitGraphicCompatibilityInfo(void)
 
   // special compatibility handling for "Jue" graphics sets (2007 and 2019)
   boolean supports_score_info = (menu.draw_xoffset[GAME_MODE_SCOREINFO] != 0);
-  if (strPrefix(leveldir_current->graphics_set, "jue") && !supports_score_info)
+  if (strPrefix(artwork.gfx_current_identifier, "jue") && !supports_score_info)
   {
     int font_title[] =
     {
@@ -2002,7 +2002,7 @@ static void InitGraphicCompatibilityInfo(void)
     {
       for (j = 0; j < 2; j++)
       {
-	boolean jue0 = strEqual(leveldir_current->graphics_set, "jue0");
+	boolean jue0 = strEqual(artwork.gfx_current_identifier, "jue0");
 	int font_nr = (j == 0 ? font_text[i] : FONT_ACTIVE(font_text[i]));
 	int font_bitmap_id = font_info[font_nr].special_bitmap_id[mode_old];
 	int font_yoffset = (jue0 ? 10 : 5);
