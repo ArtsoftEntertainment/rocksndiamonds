@@ -6260,6 +6260,13 @@ static char *setNewArtworkIdentifier(int type)
   return artwork_new_identifier;
 }
 
+static void InitArtworkIdentifier(void)
+{
+  setNewArtworkIdentifier(ARTWORK_TYPE_GRAPHICS);
+  setNewArtworkIdentifier(ARTWORK_TYPE_SOUNDS);
+  setNewArtworkIdentifier(ARTWORK_TYPE_MUSIC);
+}
+
 void ReloadCustomArtwork(int force_reload)
 {
   int last_game_status = game_status;	// save current game status
@@ -6508,6 +6515,9 @@ void OpenAll(void)
 
   InitOverrideArtwork();	// needs to know current level directory
   print_timestamp_time("InitOverrideArtwork");
+
+  InitArtworkIdentifier();	// needs to know current level directory
+  print_timestamp_time("InitArtworkIdentifier");
 
   InitImages();			// needs to know current level directory
   print_timestamp_time("InitImages");
