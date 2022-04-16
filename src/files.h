@@ -54,6 +54,7 @@ void LoadTapeFromFilename(char *);
 void LoadTape(int);
 void LoadSolutionTape(int);
 void LoadScoreTape(char *, int);
+void LoadScoreCacheTape(char *, int);
 void SaveTapeToFilename(char *);
 void SaveTape(int);
 void SaveScoreTape(int);

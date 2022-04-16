@@ -8340,6 +8340,13 @@ void LoadScoreTape(char *score_tape_basename, int nr)
   LoadTapeFromFilename(filename);
 }
 
+void LoadScoreCacheTape(char *score_tape_basename, int nr)
+{
+  char *filename = getScoreCacheTapeFilename(score_tape_basename, nr);
+
+  LoadTapeFromFilename(filename);
+}
+
 static boolean checkSaveTape_SCRN(struct TapeInfo *tape)
 {
   // chunk required for team mode tapes with non-default screen size

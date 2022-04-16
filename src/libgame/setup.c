@@ -164,6 +164,19 @@ static char *getScoreTapeDir(char *level_subdir, int nr)
   return score_tape_dir;
 }
 
+static char *getScoreCacheTapeDir(char *level_subdir, int nr)
+{
+  static char *score_cache_tape_dir = NULL;
+  char tape_subdir[MAX_FILENAME_LEN];
+
+  checked_free(score_cache_tape_dir);
+
+  sprintf(tape_subdir, "%03d", nr);
+  score_cache_tape_dir = getPath2(getScoreCacheDir(level_subdir), tape_subdir);
+
+  return score_cache_tape_dir;
+}
+
 static char *getUserSubdir(int nr)
 {
   static char user_subdir[16] = { 0 };
@@ -701,6 +714,21 @@ char *getScoreTapeFilename(char *basename_no_ext, int nr)
 
   // used instead of "leveldir_current->subdir" (for network games)
   filename = getPath2(getScoreTapeDir(levelset.identifier, nr), basename);
+
+  return filename;
+}
+
+char *getScoreCacheTapeFilename(char *basename_no_ext, int nr)
+{
+  static char *filename = NULL;
+  char basename[MAX_FILENAME_LEN];
+
+  checked_free(filename);
+
+  sprintf(basename, "%s.%s", basename_no_ext, TAPEFILE_EXTENSION);
+
+  // used instead of "leveldir_current->subdir" (for network games)
+  filename = getPath2(getScoreCacheTapeDir(levelset.identifier, nr), basename);
 
   return filename;
 }
@@ -1293,6 +1321,13 @@ void InitScoreTapeDirectory(char *level_subdir, int nr)
   InitScoreDirectory(level_subdir);
 
   createDirectory(getScoreTapeDir(level_subdir, nr), "score tape", PERMS_PRIVATE);
+}
+
+void InitScoreCacheTapeDirectory(char *level_subdir, int nr)
+{
+  InitScoreCacheDirectory(level_subdir);
+
+  createDirectory(getScoreCacheTapeDir(level_subdir, nr), "score tape", PERMS_PRIVATE);
 }
 
 static void SaveUserLevelInfo(void);
