@@ -906,6 +906,9 @@ void FadeRectangle(int x, int y, int width, int height,
 void FillRectangle(Bitmap *bitmap, int x, int y, int width, int height,
 		   Pixel color)
 {
+  if (program.headless)
+    return;
+
   if (DrawingDeactivated(x, y, width, height))
     return;
 
