@@ -4781,6 +4781,15 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     return;
   }
 
+#if defined(PLATFORM_ANDROID)
+  // touching the screen anywhere continues playing the next level
+  if ((mx || my) && scores.was_just_playing)
+  {
+    mx = my = 0;
+    button = MB_MENU_CHOICE;
+  }
+#endif
+
   // any mouse click or direction input stops playing the next level
   if ((mx || my || dx || dy) && scores.was_just_playing)
   {
