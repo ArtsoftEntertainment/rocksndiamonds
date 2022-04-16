@@ -651,7 +651,7 @@ static void *CreateThreadData_ApiGetScoreTape(int nr, int id,
 {
   struct ApiGetScoreTapeThreadData *data =
     checked_malloc(sizeof(struct ApiGetScoreTapeThreadData));
-  char *score_tape_filename = getScoreTapeFilename(score_tape_basename, nr);
+  char *score_tape_filename = getScoreCacheTapeFilename(score_tape_basename, nr);
 
   data->level_nr = nr;
   data->score_id = id;
@@ -716,7 +716,7 @@ static void HandleResponse_ApiGetScoreTape(struct HttpResponse *response,
   int i;
 
   // used instead of "leveldir_current->subdir" (for network games)
-  InitScoreTapeDirectory(levelset.identifier, level_nr);
+  InitScoreCacheTapeDirectory(levelset.identifier, level_nr);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {

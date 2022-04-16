@@ -1402,7 +1402,10 @@ static boolean PlayScoreTape_WaitForDownload(void)
 boolean PlayScoreTape(int entry_nr)
 {
   struct ScoreEntry *entry = &scores.entry[entry_nr];
-  char *tape_filename = getScoreTapeFilename(entry->tape_basename, level_nr);
+  char *tape_filename =
+    (entry->id == -1 ?
+     getScoreTapeFilename(entry->tape_basename, level_nr) :
+     getScoreCacheTapeFilename(entry->tape_basename, level_nr));
   boolean download_tape = (!fileExists(tape_filename));
 
   if (download_tape && entry->id == -1)
@@ -1439,7 +1442,10 @@ boolean PlayScoreTape(int entry_nr)
   // if tape recorder already contains a tape, remove it without asking
   TapeErase();
 
-  LoadScoreTape(entry->tape_basename, level_nr);
+  if (entry->id == -1)
+    LoadScoreTape(entry->tape_basename, level_nr);
+  else
+    LoadScoreCacheTape(entry->tape_basename, level_nr);
 
   if (TAPE_IS_EMPTY(tape))
   {
