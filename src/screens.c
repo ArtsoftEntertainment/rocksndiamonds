@@ -4781,10 +4781,16 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     return;
   }
 
-  if (mx || my)		// mouse input
+  // any mouse click or direction input stops playing the next level
+  if ((mx || my || dx || dy) && scores.was_just_playing)
   {
     scores.was_just_playing = FALSE;
+    level_nr = scores.last_level_nr;
+    LoadLevel(level_nr);
+  }
 
+  if (mx || my)		// mouse input
+  {
     x = (mx - amSX) / 32;
     y = (my - amSY) / 32 - MENU_SCREEN_START_YPOS;
 
@@ -4793,8 +4799,6 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   }
   else if (dx || dy)	// keyboard or scrollbar/scrollbutton input
   {
-    scores.was_just_playing = FALSE;
-
     // move cursor instead of scrolling when already at start/end of list
     if (dy == -1 * SCROLL_LINE && ti->cl_first == 0)
       dy = -1;
