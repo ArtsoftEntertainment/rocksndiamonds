@@ -1406,7 +1406,13 @@ boolean PlayScoreTape(int entry_nr)
   boolean download_tape = (!fileExists(tape_filename));
 
   if (download_tape && entry->id == -1)
+  {
+    FadeSkipNextFadeIn();
+
+    Request("Cannot find score tape!", REQ_CONFIRM);
+
     return FALSE;
+  }
 
   server_scores.tape_downloaded = FALSE;
 
