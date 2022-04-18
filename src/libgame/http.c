@@ -65,18 +65,18 @@ static void SetHttpResponseToDefaults(struct HttpResponse *response)
   response->status_text[0] = '\0';
 }
 
-struct HttpResponse *GetHttpResponseFromBuffer(void *buffer, int size)
+struct HttpResponse *GetHttpResponseFromBuffer(void *buffer, int body_size)
 {
-  if (size > MAX_HTTP_BODY_SIZE)
+  if (body_size > MAX_HTTP_BODY_SIZE)
     return NULL;
 
   struct HttpResponse *response = checked_calloc(sizeof(struct HttpResponse));
 
   SetHttpResponseToDefaults(response);
 
-  strncpy(response->body, buffer, MAX_HTTP_BODY_SIZE);
-  response->body[MAX_HTTP_BODY_SIZE] = '\0';
-  response->body_size = MIN(size, MAX_HTTP_BODY_SIZE);
+  memcpy(response->body, buffer, body_size);
+  response->body[body_size] = '\0';
+  response->body_size = body_size;
 
   return response;
 }
