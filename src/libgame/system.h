@@ -657,7 +657,7 @@
 #define DOCS_DIRECTORY		"docs"
 #define ELEMENTS_DIRECTORY	"elements"
 #define CREDITS_DIRECTORY	"credits"
-#define INFO_DIRECTORY		"info"
+#define PROGRAM_INFO_DIRECTORY	"program"
 #define CACHE_DIRECTORY		"cache"
 #define CONF_DIRECTORY		"conf"
 #define NETWORK_DIRECTORY	"network"

@@ -939,7 +939,7 @@ char *getProgramInfoFilename(int nr)
   static char *filename = NULL;
 
   if (info_subdir == NULL)
-    info_subdir = getPath2(DOCS_DIRECTORY, INFO_DIRECTORY);
+    info_subdir = getPath2(DOCS_DIRECTORY, PROGRAM_INFO_DIRECTORY);
 
   checked_free(filename);
 
