@@ -593,6 +593,34 @@ char *getProgramConfigFilename(char *command_filename)
   return config_filename_3;
 }
 
+static char *getPlatformConfigFilename(char *config_filename)
+{
+  static char *platform_config_filename = NULL;
+  static boolean initialized = FALSE;
+
+  if (!initialized)
+  {
+    char *config_basepath = getBasePath(config_filename);
+    char *config_basename = getBaseNameNoSuffix(config_filename);
+    char *config_filename_prefix = getPath2(config_basepath, config_basename);
+    char *platform_string_lower = getStringToLower(PLATFORM_STRING);
+    char *platform_suffix = getStringCat2("-", platform_string_lower);
+
+    platform_config_filename = getStringCat3(config_filename_prefix,
+					     platform_suffix, ".conf");
+
+    checked_free(config_basepath);
+    checked_free(config_basename);
+    checked_free(config_filename_prefix);
+    checked_free(platform_string_lower);
+    checked_free(platform_suffix);
+
+    initialized = TRUE;
+  }
+
+  return platform_config_filename;
+}
+
 char *getTapeFilename(int nr)
 {
   static char *filename = NULL;
@@ -747,6 +775,11 @@ char *getSetupFilename(void)
 char *getDefaultSetupFilename(void)
 {
   return program.config_filename;
+}
+
+char *getPlatformSetupFilename(void)
+{
+  return getPlatformConfigFilename(program.config_filename);
 }
 
 char *getEditorSetupFilename(void)

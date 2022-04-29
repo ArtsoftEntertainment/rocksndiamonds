@@ -10841,6 +10841,12 @@ void LoadSetup_Default(void)
   if (fileExists(filename))
     LoadSetupFromFilename(filename);
 
+  // try to load setup values from platform setup file
+  filename = getPlatformSetupFilename();
+
+  if (fileExists(filename))
+    LoadSetupFromFilename(filename);
+
   // try to load setup values from user setup file
   filename = getSetupFilename();
 
