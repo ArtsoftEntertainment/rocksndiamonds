@@ -1718,9 +1718,11 @@ void HandleButton(int mx, int my, int button, int button_nr)
   // when playing, only handle gadgets when using "follow finger" controls
   // or when using touch controls in combination with the MM game engine
   // or when using gadgets that do not overlap with virtual buttons
+  // or when touch controls are disabled (e.g., with mouse-only levels)
   handle_gadgets =
     (game_status != GAME_MODE_PLAYING ||
      level.game_engine_type == GAME_ENGINE_TYPE_MM ||
+     strEqual(setup.touch.control_type, TOUCH_CONTROL_OFF) ||
      strEqual(setup.touch.control_type, TOUCH_CONTROL_FOLLOW_FINGER) ||
      (strEqual(setup.touch.control_type, TOUCH_CONTROL_VIRTUAL_BUTTONS) &&
       !CheckVirtualButtonPressed(mx, my, button)));
