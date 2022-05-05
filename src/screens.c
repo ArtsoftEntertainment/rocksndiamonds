@@ -2071,7 +2071,7 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
   {
     // skipping levels is only allowed when trying to skip single level
     if (setup.skip_levels && new_level_nr == old_level_nr + 1 &&
-	Request("Level still unsolved! Skip despite handicap?", REQ_ASK))
+	Request("Level still unsolved! Skip it anyway?", REQ_ASK))
     {
       leveldir_current->handicap_level++;
       SaveLevelSetup_SeriesInfo();
@@ -7275,8 +7275,8 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_SWITCH,	&setup.multiple_users,	"Multiple Users/Teams:"	},
   { TYPE_YES_NO,	&setup.input_on_focus,	"Only Move Focussed Player:" },
   { TYPE_SWITCH,	&setup.time_limit,	"Time Limit:"		},
-  { TYPE_SWITCH,	&setup.handicap,	"Handicap:"		},
-  { TYPE_SWITCH,	&setup.skip_levels,	"Skip Unsolved Levels:"	},
+  { TYPE_SWITCH,	&setup.handicap,	"Force Solving Levels:" },
+  { TYPE_SWITCH,	&setup.skip_levels,	"Allow Skipping Levels:" },
   { TYPE_SWITCH,	&setup.increment_levels,"Increment Solved Levels:" },
   { TYPE_SWITCH,	&setup.auto_play_next_level,"Auto-play Next Level:" },
   { TYPE_SWITCH,	&setup.count_score_after_game,"Count Score After Game:" },
