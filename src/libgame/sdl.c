@@ -151,6 +151,9 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
     dst_rect1 = &dst_rect_screen;
 
 #if defined(HAS_SCREEN_KEYBOARD)
+  SDL_Rect src_rect_up = { 0, 0,  video.width, video.height };
+  SDL_Rect dst_rect_up = dst_rect_screen;
+
   if (video.shifted_up || video.shifted_up_delay)
   {
     int time_current = SDL_GetTicks();
@@ -171,8 +174,9 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
       video.shifted_up_delay = 0;
     }
 
-    SDL_Rect src_rect_up = { 0,    pos,  video.width, video.height - pos };
-    SDL_Rect dst_rect_up = { xoff, yoff, video.width, video.height - pos };
+    src_rect_up.y = pos;
+    src_rect_up.h = video.height - pos;
+    dst_rect_up.h = video.height - pos;
 
     if (video.screen_rendering_mode == SPECIAL_RENDERING_TARGET ||
 	video.screen_rendering_mode == SPECIAL_RENDERING_DOUBLE)
