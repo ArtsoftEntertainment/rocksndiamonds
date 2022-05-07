@@ -148,7 +148,7 @@
 #define USE_TOUCH_INPUT_OVERLAY
 #define USE_COMPLETE_DISPLAY
 #define HAS_SCREEN_KEYBOARD
-#define SCREEN_KEYBOARD_POS(h)		((h) / 2)
+#define SCREEN_KEYBOARD_POS(h)		((h) * 40 / 100)
 #endif
 
 // values for drag-and-drop support (some parts not added before SDL 2.0.5)
