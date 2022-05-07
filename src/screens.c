@@ -1531,6 +1531,15 @@ static int getChooseTreeEditYPos(int ypos_raw)
   return sy;
 }
 
+static int getChooseTreeEditXPosReal(int pos)
+{
+  int xpos = getChooseTreeEditXPos(pos);
+  int font_nr = getChooseTreeEditFont(FALSE);
+  int font_xoffset = getFontDrawOffsetX(font_nr);
+
+  return xpos + font_xoffset;
+}
+
 static void drawChooseTreeEdit(int ypos_raw, boolean active)
 {
   int sx = getChooseTreeEditXPos(POS_LEFT);
@@ -4638,8 +4647,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   boolean has_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->mapped;
   int mx_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x;
   int mx_right_border = (has_scrollbar ? mx_scrollbar : SX + SXSIZE);
-  int sx1_edit_name = getChooseTreeEditXPos(POS_LEFT);
-  int sx2_edit_name = getChooseTreeEditXPos(POS_RIGHT);
+  int sx1_edit_name = getChooseTreeEditXPosReal(POS_LEFT);
+  int sx2_edit_name = getChooseTreeEditXPosReal(POS_RIGHT);
   int x = 0;
   int y = (ti != NULL ? ti->cl_cursor : 0);
   int step = (button == 1 ? 1 : button == 2 ? 5 : 10);
