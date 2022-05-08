@@ -4007,7 +4007,7 @@ static int getPlayerNameColor(char *name)
 }
 
 static void drawTypeNameText(char *name, struct TextPosInfo *pos,
-			      boolean active)
+			     boolean active)
 {
   char text[MAX_PLAYER_NAME_LEN + 2] = { 0 };
   boolean multiple_users = (game_status == GAME_MODE_PSEUDO_TYPENAMES);
