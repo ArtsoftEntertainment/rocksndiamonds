@@ -5165,6 +5165,9 @@ void DrawChoosePlayerName(void)
   if (player_name_current == NULL)
     player_name_current = player_name;
 
+  // set text size for main name input (also used on name selection screen)
+  InitializeMainControls();
+
   DrawChooseTree(&player_name_current);
 }
 
