@@ -4015,8 +4015,12 @@ static void drawTypeNameText(char *name, struct TextPosInfo *pos,
   int sy = (multiple_users ? amSY + pos->y : mSY + ALIGNED_TEXT_YPOS(pos));
   int font_nr = (active ? FONT_ACTIVE(pos->font) : pos->font);
   int font_width = getFontWidth(font_nr);
+  int font_xoffset = getFontDrawOffsetX(font_nr);
+  int font_yoffset = getFontDrawOffsetY(font_nr);
+  int font_sx = sx + font_xoffset;
+  int font_sy = sy + font_yoffset;
 
-  DrawBackgroundForFont(sx, sy, pos->width, pos->height, font_nr);
+  DrawBackgroundForFont(font_sx, font_sy, pos->width, pos->height, font_nr);
 
   sprintf(text, "%s%c", name, (active ? '_' : '\0'));
 
