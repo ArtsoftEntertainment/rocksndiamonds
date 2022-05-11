@@ -9326,6 +9326,7 @@ void SaveServerScoreFromFile(int nr, boolean tape_saved,
 void LoadLocalAndServerScore(int nr, boolean download_score)
 {
   int last_added_local = scores.last_added_local;
+  boolean force_last_added = scores.force_last_added;
 
   // needed if only showing server scores
   setScoreInfoToDefaults();
@@ -9345,6 +9346,9 @@ void LoadLocalAndServerScore(int nr, boolean download_score)
     // merge local scores with scores from server
     MergeServerScore();
   }
+
+  if (force_last_added)
+    scores.force_last_added = force_last_added;
 }
 
 

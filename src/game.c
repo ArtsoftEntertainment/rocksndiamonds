@@ -5151,7 +5151,8 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry,
     }
   }
 
-  return -1;
+  // special case: new score is beyond the last high score list position
+  return MAX_SCORE_ENTRIES;
 }
 
 void NewHighScore(int level_nr, boolean tape_saved)
@@ -5168,6 +5169,19 @@ void NewHighScore(int level_nr, boolean tape_saved)
   LoadScore(level_nr);
 
   scores.last_added = addScoreEntry(&scores, &new_entry, one_per_name);
+
+  if (scores.last_added >= MAX_SCORE_ENTRIES)
+  {
+    scores.last_added = MAX_SCORE_ENTRIES - 1;
+    scores.force_last_added = TRUE;
+
+    scores.entry[scores.last_added] = new_entry;
+
+    // store last added local score entry (before merging server scores)
+    scores.last_added_local = scores.last_added;
+
+    return;
+  }
 
   if (scores.last_added < 0)
     return;
