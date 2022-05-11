@@ -4912,14 +4912,14 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
       return;
     }
   }
-  else if (dx == -1 && ti->node_parent)
+  else if ((dx == -1 || button == MB_MENU_CONTINUE) && ti->node_parent)
   {
-    FadeSetLeaveMenu();
+    if (game_status != GAME_MODE_SCORES)
+      FadeSetLeaveMenu();
 
     PlaySound(SND_MENU_ITEM_SELECTING);
 
     *ti_ptr = ti->node_parent;
-
     DrawChooseTree(ti_ptr);
 
     return;

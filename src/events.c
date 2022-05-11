@@ -2335,6 +2335,14 @@ void HandleKey(Key key, int key_status)
   if (HandleGadgetsKeyInput(key))
     return;		// do not handle already processed keys again
 
+  // special case: on "space" key, either continue playing or go to main menu
+  if (game_status == GAME_MODE_SCORES && key == KSYM_space)
+  {
+    HandleHallOfFame(0, 0, 0, 0, MB_MENU_CONTINUE);
+
+    return;
+  }
+
   switch (game_status)
   {
     case GAME_MODE_PSEUDO_TYPENAME:
