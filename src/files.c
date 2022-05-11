@@ -8694,6 +8694,7 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
   // - last_level_nr
   // - last_entry_nr
   // - continue_playing
+  // - continue_on_return
 }
 
 static void setScoreInfoToDefaults(void)

@@ -4806,10 +4806,10 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   }
 #endif
 
-  // any mouse click or direction input stops playing the next level
-  if ((mx || my || dx || dy) && scores.continue_playing)
+  // any mouse click or cursor key stops leaving scores by "Return" key
+  if ((mx || my || dx || dy) && scores.continue_on_return)
   {
-    scores.continue_playing = FALSE;
+    scores.continue_on_return = FALSE;
     level_nr = scores.last_level_nr;
     LoadLevel(level_nr);
   }
@@ -5092,16 +5092,13 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  }
 	  else if (game_status == GAME_MODE_SCORES)
 	  {
-	    if (setup.auto_play_next_level && setup.increment_levels &&
-		scores.last_level_nr < leveldir_current->last_level &&
-		scores.continue_playing &&
-		!network_playing)
+	    if (scores.continue_playing && scores.continue_on_return)
 	    {
 	      StartGameActions(network.enabled, setup.autorecord,
 			       level.random_seed);
 	      return;
 	    }
-	    else if (!scores.continue_playing)
+	    else if (!scores.continue_on_return)
 	    {
 	      SetGameStatus(GAME_MODE_SCOREINFO);
 
@@ -5304,6 +5301,7 @@ static void DrawHallOfFame_setScoreEntries(void)
 void DrawHallOfFame(int nr)
 {
   scores.last_level_nr = nr;
+  scores.continue_on_return = (game_status_last_screen == GAME_MODE_PLAYING);
 
   // (this is needed when called from GameEnd() after winning a game)
   KeyboardAutoRepeatOn();

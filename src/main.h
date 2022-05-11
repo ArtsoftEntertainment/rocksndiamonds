@@ -3129,6 +3129,7 @@ struct ScoreInfo
   boolean tape_downloaded;
   boolean force_last_added;
   boolean continue_playing;
+  boolean continue_on_return;
 
   struct ScoreEntry entry[MAX_SCORE_ENTRIES];
 };
