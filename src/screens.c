@@ -5311,7 +5311,7 @@ static void DrawHallOfFame_setScoreEntries(void)
   if (score_entry_current == NULL)
     score_entry_current = getFirstValidTreeInfoEntry(score_entries);
 
-  if (score_entries != NULL && scores.last_added >= 0)
+  if (score_entries != NULL && scores.continue_playing)
     setString(&score_entries->node_group->name, BACKLINK_TEXT_NEXT);
 
   // ("score_entries" and "score_entry_current" may be NULL here)
