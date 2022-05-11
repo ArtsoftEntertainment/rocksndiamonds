@@ -4341,6 +4341,9 @@ static int getAlignYOffsetFromTreeInfo(TreeInfo *ti)
 
 static void StartPlayingFromHallOfFame(void)
 {
+  level_nr = scores.next_level_nr;
+  LoadLevel(level_nr);
+
   StartGameActions(network.enabled, setup.autorecord, level.random_seed);
 }
 

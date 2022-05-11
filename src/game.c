@@ -5051,6 +5051,7 @@ void GameEnd(void)
     if (setup.auto_play_next_level)
     {
       scores.continue_playing = TRUE;
+      scores.next_level_nr = level_nr;
 
       LoadLevel(level_nr);
 

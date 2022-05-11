@@ -8693,6 +8693,7 @@ static void setScoreInfoToDefaultsExt(struct ScoreInfo *scores)
   // The following values are intentionally not reset here:
   // - last_level_nr
   // - last_entry_nr
+  // - next_level_nr
   // - continue_playing
   // - continue_on_return
 }
