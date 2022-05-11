@@ -4339,6 +4339,11 @@ static int getAlignYOffsetFromTreeInfo(TreeInfo *ti)
   return align_yoffset;
 }
 
+static void StartPlayingFromHallOfFame(void)
+{
+  StartGameActions(network.enabled, setup.autorecord, level.random_seed);
+}
+
 static void DrawChooseTree(TreeInfo **ti_ptr)
 {
   int fade_mask = REDRAW_FIELD;
@@ -5094,8 +5099,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  {
 	    if (scores.continue_playing && scores.continue_on_return)
 	    {
-	      StartGameActions(network.enabled, setup.autorecord,
-			       level.random_seed);
+	      StartPlayingFromHallOfFame();
+
 	      return;
 	    }
 	    else if (!scores.continue_on_return)
