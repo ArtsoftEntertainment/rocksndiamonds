@@ -4901,6 +4901,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
       node_cursor->cl_first = ti->cl_first;
       node_cursor->cl_cursor = ti->cl_cursor;
+
       *ti_ptr = node_cursor->node_group;
       DrawChooseTree(ti_ptr);
 
@@ -4914,6 +4915,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     PlaySound(SND_MENU_ITEM_SELECTING);
 
     *ti_ptr = ti->node_parent;
+
     DrawChooseTree(ti_ptr);
 
     return;
@@ -4992,6 +4994,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
 	node_cursor->cl_first = ti->cl_first;
 	node_cursor->cl_cursor = ti->cl_cursor;
+
 	*ti_ptr = node_cursor->node_group;
 	DrawChooseTree(ti_ptr);
       }
@@ -5010,6 +5013,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
 	node_cursor->cl_first = ti->cl_first;
 	node_cursor->cl_cursor = ti->cl_cursor;
+
 	*ti_ptr = node_cursor;
 
 	if (ti->type == TREE_TYPE_LEVEL_DIR)
