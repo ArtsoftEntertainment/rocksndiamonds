@@ -4362,7 +4362,11 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
     {
       execSetupArtwork();
     }
-    else	// GAME_MODE_LEVELS
+    else if (game_status == GAME_MODE_SCORES && scores.continue_playing)
+    {
+      StartPlayingFromHallOfFame();
+    }
+    else
     {
       SetGameStatus(GAME_MODE_MAIN);
 
@@ -5306,6 +5310,9 @@ static void DrawHallOfFame_setScoreEntries(void)
   // if that fails, set current score entry to first valid score entry
   if (score_entry_current == NULL)
     score_entry_current = getFirstValidTreeInfoEntry(score_entries);
+
+  if (score_entries != NULL && scores.last_added >= 0)
+    setString(&score_entries->node_group->name, BACKLINK_TEXT_NEXT);
 
   // ("score_entries" and "score_entry_current" may be NULL here)
 }
