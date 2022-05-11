@@ -4342,7 +4342,7 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   boolean restart_music = (game_status != game_status_last_screen &&
 			   game_status_last_screen != GAME_MODE_SCOREINFO);
 
-  scores.was_just_playing = (game_status == GAME_MODE_SCORES &&
+  scores.continue_playing = (game_status == GAME_MODE_SCORES &&
 			     game_status_last_screen == GAME_MODE_PLAYING);
 
   if (CheckFadeAll())
@@ -4799,7 +4799,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
 #if defined(PLATFORM_ANDROID)
   // touching the screen anywhere continues playing the next level
-  if ((mx || my) && scores.was_just_playing)
+  if ((mx || my) && scores.continue_playing)
   {
     mx = my = 0;
     button = MB_MENU_CHOICE;
@@ -4807,9 +4807,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 #endif
 
   // any mouse click or direction input stops playing the next level
-  if ((mx || my || dx || dy) && scores.was_just_playing)
+  if ((mx || my || dx || dy) && scores.continue_playing)
   {
-    scores.was_just_playing = FALSE;
+    scores.continue_playing = FALSE;
     level_nr = scores.last_level_nr;
     LoadLevel(level_nr);
   }
@@ -5094,14 +5094,14 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  {
 	    if (setup.auto_play_next_level && setup.increment_levels &&
 		scores.last_level_nr < leveldir_current->last_level &&
-		scores.was_just_playing &&
+		scores.continue_playing &&
 		!network_playing)
 	    {
 	      StartGameActions(network.enabled, setup.autorecord,
 			       level.random_seed);
 	      return;
 	    }
-	    else if (!scores.was_just_playing)
+	    else if (!scores.continue_playing)
 	    {
 	      SetGameStatus(GAME_MODE_SCOREINFO);
 
