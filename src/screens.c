@@ -1721,6 +1721,9 @@ void DrawMainMenu(void)
     return;
   }
 
+  // reset flag to continue playing next level from hall of fame
+  scores.continue_playing = FALSE;
+
   // leveldir_current may be invalid (level group, parent link, node copy)
   leveldir_current = getValidLevelSeries(leveldir_current, leveldir_last_valid);
 
@@ -4341,9 +4344,6 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   int fade_mask = REDRAW_FIELD;
   boolean restart_music = (game_status != game_status_last_screen &&
 			   game_status_last_screen != GAME_MODE_SCOREINFO);
-
-  scores.continue_playing = (game_status == GAME_MODE_SCORES &&
-			     game_status_last_screen == GAME_MODE_PLAYING);
 
   if (CheckFadeAll())
     fade_mask = REDRAW_ALL;

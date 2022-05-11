@@ -5050,6 +5050,8 @@ void GameEnd(void)
 
     if (setup.auto_play_next_level)
     {
+      scores.continue_playing = TRUE;
+
       LoadLevel(level_nr);
 
       SaveLevelSetup_SeriesInfo();
@@ -5062,9 +5064,7 @@ void GameEnd(void)
 
     DrawHallOfFame(last_level_nr);
   }
-  else if (setup.auto_play_next_level && setup.increment_levels &&
-	   last_level_nr < leveldir_current->last_level &&
-	   !network_playing)
+  else if (scores.continue_playing)
   {
     StartGameActions(network.enabled, setup.autorecord, level.random_seed);
   }
