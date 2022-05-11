@@ -5301,9 +5301,9 @@ static void DrawHallOfFame_setScoreEntries(void)
   // ("score_entries" and "score_entry_current" may be NULL here)
 }
 
-void DrawHallOfFame(int level_nr)
+void DrawHallOfFame(int nr)
 {
-  scores.last_level_nr = level_nr;
+  scores.last_level_nr = nr;
 
   // (this is needed when called from GameEnd() after winning a game)
   KeyboardAutoRepeatOn();
@@ -5312,7 +5312,7 @@ void DrawHallOfFame(int level_nr)
   SetDrawDeactivationMask(REDRAW_NONE);
   SetDrawBackgroundMask(REDRAW_FIELD);
 
-  LoadLocalAndServerScore(level_nr, TRUE);
+  LoadLocalAndServerScore(scores.last_level_nr, TRUE);
 
   DrawHallOfFame_setScoreEntries();
 
