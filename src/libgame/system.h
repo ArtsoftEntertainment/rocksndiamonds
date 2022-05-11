@@ -818,7 +818,7 @@
 #define BACKLINK_TEXT_MAIN	".. (main menu)"
 #define BACKLINK_TEXT_SETUP	".. (setup menu)"
 #define BACKLINK_TEXT_PARENT	".. (parent directory)"
-#define BACKLINK_TEXT_SCORES	"back"
+#define BACKLINK_TEXT_BACK	"back"
 
 #define TREE_INFOTEXT(t)	((t) == TREE_TYPE_SCORE_ENTRY ?		\
 				 INFOTEXT_SCORE_ENTRY :			\
@@ -837,7 +837,7 @@
 				 INFOTEXT_UNDEFINED)
 
 #define TREE_BACKLINK_TEXT(t)	((t) == TREE_TYPE_SCORE_ENTRY ?		\
-				 BACKLINK_TEXT_SCORES :			\
+				 BACKLINK_TEXT_BACK :			\
 				 (t) == TREE_TYPE_LEVEL_DIR ?		\
 				 BACKLINK_TEXT_MAIN :			\
 				 BACKLINK_TEXT_SETUP)
