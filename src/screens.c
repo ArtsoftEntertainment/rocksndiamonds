@@ -4810,8 +4810,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   }
 
 #if defined(PLATFORM_ANDROID)
-  // touching the screen anywhere continues playing the next level
-  if ((mx || my) && scores.continue_playing)
+  // directly continue when touching the screen after playing
+  if ((mx || my) && scores.continue_on_return)
   {
     mx = my = 0;
     button = MB_MENU_CHOICE;
