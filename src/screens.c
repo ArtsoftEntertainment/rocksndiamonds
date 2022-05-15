@@ -4353,6 +4353,9 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
   boolean restart_music = (game_status != game_status_last_screen &&
 			   game_status_last_screen != GAME_MODE_SCOREINFO);
 
+  scores.continue_on_return = (game_status == GAME_MODE_SCORES &&
+			       game_status_last_screen == GAME_MODE_PLAYING);
+
   if (CheckFadeAll())
     fade_mask = REDRAW_ALL;
 
@@ -5320,7 +5323,6 @@ static void DrawHallOfFame_setScoreEntries(void)
 void DrawHallOfFame(int nr)
 {
   scores.last_level_nr = nr;
-  scores.continue_on_return = (game_status_last_screen == GAME_MODE_PLAYING);
 
   // (this is needed when called from GameEnd() after winning a game)
   KeyboardAutoRepeatOn();
