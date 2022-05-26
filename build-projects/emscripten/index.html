@@ -8,13 +8,22 @@
 </head>
 <body style="background:black;text-align:center;vertical-align:middle;">
 <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+<div id="loading">
+<img src="loading.svg" width="200px" height="200px">
+<br>
+<span style="color:white;font-size:120%;font-family:sans-serif">
+Loading Rocks'n'Diamonds ...
+</span>
+</div>
 <script type='text/javascript'>
       var Module = {
         arguments: [],
         preRun: [
           function() {}
         ],
-        postRun: [],
+        postRun: [
+          function() { loading.style.display = 'none'; }
+        ],
         print: (function() {
           var element = document.getElementById('output');
           if (element) element.value = ''; // clear browser cache
@@ -52,7 +61,7 @@
         alert("An error occurred, see console.");
         document.title = "Rocks'n'Diamonds (aborted)";
       };
-    </script>
+</script>
 <script async type="text/javascript" src="rocksndiamonds.data.js"></script>
 <script async type="text/javascript" src="rocksndiamonds.js"></script>
 </body>
