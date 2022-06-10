@@ -7799,9 +7799,6 @@ static void InitProgramConfig(char *command_filename)
   char *config_filename = getProgramConfigFilename(command_filename);
   char *userdata_basename = getBaseNameNoSuffix(command_filename);
   char *userdata_subdir;
-#if defined(PLATFORM_UNIX)
-  char *userdata_subdir_unix;
-#endif
 
   // read default program config, if existing
   if (fileExists(config_filename))
@@ -7818,11 +7815,6 @@ static void InitProgramConfig(char *command_filename)
 
     LoadSetupFromFilename(config_filename);
   }
-
-#if defined(PLATFORM_UNIX)
-  // set user data directory for Linux/Unix (but not Mac OS X)
-  userdata_subdir_unix = getStringCat2(".", userdata_basename);
-#endif
 
   // set program title from potentially redefined program title
   if (setup.internal.program_title != NULL &&
@@ -7842,7 +7834,7 @@ static void InitProgramConfig(char *command_filename)
 #if defined(PLATFORM_WIN32) || defined(PLATFORM_MACOSX) || defined(PLATFORM_EMSCRIPTEN)
   userdata_subdir = program_title;
 #elif defined(PLATFORM_UNIX)
-  userdata_subdir = userdata_subdir_unix;
+  userdata_subdir = getStringCat2(".", userdata_basename);
 #else
   userdata_subdir = USERDATA_DIRECTORY_OTHER;
 #endif
