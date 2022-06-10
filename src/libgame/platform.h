@@ -16,8 +16,8 @@
 // define main platform keywords
 // ============================================================================
 
-#if defined(WIN32) || defined(_WIN32)
-#define PLATFORM_WIN32
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+#define PLATFORM_WINDOWS
 #define PLATFORM_STRING "Windows"
 #else
 #define PLATFORM_UNIX
@@ -86,7 +86,7 @@
 #endif
 
 #if defined(__APPLE__) && defined(__MACH__)
-#define PLATFORM_MACOSX
+#define PLATFORM_MAC
 #undef  PLATFORM_STRING
 #define PLATFORM_STRING "Mac"
 #endif

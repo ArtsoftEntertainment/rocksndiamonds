@@ -19,7 +19,7 @@
 #include <sys/types.h>
 
 
-#if !defined(PLATFORM_WIN32)
+#if !defined(PLATFORM_WINDOWS)
 typedef int boolean;
 typedef unsigned char byte;
 #endif

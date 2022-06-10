@@ -516,7 +516,7 @@ char *getProgramMainDataPath(char *command_filename, char *base_path)
      set the current working directory to the program package directory) */
   char *main_data_path = getBasePath(command_filename);
 
-#if defined(PLATFORM_MACOSX)
+#if defined(PLATFORM_MAC)
   if (strSuffix(main_data_path, MAC_APP_BINARY_SUBDIR))
   {
     char *main_data_path_old = main_data_path;
@@ -1785,7 +1785,7 @@ void sortTreeInfo(TreeInfo **node_first)
 // some stuff from "files.c"
 // ============================================================================
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #ifndef S_IRGRP
 #define S_IRGRP S_IRUSR
 #endif
@@ -1810,7 +1810,7 @@ void sortTreeInfo(TreeInfo **node_first)
 #ifndef S_ISGID
 #define S_ISGID 0
 #endif
-#endif	// PLATFORM_WIN32
+#endif	// PLATFORM_WINDOWS
 
 // file permissions for newly written files
 #define MODE_R_ALL		(S_IRUSR | S_IRGRP | S_IROTH)
@@ -1834,7 +1834,7 @@ char *getHomeDir(void)
 {
   static char *dir = NULL;
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
   if (dir == NULL)
   {
     dir = checked_malloc(MAX_PATH + 1);
@@ -1868,7 +1868,7 @@ char *getPersonalDataDir(void)
 {
   static char *personal_data_dir = NULL;
 
-#if defined(PLATFORM_MACOSX)
+#if defined(PLATFORM_MAC)
   if (personal_data_dir == NULL)
     personal_data_dir = getPath2(getHomeDir(), "Documents");
 #else
@@ -1922,7 +1922,7 @@ static mode_t posix_umask(mode_t mask)
 
 static int posix_mkdir(const char *pathname, mode_t mode)
 {
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
   return mkdir(pathname);
 #else
   return mkdir(pathname, mode);

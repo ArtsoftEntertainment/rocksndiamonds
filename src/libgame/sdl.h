@@ -17,7 +17,7 @@
 #include <SDL_mixer.h>
 #include <SDL_net.h>
 #include <SDL_thread.h>
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <SDL_syswm.h>
 #endif
 

@@ -585,7 +585,7 @@ void HandleWheelEvent(WheelEvent *event)
 	       event->y < 0 ? MB_WHEEL_DOWN :
 	       event->y > 0 ? MB_WHEEL_UP : 0);
 
-#if defined(PLATFORM_WIN32) || defined(PLATFORM_MACOSX)
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_MAC)
   // accelerated mouse wheel available on Mac and Windows
   wheel_steps = (event->x ? ABS(event->x) : ABS(event->y));
 #else

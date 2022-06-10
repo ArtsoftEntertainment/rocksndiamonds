@@ -9976,7 +9976,7 @@ void OpenURLFromHash(SetupFileHash *hash, int hash_key)
 // tests
 // ============================================================================
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 /* FILETIME of Jan 1 1970 00:00:00. */
 static const unsigned __int64 epoch = ((unsigned __int64) 116444736000000000ULL);
 
@@ -10030,7 +10030,7 @@ static char *test_init_uuid_random_function_better(void)
   return seed_text;
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 static char *test_init_uuid_random_function_better_windows(void)
 {
   static char seed_text[100];
@@ -10058,7 +10058,7 @@ static unsigned int test_uuid_random_function_better(int max)
   return (max > 0 ? prng_get_uint() % max : 0);
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #define NUM_UUID_TESTS			3
 #else
 #define NUM_UUID_TESTS			2
@@ -10085,7 +10085,7 @@ static void TestGeneratingUUIDs_RunTest(int nr, int always_seed, int num_uuids)
      test_uuid_random_function_better);
   int xpos = 40;
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
   if (nr == 2)
   {
     random_name = "windows";

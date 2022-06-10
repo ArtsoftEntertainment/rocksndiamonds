@@ -763,7 +763,7 @@ static unsigned int init_random_number_ext(int nr, int seed)
     // default random seed
     seed = (int)time(NULL);			// seconds since the epoch
 
-#if !defined(PLATFORM_WIN32)
+#if !defined(PLATFORM_WINDOWS)
     // add some more randomness
     struct timeval current_time;
 
@@ -896,7 +896,7 @@ char *getLoginName(void)
 {
   static char *login_name = NULL;
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
   if (login_name == NULL)
   {
     unsigned long buffer_size = MAX_USERNAME_LEN + 1;
@@ -927,7 +927,7 @@ char *getRealName(void)
 {
   static char *real_name = NULL;
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
   if (real_name == NULL)
   {
     static char buffer[MAX_USERNAME_LEN + 1];
@@ -1543,7 +1543,7 @@ void GetOptions(int argc, char *argv[],
       if (option_arg == next_option)
 	options_left++;
     }
-#if defined(PLATFORM_MACOSX)
+#if defined(PLATFORM_MAC)
     else if (strPrefix(option, "-psn"))
     {
       // ignore process serial number when launched via GUI on Mac OS X
@@ -1617,7 +1617,7 @@ void checked_free(void *ptr)
 
 void clear_mem(void *ptr, unsigned int size)
 {
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
   // for unknown reason, memset() sometimes crashes when compiled with MinGW
   char *cptr = (char *)ptr;
 
@@ -4201,7 +4201,7 @@ void DumpLogFile(int nr)
 
 void NotifyUserAboutErrorFile(void)
 {
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
   char *title_text = getStringCat2(program.program_title, " Error Message");
   char *error_text = getStringCat2("The program was aborted due to an error; "
 				   "for details, see the following error file:"

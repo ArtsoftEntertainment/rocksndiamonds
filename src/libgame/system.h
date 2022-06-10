@@ -16,9 +16,9 @@
 #include "types.h"
 
 
-#if defined(PLATFORM_MACOSX)
+#if defined(PLATFORM_MAC)
 #include "macosx.h"
-#elif defined(PLATFORM_WIN32)
+#elif defined(PLATFORM_WINDOWS)
 #include "windows.h"
 #elif defined(PLATFORM_ANDROID)
 #include "android.h"
@@ -163,7 +163,7 @@
 #define DEFAULT_KEY_RIGHT		KSYM_Right
 #define DEFAULT_KEY_UP			KSYM_Up
 #define DEFAULT_KEY_DOWN		KSYM_Down
-#if defined(PLATFORM_MACOSX)
+#if defined(PLATFORM_MAC)
 #define DEFAULT_KEY_SNAP		KSYM_Control_L
 #define DEFAULT_KEY_DROP		KSYM_KP_Enter
 #else
@@ -722,7 +722,7 @@
 #define STRING_NEWLINE_UNIX		"\n"
 #define STRING_NEWLINE_DOS		"\r\n"
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #define CHAR_PATH_SEPARATOR	CHAR_PATH_SEPARATOR_DOS
 #define STRING_PATH_SEPARATOR	STRING_PATH_SEPARATOR_DOS
 #define STRING_NEWLINE		STRING_NEWLINE_DOS

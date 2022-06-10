@@ -264,7 +264,7 @@ static void SDLSetWindowIcon(char *basename)
   // (setting the window icon on Mac OS X would replace the high-quality
   // dock icon with the currently smaller (and uglier) icon from file)
 
-#if !defined(PLATFORM_MACOSX)
+#if !defined(PLATFORM_MAC)
   char *filename = getCustomImageFilename(basename);
   SDL_Surface *surface;
 

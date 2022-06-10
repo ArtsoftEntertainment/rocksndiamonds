@@ -233,7 +233,7 @@ static void Mixer_PlayMusicChannel(void)
     Mix_VolumeMusic(mixer[audio.music_channel].volume);
     Mix_FadeInMusic(mixer[audio.music_channel].data_ptr, loops, 100);
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
     // playing MIDI music is broken since Windows Vista, as it sets the volume
     // for MIDI music also for all other sounds and music, which cannot be set
     // back to normal unless playing MIDI music again with that desired volume
@@ -281,7 +281,7 @@ static void Mixer_FadeMusicChannel(void)
 
   Mix_FadeOutMusic(SOUND_FADING_INTERVAL);
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
   // playing MIDI music is broken since Windows Vista, as it sets the volume
   // for MIDI music also for all other sounds and music, which cannot be set
   // back to normal unless playing MIDI music again with that desired volume

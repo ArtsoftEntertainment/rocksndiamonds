@@ -7831,7 +7831,7 @@ static void InitProgramConfig(char *command_filename)
       strlen(setup.internal.program_icon_file) > 0)
     program_icon_file = getStringCopy(setup.internal.program_icon_file);
 
-#if defined(PLATFORM_WIN32) || defined(PLATFORM_MACOSX) || defined(PLATFORM_EMSCRIPTEN)
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_MAC) || defined(PLATFORM_EMSCRIPTEN)
   userdata_subdir = program_title;
 #elif defined(PLATFORM_UNIX)
   userdata_subdir = getStringCat2(".", userdata_basename);
