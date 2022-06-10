@@ -7394,7 +7394,7 @@ static struct TokenInfo setup_info_editor[] =
 
 static struct TokenInfo setup_info_graphics[] =
 {
-#if !defined(PLATFORM_ANDROID)
+#if !defined(PLATFORM_ANDROID) && !defined(PLATFORM_EMSCRIPTEN)
   { TYPE_SWITCH,	&setup.fullscreen,	"Fullscreen:"		},
   { TYPE_ENTER_LIST,	execSetupChooseWindowSize, "Window Scaling:"	},
   { TYPE_STRING,	&window_size_text,	""			},
@@ -7407,8 +7407,10 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_ENTER_LIST,	execSetupChooseScrollDelay, "Scroll Delay:"	},
   { TYPE_STRING,	&scroll_delay_text,	""			},
 #endif
+#if !defined(PLATFORM_EMSCRIPTEN)
   { TYPE_ENTER_LIST,	execSetupChooseVsyncMode, "Vertical Sync (VSync):" },
   { TYPE_STRING,	&vsync_mode_text,	""			},
+#endif
   { TYPE_SWITCH,	&setup.fade_screens,	"Fade Screens:"		},
   { TYPE_SWITCH,	&setup.quick_switch,	"Quick Player Focus Switch:" },
   { TYPE_SWITCH,	&setup.quick_doors,	"Quick Menu Doors:"	},
