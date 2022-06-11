@@ -85,7 +85,7 @@ static void WarnUsingFallback(char *filename)
   {
     setHashEntry(missing_file_hash, filename, "");
 
-    Warn("cannot find artwork file '%s' (using fallback)", filename);
+    Debug("setup", "cannot find artwork file '%s' (using fallback)", filename);
   }
 }
 
