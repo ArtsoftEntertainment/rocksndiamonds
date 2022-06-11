@@ -506,10 +506,11 @@ static void DrawTextBuffer_Flush(int x, int y, char *buffer, int font_nr,
     DrawText(xx, yy, buffer, font_nr);
 }
 
-int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
-		   int line_length, int cut_length, int max_lines,
-		   int line_spacing, int mask_mode, boolean autowrap,
-		   boolean centered, boolean parse_comments)
+static int DrawTextBufferExt(int x, int y, char *text_buffer, int font_nr,
+			     int line_length, int cut_length, int max_lines,
+			     int line_spacing, int mask_mode, boolean autowrap,
+			     boolean centered, boolean parse_comments,
+			     boolean is_text_area)
 {
   char buffer[line_length + 1];
   int buffer_len;
@@ -541,8 +542,16 @@ int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
 
     // copy next line from text buffer to line buffer (nearly fgets() style)
     for (i = 0; i < num_line_chars && *text_buffer; i++)
+    {
       if ((line[i] = *text_buffer++) == '\n')
+      {
+	// in text areas, 'line_length' sized lines cause additional empty line
+	if (i == line_length && is_text_area)
+	  text_buffer--;
+
 	break;
+      }
+    }
     line[i] = '\0';
 
     // prevent 'num_line_chars' sized lines to cause additional empty line
@@ -653,6 +662,28 @@ int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
   }
 
   return current_line;
+}
+
+int DrawTextArea(int x, int y, char *text_buffer, int font_nr,
+		 int line_length, int cut_length, int max_lines,
+		 int line_spacing, int mask_mode, boolean autowrap,
+		 boolean centered, boolean parse_comments)
+{
+  return DrawTextBufferExt(x, y, text_buffer, font_nr,
+			   line_length, cut_length, max_lines,
+			   line_spacing, mask_mode, autowrap,
+			   centered, parse_comments, TRUE);
+}
+
+int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
+		   int line_length, int cut_length, int max_lines,
+		   int line_spacing, int mask_mode, boolean autowrap,
+		   boolean centered, boolean parse_comments)
+{
+  return DrawTextBufferExt(x, y, text_buffer, font_nr,
+			   line_length, cut_length, max_lines,
+			   line_spacing, mask_mode, autowrap,
+			   centered, parse_comments, FALSE);
 }
 
 int DrawTextBufferS(int x, int y, char *text_buffer, int font_nr,

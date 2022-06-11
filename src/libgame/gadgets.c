@@ -423,9 +423,9 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 				   gi->height - 2 * border_y);
 
 	// gadget text value
-	DrawTextBuffer(gi->x + border_x, gi->y + border_y, gi->textarea.value,
-		       font_nr, gi->textarea.xsize, -1, gi->textarea.ysize, 0,
-		       BLIT_ON_BACKGROUND, FALSE, FALSE, FALSE);
+	DrawTextArea(gi->x + border_x, gi->y + border_y, gi->textarea.value,
+		     font_nr, gi->textarea.xsize, -1, gi->textarea.ysize, 0,
+		     BLIT_ON_BACKGROUND, FALSE, FALSE, FALSE);
 
 	cursor_letter = gi->textarea.value[gi->textarea.cursor_position];
 	cursor_string[0] = (cursor_letter != '\0' ? cursor_letter : ' ');

@@ -2925,11 +2925,11 @@ static void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
       for (xx = 0; xx < xsize; xx++)
 	DrawEnvelopeBackground(graphic, sx, sy, xx, yy, xsize, ysize, font_nr);
 
-    DrawTextBuffer(sx + font_width, sy + font_height,
-		   level.envelope[envelope_nr].text, font_nr, max_xsize,
-		   xsize - 2, ysize - 2, 0, mask_mode,
-		   level.envelope[envelope_nr].autowrap,
-		   level.envelope[envelope_nr].centered, FALSE);
+    DrawTextArea(sx + font_width, sy + font_height,
+		 level.envelope[envelope_nr].text, font_nr, max_xsize,
+		 xsize - 2, ysize - 2, 0, mask_mode,
+		 level.envelope[envelope_nr].autowrap,
+		 level.envelope[envelope_nr].centered, FALSE);
 
     redraw_mask |= REDRAW_FIELD;
     BackToFront();
