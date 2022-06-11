@@ -1371,10 +1371,13 @@ void InitUserLevelDirectory(char *level_subdir)
   {
     createDirectory(getMainUserGameDataDir(), "main user data");
     createDirectory(getUserLevelDir(NULL), "main user level");
-    createDirectory(getUserLevelDir(level_subdir), "user level");
 
     if (setup.internal.create_user_levelset)
+    {
+      createDirectory(getUserLevelDir(level_subdir), "user level");
+
       SaveUserLevelInfo();
+    }
   }
 }
 
