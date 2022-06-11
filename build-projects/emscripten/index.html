@@ -6,6 +6,16 @@
 <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
 <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
 <style>
+body {
+    background: black;
+    text-align: center;
+    vertical-align: middle;
+}
+#loading {
+    color: white;
+    font-size: 120%;
+    font-family: sans-serif;
+}
 #canvas {
     position: absolute;
     top: 0px;
@@ -18,14 +28,12 @@
 }
 </style>
 </head>
-<body style="background:black;text-align:center;vertical-align:middle;">
+<body>
 <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
 <div id="loading">
 <img src="loading.svg" width="200px" height="200px">
 <br>
-<span style="color:white;font-size:120%;font-family:sans-serif">
 Loading Rocks'n'Diamonds ...
-</span>
 </div>
 <script type='text/javascript'>
       var Module = {
