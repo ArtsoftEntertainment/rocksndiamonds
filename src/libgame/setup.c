@@ -1326,9 +1326,9 @@ void InitTapeDirectory(char *level_subdir)
 {
   boolean new_tape_dir = !directoryExists(getTapeDir(level_subdir));
 
-  createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
-  createDirectory(getTapeDir(NULL), "main tape", PERMS_PRIVATE);
-  createDirectory(getTapeDir(level_subdir), "level tape", PERMS_PRIVATE);
+  createDirectory(getUserGameDataDir(), "user data");
+  createDirectory(getTapeDir(NULL), "main tape");
+  createDirectory(getTapeDir(level_subdir), "level tape");
 
   if (new_tape_dir)
     MarkTapeDirectoryUploadsAsComplete(level_subdir);
@@ -1336,31 +1336,31 @@ void InitTapeDirectory(char *level_subdir)
 
 void InitScoreDirectory(char *level_subdir)
 {
-  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
-  createDirectory(getScoreDir(NULL), "main score", PERMS_PRIVATE);
-  createDirectory(getScoreDir(level_subdir), "level score", PERMS_PRIVATE);
+  createDirectory(getMainUserGameDataDir(), "main user data");
+  createDirectory(getScoreDir(NULL), "main score");
+  createDirectory(getScoreDir(level_subdir), "level score");
 }
 
 void InitScoreCacheDirectory(char *level_subdir)
 {
-  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
-  createDirectory(getCacheDir(), "cache data", PERMS_PRIVATE);
-  createDirectory(getScoreCacheDir(NULL), "main score", PERMS_PRIVATE);
-  createDirectory(getScoreCacheDir(level_subdir), "level score", PERMS_PRIVATE);
+  createDirectory(getMainUserGameDataDir(), "main user data");
+  createDirectory(getCacheDir(), "cache data");
+  createDirectory(getScoreCacheDir(NULL), "main score");
+  createDirectory(getScoreCacheDir(level_subdir), "level score");
 }
 
 void InitScoreTapeDirectory(char *level_subdir, int nr)
 {
   InitScoreDirectory(level_subdir);
 
-  createDirectory(getScoreTapeDir(level_subdir, nr), "score tape", PERMS_PRIVATE);
+  createDirectory(getScoreTapeDir(level_subdir, nr), "score tape");
 }
 
 void InitScoreCacheTapeDirectory(char *level_subdir, int nr)
 {
   InitScoreCacheDirectory(level_subdir);
 
-  createDirectory(getScoreCacheTapeDir(level_subdir, nr), "score tape", PERMS_PRIVATE);
+  createDirectory(getScoreCacheTapeDir(level_subdir, nr), "score tape");
 }
 
 static void SaveUserLevelInfo(void);
@@ -1369,9 +1369,9 @@ void InitUserLevelDirectory(char *level_subdir)
 {
   if (!directoryExists(getUserLevelDir(level_subdir)))
   {
-    createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
-    createDirectory(getUserLevelDir(NULL), "main user level", PERMS_PRIVATE);
-    createDirectory(getUserLevelDir(level_subdir), "user level", PERMS_PRIVATE);
+    createDirectory(getMainUserGameDataDir(), "main user data");
+    createDirectory(getUserLevelDir(NULL), "main user level");
+    createDirectory(getUserLevelDir(level_subdir), "user level");
 
     if (setup.internal.create_user_levelset)
       SaveUserLevelInfo();
@@ -1382,24 +1382,24 @@ void InitNetworkLevelDirectory(char *level_subdir)
 {
   if (!directoryExists(getNetworkLevelDir(level_subdir)))
   {
-    createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
-    createDirectory(getNetworkDir(), "network data", PERMS_PRIVATE);
-    createDirectory(getNetworkLevelDir(NULL), "main network level", PERMS_PRIVATE);
-    createDirectory(getNetworkLevelDir(level_subdir), "network level", PERMS_PRIVATE);
+    createDirectory(getMainUserGameDataDir(), "main user data");
+    createDirectory(getNetworkDir(), "network data");
+    createDirectory(getNetworkLevelDir(NULL), "main network level");
+    createDirectory(getNetworkLevelDir(level_subdir), "network level");
   }
 }
 
 void InitLevelSetupDirectory(char *level_subdir)
 {
-  createDirectory(getUserGameDataDir(), "user data", PERMS_PRIVATE);
-  createDirectory(getLevelSetupDir(NULL), "main level setup", PERMS_PRIVATE);
-  createDirectory(getLevelSetupDir(level_subdir), "level setup", PERMS_PRIVATE);
+  createDirectory(getUserGameDataDir(), "user data");
+  createDirectory(getLevelSetupDir(NULL), "main level setup");
+  createDirectory(getLevelSetupDir(level_subdir), "level setup");
 }
 
 static void InitCacheDirectory(void)
 {
-  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
-  createDirectory(getCacheDir(), "cache data", PERMS_PRIVATE);
+  createDirectory(getMainUserGameDataDir(), "main user data");
+  createDirectory(getCacheDir(), "cache data");
 }
 
 
@@ -1938,13 +1938,14 @@ static boolean posix_process_running_setgid(void)
 #endif
 }
 
-void createDirectory(char *dir, char *text, int permission_class)
+void createDirectory(char *dir, char *text)
 {
   if (directoryExists(dir))
     return;
 
   // leave "other" permissions in umask untouched, but ensure group parts
   // of USERDATA_DIR_MODE are not masked
+  int permission_class = PERMS_PRIVATE;
   mode_t dir_mode = (permission_class == PERMS_PRIVATE ?
 		     DIR_PERMS_PRIVATE : DIR_PERMS_PUBLIC);
   mode_t last_umask = posix_umask(0);
@@ -1973,17 +1974,17 @@ void createDirectory(char *dir, char *text, int permission_class)
 
 void InitMainUserDataDirectory(void)
 {
-  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
+  createDirectory(getMainUserGameDataDir(), "main user data");
 }
 
 void InitUserDataDirectory(void)
 {
-  createDirectory(getMainUserGameDataDir(), "main user data", PERMS_PRIVATE);
+  createDirectory(getMainUserGameDataDir(), "main user data");
 
   if (user.nr != 0)
   {
-    createDirectory(getUserDir(-1), "users", PERMS_PRIVATE);
-    createDirectory(getUserDir(user.nr), "user data", PERMS_PRIVATE);
+    createDirectory(getUserDir(-1), "users");
+    createDirectory(getUserDir(user.nr), "user data");
   }
 }
 
@@ -4642,7 +4643,7 @@ boolean CreateUserLevelSet(char *level_subdir, char *level_name,
   int i;
 
   // create user level sub-directory, if needed
-  createDirectory(getUserLevelDir(level_subdir), "user level", PERMS_PRIVATE);
+  createDirectory(getUserLevelDir(level_subdir), "user level");
 
   filename = getPath2(getUserLevelDir(level_subdir), LEVELINFO_FILENAME);
 

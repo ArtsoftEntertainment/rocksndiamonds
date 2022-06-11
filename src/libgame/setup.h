@@ -340,7 +340,7 @@ char *getCurrentLevelDir(void);
 char *getNewUserLevelSubdir(void);
 char *getTapeDir(char *);
 
-void createDirectory(char *, char *, int);
+void createDirectory(char *, char *);
 void InitMainUserDataDirectory(void);
 void InitUserDataDirectory(void);
 void SetFilePermissions(char *, int);
