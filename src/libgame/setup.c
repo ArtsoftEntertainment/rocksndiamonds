@@ -3893,9 +3893,13 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
 						    level_directory, ".");
   }
 
-  if (!valid_entry_found)
+  boolean valid_entry_expected =
+    (strEqual(level_directory, options.level_directory) ||
+     setup.internal.create_user_levelset);
+
+  if (valid_entry_expected && !valid_entry_found)
     Warn("cannot find any valid level series in directory '%s'",
-	  level_directory);
+	 level_directory);
 }
 
 boolean AdjustGraphicsForEMC(void)
