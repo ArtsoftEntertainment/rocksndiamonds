@@ -7798,6 +7798,28 @@ void DumpLevel(struct LevelInfo *level)
   Print("use step counter: %s\n", (level->use_step_counter ? "yes" : "no"));
   Print("rate time over score: %s\n", (level->rate_time_over_score ? "yes" : "no"));
 
+  if (options.debug)
+  {
+    int i, j;
+
+    for (i = 0; i < NUM_ENVELOPES; i++)
+    {
+      char *text = level->envelope[i].text;
+      int text_len = strlen(text);
+      boolean has_text = FALSE;
+
+      for (j = 0; j < text_len; j++)
+	if (text[j] != ' ' && text[j] != '\n')
+	  has_text = TRUE;
+
+      if (has_text)
+      {
+	Print("\n");
+	Print("Envelope %d:\n'%s'\n", i + 1, text);
+      }
+    }
+  }
+
   PrintLine("-", 79);
 }
 
