@@ -2356,6 +2356,18 @@ boolean HandleGadgetsKeyInput(Key key)
 
       DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
+    else if (key == KSYM_Home && cursor_pos > 0)
+    {
+      gi->textinput.cursor_position = 0;
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_End && cursor_pos < text_length)
+    {
+      gi->textinput.cursor_position = text_length;
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
   }
   else if (gi->type & GD_TYPE_TEXT_AREA)	// only valid for text area
   {
@@ -2363,6 +2375,7 @@ boolean HandleGadgetsKeyInput(Key key)
     int text_length = strlen(gi->textarea.value);
     int area_ysize = gi->textarea.ysize;
     int cursor_x_pref = gi->textarea.cursor_x_preferred;
+    int cursor_x = gi->textarea.cursor_x;
     int cursor_y = gi->textarea.cursor_y;
     int cursor_pos = gi->textarea.cursor_position;
     char letter = getCharFromKey(key);
@@ -2413,6 +2426,25 @@ boolean HandleGadgetsKeyInput(Key key)
     {
       strcpy(text, gi->textarea.value);
       strcpy(&gi->textarea.value[cursor_pos], &text[cursor_pos + 1]);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_Home && cursor_x > 0)
+    {
+      setTextAreaCursorPosition(gi, gi->textarea.cursor_position - cursor_x);
+
+      DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (key == KSYM_End && cursor_pos < text_length)
+    {
+      int last_cursor_pos = cursor_pos;
+
+      while (gi->textarea.value[cursor_pos] != '\0' &&
+	     gi->textarea.value[cursor_pos] != '\n')
+	cursor_pos++;
+
+      setTextAreaCursorPosition(gi, gi->textarea.cursor_position + cursor_pos -
+				last_cursor_pos);
 
       DrawGadget(gi, DG_PRESSED, gi->direct_draw);
     }
