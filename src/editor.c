@@ -5651,6 +5651,11 @@ static char *getElementDescriptionFilename(int element)
   if (filename != NULL)
     return filename;
 
+  // 3rd try: look for generic fallback text file for any element
+  filename = getElementDescriptionFilenameExt(FALLBACK_TEXT_FILENAME);
+  if (filename != NULL)
+    return filename;
+
   return NULL;
 }
 

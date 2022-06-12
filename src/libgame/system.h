@@ -703,6 +703,8 @@
 
 #define GAMECONTROLLER_BASENAME	"gamecontrollerdb.txt"
 
+#define FALLBACK_TEXT_FILENAME	"fallback.txt"
+
 #define LOG_OUT_BASENAME	"stdout.txt"
 #define LOG_ERR_BASENAME	"stderr.txt"
 
