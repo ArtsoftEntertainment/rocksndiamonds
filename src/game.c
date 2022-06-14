@@ -15692,6 +15692,7 @@ void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
     {
       // prevent short reactivation of overlay buttons while closing door
       SetOverlayActive(FALSE);
+      UnmapGameButtons();
 
       // door may still be open due to skipped or envelope style request
       CloseDoor(score_info_tape_play ? DOOR_CLOSE_ALL : DOOR_CLOSE_1);
