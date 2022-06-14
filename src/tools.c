@@ -5857,6 +5857,11 @@ void CreateToolButtons(void)
     int y = pos->y;
     int id = i;
 
+    // do not use touch buttons if touch controls are disabled
+    if (is_touch_button &&
+	strEqual(setup.touch.control_type, TOUCH_CONTROL_OFF))
+      continue;
+
     if (global.use_envelope_request && !is_touch_button)
     {
       setRequestPosition(&base_x, &base_y, TRUE);

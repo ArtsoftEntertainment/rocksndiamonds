@@ -9745,6 +9745,11 @@ static void CreateScreenMenubuttons(void)
     int type = GD_TYPE_NORMAL_BUTTON;
     boolean checked = FALSE;
 
+    // do not use touch buttons if touch controls are disabled
+    if (is_touch_button &&
+	strEqual(setup.touch.control_type, TOUCH_CONTROL_OFF))
+      continue;
+
     event_mask = menubutton_info[i].event_mask;
 
     x = (is_touch_button ? pos->x : mSX + GDI_ACTIVE_POS(pos->x));
