@@ -5857,9 +5857,8 @@ void CreateToolButtons(void)
     int y = pos->y;
     int id = i;
 
-    // do not use touch buttons if touch controls are disabled
-    if (is_touch_button &&
-	strEqual(setup.touch.control_type, TOUCH_CONTROL_OFF))
+    // do not use touch buttons if overlay touch buttons are disabled
+    if (is_touch_button && !setup.touch.overlay_buttons)
       continue;
 
     if (global.use_envelope_request && !is_touch_button)

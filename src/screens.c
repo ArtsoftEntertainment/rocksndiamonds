@@ -9745,9 +9745,8 @@ static void CreateScreenMenubuttons(void)
     int type = GD_TYPE_NORMAL_BUTTON;
     boolean checked = FALSE;
 
-    // do not use touch buttons if touch controls are disabled
-    if (is_touch_button &&
-	strEqual(setup.touch.control_type, TOUCH_CONTROL_OFF))
+    // do not use touch buttons if overlay touch buttons are disabled
+    if (is_touch_button && !setup.touch.overlay_buttons)
       continue;
 
     event_mask = menubutton_info[i].event_mask;
