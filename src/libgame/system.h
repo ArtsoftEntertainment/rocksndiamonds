@@ -1309,6 +1309,8 @@ struct SetupTouchInfo
   boolean draw_pressed;
 
   boolean grid_initialized;
+
+  boolean overlay_buttons;
 };
 
 struct SetupInputInfo

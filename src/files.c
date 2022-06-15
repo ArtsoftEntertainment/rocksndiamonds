@@ -9661,6 +9661,10 @@ static struct TokenInfo global_setup_tokens[] =
     TYPE_INTEGER,
     &setup.touch.grid_ysize[1],			"touch.virtual_buttons.1.ysize"
   },
+  {
+    TYPE_SWITCH,
+    &setup.touch.overlay_buttons,		"touch.overlay_buttons"
+  },
 };
 
 static struct TokenInfo auto_setup_tokens[] =
@@ -10401,6 +10405,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->touch.grid_initialized		= video.initialized;
 
+  si->touch.overlay_buttons		= FALSE;
+
   si->editor.el_boulderdash		= TRUE;
   si->editor.el_emerald_mine		= TRUE;
   si->editor.el_emerald_mine_club	= TRUE;
@@ -10543,6 +10549,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
 #if defined(PLATFORM_ANDROID)
   si->fullscreen = TRUE;
+  si->touch.overlay_buttons = TRUE;
 #endif
 
   setHideSetupEntry(&setup.debug.xsn_mode);
