@@ -8456,8 +8456,13 @@ static boolean CustomizeKeyboardMain(int player_nr)
   while (!finished)
   {
     Event event;
+    unsigned int event_frame_delay = 0;
+    unsigned int event_frame_delay_value = GAME_FRAME_DELAY;
 
-    if (NextValidEvent(&event))
+    // reset frame delay counter directly after updating screen
+    ResetDelayCounter(&event_frame_delay);
+
+    while (NextValidEvent(&event))
     {
       switch (event.type)
       {
@@ -8528,6 +8533,10 @@ static boolean CustomizeKeyboardMain(int player_nr)
 	  HandleOtherEvents(&event);
 	  break;
       }
+
+      // do not handle events for longer than standard frame delay period
+      if (DelayReached(&event_frame_delay, event_frame_delay_value))
+	break;
     }
 
     BackToFront();
