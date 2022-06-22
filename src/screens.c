@@ -8630,11 +8630,6 @@ static boolean ConfigureJoystickMapButtonsAndAxes(SDL_Joystick *joystick)
     { 282, 210, MARKER_AXIS_Y, "righty",	},
   };
 
-  unsigned int event_frame_delay = 0;
-  unsigned int event_frame_delay_value = GAME_FRAME_DELAY;
-
-  ResetDelayCounter(&event_frame_delay);
-
   if (!bitmaps_initialized)
   {
     controller = LoadCustomImage("joystick/controller.png");
@@ -8765,6 +8760,12 @@ static boolean ConfigureJoystickMapButtonsAndAxes(SDL_Joystick *joystick)
 	BackToFront();
 
       screen_initialized = TRUE;
+
+      unsigned int event_frame_delay = 0;
+      unsigned int event_frame_delay_value = GAME_FRAME_DELAY;
+
+      // reset frame delay counter directly after updating screen
+      ResetDelayCounter(&event_frame_delay);
 
       while (NextValidEvent(&event))
       {
