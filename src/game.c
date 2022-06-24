@@ -3819,6 +3819,7 @@ void InitGame(void)
   game.panel.active = TRUE;
 
   game.no_level_time_limit = (level.time == 0);
+  game.time_limit = (setup.time_limit);
 
   game.yamyam_content_nr = 0;
   game.robot_wheel_active = FALSE;
@@ -10227,7 +10228,7 @@ static void ExecuteCustomElementAction(int x, int y, int element, int page)
 
 	DisplayGameControlValues();
 
-	if (!TimeLeft && setup.time_limit)
+	if (!TimeLeft && game.time_limit)
 	  for (i = 0; i < MAX_PLAYERS; i++)
 	    KillPlayer(&stored_player[i]);
       }
@@ -11637,14 +11638,14 @@ static void CheckLevelTime_StepCounter(void)
   {
     TimeLeft--;
 
-    if (TimeLeft <= 10 && setup.time_limit && !game.LevelSolved)
+    if (TimeLeft <= 10 && game.time_limit && !game.LevelSolved)
       PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
 
     game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
 
     DisplayGameControlValues();
 
-    if (!TimeLeft && setup.time_limit && !game.LevelSolved)
+    if (!TimeLeft && game.time_limit && !game.LevelSolved)
       for (i = 0; i < MAX_PLAYERS; i++)
 	KillPlayer(&stored_player[i]);
   }
@@ -11686,7 +11687,7 @@ static void CheckLevelTime(void)
       {
 	TimeLeft--;
 
-	if (TimeLeft <= 10 && setup.time_limit)
+	if (TimeLeft <= 10 && game.time_limit)
 	  PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
 
 	/* this does not make sense: game_panel_controls[GAME_PANEL_TIME].value
@@ -11694,7 +11695,7 @@ static void CheckLevelTime(void)
 
 	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
 
-	if (!TimeLeft && setup.time_limit)
+	if (!TimeLeft && game.time_limit)
 	{
 	  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
 	    game_em.lev->killed_out_of_time = TRUE;

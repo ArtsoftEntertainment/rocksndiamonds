@@ -293,7 +293,7 @@ static boolean player_killed(struct PLAYER *ply)
   if (!ply->alive)
     return FALSE;
 
-  if (lev.killed_out_of_time && setup.time_limit)
+  if (lev.killed_out_of_time && game.time_limit)
     return TRUE;
 
   switch (cave[x][y-1])

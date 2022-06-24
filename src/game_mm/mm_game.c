@@ -3119,7 +3119,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 
       redraw_mask |= REDRAW_DOOR_1;
     }
-    else if (setup.time_limit && !game_mm.game_over)
+    else if (game.time_limit && !game_mm.game_over)
     {
       int i;
 
