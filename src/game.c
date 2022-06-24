@@ -2239,7 +2239,7 @@ static void UpdateGameControlValues(void)
 	      game_sp.time_played :
 	      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 	      game_mm.energy_left :
-	      game.no_time_limit ? TimePlayed : TimeLeft);
+	      game.no_level_time_limit ? TimePlayed : TimeLeft);
   int score = (game.LevelSolved ?
 	       game.LevelSolved_CountingScore :
 	       level.game_engine_type == GAME_ENGINE_TYPE_EM ?
@@ -3818,7 +3818,7 @@ void InitGame(void)
 
   game.panel.active = TRUE;
 
-  game.no_time_limit = (level.time == 0);
+  game.no_level_time_limit = (level.time == 0);
 
   game.yamyam_content_nr = 0;
   game.robot_wheel_active = FALSE;
@@ -4726,7 +4726,7 @@ void InitAmoebaNr(int x, int y)
 
 static void LevelSolved_SetFinalGameValues(void)
 {
-  game.time_final = (game.no_time_limit ? TimePlayed : TimeLeft);
+  game.time_final = (game.no_level_time_limit ? TimePlayed : TimeLeft);
   game.score_time_final = (level.use_step_counter ? TimePlayed :
 			   TimePlayed * FRAMES_PER_SECOND + TimeFrames);
 
@@ -4835,7 +4835,7 @@ void GameWon(void)
 	time_final = 0;
 	time_frames = time_frames_left;
       }
-      else if (game.no_time_limit && TimePlayed < time_final_max)
+      else if (game.no_level_time_limit && TimePlayed < time_final_max)
       {
 	time_final = time_final_max;
 	time_frames = time_frames_final_max - time_frames_played;
@@ -11648,7 +11648,7 @@ static void CheckLevelTime_StepCounter(void)
       for (i = 0; i < MAX_PLAYERS; i++)
 	KillPlayer(&stored_player[i]);
   }
-  else if (game.no_time_limit && !game.all_players_gone)
+  else if (game.no_level_time_limit && !game.all_players_gone)
   {
     game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
 
@@ -11703,12 +11703,12 @@ static void CheckLevelTime(void)
 	      KillPlayer(&stored_player[i]);
 	}
       }
-      else if (game.no_time_limit && !game.all_players_gone)
+      else if (game.no_level_time_limit && !game.all_players_gone)
       {
 	game_panel_controls[GAME_PANEL_TIME].value = TimePlayed;
       }
 
-      game_em.lev->time = (game.no_time_limit ? TimePlayed : TimeLeft);
+      game_em.lev->time = (game.no_level_time_limit ? TimePlayed : TimeLeft);
     }
 
     if (tape.recording || tape.playing)
@@ -14882,7 +14882,7 @@ static int DigField(struct PlayerInfo *player,
       if (level.time > 0 || level.use_time_orb_bug)
       {
 	TimeLeft += level.time_orb_time;
-	game.no_time_limit = FALSE;
+	game.no_level_time_limit = FALSE;
 
 	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
 

@@ -203,7 +203,7 @@ struct GameInfo
 
   boolean explosions_delayed;
   boolean envelope_active;
-  boolean no_time_limit;	// (variable only in very special case)
+  boolean no_level_time_limit;	// (variable only in very special case)
 
   int time_final;		// time (in seconds) or steps left or played
   int score_time_final;		// time (in frames) or steps played
