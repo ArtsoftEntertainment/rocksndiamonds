@@ -204,7 +204,7 @@ struct GameInfo
   boolean explosions_delayed;
   boolean envelope_active;
   boolean no_level_time_limit;	// (variable only in very special case)
-  boolean time_limit;		// forced by setup option
+  boolean time_limit;		// forced by levelset config or setup option
 
   int time_final;		// time (in seconds) or steps left or played
   int score_time_final;		// time (in frames) or steps played

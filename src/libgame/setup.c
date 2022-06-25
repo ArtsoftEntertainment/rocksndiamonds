@@ -2730,10 +2730,11 @@ SetupFileHash *loadSetupFileHash(char *filename)
 #define LEVELINFO_TOKEN_EMPTY_LEVEL_NAME	27
 #define LEVELINFO_TOKEN_FORCE_LEVEL_NAME	28
 #define LEVELINFO_TOKEN_HANDICAP		29
-#define LEVELINFO_TOKEN_SKIP_LEVELS		30
-#define LEVELINFO_TOKEN_USE_EMC_TILES		31
+#define LEVELINFO_TOKEN_TIME_LIMIT		30
+#define LEVELINFO_TOKEN_SKIP_LEVELS		31
+#define LEVELINFO_TOKEN_USE_EMC_TILES		32
 
-#define NUM_LEVELINFO_TOKENS			32
+#define NUM_LEVELINFO_TOKENS			33
 
 static LevelDirTree ldi;
 
@@ -2770,6 +2771,7 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.empty_level_name,	"empty_level_name"	},
   { TYPE_BOOLEAN,	&ldi.force_level_name,	"force_level_name"	},
   { TYPE_BOOLEAN,	&ldi.handicap,		"handicap"		},
+  { TYPE_BOOLEAN,	&ldi.time_limit,	"time_limit"		},
   { TYPE_BOOLEAN,	&ldi.skip_levels,	"skip_levels"		},
   { TYPE_BOOLEAN,	&ldi.use_emc_tiles,	"use_emc_tiles"		}
 };
@@ -2876,6 +2878,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
     ti->handicap_level = 0;
     ti->readonly = TRUE;
     ti->handicap = TRUE;
+    ti->time_limit = TRUE;
     ti->skip_levels = FALSE;
 
     ti->use_emc_tiles = FALSE;
@@ -2961,6 +2964,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
     ti->handicap_level = parent->handicap_level;
     ti->readonly = parent->readonly;
     ti->handicap = parent->handicap;
+    ti->time_limit = parent->time_limit;
     ti->skip_levels = parent->skip_levels;
 
     ti->use_emc_tiles = parent->use_emc_tiles;
@@ -3033,6 +3037,7 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->user_defined		= ti->user_defined;
   ti_copy->readonly		= ti->readonly;
   ti_copy->handicap		= ti->handicap;
+  ti_copy->time_limit		= ti->time_limit;
   ti_copy->skip_levels		= ti->skip_levels;
 
   ti_copy->use_emc_tiles	= ti->use_emc_tiles;

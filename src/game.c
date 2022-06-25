@@ -3819,7 +3819,7 @@ void InitGame(void)
   game.panel.active = TRUE;
 
   game.no_level_time_limit = (level.time == 0);
-  game.time_limit = (setup.time_limit);
+  game.time_limit = (leveldir_current->time_limit && setup.time_limit);
 
   game.yamyam_content_nr = 0;
   game.robot_wheel_active = FALSE;
