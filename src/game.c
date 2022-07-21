@@ -7680,25 +7680,19 @@ static void TurnRoundExt(int x, int y)
   }
   else if (move_pattern & MV_MAZE_RUNNER_STYLE)
   {
-    static int test_xy[7][2] =
+    static int test_xy[4][2] =
     {
       { 0, -1 },
       { -1, 0 },
       { +1, 0 },
-      { 0, +1 },
-      { 0, -1 },
-      { -1, 0 },
-      { +1, 0 },
+      { 0, +1 }
     };
-    static int test_dir[7] =
+    static int test_dir[4] =
     {
       MV_UP,
       MV_LEFT,
       MV_RIGHT,
-      MV_DOWN,
-      MV_UP,
-      MV_LEFT,
-      MV_RIGHT,
+      MV_DOWN
     };
     boolean hunter_mode = (move_pattern == MV_MAZE_HUNTER);
     int move_preference = -1000000;	// start with very low preference
@@ -7708,11 +7702,12 @@ static void TurnRoundExt(int x, int y)
 
     for (i = 0; i < NUM_DIRECTIONS; i++)
     {
-      int move_dir = test_dir[start_test + i];
+      int j = (start_test + i) % 4;
+      int move_dir = test_dir[j];
       int move_dir_preference;
 
-      xx = x + test_xy[start_test + i][0];
-      yy = y + test_xy[start_test + i][1];
+      xx = x + test_xy[j][0];
+      yy = y + test_xy[j][1];
 
       if (hunter_mode && IN_LEV_FIELD(xx, yy) &&
 	  (IS_PLAYER(xx, yy) || Tile[xx][yy] == EL_PLAYER_IS_LEAVING))
