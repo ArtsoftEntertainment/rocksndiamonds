@@ -1125,14 +1125,12 @@ struct VideoSystemInfo
   int vsync_mode;
 
   unsigned int frame_counter;
-  unsigned int frame_delay;
-  unsigned int frame_delay_value;
+  DelayCounter frame_delay;
 
   boolean shifted_up;
   int shifted_up_pos;
   int shifted_up_pos_last;
-  unsigned int shifted_up_delay;
-  unsigned int shifted_up_delay_value;
+  DelayCounter shifted_up_delay;
 
   boolean initialized;
 };

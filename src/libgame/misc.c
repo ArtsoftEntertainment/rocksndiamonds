@@ -641,8 +641,8 @@ void Delay(unsigned int delay)	// Sleep specified number of milliseconds
   sleep_milliseconds(delay);
 }
 
-boolean DelayReachedExt(unsigned int *counter_var, unsigned int delay,
-			unsigned int actual_counter)
+boolean DelayReachedExt2(unsigned int *counter_var, unsigned int delay,
+			 unsigned int actual_counter)
 {
   if (actual_counter >= *counter_var &&
       actual_counter < *counter_var + delay)
@@ -653,34 +653,40 @@ boolean DelayReachedExt(unsigned int *counter_var, unsigned int delay,
   return TRUE;
 }
 
-boolean FrameReached(unsigned int *frame_counter_var, unsigned int frame_delay)
+boolean DelayReachedExt(DelayCounter *counter, unsigned int actual_counter)
 {
-  return DelayReachedExt(frame_counter_var, frame_delay, FrameCounter);
+  return DelayReachedExt2(&counter->count, counter->value, actual_counter);
 }
 
-boolean DelayReached(unsigned int *counter_var, unsigned int delay)
+boolean FrameReached(DelayCounter *counter)
 {
-  return DelayReachedExt(counter_var, delay, Counter());
+  return DelayReachedExt(counter, FrameCounter);
 }
 
-void ResetDelayCounterExt(unsigned int *counter_var,
-			  unsigned int actual_counter)
+boolean DelayReached(DelayCounter *counter)
 {
-  DelayReachedExt(counter_var, 0, actual_counter);
+  return DelayReachedExt(counter, Counter());
 }
 
-void ResetFrameCounter(unsigned int *frame_counter_var)
+void ResetDelayCounterExt(DelayCounter *counter, unsigned int actual_counter)
 {
-  FrameReached(frame_counter_var, 0);
+  DelayReachedExt2(&counter->count, 0, actual_counter);
 }
 
-void ResetDelayCounter(unsigned int *counter_var)
+void ResetFrameCounter(DelayCounter *counter)
 {
-  DelayReached(counter_var, 0);
+  ResetDelayCounterExt(counter, FrameCounter);
 }
 
-int WaitUntilDelayReached(unsigned int *counter_var, unsigned int delay)
+void ResetDelayCounter(DelayCounter *counter)
 {
+  ResetDelayCounterExt(counter, Counter());
+}
+
+int WaitUntilDelayReached(DelayCounter *counter)
+{
+  unsigned int *counter_var = &counter->count;
+  unsigned int delay = counter->value;
   unsigned int actual_counter;
   int skip_frames = 0;
 
@@ -711,22 +717,22 @@ int WaitUntilDelayReached(unsigned int *counter_var, unsigned int delay)
   return skip_frames;
 }
 
-void SkipUntilDelayReached(unsigned int *counter_var, unsigned int delay,
+void SkipUntilDelayReached(DelayCounter *counter,
 			   int *loop_var, int last_loop_value)
 {
-  int skip_frames = WaitUntilDelayReached(counter_var, delay);
+  int skip_frames = WaitUntilDelayReached(counter);
 
 #if 0
 #if DEBUG
   if (skip_frames)
     Debug("internal:SkipUntilDelayReached",
 	  "%d: %d ms -> SKIP %d FRAME(S) [%d ms]",
-	  *loop_var, delay,
-	  skip_frames, skip_frames * delay);
+	  *loop_var, counter->value,
+	  skip_frames, skip_frames * counter->value);
   else
     Debug("internal:SkipUntilDelayReached",
 	  "%d: %d ms",
-	  *loop_var, delay);
+	  *loop_var, counter->value);
 #endif
 #endif
 

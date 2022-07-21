@@ -14524,11 +14524,12 @@ static void HandleLevelEditorIdle_Properties(void)
   int element_border = graphic_info[IMG_EDITOR_ELEMENT_BORDER].border_size;
   int x = editor.settings.element_graphic.x + element_border;
   int y = editor.settings.element_graphic.y + element_border;
-  static unsigned int action_delay = 0;
-  unsigned int action_delay_value = GameFrameDelay;
+  static DelayCounter action_delay = { 0 };
   int i;
 
-  if (!DelayReached(&action_delay, action_delay_value))
+  action_delay.value = GameFrameDelay;
+
+  if (!DelayReached(&action_delay))
     return;
 
   for (i = 0; i < ED_NUM_SELECTBOX; i++)

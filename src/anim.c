@@ -124,7 +124,8 @@ struct GlobalAnimPartControlInfo
 
   unsigned int initial_anim_sync_frame;
   unsigned int anim_random_frame;
-  unsigned int step_delay, step_delay_value;
+
+  DelayCounter step_delay;
 
   int init_delay_counter;
   int anim_delay_counter;
@@ -436,8 +437,8 @@ static void InitToonControls(void)
     part->initial_anim_sync_frame = 0;
     part->anim_random_frame = -1;
 
-    part->step_delay = 0;
-    part->step_delay_value = graphic_info[control].step_delay;
+    part->step_delay.count = 0;
+    part->step_delay.value = graphic_info[control].step_delay;
 
     part->state = ANIM_STATE_INACTIVE;
     part->last_anim_status = -1;
@@ -543,8 +544,8 @@ static void InitGlobalAnimControls(void)
 	part->initial_anim_sync_frame = 0;
 	part->anim_random_frame = -1;
 
-	part->step_delay = 0;
-	part->step_delay_value = graphic_info[control].step_delay;
+	part->step_delay.count = 0;
+	part->step_delay.value = graphic_info[control].step_delay;
 
 	part->state = ANIM_STATE_INACTIVE;
 	part->last_anim_status = -1;
@@ -1531,8 +1532,7 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
   // special case to prevent expiring loop sounds when playing
   PlayGlobalAnimSoundIfLoop(part);
 
-  if (!DelayReachedExt(&part->step_delay, part->step_delay_value,
-		       anim_sync_frame))
+  if (!DelayReachedExt(&part->step_delay, anim_sync_frame))
     return ANIM_STATE_RUNNING;
 
 #if 0

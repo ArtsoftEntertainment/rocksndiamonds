@@ -567,14 +567,14 @@ void InitVideoBuffer(int width, int height, int depth, boolean fullscreen)
   video.window_scaling_available = WINDOW_SCALING_STATUS;
 
   video.frame_counter = 0;
-  video.frame_delay = 0;
-  video.frame_delay_value = GAME_FRAME_DELAY;
+  video.frame_delay.count = 0;
+  video.frame_delay.value = GAME_FRAME_DELAY;
 
   video.shifted_up = FALSE;
   video.shifted_up_pos = 0;
   video.shifted_up_pos_last = 0;
-  video.shifted_up_delay = 0;
-  video.shifted_up_delay_value = ONE_SECOND_DELAY / 4;
+  video.shifted_up_delay.count = 0;
+  video.shifted_up_delay.value = ONE_SECOND_DELAY / 4;
 
   SDLInitVideoBuffer(fullscreen);
 
@@ -1112,12 +1112,12 @@ boolean SetVideoMode(boolean fullscreen)
 
 void SetVideoFrameDelay(unsigned int frame_delay_value)
 {
-  video.frame_delay_value = frame_delay_value;
+  video.frame_delay.value = frame_delay_value;
 }
 
 unsigned int GetVideoFrameDelay(void)
 {
-  return video.frame_delay_value;
+  return video.frame_delay.value;
 }
 
 boolean ChangeVideoModeIfNeeded(boolean fullscreen)

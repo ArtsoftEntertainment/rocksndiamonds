@@ -1380,15 +1380,14 @@ boolean PlaySolutionTape(void)
 
 static boolean PlayScoreTape_WaitForDownload(void)
 {
-  unsigned int download_delay = 0;
-  unsigned int download_delay_value = 10000;
+  DelayCounter download_delay = { 10000 };
 
   ResetDelayCounter(&download_delay);
 
   // wait for score tape to be successfully downloaded (and fail on timeout)
   while (!server_scores.tape_downloaded)
   {
-    if (DelayReached(&download_delay, download_delay_value))
+    if (DelayReached(&download_delay))
       return FALSE;
 
     UPDATE_BUSY_STATE_NOT_LOADING();
@@ -1578,15 +1577,14 @@ static void AutoPlayTapes_SetScoreEntry(int score, int time)
 
 static boolean AutoPlayTapes_WaitForUpload(void)
 {
-  unsigned int upload_delay = 0;
-  unsigned int upload_delay_value = 10000;
+  DelayCounter upload_delay = { 10000 };
 
   ResetDelayCounter(&upload_delay);
 
   // wait for score tape to be successfully uploaded (and fail on timeout)
   while (!server_scores.uploaded)
   {
-    if (DelayReached(&upload_delay, upload_delay_value))
+    if (DelayReached(&upload_delay))
     {
       PrintNoLog("\r");
       Print("- uploading score tape to score server - TIMEOUT.\n");

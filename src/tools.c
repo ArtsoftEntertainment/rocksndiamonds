@@ -2886,9 +2886,9 @@ static void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
   int mask_mode = (src_bitmap != NULL ? BLIT_MASKED : BLIT_ON_BACKGROUND);
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
   boolean no_delay = (tape.warp_forward);
-  unsigned int anim_delay = 0;
   int frame_delay_value = (ffwd_delay ? FfwdFrameDelay : GameFrameDelay);
   int anim_delay_value = MAX(1, (no_delay ? 0 : frame_delay_value) / 2);
+  DelayCounter anim_delay = { anim_delay_value };
   int font_nr = FONT_ENVELOPE_1 + envelope_nr;
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
@@ -2934,7 +2934,7 @@ static void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
     redraw_mask |= REDRAW_FIELD;
     BackToFront();
 
-    SkipUntilDelayReached(&anim_delay, anim_delay_value, &i, last_frame);
+    SkipUntilDelayReached(&anim_delay, &i, last_frame);
   }
 
   ClearAutoRepeatKeyEvents();
@@ -3204,7 +3204,7 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
   boolean no_delay = (tape.warp_forward);
   int delay_value = (ffwd_delay ? delay_value_fast : delay_value_normal);
   int anim_delay_value = MAX(1, (no_delay ? 0 : delay_value + 500 * 0) / 2);
-  unsigned int anim_delay = 0;
+  DelayCounter anim_delay = { anim_delay_value };
 
   int tile_size = MAX(request.step_offset, 1);
   int max_xsize = request.width  / tile_size;
@@ -3277,7 +3277,7 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
 
     BackToFront();
 
-    SkipUntilDelayReached(&anim_delay, anim_delay_value, &i, last_frame);
+    SkipUntilDelayReached(&anim_delay, &i, last_frame);
   }
 
   ClearAutoRepeatKeyEvents();
@@ -3548,14 +3548,16 @@ static void DrawPreviewLevelInfo(int mode)
 
 static void DrawPreviewLevelExt(boolean restart)
 {
-  static unsigned int scroll_delay = 0;
-  static unsigned int label_delay = 0;
+  static DelayCounter scroll_delay = { 0 };
+  static DelayCounter label_delay = { 0 };
   static int from_x, from_y, scroll_direction;
   static int label_state, label_counter;
-  unsigned int scroll_delay_value = preview.step_delay;
   boolean show_level_border = (BorderElement != EL_EMPTY);
   int level_xsize = lev_fieldx + (show_level_border ? 2 : 0);
   int level_ysize = lev_fieldy + (show_level_border ? 2 : 0);
+
+  scroll_delay.value = preview.step_delay;
+  label_delay.value = MICROLEVEL_LABEL_DELAY;
 
   if (restart)
   {
@@ -3610,7 +3612,7 @@ static void DrawPreviewLevelExt(boolean restart)
   // scroll preview level, if needed
   if (preview.anim_mode != ANIM_NONE &&
       (level_xsize > preview.xsize || level_ysize > preview.ysize) &&
-      DelayReached(&scroll_delay, scroll_delay_value))
+      DelayReached(&scroll_delay))
   {
     switch (scroll_direction)
     {
@@ -3668,7 +3670,7 @@ static void DrawPreviewLevelExt(boolean restart)
   if (!strEqual(level.name, NAMELESS_LEVEL_NAME) &&
       !strEqual(level.author, ANONYMOUS_NAME) &&
       !strEqual(level.author, leveldir_current->name) &&
-      DelayReached(&label_delay, MICROLEVEL_LABEL_DELAY))
+      DelayReached(&label_delay))
   {
     int max_label_counter = 23;
 
@@ -5352,8 +5354,7 @@ unsigned int MoveDoor(unsigned int door_state)
   };
   static int door1 = DOOR_CLOSE_1;
   static int door2 = DOOR_CLOSE_2;
-  unsigned int door_delay = 0;
-  unsigned int door_delay_value;
+  DelayCounter door_delay = { 0 };
   int i;
 
   if (door_state == DOOR_GET_STATE)
@@ -5468,7 +5469,7 @@ unsigned int MoveDoor(unsigned int door_state)
     num_move_steps = max_move_delay / max_step_delay;
     num_move_steps_doors_only = max_move_delay_doors_only / max_step_delay;
 
-    door_delay_value = max_step_delay;
+    door_delay.value = max_step_delay;
 
     if ((door_state & DOOR_NO_DELAY) || setup.quick_doors)
     {
@@ -5551,7 +5552,7 @@ unsigned int MoveDoor(unsigned int door_state)
 	{
 	  int k2_door = (door_opening ? k : num_move_steps_doors_only - k - 1);
 	  int kk_door = MAX(0, k2_door);
-	  int sync_frame = kk_door * door_delay_value;
+	  int sync_frame = kk_door * door_delay.value;
 	  int frame = getGraphicAnimationFrame(dpc->graphic, sync_frame);
 
 	  getFixedGraphicSource(dpc->graphic, frame, &bitmap,
@@ -5660,7 +5661,7 @@ unsigned int MoveDoor(unsigned int door_state)
       {
 	BackToFront();
 
-	SkipUntilDelayReached(&door_delay, door_delay_value, &k, last_frame);
+	SkipUntilDelayReached(&door_delay, &k, last_frame);
 
 	// prevent OS (Windows) from complaining about program not responding
 	CheckQuitEvent();
@@ -5674,13 +5675,13 @@ unsigned int MoveDoor(unsigned int door_state)
     {
       // wait for specified door action post delay
       if (door_state & DOOR_ACTION_1 && door_state & DOOR_ACTION_2)
-	door_delay_value = MAX(door_1.post_delay, door_2.post_delay);
+	door_delay.value = MAX(door_1.post_delay, door_2.post_delay);
       else if (door_state & DOOR_ACTION_1)
-	door_delay_value = door_1.post_delay;
+	door_delay.value = door_1.post_delay;
       else if (door_state & DOOR_ACTION_2)
-	door_delay_value = door_2.post_delay;
+	door_delay.value = door_2.post_delay;
 
-      while (!DelayReached(&door_delay, door_delay_value))
+      while (!DelayReached(&door_delay))
 	BackToFront();
     }
   }

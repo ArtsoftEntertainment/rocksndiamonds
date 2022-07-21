@@ -899,16 +899,11 @@ static void DrawTileCursor_Xsn(int draw_target)
   static boolean started = FALSE;
   static boolean active = FALSE;
   static boolean debug = FALSE;
-  static unsigned int check_delay = 0;
-  static unsigned int start_delay = 0;
-  static unsigned int growth_delay = 0;
-  static unsigned int update_delay = 0;
-  static unsigned int change_delay = 0;
-  static unsigned int check_delay_value = XSN_CHECK_DELAY * 1000;
-  static unsigned int start_delay_value = 0;
-  static unsigned int growth_delay_value = 0;
-  static unsigned int update_delay_value = 0;
-  static unsigned int change_delay_value = 0;
+  static DelayCounter check_delay = { XSN_CHECK_DELAY * 1000 };
+  static DelayCounter start_delay = { 0 };
+  static DelayCounter growth_delay = { 0 };
+  static DelayCounter update_delay = { 0 };
+  static DelayCounter change_delay = { 0 };
   static int percent = 0;
   static int debug_value = 0;
   boolean reinitialize = FALSE;
@@ -918,7 +913,7 @@ static void DrawTileCursor_Xsn(int draw_target)
   if (draw_target != DRAW_TO_SCREEN)
     return;
 
-  if (DelayReached(&check_delay, check_delay_value))
+  if (DelayReached(&check_delay))
   {
     percent = (debug ? debug_value * 100 / XSN_DEBUG_STEPS : xsn_percent());
 
@@ -996,7 +991,7 @@ static void DrawTileCursor_Xsn(int draw_target)
 
   if (!active_last)
   {
-    start_delay_value = (debug || setup.debug.xsn_mode == TRUE ? 0 :
+    start_delay.value = (debug || setup.debug.xsn_mode == TRUE ? 0 :
 			 (XSN_START_DELAY + XSN_RND(XSN_START_DELAY)) * 1000);
     started = FALSE;
 
@@ -1072,12 +1067,12 @@ static void DrawTileCursor_Xsn(int draw_target)
 
   if (!started)
   {
-    if (!DelayReached(&start_delay, start_delay_value))
+    if (!DelayReached(&start_delay))
       return;
 
-    update_delay_value = XSN_UPDATE_DELAY;
-    growth_delay_value = XSN_GROWTH_DELAY * 1000;
-    change_delay_value = XSN_CHANGE_DELAY * 1000;
+    update_delay.value = XSN_UPDATE_DELAY;
+    growth_delay.value = XSN_GROWTH_DELAY * 1000;
+    change_delay.value = XSN_CHANGE_DELAY * 1000;
 
     ResetDelayCounter(&growth_delay);
     ResetDelayCounter(&update_delay);
@@ -1088,24 +1083,24 @@ static void DrawTileCursor_Xsn(int draw_target)
 
   if (xsn.num_items < xsn.max_items)
   {
-    if (DelayReached(&growth_delay, growth_delay_value))
+    if (DelayReached(&growth_delay))
     {
       xsn.num_items += XSN_RND(XSN_GROWTH_RATE * 2);
       xsn.num_items = MIN(xsn.num_items, xsn.max_items);
     }
   }
 
-  if (DelayReached(&update_delay, update_delay_value))
+  if (DelayReached(&update_delay))
   {
     for (i = 0; i < xsn.num_items; i++)
       xsn_update_item(i);
   }
 
-  if (DelayReached(&change_delay, change_delay_value))
+  if (DelayReached(&change_delay))
   {
     xsn_update_change();
 
-    change_delay_value = xsn.change_delay * 1000;
+    change_delay.value = xsn.change_delay * 1000;
   }
 
   int xsn_alpha_dx = (gfx.mouse_y > xsn.area_ysize - xsn.max_height ?

@@ -379,7 +379,7 @@ struct PlayerInfo
   int push_delay;
   int push_delay_value;
 
-  unsigned int actual_frame_counter;
+  DelayCounter actual_frame_counter;
 
   int drop_delay;
   int drop_pressed_delay;

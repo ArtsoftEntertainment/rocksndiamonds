@@ -1629,8 +1629,7 @@ void ClickOnGadget(struct GadgetInfo *gi, int button)
 
 boolean HandleGadgets(int mx, int my, int button)
 {
-  static unsigned int pressed_delay = 0;
-  static unsigned int pressed_delay_value = GADGET_FRAME_DELAY;
+  static DelayCounter pressed_delay = { GADGET_FRAME_DELAY };
   static int last_button = 0;
   static int last_mx = 0, last_my = 0;
   static int pressed_mx = 0, pressed_my = 0;
@@ -1756,7 +1755,7 @@ boolean HandleGadgets(int mx, int my, int button)
     (button != 0 && last_gi != NULL && new_gi == last_gi);
 
   gadget_pressed_delay_reached =
-    DelayReached(&pressed_delay, pressed_delay_value);
+    DelayReached(&pressed_delay);
 
   gadget_released =		(release_event && last_gi != NULL);
   gadget_released_inside =	(gadget_released && new_gi == last_gi);
@@ -1937,12 +1936,12 @@ boolean HandleGadgets(int mx, int my, int button)
       ResetDelayCounter(&pressed_delay);
 
       // start gadget delay with longer delay after first click on gadget
-      pressed_delay_value = GADGET_FRAME_DELAY_FIRST;
+      pressed_delay.value = GADGET_FRAME_DELAY_FIRST;
     }
     else			// gadget hold pressed for some time
     {
       // after first repeated gadget click, continue with shorter delay value
-      pressed_delay_value = GADGET_FRAME_DELAY;
+      pressed_delay.value = GADGET_FRAME_DELAY;
     }
 
     if (gi->type & GD_TYPE_SCROLLBAR && !gadget_dragging)

@@ -1872,7 +1872,7 @@ static unsigned int getAutoDelayCounter(struct TitleFadingInfo *fi)
 static boolean TitleAutoDelayReached(unsigned int *counter_var,
 				     struct TitleFadingInfo *fi)
 {
-  return DelayReachedExt(counter_var, fi->auto_delay, getAutoDelayCounter(fi));
+  return DelayReachedExt2(counter_var, fi->auto_delay, getAutoDelayCounter(fi));
 }
 
 static void ResetTitleAutoDelay(unsigned int *counter_var,
@@ -3161,12 +3161,14 @@ static void DrawInfoScreen_Elements(void)
 
 void HandleInfoScreen_Elements(int dx, int dy, int button)
 {
-  static unsigned int info_delay = 0;
+  static DelayCounter info_delay = { 0 };
   static int num_anims;
   static int num_pages;
   static int page;
   int anims_per_page = NUM_INFO_ELEMENTS_ON_SCREEN;
   int i;
+
+  info_delay.value = GameFrameDelay;
 
   if (button == MB_MENU_INITIALIZE)
   {
@@ -3230,7 +3232,7 @@ void HandleInfoScreen_Elements(int dx, int dy, int button)
   }
   else
   {
-    if (DelayReached(&info_delay, GameFrameDelay))
+    if (DelayReached(&info_delay))
       if (page < num_pages)
 	DrawInfoScreen_HelpAnim(page * anims_per_page, num_anims, FALSE);
 
@@ -8456,8 +8458,7 @@ static boolean CustomizeKeyboardMain(int player_nr)
   while (!finished)
   {
     Event event;
-    unsigned int event_frame_delay = 0;
-    unsigned int event_frame_delay_value = GAME_FRAME_DELAY;
+    DelayCounter event_frame_delay = { GAME_FRAME_DELAY };
 
     // reset frame delay counter directly after updating screen
     ResetDelayCounter(&event_frame_delay);
@@ -8535,7 +8536,7 @@ static boolean CustomizeKeyboardMain(int player_nr)
       }
 
       // do not handle events for longer than standard frame delay period
-      if (DelayReached(&event_frame_delay, event_frame_delay_value))
+      if (DelayReached(&event_frame_delay))
 	break;
     }
 
@@ -8559,8 +8560,7 @@ void CustomizeKeyboard(int player_nr)
     int font_height = getFontHeight(font_nr);
     int ypos1 = SYSIZE / 2 - font_height * 2;
     int ypos2 = SYSIZE / 2 - font_height * 1;
-    unsigned int wait_frame_delay = 0;
-    unsigned int wait_frame_delay_value = 2000;
+    DelayCounter wait_frame_delay = { 2000 };
 
     ResetDelayCounter(&wait_frame_delay);
 
@@ -8569,7 +8569,7 @@ void CustomizeKeyboard(int player_nr)
     DrawTextSCentered(ypos1, font_nr, "Keyboard");
     DrawTextSCentered(ypos2, font_nr, "configured!");
 
-    while (!DelayReached(&wait_frame_delay, wait_frame_delay_value))
+    while (!DelayReached(&wait_frame_delay))
       BackToFront();
 
     ClearEventQueue();
@@ -8770,8 +8770,7 @@ static boolean ConfigureJoystickMapButtonsAndAxes(SDL_Joystick *joystick)
 
       screen_initialized = TRUE;
 
-      unsigned int event_frame_delay = 0;
-      unsigned int event_frame_delay_value = GAME_FRAME_DELAY;
+      DelayCounter event_frame_delay = { GAME_FRAME_DELAY };
 
       // reset frame delay counter directly after updating screen
       ResetDelayCounter(&event_frame_delay);
@@ -8909,7 +8908,7 @@ static boolean ConfigureJoystickMapButtonsAndAxes(SDL_Joystick *joystick)
 	}
 
 	// do not handle events for longer than standard frame delay period
-	if (DelayReached(&event_frame_delay, event_frame_delay_value))
+	if (DelayReached(&event_frame_delay))
 	  break;
       }
     }
@@ -8993,8 +8992,7 @@ void ConfigureJoystick(int player_nr)
     int font_height = getFontHeight(font_nr);
     int ypos1 = SYSIZE / 2 - font_height * 2;
     int ypos2 = SYSIZE / 2 - font_height * 1;
-    unsigned int wait_frame_delay = 0;
-    unsigned int wait_frame_delay_value = 2000;
+    DelayCounter wait_frame_delay = { 2000 };
 
     ResetDelayCounter(&wait_frame_delay);
 
@@ -9005,7 +9003,7 @@ void ConfigureJoystick(int player_nr)
     DrawTextSCentered(ypos1, font_nr, message1);
     DrawTextSCentered(ypos2, font_nr, message2);
 
-    while (!DelayReached(&wait_frame_delay, wait_frame_delay_value))
+    while (!DelayReached(&wait_frame_delay))
       BackToFront();
 
     ClearEventQueue();
@@ -9323,8 +9321,7 @@ void ConfigureVirtualButtons(void)
     int font_height = getFontHeight(font_nr);
     int ypos1 = SYSIZE / 2 - font_height * 2;
     int ypos2 = SYSIZE / 2 - font_height * 1;
-    unsigned int wait_frame_delay = 0;
-    unsigned int wait_frame_delay_value = 2000;
+    DelayCounter wait_frame_delay = { 2000 };
 
     ResetDelayCounter(&wait_frame_delay);
 
@@ -9333,7 +9330,7 @@ void ConfigureVirtualButtons(void)
     DrawTextSCentered(ypos1, font_nr, "Virtual buttons");
     DrawTextSCentered(ypos2, font_nr, "configured!");
 
-    while (!DelayReached(&wait_frame_delay, wait_frame_delay_value))
+    while (!DelayReached(&wait_frame_delay))
       BackToFront();
 
     ClearEventQueue();

@@ -111,10 +111,10 @@ static int hold_x = -1, hold_y = -1;
 static int pacman_nr = -1;
 
 // various game engine delay counters
-static unsigned int rotate_delay = 0;
-static unsigned int pacman_delay = 0;
-static unsigned int energy_delay = 0;
-static unsigned int overload_delay = 0;
+static DelayCounter rotate_delay = { AUTO_ROTATE_DELAY };
+static DelayCounter pacman_delay = { PACMAN_MOVE_DELAY };
+static DelayCounter energy_delay = { ENERGY_DELAY };
+static DelayCounter overload_delay = { 0 };
 
 // element masks for scanning pixels of MM elements
 static const char mm_masks[10][16][16 + 1] =
@@ -637,10 +637,10 @@ void InitGameEngine_MM(void)
 
   CT = Ct = 0;
 
-  rotate_delay = 0;
-  pacman_delay = 0;
-  energy_delay = 0;
-  overload_delay = 0;
+  rotate_delay.count = 0;
+  pacman_delay.count = 0;
+  energy_delay.count = 0;
+  overload_delay.count = 0;
 
   ClickElement(-1, -1, -1);
 
@@ -2709,8 +2709,7 @@ static void ContinueMoving_MM(int x, int y)
 
 boolean ClickElement(int x, int y, int button)
 {
-  static unsigned int click_delay = 0;
-  static int click_delay_value = CLICK_DELAY;
+  static DelayCounter click_delay = { CLICK_DELAY };
   static boolean new_button = TRUE;
   boolean element_clicked = FALSE;
   int element;
@@ -2718,8 +2717,8 @@ boolean ClickElement(int x, int y, int button)
   if (button == -1)
   {
     // initialize static variables
-    click_delay = 0;
-    click_delay_value = CLICK_DELAY;
+    click_delay.count = 0;
+    click_delay.value = CLICK_DELAY;
     new_button = TRUE;
 
     return FALSE;
@@ -2732,7 +2731,7 @@ boolean ClickElement(int x, int y, int button)
   if (button == MB_RELEASED)
   {
     new_button = TRUE;
-    click_delay_value = CLICK_DELAY;
+    click_delay.value = CLICK_DELAY;
 
     // release eventually hold auto-rotating mirror
     RotateMirror(x, y, MB_RELEASED);
@@ -2740,7 +2739,7 @@ boolean ClickElement(int x, int y, int button)
     return FALSE;
   }
 
-  if (!FrameReached(&click_delay, click_delay_value) && !new_button)
+  if (!FrameReached(&click_delay) && !new_button)
     return FALSE;
 
   if (button == MB_MIDDLEBUTTON)	// middle button has no function
@@ -2827,7 +2826,7 @@ boolean ClickElement(int x, int y, int button)
     element_clicked = TRUE;
   }
 
-  click_delay_value = (new_button ? CLICK_DELAY_FIRST : CLICK_DELAY);
+  click_delay.value = (new_button ? CLICK_DELAY_FIRST : CLICK_DELAY);
   new_button = FALSE;
 
   return element_clicked;
@@ -2932,7 +2931,7 @@ static void AutoRotateMirrors(void)
 {
   int x, y;
 
-  if (!FrameReached(&rotate_delay, AUTO_ROTATE_DELAY))
+  if (!FrameReached(&rotate_delay))
     return;
 
   for (x = 0; x < lev_fieldx; x++)
@@ -3100,7 +3099,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
 
   CT = FrameCounter;
 
-  if (game_mm.num_pacman && FrameReached(&pacman_delay, PACMAN_MOVE_DELAY))
+  if (game_mm.num_pacman && FrameReached(&pacman_delay))
   {
     MovePacMen();
 
@@ -3111,7 +3110,7 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
     }
   }
 
-  if (FrameReached(&energy_delay, ENERGY_DELAY))
+  if (FrameReached(&energy_delay))
   {
     if (game_mm.energy_left > 0)
     {
@@ -3177,9 +3176,11 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
       !IS_WALL_AMOEBA(element))
     return;
 
+  overload_delay.value = HEALTH_DELAY(laser.overloaded);
+
   if (((laser.overloaded && laser.overload_value < MAX_LASER_OVERLOAD) ||
        (!laser.overloaded && laser.overload_value > 0)) &&
-      FrameReached(&overload_delay, HEALTH_DELAY(laser.overloaded)))
+      FrameReached(&overload_delay))
   {
     if (laser.overloaded)
       laser.overload_value++;

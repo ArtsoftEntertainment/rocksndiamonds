@@ -76,4 +76,11 @@ struct ListNode
 };
 typedef struct ListNode ListNode;
 
+struct DelayCounter
+{
+  unsigned int value;
+  unsigned int count;
+};
+typedef struct DelayCounter DelayCounter;
+
 #endif // TYPES_H

@@ -69,12 +69,11 @@ static void FinalizeScreen(int draw_target)
 
 static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
 {
-  static unsigned int update_screen_delay = 0;
-  unsigned int update_screen_delay_value = 50;		// (milliseconds)
+  static DelayCounter update_screen_delay = { 50 };	// (milliseconds)
   SDL_Surface *screen = backbuffer->surface;
 
   if (limit_screen_updates &&
-      !DelayReached(&update_screen_delay, update_screen_delay_value))
+      !DelayReached(&update_screen_delay))
     return;
 
   LimitScreenUpdates(FALSE);
@@ -154,24 +153,23 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
   SDL_Rect src_rect_up = { 0, 0,  video.width, video.height };
   SDL_Rect dst_rect_up = dst_rect_screen;
 
-  if (video.shifted_up || video.shifted_up_delay)
+  if (video.shifted_up || video.shifted_up_delay.count)
   {
     int time_current = SDL_GetTicks();
     int pos = video.shifted_up_pos;
     int pos_last = video.shifted_up_pos_last;
 
-    if (!DelayReachedExt(&video.shifted_up_delay, video.shifted_up_delay_value,
-			 time_current))
+    if (!DelayReachedExt(&video.shifted_up_delay, time_current))
     {
-      int delay = time_current - video.shifted_up_delay;
-      int delay_value = video.shifted_up_delay_value;
+      int delay_count = time_current - video.shifted_up_delay.count;
+      int delay_value = video.shifted_up_delay.value;
 
-      pos = pos_last + (pos - pos_last) * delay / delay_value;
+      pos = pos_last + (pos - pos_last) * delay_count / delay_value;
     }
     else
     {
       video.shifted_up_pos_last = pos;
-      video.shifted_up_delay = 0;
+      video.shifted_up_delay.count = 0;
     }
 
     src_rect_up.y = pos;
@@ -225,7 +223,7 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
 
   // global synchronization point of the game to align video frame delay
   if (with_frame_delay)
-    WaitUntilDelayReached(&video.frame_delay, video.frame_delay_value);
+    WaitUntilDelayReached(&video.frame_delay);
 
   video.frame_counter++;
 

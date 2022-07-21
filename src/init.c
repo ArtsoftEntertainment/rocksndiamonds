@@ -138,10 +138,11 @@ static void DrawInitAnim(boolean only_when_loading)
 			      game_status == GAME_MODE_LOADING ?
 			      &init_last.busy :
 			      &init_last.busy_playfield);
-  static unsigned int action_delay = 0;
-  unsigned int action_delay_value = GameFrameDelay;
+  static DelayCounter action_delay = { 0 };
   int sync_frame = FrameCounter;
   int x, y;
+
+  action_delay.value = GameFrameDelay;
 
   // prevent OS (Windows) from complaining about program not responding
   CheckQuitEvent();
@@ -152,7 +153,7 @@ static void DrawInitAnim(boolean only_when_loading)
   if (image_initial[graphic].bitmap == NULL || window == NULL)
     return;
 
-  if (!DelayReached(&action_delay, action_delay_value))
+  if (!DelayReached(&action_delay))
     return;
 
   if (busy->x == -1)
@@ -6610,8 +6611,7 @@ void OpenAll(void)
 
 static boolean WaitForApiThreads(void)
 {
-  unsigned int thread_delay = 0;
-  unsigned int thread_delay_value = 10000;
+  DelayCounter thread_delay = { 10000 };
 
   if (program.api_thread_count == 0)
     return TRUE;
@@ -6627,7 +6627,7 @@ static boolean WaitForApiThreads(void)
   // wait for threads to finish (and fail on timeout)
   while (program.api_thread_count > 0)
   {
-    if (DelayReached(&thread_delay, thread_delay_value))
+    if (DelayReached(&thread_delay))
     {
       Error("failed waiting for threads - TIMEOUT");
 

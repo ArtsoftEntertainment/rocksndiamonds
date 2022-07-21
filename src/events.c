@@ -36,8 +36,7 @@
 
 static boolean cursor_inside_playfield = FALSE;
 static int cursor_mode_last = CURSOR_DEFAULT;
-static unsigned int special_cursor_delay = 0;
-static unsigned int special_cursor_delay_value = 1000;
+static DelayCounter special_cursor_delay = { 1000 };
 static boolean special_cursor_enabled = FALSE;
 
 static boolean stop_processing_events = FALSE;
@@ -211,8 +210,7 @@ void StopProcessingEvents(void)
 static void HandleEvents(void)
 {
   Event event;
-  unsigned int event_frame_delay = 0;
-  unsigned int event_frame_delay_value = GAME_FRAME_DELAY;
+  DelayCounter event_frame_delay = { GAME_FRAME_DELAY };
 
   ResetDelayCounter(&event_frame_delay);
 
@@ -277,7 +275,7 @@ static void HandleEvents(void)
       ResetDelayCounter(&event_frame_delay);
 
     // do not handle events for longer than standard frame delay period
-    if (DelayReached(&event_frame_delay, event_frame_delay_value))
+    if (DelayReached(&event_frame_delay))
       break;
 
     // do not handle any further events if triggered by a special flag
@@ -330,7 +328,7 @@ static void HandleMouseCursor(void)
     // when showing title screens, hide mouse pointer (if not moved)
 
     if (gfx.cursor_mode != CURSOR_NONE &&
-	DelayReached(&special_cursor_delay, special_cursor_delay_value))
+	DelayReached(&special_cursor_delay))
     {
       SetMouseCursor(CURSOR_NONE);
     }
@@ -347,7 +345,7 @@ static void HandleMouseCursor(void)
     if (gfx.cursor_mode != CURSOR_PLAYFIELD &&
 	cursor_inside_playfield &&
 	special_cursor_enabled &&
-	DelayReached(&special_cursor_delay, special_cursor_delay_value))
+	DelayReached(&special_cursor_delay))
     {
       SetMouseCursor(CURSOR_PLAYFIELD);
     }
@@ -2589,8 +2587,7 @@ static int HandleJoystickForAllPlayers(void)
 
 void HandleJoystick(void)
 {
-  static unsigned int joytest_delay = 0;
-  static unsigned int joytest_delay_value = GADGET_FRAME_DELAY;
+  static DelayCounter joytest_delay = { GADGET_FRAME_DELAY };
   static int joytest_last = 0;
   int delay_value_first = GADGET_FRAME_DELAY_FIRST;
   int delay_value       = GADGET_FRAME_DELAY;
@@ -2648,7 +2645,7 @@ void HandleJoystick(void)
   if (dx || dy || button)
     SetPlayfieldMouseCursorEnabled(TRUE);
 
-  if (joytest && !button && !DelayReached(&joytest_delay, joytest_delay_value))
+  if (joytest && !button && !DelayReached(&joytest_delay))
   {
     // delay joystick/keyboard actions if axes/keys continually pressed
     newbutton = dx = dy = 0;
@@ -2656,7 +2653,7 @@ void HandleJoystick(void)
   else
   {
     // first start with longer delay, then continue with shorter delay
-    joytest_delay_value =
+    joytest_delay.value =
       (use_delay_value_first ? delay_value_first : delay_value);
   }
 

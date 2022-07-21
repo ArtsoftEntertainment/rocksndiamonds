@@ -193,10 +193,10 @@ struct EngineSnapshotInfo_MM
   int hold_x, hold_y;
   int pacman_nr;
 
-  unsigned int rotate_delay;
-  unsigned int pacman_delay;
-  unsigned int energy_delay;
-  unsigned int overload_delay;
+  DelayCounter rotate_delay;
+  DelayCounter pacman_delay;
+  DelayCounter energy_delay;
+  DelayCounter overload_delay;
 };
 
 

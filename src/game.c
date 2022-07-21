@@ -3680,7 +3680,8 @@ void InitGame(void)
 
     player->can_fall_into_acid = CAN_MOVE_INTO_ACID(player->element_nr);
 
-    player->actual_frame_counter = 0;
+    player->actual_frame_counter.count = 0;
+    player->actual_frame_counter.value = 1;
 
     player->step_counter = 0;
 
@@ -9139,17 +9140,16 @@ static void AmoebaToDiamondBD(int ax, int ay, int new_element)
 
 static void AmoebaGrowing(int x, int y)
 {
-  static unsigned int sound_delay = 0;
-  static unsigned int sound_delay_value = 0;
+  static DelayCounter sound_delay = { 0 };
 
   if (!MovDelay[x][y])		// start new growing cycle
   {
     MovDelay[x][y] = 7;
 
-    if (DelayReached(&sound_delay, sound_delay_value))
+    if (DelayReached(&sound_delay))
     {
       PlayLevelSoundElementAction(x, y, Store[x][y], ACTION_GROWING);
-      sound_delay_value = 30;
+      sound_delay.value = 30;
     }
   }
 
@@ -9175,15 +9175,14 @@ static void AmoebaGrowing(int x, int y)
 
 static void AmoebaShrinking(int x, int y)
 {
-  static unsigned int sound_delay = 0;
-  static unsigned int sound_delay_value = 0;
+  static DelayCounter sound_delay = { 0 };
 
   if (!MovDelay[x][y])		// start new shrinking cycle
   {
     MovDelay[x][y] = 7;
 
-    if (DelayReached(&sound_delay, sound_delay_value))
-      sound_delay_value = 30;
+    if (DelayReached(&sound_delay))
+      sound_delay.value = 30;
   }
 
   if (MovDelay[x][y])		// wait some time before shrinking
@@ -13196,7 +13195,7 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 
   if (mode == SCROLL_INIT)
   {
-    player->actual_frame_counter = FrameCounter;
+    player->actual_frame_counter.count = FrameCounter;
     player->GfxPos = move_stepsize * (player->MovPos / move_stepsize);
 
     if ((player->block_last_field || player->block_delay_adjustment > 0) &&
@@ -13225,7 +13224,7 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
     if (player->MovPos != 0)	// player has not yet reached destination
       return;
   }
-  else if (!FrameReached(&player->actual_frame_counter, 1))
+  else if (!FrameReached(&player->actual_frame_counter))
     return;
 
   if (player->MovPos != 0)
@@ -13348,20 +13347,22 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 
 void ScrollScreen(struct PlayerInfo *player, int mode)
 {
-  static unsigned int screen_frame_counter = 0;
+  static DelayCounter screen_frame_counter = { 0 };
 
   if (mode == SCROLL_INIT)
   {
     // set scrolling step size according to actual player's moving speed
     ScrollStepSize = TILEX / player->move_delay_value;
 
-    screen_frame_counter = FrameCounter;
+    screen_frame_counter.count = FrameCounter;
+    screen_frame_counter.value = 1;
+
     ScreenMovDir = player->MovDir;
     ScreenMovPos = player->MovPos;
     ScreenGfxPos = ScrollStepSize * (ScreenMovPos / ScrollStepSize);
     return;
   }
-  else if (!FrameReached(&screen_frame_counter, 1))
+  else if (!FrameReached(&screen_frame_counter))
     return;
 
   if (ScreenMovPos)

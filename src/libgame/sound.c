@@ -166,8 +166,8 @@ static boolean Mixer_ChannelExpired(int channel)
 
   if (expire_loop_sounds &&
       IS_LOOP(mixer[channel]) && !IS_MUSIC(mixer[channel]) &&
-      DelayReached(&mixer[channel].playing_starttime,
-		   SOUND_LOOP_EXPIRATION_TIME))
+      DelayReachedExt2(&mixer[channel].playing_starttime,
+		       SOUND_LOOP_EXPIRATION_TIME, Counter()))
     return TRUE;
 
   if (!Mix_Playing(channel))
