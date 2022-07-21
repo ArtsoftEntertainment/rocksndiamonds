@@ -5557,6 +5557,14 @@ editor_elements_info[] =
   }
 };
 
+static struct XY xy_directions[] =
+{
+  { -1,  0 },
+  { +1,  0 },
+  {  0, -1 },
+  {  0, +1 }
+};
+
 
 // ----------------------------------------------------------------------------
 // functions
@@ -10835,13 +10843,7 @@ static int getChipFromOpenDirectionNotEmpty(int direction, int element_old)
 
 static int getClosedTube(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { -1, 0 },
-    { +1, 0 },
-    { 0, -1 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_directions;
   int element_old = IntelliDrawBuffer[x][y];
   int direction_old = getOpenDirectionFromTube(element_old);
   int direction_new = MV_NONE;
@@ -10849,8 +10851,8 @@ static int getClosedTube(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int dir = MV_DIR_FROM_BIT(i);
     int dir_opposite = MV_DIR_OPPOSITE(dir);
 
@@ -10865,13 +10867,7 @@ static int getClosedTube(int x, int y)
 
 static int getClosedBelt(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { -1, 0 },
-    { +1, 0 },
-    { 0, -1 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_directions;
   int element_old = IntelliDrawBuffer[x][y];
   int nr = getBeltNrFromBeltElement(element_old);
   int direction_old = getOpenDirectionFromBelt(element_old);
@@ -10880,8 +10876,8 @@ static int getClosedBelt(int x, int y)
 
   for (i = MV_BIT_LEFT; i <= MV_BIT_RIGHT; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int dir = MV_DIR_FROM_BIT(i);
     int dir_opposite = MV_DIR_OPPOSITE(dir);
 
@@ -10896,13 +10892,7 @@ static int getClosedBelt(int x, int y)
 
 static int getClosedPool(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { -1, 0 },
-    { +1, 0 },
-    { 0, -1 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_directions;
   int element_old = IntelliDrawBuffer[x][y];
   int direction_old = getOpenDirectionFromPool(element_old);
   int direction_new = MV_NONE;
@@ -10910,8 +10900,8 @@ static int getClosedPool(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int dir = MV_DIR_FROM_BIT(i);
     int dir_opposite = MV_DIR_OPPOSITE(dir);
 
@@ -10927,13 +10917,7 @@ static int getClosedPool(int x, int y)
 
 static int getClosedPillar(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { -1, 0 },
-    { +1, 0 },
-    { 0, -1 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_directions;
   int element_old = IntelliDrawBuffer[x][y];
   int direction_old = getOpenDirectionFromPillar(element_old);
   int direction_new = MV_NONE;
@@ -10941,8 +10925,8 @@ static int getClosedPillar(int x, int y)
 
   for (i = MV_BIT_UP; i <= MV_BIT_DOWN; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int dir = MV_DIR_FROM_BIT(i);
     int dir_opposite = MV_DIR_OPPOSITE(dir);
 
@@ -10957,13 +10941,7 @@ static int getClosedPillar(int x, int y)
 
 static int getClosedSteel2(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { -1, 0 },
-    { +1, 0 },
-    { 0, -1 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_directions;
   int element_old = IntelliDrawBuffer[x][y];
   int direction_old = getOpenDirectionFromSteel2(element_old);
   int direction_new = MV_NONE;
@@ -10971,8 +10949,8 @@ static int getClosedSteel2(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int dir = MV_DIR_FROM_BIT(i);
     int dir_opposite = MV_DIR_OPPOSITE(dir);
 
@@ -10987,13 +10965,7 @@ static int getClosedSteel2(int x, int y)
 
 static int getClosedChip(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { -1, 0 },
-    { +1, 0 },
-    { 0, -1 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_directions;
   int element_old = IntelliDrawBuffer[x][y];
   int direction_old = getOpenDirectionFromChip(element_old);
   int direction_new = MV_NONE;
@@ -11001,8 +10973,8 @@ static int getClosedChip(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int dir = MV_DIR_FROM_BIT(i);
     int dir_opposite = MV_DIR_OPPOSITE(dir);
 
@@ -11085,13 +11057,7 @@ static void MergeAndCloseNeighbourElements(int x1, int y1, int *element1,
 static void SetElementIntelliDraw(int x, int y, int new_element,
 				  boolean change_level, int button)
 {
-  static int xy[4][2] =
-  {
-    { -1, 0 },
-    { +1, 0 },
-    { 0, -1 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_directions;
   static int last_x = -1;
   static int last_y = -1;
 
@@ -11117,8 +11083,8 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
 
     for (i = 0; i < NUM_DIRECTIONS; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
 
       if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
 	  IS_TUBE(IntelliDrawBuffer[last_x][last_y]))
@@ -11155,8 +11121,8 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
 
     for (i = MV_BIT_LEFT; i <= MV_BIT_RIGHT; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
 
       if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
 	  IS_BELT(IntelliDrawBuffer[last_x][last_y]))
@@ -11193,8 +11159,8 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
 
     for (i = 0; i < NUM_DIRECTIONS; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
 
       if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
 	  IS_ACID_POOL_OR_ACID(IntelliDrawBuffer[last_x][last_y]))
@@ -11236,8 +11202,8 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
 
     for (i = MV_BIT_UP; i <= MV_BIT_DOWN; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
 
       if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
 	  IS_EMC_PILLAR(IntelliDrawBuffer[last_x][last_y]))
@@ -11273,8 +11239,8 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
 
     for (i = 0; i < NUM_DIRECTIONS; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
 
       if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
 	  IS_DC_STEELWALL_2(IntelliDrawBuffer[last_x][last_y]))
@@ -11308,8 +11274,8 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
 
     for (i = 0; i < NUM_DIRECTIONS; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
 
       if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
 	  IS_SP_CHIP(IntelliDrawBuffer[last_x][last_y]))
@@ -11369,8 +11335,8 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
 
     for (i = 0; i < NUM_DIRECTIONS; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
 
       if (last_x == xx && last_y == yy && IN_LEV_FIELD(last_x, last_y) &&
 	  IS_IN_GROUP_EL(IntelliDrawBuffer[last_x][last_y], new_element))

@@ -165,6 +165,14 @@ static struct DoorPartControlInfo door_part_controls[] =
   }
 };
 
+static struct XY xy_topdown[] =
+{
+  {  0, -1 },
+  { -1,  0 },
+  { +1,  0 },
+  {  0, +1 }
+};
+
 
 // forward declaration for internal use
 static void UnmapToolButtons(void);
@@ -1433,7 +1441,7 @@ void FloodFillLevelExt(int start_x, int start_y, int fill_element,
 		       int max_fieldx, int max_fieldy)
 {
   static struct XY stack_buffer[MAX_LEV_FIELDX * MAX_LEV_FIELDY];
-  static struct XY check[4] = { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 } };
+  struct XY *check = xy_topdown;
   int old_element = field[start_x][start_y];
   int stack_pos = 0;
 
@@ -2293,13 +2301,7 @@ static void DrawLevelFieldCrumbledExt(int x, int y, int graphic, int frame)
   int sx = SCREENX(x), sy = SCREENY(y);
   int element;
   int i;
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   if (!IN_LEV_FIELD(x, y))
     return;
@@ -2314,8 +2316,8 @@ static void DrawLevelFieldCrumbledExt(int x, int y, int graphic, int frame)
     // crumble field borders towards direct neighbour fields
     for (i = 0; i < 4; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
 
       element = (IN_LEV_FIELD(xx, yy) ? TILE_GFX_ELEMENT(xx, yy) :
 		 BorderElement);
@@ -2349,10 +2351,10 @@ static void DrawLevelFieldCrumbledExt(int x, int y, int graphic, int frame)
     // crumble field borders of direct neighbour fields
     for (i = 0; i < 4; i++)
     {
-      int xx = x + xy[i][0];
-      int yy = y + xy[i][1];
-      int sxx = sx + xy[i][0];
-      int syy = sy + xy[i][1];
+      int xx = x + xy[i].x;
+      int yy = y + xy[i].y;
+      int sxx = sx + xy[i].x;
+      int syy = sy + xy[i].y;
 
       if (!IN_LEV_FIELD(xx, yy) ||
 	  !IN_SCR_FIELD(sxx, syy))
@@ -2445,22 +2447,16 @@ void DrawLevelFieldCrumbledDigging(int x, int y, int direction,
 void DrawLevelFieldCrumbledNeighbours(int x, int y)
 {
   int sx = SCREENX(x), sy = SCREENY(y);
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
   int i;
 
   // crumble direct neighbour fields (required for field borders)
   for (i = 0; i < 4; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
-    int sxx = sx + xy[i][0];
-    int syy = sy + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
+    int sxx = sx + xy[i].x;
+    int syy = sy + xy[i].y;
 
     if (!IN_LEV_FIELD(xx, yy) ||
 	!IN_SCR_FIELD(sxx, syy) ||

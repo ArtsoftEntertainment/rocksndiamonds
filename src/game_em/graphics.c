@@ -49,6 +49,14 @@ static int crumbled_state[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
 struct GraphicInfo_EM graphic_info_em_object[GAME_TILE_MAX][8];
 struct GraphicInfo_EM graphic_info_em_player[MAX_PLAYERS][PLY_MAX][8];
 
+static struct XY xy_topdown[] =
+{
+  {  0, -1 },
+  { -1,  0 },
+  { +1,  0 },
+  {  0, +1 }
+};
+
 static void setScreenCenteredToAllPlayers(int *, int *);
 
 int getFieldbufferOffsetX_EM(void)
@@ -301,13 +309,7 @@ static void animscreen(void)
   int x, y, i;
   int left = screen_x / TILEX;
   int top  = screen_y / TILEY;
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   if (!game.use_native_emc_graphics_engine)
     for (y = lev.top; y < lev.bottom; y++)
@@ -333,8 +335,8 @@ static void animscreen(void)
       {
 	for (i = 0; i < 4; i++)
 	{
-	  int xx = x + xy[i][0];
-	  int yy = y + xy[i][1];
+	  int xx = x + xy[i].x;
+	  int yy = y + xy[i].y;
 	  int tile_next;
 
 	  if (xx < 0 || xx >= CAVE_BUFFER_WIDTH ||

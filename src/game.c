@@ -1554,6 +1554,14 @@ access_direction_list[] =
   { EL_UNDEFINED,			MV_NONE				     }
 };
 
+static struct XY xy_topdown[] =
+{
+  {  0, -1 },
+  { -1,  0 },
+  { +1,  0 },
+  {  0, +1 }
+};
+
 static boolean trigger_events[MAX_NUM_ELEMENTS][NUM_CHANGE_EVENTS];
 
 #define IS_AUTO_CHANGING(e)	(element_info[e].has_change_event[CE_DELAY])
@@ -6112,13 +6120,7 @@ static void DynaExplode(int ex, int ey)
   int dynabomb_size = 1;
   boolean dynabomb_xl = FALSE;
   struct PlayerInfo *player;
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   if (IS_ACTIVE_BOMB(dynabomb_element))
   {
@@ -6134,8 +6136,8 @@ static void DynaExplode(int ex, int ey)
   {
     for (j = 1; j <= dynabomb_size; j++)
     {
-      int x = ex + j * xy[i][0];
-      int y = ey + j * xy[i][1];
+      int x = ex + j * xy[i].x;
+      int y = ey + j * xy[i].y;
       int element;
 
       if (!IN_LEV_FIELD(x, y) || IS_INDESTRUCTIBLE(Tile[x][y]))
@@ -7270,18 +7272,12 @@ static void TurnRoundExt(int x, int y)
     if (element == EL_PENGUIN)
     {
       int i;
-      static int xy[4][2] =
-      {
-	{ 0, -1 },
-	{ -1, 0 },
-	{ +1, 0 },
-	{ 0, +1 }
-      };
+      struct XY *xy = xy_topdown;
 
       for (i = 0; i < NUM_DIRECTIONS; i++)
       {
-    	int ex = x + xy[i][0];
-    	int ey = y + xy[i][1];
+	int ex = x + xy[i].x;
+	int ey = y + xy[i].y;
 
     	if (IN_LEV_FIELD(ex, ey) && (Tile[ex][ey] == EL_EXIT_OPEN ||
 				     Tile[ex][ey] == EL_EM_EXIT_OPEN ||
@@ -7680,13 +7676,7 @@ static void TurnRoundExt(int x, int y)
   }
   else if (move_pattern & MV_MAZE_RUNNER_STYLE)
   {
-    static int test_xy[4][2] =
-    {
-      { 0, -1 },
-      { -1, 0 },
-      { +1, 0 },
-      { 0, +1 }
-    };
+    struct XY *test_xy = xy_topdown;
     static int test_dir[4] =
     {
       MV_UP,
@@ -7706,8 +7696,8 @@ static void TurnRoundExt(int x, int y)
       int move_dir = test_dir[j];
       int move_dir_preference;
 
-      xx = x + test_xy[j][0];
-      yy = y + test_xy[j][1];
+      xx = x + test_xy[j].x;
+      yy = y + test_xy[j].y;
 
       if (hunter_mode && IN_LEV_FIELD(xx, yy) &&
 	  (IS_PLAYER(xx, yy) || Tile[xx][yy] == EL_PLAYER_IS_LEAVING))
@@ -8965,18 +8955,12 @@ int AmoebaNeighbourNr(int ax, int ay)
   int i;
   int element = Tile[ax][ay];
   int group_nr = 0;
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int x = ax + xy[i][0];
-    int y = ay + xy[i][1];
+    int x = ax + xy[i].x;
+    int y = ay + xy[i].y;
 
     if (!IN_LEV_FIELD(x, y))
       continue;
@@ -8992,21 +8976,15 @@ static void AmoebaMerge(int ax, int ay)
 {
   int i, x, y, xx, yy;
   int new_group_nr = AmoebaNr[ax][ay];
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   if (new_group_nr == 0)
     return;
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    x = ax + xy[i][0];
-    y = ay + xy[i][1];
+    x = ax + xy[i].x;
+    y = ay + xy[i].y;
 
     if (!IN_LEV_FIELD(x, y))
       continue;
@@ -9069,18 +9047,12 @@ void AmoebaToDiamond(int ax, int ay)
   }
   else
   {
-    static int xy[4][2] =
-    {
-      { 0, -1 },
-      { -1, 0 },
-      { +1, 0 },
-      { 0, +1 }
-    };
+    struct XY *xy = xy_topdown;
 
     for (i = 0; i < NUM_DIRECTIONS; i++)
     {
-      x = ax + xy[i][0];
-      y = ay + xy[i][1];
+      x = ax + xy[i].x;
+      y = ay + xy[i].y;
 
       if (!IN_LEV_FIELD(x, y))
 	continue;
@@ -9210,13 +9182,7 @@ static void AmoebaReproduce(int ax, int ay)
   int graphic = el2img(element);
   int newax = ax, neway = ay;
   boolean can_drop = (element == EL_AMOEBA_WET || element == EL_EMC_DRIPPER);
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   if (!level.amoeba_speed && element != EL_EMC_DRIPPER)
   {
@@ -9241,8 +9207,8 @@ static void AmoebaReproduce(int ax, int ay)
   if (can_drop)			// EL_AMOEBA_WET or EL_EMC_DRIPPER
   {
     int start = RND(4);
-    int x = ax + xy[start][0];
-    int y = ay + xy[start][1];
+    int x = ax + xy[start].x;
+    int y = ay + xy[start].y;
 
     if (!IN_LEV_FIELD(x, y))
       return;
@@ -9267,8 +9233,8 @@ static void AmoebaReproduce(int ax, int ay)
     for (i = 0; i < NUM_DIRECTIONS; i++)
     {
       int j = (start + i) % 4;
-      int x = ax + xy[j][0];
-      int y = ay + xy[j][1];
+      int x = ax + xy[j].x;
+      int y = ay + xy[j].y;
 
       if (!IN_LEV_FIELD(x, y))
 	continue;
@@ -9946,19 +9912,14 @@ static void CheckForDragon(int x, int y)
 {
   int i, j;
   boolean dragon_found = FALSE;
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
     for (j = 0; j < 4; j++)
     {
-      int xx = x + j * xy[i][0], yy = y + j * xy[i][1];
+      int xx = x + j * xy[i].x;
+      int yy = y + j * xy[i].y;
 
       if (IN_LEV_FIELD(xx, yy) &&
 	  (Tile[xx][yy] == EL_FLAMES || Tile[xx][yy] == EL_DRAGON))
@@ -9977,8 +9938,9 @@ static void CheckForDragon(int x, int y)
     {
       for (j = 0; j < 3; j++)
       {
-  	int xx = x + j * xy[i][0], yy = y + j * xy[i][1];
-  
+	int xx = x + j * xy[i].x;
+	int yy = y + j * xy[i].y;
+
   	if (IN_LEV_FIELD(xx, yy) && Tile[xx][yy] == EL_FLAMES)
   	{
 	  Tile[xx][yy] = EL_EMPTY;
@@ -10008,18 +9970,12 @@ static void InitBuggyBase(int x, int y)
 static void WarnBuggyBase(int x, int y)
 {
   int i;
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
 
     if (IN_LEV_FIELD(xx, yy) && IS_PLAYER(xx, yy))
     {
@@ -13384,13 +13340,7 @@ void CheckNextToConditions(int x, int y)
 
 void TestIfPlayerNextToCustomElement(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
   static int trigger_sides[4][2] =
   {
     // center side       border side
@@ -13411,8 +13361,8 @@ void TestIfPlayerNextToCustomElement(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int border_side = trigger_sides[i][1];
     int border_element;
 
@@ -13442,13 +13392,7 @@ void TestIfPlayerNextToCustomElement(int x, int y)
 
 void TestIfPlayerTouchesCustomElement(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
   static int trigger_sides[4][2] =
   {
     // center side       border side
@@ -13469,8 +13413,8 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int center_side = trigger_sides[i][0];
     int border_side = trigger_sides[i][1];
     int border_element;
@@ -13542,13 +13486,7 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
 
 void TestIfElementNextToCustomElement(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
   static int trigger_sides[4][2] =
   {
     // center side	border side
@@ -13565,8 +13503,8 @@ void TestIfElementNextToCustomElement(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int border_side = trigger_sides[i][1];
     int border_element;
 
@@ -13587,13 +13525,7 @@ void TestIfElementNextToCustomElement(int x, int y)
 
 void TestIfElementTouchesCustomElement(int x, int y)
 {
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
   static int trigger_sides[4][2] =
   {
     // center side	border side
@@ -13616,8 +13548,8 @@ void TestIfElementTouchesCustomElement(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int border_element;
 
     border_element_old[i] = -1;
@@ -13639,8 +13571,8 @@ void TestIfElementTouchesCustomElement(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int center_side = trigger_sides[i][0];
     int border_element = border_element_old[i];
 
@@ -13656,8 +13588,8 @@ void TestIfElementTouchesCustomElement(int x, int y)
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
-    int xx = x + xy[i][0];
-    int yy = y + xy[i][1];
+    int xx = x + xy[i].x;
+    int yy = y + xy[i].y;
     int border_side = trigger_sides[i][1];
     int border_element = border_element_old[i];
 
@@ -13744,13 +13676,7 @@ void TestIfGoodThingHitsBadThing(int good_x, int good_y, int good_move_dir)
   int i, kill_x = -1, kill_y = -1;
 
   int bad_element = -1;
-  static int test_xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *test_xy = xy_topdown;
   static int test_dir[4] =
   {
     MV_UP,
@@ -13763,8 +13689,8 @@ void TestIfGoodThingHitsBadThing(int good_x, int good_y, int good_move_dir)
   {
     int test_x, test_y, test_move_dir, test_element;
 
-    test_x = good_x + test_xy[i][0];
-    test_y = good_y + test_xy[i][1];
+    test_x = good_x + test_xy[i].x;
+    test_y = good_y + test_xy[i].y;
 
     if (!IN_LEV_FIELD(test_x, test_y))
       continue;
@@ -13809,13 +13735,7 @@ void TestIfBadThingHitsGoodThing(int bad_x, int bad_y, int bad_move_dir)
 {
   int i, kill_x = -1, kill_y = -1;
   int bad_element = Tile[bad_x][bad_y];
-  static int test_xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *test_xy = xy_topdown;
   static int touch_dir[4] =
   {
     MV_LEFT | MV_RIGHT,
@@ -13838,8 +13758,8 @@ void TestIfBadThingHitsGoodThing(int bad_x, int bad_y, int bad_move_dir)
   {
     int test_x, test_y, test_move_dir, test_element;
 
-    test_x = bad_x + test_xy[i][0];
-    test_y = bad_y + test_xy[i][1];
+    test_x = bad_x + test_xy[i].x;
+    test_y = bad_y + test_xy[i].y;
 
     if (!IN_LEV_FIELD(test_x, test_y))
       continue;
@@ -13991,20 +13911,14 @@ void TestIfBadThingTouchesFriend(int x, int y)
 void TestIfBadThingTouchesOtherBadThing(int bad_x, int bad_y)
 {
   int i, kill_x = bad_x, kill_y = bad_y;
-  static int xy[4][2] =
-  {
-    { 0, -1 },
-    { -1, 0 },
-    { +1, 0 },
-    { 0, +1 }
-  };
+  struct XY *xy = xy_topdown;
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
   {
     int x, y, element;
 
-    x = bad_x + xy[i][0];
-    y = bad_y + xy[i][1];
+    x = bad_x + xy[i].x;
+    y = bad_y + xy[i].y;
     if (!IN_LEV_FIELD(x, y))
       continue;
 
