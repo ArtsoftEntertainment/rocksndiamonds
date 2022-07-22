@@ -1110,7 +1110,7 @@ static int getGlobalGameStatus(int status)
 	  status);
 }
 
-static Bitmap *getBitmapFromGraphicOrDefault(int graphic, int default_graphic)
+Bitmap *getBitmapFromGraphicOrDefault(int graphic, int default_graphic)
 {
   if (graphic == IMG_UNDEFINED)
     return NULL;

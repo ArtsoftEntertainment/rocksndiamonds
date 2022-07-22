@@ -37,6 +37,7 @@
 #define CONFIG_TOKEN_GLOBAL_BUSY_INITIAL	"global.busy_initial"
 #define CONFIG_TOKEN_GLOBAL_BUSY		"global.busy"
 #define CONFIG_TOKEN_GLOBAL_BUSY_PLAYFIELD	"global.busy_playfield"
+#define CONFIG_TOKEN_BACKGROUND			"background"
 #define CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL	"background.LOADING_INITIAL"
 #define CONFIG_TOKEN_BACKGROUND_LOADING		"background.LOADING"
 
@@ -46,10 +47,11 @@
 
 #define NUM_INITIAL_IMAGES_BUSY			3
 
-#define INITIAL_IMG_BACKGROUND_LOADING_INITIAL	3
-#define INITIAL_IMG_BACKGROUND_LOADING		4
+#define INITIAL_IMG_BACKGROUND			3
+#define INITIAL_IMG_BACKGROUND_LOADING_INITIAL	4
+#define INITIAL_IMG_BACKGROUND_LOADING		5
 
-#define NUM_INITIAL_IMAGES			5
+#define NUM_INITIAL_IMAGES			6
 
 
 static struct FontBitmapInfo font_initial[NUM_INITIAL_FONTS];
@@ -108,6 +110,16 @@ static int copy_properties[][5] =
 static int get_graphic_parameter_value(char *, char *, int);
 
 
+static Bitmap *getLoadingBackgroundBitmap(int graphic)
+{
+  return getBitmapFromGraphicOrDefault(graphic, INITIAL_IMG_BACKGROUND);
+}
+
+static void SetLoadingWindowBackgroundImage(int graphic)
+{
+  SetWindowBackgroundBitmap(getLoadingBackgroundBitmap(graphic));
+}
+
 static void SetLoadingBackgroundImage(void)
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
@@ -120,7 +132,7 @@ static void SetLoadingBackgroundImage(void)
   SetDrawDeactivationMask(REDRAW_NONE);
   SetDrawBackgroundMask(REDRAW_ALL);
 
-  SetWindowBackgroundImage(background_image);
+  SetLoadingWindowBackgroundImage(background_image);
 
   graphic_info = graphic_info_last;
 }
@@ -5671,6 +5683,7 @@ static void InitGfx(void)
     CONFIG_TOKEN_GLOBAL_BUSY_INITIAL,
     CONFIG_TOKEN_GLOBAL_BUSY,
     CONFIG_TOKEN_GLOBAL_BUSY_PLAYFIELD,
+    CONFIG_TOKEN_BACKGROUND,
     CONFIG_TOKEN_BACKGROUND_LOADING_INITIAL,
     CONFIG_TOKEN_BACKGROUND_LOADING
   };

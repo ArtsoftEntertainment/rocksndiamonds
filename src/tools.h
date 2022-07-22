@@ -108,6 +108,7 @@ void FadeSetDisabled(void);
 void FadeSkipNextFadeIn(void);
 void FadeSkipNextFadeOut(void);
 
+Bitmap *getBitmapFromGraphicOrDefault(int, int);
 Bitmap *getGlobalBorderBitmapFromStatus(int);
 
 void ClearField(void);
