@@ -5116,10 +5116,11 @@ static int addScoreEntry(struct ScoreInfo *list, struct ScoreEntry *new_entry,
     if (strEqual(new_entry->tape_basename, entry->tape_basename) &&
 	!strEqual(new_entry->tape_basename, UNDEFINED_FILENAME))
     {
-      // special case: use server score instead of local score value if higher
-      // (historic scores might have been truncated to 16-bit values locally)
-      if (score_is_better)
-	entry->score = new_entry->score;
+      // add fields from server score entry not stored in local score entry
+      // (currently, this means setting platform, version and country fields;
+      // in rare cases, this may also correct an invalid score value, as
+      // historic scores might have been truncated to 16-bit values locally)
+      *entry = *new_entry;
 
       return -1;
     }
