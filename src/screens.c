@@ -7138,7 +7138,12 @@ static void ToggleUseApiServerIfNeeded(void)
   runtime.use_api_server = setup.use_api_server;
 
   if (runtime.use_api_server)
+  {
+    if (setup.has_remaining_tapes)
+      setup.ask_for_uploading_tapes = TRUE;
+
     CheckApiServerTasks();
+  }
 }
 
 static void ModifyGameSpeedIfNeeded(void)
