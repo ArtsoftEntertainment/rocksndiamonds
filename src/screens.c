@@ -1729,6 +1729,11 @@ void DrawMainMenu(void)
 
   if (leveldir_current != leveldir_last_valid)
   {
+    // level setup config may have been loaded to "last played" tree node copy,
+    // but "leveldir_current" now points to the "original" level set tree node,
+    // in which case "handicap_level" may still default to the first level
+    LoadLevelSetup_SeriesInfo();
+
     UpdateLastPlayedLevels_TreeInfo();
 
     levelset_has_changed = TRUE;
