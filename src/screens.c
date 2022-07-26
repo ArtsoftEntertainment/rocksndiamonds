@@ -10482,6 +10482,9 @@ static boolean OfferUploadTapes(void)
 	       "Upload all your tapes to the high score server now?", REQ_ASK))
     return FALSE;
 
+  // when uploading tapes, make sure that high score server is enabled
+  runtime.use_api_server = setup.use_api_server = TRUE;
+
   int num_tapes_uploaded = UploadTapes();
   char message[100];
 
