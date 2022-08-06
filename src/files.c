@@ -13453,8 +13453,18 @@ void CreateCollectElementImages(void)
   int dst_width  = anim_width * 2;
   int dst_height = anim_height * num_collect_images / 2;
   Bitmap *dst_bitmap = CreateBitmap(dst_width, dst_height, DEFAULT_DEPTH);
-  char *basename = "RocksCollect.bmp";
-  char *filename = getPath2(global.create_collect_images_dir, basename);
+  char *basename_bmp = "RocksCollect.bmp";
+  char *basename_png = "RocksCollect.png";
+  char *filename_bmp = getPath2(global.create_collect_images_dir, basename_bmp);
+  char *filename_png = getPath2(global.create_collect_images_dir, basename_png);
+  int len_filename_bmp = strlen(filename_bmp);
+  int len_filename_png = strlen(filename_png);
+  int max_command_len = MAX_FILENAME_LEN + len_filename_bmp + len_filename_png;
+  char cmd_convert[max_command_len];
+
+  snprintf(cmd_convert, max_command_len, "convert \"%s\" \"%s\"",
+	   filename_bmp,
+	   filename_png);
 
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
@@ -13510,10 +13520,15 @@ void CreateCollectElementImages(void)
     pos_collect_images++;
   }
 
-  if (SDL_SaveBMP(dst_bitmap->surface, filename) != 0)
-    Fail("cannot save element collecting image file '%s'", filename);
+  if (SDL_SaveBMP(dst_bitmap->surface, filename_bmp) != 0)
+    Fail("cannot save element collecting image file '%s'", filename_bmp);
 
   FreeBitmap(dst_bitmap);
+
+  Info("Converting image file from BMP to PNG ...");
+
+  system(cmd_convert);
+  unlink(filename_bmp);
 
   Info("Done.");
 
