@@ -13466,6 +13466,13 @@ void CreateCollectElementImages(void)
 	   filename_bmp,
 	   filename_png);
 
+  // force using RGBA surface for destination bitmap
+  SDL_SetColorKey(dst_bitmap->surface, SET_TRANSPARENT_PIXEL,
+		  SDL_MapRGB(dst_bitmap->surface->format, 0x00, 0x00, 0x00));
+
+  dst_bitmap->surface =
+    SDL_ConvertSurfaceFormat(dst_bitmap->surface, SDL_PIXELFORMAT_RGBA32, 0);
+
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
     if (!createCollectImage(i))
@@ -13485,6 +13492,13 @@ void CreateCollectElementImages(void)
 
     BlitBitmap(src_bitmap, tmp_bitmap, src_x, src_y,
 	       tile_size, tile_size, 0, 0);
+
+    // force using RGBA surface for temporary bitmap (using transparent black)
+    SDL_SetColorKey(tmp_bitmap->surface, SET_TRANSPARENT_PIXEL,
+		    SDL_MapRGB(tmp_bitmap->surface->format, 0x00, 0x00, 0x00));
+
+    tmp_bitmap->surface =
+      SDL_ConvertSurfaceFormat(tmp_bitmap->surface, SDL_PIXELFORMAT_RGBA32, 0);
 
     tmp_bitmap->surface_masked = tmp_bitmap->surface;
 
@@ -13506,9 +13520,9 @@ void CreateCollectElementImages(void)
 	frame_bitmap = half_bitmap;
       }
 
-      BlitBitmap(frame_bitmap, dst_bitmap, 0, 0,
-		 frame_size_final, frame_size_final,
-		 dst_x + j * tile_size + offset, dst_y + offset);
+      BlitBitmapMasked(frame_bitmap, dst_bitmap, 0, 0,
+		       frame_size_final, frame_size_final,
+		       dst_x + j * tile_size + offset, dst_y + offset);
 
       FreeBitmap(frame_bitmap);
     }
