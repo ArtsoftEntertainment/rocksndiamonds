@@ -9964,7 +9964,13 @@ void ChangeViewportPropertiesIfNeeded(void)
 
 void OpenURL(char *url)
 {
+#if SDL_VERSION_ATLEAST(2,0,14)
   SDL_OpenURL(url);
+#else
+  Warn("SDL_OpenURL(\"%s\") not supported by SDL %d.%d.%d!",
+       url, SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+  Warn("Please upgrade to at least SDL 2.0.14 for URL support!");
+#endif
 }
 
 void OpenURLFromHash(SetupFileHash *hash, int hash_key)
