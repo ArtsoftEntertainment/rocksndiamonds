@@ -3591,6 +3591,14 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 	int chunk_size_expected =
 	  (chunk_info[i].loader)(file, chunk_size, level);
 
+	if (chunk_size_expected < 0)
+	{
+	  Warn("error reading chunk '%s' in level file '%s'",
+	       chunk_name, filename);
+
+	  break;
+	}
+
 	// the size of some chunks cannot be checked before reading other
 	// chunks first (like "HEAD" and "BODY") that contain some header
 	// information, so check them here
