@@ -3355,6 +3355,10 @@ static int LoadLevel_CUSX(File *file, int chunk_size, struct LevelInfo *level)
 
   while (!checkEndOfFile(file))
   {
+    // level file might contain invalid change page number
+    if (xx_current_change_page >= ei->num_change_pages)
+      break;
+
     struct ElementChangeInfo *change = &ei->change_page[xx_current_change_page];
 
     xx_change = *change;	// copy change data into temporary buffer
