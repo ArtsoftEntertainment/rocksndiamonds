@@ -3606,6 +3606,8 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 	{
 	  Warn("wrong size (%d) of chunk '%s' in level file '%s'",
 	       chunk_size, chunk_name, filename);
+
+	  break;
 	}
       }
     }
