@@ -9721,6 +9721,46 @@ static void CheckWallGrowing(int ax, int ay)
   boolean stop_right  = FALSE;
   boolean new_wall    = FALSE;
 
+  boolean is_steelwall  = (element == EL_EXPANDABLE_STEELWALL_HORIZONTAL ||
+			   element == EL_EXPANDABLE_STEELWALL_VERTICAL ||
+			   element == EL_EXPANDABLE_STEELWALL_ANY);
+
+  boolean grow_vertical   = (element == EL_EXPANDABLE_WALL_VERTICAL ||
+			     element == EL_EXPANDABLE_WALL_ANY ||
+			     element == EL_EXPANDABLE_STEELWALL_VERTICAL ||
+			     element == EL_EXPANDABLE_STEELWALL_ANY);
+
+  boolean grow_horizontal = (element == EL_EXPANDABLE_WALL_HORIZONTAL ||
+			     element == EL_EXPANDABLE_WALL_ANY ||
+			     element == EL_EXPANDABLE_WALL ||
+			     element == EL_BD_EXPANDABLE_WALL ||
+			     element == EL_EXPANDABLE_STEELWALL_HORIZONTAL ||
+			     element == EL_EXPANDABLE_STEELWALL_ANY);
+
+  boolean stop_vertical   = (element == EL_EXPANDABLE_WALL_VERTICAL ||
+			     element == EL_EXPANDABLE_STEELWALL_VERTICAL);
+
+  boolean stop_horizontal = (element == EL_EXPANDABLE_WALL_HORIZONTAL ||
+			     element == EL_EXPANDABLE_WALL ||
+			     element == EL_EXPANDABLE_STEELWALL_HORIZONTAL);
+
+  int wall_growing = (is_steelwall ?
+		      EL_EXPANDABLE_STEELWALL_GROWING :
+		      EL_EXPANDABLE_WALL_GROWING);
+
+  int gfx_wall_growing_up    = (is_steelwall ?
+				IMG_EXPANDABLE_STEELWALL_GROWING_UP :
+				IMG_EXPANDABLE_WALL_GROWING_UP);
+  int gfx_wall_growing_down  = (is_steelwall ?
+				IMG_EXPANDABLE_STEELWALL_GROWING_DOWN :
+				IMG_EXPANDABLE_WALL_GROWING_DOWN);
+  int gfx_wall_growing_left  = (is_steelwall ?
+				IMG_EXPANDABLE_STEELWALL_GROWING_LEFT :
+				IMG_EXPANDABLE_WALL_GROWING_LEFT);
+  int gfx_wall_growing_right = (is_steelwall ?
+				IMG_EXPANDABLE_STEELWALL_GROWING_RIGHT :
+				IMG_EXPANDABLE_WALL_GROWING_RIGHT);
+
   if (IS_ANIMATED(graphic))
     DrawLevelGraphicAnimationIfNeeded(ax, ay, graphic);
 
@@ -9743,59 +9783,55 @@ static void CheckWallGrowing(int ax, int ay)
   if (IN_LEV_FIELD(ax + 1, ay) && IS_FREE(ax + 1, ay))
     free_right = TRUE;
 
-  if (element == EL_EXPANDABLE_WALL_VERTICAL ||
-      element == EL_EXPANDABLE_WALL_ANY)
+  if (grow_vertical)
   {
     if (free_top)
     {
-      Tile[ax][ay - 1] = EL_EXPANDABLE_WALL_GROWING;
+      Tile[ax][ay - 1] = wall_growing;
       Store[ax][ay - 1] = element;
       GfxDir[ax][ay - 1] = MovDir[ax][ay - 1] = MV_UP;
 
       if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay - 1)))
-	DrawLevelGraphic(ax, ay - 1, IMG_EXPANDABLE_WALL_GROWING_UP, 0);
+	DrawLevelGraphic(ax, ay - 1, gfx_wall_growing_up, 0);
 
       new_wall = TRUE;
     }
 
     if (free_bottom)
     {
-      Tile[ax][ay + 1] = EL_EXPANDABLE_WALL_GROWING;
+      Tile[ax][ay + 1] = wall_growing;
       Store[ax][ay + 1] = element;
       GfxDir[ax][ay + 1] = MovDir[ax][ay + 1] = MV_DOWN;
 
       if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay + 1)))
-	DrawLevelGraphic(ax, ay + 1, IMG_EXPANDABLE_WALL_GROWING_DOWN, 0);
+	DrawLevelGraphic(ax, ay + 1, gfx_wall_growing_down, 0);
 
       new_wall = TRUE;
     }
   }
 
-  if (element == EL_EXPANDABLE_WALL_HORIZONTAL ||
-      element == EL_EXPANDABLE_WALL_ANY ||
-      element == EL_EXPANDABLE_WALL ||
-      element == EL_BD_EXPANDABLE_WALL)
+  if (grow_horizontal)
   {
     if (free_left)
     {
-      Tile[ax - 1][ay] = EL_EXPANDABLE_WALL_GROWING;
+      Tile[ax - 1][ay] = wall_growing;
       Store[ax - 1][ay] = element;
       GfxDir[ax - 1][ay] = MovDir[ax - 1][ay] = MV_LEFT;
 
       if (IN_SCR_FIELD(SCREENX(ax - 1), SCREENY(ay)))
-	DrawLevelGraphic(ax - 1, ay, IMG_EXPANDABLE_WALL_GROWING_LEFT, 0);
+	DrawLevelGraphic(ax - 1, ay, gfx_wall_growing_left, 0);
 
       new_wall = TRUE;
     }
 
     if (free_right)
     {
-      Tile[ax + 1][ay] = EL_EXPANDABLE_WALL_GROWING;
+      Tile[ax + 1][ay] = wall_growing;
       Store[ax + 1][ay] = element;
       GfxDir[ax + 1][ay] = MovDir[ax + 1][ay] = MV_RIGHT;
 
       if (IN_SCR_FIELD(SCREENX(ax + 1), SCREENY(ay)))
-	DrawLevelGraphic(ax + 1, ay, IMG_EXPANDABLE_WALL_GROWING_RIGHT, 0);
+	DrawLevelGraphic(ax + 1, ay, gfx_wall_growing_right, 0);
 
       new_wall = TRUE;
     }
@@ -9813,123 +9849,9 @@ static void CheckWallGrowing(int ax, int ay)
   if (!IN_LEV_FIELD(ax + 1, ay) || IS_WALL(Tile[ax + 1][ay]))
     stop_right = TRUE;
 
-  if (((stop_top && stop_bottom) ||
-       element == EL_EXPANDABLE_WALL_HORIZONTAL ||
-       element == EL_EXPANDABLE_WALL) &&
-      ((stop_left && stop_right) ||
-       element == EL_EXPANDABLE_WALL_VERTICAL))
+  if (((stop_top && stop_bottom) || stop_horizontal) &&
+      ((stop_left && stop_right) || stop_vertical))
     Tile[ax][ay] = EL_WALL;
-
-  if (new_wall)
-    PlayLevelSoundAction(ax, ay, ACTION_GROWING);
-}
-
-static void CheckSteelWallGrowing(int ax, int ay)
-{
-  int element = Tile[ax][ay];
-  int graphic = el2img(element);
-  boolean free_top    = FALSE;
-  boolean free_bottom = FALSE;
-  boolean free_left   = FALSE;
-  boolean free_right  = FALSE;
-  boolean stop_top    = FALSE;
-  boolean stop_bottom = FALSE;
-  boolean stop_left   = FALSE;
-  boolean stop_right  = FALSE;
-  boolean new_wall    = FALSE;
-
-  if (IS_ANIMATED(graphic))
-    DrawLevelGraphicAnimationIfNeeded(ax, ay, graphic);
-
-  if (!MovDelay[ax][ay])	// start building new wall
-    MovDelay[ax][ay] = 6;
-
-  if (MovDelay[ax][ay])		// wait some time before building new wall
-  {
-    MovDelay[ax][ay]--;
-    if (MovDelay[ax][ay])
-      return;
-  }
-
-  if (IN_LEV_FIELD(ax, ay - 1) && IS_FREE(ax, ay - 1))
-    free_top = TRUE;
-  if (IN_LEV_FIELD(ax, ay + 1) && IS_FREE(ax, ay + 1))
-    free_bottom = TRUE;
-  if (IN_LEV_FIELD(ax - 1, ay) && IS_FREE(ax - 1, ay))
-    free_left = TRUE;
-  if (IN_LEV_FIELD(ax + 1, ay) && IS_FREE(ax + 1, ay))
-    free_right = TRUE;
-
-  if (element == EL_EXPANDABLE_STEELWALL_VERTICAL ||
-      element == EL_EXPANDABLE_STEELWALL_ANY)
-  {
-    if (free_top)
-    {
-      Tile[ax][ay - 1] = EL_EXPANDABLE_STEELWALL_GROWING;
-      Store[ax][ay - 1] = element;
-      GfxDir[ax][ay - 1] = MovDir[ax][ay - 1] = MV_UP;
-
-      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay - 1)))
-	DrawLevelGraphic(ax, ay - 1, IMG_EXPANDABLE_STEELWALL_GROWING_UP, 0);
-
-      new_wall = TRUE;
-    }
-
-    if (free_bottom)
-    {
-      Tile[ax][ay + 1] = EL_EXPANDABLE_STEELWALL_GROWING;
-      Store[ax][ay + 1] = element;
-      GfxDir[ax][ay + 1] = MovDir[ax][ay + 1] = MV_DOWN;
-
-      if (IN_SCR_FIELD(SCREENX(ax), SCREENY(ay + 1)))
-	DrawLevelGraphic(ax, ay + 1, IMG_EXPANDABLE_STEELWALL_GROWING_DOWN, 0);
-
-      new_wall = TRUE;
-    }
-  }
-
-  if (element == EL_EXPANDABLE_STEELWALL_HORIZONTAL ||
-      element == EL_EXPANDABLE_STEELWALL_ANY)
-  {
-    if (free_left)
-    {
-      Tile[ax - 1][ay] = EL_EXPANDABLE_STEELWALL_GROWING;
-      Store[ax - 1][ay] = element;
-      GfxDir[ax - 1][ay] = MovDir[ax - 1][ay] = MV_LEFT;
-
-      if (IN_SCR_FIELD(SCREENX(ax - 1), SCREENY(ay)))
-	DrawLevelGraphic(ax - 1, ay, IMG_EXPANDABLE_STEELWALL_GROWING_LEFT, 0);
-
-      new_wall = TRUE;
-    }
-
-    if (free_right)
-    {
-      Tile[ax + 1][ay] = EL_EXPANDABLE_STEELWALL_GROWING;
-      Store[ax + 1][ay] = element;
-      GfxDir[ax + 1][ay] = MovDir[ax + 1][ay] = MV_RIGHT;
-
-      if (IN_SCR_FIELD(SCREENX(ax + 1), SCREENY(ay)))
-	DrawLevelGraphic(ax + 1, ay, IMG_EXPANDABLE_STEELWALL_GROWING_RIGHT, 0);
-
-      new_wall = TRUE;
-    }
-  }
-
-  if (!IN_LEV_FIELD(ax, ay - 1) || IS_WALL(Tile[ax][ay - 1]))
-    stop_top = TRUE;
-  if (!IN_LEV_FIELD(ax, ay + 1) || IS_WALL(Tile[ax][ay + 1]))
-    stop_bottom = TRUE;
-  if (!IN_LEV_FIELD(ax - 1, ay) || IS_WALL(Tile[ax - 1][ay]))
-    stop_left = TRUE;
-  if (!IN_LEV_FIELD(ax + 1, ay) || IS_WALL(Tile[ax + 1][ay]))
-    stop_right = TRUE;
-
-  if (((stop_top && stop_bottom) ||
-       element == EL_EXPANDABLE_STEELWALL_HORIZONTAL) &&
-      ((stop_left && stop_right) ||
-       element == EL_EXPANDABLE_STEELWALL_VERTICAL))
-    Tile[ax][ay] = EL_STEELWALL;
 
   if (new_wall)
     PlayLevelSoundAction(ax, ay, ACTION_GROWING);
@@ -12465,12 +12387,11 @@ void GameActions_RND(void)
 	     element == EL_EXPANDABLE_WALL_HORIZONTAL ||
 	     element == EL_EXPANDABLE_WALL_VERTICAL ||
 	     element == EL_EXPANDABLE_WALL_ANY ||
-	     element == EL_BD_EXPANDABLE_WALL)
-      CheckWallGrowing(x, y);
-    else if (element == EL_EXPANDABLE_STEELWALL_HORIZONTAL ||
+	     element == EL_BD_EXPANDABLE_WALL ||
+	     element == EL_EXPANDABLE_STEELWALL_HORIZONTAL ||
 	     element == EL_EXPANDABLE_STEELWALL_VERTICAL ||
 	     element == EL_EXPANDABLE_STEELWALL_ANY)
-      CheckSteelWallGrowing(x, y);
+      CheckWallGrowing(x, y);
     else if (element == EL_FLAMES)
       CheckForDragon(x, y);
     else if (element == EL_EXPLOSION)
