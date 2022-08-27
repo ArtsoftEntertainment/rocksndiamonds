@@ -3388,6 +3388,9 @@ static int LoadLevel_GRPX(File *file, int chunk_size, struct LevelInfo *level)
   struct ElementInfo *ei = &element_info[element];
   struct ElementGroupInfo *group = ei->group;
 
+  if (group == NULL)
+    return -1;
+
   xx_ei = *ei;		// copy element data into temporary buffer
   xx_group = *group;	// copy group data into temporary buffer
 
