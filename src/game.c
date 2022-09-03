@@ -4777,6 +4777,8 @@ static void LevelSolved(void)
   game.LevelSolved = TRUE;
   game.GameOver = TRUE;
 
+  tape.solved = TRUE;
+
   // needed here to display correct panel values while player walks into exit
   LevelSolved_SetFinalGameValues();
 }

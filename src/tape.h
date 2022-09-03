@@ -210,6 +210,7 @@ struct TapeInfo
   boolean quick_resume;
   boolean single_step;
   boolean changed;
+  boolean solved;
   boolean player_participates[MAX_PLAYERS];
   int num_participating_players;
   int centered_player_nr_next;

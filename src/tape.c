@@ -664,6 +664,7 @@ void TapeErase(void)
   tape.level_nr = level_nr;
   tape.pos[tape.counter].delay = 0;
   tape.changed = TRUE;
+  tape.solved = FALSE;
 
   tape.random_seed = InitRND(level.random_seed);
 
@@ -760,6 +761,7 @@ static void TapeAppendRecording(void)
   // start recording
   tape.recording = TRUE;
   tape.changed = TRUE;
+  tape.solved = FALSE;
 
   // set current delay (for last played move)
   tape.pos[tape.counter].delay = tape.delay_played;

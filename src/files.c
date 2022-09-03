@@ -60,7 +60,6 @@
 
 #define TAPE_CHUNK_VERS_SIZE	8	// size of file version chunk
 #define TAPE_CHUNK_HEAD_SIZE	20	// size of tape file header
-#define TAPE_CHUNK_HEAD_UNUSED	1	// unused tape header bytes
 #define TAPE_CHUNK_SCRN_SIZE	2	// size of screen size chunk
 
 #define SCORE_CHUNK_VERS_SIZE	8	// size of file version chunk
@@ -7887,6 +7886,7 @@ static void setTapeInfoToDefaults(void)
   tape.level_nr = level_nr;
   tape.counter = 0;
   tape.changed = FALSE;
+  tape.solved = FALSE;
 
   tape.recording = FALSE;
   tape.playing = FALSE;
@@ -7973,8 +7973,7 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
     setTapeActionFlags(tape, getFile8Bit(file));
 
     tape->property_bits = getFile8Bit(file);
-
-    ReadUnusedBytesFromFile(file, TAPE_CHUNK_HEAD_UNUSED);
+    tape->solved = getFile8Bit(file);
 
     engine_version = getFileVersion(file);
     if (engine_version > 0)
@@ -8419,9 +8418,7 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
   putFile8Bit(file, getTapeActionValue(tape));
 
   putFile8Bit(file, tape->property_bits);
-
-  // unused bytes not at the end here for 4-byte alignment of engine_version
-  WriteUnusedBytesToFile(file, TAPE_CHUNK_HEAD_UNUSED);
+  putFile8Bit(file, tape->solved);
 
   putFileVersion(file, tape->engine_version);
 }
@@ -8602,6 +8599,10 @@ void DumpTape(struct TapeInfo *tape)
   Print("                  (effective engine version %08d)\n",
 	tape->engine_version);
   Print("Level series identifier: '%s'\n", tape->level_identifier);
+
+  Print("Solution tape: %s\n",
+	tape->solved ? "yes" :
+	tape->game_version < VERSION_IDENT(4,3,2,3) ? "unknown" : "no");
 
   Print("Special tape properties: ");
   if (tape->property_bits == TAPE_PROPERTY_NONE)
