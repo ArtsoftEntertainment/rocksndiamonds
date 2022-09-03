@@ -13559,7 +13559,9 @@ void CreateCollectElementImages(void)
 
   Info("Converting image file from BMP to PNG ...");
 
-  system(cmd_convert);
+  if (system(cmd_convert) != 0)
+    Fail("converting image file failed");
+
   unlink(filename_bmp);
 
   Info("Done.");
