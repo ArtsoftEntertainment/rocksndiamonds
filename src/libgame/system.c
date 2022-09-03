@@ -1812,7 +1812,7 @@ void StartTextInput(int x, int y, int width, int height)
   if (y + height > SCREEN_KEYBOARD_POS(video.height))
   {
     video.shifted_up_pos = y + height - SCREEN_KEYBOARD_POS(video.height);
-    video.shifted_up_delay = SDL_GetTicks();
+    video.shifted_up_delay.count = SDL_GetTicks();
     video.shifted_up = TRUE;
   }
 #endif
@@ -1828,7 +1828,7 @@ void StopTextInput(void)
   if (video.shifted_up)
   {
     video.shifted_up_pos = 0;
-    video.shifted_up_delay = SDL_GetTicks();
+    video.shifted_up_delay.count = SDL_GetTicks();
     video.shifted_up = FALSE;
   }
 #endif
