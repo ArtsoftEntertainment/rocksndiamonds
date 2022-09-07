@@ -7710,7 +7710,7 @@ static void print_usage(void)
 	"\n"
 	"Options:\n"
 	"  -b, --basepath DIRECTORY         alternative base DIRECTORY\n"
-	"  -l, --level DIRECTORY            alternative level DIRECTORY\n"
+	"  -l, --levels DIRECTORY           alternative levels DIRECTORY\n"
 	"  -g, --graphics DIRECTORY         alternative graphics DIRECTORY\n"
 	"  -s, --sounds DIRECTORY           alternative sounds DIRECTORY\n"
 	"  -m, --music DIRECTORY            alternative music DIRECTORY\n"
