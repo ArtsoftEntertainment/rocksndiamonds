@@ -1350,6 +1350,8 @@ void GetOptions(int argc, char *argv[],
   options.identifier = NULL;
   options.level_nr = NULL;
 
+  options.display_nr = 0;
+
   options.mytapes = FALSE;
   options.serveronly = FALSE;
   options.network = FALSE;
@@ -1548,6 +1550,23 @@ void GetOptions(int argc, char *argv[],
       options.tape_log_filename = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
+    }
+    else if (strncmp(option, "-display", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	FailWithHelp("option '%s' requires an argument", option_str);
+
+      if (option_arg == next_option)
+	options_left++;
+
+      int display_nr = atoi(option_arg);
+
+      options.display_nr =
+	MAX(0, MIN(display_nr, SDL_GetNumVideoDisplays() - 1));
+
+      if (display_nr != options.display_nr)
+	Warn("invalid display %d -- using display %d",
+	     display_nr, options.display_nr);
     }
 #if defined(PLATFORM_MAC)
     else if (strPrefix(option, "-psn"))

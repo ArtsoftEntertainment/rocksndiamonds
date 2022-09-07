@@ -1098,6 +1098,8 @@ struct OptionInfo
   char *identifier;
   char *level_nr;
 
+  int display_nr;
+
   boolean mytapes;
   boolean serveronly;
   boolean network;

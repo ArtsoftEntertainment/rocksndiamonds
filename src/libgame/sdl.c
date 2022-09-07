@@ -553,6 +553,7 @@ static boolean SDLCreateScreen(boolean fullscreen)
   int screen_height = video.screen_height;
   int surface_flags = (fullscreen ? surface_flags_fullscreen :
 		       surface_flags_window);
+  int display_nr = options.display_nr;
 
   // default window size is unscaled
   video.window_width  = screen_width;
@@ -595,8 +596,8 @@ static boolean SDLCreateScreen(boolean fullscreen)
 
   if (sdl_window == NULL)
     sdl_window = SDL_CreateWindow(program.window_title,
-				  SDL_WINDOWPOS_CENTERED,
-				  SDL_WINDOWPOS_CENTERED,
+				  SDL_WINDOWPOS_CENTERED_DISPLAY(display_nr),
+				  SDL_WINDOWPOS_CENTERED_DISPLAY(display_nr),
 				  video.window_width,
 				  video.window_height,
 				  surface_flags);
@@ -796,7 +797,8 @@ void SDLSetWindowFullscreen(boolean fullscreen)
   {
     SDLSetWindowScaling(setup.window_scaling_percent);
     SDL_SetWindowPosition(sdl_window,
-			  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+			  SDL_WINDOWPOS_CENTERED_DISPLAY(options.display_nr),
+			  SDL_WINDOWPOS_CENTERED_DISPLAY(options.display_nr));
 
     video.fullscreen_initial = FALSE;
   }

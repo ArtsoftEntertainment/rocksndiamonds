@@ -7714,6 +7714,7 @@ static void print_usage(void)
 	"  -g, --graphics DIRECTORY         alternative graphics DIRECTORY\n"
 	"  -s, --sounds DIRECTORY           alternative sounds DIRECTORY\n"
 	"  -m, --music DIRECTORY            alternative music DIRECTORY\n"
+	"      --display NR                 open program window on display NR\n"
 	"      --mytapes                    use private tapes for tape tests\n"
 	"  -n, --network                    network multiplayer game\n"
 	"      --serveronly                 only start network server\n"
