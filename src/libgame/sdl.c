@@ -589,8 +589,7 @@ static boolean SDLCreateScreen(boolean fullscreen)
 
     if (sdl_window)
     {
-      SDL_DestroyWindow(sdl_window);
-      sdl_window = NULL;
+      SDL_SetWindowSize(sdl_window, video.window_width, video.window_height);
     }
   }
 
