@@ -620,6 +620,8 @@ void HandleWindowEvent(WindowEvent *event)
      subtype == SDL_WINDOWEVENT_FOCUS_GAINED ? "SDL_WINDOWEVENT_FOCUS_GAINED" :
      subtype == SDL_WINDOWEVENT_FOCUS_LOST ? "SDL_WINDOWEVENT_FOCUS_LOST" :
      subtype == SDL_WINDOWEVENT_CLOSE ? "SDL_WINDOWEVENT_CLOSE" :
+     subtype == SDL_WINDOWEVENT_TAKE_FOCUS ? "SDL_WINDOWEVENT_TAKE_FOCUS" :
+     subtype == SDL_WINDOWEVENT_HIT_TEST ? "SDL_WINDOWEVENT_HIT_TEST" :
      "(UNKNOWN)");
 
   Debug("event:window", "name: '%s', data1: %ld, data2: %ld",
