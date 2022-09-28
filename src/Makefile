@@ -316,6 +316,8 @@ conf-hash:
 	@echo '#define SOURCE_HASH_STRING "$(SOURCE_HASH_STRING)"' \
 	> $(COMMIT_HASH_FILE)
 
+config.o: config.c $(TIMESTAMP_FILE)
+
 $(TIMESTAMP_FILE): $(SRCS) $(RNDLIBS)
 	@$(MAKE) conf-time
 
