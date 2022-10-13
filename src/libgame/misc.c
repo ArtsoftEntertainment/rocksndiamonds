@@ -1561,12 +1561,17 @@ void GetOptions(int argc, char *argv[],
 
       int display_nr = atoi(option_arg);
 
+#if 1
+      // dirty hack: SDL_GetNumVideoDisplays() seems broken on some systems
+      options.display_nr = display_nr;
+#else
       options.display_nr =
 	MAX(0, MIN(display_nr, SDL_GetNumVideoDisplays() - 1));
 
       if (display_nr != options.display_nr)
 	Warn("invalid display %d -- using display %d",
 	     display_nr, options.display_nr);
+#endif
     }
 #if defined(PLATFORM_MAC)
     else if (strPrefix(option, "-psn"))
