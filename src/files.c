@@ -13489,7 +13489,7 @@ void CreateCollectElementImages(void)
 		  SDL_MapRGB(dst_bitmap->surface->format, 0x00, 0x00, 0x00));
 
   dst_bitmap->surface =
-    SDL_ConvertSurfaceFormat(dst_bitmap->surface, SDL_PIXELFORMAT_RGBA32, 0);
+    SDL_ConvertSurfaceFormat(dst_bitmap->surface, SDL_PIXELFORMAT_ARGB8888, 0);
 
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
   {
@@ -13516,7 +13516,7 @@ void CreateCollectElementImages(void)
 		    SDL_MapRGB(tmp_bitmap->surface->format, 0x00, 0x00, 0x00));
 
     tmp_bitmap->surface =
-      SDL_ConvertSurfaceFormat(tmp_bitmap->surface, SDL_PIXELFORMAT_RGBA32, 0);
+      SDL_ConvertSurfaceFormat(tmp_bitmap->surface, SDL_PIXELFORMAT_ARGB8888, 0);
 
     tmp_bitmap->surface_masked = tmp_bitmap->surface;
 
