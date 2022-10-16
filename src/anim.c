@@ -1177,12 +1177,12 @@ static boolean isClickedPart(struct GlobalAnimPartControlInfo *part,
 
 static boolean clickBlocked(struct GlobalAnimPartControlInfo *part)
 {
-  return (part->control_info.style & STYLE_BLOCK ? TRUE : FALSE);
+  return ((part->control_info.style & STYLE_BLOCK) ? TRUE : FALSE);
 }
 
 static boolean clickConsumed(struct GlobalAnimPartControlInfo *part)
 {
-  return (part->control_info.style & STYLE_PASSTHROUGH ? FALSE : TRUE);
+  return ((part->control_info.style & STYLE_PASSTHROUGH) ? FALSE : TRUE);
 }
 
 static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
