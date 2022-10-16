@@ -1904,7 +1904,6 @@ extern struct AudioSystemInfo	audio;
 extern struct GfxInfo		gfx;
 extern struct TileCursorInfo	tile_cursor;
 extern struct OverlayInfo	overlay;
-extern struct AnimInfo		anim;
 extern struct ArtworkInfo	artwork;
 extern struct JoystickInfo	joystick;
 extern struct SetupInfo		setup;
