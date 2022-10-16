@@ -411,7 +411,8 @@ static void InitToonControls(void)
     int sound = SND_UNDEFINED;
     int music = MUS_UNDEFINED;
     int graphic = IMG_TOON_1 + i;
-    int control = graphic;
+
+    control = graphic;
 
     part->nr = part_nr;
     part->anim_nr = anim_nr;
