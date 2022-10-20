@@ -10431,12 +10431,12 @@ static void DrawEditorElementName(int x, int y, int font_nr)
   int font_height = getFontHeight(font_nr);
   int max_text_width = SXSIZE - x - ED_ELEMENT_SETTINGS_X(0);
   int max_chars_per_line = max_text_width / font_width;
-  char buffer[max_chars_per_line + 1];
 
   if (strlen(element_name) <= max_chars_per_line)
     DrawTextS(x, y, font_nr, element_name);
   else
   {
+    char buffer[max_chars_per_line + 1];
     int next_pos = max_chars_per_line;
 
     strncpy(buffer, element_name, max_chars_per_line);
@@ -12925,8 +12925,6 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
   int dx = sx2 % 2;
   int dy = sy2 % 2;
   int lx = 0, ly = 0;
-  int min_lx = 0, min_ly = 0;
-  int max_lx = lev_fieldx - 1, max_ly = lev_fieldy - 1;
   int x, y;
 
   button_press_event = (gi->event.type == GD_EVENT_PRESSED);
@@ -12938,6 +12936,9 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 
   if (draw_level)
   {
+    int min_lx = 0, min_ly = 0;
+    int max_lx = lev_fieldx - 1, max_ly = lev_fieldy - 1;
+
     // get positions inside level field
     lx = sx + level_xpos;
     ly = sy + level_ypos;
