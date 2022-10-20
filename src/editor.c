@@ -12621,7 +12621,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
   static int start_sx;
   static int last_sx, last_sy;
   static boolean typing = FALSE;
-  int letter_element = EL_CHAR_ASCII0 + letter;
+  int letter_element;
   int lx = 0, ly = 0;
 
   // map lower case letters to upper case and convert special characters
