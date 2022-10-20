@@ -147,8 +147,8 @@ SYS_LDFLAGS := $(shell echo $(SYS_LDFLAGS) |	\
 OPTIONS = -O2 -Wall
 endif
 
-CFLAGS = $(OPTIONS) $(SYS_CFLAGS)  $(EXTRA_CFLAGS) $(CONFIG)
-LDFLAGS =           $(SYS_LDFLAGS) $(EXTRA_LDFLAGS)
+CFLAGS = $(OPTIONS) $(ANALYZE) $(SYS_CFLAGS)  $(EXTRA_CFLAGS) $(CONFIG)
+LDFLAGS =           $(ANALYZE) $(SYS_LDFLAGS) $(EXTRA_LDFLAGS)
 
 
 SRCS =	main.c		\
@@ -259,7 +259,7 @@ GRAPHICS_DIR = ../graphics
 all: $(AUTOCONF) libgame_dir game_em_dir game_sp_dir game_mm_dir $(PROGNAME) graphics_dir
 
 $(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(COMMIT_HASH_FILE) $(OBJS) $(ICON)
-	$(CC) $(ANALYZE) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
+	$(CC) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
 ifdef BUILD_DIST
 	$(STRIP) $(PROGNAME)
 endif
@@ -330,7 +330,7 @@ $(ICON):
 	echo "$(ICONBASE) ICON $(ICONBASE).ico" | $(WINDRES) -o $(ICON)
 
 .c.o:
-	$(CC) $(ANALYZE) $(CFLAGS) -c $*.c
+	$(CC) $(CFLAGS) -c $*.c
 
 graphics_dir:
 	@test -f $(GRAPHICS_DIR)/Makefile && $(MAKE) -C $(GRAPHICS_DIR) || true
