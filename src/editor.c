@@ -14513,7 +14513,6 @@ static void ClearEditorGadgetInfoText(void)
 void PrintEditorGadgetInfoText(struct GadgetInfo *gi)
 {
   char infotext[MAX_OUTPUT_LINESIZE + 1];
-  char shortcut[MAX_OUTPUT_LINESIZE + 1];
   int max_infotext_len = getMaxInfoTextLength();
 
   if (gi == NULL || strlen(gi->info_text) == 0)
@@ -14528,6 +14527,8 @@ void PrintEditorGadgetInfoText(struct GadgetInfo *gi)
 
     if (key)
     {
+      char shortcut[MAX_OUTPUT_LINESIZE + 1];
+
       if (gi->custom_id == GADGET_ID_SINGLE_ITEMS)
 	sprintf(shortcut, " ('.' or '%c')", key);
       else if (gi->custom_id == GADGET_ID_PICK_ELEMENT)
@@ -14571,7 +14572,6 @@ void HandleEditorGadgetInfoText(void *ptr)
 
 static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
 {
-  static int start_lx, start_ly;
   int id = gi->custom_id;
   int type_id = gi->custom_type_id;
   int sx = gi->event.x;
@@ -14584,7 +14584,6 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
   int actual_drawing_function = drawing_function;
   int max_infotext_len = getMaxInfoTextLength();
   char infotext[MAX_OUTPUT_LINESIZE + 1];
-  char *text;
 
   infotext[0] = '\0';		// start with empty info text
 
@@ -14625,6 +14624,10 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
     {
       if (button_status)	// if (gi->state == GD_BUTTON_PRESSED)
       {
+	static int start_lx = 0;
+	static int start_ly = 0;
+	char *text;
+
 	if (gi->event.type == GD_EVENT_PRESSED)
 	{
 	  start_lx = lx;
