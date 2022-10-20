@@ -5892,10 +5892,10 @@ static void ReinitializeElementList(void)
   // determine size of element list
   for (i = 0; editor_elements_info[i].setup_value != NULL; i++)
   {
-    boolean found_inactive_cascade = FALSE;
-
     if (*editor_elements_info[i].setup_value)
     {
+      boolean found_inactive_cascade = FALSE;
+
       if (setup.editor.el_headlines)
       {
 	// required for correct padding of palette headline buttons
@@ -6502,10 +6502,8 @@ static void CreateCounterButtons(void)
       int graphic;
       struct GraphicInfo *gd;
       int gd_x1, gd_x2, gd_y1, gd_y2;
-      unsigned int event_mask;
+      unsigned int event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
       char infotext[max_infotext_len + 1];
-
-      event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
 
       if (i == ED_COUNTER_ID_SELECT_LEVEL)
       {
@@ -6646,7 +6644,6 @@ static void CreateDrawingAreas(void)
   for (i = 0; i < ED_NUM_DRAWING_AREAS; i++)
   {
     struct GadgetInfo *gi;
-    unsigned int event_mask;
     int id = drawingarea_info[i].gadget_id;
     int x = SX + ED_AREA_SETTINGS_X(drawingarea_info[i]);
     int y = SY + ED_AREA_SETTINGS_Y(drawingarea_info[i]);
@@ -6654,8 +6651,7 @@ static void CreateDrawingAreas(void)
     int area_ysize = drawingarea_info[i].area_ysize;
     int item_size = (id == GADGET_ID_DRAWING_LEVEL ?
 		     ed_tilesize : ED_DRAWINGAREA_TILE_SIZE);
-
-    event_mask =
+    unsigned int event_mask =
       GD_EVENT_PRESSED | GD_EVENT_RELEASED | GD_EVENT_MOVING |
       GD_EVENT_OFF_BORDERS | GD_EVENT_PIXEL_PRECISE;
 
@@ -6702,7 +6698,7 @@ static void CreateTextInputGadgets(void)
     int gd_x2 = gd->src_x + gd->active_xoffset;
     int gd_y2 = gd->src_y + gd->active_yoffset;
     struct GadgetInfo *gi;
-    unsigned int event_mask;
+    unsigned int event_mask = GD_EVENT_TEXT_RETURN | GD_EVENT_TEXT_LEAVING;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = textinput_info[i].gadget_id;
     int x, y;
@@ -6728,8 +6724,6 @@ static void CreateTextInputGadgets(void)
       x = ED_SETTINGS_X(textinput_info[i].x);
       y = ED_SETTINGS_Y(textinput_info[i].y);
     }
-
-    event_mask = GD_EVENT_TEXT_RETURN | GD_EVENT_TEXT_LEAVING;
 
     sprintf(infotext, "Enter %s", textinput_info[i].infotext);
     infotext[max_infotext_len] = '\0';
@@ -6773,13 +6767,11 @@ static void CreateTextAreaGadgets(void)
     int gd_x2 = gd->src_x + gd->active_xoffset;
     int gd_y2 = gd->src_y + gd->active_yoffset;
     struct GadgetInfo *gi;
-    unsigned int event_mask;
+    unsigned int event_mask = GD_EVENT_TEXT_LEAVING;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = textarea_info[i].gadget_id;
     int area_xsize = textarea_info[i].xsize;
     int area_ysize = textarea_info[i].ysize;
-
-    event_mask = GD_EVENT_TEXT_LEAVING;
 
     sprintf(infotext, "Enter %s", textarea_info[i].infotext);
     infotext[max_infotext_len] = '\0';
@@ -6824,11 +6816,12 @@ static void CreateSelectboxGadgets(void)
     int gd_y2 = gd->src_y + gd->active_yoffset;
     int selectbox_button_xsize = gd2->width;
     struct GadgetInfo *gi;
-    unsigned int event_mask;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = selectbox_info[i].gadget_id;
     int x = SX + ED_SETTINGS_X(selectbox_info[i].x);
     int y = SY + ED_SETTINGS_Y(selectbox_info[i].y);
+    unsigned int event_mask =
+      GD_EVENT_RELEASED | GD_EVENT_TEXT_RETURN | GD_EVENT_TEXT_LEAVING;
 
     if (selectbox_info[i].size == -1)	// dynamically determine size
     {
@@ -6843,9 +6836,6 @@ static void CreateSelectboxGadgets(void)
 
       selectbox_info[i].size++;		// add one character empty space
     }
-
-    event_mask = GD_EVENT_RELEASED |
-      GD_EVENT_TEXT_RETURN | GD_EVENT_TEXT_LEAVING;
 
     // determine horizontal position to the right of specified gadget
     if (selectbox_info[i].gadget_id_align != GADGET_ID_NONE)
@@ -6915,15 +6905,13 @@ static void CreateTextbuttonGadgets(void)
     int border_xsize = gd->border_size + gd->draw_xoffset;
     int border_ysize = gd->border_size;
     struct GadgetInfo *gi;
-    unsigned int event_mask;
+    unsigned int event_mask = GD_EVENT_RELEASED;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int x = SX + ED_SETTINGS_X(textbutton_info[i].x);
     int y = SY + ED_SETTINGS_Y(textbutton_info[i].y);
 
     if (textbutton_info[i].size == -1)	// dynamically determine size
       textbutton_info[i].size = strlen(textbutton_info[i].text);
-
-    event_mask = GD_EVENT_RELEASED;
 
     sprintf(infotext, "%s", textbutton_info[i].infotext);
     infotext[max_infotext_len] = '\0';
@@ -6977,7 +6965,6 @@ static void CreateTextbuttonGadgets(void)
 static void CreateGraphicbuttonGadgets(void)
 {
   struct GadgetInfo *gi;
-  unsigned int event_mask;
   int i;
 
   // create buttons for scrolling of drawing area and element list
@@ -6992,8 +6979,7 @@ static void CreateGraphicbuttonGadgets(void)
     int gd_y1 = gd->src_y;
     int gd_x2 = gd->src_x + gd->pressed_xoffset;
     int gd_y2 = gd->src_y + gd->pressed_yoffset;
-
-    event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
+    unsigned int event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
 
     // determine horizontal position to the right of specified gadget
     if (graphicbutton_info[i].gadget_id_align != GADGET_ID_NONE)
@@ -7085,7 +7071,7 @@ static void CreateScrollbarGadgets(void)
     int gd_y2 = gd->src_y + gd->pressed_yoffset;
     struct GadgetInfo *gi;
     int items_max, items_visible, item_position;
-    unsigned int event_mask;
+    unsigned int event_mask = GD_EVENT_MOVING | GD_EVENT_OFF_BORDERS;
 
     if (i == ED_SCROLLBAR_ID_LIST_VERTICAL)
     {
@@ -7108,8 +7094,6 @@ static void CreateScrollbarGadgets(void)
 	item_position = 0;
       }
     }
-
-    event_mask = GD_EVENT_MOVING | GD_EVENT_OFF_BORDERS;
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
 		      GDI_CUSTOM_TYPE_ID, i,
@@ -7146,10 +7130,7 @@ static void CreateScrollbarGadgets(void)
 static void CreateCheckbuttonGadgets(void)
 {
   struct GadgetInfo *gi;
-  unsigned int event_mask;
   int i;
-
-  event_mask = GD_EVENT_PRESSED;
 
   for (i = 0; i < ED_NUM_CHECKBUTTONS; i++)
   {
@@ -7167,6 +7148,7 @@ static void CreateCheckbuttonGadgets(void)
     int gd_y2a = gd->src_y + gd->active_yoffset + gd->pressed_yoffset;
     int x = SX + ED_SETTINGS_X(checkbutton_info[i].x);
     int y = SY + ED_SETTINGS_Y(checkbutton_info[i].y);
+    unsigned int event_mask = GD_EVENT_PRESSED;
 
     // determine horizontal position to the right of specified gadget
     if (checkbutton_info[i].gadget_id_align != GADGET_ID_NONE)
@@ -7218,16 +7200,14 @@ static void CreateRadiobuttonGadgets(void)
   int gd_x2a = gd->src_x + gd->active_xoffset + gd->pressed_xoffset;
   int gd_y2a = gd->src_y + gd->active_yoffset + gd->pressed_yoffset;
   struct GadgetInfo *gi;
-  unsigned int event_mask;
   int i;
-
-  event_mask = GD_EVENT_PRESSED;
 
   for (i = 0; i < ED_NUM_RADIOBUTTONS; i++)
   {
     int id = radiobutton_info[i].gadget_id;
     int x = SX + ED_SETTINGS_X(radiobutton_info[i].x);
     int y = SY + ED_SETTINGS_Y(radiobutton_info[i].y);
+    unsigned int event_mask = GD_EVENT_PRESSED;
 
     int checked =
       (*radiobutton_info[i].value == radiobutton_info[i].checked_value);
