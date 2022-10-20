@@ -36,7 +36,7 @@ int getScreenFieldSizeY(void);
 
 void PlayLevelSound_EM(int, int, int, int);
 void InitGraphicInfo_EM(void);
-boolean CheckSingleStepMode_EM(byte action[], int, boolean, boolean, boolean);
+boolean CheckSingleStepMode_EM(byte[MAX_PLAYERS], int, boolean, boolean, boolean);
 
 void SetGfxAnimation_EM(struct GraphicInfo_EM *, int, int, int, int);
 void getGraphicSourceObjectExt_EM(struct GraphicInfo_EM *, int, int, int, int);
