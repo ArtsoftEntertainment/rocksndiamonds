@@ -200,7 +200,7 @@
 #define EP_BITMASK_BASE_DEFAULT		(1 << EP_CAN_MOVE_INTO_ACID)
 #define EP_BITMASK_DEFAULT		0
 
-#define PROPERTY_BIT(p)			(1 << ((p) % 32))
+#define PROPERTY_BIT(p)			(1u << ((p) % 32))
 #define PROPERTY_VAR(e,p)		(element_info[e].properties[(p) / 32])
 #define HAS_PROPERTY(e,p)	((PROPERTY_VAR(e, p) & PROPERTY_BIT(p)) != 0)
 #define SET_PROPERTY(e,p,v)	((v) ?					   \

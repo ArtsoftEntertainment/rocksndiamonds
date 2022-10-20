@@ -2848,7 +2848,7 @@ static int LoadLevel_CUS3(File *file, int chunk_size, struct LevelInfo *level)
     // bits 0 - 31 of "has_event[]"
     event_bits = getFile32BitBE(file);
     for (j = 0; j < MIN(NUM_CHANGE_EVENTS, 32); j++)
-      if (event_bits & (1 << j))
+      if (event_bits & (1u << j))
 	ei->change->has_event[j] = TRUE;
 
     ei->change->target_element = getMappedElement(getFile16BitBE(file));
@@ -2984,7 +2984,7 @@ static int LoadLevel_CUS4(File *file, int chunk_size, struct LevelInfo *level)
     // bits 0 - 31 of "has_event[]" ...
     event_bits = getFile32BitBE(file);
     for (j = 0; j < MIN(NUM_CHANGE_EVENTS, 32); j++)
-      if (event_bits & (1 << j))
+      if (event_bits & (1u << j))
 	change->has_event[j] = TRUE;
 
     change->target_element = getMappedElement(getFile16BitBE(file));
@@ -3025,7 +3025,7 @@ static int LoadLevel_CUS4(File *file, int chunk_size, struct LevelInfo *level)
     // ... bits 32 - 39 of "has_event[]" (not nice, but downward compatible)
     event_bits = getFile8Bit(file);
     for (j = 32; j < NUM_CHANGE_EVENTS; j++)
-      if (event_bits & (1 << (j - 32)))
+      if (event_bits & (1u << (j - 32)))
 	change->has_event[j] = TRUE;
   }
 
@@ -7327,7 +7327,7 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
     event_bits = 0;
     for (j = 0; j < MIN(NUM_CHANGE_EVENTS, 32); j++)
       if (change->has_event[j])
-	event_bits |= (1 << j);
+	event_bits |= (1u << j);
     putFile32BitBE(file, event_bits);
 
     putFile16BitBE(file, change->target_element);
@@ -7367,7 +7367,7 @@ static void SaveLevel_CUS4(FILE *file, struct LevelInfo *level, int element)
     event_bits = 0;
     for (j = 32; j < NUM_CHANGE_EVENTS; j++)
       if (change->has_event[j])
-	event_bits |= (1 << (j - 32));
+	event_bits |= (1u << (j - 32));
     putFile8Bit(file, event_bits);
   }
 }
