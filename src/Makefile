@@ -72,6 +72,7 @@ endif
 
 ifeq ($(shell uname -s),Darwin)		# compiling on Mac OS X
 DEBUGGER = lldb --batch -o "run" -k "bt" -k "quit"
+SANITIZING_FLAGS = -fsanitize=undefined
 ifdef BUILD_DIST			# distribution build
 MAC_TARGET_VERSION_MIN = 10.7
 EXTRA_FLAGS_MAC = -mmacosx-version-min=$(MAC_TARGET_VERSION_MIN)
@@ -127,6 +128,7 @@ CONFIG = $(CONFIG_BASE_PATH) $(JOYSTICK)
 DEBUG = -DDEBUG -g
 
 # ANALYZE = $(PROFILING_FLAGS)
+# ANALYZE = $(SANITIZING_FLAGS)
 
 # OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
 # OPTIONS = $(DEBUG) -O2 -Wall			# only for debugging purposes
