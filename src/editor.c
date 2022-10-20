@@ -13020,9 +13020,6 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
   if (!IS_VALID_BUTTON(button))
     return;
 
-  if (!button && !button_release_event)
-    return;
-
   // handle info callback for each invocation of action callback
   gi->callback_info(gi);
 
@@ -13058,10 +13055,9 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	  if (edit_mode == ED_MODE_DRAWING && draw_with_brush &&
 	      !inside_drawing_area)
 	    DeleteBrushFromCursor();
-	}
 
-	if (!button || button_release_event)
 	  break;
+	}
 
 	if (draw_with_brush)
 	{
