@@ -1784,7 +1784,7 @@ static void InitPlayerField(int x, int y, int element, boolean init_game)
       player->active = TRUE;
 
       // remove potentially duplicate players
-      if (StorePlayer[jx][jy] == Tile[x][y])
+      if (IN_LEV_FIELD(jx, jy) && StorePlayer[jx][jy] == Tile[x][y])
 	StorePlayer[jx][jy] = 0;
 
       StorePlayer[x][y] = Tile[x][y];
