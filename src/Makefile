@@ -126,7 +126,7 @@ CONFIG = $(CONFIG_BASE_PATH) $(JOYSTICK)
 
 DEBUG = -DDEBUG -g
 
-# PROFILING = $(PROFILING_FLAGS)
+# ANALYZE = $(PROFILING_FLAGS)
 
 # OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
 # OPTIONS = $(DEBUG) -O2 -Wall			# only for debugging purposes
@@ -259,7 +259,7 @@ GRAPHICS_DIR = ../graphics
 all: $(AUTOCONF) libgame_dir game_em_dir game_sp_dir game_mm_dir $(PROGNAME) graphics_dir
 
 $(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(COMMIT_HASH_FILE) $(OBJS) $(ICON)
-	$(CC) $(PROFILING) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
+	$(CC) $(ANALYZE) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
 ifdef BUILD_DIST
 	$(STRIP) $(PROGNAME)
 endif
@@ -330,7 +330,7 @@ $(ICON):
 	echo "$(ICONBASE) ICON $(ICONBASE).ico" | $(WINDRES) -o $(ICON)
 
 .c.o:
-	$(CC) $(PROFILING) $(CFLAGS) -c $*.c
+	$(CC) $(ANALYZE) $(CFLAGS) -c $*.c
 
 graphics_dir:
 	@test -f $(GRAPHICS_DIR)/Makefile && $(MAKE) -C $(GRAPHICS_DIR) || true
