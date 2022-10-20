@@ -14219,7 +14219,8 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	  id <= GADGET_ID_ELEMENTLIST_LAST)
       {
 	int element_position = id - GADGET_ID_ELEMENTLIST_FIRST;
-	int new_element = editor_elements[element_position + element_shift];
+
+	new_element = editor_elements[element_position + element_shift];
 
 	if (IS_EDITOR_CASCADE(new_element))
 	{
