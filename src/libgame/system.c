@@ -690,8 +690,7 @@ void SetRedrawMaskFromArea(int x, int y, int width, int height)
     redraw_mask = REDRAW_ALL;
 }
 
-static boolean CheckDrawingArea(int x, int y, int width, int height,
-				int draw_mask)
+static boolean CheckDrawingArea(int x, int y, int draw_mask)
 {
   if (draw_mask == REDRAW_NONE)
     return FALSE;
@@ -725,15 +724,15 @@ boolean DrawingDeactivatedField(void)
   return FALSE;
 }
 
-boolean DrawingDeactivated(int x, int y, int width, int height)
+boolean DrawingDeactivated(int x, int y)
 {
-  return CheckDrawingArea(x, y, width, height, gfx.draw_deactivation_mask);
+  return CheckDrawingArea(x, y, gfx.draw_deactivation_mask);
 }
 
 boolean DrawingOnBackground(int x, int y)
 {
-  return (CheckDrawingArea(x, y, 1, 1, gfx.background_bitmap_mask) &&
-	  CheckDrawingArea(x, y, 1, 1, gfx.draw_background_mask));
+  return (CheckDrawingArea(x, y, gfx.background_bitmap_mask) &&
+	  CheckDrawingArea(x, y, gfx.draw_background_mask));
 }
 
 static boolean InClippedRectangle(Bitmap *bitmap, int *x, int *y,
@@ -802,7 +801,7 @@ void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
   if (src_bitmap == NULL || dst_bitmap == NULL)
     return;
 
-  if (DrawingDeactivated(dst_x, dst_y, width, height))
+  if (DrawingDeactivated(dst_x, dst_y))
     return;
 
   if (!InClippedRectangle(src_bitmap, &src_x, &src_y, &width, &height, FALSE) ||
@@ -909,7 +908,7 @@ void FillRectangle(Bitmap *bitmap, int x, int y, int width, int height,
   if (program.headless)
     return;
 
-  if (DrawingDeactivated(x, y, width, height))
+  if (DrawingDeactivated(x, y))
     return;
 
   if (!InClippedRectangle(bitmap, &x, &y, &width, &height, TRUE))
@@ -936,7 +935,7 @@ void BlitBitmapMasked(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 		      int src_x, int src_y, int width, int height,
 		      int dst_x, int dst_y)
 {
-  if (DrawingDeactivated(dst_x, dst_y, width, height))
+  if (DrawingDeactivated(dst_x, dst_y))
     return;
 
   sysCopyArea(src_bitmap, dst_bitmap, src_x, src_y, width, height,

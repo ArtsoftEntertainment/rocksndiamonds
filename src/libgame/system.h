@@ -2001,7 +2001,7 @@ void ClearRectangle(Bitmap *, int, int, int, int);
 void ClearRectangleOnBackground(Bitmap *, int, int, int, int);
 void BlitBitmapMasked(Bitmap *, Bitmap *, int, int, int, int, int, int);
 boolean DrawingDeactivatedField(void);
-boolean DrawingDeactivated(int, int, int, int);
+boolean DrawingDeactivated(int, int);
 boolean DrawingOnBackground(int, int);
 boolean DrawingAreaChanged(void);
 void BlitBitmapOnBackground(Bitmap *, Bitmap *, int, int, int, int, int, int);

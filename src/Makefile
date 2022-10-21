@@ -134,6 +134,7 @@ DEBUG = -DDEBUG -g
 # OPTIONS = $(DEBUG) -O2 -Wall			# only for debugging purposes
 # OPTIONS = $(DEBUG) -Wall			# only for debugging purposes
 OPTIONS = $(DEBUG) -Wall -Wstrict-prototypes -Wmissing-prototypes
+# OPTIONS = $(DEBUG) -Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes
 # OPTIONS = $(DEBUG) -Wall -ansi -pedantic	# only for debugging purposes
 # OPTIONS = -O2 -Wall -ansi -pedantic
 # OPTIONS = -O2 -Wall
