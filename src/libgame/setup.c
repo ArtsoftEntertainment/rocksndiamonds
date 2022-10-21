@@ -47,8 +47,6 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 #define TOKEN_VALUE_POSITION_DEFAULT		40
 #define TOKEN_COMMENT_POSITION_DEFAULT		60
 
-#define MAX_COOKIE_LEN				256
-
 #define TREE_NODE_TYPE_DEFAULT			0
 #define TREE_NODE_TYPE_PARENT			1
 #define TREE_NODE_TYPE_GROUP			2
@@ -2001,21 +1999,6 @@ void SetFilePermissions(char *filename, int permission_class)
     perms = FILE_PERMS_PUBLIC_ALL;
 
   chmod(filename, perms);
-}
-
-char *getCookie(char *file_type)
-{
-  static char cookie[MAX_COOKIE_LEN + 1];
-
-  if (strlen(program.cookie_prefix) + 1 +
-      strlen(file_type) + strlen("_FILE_VERSION_x.x") > MAX_COOKIE_LEN)
-    return "[COOKIE ERROR]";	// should never happen
-
-  sprintf(cookie, "%s_%s_FILE_VERSION_%d.%d",
-	  program.cookie_prefix, file_type,
-	  program.version_super, program.version_major);
-
-  return cookie;
 }
 
 void fprintFileHeader(FILE *file, char *basename)

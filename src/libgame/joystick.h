@@ -67,20 +67,14 @@
 #define JOY_BUTTON_NEW_PRESSED	2
 #define JOY_BUTTON_NEW_RELEASED	3
 
-char *getJoyNameFromJoySymbol(int);
-int getJoySymbolFromJoyName(char *);
 int getJoystickNrFromDeviceName(char *);
 char *getDeviceNameFromJoystickNr(int);
 char *getFormattedJoystickName(const char *);
 
-void CheckJoystickData(void);
 int Joystick(int);
 int JoystickExt(int, boolean);
 int JoystickButton(int);
 int AnyJoystick(void);
 int AnyJoystickButton(void);
-
-void DeactivateJoystick(void);
-void ActivateJoystick(void);
 
 #endif	// JOYSTICK_H

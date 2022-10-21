@@ -1903,22 +1903,6 @@ void SDLPutPixel(Bitmap *dst_bitmap, int x, int y, Pixel pixel)
 // quick (no, it's slow) and dirty hack to "invert" rectangle inside SDL surface
 // ----------------------------------------------------------------------------
 
-void SDLInvertArea(Bitmap *bitmap, int src_x, int src_y,
-		   int width, int height, Uint32 color)
-{
-  int x, y;
-
-  for (y = src_y; y < src_y + height; y++)
-  {
-    for (x = src_x; x < src_x + width; x++)
-    {
-      Uint32 pixel = SDLGetPixel(bitmap, x, y);
-
-      SDLPutPixel(bitmap, x, y, pixel == BLACK_PIXEL ? color : BLACK_PIXEL);
-    }
-  }
-}
-
 void SDLCopyInverseMasked(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 			  int src_x, int src_y, int width, int height,
 			  int dst_x, int dst_y)

@@ -21,71 +21,6 @@
 // platform independent joystick functions
 // ============================================================================
 
-#define TRANSLATE_JOYSYMBOL_TO_JOYNAME	0
-#define TRANSLATE_JOYNAME_TO_JOYSYMBOL	1
-
-static void translate_joyname(int *joysymbol, char **name, int mode)
-{
-  static struct
-  {
-    int joysymbol;
-    char *name;
-  } translate_joy[] =
-  {
-    { JOY_LEFT,		"joystick_left" },
-    { JOY_RIGHT,	"joystick_right" },
-    { JOY_UP,		"joystick_up" },
-    { JOY_DOWN,		"joystick_down" },
-    { JOY_BUTTON_1,	"joystick_button_1" },
-    { JOY_BUTTON_2,	"joystick_button_2" },
-  };
-
-  int i;
-
-  if (mode == TRANSLATE_JOYSYMBOL_TO_JOYNAME)
-  {
-    *name = "[undefined]";
-
-    for (i = 0; i < 6; i++)
-    {
-      if (*joysymbol == translate_joy[i].joysymbol)
-      {
-	*name = translate_joy[i].name;
-	break;
-      }
-    }
-  }
-  else if (mode == TRANSLATE_JOYNAME_TO_JOYSYMBOL)
-  {
-    *joysymbol = 0;
-
-    for (i = 0; i < 6; i++)
-    {
-      if (strEqual(*name, translate_joy[i].name))
-      {
-	*joysymbol = translate_joy[i].joysymbol;
-	break;
-      }
-    }
-  }
-}
-
-char *getJoyNameFromJoySymbol(int joysymbol)
-{
-  char *name;
-
-  translate_joyname(&joysymbol, &name, TRANSLATE_JOYSYMBOL_TO_JOYNAME);
-  return name;
-}
-
-int getJoySymbolFromJoyName(char *name)
-{
-  int joysymbol;
-
-  translate_joyname(&joysymbol, &name, TRANSLATE_JOYNAME_TO_JOYSYMBOL);
-  return joysymbol;
-}
-
 int getJoystickNrFromDeviceName(char *device_name)
 {
   char c;
@@ -171,25 +106,6 @@ static int JoystickPositionPercent(int center, int border, int actual)
     percent = 100;
 
   return percent;
-}
-
-void CheckJoystickData(void)
-{
-  int i;
-  int distance = 100;
-
-  for (i = 0; i < MAX_PLAYERS; i++)
-  {
-    if (setup.input[i].joy.xleft >= setup.input[i].joy.xmiddle)
-      setup.input[i].joy.xleft = setup.input[i].joy.xmiddle - distance;
-    if (setup.input[i].joy.xright <= setup.input[i].joy.xmiddle)
-      setup.input[i].joy.xright = setup.input[i].joy.xmiddle + distance;
-
-    if (setup.input[i].joy.yupper >= setup.input[i].joy.ymiddle)
-      setup.input[i].joy.yupper = setup.input[i].joy.ymiddle - distance;
-    if (setup.input[i].joy.ylower <= setup.input[i].joy.ymiddle)
-      setup.input[i].joy.ylower = setup.input[i].joy.ymiddle + distance;
-  }
 }
 
 int JoystickExt(int player_nr, boolean use_as_joystick_nr)
@@ -304,25 +220,4 @@ int AnyJoystickButton(void)
   }
 
   return result;
-}
-
-void DeactivateJoystick(void)
-{
-  /* Temporarily deactivate joystick. This is needed for calibration
-     screens, where the player has to select a joystick device that
-     should be calibrated. If there is a totally uncalibrated joystick
-     active, it may be impossible (due to messed up input from joystick)
-     to select the joystick device to calibrate even when trying to use
-     the mouse or keyboard to select the device. */
-
-  if (joystick.status & JOYSTICK_AVAILABLE)
-    joystick.status &= ~JOYSTICK_ACTIVE;
-}
-
-void ActivateJoystick(void)
-{
-  // reactivate temporarily deactivated joystick
-
-  if (joystick.status & JOYSTICK_AVAILABLE)
-    joystick.status |= JOYSTICK_ACTIVE;
 }

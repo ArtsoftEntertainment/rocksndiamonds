@@ -239,7 +239,3 @@ void mm_open_all(void)
 {
   InitElementProperties_MM();
 }
-
-void mm_close_all(void)
-{
-}

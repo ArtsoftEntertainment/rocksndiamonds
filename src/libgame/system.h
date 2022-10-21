@@ -2009,12 +2009,10 @@ void BlitTexture(Bitmap *, int, int, int, int, int, int);
 void BlitTextureMasked(Bitmap *, int, int, int, int, int, int);
 void BlitToScreen(Bitmap *, int, int, int, int, int, int);
 void BlitToScreenMasked(Bitmap *, int, int, int, int, int, int);
-void DrawSimpleBlackLine(Bitmap *, int, int, int, int);
 void DrawSimpleWhiteLine(Bitmap *, int, int, int, int);
 void DrawLines(Bitmap *, struct XY *, int, Pixel);
 Pixel GetPixel(Bitmap *, int, int);
 Pixel GetPixelFromRGB(Bitmap *, unsigned int,unsigned int,unsigned int);
-Pixel GetPixelFromRGBcompact(Bitmap *, unsigned int);
 
 void KeyboardAutoRepeatOn(void);
 void KeyboardAutoRepeatOff(void);

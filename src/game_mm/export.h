@@ -211,7 +211,6 @@ extern struct EngineSnapshotInfo_MM engine_snapshot_mm;
 extern short Ur[MM_MAX_PLAYFIELD_WIDTH][MM_MAX_PLAYFIELD_HEIGHT];
 
 void mm_open_all(void);
-void mm_close_all(void);
 
 void InitElementProperties_MM(void);
 

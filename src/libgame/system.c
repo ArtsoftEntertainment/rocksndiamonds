@@ -1012,12 +1012,6 @@ void BlitToScreenMasked(Bitmap *bitmap,
     BlitTextureMasked(bitmap, src_x, src_y, width, height, dst_x, dst_y);
 }
 
-void DrawSimpleBlackLine(Bitmap *bitmap, int from_x, int from_y,
-			 int to_x, int to_y)
-{
-  SDLDrawSimpleLine(bitmap, from_x, from_y, to_x, to_y, BLACK_PIXEL);
-}
-
 void DrawSimpleWhiteLine(Bitmap *bitmap, int from_x, int from_y,
 			 int to_x, int to_y)
 {
@@ -1084,15 +1078,6 @@ Pixel GetPixelFromRGB(Bitmap *bitmap, unsigned int color_r,
     return BLACK_PIXEL;
 
   return SDL_MapRGB(bitmap->surface->format, color_r, color_g, color_b);
-}
-
-Pixel GetPixelFromRGBcompact(Bitmap *bitmap, unsigned int color)
-{
-  unsigned int color_r = (color >> 16) & 0xff;
-  unsigned int color_g = (color >>  8) & 0xff;
-  unsigned int color_b = (color >>  0) & 0xff;
-
-  return GetPixelFromRGB(bitmap, color_r, color_g, color_b);
 }
 
 void KeyboardAutoRepeatOn(void)

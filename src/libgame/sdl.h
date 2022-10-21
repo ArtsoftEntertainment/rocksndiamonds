@@ -428,7 +428,6 @@ void SDLDrawLine(Bitmap *, int, int, int, int, Uint32);
 Pixel SDLGetPixel(Bitmap *, int, int);
 void SDLPutPixel(Bitmap *, int, int, Pixel);
 
-void SDLInvertArea(Bitmap *, int, int, int, int, Uint32);
 void SDLCopyInverseMasked(Bitmap *, Bitmap *, int, int, int, int, int, int);
 
 Bitmap *SDLZoomBitmap(Bitmap *, int, int);

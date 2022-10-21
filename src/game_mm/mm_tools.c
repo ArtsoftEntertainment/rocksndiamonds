@@ -260,12 +260,6 @@ void DrawGraphicShifted_MM(int x,int y, int dx,int dy, int graphic,
   MarkTileDirty(x,y);
 }
 
-void DrawGraphicShiftedThruMask_MM(int x,int y, int dx,int dy, int graphic,
-				int cut_mode)
-{
-  DrawGraphicShifted_MM(x, y, dx, dy, graphic, cut_mode, USE_MASKING);
-}
-
 void DrawScreenElementExt_MM(int x, int y, int dx, int dy, int element,
 			  int cut_mode, int mask_mode)
 {
@@ -309,36 +303,9 @@ void DrawScreenElementShifted_MM(int x, int y, int dx, int dy, int element,
   DrawScreenElementExt_MM(x, y, dx, dy, element, cut_mode, NO_MASKING);
 }
 
-void DrawLevelElementShifted_MM(int x, int y, int dx, int dy, int element,
-			     int cut_mode)
-{
-  DrawLevelElementExt_MM(x, y, dx, dy, element, cut_mode, NO_MASKING);
-}
-
-void DrawScreenElementThruMask_MM(int x, int y, int element)
-{
-  DrawScreenElementExt_MM(x, y, 0, 0, element, NO_CUTTING, USE_MASKING);
-}
-
-void DrawLevelElementThruMask_MM(int x, int y, int element)
-{
-  DrawLevelElementExt_MM(x, y, 0, 0, element, NO_CUTTING, USE_MASKING);
-}
-
-void DrawLevelFieldThruMask_MM(int x, int y)
-{
-  DrawLevelElementExt_MM(x, y, 0, 0, Tile[x][y], NO_CUTTING, USE_MASKING);
-}
-
 void DrawScreenElement_MM(int x, int y, int element)
 {
   DrawScreenElementExt_MM(x, y, 0, 0, element, NO_CUTTING, NO_MASKING);
-}
-
-void DrawLevelElement_MM(int x, int y, int element)
-{
-  if (IN_LEV_FIELD(x, y) && IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
-    DrawScreenElement_MM(SCREENX(x), SCREENY(y), element);
 }
 
 void DrawScreenField_MM(int x, int y)
@@ -616,17 +583,6 @@ static void DrawMicroLevelExt_MM(int xpos, int ypos)
   redraw_mask |= REDRAW_FIELD;
 }
 #endif
-
-void DrawMiniLevel_MM(int size_x, int size_y, int scroll_x, int scroll_y)
-{
-  int x, y;
-
-  for (x = 0; x < size_x; x++)
-    for (y = 0; y < size_y; y++)
-      DrawMiniElementOrWall_MM(x, y, scroll_x, scroll_y);
-
-  redraw_mask |= REDRAW_FIELD;
-}
 
 
 // ----------------------------------------------------------------------------

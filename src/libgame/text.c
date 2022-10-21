@@ -223,12 +223,6 @@ void DrawTextSAligned(int x, int y, char *text, int font_nr, int align)
 	   gfx.sy + y, text, font_nr);
 }
 
-void DrawTextAligned(int x, int y, char *text, int font_nr, int align)
-{
-  DrawText(ALIGNED_XPOS(x, getTextWidth(text, font_nr), align),
-	   y, text, font_nr);
-}
-
 void DrawText(int x, int y, char *text, int font_nr)
 {
   int mask_mode = BLIT_OPAQUE;
