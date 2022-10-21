@@ -7682,7 +7682,7 @@ static Key getSetupKey(void)
       {
         case EVENT_KEYPRESS:
 	  {
-	    key = GetEventKey((KeyEvent *)&event, TRUE);
+	    key = GetEventKey((KeyEvent *)&event);
 
 	    // press 'Escape' or 'Enter' to keep the existing key binding
 	    if (key == KSYM_Escape || key == KSYM_Return)
@@ -8479,7 +8479,7 @@ static boolean CustomizeKeyboardMain(int player_nr)
       {
         case EVENT_KEYPRESS:
 	  {
-	    Key key = GetEventKey((KeyEvent *)&event, FALSE);
+	    Key key = GetEventKey((KeyEvent *)&event);
 
 	    // press 'Escape' to abort and keep the old key bindings
 	    if (key == KSYM_Escape)
@@ -9130,7 +9130,7 @@ static boolean ConfigureVirtualButtonsMain(void)
 
         case EVENT_KEYPRESS:
 	  {
-	    Key key = GetEventKey((KeyEvent *)&event, FALSE);
+	    Key key = GetEventKey((KeyEvent *)&event);
 
 	    action = (key == KSYM_Escape ?	ACTION_ESCAPE :
 		      key == KSYM_BackSpace ||

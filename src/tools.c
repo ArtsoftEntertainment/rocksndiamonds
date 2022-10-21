@@ -4603,7 +4603,7 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 
 	  case EVENT_KEYPRESS:
 	  {
-	    Key key = GetEventKey((KeyEvent *)&event, TRUE);
+	    Key key = GetEventKey((KeyEvent *)&event);
 
 	    switch (key)
 	    {

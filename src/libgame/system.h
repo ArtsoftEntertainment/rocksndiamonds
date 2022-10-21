@@ -2046,7 +2046,7 @@ void WaitEvent(Event *event);
 void PeekEvent(Event *event);
 void PumpEvents(void);
 void CheckQuitEvent(void);
-Key GetEventKey(KeyEvent *, boolean);
+Key GetEventKey(KeyEvent *);
 KeyMod HandleKeyModState(Key, int);
 KeyMod GetKeyModState(void);
 KeyMod GetKeyModStateFromEvents(void);

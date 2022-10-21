@@ -1717,7 +1717,7 @@ void CheckQuitEvent(void)
     program.exit_function(0);
 }
 
-Key GetEventKey(KeyEvent *event, boolean with_modifiers)
+Key GetEventKey(KeyEvent *event)
 {
   // key up/down events in SDL2 do not return text characters anymore
   return event->keysym.sym;

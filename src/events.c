@@ -1458,16 +1458,13 @@ void HandlePauseResumeEvent(PauseResumeEvent *event)
 void HandleKeyEvent(KeyEvent *event)
 {
   int key_status = (event->type == EVENT_KEYPRESS ? KEY_PRESSED : KEY_RELEASED);
-  boolean with_modifiers = (game_status == GAME_MODE_PLAYING ? FALSE : TRUE);
-  Key key = GetEventKey(event, with_modifiers);
-  Key keymod = (with_modifiers ? GetEventKey(event, FALSE) : key);
+  Key key = GetEventKey(event);
 
 #if DEBUG_EVENTS_KEY
-  Debug("event:key", "key was %s, keysym.scancode == %d, keysym.sym == %d, keymod = %d, GetKeyModState() = 0x%04x, resulting key == %d (%s)",
+  Debug("event:key", "key was %s, keysym.scancode == %d, keysym.sym == %d, GetKeyModState() = 0x%04x, resulting key == %d (%s)",
 	event->type == EVENT_KEYPRESS ? "pressed" : "released",
 	event->keysym.scancode,
 	event->keysym.sym,
-	keymod,
 	GetKeyModState(),
 	key,
 	getKeyNameFromKey(key));
@@ -1495,7 +1492,7 @@ void HandleKeyEvent(KeyEvent *event)
   }
 #endif
 
-  HandleKeyModState(keymod, key_status);
+  HandleKeyModState(key, key_status);
 
   // process all keys if not in text input mode or if non-printable keys
   if (!checkTextInputKey(key))
