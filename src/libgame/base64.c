@@ -50,7 +50,7 @@
 #include "base64.h"
 
 
-const static char *b64encode =
+static const char *b64encode =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 int base64_encoded_size(int unencoded_size)
@@ -106,7 +106,7 @@ void base64_encode(char *encoded_data,
   *ptr++= '\0';
 }
 
-const static byte b64decode[] =
+static const byte b64decode[] =
 {
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,	//   0
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,	//  16
