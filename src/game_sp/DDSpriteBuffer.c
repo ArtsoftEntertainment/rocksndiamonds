@@ -40,7 +40,7 @@ void DDSpriteBuffer_BltImg(int pX, int pY, int graphic, int sync_frame)
   if (graphic < 0)
     return;
 
-  getGraphicSource_SP(&g, graphic, sync_frame, -1, -1);
+  getGraphicSource_SP(&g, graphic, sync_frame);
 
   Blt(pX, pY, g.bitmap, g.src_x, g.src_y);
 }

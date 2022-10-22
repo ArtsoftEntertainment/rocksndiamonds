@@ -9492,7 +9492,7 @@ static void DrawMagicBallContentAreas(void)
   DrawText(x, y + 2 * tilesize, "active",    font_nr);
 }
 
-static void DrawAndroidElementArea(int element)
+static void DrawAndroidElementArea(void)
 {
   int id = ED_DRAWING_ID_ANDROID_CONTENT;
   int num_elements = level.num_android_clone_elements;
@@ -9520,7 +9520,7 @@ static void DrawAndroidElementArea(int element)
   MapDrawingArea(id);
 }
 
-static void DrawGroupElementArea(int element)
+static void DrawGroupElementArea(void)
 {
   int id = ED_DRAWING_ID_GROUP_CONTENT;
   int num_elements = group_element_info.num_elements;
@@ -10059,7 +10059,7 @@ static void DrawPropertiesConfig(void)
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_INITIAL_BALL_ACTIVE);
     }
     else if (properties_element == EL_EMC_ANDROID)
-      DrawAndroidElementArea(properties_element);
+      DrawAndroidElementArea();
   }
 
   if (IS_PLAYER_ELEMENT(properties_element))
@@ -10314,7 +10314,7 @@ static void DrawPropertiesConfig(void)
     MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_1);
 
     // draw drawing area gadgets
-    DrawGroupElementArea(properties_element);
+    DrawGroupElementArea();
 
     // draw text input gadgets
     MapTextInputGadget(ED_TEXTINPUT_ID_ELEMENT_NAME);
@@ -13313,11 +13313,11 @@ static void HandleCounterButtons(struct GadgetInfo *gi)
       break;
 
     case ED_COUNTER_ID_ANDROID_CONTENT:
-      DrawAndroidElementArea(properties_element);
+      DrawAndroidElementArea();
       break;
 
     case ED_COUNTER_ID_GROUP_CONTENT:
-      DrawGroupElementArea(properties_element);
+      DrawGroupElementArea();
       CopyGroupElementPropertiesToGame(properties_element);
       break;
 

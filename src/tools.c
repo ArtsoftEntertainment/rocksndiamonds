@@ -9308,7 +9308,7 @@ void InitGraphicInfo_EM(void)
   }
 }
 
-static void CheckSaveEngineSnapshot_EM(byte action[MAX_PLAYERS], int frame,
+static void CheckSaveEngineSnapshot_EM(int frame,
 				       boolean any_player_moving,
 				       boolean any_player_snapping,
 				       boolean any_player_dropping)
@@ -9365,7 +9365,7 @@ static void CheckSaveEngineSnapshot_MM(boolean element_clicked,
   }
 }
 
-boolean CheckSingleStepMode_EM(byte action[MAX_PLAYERS], int frame,
+boolean CheckSingleStepMode_EM(int frame,
 			       boolean any_player_moving,
 			       boolean any_player_snapping,
 			       boolean any_player_dropping)
@@ -9374,7 +9374,7 @@ boolean CheckSingleStepMode_EM(byte action[MAX_PLAYERS], int frame,
     if (frame == 7 && !any_player_dropping && FrameCounter > 6)
       TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
 
-  CheckSaveEngineSnapshot_EM(action, frame, any_player_moving,
+  CheckSaveEngineSnapshot_EM(frame, any_player_moving,
 			     any_player_snapping, any_player_dropping);
 
   return tape.pausing;
@@ -9408,7 +9408,7 @@ void CheckSingleStepMode_MM(boolean element_clicked,
 }
 
 void getGraphicSource_SP(struct GraphicInfo_SP *g_sp,
-			 int graphic, int sync_frame, int x, int y)
+			 int graphic, int sync_frame)
 {
   int frame = getGraphicAnimationFrame(graphic, sync_frame);
 

@@ -436,7 +436,7 @@ static void InitMovDir_MM(int x, int y)
   }
 }
 
-static void InitField(int x, int y, boolean init_game)
+static void InitField(int x, int y)
 {
   int element = Tile[x][y];
 
@@ -656,7 +656,7 @@ void InitGameEngine_MM(void)
       Frame[x][y] = 0;
       Stop[x][y] = FALSE;
 
-      InitField(x, y, TRUE);
+      InitField(x, y);
     }
   }
 
@@ -945,7 +945,7 @@ void ScanLaser(void)
 
     if (element == EL_EMPTY)
     {
-      if (!HitOnlyAnEdge(element, hit_mask))
+      if (!HitOnlyAnEdge(hit_mask))
 	break;
     }
     else if (element == EL_FUSE_ON)
@@ -1315,7 +1315,7 @@ void DrawLaser_MM(void)
 
 boolean HitElement(int element, int hit_mask)
 {
-  if (HitOnlyAnEdge(element, hit_mask))
+  if (HitOnlyAnEdge(hit_mask))
     return FALSE;
 
   if (IS_MOVING(ELX, ELY) || IS_BLOCKED(ELX, ELY))
@@ -1638,7 +1638,7 @@ boolean HitElement(int element, int hit_mask)
   return TRUE;
 }
 
-boolean HitOnlyAnEdge(int element, int hit_mask)
+boolean HitOnlyAnEdge(int hit_mask)
 {
   // check if the laser hit only the edge of an element and, if so, go on
 
@@ -1697,7 +1697,7 @@ boolean HitOnlyAnEdge(int element, int hit_mask)
 
 boolean HitPolarizer(int element, int hit_mask)
 {
-  if (HitOnlyAnEdge(element, hit_mask))
+  if (HitOnlyAnEdge(hit_mask))
     return FALSE;
 
   if (IS_DF_GRID(element))
@@ -1895,7 +1895,7 @@ boolean HitBlock(int element, int hit_mask)
 
 boolean HitLaserSource(int element, int hit_mask)
 {
-  if (HitOnlyAnEdge(element, hit_mask))
+  if (HitOnlyAnEdge(hit_mask))
     return FALSE;
 
   PlayLevelSound_MM(ELX, ELY, element, MM_ACTION_HITTING);
@@ -1907,7 +1907,7 @@ boolean HitLaserSource(int element, int hit_mask)
 
 boolean HitLaserDestination(int element, int hit_mask)
 {
-  if (HitOnlyAnEdge(element, hit_mask))
+  if (HitOnlyAnEdge(hit_mask))
     return FALSE;
 
   if (element != EL_EXIT_OPEN &&
@@ -2143,7 +2143,7 @@ boolean HitReflectingWalls(int element, int hit_mask)
     }
   }
 
-  if (!HitOnlyAnEdge(element, hit_mask))
+  if (!HitOnlyAnEdge(hit_mask))
   {
     laser.overloaded = TRUE;
 
@@ -2155,7 +2155,7 @@ boolean HitReflectingWalls(int element, int hit_mask)
 
 boolean HitAbsorbingWalls(int element, int hit_mask)
 {
-  if (HitOnlyAnEdge(element, hit_mask))
+  if (HitOnlyAnEdge(hit_mask))
     return FALSE;
 
   if (ABS(XS) == 4 &&
@@ -2470,7 +2470,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
     Store[x][y] = Store2[x][y] = 0;
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
 
-    InitField(x, y, FALSE);
+    InitField(x, y);
     DrawField_MM(x, y);
   }
   else if (!(phase % delay) && IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
@@ -3056,7 +3056,7 @@ void ColorCycling(void)
   }
 }
 
-static void GameActions_MM_Ext(struct MouseActionInfo action)
+static void GameActions_MM_Ext(void)
 {
   int element;
   int x, y, i;
@@ -3678,7 +3678,7 @@ void GameActions_MM(struct MouseActionInfo action)
   boolean element_clicked = ClickElement(action.lx, action.ly, action.button);
   boolean button_released = (action.button == MB_RELEASED);
 
-  GameActions_MM_Ext(action);
+  GameActions_MM_Ext();
 
   CheckSingleStepMode_MM(element_clicked, button_released);
 }
@@ -3962,7 +3962,7 @@ void RaiseScoreElement_MM(int element)
 // Mirror Magic game engine snapshot handling functions
 // ----------------------------------------------------------------------------
 
-void SaveEngineSnapshotValues_MM(ListNode **buffers)
+void SaveEngineSnapshotValues_MM(void)
 {
   int x, y;
 

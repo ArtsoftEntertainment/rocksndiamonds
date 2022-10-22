@@ -109,7 +109,7 @@ void GameActions_EM(byte action[MAX_PLAYERS])
       any_player_dropping = TRUE;
 
   boolean single_step_mode_paused =
-    CheckSingleStepMode_EM(action, frame, game_em.any_player_moving,
+    CheckSingleStepMode_EM(frame, game_em.any_player_moving,
 			   game_em.any_player_snapping, any_player_dropping);
 
   // draw wrapping around before going to single step pause mode

@@ -24,7 +24,7 @@ void AddDamagedField(int, int);
 void ScanLaser(void);
 void DrawLaser(int, int);
 boolean HitElement(int, int);
-boolean HitOnlyAnEdge(int, int);
+boolean HitOnlyAnEdge(int);
 boolean HitPolarizer(int, int);
 boolean HitBlock(int, int);
 boolean HitLaserSource(int, int);

@@ -5611,7 +5611,7 @@ static void setScreenCenteredToAllPlayers(int *sx, int *sy)
   *sy = (sy1 + sy2) / 2;
 }
 
-static void DrawRelocateScreen(int old_x, int old_y, int x, int y, int move_dir,
+static void DrawRelocateScreen(int old_x, int old_y, int x, int y,
 			       boolean center_screen, boolean quick_relocation)
 {
   unsigned int frame_delay_value_old = GetVideoFrameDelay();
@@ -5782,7 +5782,7 @@ static void RelocatePlayer(int jx, int jy, int el_player_raw)
   }
 
   // only visually relocate centered player
-  DrawRelocateScreen(old_jx, old_jy, player->jx, player->jy, player->MovDir,
+  DrawRelocateScreen(old_jx, old_jy, player->jx, player->jy,
 		     FALSE, level.instant_relocation);
 
   TestIfPlayerTouchesBadThing(jx, jy);
@@ -6421,7 +6421,7 @@ static void ToggleBeltSwitch(int x, int y)
   }
 }
 
-static void ToggleSwitchgateSwitch(int x, int y)
+static void ToggleSwitchgateSwitch(void)
 {
   int xx, yy;
 
@@ -6901,7 +6901,7 @@ static void Impact(int x, int y)
 		 smashed == EL_DC_SWITCHGATE_SWITCH_UP ||
 		 smashed == EL_DC_SWITCHGATE_SWITCH_DOWN)
 	{
-	  ToggleSwitchgateSwitch(x, y + 1);
+	  ToggleSwitchgateSwitch();
 	}
 	else if (smashed == EL_LIGHT_SWITCH ||
 		 smashed == EL_LIGHT_SWITCH_ACTIVE)
@@ -12083,7 +12083,7 @@ void GameActions_RND(void)
     game.centered_player_nr = game.centered_player_nr_next;
     game.set_centered_player = FALSE;
 
-    DrawRelocateScreen(0, 0, sx, sy, MV_NONE, TRUE, setup.quick_switch);
+    DrawRelocateScreen(0, 0, sx, sy, TRUE, setup.quick_switch);
     DrawGameDoorValues();
   }
 
@@ -14702,7 +14702,7 @@ static int DigField(struct PlayerInfo *player,
 	     element == EL_DC_SWITCHGATE_SWITCH_UP ||
 	     element == EL_DC_SWITCHGATE_SWITCH_DOWN)
     {
-      ToggleSwitchgateSwitch(x, y);
+      ToggleSwitchgateSwitch();
     }
     else if (element == EL_LIGHT_SWITCH ||
 	     element == EL_LIGHT_SWITCH_ACTIVE)
@@ -15836,7 +15836,7 @@ static ListNode *SaveEngineSnapshotBuffers(void)
   if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
     SaveEngineSnapshotValues_SP(&buffers);
   if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
-    SaveEngineSnapshotValues_MM(&buffers);
+    SaveEngineSnapshotValues_MM();
 
   // save values stored in special snapshot structure
 

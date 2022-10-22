@@ -5678,8 +5678,7 @@ static int getMappedElement_DC(int element)
   return getMappedElement(element);
 }
 
-static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level,
-				       int nr)
+static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 {
   byte header[DC_LEVEL_HEADER_SIZE];
   int envelope_size;
@@ -5928,7 +5927,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
     }
   }
 
-  LoadLevelFromFileStream_DC(file, level, level_file_info->nr);
+  LoadLevelFromFileStream_DC(file, level);
 
   closeFile(file);
 }

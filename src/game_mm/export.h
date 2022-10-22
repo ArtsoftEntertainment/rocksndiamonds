@@ -239,7 +239,7 @@ void BlitScreenToBitmap_MM(Bitmap *);
 void RedrawPlayfield_MM(void);
 
 void LoadEngineSnapshotValues_MM(void);
-void SaveEngineSnapshotValues_MM(ListNode **);
+void SaveEngineSnapshotValues_MM(void);
 
 int getButtonFromTouchPosition(int, int, int, int);
 

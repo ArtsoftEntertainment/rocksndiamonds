@@ -36,7 +36,7 @@ int getScreenFieldSizeY(void);
 
 void PlayLevelSound_EM(int, int, int, int);
 void InitGraphicInfo_EM(void);
-boolean CheckSingleStepMode_EM(byte[MAX_PLAYERS], int, boolean, boolean, boolean);
+boolean CheckSingleStepMode_EM(int, boolean, boolean, boolean);
 
 void SetGfxAnimation_EM(struct GraphicInfo_EM *, int, int, int, int);
 void getGraphicSourceObjectExt_EM(struct GraphicInfo_EM *, int, int, int, int);
@@ -49,7 +49,7 @@ void getGraphicSourcePlayerExt_EM(struct GraphicInfo_EM *, int, int, int);
 
 void CheckSingleStepMode_SP(boolean, boolean);
 
-void getGraphicSource_SP(struct GraphicInfo_SP *, int, int, int, int);
+void getGraphicSource_SP(struct GraphicInfo_SP *, int, int);
 int getGraphicInfo_Delay(int);
 boolean isNextAnimationFrame_SP(int, int);
 
