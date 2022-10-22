@@ -218,7 +218,7 @@ void InitGfxBuffers_MM(void);
 
 void InitGameEngine_MM(void);
 void InitGameActions_MM(void);
-void GameActions_MM(struct MouseActionInfo, boolean);
+void GameActions_MM(struct MouseActionInfo);
 
 void DrawLaser_MM(void);
 void DrawTileCursor_MM(int, boolean);

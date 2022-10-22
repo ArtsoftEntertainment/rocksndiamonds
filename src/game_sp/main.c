@@ -72,7 +72,7 @@ static void UpdateGameDoorValues_SP(void)
   game_sp.score = 0;		// (currently no score in Supaplex engine)
 }
 
-void GameActions_SP(byte action[MAX_PLAYERS], boolean warp_mode)
+void GameActions_SP(byte action[MAX_PLAYERS])
 {
   byte single_player_action = action[0];
   int x, y;
@@ -80,7 +80,7 @@ void GameActions_SP(byte action[MAX_PLAYERS], boolean warp_mode)
   UpdateEngineValues(mScrollX / TILEX, mScrollY / TILEY,
 		     MurphyScreenXPos / TILEX, MurphyScreenYPos / TILEY);
 
-  subMainGameLoop_Main(single_player_action, warp_mode);
+  subMainGameLoop_Main(single_player_action);
 
   RedrawPlayfield_SP(FALSE);
 

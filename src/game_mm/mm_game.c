@@ -3056,7 +3056,7 @@ void ColorCycling(void)
   }
 }
 
-static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
+static void GameActions_MM_Ext(struct MouseActionInfo action)
 {
   int element;
   int x, y, i;
@@ -3673,12 +3673,12 @@ static void GameActions_MM_Ext(struct MouseActionInfo action, boolean warp_mode)
   return;
 }
 
-void GameActions_MM(struct MouseActionInfo action, boolean warp_mode)
+void GameActions_MM(struct MouseActionInfo action)
 {
   boolean element_clicked = ClickElement(action.lx, action.ly, action.button);
   boolean button_released = (action.button == MB_RELEASED);
 
-  GameActions_MM_Ext(action, warp_mode);
+  GameActions_MM_Ext(action);
 
   CheckSingleStepMode_MM(element_clicked, button_released);
 }

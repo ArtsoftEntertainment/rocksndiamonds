@@ -172,7 +172,7 @@ void InitPrecedingPlayfieldMemory(void);
 void InitGfxBuffers_SP(void);
 
 void InitGameEngine_SP(void);
-void GameActions_SP(byte[MAX_PLAYERS], boolean);
+void GameActions_SP(byte[MAX_PLAYERS]);
 
 unsigned int InitEngineRandom_SP(int);
 

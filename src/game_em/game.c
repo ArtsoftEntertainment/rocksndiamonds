@@ -82,7 +82,7 @@ void InitGameEngine_EM(void)
   RedrawPlayfield_EM(FALSE);
 }
 
-void GameActions_EM(byte action[MAX_PLAYERS], boolean warp_mode)
+void GameActions_EM(byte action[MAX_PLAYERS])
 {
   int i;
   boolean any_player_dropping = FALSE;

@@ -11990,25 +11990,23 @@ void GameActions(void)
 void GameActions_EM_Main(void)
 {
   byte effective_action[MAX_PLAYERS];
-  boolean warp_mode = (tape.playing && tape.warp_forward && !tape.pausing);
   int i;
 
   for (i = 0; i < MAX_PLAYERS; i++)
     effective_action[i] = stored_player[i].effective_action;
 
-  GameActions_EM(effective_action, warp_mode);
+  GameActions_EM(effective_action);
 }
 
 void GameActions_SP_Main(void)
 {
   byte effective_action[MAX_PLAYERS];
-  boolean warp_mode = (tape.playing && tape.warp_forward && !tape.pausing);
   int i;
 
   for (i = 0; i < MAX_PLAYERS; i++)
     effective_action[i] = stored_player[i].effective_action;
 
-  GameActions_SP(effective_action, warp_mode);
+  GameActions_SP(effective_action);
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
@@ -12021,9 +12019,7 @@ void GameActions_SP_Main(void)
 
 void GameActions_MM_Main(void)
 {
-  boolean warp_mode = (tape.playing && tape.warp_forward && !tape.pausing);
-
-  GameActions_MM(local_player->effective_mouse_action, warp_mode);
+  GameActions_MM(local_player->effective_mouse_action);
 }
 
 void GameActions_RND_Main(void)

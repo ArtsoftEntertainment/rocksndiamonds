@@ -14,7 +14,7 @@ extern int ExitToMenuFlag;
 extern int LeadOutCounter;
 
 void subMainGameLoop_Init(void);
-void subMainGameLoop_Main(byte, boolean);
+void subMainGameLoop_Main(byte);
 void subCalculateScreenScrollPos(void);
 
 #endif // MAINGAMELOOP_H

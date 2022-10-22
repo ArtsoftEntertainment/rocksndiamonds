@@ -25,7 +25,7 @@ void subMainGameLoop_Init(void)
   RedDiskReleasePhase = 0; // (re-)enable red disk release
 }
 
-void subMainGameLoop_Main(byte action, boolean warp_mode)
+void subMainGameLoop_Main(byte action)
 {
   // ---------------------------------------------------------------------------
   // --------------------- START OF GAME-BUSY LOOP -----------------------------

@@ -108,7 +108,7 @@ void em_close_all(void);
 void InitGfxBuffers_EM(void);
 
 void InitGameEngine_EM(void);
-void GameActions_EM(byte[MAX_PLAYERS], boolean);
+void GameActions_EM(byte[MAX_PLAYERS]);
 
 unsigned int InitEngineRandom_EM(int);
 
