@@ -134,8 +134,8 @@ void InitSoundList(struct ConfigInfo *, int, struct ConfigTypeInfo *,
 		   char **, char **, char **, char **, char **);
 void InitMusicList(struct ConfigInfo *, int, struct ConfigTypeInfo *,
 		   char **, char **, char **, char **, char **);
-void InitReloadCustomSounds(char *);
-void InitReloadCustomMusic(char *);
+void InitReloadCustomSounds(void);
+void InitReloadCustomMusic(void);
 void FreeAllSounds(void);
 void FreeAllMusic(void);
 

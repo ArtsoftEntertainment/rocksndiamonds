@@ -5979,17 +5979,14 @@ static void InitImages(void)
   print_timestamp_done("InitImages");
 }
 
-static void InitSound(char *identifier)
+static void InitSound(void)
 {
   print_timestamp_init("InitSound");
-
-  if (identifier == NULL)
-    identifier = artwork.snd_current->identifier;
 
   // set artwork path to send it to the sound server process
   setLevelArtworkDir(artwork.snd_first);
 
-  InitReloadCustomSounds(identifier);
+  InitReloadCustomSounds();
   print_timestamp_time("InitReloadCustomSounds");
 
   ReinitializeSounds();
@@ -5998,17 +5995,14 @@ static void InitSound(char *identifier)
   print_timestamp_done("InitSound");
 }
 
-static void InitMusic(char *identifier)
+static void InitMusic(void)
 {
   print_timestamp_init("InitMusic");
-
-  if (identifier == NULL)
-    identifier = artwork.mus_current->identifier;
 
   // set artwork path to send it to the sound server process
   setLevelArtworkDir(artwork.mus_first);
 
-  InitReloadCustomMusic(identifier);
+  InitReloadCustomMusic();
   print_timestamp_time("InitReloadCustomMusic");
 
   ReinitializeMusic();
@@ -6342,13 +6336,13 @@ void ReloadCustomArtwork(int force_reload)
 
   if (snd_new_identifier != NULL || force_reload_snd)
   {
-    InitSound(snd_new_identifier);
+    InitSound();
     print_timestamp_time("InitSound");
   }
 
   if (mus_new_identifier != NULL || force_reload_mus)
   {
-    InitMusic(mus_new_identifier);
+    InitMusic();
     print_timestamp_time("InitMusic");
   }
 
@@ -6536,10 +6530,10 @@ void OpenAll(void)
   InitImages();			// needs to know current level directory
   print_timestamp_time("InitImages");
 
-  InitSound(NULL);		// needs to know current level directory
+  InitSound();			// needs to know current level directory
   print_timestamp_time("InitSound");
 
-  InitMusic(NULL);		// needs to know current level directory
+  InitMusic();			// needs to know current level directory
   print_timestamp_time("InitMusic");
 
   InitArtworkDone();

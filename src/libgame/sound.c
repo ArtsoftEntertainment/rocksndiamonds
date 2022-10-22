@@ -1103,7 +1103,7 @@ static void ReloadCustomMusic(void)
   LoadCustomMusic_NoConf();
 }
 
-void InitReloadCustomSounds(char *set_identifier)
+void InitReloadCustomSounds(void)
 {
   if (!audio.sound_available)
     return;
@@ -1111,7 +1111,7 @@ void InitReloadCustomSounds(char *set_identifier)
   ReloadCustomSounds();
 }
 
-void InitReloadCustomMusic(char *set_identifier)
+void InitReloadCustomMusic(void)
 {
   if (!audio.music_available)
     return;
