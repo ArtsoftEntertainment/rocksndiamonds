@@ -20,4 +20,6 @@ void DrawGlobalAnimations(int, int);
 
 boolean HandleGlobalAnimClicks(int, int, int, boolean);
 
+int getGlobalAnimSyncFrame(void);
+
 #endif

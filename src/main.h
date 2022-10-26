@@ -2411,6 +2411,7 @@ enum
   GFX_ARG_DELAY,
   GFX_ARG_ANIM_MODE,
   GFX_ARG_GLOBAL_SYNC,
+  GFX_ARG_GLOBAL_ANIM_SYNC,
   GFX_ARG_CRUMBLED_LIKE,
   GFX_ARG_DIGGABLE_LIKE,
   GFX_ARG_BORDER_SIZE,
@@ -3626,6 +3627,7 @@ struct GraphicInfo
   int anim_mode;
 
   boolean anim_global_sync;
+  boolean anim_global_anim_sync;
 
   int crumbled_like;		// element for cloning crumble graphics
   int diggable_like;		// element for cloning digging graphics

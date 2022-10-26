@@ -1315,7 +1315,8 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
     part->anim_event_state = (c->anim_event != ANIM_EVENT_UNDEFINED);
 
     part->initial_anim_sync_frame =
-      (g->anim_global_sync ? 0 : anim_sync_frame + part->init_delay_counter);
+      (g->anim_global_sync || g->anim_global_anim_sync ? 0 :
+       anim_sync_frame + part->init_delay_counter);
 
     // do not re-initialize random animation frame after fade-in
     if (part->anim_random_frame == -1)
@@ -1981,4 +1982,9 @@ boolean HandleGlobalAnimClicks(int mx, int my, int button, boolean force_click)
   }
 
   return click_consumed_current;
+}
+
+int getGlobalAnimSyncFrame(void)
+{
+  return anim_sync_frame;
 }

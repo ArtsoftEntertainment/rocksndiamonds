@@ -1492,6 +1492,8 @@ int getGraphicAnimationFrame(int graphic, int sync_frame)
   // animation synchronized with global frame counter, not move position
   if (graphic_info[graphic].anim_global_sync || sync_frame < 0)
     sync_frame = FrameCounter;
+  else if (graphic_info[graphic].anim_global_anim_sync)
+    sync_frame = getGlobalAnimSyncFrame();
 
   return getAnimationFrame(graphic_info[graphic].anim_frames,
 			   graphic_info[graphic].anim_delay,
@@ -8786,6 +8788,8 @@ void SetGfxAnimation_EM(struct GraphicInfo_EM *g_em,
 
   if (graphic_info[graphic].anim_global_sync)
     sync_frame = FrameCounter;
+  else if (graphic_info[graphic].anim_global_anim_sync)
+    sync_frame = getGlobalAnimSyncFrame();
   else if (IN_FIELD(x, y, MAX_LEV_FIELDX, MAX_LEV_FIELDY))
     sync_frame = GfxFrame[x][y];
   else
@@ -8845,6 +8849,8 @@ void getGraphicSourceObjectExt_EM(struct GraphicInfo_EM *g_em,
 
   if (graphic_info[graphic].anim_global_sync)
     sync_frame = FrameCounter;
+  else if (graphic_info[graphic].anim_global_anim_sync)
+    sync_frame = getGlobalAnimSyncFrame();
   else if (IN_FIELD(x, y, MAX_LEV_FIELDX, MAX_LEV_FIELDY))
     sync_frame = GfxFrame[x][y];
   else

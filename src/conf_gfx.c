@@ -41,6 +41,7 @@ struct ConfigTypeInfo image_config_suffix[] =
   { ".delay",				"1",		TYPE_INTEGER	},
   { ".anim_mode",			ARG_UNDEFINED,	TYPE_STRING	},
   { ".global_sync",			"false",	TYPE_BOOLEAN	},
+  { ".global_anim_sync",		"false",	TYPE_BOOLEAN	},
   { ".crumbled_like",			ARG_UNDEFINED,	TYPE_ELEMENT	},
   { ".diggable_like",			ARG_UNDEFINED,	TYPE_ELEMENT	},
   { ".border_size",			ARG_UNDEFINED,	TYPE_INTEGER	},

@@ -1561,6 +1561,9 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   // animation synchronized with global frame counter, not move position
   g->anim_global_sync = parameter[GFX_ARG_GLOBAL_SYNC];
 
+  // animation synchronized with global anim frame counter, not move position
+  g->anim_global_anim_sync = parameter[GFX_ARG_GLOBAL_ANIM_SYNC];
+
   // optional element for cloning crumble graphics
   if (parameter[GFX_ARG_CRUMBLED_LIKE] != ARG_UNDEFINED_VALUE)
     g->crumbled_like = parameter[GFX_ARG_CRUMBLED_LIKE];

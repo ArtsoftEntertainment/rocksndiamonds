@@ -2566,7 +2566,9 @@ static void UpdateGameControlValues(void)
 	int element = gpc->value;
 	int graphic = el2panelimg(element);
 	int init_gfx_random = (graphic_info[graphic].anim_global_sync ?
-			       sync_random_frame : INIT_GFX_RANDOM());
+			       sync_random_frame :
+			       graphic_info[graphic].anim_global_anim_sync ?
+			       getGlobalAnimSyncFrame() : INIT_GFX_RANDOM());
 
 	if (gpc->value != gpc->last_value)
 	{
@@ -2601,7 +2603,9 @@ static void UpdateGameControlValues(void)
 	int last_anim_random_frame = gfx.anim_random_frame;
 	int graphic = gpc->graphic;
 	int init_gfx_random = (graphic_info[graphic].anim_global_sync ?
-			       sync_random_frame : INIT_GFX_RANDOM());
+			       sync_random_frame :
+			       graphic_info[graphic].anim_global_anim_sync ?
+			       getGlobalAnimSyncFrame() : INIT_GFX_RANDOM());
 
 	if (gpc->value != gpc->last_value)
 	{
@@ -5305,6 +5309,8 @@ static void ResetGfxFrame(int x, int y)
 
   if (graphic_info[graphic].anim_global_sync)
     GfxFrame[x][y] = FrameCounter;
+  else if (graphic_info[graphic].anim_global_anim_sync)
+    GfxFrame[x][y] = getGlobalAnimSyncFrame();
   else if (ANIM_MODE(graphic) == ANIM_CE_VALUE)
     GfxFrame[x][y] = CustomValue[x][y];
   else if (ANIM_MODE(graphic) == ANIM_CE_SCORE)
