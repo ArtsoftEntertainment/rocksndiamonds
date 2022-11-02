@@ -1289,13 +1289,7 @@ static int map_element(int element)
 
 int el2gfx(int element)
 {
-  element = map_element(element);
-
-  switch (element)
-  {
-    default:
-      return el2img_mm(element);
-  }
+  return el2img_mm(map_element(element));
 }
 
 void RedrawPlayfield_MM(void)
