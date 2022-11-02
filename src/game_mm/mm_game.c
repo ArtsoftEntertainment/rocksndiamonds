@@ -537,7 +537,6 @@ static void InitCycleElements_RotateSingleStep(void)
 
     Tile[x][y] = next_element;
 
-    DrawField_MM(x, y);
     game_mm.cycle[i].steps -= step;
   }
 }
@@ -690,6 +689,11 @@ void InitGameActions_MM(void)
 
       cycle_steps_done++;
     }
+
+    AdvanceFrameCounter();
+    AdvanceGfxFrame();
+
+    DrawLevel_MM();
 
     BackToFront();
 
@@ -2398,6 +2402,16 @@ static void GrowAmoeba(int x, int y)
   }
 }
 
+static void DrawFieldAnimated_MM(int x, int y)
+{
+  if (IS_BLOCKED(x, y))
+    return;
+
+  DrawField_MM(x, y);
+
+  laser.redraw = TRUE;
+}
+
 static void Explode_MM(int x, int y, int phase, int mode)
 {
   int num_phase = 9, delay = 2;
@@ -3084,6 +3098,8 @@ static void GameActions_MM_Ext(void)
       MeltIce(x, y);
     else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_AMOEBA)
       GrowAmoeba(x, y);
+    else
+      DrawFieldAnimated_MM(x, y);
   }
 
   AutoRotateMirrors();

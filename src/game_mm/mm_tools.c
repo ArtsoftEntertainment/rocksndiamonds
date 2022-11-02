@@ -75,7 +75,9 @@ void DrawGraphic_MM(int x, int y, int graphic)
   }
 #endif
 
-  DrawGraphicExt_MM(drawto_field, cFX + x * TILEX, cFY + y * TILEY, graphic);
+  int frame = getGraphicAnimationFrameXY(graphic, x, y);
+
+  DrawGraphicAnimation_MM(x, y, graphic, frame);
 
   MarkTileDirty(x, y);
 }
@@ -1291,9 +1293,6 @@ int el2gfx(int element)
 
   switch (element)
   {
-    case EL_LIGHTBALL:
-      return IMG_MM_LIGHTBALL_RED + RND(3);
-
     default:
       return el2img_mm(element);
   }
