@@ -11678,6 +11678,21 @@ void AdvanceFrameAndPlayerCounters(int player_nr)
   }
 }
 
+void AdvanceFrameCounter(void)
+{
+  FrameCounter++;
+}
+
+void AdvanceGfxFrame(void)
+{
+  int x, y;
+
+  SCAN_PLAYFIELD(x, y)
+  {
+    GfxFrame[x][y]++;
+  }
+}
+
 void StartGameActions(boolean init_network_game, boolean record_tape,
 		      int random_seed)
 {
@@ -12025,6 +12040,8 @@ void GameActions_SP_Main(void)
 
 void GameActions_MM_Main(void)
 {
+  AdvanceGfxFrame();
+
   GameActions_MM(local_player->effective_mouse_action);
 }
 

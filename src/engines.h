@@ -65,9 +65,14 @@ int el2img_mm(int);
 void CheckSingleStepMode_MM(boolean, boolean);
 
 int getGraphicAnimationFrame(int, int);
+int getGraphicAnimationFrameXY(int, int, int);
+
 void getGraphicSource(int, int, Bitmap **, int *, int *);
 void getMiniGraphicSource(int, Bitmap **, int *, int *);
 void getSizedGraphicSource(int, int, int, Bitmap **, int *, int *);
+
+void AdvanceFrameCounter(void);
+void AdvanceGfxFrame(void);
 
 
 #endif	// ENGINES_H
