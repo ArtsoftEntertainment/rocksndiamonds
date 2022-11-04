@@ -82,6 +82,11 @@ MACOSX_DEPLOYMENT_TARGET = $MAC_TARGET_VERSION_MIN
 endif
 endif
 
+ifeq ($(shell uname -s),OS/2)		# compiling on OS/2
+PROGNAME = ../$(PROGBASE).exe
+EXTRA_LDFLAGS = -Zomf -Zbin-files -Zmap -lcx -Zhigh-mem
+endif
+
 
 # -----------------------------------------------------------------------------
 # configuring target
