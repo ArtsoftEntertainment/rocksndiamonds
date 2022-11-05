@@ -44,8 +44,6 @@ DEBUGGER = gdb -batch -ex "run" -ex "bt"
 PROGBASE = rocksndiamonds
 PROGNAME = ../$(PROGBASE)
 
-EDITION ?= default
-
 
 # -----------------------------------------------------------------------------
 # configuring platform
@@ -250,10 +248,10 @@ RNDLIBS = $(LIBGAME) $(GAME_EM) $(GAME_SP) $(GAME_MM)
 AUTOCONF = conf_gfx.h conf_snd.h conf_mus.h
 
 ICONBASE = windows_icon
-ICON_BASEPATH = ../Special/Icons/windows_icons
+ICON_BASEPATH = ../build-projects/windows/icons
 
 ifeq ($(PLATFORM_BASE),cross-win)
-ICON_PATH = $(ICON_BASEPATH)/$(EDITION)
+ICON_PATH = $(ICON_BASEPATH)
 ICON = $(ICONBASE).o
 endif
 
@@ -333,7 +331,6 @@ $(COMMIT_HASH_FILE): $(SRCS) $(RNDLIBS)
 	@$(MAKE) conf-hash
 
 $(ICON):
-#	$(CONVERT) $(ICON32X32) $(CONVERT_ICON_ARGS) $(ICONBASE).ico
 	$(CONVERT) $(ICON_PATH)/*.png $(CONVERT_ICON_ARGS) $(ICONBASE).ico
 	echo "$(ICONBASE) ICON $(ICONBASE).ico" | $(WINDRES) -o $(ICON)
 
