@@ -2622,7 +2622,7 @@ enum
 #define PROGRAM_COPYRIGHT_STRING	"Copyright \xa9""1995-2022 by Holger Schemel"
 #define PROGRAM_COMPANY_STRING		"A Game by Artsoft Entertainment"
 
-#define PROGRAM_ICON_FILENAME		"RocksIcon32x32.png"
+#define PROGRAM_ICON_FILENAME		"icons/icon.png"
 
 #define COOKIE_PREFIX			"ROCKSNDIAMONDS"
 
