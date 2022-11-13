@@ -7,3 +7,14 @@ David Tritscher
 # .font: font.text_2
 for the code base used for the
 native Emerald Mine engine
+
+
+
+# .font: font.text_2
+Thanks to
+
+# .font: font.text_3
+Guido Schulz
+
+# .font: font.text_2
+for the initial DOS/Windows port

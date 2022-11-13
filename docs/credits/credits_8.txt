@@ -2,10 +2,16 @@
 Thanks to
 
 # .font: font.text_3
-Guido Schulz
+Thomas Andrae
 
 # .font: font.text_2
-for the initial DOS port
+and
+
+# .font: font.text_3
+Karl Hörnell
+
+# .font: font.text_2
+for additional toon animations
 
 
 
@@ -13,7 +19,7 @@ for the initial DOS port
 Thanks to
 
 # .font: font.text_3
-Karl Hörnell
+Majid Katzer
 
 # .font: font.text_2
-for some additional toons
+for additional sounds and music
