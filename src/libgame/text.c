@@ -351,10 +351,23 @@ char *GetTextBufferFromFile(char *filename, int max_lines)
   while (!checkEndOfFile(file) && num_lines < max_lines)
   {
     char line[MAX_LINE_LEN];
+    char *line_ptr;
+    int line_len;
 
     // read next line of input file
     if (!getStringFromFile(file, line, MAX_LINE_LEN))
       break;
+
+    line_len = strlen(line);
+
+    // cut trailing line break (this can be newline and/or carriage return)
+    for (line_ptr = &line[line_len]; line_ptr >= line; line_ptr--)
+      if ((*line_ptr == '\n' || *line_ptr == '\r') && *(line_ptr + 1) == '\0')
+	*line_ptr = '\0';
+
+    // re-add newline (so the result is terminated by newline, but not CR/LF)
+    if (strlen(line) != line_len)
+      strcat(line, "\n");
 
     buffer = checked_realloc(buffer, strlen(buffer) + strlen(line) + 1);
 
