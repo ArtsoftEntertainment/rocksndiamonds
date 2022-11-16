@@ -10117,6 +10117,10 @@ static struct TokenInfo internal_setup_tokens[] =
   },
   {
     TYPE_BOOLEAN,
+    &setup.internal.menu_engines,		"menu_engines"
+  },
+  {
+    TYPE_BOOLEAN,
     &setup.internal.menu_editor,		"menu_editor"
   },
   {
