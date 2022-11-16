@@ -7274,6 +7274,12 @@ static struct
   { &setup.internal.menu_exit,		execExitSetup			},
   { &setup.internal.menu_save_and_exit,	execSaveAndExitSetup		},
 
+  { &setup.internal.menu_shortcuts_various,	execSetupShortcuts1	},
+  { &setup.internal.menu_shortcuts_focus,	execSetupShortcuts2	},
+  { &setup.internal.menu_shortcuts_tape,	execSetupShortcuts3	},
+  { &setup.internal.menu_shortcuts_sound,	execSetupShortcuts4	},
+  { &setup.internal.menu_shortcuts_snap,	execSetupShortcuts5	},
+
   { &setup.internal.info_title,		execInfoTitleScreen		},
   { &setup.internal.info_elements,	execInfoElements		},
   { &setup.internal.info_music,		execInfoMusic			},

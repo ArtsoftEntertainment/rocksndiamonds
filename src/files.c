@@ -10157,6 +10157,26 @@ static struct TokenInfo internal_setup_tokens[] =
   },
   {
     TYPE_BOOLEAN,
+    &setup.internal.menu_shortcuts_various,	"menu_shortcuts_various"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.menu_shortcuts_focus,	"menu_shortcuts_focus"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.menu_shortcuts_tape,	"menu_shortcuts_tape"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.menu_shortcuts_sound,	"menu_shortcuts_sound"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.menu_shortcuts_snap,	"menu_shortcuts_snap"
+  },
+  {
+    TYPE_BOOLEAN,
     &setup.internal.info_title,			"info_title"
   },
   {

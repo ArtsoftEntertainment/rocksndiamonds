@@ -1463,6 +1463,12 @@ struct SetupInternalInfo
   boolean menu_exit;
   boolean menu_save_and_exit;
 
+  boolean menu_shortcuts_various;
+  boolean menu_shortcuts_focus;
+  boolean menu_shortcuts_tape;
+  boolean menu_shortcuts_sound;
+  boolean menu_shortcuts_snap;
+
   boolean info_title;
   boolean info_elements;
   boolean info_music;
