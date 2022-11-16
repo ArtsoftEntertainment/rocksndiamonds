@@ -7193,6 +7193,9 @@ static struct
   void *related_value;
 } hide_related_entry_list[] =
 {
+  { &setup.network_server_hostname,	execGadgetNetworkServer		},
+  { &setup.network_server_hostname,	&network_server_text		},
+
   { &setup.scores_in_highscore_list,	execSetupChooseScoresType	},
   { &setup.scores_in_highscore_list,	&scores_type_text		},
 
