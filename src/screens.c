@@ -285,10 +285,8 @@ static void HandleInfoScreen_Main(int, int, int, int, int);
 static void HandleInfoScreen_TitleScreen(int, int, int);
 static void HandleInfoScreen_Elements(int, int, int);
 static void HandleInfoScreen_Music(int, int, int);
-static void HandleInfoScreen_Credits(int, int, int);
-static void HandleInfoScreen_Program(int, int, int);
 static void HandleInfoScreen_Version(int);
-static void HandleInfoScreen_LevelSet(int, int, int);
+static void HandleInfoScreen_Generic(int, int, int);
 
 static void ModifyGameSpeedIfNeeded(void);
 static void DisableVsyncIfNeeded(void);
@@ -691,22 +689,6 @@ struct TitleControlInfo
 };
 
 struct TitleControlInfo title_controls[MAX_NUM_TITLE_SCREENS];
-
-
-// credits screens definitions
-
-static int num_credits_screens = 0;
-static boolean use_global_credits_screens = FALSE;
-
-
-// program info screens definitions
-
-static int num_program_info_screens = 0;
-
-
-// level set info screens definitions
-
-static int num_levelset_info_screens = 0;
 
 
 // main menu display and control definitions
@@ -3427,258 +3409,6 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
     PlaySoundLoop(list->music);
 }
 
-static void DrawInfoScreen_CreditsScreen(int screen_nr)
-{
-  int font_title = MENU_INFO_FONT_TITLE;
-  int font_text  = MENU_INFO_FONT_TEXT;
-  int font_foot  = MENU_INFO_FONT_FOOT;
-  int spacing_title = menu.headline1_spacing_info[info_mode];
-  int spacing_line  = menu.line_spacing_info[info_mode];
-  int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
-  int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
-
-  ClearField();
-  DrawHeadline();
-
-  DrawTextSCentered(ystart, font_title, "Credits:");
-
-  char *filename = getCreditsFilename(screen_nr, use_global_credits_screens);
-  int width = SXSIZE;
-  int height = MENU_SCREEN_INFO_YBOTTOM - MENU_SCREEN_INFO_YSTART1;
-  int chars = width / getFontWidth(font_text);
-  int lines = height / getFontHeight(font_text);
-  int padx = (width - chars * getFontWidth(font_text)) / 2;
-  int line_spacing = getMenuTextSpacing(spacing_line, font_text);
-  boolean autowrap = FALSE;
-  boolean centered = TRUE;
-  boolean parse_comments = TRUE;
-
-  DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART1 + ystep_title,
-	       filename, font_text, chars, -1, lines, line_spacing, -1,
-	       autowrap, centered, parse_comments);
-
-  boolean last_screen = (screen_nr == num_credits_screens - 1);
-  char *text_foot = (last_screen ? TEXT_INFO_MENU : TEXT_NEXT_PAGE);
-
-  DrawTextSCentered(ybottom, font_foot, text_foot);
-}
-
-static void DrawInfoScreen_Credits(void)
-{
-  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_CREDITS);
-
-  FadeMenuSoundsAndMusic();
-
-  FadeOut(REDRAW_FIELD);
-
-  HandleInfoScreen_Credits(0, 0, MB_MENU_INITIALIZE);
-
-  FadeIn(REDRAW_FIELD);
-}
-
-void HandleInfoScreen_Credits(int dx, int dy, int button)
-{
-  static int screen_nr = 0;
-
-  if (button == MB_MENU_INITIALIZE)
-  {
-    int i;
-
-    // determine number of (global or level set specific) credits screens
-    for (i = 0; i < 2; i++)
-    {
-      num_credits_screens = 0;
-      use_global_credits_screens = i;
-
-      while (getCreditsFilename(num_credits_screens,
-				use_global_credits_screens) != NULL)
-	num_credits_screens++;
-
-      if (num_credits_screens > 0)
-	break;
-    }
-
-    if (num_credits_screens == 0)
-    {
-      int font_title = MENU_INFO_FONT_TITLE;
-      int font_foot  = MENU_INFO_FONT_FOOT;
-      int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
-      int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
-
-      ClearField();
-      DrawHeadline();
-
-      DrawTextSCentered(ystart, font_title, "No credits for this level set.");
-      DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
-
-      return;
-    }
-
-    screen_nr = 0;
-
-    DrawInfoScreen_CreditsScreen(screen_nr);
-  }
-  else if (button == MB_MENU_LEAVE)
-  {
-    PlaySound(SND_MENU_ITEM_SELECTING);
-
-    info_mode = INFO_MODE_MAIN;
-    DrawInfoScreen();
-
-    return;
-  }
-  else if (button == MB_MENU_CHOICE || dx)
-  {
-    PlaySound(SND_MENU_ITEM_SELECTING);
-
-    screen_nr += (dx < 0 ? -1 : +1);
-
-    if (screen_nr < 0 || screen_nr >= num_credits_screens)
-    {
-      FadeMenuSoundsAndMusic();
-
-      info_mode = INFO_MODE_MAIN;
-      DrawInfoScreen();
-
-      return;
-    }
-
-    FadeSetNextScreen();
-
-    FadeOut(REDRAW_FIELD);
-
-    DrawInfoScreen_CreditsScreen(screen_nr);
-
-    FadeIn(REDRAW_FIELD);
-  }
-  else
-  {
-    PlayMenuSoundIfLoop();
-  }
-}
-
-static void DrawInfoScreen_ProgramScreen(int screen_nr)
-{
-  int font_title = MENU_INFO_FONT_TITLE;
-  int font_text  = MENU_INFO_FONT_TEXT;
-  int font_foot  = MENU_INFO_FONT_FOOT;
-  int spacing_title = menu.headline1_spacing_info[info_mode];
-  int spacing_line  = menu.line_spacing_info[info_mode];
-  int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
-  int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
-
-  ClearField();
-  DrawHeadline();
-
-  DrawTextSCentered(ystart, font_title, "Program Information:");
-
-  char *filename = getProgramInfoFilename(screen_nr);
-  int width = SXSIZE;
-  int height = MENU_SCREEN_INFO_YBOTTOM - MENU_SCREEN_INFO_YSTART1;
-  int chars = width / getFontWidth(font_text);
-  int lines = height / getFontHeight(font_text);
-  int padx = (width - chars * getFontWidth(font_text)) / 2;
-  int line_spacing = getMenuTextSpacing(spacing_line, font_text);
-  boolean autowrap = FALSE;
-  boolean centered = TRUE;
-  boolean parse_comments = TRUE;
-
-  DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART1 + ystep_title,
-	       filename, font_text, chars, -1, lines, line_spacing, -1,
-	       autowrap, centered, parse_comments);
-
-  boolean last_screen = (screen_nr == num_program_info_screens - 1);
-  char *text_foot = (last_screen ? TEXT_INFO_MENU : TEXT_NEXT_PAGE);
-
-  DrawTextSCentered(ybottom, font_foot, text_foot);
-}
-
-static void DrawInfoScreen_Program(void)
-{
-  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_PROGRAM);
-
-  FadeMenuSoundsAndMusic();
-
-  FadeOut(REDRAW_FIELD);
-
-  HandleInfoScreen_Program(0, 0, MB_MENU_INITIALIZE);
-
-  FadeIn(REDRAW_FIELD);
-}
-
-void HandleInfoScreen_Program(int dx, int dy, int button)
-{
-  static int screen_nr = 0;
-
-  if (button == MB_MENU_INITIALIZE)
-  {
-    // determine number of program info screens
-    num_program_info_screens = 0;
-
-    while (getProgramInfoFilename(num_program_info_screens) != NULL)
-      num_program_info_screens++;
-
-    if (num_program_info_screens == 0)
-    {
-      int font_title = MENU_INFO_FONT_TITLE;
-      int font_foot  = MENU_INFO_FONT_FOOT;
-      int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
-      int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
-
-      ClearField();
-      DrawHeadline();
-
-      DrawTextSCentered(ystart, font_title, "No program info available.");
-      DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
-
-      return;
-    }
-
-    screen_nr = 0;
-
-    DrawInfoScreen_ProgramScreen(screen_nr);
-  }
-  else if (button == MB_MENU_LEAVE)
-  {
-    PlaySound(SND_MENU_ITEM_SELECTING);
-
-    info_mode = INFO_MODE_MAIN;
-    DrawInfoScreen();
-
-    return;
-  }
-  else if (button == MB_MENU_CHOICE || dx)
-  {
-    PlaySound(SND_MENU_ITEM_SELECTING);
-
-    screen_nr += (dx < 0 ? -1 : +1);
-
-    if (screen_nr < 0 || screen_nr >= num_program_info_screens)
-    {
-      FadeMenuSoundsAndMusic();
-
-      info_mode = INFO_MODE_MAIN;
-      DrawInfoScreen();
-
-      return;
-    }
-
-    FadeSetNextScreen();
-
-    FadeOut(REDRAW_FIELD);
-
-    DrawInfoScreen_ProgramScreen(screen_nr);
-
-    FadeIn(REDRAW_FIELD);
-  }
-  else
-  {
-    PlayMenuSoundIfLoop();
-  }
-}
-
 static void DrawInfoScreen_Version(void)
 {
   int font_title = MENU_INFO_FONT_TITLE;
@@ -3875,84 +3605,166 @@ void HandleInfoScreen_Version(int button)
   }
 }
 
-static void DrawInfoScreen_LevelSetScreen(int screen_nr)
+static int getInfoScreenBackground_Generic(void)
 {
-  struct TitleMessageInfo *tmi = &readme;
-  char *filename = getLevelSetInfoFilename(screen_nr);
+  return (info_mode == INFO_MODE_CREDITS  ? IMG_BACKGROUND_INFO_CREDITS  :
+	  info_mode == INFO_MODE_PROGRAM  ? IMG_BACKGROUND_INFO_PROGRAM  :
+	  info_mode == INFO_MODE_LEVELSET ? IMG_BACKGROUND_INFO_LEVELSET :
+	  IMG_BACKGROUND_INFO);
+}
+
+static char *getInfoScreenFilename_Generic(int nr, boolean global)
+{
+  return (info_mode == INFO_MODE_CREDITS  ? getCreditsFilename(nr, global) :
+	  info_mode == INFO_MODE_PROGRAM  ? getProgramInfoFilename(nr)     :
+	  info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoFilename(nr)    :
+	  NULL);
+}
+
+static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
+					 int use_global_screens,
+					 char *text_title)
+{
+  char *filename = getInfoScreenFilename_Generic(screen_nr, use_global_screens);
   int font_title = MENU_INFO_FONT_TITLE;
+  int font_text  = MENU_INFO_FONT_TEXT;
   int font_foot  = MENU_INFO_FONT_FOOT;
+  int spacing_title = menu.headline1_spacing_info[info_mode];
+  int spacing_line  = menu.line_spacing_info[info_mode];
+  int ystep_title = getMenuTextStep(spacing_title, font_title);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
   ClearField();
   DrawHeadline();
 
-  DrawTextSCentered(ystart, font_title, "Level Set Information:");
+  DrawTextSCentered(ystart, font_title, text_title);
 
-  // if x position set to "-1", automatically determine by playfield width
-  if (tmi->x == -1)
-    tmi->x = SXSIZE / 2;
+  if (info_mode == INFO_MODE_CREDITS ||
+      info_mode == INFO_MODE_PROGRAM)
+  {
+    int width = SXSIZE;
+    int height = MENU_SCREEN_INFO_YBOTTOM - MENU_SCREEN_INFO_YSTART1;
+    int chars = width / getFontWidth(font_text);
+    int lines = height / getFontHeight(font_text);
+    int padx = (width - chars * getFontWidth(font_text)) / 2;
+    int line_spacing = getMenuTextSpacing(spacing_line, font_text);
+    boolean autowrap = FALSE;
+    boolean centered = TRUE;
+    boolean parse_comments = TRUE;
 
-  // if y position set to "-1", use static default value
-  if (tmi->y == -1)
-    tmi->y = 150;
+    DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART1 + ystep_title,
+		 filename, font_text, chars, -1, lines, line_spacing, -1,
+		 autowrap, centered, parse_comments);
+  }
+  else if (info_mode == INFO_MODE_LEVELSET)
+  {
+    struct TitleMessageInfo *tmi = &readme;
 
-  // if width set to "-1", automatically determine by playfield width
-  if (tmi->width == -1)
-    tmi->width = SXSIZE - 2 * TILEX;
+    // if x position set to "-1", automatically determine by playfield width
+    if (tmi->x == -1)
+      tmi->x = SXSIZE / 2;
 
-  // if height set to "-1", automatically determine by playfield height
-  if (tmi->height == -1)
-    tmi->height = MENU_SCREEN_INFO_YBOTTOM - tmi->y - 10;
+    // if y position set to "-1", use static default value
+    if (tmi->y == -1)
+      tmi->y = 150;
 
-  // if chars set to "-1", automatically determine by text and font width
-  if (tmi->chars == -1)
-    tmi->chars = tmi->width / getFontWidth(tmi->font);
-  else
-    tmi->width = tmi->chars * getFontWidth(tmi->font);
+    // if width set to "-1", automatically determine by playfield width
+    if (tmi->width == -1)
+      tmi->width = SXSIZE - 2 * TILEX;
 
-  // if lines set to "-1", automatically determine by text and font height
-  if (tmi->lines == -1)
-    tmi->lines = tmi->height / getFontHeight(tmi->font);
-  else
-    tmi->height = tmi->lines * getFontHeight(tmi->font);
+    // if height set to "-1", automatically determine by playfield height
+    if (tmi->height == -1)
+      tmi->height = MENU_SCREEN_INFO_YBOTTOM - tmi->y - 10;
 
-  DrawTextFile(mSX + ALIGNED_TEXT_XPOS(tmi), mSY + ALIGNED_TEXT_YPOS(tmi),
-	       filename, tmi->font, tmi->chars, -1, tmi->lines, 0, -1,
-	       tmi->autowrap, tmi->centered, tmi->parse_comments);
+    // if chars set to "-1", automatically determine by text and font width
+    if (tmi->chars == -1)
+      tmi->chars = tmi->width / getFontWidth(tmi->font);
+    else
+      tmi->width = tmi->chars * getFontWidth(tmi->font);
 
-  boolean last_screen = (screen_nr == num_levelset_info_screens - 1);
+    // if lines set to "-1", automatically determine by text and font height
+    if (tmi->lines == -1)
+      tmi->lines = tmi->height / getFontHeight(tmi->font);
+    else
+      tmi->height = tmi->lines * getFontHeight(tmi->font);
+
+    DrawTextFile(mSX + ALIGNED_TEXT_XPOS(tmi), mSY + ALIGNED_TEXT_YPOS(tmi),
+		 filename, tmi->font, tmi->chars, -1, tmi->lines, 0, -1,
+		 tmi->autowrap, tmi->centered, tmi->parse_comments);
+  }
+
+  boolean last_screen = (screen_nr == num_screens - 1);
   char *text_foot = (last_screen ? TEXT_INFO_MENU : TEXT_NEXT_PAGE);
 
   DrawTextSCentered(ybottom, font_foot, text_foot);
 }
 
-static void DrawInfoScreen_LevelSet(void)
+static void DrawInfoScreen_Generic(void)
 {
-  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_LEVELSET);
+  SetMainBackgroundImageIfDefined(getInfoScreenBackground_Generic());
 
   FadeMenuSoundsAndMusic();
 
   FadeOut(REDRAW_FIELD);
 
-  HandleInfoScreen_LevelSet(0, 0, MB_MENU_INITIALIZE);
+  HandleInfoScreen_Generic(0, 0, MB_MENU_INITIALIZE);
 
   FadeIn(REDRAW_FIELD);
 }
 
-void HandleInfoScreen_LevelSet(int dx, int dy, int button)
+void HandleInfoScreen_Generic(int dx, int dy, int button)
 {
+  static char *text_title = "";
+  static char *text_no_info = "";
+  static int num_screens = 0;
   static int screen_nr = 0;
+  static boolean use_global_screens = FALSE;
 
   if (button == MB_MENU_INITIALIZE)
   {
-    // determine number of levelset info screens
-    num_levelset_info_screens = 0;
+    num_screens = 0;
+    screen_nr = 0;
 
-    while (getLevelSetInfoFilename(num_levelset_info_screens) != NULL)
-      num_levelset_info_screens++;
+    if (info_mode == INFO_MODE_CREDITS)
+    {
+      int i;
 
-    if (num_levelset_info_screens == 0)
+      for (i = 0; i < 2; i++)
+      {
+	use_global_screens = i;		// check for "FALSE", then "TRUE"
+
+	// determine number of (global or level set specific) credits screens
+	while (getCreditsFilename(num_screens, use_global_screens) != NULL)
+	  num_screens++;
+
+	if (num_screens > 0)
+	  break;
+      }
+
+      text_title = "Credits:";
+      text_no_info = "No credits for this level set.";
+    }
+    else if (info_mode == INFO_MODE_PROGRAM)
+    {
+      // determine number of program info screens
+      while (getProgramInfoFilename(num_screens) != NULL)
+	num_screens++;
+
+      text_title = "Program Information:";
+      text_no_info = "No program info available.";
+    }
+    else if (info_mode == INFO_MODE_LEVELSET)
+    {
+      // determine number of levelset info screens
+      while (getLevelSetInfoFilename(num_screens) != NULL)
+	num_screens++;
+
+      text_title = "Level Set Information:";
+      text_no_info = "No level set info available.";
+    }
+
+    if (num_screens == 0)
     {
       int font_title = MENU_INFO_FONT_TITLE;
       int font_foot  = MENU_INFO_FONT_FOOT;
@@ -3962,15 +3774,14 @@ void HandleInfoScreen_LevelSet(int dx, int dy, int button)
       ClearField();
       DrawHeadline();
 
-      DrawTextSCentered(ystart, font_title, "No level set info available.");
+      DrawTextSCentered(ystart, font_title, text_no_info);
       DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
 
       return;
     }
 
-    screen_nr = 0;
-
-    DrawInfoScreen_LevelSetScreen(screen_nr);
+    DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens,
+				 text_title);
   }
   else if (button == MB_MENU_LEAVE)
   {
@@ -3978,8 +3789,6 @@ void HandleInfoScreen_LevelSet(int dx, int dy, int button)
 
     info_mode = INFO_MODE_MAIN;
     DrawInfoScreen();
-
-    return;
   }
   else if (button == MB_MENU_CHOICE || dx)
   {
@@ -3987,23 +3796,24 @@ void HandleInfoScreen_LevelSet(int dx, int dy, int button)
 
     screen_nr += (dx < 0 ? -1 : +1);
 
-    if (screen_nr < 0 || screen_nr >= num_levelset_info_screens)
+    if (screen_nr < 0 || screen_nr >= num_screens)
     {
       FadeMenuSoundsAndMusic();
 
       info_mode = INFO_MODE_MAIN;
       DrawInfoScreen();
-
-      return;
     }
+    else
+    {
+      FadeSetNextScreen();
 
-    FadeSetNextScreen();
+      FadeOut(REDRAW_FIELD);
 
-    FadeOut(REDRAW_FIELD);
+      DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens,
+				   text_title);
 
-    DrawInfoScreen_LevelSetScreen(screen_nr);
-
-    FadeIn(REDRAW_FIELD);
+      FadeIn(REDRAW_FIELD);
+    }
   }
   else
   {
@@ -4020,13 +3830,13 @@ static void DrawInfoScreen(void)
   else if (info_mode == INFO_MODE_MUSIC)
     DrawInfoScreen_Music();
   else if (info_mode == INFO_MODE_CREDITS)
-    DrawInfoScreen_Credits();
+    DrawInfoScreen_Generic();
   else if (info_mode == INFO_MODE_PROGRAM)
-    DrawInfoScreen_Program();
+    DrawInfoScreen_Generic();
   else if (info_mode == INFO_MODE_VERSION)
     DrawInfoScreen_Version();
   else if (info_mode == INFO_MODE_LEVELSET)
-    DrawInfoScreen_LevelSet();
+    DrawInfoScreen_Generic();
   else
     DrawInfoScreen_Main();
 
@@ -4045,13 +3855,13 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   else if (info_mode == INFO_MODE_MUSIC)
     HandleInfoScreen_Music(dx, dy, button);
   else if (info_mode == INFO_MODE_CREDITS)
-    HandleInfoScreen_Credits(dx, dy, button);
+    HandleInfoScreen_Generic(dx, dy, button);
   else if (info_mode == INFO_MODE_PROGRAM)
-    HandleInfoScreen_Program(dx, dy, button);
+    HandleInfoScreen_Generic(dx, dy, button);
   else if (info_mode == INFO_MODE_VERSION)
     HandleInfoScreen_Version(button);
   else if (info_mode == INFO_MODE_LEVELSET)
-    HandleInfoScreen_LevelSet(dx, dy, button);
+    HandleInfoScreen_Generic(dx, dy, button);
   else
     HandleInfoScreen_Main(mx, my, dx, dy, button);
 }
