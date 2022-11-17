@@ -279,7 +279,7 @@ char *getPlatformSetupFilename(void);
 char *getEditorSetupFilename(void);
 char *getHelpAnimFilename(void);
 char *getHelpTextFilename(void);
-char *getLevelSetInfoFilename(void);
+char *getLevelSetInfoFilename(int);
 char *getLevelSetTitleMessageFilename(int, boolean);
 char *getCreditsFilename(int, boolean);
 char *getProgramInfoFilename(int);

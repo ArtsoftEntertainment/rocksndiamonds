@@ -818,9 +818,34 @@ char *getHelpTextFilename(void)
   return filename;
 }
 
-char *getLevelSetInfoFilename(void)
+static char *getLevelSetInfoBasename(int nr)
 {
+  static char basename[32];
+
+  sprintf(basename, "levelset_%d.txt", nr + 1);
+
+  return basename;
+}
+
+char *getLevelSetInfoFilename(int nr)
+{
+  char *basename = getLevelSetInfoBasename(nr);
+  static char *info_subdir = NULL;
   static char *filename = NULL;
+
+  if (info_subdir == NULL)
+    info_subdir = getPath2(DOCS_DIRECTORY, LEVELSET_INFO_DIRECTORY);
+
+  checked_free(filename);
+
+  // look for level set info file the current level set directory
+  filename = getPath3(getCurrentLevelDir(), info_subdir, basename);
+  if (fileExists(filename))
+    return filename;
+
+  if (nr > 0)
+    return NULL;
+
   char *basenames[] =
   {
     "README",

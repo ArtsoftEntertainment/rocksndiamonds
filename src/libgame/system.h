@@ -659,6 +659,7 @@
 #define ELEMENTS_DIRECTORY	"elements"
 #define CREDITS_DIRECTORY	"credits"
 #define PROGRAM_INFO_DIRECTORY	"program"
+#define LEVELSET_INFO_DIRECTORY	"levelset"
 #define CACHE_DIRECTORY		"cache"
 #define CONF_DIRECTORY		"conf"
 #define NETWORK_DIRECTORY	"network"

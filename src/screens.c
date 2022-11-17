@@ -288,6 +288,7 @@ static void HandleInfoScreen_Music(int, int, int);
 static void HandleInfoScreen_Credits(int, int, int);
 static void HandleInfoScreen_Program(int, int, int);
 static void HandleInfoScreen_Version(int);
+static void HandleInfoScreen_LevelSet(int, int, int);
 
 static void ModifyGameSpeedIfNeeded(void);
 static void DisableVsyncIfNeeded(void);
@@ -701,6 +702,11 @@ static boolean use_global_credits_screens = FALSE;
 // program info screens definitions
 
 static int num_program_info_screens = 0;
+
+
+// level set info screens definitions
+
+static int num_levelset_info_screens = 0;
 
 
 // main menu display and control definitions
@@ -3869,30 +3875,19 @@ void HandleInfoScreen_Version(int button)
   }
 }
 
-static void DrawInfoScreen_LevelSet(void)
+static void DrawInfoScreen_LevelSetScreen(int screen_nr)
 {
   struct TitleMessageInfo *tmi = &readme;
-  char *filename = getLevelSetInfoFilename();
-  char *title = "Level Set Information:";
-  int font_foot = MENU_INFO_FONT_FOOT;
+  char *filename = getLevelSetInfoFilename(screen_nr);
+  int font_title = MENU_INFO_FONT_TITLE;
+  int font_foot  = MENU_INFO_FONT_FOOT;
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
-
-  if (filename == NULL)
-  {
-    DrawInfoScreen_NotAvailable(title, "No information for this level set.");
-
-    return;
-  }
-
-  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_LEVELSET);
-
-  FadeOut(REDRAW_FIELD);
 
   ClearField();
   DrawHeadline();
 
-  DrawTextSCentered(ystart, FONT_TEXT_1, title);
+  DrawTextSCentered(ystart, font_title, "Level Set Information:");
 
   // if x position set to "-1", automatically determine by playfield width
   if (tmi->x == -1)
@@ -3926,14 +3921,58 @@ static void DrawInfoScreen_LevelSet(void)
 	       filename, tmi->font, tmi->chars, -1, tmi->lines, 0, -1,
 	       tmi->autowrap, tmi->centered, tmi->parse_comments);
 
-  DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
+  boolean last_screen = (screen_nr == num_levelset_info_screens - 1);
+  char *text_foot = (last_screen ? TEXT_INFO_MENU : TEXT_NEXT_PAGE);
+
+  DrawTextSCentered(ybottom, font_foot, text_foot);
+}
+
+static void DrawInfoScreen_LevelSet(void)
+{
+  SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_LEVELSET);
+
+  FadeMenuSoundsAndMusic();
+
+  FadeOut(REDRAW_FIELD);
+
+  HandleInfoScreen_LevelSet(0, 0, MB_MENU_INITIALIZE);
 
   FadeIn(REDRAW_FIELD);
 }
 
-static void HandleInfoScreen_LevelSet(int button)
+void HandleInfoScreen_LevelSet(int dx, int dy, int button)
 {
-  if (button == MB_MENU_LEAVE)
+  static int screen_nr = 0;
+
+  if (button == MB_MENU_INITIALIZE)
+  {
+    // determine number of levelset info screens
+    num_levelset_info_screens = 0;
+
+    while (getLevelSetInfoFilename(num_levelset_info_screens) != NULL)
+      num_levelset_info_screens++;
+
+    if (num_levelset_info_screens == 0)
+    {
+      int font_title = MENU_INFO_FONT_TITLE;
+      int font_foot  = MENU_INFO_FONT_FOOT;
+      int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+      int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+
+      ClearField();
+      DrawHeadline();
+
+      DrawTextSCentered(ystart, font_title, "No level set info available.");
+      DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
+
+      return;
+    }
+
+    screen_nr = 0;
+
+    DrawInfoScreen_LevelSetScreen(screen_nr);
+  }
+  else if (button == MB_MENU_LEAVE)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
@@ -3942,14 +3981,29 @@ static void HandleInfoScreen_LevelSet(int button)
 
     return;
   }
-  else if (button == MB_MENU_CHOICE)
+  else if (button == MB_MENU_CHOICE || dx)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
-    FadeMenuSoundsAndMusic();
+    screen_nr += (dx < 0 ? -1 : +1);
 
-    info_mode = INFO_MODE_MAIN;
-    DrawInfoScreen();
+    if (screen_nr < 0 || screen_nr >= num_levelset_info_screens)
+    {
+      FadeMenuSoundsAndMusic();
+
+      info_mode = INFO_MODE_MAIN;
+      DrawInfoScreen();
+
+      return;
+    }
+
+    FadeSetNextScreen();
+
+    FadeOut(REDRAW_FIELD);
+
+    DrawInfoScreen_LevelSetScreen(screen_nr);
+
+    FadeIn(REDRAW_FIELD);
   }
   else
   {
@@ -3997,7 +4051,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   else if (info_mode == INFO_MODE_VERSION)
     HandleInfoScreen_Version(button);
   else if (info_mode == INFO_MODE_LEVELSET)
-    HandleInfoScreen_LevelSet(button);
+    HandleInfoScreen_LevelSet(dx, dy, button);
   else
     HandleInfoScreen_Main(mx, my, dx, dy, button);
 }
