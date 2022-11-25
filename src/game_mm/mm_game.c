@@ -1463,14 +1463,14 @@ boolean HitElement(int element, int hit_mask)
     LX += step_size * XS;
     LY += step_size * YS;
 
-#if 0
     // draw sparkles on mirror
-    if ((IS_MIRROR(element) || IS_MIRROR_FIXED(element)) &&
+    if ((IS_MIRROR(element) ||
+	 IS_MIRROR_FIXED(element) ||
+	 element == EL_PRISM) &&
 	current_angle != laser.current_angle)
     {
-      MoveSprite(vp, &Pfeil[2], 4 + 16 * ELX, 5 + 16 * ELY + 1);
+      MovDelay[ELX][ELY] = 11;		// start animation
     }
-#endif
 
     if ((!IS_POLAR(element) && !IS_POLAR_CROSS(element)) &&
 	current_angle != laser.current_angle)
@@ -2404,10 +2404,30 @@ static void GrowAmoeba(int x, int y)
 
 static void DrawFieldAnimated_MM(int x, int y)
 {
+  int element = Tile[x][y];
+
   if (IS_BLOCKED(x, y))
     return;
 
   DrawField_MM(x, y);
+
+  if (IS_MIRROR(element) ||
+      IS_MIRROR_FIXED(element) ||
+      element == EL_PRISM)
+  {
+    if (MovDelay[x][y] != 0)	// wait some time before next frame
+    {
+      MovDelay[x][y]--;
+
+      if (MovDelay[x][y] != 0)
+      {
+	int graphic = IMG_TWINKLE_WHITE;
+	int frame = getGraphicAnimationFrame(graphic, 10 - MovDelay[x][y]);
+
+	DrawGraphicThruMask_MM(SCREENX(x), SCREENY(y), graphic, frame);
+      }
+    }
+  }
 
   laser.redraw = TRUE;
 }
