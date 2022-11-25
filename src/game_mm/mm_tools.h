@@ -63,8 +63,8 @@ void DrawGraphicAnimation_MM(int, int, int, int);
 
 void DrawGraphic_MM(int, int, int);
 void DrawGraphicExt_MM(DrawBuffer *, int, int, int);
-void DrawGraphicThruMask_MM(int, int, int);
-void DrawGraphicThruMaskExt_MM(DrawBuffer *, int, int, int);
+void DrawGraphicThruMask_MM(int, int, int, int);
+void DrawGraphicThruMaskExt_MM(DrawBuffer *, int, int, int, int);
 void DrawMiniGraphic_MM(int, int, int);
 void getMiniGraphicSource(int, Bitmap **, int *, int *);
 void DrawMiniGraphicExt_MM(DrawBuffer *, int, int, int);

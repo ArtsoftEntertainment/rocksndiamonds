@@ -92,7 +92,7 @@ void DrawGraphicExt_MM(DrawBuffer *d, int x, int y, int graphic)
   BlitBitmap(bitmap, d, src_x, src_y, TILEX, TILEY, x, y);
 }
 
-void DrawGraphicThruMask_MM(int x, int y, int graphic)
+void DrawGraphicThruMask_MM(int x, int y, int graphic, int frame)
 {
 #if DEBUG
   if (!IN_SCR_FIELD(x,y))
@@ -106,13 +106,13 @@ void DrawGraphicThruMask_MM(int x, int y, int graphic)
 #endif
 
   DrawGraphicThruMaskExt_MM(drawto_field, cFX + x * TILEX, cFY + y * TILEY,
-			    graphic);
+			    graphic, frame);
 
   MarkTileDirty(x,y);
 }
 
 void DrawGraphicThruMaskExt_MM(DrawBuffer *d, int dest_x, int dest_y,
-			       int graphic)
+			       int graphic, int frame)
 {
   int src_x, src_y;
   Bitmap *src_bitmap;
@@ -120,7 +120,7 @@ void DrawGraphicThruMaskExt_MM(DrawBuffer *d, int dest_x, int dest_y,
   if (graphic == IMG_EMPTY)
     return;
 
-  getGraphicSource(graphic, 0, &src_bitmap, &src_x, &src_y);
+  getGraphicSource(graphic, frame, &src_bitmap, &src_x, &src_y);
 
   BlitBitmapMasked(src_bitmap, d, src_x, src_y, TILEX, TILEY, dest_x, dest_y);
 }
@@ -286,7 +286,7 @@ void DrawScreenElementExt_MM(int x, int y, int dx, int dy, int element,
   if (dx || dy)
     DrawGraphicShifted_MM(x, y, dx, dy, graphic, cut_mode, mask_mode);
   else if (mask_mode == USE_MASKING)
-    DrawGraphicThruMask_MM(x, y, graphic);
+    DrawGraphicThruMask_MM(x, y, graphic, 0);
   else
     DrawGraphic_MM(x, y, graphic);
 }
