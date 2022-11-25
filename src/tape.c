@@ -1000,7 +1000,7 @@ byte *TapePlayAction(void)
 
   if (tape.counter >= tape.length)	// end of tape reached
   {
-    if (tape.warp_forward && !tape.auto_play)
+    if (!tape.auto_play)
     {
       TapeStopWarpForward();
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
