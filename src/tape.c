@@ -1195,6 +1195,13 @@ void TapeQuickSave(void)
   if (game_status != GAME_MODE_PLAYING)
     return;
 
+  if (!tape.recording)
+  {
+    Request("No recording that can be saved!", REQ_CONFIRM);
+
+    return;
+  }
+
   if (tape.recording)
     TapeHaltRecording();	// prepare tape for saving on-the-fly
 
