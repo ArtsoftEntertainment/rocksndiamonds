@@ -994,6 +994,9 @@ byte *TapePlayAction(void)
       TapeStopWarpForward();
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
 
+      if (setup.autorecord_after_replay)
+	TapeAppendRecording();
+
       return NULL;
     }
   }
@@ -1004,6 +1007,9 @@ byte *TapePlayAction(void)
     {
       TapeStopWarpForward();
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
+
+      if (setup.autorecord_after_replay)
+	TapeAppendRecording();
     }
     else
     {

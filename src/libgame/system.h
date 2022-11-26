@@ -1511,6 +1511,7 @@ struct SetupInfo
   int engine_snapshot_memory;
   boolean fade_screens;
   boolean autorecord;
+  boolean autorecord_after_replay;
   boolean auto_pause_on_start;
   boolean show_titlescreen;
   boolean quick_doors;
