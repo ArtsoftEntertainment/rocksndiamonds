@@ -4664,7 +4664,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "mm_kettle",
     "mm_kettle",
-    "magic kettle"
+    "magic cauldron"
   },
   {
     "mm_bomb",
