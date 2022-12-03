@@ -2281,6 +2281,15 @@ void HandleKey(Key key, int key_status)
     return;
   }
 
+  if (game_status == GAME_MODE_MAIN &&
+      setup.internal.info_screens_from_main &&
+      (key >= KSYM_KP_1 && key <= KSYM_KP_9))
+  {
+    DrawInfoScreen_FromMainMenu(key - KSYM_KP_1 + 1);
+
+    return;
+  }
+
   if (game_status == GAME_MODE_MAIN || game_status == GAME_MODE_PLAYING)
   {
     if (key == setup.shortcut.save_game)

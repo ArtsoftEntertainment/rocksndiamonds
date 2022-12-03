@@ -3846,6 +3846,22 @@ static void DrawInfoScreen(void)
     PlayMenuSoundsAndMusic();
 }
 
+void DrawInfoScreen_FromMainMenu(int nr)
+{
+  if (nr < INFO_MODE_MAIN || nr >= MAX_INFO_MODES)
+    return;
+
+  CloseDoor(DOOR_CLOSE_2);
+
+  SetGameStatus(GAME_MODE_INFO);
+
+  info_mode = nr;;
+
+  FadeSetEnterScreen();
+
+  DrawInfoScreen();
+}
+
 void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 {
   if (info_mode == INFO_MODE_TITLE)

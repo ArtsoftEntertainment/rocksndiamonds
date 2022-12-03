@@ -10117,6 +10117,10 @@ static struct TokenInfo internal_setup_tokens[] =
   },
   {
     TYPE_BOOLEAN,
+    &setup.internal.info_screens_from_main,	"info_screens_from_main"
+  },
+  {
+    TYPE_BOOLEAN,
     &setup.internal.menu_game,			"menu_game"
   },
   {
@@ -10557,6 +10561,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->internal.choose_from_top_leveldir = FALSE;
   si->internal.show_scaling_in_title = TRUE;
   si->internal.create_user_levelset = TRUE;
+  si->internal.info_screens_from_main = FALSE;
 
   si->internal.default_window_width  = WIN_XSIZE_DEFAULT;
   si->internal.default_window_height = WIN_YSIZE_DEFAULT;

@@ -1451,6 +1451,7 @@ struct SetupInternalInfo
   boolean choose_from_top_leveldir;
   boolean show_scaling_in_title;
   boolean create_user_levelset;
+  boolean info_screens_from_main;
 
   boolean menu_game;
   boolean menu_engines;
