@@ -834,6 +834,8 @@ boolean TapeAddAction(byte action[MAX_TAPE_ACTIONS])
     tape.pos[tape.counter].delay++;
   }
 
+  tape.changed = TRUE;
+
   return TRUE;
 }
 
