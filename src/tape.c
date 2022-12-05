@@ -1199,8 +1199,7 @@ void TapeQuickSave(void)
     return;
   }
 
-  if (tape.recording)
-    TapeHaltRecording();	// prepare tape for saving on-the-fly
+  TapeHaltRecording();		// prepare tape for saving on-the-fly
 
   if (TAPE_IS_EMPTY(tape))
   {
