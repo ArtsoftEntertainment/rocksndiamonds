@@ -1185,15 +1185,12 @@ static void TapeSingleStep(void)
 
 void TapeQuickSave(void)
 {
-  if (game_status == GAME_MODE_MAIN)
+  if (game_status != GAME_MODE_PLAYING)
   {
     Request("No game that could be saved!", REQ_CONFIRM);
 
     return;
   }
-
-  if (game_status != GAME_MODE_PLAYING)
-    return;
 
   if (!tape.recording)
   {
