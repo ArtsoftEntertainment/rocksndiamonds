@@ -779,7 +779,9 @@ static void TapeAppendRecording(void)
 
 void TapeHaltRecording(void)
 {
-  tape.counter++;
+  // only advance tape counter if any input events have been recorded
+  if (tape.pos[tape.counter].delay > 0)
+    tape.counter++;
 
   // initialize delay for next tape entry (to be able to continue recording)
   if (tape.counter < MAX_TAPE_LEN)
