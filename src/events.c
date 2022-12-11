@@ -2282,7 +2282,8 @@ void HandleKey(Key key, int key_status)
   }
 
   if (game_status == GAME_MODE_MAIN &&
-      setup.internal.info_screens_from_main &&
+      (setup.internal.info_screens_from_main ||
+       leveldir_current->info_screens_from_main) &&
       (key >= KSYM_KP_1 && key <= KSYM_KP_9))
   {
     DrawInfoScreen_FromMainMenu(key - KSYM_KP_1 + 1);
