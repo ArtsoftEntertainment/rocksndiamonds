@@ -318,6 +318,8 @@ static struct GadgetInfo *screen_gadget[NUM_SCREEN_GADGETS];
 static int info_mode = INFO_MODE_MAIN;
 static int setup_mode = SETUP_MODE_MAIN;
 
+static boolean info_screens_from_main = FALSE;
+
 static TreeInfo *window_sizes = NULL;
 static TreeInfo *window_size_current = NULL;
 
@@ -2537,6 +2539,18 @@ static void DrawInfoScreen_Main(void)
   int fade_mask = REDRAW_FIELD;
   int i;
 
+  // (needed after displaying info sub-screens directly from main menu)
+  if (info_screens_from_main)
+  {
+    info_screens_from_main = FALSE;
+
+    SetGameStatus(GAME_MODE_MAIN);
+
+    DrawMainMenu();
+
+    return;
+  }
+
   if (redraw_mask & REDRAW_ALL)
     fade_mask = REDRAW_ALL;
 
@@ -3856,6 +3870,7 @@ void DrawInfoScreen_FromMainMenu(int nr)
   SetGameStatus(GAME_MODE_INFO);
 
   info_mode = nr;;
+  info_screens_from_main = TRUE;
 
   FadeSetEnterScreen();
 
