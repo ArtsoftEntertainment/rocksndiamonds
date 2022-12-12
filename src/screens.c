@@ -3869,7 +3869,7 @@ void DrawInfoScreen_FromMainMenu(int nr)
 
   SetGameStatus(GAME_MODE_INFO);
 
-  info_mode = nr;;
+  info_mode = nr;
   info_screens_from_main = TRUE;
 
   FadeSetEnterScreen();
