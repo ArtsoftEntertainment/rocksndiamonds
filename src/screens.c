@@ -131,9 +131,11 @@
 #define MENU_CHOOSE_TREE_FONT(x)	(FONT_TEXT_1 + (x))
 #define MENU_CHOOSE_TREE_COLOR(ti, a)	TREE_COLOR(ti, a)
 
-#define TEXT_NEXT_PAGE			"Press any key or button for next page"
-#define TEXT_INFO_MENU			"Press any key or button for info menu"
 #define TEXT_MAIN_MENU			"Press any key or button for main menu"
+#define TEXT_INFO_MENU			"Press any key or button for info menu"
+#define TEXT_NEXT_PAGE			"Press any key or button for next page"
+#define TEXT_NEXT_MENU			(info_screens_from_main ?	\
+					 TEXT_MAIN_MENU : TEXT_INFO_MENU)
 
 // for input setup functions
 #define SETUPINPUT_SCREEN_POS_START	0
@@ -2970,7 +2972,7 @@ void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
   DrawTextSCentered(ystart1, font_title, text_title);
   DrawTextSCentered(ystart2, font_error, text_error);
 
-  DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
+  DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
 
   FadeIn(REDRAW_FIELD);
 }
@@ -3290,7 +3292,7 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       DrawHeadline();
 
       DrawTextSCentered(ystart, font_title, "No music info for this level set.");
-      DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
+      DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
 
       return;
     }
@@ -3589,7 +3591,7 @@ static void DrawInfoScreen_Version(void)
   DrawTextF(xstart2, ystart, font_text, "%s", setup.system.sdl_audiodriver);
   DrawTextF(xstart3, ystart, font_text, "%s", driver_name);
 
-  DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
+  DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
 
   FadeIn(REDRAW_FIELD);
 }
@@ -3710,7 +3712,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
   }
 
   boolean last_screen = (screen_nr == num_screens - 1);
-  char *text_foot = (last_screen ? TEXT_INFO_MENU : TEXT_NEXT_PAGE);
+  char *text_foot = (last_screen ? TEXT_NEXT_MENU : TEXT_NEXT_PAGE);
 
   DrawTextSCentered(ybottom, font_foot, text_foot);
 }
@@ -3790,7 +3792,7 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
       DrawHeadline();
 
       DrawTextSCentered(ystart, font_title, text_no_info);
-      DrawTextSCentered(ybottom, font_foot, TEXT_INFO_MENU);
+      DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
 
       return;
     }
