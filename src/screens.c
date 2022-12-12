@@ -133,6 +133,7 @@
 
 #define TEXT_NEXT_PAGE			"Press any key or button for next page"
 #define TEXT_INFO_MENU			"Press any key or button for info menu"
+#define TEXT_MAIN_MENU			"Press any key or button for main menu"
 
 // for input setup functions
 #define SETUPINPUT_SCREEN_POS_START	0
@@ -4517,7 +4518,7 @@ static void drawChooseTreeScreen_Scores_NotAvailable(void)
   char *text_info = "HighScores of Level %d";
   char *text_title = "Score information:";
   char *text_error = "No scores for this level.";
-  char *text_foot = "Press any key or button for main menu";
+  char *text_foot = TEXT_MAIN_MENU;
   int font_info = FONT_TITLE_2;
   int font_title = FONT_INITIAL_3;
   int font_error = FONT_INITIAL_4;
