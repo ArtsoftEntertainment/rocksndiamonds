@@ -1,6 +1,5 @@
 # .font: font.text_2
 This game is Freeware!
-
 If you like it, send e-mail to:
 
 # .font: font.text_3
