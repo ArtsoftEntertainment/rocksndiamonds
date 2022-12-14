@@ -9777,6 +9777,10 @@ static void CreateScreenMenubuttons(void)
 	// use "SX" here to place button (ignore draw offsets)
 	x = SX + SXSIZE - 2 * TILESIZE;
 	y = SY + SYSIZE - 2 * TILESIZE;
+
+	// special compatibility handling for "BD2K3" graphics set
+	if (strPrefix(leveldir_current->identifier, "BD2K3"))
+	  x = SX + TILESIZE + MINI_TILESIZE;
       }
     }
 
