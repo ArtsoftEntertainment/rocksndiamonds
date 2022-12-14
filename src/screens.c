@@ -3865,6 +3865,8 @@ static void DrawInfoScreen(void)
 
 void DrawInfoScreen_FromMainMenu(int nr)
 {
+  int fade_mask = REDRAW_FIELD;
+
   if (nr < INFO_MODE_MAIN || nr >= MAX_INFO_MODES)
     return;
 
@@ -3875,7 +3877,25 @@ void DrawInfoScreen_FromMainMenu(int nr)
   info_mode = nr;
   info_screens_from_main = TRUE;
 
+  if (redraw_mask & REDRAW_ALL)
+    fade_mask = REDRAW_ALL;
+
+  if (CheckFadeAll())
+    fade_mask = REDRAW_ALL;
+
+  UnmapAllGadgets();
+  FadeMenuSoundsAndMusic();
+
   FadeSetEnterScreen();
+
+  FadeOut(fade_mask);
+
+  FadeSkipNextFadeOut();
+
+  // needed if different viewport properties defined for info screen
+  ChangeViewportPropertiesIfNeeded();
+
+  SetMainBackgroundImage(IMG_BACKGROUND_INFO);
 
   DrawInfoScreen();
 }
