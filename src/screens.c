@@ -9770,6 +9770,16 @@ static void CreateScreenMenubuttons(void)
 	     id == SCREEN_CTRL_ID_NEXT_LEVEL2 ? mSY + MENU_TITLE1_YPOS : 0);
     }
 
+    if (id == SCREEN_CTRL_ID_LEVELSET_INFO)
+    {
+      if (pos->x == -1 && pos->y == -1)
+      {
+	// use "SX" here to place button (ignore draw offsets)
+	x = SX + SXSIZE - 2 * TILESIZE;
+	y = SY + SYSIZE - 2 * TILESIZE;
+      }
+    }
+
     gi = CreateGadget(GDI_CUSTOM_ID, id,
 		      GDI_CUSTOM_TYPE_ID, i,
 		      GDI_IMAGE_ID, gfx_unpressed,
