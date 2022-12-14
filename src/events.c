@@ -1697,6 +1697,7 @@ void HandleButton(int mx, int my, int button, int button_nr)
   static int old_mx = 0, old_my = 0;
   boolean button_hold = FALSE;
   boolean handle_gadgets = TRUE;
+  int game_status_last = game_status;
 
   if (button_nr < 0)
   {
@@ -1741,8 +1742,12 @@ void HandleButton(int mx, int my, int button, int button_nr)
 
   if (handle_gadgets && HandleGadgets(mx, my, button))
   {
-    // do not handle this button event anymore
+    // do not handle this button event anymore with position on screen
     mx = my = -32;	// force mouse event to be outside screen tiles
+
+    // do not handle this button event anymore if game status has changed
+    if (game_status != game_status_last)
+      return;
   }
 
   if (button_hold && game_status == GAME_MODE_PLAYING && tape.pausing)
