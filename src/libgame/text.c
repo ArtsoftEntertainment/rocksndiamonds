@@ -404,6 +404,9 @@ static boolean RenderLineToBuffer(char **src_buffer_ptr, char *dst_buffer,
     char *word_ptr;
     int word_len;
 
+    if (strEqual(text_ptr, "  "))	// special case: force line break
+      buffer_filled = TRUE;
+
     // skip leading whitespaces
     while (*text_ptr == ' ' || *text_ptr == '\t')
       text_ptr++;
