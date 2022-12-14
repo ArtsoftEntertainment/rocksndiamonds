@@ -203,20 +203,21 @@
 #define SCREEN_CTRL_ID_NEXT_PLAYER	11
 #define SCREEN_CTRL_ID_INSERT_SOLUTION	12
 #define SCREEN_CTRL_ID_PLAY_SOLUTION	13
-#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	14
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	15
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	16
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	17
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	18
+#define SCREEN_CTRL_ID_LEVELSET_INFO	14
+#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	15
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	16
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	17
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	18
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	19
 
-#define NUM_SCREEN_MENUBUTTONS		19
+#define NUM_SCREEN_MENUBUTTONS		20
 
-#define SCREEN_CTRL_ID_SCROLL_UP	19
-#define SCREEN_CTRL_ID_SCROLL_DOWN	20
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL	21
-#define SCREEN_CTRL_ID_NETWORK_SERVER	22
+#define SCREEN_CTRL_ID_SCROLL_UP	20
+#define SCREEN_CTRL_ID_SCROLL_DOWN	21
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL	22
+#define SCREEN_CTRL_ID_NETWORK_SERVER	23
 
-#define NUM_SCREEN_GADGETS		23
+#define NUM_SCREEN_GADGETS		24
 
 #define NUM_SCREEN_SCROLLBUTTONS	2
 #define NUM_SCREEN_SCROLLBARS		1
@@ -224,11 +225,12 @@
 
 #define SCREEN_MASK_MAIN		(1 << 0)
 #define SCREEN_MASK_MAIN_HAS_SOLUTION	(1 << 1)
-#define SCREEN_MASK_INPUT		(1 << 2)
-#define SCREEN_MASK_TOUCH		(1 << 3)
-#define SCREEN_MASK_TOUCH2		(1 << 4)
-#define SCREEN_MASK_SCORES		(1 << 5)
-#define SCREEN_MASK_SCORES_INFO		(1 << 6)
+#define SCREEN_MASK_MAIN_HAS_SET_INFO	(1 << 2)
+#define SCREEN_MASK_INPUT		(1 << 3)
+#define SCREEN_MASK_TOUCH		(1 << 4)
+#define SCREEN_MASK_TOUCH2		(1 << 5)
+#define SCREEN_MASK_SCORES		(1 << 6)
+#define SCREEN_MASK_SCORES_INFO		(1 << 7)
 
 // graphic position and size values for buttons and scrollbars
 #define SC_MENUBUTTON_XSIZE		TILEX
@@ -922,6 +924,11 @@ static struct MainControlInfo main_controls[] =
   }
 };
 
+
+static boolean hasLevelSetInfo(void)
+{
+  return (getLevelSetInfoFilename(0) != NULL);
+}
 
 static int getTitleScreenGraphic(int nr, boolean initial)
 {
@@ -1809,6 +1816,7 @@ void DrawMainMenu(void)
   MapTapeButtons();
   MapScreenMenuGadgets(SCREEN_MASK_MAIN);
   UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SOLUTION, hasSolutionTape());
+  UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SET_INFO, hasLevelSetInfo());
 
   // copy actual game door content to door double buffer for OpenDoor()
   BlitBitmap(drawto, bitmap_db_door_1, DX, DY, DXSIZE, DYSIZE, 0, 0);
@@ -9563,6 +9571,14 @@ static struct
     FALSE, "play solution tape"
   },
   {
+    IMG_MENU_BUTTON_LEVELSET_INFO, IMG_MENU_BUTTON_LEVELSET_INFO_ACTIVE,
+    &menu.main.button.levelset_info, NULL,
+    SCREEN_CTRL_ID_LEVELSET_INFO,
+    SCREEN_MASK_MAIN_HAS_SET_INFO,
+    GD_EVENT_RELEASED,
+    FALSE, "show level set info"
+  },
+  {
     IMG_MENU_BUTTON_SWITCH_ECS_AGA, IMG_MENU_BUTTON_SWITCH_ECS_AGA_ACTIVE,
     &menu.main.button.switch_ecs_aga, &setup.prefer_aga_graphics,
     SCREEN_CTRL_ID_SWITCH_ECS_AGA,
@@ -10168,6 +10184,10 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_PLAY_SOLUTION:
       PlaySolutionTape();
+      break;
+
+    case SCREEN_CTRL_ID_LEVELSET_INFO:
+      DrawInfoScreen_FromMainMenu(INFO_MODE_LEVELSET);
       break;
 
     case SCREEN_CTRL_ID_SWITCH_ECS_AGA:

@@ -2750,6 +2750,7 @@ struct MenuMainButtonInfo
   struct MenuPosInfo insert_solution;
   struct MenuPosInfo play_solution;
 
+  struct MenuPosInfo levelset_info;
   struct MenuPosInfo switch_ecs_aga;
 };
 

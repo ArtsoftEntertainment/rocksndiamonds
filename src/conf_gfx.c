@@ -6204,6 +6204,11 @@ struct ConfigInfo image_config[] =
   { "menu.button_play_solution",		UNDEFINED_FILENAME	},
   { "menu.button_play_solution.active",		UNDEFINED_FILENAME	},
 
+  { "menu.button_levelset_info",		UNDEFINED_FILENAME	},
+  { "menu.button_levelset_info.clone_from",	"envelope_1"		},
+  { "menu.button_levelset_info.active",		UNDEFINED_FILENAME	},
+  { "menu.button_levelset_info.active.clone_from", "envelope_1.collecting" },
+
   { "menu.button_switch_ecs_aga",		UNDEFINED_FILENAME	},
   { "menu.button_switch_ecs_aga.active",	UNDEFINED_FILENAME	},
 
@@ -8196,6 +8201,9 @@ struct ConfigInfo image_config[] =
   { "main.button.insert_solution.y",		"-1"			},
   { "main.button.play_solution.x",		"-1"			},
   { "main.button.play_solution.y",		"-1"			},
+
+  { "main.button.levelset_info.x",		"-1"			},
+  { "main.button.levelset_info.y",		"-1"			},
 
   { "main.button.switch_ecs_aga.x",		"-1"			},
   { "main.button.switch_ecs_aga.y",		"-1"			},
