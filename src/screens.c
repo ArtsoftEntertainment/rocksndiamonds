@@ -2994,13 +2994,9 @@ static int getMenuTextStep(int spacing_height, int font_nr)
 
 void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
 {
-  int font_title = MENU_INFO_FONT_TITLE;
   int font_error = FONT_TEXT_2;
   int font_foot  = MENU_INFO_FONT_FOOT;
-  int spacing_title = menu.headline1_spacing_info[info_mode];
-  int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystart1 = mSY - SY + MENU_SCREEN_INFO_YSTART1;
-  int ystart2 = ystart1 + ystep_title;
+  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO);
@@ -3011,9 +3007,7 @@ void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
 
   DrawInfoScreen_Headline(0, 1, FALSE);
 
-  DrawTextSCentered(ystart1, font_title, text_title);
-  DrawTextSCentered(ystart2, font_error, text_error);
-
+  DrawTextSCentered(ystart, font_error, text_error);
   DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
 
   FadeIn(REDRAW_FIELD);
@@ -3023,11 +3017,9 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
 {
   static int infoscreen_step[MAX_INFO_ELEMENTS_ON_SCREEN];
   static int infoscreen_frame[MAX_INFO_ELEMENTS_ON_SCREEN];
-  int font_title = MENU_INFO_FONT_TITLE;
-  int font_foot  = MENU_INFO_FONT_FOOT;
-  int xstart  = mSX + MENU_SCREEN_INFO_SPACE_LEFT;
-  int ystart1 = mSY - SY + MENU_SCREEN_INFO_YSTART1;
-  int ystart2 = mSY + MENU_SCREEN_INFO_YSTART2;
+  int font_foot = MENU_INFO_FONT_FOOT;
+  int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT;
+  int ystart = mSY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int ystep = MENU_SCREEN_INFO_YSTEP;
   int element, action, direction;
@@ -3041,7 +3033,6 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
     for (i = 0; i < NUM_INFO_ELEMENTS_ON_SCREEN; i++)
       infoscreen_step[i] = infoscreen_frame[i] = 0;
 
-    DrawTextSCentered(ystart1, font_title, "The Game Elements:");
     DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_PAGE);
 
     FrameCounter = 0;
@@ -3113,9 +3104,9 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
 
     j++;
 
-    ClearRectangleOnBackground(drawto, xstart, ystart2 + (i - start) * ystep,
+    ClearRectangleOnBackground(drawto, xstart, ystart + (i - start) * ystep,
 			       TILEX, TILEY);
-    DrawFixedGraphicAnimationExt(drawto, xstart, ystart2 + (i - start) * ystep,
+    DrawFixedGraphicAnimationExt(drawto, xstart, ystart + (i - start) * ystep,
 				 graphic, sync_frame, USE_MASKING);
 
     if (init)
@@ -3151,7 +3142,7 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
   int font_height = getFontHeight(font_nr);
   int yoffset = (TILEX - 2 * font_height) / 2;
   int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT + TILEX + MINI_TILEX;
-  int ystart = mSY + MENU_SCREEN_INFO_YSTART2 + yoffset;
+  int ystart = mSY + MENU_SCREEN_INFO_YSTART1 + yoffset;
   int ystep = TILEY + 4;
   int pad_left = xstart - SX;
   int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
@@ -3318,10 +3309,8 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
   int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
   int font_foot  = MENU_INFO_FONT_FOOT;
-  int spacing_title = menu.headline1_spacing_info[info_mode];
-  int spacing_head  = menu.headline2_spacing_info[info_mode];
-  int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystep_head  = getMenuTextStep(spacing_head,  font_head);
+  int spacing_head = menu.headline2_spacing_info[info_mode];
+  int ystep_head = getMenuTextStep(spacing_head,  font_head);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
@@ -3409,8 +3398,6 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
 	PlaySoundLoop(sound);
       else
 	PlaySound(sound);
-
-      DrawTextSCentered(ystart, font_title, "The Game Background Sounds:");
     }
     else
     {
@@ -3420,19 +3407,16 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
 	PlayMusicLoop(music);
       else
 	PlayMusic(music);
-
-      DrawTextSCentered(ystart, font_title, "The Game Background Music:");
     }
-
-    ystart += ystep_title;
 
     if (!strEqual(list->title, UNKNOWN_NAME))
     {
       if (!strEqual(list->title_header, UNKNOWN_NAME))
-      {
 	DrawTextSCentered(ystart, font_head, list->title_header);
-	ystart += ystep_head;
-      }
+      else
+	DrawTextSCentered(ystart, font_head, "Track");
+
+      ystart += ystep_head;
 
       DrawTextFCentered(ystart, font_text, "\"%s\"", list->title);
       ystart += ystep_head;
@@ -3489,19 +3473,16 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
 
 static void DrawInfoScreen_Version(void)
 {
-  int font_title = MENU_INFO_FONT_TITLE;
-  int font_head  = MENU_INFO_FONT_HEAD;
-  int font_text  = MENU_INFO_FONT_TEXT;
-  int font_foot  = MENU_INFO_FONT_FOOT;
-  int spacing_title = menu.headline1_spacing_info[info_mode];
-  int spacing_head  = menu.headline2_spacing_info[info_mode];
-  int spacing_para  = menu.paragraph_spacing_info[info_mode];
-  int spacing_line  = menu.line_spacing_info[info_mode];
+  int font_head = MENU_INFO_FONT_HEAD;
+  int font_text = MENU_INFO_FONT_TEXT;
+  int font_foot = MENU_INFO_FONT_FOOT;
+  int spacing_head = menu.headline2_spacing_info[info_mode];
+  int spacing_para = menu.paragraph_spacing_info[info_mode];
+  int spacing_line = menu.line_spacing_info[info_mode];
   int xstep = getFontWidth(font_text);
-  int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystep_head  = getMenuTextStep(spacing_head,  font_head);
-  int ystep_para  = getMenuTextStep(spacing_para,  font_text);
-  int ystep_line  = getMenuTextStep(spacing_line,  font_text);
+  int ystep_head = getMenuTextStep(spacing_head,  font_head);
+  int ystep_para = getMenuTextStep(spacing_para,  font_text);
+  int ystep_line = getMenuTextStep(spacing_line,  font_text);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int xstart1 = mSX - SX + 2 * xstep;
@@ -3520,9 +3501,6 @@ static void DrawInfoScreen_Version(void)
   ClearField();
 
   DrawInfoScreen_Headline(0, 1, TRUE);
-
-  DrawTextSCentered(ystart, font_title, "Version Information:");
-  ystart += ystep_title;
 
   DrawTextF(xstart1, ystart, font_head, "Name");
   DrawTextF(xstart2, ystart, font_text, getProgramTitleString());
@@ -3714,24 +3692,17 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 }
 
 static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
-					 int use_global_screens,
-					 char *text_title)
+					 int use_global_screens)
 {
   char *filename = getInfoScreenFilename_Generic(screen_nr, use_global_screens);
-  int font_title = MENU_INFO_FONT_TITLE;
-  int font_text  = MENU_INFO_FONT_TEXT;
-  int font_foot  = MENU_INFO_FONT_FOOT;
-  int spacing_title = menu.headline1_spacing_info[info_mode];
-  int spacing_line  = menu.line_spacing_info[info_mode];
-  int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+  int font_text = MENU_INFO_FONT_TEXT;
+  int font_foot = MENU_INFO_FONT_FOOT;
+  int spacing_line = menu.line_spacing_info[info_mode];
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
   ClearField();
 
   DrawInfoScreen_Headline(screen_nr, num_screens, use_global_screens);
-
-  DrawTextSCentered(ystart, font_title, text_title);
 
   if (info_mode == INFO_MODE_CREDITS ||
       info_mode == INFO_MODE_PROGRAM)
@@ -3746,7 +3717,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
     boolean centered = TRUE;
     boolean parse_comments = TRUE;
 
-    DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART1 + ystep_title,
+    DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART1,
 		 filename, font_text, chars, -1, lines, line_spacing, -1,
 		 autowrap, centered, parse_comments);
   }
@@ -3760,7 +3731,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
 
     // if y position set to "-1", use static default value
     if (tmi->y == -1)
-      tmi->y = 150;
+      tmi->y = MENU_SCREEN_INFO_YSTART1;
 
     // if width set to "-1", automatically determine by playfield width
     if (tmi->width == -1)
@@ -3808,7 +3779,6 @@ static void DrawInfoScreen_Generic(void)
 
 void HandleInfoScreen_Generic(int dx, int dy, int button)
 {
-  static char *text_title = "";
   static char *text_no_info = "";
   static int num_screens = 0;
   static int screen_nr = 0;
@@ -3835,8 +3805,7 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
 	  break;
       }
 
-      text_title = "Credits:";
-      text_no_info = "No credits for this level set.";
+      text_no_info = "No credits available.";
     }
     else if (info_mode == INFO_MODE_PROGRAM)
     {
@@ -3846,7 +3815,6 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
       while (getProgramInfoFilename(num_screens) != NULL)
 	num_screens++;
 
-      text_title = "Program Information:";
       text_no_info = "No program info available.";
     }
     else if (info_mode == INFO_MODE_LEVELSET)
@@ -3857,7 +3825,6 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
       while (getLevelSetInfoFilename(num_screens) != NULL)
 	num_screens++;
 
-      text_title = "Level Set Information:";
       text_no_info = "No level set info available.";
     }
 
@@ -3878,8 +3845,7 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
       return;
     }
 
-    DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens,
-				 text_title);
+    DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
   }
   else if (button == MB_MENU_LEAVE)
   {
@@ -3907,8 +3873,7 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
 
       FadeOut(REDRAW_FIELD);
 
-      DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens,
-				   text_title);
+      DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
 
       FadeIn(REDRAW_FIELD);
     }
