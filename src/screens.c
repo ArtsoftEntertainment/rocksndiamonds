@@ -92,6 +92,17 @@
 
 #define MAX_MENU_MODES			MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
+// info screen titles
+#define STR_INFO_MAIN			"Info Screen"
+#define STR_INFO_TITLE			"Title Screen"
+#define STR_INFO_ELEMENTS		"Game Elements"
+#define STR_INFO_MUSIC			"Game Music"
+#define STR_INFO_CREDITS		"Credits"
+#define STR_INFO_PROGRAM		"Program Info"
+#define STR_INFO_VERSION		"Version Info"
+#define STR_INFO_LEVELSET		"Level Set Info"
+#define STR_INFO_EXIT			"Exit"
+
 // setup screen titles
 #define STR_SETUP_MAIN			"Setup"
 #define STR_SETUP_GAME			"Game & Menu"
@@ -2412,15 +2423,15 @@ static void execExitInfo(void)
 
 static struct TokenInfo info_info_main[] =
 {
-  { TYPE_ENTER_SCREEN,	execInfoTitleScreen,	"Title Screen"		},
-  { TYPE_ENTER_SCREEN,	execInfoElements,	"Elements Info"		},
-  { TYPE_ENTER_SCREEN,	execInfoMusic,		"Music Info"		},
-  { TYPE_ENTER_SCREEN,	execInfoCredits,	"Credits"		},
-  { TYPE_ENTER_SCREEN,	execInfoProgram,	"Program Info"		},
-  { TYPE_ENTER_SCREEN,	execInfoVersion,	"Version Info"		},
-  { TYPE_ENTER_SCREEN,	execInfoLevelSet,	"Level Set Info"	},
+  { TYPE_ENTER_SCREEN,	execInfoTitleScreen,	STR_INFO_TITLE		},
+  { TYPE_ENTER_SCREEN,	execInfoElements,	STR_INFO_ELEMENTS	},
+  { TYPE_ENTER_SCREEN,	execInfoMusic,		STR_INFO_MUSIC		},
+  { TYPE_ENTER_SCREEN,	execInfoCredits,	STR_INFO_CREDITS	},
+  { TYPE_ENTER_SCREEN,	execInfoProgram,	STR_INFO_PROGRAM	},
+  { TYPE_ENTER_SCREEN,	execInfoVersion,	STR_INFO_VERSION	},
+  { TYPE_ENTER_SCREEN,	execInfoLevelSet,	STR_INFO_LEVELSET	},
   { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execExitInfo, 		"Exit"			},
+  { TYPE_LEAVE_MENU,	execExitInfo, 		STR_INFO_EXIT		},
 
   { 0,			NULL,			NULL			}
 };
@@ -2590,7 +2601,7 @@ static void DrawInfoScreen_Main(void)
 
   OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
 
-  DrawTextSCentered(mSY - SY + 16, FONT_TITLE_1, "Info Screen");
+  DrawTextSCentered(mSY - SY + 16, FONT_TITLE_1, STR_INFO_MAIN);
 
   info_info = info_info_main;
 
