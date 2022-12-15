@@ -1,10 +1,7 @@
-# .font: font.text_2
 NB's Introduction Levels
 
-# .font: font.text_1
-About
-
-# .font: font.info.levelset
+About  
+-----  
 These levels are meant as an advanced tutorial, where (nearly) all of the
 Rocks'n'Diamonds elements are introduced (with one exception; see below).
 
@@ -15,16 +12,12 @@ The only elements not present are gravity ports. Because gravity is
 introduced not until the last level and they originally belong to Supaplex,
 they simply didn't fit in anywhere ;)
 
-# .font: font.text_1
-Legal notes
-
-# .font: font.info.levelset
+Legal notes  
+-----------  
 You may do anything with these levels as long as they or any derived work
 of them are made available freely. If you however want to charge money for
 derived work, please contact the author first.
 
-# .font: font.text_1
-Contact
-
-# .font: font.info.levelset
+Contact  
+-------  
 Niko Böhm <flummi@semisane.de>
