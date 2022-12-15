@@ -326,6 +326,7 @@ static void DrawHallOfFame_setScoreEntries(void);
 static void HandleHallOfFame_SelectLevel(int, int);
 static char *getHallOfFameRankText(int, int);
 static char *getHallOfFameScoreText(int, int);
+static char *getInfoScreenTitle_Generic(void);
 
 static struct TokenInfo *getSetupInfoFinal(struct TokenInfo *);
 
@@ -1560,10 +1561,31 @@ static void drawChooseTreeEdit(int ypos_raw, boolean active)
   DrawText(sx, sy, STR_CHOOSE_TREE_EDIT, font_nr);
 }
 
-static void DrawHeadline(void)
+static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
+				    int use_global_screens)
 {
-  DrawTextSCentered(MENU_TITLE1_YPOS, FONT_TITLE_1, main_text_title_1);
-  DrawTextSCentered(MENU_TITLE2_YPOS, FONT_TITLE_2, main_text_title_2);
+  char *info_text_title_1 = getInfoScreenTitle_Generic();
+  char info_text_title_2[MAX_LINE_LEN + 1];
+
+  if (num_screens > 1)
+  {
+    sprintf(info_text_title_2, "Page %d of %d", screen_nr + 1, num_screens);
+  }
+  else
+  {
+    char *text_format = (use_global_screens ? "for %s" : "for \"%s\"");
+    int max_text_len = SXSIZE / getFontWidth(FONT_TITLE_2);
+    int max_name_len = max_text_len - strlen(text_format) - strlen("%s");
+    char name_cut[max_name_len];
+    char *name_full = (use_global_screens ? getProgramTitleString() :
+		       leveldir_current->name);
+
+    snprintf(name_cut, max_name_len, "%s", name_full);
+    snprintf(info_text_title_2, max_text_len, text_format, name_cut);
+  }
+
+  DrawTextSCentered(MENU_TITLE1_YPOS, FONT_TITLE_1, info_text_title_1);
+  DrawTextSCentered(MENU_TITLE2_YPOS, FONT_TITLE_2, info_text_title_2);
 }
 
 static void DrawTitleScreenImage(int nr, boolean initial)
@@ -2986,7 +3008,8 @@ void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
   FadeOut(REDRAW_FIELD);
 
   ClearField();
-  DrawHeadline();
+
+  DrawInfoScreen_Headline(0, 1, FALSE);
 
   DrawTextSCentered(ystart1, font_title, text_title);
   DrawTextSCentered(ystart2, font_error, text_error);
@@ -3017,9 +3040,6 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
   {
     for (i = 0; i < NUM_INFO_ELEMENTS_ON_SCREEN; i++)
       infoscreen_step[i] = infoscreen_frame[i] = 0;
-
-    ClearField();
-    DrawHeadline();
 
     DrawTextSCentered(ystart1, font_title, "The Game Elements:");
     DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_PAGE);
@@ -3254,6 +3274,9 @@ void HandleInfoScreen_Elements(int dx, int dy, int button)
     if (button != MB_MENU_INITIALIZE)
       FadeOut(REDRAW_FIELD);
 
+    ClearField();
+
+    DrawInfoScreen_Headline(page, num_pages, TRUE);
     DrawInfoScreen_HelpAnim(page * anims_per_page, num_anims, TRUE);
 
     if (button != MB_MENU_INITIALIZE)
@@ -3276,7 +3299,8 @@ static void DrawInfoScreen_Music(void)
   FadeOut(REDRAW_FIELD);
 
   ClearField();
-  DrawHeadline();
+
+  DrawInfoScreen_Headline(0, 1, TRUE);
 
   LoadMusicInfo();
 
@@ -3288,6 +3312,8 @@ static void DrawInfoScreen_Music(void)
 void HandleInfoScreen_Music(int dx, int dy, int button)
 {
   static struct MusicFileInfo *list = NULL;
+  static int num_screens = 0;
+  static int screen_nr = 0;
   int font_title = MENU_INFO_FONT_TITLE;
   int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
@@ -3301,6 +3327,17 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
 
   if (button == MB_MENU_INITIALIZE)
   {
+    struct MusicFileInfo *list_ptr = music_file_info;
+
+    num_screens = 0;
+    screen_nr = 0;
+
+    while (list_ptr != NULL)
+    {
+      list_ptr = list_ptr->next;
+      num_screens++;
+    }
+
     list = music_file_info;
 
     if (list == NULL)
@@ -3308,7 +3345,8 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       FadeMenuSoundsAndMusic();
 
       ClearField();
-      DrawHeadline();
+
+      DrawInfoScreen_Headline(0, 1, TRUE);
 
       DrawTextSCentered(ystart, font_title, "No music info for this level set.");
       DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
@@ -3335,7 +3373,10 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       PlaySound(SND_MENU_ITEM_SELECTING);
 
       if (list != NULL)
+      {
 	list = (dx < 0 ? list->prev : list->next);
+	screen_nr += (dx < 0 ? -1 : +1);
+      }
     }
 
     if (list == NULL)
@@ -3357,7 +3398,8 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       FadeOut(REDRAW_FIELD);
 
     ClearField();
-    DrawHeadline();
+
+    DrawInfoScreen_Headline(screen_nr, num_screens, TRUE);
 
     if (list->is_sound)
     {
@@ -3476,7 +3518,8 @@ static void DrawInfoScreen_Version(void)
   FadeOut(REDRAW_FIELD);
 
   ClearField();
-  DrawHeadline();
+
+  DrawInfoScreen_Headline(0, 1, TRUE);
 
   DrawTextSCentered(ystart, font_title, "Version Information:");
   ystart += ystep_title;
@@ -3641,6 +3684,19 @@ void HandleInfoScreen_Version(int button)
   }
 }
 
+static char *getInfoScreenTitle_Generic(void)
+{
+  return (info_mode == INFO_MODE_MAIN     ? STR_INFO_MAIN     :
+	  info_mode == INFO_MODE_TITLE    ? STR_INFO_TITLE    :
+	  info_mode == INFO_MODE_ELEMENTS ? STR_INFO_ELEMENTS :
+	  info_mode == INFO_MODE_MUSIC    ? STR_INFO_MUSIC    :
+	  info_mode == INFO_MODE_CREDITS  ? STR_INFO_CREDITS  :
+	  info_mode == INFO_MODE_PROGRAM  ? STR_INFO_PROGRAM  :
+	  info_mode == INFO_MODE_VERSION  ? STR_INFO_VERSION  :
+	  info_mode == INFO_MODE_LEVELSET ? STR_INFO_LEVELSET :
+	  "");
+}
+
 static int getInfoScreenBackground_Generic(void)
 {
   return (info_mode == INFO_MODE_CREDITS  ? IMG_BACKGROUND_INFO_CREDITS  :
@@ -3672,7 +3728,8 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
   ClearField();
-  DrawHeadline();
+
+  DrawInfoScreen_Headline(screen_nr, num_screens, use_global_screens);
 
   DrawTextSCentered(ystart, font_title, text_title);
 
@@ -3783,6 +3840,8 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
     }
     else if (info_mode == INFO_MODE_PROGRAM)
     {
+      use_global_screens = TRUE;
+
       // determine number of program info screens
       while (getProgramInfoFilename(num_screens) != NULL)
 	num_screens++;
@@ -3792,6 +3851,8 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
     }
     else if (info_mode == INFO_MODE_LEVELSET)
     {
+      use_global_screens = FALSE;
+
       // determine number of levelset info screens
       while (getLevelSetInfoFilename(num_screens) != NULL)
 	num_screens++;
@@ -3808,7 +3869,8 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
       int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
       ClearField();
-      DrawHeadline();
+
+      DrawInfoScreen_Headline(screen_nr, num_screens, use_global_screens);
 
       DrawTextSCentered(ystart, font_title, text_no_info);
       DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
