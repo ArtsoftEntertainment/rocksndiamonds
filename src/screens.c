@@ -96,7 +96,7 @@
 #define STR_INFO_MAIN			"Info Screen"
 #define STR_INFO_TITLE			"Title Screen"
 #define STR_INFO_ELEMENTS		"Game Elements"
-#define STR_INFO_MUSIC			"Game Music"
+#define STR_INFO_MUSIC			"Music Info"
 #define STR_INFO_CREDITS		"Credits"
 #define STR_INFO_PROGRAM		"Program Info"
 #define STR_INFO_VERSION		"Version Info"
