@@ -9821,6 +9821,13 @@ static void CreateScreenMenubuttons(void)
 	// special compatibility handling for "BD2K3" graphics set
 	if (strPrefix(leveldir_current->identifier, "BD2K3"))
 	  x = SX + TILESIZE + MINI_TILESIZE;
+
+	// special compatibility handling for "jue0" graphics set
+	if (strPrefix(artwork.gfx_current_identifier, "jue0"))
+	{
+	  x = SX + SXSIZE - 4 * TILESIZE;
+	  y = SY + SYSIZE - 3 * TILESIZE;
+	}
       }
     }
 
