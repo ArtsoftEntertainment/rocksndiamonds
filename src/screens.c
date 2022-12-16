@@ -176,14 +176,11 @@
 #define MENU_SCREEN_INFO_SPACE_RIGHT	(menu.right_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_TOP	(menu.top_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_BOTTOM	(menu.bottom_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_YSTART1	MENU_SCREEN_INFO_SPACE_TOP
-#define MENU_SCREEN_INFO_YSTART2	(MENU_SCREEN_INFO_YSTART1 +	       \
-					 getMenuTextStep(MENU_INFO_SPACE_HEAD, \
-							 MENU_INFO_FONT_TITLE))
+#define MENU_SCREEN_INFO_YSTART		MENU_SCREEN_INFO_SPACE_TOP
 #define MENU_SCREEN_INFO_YSTEP		(TILEY + 4)
 #define MENU_SCREEN_INFO_YBOTTOM	(SYSIZE - MENU_SCREEN_INFO_SPACE_BOTTOM)
 #define MENU_SCREEN_INFO_YSIZE		(MENU_SCREEN_INFO_YBOTTOM -	\
-					 MENU_SCREEN_INFO_YSTART2 -	\
+					 MENU_SCREEN_INFO_YSTART -	\
 					 TILEY / 2)
 #define MAX_INFO_ELEMENTS_ON_SCREEN	128
 #define STD_INFO_ELEMENTS_ON_SCREEN	(MENU_SCREEN_INFO_YSIZE /	\
@@ -2996,7 +2993,7 @@ void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
 {
   int font_error = FONT_TEXT_2;
   int font_foot  = MENU_INFO_FONT_FOOT;
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO);
@@ -3019,7 +3016,7 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
   static int infoscreen_frame[MAX_INFO_ELEMENTS_ON_SCREEN];
   int font_foot = MENU_INFO_FONT_FOOT;
   int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT;
-  int ystart = mSY + MENU_SCREEN_INFO_YSTART1;
+  int ystart = mSY + MENU_SCREEN_INFO_YSTART;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int ystep = MENU_SCREEN_INFO_YSTEP;
   int element, action, direction;
@@ -3142,7 +3139,7 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
   int font_height = getFontHeight(font_nr);
   int yoffset = (TILEX - 2 * font_height) / 2;
   int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT + TILEX + MINI_TILEX;
-  int ystart = mSY + MENU_SCREEN_INFO_YSTART1 + yoffset;
+  int ystart = mSY + MENU_SCREEN_INFO_YSTART + yoffset;
   int ystep = TILEY + 4;
   int pad_left = xstart - SX;
   int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
@@ -3311,7 +3308,7 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
   int font_foot  = MENU_INFO_FONT_FOOT;
   int spacing_head = menu.headline2_spacing_info[info_mode];
   int ystep_head = getMenuTextStep(spacing_head,  font_head);
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
   if (button == MB_MENU_INITIALIZE)
@@ -3483,7 +3480,7 @@ static void DrawInfoScreen_Version(void)
   int ystep_head = getMenuTextStep(spacing_head,  font_head);
   int ystep_para = getMenuTextStep(spacing_para,  font_text);
   int ystep_line = getMenuTextStep(spacing_line,  font_text);
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int xstart1 = mSX - SX + 2 * xstep;
   int xstart2 = mSX - SX + 18 * xstep;
@@ -3708,7 +3705,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
       info_mode == INFO_MODE_PROGRAM)
   {
     int width = SXSIZE;
-    int height = MENU_SCREEN_INFO_YBOTTOM - MENU_SCREEN_INFO_YSTART1;
+    int height = MENU_SCREEN_INFO_YBOTTOM - MENU_SCREEN_INFO_YSTART;
     int chars = width / getFontWidth(font_text);
     int lines = height / getFontHeight(font_text);
     int padx = (width - chars * getFontWidth(font_text)) / 2;
@@ -3717,7 +3714,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
     boolean centered = TRUE;
     boolean parse_comments = TRUE;
 
-    DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART1,
+    DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART,
 		 filename, font_text, chars, -1, lines, line_spacing, -1,
 		 autowrap, centered, parse_comments);
   }
@@ -3731,7 +3728,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
 
     // if y position set to "-1", use static default value
     if (tmi->y == -1)
-      tmi->y = MENU_SCREEN_INFO_YSTART1;
+      tmi->y = MENU_SCREEN_INFO_YSTART;
 
     // if width set to "-1", automatically determine by playfield width
     if (tmi->width == -1)
@@ -3832,7 +3829,7 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
     {
       int font_title = MENU_INFO_FONT_TITLE;
       int font_foot  = MENU_INFO_FONT_FOOT;
-      int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+      int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
       int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
       ClearField();
@@ -4593,7 +4590,7 @@ static void drawChooseTreeScreen_Scores_NotAvailable(void)
   int font_foot  = FONT_INITIAL_2;
   int spacing_title = menu.headline1_spacing_info[INFO_MODE_TITLE];
   int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystart1 = mSY - SY + MENU_SCREEN_INFO_YSTART1;
+  int ystart1 = mSY - SY + MENU_SCREEN_INFO_YSTART;
   int ystart2 = ystart1 + ystep_title;
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int ystart0 = MENU_TITLE2_YPOS;
