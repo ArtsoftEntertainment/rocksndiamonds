@@ -4580,35 +4580,6 @@ static void drawChooseTreeScreen(TreeInfo *ti)
     MapScreenTreeGadgets(ti);
 }
 
-static void drawChooseTreeScreen_Scores_NotAvailable(void)
-{
-  // dirty workaround to use spacing definitions from info screen
-  info_mode = INFO_MODE_TITLE;
-
-  char *text_info = "HighScores of Level %d";
-  char *text_title = "Score information:";
-  char *text_error = "No scores for this level.";
-  char *text_foot = TEXT_MAIN_MENU;
-  int font_info = FONT_TITLE_2;
-  int font_title = FONT_INITIAL_3;
-  int font_error = FONT_INITIAL_4;
-  int font_foot  = FONT_INITIAL_2;
-  int spacing_title = menu.headline1_spacing_info[INFO_MODE_TITLE];
-  int ystep_title = getMenuTextStep(spacing_title, font_title);
-  int ystart1 = mSY - SY + MENU_SCREEN_INFO_YSTART;
-  int ystart2 = ystart1 + ystep_title;
-  int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
-  int ystart0 = MENU_TITLE2_YPOS;
-
-  drawChooseTreeHeadExt(TREE_TYPE_SCORE_ENTRY, INFOTEXT_SCORE_ENTRY);
-  DrawTextFCentered(ystart0, font_info, text_info, scores.last_level_nr);
-
-  DrawTextSCentered(ystart1, font_title, text_title);
-  DrawTextSCentered(ystart2, font_error, text_error);
-
-  DrawTextSCentered(ybottom, font_foot, text_foot);
-}
-
 static TreeInfo *setHallOfFameActiveEntry(TreeInfo **ti_ptr)
 {
   int score_pos = scores.last_added;
@@ -4650,9 +4621,6 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   int num_entries = numTreeInfoInGroup(ti);
   int num_page_entries = MIN(num_entries, NUM_MENU_ENTRIES_ON_SCREEN);
   boolean position_set_by_scrollbar = (dx == 999);
-  boolean button_action = (button == MB_MENU_LEAVE || button == MB_MENU_CHOICE);
-  boolean button_is_valid = (mx >= 0 && my >= 0);
-  boolean button_screen_clicked = (button_action && button_is_valid);
 
   if (game_status == GAME_MODE_SCORES)
   {
@@ -4665,31 +4633,10 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
       DrawHallOfFame_setScoreEntries();
 
-      if (score_entries != NULL)
-      {
-	ti = setHallOfFameActiveEntry(ti_ptr);
+      ti = setHallOfFameActiveEntry(ti_ptr);
 
-	if (button != MB_MENU_INITIALIZE)
-	  drawChooseTreeScreen(ti);
-      }
-    }
-
-    if (score_entries == NULL)
-    {
-      if (button == MB_MENU_INITIALIZE)
-      {
-	drawChooseTreeScreen_Scores_NotAvailable();
-      }
-      else if (button_screen_clicked)
-      {
-	PlaySound(SND_MENU_ITEM_SELECTING);
-
-	SetGameStatus(GAME_MODE_MAIN);
-
-	DrawMainMenu();
-      }
-
-      return;
+      if (button != MB_MENU_INITIALIZE)
+	drawChooseTreeScreen(ti);
     }
   }
 
@@ -5289,8 +5236,6 @@ static void DrawHallOfFame_setScoreEntries(void)
 
   if (score_entries != NULL && scores.continue_playing)
     setString(&score_entries->node_group->name, BACKLINK_TEXT_NEXT);
-
-  // ("score_entries" and "score_entry_current" may be NULL here)
 }
 
 void DrawHallOfFame(int nr)
@@ -5459,13 +5404,6 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   // redraw level selection buttons (which have just been erased)
   RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
-
-  if (score_entries == NULL)
-  {
-    drawChooseTreeScreen_Scores_NotAvailable();
-
-    return;
-  }
 
   drawChooseTreeHead(score_entries);
   drawChooseTreeInfo(score_entries);
