@@ -36,6 +36,11 @@ struct ConfigInfo music_config[] =
   { "background.SCORES",		UNDEFINED_FILENAME		},
   { "background.EDITOR",		UNDEFINED_FILENAME		},
   { "background.INFO",			"rhythmloop.wav"		},
+  { "background.INFO[ELEMENTS]",	UNDEFINED_FILENAME		},
+  { "background.INFO[CREDITS]",		UNDEFINED_FILENAME		},
+  { "background.INFO[PROGRAM]",		UNDEFINED_FILENAME		},
+  { "background.INFO[VERSION]",		UNDEFINED_FILENAME		},
+  { "background.INFO[LEVELSET]",	UNDEFINED_FILENAME		},
   { "background.SETUP",			UNDEFINED_FILENAME		},
 
   { "background.titlescreen_initial_1",	UNDEFINED_FILENAME		},

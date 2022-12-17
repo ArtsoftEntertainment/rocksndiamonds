@@ -322,6 +322,11 @@ struct ConfigInfo sound_config[] =
   { "background.SCORES.mode_loop",	"false"				},
   { "background.EDITOR",		UNDEFINED_FILENAME		},
   { "background.INFO",			UNDEFINED_FILENAME		},
+  { "background.INFO[ELEMENTS]",	UNDEFINED_FILENAME		},
+  { "background.INFO[CREDITS]",		UNDEFINED_FILENAME		},
+  { "background.INFO[PROGRAM]",		UNDEFINED_FILENAME		},
+  { "background.INFO[VERSION]",		UNDEFINED_FILENAME		},
+  { "background.INFO[LEVELSET]",	UNDEFINED_FILENAME		},
   { "background.SETUP",			UNDEFINED_FILENAME		},
 
   { "background.titlescreen_initial_1",	UNDEFINED_FILENAME		},

@@ -500,6 +500,11 @@ sub print_sounds_list
 	    $sound =~ s/^/CLASS_/;	# add class identifier
  	}
 
+	# dirty hack for making "ABC[DEF]" work as a "special" suffix
+	$sound =~ s/([^_])\[/$1_/;
+	$sound =~ s/\[//;
+	$sound =~ s/\]//;
+
 	$sound = "SND_$sound";
 
 	my $define_text = "#define $sound";
@@ -557,6 +562,11 @@ sub print_music_list
 	s/\",.*$//;
 
 	my $music = $_;
+
+	# dirty hack for making "ABC[DEF]" work as a "special" suffix
+	$music =~ s/([^_])\[/$1_/;
+	$music =~ s/\[//;
+	$music =~ s/\]//;
 
 	$music = "MUS_$music";
 

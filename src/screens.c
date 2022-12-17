@@ -329,6 +329,9 @@ static void HandleHallOfFame_SelectLevel(int, int);
 static char *getHallOfFameRankText(int, int);
 static char *getHallOfFameScoreText(int, int);
 static char *getInfoScreenTitle_Generic(void);
+static int getInfoScreenBackgroundImage_Generic(void);
+static int getInfoScreenBackgroundSound_Generic(void);
+static int getInfoScreenBackgroundMusic_Generic(void);
 
 static struct TokenInfo *getSetupInfoFinal(struct TokenInfo *);
 
@@ -2481,6 +2484,78 @@ static struct TokenInfo setup_info_input[];
 
 static struct TokenInfo *menu_info;
 
+static void PlayInfoSound(void)
+{
+  int info_sound = getInfoScreenBackgroundSound_Generic();
+  char *next_sound = getSoundInfoEntryFilename(info_sound);
+
+  if (next_sound != NULL)
+    PlayMenuSoundExt(info_sound);
+  else
+    PlayMenuSound();
+}
+
+static void PlayInfoSoundIfLoop(void)
+{
+  int info_sound = getInfoScreenBackgroundSound_Generic();
+  char *next_sound = getSoundInfoEntryFilename(info_sound);
+
+  if (next_sound != NULL)
+    PlayMenuSoundIfLoopExt(info_sound);
+  else
+    PlayMenuSoundIfLoop();
+}
+
+static void PlayInfoMusic(void)
+{
+  int info_music = getInfoScreenBackgroundMusic_Generic();
+  char *curr_music = getCurrentlyPlayingMusicFilename();
+  char *next_music = getMusicInfoEntryFilename(info_music);
+
+  if (next_music != NULL)
+  {
+    // play music if info screen music differs from current music
+    if (!strEqual(curr_music, next_music))
+      PlayMenuMusicExt(info_music);
+  }
+  else
+  {
+    // only needed if info screen was directly invoked from main menu
+    PlayMenuMusic();
+  }
+}
+
+static void PlayInfoSoundsAndMusic(void)
+{
+  PlayInfoSound();
+  PlayInfoMusic();
+}
+
+static void FadeInfoSounds(void)
+{
+  FadeSounds();
+}
+
+static void FadeInfoMusic(void)
+{
+  int info_music = getInfoScreenBackgroundMusic_Generic();
+  char *curr_music = getCurrentlyPlayingMusicFilename();
+  char *next_music = getMusicInfoEntryFilename(info_music);
+
+  if (next_music != NULL)
+  {
+    // fade music if info screen music differs from current music
+    if (!strEqual(curr_music, next_music))
+      FadeMusic();
+  }
+}
+
+static void FadeInfoSoundsAndMusic(void)
+{
+  FadeInfoSounds();
+  FadeInfoMusic();
+}
+
 static void DrawCursorAndText_Menu_Ext(struct TokenInfo *token_info,
 				       int screen_pos, int menu_info_pos_raw,
 				       boolean active)
@@ -3191,12 +3266,16 @@ static void DrawInfoScreen_Elements(void)
 {
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_ELEMENTS);
 
+  FadeInfoSoundsAndMusic();
+
   FadeOut(REDRAW_FIELD);
 
   LoadHelpAnimInfo();
   LoadHelpTextInfo();
 
   HandleInfoScreen_Elements(0, 0, MB_MENU_INITIALIZE);
+
+  PlayInfoSoundsAndMusic();
 
   FadeIn(REDRAW_FIELD);
 }
@@ -3253,7 +3332,7 @@ void HandleInfoScreen_Elements(int dx, int dy, int button)
 
     if (page < 0 || page >= num_pages)
     {
-      FadeMenuSoundsAndMusic();
+      FadeInfoSoundsAndMusic();
 
       info_mode = INFO_MODE_MAIN;
       DrawInfoScreen();
@@ -3281,7 +3360,7 @@ void HandleInfoScreen_Elements(int dx, int dy, int button)
       if (page < num_pages)
 	DrawInfoScreen_HelpAnim(page * anims_per_page, num_anims, FALSE);
 
-    PlayMenuSoundIfLoop();
+    PlayInfoSoundIfLoop();
   }
 }
 
@@ -3498,6 +3577,8 @@ static void DrawInfoScreen_Version(void)
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_VERSION);
 
+  FadeInfoSoundsAndMusic();
+
   FadeOut(REDRAW_FIELD);
 
   ClearField();
@@ -3635,6 +3716,8 @@ static void DrawInfoScreen_Version(void)
 
   DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
 
+  PlayInfoSoundsAndMusic();
+
   FadeIn(REDRAW_FIELD);
 }
 
@@ -3677,12 +3760,35 @@ static char *getInfoScreenTitle_Generic(void)
 	  "");
 }
 
-static int getInfoScreenBackground_Generic(void)
+static int getInfoScreenBackgroundImage_Generic(void)
 {
-  return (info_mode == INFO_MODE_CREDITS  ? IMG_BACKGROUND_INFO_CREDITS  :
+  return (info_mode == INFO_MODE_ELEMENTS ? IMG_BACKGROUND_INFO_ELEMENTS :
+	  info_mode == INFO_MODE_MUSIC    ? IMG_BACKGROUND_INFO_MUSIC    :
+	  info_mode == INFO_MODE_CREDITS  ? IMG_BACKGROUND_INFO_CREDITS  :
 	  info_mode == INFO_MODE_PROGRAM  ? IMG_BACKGROUND_INFO_PROGRAM  :
+	  info_mode == INFO_MODE_VERSION  ? IMG_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? IMG_BACKGROUND_INFO_LEVELSET :
 	  IMG_BACKGROUND_INFO);
+}
+
+static int getInfoScreenBackgroundSound_Generic(void)
+{
+  return (info_mode == INFO_MODE_ELEMENTS ? SND_BACKGROUND_INFO_ELEMENTS :
+	  info_mode == INFO_MODE_CREDITS  ? SND_BACKGROUND_INFO_CREDITS  :
+	  info_mode == INFO_MODE_PROGRAM  ? SND_BACKGROUND_INFO_PROGRAM  :
+	  info_mode == INFO_MODE_VERSION  ? SND_BACKGROUND_INFO_VERSION  :
+	  info_mode == INFO_MODE_LEVELSET ? SND_BACKGROUND_INFO_LEVELSET :
+	  SND_BACKGROUND_INFO);
+}
+
+static int getInfoScreenBackgroundMusic_Generic(void)
+{
+  return (info_mode == INFO_MODE_ELEMENTS ? MUS_BACKGROUND_INFO_ELEMENTS :
+	  info_mode == INFO_MODE_CREDITS  ? MUS_BACKGROUND_INFO_CREDITS  :
+	  info_mode == INFO_MODE_PROGRAM  ? MUS_BACKGROUND_INFO_PROGRAM  :
+	  info_mode == INFO_MODE_VERSION  ? MUS_BACKGROUND_INFO_VERSION  :
+	  info_mode == INFO_MODE_LEVELSET ? MUS_BACKGROUND_INFO_LEVELSET :
+	  MUS_BACKGROUND_INFO);
 }
 
 static char *getInfoScreenFilename_Generic(int nr, boolean global)
@@ -3768,13 +3874,15 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
 
 static void DrawInfoScreen_Generic(void)
 {
-  SetMainBackgroundImageIfDefined(getInfoScreenBackground_Generic());
+  SetMainBackgroundImageIfDefined(getInfoScreenBackgroundImage_Generic());
 
-  FadeMenuSoundsAndMusic();
+  FadeInfoSoundsAndMusic();
 
   FadeOut(REDRAW_FIELD);
 
   HandleInfoScreen_Generic(0, 0, MB_MENU_INITIALIZE);
+
+  PlayInfoSoundsAndMusic();
 
   FadeIn(REDRAW_FIELD);
 }
@@ -3864,7 +3972,7 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
 
     if (screen_nr < 0 || screen_nr >= num_screens)
     {
-      FadeMenuSoundsAndMusic();
+      FadeInfoSoundsAndMusic();
 
       info_mode = INFO_MODE_MAIN;
       DrawInfoScreen();
@@ -3882,7 +3990,7 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
   }
   else
   {
-    PlayMenuSoundIfLoop();
+    PlayInfoSoundIfLoop();
   }
 }
 
@@ -3904,11 +4012,6 @@ static void DrawInfoScreen(void)
     DrawInfoScreen_Generic();
   else
     DrawInfoScreen_Main();
-
-  if (info_mode != INFO_MODE_MAIN &&
-      info_mode != INFO_MODE_TITLE &&
-      info_mode != INFO_MODE_MUSIC)
-    PlayMenuSoundsAndMusic();
 }
 
 void DrawInfoScreen_FromMainMenu(int nr)
