@@ -5428,15 +5428,12 @@ static void DrawScoreInfo_Content(int entry_nr)
   struct ScoreEntry *entry = &scores.entry[entry_nr];
   char *pos_text = getHallOfFameRankText(entry_nr, 0);
   char *tape_date = getHallOfFameTapeDateText(entry);
-  int font_title = MENU_INFO_FONT_TITLE;
   int font_head  = MENU_INFO_FONT_HEAD;
   int font_text  = MENU_INFO_FONT_TEXT;
   int font_foot  = MENU_INFO_FONT_FOOT;
-  int spacing_title = menu.headline1_spacing[GAME_MODE_SCOREINFO];
   int spacing_para  = menu.paragraph_spacing[GAME_MODE_SCOREINFO];
   int spacing_line  = menu.line_spacing[GAME_MODE_SCOREINFO];
   int xstep = getFontWidth(font_text);
-  int ystep_title = getMenuTextStep(spacing_title, font_title);
   int ystep_para  = getMenuTextStep(spacing_para,  font_text);
   int ystep_line  = getMenuTextStep(spacing_line,  font_text);
   int xstart  = mSX - SX + menu.left_spacing[GAME_MODE_SCOREINFO];
@@ -5472,9 +5469,6 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   drawChooseTreeHead(score_entries);
   drawChooseTreeInfo(score_entries);
-
-  DrawTextSCentered(ystart, font_title, "Score Information:");
-  ystart += ystep_title;
 
   DrawTextF(xstart1, ystart, font_head, "Level Set");
   lines = DrawTextBufferS(xstart2, ystart, leveldir_current->name, font_text,
