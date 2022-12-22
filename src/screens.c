@@ -3070,11 +3070,23 @@ static int getMenuTextStep(int spacing_height, int font_nr)
   return getFontHeight(font_nr) + getMenuTextSpacing(spacing_height, font_nr);
 }
 
+static int getHeadlineSpacing(void)
+{
+  // special compatibility handling for "R'n'D jue 2022" game editions
+  int spacing_check = menu.headline1_spacing[GAME_MODE_SCOREINFO];
+  int spacing = (game_status == GAME_MODE_SCOREINFO ?
+		 menu.headline1_spacing[GAME_MODE_SCOREINFO] :
+		 menu.headline1_spacing_info[info_mode]);
+  int font = MENU_INFO_FONT_TITLE;
+
+  return (spacing_check != -2 ? getMenuTextStep(spacing, font) : 0);
+}
+
 void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
 {
   int font_error = FONT_TEXT_2;
   int font_foot  = MENU_INFO_FONT_FOOT;
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
+  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO);
@@ -3097,7 +3109,7 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
   static int infoscreen_frame[MAX_INFO_ELEMENTS_IN_ARRAY];
   int font_foot = MENU_INFO_FONT_FOOT;
   int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT;
-  int ystart = mSY + MENU_SCREEN_INFO_YSTART;
+  int ystart = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int ystep = MENU_SCREEN_INFO_YSTEP;
   int element, action, direction;
@@ -3220,7 +3232,7 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
   int font_height = getFontHeight(font_nr);
   int yoffset = (TILEX - 2 * font_height) / 2;
   int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT + TILEX + MINI_TILEX;
-  int ystart = mSY + MENU_SCREEN_INFO_YSTART + yoffset;
+  int ystart = mSY + MENU_SCREEN_INFO_YSTART + yoffset + getHeadlineSpacing();
   int ystep = TILEY + 4;
   int pad_left = xstart - SX;
   int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
@@ -3565,7 +3577,7 @@ static void DrawInfoScreen_Version(void)
   int ystep_head = getMenuTextStep(spacing_head,  font_head);
   int ystep_para = getMenuTextStep(spacing_para,  font_text);
   int ystep_line = getMenuTextStep(spacing_line,  font_text);
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
+  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int xstart1 = mSX - SX + 2 * xstep;
   int xstart2 = mSX - SX + 18 * xstep;
@@ -3822,11 +3834,13 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
     int lines = height / getFontHeight(font_text);
     int padx = (width - chars * getFontWidth(font_text)) / 2;
     int line_spacing = getMenuTextSpacing(spacing_line, font_text);
+    int xstart = mSX + padx;
+    int ystart = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
     boolean autowrap = FALSE;
     boolean centered = TRUE;
     boolean parse_comments = TRUE;
 
-    DrawTextFile(mSX + padx, mSY + MENU_SCREEN_INFO_YSTART,
+    DrawTextFile(xstart, ystart,
 		 filename, font_text, chars, -1, lines, line_spacing, -1,
 		 autowrap, centered, parse_comments);
   }
@@ -3840,7 +3854,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
 
     // if y position set to "-1", use static default value
     if (tmi->y == -1)
-      tmi->y = MENU_SCREEN_INFO_YSTART;
+      tmi->y = MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
 
     // if width set to "-1", automatically determine by playfield width
     if (tmi->width == -1)
@@ -5482,11 +5496,13 @@ static void DrawScoreInfo_Content(int entry_nr)
   int font_foot  = MENU_INFO_FONT_FOOT;
   int spacing_para  = menu.paragraph_spacing[GAME_MODE_SCOREINFO];
   int spacing_line  = menu.line_spacing[GAME_MODE_SCOREINFO];
+  int spacing_left  = menu.left_spacing[GAME_MODE_SCOREINFO];
+  int spacing_top   = menu.top_spacing[GAME_MODE_SCOREINFO];
   int xstep = getFontWidth(font_text);
   int ystep_para  = getMenuTextStep(spacing_para,  font_text);
   int ystep_line  = getMenuTextStep(spacing_line,  font_text);
-  int xstart  = mSX - SX + menu.left_spacing[GAME_MODE_SCOREINFO];
-  int ystart  = mSY - SY + menu.top_spacing[GAME_MODE_SCOREINFO];
+  int xstart  = mSX - SX + spacing_left;
+  int ystart  = mSY - SY + spacing_top + getHeadlineSpacing();
   int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
   int xstart1 = xstart + xstep;
   int xstart2 = xstart + xstep * 12;
