@@ -2950,7 +2950,9 @@ void RotateMirror(int x, int y, int button)
 	      LX, LY, laser.beamer_edge, laser.beamer[1].num);
 #endif
 
+#if 0
 	laser.num_edges--;
+#endif
       }
 
       ScanLaser();
