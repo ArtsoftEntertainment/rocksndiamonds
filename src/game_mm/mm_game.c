@@ -3174,6 +3174,10 @@ static void GameActions_MM_Ext(void)
     }
   }
 
+  // skip all following game actions if game is over
+  if (game_mm.game_over)
+    return;
+
   if (FrameReached(&energy_delay))
   {
     if (game_mm.energy_left > 0)
