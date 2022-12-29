@@ -740,6 +740,27 @@ static void FadeOutLaser(boolean overloaded)
     StopSound_MM(SND_MM_GAME_HEALTH_CHARGING);
 }
 
+static void GameOver_MM(int game_over_cause)
+{
+  // do not handle game over if request dialog is already active
+  if (game.request_active)
+    return;
+
+  game_mm.game_over = TRUE;
+  game_mm.game_over_cause = game_over_cause;
+
+  if (setup.ask_on_game_over)
+    game.restart_game_message = (game_over_cause == GAME_OVER_BOMB ?
+				 "Bomb killed Mc Duffin! Play it again?" :
+				 game_over_cause == GAME_OVER_NO_ENERGY ?
+				 "Out of magic energy! Play it again?" :
+				 game_over_cause == GAME_OVER_OVERLOADED ?
+				 "Magic spell hit Mc Duffin! Play it again?" :
+				 NULL);
+
+  SetTileCursorActive(FALSE);
+}
+
 void AddLaserEdge(int lx, int ly)
 {
   int clx = dSX + lx;
@@ -2512,10 +2533,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
       Bang_MM(laser.start_edge.x, laser.start_edge.y);
       Store[x][y] = EL_EMPTY;
 
-      game_mm.game_over = TRUE;
-      game_mm.game_over_cause = GAME_OVER_BOMB;
-
-      SetTileCursorActive(FALSE);
+      GameOver_MM(GAME_OVER_DELAYED);
 
       laser.overloaded = FALSE;
     }
@@ -2523,7 +2541,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
     {
       Store[x][y] = EL_EMPTY;
 
-      game.restart_game_message = "Bomb killed Mc Duffin! Play it again?";
+      GameOver_MM(GAME_OVER_BOMB);
     }
 
     Tile[x][y] = Store[x][y];
@@ -3190,12 +3208,7 @@ static void GameActions_MM_Ext(void)
     {
       FadeOutLaser(FALSE);
 
-      game_mm.game_over = TRUE;
-      game_mm.game_over_cause = GAME_OVER_NO_ENERGY;
-
-      SetTileCursorActive(FALSE);
-
-      game.restart_game_message = "Out of magic energy! Play it again?";
+      GameOver_MM(GAME_OVER_NO_ENERGY);
 
       return;
     }
@@ -3297,12 +3310,7 @@ static void GameActions_MM_Ext(void)
 
       FadeOutLaser(TRUE);
 
-      game_mm.game_over = TRUE;
-      game_mm.game_over_cause = GAME_OVER_OVERLOADED;
-
-      SetTileCursorActive(FALSE);
-
-      game.restart_game_message = "Magic spell hit Mc Duffin! Play it again?";
+      GameOver_MM(GAME_OVER_OVERLOADED);
 
       return;
     }

@@ -1104,6 +1104,7 @@ extern int		num_element_info;
 #define GAME_OVER_NO_ENERGY	1
 #define GAME_OVER_OVERLOADED	2
 #define GAME_OVER_BOMB		3
+#define GAME_OVER_DELAYED	4
 
 // values for color_status
 #define STATIC_COLORS		0
