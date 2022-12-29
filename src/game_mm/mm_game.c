@@ -714,6 +714,32 @@ void InitGameActions_MM(void)
   SetTileCursorActive(TRUE);
 }
 
+static void FadeOutLaser(boolean overloaded)
+{
+  int i;
+
+  for (i = 15; i >= 0; i--)
+  {
+    if (overloaded)
+      pen_ray = GetPixelFromRGB(window, 0x11 * i, 0x00, 0x00);
+    else
+      pen_ray = GetPixelFromRGB(window,
+				native_mm_level.laser_red   * 0x11 * i,
+				native_mm_level.laser_green * 0x11 * i,
+				native_mm_level.laser_blue  * 0x11 * i);
+
+    DrawLaser(0, DL_LASER_ENABLED);
+
+    BackToFront();
+    Delay_WithScreenUpdates(50);
+  }
+
+  DrawLaser(0, DL_LASER_DISABLED);
+
+  if (!overloaded)
+    StopSound_MM(SND_MM_GAME_HEALTH_CHARGING);
+}
+
 void AddLaserEdge(int lx, int ly)
 {
   int clx = dSX + lx;
@@ -3158,29 +3184,8 @@ static void GameActions_MM_Ext(void)
     }
     else if (game.time_limit && !game_mm.game_over)
     {
-      int i;
+      FadeOutLaser(FALSE);
 
-      for (i = 15; i >= 0; i--)
-      {
-#if 0
-	SetRGB(pen_ray, 0x0000, 0x0000, i * color_scale);
-#endif
-	pen_ray = GetPixelFromRGB(window,
-				  native_mm_level.laser_red   * 0x11 * i,
-				  native_mm_level.laser_green * 0x11 * i,
-				  native_mm_level.laser_blue  * 0x11 * i);
-
-	DrawLaser(0, DL_LASER_ENABLED);
-	BackToFront();
-	Delay_WithScreenUpdates(50);
-      }
-
-      StopSound_MM(SND_MM_GAME_HEALTH_CHARGING);
-#if 0
-      FadeMusic();
-#endif
-
-      DrawLaser(0, DL_LASER_DISABLED);
       game_mm.game_over = TRUE;
       game_mm.game_over_cause = GAME_OVER_NO_ENERGY;
 
@@ -3284,24 +3289,9 @@ static void GameActions_MM_Ext(void)
 
     if (laser.overload_value == MAX_LASER_OVERLOAD)
     {
-      int i;
-
       UpdateAndDisplayGameControlValues();
 
-      for (i = 15; i >= 0; i--)
-      {
-#if 0
-	SetRGB(pen_ray, i * color_scale, 0x0000, 0x0000);
-#endif
-
-	pen_ray = GetPixelFromRGB(window, 0x11 * i, 0x00, 0x00);
-
-	DrawLaser(0, DL_LASER_ENABLED);
-	BackToFront();
-	Delay_WithScreenUpdates(50);
-      }
-
-      DrawLaser(0, DL_LASER_DISABLED);
+      FadeOutLaser(TRUE);
 
       game_mm.game_over = TRUE;
       game_mm.game_over_cause = GAME_OVER_OVERLOADED;
