@@ -723,6 +723,8 @@ void InitGameActions_MM(void)
 
   SetTileCursorXY(laser.start_edge.x, laser.start_edge.y);
   SetTileCursorActive(TRUE);
+
+  ResetFrameCounter(&energy_delay);
 }
 
 static void FadeOutLaser(void)
