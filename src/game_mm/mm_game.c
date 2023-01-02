@@ -725,7 +725,7 @@ void InitGameActions_MM(void)
   SetTileCursorActive(TRUE);
 }
 
-static void FadeOutLaser(boolean overloaded)
+static void FadeOutLaser(void)
 {
   int i;
 
@@ -741,8 +741,7 @@ static void FadeOutLaser(boolean overloaded)
 
   DrawLaser(0, DL_LASER_DISABLED);
 
-  if (!overloaded)
-    StopSound_MM(SND_MM_GAME_HEALTH_CHARGING);
+  StopSound_MM(SND_MM_GAME_HEALTH_CHARGING);
 }
 
 static void GameOver_MM(int game_over_cause)
@@ -3211,7 +3210,7 @@ static void GameActions_MM_Ext(void)
     }
     else if (game.time_limit && !game_mm.game_over)
     {
-      FadeOutLaser(FALSE);
+      FadeOutLaser();
 
       GameOver_MM(GAME_OVER_NO_ENERGY);
 
@@ -3302,7 +3301,7 @@ static void GameActions_MM_Ext(void)
     {
       UpdateAndDisplayGameControlValues();
 
-      FadeOutLaser(TRUE);
+      FadeOutLaser();
 
       GameOver_MM(GAME_OVER_OVERLOADED);
 
