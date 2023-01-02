@@ -3202,22 +3202,21 @@ static void GameActions_MM_Ext(void)
   if (game_mm.game_over)
     return;
 
+  if (game_mm.energy_left == 0 && !game.no_level_time_limit && game.time_limit)
+  {
+    FadeOutLaser();
+
+    GameOver_MM(GAME_OVER_NO_ENERGY);
+
+    return;
+  }
+
   if (FrameReached(&energy_delay))
   {
     if (game_mm.energy_left > 0)
-    {
       game_mm.energy_left--;
 
-      redraw_mask |= REDRAW_DOOR_1;
-    }
-    else if (game.time_limit && !game_mm.game_over)
-    {
-      FadeOutLaser();
-
-      GameOver_MM(GAME_OVER_NO_ENERGY);
-
-      return;
-    }
+    // when out of energy, wait another frame to play "out of time" sound
   }
 
   element = laser.dest_element;
