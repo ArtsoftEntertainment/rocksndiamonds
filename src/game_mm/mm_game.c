@@ -573,10 +573,13 @@ static void InitLaser(void)
 
   AddLaserEdge(LX, LY);		// set laser starting edge
 
+  int color_up = 0xFF * laser.overload_value / MAX_LASER_OVERLOAD;
+  int color_down = 0xFF - color_up;
+
   pen_ray = GetPixelFromRGB(window,
-			    native_mm_level.laser_red   * 0xFF,
-			    native_mm_level.laser_green * 0xFF,
-			    native_mm_level.laser_blue  * 0xFF);
+			    (native_mm_level.laser_red   ? 0xFF : color_up),
+			    (native_mm_level.laser_green ? color_down : 0x00),
+			    (native_mm_level.laser_blue  ? color_down : 0x00));
 }
 
 void InitGameEngine_MM(void)
