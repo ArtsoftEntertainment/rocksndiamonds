@@ -411,6 +411,20 @@ static void CheckExitMM(void)
     PlayLevelSound_MM(exit_x, exit_y, exit_element, MM_ACTION_OPENING);
 }
 
+static void SetLaserColor(int brightness)
+{
+  int color_min = 0x00;
+  int color_max = brightness;		// (0x00 <= brightness <= 0xFF)
+  int color_up   = color_max * laser.overload_value / MAX_LASER_OVERLOAD;
+  int color_down = color_max - color_up;
+
+  pen_ray =
+    GetPixelFromRGB(window,
+		    (native_mm_level.laser_red   ? color_max  : color_up),
+		    (native_mm_level.laser_green ? color_down : color_min),
+		    (native_mm_level.laser_blue  ? color_down : color_min));
+}
+
 static void InitMovDir_MM(int x, int y)
 {
   int element = Tile[x][y];
@@ -573,13 +587,7 @@ static void InitLaser(void)
 
   AddLaserEdge(LX, LY);		// set laser starting edge
 
-  int color_up = 0xFF * laser.overload_value / MAX_LASER_OVERLOAD;
-  int color_down = 0xFF - color_up;
-
-  pen_ray = GetPixelFromRGB(window,
-			    (native_mm_level.laser_red   ? 0xFF : color_up),
-			    (native_mm_level.laser_green ? color_down : 0x00),
-			    (native_mm_level.laser_blue  ? color_down : 0x00));
+  SetLaserColor(0xFF);
 }
 
 void InitGameEngine_MM(void)
@@ -723,13 +731,7 @@ static void FadeOutLaser(boolean overloaded)
 
   for (i = 15; i >= 0; i--)
   {
-    if (overloaded)
-      pen_ray = GetPixelFromRGB(window, 0x11 * i, 0x00, 0x00);
-    else
-      pen_ray = GetPixelFromRGB(window,
-				native_mm_level.laser_red   * 0x11 * i,
-				native_mm_level.laser_green * 0x11 * i,
-				native_mm_level.laser_blue  * 0x11 * i);
+    SetLaserColor(0x11 * i);
 
     DrawLaser(0, DL_LASER_ENABLED);
 
@@ -3260,18 +3262,7 @@ static void GameActions_MM_Ext(void)
 
     if (laser.overload_value < MAX_LASER_OVERLOAD - 8)
     {
-      int color_up = 0xFF * laser.overload_value / MAX_LASER_OVERLOAD;
-      int color_down = 0xFF - color_up;
-
-#if 0
-      SetRGB(pen_ray, (laser.overload_value / 6) * color_scale, 0x0000,
-	     (15 - (laser.overload_value / 6)) * color_scale);
-#endif
-      pen_ray =
-	GetPixelFromRGB(window,
-			(native_mm_level.laser_red  ? 0xFF : color_up),
-			(native_mm_level.laser_green ? color_down : 0x00),
-			(native_mm_level.laser_blue  ? color_down : 0x00));
+      SetLaserColor(0xFF);
 
       DrawLaser(0, DL_LASER_ENABLED);
     }
