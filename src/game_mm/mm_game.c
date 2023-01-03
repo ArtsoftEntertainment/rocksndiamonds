@@ -3679,24 +3679,27 @@ static void GameActions_MM_Ext(void)
 
   if (element == EL_FUEL_FULL && CT > 10)
   {
-    for (i = game_mm.energy_left; i <= MAX_LASER_ENERGY; i+=2)
+    int num_init_game_frames = INIT_GAME_ACTIONS_DELAY;
+    int start = num_init_game_frames * game_mm.energy_left / native_mm_level.time;
+
+    for (i = start; i <= num_init_game_frames; i++)
     {
-#if 0
-      BlitBitmap(pix[PIX_DOOR], drawto,
-		 DOOR_GFX_PAGEX4 + XX_ENERGY,
-		 DOOR_GFX_PAGEY1 + YY_ENERGY + ENERGY_YSIZE - i,
-		 ENERGY_XSIZE, i, DX_ENERGY,
-		 DY_ENERGY + ENERGY_YSIZE - i);
-#endif
+      if (i == num_init_game_frames)
+	StopSound_MM(SND_MM_GAME_LEVELTIME_CHARGING);
+      else if (setup.sound_loops)
+	PlaySoundLoop_MM(SND_MM_GAME_LEVELTIME_CHARGING);
+      else
+	PlaySound_MM(SND_MM_GAME_LEVELTIME_CHARGING);
 
-      redraw_mask |= REDRAW_DOOR_1;
+      game_mm.energy_left = native_mm_level.time * i / num_init_game_frames;
+
+      UpdateAndDisplayGameControlValues();
+
       BackToFront();
-
-      Delay_WithScreenUpdates(20);
     }
 
-    game_mm.energy_left = MAX_LASER_ENERGY;
-    Tile[ELX][ELY] = EL_FUEL_EMPTY;
+    Tile[ELX][ELY] = laser.dest_element = EL_FUEL_EMPTY;
+
     DrawField_MM(ELX, ELY);
 
     DrawLaser(0, DL_LASER_ENABLED);
