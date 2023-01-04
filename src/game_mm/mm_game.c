@@ -663,7 +663,6 @@ void InitGameEngine_MM(void)
       Angle[x][y] = 0;
       MovPos[x][y] = MovDir[x][y] = MovDelay[x][y] = 0;
       Store[x][y] = Store2[x][y] = 0;
-      Frame[x][y] = 0;
       Stop[x][y] = FALSE;
 
       InitField(x, y);
@@ -2514,12 +2513,12 @@ static void Explode_MM(int x, int y, int phase, int mode)
     Store2[x][y] = mode;
     Tile[x][y] = EL_EXPLODING_OPAQUE;
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
-    Frame[x][y] = 1;
+    ExplodePhase[x][y] = 1;
 
     return;
   }
 
-  Frame[x][y] = (phase < last_phase ? phase + 1 : 0);
+  ExplodePhase[x][y] = (phase < last_phase ? phase + 1 : 0);
 
   if (phase == half_phase)
   {
@@ -3161,7 +3160,7 @@ static void GameActions_MM_Ext(void)
     else if (IS_MOVING(x, y))
       ContinueMoving_MM(x, y);
     else if (IS_EXPLODING(element))
-      Explode_MM(x, y, Frame[x][y], EX_NORMAL);
+      Explode_MM(x, y, ExplodePhase[x][y], EX_NORMAL);
     else if (element == EL_EXIT_OPENING)
       OpenExit(x, y);
     else if (element == EL_GRAY_BALL_OPENING)
@@ -4014,7 +4013,6 @@ void SaveEngineSnapshotValues_MM(void)
       engine_snapshot_mm.Hit[x][y]   = Hit[x][y];
       engine_snapshot_mm.Box[x][y]   = Box[x][y];
       engine_snapshot_mm.Angle[x][y] = Angle[x][y];
-      engine_snapshot_mm.Frame[x][y] = Frame[x][y];
     }
   }
 
@@ -4057,7 +4055,6 @@ void LoadEngineSnapshotValues_MM(void)
       Hit[x][y]   = engine_snapshot_mm.Hit[x][y];
       Box[x][y]   = engine_snapshot_mm.Box[x][y];
       Angle[x][y] = engine_snapshot_mm.Angle[x][y];
-      Frame[x][y] = engine_snapshot_mm.Frame[x][y];
     }
   }
 
