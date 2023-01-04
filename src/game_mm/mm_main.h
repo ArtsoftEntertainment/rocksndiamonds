@@ -203,7 +203,9 @@ extern short		StorePlayer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		Frame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern boolean		Stop[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 extern short		AmoebaNr[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
-extern short		AmoebaCnt[MAX_NUM_AMOEBA], AmoebaCnt2[MAX_NUM_AMOEBA];
+extern short		AmoebaCnt[MAX_NUM_AMOEBA];
+extern short		AmoebaCnt2[MAX_NUM_AMOEBA];
+
 extern unsigned int	Elementeigenschaften[MAX_ELEMENTS];
 
 extern int		level_nr;
