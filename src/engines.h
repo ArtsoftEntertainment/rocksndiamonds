@@ -61,6 +61,7 @@ boolean isNextAnimationFrame_SP(int, int);
 void SetDrawtoField(int);
 
 int el2img_mm(int);
+int el_act2img_mm(int, int);
 
 void CheckSingleStepMode_MM(boolean, boolean);
 

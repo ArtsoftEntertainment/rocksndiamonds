@@ -8323,6 +8323,11 @@ int el2img_mm(int element_mm)
   return el2img(map_element_MM_to_RND(element_mm));
 }
 
+int el_act2img_mm(int element_mm, int action)
+{
+  return el_act2img(map_element_MM_to_RND(element_mm), action);
+}
+
 int el_act_dir2img(int element, int action, int direction)
 {
   element = GFX_ELEMENT(element);

@@ -25,9 +25,8 @@
 
 // values for Explode_MM()
 #define EX_PHASE_START		0
-#define EX_NORMAL		0
-#define EX_KETTLE		1
-#define EX_SHORT		2
+#define EX_TYPE_NONE		0
+#define EX_TYPE_NORMAL		(1 << 0)
 
 // special positions in the game control window (relative to control window)
 #define XX_LEVEL		36
@@ -2525,12 +2524,19 @@ static void Explode_MM(int x, int y, int phase, int mode)
       Store[x][y] = EL_EMPTY;
 
     Store2[x][y] = mode;
+
     Tile[x][y] = EL_EXPLODING_OPAQUE;
+    GfxElement[x][y] = center_element;
+
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
+
     ExplodePhase[x][y] = 1;
 
     return;
   }
+
+  if (phase == 1)
+    GfxFrame[x][y] = 0;		// restart explosion animation
 
   ExplodePhase[x][y] = (phase < last_phase ? phase + 1 : 0);
 
@@ -2572,44 +2578,10 @@ static void Explode_MM(int x, int y, int phase, int mode)
   }
   else if (!(phase % delay) && IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
   {
-    int graphic = IMG_MM_DEFAULT_EXPLODING;
-    int graphic_phase = (phase / delay - 1);
-    Bitmap *bitmap;
-    int src_x, src_y;
+    int graphic = el_act2gfx(GfxElement[x][y], MM_ACTION_EXPLODING);
+    int frame = getGraphicAnimationFrameXY(graphic, x, y);
 
-    if (Store2[x][y] == EX_KETTLE)
-    {
-      if (graphic_phase < 3)
-      {
-	graphic = IMG_MM_KETTLE_EXPLODING;
-      }
-      else if (graphic_phase < 5)
-      {
-	graphic_phase += 3;
-      }
-      else
-      {
-	graphic = IMG_EMPTY;
-	graphic_phase = 0;
-      }
-    }
-    else if (Store2[x][y] == EX_SHORT)
-    {
-      if (graphic_phase < 4)
-      {
-	graphic_phase += 4;
-      }
-      else
-      {
-	graphic = IMG_EMPTY;
-	graphic_phase = 0;
-      }
-    }
-
-    getGraphicSource(graphic, graphic_phase, &bitmap, &src_x, &src_y);
-
-    BlitBitmap(bitmap, drawto_field, src_x, src_y, TILEX, TILEY,
-	       cFX + x * TILEX, cFY + y * TILEY);
+    DrawGraphicAnimation_MM(x, y, graphic, frame);
 
     MarkTileDirty(x, y);
   }
@@ -2618,27 +2590,10 @@ static void Explode_MM(int x, int y, int phase, int mode)
 static void Bang_MM(int x, int y)
 {
   int element = Tile[x][y];
-  int mode = EX_NORMAL;
 
 #if 0
   DrawLaser(0, DL_LASER_ENABLED);
 #endif
-
-  switch (element)
-  {
-    case EL_KETTLE:
-      mode = EX_KETTLE;
-      break;
-
-    case EL_GATE_STONE:
-    case EL_GATE_WOOD:
-      mode = EX_SHORT;
-      break;
-
-    default:
-      mode = EX_NORMAL;
-      break;
-  }
 
   if (IS_PACMAN(element))
     PlayLevelSound_MM(x, y, element, MM_ACTION_EXPLODING);
@@ -2649,7 +2604,7 @@ static void Bang_MM(int x, int y)
   else
     PlayLevelSound_MM(x, y, element, MM_ACTION_EXPLODING);
 
-  Explode_MM(x, y, EX_PHASE_START, mode);
+  Explode_MM(x, y, EX_PHASE_START, EX_TYPE_NORMAL);
 }
 
 void TurnRound(int x, int y)
@@ -3174,7 +3129,7 @@ static void GameActions_MM_Ext(void)
     else if (IS_MOVING(x, y))
       ContinueMoving_MM(x, y);
     else if (IS_EXPLODING(element))
-      Explode_MM(x, y, ExplodePhase[x][y], EX_NORMAL);
+      Explode_MM(x, y, ExplodePhase[x][y], EX_TYPE_NORMAL);
     else if (element == EL_EXIT_OPENING)
       OpenExit(x, y);
     else if (element == EL_GRAY_BALL_OPENING)

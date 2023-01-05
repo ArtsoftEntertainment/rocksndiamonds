@@ -207,6 +207,9 @@ extern short		AmoebaCnt[MAX_NUM_AMOEBA];
 extern short		AmoebaCnt2[MAX_NUM_AMOEBA];
 extern short		ExplodePhase[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
 
+extern int		GfxFrame[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+extern int		GfxElement[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
+
 extern unsigned int	Elementeigenschaften[MAX_ELEMENTS];
 
 extern int		level_nr;

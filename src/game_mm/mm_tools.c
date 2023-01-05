@@ -1292,6 +1292,11 @@ int el2gfx(int element)
   return el2img_mm(map_element(element));
 }
 
+int el_act2gfx(int element, int action)
+{
+  return el_act2img_mm(map_element(element), action);
+}
+
 void RedrawPlayfield_MM(void)
 {
   DrawLevel_MM();
