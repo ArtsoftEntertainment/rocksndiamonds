@@ -662,18 +662,6 @@ extern int		num_element_info;
 #define EL_EXPLODING_OPAQUE	601
 #define EL_EXPLODING_TRANSP	602
 
-// dummy elements (never used as game elements, only used as graphics)
-#define EL_MM_MASK_MCDUFFIN_RIGHT	700
-#define EL_MM_MASK_MCDUFFIN_UP		701
-#define EL_MM_MASK_MCDUFFIN_LEFT	702
-#define EL_MM_MASK_MCDUFFIN_DOWN	703
-#define EL_MM_MASK_GRID_1		704
-#define EL_MM_MASK_GRID_2		705
-#define EL_MM_MASK_GRID_3		706
-#define EL_MM_MASK_GRID_4		707
-#define EL_MM_MASK_RECTANGE		708
-#define EL_MM_MASK_CIRCLE		709
-
 
 // game graphics:
 //	  0 -  191: graphics from "MirrorScreen"

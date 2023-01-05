@@ -8205,10 +8205,6 @@ int map_element_RND_to_MM(int element_rnd)
 	  element_rnd <= EL_MM_RUNTIME_END ?
 	  EL_MM_RUNTIME_START_NATIVE + element_rnd - EL_MM_RUNTIME_START :
 
-	  element_rnd >= EL_MM_DUMMY_START &&
-	  element_rnd <= EL_MM_DUMMY_END ?
-	  EL_MM_DUMMY_START_NATIVE + element_rnd - EL_MM_DUMMY_START :
-
 	  EL_MM_EMPTY_NATIVE);
 }
 
@@ -8233,10 +8229,6 @@ int map_element_MM_to_RND(int element_mm)
 	  element_mm >= EL_MM_RUNTIME_START_NATIVE &&
 	  element_mm <= EL_MM_RUNTIME_END_NATIVE ?
 	  EL_MM_RUNTIME_START + element_mm - EL_MM_RUNTIME_START_NATIVE :
-
-	  element_mm >= EL_MM_DUMMY_START_NATIVE &&
-	  element_mm <= EL_MM_DUMMY_END_NATIVE ?
-	  EL_MM_DUMMY_START + element_mm - EL_MM_DUMMY_START_NATIVE :
 
 	  EL_EMPTY);
 }

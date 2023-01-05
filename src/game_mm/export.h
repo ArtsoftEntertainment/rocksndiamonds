@@ -43,9 +43,6 @@
 #define EL_MM_RUNTIME_START_NATIVE	500
 #define EL_MM_RUNTIME_END_NATIVE	504
 
-#define EL_MM_DUMMY_START_NATIVE	700
-#define EL_MM_DUMMY_END_NATIVE		709
-
 // elements to be specially mapped
 #define EL_MM_EMPTY_NATIVE		0
 #define EL_DF_EMPTY_NATIVE		304

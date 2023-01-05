@@ -116,8 +116,22 @@ static DelayCounter pacman_delay = { PACMAN_MOVE_DELAY };
 static DelayCounter energy_delay = { ENERGY_DELAY };
 static DelayCounter overload_delay = { 0 };
 
+// element mask positions for scanning pixels of MM elements
+#define MM_MASK_MCDUFFIN_RIGHT	0
+#define MM_MASK_MCDUFFIN_UP	1
+#define MM_MASK_MCDUFFIN_LEFT	2
+#define MM_MASK_MCDUFFIN_DOWN	3
+#define MM_MASK_GRID_1		4
+#define MM_MASK_GRID_2		5
+#define MM_MASK_GRID_3		6
+#define MM_MASK_GRID_4		7
+#define MM_MASK_RECTANGLE	8
+#define MM_MASK_CIRCLE		9
+
+#define NUM_MM_MASKS		10
+
 // element masks for scanning pixels of MM elements
-static const char mm_masks[10][16][16 + 1] =
+static const char mm_masks[NUM_MM_MASKS][16][16 + 1] =
 {
   {
     "                ",
@@ -813,13 +827,13 @@ static boolean StepBehind(void)
 static int getMaskFromElement(int element)
 {
   if (IS_GRID(element))
-    return IMG_MM_MASK_GRID_1 + get_element_phase(element);
+    return MM_MASK_GRID_1 + get_element_phase(element);
   else if (IS_MCDUFFIN(element))
-    return IMG_MM_MASK_MCDUFFIN_RIGHT + get_element_phase(element);
+    return MM_MASK_MCDUFFIN_RIGHT + get_element_phase(element);
   else if (IS_RECTANGLE(element) || IS_DF_GRID(element))
-    return IMG_MM_MASK_RECTANGLE;
+    return MM_MASK_RECTANGLE;
   else
-    return IMG_MM_MASK_CIRCLE;
+    return MM_MASK_CIRCLE;
 }
 
 static int ScanPixel(void)
@@ -873,7 +887,7 @@ static int ScanPixel(void)
 	}
 	else
 	{
-	  int pos = getMaskFromElement(element) - IMG_MM_MASK_MCDUFFIN_RIGHT;
+	  int pos = getMaskFromElement(element);
 
 	  pixel = (mm_masks[pos][dy / 2][dx / 2] == 'X' ? 1 : 0);
 	}
