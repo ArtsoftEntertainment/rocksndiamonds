@@ -5134,6 +5134,10 @@ struct ConfigInfo image_config[] =
   { "mm_gray_ball.xpos",			"15"			},
   { "mm_gray_ball.ypos",			"2"			},
   { "mm_gray_ball.frames",			"1"			},
+  { "mm_gray_ball.EDITOR",			"RocksMM.png"		},
+  { "mm_gray_ball.EDITOR.xpos",			"15"			},
+  { "mm_gray_ball.EDITOR.ypos",			"1"			},
+  { "mm_gray_ball.EDITOR.frames",		"1"			},
 
   { "mm_fuel_full",				"RocksMM.png"		},
   { "mm_fuel_full.xpos",			"10"			},
