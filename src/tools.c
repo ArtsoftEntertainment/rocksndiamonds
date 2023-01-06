@@ -5896,7 +5896,8 @@ void CreateToolButtons(void)
       }
     }
 
-    if (id >= TOOL_CTRL_ID_PLAYER_1 && id <= TOOL_CTRL_ID_PLAYER_4)
+    if (id >= TOOL_CTRL_ID_PLAYER_1 && id <= TOOL_CTRL_ID_PLAYER_4 &&
+	pos->draw_player)
     {
       int player_nr = id - TOOL_CTRL_ID_PLAYER_1;
 
