@@ -647,6 +647,9 @@ void InitGameEngine_MM(void)
   laser.fuse_x = laser.fuse_y = -1;
 
   laser.dest_element = EL_EMPTY;
+  laser.dest_element_last = EL_EMPTY;
+  laser.dest_element_last_x = -1;
+  laser.dest_element_last_y = -1;
   laser.wall_mask = 0;
 
   last_LX = 0;
@@ -920,6 +923,21 @@ void ScanLaser(void)
   // do not scan laser again after the game was lost for whatever reason
   if (game_mm.game_over)
     return;
+
+  if (laser.dest_element_last == EL_BOMB_ACTIVE ||
+      laser.dest_element_last == EL_MINE_ACTIVE)
+  {
+    int x = laser.dest_element_last_x;
+    int y = laser.dest_element_last_y;
+    int element = laser.dest_element_last;
+
+    if (Tile[x][y] == element)
+      Tile[x][y] = (element == EL_BOMB_ACTIVE ? EL_BOMB : EL_MINE);
+
+    laser.dest_element_last = EL_EMPTY;
+    laser.dest_element_last_x = -1;
+    laser.dest_element_last_y = -1;
+  }
 
   laser.overloaded = FALSE;
   laser.stops_inside_element = FALSE;
@@ -1558,6 +1576,12 @@ boolean HitElement(int element, int hit_mask)
   if (element == EL_BOMB || element == EL_MINE)
   {
     PlayLevelSound_MM(ELX, ELY, element, MM_ACTION_HITTING);
+
+    Tile[ELX][ELY] = (element == EL_BOMB ? EL_BOMB_ACTIVE : EL_MINE_ACTIVE);
+
+    laser.dest_element_last = Tile[ELX][ELY];
+    laser.dest_element_last_x = ELX;
+    laser.dest_element_last_y = ELY;
 
     if (element == EL_MINE)
       laser.overloaded = TRUE;
@@ -2518,7 +2542,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
       Tile[x][y] = center_element;
     }
 
-    if (center_element == EL_BOMB || IS_MCDUFFIN(center_element))
+    if (center_element == EL_BOMB_ACTIVE || IS_MCDUFFIN(center_element))
       Store[x][y] = center_element;
     else
       Store[x][y] = EL_EMPTY;
@@ -2550,7 +2574,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
   if (phase == last_phase)
   {
-    if (Store[x][y] == EL_BOMB)
+    if (Store[x][y] == EL_BOMB_ACTIVE)
     {
       DrawLaser(0, DL_LASER_DISABLED);
       InitLaser();
@@ -2597,7 +2621,7 @@ static void Bang_MM(int x, int y)
 
   if (IS_PACMAN(element))
     PlayLevelSound_MM(x, y, element, MM_ACTION_EXPLODING);
-  else if (element == EL_BOMB || IS_MCDUFFIN(element))
+  else if (element == EL_BOMB_ACTIVE || IS_MCDUFFIN(element))
     PlayLevelSound_MM(x, y, element, MM_ACTION_EXPLODING);
   else if (element == EL_KEY)
     PlayLevelSound_MM(x, y, element, MM_ACTION_EXPLODING);
@@ -3199,7 +3223,9 @@ static void GameActions_MM_Ext(void)
 
   if (!laser.overloaded && laser.overload_value == 0 &&
       element != EL_BOMB &&
+      element != EL_BOMB_ACTIVE &&
       element != EL_MINE &&
+      element != EL_MINE_ACTIVE &&
       element != EL_BALL_GRAY &&
       element != EL_BLOCK_STONE &&
       element != EL_BLOCK_WOOD &&

@@ -5051,6 +5051,12 @@ struct ConfigInfo image_config[] =
   { "mm_bomb.xpos",				"5"			},
   { "mm_bomb.ypos",				"2"			},
   { "mm_bomb.frames",				"1"			},
+  { "mm_bomb.active",				"RocksMM.png"		},
+  { "mm_bomb.active.xpos",			"12"			},
+  { "mm_bomb.active.ypos",			"1"			},
+  { "mm_bomb.active.frames",			"3"			},
+  { "mm_bomb.active.delay",			"6"			},
+  { "mm_bomb.active.anim_mode",			"pingpong"		},
 
   { "mm_prism",					"RocksMM.png"		},
   { "mm_prism.xpos",				"0"			},
@@ -5747,6 +5753,12 @@ struct ConfigInfo image_config[] =
   { "df_mine.xpos",				"4"			},
   { "df_mine.ypos",				"8"			},
   { "df_mine.frames",				"1"			},
+  { "df_mine.active",				"RocksDF.png"		},
+  { "df_mine.active.xpos",			"3"			},
+  { "df_mine.active.ypos",			"8"			},
+  { "df_mine.active.frames",			"3"			},
+  { "df_mine.active.delay",			"6"			},
+  { "df_mine.active.anim_mode",			"pingpong"		},
 
   // (these are only defined as elements to support ".PANEL" definitions)
   { "graphic_1",				UNDEFINED_FILENAME	},

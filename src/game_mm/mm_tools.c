@@ -526,6 +526,10 @@ void DrawElement_MM(int x, int y, int element)
     DrawGraphic_MM(x, y, IMG_MM_FUSE);
   else if (element == EL_GRAY_BALL_OPENING)
     DrawGraphic_MM(x, y, el_act2gfx(EL_BALL_GRAY, MM_ACTION_OPENING));
+  else if (element == EL_BOMB_ACTIVE)
+    DrawGraphic_MM(x, y, el_act2gfx(EL_BOMB, MM_ACTION_ACTIVE));
+  else if (element == EL_MINE_ACTIVE)
+    DrawGraphic_MM(x, y, el_act2gfx(EL_MINE, MM_ACTION_ACTIVE));
   else
     DrawGraphic_MM(x, y, el2gfx(element));
 }

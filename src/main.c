@@ -6772,6 +6772,16 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "mm_pacman",
     "pac man (eating down)"
   },
+  {
+    "mm_bomb.active",
+    "mm_bomb",
+    "active bomb (MM style)"
+  },
+  {
+    "df_mine.active",
+    "df_mine",
+    "active mine"
+  },
 
   // --------------------------------------------------------------------------
   // "unreal" (and therefore not drawable) runtime elements

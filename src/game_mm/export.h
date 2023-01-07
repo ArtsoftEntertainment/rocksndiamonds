@@ -112,6 +112,9 @@ struct LaserInfo
   int fuse_x, fuse_y;
 
   int dest_element;
+  int dest_element_last;
+  int dest_element_last_x;
+  int dest_element_last_y;
   boolean stops_inside_element;
 
   boolean redraw;
