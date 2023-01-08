@@ -75,5 +75,6 @@ void getSizedGraphicSource(int, int, int, Bitmap **, int *, int *);
 void AdvanceFrameCounter(void);
 void AdvanceGfxFrame(void);
 
+int getAnimationFrame(int, int, int, int, int);
 
 #endif	// ENGINES_H

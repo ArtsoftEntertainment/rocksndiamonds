@@ -27,6 +27,8 @@
 
 #define MM_LEVEL_SCORE_ELEMENTS		16
 
+#define MM_MAX_BALL_CONTENTS		16
+
 #define MM_MAX_LEVEL_NAME_LEN		32
 #define MM_MAX_LEVEL_AUTHOR_LEN		32
 
@@ -138,6 +140,7 @@ struct GameInfo_MM
   int kettles_still_needed;
   int lights_still_needed;
   int num_keys;
+  int ball_choice_pos;		// current content element choice position
 
   boolean level_solved;
   boolean game_over;
@@ -170,6 +173,10 @@ struct LevelInfo_MM
   int time_bomb;
   int time_ball;
   int time_block;
+
+  int num_ball_contents;
+  int ball_choice_mode;
+  int ball_content[MM_MAX_BALL_CONTENTS];
 
   short field[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
 };

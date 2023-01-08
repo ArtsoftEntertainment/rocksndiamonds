@@ -625,6 +625,7 @@ void InitGameEngine_MM(void)
     (native_mm_level.auto_count_kettles ? 0 : native_mm_level.kettles_needed);
   game_mm.lights_still_needed = 0;
   game_mm.num_keys = 0;
+  game_mm.ball_choice_pos = 0;
 
   game_mm.level_solved = FALSE;
   game_mm.game_over = FALSE;
@@ -3333,19 +3334,22 @@ static void GameActions_MM_Ext(void)
 
   if (element == EL_BALL_GRAY && CT > native_mm_level.time_ball)
   {
-    static int new_elements[] =
-    {
-      EL_MIRROR_START,
-      EL_MIRROR_FIXED_START,
-      EL_POLAR_START,
-      EL_POLAR_CROSS_START,
-      EL_PACMAN_START,
-      EL_KETTLE,
-      EL_BOMB,
-      EL_PRISM
-    };
-    int num_new_elements = sizeof(new_elements) / sizeof(int);
-    int new_element = new_elements[RND(num_new_elements)];
+    int last_anim_random_frame = gfx.anim_random_frame;
+    int element_pos;
+
+    if (native_mm_level.ball_choice_mode == ANIM_RANDOM)
+      gfx.anim_random_frame = RND(native_mm_level.num_ball_contents);
+
+    element_pos = getAnimationFrame(native_mm_level.num_ball_contents, 1,
+                                    native_mm_level.ball_choice_mode, 0,
+                                    game_mm.ball_choice_pos);
+
+    if (native_mm_level.ball_choice_mode == ANIM_RANDOM)
+      gfx.anim_random_frame = last_anim_random_frame;
+
+    game_mm.ball_choice_pos++;
+
+    int new_element = native_mm_level.ball_content[element_pos];
 
     Store[ELX][ELY] = new_element + RND(get_num_elements(new_element));
     Tile[ELX][ELY] = EL_GRAY_BALL_OPENING;

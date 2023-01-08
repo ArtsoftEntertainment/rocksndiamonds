@@ -995,6 +995,10 @@
 #define STD_ELEMENT_CONTENTS	4
 #define MAX_ELEMENT_CONTENTS	8
 
+#define MIN_MM_BALL_CONTENTS	1
+#define STD_MM_BALL_CONTENTS	8
+#define MAX_MM_BALL_CONTENTS	16
+
 // values for initial player inventory
 #define MIN_INITIAL_INVENTORY_SIZE	1
 #define MAX_INITIAL_INVENTORY_SIZE	8
@@ -3289,6 +3293,10 @@ struct LevelInfo
   int mm_time_bomb;
   int mm_time_ball;
   int mm_time_block;
+
+  int num_mm_ball_contents;
+  int mm_ball_choice_mode;
+  int mm_ball_content[MAX_MM_BALL_CONTENTS];
 
   // ('int' instead of 'boolean' because used as selectbox value in editor)
   int use_step_counter;		// count steps instead of seconds for level

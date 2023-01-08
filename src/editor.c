@@ -459,6 +459,9 @@ enum
   GADGET_ID_INVENTORY_SIZE_DOWN,
   GADGET_ID_INVENTORY_SIZE_TEXT,
   GADGET_ID_INVENTORY_SIZE_UP,
+  GADGET_ID_MM_BALL_CONTENT_DOWN,
+  GADGET_ID_MM_BALL_CONTENT_TEXT,
+  GADGET_ID_MM_BALL_CONTENT_UP,
   GADGET_ID_CUSTOM_SCORE_DOWN,
   GADGET_ID_CUSTOM_SCORE_TEXT,
   GADGET_ID_CUSTOM_SCORE_UP,
@@ -539,6 +542,7 @@ enum
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
   GADGET_ID_INVENTORY_CONTENT,
+  GADGET_ID_MM_BALL_CONTENT,
   GADGET_ID_CUSTOM_GRAPHIC,
   GADGET_ID_CUSTOM_CONTENT,
   GADGET_ID_CUSTOM_MOVE_ENTER,
@@ -570,6 +574,7 @@ enum
   GADGET_ID_LEVELSET_SAVE_MODE,
   GADGET_ID_WIND_DIRECTION,
   GADGET_ID_PLAYER_SPEED,
+  GADGET_ID_MM_BALL_CHOICE_MODE,
   GADGET_ID_CUSTOM_WALK_TO_ACTION,
   GADGET_ID_CUSTOM_EXPLOSION_TYPE,
   GADGET_ID_CUSTOM_DEADLINESS,
@@ -750,6 +755,7 @@ enum
   ED_COUNTER_ID_ENVELOPE_XSIZE,
   ED_COUNTER_ID_ENVELOPE_YSIZE,
   ED_COUNTER_ID_INVENTORY_SIZE,
+  ED_COUNTER_ID_MM_BALL_CONTENT,
   ED_COUNTER_ID_CUSTOM_SCORE,
   ED_COUNTER_ID_CUSTOM_GEMCOUNT,
   ED_COUNTER_ID_CUSTOM_VALUE_FIX,
@@ -856,6 +862,7 @@ enum
   ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
   ED_SELECTBOX_ID_WIND_DIRECTION,
   ED_SELECTBOX_ID_PLAYER_SPEED,
+  ED_SELECTBOX_ID_MM_BALL_CHOICE_MODE,
   ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE,
   ED_SELECTBOX_ID_CUSTOM_ACCESS_LAYER,
   ED_SELECTBOX_ID_CUSTOM_ACCESS_PROTECTED,
@@ -1079,6 +1086,7 @@ enum
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
   ED_DRAWING_ID_INVENTORY_CONTENT,
+  ED_DRAWING_ID_MM_BALL_CONTENT,
   ED_DRAWING_ID_CUSTOM_GRAPHIC,
   ED_DRAWING_ID_CUSTOM_CONTENT,
   ED_DRAWING_ID_CUSTOM_MOVE_ENTER,
@@ -1532,6 +1540,14 @@ static struct
     GADGET_ID_INVENTORY_SIZE_TEXT,	GADGET_ID_NONE,
     &level.initial_inventory_size[0],
     NULL,				NULL, "number of inventory elements"
+  },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
+    MIN_ELEMENTS_IN_GROUP,		MAX_MM_BALL_CONTENTS,
+    GADGET_ID_MM_BALL_CONTENT_DOWN,	GADGET_ID_MM_BALL_CONTENT_UP,
+    GADGET_ID_MM_BALL_CONTENT_TEXT,	GADGET_ID_NONE,
+    &level.num_mm_ball_contents,
+    NULL,				NULL, "number of content elements"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -2554,6 +2570,14 @@ static struct
     options_player_speed,
     &level.initial_player_stepsize[0],
     NULL, "initial player speed:", NULL,	"initial player speed"
+  },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_MM_BALL_CHOICE_MODE,	GADGET_ID_NONE,
+    -1,
+    options_group_choice_mode,
+    &level.mm_ball_choice_mode,
+    NULL, "choice type:", NULL,		"type of content choice"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -3738,6 +3762,16 @@ static struct
     GADGET_ID_INVENTORY_CONTENT,	GADGET_ID_USE_INITIAL_INVENTORY,
     &level.initial_inventory_content[0][0], MAX_INITIAL_INVENTORY_SIZE, 1,
     NULL, NULL, NULL, NULL,		"content for initial inventory"
+  },
+
+  // ---------- gray ball content -----------------------------------------
+
+  {
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(2),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_MM_BALL_CONTENT,		GADGET_ID_NONE,
+    &level.mm_ball_content[0],		MAX_MM_BALL_CONTENTS, 1,
+    "content:", NULL, NULL, NULL,	"content for gray ball"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -9577,6 +9611,31 @@ static void DrawPlayerInitialInventoryArea(int element)
   MapDrawingArea(id);
 }
 
+static void DrawMMBallContentArea(void)
+{
+  int id = ED_DRAWING_ID_MM_BALL_CONTENT;
+  int num_elements = level.num_mm_ball_contents;
+  int border_size = ED_DRAWINGAREA_BORDER_SIZE;
+  int sx = SX + ED_AREA_SETTINGS_X(drawingarea_info[id]) - border_size;
+  int sy = SY + ED_AREA_SETTINGS_Y(drawingarea_info[id]) - border_size;
+  int xsize = MAX_MM_BALL_CONTENTS;
+  int ysize = 1;
+
+  if (drawingarea_info[id].text_left != NULL)
+    sx += getTextWidthForDrawingArea(drawingarea_info[id].text_left);
+
+  UnmapDrawingArea(id);
+
+  ModifyEditorDrawingArea(id, num_elements, 1);
+
+  // delete content areas in case of reducing number of them
+  DrawBackground(sx, sy,
+		 xsize * ED_DRAWINGAREA_TILE_SIZE + 2 * border_size,
+		 ysize * ED_DRAWINGAREA_TILE_SIZE + 2 * border_size);
+
+  MapDrawingArea(id);
+}
+
 static void DrawEnvelopeTextArea(int envelope_nr)
 {
   int id = ED_TEXTAREA_ID_ENVELOPE_INFO;
@@ -10060,6 +10119,13 @@ static void DrawPropertiesConfig(void)
     }
     else if (properties_element == EL_EMC_ANDROID)
       DrawAndroidElementArea();
+    else if (properties_element == EL_MM_GRAY_BALL)
+    {
+      MapCounterButtons(ED_COUNTER_ID_MM_BALL_CONTENT);
+      MapSelectboxGadget(ED_SELECTBOX_ID_MM_BALL_CHOICE_MODE);
+
+      DrawMMBallContentArea();
+    }
   }
 
   if (IS_PLAYER_ELEMENT(properties_element))
@@ -13323,6 +13389,10 @@ static void HandleCounterButtons(struct GadgetInfo *gi)
 
     case ED_COUNTER_ID_INVENTORY_SIZE:
       DrawPlayerInitialInventoryArea(properties_element);
+      break;
+
+    case ED_COUNTER_ID_MM_BALL_CONTENT:
+      DrawMMBallContentArea();
       break;
 
     case ED_COUNTER_ID_ENVELOPE_XSIZE:

@@ -4240,6 +4240,7 @@ void InitElementPropertiesStatic(void)
     EL_BD_AMOEBA,
     EL_EMC_MAGIC_BALL,
     EL_EMC_ANDROID,
+    EL_MM_GRAY_BALL,
 
     -1
   };

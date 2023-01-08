@@ -127,6 +127,25 @@ void setLevelInfoToDefaults_MM(void)
   for (i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
     native_mm_level.score[i] = 10;
 
+  int ball_content[] =
+  {
+    EL_MIRROR_START,
+    EL_MIRROR_FIXED_START,
+    EL_POLAR_START,
+    EL_POLAR_CROSS_START,
+    EL_PACMAN_START,
+    EL_KETTLE,
+    EL_BOMB,
+    EL_PRISM
+  };
+  int num_ball_contents = sizeof(ball_content) / sizeof(int);
+
+  native_mm_level.num_ball_contents = num_ball_contents;
+  native_mm_level.ball_choice_mode = ANIM_RANDOM;
+
+  for (i = 0; i < num_ball_contents; i++)
+    native_mm_level.ball_content[i] = ball_content[i];
+
   native_mm_level.field[0][0] = Ur[0][0] = EL_MCDUFFIN_RIGHT;
   native_mm_level.field[STD_LEV_FIELDX-1][STD_LEV_FIELDY-1] =
     Ur[STD_LEV_FIELDX-1][STD_LEV_FIELDY-1] = EL_EXIT_CLOSED;

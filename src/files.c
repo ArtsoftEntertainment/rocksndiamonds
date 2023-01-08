@@ -904,11 +904,24 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.mm_time_bomb,			75
   },
+
   {
     EL_MM_GRAY_BALL,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.mm_time_ball,			75
   },
+  {
+    EL_MM_GRAY_BALL,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
+    &li.mm_ball_choice_mode,		ANIM_RANDOM
+  },
+  {
+    EL_MM_GRAY_BALL,			-1,
+    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
+    &li.mm_ball_content,		EL_EMPTY, NULL,
+    &li.num_mm_ball_contents,		8, MAX_MM_BALL_CONTENTS
+  },
+
   {
     EL_MM_STEEL_BLOCK,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
@@ -1840,6 +1853,16 @@ static void setLevelInfoToDefaults_Elements(struct LevelInfo *level)
   {
     int element = i;
     struct ElementInfo *ei = &element_info[element];
+
+    if (element == EL_MM_GRAY_BALL)
+    {
+      struct LevelInfo_MM *level_mm = level->native_mm_level;
+      int j;
+
+      for (j = 0; j < level->num_mm_ball_contents; j++)
+	level->mm_ball_content[j] =
+	  map_element_MM_to_RND(level_mm->ball_content[j]);
+    }
 
     // never initialize clipboard elements after the very first time
     // (to be able to use clipboard elements between several levels)
@@ -4129,7 +4152,7 @@ static void CopyNativeTape_SP_to_RND(struct LevelInfo *level)
 static void CopyNativeLevel_RND_to_MM(struct LevelInfo *level)
 {
   struct LevelInfo_MM *level_mm = level->native_mm_level;
-  int x, y;
+  int i, x, y;
 
   level_mm->fieldx = MIN(level->fieldx, MM_MAX_PLAYFIELD_WIDTH);
   level_mm->fieldy = MIN(level->fieldy, MM_MAX_PLAYFIELD_HEIGHT);
@@ -4157,6 +4180,13 @@ static void CopyNativeLevel_RND_to_MM(struct LevelInfo *level)
   level_mm->time_ball    = level->mm_time_ball;
   level_mm->time_block   = level->mm_time_block;
 
+  level_mm->num_ball_contents = level->num_mm_ball_contents;
+  level_mm->ball_choice_mode = level->mm_ball_choice_mode;
+
+  for (i = 0; i < level->num_mm_ball_contents; i++)
+    level_mm->ball_content[i] =
+      map_element_RND_to_MM(level->mm_ball_content[i]);
+
   for (x = 0; x < level->fieldx; x++)
     for (y = 0; y < level->fieldy; y++)
       Ur[x][y] =
@@ -4166,7 +4196,7 @@ static void CopyNativeLevel_RND_to_MM(struct LevelInfo *level)
 static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 {
   struct LevelInfo_MM *level_mm = level->native_mm_level;
-  int x, y;
+  int i, x, y;
 
   level->fieldx = MIN(level_mm->fieldx, MAX_LEV_FIELDX);
   level->fieldy = MIN(level_mm->fieldy, MAX_LEV_FIELDY);
@@ -4196,6 +4226,13 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
   level->mm_time_bomb  = level_mm->time_bomb;
   level->mm_time_ball  = level_mm->time_ball;
   level->mm_time_block = level_mm->time_block;
+
+  level->num_mm_ball_contents = level_mm->num_ball_contents;
+  level->mm_ball_choice_mode = level_mm->ball_choice_mode;
+
+  for (i = 0; i < level->num_mm_ball_contents; i++)
+    level->mm_ball_content[i] =
+      map_element_MM_to_RND(level_mm->ball_content[i]);
 
   for (x = 0; x < level->fieldx; x++)
     for (y = 0; y < level->fieldy; y++)
