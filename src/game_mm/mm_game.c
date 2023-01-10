@@ -926,14 +926,19 @@ void ScanLaser(void)
     return;
 
   if (laser.dest_element_last == EL_BOMB_ACTIVE ||
-      laser.dest_element_last == EL_MINE_ACTIVE)
+      laser.dest_element_last == EL_MINE_ACTIVE ||
+      laser.dest_element_last == EL_GRAY_BALL_OPENING)
   {
     int x = laser.dest_element_last_x;
     int y = laser.dest_element_last_y;
     int element = laser.dest_element_last;
 
     if (Tile[x][y] == element)
-      Tile[x][y] = (element == EL_BOMB_ACTIVE ? EL_BOMB : EL_MINE);
+      Tile[x][y] = (element == EL_BOMB_ACTIVE ? EL_BOMB :
+		    element == EL_MINE_ACTIVE ? EL_MINE : EL_BALL_GRAY);
+
+    if (Tile[x][y] == EL_BALL_GRAY)
+      MovDelay[x][y] = 0;
 
     laser.dest_element_last = EL_EMPTY;
     laser.dest_element_last_x = -1;
@@ -2403,7 +2408,8 @@ static void OpenSurpriseBall(int x, int y)
     if (!MovDelay[x][y])
     {
       Tile[x][y] = Store[x][y];
-      Store[x][y] = 0;
+      Store[x][y] = Store2[x][y] = 0;
+
       DrawField_MM(x, y);
 
       ScanLaser();
@@ -3334,28 +3340,37 @@ static void GameActions_MM_Ext(void)
 
   if (element == EL_BALL_GRAY && CT > native_mm_level.time_ball)
   {
-    int last_anim_random_frame = gfx.anim_random_frame;
-    int element_pos;
+    if (!Store2[ELX][ELY])	// check if content element not yet determined
+    {
+      int last_anim_random_frame = gfx.anim_random_frame;
+      int element_pos;
 
-    if (native_mm_level.ball_choice_mode == ANIM_RANDOM)
-      gfx.anim_random_frame = RND(native_mm_level.num_ball_contents);
+      if (native_mm_level.ball_choice_mode == ANIM_RANDOM)
+	gfx.anim_random_frame = RND(native_mm_level.num_ball_contents);
 
-    element_pos = getAnimationFrame(native_mm_level.num_ball_contents, 1,
-                                    native_mm_level.ball_choice_mode, 0,
-                                    game_mm.ball_choice_pos);
+      element_pos = getAnimationFrame(native_mm_level.num_ball_contents, 1,
+				      native_mm_level.ball_choice_mode, 0,
+				      game_mm.ball_choice_pos);
 
-    if (native_mm_level.ball_choice_mode == ANIM_RANDOM)
-      gfx.anim_random_frame = last_anim_random_frame;
+      if (native_mm_level.ball_choice_mode == ANIM_RANDOM)
+	gfx.anim_random_frame = last_anim_random_frame;
 
-    game_mm.ball_choice_pos++;
+      game_mm.ball_choice_pos++;
 
-    int new_element = native_mm_level.ball_content[element_pos];
+      int new_element = native_mm_level.ball_content[element_pos];
 
-    Store[ELX][ELY] = new_element + RND(get_num_elements(new_element));
+      Store[ELX][ELY] = new_element + RND(get_num_elements(new_element));
+      Store2[ELX][ELY] = TRUE;
+    }
+
     Tile[ELX][ELY] = EL_GRAY_BALL_OPENING;
 
     // !!! CHECK AGAIN: Laser on Polarizer !!!
     ScanLaser();
+
+    laser.dest_element_last = Tile[ELX][ELY];
+    laser.dest_element_last_x = ELX;
+    laser.dest_element_last_y = ELY;
 
     return;
 
