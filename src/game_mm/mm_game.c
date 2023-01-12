@@ -1325,6 +1325,9 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
 
 void DrawLaser(int start_edge, int mode)
 {
+  if (mode == DL_LASER_DISABLED)
+    DeactivateLaserTargetElement();
+
   if (laser.num_edges - start_edge < 0)
   {
     Warn("DrawLaser: laser.num_edges - start_edge < 0");
