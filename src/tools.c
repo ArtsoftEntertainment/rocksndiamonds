@@ -4269,13 +4269,9 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
 	DrawLevelElement(jx, jy, Back[jx][jy]);
       else
 	DrawLevelElement(jx, jy, EL_EMPTY);
-
-      if (Back[next_jx][next_jy])
-	DrawLevelElement(next_jx, next_jy, Back[next_jx][next_jy]);
-      else
-	DrawLevelElement(next_jx, next_jy, EL_EMPTY);
     }
-    else if (Back[next_jx][next_jy])
+
+    if (Back[next_jx][next_jy])
       DrawLevelElement(next_jx, next_jy, Back[next_jx][next_jy]);
     else
       DrawLevelElement(next_jx, next_jy, EL_EMPTY);
