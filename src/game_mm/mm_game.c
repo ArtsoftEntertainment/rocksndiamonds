@@ -948,6 +948,10 @@ void ScanLaser(void)
   if (game_mm.game_over)
     return;
 
+  // do not scan laser if fuse is off
+  if (laser.fuse_off)
+    return;
+
   DeactivateLaserTargetElement();
 
   laser.overloaded = FALSE;
@@ -1325,6 +1329,10 @@ static void DrawLaserExt(int start_edge, int num_edges, int mode)
 
 void DrawLaser(int start_edge, int mode)
 {
+  // do not draw laser if fuse is off
+  if (laser.fuse_off && mode == DL_LASER_ENABLED)
+    return;
+
   if (mode == DL_LASER_DISABLED)
     DeactivateLaserTargetElement();
 
