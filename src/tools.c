@@ -4248,6 +4248,9 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
     if (!player->is_pushing || !player->is_moving)
       return;
 
+    if (Tile[next_jx][next_jy] == EL_EXPLOSION)
+      return;
+
     int gfx_frame = GfxFrame[jx][jy];
 
     if (!IS_MOVING(jx, jy))		// push movement already finished
