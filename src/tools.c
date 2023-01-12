@@ -4191,9 +4191,6 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
       DrawDynamite(last_jx, last_jy);
     else
       DrawLevelField(last_jx, last_jy);
-
-    if (player->is_pushing && IN_SCR_FIELD(SCREENX(next_jx), SCREENY(next_jy)))
-      DrawLevelElement(next_jx, next_jy, EL_EMPTY);
   }
   else if (drawing_stage == DRAW_PLAYER_STAGE_FIELD_UNDER_PLAYER)
   {
@@ -4280,6 +4277,8 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
     }
     else if (Back[next_jx][next_jy])
       DrawLevelElement(next_jx, next_jy, Back[next_jx][next_jy]);
+    else
+      DrawLevelElement(next_jx, next_jy, EL_EMPTY);
 
     int px = SCREENX(jx), py = SCREENY(jy);
     int pxx = (TILEX - ABS(sxx)) * dx;
