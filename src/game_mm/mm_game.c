@@ -916,15 +916,8 @@ static int ScanPixel(void)
   return hit_mask;
 }
 
-void ScanLaser(void)
+static void DeactivateLaserTargetElement(void)
 {
-  int element;
-  int end = 0, rf = laser.num_edges;
-
-  // do not scan laser again after the game was lost for whatever reason
-  if (game_mm.game_over)
-    return;
-
   if (laser.dest_element_last == EL_BOMB_ACTIVE ||
       laser.dest_element_last == EL_MINE_ACTIVE ||
       laser.dest_element_last == EL_GRAY_BALL_OPENING)
@@ -944,6 +937,18 @@ void ScanLaser(void)
     laser.dest_element_last_x = -1;
     laser.dest_element_last_y = -1;
   }
+}
+
+void ScanLaser(void)
+{
+  int element;
+  int end = 0, rf = laser.num_edges;
+
+  // do not scan laser again after the game was lost for whatever reason
+  if (game_mm.game_over)
+    return;
+
+  DeactivateLaserTargetElement();
 
   laser.overloaded = FALSE;
   laser.stops_inside_element = FALSE;
