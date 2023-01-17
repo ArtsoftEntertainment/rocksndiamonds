@@ -141,6 +141,7 @@ struct GameInfo_MM
   int lights_still_needed;
   int num_keys;
   int ball_choice_pos;		// current content element choice position
+  boolean laser_red, laser_green, laser_blue;
 
   boolean level_solved;
   boolean game_over;
@@ -164,7 +165,8 @@ struct LevelInfo_MM
   int time;
   int kettles_needed;
   boolean auto_count_kettles;
-  boolean laser_red, laser_green, laser_blue;
+  boolean mm_laser_red, mm_laser_green, mm_laser_blue;
+  boolean df_laser_red, df_laser_green, df_laser_blue;
   char name[MM_MAX_LEVEL_NAME_LEN + 1];
   char author[MM_MAX_LEVEL_AUTHOR_LEN + 1];
   int score[MM_LEVEL_SCORE_ELEMENTS];

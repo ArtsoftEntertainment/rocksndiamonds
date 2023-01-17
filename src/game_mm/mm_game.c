@@ -433,9 +433,9 @@ static void SetLaserColor(int brightness)
 
   pen_ray =
     GetPixelFromRGB(window,
-		    (native_mm_level.laser_red   ? color_max  : color_up),
-		    (native_mm_level.laser_green ? color_down : color_min),
-		    (native_mm_level.laser_blue  ? color_down : color_min));
+		    (game_mm.laser_red   ? color_max  : color_up),
+		    (game_mm.laser_green ? color_down : color_min),
+		    (game_mm.laser_blue  ? color_down : color_min));
 }
 
 static void InitMovDir_MM(int x, int y)
@@ -538,6 +538,19 @@ static void InitField(int x, int y)
 	laser.start_edge.x = x;
 	laser.start_edge.y = y;
 	laser.start_angle = get_element_angle(element);
+
+        if (IS_MCDUFFIN(element))
+        {
+          game_mm.laser_red   = native_mm_level.mm_laser_red;
+          game_mm.laser_green = native_mm_level.mm_laser_green;
+          game_mm.laser_blue  = native_mm_level.mm_laser_blue;
+        }
+        else
+        {
+          game_mm.laser_red   = native_mm_level.df_laser_red;
+          game_mm.laser_green = native_mm_level.df_laser_green;
+          game_mm.laser_blue  = native_mm_level.df_laser_blue;
+        }
       }
 
       break;
@@ -626,6 +639,10 @@ void InitGameEngine_MM(void)
   game_mm.lights_still_needed = 0;
   game_mm.num_keys = 0;
   game_mm.ball_choice_pos = 0;
+
+  game_mm.laser_red = FALSE;
+  game_mm.laser_green = FALSE;
+  game_mm.laser_blue = TRUE;
 
   game_mm.level_solved = FALSE;
   game_mm.game_over = FALSE;

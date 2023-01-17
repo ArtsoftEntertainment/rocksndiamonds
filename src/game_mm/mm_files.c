@@ -112,9 +112,12 @@ void setLevelInfoToDefaults_MM(void)
   native_mm_level.time_bomb = 75;
   native_mm_level.time_ball = 75;
   native_mm_level.time_block = 75;
-  native_mm_level.laser_red = FALSE;
-  native_mm_level.laser_green = FALSE;
-  native_mm_level.laser_blue = TRUE;
+  native_mm_level.mm_laser_red = FALSE;
+  native_mm_level.mm_laser_green = FALSE;
+  native_mm_level.mm_laser_blue = TRUE;
+  native_mm_level.df_laser_red = TRUE;
+  native_mm_level.df_laser_green = TRUE;
+  native_mm_level.df_laser_blue = FALSE;
 
   for (i = 0; i < MAX_LEVEL_NAME_LEN; i++)
     native_mm_level.name[i] = '\0';
@@ -209,9 +212,9 @@ static int LoadLevel_MM_HEAD(File *file, int chunk_size,
     level->time_fuse = 25;
 
   laser_color			= getFile8Bit(file);
-  level->laser_red		= (laser_color >> 2) & 0x01;
-  level->laser_green		= (laser_color >> 1) & 0x01;
-  level->laser_blue		= (laser_color >> 0) & 0x01;
+  level->mm_laser_red		= (laser_color >> 2) & 0x01;
+  level->mm_laser_green		= (laser_color >> 1) & 0x01;
+  level->mm_laser_blue		= (laser_color >> 0) & 0x01;
 
   level->encoding_16bit_field	= (getFile8Bit(file) == 1 ? TRUE : FALSE);
 
@@ -401,9 +404,9 @@ static void SaveLevel_MM_HEAD(FILE *file, struct LevelInfo_MM *level)
   fputc(level->amoeba_speed, file);
   fputc(level->time_fuse, file);
 
-  laser_color = ((level->laser_red   << 2) |
-		 (level->laser_green << 1) |
-		 (level->laser_blue  << 0));
+  laser_color = ((level->mm_laser_red   << 2) |
+		 (level->mm_laser_green << 1) |
+		 (level->mm_laser_blue  << 0));
   fputc(laser_color, file);
 
   fputc((level->encoding_16bit_field ? 1 : 0), file);

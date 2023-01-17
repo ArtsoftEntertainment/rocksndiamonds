@@ -4161,9 +4161,13 @@ static void CopyNativeLevel_RND_to_MM(struct LevelInfo *level)
   level_mm->kettles_needed = level->gems_needed;
   level_mm->auto_count_kettles = level->auto_count_gems;
 
-  level_mm->laser_red = level->mm_laser_red;
-  level_mm->laser_green = level->mm_laser_green;
-  level_mm->laser_blue = level->mm_laser_blue;
+  level_mm->mm_laser_red   = level->mm_laser_red;
+  level_mm->mm_laser_green = level->mm_laser_green;
+  level_mm->mm_laser_blue  = level->mm_laser_blue;
+
+  level_mm->df_laser_red   = level->df_laser_red;
+  level_mm->df_laser_green = level->df_laser_green;
+  level_mm->df_laser_blue  = level->df_laser_blue;
 
   strcpy(level_mm->name, level->name);
   strcpy(level_mm->author, level->author);
@@ -4205,9 +4209,13 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
   level->gems_needed = level_mm->kettles_needed;
   level->auto_count_gems = level_mm->auto_count_kettles;
 
-  level->mm_laser_red = level_mm->laser_red;
-  level->mm_laser_green = level_mm->laser_green;
-  level->mm_laser_blue = level_mm->laser_blue;
+  level->mm_laser_red   = level_mm->mm_laser_red;
+  level->mm_laser_green = level_mm->mm_laser_green;
+  level->mm_laser_blue  = level_mm->mm_laser_blue;
+
+  level->df_laser_red   = level_mm->df_laser_red;
+  level->df_laser_green = level_mm->df_laser_green;
+  level->df_laser_blue  = level_mm->df_laser_blue;
 
   strcpy(level->name, level_mm->name);
 
