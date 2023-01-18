@@ -1120,6 +1120,14 @@ void ScanLaser(void)
     if (rf)
       DrawLaser(rf - 1, DL_LASER_ENABLED);
     rf = laser.num_edges;
+
+    if (!IS_DF_WALL_STEEL(element))
+    {
+      // only used for scanning DF steel walls; reset for all other elements
+      last_LX = 0;
+      last_LY = 0;
+      last_hit_mask = 0;
+    }
   }
 
 #if 0
