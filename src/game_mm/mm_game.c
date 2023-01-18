@@ -1473,6 +1473,10 @@ boolean HitElement(int element, int hit_mask)
   // this is more precise: check if laser would go through the center
   if ((ELX * TILEX + 14 - LX) * YS != (ELY * TILEY + 14 - LY) * XS)
   {
+    // prevent cutting through laser emitter with laser beam
+    if (IS_LASER(element))
+      return TRUE;
+
     // skip the whole element before continuing the scan
     do
     {
