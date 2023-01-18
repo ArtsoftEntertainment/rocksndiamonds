@@ -958,7 +958,8 @@ static void DeactivateLaserTargetElement(void)
 
 void ScanLaser(void)
 {
-  int element;
+  int element = EL_EMPTY;
+  int last_element = EL_EMPTY;
   int end = 0, rf = laser.num_edges;
 
   // do not scan laser again after the game was lost for whatever reason
@@ -1044,6 +1045,8 @@ void ScanLaser(void)
 	  hit_mask, LX, LY, ELX, ELY);
 #endif
 
+    last_element = element;
+
     element = Tile[ELX][ELY];
     laser.dest_element = element;
 
@@ -1061,6 +1064,12 @@ void ScanLaser(void)
       Debug("game:mm:ScanLaser", "WARNING! (1) %d, %d (%d)",
 	    ELX, ELY, element);
 #endif
+
+    // special case: leaving fixed MM steel grid (upwards) with non-90° angle
+    if (element == EL_EMPTY &&
+	IS_GRID_STEEL(last_element) &&
+	laser.current_angle % 4)		// angle is not 90°
+      element = last_element;
 
     if (element == EL_EMPTY)
     {
