@@ -69,6 +69,9 @@ static void FinalizeScreen(int draw_target)
 
 static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
 {
+  if (program.headless)
+    return;
+
   static DelayCounter update_screen_delay = { 50 };	// (milliseconds)
   SDL_Surface *screen = backbuffer->surface;
 
