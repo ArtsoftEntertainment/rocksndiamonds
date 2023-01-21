@@ -71,6 +71,7 @@ int getGraphicAnimationFrameXY(int, int, int);
 void getGraphicSource(int, int, Bitmap **, int *, int *);
 void getMiniGraphicSource(int, Bitmap **, int *, int *);
 void getSizedGraphicSource(int, int, int, Bitmap **, int *, int *);
+boolean getGraphicInfo_NewFrame(int, int, int);
 
 void AdvanceFrameCounter(void);
 void AdvanceGfxFrame(void);

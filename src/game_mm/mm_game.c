@@ -2554,32 +2554,42 @@ static void GrowAmoeba(int x, int y)
 
 static void DrawFieldAnimated_MM(int x, int y)
 {
-  int element = Tile[x][y];
+  DrawField_MM(x, y);
 
-  if (IS_BLOCKED(x, y))
+  laser.redraw = TRUE;
+}
+
+static void DrawFieldAnimatedIfNeeded_MM(int x, int y)
+{
+  int element = Tile[x][y];
+  int graphic = el2gfx(element);
+
+  if (!getGraphicInfo_NewFrame(x, y, graphic))
     return;
 
   DrawField_MM(x, y);
 
-  if (IS_MIRROR(element) ||
-      IS_MIRROR_FIXED(element) ||
-      element == EL_PRISM)
-  {
-    if (MovDelay[x][y] != 0)	// wait some time before next frame
-    {
-      MovDelay[x][y]--;
-
-      if (MovDelay[x][y] != 0)
-      {
-	int graphic = IMG_TWINKLE_WHITE;
-	int frame = getGraphicAnimationFrame(graphic, 10 - MovDelay[x][y]);
-
-	DrawGraphicThruMask_MM(SCREENX(x), SCREENY(y), graphic, frame);
-      }
-    }
-  }
-
   laser.redraw = TRUE;
+}
+
+static void DrawFieldTwinkle(int x, int y)
+{
+  if (MovDelay[x][y] != 0)	// wait some time before next frame
+  {
+    MovDelay[x][y]--;
+
+    DrawField_MM(x, y);
+
+    if (MovDelay[x][y] != 0)
+    {
+      int graphic = IMG_TWINKLE_WHITE;
+      int frame = getGraphicAnimationFrame(graphic, 10 - MovDelay[x][y]);
+
+      DrawGraphicThruMask_MM(SCREENX(x), SCREENY(y), graphic, frame);
+    }
+
+    laser.redraw = TRUE;
+  }
 }
 
 static void Explode_MM(int x, int y, int phase, int mode)
@@ -3223,8 +3233,16 @@ static void GameActions_MM_Ext(void)
       MeltIce(x, y);
     else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_AMOEBA)
       GrowAmoeba(x, y);
-    else
+    else if (IS_MIRROR(element) ||
+	     IS_MIRROR_FIXED(element) ||
+	     element == EL_PRISM)
+      DrawFieldTwinkle(x, y);
+    else if (element == EL_GRAY_BALL_OPENING ||
+	     element == EL_BOMB_ACTIVE ||
+	     element == EL_MINE_ACTIVE)
       DrawFieldAnimated_MM(x, y);
+    else if (!IS_BLOCKED(x, y))
+      DrawFieldAnimatedIfNeeded_MM(x, y);
   }
 
   AutoRotateMirrors();

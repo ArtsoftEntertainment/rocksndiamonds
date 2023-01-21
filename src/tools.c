@@ -9427,6 +9427,17 @@ int getGraphicInfo_Delay(int graphic)
   return graphic_info[graphic].anim_delay;
 }
 
+boolean getGraphicInfo_NewFrame(int x, int y, int graphic)
+{
+  if (!IS_NEW_FRAME(GfxFrame[x][y], graphic))
+    return FALSE;
+
+  if (ANIM_MODE(graphic) & (ANIM_TILED | ANIM_RANDOM_STATIC))
+    return FALSE;
+
+  return TRUE;
+}
+
 void PlayMenuSoundExt(int sound)
 {
   if (sound == SND_UNDEFINED)
