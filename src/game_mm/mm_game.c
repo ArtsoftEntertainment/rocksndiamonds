@@ -644,6 +644,8 @@ void InitGameEngine_MM(void)
   game_mm.laser_green = FALSE;
   game_mm.laser_blue = TRUE;
 
+  game_mm.lightball_rnd = TRUE;
+
   game_mm.level_solved = FALSE;
   game_mm.game_over = FALSE;
   game_mm.game_over_cause = 0;
@@ -714,6 +716,8 @@ void InitGameActions_MM(void)
 
   InitLaser();
 
+  game_mm.lightball_rnd = FALSE;
+
   for (i = 0; i <= num_init_game_frames; i++)
   {
     if (i == num_init_game_frames)
@@ -748,6 +752,8 @@ void InitGameActions_MM(void)
       continue;
 #endif
   }
+
+  game_mm.lightball_rnd = TRUE;
 
   ScanLaser();
 

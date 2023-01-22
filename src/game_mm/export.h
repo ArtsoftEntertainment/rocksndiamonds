@@ -143,6 +143,8 @@ struct GameInfo_MM
   int ball_choice_pos;		// current content element choice position
   boolean laser_red, laser_green, laser_blue;
 
+  boolean lightball_rnd;
+
   boolean level_solved;
   boolean game_over;
   int game_over_cause;
