@@ -3060,8 +3060,6 @@ void RotateMirror(int x, int y, int button)
 	 IS_POLAR(Tile[x][y]) ||
 	 IS_POLAR_CROSS(Tile[x][y])) && x == ELX && y == ELY)
     {
-      check = 0;
-
       if (IS_BEAMER(Tile[x][y]))
       {
 #if 0
@@ -3069,12 +3067,13 @@ void RotateMirror(int x, int y, int button)
 	      LX, LY, laser.beamer_edge, laser.beamer[1].num);
 #endif
 
-#if 0
-	laser.num_edges--;
-#endif
+	if (check == 1)
+	  laser.num_edges--;
       }
 
       ScanLaser();
+
+      check = 0;
     }
 
     if (check == 2)
