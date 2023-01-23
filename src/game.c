@@ -9859,7 +9859,7 @@ static void CheckWallGrowing(int ax, int ay)
 
   if (((stop_top && stop_bottom) || stop_horizontal) &&
       ((stop_left && stop_right) || stop_vertical))
-    Tile[ax][ay] = EL_WALL;
+    Tile[ax][ay] = (is_steelwall ? EL_STEELWALL : EL_WALL);
 
   if (new_wall)
     PlayLevelSoundAction(ax, ay, ACTION_GROWING);
