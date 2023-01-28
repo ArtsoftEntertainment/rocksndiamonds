@@ -757,7 +757,11 @@ void InitGameActions_MM(void)
   SetTileCursorXY(laser.start_edge.x, laser.start_edge.y);
   SetTileCursorActive(TRUE);
 
+  // restart all delay counters after initially cycling game elements
+  ResetFrameCounter(&rotate_delay);
+  ResetFrameCounter(&pacman_delay);
   ResetFrameCounter(&energy_delay);
+  ResetFrameCounter(&overload_delay);
 }
 
 static void FadeOutLaser(void)
