@@ -936,6 +936,10 @@ void TapeTogglePause(boolean toggle_mode)
 
     ModifyPauseButtons();
   }
+
+  // stop tape when leaving auto-pause after completely replaying tape
+  if (tape.playing && !tape.pausing && tape.counter >= tape.length)
+    TapeStop();
 }
 
 void TapeStartPlaying(void)
@@ -1007,7 +1011,7 @@ byte *TapePlayAction(void)
 
   if (tape.counter >= tape.length)	// end of tape reached
   {
-    if (tape.warp_forward && !tape.auto_play)
+    if (!tape.auto_play)
     {
       TapeStopWarpForward();
       TapeTogglePause(TAPE_TOGGLE_MANUAL);
