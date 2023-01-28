@@ -825,6 +825,13 @@ void AddLaserEdge(int lx, int ly)
 
 void AddDamagedField(int ex, int ey)
 {
+  // prevent adding the same field position again
+  if (laser.num_damages > 0 &&
+      laser.damage[laser.num_damages - 1].x == ex &&
+      laser.damage[laser.num_damages - 1].y == ey &&
+      laser.damage[laser.num_damages - 1].edge == laser.num_edges)
+    return;
+
   laser.damage[laser.num_damages].is_mirror = FALSE;
   laser.damage[laser.num_damages].angle = laser.current_angle;
   laser.damage[laser.num_damages].edge = laser.num_edges;
