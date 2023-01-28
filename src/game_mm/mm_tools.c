@@ -398,11 +398,6 @@ void DrawField_MM(int x, int y)
   int element = Tile[x][y];
 
   DrawElement_MM(x, y, element);
-
-  // old game versions randomly changed colors of bonus light balls
-  if (game.engine_version < VERSION_IDENT(4,3,3,0) &&
-      element == EL_LIGHTBALL && game_mm.lightball_rnd)
-    RND(3);
 }
 
 void DrawLevel_MM(void)
