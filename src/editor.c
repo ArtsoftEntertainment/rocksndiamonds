@@ -4644,7 +4644,12 @@ static int editor_el_mirror_magic[] =
   EL_MM_WOODEN_GRID_FIXED_1,
   EL_MM_WOODEN_GRID_FIXED_2,
   EL_MM_WOODEN_GRID_FIXED_3,
-  EL_MM_WOODEN_GRID_FIXED_4
+  EL_MM_WOODEN_GRID_FIXED_4,
+
+  EL_MM_ENVELOPE_1,
+  EL_MM_ENVELOPE_2,
+  EL_MM_ENVELOPE_3,
+  EL_MM_ENVELOPE_4
 };
 static int *editor_hl_mirror_magic_ptr = editor_hl_mirror_magic;
 static int *editor_el_mirror_magic_ptr = editor_el_mirror_magic;
@@ -9962,6 +9967,7 @@ static boolean checkPropertiesConfig(int element)
       IS_EMPTY_ELEMENT(element) ||
       IS_BALLOON_ELEMENT(element) ||
       IS_ENVELOPE(element) ||
+      IS_MM_ENVELOPE(element) ||
       IS_MM_MCDUFFIN(element) ||
       IS_DF_LASER(element) ||
       IS_PLAYER_ELEMENT(element) ||
@@ -10266,13 +10272,14 @@ static void DrawPropertiesConfig(void)
   if (IS_BALLOON_ELEMENT(properties_element))
     MapSelectboxGadget(ED_SELECTBOX_ID_WIND_DIRECTION);
 
-  if (IS_ENVELOPE(properties_element))
+  if (IS_ENVELOPE(properties_element) ||
+      IS_MM_ENVELOPE(properties_element))
   {
     int counter1_id = ED_COUNTER_ID_ENVELOPE_XSIZE;
     int counter2_id = ED_COUNTER_ID_ENVELOPE_YSIZE;
     int button1_id = ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP;
     int button2_id = ED_CHECKBUTTON_ID_ENVELOPE_CENTERED;
-    int envelope_nr = properties_element - EL_ENVELOPE_1;
+    int envelope_nr = ENVELOPE_NR(properties_element);
 
     counterbutton_info[counter1_id].value = &level.envelope[envelope_nr].xsize;
     counterbutton_info[counter2_id].value = &level.envelope[envelope_nr].ysize;

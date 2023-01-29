@@ -48,6 +48,7 @@
 #define EP_BIT_INACTIVE		(1 << 11)
 #define EP_BIT_WALL		(1 << 12)
 #define EP_BIT_PACMAN		(1 << 13)
+#define EP_BIT_ENVELOPE		(1 << 14)
 
 #define IS_GRID(e)		(Elementeigenschaften[e] & EP_BIT_GRID)
 #define IS_MCDUFFIN(e)		(Elementeigenschaften[e] & EP_BIT_MCDUFFIN)
@@ -63,6 +64,7 @@
 #define IS_INACTIVE(e)		(Elementeigenschaften[e] & EP_BIT_INACTIVE)
 #define IS_MM_WALL(e)		(Elementeigenschaften[e] & EP_BIT_WALL)
 #define IS_PACMAN(e)		(Elementeigenschaften[e] & EP_BIT_PACMAN)
+#define IS_ENVELOPE(e)		(Elementeigenschaften[e] & EP_BIT_ENVELOPE)
 
 #define IS_WALL_STEEL(e)	((e) >= EL_WALL_STEEL_START &&		\
 				 (e) <= EL_WALL_STEEL_END)
@@ -121,6 +123,12 @@
 				 (e) == EL_CELL ||			\
 				 (e) == EL_BOMB ||			\
 				 IS_WALL_AMOEBA(e))
+
+#define IS_ENVELOPE_OPENING(e)	((e) >= EL_ENVELOPE_OPENING_START &&	\
+				 (e) <= EL_ENVELOPE_OPENING_END)
+
+#define ENVELOPE_NR(e)		((e) - EL_ENVELOPE_1)
+#define ENVELOPE_OPENING_NR(e)	((e) - EL_ENVELOPE_1_OPENING)
 
 #define CAN_MOVE(e)		((e) == EL_PACMAN)
 #define IS_FREE(x,y)            (Tile[x][y] == EL_EMPTY)
@@ -451,8 +459,12 @@ extern int		num_element_info;
 #define EL_GRID_WOOD_03		(EL_GRID_WOOD_START + 3)
 #define EL_GRID_WOOD_END	EL_GRID_WOOD_03
 #define EL_FUEL_EMPTY		155
+#define EL_ENVELOPE_1		156
+#define EL_ENVELOPE_2		157
+#define EL_ENVELOPE_3		158
+#define EL_ENVELOPE_4		159
 
-#define EL_MM_END_1		155
+#define EL_MM_END_1		159
 
 #define EL_CHAR_START		160
 #define EL_CHAR_ASCII0		(EL_CHAR_START - 32)
@@ -655,6 +667,13 @@ extern int		num_element_info;
 #define EL_AMOEBA_WALL_GROWING	504
 #define EL_BOMB_ACTIVE		505
 #define EL_MINE_ACTIVE		506
+#define EL_ENVELOPE_1_OPENING	507
+#define EL_ENVELOPE_2_OPENING	508
+#define EL_ENVELOPE_3_OPENING	509
+#define EL_ENVELOPE_4_OPENING	510
+
+#define EL_ENVELOPE_OPENING_START	EL_ENVELOPE_1_OPENING
+#define EL_ENVELOPE_OPENING_END		EL_ENVELOPE_4_OPENING
 
 #define EL_WALL_CHANGING	512
 #define EL_WALL_CHANGING_START	(EL_WALL_CHANGING + 0)

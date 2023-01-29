@@ -727,6 +727,9 @@
 #define IS_ENVELOPE(e)		((e) >= EL_ENVELOPE_1 &&		\
 	 			 (e) <= EL_ENVELOPE_4)
 
+#define IS_MM_ENVELOPE(e)	((e) >= EL_MM_ENVELOPE_1 &&		\
+				 (e) <= EL_MM_ENVELOPE_4)
+
 #define IS_BALLOON_ELEMENT(e)	((e) == EL_BALLOON ||			\
 				 (e) == EL_BALLOON_SWITCH_LEFT ||	\
 				 (e) == EL_BALLOON_SWITCH_RIGHT ||	\
@@ -801,6 +804,11 @@
 #define GATE_GRAY_NR(e)		(IS_RND_GATE_GRAY(e) ? RND_GATE_GRAY_NR(e) :  \
 				 IS_EM_GATE_GRAY(e) ?  EM_GATE_GRAY_NR(e) :   \
 				 IS_EMC_GATE_GRAY(e) ? EMC_GATE_GRAY_NR(e) : 0)
+
+#define RND_ENVELOPE_NR(e)	((e) - EL_ENVELOPE_1)
+#define MM_ENVELOPE_NR(e)	((e) - EL_MM_ENVELOPE_1)
+#define ENVELOPE_NR(e)		(IS_ENVELOPE(e) ? RND_ENVELOPE_NR(e) :	\
+				 MM_ENVELOPE_NR(e))
 
 #define IS_ACID_POOL_OR_ACID(e)	(IS_ACID_POOL(e) || (e) == EL_ACID)
 
@@ -1702,11 +1710,10 @@
 #define EL_MM_WOODEN_GRID_FIXED_4	(EL_MM_WOODEN_GRID_FIXED_START + 3)
 #define EL_MM_WOODEN_GRID_FIXED_END	EL_MM_WOODEN_GRID_FIXED_03
 #define EL_MM_FUEL_EMPTY		(EL_MM_START + 155)
-
-#define EL_MM_UNUSED_156		(EL_MM_START + 156)
-#define EL_MM_UNUSED_157		(EL_MM_START + 157)
-#define EL_MM_UNUSED_158		(EL_MM_START + 158)
-#define EL_MM_UNUSED_159		(EL_MM_START + 159)
+#define EL_MM_ENVELOPE_1		(EL_MM_START + 156)
+#define EL_MM_ENVELOPE_2		(EL_MM_START + 157)
+#define EL_MM_ENVELOPE_3		(EL_MM_START + 158)
+#define EL_MM_ENVELOPE_4		(EL_MM_START + 159)
 
 #define EL_MM_END_1			(EL_MM_START + 159)
 #define EL_MM_START_2			(EL_MM_START + 160)

@@ -5297,24 +5297,24 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "extra energy ball (empty)"
   },
   {
-    "mm_unused_156",
-    "unused",
-    "(not used)"
+    "mm_envelope_1",
+    "mm_envelope",
+    "mail envelope 1 (MM style)"
   },
   {
-    "mm_unused_157",
-    "unused",
-    "(not used)"
+    "mm_envelope_2",
+    "mm_envelope",
+    "mail envelope 2 (MM style)"
   },
   {
-    "mm_unused_158",
-    "unused",
-    "(not used)"
+    "mm_envelope_3",
+    "mm_envelope",
+    "mail envelope 3 (MM style)"
   },
   {
-    "mm_unused_159",
-    "unused",
-    "(not used)"
+    "mm_envelope_4",
+    "mm_envelope",
+    "mail envelope 4 (MM style)"
   },
   {
     "df_mirror_1",

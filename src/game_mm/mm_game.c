@@ -1663,9 +1663,11 @@ boolean HitElement(int element, int hit_mask)
       element == EL_KEY ||
       element == EL_LIGHTBALL ||
       element == EL_PACMAN ||
-      IS_PACMAN(element))
+      IS_PACMAN(element) ||
+      IS_ENVELOPE(element))
   {
-    if (!IS_PACMAN(element))
+    if (!IS_PACMAN(element) &&
+	!IS_ENVELOPE(element))
       Bang_MM(ELX, ELY);
 
     if (element == EL_PACMAN)
@@ -1692,6 +1694,10 @@ boolean HitElement(int element, int hit_mask)
     else if (IS_PACMAN(element))
     {
       DeletePacMan(ELX, ELY);
+    }
+    else if (IS_ENVELOPE(element))
+    {
+      Tile[ELX][ELY] = EL_ENVELOPE_1_OPENING + ENVELOPE_NR(Tile[ELX][ELY]);
     }
 
     RaiseScoreElement_MM(element);
@@ -2482,6 +2488,42 @@ static void OpenSurpriseBall(int x, int y)
   }
 }
 
+static void OpenEnvelope(int x, int y)
+{
+  int num_frames = 8;		// seven frames plus final empty space
+
+  if (!MovDelay[x][y])		// next animation frame
+    MovDelay[x][y] = num_frames;
+
+  if (MovDelay[x][y])		// wait some time before next frame
+  {
+    int nr = ENVELOPE_OPENING_NR(Tile[x][y]);
+
+    MovDelay[x][y]--;
+
+    if (MovDelay[x][y] > 0 && IN_SCR_FIELD(x, y))
+    {
+      int graphic = el_act2gfx(EL_ENVELOPE_1 + nr, MM_ACTION_COLLECTING);
+      int frame = num_frames - MovDelay[x][y] - 1;
+
+      DrawGraphicAnimation_MM(x, y, graphic, frame);
+
+      laser.redraw = TRUE;
+    }
+
+    if (MovDelay[x][y] == 0)
+    {
+      Tile[x][y] = EL_EMPTY;
+
+      DrawField_MM(x, y);
+
+      ScanLaser();
+
+      ShowEnvelope_MM(nr);
+    }
+  }
+}
+
 static void MeltIce(int x, int y)
 {
   int frames = 5;
@@ -2983,6 +3025,12 @@ boolean ClickElement(int x, int y, int button)
 
     element_clicked = TRUE;
   }
+  else if (IS_ENVELOPE(element))
+  {
+    Tile[x][y] = EL_ENVELOPE_1_OPENING + ENVELOPE_NR(element);
+
+    element_clicked = TRUE;
+  }
 
   click_delay.value = (new_button ? CLICK_DELAY_FIRST : CLICK_DELAY);
   new_button = FALSE;
@@ -3239,6 +3287,8 @@ static void GameActions_MM_Ext(void)
       OpenExit(x, y);
     else if (element == EL_GRAY_BALL_OPENING)
       OpenSurpriseBall(x, y);
+    else if (IS_ENVELOPE_OPENING(element))
+      OpenEnvelope(x, y);
     else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_ICE)
       MeltIce(x, y);
     else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_AMOEBA)

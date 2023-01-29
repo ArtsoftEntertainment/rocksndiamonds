@@ -171,6 +171,15 @@ void InitElementProperties_MM(void)
   };
   static int ep_pacman_num = sizeof(ep_pacman) / sizeof(int);
 
+  static int ep_envelope[] =
+  {
+    EL_ENVELOPE_1,
+    EL_ENVELOPE_2,
+    EL_ENVELOPE_3,
+    EL_ENVELOPE_4,
+  };
+  static int ep_envelope_num = sizeof(ep_envelope) / sizeof(int);
+
   static long ep_bit[] =
   {
     EP_BIT_GRID,
@@ -186,6 +195,7 @@ void InitElementProperties_MM(void)
     EP_BIT_INACTIVE,
     EP_BIT_WALL,
     EP_BIT_PACMAN,
+    EP_BIT_ENVELOPE,
   };
   static int *ep_array[] =
   {
@@ -202,6 +212,7 @@ void InitElementProperties_MM(void)
     ep_inactive,
     ep_wall,
     ep_pacman,
+    ep_envelope,
   };
   static int *ep_num[] =
   {
@@ -218,6 +229,7 @@ void InitElementProperties_MM(void)
     &ep_inactive_num,
     &ep_wall_num,
     &ep_pacman_num,
+    &ep_envelope_num,
   };
   static int num_properties = sizeof(ep_num) / sizeof(int *);
 
