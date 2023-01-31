@@ -1598,6 +1598,7 @@ static void DrawTitleScreenImage(int nr, boolean initial)
 {
   int graphic = getTitleScreenGraphic(nr, initial);
   Bitmap *bitmap = graphic_info[graphic].bitmap;
+  int draw_masked = graphic_info[graphic].draw_masked;
   int width  = graphic_info[graphic].width;
   int height = graphic_info[graphic].height;
   int src_x = graphic_info[graphic].src_x;
@@ -1630,7 +1631,7 @@ static void DrawTitleScreenImage(int nr, boolean initial)
 
   ClearRectangleOnBackground(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
-  if (DrawingOnBackground(dst_x, dst_y))
+  if (DrawingOnBackground(dst_x, dst_y) && draw_masked)
     BlitBitmapMasked(bitmap, drawto, src_x, src_y, width, height, dst_x, dst_y);
   else
     BlitBitmap(bitmap, drawto, src_x, src_y, width, height, dst_x, dst_y);
