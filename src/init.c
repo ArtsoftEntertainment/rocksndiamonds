@@ -110,14 +110,14 @@ static int copy_properties[][5] =
 static int get_graphic_parameter_value(char *, char *, int);
 
 
-static Bitmap *getLoadingBackgroundBitmap(int graphic)
+static int getLoadingBackgroundImage(int graphic)
 {
-  return getBitmapFromGraphicOrDefault(graphic, INITIAL_IMG_BACKGROUND);
+  return getImageFromGraphicOrDefault(graphic, INITIAL_IMG_BACKGROUND);
 }
 
 static void SetLoadingWindowBackgroundImage(int graphic)
 {
-  SetWindowBackgroundBitmap(getLoadingBackgroundBitmap(graphic));
+  SetBackgroundImage(getLoadingBackgroundImage(graphic), REDRAW_ALL);
 }
 
 static void SetLoadingBackgroundImage(void)
@@ -5655,7 +5655,6 @@ void InitGfxBuffers(void)
   }
 
   ReCreateBitmap(&bitmap_db_field, FXSIZE, FYSIZE);
-  ReCreateBitmap(&bitmap_db_panel, DXSIZE, DYSIZE);
   ReCreateBitmap(&bitmap_db_door_1, 3 * DXSIZE, DYSIZE);
   ReCreateBitmap(&bitmap_db_door_2, 3 * VXSIZE, VYSIZE);
 

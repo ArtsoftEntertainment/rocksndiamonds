@@ -3762,7 +3762,6 @@ struct HelpAnimInfo
 
 
 extern Bitmap		       *bitmap_db_field;
-extern Bitmap		       *bitmap_db_panel;
 extern Bitmap		       *bitmap_db_door_1;
 extern Bitmap		       *bitmap_db_door_2;
 extern Bitmap		       *bitmap_db_store_1;

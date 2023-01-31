@@ -1987,9 +1987,7 @@ boolean GetOverlayActive(void);
 void SetDrawDeactivationMask(int);
 int GetDrawDeactivationMask(void);
 void SetDrawBackgroundMask(int);
-void SetWindowBackgroundBitmap(Bitmap *);
-void SetMainBackgroundBitmap(Bitmap *);
-void SetDoorBackgroundBitmap(Bitmap *);
+void SetBackgroundBitmap(Bitmap *, int, int, int, int, int);
 void SetRedrawMaskFromArea(int, int, int, int);
 
 void LimitScreenUpdates(boolean);

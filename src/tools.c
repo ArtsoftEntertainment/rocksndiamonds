@@ -1110,26 +1110,25 @@ static int getGlobalGameStatus(int status)
 	  status);
 }
 
-Bitmap *getBitmapFromGraphicOrDefault(int graphic, int default_graphic)
+int getImageFromGraphicOrDefault(int graphic, int default_graphic)
 {
   if (graphic == IMG_UNDEFINED)
-    return NULL;
+    return IMG_UNDEFINED;
 
   boolean redefined = getImageListEntryFromImageID(graphic)->redefined;
 
   return (graphic_info[graphic].bitmap != NULL || redefined ?
-	  graphic_info[graphic].bitmap :
-	  graphic_info[default_graphic].bitmap);
+	  graphic : default_graphic);
 }
 
-static Bitmap *getBackgroundBitmap(int graphic)
+static int getBackgroundImage(int graphic)
 {
-  return getBitmapFromGraphicOrDefault(graphic, IMG_BACKGROUND);
+  return getImageFromGraphicOrDefault(graphic, IMG_BACKGROUND);
 }
 
-static Bitmap *getGlobalBorderBitmap(int graphic)
+static int getGlobalBorderImage(int graphic)
 {
-  return getBitmapFromGraphicOrDefault(graphic, IMG_GLOBAL_BORDER);
+  return getImageFromGraphicOrDefault(graphic, IMG_GLOBAL_BORDER);
 }
 
 Bitmap *getGlobalBorderBitmapFromStatus(int status_raw)
@@ -1141,51 +1140,66 @@ Bitmap *getGlobalBorderBitmapFromStatus(int status_raw)
      status == GAME_MODE_EDITOR  ? IMG_GLOBAL_BORDER_EDITOR :
      status == GAME_MODE_PLAYING ? IMG_GLOBAL_BORDER_PLAYING :
      IMG_GLOBAL_BORDER);
+  int graphic_final = getGlobalBorderImage(graphic);
 
-  return getGlobalBorderBitmap(graphic);
+  return graphic_info[graphic_final].bitmap;
+}
+
+void SetBackgroundImage(int graphic, int redraw_mask)
+{
+  struct GraphicInfo *g = &graphic_info[graphic];
+  struct GraphicInfo g_undefined = { 0 };
+
+  if (graphic == IMG_UNDEFINED)
+    g = &g_undefined;
+
+  // remove every mask before setting mask for window, and
+  // remove window area mask before setting mask for main or door area
+  int remove_mask = (redraw_mask == REDRAW_ALL ? 0xffff : REDRAW_ALL);
+
+  // (!!! TO BE FIXED: The whole REDRAW_* system really sucks! !!!)
+  SetBackgroundBitmap(NULL, remove_mask, 0, 0, 0, 0);	// !!! FIX THIS !!!
+  SetBackgroundBitmap(g->bitmap, redraw_mask,
+		      g->src_x, g->src_y,
+		      g->width, g->height);
 }
 
 void SetWindowBackgroundImageIfDefined(int graphic)
 {
   if (graphic_info[graphic].bitmap)
-    SetWindowBackgroundBitmap(graphic_info[graphic].bitmap);
+    SetBackgroundImage(graphic, REDRAW_ALL);
 }
 
 void SetMainBackgroundImageIfDefined(int graphic)
 {
   if (graphic_info[graphic].bitmap)
-    SetMainBackgroundBitmap(graphic_info[graphic].bitmap);
+    SetBackgroundImage(graphic, REDRAW_FIELD);
 }
 
 void SetDoorBackgroundImageIfDefined(int graphic)
 {
   if (graphic_info[graphic].bitmap)
-    SetDoorBackgroundBitmap(graphic_info[graphic].bitmap);
+    SetBackgroundImage(graphic, REDRAW_DOOR_1);
 }
 
 void SetWindowBackgroundImage(int graphic)
 {
-  SetWindowBackgroundBitmap(getBackgroundBitmap(graphic));
+  SetBackgroundImage(getBackgroundImage(graphic), REDRAW_ALL);
 }
 
 void SetMainBackgroundImage(int graphic)
 {
-  SetMainBackgroundBitmap(getBackgroundBitmap(graphic));
+  SetBackgroundImage(getBackgroundImage(graphic), REDRAW_FIELD);
 }
 
 void SetDoorBackgroundImage(int graphic)
 {
-  SetDoorBackgroundBitmap(getBackgroundBitmap(graphic));
+  SetBackgroundImage(getBackgroundImage(graphic), REDRAW_DOOR_1);
 }
 
 void SetPanelBackground(void)
 {
-  struct GraphicInfo *gfx = &graphic_info[IMG_BACKGROUND_PANEL];
-
-  BlitBitmapTiled(gfx->bitmap, bitmap_db_panel, gfx->src_x, gfx->src_y,
-		  gfx->width, gfx->height, 0, 0, DXSIZE, DYSIZE);
-
-  SetDoorBackgroundBitmap(bitmap_db_panel);
+  SetDoorBackgroundImage(IMG_BACKGROUND_PANEL);
 }
 
 void DrawBackground(int x, int y, int width, int height)

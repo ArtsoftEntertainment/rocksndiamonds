@@ -449,7 +449,8 @@ void SetDrawBackgroundMask(int draw_background_mask)
   gfx.draw_background_mask = draw_background_mask;
 }
 
-static void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
+void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask,
+			 int x, int y, int width, int height)
 {
   if (background_bitmap_tile != NULL)
     gfx.background_bitmap_mask |= mask;
@@ -460,38 +461,17 @@ static void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask)
     return;
 
   if (mask == REDRAW_ALL)
-    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap, 0, 0, 0, 0,
+    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap,
+		    x, y, width, height,
 		    0, 0, video.width, video.height);
   else if (mask == REDRAW_FIELD)
-    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap, 0, 0, 0, 0,
+    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap,
+		    x, y, width, height,
 		    gfx.real_sx, gfx.real_sy, gfx.full_sxsize, gfx.full_sysize);
   else if (mask == REDRAW_DOOR_1)
-    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap, 0, 0, 0, 0,
+    BlitBitmapTiled(background_bitmap_tile, gfx.background_bitmap,
+		    x, y, width, height,
 		    gfx.dx, gfx.dy, gfx.dxsize, gfx.dysize);
-}
-
-void SetWindowBackgroundBitmap(Bitmap *background_bitmap_tile)
-{
-  // remove every mask before setting mask for window
-  // (!!! TO BE FIXED: The whole REDRAW_* system really sucks! !!!)
-  SetBackgroundBitmap(NULL, 0xffff);		// !!! FIX THIS !!!
-  SetBackgroundBitmap(background_bitmap_tile, REDRAW_ALL);
-}
-
-void SetMainBackgroundBitmap(Bitmap *background_bitmap_tile)
-{
-  // remove window area mask before setting mask for main area
-  // (!!! TO BE FIXED: The whole REDRAW_* system really sucks! !!!)
-  SetBackgroundBitmap(NULL, REDRAW_ALL);	// !!! FIX THIS !!!
-  SetBackgroundBitmap(background_bitmap_tile, REDRAW_FIELD);
-}
-
-void SetDoorBackgroundBitmap(Bitmap *background_bitmap_tile)
-{
-  // remove window area mask before setting mask for door area
-  // (!!! TO BE FIXED: The whole REDRAW_* system really sucks! !!!)
-  SetBackgroundBitmap(NULL, REDRAW_ALL);	// !!! FIX THIS !!!
-  SetBackgroundBitmap(background_bitmap_tile, REDRAW_DOOR_1);
 }
 
 

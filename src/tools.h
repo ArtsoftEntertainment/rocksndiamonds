@@ -108,10 +108,12 @@ void FadeSetDisabled(void);
 void FadeSkipNextFadeIn(void);
 void FadeSkipNextFadeOut(void);
 
-Bitmap *getBitmapFromGraphicOrDefault(int, int);
+int getImageFromGraphicOrDefault(int, int);
 Bitmap *getGlobalBorderBitmapFromStatus(int);
 
 void ClearField(void);
+
+void SetBackgroundImage(int, int);
 void SetWindowBackgroundImageIfDefined(int);
 void SetMainBackgroundImageIfDefined(int);
 void SetDoorBackgroundImageIfDefined(int);
