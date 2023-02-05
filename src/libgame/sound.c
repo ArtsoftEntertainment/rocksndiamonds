@@ -591,7 +591,7 @@ static void LoadCustomMusic_NoConf(void)
 {
   static boolean draw_init_text = TRUE;		// only draw at startup
   static char *last_music_directory = NULL;
-  char *music_directory = getCustomMusicDirectory();
+  char *music_directory = getCustomMusicDirectory_NoConf();
   Directory *dir;
   DirectoryEntry *dir_entry;
   int num_music = getMusicListSize();

@@ -19,6 +19,7 @@
 #include "platform.h"
 
 #include "setup.h"
+#include "sound.h"
 #include "joystick.h"
 #include "text.h"
 #include "misc.h"
@@ -1253,7 +1254,58 @@ char *getCustomArtworkLevelConfigFilename(int type)
   return filename;
 }
 
-char *getCustomMusicDirectory(void)
+static boolean directoryExists_CheckMusic(char *directory, boolean check_music)
+{
+  if (!directoryExists(directory))
+    return FALSE;
+
+  if (!check_music)
+    return TRUE;
+
+  Directory *dir;
+  DirectoryEntry *dir_entry;
+  int num_music = getMusicListSize();
+  boolean music_found = FALSE;
+
+  if ((dir = openDirectory(directory)) == NULL)
+    return FALSE;
+
+  while ((dir_entry = readDirectory(dir)) != NULL)	// loop all entries
+  {
+    char *basename = dir_entry->basename;
+    boolean music_already_used = FALSE;
+    int i;
+
+    // skip all music files that are configured in music config file
+    for (i = 0; i < num_music; i++)
+    {
+      struct FileInfo *music = getMusicListEntry(i);
+
+      if (strEqual(basename, music->filename))
+      {
+	music_already_used = TRUE;
+
+	break;
+      }
+    }
+
+    if (music_already_used)
+      continue;
+
+    if (FileIsMusic(dir_entry->filename))
+    {
+      music_found = TRUE;
+
+      break;
+    }
+  }
+
+  closeDirectory(dir);
+
+  return music_found;
+}
+
+static char *getCustomMusicDirectoryExt(boolean check_music)
 {
   static char *directory = NULL;
   boolean skip_setup_artwork = FALSE;
@@ -1264,7 +1316,7 @@ char *getCustomMusicDirectory(void)
   {
     // 1st try: look for special artwork in current level series directory
     directory = getPath2(getCurrentLevelDir(), MUSIC_DIRECTORY);
-    if (directoryExists(directory))
+    if (directoryExists_CheckMusic(directory, check_music))
       return directory;
 
     free(directory);
@@ -1274,7 +1326,7 @@ char *getCustomMusicDirectory(void)
     {
       // 2nd try: look for special artwork configured in level series config
       directory = getStringCopy(getLevelArtworkDir(TREE_TYPE_MUSIC_DIR));
-      if (directoryExists(directory))
+      if (directoryExists_CheckMusic(directory, check_music))
 	return directory;
 
       free(directory);
@@ -1288,7 +1340,7 @@ char *getCustomMusicDirectory(void)
   {
     // 3rd try: look for special artwork in configured artwork directory
     directory = getStringCopy(getSetupArtworkDir(artwork.mus_current));
-    if (directoryExists(directory))
+    if (directoryExists_CheckMusic(directory, check_music))
       return directory;
 
     free(directory);
@@ -1296,17 +1348,27 @@ char *getCustomMusicDirectory(void)
 
   // 4th try: look for default artwork in new default artwork directory
   directory = getStringCopy(getDefaultMusicDir(MUS_DEFAULT_SUBDIR));
-  if (directoryExists(directory))
+  if (directoryExists_CheckMusic(directory, check_music))
     return directory;
 
   free(directory);
 
   // 5th try: look for default artwork in old default artwork directory
   directory = getStringCopy(options.music_directory);
-  if (directoryExists(directory))
+  if (directoryExists_CheckMusic(directory, check_music))
     return directory;
 
   return NULL;		// cannot find specified artwork file anywhere
+}
+
+char *getCustomMusicDirectory(void)
+{
+  return getCustomMusicDirectoryExt(FALSE);
+}
+
+char *getCustomMusicDirectory_NoConf(void)
+{
+  return getCustomMusicDirectoryExt(TRUE);
 }
 
 void MarkTapeDirectoryUploadsAsComplete(char *level_subdir)

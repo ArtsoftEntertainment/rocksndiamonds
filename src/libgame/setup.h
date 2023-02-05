@@ -291,6 +291,7 @@ char *getCustomArtworkFilename(char *, int);
 char *getCustomArtworkConfigFilename(int);
 char *getCustomArtworkLevelConfigFilename(int);
 char *getCustomMusicDirectory(void);
+char *getCustomMusicDirectory_NoConf(void);
 
 void MarkTapeDirectoryUploadsAsComplete(char *);
 void MarkTapeDirectoryUploadsAsIncomplete(char *);

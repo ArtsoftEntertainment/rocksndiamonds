@@ -12911,7 +12911,7 @@ static boolean sound_info_listed(struct MusicFileInfo *list, char *basename)
 
 void LoadMusicInfo(void)
 {
-  char *music_directory = getCustomMusicDirectory();
+  char *music_directory = getCustomMusicDirectory_NoConf();
   int num_music = getMusicListSize();
   int num_music_noconf = 0;
   int num_sounds = getSoundListSize();
