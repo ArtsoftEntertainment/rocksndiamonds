@@ -391,9 +391,11 @@ void ScaleImage(int pos, int zoom_factor)
     return;
 
   if (zoom_factor != 1)
+  {
     ScaleBitmap(img_info->bitmaps, zoom_factor);
 
-  img_info->scaled_up = TRUE;
+    img_info->scaled_up = TRUE;
+  }
 }
 
 void FreeAllImages(void)
