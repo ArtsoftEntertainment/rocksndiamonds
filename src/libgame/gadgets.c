@@ -238,6 +238,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
   {
     case GD_TYPE_NORMAL_BUTTON:
     case GD_TYPE_CHECK_BUTTON:
+    case GD_TYPE_CHECK_BUTTON_2:
     case GD_TYPE_RADIO_BUTTON:
 
       BlitBitmapOnBackground(gd->bitmap, drawto,
@@ -828,6 +829,7 @@ static void DrawGadget_OverlayTouchButton(struct GadgetInfo *gi)
   {
     case GD_TYPE_NORMAL_BUTTON:
     case GD_TYPE_CHECK_BUTTON:
+    case GD_TYPE_CHECK_BUTTON_2:
     case GD_TYPE_RADIO_BUTTON:
       SDL_SetTextureAlphaMod(gd->bitmap->texture_masked, alpha);
       SDL_SetTextureBlendMode(gd->bitmap->texture_masked, SDL_BLENDMODE_BLEND);
@@ -2158,7 +2160,11 @@ boolean HandleGadgets(int mx, int my, int button)
     boolean deactivate_gadget = TRUE;
     boolean gadget_changed = TRUE;
 
-    if (gi->type & GD_TYPE_SELECTBOX)
+    if (gi->type == GD_TYPE_CHECK_BUTTON_2)
+    {
+      gi->checked = !gi->checked;
+    }
+    else if (gi->type & GD_TYPE_SELECTBOX)
     {
       if (keep_selectbox_open ||
 	  mouse_released_where_pressed ||
