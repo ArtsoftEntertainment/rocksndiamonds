@@ -22,12 +22,14 @@
 
 void InitFontInfo(struct FontBitmapInfo *font_bitmap_info, int num_fonts,
 		  int (*select_font_function)(int),
-		  int (*get_font_from_token_function)(char *))
+		  int (*get_font_from_token_function)(char *),
+		  char * (*get_token_from_font_function)(int))
 {
   gfx.num_fonts = num_fonts;
   gfx.font_bitmap_info = font_bitmap_info;
   gfx.select_font_function = select_font_function;
   gfx.get_font_from_token_function = get_font_from_token_function;
+  gfx.get_token_from_font_function = get_token_from_font_function;
 }
 
 void FreeFontInfo(struct FontBitmapInfo *font_bitmap_info)
@@ -253,6 +255,11 @@ void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
   Bitmap *src_bitmap;
   int src_x, src_y;
   char *text_ptr = text;
+
+#if DEBUG
+  Debug("font:token", "'%s' / '%s'",
+        gfx.get_token_from_font_function(font_nr), text);
+#endif
 
   if (font->bitmap == NULL)
     return;

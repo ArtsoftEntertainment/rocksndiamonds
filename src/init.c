@@ -381,7 +381,7 @@ void InitImageTextures(void)
     CreateImageTextures(texture_graphics[i]);
 }
 
-static int getFontBitmapID(int font_nr)
+static int getFontSpecialSuffix(void)
 {
   int special = -1;
 
@@ -393,6 +393,13 @@ static int getFontBitmapID(int font_nr)
     special = GFX_SPECIAL_ARG_MAIN;
   else if (game_status == GAME_MODE_PSEUDO_TYPENAMES)
     special = GFX_SPECIAL_ARG_NAMES;
+
+  return special;
+}
+
+static int getFontBitmapID(int font_nr)
+{
+  int special = getFontSpecialSuffix();
 
   if (special != -1)
     return font_info[font_nr].special_bitmap_id[special];
@@ -411,6 +418,22 @@ static int getFontFromToken(char *token)
   return FONT_INITIAL_1;
 }
 
+static char *getTokenFromFont(int font_nr)
+{
+  static char *token = NULL;
+  int special = getFontSpecialSuffix();
+
+  checked_free(token);
+
+  if (special != -1)
+    token = getStringCat2(font_info[font_nr].token_name,
+                          special_suffix_info[special].suffix);
+  else
+    token = getStringCopy(font_info[font_nr].token_name);
+
+  return token;
+}
+
 static void InitFontGraphicInfo(void)
 {
   static struct FontBitmapInfo *font_bitmap_info = NULL;
@@ -422,7 +445,7 @@ static void InitFontGraphicInfo(void)
   if (graphic_info == NULL)		// still at startup phase
   {
     InitFontInfo(font_initial, NUM_INITIAL_FONTS,
-		 getFontBitmapID, getFontFromToken);
+		 getFontBitmapID, getFontFromToken, getTokenFromFont);
 
     return;
   }
@@ -647,7 +670,7 @@ static void InitFontGraphicInfo(void)
   }
 
   InitFontInfo(font_bitmap_info, num_font_bitmaps,
-	       getFontBitmapID, getFontFromToken);
+	       getFontBitmapID, getFontFromToken, getTokenFromFont);
 }
 
 static void InitGlobalAnimGraphicInfo(void)

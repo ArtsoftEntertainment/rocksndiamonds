@@ -1228,6 +1228,7 @@ struct GfxInfo
   struct FontBitmapInfo *font_bitmap_info;
   int (*select_font_function)(int);
   int (*get_font_from_token_function)(char *);
+  char * (*get_token_from_font_function)(int);
 
   int anim_random_frame;
 
