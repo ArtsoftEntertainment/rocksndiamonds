@@ -9541,7 +9541,7 @@ void HandleGameActions(void)
 
 static struct
 {
-  int gfx_unpressed, gfx_pressed;
+  int gfx_unpressed, gfx_pressed, gfx_active;
   struct MenuPosInfo *pos;
   boolean *check_value;
   int gadget_id;
@@ -9552,7 +9552,7 @@ static struct
 } menubutton_info[NUM_SCREEN_MENUBUTTONS] =
 {
   {
-    IMG_MENU_BUTTON_PREV_LEVEL, IMG_MENU_BUTTON_PREV_LEVEL_ACTIVE,
+    IMG_MENU_BUTTON_PREV_LEVEL, IMG_MENU_BUTTON_PREV_LEVEL_ACTIVE, -1,
     &menu.main.button.prev_level, NULL,
     SCREEN_CTRL_ID_PREV_LEVEL,
     SCREEN_MASK_MAIN,
@@ -9560,7 +9560,7 @@ static struct
     FALSE, "previous level"
   },
   {
-    IMG_MENU_BUTTON_NEXT_LEVEL, IMG_MENU_BUTTON_NEXT_LEVEL_ACTIVE,
+    IMG_MENU_BUTTON_NEXT_LEVEL, IMG_MENU_BUTTON_NEXT_LEVEL_ACTIVE, -1,
     &menu.main.button.next_level, NULL,
     SCREEN_CTRL_ID_NEXT_LEVEL,
     SCREEN_MASK_MAIN,
@@ -9568,7 +9568,7 @@ static struct
     FALSE, "next level"
   },
   {
-    IMG_MENU_BUTTON_PREV_LEVEL2, IMG_MENU_BUTTON_PREV_LEVEL2_ACTIVE,
+    IMG_MENU_BUTTON_PREV_LEVEL2, IMG_MENU_BUTTON_PREV_LEVEL2_ACTIVE, -1,
     &menu.scores.button.prev_level, NULL,
     SCREEN_CTRL_ID_PREV_LEVEL2,
     SCREEN_MASK_SCORES | SCREEN_MASK_SCORES_INFO,
@@ -9576,7 +9576,7 @@ static struct
     FALSE, "previous level"
   },
   {
-    IMG_MENU_BUTTON_NEXT_LEVEL2, IMG_MENU_BUTTON_NEXT_LEVEL2_ACTIVE,
+    IMG_MENU_BUTTON_NEXT_LEVEL2, IMG_MENU_BUTTON_NEXT_LEVEL2_ACTIVE, -1,
     &menu.scores.button.next_level, NULL,
     SCREEN_CTRL_ID_NEXT_LEVEL2,
     SCREEN_MASK_SCORES | SCREEN_MASK_SCORES_INFO,
@@ -9584,7 +9584,7 @@ static struct
     FALSE, "next level"
   },
   {
-    IMG_MENU_BUTTON_PREV_SCORE, IMG_MENU_BUTTON_PREV_SCORE_ACTIVE,
+    IMG_MENU_BUTTON_PREV_SCORE, IMG_MENU_BUTTON_PREV_SCORE_ACTIVE, -1,
     &menu.scores.button.prev_score, NULL,
     SCREEN_CTRL_ID_PREV_SCORE,
     SCREEN_MASK_SCORES_INFO,
@@ -9592,7 +9592,7 @@ static struct
     FALSE, "previous score"
   },
   {
-    IMG_MENU_BUTTON_NEXT_SCORE, IMG_MENU_BUTTON_NEXT_SCORE_ACTIVE,
+    IMG_MENU_BUTTON_NEXT_SCORE, IMG_MENU_BUTTON_NEXT_SCORE_ACTIVE, -1,
     &menu.scores.button.next_score, NULL,
     SCREEN_CTRL_ID_NEXT_SCORE,
     SCREEN_MASK_SCORES_INFO,
@@ -9600,7 +9600,7 @@ static struct
     FALSE, "next score"
   },
   {
-    IMG_MENU_BUTTON_PLAY_TAPE, IMG_MENU_BUTTON_PLAY_TAPE,
+    IMG_MENU_BUTTON_PLAY_TAPE, IMG_MENU_BUTTON_PLAY_TAPE, -1,
     &menu.scores.button.play_tape, NULL,
     SCREEN_CTRL_ID_PLAY_TAPE,
     SCREEN_MASK_SCORES_INFO,
@@ -9608,7 +9608,7 @@ static struct
     FALSE, "play tape"
   },
   {
-    IMG_MENU_BUTTON_FIRST_LEVEL, IMG_MENU_BUTTON_FIRST_LEVEL_ACTIVE,
+    IMG_MENU_BUTTON_FIRST_LEVEL, IMG_MENU_BUTTON_FIRST_LEVEL_ACTIVE, -1,
     &menu.main.button.first_level, NULL,
     SCREEN_CTRL_ID_FIRST_LEVEL,
     SCREEN_MASK_MAIN,
@@ -9616,7 +9616,7 @@ static struct
     FALSE, "first level"
   },
   {
-    IMG_MENU_BUTTON_LAST_LEVEL, IMG_MENU_BUTTON_LAST_LEVEL_ACTIVE,
+    IMG_MENU_BUTTON_LAST_LEVEL, IMG_MENU_BUTTON_LAST_LEVEL_ACTIVE, -1,
     &menu.main.button.last_level, NULL,
     SCREEN_CTRL_ID_LAST_LEVEL,
     SCREEN_MASK_MAIN,
@@ -9624,7 +9624,7 @@ static struct
     FALSE, "last level"
   },
   {
-    IMG_MENU_BUTTON_LEVEL_NUMBER, IMG_MENU_BUTTON_LEVEL_NUMBER_ACTIVE,
+    IMG_MENU_BUTTON_LEVEL_NUMBER, IMG_MENU_BUTTON_LEVEL_NUMBER_ACTIVE, -1,
     &menu.main.button.level_number, NULL,
     SCREEN_CTRL_ID_LEVEL_NUMBER,
     SCREEN_MASK_MAIN,
@@ -9632,7 +9632,7 @@ static struct
     FALSE, "level number"
   },
   {
-    IMG_MENU_BUTTON_LEFT, IMG_MENU_BUTTON_LEFT_ACTIVE,
+    IMG_MENU_BUTTON_LEFT, IMG_MENU_BUTTON_LEFT_ACTIVE, -1,
     &menu.setup.button.prev_player, NULL,
     SCREEN_CTRL_ID_PREV_PLAYER,
     SCREEN_MASK_INPUT,
@@ -9640,7 +9640,7 @@ static struct
     FALSE, "previous player"
   },
   {
-    IMG_MENU_BUTTON_RIGHT, IMG_MENU_BUTTON_RIGHT_ACTIVE,
+    IMG_MENU_BUTTON_RIGHT, IMG_MENU_BUTTON_RIGHT_ACTIVE, -1,
     &menu.setup.button.next_player, NULL,
     SCREEN_CTRL_ID_NEXT_PLAYER,
     SCREEN_MASK_INPUT,
@@ -9648,7 +9648,7 @@ static struct
     FALSE, "next player"
   },
   {
-    IMG_MENU_BUTTON_INSERT_SOLUTION, IMG_MENU_BUTTON_INSERT_SOLUTION_ACTIVE,
+    IMG_MENU_BUTTON_INSERT_SOLUTION, IMG_MENU_BUTTON_INSERT_SOLUTION_ACTIVE, -1,
     &menu.main.button.insert_solution, NULL,
     SCREEN_CTRL_ID_INSERT_SOLUTION,
     SCREEN_MASK_MAIN_HAS_SOLUTION,
@@ -9656,7 +9656,7 @@ static struct
     FALSE, "insert solution tape"
   },
   {
-    IMG_MENU_BUTTON_PLAY_SOLUTION, IMG_MENU_BUTTON_PLAY_SOLUTION_ACTIVE,
+    IMG_MENU_BUTTON_PLAY_SOLUTION, IMG_MENU_BUTTON_PLAY_SOLUTION_ACTIVE, -1,
     &menu.main.button.play_solution, NULL,
     SCREEN_CTRL_ID_PLAY_SOLUTION,
     SCREEN_MASK_MAIN_HAS_SOLUTION,
@@ -9664,7 +9664,7 @@ static struct
     FALSE, "play solution tape"
   },
   {
-    IMG_MENU_BUTTON_LEVELSET_INFO, IMG_MENU_BUTTON_LEVELSET_INFO_ACTIVE,
+    IMG_MENU_BUTTON_LEVELSET_INFO, IMG_MENU_BUTTON_LEVELSET_INFO_ACTIVE, -1,
     &menu.main.button.levelset_info, NULL,
     SCREEN_CTRL_ID_LEVELSET_INFO,
     SCREEN_MASK_MAIN_HAS_SET_INFO,
@@ -9672,7 +9672,7 @@ static struct
     FALSE, "show level set info"
   },
   {
-    IMG_MENU_BUTTON_SWITCH_ECS_AGA, IMG_MENU_BUTTON_SWITCH_ECS_AGA_ACTIVE,
+    IMG_MENU_BUTTON_SWITCH_ECS_AGA, IMG_MENU_BUTTON_SWITCH_ECS_AGA_ACTIVE, -1,
     &menu.main.button.switch_ecs_aga, &setup.prefer_aga_graphics,
     SCREEN_CTRL_ID_SWITCH_ECS_AGA,
     SCREEN_MASK_MAIN,
@@ -9680,7 +9680,7 @@ static struct
     FALSE, "switch ECS/AGA chipset"
   },
   {
-    IMG_MENU_BUTTON_TOUCH_BACK, IMG_MENU_BUTTON_TOUCH_BACK,
+    IMG_MENU_BUTTON_TOUCH_BACK, IMG_MENU_BUTTON_TOUCH_BACK, -1,
     &menu.setup.button.touch_back, NULL,
     SCREEN_CTRL_ID_TOUCH_PREV_PAGE,
     SCREEN_MASK_TOUCH,
@@ -9688,7 +9688,7 @@ static struct
     TRUE, "previous page"
   },
   {
-    IMG_MENU_BUTTON_TOUCH_NEXT, IMG_MENU_BUTTON_TOUCH_NEXT,
+    IMG_MENU_BUTTON_TOUCH_NEXT, IMG_MENU_BUTTON_TOUCH_NEXT, -1,
     &menu.setup.button.touch_next, NULL,
     SCREEN_CTRL_ID_TOUCH_NEXT_PAGE,
     SCREEN_MASK_TOUCH,
@@ -9696,7 +9696,7 @@ static struct
     TRUE, "next page"
   },
   {
-    IMG_MENU_BUTTON_TOUCH_BACK2, IMG_MENU_BUTTON_TOUCH_BACK2,
+    IMG_MENU_BUTTON_TOUCH_BACK2, IMG_MENU_BUTTON_TOUCH_BACK2, -1,
     &menu.setup.button.touch_back2, NULL,
     SCREEN_CTRL_ID_TOUCH_PREV_PAGE2,
     SCREEN_MASK_TOUCH2,
@@ -9704,7 +9704,7 @@ static struct
     TRUE, "previous page"
   },
   {
-    IMG_MENU_BUTTON_TOUCH_NEXT2, IMG_MENU_BUTTON_TOUCH_NEXT2,
+    IMG_MENU_BUTTON_TOUCH_NEXT2, IMG_MENU_BUTTON_TOUCH_NEXT2, -1,
     &menu.setup.button.touch_next2, NULL,
     SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2,
     SCREEN_MASK_TOUCH2,
@@ -9790,8 +9790,11 @@ static void CreateScreenMenubuttons(void)
     boolean is_score_button = (screen_mask & SCREEN_MASK_SCORES_INFO);
     boolean has_gfx_pressed = (menubutton_info[i].gfx_pressed ==
                                menubutton_info[i].gfx_unpressed);
+    boolean has_gfx_active = (menubutton_info[i].gfx_active != -1);
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
+    Bitmap *gd_bitmap_unpressed_alt, *gd_bitmap_pressed_alt;
     int gfx_unpressed, gfx_pressed;
+    int gfx_unpressed_alt, gfx_pressed_alt;
     int x, y, width, height;
     int gd_x1, gd_x2, gd_y1, gd_y2;
     int gd_x1a, gd_x2a, gd_y1a, gd_y2a;
@@ -9813,16 +9816,33 @@ static void CreateScreenMenubuttons(void)
 
     gfx_unpressed = menubutton_info[i].gfx_unpressed;
     gfx_pressed   = menubutton_info[i].gfx_pressed;
+    gfx_unpressed_alt = gfx_unpressed;
+    gfx_pressed_alt   = gfx_pressed;
+
+    if (has_gfx_active)
+    {
+      gfx_unpressed_alt = menubutton_info[i].gfx_active;
+
+      type = GD_TYPE_CHECK_BUTTON_2;
+
+      if (menubutton_info[i].check_value != NULL)
+	checked = *menubutton_info[i].check_value;
+    }
+
     gd_bitmap_unpressed = graphic_info[gfx_unpressed].bitmap;
     gd_bitmap_pressed   = graphic_info[gfx_pressed].bitmap;
+    gd_bitmap_unpressed_alt = graphic_info[gfx_unpressed_alt].bitmap;
+    gd_bitmap_pressed_alt   = graphic_info[gfx_pressed_alt].bitmap;
+
     gd_x1 = graphic_info[gfx_unpressed].src_x;
     gd_y1 = graphic_info[gfx_unpressed].src_y;
     gd_x2 = graphic_info[gfx_pressed].src_x;
     gd_y2 = graphic_info[gfx_pressed].src_y;
-    gd_x1a = gd_x1;
-    gd_y1a = gd_y1;
-    gd_x2a = gd_x2;
-    gd_y2a = gd_y2;
+
+    gd_x1a = graphic_info[gfx_unpressed_alt].src_x;
+    gd_y1a = graphic_info[gfx_unpressed_alt].src_y;
+    gd_x2a = graphic_info[gfx_pressed_alt].src_x;
+    gd_y2a = graphic_info[gfx_pressed_alt].src_y;
 
     if (has_gfx_pressed)
     {
@@ -9838,7 +9858,9 @@ static void CreateScreenMenubuttons(void)
       gd_y2a += graphic_info[gfx_pressed].active_yoffset;
 
       type = GD_TYPE_CHECK_BUTTON;
-      checked = *menubutton_info[i].check_value;
+
+      if (menubutton_info[i].check_value != NULL)
+	checked = *menubutton_info[i].check_value;
     }
 
     if (is_score_button)
@@ -9897,8 +9919,8 @@ static void CreateScreenMenubuttons(void)
 		      GDI_CHECKED, checked,
 		      GDI_DESIGN_UNPRESSED, gd_bitmap_unpressed, gd_x1, gd_y1,
 		      GDI_DESIGN_PRESSED, gd_bitmap_pressed, gd_x2, gd_y2,
-                      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap_unpressed, gd_x1a, gd_y1a,
-                      GDI_ALT_DESIGN_PRESSED, gd_bitmap_pressed, gd_x2a, gd_y2a,
+                      GDI_ALT_DESIGN_UNPRESSED, gd_bitmap_unpressed_alt, gd_x1a, gd_y1a,
+                      GDI_ALT_DESIGN_PRESSED, gd_bitmap_pressed_alt, gd_x2a, gd_y2a,
 		      GDI_DIRECT_DRAW, FALSE,
 		      GDI_OVERLAY_TOUCH_BUTTON, is_touch_button,
 		      GDI_EVENT_MASK, event_mask,
