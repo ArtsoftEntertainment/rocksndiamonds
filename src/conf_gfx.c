@@ -6209,6 +6209,8 @@ struct ConfigInfo image_config[] =
   { "menu.button_levelset_info.clone_from",	"envelope_1"		},
   { "menu.button_levelset_info.active",		UNDEFINED_FILENAME	},
   { "menu.button_levelset_info.active.clone_from", "envelope_1.collecting" },
+  { "menu.button_levelset_info.pressed",	UNDEFINED_FILENAME	},
+  { "menu.button_levelset_info.pressed.clone_from", "envelope_1"	},
 
   { "menu.button_switch_ecs_aga",		UNDEFINED_FILENAME	},
   { "menu.button_switch_ecs_aga.active",	UNDEFINED_FILENAME	},
