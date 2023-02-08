@@ -1029,7 +1029,6 @@ struct ProgramInfo
 
   char *program_title;
   char *window_title;
-  char *icon_title;
 
   char *icon_filename;
 
@@ -1945,7 +1944,7 @@ extern int			FrameCounter;
 
 // function definitions
 
-void InitProgramInfo(char *, char *, char *, char *, char *, char *, char *,
+void InitProgramInfo(char *, char *, char *, char *, char *, char *,
 		     char *, int);
 void InitNetworkInfo(boolean, boolean, boolean, char *, int);
 void InitRuntimeInfo(void);

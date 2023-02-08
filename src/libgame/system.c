@@ -70,7 +70,7 @@ int			FrameCounter = 0;
 // ============================================================================
 
 void InitProgramInfo(char *argv0, char *config_filename, char *userdata_subdir,
-		     char *program_title, char *icon_title,
+		     char *program_title,
 		     char *icon_filename, char *cookie_prefix,
 		     char *program_version_string, int program_version)
 {
@@ -84,7 +84,6 @@ void InitProgramInfo(char *argv0, char *config_filename, char *userdata_subdir,
 
   program.program_title = program_title;
   program.window_title = "(undefined)";
-  program.icon_title = icon_title;
 
   program.icon_filename = icon_filename;
 
