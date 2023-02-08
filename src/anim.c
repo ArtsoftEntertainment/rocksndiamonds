@@ -636,7 +636,9 @@ void InitGlobalAnimations(void)
   InitGlobalAnimControls();
 }
 
-static void BlitGlobalAnimation(struct GraphicInfo *g, Bitmap *src_bitmap,
+static void BlitGlobalAnimation(struct GraphicInfo *g,
+				struct GraphicInfo *c,
+				Bitmap *src_bitmap,
 				int src_x, int src_y, int width, int height,
 				int dst_x, int dst_y, int drawing_target)
 {
@@ -647,13 +649,23 @@ static void BlitGlobalAnimation(struct GraphicInfo *g, Bitmap *src_bitmap,
   Bitmap *fade_bitmap =
     (drawing_target == DRAW_TO_FADE_SOURCE ? gfx.fade_bitmap_source :
      drawing_target == DRAW_TO_FADE_TARGET ? gfx.fade_bitmap_target : NULL);
+  int x, y;
 
-  if (drawing_target == DRAW_TO_SCREEN)
-    blit_screen(src_bitmap, src_x, src_y, width, height,
-		dst_x, dst_y);
-  else
-    blit_bitmap(src_bitmap, fade_bitmap, src_x, src_y, width, height,
-		dst_x, dst_y);
+  for (y = 0; y < c->stacked_yfactor; y++)
+  {
+    for (x = 0; x < c->stacked_xfactor; x++)
+    {
+      int dst_x_final = dst_x + x * (g->width  + c->stacked_xoffset);
+      int dst_y_final = dst_y + y * (g->height + c->stacked_yoffset);
+
+      if (drawing_target == DRAW_TO_SCREEN)
+	blit_screen(src_bitmap, src_x, src_y, width, height,
+		    dst_x_final, dst_y_final);
+      else
+	blit_bitmap(src_bitmap, fade_bitmap, src_x, src_y, width, height,
+		    dst_x_final, dst_y_final);
+    }
+  }
 }
 
 static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
@@ -800,6 +812,7 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
       {
 	struct GlobalAnimPartControlInfo *part = &anim->part[part_nr];
 	struct GraphicInfo *g = &part->graphic_info;
+	struct GraphicInfo *c = &part->control_info;
 	Bitmap *src_bitmap;
 	int src_x, src_y;
 	int width  = g->width;
@@ -864,7 +877,7 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 	src_x += cut_x;
 	src_y += cut_y;
 
-	BlitGlobalAnimation(g, src_bitmap, src_x, src_y, width, height,
+	BlitGlobalAnimation(g, c, src_bitmap, src_x, src_y, width, height,
 			    dst_x, dst_y, drawing_target);
       }
     }

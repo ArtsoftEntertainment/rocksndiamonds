@@ -2456,6 +2456,10 @@ enum
   GFX_ARG_ACTIVE_YOFFSET,
   GFX_ARG_PRESSED_XOFFSET,
   GFX_ARG_PRESSED_YOFFSET,
+  GFX_ARG_STACKED_XFACTOR,
+  GFX_ARG_STACKED_YFACTOR,
+  GFX_ARG_STACKED_XOFFSET,
+  GFX_ARG_STACKED_YOFFSET,
 
   NUM_GFX_ARGS
 };
@@ -3689,6 +3693,11 @@ struct GraphicInfo
   int active_yoffset;
   int pressed_xoffset;
   int pressed_yoffset;
+
+  int stacked_xfactor;
+  int stacked_yfactor;
+  int stacked_xoffset;
+  int stacked_yoffset;
 
   boolean use_image_size;	// use image size as default width and height
 };

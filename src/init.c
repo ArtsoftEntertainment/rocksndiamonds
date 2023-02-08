@@ -1691,6 +1691,12 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   g->active_yoffset = parameter[GFX_ARG_ACTIVE_YOFFSET];
   g->pressed_xoffset = parameter[GFX_ARG_PRESSED_XOFFSET];
   g->pressed_yoffset = parameter[GFX_ARG_PRESSED_YOFFSET];
+
+  // this is only used for drawing stacked global animations
+  g->stacked_xfactor = parameter[GFX_ARG_STACKED_XFACTOR];
+  g->stacked_yfactor = parameter[GFX_ARG_STACKED_YFACTOR];
+  g->stacked_xoffset = parameter[GFX_ARG_STACKED_XOFFSET];
+  g->stacked_yoffset = parameter[GFX_ARG_STACKED_YOFFSET];
 }
 
 static void set_graphic_parameters(int graphic)

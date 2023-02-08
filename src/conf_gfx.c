@@ -86,6 +86,10 @@ struct ConfigTypeInfo image_config_suffix[] =
   { ".active_yoffset",			"0",		TYPE_INTEGER	},
   { ".pressed_xoffset",			"0",		TYPE_INTEGER	},
   { ".pressed_yoffset",			"0",		TYPE_INTEGER	},
+  { ".stacked_xfactor",			"1",		TYPE_INTEGER	},
+  { ".stacked_yfactor",			"1",		TYPE_INTEGER	},
+  { ".stacked_xoffset",			"0",		TYPE_INTEGER	},
+  { ".stacked_yoffset",			"0",		TYPE_INTEGER	},
 
   { NULL,				NULL,		0		}
 };
