@@ -636,12 +636,12 @@ void InitGlobalAnimations(void)
   InitGlobalAnimControls();
 }
 
-static void BlitGlobalAnimation(struct GraphicInfo *g,
-				struct GraphicInfo *c,
-				Bitmap *src_bitmap,
-				int src_x, int src_y, int width, int height,
-				int dst_x, int dst_y, int drawing_target)
+static void BlitGlobalAnimation(struct GlobalAnimPartControlInfo *part,
+				Bitmap *src_bitmap, int src_x0, int src_y0,
+				int drawing_target)
 {
+  struct GraphicInfo *g = &part->graphic_info;
+  struct GraphicInfo *c = &part->control_info;
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
     (g->draw_masked ? BlitBitmapMasked : BlitBitmap);
   void (*blit_screen)(Bitmap *, int, int, int, int, int, int) =
@@ -655,15 +655,52 @@ static void BlitGlobalAnimation(struct GraphicInfo *g,
   {
     for (x = 0; x < c->stacked_xfactor; x++)
     {
-      int dst_x_final = dst_x + x * (g->width  + c->stacked_xoffset);
-      int dst_y_final = dst_y + y * (g->height + c->stacked_yoffset);
+      int src_x = src_x0;
+      int src_y = src_y0;
+      int dst_x = part->x + x * (g->width  + c->stacked_xoffset);
+      int dst_y = part->y + y * (g->height + c->stacked_yoffset);
+      int cut_x = 0;
+      int cut_y = 0;
+      int width  = g->width;
+      int height = g->height;
+
+      if (dst_x < 0)
+      {
+	width += dst_x;
+	cut_x = -dst_x;
+	dst_x = 0;
+      }
+      else if (dst_x > part->viewport_width - g->width)
+      {
+	width -= (dst_x - (part->viewport_width - g->width));
+      }
+
+      if (dst_y < 0)
+      {
+	height += dst_y;
+	cut_y  = -dst_y;
+	dst_y = 0;
+      }
+      else if (dst_y > part->viewport_height - g->height)
+      {
+	height -= (dst_y - (part->viewport_height - g->height));
+      }
+
+      if (width <= 0 || height <= 0)
+	continue;
+
+      src_x += cut_x;
+      src_y += cut_y;
+
+      dst_x += part->viewport_x;
+      dst_y += part->viewport_y;
 
       if (drawing_target == DRAW_TO_SCREEN)
 	blit_screen(src_bitmap, src_x, src_y, width, height,
-		    dst_x_final, dst_y_final);
+		    dst_x, dst_y);
       else
 	blit_bitmap(src_bitmap, fade_bitmap, src_x, src_y, width, height,
-		    dst_x_final, dst_y_final);
+		    dst_x, dst_y);
     }
   }
 }
@@ -812,15 +849,8 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
       {
 	struct GlobalAnimPartControlInfo *part = &anim->part[part_nr];
 	struct GraphicInfo *g = &part->graphic_info;
-	struct GraphicInfo *c = &part->control_info;
 	Bitmap *src_bitmap;
 	int src_x, src_y;
-	int width  = g->width;
-	int height = g->height;
-	int dst_x = part->x;
-	int dst_y = part->y;
-	int cut_x = 0;
-	int cut_y = 0;
 	int sync_frame;
 	int frame;
 	int last_anim_random_frame = gfx.anim_random_frame;
@@ -830,30 +860,6 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 
 	if (part->drawing_stage != drawing_stage)
 	  continue;
-
-	if (part->x < 0)
-	{
-	  dst_x = 0;
-	  width += part->x;
-	  cut_x = -part->x;
-	}
-	else if (part->x > part->viewport_width - g->width)
-	  width -= (part->x - (part->viewport_width - g->width));
-
-	if (part->y < 0)
-	{
-	  dst_y = 0;
-	  height += part->y;
-	  cut_y = -part->y;
-	}
-	else if (part->y > part->viewport_height - g->height)
-	  height -= (part->y - (part->viewport_height - g->height));
-
-	if (width <= 0 || height <= 0)
-	  continue;
-
-	dst_x += part->viewport_x;
-	dst_y += part->viewport_y;
 
 	sync_frame = anim_sync_frame - part->initial_anim_sync_frame;
 
@@ -874,11 +880,7 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 	getGlobalAnimGraphicSource(part->graphic, frame, &src_bitmap,
 				   &src_x, &src_y);
 
-	src_x += cut_x;
-	src_y += cut_y;
-
-	BlitGlobalAnimation(g, c, src_bitmap, src_x, src_y, width, height,
-			    dst_x, dst_y, drawing_target);
+	BlitGlobalAnimation(part, src_bitmap, src_x, src_y, drawing_target);
       }
     }
   }
