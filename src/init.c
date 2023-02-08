@@ -6443,7 +6443,7 @@ void DisplayExitMessage(char *format, va_list ap)
   sy += 3 * font_height;
 
   num_lines_printed =
-    DrawTextBuffer(sx, sy, program.log_filename[LOG_ERR_ID], font_2,
+    DrawTextBuffer(sx, sy, program.log_filename, font_2,
 		   line_length, line_length, max_lines,
 		   0, BLIT_ON_BACKGROUND, TRUE, TRUE, FALSE);
 

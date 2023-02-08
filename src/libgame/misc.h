@@ -295,9 +295,9 @@ void ReloadCustomArtworkList(struct ArtworkListInfo *);
 void FreeCustomArtworkLists(struct ArtworkListInfo *);
 
 char *getLogFilename(char *);
-void OpenLogFiles(void);
-void CloseLogFiles(void);
-void DumpLogFile(int);
+void OpenLogFile(void);
+void CloseLogFile(void);
+void DumpLogFile(void);
 
 void NotifyUserAboutErrorFile(void);
 

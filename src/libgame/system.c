@@ -99,10 +99,8 @@ void InitProgramInfo(char *command_filename,
 
   program.version_string = program_version_string;
 
-  program.log_filename[LOG_OUT_ID] = getLogFilename(LOG_OUT_BASENAME);
-  program.log_filename[LOG_ERR_ID] = getLogFilename(LOG_ERR_BASENAME);
-  program.log_file[LOG_OUT_ID] = program.log_file_default[LOG_OUT_ID] = stdout;
-  program.log_file[LOG_ERR_ID] = program.log_file_default[LOG_ERR_ID] = stderr;
+  program.log_filename = getLogFilename(LOG_FILENAME);
+  program.log_file = program.log_file_default = stdout;
 
   program.api_thread_count = 0;
 
@@ -170,7 +168,7 @@ void InitPlatformDependentStuff(void)
   // this is initialized in GetOptions(), but may already be used before
   options.verbose = TRUE;
 
-  OpenLogFiles();
+  OpenLogFile();
 
   int sdl_init_flags = SDL_INIT_EVENTS | SDL_INIT_NOPARACHUTE;
 
@@ -182,7 +180,7 @@ void InitPlatformDependentStuff(void)
 
 void ClosePlatformDependentStuff(void)
 {
-  CloseLogFiles();
+  CloseLogFile();
 }
 
 void InitGfxFieldInfo(int sx, int sy, int sxsize, int sysize,

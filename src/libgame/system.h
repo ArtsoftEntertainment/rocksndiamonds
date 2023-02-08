@@ -706,12 +706,7 @@
 
 #define FALLBACK_TEXT_FILENAME	"fallback.txt"
 
-#define LOG_OUT_BASENAME	"stdout.txt"
-#define LOG_ERR_BASENAME	"stderr.txt"
-
-#define LOG_OUT_ID		0
-#define LOG_ERR_ID		1
-#define NUM_LOGS		2
+#define LOG_FILENAME		"stdout.txt"
 
 #define STRING_PARENT_DIRECTORY		".."
 #define STRING_TOP_DIRECTORY		"/"
@@ -1035,9 +1030,9 @@ struct ProgramInfo
 
   char *cookie_prefix;
 
-  char *log_filename[NUM_LOGS];		// log filenames for out/err messages
-  FILE *log_file[NUM_LOGS];		// log file handles for out/err files
-  FILE *log_file_default[NUM_LOGS];	// default log file handles (out/err)
+  char *log_filename;			// filename for log messages
+  FILE *log_file;			// file handle for log files
+  FILE *log_file_default;		// default log file handle
 
   int version_super;
   int version_major;

@@ -41,8 +41,7 @@
 // logging functions
 // ----------------------------------------------------------------------------
 
-#define DUPLICATE_LOG_OUT_TO_STDOUT		TRUE
-#define DUPLICATE_LOG_ERR_TO_STDERR		TRUE
+#define DUPLICATE_LOGGING_TO_STDOUT		TRUE
 
 
 #if defined(PLATFORM_ANDROID)
@@ -94,15 +93,15 @@ static void vprintf_log(char *format, va_list ap)
 
 static void vprintf_log_nonewline(char *format, va_list ap)
 {
-  FILE *file = program.log_file[LOG_ERR_ID];
+  FILE *file = program.log_file;
 
-#if DUPLICATE_LOG_ERR_TO_STDERR
-  if (file != program.log_file_default[LOG_ERR_ID])
+#if DUPLICATE_LOGGING_TO_STDOUT
+  if (file != program.log_file_default)
   {
     va_list ap2;
     va_copy(ap2, ap);
 
-    vfprintf(program.log_file_default[LOG_ERR_ID], format, ap2);
+    vfprintf(program.log_file_default, format, ap2);
 
     va_end(ap2);
   }
@@ -113,17 +112,17 @@ static void vprintf_log_nonewline(char *format, va_list ap)
 
 static void vprintf_log(char *format, va_list ap)
 {
-  FILE *file = program.log_file[LOG_ERR_ID];
+  FILE *file = program.log_file;
   char *newline = STRING_NEWLINE;
 
-#if DUPLICATE_LOG_ERR_TO_STDERR
-  if (file != program.log_file_default[LOG_ERR_ID])
+#if DUPLICATE_LOGGING_TO_STDOUT
+  if (file != program.log_file_default)
   {
     va_list ap2;
     va_copy(ap2, ap);
 
-    vfprintf(program.log_file_default[LOG_ERR_ID], format, ap2);
-    fprintf(program.log_file_default[LOG_ERR_ID], "%s", newline);
+    vfprintf(program.log_file_default, format, ap2);
+    fprintf(program.log_file_default, "%s", newline);
 
     va_end(ap2);
   }
@@ -196,15 +195,15 @@ void printf_line_with_prefix(char *prefix, char *line_chars, int line_length)
 
 static void vPrint(char *format, va_list ap)
 {
-  FILE *file = program.log_file[LOG_OUT_ID];
+  FILE *file = program.log_file;
 
-#if DUPLICATE_LOG_OUT_TO_STDOUT
-  if (file != program.log_file_default[LOG_OUT_ID])
+#if DUPLICATE_LOGGING_TO_STDOUT
+  if (file != program.log_file_default)
   {
     va_list ap2;
     va_copy(ap2, ap);
 
-    vfprintf(program.log_file_default[LOG_OUT_ID], format, ap2);
+    vfprintf(program.log_file_default, format, ap2);
 
     va_end(ap2);
   }
@@ -224,7 +223,7 @@ void Print(char *format, ...)
 
 void PrintNoLog(char *format, ...)
 {
-  FILE *file = program.log_file_default[LOG_OUT_ID];
+  FILE *file = program.log_file_default;
   va_list ap;
 
   va_start(ap, format);
@@ -4185,40 +4184,31 @@ char *getLogFilename(char *basename)
   return getPath2(getMainUserGameDataDir(), basename);
 }
 
-void OpenLogFiles(void)
+void OpenLogFile(void)
 {
-  int i;
-
   InitMainUserDataDirectory();
 
-  for (i = 0; i < NUM_LOGS; i++)
+  if ((program.log_file = fopen(program.log_filename, MODE_WRITE)) == NULL)
   {
-    if ((program.log_file[i] = fopen(program.log_filename[i], MODE_WRITE))
-	== NULL)
-    {
-      program.log_file[i] = program.log_file_default[i];   // reset to default
+    program.log_file = program.log_file_default;   // reset to default
 
-      Warn("cannot open file '%s' for writing: %s",
-	   program.log_filename[i], strerror(errno));
-    }
-
-    // output should be unbuffered so it is not truncated in a crash
-    setbuf(program.log_file[i], NULL);
+    Warn("cannot open file '%s' for writing: %s",
+	 program.log_filename, strerror(errno));
   }
+
+  // output should be unbuffered so it is not truncated in a crash
+  setbuf(program.log_file, NULL);
 }
 
-void CloseLogFiles(void)
+void CloseLogFile(void)
 {
-  int i;
-
-  for (i = 0; i < NUM_LOGS; i++)
-    if (program.log_file[i] != program.log_file_default[i])
-      fclose(program.log_file[i]);
+  if (program.log_file != program.log_file_default)
+    fclose(program.log_file);
 }
 
-void DumpLogFile(int nr)
+void DumpLogFile(void)
 {
-  FILE *log_file = fopen(program.log_filename[nr], MODE_READ);
+  FILE *log_file = fopen(program.log_filename, MODE_READ);
 
   if (log_file == NULL)
     return;
@@ -4236,7 +4226,7 @@ void NotifyUserAboutErrorFile(void)
   char *error_text = getStringCat2("The program was aborted due to an error; "
 				   "for details, see the following error file:"
 				   STRING_NEWLINE,
-				   program.log_filename[LOG_ERR_ID]);
+				   program.log_filename);
 
   MessageBox(NULL, error_text, title_text, MB_OK);
 #endif
