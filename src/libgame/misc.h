@@ -294,6 +294,7 @@ void LoadArtworkConfig(struct ArtworkListInfo *);
 void ReloadCustomArtworkList(struct ArtworkListInfo *);
 void FreeCustomArtworkLists(struct ArtworkListInfo *);
 
+char *getLogBasename(char *);
 char *getLogFilename(char *);
 void OpenLogFile(void);
 void CloseLogFile(void);

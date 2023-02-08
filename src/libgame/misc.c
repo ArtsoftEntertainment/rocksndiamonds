@@ -4179,6 +4179,11 @@ void FreeCustomArtworkLists(struct ArtworkListInfo *artwork_info)
 // (now also added for Windows, to create files in user data directory)
 // ----------------------------------------------------------------------------
 
+char *getLogBasename(char *basename)
+{
+  return getStringCat2(basename, ".log");
+}
+
 char *getLogFilename(char *basename)
 {
   return getPath2(getMainUserGameDataDir(), basename);

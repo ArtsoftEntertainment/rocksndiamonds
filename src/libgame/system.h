@@ -706,8 +706,6 @@
 
 #define FALLBACK_TEXT_FILENAME	"fallback.txt"
 
-#define LOG_FILENAME		"stdout.txt"
-
 #define STRING_PARENT_DIRECTORY		".."
 #define STRING_TOP_DIRECTORY		"/"
 

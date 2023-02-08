@@ -99,7 +99,7 @@ void InitProgramInfo(char *command_filename,
 
   program.version_string = program_version_string;
 
-  program.log_filename = getLogFilename(LOG_FILENAME);
+  program.log_filename = getLogFilename(getLogBasename(program_basename));
   program.log_file = program.log_file_default = stdout;
 
   program.api_thread_count = 0;
