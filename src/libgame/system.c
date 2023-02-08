@@ -70,7 +70,7 @@ int			FrameCounter = 0;
 // ============================================================================
 
 void InitProgramInfo(char *argv0, char *config_filename, char *userdata_subdir,
-		     char *program_title,
+		     char *program_basename, char *program_title,
 		     char *icon_filename, char *cookie_prefix,
 		     char *program_version_string, int program_version)
 {
@@ -82,6 +82,7 @@ void InitProgramInfo(char *argv0, char *config_filename, char *userdata_subdir,
   program.userdata_subdir = userdata_subdir;
   program.userdata_path = getMainUserGameDataDir();
 
+  program.program_basename = program_basename;
   program.program_title = program_title;
   program.window_title = "(undefined)";
 

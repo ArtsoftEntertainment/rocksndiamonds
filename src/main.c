@@ -7798,6 +7798,7 @@ static void InitProgramConfig(char *command_filename)
   InitProgramInfo(command_filename,
 		  config_filename,
 		  userdata_subdir,
+		  program_basename,
 		  program_title,
 		  program_icon_file,
 		  COOKIE_PREFIX,

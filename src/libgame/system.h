@@ -1027,6 +1027,7 @@ struct ProgramInfo
   char *userdata_subdir;	// personal user game data directory
   char *userdata_path;		// resulting full path to game data directory
 
+  char *program_basename;
   char *program_title;
   char *window_title;
 
@@ -1944,7 +1945,7 @@ extern int			FrameCounter;
 
 // function definitions
 
-void InitProgramInfo(char *, char *, char *, char *, char *, char *,
+void InitProgramInfo(char *, char *, char *, char *, char *, char *, char *,
 		     char *, int);
 void InitNetworkInfo(boolean, boolean, boolean, char *, int);
 void InitRuntimeInfo(void);
