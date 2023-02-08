@@ -7756,8 +7756,8 @@ static void InitProgramConfig(char *command_filename)
   char *program_title = PROGRAM_TITLE_STRING;
   char *program_icon_file = PROGRAM_ICON_FILENAME;
   char *program_version = getProgramRealVersionString();
+  char *program_basename = getBaseNameNoSuffix(command_filename);
   char *config_filename = getProgramConfigFilename(command_filename);
-  char *userdata_basename = getBaseNameNoSuffix(command_filename);
   char *userdata_subdir;
 
   // read default program config, if existing
@@ -7782,7 +7782,7 @@ static void InitProgramConfig(char *command_filename)
 #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_MAC) || defined(PLATFORM_EMSCRIPTEN)
   userdata_subdir = program_title;
 #elif defined(PLATFORM_UNIX)
-  userdata_subdir = getStringCat2(".", userdata_basename);
+  userdata_subdir = getStringCat2(".", program_basename);
 #else
   userdata_subdir = USERDATA_DIRECTORY_OTHER;
 #endif
