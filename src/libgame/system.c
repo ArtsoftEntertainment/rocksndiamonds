@@ -69,13 +69,14 @@ int			FrameCounter = 0;
 // init/close functions
 // ============================================================================
 
-void InitProgramInfo(char *argv0, char *config_filename, char *userdata_subdir,
+void InitProgramInfo(char *command_filename,
+		     char *config_filename, char *userdata_subdir,
 		     char *program_basename, char *program_title,
 		     char *icon_filename, char *cookie_prefix,
 		     char *program_version_string, int program_version)
 {
-  program.command_basepath = getBasePath(argv0);
-  program.command_basename = getBaseName(argv0);
+  program.command_basepath = getBasePath(command_filename);
+  program.command_basename = getBaseName(command_filename);
 
   program.config_filename = config_filename;
 
