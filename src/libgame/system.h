@@ -633,10 +633,13 @@
 // default value for undefined password
 #define UNDEFINED_PASSWORD	"[undefined]"
 
-// default value for undefined parameter
+// default value for undefined string parameter
+#define ARG_UNDEFINED_STRING	"[undefined]"
+
+// default value for default string parameter
 #define ARG_DEFAULT		"[DEFAULT]"
 
-// default values for undefined configuration file parameters
+// default values for undefined numerical parameter (as string and integer)
 #define ARG_UNDEFINED		"-1000000"
 #define ARG_UNDEFINED_VALUE	(-1000000)
 
