@@ -10371,6 +10371,14 @@ static struct TokenInfo options_setup_tokens[] =
     TYPE_BOOLEAN,
     &setup.options.verbose,			"options.verbose"
   },
+  {
+    TYPE_BOOLEAN,
+    &setup.options.debug,			"options.debug"
+  },
+  {
+    TYPE_STRING,
+    &setup.options.debug_mode,			"options.debug_mode"
+  },
 };
 
 static void setSetupInfoToDefaults(struct SetupInfo *si)
@@ -10642,6 +10650,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->debug.xsn_percent = 0;
 
   si->options.verbose = FALSE;
+  si->options.debug = FALSE;
+  si->options.debug_mode = getStringCopy(ARG_UNDEFINED_STRING);
 
 #if defined(PLATFORM_ANDROID)
   si->fullscreen = TRUE;

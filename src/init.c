@@ -5471,6 +5471,12 @@ static void InitSetup(void)
   if (setup.options.verbose)
     options.verbose = TRUE;
 
+  if (setup.options.debug)
+    options.debug = TRUE;
+
+  if (!strEqual(setup.options.debug_mode, ARG_UNDEFINED_STRING))
+    options.debug_mode = getStringCopy(setup.options.debug_mode);
+
   if (setup.debug.show_frames_per_second)
     global.show_frames_per_second = TRUE;
 }
