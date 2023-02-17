@@ -38,6 +38,8 @@ static struct GadgetInfo *gadget_list_last_entry = NULL;
 static struct GadgetInfo *last_info_gi = NULL;
 static int next_free_gadget_id = 1;
 static boolean gadget_id_wrapped = FALSE;
+static int gadget_screen_border_right = -1;
+static int gadget_screen_border_bottom = -1;
 
 static void (*PlayGadgetSoundActivating)(void) = NULL;
 static void (*PlayGadgetSoundSelecting)(void) = NULL;
@@ -48,6 +50,30 @@ void InitGadgetsSoundCallback(void (*activating_function)(void),
 {
   PlayGadgetSoundActivating = activating_function;
   PlayGadgetSoundSelecting = selecting_function;
+}
+
+void InitGadgetScreenBorders(int border_right, int border_bottom)
+{
+  gadget_screen_border_right  = border_right;
+  gadget_screen_border_bottom = border_bottom;
+}
+
+static int getGadgetScreenBorderRight(void)
+{
+  if (gadget_screen_border_right < gfx.sx ||
+      gadget_screen_border_right > gfx.sx + gfx.sxsize)
+    return gfx.sx + gfx.sxsize;
+
+  return gadget_screen_border_right;
+}
+
+static int getGadgetScreenBorderBottom(void)
+{
+  if (gadget_screen_border_bottom < gfx.sy ||
+      gadget_screen_border_bottom > gfx.sy + gfx.sysize)
+    return gfx.sy + gfx.sysize;
+
+  return gadget_screen_border_bottom;
 }
 
 static struct GadgetInfo *getGadgetInfoFromGadgetID(int id)
@@ -1262,7 +1288,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     int border_xsize = gi->border.xsize;
     int border_ysize = gi->border.ysize;
     int button_size = gi->border.xsize_selectbutton;
-    int bottom_screen_border = gfx.sy + gfx.sysize - font_height;
+    int bottom_screen_border = getGadgetScreenBorderBottom();
     Bitmap *src_bitmap;
     int src_x, src_y;
 

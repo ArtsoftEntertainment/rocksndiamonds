@@ -7315,6 +7315,8 @@ void CreateLevelEditorGadgets(void)
 
   use_permanent_palette = !editor.palette.show_as_separate_screen;
 
+  InitGadgetScreenBorders(-1, INFOTEXT_YPOS);
+
   ReinitializeElementList();
 
   CreateControlButtons();

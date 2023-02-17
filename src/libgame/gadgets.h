@@ -276,6 +276,7 @@ struct GadgetInfo
 
 void InitGadgetsSoundCallback(void (*activating_function)(void),
 			      void (*selecting_function)(void));
+void InitGadgetScreenBorders(int, int);
 
 struct GadgetInfo *CreateGadget(int, ...);
 void FreeGadget(struct GadgetInfo *);
