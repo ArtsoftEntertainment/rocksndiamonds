@@ -179,6 +179,7 @@ struct LevelInfo_MM
   int num_ball_contents;
   int ball_choice_mode;
   int ball_content[MM_MAX_BALL_CONTENTS];
+  boolean rotate_ball_content;
 
   short field[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
 };

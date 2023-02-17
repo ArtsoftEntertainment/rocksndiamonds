@@ -3493,7 +3493,11 @@ static void GameActions_MM_Ext(void)
 
       int new_element = native_mm_level.ball_content[element_pos];
 
-      Store[ELX][ELY] = get_rotated_element(new_element, RND(16));
+      // randomly rotate newly created game element, if needed
+      if (native_mm_level.rotate_ball_content)
+	new_element = get_rotated_element(new_element, RND(16));
+
+      Store[ELX][ELY] = new_element;
       Store2[ELX][ELY] = TRUE;
     }
 

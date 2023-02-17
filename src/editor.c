@@ -687,6 +687,7 @@ enum
   GADGET_ID_DF_LASER_RED,
   GADGET_ID_DF_LASER_GREEN,
   GADGET_ID_DF_LASER_BLUE,
+  GADGET_ID_ROTATE_MM_BALL_CONTENT,
   GADGET_ID_CUSTOM_INDESTRUCTIBLE,
   GADGET_ID_CUSTOM_CAN_EXPLODE,
   GADGET_ID_CUSTOM_EXPLODE_FIRE,
@@ -1000,6 +1001,7 @@ enum
   ED_CHECKBUTTON_ID_DF_LASER_RED,
   ED_CHECKBUTTON_ID_DF_LASER_GREEN,
   ED_CHECKBUTTON_ID_DF_LASER_BLUE,
+  ED_CHECKBUTTON_ID_ROTATE_MM_BALL_CONTENT,
   ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC,
   ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_1,
   ED_CHECKBUTTON_ID_CUSTOM_ACCESSIBLE,
@@ -3377,6 +3379,13 @@ static struct
     &level.df_laser_blue,
     NULL, NULL,
     "blue",				"use blue color components in laser"
+  },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
+    GADGET_ID_ROTATE_MM_BALL_CONTENT,	GADGET_ID_NONE,
+    &level.rotate_mm_ball_content,
+    NULL, NULL,
+    "randomly rotate created content",	"randomly rotate newly created content"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -10137,6 +10146,7 @@ static void DrawPropertiesConfig(void)
     {
       MapCounterButtons(ED_COUNTER_ID_MM_BALL_CONTENT);
       MapSelectboxGadget(ED_SELECTBOX_ID_MM_BALL_CHOICE_MODE);
+      MapCheckbuttonGadget(ED_CHECKBUTTON_ID_ROTATE_MM_BALL_CONTENT);
 
       DrawMMBallContentArea();
     }
