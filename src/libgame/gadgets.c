@@ -389,69 +389,75 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	int border_x = gi->border.xsize;
 	int border_y = gi->border.ysize;
 	int gd_height = 2 * border_y + font_height;
+	int x = gi->x;
+	int y = gi->y;
+	int width  = gi->width;
+	int height = gi->height;
+	int xsize = gi->textarea.xsize;
+	int ysize = gi->textarea.ysize;
 
 	// top left part of gadget border
 	BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y,
-			       border_x, border_y, gi->x, gi->y);
+			       border_x, border_y, x, y);
 
 	// top middle part of gadget border
-	for (i=0; i < gi->textarea.xsize; i++)
+	for (i=0; i < xsize; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
 				 font_width, border_y,
-				 gi->x + border_x + i * font_width, gi->y);
+				 x + border_x + i * font_width, y);
 
 	// top right part of gadget border
 	BlitBitmapOnBackground(gd->bitmap, drawto,
 			       gd->x + gi->border.width - border_x, gd->y,
 			       border_x, border_y,
-			       gi->x + gi->width - border_x, gi->y);
+			       x + width - border_x, y);
 
 	// left and right part of gadget border for each row
-	for (i=0; i < gi->textarea.ysize; i++)
+	for (i=0; i < ysize; i++)
 	{
 	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y + border_y,
 				 border_x, font_height,
-				 gi->x, gi->y + border_y + i * font_height);
+				 x, y + border_y + i * font_height);
 	  BlitBitmapOnBackground(gd->bitmap, drawto,
 				 gd->x + gi->border.width - border_x,
 				 gd->y + border_y,
 				 border_x, font_height,
-				 gi->x + gi->width - border_x,
-				 gi->y + border_y + i * font_height);
+				 x + width - border_x,
+				 y + border_y + i * font_height);
 	}
 
 	// bottom left part of gadget border
 	BlitBitmapOnBackground(gd->bitmap, drawto,
 			       gd->x, gd->y + gd_height - border_y,
 			       border_x, border_y,
-			       gi->x, gi->y + gi->height - border_y);
+			       x, y + height - border_y);
 
 	// bottom middle part of gadget border
-	for (i=0; i < gi->textarea.xsize; i++)
+	for (i=0; i < xsize; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto,
 				 gd->x + border_x,
 				 gd->y + gd_height - border_y,
 				 font_width, border_y,
-				 gi->x + border_x + i * font_width,
-				 gi->y + gi->height - border_y);
+				 x + border_x + i * font_width,
+				 y + height - border_y);
 
 	// bottom right part of gadget border
 	BlitBitmapOnBackground(gd->bitmap, drawto,
 			       gd->x + gi->border.width - border_x,
 			       gd->y + gd_height - border_y,
 			       border_x, border_y,
-			       gi->x + gi->width - border_x,
-			       gi->y + gi->height - border_y);
+			       x + width - border_x,
+			       y + height - border_y);
 
 	ClearRectangleOnBackground(drawto,
-				   gi->x + border_x,
-				   gi->y + border_y,
-				   gi->width - 2 * border_x,
-				   gi->height - 2 * border_y);
+				   x + border_x,
+				   y + border_y,
+				   width - 2 * border_x,
+				   height - 2 * border_y);
 
 	// gadget text value
-	DrawTextArea(gi->x + border_x, gi->y + border_y, gi->textarea.value,
-		     font_nr, gi->textarea.xsize, -1, gi->textarea.ysize, 0,
+	DrawTextArea(x + border_x, y + border_y, gi->textarea.value,
+		     font_nr, xsize, -1, ysize, 0,
 		     BLIT_ON_BACKGROUND, FALSE, FALSE, FALSE);
 
 	cursor_letter = gi->textarea.value[gi->textarea.cursor_position];
@@ -461,8 +467,8 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	// draw cursor, if active
 	if (pressed)
 	  DrawTextExt(drawto,
-		      gi->x + border_x + gi->textarea.cursor_x * font_width,
-		      gi->y + border_y + gi->textarea.cursor_y * font_height,
+		      x + border_x + gi->textarea.cursor_x * font_width,
+		      y + border_y + gi->textarea.cursor_y * font_height,
 		      cursor_string,
 		      font_nr, BLIT_INVERSE);
       }
