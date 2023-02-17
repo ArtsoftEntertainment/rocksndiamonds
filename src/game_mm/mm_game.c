@@ -3491,7 +3491,7 @@ static void GameActions_MM_Ext(void)
 
       int new_element = native_mm_level.ball_content[element_pos];
 
-      Store[ELX][ELY] = new_element + RND(get_num_elements(new_element));
+      Store[ELX][ELY] = get_rotated_element(new_element, RND(16));
       Store2[ELX][ELY] = TRUE;
     }
 
