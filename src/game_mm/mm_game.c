@@ -2473,6 +2473,8 @@ static void OpenSurpriseBall(int x, int y)
       BlitBitmap(bitmap, drawto, gx + dx, gy + dy, 6, 6,
 		 cSX + x * TILEX + dx, cSY + y * TILEY + dy);
 
+      laser.redraw = TRUE;
+
       MarkTileDirty(x, y);
     }
 
