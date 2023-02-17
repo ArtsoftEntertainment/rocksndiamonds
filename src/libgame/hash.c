@@ -70,7 +70,7 @@ create_hashtable(unsigned int minsize, float maxloadfactor,
     return NULL;
   }
 
-  for (i=0; i < size; i++)
+  for (i = 0; i < size; i++)
     h->table[i] = NULL;
 
   h->tablelength  = size;

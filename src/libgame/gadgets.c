@@ -318,7 +318,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       border_x, gi->height, gi->x, gi->y);
 
 	// middle part of gadget
-	for (i=0; i < gi->textbutton.size; i++)
+	for (i = 0; i < gi->textbutton.size; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
 				 font_width, gi->height,
 				 gi->x + border_x + i * font_width, gi->y);
@@ -354,7 +354,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       border_x, gi->height, gi->x, gi->y);
 
 	// middle part of gadget
-	for (i=0; i < gi->textinput.size + 1; i++)
+	for (i = 0; i < gi->textinput.size + 1; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
 				 font_width, gi->height,
 				 gi->x + border_x + i * font_width, gi->y);
@@ -449,7 +449,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       border_x, border_y, x, y);
 
 	// top middle part of gadget border
-	for (i=0; i < xsize; i++)
+	for (i = 0; i < xsize; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
 				 font_width, border_y,
 				 x + border_x + i * font_width, y);
@@ -461,7 +461,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       x + width - border_x, y);
 
 	// left and right part of gadget border for each row
-	for (i=0; i < ysize; i++)
+	for (i = 0; i < ysize; i++)
 	{
 	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y + border_y,
 				 border_x, font_height,
@@ -481,7 +481,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       x, y + height - border_y);
 
 	// bottom middle part of gadget border
-	for (i=0; i < xsize; i++)
+	for (i = 0; i < xsize; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto,
 				 gd->x + border_x,
 				 gd->y + gd_height - border_y,
@@ -542,7 +542,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       border_x, gi->height, gi->x, gi->y);
 
 	// middle part of gadget
-	for (i=0; i < gi->selectbox.size; i++)
+	for (i = 0; i < gi->selectbox.size; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
 				 font_width, gi->height,
 				 gi->x + border_x + i * font_width, gi->y);
@@ -595,7 +595,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 				 gi->selectbox.x, gi->selectbox.y);
 
 	  // top middle part of gadget border
-	  for (i=0; i < gi->selectbox.size; i++)
+	  for (i = 0; i < gi->selectbox.size; i++)
 	    BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
 				   font_width, border_y,
 				   gi->selectbox.x + border_x + i * font_width,
@@ -616,7 +616,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 				 gi->selectbox.y);
 
 	  // left and right part of gadget border for each row
-	  for (i=0; i < gi->selectbox.num_values; i++)
+	  for (i = 0; i < gi->selectbox.num_values; i++)
 	  {
 	    BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y + border_y,
 				   border_x, font_height,
@@ -638,7 +638,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 				 gi->selectbox.y + box_height - border_y);
 
 	  // bottom middle part of gadget border
-	  for (i=0; i < gi->selectbox.size; i++)
+	  for (i = 0; i < gi->selectbox.size; i++)
 	    BlitBitmapOnBackground(gd->bitmap, drawto,
 				   gd->x + border_x,
 				   gd->y + gi->height - border_y,
@@ -669,7 +669,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 				     gi->selectbox.height - 2 * border_y);
 
 	  // selectbox text values
-	  for (i=0; i < gi->selectbox.num_values; i++)
+	  for (i = 0; i < gi->selectbox.num_values; i++)
 	  {
 	    int mask_mode = BLIT_MASKED;
 
@@ -744,7 +744,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       xpos, ypos);
 
 	// middle part of gadget
-	for (i=0; i < num_steps; i++)
+	for (i = 0; i < num_steps; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto,
 				 gd->x, gd->y + gi->border.ysize,
 				 gi->width, design_body,
@@ -791,7 +791,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 			       xpos, ypos);
 
 	// middle part of gadget
-	for (i=0; i < num_steps; i++)
+	for (i = 0; i < num_steps; i++)
 	  BlitBitmapOnBackground(gd->bitmap, drawto,
 				 gd->x + gi->border.xsize, gd->y,
 				 design_body, gi->height,
