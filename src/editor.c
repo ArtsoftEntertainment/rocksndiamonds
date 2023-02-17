@@ -1759,7 +1759,7 @@ static struct
   int gadget_id;
   int xsize, ysize;
   char *value;
-  char *text_above, *infotext;
+  char *text_above, *text_above_cropped, *infotext;
 } textarea_info[ED_NUM_TEXTAREAS] =
 {
   {
@@ -1767,7 +1767,7 @@ static struct
     GADGET_ID_ENVELOPE_INFO,
     MAX_ENVELOPE_XSIZE, MAX_ENVELOPE_YSIZE,
     NULL,
-    "Envelope Content:", "Envelope Content"
+    "Envelope Content:", "Envelope Content (cropped):", "Envelope Content"
   }
 };
 
@@ -7509,9 +7509,13 @@ static void MapTextAreaGadget(int id)
   int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
   int x_above = ED_SETTINGS_X(textarea_info[id].x);
   int y_above = ED_SETTINGS_Y(textarea_info[id].y) - yoffset_above;
+  char *text_above = textarea_info[id].text_above;
 
-  if (textarea_info[id].text_above)
-    DrawTextS(x_above, y_above, font_nr, textarea_info[id].text_above);
+  if (gi->textarea.cropped && textarea_info[id].text_above_cropped)
+    text_above = textarea_info[id].text_above_cropped;
+
+  if (text_above)
+    DrawTextS(x_above, y_above, font_nr, text_above);
 
   ModifyGadget(gi, GDI_TEXT_VALUE, textarea_info[id].value, GDI_END);
 
@@ -9649,7 +9653,9 @@ static void DrawEnvelopeTextArea(int envelope_nr)
   struct GadgetInfo *gi = level_editor_gadget[textarea_info[id].gadget_id];
 
   UnmapGadget(gi);
-  DrawBackground(gi->x, gi->y, gi->width, gi->height);
+
+  DrawBackground(gi->x, gi->y,
+		 gi->textarea.crop_width, gi->textarea.crop_height);
 
   if (envelope_nr != -1)
     textarea_info[id].value = level.envelope[envelope_nr].text;

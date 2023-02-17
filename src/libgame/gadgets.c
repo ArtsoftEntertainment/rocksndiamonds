@@ -156,6 +156,16 @@ static struct GadgetInfo *getGadgetInfoFromMousePosition(int mx, int my,
       return gi;
   }
 
+  // full text areas may overlap other active gadgets, so check them first
+  for (gi = gadget_list_first_entry; gi != NULL; gi = gi->next)
+  {
+    if (gi->mapped && gi->active &&
+	gi->type & GD_TYPE_TEXT_AREA && gi->textarea.full_open &&
+	mx >= gi->textarea.full_x && mx < gi->textarea.full_x + gi->width &&
+	my >= gi->textarea.full_y && my < gi->textarea.full_y + gi->height)
+      return gi;
+  }
+
   // check all other gadgets
   for (gi = gadget_list_first_entry; gi != NULL; gi = gi->next)
   {
@@ -395,6 +405,44 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	int height = gi->height;
 	int xsize = gi->textarea.xsize;
 	int ysize = gi->textarea.ysize;
+
+	if (gi->textarea.cropped)
+	{
+	  if (pressed)
+	  {
+	    x = gi->textarea.full_x;
+	    y = gi->textarea.full_y;
+
+	    if (!gi->textarea.full_open)
+	    {
+	      gi->textarea.full_open = TRUE;
+
+	      // save background under fully opened text area
+	      BlitBitmap(drawto, gfx.field_save_buffer,
+			 gi->textarea.full_x, gi->textarea.full_y,
+			 gi->width, gi->height,
+			 gi->textarea.full_x, gi->textarea.full_y);
+	    }
+	  }
+	  else
+	  {
+	    width  = gi->textarea.crop_width;
+	    height = gi->textarea.crop_height;
+	    xsize = gi->textarea.crop_xsize;
+	    ysize = gi->textarea.crop_ysize;
+
+	    if (gi->textarea.full_open)
+	    {
+	      gi->textarea.full_open = FALSE;
+
+	      // restore background under fully opened text area
+	      BlitBitmap(gfx.field_save_buffer, drawto,
+			 gi->textarea.full_x, gi->textarea.full_y,
+			 gi->width, gi->height,
+			 gi->textarea.full_x, gi->textarea.full_y);
+	    }
+	  }
+	}
 
 	// top left part of gadget border
 	BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y,
@@ -1392,6 +1440,8 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     int font_height = getFontHeight(font_nr);
     int border_xsize = gi->border.xsize;
     int border_ysize = gi->border.ysize;
+    int right_screen_border = getGadgetScreenBorderRight();
+    int bottom_screen_border = getGadgetScreenBorderBottom();
 
     if (gi->width == 0 || gi->height == 0)
     {
@@ -1403,6 +1453,42 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
       gi->textarea.xsize = (gi->width  - 2 * border_xsize) / font_width;
       gi->textarea.ysize = (gi->height - 2 * border_ysize) / font_height;
     }
+
+    gi->textarea.full_x = gi->x;
+    gi->textarea.full_y = gi->y;
+    gi->textarea.crop_width = gi->width;
+    gi->textarea.crop_height = gi->height;
+    gi->textarea.crop_xsize = gi->textarea.xsize;
+    gi->textarea.crop_ysize = gi->textarea.ysize;
+
+    gi->textarea.cropped = FALSE;
+
+    if (gi->x + gi->width > right_screen_border)
+    {
+      gi->textarea.full_x = MAX(0, right_screen_border - gi->width);
+      gi->textarea.crop_width = right_screen_border - gi->x;
+      gi->textarea.crop_xsize =
+	(gi->textarea.crop_width - 2 * border_xsize) / font_width;
+      gi->textarea.crop_width =
+	2 * border_xsize + gi->textarea.crop_xsize * font_width;
+
+      gi->textarea.cropped = TRUE;
+    }
+
+    if (gi->y + gi->height > bottom_screen_border)
+    {
+      gi->textarea.full_y = MAX(0, bottom_screen_border - gi->height);
+      gi->textarea.crop_height = bottom_screen_border - gi->y;
+      gi->textarea.crop_ysize =
+	(gi->textarea.crop_height - 2 * border_ysize) / font_height;
+      gi->textarea.crop_height =
+	2 * border_ysize + gi->textarea.crop_ysize * font_height;
+
+      gi->textarea.cropped = TRUE;
+    }
+
+    // always start with unselected text area (which is potentially cropped)
+    gi->textarea.full_open = FALSE;
   }
 }
 
@@ -1893,8 +1979,10 @@ boolean HandleGadgets(int mx, int my, int button)
     else if (gi->type & GD_TYPE_TEXT_AREA && button != 0 && !motion_status)
     {
       int old_cursor_position = gi->textarea.cursor_position;
-      int x = (mx - gi->x - gi->border.xsize) / getFontWidth(gi->font);
-      int y = (my - gi->y - gi->border.ysize) / getFontHeight(gi->font);
+      int gadget_x = mx - gi->textarea.full_x - gi->border.xsize;
+      int gadget_y = my - gi->textarea.full_y - gi->border.ysize;
+      int x = gadget_x / getFontWidth(gi->font);
+      int y = gadget_y / getFontHeight(gi->font);
 
       x = (x < 0 ? 0 : x >= gi->textarea.xsize ? gi->textarea.xsize - 1 : x);
       y = (y < 0 ? 0 : y >= gi->textarea.ysize ? gi->textarea.ysize - 1 : y);

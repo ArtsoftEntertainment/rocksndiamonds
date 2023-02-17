@@ -188,6 +188,15 @@ struct GadgetTextArea
   int cursor_x_preferred;		// "preferred" x cursor position
   int size;				// maximal size of input text
   int xsize, ysize;			// size of text area (in chars)
+
+  // automatically determined values
+  boolean cropped;			// text area cropped to fit viewport
+  int full_x, full_y;			// text area position when not cropped
+  int crop_width, crop_height;		// size of text area when cropped
+  int crop_xsize, crop_ysize;		// size of text area when cropped
+
+  // runtime values
+  boolean full_open;			// opening state of text area
 };
 
 struct GadgetSelectbox
