@@ -3573,7 +3573,7 @@ void InitGame(void)
   int full_lev_fieldx = lev_fieldx + (BorderElement != EL_EMPTY ? 2 : 0);
   int full_lev_fieldy = lev_fieldy + (BorderElement != EL_EMPTY ? 2 : 0);
   int fade_mask = REDRAW_FIELD;
-
+  boolean restarting = (game_status == GAME_MODE_PLAYING);
   boolean emulate_bd = TRUE;	// unless non-BOULDERDASH elements found
   boolean emulate_sp = TRUE;	// unless non-SUPAPLEX    elements found
   int initial_move_dir = MV_DOWN;
@@ -3585,7 +3585,15 @@ void InitGame(void)
   if (!game.restart_level)
     CloseDoor(DOOR_CLOSE_1);
 
-  SetGameStatus(GAME_MODE_PLAYING);
+  if (restarting)
+  {
+    // force fading out global animations displayed during game play
+    SetGameStatus(GAME_MODE_LOADING);
+  }
+  else
+  {
+    SetGameStatus(GAME_MODE_PLAYING);
+  }
 
   if (level_editor_test_game)
     FadeSkipNextFadeOut();
@@ -3600,6 +3608,14 @@ void InitGame(void)
   ExpireSoundLoops(TRUE);
 
   FadeOut(fade_mask);
+
+  if (restarting)
+  {
+    // force restarting global animations displayed during game play
+    RestartGlobalAnims();
+
+    SetGameStatus(GAME_MODE_PLAYING);
+  }
 
   if (level_editor_test_game)
     FadeSkipNextFadeIn();
