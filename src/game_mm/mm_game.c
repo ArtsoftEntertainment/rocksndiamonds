@@ -463,7 +463,7 @@ static void InitMovDir_MM(int x, int y)
   }
 }
 
-static void InitField(int x, int y)
+static void InitField(int x, int y, boolean init_game)
 {
   int element = Tile[x][y];
 
@@ -475,7 +475,7 @@ static void InitField(int x, int y)
 
     case EL_KETTLE:
     case EL_CELL:
-      if (native_mm_level.auto_count_kettles)
+      if (init_game && native_mm_level.auto_count_kettles)
 	game_mm.kettles_still_needed++;
       break;
 
@@ -535,9 +535,12 @@ static void InitField(int x, int y)
       }
       else if (IS_MCDUFFIN(element) || IS_LASER(element))
       {
-	laser.start_edge.x = x;
-	laser.start_edge.y = y;
-	laser.start_angle = get_element_angle(element);
+	if (init_game)
+	{
+	  laser.start_edge.x = x;
+	  laser.start_edge.y = y;
+	  laser.start_angle = get_element_angle(element);
+	}
 
         if (IS_MCDUFFIN(element))
         {
@@ -699,7 +702,7 @@ void InitGameEngine_MM(void)
       Store[x][y] = Store2[x][y] = 0;
       Stop[x][y] = FALSE;
 
-      InitField(x, y);
+      InitField(x, y, TRUE);
     }
   }
 
@@ -2482,7 +2485,9 @@ static void OpenSurpriseBall(int x, int y)
     {
       Tile[x][y] = Store[x][y];
       Store[x][y] = Store2[x][y] = 0;
+      MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
 
+      InitField(x, y, FALSE);
       DrawField_MM(x, y);
 
       ScanLaser();
@@ -2720,7 +2725,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
     Store[x][y] = Store2[x][y] = 0;
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
 
-    InitField(x, y);
+    InitField(x, y, FALSE);
     DrawField_MM(x, y);
   }
   else if (!(phase % delay) && IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
