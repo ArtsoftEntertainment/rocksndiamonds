@@ -18,7 +18,7 @@ int getAnimationFrame(int, int, int, int, int);
 void InitGlobalAnimations(void);
 void DrawGlobalAnimations(int, int);
 
-void RestartGlobalAnims(void);
+void RestartGlobalAnimsByStatus(int);
 
 boolean HandleGlobalAnimClicks(int, int, int, boolean);
 

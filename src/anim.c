@@ -1997,12 +1997,13 @@ static void ResetGlobalAnim_Clicked(void)
   InitGlobalAnim_Clicked(-1, -1, ANIM_CLICKED_RESET);
 }
 
-void RestartGlobalAnims(void)
+void RestartGlobalAnimsByStatus(int status)
 {
   int anim_status_last = global.anim_status;
 
-  global.anim_status = GAME_MODE_LOADING;
+  global.anim_status = status;
 
+  // force restarting global animations by changed global animation status
   SDLRedrawWindow();
 
   global.anim_status = anim_status_last;

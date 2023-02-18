@@ -3588,7 +3588,7 @@ void InitGame(void)
   if (restarting)
   {
     // force fading out global animations displayed during game play
-    SetGameStatus(GAME_MODE_LOADING);
+    SetGameStatus(GAME_MODE_PSEUDO_RESTARTING);
   }
   else
   {
@@ -3612,7 +3612,7 @@ void InitGame(void)
   if (restarting)
   {
     // force restarting global animations displayed during game play
-    RestartGlobalAnims();
+    RestartGlobalAnimsByStatus(GAME_MODE_PSEUDO_RESTARTING);
 
     SetGameStatus(GAME_MODE_PLAYING);
   }
