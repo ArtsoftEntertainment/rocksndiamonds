@@ -2676,7 +2676,10 @@ static void Explode_MM(int x, int y, int phase, int mode)
     Store2[x][y] = mode;
 
     Tile[x][y] = EL_EXPLODING_OPAQUE;
-    GfxElement[x][y] = center_element;
+
+    GfxElement[x][y] = (center_element == EL_BOMB_ACTIVE ? EL_BOMB :
+			IS_MCDUFFIN(center_element) ? EL_MCDUFFIN :
+			center_element);
 
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
 
