@@ -1169,34 +1169,54 @@ static boolean isClickablePart(struct GlobalAnimPartControlInfo *part, int mask)
   return FALSE;
 }
 
-static boolean isClickedPart(struct GlobalAnimPartControlInfo *part,
-			     int mx, int my, boolean clicked)
+static boolean isInsidePartStacked(struct GlobalAnimPartControlInfo *part,
+				   int mx, int my)
 {
   struct GraphicInfo *g = &part->graphic_info;
+  struct GraphicInfo *c = &part->control_info;
   int part_x = part->viewport_x + part->x;
   int part_y = part->viewport_y + part->y;
   int part_width  = g->width;
   int part_height = g->height;
+  int x, y;
 
+  for (y = 0; y < c->stacked_yfactor; y++)
+  {
+    for (x = 0; x < c->stacked_xfactor; x++)
+    {
+      int part_stacked_x = part_x + x * (part_width  + c->stacked_xoffset);
+      int part_stacked_y = part_y + y * (part_height + c->stacked_yoffset);
+
+      if (mx >= part_stacked_x &&
+	  mx <  part_stacked_x + part_width &&
+	  my >= part_stacked_y &&
+	  my <  part_stacked_y + part_height)
+	return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+static boolean isClickedPart(struct GlobalAnimPartControlInfo *part,
+			     int mx, int my, boolean clicked)
+{
   // check if mouse click was detected at all
   if (!clicked)
     return FALSE;
 
-  // check if mouse click is inside the animation part's viewport
+  // check if mouse click is outside the animation part's viewport
   if (mx <  part->viewport_x ||
       mx >= part->viewport_x + part->viewport_width ||
       my <  part->viewport_y ||
       my >= part->viewport_y + part->viewport_height)
     return FALSE;
 
-  // check if mouse click is inside the animation part's graphic
-  if (mx <  part_x ||
-      mx >= part_x + part_width ||
-      my <  part_y ||
-      my >= part_y + part_height)
-    return FALSE;
+  // check if mouse click is inside the animation part's (stacked) graphic
+  if (isInsidePartStacked(part, mx, my))
+    return TRUE;
 
-  return TRUE;
+  return FALSE;
 }
 
 static boolean clickBlocked(struct GlobalAnimPartControlInfo *part)
