@@ -2668,11 +2668,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
       Tile[x][y] = center_element;
     }
 
-    if (center_element == EL_BOMB_ACTIVE || IS_MCDUFFIN(center_element))
-      Store[x][y] = center_element;
-    else
-      Store[x][y] = EL_EMPTY;
-
+    Store[x][y] = center_element;
     Store2[x][y] = mode;
 
     Tile[x][y] = EL_EXPLODING_OPAQUE;
@@ -2709,7 +2705,6 @@ static void Explode_MM(int x, int y, int phase, int mode)
       InitLaser();
 
       Bang_MM(laser.start_edge.x, laser.start_edge.y);
-      Store[x][y] = EL_EMPTY;
 
       GameOver_MM(GAME_OVER_DELAYED);
 
@@ -2717,12 +2712,11 @@ static void Explode_MM(int x, int y, int phase, int mode)
     }
     else if (IS_MCDUFFIN(Store[x][y]))
     {
-      Store[x][y] = EL_EMPTY;
-
       GameOver_MM(GAME_OVER_BOMB);
     }
 
-    Tile[x][y] = Store[x][y];
+    Tile[x][y] = EL_EMPTY;
+
     Store[x][y] = Store2[x][y] = 0;
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
 
