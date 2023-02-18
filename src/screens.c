@@ -3268,6 +3268,8 @@ static void DrawInfoScreen_TitleScreen(void)
 {
   SetGameStatus(GAME_MODE_TITLE);
 
+  UnmapAllGadgets();
+
   DrawTitleScreen();
 }
 
@@ -3280,6 +3282,7 @@ static void DrawInfoScreen_Elements(void)
 {
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_ELEMENTS);
 
+  UnmapAllGadgets();
   FadeInfoSoundsAndMusic();
 
   FadeOut(REDRAW_FIELD);
@@ -3381,6 +3384,8 @@ void HandleInfoScreen_Elements(int dx, int dy, int button)
 static void DrawInfoScreen_Music(void)
 {
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_MUSIC);
+
+  UnmapAllGadgets();
 
   FadeOut(REDRAW_FIELD);
 
@@ -3591,6 +3596,7 @@ static void DrawInfoScreen_Version(void)
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO_VERSION);
 
+  UnmapAllGadgets();
   FadeInfoSoundsAndMusic();
 
   FadeOut(REDRAW_FIELD);
@@ -3892,6 +3898,7 @@ static void DrawInfoScreen_Generic(void)
 {
   SetMainBackgroundImageIfDefined(getInfoScreenBackgroundImage_Generic());
 
+  UnmapAllGadgets();
   FadeInfoSoundsAndMusic();
 
   FadeOut(REDRAW_FIELD);
