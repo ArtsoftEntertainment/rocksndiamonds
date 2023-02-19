@@ -1496,6 +1496,8 @@ boolean HitElement(int element, int hit_mask)
   // this is more precise: check if laser would go through the center
   if ((ELX * TILEX + 14 - LX) * YS != (ELY * TILEY + 14 - LY) * XS)
   {
+    int skip_count = 0;
+
     // prevent cutting through laser emitter with laser beam
     if (IS_LASER(element))
       return TRUE;
@@ -1505,15 +1507,18 @@ boolean HitElement(int element, int hit_mask)
     {
       LX += XS;
       LY += YS;
+
+      skip_count++;
     }
     while (ELX == LX/TILEX && ELY == LY/TILEY && LX > 0 && LY > 0);
 
-    if (LX/TILEX > ELX || LY/TILEY > ELY)
+    if ((LX/TILEX > ELX || LY/TILEY > ELY) && skip_count > 1)
     {
       /* skipping scan positions to the right and down skips one scan
 	 position too much, because this is only the top left scan position
 	 of totally four scan positions (plus one to the right, one to the
 	 bottom and one to the bottom right) */
+      /* ... but only roll back scan position if more than one step done */
 
       LX -= XS;
       LY -= YS;
