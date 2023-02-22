@@ -1185,6 +1185,22 @@ void ScanLaser(void)
 #endif
 }
 
+static void ScanLaser_FromLastMirror(void)
+{
+  int start_pos = (laser.num_damages > 0 ? laser.num_damages - 1 : 0);
+  int i;
+
+  for (i = start_pos; i >= 0; i--)
+    if (laser.damage[i].is_mirror)
+      break;
+
+  int start_edge = (i > 0 ? laser.damage[i].edge - 1 : 0);
+
+  DrawLaser(start_edge, DL_LASER_DISABLED);
+
+  ScanLaser();
+}
+
 static void DrawLaserExt(int start_edge, int num_edges, int mode)
 {
   int element;
@@ -2512,8 +2528,6 @@ static void OpenSurpriseBall(int x, int y)
 
     if (!MovDelay[x][y])
     {
-      int i;
-
       Tile[x][y] = Store[x][y];
       Store[x][y] = Store2[x][y] = 0;
       MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
@@ -2521,16 +2535,7 @@ static void OpenSurpriseBall(int x, int y)
       InitField(x, y, FALSE);
       DrawField_MM(x, y);
 
-      for (i = (laser.num_damages > 0 ? laser.num_damages - 1 : 0); i >= 0; i--)
-	if (laser.damage[i].is_mirror)
-	  break;
-
-      if (i > 0)
-	DrawLaser(laser.damage[i].edge - 1, DL_LASER_DISABLED);
-      else
-	DrawLaser(0, DL_LASER_DISABLED);
-
-      ScanLaser();
+      ScanLaser_FromLastMirror();
     }
   }
 }
@@ -2590,8 +2595,6 @@ static void MeltIce(int x, int y)
 
     if (!MovDelay[x][y])
     {
-      int i;
-
       Tile[x][y] = real_element & (wall_mask ^ 0xFF);
       Store[x][y] = Store2[x][y] = 0;
 
@@ -2600,16 +2603,7 @@ static void MeltIce(int x, int y)
       if (Tile[x][y] == EL_WALL_ICE)
 	Tile[x][y] = EL_EMPTY;
 
-      for (i = (laser.num_damages > 0 ? laser.num_damages - 1 : 0); i >= 0; i--)
-	if (laser.damage[i].is_mirror)
-	  break;
-
-      if (i > 0)
-	DrawLaser(laser.damage[i].edge - 1, DL_LASER_DISABLED);
-      else
-	DrawLaser(0, DL_LASER_DISABLED);
-
-      ScanLaser();
+      ScanLaser_FromLastMirror();
     }
     else if (!(MovDelay[x][y] % delay) && IN_SCR_FIELD(x, y))
     {
@@ -3692,16 +3686,7 @@ static void GameActions_MM_Ext(void)
     LY = laser.edge[laser.num_edges].y - cSY2;
 */
 
-    for (i = (laser.num_damages > 0 ? laser.num_damages - 1 : 0); i >= 0; i--)
-      if (laser.damage[i].is_mirror)
-	break;
-
-    if (i > 0)
-      DrawLaser(laser.damage[i].edge - 1, DL_LASER_DISABLED);
-    else
-      DrawLaser(0, DL_LASER_DISABLED);
-
-    ScanLaser();
+    ScanLaser_FromLastMirror();
 
     return;
   }
