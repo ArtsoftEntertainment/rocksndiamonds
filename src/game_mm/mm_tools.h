@@ -106,6 +106,8 @@ int get_element_phase(int);
 int get_num_elements(int);
 int get_rotated_element(int, int);
 
+int unmap_element(int);
+
 int el2gfx(int);
 int el_act2gfx(int, int);
 

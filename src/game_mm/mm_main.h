@@ -189,6 +189,7 @@
 
 
 extern DrawBuffer      *drawto_field;
+extern DrawBuffer      *bitmap_db_field;
 
 extern int		game_status;
 extern boolean		level_editor_test_game;

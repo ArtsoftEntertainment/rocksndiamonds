@@ -1293,6 +1293,21 @@ static int map_element(int element)
   }
 }
 
+int unmap_element(int element)
+{
+  switch (element)
+  {
+    case EL_STEEL_WALL:		return EL_WALL_STEEL;
+    case EL_WOODEN_WALL:	return EL_WALL_WOOD;
+    case EL_ICE_WALL:		return EL_WALL_ICE;
+    case EL_AMOEBA_WALL:	return EL_WALL_AMOEBA;
+    case EL_DF_STEEL_WALL:	return EL_DF_WALL_STEEL;
+    case EL_DF_WOODEN_WALL:	return EL_DF_WALL_WOOD;
+
+    default:			return element;
+  }
+}
+
 int el2gfx(int element)
 {
   return el2img_mm(map_element(element));

@@ -2463,7 +2463,20 @@ static void OpenSurpriseBall(int x, int y)
   int delay = 2;
 
   if (!MovDelay[x][y])		// next animation frame
+  {
+    if (IS_WALL(Store[x][y]))
+    {
+      DrawWalls_MM(x, y, Store[x][y]);
+
+      // copy wall tile to spare bitmap for "melting" animation
+      BlitBitmap(drawto, bitmap_db_field, cSX + x * TILEX, cSY + y * TILEY,
+		 TILEX, TILEY, x * TILEX, y * TILEY);
+
+      DrawElement_MM(x, y, EL_BALL_GRAY);
+    }
+
     MovDelay[x][y] = 50 * delay;
+  }
 
   if (MovDelay[x][y])		// wait some time before next frame
   {
@@ -2472,11 +2485,22 @@ static void OpenSurpriseBall(int x, int y)
     if (!(MovDelay[x][y] % delay) && IN_SCR_FIELD(x, y))
     {
       Bitmap *bitmap;
-      int graphic = el2gfx(Store[x][y]);
       int gx, gy;
       int dx = RND(26), dy = RND(26);
 
-      getGraphicSource(graphic, 0, &bitmap, &gx, &gy);
+      if (IS_WALL(Store[x][y]))
+      {
+	// copy wall tile from spare bitmap for "melting" animation
+	bitmap = bitmap_db_field;
+	gx = x * TILEX;
+	gy = y * TILEY;
+      }
+      else
+      {
+	int graphic = el2gfx(Store[x][y]);
+
+	getGraphicSource(graphic, 0, &bitmap, &gx, &gy);
+      }
 
       BlitBitmap(bitmap, drawto, gx + dx, gy + dy, 6, 6,
 		 cSX + x * TILEX + dx, cSY + y * TILEY + dy);
@@ -2488,12 +2512,23 @@ static void OpenSurpriseBall(int x, int y)
 
     if (!MovDelay[x][y])
     {
+      int i;
+
       Tile[x][y] = Store[x][y];
       Store[x][y] = Store2[x][y] = 0;
       MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
 
       InitField(x, y, FALSE);
       DrawField_MM(x, y);
+
+      for (i = (laser.num_damages > 0 ? laser.num_damages - 1 : 0); i >= 0; i--)
+	if (laser.damage[i].is_mirror)
+	  break;
+
+      if (i > 0)
+	DrawLaser(laser.damage[i].edge - 1, DL_LASER_DISABLED);
+      else
+	DrawLaser(0, DL_LASER_DISABLED);
 
       ScanLaser();
     }
@@ -3499,10 +3534,19 @@ static void GameActions_MM_Ext(void)
       game_mm.ball_choice_pos++;
 
       int new_element = native_mm_level.ball_content[element_pos];
+      int new_element_unmapped = unmap_element(new_element);
 
-      // randomly rotate newly created game element, if needed
-      if (native_mm_level.rotate_ball_content)
+      if (IS_WALL(new_element_unmapped))
+      {
+	// always use completely filled wall element
+	new_element = new_element_unmapped | 0x000f;
+      }
+      else if (native_mm_level.rotate_ball_content &&
+	       get_num_elements(new_element) > 1)
+      {
+	// randomly rotate newly created game element
 	new_element = get_rotated_element(new_element, RND(16));
+      }
 
       Store[ELX][ELY] = new_element;
       Store2[ELX][ELY] = TRUE;
