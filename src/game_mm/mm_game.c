@@ -951,6 +951,7 @@ static void DeactivateLaserTargetElement(void)
 {
   if (laser.dest_element_last == EL_BOMB_ACTIVE ||
       laser.dest_element_last == EL_MINE_ACTIVE ||
+      laser.dest_element_last == EL_GRAY_BALL_ACTIVE ||
       laser.dest_element_last == EL_GRAY_BALL_OPENING)
   {
     int x = laser.dest_element_last_x;
@@ -1668,11 +1669,13 @@ boolean HitElement(int element, int hit_mask)
     return TRUE;
   }
 
-  if (element == EL_BOMB || element == EL_MINE)
+  if (element == EL_BOMB || element == EL_MINE || element == EL_BALL_GRAY)
   {
     PlayLevelSound_MM(ELX, ELY, element, MM_ACTION_HITTING);
 
-    Tile[ELX][ELY] = (element == EL_BOMB ? EL_BOMB_ACTIVE : EL_MINE_ACTIVE);
+    Tile[ELX][ELY] = (element == EL_BOMB ? EL_BOMB_ACTIVE :
+		      element == EL_MINE ? EL_MINE_ACTIVE :
+		      EL_GRAY_BALL_ACTIVE);
 
     laser.dest_element_last = Tile[ELX][ELY];
     laser.dest_element_last_x = ELX;
@@ -3335,7 +3338,7 @@ static void GameActions_MM_Ext(void)
 	     IS_MIRROR_FIXED(element) ||
 	     element == EL_PRISM)
       DrawFieldTwinkle(x, y);
-    else if (element == EL_GRAY_BALL_OPENING ||
+    else if (element == EL_GRAY_BALL_ACTIVE ||
 	     element == EL_BOMB_ACTIVE ||
 	     element == EL_MINE_ACTIVE)
       DrawFieldAnimated_MM(x, y);
@@ -3404,6 +3407,7 @@ static void GameActions_MM_Ext(void)
       element != EL_MINE &&
       element != EL_MINE_ACTIVE &&
       element != EL_BALL_GRAY &&
+      element != EL_GRAY_BALL_ACTIVE &&
       element != EL_BLOCK_STONE &&
       element != EL_BLOCK_WOOD &&
       element != EL_FUSE_ON &&
@@ -3548,12 +3552,7 @@ static void GameActions_MM_Ext(void)
 
     Tile[ELX][ELY] = EL_GRAY_BALL_OPENING;
 
-    // !!! CHECK AGAIN: Laser on Polarizer !!!
-    ScanLaser();
-
     laser.dest_element_last = Tile[ELX][ELY];
-    laser.dest_element_last_x = ELX;
-    laser.dest_element_last_y = ELY;
 
     return;
 

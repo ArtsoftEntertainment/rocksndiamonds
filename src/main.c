@@ -6737,6 +6737,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "mm_gray_ball.active",
+    "mm_gray_ball",
+    "-",
+  },
+  {
     "mm_gray_ball.opening",
     "mm_gray_ball",
     "-",

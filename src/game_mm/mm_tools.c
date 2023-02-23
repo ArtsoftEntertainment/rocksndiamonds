@@ -524,6 +524,8 @@ void DrawElement_MM(int x, int y, int element)
 	   laser.fuse_x == x &&
 	   laser.fuse_y == y)
     DrawGraphic_MM(x, y, IMG_MM_FUSE);
+  else if (element == EL_GRAY_BALL_ACTIVE)
+    DrawGraphic_MM(x, y, el_act2gfx(EL_BALL_GRAY, MM_ACTION_ACTIVE));
   else if (element == EL_GRAY_BALL_OPENING)
     DrawGraphic_MM(x, y, el_act2gfx(EL_BALL_GRAY, MM_ACTION_OPENING));
   else if (element == EL_BOMB_ACTIVE)
