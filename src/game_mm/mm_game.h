@@ -17,8 +17,6 @@
 
 void TurnRound(int, int);
 
-void PlaySoundLevel(int, int, int);
-
 void AddLaserEdge(int, int);
 void AddDamagedField(int, int);
 void ScanLaser(void);
@@ -34,8 +32,6 @@ boolean HitAbsorbingWalls(int, int);
 void RotateMirror(int, int, int);
 boolean ObjHit(int, int, int);
 void DeletePacMan(int, int);
-
-void ColorCycling(void);
 void MovePacMen(void);
 
 #endif

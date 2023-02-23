@@ -744,8 +744,6 @@ void InitGameActions_MM(void)
 
     BackToFront();
 
-    ColorCycling();
-
 #ifdef DEBUG
     if (setup.quick_doors)
       continue;
@@ -2780,10 +2778,6 @@ static void Bang_MM(int x, int y)
 {
   int element = Tile[x][y];
 
-#if 0
-  DrawLaser(0, DL_LASER_ENABLED);
-#endif
-
   if (IS_PACMAN(element))
     PlayLevelSound_MM(x, y, element, MM_ACTION_EXPLODING);
   else if (element == EL_BOMB_ACTIVE || IS_MCDUFFIN(element))
@@ -3260,50 +3254,6 @@ void DeletePacMan(int px, int py)
   }
 }
 
-void ColorCycling(void)
-{
-  static int CC, Cc = 0;
-
-  static int color, old = 0xF00, new = 0x010, mult = 1;
-  static unsigned short red, green, blue;
-
-  if (color_status == STATIC_COLORS)
-    return;
-
-  CC = FrameCounter;
-
-  if (CC < Cc || CC > Cc + 2)
-  {
-    Cc = CC;
-
-    color = old + new * mult;
-    if (mult > 0)
-      mult++;
-    else
-      mult--;
-
-    if (ABS(mult) == 16)
-    {
-      mult =- mult / 16;
-      old = color;
-      new = new << 4;
-
-      if (new > 0x100)
-	new = 0x001;
-    }
-
-    red   = 0x0e00 * ((color & 0xF00) >> 8);
-    green = 0x0e00 * ((color & 0x0F0) >> 4);
-    blue  = 0x0e00 * ((color & 0x00F));
-    SetRGB(pen_magicolor[0], red, green, blue);
-
-    red   = 0x1111 * ((color & 0xF00) >> 8);
-    green = 0x1111 * ((color & 0x0F0) >> 4);
-    blue  = 0x1111 * ((color & 0x00F));
-    SetRGB(pen_magicolor[1], red, green, blue);
-  }
-}
-
 static void GameActions_MM_Ext(void)
 {
   int element;
@@ -3449,30 +3399,6 @@ static void GameActions_MM_Ext(void)
     else
       PlaySound_MM(SND_MM_GAME_HEALTH_CHARGING);
 
-    if (laser.overloaded)
-    {
-#if 0
-      BlitBitmap(pix[PIX_DOOR], drawto,
-		 DOOR_GFX_PAGEX4 + XX_OVERLOAD,
-		 DOOR_GFX_PAGEY1 + YY_OVERLOAD + OVERLOAD_YSIZE
-		 - laser.overload_value,
-		 OVERLOAD_XSIZE, laser.overload_value,
-		 DX_OVERLOAD, DY_OVERLOAD + OVERLOAD_YSIZE
-		 - laser.overload_value);
-#endif
-      redraw_mask |= REDRAW_DOOR_1;
-    }
-    else
-    {
-#if 0
-      BlitBitmap(pix[PIX_DOOR], drawto,
-		 DOOR_GFX_PAGEX5 + XX_OVERLOAD, DOOR_GFX_PAGEY1 + YY_OVERLOAD,
-		 OVERLOAD_XSIZE, OVERLOAD_YSIZE - laser.overload_value,
-		 DX_OVERLOAD, DY_OVERLOAD);
-#endif
-      redraw_mask |= REDRAW_DOOR_1;
-    }
-
     if (laser.overload_value == MAX_LASER_OVERLOAD)
     {
       UpdateAndDisplayGameControlValues();
@@ -3555,144 +3481,24 @@ static void GameActions_MM_Ext(void)
     laser.dest_element_last = Tile[ELX][ELY];
 
     return;
-
-#if 0
-    int graphic;
-
-    switch (RND(5))
-    {
-      case 0:
-        element = EL_MIRROR_START + RND(16);
-	break;
-      case 1:
-	{
-	  int rnd = RND(3);
-
-	  element = (rnd == 0 ? EL_KETTLE : rnd == 1 ? EL_BOMB : EL_PRISM);
-	}
-	break;
-      default:
-	{
-	  int rnd = RND(3);
-
-	  element = (rnd == 0 ? EL_FUSE_ON :
-		     rnd >= 1 && rnd <= 4 ? EL_PACMAN_RIGHT + rnd - 1 :
-		     rnd >= 5 && rnd <= 20 ? EL_POLAR_START + rnd - 5 :
-		     rnd >= 21 && rnd <= 24 ? EL_POLAR_CROSS_START + rnd - 21 :
-		     EL_MIRROR_FIXED_START + rnd - 25);
-	}
-	break;
-    }
-
-    graphic = el2gfx(element);
-
-    for (i = 0; i < 50; i++)
-    {
-      int x = RND(26);
-      int y = RND(26);
-
-#if 0
-      BlitBitmap(pix[PIX_BACK], drawto,
-		 SX + (graphic % GFX_PER_LINE) * TILEX + x,
-		 SY + (graphic / GFX_PER_LINE) * TILEY + y, 6, 6,
-		 SX + ELX * TILEX + x,
-		 SY + ELY * TILEY + y);
-#endif
-      MarkTileDirty(ELX, ELY);
-      BackToFront();
-
-      DrawLaser(0, DL_LASER_ENABLED);
-
-      Delay_WithScreenUpdates(50);
-    }
-
-    Tile[ELX][ELY] = element;
-    DrawField_MM(ELX, ELY);
-
-#if 0
-    Debug("game:mm:GameActions_MM_Ext", "NEW ELEMENT: (%d, %d)", ELX, ELY);
-#endif
-
-    // above stuff: GRAY BALL -> PRISM !!!
-/*
-    LX = ELX * TILEX + 14;
-    LY = ELY * TILEY + 14;
-    if (laser.current_angle == (laser.current_angle >> 1) << 1)
-      OK = 8;
-    else
-      OK = 4;
-    LX -= OK * XS;
-    LY -= OK * YS;
-
-    laser.num_edges -= 2;
-    laser.num_damages--;
-*/
-
-#if 0
-    for (i = (laser.num_damages > 0 ? laser.num_damages - 1 : 0); i>=0; i--)
-      if (laser.damage[i].is_mirror)
-	break;
-
-    if (i > 0)
-      DrawLaser(laser.damage[i].edge - 1, DL_LASER_DISABLED);
-    else
-      DrawLaser(0, DL_LASER_DISABLED);
-#else
-    DrawLaser(0, DL_LASER_DISABLED);
-#endif
-
-    ScanLaser();
-#endif
-
-    return;
   }
 
   if (IS_WALL_ICE(element) && CT > 50)
   {
     PlayLevelSound_MM(ELX, ELY, element, MM_ACTION_SHRINKING);
 
-    {
-      Tile[ELX][ELY] = Tile[ELX][ELY] - EL_WALL_ICE + EL_WALL_CHANGING;
-      Store[ELX][ELY] = EL_WALL_ICE;
-      Store2[ELX][ELY] = laser.wall_mask;
+    Tile[ELX][ELY] = Tile[ELX][ELY] - EL_WALL_ICE + EL_WALL_CHANGING;
+    Store[ELX][ELY] = EL_WALL_ICE;
+    Store2[ELX][ELY] = laser.wall_mask;
 
-      laser.dest_element = Tile[ELX][ELY];
-
-      return;
-    }
-
-    for (i = 0; i < 5; i++)
-    {
-      int phase = i + 1;
-
-      if (i == 4)
-      {
-	Tile[ELX][ELY] &= (laser.wall_mask ^ 0xFF);
-	phase = 0;
-      }
-
-      DrawWallsAnimation_MM(ELX, ELY, Tile[ELX][ELY], phase, laser.wall_mask);
-      BackToFront();
-      Delay_WithScreenUpdates(100);
-    }
-
-    if (Tile[ELX][ELY] == EL_WALL_ICE)
-      Tile[ELX][ELY] = EL_EMPTY;
-
-/*
-    laser.num_edges--;
-    LX = laser.edge[laser.num_edges].x - cSX2;
-    LY = laser.edge[laser.num_edges].y - cSY2;
-*/
-
-    ScanLaser_FromLastMirror();
+    laser.dest_element = Tile[ELX][ELY];
 
     return;
   }
 
   if (IS_WALL_AMOEBA(element) && CT > 60)
   {
-    int k1, k2, k3, dx, dy, de, dm;
+    int k1, k2, k3;
     int element2 = Tile[ELX][ELY];
 
     if (element2 != EL_EMPTY && !IS_WALL_AMOEBA(element))
@@ -3763,44 +3569,17 @@ static void GameActions_MM_Ext(void)
 
     Tile[ELX][ELY] = element | laser.wall_mask;
 
-    dx = ELX;
-    dy = ELY;
-    de = Tile[ELX][ELY];
-    dm = laser.wall_mask;
+    int x = ELX, y = ELY;
+    int wall_mask = laser.wall_mask;
 
-#if 1
-    {
-      int x = ELX, y = ELY;
-      int wall_mask = laser.wall_mask;
-
-      ScanLaser();
-      DrawLaser(0, DL_LASER_ENABLED);
-
-      PlayLevelSound_MM(dx, dy, element, MM_ACTION_GROWING);
-
-      Tile[x][y] = Tile[x][y] - EL_WALL_AMOEBA + EL_WALL_CHANGING;
-      Store[x][y] = EL_WALL_AMOEBA;
-      Store2[x][y] = wall_mask;
-
-      return;
-    }
-#endif
-
-    DrawWallsAnimation_MM(dx, dy, de, 4, dm);
     ScanLaser();
     DrawLaser(0, DL_LASER_ENABLED);
 
-    PlayLevelSound_MM(dx, dy, element, MM_ACTION_GROWING);
+    PlayLevelSound_MM(x, y, element, MM_ACTION_GROWING);
 
-    for (i = 4; i >= 0; i--)
-    {
-      DrawWallsAnimation_MM(dx, dy, de, i, dm);
-
-      BackToFront();
-      Delay_WithScreenUpdates(20);
-    }
-
-    DrawLaser(0, DL_LASER_ENABLED);
+    Tile[x][y] = Tile[x][y] - EL_WALL_AMOEBA + EL_WALL_CHANGING;
+    Store[x][y] = EL_WALL_AMOEBA;
+    Store2[x][y] = wall_mask;
 
     return;
   }
@@ -3892,8 +3671,6 @@ static void GameActions_MM_Ext(void)
 
     return;
   }
-
-  return;
 }
 
 void GameActions_MM(struct MouseActionInfo action)
@@ -4068,16 +3845,6 @@ static int MovingOrBlocked2Element_MM(int x, int y)
   return element;
 }
 
-#if 0
-static void RemoveField(int x, int y)
-{
-  Tile[x][y] = EL_EMPTY;
-  MovPos[x][y] = 0;
-  MovDir[x][y] = 0;
-  MovDelay[x][y] = 0;
-}
-#endif
-
 static void RemoveMovingField_MM(int x, int y)
 {
   int oldx = x, oldy = y, newx = x, newy = y;
@@ -4105,44 +3872,6 @@ static void RemoveMovingField_MM(int x, int y)
 
   DrawLevelField_MM(oldx, oldy);
   DrawLevelField_MM(newx, newy);
-}
-
-void PlaySoundLevel(int x, int y, int sound_nr)
-{
-  int sx = SCREENX(x), sy = SCREENY(y);
-  int volume, stereo;
-  int silence_distance = 8;
-
-  if ((!setup.sound_simple && !IS_LOOP_SOUND(sound_nr)) ||
-      (!setup.sound_loops && IS_LOOP_SOUND(sound_nr)))
-    return;
-
-  if (!IN_LEV_FIELD(x, y) ||
-      sx < -silence_distance || sx >= SCR_FIELDX+silence_distance ||
-      sy < -silence_distance || sy >= SCR_FIELDY+silence_distance)
-    return;
-
-  volume = SOUND_MAX_VOLUME;
-
-#ifndef MSDOS
-  stereo = (sx - SCR_FIELDX/2) * 12;
-#else
-  stereo = SOUND_MIDDLE + (2 * sx - (SCR_FIELDX - 1)) * 5;
-  if (stereo > SOUND_MAX_RIGHT)
-    stereo = SOUND_MAX_RIGHT;
-  if (stereo < SOUND_MAX_LEFT)
-    stereo = SOUND_MAX_LEFT;
-#endif
-
-  if (!IN_SCR_FIELD(sx, sy))
-  {
-    int dx = ABS(sx - SCR_FIELDX/2) - SCR_FIELDX/2;
-    int dy = ABS(sy - SCR_FIELDY/2) - SCR_FIELDY/2;
-
-    volume -= volume * (dx > dy ? dx : dy) / silence_distance;
-  }
-
-  PlaySoundExt(sound_nr, volume, stereo, SND_CTRL_PLAY_SOUND);
 }
 
 static void RaiseScore_MM(int value)

@@ -1179,11 +1179,6 @@ Pixel ReadPixel(DrawBuffer *bitmap, int x, int y)
   return GetPixel(bitmap, x, y);
 }
 
-void SetRGB(unsigned int pixel,
-	    unsigned short red, unsigned short green, unsigned short blue)
-{
-}
-
 int get_base_element(int element)
 {
   if (IS_MIRROR(element))

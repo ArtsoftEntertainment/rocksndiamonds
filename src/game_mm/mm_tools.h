@@ -97,7 +97,6 @@ unsigned int MoveDoor(unsigned int);
 void DrawSpecialEditorDoor_MM(void);
 void UndrawSpecialEditorDoor(void);
 Pixel ReadPixel(DrawBuffer *, int, int);
-void SetRGB(unsigned int, unsigned short, unsigned short, unsigned short);
 
 void CreateToolButtons(void);
 
