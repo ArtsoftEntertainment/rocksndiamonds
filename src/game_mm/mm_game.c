@@ -3474,12 +3474,12 @@ static void GameActions_MM_Ext(void)
       game_mm.ball_choice_pos++;
 
       int new_element = native_mm_level.ball_content[element_pos];
-      int new_element_unmapped = unmap_element(new_element);
+      int new_element_base = map_wall_to_base_element(new_element);
 
-      if (IS_WALL(new_element_unmapped))
+      if (IS_WALL(new_element_base))
       {
 	// always use completely filled wall element
-	new_element = new_element_unmapped | 0x000f;
+	new_element = new_element_base | 0x000f;
       }
       else if (native_mm_level.rotate_ball_content &&
 	       get_num_elements(new_element) > 1)

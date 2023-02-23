@@ -1195,7 +1195,7 @@ int get_rotated_element(int element, int step)
   return base_element + (element_phase + step + num_elements) % num_elements;
 }
 
-static int map_element(int element)
+int map_wall_from_base_element(int element)
 {
   switch (element)
   {
@@ -1210,7 +1210,7 @@ static int map_element(int element)
   }
 }
 
-int unmap_element(int element)
+int map_wall_to_base_element(int element)
 {
   switch (element)
   {
@@ -1227,12 +1227,12 @@ int unmap_element(int element)
 
 int el2gfx(int element)
 {
-  return el2img_mm(map_element(element));
+  return el2img_mm(map_wall_from_base_element(element));
 }
 
 int el_act2gfx(int element, int action)
 {
-  return el_act2img_mm(map_element(element), action);
+  return el_act2img_mm(map_wall_from_base_element(element), action);
 }
 
 void RedrawPlayfield_MM(void)
