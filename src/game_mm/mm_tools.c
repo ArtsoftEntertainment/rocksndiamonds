@@ -1199,12 +1199,12 @@ static int map_element(int element)
 {
   switch (element)
   {
-    case EL_WALL_STEEL:		return EL_STEEL_WALL;
-    case EL_WALL_WOOD:		return EL_WOODEN_WALL;
-    case EL_WALL_ICE:		return EL_ICE_WALL;
-    case EL_WALL_AMOEBA:	return EL_AMOEBA_WALL;
-    case EL_DF_WALL_STEEL:	return EL_DF_STEEL_WALL;
-    case EL_DF_WALL_WOOD:	return EL_DF_WOODEN_WALL;
+    case EL_WALL_STEEL_BASE:	return EL_WALL_STEEL;
+    case EL_WALL_WOOD_BASE:	return EL_WALL_WOOD;
+    case EL_WALL_ICE_BASE:	return EL_WALL_ICE;
+    case EL_WALL_AMOEBA_BASE:	return EL_WALL_AMOEBA;
+    case EL_DF_WALL_STEEL_BASE:	return EL_DF_WALL_STEEL;
+    case EL_DF_WALL_WOOD_BASE:	return EL_DF_WALL_WOOD;
 
     default:			return element;
   }
@@ -1214,12 +1214,12 @@ int unmap_element(int element)
 {
   switch (element)
   {
-    case EL_STEEL_WALL:		return EL_WALL_STEEL;
-    case EL_WOODEN_WALL:	return EL_WALL_WOOD;
-    case EL_ICE_WALL:		return EL_WALL_ICE;
-    case EL_AMOEBA_WALL:	return EL_WALL_AMOEBA;
-    case EL_DF_STEEL_WALL:	return EL_DF_WALL_STEEL;
-    case EL_DF_WOODEN_WALL:	return EL_DF_WALL_WOOD;
+    case EL_WALL_STEEL:		return EL_WALL_STEEL_BASE;
+    case EL_WALL_WOOD:		return EL_WALL_WOOD_BASE;
+    case EL_WALL_ICE:		return EL_WALL_ICE_BASE;
+    case EL_WALL_AMOEBA:	return EL_WALL_AMOEBA_BASE;
+    case EL_DF_WALL_STEEL:	return EL_DF_WALL_STEEL_BASE;
+    case EL_DF_WALL_WOOD:	return EL_DF_WALL_WOOD_BASE;
 
     default:			return element;
   }

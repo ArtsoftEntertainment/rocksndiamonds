@@ -2458,7 +2458,7 @@ static boolean HitAbsorbingWalls(int element, int hit_mask)
     if (IS_90_ANGLE(laser.current_angle))
       mask += mask * (2 + IS_HORIZ_ANGLE(laser.current_angle) * 2);
 
-    laser.dest_element = element2 | EL_WALL_AMOEBA;
+    laser.dest_element = element2 | EL_WALL_AMOEBA_BASE;
 
     laser.wall_mask = mask;
   }
@@ -2605,7 +2605,7 @@ static void MeltIce(int x, int y)
   {
     int phase;
     int wall_mask = Store2[x][y];
-    int real_element = Tile[x][y] - EL_WALL_CHANGING + EL_WALL_ICE;
+    int real_element = Tile[x][y] - EL_WALL_CHANGING_BASE + EL_WALL_ICE_BASE;
 
     MovDelay[x][y]--;
     phase = frames - MovDelay[x][y] / delay - 1;
@@ -2617,7 +2617,7 @@ static void MeltIce(int x, int y)
 
       DrawWalls_MM(x, y, Tile[x][y]);
 
-      if (Tile[x][y] == EL_WALL_ICE)
+      if (Tile[x][y] == EL_WALL_ICE_BASE)
 	Tile[x][y] = EL_EMPTY;
 
       ScanLaser_FromLastMirror();
@@ -2643,7 +2643,7 @@ static void GrowAmoeba(int x, int y)
   {
     int phase;
     int wall_mask = Store2[x][y];
-    int real_element = Tile[x][y] - EL_WALL_CHANGING + EL_WALL_AMOEBA;
+    int real_element = Tile[x][y] - EL_WALL_CHANGING_BASE + EL_WALL_AMOEBA_BASE;
 
     MovDelay[x][y]--;
     phase = MovDelay[x][y] / delay;
@@ -3296,9 +3296,9 @@ static void GameActions_MM_Ext(void)
       OpenGrayBall(x, y);
     else if (IS_ENVELOPE_OPENING(element))
       OpenEnvelope(x, y);
-    else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_ICE)
+    else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_ICE_BASE)
       MeltIce(x, y);
-    else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_AMOEBA)
+    else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_AMOEBA_BASE)
       GrowAmoeba(x, y);
     else if (IS_MIRROR(element) ||
 	     IS_MIRROR_FIXED(element) ||
@@ -3503,8 +3503,8 @@ static void GameActions_MM_Ext(void)
   {
     PlayLevelSound_MM(ELX, ELY, element, MM_ACTION_SHRINKING);
 
-    Tile[ELX][ELY] = Tile[ELX][ELY] - EL_WALL_ICE + EL_WALL_CHANGING;
-    Store[ELX][ELY] = EL_WALL_ICE;
+    Tile[ELX][ELY] = Tile[ELX][ELY] - EL_WALL_ICE_BASE + EL_WALL_CHANGING_BASE;
+    Store[ELX][ELY] = EL_WALL_ICE_BASE;
     Store2[ELX][ELY] = laser.wall_mask;
 
     laser.dest_element = Tile[ELX][ELY];
@@ -3593,8 +3593,8 @@ static void GameActions_MM_Ext(void)
 
     PlayLevelSound_MM(x, y, element, MM_ACTION_GROWING);
 
-    Tile[x][y] = Tile[x][y] - EL_WALL_AMOEBA + EL_WALL_CHANGING;
-    Store[x][y] = EL_WALL_AMOEBA;
+    Tile[x][y] = Tile[x][y] - EL_WALL_AMOEBA_BASE + EL_WALL_CHANGING_BASE;
+    Store[x][y] = EL_WALL_AMOEBA_BASE;
     Store2[x][y] = wall_mask;
 
     return;
