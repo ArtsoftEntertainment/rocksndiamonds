@@ -2710,12 +2710,13 @@ static void Explode_MM(int x, int y, int phase, int mode)
   int num_phase = 9, delay = 2;
   int last_phase = num_phase * delay;
   int half_phase = (num_phase / 2) * delay;
+  int center_element;
 
   laser.redraw = TRUE;
 
   if (phase == EX_PHASE_START)		// initialize 'Store[][]' field
   {
-    int center_element = Tile[x][y];
+    center_element = Tile[x][y];
 
     if (IS_MOVING(x, y) || IS_BLOCKED(x, y))
     {
@@ -2726,8 +2727,8 @@ static void Explode_MM(int x, int y, int phase, int mode)
       Tile[x][y] = center_element;
     }
 
-    Store[x][y] = center_element;
-    Store2[x][y] = mode;
+    Store[x][y] = EL_EMPTY;
+    Store2[x][y] = center_element;
 
     Tile[x][y] = EL_EXPLODING_OPAQUE;
 
@@ -2747,7 +2748,9 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
   ExplodePhase[x][y] = (phase < last_phase ? phase + 1 : 0);
 
-  if (phase == half_phase)
+  center_element = Store2[x][y];
+
+  if (phase == half_phase && Store[x][y] == EL_EMPTY)
   {
     Tile[x][y] = EL_EXPLODING_TRANSP;
 
@@ -2757,7 +2760,7 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
   if (phase == last_phase)
   {
-    if (Store[x][y] == EL_BOMB_ACTIVE)
+    if (center_element == EL_BOMB_ACTIVE)
     {
       DrawLaser(0, DL_LASER_DISABLED);
       InitLaser();
@@ -2768,12 +2771,12 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
       laser.overloaded = FALSE;
     }
-    else if (IS_MCDUFFIN(Store[x][y]))
+    else if (IS_MCDUFFIN(center_element))
     {
       GameOver_MM(GAME_OVER_BOMB);
     }
 
-    Tile[x][y] = EL_EMPTY;
+    Tile[x][y] = Store[x][y];
 
     Store[x][y] = Store2[x][y] = 0;
     MovDir[x][y] = MovPos[x][y] = MovDelay[x][y] = 0;
