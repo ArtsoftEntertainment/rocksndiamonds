@@ -35,6 +35,10 @@ extern int			TILESIZE_VAR;
 #define TILEX_VAR		TILESIZE_VAR
 #define TILEY_VAR		TILESIZE_VAR
 
+#define MINI_TILESIZE		(TILESIZE / 2)
+#define MINI_TILEX		(TILEX / 2)
+#define MINI_TILEY		(TILEY / 2)
+
 extern int			SCR_FIELDX, SCR_FIELDY;
 
 #define MAX_BUF_XSIZE		SCR_FIELDX

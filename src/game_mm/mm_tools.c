@@ -133,13 +133,6 @@ void DrawMiniGraphic_MM(int x, int y, int graphic)
   MarkTileDirty(x / 2, y / 2);
 }
 
-#if 0
-static void getMicroGraphicSource(int graphic, Bitmap **bitmap, int *x, int *y)
-{
-  getSizedGraphicSource(graphic, 0, TILESIZE / 4, bitmap, x, y);
-}
-#endif
-
 void DrawMiniGraphicExt_MM(DrawBuffer *d, int x, int y, int graphic)
 {
   Bitmap *bitmap;
@@ -535,64 +528,6 @@ void DrawElement_MM(int x, int y, int element)
   else
     DrawGraphic_MM(x, y, el2gfx(element));
 }
-
-#if 0
-static void DrawMicroWalls_MM(int x, int y, int element)
-{
-  Bitmap *bitmap;
-  int graphic = el2gfx(WALL_BASE(element));
-  int gx, gy;
-  int i;
-
-  getMicroGraphicSource(graphic, &bitmap, &gx, &gy);
-
-  for (i = 0; i < 4; i++)
-  {
-    int xpos = MICROLEV_XPOS + x * MICRO_TILEX + MICRO_WALLX * (i % 2);
-    int ypos = MICROLEV_YPOS + y * MICRO_TILEY + MICRO_WALLY * (i / 2);
-
-    if (element & (1 << i))
-      BlitBitmap(bitmap, drawto, gx, gy, MICRO_WALLX, MICRO_WALLY, xpos, ypos);
-    else
-      ClearRectangle(drawto, xpos, ypos, MICRO_WALLX, MICRO_WALLY);
-  }
-}
-
-static void DrawMicroElement_MM(int x, int y, int element)
-{
-  Bitmap *bitmap;
-  int graphic = el2gfx(element);
-  int gx, gy;
-
-  if (element == EL_EMPTY)
-    return;
-
-  if (IS_WALL(element))
-  {
-    DrawMicroWalls_MM(x, y, element);
-
-    return;
-  }
-
-  getMicroGraphicSource(graphic, &bitmap, &gx, &gy);
-
-  BlitBitmap(bitmap, drawto, gx, gy, MICRO_TILEX, MICRO_TILEY,
-	     MICROLEV_XPOS + x * MICRO_TILEX, MICROLEV_YPOS + y * MICRO_TILEY);
-}
-
-static void DrawMicroLevelExt_MM(int xpos, int ypos)
-{
-  int x, y;
-
-  ClearRectangle(drawto, xpos, ypos, MICROLEV_XSIZE, MICROLEV_YSIZE);
-
-  for (x = 0; x < STD_LEV_FIELDX; x++)
-    for (y = 0; y < STD_LEV_FIELDY; y++)
-      DrawMicroElement_MM(x, y, Ur[x][y]);
-
-  redraw_mask |= REDRAW_FIELD;
-}
-#endif
 
 
 // ----------------------------------------------------------------------------
@@ -1158,21 +1093,6 @@ void DrawTileCursor_MM(int draw_target, boolean tile_cursor_active)
     BlitBitmapMasked(src_bitmap, fade_bitmap, src_x, src_y, width, height,
 		     dst_x, dst_y);
 }
-
-#if 0
-static int REQ_in_range(int x, int y)
-{
-  if (y > DY + 249 && y < DY + 278)
-  {
-    if (x > DX + 1 && x < DX + 48)
-      return 1;
-    else if (x > DX + 51 && x < DX + 98)
-      return 2;
-  }
-
-  return 0;
-}
-#endif
 
 Pixel ReadPixel(DrawBuffer *bitmap, int x, int y)
 {
