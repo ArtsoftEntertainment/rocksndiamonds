@@ -99,6 +99,22 @@ static void InitMovingField_MM(int, int, int);
 static void ContinueMoving_MM(int, int);
 static void Moving2Blocked_MM(int, int, int *, int *);
 
+static void AddLaserEdge(int, int);
+static void ScanLaser(void);
+static void DrawLaser(int, int);
+static boolean HitElement(int, int);
+static boolean HitOnlyAnEdge(int);
+static boolean HitPolarizer(int, int);
+static boolean HitBlock(int, int);
+static boolean HitLaserSource(int, int);
+static boolean HitLaserDestination(int, int);
+static boolean HitReflectingWalls(int, int);
+static boolean HitAbsorbingWalls(int, int);
+static void RotateMirror(int, int, int);
+static boolean ObjHit(int, int, int);
+static void DeletePacMan(int, int);
+static void MovePacMen(void);
+
 // bitmap for laser beam detection
 static Bitmap *laser_bitmap = NULL;
 
@@ -805,7 +821,7 @@ static void GameOver_MM(int game_over_cause)
   SetTileCursorActive(FALSE);
 }
 
-void AddLaserEdge(int lx, int ly)
+static void AddLaserEdge(int lx, int ly)
 {
   int clx = dSX + lx;
   int cly = dSY + ly;
@@ -824,7 +840,7 @@ void AddLaserEdge(int lx, int ly)
   laser.redraw = TRUE;
 }
 
-void AddDamagedField(int ex, int ey)
+static void AddDamagedField(int ex, int ey)
 {
   // prevent adding the same field position again
   if (laser.num_damages > 0 &&
@@ -969,7 +985,7 @@ static void DeactivateLaserTargetElement(void)
   }
 }
 
-void ScanLaser(void)
+static void ScanLaser(void)
 {
   int element = EL_EMPTY;
   int last_element = EL_EMPTY;
@@ -1485,7 +1501,7 @@ void DrawLaser_MM(void)
   DrawLaser(0, game_mm.laser_enabled);
 }
 
-boolean HitElement(int element, int hit_mask)
+static boolean HitElement(int element, int hit_mask)
 {
   if (HitOnlyAnEdge(hit_mask))
     return FALSE;
@@ -1833,7 +1849,7 @@ boolean HitElement(int element, int hit_mask)
   return TRUE;
 }
 
-boolean HitOnlyAnEdge(int hit_mask)
+static boolean HitOnlyAnEdge(int hit_mask)
 {
   // check if the laser hit only the edge of an element and, if so, go on
 
@@ -1890,7 +1906,7 @@ boolean HitOnlyAnEdge(int hit_mask)
   return FALSE;
 }
 
-boolean HitPolarizer(int element, int hit_mask)
+static boolean HitPolarizer(int element, int hit_mask)
 {
   if (HitOnlyAnEdge(hit_mask))
     return FALSE;
@@ -1967,7 +1983,7 @@ boolean HitPolarizer(int element, int hit_mask)
   return TRUE;
 }
 
-boolean HitBlock(int element, int hit_mask)
+static boolean HitBlock(int element, int hit_mask)
 {
   boolean check = FALSE;
 
@@ -2088,7 +2104,7 @@ boolean HitBlock(int element, int hit_mask)
   return TRUE;
 }
 
-boolean HitLaserSource(int element, int hit_mask)
+static boolean HitLaserSource(int element, int hit_mask)
 {
   if (HitOnlyAnEdge(hit_mask))
     return FALSE;
@@ -2100,7 +2116,7 @@ boolean HitLaserSource(int element, int hit_mask)
   return TRUE;
 }
 
-boolean HitLaserDestination(int element, int hit_mask)
+static boolean HitLaserDestination(int element, int hit_mask)
 {
   if (HitOnlyAnEdge(hit_mask))
     return FALSE;
@@ -2146,7 +2162,7 @@ boolean HitLaserDestination(int element, int hit_mask)
   return TRUE;
 }
 
-boolean HitReflectingWalls(int element, int hit_mask)
+static boolean HitReflectingWalls(int element, int hit_mask)
 {
   // check if laser hits side of a wall with an angle that is not 90°
   if (!IS_90_ANGLE(laser.current_angle) && (hit_mask == HIT_MASK_TOP ||
@@ -2348,7 +2364,7 @@ boolean HitReflectingWalls(int element, int hit_mask)
   return FALSE;
 }
 
-boolean HitAbsorbingWalls(int element, int hit_mask)
+static boolean HitAbsorbingWalls(int element, int hit_mask)
 {
   if (HitOnlyAnEdge(hit_mask))
     return FALSE;
@@ -2790,7 +2806,7 @@ static void Bang_MM(int x, int y)
   Explode_MM(x, y, EX_PHASE_START, EX_TYPE_NORMAL);
 }
 
-void TurnRound(int x, int y)
+static void TurnRound(int x, int y)
 {
   static struct
   {
@@ -3073,7 +3089,7 @@ boolean ClickElement(int x, int y, int button)
   return element_clicked;
 }
 
-void RotateMirror(int x, int y, int button)
+static void RotateMirror(int x, int y, int button)
 {
   if (button == MB_RELEASED)
   {
@@ -3195,7 +3211,7 @@ static void AutoRotateMirrors(void)
   }
 }
 
-boolean ObjHit(int obx, int oby, int bits)
+static boolean ObjHit(int obx, int oby, int bits)
 {
   int i;
 
@@ -3228,7 +3244,7 @@ boolean ObjHit(int obx, int oby, int bits)
   return FALSE;
 }
 
-void DeletePacMan(int px, int py)
+static void DeletePacMan(int px, int py)
 {
   int i, j;
 
@@ -3683,7 +3699,7 @@ void GameActions_MM(struct MouseActionInfo action)
   CheckSingleStepMode_MM(element_clicked, button_released);
 }
 
-void MovePacMen(void)
+static void MovePacMen(void)
 {
   int mx, my, ox, oy, nx, ny;
   int element;

@@ -14,24 +14,4 @@
 
 #include "main_mm.h"
 
-
-void TurnRound(int, int);
-
-void AddLaserEdge(int, int);
-void AddDamagedField(int, int);
-void ScanLaser(void);
-void DrawLaser(int, int);
-boolean HitElement(int, int);
-boolean HitOnlyAnEdge(int);
-boolean HitPolarizer(int, int);
-boolean HitBlock(int, int);
-boolean HitLaserSource(int, int);
-boolean HitLaserDestination(int, int);
-boolean HitReflectingWalls(int, int);
-boolean HitAbsorbingWalls(int, int);
-void RotateMirror(int, int, int);
-boolean ObjHit(int, int, int);
-void DeletePacMan(int, int);
-void MovePacMen(void);
-
 #endif
