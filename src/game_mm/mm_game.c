@@ -1691,6 +1691,8 @@ static boolean HitElement(int element, int hit_mask)
 		      element == EL_MINE ? EL_MINE_ACTIVE :
 		      EL_GRAY_BALL_ACTIVE);
 
+    GfxFrame[ELX][ELY] = 0;		// restart animation
+
     laser.dest_element_last = Tile[ELX][ELY];
     laser.dest_element_last_x = ELX;
     laser.dest_element_last_y = ELY;
