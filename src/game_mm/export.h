@@ -180,6 +180,7 @@ struct LevelInfo_MM
   int ball_choice_mode;
   int ball_content[MM_MAX_BALL_CONTENTS];
   boolean rotate_ball_content;
+  boolean explode_ball;
 
   short field[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
 };

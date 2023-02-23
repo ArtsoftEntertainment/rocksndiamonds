@@ -3312,6 +3312,7 @@ struct LevelInfo
   int mm_ball_choice_mode;
   int mm_ball_content[MAX_MM_BALL_CONTENTS];
   boolean rotate_mm_ball_content;
+  boolean explode_mm_ball;
 
   // ('int' instead of 'boolean' because used as selectbox value in editor)
   int use_step_counter;		// count steps instead of seconds for level

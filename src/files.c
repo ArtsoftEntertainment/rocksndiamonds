@@ -926,6 +926,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.rotate_mm_ball_content,		TRUE
   },
+  {
+    EL_MM_GRAY_BALL,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    &li.explode_mm_ball,		FALSE
+  },
 
   {
     EL_MM_STEEL_BLOCK,			-1,
@@ -4192,6 +4197,7 @@ static void CopyNativeLevel_RND_to_MM(struct LevelInfo *level)
   level_mm->num_ball_contents = level->num_mm_ball_contents;
   level_mm->ball_choice_mode = level->mm_ball_choice_mode;
   level_mm->rotate_ball_content = level->rotate_mm_ball_content;
+  level_mm->explode_ball = level->explode_mm_ball;
 
   for (i = 0; i < level->num_mm_ball_contents; i++)
     level_mm->ball_content[i] =
@@ -4244,6 +4250,7 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
   level->num_mm_ball_contents = level_mm->num_ball_contents;
   level->mm_ball_choice_mode = level_mm->ball_choice_mode;
   level->rotate_mm_ball_content = level_mm->rotate_ball_content;
+  level->explode_mm_ball = level_mm->explode_ball;
 
   for (i = 0; i < level->num_mm_ball_contents; i++)
     level->mm_ball_content[i] =

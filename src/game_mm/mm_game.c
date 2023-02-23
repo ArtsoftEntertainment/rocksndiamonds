@@ -2727,12 +2727,14 @@ static void Explode_MM(int x, int y, int phase, int mode)
       Tile[x][y] = center_element;
     }
 
-    Store[x][y] = EL_EMPTY;
+    if (center_element != EL_GRAY_BALL_ACTIVE)
+      Store[x][y] = EL_EMPTY;
     Store2[x][y] = center_element;
 
     Tile[x][y] = EL_EXPLODING_OPAQUE;
 
     GfxElement[x][y] = (center_element == EL_BOMB_ACTIVE ? EL_BOMB :
+			center_element == EL_GRAY_BALL_ACTIVE ? EL_GRAY_BALL :
 			IS_MCDUFFIN(center_element) ? EL_MCDUFFIN :
 			center_element);
 
@@ -2783,6 +2785,9 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
     InitField(x, y, FALSE);
     DrawField_MM(x, y);
+
+    if (center_element == EL_GRAY_BALL_ACTIVE)
+      ScanLaser_FromLastMirror();
   }
   else if (!(phase % delay) && IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
   {
@@ -3497,9 +3502,12 @@ static void GameActions_MM_Ext(void)
       Store2[ELX][ELY] = TRUE;
     }
 
-    Tile[ELX][ELY] = EL_GRAY_BALL_OPENING;
+    if (native_mm_level.explode_ball)
+      Bang_MM(ELX, ELY);
+    else
+      Tile[ELX][ELY] = EL_GRAY_BALL_OPENING;
 
-    laser.dest_element_last = Tile[ELX][ELY];
+    laser.dest_element = laser.dest_element_last = Tile[ELX][ELY];
 
     return;
   }
