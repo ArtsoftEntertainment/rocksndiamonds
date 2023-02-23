@@ -2477,7 +2477,7 @@ static void OpenExit(int x, int y)
   }
 }
 
-static void OpenSurpriseBall(int x, int y)
+static void OpenGrayBall(int x, int y)
 {
   int delay = 2;
 
@@ -3327,7 +3327,7 @@ static void GameActions_MM_Ext(void)
     else if (element == EL_EXIT_OPENING)
       OpenExit(x, y);
     else if (element == EL_GRAY_BALL_OPENING)
-      OpenSurpriseBall(x, y);
+      OpenGrayBall(x, y);
     else if (IS_ENVELOPE_OPENING(element))
       OpenEnvelope(x, y);
     else if (IS_WALL_CHANGING(element) && Store[x][y] == EL_WALL_ICE)
