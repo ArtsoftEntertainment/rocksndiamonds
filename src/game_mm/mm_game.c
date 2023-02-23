@@ -960,9 +960,9 @@ static void DeactivateLaserTargetElement(void)
 
     if (Tile[x][y] == element)
       Tile[x][y] = (element == EL_BOMB_ACTIVE ? EL_BOMB :
-		    element == EL_MINE_ACTIVE ? EL_MINE : EL_BALL_GRAY);
+		    element == EL_MINE_ACTIVE ? EL_MINE : EL_GRAY_BALL);
 
-    if (Tile[x][y] == EL_BALL_GRAY)
+    if (Tile[x][y] == EL_GRAY_BALL)
       MovDelay[x][y] = 0;
 
     laser.dest_element_last = EL_EMPTY;
@@ -1669,7 +1669,7 @@ boolean HitElement(int element, int hit_mask)
     return TRUE;
   }
 
-  if (element == EL_BOMB || element == EL_MINE || element == EL_BALL_GRAY)
+  if (element == EL_BOMB || element == EL_MINE || element == EL_GRAY_BALL)
   {
     PlayLevelSound_MM(ELX, ELY, element, MM_ACTION_HITTING);
 
@@ -2491,7 +2491,7 @@ static void OpenSurpriseBall(int x, int y)
       BlitBitmap(drawto, bitmap_db_field, cSX + x * TILEX, cSY + y * TILEY,
 		 TILEX, TILEY, x * TILEX, y * TILEY);
 
-      DrawElement_MM(x, y, EL_BALL_GRAY);
+      DrawElement_MM(x, y, EL_GRAY_BALL);
     }
 
     MovDelay[x][y] = 50 * delay;
@@ -3406,7 +3406,7 @@ static void GameActions_MM_Ext(void)
       element != EL_BOMB_ACTIVE &&
       element != EL_MINE &&
       element != EL_MINE_ACTIVE &&
-      element != EL_BALL_GRAY &&
+      element != EL_GRAY_BALL &&
       element != EL_GRAY_BALL_ACTIVE &&
       element != EL_BLOCK_STONE &&
       element != EL_BLOCK_WOOD &&
@@ -3512,7 +3512,7 @@ static void GameActions_MM_Ext(void)
     DrawGraphic_MM(ELX, ELY, IMG_MM_FUSE);
   }
 
-  if (element == EL_BALL_GRAY && CT > native_mm_level.time_ball)
+  if (element == EL_GRAY_BALL && CT > native_mm_level.time_ball)
   {
     if (!Store2[ELX][ELY])	// check if content element not yet determined
     {

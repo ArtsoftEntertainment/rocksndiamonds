@@ -389,7 +389,7 @@ extern int		num_element_info;
 #define EL_WALL_AMOEBA_END	EL_WALL_63
 #define EL_WALL_END		EL_WALL_63
 #define EL_BLOCK_WOOD		96
-#define EL_BALL_GRAY		97
+#define EL_GRAY_BALL		97
 #define EL_BEAMER_START		98
 #define EL_BEAMER_00		(EL_BEAMER_START + 0)
 #define EL_BEAMER_01		(EL_BEAMER_START + 1)
