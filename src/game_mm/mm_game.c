@@ -1049,24 +1049,44 @@ static void ScanLaser(void)
       break;
     }
 
-    if (hit_mask == (HIT_MASK_TOPRIGHT | HIT_MASK_BOTTOMLEFT))
+    if (hit_mask == HIT_MASK_DIAGONAL_1 || hit_mask == HIT_MASK_DIAGONAL_2)
     {
-      /* we have hit the top-right and bottom-left element --
-	 choose the bottom-left one */
-      /* !!! THIS CAN BE DONE MORE INTELLIGENTLY, FOR EXAMPLE, IF ONE
-	 ELEMENT WAS STEEL AND THE OTHER ONE WAS ICE => ALWAYS CHOOSE
-	 THE ICE AND MELT IT AWAY INSTEAD OF OVERLOADING LASER !!! */
-      ELX = (LX - 2) / TILEX;
-      ELY = (LY + 2) / TILEY;
-    }
+      // we have hit two diagonally adjacent elements -- compare them
+      boolean dia_1 = (hit_mask == HIT_MASK_DIAGONAL_1);
+      int xoffset = 2;
+      int yoffset = 2 * (dia_1 ? -1 : +1);
+      int elx1 = (LX - xoffset) / TILEX;
+      int ely1 = (LY + yoffset) / TILEY;
+      int elx2 = (LX + xoffset) / TILEX;
+      int ely2 = (LY - yoffset) / TILEY;
+      int e1 = Tile[elx1][ely1];
+      int e2 = Tile[elx2][ely2];
+      boolean use_element_1 = FALSE;
 
-    if (hit_mask == (HIT_MASK_TOPLEFT | HIT_MASK_BOTTOMRIGHT))
-    {
-      /* we have hit the top-left and bottom-right element --
-	 choose the top-left one */
-      // !!! SEE ABOVE !!!
-      ELX = (LX - 2) / TILEX;
-      ELY = (LY - 2) / TILEY;
+      if (IS_WALL_ICE(e1) || IS_WALL_ICE(e2))
+      {
+	if (IS_WALL_ICE(e1) && IS_WALL_ICE(e2))
+	  use_element_1 = (RND(2) ? TRUE : FALSE);
+	else if (IS_WALL_ICE(e1))
+	  use_element_1 = TRUE;
+      }
+      else if (IS_WALL_AMOEBA(e1) || IS_WALL_AMOEBA(e2))
+      {
+	if (IS_WALL_AMOEBA(e1) && IS_WALL_AMOEBA(e2))
+	  use_element_1 = (RND(2) ? TRUE : FALSE);
+	else if (IS_WALL_AMOEBA(e1))
+	  use_element_1 = TRUE;
+      }
+      else if (IS_ABSORBING_BLOCK(e1) || IS_ABSORBING_BLOCK(e2))
+      {
+	if (IS_ABSORBING_BLOCK(e1) && IS_ABSORBING_BLOCK(e2))
+	  use_element_1 = (RND(2) ? TRUE : FALSE);
+	else if (IS_ABSORBING_BLOCK(e1))
+	  use_element_1 = TRUE;
+      }
+
+      ELX = (use_element_1 ? elx1 : elx2);
+      ELY = (use_element_1 ? ely1 : ely2);
     }
 
 #if 0
@@ -2405,10 +2425,18 @@ static boolean HitAbsorbingWalls(int element, int hit_mask)
 
   if (IS_WALL_ICE(element))
   {
+    int lx = LX + XS;
+    int ly = LY + YS;
     int mask;
 
-    mask = (LX + XS) / MINI_TILEX - ELX * 2 + 1;    // Quadrant (horizontal)
-    mask <<= (((LY + YS) / MINI_TILEY - ELY * 2) > 0) * 2;  // || (vertical)
+    // check if laser hit adjacent edges of two diagonal tiles
+    if (ELX != lx / TILEX)
+      lx = LX - XS;
+    if (ELY != ly / TILEY)
+      ly = LY - YS;
+
+    mask =     lx / MINI_TILEX - ELX * 2 + 1;    // Quadrant (horizontal)
+    mask <<= ((ly / MINI_TILEY - ELY * 2) > 0 ? 2 : 0);  // || (vertical)
 
     // check if laser hits wall with an angle of 90°
     if (IS_90_ANGLE(laser.current_angle))

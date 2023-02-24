@@ -124,6 +124,13 @@
 				 (e) == EL_BOMB ||			\
 				 IS_WALL_AMOEBA(e))
 
+#define IS_ABSORBING_BLOCK(e)	(IS_WALL_WOOD(e) ||			\
+				 IS_DF_WALL_WOOD(e) ||			\
+				 (e) == EL_BLOCK_WOOD ||		\
+				 (e) == EL_GATE_WOOD ||			\
+				 (e) == EL_EXIT_CLOSED ||		\
+				 (e) == EL_EXIT_OPEN)
+
 #define IS_ENVELOPE_OPENING(e)	((e) >= EL_ENVELOPE_OPENING_START &&	\
 				 (e) <= EL_ENVELOPE_OPENING_END)
 
@@ -712,6 +719,8 @@ extern int		num_element_info;
 #define HIT_MASK_RIGHT		(HIT_MASK_TOPRIGHT | HIT_MASK_BOTTOMRIGHT)
 #define HIT_MASK_TOP		(HIT_MASK_TOPLEFT | HIT_MASK_TOPRIGHT)
 #define HIT_MASK_BOTTOM		(HIT_MASK_BOTTOMLEFT | HIT_MASK_BOTTOMRIGHT)
+#define HIT_MASK_DIAGONAL_1	(HIT_MASK_TOPLEFT  | HIT_MASK_BOTTOMRIGHT)
+#define HIT_MASK_DIAGONAL_2	(HIT_MASK_TOPRIGHT | HIT_MASK_BOTTOMLEFT)
 #define HIT_MASK_ALL		(HIT_MASK_LEFT | HIT_MASK_RIGHT)
 
 // step values for rotating elements
