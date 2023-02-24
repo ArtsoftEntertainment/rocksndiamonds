@@ -13009,6 +13009,10 @@ static void CopyLevelTemplateToUserLevelSet(char *levelset_subdir)
 static void HandleDrawingAreas(struct GadgetInfo *gi)
 {
   static boolean started_inside_drawing_area = FALSE;
+  static int last_sx = -1;
+  static int last_sy = -1;
+  static int last_sx2 = -1;
+  static int last_sy2 = -1;
   int id = gi->custom_id;
   int type_id = gi->custom_type_id;
   boolean button_press_event;
@@ -13072,10 +13076,6 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 
   if (!button_press_event && !button_release_event)
   {
-    static int last_sx = -1;
-    static int last_sy = -1;
-    static int last_sx2 = -1;
-    static int last_sy2 = -1;
     int old_element = (IN_LEV_FIELD(lx, ly) ? Tile[lx][ly] : EL_UNDEFINED);
     boolean hires_drawing = (level.game_engine_type == GAME_ENGINE_TYPE_MM &&
 			     isHiresTileElement(old_element) &&
@@ -13085,12 +13085,12 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
     if ((sx == last_sx && sy == last_sy && !hires_drawing) ||
 	(sx2 == last_sx2 && sy2 == last_sy2))
       return;
-
-    last_sx = sx;
-    last_sy = sy;
-    last_sx2 = sx2;
-    last_sy2 = sy2;
   }
+
+  last_sx = sx;
+  last_sy = sy;
+  last_sx2 = sx2;
+  last_sy2 = sy2;
 
   if (button_press_event)
     started_inside_drawing_area = inside_drawing_area;
