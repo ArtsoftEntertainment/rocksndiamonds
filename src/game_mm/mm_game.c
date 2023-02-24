@@ -809,6 +809,10 @@ static void GameOver_MM(int game_over_cause)
   game_mm.game_over = TRUE;
   game_mm.game_over_cause = game_over_cause;
 
+  // do not ask to play again if game was never actually played
+  if (!game.GamePlayed)
+    return;
+
   if (setup.ask_on_game_over)
     game.restart_game_message = (game_over_cause == GAME_OVER_BOMB ?
 				 "Bomb killed Mc Duffin! Play it again?" :
