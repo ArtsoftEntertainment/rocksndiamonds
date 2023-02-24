@@ -1049,12 +1049,21 @@ static void ScanLaser(void)
       break;
     }
 
-    if (hit_mask == HIT_MASK_DIAGONAL_1 || hit_mask == HIT_MASK_DIAGONAL_2)
+    // check if laser scan has hit two diagonally adjacent element corners
+    boolean diag_1 = ((hit_mask & HIT_MASK_DIAGONAL_1) == HIT_MASK_DIAGONAL_1);
+    boolean diag_2 = ((hit_mask & HIT_MASK_DIAGONAL_2) == HIT_MASK_DIAGONAL_2);
+
+    // check if laser scan has crossed element boundaries (not just mini tiles)
+    boolean cross_x = (LX / TILEX != (LX + 2) / TILEX);
+    boolean cross_y = (LY / TILEY != (LY + 2) / TILEY);
+
+    // handle special case of laser hitting two diagonally adjacent elements
+    // (with or without a third corner element behind these two elements)
+    if ((diag_1 || diag_2) && cross_x && cross_y)
     {
-      // we have hit two diagonally adjacent elements -- compare them
-      boolean dia_1 = (hit_mask == HIT_MASK_DIAGONAL_1);
+      // compare the two diagonally adjacent elements
       int xoffset = 2;
-      int yoffset = 2 * (dia_1 ? -1 : +1);
+      int yoffset = 2 * (diag_1 ? -1 : +1);
       int elx1 = (LX - xoffset) / TILEX;
       int ely1 = (LY + yoffset) / TILEY;
       int elx2 = (LX + xoffset) / TILEX;
@@ -1072,16 +1081,14 @@ static void ScanLaser(void)
       }
       else if (IS_WALL_AMOEBA(e1) || IS_WALL_AMOEBA(e2))
       {
-	if (IS_WALL_AMOEBA(e1) && IS_WALL_AMOEBA(e2))
-	  use_element_1 = (RND(2) ? TRUE : FALSE);
-	else if (IS_WALL_AMOEBA(e1))
+	// if both tiles match, we can just select the first one
+	if (IS_WALL_AMOEBA(e1))
 	  use_element_1 = TRUE;
       }
       else if (IS_ABSORBING_BLOCK(e1) || IS_ABSORBING_BLOCK(e2))
       {
-	if (IS_ABSORBING_BLOCK(e1) && IS_ABSORBING_BLOCK(e2))
-	  use_element_1 = (RND(2) ? TRUE : FALSE);
-	else if (IS_ABSORBING_BLOCK(e1))
+	// if both tiles match, we can just select the first one
+	if (IS_ABSORBING_BLOCK(e1))
 	  use_element_1 = TRUE;
       }
 
