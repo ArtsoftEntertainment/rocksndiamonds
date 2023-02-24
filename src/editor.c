@@ -11136,7 +11136,7 @@ static void MergeAndCloseNeighbourElements(int x1, int y1, int *element1,
   SetElementSimple(x2, y2, *element2, change_level);
 }
 
-static void SetElementIntelliDraw(int x, int y, int new_element,
+static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
 				  boolean change_level, int button)
 {
   struct XY *xy = xy_directions;
@@ -11908,7 +11908,10 @@ static void SetElementIntelliDraw(int x, int y, int new_element,
     }
   }
 
-  SetElementSimple(x, y, new_element, change_level);
+  if (IS_MM_WALL_EDITOR(new_element))
+    SetElementSimpleExt(x, y, dx, dy, new_element, change_level);
+  else
+    SetElementSimple(x, y, new_element, change_level);
 
   last_x = x;
   last_y = y;
@@ -11922,7 +11925,7 @@ static void ResetIntelliDraw(void)
     for (y = 0; y < lev_fieldy; y++)
       IntelliDrawBuffer[x][y] = Tile[x][y];
 
-  SetElementIntelliDraw(-1, -1, EL_UNDEFINED, FALSE, -1);
+  SetElementIntelliDraw(-1, -1, -1, -1, EL_UNDEFINED, FALSE, -1);
 }
 
 static boolean draw_mode_hires = FALSE;
@@ -11964,8 +11967,8 @@ static void SetElementExt(int x, int y, int dx, int dy, int element,
 {
   if (element < 0)
     SetElementSimple(x, y, Tile[x][y], change_level);
-  else if (GetKeyModState() & KMOD_Shift && !IS_MM_WALL_EDITOR(element))
-    SetElementIntelliDraw(x, y, element, change_level, button);
+  else if (GetKeyModState() & KMOD_Shift)
+    SetElementIntelliDraw(x, y, dx, dy, element, change_level, button);
   else
     SetElementSimpleExt(x, y, dx, dy, element, change_level);
 }
