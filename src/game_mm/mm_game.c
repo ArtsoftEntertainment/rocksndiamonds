@@ -2055,11 +2055,9 @@ static boolean HitBlock(int element, int hit_mask)
   if (element == EL_GATE_STONE || element == EL_GATE_WOOD)
   {
     int xs = XS / 2, ys = YS / 2;
-    int hit_mask_diagonal1 = HIT_MASK_TOPRIGHT | HIT_MASK_BOTTOMLEFT;
-    int hit_mask_diagonal2 = HIT_MASK_TOPLEFT | HIT_MASK_BOTTOMRIGHT;
 
-    if ((hit_mask & hit_mask_diagonal1) == hit_mask_diagonal1 ||
-	(hit_mask & hit_mask_diagonal2) == hit_mask_diagonal2)
+    if ((hit_mask & HIT_MASK_DIAGONAL_1) == HIT_MASK_DIAGONAL_1 ||
+	(hit_mask & HIT_MASK_DIAGONAL_2) == HIT_MASK_DIAGONAL_2)
     {
       laser.overloaded = (element == EL_GATE_STONE);
 
@@ -2098,11 +2096,9 @@ static boolean HitBlock(int element, int hit_mask)
   if (element == EL_BLOCK_STONE || element == EL_BLOCK_WOOD)
   {
     int xs = XS / 2, ys = YS / 2;
-    int hit_mask_diagonal1 = HIT_MASK_TOPRIGHT | HIT_MASK_BOTTOMLEFT;
-    int hit_mask_diagonal2 = HIT_MASK_TOPLEFT | HIT_MASK_BOTTOMRIGHT;
 
-    if ((hit_mask & hit_mask_diagonal1) == hit_mask_diagonal1 ||
-	(hit_mask & hit_mask_diagonal2) == hit_mask_diagonal2)
+    if ((hit_mask & HIT_MASK_DIAGONAL_1) == HIT_MASK_DIAGONAL_1 ||
+	(hit_mask & HIT_MASK_DIAGONAL_2) == HIT_MASK_DIAGONAL_2)
     {
       laser.overloaded = (element == EL_BLOCK_STONE);
 
