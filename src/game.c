@@ -11904,7 +11904,7 @@ static void GameActionsExt(void)
     TapeRecordAction(tape_action);
 
   // remember if game was played (especially after tape stopped playing)
-  if (!tape.playing && summarized_player_action)
+  if (!tape.playing && summarized_player_action && !checkGameFailed())
     game.GamePlayed = TRUE;
 
 #if USE_NEW_PLAYER_ASSIGNMENTS
