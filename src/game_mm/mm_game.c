@@ -2006,10 +2006,16 @@ static boolean HitPolarizer(int element, int hit_mask)
   }
   else if (IS_GRID_STEEL(element))
   {
+    // may be required if graphics for steel grid redefined
+    AddDamagedField(ELX, ELY);
+
     return HitReflectingWalls(element, hit_mask);
   }
   else	// IS_GRID_WOOD
   {
+    // may be required if graphics for wooden grid redefined
+    AddDamagedField(ELX, ELY);
+
     return HitAbsorbingWalls(element, hit_mask);
   }
 
