@@ -913,6 +913,26 @@ static int ScanPixel(void)
     }
 #endif
 
+    // check if laser scan has crossed element boundaries (not just mini tiles)
+    boolean cross_x = (LX / TILEX != (LX + 2) / TILEX);
+    boolean cross_y = (LY / TILEY != (LY + 2) / TILEY);
+
+    if (cross_x && cross_y)
+    {
+      int elx1 = (LX - XS) / TILEX;
+      int ely1 = (LY + YS) / TILEY;
+      int elx2 = (LX + XS) / TILEX;
+      int ely2 = (LY - YS) / TILEY;
+
+      // add element corners left and right from the laser beam to damage list
+
+      if (IN_LEV_FIELD(elx1, ely1) && Tile[elx1][ely1] != EL_EMPTY)
+	AddDamagedField(elx1, ely1);
+
+      if (IN_LEV_FIELD(elx2, ely2) && Tile[elx2][ely2] != EL_EMPTY)
+	AddDamagedField(elx2, ely2);
+    }
+
     for (i = 0; i < 4; i++)
     {
       int px = LX + (i % 2) * 2;
