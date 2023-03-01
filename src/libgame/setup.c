@@ -2765,6 +2765,7 @@ SetupFileHash *loadSetupFileHash(char *filename)
 // ============================================================================
 
 #define TOKEN_STR_LAST_LEVEL_SERIES		"last_level_series"
+#define TOKEN_STR_LAST_PLAYED_MENU_USED		"last_played_menu_used"
 #define TOKEN_STR_LAST_PLAYED_LEVEL		"last_played_level"
 #define TOKEN_STR_HANDICAP_LEVEL		"handicap_level"
 #define TOKEN_STR_LAST_USER			"last_user"
@@ -5088,6 +5089,13 @@ void LoadLevelSetup_LastSeries(void)
     if (leveldir_current == NULL)
       leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
 
+    char *last_played_menu_used =
+      getHashEntry(level_setup_hash, TOKEN_STR_LAST_PLAYED_MENU_USED);
+
+    // store if last level set was selected from "last played" menu
+    if (strEqual(last_played_menu_used, "true"))
+      ForcedStoreLastPlayedLevels(leveldir_current);
+
     for (i = 0; i < MAX_LEVELDIR_HISTORY; i++)
     {
       char token[strlen(TOKEN_STR_LAST_LEVEL_SERIES) + 10];
@@ -5150,7 +5158,14 @@ static void SaveLevelSetup_LastSeries_Ext(boolean deactivate_last_level_series)
     fprintf(file, "# %s\n# ", "the following level set may have caused a problem and was deactivated");
 
   fprintf(file, "%s\n\n", getFormattedSetupEntry(TOKEN_STR_LAST_LEVEL_SERIES,
-					       leveldir_current->identifier));
+						 leveldir_current->identifier));
+
+  // store if last level set was selected from "last played" menu
+  boolean last_played_menu_used = CheckLastPlayedLevels();
+  char *setup_value = getSetupValue(TYPE_BOOLEAN, &last_played_menu_used);
+
+  fprintf(file, "%s\n\n", getFormattedSetupEntry(TOKEN_STR_LAST_PLAYED_MENU_USED,
+						 setup_value));
 
   for (i = 0; last_level_series[i] != NULL; i++)
   {

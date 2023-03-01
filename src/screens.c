@@ -5118,6 +5118,9 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  {
 	    // store level set if chosen from "last played level set" menu
 	    StoreLastPlayedLevels(leveldir_current);
+
+	    // store if level set chosen from "last played level set" menu
+	    SaveLevelSetup_LastSeries();
 	  }
 	  else if (game_status == GAME_MODE_NAMES)
 	  {
