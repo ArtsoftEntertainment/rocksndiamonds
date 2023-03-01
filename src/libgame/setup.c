@@ -5006,33 +5006,51 @@ static void UpdateLastPlayedLevels_List(void)
   setString(&last_level_series[0], leveldir_current->identifier);
 }
 
-static TreeInfo *StoreOrRestoreLastPlayedLevels(TreeInfo *node, boolean store)
+#define LAST_PLAYED_MODE_SET			1
+#define LAST_PLAYED_MODE_SET_FORCED		2
+#define LAST_PLAYED_MODE_GET			3
+
+static TreeInfo *StoreOrRestoreLastPlayedLevels(TreeInfo *node, int mode)
 {
   static char *identifier = NULL;
 
-  if (store)
+  if (mode == LAST_PLAYED_MODE_SET)
   {
     setString(&identifier, (node && node->is_copy ? node->identifier : NULL));
-
-    return NULL;	// not used
   }
-  else
+  else if (mode == LAST_PLAYED_MODE_SET_FORCED)
+  {
+    setString(&identifier, (node ? node->identifier : NULL));
+  }
+  else if (mode == LAST_PLAYED_MODE_GET)
   {
     TreeInfo *node_new = getTreeInfoFromIdentifierExt(leveldir_first,
 						      identifier,
 						      TREE_NODE_TYPE_COPY);
     return (node_new != NULL ? node_new : node);
   }
+
+  return NULL;		// not used
 }
 
 void StoreLastPlayedLevels(TreeInfo *node)
 {
-  StoreOrRestoreLastPlayedLevels(node, TRUE);
+  StoreOrRestoreLastPlayedLevels(node, LAST_PLAYED_MODE_SET);
+}
+
+void ForcedStoreLastPlayedLevels(TreeInfo *node)
+{
+  StoreOrRestoreLastPlayedLevels(node, LAST_PLAYED_MODE_SET_FORCED);
 }
 
 void RestoreLastPlayedLevels(TreeInfo **node)
 {
-  *node = StoreOrRestoreLastPlayedLevels(*node, FALSE);
+  *node = StoreOrRestoreLastPlayedLevels(*node, LAST_PLAYED_MODE_GET);
+}
+
+boolean CheckLastPlayedLevels(void)
+{
+  return (StoreOrRestoreLastPlayedLevels(NULL, LAST_PLAYED_MODE_GET) != NULL);
 }
 
 void LoadLevelSetup_LastSeries(void)
