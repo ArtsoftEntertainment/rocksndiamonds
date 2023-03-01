@@ -607,7 +607,7 @@
 					 JOY_NO_ACTION)
 
 // maximum number of level sets in the level set history
-#define MAX_LEVELDIR_HISTORY	12
+#define MAX_LEVELDIR_HISTORY	100
 
 // default name for empty highscore entry
 #define EMPTY_PLAYER_NAME	"no name"
