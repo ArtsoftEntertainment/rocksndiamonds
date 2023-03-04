@@ -3713,6 +3713,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   cav->lenses_time		= level->lenses_time;
   cav->magnify_time		= level->magnify_time;
 
+  cav->wind_time = 9999;
   cav->wind_direction =
     map_direction_RND_to_EM(level->wind_direction_initial);
 
