@@ -12934,6 +12934,18 @@ static boolean sound_info_listed(struct MusicFileInfo *list, char *basename)
   return music_info_listed_ext(list, basename, TRUE);
 }
 
+static boolean checkLevelSetHasMusic_NoConf(void)
+{
+  int i;
+
+  for (i = leveldir_current->first_level;
+       i <= leveldir_current->last_level; i++)
+    if (levelset.music[level_nr] == MUS_UNDEFINED)
+      return TRUE;
+
+  return FALSE;
+}
+
 void LoadMusicInfo(void)
 {
   char *music_directory = getCustomMusicDirectory_NoConf();
@@ -12992,6 +13004,10 @@ void LoadMusicInfo(void)
 	new = &(*new)->next;
     }
   }
+
+  // if all levels have game music configured, do not read music from directory
+  if (!checkLevelSetHasMusic_NoConf())
+    read_music_from_directory = FALSE;
 
   if ((dir = openDirectory(music_directory)) == NULL)
   {
