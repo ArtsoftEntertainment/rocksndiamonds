@@ -12944,6 +12944,7 @@ void LoadMusicInfo(void)
   DirectoryEntry *dir_entry;
   struct FileInfo *music, *sound;
   struct MusicFileInfo *next, **new;
+  boolean read_music_from_directory = TRUE;
   int i;
 
   while (music_file_info != NULL)
@@ -12996,10 +12997,11 @@ void LoadMusicInfo(void)
   {
     Warn("cannot read music directory '%s'", music_directory);
 
-    return;
+    read_music_from_directory = FALSE;
   }
 
-  while ((dir_entry = readDirectory(dir)) != NULL)	// loop all entries
+  while (read_music_from_directory &&
+	 (dir_entry = readDirectory(dir)) != NULL)	// loop all entries
   {
     char *basename = dir_entry->basename;
     boolean music_already_used = FALSE;
@@ -13037,7 +13039,8 @@ void LoadMusicInfo(void)
     num_music_noconf++;
   }
 
-  closeDirectory(dir);
+  if (dir != NULL)
+    closeDirectory(dir);
 
   for (i = 0; i < num_sounds; i++)
   {
