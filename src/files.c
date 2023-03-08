@@ -12952,7 +12952,7 @@ void LoadMusicInfo(void)
   int num_music = getMusicListSize();
   int num_music_noconf = 0;
   int num_sounds = getSoundListSize();
-  Directory *dir;
+  Directory *dir = NULL;
   DirectoryEntry *dir_entry;
   struct FileInfo *music, *sound;
   struct MusicFileInfo *next, **new;
