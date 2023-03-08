@@ -346,8 +346,12 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	char text[MAX_GADGET_TEXTSIZE + 1];
 	int font_nr = (pressed ? gi->font_active : gi->font);
 	int font_width = getFontWidth(font_nr);
+	int font_height = getFontHeight(font_nr);
+	struct FontBitmapInfo *font = getFontBitmapInfo(font_nr);
 	int border_x = gi->border.xsize;
 	int border_y = gi->border.ysize;
+	int text_x = gi->x + font->draw_xoffset;
+	int text_y = gi->y + font->draw_yoffset;
 
 	// left part of gadget
 	BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y,
@@ -368,6 +372,15 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	// set text value
 	strcpy(text, gi->textinput.value);
 	strcat(text, " ");
+
+	// dirty workaround to erase text if input gadget font has draw offset
+	if (font->draw_xoffset != 0 || font->draw_yoffset != 0)
+	  for (i = 0; i < gi->textinput.size + 1; i++)
+	    BlitBitmapOnBackground(gd->bitmap, drawto,
+				   gd->x + border_x, gd->y + border_y,
+				   font_width, font_height,
+				   text_x + border_x + i * font_width,
+				   text_y + border_y);
 
 	// gadget text value
 	DrawTextExt(drawto,
