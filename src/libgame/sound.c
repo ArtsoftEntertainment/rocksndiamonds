@@ -613,15 +613,11 @@ static void LoadCustomMusic_NoConf(void)
   {
     Warn("cannot find music directory with unconfigured music");
 
-    audio.music_available = FALSE;
-
     return;
   }
   else if ((dir = openDirectory(music_directory)) == NULL)
   {
     Warn("cannot read music directory '%s'", music_directory);
-
-    audio.music_available = FALSE;
 
     return;
   }
