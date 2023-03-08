@@ -609,7 +609,15 @@ static void LoadCustomMusic_NoConf(void)
 
   FreeAllMusic_NoConf();
 
-  if ((dir = openDirectory(music_directory)) == NULL)
+  if (music_directory == NULL)
+  {
+    Warn("cannot find music directory with unconfigured music");
+
+    audio.music_available = FALSE;
+
+    return;
+  }
+  else if ((dir = openDirectory(music_directory)) == NULL)
   {
     Warn("cannot read music directory '%s'", music_directory);
 

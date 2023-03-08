@@ -13007,9 +13007,16 @@ void LoadMusicInfo(void)
 
   // if all levels have game music configured, do not read music from directory
   if (!checkLevelSetHasMusic_NoConf())
+  {
     read_music_from_directory = FALSE;
+  }
+  else if (music_directory == NULL)
+  {
+    Warn("cannot find music directory with unconfigured music");
 
-  if ((dir = openDirectory(music_directory)) == NULL)
+    read_music_from_directory = FALSE;
+  }
+  else if ((dir = openDirectory(music_directory)) == NULL)
   {
     Warn("cannot read music directory '%s'", music_directory);
 
