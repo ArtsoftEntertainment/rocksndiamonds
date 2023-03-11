@@ -1153,13 +1153,18 @@ void SetBackgroundImage(int graphic, int redraw_mask)
   if (graphic == IMG_UNDEFINED)
     g = &g_undefined;
 
+  // always use original size bitmap for backgrounds, if existing
+  Bitmap *bitmap = (g->bitmaps != NULL &&
+		    g->bitmaps[IMG_BITMAP_PTR_ORIGINAL] != NULL ?
+		    g->bitmaps[IMG_BITMAP_PTR_ORIGINAL] : g->bitmap);
+
   // remove every mask before setting mask for window, and
   // remove window area mask before setting mask for main or door area
   int remove_mask = (redraw_mask == REDRAW_ALL ? 0xffff : REDRAW_ALL);
 
   // (!!! TO BE FIXED: The whole REDRAW_* system really sucks! !!!)
   SetBackgroundBitmap(NULL, remove_mask, 0, 0, 0, 0);	// !!! FIX THIS !!!
-  SetBackgroundBitmap(g->bitmap, redraw_mask,
+  SetBackgroundBitmap(bitmap, redraw_mask,
 		      g->src_x, g->src_y,
 		      g->width, g->height);
 }
