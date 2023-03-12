@@ -570,6 +570,8 @@ static void InitField(int x, int y, boolean init_game)
           game_mm.laser_green = native_mm_level.df_laser_green;
           game_mm.laser_blue  = native_mm_level.df_laser_blue;
         }
+
+	game_mm.has_mcduffin = (IS_MCDUFFIN(element));
       }
 
       break;
@@ -662,6 +664,7 @@ void InitGameEngine_MM(void)
   game_mm.laser_red = FALSE;
   game_mm.laser_green = FALSE;
   game_mm.laser_blue = TRUE;
+  game_mm.has_mcduffin = TRUE;
 
   game_mm.level_solved = FALSE;
   game_mm.game_over = FALSE;
