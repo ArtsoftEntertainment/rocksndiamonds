@@ -808,13 +808,21 @@ static void GameOver_MM(int game_over_cause)
 {
   game_mm.game_over = TRUE;
   game_mm.game_over_cause = game_over_cause;
-  game_mm.game_over_message = (game_over_cause == GAME_OVER_BOMB ?
-			       "Bomb killed Mc Duffin!" :
-			       game_over_cause == GAME_OVER_NO_ENERGY ?
-			       "Out of magic energy!" :
-			       game_over_cause == GAME_OVER_OVERLOADED ?
-			       "Magic spell hit Mc Duffin!" :
-			       NULL);
+  game_mm.game_over_message = (game_mm.has_mcduffin ?
+			       (game_over_cause == GAME_OVER_BOMB ?
+				"Bomb killed Mc Duffin!" :
+				game_over_cause == GAME_OVER_NO_ENERGY ?
+				"Out of magic energy!" :
+				game_over_cause == GAME_OVER_OVERLOADED ?
+				"Magic spell hit Mc Duffin!" :
+				NULL) :
+			       (game_over_cause == GAME_OVER_BOMB ?
+				"Bomb destroyed laser cannon!" :
+				game_over_cause == GAME_OVER_NO_ENERGY ?
+				"Out of laser energy!" :
+				game_over_cause == GAME_OVER_OVERLOADED ?
+				"Laser beam hit laser cannon!" :
+				NULL));
 
   SetTileCursorActive(FALSE);
 }
@@ -2824,11 +2832,9 @@ static void Explode_MM(int x, int y, int phase, int mode)
 
       Bang_MM(laser.start_edge.x, laser.start_edge.y);
 
-      GameOver_MM(GAME_OVER_DELAYED);
-
       laser.overloaded = FALSE;
     }
-    else if (IS_MCDUFFIN(center_element))
+    else if (IS_MCDUFFIN(center_element) || IS_LASER(center_element))
     {
       GameOver_MM(GAME_OVER_BOMB);
     }

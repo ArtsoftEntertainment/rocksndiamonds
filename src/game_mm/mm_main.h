@@ -735,7 +735,6 @@ extern int		num_element_info;
 #define GAME_OVER_NO_ENERGY	1
 #define GAME_OVER_OVERLOADED	2
 #define GAME_OVER_BOMB		3
-#define GAME_OVER_DELAYED	4
 
 #define PROGRAM_VERSION_MAJOR	2
 #define PROGRAM_VERSION_MINOR	0
