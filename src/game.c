@@ -15680,7 +15680,7 @@ void CheckGameOver(void)
 
   if (game_over_delay > 0)
   {
-    if (game_over_delay == game_over_delay_value)
+    if (game_over_delay == game_over_delay_value / 2)
       PlaySound(SND_GAME_LOSING);
 
     game_over_delay--;
