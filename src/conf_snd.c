@@ -53,7 +53,9 @@ struct ConfigInfo sound_config[] =
   { "bd_amoeba.waiting",		UNDEFINED_FILENAME		},
   { "bd_amoeba.growing",		"amoebe.wav"			},
   { "bd_amoeba.turning_to_gem",		"pling.wav"			},
+  { "bd_amoeba.turning_to_gem.mode_loop", "false"			},
   { "bd_amoeba.turning_to_rock",	"klopf.wav"			},
+  { "bd_amoeba.turning_to_rock.mode_loop", "false"			},
   { "bd_butterfly.moving",		"klapper.wav"			},
   { "bd_butterfly.waiting",		"klapper.wav"			},
   { "bd_firefly.moving",		"roehr.wav"			},
@@ -202,7 +204,9 @@ struct ConfigInfo sound_config[] =
 
   // sounds for Rocks'n'Diamonds style elements and actions
   { "amoeba.turning_to_gem",		"pling.wav"			},
+  { "amoeba.turning_to_gem.mode_loop", "false"				},
   { "amoeba.turning_to_rock",		"klopf.wav"			},
+  { "amoeba.turning_to_rock.mode_loop", "false"				},
   { "speed_pill.collecting",		"pong.wav"			},
   { "dynabomb_increase_number.collecting","pong.wav"			},
   { "dynabomb_increase_size.collecting","pong.wav"			},
