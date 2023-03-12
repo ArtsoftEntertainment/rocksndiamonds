@@ -15639,15 +15639,21 @@ void RequestRestartGame(char *message)
 
   boolean has_started_game = hasStartedNetworkGame();
   int request_mode = (has_started_game ? REQ_ASK : REQ_CONFIRM);
+  int door_state = DOOR_CLOSE_1;
 
-  if (Request(message, request_mode | REQ_STAY_CLOSED) && has_started_game)
+  if (Request(message, request_mode | REQ_STAY_OPEN) && has_started_game)
   {
+    CloseDoor(door_state);
+
     StartGameActions(network.enabled, setup.autorecord, level.random_seed);
   }
   else
   {
-    // needed in case of envelope request to close game panel
-    CloseDoor(DOOR_CLOSE_1);
+    // if game was invoked from level editor, also close tape recorder door
+    if (level_editor_test_game)
+      door_state = DOOR_CLOSE_ALL;
+
+    CloseDoor(door_state);
 
     SetGameStatus(GAME_MODE_MAIN);
 
