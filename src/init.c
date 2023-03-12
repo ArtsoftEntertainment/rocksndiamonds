@@ -2279,6 +2279,11 @@ static void InitSoundInfo(void)
     }
 
     set_sound_parameters(i, sound->parameter);
+
+#if 0
+    Debug("init:InitSoundInfo", "loop mode: %d ['%s']",
+	  sound_info[i].loop, sound->token);
+#endif
   }
 
   free(sound_effect_properties);
