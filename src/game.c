@@ -13999,8 +13999,6 @@ void BuryPlayer(struct PlayerInfo *player)
 
   PlayLevelSoundElementAction(jx, jy, player->artwork_element, ACTION_DYING);
 
-  PlaySound(SND_GAME_LOSING);
-
   RemovePlayer(player);
 
   player->buried = TRUE;
@@ -15682,6 +15680,9 @@ void CheckGameOver(void)
 
   if (game_over_delay > 0)
   {
+    if (game_over_delay == game_over_delay_value)
+      PlaySound(SND_GAME_LOSING);
+
     game_over_delay--;
 
     return;
