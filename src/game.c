@@ -13998,7 +13998,8 @@ void BuryPlayer(struct PlayerInfo *player)
     return;
 
   PlayLevelSoundElementAction(jx, jy, player->artwork_element, ACTION_DYING);
-  PlayLevelSound(jx, jy, SND_GAME_LOSING);
+
+  PlaySound(SND_GAME_LOSING);
 
   RemovePlayer(player);
 
@@ -14656,7 +14657,7 @@ static int DigField(struct PlayerInfo *player,
 
 	LevelSolved();
 
-	PlayLevelSound(x, y, SND_GAME_SOKOBAN_SOLVING);
+	PlaySound(SND_GAME_SOKOBAN_SOLVING);
       }
     }
     else
