@@ -294,7 +294,7 @@ struct ConfigInfo sound_config[] =
   { "game.running_out_of_time",		"gong.wav"			},
   { "game.leveltime_bonus",		"sirr.wav"			},
   { "game.health_bonus",		"sirr.wav"			},
-  { "game.losing",			"lachen.wav"			},
+  { "game.losing",			UNDEFINED_FILENAME		},
   { "game.winning",			UNDEFINED_FILENAME		},
   { "game.sokoban_solving",		"buing.wav"			},
 
