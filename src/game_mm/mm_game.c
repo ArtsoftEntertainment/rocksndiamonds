@@ -669,6 +669,7 @@ void InitGameEngine_MM(void)
   game_mm.level_solved = FALSE;
   game_mm.game_over = FALSE;
   game_mm.game_over_cause = 0;
+  game_mm.game_over_message = NULL;
 
   game_mm.laser_overload_value = 0;
   game_mm.laser_enabled = FALSE;
@@ -805,25 +806,15 @@ static void FadeOutLaser(void)
 
 static void GameOver_MM(int game_over_cause)
 {
-  // do not handle game over if request dialog is already active
-  if (game.request_active)
-    return;
-
   game_mm.game_over = TRUE;
   game_mm.game_over_cause = game_over_cause;
-
-  // do not ask to play again if game was never actually played
-  if (!game.GamePlayed)
-    return;
-
-  if (setup.ask_on_game_over)
-    game.restart_game_message = (game_over_cause == GAME_OVER_BOMB ?
-				 "Bomb killed Mc Duffin! Play it again?" :
-				 game_over_cause == GAME_OVER_NO_ENERGY ?
-				 "Out of magic energy! Play it again?" :
-				 game_over_cause == GAME_OVER_OVERLOADED ?
-				 "Magic spell hit Mc Duffin! Play it again?" :
-				 NULL);
+  game_mm.game_over_message = (game_over_cause == GAME_OVER_BOMB ?
+			       "Bomb killed Mc Duffin!" :
+			       game_over_cause == GAME_OVER_NO_ENERGY ?
+			       "Out of magic energy!" :
+			       game_over_cause == GAME_OVER_OVERLOADED ?
+			       "Magic spell hit Mc Duffin!" :
+			       NULL);
 
   SetTileCursorActive(FALSE);
 }

@@ -15668,6 +15668,10 @@ static char *getRestartGameMessage(void)
   char *game_over_text = "Game over!";
   char *play_again_text = " Play it again?";
 
+  if (level.game_engine_type == GAME_ENGINE_TYPE_MM &&
+      game_mm.game_over_message != NULL)
+    game_over_text = game_mm.game_over_message;
+
   snprintf(message, MAX_OUTPUT_LINESIZE, "%s%s", game_over_text,
 	   (play_again ? play_again_text : ""));
 

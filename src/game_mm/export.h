@@ -147,6 +147,7 @@ struct GameInfo_MM
   boolean level_solved;
   boolean game_over;
   int game_over_cause;
+  char *game_over_message;
 
   boolean cheat_no_overload;
   boolean cheat_no_explosion;
