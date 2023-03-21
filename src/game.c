@@ -15711,6 +15711,10 @@ void CheckGameOver(void)
     return;
   }
 
+  // do not ask to play again if this was disabled in setup menu
+  if (!setup.ask_on_game_over)
+    return;
+
   if (last_game_over != game_over)
     game.restart_game_message = getRestartGameMessage();
 

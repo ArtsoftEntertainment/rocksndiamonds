@@ -9527,8 +9527,7 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
 
 void HandleGameActions(void)
 {
-  if (setup.ask_on_game_over)
-    CheckGameOver();
+  CheckGameOver();
 
   if (game.restart_game_message != NULL)
   {
