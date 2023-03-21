@@ -15685,14 +15685,6 @@ void CheckGameOver(void)
   int game_over_delay_value = 50;
   boolean game_over = checkGameFailed();
 
-  // do not handle game over if request dialog is already active
-  if (game.request_active)
-    return;
-
-  // do not ask to play again if game was never actually played
-  if (!game.GamePlayed)
-    return;
-
   if (!game_over)
   {
     last_game_over = FALSE;
@@ -15710,6 +15702,14 @@ void CheckGameOver(void)
 
     return;
   }
+
+  // do not handle game over if request dialog is already active
+  if (game.request_active)
+    return;
+
+  // do not ask to play again if game was never actually played
+  if (!game.GamePlayed)
+    return;
 
   // do not ask to play again if this was disabled in setup menu
   if (!setup.ask_on_game_over)
