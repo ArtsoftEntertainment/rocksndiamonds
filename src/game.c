@@ -4515,7 +4515,6 @@ void InitGame(void)
   }
 
   game.restart_level = FALSE;
-  game.restart_game_message = NULL;
 
   game.request_active = FALSE;
   game.request_active_or_moving = FALSE;
@@ -15635,8 +15634,6 @@ void RequestQuitGame(boolean escape_key_pressed)
 
 void RequestRestartGame(char *message)
 {
-  game.restart_game_message = NULL;
-
   boolean has_started_game = hasStartedNetworkGame();
   int request_mode = (has_started_game ? REQ_ASK : REQ_CONFIRM);
   int door_state = DOOR_CLOSE_1;
@@ -15713,9 +15710,7 @@ boolean CheckRestartGame(void)
   if (!setup.ask_on_game_over)
     return FALSE;
 
-  game.restart_game_message = getRestartGameMessage();
-
-  RequestRestartGame(game.restart_game_message);
+  RequestRestartGame(getRestartGameMessage());
 
   return TRUE;
 }

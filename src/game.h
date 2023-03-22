@@ -242,9 +242,6 @@ struct GameInfo
   // values for special game initialization control
   boolean restart_level;
 
-  // trigger message to ask for restarting the game
-  char *restart_game_message;
-
   // values for special request dialog control
   boolean request_active;
   boolean request_active_or_moving;
