@@ -15678,7 +15678,7 @@ static char *getRestartGameMessage(void)
   return message;
 }
 
-void CheckGameOver(void)
+boolean CheckRestartGame(void)
 {
   static boolean last_game_over = FALSE;
   static int game_over_delay = 0;
@@ -15690,7 +15690,7 @@ void CheckGameOver(void)
     last_game_over = FALSE;
     game_over_delay = game_over_delay_value;
 
-    return;
+    return FALSE;
   }
 
   if (game_over_delay > 0)
@@ -15700,25 +15700,34 @@ void CheckGameOver(void)
 
     game_over_delay--;
 
-    return;
+    return FALSE;
   }
 
   // do not handle game over if request dialog is already active
   if (game.request_active)
-    return;
+    return FALSE;
 
   // do not ask to play again if game was never actually played
   if (!game.GamePlayed)
-    return;
+    return FALSE;
 
   // do not ask to play again if this was disabled in setup menu
   if (!setup.ask_on_game_over)
-    return;
+    return FALSE;
 
   if (last_game_over != game_over)
     game.restart_game_message = getRestartGameMessage();
 
   last_game_over = game_over;
+
+  if (game.restart_game_message != NULL)
+  {
+    RequestRestartGame(game.restart_game_message);
+
+    return TRUE;
+  }
+
+  return FALSE;
 }
 
 boolean checkGameSolved(void)
