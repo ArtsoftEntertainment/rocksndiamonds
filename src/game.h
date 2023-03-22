@@ -452,7 +452,6 @@ void RaiseScoreElement(int);
 
 void RequestQuitGameExt(boolean, boolean, char *);
 void RequestQuitGame(boolean);
-void RequestRestartGame(char *);
 
 boolean CheckRestartGame(void);
 boolean checkGameSolved(void);

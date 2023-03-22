@@ -15632,7 +15632,7 @@ void RequestQuitGame(boolean escape_key_pressed)
 		     "Do you really want to quit the game?");
 }
 
-void RequestRestartGame(char *message)
+static void RequestRestartGame(char *message)
 {
   boolean has_started_game = hasStartedNetworkGame();
   int request_mode = (has_started_game ? REQ_ASK : REQ_CONFIRM);
