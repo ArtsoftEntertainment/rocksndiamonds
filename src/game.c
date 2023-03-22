@@ -15632,6 +15632,23 @@ void RequestQuitGame(boolean escape_key_pressed)
 		     "Do you really want to quit the game?");
 }
 
+static char *getRestartGameMessage(void)
+{
+  boolean play_again = hasStartedNetworkGame();
+  static char message[MAX_OUTPUT_LINESIZE];
+  char *game_over_text = "Game over!";
+  char *play_again_text = " Play it again?";
+
+  if (level.game_engine_type == GAME_ENGINE_TYPE_MM &&
+      game_mm.game_over_message != NULL)
+    game_over_text = game_mm.game_over_message;
+
+  snprintf(message, MAX_OUTPUT_LINESIZE, "%s%s", game_over_text,
+	   (play_again ? play_again_text : ""));
+
+  return message;
+}
+
 static void RequestRestartGame(char *message)
 {
   boolean has_started_game = hasStartedNetworkGame();
@@ -15656,23 +15673,6 @@ static void RequestRestartGame(char *message)
 
     DrawMainMenu();
   }
-}
-
-static char *getRestartGameMessage(void)
-{
-  boolean play_again = hasStartedNetworkGame();
-  static char message[MAX_OUTPUT_LINESIZE];
-  char *game_over_text = "Game over!";
-  char *play_again_text = " Play it again?";
-
-  if (level.game_engine_type == GAME_ENGINE_TYPE_MM &&
-      game_mm.game_over_message != NULL)
-    game_over_text = game_mm.game_over_message;
-
-  snprintf(message, MAX_OUTPUT_LINESIZE, "%s%s", game_over_text,
-	   (play_again ? play_again_text : ""));
-
-  return message;
 }
 
 boolean CheckRestartGame(void)
