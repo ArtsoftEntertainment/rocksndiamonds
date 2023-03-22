@@ -15649,8 +15649,9 @@ static char *getRestartGameMessage(void)
   return message;
 }
 
-static void RequestRestartGame(char *message)
+static void RequestRestartGame(void)
 {
+  char *message = getRestartGameMessage();
   boolean has_started_game = hasStartedNetworkGame();
   int request_mode = (has_started_game ? REQ_ASK : REQ_CONFIRM);
   int door_state = DOOR_CLOSE_1;
@@ -15710,7 +15711,7 @@ boolean CheckRestartGame(void)
   if (!setup.ask_on_game_over)
     return FALSE;
 
-  RequestRestartGame(getRestartGameMessage());
+  RequestRestartGame();
 
   return TRUE;
 }
