@@ -15680,14 +15680,12 @@ static char *getRestartGameMessage(void)
 
 boolean CheckRestartGame(void)
 {
-  static boolean last_game_over = FALSE;
   static int game_over_delay = 0;
   int game_over_delay_value = 50;
   boolean game_over = checkGameFailed();
 
   if (!game_over)
   {
-    last_game_over = FALSE;
     game_over_delay = game_over_delay_value;
 
     return FALSE;
@@ -15715,19 +15713,11 @@ boolean CheckRestartGame(void)
   if (!setup.ask_on_game_over)
     return FALSE;
 
-  if (last_game_over != game_over)
-    game.restart_game_message = getRestartGameMessage();
+  game.restart_game_message = getRestartGameMessage();
 
-  last_game_over = game_over;
+  RequestRestartGame(game.restart_game_message);
 
-  if (game.restart_game_message != NULL)
-  {
-    RequestRestartGame(game.restart_game_message);
-
-    return TRUE;
-  }
-
-  return FALSE;
+  return TRUE;
 }
 
 boolean checkGameSolved(void)
