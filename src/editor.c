@@ -5765,14 +5765,18 @@ static void InitDynamicEditorElementList(int **elements, int *num_elements)
 
   *num_elements = 0;
 
-  // add all elements used in current level (non-custom/group elements)
+  // add all elements used in current level (non-custom/group/empty elements)
   for (i = 0; i < NUM_FILE_ELEMENTS; i++)
-    if (element_found[i] && !(IS_CUSTOM_ELEMENT(i) || IS_GROUP_ELEMENT(i)))
+    if (element_found[i] && !(IS_CUSTOM_ELEMENT(i) ||
+			      IS_GROUP_ELEMENT(i) ||
+			      IS_EMPTY_ELEMENT(i)))
       (*elements)[(*num_elements)++] = i;
 
-  // add all elements used in current level (custom/group elements)
+  // add all elements used in current level (custom/group/empty elements)
   for (i = 0; i < NUM_FILE_ELEMENTS; i++)
-    if (element_found[i] && (IS_CUSTOM_ELEMENT(i) || IS_GROUP_ELEMENT(i)))
+    if (element_found[i] && (IS_CUSTOM_ELEMENT(i) ||
+			     IS_GROUP_ELEMENT(i) ||
+			     IS_EMPTY_ELEMENT(i)))
       (*elements)[(*num_elements)++] = i;
 
   while (*num_elements % 4)	// pad with empty elements, if needed
