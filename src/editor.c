@@ -5743,9 +5743,18 @@ static void InitDynamicEditorElementList(int **elements, int *num_elements)
 
   // find all elements used in current level
   for (y = 0; y < lev_fieldy; y++)
+  {
     for (x = 0; x < lev_fieldx; x++)
-      if (Tile[x][y] < NUM_FILE_ELEMENTS)	// should always be true
+    {
+      if (Tile[x][y] >= NUM_FILE_ELEMENTS)	// should never happen
+	continue;
+
+      if (IS_MM_WALL(Tile[x][y]))
+	element_found[map_mm_wall_element(Tile[x][y])] = TRUE;
+      else
 	element_found[Tile[x][y]] = TRUE;
+    }
+  }
 
   *num_elements = 0;
 
