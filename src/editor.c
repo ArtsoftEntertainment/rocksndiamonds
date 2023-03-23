@@ -9754,8 +9754,8 @@ static void DrawPropertiesInfo(void)
   char *no_description_text = "No description available.";
   char *none_text = "None";
   float percentage;
-  int num_elements_in_level;
-  int num_similar_in_level;
+  int num_elements_in_level = 0;
+  int num_similar_in_level = 0;
   int num_standard_properties = 0;
   int font1_nr = FONT_TEXT_1;
   int font2_nr = FONT_TEXT_2;
@@ -9784,11 +9784,11 @@ static void DrawPropertiesInfo(void)
 
   // ----- print number of elements / percentage of this element in level
 
-  num_elements_in_level = 0;
-  for (y = 0; y < lev_fieldy; y++) 
+  for (y = 0; y < lev_fieldy; y++)
     for (x = 0; x < lev_fieldx; x++)
       if (Tile[x][y] == properties_element)
 	num_elements_in_level++;
+
   percentage = num_elements_in_level * 100.0 / (lev_fieldx * lev_fieldy);
 
   DrawTextS(xpos, ypos, font1_nr, num_elements_text);
@@ -9802,7 +9802,6 @@ static void DrawPropertiesInfo(void)
 
   // ----- print number of similar elements / percentage of them in level
 
-  num_similar_in_level = 0;
   for (y = 0; y < lev_fieldy; y++)
     for (x = 0; x < lev_fieldx; x++)
       if (strEqual(element_info[Tile[x][y]].class_name,
