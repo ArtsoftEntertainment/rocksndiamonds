@@ -9747,13 +9747,15 @@ static void DrawPropertiesInfo(void)
     { -1,			NULL					}
   };
   char *filename = getElementDescriptionFilename(properties_element);
-  char *percentage_text = "In this level: ";
+  char *num_elements_text = "In this level: ";
+  char *num_similar_text = "Similar tiles: ";
   char *properties_text = "Standard properties: ";
   char *description_text = "Description:";
   char *no_description_text = "No description available.";
   char *none_text = "None";
   float percentage;
   int num_elements_in_level;
+  int num_similar_in_level;
   int num_standard_properties = 0;
   int font1_nr = FONT_TEXT_1;
   int font2_nr = FONT_TEXT_2;
@@ -9762,7 +9764,8 @@ static void DrawPropertiesInfo(void)
   int font2_height = getFontHeight(font2_nr);
   int line1_height = font1_height + ED_GADGET_LINE_DISTANCE;
   int font2_yoffset = (font1_height - font2_height) / 2;
-  int percentage_text_len = strlen(percentage_text) * font1_width;
+  int num_elements_text_len = strlen(num_elements_text) * font1_width;
+  int num_similar_text_len = strlen(num_similar_text) * font1_width;
   int properties_text_len = strlen(properties_text) * font1_width;
   int xpos = ED_ELEMENT_SETTINGS_X(0);
   int ypos = ED_ELEMENT_SETTINGS_Y(0) + ED_GADGET_SMALL_DISTANCE;
@@ -9788,14 +9791,39 @@ static void DrawPropertiesInfo(void)
 	num_elements_in_level++;
   percentage = num_elements_in_level * 100.0 / (lev_fieldx * lev_fieldy);
 
-  DrawTextS(xpos, ypos, font1_nr, percentage_text);
+  DrawTextS(xpos, ypos, font1_nr, num_elements_text);
 
   if (num_elements_in_level > 0)
-    DrawTextF(xpos + percentage_text_len, ypos + font2_yoffset, font2_nr,
+    DrawTextF(xpos + num_elements_text_len, ypos + font2_yoffset, font2_nr,
 	      "%d (%.2f %%)", num_elements_in_level, percentage);
   else
-    DrawTextF(xpos + percentage_text_len, ypos + font2_yoffset, font2_nr,
+    DrawTextF(xpos + num_elements_text_len, ypos + font2_yoffset, font2_nr,
 	      none_text);
+
+  // ----- print number of similar elements / percentage of them in level
+
+  num_similar_in_level = 0;
+  for (y = 0; y < lev_fieldy; y++)
+    for (x = 0; x < lev_fieldx; x++)
+      if (strEqual(element_info[Tile[x][y]].class_name,
+		   element_info[properties_element].class_name))
+	num_similar_in_level++;
+
+  if (num_similar_in_level != num_elements_in_level)
+  {
+    ypos += 1 * MAX(font1_height, font2_height);
+
+    percentage = num_similar_in_level * 100.0 / (lev_fieldx * lev_fieldy);
+
+    DrawTextS(xpos, ypos, font1_nr, num_similar_text);
+
+    if (num_similar_in_level > 0)
+      DrawTextF(xpos + num_similar_text_len, ypos + font2_yoffset, font2_nr,
+		"%d (%.2f %%)", num_similar_in_level, percentage);
+    else
+      DrawTextF(xpos + num_similar_text_len, ypos + font2_yoffset, font2_nr,
+		none_text);
+  }
 
   ypos += 2 * MAX(font1_height, font2_height);
 
