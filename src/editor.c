@@ -3973,6 +3973,7 @@ static boolean getDrawModeHiRes(void);
 static int getTabulatorBarWidth(void);
 static int getTabulatorBarHeight(void);
 static Pixel getTabulatorBarColor(void);
+static int numHiresTiles(int);
 
 static int num_editor_gadgets = 0;	// dynamically determined
 
@@ -9756,6 +9757,7 @@ static void DrawPropertiesInfo(void)
   float percentage;
   int num_elements_in_level = 0;
   int num_similar_in_level = 0;
+  int num_hires_tiles_in_level = 0;
   int num_standard_properties = 0;
   int font1_nr = FONT_TEXT_1;
   int font2_nr = FONT_TEXT_2;
@@ -9785,15 +9787,29 @@ static void DrawPropertiesInfo(void)
   // ----- print number of elements / percentage of this element in level
 
   for (y = 0; y < lev_fieldy; y++)
+  {
     for (x = 0; x < lev_fieldx; x++)
+    {
       if (Tile[x][y] == properties_element)
+      {
 	num_elements_in_level++;
+      }
+      else if (IS_MM_WALL(Tile[x][y]) &&
+	       map_mm_wall_element(Tile[x][y]) == properties_element)
+      {
+	num_hires_tiles_in_level += numHiresTiles(Tile[x][y]);
+      }
+    }
+  }
 
   percentage = num_elements_in_level * 100.0 / (lev_fieldx * lev_fieldy);
 
   DrawTextS(xpos, ypos, font1_nr, num_elements_text);
 
-  if (num_elements_in_level > 0)
+  if (num_hires_tiles_in_level > 0)
+    DrawTextF(xpos + num_elements_text_len, ypos + font2_yoffset, font2_nr,
+	      "%d wall tiles", num_hires_tiles_in_level);
+  else if (num_elements_in_level > 0)
     DrawTextF(xpos + num_elements_text_len, ypos + font2_yoffset, font2_nr,
 	      "%d (%.2f %%)", num_elements_in_level, percentage);
   else
@@ -9803,10 +9819,16 @@ static void DrawPropertiesInfo(void)
   // ----- print number of similar elements / percentage of them in level
 
   for (y = 0; y < lev_fieldy; y++)
+  {
     for (x = 0; x < lev_fieldx; x++)
+    {
       if (strEqual(element_info[Tile[x][y]].class_name,
 		   element_info[properties_element].class_name))
+      {
 	num_similar_in_level++;
+      }
+    }
+  }
 
   if (num_similar_in_level != num_elements_in_level)
   {
@@ -11965,6 +11987,23 @@ static boolean isHiresTileElement(int element)
 static boolean isHiresDrawElement(int element)
 {
   return (IS_MM_WALL_EDITOR(element) || element == EL_EMPTY);
+}
+
+static int numHiresTiles(int element)
+{
+  if (!IS_MM_WALL(element))
+    return 1;
+
+  int bits = MM_WALL_BITS(element);
+  int num_bits = 0;
+
+  while (bits)
+  {
+    bits &= bits - 1;
+    num_bits++;
+  }
+
+  return num_bits;
 }
 
 static void SetDrawModeHiRes(int element)
