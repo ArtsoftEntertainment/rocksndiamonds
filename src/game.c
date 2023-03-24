@@ -5836,9 +5836,6 @@ static void Explode(int ex, int ey, int phase, int mode)
   int last_phase;
   int border_element;
 
-  // !!! eliminate this variable !!!
-  int delay = (game.emulation == EMU_SUPAPLEX ? 3 : 2);
-
   if (game.explosions_delayed)
   {
     ExplodeField[ex][ey] = mode;
@@ -6119,7 +6116,7 @@ static void Explode(int ex, int ey, int phase, int mode)
     int graphic = el_act2img(GfxElement[x][y], ACTION_EXPLODING);
     int frame = getGraphicAnimationFrameXY(graphic, x, y);
 
-    if (phase == delay)
+    if (phase == 1)
       TEST_DrawLevelFieldCrumbled(x, y);
 
     if (IS_WALKABLE_OVER(Back[x][y]) && Back[x][y] != EL_EMPTY)
