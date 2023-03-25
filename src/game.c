@@ -13948,7 +13948,7 @@ void KillPlayer(struct PlayerInfo *player)
   player->killed = TRUE;
 
   // remove accessible field at the player's position
-  Tile[jx][jy] = EL_EMPTY;
+  RemoveField(jx, jy);
 
   // deactivate shield (else Bang()/Explode() would not work right)
   player->shield_normal_time_left = 0;
