@@ -75,6 +75,9 @@
 
 // font structure definitions
 
+void EnableDrawingText(void);
+void DisableDrawingText(void);
+
 void InitFontInfo(struct FontBitmapInfo *, int,
 		  int (*function1)(int),
                   int (*function2)(char *),

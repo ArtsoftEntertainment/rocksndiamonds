@@ -17,8 +17,25 @@
 
 
 // ============================================================================
+// static font variables
+// ============================================================================
+
+boolean text_drawing_enabled = TRUE;
+
+
+// ============================================================================
 // font functions
 // ============================================================================
+
+void EnableDrawingText(void)
+{
+  text_drawing_enabled = TRUE;
+}
+
+void DisableDrawingText(void)
+{
+  text_drawing_enabled = FALSE;
+}
 
 void InitFontInfo(struct FontBitmapInfo *font_bitmap_info, int num_fonts,
 		  int (*select_font_function)(int),
@@ -144,6 +161,9 @@ static void DrawInitTextExt(char *text, int ypos, int font_nr, boolean update)
 
   UPDATE_BUSY_STATE();
 
+  if (!text_drawing_enabled)
+    return;
+
   if (window != NULL &&
       gfx.draw_init_text &&
       gfx.num_fonts > 0 &&
@@ -255,6 +275,9 @@ void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
   Bitmap *src_bitmap;
   int src_x, src_y;
   char *text_ptr = text;
+
+  if (!text_drawing_enabled)
+    return;
 
 #if DEBUG
   Debug("font:token", "'%s' / '%s'",
