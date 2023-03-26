@@ -8175,7 +8175,7 @@ struct ConfigInfo image_config[] =
   { "menu.extra_spacing.SCOREINFO",		"2"			},
   { "menu.extra_spacing.INFO",			"2"			},
   { "menu.extra_spacing.INFO[TITLE]",		"2"			},
-  { "menu.extra_spacing.INFO[ELEMENTS]",	"2"			},
+  { "menu.extra_spacing.INFO[ELEMENTS]",	"4"			},
   { "menu.extra_spacing.INFO[MUSIC]",		"2"			},
   { "menu.extra_spacing.INFO[CREDITS]",		"2"			},
   { "menu.extra_spacing.INFO[PROGRAM]",		"2"			},

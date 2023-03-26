@@ -176,8 +176,14 @@
 #define MENU_SCREEN_INFO_SPACE_RIGHT	(menu.right_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_TOP	(menu.top_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_BOTTOM	(menu.bottom_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_LINE	(menu.line_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_EXTRA	(menu.extra_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_ENTRY_SIZE_RAW	(menu.list_entry_size_info[info_mode])
+#define MENU_SCREEN_INFO_ENTRY_SIZE	(MAX(MENU_SCREEN_INFO_ENTRY_SIZE_RAW, \
+					     TILEY))
 #define MENU_SCREEN_INFO_YSTART		MENU_SCREEN_INFO_SPACE_TOP
-#define MENU_SCREEN_INFO_YSTEP		(TILEY + 4)
+#define MENU_SCREEN_INFO_YSTEP		(MENU_SCREEN_INFO_ENTRY_SIZE + \
+					 MENU_SCREEN_INFO_SPACE_EXTRA)
 #define MENU_SCREEN_INFO_YBOTTOM	(SYSIZE - MENU_SCREEN_INFO_SPACE_BOTTOM)
 #define MENU_SCREEN_INFO_YSIZE		(MENU_SCREEN_INFO_YBOTTOM -	\
 					 MENU_SCREEN_INFO_YSTART -	\
@@ -3113,6 +3119,8 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
   int ystart = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int ystep = MENU_SCREEN_INFO_YSTEP;
+  int row_height = MENU_SCREEN_INFO_ENTRY_SIZE;
+  int yoffset = (row_height - TILEY) / 2;
   int element, action, direction;
   int graphic;
   int delay;
@@ -3147,6 +3155,7 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
     }
 
     int ypos = i - start;
+    int ystart_pos = ystart + ypos * ystep + yoffset;
 
     j += infoscreen_step[ypos];
 
@@ -3197,9 +3206,8 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
 
     j++;
 
-    ClearRectangleOnBackground(drawto, xstart, ystart + ypos * ystep,
-			       TILEX, TILEY);
-    DrawFixedGraphicAnimationExt(drawto, xstart, ystart + ypos * ystep,
+    ClearRectangleOnBackground(drawto, xstart, ystart_pos, TILEX, TILEY);
+    DrawFixedGraphicAnimationExt(drawto, xstart, ystart_pos,
 				 graphic, sync_frame, USE_MASKING);
 
     if (init)
@@ -3233,15 +3241,20 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
   int font_nr = FONT_INFO_ELEMENTS;
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
-  int yoffset = (TILEX - 2 * font_height) / 2;
+  int line_spacing = MENU_SCREEN_INFO_SPACE_LINE;
+  int line_height = font_height + line_spacing;
+  int row_height = MENU_SCREEN_INFO_ENTRY_SIZE;
   int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT + TILEX + MINI_TILEX;
-  int ystart = mSY + MENU_SCREEN_INFO_YSTART + yoffset + getHeadlineSpacing();
-  int ystep = TILEY + 4;
+  int ystart = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
+  int ystep = MENU_SCREEN_INFO_YSTEP;
   int pad_left = xstart - SX;
   int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
   int max_chars_per_line = (SXSIZE - pad_left - pad_right) / font_width;
-  int max_lines_per_text = 2;    
+  int max_lines_per_text = (row_height + line_spacing) / line_height;
   char *text = NULL;
+  boolean autowrap = TRUE;
+  boolean centered = FALSE;
+  boolean parse_comments = FALSE;
 
   if (action != -1 && direction != -1)		// element.action.direction
     text = getHelpText(element, action, direction);
@@ -3258,12 +3271,22 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
   if (text == NULL)				// not found
     text = "No description available";
 
-  if (strlen(text) <= max_chars_per_line)	// only one line of text
-    ystart += getFontHeight(font_nr) / 2;
+  DisableDrawingText();
 
-  DrawTextBuffer(xstart, ystart + ypos * ystep, text, font_nr,
-		 max_chars_per_line, -1, max_lines_per_text, 0, -1,
-		 TRUE, FALSE, FALSE);
+  // first get number of text lines to calculate offset for centering text
+  int num_lines_printed =
+    DrawTextBuffer(0, 0, text, font_nr,
+		   max_chars_per_line, -1, max_lines_per_text, line_spacing, -1,
+		   autowrap, centered, parse_comments);
+
+  EnableDrawingText();
+
+  int size_lines_printed = num_lines_printed * line_height - line_spacing;
+  int yoffset = (row_height - size_lines_printed) / 2;
+
+  DrawTextBuffer(xstart, ystart + ypos * ystep + yoffset, text, font_nr,
+		 max_chars_per_line, -1, max_lines_per_text, line_spacing, -1,
+		 autowrap, centered, parse_comments);
 }
 
 static void DrawInfoScreen_TitleScreen(void)
