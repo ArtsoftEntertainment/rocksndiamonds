@@ -2577,7 +2577,7 @@ sub print_image_config_vars
 		$var = $1 . "[GFX_SPECIAL_ARG_DEFAULT]" . $3;
 	    }
 
-	    if ($var =~ /^menu.(draw_[xy]offset|list_size)$/)
+	    if ($var =~ /^menu.(draw_[xy]offset|list_size|list_entry_size)$/)
 	    {
 		$var .= "[GFX_SPECIAL_ARG_DEFAULT]";
 	    }

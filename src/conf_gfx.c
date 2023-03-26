@@ -8082,6 +8082,8 @@ struct ConfigInfo image_config[] =
   { "menu.list_size.INFO[ELEMENTS]",		"-1"			},
   { "menu.list_size.SETUP",			"-1"			},
 
+  { "menu.list_entry_size.INFO[ELEMENTS]",	"-1"			},
+
   { "menu.left_spacing.SCOREINFO",		"16"			},
   { "menu.left_spacing.INFO",			"16"			},
   { "menu.left_spacing.INFO[TITLE]",		"16"			},

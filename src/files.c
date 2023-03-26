@@ -12456,9 +12456,10 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
   {
     struct TokenIntPtrInfo menu_config[] =
     {
-      { "menu.draw_xoffset",	&menu.draw_xoffset[i]	},
-      { "menu.draw_yoffset",	&menu.draw_yoffset[i]	},
-      { "menu.list_size",	&menu.list_size[i]	}
+      { "menu.draw_xoffset",	&menu.draw_xoffset[i]		},
+      { "menu.draw_yoffset",	&menu.draw_yoffset[i]		},
+      { "menu.list_size",	&menu.list_size[i]		},
+      { "menu.list_entry_size",	&menu.list_entry_size[i]	}
     };
 
     for (j = 0; j < ARRAY_SIZE(menu_config); j++)
@@ -12479,7 +12480,8 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
     {
       { "menu.draw_xoffset.INFO",	&menu.draw_xoffset_info[i]	},
       { "menu.draw_yoffset.INFO",	&menu.draw_yoffset_info[i]	},
-      { "menu.list_size.INFO",		&menu.list_size_info[i]		}
+      { "menu.list_size.INFO",		&menu.list_size_info[i]		},
+      { "menu.list_entry_size.INFO",	&menu.list_entry_size_info[i]	}
     };
 
     for (j = 0; j < ARRAY_SIZE(menu_config); j++)
