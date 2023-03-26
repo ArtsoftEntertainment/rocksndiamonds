@@ -3146,7 +3146,9 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
       continue;
     }
 
-    j += infoscreen_step[i - start];
+    int ypos = i - start;
+
+    j += infoscreen_step[ypos];
 
     element = helpanim_info[j].element;
     action = helpanim_info[j].action;
@@ -3169,39 +3171,39 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
     if (delay == -1)
       delay = 1000000;
 
-    if (infoscreen_frame[i - start] == 0)
+    if (infoscreen_frame[ypos] == 0)
     {
       sync_frame = 0;
-      infoscreen_frame[i - start] = delay - 1;
+      infoscreen_frame[ypos] = delay - 1;
     }
     else
     {
-      sync_frame = delay - infoscreen_frame[i - start];
-      infoscreen_frame[i - start]--;
+      sync_frame = delay - infoscreen_frame[ypos];
+      infoscreen_frame[ypos]--;
     }
 
     if (helpanim_info[j].element == HELPANIM_LIST_NEXT)
     {
-      if (!infoscreen_frame[i - start])
-	infoscreen_step[i - start] = 0;
+      if (!infoscreen_frame[ypos])
+	infoscreen_step[ypos] = 0;
     }
     else
     {
-      if (!infoscreen_frame[i - start])
-	infoscreen_step[i - start]++;
+      if (!infoscreen_frame[ypos])
+	infoscreen_step[ypos]++;
       while (helpanim_info[j].element != HELPANIM_LIST_NEXT)
 	j++;
     }
 
     j++;
 
-    ClearRectangleOnBackground(drawto, xstart, ystart + (i - start) * ystep,
+    ClearRectangleOnBackground(drawto, xstart, ystart + ypos * ystep,
 			       TILEX, TILEY);
-    DrawFixedGraphicAnimationExt(drawto, xstart, ystart + (i - start) * ystep,
+    DrawFixedGraphicAnimationExt(drawto, xstart, ystart + ypos * ystep,
 				 graphic, sync_frame, USE_MASKING);
 
     if (init)
-      DrawInfoScreen_HelpText(element, action, direction, i - start);
+      DrawInfoScreen_HelpText(element, action, direction, ypos);
 
     i++;
   }
