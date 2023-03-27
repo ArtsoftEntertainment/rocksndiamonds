@@ -12480,7 +12480,8 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
       { "menu.draw_xoffset.INFO",	&menu.draw_xoffset_info[i]	},
       { "menu.draw_yoffset.INFO",	&menu.draw_yoffset_info[i]	},
       { "menu.list_size.INFO",		&menu.list_size_info[i]		},
-      { "menu.list_entry_size.INFO",	&menu.list_entry_size_info[i]	}
+      { "menu.list_entry_size.INFO",	&menu.list_entry_size_info[i]	},
+      { "menu.tile_size.INFO",		&menu.tile_size_info[i]		}
     };
 
     for (j = 0; j < ARRAY_SIZE(menu_config); j++)
@@ -12520,6 +12521,7 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
     struct TokenIntPtrInfo menu_config[] =
     {
       { "menu.left_spacing.INFO",	&menu.left_spacing_info[i]	},
+      { "menu.middle_spacing.INFO",	&menu.middle_spacing_info[i]	},
       { "menu.right_spacing.INFO",	&menu.right_spacing_info[i]	},
       { "menu.top_spacing.INFO",	&menu.top_spacing_info[i]	},
       { "menu.bottom_spacing.INFO",	&menu.bottom_spacing_info[i]	},

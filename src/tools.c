@@ -3948,6 +3948,18 @@ void DrawFixedGraphicAnimationExt(DrawBuffer *dst_bitmap, int x, int y,
     DrawFixedGraphicExt(dst_bitmap, x, y, graphic, frame);
 }
 
+void DrawSizedGraphicAnimationExt(DrawBuffer *dst_bitmap, int x, int y,
+				  int graphic, int sync_frame, int tilesize,
+				  int mask_mode)
+{
+  int frame = getGraphicAnimationFrame(graphic, sync_frame);
+
+  if (mask_mode == USE_MASKING)
+    DrawSizedGraphicThruMaskExt(dst_bitmap, x, y, graphic, frame, tilesize);
+  else
+    DrawSizedGraphicExt(dst_bitmap, x, y, graphic, frame, tilesize);
+}
+
 static void DrawGraphicAnimation(int x, int y, int graphic)
 {
   int lx = LEVELX(x), ly = LEVELY(y);

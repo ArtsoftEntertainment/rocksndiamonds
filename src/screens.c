@@ -173,14 +173,16 @@
 #define MENU_INFO_FONT_FOOT		FONT_TEXT_4
 #define MENU_INFO_SPACE_HEAD		(menu.headline2_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_LEFT	(menu.left_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_MIDDLE	(menu.middle_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_RIGHT	(menu.right_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_TOP	(menu.top_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_BOTTOM	(menu.bottom_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_LINE	(menu.line_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_EXTRA	(menu.extra_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_TILE_SIZE	(menu.tile_size_info[info_mode])
 #define MENU_SCREEN_INFO_ENTRY_SIZE_RAW	(menu.list_entry_size_info[info_mode])
 #define MENU_SCREEN_INFO_ENTRY_SIZE	(MAX(MENU_SCREEN_INFO_ENTRY_SIZE_RAW, \
-					     TILEY))
+					     MENU_SCREEN_INFO_TILE_SIZE))
 #define MENU_SCREEN_INFO_YSTART		MENU_SCREEN_INFO_SPACE_TOP
 #define MENU_SCREEN_INFO_YSTEP		(MENU_SCREEN_INFO_ENTRY_SIZE + \
 					 MENU_SCREEN_INFO_SPACE_EXTRA)
@@ -3120,7 +3122,8 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
   int ystep = MENU_SCREEN_INFO_YSTEP;
   int row_height = MENU_SCREEN_INFO_ENTRY_SIZE;
-  int yoffset = (row_height - TILEY) / 2;
+  int tilesize = MENU_SCREEN_INFO_TILE_SIZE;
+  int yoffset = (row_height - tilesize) / 2;
   int element, action, direction;
   int graphic;
   int delay;
@@ -3206,9 +3209,9 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
 
     j++;
 
-    ClearRectangleOnBackground(drawto, xstart, ystart_pos, TILEX, TILEY);
-    DrawFixedGraphicAnimationExt(drawto, xstart, ystart_pos,
-				 graphic, sync_frame, USE_MASKING);
+    ClearRectangleOnBackground(drawto, xstart, ystart_pos, tilesize, tilesize);
+    DrawSizedGraphicAnimationExt(drawto, xstart, ystart_pos,
+				 graphic, sync_frame, tilesize, USE_MASKING);
 
     if (init)
       DrawInfoScreen_HelpText(element, action, direction, ypos);
@@ -3242,13 +3245,17 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
   int line_spacing = MENU_SCREEN_INFO_SPACE_LINE;
+  int left_spacing = MENU_SCREEN_INFO_SPACE_LEFT;
+  int middle_spacing = MENU_SCREEN_INFO_SPACE_MIDDLE;
+  int right_spacing = MENU_SCREEN_INFO_SPACE_RIGHT;
   int line_height = font_height + line_spacing;
   int row_height = MENU_SCREEN_INFO_ENTRY_SIZE;
-  int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT + TILEX + MINI_TILEX;
+  int tilesize = MENU_SCREEN_INFO_TILE_SIZE;
+  int xstart = mSX + left_spacing + tilesize + middle_spacing;
   int ystart = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
   int ystep = MENU_SCREEN_INFO_YSTEP;
   int pad_left = xstart - SX;
-  int pad_right = MENU_SCREEN_INFO_SPACE_RIGHT;
+  int pad_right = right_spacing;
   int max_chars_per_line = (SXSIZE - pad_left - pad_right) / font_width;
   int max_lines_per_text = (row_height + line_spacing) / line_height;
   char *text = NULL;

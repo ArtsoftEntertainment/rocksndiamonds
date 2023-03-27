@@ -138,6 +138,7 @@ int getGraphicAnimationFrameXY(int, int, int);
 
 void DrawFixedGraphicAnimation(int, int, int);
 void DrawFixedGraphicAnimationExt(DrawBuffer *, int, int, int, int, int);
+void DrawSizedGraphicAnimationExt(DrawBuffer *, int, int, int, int, int, int);
 
 void DrawLevelGraphicAnimation(int, int, int);
 void DrawLevelElementAnimation(int, int, int);
