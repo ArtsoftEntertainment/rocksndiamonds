@@ -2883,7 +2883,6 @@ struct MenuInfo
 
   int list_size[NUM_SPECIAL_GFX_ARGS];
   int list_size_info[NUM_SPECIAL_GFX_INFO_ARGS];
-  int list_entry_size[NUM_SPECIAL_GFX_ARGS];
   int list_entry_size_info[NUM_SPECIAL_GFX_INFO_ARGS];
 
   int left_spacing[NUM_SPECIAL_GFX_ARGS];
