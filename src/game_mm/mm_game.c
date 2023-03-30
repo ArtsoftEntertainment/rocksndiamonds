@@ -364,7 +364,7 @@ static void DrawLaserLines(struct XY *points, int num_points, int mode)
   Pixel pixel_drawto = (mode == DL_LASER_ENABLED ? pen_ray     : pen_bg);
   Pixel pixel_buffer = (mode == DL_LASER_ENABLED ? WHITE_PIXEL : BLACK_PIXEL);
 
-  DrawLines(drawto, points, num_points, pixel_drawto);
+  DrawLines(drawto_mm, points, num_points, pixel_drawto);
 
   BEGIN_NO_HEADLESS
   {
@@ -644,8 +644,8 @@ void InitGameEngine_MM(void)
   BEGIN_NO_HEADLESS
   {
     // initialize laser bitmap to current playfield (screen) size
-    ReCreateBitmap(&laser_bitmap, drawto->width, drawto->height);
-    ClearRectangle(laser_bitmap, 0, 0, drawto->width, drawto->height);
+    ReCreateBitmap(&laser_bitmap, drawto_mm->width, drawto_mm->height);
+    ClearRectangle(laser_bitmap, 0, 0, drawto_mm->width, drawto_mm->height);
   }
   END_NO_HEADLESS
 
@@ -762,7 +762,7 @@ void InitGameActions_MM(void)
 
     DrawLevel_MM();
 
-    BackToFront();
+    BackToFront_MM();
 
 #ifdef DEBUG
     if (setup.quick_doors)
@@ -795,7 +795,7 @@ static void FadeOutLaser(void)
 
     DrawLaser(0, DL_LASER_ENABLED);
 
-    BackToFront();
+    BackToFront_MM();
     Delay_WithScreenUpdates(50);
   }
 
@@ -2567,7 +2567,7 @@ static void OpenGrayBall(int x, int y)
       DrawWalls_MM(x, y, Store[x][y]);
 
       // copy wall tile to spare bitmap for "melting" animation
-      BlitBitmap(drawto, bitmap_db_field, cSX + x * TILEX, cSY + y * TILEY,
+      BlitBitmap(drawto_mm, bitmap_db_field, cSX + x * TILEX, cSY + y * TILEY,
 		 TILEX, TILEY, x * TILEX, y * TILEY);
 
       DrawElement_MM(x, y, EL_GRAY_BALL);
@@ -2600,7 +2600,7 @@ static void OpenGrayBall(int x, int y)
 	getGraphicSource(graphic, 0, &bitmap, &gx, &gy);
       }
 
-      BlitBitmap(bitmap, drawto, gx + dx, gy + dy, 6, 6,
+      BlitBitmap(bitmap, drawto_mm, gx + dx, gy + dy, 6, 6,
 		 cSX + x * TILEX + dx, cSY + y * TILEY + dy);
 
       laser.redraw = TRUE;
@@ -2653,7 +2653,7 @@ static void OpenEnvelope(int x, int y)
 
       ScanLaser();
 
-      ShowEnvelope_MM(nr);
+      ShowEnvelope(nr);
     }
   }
 }
@@ -3750,7 +3750,7 @@ static void GameActions_MM_Ext(void)
 
       UpdateAndDisplayGameControlValues();
 
-      BackToFront();
+      BackToFront_MM();
     }
 
     Tile[ELX][ELY] = laser.dest_element = EL_FUEL_EMPTY;
@@ -3849,7 +3849,7 @@ static void MovePacMen(void)
     }
 
     DrawField_MM(nx, ny);
-    BackToFront();
+    BackToFront_MM();
 
     if (!laser.fuse_off)
     {

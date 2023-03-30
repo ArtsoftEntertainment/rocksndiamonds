@@ -14,8 +14,15 @@
 #include "mm_main.h"
 
 
+Bitmap *drawto_mm;
+
 struct EngineSnapshotInfo_MM engine_snapshot_mm;
 
+
+void InitGfxBuffers_MM(void)
+{
+  ReCreateBitmap(&drawto_mm, video.width, video.height);
+}
 
 unsigned int InitEngineRandom_MM(int seed)
 {

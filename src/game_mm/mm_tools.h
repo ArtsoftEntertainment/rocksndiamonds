@@ -50,7 +50,8 @@
 
 
 void SetDrawtoField_MM(int);
-void BackToFront(void);
+void BackToFront_MM(void);
+
 void FadeToFront(void);
 void ClearWindow(void);
 

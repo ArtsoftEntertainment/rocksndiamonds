@@ -41,9 +41,16 @@ void SetDrawtoField_MM(int mode)
   SetTileCursorSXSY(cSX, cSY);
 }
 
+void BackToFront_MM(void)
+{
+  BlitScreenToBitmap_MM(backbuffer);
+
+  BackToFront();
+}
+
 void ClearWindow(void)
 {
-  ClearRectangle(backbuffer, REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
+  ClearRectangle(drawto_mm, REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE);
 
   SetDrawtoField(DRAW_TO_BACKBUFFER);
   SetDrawtoField_MM(DRAW_TO_BACKBUFFER);
@@ -58,7 +65,7 @@ void DrawGraphicAnimation_MM(int x, int y, int graphic, int frame)
 
   getGraphicSource(graphic, frame, &bitmap, &src_x, &src_y);
 
-  BlitBitmap(bitmap, drawto_field, src_x, src_y, TILEX, TILEY,
+  BlitBitmap(bitmap, drawto_mm, src_x, src_y, TILEX, TILEY,
 	     cFX + x * TILEX, cFY + y * TILEY);
 }
 
@@ -105,7 +112,7 @@ void DrawGraphicThruMask_MM(int x, int y, int graphic, int frame)
   }
 #endif
 
-  DrawGraphicThruMaskExt_MM(drawto_field, cFX + x * TILEX, cFY + y * TILEY,
+  DrawGraphicThruMaskExt_MM(drawto_mm, cFX + x * TILEX, cFY + y * TILEY,
 			    graphic, frame);
 
   MarkTileDirty(x,y);
@@ -127,7 +134,7 @@ void DrawGraphicThruMaskExt_MM(DrawBuffer *d, int dest_x, int dest_y,
 
 void DrawMiniGraphic_MM(int x, int y, int graphic)
 {
-  DrawMiniGraphicExt_MM(drawto, cSX + x * MINI_TILEX, cSY + y * MINI_TILEY,
+  DrawMiniGraphicExt_MM(drawto_mm, cSX + x * MINI_TILEX, cSY + y * MINI_TILEY,
 			graphic);
 
   MarkTileDirty(x / 2, y / 2);
@@ -246,10 +253,10 @@ void DrawGraphicShifted_MM(int x,int y, int dx,int dy, int graphic,
 #endif
 
   if (mask_mode == USE_MASKING)
-    BlitBitmapMasked(src_bitmap, drawto_field,
+    BlitBitmapMasked(src_bitmap, drawto_mm,
 		     src_x, src_y, TILEX, TILEY, dest_x, dest_y);
   else
-    BlitBitmap(src_bitmap, drawto_field,
+    BlitBitmap(src_bitmap, drawto_mm,
 	       src_x, src_y, width, height, dest_x, dest_y);
 
   MarkTileDirty(x,y);
@@ -434,10 +441,10 @@ void DrawWallsExt_MM(int x, int y, int element, int draw_mask)
       continue;
 
     if (element & (1 << i))
-      BlitBitmap(bitmap, drawto, gx, gy, MINI_TILEX, MINI_TILEY,
+      BlitBitmap(bitmap, drawto_mm, gx, gy, MINI_TILEX, MINI_TILEY,
 		 dest_x, dest_y);
     else
-      ClearRectangle(drawto, dest_x, dest_y, MINI_TILEX, MINI_TILEY);
+      ClearRectangle(drawto_mm, dest_x, dest_y, MINI_TILEX, MINI_TILEY);
   }
 
   MarkTileDirty(x, y);
@@ -488,7 +495,7 @@ void DrawWallsAnimation_MM(int x, int y, int element, int phase, int bit_mask)
       getSizedGraphicSource(graphic, frame, MINI_TILESIZE, &bitmap,
 			    &src_x, &src_y);
 
-      BlitBitmap(bitmap, drawto, src_x, src_y, MINI_TILEX, MINI_TILEY,
+      BlitBitmap(bitmap, drawto_mm, src_x, src_y, MINI_TILEX, MINI_TILEY,
 		 dst_x, dst_y);
     }
   }
@@ -1243,6 +1250,6 @@ void RedrawPlayfield_MM(void)
 
 void BlitScreenToBitmap_MM(Bitmap *target_bitmap)
 {
-  BlitBitmap(drawto_field, target_bitmap,
+  BlitBitmap(drawto_mm, target_bitmap,
 	     REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE, REAL_SX, REAL_SY);
 }

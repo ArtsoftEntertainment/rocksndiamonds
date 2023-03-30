@@ -181,7 +181,7 @@
 #define LEVEL_SCORE_ELEMENTS	16	// level elements with score
 
 
-extern DrawBuffer      *drawto_field;
+extern DrawBuffer      *drawto_mm;
 extern DrawBuffer      *bitmap_db_field;
 
 extern int		game_status;

@@ -5713,6 +5713,7 @@ void InitGfxBuffers(void)
 
   InitGfxBuffers_EM();
   InitGfxBuffers_SP();
+  InitGfxBuffers_MM();
 }
 
 static void InitGfx(void)

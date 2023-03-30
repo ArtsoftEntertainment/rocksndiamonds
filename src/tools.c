@@ -3008,19 +3008,6 @@ void ShowEnvelope(int envelope_nr)
   BackToFront();
 }
 
-void ShowEnvelope_MM(int envelope_nr)
-{
-  BlitBitmap(backbuffer, bitmap_db_field, REAL_SX, REAL_SY,
-	     FULL_SXSIZE, FULL_SYSIZE, REAL_SX, REAL_SY);
-
-  ShowEnvelope(envelope_nr);
-
-  SetDrawtoField(DRAW_TO_BACKBUFFER);
-
-  BlitBitmap(bitmap_db_field, backbuffer, REAL_SX, REAL_SY,
-	     FULL_SXSIZE, FULL_SYSIZE, REAL_SX, REAL_SY);
-}
-
 static void PrepareEnvelopeRequestToScreen(Bitmap *bitmap, int sx, int sy,
 					   int xsize, int ysize)
 {

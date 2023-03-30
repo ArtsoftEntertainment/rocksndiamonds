@@ -59,12 +59,13 @@ boolean isNextAnimationFrame_SP(int, int);
 // ============================================================================
 
 void SetDrawtoField(int);
+void BackToFront(void);
 
 int el2img_mm(int);
 int el_act2img_mm(int, int);
 
 void CheckSingleStepMode_MM(boolean, boolean);
-void ShowEnvelope_MM(int);
+void ShowEnvelope(int);
 
 int getGraphicAnimationFrame(int, int);
 int getGraphicAnimationFrameXY(int, int, int);
