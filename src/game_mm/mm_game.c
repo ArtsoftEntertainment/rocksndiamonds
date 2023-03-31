@@ -3088,29 +3088,25 @@ boolean ClickElement(int x, int y, int button)
   }
   else if (IS_MCDUFFIN(element))
   {
-    if (!laser.fuse_off)
-    {
+    boolean has_laser = (x == laser.start_edge.x && y == laser.start_edge.y);
+
+    if (has_laser && !laser.fuse_off)
       DrawLaser(0, DL_LASER_DISABLED);
 
-      /*
-      BackToFront();
-      */
-    }
-
     element = get_rotated_element(element, BUTTON_ROTATION(button));
-    laser.start_angle = get_element_angle(element);
-
-    InitLaser();
 
     Tile[x][y] = element;
     DrawField_MM(x, y);
 
-    /*
-    BackToFront();
-    */
+    if (has_laser)
+    {
+      laser.start_angle = get_element_angle(element);
 
-    if (!laser.fuse_off)
-      ScanLaser();
+      InitLaser();
+
+      if (!laser.fuse_off)
+	ScanLaser();
+    }
 
     element_clicked = TRUE;
   }
