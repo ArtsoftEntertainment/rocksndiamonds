@@ -97,7 +97,6 @@ static void RaiseScoreElement_MM(int);
 static void RemoveMovingField_MM(int, int);
 static void InitMovingField_MM(int, int, int);
 static void ContinueMoving_MM(int, int);
-static void Moving2Blocked_MM(int, int, int *, int *);
 
 static void AddLaserEdge(int, int);
 static void ScanLaser(void);
@@ -2951,7 +2950,7 @@ static void StartMoving_MM(int x, int y)
 
     // now make next step
 
-    Moving2Blocked_MM(x, y, &newx, &newy);	// get next screen position
+    Moving2Blocked(x, y, &newx, &newy);	// get next screen position
 
     if (element == EL_PACMAN &&
 	IN_LEV_FIELD(newx, newy) && IS_EATABLE4PACMAN(Tile[newx][newy]) &&
@@ -3886,35 +3885,6 @@ static void InitMovingField_MM(int x, int y, int direction)
     Tile[newx][newy] = EL_BLOCKED;
 }
 
-static void Moving2Blocked_MM(int x, int y, int *goes_to_x, int *goes_to_y)
-{
-  int direction = MovDir[x][y];
-  int newx = x + (direction == MV_LEFT ? -1 : direction == MV_RIGHT ? +1 : 0);
-  int newy = y + (direction == MV_UP   ? -1 : direction == MV_DOWN  ? +1 : 0);
-
-  *goes_to_x = newx;
-  *goes_to_y = newy;
-}
-
-static void Blocked2Moving_MM(int x, int y,
-			      int *comes_from_x, int *comes_from_y)
-{
-  int oldx = x, oldy = y;
-  int direction = MovDir[x][y];
-
-  if (direction == MV_LEFT)
-    oldx++;
-  else if (direction == MV_RIGHT)
-    oldx--;
-  else if (direction == MV_UP)
-    oldy++;
-  else if (direction == MV_DOWN)
-    oldy--;
-
-  *comes_from_x = oldx;
-  *comes_from_y = oldy;
-}
-
 static int MovingOrBlocked2Element_MM(int x, int y)
 {
   int element = Tile[x][y];
@@ -3923,7 +3893,7 @@ static int MovingOrBlocked2Element_MM(int x, int y)
   {
     int oldx, oldy;
 
-    Blocked2Moving_MM(x, y, &oldx, &oldy);
+    Blocked2Moving(x, y, &oldx, &oldy);
 
     return Tile[oldx][oldy];
   }
@@ -3940,13 +3910,13 @@ static void RemoveMovingField_MM(int x, int y)
 
   if (IS_MOVING(x, y))
   {
-    Moving2Blocked_MM(x, y, &newx, &newy);
+    Moving2Blocked(x, y, &newx, &newy);
     if (Tile[newx][newy] != EL_BLOCKED)
       return;
   }
   else if (Tile[x][y] == EL_BLOCKED)
   {
-    Blocked2Moving_MM(x, y, &oldx, &oldy);
+    Blocked2Moving(x, y, &oldx, &oldy);
     if (!IS_MOVING(oldx, oldy))
       return;
   }

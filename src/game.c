@@ -5430,10 +5430,11 @@ static int MovingOrBlocked2Element(int x, int y)
     int oldx, oldy;
 
     Blocked2Moving(x, y, &oldx, &oldy);
+
     return Tile[oldx][oldy];
   }
-  else
-    return element;
+
+  return element;
 }
 
 static int MovingOrBlocked2ElementIfNotLeaving(int x, int y)
