@@ -13227,7 +13227,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	{
 	  SetDrawModeHiRes(new_element);
 
-	  if (IS_PLAYER_ELEMENT(new_element))
+	  if (IS_PLAYER_ELEMENT(new_element) || IS_MM_MCDUFFIN(new_element))
 	  {
 	    // remove player at old position
 	    for (y = 0; y < lev_fieldy; y++)
@@ -13236,7 +13236,8 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	      {
 		int old_element = Tile[x][y];
 
-		if (IS_PLAYER_ELEMENT(old_element))
+		if (IS_PLAYER_ELEMENT(old_element) &&
+		    IS_PLAYER_ELEMENT(new_element))
 		{
 		  int replaced_with_element =
 		    (old_element == EL_SOKOBAN_FIELD_PLAYER &&
@@ -13255,6 +13256,12 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 		     old_element);
 
 		  SetElement(x, y, replaced_with_element);
+		}
+		else if (IS_MM_MCDUFFIN(old_element) &&
+			 IS_MM_MCDUFFIN(new_element))
+		{
+		  // remove McDuffin at old position
+		  SetElement(x, y, EL_EMPTY);
 		}
 	      }
 	    }
