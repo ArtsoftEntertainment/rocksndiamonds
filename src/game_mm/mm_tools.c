@@ -364,7 +364,24 @@ void DrawScreenField_MM(int x, int y)
 
 void DrawLevelField_MM(int x, int y)
 {
-  DrawScreenField_MM(x, y);
+  if (IN_SCR_FIELD(SCREENX(x), SCREENY(y)))
+    DrawScreenField_MM(SCREENX(x), SCREENY(y));
+  else if (IS_MOVING(x, y))
+  {
+    int newx,newy;
+
+    Moving2Blocked(x, y, &newx, &newy);
+    if (IN_SCR_FIELD(SCREENX(newx), SCREENY(newy)))
+      DrawScreenField_MM(SCREENX(newx), SCREENY(newy));
+  }
+  else if (IS_BLOCKED(x, y))
+  {
+    int oldx, oldy;
+
+    Blocked2Moving(x, y, &oldx, &oldy);
+    if (IN_SCR_FIELD(SCREENX(oldx), SCREENY(oldy)))
+      DrawScreenField_MM(SCREENX(oldx), SCREENY(oldy));
+  }
 }
 
 void DrawMiniElement_MM(int x, int y, int element)
