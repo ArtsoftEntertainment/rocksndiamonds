@@ -7050,7 +7050,7 @@ static void CreateGraphicbuttonGadgets(void)
     int gd_y1 = gd->src_y;
     int gd_x2 = gd->src_x + gd->pressed_xoffset;
     int gd_y2 = gd->src_y + gd->pressed_yoffset;
-    unsigned int event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
+    unsigned int event_mask = GD_EVENT_RELEASED;
 
     // determine horizontal position to the right of specified gadget
     if (graphicbutton_info[i].gadget_id_align != GADGET_ID_NONE)
