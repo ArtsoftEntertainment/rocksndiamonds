@@ -382,7 +382,7 @@ enum
   GADGET_ID_PICK_ELEMENT,
 
   GADGET_ID_UNDO,
-  GADGET_ID_INFO,
+  GADGET_ID_CONF,
   GADGET_ID_SAVE,
   GADGET_ID_CLEAR,
   GADGET_ID_TEST,
@@ -603,9 +603,9 @@ enum
 
   // textbutton identifiers
 
-  GADGET_ID_LEVELINFO_LEVEL,
-  GADGET_ID_LEVELINFO_LEVELSET,
-  GADGET_ID_LEVELINFO_EDITOR,
+  GADGET_ID_LEVELCONFIG_LEVEL,
+  GADGET_ID_LEVELCONFIG_LEVELSET,
+  GADGET_ID_LEVELCONFIG_EDITOR,
   GADGET_ID_PROPERTIES_INFO,
   GADGET_ID_PROPERTIES_CONFIG,
   GADGET_ID_PROPERTIES_CONFIG_1,
@@ -913,9 +913,9 @@ enum
 // values for textbutton gadgets
 enum
 {
-  ED_TEXTBUTTON_ID_LEVELINFO_LEVEL,
-  ED_TEXTBUTTON_ID_LEVELINFO_LEVELSET,
-  ED_TEXTBUTTON_ID_LEVELINFO_EDITOR,
+  ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL,
+  ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET,
+  ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR,
   ED_TEXTBUTTON_ID_PROPERTIES_INFO,
   ED_TEXTBUTTON_ID_PROPERTIES_CONFIG,
   ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_1,
@@ -930,8 +930,8 @@ enum
   ED_NUM_TEXTBUTTONS
 };
 
-#define ED_TAB_BUTTON_ID_LEVELINFO_FIRST ED_TEXTBUTTON_ID_LEVELINFO_LEVEL
-#define ED_TAB_BUTTON_ID_LEVELINFO_LAST  ED_TEXTBUTTON_ID_LEVELINFO_EDITOR
+#define ED_TAB_BUTTON_ID_LEVELCONFIG_FIRST ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL
+#define ED_TAB_BUTTON_ID_LEVELCONFIG_LAST  ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR
 
 #define ED_TAB_BUTTON_ID_PROPERTIES_FIRST ED_TEXTBUTTON_ID_PROPERTIES_INFO
 #define ED_TAB_BUTTON_ID_PROPERTIES_LAST  ED_TEXTBUTTON_ID_PROPERTIES_CHANGE
@@ -1126,14 +1126,14 @@ enum
 
 // screens in the level editor
 #define ED_MODE_DRAWING			0
-#define ED_MODE_INFO			1
+#define ED_MODE_LEVELCONFIG		1
 #define ED_MODE_PROPERTIES		2
 #define ED_MODE_PALETTE			3
 
 // sub-screens in the global settings section
-#define ED_MODE_LEVELINFO_LEVEL		ED_TEXTBUTTON_ID_LEVELINFO_LEVEL
-#define ED_MODE_LEVELINFO_LEVELSET	ED_TEXTBUTTON_ID_LEVELINFO_LEVELSET
-#define ED_MODE_LEVELINFO_EDITOR	ED_TEXTBUTTON_ID_LEVELINFO_EDITOR
+#define ED_MODE_LEVELCONFIG_LEVEL	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL
+#define ED_MODE_LEVELCONFIG_LEVELSET	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET
+#define ED_MODE_LEVELCONFIG_EDITOR	ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR
 
 // sub-screens in the element properties section
 #define ED_MODE_PROPERTIES_INFO		ED_TEXTBUTTON_ID_PROPERTIES_INFO
@@ -1274,9 +1274,9 @@ static struct
     "undo/redo last operation",			'u'
   },
   {
-    IMG_GFX_EDITOR_BUTTON_CONF,			GADGET_ID_INFO,
+    IMG_GFX_EDITOR_BUTTON_CONF,			GADGET_ID_CONF,
     &editor.button.conf,			GD_TYPE_NORMAL_BUTTON,
-    "properties of level",			'I'
+    "level and editor settings",		'I'
   },
   {
     IMG_GFX_EDITOR_BUTTON_SAVE,			GADGET_ID_SAVE,
@@ -2814,21 +2814,21 @@ static struct
 
   {
     ED_LEVEL_TABS_XPOS(0),		ED_LEVEL_TABS_YPOS(0),
-    GADGET_ID_LEVELINFO_LEVEL,		GADGET_ID_NONE,
+    GADGET_ID_LEVELCONFIG_LEVEL,	GADGET_ID_NONE,
     8,					"Level",
-    NULL, NULL, NULL,			"Configure level properties"
+    NULL, NULL, NULL,			"Configure level settings"
   },
   {
     -1,					-1,
-    GADGET_ID_LEVELINFO_LEVELSET,	GADGET_ID_LEVELINFO_LEVEL,
+    GADGET_ID_LEVELCONFIG_LEVELSET,	GADGET_ID_LEVELCONFIG_LEVEL,
     8,					"Levelset",
     NULL, NULL, NULL,			"Update this or create new level set"
   },
   {
     -1,					-1,
-    GADGET_ID_LEVELINFO_EDITOR,		GADGET_ID_LEVELINFO_LEVELSET,
+    GADGET_ID_LEVELCONFIG_EDITOR,	GADGET_ID_LEVELCONFIG_LEVELSET,
     8,					"Editor",
-    NULL, NULL, NULL,			"Configure editor properties"
+    NULL, NULL, NULL,			"Configure editor settings"
   },
 
   // ---------- element settings (tabs) ---------------------------------------
@@ -3948,7 +3948,7 @@ static void AdjustElementListScrollbar(void);
 static void RedrawDrawingElements(void);
 static void DrawDrawingWindowExt(boolean);
 static void DrawDrawingWindow(void);
-static void DrawLevelInfoWindow(void);
+static void DrawLevelConfigWindow(void);
 static void DrawPropertiesWindow(void);
 static void DrawPaletteWindow(void);
 static void UpdateCustomElementGraphicGadgets(void);
@@ -3993,7 +3993,7 @@ static int undo_buffer_steps = 0;
 static int redo_buffer_steps = 0;
 
 static int edit_mode;
-static int edit_mode_levelinfo;
+static int edit_mode_levelconfig;
 static int edit_mode_properties;
 
 static int element_shift = 0;
@@ -6960,7 +6960,7 @@ static void CreateTextbuttonGadgets(void)
   {
     int id = textbutton_info[i].gadget_id;
     int is_tab_button =
-      ((id >= GADGET_ID_LEVELINFO_LEVEL && id <= GADGET_ID_LEVELINFO_EDITOR) ||
+      ((id >= GADGET_ID_LEVELCONFIG_LEVEL && id <= GADGET_ID_LEVELCONFIG_EDITOR) ||
        (id >= GADGET_ID_PROPERTIES_INFO && id <= GADGET_ID_PROPERTIES_CHANGE));
     int graphic =
       (is_tab_button ? IMG_EDITOR_TABBUTTON : IMG_EDITOR_TEXTBUTTON);
@@ -7855,8 +7855,8 @@ static void DrawEditModeWindowExt(boolean remap_toolbox_gadgets)
     RedrawDrawingElements();
   }
 
-  if (edit_mode == ED_MODE_INFO)
-    DrawLevelInfoWindow();
+  if (edit_mode == ED_MODE_LEVELCONFIG)
+    DrawLevelConfigWindow();
   else if (edit_mode == ED_MODE_PROPERTIES)
     DrawPropertiesWindow();
   else if (edit_mode == ED_MODE_PALETTE)
@@ -7956,7 +7956,7 @@ static boolean PrepareSavingIntoPersonalLevelSet(void)
   return TRUE;
 }
 
-static void ModifyLevelInfoForSavingIntoPersonalLevelSet(char *former_name)
+static void ModifyLevelConfigForSavingIntoPersonalLevelSet(char *former_name)
 {
   static char *filename_levelinfo = NULL, *mod_name = NULL;
   FILE *file;
@@ -8856,7 +8856,7 @@ void DrawLevelEd(void)
   else
   {
     edit_mode = ED_MODE_DRAWING;
-    edit_mode_levelinfo = ED_MODE_LEVELINFO_LEVEL;
+    edit_mode_levelconfig = ED_MODE_LEVELCONFIG_LEVEL;
     edit_mode_properties = ED_MODE_PROPERTIES_INFO;
 
     ResetUndoBuffer();
@@ -9239,7 +9239,7 @@ static int getTabulatorBarHeight(void)
 
 static Pixel getTabulatorBarColor(void)
 {
-  struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELINFO_LEVEL];
+  struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELCONFIG_LEVEL];
   struct GadgetDesign *gd = &gd_gi1->alt_design[GD_BUTTON_UNPRESSED];
   int gd_x = gd->x + gd_gi1->border.width / 2;
   int gd_y = gd->y + gd_gi1->height - 1;
@@ -9247,19 +9247,19 @@ static Pixel getTabulatorBarColor(void)
   return GetPixel(gd->bitmap, gd_x, gd_y);
 }
 
-static void DrawLevelInfoTabulatorGadgets(void)
+static void DrawLevelConfigTabulatorGadgets(void)
 {
-  struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELINFO_LEVEL];
+  struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELCONFIG_LEVEL];
   Pixel tab_color = getTabulatorBarColor();
-  int id_first = ED_TAB_BUTTON_ID_LEVELINFO_FIRST;
-  int id_last  = ED_TAB_BUTTON_ID_LEVELINFO_LAST;
+  int id_first = ED_TAB_BUTTON_ID_LEVELCONFIG_FIRST;
+  int id_last  = ED_TAB_BUTTON_ID_LEVELCONFIG_LAST;
   int i;
 
   for (i = id_first; i <= id_last; i++)
   {
     int gadget_id = textbutton_info[i].gadget_id;
     struct GadgetInfo *gi = level_editor_gadget[gadget_id];
-    boolean active = (i != edit_mode_levelinfo);
+    boolean active = (i != edit_mode_levelconfig);
 
     // draw background line below tabulator button
     ClearRectangleOnBackground(drawto, gi->x, gi->y + gi->height, gi->width, 1);
@@ -9348,7 +9348,7 @@ static int PrintElementDescriptionFromFile(char *filename, int font_nr,
 		      TRUE, FALSE, FALSE);
 }
 
-static void DrawLevelInfoLevel(void)
+static void DrawLevelConfigLevel(void)
 {
   int i;
 
@@ -9377,7 +9377,7 @@ static char *getLevelSubdirFromSaveMode(int save_mode)
   return leveldir_current->subdir;
 }
 
-static void DrawLevelInfoLevelSet_DirectoryInfo(void)
+static void DrawLevelConfigLevelSet_DirectoryInfo(void)
 {
   char *directory_text = "Level set directory:";
   char *directory_name = getLevelSubdirFromSaveMode(levelset_save_mode);
@@ -9392,7 +9392,7 @@ static void DrawLevelInfoLevelSet_DirectoryInfo(void)
   PrintInfoText(directory_name, font2_nr, x, y);
 }
 
-static void DrawLevelInfoLevelSet(void)
+static void DrawLevelConfigLevelSet(void)
 {
   boolean artwork_exists = checkIfCustomArtworkExistsForCurrentLevelSet();
   boolean template_exists = fileExists(getLocalLevelTemplateFilename());
@@ -9425,10 +9425,10 @@ static void DrawLevelInfoLevelSet(void)
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_LEVELSET);
 
   // draw info text
-  DrawLevelInfoLevelSet_DirectoryInfo();
+  DrawLevelConfigLevelSet_DirectoryInfo();
 }
 
-static void DrawLevelInfoEditor(void)
+static void DrawLevelConfigEditor(void)
 {
   int i;
 
@@ -9451,7 +9451,7 @@ static void DrawLevelInfoEditor(void)
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_2);
 }
 
-static void DrawLevelInfoWindow(void)
+static void DrawLevelConfigWindow(void)
 {
   char *text = "Global Settings";
   int font_nr = FONT_TITLE_1;
@@ -9470,14 +9470,14 @@ static void DrawLevelInfoWindow(void)
 
   DrawText(sx, sy, text, font_nr);
 
-  DrawLevelInfoTabulatorGadgets();
+  DrawLevelConfigTabulatorGadgets();
 
-  if (edit_mode_levelinfo == ED_MODE_LEVELINFO_LEVEL)
-    DrawLevelInfoLevel();
-  else if (edit_mode_levelinfo == ED_MODE_LEVELINFO_LEVELSET)
-    DrawLevelInfoLevelSet();
-  else if (edit_mode_levelinfo == ED_MODE_LEVELINFO_EDITOR)
-    DrawLevelInfoEditor();
+  if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_LEVEL)
+    DrawLevelConfigLevel();
+  else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_LEVELSET)
+    DrawLevelConfigLevelSet();
+  else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_EDITOR)
+    DrawLevelConfigEditor();
 }
 
 static void DrawCustomContentArea(void)
@@ -13618,7 +13618,7 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
 
   if (type_id == ED_SELECTBOX_ID_LEVELSET_SAVE_MODE)
   {
-    DrawLevelInfoWindow();
+    DrawLevelConfigWindow();
   }
   else if (type_id == ED_SELECTBOX_ID_SELECT_CHANGE_PAGE)
   {
@@ -13663,12 +13663,12 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
   int type_id = gi->custom_type_id;
   int i;
 
-  if (type_id >= ED_TAB_BUTTON_ID_LEVELINFO_FIRST &&
-      type_id <= ED_TAB_BUTTON_ID_LEVELINFO_LAST)
+  if (type_id >= ED_TAB_BUTTON_ID_LEVELCONFIG_FIRST &&
+      type_id <= ED_TAB_BUTTON_ID_LEVELCONFIG_LAST)
   {
-    edit_mode_levelinfo = gi->custom_type_id;
+    edit_mode_levelconfig = gi->custom_type_id;
 
-    DrawLevelInfoWindow();
+    DrawLevelConfigWindow();
   }
   else if (type_id >= ED_TAB_BUTTON_ID_PROPERTIES_FIRST &&
 	   type_id <= ED_TAB_BUTTON_ID_PROPERTIES_LAST)
@@ -14324,12 +14324,12 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
       break;
 
-    case GADGET_ID_INFO:
-      if (edit_mode != ED_MODE_INFO)
+    case GADGET_ID_CONF:
+      if (edit_mode != ED_MODE_LEVELCONFIG)
       {
 	last_edit_mode = edit_mode;
 
-	ChangeEditModeWindow(ED_MODE_INFO);
+	ChangeEditModeWindow(ED_MODE_LEVELCONFIG);
       }
       else
       {
@@ -14370,7 +14370,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	  Request("Save this level and kill the old?", REQ_ASK))
       {
 	if (leveldir_former->readonly)
-	  ModifyLevelInfoForSavingIntoPersonalLevelSet(leveldir_former->name);
+	  ModifyLevelConfigForSavingIntoPersonalLevelSet(leveldir_former->name);
 
 	SetAutomaticNumberOfGemsNeeded();
 
@@ -14626,8 +14626,8 @@ void HandleLevelEditorKeyInput(Key key)
     case KSYM_Escape:
       if (edit_mode == ED_MODE_DRAWING)
 	RequestExitLevelEditor(setup.ask_on_escape_editor, TRUE);
-      else if (edit_mode == ED_MODE_INFO)
-	HandleControlButtons(level_editor_gadget[GADGET_ID_INFO]);
+      else if (edit_mode == ED_MODE_LEVELCONFIG)
+	HandleControlButtons(level_editor_gadget[GADGET_ID_CONF]);
       else if (edit_mode == ED_MODE_PROPERTIES)
 	HandleControlButtons(level_editor_gadget[GADGET_ID_PROPERTIES]);
       else if (edit_mode == ED_MODE_PALETTE)
