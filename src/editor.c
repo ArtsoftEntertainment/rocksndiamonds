@@ -7759,6 +7759,14 @@ static void MapLevelEditorToolboxCustomGadgets(void)
   MapOrUnmapLevelEditorToolboxCustomGadgets(TRUE);
 }
 
+static void MapLevelEditorToolboxCustomGadgetsIfNeeded(void)
+{
+  if (IS_CUSTOM_ELEMENT(properties_element) ||
+      IS_GROUP_ELEMENT(properties_element) ||
+      IS_EMPTY_ELEMENT(properties_element))
+    MapLevelEditorToolboxCustomGadgets();
+}
+
 static void UnmapLevelEditorToolboxCustomGadgets(void)
 {
   MapOrUnmapLevelEditorToolboxCustomGadgets(FALSE);
@@ -10682,10 +10690,7 @@ static void DrawPropertiesWindow(void)
   UnmapLevelEditorToolboxDrawingGadgets();
   UnmapLevelEditorToolboxCustomGadgets();
 
-  if (IS_CUSTOM_ELEMENT(properties_element) ||
-      IS_GROUP_ELEMENT(properties_element) ||
-      IS_EMPTY_ELEMENT(properties_element))
-    MapLevelEditorToolboxCustomGadgets();
+  MapLevelEditorToolboxCustomGadgetsIfNeeded();
 
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
   ClearField();
