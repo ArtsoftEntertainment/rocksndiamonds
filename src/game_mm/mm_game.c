@@ -830,8 +830,10 @@ static void AddLaserEdge(int lx, int ly)
 {
   int clx = dSX + lx;
   int cly = dSY + ly;
+  int sxsize = MAX(SXSIZE, lev_fieldx * TILEX);
+  int sysize = MAX(SYSIZE, lev_fieldy * TILEY);
 
-  if (clx < -2 || cly < -2 || clx >= SXSIZE + 2 || cly >= SYSIZE + 2)
+  if (clx < -2 || cly < -2 || clx >= sxsize + 2 || cly >= sysize + 2)
   {
     Warn("AddLaserEdge: out of bounds: %d, %d", lx, ly);
 
@@ -1058,15 +1060,15 @@ static void ScanLaser(void)
 #endif
 
     // hit something -- check out what it was
-    ELX = (LX + XS) / TILEX;
-    ELY = (LY + YS) / TILEY;
+    ELX = (LX + XS + TILEX) / TILEX - 1;  // ...+TILEX...-1 to get correct
+    ELY = (LY + YS + TILEY) / TILEY - 1;  // negative values!
 
 #if 0
     Debug("game:mm:ScanLaser", "hit_mask (1) == '%x' (%d, %d) (%d, %d)",
 	  hit_mask, LX, LY, ELX, ELY);
 #endif
 
-    if (!IN_LEV_FIELD(ELX, ELY) || !IN_PIX_FIELD(LX, LY))
+    if (!IN_LEV_FIELD(ELX, ELY))
     {
       element = EL_EMPTY;
       laser.dest_element = element;
