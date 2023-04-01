@@ -389,7 +389,7 @@ static int miniunz_extract_currentfile(unzFile uf, int opt_extract_without_path,
     err = unzGetCurrentFileInfo64(uf, &file_info, filename_inzip, sizeof(filename_inzip), NULL, 0, NULL, 0);
     if (err != UNZ_OK)
     {
-        debug_printf("error %d with zipfile in unzGetCurrentFileInfo\n",err);
+        debug_printf("error %d with zipfile in unzGetCurrentFileInfo\n", err);
         return err;
     }
 

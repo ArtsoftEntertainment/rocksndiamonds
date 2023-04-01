@@ -1728,7 +1728,7 @@ void DrawGraphicThruMask(int x, int y, int graphic, int frame)
 #if DEBUG
   if (!IN_SCR_FIELD(x, y))
   {
-    Debug("draw:DrawGraphicThruMask", "x = %d,y = %d, graphic = %d",
+    Debug("draw:DrawGraphicThruMask", "x = %d, y = %d, graphic = %d",
 	  x, y, graphic);
     Debug("draw:DrawGraphicThruMask", "This should never happen!");
 
@@ -1747,7 +1747,7 @@ void DrawFixedGraphicThruMask(int x, int y, int graphic, int frame)
 #if DEBUG
   if (!IN_SCR_FIELD(x, y))
   {
-    Debug("draw:DrawFixedGraphicThruMask", "x = %d,y = %d, graphic = %d",
+    Debug("draw:DrawFixedGraphicThruMask", "x = %d, y = %d, graphic = %d",
 	  x, y, graphic);
     Debug("draw:DrawFixedGraphicThruMask", "This should never happen!");
 
@@ -1821,7 +1821,7 @@ void DrawSizedGraphicThruMaskExt(DrawBuffer *d, int x, int y, int graphic,
 
 void DrawMiniGraphic(int x, int y, int graphic)
 {
-  DrawMiniGraphicExt(drawto, SX + x * MINI_TILEX,SY + y * MINI_TILEY, graphic);
+  DrawMiniGraphicExt(drawto, SX + x * MINI_TILEX, SY + y * MINI_TILEY, graphic);
   MarkTileDirty(x / 2, y / 2);
 }
 
@@ -2024,9 +2024,9 @@ static void DrawGraphicShifted(int x, int y, int dx, int dy,
   }
 
   if (graphic_info[graphic].double_movement)	// EM style movement images
-    DrawGraphicShiftedDouble(x, y, dx, dy, graphic, frame, cut_mode,mask_mode);
+    DrawGraphicShiftedDouble(x, y, dx, dy, graphic, frame, cut_mode, mask_mode);
   else
-    DrawGraphicShiftedNormal(x, y, dx, dy, graphic, frame, cut_mode,mask_mode);
+    DrawGraphicShiftedNormal(x, y, dx, dy, graphic, frame, cut_mode, mask_mode);
 }
 
 static void DrawGraphicShiftedThruMask(int x, int y, int dx, int dy,
@@ -2711,7 +2711,7 @@ void DrawLevelField(int x, int y)
     DrawScreenField(SCREENX(x), SCREENY(y));
   else if (IS_MOVING(x, y))
   {
-    int newx,newy;
+    int newx, newy;
 
     Moving2Blocked(x, y, &newx, &newy);
     if (IN_SCR_FIELD(SCREENX(newx), SCREENY(newy)))
@@ -3405,7 +3405,7 @@ static void DrawPreviewElement(int dst_x, int dst_y, int element, int tilesize)
 
 void DrawLevel(int draw_background_mask)
 {
-  int x,y;
+  int x, y;
 
   SetMainBackgroundImage(IMG_BACKGROUND_PLAYING);
   SetDrawBackgroundMask(draw_background_mask);
@@ -3422,7 +3422,7 @@ void DrawLevel(int draw_background_mask)
 void DrawSizedLevel(int size_x, int size_y, int scroll_x, int scroll_y,
 		    int tilesize)
 {
-  int x,y;
+  int x, y;
 
   for (x = 0; x < size_x; x++)
     for (y = 0; y < size_y; y++)
@@ -3433,7 +3433,7 @@ void DrawSizedLevel(int size_x, int size_y, int scroll_x, int scroll_y,
 
 void DrawMiniLevel(int size_x, int size_y, int scroll_x, int scroll_y)
 {
-  int x,y;
+  int x, y;
 
   for (x = 0; x < size_x; x++)
     for (y = 0; y < size_y; y++)
@@ -4074,7 +4074,7 @@ static int getPlayerGraphic(struct PlayerInfo *player, int move_dir)
     return graphic;
   }
   else
-    return el_act_dir2img(player->artwork_element, player->GfxAction,move_dir);
+    return el_act_dir2img(player->artwork_element, player->GfxAction, move_dir);
 }
 
 static boolean equalGraphics(int graphic1, int graphic2)

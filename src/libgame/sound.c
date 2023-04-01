@@ -48,10 +48,10 @@
 #define SOUND_VOLUME_LEFT(x)		(stereo_volume[x])
 #define SOUND_VOLUME_RIGHT(x)		(stereo_volume[SOUND_MAX_LEFT2RIGHT-x])
 
-#define SAME_SOUND_NR(x,y)		((x).nr == (y).nr)
-#define SAME_SOUND_DATA(x,y)		((x).data_ptr == (y).data_ptr)
+#define SAME_SOUND_NR(x, y)		((x).nr == (y).nr)
+#define SAME_SOUND_DATA(x, y)		((x).data_ptr == (y).data_ptr)
 
-#define SOUND_VOLUME_FROM_PERCENT(v,p)	((p) < 0   ? SOUND_MIN_VOLUME :	\
+#define SOUND_VOLUME_FROM_PERCENT(v, p)	((p) < 0   ? SOUND_MIN_VOLUME :	\
 					 (p) > 100 ? (v) :		\
 					 (p) * (v) / 100)
 
@@ -59,7 +59,7 @@
 #define SOUND_VOLUME_LOOPS(v)  SOUND_VOLUME_FROM_PERCENT(v, setup.volume_loops)
 #define SOUND_VOLUME_MUSIC(v)  SOUND_VOLUME_FROM_PERCENT(v, setup.volume_music)
 
-#define SETUP_SOUND_VOLUME(v,s)		((s) & SND_CTRL_MUSIC ?		\
+#define SETUP_SOUND_VOLUME(v, s)	((s) & SND_CTRL_MUSIC ?		\
 					 SOUND_VOLUME_MUSIC(v) :	\
 					 (s) & SND_CTRL_LOOP ?		\
 					 SOUND_VOLUME_LOOPS(v) :	\

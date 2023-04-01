@@ -138,14 +138,12 @@
 #define ENVELOPE_OPENING_NR(e)	((e) - EL_ENVELOPE_1_OPENING)
 
 #define CAN_MOVE(e)		((e) == EL_PACMAN)
-#define IS_FREE(x,y)            (Tile[x][y] == EL_EMPTY)
+#define IS_FREE(x, y)		(Tile[x][y] == EL_EMPTY)
 
-#define IS_MOVING(x,y)          (MovPos[x][y] != 0)
-#define IS_BLOCKED(x,y)         (Tile[x][y] == EL_BLOCKED)
-#define IS_DRAWABLE(e)          ((e) < EL_BLOCKED)
-#define IS_NOT_DRAWABLE(e)      ((e) >= EL_BLOCKED)
-
-#define PLAYERINFO(x,y)         (&stored_player[StorePlayer[x][y]-EL_SPIELER1])
+#define IS_MOVING(x, y)		(MovPos[x][y] != 0)
+#define IS_BLOCKED(x, y)	(Tile[x][y] == EL_BLOCKED)
+#define IS_DRAWABLE(e)		((e) < EL_BLOCKED)
+#define IS_NOT_DRAWABLE(e)	((e) >= EL_BLOCKED)
 
 #define WALL_BASE(e)		((e) & 0xfff0)
 #define WALL_BITS(e)		((e) & 0x000f)

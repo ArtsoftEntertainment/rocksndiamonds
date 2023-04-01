@@ -3800,7 +3800,7 @@ static struct
     -1,					ED_AREA_1X1_SETTINGS_YPOS(1),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_GRAPHIC,		GADGET_ID_CUSTOM_USE_GRAPHIC,
-    &custom_element.gfx_element_initial,1, 1,
+    &custom_element.gfx_element_initial, 1, 1,
     NULL, NULL, NULL, NULL,		"custom graphic element"
   },
 
@@ -3914,7 +3914,7 @@ static int level_xpos = -1, level_ypos = -1;
 static int ed_tilesize = DEFAULT_EDITOR_TILESIZE;
 static int ed_tilesize_default = DEFAULT_EDITOR_TILESIZE;
 
-#define IN_ED_FIELD(x,y)	IN_FIELD(x, y, ed_fieldx, ed_fieldy)
+#define IN_ED_FIELD(x, y)	IN_FIELD(x, y, ed_fieldx, ed_fieldy)
 
 // drawing elements on the three mouse buttons
 static int new_element1 = EL_WALL;
@@ -7676,7 +7676,7 @@ static void MapCheckbuttonGadget(int id)
 
   // set position for gadgets with dynamically determined position
   if (checkbutton_info[id].x != -1)	// do not change dynamic positions
-    ModifyGadget(gi, GDI_X, SX + ED_SETTINGS_X(checkbutton_info[id].x),GDI_END);
+    ModifyGadget(gi, GDI_X, SX + ED_SETTINGS_X(checkbutton_info[id].x), GDI_END);
   ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(checkbutton_info[id].y), GDI_END);
 
   x_left = gi->x - xoffset_left;
@@ -9972,9 +9972,9 @@ static struct
   { EL_NUT,		&level.score[SC_NUT],		TEXT_CRACKING	},
   { EL_DYNAMITE,	&level.score[SC_DYNAMITE],	TEXT_COLLECTING	},
   { EL_EM_DYNAMITE,	&level.score[SC_DYNAMITE],	TEXT_COLLECTING	},
-  { EL_DYNABOMB_INCREASE_NUMBER,&level.score[SC_DYNAMITE],TEXT_COLLECTING },
-  { EL_DYNABOMB_INCREASE_SIZE,	&level.score[SC_DYNAMITE],TEXT_COLLECTING },
-  { EL_DYNABOMB_INCREASE_POWER,	&level.score[SC_DYNAMITE],TEXT_COLLECTING },
+  { EL_DYNABOMB_INCREASE_NUMBER,&level.score[SC_DYNAMITE], TEXT_COLLECTING },
+  { EL_DYNABOMB_INCREASE_SIZE,	&level.score[SC_DYNAMITE], TEXT_COLLECTING },
+  { EL_DYNABOMB_INCREASE_POWER,	&level.score[SC_DYNAMITE], TEXT_COLLECTING },
   { EL_SHIELD_NORMAL,	&level.score[SC_SHIELD],	TEXT_COLLECTING	},
   { EL_SHIELD_DEADLY,	&level.score[SC_SHIELD],	TEXT_COLLECTING	},
   { EL_EXTRA_TIME,	&level.extra_time_score,	TEXT_COLLECTING	},
@@ -12249,7 +12249,7 @@ static void DrawCircle(int from_x, int from_y, int to_x, int to_y,
   DrawArcExt(from_x, from_y, to_x2, to_y2, element, change_level);
   DrawArcExt(from_x, from_y, mirror_to_x2, to_y2, element, change_level);
   DrawArcExt(from_x, from_y, to_x2, mirror_to_y2, element, change_level);
-  DrawArcExt(from_x, from_y, mirror_to_x2, mirror_to_y2, element,change_level);
+  DrawArcExt(from_x, from_y, mirror_to_x2, mirror_to_y2, element, change_level);
 }
 #endif
 
@@ -14816,7 +14816,7 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
       sy = ly - level_ypos;
     }
 
-    if (IN_ED_FIELD(sx,sy) && IN_LEV_FIELD(lx, ly))
+    if (IN_ED_FIELD(sx, sy) && IN_LEV_FIELD(lx, ly))
     {
       if (button_status)	// if (gi->state == GD_BUTTON_PRESSED)
       {

@@ -43,7 +43,7 @@
 struct hashtable *
 create_hashtable(unsigned int minsize, float maxloadfactor,
                  unsigned int (*hashf) (void*),
-                 int (*eqf) (void*,void*))
+                 int (*eqf) (void*, void*))
 {
   struct hashtable *h;
   unsigned int i, size = 1u;
@@ -134,7 +134,7 @@ hashtable_expand(struct hashtable *h)
       while ((e = h->table[i]) != NULL)
       {
 	h->table[i] = e->next;
-	index = indexFor(newsize,e->h);
+	index = indexFor(newsize, e->h);
 	e->next = newtable[index];
 	newtable[index] = e;
       }
@@ -160,7 +160,7 @@ hashtable_expand(struct hashtable *h)
     {
       for (pE = &(newtable[i]), e = *pE; e != NULL; e = *pE)
       {
-	index = indexFor(newsize,e->h);
+	index = indexFor(newsize, e->h);
 
 	if (index == i)
 	{
@@ -216,8 +216,8 @@ hashtable_insert(struct hashtable *h, void *k, void *v)
     return 0;
   }
 
-  e->h = hash(h,k);
-  index = indexFor(h->tablelength,e->h);
+  e->h = hash(h, k);
+  index = indexFor(h->tablelength, e->h);
   e->k = k;
   e->v = v;
   e->next = h->table[index];
@@ -233,8 +233,8 @@ hashtable_change(struct hashtable *h, void *k, void *v)
   struct entry *e;
   unsigned int hashvalue, index;
 
-  hashvalue = hash(h,k);
-  index = indexFor(h->tablelength,hashvalue);
+  hashvalue = hash(h, k);
+  index = indexFor(h->tablelength, hashvalue);
   e = h->table[index];
 
   while (e != NULL)
@@ -261,8 +261,8 @@ hashtable_search(struct hashtable *h, void *k)
   struct entry *e;
   unsigned int hashvalue, index;
 
-  hashvalue = hash(h,k);
-  index = indexFor(h->tablelength,hashvalue);
+  hashvalue = hash(h, k);
+  index = indexFor(h->tablelength, hashvalue);
   e = h->table[index];
 
   while (e != NULL)
@@ -287,7 +287,7 @@ hashtable_remove(struct hashtable *h, void *k)
   struct entry *e;
   struct entry **pE;
   void *v;
-  unsigned int index = indexFor(h->tablelength,hash(h,k));
+  unsigned int index = indexFor(h->tablelength, hash(h, k));
 
   pE = &(h->table[index]);
   e = *pE;
@@ -379,7 +379,7 @@ hashtable_iterator(struct hashtable *h)
 }
 
 /*****************************************************************************/
-/* key - return the key of the (key,value) pair at the current position */
+/* key - return the key of the (key, value) pair at the current position */
 
 void *
 hashtable_iterator_key(struct hashtable_itr *i)
@@ -388,7 +388,7 @@ hashtable_iterator_key(struct hashtable_itr *i)
 }
 
 /*****************************************************************************/
-/* value - return the value of the (key,value) pair at the current position */
+/* value - return the value of the (key, value) pair at the current position */
 
 void *
 hashtable_iterator_value(struct hashtable_itr *i)
@@ -403,7 +403,7 @@ hashtable_iterator_value(struct hashtable_itr *i)
 int
 hashtable_iterator_advance(struct hashtable_itr *itr)
 {
-  unsigned int j,tablelength;
+  unsigned int j, tablelength;
   struct entry **table;
   struct entry *next;
 

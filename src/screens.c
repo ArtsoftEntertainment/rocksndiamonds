@@ -5937,7 +5937,7 @@ static void execSetupGame_setScrollDelays(void)
 
     // set current scroll delay value to configured scroll delay value
     scroll_delay_current =
-      getTreeInfoFromIdentifier(scroll_delays,i_to_a(setup.scroll_delay_value));
+      getTreeInfoFromIdentifier(scroll_delays, i_to_a(setup.scroll_delay_value));
 
     // if that fails, set current scroll delay to reliable default value
     if (scroll_delay_current == NULL)
@@ -6497,7 +6497,7 @@ static void execSetupSound(void)
 
     // set current volume value to configured volume value
     volume_simple_current =
-      getTreeInfoFromIdentifier(volumes_simple,i_to_a(setup.volume_simple));
+      getTreeInfoFromIdentifier(volumes_simple, i_to_a(setup.volume_simple));
 
     // if that fails, set current volume to reliable default value
     if (volume_simple_current == NULL)
@@ -6565,7 +6565,7 @@ static void execSetupSound(void)
 
     // set current volume value to configured volume value
     volume_loops_current =
-      getTreeInfoFromIdentifier(volumes_loops,i_to_a(setup.volume_loops));
+      getTreeInfoFromIdentifier(volumes_loops, i_to_a(setup.volume_loops));
 
     // if that fails, set current volume to reliable default value
     if (volume_loops_current == NULL)
@@ -6633,7 +6633,7 @@ static void execSetupSound(void)
 
     // set current volume value to configured volume value
     volume_music_current =
-      getTreeInfoFromIdentifier(volumes_music,i_to_a(setup.volume_music));
+      getTreeInfoFromIdentifier(volumes_music, i_to_a(setup.volume_music));
 
     // if that fails, set current volume to reliable default value
     if (volume_music_current == NULL)
@@ -10376,47 +10376,47 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_SCROLL_UP:
       if (game_status == GAME_MODE_NAMES)
-	HandleChoosePlayerName(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleChoosePlayerName(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_LEVELS)
-	HandleChooseLevelSet(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleChooseLevelSet(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_LEVELNR)
-	HandleChooseLevelNr(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleChooseLevelNr(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SETUP)
-	HandleSetupScreen(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleSetupScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
-	HandleInfoScreen(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleInfoScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SCORES)
-	HandleHallOfFame(0,0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleHallOfFame(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       break;
 
     case SCREEN_CTRL_ID_SCROLL_DOWN:
       if (game_status == GAME_MODE_NAMES)
-	HandleChoosePlayerName(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleChoosePlayerName(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_LEVELS)
-	HandleChooseLevelSet(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleChooseLevelSet(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_LEVELNR)
-	HandleChooseLevelNr(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleChooseLevelNr(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SETUP)
-	HandleSetupScreen(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleSetupScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
-	HandleInfoScreen(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleInfoScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SCORES)
-	HandleHallOfFame(0,0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+	HandleHallOfFame(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       break;
 
     case SCREEN_CTRL_ID_SCROLL_VERTICAL:
       if (game_status == GAME_MODE_NAMES)
-	HandleChoosePlayerName(0,0,999,gi->event.item_position,MB_MENU_INITIALIZE);
+	HandleChoosePlayerName(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_LEVELS)
-	HandleChooseLevelSet(0,0,999,gi->event.item_position,MB_MENU_INITIALIZE);
+	HandleChooseLevelSet(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_LEVELNR)
-	HandleChooseLevelNr(0,0,999,gi->event.item_position,MB_MENU_INITIALIZE);
+	HandleChooseLevelNr(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_SETUP)
-	HandleSetupScreen(0,0, 999,gi->event.item_position,MB_MENU_INITIALIZE);
+	HandleSetupScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_INFO)
-	HandleInfoScreen(0,0, 999,gi->event.item_position,MB_MENU_INITIALIZE);
+	HandleInfoScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_SCORES)
-	HandleHallOfFame(0,0, 999,gi->event.item_position,MB_MENU_INITIALIZE);
+	HandleHallOfFame(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       break;
 
     case SCREEN_CTRL_ID_NETWORK_SERVER:

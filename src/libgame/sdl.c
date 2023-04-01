@@ -1454,14 +1454,14 @@ static void _PutPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
       case 1:
       {
 	// Assuming 8-bpp
-	*((Uint8 *)surface->pixels + y*surface->pitch + x) = color;
+	*((Uint8 *)surface->pixels + y * surface->pitch + x) = color;
       }
       break;
 
       case 2:
       {
 	// Probably 15-bpp or 16-bpp
-	*((Uint16 *)surface->pixels + y*surface->pitch/2 + x) = color;
+	*((Uint16 *)surface->pixels + y * surface->pitch / 2 + x) = color;
       }
       break;
 
@@ -1472,20 +1472,20 @@ static void _PutPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
 	int shift;
 
 	// Gack - slow, but endian correct
-	pix = (Uint8 *)surface->pixels + y * surface->pitch + x*3;
+	pix = (Uint8 *)surface->pixels + y * surface->pitch + x * 3;
 	shift = surface->format->Rshift;
-	*(pix+shift/8) = color>>shift;
+	*(pix + shift / 8) = color>>shift;
 	shift = surface->format->Gshift;
-	*(pix+shift/8) = color>>shift;
+	*(pix + shift / 8) = color>>shift;
 	shift = surface->format->Bshift;
-	*(pix+shift/8) = color>>shift;
+	*(pix + shift / 8) = color>>shift;
       }
       break;
 
       case 4:
       {
 	// Probably 32-bpp
-	*((Uint32 *)surface->pixels + y*surface->pitch/4 + x) = color;
+	*((Uint32 *)surface->pixels + y * surface->pitch / 4 + x) = color;
       }
       break;
     }
@@ -1501,12 +1501,12 @@ static void _PutPixelRGB(SDL_Surface *surface, Sint16 x, Sint16 y,
 
 static void _PutPixel8(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
 {
-  *((Uint8 *)surface->pixels + y*surface->pitch + x) = color;
+  *((Uint8 *)surface->pixels + y * surface->pitch + x) = color;
 }
 
 static void _PutPixel16(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
 {
-  *((Uint16 *)surface->pixels + y*surface->pitch/2 + x) = color;
+  *((Uint16 *)surface->pixels + y * surface->pitch / 2 + x) = color;
 }
 
 static void _PutPixel24(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
@@ -1515,38 +1515,38 @@ static void _PutPixel24(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
   int shift;
 
   // Gack - slow, but endian correct
-  pix = (Uint8 *)surface->pixels + y * surface->pitch + x*3;
+  pix = (Uint8 *)surface->pixels + y * surface->pitch + x * 3;
   shift = surface->format->Rshift;
-  *(pix+shift/8) = color>>shift;
+  *(pix + shift / 8) = color>>shift;
   shift = surface->format->Gshift;
-  *(pix+shift/8) = color>>shift;
+  *(pix + shift / 8) = color>>shift;
   shift = surface->format->Bshift;
-  *(pix+shift/8) = color>>shift;
+  *(pix + shift / 8) = color>>shift;
 }
 
 static void _PutPixel32(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
 {
-  *((Uint32 *)surface->pixels + y*surface->pitch/4 + x) = color;
+  *((Uint32 *)surface->pixels + y * surface->pitch / 4 + x) = color;
 }
 
-static void _PutPixelX(SDL_Surface *dest,Sint16 x,Sint16 y,Uint32 color)
+static void _PutPixelX(SDL_Surface *dest, Sint16 x, Sint16 y, Uint32 color)
 {
   switch (dest->format->BytesPerPixel)
   {
     case 1:
-      *((Uint8 *)dest->pixels + y*dest->pitch + x) = color;
+      *((Uint8 *)dest->pixels + y * dest->pitch + x) = color;
       break;
 
     case 2:
-      *((Uint16 *)dest->pixels + y*dest->pitch/2 + x) = color;
+      *((Uint16 *)dest->pixels + y * dest->pitch / 2 + x) = color;
       break;
 
     case 3:
-      _PutPixel24(dest,x,y,color);
+      _PutPixel24(dest, x, y, color);
       break;
 
     case 4:
-      *((Uint32 *)dest->pixels + y*dest->pitch/4 + x) = color;
+      *((Uint32 *)dest->pixels + y * dest->pitch / 4 + x) = color;
       break;
   }
 }
@@ -1584,19 +1584,19 @@ static Sint32 sge_CalcYPitch(SDL_Surface *dest, Sint16 y)
     switch (dest->format->BytesPerPixel)
     {
       case 1:
-	return y*dest->pitch;
+	return y * dest->pitch;
 	break;
 
       case 2:
-	return y*dest->pitch/2;
+	return y * dest->pitch / 2;
 	break;
 
       case 3:
-	return y*dest->pitch;
+	return y * dest->pitch;
 	break;
 
       case 4:
-	return y*dest->pitch/4;
+	return y * dest->pitch / 4;
 	break;
     }
   }
@@ -1632,13 +1632,13 @@ static void sge_pPutPixel(SDL_Surface *surface, Sint16 x, Sint32 ypitch,
 	int shift;
 
 	// Gack - slow, but endian correct
-	pix = (Uint8 *)surface->pixels + ypitch + x*3;
+	pix = (Uint8 *)surface->pixels + ypitch + x * 3;
 	shift = surface->format->Rshift;
-	*(pix+shift/8) = color>>shift;
+	*(pix + shift / 8) = color>>shift;
 	shift = surface->format->Gshift;
-	*(pix+shift/8) = color>>shift;
+	*(pix + shift / 8) = color>>shift;
 	shift = surface->format->Bshift;
-	*(pix+shift/8) = color>>shift;
+	*(pix + shift / 8) = color>>shift;
       }
       break;
 

@@ -2883,26 +2883,28 @@ static void TurnRound(int x, int y)
     int x, y;
   } move_xy[] =
   {
-    { 0, 0 },
-    {-1, 0 },
-    {+1, 0 },
-    { 0, 0 },
-    { 0, -1 },
-    { 0, 0 }, { 0, 0 }, { 0, 0 },
-    { 0, +1 }
+    {  0,  0 },
+    { -1,  0 },
+    { +1,  0 },
+    {  0,  0 },
+    {  0, -1 },
+    {  0,  0 }, { 0, 0 }, { 0, 0 },
+    {  0, +1 }
   };
   static struct
   {
     int left, right, back;
   } turn[] =
   {
-    { 0,	0,		0 },
+    { 0,	0,		0	 },
     { MV_DOWN,	MV_UP,		MV_RIGHT },
-    { MV_UP,	MV_DOWN,	MV_LEFT },
-    { 0,	0,		0 },
-    { MV_LEFT,	MV_RIGHT,	MV_DOWN },
-    { 0,0,0 },	{ 0,0,0 },	{ 0,0,0 },
-    { MV_RIGHT,	MV_LEFT,	MV_UP }
+    { MV_UP,	MV_DOWN,	MV_LEFT	 },
+    { 0,	0,		0	 },
+    { MV_LEFT,	MV_RIGHT,	MV_DOWN	 },
+    { 0,	0,		0	 },
+    { 0,	0,		0	 },
+    { 0,	0,		0	 },
+    { MV_RIGHT,	MV_LEFT,	MV_UP	 }
   };
 
   int element = Tile[x][y];

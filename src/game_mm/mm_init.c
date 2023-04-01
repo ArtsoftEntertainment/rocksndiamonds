@@ -31,7 +31,7 @@ unsigned int InitEngineRandom_MM(int seed)
 
 void InitElementProperties_MM(void)
 {
-  int i,j;
+  int i, j;
 
   static int ep_grid[] =
   {

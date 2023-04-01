@@ -201,9 +201,9 @@
 #define EP_BITMASK_DEFAULT		0
 
 #define PROPERTY_BIT(p)			(1u << ((p) % 32))
-#define PROPERTY_VAR(e,p)		(element_info[e].properties[(p) / 32])
-#define HAS_PROPERTY(e,p)	((PROPERTY_VAR(e, p) & PROPERTY_BIT(p)) != 0)
-#define SET_PROPERTY(e,p,v)	((v) ?					   \
+#define PROPERTY_VAR(e, p)		(element_info[e].properties[(p) / 32])
+#define HAS_PROPERTY(e, p)	((PROPERTY_VAR(e, p) & PROPERTY_BIT(p)) != 0)
+#define SET_PROPERTY(e, p, v)	((v) ?					   \
 				 (PROPERTY_VAR(e,p) |=  PROPERTY_BIT(p)) : \
 				 (PROPERTY_VAR(e,p) &= ~PROPERTY_BIT(p)))
 
@@ -273,19 +273,19 @@
 #define CH_EVENT_BITFIELD_NR(e)		(e / 32)
 #define CH_EVENT_BIT(e)			(1 << ((e) % 32))
 
-#define CH_EVENT_VAR(e,c)		(element_info[e].change->has_event[c])
-#define CH_ANY_EVENT_VAR(e,c)		(element_info[e].has_change_event[c])
+#define CH_EVENT_VAR(e, c)		(element_info[e].change->has_event[c])
+#define CH_ANY_EVENT_VAR(e, c)		(element_info[e].has_change_event[c])
 
-#define PAGE_HAS_CHANGE_EVENT(p,c)	((p)->has_event[c])
-#define HAS_CHANGE_EVENT(e,c)		(IS_CUSTOM_ELEMENT(e) &&	\
-					 CH_EVENT_VAR(e,c))
-#define HAS_ANY_CHANGE_EVENT(e,c)	(IS_CUSTOM_ELEMENT(e) &&	\
-					 CH_ANY_EVENT_VAR(e,c))
+#define PAGE_HAS_CHANGE_EVENT(p, c)	((p)->has_event[c])
+#define HAS_CHANGE_EVENT(e, c)		(IS_CUSTOM_ELEMENT(e) &&	\
+					 CH_EVENT_VAR(e, c))
+#define HAS_ANY_CHANGE_EVENT(e, c)	(IS_CUSTOM_ELEMENT(e) &&	\
+					 CH_ANY_EVENT_VAR(e, c))
 
-#define SET_CHANGE_EVENT(e,c,v)		(IS_CUSTOM_ELEMENT(e) ?		\
-					 CH_EVENT_VAR(e,c) = (v) : 0)
-#define SET_ANY_CHANGE_EVENT(e,c,v)	(IS_CUSTOM_ELEMENT(e) ?		\
-					 CH_ANY_EVENT_VAR(e,c) = (v) : 0)
+#define SET_CHANGE_EVENT(e, c, v)	(IS_CUSTOM_ELEMENT(e) ?		\
+					 CH_EVENT_VAR(e, c) = (v) : 0)
+#define SET_ANY_CHANGE_EVENT(e, c, v)	(IS_CUSTOM_ELEMENT(e) ?		\
+					 CH_ANY_EVENT_VAR(e, c) = (v) : 0)
 
 // values for player bitmasks
 #define PLAYER_BITS_NONE		0
@@ -871,9 +871,9 @@
 #define IS_FREE(x, y)		(Tile[x][y] == EL_EMPTY && !IS_PLAYER(x, y))
 #define IS_FREE_OR_PLAYER(x, y)	(Tile[x][y] == EL_EMPTY)
 
-#define IS_MOVING(x,y)		(MovPos[x][y] != 0)
-#define IS_FALLING(x,y)		(MovPos[x][y] != 0 && MovDir[x][y] == MV_DOWN)
-#define IS_BLOCKED(x,y)		(Tile[x][y] == EL_BLOCKED)
+#define IS_MOVING(x, y)		(MovPos[x][y] != 0)
+#define IS_FALLING(x, y)	(MovPos[x][y] != 0 && MovDir[x][y] == MV_DOWN)
+#define IS_BLOCKED(x, y)	(Tile[x][y] == EL_BLOCKED)
 
 #define IS_MV_DIAGONAL(x)	((x) & MV_HORIZONTAL && (x) & MV_VERTICAL)
 
@@ -901,13 +901,13 @@
 #define TAPE_IS_EMPTY(x)	((x).length == 0)
 #define TAPE_IS_STOPPED(x)	(!(x).recording && !(x).playing)
 
-#define PLAYERINFO(x,y)		(&stored_player[StorePlayer[x][y]-EL_PLAYER_1])
+#define PLAYERINFO(x, y)	(&stored_player[StorePlayer[x][y] - EL_PLAYER_1])
 #define SHIELD_ON(p)		((p)->shield_normal_time_left > 0)
 
-#define ENEMY_PROTECTED_FIELD(x,y)	(IS_PROTECTED(Tile[x][y]) ||       \
+#define ENEMY_PROTECTED_FIELD(x, y)	(IS_PROTECTED(Tile[x][y]) ||       \
 					 IS_PROTECTED(Back[x][y]))
-#define EXPLOSION_PROTECTED_FIELD(x,y)  (IS_EXPLOSION_PROOF(Tile[x][y]))
-#define PLAYER_ENEMY_PROTECTED(x,y)     (SHIELD_ON(PLAYERINFO(x, y)) ||	   \
+#define EXPLOSION_PROTECTED_FIELD(x, y)	(IS_EXPLOSION_PROOF(Tile[x][y]))
+#define PLAYER_ENEMY_PROTECTED(x, y)	(SHIELD_ON(PLAYERINFO(x, y)) ||	   \
 					 ENEMY_PROTECTED_FIELD(x, y))
 #define PLAYER_EXPLOSION_PROTECTED(x,y) (SHIELD_ON(PLAYERINFO(x, y)) ||	   \
 					 EXPLOSION_PROTECTED_FIELD(x, y))
@@ -918,7 +918,7 @@
 #define PLAYER_DROPPING(p,x,y)	((p)->is_dropping &&			\
 				 (p)->drop_x == (x) && (p)->drop_y == (y))
 
-#define PLAYER_NR_GFX(g,i)	((g) + i * (IMG_PLAYER_2 - IMG_PLAYER_1))
+#define PLAYER_NR_GFX(g, i)	((g) + i * (IMG_PLAYER_2 - IMG_PLAYER_1))
 
 #define GET_PLAYER_ELEMENT(e)	((e) >= EL_PLAYER_1 && (e) <= EL_PLAYER_4 ? \
 				 (e) : EL_PLAYER_1)

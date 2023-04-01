@@ -801,7 +801,7 @@ if(len >= 2110 && (buf[2106] == 255 && buf[2107] == 53 && buf[2108] == 48 && buf
 if(len >= 2106 && (buf[1983] == 116 || buf[2047] == 116)) // v4
 if(len >= 2106 && (buf[1983] == 27 || buf[2047] == 219)) // v3
 
-buf[0]=241;buf[1]=248;for(i=0,j=101;i<2106;i++,j+=7)buf[i]=(buf[i]^j)-17; // decrypt
+buf[0] = 241; buf[1] = 248; for(i = 0, j = 101; i < 2106; i++, j += 7) buf[i] = (buf[i] ^ j) - 17; // decrypt
 
 number of movements (calls to logic) = time * 50 / 8
 

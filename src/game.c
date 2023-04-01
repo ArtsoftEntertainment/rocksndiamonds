@@ -962,7 +962,7 @@ static struct GamePanelControlInfo game_panel_controls[] =
 	ELEMENT_CAN_ENTER_FIELD_BASE_3(e, x, y, Tile[x][y] == EL_DIAMOND)
 
 #define DARK_YAMYAM_CAN_ENTER_FIELD(e, x, y)				\
-	ELEMENT_CAN_ENTER_FIELD_BASE_3(e, x,y, IS_FOOD_DARK_YAMYAM(Tile[x][y]))
+	ELEMENT_CAN_ENTER_FIELD_BASE_3(e, x, y, IS_FOOD_DARK_YAMYAM(Tile[x][y]))
 
 #define PACMAN_CAN_ENTER_FIELD(e, x, y)					\
 	ELEMENT_CAN_ENTER_FIELD_BASE_3(e, x, y, IS_AMOEBOID(Tile[x][y]))
@@ -1069,9 +1069,9 @@ static void HandleElementChange(int, int, int);
 static void ExecuteCustomElementAction(int, int, int, int);
 static boolean ChangeElement(int, int, int, int);
 
-static boolean CheckTriggeredElementChangeExt(int, int, int, int, int,int,int);
+static boolean CheckTriggeredElementChangeExt(int, int, int, int, int, int, int);
 #define CheckTriggeredElementChange(x, y, e, ev)			\
-	CheckTriggeredElementChangeExt(x,y,e,ev, CH_PLAYER_ANY,CH_SIDE_ANY, -1)
+	CheckTriggeredElementChangeExt(x,y,e,ev, CH_PLAYER_ANY, CH_SIDE_ANY, -1)
 #define CheckTriggeredElementChangeByPlayer(x, y, e, ev, p, s)		\
 	CheckTriggeredElementChangeExt(x, y, e, ev, p, s, -1)
 #define CheckTriggeredElementChangeBySide(x, y, e, ev, s)		\
@@ -5440,7 +5440,7 @@ static int MovingOrBlocked2Element(int x, int y)
 static int MovingOrBlocked2ElementIfNotLeaving(int x, int y)
 {
   // like MovingOrBlocked2Element(), but if element is moving
-  // and (x,y) is the field the moving element is just leaving,
+  // and (x, y) is the field the moving element is just leaving,
   // return EL_BLOCKED instead of the element value
   int element = Tile[x][y];
 
@@ -7543,7 +7543,7 @@ static void TurnRoundExt(int x, int y)
     boolean can_turn_left =
       CUSTOM_ELEMENT_CAN_ENTER_FIELD(element, left_x, left_y);
     boolean can_turn_right =
-      CUSTOM_ELEMENT_CAN_ENTER_FIELD(element, right_x,right_y);
+      CUSTOM_ELEMENT_CAN_ENTER_FIELD(element, right_x, right_y);
 
     if (element_info[element].move_stepsize == 0)	// "not moving"
       return;
@@ -8373,7 +8373,7 @@ static void StartMoving(int x, int y)
 
 	PlayLevelSound(newx, newy, SND_PENGUIN_PASSING);
 	if (IN_SCR_FIELD(SCREENX(newx), SCREENY(newy)))
-	  DrawGraphicThruMask(SCREENX(newx),SCREENY(newy), el2img(element), 0);
+	  DrawGraphicThruMask(SCREENX(newx), SCREENY(newy), el2img(element), 0);
 
 	game.friends_still_needed--;
 	if (!game.friends_still_needed &&
@@ -8385,7 +8385,7 @@ static void StartMoving(int x, int y)
       }
       else if (IS_FOOD_PENGUIN(Tile[newx][newy]))
       {
-	if (DigField(local_player, x, y, newx, newy, 0,0, DF_DIG) == MP_MOVING)
+	if (DigField(local_player, x, y, newx, newy, 0, 0, DF_DIG) == MP_MOVING)
 	  TEST_DrawLevelField(newx, newy);
 	else
 	  GfxDir[x][y] = MovDir[x][y] = MV_NONE;
@@ -8690,7 +8690,7 @@ void ContinueMoving(int x, int y)
 
   if (pushed_by_player)		// special case: moving object pushed by player
   {
-    MovPos[x][y] = SIGN(MovPos[x][y]) * (TILEX - ABS(PLAYERINFO(x,y)->MovPos));
+    MovPos[x][y] = SIGN(MovPos[x][y]) * (TILEX - ABS(PLAYERINFO(x, y)->MovPos));
   }
   else if (use_step_delay)	// special case: moving object has step delay
   {
@@ -8952,7 +8952,7 @@ void ContinueMoving(int x, int y)
 
     CheckElementChangeByPlayer(newx, newy, element, CE_PUSHED_BY_PLAYER,
 			       player->index_bit, push_side);
-    CheckTriggeredElementChangeByPlayer(newx,newy, element, CE_PLAYER_PUSHES_X,
+    CheckTriggeredElementChangeByPlayer(newx, newy, element, CE_PLAYER_PUSHES_X,
 					player->index_bit, push_side);
   }
 
@@ -12434,7 +12434,7 @@ void GameActions_RND(void)
 	     element == EL_DIAGONAL_SHRINKING ||
 	     element == EL_DIAGONAL_GROWING)
     {
-      graphic = el_act_dir2img(GfxElement[x][y], GfxAction[x][y],GfxDir[x][y]);
+      graphic = el_act_dir2img(GfxElement[x][y], GfxAction[x][y], GfxDir[x][y]);
 
       DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
     }
@@ -12479,7 +12479,7 @@ void GameActions_RND(void)
       y = RND(lev_fieldy);
       element = Tile[x][y];
 
-      if (!IS_PLAYER(x,y) &&
+      if (!IS_PLAYER(x, y) &&
 	  (element == EL_EMPTY ||
 	   CAN_GROW_INTO(element) ||
 	   element == EL_QUICKSAND_EMPTY ||
@@ -12855,7 +12855,7 @@ boolean MovePlayerOneStep(struct PlayerInfo *player,
       !AllPlayersInSight(player, new_jx, new_jy))
     return MP_NO_ACTION;
 
-  can_move = DigField(player, jx, jy, new_jx, new_jy, real_dx,real_dy, DF_DIG);
+  can_move = DigField(player, jx, jy, new_jx, new_jy, real_dx, real_dy, DF_DIG);
   if (can_move != MP_MOVING)
     return can_move;
 
@@ -14173,7 +14173,7 @@ static int DigField(struct PlayerInfo *player,
   if (IS_WALKABLE(old_element) && !ACCESS_FROM(old_element, move_direction))
     return MP_NO_ACTION;	// field has no opening in this direction
 
-  if (IS_PASSABLE(old_element) && !ACCESS_FROM(old_element,opposite_direction))
+  if (IS_PASSABLE(old_element) && !ACCESS_FROM(old_element, opposite_direction))
     return MP_NO_ACTION;	// field has no opening in this direction
 
   if (player_can_move && element == EL_ACID && move_direction == MV_DOWN)

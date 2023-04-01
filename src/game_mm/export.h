@@ -198,8 +198,10 @@ struct EngineSnapshotInfo_MM
   short Box[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
   short Angle[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
 
-  short LX,LY, XS,YS, ELX,ELY;
-  short CT,Ct;
+  short LX, LY;
+  short XS, YS;
+  short ELX, ELY;
+  short CT, Ct;
 
   int last_LX, last_LY, last_hit_mask;
   int hold_x, hold_y;

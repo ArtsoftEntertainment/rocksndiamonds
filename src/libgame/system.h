@@ -482,9 +482,9 @@
 #define VALIGN_MIDDLE		(1 << 2)
 #define VALIGN_DEFAULT		VALIGN_TOP
 
-#define ALIGNED_XPOS(x,w,a)	((a) == ALIGN_CENTER  ? (x) - (w) / 2 :	\
+#define ALIGNED_XPOS(x, w, a)	((a) == ALIGN_CENTER  ? (x) - (w) / 2 :	\
 				 (a) == ALIGN_RIGHT   ? (x) - (w) : (x))
-#define ALIGNED_YPOS(y,h,v)	((v) == VALIGN_MIDDLE ? (y) - (h) / 2 :	\
+#define ALIGNED_YPOS(y, h, v)	((v) == VALIGN_MIDDLE ? (y) - (h) / 2 :	\
 				 (v) == VALIGN_BOTTOM ? (y) - (h) : (y))
 #define ALIGNED_TEXT_XPOS(p)	ALIGNED_XPOS((p)->x, (p)->width,  (p)->align)
 #define ALIGNED_TEXT_YPOS(p)	ALIGNED_YPOS((p)->y, (p)->height, (p)->valign)
@@ -1998,7 +1998,7 @@ Bitmap *CreateBitmap(int, int, int);
 void ReCreateBitmap(Bitmap **, int, int);
 void FreeBitmap(Bitmap *);
 void BlitBitmap(Bitmap *, Bitmap *, int, int, int, int, int, int);
-void BlitBitmapTiled(Bitmap *, Bitmap *, int, int, int, int, int, int, int,int);
+void BlitBitmapTiled(Bitmap *, Bitmap *, int, int, int, int, int, int, int, int);
 void FadeRectangle(int, int, int, int, int, int, int,
 		   void (*draw_border_function)(void));
 void FillRectangle(Bitmap *, int, int, int, int, Pixel);
@@ -2017,7 +2017,7 @@ void BlitToScreenMasked(Bitmap *, int, int, int, int, int, int);
 void DrawSimpleWhiteLine(Bitmap *, int, int, int, int);
 void DrawLines(Bitmap *, struct XY *, int, Pixel);
 Pixel GetPixel(Bitmap *, int, int);
-Pixel GetPixelFromRGB(Bitmap *, unsigned int,unsigned int,unsigned int);
+Pixel GetPixelFromRGB(Bitmap *, unsigned int, unsigned int, unsigned int);
 
 void KeyboardAutoRepeatOn(void);
 void KeyboardAutoRepeatOff(void);

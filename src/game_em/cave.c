@@ -126,7 +126,7 @@ boolean LoadNativeLevel_EM(char *filename, boolean level_info_only)
     return FALSE;
   }
 
-  file_version = cleanup_em_level(raw_leveldata, raw_leveldata_length,filename);
+  file_version = cleanup_em_level(raw_leveldata, raw_leveldata_length, filename);
 
   if (file_version == FILE_VERSION_EM_UNKNOWN)
   {

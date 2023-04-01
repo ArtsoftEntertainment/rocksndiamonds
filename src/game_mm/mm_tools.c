@@ -72,7 +72,7 @@ void DrawGraphicAnimation_MM(int x, int y, int graphic, int frame)
 void DrawGraphic_MM(int x, int y, int graphic)
 {
 #if DEBUG
-  if (!IN_SCR_FIELD(x,y))
+  if (!IN_SCR_FIELD(x, y))
   {
     Debug("game:mm:DrawGraphic_MM", "x = %d, y = %d, graphic = %d",
 	  x, y, graphic);
@@ -102,9 +102,9 @@ void DrawGraphicExt_MM(DrawBuffer *d, int x, int y, int graphic)
 void DrawGraphicThruMask_MM(int x, int y, int graphic, int frame)
 {
 #if DEBUG
-  if (!IN_SCR_FIELD(x,y))
+  if (!IN_SCR_FIELD(x, y))
   {
-    Debug("game:mm:DrawGraphicThruMask_MM", "x = %d,y = %d, graphic = %d",
+    Debug("game:mm:DrawGraphicThruMask_MM", "x = %d, y = %d, graphic = %d",
 	  x, y, graphic);
     Debug("game:mm:DrawGraphicThruMask_MM", "This should never happen!");
 
@@ -115,7 +115,7 @@ void DrawGraphicThruMask_MM(int x, int y, int graphic, int frame)
   DrawGraphicThruMaskExt_MM(drawto_mm, cFX + x * TILEX, cFY + y * TILEY,
 			    graphic, frame);
 
-  MarkTileDirty(x,y);
+  MarkTileDirty(x, y);
 }
 
 void DrawGraphicThruMaskExt_MM(DrawBuffer *d, int dest_x, int dest_y,
@@ -150,8 +150,8 @@ void DrawMiniGraphicExt_MM(DrawBuffer *d, int x, int y, int graphic)
   BlitBitmap(bitmap, d, src_x, src_y, MINI_TILEX, MINI_TILEY, x, y);
 }
 
-void DrawGraphicShifted_MM(int x,int y, int dx,int dy, int graphic,
-			int cut_mode, int mask_mode)
+void DrawGraphicShifted_MM(int x, int y, int dx, int dy, int graphic,
+			   int cut_mode, int mask_mode)
 {
   int width = TILEX, height = TILEY;
   int cx = 0, cy = 0;
@@ -242,7 +242,7 @@ void DrawGraphicShifted_MM(int x,int y, int dx,int dy, int graphic,
   dest_y = cFY + y * TILEY + dy;
 
 #if DEBUG
-  if (!IN_SCR_FIELD(x,y))
+  if (!IN_SCR_FIELD(x, y))
   {
     Debug("game:mm:DrawGraphicShifted_MM", "x = %d, y = %d, graphic = %d",
 	  x, y, graphic);
@@ -259,7 +259,7 @@ void DrawGraphicShifted_MM(int x,int y, int dx,int dy, int graphic,
     BlitBitmap(src_bitmap, drawto_mm,
 	       src_x, src_y, width, height, dest_x, dest_y);
 
-  MarkTileDirty(x,y);
+  MarkTileDirty(x, y);
 }
 
 void DrawScreenElementExt_MM(int x, int y, int dx, int dy, int element,
@@ -368,7 +368,7 @@ void DrawLevelField_MM(int x, int y)
     DrawScreenField_MM(SCREENX(x), SCREENY(y));
   else if (IS_MOVING(x, y))
   {
-    int newx,newy;
+    int newx, newy;
 
     Moving2Blocked(x, y, &newx, &newy);
     if (IN_SCR_FIELD(SCREENX(newx), SCREENY(newy)))
@@ -419,7 +419,7 @@ void DrawField_MM(int x, int y)
 
 void DrawLevel_MM(void)
 {
-  int x,y;
+  int x, y;
 
   ClearWindow();
 
@@ -647,7 +647,7 @@ static int xsn_percent(void)
   int xsn_m3 = xsn_m2 + 10;
   time_t xsn_e0 = time(NULL);
   struct tm *xsn_t0 = localtime(&xsn_e0);
-  struct tm xsn_t1 = { 0,0,0, xsn_m2*3, xsn_m3/3, xsn_t0->tm_year, 0,0,-1 };
+  struct tm xsn_t1 = { 0,0,0, xsn_m2 * 3, xsn_m3 / 3, xsn_t0->tm_year, 0,0,-1 };
   time_t xsn_e1 = mktime(&xsn_t1);
   int xsn_c0 = (25 * xsn_m3) << xsn_m1;
   int xsn_c1 = (xsn_t1.tm_wday - xsn_m1) * !!xsn_t1.tm_wday;

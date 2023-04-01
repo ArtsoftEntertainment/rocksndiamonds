@@ -114,7 +114,7 @@
 					 CONF_CONTENT_NUM_BYTES : 1)
 
 #define CONF_ELEMENT_BYTE_POS(i)	((i) * CONF_ELEMENT_NUM_BYTES)
-#define CONF_ELEMENTS_ELEMENT(b,i)     ((b[CONF_ELEMENT_BYTE_POS(i)] << 8) |  \
+#define CONF_ELEMENTS_ELEMENT(b, i)	((b[CONF_ELEMENT_BYTE_POS(i)] << 8) | \
 					(b[CONF_ELEMENT_BYTE_POS(i) + 1]))
 
 #define CONF_CONTENT_ELEMENT_POS(c,x,y)	((c) * CONF_CONTENT_NUM_ELEMENTS +    \
@@ -12110,7 +12110,7 @@ static void InitMenuDesignSettings_SpecialPostProcessing(void)
       vp_playfield->width = MIN(vp_playfield->width, vp_playfield->max_width);
 
     if (vp_playfield->max_height != -1)
-      vp_playfield->height = MIN(vp_playfield->height,vp_playfield->max_height);
+      vp_playfield->height = MIN(vp_playfield->height, vp_playfield->max_height);
 
     // adjust playfield position according to specified alignment
 

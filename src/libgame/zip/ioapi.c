@@ -45,11 +45,11 @@ long call_zseek64(const zlib_filefunc64_32_def *pfilefunc, voidpf filestream, ui
 {
     uint32_t offset_truncated = 0;
     if (pfilefunc->zfile_func64.zseek64_file != NULL)
-        return (*(pfilefunc->zfile_func64.zseek64_file)) (pfilefunc->zfile_func64.opaque,filestream,offset,origin);
+        return (*(pfilefunc->zfile_func64.zseek64_file)) (pfilefunc->zfile_func64.opaque, filestream, offset, origin);
     offset_truncated = (uint32_t)offset;
     if (offset_truncated != offset)
         return -1;
-    return (*(pfilefunc->zseek32_file))(pfilefunc->zfile_func64.opaque,filestream, offset_truncated, origin);
+    return (*(pfilefunc->zseek32_file))(pfilefunc->zfile_func64.opaque, filestream, offset_truncated, origin);
 }
 
 uint64_t call_ztell64(const zlib_filefunc64_32_def *pfilefunc, voidpf filestream)

@@ -28,8 +28,10 @@ unsigned int	Elementeigenschaften[MAX_ELEMENTS];
 
 struct LaserInfo	laser;
 
-short		LX,LY, XS,YS, ELX,ELY;
-short		CT,Ct;
+short		LX, LY;
+short		XS, YS;
+short		ELX, ELY;
+short		CT, Ct;
 
 int		dSX, dSY;
 int		cSX, cSY;
