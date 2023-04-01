@@ -8181,6 +8181,12 @@ static boolean CopyCustomElement(int element_old, int element_new,
 
     return FALSE;
   }
+  else if (IS_EMPTY_ELEMENT(element_old) && !IS_EMPTY_ELEMENT(element_new))
+  {
+    Request("Please choose empty element!", REQ_CONFIRM);
+
+    return FALSE;
+  }
   else
   {
     level.changed = TRUE;
@@ -10677,7 +10683,8 @@ static void DrawPropertiesWindow(void)
   UnmapLevelEditorToolboxCustomGadgets();
 
   if (IS_CUSTOM_ELEMENT(properties_element) ||
-      IS_GROUP_ELEMENT(properties_element))
+      IS_GROUP_ELEMENT(properties_element) ||
+      IS_EMPTY_ELEMENT(properties_element))
     MapLevelEditorToolboxCustomGadgets();
 
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
