@@ -8805,6 +8805,15 @@ static void DrawEditorDoorContent(void)
   // draw all toolbox gadgets to editor doors
   MapControlButtons();
 
+  // when returning from test game to properties page, redraw toolbox gadgets
+  if (edit_mode == ED_MODE_PROPERTIES)
+  {
+    UnmapLevelEditorToolboxDrawingGadgets();
+    UnmapLevelEditorToolboxCustomGadgets();
+
+    MapLevelEditorToolboxCustomGadgetsIfNeeded();
+  }
+
   // draw all palette gadgets to editor doors
   ModifyEditorElementList();
   RedrawDrawingElements();
