@@ -5405,17 +5405,9 @@ void Moving2Blocked(int x, int y, int *goes_to_x, int *goes_to_y)
 
 void Blocked2Moving(int x, int y, int *comes_from_x, int *comes_from_y)
 {
-  int oldx = x, oldy = y;
   int direction = MovDir[x][y];
-
-  if (direction == MV_LEFT)
-    oldx++;
-  else if (direction == MV_RIGHT)
-    oldx--;
-  else if (direction == MV_UP)
-    oldy++;
-  else if (direction == MV_DOWN)
-    oldy--;
+  int oldx = x + (direction & MV_LEFT ? +1 : direction & MV_RIGHT ? -1 : 0);
+  int oldy = y + (direction & MV_UP   ? +1 : direction & MV_DOWN  ? -1 : 0);
 
   *comes_from_x = oldx;
   *comes_from_y = oldy;
