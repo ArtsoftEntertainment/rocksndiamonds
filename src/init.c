@@ -5792,10 +5792,6 @@ static void InitGfx(void)
 
   InitFontGraphicInfo();
 
-  DrawProgramInfo();
-
-  DrawInitTextHead("Loading graphics");
-
   InitMenuDesignSettings_Static();
 
   // initialize settings for initial images with default values
@@ -5910,6 +5906,8 @@ static void InitGfx(void)
   SetLoadingBackgroundImage();
 
   ClearRectangleOnBackground(window, 0, 0, WIN_XSIZE, WIN_YSIZE);
+
+  DrawProgramInfo();
 
   InitGfxDrawBusyAnimFunction(DrawInitAnim);
   InitGfxDrawGlobalAnimFunction(DrawGlobalAnimations);
