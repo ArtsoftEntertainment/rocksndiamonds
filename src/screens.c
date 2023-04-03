@@ -179,7 +179,9 @@
 #define MENU_SCREEN_INFO_SPACE_BOTTOM	(menu.bottom_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_LINE	(menu.line_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_EXTRA	(menu.extra_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_TILE_SIZE	(menu.tile_size_info[info_mode])
+#define MENU_SCREEN_INFO_TILE_SIZE_RAW	(menu.tile_size_info[info_mode])
+#define MENU_SCREEN_INFO_TILE_SIZE	(MENU_SCREEN_INFO_TILE_SIZE_RAW > 0 ? \
+					 MENU_SCREEN_INFO_TILE_SIZE_RAW : TILEY)
 #define MENU_SCREEN_INFO_ENTRY_SIZE_RAW	(menu.list_entry_size_info[info_mode])
 #define MENU_SCREEN_INFO_ENTRY_SIZE	(MAX(MENU_SCREEN_INFO_ENTRY_SIZE_RAW, \
 					     MENU_SCREEN_INFO_TILE_SIZE))
