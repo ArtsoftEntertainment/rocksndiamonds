@@ -2553,14 +2553,14 @@ static void HandleTileCursor(int dx, int dy, int button)
   {
     int old_xpos = tile_cursor.xpos;
     int old_ypos = tile_cursor.ypos;
-    int new_xpos = old_xpos;
-    int new_ypos = old_ypos;
+    int new_xpos = tile_cursor.xpos + dx;
+    int new_ypos = tile_cursor.ypos + dy;
 
-    if (IN_LEV_FIELD(old_xpos + dx, old_ypos))
-      new_xpos = old_xpos + dx;
+    if (!IN_LEV_FIELD(new_xpos, old_ypos))
+      new_xpos = old_xpos;
 
-    if (IN_LEV_FIELD(old_xpos, old_ypos + dy))
-      new_ypos = old_ypos + dy;
+    if (!IN_LEV_FIELD(old_xpos, new_ypos))
+      new_ypos = old_ypos;
 
     SetTileCursorTargetXY(new_xpos, new_ypos);
   }
