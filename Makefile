@@ -237,7 +237,7 @@ dist-upload-all:
 dist-deploy-all:
 	$(MAKE) dist-deploy-emscripten
 
-dist-release-all: dist-package-all dist-copy-package-all dist-upload-all
+dist-release-all: dist-package-all dist-copy-package-all dist-upload-all dist-deploy-all
 
 package-all: dist-package-all
 
