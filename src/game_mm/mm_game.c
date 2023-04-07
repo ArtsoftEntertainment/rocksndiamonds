@@ -139,10 +139,11 @@ static DelayCounter overload_delay = { 0 };
 #define MM_MASK_GRID_2		5
 #define MM_MASK_GRID_3		6
 #define MM_MASK_GRID_4		7
-#define MM_MASK_RECTANGLE	8
-#define MM_MASK_CIRCLE		9
+#define MM_MASK_GRID_CLOSED	8
+#define MM_MASK_RECTANGLE	9
+#define MM_MASK_CIRCLE		10
 
-#define NUM_MM_MASKS		10
+#define NUM_MM_MASKS		11
 
 // element masks for scanning pixels of MM elements
 static const char mm_masks[NUM_MM_MASKS][16][16 + 1] =
@@ -290,6 +291,24 @@ static const char mm_masks[NUM_MM_MASKS][16][16 + 1] =
     "   XXXX  XXX   X",
     "    XXX  XXXX   ",
     "     XX  XXXXX  ",
+  },
+  {
+    " XXXXXX  XXXXXX ",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    " XXXXXXXXXXXXXX ",
+    " XXXXXXXXXXXXXX ",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+    " XXXXXX  XXXXXX ",
   },
   {
     "XXXXXXXXXXXXXXXX",
@@ -881,11 +900,13 @@ static boolean StepBehind(void)
 
 static int getMaskFromElement(int element)
 {
-  if (IS_GRID(element))
-    return MM_MASK_GRID_1 + get_element_phase(element);
-  else if (IS_MCDUFFIN(element))
+  if (IS_MCDUFFIN(element))
     return MM_MASK_MCDUFFIN_RIGHT + get_element_phase(element);
-  else if (IS_RECTANGLE(element) || IS_DF_GRID(element))
+  else if (IS_GRID(element))
+    return MM_MASK_GRID_1 + get_element_phase(element);
+  else if (IS_DF_GRID(element))
+    return MM_MASK_GRID_CLOSED;
+  else if (IS_RECTANGLE(element))
     return MM_MASK_RECTANGLE;
   else
     return MM_MASK_CIRCLE;
