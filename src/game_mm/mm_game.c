@@ -850,8 +850,8 @@ static void AddLaserEdge(int lx, int ly)
   int full_sxsize = MAX(FULL_SXSIZE, lev_fieldx * TILEX);
   int full_sysize = MAX(FULL_SYSIZE, lev_fieldy * TILEY);
 
-  if (SX + dSX + lx < REAL_SX || SX + dSX + lx >= REAL_SX + full_sxsize ||
-      SY + dSY + ly < REAL_SY || SY + dSY + ly >= REAL_SY + full_sysize)
+  if (cSX + lx < REAL_SX || cSX + lx >= REAL_SX + full_sxsize ||
+      cSY + ly < REAL_SY || cSY + ly >= REAL_SY + full_sysize)
   {
     Warn("AddLaserEdge: out of bounds: %d, %d", lx, ly);
 
