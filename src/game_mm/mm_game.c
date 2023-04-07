@@ -850,6 +850,7 @@ static void AddLaserEdge(int lx, int ly)
   int full_sxsize = MAX(FULL_SXSIZE, lev_fieldx * TILEX);
   int full_sysize = MAX(FULL_SYSIZE, lev_fieldy * TILEY);
 
+  // check if laser is still inside visible playfield area (or inside level)
   if (cSX + lx < REAL_SX || cSX + lx >= REAL_SX + full_sxsize ||
       cSY + ly < REAL_SY || cSY + ly >= REAL_SY + full_sysize)
   {
@@ -989,6 +990,7 @@ static int ScanPixel(void)
       }
       else
       {
+	// check if laser is still inside visible playfield area
 	pixel = (cSX + px < REAL_SX || cSX + px >= REAL_SX + FULL_SXSIZE ||
 		 cSY + py < REAL_SY || cSY + py >= REAL_SY + FULL_SYSIZE);
       }
@@ -1090,6 +1092,17 @@ static void ScanLaser(void)
 
     if (!IN_LEV_FIELD(ELX, ELY))
     {
+      // check if laser is still inside visible playfield area
+      if (cSX + LX >= REAL_SX && cSX + LX < REAL_SX + FULL_SXSIZE &&
+	  cSY + LY >= REAL_SY && cSY + LY < REAL_SY + FULL_SYSIZE)
+      {
+	// go on with another step
+	LX += XS;
+	LY += YS;
+
+	continue;
+      }
+
       element = EL_EMPTY;
       laser.dest_element = element;
 
