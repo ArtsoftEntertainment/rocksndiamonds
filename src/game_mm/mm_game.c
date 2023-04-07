@@ -847,11 +847,11 @@ static void GameOver_MM(int game_over_cause)
 
 static void AddLaserEdge(int lx, int ly)
 {
-  int sxsize = MAX(SXSIZE, lev_fieldx * TILEX);
-  int sysize = MAX(SYSIZE, lev_fieldy * TILEY);
+  int full_sxsize = MAX(FULL_SXSIZE, lev_fieldx * TILEX);
+  int full_sysize = MAX(FULL_SYSIZE, lev_fieldy * TILEY);
 
-  if (dSX + lx < -2 || dSX + lx >= sxsize + 2 ||
-      dSY + ly < -2 || dSY + ly >= sysize + 2)
+  if (SX + dSX + lx < REAL_SX || SX + dSX + lx >= REAL_SX + full_sxsize ||
+      SY + dSY + ly < REAL_SY || SY + dSY + ly >= REAL_SY + full_sysize)
   {
     Warn("AddLaserEdge: out of bounds: %d, %d", lx, ly);
 
