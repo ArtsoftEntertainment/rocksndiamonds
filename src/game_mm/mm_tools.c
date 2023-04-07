@@ -29,8 +29,8 @@ void SetDrawtoField_MM(int mode)
   // for convenience, absolute screen position to centered level playfield
   cSX = SX + dSX;
   cSY = SY + dSY;
-  cSX2 = SX + dSX + 2;	// including playfield border
-  cSY2 = SY + dSY + 2;	// including playfield border
+  cSX2 = SX + dSX + (SX - REAL_SX);	// including playfield border
+  cSY2 = SY + dSY + (SY - REAL_SY);	// including playfield border
 
   if (mode == DRAW_TO_BACKBUFFER)
   {
