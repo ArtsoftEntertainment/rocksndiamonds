@@ -5398,82 +5398,82 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "df_wooden_grid_fixed_1",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (0\xb0)"
+    "fixed wooden polarizer (DF) (0\xb0)"
   },
   {
     "df_wooden_grid_fixed_2",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (22.5\xb0)"
+    "fixed wooden polarizer (DF) (22.5\xb0)"
   },
   {
     "df_wooden_grid_fixed_3",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (45\xb0)"
+    "fixed wooden polarizer (DF) (45\xb0)"
   },
   {
     "df_wooden_grid_fixed_4",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (67.5\xb0)"
+    "fixed wooden polarizer (DF) (67.5\xb0)"
   },
   {
     "df_wooden_grid_fixed_5",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (90\xb0)"
+    "fixed wooden polarizer (DF) (90\xb0)"
   },
   {
     "df_wooden_grid_fixed_6",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (112.5\xb0)"
+    "fixed wooden polarizer (DF) (112.5\xb0)"
   },
   {
     "df_wooden_grid_fixed_7",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (135\xb0)"
+    "fixed wooden polarizer (DF) (135\xb0)"
   },
   {
     "df_wooden_grid_fixed_8",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (157.5\xb0)"
+    "fixed wooden polarizer (DF) (157.5\xb0)"
   },
   {
     "df_steel_grid_fixed_1",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (0\xb0)"
+    "fixed steel polarizer (DF) (0\xb0)"
   },
   {
     "df_steel_grid_fixed_2",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (22.5\xb0)"
+    "fixed steel polarizer (DF) (22.5\xb0)"
   },
   {
     "df_steel_grid_fixed_3",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (45\xb0)"
+    "fixed steel polarizer (DF) (45\xb0)"
   },
   {
     "df_steel_grid_fixed_4",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (67.5\xb0)"
+    "fixed steel polarizer (DF) (67.5\xb0)"
   },
   {
     "df_steel_grid_fixed_5",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (90\xb0)"
+    "fixed steel polarizer (DF) (90\xb0)"
   },
   {
     "df_steel_grid_fixed_6",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (112.5\xb0)"
+    "fixed steel polarizer (DF) (112.5\xb0)"
   },
   {
     "df_steel_grid_fixed_7",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (135\xb0)"
+    "fixed steel polarizer (DF) (135\xb0)"
   },
   {
     "df_steel_grid_fixed_8",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (157.5\xb0)"
+    "fixed steel polarizer (DF) (157.5\xb0)"
   },
   {
     "df_wooden_wall_1",
