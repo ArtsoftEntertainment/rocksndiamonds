@@ -923,7 +923,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
   {
     EL_MM_GRAY_BALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
     &li.rotate_mm_ball_content,		TRUE
   },
   {
