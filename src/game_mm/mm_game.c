@@ -3276,7 +3276,11 @@ static void AutoRotateMirrors(void)
 	  IS_GRID_WOOD_AUTO(element) ||
 	  IS_GRID_STEEL_AUTO(element) ||
 	  element == EL_REFRACTOR)
+      {
 	RotateMirror(x, y, MB_RIGHTBUTTON);
+
+	laser.redraw = TRUE;
+      }
     }
   }
 }
