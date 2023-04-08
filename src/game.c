@@ -5838,6 +5838,8 @@ static void Explode(int ex, int ey, int phase, int mode)
   if (phase == EX_PHASE_START)		// initialize 'Store[][]' field
   {
     int center_element = Tile[ex][ey];
+    int ce_value = CustomValue[ex][ey];
+    int ce_score = element_info[center_element].collect_score;
     int artwork_element, explosion_element;	// set these values later
 
     // remove things displayed in background while burning dynamite
@@ -5975,6 +5977,14 @@ static void Explode(int ex, int ey, int phase, int mode)
 #endif
       else
 	Store[x][y] = EL_EMPTY;
+
+      if (IS_CUSTOM_ELEMENT(center_element))
+	Store[x][y] = (Store[x][y] == EL_CURRENT_CE_VALUE ? ce_value :
+		       Store[x][y] == EL_CURRENT_CE_SCORE ? ce_score :
+		       Store[x][y] >= EL_PREV_CE_8 &&
+		       Store[x][y] <= EL_NEXT_CE_8 ?
+		       RESOLVED_REFERENCE_ELEMENT(center_element, Store[x][y]) :
+		       Store[x][y]);
 
       if (x != ex || y != ey || mode == EX_TYPE_BORDER ||
 	  center_element == EL_AMOEBA_TO_DIAMOND)
