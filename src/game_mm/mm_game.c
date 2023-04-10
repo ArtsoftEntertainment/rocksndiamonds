@@ -1073,9 +1073,13 @@ static void ScanLaser(void)
 
     if (!IN_LEV_FIELD(ELX, ELY))
     {
-      // check if laser is still inside visible playfield area
-      if (cSX + LX >= REAL_SX && cSX + LX < REAL_SX + FULL_SXSIZE &&
-	  cSY + LY >= REAL_SY && cSY + LY < REAL_SY + FULL_SYSIZE)
+      // laser next step position
+      int x = cSX + LX + XS;
+      int y = cSY + LY + YS;
+
+      // check if next step of laser is still inside visible playfield area
+      if (x >= REAL_SX && x < REAL_SX + FULL_SXSIZE &&
+	  y >= REAL_SY && y < REAL_SY + FULL_SYSIZE)
       {
 	// go on with another step
 	LX += XS;
