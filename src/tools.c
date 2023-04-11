@@ -8228,6 +8228,10 @@ int map_element_RND_to_MM(int element_rnd)
 	  element_rnd <= EL_MM_END_2 ?
 	  EL_MM_START_2_NATIVE + element_rnd - EL_MM_START_2 :
 
+	  element_rnd >= EL_MM_START_3 &&
+	  element_rnd <= EL_MM_END_3 ?
+	  EL_MM_START_3_NATIVE + element_rnd - EL_MM_START_3 :
+
 	  element_rnd >= EL_CHAR_START &&
 	  element_rnd <= EL_CHAR_END ?
 	  EL_MM_CHAR_START_NATIVE + element_rnd - EL_CHAR_START :
@@ -8252,6 +8256,10 @@ int map_element_MM_to_RND(int element_mm)
 	  element_mm >= EL_MM_START_2_NATIVE &&
 	  element_mm <= EL_MM_END_2_NATIVE ?
 	  EL_MM_START_2 + element_mm - EL_MM_START_2_NATIVE :
+
+	  element_mm >= EL_MM_START_3_NATIVE &&
+	  element_mm <= EL_MM_END_3_NATIVE ?
+	  EL_MM_START_3 + element_mm - EL_MM_START_3_NATIVE :
 
 	  element_mm >= EL_MM_CHAR_START_NATIVE &&
 	  element_mm <= EL_MM_CHAR_END_NATIVE ?

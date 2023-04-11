@@ -6360,6 +6360,86 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "empty_space",
     "empty space 16"
   },
+  {
+    "df_mirror_fixed_1",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (0\xb0)"
+  },
+  {
+    "df_mirror_fixed_2",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (11.25\xb0)"
+  },
+  {
+    "df_mirror_fixed_3",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (22.5\xb0)"
+  },
+  {
+    "df_mirror_fixed_4",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (33.75\xb0)"
+  },
+  {
+    "df_mirror_fixed_5",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (45\xb0)"
+  },
+  {
+    "df_mirror_fixed_6",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (56.25\xb0)"
+  },
+  {
+    "df_mirror_fixed_7",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (67.5\xb0)"
+  },
+  {
+    "df_mirror_fixed_8",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (78.75\xb0)"
+  },
+  {
+    "df_mirror_fixed_9",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (90\xb0)"
+  },
+  {
+    "df_mirror_fixed_10",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (101.25\xb0)"
+  },
+  {
+    "df_mirror_fixed_11",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (112.5\xb0)"
+  },
+  {
+    "df_mirror_fixed_12",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (123.75\xb0)"
+  },
+  {
+    "df_mirror_fixed_13",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (135\xb0)"
+  },
+  {
+    "df_mirror_fixed_14",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (146.25\xb0)"
+  },
+  {
+    "df_mirror_fixed_15",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (157.5\xb0)"
+  },
+  {
+    "df_mirror_fixed_16",
+    "df_mirror_fixed",
+    "fixed mirror (DF style) (168.75\xb0)"
+  },
 
   // --------------------------------------------------------------------------
   // "real" (and therefore drawable) runtime elements

@@ -1147,6 +1147,8 @@ int get_base_element(int element)
     return EL_DF_MIRROR_START;
   else if (IS_DF_MIRROR_AUTO(element))
     return EL_DF_MIRROR_AUTO_START;
+  else if (IS_DF_MIRROR_FIXED(element))
+    return EL_DF_MIRROR_FIXED_START;
   else if (IS_PACMAN(element))
     return EL_PACMAN_START;
   else if (IS_GRID_STEEL(element))
@@ -1190,7 +1192,8 @@ int get_num_elements(int element)
       IS_POLAR(element) ||
       IS_BEAMER(element) ||
       IS_DF_MIRROR(element) ||
-      IS_DF_MIRROR_AUTO(element))
+      IS_DF_MIRROR_AUTO(element) ||
+      IS_DF_MIRROR_FIXED(element))
     return 16;
   else if (IS_GRID_STEEL_FIXED(element) ||
 	   IS_GRID_WOOD_FIXED(element) ||

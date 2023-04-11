@@ -4697,8 +4697,8 @@ static int editor_el_deflektor[] =
 
   EL_DF_MIRROR_START,
   EL_DF_MIRROR_ROTATING_START,
+  EL_DF_MIRROR_FIXED_START,
   EL_DF_CELL,
-  EL_DF_MINE,
 
   EL_DF_FIBRE_OPTIC_RED_1,
   EL_DF_FIBRE_OPTIC_YELLOW_1,
@@ -4713,7 +4713,7 @@ static int editor_el_deflektor[] =
   EL_DF_STEEL_WALL,
   EL_DF_WOODEN_WALL,
   EL_DF_REFRACTOR,
-  EL_EMPTY
+  EL_DF_MINE
 };
 static int *editor_hl_deflektor_ptr = editor_hl_deflektor;
 static int *editor_el_deflektor_ptr = editor_el_deflektor;
@@ -11917,6 +11917,24 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
 	EL_DF_MIRROR_ROTATING_4,
 	EL_DF_MIRROR_ROTATING_3,
 	EL_DF_MIRROR_ROTATING_2
+      },
+      {
+	EL_DF_MIRROR_FIXED_1,
+	EL_DF_MIRROR_FIXED_16,
+	EL_DF_MIRROR_FIXED_15,
+	EL_DF_MIRROR_FIXED_14,
+	EL_DF_MIRROR_FIXED_13,
+	EL_DF_MIRROR_FIXED_12,
+	EL_DF_MIRROR_FIXED_11,
+	EL_DF_MIRROR_FIXED_10,
+	EL_DF_MIRROR_FIXED_9,
+	EL_DF_MIRROR_FIXED_8,
+	EL_DF_MIRROR_FIXED_7,
+	EL_DF_MIRROR_FIXED_6,
+	EL_DF_MIRROR_FIXED_5,
+	EL_DF_MIRROR_FIXED_4,
+	EL_DF_MIRROR_FIXED_3,
+	EL_DF_MIRROR_FIXED_2
       },
 
       {

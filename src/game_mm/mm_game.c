@@ -1692,6 +1692,7 @@ static boolean HitElement(int element, int hit_mask)
       IS_POLAR_CROSS(element) ||
       IS_DF_MIRROR(element) ||
       IS_DF_MIRROR_AUTO(element) ||
+      IS_DF_MIRROR_FIXED(element) ||
       element == EL_PRISM ||
       element == EL_REFRACTOR)
   {
@@ -1710,7 +1711,8 @@ static boolean HitElement(int element, int hit_mask)
     if (IS_MIRROR(element) ||
 	IS_MIRROR_FIXED(element) ||
 	IS_DF_MIRROR(element) ||
-	IS_DF_MIRROR_AUTO(element))
+	IS_DF_MIRROR_AUTO(element) ||
+	IS_DF_MIRROR_FIXED(element))
       laser.current_angle = get_mirrored_angle(laser.current_angle,
 					       get_element_angle(element));
 
