@@ -12943,7 +12943,7 @@ static boolean checkLevelSetHasMusic_NoConf(void)
 
   for (i = leveldir_current->first_level;
        i <= leveldir_current->last_level; i++)
-    if (levelset.music[level_nr] == MUS_UNDEFINED)
+    if (levelset.music[i] == MUS_UNDEFINED)
       return TRUE;
 
   return FALSE;
