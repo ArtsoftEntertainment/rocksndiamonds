@@ -587,6 +587,14 @@ static void *Load_WAV_or_MOD(char *filename)
     return NULL;
 }
 
+static int compareMusicInfo(const void *object1, const void *object2)
+{
+  const MusicInfo *mi1 = *((MusicInfo **)object1);
+  const MusicInfo *mi2 = *((MusicInfo **)object2);
+
+  return strcmp(mi1->source_filename, mi2->source_filename);
+}
+
 static void LoadCustomMusic_NoConf(void)
 {
   static boolean draw_init_text = TRUE;		// only draw at startup
@@ -663,6 +671,9 @@ static void LoadCustomMusic_NoConf(void)
   }
 
   closeDirectory(dir);
+
+  // sort music files by filename
+  qsort(Music_NoConf, num_music_noconf, sizeof(MusicInfo *), compareMusicInfo);
 
   draw_init_text = FALSE;
 }
