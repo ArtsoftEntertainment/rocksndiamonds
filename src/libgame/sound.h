@@ -122,6 +122,7 @@ void ExpireSoundLoops(boolean);
 
 int getSoundListSize(void);
 int getMusicListSize(void);
+int getMusicListSize_NoConf(void);
 struct FileInfo *getSoundListEntry(int);
 struct FileInfo *getMusicListEntry(int);
 char *getSoundInfoEntryFilename(int);

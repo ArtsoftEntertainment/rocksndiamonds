@@ -12951,15 +12951,10 @@ static boolean checkLevelSetHasMusic_NoConf(void)
 
 void LoadMusicInfo(void)
 {
-  char *music_directory = getCustomMusicDirectory_NoConf();
   int num_music = getMusicListSize();
-  int num_music_noconf = 0;
   int num_sounds = getSoundListSize();
-  Directory *dir = NULL;
-  DirectoryEntry *dir_entry;
   struct FileInfo *music, *sound;
   struct MusicFileInfo *next, **new;
-  boolean read_music_from_directory = TRUE;
   int i;
 
   while (music_file_info != NULL)
@@ -12985,6 +12980,7 @@ void LoadMusicInfo(void)
 
   new = &music_file_info;
 
+  // get music file info for all configured music files
   for (i = 0; i < num_music; i++)
   {
     music = getMusicListEntry(i);
@@ -13008,66 +13004,31 @@ void LoadMusicInfo(void)
     }
   }
 
-  // if all levels have game music configured, do not read music from directory
-  if (!checkLevelSetHasMusic_NoConf())
+  // if some levels have no game music configured, use unconfigured music
+  if (checkLevelSetHasMusic_NoConf())
   {
-    read_music_from_directory = FALSE;
-  }
-  else if (music_directory == NULL)
-  {
-    Warn("cannot find music directory with unconfigured music");
+    int num_music_noconf = getMusicListSize_NoConf();
 
-    read_music_from_directory = FALSE;
-  }
-  else if ((dir = openDirectory(music_directory)) == NULL)
-  {
-    Warn("cannot read music directory '%s'", music_directory);
-
-    read_music_from_directory = FALSE;
-  }
-
-  while (read_music_from_directory &&
-	 (dir_entry = readDirectory(dir)) != NULL)	// loop all entries
-  {
-    char *basename = dir_entry->basename;
-    boolean music_already_used = FALSE;
-    int i;
-
-    // skip all music files that are configured in music config file
-    for (i = 0; i < num_music; i++)
+    // get music file info for all unconfigured music files
+    for (i = 0; i < num_music_noconf; i++)
     {
-      music = getMusicListEntry(i);
+      int music_nr_noconf = MAP_NOCONF_MUSIC(i);
+      char *basename = getMusicInfoEntryFilename(music_nr_noconf);
 
-      if (music->filename == NULL)
+      if (basename == NULL)
 	continue;
 
-      if (strEqual(basename, music->filename))
+      if (!music_info_listed(music_file_info, basename))
       {
-	music_already_used = TRUE;
-	break;
+	*new = get_music_file_info(basename, music_nr_noconf);
+
+	if (*new != NULL)
+	  new = &(*new)->next;
       }
     }
-
-    if (music_already_used)
-      continue;
-
-    if (!FileIsMusic(dir_entry->filename))
-      continue;
-
-    if (!music_info_listed(music_file_info, basename))
-    {
-      *new = get_music_file_info(basename, MAP_NOCONF_MUSIC(num_music_noconf));
-
-      if (*new != NULL)
-	new = &(*new)->next;
-    }
-
-    num_music_noconf++;
   }
 
-  if (dir != NULL)
-    closeDirectory(dir);
-
+  // get sound file info for all configured sound files
   for (i = 0; i < num_sounds; i++)
   {
     sound = getSoundListEntry(i);

@@ -690,6 +690,11 @@ int getMusicListSize(void)
 	  music_info->num_dynamic_file_list_entries);
 }
 
+int getMusicListSize_NoConf(void)
+{
+  return num_music_noconf;
+}
+
 struct FileInfo *getSoundListEntry(int pos)
 {
   int num_sounds = getSoundListSize();
