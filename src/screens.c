@@ -3595,6 +3595,35 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       ystart += ystep_head;
     }
 
+    int music_level_nr = -1;
+    int i;
+
+    if (!list->is_sound)
+    {
+      // check if this music is configured for a certain level
+      for (i = leveldir_current->first_level;
+	   i <= leveldir_current->last_level; i++)
+      {
+	// (special case: "list->music" may be negative for unconfigured music)
+	if (levelset.music[i] != MUS_UNDEFINED &&
+	    levelset.music[i] == list->music)
+	{
+	  music_level_nr = i;
+
+	  break;
+	}
+      }
+
+      if (music_level_nr != -1)
+      {
+	DrawTextSCentered(ystart, font_head, "played in");
+	ystart += ystep_head;
+
+	DrawTextFCentered(ystart, font_text, "level %03d", music_level_nr);
+	ystart += ystep_head;
+      }
+    }
+
     DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_PAGE);
 
     if (button != MB_MENU_INITIALIZE)
