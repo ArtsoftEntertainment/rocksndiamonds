@@ -12937,24 +12937,14 @@ static boolean sound_info_listed(struct MusicFileInfo *list, char *basename)
   return music_info_listed_ext(list, basename, TRUE);
 }
 
-static boolean checkLevelSetHasMusic_NoConf(void)
-{
-  int i;
-
-  for (i = leveldir_current->first_level;
-       i <= leveldir_current->last_level; i++)
-    if (levelset.music[i] == MUS_UNDEFINED)
-      return TRUE;
-
-  return FALSE;
-}
-
 void LoadMusicInfo(void)
 {
+  int num_music_noconf = getMusicListSize_NoConf();
   int num_music = getMusicListSize();
   int num_sounds = getSoundListSize();
   struct FileInfo *music, *sound;
   struct MusicFileInfo *next, **new;
+
   int i;
 
   while (music_file_info != NULL)
@@ -12980,7 +12970,40 @@ void LoadMusicInfo(void)
 
   new = &music_file_info;
 
-  // get music file info for all configured music files
+  // get (configured or unconfigured) music file info for all levels
+  for (i = leveldir_current->first_level;
+       i <= leveldir_current->last_level; i++)
+  {
+    int music_nr;
+
+    if (levelset.music[i] != MUS_UNDEFINED)
+    {
+      // get music file info for configured level music
+      music_nr = levelset.music[i];
+    }
+    else
+    {
+      // get music file info for unconfigured level music
+      int level_pos = i - leveldir_current->first_level;
+
+      music_nr = MAP_NOCONF_MUSIC(level_pos % num_music_noconf);
+    }
+
+    char *basename = getMusicInfoEntryFilename(music_nr);
+
+    if (basename == NULL)
+      continue;
+
+    if (!music_info_listed(music_file_info, basename))
+    {
+      *new = get_music_file_info(basename, music_nr);
+
+      if (*new != NULL)
+	new = &(*new)->next;
+    }
+  }
+
+  // get music file info for all remaining configured music files
   for (i = 0; i < num_music; i++)
   {
     music = getMusicListEntry(i);
@@ -13001,30 +13024,6 @@ void LoadMusicInfo(void)
 
       if (*new != NULL)
 	new = &(*new)->next;
-    }
-  }
-
-  // if some levels have no game music configured, use unconfigured music
-  if (checkLevelSetHasMusic_NoConf())
-  {
-    int num_music_noconf = getMusicListSize_NoConf();
-
-    // get music file info for all unconfigured music files
-    for (i = 0; i < num_music_noconf; i++)
-    {
-      int music_nr_noconf = MAP_NOCONF_MUSIC(i);
-      char *basename = getMusicInfoEntryFilename(music_nr_noconf);
-
-      if (basename == NULL)
-	continue;
-
-      if (!music_info_listed(music_file_info, basename))
-      {
-	*new = get_music_file_info(basename, music_nr_noconf);
-
-	if (*new != NULL)
-	  new = &(*new)->next;
-      }
     }
   }
 
