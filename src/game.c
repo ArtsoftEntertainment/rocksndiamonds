@@ -15241,10 +15241,12 @@ static void StopLevelSoundActionIfLoop(int x, int y, int action)
 
 static int getLevelMusicNr(void)
 {
+  int level_pos = level_nr - leveldir_current->first_level;
+
   if (levelset.music[level_nr] != MUS_UNDEFINED)
     return levelset.music[level_nr];		// from config file
   else
-    return MAP_NOCONF_MUSIC(level_nr);		// from music dir
+    return MAP_NOCONF_MUSIC(level_pos);		// from music dir
 }
 
 static void FadeLevelSounds(void)
