@@ -1072,9 +1072,26 @@ static void ScanLaser(void)
 	  LX, LY, XS, YS);
 #endif
 
-    // hit something -- check out what it was
-    ELX = getLevelFromLaserX(LX + XS);
-    ELY = getLevelFromLaserY(LY + YS);
+    // check if laser scan has hit two diagonally adjacent element corners
+    boolean diag_1 = ((hit_mask & HIT_MASK_DIAGONAL_1) == HIT_MASK_DIAGONAL_1);
+    boolean diag_2 = ((hit_mask & HIT_MASK_DIAGONAL_2) == HIT_MASK_DIAGONAL_2);
+
+    // check if laser scan has crossed element boundaries (not just mini tiles)
+    boolean cross_x = (getLevelFromLaserX(LX) != getLevelFromLaserX(LX + 2));
+    boolean cross_y = (getLevelFromLaserY(LY) != getLevelFromLaserY(LY + 2));
+
+    if (cross_x || cross_y)
+    {
+      // hit something at next tile -- check out what it was
+      ELX = getLevelFromLaserX(LX + XS);
+      ELY = getLevelFromLaserY(LY + YS);
+    }
+    else
+    {
+      // hit something at same tile -- check out what it was
+      ELX = getLevelFromLaserX(LX);
+      ELY = getLevelFromLaserY(LY);
+    }
 
 #if 0
     Debug("game:mm:ScanLaser", "hit_mask (1) == '%x' (%d, %d) (%d, %d)",
@@ -1103,14 +1120,6 @@ static void ScanLaser(void)
 
       break;
     }
-
-    // check if laser scan has hit two diagonally adjacent element corners
-    boolean diag_1 = ((hit_mask & HIT_MASK_DIAGONAL_1) == HIT_MASK_DIAGONAL_1);
-    boolean diag_2 = ((hit_mask & HIT_MASK_DIAGONAL_2) == HIT_MASK_DIAGONAL_2);
-
-    // check if laser scan has crossed element boundaries (not just mini tiles)
-    boolean cross_x = (getLevelFromLaserX(LX) != getLevelFromLaserX(LX + 2));
-    boolean cross_y = (getLevelFromLaserY(LY) != getLevelFromLaserY(LY + 2));
 
     // handle special case of laser hitting two diagonally adjacent elements
     // (with or without a third corner element behind these two elements)
