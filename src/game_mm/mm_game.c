@@ -893,6 +893,16 @@ static int getMaskFromElement(int element)
     return MM_MASK_CIRCLE;
 }
 
+static int getLevelFromLaserX(int x)
+{
+  return x / TILEX - (x < 0 ? 1 : 0);		// correct negative values
+}
+
+static int getLevelFromLaserY(int y)
+{
+  return y / TILEY - (y < 0 ? 1 : 0);		// correct negative values
+}
+
 static int ScanPixel(void)
 {
   int hit_mask = 0;
@@ -944,8 +954,8 @@ static int ScanPixel(void)
       int py = LY + (i / 2) * 2;
       int dx = px % TILEX;
       int dy = py % TILEY;
-      int lx = (px + TILEX) / TILEX - 1;  // ...+TILEX...-1 to get correct
-      int ly = (py + TILEY) / TILEY - 1;  // negative values!
+      int lx = getLevelFromLaserX(px);
+      int ly = getLevelFromLaserY(py);
       Pixel pixel;
 
       if (IN_LEV_FIELD(lx, ly))
@@ -1063,8 +1073,8 @@ static void ScanLaser(void)
 #endif
 
     // hit something -- check out what it was
-    ELX = (LX + XS + TILEX) / TILEX - 1;  // ...+TILEX...-1 to get correct
-    ELY = (LY + YS + TILEY) / TILEY - 1;  // negative values!
+    ELX = getLevelFromLaserX(LX + XS);
+    ELY = getLevelFromLaserY(LY + YS);
 
 #if 0
     Debug("game:mm:ScanLaser", "hit_mask (1) == '%x' (%d, %d) (%d, %d)",
@@ -1099,8 +1109,8 @@ static void ScanLaser(void)
     boolean diag_2 = ((hit_mask & HIT_MASK_DIAGONAL_2) == HIT_MASK_DIAGONAL_2);
 
     // check if laser scan has crossed element boundaries (not just mini tiles)
-    boolean cross_x = (LX / TILEX != (LX + 2) / TILEX);
-    boolean cross_y = (LY / TILEY != (LY + 2) / TILEY);
+    boolean cross_x = (getLevelFromLaserX(LX) != getLevelFromLaserX(LX + 2));
+    boolean cross_y = (getLevelFromLaserY(LY) != getLevelFromLaserY(LY + 2));
 
     // handle special case of laser hitting two diagonally adjacent elements
     // (with or without a third corner element behind these two elements)
