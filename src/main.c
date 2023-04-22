@@ -5218,17 +5218,17 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "mm_mirror_fixed_2",
     "mm_mirror_fixed",
-    "fixed mirror (0\xb0)"
+    "fixed mirror (45\xb0)"
   },
   {
     "mm_mirror_fixed_3",
     "mm_mirror_fixed",
-    "fixed mirror (0\xb0)"
+    "fixed mirror (90\xb0)"
   },
   {
     "mm_mirror_fixed_4",
     "mm_mirror_fixed",
-    "fixed mirror (0\xb0)"
+    "fixed mirror (135\xb0)"
   },
   {
     "mm_steel_lock",
