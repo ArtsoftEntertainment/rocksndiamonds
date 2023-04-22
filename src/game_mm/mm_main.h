@@ -715,7 +715,7 @@ extern int		num_element_info;
 #define IS_22_5_ANGLE(angle)	((angle) % 2)
 #define IS_90_ANGLE(angle)	(!((angle) % 4))
 #define IS_HORIZ_ANGLE(angle)	(!((angle) % 8))
-#define IS_VERT_ANGLE(angle)	((angle) % 8)
+#define IS_VERT_ANGLE(angle)	(!(((angle) + 4) % 8))
 
 // mirror angles
 #define ANG_MIRROR_0		0
