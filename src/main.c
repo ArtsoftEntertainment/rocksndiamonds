@@ -6440,6 +6440,26 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "df_mirror_fixed",
     "fixed mirror (DF style) (168.75\xb0)"
   },
+  {
+    "df_slope_1",
+    "df_slope",
+    "slope (DF style) (45\xb0)"
+  },
+  {
+    "df_slope_2",
+    "df_slope",
+    "slope (DF style) (135\xb0)"
+  },
+  {
+    "df_slope_3",
+    "df_slope",
+    "slope (DF style) (225\xb0)"
+  },
+  {
+    "df_slope_4",
+    "df_slope",
+    "slope (DF style) (315\xb0)"
+  },
 
   // --------------------------------------------------------------------------
   // "real" (and therefore drawable) runtime elements

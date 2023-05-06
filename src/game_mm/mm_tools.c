@@ -1149,6 +1149,8 @@ int get_base_element(int element)
     return EL_DF_MIRROR_AUTO_START;
   else if (IS_DF_MIRROR_FIXED(element))
     return EL_DF_MIRROR_FIXED_START;
+  else if (IS_DF_SLOPE(element))
+    return EL_DF_SLOPE_START;
   else if (IS_PACMAN(element))
     return EL_PACMAN_START;
   else if (IS_GRID_STEEL(element))
@@ -1207,7 +1209,8 @@ int get_num_elements(int element)
 	   IS_RECEIVER(element) ||
 	   IS_PACMAN(element) ||
 	   IS_GRID_STEEL(element) ||
-	   IS_GRID_WOOD(element))
+	   IS_GRID_WOOD(element) ||
+	   IS_DF_SLOPE(element))
     return 4;
   else
     return 1;
@@ -1277,6 +1280,13 @@ static int getFlippedTileExt_MM(int element, int mode)
       if ((mode == MM_FLIP_XY && element_phase < 2) ||
 	  (mode != MM_FLIP_XY && element_phase > 1))
 	element_phase ^= 1;
+    }
+    else if (IS_DF_SLOPE(element))
+    {
+      element_phase = (mode == MM_FLIP_X  ? 5 - element_phase :
+		       mode == MM_FLIP_Y  ? 3 - element_phase :
+		       mode == MM_FLIP_XY ? 4 - element_phase :
+		       element_phase);
     }
     else
     {

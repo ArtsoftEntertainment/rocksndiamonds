@@ -105,6 +105,8 @@
 				 (e) <= EL_DF_MIRROR_AUTO_END)
 #define IS_DF_MIRROR_FIXED(e)	((e) >= EL_DF_MIRROR_FIXED_START &&	\
 				 (e) <= EL_DF_MIRROR_FIXED_END)
+#define IS_DF_SLOPE(e)		((e) >= EL_DF_SLOPE_START &&		\
+				 (e) <= EL_DF_SLOPE_END)
 #define IS_LASER(e)		((e) >= EL_LASER_START &&		\
 				 (e) <= EL_LASER_END)
 #define IS_RECEIVER(e)		((e) >= EL_RECEIVER_START &&		\
@@ -606,7 +608,14 @@ extern int		num_element_info;
 #define EL_DF_MIRROR_FIXED_15	(EL_DF_MIRROR_FIXED_START + 15)
 #define EL_DF_MIRROR_FIXED_END	EL_DF_MIRROR_FIXED_15
 
-#define EL_MM_END_2		446
+#define EL_DF_SLOPE_START	 447
+#define EL_DF_SLOPE_00		(EL_DF_SLOPE_START + 0)
+#define EL_DF_SLOPE_01		(EL_DF_SLOPE_START + 1)
+#define EL_DF_SLOPE_02		(EL_DF_SLOPE_START + 2)
+#define EL_DF_SLOPE_03		(EL_DF_SLOPE_START + 3)
+#define EL_DF_SLOPE_END		EL_DF_SLOPE_03
+
+#define EL_MM_END_2		450
 #define EL_MM_END		EL_MM_END_2
 
 // "real" (and therefore drawable) runtime elements
@@ -714,6 +723,7 @@ extern int		num_element_info;
 #define ANG_RAY_270		12
 #define IS_22_5_ANGLE(angle)	((angle) % 2)
 #define IS_90_ANGLE(angle)	(!((angle) % 4))
+#define IS_45_ANGLE(angle)	(!(((angle) + 2) % 4))
 #define IS_HORIZ_ANGLE(angle)	(!((angle) % 8))
 #define IS_VERT_ANGLE(angle)	(!(((angle) + 4) % 8))
 

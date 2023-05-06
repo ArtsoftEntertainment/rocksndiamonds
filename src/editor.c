@@ -4713,7 +4713,12 @@ static int editor_el_deflektor[] =
   EL_DF_STEEL_WALL,
   EL_DF_WOODEN_WALL,
   EL_DF_REFRACTOR,
-  EL_DF_MINE
+  EL_DF_MINE,
+
+  EL_DF_SLOPE_1,
+  EL_DF_SLOPE_2,
+  EL_DF_SLOPE_3,
+  EL_DF_SLOPE_4
 };
 static int *editor_hl_deflektor_ptr = editor_hl_deflektor;
 static int *editor_el_deflektor_ptr = editor_el_deflektor;
@@ -11701,6 +11706,12 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
 	EL_DF_RECEIVER_RIGHT,
 	EL_DF_RECEIVER_DOWN,
 	EL_DF_RECEIVER_LEFT
+      },
+      {
+	EL_DF_SLOPE_1,
+	EL_DF_SLOPE_4,
+	EL_DF_SLOPE_3,
+	EL_DF_SLOPE_2
       },
 
       {

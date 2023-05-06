@@ -1980,10 +1980,17 @@
 #define EL_DF_MIRROR_FIXED_16		(EL_DF_MIRROR_FIXED_START + 15)
 #define EL_DF_MIRROR_FIXED_END		EL_DF_MIRROR_FIXED_16
 
-#define EL_MM_END_3			EL_DF_MIRROR_FIXED_END
-#define EL_DF_END_2			EL_DF_MIRROR_FIXED_END
+#define EL_DF_SLOPE_START		1249
+#define EL_DF_SLOPE_1			(EL_DF_SLOPE_START + 0)
+#define EL_DF_SLOPE_2			(EL_DF_SLOPE_START + 1)
+#define EL_DF_SLOPE_3			(EL_DF_SLOPE_START + 2)
+#define EL_DF_SLOPE_4			(EL_DF_SLOPE_START + 3)
+#define EL_DF_SLOPE_END			EL_DF_SLOPE_4
 
-#define NUM_FILE_ELEMENTS		1249
+#define EL_MM_END_3			EL_DF_SLOPE_END
+#define EL_DF_END_2			EL_DF_SLOPE_END
+
+#define NUM_FILE_ELEMENTS		1253
 
 
 // "real" (and therefore drawable) runtime elements

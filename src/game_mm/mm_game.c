@@ -139,10 +139,14 @@ static DelayCounter overload_delay = { 0 };
 #define MM_MASK_GRID_2		5
 #define MM_MASK_GRID_3		6
 #define MM_MASK_GRID_4		7
-#define MM_MASK_RECTANGLE	8
-#define MM_MASK_CIRCLE		9
+#define MM_MASK_SLOPE_1		8
+#define MM_MASK_SLOPE_2		9
+#define MM_MASK_SLOPE_3		10
+#define MM_MASK_SLOPE_4		11
+#define MM_MASK_RECTANGLE	12
+#define MM_MASK_CIRCLE		13
 
-#define NUM_MM_MASKS		10
+#define NUM_MM_MASKS		14
 
 // element masks for scanning pixels of MM elements
 static const char mm_masks[NUM_MM_MASKS][16][16 + 1] =
@@ -292,6 +296,78 @@ static const char mm_masks[NUM_MM_MASKS][16][16 + 1] =
     "     XX  XXXXX  ",
   },
   {
+    "               X",
+    "              XX",
+    "             XXX",
+    "            XXXX",
+    "           XXXXX",
+    "          XXXXXX",
+    "         XXXXXXX",
+    "        XXXXXXXX",
+    "       XXXXXXXXX",
+    "      XXXXXXXXXX",
+    "     XXXXXXXXXXX",
+    "    XXXXXXXXXXXX",
+    "   XXXXXXXXXXXXX",
+    "  XXXXXXXXXXXXXX",
+    " XXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXX",
+  },
+  {
+    "X               ",
+    "XX              ",
+    "XXX             ",
+    "XXXX            ",
+    "XXXXX           ",
+    "XXXXXX          ",
+    "XXXXXXX         ",
+    "XXXXXXXX        ",
+    "XXXXXXXXX       ",
+    "XXXXXXXXXX      ",
+    "XXXXXXXXXXX     ",
+    "XXXXXXXXXXXX    ",
+    "XXXXXXXXXXXXX   ",
+    "XXXXXXXXXXXXXX  ",
+    "XXXXXXXXXXXXXXX ",
+    "XXXXXXXXXXXXXXXX",
+  },
+  {
+    "XXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXX ",
+    "XXXXXXXXXXXXXX  ",
+    "XXXXXXXXXXXXX   ",
+    "XXXXXXXXXXXX    ",
+    "XXXXXXXXXXX     ",
+    "XXXXXXXXXX      ",
+    "XXXXXXXXX       ",
+    "XXXXXXXX        ",
+    "XXXXXXX         ",
+    "XXXXXX          ",
+    "XXXXX           ",
+    "XXXX            ",
+    "XXX             ",
+    "XX              ",
+    "X               ",
+  },
+  {
+    "XXXXXXXXXXXXXXXX",
+    " XXXXXXXXXXXXXXX",
+    "  XXXXXXXXXXXXXX",
+    "   XXXXXXXXXXXXX",
+    "    XXXXXXXXXXXX",
+    "     XXXXXXXXXXX",
+    "      XXXXXXXXXX",
+    "       XXXXXXXXX",
+    "        XXXXXXXX",
+    "         XXXXXXX",
+    "          XXXXXX",
+    "           XXXXX",
+    "            XXXX",
+    "             XXX",
+    "              XX",
+    "               X",
+  },
+  {
     "XXXXXXXXXXXXXXXX",
     "XXXXXXXXXXXXXXXX",
     "XXXXXXXXXXXXXXXX",
@@ -338,6 +414,8 @@ static int get_element_angle(int element)
       IS_LASER(element) ||
       IS_RECEIVER(element))
     return 4 * element_phase;
+  else if (IS_DF_SLOPE(element))
+    return 4 + (element_phase % 2) * 8;
   else
     return element_phase;
 }
@@ -887,6 +965,8 @@ static int getMaskFromElement(int element)
     return MM_MASK_GRID_1 + get_element_phase(element);
   else if (IS_DF_GRID(element))
     return MM_MASK_RECTANGLE;
+  else if (IS_DF_SLOPE(element))
+    return MM_MASK_SLOPE_1 + get_element_phase(element);
   else if (IS_RECTANGLE(element))
     return MM_MASK_RECTANGLE;
   else
@@ -1121,10 +1201,14 @@ static void ScanLaser(void)
       break;
     }
 
+    boolean diagonally_adjacent_hit = FALSE;
+
     // handle special case of laser hitting two diagonally adjacent elements
     // (with or without a third corner element behind these two elements)
     if ((diag_1 || diag_2) && cross_x && cross_y)
     {
+      diagonally_adjacent_hit = TRUE;
+
       // compare the two diagonally adjacent elements
       int xoffset = 2;
       int yoffset = 2 * (diag_1 ? -1 : +1);
@@ -1237,6 +1321,29 @@ static void ScanLaser(void)
       else
       {
 	if (HitAbsorbingWalls(element, hit_mask))
+	  break;
+      }
+    }
+    else if (IS_DF_SLOPE(element))
+    {
+      if (diagonally_adjacent_hit)
+      {
+	laser.overloaded = TRUE;
+
+	break;
+      }
+
+      if (hit_mask == HIT_MASK_LEFT ||
+	  hit_mask == HIT_MASK_RIGHT ||
+	  hit_mask == HIT_MASK_TOP ||
+	  hit_mask == HIT_MASK_BOTTOM)
+      {
+	if (HitReflectingWalls(element, hit_mask))
+	  break;
+      }
+      else
+      {
+	if (HitElement(element, hit_mask))
 	  break;
       }
     }
@@ -1594,8 +1701,30 @@ void DrawLaser_MM(void)
 
 static boolean HitElement(int element, int hit_mask)
 {
-  if (HitOnlyAnEdge(hit_mask))
-    return FALSE;
+  if (IS_DF_SLOPE(element))
+  {
+    int mirrored_angle = get_mirrored_angle(laser.current_angle,
+					    get_element_angle(element));
+    int opposite_angle = get_opposite_angle(laser.current_angle);
+
+    // check if laser is reflected by slope by 180°
+    if (mirrored_angle == opposite_angle)
+    {
+      LX += XS;
+      LY += YS;
+
+      AddDamagedField(LX / TILEX, LY / TILEY);
+
+      laser.overloaded = TRUE;
+
+      return TRUE;
+    }
+  }
+  else
+  {
+    if (HitOnlyAnEdge(hit_mask))
+      return FALSE;
+  }
 
   if (IS_MOVING(ELX, ELY) || IS_BLOCKED(ELX, ELY))
     element = MovingOrBlocked2Element_MM(ELX, ELY);
@@ -1615,8 +1744,11 @@ static boolean HitElement(int element, int hit_mask)
 
   AddDamagedField(ELX, ELY);
 
+  boolean through_center = ((ELX * TILEX + 14 - LX) * YS ==
+			    (ELY * TILEY + 14 - LY) * XS);
+
   // this is more precise: check if laser would go through the center
-  if ((ELX * TILEX + 14 - LX) * YS != (ELY * TILEY + 14 - LY) * XS)
+  if (!IS_DF_SLOPE(element) && !through_center)
   {
     int skip_count = 0;
 
@@ -1687,10 +1819,28 @@ static boolean HitElement(int element, int hit_mask)
     return TRUE;
   }
 
-  if (!IS_BEAMER(element) &&
-      !IS_FIBRE_OPTIC(element) &&
-      !IS_GRID_WOOD(element) &&
-      element != EL_FUEL_EMPTY)
+  if (IS_DF_SLOPE(element) && !through_center)
+  {
+    int correction = 2;
+
+    if (hit_mask == HIT_MASK_ALL)
+    {
+      // laser already inside slope -- go back half step
+      LX -= XS / 2;
+      LY -= YS / 2;
+
+      correction = 1;
+    }
+
+    AddLaserEdge(LX, LY);
+
+    LX -= (ABS(XS) < ABS(YS) ? correction * SIGN(XS) : 0);
+    LY -= (ABS(YS) < ABS(XS) ? correction * SIGN(YS) : 0);
+  }
+  else if (!IS_BEAMER(element) &&
+	   !IS_FIBRE_OPTIC(element) &&
+	   !IS_GRID_WOOD(element) &&
+	   element != EL_FUEL_EMPTY)
   {
 #if 0
     if ((ELX * TILEX + 14 - LX) * YS == (ELY * TILEY + 14 - LY) * XS)
@@ -1712,6 +1862,7 @@ static boolean HitElement(int element, int hit_mask)
       IS_DF_MIRROR(element) ||
       IS_DF_MIRROR_AUTO(element) ||
       IS_DF_MIRROR_FIXED(element) ||
+      IS_DF_SLOPE(element) ||
       element == EL_PRISM ||
       element == EL_REFRACTOR)
   {
@@ -1731,7 +1882,8 @@ static boolean HitElement(int element, int hit_mask)
 	IS_MIRROR_FIXED(element) ||
 	IS_DF_MIRROR(element) ||
 	IS_DF_MIRROR_AUTO(element) ||
-	IS_DF_MIRROR_FIXED(element))
+	IS_DF_MIRROR_FIXED(element) ||
+	IS_DF_SLOPE(element))
       laser.current_angle = get_mirrored_angle(laser.current_angle,
 					       get_element_angle(element));
 
@@ -1765,6 +1917,68 @@ static boolean HitElement(int element, int hit_mask)
     laser.overloaded =
       (get_opposite_angle(laser.current_angle) ==
        laser.damage[laser.num_damages - 1].angle ? TRUE : FALSE);
+
+    if (IS_DF_SLOPE(element))
+    {
+      // handle special cases for slope element
+
+      if (IS_45_ANGLE(laser.current_angle))
+      {
+	int elx, ely;
+
+	elx = getLevelFromLaserX(LX);
+	ely = getLevelFromLaserY(LY);
+
+	if (IN_LEV_FIELD(elx, ely))
+	{
+	  int element_next = Tile[elx][ely];
+
+	  // check if slope is followed by slope with opposite orientation
+	  if (IS_DF_SLOPE(element_next) && ABS(element - element_next) == 2)
+	    laser.overloaded = TRUE;
+	}
+
+	int nr = element - EL_DF_SLOPE_START;
+	int dx = (nr == 0 ? (XS > 0 ? TILEX - 1 : -1) :
+		  nr == 1 ? (XS > 0 ? TILEX     :  1) :
+		  nr == 2 ? (XS > 0 ? TILEX     :  1) :
+		  nr == 3 ? (XS > 0 ? TILEX - 1 : -1) : 0);
+	int dy = (nr == 0 ? (YS > 0 ? TILEY - 1 : -1) :
+		  nr == 1 ? (YS > 0 ? TILEY - 1 : -1) :
+		  nr == 2 ? (YS > 0 ? TILEY     :  0) :
+		  nr == 3 ? (YS > 0 ? TILEY     :  0) : 0);
+
+	int px = ELX * TILEX + dx;
+	int py = ELY * TILEY + dy;
+
+	dx = px % TILEX;
+	dy = py % TILEY;
+
+	elx = getLevelFromLaserX(px);
+	ely = getLevelFromLaserY(py);
+
+	if (IN_LEV_FIELD(elx, ely))
+	{
+	  int element_side = Tile[elx][ely];
+
+	  // check if end of slope is blocked by other element
+	  if (IS_WALL(element_side) || IS_WALL_CHANGING(element_side))
+	  {
+	    int pos = dy / MINI_TILEY * 2 + dx / MINI_TILEX;
+
+	    if (element & (1 << pos))
+	      laser.overloaded = TRUE;
+	  }
+	  else
+	  {
+	    int pos = getMaskFromElement(element_side);
+
+	    if (mm_masks[pos][dx / 2][dx / 2] == 'X')
+	      laser.overloaded = TRUE;
+	  }
+	}
+      }
+    }
 
     return (laser.overloaded ? TRUE : FALSE);
   }

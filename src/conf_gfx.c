@@ -5852,6 +5852,23 @@ struct ConfigInfo image_config[] =
   { "df_mirror_fixed_16.ypos",			"10"			},
   { "df_mirror_fixed_16.frames",		"1"			},
 
+  { "df_slope_1",				"RocksDF.png"		},
+  { "df_slope_1.xpos",				"0"			},
+  { "df_slope_1.ypos",				"11"			},
+  { "df_slope_1.frames",			"1"			},
+  { "df_slope_2",				"RocksDF.png"		},
+  { "df_slope_2.xpos",				"1"			},
+  { "df_slope_2.ypos",				"11"			},
+  { "df_slope_2.frames",			"1"			},
+  { "df_slope_3",				"RocksDF.png"		},
+  { "df_slope_3.xpos",				"2"			},
+  { "df_slope_3.ypos",				"11"			},
+  { "df_slope_3.frames",			"1"			},
+  { "df_slope_4",				"RocksDF.png"		},
+  { "df_slope_4.xpos",				"3"			},
+  { "df_slope_4.ypos",				"11"			},
+  { "df_slope_4.frames",			"1"			},
+
   // (these are only defined as elements to support ".PANEL" definitions)
   { "graphic_1",				UNDEFINED_FILENAME	},
   { "graphic_2",				UNDEFINED_FILENAME	},
