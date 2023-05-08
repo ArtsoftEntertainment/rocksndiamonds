@@ -12327,6 +12327,9 @@ static void SelectArea(int from_x, int from_y, int to_x, int to_y,
 #define CB_BRUSH_TO_CLIPBOARD		7
 #define CB_BRUSH_TO_CLIPBOARD_SMALL	8
 #define CB_UPDATE_BRUSH_POSITION	9
+#define CB_MIRROR_BRUSH_H  		10
+#define CB_MIRROR_BRUSH_V  		11
+#define CB_FLIP_BRUSH	  		12
 
 #define MAX_CB_PART_SIZE	10
 #define MAX_CB_LINE_SIZE	(MAX_LEV_FIELDX + 1)	// text plus newline
@@ -12637,6 +12640,43 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 
     delete_old_brush = FALSE;
   }
+  else if (mode == CB_MIRROR_BRUSH_H)
+  {
+    for (y = 0; y < brush_height; y++)
+    {
+      for (x = 0; x < brush_width/2; x++)
+      {
+	short temp = brush_buffer[x][y];
+	brush_buffer[x][y] = brush_buffer[brush_width-x-1][y];
+	brush_buffer[brush_width-x-1][y] = temp;
+      }
+    }
+  }
+  else if (mode == CB_MIRROR_BRUSH_V)
+  {
+    for (y = 0; y < brush_height/2; y++)
+    {
+      for (x = 0; x < brush_width; x++)
+      {
+	short temp = brush_buffer[x][y];
+	brush_buffer[x][y] = brush_buffer[x][brush_height-y-1];
+	brush_buffer[x][brush_height-y-1] = temp;
+      }
+    }
+  }
+  else if (mode == CB_FLIP_BRUSH)
+  {
+    for (y = 1; y < MAX(brush_height, brush_width); y++)
+    {
+      for (x = 0; x < y; x++)
+      {
+	short temp = brush_buffer[x][y];
+	brush_buffer[x][y] = brush_buffer[y][x];
+	brush_buffer[y][x] = temp;
+      }
+    }
+    swap_numbers(&brush_width, &brush_height);
+  }
   else if (mode == CB_BRUSH_TO_CURSOR || mode == CB_DELETE_OLD_CURSOR ||
 	   mode == CB_BRUSH_TO_LEVEL)
   {
@@ -12727,6 +12767,27 @@ static void UpdateBrushPosition(int x, int y)
 static void DeleteBrushFromCursor(void)
 {
   CopyBrushExt(0, 0, 0, 0, 0, CB_DELETE_OLD_CURSOR);
+}
+
+static void MirrorBrushH(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_MIRROR_BRUSH_H);
+}
+
+static void MirrorBrushV(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_MIRROR_BRUSH_V);
+}
+
+static void FlipBrush(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_FLIP_BRUSH);
+}
+
+static void RotateBrush(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_FLIP_BRUSH);
+  CopyBrushExt(0, 0, 0, 0, 0, CB_MIRROR_BRUSH_H);
 }
 
 void DumpBrush(void)
@@ -14643,6 +14704,17 @@ void HandleLevelEditorKeyInput(Key key)
 
   if (id != GADGET_ID_NONE)
     ClickOnGadget(level_editor_gadget[id], button);
+  else if (GetKeyModState() & (KMOD_Control | KMOD_Meta))
+  {
+      if (letter == 'e')
+        MirrorBrushH();
+      else if (letter == 'd')
+        MirrorBrushV();
+      else if (letter == 'f')
+        FlipBrush();
+      else if (letter == 'r')
+        RotateBrush();
+  }
   else if (letter == '1' || letter == '?')
     ClickOnGadget(level_editor_gadget[GADGET_ID_ELEMENT_LEFT], button);
   else if (letter == '2')
