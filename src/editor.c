@@ -12345,6 +12345,9 @@ static void SelectArea(int from_x, int from_y, int to_x, int to_y,
 #define CB_BRUSH_TO_CLIPBOARD		7
 #define CB_BRUSH_TO_CLIPBOARD_SMALL	8
 #define CB_UPDATE_BRUSH_POSITION	9
+#define CB_FLIP_BRUSH_X			10
+#define CB_FLIP_BRUSH_Y			11
+#define CB_FLIP_BRUSH_XY		12
 
 #define MAX_CB_PART_SIZE	10
 #define MAX_CB_LINE_SIZE	(MAX_LEV_FIELDX + 1)	// text plus newline
@@ -12352,6 +12355,23 @@ static void SelectArea(int from_x, int from_y, int to_x, int to_y,
 #define MAX_CB_TEXT_SIZE	(MAX_CB_LINE_SIZE *	\
 				 MAX_CB_NUM_LINES *	\
 				 MAX_CB_PART_SIZE)
+
+static short getFlippedTile(short tile, int mode)
+{
+  // flip tile (yet to be added)
+  return tile;
+}
+
+static void SwapFlippedTiles(short *tile1, short *tile2, int mode)
+{
+  // flip tiles
+  short tile1_flipped = getFlippedTile(*tile1, mode);
+  short tile2_flipped = getFlippedTile(*tile2, mode);
+
+  // swap tiles
+  *tile1 = tile2_flipped;
+  *tile2 = tile1_flipped;
+}
 
 static void DrawBrushElement(int sx, int sy, int element, boolean change_level)
 {
@@ -12713,6 +12733,37 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 
     delete_old_brush = TRUE;
   }
+  else if (mode == CB_FLIP_BRUSH_X)
+  {
+    for (y = 0; y < brush_height; y++)
+      for (x = 0; x < brush_width / 2; x++)
+	SwapFlippedTiles(&brush_buffer[x][y],
+			 &brush_buffer[brush_width - x - 1][y], mode);
+
+    CopyBrushExt(last_cursor_x, last_cursor_y, 0, 0, 0, CB_BRUSH_TO_CURSOR);
+  }
+  else if (mode == CB_FLIP_BRUSH_Y)
+  {
+    for (y = 0; y < brush_height / 2; y++)
+      for (x = 0; x < brush_width; x++)
+	SwapFlippedTiles(&brush_buffer[x][y],
+			 &brush_buffer[x][brush_height - y - 1], mode);
+
+    CopyBrushExt(last_cursor_x, last_cursor_y, 0, 0, 0, CB_BRUSH_TO_CURSOR);
+  }
+  else if (mode == CB_FLIP_BRUSH_XY)
+  {
+    CopyBrushExt(0, 0, 0, 0, 0, CB_DELETE_OLD_CURSOR);
+
+    for (y = 1; y < MAX(brush_width, brush_height); y++)
+      for (x = 0; x < y; x++)
+	SwapFlippedTiles(&brush_buffer[x][y],
+			 &brush_buffer[y][x], mode);
+
+    swap_numbers(&brush_width, &brush_height);
+
+    CopyBrushExt(last_cursor_x, last_cursor_y, 0, 0, 0, CB_BRUSH_TO_CURSOR);
+  }
 
   if (mode == CB_UPDATE_BRUSH_POSITION)
   {
@@ -12745,6 +12796,22 @@ static void UpdateBrushPosition(int x, int y)
 static void DeleteBrushFromCursor(void)
 {
   CopyBrushExt(0, 0, 0, 0, 0, CB_DELETE_OLD_CURSOR);
+}
+
+static void FlipBrushX(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_FLIP_BRUSH_X);
+}
+
+static void FlipBrushY(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_FLIP_BRUSH_Y);
+}
+
+static void RotateBrush(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_FLIP_BRUSH_XY);
+  CopyBrushExt(0, 0, 0, 0, 0, CB_FLIP_BRUSH_X);
 }
 
 void DumpBrush(void)
@@ -14687,6 +14754,16 @@ void HandleLevelEditorKeyInput(Key key)
       if (letter && letter == controlbutton_info[i].shortcut)
 	if (!anyTextGadgetActive())
 	  ClickOnGadget(level_editor_gadget[i], button);
+
+  if (draw_with_brush)
+  {
+    if (letter == 'x')
+      FlipBrushX();
+    else if (letter == 'y')
+      FlipBrushY();
+    else if (letter == 'z')
+      RotateBrush();
+  }
 }
 
 static void HandleLevelEditorIdle_Properties(void)
