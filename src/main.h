@@ -697,11 +697,22 @@
 #define IS_INTERNAL_ELEMENT(e)	((e) >= EL_INTERNAL_START &&		\
 	 			 (e) <= EL_INTERNAL_END)
 
-#define IS_MM_ELEMENT(e)	((e) >= EL_MM_START &&			\
-				 (e) <= EL_MM_END)
+#define IS_MM_ELEMENT_1(e)	((e) >= EL_MM_START_1 &&		\
+				 (e) <= EL_MM_END_1)
+#define IS_MM_ELEMENT_2(e)	((e) >= EL_MM_START_2 &&		\
+				 (e) <= EL_MM_END_2)
+#define IS_MM_ELEMENT_3(e)	((e) >= EL_MM_START_3 &&		\
+				 (e) <= EL_MM_END_3)
+#define IS_MM_ELEMENT(e)	(IS_MM_ELEMENT_1(e) ||			\
+				 IS_MM_ELEMENT_2(e) ||			\
+				 IS_MM_ELEMENT_3(e))
 
-#define IS_DF_ELEMENT(e)	((e) >= EL_DF_START &&			\
-				 (e) <= EL_DF_END)
+#define IS_DF_ELEMENT_1(e)	((e) >= EL_DF_START_1 &&		\
+				 (e) <= EL_DF_END_1)
+#define IS_DF_ELEMENT_2(e)	((e) >= EL_DF_START_2 &&		\
+				 (e) <= EL_DF_END_2)
+#define IS_DF_ELEMENT(e)	(IS_DF_ELEMENT_1(e) ||			\
+				 IS_DF_ELEMENT_2(e))
 
 #define IS_MM_MCDUFFIN(e)	((e) >= EL_MM_MCDUFFIN_START &&		\
 				 (e) <= EL_MM_MCDUFFIN_END)
@@ -1719,6 +1730,7 @@
 #define EL_MM_START_2			(EL_MM_START + 160)
 
 #define EL_DF_START			EL_MM_START_2
+#define EL_DF_START_1			EL_MM_START_2
 #define EL_DF_START2			(EL_DF_START - 240)
 
 #define EL_DF_MIRROR_START		EL_DF_START
@@ -1844,7 +1856,7 @@
 #define EL_DF_STEEL_GRID_ROTATING_8	(EL_DF_STEEL_GRID_ROTATING_START + 7)
 #define EL_DF_STEEL_GRID_ROTATING_END	EL_DF_STEEL_GRID_ROTATING_07
 
-#define EL_DF_END			(EL_DF_START2 + 355)
+#define EL_DF_END_1			(EL_DF_START2 + 355)
 
 #define EL_MM_TELEPORTER_RED_START	(EL_DF_START2 + 356)
 #define EL_MM_TELEPORTER_RED_1		(EL_MM_TELEPORTER_RED_START + 0)
@@ -1932,7 +1944,6 @@
 #define EL_DF_WOODEN_WALL		1214
 
 #define EL_MM_END_2			(EL_DF_START2 + 430)
-#define EL_MM_END			EL_MM_END_2
 
 #define EL_SPRING_LEFT			1215
 #define EL_SPRING_RIGHT			1216
@@ -1948,6 +1959,7 @@
 // ---------- end of empty space elements section -----------------------------
 
 #define EL_MM_START_3			EL_DF_MIRROR_FIXED_START
+#define EL_DF_START_2			EL_DF_MIRROR_FIXED_START
 
 #define EL_DF_MIRROR_FIXED_START	1233
 #define EL_DF_MIRROR_FIXED_1		(EL_DF_MIRROR_FIXED_START + 0)
@@ -1969,6 +1981,7 @@
 #define EL_DF_MIRROR_FIXED_END		EL_DF_MIRROR_FIXED_16
 
 #define EL_MM_END_3			EL_DF_MIRROR_FIXED_END
+#define EL_DF_END_2			EL_DF_MIRROR_FIXED_END
 
 #define NUM_FILE_ELEMENTS		1249
 
