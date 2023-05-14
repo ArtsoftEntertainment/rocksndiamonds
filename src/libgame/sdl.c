@@ -65,6 +65,10 @@ static void FinalizeScreen(int draw_target)
   // copy tile selection cursor to render target buffer, if defined (above all)
   if (gfx.draw_tile_cursor_function != NULL)
     gfx.draw_tile_cursor_function(draw_target);
+
+  // copy global animations to render target buffer, if defined (mouse pointer)
+  if (gfx.draw_global_anim_function != NULL)
+    gfx.draw_global_anim_function(draw_target, DRAW_GLOBAL_ANIM_STAGE_3);
 }
 
 static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)

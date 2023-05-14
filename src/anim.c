@@ -961,7 +961,7 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
     viewport_width  = part->graphic_info.width;
     viewport_height = part->graphic_info.height;
 
-    part->drawing_stage = DRAW_GLOBAL_ANIM_STAGE_2;
+    part->drawing_stage = DRAW_GLOBAL_ANIM_STAGE_3;
 
     // do not use global animation mouse pointer when reloading artwork
     if (global.anim_status != GAME_MODE_LOADING)
