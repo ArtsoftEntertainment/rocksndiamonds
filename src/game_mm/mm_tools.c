@@ -1222,6 +1222,103 @@ int get_rotated_element(int element, int step)
   return base_element + (element_phase + step + num_elements) % num_elements;
 }
 
+static boolean has_full_rotation(int element)
+{
+  return (IS_BEAMER(element) ||
+	  IS_MCDUFFIN(element) ||
+	  IS_LASER(element) ||
+	  IS_RECEIVER(element) ||
+	  IS_PACMAN(element));
+}
+
+#define MM_FLIP_X			0
+#define MM_FLIP_Y			1
+#define MM_FLIP_XY			2
+
+static int getFlippedTileExt_MM(int element, int mode)
+{
+  if (IS_WALL(element))
+  {
+    int base = WALL_BASE(element);
+    int bits = WALL_BITS(element);
+
+    if (mode == MM_FLIP_X)
+    {
+      bits = ((bits & 1) << 1 |
+	      (bits & 2) >> 1 |
+	      (bits & 4) << 1 |
+	      (bits & 8) >> 1);
+    }
+    else if (mode == MM_FLIP_Y)
+    {
+      bits = ((bits & 1) << 2 |
+	      (bits & 2) << 2 |
+	      (bits & 4) >> 2 |
+	      (bits & 8) >> 2);
+    }
+    else if (mode == MM_FLIP_XY)
+    {
+      bits = ((bits & 1) << 0 |
+	      (bits & 2) << 1 |
+	      (bits & 4) >> 1 |
+	      (bits & 8) >> 0);
+    }
+
+    element = base | bits;
+  }
+  else
+  {
+    int base_element = get_base_element(element);
+    int num_elements = get_num_elements(element);
+    int element_phase = element - base_element;
+
+    if (IS_GRID_STEEL(element) || IS_GRID_WOOD(element))
+    {
+      if ((mode == MM_FLIP_XY && element_phase < 2) ||
+	  (mode != MM_FLIP_XY && element_phase > 1))
+	element_phase ^= 1;
+    }
+    else
+    {
+      int num_elements_flip = num_elements;
+
+      if (has_full_rotation(element))
+      {
+	if (mode == MM_FLIP_X)
+	  num_elements_flip = num_elements / 2;
+	else if (mode == MM_FLIP_XY)
+	  num_elements_flip = num_elements * 3 / 4;
+      }
+      else
+      {
+	if (mode == MM_FLIP_XY)
+	  num_elements_flip = num_elements / 2;
+      }
+
+      element_phase = num_elements_flip - element_phase;
+    }
+
+    element = base_element + (element_phase + num_elements) % num_elements;
+  }
+
+  return element;
+}
+
+int getFlippedTileX_MM(int element)
+{
+  return getFlippedTileExt_MM(element, MM_FLIP_X);
+}
+
+int getFlippedTileY_MM(int element)
+{
+  return getFlippedTileExt_MM(element, MM_FLIP_Y);
+}
+
+int getFlippedTileXY_MM(int element)
+{
+  return getFlippedTileExt_MM(element, MM_FLIP_XY);
+}
+
 int map_wall_from_base_element(int element)
 {
   switch (element)

@@ -252,6 +252,10 @@ void SaveNativeLevel_MM(char *);
 int getFieldbufferOffsetX_MM(void);
 int getFieldbufferOffsetY_MM(void);
 
+int getFlippedTileX_MM(int);
+int getFlippedTileY_MM(int);
+int getFlippedTileXY_MM(int);
+
 void BlitScreenToBitmap_MM(Bitmap *);
 void RedrawPlayfield_MM(void);
 
