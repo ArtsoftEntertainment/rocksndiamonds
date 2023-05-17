@@ -203,6 +203,7 @@ void clear_mem(void *, unsigned int);
 
 void swap_numbers(int *, int *);
 void swap_number_pairs(int *, int *, int *, int *);
+int get_number_of_bits(int);
 
 int getFile8BitInteger(File *);
 int putFile8BitInteger(FILE *, int);

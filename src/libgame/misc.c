@@ -1682,6 +1682,31 @@ void swap_number_pairs(int *x1, int *y1, int *x2, int *y2)
   *y2 = help_y;
 }
 
+int get_number_of_bits(int bits)
+{
+  /*
+    Counting bits set, Brian Kernighan's way
+
+    Brian Kernighan's method goes through as many iterations as there are set
+    bits. So if we have a 32-bit word with only the high bit set, then it will
+    only go once through the loop.
+
+    Published in 1988, the C Programming Language 2nd Ed. (by Brian W. Kernighan
+    and Dennis M. Ritchie) mentions this in exercise 2-9.
+    First published by Peter Wegner in CACM 3 (1960), 322.
+  */
+
+  int num_bits = 0;
+
+  while (bits)
+  {
+    bits &= bits - 1;	// clear the least significant bit set
+    num_bits++;
+  }
+
+  return num_bits;
+}
+
 /* the "put" variants of the following file access functions check for the file
    pointer being != NULL and return the number of bytes they have or would have
    written; this allows for chunk writing functions to first determine the size

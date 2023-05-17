@@ -12054,19 +12054,10 @@ static boolean isHiresDrawElement(int element)
 
 static int numHiresTiles(int element)
 {
-  if (!IS_MM_WALL(element))
-    return 1;
+  if (IS_MM_WALL(element))
+    return get_number_of_bits(MM_WALL_BITS(element));
 
-  int bits = MM_WALL_BITS(element);
-  int num_bits = 0;
-
-  while (bits)
-  {
-    bits &= bits - 1;
-    num_bits++;
-  }
-
-  return num_bits;
+  return 1;
 }
 
 static void SetDrawModeHiRes(int element)
