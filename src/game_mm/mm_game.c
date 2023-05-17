@@ -837,6 +837,9 @@ void InitGameActions_MM(void)
     AdvanceFrameCounter();
     AdvanceGfxFrame();
 
+    if (PendingEscapeKeyEvent())
+      continue;
+
 #ifdef DEBUG
     if (setup.quick_doors)
       continue;
