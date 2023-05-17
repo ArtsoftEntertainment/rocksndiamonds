@@ -837,15 +837,20 @@ void InitGameActions_MM(void)
     AdvanceFrameCounter();
     AdvanceGfxFrame();
 
-    DrawLevel_MM();
-
-    BackToFront_MM();
-
 #ifdef DEBUG
     if (setup.quick_doors)
       continue;
 #endif
+
+    DrawLevel_MM();
+
+    BackToFront_MM();
   }
+
+#ifdef DEBUG
+  if (setup.quick_doors)
+    DrawLevel_MM();
+#endif
 
   ScanLaser();
 
