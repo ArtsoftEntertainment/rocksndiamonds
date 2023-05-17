@@ -1711,6 +1711,30 @@ static boolean HitElement(int element, int hit_mask)
 {
   if (IS_DF_SLOPE(element))
   {
+    // check if laser scan has crossed element boundaries (not just mini tiles)
+    boolean cross_x = (getLevelFromLaserX(LX) != getLevelFromLaserX(LX + 2));
+    boolean cross_y = (getLevelFromLaserY(LY) != getLevelFromLaserY(LY + 2));
+
+    // check if an edge was hit while crossing element borders
+    if (cross_x && cross_y && get_number_of_bits(hit_mask) == 1)
+    {
+      // check both sides of potentially diagonal side of slope
+      int dx1 = (LX + XS) % TILEX;
+      int dy1 = (LY + YS) % TILEY;
+      int dx2 = (LX + XS + 2) % TILEX;
+      int dy2 = (LY + YS + 2) % TILEY;
+      int pos = getMaskFromElement(element);
+
+      // check if we are entering empty space area after hitting edge
+      if (mm_masks[pos][dx1 / 2][dy1 / 2] != 'X' &&
+	  mm_masks[pos][dx2 / 2][dy2 / 2] != 'X')
+      {
+	// we already know that we hit an edge, but use this function to go on
+	if (HitOnlyAnEdge(hit_mask))
+	  return FALSE;
+      }
+    }
+
     int mirrored_angle = get_mirrored_angle(laser.current_angle,
 					    get_element_angle(element));
     int opposite_angle = get_opposite_angle(laser.current_angle);
