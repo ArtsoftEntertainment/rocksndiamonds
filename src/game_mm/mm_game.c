@@ -1981,7 +1981,7 @@ static boolean HitElement(int element, int hit_mask)
 	  {
 	    int pos = getMaskFromElement(element_side);
 
-	    if (mm_masks[pos][dx / 2][dx / 2] == 'X')
+	    if (mm_masks[pos][dx / 2][dy / 2] == 'X')
 	      laser.overloaded = TRUE;
 	  }
 	}
