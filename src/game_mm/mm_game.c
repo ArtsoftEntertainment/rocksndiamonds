@@ -1901,13 +1901,27 @@ static boolean HitElement(int element, int hit_mask)
     XS = 2 * Step[laser.current_angle].x;
     YS = 2 * Step[laser.current_angle].y;
 
-    if (!IS_22_5_ANGLE(laser.current_angle))	// 90° or 45° angle
-      step_size = 8;
-    else
-      step_size = 4;
+    if (through_center)
+    {
+      // start from center position for all game elements but slope
+      if (!IS_22_5_ANGLE(laser.current_angle))	// 90° or 45° angle
+	step_size = 8;
+      else
+	step_size = 4;
 
-    LX += step_size * XS;
-    LY += step_size * YS;
+      LX += step_size * XS;
+      LY += step_size * YS;
+    }
+    else
+    {
+      // advance laser position until reaching the next tile (slopes)
+      while (LX / TILEX == ELX && (LX + 2) / TILEX == ELX &&
+	     LY / TILEY == ELY && (LY + 2) / TILEY == ELY)
+      {
+	LX += XS;
+	LY += YS;
+      }
+    }
 
     // draw sparkles on mirror
     if ((IS_MIRROR(element) ||
