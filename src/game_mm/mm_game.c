@@ -1970,8 +1970,8 @@ static boolean HitElement(int element, int hit_mask)
 
 	int nr = element - EL_DF_SLOPE_START;
 	int dx = (nr == 0 ? (XS > 0 ? TILEX - 1 : -1) :
-		  nr == 1 ? (XS > 0 ? TILEX     :  1) :
-		  nr == 2 ? (XS > 0 ? TILEX     :  1) :
+		  nr == 1 ? (XS > 0 ? TILEX     :  0) :
+		  nr == 2 ? (XS > 0 ? TILEX     :  0) :
 		  nr == 3 ? (XS > 0 ? TILEX - 1 : -1) : 0);
 	int dy = (nr == 0 ? (YS > 0 ? TILEY - 1 : -1) :
 		  nr == 1 ? (YS > 0 ? TILEY - 1 : -1) :
