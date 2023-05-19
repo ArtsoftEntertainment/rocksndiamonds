@@ -1956,8 +1956,8 @@ static boolean HitElement(int element, int hit_mask)
       {
 	int elx, ely;
 
-	elx = getLevelFromLaserX(LX);
-	ely = getLevelFromLaserY(LY);
+	elx = getLevelFromLaserX(LX + XS);
+	ely = getLevelFromLaserY(LY + YS);
 
 	if (IN_LEV_FIELD(elx, ely))
 	{
