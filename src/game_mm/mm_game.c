@@ -981,6 +981,11 @@ static int getMaskFromElement(int element)
     return MM_MASK_CIRCLE;
 }
 
+static int getPixelFromMask(int pos, int dx, int dy)
+{
+  return (mm_masks[pos][dy / 2][dx / 2] == 'X' ? 1 : 0);
+}
+
 static int getLevelFromLaserX(int x)
 {
   return x / TILEX - (x < 0 ? 1 : 0);		// correct negative values
@@ -1064,7 +1069,7 @@ static int ScanPixel(void)
 	{
 	  int pos = getMaskFromElement(element);
 
-	  pixel = (mm_masks[pos][dy / 2][dx / 2] == 'X' ? 1 : 0);
+	  pixel = getPixelFromMask(pos, dx, dy);
 	}
       }
       else
@@ -1708,8 +1713,8 @@ static boolean HitElement(int element, int hit_mask)
       int pos = getMaskFromElement(element);
 
       // check if we are entering empty space area after hitting edge
-      if (mm_masks[pos][dy1 / 2][dx1 / 2] != 'X' &&
-	  mm_masks[pos][dy2 / 2][dx2 / 2] != 'X')
+      if (!getPixelFromMask(pos, dx1, dy1) &&
+	  !getPixelFromMask(pos, dx2, dy2))
       {
 	// we already know that we hit an edge, but use this function to go on
 	if (HitOnlyAnEdge(hit_mask))
@@ -1998,7 +2003,7 @@ static boolean HitElement(int element, int hit_mask)
 	  {
 	    int pos = getMaskFromElement(element_side);
 
-	    if (mm_masks[pos][dy / 2][dx / 2] == 'X')
+	    if (getPixelFromMask(pos, dx, dy))
 	      laser.overloaded = TRUE;
 	  }
 	}
