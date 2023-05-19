@@ -1742,9 +1742,6 @@ static boolean HitElement(int element, int hit_mask)
     // check if laser is reflected by slope by 180°
     if (mirrored_angle == opposite_angle)
     {
-      LX += XS;
-      LY += YS;
-
       AddDamagedField(LX / TILEX, LY / TILEY);
 
       laser.overloaded = TRUE;
