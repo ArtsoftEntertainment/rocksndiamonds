@@ -1708,8 +1708,8 @@ static boolean HitElement(int element, int hit_mask)
       int pos = getMaskFromElement(element);
 
       // check if we are entering empty space area after hitting edge
-      if (mm_masks[pos][dx1 / 2][dy1 / 2] != 'X' &&
-	  mm_masks[pos][dx2 / 2][dy2 / 2] != 'X')
+      if (mm_masks[pos][dy1 / 2][dx1 / 2] != 'X' &&
+	  mm_masks[pos][dy2 / 2][dx2 / 2] != 'X')
       {
 	// we already know that we hit an edge, but use this function to go on
 	if (HitOnlyAnEdge(hit_mask))
@@ -1998,7 +1998,7 @@ static boolean HitElement(int element, int hit_mask)
 	  {
 	    int pos = getMaskFromElement(element_side);
 
-	    if (mm_masks[pos][dx / 2][dy / 2] == 'X')
+	    if (mm_masks[pos][dy / 2][dx / 2] == 'X')
 	      laser.overloaded = TRUE;
 	  }
 	}
