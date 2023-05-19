@@ -1328,22 +1328,6 @@ static void ScanLaser(void)
 	  break;
       }
     }
-    else if (IS_DF_SLOPE(element))
-    {
-      if (hit_mask == HIT_MASK_LEFT ||
-	  hit_mask == HIT_MASK_RIGHT ||
-	  hit_mask == HIT_MASK_TOP ||
-	  hit_mask == HIT_MASK_BOTTOM)
-      {
-	if (HitReflectingWalls(element, hit_mask))
-	  break;
-      }
-      else
-      {
-	if (HitElement(element, hit_mask))
-	  break;
-      }
-    }
     else
     {
       if (HitElement(element, hit_mask))
@@ -1703,6 +1687,15 @@ static boolean HitElement(int element, int hit_mask)
     // check if laser scan has crossed element boundaries (not just mini tiles)
     boolean cross_x = (getLevelFromLaserX(LX) != getLevelFromLaserX(LX + 2));
     boolean cross_y = (getLevelFromLaserY(LY) != getLevelFromLaserY(LY + 2));
+
+    // check if wall (horizontal or vertical) side of slope was hit
+    if (hit_mask == HIT_MASK_LEFT ||
+	hit_mask == HIT_MASK_RIGHT ||
+	hit_mask == HIT_MASK_TOP ||
+	hit_mask == HIT_MASK_BOTTOM)
+    {
+      return HitReflectingWalls(element, hit_mask);
+    }
 
     // check if an edge was hit while crossing element borders
     if (cross_x && cross_y && get_number_of_bits(hit_mask) == 1)
