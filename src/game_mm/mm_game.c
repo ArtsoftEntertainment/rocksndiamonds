@@ -1702,7 +1702,26 @@ static boolean HitElement(int element, int hit_mask)
 	hit_mask == HIT_MASK_TOP ||
 	hit_mask == HIT_MASK_BOTTOM)
     {
-      return HitReflectingWalls(element, hit_mask);
+      boolean hit_slope_corner_in_laser_direction =
+	((hit_mask == HIT_MASK_LEFT   && (element == EL_DF_SLOPE_01 ||
+					  element == EL_DF_SLOPE_02)) ||
+	 (hit_mask == HIT_MASK_RIGHT  && (element == EL_DF_SLOPE_00 ||
+					  element == EL_DF_SLOPE_03)) ||
+	 (hit_mask == HIT_MASK_TOP    && (element == EL_DF_SLOPE_02 ||
+					  element == EL_DF_SLOPE_03)) ||
+	 (hit_mask == HIT_MASK_BOTTOM && (element == EL_DF_SLOPE_00 ||
+					  element == EL_DF_SLOPE_01)));
+
+      boolean hit_slope_corner_in_laser_direction_double_checked =
+	(cross_x && cross_y &&
+	 laser.current_angle == mirrored_angle &&
+	 hit_slope_corner_in_laser_direction);
+
+      // check special case of laser hitting the corner of a slope and another
+      // element (either wall or another slope), following the diagonal side
+      // of the slope which has the same angle as the direction of the laser
+      if (!hit_slope_corner_in_laser_direction_double_checked)
+	return HitReflectingWalls(element, hit_mask);
     }
 
     // check if an edge was hit while crossing element borders
