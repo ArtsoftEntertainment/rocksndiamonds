@@ -1209,14 +1209,10 @@ static void ScanLaser(void)
       break;
     }
 
-    boolean diagonally_adjacent_hit = FALSE;
-
     // handle special case of laser hitting two diagonally adjacent elements
     // (with or without a third corner element behind these two elements)
     if ((diag_1 || diag_2) && cross_x && cross_y)
     {
-      diagonally_adjacent_hit = TRUE;
-
       // compare the two diagonally adjacent elements
       int xoffset = 2;
       int yoffset = 2 * (diag_1 ? -1 : +1);
@@ -1334,13 +1330,6 @@ static void ScanLaser(void)
     }
     else if (IS_DF_SLOPE(element))
     {
-      if (diagonally_adjacent_hit)
-      {
-	laser.overloaded = TRUE;
-
-	break;
-      }
-
       if (hit_mask == HIT_MASK_LEFT ||
 	  hit_mask == HIT_MASK_RIGHT ||
 	  hit_mask == HIT_MASK_TOP ||
