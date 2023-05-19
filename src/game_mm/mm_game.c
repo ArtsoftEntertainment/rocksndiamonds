@@ -1692,6 +1692,9 @@ static boolean HitElement(int element, int hit_mask)
     // check if laser scan has crossed element boundaries (not just mini tiles)
     boolean cross_x = (getLevelFromLaserX(LX) != getLevelFromLaserX(LX + 2));
     boolean cross_y = (getLevelFromLaserY(LY) != getLevelFromLaserY(LY + 2));
+    int element_angle = get_element_angle(element);
+    int mirrored_angle = get_mirrored_angle(laser.current_angle, element_angle);
+    int opposite_angle = get_opposite_angle(laser.current_angle);
 
     // check if wall (horizontal or vertical) side of slope was hit
     if (hit_mask == HIT_MASK_LEFT ||
@@ -1721,10 +1724,6 @@ static boolean HitElement(int element, int hit_mask)
 	  return FALSE;
       }
     }
-
-    int mirrored_angle = get_mirrored_angle(laser.current_angle,
-					    get_element_angle(element));
-    int opposite_angle = get_opposite_angle(laser.current_angle);
 
     // check if laser is reflected by slope by 180°
     if (mirrored_angle == opposite_angle)
