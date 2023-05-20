@@ -13227,13 +13227,18 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
 					  CE_PLAYER_LEAVES_X,
 					  player->index_bit, leave_side);
 
-      if (IS_CUSTOM_ELEMENT(new_element))
-	CheckElementChangeByPlayer(jx, jy, new_element, CE_ENTERED_BY_PLAYER,
-				   player->index_bit, enter_side);
+      // needed because pushed element has not yet reached its destination,
+      // so it would trigger a change event at its previous field location
+      if (!player->is_pushing)
+      {
+	if (IS_CUSTOM_ELEMENT(new_element))
+	  CheckElementChangeByPlayer(jx, jy, new_element, CE_ENTERED_BY_PLAYER,
+				     player->index_bit, enter_side);
 
-      CheckTriggeredElementChangeByPlayer(jx, jy, new_element,
-					  CE_PLAYER_ENTERS_X,
-					  player->index_bit, enter_side);
+	CheckTriggeredElementChangeByPlayer(jx, jy, new_element,
+					    CE_PLAYER_ENTERS_X,
+					    player->index_bit, enter_side);
+      }
 
       CheckTriggeredElementChangeBySide(jx, jy, player->initial_element,
 					CE_MOVE_OF_X, move_direction);
@@ -13244,8 +13249,8 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
       TestIfPlayerTouchesBadThing(jx, jy);
       TestIfPlayerTouchesCustomElement(jx, jy);
 
-      /* needed because pushed element has not yet reached its destination,
-	 so it would trigger a change event at its previous field location */
+      // needed because pushed element has not yet reached its destination,
+      // so it would trigger a change event at its previous field location
       if (!player->is_pushing)
 	TestIfElementTouchesCustomElement(jx, jy);	// for empty space
 
