@@ -2661,7 +2661,7 @@ enum
 // program information and versioning definitions
 #define PROGRAM_VERSION_SUPER		4
 #define PROGRAM_VERSION_MAJOR		3
-#define PROGRAM_VERSION_MINOR		6
+#define PROGRAM_VERSION_MINOR		7
 #define PROGRAM_VERSION_PATCH		0
 #define PROGRAM_VERSION_EXTRA		""
 
