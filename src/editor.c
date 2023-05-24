@@ -13306,7 +13306,8 @@ static void WrapLevel(int dx, int dy)
   CopyLevelToUndoBuffer(UNDO_ACCUMULATE);
 }
 
-static void DrawAreaElementHighlight(boolean highlighted)
+static void DrawAreaElementHighlight(boolean highlighted,
+				     boolean highlighted_similar)
 {
   DrawEditorLevel(ed_fieldx, ed_fieldy, level_xpos, level_ypos);
 
@@ -13325,7 +13326,10 @@ static void DrawAreaElementHighlight(boolean highlighted)
       if (!IN_LEV_FIELD(lx, ly))
 	continue;
 
-      if (Tile[lx][ly] != new_element1)
+      if (Tile[lx][ly] != new_element1 &&
+	  (!highlighted_similar ||
+	   !strEqual(element_info[Tile[lx][ly]].class_name,
+		     element_info[new_element1].class_name)))
 	continue;
 
       int sx = SX + x * ed_tilesize;
@@ -14961,16 +14965,20 @@ static void HandleLevelEditorIdle_Properties(void)
 static void HandleLevelEditorIdle_Drawing(void)
 {
   static boolean last_highlighted = FALSE;
+  static boolean last_highlighted_similar = FALSE;
   boolean highlighted = (GetKeyModState() & KMOD_Alt);
+  boolean highlighted_similar = (GetKeyModState() & KMOD_Shift);
 
-  if (highlighted != last_highlighted)
+  if (highlighted != last_highlighted ||
+      (highlighted && highlighted_similar != last_highlighted_similar))
   {
-    DrawAreaElementHighlight(highlighted);
-
-    last_highlighted = highlighted;
+    DrawAreaElementHighlight(highlighted, highlighted_similar);
 
     redraw_mask |= REDRAW_FIELD;
   }
+
+  last_highlighted = highlighted;
+  last_highlighted_similar = highlighted_similar;
 }
 
 void HandleLevelEditorIdle(void)
