@@ -13320,29 +13320,69 @@ static void DrawAreaElementHighlight(boolean highlighted,
   {
     for (y = 0; y < ed_fieldy; y++)
     {
+      boolean highlight = FALSE;
       int lx = x + level_xpos;
       int ly = y + level_ypos;
 
       if (!IN_LEV_FIELD(lx, ly))
 	continue;
 
-      if (Tile[lx][ly] != new_element1 &&
-	  (!highlighted_similar ||
-	   !strEqual(element_info[Tile[lx][ly]].class_name,
-		     element_info[new_element1].class_name)))
+      // check if element is the same
+      if (Tile[lx][ly] == new_element1)
+	highlight = TRUE;
+
+      // check if element is similar
+      if (highlighted_similar &&
+	  strEqual(element_info[Tile[lx][ly]].class_name,
+		   element_info[new_element1].class_name))
+	highlight = TRUE;
+
+      // check if element is matching MM style wall
+      if (IS_MM_WALL(Tile[lx][ly]) &&
+	  map_mm_wall_element(Tile[lx][ly]) == new_element1)
+	highlight = TRUE;
+
+      if (!highlight)
 	continue;
 
-      int sx = SX + x * ed_tilesize;
-      int sy = SY + y * ed_tilesize;
-      int from_sx = sx;
-      int from_sy = sy;
-      int to_sx = sx + ed_tilesize - 1;
-      int to_sy = sy + ed_tilesize - 1;
+      if (IS_MM_WALL(Tile[lx][ly]) && !highlighted_similar)
+      {
+	int i;
 
-      DrawSimpleWhiteLine(drawto, from_sx, from_sy, to_sx,   from_sy);
-      DrawSimpleWhiteLine(drawto, to_sx,   from_sy, to_sx,   to_sy);
-      DrawSimpleWhiteLine(drawto, to_sx,   to_sy,   from_sx, to_sy);
-      DrawSimpleWhiteLine(drawto, from_sx, to_sy,   from_sx, from_sy);
+	for (i = 0; i < 4; i++)
+	{
+	  if (!(MM_WALL_BITS(Tile[lx][ly]) & (1 << i)))
+	    continue;
+
+	  int xx = x * 2 + (i % 2);
+	  int yy = y * 2 + (i / 2);
+	  int sx = SX + xx * ed_tilesize / 2;
+	  int sy = SY + yy * ed_tilesize / 2;
+	  int from_sx = sx;
+	  int from_sy = sy;
+	  int to_sx = sx + ed_tilesize / 2 - 1;
+	  int to_sy = sy + ed_tilesize / 2 - 1;
+
+	  DrawSimpleWhiteLine(drawto, from_sx, from_sy, to_sx,   from_sy);
+	  DrawSimpleWhiteLine(drawto, to_sx,   from_sy, to_sx,   to_sy);
+	  DrawSimpleWhiteLine(drawto, to_sx,   to_sy,   from_sx, to_sy);
+	  DrawSimpleWhiteLine(drawto, from_sx, to_sy,   from_sx, from_sy);
+	}
+      }
+      else
+      {
+	int sx = SX + x * ed_tilesize;
+	int sy = SY + y * ed_tilesize;
+	int from_sx = sx;
+	int from_sy = sy;
+	int to_sx = sx + ed_tilesize - 1;
+	int to_sy = sy + ed_tilesize - 1;
+
+	DrawSimpleWhiteLine(drawto, from_sx, from_sy, to_sx,   from_sy);
+	DrawSimpleWhiteLine(drawto, to_sx,   from_sy, to_sx,   to_sy);
+	DrawSimpleWhiteLine(drawto, to_sx,   to_sy,   from_sx, to_sy);
+	DrawSimpleWhiteLine(drawto, from_sx, to_sy,   from_sx, from_sy);
+      }
     }
   }
 }
