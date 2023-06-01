@@ -3779,11 +3779,13 @@ struct MusicFileInfo
   char *artist_header;
   char *album_header;
   char *year_header;
+  char *played_header;
 
   char *title;
   char *artist;
   char *album;
   char *year;
+  char *played;
 
   int music;
 

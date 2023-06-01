@@ -12839,11 +12839,13 @@ static struct MusicFileInfo *get_music_file_info_ext(char *basename, int music,
     { "artist_header",	&tmp_music_file_info.artist_header	},
     { "album_header",	&tmp_music_file_info.album_header	},
     { "year_header",	&tmp_music_file_info.year_header	},
+    { "played_header",	&tmp_music_file_info.played_header	},
 
     { "title",		&tmp_music_file_info.title		},
     { "artist",		&tmp_music_file_info.artist		},
     { "album",		&tmp_music_file_info.album		},
     { "year",		&tmp_music_file_info.year		},
+    { "played",		&tmp_music_file_info.played		},
 
     { NULL,		NULL					},
   };
@@ -12957,11 +12959,13 @@ void LoadMusicInfo(void)
     checked_free(music_file_info->artist_header);
     checked_free(music_file_info->album_header);
     checked_free(music_file_info->year_header);
+    checked_free(music_file_info->played_header);
 
     checked_free(music_file_info->title);
     checked_free(music_file_info->artist);
     checked_free(music_file_info->album);
     checked_free(music_file_info->year);
+    checked_free(music_file_info->played);
 
     free(music_file_info);
 

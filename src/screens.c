@@ -3595,11 +3595,23 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       ystart += ystep_head;
     }
 
-    int music_level_nr = -1;
-    int i;
-
-    if (!list->is_sound)
+    if (!strEqual(list->played, UNKNOWN_NAME))
     {
+      if (!strEqual(list->played_header, UNKNOWN_NAME))
+	DrawTextSCentered(ystart, font_head, list->played_header);
+      else
+	DrawTextSCentered(ystart, font_head, "played in");
+
+      ystart += ystep_head;
+
+      DrawTextFCentered(ystart, font_text, "%s", list->played);
+      ystart += ystep_head;
+    }
+    else if (!list->is_sound)
+    {
+      int music_level_nr = -1;
+      int i;
+
       // check if this music is configured for a certain level
       for (i = leveldir_current->first_level;
 	   i <= leveldir_current->last_level; i++)
@@ -3616,7 +3628,11 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
 
       if (music_level_nr != -1)
       {
-	DrawTextSCentered(ystart, font_head, "played in");
+	if (!strEqual(list->played_header, UNKNOWN_NAME))
+	  DrawTextSCentered(ystart, font_head, list->played_header);
+	else
+	  DrawTextSCentered(ystart, font_head, "played in");
+
 	ystart += ystep_head;
 
 	DrawTextFCentered(ystart, font_text, "level %03d", music_level_nr);
