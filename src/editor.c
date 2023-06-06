@@ -8917,8 +8917,8 @@ static void AdjustDrawingAreaGadgets(void)
 
   if (suppressBorderElement())
   {
-    ed_xsize = max_ed_fieldx;
-    ed_ysize = max_ed_fieldy;
+    ed_xsize = lev_fieldx;
+    ed_ysize = lev_fieldy;
   }
 
   // check if we need any scrollbars
