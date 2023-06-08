@@ -1326,7 +1326,9 @@ static char *getCustomMusicDirectoryExt(boolean check_music)
     {
       // 2nd try: look for special artwork configured in level series config
       directory = getStringCopy(getLevelArtworkDir(TREE_TYPE_MUSIC_DIR));
-      if (directoryExists_CheckMusic(directory, check_music))
+
+      // directory also valid if no unconfigured music found (no game music)
+      if (directoryExists_CheckMusic(directory, FALSE))
 	return directory;
 
       free(directory);
@@ -1340,7 +1342,9 @@ static char *getCustomMusicDirectoryExt(boolean check_music)
   {
     // 3rd try: look for special artwork in configured artwork directory
     directory = getStringCopy(getSetupArtworkDir(artwork.mus_current));
-    if (directoryExists_CheckMusic(directory, check_music))
+
+    // directory also valid if no unconfigured music found (no game music)
+    if (directoryExists_CheckMusic(directory, FALSE))
       return directory;
 
     free(directory);
