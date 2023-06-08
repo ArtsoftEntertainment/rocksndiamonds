@@ -12985,12 +12985,16 @@ void LoadMusicInfo(void)
       // get music file info for configured level music
       music_nr = levelset.music[i];
     }
-    else
+    else if (num_music_noconf > 0)
     {
       // get music file info for unconfigured level music
       int level_pos = i - leveldir_current->first_level;
 
       music_nr = MAP_NOCONF_MUSIC(level_pos % num_music_noconf);
+    }
+    else
+    {
+      continue;
     }
 
     char *basename = getMusicInfoEntryFilename(music_nr);
