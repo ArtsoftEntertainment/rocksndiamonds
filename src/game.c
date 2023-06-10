@@ -10934,13 +10934,14 @@ static void HandleElementChange(int x, int y, int page)
 
   if (ChangeDelay[x][y] != 0)		// continue element change
   {
+    int graphic = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
+
+    // also needed if CE can not change, but has CE delay with CE action
+    if (IS_ANIMATED(graphic))
+      DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
+
     if (change->can_change)
     {
-      int graphic = el_act_dir2img(element, GfxAction[x][y], GfxDir[x][y]);
-
-      if (IS_ANIMATED(graphic))
-	DrawLevelGraphicAnimationIfNeeded(x, y, graphic);
-
       if (change->change_function)
 	change->change_function(x, y);
     }
