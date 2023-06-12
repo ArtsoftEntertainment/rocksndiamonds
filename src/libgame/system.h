@@ -379,34 +379,6 @@
 
 #define ANIM_DEFAULT		ANIM_LOOP
 
-// values for special drawing styles and event handling
-#define STYLE_NONE		0
-
-// values used for crumbled graphics
-#define STYLE_ACCURATE_BORDERS	(1 << 0)
-#define STYLE_INNER_CORNERS	(1 << 1)
-
-// values used for game panel graphics
-#define STYLE_REVERSE		(1 << 2)
-#define STYLE_LEFTMOST_POSITION	(1 << 3)
-
-// values used for global animations
-#define STYLE_BLOCK		(1 << 4)
-#define STYLE_PASSTHROUGH	(1 << 5)
-#define STYLE_MULTIPLE_ACTIONS	(1 << 6)
-
-#define STYLE_DEFAULT		STYLE_NONE
-
-// values for special global animation delay types
-#define ANIM_DELAY_UNDEFINED	-1
-#define ANIM_DELAY_NONE		0
-#define ANIM_DELAY_INIT		1
-#define ANIM_DELAY_ANIM		2
-#define ANIM_DELAY_POST		3
-
-// values for special global animation delay actions
-#define ANIM_DELAY_ACTION_NONE	-1
-
 // values for special global animation events
 #define ANIM_EVENT_UNDEFINED	-1
 #define ANIM_EVENT_NONE		0
@@ -431,6 +403,34 @@
 
 // values for special global animation event actions
 #define ANIM_EVENT_ACTION_NONE	-1
+
+// values for special global animation delay types
+#define ANIM_DELAY_UNDEFINED	-1
+#define ANIM_DELAY_NONE		0
+#define ANIM_DELAY_INIT		1
+#define ANIM_DELAY_ANIM		2
+#define ANIM_DELAY_POST		3
+
+// values for special global animation delay actions
+#define ANIM_DELAY_ACTION_NONE	-1
+
+// values for special drawing styles and event handling
+#define STYLE_NONE		0
+
+// values used for crumbled graphics
+#define STYLE_ACCURATE_BORDERS	(1 << 0)
+#define STYLE_INNER_CORNERS	(1 << 1)
+
+// values used for game panel graphics
+#define STYLE_REVERSE		(1 << 2)
+#define STYLE_LEFTMOST_POSITION	(1 << 3)
+
+// values used for global animations
+#define STYLE_BLOCK		(1 << 4)
+#define STYLE_PASSTHROUGH	(1 << 5)
+#define STYLE_MULTIPLE_ACTIONS	(1 << 6)
+
+#define STYLE_DEFAULT		STYLE_NONE
 
 // values for fade mode
 #define FADE_TYPE_NONE		0
