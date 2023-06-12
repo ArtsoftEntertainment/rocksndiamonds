@@ -382,19 +382,20 @@
 // values for special global animation events
 #define ANIM_EVENT_UNDEFINED	-1
 #define ANIM_EVENT_NONE		0
-#define ANIM_EVENT_SELF		(1 << 16)
-#define ANIM_EVENT_ANY		(1 << 17)
-#define ANIM_EVENT_CLICK	(1 << 18)
-#define ANIM_EVENT_INIT		(1 << 19)
-#define ANIM_EVENT_START	(1 << 20)
-#define ANIM_EVENT_END		(1 << 21)
-#define ANIM_EVENT_POST		(1 << 22)
-#define ANIM_EVENT_UNCLICK_ANY	(1 << 23)
+#define ANIM_EVENT_SELF		(1 << 0)
+#define ANIM_EVENT_ANY		(1 << 1)
+#define ANIM_EVENT_CLICK	(1 << 2)
+#define ANIM_EVENT_INIT		(1 << 3)
+#define ANIM_EVENT_START	(1 << 4)
+#define ANIM_EVENT_END		(1 << 5)
+#define ANIM_EVENT_POST		(1 << 6)
+#define ANIM_EVENT_UNCLICK_ANY	(1 << 7)
 
-// anim number: bits 0-7
-// part number: bits 8-15
-#define ANIM_EVENT_ANIM_BIT	0
-#define ANIM_EVENT_PART_BIT	8
+// event mask:  bits 0-7
+// anim number: bits 8-15
+// part number: bits 16-23
+#define ANIM_EVENT_ANIM_BIT	8
+#define ANIM_EVENT_PART_BIT	16
 
 #define ANIM_EVENT_ANIM_MASK	(0xff << ANIM_EVENT_ANIM_BIT)
 #define ANIM_EVENT_PART_MASK	(0xff << ANIM_EVENT_PART_BIT)
