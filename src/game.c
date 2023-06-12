@@ -3260,12 +3260,14 @@ static void InitGameEngine(void)
 
     for (j = 0; j < ei->num_change_pages; j++)
     {
-      ei->change_page[j].actual_trigger_element = EL_EMPTY;
-      ei->change_page[j].actual_trigger_player = EL_EMPTY;
-      ei->change_page[j].actual_trigger_player_bits = CH_PLAYER_NONE;
-      ei->change_page[j].actual_trigger_side = CH_SIDE_NONE;
-      ei->change_page[j].actual_trigger_ce_value = 0;
-      ei->change_page[j].actual_trigger_ce_score = 0;
+      struct ElementChangeInfo *change = &ei->change_page[j];
+
+      change->actual_trigger_element = EL_EMPTY;
+      change->actual_trigger_player = EL_EMPTY;
+      change->actual_trigger_player_bits = CH_PLAYER_NONE;
+      change->actual_trigger_side = CH_SIDE_NONE;
+      change->actual_trigger_ce_value = 0;
+      change->actual_trigger_ce_score = 0;
     }
   }
 
@@ -3283,16 +3285,18 @@ static void InitGameEngine(void)
 
     for (j = 0; j < ei->num_change_pages; j++)
     {
-      if (!ei->change_page[j].can_change_or_has_action)
+      struct ElementChangeInfo *change = &ei->change_page[j];
+
+      if (!change->can_change_or_has_action)
 	continue;
 
-      if (ei->change_page[j].has_event[CE_BY_OTHER_ACTION])
+      if (change->has_event[CE_BY_OTHER_ACTION])
       {
-	int trigger_element = ei->change_page[j].trigger_element;
+	int trigger_element = change->trigger_element;
 
 	for (k = 0; k < NUM_CHANGE_EVENTS; k++)
 	{
-	  if (ei->change_page[j].has_event[k])
+	  if (change->has_event[k])
 	  {
 	    if (IS_GROUP_ELEMENT(trigger_element))
 	    {
