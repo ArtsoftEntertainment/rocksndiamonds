@@ -2614,12 +2614,15 @@ void HandleJoystick(void)
   int up	= joy & JOY_UP;
   int down	= joy & JOY_DOWN;
   int button	= joy & JOY_BUTTON;
-  int newbutton	= (AnyJoystickButton() == JOY_BUTTON_NEW_PRESSED);
+  int anybutton = AnyJoystickButton();
+  int newbutton	= (anybutton == JOY_BUTTON_NEW_PRESSED);
   int dx	= (left ? -1	: right ? 1	: 0);
   int dy	= (up   ? -1	: down  ? 1	: 0);
   boolean use_delay_value_first = (joytest != joytest_last);
+  boolean new_button_event = (anybutton == JOY_BUTTON_NEW_PRESSED ||
+			      anybutton == JOY_BUTTON_NEW_RELEASED);
 
-  if (HandleGlobalAnimClicks(-1, -1, newbutton, FALSE))
+  if (new_button_event && HandleGlobalAnimClicks(-1, -1, newbutton, FALSE))
   {
     // do not handle this button event anymore
     return;
