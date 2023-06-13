@@ -2204,6 +2204,9 @@ void HandleKey(Key key, int key_status)
     // reset flag to ignore repeated "key pressed" events after key release
     ignore_repeated_key = FALSE;
 
+    // send key release event to global animation event handling
+    HandleGlobalAnimClicks(-1, -1, KEY_RELEASED, FALSE);
+
     return;
   }
 
