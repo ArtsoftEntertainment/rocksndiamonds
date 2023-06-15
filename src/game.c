@@ -11713,6 +11713,49 @@ void AdvanceGfxFrame(void)
   }
 }
 
+static void HandleMouseAction(struct MouseActionInfo *mouse_action,
+			      struct MouseActionInfo *mouse_action_last)
+{
+  if (mouse_action->button)
+  {
+    int new_button = (mouse_action->button && mouse_action_last->button == 0);
+    int ch_button = CH_SIDE_FROM_BUTTON(mouse_action->button);
+    int x = mouse_action->lx;
+    int y = mouse_action->ly;
+    int element = Tile[x][y];
+
+    if (new_button)
+    {
+      CheckElementChangeByMouse(x, y, element, CE_CLICKED_BY_MOUSE, ch_button);
+      CheckTriggeredElementChangeByMouse(x, y, element, CE_MOUSE_CLICKED_ON_X,
+					 ch_button);
+    }
+
+    CheckElementChangeByMouse(x, y, element, CE_PRESSED_BY_MOUSE, ch_button);
+    CheckTriggeredElementChangeByMouse(x, y, element, CE_MOUSE_PRESSED_ON_X,
+				       ch_button);
+
+    if (level.use_step_counter)
+    {
+      boolean counted_click = FALSE;
+
+      // element clicked that can change when clicked/pressed
+      if (CAN_CHANGE_OR_HAS_ACTION(element) &&
+	  (HAS_ANY_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ||
+	   HAS_ANY_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE)))
+	counted_click = TRUE;
+
+      // element clicked that can trigger change when clicked/pressed
+      if (trigger_events[element][CE_MOUSE_CLICKED_ON_X] ||
+	  trigger_events[element][CE_MOUSE_PRESSED_ON_X])
+	counted_click = TRUE;
+
+      if (new_button && counted_click)
+	CheckLevelTime_StepCounter();
+    }
+  }
+}
+
 void StartGameActions(boolean init_network_game, boolean record_tape,
 		      int random_seed)
 {
@@ -12279,45 +12322,7 @@ void GameActions_RND(void)
 #endif
   }
 
-  if (mouse_action.button)
-  {
-    int new_button = (mouse_action.button && mouse_action_last.button == 0);
-    int ch_button = CH_SIDE_FROM_BUTTON(mouse_action.button);
-
-    x = mouse_action.lx;
-    y = mouse_action.ly;
-    element = Tile[x][y];
-
-    if (new_button)
-    {
-      CheckElementChangeByMouse(x, y, element, CE_CLICKED_BY_MOUSE, ch_button);
-      CheckTriggeredElementChangeByMouse(x, y, element, CE_MOUSE_CLICKED_ON_X,
-					 ch_button);
-    }
-
-    CheckElementChangeByMouse(x, y, element, CE_PRESSED_BY_MOUSE, ch_button);
-    CheckTriggeredElementChangeByMouse(x, y, element, CE_MOUSE_PRESSED_ON_X,
-				       ch_button);
-
-    if (level.use_step_counter)
-    {
-      boolean counted_click = FALSE;
-
-      // element clicked that can change when clicked/pressed
-      if (CAN_CHANGE_OR_HAS_ACTION(element) &&
-	  (HAS_ANY_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ||
-	   HAS_ANY_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE)))
-	counted_click = TRUE;
-
-      // element clicked that can trigger change when clicked/pressed
-      if (trigger_events[element][CE_MOUSE_CLICKED_ON_X] ||
-	  trigger_events[element][CE_MOUSE_PRESSED_ON_X])
-	counted_click = TRUE;
-
-      if (new_button && counted_click)
-	CheckLevelTime_StepCounter();
-    }
-  }
+  HandleMouseAction(&mouse_action, &mouse_action_last);
 
   SCAN_PLAYFIELD(x, y)
   {
