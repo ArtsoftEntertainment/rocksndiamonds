@@ -15,12 +15,14 @@
 
 int getAnimationFrame(int, int, int, int, int);
 
+void InitGlobalAnimEventsForCustomElements(void);
 void InitGlobalAnimations(void);
 void DrawGlobalAnimations(int, int);
 
 void RestartGlobalAnimsByStatus(int);
 
 boolean HandleGlobalAnimClicks(int, int, int, boolean);
+void HandleGlobalAnimEventByElementChange(int);
 
 int getGlobalAnimSyncFrame(void);
 

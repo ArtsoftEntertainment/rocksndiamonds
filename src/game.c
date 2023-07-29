@@ -3195,6 +3195,17 @@ static void InitGameEngine(void)
     SET_PROPERTY(ch_delay->element, EP_CAN_CHANGE_OR_HAS_ACTION, TRUE);
   }
 
+  // ---------- initialize if element can trigger global animations -----------
+
+  for (i = 0; i < MAX_NUM_ELEMENTS; i++)
+  {
+    struct ElementInfo *ei = &element_info[i];
+
+    ei->has_anim_event = FALSE;
+  }
+
+  InitGlobalAnimEventsForCustomElements();
+
   // ---------- initialize internal run-time variables ------------------------
 
   for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
@@ -10703,6 +10714,9 @@ static boolean ChangeElement(int x, int y, int element, int page)
     return FALSE;
 
   ChangeCount[x][y]++;		// count number of changes in the same frame
+
+  if (ei->has_anim_event)
+    HandleGlobalAnimEventByElementChange(element);
 
   if (change->explode)
   {

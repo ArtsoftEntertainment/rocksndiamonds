@@ -3591,6 +3591,8 @@ struct ElementInfo
 
   struct ElementGroupInfo *group;	// pointer to element group info
 
+  boolean has_anim_event;	// element can trigger global animation
+
   // ---------- internal values used at runtime when playing ----------
 
   boolean has_change_event[NUM_CHANGE_EVENTS];

@@ -11546,6 +11546,57 @@ static boolean string_has_parameter(char *s, char *s_contained)
   return string_has_parameter(substring, s_contained);
 }
 
+static int get_anim_parameter_value_ce(char *s)
+{
+  char *s_ptr = s;
+  char *pattern = "ce_change:custom_";
+  int pattern_len = strlen(pattern);
+  char *matching_char = strstr(s_ptr, pattern);
+  int result = ANIM_EVENT_NONE;
+
+  if (matching_char == NULL)
+    return ANIM_EVENT_NONE;
+
+  result = ANIM_EVENT_CE_CHANGE;
+
+  s_ptr = matching_char + pattern_len;
+
+  // check for custom element number ("custom_X" or "custom_XX" or "custom_XXX")
+  if (*s_ptr >= '0' && *s_ptr <= '9')
+  {
+    int gic_ce_nr = (*s_ptr++ - '0');
+
+    if (*s_ptr >= '0' && *s_ptr <= '9')
+    {
+      gic_ce_nr = 10 * gic_ce_nr + (*s_ptr++ - '0');
+
+      if (*s_ptr >= '0' && *s_ptr <= '9')
+	gic_ce_nr = 10 * gic_ce_nr + (*s_ptr++ - '0');
+    }
+
+    if (gic_ce_nr < 1 || gic_ce_nr > NUM_CUSTOM_ELEMENTS)
+      return ANIM_EVENT_NONE;
+
+    // store internal CE number (0 to 255, not "custom_1" to "custom_256")
+    gic_ce_nr--;
+
+    result |= gic_ce_nr << ANIM_EVENT_CE_BIT;
+  }
+  else
+  {
+    // invalid custom element number specified
+
+    return ANIM_EVENT_NONE;
+  }
+
+  // discard result if next character is neither delimiter nor whitespace
+  if (!(*s_ptr == ',' || *s_ptr == '\0' ||
+	*s_ptr == ' ' || *s_ptr == '\t'))
+    return ANIM_EVENT_NONE;
+
+  return result;
+}
+
 static int get_anim_parameter_value(char *s)
 {
   int event_value[] =
@@ -11570,6 +11621,11 @@ static int get_anim_parameter_value(char *s)
   int pattern_1_len = 0;
   int result = ANIM_EVENT_NONE;
   int i;
+
+  result = get_anim_parameter_value_ce(s);
+
+  if (result != ANIM_EVENT_NONE)
+    return result;
 
   for (i = 0; i < ARRAY_SIZE(event_value); i++)
   {
@@ -11657,7 +11713,12 @@ static int get_anim_parameter_values(char *s)
 
   // if animation event found, add it to global animation event list
   if (event_value != ANIM_EVENT_NONE)
+  {
     list_pos = AddGlobalAnimEventValue(list_pos, event_value);
+
+    // continue with next part of the string, starting with next comma
+    s = strchr(s + 1, ',');
+  }
 
   while (s != NULL)
   {

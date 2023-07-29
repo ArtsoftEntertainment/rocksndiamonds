@@ -631,6 +631,59 @@ static void InitGlobalAnimControls(void)
   anim_classes_last = ANIM_CLASS_NONE;
 }
 
+static void SetGlobalAnimEventsForCustomElements(int list_pos)
+{
+  int num_events = GetGlobalAnimEventValueCount(list_pos);
+  int i;
+
+  for (i = 0; i < num_events; i++)
+  {
+    int event = GetGlobalAnimEventValue(list_pos, i);
+
+    if (event & ANIM_EVENT_CE_CHANGE)
+    {
+      int nr = (event >> ANIM_EVENT_CE_BIT) & 0xff;
+
+      if (nr >= 0 && nr < NUM_CUSTOM_ELEMENTS)
+	element_info[EL_CUSTOM_START + nr].has_anim_event = TRUE;
+    }
+  }
+}
+
+void InitGlobalAnimEventsForCustomElements(void)
+{
+  int m, a, p;
+  int control;
+
+  // custom element events for global animations only relevant while playing
+  m = GAME_MODE_PLAYING;
+
+  for (a = 0; a < NUM_GLOBAL_ANIMS; a++)
+  {
+    int ctrl_id = GLOBAL_ANIM_ID_CONTROL_FIRST + a;
+
+    control = global_anim_info[ctrl_id].graphic[GLOBAL_ANIM_ID_PART_BASE][m];
+
+    // if no base animation parameters defined, use default values
+    if (control == IMG_UNDEFINED)
+      control = IMG_INTERNAL_GLOBAL_ANIM_DEFAULT;
+
+    SetGlobalAnimEventsForCustomElements(graphic_info[control].init_event);
+    SetGlobalAnimEventsForCustomElements(graphic_info[control].anim_event);
+
+    for (p = 0; p < NUM_GLOBAL_ANIM_PARTS_ALL; p++)
+    {
+      control = global_anim_info[ctrl_id].graphic[p][m];
+
+      if (control == IMG_UNDEFINED)
+	continue;
+
+      SetGlobalAnimEventsForCustomElements(graphic_info[control].init_event);
+      SetGlobalAnimEventsForCustomElements(graphic_info[control].anim_event);
+    }
+  }
+}
+
 void InitGlobalAnimations(void)
 {
   InitGlobalAnimControls();
@@ -1145,6 +1198,8 @@ static boolean checkGlobalAnimEvent(int anim_event, int mask)
     return (anim_event & ANIM_EVENT_SELF);
   else if (mask & ANIM_EVENT_UNCLICK_ANY)
     return (anim_event & ANIM_EVENT_UNCLICK_ANY);
+  else if (mask & ANIM_EVENT_CE_CHANGE)
+    return (anim_event == mask);
   else
     return (anim_event == mask ||
 	    anim_event == mask_anim_only);
@@ -1299,6 +1354,39 @@ static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
 	      "%d.%d: 0x%08x, 0x%08x [0x%08x]",
 	      anim2_nr, part2_nr, c->init_event, c->anim_event, mask);
 #endif
+    }
+  }
+}
+
+static void InitGlobalAnim_Triggered_ByCustomElement(int nr)
+{
+  struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[GAME_MODE_PLAYING];
+
+  int event_value = ANIM_EVENT_CE_CHANGE;
+  int mask = event_value | (nr << ANIM_EVENT_CE_BIT);
+  int anim2_nr;
+
+  for (anim2_nr = 0; anim2_nr < ctrl->num_anims; anim2_nr++)
+  {
+    struct GlobalAnimMainControlInfo *anim2 = &ctrl->anim[anim2_nr];
+    int part2_nr;
+
+    for (part2_nr = 0; part2_nr < anim2->num_parts_all; part2_nr++)
+    {
+      struct GlobalAnimPartControlInfo *part2 = &anim2->part[part2_nr];
+
+      if (!(part2->state & ANIM_STATE_RUNNING))
+	continue;
+
+      if (isClickablePart(part2, mask))
+      {
+	part2->triggered = TRUE;
+
+#if 0
+	Debug("anim:InitGlobalAnim_Triggered_ByCustomElement",
+	      "%d.%d TRIGGERED BY CE %d", anim2_nr, part2_nr, nr + 1);
+#endif
+      }
     }
   }
 }
@@ -2050,4 +2138,12 @@ boolean HandleGlobalAnimClicks(int mx, int my, int button, boolean force_click)
 int getGlobalAnimSyncFrame(void)
 {
   return anim_sync_frame;
+}
+
+void HandleGlobalAnimEventByElementChange(int element)
+{
+  if (!IS_CUSTOM_ELEMENT(element))
+    return;
+
+  InitGlobalAnim_Triggered_ByCustomElement(element - EL_CUSTOM_START);
 }
