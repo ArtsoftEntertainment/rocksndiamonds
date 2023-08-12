@@ -1337,18 +1337,26 @@ static int get_graphic_parameter_value(char *value_raw, char *suffix, int type)
   return -1;
 }
 
-static int get_scaled_graphic_width(int graphic)
+static int get_scaled_graphic_width(Bitmap *src_bitmap, int graphic)
 {
   int original_width = getOriginalImageWidthFromImageID(graphic);
   int scale_up_factor = graphic_info[graphic].scale_up_factor;
 
+  // only happens when loaded outside artwork system (like "global.busy")
+  if (graphic_info == image_initial && src_bitmap)
+    original_width = src_bitmap->width;
+
   return original_width * scale_up_factor;
 }
 
-static int get_scaled_graphic_height(int graphic)
+static int get_scaled_graphic_height(Bitmap *src_bitmap, int graphic)
 {
   int original_height = getOriginalImageHeightFromImageID(graphic);
   int scale_up_factor = graphic_info[graphic].scale_up_factor;
+
+  // only happens when loaded outside artwork system (like "global.busy")
+  if (graphic_info == image_initial && src_bitmap)
+    original_height = src_bitmap->height;
 
   return original_height * scale_up_factor;
 }
@@ -1433,8 +1441,8 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   if (g->use_image_size)
   {
     // set new default bitmap size (with scaling, but without small images)
-    g->width  = get_scaled_graphic_width(graphic);
-    g->height = get_scaled_graphic_height(graphic);
+    g->width  = get_scaled_graphic_width(src_bitmap, graphic);
+    g->height = get_scaled_graphic_height(src_bitmap, graphic);
   }
 
   // optional width and height of each animation frame
@@ -1481,15 +1489,8 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   if (src_bitmap)
   {
     // get final bitmap size (with scaling, but without small images)
-    int src_image_width  = get_scaled_graphic_width(graphic);
-    int src_image_height = get_scaled_graphic_height(graphic);
-
-    if (src_image_width == 0 || src_image_height == 0)
-    {
-      // only happens when loaded outside artwork system (like "global.busy")
-      src_image_width  = src_bitmap->width;
-      src_image_height = src_bitmap->height;
-    }
+    int src_image_width  = get_scaled_graphic_width(src_bitmap, graphic);
+    int src_image_height = get_scaled_graphic_height(src_bitmap, graphic);
 
     if (parameter[GFX_ARG_TILE_SIZE] != ARG_UNDEFINED_VALUE)
     {
