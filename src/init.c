@@ -5890,6 +5890,9 @@ static void InitGfx(void)
     checked_free(filename_image_initial[i]);
   }
 
+  for (i = 0; i < NUM_INITIAL_IMAGES; i++)
+    image_initial[i].use_image_size = TRUE;
+
   graphic_info = image_initial;		// graphic == 0 => image_initial
 
   for (i = 0; i < NUM_INITIAL_IMAGES; i++)
