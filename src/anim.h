@@ -22,7 +22,7 @@ void DrawGlobalAnimations(int, int);
 void RestartGlobalAnimsByStatus(int);
 
 boolean HandleGlobalAnimClicks(int, int, int, boolean);
-void HandleGlobalAnimEventByElementChange(int);
+void HandleGlobalAnimEventByElementChange(int, int);
 
 int getGlobalAnimSyncFrame(void);
 

@@ -11549,9 +11549,10 @@ static boolean string_has_parameter(char *s, char *s_contained)
 static int get_anim_parameter_value_ce(char *s)
 {
   char *s_ptr = s;
-  char *pattern = "ce_change:custom_";
-  int pattern_len = strlen(pattern);
-  char *matching_char = strstr(s_ptr, pattern);
+  char *pattern_1 = "ce_change:custom_";
+  char *pattern_2 = ".page_";
+  int pattern_1_len = strlen(pattern_1);
+  char *matching_char = strstr(s_ptr, pattern_1);
   int result = ANIM_EVENT_NONE;
 
   if (matching_char == NULL)
@@ -11559,9 +11560,9 @@ static int get_anim_parameter_value_ce(char *s)
 
   result = ANIM_EVENT_CE_CHANGE;
 
-  s_ptr = matching_char + pattern_len;
+  s_ptr = matching_char + pattern_1_len;
 
-  // check for custom element number ("custom_X" or "custom_XX" or "custom_XXX")
+  // check for custom element number ("custom_X", "custom_XX" or "custom_XXX")
   if (*s_ptr >= '0' && *s_ptr <= '9')
   {
     int gic_ce_nr = (*s_ptr++ - '0');
@@ -11577,7 +11578,7 @@ static int get_anim_parameter_value_ce(char *s)
     if (gic_ce_nr < 1 || gic_ce_nr > NUM_CUSTOM_ELEMENTS)
       return ANIM_EVENT_NONE;
 
-    // store internal CE number (0 to 255, not "custom_1" to "custom_256")
+    // custom element stored as 0 to 255
     gic_ce_nr--;
 
     result |= gic_ce_nr << ANIM_EVENT_CE_BIT;
@@ -11587,6 +11588,33 @@ static int get_anim_parameter_value_ce(char *s)
     // invalid custom element number specified
 
     return ANIM_EVENT_NONE;
+  }
+
+  // check for change page number ("page_X" or "page_XX") (optional)
+  if (strPrefix(s_ptr, pattern_2))
+  {
+    s_ptr += strlen(pattern_2);
+
+    if (*s_ptr >= '0' && *s_ptr <= '9')
+    {
+      int gic_page_nr = (*s_ptr++ - '0');
+
+      if (*s_ptr >= '0' && *s_ptr <= '9')
+	gic_page_nr = 10 * gic_page_nr + (*s_ptr++ - '0');
+
+      if (gic_page_nr < 1 || gic_page_nr > MAX_CHANGE_PAGES)
+	return ANIM_EVENT_NONE;
+
+      // change page stored as 1 to 32 (0 means "all change pages")
+
+      result |= gic_page_nr << ANIM_EVENT_PAGE_BIT;
+    }
+    else
+    {
+      // invalid animation part number specified
+
+      return ANIM_EVENT_NONE;
+    }
   }
 
   // discard result if next character is neither delimiter nor whitespace

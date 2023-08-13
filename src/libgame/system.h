@@ -395,13 +395,16 @@
 // event mask:  bits 0-15
 // CE number:   bits 16-23
 // anim number: bits 16-23
+// page number: bits 24-31
 // part number: bits 24-31
 #define ANIM_EVENT_CE_BIT	16
 #define ANIM_EVENT_ANIM_BIT	16
+#define ANIM_EVENT_PAGE_BIT	24
 #define ANIM_EVENT_PART_BIT	24
 
 #define ANIM_EVENT_CE_MASK	(0xff << ANIM_EVENT_CE_BIT)
 #define ANIM_EVENT_ANIM_MASK	(0xff << ANIM_EVENT_ANIM_BIT)
+#define ANIM_EVENT_PAGE_MASK	(0xff << ANIM_EVENT_PAGE_BIT)
 #define ANIM_EVENT_PART_MASK	(0xff << ANIM_EVENT_PART_BIT)
 
 #define ANIM_EVENT_DEFAULT	ANIM_EVENT_NONE

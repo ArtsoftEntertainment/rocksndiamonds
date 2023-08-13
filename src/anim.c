@@ -1191,6 +1191,7 @@ static void PlayGlobalAnimSoundIfLoop(struct GlobalAnimPartControlInfo *part)
 static boolean checkGlobalAnimEvent(int anim_event, int mask)
 {
   int mask_anim_only = mask & ~ANIM_EVENT_PART_MASK;
+  int mask_ce_only   = mask & ~ANIM_EVENT_PAGE_MASK;
 
   if (mask & ANIM_EVENT_ANY)
     return (anim_event & ANIM_EVENT_ANY);
@@ -1199,7 +1200,8 @@ static boolean checkGlobalAnimEvent(int anim_event, int mask)
   else if (mask & ANIM_EVENT_UNCLICK_ANY)
     return (anim_event & ANIM_EVENT_UNCLICK_ANY);
   else if (mask & ANIM_EVENT_CE_CHANGE)
-    return (anim_event == mask);
+    return (anim_event == mask ||
+	    anim_event == mask_ce_only);
   else
     return (anim_event == mask ||
 	    anim_event == mask_anim_only);
@@ -1358,12 +1360,13 @@ static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
   }
 }
 
-static void InitGlobalAnim_Triggered_ByCustomElement(int nr)
+static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page)
 {
   struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[GAME_MODE_PLAYING];
 
   int event_value = ANIM_EVENT_CE_CHANGE;
-  int mask = event_value | (nr << ANIM_EVENT_CE_BIT);
+  int event_bits = (nr << ANIM_EVENT_CE_BIT) | (page << ANIM_EVENT_PAGE_BIT);
+  int mask = event_value | event_bits;
   int anim2_nr;
 
   for (anim2_nr = 0; anim2_nr < ctrl->num_anims; anim2_nr++)
@@ -2140,10 +2143,11 @@ int getGlobalAnimSyncFrame(void)
   return anim_sync_frame;
 }
 
-void HandleGlobalAnimEventByElementChange(int element)
+void HandleGlobalAnimEventByElementChange(int element, int page)
 {
   if (!IS_CUSTOM_ELEMENT(element))
     return;
 
-  InitGlobalAnim_Triggered_ByCustomElement(element - EL_CUSTOM_START);
+  // custom element stored as 0 to 255, change page stored as 1 to 32
+  InitGlobalAnim_Triggered_ByCustomElement(element - EL_CUSTOM_START, page + 1);
 }

@@ -10716,7 +10716,7 @@ static boolean ChangeElement(int x, int y, int element, int page)
   ChangeCount[x][y]++;		// count number of changes in the same frame
 
   if (ei->has_anim_event)
-    HandleGlobalAnimEventByElementChange(element);
+    HandleGlobalAnimEventByElementChange(element, page);
 
   if (change->explode)
   {
