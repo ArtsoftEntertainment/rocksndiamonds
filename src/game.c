@@ -3505,10 +3505,10 @@ static void InitGameEngine(void)
     {
       int element = EL_CUSTOM_START + i;
 
-      if (HAS_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ||
-	  HAS_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE) ||
-	  HAS_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X) ||
-	  HAS_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X))
+      if (HAS_ANY_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ||
+	  HAS_ANY_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE) ||
+	  HAS_ANY_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X) ||
+	  HAS_ANY_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X))
 	game.use_mouse_actions = TRUE;
     }
   }
