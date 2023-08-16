@@ -3314,15 +3314,14 @@ static void ShowEnvelopeRequest(char *text, unsigned int req_state, int action)
   if (game_status == GAME_MODE_PLAYING)
     BlitScreenToBitmap(backbuffer);
 
-  if (game_status == GAME_MODE_PLAYING || action == ACTION_OPENING)
-    BlitBitmap(backbuffer, bitmap_db_store_1, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
-
   SetDrawtoField(DRAW_TO_BACKBUFFER);
 
   // SetDrawBackgroundMask(REDRAW_NONE);
 
   if (action == ACTION_OPENING)
   {
+    BlitBitmap(backbuffer, bitmap_db_store_1, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+
     if (req_state & REQ_ASK)
     {
       MapGadget(tool_gadget[TOOL_CTRL_ID_YES]);
