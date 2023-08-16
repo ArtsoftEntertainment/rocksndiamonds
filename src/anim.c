@@ -1082,6 +1082,13 @@ static void StopGlobalAnimMusic(struct GlobalAnimPartControlInfo *part)
   if (music == MUS_UNDEFINED)
     return;
 
+  char *anim_music = getMusicInfoEntryFilename(music);
+  char *curr_music = getCurrentlyPlayingMusicFilename();
+
+  // do not stop music if global anim music differs from current music
+  if (!strEqual(curr_music, anim_music))
+    return;
+
   StopMusic();
 
 #if 0
