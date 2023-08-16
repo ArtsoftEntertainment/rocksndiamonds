@@ -1566,7 +1566,12 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
       part->init_event_state)
   {
     if (part->initial_anim_sync_frame > 0)
-      part->initial_anim_sync_frame -= part->init_delay_counter - 1;
+    {
+      if (part->init_delay_counter > 0)
+	part->initial_anim_sync_frame -= part->init_delay_counter - 1;
+      else
+	part->initial_anim_sync_frame = anim_sync_frame;
+    }
 
     part->init_delay_counter = 1;
     part->init_event_state = FALSE;
