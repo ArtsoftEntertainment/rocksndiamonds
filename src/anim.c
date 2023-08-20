@@ -1210,24 +1210,32 @@ static boolean checkGlobalAnimEvent(int anim_event, int mask)
 static boolean isClickablePart(struct GlobalAnimPartControlInfo *part, int mask)
 {
   struct GraphicInfo *c = &part->control_info;
-  int num_init_events = GetGlobalAnimEventValueCount(c->init_event);
-  int num_anim_events = GetGlobalAnimEventValueCount(c->anim_event);
   int i;
 
-  for (i = 0; i < num_init_events; i++)
+  if (part->init_event_state)
   {
-    int init_event = GetGlobalAnimEventValue(c->init_event, i);
+    int num_init_events = GetGlobalAnimEventValueCount(c->init_event);
 
-    if (checkGlobalAnimEvent(init_event, mask))
-      return TRUE;
+    for (i = 0; i < num_init_events; i++)
+    {
+      int init_event = GetGlobalAnimEventValue(c->init_event, i);
+
+      if (checkGlobalAnimEvent(init_event, mask))
+	return TRUE;
+    }
   }
 
-  for (i = 0; i < num_anim_events; i++)
+  if (part->anim_event_state)
   {
-    int anim_event = GetGlobalAnimEventValue(c->anim_event, i);
+    int num_anim_events = GetGlobalAnimEventValueCount(c->anim_event);
 
-    if (checkGlobalAnimEvent(anim_event, mask))
-      return TRUE;
+    for (i = 0; i < num_anim_events; i++)
+    {
+      int anim_event = GetGlobalAnimEventValue(c->anim_event, i);
+
+      if (checkGlobalAnimEvent(anim_event, mask))
+	return TRUE;
+    }
   }
 
   return FALSE;
