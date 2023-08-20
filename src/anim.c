@@ -1598,7 +1598,7 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
     if (part->initial_anim_sync_frame > 0)
     {
       if (part->init_delay_counter > 0)
-	part->initial_anim_sync_frame -= part->init_delay_counter - 1;
+	part->initial_anim_sync_frame -= part->init_delay_counter;
       else
 	part->initial_anim_sync_frame = anim_sync_frame;
     }
@@ -1630,9 +1630,13 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
 
       HandleGlobalAnimDelay(part, ANIM_DELAY_INIT,  "START [INIT_DELAY]");
       HandleGlobalAnimEvent(part, ANIM_EVENT_START, "START [ANIM]");
-    }
 
-    return ANIM_STATE_WAITING;
+      // continue with state ANIM_STATE_RUNNING (set below)
+    }
+    else
+    {
+      return ANIM_STATE_WAITING;
+    }
   }
 
   if (part->init_event_state)
