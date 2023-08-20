@@ -122,6 +122,9 @@ struct GlobalAnimPartControlInfo
   int x, y;
   int step_xoffset, step_yoffset;
 
+  int tile_x, tile_y;
+  int tile_xoffset, tile_yoffset;
+
   unsigned int initial_anim_sync_frame;
   unsigned int anim_random_frame;
 
@@ -1396,8 +1399,14 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
 
 	if (c->position == POS_CE)
 	{
-	  part2->x = c->x + x;
-	  part2->y = c->y + y;
+	  // store CE tile and offset position to handle scrolling
+	  part2->tile_x = x;
+	  part2->tile_y = y;
+	  part2->tile_xoffset = c->x;
+	  part2->tile_yoffset = c->y;
+
+	  // restart animation (by using current sync frame)
+	  part2->initial_anim_sync_frame = anim_sync_frame;
 	}
 
 	part2->triggered = TRUE;
@@ -1713,8 +1722,27 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
   }
 #endif
 
-  part->x += part->step_xoffset;
-  part->y += part->step_yoffset;
+  if (c->position == POS_CE)
+  {
+    // calculate playfield position (with scrolling) for related CE tile
+    int fx = getFieldbufferOffsetX_RND(ScreenMovDir, ScreenGfxPos);
+    int fy = getFieldbufferOffsetY_RND(ScreenMovDir, ScreenGfxPos);
+    int sx = FX + SCREENX(part->tile_x) * TILEX_VAR;
+    int sy = FY + SCREENY(part->tile_y) * TILEY_VAR;
+    int x = sx - fx;
+    int y = sy - fy;
+
+    part->tile_xoffset += part->step_xoffset;
+    part->tile_yoffset += part->step_yoffset;
+
+    part->x = x + part->tile_xoffset;
+    part->y = y + part->tile_yoffset;
+  }
+  else
+  {
+    part->x += part->step_xoffset;
+    part->y += part->step_yoffset;
+  }
 
   anim->last_x = part->x;
   anim->last_y = part->y;
