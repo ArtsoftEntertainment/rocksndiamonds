@@ -11527,8 +11527,9 @@ static boolean string_has_parameter(char *s, char *s_contained)
     char next_char = s[strlen(s_contained)];
 
     // check if next character is delimiter or whitespace
-    return (next_char == ',' || next_char == '\0' ||
-	    next_char == ' ' || next_char == '\t' ? TRUE : FALSE);
+    if (next_char == ',' || next_char == '\0' ||
+	next_char == ' ' || next_char == '\t')
+      return TRUE;
   }
 
   // check if string contains another parameter string after a comma
@@ -11741,12 +11742,7 @@ static int get_anim_parameter_values(char *s)
 
   // if animation event found, add it to global animation event list
   if (event_value != ANIM_EVENT_NONE)
-  {
     list_pos = AddGlobalAnimEventValue(list_pos, event_value);
-
-    // continue with next part of the string, starting with next comma
-    s = strchr(s + 1, ',');
-  }
 
   while (s != NULL)
   {
