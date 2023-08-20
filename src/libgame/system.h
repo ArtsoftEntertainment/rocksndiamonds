@@ -437,6 +437,7 @@
 #define STYLE_BLOCK		(1 << 4)
 #define STYLE_PASSTHROUGH	(1 << 5)
 #define STYLE_MULTIPLE_ACTIONS	(1 << 6)
+#define STYLE_CONSUME_CE_EVENT	(1 << 7)
 
 #define STYLE_DEFAULT		STYLE_NONE
 

@@ -1411,6 +1411,10 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
 
 	part2->triggered = TRUE;
 
+	// do not trigger any other animation if CE change event was consumed
+	if (c->style == STYLE_CONSUME_CE_EVENT)
+	  return;
+
 #if 0
 	Debug("anim:InitGlobalAnim_Triggered_ByCustomElement",
 	      "%d.%d TRIGGERED BY CE %d", anim2_nr, part2_nr, nr + 1);

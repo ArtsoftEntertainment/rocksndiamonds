@@ -11915,6 +11915,9 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 
     if (string_has_parameter(value, "multiple_actions"))
       result |= STYLE_MULTIPLE_ACTIONS;
+
+    if (string_has_parameter(value, "consume_ce_event"))
+      result |= STYLE_CONSUME_CE_EVENT;
   }
   else if (strEqual(suffix, ".fade_mode"))
   {
