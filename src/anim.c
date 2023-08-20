@@ -1360,7 +1360,8 @@ static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
   }
 }
 
-static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page)
+static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
+						     int x, int y)
 {
   struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[GAME_MODE_PLAYING];
 
@@ -1383,6 +1384,14 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page)
 
       if (isClickablePart(part2, mask))
       {
+	struct GraphicInfo *c = &part2->control_info;
+
+	if (c->position == POS_CE)
+	{
+	  part2->x = c->x + x;
+	  part2->y = c->y + y;
+	}
+
 	part2->triggered = TRUE;
 
 #if 0
@@ -2148,11 +2157,12 @@ int getGlobalAnimSyncFrame(void)
   return anim_sync_frame;
 }
 
-void HandleGlobalAnimEventByElementChange(int element, int page)
+void HandleGlobalAnimEventByElementChange(int element, int page, int x, int y)
 {
   if (!IS_CUSTOM_ELEMENT(element))
     return;
 
   // custom element stored as 0 to 255, change page stored as 1 to 32
-  InitGlobalAnim_Triggered_ByCustomElement(element - EL_CUSTOM_START, page + 1);
+  InitGlobalAnim_Triggered_ByCustomElement(element - EL_CUSTOM_START, page + 1,
+					   x, y);
 }

@@ -11829,6 +11829,7 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
 	      strEqual(value, "lower")  ? POS_LOWER :
 	      strEqual(value, "bottom") ? POS_BOTTOM :
 	      strEqual(value, "any")    ? POS_ANY :
+	      strEqual(value, "ce")     ? POS_CE :
 	      strEqual(value, "last")   ? POS_LAST : POS_UNDEFINED);
   }
   else if (strEqual(suffix, ".align"))

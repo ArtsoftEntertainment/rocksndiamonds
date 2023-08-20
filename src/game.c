@@ -10716,7 +10716,14 @@ static boolean ChangeElement(int x, int y, int element, int page)
   ChangeCount[x][y]++;		// count number of changes in the same frame
 
   if (ei->has_anim_event)
-    HandleGlobalAnimEventByElementChange(element, page);
+  {
+    int fx = getFieldbufferOffsetX_RND(ScreenMovDir, ScreenGfxPos);
+    int fy = getFieldbufferOffsetY_RND(ScreenMovDir, ScreenGfxPos);
+    int sx = FX + SCREENX(x) * TILEX_VAR;
+    int sy = FY + SCREENY(y) * TILEY_VAR;
+
+    HandleGlobalAnimEventByElementChange(element, page, sx - fx, sy - fy);
+  }
 
   if (change->explode)
   {
