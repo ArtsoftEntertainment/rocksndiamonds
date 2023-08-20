@@ -1393,7 +1393,7 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
       if (!(part2->state & ANIM_STATE_RUNNING))
 	continue;
 
-      if (isClickablePart(part2, mask))
+      if (isClickablePart(part2, mask) && !part2->triggered)
       {
 	struct GraphicInfo *c = &part2->control_info;
 
