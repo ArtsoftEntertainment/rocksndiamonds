@@ -12345,9 +12345,9 @@ static void InitMenuDesignSettings_SpecialPostProcessing_AfterGraphics(void)
   }
 }
 
-static void InitMenuDesignSettings_PreviewPlayers_FromHash(SetupFileHash *hash)
+static void InitMenuDesignSettings_PreviewPlayers_Ext(SetupFileHash *hash,
+                                                      boolean initialize)
 {
-
   // special case: check if network and preview player positions are redefined,
   // to compare this later against the main menu level preview being redefined
   struct TokenIntPtrInfo menu_config_players[] =
@@ -12361,12 +12361,27 @@ static void InitMenuDesignSettings_PreviewPlayers_FromHash(SetupFileHash *hash)
   };
   int i;
 
-  for (i = 0; i < ARRAY_SIZE(menu_config_players); i++)
-    *menu_config_players[i].value = FALSE;
+  if (initialize)
+  {
+    for (i = 0; i < ARRAY_SIZE(menu_config_players); i++)
+      *menu_config_players[i].value = FALSE;
+  }
+  else
+  {
+    for (i = 0; i < ARRAY_SIZE(menu_config_players); i++)
+      if (getHashEntry(hash, menu_config_players[i].token) != NULL)
+        *menu_config_players[i].value = TRUE;
+  }
+}
 
-  for (i = 0; i < ARRAY_SIZE(menu_config_players); i++)
-    if (getHashEntry(hash, menu_config_players[i].token) != NULL)
-      *menu_config_players[i].value = TRUE;
+static void InitMenuDesignSettings_PreviewPlayers(void)
+{
+  InitMenuDesignSettings_PreviewPlayers_Ext(NULL, TRUE);
+}
+
+static void InitMenuDesignSettings_PreviewPlayers_FromHash(SetupFileHash *hash)
+{
+  InitMenuDesignSettings_PreviewPlayers_Ext(hash, FALSE);
 }
 
 static void LoadMenuDesignSettingsFromFilename(char *filename)
@@ -12711,6 +12726,7 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
   }
 
   // special case: check if network and preview player positions are redefined
+  InitMenuDesignSettings_PreviewPlayers();
   InitMenuDesignSettings_PreviewPlayers_FromHash(setup_file_hash);
 
   // read (and overwrite with) values that may be specified in config file
