@@ -12725,12 +12725,11 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
     }
   }
 
-  // special case: check if network and preview player positions are redefined
-  InitMenuDesignSettings_PreviewPlayers();
-  InitMenuDesignSettings_PreviewPlayers_FromHash(setup_file_hash);
-
   // read (and overwrite with) values that may be specified in config file
   InitMenuDesignSettings_FromHash(setup_file_hash, TRUE);
+
+  // special case: check if network and preview player positions are redefined
+  InitMenuDesignSettings_PreviewPlayers_FromHash(setup_file_hash);
 
   freeSetupFileHash(setup_file_hash);
 }
@@ -12741,6 +12740,7 @@ void LoadMenuDesignSettings(void)
 
   InitMenuDesignSettings_Static();
   InitMenuDesignSettings_SpecialPreProcessing();
+  InitMenuDesignSettings_PreviewPlayers();
 
   if (!GFX_OVERRIDE_ARTWORK(ARTWORK_TYPE_GRAPHICS))
   {
