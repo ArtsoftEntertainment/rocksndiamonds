@@ -857,6 +857,10 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
     }
   }
 
+  // when restarting global animations, do not redraw them, but stop here
+  if (drawing_stage == DRAW_GLOBAL_ANIM_STAGE_RESTART)
+    return;
+
   if (global.anim_status == GAME_MODE_LOADING)
     return;
 
@@ -2155,7 +2159,7 @@ void RestartGlobalAnimsByStatus(int status)
   global.anim_status = status;
 
   // force restarting global animations by changed global animation status
-  SDLRedrawWindow();
+  DrawGlobalAnimationsExt(DRAW_TO_SCREEN, DRAW_GLOBAL_ANIM_STAGE_RESTART);
 
   global.anim_status = anim_status_last;
 }

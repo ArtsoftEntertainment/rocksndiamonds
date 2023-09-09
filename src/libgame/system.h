@@ -289,6 +289,7 @@
 #define DRAW_GLOBAL_ANIM_STAGE_1	1
 #define DRAW_GLOBAL_ANIM_STAGE_2	2
 #define DRAW_GLOBAL_ANIM_STAGE_3	3
+#define DRAW_GLOBAL_ANIM_STAGE_RESTART	4
 
 // values for drawing target (various functions)
 #define DRAW_TO_BACKBUFFER		0
