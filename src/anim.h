@@ -20,6 +20,7 @@ void InitGlobalAnimations(void);
 void DrawGlobalAnimations(int, int);
 
 void RestartGlobalAnimsByStatus(int);
+void SetAnimStatusBeforeFading(int);
 
 boolean HandleGlobalAnimClicks(int, int, int, boolean);
 void HandleGlobalAnimEventByElementChange(int, int, int, int);

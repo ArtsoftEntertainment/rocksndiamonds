@@ -3629,6 +3629,10 @@ void InitGame(void)
     // force restarting global animations displayed during game play
     RestartGlobalAnimsByStatus(GAME_MODE_PSEUDO_RESTARTING);
 
+    // this is required for "transforming" fade modes like cross-fading
+    // (else global animations will be stopped, but not restarted here)
+    SetAnimStatusBeforeFading(GAME_MODE_PSEUDO_RESTARTING);
+
     SetGameStatus(GAME_MODE_PLAYING);
   }
 

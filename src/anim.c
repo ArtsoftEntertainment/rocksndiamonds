@@ -2164,6 +2164,11 @@ void RestartGlobalAnimsByStatus(int status)
   global.anim_status = anim_status_last;
 }
 
+void SetAnimStatusBeforeFading(int status)
+{
+  anim_status_last_before_fading = status;
+}
+
 boolean HandleGlobalAnimClicks(int mx, int my, int button, boolean force_click)
 {
   static boolean click_consumed = FALSE;
