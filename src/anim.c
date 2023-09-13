@@ -1736,8 +1736,10 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
     int fy = getFieldbufferOffsetY_RND(ScreenMovDir, ScreenGfxPos);
     int sx = FX + SCREENX(part->tile_x) * TILEX_VAR;
     int sy = FY + SCREENY(part->tile_y) * TILEY_VAR;
-    int x = sx - fx;
-    int y = sy - fy;
+    int cx = SX - REAL_SX;
+    int cy = SY - REAL_SY;
+    int x = sx - fx + cx;
+    int y = sy - fy + cy;
 
     part->tile_xoffset += part->step_xoffset;
     part->tile_yoffset += part->step_yoffset;
