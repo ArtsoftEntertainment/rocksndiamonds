@@ -13465,8 +13465,9 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
 	   incorrectly give EL_PLAYER_1 for "player->element_nr") */
 	int player_element = PLAYERINFO(x, y)->initial_element;
 
+	// as element "X" is the player here, check opposite (center) side
 	CheckElementChangeBySide(xx, yy, border_element, player_element,
-				 CE_TOUCHING_X, border_side);
+				 CE_TOUCHING_X, center_side);
       }
     }
     else if (IS_PLAYER(xx, yy))		// player found at border element
@@ -13492,8 +13493,9 @@ void TestIfPlayerTouchesCustomElement(int x, int y)
 	   incorrectly give EL_PLAYER_1 for "player->element_nr") */
 	int player_element = PLAYERINFO(xx, yy)->initial_element;
 
+	// as element "X" is the player here, check opposite (border) side
 	CheckElementChangeBySide(x, y, center_element, player_element,
-				 CE_TOUCHING_X, center_side);
+				 CE_TOUCHING_X, border_side);
       }
 
       break;
@@ -13600,7 +13602,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
     CheckElementChangeBySide(xx, yy, border_element, center_element,
 			     CE_TOUCHING_X, center_side);
 
-    // (center element cannot be player, so we dont have to check this here)
+    // (center element cannot be player, so we don't have to check this here)
   }
 
   for (i = 0; i < NUM_DIRECTIONS; i++)
@@ -13627,6 +13629,7 @@ void TestIfElementTouchesCustomElement(int x, int y)
 	 incorrectly give EL_PLAYER_1 for "player->element_nr") */
       int player_element = PLAYERINFO(xx, yy)->initial_element;
 
+      // as element "X" is the player here, check opposite (border) side
       CheckElementChangeBySide(x, y, center_element, player_element,
 			       CE_TOUCHING_X, border_side);
     }
