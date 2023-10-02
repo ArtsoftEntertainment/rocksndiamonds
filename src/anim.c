@@ -1433,6 +1433,10 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
 
 	if (c->position == POS_CE)
 	{
+	  // may contain negative tile offset that is treated as "off-screen"
+	  part2->x = 0;
+	  part2->y = 0;
+
 	  // store CE tile and offset position to handle scrolling
 	  part2->tile_x = x;
 	  part2->tile_y = y;
