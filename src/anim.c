@@ -974,8 +974,6 @@ void DrawGlobalAnimations(int drawing_target, int drawing_stage)
     ResetGlobalAnim_Clicked();
   }
 
-  DrawEnvelopeRequestToScreen(drawing_target, drawing_stage);
-
   if (gfx.cursor_mode_override != last_cursor_mode_override)
     SetMouseCursor(gfx.cursor_mode);
 }

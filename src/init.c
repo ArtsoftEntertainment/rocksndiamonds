@@ -5917,6 +5917,7 @@ static void InitGfx(void)
   InitGfxDrawGlobalAnimFunction(DrawGlobalAnimations);
   InitGfxDrawGlobalBorderFunction(DrawMaskedBorderToTarget);
   InitGfxDrawTileCursorFunction(DrawTileCursor);
+  InitGfxDrawEnvelopeRequestFunction(DrawEnvelopeRequestToScreen);
 
   gfx.fade_border_source_status = global.border_status;
   gfx.fade_border_target_status = global.border_status;

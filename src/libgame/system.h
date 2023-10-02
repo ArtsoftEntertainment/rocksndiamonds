@@ -1244,6 +1244,7 @@ struct GfxInfo
   void (*draw_global_anim_function)(int, int);
   void (*draw_global_border_function)(int);
   void (*draw_tile_cursor_function)(int);
+  void (*draw_envelope_request_function)(int);
 
   int cursor_mode;
   int cursor_mode_override;
@@ -1978,6 +1979,7 @@ void InitGfxDrawBusyAnimFunction(void (*draw_busy_anim_function)(boolean));
 void InitGfxDrawGlobalAnimFunction(void (*draw_global_anim_function)(int, int));
 void InitGfxDrawGlobalBorderFunction(void (*draw_global_border_function)(int));
 void InitGfxDrawTileCursorFunction(void (*draw_tile_cursor_function)(int));
+void InitGfxDrawEnvelopeRequestFunction(void (*draw_envelope_request_function)(int));
 void InitGfxCustomArtworkInfo(void);
 void InitGfxOtherSettings(void);
 void InitTileCursorInfo(void);

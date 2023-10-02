@@ -292,6 +292,11 @@ void InitGfxDrawTileCursorFunction(void (*draw_tile_cursor_function)(int))
   gfx.draw_tile_cursor_function = draw_tile_cursor_function;
 }
 
+void InitGfxDrawEnvelopeRequestFunction(void (*draw_envelope_request_function)(int))
+{
+  gfx.draw_envelope_request_function = draw_envelope_request_function;
+}
+
 void InitGfxCustomArtworkInfo(void)
 {
   gfx.override_level_graphics = FALSE;
