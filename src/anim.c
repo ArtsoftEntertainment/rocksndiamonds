@@ -17,6 +17,7 @@
 #include "files.h"
 #include "events.h"
 #include "screens.h"
+#include "tape.h"
 
 
 #define DEBUG_ANIM_DELAY		0
@@ -113,6 +114,8 @@ struct GlobalAnimPartControlInfo
 
   struct GraphicInfo graphic_info;
   struct GraphicInfo control_info;
+
+  boolean class_playfield;
 
   int viewport_x;
   int viewport_y;
@@ -370,6 +373,27 @@ static int compareGlobalAnimMainControlInfo(const void *obj1, const void *obj2)
     compare_result = o1->nr - o2->nr;
 
   return compare_result;
+}
+
+static boolean isPausedOnPlayfield(struct GlobalAnimPartControlInfo *part)
+{
+  // only pause playfield animations when playing
+  if (game_status != GAME_MODE_PLAYING)
+    return FALSE;
+
+  // do not pause animations when game ended (and engine is running)
+  if (checkGameEnded())
+    return FALSE;
+
+  // only pause animations on playfield
+  if (!part->class_playfield)
+    return FALSE;
+
+  // only pause animations when engine is paused or request dialog is open(ing)
+  if (!tape.pausing && !game.request_active_or_moving)
+    return FALSE;
+
+  return TRUE;
 }
 
 static void InitToonControls(void)
@@ -921,6 +945,10 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 	if (part->drawing_stage != drawing_stage)
 	  continue;
 
+	// if game is paused, also pause playfield animations
+	if (isPausedOnPlayfield(part))
+	  part->initial_anim_sync_frame++;
+
 	sync_frame = anim_sync_frame - part->initial_anim_sync_frame;
 
 	// re-initialize random animation frame after animation delay
@@ -994,6 +1022,8 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
 
   part->drawing_stage = DRAW_GLOBAL_ANIM_STAGE_1;
 
+  part->class_playfield = FALSE;
+
   if (part->control_info.class == get_hash_from_key("window") ||
       part->control_info.class == get_hash_from_key("border"))
   {
@@ -1055,6 +1085,8 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
     viewport_y = REAL_SY;
     viewport_width  = FULL_SXSIZE;
     viewport_height = FULL_SYSIZE;
+
+    part->class_playfield = TRUE;
   }
 
   if (viewport_x != part->viewport_x ||
@@ -1464,6 +1496,10 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
   struct GraphicInfo *g = &part->graphic_info;
   struct GraphicInfo *c = &part->control_info;
   boolean viewport_changed = SetGlobalAnimPart_Viewport(part);
+
+  // if game is paused, also pause playfield animations
+  if (isPausedOnPlayfield(part))
+    return state;
 
   if (viewport_changed)
     state |= ANIM_STATE_RESTART;
