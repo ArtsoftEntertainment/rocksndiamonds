@@ -3011,8 +3011,7 @@ void ShowEnvelope(int envelope_nr)
 static void PrepareEnvelopeRequestToScreen(Bitmap *bitmap, int sx, int sy,
 					   int xsize, int ysize)
 {
-  if (!global.use_envelope_request ||
-      request.sort_priority <= 0)
+  if (!global.use_envelope_request)
     return;
 
   if (request.bitmap == NULL ||
@@ -3046,7 +3045,6 @@ void DrawEnvelopeRequestToScreen(int drawing_target)
 {
   if (global.use_envelope_request &&
       game.request_active_or_moving &&
-      request.sort_priority > 0 &&
       drawing_target == DRAW_TO_SCREEN)
   {
     BlitToScreen(request.bitmap, 0, 0, request.xsize, request.ysize,
