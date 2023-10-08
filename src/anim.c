@@ -310,6 +310,12 @@ int getAnimationFrame(int num_frames, int delay, int mode, int start_frame,
     else
       frame = gfx.anim_random_frame % num_frames;
   }
+  else if (mode & ANIM_LEVEL_NR)	// play frames by level number
+  {
+    int level_pos = level_nr - leveldir_current->first_level;
+
+    frame = level_pos % num_frames;
+  }
   else if (mode & (ANIM_CE_VALUE | ANIM_CE_SCORE | ANIM_CE_DELAY))
   {
     frame = sync_frame % num_frames;

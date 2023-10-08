@@ -366,17 +366,18 @@
 #define ANIM_CE_DELAY		(1 << 7)
 #define ANIM_REVERSE		(1 << 8)
 #define ANIM_OPAQUE_PLAYER	(1 << 9)
+#define ANIM_LEVEL_NR		(1 << 10)
 
 // values for special (non game element) animation modes
 // (not stored in level files -- can be changed, if needed)
-#define ANIM_HORIZONTAL		(1 << 10)
-#define ANIM_VERTICAL		(1 << 11)
-#define ANIM_CENTERED		(1 << 12)
-#define ANIM_STATIC_PANEL	(1 << 13)
-#define ANIM_ALL		(1 << 14)
-#define ANIM_ONCE		(1 << 15)
-#define ANIM_TILED		(1 << 16)
-#define ANIM_RANDOM_STATIC	(1 << 17)
+#define ANIM_HORIZONTAL		(1 << 11)
+#define ANIM_VERTICAL		(1 << 12)
+#define ANIM_CENTERED		(1 << 13)
+#define ANIM_STATIC_PANEL	(1 << 14)
+#define ANIM_ALL		(1 << 15)
+#define ANIM_ONCE		(1 << 16)
+#define ANIM_TILED		(1 << 17)
+#define ANIM_RANDOM_STATIC	(1 << 18)
 
 #define ANIM_DEFAULT		ANIM_LOOP
 
