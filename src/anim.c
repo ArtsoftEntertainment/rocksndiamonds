@@ -1344,6 +1344,28 @@ static boolean clickConsumed(struct GlobalAnimPartControlInfo *part)
   return ((part->control_info.style & STYLE_PASSTHROUGH) ? FALSE : TRUE);
 }
 
+static void SetGlobalAnimPartTileXY(struct GlobalAnimPartControlInfo *part)
+{
+  // calculate playfield position (with scrolling) for related CE tile
+  // (do not use FX/FY, which are incorrect during envelope requests)
+  int FX0 = 2 * TILEX_VAR;	// same as FX during DRAW_TO_FIELDBUFFER
+  int FY0 = 2 * TILEY_VAR;	// same as FY during DRAW_TO_FIELDBUFFER
+  int fx = getFieldbufferOffsetX_RND(ScreenMovDir, ScreenGfxPos);
+  int fy = getFieldbufferOffsetY_RND(ScreenMovDir, ScreenGfxPos);
+  int sx = FX0 + SCREENX(part->tile_x) * TILEX_VAR;
+  int sy = FY0 + SCREENY(part->tile_y) * TILEY_VAR;
+  int cx = SX - REAL_SX;
+  int cy = SY - REAL_SY;
+  int x = sx - fx + cx;
+  int y = sy - fy + cy;
+
+  part->tile_xoffset += part->step_xoffset;
+  part->tile_yoffset += part->step_yoffset;
+
+  part->x = x + part->tile_xoffset;
+  part->y = y + part->tile_yoffset;
+}
+
 static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
 				     boolean *click_consumed,
 				     boolean *any_event_action,
@@ -1775,24 +1797,7 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
 
   if (c->position == POS_CE)
   {
-    // calculate playfield position (with scrolling) for related CE tile
-    // (do not use FX/FY, which are incorrect during envelope requests)
-    int FX0 = 2 * TILEX_VAR;	// same as FX during DRAW_TO_FIELDBUFFER
-    int FY0 = 2 * TILEY_VAR;	// same as FY during DRAW_TO_FIELDBUFFER
-    int fx = getFieldbufferOffsetX_RND(ScreenMovDir, ScreenGfxPos);
-    int fy = getFieldbufferOffsetY_RND(ScreenMovDir, ScreenGfxPos);
-    int sx = FX0 + SCREENX(part->tile_x) * TILEX_VAR;
-    int sy = FY0 + SCREENY(part->tile_y) * TILEY_VAR;
-    int cx = SX - REAL_SX;
-    int cy = SY - REAL_SY;
-    int x = sx - fx + cx;
-    int y = sy - fy + cy;
-
-    part->tile_xoffset += part->step_xoffset;
-    part->tile_yoffset += part->step_yoffset;
-
-    part->x = x + part->tile_xoffset;
-    part->y = y + part->tile_yoffset;
+    SetGlobalAnimPartTileXY(part);
   }
   else
   {
