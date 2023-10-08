@@ -2465,6 +2465,7 @@ static struct ValueTextInfo options_group_choice_mode[] =
   { ANIM_LINEAR,		"linear"			},
   { ANIM_PINGPONG,		"pingpong"			},
   { ANIM_PINGPONG2,		"pingpong 2"			},
+  { ANIM_LEVEL_NR,		"level number"			},
 
   { -1,				NULL				}
 };
