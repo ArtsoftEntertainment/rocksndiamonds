@@ -10641,17 +10641,17 @@ static void CreateFieldExt(int x, int y, int element, boolean is_change)
 
     if (GFX_CRUMBLED(new_element))
       TEST_DrawLevelFieldCrumbledNeighbours(x, y);
-  }
 
-  // check if element under the player changes from accessible to unaccessible
-  // (needed for special case of dropping element which then changes)
-  // (must be checked after creating new element for walkable group elements)
-  if (IS_PLAYER(x, y) && !player_explosion_protected &&
-      IS_ACCESSIBLE(old_element) && !IS_ACCESSIBLE(new_element))
-  {
-    Bang(x, y);
+    // check if element under the player changes from accessible to unaccessible
+    // (needed for special case of dropping element which then changes)
+    // (must be checked after creating new element for walkable group elements)
+    if (IS_PLAYER(x, y) && !player_explosion_protected &&
+	IS_ACCESSIBLE(old_element) && !IS_ACCESSIBLE(new_element))
+    {
+      Bang(x, y);
 
-    return;
+      return;
+    }
   }
 
   // "ChangeCount" not set yet to allow "entered by player" change one time
