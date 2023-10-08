@@ -10648,7 +10648,7 @@ static void CreateFieldExt(int x, int y, int element, boolean is_change)
     if (IS_PLAYER(x, y) && !player_explosion_protected &&
 	IS_ACCESSIBLE(old_element) && !IS_ACCESSIBLE(new_element))
     {
-      Bang(x, y);
+      KillPlayer(PLAYERINFO(x, y));
 
       return;
     }
