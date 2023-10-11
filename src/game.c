@@ -5674,14 +5674,13 @@ static void DrawRelocateScreen(int old_x, int old_y, int x, int y,
   {
     // relocation _without_ centering of screen
 
-    int center_scroll_x = SCROLL_POSITION_X(old_x);
-    int center_scroll_y = SCROLL_POSITION_Y(old_y);
-    int offset_x = x + (scroll_x - center_scroll_x);
-    int offset_y = y + (scroll_y - center_scroll_y);
+    // apply distance between old and new player position to scroll position
+    int shifted_scroll_x = scroll_x + (x - old_x);
+    int shifted_scroll_y = scroll_y + (y - old_y);
 
-    // for new screen position, apply previous offset to center position
-    new_scroll_x = SCROLL_POSITION_X(offset_x);
-    new_scroll_y = SCROLL_POSITION_Y(offset_y);
+    // make sure that shifted scroll position does not scroll beyond screen
+    new_scroll_x = SCROLL_POSITION_X(shifted_scroll_x + MIDPOSX);
+    new_scroll_y = SCROLL_POSITION_Y(shifted_scroll_y + MIDPOSY);
   }
 
   if (quick_relocation)
