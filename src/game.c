@@ -4445,6 +4445,11 @@ void InitGame(void)
     scroll_y = SCROLL_POSITION_Y(local_player->jy);
   }
 
+  if (game.forced_scroll_x != ARG_UNDEFINED_VALUE)
+    scroll_x = game.forced_scroll_x;
+  if (game.forced_scroll_y != ARG_UNDEFINED_VALUE)
+    scroll_y = game.forced_scroll_y;
+
   // !!! FIX THIS (START) !!!
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {

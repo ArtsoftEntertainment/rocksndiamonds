@@ -10077,6 +10077,8 @@ struct ConfigInfo image_config[] =
 
   { "game.graphics_engine_version",		"-1"			},
   { "game.forced_scroll_delay_value",		"-1"			},
+  { "game.forced_scroll_x",			ARG_UNDEFINED		},
+  { "game.forced_scroll_y",			ARG_UNDEFINED		},
   { "game.use_native_emc_graphics_engine",	"false"			},
   { "game.use_native_sp_graphics_engine",	"true"			},
   { "game.use_masked_pushing",			"false"			},
