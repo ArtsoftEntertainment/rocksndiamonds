@@ -3474,8 +3474,9 @@ static void InitGameEngine(void)
      level.game_engine_type == GAME_ENGINE_TYPE_EM &&
      !setup.forced_scroll_delay           ? 0 :
      setup.scroll_delay                   ? setup.scroll_delay_value       : 0);
-  game.scroll_delay_value =
-    MIN(MAX(MIN_SCROLL_DELAY, game.scroll_delay_value), MAX_SCROLL_DELAY);
+  if (game.forced_scroll_delay_value == -1)
+    game.scroll_delay_value =
+      MIN(MAX(MIN_SCROLL_DELAY, game.scroll_delay_value), MAX_SCROLL_DELAY);
 
   // ---------- initialize game engine snapshots ------------------------------
   for (i = 0; i < MAX_PLAYERS; i++)
