@@ -5687,6 +5687,40 @@ static void DrawRelocateScreen(int old_x, int old_y, int x, int y,
     // make sure that shifted scroll position does not scroll beyond screen
     new_scroll_x = SCROLL_POSITION_X(shifted_scroll_x + MIDPOSX);
     new_scroll_y = SCROLL_POSITION_Y(shifted_scroll_y + MIDPOSY);
+
+    // special case for teleporting from one end of the playfield to the other
+    // (this kludge prevents the destination area to be shifted by half a tile
+    // against the source destination for even screen width or screen height;
+    // probably most useful when used with high "game.forced_scroll_delay_value"
+    // in combination with "game.forced_scroll_x" and "game.forced_scroll_y")
+    if (quick_relocation)
+    {
+      if (EVEN(SCR_FIELDX))
+      {
+	// relocate (teleport) between left and right border (half or full)
+	if (scroll_x == SBX_Left && new_scroll_x == SBX_Right - 1)
+	  new_scroll_x = SBX_Right;
+	else if (scroll_x == SBX_Left + 1 && new_scroll_x == SBX_Right)
+	  new_scroll_x = SBX_Right - 1;
+	else if (scroll_x == SBX_Right && new_scroll_x == SBX_Left + 1)
+	  new_scroll_x = SBX_Left;
+	else if (scroll_x == SBX_Right - 1 && new_scroll_x == SBX_Left)
+	  new_scroll_x = SBX_Left + 1;
+      }
+
+      if (EVEN(SCR_FIELDY))
+      {
+	// relocate (teleport) between top and bottom border (half or full)
+	if (scroll_y == SBY_Upper && new_scroll_y == SBY_Lower - 1)
+	  new_scroll_y = SBY_Lower;
+	else if (scroll_y == SBY_Upper + 1 && new_scroll_y == SBY_Lower)
+	  new_scroll_y = SBY_Lower - 1;
+	else if (scroll_y == SBY_Lower && new_scroll_y == SBY_Upper + 1)
+	  new_scroll_y = SBY_Upper;
+	else if (scroll_y == SBY_Lower - 1 && new_scroll_y == SBY_Upper)
+	  new_scroll_y = SBY_Upper + 1;
+      }
+    }
   }
 
   if (quick_relocation)
