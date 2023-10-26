@@ -1468,7 +1468,9 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
 	  part2->tile_yoffset = c->y;
 
 	  // set resulting animation position relative to CE tile position
-	  SetGlobalAnimPartTileXY(part2);
+	  // (but only for ".init_event", not ".anim_event" type events)
+	  if (part2->init_event_state)
+	    SetGlobalAnimPartTileXY(part2);
 
 	  // restart animation (by using current sync frame)
 	  part2->initial_anim_sync_frame = anim_sync_frame;
