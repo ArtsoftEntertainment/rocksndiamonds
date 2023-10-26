@@ -634,6 +634,10 @@ void DrawMaskedBorderToTarget(int draw_target)
       gfx.masked_border_bitmap_ptr = gfx.fade_bitmap_target;
     }
 
+    // always use global border for PLAYING when restarting the game
+    if (global.border_status == GAME_MODE_PSEUDO_RESTARTING)
+      global.border_status = GAME_MODE_PLAYING;
+
     DrawMaskedBorderExt(REDRAW_ALL, draw_target);
 
     global.border_status = last_border_status;
@@ -976,6 +980,10 @@ static void SetScreenStates_BeforeFadingOut(void)
 static void SetScreenStates_AfterFadingOut(void)
 {
   global.border_status = game_status;
+
+  // always use global border for PLAYING when restarting the game
+  if (global.border_status == GAME_MODE_PSEUDO_RESTARTING)
+    global.border_status = GAME_MODE_PLAYING;
 }
 
 void FadeIn(int fade_mask)
