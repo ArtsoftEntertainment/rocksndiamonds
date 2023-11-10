@@ -3477,6 +3477,8 @@ struct ElementChangeInfo
   void (*post_change_function)(int x, int y);
 
   short actual_trigger_element;	// element that actually triggered change
+  int actual_trigger_x;		// element x position that triggered change
+  int actual_trigger_y;		// element y position that triggered change
   int actual_trigger_side;	// element side that triggered the change
   int actual_trigger_player;	// player which actually triggered change
   int actual_trigger_player_bits; // player bits of triggering players

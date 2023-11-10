@@ -1434,7 +1434,9 @@ static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
 }
 
 static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
-						     int x, int y)
+						     int x, int y,
+						     int trigger_x,
+						     int trigger_y)
 {
   struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[GAME_MODE_PLAYING];
 
@@ -1459,11 +1461,12 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
       {
 	struct GraphicInfo *c = &part2->control_info;
 
-	if (c->position == POS_CE)
+	if (c->position == POS_CE ||
+	    c->position == POS_CE_TRIGGER)
 	{
 	  // store CE tile and offset position to handle scrolling
-	  part2->tile_x = x;
-	  part2->tile_y = y;
+	  part2->tile_x = (c->position == POS_CE_TRIGGER ? trigger_x : x);
+	  part2->tile_y = (c->position == POS_CE_TRIGGER ? trigger_y : y);
 	  part2->tile_xoffset = c->x;
 	  part2->tile_yoffset = c->y;
 
@@ -1796,7 +1799,8 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
   }
 #endif
 
-  if (c->position == POS_CE)
+  if (c->position == POS_CE ||
+      c->position == POS_CE_TRIGGER)
   {
     SetGlobalAnimPartTileXY(part);
   }
@@ -2260,12 +2264,13 @@ int getGlobalAnimSyncFrame(void)
   return anim_sync_frame;
 }
 
-void HandleGlobalAnimEventByElementChange(int element, int page, int x, int y)
+void HandleGlobalAnimEventByElementChange(int element, int page, int x, int y,
+					  int trigger_x, int trigger_y)
 {
   if (!IS_CUSTOM_ELEMENT(element))
     return;
 
   // custom element stored as 0 to 255, change page stored as 1 to 32
   InitGlobalAnim_Triggered_ByCustomElement(element - EL_CUSTOM_START, page + 1,
-					   x, y);
+					   x, y, trigger_x, trigger_y);
 }

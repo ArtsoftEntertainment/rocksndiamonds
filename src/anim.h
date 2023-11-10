@@ -23,7 +23,7 @@ void RestartGlobalAnimsByStatus(int);
 void SetAnimStatusBeforeFading(int);
 
 boolean HandleGlobalAnimClicks(int, int, int, boolean);
-void HandleGlobalAnimEventByElementChange(int, int, int, int);
+void HandleGlobalAnimEventByElementChange(int, int, int, int, int, int);
 
 int getGlobalAnimSyncFrame(void);
 

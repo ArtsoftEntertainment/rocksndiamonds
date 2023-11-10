@@ -482,7 +482,8 @@
 #define POS_BOTTOM		6
 #define POS_ANY			7
 #define POS_CE			8
-#define POS_LAST		9
+#define POS_CE_TRIGGER		9
+#define POS_LAST		10
 
 // values for text alignment
 #define ALIGN_LEFT		(1 << 0)

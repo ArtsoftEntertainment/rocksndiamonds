@@ -3279,6 +3279,8 @@ static void InitGameEngine(void)
       change->actual_trigger_side = CH_SIDE_NONE;
       change->actual_trigger_ce_value = 0;
       change->actual_trigger_ce_score = 0;
+      change->actual_trigger_x = -1;
+      change->actual_trigger_y = -1;
     }
   }
 
@@ -10759,6 +10761,8 @@ static boolean ChangeElement(int x, int y, int element, int page)
     change->actual_trigger_side = CH_SIDE_NONE;
     change->actual_trigger_ce_value = 0;
     change->actual_trigger_ce_score = 0;
+    change->actual_trigger_x = -1;
+    change->actual_trigger_y = -1;
   }
 
   // do not change elements more than a specified maximum number of changes
@@ -10768,7 +10772,9 @@ static boolean ChangeElement(int x, int y, int element, int page)
   ChangeCount[x][y]++;		// count number of changes in the same frame
 
   if (ei->has_anim_event)
-    HandleGlobalAnimEventByElementChange(element, page, x, y);
+    HandleGlobalAnimEventByElementChange(element, page, x, y,
+					 change->actual_trigger_x,
+					 change->actual_trigger_y);
 
   if (change->explode)
   {
@@ -11098,6 +11104,8 @@ static boolean CheckTriggeredElementChangeExt(int trigger_x, int trigger_y,
 	change->actual_trigger_side = trigger_side;
 	change->actual_trigger_ce_value = CustomValue[trigger_x][trigger_y];
 	change->actual_trigger_ce_score = GET_CE_SCORE(trigger_element);
+	change->actual_trigger_x = trigger_x;
+	change->actual_trigger_y = trigger_y;
 
 	if ((change->can_change && !change_done) || change->has_action)
 	{
@@ -11212,6 +11220,8 @@ static boolean CheckElementChangeExt(int x, int y,
       change->actual_trigger_side = trigger_side;
       change->actual_trigger_ce_value = CustomValue[x][y];
       change->actual_trigger_ce_score = GET_CE_SCORE(trigger_element);
+      change->actual_trigger_x = x;
+      change->actual_trigger_y = y;
 
       // special case: trigger element not at (x,y) position for some events
       if (check_trigger_element)
@@ -11235,6 +11245,8 @@ static boolean CheckElementChangeExt(int x, int y,
 
 	change->actual_trigger_ce_value = CustomValue[xx][yy];
 	change->actual_trigger_ce_score = GET_CE_SCORE(trigger_element);
+	change->actual_trigger_x = xx;
+	change->actual_trigger_y = yy;
       }
 
       if (change->can_change && !change_done)
