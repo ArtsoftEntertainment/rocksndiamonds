@@ -115,7 +115,7 @@ struct GlobalAnimPartControlInfo
   struct GraphicInfo graphic_info;
   struct GraphicInfo control_info;
 
-  boolean class_playfield;
+  boolean class_playfield_or_door;
 
   int viewport_x;
   int viewport_y;
@@ -381,9 +381,9 @@ static int compareGlobalAnimMainControlInfo(const void *obj1, const void *obj2)
   return compare_result;
 }
 
-static boolean isPausedOnPlayfield(struct GlobalAnimPartControlInfo *part)
+static boolean isPausedOnPlayfieldOrDoor(struct GlobalAnimPartControlInfo *part)
 {
-  // only pause playfield animations when playing
+  // only pause playfield and door animations when playing
   if (game_status != GAME_MODE_PLAYING)
     return FALSE;
 
@@ -391,8 +391,8 @@ static boolean isPausedOnPlayfield(struct GlobalAnimPartControlInfo *part)
   if (checkGameEnded())
     return FALSE;
 
-  // only pause animations on playfield
-  if (!part->class_playfield)
+  // only pause animations on playfield and doors
+  if (!part->class_playfield_or_door)
     return FALSE;
 
   // only pause animations when engine is paused or request dialog is open(ing)
@@ -951,8 +951,8 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 	if (part->drawing_stage != drawing_stage)
 	  continue;
 
-	// if game is paused, also pause playfield animations
-	if (isPausedOnPlayfield(part))
+	// if game is paused, also pause playfield and door animations
+	if (isPausedOnPlayfieldOrDoor(part))
 	  part->initial_anim_sync_frame++;
 
 	sync_frame = anim_sync_frame - part->initial_anim_sync_frame;
@@ -1028,7 +1028,7 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
 
   part->drawing_stage = DRAW_GLOBAL_ANIM_STAGE_1;
 
-  part->class_playfield = FALSE;
+  part->class_playfield_or_door = FALSE;
 
   if (part->control_info.class == get_hash_from_key("window") ||
       part->control_info.class == get_hash_from_key("border"))
@@ -1067,6 +1067,8 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
     viewport_y = DY;
     viewport_width  = DXSIZE;
     viewport_height = DYSIZE;
+
+    part->class_playfield_or_door = TRUE;
   }
   else if (part->control_info.class == get_hash_from_key("door_2"))
   {
@@ -1084,6 +1086,8 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
       viewport_width  = VXSIZE;
       viewport_height = VYSIZE;
     }
+
+    part->class_playfield_or_door = TRUE;
   }
   else		// default: "playfield"
   {
@@ -1092,7 +1096,7 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
     viewport_width  = FULL_SXSIZE;
     viewport_height = FULL_SYSIZE;
 
-    part->class_playfield = TRUE;
+    part->class_playfield_or_door = TRUE;
   }
 
   if (viewport_x != part->viewport_x ||
@@ -1533,8 +1537,8 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
   struct GraphicInfo *c = &part->control_info;
   boolean viewport_changed = SetGlobalAnimPart_Viewport(part);
 
-  // if game is paused, also pause playfield animations
-  if (isPausedOnPlayfield(part))
+  // if game is paused, also pause playfield and door animations
+  if (isPausedOnPlayfieldOrDoor(part))
     return state;
 
   if (viewport_changed)
