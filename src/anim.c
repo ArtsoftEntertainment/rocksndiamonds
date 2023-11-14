@@ -1394,7 +1394,7 @@ static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
     {
       struct GlobalAnimPartControlInfo *part2 = &anim2->part[part2_nr];
 
-      if (!(part2->state & ANIM_STATE_RUNNING))
+      if (!(part2->state & (ANIM_STATE_RUNNING | ANIM_STATE_WAITING)))
 	continue;
 
       if (isClickablePart(part2, mask))
@@ -1457,7 +1457,7 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
     {
       struct GlobalAnimPartControlInfo *part2 = &anim2->part[part2_nr];
 
-      if (!(part2->state & ANIM_STATE_RUNNING))
+      if (!(part2->state & (ANIM_STATE_RUNNING | ANIM_STATE_WAITING)))
 	continue;
 
       if (isClickablePart(part2, mask) && !part2->triggered)
