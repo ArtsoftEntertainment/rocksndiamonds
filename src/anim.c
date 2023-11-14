@@ -1271,8 +1271,7 @@ static boolean isClickablePart(struct GlobalAnimPartControlInfo *part, int mask)
 	return TRUE;
     }
   }
-
-  if (part->anim_event_state)
+  else if (part->anim_event_state)
   {
     int num_anim_events = GetGlobalAnimEventValueCount(c->anim_event);
 
