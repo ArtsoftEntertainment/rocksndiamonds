@@ -3973,6 +3973,10 @@ void InitGame(void)
 
   InitBeltMovement();
 
+  // required if level does not contain any "empty space" element
+  if (element_info[EL_EMPTY].use_gfx_element)
+    game.use_masked_elements = TRUE;
+
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     struct PlayerInfo *player = &stored_player[i];
