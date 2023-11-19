@@ -137,6 +137,9 @@ struct GlobalAnimPartControlInfo
   int anim_delay_counter;
   int post_delay_counter;
 
+  int fade_delay_counter;
+  int fade_alpha;
+
   boolean init_event_state;
   boolean anim_event_state;
 
@@ -735,6 +738,7 @@ static void BlitGlobalAnimation(struct GlobalAnimPartControlInfo *part,
   Bitmap *fade_bitmap =
     (drawing_target == DRAW_TO_FADE_SOURCE ? gfx.fade_bitmap_source :
      drawing_target == DRAW_TO_FADE_TARGET ? gfx.fade_bitmap_target : NULL);
+  int alpha = (c->fade_mode & FADE_MODE_FADE ? part->fade_alpha : g->alpha);
   int x, y;
 
   for (y = 0; y < c->stacked_yfactor; y++)
@@ -781,7 +785,7 @@ static void BlitGlobalAnimation(struct GlobalAnimPartControlInfo *part,
       dst_x += part->viewport_x;
       dst_y += part->viewport_y;
 
-      SetBitmapAlphaNextBlit(src_bitmap, g->alpha);
+      SetBitmapAlphaNextBlit(src_bitmap, alpha);
 
       if (drawing_target == DRAW_TO_SCREEN)
 	blit_screen(src_bitmap, src_x, src_y, width, height,
@@ -1537,6 +1541,7 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
   struct GraphicInfo *g = &part->graphic_info;
   struct GraphicInfo *c = &part->control_info;
   boolean viewport_changed = SetGlobalAnimPart_Viewport(part);
+  int alpha = (g->alpha != -1 ? g->alpha : SDL_ALPHA_OPAQUE);
 
   // if game is paused, also pause playfield and door animations
   if (isPausedOnPlayfieldOrDoor(part))
@@ -1572,6 +1577,18 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
     // do not re-initialize random animation frame after fade-in
     if (part->anim_random_frame == -1)
       part->anim_random_frame = GetSimpleRandom(g->anim_frames);
+
+    if (c->fade_mode & FADE_MODE_FADE)
+    {
+      // when fading in screen, first frame is 100 % transparent or opaque
+      part->fade_delay_counter = c->fade_delay + 1;
+      part->fade_alpha = (c->fade_mode == FADE_MODE_FADE_IN ? 0 : alpha);
+    }
+    else
+    {
+      part->fade_delay_counter = 0;
+      part->fade_alpha = -1;
+    }
 
     if (c->direction & MV_HORIZONTAL)
     {
@@ -1784,6 +1801,14 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
     }
 
     return ANIM_STATE_WAITING;
+  }
+
+  if (part->fade_delay_counter > 0)
+  {
+    part->fade_delay_counter--;
+    part->fade_alpha = alpha * (c->fade_mode == FADE_MODE_FADE_IN ?
+				c->fade_delay - part->fade_delay_counter :
+				part->fade_delay_counter) / c->fade_delay;
   }
 
   // special case to prevent expiring loop sounds when playing

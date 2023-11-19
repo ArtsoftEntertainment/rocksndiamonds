@@ -11925,6 +11925,8 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
   {
     result = (string_has_parameter(value, "none")	? FADE_MODE_NONE :
 	      string_has_parameter(value, "fade")	? FADE_MODE_FADE :
+	      string_has_parameter(value, "fade_in")	? FADE_MODE_FADE_IN :
+	      string_has_parameter(value, "fade_out")	? FADE_MODE_FADE_OUT :
 	      string_has_parameter(value, "crossfade")	? FADE_MODE_CROSSFADE :
 	      string_has_parameter(value, "melt")	? FADE_MODE_MELT :
 	      string_has_parameter(value, "curtain")	? FADE_MODE_CURTAIN :
