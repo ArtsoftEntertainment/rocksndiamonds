@@ -2497,6 +2497,7 @@ enum
   GFX_ARG_SORT_PRIORITY,
   GFX_ARG_CLASS,
   GFX_ARG_STYLE,
+  GFX_ARG_ALPHA,
   GFX_ARG_ACTIVE_XOFFSET,
   GFX_ARG_ACTIVE_YOFFSET,
   GFX_ARG_PRESSED_XOFFSET,
@@ -3743,6 +3744,7 @@ struct GraphicInfo
 
   int class;
   int style;
+  int alpha;
 
   int active_xoffset;
   int active_yoffset;

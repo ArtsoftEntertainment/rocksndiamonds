@@ -1412,6 +1412,7 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   g->sort_priority = 0;			// default for title screens
   g->class = 0;
   g->style = STYLE_DEFAULT;
+  g->alpha = -1;
 
   g->bitmaps = src_bitmaps;
   g->bitmap = src_bitmap;
@@ -1686,6 +1687,8 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
     g->class = parameter[GFX_ARG_CLASS];
   if (parameter[GFX_ARG_STYLE] != ARG_UNDEFINED_VALUE)
     g->style = parameter[GFX_ARG_STYLE];
+  if (parameter[GFX_ARG_ALPHA] != ARG_UNDEFINED_VALUE)
+    g->alpha = parameter[GFX_ARG_ALPHA];
 
   // this is only used for drawing menu buttons and text
   g->active_xoffset = parameter[GFX_ARG_ACTIVE_XOFFSET];

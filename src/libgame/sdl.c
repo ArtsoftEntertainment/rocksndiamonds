@@ -351,12 +351,55 @@ static boolean SDLHasAlpha(SDL_Surface *surface)
   return (blend_mode == SDL_BLENDMODE_BLEND);
 }
 
-void SDLSetAlpha(SDL_Surface *surface, boolean set, int alpha)
+static void SDLSetSurfaceAlpha(SDL_Surface *surface, boolean set, int alpha)
 {
   SDL_BlendMode blend_mode = (set ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
 
   SDL_SetSurfaceBlendMode(surface, blend_mode);
   SDL_SetSurfaceAlphaMod(surface, alpha);
+}
+
+static void SDLSetTextureAlpha(SDL_Texture *texture, boolean set, int alpha)
+{
+  SDL_BlendMode blend_mode = (set ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
+
+  SDL_SetTextureBlendMode(texture, blend_mode);
+  SDL_SetTextureAlphaMod(texture, alpha);
+}
+
+static void SDLSetBitmapAlpha(Bitmap *bitmap, boolean is_texture,
+			      boolean is_masked)
+{
+  int alpha_next_blit = bitmap->alpha_next_blit;
+
+  // alpha value must be requested every time before blitting, if needed
+  bitmap->alpha_next_blit = -1;
+
+  // nothing to do if requested alpha value is already set
+  if (bitmap->alpha[is_texture][is_masked] == alpha_next_blit)
+    return;
+
+  // store requested alpha value for masked/unmasked surface/texture
+  bitmap->alpha[is_texture][is_masked] = alpha_next_blit;
+
+  // set blend mode if bitmap is masked or if alpha value is defined
+  boolean set_blend_mode = (is_masked || alpha_next_blit != -1);
+
+  // if alpha value is undefined, use default (opaque) alpha value
+  if (alpha_next_blit == -1)
+    alpha_next_blit = SDL_ALPHA_OPAQUE;
+
+  if (is_texture)
+    SDLSetTextureAlpha(is_masked ? bitmap->texture_masked : bitmap->texture,
+		       set_blend_mode, alpha_next_blit);
+  else
+    SDLSetSurfaceAlpha(is_masked ? bitmap->surface_masked : bitmap->surface,
+		       set_blend_mode, alpha_next_blit);
+}
+
+void SDLSetAlpha(SDL_Surface *surface, boolean set, int alpha)
+{
+  SDLSetSurfaceAlpha(surface, set, alpha);
 }
 
 const char *SDLGetRendererName(void)
@@ -986,6 +1029,8 @@ void SDLCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
   dst_rect.w = width;
   dst_rect.h = height;
 
+  SDLSetBitmapAlpha(src_bitmap, FALSE, mask_mode == BLIT_MASKED);
+
   // if (src_bitmap != backbuffer || dst_bitmap != window)
   if (!(src_bitmap == backbuffer && dst_bitmap == window))
     SDL_BlitSurface((mask_mode == BLIT_MASKED ?
@@ -1019,6 +1064,8 @@ void SDLBlitTexture(Bitmap *bitmap,
   dst_rect.y = dst_y;
   dst_rect.w = width;
   dst_rect.h = height;
+
+  SDLSetBitmapAlpha(bitmap, TRUE, mask_mode == BLIT_MASKED);
 
   SDL_RenderCopy(sdl_renderer, texture, &src_rect, &dst_rect);
 }

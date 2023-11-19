@@ -781,6 +781,8 @@ static void BlitGlobalAnimation(struct GlobalAnimPartControlInfo *part,
       dst_x += part->viewport_x;
       dst_y += part->viewport_y;
 
+      SetBitmapAlphaNextBlit(src_bitmap, g->alpha);
+
       if (drawing_target == DRAW_TO_SCREEN)
 	blit_screen(src_bitmap, src_x, src_y, width, height,
 		    dst_x, dst_y);

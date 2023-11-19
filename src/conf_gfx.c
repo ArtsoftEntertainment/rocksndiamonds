@@ -82,6 +82,7 @@ struct ConfigTypeInfo image_config_suffix[] =
   { ".sort_priority",			ARG_UNDEFINED,	TYPE_INTEGER	},
   { ".class",				ARG_UNDEFINED,	TYPE_STRING	},
   { ".style",				ARG_UNDEFINED,	TYPE_STRING	},
+  { ".alpha",				ARG_UNDEFINED,	TYPE_INTEGER	},
   { ".active_xoffset",			"0",		TYPE_INTEGER	},
   { ".active_yoffset",			"0",		TYPE_INTEGER	},
   { ".pressed_xoffset",			"0",		TYPE_INTEGER	},

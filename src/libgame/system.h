@@ -2013,6 +2013,7 @@ Bitmap *CreateBitmapStruct(void);
 Bitmap *CreateBitmap(int, int, int);
 void ReCreateBitmap(Bitmap **, int, int);
 void FreeBitmap(Bitmap *);
+void SetBitmapAlphaNextBlit(Bitmap *, int);
 void BlitBitmap(Bitmap *, Bitmap *, int, int, int, int, int, int);
 void BlitBitmapTiled(Bitmap *, Bitmap *, int, int, int, int, int, int, int, int);
 void FadeRectangle(int, int, int, int, int, int, int,

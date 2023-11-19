@@ -75,6 +75,10 @@ struct SDLSurfaceInfo
   char *source_filename;
 
   int width, height;
+
+  int alpha[2][2];		// [surface|texture][opaque|masked]
+  int alpha_next_blit;
+
   SDL_Surface *surface;
   SDL_Surface *surface_masked;
   SDL_Texture *texture;

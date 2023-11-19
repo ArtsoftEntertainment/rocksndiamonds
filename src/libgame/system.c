@@ -601,7 +601,15 @@ void FreeBitmap(Bitmap *bitmap)
 
 Bitmap *CreateBitmapStruct(void)
 {
-  return checked_calloc(sizeof(Bitmap));
+  Bitmap *new_bitmap = checked_calloc(sizeof(Bitmap));
+
+  new_bitmap->alpha[0][0] = -1;
+  new_bitmap->alpha[0][1] = -1;
+  new_bitmap->alpha[1][0] = -1;
+  new_bitmap->alpha[1][1] = -1;
+  new_bitmap->alpha_next_blit = -1;
+
+  return new_bitmap;
 }
 
 Bitmap *CreateBitmap(int width, int height, int depth)
@@ -770,6 +778,12 @@ static boolean InClippedRectangle(Bitmap *bitmap, int *x, int *y,
   }
 
   return TRUE;
+}
+
+void SetBitmapAlphaNextBlit(Bitmap *bitmap, int alpha)
+{
+  // set alpha value for next blitting of bitmap
+  bitmap->alpha_next_blit = alpha;
 }
 
 void BlitBitmap(Bitmap *src_bitmap, Bitmap *dst_bitmap,
