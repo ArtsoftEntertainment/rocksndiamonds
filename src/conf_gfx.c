@@ -10073,6 +10073,7 @@ struct ConfigInfo image_config[] =
   { "request.autowrap",				"false"			},
   { "request.centered",				"true"			},
   { "request.wrap_single_words",		"true"			},
+  { "request.draw_order",			"-1"			},
 
   { "global.use_envelope_request",		"false"			},
 
