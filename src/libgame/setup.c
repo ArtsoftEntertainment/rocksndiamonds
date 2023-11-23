@@ -1713,11 +1713,25 @@ static boolean adjustTreeArtworkForEMC(char **artwork_set_1,
 				       char **artwork_set_2,
 				       char **artwork_set, boolean prefer_2)
 {
+  // do nothing if neither special artwork set 1 nor 2 are defined
+  if (!*artwork_set_1 && !*artwork_set_2)
+    return FALSE;
+
   boolean want_1 = (prefer_2 == FALSE);
   boolean want_2 = (prefer_2 == TRUE);
   boolean has_only_1 = (!*artwork_set && !*artwork_set_2);
   boolean has_only_2 = (!*artwork_set && !*artwork_set_1);
   char *artwork_set_new = NULL;
+
+  // replace missing special artwork 1 or 2 with (optional) standard artwork
+
+  if (!*artwork_set_1)
+    setString(artwork_set_1, *artwork_set);
+
+  if (!*artwork_set_2)
+    setString(artwork_set_2, *artwork_set);
+
+  // set standard artwork to either special artwork 1 or 2, as requested
 
   if (*artwork_set_1 && (want_1 || has_only_1))
     artwork_set_new = *artwork_set_1;
