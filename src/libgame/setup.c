@@ -1709,30 +1709,42 @@ static void cloneTree(TreeInfo **ti_new, TreeInfo *ti, boolean skip_empty_sets)
   *ti_new = ti_cloned;
 }
 
+static boolean adjustTreeArtworkForEMC(char **artwork_set_1,
+				       char **artwork_set_2,
+				       char **artwork_set, boolean prefer_2)
+{
+  boolean want_1 = (prefer_2 == FALSE);
+  boolean want_2 = (prefer_2 == TRUE);
+  boolean has_only_1 = (!*artwork_set && !*artwork_set_2);
+  boolean has_only_2 = (!*artwork_set && !*artwork_set_1);
+  char *artwork_set_new = NULL;
+
+  if (*artwork_set_1 && (want_1 || has_only_1))
+    artwork_set_new = *artwork_set_1;
+
+  if (*artwork_set_2 && (want_2 || has_only_2))
+    artwork_set_new = *artwork_set_2;
+
+  if (artwork_set_new && !strEqual(*artwork_set, artwork_set_new))
+  {
+    setString(artwork_set, artwork_set_new);
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 static boolean adjustTreeGraphicsForEMC(TreeInfo *node)
 {
   boolean settings_changed = FALSE;
 
   while (node)
   {
-    boolean want_ecs = (setup.prefer_aga_graphics == FALSE);
-    boolean want_aga = (setup.prefer_aga_graphics == TRUE);
-    boolean has_only_ecs = (!node->graphics_set && !node->graphics_set_aga);
-    boolean has_only_aga = (!node->graphics_set && !node->graphics_set_ecs);
-    char *graphics_set = NULL;
-
-    if (node->graphics_set_ecs && (want_ecs || has_only_ecs))
-      graphics_set = node->graphics_set_ecs;
-
-    if (node->graphics_set_aga && (want_aga || has_only_aga))
-      graphics_set = node->graphics_set_aga;
-
-    if (graphics_set && !strEqual(node->graphics_set, graphics_set))
-    {
-      setString(&node->graphics_set, graphics_set);
-      settings_changed = TRUE;
-    }
-
+    settings_changed |= adjustTreeArtworkForEMC(&node->graphics_set_ecs,
+						&node->graphics_set_aga,
+						&node->graphics_set,
+						setup.prefer_aga_graphics);
     if (node->node_group != NULL)
       settings_changed |= adjustTreeGraphicsForEMC(node->node_group);
 
@@ -1748,24 +1760,10 @@ static boolean adjustTreeSoundsForEMC(TreeInfo *node)
 
   while (node)
   {
-    boolean want_default = (setup.prefer_lowpass_sounds == FALSE);
-    boolean want_lowpass = (setup.prefer_lowpass_sounds == TRUE);
-    boolean has_only_default = (!node->sounds_set && !node->sounds_set_lowpass);
-    boolean has_only_lowpass = (!node->sounds_set && !node->sounds_set_default);
-    char *sounds_set = NULL;
-
-    if (node->sounds_set_default && (want_default || has_only_default))
-      sounds_set = node->sounds_set_default;
-
-    if (node->sounds_set_lowpass && (want_lowpass || has_only_lowpass))
-      sounds_set = node->sounds_set_lowpass;
-
-    if (sounds_set && !strEqual(node->sounds_set, sounds_set))
-    {
-      setString(&node->sounds_set, sounds_set);
-      settings_changed = TRUE;
-    }
-
+    settings_changed |= adjustTreeArtworkForEMC(&node->sounds_set_default,
+						&node->sounds_set_lowpass,
+						&node->sounds_set,
+						setup.prefer_lowpass_sounds);
     if (node->node_group != NULL)
       settings_changed |= adjustTreeSoundsForEMC(node->node_group);
 
