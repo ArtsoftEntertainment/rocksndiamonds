@@ -51,6 +51,7 @@ struct GameInfo_EM
   boolean use_old_push_elements;
   boolean use_old_push_into_acid;
   boolean use_wrap_around;
+  boolean use_push_delay;
 };
 
 struct LevelInfo_EM

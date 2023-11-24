@@ -777,6 +777,9 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	if (dy)
 	  break;
 
+	if (game_em.use_push_delay && RANDOM(32) < 16)
+	  goto stone_push_anim;
+
 	switch (cave[x+dx][y])
 	{
           case Xblank:
@@ -817,12 +820,17 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	    break;
 	}
 
+      stone_push_anim:
+
 	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xbomb:
 	if (dy)
 	  break;
+
+	if (game_em.use_push_delay && RANDOM(32) < 22)
+	  goto bomb_push_anim;
 
 	switch (cave[x+dx][y])
 	{
@@ -864,12 +872,17 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	    break;
 	}
 
+      bomb_push_anim:
+
 	ply->anim = PLY_push_n + anim;
 	break;
 
       case Xnut:
 	if (dy)
 	  break;
+
+	if (game_em.use_push_delay && RANDOM(32) < 19)
+	  goto nut_push_anim;
 
 	switch (cave[x+dx][y])
 	{
@@ -910,6 +923,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	    ply->x = x;
 	    break;
 	}
+
+      nut_push_anim:
 
 	ply->anim = PLY_push_n + anim;
 	break;
@@ -1469,6 +1484,8 @@ static void check_player(struct PLAYER *ply)
 
   ply->dynamite_cnt = 0;	/* reset dynamite timer if we move */
 
+  seed = game_em.random;
+
   if (!ply->joy_snap)		/* player wants to move */
   {
     boolean moved = FALSE;
@@ -1500,6 +1517,8 @@ static void check_player(struct PLAYER *ply)
   {
     game_em.any_player_snapping = player_digfield(ply, dx, dy);
   }
+
+  game_em.random = seed;
 }
 
 static void set_nearest_player_xy(int x, int y, int *dx, int *dy)

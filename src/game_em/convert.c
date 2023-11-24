@@ -472,6 +472,10 @@ void prepare_em_level(void)
   // - game_em.use_old_push_elements (default: FALSE)
   // - game_em.use_old_push_into_acid (default: FALSE)
   // - game_em.use_wrap_around (default: TRUE)
+  // - game_em.use_push_delay (default: TRUE)
+
+  if (native_em_level.file_version > FILE_VERSION_EM_V5)
+    game_em.use_push_delay = FALSE;
 
   game_em.level_solved = FALSE;
   game_em.game_over = FALSE;

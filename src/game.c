@@ -3095,6 +3095,9 @@ static void InitGameEngine(void)
   game_em.use_single_button =
     (game.engine_version > VERSION_IDENT(4,0,0,2));
 
+  game_em.use_push_delay =
+    (game.engine_version > VERSION_IDENT(4,3,7,1));
+
   game_em.use_snap_key_bug =
     (game.engine_version < VERSION_IDENT(4,0,1,0));
 
