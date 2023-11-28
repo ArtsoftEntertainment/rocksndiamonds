@@ -1012,6 +1012,25 @@ void SDLFreeBitmapPointers(Bitmap *bitmap)
   bitmap->texture_masked = NULL;
 }
 
+void SDLBlitSurface(SDL_Surface *src_surface, SDL_Surface *dst_surface,
+		    int src_x, int src_y, int width, int height,
+		    int dst_x, int dst_y)
+{
+  SDL_Rect src_rect, dst_rect;
+
+  src_rect.x = src_x;
+  src_rect.y = src_y;
+  src_rect.w = width;
+  src_rect.h = height;
+
+  dst_rect.x = dst_x;
+  dst_rect.y = dst_y;
+  dst_rect.w = width;
+  dst_rect.h = height;
+
+  SDL_BlitSurface(src_surface, &src_rect, dst_surface, &dst_rect);
+}
+
 void SDLCopyArea(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 		 int src_x, int src_y, int width, int height,
 		 int dst_x, int dst_y, int mask_mode)

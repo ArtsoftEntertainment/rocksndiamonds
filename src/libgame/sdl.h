@@ -422,6 +422,7 @@ void SDLInitVideoBuffer(boolean);
 boolean SDLSetVideoMode(boolean);
 void SDLCreateBitmapContent(Bitmap *, int, int, int);
 void SDLFreeBitmapPointers(Bitmap *);
+void SDLBlitSurface(SDL_Surface *, SDL_Surface *, int, int, int, int, int, int);
 void SDLCopyArea(Bitmap *, Bitmap *, int, int, int, int, int, int, int);
 void SDLBlitTexture(Bitmap *, int, int, int, int, int, int, int);
 void SDLFillRectangle(Bitmap *, int, int, int, int, Uint32);
