@@ -3039,6 +3039,17 @@ static void PrepareEnvelopeRequestToScreen(Bitmap *bitmap, int sx, int sy,
 
   BlitBitmap(bitmap, request.bitmap, sx, sy, xsize, ysize, 0, 0);
 
+  // create masked surface for request bitmap, if needed
+  if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
+  {
+    SDL_Surface *surface        = request.bitmap->surface;
+    SDL_Surface *surface_masked = request.bitmap->surface_masked;
+
+    SDLBlitSurface(surface, surface_masked, 0, 0, xsize, ysize, 0, 0);
+    SDL_SetColorKey(surface_masked, SET_TRANSPARENT_PIXEL,
+		    SDL_MapRGB(surface_masked->format, 0x00, 0x00, 0x00));
+  }
+
   SDLFreeBitmapTextures(request.bitmap);
   SDLCreateBitmapTextures(request.bitmap);
 
@@ -3055,8 +3066,12 @@ void DrawEnvelopeRequestToScreen(int drawing_target)
       game.request_active_or_moving &&
       drawing_target == DRAW_TO_SCREEN)
   {
-    BlitToScreen(request.bitmap, 0, 0, request.xsize, request.ysize,
-		 request.sx, request.sy);
+    if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
+      BlitToScreenMasked(request.bitmap, 0, 0, request.xsize, request.ysize,
+			 request.sx, request.sy);
+    else
+      BlitToScreen(request.bitmap, 0, 0, request.xsize, request.ysize,
+		   request.sx, request.sy);
   }
 }
 
@@ -3209,6 +3224,24 @@ static void DrawEnvelopeRequest(char *text)
 
   // store readily prepared envelope request for later use when animating
   BlitBitmap(backbuffer, bitmap_db_store_2, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+
+  // create masked surface for request bitmap, if needed
+  if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
+  {
+    if (bitmap_db_store_2->surface_masked == NULL)
+    {
+      if ((bitmap_db_store_2->surface_masked =
+	   SDLGetNativeSurface(bitmap_db_store_2->surface)) == NULL)
+	Fail("SDLGetNativeSurface() failed");
+    }
+
+    SDL_Surface *surface        = bitmap_db_store_2->surface;
+    SDL_Surface *surface_masked = bitmap_db_store_2->surface_masked;
+
+    SDLBlitSurface(surface, surface_masked, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+    SDL_SetColorKey(surface_masked, SET_TRANSPARENT_PIXEL,
+		    SDL_MapRGB(surface_masked->format, 0x00, 0x00, 0x00));
+  }
 
   PrepareEnvelopeRequestToScreen(bitmap_db_store_2, sx, sy, width, height);
 
@@ -4546,7 +4579,10 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
       if (global.use_envelope_request)
       {
 	// copy current state of request area to middle of playfield area
-	BlitBitmap(bitmap_db_store_2, drawto, sx, sy, width, height, sx, sy);
+	if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
+	  BlitBitmapMasked(bitmap_db_store_2, drawto, sx, sy, width, height, sx, sy);
+	else
+	  BlitBitmap(bitmap_db_store_2, drawto, sx, sy, width, height, sx, sy);
       }
     }
 
