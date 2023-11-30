@@ -3203,8 +3203,8 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 
   setRequestPosition(&sx, &sy, FALSE);
 
-  // draw envelope request to temporary bitmap
-  drawto = bitmap_db_store_2;
+  // draw complete envelope request to temporary bitmap
+  drawto = bitmap_db_store_1;
 
   ClearRectangle(drawto, sx, sy, width, height);
 
@@ -3246,7 +3246,8 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
   // restore pointer to drawing buffer
   drawto = drawto_last;
 
-  PrepareEnvelopeRequestToScreen(bitmap_db_store_2, sx, sy, width, height);
+  // prepare complete envelope request from temporary bitmap
+  PrepareEnvelopeRequestToScreen(bitmap_db_store_1, sx, sy, width, height);
 
   if (text_door_style)
     free(text_door_style);
@@ -3316,12 +3317,14 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
 	int xx_size = (xx ? tile_size : xsize_size_left);
 	int yy_size = (yy ? tile_size : ysize_size_top);
 
-	BlitBitmap(bitmap_db_store_2, bitmap_db_store_1,
+	// draw partial (animated) envelope request to temporary bitmap
+	BlitBitmap(bitmap_db_store_1, bitmap_db_store_2,
 		   src_xx, src_yy, xx_size, yy_size, dst_xx, dst_yy);
       }
     }
 
-    PrepareEnvelopeRequestToScreen(bitmap_db_store_1, dst_x, dst_y,
+    // prepare partial (animated) envelope request from temporary bitmap
+    PrepareEnvelopeRequestToScreen(bitmap_db_store_2, dst_x, dst_y,
 				   width, height);
 
     redraw_mask |= REDRAW_FIELD;
@@ -4563,7 +4566,7 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 	    if (global.use_envelope_request)
 	    {
 	      // draw changed button states to temporary bitmap
-	      drawto = bitmap_db_store_2;
+	      drawto = bitmap_db_store_1;
 	    }
 
 	    // this sets 'request_gadget_id'
@@ -4571,10 +4574,12 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 
 	    if (global.use_envelope_request)
 	    {
-	      PrepareEnvelopeRequestToScreen(drawto, sx, sy, width, height);
-
 	      // restore pointer to drawing buffer
 	      drawto = drawto_last;
+
+	      // prepare complete envelope request from temporary bitmap
+	      PrepareEnvelopeRequestToScreen(bitmap_db_store_1, sx, sy,
+					     width, height);
 	    }
 
 	    switch (request_gadget_id)
