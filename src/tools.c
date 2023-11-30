@@ -3142,8 +3142,9 @@ static void setRequestPosition(int *x, int *y, boolean add_border_size)
   setRequestPositionExt(x, y, request.width, request.height, add_border_size);
 }
 
-static void DrawEnvelopeRequest(char *text)
+static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 {
+  DrawBuffer *drawto_last = drawto;
   char *text_final = text;
   char *text_door_style = NULL;
   int graphic = IMG_BACKGROUND_REQUEST;
@@ -3168,7 +3169,7 @@ static void DrawEnvelopeRequest(char *text)
   int sx_offset = border_size;
   int sy_offset = border_size;
   int sx, sy;
-  int i, x, y;
+  int x, y;
 
   if (request.centered)
     sx_offset = (request.width - text_width) / 2;
@@ -3202,7 +3203,10 @@ static void DrawEnvelopeRequest(char *text)
 
   setRequestPosition(&sx, &sy, FALSE);
 
-  ClearRectangle(backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE);
+  // draw envelope request to temporary bitmap
+  drawto = bitmap_db_store_2;
+
+  ClearRectangle(drawto, sx, sy, width, height);
 
   for (y = 0; y < y_steps; y++)
     for (x = 0; x < x_steps; x++)
@@ -3219,29 +3223,28 @@ static void DrawEnvelopeRequest(char *text)
 
   ResetFontStatus();
 
-  for (i = 0; i < NUM_TOOL_BUTTONS; i++)
-    RedrawGadget(tool_gadget[i]);
-
-  // store readily prepared envelope request for later use when animating
-  BlitBitmap(backbuffer, bitmap_db_store_2, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
-
-  // create masked surface for request bitmap, if needed
-  if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
+  if (req_state & REQ_ASK)
   {
-    if (bitmap_db_store_2->surface_masked == NULL)
-    {
-      if ((bitmap_db_store_2->surface_masked =
-	   SDLGetNativeSurface(bitmap_db_store_2->surface)) == NULL)
-	Fail("SDLGetNativeSurface() failed");
-    }
-
-    SDL_Surface *surface        = bitmap_db_store_2->surface;
-    SDL_Surface *surface_masked = bitmap_db_store_2->surface_masked;
-
-    SDLBlitSurface(surface, surface_masked, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
-    SDL_SetColorKey(surface_masked, SET_TRANSPARENT_PIXEL,
-		    SDL_MapRGB(surface_masked->format, 0x00, 0x00, 0x00));
+    MapGadget(tool_gadget[TOOL_CTRL_ID_YES]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_NO]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_YES]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_NO]);
   }
+  else if (req_state & REQ_CONFIRM)
+  {
+    MapGadget(tool_gadget[TOOL_CTRL_ID_CONFIRM]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_CONFIRM]);
+  }
+  else if (req_state & REQ_PLAYER)
+  {
+    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_1]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_2]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_3]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_4]);
+  }
+
+  // restore pointer to drawing buffer
+  drawto = drawto_last;
 
   PrepareEnvelopeRequestToScreen(bitmap_db_store_2, sx, sy, width, height);
 
@@ -3251,8 +3254,6 @@ static void DrawEnvelopeRequest(char *text)
 
 static void AnimateEnvelopeRequest(int anim_mode, int action)
 {
-  int graphic = IMG_BACKGROUND_REQUEST;
-  boolean draw_masked = graphic_info[graphic].draw_masked;
   int delay_value_normal = request.step_delay;
   int delay_value_fast = delay_value_normal / 2;
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
@@ -3304,8 +3305,6 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
     setRequestPosition(&src_x, &src_y, FALSE);
     setRequestPositionExt(&dst_x, &dst_y, width, height, FALSE);
 
-    BlitBitmap(bitmap_db_store_1, backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
-
     for (yy = 0; yy < 2; yy++)
     {
       for (xx = 0; xx < 2; xx++)
@@ -3317,16 +3316,13 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
 	int xx_size = (xx ? tile_size : xsize_size_left);
 	int yy_size = (yy ? tile_size : ysize_size_top);
 
-	if (draw_masked)
-	  BlitBitmapMasked(bitmap_db_store_2, backbuffer,
-			   src_xx, src_yy, xx_size, yy_size, dst_xx, dst_yy);
-	else
-	  BlitBitmap(bitmap_db_store_2, backbuffer,
-		     src_xx, src_yy, xx_size, yy_size, dst_xx, dst_yy);
+	BlitBitmap(bitmap_db_store_2, bitmap_db_store_1,
+		   src_xx, src_yy, xx_size, yy_size, dst_xx, dst_yy);
       }
     }
 
-    PrepareEnvelopeRequestToScreen(backbuffer, dst_x, dst_y, width, height);
+    PrepareEnvelopeRequestToScreen(bitmap_db_store_1, dst_x, dst_y,
+				   width, height);
 
     redraw_mask |= REDRAW_FIELD;
 
@@ -3349,44 +3345,12 @@ static void ShowEnvelopeRequest(char *text, unsigned int req_state, int action)
   int main_anim_mode = (anim_mode == ANIM_NONE ? ANIM_VERTICAL|ANIM_HORIZONTAL:
 			anim_mode == ANIM_DEFAULT ? ANIM_VERTICAL : anim_mode);
 
-  if (game_status == GAME_MODE_PLAYING)
-    BlitScreenToBitmap(backbuffer);
-
-  SetDrawtoField(DRAW_TO_BACKBUFFER);
-
-  // SetDrawBackgroundMask(REDRAW_NONE);
-
-  if (action == ACTION_OPENING)
-  {
-    BlitBitmap(backbuffer, bitmap_db_store_1, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
-
-    if (req_state & REQ_ASK)
-    {
-      MapGadget(tool_gadget[TOOL_CTRL_ID_YES]);
-      MapGadget(tool_gadget[TOOL_CTRL_ID_NO]);
-      MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_YES]);
-      MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_NO]);
-    }
-    else if (req_state & REQ_CONFIRM)
-    {
-      MapGadget(tool_gadget[TOOL_CTRL_ID_CONFIRM]);
-      MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_CONFIRM]);
-    }
-    else if (req_state & REQ_PLAYER)
-    {
-      MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_1]);
-      MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_2]);
-      MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_3]);
-      MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_4]);
-    }
-
-    DrawEnvelopeRequest(text);
-  }
-
   game.envelope_active = TRUE;	// needed for RedrawPlayfield() events
 
   if (action == ACTION_OPENING)
   {
+    DrawEnvelopeRequest(text, req_state);
+
     PlayMenuSoundStereo(sound_opening, SOUND_MIDDLE);
 
     if (anim_mode == ANIM_DEFAULT)
@@ -3406,20 +3370,6 @@ static void ShowEnvelopeRequest(char *text, unsigned int req_state, int action)
   }
 
   game.envelope_active = FALSE;
-
-  if (action == ACTION_CLOSING)
-    BlitBitmap(bitmap_db_store_1, backbuffer, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
-
-  // SetDrawBackgroundMask(last_draw_background_mask);
-
-  redraw_mask |= REDRAW_FIELD;
-
-  BackToFront();
-
-  if (action == ACTION_CLOSING &&
-      game_status == GAME_MODE_PLAYING &&
-      level.game_engine_type == GAME_ENGINE_TYPE_RND)
-    SetDrawtoField(DRAW_TO_FIELDBUFFER);
 }
 
 static void DrawPreviewElement(int dst_x, int dst_y, int element, int tilesize)
@@ -4566,8 +4516,6 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 
   while (result < 0)
   {
-    boolean event_handled = FALSE;
-
     if (game_just_ended)
     {
       SetDrawtoField(draw_buffer_game);
@@ -4575,15 +4523,6 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
       HandleGameActions();
 
       SetDrawtoField(DRAW_TO_BACKBUFFER);
-
-      if (global.use_envelope_request)
-      {
-	// copy current state of request area to middle of playfield area
-	if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
-	  BlitBitmapMasked(bitmap_db_store_2, drawto, sx, sy, width, height, sx, sy);
-	else
-	  BlitBitmap(bitmap_db_store_2, drawto, sx, sy, width, height, sx, sy);
-      }
     }
 
     if (PendingEvent())
@@ -4592,14 +4531,13 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 
       while (NextValidEvent(&event))
       {
-	event_handled = TRUE;
-
 	switch (event.type)
 	{
 	  case EVENT_BUTTONPRESS:
 	  case EVENT_BUTTONRELEASE:
 	  case EVENT_MOTIONNOTIFY:
 	  {
+	    DrawBuffer *drawto_last = drawto;
 	    int mx, my;
 
 	    if (event.type == EVENT_MOTIONNOTIFY)
@@ -4622,8 +4560,22 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 		button_status = MB_RELEASED;
 	    }
 
+	    if (global.use_envelope_request)
+	    {
+	      // draw changed button states to temporary bitmap
+	      drawto = bitmap_db_store_2;
+	    }
+
 	    // this sets 'request_gadget_id'
 	    HandleGadgets(mx, my, button_status);
+
+	    if (global.use_envelope_request)
+	    {
+	      PrepareEnvelopeRequestToScreen(drawto, sx, sy, width, height);
+
+	      // restore pointer to drawing buffer
+	      drawto = drawto_last;
+	    }
 
 	    switch (request_gadget_id)
 	    {
@@ -4846,20 +4798,6 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 	else if (joy & JOY_LEFT)
 	  result = 4;
       }
-    }
-
-    if (event_handled)
-    {
-      if (game_just_ended)
-      {
-	if (global.use_envelope_request)
-	{
-	  // copy back current state of pressed buttons inside request area
-	  BlitBitmap(drawto, bitmap_db_store_2, sx, sy, width, height, sx, sy);
-	}
-      }
-
-      PrepareEnvelopeRequestToScreen(drawto, sx, sy, width, height);
     }
 
     BackToFront();
