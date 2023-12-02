@@ -3244,7 +3244,7 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
   boolean no_delay = (tape.warp_forward);
   int delay_value = (ffwd_delay ? delay_value_fast : delay_value_normal);
-  int anim_delay_value = MAX(1, (no_delay ? 0 : delay_value + 500 * 0) / 2);
+  int anim_delay_value = MAX(1, (no_delay ? 0 : delay_value) / 2);
   DelayCounter anim_delay = { anim_delay_value };
 
   int tile_size = MAX(request.step_offset, 1);
@@ -4858,16 +4858,13 @@ static boolean RequestDoor(char *text, unsigned int req_state)
 
   DoRequestBefore();
 
-  // draw released gadget before proceeding
-  // BackToFront();
-
   if (old_door_state & DOOR_OPEN_1)
   {
     CloseDoor(DOOR_CLOSE_1);
 
     // save old door content
     BlitBitmap(bitmap_db_door_1, bitmap_db_door_1,
-	       0 * DXSIZE, 0, DXSIZE, DYSIZE, 1 * DXSIZE, 0);
+	       0, 0, DXSIZE, DYSIZE, DXSIZE, 0);
   }
 
   SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
@@ -4891,7 +4888,6 @@ static boolean RequestDoor(char *text, unsigned int req_state)
     for (tl = 0, tx = 0; tx < max_request_line_len; tl++, tx++)
     {
       tc = *(text_ptr + tx);
-      // if (!tc || tc == ' ')
       if (!tc || tc == ' ' || tc == '?' || tc == '!')
 	break;
     }
@@ -4914,7 +4910,6 @@ static boolean RequestDoor(char *text, unsigned int req_state)
 	     text_line, font_nr);
 
     text_ptr += tl + (tc == ' ' ? 1 : 0);
-    // text_ptr += tl + (tc == ' ' || tc == '?' || tc == '!' ? 1 : 0);
   }
 
   ResetFontStatus();
