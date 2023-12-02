@@ -4973,13 +4973,6 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
 
   DoRequestBefore(req_state);
 
-  // (replace with setting corresponding request background)
-  // SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
-  // SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
-
-  // clear door drawing field
-  // DrawBackground(DX, DY, DXSIZE, DYSIZE);
-
   ShowEnvelopeRequest(text, req_state, ACTION_OPENING);
 
   if (!(req_state & REQUEST_WAIT_FOR_INPUT))
