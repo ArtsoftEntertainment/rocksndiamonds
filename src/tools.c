@@ -3255,8 +3255,7 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 
 static void AnimateEnvelopeRequest(int anim_mode, int action)
 {
-  boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
-			     checkGameEnded());
+  boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
   int delay_value_normal = request.step_delay;
   int delay_value_fast = delay_value_normal / 2;
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
@@ -3305,7 +3304,7 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
     int dst_x, dst_y;
     int xx, yy;
 
-    if (game_just_ended)
+    if (game_ended)
       HandleGameActions();
 
     setRequestPosition(&src_x, &src_y, FALSE);
@@ -4501,8 +4500,7 @@ void WaitForEventToContinue(void)
 
 static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 {
-  boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
-			     checkGameEnded());
+  boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
   int draw_buffer_last = GetDrawtoField();
   int width  = request.width;
   int height = request.height;
@@ -4518,7 +4516,7 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 
   while (result < 0)
   {
-    if (game_just_ended)
+    if (game_ended)
     {
       SetDrawtoField(draw_buffer_game);
 
@@ -5083,13 +5081,12 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
 
 boolean Request(char *text, unsigned int req_state)
 {
-  boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
-			     checkGameEnded());
+  boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
   boolean overlay_enabled = GetOverlayEnabled();
   boolean result;
 
   // when showing request dialog after game ended, deactivate game panel
-  if (game_just_ended)
+  if (game_ended)
     game.panel.active = FALSE;
 
   game.request_active = TRUE;
@@ -5407,8 +5404,7 @@ unsigned int MoveDoor(unsigned int door_state)
 
   if (door_state & DOOR_ACTION)
   {
-    boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
-			       checkGameEnded());
+    boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
     boolean door_panel_drawn[NUM_DOORS];
     boolean panel_has_doors[NUM_DOORS];
     boolean door_part_skip[MAX_DOOR_PARTS];
@@ -5675,7 +5671,7 @@ unsigned int MoveDoor(unsigned int door_state)
 
       if (!(door_state & DOOR_NO_DELAY))
       {
-	if (game_just_ended)
+	if (game_ended)
 	  HandleGameActions();
 
 	BackToFront();
@@ -5702,7 +5698,7 @@ unsigned int MoveDoor(unsigned int door_state)
 
       while (!DelayReached(&door_delay))
       {
-	if (game_just_ended)
+	if (game_ended)
 	  HandleGameActions();
 
 	BackToFront();
