@@ -4813,7 +4813,7 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 static boolean RequestDoor(char *text, unsigned int req_state)
 {
   int draw_buffer_last = GetDrawtoField();
-  unsigned int old_door_state;
+  unsigned int old_door_state = GetDoorState();
   int max_request_line_len = MAX_REQUEST_LINE_FONT1_LEN;
   int font_nr = FONT_TEXT_2;
   char *text_ptr;
@@ -4841,8 +4841,6 @@ static boolean RequestDoor(char *text, unsigned int req_state)
       !game.all_players_gone &&
       req_state & REQUEST_WAIT_FOR_INPUT)
     SendToServer_PausePlaying();
-
-  old_door_state = GetDoorState();
 
   // simulate releasing mouse button over last gadget, if still pressed
   if (button_status)
