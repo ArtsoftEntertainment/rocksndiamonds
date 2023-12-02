@@ -3255,6 +3255,8 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 
 static void AnimateEnvelopeRequest(int anim_mode, int action)
 {
+  boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
+			     checkGameEnded());
   int delay_value_normal = request.step_delay;
   int delay_value_fast = delay_value_normal / 2;
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
@@ -3302,6 +3304,9 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
     int src_x, src_y;
     int dst_x, dst_y;
     int xx, yy;
+
+    if (game_just_ended)
+      HandleGameActions();
 
     setRequestPosition(&src_x, &src_y, FALSE);
     setRequestPositionExt(&dst_x, &dst_y, width, height, FALSE);
@@ -4504,10 +4509,6 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
   int sx, sy;
   int result;
 
-  // when showing request dialog after game ended, deactivate game panel
-  if (game_just_ended)
-    game.panel.active = FALSE;
-
   setRequestPosition(&sx, &sy, FALSE);
 
   button_status = MB_RELEASED;
@@ -5082,8 +5083,14 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
 
 boolean Request(char *text, unsigned int req_state)
 {
+  boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
+			     checkGameEnded());
   boolean overlay_enabled = GetOverlayEnabled();
   boolean result;
+
+  // when showing request dialog after game ended, deactivate game panel
+  if (game_just_ended)
+    game.panel.active = FALSE;
 
   game.request_active = TRUE;
 
