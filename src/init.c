@@ -5493,9 +5493,7 @@ static void InitSetup(void)
 static void InitGameInfo(void)
 {
   game.restart_level = FALSE;
-
   game.request_active = FALSE;
-  game.request_active_or_moving = FALSE;
 
   game.use_masked_elements_initial = FALSE;
 }

@@ -398,8 +398,8 @@ static boolean isPausedOnPlayfieldOrDoor(struct GlobalAnimPartControlInfo *part)
   if (!part->class_playfield_or_door)
     return FALSE;
 
-  // only pause animations when engine is paused or request dialog is open(ing)
-  if (!tape.pausing && !game.request_active_or_moving)
+  // only pause animations when engine is paused or request dialog is active
+  if (!tape.pausing && !game.request_active)
     return FALSE;
 
   return TRUE;

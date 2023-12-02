@@ -4549,9 +4549,7 @@ void InitGame(void)
   }
 
   game.restart_level = FALSE;
-
   game.request_active = FALSE;
-  game.request_active_or_moving = FALSE;
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
     InitGameActions_MM();
@@ -15804,7 +15802,7 @@ boolean CheckRestartGame(void)
     return FALSE;
   }
 
-  // do not handle game over if request dialog is already active
+  // do not ask to play again if request dialog is already active
   if (game.request_active)
     return FALSE;
 

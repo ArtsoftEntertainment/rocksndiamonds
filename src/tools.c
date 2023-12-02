@@ -3063,7 +3063,7 @@ static void PrepareEnvelopeRequestToScreen(Bitmap *bitmap, int sx, int sy,
 void DrawEnvelopeRequestToScreen(int drawing_target)
 {
   if (global.use_envelope_request &&
-      game.request_active_or_moving &&
+      game.request_active &&
       drawing_target == DRAW_TO_SCREEN)
   {
     if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
@@ -4508,8 +4508,6 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
   if (game_just_ended)
     game.panel.active = FALSE;
 
-  game.request_active = TRUE;
-
   setRequestPosition(&sx, &sy, FALSE);
 
   button_status = MB_RELEASED;
@@ -4810,8 +4808,6 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 
   SetDrawtoField(draw_buffer_last);
 
-  game.request_active = FALSE;
-
   return result;
 }
 
@@ -5089,7 +5085,7 @@ boolean Request(char *text, unsigned int req_state)
   boolean overlay_enabled = GetOverlayEnabled();
   boolean result;
 
-  game.request_active_or_moving = TRUE;
+  game.request_active = TRUE;
 
   SetOverlayEnabled(FALSE);
 
@@ -5100,7 +5096,7 @@ boolean Request(char *text, unsigned int req_state)
 
   SetOverlayEnabled(overlay_enabled);
 
-  game.request_active_or_moving = FALSE;
+  game.request_active = FALSE;
 
   return result;
 }
