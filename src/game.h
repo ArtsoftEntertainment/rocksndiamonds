@@ -275,6 +275,8 @@ struct GameInfo
   int LevelSolved_CountingTime;
   int LevelSolved_CountingScore;
   int LevelSolved_CountingHealth;
+
+  boolean RestartGameRequested;
 };
 
 struct PlayerInfo

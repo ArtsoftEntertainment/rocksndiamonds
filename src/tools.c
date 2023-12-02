@@ -5407,6 +5407,8 @@ unsigned int MoveDoor(unsigned int door_state)
 
   if (door_state & DOOR_ACTION)
   {
+    boolean game_just_ended = (game_status == GAME_MODE_PLAYING &&
+			       checkGameEnded());
     boolean door_panel_drawn[NUM_DOORS];
     boolean panel_has_doors[NUM_DOORS];
     boolean door_part_skip[MAX_DOOR_PARTS];
@@ -5673,6 +5675,9 @@ unsigned int MoveDoor(unsigned int door_state)
 
       if (!(door_state & DOOR_NO_DELAY))
       {
+	if (game_just_ended)
+	  HandleGameActions();
+
 	BackToFront();
 
 	SkipUntilDelayReached(&door_delay, &k, last_frame);
@@ -5696,7 +5701,12 @@ unsigned int MoveDoor(unsigned int door_state)
 	door_delay.value = door_2.post_delay;
 
       while (!DelayReached(&door_delay))
+      {
+	if (game_just_ended)
+	  HandleGameActions();
+
 	BackToFront();
+      }
     }
   }
 

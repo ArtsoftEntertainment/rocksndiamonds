@@ -3870,6 +3870,8 @@ void InitGame(void)
   game.LevelSolved_CountingScore = 0;
   game.LevelSolved_CountingHealth = 0;
 
+  game.RestartGameRequested = FALSE;
+
   game.panel.active = TRUE;
 
   game.no_level_time_limit = (level.time == 0);
@@ -15806,6 +15808,10 @@ boolean CheckRestartGame(void)
   if (game.request_active)
     return FALSE;
 
+  // do not ask to play again if request dialog already handled
+  if (game.RestartGameRequested)
+    return FALSE;
+
   // do not ask to play again if game was never actually played
   if (!game.GamePlayed)
     return FALSE;
@@ -15813,6 +15819,8 @@ boolean CheckRestartGame(void)
   // do not ask to play again if this was disabled in setup menu
   if (!setup.ask_on_game_over)
     return FALSE;
+
+  game.RestartGameRequested = TRUE;
 
   RequestRestartGame();
 
