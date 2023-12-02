@@ -4840,15 +4840,15 @@ static void DoRequestAfter(void)
     TapeDeactivateDisplayOn();
 }
 
-static boolean RequestDoor(char *text, unsigned int req_state)
+static void DrawRequestDoorText(char *text)
 {
-  int draw_buffer_last = GetDrawtoField();
-  unsigned int old_door_state = GetDoorState();
+  char *text_ptr = text;
   int max_request_line_len = MAX_REQUEST_LINE_FONT1_LEN;
   int font_nr = FONT_TEXT_2;
-  char *text_ptr;
-  int result;
   int ty;
+
+  // force DOOR font inside door area
+  SetFontStatus(GAME_MODE_PSEUDO_DOOR);
 
   if (maxWordLengthInRequestString(text) > MAX_REQUEST_LINE_FONT1_LEN)
   {
@@ -4856,27 +4856,6 @@ static boolean RequestDoor(char *text, unsigned int req_state)
     font_nr = FONT_TEXT_1;
   }
 
-  DoRequestBefore();
-
-  if (old_door_state & DOOR_OPEN_1)
-  {
-    CloseDoor(DOOR_CLOSE_1);
-
-    // save old door content
-    BlitBitmap(bitmap_db_door_1, bitmap_db_door_1,
-	       0, 0, DXSIZE, DYSIZE, DXSIZE, 0);
-  }
-
-  SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
-  SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
-
-  // clear door drawing field
-  DrawBackground(DX, DY, DXSIZE, DYSIZE);
-
-  // force DOOR font inside door area
-  SetFontStatus(GAME_MODE_PSEUDO_DOOR);
-
-  // write text for request
   for (text_ptr = text, ty = 0; ty < MAX_REQUEST_LINES; ty++)
   {
     char text_line[max_request_line_len + 1];
@@ -4913,6 +4892,33 @@ static boolean RequestDoor(char *text, unsigned int req_state)
   }
 
   ResetFontStatus();
+}
+
+static boolean RequestDoor(char *text, unsigned int req_state)
+{
+  int draw_buffer_last = GetDrawtoField();
+  unsigned int old_door_state = GetDoorState();
+  int result;
+
+  DoRequestBefore();
+
+  if (old_door_state & DOOR_OPEN_1)
+  {
+    CloseDoor(DOOR_CLOSE_1);
+
+    // save old door content
+    BlitBitmap(bitmap_db_door_1, bitmap_db_door_1,
+	       0, 0, DXSIZE, DYSIZE, DXSIZE, 0);
+  }
+
+  SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
+  SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
+
+  // clear door drawing field
+  DrawBackground(DX, DY, DXSIZE, DYSIZE);
+
+  // write text for request
+  DrawRequestDoorText(text);
 
   MapToolButtons(req_state);
 
