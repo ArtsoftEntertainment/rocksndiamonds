@@ -3339,8 +3339,6 @@ static void ShowEnvelopeRequest(char *text, unsigned int req_state, int action)
 
   if (action == ACTION_OPENING)
   {
-    DrawEnvelopeRequest(text, req_state);
-
     PlayMenuSoundStereo(sound_opening, SOUND_MIDDLE);
 
     if (anim_mode == ANIM_DEFAULT)
@@ -4973,6 +4971,7 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
 
   DoRequestBefore(req_state);
 
+  DrawEnvelopeRequest(text, req_state);
   ShowEnvelopeRequest(text, req_state, ACTION_OPENING);
 
   if (!(req_state & REQUEST_WAIT_FOR_INPUT))
