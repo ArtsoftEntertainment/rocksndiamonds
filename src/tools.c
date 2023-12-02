@@ -175,6 +175,7 @@ static struct XY xy_topdown[] =
 
 
 // forward declaration for internal use
+static void MapToolButtons(unsigned int);
 static void UnmapToolButtons(void);
 static void HandleToolButtons(struct GadgetInfo *);
 static int el_act_dir2crm(int, int, int);
@@ -3223,25 +3224,7 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 
   ResetFontStatus();
 
-  if (req_state & REQ_ASK)
-  {
-    MapGadget(tool_gadget[TOOL_CTRL_ID_YES]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_NO]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_YES]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_NO]);
-  }
-  else if (req_state & REQ_CONFIRM)
-  {
-    MapGadget(tool_gadget[TOOL_CTRL_ID_CONFIRM]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_CONFIRM]);
-  }
-  else if (req_state & REQ_PLAYER)
-  {
-    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_1]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_2]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_3]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_4]);
-  }
+  MapToolButtons(req_state);
 
   // restore pointer to drawing buffer
   drawto = drawto_last;
@@ -4810,22 +4793,8 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
   return result;
 }
 
-static boolean RequestDoor(char *text, unsigned int req_state)
+static void DoRequestBefore(unsigned int req_state)
 {
-  int draw_buffer_last = GetDrawtoField();
-  unsigned int old_door_state = GetDoorState();
-  int max_request_line_len = MAX_REQUEST_LINE_FONT1_LEN;
-  int font_nr = FONT_TEXT_2;
-  char *text_ptr;
-  int result;
-  int ty;
-
-  if (maxWordLengthInRequestString(text) > MAX_REQUEST_LINE_FONT1_LEN)
-  {
-    max_request_line_len = MAX_REQUEST_LINE_FONT2_LEN;
-    font_nr = FONT_TEXT_1;
-  }
-
   if (game_status == GAME_MODE_PLAYING)
     BlitScreenToBitmap(backbuffer);
 
@@ -4847,6 +4816,51 @@ static boolean RequestDoor(char *text, unsigned int req_state)
     HandleGadgets(-1, -1, 0);
 
   UnmapAllGadgets();
+}
+
+static void DoRequestAfter(unsigned int req_state)
+{
+  RemapAllGadgets();
+
+  if (game_status == GAME_MODE_PLAYING)
+  {
+    SetPanelBackground();
+    SetDrawBackgroundMask(REDRAW_DOOR_1);
+  }
+  else
+  {
+    SetDrawBackgroundMask(REDRAW_FIELD);
+  }
+
+  // continue network game after request
+  if (network.enabled &&
+      game_status == GAME_MODE_PLAYING &&
+      !game.all_players_gone &&
+      req_state & REQUEST_WAIT_FOR_INPUT)
+    SendToServer_ContinuePlaying();
+
+  // restore deactivated drawing when quick-loading level tape recording
+  if (tape.playing && tape.deactivate_display)
+    TapeDeactivateDisplayOn();
+}
+
+static boolean RequestDoor(char *text, unsigned int req_state)
+{
+  int draw_buffer_last = GetDrawtoField();
+  unsigned int old_door_state = GetDoorState();
+  int max_request_line_len = MAX_REQUEST_LINE_FONT1_LEN;
+  int font_nr = FONT_TEXT_2;
+  char *text_ptr;
+  int result;
+  int ty;
+
+  if (maxWordLengthInRequestString(text) > MAX_REQUEST_LINE_FONT1_LEN)
+  {
+    max_request_line_len = MAX_REQUEST_LINE_FONT2_LEN;
+    font_nr = FONT_TEXT_1;
+  }
+
+  DoRequestBefore(req_state);
 
   // draw released gadget before proceeding
   // BackToFront();
@@ -4909,25 +4923,7 @@ static boolean RequestDoor(char *text, unsigned int req_state)
 
   ResetFontStatus();
 
-  if (req_state & REQ_ASK)
-  {
-    MapGadget(tool_gadget[TOOL_CTRL_ID_YES]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_NO]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_YES]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_NO]);
-  }
-  else if (req_state & REQ_CONFIRM)
-  {
-    MapGadget(tool_gadget[TOOL_CTRL_ID_CONFIRM]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_CONFIRM]);
-  }
-  else if (req_state & REQ_PLAYER)
-  {
-    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_1]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_2]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_3]);
-    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_4]);
-  }
+  MapToolButtons(req_state);
 
   // copy request gadgets to door backbuffer
   BlitBitmap(drawto, bitmap_db_door_1, DX, DY, DXSIZE, DYSIZE, 0, 0);
@@ -4965,28 +4961,7 @@ static boolean RequestDoor(char *text, unsigned int req_state)
       OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
   }
 
-  RemapAllGadgets();
-
-  if (game_status == GAME_MODE_PLAYING)
-  {
-    SetPanelBackground();
-    SetDrawBackgroundMask(REDRAW_DOOR_1);
-  }
-  else
-  {
-    SetDrawBackgroundMask(REDRAW_FIELD);
-  }
-
-  // continue network game after request
-  if (network.enabled &&
-      game_status == GAME_MODE_PLAYING &&
-      !game.all_players_gone &&
-      req_state & REQUEST_WAIT_FOR_INPUT)
-    SendToServer_ContinuePlaying();
-
-  // restore deactivated drawing when quick-loading level tape recording
-  if (tape.playing && tape.deactivate_display)
-    TapeDeactivateDisplayOn();
+  DoRequestAfter(req_state);
 
   return result;
 }
@@ -4996,27 +4971,7 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
   int draw_buffer_last = GetDrawtoField();
   int result;
 
-  if (game_status == GAME_MODE_PLAYING)
-    BlitScreenToBitmap(backbuffer);
-
-  // disable deactivated drawing when quick-loading level tape recording
-  if (tape.playing && tape.deactivate_display)
-    TapeDeactivateDisplayOff(TRUE);
-
-  SetMouseCursor(CURSOR_DEFAULT);
-
-  // pause network game while waiting for request to answer
-  if (network.enabled &&
-      game_status == GAME_MODE_PLAYING &&
-      !game.all_players_gone &&
-      req_state & REQUEST_WAIT_FOR_INPUT)
-    SendToServer_PausePlaying();
-
-  // simulate releasing mouse button over last gadget, if still pressed
-  if (button_status)
-    HandleGadgets(-1, -1, 0);
-
-  UnmapAllGadgets();
+  DoRequestBefore(req_state);
 
   // (replace with setting corresponding request background)
   // SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
@@ -5051,28 +5006,7 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
 
   ShowEnvelopeRequest(text, req_state, ACTION_CLOSING);
 
-  RemapAllGadgets();
-
-  if (game_status == GAME_MODE_PLAYING)
-  {
-    SetPanelBackground();
-    SetDrawBackgroundMask(REDRAW_DOOR_1);
-  }
-  else
-  {
-    SetDrawBackgroundMask(REDRAW_FIELD);
-  }
-
-  // continue network game after request
-  if (network.enabled &&
-      game_status == GAME_MODE_PLAYING &&
-      !game.all_players_gone &&
-      req_state & REQUEST_WAIT_FOR_INPUT)
-    SendToServer_ContinuePlaying();
-
-  // restore deactivated drawing when quick-loading level tape recording
-  if (tape.playing && tape.deactivate_display)
-    TapeDeactivateDisplayOn();
+  DoRequestAfter(req_state);
 
   return result;
 }
@@ -5961,6 +5895,29 @@ void FreeToolButtons(void)
 
   for (i = 0; i < NUM_TOOL_BUTTONS; i++)
     FreeGadget(tool_gadget[i]);
+}
+
+static void MapToolButtons(unsigned int req_state)
+{
+  if (req_state & REQ_ASK)
+  {
+    MapGadget(tool_gadget[TOOL_CTRL_ID_YES]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_NO]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_YES]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_NO]);
+  }
+  else if (req_state & REQ_CONFIRM)
+  {
+    MapGadget(tool_gadget[TOOL_CTRL_ID_CONFIRM]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_TOUCH_CONFIRM]);
+  }
+  else if (req_state & REQ_PLAYER)
+  {
+    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_1]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_2]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_3]);
+    MapGadget(tool_gadget[TOOL_CTRL_ID_PLAYER_4]);
+  }
 }
 
 static void UnmapToolButtons(void)
