@@ -4926,8 +4926,6 @@ static boolean RequestDoor(char *text, unsigned int req_state)
 
   OpenDoor(DOOR_OPEN_1);
 
-  SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
-
   // ---------- handle request buttons ----------
   result = RequestHandleEvents(req_state, draw_buffer_last);
 
@@ -4956,8 +4954,6 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
 
   DrawEnvelopeRequest(text, req_state);
   ShowEnvelopeRequest(text, req_state, ACTION_OPENING);
-
-  SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
 
   // ---------- handle request buttons ----------
   result = RequestHandleEvents(req_state, draw_buffer_last);
