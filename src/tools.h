@@ -63,8 +63,6 @@
 #define REQ_STAY_CLOSED		(1 << 4)
 #define REQ_REOPEN		(1 << 5)
 
-#define REQUEST_WAIT_FOR_INPUT	(REQ_ASK | REQ_CONFIRM | REQ_PLAYER)
-
 
 int getFieldbufferOffsetX_RND(int, int);
 int getFieldbufferOffsetY_RND(int, int);

@@ -4791,7 +4791,7 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
   return result;
 }
 
-static void DoRequestBefore(unsigned int req_state)
+static void DoRequestBefore(void)
 {
   if (game_status == GAME_MODE_PLAYING)
     BlitScreenToBitmap(backbuffer);
@@ -4805,8 +4805,7 @@ static void DoRequestBefore(unsigned int req_state)
   // pause network game while waiting for request to answer
   if (network.enabled &&
       game_status == GAME_MODE_PLAYING &&
-      !game.all_players_gone &&
-      req_state & REQUEST_WAIT_FOR_INPUT)
+      !game.all_players_gone)
     SendToServer_PausePlaying();
 
   // simulate releasing mouse button over last gadget, if still pressed
@@ -4816,7 +4815,7 @@ static void DoRequestBefore(unsigned int req_state)
   UnmapAllGadgets();
 }
 
-static void DoRequestAfter(unsigned int req_state)
+static void DoRequestAfter(void)
 {
   RemapAllGadgets();
 
@@ -4833,8 +4832,7 @@ static void DoRequestAfter(unsigned int req_state)
   // continue network game after request
   if (network.enabled &&
       game_status == GAME_MODE_PLAYING &&
-      !game.all_players_gone &&
-      req_state & REQUEST_WAIT_FOR_INPUT)
+      !game.all_players_gone)
     SendToServer_ContinuePlaying();
 
   // restore deactivated drawing when quick-loading level tape recording
@@ -4858,7 +4856,7 @@ static boolean RequestDoor(char *text, unsigned int req_state)
     font_nr = FONT_TEXT_1;
   }
 
-  DoRequestBefore(req_state);
+  DoRequestBefore();
 
   // draw released gadget before proceeding
   // BackToFront();
@@ -4928,21 +4926,6 @@ static boolean RequestDoor(char *text, unsigned int req_state)
 
   OpenDoor(DOOR_OPEN_1);
 
-  if (!(req_state & REQUEST_WAIT_FOR_INPUT))
-  {
-    if (game_status == GAME_MODE_PLAYING)
-    {
-      SetPanelBackground();
-      SetDrawBackgroundMask(REDRAW_DOOR_1);
-    }
-    else
-    {
-      SetDrawBackgroundMask(REDRAW_FIELD);
-    }
-
-    return FALSE;
-  }
-
   SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
 
   // ---------- handle request buttons ----------
@@ -4959,7 +4942,7 @@ static boolean RequestDoor(char *text, unsigned int req_state)
       OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
   }
 
-  DoRequestAfter(req_state);
+  DoRequestAfter();
 
   return result;
 }
@@ -4969,25 +4952,10 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
   int draw_buffer_last = GetDrawtoField();
   int result;
 
-  DoRequestBefore(req_state);
+  DoRequestBefore();
 
   DrawEnvelopeRequest(text, req_state);
   ShowEnvelopeRequest(text, req_state, ACTION_OPENING);
-
-  if (!(req_state & REQUEST_WAIT_FOR_INPUT))
-  {
-    if (game_status == GAME_MODE_PLAYING)
-    {
-      SetPanelBackground();
-      SetDrawBackgroundMask(REDRAW_DOOR_1);
-    }
-    else
-    {
-      SetDrawBackgroundMask(REDRAW_FIELD);
-    }
-
-    return FALSE;
-  }
 
   SetDrawBackgroundMask(REDRAW_FIELD | REDRAW_DOOR_1);
 
@@ -4998,7 +4966,7 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
 
   ShowEnvelopeRequest(text, req_state, ACTION_CLOSING);
 
-  DoRequestAfter(req_state);
+  DoRequestAfter();
 
   return result;
 }
