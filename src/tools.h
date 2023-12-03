@@ -214,7 +214,7 @@ void DrawNetworkPlayers(void);
 void ClearNetworkPlayers(void);
 
 void WaitForEventToContinue(void);
-boolean Request(char *, unsigned int);
+int Request(char *, unsigned int);
 void InitGraphicCompatibilityInfo_Doors(void);
 void InitDoors(void);
 unsigned int OpenDoor(unsigned int);

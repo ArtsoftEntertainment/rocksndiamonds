@@ -4894,7 +4894,7 @@ static void DrawRequestDoorText(char *text)
   ResetFontStatus();
 }
 
-static boolean RequestDoor(char *text, unsigned int req_state)
+static int RequestDoor(char *text, unsigned int req_state)
 {
   int draw_buffer_last = GetDrawtoField();
   unsigned int old_door_state = GetDoorState();
@@ -4946,7 +4946,7 @@ static boolean RequestDoor(char *text, unsigned int req_state)
   return result;
 }
 
-static boolean RequestEnvelope(char *text, unsigned int req_state)
+static int RequestEnvelope(char *text, unsigned int req_state)
 {
   int draw_buffer_last = GetDrawtoField();
   int result;
@@ -4968,11 +4968,11 @@ static boolean RequestEnvelope(char *text, unsigned int req_state)
   return result;
 }
 
-boolean Request(char *text, unsigned int req_state)
+int Request(char *text, unsigned int req_state)
 {
   boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
   boolean overlay_enabled = GetOverlayEnabled();
-  boolean result;
+  int result;
 
   // when showing request dialog after game ended, deactivate game panel
   if (game_ended)
