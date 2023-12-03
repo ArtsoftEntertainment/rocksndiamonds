@@ -4793,6 +4793,12 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 
 static void DoRequestBefore(void)
 {
+  boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
+
+  // when showing request dialog after game ended, deactivate game panel
+  if (game_ended)
+    game.panel.active = FALSE;
+
   if (game_status == GAME_MODE_PLAYING)
     BlitScreenToBitmap(backbuffer);
 
@@ -4896,11 +4902,9 @@ static void DrawRequestDoorText(char *text)
 
 static int RequestDoor(char *text, unsigned int req_state)
 {
-  int draw_buffer_last = GetDrawtoField();
   unsigned int old_door_state = GetDoorState();
+  int draw_buffer_last = GetDrawtoField();
   int result;
-
-  DoRequestBefore();
 
   if (old_door_state & DOOR_OPEN_1)
   {
@@ -4941,8 +4945,6 @@ static int RequestDoor(char *text, unsigned int req_state)
       OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
   }
 
-  DoRequestAfter();
-
   return result;
 }
 
@@ -4950,8 +4952,6 @@ static int RequestEnvelope(char *text, unsigned int req_state)
 {
   int draw_buffer_last = GetDrawtoField();
   int result;
-
-  DoRequestBefore();
 
   DrawEnvelopeRequest(text, req_state);
   ShowEnvelopeRequest(text, req_state, ACTION_OPENING);
@@ -4963,29 +4963,26 @@ static int RequestEnvelope(char *text, unsigned int req_state)
 
   ShowEnvelopeRequest(text, req_state, ACTION_CLOSING);
 
-  DoRequestAfter();
-
   return result;
 }
 
 int Request(char *text, unsigned int req_state)
 {
-  boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
   boolean overlay_enabled = GetOverlayEnabled();
   int result;
-
-  // when showing request dialog after game ended, deactivate game panel
-  if (game_ended)
-    game.panel.active = FALSE;
 
   game.request_active = TRUE;
 
   SetOverlayEnabled(FALSE);
 
+  DoRequestBefore();
+
   if (global.use_envelope_request)
     result = RequestEnvelope(text, req_state);
   else
     result = RequestDoor(text, req_state);
+
+  DoRequestAfter();
 
   SetOverlayEnabled(overlay_enabled);
 
