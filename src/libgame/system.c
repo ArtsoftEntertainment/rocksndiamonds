@@ -287,7 +287,7 @@ void InitGfxDrawGlobalBorderFunction(void (*draw_global_border_function)(int))
   gfx.draw_global_border_function = draw_global_border_function;
 }
 
-void InitGfxDrawTileCursorFunction(void (*draw_tile_cursor_function)(int))
+void InitGfxDrawTileCursorFunction(void (*draw_tile_cursor_function)(int, int))
 {
   gfx.draw_tile_cursor_function = draw_tile_cursor_function;
 }

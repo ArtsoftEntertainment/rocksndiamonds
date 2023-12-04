@@ -646,9 +646,11 @@ void DrawMaskedBorderToTarget(int draw_target)
   }
 }
 
-void DrawTileCursor(int draw_target)
+void DrawTileCursor(int draw_target, int drawing_stage)
 {
-  DrawTileCursor_MM(draw_target, game_status == GAME_MODE_PLAYING);
+  int tile_cursor_active = (game_status == GAME_MODE_PLAYING);
+
+  DrawTileCursor_MM(draw_target, drawing_stage, tile_cursor_active);
 }
 
 void BlitScreenToBitmapExt_RND(Bitmap *target_bitmap, int fx, int fy)

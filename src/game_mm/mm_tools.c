@@ -1057,7 +1057,8 @@ static void DrawTileCursor_Xsn(int draw_target)
   }
 }
 
-void DrawTileCursor_MM(int draw_target, boolean tile_cursor_active)
+void DrawTileCursor_MM(int draw_target, int drawing_stage,
+		       boolean tile_cursor_active)
 {
   if (program.headless)
     return;
@@ -1072,7 +1073,12 @@ void DrawTileCursor_MM(int draw_target, boolean tile_cursor_active)
   int width = tilesize;
   int height = tilesize;
 
-  DrawTileCursor_Xsn(draw_target);
+  if (!drawing_stage)
+  {
+    DrawTileCursor_Xsn(draw_target);
+
+    return;
+  }
 
   if (!tile_cursor.enabled ||
       !tile_cursor.active ||
