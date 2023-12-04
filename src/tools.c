@@ -4477,10 +4477,6 @@ void WaitForEventToContinue(void)
   }
 }
 
-#define MAX_REQUEST_LINES		13
-#define MAX_REQUEST_LINE_FONT1_LEN	7
-#define MAX_REQUEST_LINE_FONT2_LEN	10
-
 static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 {
   boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
@@ -4848,23 +4844,54 @@ static void DoRequestAfter(void)
     TapeDeactivateDisplayOn();
 }
 
+static void setRequestDoorTextProperties(char *text,
+					 int text_spacing,
+					 int line_spacing,
+					 int *set_font_nr,
+					 int *set_max_lines,
+					 int *set_max_line_length)
+{
+  struct RectWithBorder *vp_door_1 = &viewport.door_1[game_status];
+  struct TextPosInfo *pos = &request.button.confirm;
+  int button_ypos = pos->y;
+  int font_nr = FONT_TEXT_2;
+  int font_width = getFontWidth(font_nr);
+  int font_height = getFontHeight(font_nr);
+  int line_height = font_height + line_spacing;
+  int max_text_width  = vp_door_1->width;
+  int max_text_height = button_ypos - 2 * text_spacing;
+  int max_line_length = max_text_width  / font_width;
+  int max_lines       = max_text_height / line_height;
+
+  if (maxWordLengthInRequestString(text) > max_line_length)
+  {
+    font_nr = FONT_TEXT_1;
+    font_width = getFontWidth(font_nr);
+    max_line_length = max_text_width  / font_width;
+  }
+
+  *set_font_nr = font_nr;
+  *set_max_lines = max_lines;
+  *set_max_line_length = max_line_length;
+}
+
 static void DrawRequestDoorText(char *text)
 {
   char *text_ptr = text;
-  int max_request_line_len = MAX_REQUEST_LINE_FONT1_LEN;
-  int font_nr = FONT_TEXT_2;
+  int text_spacing = 8;
+  int line_spacing = 2;
+  int max_request_lines;
+  int max_request_line_len;
+  int font_nr;
   int ty;
 
   // force DOOR font inside door area
   SetFontStatus(GAME_MODE_PSEUDO_DOOR);
 
-  if (maxWordLengthInRequestString(text) > MAX_REQUEST_LINE_FONT1_LEN)
-  {
-    max_request_line_len = MAX_REQUEST_LINE_FONT2_LEN;
-    font_nr = FONT_TEXT_1;
-  }
+  setRequestDoorTextProperties(text, text_spacing, line_spacing, &font_nr,
+			       &max_request_lines, &max_request_line_len);
 
-  for (text_ptr = text, ty = 0; ty < MAX_REQUEST_LINES; ty++)
+  for (text_ptr = text, ty = 0; ty < max_request_lines; ty++)
   {
     char text_line[max_request_line_len + 1];
     int tx, tl, tc = 0;
@@ -4893,7 +4920,7 @@ static void DrawRequestDoorText(char *text)
     text_line[tl] = 0;
 
     DrawText(DX + (DXSIZE - tl * getFontWidth(font_nr)) / 2,
-	     DY + 8 + ty * (getFontHeight(font_nr) + 2),
+	     DY + text_spacing + ty * (getFontHeight(font_nr) + line_spacing),
 	     text_line, font_nr);
 
     text_ptr += tl + (tc == ' ' ? 1 : 0);
