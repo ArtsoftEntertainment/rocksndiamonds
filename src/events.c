@@ -1551,6 +1551,15 @@ static int HandleDropFileEvent(char *filename)
   // add extracted level or artwork set to tree info structure
   AddTreeSetToTreeInfo(tree_node, directory, top_dir, tree_type);
 
+  // force restart after adding level collection
+  if (getTreeInfoFromIdentifier(TREE_FIRST_NODE(tree_type), top_dir) == NULL)
+  {
+    Request("Program must be restarted after adding a new level collection!",
+	    REQ_CONFIRM);
+
+    CloseAllAndExit(0);
+  }
+
   // update menu screen (and possibly change current level set)
   DrawScreenAfterAddingSet(top_dir, tree_type);
 

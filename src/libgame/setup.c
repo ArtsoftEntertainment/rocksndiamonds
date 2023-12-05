@@ -4594,6 +4594,12 @@ static boolean AddTreeSetToTreeInfoExt(TreeInfo *tree_node_old, char *tree_dir,
   TreeInfo *tree_node_new = getTreeInfoFromIdentifier(*tree_node_first,
 						      tree_subdir_new);
 
+  // if not found, check if added node is level group or artwork group
+  if (tree_node_new == NULL)
+    tree_node_new = getTreeInfoFromIdentifierExt(*tree_node_first,
+						 tree_subdir_new,
+						 TREE_NODE_TYPE_GROUP);
+
   if (tree_node_new == NULL)		// should not happen
     return FALSE;
 
