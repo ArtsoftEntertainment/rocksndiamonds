@@ -3176,6 +3176,13 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
   {
     char *src_text_ptr, *dst_text_ptr;
 
+    if (maxWordLengthInRequestString(text) > line_length)
+    {
+      font_nr = FONT_REQUEST_NARROW;
+      font_width = getFontWidth(font_nr);
+      line_length = max_text_width  / font_width;
+    }
+
     text_door_style = checked_malloc(2 * strlen(text) + 1);
 
     src_text_ptr = text;

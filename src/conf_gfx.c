@@ -6858,6 +6858,8 @@ struct ConfigInfo image_config[] =
   { "font.request.y",				"210"			},
   { "font.request.width",			"14"			},
   { "font.request.height",			"14"			},
+  { "font.request_narrow",			UNDEFINED_FILENAME	},
+  { "font.request_narrow.clone_from",		"font.text_1.DOOR"	},
 
   { "font.input_1",				"RocksFontSmall.png"	},
   { "font.input_1.x",				"0"			},
