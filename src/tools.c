@@ -3145,9 +3145,8 @@ static void setRequestPosition(int *x, int *y, boolean add_border_size)
   setRequestPositionExt(x, y, request.width, request.height, add_border_size);
 }
 
-static void DrawEnvelopeRequest(char *text, unsigned int req_state)
+static void DrawEnvelopeRequestText(int sx, int sy, char *text)
 {
-  DrawBuffer *drawto_last = drawto;
   char *text_final = text;
   char *text_door_style = NULL;
   int graphic = IMG_BACKGROUND_REQUEST;
@@ -3164,15 +3163,11 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
   int line_length = max_text_width  / font_width;
   int max_lines   = max_text_height / line_height;
   int text_width = line_length * font_width;
-  int width = request.width;
-  int height = request.height;
-  int tile_size = MAX(request.step_offset, 1);
-  int x_steps = width  / tile_size;
-  int y_steps = height / tile_size;
   int sx_offset = border_size;
   int sy_offset = border_size;
-  int sx, sy;
-  int x, y;
+
+  // force DOOR font inside door area
+  SetFontStatus(GAME_MODE_PSEUDO_DOOR);
 
   if (request.centered)
     sx_offset = (request.width - text_width) / 2;
@@ -3204,6 +3199,28 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
     text_final = text_door_style;
   }
 
+  DrawTextBuffer(sx + sx_offset, sy + sy_offset, text_final, font_nr,
+		 line_length, -1, max_lines, line_spacing, mask_mode,
+		 request.autowrap, request.centered, FALSE);
+
+  if (text_door_style)
+    free(text_door_style);
+
+  ResetFontStatus();
+}
+
+static void DrawEnvelopeRequest(char *text, unsigned int req_state)
+{
+  DrawBuffer *drawto_last = drawto;
+  int graphic = IMG_BACKGROUND_REQUEST;
+  int width = request.width;
+  int height = request.height;
+  int tile_size = MAX(request.step_offset, 1);
+  int x_steps = width  / tile_size;
+  int y_steps = height / tile_size;
+  int sx, sy;
+  int x, y;
+
   setRequestPosition(&sx, &sy, FALSE);
 
   // draw complete envelope request to temporary bitmap
@@ -3217,14 +3234,8 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 				  x, y, x_steps, y_steps,
 				  tile_size, tile_size);
 
-  // force DOOR font inside door area
-  SetFontStatus(GAME_MODE_PSEUDO_DOOR);
-
-  DrawTextBuffer(sx + sx_offset, sy + sy_offset, text_final, font_nr,
-		 line_length, -1, max_lines, line_spacing, mask_mode,
-		 request.autowrap, request.centered, FALSE);
-
-  ResetFontStatus();
+  // write text for request
+  DrawEnvelopeRequestText(sx, sy, text);
 
   MapToolButtons(req_state);
 
@@ -3233,9 +3244,6 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 
   // prepare complete envelope request from temporary bitmap
   PrepareEnvelopeRequestToScreen(bitmap_db_store_1, sx, sy, width, height);
-
-  if (text_door_style)
-    free(text_door_style);
 }
 
 static void AnimateEnvelopeRequest(int anim_mode, int action)
