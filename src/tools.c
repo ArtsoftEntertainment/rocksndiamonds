@@ -3056,6 +3056,8 @@ static void PrepareEnvelopeRequestToScreen(Bitmap *bitmap, int sx, int sy,
   SDLFreeBitmapTextures(request.bitmap);
   SDLCreateBitmapTextures(request.bitmap);
 
+  ResetBitmapAlpha(request.bitmap);
+
   // set envelope request run-time values
   request.sx = sx;
   request.sy = sy;
