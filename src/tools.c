@@ -3071,7 +3071,11 @@ void DrawEnvelopeRequestToScreen(int drawing_target)
       game.request_active &&
       drawing_target == DRAW_TO_SCREEN)
   {
-    if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
+    struct GraphicInfo *g = &graphic_info[IMG_BACKGROUND_REQUEST];
+
+    SetBitmapAlphaNextBlit(request.bitmap, g->alpha);
+
+    if (g->draw_masked)
       BlitToScreenMasked(request.bitmap, 0, 0, request.xsize, request.ysize,
 			 request.sx, request.sy);
     else
