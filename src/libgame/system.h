@@ -2009,6 +2009,7 @@ void InitVideoDefaults(void);
 void InitVideoDisplay(void);
 void CloseVideoDisplay(void);
 void InitVideoBuffer(int, int, int, boolean);
+void ResetBitmapAlpha(Bitmap *);
 Bitmap *CreateBitmapStruct(void);
 Bitmap *CreateBitmap(int, int, int);
 void ReCreateBitmap(Bitmap **, int, int);

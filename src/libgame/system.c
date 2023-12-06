@@ -599,15 +599,20 @@ void FreeBitmap(Bitmap *bitmap)
   free(bitmap);
 }
 
+void ResetBitmapAlpha(Bitmap *bitmap)
+{
+  bitmap->alpha[0][0] = -1;
+  bitmap->alpha[0][1] = -1;
+  bitmap->alpha[1][0] = -1;
+  bitmap->alpha[1][1] = -1;
+  bitmap->alpha_next_blit = -1;
+}
+
 Bitmap *CreateBitmapStruct(void)
 {
   Bitmap *new_bitmap = checked_calloc(sizeof(Bitmap));
 
-  new_bitmap->alpha[0][0] = -1;
-  new_bitmap->alpha[0][1] = -1;
-  new_bitmap->alpha[1][0] = -1;
-  new_bitmap->alpha[1][1] = -1;
-  new_bitmap->alpha_next_blit = -1;
+  ResetBitmapAlpha(new_bitmap);
 
   return new_bitmap;
 }
