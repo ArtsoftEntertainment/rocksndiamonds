@@ -40,6 +40,7 @@ static DelayCounter special_cursor_delay = { 1000 };
 static boolean special_cursor_enabled = FALSE;
 
 static boolean stop_processing_events = FALSE;
+static boolean is_global_anim_event = FALSE;
 
 
 // forward declarations for internal use
@@ -2214,7 +2215,8 @@ void HandleKey(Key key, int key_status)
     ignore_repeated_key = FALSE;
 
     // send key release event to global animation event handling
-    HandleGlobalAnimClicks(-1, -1, KEY_RELEASED, FALSE);
+    if (!is_global_anim_event)
+      HandleGlobalAnimClicks(-1, -1, KEY_RELEASED, FALSE);
 
     return;
   }
@@ -2271,9 +2273,9 @@ void HandleKey(Key key, int key_status)
   }
 
   // some key events are handled like clicks for global animations
-  boolean click = (key == KSYM_space ||
-		   key == KSYM_Return ||
-		   key == KSYM_Escape);
+  boolean click = (!is_global_anim_event && (key == KSYM_space ||
+					     key == KSYM_Return ||
+					     key == KSYM_Escape));
 
   if (click && HandleGlobalAnimClicks(-1, -1, MB_LEFTBUTTON, TRUE))
   {
@@ -2833,8 +2835,12 @@ boolean DoKeysymAction(int keysym)
   {
     Key key = (Key)(-keysym);
 
+    is_global_anim_event = TRUE;
+
     HandleKey(key, KEY_PRESSED);
     HandleKey(key, KEY_RELEASED);
+
+    is_global_anim_event = FALSE;
 
     return TRUE;
   }
