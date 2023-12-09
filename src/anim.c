@@ -2122,8 +2122,7 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
   int mode_nr;
   int i;
 
-  // check game modes in reverse draw order (to stop when clicked)
-  for (mode_nr = NUM_GAME_MODES - 1; mode_nr >= 0; mode_nr--)
+  for (mode_nr = 0; mode_nr < NUM_GAME_MODES; mode_nr++)
   {
     struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[mode_nr];
     int anim_nr;
