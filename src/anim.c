@@ -2139,6 +2139,11 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
       {
 	struct GlobalAnimPartControlInfo *part = &anim->part[part_nr];
 
+	// if request dialog is active, only handle pointer-style animations
+	if (game.request_active &&
+	    part->control_info.class != get_hash_from_key("pointer"))
+	  continue;
+
 	if (clicked_event == ANIM_CLICKED_RESET)
 	{
 	  part->clicked = FALSE;
