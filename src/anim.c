@@ -360,10 +360,8 @@ static int compareGlobalAnimPartControlInfo(const void *obj1, const void *obj2)
     (struct GlobalAnimPartControlInfo *)obj2;
   int compare_result;
 
-  if (o1->control_info.draw_order != o2->control_info.draw_order)
-    compare_result = o1->control_info.draw_order - o2->control_info.draw_order;
-  else
-    compare_result = o1->nr - o2->nr;
+  // do not sort animations parts by draw order (as it would be confusing)
+  compare_result = o1->nr - o2->nr;
 
   return compare_result;
 }
