@@ -4608,10 +4608,11 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 		break;
 
 	      default:
-		// only check clickable animations if no request gadget clicked
-		HandleGlobalAnimClicks(mx, my, button_status, FALSE);
 		break;
 	    }
+
+	    // only needed to handle clickable pointer animations here
+	    HandleGlobalAnimClicks(mx, my, button_status, FALSE);
 
 	    break;
 	  }
