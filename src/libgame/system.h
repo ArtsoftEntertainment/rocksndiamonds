@@ -1241,6 +1241,7 @@ struct GfxInfo
   char * (*get_token_from_font_function)(int);
 
   int anim_random_frame;
+  int anim_first_level;
 
   void (*draw_busy_anim_function)(boolean);
   void (*draw_global_anim_function)(int, int);

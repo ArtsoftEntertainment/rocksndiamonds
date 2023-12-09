@@ -315,7 +315,7 @@ int getAnimationFrame(int num_frames, int delay, int mode, int start_frame,
   }
   else if (mode & ANIM_LEVEL_NR)	// play frames by level number
   {
-    int level_pos = level_nr - leveldir_current->first_level;
+    int level_pos = level_nr - gfx.anim_first_level;
 
     frame = level_pos % num_frames;
   }

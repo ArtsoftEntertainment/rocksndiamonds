@@ -1517,6 +1517,11 @@ void SetRandomAnimationValue(int x, int y)
   gfx.anim_random_frame = GfxRandom[x][y];
 }
 
+void SetAnimationFirstLevel(int first_level)
+{
+  gfx.anim_first_level = first_level;
+}
+
 int getGraphicAnimationFrame(int graphic, int sync_frame)
 {
   // animation synchronized with global frame counter, not move position

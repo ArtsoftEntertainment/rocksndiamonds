@@ -1792,6 +1792,9 @@ void DrawMainMenu(void)
   // store valid level series information
   leveldir_last_valid = leveldir_current;
 
+  // store first level of this level set for "level_nr" style animations
+  SetAnimationFirstLevel(leveldir_current->first_level);
+
   // needed if last screen (level choice) changed graphics, sounds or music
   ReloadCustomArtwork(0);
 

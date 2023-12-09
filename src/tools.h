@@ -131,6 +131,7 @@ void FloodFillLevel(int, int, int, short[MAX_LEV_FIELDX][MAX_LEV_FIELDY], int, i
 void FloodFillLevelExt(int, int, int, int x, int y, short field[x][y], int, int);
 
 void SetRandomAnimationValue(int, int);
+void SetAnimationFirstLevel(int);
 int getGraphicAnimationFrame(int, int);
 int getGraphicAnimationFrameXY(int, int, int);
 
