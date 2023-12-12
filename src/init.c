@@ -1649,7 +1649,7 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   g->draw_yoffset = parameter[GFX_ARG_DRAW_YOFFSET];
 
   // use a different default value for global animations and toons
-  if ((graphic >= IMG_GFX_GLOBAL_ANIM_1 && graphic <= IMG_GFX_GLOBAL_ANIM_8) ||
+  if ((graphic >= IMG_GFX_GLOBAL_ANIM_1 && graphic <= IMG_GFX_GLOBAL_ANIM_32) ||
       (graphic >= IMG_TOON_1            && graphic <= IMG_TOON_20))
     g->draw_masked = TRUE;
 
