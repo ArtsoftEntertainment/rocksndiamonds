@@ -34,6 +34,10 @@
 #define NUM_GLOBAL_ANIM_PARTS_AND_TOONS	MAX(NUM_GLOBAL_ANIM_PARTS_ALL,	\
 					    NUM_GLOBAL_TOON_PARTS)
 
+#define MAX_GLOBAL_ANIM_LIST		(NUM_GAME_MODES *		\
+					 NUM_GLOBAL_ANIMS_AND_TOONS *	\
+					 NUM_GLOBAL_ANIM_PARTS_AND_TOONS)
+
 #define ANIM_CLASS_BIT_TITLE_INITIAL	0
 #define ANIM_CLASS_BIT_TITLE		1
 #define ANIM_CLASS_BIT_MAIN		2
@@ -250,6 +254,8 @@ static void ResetGlobalAnim_Clickable(void);
 static void ResetGlobalAnim_Clicked(void);
 
 static struct GlobalAnimControlInfo global_anim_ctrl[NUM_GAME_MODES];
+static struct GlobalAnimPartControlInfo *global_anim_list[MAX_GLOBAL_ANIM_LIST];
+static int num_global_anim_list = 0;
 
 static unsigned int anim_sync_frame = 0;
 
@@ -355,27 +361,17 @@ static int getGlobalAnimationPart(struct GlobalAnimMainControlInfo *anim)
 static int compareGlobalAnimPartControlInfo(const void *obj1, const void *obj2)
 {
   const struct GlobalAnimPartControlInfo *o1 =
-    (struct GlobalAnimPartControlInfo *)obj1;
+    *(struct GlobalAnimPartControlInfo **)obj1;
   const struct GlobalAnimPartControlInfo *o2 =
-    (struct GlobalAnimPartControlInfo *)obj2;
-  int compare_result;
-
-  // do not sort animations parts by draw order (as it would be confusing)
-  compare_result = o1->nr - o2->nr;
-
-  return compare_result;
-}
-
-static int compareGlobalAnimMainControlInfo(const void *obj1, const void *obj2)
-{
-  const struct GlobalAnimMainControlInfo *o1 =
-    (struct GlobalAnimMainControlInfo *)obj1;
-  const struct GlobalAnimMainControlInfo *o2 =
-    (struct GlobalAnimMainControlInfo *)obj2;
+    *(struct GlobalAnimPartControlInfo **)obj2;
   int compare_result;
 
   if (o1->control_info.draw_order != o2->control_info.draw_order)
     compare_result = o1->control_info.draw_order - o2->control_info.draw_order;
+  else if (o1->mode_nr != o2->mode_nr)
+    compare_result = o1->mode_nr - o2->mode_nr;
+  else if (o1->anim_nr != o2->anim_nr)
+    compare_result = o1->anim_nr - o2->anim_nr;
   else
     compare_result = o1->nr - o2->nr;
 
@@ -626,26 +622,18 @@ static void InitGlobalAnimControls(void)
 
   InitToonControls();
 
-  // sort all animations according to draw_order and animation number
+  // create list of all animation parts
+  num_global_anim_list = 0;
   for (m = 0; m < NUM_GAME_MODES; m++)
-  {
-    struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[m];
+    for (a = 0; a < global_anim_ctrl[m].num_anims; a++)
+      for (p = 0; p < global_anim_ctrl[m].anim[a].num_parts_all; p++)
+	global_anim_list[num_global_anim_list++] =
+	  &global_anim_ctrl[m].anim[a].part[p];
 
-    // sort all main animations for this game mode
-    qsort(ctrl->anim, ctrl->num_anims,
-	  sizeof(struct GlobalAnimMainControlInfo),
-	  compareGlobalAnimMainControlInfo);
-
-    for (a = 0; a < ctrl->num_anims; a++)
-    {
-      struct GlobalAnimMainControlInfo *anim = &ctrl->anim[a];
-
-      // sort all animation parts for this main animation
-      qsort(anim->part, anim->num_parts,
-	    sizeof(struct GlobalAnimPartControlInfo),
-	    compareGlobalAnimPartControlInfo);
-    }
-  }
+  // sort list of all animation parts according to draw_order and number
+  qsort(global_anim_list, num_global_anim_list,
+	sizeof(struct GlobalAnimPartControlInfo *),
+	compareGlobalAnimPartControlInfo);
 
   for (i = 0; i < NUM_GAME_MODES; i++)
     game_mode_anim_classes[i] = ANIM_CLASS_NONE;
@@ -798,6 +786,7 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 {
   int game_mode_anim_action[NUM_GAME_MODES];
   int mode_nr;
+  int i;
 
   if (!setup.toons)
     return;
@@ -897,89 +886,61 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
   if (global.anim_status == GAME_MODE_LOADING)
     return;
 
-  for (mode_nr = 0; mode_nr < NUM_GAME_MODES; mode_nr++)
+  for (i = 0; i < num_global_anim_list; i++)
   {
-    struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[mode_nr];
-    int anim_nr;
+    struct GlobalAnimPartControlInfo *part = global_anim_list[i];
+    struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[part->mode_nr];
+    struct GlobalAnimMainControlInfo *anim = &ctrl->anim[part->anim_nr];
+    struct GraphicInfo *g = &part->graphic_info;
+    Bitmap *src_bitmap;
+    int src_x, src_y;
+    int sync_frame;
+    int frame;
+    int last_anim_random_frame = gfx.anim_random_frame;
 
     // when preparing source fading buffer, only draw animations to be stopped
     if (drawing_target == DRAW_TO_FADE_SOURCE &&
-	game_mode_anim_action[mode_nr] != ANIM_STOP)
+	game_mode_anim_action[part->mode_nr] != ANIM_STOP)
       continue;
 
     // when preparing target fading buffer, only draw animations to be started
     if (drawing_target == DRAW_TO_FADE_TARGET &&
-	game_mode_anim_action[mode_nr] != ANIM_START)
+	game_mode_anim_action[part->mode_nr] != ANIM_START)
       continue;
 
-#if 0
-    if (mode_nr != GFX_SPECIAL_ARG_DEFAULT &&
-	mode_nr != game_status)
+    if (!(anim->state & ANIM_STATE_RUNNING))
       continue;
-#endif
 
-    for (anim_nr = 0; anim_nr < ctrl->num_anims; anim_nr++)
-    {
-      struct GlobalAnimMainControlInfo *anim = &ctrl->anim[anim_nr];
-      struct GraphicInfo *c = &anim->control_info;
-      int part_first, part_last;
-      int part_nr;
+    if (!(part->state & ANIM_STATE_RUNNING))
+      continue;
 
-      if (!(anim->state & ANIM_STATE_RUNNING))
-	continue;
+    if (part->drawing_stage != drawing_stage)
+      continue;
 
-      part_first = part_last = anim->active_part_nr;
+    // if game is paused, also pause playfield and door animations
+    if (isPausedOnPlayfieldOrDoor(part))
+      part->initial_anim_sync_frame++;
 
-      if (c->anim_mode & ANIM_ALL || anim->num_parts == 0)
-      {
-	int num_parts = anim->num_parts + (anim->has_base ? 1 : 0);
+    sync_frame = anim_sync_frame - part->initial_anim_sync_frame;
 
-	part_first = 0;
-	part_last = num_parts - 1;
-      }
+    // re-initialize random animation frame after animation delay
+    if (g->anim_mode == ANIM_RANDOM &&
+	sync_frame % g->anim_delay == 0 &&
+	sync_frame > 0)
+      part->anim_random_frame = GetSimpleRandom(g->anim_frames);
 
-      for (part_nr = part_first; part_nr <= part_last; part_nr++)
-      {
-	struct GlobalAnimPartControlInfo *part = &anim->part[part_nr];
-	struct GraphicInfo *g = &part->graphic_info;
-	Bitmap *src_bitmap;
-	int src_x, src_y;
-	int sync_frame;
-	int frame;
-	int last_anim_random_frame = gfx.anim_random_frame;
+    gfx.anim_random_frame = part->anim_random_frame;
 
-	if (!(part->state & ANIM_STATE_RUNNING))
-	  continue;
+    frame = getAnimationFrame(g->anim_frames, g->anim_delay,
+			      g->anim_mode, g->anim_start_frame,
+			      sync_frame);
 
-	if (part->drawing_stage != drawing_stage)
-	  continue;
+    gfx.anim_random_frame = last_anim_random_frame;
 
-	// if game is paused, also pause playfield and door animations
-	if (isPausedOnPlayfieldOrDoor(part))
-	  part->initial_anim_sync_frame++;
+    getGlobalAnimGraphicSource(part->graphic, frame, &src_bitmap,
+			       &src_x, &src_y);
 
-	sync_frame = anim_sync_frame - part->initial_anim_sync_frame;
-
-	// re-initialize random animation frame after animation delay
-	if (g->anim_mode == ANIM_RANDOM &&
-	    sync_frame % g->anim_delay == 0 &&
-	    sync_frame > 0)
-	  part->anim_random_frame = GetSimpleRandom(g->anim_frames);
-
-	gfx.anim_random_frame = part->anim_random_frame;
-
-	frame = getAnimationFrame(g->anim_frames, g->anim_delay,
-				  g->anim_mode, g->anim_start_frame,
-				  sync_frame);
-
-	gfx.anim_random_frame = last_anim_random_frame;
-
-	getGlobalAnimGraphicSource(part->graphic, frame, &src_bitmap,
-				   &src_x, &src_y);
-
-	BlitGlobalAnimation(part, src_bitmap, src_x, src_y, drawing_target);
-      }
-    }
+    BlitGlobalAnimation(part, src_bitmap, src_x, src_y, drawing_target);
   }
 
   if (drawing_target == DRAW_TO_FADE_TARGET)
@@ -2080,29 +2041,17 @@ static boolean DoGlobalAnim_EventAction(struct GlobalAnimPartControlInfo *part)
 
 static void InitGlobalAnim_Clickable(void)
 {
-  int mode_nr;
+  int i;
 
-  for (mode_nr = 0; mode_nr < NUM_GAME_MODES; mode_nr++)
+  for (i = 0; i < num_global_anim_list; i++)
   {
-    struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[mode_nr];
-    int anim_nr;
+    struct GlobalAnimPartControlInfo *part = global_anim_list[i];
 
-    for (anim_nr = 0; anim_nr < ctrl->num_anims; anim_nr++)
-    {
-      struct GlobalAnimMainControlInfo *anim = &ctrl->anim[anim_nr];
-      int part_nr;
+    if (part->triggered)
+      part->clicked = TRUE;
 
-      for (part_nr = 0; part_nr < anim->num_parts_all; part_nr++)
-      {
-	struct GlobalAnimPartControlInfo *part = &anim->part[part_nr];
-
-	if (part->triggered)
-	  part->clicked = TRUE;
-
-	part->triggered = FALSE;
-	part->clickable = FALSE;
-      }
-    }
+    part->triggered = FALSE;
+    part->clickable = FALSE;
   }
 }
 
@@ -2116,108 +2065,93 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
   boolean anything_clicked = FALSE;
   boolean any_part_clicked = FALSE;
   boolean any_event_action = FALSE;
-  int mode_nr;
   int i;
 
-  // check game modes in reverse draw order (to stop when clicked)
-  for (mode_nr = NUM_GAME_MODES - 1; mode_nr >= 0; mode_nr--)
+  // check animation parts in reverse draw order (to stop when clicked)
+  for (i = num_global_anim_list - 1; i >= 0; i--)
   {
-    struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[mode_nr];
-    int anim_nr;
+    struct GlobalAnimPartControlInfo *part = global_anim_list[i];
 
-    // check animations in reverse draw order (to stop when clicked)
-    for (anim_nr = ctrl->num_anims - 1; anim_nr >= 0; anim_nr--)
+    // if request dialog is active, only handle pointer-style animations
+    if (game.request_active &&
+	part->control_info.class != get_hash_from_key("pointer"))
+      continue;
+
+    if (clicked_event == ANIM_CLICKED_RESET)
     {
-      struct GlobalAnimMainControlInfo *anim = &ctrl->anim[anim_nr];
-      int part_nr;
+      part->clicked = FALSE;
 
-      // check animation parts in reverse draw order (to stop when clicked)
-      for (part_nr = anim->num_parts_all - 1; part_nr >= 0; part_nr--)
-      {
-	struct GlobalAnimPartControlInfo *part = &anim->part[part_nr];
+      continue;
+    }
 
-	// if request dialog is active, only handle pointer-style animations
-	if (game.request_active &&
-	    part->control_info.class != get_hash_from_key("pointer"))
-	  continue;
+    if (!part->clickable)
+      continue;
 
-	if (clicked_event == ANIM_CLICKED_RESET)
-	{
-	  part->clicked = FALSE;
+    if (!(part->state & ANIM_STATE_RUNNING))
+      continue;
 
-	  continue;
-	}
-
-	if (!part->clickable)
-	  continue;
-
-	if (!(part->state & ANIM_STATE_RUNNING))
-	  continue;
-
-	// always handle "any" click events (clicking anywhere on screen) ...
-	if (clicked_event == ANIM_CLICKED_PRESSED &&
-	    isClickablePart(part, ANIM_EVENT_ANY))
-	{
+    // always handle "any" click events (clicking anywhere on screen) ...
+    if (clicked_event == ANIM_CLICKED_PRESSED &&
+	isClickablePart(part, ANIM_EVENT_ANY))
+    {
 #if DEBUG_ANIM_EVENTS
-	  Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY ANY",
-		part->old_anim_nr + 1, part->old_nr + 1);
+      Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY ANY",
+	    part->old_anim_nr + 1, part->old_nr + 1);
 #endif
 
-	  anything_clicked = part->clicked = TRUE;
-	  click_consumed |= clickConsumed(part);
-	}
+      anything_clicked = part->clicked = TRUE;
+      click_consumed |= clickConsumed(part);
+    }
 
-	// always handle "unclick:any" events (releasing anywhere on screen) ...
-	if (clicked_event == ANIM_CLICKED_RELEASED &&
-	    isClickablePart(part, ANIM_EVENT_UNCLICK_ANY))
-	{
+    // always handle "unclick:any" events (releasing anywhere on screen) ...
+    if (clicked_event == ANIM_CLICKED_RELEASED &&
+	isClickablePart(part, ANIM_EVENT_UNCLICK_ANY))
+    {
 #if DEBUG_ANIM_EVENTS
-	  Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY UNCLICK:ANY",
-		part->old_anim_nr + 1, part->old_nr + 1);
+      Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY UNCLICK:ANY",
+	    part->old_anim_nr + 1, part->old_nr + 1);
 #endif
 
-	  anything_clicked = part->clicked = TRUE;
-	  click_consumed |= clickConsumed(part);
-	}
+      anything_clicked = part->clicked = TRUE;
+      click_consumed |= clickConsumed(part);
+    }
 
-	// ... but only handle the first (topmost) clickable animation
-	if (any_part_clicked)
-	  continue;
+    // ... but only handle the first (topmost) clickable animation
+    if (any_part_clicked)
+      continue;
 
-	if (clicked_event == ANIM_CLICKED_PRESSED &&
-	    isClickedPart(part, mx, my, TRUE))
-	{
+    if (clicked_event == ANIM_CLICKED_PRESSED &&
+	isClickedPart(part, mx, my, TRUE))
+    {
 #if 0
-	  Debug("anim:InitGlobalAnim_Clicked", "%d.%d CLICKED [%d]",
-		anim_nr, part_nr, part->control_info.anim_event_action);
+      Debug("anim:InitGlobalAnim_Clicked", "%d.%d CLICKED [%d]",
+	    anim_nr, part_nr, part->control_info.anim_event_action);
 #endif
 
-	  // after executing event action, ignore any further actions
-	  if (!any_event_action && DoGlobalAnim_EventAction(part))
-	    any_event_action = TRUE;
+      // after executing event action, ignore any further actions
+      if (!any_event_action && DoGlobalAnim_EventAction(part))
+	any_event_action = TRUE;
 
-	  // determine if mouse clicks should be blocked from other animations
-	  any_part_clicked |= clickConsumed(part);
+      // determine if mouse clicks should be blocked from other animations
+      any_part_clicked |= clickConsumed(part);
 
-	  if (isClickablePart(part, ANIM_EVENT_SELF))
-	  {
+      if (isClickablePart(part, ANIM_EVENT_SELF))
+      {
 #if DEBUG_ANIM_EVENTS
-	    Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY SELF",
-		  part->old_anim_nr + 1, part->old_nr + 1);
+	Debug("anim:InitGlobalAnim_Clicked", "%d.%d TRIGGERED BY SELF",
+	      part->old_anim_nr + 1, part->old_nr + 1);
 #endif
 
-	    anything_clicked = part->clicked = TRUE;
-	    click_consumed |= clickConsumed(part);
-	  }
-
-	  // determine if mouse clicks should be blocked by this animation
-	  click_consumed |= clickBlocked(part);
-
-	  // check if this click is defined to trigger other animations
-	  InitGlobalAnim_Triggered(part, &click_consumed, &any_event_action,
-				   ANIM_EVENT_CLICK, "CLICK");
-	}
+	anything_clicked = part->clicked = TRUE;
+	click_consumed |= clickConsumed(part);
       }
+
+      // determine if mouse clicks should be blocked by this animation
+      click_consumed |= clickBlocked(part);
+
+      // check if this click is defined to trigger other animations
+      InitGlobalAnim_Triggered(part, &click_consumed, &any_event_action,
+			       ANIM_EVENT_CLICK, "CLICK");
     }
   }
 
