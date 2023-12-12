@@ -535,6 +535,10 @@ static void InitGlobalAnimControls(void)
 
       anim->state = ANIM_STATE_INACTIVE;
 
+      // if draw order is undefined, set to default value "0"
+      if (anim->control_info.draw_order == ARG_UNDEFINED_VALUE)
+	anim->control_info.draw_order = 0;
+
       part_nr = 0;
 
       for (p = 0; p < NUM_GLOBAL_ANIM_PARTS_ALL; p++)
@@ -606,6 +610,10 @@ static void InitGlobalAnimControls(void)
 	if (part->control_info.class == get_hash_from_key("pointer") &&
 	    part->control_info.style == STYLE_DEFAULT)
 	  part->control_info.style |= STYLE_PASSTHROUGH;
+
+	// if draw order is undefined, inherit it from main animation
+	if (part->control_info.draw_order == ARG_UNDEFINED_VALUE)
+	  part->control_info.draw_order = anim->control_info.draw_order;
       }
 
       if (anim->num_parts > 0 || anim->has_base)
