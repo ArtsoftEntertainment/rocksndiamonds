@@ -70,13 +70,13 @@ static void FinalizeScreen(int draw_target)
   if (gfx.draw_envelope_request_function != NULL)
     gfx.draw_envelope_request_function(draw_target);
 
-  // copy global animations to render target buffer, if defined (mouse pointer)
-  if (gfx.draw_global_anim_function != NULL)
-    gfx.draw_global_anim_function(draw_target, DRAW_GLOBAL_ANIM_STAGE_3);
-
   // copy tile selection cursor to render target buffer, if defined (part 2)
   if (gfx.draw_tile_cursor_function != NULL)
     gfx.draw_tile_cursor_function(draw_target, FALSE);
+
+  // copy global animations to render target buffer, if defined (mouse pointer)
+  if (gfx.draw_global_anim_function != NULL)
+    gfx.draw_global_anim_function(draw_target, DRAW_GLOBAL_ANIM_STAGE_3);
 }
 
 static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
