@@ -722,23 +722,14 @@ static void InitGlobalAnimGraphicInfo(void)
     struct GraphicInfo *g = &graphic_info[graphic];
     struct FileInfo *image = getImageListEntryFromImageID(graphic);
     char **parameter_raw = image->parameter;
-    int p1 = GFX_ARG_DRAW_MASKED;
-    int p2 = GFX_ARG_DRAW_ORDER;
-    int draw_masked = get_graphic_parameter_value(parameter_raw[p1],
-						  image_config_suffix[p1].token,
-						  image_config_suffix[p1].type);
-    int draw_order = get_graphic_parameter_value(parameter_raw[p2],
-						 image_config_suffix[p2].token,
-						 image_config_suffix[p2].type);
+    int p = GFX_ARG_DRAW_MASKED;
+    int draw_masked = get_graphic_parameter_value(parameter_raw[p],
+						  image_config_suffix[p].token,
+						  image_config_suffix[p].type);
 
     // if ".draw_masked" parameter is undefined, use default value "TRUE"
     if (draw_masked == ARG_UNDEFINED_VALUE)
       g->draw_masked = TRUE;
-
-    // if ".draw_order" parameter is undefined, set back to "undefined"
-    // (used to be able to inherit draw order from main animation later)
-    if (draw_order == ARG_UNDEFINED_VALUE)
-      g->draw_order = ARG_UNDEFINED_VALUE;
   }
 
 #if 0
@@ -1665,10 +1656,6 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   // this is used for drawing envelopes, global animations and toons
   if (parameter[GFX_ARG_DRAW_MASKED] != ARG_UNDEFINED_VALUE)
     g->draw_masked = parameter[GFX_ARG_DRAW_MASKED];
-
-  // use a different default value for global animations (corrected later)
-  if (graphic >= IMG_GLOBAL_ANIM_1 && graphic <= IMG_GLOBAL_ANIM_32)
-    g->draw_order = ARG_UNDEFINED_VALUE;
 
   // used for toon animations and global animations
   if (parameter[GFX_ARG_DRAW_ORDER] != ARG_UNDEFINED_VALUE)
