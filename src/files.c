@@ -9492,6 +9492,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.global_animations,			"global_animations"
+  },
+  {
+    TYPE_SWITCH,
     &setup.scroll_delay,			"scroll_delay"
   },
   {
@@ -10409,6 +10413,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->sound_music = TRUE;
   si->sound_simple = TRUE;
   si->toons = TRUE;
+  si->global_animations = TRUE;
   si->scroll_delay = TRUE;
   si->forced_scroll_delay = FALSE;
   si->scroll_delay_value = STD_SCROLL_DELAY;

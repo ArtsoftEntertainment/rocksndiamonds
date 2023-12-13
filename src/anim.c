@@ -780,7 +780,7 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
   int mode_nr;
   int i;
 
-  if (!setup.toons)
+  if (!setup.global_animations)
     return;
 
   if (drawing_stage == DRAW_GLOBAL_ANIM_STAGE_1 &&
@@ -889,6 +889,11 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
     int sync_frame;
     int frame;
     int last_anim_random_frame = gfx.anim_random_frame;
+
+    if (!setup.toons &&
+	part->graphic >= IMG_TOON_1 &&
+	part->graphic <= IMG_TOON_20)
+      continue;
 
     // when preparing source fading buffer, only draw animations to be stopped
     if (drawing_target == DRAW_TO_FADE_SOURCE &&

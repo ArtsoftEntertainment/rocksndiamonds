@@ -1518,6 +1518,7 @@ struct SetupInfo
   boolean sound_music;
   boolean sound_simple;
   boolean toons;
+  boolean global_animations;
   boolean scroll_delay;
   boolean forced_scroll_delay;
   int scroll_delay_value;

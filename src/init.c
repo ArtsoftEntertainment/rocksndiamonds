@@ -6477,8 +6477,8 @@ void DisplayExitMessage(char *format, va_list ap)
 
   BackToFront();
 
-  // deactivate toons on error message screen
-  setup.toons = FALSE;
+  // deactivate toons and global animations on error message screen
+  setup.global_animations = FALSE;
 
   WaitForEventToContinue();
 }
@@ -6671,7 +6671,7 @@ static boolean WaitForApiThreads(void)
     return TRUE;
 
   // deactivate global animations (not accessible in game state "loading")
-  setup.toons = FALSE;
+  setup.global_animations = FALSE;
 
   // set game state to "loading" to be able to show busy animation
   SetGameStatus(GAME_MODE_LOADING);

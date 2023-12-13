@@ -7548,7 +7548,7 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_SWITCH,	&setup.quick_switch,	"Quick Player Focus Switch:" },
   { TYPE_SWITCH,	&setup.quick_doors,	"Quick Menu Doors:"	},
   { TYPE_SWITCH,	&setup.show_titlescreen,"Show Title Screens:"	},
-  { TYPE_SWITCH,	&setup.toons,		"Show Menu Animations:"	},
+  { TYPE_SWITCH,	&setup.toons,		"Show Toons:"		},
   { TYPE_SWITCH,	&setup.small_game_graphics, "Small Game Graphics:" },
   { TYPE_YES_NO_AUTO,	&setup.debug.xsn_mode,	debug_xsn_mode		},
   { TYPE_EMPTY,		NULL,			""			},
