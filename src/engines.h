@@ -14,11 +14,17 @@
 
 #include "libgame/libgame.h"
 
+#include "game_bd/export.h"
 #include "game_em/export.h"
 #include "game_sp/export.h"
 #include "game_mm/export.h"
 
 #include "game.h"
+
+
+// ============================================================================
+// functions and definitions exported from main program to game_bd
+// ============================================================================
 
 
 // ============================================================================

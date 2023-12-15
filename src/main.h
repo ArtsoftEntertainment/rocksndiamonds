@@ -2731,11 +2731,12 @@ enum
 // values for game engine type identifier
 #define GAME_ENGINE_TYPE_UNKNOWN	LEVEL_FILE_TYPE_UNKNOWN
 #define GAME_ENGINE_TYPE_RND		LEVEL_FILE_TYPE_RND
+#define GAME_ENGINE_TYPE_BD		LEVEL_FILE_TYPE_BD
 #define GAME_ENGINE_TYPE_EM		LEVEL_FILE_TYPE_EM
 #define GAME_ENGINE_TYPE_SP		LEVEL_FILE_TYPE_SP
 #define GAME_ENGINE_TYPE_MM		LEVEL_FILE_TYPE_MM
 
-#define NUM_ENGINE_TYPES		4
+#define NUM_ENGINE_TYPES		5
 
 // values for automatically playing tapes
 #define AUTOPLAY_NONE			0
@@ -3237,6 +3238,7 @@ struct LevelInfo
   int game_engine_type;
 
   // level stored in native format for the alternative native game engines
+  struct LevelInfo_BD *native_bd_level;
   struct LevelInfo_EM *native_em_level;
   struct LevelInfo_SP *native_sp_level;
   struct LevelInfo_MM *native_mm_level;

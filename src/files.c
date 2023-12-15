@@ -1771,10 +1771,12 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
   setConfigToDefaultsFromConfigList(chunk_config_INFO);
   *level = li;		// copy temporary buffer back to level data
 
+  setLevelInfoToDefaults_BD();
   setLevelInfoToDefaults_EM();
   setLevelInfoToDefaults_SP();
   setLevelInfoToDefaults_MM();
 
+  level->native_bd_level = &native_bd_level;
   level->native_em_level = &native_em_level;
   level->native_sp_level = &native_sp_level;
   level->native_mm_level = &native_mm_level;

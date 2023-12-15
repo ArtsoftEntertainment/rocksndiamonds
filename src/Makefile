@@ -235,6 +235,9 @@ SOURCE_HASH_STRING ?= $(shell test -d ../.git && test `git ls-files -m | wc -l` 
 LIBGAME_DIR = libgame
 LIBGAME = $(LIBGAME_DIR)/libgame.a
 
+GAME_BD_DIR = game_bd
+GAME_BD = $(GAME_BD_DIR)/game_bd.a
+
 GAME_EM_DIR = game_em
 GAME_EM = $(GAME_EM_DIR)/game_em.a
 
@@ -244,7 +247,7 @@ GAME_SP = $(GAME_SP_DIR)/game_sp.a
 GAME_MM_DIR = game_mm
 GAME_MM = $(GAME_MM_DIR)/game_mm.a
 
-RNDLIBS = $(LIBGAME) $(GAME_EM) $(GAME_SP) $(GAME_MM)
+RNDLIBS = $(LIBGAME) $(GAME_BD) $(GAME_EM) $(GAME_SP) $(GAME_MM)
 AUTOCONF = conf_gfx.h conf_snd.h conf_mus.h
 
 ICONBASE = windows_icon
@@ -262,7 +265,7 @@ GRAPHICS_DIR = ../graphics
 # build targets
 # -----------------------------------------------------------------------------
 
-all: $(AUTOCONF) libgame_dir game_em_dir game_sp_dir game_mm_dir $(PROGNAME) graphics_dir
+all: $(AUTOCONF) libgame_dir game_bd_dir game_em_dir game_sp_dir game_mm_dir $(PROGNAME) graphics_dir
 
 $(PROGNAME): $(RNDLIBS) $(TIMESTAMP_FILE) $(COMMIT_HASH_FILE) $(OBJS) $(ICON)
 	$(CC) $(OBJS) $(ICON) $(RNDLIBS) $(LDFLAGS) -o $(PROGNAME)
@@ -277,6 +280,11 @@ libgame_dir:
 	@$(MAKE) -C $(LIBGAME_DIR)
 $(LIBGAME):
 	@$(MAKE) -C $(LIBGAME_DIR)
+
+game_bd_dir:
+	@$(MAKE) -C $(GAME_BD_DIR)
+$(GAME_BD):
+	@$(MAKE) -C $(GAME_BD_DIR)
 
 game_em_dir:
 	@$(MAKE) -C $(GAME_EM_DIR)
@@ -342,6 +350,7 @@ graphics_dir:
 
 clean-obj:
 	$(MAKE) -C $(LIBGAME_DIR) clean
+	$(MAKE) -C $(GAME_BD_DIR) clean
 	$(MAKE) -C $(GAME_EM_DIR) clean
 	$(MAKE) -C $(GAME_SP_DIR) clean
 	$(MAKE) -C $(GAME_MM_DIR) clean
@@ -386,10 +395,11 @@ valgrind:
 # -----------------------------------------------------------------------------
 
 tags:
-	$(ETAGS) *.[ch] $(LIBGAME_DIR)/*.[ch] $(GAME_EM_DIR)/*.[ch] $(GAME_SP_DIR)/*.[ch] $(GAME_MM_DIR)/*.[ch]
+	$(ETAGS) *.[ch] $(LIBGAME_DIR)/*.[ch] $(GAME_BD_DIR)/*.[ch] $(GAME_EM_DIR)/*.[ch] $(GAME_SP_DIR)/*.[ch] $(GAME_MM_DIR)/*.[ch]
 
 depend:
 	$(MAKE) -C $(LIBGAME_DIR) depend
+	$(MAKE) -C $(GAME_BD_DIR) depend
 	$(MAKE) -C $(GAME_EM_DIR) depend
 	$(MAKE) -C $(GAME_SP_DIR) depend
 	$(MAKE) -C $(GAME_MM_DIR) depend
