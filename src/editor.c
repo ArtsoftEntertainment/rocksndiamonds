@@ -15283,7 +15283,7 @@ void RequestExitLevelEditor(boolean ask_if_level_has_changed,
 	vp_door_2->height == VYSIZE)
       CloseDoor(DOOR_CLOSE_ALL | DOOR_NO_DELAY);
     else
-      SetDoorState(DOOR_CLOSE_2);
+      SetDoorState(DOOR_CLOSE_ALL);
 
     BackToFront();
 
