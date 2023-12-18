@@ -168,28 +168,28 @@ char *getBaseName(char *);
 char *getBaseNamePtr(char *);
 char *getBaseNameNoSuffix(char *);
 
-char *getStringCat2WithSeparator(char *, char *, char *);
-char *getStringCat3WithSeparator(char *, char *, char *, char *);
-char *getStringCat2(char *, char *);
-char *getStringCat3(char *, char *, char *);
-char *getPath2(char *, char *);
-char *getPath3(char *, char *, char*);
-char *getImg2(char *, char *);
-char *getImg3(char *, char *, char*);
+char *getStringCat2WithSeparator(const char *, const char *, const char *);
+char *getStringCat3WithSeparator(const char *, const char *, const char *, const char *);
+char *getStringCat2(const char *, const char *);
+char *getStringCat3(const char *, const char *, const char *);
+char *getPath2(const char *, const char *);
+char *getPath3(const char *, const char *, const char *);
+char *getImg2(const char *, const char *);
+char *getImg3(const char *, const char *, const char *);
 char *getStringCopy(const char *);
 char *getStringCopyN(const char *, int);
 char *getStringCopyNStatic(const char *, int);
 char *getStringToLower(const char *);
-void setString(char **, char *);
-boolean strEqual(char *, char *);
-boolean strEqualN(char *, char *, int);
-boolean strEqualCase(char *, char *);
-boolean strEqualCaseN(char *, char *, int);
-boolean strPrefix(char *, char *);
-boolean strSuffix(char *, char *);
-boolean strPrefixLower(char *, char *);
-boolean strSuffixLower(char *, char *);
-boolean isURL(char *);
+void setString(char **, const char *);
+boolean strEqual(const char *, const char *);
+boolean strEqualN(const char *, const char *, int);
+boolean strEqualCase(const char *, const char *);
+boolean strEqualCaseN(const char *, const char *, int);
+boolean strPrefix(const char *, const char *);
+boolean strSuffix(const char *, const char *);
+boolean strPrefixLower(const char *, const char *);
+boolean strSuffixLower(const char *, const char *);
+boolean isURL(const char *);
 
 void GetOptions(int, char **,
 		void (*print_usage_function)(void),
@@ -279,8 +279,9 @@ int closeDirectory(Directory *);
 DirectoryEntry *readDirectory(Directory *);
 void freeDirectoryEntry(DirectoryEntry *);
 
-boolean directoryExists(char *);
-boolean fileExists(char *);
+boolean directoryExists(const char *);
+boolean fileExists(const char *);
+
 boolean FileIsGraphic(char *);
 boolean FileIsSound(char *);
 boolean FileIsMusic(char *);

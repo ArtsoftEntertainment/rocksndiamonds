@@ -1088,7 +1088,9 @@ char *getBasePath(char *filename)
 // various string functions
 // ----------------------------------------------------------------------------
 
-char *getStringCat2WithSeparator(char *s1, char *s2, char *sep)
+char *getStringCat2WithSeparator(const char *s1,
+				 const char *s2,
+				 const char *sep)
 {
   if (s1 == NULL || s2 == NULL || sep == NULL)
     return NULL;
@@ -1101,7 +1103,10 @@ char *getStringCat2WithSeparator(char *s1, char *s2, char *sep)
   return complete_string;
 }
 
-char *getStringCat3WithSeparator(char *s1, char *s2, char *s3, char *sep)
+char *getStringCat3WithSeparator(const char *s1,
+				 const char *s2,
+				 const char *s3,
+				 const char *sep)
 {
   if (s1 == NULL || s2 == NULL || s3 == NULL || sep == NULL)
     return NULL;
@@ -1115,17 +1120,17 @@ char *getStringCat3WithSeparator(char *s1, char *s2, char *s3, char *sep)
   return complete_string;
 }
 
-char *getStringCat2(char *s1, char *s2)
+char *getStringCat2(const char *s1, const char *s2)
 {
   return getStringCat2WithSeparator(s1, s2, "");
 }
 
-char *getStringCat3(char *s1, char *s2, char *s3)
+char *getStringCat3(const char *s1, const char *s2, const char *s3)
 {
   return getStringCat3WithSeparator(s1, s2, s3, "");
 }
 
-char *getPath2(char *path1, char *path2)
+char *getPath2(const char *path1, const char *path2)
 {
 #if defined(PLATFORM_ANDROID)
   // workaround for reading from assets directory -- skip "." subdirs in path
@@ -1138,7 +1143,7 @@ char *getPath2(char *path1, char *path2)
   return getStringCat2WithSeparator(path1, path2, STRING_PATH_SEPARATOR);
 }
 
-char *getPath3(char *path1, char *path2, char *path3)
+char *getPath3(const char *path1, const char *path2, const char *path3)
 {
 #if defined(PLATFORM_ANDROID)
   // workaround for reading from assets directory -- skip "." subdirs in path
@@ -1166,12 +1171,12 @@ static char *getPngOrPcxIfNotExists(char *filename)
   return filename;
 }
 
-char *getImg2(char *path1, char *path2)
+char *getImg2(const char *path1, const char *path2)
 {
   return getPngOrPcxIfNotExists(getPath2(path1, path2));
 }
 
-char *getImg3(char *path1, char *path2, char *path3)
+char *getImg3(const char *path1, const char *path2, const char *path3)
 {
   return getPngOrPcxIfNotExists(getPath3(path1, path2, path3));
 }
@@ -1227,14 +1232,14 @@ char *getStringToLower(const char *s)
   return s_copy;
 }
 
-void setString(char **old_value, char *new_value)
+void setString(char **old_value, const char *new_value)
 {
   checked_free(*old_value);
 
   *old_value = getStringCopy(new_value);
 }
 
-boolean strEqual(char *s1, char *s2)
+boolean strEqual(const char *s1, const char *s2)
 {
   return (s1 == NULL && s2 == NULL ? TRUE  :
 	  s1 == NULL && s2 != NULL ? FALSE :
@@ -1242,7 +1247,7 @@ boolean strEqual(char *s1, char *s2)
 	  strcmp(s1, s2) == 0);
 }
 
-boolean strEqualN(char *s1, char *s2, int n)
+boolean strEqualN(const char *s1, const char *s2, int n)
 {
   return (s1 == NULL && s2 == NULL ? TRUE  :
 	  s1 == NULL && s2 != NULL ? FALSE :
@@ -1250,7 +1255,7 @@ boolean strEqualN(char *s1, char *s2, int n)
 	  strncmp(s1, s2, n) == 0);
 }
 
-boolean strEqualCase(char *s1, char *s2)
+boolean strEqualCase(const char *s1, const char *s2)
 {
   return (s1 == NULL && s2 == NULL ? TRUE  :
 	  s1 == NULL && s2 != NULL ? FALSE :
@@ -1258,7 +1263,7 @@ boolean strEqualCase(char *s1, char *s2)
 	  strcasecmp(s1, s2) == 0);
 }
 
-boolean strEqualCaseN(char *s1, char *s2, int n)
+boolean strEqualCaseN(const char *s1, const char *s2, int n)
 {
   return (s1 == NULL && s2 == NULL ? TRUE  :
 	  s1 == NULL && s2 != NULL ? FALSE :
@@ -1266,7 +1271,7 @@ boolean strEqualCaseN(char *s1, char *s2, int n)
 	  strncasecmp(s1, s2, n) == 0);
 }
 
-boolean strPrefix(char *s, char *prefix)
+boolean strPrefix(const char *s, const char *prefix)
 {
   return (s == NULL && prefix == NULL ? TRUE  :
 	  s == NULL && prefix != NULL ? FALSE :
@@ -1274,7 +1279,7 @@ boolean strPrefix(char *s, char *prefix)
 	  strncmp(s, prefix, strlen(prefix)) == 0);
 }
 
-boolean strSuffix(char *s, char *suffix)
+boolean strSuffix(const char *s, const char *suffix)
 {
   return (s == NULL && suffix == NULL ? TRUE  :
 	  s == NULL && suffix != NULL ? FALSE :
@@ -1283,7 +1288,7 @@ boolean strSuffix(char *s, char *suffix)
 	  strcmp(&s[strlen(s) - strlen(suffix)], suffix) == 0);
 }
 
-boolean strPrefixLower(char *s, char *prefix)
+boolean strPrefixLower(const char *s, const char *prefix)
 {
   char *s_lower = getStringToLower(s);
   boolean match = strPrefix(s_lower, prefix);
@@ -1293,7 +1298,7 @@ boolean strPrefixLower(char *s, char *prefix)
   return match;
 }
 
-boolean strSuffixLower(char *s, char *suffix)
+boolean strSuffixLower(const char *s, const char *suffix)
 {
   char *s_lower = getStringToLower(s);
   boolean match = strSuffix(s_lower, suffix);
@@ -1303,7 +1308,7 @@ boolean strSuffixLower(char *s, char *suffix)
   return match;
 }
 
-boolean isURL(char *s)
+boolean isURL(const char *s)
 {
   while (*s && *s >= 'a' && *s <= 'z')
     s++;
@@ -3072,7 +3077,7 @@ void freeDirectoryEntry(DirectoryEntry *dir_entry)
 // functions for checking files and filenames
 // ----------------------------------------------------------------------------
 
-boolean directoryExists(char *dir_name)
+boolean directoryExists(const char *dir_name)
 {
   if (dir_name == NULL)
     return FALSE;
@@ -3100,7 +3105,7 @@ boolean directoryExists(char *dir_name)
   return success;
 }
 
-boolean fileExists(char *filename)
+boolean fileExists(const char *filename)
 {
   if (filename == NULL)
     return FALSE;
@@ -3124,7 +3129,7 @@ boolean fileExists(char *filename)
 }
 
 #if 0
-static boolean fileHasPrefix(char *basename, char *prefix)
+static boolean fileHasPrefix(const char *basename, const char *prefix)
 {
   static char *basename_lower = NULL;
   int basename_length, prefix_length;
@@ -3147,7 +3152,7 @@ static boolean fileHasPrefix(char *basename, char *prefix)
 }
 #endif
 
-static boolean fileHasSuffix(char *basename, char *suffix)
+static boolean fileHasSuffix(const char *basename, const char *suffix)
 {
   static char *basename_lower = NULL;
   int basename_length, suffix_length;
