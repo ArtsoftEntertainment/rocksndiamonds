@@ -5,11 +5,13 @@
 // functions and definitions exported from game_bd to main program
 // ============================================================================
 
+
 // ----------------------------------------------------------------------------
 // constant definitions
 // ----------------------------------------------------------------------------
 
-// ...
+#define BD_MAX_CAVE_WIDTH		MAX_PLAYFIELD_WIDTH
+#define BD_MAX_CAVE_HEIGHT		MAX_PLAYFIELD_HEIGHT
 
 
 // ----------------------------------------------------------------------------
@@ -18,10 +20,21 @@
 
 struct GameInfo_BD
 {
+  boolean level_solved;
+  boolean game_over;
+
+  // needed for updating panel
+  int time_played;
+  int gems_still_needed;
+  int score;
 };
 
 struct LevelInfo_BD
 {
+  int width;
+  int height;
+
+  int cave[BD_MAX_CAVE_WIDTH][BD_MAX_CAVE_HEIGHT];
 };
 
 struct EngineSnapshotInfo_BD

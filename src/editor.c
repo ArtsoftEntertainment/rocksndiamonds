@@ -5859,6 +5859,22 @@ static void ReinitializeElementList_EnableSections(void)
     setup_editor_el_mirror_magic	= FALSE;
     setup_editor_el_deflektor		= FALSE;
   }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    setup_editor_el_emerald_mine	= FALSE;
+    setup_editor_el_emerald_mine_club	= FALSE;
+    setup_editor_el_more		= FALSE;
+    setup_editor_el_sokoban		= FALSE;
+    setup_editor_el_supaplex		= FALSE;
+    setup_editor_el_diamond_caves	= FALSE;
+    setup_editor_el_dx_boulderdash	= FALSE;
+    setup_editor_el_mirror_magic	= FALSE;
+    setup_editor_el_deflektor		= FALSE;
+    setup_editor_el_chars		= FALSE;
+    setup_editor_el_steel_chars		= FALSE;
+
+    setup_editor_el_custom		= FALSE;
+  }
   else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
     setup_editor_el_boulderdash		= FALSE;
@@ -12766,6 +12782,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
       lev_fieldx = level.fieldx = brush_width;
       lev_fieldy = level.fieldy = brush_height;
 
+      boolean use_bd_engine = TRUE;
       boolean use_em_engine = TRUE;
       boolean use_sp_engine = TRUE;
       boolean use_mm_engine = TRUE;
@@ -12775,6 +12792,9 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 	for (y = 0; y < MAX_LEV_FIELDY; y++)
 	{
 	  int element = Tile[x][y];
+
+	  if (!IS_BD_ELEMENT(element) && !IS_PLAYER_ELEMENT(element))
+	    use_bd_engine = FALSE;
 
 	  if (!IS_EM_ELEMENT(element) && !IS_PLAYER_ELEMENT(element))
 	    use_em_engine = FALSE;
@@ -12787,7 +12807,8 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 	}
       }
 
-      level.game_engine_type = (use_em_engine ? GAME_ENGINE_TYPE_EM :
+      level.game_engine_type = (use_bd_engine ? GAME_ENGINE_TYPE_BD :
+				use_em_engine ? GAME_ENGINE_TYPE_EM :
 				use_sp_engine ? GAME_ENGINE_TYPE_SP :
 				use_mm_engine ? GAME_ENGINE_TYPE_MM :
 				GAME_ENGINE_TYPE_RND);

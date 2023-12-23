@@ -3651,6 +3651,27 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 
 
 // ----------------------------------------------------------------------------
+// functions for loading BD level
+// ----------------------------------------------------------------------------
+
+static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
+{
+  struct LevelInfo_BD *level_bd = level->native_bd_level;
+
+  level_bd->width  = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
+  level_bd->height = MIN(level->fieldy, MAX_PLAYFIELD_HEIGHT);
+}
+
+static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
+{
+  struct LevelInfo_BD *level_bd = level->native_bd_level;
+
+  level->fieldx = MIN(level_bd->width,  MAX_LEV_FIELDX);
+  level->fieldy = MIN(level_bd->height, MAX_LEV_FIELDY);
+}
+
+
+// ----------------------------------------------------------------------------
 // functions for loading EM level
 // ----------------------------------------------------------------------------
 
@@ -6323,7 +6344,9 @@ static void LoadLevelFromFileInfo_MM(struct LevelInfo *level,
 
 void CopyNativeLevel_RND_to_Native(struct LevelInfo *level)
 {
-  if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level->game_engine_type == GAME_ENGINE_TYPE_BD)
+    CopyNativeLevel_RND_to_BD(level);
+  else if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
     CopyNativeLevel_RND_to_EM(level);
   else if (level->game_engine_type == GAME_ENGINE_TYPE_SP)
     CopyNativeLevel_RND_to_SP(level);
@@ -6333,7 +6356,9 @@ void CopyNativeLevel_RND_to_Native(struct LevelInfo *level)
 
 void CopyNativeLevel_Native_to_RND(struct LevelInfo *level)
 {
-  if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level->game_engine_type == GAME_ENGINE_TYPE_BD)
+    CopyNativeLevel_BD_to_RND(level);
+  else if (level->game_engine_type == GAME_ENGINE_TYPE_EM)
     CopyNativeLevel_EM_to_RND(level);
   else if (level->game_engine_type == GAME_ENGINE_TYPE_SP)
     CopyNativeLevel_SP_to_RND(level);

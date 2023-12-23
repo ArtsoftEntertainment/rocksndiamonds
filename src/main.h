@@ -21,6 +21,7 @@
 #include <fcntl.h>
 
 #include "libgame/libgame.h"
+#include "game_bd/game_bd.h"
 #include "game_em/game_em.h"
 #include "game_sp/game_sp.h"
 #include "game_mm/game_mm.h"
