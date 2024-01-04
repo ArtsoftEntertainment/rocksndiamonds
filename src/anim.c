@@ -598,10 +598,15 @@ static void InitGlobalAnimControls(void)
 	  anim->has_base = TRUE;
 	}
 
-	// force pointer-style animations to pass-through clicks
-	if (part->control_info.class == get_hash_from_key("pointer") &&
-	    part->control_info.style == STYLE_DEFAULT)
+	// apply special settings to pointer-style animations
+	if (part->control_info.class == get_hash_from_key("pointer"))
+	{
+	  // force pointer-style animations to be checked for clicks first
+	  part->control_info.draw_order = 1000000;
+
+	  // force pointer-style animations to pass-through clicks
 	  part->control_info.style |= STYLE_PASSTHROUGH;
+	}
       }
 
       if (anim->num_parts > 0 || anim->has_base)
