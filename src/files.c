@@ -1903,8 +1903,7 @@ static void setLevelInfoToDefaults_Elements(struct LevelInfo *level)
     setElementChangeInfoToDefaults(ei->change);
 
     if (IS_CUSTOM_ELEMENT(element) ||
-	IS_GROUP_ELEMENT(element) ||
-	IS_INTERNAL_ELEMENT(element))
+	IS_GROUP_ELEMENT(element))
     {
       setElementDescriptionToDefault(ei);
 
