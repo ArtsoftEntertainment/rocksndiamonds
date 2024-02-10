@@ -5,8 +5,7 @@
 // external functions and definitions imported from main program to game_mm
 // ============================================================================
 
-#include "../engines.h"
-#include "../conf_gfx.h"
+#include "import_mm.h"
 
 
 // ============================================================================

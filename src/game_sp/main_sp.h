@@ -5,8 +5,7 @@
 // external functions and definitions imported from main program to game_sp
 // ============================================================================
 
-#include "../engines.h"
-#include "../conf_gfx.h"
+#include "import_sp.h"
 
 
 // ============================================================================

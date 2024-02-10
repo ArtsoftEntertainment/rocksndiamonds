@@ -5,7 +5,7 @@
 // external functions and definitions imported from main program to game_em
 // ============================================================================
 
-#include "../engines.h"
+#include "import_em.h"
 
 
 // ============================================================================

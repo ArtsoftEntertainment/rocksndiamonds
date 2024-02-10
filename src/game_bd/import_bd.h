@@ -1,20 +1,25 @@
 // ============================================================================
 // Rocks'n'Diamonds - McDuffin Strikes Back!
 // ----------------------------------------------------------------------------
-// (c) 1995-2014 by Artsoft Entertainment
+// (c) 1995-2024 by Artsoft Entertainment
 //     		    Holger Schemel
 //		    info@artsoft.org
 //		    https://www.artsoft.org/
 // ----------------------------------------------------------------------------
-// game_sp.h
+// import_bd.h
 // ============================================================================
 
-#ifndef GAME_SP_H
-#define GAME_SP_H
+#ifndef IMPORT_BD_H
+#define IMPORT_BD_H
 
-#define GAME_SP_VERSION_1_0_0
+#include "../libgame/libgame.h"
+#include "../game.h"
 
-#include "import_sp.h"
-#include "export_sp.h"
+#include "export_bd.h"
 
-#endif	// GAME_SP_H
+
+// ============================================================================
+// functions and definitions exported from main program to game_bd
+// ============================================================================
+
+#endif	// IMPORT_BD_H
