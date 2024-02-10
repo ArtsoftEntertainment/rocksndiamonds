@@ -141,6 +141,15 @@ static MusicInfo *getMusicInfoEntryFromMusicID(int);
 // mixer functions
 // ----------------------------------------------------------------------------
 
+static void Mixer_ChannelFinished(int channel)
+{
+  if (!mixer[channel].active)
+    return;
+
+  mixer[channel].active = FALSE;
+  mixer_active_channels--;
+}
+
 void Mixer_InitChannels(void)
 {
   int i;
@@ -148,6 +157,8 @@ void Mixer_InitChannels(void)
   for (i = 0; i < audio.num_channels; i++)
     mixer[i].active = FALSE;
   mixer_active_channels = 0;
+
+  Mix_ChannelFinished(Mixer_ChannelFinished);
 }
 
 static void Mixer_ResetChannelExpiration(int channel)
@@ -247,13 +258,7 @@ static void Mixer_PlayMusicChannel(void)
 
 static void Mixer_StopChannel(int channel)
 {
-  if (!mixer[channel].active)
-    return;
-
   Mix_HaltChannel(channel);
-
-  mixer[channel].active = FALSE;
-  mixer_active_channels--;
 }
 
 static void Mixer_StopMusicChannel(void)
