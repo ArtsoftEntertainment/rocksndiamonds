@@ -103,7 +103,7 @@ void base64_encode(char *encoded_data,
     *ptr++ = '=';
   }
 
-  *ptr++= '\0';
+  *ptr++ = '\0';
 }
 
 static const byte b64decode[] =

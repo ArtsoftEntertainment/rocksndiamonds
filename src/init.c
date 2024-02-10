@@ -5028,7 +5028,7 @@ static void InitGlobal(void)
 
     element_info[i].token_name = element_name_info[i].token_name;
     element_info[i].class_name = element_name_info[i].class_name;
-    element_info[i].editor_description= element_name_info[i].editor_description;
+    element_info[i].editor_description = element_name_info[i].editor_description;
   }
 
   for (i = 0; i < NUM_GLOBAL_ANIM_TOKENS + 1; i++)

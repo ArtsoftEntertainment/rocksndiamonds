@@ -1359,7 +1359,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     Bitmap *src_bitmap;
     int src_x, src_y;
 
-    gi->width  = 2 * border_xsize + gi->textinput.size * font_width +button_size;
+    gi->width  = 2 * border_xsize + gi->textinput.size * font_width + button_size;
     gi->height = 2 * border_ysize + font_height;
 
     if (gi->selectbox.options == NULL)
