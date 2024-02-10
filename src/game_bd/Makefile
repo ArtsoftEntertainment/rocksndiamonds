@@ -16,9 +16,9 @@
 # configuration
 # -----------------------------------------------------------------------------
 
-SRCS =	bd_main.c
+SRCS =	main_bd.c
 
-OBJS =	bd_main.o
+OBJS =	main_bd.o
 
 GAME_BD = game_bd.a
 
