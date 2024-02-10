@@ -1,6 +1,6 @@
-Butterflies always try to follow the right side of a wall or other elements.
-Touching them is deadly.
+Butterflies move through empty space. Touching them is deadly.. Butterflies
+blow up when hit by a falling rock or diamond. Amoeba is also deadly for them.
+They explode into diamonds, producing a 3x3 square of diamonds. Butterflies are
+spinning right. They prefer turning right, usually clockwise.
 
-They will explode in 9 BD style diamonds if smashed by a rock or BD style
-diamond. If dynabombed, they will become one BD style diamond.
-Other explosions simply destroy them.
+There is another variant of the butterfly that is spinning left.

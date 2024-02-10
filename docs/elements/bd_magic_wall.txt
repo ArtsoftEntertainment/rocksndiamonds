@@ -1,7 +1,8 @@
-This is a BD style magic wall. It gets activated for a limited duration by
-rocks or gems that fall on it. While activated, they can fall through it, and
-rocks turn into BD style diamonds, and gems turn into BD style rocks.
-After the magic wall has stopped running, it cannot be activated again.
+This BD style magic wall converts rocks into diamonds and vice versa. Note that
+a magic wall can only be activated for some limited time. It can also turn mega
+rocks into nitro packs, nitro packs into mega rocks. Even flying diamonds and
+rocks pass them to be converted into each other, but they do that from bottom to
+up, of course.
 
 The duration in seconds for which magic walls are active is configurable.
 A duration of zero will let the wall run forever.
