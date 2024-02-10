@@ -8549,14 +8549,14 @@ unsigned int InitRND(int seed)
     return InitEngineRandom_RND(seed);
 }
 
-static struct Mapping_EM_to_RND_object object_mapping[GAME_TILE_MAX];
-static struct Mapping_EM_to_RND_player player_mapping[MAX_PLAYERS][PLY_MAX];
+static struct Mapping_EM_to_RND_object em_object_mapping[GAME_TILE_MAX];
+static struct Mapping_EM_to_RND_player em_player_mapping[MAX_PLAYERS][PLY_MAX];
 
 static int get_effective_element_EM(int tile, int frame_em)
 {
-  int element             = object_mapping[tile].element_rnd;
-  int action              = object_mapping[tile].action;
-  boolean is_backside     = object_mapping[tile].is_backside;
+  int element             = em_object_mapping[tile].element_rnd;
+  int action              = em_object_mapping[tile].action;
+  boolean is_backside     = em_object_mapping[tile].is_backside;
   boolean action_removing = (action == ACTION_DIGGING ||
 			     action == ACTION_SNAPPING ||
 			     action == ACTION_COLLECTING);
@@ -8704,8 +8704,8 @@ void ResetGfxAnimation_EM(int x, int y, int tile)
 void SetGfxAnimation_EM(struct GraphicInfo_EM *g_em,
 			int tile, int frame_em, int x, int y)
 {
-  int action = object_mapping[tile].action;
-  int direction = object_mapping[tile].direction;
+  int action = em_object_mapping[tile].action;
+  int direction = em_object_mapping[tile].direction;
   int effective_element = get_effective_element_EM(tile, frame_em);
   int graphic = (direction == MV_NONE ?
 		 el_act2img(effective_element, action) :
@@ -8744,11 +8744,11 @@ void SetGfxAnimation_EM(struct GraphicInfo_EM *g_em,
   }
   else if (action_moving)
   {
-    boolean is_backside = object_mapping[tile].is_backside;
+    boolean is_backside = em_object_mapping[tile].is_backside;
 
     if (is_backside)
     {
-      int direction = object_mapping[tile].direction;
+      int direction = em_object_mapping[tile].direction;
       int move_dir = (action_falling ? MV_DOWN : direction);
 
       GfxFrame[x][y]++;
@@ -8803,9 +8803,9 @@ void SetGfxAnimation_EM(struct GraphicInfo_EM *g_em,
 void getGraphicSourceObjectExt_EM(struct GraphicInfo_EM *g_em,
 				  int tile, int frame_em, int x, int y)
 {
-  int action = object_mapping[tile].action;
-  int direction = object_mapping[tile].direction;
-  boolean is_backside = object_mapping[tile].is_backside;
+  int action = em_object_mapping[tile].action;
+  int direction = em_object_mapping[tile].direction;
+  boolean is_backside = em_object_mapping[tile].is_backside;
   int effective_element = get_effective_element_EM(tile, frame_em);
   int effective_action = action;
   int graphic = (direction == MV_NONE ?
@@ -8869,9 +8869,9 @@ void getGraphicSourceObjectExt_EM(struct GraphicInfo_EM *g_em,
 void getGraphicSourcePlayerExt_EM(struct GraphicInfo_EM *g_em,
 				  int player_nr, int anim, int frame_em)
 {
-  int element   = player_mapping[player_nr][anim].element_rnd;
-  int action    = player_mapping[player_nr][anim].action;
-  int direction = player_mapping[player_nr][anim].direction;
+  int element   = em_player_mapping[player_nr][anim].element_rnd;
+  int action    = em_player_mapping[player_nr][anim].action;
+  int direction = em_player_mapping[player_nr][anim].direction;
   int graphic = (direction == MV_NONE ?
 		 el_act2img(element, action) :
 		 el_act_dir2img(element, action, direction));
@@ -8901,10 +8901,10 @@ void InitGraphicInfo_EM(void)
   // always start with reliable default values
   for (i = 0; i < GAME_TILE_MAX; i++)
   {
-    object_mapping[i].element_rnd = EL_UNKNOWN;
-    object_mapping[i].is_backside = FALSE;
-    object_mapping[i].action = ACTION_DEFAULT;
-    object_mapping[i].direction = MV_NONE;
+    em_object_mapping[i].element_rnd = EL_UNKNOWN;
+    em_object_mapping[i].is_backside = FALSE;
+    em_object_mapping[i].action = ACTION_DEFAULT;
+    em_object_mapping[i].direction = MV_NONE;
   }
 
   // always start with reliable default values
@@ -8912,9 +8912,9 @@ void InitGraphicInfo_EM(void)
   {
     for (i = 0; i < PLY_MAX; i++)
     {
-      player_mapping[p][i].element_rnd = EL_UNKNOWN;
-      player_mapping[p][i].action = ACTION_DEFAULT;
-      player_mapping[p][i].direction = MV_NONE;
+      em_player_mapping[p][i].element_rnd = EL_UNKNOWN;
+      em_player_mapping[p][i].action = ACTION_DEFAULT;
+      em_player_mapping[p][i].direction = MV_NONE;
     }
   }
 
@@ -8922,14 +8922,14 @@ void InitGraphicInfo_EM(void)
   {
     int e = em_object_mapping_list[i].element_em;
 
-    object_mapping[e].element_rnd = em_object_mapping_list[i].element_rnd;
-    object_mapping[e].is_backside = em_object_mapping_list[i].is_backside;
+    em_object_mapping[e].element_rnd = em_object_mapping_list[i].element_rnd;
+    em_object_mapping[e].is_backside = em_object_mapping_list[i].is_backside;
 
     if (em_object_mapping_list[i].action != -1)
-      object_mapping[e].action = em_object_mapping_list[i].action;
+      em_object_mapping[e].action = em_object_mapping_list[i].action;
 
     if (em_object_mapping_list[i].direction != -1)
-      object_mapping[e].direction =
+      em_object_mapping[e].direction =
 	MV_DIR_FROM_BIT(em_object_mapping_list[i].direction);
   }
 
@@ -8938,22 +8938,22 @@ void InitGraphicInfo_EM(void)
     int a = em_player_mapping_list[i].action_em;
     int p = em_player_mapping_list[i].player_nr;
 
-    player_mapping[p][a].element_rnd = em_player_mapping_list[i].element_rnd;
+    em_player_mapping[p][a].element_rnd = em_player_mapping_list[i].element_rnd;
 
     if (em_player_mapping_list[i].action != -1)
-      player_mapping[p][a].action = em_player_mapping_list[i].action;
+      em_player_mapping[p][a].action = em_player_mapping_list[i].action;
 
     if (em_player_mapping_list[i].direction != -1)
-      player_mapping[p][a].direction =
+      em_player_mapping[p][a].direction =
 	MV_DIR_FROM_BIT(em_player_mapping_list[i].direction);
   }
 
   for (i = 0; i < GAME_TILE_MAX; i++)
   {
-    int element = object_mapping[i].element_rnd;
-    int action = object_mapping[i].action;
-    int direction = object_mapping[i].direction;
-    boolean is_backside = object_mapping[i].is_backside;
+    int element = em_object_mapping[i].element_rnd;
+    int action = em_object_mapping[i].action;
+    int direction = em_object_mapping[i].direction;
+    boolean is_backside = em_object_mapping[i].is_backside;
     boolean action_exploding = ((action == ACTION_EXPLODING ||
 				 action == ACTION_SMASHED_BY_ROCK ||
 				 action == ACTION_SMASHED_BY_SPRING) &&
@@ -9225,10 +9225,10 @@ void InitGraphicInfo_EM(void)
   {
     for (j = 0; j < 8; j++)
     {
-      int element = object_mapping[i].element_rnd;
-      int action = object_mapping[i].action;
-      int direction = object_mapping[i].direction;
-      boolean is_backside = object_mapping[i].is_backside;
+      int element = em_object_mapping[i].element_rnd;
+      int action = em_object_mapping[i].action;
+      int direction = em_object_mapping[i].direction;
+      boolean is_backside = em_object_mapping[i].is_backside;
       int graphic_action  = el_act_dir2img(element, action, direction);
       int graphic_default = el_act_dir2img(element, ACTION_DEFAULT, direction);
 
@@ -9268,9 +9268,9 @@ void InitGraphicInfo_EM(void)
   {
     for (i = 0; i < PLY_MAX; i++)
     {
-      int element = player_mapping[p][i].element_rnd;
-      int action = player_mapping[p][i].action;
-      int direction = player_mapping[p][i].direction;
+      int element = em_player_mapping[p][i].element_rnd;
+      int action = em_player_mapping[p][i].action;
+      int direction = em_player_mapping[p][i].direction;
 
       for (j = 0; j < 8; j++)
       {
