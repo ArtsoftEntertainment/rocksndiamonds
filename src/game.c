@@ -9448,7 +9448,7 @@ static void Life(int ax, int ay)
 
   for (y1 = -1; y1 < 2; y1++) for (x1 = -1; x1 < 2; x1++)
   {
-    int xx = ax+x1, yy = ay+y1;
+    int xx = ax + x1, yy = ay + y1;
     int old_element = Tile[xx][yy];
     int num_neighbours = 0;
 
@@ -9457,7 +9457,7 @@ static void Life(int ax, int ay)
 
     for (y2 = -1; y2 < 2; y2++) for (x2 = -1; x2 < 2; x2++)
     {
-      int x = xx+x2, y = yy+y2;
+      int x = xx + x2, y = yy + y2;
 
       if (!IN_LEV_FIELD(x, y) || (x == xx && y == yy))
 	continue;
@@ -15705,7 +15705,9 @@ void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
     }
 
     if (network.enabled)
+    {
       SendToServer_StopPlaying(NETWORK_STOP_BY_PLAYER);
+    }
     else
     {
       if (quick_quit)

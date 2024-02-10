@@ -634,13 +634,13 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	    BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y + border_y,
 				   border_x, font_height,
 				   gi->selectbox.x,
-				   gi->selectbox.y + border_y + i*font_height);
+				   gi->selectbox.y + border_y + i * font_height);
 	    BlitBitmapOnBackground(gd->bitmap, drawto,
 				   gd->x + gi->border.width - border_x,
 				   gd->y + border_y,
 				   border_x, font_height,
 				   gi->selectbox.x + box_width - border_x,
-				   gi->selectbox.y + border_y + i*font_height);
+				   gi->selectbox.y + border_y + i * font_height);
 	  }
 
 	  // bottom left part of gadget border
@@ -1167,7 +1167,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	break;
 
       case GDI_ALT_DESIGN_UNPRESSED:
-	gi->alt_design[GD_BUTTON_UNPRESSED].bitmap= va_arg(ap, Bitmap *);
+	gi->alt_design[GD_BUTTON_UNPRESSED].bitmap = va_arg(ap, Bitmap *);
 	gi->alt_design[GD_BUTTON_UNPRESSED].x = va_arg(ap, int);
 	gi->alt_design[GD_BUTTON_UNPRESSED].y = va_arg(ap, int);
 	break;
@@ -1359,7 +1359,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     Bitmap *src_bitmap;
     int src_x, src_y;
 
-    gi->width  = 2 * border_xsize + gi->textinput.size*font_width +button_size;
+    gi->width  = 2 * border_xsize + gi->textinput.size * font_width +button_size;
     gi->height = 2 * border_ysize + font_height;
 
     if (gi->selectbox.options == NULL)

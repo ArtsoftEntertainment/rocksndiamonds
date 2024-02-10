@@ -7641,7 +7641,7 @@ static void MapGraphicbuttonGadget(int id)
 {
   int font_nr = FONT_TEXT_1;
   int font_height = getFontHeight(font_nr);
-  struct GadgetInfo *gi= level_editor_gadget[graphicbutton_info[id].gadget_id];
+  struct GadgetInfo *gi = level_editor_gadget[graphicbutton_info[id].gadget_id];
   int xoffset_left = getTextWidthForGadget(graphicbutton_info[id].text_left);
   int xoffset_right = ED_GADGET_TEXT_DISTANCE;
   int yoffset = (gi->height - font_height) / 2;
@@ -10214,7 +10214,7 @@ static void DrawPropertiesConfig(void)
 		num_element_counters);
 
       counterbutton_info[counter_id].value = elements_with_counter[i].value;
-      counterbutton_info[counter_id].text_right= elements_with_counter[i].text;
+      counterbutton_info[counter_id].text_right = elements_with_counter[i].text;
 
       if (properties_element == EL_GAME_OF_LIFE ||
 	  properties_element == EL_BIOMAZE)
@@ -14759,8 +14759,8 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
 	  for (i = 0; editor_elements_info[i].setup_value != NULL; i++)
 	  {
-	    int *cascade_element= &(*editor_elements_info[i].headline_list)[0];
-	    boolean *cascade_value=editor_elements_info[i].setup_cascade_value;
+	    int *cascade_element = &(*editor_elements_info[i].headline_list)[0];
+	    boolean *cascade_value = editor_elements_info[i].setup_cascade_value;
 
 	    if (*cascade_element == new_element)
 	    {

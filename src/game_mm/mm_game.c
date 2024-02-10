@@ -3289,7 +3289,7 @@ static void ContinueMoving_MM(int x, int y)
   int direction = MovDir[x][y];
   int dx = (direction == MV_LEFT ? -1 : direction == MV_RIGHT ? +1 : 0);
   int dy = (direction == MV_UP   ? -1 : direction == MV_DOWN  ? +1 : 0);
-  int horiz_move = (dx!=0);
+  int horiz_move = (dx != 0);
   int newx = x + dx, newy = y + dy;
   int step = (horiz_move ? dx : dy) * TILEX / 8;
 

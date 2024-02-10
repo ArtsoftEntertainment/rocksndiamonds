@@ -2891,7 +2891,7 @@ static int LoadLevel_CUS3(File *file, int chunk_size, struct LevelInfo *level)
     ei->change->delay_random = getFile16BitBE(file);
     ei->change->delay_frames = getFile16BitBE(file);
 
-    ei->change->initial_trigger_element= getMappedElement(getFile16BitBE(file));
+    ei->change->initial_trigger_element = getMappedElement(getFile16BitBE(file));
 
     ei->change->explode = getFile8Bit(file);
     ei->change->use_target_content = getFile8Bit(file);
@@ -8160,7 +8160,7 @@ static int LoadTape_BODY(File *file, int chunk_size, struct TapeInfo *tape)
       byte action = tape->pos[i].action[0];
       int k, num_moves = 0;
 
-      for (k = 0; k<4; k++)
+      for (k = 0; k < 4; k++)
       {
 	if (action & joy_dir[k])
 	{
@@ -10616,7 +10616,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     si->input[i].use_joystick = FALSE;
-    si->input[i].joy.device_name=getStringCopy(getDeviceNameFromJoystickNr(i));
+    si->input[i].joy.device_name = getStringCopy(getDeviceNameFromJoystickNr(i));
     si->input[i].joy.xleft   = JOYSTICK_XLEFT;
     si->input[i].joy.xmiddle = JOYSTICK_XMIDDLE;
     si->input[i].joy.xright  = JOYSTICK_XRIGHT;

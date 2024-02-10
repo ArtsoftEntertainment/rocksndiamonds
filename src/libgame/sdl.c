@@ -1463,7 +1463,7 @@ void SDLDrawLines(SDL_Surface *surface, struct XY *points,
 	  continue;
 
 	sge_Line(surface, points[i].x + dx, points[i].y + dy,
-		 points[i+1].x + dx, points[i+1].y + dy, color);
+		 points[i + 1].x + dx, points[i + 1].y + dy, color);
       }
     }
   }
