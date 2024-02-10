@@ -14,6 +14,6 @@
 
 #define GAME_EM_VERSION_1_0_0
 
-#include "export.h"
+#include "export_em.h"
 
 #endif	/* GAME_EM_H */

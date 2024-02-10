@@ -12,7 +12,7 @@
 // functions and definitions that are exported from game_em to main program
 // ============================================================================
 
-#include "export.h"
+#include "export_em.h"
 
 
 // ============================================================================

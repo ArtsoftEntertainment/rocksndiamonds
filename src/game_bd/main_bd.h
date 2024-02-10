@@ -12,7 +12,7 @@
 // functions and definitions that are exported from game_bd to main program
 // ============================================================================
 
-#include "export.h"
+#include "export_bd.h"
 
 
 // ============================================================================

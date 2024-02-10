@@ -14,10 +14,10 @@
 
 #include "libgame/libgame.h"
 
-#include "game_bd/export.h"
-#include "game_em/export.h"
-#include "game_sp/export.h"
-#include "game_mm/export.h"
+#include "game_bd/export_bd.h"
+#include "game_em/export_em.h"
+#include "game_sp/export_sp.h"
+#include "game_mm/export_mm.h"
 
 #include "game.h"
 

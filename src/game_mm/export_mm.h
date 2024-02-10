@@ -1,5 +1,16 @@
-#ifndef GAME_MM_EXPORT_H
-#define GAME_MM_EXPORT_H
+// ============================================================================
+// Rocks'n'Diamonds - McDuffin Strikes Back!
+// ----------------------------------------------------------------------------
+// (c) 1995-2024 by Artsoft Entertainment
+//     		    Holger Schemel
+//		    info@artsoft.org
+//		    https://www.artsoft.org/
+// ----------------------------------------------------------------------------
+// export_mm.h
+// ============================================================================
+
+#ifndef EXPORT_MM_H
+#define EXPORT_MM_H
 
 // ============================================================================
 // functions and definitions exported from game_mm to main program
@@ -264,4 +275,4 @@ void SaveEngineSnapshotValues_MM(void);
 
 int getButtonFromTouchPosition(int, int, int, int);
 
-#endif	// GAME_MM_EXPORT_H
+#endif	// EXPORT_MM_H

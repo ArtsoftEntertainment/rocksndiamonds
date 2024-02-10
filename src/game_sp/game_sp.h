@@ -14,6 +14,6 @@
 
 #define GAME_SP_VERSION_1_0_0
 
-#include "export.h"
+#include "export_sp.h"
 
 #endif	// GAME_SP_H

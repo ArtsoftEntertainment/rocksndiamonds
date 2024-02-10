@@ -1,5 +1,16 @@
-#ifndef GAME_SP_EXPORT_H
-#define GAME_SP_EXPORT_H
+// ============================================================================
+// Rocks'n'Diamonds - McDuffin Strikes Back!
+// ----------------------------------------------------------------------------
+// (c) 1995-2024 by Artsoft Entertainment
+//     		    Holger Schemel
+//		    info@artsoft.org
+//		    https://www.artsoft.org/
+// ----------------------------------------------------------------------------
+// export_sp.h
+// ============================================================================
+
+#ifndef EXPORT_SP_H
+#define EXPORT_SP_H
 
 // ============================================================================
 // functions and definitions exported from game_sp to main program
@@ -195,4 +206,4 @@ int map_key_SP_to_RND(int);
 
 int getRedDiskReleaseFlag_SP(void);
 
-#endif	// GAME_SP_EXPORT_H
+#endif	// EXPORT_SP_H

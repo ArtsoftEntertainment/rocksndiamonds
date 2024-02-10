@@ -1,5 +1,16 @@
-#ifndef EXPORT_H
-#define EXPORT_H
+// ============================================================================
+// Rocks'n'Diamonds - McDuffin Strikes Back!
+// ----------------------------------------------------------------------------
+// (c) 1995-2024 by Artsoft Entertainment
+//     		    Holger Schemel
+//		    info@artsoft.org
+//		    https://www.artsoft.org/
+// ----------------------------------------------------------------------------
+// export_em.h
+// ============================================================================
+
+#ifndef EXPORT_EM_H
+#define EXPORT_EM_H
 
 // ============================================================================
 // functions and definitions exported from game_em to main program
@@ -130,4 +141,4 @@ boolean checkIfAllPlayersFitToScreen(void);
 int map_em_element_C_to_X(int);
 int map_em_element_X_to_C(int);
 
-#endif	// EXPORT_H
+#endif	// EXPORT_EM_H

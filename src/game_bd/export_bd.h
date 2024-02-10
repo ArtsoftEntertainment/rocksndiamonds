@@ -1,5 +1,16 @@
-#ifndef GAME_BD_EXPORT_H
-#define GAME_BD_EXPORT_H
+// ============================================================================
+// Rocks'n'Diamonds - McDuffin Strikes Back!
+// ----------------------------------------------------------------------------
+// (c) 1995-2024 by Artsoft Entertainment
+//                  Holger Schemel
+//                  info@artsoft.org
+//                  https://www.artsoft.org/
+// ----------------------------------------------------------------------------
+// export_bd.h
+// ============================================================================
+
+#ifndef EXPORT_BD_H
+#define EXPORT_BD_H
 
 // ============================================================================
 // functions and definitions exported from game_bd to main program
@@ -52,4 +63,4 @@ extern struct EngineSnapshotInfo_BD engine_snapshot_bd;
 
 void setLevelInfoToDefaults_BD(void);
 
-#endif	// GAME_BD_EXPORT_H
+#endif	// EXPORT_BD_H

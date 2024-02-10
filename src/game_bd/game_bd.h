@@ -14,6 +14,6 @@
 
 #define GAME_BD_VERSION_1_0_0
 
-#include "export.h"
+#include "export_bd.h"
 
 #endif	// GAME_BD_H

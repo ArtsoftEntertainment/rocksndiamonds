@@ -14,6 +14,6 @@
 
 #define GAME_MM_VERSION_1_0_0
 
-#include "export.h"
+#include "export_mm.h"
 
 #endif	// GAME_MM_H
