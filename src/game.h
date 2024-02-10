@@ -52,6 +52,9 @@ struct GamePanelInfo
 {
   struct TextPosInfo level_number;
   struct TextPosInfo gems;
+  struct TextPosInfo gems_total;
+  struct TextPosInfo gems_collected;
+  struct TextPosInfo gems_score;
   struct TextPosInfo inventory_count;
   struct TextPosInfo inventory_first[NUM_PANEL_INVENTORY];
   struct TextPosInfo inventory_last[NUM_PANEL_INVENTORY];
