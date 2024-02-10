@@ -1201,6 +1201,7 @@
 
 #define EL_EM_KEY_1_FILE_OBSOLETE	119	// obsolete; now EL_EM_KEY_1
 
+// text character elements
 #define EL_CHAR_START			120
 #define EL_CHAR_ASCII0			(EL_CHAR_START  - 32)
 #define EL_CHAR_ASCII0_START		(EL_CHAR_ASCII0 + 32)
@@ -1216,6 +1217,7 @@
 #define EL_EXPANDABLE_WALL_VERTICAL	201
 #define EL_EXPANDABLE_WALL_ANY		202
 
+// EM style elements
 #define EL_EM_GATE_1			203
 #define EL_EM_GATE_2			204
 #define EL_EM_GATE_3			205
@@ -1225,6 +1227,7 @@
 #define EL_EM_KEY_3_FILE_OBSOLETE	208	// obsolete; now EL_EM_KEY_3
 #define EL_EM_KEY_4_FILE_OBSOLETE	209	// obsolete; now EL_EM_KEY_4
 
+// SP style elements
 #define EL_SP_START			210
 #define EL_SP_EMPTY_SPACE		(EL_SP_START + 0)
 #define EL_SP_EMPTY			EL_SP_EMPTY_SPACE
@@ -1269,6 +1272,7 @@
 #define EL_SP_CHIP_BOTTOM		(EL_SP_START + 39)
 #define EL_SP_END			(EL_SP_START + 39)
 
+// EM style elements
 #define EL_EM_GATE_1_GRAY		250
 #define EL_EM_GATE_2_GRAY		251
 #define EL_EM_GATE_3_GRAY		252
@@ -1277,6 +1281,7 @@
 #define EL_EM_DYNAMITE			254
 #define EL_EM_DYNAMITE_ACTIVE		255
 
+// DC2 style elements
 #define EL_PEARL			256
 #define EL_CRYSTAL			257
 #define EL_WALL_PEARL			258
@@ -1352,6 +1357,7 @@
 #define EL_TIMEGATE_SWITCH_ACTIVE	324
 #define EL_TIMEGATE_SWITCH		325
 
+// EMC style elements
 #define EL_BALLOON			326
 #define EL_BALLOON_SWITCH_LEFT		327
 #define EL_BALLOON_SWITCH_RIGHT		328
@@ -1372,6 +1378,7 @@
 #define EL_EMC_WALL_7			342
 #define EL_EMC_WALL_8			343
 
+// DX style elements
 #define EL_TUBE_ANY			344
 #define EL_TUBE_VERTICAL		345
 #define EL_TUBE_HORIZONTAL		346
@@ -1399,10 +1406,13 @@
 #define EL_CUSTOM_END			615
 // ---------- end of custom elements section ----------------------------------
 
+// EM style elements
 #define EL_EM_KEY_1			616
 #define EL_EM_KEY_2			617
 #define EL_EM_KEY_3			618
 #define EL_EM_KEY_4			619
+
+// DC2 style elements
 #define EL_ENVELOPE_1			620
 #define EL_ENVELOPE_2			621
 #define EL_ENVELOPE_3			622
@@ -1483,6 +1493,7 @@
 
 #define EL_BD_EXPANDABLE_WALL		713
 
+// reference elements
 #define EL_PREV_CE_8			714
 #define EL_PREV_CE_7			715
 #define EL_PREV_CE_6			716
@@ -1502,6 +1513,7 @@
 #define EL_NEXT_CE_8			730
 #define EL_ANY_ELEMENT			731
 
+// text character elements
 #define EL_STEEL_CHAR_START		732
 #define EL_STEEL_CHAR_ASCII0		(EL_STEEL_CHAR_START  - 32)
 #define EL_STEEL_CHAR_ASCII0_START	(EL_STEEL_CHAR_ASCII0 + 32)
@@ -1513,6 +1525,7 @@
 
 #define EL_STEEL_CHAR(c)		(EL_STEEL_CHAR_ASCII0+MAP_FONT_ASCII(c))
 
+// unused elements
 #define EL_SPERMS			812
 #define EL_BULLET			813
 #define EL_HEART			814
@@ -1524,6 +1537,7 @@
 #define EL_SIGN_CROSS			820
 #define EL_SIGN_FRANKIE			821
 
+// DC2 style elements
 #define EL_STEEL_EXIT_CLOSED		822
 #define EL_STEEL_EXIT_OPEN		823
 
@@ -1577,6 +1591,7 @@
 
 #define EL_FROM_LEVEL_TEMPLATE		863
 
+// MM style elements
 #define EL_MM_START			864
 #define EL_MM_START_1			EL_MM_START
 
@@ -1722,6 +1737,7 @@
 #define EL_MM_END_1			(EL_MM_START + 159)
 #define EL_MM_START_2			(EL_MM_START + 160)
 
+// DF style elements
 #define EL_DF_START			EL_MM_START_2
 #define EL_DF_START_1			EL_MM_START_2
 #define EL_DF_START2			(EL_DF_START - 240)
@@ -1851,6 +1867,7 @@
 
 #define EL_DF_END_1			(EL_DF_START2 + 355)
 
+// MM style elements
 #define EL_MM_TELEPORTER_RED_START	(EL_DF_START2 + 356)
 #define EL_MM_TELEPORTER_RED_1		(EL_MM_TELEPORTER_RED_START + 0)
 #define EL_MM_TELEPORTER_RED_2		(EL_MM_TELEPORTER_RED_START + 1)
@@ -1938,6 +1955,7 @@
 
 #define EL_MM_END_2			(EL_DF_START2 + 430)
 
+// EMC style elements
 #define EL_SPRING_LEFT			1215
 #define EL_SPRING_RIGHT			1216
 
@@ -1954,6 +1972,7 @@
 #define EL_MM_START_3			EL_DF_MIRROR_FIXED_START
 #define EL_DF_START_2			EL_DF_MIRROR_FIXED_START
 
+// DF style elements
 #define EL_DF_MIRROR_FIXED_START	1233
 #define EL_DF_MIRROR_FIXED_1		(EL_DF_MIRROR_FIXED_START + 0)
 #define EL_DF_MIRROR_FIXED_2		(EL_DF_MIRROR_FIXED_START + 1)
