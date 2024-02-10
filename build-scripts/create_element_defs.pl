@@ -71,7 +71,7 @@ my $text_e2s_c = 'values for element/sounds mapping configuration';
 my $text_fnt_c = 'values for font/graphics mapping configuration';
 my $text_g2s_c = 'values for gamemode/sound mapping configuration';
 my $text_g2m_c = 'values for gamemode/music mapping configuration';
-my $text_var_c = 'values for image and layout parameter configuration';
+my $text_var_c = 'values for graphics and sound parameter configuration';
 my $text_act_c = 'values for active states of elements and fonts';
 
 my $num_custom_elements = 256;
@@ -1455,7 +1455,7 @@ sub print_gamemode_to_music_entry
     print "  },\n";
 }
 
-sub print_image_config_var_entry
+sub print_config_var_entry
 {
     my ($token, $var) = @_;
 
@@ -2480,7 +2480,7 @@ sub print_gamemode_to_music_list
     print_file_footer($filename_conf_g2m_c);
 }
 
-sub print_image_config_vars
+sub print_config_vars
 {
     # ---------- read graphic file definitions ----------
 
@@ -2587,7 +2587,7 @@ sub print_image_config_vars
 		$var = $1 . "[GFX_SPECIAL_ARG_DEFAULT]" . $3;
 	    }
 
-	    print_image_config_var_entry("\"$token\"", "&$var");
+	    print_config_var_entry("\"$token\"", "&$var");
 
 	    if ($var =~ /^(title)_default/ ||
 		$var =~ /^(title_initial)_default/ ||
@@ -2597,12 +2597,54 @@ sub print_image_config_vars
 		my $prefix = $1;
 		$var =~ s/^$prefix/${prefix}_first/;
 
-		print_image_config_var_entry("\"$token\"", "&$var");
+		print_config_var_entry("\"$token\"", "&$var");
 	    }
 	}
     }
 
-    print_image_config_var_entry('NULL', 'NULL');
+    print_config_var_entry('NULL', 'NULL');
+
+    print "};\n";
+
+    close FILE;
+
+
+    # ---------- read sound file definitions ----------
+
+    $filename = "$src_path/conf_snd.c";
+
+    open(FILE, "$filename") ||
+	fail("cannot open file '$filename' for reading");
+
+    print "struct TokenIntPtrInfo sound_config_vars[] =\n";
+    print "{\n";
+
+    $start_parsing = 0;
+
+    while (<FILE>)
+    {
+	chomp;				# cut trailing newline
+
+	if (/CONFIG_VARS_START/)	# keyword to start parsing file
+	{
+	    $start_parsing = 1;
+	}
+
+	if (!$start_parsing)
+	{
+	    next;
+	}
+
+	if (/^\s*\{\s*\"([^\"]+)\"/)	# config token found
+	{
+	    my $token = $1;
+	    my $var = $token;
+
+	    print_config_var_entry("\"$token\"", "&$var");
+	}
+    }
+
+    print_config_var_entry('NULL', 'NULL');
 
     print "};\n";
 
@@ -2799,7 +2841,7 @@ sub main
     }
     elsif ($ARGV[0] eq $filename_conf_var_c)
     {
-	print_image_config_vars();
+	print_config_vars();
     }
     elsif ($ARGV[0] eq $filename_conf_act_c)
     {

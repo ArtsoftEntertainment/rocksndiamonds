@@ -12888,6 +12888,65 @@ void LoadMenuDesignSettings_AfterGraphics(void)
   InitMenuDesignSettings_SpecialPostProcessing_AfterGraphics();
 }
 
+void InitSoundSettings_FromHash(SetupFileHash *setup_file_hash,
+				boolean ignore_defaults)
+{
+  int i;
+
+  for (i = 0; sound_config_vars[i].token != NULL; i++)
+  {
+    char *value = getHashEntry(setup_file_hash, sound_config_vars[i].token);
+
+    // (ignore definitions set to "[DEFAULT]" which are already initialized)
+    if (ignore_defaults && strEqual(value, ARG_DEFAULT))
+      continue;
+
+    if (value != NULL)
+      *sound_config_vars[i].value =
+	get_token_parameter_value(sound_config_vars[i].token, value);
+  }
+}
+
+void InitSoundSettings_Static(void)
+{
+  // always start with reliable default values from static default config
+  InitSoundSettings_FromHash(sound_config_hash, FALSE);
+}
+
+static void LoadSoundSettingsFromFilename(char *filename)
+{
+  SetupFileHash *setup_file_hash;
+
+  if ((setup_file_hash = loadSetupFileHash(filename)) == NULL)
+    return;
+
+  // read (and overwrite with) values that may be specified in config file
+  InitSoundSettings_FromHash(setup_file_hash, TRUE);
+
+  freeSetupFileHash(setup_file_hash);
+}
+
+void LoadSoundSettings(void)
+{
+  char *filename_base = UNDEFINED_FILENAME, *filename_local;
+
+  InitSoundSettings_Static();
+
+  if (!GFX_OVERRIDE_ARTWORK(ARTWORK_TYPE_SOUNDS))
+  {
+    // first look for special settings configured in level series config
+    filename_base = getCustomArtworkLevelConfigFilename(ARTWORK_TYPE_SOUNDS);
+
+    if (fileExists(filename_base))
+      LoadSoundSettingsFromFilename(filename_base);
+  }
+
+  filename_local = getCustomArtworkConfigFilename(ARTWORK_TYPE_SOUNDS);
+
+  if (filename_local != NULL && !strEqual(filename_base, filename_local))
+    LoadSoundSettingsFromFilename(filename_local);
+}
+
 void LoadUserDefinedEditorElementList(int **elements, int *num_elements)
 {
   char *filename = getEditorSetupFilename();

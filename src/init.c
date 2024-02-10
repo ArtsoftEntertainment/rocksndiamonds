@@ -5051,6 +5051,13 @@ static void InitGlobal(void)
 		 image_config[i].token,
 		 image_config[i].value);
 
+  // create hash from sound config list
+  sound_config_hash = newSetupFileHash();
+  for (i = 0; sound_config[i].token != NULL; i++)
+    setHashEntry(sound_config_hash,
+		 sound_config[i].token,
+		 sound_config[i].value);
+
   // create hash from element token list
   element_token_hash = newSetupFileHash();
   for (i = 0; element_name_info[i].token_name != NULL; i++)
@@ -5593,10 +5600,15 @@ static void InitArtworkConfig(void)
 
   // dynamically determine list of sound tokens to be ignored
   num_ignore_sound_tokens = num_ignore_generic_tokens;
+  for (i = 0; sound_config_vars[i].token != NULL; i++)
+    num_ignore_sound_tokens++;
   ignore_sound_tokens =
     checked_malloc((num_ignore_sound_tokens + 1) * sizeof(char *));
   for (i = 0; i < num_ignore_generic_tokens; i++)
     ignore_sound_tokens[i] = ignore_generic_tokens[i];
+  for (i = 0; i < num_ignore_sound_tokens - num_ignore_generic_tokens; i++)
+    ignore_sound_tokens[num_ignore_generic_tokens + i] =
+      sound_config_vars[i].token;
   ignore_sound_tokens[num_ignore_sound_tokens] = NULL;
 
   // dynamically determine list of music tokens to be ignored
@@ -5938,6 +5950,29 @@ static void InitGfxBackground(void)
   redraw_mask = REDRAW_ALL;
 }
 
+static void InitSnd(void)
+{
+  InitSoundSettings_Static();
+
+  // read settings for initial sounds from default custom artwork config
+  char *snd_config_filename = getPath3(options.sounds_directory,
+				       SND_DEFAULT_SUBDIR,
+				       SOUNDSINFO_FILENAME);
+
+  if (fileExists(snd_config_filename))
+  {
+    SetupFileHash *setup_file_hash = loadSetupFileHash(snd_config_filename);
+
+    if (setup_file_hash)
+    {
+      // read values from custom sounds config file
+      InitSoundSettings_FromHash(setup_file_hash, FALSE);
+
+      freeSetupFileHash(setup_file_hash);
+    }
+  }
+}
+
 static void InitLevelInfo(void)
 {
   LoadLevelInfo();				// global level info
@@ -6035,6 +6070,9 @@ static void InitSound(void)
 
   InitReloadCustomSounds();
   print_timestamp_time("InitReloadCustomSounds");
+
+  LoadSoundSettings();
+  print_timestamp_time("LoadSoundSettings");
 
   ReinitializeSounds();
   print_timestamp_time("ReinitializeSounds");
@@ -6559,6 +6597,7 @@ void OpenAll(void)
   print_timestamp_time("[init element properties stuff]");
 
   InitGfx();
+  InitSnd();
 
   print_timestamp_time("InitGfx");
 

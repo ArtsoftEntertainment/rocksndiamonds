@@ -173,6 +173,7 @@ struct HelpAnimInfo    *helpanim_info = NULL;
 
 SetupFileHash          *helptext_info = NULL;
 SetupFileHash	       *image_config_hash = NULL;
+SetupFileHash	       *sound_config_hash = NULL;
 SetupFileHash	       *element_token_hash = NULL;
 SetupFileHash	       *graphic_token_hash = NULL;
 SetupFileHash	       *font_token_hash = NULL;
