@@ -101,6 +101,8 @@ void UnixCloseAudio(void);
 void Mixer_InitChannels(void);
 void StartMixer(void);
 
+boolean isSoundPlaying(int);
+
 // sound client functions
 void PlayMusic(int);
 void PlayMusicLoop(int);

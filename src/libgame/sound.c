@@ -524,6 +524,17 @@ void StartMixer(void)
       (int)sqrt((float)(SOUND_MAX_LEFT2RIGHT * SOUND_MAX_LEFT2RIGHT - i * i));
 }
 
+boolean isSoundPlaying(int nr)
+{
+  int i;
+
+  for (i = audio.first_sound_channel; i < audio.num_channels; i++)
+    if (mixer[i].active && mixer[i].nr == nr)
+      return TRUE;
+
+  return FALSE;
+}
+
 
 // THE STUFF ABOVE IS ONLY USED BY THE SOUND SERVER CHILD PROCESS
 // ============================================================================
