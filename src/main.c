@@ -6462,6 +6462,666 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "df_slope",
     "slope (DF style) (315\xb0)"
   },
+  {
+    "bd_player",
+    "bd_player",
+    "player"
+  },
+  {
+    "bd_sand",
+    "bd_sand",
+    "sand"
+  },
+  {
+    "bd_sand_2",
+    "bd_sand",
+    "sand (alternative)"
+  },
+  {
+    "bd_sand_ball",
+    "bd_sand_ball",
+    "sand ball"
+  },
+  {
+    "bd_sand_loose",
+    "bd_sand_loose",
+    "sand (loose)"
+  },
+  {
+    "bd_sand_sloped_up_right",
+    "bd_sand_sloped",
+    "sand (sloped up right)"
+  },
+  {
+    "bd_sand_sloped_up_left",
+    "bd_sand_sloped",
+    "sand (sloped up left)"
+  },
+  {
+    "bd_sand_sloped_down_left",
+    "bd_sand_sloped",
+    "sand (sloped down left)"
+  },
+  {
+    "bd_sand_sloped_down_right",
+    "bd_sand_sloped",
+    "sand (sloped down right)"
+  },
+  {
+    "bd_sand_glued",
+    "bd_sane_glued",
+    "glued sand"
+  },
+  {
+    "bd_wall_sloped_up_right",
+    "bd_wall_sloped",
+    "wall (sloped up right)"
+  },
+  {
+    "bd_wall_sloped_up_left",
+    "bd_wall_sloped",
+    "wall (sloped up left)"
+  },
+  {
+    "bd_wall_sloped_down_left",
+    "bd_wall_sloped",
+    "wall (sloped down left)"
+  },
+  {
+    "bd_wall_sloped_down_right",
+    "bd_wall_sloped",
+    "wall (sloped down right)"
+  },
+  {
+    "bd_wall_non_sloped",
+    "bd_wall",
+    "wall (non sloped)"
+  },
+  {
+    "bd_wall_diggable",
+    "bd_wall_diggable",
+    "diggable wall"
+  },
+  {
+    "bd_wall_diamond",
+    "bd_wall",
+    "wall with diamond"
+  },
+  {
+    "bd_wall_key_1",
+    "bd_wall_key",
+    "wall with key 1"
+  },
+  {
+    "bd_wall_key_2",
+    "bd_wall_key",
+    "wall with key 2"
+  },
+  {
+    "bd_wall_key_3",
+    "bd_wall_key",
+    "wall with key 3"
+  },
+  {
+    "bd_falling_wall",
+    "bd_falling_wall",
+    "falling wall"
+  },
+  {
+    "bd_steelwall",
+    "bd_steelwall",
+    "steel wall"
+  },
+  {
+    "bd_steelwall_sloped_up_right",
+    "bd_steelwall_sloped",
+    "steel wall (sloped up right)"
+  },
+  {
+    "bd_steelwall_sloped_up_left",
+    "bd_steelwall_sloped",
+    "steel wall (sloped up left)"
+  },
+  {
+    "bd_steelwall_sloped_down_left",
+    "bd_steelwall_sloped",
+    "steel wall (sloped down left)"
+  },
+  {
+    "bd_steelwall_sloped_down_right",
+    "bd_steelwall_sloped",
+    "steel wall (sloped down right)"
+  },
+  {
+    "bd_steelwall_explodable",
+    "bd_steelwall_explodable",
+    "explodable steel wall"
+  },
+  {
+    "bd_steelwall_diggable",
+    "bd_steelwall_diggable",
+    "diggable steel wall"
+  },
+  {
+    "bd_expandable_wall_horizontal",
+    "bd_expandable_wall",
+    "expandable wall (horizontal)"
+  },
+  {
+    "bd_expandable_wall_vertical",
+    "bd_expandable_wall",
+    "expandable wall (vertical)"
+  },
+  {
+    "bd_expandable_wall_any",
+    "bd_expandable_wall",
+    "expandable wall (any direction)"
+  },
+  {
+    "bd_expandable_steelwall_horizontal",
+    "bd_expandable_steelwall",
+    "expandable steelwall (horizontal)"
+  },
+  {
+    "bd_expandable_steelwall_vertical",
+    "bd_expandable_steelwall",
+    "expandable steelwall (vertical)"
+  },
+  {
+    "bd_expandable_steelwall_any",
+    "bd_expandable_steelwall",
+    "expandable steelwall (any direction)"
+  },
+  {
+    "bd_expandable_wall_switch_horizontal",
+    "bd_expandable_wall_switch",
+    "switch for expandable wall (horizontal)"
+  },
+  {
+    "bd_expandable_wall_switch_vertical",
+    "bd_expandable_wall_switch",
+    "switch for expandable wall (vertical)"
+  },
+  {
+    "bd_inbox",
+    "bd_inbox",
+    "inbox"
+  },
+  {
+    "bd_exit_closed",
+    "bd_exit",
+    "closed exit"
+  },
+  {
+    "bd_exit_open",
+    "bd_exit",
+    "open exit"
+  },
+  {
+    "bd_invisible_exit_closed",
+    "bd_invisible_exit",
+    "invisible exit (closed)"
+  },
+  {
+    "bd_invisible_exit_open",
+    "bd_invisible_exit",
+    "invisible exit (open)"
+  },
+  {
+    "bd_flying_rock",
+    "bd_flying_rock",
+    "flying rock"
+  },
+  {
+    "bd_mega_rock",
+    "bd_mega_rock",
+    "mega rock"
+  },
+  {
+    "bd_rock_glued",
+    "bd_rock_glued",
+    "glued rock"
+  },
+  {
+    "bd_flying_diamond",
+    "bd_flying_diamond",
+    "flying diamond"
+  },
+  {
+    "bd_diamond_glued",
+    "bd_diamond_glued",
+    "glued diamond"
+  },
+  {
+    "bd_diamond_key",
+    "bd_diamond_key",
+    "diamond key"
+  },
+  {
+    "bd_trapped_diamond",
+    "bd_trapped_diamond",
+    "trapped diamond"
+  },
+  {
+    "bd_nut",
+    "bd_nut",
+    "nut with diamond"
+  },
+  {
+    "bd_amoeba_2",
+    "bd_amoeba",
+    "amoeba (alternative)"
+  },
+  {
+    "bd_bladder",
+    "bd_bladder",
+    "bladder"
+  },
+  {
+    "bd_bladder_spender",
+    "bd_bladder_spender",
+    "bladder spender"
+  },
+  {
+    "bd_creature_switch",
+    "bd_creature_switch",
+    "switch for creature (off)"
+  },
+  {
+    "bd_creature_switch.active",
+    "bd_creature_switch",
+    "switch for creature (on)"
+  },
+  {
+    "bd_biter_switch_1",
+    "bd_biter_switch",
+    "switch for biter"
+  },
+  {
+    "bd_biter_switch_2",
+    "bd_biter_switch",
+    "switch for biter"
+  },
+  {
+    "bd_biter_switch_3",
+    "bd_biter_switch",
+    "switch for biter"
+  },
+  {
+    "bd_biter_switch_4",
+    "bd_biter_switch",
+    "switch for biter"
+  },
+  {
+    "bd_replicator",
+    "bd_replicator",
+    "replicator"
+  },
+  {
+    "bd_replicator.active",
+    "bd_replicator",
+    "replicator (active)"
+  },
+  {
+    "bd_replicator_switch",
+    "bd_replicator_switch",
+    "switch for replicator (off)"
+  },
+  {
+    "bd_replicator_switch.active",
+    "bd_replicator_switch",
+    "switch for replicator (on)"
+  },
+  {
+    "bd_conveyor_left",
+    "bd_conveyor",
+    "conveyor belt (left)"
+  },
+  {
+    "bd_conveyor_left.active",
+    "bd_conveyor",
+    "conveyor belt (left) (active)"
+  },
+  {
+    "bd_conveyor_right",
+    "bd_conveyor",
+    "conveyor belt (right)"
+  },
+  {
+    "bd_conveyor_right.active",
+    "bd_conveyor",
+    "conveyor belt (right) (active)"
+  },
+  {
+    "bd_conveyor_switch",
+    "bd_conveyor_switch",
+    "switch for conveyor belt (off)"
+  },
+  {
+    "bd_conveyor_switch.active",
+    "bd_conveyor_switch",
+    "switch for conveyor belt (on)"
+  },
+  {
+    "bd_conveyor_dir_switch_left",
+    "bd_conveyor_dir_switch",
+    "switch for conveyor belt direction (left)"
+  },
+  {
+    "bd_conveyor_dir_switch_right",
+    "bd_conveyor_dir_switch",
+    "switch for conveyor belt direction (right)"
+  },
+  {
+    "bd_gravity_switch",
+    "bd_gravity_switch",
+    "gravity switch"
+  },
+  {
+    "bd_gravity_switch.active",
+    "bd_gravity_switch",
+    "gravity switch (active)"
+  },
+  {
+    "bd_acid",
+    "bd_acid",
+    "acid"
+  },
+  {
+    "bd_box",
+    "bd_box",
+    "box"
+  },
+  {
+    "bd_time_penalty",
+    "bd_time_penalty",
+    "time penalty"
+  },
+  {
+    "bd_gravestone",
+    "bd_gravestone",
+    "gravestone"
+  },
+  {
+    "bd_clock",
+    "bd_clock",
+    "clock"
+  },
+  {
+    "bd_pot",
+    "bd_pot",
+    "pot"
+  },
+  {
+    "bd_pneumatic_hammer",
+    "bd_pneumatic_hammer",
+    "pneumatic hammer"
+  },
+  {
+    "bd_teleporter",
+    "bd_teleporter",
+    "teleporter"
+  },
+  {
+    "bd_skeleton",
+    "bd_skeleton",
+    "skeleton"
+  },
+  {
+    "bd_water",
+    "bd_water",
+    "water"
+  },
+  {
+    "bd_key_1",
+    "bd_key",
+    "key 1"
+    },
+  {
+    "bd_key_2",
+    "bd_key",
+    "key 2"
+    },
+  {
+    "bd_key_3",
+    "bd_key",
+    "key 3"
+  },
+  {
+    "bd_gate_1",
+    "bd_gate",
+    "door 1"
+  },
+  {
+    "bd_gate_2",
+    "bd_gate",
+    "door 2"
+  },
+  {
+    "bd_gate_3",
+    "bd_gate",
+    "door 3"
+  },
+  {
+    "bd_lava",
+    "bd_lava",
+    "lava"
+  },
+  {
+    "bd_sweet",
+    "bd_sweet",
+    "sweet"
+  },
+  {
+    "bd_voodoo_doll",
+    "bd_voodoo_doll",
+    "voodoo doll"
+  },
+  {
+    "bd_slime",
+    "bd_slime",
+    "slime"
+  },
+  {
+    "bd_waiting_rock",
+    "bd_waiting_rock",
+    "waiting rock"
+  },
+  {
+    "bd_chasing_rock",
+    "bd_chasing_rock",
+    "chasing rock"
+  },
+  {
+    "bd_ghost",
+    "bd_ghost",
+    "ghost"
+  },
+  {
+    "bd_cow",
+    "bd_cow",
+    "cow (random start direction)"
+  },
+  {
+    "bd_cow.left",
+    "bd_cow",
+    "cow (starts moving left)"
+  },
+  {
+    "bd_cow.up",
+    "bd_cow",
+    "cow (starts moving up)"
+  },
+  {
+    "bd_cow.right",
+    "bd_cow",
+    "cow (starts moving right)"
+  },
+  {
+    "bd_cow.down",
+    "bd_cow",
+    "cow (starts moving down)"
+  },
+  {
+    "bd_butterfly_2",
+    "bd_butterfly",
+    "butterfly (alternative, random start direction)"
+  },
+  {
+    "bd_butterfly_2.right",
+    "bd_butterfly",
+    "butterfly (alternative, starts moving right)"
+  },
+  {
+    "bd_butterfly_2.up",
+    "bd_butterfly",
+    "butterfly (alternative, starts moving up)"
+  },
+  {
+    "bd_butterfly_2.left",
+    "bd_butterfly",
+    "butterfly (alternative, starts moving left)"
+  },
+  {
+    "bd_butterfly_2.down",
+    "bd_butterfly",
+    "butterfly (alternative, starts moving down)"
+  },
+  {
+    "bd_firefly_2.right",
+    "bd_firefly",
+    "firefly (alternative, starts moving right)"
+  },
+  {
+    "bd_firefly_2",
+    "bd_firefly",
+    "firefly (alternative, random start direction)"
+  },
+  {
+    "bd_firefly_2.up",
+    "bd_firefly",
+    "firefly (alternative, starts moving up)"
+  },
+  {
+    "bd_firefly_2.left",
+    "bd_firefly",
+    "firefly (alternative, starts moving left)"
+  },
+  {
+    "bd_firefly_2.down",
+    "bd_firefly",
+    "firefly (alternative, starts moving down)"
+  },
+  {
+    "bd_stonefly",
+    "bd_stonefly",
+    "stonefly (random start direction)"
+  },
+  {
+    "bd_stonefly.right",
+    "bd_stonefly",
+    "stonefly (starts moving right)"
+  },
+  {
+    "bd_stonefly.up",
+    "bd_stonefly",
+    "stonefly (starts moving up)"
+  },
+  {
+    "bd_stonefly.left",
+    "bd_stonefly",
+    "stonefly (starts moving left)"
+  },
+  {
+    "bd_stonefly.down",
+    "bd_stonefly",
+    "stonefly (starts moving down)"
+  },
+  {
+    "bd_biter",
+    "bd_biter",
+    "biter (random start direction)"
+  },
+  {
+    "bd_biter.right",
+    "bd_biter",
+    "biter (starts moving right)"
+  },
+  {
+    "bd_biter.up",
+    "bd_biter",
+    "biter (starts moving up)"
+  },
+  {
+    "bd_biter.left",
+    "bd_biter",
+    "biter (starts moving left)"
+  },
+  {
+    "bd_biter.down",
+    "bd_biter",
+    "biter (starts moving down)"
+  },
+  {
+    "bd_dragonfly",
+    "bd_dragonfly",
+    "dragonfly (random start direction)"
+  },
+  {
+    "bd_dragonfly.right",
+    "bd_dragonfly",
+    "dragonfly (starts moving right)"
+  },
+  {
+    "bd_dragonfly.up",
+    "bd_dragonfly",
+    "dragonfly (starts moving up)"
+  },
+  {
+    "bd_dragonfly.left",
+    "bd_dragonfly",
+    "dragonfly (starts moving left)"
+  },
+  {
+    "bd_dragonfly.down",
+    "bd_dragonfly",
+    "dragonfly (starts moving down)"
+  },
+  {
+    "bd_bomb",
+    "bd_bomb",
+    "bomb"
+  },
+  {
+    "bd_nitro_pack",
+    "bd_nitro_pack",
+    "nitro pack"
+  },
+  {
+    "bd_player_with_bomb",
+    "bd_player",
+    "player with bomb",
+  },
+  {
+    "bd_player_glued",
+    "bd_player",
+    "glued player",
+  },
+  {
+    "bd_player_stirring",
+    "bd_player",
+    "stirring player"
+  },
+  {
+    "bd_fake_bonus",
+    "bd_fake_bonus",
+    "fake bonus"
+  },
+  {
+    "bd_covered",
+    "bd_covered",
+    "covered"
+  },
 
   // --------------------------------------------------------------------------
   // "real" (and therefore drawable) runtime elements
@@ -7232,6 +7892,16 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "internal_cascade_bd.active",
     "internal",
     "hide Boulder Dash elements"
+  },
+  {
+    "internal_cascade_bd_native",
+    "internal",
+    "show native Boulder Dash elements"
+  },
+  {
+    "internal_cascade_bd_native.active",
+    "internal",
+    "hide native Boulder Dash elements"
   },
   {
     "internal_cascade_em",

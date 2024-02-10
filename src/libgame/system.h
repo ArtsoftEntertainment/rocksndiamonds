@@ -1337,6 +1337,7 @@ struct SetupInputInfo
 struct SetupEditorInfo
 {
   boolean el_boulderdash;
+  boolean el_boulderdash_native;
   boolean el_emerald_mine;
   boolean el_emerald_mine_club;
   boolean el_more;
@@ -1381,6 +1382,7 @@ struct SetupLevelSetupInfo
 struct SetupEditorCascadeInfo
 {
   boolean el_bd;
+  boolean el_bd_native;
   boolean el_em;
   boolean el_emc;
   boolean el_rnd;

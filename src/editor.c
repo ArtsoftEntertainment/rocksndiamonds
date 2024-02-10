@@ -4049,6 +4049,181 @@ static int *editor_el_boulderdash_ptr = editor_el_boulderdash;
 static int num_editor_hl_boulderdash = ARRAY_SIZE(editor_hl_boulderdash);
 static int num_editor_el_boulderdash = ARRAY_SIZE(editor_el_boulderdash);
 
+static int editor_hl_boulderdash_native[] =
+{
+  EL_INTERNAL_CASCADE_BD_NATIVE_ACTIVE,
+  EL_CHAR('B'),
+  EL_CHAR('D'),
+  EL_EMPTY,
+};
+
+static int editor_el_boulderdash_native[] =
+{
+  EL_EMPTY,
+  EL_BD_SAND,
+  EL_BD_SAND_BALL,
+  EL_BD_SAND_LOOSE,
+
+  EL_BD_SAND_SLOPED_UP_RIGHT,
+  EL_BD_SAND_SLOPED_UP_LEFT,
+  EL_BD_SAND_SLOPED_DOWN_LEFT,
+  EL_BD_SAND_SLOPED_DOWN_RIGHT,
+
+  EL_BD_WALL_SLOPED_UP_RIGHT,
+  EL_BD_WALL_SLOPED_UP_LEFT,
+  EL_BD_WALL_SLOPED_DOWN_LEFT,
+  EL_BD_WALL_SLOPED_DOWN_RIGHT,
+
+  EL_BD_SAND_2,
+  EL_BD_WALL_NON_SLOPED,
+  EL_BD_WALL,
+  EL_BD_MAGIC_WALL,
+
+  EL_BD_EXIT_CLOSED,
+  EL_BD_EXIT_OPEN,
+  EL_BD_INVISIBLE_EXIT_CLOSED,
+  EL_BD_INVISIBLE_EXIT_OPEN,
+
+  EL_BD_STEELWALL_SLOPED_UP_RIGHT,
+  EL_BD_STEELWALL_SLOPED_UP_LEFT,
+  EL_BD_STEELWALL_SLOPED_DOWN_LEFT,
+  EL_BD_STEELWALL_SLOPED_DOWN_RIGHT,
+
+  EL_BD_STEELWALL,
+  EL_BD_STEELWALL_EXPLODABLE,
+  EL_BD_STEELWALL_DIGGABLE,
+  EL_BD_WALL_DIGGABLE,
+
+  EL_BD_ROCK,
+  EL_BD_FLYING_ROCK,
+  EL_BD_MEGA_ROCK,
+  EL_BD_DIAMOND,
+
+  EL_BD_FLYING_DIAMOND,
+  EL_BD_NUT,
+  EL_BD_BLADDER_SPENDER,
+  EL_BD_INBOX,
+
+  EL_BD_EXPANDABLE_WALL_HORIZONTAL,
+  EL_BD_EXPANDABLE_WALL_VERTICAL,
+  EL_BD_EXPANDABLE_WALL_ANY,
+  EL_BD_CREATURE_SWITCH,
+
+  EL_BD_EXPANDABLE_STEELWALL_HORIZONTAL,
+  EL_BD_EXPANDABLE_STEELWALL_VERTICAL,
+  EL_BD_EXPANDABLE_STEELWALL_ANY,
+  EL_BD_EXPANDABLE_WALL_SWITCH_HORIZONTAL,
+
+  EL_BD_BITER_SWITCH_1,
+  EL_BD_REPLICATOR_SWITCH,
+  EL_BD_CONVEYOR_SWITCH,
+  EL_BD_CONVEYOR_DIR_SWITCH_RIGHT,
+
+  EL_BD_ACID,
+  EL_BD_FALLING_WALL,
+  EL_BD_BOX,
+  EL_BD_TIME_PENALTY,
+
+  EL_BD_GRAVESTONE,
+  EL_BD_ROCK_GLUED,
+  EL_BD_DIAMOND_GLUED,
+  EL_BD_DIAMOND_KEY,
+
+  EL_BD_TRAPPED_DIAMOND,
+  EL_BD_CLOCK,
+  EL_BD_SAND_GLUED,
+  EL_BD_WATER,
+
+  EL_BD_KEY_1,
+  EL_BD_KEY_2,
+  EL_BD_KEY_3,
+  EL_EMPTY,
+
+  EL_BD_WALL_KEY_1,
+  EL_BD_WALL_KEY_2,
+  EL_BD_WALL_KEY_3,
+  EL_BD_WALL_DIAMOND,
+
+  EL_BD_GATE_1,
+  EL_BD_GATE_2,
+  EL_BD_GATE_3,
+  EL_BD_POT,
+
+  EL_BD_GRAVITY_SWITCH,
+  EL_BD_PNEUMATIC_HAMMER,
+  EL_BD_TELEPORTER,
+  EL_BD_SKELETON,
+
+  EL_BD_AMOEBA,
+  EL_BD_AMOEBA_2,
+  EL_BD_REPLICATOR,
+  EL_EMPTY,
+
+  EL_BD_CONVEYOR_LEFT,
+  EL_BD_CONVEYOR_RIGHT,
+  EL_BD_BOMB,
+  EL_BD_NITRO_PACK,
+
+  EL_BD_LAVA,
+  EL_BD_SWEET,
+  EL_BD_VOODOO_DOLL,
+  EL_BD_SLIME,
+
+  EL_BD_BLADDER,
+  EL_BD_WAITING_ROCK,
+  EL_BD_CHASING_ROCK,
+  EL_BD_GHOST,
+
+  EL_BD_COW_LEFT,
+  EL_BD_COW_UP,
+  EL_BD_COW_RIGHT,
+  EL_BD_COW_DOWN,
+
+  EL_BD_FIREFLY_LEFT,
+  EL_BD_FIREFLY_UP,
+  EL_BD_FIREFLY_RIGHT,
+  EL_BD_FIREFLY_DOWN,
+
+  EL_BD_FIREFLY_2_LEFT,
+  EL_BD_FIREFLY_2_UP,
+  EL_BD_FIREFLY_2_RIGHT,
+  EL_BD_FIREFLY_2_DOWN,
+
+  EL_BD_BUTTERFLY_LEFT,
+  EL_BD_BUTTERFLY_UP,
+  EL_BD_BUTTERFLY_RIGHT,
+  EL_BD_BUTTERFLY_DOWN,
+
+  EL_BD_BUTTERFLY_2_LEFT,
+  EL_BD_BUTTERFLY_2_UP,
+  EL_BD_BUTTERFLY_2_RIGHT,
+  EL_BD_BUTTERFLY_2_DOWN,
+
+  EL_BD_STONEFLY_LEFT,
+  EL_BD_STONEFLY_UP,
+  EL_BD_STONEFLY_RIGHT,
+  EL_BD_STONEFLY_DOWN,
+
+  EL_BD_BITER_UP,
+  EL_BD_BITER_RIGHT,
+  EL_BD_BITER_DOWN,
+  EL_BD_BITER_LEFT,
+
+  EL_BD_DRAGONFLY_LEFT,
+  EL_BD_DRAGONFLY_UP,
+  EL_BD_DRAGONFLY_RIGHT,
+  EL_BD_DRAGONFLY_DOWN,
+
+  EL_BD_PLAYER,
+  EL_BD_PLAYER_WITH_BOMB,
+  EL_BD_PLAYER_GLUED,
+  EL_BD_PLAYER_STIRRING,
+};
+static int *editor_hl_boulderdash_native_ptr = editor_hl_boulderdash_native;
+static int *editor_el_boulderdash_native_ptr = editor_el_boulderdash_native;
+static int num_editor_hl_boulderdash_native = ARRAY_SIZE(editor_hl_boulderdash_native);
+static int num_editor_el_boulderdash_native = ARRAY_SIZE(editor_el_boulderdash_native);
+
 static int editor_hl_emerald_mine[] =
 {
   EL_INTERNAL_CASCADE_EM_ACTIVE,
@@ -5459,6 +5634,7 @@ static boolean setup_editor_cascade_never = FALSE;
 
 static boolean setup_editor_el_players			= TRUE;
 static boolean setup_editor_el_boulderdash		= TRUE;
+static boolean setup_editor_el_boulderdash_native	= TRUE;
 static boolean setup_editor_el_emerald_mine		= TRUE;
 static boolean setup_editor_el_emerald_mine_club	= TRUE;
 static boolean setup_editor_el_more			= TRUE;
@@ -5504,6 +5680,12 @@ editor_elements_info[] =
     &setup.editor_cascade.el_bd,
     &editor_hl_boulderdash_ptr,		&num_editor_hl_boulderdash,
     &editor_el_boulderdash_ptr,		&num_editor_el_boulderdash
+  },
+  {
+    &setup_editor_el_boulderdash_native,
+    &setup.editor_cascade.el_bd_native,
+    &editor_hl_boulderdash_native_ptr,	&num_editor_hl_boulderdash_native,
+    &editor_el_boulderdash_native_ptr,	&num_editor_el_boulderdash_native
   },
   {
     &setup_editor_el_emerald_mine,
@@ -5804,6 +5986,7 @@ static void ReinitializeElementList_EnableSections(void)
 
   setup_editor_el_players		= TRUE;
   setup_editor_el_boulderdash		= TRUE;
+  setup_editor_el_boulderdash_native	= TRUE;
   setup_editor_el_emerald_mine		= TRUE;
   setup_editor_el_emerald_mine_club	= TRUE;
   setup_editor_el_more			= TRUE;
@@ -5826,6 +6009,7 @@ static void ReinitializeElementList_EnableSections(void)
   {
     setup_editor_el_players		= FALSE;
     setup_editor_el_boulderdash		= FALSE;
+    setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_emerald_mine	= FALSE;
     setup_editor_el_emerald_mine_club	= FALSE;
     setup_editor_el_more		= FALSE;
@@ -5856,11 +6040,13 @@ static void ReinitializeElementList_EnableSections(void)
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
   {
+    setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_mirror_magic	= FALSE;
     setup_editor_el_deflektor		= FALSE;
   }
   else if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
+    setup_editor_el_boulderdash		= FALSE;
     setup_editor_el_emerald_mine	= FALSE;
     setup_editor_el_emerald_mine_club	= FALSE;
     setup_editor_el_more		= FALSE;
@@ -5878,6 +6064,7 @@ static void ReinitializeElementList_EnableSections(void)
   else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
     setup_editor_el_boulderdash		= FALSE;
+    setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_more		= FALSE;
     setup_editor_el_sokoban		= FALSE;
     setup_editor_el_supaplex		= FALSE;
@@ -5893,6 +6080,7 @@ static void ReinitializeElementList_EnableSections(void)
   {
     setup_editor_el_players		= FALSE;
     setup_editor_el_boulderdash		= FALSE;
+    setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_emerald_mine	= FALSE;
     setup_editor_el_emerald_mine_club	= FALSE;
     setup_editor_el_more		= FALSE;
@@ -5910,6 +6098,7 @@ static void ReinitializeElementList_EnableSections(void)
   {
     setup_editor_el_players		= FALSE;
     setup_editor_el_boulderdash		= FALSE;
+    setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_emerald_mine	= FALSE;
     setup_editor_el_emerald_mine_club	= FALSE;
     setup_editor_el_more		= FALSE;
@@ -8724,7 +8913,13 @@ static void InitDrawingElements(void)
   if (level.game_engine_type == game_engine_type_last)
     return;
 
-  if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    new_element1 = EL_BD_WALL;
+    new_element2 = EL_EMPTY;
+    new_element3 = EL_BD_SAND;
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
   {
     new_element1 = EL_SP_CHIP_SINGLE;
     new_element2 = EL_EMPTY;
