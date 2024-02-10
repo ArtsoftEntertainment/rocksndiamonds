@@ -3843,6 +3843,8 @@ void InitGame(void)
   TimeFrames = 0;
   TimePlayed = 0;
   TimeLeft = level.time;
+
+  TapeTimeFrames = 0;
   TapeTime = 0;
 
   ScreenMovDir = MV_NONE;
@@ -11679,7 +11681,6 @@ static void CheckLevelTime(void)
   if (TimeFrames >= FRAMES_PER_SECOND)
   {
     TimeFrames = 0;
-    TapeTime++;
 
     for (i = 0; i < MAX_PLAYERS; i++)
     {
@@ -11726,6 +11727,12 @@ static void CheckLevelTime(void)
 
       game_em.lev->time = (game.no_level_time_limit ? TimePlayed : TimeLeft);
     }
+  }
+
+  if (TapeTimeFrames >= FRAMES_PER_SECOND)
+  {
+    TapeTimeFrames = 0;
+    TapeTime++;
 
     if (tape.recording || tape.playing)
       DrawVideoDisplay(VIDEO_STATE_TIME_ON, TapeTime);
@@ -11741,8 +11748,11 @@ void AdvanceFrameAndPlayerCounters(int player_nr)
 {
   int i;
 
-  // advance frame counters (global frame counter and time frame counter)
+  // advance frame counters (global frame counter and tape time frame counter)
   FrameCounter++;
+  TapeTimeFrames++;
+
+  // advance time frame counter (used to control available time to solve level)
   TimeFrames++;
 
   // advance player counters (counters for move delay, move animation etc.)
@@ -16036,6 +16046,7 @@ static ListNode *SaveEngineSnapshotBuffers(void)
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(TimeFrames));
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(TimePlayed));
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(TimeLeft));
+  SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(TapeTimeFrames));
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(TapeTime));
 
   SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(ScreenMovDir));

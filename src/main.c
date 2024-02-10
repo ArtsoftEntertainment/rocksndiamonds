@@ -124,7 +124,8 @@ int			BX2, BY2;
 int			SBX_Left, SBX_Right;
 int			SBY_Upper, SBY_Lower;
 
-int			TimeFrames, TimePlayed, TimeLeft, TapeTime;
+int			TimeFrames, TimePlayed, TimeLeft;
+int			TapeTimeFrames, TapeTime;
 
 boolean			network_player_action_received = FALSE;
 

@@ -3916,7 +3916,8 @@ extern int			BX2, BY2;
 extern int			SBX_Left, SBX_Right;
 extern int			SBY_Upper, SBY_Lower;
 
-extern int			TimeFrames, TimePlayed, TimeLeft, TapeTime;
+extern int			TimeFrames, TimePlayed, TimeLeft;
+extern int			TapeTimeFrames, TapeTime;
 
 extern boolean			network_player_action_received;
 
