@@ -269,6 +269,7 @@ void TapeStopPlaying(void);
 byte *TapePlayActionExt(boolean);
 byte *TapePlayAction_BD(void);
 byte *TapePlayAction(void);
+byte *TapeCorrectAction_BD(byte *);
 void TapeStop(void);
 void TapeStopGame(void);
 void TapeStopTape(void);

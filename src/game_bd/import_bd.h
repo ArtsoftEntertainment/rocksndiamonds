@@ -29,6 +29,7 @@ void StopSound_BD(int, int);
 boolean isSoundPlaying_BD(int, int);
 
 byte *TapePlayAction_BD(void);
+byte *TapeCorrectAction_BD(byte *);
 boolean TapeIsPlaying_ReplayBD(void);
 
 #endif	// IMPORT_BD_H

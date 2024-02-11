@@ -698,6 +698,8 @@ void TapeErase(void)
 
   tape.property_bits = TAPE_PROPERTY_NONE;
 
+  tape.bd_replay = FALSE;
+
   TapeSetDateFromNow();
 
   for (i = 0; i < MAX_PLAYERS; i++)
@@ -871,6 +873,9 @@ void TapeRecordAction(byte action_raw[MAX_TAPE_ACTIONS])
   int i;
 
   if (!tape.recording)		// (record action even when tape is paused)
+    return;
+
+  if (!checkGameRunning())
     return;
 
   for (i = 0; i < MAX_TAPE_ACTIONS; i++)
@@ -1128,6 +1133,24 @@ byte *TapePlayAction(void)
   return TapePlayActionExt(FALSE);
 }
 
+byte *TapeCorrectAction_BD(byte *action)
+{
+  if (tape.playing)
+  {
+    // only read next tape action if not playing native BD replay
+    if (!TapeIsPlaying_ReplayBD())
+      action = TapePlayAction();
+  }
+  else if (tape.recording)
+  {
+    byte tape_action[MAX_TAPE_ACTIONS] = { action[0] };
+
+    TapeRecordAction(tape_action);
+  }
+
+  return action;
+}
+
 void TapeStop(void)
 {
   if (tape.pausing)
@@ -1363,6 +1386,10 @@ void TapeRestartGame(void)
   if (!checkRestartGame("Restart game?"))
     return;
 
+  // when using BD game engine, cover screen before fading out
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    game_bd.cover_screen = TRUE;
+
   StartGameActions(network.enabled, setup.autorecord, level.random_seed);
 }
 
@@ -1397,8 +1424,10 @@ boolean TapeIsPlaying_ReplayBD(void)
 boolean hasSolutionTape(void)
 {
   boolean tape_file_exists = fileExists(getSolutionTapeFilename(level_nr));
-  boolean level_has_tape = (level.game_engine_type == GAME_ENGINE_TYPE_SP &&
-			    level.native_sp_level->demo.is_available);
+  boolean level_has_tape = ((level.game_engine_type == GAME_ENGINE_TYPE_BD &&
+			     level.native_bd_level->replay != NULL) ||
+			    (level.game_engine_type == GAME_ENGINE_TYPE_SP &&
+			     level.native_sp_level->demo.is_available));
 
   return (tape_file_exists || level_has_tape);
 }
