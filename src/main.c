@@ -6988,14 +6988,14 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "butterfly (alternative, starts moving down)"
   },
   {
-    "bd_firefly_2.right",
-    "bd_firefly",
-    "firefly (alternative, starts moving right)"
-  },
-  {
     "bd_firefly_2",
     "bd_firefly",
     "firefly (alternative, random start direction)"
+  },
+  {
+    "bd_firefly_2.right",
+    "bd_firefly",
+    "firefly (alternative, starts moving right)"
   },
   {
     "bd_firefly_2.up",
