@@ -9688,6 +9688,7 @@ unsigned int InitRND(int seed)
     return InitEngineRandom_RND(seed);
 }
 
+static struct Mapping_BD_to_RND_object bd_object_mapping[O_MAX_ALL];
 static struct Mapping_EM_to_RND_object em_object_mapping[GAME_TILE_MAX];
 static struct Mapping_EM_to_RND_player em_player_mapping[MAX_PLAYERS][PLY_MAX];
 
@@ -10031,6 +10032,82 @@ void getGraphicSourcePlayerExt_EM(struct GraphicInfo_EM *g_em,
 
   getGraphicSourceExt(graphic, frame, &g_em->bitmap,
 		      &g_em->src_x, &g_em->src_y, FALSE);
+}
+
+#define BD_GFX_RANGE(a, n, i)		((i) >= (a) && (i) < (a) + (n))
+#define BD_GFX_FRAME(b, i)		(((i) - (b)) * 8)
+
+void InitGraphicInfo_BD(void)
+{
+  int i, j;
+
+  // always start with reliable default values
+  for (i = 0; i < O_MAX_ALL; i++)
+  {
+    bd_object_mapping[i].element_rnd = EL_UNKNOWN;
+    bd_object_mapping[i].action = ACTION_DEFAULT;
+    bd_object_mapping[i].direction = MV_NONE;
+  }
+
+  for (i = 0; bd_object_mapping_list[i].element_bd != -1; i++)
+  {
+    int e = bd_object_mapping_list[i].element_bd;
+
+    bd_object_mapping[e].element_rnd = bd_object_mapping_list[i].element_rnd;
+
+    if (bd_object_mapping_list[i].action != -1)
+      bd_object_mapping[e].action = bd_object_mapping_list[i].action;
+
+    if (bd_object_mapping_list[i].direction != -1)
+      bd_object_mapping[e].direction =
+	MV_DIR_FROM_BIT(bd_object_mapping_list[i].direction);
+  }
+
+  for (i = 0; i < O_MAX_ALL; i++)
+  {
+    int element = bd_object_mapping[i].element_rnd;
+    int action = bd_object_mapping[i].action;
+    int direction = bd_object_mapping[i].direction;
+
+    for (j = 0; j < 8; j++)
+    {
+      int effective_element = element;
+      int effective_action = action;
+      int graphic = (el_act_dir2img(effective_element, effective_action,
+				    direction));
+      struct GraphicInfo *g = &graphic_info[graphic];
+      struct GraphicInfo_BD *g_bd = &graphic_info_bd_object[i][j];
+      Bitmap *src_bitmap;
+      int src_x, src_y;
+      int sync_frame = (BD_GFX_RANGE(O_PRE_PL_1, 3, i)        ? BD_GFX_FRAME(O_PRE_PL_1, i) :
+			BD_GFX_RANGE(O_PRE_DIA_1, 5, i)       ? BD_GFX_FRAME(O_PRE_DIA_1, i) :
+			BD_GFX_RANGE(O_PRE_STONE_1, 4, i)     ? BD_GFX_FRAME(O_PRE_STONE_1, i) :
+			BD_GFX_RANGE(O_PRE_STEEL_1, 4, i)     ? BD_GFX_FRAME(O_PRE_STEEL_1, i) :
+			BD_GFX_RANGE(O_BOMB_TICK_1, 7, i)     ? BD_GFX_FRAME(O_BOMB_TICK_1, i) :
+			BD_GFX_RANGE(O_BOMB_EXPL_1, 4, i)     ? BD_GFX_FRAME(O_BOMB_EXPL_1, i) :
+			BD_GFX_RANGE(O_NUT_EXPL_1, 4, i)      ? BD_GFX_FRAME(O_NUT_EXPL_1, i) :
+			BD_GFX_RANGE(O_GHOST_EXPL_1, 4, i)    ? BD_GFX_FRAME(O_GHOST_EXPL_1, i) :
+			BD_GFX_RANGE(O_EXPLODE_1, 5, i)       ? BD_GFX_FRAME(O_EXPLODE_1, i) :
+			BD_GFX_RANGE(O_PRE_CLOCK_1, 4, i)     ? BD_GFX_FRAME(O_PRE_CLOCK_1, i) :
+			BD_GFX_RANGE(O_NITRO_EXPL_1, 4, i)    ? BD_GFX_FRAME(O_NITRO_EXPL_1, i) :
+			BD_GFX_RANGE(O_AMOEBA_2_EXPL_1, 4, i) ? BD_GFX_FRAME(O_AMOEBA_2_EXPL_1, i):
+			i == O_INBOX_OPEN || i == O_OUTBOX_OPEN ? j :
+			j * 2);
+      int frame = getAnimationFrame(g->anim_frames,
+				    g->anim_delay,
+				    g->anim_mode,
+				    g->anim_start_frame,
+				    sync_frame);
+
+      getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x, &src_y, FALSE);
+
+      g_bd->bitmap = src_bitmap;
+      g_bd->src_x  = src_x;
+      g_bd->src_y  = src_y;
+      g_bd->width  = TILEX;
+      g_bd->height = TILEY;
+    }
+  }
 }
 
 void InitGraphicInfo_EM(void)
@@ -10940,6 +11017,7 @@ void ChangeViewportPropertiesIfNeeded(void)
   boolean init_gfx_buffers = FALSE;
   boolean init_video_buffer = FALSE;
   boolean init_gadgets_and_anims = FALSE;
+  boolean init_bd_graphics = FALSE;
   boolean init_em_graphics = FALSE;
 
   if (new_win_xsize != WIN_XSIZE ||
@@ -11038,7 +11116,8 @@ void ChangeViewportPropertiesIfNeeded(void)
       // changing tile size invalidates scroll values of engine snapshots
       FreeEngineSnapshotSingle();
 
-      // changing tile size requires update of graphic mapping for EM engine
+      // changing tile size requires update of graphic mapping for BD/EM engine
+      init_bd_graphics = TRUE;
       init_em_graphics = TRUE;
     }
 
@@ -11103,6 +11182,11 @@ void ChangeViewportPropertiesIfNeeded(void)
 
     InitGadgets();
     InitGlobalAnimations();
+  }
+
+  if (init_bd_graphics)
+  {
+    InitGraphicInfo_BD();
   }
 
   if (init_em_graphics)

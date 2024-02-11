@@ -2446,6 +2446,8 @@ static void ReinitializeGraphics(void)
   InitImageTextures();			// create textures for certain images
   print_timestamp_time("InitImageTextures");
 
+  InitGraphicInfo_BD();			// graphic mapping for BD engine
+  print_timestamp_time("InitGraphicInfo_BD");
   InitGraphicInfo_EM();			// graphic mapping for EM engine
   print_timestamp_time("InitGraphicInfo_EM");
 
@@ -5727,6 +5729,7 @@ void InitGfxBuffers(void)
   // required if door size definitions have changed
   InitGraphicCompatibilityInfo_Doors();
 
+  InitGfxBuffers_BD();
   InitGfxBuffers_EM();
   InitGfxBuffers_SP();
   InitGfxBuffers_MM();
@@ -6628,6 +6631,7 @@ void OpenAll(void)
 
   InitGfxBackground();
 
+  bd_open_all();
   em_open_all();
   sp_open_all();
   mm_open_all();
@@ -6746,6 +6750,7 @@ void CloseAllAndExit(int exit_value)
   FreeAllMusic();
   CloseAudio();		// called after freeing sounds (needed for SDL)
 
+  bd_close_all();
   em_close_all();
   sp_close_all();
 

@@ -22,6 +22,8 @@
 // functions and definitions exported from main program to game_bd
 // ============================================================================
 
+void InitGraphicInfo_BD(void);
+
 void PlayLevelSound_BD(int, int, int, int);
 void StopSound_BD(int, int);
 boolean isSoundPlaying_BD(int, int);

@@ -81,10 +81,15 @@ extern struct LevelInfo_BD native_bd_level;
 extern struct GraphicInfo_BD graphic_info_bd_object[O_MAX_ALL][8];
 extern struct EngineSnapshotInfo_BD engine_snapshot_bd;
 
+void bd_open_all(void);
+void bd_close_all(void);
+
 int map_action_RND_to_BD(int);
 int map_action_BD_to_RND(int);
 
 boolean checkGameRunning_BD(void);
+
+void InitGfxBuffers_BD(void);
 
 void setLevelInfoToDefaults_BD_Ext(int, int);
 void setLevelInfoToDefaults_BD(void);

@@ -277,6 +277,8 @@ int getBeltSwitchElementFromBeltNrAndBeltDirNr(int, int);
 int getBeltSwitchElementFromBeltNrAndBeltDir(int, int);
 
 unsigned int InitRND(int);
+
+void InitGraphicInfo_BD(void);
 void InitGraphicInfo_EM(void);
 
 void PlayMenuSoundExt(int);

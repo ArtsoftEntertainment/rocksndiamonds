@@ -18,6 +18,39 @@ struct EngineSnapshotInfo_BD engine_snapshot_bd;
 
 
 // ============================================================================
+// initialization functions
+// ============================================================================
+
+void InitGfxBuffers_BD(void)
+{
+  ReCreateBitmap(&gd_screen_bitmap, SXSIZE, SYSIZE);
+
+  set_cell_size(TILESIZE_VAR);
+  set_play_area(SXSIZE, SYSIZE);
+}
+
+void bd_open_all(void)
+{
+  InitGraphicInfo_BD();
+
+  gd_cave_init();
+  gd_cave_db_init();
+
+  gd_c64_import_init_tables();
+
+  gd_caveset_clear();
+
+  gd_init_keystate();
+
+  gd_sound_init();
+}
+
+void bd_close_all(void)
+{
+}
+
+
+// ============================================================================
 // level file functions
 // ============================================================================
 
