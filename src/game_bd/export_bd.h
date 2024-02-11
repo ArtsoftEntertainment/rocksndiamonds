@@ -88,5 +88,6 @@ boolean checkGameRunning_BD(void);
 
 void setLevelInfoToDefaults_BD_Ext(int, int);
 void setLevelInfoToDefaults_BD(void);
+boolean LoadNativeLevel_BD(char *, int, boolean);
 
 #endif	// EXPORT_BD_H

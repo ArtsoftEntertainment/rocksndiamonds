@@ -2101,6 +2101,13 @@ static int getFileTypeFromBasename(char *basename)
       strchr(basename, '%') == NULL)
     return LEVEL_FILE_TYPE_SB;
 
+  // check for typical filename of a Boulder Dash (GDash) level package file
+  if (strSuffixLower(basename, ".bd") ||
+      strSuffixLower(basename, ".bdr") ||
+      strSuffixLower(basename, ".brc") ||
+      strSuffixLower(basename, ".gds"))
+    return LEVEL_FILE_TYPE_BD;
+
   // ---------- try to determine file type from filesize ----------
 
   checked_free(filename);
@@ -6419,6 +6426,20 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
 // functions for handling native levels
 // -------------------------------------------------------------------------
 
+static void LoadLevelFromFileInfo_BD(struct LevelInfo *level,
+				     struct LevelFileInfo *level_file_info,
+				     boolean level_info_only)
+{
+  int pos = 0;
+
+  // determine position of requested level inside level package
+  if (level_file_info->packed)
+    pos = level_file_info->nr - leveldir_current->first_level;
+
+  if (!LoadNativeLevel_BD(level_file_info->filename, pos, level_info_only))
+    level->no_valid_file = TRUE;
+}
+
 static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,
 				     struct LevelFileInfo *level_file_info,
 				     boolean level_info_only)
@@ -6503,6 +6524,11 @@ static void LoadLevelFromFileInfo(struct LevelInfo *level,
   {
     case LEVEL_FILE_TYPE_RND:
       LoadLevelFromFileInfo_RND(level, level_file_info, level_info_only);
+      break;
+
+    case LEVEL_FILE_TYPE_BD:
+      LoadLevelFromFileInfo_BD(level, level_file_info, level_info_only);
+      level->game_engine_type = GAME_ENGINE_TYPE_BD;
       break;
 
     case LEVEL_FILE_TYPE_EM:

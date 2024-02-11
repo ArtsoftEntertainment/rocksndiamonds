@@ -57,10 +57,95 @@ boolean checkGameRunning_BD(void)
 
 void setLevelInfoToDefaults_BD_Ext(int width, int height)
 {
-  // ...
+  GdCave *cave = native_bd_level.cave;
+
+  if (cave != NULL)
+    gd_cave_free(cave);
+
+  // get empty cave, using default values
+  cave = gd_cave_new();
+
+  // set cave size, if defined
+  if (width > 0 && height > 0)
+  {
+    cave->w = width;
+    cave->h = height;
+  }
+
+  gd_flatten_cave(cave, 0);
+
+  cave->selectable = TRUE;
+  cave->intermission = FALSE;
+
+  native_bd_level.cave = cave;
+  native_bd_level.replay = NULL;
+
+  native_bd_level.cave_nr = 0;
+  native_bd_level.level_nr = 0;
+
+  native_bd_level.loaded_from_caveset = FALSE;
 }
 
 void setLevelInfoToDefaults_BD(void)
 {
   setLevelInfoToDefaults_BD_Ext(0, 0);
+}
+
+boolean LoadNativeLevel_BD(char *filename, int level_pos, boolean level_info_only)
+{
+  static char *filename_loaded = NULL;
+
+  if (filename_loaded == NULL || !strEqual(filename, filename_loaded))
+  {
+    if (!gd_caveset_load_from_file(filename))
+    {
+      if (!level_info_only)
+	Warn("cannot load BD cave set from file '%s'", filename);
+
+      return FALSE;
+    }
+
+    setString(&filename_loaded, filename);
+  }
+
+  if (level_pos < 0 || level_pos >= 5 * gd_caveset_count())
+  {
+    Warn("invalid level position %d in BD cave set", level_pos);
+
+    return FALSE;
+  }
+
+  native_bd_level.cave_nr  = level_pos % gd_caveset_count();
+  native_bd_level.level_nr = level_pos / gd_caveset_count();
+
+  if (native_bd_level.cave != NULL)
+    gd_cave_free(native_bd_level.cave);
+
+  // get selected cave, prepared for playing
+  native_bd_level.cave = gd_get_prepared_cave_from_caveset(native_bd_level.cave_nr,
+							   native_bd_level.level_nr);
+
+  // set better initial cave speed (to set better native replay tape length)
+  set_initial_cave_speed(native_bd_level.cave);
+
+  native_bd_level.loaded_from_caveset = TRUE;
+
+  // check if this cave has any replays
+  if (native_bd_level.cave->replays != NULL)
+  {
+    GList *item = native_bd_level.cave->replays;
+
+    // try to find replay that was recorded for this difficulty level
+    while (item != NULL &&
+	   (item->data == NULL ||
+	    ((GdReplay *)item->data)->success == FALSE ||
+	    ((GdReplay *)item->data)->level != native_bd_level.level_nr))
+      item = item->next;
+
+    // matching replay found
+    if (item != NULL)
+      native_bd_level.replay = (GdReplay *)item->data;
+  }
+
+  return TRUE;
 }
