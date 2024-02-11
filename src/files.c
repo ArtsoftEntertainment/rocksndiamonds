@@ -6563,6 +6563,9 @@ static void LoadLevelFromFileInfo(struct LevelInfo *level,
   if (level->no_valid_file)
     setLevelInfoToDefaults(level, level_info_only, FALSE);
 
+  if (check_special_flags("use_native_bd_game_engine"))
+    level->game_engine_type = GAME_ENGINE_TYPE_BD;
+
   if (level->game_engine_type == GAME_ENGINE_TYPE_UNKNOWN)
     level->game_engine_type = GAME_ENGINE_TYPE_RND;
 
