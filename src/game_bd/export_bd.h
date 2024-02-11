@@ -16,6 +16,8 @@
 // functions and definitions exported from game_bd to main program
 // ============================================================================
 
+#include "bd_elements.h"
+
 
 // ----------------------------------------------------------------------------
 // constant definitions
