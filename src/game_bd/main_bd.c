@@ -188,6 +188,51 @@ boolean checkGameRunning_BD(void)
   return (game_bd.game != NULL && game_bd.game->state_counter == GAME_INT_CAVE_RUNNING);
 }
 
+boolean checkGamePlaying_BD(void)
+{
+  return (game_bd.game != NULL && game_bd.game->state_counter == GAME_INT_CAVE_RUNNING &&
+	  game_bd.game->cave != NULL && game_bd.game->cave->hatched);
+}
+
+boolean checkBonusTime_BD(void)
+{
+  return (game_bd.game != NULL && game_bd.game->state_counter == GAME_INT_CHECK_BONUS_TIME);
+}
+
+int getFramesPerSecond_BD(void)
+{
+  if (game_bd.game != NULL && game_bd.game->cave != NULL && game_bd.game->cave->pal_timing)
+    return FRAMES_PER_SECOND_NTSC;
+
+  return FRAMES_PER_SECOND_PAL;
+}
+
+int getTimeLeft_BD(void)
+{
+  if (game_bd.game != NULL && game_bd.game->cave != NULL)
+    return gd_cave_time_show(game_bd.game->cave, game_bd.game->cave->time);
+
+  return 0;
+}
+
+static void UpdateGameDoorValues_BD(void)
+{
+  GdCave *cave = game_bd.game->cave;
+  int time_secs = gd_cave_time_show(cave, cave->time);
+  int gems_still_needed = MAX(0, (cave->diamonds_needed - cave->diamonds_collected));
+
+  game_bd.time_played = time_secs;
+  game_bd.gems_still_needed = gems_still_needed;
+  game_bd.score = game_bd.game->player_score;
+
+  if (game.LevelSolved)
+  {
+    // update time and score in panel while counting bonus time
+    game.LevelSolved_CountingTime  = game_bd.time_played;
+    game.LevelSolved_CountingScore = game_bd.score;
+  }
+}
+
 unsigned int InitEngineRandom_BD(int seed)
 {
   if (seed == NEW_RANDOMIZE)
@@ -199,6 +244,103 @@ unsigned int InitEngineRandom_BD(int seed)
   game_bd.random_seed = seed;
 
   return (unsigned int)seed;
+}
+
+void InitGameEngine_BD(void)
+{
+  game_bd.level_solved = FALSE;
+  game_bd.game_over = FALSE;
+  game_bd.cover_screen = FALSE;
+
+  game_bd.time_played = 0;
+  game_bd.gems_still_needed = 0;
+  game_bd.score = 0;
+
+  gd_caveset_last_selected       = native_bd_level.cave_nr;
+  gd_caveset_last_selected_level = native_bd_level.level_nr;
+
+  if (game_bd.game != NULL)
+    gd_game_free(game_bd.game);
+
+  game_bd.game = gd_game_new(native_bd_level.cave_nr, native_bd_level.level_nr);
+
+  // default: start with completely covered playfield
+  int next_state = GAME_INT_START_UNCOVER + 1;
+
+  // when skipping uncovering, start with uncovered playfield
+  if (setup.bd_skip_uncovering)
+    next_state = GAME_INT_LOAD_CAVE + 1;
+
+  // fast-forward game engine until cave loaded (covered or uncovered)
+  while (game_bd.game->state_counter < next_state)
+    play_game_func(game_bd.game, 0);
+
+  // when skipping uncovering, continue with uncovered playfield
+  if (setup.bd_skip_uncovering)
+    game_bd.game->state_counter = GAME_INT_UNCOVER_ALL + 1;
+
+  if (setup.bd_skip_uncovering)
+    gd_scroll(game_bd.game, TRUE, TRUE);
+
+  RedrawPlayfield_BD(TRUE);
+
+  UpdateGameDoorValues_BD();
+}
+
+void GameActions_BD(byte action[MAX_PLAYERS])
+{
+  GdCave *cave = game_bd.game->cave;
+  boolean player_found = FALSE;
+  int player_x = 0;
+  int player_y = 0;
+  int x, y;
+
+  if (cave->getp)
+  {
+    for (y = 0; y < cave->h && !player_found; y++)
+    {
+      for (x = 0; x < cave->w && !player_found; x++)
+      {
+	int element = *cave->getp(cave, x, y);
+
+	if (element == O_PLAYER ||
+	    element == O_PLAYER_BOMB ||
+	    element == O_PLAYER_STIRRING ||
+	    element == O_PLAYER_PNEUMATIC_LEFT ||
+	    element == O_PLAYER_PNEUMATIC_RIGHT)
+	{
+	  player_x = x;
+	  player_y = y;
+
+	  player_found = TRUE;
+	}
+      }
+    }
+  }
+
+  UpdateEngineValues(get_scroll_x(),
+		     get_scroll_y(),
+		     player_x,
+		     player_y);
+
+  if (setup.bd_skip_hatching && !game_bd.game->cave->hatched &&
+      game_bd.game->state_counter == GAME_INT_CAVE_RUNNING)
+  {
+    // fast-forward game engine until player hatched
+    while (!game_bd.game->cave->hatched)
+    {
+      play_game_func(game_bd.game, 0);
+
+      // also record or replay tape action during fast-forward
+      action = TapeCorrectAction_BD(action);
+    }
+  }
+
+  play_game_func(game_bd.game, action[0]);
+
+  RedrawPlayfield_BD(FALSE);
+
+  UpdateGameDoorValues_BD();
 }
 
 

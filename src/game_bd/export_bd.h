@@ -88,6 +88,10 @@ int map_action_RND_to_BD(int);
 int map_action_BD_to_RND(int);
 
 boolean checkGameRunning_BD(void);
+boolean checkGamePlaying_BD(void);
+boolean checkBonusTime_BD(void);
+int getFramesPerSecond_BD(void);
+int getTimeLeft_BD(void);
 
 void InitGfxBuffers_BD(void);
 
@@ -96,6 +100,8 @@ void setLevelInfoToDefaults_BD(void);
 boolean LoadNativeLevel_BD(char *, int, boolean);
 
 unsigned int InitEngineRandom_BD(int);
+void InitGameEngine_BD(void);
+void GameActions_BD(byte[MAX_PLAYERS]);
 void CoverScreen_BD(void);
 
 void BlitScreenToBitmap_BD(Bitmap *);

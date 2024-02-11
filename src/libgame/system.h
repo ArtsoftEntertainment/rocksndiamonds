@@ -546,6 +546,8 @@
 #define MAX_VSYNC_FRAME_DELAY	16	// maximum value for vsync to work
 #define FRAMES_PER_SECOND	(ONE_SECOND_DELAY / GAME_FRAME_DELAY)
 #define FRAMES_PER_SECOND_SP	35
+#define FRAMES_PER_SECOND_PAL	50
+#define FRAMES_PER_SECOND_NTSC	60
 
 // maximum playfield size supported by libgame functions
 #define MAX_PLAYFIELD_WIDTH	128

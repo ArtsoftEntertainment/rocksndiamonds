@@ -448,6 +448,7 @@ void DrawDynamite(int, int);
 void StartGameActions(boolean, boolean, int);
 
 void GameActions(void);
+void GameActions_BD_Main(void);
 void GameActions_EM_Main(void);
 void GameActions_SP_Main(void);
 void GameActions_MM_Main(void);
@@ -472,6 +473,7 @@ void RequestQuitGame(boolean);
 
 boolean CheckRestartGame(void);
 boolean checkGameRunning(void);
+boolean checkGamePlaying(void);
 boolean checkGameSolved(void);
 boolean checkGameFailed(void);
 boolean checkGameEnded(void);

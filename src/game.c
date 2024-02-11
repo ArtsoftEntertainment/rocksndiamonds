@@ -4503,7 +4503,11 @@ void InitGame(void)
     scroll_y = game.forced_scroll_y;
 
   // !!! FIX THIS (START) !!!
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    InitGameEngine_BD();
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
     InitGameEngine_EM();
   }
@@ -4968,7 +4972,8 @@ void GameWon(void)
     }
 
     // if not counting score after game, immediately update game panel values
-    if (level_editor_test_game || !setup.count_score_after_game)
+    if (level_editor_test_game || !setup.count_score_after_game ||
+	level.game_engine_type == GAME_ENGINE_TYPE_BD)
     {
       time = time_final;
       score = score_final;
@@ -11704,6 +11709,10 @@ static void CheckLevelSolved(void)
 
 static void PlayTimeoutSound(int seconds_left)
 {
+  // will be played directly by BD engine (for classic bonus time sounds)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD && checkBonusTime_BD())
+    return;
+
   // try to use individual "running out of time" sound for each second left
   int sound = SND_GAME_RUNNING_OUT_OF_TIME_0 - seconds_left;
 
@@ -11750,9 +11759,24 @@ static void CheckLevelTime_StepCounter(void)
 
 static void CheckLevelTime(void)
 {
+  int frames_per_second = FRAMES_PER_SECOND;
   int i;
 
-  if (TimeFrames >= FRAMES_PER_SECOND)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    // level time may be running slower in native BD engine
+    frames_per_second = getFramesPerSecond_BD();
+
+    // if native engine time changed, force main engine time change
+    if (getTimeLeft_BD() < TimeLeft)
+      TimeFrames = frames_per_second;
+
+    // if last second running, wait for native engine time to exactly reach zero
+    if (getTimeLeft_BD() == 1 && TimeLeft == 1)
+      TimeFrames = frames_per_second - 1;
+  }
+
+  if (TimeFrames >= frames_per_second)
   {
     TimeFrames = 0;
 
@@ -11787,11 +11811,20 @@ static void CheckLevelTime(void)
 
 	if (!TimeLeft && game.time_limit)
 	{
-	  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+	  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+	  {
+	    if (game_bd.game->cave->player_state == GD_PL_LIVING)
+	      game_bd.game->cave->player_state = GD_PL_TIMEOUT;
+	  }
+	  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+	  {
 	    game_em.lev->killed_out_of_time = TRUE;
+	  }
 	  else
+	  {
 	    for (i = 0; i < MAX_PLAYERS; i++)
 	      KillPlayer(&stored_player[i]);
+	  }
 	}
       }
       else if (game.no_level_time_limit && !game.all_players_gone)
@@ -11822,9 +11855,19 @@ void AdvanceFrameAndPlayerCounters(int player_nr)
 {
   int i;
 
+  // handle game and tape time differently for native BD game engine
+
+  // tape time is running in native BD engine even if player is not hatched yet
+  if (!checkGameRunning())
+    return;
+
   // advance frame counters (global frame counter and tape time frame counter)
   FrameCounter++;
   TapeTimeFrames++;
+
+  // level time is running in native BD engine after player is being hatched
+  if (!checkGamePlaying())
+    return;
 
   // advance time frame counter (used to control available time to solve level)
   TimeFrames++;
@@ -12176,7 +12219,11 @@ static void GameActionsExt(void)
     game.snapshot.last_action[i] = stored_player[i].effective_action;
   }
 
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    GameActions_BD_Main();
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
     GameActions_EM_Main();
   }
@@ -12241,6 +12288,17 @@ void GameActions(void)
   GameActionsExt();
 
   GameActions_CheckSaveEngineSnapshot();
+}
+
+void GameActions_BD_Main(void)
+{
+  byte effective_action[MAX_PLAYERS];
+  int i;
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+    effective_action[i] = stored_player[i].effective_action;
+
+  GameActions_BD(effective_action);
 }
 
 void GameActions_EM_Main(void)
@@ -16151,6 +16209,17 @@ boolean checkGameRunning(void)
     return FALSE;
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD && !checkGameRunning_BD())
+    return FALSE;
+
+  return TRUE;
+}
+
+boolean checkGamePlaying(void)
+{
+  if (game_status != GAME_MODE_PLAYING)
+    return FALSE;
+
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD && !checkGamePlaying_BD())
     return FALSE;
 
   return TRUE;
