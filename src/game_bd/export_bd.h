@@ -2,9 +2,9 @@
 // Rocks'n'Diamonds - McDuffin Strikes Back!
 // ----------------------------------------------------------------------------
 // (c) 1995-2024 by Artsoft Entertainment
-//                  Holger Schemel
-//                  info@artsoft.org
-//                  https://www.artsoft.org/
+//     		    Holger Schemel
+//		    info@artsoft.org
+//		    https://www.artsoft.org/
 // ----------------------------------------------------------------------------
 // export_bd.h
 // ============================================================================

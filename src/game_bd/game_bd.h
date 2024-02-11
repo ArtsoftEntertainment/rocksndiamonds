@@ -1,7 +1,7 @@
 // ============================================================================
-// Mirror Magic -- McDuffin's Revenge
+// Rocks'n'Diamonds - McDuffin Strikes Back!
 // ----------------------------------------------------------------------------
-// (c) 1995-2023 by Artsoft Entertainment
+// (c) 1995-2024 by Artsoft Entertainment
 //     		    Holger Schemel
 //		    info@artsoft.org
 //		    https://www.artsoft.org/
