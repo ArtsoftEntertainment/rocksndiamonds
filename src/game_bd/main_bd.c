@@ -187,3 +187,16 @@ boolean checkGameRunning_BD(void)
 {
   return (game_bd.game != NULL && game_bd.game->state_counter == GAME_INT_CAVE_RUNNING);
 }
+
+unsigned int InitEngineRandom_BD(int seed)
+{
+  if (seed == NEW_RANDOMIZE)
+  {
+    // get randomly selected seed to render the cave
+    seed = g_random_int_range(0, GD_CAVE_SEED_MAX);
+  }
+
+  game_bd.random_seed = seed;
+
+  return (unsigned int)seed;
+}

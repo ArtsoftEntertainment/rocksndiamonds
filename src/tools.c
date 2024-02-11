@@ -9678,7 +9678,9 @@ boolean isActivePlayer_EM(int player_nr)
 
 unsigned int InitRND(int seed)
 {
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    return InitEngineRandom_BD(seed);
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
     return InitEngineRandom_EM(seed);
   else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
     return InitEngineRandom_SP(seed);

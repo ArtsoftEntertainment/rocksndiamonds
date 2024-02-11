@@ -95,4 +95,6 @@ void setLevelInfoToDefaults_BD_Ext(int, int);
 void setLevelInfoToDefaults_BD(void);
 boolean LoadNativeLevel_BD(char *, int, boolean);
 
+unsigned int InitEngineRandom_BD(int);
+
 #endif	// EXPORT_BD_H
