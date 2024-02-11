@@ -471,6 +471,7 @@ void RequestQuitGameExt(boolean, boolean, char *);
 void RequestQuitGame(boolean);
 
 boolean CheckRestartGame(void);
+boolean checkGameRunning(void);
 boolean checkGameSolved(void);
 boolean checkGameFailed(void);
 boolean checkGameEnded(void);

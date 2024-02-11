@@ -26,4 +26,7 @@ void PlayLevelSound_BD(int, int, int, int);
 void StopSound_BD(int, int);
 boolean isSoundPlaying_BD(int, int);
 
+byte *TapePlayAction_BD(void);
+boolean TapeIsPlaying_ReplayBD(void);
+
 #endif	// IMPORT_BD_H

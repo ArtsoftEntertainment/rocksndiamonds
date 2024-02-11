@@ -16141,6 +16141,17 @@ boolean CheckRestartGame(void)
   return TRUE;
 }
 
+boolean checkGameRunning(void)
+{
+  if (game_status != GAME_MODE_PLAYING)
+    return FALSE;
+
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD && !checkGameRunning_BD())
+    return FALSE;
+
+  return TRUE;
+}
+
 boolean checkGameSolved(void)
 {
   // set for all game engines if level was solved

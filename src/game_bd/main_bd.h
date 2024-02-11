@@ -30,9 +30,38 @@
 // internal functions and definitions that are not exported to main program
 // ============================================================================
 
+#include "bd_bdcff.h"
+#include "bd_cave.h"
+#include "bd_cavedb.h"
+#include "bd_caveset.h"
+#include "bd_caveobject.h"
+#include "bd_caveengine.h"
+#include "bd_gameplay.h"
+#include "bd_c64import.h"
+#include "bd_graphics.h"
+#include "bd_sound.h"
+
+
 // ----------------------------------------------------------------------------
 // constant definitions
 // ----------------------------------------------------------------------------
+
+/* screen sizes and positions for BD engine */
+
+extern int			TILESIZE_VAR;
+
+#define TILEX			TILESIZE_VAR
+#define TILEY			TILESIZE_VAR
+
+extern int			SCR_FIELDX, SCR_FIELDY;
+
+/* often used screen positions */
+
+extern int			SX, SY;
+
+#define SXSIZE			(SCR_FIELDX * TILEX)
+#define SYSIZE			(SCR_FIELDY * TILEY)
+
 
 // ----------------------------------------------------------------------------
 // data structure definitions

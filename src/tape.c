@@ -1008,7 +1008,7 @@ void TapeStopPlaying(void)
   MapTapeEjectButton();
 }
 
-byte *TapePlayAction(void)
+byte *TapePlayActionExt(boolean bd_replay)
 {
   int update_delay = FRAMES_PER_SECOND / 2;
   boolean update_video_display = (FrameCounter % update_delay == 0);
@@ -1017,6 +1017,12 @@ byte *TapePlayAction(void)
   int i;
 
   if (!tape.playing || tape.pausing)
+    return NULL;
+
+  if (!checkGameRunning())
+    return NULL;
+
+  if (tape.bd_replay && !bd_replay)
     return NULL;
 
   if (tape.pause_before_end)  // stop some seconds before end of tape
@@ -1097,7 +1103,7 @@ byte *TapePlayAction(void)
   }
 
   tape.delay_played++;
-  if (tape.delay_played >= tape.pos[tape.counter].delay)
+  if (tape.delay_played >= tape.pos[tape.counter].delay || tape.bd_replay)
   {
     tape.counter++;
     tape.delay_played = 0;
@@ -1110,6 +1116,16 @@ byte *TapePlayAction(void)
     WriteTapeLogfile(action);
 
   return action;
+}
+
+byte *TapePlayAction_BD(void)
+{
+  return TapePlayActionExt(TRUE);
+}
+
+byte *TapePlayAction(void)
+{
+  return TapePlayActionExt(FALSE);
 }
 
 void TapeStop(void)
@@ -1371,6 +1387,11 @@ void TapeReplayAndPauseBeforeEnd(void)
 
   tape.pause_before_end = TRUE;
   tape.quick_resume = TRUE;
+}
+
+boolean TapeIsPlaying_ReplayBD(void)
+{
+  return (tape.playing && tape.bd_replay);
 }
 
 boolean hasSolutionTape(void)

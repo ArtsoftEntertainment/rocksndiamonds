@@ -60,6 +60,13 @@ struct LevelInfo_BD
   boolean loaded_from_caveset;
 };
 
+struct GraphicInfo_BD
+{
+  Bitmap *bitmap;
+  int src_x, src_y;
+  int width, height;
+};
+
 struct EngineSnapshotInfo_BD
 {
 };
@@ -71,9 +78,13 @@ struct EngineSnapshotInfo_BD
 
 extern struct GameInfo_BD game_bd;
 extern struct LevelInfo_BD native_bd_level;
+extern struct GraphicInfo_BD graphic_info_bd_object[O_MAX_ALL][8];
 extern struct EngineSnapshotInfo_BD engine_snapshot_bd;
 
+int map_action_RND_to_BD(int);
 int map_action_BD_to_RND(int);
+
+boolean checkGameRunning_BD(void);
 
 void setLevelInfoToDefaults_BD_Ext(int, int);
 void setLevelInfoToDefaults_BD(void);

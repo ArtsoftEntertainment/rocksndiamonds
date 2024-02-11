@@ -1557,6 +1557,8 @@ struct SetupInfo
   boolean prefer_extra_panel_items;
   boolean game_speed_extended;
   int game_frame_delay;
+  boolean bd_skip_uncovering;
+  boolean bd_skip_hatching;
   boolean sp_show_border_elements;
   boolean small_game_graphics;
   boolean show_load_save_buttons;

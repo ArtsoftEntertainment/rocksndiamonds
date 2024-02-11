@@ -16,9 +16,29 @@
 # configuration
 # -----------------------------------------------------------------------------
 
-SRCS =	main_bd.c
+SRCS =	main_bd.c	\
+	bd_cave.c	\
+	bd_cavedb.c	\
+	bd_caveengine.c	\
+	bd_caveobject.c	\
+	bd_bdcff.c	\
+	bd_caveset.c	\
+	bd_c64import.c	\
+	bd_gameplay.c	\
+	bd_graphics.c	\
+	bd_sound.c
 
-OBJS =	main_bd.o
+OBJS =	main_bd.o	\
+	bd_cave.o	\
+	bd_cavedb.o	\
+	bd_caveengine.o	\
+	bd_caveobject.o	\
+	bd_bdcff.o	\
+	bd_caveset.o	\
+	bd_c64import.o	\
+	bd_gameplay.o	\
+	bd_graphics.o	\
+	bd_sound.o
 
 GAME_BD = game_bd.a
 

@@ -266,6 +266,8 @@ void TapeRecordAction(byte[MAX_TAPE_ACTIONS]);
 void TapeTogglePause(boolean);
 void TapeStartPlaying(void);
 void TapeStopPlaying(void);
+byte *TapePlayActionExt(boolean);
+byte *TapePlayAction_BD(void);
 byte *TapePlayAction(void);
 void TapeStop(void);
 void TapeStopGame(void);
@@ -277,6 +279,7 @@ void TapeQuickSave(void);
 void TapeQuickLoad(void);
 void TapeRestartGame(void);
 void TapeReplayAndPauseBeforeEnd(void);
+boolean TapeIsPlaying_ReplayBD(void);
 
 boolean hasSolutionTape(void);
 boolean InsertSolutionTape(void);
