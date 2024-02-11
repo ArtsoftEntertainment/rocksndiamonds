@@ -11669,6 +11669,23 @@ static void CheckLevelSolved(void)
   }
 }
 
+static void PlayTimeoutSound(int seconds_left)
+{
+  // try to use individual "running out of time" sound for each second left
+  int sound = SND_GAME_RUNNING_OUT_OF_TIME_0 - seconds_left;
+
+  // if special sound per second not defined, use default sound
+  if (getSoundInfoEntryFilename(sound) == NULL)
+    sound = SND_GAME_RUNNING_OUT_OF_TIME;
+
+  // if out of time, but player still alive, play special "timeout" sound, if defined
+  if (seconds_left == 0 && !checkGameFailed())
+    if (getSoundInfoEntryFilename(SND_GAME_TIMEOUT) != NULL)
+      sound = SND_GAME_TIMEOUT;
+
+  PlaySound(sound);
+}
+
 static void CheckLevelTime_StepCounter(void)
 {
   int i;
@@ -11680,7 +11697,7 @@ static void CheckLevelTime_StepCounter(void)
     TimeLeft--;
 
     if (TimeLeft <= 10 && game.time_limit && !game.LevelSolved)
-      PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
+      PlayTimeoutSound(TimeLeft);
 
     game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
 
@@ -11728,7 +11745,7 @@ static void CheckLevelTime(void)
 	TimeLeft--;
 
 	if (TimeLeft <= 10 && game.time_limit)
-	  PlaySound(SND_GAME_RUNNING_OUT_OF_TIME);
+	  PlayTimeoutSound(TimeLeft);
 
 	/* this does not make sense: game_panel_controls[GAME_PANEL_TIME].value
 	   is reset from other values in UpdateGameDoorValues() -- FIX THIS */
