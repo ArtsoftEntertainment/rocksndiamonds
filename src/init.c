@@ -1550,7 +1550,7 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
 
   // optionally, the second movement tile can be specified as start tile
   if (parameter[GFX_ARG_2ND_SWAP_TILES] != ARG_UNDEFINED_VALUE)
-    g->swap_double_tiles= parameter[GFX_ARG_2ND_SWAP_TILES];
+    g->swap_double_tiles = parameter[GFX_ARG_2ND_SWAP_TILES];
 
   // automatically determine correct number of frames, if not defined
   if (parameter[GFX_ARG_FRAMES] != ARG_UNDEFINED_VALUE)
