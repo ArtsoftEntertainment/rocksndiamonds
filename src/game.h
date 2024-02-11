@@ -166,6 +166,7 @@ struct GameInfo
 
   // values for graphics engine customization
   int graphics_engine_version;
+  boolean use_native_bd_graphics_engine;
   boolean use_native_emc_graphics_engine;
   boolean use_native_sp_graphics_engine;
   boolean use_masked_pushing;
@@ -176,6 +177,9 @@ struct GameInfo
   int forced_scroll_delay_value;
   int scroll_delay_value;
   int tile_size;
+
+  // values for sound engine customization
+  boolean use_native_bd_sound_engine;
 
   // constant within running game
   int engine_version;

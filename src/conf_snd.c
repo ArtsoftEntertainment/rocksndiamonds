@@ -380,5 +380,17 @@ struct ConfigInfo sound_config[] =
   { "background.titlemessage_4",	UNDEFINED_FILENAME		},
   { "background.titlemessage_5",	UNDEFINED_FILENAME		},
 
+
+  // ==========================================================================
+  // non-sound definitions
+  // ==========================================================================
+
+  // the following directives are not associated with a sound, but
+  // probably make sense to be defined in "soundsinfo.conf", too
+
+  // keyword to start parser: "CONFIG_VARS_START" <-- do not change!
+
+  { "game.use_native_bd_sound_engine",	"false"				},
+
   { NULL,				NULL				}
 };
