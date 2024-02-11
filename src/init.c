@@ -4571,6 +4571,7 @@ void InitElementPropertiesStatic(void)
   static int ep_editor_cascade_active[] =
   {
     EL_INTERNAL_CASCADE_BD_ACTIVE,
+    EL_INTERNAL_CASCADE_BD_NATIVE_ACTIVE,
     EL_INTERNAL_CASCADE_EM_ACTIVE,
     EL_INTERNAL_CASCADE_EMC_ACTIVE,
     EL_INTERNAL_CASCADE_RND_ACTIVE,
@@ -4595,6 +4596,7 @@ void InitElementPropertiesStatic(void)
   static int ep_editor_cascade_inactive[] =
   {
     EL_INTERNAL_CASCADE_BD,
+    EL_INTERNAL_CASCADE_BD_NATIVE,
     EL_INTERNAL_CASCADE_EM,
     EL_INTERNAL_CASCADE_EMC,
     EL_INTERNAL_CASCADE_RND,
