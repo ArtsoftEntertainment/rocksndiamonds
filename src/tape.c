@@ -629,6 +629,30 @@ static void CloseTapeLogfile(void)
 // tape control functions
 // ============================================================================
 
+void TapeSetDateFromIsoDateString(char *date)
+{
+  int i;
+
+  // check ISO date string for correct length
+  if (strlen(date) != 10)
+    return;
+
+  // check ISO date string for correct format
+  for (i = 0; i < strlen(date); i++)
+    if (((i != 4 && i != 7) && (date[i] < '0' || date[i] > '9')) ||
+	((i == 4 || i == 7) && (date[i] != '-')))
+      return;
+
+  int yy = (date[2] - '0') * 10 + (date[3] - '0');
+  int mm = (date[5] - '0') * 10 + (date[6] - '0');
+  int dd = (date[8] - '0') * 10 + (date[9] - '0');
+
+  if (mm < 1 || mm > 12 || dd < 1 || dd > 31)
+    return;
+
+  tape.date = 10000 * yy + 100 * (mm - 1) + dd;
+}
+
 void TapeSetDateFromEpochSeconds(time_t epoch_seconds)
 {
   struct tm *lt = localtime(&epoch_seconds);

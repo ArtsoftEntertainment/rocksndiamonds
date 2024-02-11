@@ -34,8 +34,11 @@
 
 struct GameInfo_BD
 {
+  unsigned int random_seed;
+
   boolean level_solved;
   boolean game_over;
+  boolean cover_screen;
 
   // needed for updating panel
   int time_played;
@@ -66,6 +69,8 @@ struct EngineSnapshotInfo_BD
 extern struct GameInfo_BD game_bd;
 extern struct LevelInfo_BD native_bd_level;
 extern struct EngineSnapshotInfo_BD engine_snapshot_bd;
+
+int map_action_BD_to_RND(int);
 
 void setLevelInfoToDefaults_BD_Ext(int, int);
 void setLevelInfoToDefaults_BD(void);

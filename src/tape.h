@@ -223,6 +223,9 @@ struct TapeInfo
   // bits to indicate which tape properties are stored in this tape
   byte property_bits;
 
+  // special game_engine_flags;
+  boolean bd_replay;
+
   // visible playfield size when recording this tape (for team mode)
   int scr_fieldx;
   int scr_fieldy;
@@ -251,6 +254,7 @@ void DrawCompleteVideoDisplay(void);
 void TapeDeactivateDisplayOn(void);
 void TapeDeactivateDisplayOff(boolean);
 
+void TapeSetDateFromIsoDateString(char *);
 void TapeSetDateFromEpochSeconds(time_t);
 void TapeSetDateFromNow(void);
 

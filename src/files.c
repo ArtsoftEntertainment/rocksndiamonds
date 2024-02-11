@@ -3713,6 +3713,72 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
       level->field[x][y] = map_element_BD_to_RND(cave->map[y][x]);
 }
 
+static void setTapeInfoToDefaults(void);
+
+static void CopyNativeTape_BD_to_RND(struct LevelInfo *level)
+{
+  struct LevelInfo_BD *level_bd = level->native_bd_level;
+  GdCave *cave = level_bd->cave;
+  GdReplay *replay = level_bd->replay;
+  int i;
+
+  if (replay == NULL)
+    return;
+
+  // always start with reliable default values
+  setTapeInfoToDefaults();
+
+  tape.level_nr = level_nr;		// (currently not used)
+  tape.random_seed = replay->seed;
+
+  TapeSetDateFromIsoDateString(replay->date);
+
+  tape.counter = 0;
+  tape.pos[tape.counter].delay = 0;
+
+  tape.bd_replay = TRUE;
+
+  // all time calculations only used to display approximate tape time
+  int cave_speed = cave->speed;
+  int milliseconds_game = 0;
+  int milliseconds_elapsed = 20;
+
+  for (i = 0; i < replay->movements->len; i++)
+  {
+    int replay_action = replay->movements->data[i];
+    int tape_action = map_action_BD_to_RND(replay_action);
+    byte action[MAX_TAPE_ACTIONS] = { tape_action };
+    boolean success = 0;
+
+    while (1)
+    {
+      success = TapeAddAction(action);
+
+      milliseconds_game += milliseconds_elapsed;
+
+      if (milliseconds_game >= cave_speed)
+      {
+	milliseconds_game -= cave_speed;
+
+	break;
+      }
+    }
+
+    tape.counter++;
+    tape.pos[tape.counter].delay = 0;
+    tape.pos[tape.counter].action[0] = 0;
+
+    if (!success)
+    {
+      Warn("BD replay truncated: size exceeds maximum tape size %d", MAX_TAPE_LEN);
+
+      break;
+    }
+  }
+
+  TapeHaltRecording();
+}
+
 
 // ----------------------------------------------------------------------------
 // functions for loading EM level
@@ -4171,8 +4237,6 @@ static void CopyNativeTape_RND_to_SP(struct LevelInfo *level)
 
   demo->is_available = TRUE;
 }
-
-static void setTapeInfoToDefaults(void);
 
 static void CopyNativeTape_SP_to_RND(struct LevelInfo *level)
 {
@@ -8493,10 +8557,15 @@ void LoadSolutionTape(int nr)
 
   LoadTapeFromFilename(filename);
 
-  if (TAPE_IS_EMPTY(tape) &&
-      level.game_engine_type == GAME_ENGINE_TYPE_SP &&
-      level.native_sp_level->demo.is_available)
-    CopyNativeTape_SP_to_RND(&level);
+  if (TAPE_IS_EMPTY(tape))
+  {
+    if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
+	level.native_bd_level->replay != NULL)
+      CopyNativeTape_BD_to_RND(&level);
+    else if (level.game_engine_type == GAME_ENGINE_TYPE_SP &&
+	level.native_sp_level->demo.is_available)
+      CopyNativeTape_SP_to_RND(&level);
+  }
 }
 
 void LoadScoreTape(char *score_tape_basename, int nr)
