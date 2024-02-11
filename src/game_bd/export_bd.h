@@ -18,6 +18,7 @@
 
 #include "bd_cave.h"
 #include "bd_elements.h"
+#include "bd_gameplay.h"
 
 
 // ----------------------------------------------------------------------------
@@ -34,6 +35,8 @@
 
 struct GameInfo_BD
 {
+  GdGame *game;
+
   unsigned int random_seed;
 
   boolean level_solved;
