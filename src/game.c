@@ -4818,14 +4818,14 @@ void InitAmoebaNr(int x, int y)
 
 static void LevelSolved_SetFinalGameValues(void)
 {
-  game.time_final = (game.no_level_time_limit ? TimePlayed : TimeLeft);
+  game.time_final = (level.game_engine_type == GAME_ENGINE_TYPE_BD ? game_bd.time_played :
+		     game.no_level_time_limit ? TimePlayed : TimeLeft);
   game.score_time_final = (level.use_step_counter ? TimePlayed :
 			   TimePlayed * FRAMES_PER_SECOND + TimeFrames);
 
-  game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-		      game_em.lev->score :
-		      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
-		      game_mm.score :
+  game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_BD ? game_bd.score :
+		      level.game_engine_type == GAME_ENGINE_TYPE_EM ? game_em.lev->score :
+		      level.game_engine_type == GAME_ENGINE_TYPE_MM ? game_mm.score :
 		      game.score);
 
   game.health_final = (level.game_engine_type == GAME_ENGINE_TYPE_MM ?
@@ -4939,7 +4939,13 @@ void GameWon(void)
 
       time_count_steps = MAX(1, ABS(time_final - time) / 100);
 
-      if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
+      if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+      {
+	// keep previous values (final values already processed here)
+	time_final = time;
+	score_final = score;
+      }
+      else if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
       {
 	health_final = 0;
 	score_final += health * time_score;
@@ -11622,7 +11628,22 @@ static void SetTapeActionFromMouseAction(byte *tape_action,
 
 static void CheckLevelSolved(void)
 {
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    if (game_bd.level_solved &&
+	!game_bd.game_over)				// game won
+    {
+      LevelSolved();
+
+      game_bd.game_over = TRUE;
+
+      game.all_players_gone = TRUE;
+    }
+
+    if (game_bd.game_over)				// game lost
+      game.all_players_gone = TRUE;
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
     if (game_em.level_solved &&
 	!game_em.game_over)				// game won
@@ -16116,7 +16137,9 @@ boolean checkGameSolved(void)
 
 boolean checkGameFailed(void)
 {
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    return (game_bd.game_over && !game_bd.level_solved);
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
     return (game_em.game_over && !game_em.level_solved);
   else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
     return (game_sp.game_over && !game_sp.level_solved);
