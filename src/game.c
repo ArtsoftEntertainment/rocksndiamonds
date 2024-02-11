@@ -2262,6 +2262,8 @@ static void UpdateGameControlValues(void)
   int i, k;
   int time = (game.LevelSolved ?
 	      game.LevelSolved_CountingTime :
+	      level.game_engine_type == GAME_ENGINE_TYPE_BD ?
+	      game_bd.time_played :
 	      level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 	      game_em.lev->time :
 	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
@@ -2271,6 +2273,8 @@ static void UpdateGameControlValues(void)
 	      game.no_level_time_limit ? TimePlayed : TimeLeft);
   int score = (game.LevelSolved ?
 	       game.LevelSolved_CountingScore :
+	       level.game_engine_type == GAME_ENGINE_TYPE_BD ?
+	       game_bd.score :
 	       level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 	       game_em.lev->score :
 	       level.game_engine_type == GAME_ENGINE_TYPE_SP ?
@@ -2278,7 +2282,9 @@ static void UpdateGameControlValues(void)
 	       level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 	       game_mm.score :
 	       game.score);
-  int gems = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+  int gems = (level.game_engine_type == GAME_ENGINE_TYPE_BD ?
+	      game_bd.gems_still_needed :
+	      level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 	      game_em.lev->gems_needed :
 	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
 	      game_sp.infotrons_still_needed :
@@ -2286,9 +2292,15 @@ static void UpdateGameControlValues(void)
 	      game_mm.kettles_still_needed :
 	      game.gems_still_needed);
   int gems_total = level.gems_needed;
-  int gems_collected = gems_total - gems;
-  int gems_score = level.score[SC_EMERALD];
-  int exit_closed = (level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+  int gems_collected = (level.game_engine_type == GAME_ENGINE_TYPE_BD ?
+			game_bd.game->cave->diamonds_collected :
+			gems_total - gems);
+  int gems_score = (level.game_engine_type == GAME_ENGINE_TYPE_BD ?
+		    game_bd.game->cave->diamond_value :
+		    level.score[SC_EMERALD]);
+  int exit_closed = (level.game_engine_type == GAME_ENGINE_TYPE_BD ?
+		     game_bd.gems_still_needed > 0 :
+		     level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 		     game_em.lev->gems_needed > 0 :
 		     level.game_engine_type == GAME_ENGINE_TYPE_SP ?
 		     game_sp.infotrons_still_needed > 0 :
