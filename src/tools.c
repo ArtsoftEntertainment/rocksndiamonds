@@ -5943,6 +5943,1145 @@ static void HandleToolButtons(struct GadgetInfo *gi)
   request_gadget_id = gi->custom_id;
 }
 
+static struct Mapping_BD_to_RND_object
+{
+  int element_bd;
+  boolean is_rnd_to_bd_mapping;		// unique mapping BD <-> RND
+
+  int element_rnd;
+  int action;
+  int direction;
+}
+bd_object_mapping_list[] =
+{
+  // additional RND style elements mapped to BD style elements must be listed first
+
+  {
+    O_DIRT,					TRUE,
+    EL_SAND,					-1, -1
+  },
+  {
+    O_STONE,					TRUE,
+    EL_BD_ROCK,					-1, -1
+  },
+  {
+    O_BRICK,					TRUE,
+    EL_BD_WALL,					-1, -1
+  },
+  {
+    O_STEEL,					TRUE,
+    EL_STEELWALL,				-1, -1
+  },
+  {
+    O_DIAMOND,					TRUE,
+    EL_BD_DIAMOND,				-1, -1
+  },
+  {
+    O_INBOX,					TRUE,
+    EL_PLAYER_1,				-1, -1
+  },
+  {
+    O_INBOX,					TRUE,
+    EL_PLAYER_2,				-1, -1
+  },
+  {
+    O_INBOX,					TRUE,
+    EL_PLAYER_3,				-1, -1
+  },
+  {
+    O_INBOX,					TRUE,
+    EL_PLAYER_4,				-1, -1
+  },
+  {
+    O_PRE_OUTBOX,				TRUE,
+    EL_EXIT_CLOSED,				-1, -1
+  },
+
+  // BD style elements with their corresponding RND style elements
+
+  {
+    O_SPACE,					TRUE,
+    EL_EMPTY,					-1, -1
+  },
+  {
+    O_DIRT,					TRUE,
+    EL_BD_SAND,					-1, -1
+  },
+  {
+    O_DIRT_SLOPED_UP_RIGHT,			TRUE,
+    EL_BD_SAND_SLOPED_UP_RIGHT,			-1, -1
+  },
+  {
+    O_DIRT_SLOPED_UP_LEFT,			TRUE,
+    EL_BD_SAND_SLOPED_UP_LEFT,			-1, -1
+  },
+  {
+    O_DIRT_SLOPED_DOWN_LEFT,			TRUE,
+    EL_BD_SAND_SLOPED_DOWN_LEFT,		-1, -1
+  },
+  {
+    O_DIRT_SLOPED_DOWN_RIGHT,			TRUE,
+    EL_BD_SAND_SLOPED_DOWN_RIGHT,		-1, -1
+  },
+  {
+    O_DIRT_BALL,				TRUE,
+    EL_BD_SAND_BALL,				-1, -1
+  },
+  {
+    O_DIRT_BALL_F,				FALSE,
+    EL_BD_SAND_BALL,				ACTION_FALLING, -1
+  },
+  {
+    O_DIRT_LOOSE,				TRUE,
+    EL_BD_SAND_LOOSE,				-1, -1
+  },
+  {
+    O_DIRT_LOOSE_F,				FALSE,
+    EL_BD_SAND_LOOSE,				ACTION_FALLING, -1
+  },
+  {
+    O_DIRT2,					TRUE,
+    EL_BD_SAND_2,				-1, -1
+  },
+  {
+    O_BRICK,					TRUE,
+    EL_BD_WALL,					-1, -1
+  },
+  {
+    O_BRICK_SLOPED_UP_RIGHT,			TRUE,
+    EL_BD_WALL_SLOPED_UP_RIGHT,			-1, -1
+  },
+  {
+    O_BRICK_SLOPED_UP_LEFT,			TRUE,
+    EL_BD_WALL_SLOPED_UP_LEFT,			-1, -1
+  },
+  {
+    O_BRICK_SLOPED_DOWN_LEFT,			TRUE,
+    EL_BD_WALL_SLOPED_DOWN_LEFT,		-1, -1
+  },
+  {
+    O_BRICK_SLOPED_DOWN_RIGHT,			TRUE,
+    EL_BD_WALL_SLOPED_DOWN_RIGHT,		-1, -1
+  },
+  {
+    O_BRICK_NON_SLOPED,				TRUE,
+    EL_BD_WALL_NON_SLOPED,			-1, -1
+  },
+  {
+    O_MAGIC_WALL,				TRUE,
+    EL_BD_MAGIC_WALL,				ACTION_ACTIVE, -1
+  },
+  {
+    O_PRE_OUTBOX,				TRUE,
+    EL_BD_EXIT_CLOSED,				-1, -1
+  },
+  {
+    O_OUTBOX,					TRUE,
+    EL_BD_EXIT_OPEN,				-1, -1
+  },
+  {
+    O_PRE_INVIS_OUTBOX,				TRUE,
+    EL_BD_INVISIBLE_EXIT_CLOSED,		-1, -1
+  },
+  {
+    O_INVIS_OUTBOX,				TRUE,
+    EL_BD_INVISIBLE_EXIT_OPEN,			-1, -1
+  },
+  {
+    O_STEEL,					TRUE,
+    EL_BD_STEELWALL,				-1, -1
+  },
+  {
+    O_STEEL_SLOPED_UP_RIGHT,			TRUE,
+    EL_BD_STEELWALL_SLOPED_UP_RIGHT,		-1, -1
+  },
+  {
+    O_STEEL_SLOPED_UP_LEFT,			TRUE,
+    EL_BD_STEELWALL_SLOPED_UP_LEFT,		-1, -1
+  },
+  {
+    O_STEEL_SLOPED_DOWN_LEFT,			TRUE,
+    EL_BD_STEELWALL_SLOPED_DOWN_LEFT,		-1, -1
+  },
+  {
+    O_STEEL_SLOPED_DOWN_RIGHT,			TRUE,
+    EL_BD_STEELWALL_SLOPED_DOWN_RIGHT,		-1, -1
+  },
+  {
+    O_STEEL_EXPLODABLE,				TRUE,
+    EL_BD_STEELWALL_EXPLODABLE,			-1, -1
+  },
+  {
+    O_STEEL_EATABLE,				TRUE,
+    EL_BD_STEELWALL_DIGGABLE,			-1, -1
+  },
+  {
+    O_BRICK_EATABLE,				TRUE,
+    EL_BD_WALL_DIGGABLE,			-1, -1
+  },
+  {
+    O_STONE,					TRUE,
+    EL_BD_ROCK,					-1, -1
+  },
+  {
+    O_STONE_F,					FALSE,
+    EL_BD_ROCK,					ACTION_FALLING, -1
+  },
+  {
+    O_FLYING_STONE,				TRUE,
+    EL_BD_FLYING_ROCK,				-1, -1
+  },
+  {
+    O_FLYING_STONE_F,				FALSE,
+    EL_BD_FLYING_ROCK,				ACTION_FALLING, -1
+  },
+  {
+    O_MEGA_STONE,				TRUE,
+    EL_BD_MEGA_ROCK,				-1, -1
+  },
+  {
+    O_MEGA_STONE_F,				FALSE,
+    EL_BD_MEGA_ROCK,				ACTION_FALLING, -1
+  },
+  {
+    O_DIAMOND,					TRUE,
+    EL_BD_DIAMOND,				-1, -1
+  },
+  {
+    O_DIAMOND_F,				FALSE,
+    EL_BD_DIAMOND,				ACTION_FALLING, -1
+  },
+  {
+    O_FLYING_DIAMOND,				TRUE,
+    EL_BD_FLYING_DIAMOND,			-1, -1
+  },
+  {
+    O_FLYING_DIAMOND_F,				FALSE,
+    EL_BD_FLYING_DIAMOND,			ACTION_FALLING, -1
+  },
+  {
+    O_NUT,					TRUE,
+    EL_BD_NUT,					-1, -1
+  },
+  {
+    O_NUT_F,					FALSE,
+    EL_BD_NUT,					ACTION_FALLING, -1
+  },
+  {
+    O_BLADDER_SPENDER,				TRUE,
+    EL_BD_BLADDER_SPENDER,			-1, -1
+  },
+  {
+    O_INBOX,					TRUE,
+    EL_BD_INBOX,				-1, -1
+  },
+  {
+    O_H_EXPANDING_WALL,				TRUE,
+    EL_BD_EXPANDABLE_WALL_HORIZONTAL,		-1, -1
+  },
+  {
+    O_V_EXPANDING_WALL,				TRUE,
+    EL_BD_EXPANDABLE_WALL_VERTICAL,		-1, -1
+  },
+  {
+    O_EXPANDING_WALL,				TRUE,
+    EL_BD_EXPANDABLE_WALL_ANY,			-1, -1
+  },
+  {
+    O_H_EXPANDING_STEEL_WALL,			TRUE,
+    EL_BD_EXPANDABLE_STEELWALL_HORIZONTAL,	-1, -1
+  },
+  {
+    O_V_EXPANDING_STEEL_WALL,			TRUE,
+    EL_BD_EXPANDABLE_STEELWALL_VERTICAL,	-1, -1
+  },
+  {
+    O_EXPANDING_STEEL_WALL,			TRUE,
+    EL_BD_EXPANDABLE_STEELWALL_ANY,		-1, -1
+  },
+  {
+    O_EXPANDING_WALL_SWITCH,			TRUE,
+    EL_BD_EXPANDABLE_WALL_SWITCH_HORIZONTAL,	-1, -1
+  },
+  {
+    O_CREATURE_SWITCH,				TRUE,
+    EL_BD_CREATURE_SWITCH,			-1, -1
+  },
+  {
+    O_BITER_SWITCH,				TRUE,
+    EL_BD_BITER_SWITCH_1,			-1, -1
+  },
+  {
+    O_REPLICATOR_SWITCH,			TRUE,
+    EL_BD_REPLICATOR_SWITCH,			-1, -1
+  },
+  {
+    O_CONVEYOR_SWITCH,				TRUE,
+    EL_BD_CONVEYOR_SWITCH,			-1, -1
+  },
+  {
+    O_CONVEYOR_DIR_SWITCH,			TRUE,
+    EL_BD_CONVEYOR_DIR_SWITCH_RIGHT,		-1, -1
+  },
+  {
+    O_ACID,					TRUE,
+    EL_BD_ACID,					-1, -1
+  },
+  {
+    O_FALLING_WALL,				TRUE,
+    EL_BD_FALLING_WALL,				-1, -1
+  },
+  {
+    O_FALLING_WALL_F,				FALSE,
+    EL_BD_FALLING_WALL,				ACTION_FALLING, -1
+  },
+  {
+    O_BOX,					TRUE,
+    EL_BD_BOX,					-1, -1
+  },
+  {
+    O_TIME_PENALTY,				TRUE,
+    EL_BD_TIME_PENALTY,				-1, -1
+  },
+  {
+    O_GRAVESTONE,				TRUE,
+    EL_BD_GRAVESTONE,				-1, -1
+  },
+  {
+    O_STONE_GLUED,				TRUE,
+    EL_BD_ROCK_GLUED,				-1, -1
+  },
+  {
+    O_DIAMOND_GLUED,				TRUE,
+    EL_BD_DIAMOND_GLUED,			-1, -1
+  },
+  {
+    O_DIAMOND_KEY,				TRUE,
+    EL_BD_DIAMOND_KEY,				-1, -1
+  },
+  {
+    O_TRAPPED_DIAMOND,				TRUE,
+    EL_BD_TRAPPED_DIAMOND,			-1, -1
+  },
+  {
+    O_CLOCK,					TRUE,
+    EL_BD_CLOCK,				-1, -1
+  },
+  {
+    O_DIRT_GLUED,				TRUE,
+    EL_BD_SAND_GLUED,				-1, -1
+  },
+  {
+    O_KEY_1,					TRUE,
+    EL_BD_KEY_1,				-1, -1
+  },
+  {
+    O_KEY_2,					TRUE,
+    EL_BD_KEY_2,				-1, -1
+  },
+  {
+    O_KEY_3,					TRUE,
+    EL_BD_KEY_3,				-1, -1
+  },
+  {
+    O_DOOR_1,					TRUE,
+    EL_BD_GATE_1,				-1, -1
+  },
+  {
+    O_DOOR_2,					TRUE,
+    EL_BD_GATE_2,				-1, -1
+  },
+  {
+    O_DOOR_3,					TRUE,
+    EL_BD_GATE_3,				-1, -1
+  },
+  {
+    O_POT,					TRUE,
+    EL_BD_POT,					-1, -1
+  },
+  {
+    O_GRAVITY_SWITCH,				TRUE,
+    EL_BD_GRAVITY_SWITCH,			-1, -1
+  },
+  {
+    O_PNEUMATIC_HAMMER,				TRUE,
+    EL_BD_PNEUMATIC_HAMMER,			-1, -1
+  },
+  {
+    O_TELEPORTER,				TRUE,
+    EL_BD_TELEPORTER,				-1, -1
+  },
+  {
+    O_SKELETON,					TRUE,
+    EL_BD_SKELETON,				-1, -1
+  },
+  {
+    O_WATER,					TRUE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_1,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_2,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_3,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_4,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_5,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_6,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_7,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_8,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_9,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_10,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_11,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_12,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_13,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_14,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_15,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_WATER_16,					FALSE,
+    EL_BD_WATER,				-1, -1
+  },
+  {
+    O_COW_1,					TRUE,
+    EL_BD_COW_LEFT,				-1, -1
+  },
+  {
+    O_COW_2,					TRUE,
+    EL_BD_COW_UP,				-1, -1
+  },
+  {
+    O_COW_3,					TRUE,
+    EL_BD_COW_RIGHT,				-1, -1
+  },
+  {
+    O_COW_4,					TRUE,
+    EL_BD_COW_DOWN,				-1, -1
+  },
+  {
+    O_COW_ENCLOSED_1,				FALSE,
+    EL_BD_COW_DOWN,				-1, -1
+  },
+  {
+    O_COW_ENCLOSED_2,				FALSE,
+    EL_BD_COW_DOWN,				-1, -1
+  },
+  {
+    O_COW_ENCLOSED_3,				FALSE,
+    EL_BD_COW_DOWN,				-1, -1
+  },
+  {
+    O_COW_ENCLOSED_4,				FALSE,
+    EL_BD_COW_DOWN,				-1, -1
+  },
+  {
+    O_COW_ENCLOSED_5,				FALSE,
+    EL_BD_COW_DOWN,				-1, -1
+  },
+  {
+    O_COW_ENCLOSED_6,				FALSE,
+    EL_BD_COW_DOWN,				-1, -1
+  },
+  {
+    O_COW_ENCLOSED_7,				FALSE,
+    EL_BD_COW_DOWN,				-1, -1
+  },
+  {
+    O_WALLED_DIAMOND,				TRUE,
+    EL_BD_WALL_DIAMOND,				-1, -1
+  },
+  {
+    O_WALLED_KEY_1,				TRUE,
+    EL_BD_WALL_KEY_1,				-1, -1
+  },
+  {
+    O_WALLED_KEY_2,				TRUE,
+    EL_BD_WALL_KEY_2,				-1, -1
+  },
+  {
+    O_WALLED_KEY_3,				TRUE,
+    EL_BD_WALL_KEY_3,				-1, -1
+  },
+  {
+    O_AMOEBA,					TRUE,
+    EL_BD_AMOEBA,				-1, -1
+  },
+  {
+    O_AMOEBA_2,					TRUE,
+    EL_BD_AMOEBA_2,				-1, -1
+  },
+  {
+    O_REPLICATOR,				TRUE,
+    EL_BD_REPLICATOR,				-1, -1
+  },
+  {
+    O_CONVEYOR_LEFT,				TRUE,
+    EL_BD_CONVEYOR_LEFT,			-1, -1
+  },
+  {
+    O_CONVEYOR_RIGHT,				TRUE,
+    EL_BD_CONVEYOR_RIGHT,			-1, -1
+  },
+  {
+    O_LAVA,					TRUE,
+    EL_BD_LAVA,					-1, -1
+  },
+  {
+    O_SWEET,					TRUE,
+    EL_BD_SWEET,				-1, -1
+  },
+  {
+    O_VOODOO,					TRUE,
+    EL_BD_VOODOO_DOLL,				-1, -1
+  },
+  {
+    O_SLIME,					TRUE,
+    EL_BD_SLIME,				-1, -1
+  },
+  {
+    O_BLADDER,					TRUE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_BLADDER_1,				FALSE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_BLADDER_2,				FALSE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_BLADDER_3,				FALSE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_BLADDER_4,				FALSE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_BLADDER_5,				FALSE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_BLADDER_6,				FALSE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_BLADDER_7,				FALSE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_BLADDER_8,				FALSE,
+    EL_BD_BLADDER,				-1, -1
+  },
+  {
+    O_WAITING_STONE,				TRUE,
+    EL_BD_WAITING_ROCK,				-1, -1
+  },
+  {
+    O_CHASING_STONE,				TRUE,
+    EL_BD_CHASING_ROCK,				-1, -1
+  },
+  {
+    O_GHOST,					TRUE,
+    EL_BD_GHOST,				-1, -1
+  },
+  {
+    O_FIREFLY_1,				TRUE,
+    EL_BD_FIREFLY_LEFT,				-1, -1
+  },
+  {
+    O_FIREFLY_2,				TRUE,
+    EL_BD_FIREFLY_UP,				-1, -1
+  },
+  {
+    O_FIREFLY_3,				TRUE,
+    EL_BD_FIREFLY_RIGHT,			-1, -1
+  },
+  {
+    O_FIREFLY_4,				TRUE,
+    EL_BD_FIREFLY_DOWN,				-1, -1
+  },
+  {
+    O_ALT_FIREFLY_1,				TRUE,
+    EL_BD_FIREFLY_2_LEFT,			-1, -1
+  },
+  {
+    O_ALT_FIREFLY_2,				TRUE,
+    EL_BD_FIREFLY_2_UP,				-1, -1
+  },
+  {
+    O_ALT_FIREFLY_3,				TRUE,
+    EL_BD_FIREFLY_2_RIGHT,			-1, -1
+  },
+  {
+    O_ALT_FIREFLY_4,				TRUE,
+    EL_BD_FIREFLY_2_DOWN,			-1, -1
+  },
+  {
+    O_BUTTER_1,					TRUE,
+    EL_BD_BUTTERFLY_LEFT,			-1, -1
+  },
+  {
+    O_BUTTER_2,					TRUE,
+    EL_BD_BUTTERFLY_UP,				-1, -1
+  },
+  {
+    O_BUTTER_3,					TRUE,
+    EL_BD_BUTTERFLY_RIGHT,			-1, -1
+  },
+  {
+    O_BUTTER_4,					TRUE,
+    EL_BD_BUTTERFLY_DOWN,			-1, -1
+  },
+  {
+    O_ALT_BUTTER_1,				TRUE,
+    EL_BD_BUTTERFLY_2_LEFT,			-1, -1
+  },
+  {
+    O_ALT_BUTTER_2,				TRUE,
+    EL_BD_BUTTERFLY_2_UP,			-1, -1
+  },
+  {
+    O_ALT_BUTTER_3,				TRUE,
+    EL_BD_BUTTERFLY_2_RIGHT,			-1, -1
+  },
+  {
+    O_ALT_BUTTER_4,				TRUE,
+    EL_BD_BUTTERFLY_2_DOWN,			-1, -1
+  },
+  {
+    O_STONEFLY_1,				TRUE,
+    EL_BD_STONEFLY_LEFT,			-1, -1
+  },
+  {
+    O_STONEFLY_2,				TRUE,
+    EL_BD_STONEFLY_UP,				-1, -1
+  },
+  {
+    O_STONEFLY_3,				TRUE,
+    EL_BD_STONEFLY_RIGHT,			-1, -1
+  },
+  {
+    O_STONEFLY_4,				TRUE,
+    EL_BD_STONEFLY_DOWN,			-1, -1
+  },
+  {
+    O_BITER_1,					TRUE,
+    EL_BD_BITER_UP,				-1, -1
+  },
+  {
+    O_BITER_2,					TRUE,
+    EL_BD_BITER_RIGHT,				-1, -1
+  },
+  {
+    O_BITER_3,					TRUE,
+    EL_BD_BITER_DOWN,				-1, -1
+  },
+  {
+    O_BITER_4,					TRUE,
+    EL_BD_BITER_LEFT,				-1, -1
+  },
+  {
+    O_DRAGONFLY_1,				TRUE,
+    EL_BD_DRAGONFLY_LEFT,			-1, -1
+  },
+  {
+    O_DRAGONFLY_2,				TRUE,
+    EL_BD_DRAGONFLY_UP,				-1, -1
+  },
+  {
+    O_DRAGONFLY_3,				TRUE,
+    EL_BD_DRAGONFLY_RIGHT,			-1, -1
+  },
+  {
+    O_DRAGONFLY_4,				TRUE,
+    EL_BD_DRAGONFLY_DOWN,			-1, -1
+  },
+  {
+    O_PRE_PL_1,					FALSE,
+    EL_BD_PLAYER,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_PL_2,					FALSE,
+    EL_BD_PLAYER,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_PL_3,					FALSE,
+    EL_BD_PLAYER,				ACTION_GROWING, -1
+  },
+  {
+    O_PLAYER,					TRUE,
+    EL_BD_PLAYER,				-1, -1
+  },
+  {
+    O_PLAYER_BOMB,				TRUE,
+    EL_BD_PLAYER_WITH_BOMB,			-1, -1
+  },
+  {
+    O_PLAYER_GLUED,				TRUE,
+    EL_BD_PLAYER_GLUED,				-1, -1
+  },
+  {
+    O_PLAYER_STIRRING,				TRUE,
+    EL_BD_PLAYER_STIRRING,			-1, -1
+  },
+  {
+    O_BOMB,					TRUE,
+    EL_BD_BOMB,					-1, -1
+  },
+  {
+    O_BOMB_TICK_1,				FALSE,
+    EL_BD_BOMB,					ACTION_ACTIVE, -1
+  },
+  {
+    O_BOMB_TICK_2,				FALSE,
+    EL_BD_BOMB,					ACTION_ACTIVE, -1
+  },
+  {
+    O_BOMB_TICK_3,				FALSE,
+    EL_BD_BOMB,					ACTION_ACTIVE, -1
+  },
+  {
+    O_BOMB_TICK_4,				FALSE,
+    EL_BD_BOMB,					ACTION_ACTIVE, -1
+  },
+  {
+    O_BOMB_TICK_5,				FALSE,
+    EL_BD_BOMB,					ACTION_ACTIVE, -1
+  },
+  {
+    O_BOMB_TICK_6,				FALSE,
+    EL_BD_BOMB,					ACTION_ACTIVE, -1
+  },
+  {
+    O_BOMB_TICK_7,				FALSE,
+    EL_BD_BOMB,					ACTION_ACTIVE, -1
+  },
+  {
+    O_NITRO_PACK,				TRUE,
+    EL_BD_NITRO_PACK,				-1, -1
+  },
+  {
+    O_NITRO_PACK_F,				FALSE,
+    EL_BD_NITRO_PACK,				ACTION_FALLING, -1
+  },
+  {
+    O_NITRO_PACK_EXPLODE,			FALSE,
+    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+  },
+  {
+    O_PRE_CLOCK_1,				FALSE,
+    EL_BD_CLOCK,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_CLOCK_2,				FALSE,
+    EL_BD_CLOCK,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_CLOCK_3,				FALSE,
+    EL_BD_CLOCK,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_CLOCK_4,				FALSE,
+    EL_BD_CLOCK,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_DIA_1,				FALSE,
+    EL_BD_DIAMOND,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_DIA_2,				FALSE,
+    EL_BD_DIAMOND,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_DIA_3,				FALSE,
+    EL_BD_DIAMOND,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_DIA_4,				FALSE,
+    EL_BD_DIAMOND,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_DIA_5,				FALSE,
+    EL_BD_DIAMOND,				ACTION_GROWING, -1
+  },
+  {
+    O_EXPLODE_1,				FALSE,
+    EL_DEFAULT,					ACTION_EXPLODING, -1
+  },
+  {
+    O_EXPLODE_2,				FALSE,
+    EL_DEFAULT,					ACTION_EXPLODING, -1
+  },
+  {
+    O_EXPLODE_3,				FALSE,
+    EL_DEFAULT,					ACTION_EXPLODING, -1
+  },
+  {
+    O_EXPLODE_4,				FALSE,
+    EL_DEFAULT,					ACTION_EXPLODING, -1
+  },
+  {
+    O_EXPLODE_5,				FALSE,
+    EL_DEFAULT,					ACTION_EXPLODING, -1
+  },
+  {
+    O_PRE_STONE_1,				FALSE,
+    EL_BD_ROCK,					ACTION_GROWING, -1
+  },
+  {
+    O_PRE_STONE_2,				FALSE,
+    EL_BD_ROCK,					ACTION_GROWING, -1
+  },
+  {
+    O_PRE_STONE_3,				FALSE,
+    EL_BD_ROCK,					ACTION_GROWING, -1
+  },
+  {
+    O_PRE_STONE_4,				FALSE,
+    EL_BD_ROCK,					ACTION_GROWING, -1
+  },
+  {
+    O_PRE_STEEL_1,				FALSE,
+    EL_BD_STEELWALL,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_STEEL_2,				FALSE,
+    EL_BD_STEELWALL,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_STEEL_3,				FALSE,
+    EL_BD_STEELWALL,				ACTION_GROWING, -1
+  },
+  {
+    O_PRE_STEEL_4,				FALSE,
+    EL_BD_STEELWALL,				ACTION_GROWING, -1
+  },
+  {
+    O_GHOST_EXPL_1,				FALSE,
+    EL_BD_GHOST,				ACTION_EXPLODING, -1
+  },
+  {
+    O_GHOST_EXPL_2,				FALSE,
+    EL_BD_GHOST,				ACTION_EXPLODING, -1
+  },
+  {
+    O_GHOST_EXPL_3,				FALSE,
+    EL_BD_GHOST,				ACTION_EXPLODING, -1
+  },
+  {
+    O_GHOST_EXPL_4,				FALSE,
+    EL_BD_GHOST,				ACTION_EXPLODING, -1
+  },
+  {
+    O_BOMB_EXPL_1,				FALSE,
+    EL_BD_BOMB,					ACTION_EXPLODING, -1
+  },
+  {
+    O_BOMB_EXPL_2,				FALSE,
+    EL_BD_BOMB,					ACTION_EXPLODING, -1
+  },
+  {
+    O_BOMB_EXPL_3,				FALSE,
+    EL_BD_BOMB,					ACTION_EXPLODING, -1
+  },
+  {
+    O_BOMB_EXPL_4,				FALSE,
+    EL_BD_BOMB,					ACTION_EXPLODING, -1
+  },
+  {
+    O_NITRO_EXPL_1,				FALSE,
+    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+  },
+  {
+    O_NITRO_EXPL_2,				FALSE,
+    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+  },
+  {
+    O_NITRO_EXPL_3,				FALSE,
+    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+  },
+  {
+    O_NITRO_EXPL_4,				FALSE,
+    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+  },
+  {
+    O_AMOEBA_2_EXPL_1,				FALSE,
+    EL_BD_AMOEBA_2,				ACTION_EXPLODING, -1
+  },
+  {
+    O_AMOEBA_2_EXPL_2,				FALSE,
+    EL_BD_AMOEBA_2,				ACTION_EXPLODING, -1
+  },
+  {
+    O_AMOEBA_2_EXPL_3,				FALSE,
+    EL_BD_AMOEBA_2,				ACTION_EXPLODING, -1
+  },
+  {
+    O_AMOEBA_2_EXPL_4,				FALSE,
+    EL_BD_AMOEBA_2,				ACTION_EXPLODING, -1
+  },
+  {
+    O_NUT_EXPL_1,				FALSE,
+    EL_BD_NUT,					ACTION_BREAKING, -1
+  },
+  {
+    O_NUT_EXPL_2,				FALSE,
+    EL_BD_NUT,					ACTION_BREAKING, -1
+  },
+  {
+    O_NUT_EXPL_3,				FALSE,
+    EL_BD_NUT,					ACTION_BREAKING, -1
+  },
+  {
+    O_NUT_EXPL_4,				FALSE,
+    EL_BD_NUT,					ACTION_BREAKING, -1
+  },
+  {
+    O_PLAYER_PNEUMATIC_LEFT,			FALSE,
+    EL_BD_PLAYER,				ACTION_HITTING, MV_BIT_LEFT
+  },
+  {
+    O_PLAYER_PNEUMATIC_RIGHT,			FALSE,
+    EL_BD_PLAYER,				ACTION_HITTING, MV_BIT_RIGHT
+  },
+  {
+    O_PNEUMATIC_ACTIVE_LEFT,			TRUE,
+    EL_BD_PNEUMATIC_HAMMER,			ACTION_HITTING, MV_BIT_LEFT
+  },
+  {
+    O_PNEUMATIC_ACTIVE_RIGHT,			TRUE,
+    EL_BD_PNEUMATIC_HAMMER,			ACTION_HITTING, MV_BIT_RIGHT
+  },
+
+  // helper (runtime) elements
+
+  {
+    O_FAKE_BONUS,				FALSE,
+    EL_BD_FAKE_BONUS,				-1, -1
+  },
+  {
+    O_INBOX_CLOSED,				FALSE,
+    EL_BD_INBOX,				-1, -1
+  },
+  {
+    O_INBOX_OPEN,				FALSE,
+    EL_BD_INBOX,				ACTION_OPENING, -1
+  },
+  {
+    O_OUTBOX_CLOSED,				FALSE,
+    EL_BD_EXIT_CLOSED,				-1, -1
+  },
+  {
+    O_OUTBOX_OPEN,				FALSE,
+    EL_BD_EXIT_OPEN,				-1, -1
+  },
+  {
+    O_COVERED,					FALSE,
+    EL_BD_COVERED,				-1, -1
+  },
+  {
+    O_PLAYER_LEFT,				FALSE,
+    EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_LEFT
+  },
+  {
+    O_PLAYER_RIGHT,				FALSE,
+    EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_RIGHT
+  },
+  {
+    O_PLAYER_BLINK,				FALSE,
+    EL_BD_PLAYER,				ACTION_BORING_1, -1
+  },
+  {
+    O_PLAYER_TAP,				FALSE,
+    EL_BD_PLAYER,				ACTION_BORING_2, -1
+  },
+  {
+    O_PLAYER_TAP_BLINK,				FALSE,
+    EL_BD_PLAYER,				ACTION_BORING_3, -1
+  },
+  {
+    O_CREATURE_SWITCH_ON,			FALSE,
+    EL_BD_CREATURE_SWITCH_ACTIVE,		-1, -1
+  },
+  {
+    O_EXPANDING_WALL_SWITCH_HORIZ,		FALSE,
+    EL_BD_EXPANDABLE_WALL_SWITCH_HORIZONTAL,	-1, -1
+  },
+  {
+    O_EXPANDING_WALL_SWITCH_VERT,		FALSE,
+    EL_BD_EXPANDABLE_WALL_SWITCH_VERTICAL,	-1, -1
+  },
+  {
+    O_GRAVITY_SWITCH_ACTIVE,			FALSE,
+    EL_BD_GRAVITY_SWITCH_ACTIVE,		-1, -1
+  },
+  {
+    O_REPLICATOR_SWITCH_OFF,			FALSE,
+    EL_BD_REPLICATOR_SWITCH,			-1, -1
+  },
+  {
+    O_REPLICATOR_SWITCH_ON,			FALSE,
+    EL_BD_REPLICATOR_SWITCH_ACTIVE,		-1, -1
+  },
+  {
+    O_CONVEYOR_DIR_NORMAL,			FALSE,
+    EL_BD_CONVEYOR_DIR_SWITCH_RIGHT,		-1, -1
+  },
+  {
+    O_CONVEYOR_DIR_CHANGED,			FALSE,
+    EL_BD_CONVEYOR_DIR_SWITCH_LEFT,		-1, -1
+  },
+  {
+    O_CONVEYOR_SWITCH_OFF,			FALSE,
+    EL_BD_CONVEYOR_SWITCH,			-1, -1
+  },
+  {
+    O_CONVEYOR_SWITCH_ON,			FALSE,
+    EL_BD_CONVEYOR_SWITCH_ACTIVE,		-1, -1
+  },
+  {
+    O_MAGIC_WALL_ACTIVE,			FALSE,
+    EL_BD_MAGIC_WALL_ACTIVE,			-1, -1
+  },
+  {
+    O_REPLICATOR_ACTIVE,			FALSE,
+    EL_BD_REPLICATOR_ACTIVE,			-1, -1
+  },
+  {
+    O_CONVEYOR_LEFT_ACTIVE,			FALSE,
+    EL_BD_CONVEYOR_LEFT_ACTIVE,			-1, -1
+  },
+  {
+    O_CONVEYOR_RIGHT_ACTIVE,			FALSE,
+    EL_BD_CONVEYOR_RIGHT_ACTIVE,		-1, -1
+  },
+  {
+    O_BITER_SWITCH_1,				FALSE,
+    EL_BD_BITER_SWITCH_1,			-1, -1
+  },
+  {
+    O_BITER_SWITCH_2,				FALSE,
+    EL_BD_BITER_SWITCH_2,			-1, -1
+  },
+  {
+    O_BITER_SWITCH_3,				FALSE,
+    EL_BD_BITER_SWITCH_3,			-1, -1
+  },
+  {
+    O_BITER_SWITCH_4,				FALSE,
+    EL_BD_BITER_SWITCH_4,			-1, -1
+  },
+
+  {
+    -1,						FALSE,
+    -1,						-1, -1
+  }
+};
+
+int map_element_RND_to_BD(int element_rnd)
+{
+  static unsigned short mapping_RND_to_BD[NUM_FILE_ELEMENTS];
+  static boolean mapping_initialized = FALSE;
+
+  if (!mapping_initialized)
+  {
+    int i;
+
+    // return "O_UNKNOWN" for all undefined elements in mapping array
+    for (i = 0; i < NUM_FILE_ELEMENTS; i++)
+      mapping_RND_to_BD[i] = O_UNKNOWN;
+
+    for (i = 0; bd_object_mapping_list[i].element_bd != -1; i++)
+      if (bd_object_mapping_list[i].is_rnd_to_bd_mapping)
+	mapping_RND_to_BD[bd_object_mapping_list[i].element_rnd] =
+	  bd_object_mapping_list[i].element_bd;
+
+    mapping_initialized = TRUE;
+  }
+
+  if (element_rnd < 0 || element_rnd >= NUM_FILE_ELEMENTS)
+  {
+    Warn("invalid RND element %d", element_rnd);
+
+    return O_UNKNOWN;
+  }
+
+  return mapping_RND_to_BD[element_rnd];
+}
+
+int map_element_BD_to_RND(int element_bd)
+{
+  static unsigned short mapping_BD_to_RND[O_MAX_ALL];
+  static boolean mapping_initialized = FALSE;
+
+  if (!mapping_initialized)
+  {
+    int i;
+
+    // return "EL_UNKNOWN" for all undefined elements in mapping array
+    for (i = 0; i < O_MAX_ALL; i++)
+      mapping_BD_to_RND[i] = EL_UNKNOWN;
+
+    for (i = 0; bd_object_mapping_list[i].element_bd != -1; i++)
+      mapping_BD_to_RND[bd_object_mapping_list[i].element_bd] =
+	bd_object_mapping_list[i].element_rnd;
+
+    mapping_initialized = TRUE;
+  }
+
+  if (element_bd < 0 || element_bd >= O_MAX_ALL)
+  {
+    Warn("invalid BD element %d", element_bd);
+
+    return EL_UNKNOWN;
+  }
+
+  return mapping_BD_to_RND[element_bd];
+}
+
 static struct Mapping_EM_to_RND_object
 {
   int element_em;
