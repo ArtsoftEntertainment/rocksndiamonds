@@ -21,7 +21,12 @@ struct EngineSnapshotInfo_BD engine_snapshot_bd;
 // level file functions
 // ============================================================================
 
-void setLevelInfoToDefaults_BD(void)
+void setLevelInfoToDefaults_BD_Ext(int width, int height)
 {
   // ...
+}
+
+void setLevelInfoToDefaults_BD(void)
+{
+  setLevelInfoToDefaults_BD_Ext(0, 0);
 }

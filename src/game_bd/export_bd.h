@@ -45,10 +45,13 @@ struct GameInfo_BD
 
 struct LevelInfo_BD
 {
-  int width;
-  int height;
+  GdCave *cave;
+  GdReplay *replay;
 
-  int cave[BD_MAX_CAVE_WIDTH][BD_MAX_CAVE_HEIGHT];
+  int cave_nr;
+  int level_nr;
+
+  boolean loaded_from_caveset;
 };
 
 struct EngineSnapshotInfo_BD
@@ -64,6 +67,7 @@ extern struct GameInfo_BD game_bd;
 extern struct LevelInfo_BD native_bd_level;
 extern struct EngineSnapshotInfo_BD engine_snapshot_bd;
 
+void setLevelInfoToDefaults_BD_Ext(int, int);
 void setLevelInfoToDefaults_BD(void);
 
 #endif	// EXPORT_BD_H

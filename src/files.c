@@ -3657,17 +3657,60 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 {
   struct LevelInfo_BD *level_bd = level->native_bd_level;
+  GdCave *cave = NULL;	// will be changed below
+  int cave_w = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
+  int cave_h = MIN(level->fieldy, MAX_PLAYFIELD_HEIGHT);
+  int i, x, y;
 
-  level_bd->width  = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
-  level_bd->height = MIN(level->fieldy, MAX_PLAYFIELD_HEIGHT);
+  setLevelInfoToDefaults_BD_Ext(cave_w, cave_h);
+
+  // cave and map newly allocated when set to defaults above
+  cave = level_bd->cave;
+
+  for (i = 0; i < 5; i++)
+  {
+    cave->level_time[i]			= level->time;
+    cave->level_diamonds[i]		= level->gems_needed;
+    cave->level_magic_wall_time[i]	= level->time_magic_wall;
+    cave->level_timevalue[i]		= level->score[SC_TIME_BONUS];
+  }
+
+  cave->diamond_value			= level->score[SC_DIAMOND];
+  cave->extra_diamond_value		= level->score[SC_DIAMOND];
+
+  cave->level_speed[0]			= 160;	// set cave speed
+
+  strncpy(cave->name, level->name, sizeof(GdString));
+  cave->name[sizeof(GdString) - 1] = '\0';
+
+  for (x = 0; x < cave->w; x++)
+    for (y = 0; y < cave->h; y++)
+      cave->map[y][x] = map_element_RND_to_BD(level->field[x][y]);
 }
 
 static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 {
   struct LevelInfo_BD *level_bd = level->native_bd_level;
+  GdCave *cave = level_bd->cave;
+  int bd_level_nr = level_bd->level_nr;
+  int x, y;
 
-  level->fieldx = MIN(level_bd->width,  MAX_LEV_FIELDX);
-  level->fieldy = MIN(level_bd->height, MAX_LEV_FIELDY);
+  level->fieldx = MIN(cave->w, MAX_LEV_FIELDX);
+  level->fieldy = MIN(cave->h, MAX_LEV_FIELDY);
+
+  level->time			= cave->level_time[bd_level_nr];
+  level->gems_needed		= cave->level_diamonds[bd_level_nr];
+  level->time_magic_wall	= cave->level_magic_wall_time[bd_level_nr];
+
+  level->score[SC_TIME_BONUS]	= cave->level_timevalue[bd_level_nr];
+  level->score[SC_DIAMOND]	= cave->diamond_value;
+
+  strncpy(level->name, cave->name, MAX_LEVEL_NAME_LEN);
+  level->name[MAX_LEVEL_NAME_LEN] = '\0';
+
+  for (x = 0; x < level->fieldx; x++)
+    for (y = 0; y < level->fieldy; y++)
+      level->field[x][y] = map_element_BD_to_RND(cave->map[y][x]);
 }
 
 
