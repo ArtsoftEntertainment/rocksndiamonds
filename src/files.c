@@ -9804,6 +9804,14 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.bd_skip_uncovering,			"bd_skip_uncovering"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.bd_skip_hatching,			"bd_skip_hatching"
+  },
+  {
+    TYPE_SWITCH,
     &setup.sp_show_border_elements,		"sp_show_border_elements"
   },
   {
@@ -10618,6 +10626,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->prefer_extra_panel_items = TRUE;
   si->game_speed_extended = FALSE;
   si->game_frame_delay = GAME_FRAME_DELAY;
+  si->bd_skip_uncovering = FALSE;
+  si->bd_skip_hatching = FALSE;
   si->sp_show_border_elements = FALSE;
   si->small_game_graphics = FALSE;
   si->show_load_save_buttons = FALSE;
