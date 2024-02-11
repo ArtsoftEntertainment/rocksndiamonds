@@ -15287,15 +15287,15 @@ void InitPlayLevelSound(void)
   loop_sound_volume = checked_calloc(num_sounds * sizeof(int));
 }
 
-static void PlayLevelSound(int x, int y, int nr)
+static void PlayLevelSoundExt(int x, int y, int nr, boolean is_loop_sound)
 {
   int sx = SCREENX(x), sy = SCREENY(y);
   int volume, stereo_position;
   int max_distance = 8;
-  int type = (IS_LOOP_SOUND(nr) ? SND_CTRL_PLAY_LOOP : SND_CTRL_PLAY_SOUND);
+  int type = (is_loop_sound ? SND_CTRL_PLAY_LOOP : SND_CTRL_PLAY_SOUND);
 
-  if ((!setup.sound_simple && !IS_LOOP_SOUND(nr)) ||
-      (!setup.sound_loops && IS_LOOP_SOUND(nr)))
+  if ((!setup.sound_simple && !is_loop_sound) ||
+      (!setup.sound_loops && is_loop_sound))
     return;
 
   if (!IN_LEV_FIELD(x, y) ||
@@ -15317,7 +15317,7 @@ static void PlayLevelSound(int x, int y, int nr)
 		     (sx + max_distance) * SOUND_MAX_LEFT2RIGHT /
 		     (SCR_FIELDX + 2 * max_distance));
 
-  if (IS_LOOP_SOUND(nr))
+  if (is_loop_sound)
   {
     /* This assures that quieter loop sounds do not overwrite louder ones,
        while restarting sound volume comparison with each new game frame. */
@@ -15330,6 +15330,11 @@ static void PlayLevelSound(int x, int y, int nr)
   }
 
   PlaySoundExt(nr, volume, stereo_position, type);
+}
+
+static void PlayLevelSound(int x, int y, int nr)
+{
+  PlayLevelSoundExt(x, y, nr, IS_LOOP_SOUND(nr));
 }
 
 static void PlayLevelSoundNearest(int x, int y, int sound_action)
@@ -15418,6 +15423,226 @@ static void PlayLevelMusic(void)
 
   if (!strEqual(curr_music, next_music))
     PlayMusicLoop(music_nr);
+}
+
+static int getSoundAction_BD(int sample)
+{
+  switch (sample)
+  {
+    case GD_S_STONE:
+    case GD_S_NUT:
+    case GD_S_DIRT_BALL:
+    case GD_S_NITRO:
+    case GD_S_FALLING_WALL:
+      return ACTION_IMPACT;
+
+    case GD_S_NUT_CRACK:
+      return ACTION_BREAKING;
+
+    case GD_S_EXPANDING_WALL:
+    case GD_S_WALL_REAPPEAR:
+    case GD_S_SLIME:
+    case GD_S_LAVA:
+    case GD_S_ACID_SPREAD:
+      return ACTION_GROWING;
+
+    case GD_S_DIAMOND_COLLECT:
+    case GD_S_SKELETON_COLLECT:
+    case GD_S_PNEUMATIC_COLLECT:
+    case GD_S_BOMB_COLLECT:
+    case GD_S_CLOCK_COLLECT:
+    case GD_S_SWEET_COLLECT:
+    case GD_S_KEY_COLLECT:
+    case GD_S_DIAMOND_KEY_COLLECT:
+      return ACTION_COLLECTING;
+
+    case GD_S_BOMB_PLACE:
+    case GD_S_REPLICATOR:
+      return ACTION_DROPPING;
+
+    case GD_S_BLADDER_MOVE:
+      return ACTION_MOVING;
+
+    case GD_S_BLADDER_SPENDER:
+    case GD_S_BLADDER_CONVERT:
+    case GD_S_GRAVITY_CHANGE:
+      return ACTION_CHANGING;
+
+    case GD_S_BITER_EAT:
+      return ACTION_EATING;
+
+    case GD_S_DOOR_OPEN:
+    case GD_S_CRACK:
+      return ACTION_OPENING;
+
+    case GD_S_WALK_EARTH:
+      return ACTION_DIGGING;
+
+    case GD_S_WALK_EMPTY:
+      return ACTION_WALKING;
+
+    case GD_S_SWITCH_BITER:
+    case GD_S_SWITCH_CREATURES:
+    case GD_S_SWITCH_GRAVITY:
+    case GD_S_SWITCH_EXPANDING:
+    case GD_S_SWITCH_CONVEYOR:
+    case GD_S_SWITCH_REPLICATOR:
+    case GD_S_STIRRING:
+      return ACTION_ACTIVATING;
+
+    case GD_S_BOX_PUSH:
+      return ACTION_PUSHING;
+
+    case GD_S_TELEPORTER:
+      return ACTION_PASSING;
+
+    case GD_S_EXPLOSION:
+    case GD_S_BOMB_EXPLOSION:
+    case GD_S_GHOST_EXPLOSION:
+    case GD_S_VOODOO_EXPLOSION:
+    case GD_S_NITRO_EXPLOSION:
+      return ACTION_EXPLODING;
+
+    case GD_S_COVER:
+    case GD_S_AMOEBA:
+    case GD_S_AMOEBA_MAGIC:
+    case GD_S_MAGIC_WALL:
+    case GD_S_PNEUMATIC_HAMMER:
+    case GD_S_WATER:
+      return ACTION_ACTIVE;
+
+    case GD_S_DIAMOND_RANDOM:
+    case GD_S_DIAMOND_1:
+    case GD_S_DIAMOND_2:
+    case GD_S_DIAMOND_3:
+    case GD_S_DIAMOND_4:
+    case GD_S_DIAMOND_5:
+    case GD_S_DIAMOND_6:
+    case GD_S_DIAMOND_7:
+    case GD_S_DIAMOND_8:
+    case GD_S_TIMEOUT_0:
+    case GD_S_TIMEOUT_1:
+    case GD_S_TIMEOUT_2:
+    case GD_S_TIMEOUT_3:
+    case GD_S_TIMEOUT_4:
+    case GD_S_TIMEOUT_5:
+    case GD_S_TIMEOUT_6:
+    case GD_S_TIMEOUT_7:
+    case GD_S_TIMEOUT_8:
+    case GD_S_TIMEOUT_9:
+    case GD_S_TIMEOUT_10:
+    case GD_S_BONUS_LIFE:
+      // kludge to prevent playing as loop sound
+      return ACTION_OTHER;
+
+    case GD_S_FINISHED:
+      return ACTION_DEFAULT;
+
+    default:
+      return ACTION_DEFAULT;
+  }
+}
+
+static int getSoundEffect_BD(int element_bd, int sample)
+{
+  int sound_action = getSoundAction_BD(sample);
+  int sound_effect = element_info[SND_ELEMENT(element_bd)].sound[sound_action];
+  int nr;
+
+  // standard sounds
+  if (sound_action != ACTION_OTHER &&
+      sound_action != ACTION_DEFAULT)
+    return sound_effect;
+
+  // special sounds
+  switch (sample)
+  {
+    case GD_S_DIAMOND_RANDOM:
+      nr = GetSimpleRandom(8);
+      sound_effect = SND_BD_DIAMOND_IMPACT_RANDOM_1 + nr;
+      break;
+
+    case GD_S_DIAMOND_1:
+    case GD_S_DIAMOND_2:
+    case GD_S_DIAMOND_3:
+    case GD_S_DIAMOND_4:
+    case GD_S_DIAMOND_5:
+    case GD_S_DIAMOND_6:
+    case GD_S_DIAMOND_7:
+    case GD_S_DIAMOND_8:
+      nr = sample - GD_S_DIAMOND_1;
+      sound_effect = SND_BD_DIAMOND_IMPACT_RANDOM_1 + nr;
+      break;
+
+    case GD_S_TIMEOUT_0:
+    case GD_S_TIMEOUT_1:
+    case GD_S_TIMEOUT_2:
+    case GD_S_TIMEOUT_3:
+    case GD_S_TIMEOUT_4:
+    case GD_S_TIMEOUT_5:
+    case GD_S_TIMEOUT_6:
+    case GD_S_TIMEOUT_7:
+    case GD_S_TIMEOUT_8:
+    case GD_S_TIMEOUT_9:
+    case GD_S_TIMEOUT_10:
+      nr = sample - GD_S_TIMEOUT_0;
+      sound_effect = SND_GAME_RUNNING_OUT_OF_TIME_0 + nr;
+
+      if (getSoundInfoEntryFilename(sound_effect) == NULL && sample != GD_S_TIMEOUT_0)
+	sound_effect = SND_GAME_RUNNING_OUT_OF_TIME;
+      break;
+
+    case GD_S_FINISHED:
+      sound_effect = SND_GAME_LEVELTIME_BONUS;
+      break;
+
+    case GD_S_BONUS_LIFE:
+      sound_effect = SND_GAME_HEALTH_BONUS;
+      break;
+
+    default:
+      sound_effect = SND_UNDEFINED;
+      break;
+  }
+
+  return sound_effect;
+}
+
+void PlayLevelSound_BD(int xx, int yy, int element_bd, int sample)
+{
+  int element = (element_bd > -1 ? map_element_BD_to_RND(element_bd) : 0);
+  int sound_effect = getSoundEffect_BD(element, sample);
+  int sound_action = getSoundAction_BD(sample);
+  boolean is_loop_sound = IS_LOOP_SOUND(sound_effect);
+  int offset = 0;
+  int x = xx - offset;
+  int y = yy - offset;
+
+  if (sound_action == ACTION_OTHER)
+    is_loop_sound = FALSE;
+
+  if (sound_effect != SND_UNDEFINED)
+    PlayLevelSoundExt(x, y, sound_effect, is_loop_sound);
+}
+
+void StopSound_BD(int element_bd, int sample)
+{
+  int element = (element_bd > -1 ? map_element_BD_to_RND(element_bd) : 0);
+  int sound_effect = getSoundEffect_BD(element, sample);
+
+  if (sound_effect != SND_UNDEFINED)
+    StopSound(sound_effect);
+}
+
+boolean isSoundPlaying_BD(int element_bd, int sample)
+{
+  int element = (element_bd > -1 ? map_element_BD_to_RND(element_bd) : 0);
+  int sound_effect = getSoundEffect_BD(element, sample);
+
+  if (sound_effect != SND_UNDEFINED)
+    return isSoundPlaying(sound_effect);
+
+  return FALSE;
 }
 
 void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)

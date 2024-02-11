@@ -284,16 +284,42 @@ struct ConfigInfo sound_config[] =
   { "[mm_steel_lock].exploding",	"whoosh.wav"			},
   { "[mm_wooden_lock].exploding",	"whoosh.wav"			},
 
-  // sounds not associated to game elements (used for menu screens etc.)
+
+  // ==========================================================================
+  // sound definitions not associated with game elements (menu screens etc.)
+  // ==========================================================================
+
   // keyword to stop parser: "NO_MORE_ELEMENT_SOUNDS" <-- do not change!
+
+  // sounds for Boulder Dash style elements and actions
+  { "bd_diamond.impact.RANDOM_1",	UNDEFINED_FILENAME		},
+  { "bd_diamond.impact.RANDOM_2",	UNDEFINED_FILENAME		},
+  { "bd_diamond.impact.RANDOM_3",	UNDEFINED_FILENAME		},
+  { "bd_diamond.impact.RANDOM_4",	UNDEFINED_FILENAME		},
+  { "bd_diamond.impact.RANDOM_5",	UNDEFINED_FILENAME		},
+  { "bd_diamond.impact.RANDOM_6",	UNDEFINED_FILENAME		},
+  { "bd_diamond.impact.RANDOM_7",	UNDEFINED_FILENAME		},
+  { "bd_diamond.impact.RANDOM_8",	UNDEFINED_FILENAME		},
 
   // sounds for other game actions
   { "game.starting",			UNDEFINED_FILENAME		},
   { "game.leveltime_charging",		"fuel.wav"			},
   { "game.health_charging",		"warnton.wav"			},
   { "game.running_out_of_time",		"gong.wav"			},
+  { "game.running_out_of_time_10",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_9",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_8",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_7",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_6",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_5",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_4",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_3",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_2",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_1",	UNDEFINED_FILENAME		},
+  { "game.running_out_of_time_0",	UNDEFINED_FILENAME		},
   { "game.leveltime_bonus",		"sirr.wav"			},
   { "game.health_bonus",		"sirr.wav"			},
+  { "game.timeout",			UNDEFINED_FILENAME		},
   { "game.losing",			UNDEFINED_FILENAME		},
   { "game.winning",			UNDEFINED_FILENAME		},
   { "game.sokoban_solving",		"buing.wav"			},
