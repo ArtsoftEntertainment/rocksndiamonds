@@ -500,7 +500,9 @@ void RedrawPlayfield(void)
   if (game_status != GAME_MODE_PLAYING)
     return;
 
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    RedrawPlayfield_BD(TRUE);
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
     RedrawPlayfield_EM(TRUE);
   else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
     RedrawPlayfield_SP(TRUE);
@@ -668,7 +670,9 @@ void BlitScreenToBitmap_RND(Bitmap *target_bitmap)
 
 void BlitScreenToBitmap(Bitmap *target_bitmap)
 {
-  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    BlitScreenToBitmap_BD(target_bitmap);
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
     BlitScreenToBitmap_EM(target_bitmap);
   else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
     BlitScreenToBitmap_SP(target_bitmap);
@@ -1025,6 +1029,10 @@ void FadeOut(int fade_mask)
   if (!equalRedrawMasks(fade_mask, redraw_mask) &&
       fade_type_skip != FADE_MODE_SKIP_FADE_OUT)
     BackToFront();
+
+  // when using BD game engine, cover playfield before fading out after a game
+  if (game_bd.cover_screen)
+    CoverScreen_BD();
 
   SetScreenStates_BeforeFadingOut();
 

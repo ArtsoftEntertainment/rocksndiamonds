@@ -16019,6 +16019,10 @@ void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
     }
     else
     {
+      // when using BD game engine, cover screen before fading out
+      if (!quick_quit && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+	game_bd.cover_screen = TRUE;
+
       if (quick_quit)
 	FadeSkipNextFadeIn();
 

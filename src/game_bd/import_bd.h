@@ -28,6 +28,8 @@ void PlayLevelSound_BD(int, int, int, int);
 void StopSound_BD(int, int);
 boolean isSoundPlaying_BD(int, int);
 
+void BackToFront(void);
+
 byte *TapePlayAction_BD(void);
 byte *TapeCorrectAction_BD(byte *);
 boolean TapeIsPlaying_ReplayBD(void);

@@ -200,3 +200,52 @@ unsigned int InitEngineRandom_BD(int seed)
 
   return (unsigned int)seed;
 }
+
+
+// ============================================================================
+// graphics functions
+// ============================================================================
+
+void CoverScreen_BD(void)
+{
+  game_bd.cover_screen = FALSE;
+
+  if (setup.bd_skip_uncovering)
+    return;
+
+  game_bd.game->state_counter = GAME_INT_COVER_START;
+
+  // play game engine (with normal speed) until cave covered
+  while (game_bd.game->state_counter < GAME_INT_COVER_ALL + 1)
+  {
+    play_game_func(game_bd.game, 0);
+
+    RedrawPlayfield_BD(TRUE);
+
+    BlitScreenToBitmap_BD(backbuffer);
+
+    BackToFront();
+  }
+
+  // stop uncovering loop sound when not using native sound engine
+  FadeSounds();
+}
+
+void BlitScreenToBitmap_BD(Bitmap *target_bitmap)
+{
+  int xsize = SXSIZE;
+  int ysize = SYSIZE;
+  int full_xsize = native_bd_level.cave->w * TILESIZE_VAR;
+  int full_ysize = native_bd_level.cave->h * TILESIZE_VAR;
+  int sx = SX + (full_xsize < xsize ? (xsize - full_xsize) / 2 : 0);
+  int sy = SY + (full_ysize < ysize ? (ysize - full_ysize) / 2 : 0);
+  int sxsize = (full_xsize < xsize ? full_xsize : xsize);
+  int sysize = (full_ysize < ysize ? full_ysize : ysize);
+
+  BlitBitmap(gd_screen_bitmap, target_bitmap, 0, 0, sxsize, sysize, sx, sy);
+}
+
+void RedrawPlayfield_BD(boolean force_redraw)
+{
+  gd_drawcave(gd_screen_bitmap, game_bd.game, force_redraw);
+}

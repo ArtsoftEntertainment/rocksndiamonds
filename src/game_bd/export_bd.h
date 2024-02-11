@@ -96,5 +96,9 @@ void setLevelInfoToDefaults_BD(void);
 boolean LoadNativeLevel_BD(char *, int, boolean);
 
 unsigned int InitEngineRandom_BD(int);
+void CoverScreen_BD(void);
+
+void BlitScreenToBitmap_BD(Bitmap *);
+void RedrawPlayfield_BD(boolean);
 
 #endif	// EXPORT_BD_H
