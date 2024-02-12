@@ -25,261 +25,258 @@
 #include "api.h"
 
 
-#define DEBUG_JOYSTICKS		0
+#define DEBUG_JOYSTICKS				0
 
 
 // screens on the info screen
-#define INFO_MODE_MAIN			0
-#define INFO_MODE_TITLE			1
-#define INFO_MODE_ELEMENTS		2
-#define INFO_MODE_MUSIC			3
-#define INFO_MODE_CREDITS		4
-#define INFO_MODE_PROGRAM		5
-#define INFO_MODE_VERSION		6
-#define INFO_MODE_LEVELSET		7
+#define INFO_MODE_MAIN				0
+#define INFO_MODE_TITLE				1
+#define INFO_MODE_ELEMENTS			2
+#define INFO_MODE_MUSIC				3
+#define INFO_MODE_CREDITS			4
+#define INFO_MODE_PROGRAM			5
+#define INFO_MODE_VERSION			6
+#define INFO_MODE_LEVELSET			7
 
-#define MAX_INFO_MODES			8
+#define MAX_INFO_MODES				8
 
 // screens on the setup screen
 // (must match GFX_SPECIAL_ARG_SETUP_* values as defined in src/main.h)
 // (should also match corresponding entries in src/conf_gfx.c)
-#define SETUP_MODE_MAIN			0
-#define SETUP_MODE_GAME			1
-#define SETUP_MODE_ENGINES		2
-#define SETUP_MODE_EDITOR		3
-#define SETUP_MODE_GRAPHICS		4
-#define SETUP_MODE_SOUND		5
-#define SETUP_MODE_ARTWORK		6
-#define SETUP_MODE_INPUT		7
-#define SETUP_MODE_TOUCH		8
-#define SETUP_MODE_SHORTCUTS		9
-#define SETUP_MODE_SHORTCUTS_1		10
-#define SETUP_MODE_SHORTCUTS_2		11
-#define SETUP_MODE_SHORTCUTS_3		12
-#define SETUP_MODE_SHORTCUTS_4		13
-#define SETUP_MODE_SHORTCUTS_5		14
+#define SETUP_MODE_MAIN				0
+#define SETUP_MODE_GAME				1
+#define SETUP_MODE_ENGINES			2
+#define SETUP_MODE_EDITOR			3
+#define SETUP_MODE_GRAPHICS			4
+#define SETUP_MODE_SOUND			5
+#define SETUP_MODE_ARTWORK			6
+#define SETUP_MODE_INPUT			7
+#define SETUP_MODE_TOUCH			8
+#define SETUP_MODE_SHORTCUTS			9
+#define SETUP_MODE_SHORTCUTS_1			10
+#define SETUP_MODE_SHORTCUTS_2			11
+#define SETUP_MODE_SHORTCUTS_3			12
+#define SETUP_MODE_SHORTCUTS_4			13
+#define SETUP_MODE_SHORTCUTS_5			14
 
 // sub-screens on the setup screen (generic)
-#define SETUP_MODE_CHOOSE_ARTWORK	15
-#define SETUP_MODE_CHOOSE_OTHER		16
+#define SETUP_MODE_CHOOSE_ARTWORK		15
+#define SETUP_MODE_CHOOSE_OTHER			16
 
 // sub-screens on the setup screen (specific)
-#define SETUP_MODE_CHOOSE_SCORES_TYPE	17
-#define SETUP_MODE_CHOOSE_GAME_SPEED	18
-#define SETUP_MODE_CHOOSE_SCROLL_DELAY	19
-#define SETUP_MODE_CHOOSE_SNAPSHOT_MODE	20
-#define SETUP_MODE_CHOOSE_WINDOW_SIZE	21
-#define SETUP_MODE_CHOOSE_SCALING_TYPE	22
-#define SETUP_MODE_CHOOSE_RENDERING	23
-#define SETUP_MODE_CHOOSE_VSYNC		24
-#define SETUP_MODE_CHOOSE_GRAPHICS	25
-#define SETUP_MODE_CHOOSE_SOUNDS	26
-#define SETUP_MODE_CHOOSE_MUSIC		27
-#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE	28
-#define SETUP_MODE_CHOOSE_VOLUME_LOOPS	29
-#define SETUP_MODE_CHOOSE_VOLUME_MUSIC	30
-#define SETUP_MODE_CHOOSE_TOUCH_CONTROL	31
-#define SETUP_MODE_CHOOSE_MOVE_DISTANCE	32
-#define SETUP_MODE_CHOOSE_DROP_DISTANCE	33
-#define SETUP_MODE_CHOOSE_TRANSPARENCY	34
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_0	35
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_0	36
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_1	37
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_1	38
-#define SETUP_MODE_CONFIG_VIRT_BUTTONS	39
+#define SETUP_MODE_CHOOSE_SCORES_TYPE		17
+#define SETUP_MODE_CHOOSE_GAME_SPEED		18
+#define SETUP_MODE_CHOOSE_SCROLL_DELAY		19
+#define SETUP_MODE_CHOOSE_SNAPSHOT_MODE		20
+#define SETUP_MODE_CHOOSE_WINDOW_SIZE		21
+#define SETUP_MODE_CHOOSE_SCALING_TYPE		22
+#define SETUP_MODE_CHOOSE_RENDERING		23
+#define SETUP_MODE_CHOOSE_VSYNC			24
+#define SETUP_MODE_CHOOSE_GRAPHICS		25
+#define SETUP_MODE_CHOOSE_SOUNDS		26
+#define SETUP_MODE_CHOOSE_MUSIC			27
+#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		28
+#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		29
+#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		30
+#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		31
+#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		32
+#define SETUP_MODE_CHOOSE_DROP_DISTANCE		33
+#define SETUP_MODE_CHOOSE_TRANSPARENCY		34
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		35
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		36
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		37
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		38
+#define SETUP_MODE_CONFIG_VIRT_BUTTONS		39
 
-#define MAX_SETUP_MODES			40
+#define MAX_SETUP_MODES				40
 
-#define MAX_MENU_MODES			MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
+#define MAX_MENU_MODES				MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
 // info screen titles
-#define STR_INFO_MAIN			"Info Screen"
-#define STR_INFO_TITLE			"Title Screen"
-#define STR_INFO_ELEMENTS		"Game Elements"
-#define STR_INFO_MUSIC			"Music Info"
-#define STR_INFO_CREDITS		"Credits"
-#define STR_INFO_PROGRAM		"Program Info"
-#define STR_INFO_VERSION		"Version Info"
-#define STR_INFO_LEVELSET		"Level Set Info"
-#define STR_INFO_EXIT			"Exit"
+#define STR_INFO_MAIN				"Info Screen"
+#define STR_INFO_TITLE				"Title Screen"
+#define STR_INFO_ELEMENTS			"Game Elements"
+#define STR_INFO_MUSIC				"Music Info"
+#define STR_INFO_CREDITS			"Credits"
+#define STR_INFO_PROGRAM			"Program Info"
+#define STR_INFO_VERSION			"Version Info"
+#define STR_INFO_LEVELSET			"Level Set Info"
+#define STR_INFO_EXIT				"Exit"
 
 // setup screen titles
-#define STR_SETUP_MAIN			"Setup"
-#define STR_SETUP_GAME			"Game & Menu"
-#define STR_SETUP_ENGINES		"Game Engines"
-#define STR_SETUP_EDITOR		"Editor"
-#define STR_SETUP_GRAPHICS		"Graphics"
-#define STR_SETUP_SOUND			"Sound & Music"
-#define STR_SETUP_ARTWORK		"Custom Artwork"
-#define STR_SETUP_INPUT			"Input Devices"
-#define STR_SETUP_TOUCH			"Touch Controls"
-#define STR_SETUP_SHORTCUTS		"Key Shortcuts"
-#define STR_SETUP_EXIT			"Exit"
-#define STR_SETUP_SAVE_AND_EXIT		"Save and Exit"
+#define STR_SETUP_MAIN				"Setup"
+#define STR_SETUP_GAME				"Game & Menu"
+#define STR_SETUP_ENGINES			"Game Engines"
+#define STR_SETUP_EDITOR			"Editor"
+#define STR_SETUP_GRAPHICS			"Graphics"
+#define STR_SETUP_SOUND				"Sound & Music"
+#define STR_SETUP_ARTWORK			"Custom Artwork"
+#define STR_SETUP_INPUT				"Input Devices"
+#define STR_SETUP_TOUCH				"Touch Controls"
+#define STR_SETUP_SHORTCUTS			"Key Shortcuts"
+#define STR_SETUP_EXIT				"Exit"
+#define STR_SETUP_SAVE_AND_EXIT			"Save and Exit"
 
-#define STR_SETUP_CHOOSE_SCORES_TYPE	"Scores Type"
-#define STR_SETUP_CHOOSE_GAME_SPEED	"Game Speed"
-#define STR_SETUP_CHOOSE_SCROLL_DELAY	"Scroll Delay"
-#define STR_SETUP_CHOOSE_SNAPSHOT_MODE	"Snapshot Mode"
-#define STR_SETUP_CHOOSE_WINDOW_SIZE	"Window Scaling"
-#define STR_SETUP_CHOOSE_SCALING_TYPE	"Anti-Aliasing"
-#define STR_SETUP_CHOOSE_RENDERING	"Rendering Mode"
-#define STR_SETUP_CHOOSE_VSYNC		"VSync Mode"
-#define STR_SETUP_CHOOSE_VOLUME_SIMPLE	"Sound Volume"
-#define STR_SETUP_CHOOSE_VOLUME_LOOPS	"Loops Volume"
-#define STR_SETUP_CHOOSE_VOLUME_MUSIC	"Music Volume"
-#define STR_SETUP_CHOOSE_TOUCH_CONTROL	"Control Type"
-#define STR_SETUP_CHOOSE_MOVE_DISTANCE	"Move Distance"
-#define STR_SETUP_CHOOSE_DROP_DISTANCE	"Drop Distance"
-#define STR_SETUP_CHOOSE_TRANSPARENCY	"Transparency"
-#define STR_SETUP_CHOOSE_GRID_XSIZE_0	"Horiz. Buttons"
-#define STR_SETUP_CHOOSE_GRID_YSIZE_0	"Vert. Buttons"
-#define STR_SETUP_CHOOSE_GRID_XSIZE_1	"Horiz. Buttons"
-#define STR_SETUP_CHOOSE_GRID_YSIZE_1	"Vert. Buttons"
+#define STR_SETUP_CHOOSE_SCORES_TYPE		"Scores Type"
+#define STR_SETUP_CHOOSE_GAME_SPEED		"Game Speed"
+#define STR_SETUP_CHOOSE_SCROLL_DELAY		"Scroll Delay"
+#define STR_SETUP_CHOOSE_SNAPSHOT_MODE		"Snapshot Mode"
+#define STR_SETUP_CHOOSE_WINDOW_SIZE		"Window Scaling"
+#define STR_SETUP_CHOOSE_SCALING_TYPE		"Anti-Aliasing"
+#define STR_SETUP_CHOOSE_RENDERING		"Rendering Mode"
+#define STR_SETUP_CHOOSE_VSYNC			"VSync Mode"
+#define STR_SETUP_CHOOSE_VOLUME_SIMPLE		"Sound Volume"
+#define STR_SETUP_CHOOSE_VOLUME_LOOPS		"Loops Volume"
+#define STR_SETUP_CHOOSE_VOLUME_MUSIC		"Music Volume"
+#define STR_SETUP_CHOOSE_TOUCH_CONTROL		"Control Type"
+#define STR_SETUP_CHOOSE_MOVE_DISTANCE		"Move Distance"
+#define STR_SETUP_CHOOSE_DROP_DISTANCE		"Drop Distance"
+#define STR_SETUP_CHOOSE_TRANSPARENCY		"Transparency"
+#define STR_SETUP_CHOOSE_GRID_XSIZE_0		"Horiz. Buttons"
+#define STR_SETUP_CHOOSE_GRID_YSIZE_0		"Vert. Buttons"
+#define STR_SETUP_CHOOSE_GRID_XSIZE_1		"Horiz. Buttons"
+#define STR_SETUP_CHOOSE_GRID_YSIZE_1		"Vert. Buttons"
 
 // other screen text constants
-#define STR_CHOOSE_TREE_EDIT		"Edit"
-#define MENU_CHOOSE_TREE_FONT(x)	(FONT_TEXT_1 + (x))
-#define MENU_CHOOSE_TREE_COLOR(ti, a)	TREE_COLOR(ti, a)
+#define STR_CHOOSE_TREE_EDIT			"Edit"
+#define MENU_CHOOSE_TREE_FONT(x)		(FONT_TEXT_1 + (x))
+#define MENU_CHOOSE_TREE_COLOR(ti, a)		TREE_COLOR(ti, a)
 
-#define TEXT_MAIN_MENU			"Press any key or button for main menu"
-#define TEXT_INFO_MENU			"Press any key or button for info menu"
-#define TEXT_NEXT_PAGE			"Press any key or button for next page"
-#define TEXT_NEXT_MENU			(info_screens_from_main ?	\
-					 TEXT_MAIN_MENU : TEXT_INFO_MENU)
+#define TEXT_MAIN_MENU				"Press any key or button for main menu"
+#define TEXT_INFO_MENU				"Press any key or button for info menu"
+#define TEXT_NEXT_PAGE				"Press any key or button for next page"
+#define TEXT_NEXT_MENU				(info_screens_from_main ?		\
+						 TEXT_MAIN_MENU : TEXT_INFO_MENU)
 
 // for input setup functions
-#define SETUPINPUT_SCREEN_POS_START	0
-#define SETUPINPUT_SCREEN_POS_EMPTY1	3
-#define SETUPINPUT_SCREEN_POS_EMPTY2	12
-#define SETUPINPUT_SCREEN_POS_END	13
+#define SETUPINPUT_SCREEN_POS_START		0
+#define SETUPINPUT_SCREEN_POS_EMPTY1		3
+#define SETUPINPUT_SCREEN_POS_EMPTY2		12
+#define SETUPINPUT_SCREEN_POS_END		13
 
-#define MENU_SETUP_FONT_TITLE		FONT_TEXT_1
-#define MENU_SETUP_FONT_TEXT		FONT_TITLE_2
+#define MENU_SETUP_FONT_TITLE			FONT_TEXT_1
+#define MENU_SETUP_FONT_TEXT			FONT_TITLE_2
 
-#define MAX_SETUP_TEXT_INPUT_LEN	28
+#define MAX_SETUP_TEXT_INPUT_LEN		28
 
 // for various menu stuff
-#define MENU_SCREEN_START_XPOS		1
-#define MENU_SCREEN_START_YPOS		2
-#define MENU_SCREEN_VALUE_XPOS		(SCR_FIELDX - 3)
-#define MENU_SCREEN_TEXT2_XPOS		(SCR_FIELDX - 2)
-#define MENU_SCREEN_MAX_XPOS		(SCR_FIELDX - 1)
-#define MENU_TITLE1_YPOS		8
-#define MENU_TITLE2_YPOS		46
-#define MENU_INFO_FONT_TITLE		FONT_TEXT_1
-#define MENU_INFO_FONT_HEAD		FONT_TEXT_2
-#define MENU_INFO_FONT_TEXT		FONT_TEXT_3
-#define MENU_INFO_FONT_FOOT		FONT_TEXT_4
-#define MENU_INFO_SPACE_HEAD		(menu.headline2_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_SPACE_LEFT	(menu.left_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_SPACE_MIDDLE	(menu.middle_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_SPACE_RIGHT	(menu.right_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_SPACE_TOP	(menu.top_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_SPACE_BOTTOM	(menu.bottom_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_SPACE_LINE	(menu.line_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_SPACE_EXTRA	(menu.extra_spacing_info[info_mode])
-#define MENU_SCREEN_INFO_TILE_SIZE_RAW	(menu.tile_size_info[info_mode])
-#define MENU_SCREEN_INFO_TILE_SIZE	(MENU_SCREEN_INFO_TILE_SIZE_RAW > 0 ? \
-					 MENU_SCREEN_INFO_TILE_SIZE_RAW : TILEY)
-#define MENU_SCREEN_INFO_ENTRY_SIZE_RAW	(menu.list_entry_size_info[info_mode])
-#define MENU_SCREEN_INFO_ENTRY_SIZE	(MAX(MENU_SCREEN_INFO_ENTRY_SIZE_RAW, \
-					     MENU_SCREEN_INFO_TILE_SIZE))
-#define MENU_SCREEN_INFO_YSTART		MENU_SCREEN_INFO_SPACE_TOP
-#define MENU_SCREEN_INFO_YSTEP		(MENU_SCREEN_INFO_ENTRY_SIZE + \
-					 MENU_SCREEN_INFO_SPACE_EXTRA)
-#define MENU_SCREEN_INFO_YBOTTOM	(SYSIZE - MENU_SCREEN_INFO_SPACE_BOTTOM)
-#define MENU_SCREEN_INFO_YSIZE		(MENU_SCREEN_INFO_YBOTTOM -	\
-					 MENU_SCREEN_INFO_YSTART -	\
-					 TILEY / 2)
-#define MAX_INFO_ELEMENTS_IN_ARRAY	128
-#define MAX_INFO_ELEMENTS_ON_SCREEN	(SYSIZE / TILEY)
-#define MAX_INFO_ELEMENTS		MIN(MAX_INFO_ELEMENTS_IN_ARRAY, \
-					    MAX_INFO_ELEMENTS_ON_SCREEN)
-#define STD_INFO_ELEMENTS_ON_SCREEN	10
-#define DYN_INFO_ELEMENTS_ON_SCREEN	(MENU_SCREEN_INFO_YSIZE /	\
-					 MENU_SCREEN_INFO_YSTEP)
-#define DEFAULT_INFO_ELEMENTS		MIN(STD_INFO_ELEMENTS_ON_SCREEN,\
-					    DYN_INFO_ELEMENTS_ON_SCREEN)
+#define MENU_SCREEN_START_XPOS			1
+#define MENU_SCREEN_START_YPOS			2
+#define MENU_SCREEN_VALUE_XPOS			(SCR_FIELDX - 3)
+#define MENU_SCREEN_TEXT2_XPOS			(SCR_FIELDX - 2)
+#define MENU_SCREEN_MAX_XPOS			(SCR_FIELDX - 1)
+#define MENU_TITLE1_YPOS			8
+#define MENU_TITLE2_YPOS			46
+#define MENU_INFO_FONT_TITLE			FONT_TEXT_1
+#define MENU_INFO_FONT_HEAD			FONT_TEXT_2
+#define MENU_INFO_FONT_TEXT			FONT_TEXT_3
+#define MENU_INFO_FONT_FOOT			FONT_TEXT_4
+#define MENU_INFO_SPACE_HEAD			(menu.headline2_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_LEFT		(menu.left_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_MIDDLE		(menu.middle_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_RIGHT		(menu.right_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_TOP		(menu.top_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_BOTTOM		(menu.bottom_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_LINE		(menu.line_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_SPACE_EXTRA		(menu.extra_spacing_info[info_mode])
+#define MENU_SCREEN_INFO_TILE_SIZE_RAW		(menu.tile_size_info[info_mode])
+#define MENU_SCREEN_INFO_TILE_SIZE		(MENU_SCREEN_INFO_TILE_SIZE_RAW > 0 ?		\
+						 MENU_SCREEN_INFO_TILE_SIZE_RAW : TILEY)
+#define MENU_SCREEN_INFO_ENTRY_SIZE_RAW		(menu.list_entry_size_info[info_mode])
+#define MENU_SCREEN_INFO_ENTRY_SIZE		(MAX(MENU_SCREEN_INFO_ENTRY_SIZE_RAW,		\
+						     MENU_SCREEN_INFO_TILE_SIZE))
+#define MENU_SCREEN_INFO_YSTART			MENU_SCREEN_INFO_SPACE_TOP
+#define MENU_SCREEN_INFO_YSTEP			(MENU_SCREEN_INFO_ENTRY_SIZE +			\
+						 MENU_SCREEN_INFO_SPACE_EXTRA)
+#define MENU_SCREEN_INFO_YBOTTOM		(SYSIZE - MENU_SCREEN_INFO_SPACE_BOTTOM)
+#define MENU_SCREEN_INFO_YSIZE			(MENU_SCREEN_INFO_YBOTTOM -			\
+						 MENU_SCREEN_INFO_YSTART - TILEY / 2)
+#define MAX_INFO_ELEMENTS_IN_ARRAY		128
+#define MAX_INFO_ELEMENTS_ON_SCREEN		(SYSIZE / TILEY)
+#define MAX_INFO_ELEMENTS			MIN(MAX_INFO_ELEMENTS_IN_ARRAY,			\
+						    MAX_INFO_ELEMENTS_ON_SCREEN)
+#define STD_INFO_ELEMENTS_ON_SCREEN		10
+#define DYN_INFO_ELEMENTS_ON_SCREEN		(MENU_SCREEN_INFO_YSIZE / MENU_SCREEN_INFO_YSTEP)
+#define DEFAULT_INFO_ELEMENTS			MIN(STD_INFO_ELEMENTS_ON_SCREEN,		\
+						    DYN_INFO_ELEMENTS_ON_SCREEN)
 #define NUM_INFO_ELEMENTS_FROM_CONF					\
-  (menu.list_size_info[GFX_SPECIAL_ARG_INFO_ELEMENTS] > 0 ?		\
-   menu.list_size_info[GFX_SPECIAL_ARG_INFO_ELEMENTS] :			\
-   DEFAULT_INFO_ELEMENTS)
-#define NUM_INFO_ELEMENTS_ON_SCREEN	MIN(NUM_INFO_ELEMENTS_FROM_CONF,\
-					    MAX_INFO_ELEMENTS)
-#define MAX_MENU_ENTRIES_ON_SCREEN	(SCR_FIELDY - MENU_SCREEN_START_YPOS)
-#define MAX_MENU_TEXT_LENGTH_BIG	13
-#define MAX_MENU_TEXT_LENGTH_MEDIUM	(MAX_MENU_TEXT_LENGTH_BIG * 2)
+				(menu.list_size_info[GFX_SPECIAL_ARG_INFO_ELEMENTS] > 0 ?	\
+				 menu.list_size_info[GFX_SPECIAL_ARG_INFO_ELEMENTS] :		\
+				 DEFAULT_INFO_ELEMENTS)
+#define NUM_INFO_ELEMENTS_ON_SCREEN		MIN(NUM_INFO_ELEMENTS_FROM_CONF, MAX_INFO_ELEMENTS)
+#define MAX_MENU_ENTRIES_ON_SCREEN		(SCR_FIELDY - MENU_SCREEN_START_YPOS)
+#define MAX_MENU_TEXT_LENGTH_BIG		13
+#define MAX_MENU_TEXT_LENGTH_MEDIUM		(MAX_MENU_TEXT_LENGTH_BIG * 2)
 
 // screen gadget identifiers
-#define SCREEN_CTRL_ID_PREV_LEVEL	0
-#define SCREEN_CTRL_ID_NEXT_LEVEL	1
-#define SCREEN_CTRL_ID_PREV_LEVEL2	2
-#define SCREEN_CTRL_ID_NEXT_LEVEL2	3
-#define SCREEN_CTRL_ID_PREV_SCORE	4
-#define SCREEN_CTRL_ID_NEXT_SCORE	5
-#define SCREEN_CTRL_ID_PLAY_TAPE	6
-#define SCREEN_CTRL_ID_FIRST_LEVEL	7
-#define SCREEN_CTRL_ID_LAST_LEVEL	8
-#define SCREEN_CTRL_ID_LEVEL_NUMBER	9
-#define SCREEN_CTRL_ID_PREV_PLAYER	10
-#define SCREEN_CTRL_ID_NEXT_PLAYER	11
-#define SCREEN_CTRL_ID_INSERT_SOLUTION	12
-#define SCREEN_CTRL_ID_PLAY_SOLUTION	13
-#define SCREEN_CTRL_ID_LEVELSET_INFO	14
-#define SCREEN_CTRL_ID_SWITCH_ECS_AGA	15
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE	16
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE	17
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2	18
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2	19
+#define SCREEN_CTRL_ID_PREV_LEVEL		0
+#define SCREEN_CTRL_ID_NEXT_LEVEL		1
+#define SCREEN_CTRL_ID_PREV_LEVEL2		2
+#define SCREEN_CTRL_ID_NEXT_LEVEL2		3
+#define SCREEN_CTRL_ID_PREV_SCORE		4
+#define SCREEN_CTRL_ID_NEXT_SCORE		5
+#define SCREEN_CTRL_ID_PLAY_TAPE		6
+#define SCREEN_CTRL_ID_FIRST_LEVEL		7
+#define SCREEN_CTRL_ID_LAST_LEVEL		8
+#define SCREEN_CTRL_ID_LEVEL_NUMBER		9
+#define SCREEN_CTRL_ID_PREV_PLAYER		10
+#define SCREEN_CTRL_ID_NEXT_PLAYER		11
+#define SCREEN_CTRL_ID_INSERT_SOLUTION		12
+#define SCREEN_CTRL_ID_PLAY_SOLUTION		13
+#define SCREEN_CTRL_ID_LEVELSET_INFO		14
+#define SCREEN_CTRL_ID_SWITCH_ECS_AGA		15
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		16
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		17
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		18
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		19
 
-#define NUM_SCREEN_MENUBUTTONS		20
+#define NUM_SCREEN_MENUBUTTONS			20
 
-#define SCREEN_CTRL_ID_SCROLL_UP	20
-#define SCREEN_CTRL_ID_SCROLL_DOWN	21
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL	22
-#define SCREEN_CTRL_ID_NETWORK_SERVER	23
+#define SCREEN_CTRL_ID_SCROLL_UP		20
+#define SCREEN_CTRL_ID_SCROLL_DOWN		21
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL		22
+#define SCREEN_CTRL_ID_NETWORK_SERVER		23
 
-#define NUM_SCREEN_GADGETS		24
+#define NUM_SCREEN_GADGETS			24
 
-#define NUM_SCREEN_SCROLLBUTTONS	2
-#define NUM_SCREEN_SCROLLBARS		1
-#define NUM_SCREEN_TEXTINPUT		1
+#define NUM_SCREEN_SCROLLBUTTONS		2
+#define NUM_SCREEN_SCROLLBARS			1
+#define NUM_SCREEN_TEXTINPUT			1
 
-#define SCREEN_MASK_MAIN		(1 << 0)
-#define SCREEN_MASK_MAIN_HAS_SOLUTION	(1 << 1)
-#define SCREEN_MASK_MAIN_HAS_SET_INFO	(1 << 2)
-#define SCREEN_MASK_INPUT		(1 << 3)
-#define SCREEN_MASK_TOUCH		(1 << 4)
-#define SCREEN_MASK_TOUCH2		(1 << 5)
-#define SCREEN_MASK_SCORES		(1 << 6)
-#define SCREEN_MASK_SCORES_INFO		(1 << 7)
+#define SCREEN_MASK_MAIN			(1 << 0)
+#define SCREEN_MASK_MAIN_HAS_SOLUTION		(1 << 1)
+#define SCREEN_MASK_MAIN_HAS_SET_INFO		(1 << 2)
+#define SCREEN_MASK_INPUT			(1 << 3)
+#define SCREEN_MASK_TOUCH			(1 << 4)
+#define SCREEN_MASK_TOUCH2			(1 << 5)
+#define SCREEN_MASK_SCORES			(1 << 6)
+#define SCREEN_MASK_SCORES_INFO			(1 << 7)
 
 // graphic position and size values for buttons and scrollbars
-#define SC_MENUBUTTON_XSIZE		TILEX
-#define SC_MENUBUTTON_YSIZE		TILEY
+#define SC_MENUBUTTON_XSIZE			TILEX
+#define SC_MENUBUTTON_YSIZE			TILEY
 
-#define SC_SCROLLBUTTON_XSIZE		TILEX
-#define SC_SCROLLBUTTON_YSIZE		TILEY
+#define SC_SCROLLBUTTON_XSIZE			TILEX
+#define SC_SCROLLBUTTON_YSIZE			TILEY
 
-#define SC_SCROLLBAR_XPOS		(SXSIZE - SC_SCROLLBUTTON_XSIZE)
+#define SC_SCROLLBAR_XPOS			(SXSIZE - SC_SCROLLBUTTON_XSIZE)
 
-#define SC_SCROLL_VERTICAL_XSIZE	SC_SCROLLBUTTON_XSIZE
-#define SC_SCROLL_VERTICAL_YSIZE	((MAX_MENU_ENTRIES_ON_SCREEN - 2) * \
-					 SC_SCROLLBUTTON_YSIZE)
+#define SC_SCROLL_VERTICAL_XSIZE		SC_SCROLLBUTTON_XSIZE
+#define SC_SCROLL_VERTICAL_YSIZE		((MAX_MENU_ENTRIES_ON_SCREEN - 2) * \
+						 SC_SCROLLBUTTON_YSIZE)
 
-#define SC_SCROLL_UP_XPOS		SC_SCROLLBAR_XPOS
-#define SC_SCROLL_UP_YPOS		(2 * SC_SCROLLBUTTON_YSIZE)
+#define SC_SCROLL_UP_XPOS			SC_SCROLLBAR_XPOS
+#define SC_SCROLL_UP_YPOS			(2 * SC_SCROLLBUTTON_YSIZE)
 
-#define SC_SCROLL_VERTICAL_XPOS		SC_SCROLLBAR_XPOS
-#define SC_SCROLL_VERTICAL_YPOS		(SC_SCROLL_UP_YPOS + \
-					 SC_SCROLLBUTTON_YSIZE)
+#define SC_SCROLL_VERTICAL_XPOS			SC_SCROLLBAR_XPOS
+#define SC_SCROLL_VERTICAL_YPOS			(SC_SCROLL_UP_YPOS + \
+						 SC_SCROLLBUTTON_YSIZE)
 
-#define SC_SCROLL_DOWN_XPOS		SC_SCROLLBAR_XPOS
-#define SC_SCROLL_DOWN_YPOS		(SC_SCROLL_VERTICAL_YPOS + \
-					 SC_SCROLL_VERTICAL_YSIZE)
+#define SC_SCROLL_DOWN_XPOS			SC_SCROLLBAR_XPOS
+#define SC_SCROLL_DOWN_YPOS			(SC_SCROLL_VERTICAL_YPOS + \
+						 SC_SCROLL_VERTICAL_YSIZE)
 
-#define SC_BORDER_SIZE			14
+#define SC_BORDER_SIZE				14
 
 
 // forward declarations of internal functions
@@ -440,15 +437,15 @@ static struct StringValueTextInfo scaling_types_list[] =
 
 static struct StringValueTextInfo rendering_modes_list[] =
 {
-  {	STR_SPECIAL_RENDERING_OFF,	"Off (May show artifacts, fast)" },
-  {	STR_SPECIAL_RENDERING_BITMAP,	"Bitmap/Texture mode (slower)"	 },
+  {	STR_SPECIAL_RENDERING_OFF,	"Off (May show artifacts, fast)"	},
+  {	STR_SPECIAL_RENDERING_BITMAP,	"Bitmap/Texture mode (slower)"		},
 #if DEBUG
   // this mode may work under certain conditions, but does not work on Windows
-  {	STR_SPECIAL_RENDERING_TARGET,	"Target Texture mode (slower)"	 },
+  {	STR_SPECIAL_RENDERING_TARGET,	"Target Texture mode (slower)"		},
 #endif
-  {	STR_SPECIAL_RENDERING_DOUBLE,	"Double Texture mode (slower)"	 },
+  {	STR_SPECIAL_RENDERING_DOUBLE,	"Double Texture mode (slower)"		},
 
-  {	NULL,				 NULL				 },
+  {	NULL,				 NULL					},
 };
 
 static struct StringValueTextInfo vsync_modes_list[] =
@@ -628,65 +625,60 @@ static struct ValueTextInfo grid_sizes_list[] =
 static int align_xoffset = 0;
 static int align_yoffset = 0;
 
-#define DRAW_MODE(s)		((s) >= GAME_MODE_MAIN &&		\
-				 (s) <= GAME_MODE_SETUP ? (s) :		\
-				 (s) == GAME_MODE_PSEUDO_TYPENAME ?	\
-				 GAME_MODE_MAIN :			\
-				 (s) == GAME_MODE_PSEUDO_TYPENAMES ?	\
+#define DRAW_MODE(s)		((s) >= GAME_MODE_MAIN &&			\
+				 (s) <= GAME_MODE_SETUP ? (s) :			\
+				 (s) == GAME_MODE_PSEUDO_TYPENAME ?		\
+				 GAME_MODE_MAIN :				\
+				 (s) == GAME_MODE_PSEUDO_TYPENAMES ?		\
 				 GAME_MODE_NAMES : GAME_MODE_DEFAULT)
 
 // (there are no draw offset definitions needed for INFO_MODE_TITLE)
-#define DRAW_MODE_INFO(i)	((i) >= INFO_MODE_TITLE &&		\
-				 (i) <= INFO_MODE_LEVELSET ? (i) :	\
+#define DRAW_MODE_INFO(i)	((i) >= INFO_MODE_TITLE &&			\
+				 (i) <= INFO_MODE_LEVELSET ? (i) :		\
 				 INFO_MODE_MAIN)
 
-#define DRAW_MODE_SETUP(i)	((i) >= SETUP_MODE_MAIN &&		\
-				 (i) <= SETUP_MODE_SHORTCUTS_5 ? (i) :	\
-				 (i) >= SETUP_MODE_CHOOSE_GRAPHICS &&	\
-				 (i) <= SETUP_MODE_CHOOSE_MUSIC ?	\
-				 SETUP_MODE_CHOOSE_ARTWORK :		\
+#define DRAW_MODE_SETUP(i)	((i) >= SETUP_MODE_MAIN &&			\
+				 (i) <= SETUP_MODE_SHORTCUTS_5 ? (i) :		\
+				 (i) >= SETUP_MODE_CHOOSE_GRAPHICS &&		\
+				 (i) <= SETUP_MODE_CHOOSE_MUSIC ?		\
+				 SETUP_MODE_CHOOSE_ARTWORK :			\
 				 SETUP_MODE_CHOOSE_OTHER)
 
-#define DRAW_XOFFSET_INFO(i)	(DRAW_MODE_INFO(i) == INFO_MODE_MAIN ?	\
-				 menu.draw_xoffset[GAME_MODE_INFO] :	\
+#define DRAW_XOFFSET_INFO(i)	(DRAW_MODE_INFO(i) == INFO_MODE_MAIN ?		\
+				 menu.draw_xoffset[GAME_MODE_INFO] :		\
 				 menu.draw_xoffset_info[DRAW_MODE_INFO(i)])
-#define DRAW_YOFFSET_INFO(i)	(DRAW_MODE_INFO(i) == INFO_MODE_MAIN ?	\
-				 menu.draw_yoffset[GAME_MODE_INFO] :	\
+#define DRAW_YOFFSET_INFO(i)	(DRAW_MODE_INFO(i) == INFO_MODE_MAIN ?		\
+				 menu.draw_yoffset[GAME_MODE_INFO] :		\
 				 menu.draw_yoffset_info[DRAW_MODE_INFO(i)])
-#define EXTRA_SPACING_INFO(i)	(DRAW_MODE_INFO(i) == INFO_MODE_MAIN ? \
-				 menu.extra_spacing[GAME_MODE_INFO] :	\
+#define EXTRA_SPACING_INFO(i)	(DRAW_MODE_INFO(i) == INFO_MODE_MAIN ?		\
+				 menu.extra_spacing[GAME_MODE_INFO] :		\
 				 menu.extra_spacing_info[DRAW_MODE_INFO(i)])
 
-#define DRAW_XOFFSET_SETUP(i)	(DRAW_MODE_SETUP(i) == SETUP_MODE_MAIN ? \
-				 menu.draw_xoffset[GAME_MODE_SETUP] :	\
+#define DRAW_XOFFSET_SETUP(i)	(DRAW_MODE_SETUP(i) == SETUP_MODE_MAIN ?	\
+				 menu.draw_xoffset[GAME_MODE_SETUP] :		\
 				 menu.draw_xoffset_setup[DRAW_MODE_SETUP(i)])
-#define DRAW_YOFFSET_SETUP(i)	(DRAW_MODE_SETUP(i) == SETUP_MODE_MAIN ? \
-				 menu.draw_yoffset[GAME_MODE_SETUP] :	\
+#define DRAW_YOFFSET_SETUP(i)	(DRAW_MODE_SETUP(i) == SETUP_MODE_MAIN ?	\
+				 menu.draw_yoffset[GAME_MODE_SETUP] :		\
 				 menu.draw_yoffset_setup[DRAW_MODE_SETUP(i)])
-#define EXTRA_SPACING_SETUP(i)	(DRAW_MODE_SETUP(i) == SETUP_MODE_MAIN ? \
-				 menu.extra_spacing[GAME_MODE_SETUP] :	\
+#define EXTRA_SPACING_SETUP(i)	(DRAW_MODE_SETUP(i) == SETUP_MODE_MAIN ?	\
+				 menu.extra_spacing[GAME_MODE_SETUP] :		\
 				 menu.extra_spacing_setup[DRAW_MODE_SETUP(i)])
 
 #define EXTRA_SPACING_SCORES(i)	(EXTRA_SPACING_INFO(i))
 
 #define EXTRA_SPACING_SCOREINFO(i) (menu.extra_spacing[GAME_MODE_SCOREINFO])
 
-#define DRAW_XOFFSET(s)		((s) == GAME_MODE_INFO ?		\
-				 DRAW_XOFFSET_INFO(info_mode) :		\
-				 (s) == GAME_MODE_SETUP ?		\
-				 DRAW_XOFFSET_SETUP(setup_mode) :	\
+#define DRAW_XOFFSET(s)		((s) == GAME_MODE_INFO  ? DRAW_XOFFSET_INFO(info_mode) :	\
+				 (s) == GAME_MODE_SETUP ? DRAW_XOFFSET_SETUP(setup_mode) :	\
 				 menu.draw_xoffset[DRAW_MODE(s)])
-#define DRAW_YOFFSET(s)		((s) == GAME_MODE_INFO ?		\
-				 DRAW_YOFFSET_INFO(info_mode) :		\
-				 (s) == GAME_MODE_SETUP ?		\
-				 DRAW_YOFFSET_SETUP(setup_mode) :	\
+
+#define DRAW_YOFFSET(s)		((s) == GAME_MODE_INFO  ? DRAW_YOFFSET_INFO(info_mode) :	\
+				 (s) == GAME_MODE_SETUP ? DRAW_YOFFSET_SETUP(setup_mode) :	\
 				 menu.draw_yoffset[DRAW_MODE(s)])
-#define EXTRA_SPACING(s)	((s) == GAME_MODE_INFO ?		\
-				 EXTRA_SPACING_INFO(info_mode) :	\
-				 (s) == GAME_MODE_SETUP ?		\
-				 EXTRA_SPACING_SETUP(setup_mode) :	\
-				 (s) == GAME_MODE_SCORES ?		\
-				 EXTRA_SPACING_SCORES(info_mode) :	\
+
+#define EXTRA_SPACING(s)	((s) == GAME_MODE_INFO   ? EXTRA_SPACING_INFO(info_mode) :	\
+				 (s) == GAME_MODE_SETUP  ? EXTRA_SPACING_SETUP(setup_mode) :	\
+				 (s) == GAME_MODE_SCORES ? EXTRA_SPACING_SCORES(info_mode) :	\
 				 menu.extra_spacing[DRAW_MODE(s)])
 
 #define mSX			(SX + DRAW_XOFFSET(game_status))
@@ -699,14 +691,12 @@ static int align_yoffset = 0;
 				    menu.list_size[game_status] :	\
 				    MAX_MENU_ENTRIES_ON_SCREEN)
 
-#define IN_VIS_MENU(x, y)	IN_FIELD(x, y, SCR_FIELDX,		\
-					 NUM_MENU_ENTRIES_ON_SCREEN)
+#define IN_VIS_MENU(x, y)	IN_FIELD(x, y, SCR_FIELDX, NUM_MENU_ENTRIES_ON_SCREEN)
 
 
 // title display and control definitions
 
-#define MAX_NUM_TITLE_SCREENS	(2 * MAX_NUM_TITLE_IMAGES +		\
-				 2 * MAX_NUM_TITLE_MESSAGES)
+#define MAX_NUM_TITLE_SCREENS	(2 * MAX_NUM_TITLE_IMAGES + 2 * MAX_NUM_TITLE_MESSAGES)
 
 #define NO_DIRECT_LEVEL_SELECT	(-1)
 
@@ -7304,103 +7294,103 @@ static struct
   void *related_value;
 } hide_related_entry_list[] =
 {
-  { &setup.network_server_hostname,	execGadgetNetworkServer		},
-  { &setup.network_server_hostname,	&network_server_text		},
+  { &setup.network_server_hostname,		execGadgetNetworkServer		},
+  { &setup.network_server_hostname,		&network_server_text		},
 
-  { &setup.scores_in_highscore_list,	execSetupChooseScoresType	},
-  { &setup.scores_in_highscore_list,	&scores_type_text		},
+  { &setup.scores_in_highscore_list,		execSetupChooseScoresType	},
+  { &setup.scores_in_highscore_list,		&scores_type_text		},
 
-  { &setup.game_frame_delay,		execSetupChooseGameSpeed	},
-  { &setup.game_frame_delay,		&game_speed_text		},
+  { &setup.game_frame_delay,			execSetupChooseGameSpeed	},
+  { &setup.game_frame_delay,			&game_speed_text		},
 
-  { &setup.scroll_delay_value,		execSetupChooseScrollDelay	},
-  { &setup.scroll_delay_value,		&scroll_delay_text		},
+  { &setup.scroll_delay_value,			execSetupChooseScrollDelay	},
+  { &setup.scroll_delay_value,			&scroll_delay_text		},
 
-  { &setup.engine_snapshot_mode,	execSetupChooseSnapshotMode	},
-  { &setup.engine_snapshot_mode,	&snapshot_mode_text		},
+  { &setup.engine_snapshot_mode,		execSetupChooseSnapshotMode	},
+  { &setup.engine_snapshot_mode,		&snapshot_mode_text		},
 
-  { &setup.window_scaling_percent,	execSetupChooseWindowSize	},
-  { &setup.window_scaling_percent,	&window_size_text		},
+  { &setup.window_scaling_percent,		execSetupChooseWindowSize	},
+  { &setup.window_scaling_percent,		&window_size_text		},
 
-  { &setup.window_scaling_quality,	execSetupChooseScalingType	},
-  { &setup.window_scaling_quality,	&scaling_type_text		},
+  { &setup.window_scaling_quality,		execSetupChooseScalingType	},
+  { &setup.window_scaling_quality,		&scaling_type_text		},
 
-  { &setup.screen_rendering_mode,	execSetupChooseRenderingMode	},
-  { &setup.screen_rendering_mode,	&rendering_mode_text		},
+  { &setup.screen_rendering_mode,		execSetupChooseRenderingMode	},
+  { &setup.screen_rendering_mode,		&rendering_mode_text		},
 
-  { &setup.vsync_mode,			execSetupChooseVsyncMode	},
-  { &setup.vsync_mode,			&vsync_mode_text		},
+  { &setup.vsync_mode,				execSetupChooseVsyncMode	},
+  { &setup.vsync_mode,				&vsync_mode_text		},
 
-  { &setup.graphics_set,		execSetupChooseGraphics		},
-  { &setup.graphics_set,		&graphics_set_name		},
+  { &setup.graphics_set,			execSetupChooseGraphics		},
+  { &setup.graphics_set,			&graphics_set_name		},
 
-  { &setup.sounds_set,			execSetupChooseSounds		},
-  { &setup.sounds_set,			&sounds_set_name		},
+  { &setup.sounds_set,				execSetupChooseSounds		},
+  { &setup.sounds_set,				&sounds_set_name		},
 
-  { &setup.music_set,			execSetupChooseMusic		},
-  { &setup.music_set,			&music_set_name			},
+  { &setup.music_set,				execSetupChooseMusic		},
+  { &setup.music_set,				&music_set_name			},
 
-  { &setup.volume_simple,		execSetupChooseVolumeSimple	},
-  { &setup.volume_simple,		&volume_simple_text		},
+  { &setup.volume_simple,			execSetupChooseVolumeSimple	},
+  { &setup.volume_simple,			&volume_simple_text		},
 
-  { &setup.volume_loops,		execSetupChooseVolumeLoops	},
-  { &setup.volume_loops,		&volume_loops_text		},
+  { &setup.volume_loops,			execSetupChooseVolumeLoops	},
+  { &setup.volume_loops,			&volume_loops_text		},
 
-  { &setup.volume_music,		execSetupChooseVolumeMusic	},
-  { &setup.volume_music,		&volume_music_text		},
+  { &setup.volume_music,			execSetupChooseVolumeMusic	},
+  { &setup.volume_music,			&volume_music_text		},
 
-  { &setup.touch.control_type,		execSetupChooseTouchControls	},
-  { &setup.touch.control_type,		&touch_controls_text		},
+  { &setup.touch.control_type,			execSetupChooseTouchControls	},
+  { &setup.touch.control_type,			&touch_controls_text		},
 
-  { &setup.touch.move_distance,		execSetupChooseMoveDistance	},
-  { &setup.touch.move_distance,		&move_distance_text		},
+  { &setup.touch.move_distance,			execSetupChooseMoveDistance	},
+  { &setup.touch.move_distance,			&move_distance_text		},
 
-  { &setup.touch.drop_distance,		execSetupChooseDropDistance	},
-  { &setup.touch.drop_distance,		&drop_distance_text		},
+  { &setup.touch.drop_distance,			execSetupChooseDropDistance	},
+  { &setup.touch.drop_distance,			&drop_distance_text		},
 
-  { &setup.touch.transparency,		execSetupChooseTransparency	},
-  { &setup.touch.transparency,		&transparency_text		},
+  { &setup.touch.transparency,			execSetupChooseTransparency	},
+  { &setup.touch.transparency,			&transparency_text		},
 
-  { &setup.touch.grid_xsize[0],		execSetupChooseGridXSize_0	},
-  { &setup.touch.grid_xsize[0],		&grid_size_text[0][0]		},
+  { &setup.touch.grid_xsize[0],			execSetupChooseGridXSize_0	},
+  { &setup.touch.grid_xsize[0],			&grid_size_text[0][0]		},
 
-  { &setup.touch.grid_ysize[0],		execSetupChooseGridYSize_0	},
-  { &setup.touch.grid_ysize[0],		&grid_size_text[0][1]		},
+  { &setup.touch.grid_ysize[0],			execSetupChooseGridYSize_0	},
+  { &setup.touch.grid_ysize[0],			&grid_size_text[0][1]		},
 
-  { &setup.touch.grid_xsize[1],		execSetupChooseGridXSize_1	},
-  { &setup.touch.grid_xsize[1],		&grid_size_text[1][0]		},
+  { &setup.touch.grid_xsize[1],			execSetupChooseGridXSize_1	},
+  { &setup.touch.grid_xsize[1],			&grid_size_text[1][0]		},
 
-  { &setup.touch.grid_ysize[1],		execSetupChooseGridYSize_1	},
-  { &setup.touch.grid_ysize[1],		&grid_size_text[1][1]		},
+  { &setup.touch.grid_ysize[1],			execSetupChooseGridYSize_1	},
+  { &setup.touch.grid_ysize[1],			&grid_size_text[1][1]		},
 
-  { &setup.internal.menu_game,		execSetupGame			},
-  { &setup.internal.menu_engines,	execSetupEngines		},
-  { &setup.internal.menu_editor,	execSetupEditor			},
-  { &setup.internal.menu_graphics,	execSetupGraphics		},
-  { &setup.internal.menu_sound,		execSetupSound			},
-  { &setup.internal.menu_artwork,	execSetupArtwork		},
-  { &setup.internal.menu_input,		execSetupInput			},
-  { &setup.internal.menu_touch,		execSetupTouch			},
-  { &setup.internal.menu_shortcuts,	execSetupShortcuts		},
-  { &setup.internal.menu_exit,		execExitSetup			},
-  { &setup.internal.menu_save_and_exit,	execSaveAndExitSetup		},
+  { &setup.internal.menu_game,			execSetupGame			},
+  { &setup.internal.menu_engines,		execSetupEngines		},
+  { &setup.internal.menu_editor,		execSetupEditor			},
+  { &setup.internal.menu_graphics,		execSetupGraphics		},
+  { &setup.internal.menu_sound,			execSetupSound			},
+  { &setup.internal.menu_artwork,		execSetupArtwork		},
+  { &setup.internal.menu_input,			execSetupInput			},
+  { &setup.internal.menu_touch,			execSetupTouch			},
+  { &setup.internal.menu_shortcuts,		execSetupShortcuts		},
+  { &setup.internal.menu_exit,			execExitSetup			},
+  { &setup.internal.menu_save_and_exit,		execSaveAndExitSetup		},
 
-  { &setup.internal.menu_shortcuts_various,	execSetupShortcuts1	},
-  { &setup.internal.menu_shortcuts_focus,	execSetupShortcuts2	},
-  { &setup.internal.menu_shortcuts_tape,	execSetupShortcuts3	},
-  { &setup.internal.menu_shortcuts_sound,	execSetupShortcuts4	},
-  { &setup.internal.menu_shortcuts_snap,	execSetupShortcuts5	},
+  { &setup.internal.menu_shortcuts_various,	execSetupShortcuts1		},
+  { &setup.internal.menu_shortcuts_focus,	execSetupShortcuts2		},
+  { &setup.internal.menu_shortcuts_tape,	execSetupShortcuts3		},
+  { &setup.internal.menu_shortcuts_sound,	execSetupShortcuts4		},
+  { &setup.internal.menu_shortcuts_snap,	execSetupShortcuts5		},
 
-  { &setup.internal.info_title,		execInfoTitleScreen		},
-  { &setup.internal.info_elements,	execInfoElements		},
-  { &setup.internal.info_music,		execInfoMusic			},
-  { &setup.internal.info_credits,	execInfoCredits			},
-  { &setup.internal.info_program,	execInfoProgram			},
-  { &setup.internal.info_version,	execInfoVersion			},
-  { &setup.internal.info_levelset,	execInfoLevelSet		},
-  { &setup.internal.info_exit,		execExitInfo			},
+  { &setup.internal.info_title,			execInfoTitleScreen		},
+  { &setup.internal.info_elements,		execInfoElements		},
+  { &setup.internal.info_music,			execInfoMusic			},
+  { &setup.internal.info_credits,		execInfoCredits			},
+  { &setup.internal.info_program,		execInfoProgram			},
+  { &setup.internal.info_version,		execInfoVersion			},
+  { &setup.internal.info_levelset,		execInfoLevelSet		},
+  { &setup.internal.info_exit,			execExitInfo			},
 
-  { NULL,				NULL				}
+  { NULL,					NULL				}
 };
 
 void setHideRelatedSetupEntries(void)
@@ -7414,260 +7404,260 @@ void setHideRelatedSetupEntries(void)
 
 static struct TokenInfo setup_info_main[] =
 {
-  { TYPE_ENTER_MENU,	execSetupGame,		STR_SETUP_GAME		},
-  { TYPE_ENTER_MENU,	execSetupEngines,	STR_SETUP_ENGINES	},
-  { TYPE_ENTER_MENU,	execSetupEditor,	STR_SETUP_EDITOR	},
-  { TYPE_ENTER_MENU,	execSetupGraphics,	STR_SETUP_GRAPHICS	},
-  { TYPE_ENTER_MENU,	execSetupSound,		STR_SETUP_SOUND		},
-  { TYPE_ENTER_MENU,	execSetupArtwork,	STR_SETUP_ARTWORK	},
-  { TYPE_ENTER_MENU,	execSetupInput,		STR_SETUP_INPUT		},
-  { TYPE_ENTER_MENU,	execSetupTouch,		STR_SETUP_TOUCH		},
-  { TYPE_ENTER_MENU,	execSetupShortcuts,	STR_SETUP_SHORTCUTS	},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execExitSetup, 		STR_SETUP_EXIT		},
-  { TYPE_LEAVE_MENU,	execSaveAndExitSetup,	STR_SETUP_SAVE_AND_EXIT	},
+  { TYPE_ENTER_MENU,	execSetupGame,			STR_SETUP_GAME			},
+  { TYPE_ENTER_MENU,	execSetupEngines,		STR_SETUP_ENGINES		},
+  { TYPE_ENTER_MENU,	execSetupEditor,		STR_SETUP_EDITOR		},
+  { TYPE_ENTER_MENU,	execSetupGraphics,		STR_SETUP_GRAPHICS		},
+  { TYPE_ENTER_MENU,	execSetupSound,			STR_SETUP_SOUND			},
+  { TYPE_ENTER_MENU,	execSetupArtwork,		STR_SETUP_ARTWORK		},
+  { TYPE_ENTER_MENU,	execSetupInput,			STR_SETUP_INPUT			},
+  { TYPE_ENTER_MENU,	execSetupTouch,			STR_SETUP_TOUCH			},
+  { TYPE_ENTER_MENU,	execSetupShortcuts,		STR_SETUP_SHORTCUTS		},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execExitSetup, 			STR_SETUP_EXIT			},
+  { TYPE_LEAVE_MENU,	execSaveAndExitSetup,		STR_SETUP_SAVE_AND_EXIT		},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_game[] =
 {
-  { TYPE_SWITCH,	&setup.team_mode,	"Team-Mode (Multi-Player):" },
-  { TYPE_SWITCH,	&setup.network_mode,	"Network Multi-Player Mode:" },
-  { TYPE_PLAYER,	&setup.network_player_nr,"Preferred Network Player:" },
-  { TYPE_TEXT_INPUT,	execGadgetNetworkServer, "Network Server Hostname:" },
-  { TYPE_STRING,	&network_server_text,	""			},
-  { TYPE_SWITCH,	&setup.use_api_server,	"Use Highscore Server:"	},
-  { TYPE_ENTER_LIST,	execSetupChooseScoresType,"Scores in Highscore List:" },
-  { TYPE_STRING,	&scores_type_text,	""			},
-  { TYPE_ENTER_LIST,	execOfferUploadTapes,	"Upload Tapes to Server" },
-  { TYPE_SWITCH,	&setup.multiple_users,	"Multiple Users/Teams:"	},
-  { TYPE_YES_NO,	&setup.input_on_focus,	"Only Move Focussed Player:" },
-  { TYPE_SWITCH,	&setup.time_limit,	"Time Limit:"		},
-  { TYPE_SWITCH,	&setup.handicap,	"Force Solving Levels:" },
-  { TYPE_SWITCH,	&setup.skip_levels,	"Allow Skipping Levels:" },
-  { TYPE_SWITCH,	&setup.increment_levels,"Increment Solved Levels:" },
-  { TYPE_SWITCH,	&setup.auto_play_next_level,"Auto-play Next Level:" },
-  { TYPE_SWITCH,	&setup.count_score_after_game,"Count Score After Game:" },
-  { TYPE_SWITCH,	&setup.show_scores_after_game,"Show Scores After Game:" },
-  { TYPE_YES_NO,	&setup.ask_on_game_over, "Ask on Game Over:"	},
-  { TYPE_YES_NO,	&setup.ask_on_quit_game, "Ask on Quit Game:"	},
-  { TYPE_YES_NO,	&setup.ask_on_quit_program, "Ask on Quit Program:" },
-  { TYPE_SWITCH,	&setup.autorecord,	"Auto-Record When Playing:" },
-  { TYPE_SWITCH,	&setup.autorecord_after_replay,	"Auto-Record After Replay:" },
-  { TYPE_SWITCH,	&setup.auto_pause_on_start, "Start Game in Pause Mode:" },
-  { TYPE_ENTER_LIST,	execSetupChooseGameSpeed, "Game Speed:"		},
-  { TYPE_STRING,	&game_speed_text,	""			},
-  { TYPE_SWITCH,	&setup.game_speed_extended, "Game Speed Extended List:" },
+  { TYPE_SWITCH,	&setup.team_mode,		"Team-Mode (Multi-Player):"	},
+  { TYPE_SWITCH,	&setup.network_mode,		"Network Multi-Player Mode:"	},
+  { TYPE_PLAYER,	&setup.network_player_nr,	"Preferred Network Player:"	},
+  { TYPE_TEXT_INPUT,	execGadgetNetworkServer,	"Network Server Hostname:"	},
+  { TYPE_STRING,	&network_server_text,		""				},
+  { TYPE_SWITCH,	&setup.use_api_server,		"Use Highscore Server:"		},
+  { TYPE_ENTER_LIST,	execSetupChooseScoresType,	"Scores in Highscore List:"	},
+  { TYPE_STRING,	&scores_type_text,		""				},
+  { TYPE_ENTER_LIST,	execOfferUploadTapes,		"Upload Tapes to Server"	},
+  { TYPE_SWITCH,	&setup.multiple_users,		"Multiple Users/Teams:"		},
+  { TYPE_YES_NO,	&setup.input_on_focus,		"Only Move Focussed Player:"	},
+  { TYPE_SWITCH,	&setup.time_limit,		"Time Limit:"			},
+  { TYPE_SWITCH,	&setup.handicap,		"Force Solving Levels:"		},
+  { TYPE_SWITCH,	&setup.skip_levels,		"Allow Skipping Levels:"	},
+  { TYPE_SWITCH,	&setup.increment_levels,	"Increment Solved Levels:"	},
+  { TYPE_SWITCH,	&setup.auto_play_next_level,	"Auto-play Next Level:"		},
+  { TYPE_SWITCH,	&setup.count_score_after_game,	"Count Score After Game:"	},
+  { TYPE_SWITCH,	&setup.show_scores_after_game,	"Show Scores After Game:"	},
+  { TYPE_YES_NO,	&setup.ask_on_game_over,	"Ask on Game Over:"		},
+  { TYPE_YES_NO,	&setup.ask_on_quit_game,	"Ask on Quit Game:"		},
+  { TYPE_YES_NO,	&setup.ask_on_quit_program,	"Ask on Quit Program:"		},
+  { TYPE_SWITCH,	&setup.autorecord,		"Auto-Record When Playing:"	},
+  { TYPE_SWITCH,	&setup.autorecord_after_replay,	"Auto-Record After Replay:"	},
+  { TYPE_SWITCH,	&setup.auto_pause_on_start,	"Start Game in Pause Mode:"	},
+  { TYPE_ENTER_LIST,	execSetupChooseGameSpeed,	"Game Speed:"			},
+  { TYPE_STRING,	&game_speed_text,		""				},
+  { TYPE_SWITCH,	&setup.game_speed_extended,	"Game Speed Extended List:"	},
 #if 1
-  { TYPE_ENTER_LIST,	execSetupChooseScrollDelay, "Scroll Delay:"	},
-  { TYPE_STRING,	&scroll_delay_text,	""			},
+  { TYPE_ENTER_LIST,	execSetupChooseScrollDelay,	"Scroll Delay:"			},
+  { TYPE_STRING,	&scroll_delay_text,		""				},
 #endif
-  { TYPE_ENTER_LIST, execSetupChooseSnapshotMode,"Game Engine Snapshot Mode:" },
-  { TYPE_STRING,	&snapshot_mode_text,	""			},
-  { TYPE_SWITCH,	&setup.show_load_save_buttons,"Show Load/Save Buttons:" },
-  { TYPE_SWITCH,	&setup.show_undo_redo_buttons,"Show Undo/Redo Buttons:" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_ENTER_LIST,	execSetupChooseSnapshotMode,	"Game Engine Snapshot Mode:"	},
+  { TYPE_STRING,	&snapshot_mode_text,		""				},
+  { TYPE_SWITCH,	&setup.show_load_save_buttons,	"Show Load/Save Buttons:"	},
+  { TYPE_SWITCH,	&setup.show_undo_redo_buttons,	"Show Undo/Redo Buttons:"	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_engines[] =
 {
-  { TYPE_HEADLINE,	NULL,			"Boulder Dash"		},
-  { TYPE_SWITCH,	&setup.bd_skip_uncovering, "Skip (un)covering screen:"	},
-  { TYPE_SWITCH,	&setup.bd_skip_hatching,   "Skip hatching player:"	},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_HEADLINE,	NULL,			"Emerald Mine"		},
-  { TYPE_SWITCH,	&setup.forced_scroll_delay, "Scroll Delay:"	},
-  { TYPE_ECS_AGA,	&setup.prefer_aga_graphics, "Amiga Graphics Chipset:" },
-  { TYPE_SWITCH,	&setup.prefer_lowpass_sounds,"Low-Pass Filter Sounds:" },
-  { TYPE_SWITCH,	&setup.prefer_extra_panel_items,"Show Dynamite and Keys:" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_HEADLINE,	NULL,			"Supaplex"		},
-  { TYPE_SWITCH,	&setup.sp_show_border_elements, "Border Elements:" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_HEADLINE,	NULL,				"Boulder Dash"			},
+  { TYPE_SWITCH,	&setup.bd_skip_uncovering,	"Skip (un)covering screen:"	},
+  { TYPE_SWITCH,	&setup.bd_skip_hatching,	"Skip hatching player:"		},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_HEADLINE,	NULL,				"Emerald Mine"			},
+  { TYPE_SWITCH,	&setup.forced_scroll_delay,	"Scroll Delay:"			},
+  { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,	"Amiga Graphics Chipset:"	},
+  { TYPE_SWITCH,	&setup.prefer_lowpass_sounds,	"Low-Pass Filter Sounds:"	},
+  { TYPE_SWITCH,	&setup.prefer_extra_panel_items,"Show Dynamite and Keys:"	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_HEADLINE,	NULL,				"Supaplex"			},
+  { TYPE_SWITCH,	&setup.sp_show_border_elements, "Border Elements:"		},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_editor[] =
 {
 #if 0
-  { TYPE_SWITCH,	&setup.editor.el_boulderdash,	"Boulder Dash:" },
-  { TYPE_SWITCH, &setup.editor.el_boulderdash_native, "Boulder Dash Native:" },
-  { TYPE_SWITCH,	&setup.editor.el_emerald_mine,	"Emerald Mine:"	},
-  { TYPE_SWITCH, &setup.editor.el_emerald_mine_club,	"Emerald Mine Club:" },
-  { TYPE_SWITCH,	&setup.editor.el_more,		"Rocks'n'Diamonds:" },
-  { TYPE_SWITCH,	&setup.editor.el_sokoban,	"Sokoban:"	},
-  { TYPE_SWITCH,	&setup.editor.el_supaplex,	"Supaplex:"	},
-  { TYPE_SWITCH,	&setup.editor.el_diamond_caves,	"Diamond Caves II:" },
-  { TYPE_SWITCH,	&setup.editor.el_dx_boulderdash,"DX-Boulderdash:" },
-  { TYPE_SWITCH,	&setup.editor.el_chars,		"Text Characters:" },
-  { TYPE_SWITCH, &setup.editor.el_steel_chars, "Text Characters (Steel):" },
+  { TYPE_SWITCH,	&setup.editor.el_boulderdash,	"Boulder Dash:"			},
+  { TYPE_SWITCH,	&setup.editor.el_boulderdash_native, "Boulder Dash Native:"	},
+  { TYPE_SWITCH,	&setup.editor.el_emerald_mine,	"Emerald Mine:"			},
+  { TYPE_SWITCH,	&setup.editor.el_emerald_mine_club, "Emerald Mine Club:"	},
+  { TYPE_SWITCH,	&setup.editor.el_more,		"Rocks'n'Diamonds:"		},
+  { TYPE_SWITCH,	&setup.editor.el_sokoban,	"Sokoban:"			},
+  { TYPE_SWITCH,	&setup.editor.el_supaplex,	"Supaplex:"			},
+  { TYPE_SWITCH,	&setup.editor.el_diamond_caves,	"Diamond Caves II:"		},
+  { TYPE_SWITCH,	&setup.editor.el_dx_boulderdash,"DX-Boulderdash:"		},
+  { TYPE_SWITCH,	&setup.editor.el_chars,		"Text Characters:"		},
+  { TYPE_SWITCH,	&setup.editor.el_steel_chars,	"Text Characters (Steel):" 	},
 #endif
-  { TYPE_SWITCH,	&setup.editor.el_classic,  "Classic Elements:" },
-  { TYPE_SWITCH,	&setup.editor.el_custom,  "Custom & Group Elements:" },
+  { TYPE_SWITCH,	&setup.editor.el_classic,	"Classic Elements:"		},
+  { TYPE_SWITCH,	&setup.editor.el_custom,	"Custom & Group Elements:"	},
 #if 0
-  { TYPE_SWITCH,	&setup.editor.el_headlines,	"Headlines:"	},
+  { TYPE_SWITCH,	&setup.editor.el_headlines,	"Headlines:"			},
 #endif
-  { TYPE_SWITCH, &setup.editor.el_user_defined, "User defined element list:" },
-  { TYPE_SWITCH,	&setup.editor.el_dynamic,  "Dynamic level elements:" },
-  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_SWITCH, &setup.editor.el_user_defined,		"User defined element list:"	},
+  { TYPE_SWITCH,	&setup.editor.el_dynamic,	"Dynamic level elements:"	},
+  { TYPE_EMPTY,		NULL,				""				},
 #if 0
-  { TYPE_SWITCH,	&setup.editor.el_by_game,   "Show elements by game:" },
-  { TYPE_SWITCH,	&setup.editor.el_by_type,   "Show elements by type:" },
-  { TYPE_EMPTY,		NULL,			""			},
+  { TYPE_SWITCH,	&setup.editor.el_by_game,	"Show elements by game:"	},
+  { TYPE_SWITCH,	&setup.editor.el_by_type,	"Show elements by type:"	},
+  { TYPE_EMPTY,		NULL,				""				},
 #endif
-  { TYPE_SWITCH, &setup.editor.show_element_token,	"Show element token:" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_SWITCH, &setup.editor.show_read_only_warning,	"Show read-only warning:" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_SWITCH, &setup.editor.show_element_token,	"Show element token:"		},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_SWITCH, &setup.editor.show_read_only_warning,	"Show read-only warning:"	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_graphics[] =
 {
 #if !defined(PLATFORM_ANDROID) && !defined(PLATFORM_EMSCRIPTEN)
-  { TYPE_SWITCH,	&setup.fullscreen,	"Fullscreen:"		},
-  { TYPE_ENTER_LIST,	execSetupChooseWindowSize, "Window Scaling:"	},
-  { TYPE_STRING,	&window_size_text,	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseScalingType, "Anti-Aliasing:"	},
-  { TYPE_STRING,	&scaling_type_text,	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseRenderingMode, "Special Rendering:" },
-  { TYPE_STRING,	&rendering_mode_text,	""			},
+  { TYPE_SWITCH,	&setup.fullscreen,		"Fullscreen:"			},
+  { TYPE_ENTER_LIST,	execSetupChooseWindowSize,	"Window Scaling:"		},
+  { TYPE_STRING,	&window_size_text,		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseScalingType,	"Anti-Aliasing:"		},
+  { TYPE_STRING,	&scaling_type_text,		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseRenderingMode,	"Special Rendering:"		},
+  { TYPE_STRING,	&rendering_mode_text,		""				},
 #endif
 #if 0
-  { TYPE_ENTER_LIST,	execSetupChooseScrollDelay, "Scroll Delay:"	},
-  { TYPE_STRING,	&scroll_delay_text,	""			},
+  { TYPE_ENTER_LIST,	execSetupChooseScrollDelay,	"Scroll Delay:"			},
+  { TYPE_STRING,	&scroll_delay_text,		""				},
 #endif
 #if !defined(PLATFORM_EMSCRIPTEN)
-  { TYPE_ENTER_LIST,	execSetupChooseVsyncMode, "Vertical Sync (VSync):" },
-  { TYPE_STRING,	&vsync_mode_text,	""			},
+  { TYPE_ENTER_LIST,	execSetupChooseVsyncMode,	"Vertical Sync (VSync):"	},
+  { TYPE_STRING,	&vsync_mode_text,		""				},
 #endif
-  { TYPE_SWITCH,	&setup.fade_screens,	"Fade Screens:"		},
-  { TYPE_SWITCH,	&setup.quick_switch,	"Quick Player Focus Switch:" },
-  { TYPE_SWITCH,	&setup.quick_doors,	"Quick Menu Doors:"	},
-  { TYPE_SWITCH,	&setup.show_titlescreen,"Show Title Screens:"	},
-  { TYPE_SWITCH,	&setup.toons,		"Show Toons:"		},
-  { TYPE_SWITCH,	&setup.small_game_graphics, "Small Game Graphics:" },
-  { TYPE_YES_NO_AUTO,	&setup.debug.xsn_mode,	debug_xsn_mode		},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_SWITCH,	&setup.fade_screens,		"Fade Screens:"			},
+  { TYPE_SWITCH,	&setup.quick_switch,		"Quick Player Focus Switch:"	},
+  { TYPE_SWITCH,	&setup.quick_doors,		"Quick Menu Doors:"		},
+  { TYPE_SWITCH,	&setup.show_titlescreen,	"Show Title Screens:"		},
+  { TYPE_SWITCH,	&setup.toons,			"Show Toons:"			},
+  { TYPE_SWITCH,	&setup.small_game_graphics,	"Small Game Graphics:"		},
+  { TYPE_YES_NO_AUTO,	&setup.debug.xsn_mode,		debug_xsn_mode			},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_sound[] =
 {
-  { TYPE_SWITCH,	&setup.sound_simple,	"Sound Effects (Normal):"  },
-  { TYPE_SWITCH,	&setup.sound_loops,	"Sound Effects (Looping):" },
-  { TYPE_SWITCH,	&setup.sound_music,	"Music:"		},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_ENTER_LIST,	execSetupChooseVolumeSimple, "Sound Volume (Normal):" },
-  { TYPE_STRING,	&volume_simple_text,	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseVolumeLoops, "Sound Volume (Looping):" },
-  { TYPE_STRING,	&volume_loops_text,	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseVolumeMusic, "Music Volume:"	},
-  { TYPE_STRING,	&volume_music_text,	""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_SWITCH,	&setup.sound_simple,		"Sound Effects (Normal):" 	},
+  { TYPE_SWITCH,	&setup.sound_loops,		"Sound Effects (Looping):"	},
+  { TYPE_SWITCH,	&setup.sound_music,		"Music:"			},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_ENTER_LIST,	execSetupChooseVolumeSimple,	"Sound Volume (Normal):"	},
+  { TYPE_STRING,	&volume_simple_text,		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseVolumeLoops,	"Sound Volume (Looping):"	},
+  { TYPE_STRING,	&volume_loops_text,		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseVolumeMusic,	"Music Volume:"			},
+  { TYPE_STRING,	&volume_music_text,		""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_artwork[] =
 {
-  { TYPE_ENTER_LIST,	execSetupChooseGraphics,"Custom Graphics:"	},
-  { TYPE_STRING,	&graphics_set_name,	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseSounds,	"Custom Sounds:"	},
-  { TYPE_STRING,	&sounds_set_name,	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseMusic,	"Custom Music:"		},
-  { TYPE_STRING,	&music_set_name,	""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_YES_NO_AUTO,&setup.override_level_graphics,"Override Level Graphics:"},
-  { TYPE_YES_NO_AUTO,&setup.override_level_sounds,  "Override Level Sounds:"  },
-  { TYPE_YES_NO_AUTO,&setup.override_level_music,   "Override Level Music:"   },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_ENTER_LIST,	execSetupChooseGraphics,	"Custom Graphics:"		},
+  { TYPE_STRING,	&graphics_set_name,		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseSounds,		"Custom Sounds:"		},
+  { TYPE_STRING,	&sounds_set_name,		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseMusic,		"Custom Music:"			},
+  { TYPE_STRING,	&music_set_name,		""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_YES_NO_AUTO,	&setup.override_level_graphics,"Override Level Graphics:"	},
+  { TYPE_YES_NO_AUTO,	&setup.override_level_sounds,	"Override Level Sounds:" 	},
+  { TYPE_YES_NO_AUTO,	&setup.override_level_music,	"Override Level Music:"  	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_input[] =
 {
-  { TYPE_SWITCH,	NULL,			"Player:"		},
-  { TYPE_SWITCH,	NULL,			"Device:"		},
-  { TYPE_SWITCH,	NULL,			""			},
-  { TYPE_SKIPPABLE,	NULL,			""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_SKIPPABLE,	NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_SWITCH,	NULL,				"Player:"			},
+  { TYPE_SWITCH,	NULL,				"Device:"			},
+  { TYPE_SWITCH,	NULL,				""				},
+  { TYPE_SKIPPABLE,	NULL,				""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_SKIPPABLE,	NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_touch[] =
 {
-  { TYPE_ENTER_LIST,	execSetupChooseTouchControls, "Touch Control Type:" },
-  { TYPE_STRING,	&touch_controls_text,	""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_ENTER_LIST,	execSetupChooseTouchControls,	"Touch Control Type:"		},
+  { TYPE_STRING,	&touch_controls_text,		""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_touch_virtual_buttons_0[] =
 {
-  { TYPE_ENTER_LIST,	execSetupChooseTouchControls, "Touch Control Type:" },
-  { TYPE_STRING,	&touch_controls_text,	""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_ENTER_LIST,	execSetupChooseGridXSize_0, "Horizontal Buttons (Landscape):"	},
-  { TYPE_STRING,	&grid_size_text[0][0],	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseGridYSize_0, "Vertical Buttons (Landscape):"	},
-  { TYPE_STRING,	&grid_size_text[0][1],	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseTransparency, "Button Transparency:" },
-  { TYPE_STRING,	&transparency_text,	""			},
-  { TYPE_SWITCH,	&setup.touch.draw_outlined, "Draw Buttons Outlined:" },
-  { TYPE_SWITCH,	&setup.touch.draw_pressed, "Highlight Pressed Buttons:" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_ENTER_LIST,	execSetupConfigureVirtualButtons, "Configure Virtual Buttons" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_ENTER_LIST,	execSetupChooseTouchControls,	"Touch Control Type:"		},
+  { TYPE_STRING,	&touch_controls_text,		""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_ENTER_LIST,	execSetupChooseGridXSize_0,	"Horizontal Buttons (Landscape):" },
+  { TYPE_STRING,	&grid_size_text[0][0],		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseGridYSize_0,	"Vertical Buttons (Landscape):"	},
+  { TYPE_STRING,	&grid_size_text[0][1],		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseTransparency,	"Button Transparency:"		},
+  { TYPE_STRING,	&transparency_text,		""				},
+  { TYPE_SWITCH,	&setup.touch.draw_outlined,	"Draw Buttons Outlined:"	},
+  { TYPE_SWITCH,	&setup.touch.draw_pressed,	"Highlight Pressed Buttons:"	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_ENTER_LIST,	execSetupConfigureVirtualButtons, "Configure Virtual Buttons"	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_touch_virtual_buttons_1[] =
 {
-  { TYPE_ENTER_LIST,	execSetupChooseTouchControls, "Touch Control Type:" },
-  { TYPE_STRING,	&touch_controls_text,	""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_ENTER_LIST,	execSetupChooseGridXSize_1, "Horizontal Buttons (Portrait):"	},
-  { TYPE_STRING,	&grid_size_text[1][0],	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseGridYSize_1, "Vertical Buttons (Portrait):"	},
-  { TYPE_STRING,	&grid_size_text[1][1],	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseTransparency, "Button Transparency:" },
-  { TYPE_STRING,	&transparency_text,	""			},
-  { TYPE_SWITCH,	&setup.touch.draw_outlined, "Draw Buttons Outlined:" },
-  { TYPE_SWITCH,	&setup.touch.draw_pressed, "Highlight Pressed Buttons:" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_ENTER_LIST,	execSetupConfigureVirtualButtons, "Configure Virtual Buttons" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_ENTER_LIST,	execSetupChooseTouchControls,	"Touch Control Type:"		},
+  { TYPE_STRING,	&touch_controls_text,		""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_ENTER_LIST,	execSetupChooseGridXSize_1,	"Horizontal Buttons (Portrait):" },
+  { TYPE_STRING,	&grid_size_text[1][0],		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseGridYSize_1,	"Vertical Buttons (Portrait):"	},
+  { TYPE_STRING,	&grid_size_text[1][1],		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseTransparency,	"Button Transparency:"		},
+  { TYPE_STRING,	&transparency_text,		""				},
+  { TYPE_SWITCH,	&setup.touch.draw_outlined,	"Draw Buttons Outlined:"	},
+  { TYPE_SWITCH,	&setup.touch.draw_pressed,	"Highlight Pressed Buttons:"	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_ENTER_LIST,	execSetupConfigureVirtualButtons, "Configure Virtual Buttons"	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo *setup_info_touch_virtual_buttons[] =
@@ -7678,119 +7668,119 @@ static struct TokenInfo *setup_info_touch_virtual_buttons[] =
 
 static struct TokenInfo setup_info_touch_wipe_gestures[] =
 {
-  { TYPE_ENTER_LIST,	execSetupChooseTouchControls, "Touch Control Type:" },
-  { TYPE_STRING,	&touch_controls_text,	""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_ENTER_LIST,	execSetupChooseMoveDistance, "Move Trigger Distance:" },
-  { TYPE_STRING,	&move_distance_text,	""			},
-  { TYPE_ENTER_LIST,	execSetupChooseDropDistance, "Drop Trigger Distance:" },
-  { TYPE_STRING,	&drop_distance_text,	""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_ENTER_LIST,	execSetupChooseTouchControls,	"Touch Control Type:"		},
+  { TYPE_STRING,	&touch_controls_text,		""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_ENTER_LIST,	execSetupChooseMoveDistance,	"Move Trigger Distance:"	},
+  { TYPE_STRING,	&move_distance_text,		""				},
+  { TYPE_ENTER_LIST,	execSetupChooseDropDistance,	"Drop Trigger Distance:"	},
+  { TYPE_STRING,	&drop_distance_text,		""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_shortcuts[] =
 {
-  { TYPE_ENTER_MENU,	execSetupShortcuts1,	"Various Keys"		},
-  { TYPE_ENTER_MENU,	execSetupShortcuts2,	"Player Focus"		},
-  { TYPE_ENTER_MENU,	execSetupShortcuts3,	"Tape Buttons"		},
-  { TYPE_ENTER_MENU,	execSetupShortcuts4,	"Sound & Music"		},
-  { TYPE_ENTER_MENU,	execSetupShortcuts5,	"TAS Snap Keys"		},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupMain, 		"Back"			},
+  { TYPE_ENTER_MENU,	execSetupShortcuts1,		"Various Keys"			},
+  { TYPE_ENTER_MENU,	execSetupShortcuts2,		"Player Focus"			},
+  { TYPE_ENTER_MENU,	execSetupShortcuts3,		"Tape Buttons"			},
+  { TYPE_ENTER_MENU,	execSetupShortcuts4,		"Sound & Music"			},
+  { TYPE_ENTER_MENU,	execSetupShortcuts5,		"TAS Snap Keys"			},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_shortcuts_1[] =
 {
-  { TYPE_KEYTEXT,	NULL,		"Quick Save Game to Tape:",	},
-  { TYPE_KEY,		&setup.shortcut.save_game, ""			},
-  { TYPE_KEYTEXT,	NULL,		"Quick Load Game from Tape:",	},
-  { TYPE_KEY,		&setup.shortcut.load_game, ""			},
-  { TYPE_KEYTEXT,	NULL,		"Restart Game:",		},
-  { TYPE_KEY,		&setup.shortcut.restart_game, ""		},
-  { TYPE_KEYTEXT,	NULL,		"Replay & Pause Before End:",	},
-  { TYPE_KEY,		&setup.shortcut.pause_before_end, ""		},
-  { TYPE_KEYTEXT,	NULL,		"Start Game & Toggle Pause:",	},
-  { TYPE_KEY,		&setup.shortcut.toggle_pause, ""		},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_YES_NO,	&setup.ask_on_escape,	"Ask on 'Esc' Key:"	},
-  { TYPE_YES_NO, &setup.ask_on_escape_editor,	"Ask on 'Esc' Key (Editor):" },
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
+  { TYPE_KEYTEXT,	NULL,				"Quick Save Game to Tape:"	},
+  { TYPE_KEY,		&setup.shortcut.save_game,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Quick Load Game from Tape:"	},
+  { TYPE_KEY,		&setup.shortcut.load_game,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Restart Game:"			},
+  { TYPE_KEY,		&setup.shortcut.restart_game,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Replay & Pause Before End:"	},
+  { TYPE_KEY,		&setup.shortcut.pause_before_end, ""				},
+  { TYPE_KEYTEXT,	NULL,				"Start Game & Toggle Pause:"	},
+  { TYPE_KEY,		&setup.shortcut.toggle_pause,	""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_YES_NO,	&setup.ask_on_escape,		"Ask on 'Esc' Key:"		},
+  { TYPE_YES_NO, &setup.ask_on_escape_editor,		"Ask on 'Esc' Key (Editor):"	},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,		"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_shortcuts_2[] =
 {
-  { TYPE_KEYTEXT,	NULL,		"Set Focus to Player 1:",	},
-  { TYPE_KEY,		&setup.shortcut.focus_player[0], ""		},
-  { TYPE_KEYTEXT,	NULL,		"Set Focus to Player 2:",	},
-  { TYPE_KEY,		&setup.shortcut.focus_player[1], ""		},
-  { TYPE_KEYTEXT,	NULL,		"Set Focus to Player 3:",	},
-  { TYPE_KEY,		&setup.shortcut.focus_player[2], ""		},
-  { TYPE_KEYTEXT,	NULL,		"Set Focus to Player 4:",	},
-  { TYPE_KEY,		&setup.shortcut.focus_player[3], ""		},
-  { TYPE_KEYTEXT,	NULL,		"Set Focus to All Players:",	},
-  { TYPE_KEY,		&setup.shortcut.focus_player_all, ""		},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
+  { TYPE_KEYTEXT,	NULL,				"Set Focus to Player 1:"	},
+  { TYPE_KEY,		&setup.shortcut.focus_player[0], ""				},
+  { TYPE_KEYTEXT,	NULL,				"Set Focus to Player 2:"	},
+  { TYPE_KEY,		&setup.shortcut.focus_player[1], ""				},
+  { TYPE_KEYTEXT,	NULL,				"Set Focus to Player 3:"	},
+  { TYPE_KEY,		&setup.shortcut.focus_player[2], ""				},
+  { TYPE_KEYTEXT,	NULL,				"Set Focus to Player 4:"	},
+  { TYPE_KEY,		&setup.shortcut.focus_player[3], ""				},
+  { TYPE_KEYTEXT,	NULL,				"Set Focus to All Players:"	},
+  { TYPE_KEY,		&setup.shortcut.focus_player_all, ""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,		"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_shortcuts_3[] =
 {
-  { TYPE_KEYTEXT,	NULL,			"Eject Tape:",		},
-  { TYPE_KEY,		&setup.shortcut.tape_eject, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Warp / Single Step:",	},
-  { TYPE_KEY,		&setup.shortcut.tape_extra, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Stop Tape:",		},
-  { TYPE_KEY,		&setup.shortcut.tape_stop, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Pause / Unpause Tape:",},
-  { TYPE_KEY,		&setup.shortcut.tape_pause, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Record Tape:",		},
-  { TYPE_KEY,		&setup.shortcut.tape_record, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Play Tape:",		},
-  { TYPE_KEY,		&setup.shortcut.tape_play, ""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
+  { TYPE_KEYTEXT,	NULL,				"Eject Tape:"			},
+  { TYPE_KEY,		&setup.shortcut.tape_eject,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Warp / Single Step:"		},
+  { TYPE_KEY,		&setup.shortcut.tape_extra,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Stop Tape:"			},
+  { TYPE_KEY,		&setup.shortcut.tape_stop,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Pause / Unpause Tape:"		},
+  { TYPE_KEY,		&setup.shortcut.tape_pause,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Record Tape:"			},
+  { TYPE_KEY,		&setup.shortcut.tape_record,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Play Tape:"			},
+  { TYPE_KEY,		&setup.shortcut.tape_play,	""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,		"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_shortcuts_4[] =
 {
-  { TYPE_KEYTEXT,	NULL,		"Toggle Sound Effects (Normal):", },
-  { TYPE_KEY,		&setup.shortcut.sound_simple, ""		},
-  { TYPE_KEYTEXT,	NULL,		"Toggle Sound Effects (Looping):", },
-  { TYPE_KEY,		&setup.shortcut.sound_loops, ""			},
-  { TYPE_KEYTEXT,	NULL,		"Toggle Music:",		},
-  { TYPE_KEY,		&setup.shortcut.sound_music, ""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
+  { TYPE_KEYTEXT,	NULL,				"Toggle Sound Effects (Normal):" },
+  { TYPE_KEY,		&setup.shortcut.sound_simple,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Toggle Sound Effects (Looping):" },
+  { TYPE_KEY,		&setup.shortcut.sound_loops,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Toggle Music:"			},
+  { TYPE_KEY,		&setup.shortcut.sound_music,	""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,		"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static struct TokenInfo setup_info_shortcuts_5[] =
 {
-  { TYPE_KEYTEXT,	NULL,			"Snap Left:",		},
-  { TYPE_KEY,		&setup.shortcut.snap_left, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Snap Right:",		},
-  { TYPE_KEY,		&setup.shortcut.snap_right, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Snap Up:",		},
-  { TYPE_KEY,		&setup.shortcut.snap_up, ""			},
-  { TYPE_KEYTEXT,	NULL,			"Snap Down:",		},
-  { TYPE_KEY,		&setup.shortcut.snap_down, ""			},
-  { TYPE_EMPTY,		NULL,			""			},
-  { TYPE_LEAVE_MENU,	execSetupShortcuts,	"Back"			},
+  { TYPE_KEYTEXT,	NULL,				"Snap Left:"			},
+  { TYPE_KEY,		&setup.shortcut.snap_left,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Snap Right:"			},
+  { TYPE_KEY,		&setup.shortcut.snap_right,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Snap Up:"			},
+  { TYPE_KEY,		&setup.shortcut.snap_up,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Snap Down:"			},
+  { TYPE_KEY,		&setup.shortcut.snap_down,	""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,		"Back"				},
 
-  { 0,			NULL,			NULL			}
+  { 0,			NULL,				NULL				}
 };
 
 static Key getSetupKey(void)
