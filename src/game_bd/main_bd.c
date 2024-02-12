@@ -69,6 +69,11 @@ void setLevelInfoToDefaults_BD_Ext(int width, int height)
   {
     cave->w = width;
     cave->h = height;
+
+    cave->x1 = 0;
+    cave->y1 = 0;
+    cave->x2 = cave->w - 1;
+    cave->y2 = cave->h - 1;
   }
 
   gd_flatten_cave(cave, 0);
@@ -282,6 +287,8 @@ void InitGameEngine_BD(void)
   if (setup.bd_skip_uncovering)
     gd_scroll(game_bd.game, TRUE, TRUE);
 
+  ClearRectangle(gd_screen_bitmap, 0, 0, SXSIZE, SYSIZE);
+
   RedrawPlayfield_BD(TRUE);
 
   UpdateGameDoorValues_BD();
@@ -375,10 +382,11 @@ void CoverScreen_BD(void)
 
 void BlitScreenToBitmap_BD(Bitmap *target_bitmap)
 {
+  GdCave *cave = native_bd_level.cave;
   int xsize = SXSIZE;
   int ysize = SYSIZE;
-  int full_xsize = native_bd_level.cave->w * TILESIZE_VAR;
-  int full_ysize = native_bd_level.cave->h * TILESIZE_VAR;
+  int full_xsize = (cave->x2 - cave->x1 + 1) * TILESIZE_VAR;
+  int full_ysize = (cave->y2 - cave->y1 + 1) * TILESIZE_VAR;
   int sx = SX + (full_xsize < xsize ? (xsize - full_xsize) / 2 : 0);
   int sy = SY + (full_ysize < ysize ? (ysize - full_ysize) / 2 : 0);
   int sxsize = (full_xsize < xsize ? full_xsize : xsize);
