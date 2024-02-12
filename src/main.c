@@ -6475,7 +6475,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_sand_2",
     "bd_sand",
-    "sand (alternative)"
+    "sand 2"
   },
   {
     "bd_sand_ball",
@@ -6710,7 +6710,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_amoeba_2",
     "bd_amoeba",
-    "amoeba (alternative)"
+    "amoeba 2 (BD style)"
   },
   {
     "bd_bladder",
@@ -6965,52 +6965,52 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_butterfly_2",
     "bd_butterfly",
-    "butterfly (alternative, random start direction)"
+    "butterfly 2 (random start direction)"
   },
   {
     "bd_butterfly_2.right",
     "bd_butterfly",
-    "butterfly (alternative, starts moving right)"
+    "butterfly 2 (starts moving right)"
   },
   {
     "bd_butterfly_2.up",
     "bd_butterfly",
-    "butterfly (alternative, starts moving up)"
+    "butterfly 2 (starts moving up)"
   },
   {
     "bd_butterfly_2.left",
     "bd_butterfly",
-    "butterfly (alternative, starts moving left)"
+    "butterfly 2 (starts moving left)"
   },
   {
     "bd_butterfly_2.down",
     "bd_butterfly",
-    "butterfly (alternative, starts moving down)"
+    "butterfly 2 (starts moving down)"
   },
   {
     "bd_firefly_2",
     "bd_firefly",
-    "firefly (alternative, random start direction)"
+    "firefly 2 (random start direction)"
   },
   {
     "bd_firefly_2.right",
     "bd_firefly",
-    "firefly (alternative, starts moving right)"
+    "firefly 2 (starts moving right)"
   },
   {
     "bd_firefly_2.up",
     "bd_firefly",
-    "firefly (alternative, starts moving up)"
+    "firefly 2 (starts moving up)"
   },
   {
     "bd_firefly_2.left",
     "bd_firefly",
-    "firefly (alternative, starts moving left)"
+    "firefly 2 (starts moving left)"
   },
   {
     "bd_firefly_2.down",
     "bd_firefly",
-    "firefly (alternative, starts moving down)"
+    "firefly 2 (starts moving down)"
   },
   {
     "bd_stonefly",
