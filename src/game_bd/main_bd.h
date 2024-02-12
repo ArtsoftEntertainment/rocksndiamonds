@@ -48,6 +48,8 @@
 
 /* screen sizes and positions for BD engine */
 
+#define TILESIZE		32
+
 extern int			TILESIZE_VAR;
 
 #define TILEX			TILESIZE_VAR

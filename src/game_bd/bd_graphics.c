@@ -343,12 +343,13 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	int tile = game->element_buffer[y][x];
 	int frame = game->animcycle;
 	struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
+	int width  = g->width  * TILESIZE_VAR / TILESIZE;
+	int height = g->height * TILESIZE_VAR / TILESIZE;
 
-	blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, g->width, g->height,
-		    offset.x, offset.y);
+	blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, width, height, offset.x, offset.y);
 
 #if DO_GFX_SANITY_CHECK
-	if (use_native_bd_graphics_engine() && !program.headless)
+	if (use_native_bd_graphics_engine() && !setup.small_game_graphics && !program.headless)
 	{
 	  int old_x = (game->gfx_buffer[y][x] % GD_NUM_OF_CELLS) % GD_NUM_OF_CELLS_X;
 	  int old_y = (game->gfx_buffer[y][x] % GD_NUM_OF_CELLS) / GD_NUM_OF_CELLS_X;
