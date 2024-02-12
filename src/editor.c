@@ -6072,6 +6072,7 @@ static void ReinitializeElementList_EnableSections(void)
   }
   else if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
+    setup_editor_el_players		= FALSE;
     setup_editor_el_boulderdash		= FALSE;
     setup_editor_el_emerald_mine	= FALSE;
     setup_editor_el_emerald_mine_club	= FALSE;
