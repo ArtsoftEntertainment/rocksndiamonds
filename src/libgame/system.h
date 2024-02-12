@@ -299,271 +299,271 @@
 #define DRAW_TO_FADE_TARGET		4
 
 // values for move directions and special "button" key bitmasks
-#define MV_NONE			0
-#define MV_LEFT			(1 << MV_BIT_LEFT)
-#define MV_RIGHT		(1 << MV_BIT_RIGHT)
-#define MV_UP			(1 << MV_BIT_UP)
-#define MV_DOWN	       		(1 << MV_BIT_DOWN)
+#define MV_NONE				0
+#define MV_LEFT				(1 << MV_BIT_LEFT)
+#define MV_RIGHT			(1 << MV_BIT_RIGHT)
+#define MV_UP				(1 << MV_BIT_UP)
+#define MV_DOWN				(1 << MV_BIT_DOWN)
 
-#define MV_UPLEFT		(MV_UP   | MV_LEFT)
-#define MV_UPRIGHT		(MV_UP   | MV_RIGHT)
-#define MV_DOWNLEFT		(MV_DOWN | MV_LEFT)
-#define MV_DOWNRIGHT		(MV_DOWN | MV_RIGHT)
+#define MV_UPLEFT			(MV_UP   | MV_LEFT)
+#define MV_UPRIGHT			(MV_UP   | MV_RIGHT)
+#define MV_DOWNLEFT			(MV_DOWN | MV_LEFT)
+#define MV_DOWNRIGHT			(MV_DOWN | MV_RIGHT)
 
-#define MV_HORIZONTAL		(MV_LEFT | MV_RIGHT)
-#define MV_VERTICAL		(MV_UP   | MV_DOWN)
-#define MV_ALL_DIRECTIONS	(MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)
-#define MV_ANY_DIRECTION	(MV_ALL_DIRECTIONS)
-#define MV_NO_DIRECTION		(MV_NONE)
+#define MV_HORIZONTAL			(MV_LEFT | MV_RIGHT)
+#define MV_VERTICAL			(MV_UP   | MV_DOWN)
+#define MV_ALL_DIRECTIONS		(MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)
+#define MV_ANY_DIRECTION		(MV_ALL_DIRECTIONS)
+#define MV_NO_DIRECTION			(MV_NONE)
 
-#define KEY_BUTTON_1		(1 << BUTTON_1)
-#define KEY_BUTTON_2		(1 << BUTTON_2)
-#define KEY_BUTTON_SNAP		KEY_BUTTON_1
-#define KEY_BUTTON_DROP		KEY_BUTTON_2
-#define KEY_MOTION		(MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)
-#define KEY_BUTTON		(KEY_BUTTON_1 | KEY_BUTTON_2)
-#define KEY_ACTION		(KEY_MOTION | KEY_BUTTON)
+#define KEY_BUTTON_1			(1 << BUTTON_1)
+#define KEY_BUTTON_2			(1 << BUTTON_2)
+#define KEY_BUTTON_SNAP			KEY_BUTTON_1
+#define KEY_BUTTON_DROP			KEY_BUTTON_2
+#define KEY_MOTION			(MV_LEFT | MV_RIGHT | MV_UP | MV_DOWN)
+#define KEY_BUTTON			(KEY_BUTTON_1 | KEY_BUTTON_2)
+#define KEY_ACTION			(KEY_MOTION | KEY_BUTTON)
 
-#define KEY_SET_FOCUS		(1 << BIT_SET_FOCUS)
+#define KEY_SET_FOCUS			(1 << BIT_SET_FOCUS)
 
-#define MV_DIR_FROM_BIT(x)	((x) < NUM_DIRECTIONS ? 1 << (x) :	  \
-				 (x) == MV_BIT_UPLEFT    ? MV_UPLEFT    : \
-				 (x) == MV_BIT_UPRIGHT   ? MV_UPRIGHT   : \
-				 (x) == MV_BIT_DOWNLEFT  ? MV_DOWNLEFT  : \
-				 (x) == MV_BIT_DOWNRIGHT ? MV_DOWNRIGHT : \
-				 MV_NONE)
+#define MV_DIR_FROM_BIT(x)		((x) < NUM_DIRECTIONS ? 1 << (x) :	  \
+					 (x) == MV_BIT_UPLEFT    ? MV_UPLEFT    : \
+					 (x) == MV_BIT_UPRIGHT   ? MV_UPRIGHT   : \
+					 (x) == MV_BIT_DOWNLEFT  ? MV_DOWNLEFT  : \
+					 (x) == MV_BIT_DOWNRIGHT ? MV_DOWNRIGHT : \
+					 MV_NONE)
 
-#define MV_DIR_TO_BIT(x)	((x) == MV_LEFT      ? MV_BIT_LEFT      : \
-				 (x) == MV_RIGHT     ? MV_BIT_RIGHT     : \
-				 (x) == MV_UP        ? MV_BIT_UP        : \
-				 (x) == MV_DOWN      ? MV_BIT_DOWN      : \
-				 (x) == MV_UPLEFT    ? MV_BIT_UPLEFT    : \
-				 (x) == MV_UPRIGHT   ? MV_BIT_UPRIGHT   : \
-				 (x) == MV_DOWNLEFT  ? MV_BIT_DOWNLEFT  : \
-				 (x) == MV_DOWNRIGHT ? MV_BIT_DOWNRIGHT : \
-				 MV_BIT_DOWN)
+#define MV_DIR_TO_BIT(x)		((x) == MV_LEFT      ? MV_BIT_LEFT      : \
+					 (x) == MV_RIGHT     ? MV_BIT_RIGHT     : \
+					 (x) == MV_UP        ? MV_BIT_UP        : \
+					 (x) == MV_DOWN      ? MV_BIT_DOWN      : \
+					 (x) == MV_UPLEFT    ? MV_BIT_UPLEFT    : \
+					 (x) == MV_UPRIGHT   ? MV_BIT_UPRIGHT   : \
+					 (x) == MV_DOWNLEFT  ? MV_BIT_DOWNLEFT  : \
+					 (x) == MV_DOWNRIGHT ? MV_BIT_DOWNRIGHT : \
+					 MV_BIT_DOWN)
 
-#define MV_DIR_OPPOSITE(x)	((x) == MV_LEFT      ? MV_RIGHT     : \
-				 (x) == MV_RIGHT     ? MV_LEFT      : \
-				 (x) == MV_UP        ? MV_DOWN      : \
-				 (x) == MV_DOWN      ? MV_UP        : \
-				 (x) == MV_UPLEFT    ? MV_DOWNRIGHT : \
-				 (x) == MV_UPRIGHT   ? MV_DOWNLEFT  : \
-				 (x) == MV_DOWNLEFT  ? MV_UPRIGHT   : \
-				 (x) == MV_DOWNRIGHT ? MV_UPLEFT    : \
-				 MV_NONE)
+#define MV_DIR_OPPOSITE(x)		((x) == MV_LEFT      ? MV_RIGHT     : \
+					 (x) == MV_RIGHT     ? MV_LEFT      : \
+					 (x) == MV_UP        ? MV_DOWN      : \
+					 (x) == MV_DOWN      ? MV_UP        : \
+					 (x) == MV_UPLEFT    ? MV_DOWNRIGHT : \
+					 (x) == MV_UPRIGHT   ? MV_DOWNLEFT  : \
+					 (x) == MV_DOWNLEFT  ? MV_UPRIGHT   : \
+					 (x) == MV_DOWNRIGHT ? MV_UPLEFT    : \
+					 MV_NONE)
 
 // values for animation mode (frame order and direction)
 // (stored in level files -- never change existing values)
-#define ANIM_NONE		0
-#define ANIM_LOOP		(1 << 0)
-#define ANIM_LINEAR		(1 << 1)
-#define ANIM_PINGPONG		(1 << 2)
-#define ANIM_PINGPONG2		(1 << 3)
-#define ANIM_RANDOM		(1 << 4)
-#define ANIM_CE_VALUE		(1 << 5)
-#define ANIM_CE_SCORE		(1 << 6)
-#define ANIM_CE_DELAY		(1 << 7)
-#define ANIM_REVERSE		(1 << 8)
-#define ANIM_OPAQUE_PLAYER	(1 << 9)
-#define ANIM_LEVEL_NR		(1 << 10)
+#define ANIM_NONE			0
+#define ANIM_LOOP			(1 << 0)
+#define ANIM_LINEAR			(1 << 1)
+#define ANIM_PINGPONG			(1 << 2)
+#define ANIM_PINGPONG2			(1 << 3)
+#define ANIM_RANDOM			(1 << 4)
+#define ANIM_CE_VALUE			(1 << 5)
+#define ANIM_CE_SCORE			(1 << 6)
+#define ANIM_CE_DELAY			(1 << 7)
+#define ANIM_REVERSE			(1 << 8)
+#define ANIM_OPAQUE_PLAYER		(1 << 9)
+#define ANIM_LEVEL_NR			(1 << 10)
 
 // values for special (non game element) animation modes
 // (not stored in level files -- can be changed, if needed)
-#define ANIM_HORIZONTAL		(1 << 11)
-#define ANIM_VERTICAL		(1 << 12)
-#define ANIM_CENTERED		(1 << 13)
-#define ANIM_STATIC_PANEL	(1 << 14)
-#define ANIM_ALL		(1 << 15)
-#define ANIM_ONCE		(1 << 16)
-#define ANIM_TILED		(1 << 17)
-#define ANIM_RANDOM_STATIC	(1 << 18)
+#define ANIM_HORIZONTAL			(1 << 11)
+#define ANIM_VERTICAL			(1 << 12)
+#define ANIM_CENTERED			(1 << 13)
+#define ANIM_STATIC_PANEL		(1 << 14)
+#define ANIM_ALL			(1 << 15)
+#define ANIM_ONCE			(1 << 16)
+#define ANIM_TILED			(1 << 17)
+#define ANIM_RANDOM_STATIC		(1 << 18)
 
-#define ANIM_DEFAULT		ANIM_LOOP
+#define ANIM_DEFAULT			ANIM_LOOP
 
 // values for special global animation events
-#define ANIM_EVENT_UNDEFINED	-1
-#define ANIM_EVENT_NONE		0
-#define ANIM_EVENT_SELF		(1 << 0)
-#define ANIM_EVENT_ANY		(1 << 1)
-#define ANIM_EVENT_CLICK	(1 << 2)
-#define ANIM_EVENT_INIT		(1 << 3)
-#define ANIM_EVENT_START	(1 << 4)
-#define ANIM_EVENT_END		(1 << 5)
-#define ANIM_EVENT_POST		(1 << 6)
-#define ANIM_EVENT_UNCLICK_ANY	(1 << 7)
-#define ANIM_EVENT_CE_CHANGE	(1 << 8)
+#define ANIM_EVENT_UNDEFINED		-1
+#define ANIM_EVENT_NONE			0
+#define ANIM_EVENT_SELF			(1 << 0)
+#define ANIM_EVENT_ANY			(1 << 1)
+#define ANIM_EVENT_CLICK		(1 << 2)
+#define ANIM_EVENT_INIT			(1 << 3)
+#define ANIM_EVENT_START		(1 << 4)
+#define ANIM_EVENT_END			(1 << 5)
+#define ANIM_EVENT_POST			(1 << 6)
+#define ANIM_EVENT_UNCLICK_ANY		(1 << 7)
+#define ANIM_EVENT_CE_CHANGE		(1 << 8)
 
 // event mask:  bits 0-15
 // CE number:   bits 16-23
 // anim number: bits 16-23
 // page number: bits 24-31
 // part number: bits 24-31
-#define ANIM_EVENT_CE_BIT	16
-#define ANIM_EVENT_ANIM_BIT	16
-#define ANIM_EVENT_PAGE_BIT	24
-#define ANIM_EVENT_PART_BIT	24
+#define ANIM_EVENT_CE_BIT		16
+#define ANIM_EVENT_ANIM_BIT		16
+#define ANIM_EVENT_PAGE_BIT		24
+#define ANIM_EVENT_PART_BIT		24
 
-#define ANIM_EVENT_CE_MASK	(0xff << ANIM_EVENT_CE_BIT)
-#define ANIM_EVENT_ANIM_MASK	(0xff << ANIM_EVENT_ANIM_BIT)
-#define ANIM_EVENT_PAGE_MASK	(0xff << ANIM_EVENT_PAGE_BIT)
-#define ANIM_EVENT_PART_MASK	(0xff << ANIM_EVENT_PART_BIT)
+#define ANIM_EVENT_CE_MASK		(0xff << ANIM_EVENT_CE_BIT)
+#define ANIM_EVENT_ANIM_MASK		(0xff << ANIM_EVENT_ANIM_BIT)
+#define ANIM_EVENT_PAGE_MASK		(0xff << ANIM_EVENT_PAGE_BIT)
+#define ANIM_EVENT_PART_MASK		(0xff << ANIM_EVENT_PART_BIT)
 
-#define ANIM_EVENT_DEFAULT	ANIM_EVENT_NONE
+#define ANIM_EVENT_DEFAULT		ANIM_EVENT_NONE
 
 // values for special global animation event actions
-#define ANIM_EVENT_ACTION_NONE	-1
+#define ANIM_EVENT_ACTION_NONE		-1
 
 // values for special global animation delay types
-#define ANIM_DELAY_UNDEFINED	-1
-#define ANIM_DELAY_NONE		0
-#define ANIM_DELAY_INIT		1
-#define ANIM_DELAY_ANIM		2
-#define ANIM_DELAY_POST		3
+#define ANIM_DELAY_UNDEFINED		-1
+#define ANIM_DELAY_NONE			0
+#define ANIM_DELAY_INIT			1
+#define ANIM_DELAY_ANIM			2
+#define ANIM_DELAY_POST			3
 
 // values for special global animation delay actions
-#define ANIM_DELAY_ACTION_NONE	-1
+#define ANIM_DELAY_ACTION_NONE		-1
 
 // values for special drawing styles and event handling
-#define STYLE_NONE		0
+#define STYLE_NONE			0
 
 // values used for crumbled graphics
-#define STYLE_ACCURATE_BORDERS	(1 << 0)
-#define STYLE_INNER_CORNERS	(1 << 1)
+#define STYLE_ACCURATE_BORDERS		(1 << 0)
+#define STYLE_INNER_CORNERS		(1 << 1)
 
 // values used for game panel graphics
-#define STYLE_REVERSE		(1 << 2)
-#define STYLE_LEFTMOST_POSITION	(1 << 3)
+#define STYLE_REVERSE			(1 << 2)
+#define STYLE_LEFTMOST_POSITION		(1 << 3)
 
 // values used for global animations
-#define STYLE_BLOCK		(1 << 4)
-#define STYLE_PASSTHROUGH	(1 << 5)
-#define STYLE_MULTIPLE_ACTIONS	(1 << 6)
-#define STYLE_CONSUME_CE_EVENT	(1 << 7)
+#define STYLE_BLOCK			(1 << 4)
+#define STYLE_PASSTHROUGH		(1 << 5)
+#define STYLE_MULTIPLE_ACTIONS		(1 << 6)
+#define STYLE_CONSUME_CE_EVENT		(1 << 7)
 
-#define STYLE_DEFAULT		STYLE_NONE
+#define STYLE_DEFAULT			STYLE_NONE
 
 // values for fade mode
-#define FADE_TYPE_NONE		0
-#define FADE_TYPE_FADE_IN	(1 << 0)
-#define FADE_TYPE_FADE_OUT	(1 << 1)
-#define FADE_TYPE_TRANSFORM	(1 << 2)
-#define FADE_TYPE_CROSSFADE	(1 << 3)
-#define FADE_TYPE_MELT		(1 << 4)
-#define FADE_TYPE_CURTAIN	(1 << 5)
-#define FADE_TYPE_SKIP		(1 << 6)
+#define FADE_TYPE_NONE			0
+#define FADE_TYPE_FADE_IN		(1 << 0)
+#define FADE_TYPE_FADE_OUT		(1 << 1)
+#define FADE_TYPE_TRANSFORM		(1 << 2)
+#define FADE_TYPE_CROSSFADE		(1 << 3)
+#define FADE_TYPE_MELT			(1 << 4)
+#define FADE_TYPE_CURTAIN		(1 << 5)
+#define FADE_TYPE_SKIP			(1 << 6)
 
-#define FADE_MODE_NONE		(FADE_TYPE_NONE)
-#define FADE_MODE_FADE_IN	(FADE_TYPE_FADE_IN)
-#define FADE_MODE_FADE_OUT	(FADE_TYPE_FADE_OUT)
-#define FADE_MODE_FADE		(FADE_TYPE_FADE_IN | FADE_TYPE_FADE_OUT)
-#define FADE_MODE_TRANSFORM	(FADE_TYPE_TRANSFORM | FADE_TYPE_FADE_IN)
-#define FADE_MODE_CROSSFADE	(FADE_MODE_TRANSFORM | FADE_TYPE_CROSSFADE)
-#define FADE_MODE_MELT		(FADE_MODE_TRANSFORM | FADE_TYPE_MELT)
-#define FADE_MODE_CURTAIN	(FADE_MODE_TRANSFORM | FADE_TYPE_CURTAIN)
-#define FADE_MODE_SKIP_FADE_IN	(FADE_TYPE_SKIP | FADE_TYPE_FADE_IN)
-#define FADE_MODE_SKIP_FADE_OUT	(FADE_TYPE_SKIP | FADE_TYPE_FADE_OUT)
+#define FADE_MODE_NONE			(FADE_TYPE_NONE)
+#define FADE_MODE_FADE_IN		(FADE_TYPE_FADE_IN)
+#define FADE_MODE_FADE_OUT		(FADE_TYPE_FADE_OUT)
+#define FADE_MODE_FADE			(FADE_TYPE_FADE_IN | FADE_TYPE_FADE_OUT)
+#define FADE_MODE_TRANSFORM		(FADE_TYPE_TRANSFORM | FADE_TYPE_FADE_IN)
+#define FADE_MODE_CROSSFADE		(FADE_MODE_TRANSFORM | FADE_TYPE_CROSSFADE)
+#define FADE_MODE_MELT			(FADE_MODE_TRANSFORM | FADE_TYPE_MELT)
+#define FADE_MODE_CURTAIN		(FADE_MODE_TRANSFORM | FADE_TYPE_CURTAIN)
+#define FADE_MODE_SKIP_FADE_IN		(FADE_TYPE_SKIP | FADE_TYPE_FADE_IN)
+#define FADE_MODE_SKIP_FADE_OUT		(FADE_TYPE_SKIP | FADE_TYPE_FADE_OUT)
 
-#define FADE_MODE_DEFAULT	FADE_MODE_FADE
+#define FADE_MODE_DEFAULT		FADE_MODE_FADE
 
-#define AUTO_DELAY_UNIT_MS	0
-#define AUTO_DELAY_UNIT_FRAMES	1
+#define AUTO_DELAY_UNIT_MS		0
+#define AUTO_DELAY_UNIT_FRAMES		1
 
-#define AUTO_DELAY_UNIT_DEFAULT	AUTO_DELAY_UNIT_MS
+#define AUTO_DELAY_UNIT_DEFAULT		AUTO_DELAY_UNIT_MS
 
 // values for toon positions
-#define POS_UNDEFINED		-1
-#define POS_LEFT		0
-#define POS_RIGHT		1
-#define POS_TOP			2
-#define POS_UPPER		3
-#define POS_MIDDLE		4
-#define POS_LOWER		5
-#define POS_BOTTOM		6
-#define POS_ANY			7
-#define POS_CE			8
-#define POS_CE_TRIGGER		9
-#define POS_LAST		10
+#define POS_UNDEFINED			-1
+#define POS_LEFT			0
+#define POS_RIGHT			1
+#define POS_TOP				2
+#define POS_UPPER			3
+#define POS_MIDDLE			4
+#define POS_LOWER			5
+#define POS_BOTTOM			6
+#define POS_ANY				7
+#define POS_CE				8
+#define POS_CE_TRIGGER			9
+#define POS_LAST			10
 
 // values for text alignment
-#define ALIGN_LEFT		(1 << 0)
-#define ALIGN_RIGHT		(1 << 1)
-#define ALIGN_CENTER		(1 << 2)
-#define ALIGN_DEFAULT		ALIGN_LEFT
+#define ALIGN_LEFT			(1 << 0)
+#define ALIGN_RIGHT			(1 << 1)
+#define ALIGN_CENTER			(1 << 2)
+#define ALIGN_DEFAULT			ALIGN_LEFT
 
-#define VALIGN_TOP		(1 << 0)
-#define VALIGN_BOTTOM		(1 << 1)
-#define VALIGN_MIDDLE		(1 << 2)
-#define VALIGN_DEFAULT		VALIGN_TOP
+#define VALIGN_TOP			(1 << 0)
+#define VALIGN_BOTTOM			(1 << 1)
+#define VALIGN_MIDDLE			(1 << 2)
+#define VALIGN_DEFAULT			VALIGN_TOP
 
-#define ALIGNED_XPOS(x, w, a)	((a) == ALIGN_CENTER  ? (x) - (w) / 2 :	\
-				 (a) == ALIGN_RIGHT   ? (x) - (w) : (x))
-#define ALIGNED_YPOS(y, h, v)	((v) == VALIGN_MIDDLE ? (y) - (h) / 2 :	\
-				 (v) == VALIGN_BOTTOM ? (y) - (h) : (y))
-#define ALIGNED_TEXT_XPOS(p)	ALIGNED_XPOS((p)->x, (p)->width,  (p)->align)
-#define ALIGNED_TEXT_YPOS(p)	ALIGNED_YPOS((p)->y, (p)->height, (p)->valign)
-#define ALIGNED_VP_XPOS(p)	ALIGNED_TEXT_XPOS(p)
-#define ALIGNED_VP_YPOS(p)	ALIGNED_TEXT_YPOS(p)
+#define ALIGNED_XPOS(x, w, a)		((a) == ALIGN_CENTER  ? (x) - (w) / 2 :	\
+					 (a) == ALIGN_RIGHT   ? (x) - (w) : (x))
+#define ALIGNED_YPOS(y, h, v)		((v) == VALIGN_MIDDLE ? (y) - (h) / 2 :	\
+					 (v) == VALIGN_BOTTOM ? (y) - (h) : (y))
+#define ALIGNED_TEXT_XPOS(p)		ALIGNED_XPOS((p)->x, (p)->width,  (p)->align)
+#define ALIGNED_TEXT_YPOS(p)		ALIGNED_YPOS((p)->y, (p)->height, (p)->valign)
+#define ALIGNED_VP_XPOS(p)		ALIGNED_TEXT_XPOS(p)
+#define ALIGNED_VP_YPOS(p)		ALIGNED_TEXT_YPOS(p)
 
 // values for redraw_mask
-#define REDRAW_NONE		(0)
-#define REDRAW_ALL		(1 << 0)
-#define REDRAW_FIELD		(1 << 1)
-#define REDRAW_DOOR_1		(1 << 2)
-#define REDRAW_DOOR_2		(1 << 3)
-#define REDRAW_DOOR_3		(1 << 4)
-#define REDRAW_FPS		(1 << 5)
+#define REDRAW_NONE			(0)
+#define REDRAW_ALL			(1 << 0)
+#define REDRAW_FIELD			(1 << 1)
+#define REDRAW_DOOR_1			(1 << 2)
+#define REDRAW_DOOR_2			(1 << 3)
+#define REDRAW_DOOR_3			(1 << 4)
+#define REDRAW_FPS			(1 << 5)
 
-#define REDRAW_DOORS		(REDRAW_DOOR_1 | \
-				 REDRAW_DOOR_2 | \
-				 REDRAW_DOOR_3)
+#define REDRAW_DOORS			(REDRAW_DOOR_1 | \
+					 REDRAW_DOOR_2 | \
+					 REDRAW_DOOR_3)
 
-#define IN_GFX_FIELD_PLAY(x, y)	(x >= gfx.sx && x < gfx.sx + gfx.sxsize && \
-				 y >= gfx.sy && y < gfx.sy + gfx.sysize)
-#define IN_GFX_FIELD_FULL(x, y)	(x >= gfx.real_sx && \
-				 x <  gfx.real_sx + gfx.full_sxsize && \
-				 y >= gfx.real_sy && \
-				 y <  gfx.real_sy + gfx.full_sysize)
-#define IN_GFX_DOOR_1(x, y)	(x >= gfx.dx && x < gfx.dx + gfx.dxsize && \
-				 y >= gfx.dy && y < gfx.dy + gfx.dysize)
-#define IN_GFX_DOOR_2(x, y)	(x >= gfx.vx && x < gfx.vx + gfx.vxsize && \
-				 y >= gfx.vy && y < gfx.vy + gfx.vysize)
-#define IN_GFX_DOOR_3(x, y)	(x >= gfx.ex && x < gfx.ex + gfx.exsize && \
-				 y >= gfx.ey && y < gfx.ey + gfx.eysize)
+#define IN_GFX_FIELD_PLAY(x, y)		(x >= gfx.sx && x < gfx.sx + gfx.sxsize && \
+					 y >= gfx.sy && y < gfx.sy + gfx.sysize)
+#define IN_GFX_FIELD_FULL(x, y)		(x >= gfx.real_sx && \
+					 x <  gfx.real_sx + gfx.full_sxsize && \
+					 y >= gfx.real_sy && \
+					 y <  gfx.real_sy + gfx.full_sysize)
+#define IN_GFX_DOOR_1(x, y)		(x >= gfx.dx && x < gfx.dx + gfx.dxsize && \
+					 y >= gfx.dy && y < gfx.dy + gfx.dysize)
+#define IN_GFX_DOOR_2(x, y)		(x >= gfx.vx && x < gfx.vx + gfx.vxsize && \
+					 y >= gfx.vy && y < gfx.vy + gfx.vysize)
+#define IN_GFX_DOOR_3(x, y)		(x >= gfx.ex && x < gfx.ex + gfx.exsize && \
+					 y >= gfx.ey && y < gfx.ey + gfx.eysize)
 
 // values for mouse cursor
-#define CURSOR_UNDEFINED	-1
-#define CURSOR_DEFAULT		0
-#define CURSOR_NONE		1
-#define CURSOR_PLAYFIELD	2
+#define CURSOR_UNDEFINED		-1
+#define CURSOR_DEFAULT			0
+#define CURSOR_NONE			1
+#define CURSOR_PLAYFIELD		2
 
 // fundamental game speed values
-#define ONE_SECOND_DELAY	1000	// delay value for one second
-#define MENU_FRAME_DELAY	20	// frame delay in milliseconds
-#define GAME_FRAME_DELAY	20	// frame delay in milliseconds
-#define FFWD_FRAME_DELAY	10	// 200% speed for fast forward
-#define MIN_VSYNC_FRAME_DELAY	15	// minimum value for vsync to keep
-#define MAX_VSYNC_FRAME_DELAY	16	// maximum value for vsync to work
-#define FRAMES_PER_SECOND	(ONE_SECOND_DELAY / GAME_FRAME_DELAY)
-#define FRAMES_PER_SECOND_SP	35
-#define FRAMES_PER_SECOND_PAL	50
-#define FRAMES_PER_SECOND_NTSC	60
+#define ONE_SECOND_DELAY		1000	// delay value for one second
+#define MENU_FRAME_DELAY		20	// frame delay in milliseconds
+#define GAME_FRAME_DELAY		20	// frame delay in milliseconds
+#define FFWD_FRAME_DELAY		10	// 200% speed for fast forward
+#define MIN_VSYNC_FRAME_DELAY		15	// minimum value for vsync to keep
+#define MAX_VSYNC_FRAME_DELAY		16	// maximum value for vsync to work
+#define FRAMES_PER_SECOND		(ONE_SECOND_DELAY / GAME_FRAME_DELAY)
+#define FRAMES_PER_SECOND_SP		35
+#define FRAMES_PER_SECOND_PAL		50
+#define FRAMES_PER_SECOND_NTSC		60
 
 // maximum playfield size supported by libgame functions
-#define MAX_PLAYFIELD_WIDTH	128
-#define MAX_PLAYFIELD_HEIGHT	128
+#define MAX_PLAYFIELD_WIDTH		128
+#define MAX_PLAYFIELD_HEIGHT		128
 
 // maximum number of parallel players supported by libgame functions
-#define MAX_PLAYERS		4
+#define MAX_PLAYERS			4
 
 // maximum number of player names
-#define MAX_PLAYER_NAMES	12
+#define MAX_PLAYER_NAMES		12
 
 // maximum allowed length of player name
-#define MAX_PLAYER_NAME_LEN	10
+#define MAX_PLAYER_NAME_LEN		10
 
 // maximum number of levels in a level set
-#define MAX_LEVELS		1000
+#define MAX_LEVELS			1000
 
 // maximum number of global animation and parts
 #define MAX_GLOBAL_ANIMS		32
@@ -623,107 +623,107 @@
 					 JOY_NO_ACTION)
 
 // maximum number of level sets in the level set history
-#define MAX_LEVELDIR_HISTORY	100
+#define MAX_LEVELDIR_HISTORY		100
 
 // default name for empty highscore entry
-#define EMPTY_PLAYER_NAME	"no name"
+#define EMPTY_PLAYER_NAME		"no name"
 
 // default name for unknown player names
-#define ANONYMOUS_NAME		"anonymous"
+#define ANONYMOUS_NAME			"anonymous"
 
 // default for other unknown names
-#define UNKNOWN_NAME		"unknown"
+#define UNKNOWN_NAME			"unknown"
 
 // default name for new levels
-#define NAMELESS_LEVEL_NAME	"nameless level"
+#define NAMELESS_LEVEL_NAME		"nameless level"
 
 // default text for non-existant artwork
-#define NOT_AVAILABLE		"(not available)"
+#define NOT_AVAILABLE			"(not available)"
 
 // default value for undefined filename
-#define UNDEFINED_FILENAME	"[NONE]"
+#define UNDEFINED_FILENAME		"[NONE]"
 
 // default value for undefined levelset
-#define UNDEFINED_LEVELSET	"[NONE]"
+#define UNDEFINED_LEVELSET		"[NONE]"
 
 // default value for undefined password
-#define UNDEFINED_PASSWORD	"[undefined]"
+#define UNDEFINED_PASSWORD		"[undefined]"
 
 // default value for undefined string parameter
-#define ARG_UNDEFINED_STRING	"[undefined]"
+#define ARG_UNDEFINED_STRING		"[undefined]"
 
 // default value for default string parameter
-#define ARG_DEFAULT		"[DEFAULT]"
+#define ARG_DEFAULT			"[DEFAULT]"
 
 // default values for undefined numerical parameter (as string and integer)
-#define ARG_UNDEFINED		"-1000000"
-#define ARG_UNDEFINED_VALUE	(-1000000)
+#define ARG_UNDEFINED			"-1000000"
+#define ARG_UNDEFINED_VALUE		(-1000000)
 
 // default value for off-screen positions
-#define POS_OFFSCREEN		(-1000000)
+#define POS_OFFSCREEN			(-1000000)
 
 // definitions for game base path and sub-directories
 #ifndef BASE_PATH
-#define BASE_PATH		"."
+#define BASE_PATH			"."
 #endif
 
 // directory names
-#define GRAPHICS_DIRECTORY	"graphics"
-#define SOUNDS_DIRECTORY	"sounds"
-#define MUSIC_DIRECTORY		"music"
-#define LEVELS_DIRECTORY	"levels"
-#define TAPES_DIRECTORY		"tapes"
-#define SCORES_DIRECTORY	"scores"
-#define DOCS_DIRECTORY		"docs"
-#define ELEMENTS_DIRECTORY	"elements"
-#define CREDITS_DIRECTORY	"credits"
-#define PROGRAM_INFO_DIRECTORY	"program"
-#define LEVELSET_INFO_DIRECTORY	"levelset"
-#define CACHE_DIRECTORY		"cache"
-#define CONF_DIRECTORY		"conf"
-#define NETWORK_DIRECTORY	"network"
-#define USERS_DIRECTORY		"users"
-#define PERSISTENT_DIRECTORY	"/persistent"
+#define GRAPHICS_DIRECTORY		"graphics"
+#define SOUNDS_DIRECTORY		"sounds"
+#define MUSIC_DIRECTORY			"music"
+#define LEVELS_DIRECTORY		"levels"
+#define TAPES_DIRECTORY			"tapes"
+#define SCORES_DIRECTORY		"scores"
+#define DOCS_DIRECTORY			"docs"
+#define ELEMENTS_DIRECTORY		"elements"
+#define CREDITS_DIRECTORY		"credits"
+#define PROGRAM_INFO_DIRECTORY		"program"
+#define LEVELSET_INFO_DIRECTORY		"levelset"
+#define CACHE_DIRECTORY			"cache"
+#define CONF_DIRECTORY			"conf"
+#define NETWORK_DIRECTORY		"network"
+#define USERS_DIRECTORY			"users"
+#define PERSISTENT_DIRECTORY		"/persistent"
 
-#define GFX_CLASSIC_SUBDIR	"gfx_classic"
-#define SND_CLASSIC_SUBDIR	"snd_classic"
-#define MUS_CLASSIC_SUBDIR	"mus_classic"
+#define GFX_CLASSIC_SUBDIR		"gfx_classic"
+#define SND_CLASSIC_SUBDIR		"snd_classic"
+#define MUS_CLASSIC_SUBDIR		"mus_classic"
 
-#define GFX_DEFAULT_SUBDIR	(setup.internal.default_graphics_set)
-#define SND_DEFAULT_SUBDIR	(setup.internal.default_sounds_set)
-#define MUS_DEFAULT_SUBDIR	(setup.internal.default_music_set)
+#define GFX_DEFAULT_SUBDIR		(setup.internal.default_graphics_set)
+#define SND_DEFAULT_SUBDIR		(setup.internal.default_sounds_set)
+#define MUS_DEFAULT_SUBDIR		(setup.internal.default_music_set)
 
-#define GFX_FALLBACK_FILENAME	(setup.internal.fallback_graphics_file)
-#define SND_FALLBACK_FILENAME	(setup.internal.fallback_sounds_file)
-#define MUS_FALLBACK_FILENAME	(setup.internal.fallback_music_file)
+#define GFX_FALLBACK_FILENAME		(setup.internal.fallback_graphics_file)
+#define SND_FALLBACK_FILENAME		(setup.internal.fallback_sounds_file)
+#define MUS_FALLBACK_FILENAME		(setup.internal.fallback_music_file)
 
-#define DEFAULT_LEVELSET	(setup.internal.default_level_series)
+#define DEFAULT_LEVELSET		(setup.internal.default_level_series)
 
 // file names and filename extensions
-#define LEVELSETUP_DIRECTORY	"levelsetup"
-#define SETUP_FILENAME		"setup.conf"
-#define USERSETUP_FILENAME	"usersetup.conf"
-#define AUTOSETUP_FILENAME	"autosetup.conf"
-#define LEVELSETUP_FILENAME	"levelsetup.conf"
-#define SERVERSETUP_FILENAME	"serversetup.conf"
-#define EDITORSETUP_FILENAME	"editorsetup.conf"
-#define EDITORCASCADE_FILENAME	"editorcascade.conf"
-#define HELPANIM_FILENAME	"helpanim.conf"
-#define HELPTEXT_FILENAME	"helptext.conf"
-#define LEVELINFO_FILENAME	"levelinfo.conf"
-#define GRAPHICSINFO_FILENAME	"graphicsinfo.conf"
-#define SOUNDSINFO_FILENAME	"soundsinfo.conf"
-#define MUSICINFO_FILENAME	"musicinfo.conf"
-#define ARTWORKINFO_CACHE_FILE	"artworkinfo.cache"
-#define LEVELTEMPLATE_FILENAME	"template.level"
-#define UPLOADED_FILENAME	".uploaded"
-#define LEVELFILE_EXTENSION	"level"
-#define TAPEFILE_EXTENSION	"tape"
-#define SCOREFILE_EXTENSION	"score"
+#define LEVELSETUP_DIRECTORY		"levelsetup"
+#define SETUP_FILENAME			"setup.conf"
+#define USERSETUP_FILENAME		"usersetup.conf"
+#define AUTOSETUP_FILENAME		"autosetup.conf"
+#define LEVELSETUP_FILENAME		"levelsetup.conf"
+#define SERVERSETUP_FILENAME		"serversetup.conf"
+#define EDITORSETUP_FILENAME		"editorsetup.conf"
+#define EDITORCASCADE_FILENAME		"editorcascade.conf"
+#define HELPANIM_FILENAME		"helpanim.conf"
+#define HELPTEXT_FILENAME		"helptext.conf"
+#define LEVELINFO_FILENAME		"levelinfo.conf"
+#define GRAPHICSINFO_FILENAME		"graphicsinfo.conf"
+#define SOUNDSINFO_FILENAME		"soundsinfo.conf"
+#define MUSICINFO_FILENAME		"musicinfo.conf"
+#define ARTWORKINFO_CACHE_FILE		"artworkinfo.cache"
+#define LEVELTEMPLATE_FILENAME		"template.level"
+#define UPLOADED_FILENAME		".uploaded"
+#define LEVELFILE_EXTENSION		"level"
+#define TAPEFILE_EXTENSION		"tape"
+#define SCOREFILE_EXTENSION		"score"
 
-#define GAMECONTROLLER_BASENAME	"gamecontrollerdb.txt"
+#define GAMECONTROLLER_BASENAME		"gamecontrollerdb.txt"
 
-#define FALLBACK_TEXT_FILENAME	"fallback.txt"
+#define FALLBACK_TEXT_FILENAME		"fallback.txt"
 
 #define STRING_PARENT_DIRECTORY		".."
 #define STRING_TOP_DIRECTORY		"/"
@@ -738,13 +738,13 @@
 #define STRING_NEWLINE_DOS		"\r\n"
 
 #if defined(PLATFORM_WINDOWS)
-#define CHAR_PATH_SEPARATOR	CHAR_PATH_SEPARATOR_DOS
-#define STRING_PATH_SEPARATOR	STRING_PATH_SEPARATOR_DOS
-#define STRING_NEWLINE		STRING_NEWLINE_DOS
+#define CHAR_PATH_SEPARATOR		CHAR_PATH_SEPARATOR_DOS
+#define STRING_PATH_SEPARATOR		STRING_PATH_SEPARATOR_DOS
+#define STRING_NEWLINE			STRING_NEWLINE_DOS
 #else
-#define CHAR_PATH_SEPARATOR	CHAR_PATH_SEPARATOR_UNIX
-#define STRING_PATH_SEPARATOR	STRING_PATH_SEPARATOR_UNIX
-#define STRING_NEWLINE		STRING_NEWLINE_UNIX
+#define CHAR_PATH_SEPARATOR		CHAR_PATH_SEPARATOR_UNIX
+#define STRING_PATH_SEPARATOR		STRING_PATH_SEPARATOR_UNIX
+#define STRING_NEWLINE			STRING_NEWLINE_UNIX
 #endif
 
 
@@ -755,263 +755,213 @@
 // PAGEX3: buffer for animations
 
 // these values are hard-coded to be able to use them in initialization
-#define DOOR_GFX_PAGE_WIDTH	100	// should be set to "gfx.dxsize"
-#define DOOR_GFX_PAGE_HEIGHT	280	// should be set to "gfx.dysize"
+#define DOOR_GFX_PAGE_WIDTH		100	// should be set to "gfx.dxsize"
+#define DOOR_GFX_PAGE_HEIGHT		280	// should be set to "gfx.dysize"
 
-#define DOOR_GFX_PAGESIZE	(DOOR_GFX_PAGE_WIDTH)
-#define DOOR_GFX_PAGEX1		(0 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX2		(1 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX3		(2 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX4		(3 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX5		(4 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX6		(5 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX7		(6 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEX8		(7 * DOOR_GFX_PAGESIZE)
-#define DOOR_GFX_PAGEY1		(0)
-#define DOOR_GFX_PAGEY2		(DOOR_GFX_PAGE_HEIGHT)
+#define DOOR_GFX_PAGESIZE		(DOOR_GFX_PAGE_WIDTH)
+#define DOOR_GFX_PAGEX1			(0 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX2			(1 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX3			(2 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX4			(3 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX5			(4 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX6			(5 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX7			(6 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEX8			(7 * DOOR_GFX_PAGESIZE)
+#define DOOR_GFX_PAGEY1			(0)
+#define DOOR_GFX_PAGEY2			(DOOR_GFX_PAGE_HEIGHT)
 
 
 // macros for version handling
-#define VERSION_PART_1(x)	((x) / 1000000)
-#define VERSION_PART_2(x)	(((x) % 1000000) / 10000)
-#define VERSION_PART_3(x)	(((x) % 10000) / 100)
-#define VERSION_PART_4(x)	((x) % 100)
+#define VERSION_PART_1(x)		((x) / 1000000)
+#define VERSION_PART_2(x)		(((x) % 1000000) / 10000)
+#define VERSION_PART_3(x)		(((x) % 10000) / 100)
+#define VERSION_PART_4(x)		((x) % 100)
 
-#define VERSION_SUPER(x)	VERSION_PART_1(x)
-#define VERSION_MAJOR(x)	VERSION_PART_2(x)
-#define VERSION_MINOR(x)	VERSION_PART_3(x)
-#define VERSION_PATCH(x)	VERSION_PART_4(x)
-#define VERSION_IDENT(a,b,c,d)	((a) * 1000000 + (b) * 10000 + (c) * 100 + (d))
+#define VERSION_SUPER(x)		VERSION_PART_1(x)
+#define VERSION_MAJOR(x)		VERSION_PART_2(x)
+#define VERSION_MINOR(x)		VERSION_PART_3(x)
+#define VERSION_PATCH(x)		VERSION_PART_4(x)
+#define VERSION_IDENT(a,b,c,d)		((a) * 1000000 + (b) * 10000 + (c) * 100 + (d))
 
 
 // macros for parent/child process identification
 #if defined(PLATFORM_UNIX)
-#define IS_PARENT_PROCESS()	(audio.mixer_pid != getpid())
-#define IS_CHILD_PROCESS()	(audio.mixer_pid == getpid())
-#define HAS_CHILD_PROCESS()	(audio.mixer_pid > 0)
+#define IS_PARENT_PROCESS()		(audio.mixer_pid != getpid())
+#define IS_CHILD_PROCESS()		(audio.mixer_pid == getpid())
+#define HAS_CHILD_PROCESS()		(audio.mixer_pid > 0)
 #else
-#define IS_PARENT_PROCESS()	TRUE
-#define IS_CHILD_PROCESS()	FALSE
-#define HAS_CHILD_PROCESS()	FALSE
+#define IS_PARENT_PROCESS()		TRUE
+#define IS_CHILD_PROCESS()		FALSE
+#define HAS_CHILD_PROCESS()		FALSE
 #endif
 
 
 // values for artwork type
-#define ARTWORK_TYPE_GRAPHICS	0
-#define ARTWORK_TYPE_SOUNDS	1
-#define ARTWORK_TYPE_MUSIC	2
+#define ARTWORK_TYPE_GRAPHICS		0
+#define ARTWORK_TYPE_SOUNDS		1
+#define ARTWORK_TYPE_MUSIC		2
 
-#define NUM_ARTWORK_TYPES	3
+#define NUM_ARTWORK_TYPES		3
 
 
 // values for tree type (chosen to match artwork type)
-#define TREE_TYPE_UNDEFINED	-1
-#define TREE_TYPE_GRAPHICS_DIR	ARTWORK_TYPE_GRAPHICS
-#define TREE_TYPE_SOUNDS_DIR	ARTWORK_TYPE_SOUNDS
-#define TREE_TYPE_MUSIC_DIR	ARTWORK_TYPE_MUSIC
-#define TREE_TYPE_LEVEL_DIR	3
-#define TREE_TYPE_LEVEL_NR	4
-#define TREE_TYPE_PLAYER_NAME	5
-#define TREE_TYPE_SCORE_ENTRY	6
+#define TREE_TYPE_UNDEFINED		-1
+#define TREE_TYPE_GRAPHICS_DIR		ARTWORK_TYPE_GRAPHICS
+#define TREE_TYPE_SOUNDS_DIR		ARTWORK_TYPE_SOUNDS
+#define TREE_TYPE_MUSIC_DIR		ARTWORK_TYPE_MUSIC
+#define TREE_TYPE_LEVEL_DIR		3
+#define TREE_TYPE_LEVEL_NR		4
+#define TREE_TYPE_PLAYER_NAME		5
+#define TREE_TYPE_SCORE_ENTRY		6
 
-#define NUM_BASE_TREE_TYPES	4
-#define NUM_TREE_TYPES		7
+#define NUM_BASE_TREE_TYPES		4
+#define NUM_TREE_TYPES			7
 
-#define TREE_TYPE_IS_DIR(type)	((type) == TREE_TYPE_GRAPHICS_DIR ||	\
-				 (type) == TREE_TYPE_SOUNDS_DIR ||	\
-				 (type) == TREE_TYPE_MUSIC_DIR ||	\
-				 (type) == TREE_TYPE_LEVEL_DIR)
+#define TREE_TYPE_IS_DIR(type)		((type) == TREE_TYPE_GRAPHICS_DIR ||	\
+					 (type) == TREE_TYPE_SOUNDS_DIR ||	\
+					 (type) == TREE_TYPE_MUSIC_DIR ||	\
+					 (type) == TREE_TYPE_LEVEL_DIR)
 
-#define INFOTEXT_UNDEFINED	""
-#define INFOTEXT_GRAPHICS_DIR	"Custom Graphics"
-#define INFOTEXT_SOUNDS_DIR	"Custom Sounds"
-#define INFOTEXT_MUSIC_DIR	"Custom Music"
-#define INFOTEXT_LEVEL_DIR	"Level Sets"
-#define INFOTEXT_LEVEL_NR	"Levels"
-#define INFOTEXT_PLAYER_NAME	"Players & Teams"
-#define INFOTEXT_SCORE_ENTRY	"Hall of Fame"
+#define INFOTEXT_UNDEFINED		""
+#define INFOTEXT_GRAPHICS_DIR		"Custom Graphics"
+#define INFOTEXT_SOUNDS_DIR		"Custom Sounds"
+#define INFOTEXT_MUSIC_DIR		"Custom Music"
+#define INFOTEXT_LEVEL_DIR		"Level Sets"
+#define INFOTEXT_LEVEL_NR		"Levels"
+#define INFOTEXT_PLAYER_NAME		"Players & Teams"
+#define INFOTEXT_SCORE_ENTRY		"Hall of Fame"
 
-#define BACKLINK_TEXT_MAIN	".. (main menu)"
-#define BACKLINK_TEXT_SETUP	".. (setup menu)"
-#define BACKLINK_TEXT_PARENT	".. (parent directory)"
-#define BACKLINK_TEXT_BACK	"back"
-#define BACKLINK_TEXT_NEXT	"next"
+#define BACKLINK_TEXT_MAIN		".. (main menu)"
+#define BACKLINK_TEXT_SETUP		".. (setup menu)"
+#define BACKLINK_TEXT_PARENT		".. (parent directory)"
+#define BACKLINK_TEXT_BACK		"back"
+#define BACKLINK_TEXT_NEXT		"next"
 
-#define TREE_INFOTEXT(t)	((t) == TREE_TYPE_SCORE_ENTRY ?		\
-				 INFOTEXT_SCORE_ENTRY :			\
-				 (t) == TREE_TYPE_PLAYER_NAME ?		\
-				 INFOTEXT_PLAYER_NAME :			\
-				 (t) == TREE_TYPE_LEVEL_NR ?		\
-				 INFOTEXT_LEVEL_NR :			\
-				 (t) == TREE_TYPE_LEVEL_DIR ?		\
-				 INFOTEXT_LEVEL_DIR :			\
-				 (t) == TREE_TYPE_GRAPHICS_DIR ?	\
-				 INFOTEXT_GRAPHICS_DIR :		\
-				 (t) == TREE_TYPE_SOUNDS_DIR ?		\
-				 INFOTEXT_SOUNDS_DIR :			\
-				 (t) == TREE_TYPE_MUSIC_DIR ?		\
-				 INFOTEXT_MUSIC_DIR :			\
-				 INFOTEXT_UNDEFINED)
+#define TREE_INFOTEXT(t)									\
+			((t) == TREE_TYPE_SCORE_ENTRY  ? INFOTEXT_SCORE_ENTRY :			\
+			 (t) == TREE_TYPE_PLAYER_NAME  ? INFOTEXT_PLAYER_NAME :			\
+			 (t) == TREE_TYPE_LEVEL_NR     ? INFOTEXT_LEVEL_NR :			\
+			 (t) == TREE_TYPE_LEVEL_DIR    ? INFOTEXT_LEVEL_DIR :			\
+			 (t) == TREE_TYPE_GRAPHICS_DIR ? INFOTEXT_GRAPHICS_DIR :		\
+			 (t) == TREE_TYPE_SOUNDS_DIR   ? INFOTEXT_SOUNDS_DIR :			\
+			 (t) == TREE_TYPE_MUSIC_DIR    ? INFOTEXT_MUSIC_DIR :			\
+			 INFOTEXT_UNDEFINED)
 
-#define TREE_BACKLINK_TEXT(t)	((t) == TREE_TYPE_SCORE_ENTRY ?		\
-				 BACKLINK_TEXT_BACK :			\
-				 (t) == TREE_TYPE_LEVEL_DIR ?		\
-				 BACKLINK_TEXT_MAIN :			\
-				 BACKLINK_TEXT_SETUP)
+#define TREE_BACKLINK_TEXT(t)									\
+			((t) == TREE_TYPE_SCORE_ENTRY  ? BACKLINK_TEXT_BACK :			\
+			 (t) == TREE_TYPE_LEVEL_DIR    ? BACKLINK_TEXT_MAIN :			\
+			 BACKLINK_TEXT_SETUP)
 
-#define TREE_USERDIR(t)		((t) == TREE_TYPE_LEVEL_DIR ?		\
-				 getUserLevelDir(NULL) :		\
-				 (t) == TREE_TYPE_GRAPHICS_DIR ?	\
-				 getUserGraphicsDir() :			\
-				 (t) == TREE_TYPE_SOUNDS_DIR ?		\
-				 getUserSoundsDir() :			\
-				 (t) == TREE_TYPE_MUSIC_DIR ?		\
-				 getUserMusicDir() :			\
-				 NULL)
+#define TREE_USERDIR(t)										\
+			((t) == TREE_TYPE_LEVEL_DIR    ? getUserLevelDir(NULL) :		\
+			 (t) == TREE_TYPE_GRAPHICS_DIR ? getUserGraphicsDir() :			\
+			 (t) == TREE_TYPE_SOUNDS_DIR   ? getUserSoundsDir() :			\
+			 (t) == TREE_TYPE_MUSIC_DIR    ? getUserMusicDir() :			\
+			 NULL)
 
-#define TREE_FIRST_NODE_PTR(t)	((t) == TREE_TYPE_LEVEL_DIR ?		\
-				 &leveldir_first :			\
-				 (t) == TREE_TYPE_GRAPHICS_DIR ?	\
-				 &artwork.gfx_first :			\
-				 (t) == TREE_TYPE_SOUNDS_DIR ?		\
-				 &artwork.snd_first :			\
-				 (t) == TREE_TYPE_MUSIC_DIR ?		\
-				 &artwork.mus_first :			\
-				 NULL)
+#define TREE_FIRST_NODE_PTR(t)									\
+			((t) == TREE_TYPE_LEVEL_DIR    ? &leveldir_first :			\
+			 (t) == TREE_TYPE_GRAPHICS_DIR ? &artwork.gfx_first :			\
+			 (t) == TREE_TYPE_SOUNDS_DIR   ? &artwork.snd_first :			\
+			 (t) == TREE_TYPE_MUSIC_DIR    ? &artwork.mus_first :			\
+			 NULL)
 
-#define TREE_FIRST_NODE(t)	((t) == TREE_TYPE_LEVEL_DIR ?		\
-				 leveldir_first :			\
-				 (t) == TREE_TYPE_GRAPHICS_DIR ?	\
-				 artwork.gfx_first :			\
-				 (t) == TREE_TYPE_SOUNDS_DIR ?		\
-				 artwork.snd_first :			\
-				 (t) == TREE_TYPE_MUSIC_DIR ?		\
-				 artwork.mus_first :			\
-				 NULL)
+#define TREE_FIRST_NODE(t)									\
+			((t) == TREE_TYPE_LEVEL_DIR    ? leveldir_first :			\
+			 (t) == TREE_TYPE_GRAPHICS_DIR ? artwork.gfx_first :			\
+			 (t) == TREE_TYPE_SOUNDS_DIR   ? artwork.snd_first :			\
+			 (t) == TREE_TYPE_MUSIC_DIR    ? artwork.mus_first :			\
+			 NULL)
 
 // values for artwork handling
-#define LEVELDIR_ARTWORK_SET_PTR(leveldir, type)			\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 &(leveldir)->graphics_set :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 &(leveldir)->sounds_set :		\
-	 			 &(leveldir)->music_set)
+#define LEVELDIR_ARTWORK_SET_PTR(leveldir, type)						\
+			((type) == ARTWORK_TYPE_GRAPHICS ? &leveldir->graphics_set :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? &leveldir->sounds_set :		\
+			 &leveldir->music_set)
 
-#define LEVELDIR_ARTWORK_SET(leveldir, type)				\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 (leveldir)->graphics_set :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 (leveldir)->sounds_set :		\
-	 			 (leveldir)->music_set)
+#define LEVELDIR_ARTWORK_SET(leveldir, type)							\
+			((type) == ARTWORK_TYPE_GRAPHICS ? leveldir->graphics_set :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? leveldir->sounds_set :		\
+			 leveldir->music_set)
 
-#define LEVELDIR_ARTWORK_PATH_PTR(leveldir, type)			\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 &(leveldir)->graphics_path :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 &(leveldir)->sounds_path :		\
-				 &(leveldir)->music_path)
+#define LEVELDIR_ARTWORK_PATH_PTR(leveldir, type)						\
+			((type) == ARTWORK_TYPE_GRAPHICS ? &leveldir->graphics_path :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? &leveldir->sounds_path :		\
+			 &leveldir->music_path)
 
-#define LEVELDIR_ARTWORK_PATH(leveldir, type)				\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 (leveldir)->graphics_path :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 (leveldir)->sounds_path :		\
-				 (leveldir)->music_path)
+#define LEVELDIR_ARTWORK_PATH(leveldir, type)							\
+			((type) == ARTWORK_TYPE_GRAPHICS ? leveldir->graphics_path :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? leveldir->sounds_path :		\
+			 leveldir->music_path)
 
-#define SETUP_ARTWORK_SET(setup, type)					\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 (setup).graphics_set :			\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 (setup).sounds_set :			\
-				 (setup).music_set)
+#define SETUP_ARTWORK_SET(setup, type)								\
+			((type) == ARTWORK_TYPE_GRAPHICS ? setup.graphics_set :			\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? setup.sounds_set :			\
+			 setup.music_set)
 
-#define SETUP_OVERRIDE_ARTWORK(setup, type)				\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 (setup).override_level_graphics :	\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 (setup).override_level_sounds :	\
-				 (setup).override_level_music)
+#define SETUP_OVERRIDE_ARTWORK(setup, type)							\
+			((type) == ARTWORK_TYPE_GRAPHICS ? setup.override_level_graphics :	\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? setup.override_level_sounds :	\
+			 setup.override_level_music)
 
-#define GFX_OVERRIDE_ARTWORK(type)					\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 gfx.override_level_graphics :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 gfx.override_level_sounds :		\
-				 gfx.override_level_music)
+#define GFX_OVERRIDE_ARTWORK(type)								\
+			((type) == ARTWORK_TYPE_GRAPHICS ? gfx.override_level_graphics :	\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? gfx.override_level_sounds :		\
+			 gfx.override_level_music)
 
-#define ARTWORK_FIRST_NODE(artwork, type)				\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 (artwork).gfx_first :			\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 (artwork).snd_first :			\
-				 (artwork).mus_first)
+#define ARTWORK_FIRST_NODE(artwork, type)							\
+			((type) == ARTWORK_TYPE_GRAPHICS ? artwork.gfx_first :			\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? artwork.snd_first :			\
+			 artwork.mus_first)
 
-#define ARTWORK_CURRENT_PTR(artwork, type)				\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 &(artwork).gfx_current :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 &(artwork).snd_current :		\
-				 &(artwork).mus_current)
+#define ARTWORK_CURRENT_PTR(artwork, type)							\
+			((type) == ARTWORK_TYPE_GRAPHICS ? &artwork.gfx_current :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? &artwork.snd_current :		\
+			 &artwork.mus_current)
 
-#define ARTWORK_CURRENT(artwork, type)					\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 (artwork).gfx_current :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 (artwork).snd_current :		\
-				 (artwork).mus_current)
+#define ARTWORK_CURRENT(artwork, type)								\
+			((type) == ARTWORK_TYPE_GRAPHICS ? artwork.gfx_current :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? artwork.snd_current :		\
+			 artwork.mus_current)
 
-#define ARTWORK_CURRENT_IDENTIFIER_PTR(artwork, type)			\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 &(artwork).gfx_current_identifier :	\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 &(artwork).snd_current_identifier :	\
-				 &(artwork).mus_current_identifier)
+#define ARTWORK_CURRENT_IDENTIFIER_PTR(artwork, type)						\
+			((type) == ARTWORK_TYPE_GRAPHICS ? &artwork.gfx_current_identifier :	\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? &artwork.snd_current_identifier :	\
+			 &artwork.mus_current_identifier)
 
-#define ARTWORK_CURRENT_IDENTIFIER(artwork, type)			\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 (artwork).gfx_current_identifier :	\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 (artwork).snd_current_identifier :	\
-				 (artwork).mus_current_identifier)
+#define ARTWORK_CURRENT_IDENTIFIER(artwork, type)						\
+			((type) == ARTWORK_TYPE_GRAPHICS ? artwork.gfx_current_identifier :	\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? artwork.snd_current_identifier :	\
+			 artwork.mus_current_identifier)
 
-#define ARTWORKINFO_FILENAME(type)					\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 GRAPHICSINFO_FILENAME :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 SOUNDSINFO_FILENAME :			\
-				 (type) == ARTWORK_TYPE_MUSIC ?		\
-				 MUSICINFO_FILENAME : "")
+#define ARTWORKINFO_FILENAME(type)								\
+			((type) == ARTWORK_TYPE_GRAPHICS ? GRAPHICSINFO_FILENAME :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? SOUNDSINFO_FILENAME :		\
+			 (type) == ARTWORK_TYPE_MUSIC    ? MUSICINFO_FILENAME :			\
+			 "")
 
-#define ARTWORK_DIRECTORY(type)						\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 GRAPHICS_DIRECTORY :			\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 SOUNDS_DIRECTORY :			\
-				 (type) == ARTWORK_TYPE_MUSIC ?		\
-				 MUSIC_DIRECTORY : "")
+#define ARTWORK_DIRECTORY(type)									\
+			((type) == ARTWORK_TYPE_GRAPHICS ? GRAPHICS_DIRECTORY :			\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? SOUNDS_DIRECTORY :			\
+			 (type) == ARTWORK_TYPE_MUSIC    ? MUSIC_DIRECTORY :			\
+			 "")
 
-#define OPTIONS_ARTWORK_DIRECTORY(type)					\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 options.graphics_directory :		\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 options.sounds_directory :		\
-				 (type) == ARTWORK_TYPE_MUSIC ?		\
-				 options.music_directory : "")
+#define OPTIONS_ARTWORK_DIRECTORY(type)								\
+			((type) == ARTWORK_TYPE_GRAPHICS ? options.graphics_directory :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? options.sounds_directory :		\
+			 (type) == ARTWORK_TYPE_MUSIC    ? options.music_directory :		\
+			 "")
 
-#define USER_ARTWORK_DIRECTORY(type)					\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 getUserGraphicsDir() :			\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 getUserSoundsDir() :			\
-				 (type) == ARTWORK_TYPE_MUSIC ?		\
-				 getUserMusicDir() : "")
+#define USER_ARTWORK_DIRECTORY(type)								\
+			((type) == ARTWORK_TYPE_GRAPHICS ? getUserGraphicsDir() :		\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? getUserSoundsDir() :			\
+			 (type) == ARTWORK_TYPE_MUSIC    ? getUserMusicDir() :			\
+			 "")
 
-#define ARTWORK_DEFAULT_SUBDIR(type)					\
-				((type) == ARTWORK_TYPE_GRAPHICS ?	\
-				 GFX_DEFAULT_SUBDIR :			\
-				 (type) == ARTWORK_TYPE_SOUNDS ?	\
-				 SND_DEFAULT_SUBDIR :			\
-				 MUS_DEFAULT_SUBDIR)
+#define ARTWORK_DEFAULT_SUBDIR(type)								\
+			((type) == ARTWORK_TYPE_GRAPHICS ? GFX_DEFAULT_SUBDIR :			\
+			 (type) == ARTWORK_TYPE_SOUNDS   ? SND_DEFAULT_SUBDIR :			\
+			 MUS_DEFAULT_SUBDIR)
 
 #define UPDATE_BUSY_STATE()			\
 {						\
@@ -1047,9 +997,9 @@ struct ProgramInfo
 
   char *cookie_prefix;
 
-  char *log_filename;			// filename for log messages
-  FILE *log_file;			// file handle for log files
-  FILE *log_file_default;		// default log file handle
+  char *log_filename;		// filename for log messages
+  FILE *log_file;		// file handle for log files
+  FILE *log_file_default;	// default log file handle
 
   int version_super;
   int version_major;
@@ -1613,80 +1563,80 @@ struct UserInfo
 
 struct TreeInfo
 {
-  struct TreeInfo **node_top;		// topmost node in tree
-  struct TreeInfo *node_parent;		// parent level directory info
-  struct TreeInfo *node_group;		// level group sub-directory info
-  struct TreeInfo *next;		// next level series structure node
+  struct TreeInfo **node_top;	// topmost node in tree
+  struct TreeInfo *node_parent;	// parent level directory info
+  struct TreeInfo *node_group;	// level group sub-directory info
+  struct TreeInfo *next;	// next level series structure node
 
-  int cl_first;		// internal control field for setup screen
-  int cl_cursor;	// internal control field for setup screen
+  int cl_first;			// internal control field for setup screen
+  int cl_cursor;		// internal control field for setup screen
 
-  int type;		// type of tree content
+  int type;			// type of tree content
 
   // fields for "type == TREE_TYPE_LEVEL_DIR"
 
-  char *subdir;		// tree info sub-directory basename (may be ".")
-  char *fullpath;	// complete path relative to tree base directory
-  char *basepath;	// absolute base path of tree base directory
-  char *identifier;	// identifier string for configuration files
-  char *name;		// tree info name, as displayed in selection menues
-  char *name_sorting;	// optional sorting name for correct name sorting
-  char *author;		// level or artwork author name
-  char *year;		// optional year of creation for levels or artwork
+  char *subdir;			// tree info sub-directory basename (may be ".")
+  char *fullpath;		// complete path relative to tree base directory
+  char *basepath;		// absolute base path of tree base directory
+  char *identifier;		// identifier string for configuration files
+  char *name;			// tree info name, as displayed in selection menues
+  char *name_sorting;		// optional sorting name for correct name sorting
+  char *author;			// level or artwork author name
+  char *year;			// optional year of creation for levels or artwork
 
-  char *program_title;	   // optional alternative text for program title
-  char *program_copyright; // optional alternative text for program copyright
-  char *program_company;   // optional alternative text for program company
+  char *program_title;		// optional alternative text for program title
+  char *program_copyright;	// optional alternative text for program copyright
+  char *program_company;	// optional alternative text for program company
 
-  char *imported_from;	// optional comment for imported levels or artwork
-  char *imported_by;	// optional comment for imported levels or artwork
-  char *tested_by;	// optional comment to name people who tested a set
+  char *imported_from;		// optional comment for imported levels or artwork
+  char *imported_by;		// optional comment for imported levels or artwork
+  char *tested_by;		// optional comment to name people who tested a set
 
-  char *graphics_set_ecs; // special EMC custom graphics set (ECS graphics)
-  char *graphics_set_aga; // special EMC custom graphics set (AGA graphics)
-  char *graphics_set;	// optional custom graphics set (level tree only)
-  char *sounds_set_default; // default EMC custom sounds set
-  char *sounds_set_lowpass; // special EMC custom sounds set (lowpass filter)
-  char *sounds_set;	// optional custom sounds set (level tree only)
-  char *music_set;	// optional custom music set (level tree only)
-  char *graphics_path;	// path to optional custom graphics set (level only)
-  char *sounds_path;	// path to optional custom sounds set (level only)
-  char *music_path;	// path to optional custom music set (level only)
+  char *graphics_set_ecs;	// special EMC custom graphics set (ECS graphics)
+  char *graphics_set_aga;	// special EMC custom graphics set (AGA graphics)
+  char *graphics_set;		// optional custom graphics set (level tree only)
+  char *sounds_set_default;	// default EMC custom sounds set
+  char *sounds_set_lowpass;	// special EMC custom sounds set (lowpass filter)
+  char *sounds_set;		// optional custom sounds set (level tree only)
+  char *music_set;		// optional custom music set (level tree only)
+  char *graphics_path;		// path to optional custom graphics set (level only)
+  char *sounds_path;		// path to optional custom sounds set (level only)
+  char *music_path;		// path to optional custom music set (level only)
 
-  char *level_filename;	// filename of level file (for packed level file)
-  char *level_filetype;	// type of levels in level directory or level file
+  char *level_filename;		// filename of level file (for packed level file)
+  char *level_filetype;		// type of levels in level directory or level file
 
-  char *special_flags;	// flags for special actions performed on level file
+  char *special_flags;		// flags for special actions performed on level file
 
-  char *empty_level_name;   // name pattern if level title is "nameless level"
-  boolean force_level_name; // force also renaming non-nameless level titles
+  char *empty_level_name;	// name pattern if level title is "nameless level"
+  boolean force_level_name;	// force also renaming non-nameless level titles
 
-  int levels;		// number of levels in level series
-  int first_level;	// first level number (to allow start with 0 or 1)
-  int last_level;	// last level number (automatically calculated)
-  int sort_priority;	// sort levels by 'sort_priority' and then by name
-  int pos;		// custom position information of node in tree
+  int levels;			// number of levels in level series
+  int first_level;		// first level number (to allow start with 0 or 1)
+  int last_level;		// last level number (automatically calculated)
+  int sort_priority;		// sort levels by 'sort_priority' and then by name
+  int pos;			// custom position information of node in tree
 
-  boolean latest_engine;// force level set to use the latest game engine
+  boolean latest_engine;	// force level set to use the latest game engine
 
-  boolean level_group;	// directory contains more level series directories
-  boolean parent_link;	// entry links back to parent directory
-  boolean is_copy;	// this entry is a copy of another entry in the tree
-  boolean in_user_dir;	// user defined levels are stored in home directory
-  boolean user_defined;	// levels in user directory and marked as "private"
-  boolean readonly;	// readonly levels can not be changed with editor
-  boolean handicap;	// level set has no handicap when set to "false"
-  boolean time_limit;	// level set has no time limit when set to "false"
-  boolean skip_levels;	// levels can be skipped when set to "true"
+  boolean level_group;		// directory contains more level series directories
+  boolean parent_link;		// entry links back to parent directory
+  boolean is_copy;		// this entry is a copy of another entry in the tree
+  boolean in_user_dir;		// user defined levels are stored in home directory
+  boolean user_defined;		// levels in user directory and marked as "private"
+  boolean readonly;		// readonly levels can not be changed with editor
+  boolean handicap;		// level set has no handicap when set to "false"
+  boolean time_limit;		// level set has no time limit when set to "false"
+  boolean skip_levels;		// levels can be skipped when set to "true"
 
-  boolean use_emc_tiles;// use (swapped) V5/V6 EMC tiles when set to "true"
+  boolean use_emc_tiles;	// use (swapped) V5/V6 EMC tiles when set to "true"
   boolean info_screens_from_main; // can invoke info screens from main menu
 
-  int color;		// color to use on selection screen for this level
-  char *class_desc;	// description of level series class
-  int handicap_level;	// number of the lowest unsolved level
+  int color;			// color to use on selection screen for this level
+  char *class_desc;		// description of level series class
+  int handicap_level;		// number of the lowest unsolved level
 
-  char *infotext;	// optional text to describe the tree type (headline)
+  char *infotext;		// optional text to describe the tree type (headline)
 };
 
 typedef struct TreeInfo TreeInfo;

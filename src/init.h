@@ -14,18 +14,14 @@
 
 #include "main.h"
 
-#define setMoveIntoAcidProperty(l, e, v)			\
-	(setBitfieldProperty(&(l)->can_move_into_acid_bits,	\
-			     EP_CAN_MOVE_INTO_ACID, e, v))
-#define getMoveIntoAcidProperty(l, e)				\
-	(getBitfieldProperty(&(l)->can_move_into_acid_bits,	\
-			     EP_CAN_MOVE_INTO_ACID, e))
-#define setDontCollideWithProperty(l, e, v)			\
-	(setBitfieldProperty(&(l)->dont_collide_with_bits,	\
-			     EP_DONT_COLLIDE_WITH, e, v))
-#define getDontCollideWithProperty(l, e)			\
-	(getBitfieldProperty(&(l)->dont_collide_with_bits,	\
-			     EP_DONT_COLLIDE_WITH, e))
+#define setMoveIntoAcidProperty(l, e, v)	\
+	(setBitfieldProperty(&(l)->can_move_into_acid_bits, EP_CAN_MOVE_INTO_ACID, e, v))
+#define getMoveIntoAcidProperty(l, e)		\
+	(getBitfieldProperty(&(l)->can_move_into_acid_bits, EP_CAN_MOVE_INTO_ACID, e))
+#define setDontCollideWithProperty(l, e, v)	\
+	(setBitfieldProperty(&(l)->dont_collide_with_bits,  EP_DONT_COLLIDE_WITH, e, v))
+#define getDontCollideWithProperty(l, e)	\
+	(getBitfieldProperty(&(l)->dont_collide_with_bits,  EP_DONT_COLLIDE_WITH, e))
 
 void setBitfieldProperty(int *, int, int, boolean);
 boolean getBitfieldProperty(int *, int, int);
