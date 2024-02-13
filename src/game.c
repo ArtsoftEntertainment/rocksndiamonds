@@ -15668,6 +15668,9 @@ static int getSoundEffect_BD(int element_bd, int sample)
     case GD_S_DIAMOND_RANDOM:
       nr = GetSimpleRandom(8);
       sound_effect = SND_BD_DIAMOND_IMPACT_RANDOM_1 + nr;
+
+      if (getSoundInfoEntryFilename(sound_effect) == NULL)
+	sound_effect = SND_BD_DIAMOND_IMPACT;
       break;
 
     case GD_S_DIAMOND_1:
@@ -15680,6 +15683,9 @@ static int getSoundEffect_BD(int element_bd, int sample)
     case GD_S_DIAMOND_8:
       nr = sample - GD_S_DIAMOND_1;
       sound_effect = SND_BD_DIAMOND_IMPACT_RANDOM_1 + nr;
+
+      if (getSoundInfoEntryFilename(sound_effect) == NULL)
+	sound_effect = SND_BD_DIAMOND_IMPACT;
       break;
 
     case GD_S_TIMEOUT_0:
