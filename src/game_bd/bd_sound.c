@@ -381,8 +381,8 @@ void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
       game_bd.game->state_counter == GAME_INT_CAVE_RUNNING)
     return;
 
-  // if no player position specified, use middle of the screen position
-  if (x == -1 && y == -1)
+  // when using native sound engine or if no position specified, use middle screen position
+  if (game.use_native_bd_sound_engine || (x == -1 && y == -1))
   {
     x = get_play_area_w() / 2 + get_scroll_x();
     y = get_play_area_h() / 2 + get_scroll_y();
