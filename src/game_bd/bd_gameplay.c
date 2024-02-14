@@ -396,7 +396,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
     /* uncover animation */
 
     /* to play cover sound */
-    gd_sound_play(game->cave, GD_S_COVER, O_COVERED, -1, -1);
+    gd_sound_play(game->cave, GD_S_COVERING, O_COVERED, -1, -1);
     gd_sound_play_cave(game->cave);
 
     counter_next = game->state_counter;
@@ -567,7 +567,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
     /* starting to cover. start cover sound. */
 
     gd_cave_clear_sounds(game->cave);
-    gd_sound_play(game->cave, GD_S_COVER, O_COVERED, -1, -1);
+    gd_sound_play(game->cave, GD_S_COVERING, O_COVERED, -1, -1);
 
     /* to play cover sound */
     gd_sound_play_cave(game->cave);
@@ -579,7 +579,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 	   game->state_counter < GAME_INT_COVER_ALL)
   {
     /* covering. */
-    gd_sound_play(game->cave, GD_S_COVER, O_COVERED, -1, -1);
+    gd_sound_play(game->cave, GD_S_COVERING, O_COVERED, -1, -1);
 
     counter_next = game->state_counter;
 

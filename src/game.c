@@ -15540,53 +15540,53 @@ static int getSoundAction_BD(int sample)
     case GD_S_STONE:
     case GD_S_NUT:
     case GD_S_DIRT_BALL:
-    case GD_S_NITRO:
+    case GD_S_NITRO_PACK:
     case GD_S_FALLING_WALL:
       return ACTION_IMPACT;
 
-    case GD_S_NUT_CRACK:
+    case GD_S_NUT_CRACKING:
       return ACTION_BREAKING;
 
     case GD_S_EXPANDING_WALL:
-    case GD_S_WALL_REAPPEAR:
+    case GD_S_WALL_REAPPEARING:
     case GD_S_SLIME:
     case GD_S_LAVA:
-    case GD_S_ACID_SPREAD:
+    case GD_S_ACID_SPREADING:
       return ACTION_GROWING;
 
-    case GD_S_DIAMOND_COLLECT:
-    case GD_S_SKELETON_COLLECT:
-    case GD_S_PNEUMATIC_COLLECT:
-    case GD_S_BOMB_COLLECT:
-    case GD_S_CLOCK_COLLECT:
-    case GD_S_SWEET_COLLECT:
-    case GD_S_KEY_COLLECT:
-    case GD_S_DIAMOND_KEY_COLLECT:
+    case GD_S_DIAMOND_COLLECTING:
+    case GD_S_SKELETON_COLLECTING:
+    case GD_S_PNEUMATIC_COLLECTING:
+    case GD_S_BOMB_COLLECTING:
+    case GD_S_CLOCK_COLLECTING:
+    case GD_S_SWEET_COLLECTING:
+    case GD_S_KEY_COLLECTING:
+    case GD_S_DIAMOND_KEY_COLLECTING:
       return ACTION_COLLECTING;
 
-    case GD_S_BOMB_PLACE:
+    case GD_S_BOMB_PLACING:
     case GD_S_REPLICATOR:
       return ACTION_DROPPING;
 
-    case GD_S_BLADDER_MOVE:
+    case GD_S_BLADDER_MOVING:
       return ACTION_MOVING;
 
     case GD_S_BLADDER_SPENDER:
-    case GD_S_BLADDER_CONVERT:
-    case GD_S_GRAVITY_CHANGE:
+    case GD_S_BLADDER_CONVERTING:
+    case GD_S_GRAVITY_CHANGING:
       return ACTION_CHANGING;
 
-    case GD_S_BITER_EAT:
+    case GD_S_BITER_EATING:
       return ACTION_EATING;
 
-    case GD_S_DOOR_OPEN:
-    case GD_S_CRACK:
+    case GD_S_DOOR_OPENING:
+    case GD_S_CRACKING:
       return ACTION_OPENING;
 
-    case GD_S_WALK_EARTH:
+    case GD_S_DIRT_WALKING:
       return ACTION_DIGGING;
 
-    case GD_S_WALK_EMPTY:
+    case GD_S_EMPTY_WALKING:
       return ACTION_WALKING;
 
     case GD_S_SWITCH_BITER:
@@ -15598,20 +15598,20 @@ static int getSoundAction_BD(int sample)
     case GD_S_STIRRING:
       return ACTION_ACTIVATING;
 
-    case GD_S_BOX_PUSH:
+    case GD_S_BOX_PUSHING:
       return ACTION_PUSHING;
 
     case GD_S_TELEPORTER:
       return ACTION_PASSING;
 
-    case GD_S_EXPLOSION:
-    case GD_S_BOMB_EXPLOSION:
-    case GD_S_GHOST_EXPLOSION:
-    case GD_S_VOODOO_EXPLOSION:
-    case GD_S_NITRO_EXPLOSION:
+    case GD_S_EXPLODING:
+    case GD_S_BOMB_EXPLODING:
+    case GD_S_GHOST_EXPLODING:
+    case GD_S_VOODOO_EXPLODING:
+    case GD_S_NITRO_PACK_EXPLODING:
       return ACTION_EXPLODING;
 
-    case GD_S_COVER:
+    case GD_S_COVERING:
     case GD_S_AMOEBA:
     case GD_S_AMOEBA_MAGIC:
     case GD_S_MAGIC_WALL:

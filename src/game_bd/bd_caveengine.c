@@ -152,7 +152,7 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
 
     case O_NITRO_PACK:
     case O_NITRO_PACK_F:
-      gd_sound_play(cave, GD_S_NITRO, element, x, y);
+      gd_sound_play(cave, GD_S_NITRO_PACK, element, x, y);
       break;
 
     case O_FALLING_WALL:
@@ -181,7 +181,7 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       break;
 
     case O_PRE_CLOCK_1:
-      gd_sound_play(cave, GD_S_BLADDER_CONVERT, element, x, y);
+      gd_sound_play(cave, GD_S_BLADDER_CONVERTING, element, x, y);
       break;
 
     case O_SLIME:
@@ -193,18 +193,18 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       break;
 
     case O_ACID:
-      gd_sound_play(cave, GD_S_ACID_SPREAD, element, x, y);
+      gd_sound_play(cave, GD_S_ACID_SPREADING, element, x, y);
       break;
 
     case O_BLADDER:
-      gd_sound_play(cave, GD_S_BLADDER_MOVE, element, x, y);
+      gd_sound_play(cave, GD_S_BLADDER_MOVING, element, x, y);
       break;
 
     case O_BITER_1:
     case O_BITER_2:
     case O_BITER_3:
     case O_BITER_4:
-      gd_sound_play(cave, GD_S_BITER_EAT, element, x, y);
+      gd_sound_play(cave, GD_S_BITER_EATING, element, x, y);
       break;
 
     case O_DIRT_BALL:
@@ -488,7 +488,7 @@ static void creature_explode(GdCave *cave, int x, int y, GdElement explode_to)
 
   /* the processing of an explosion took pretty much time: processing 3x3 = 9 elements */
   cave->ckdelay += 1200;
-  gd_sound_play(cave, GD_S_EXPLOSION, get(cave, x, y), x, y);
+  gd_sound_play(cave, GD_S_EXPLODING, get(cave, x, y), x, y);
 
   for (yy = y - 1; yy <= y + 1; yy++)
     for (xx = x - 1; xx <= x + 1; xx++)
@@ -501,7 +501,7 @@ static void nitro_explode(GdCave *cave, int x, int y)
 
   /* the processing of an explosion took pretty much time: processing 3x3 = 9 elements */
   cave->ckdelay += 1200;
-  gd_sound_play(cave, GD_S_NITRO_EXPLOSION, get(cave, x, y), x, y);
+  gd_sound_play(cave, GD_S_NITRO_PACK_EXPLODING, get(cave, x, y), x, y);
 
   for (yy = y - 1; yy <= y + 1; yy++)
     for (xx = x - 1; xx <= x + 1; xx++)
@@ -520,7 +520,7 @@ static void voodoo_explode(GdCave *cave, int x, int y)
   /* the processing of an explosion took pretty much time: processing 3x3 = 9 elements */
   cave->ckdelay += 1000;
 
-  gd_sound_play(cave, GD_S_VOODOO_EXPLOSION, get(cave, x, y), x, y);
+  gd_sound_play(cave, GD_S_VOODOO_EXPLODING, get(cave, x, y), x, y);
   if (cave->voodoo_any_hurt_kills_player)
     cave->voodoo_touched = TRUE;
 
@@ -555,7 +555,7 @@ static void explode_try_skip_voodoo(GdCave *cave, const int x, const int y, cons
 /* X shaped ghost explosion; does not touch voodoo! */
 static void ghost_explode(GdCave *cave, const int x, const int y)
 {
-  gd_sound_play(cave, GD_S_GHOST_EXPLOSION, get(cave, x, y), x, y);
+  gd_sound_play(cave, GD_S_GHOST_EXPLODING, get(cave, x, y), x, y);
 
   /* the processing of an explosion took pretty much time: processing 5 elements */
   cave->ckdelay += 650;
@@ -570,7 +570,7 @@ static void ghost_explode(GdCave *cave, const int x, const int y)
 /* +shaped bomb explosion; does not touch voodoo! */
 static void bomb_explode(GdCave *cave, const int x, const int y)
 {
-  gd_sound_play(cave, GD_S_BOMB_EXPLOSION, get(cave, x, y), x, y);
+  gd_sound_play(cave, GD_S_BOMB_EXPLODING, get(cave, x, y), x, y);
 
   /* the processing of an explosion took pretty much time: processing 5 elements */
   cave->ckdelay += 650;
@@ -693,43 +693,43 @@ static GdElement player_get_element (GdCave* cave, const GdElement object, int x
   {
     case O_DIAMOND_KEY:
       cave->diamond_key_collected = TRUE;
-      gd_sound_play(cave, GD_S_DIAMOND_KEY_COLLECT, object, x, y);
+      gd_sound_play(cave, GD_S_DIAMOND_KEY_COLLECTING, object, x, y);
       return O_SPACE;
 
     /* KEYS AND DOORS */
     case O_KEY_1:
-      gd_sound_play(cave, GD_S_KEY_COLLECT, object, x, y);
+      gd_sound_play(cave, GD_S_KEY_COLLECTING, object, x, y);
       cave->key1++;
       return O_SPACE;
 
     case O_KEY_2:
-      gd_sound_play(cave, GD_S_KEY_COLLECT, object, x, y);
+      gd_sound_play(cave, GD_S_KEY_COLLECTING, object, x, y);
       cave->key2++;
       return O_SPACE;
 
     case O_KEY_3:
-      gd_sound_play(cave, GD_S_KEY_COLLECT, object, x, y);
+      gd_sound_play(cave, GD_S_KEY_COLLECTING, object, x, y);
       cave->key3++;
       return O_SPACE;
 
     case O_DOOR_1:
       if (cave->key1 == 0)
 	return object;
-      gd_sound_play(cave, GD_S_DOOR_OPEN, object, x, y);
+      gd_sound_play(cave, GD_S_DOOR_OPENING, object, x, y);
       cave->key1--;
       return O_SPACE;
 
     case O_DOOR_2:
       if (cave->key2 == 0)
 	return object;
-      gd_sound_play(cave, GD_S_DOOR_OPEN, object, x, y);
+      gd_sound_play(cave, GD_S_DOOR_OPENING, object, x, y);
       cave->key2--;
       return O_SPACE;
 
     case O_DOOR_3:
       if (cave->key3 == 0)
 	return object;
-      gd_sound_play(cave, GD_S_DOOR_OPEN, object, x, y);
+      gd_sound_play(cave, GD_S_DOOR_OPENING, object, x, y);
       cave->key3--;
       return O_SPACE;
 
@@ -777,22 +777,22 @@ static GdElement player_get_element (GdCave* cave, const GdElement object, int x
     case O_DIRT_SLOPED_DOWN_RIGHT:
     case O_DIRT_BALL:
     case O_DIRT_LOOSE:
-      gd_sound_play(cave, GD_S_WALK_EARTH, object, x, y);
+      gd_sound_play(cave, GD_S_DIRT_WALKING, object, x, y);
       return O_SPACE;
 
     case O_SWEET:
-      gd_sound_play(cave, GD_S_SWEET_COLLECT, object, x, y);
+      gd_sound_play(cave, GD_S_SWEET_COLLECTING, object, x, y);
       cave->sweet_eaten = TRUE;
       return O_SPACE;
 
     case O_PNEUMATIC_HAMMER:
-      gd_sound_play(cave, GD_S_PNEUMATIC_COLLECT, object, x, y);
+      gd_sound_play(cave, GD_S_PNEUMATIC_COLLECTING, object, x, y);
       cave->got_pneumatic_hammer = TRUE;
       return O_SPACE;
 
     case O_CLOCK:
       /* bonus time */
-      gd_sound_play(cave, GD_S_CLOCK_COLLECT, object, x, y);
+      gd_sound_play(cave, GD_S_CLOCK_COLLECTING, object, x, y);
       cave->time += cave->time_bonus * cave->timing_factor;
       if (cave->time > cave->max_time * cave->timing_factor)
 	cave->time -= cave->max_time * cave->timing_factor;
@@ -803,7 +803,7 @@ static GdElement player_get_element (GdCave* cave, const GdElement object, int x
     case O_FLYING_DIAMOND:
       // prevent diamond sounds for O_SKELETON (see below)
       if (x != -1 && y != -1)
-	gd_sound_play(cave, GD_S_DIAMOND_COLLECT, object, x, y);
+	gd_sound_play(cave, GD_S_DIAMOND_COLLECTING, object, x, y);
 
       cave->score += cave->diamond_value;
       cave->diamonds_collected++;
@@ -816,8 +816,8 @@ static GdElement player_get_element (GdCave* cave, const GdElement object, int x
 	cave->diamond_value = cave->extra_diamond_value;
 
 	cave->gate_open_flash = 1;
-	cave->sound3 = GD_S_CRACK;
-	gd_sound_play(cave, GD_S_CRACK, O_OUTBOX, x, y);
+	cave->sound3 = GD_S_CRACKING;
+	gd_sound_play(cave, GD_S_CRACKING, O_OUTBOX, x, y);
       }
       return O_SPACE;
 
@@ -829,7 +829,7 @@ static GdElement player_get_element (GdCave* cave, const GdElement object, int x
 	player_get_element(cave, O_DIAMOND, -1, -1);
 
       /* _after_ calling get_element for the fake diamonds, so we overwrite its sounds */
-      gd_sound_play(cave, GD_S_SKELETON_COLLECT, object, x, y);
+      gd_sound_play(cave, GD_S_SKELETON_COLLECTING, object, x, y);
       return O_SPACE;
 
     case O_OUTBOX:
@@ -839,7 +839,7 @@ static GdElement player_get_element (GdCave* cave, const GdElement object, int x
 
     case O_SPACE:
     case O_LAVA:    /* player goes into lava, as if it was space */
-      gd_sound_play(cave, GD_S_WALK_EMPTY, object, x, y);
+      gd_sound_play(cave, GD_S_EMPTY_WALKING, object, x, y);
       return O_SPACE;
 
     default:
@@ -1066,7 +1066,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	      /* yes, so push. */
 	      store_dir(cave, x, y, player_move + GD_MV_TWICE, O_BOX);
 	      result = TRUE;
-	      gd_sound_play(cave, GD_S_BOX_PUSH, what, x, y);
+	      gd_sound_play(cave, GD_S_BOX_PUSHING, what, x, y);
 	    }
 	    break;
 
@@ -1202,7 +1202,7 @@ static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y,
     store(cave, x, y, bouncing);
     store_dir(cave, x, y, fall_dir, cave->nut_turns_to_when_crushed);
 
-    gd_sound_play(cave, GD_S_NUT_CRACK, O_NUT, x, y);
+    gd_sound_play(cave, GD_S_NUT_CRACKING, O_NUT, x, y);
 
     return TRUE;
   }
@@ -1480,7 +1480,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  if (cave->hammered_reappear[y][x] == 0)
 	  {
 	    store(cave, x, y, O_BRICK);
-	    gd_sound_play(cave, GD_S_WALL_REAPPEAR, O_BRICK, x, y);
+	    gd_sound_play(cave, GD_S_WALL_REAPPEARING, O_BRICK, x, y);
 	  }
 	}
       }
@@ -1594,7 +1594,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  /* if its a bomb, remember he now has one. */
 		  /* we do not change the "remains" and "what" variables,
 		     so that part of the code will be ineffective */
-		  gd_sound_play(cave, GD_S_BOMB_COLLECT, what, x, y);
+		  gd_sound_play(cave, GD_S_BOMB_COLLECTING, what, x, y);
 		  store_dir(cave, x, y, player_move, O_SPACE);
 
 		  if (player_fire)
@@ -1689,7 +1689,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 		/* placed bomb, he is normal player again */
 		store(cave, x, y, O_PLAYER);
-		gd_sound_play(cave, GD_S_BOMB_PLACE, O_BOMB, x, y);
+		gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
 	      }
 	      break;
 	    }
@@ -3386,7 +3386,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     if (cave->gravity_will_change == 0)
     {
       cave->gravity = cave->gravity_next_direction;
-      gd_sound_play(cave, GD_S_GRAVITY_CHANGE, O_GRAVITY_SWITCH, -1, -1);    /* takes precedence over amoeba and magic wall sound */
+      gd_sound_play(cave, GD_S_GRAVITY_CHANGING, O_GRAVITY_SWITCH, -1, -1);    /* takes precedence over amoeba and magic wall sound */
     }
   }
 
@@ -3495,7 +3495,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	cave->creatures_backwards = !cave->creatures_backwards;
     }
 
-    gd_sound_play(cave, GD_S_CRACK, O_INBOX, -1, -1);
+    gd_sound_play(cave, GD_S_CRACKING, O_INBOX, -1, -1);
   }
 
   /* for biters */

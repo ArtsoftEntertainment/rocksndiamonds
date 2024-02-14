@@ -73,92 +73,96 @@ typedef struct _sound_property
 
 static SoundProperty sound_flags[] =
 {
-  { 0, GD_S_NONE,		0, 0	},
+  { 0, GD_S_NONE,			0, 0	},
 
   /* channel 1 sounds. */
   /* CHANNEL 1 SOUNDS ARE ALWAYS RESTARTED, so no need for GD_SP_FORCE flag. */
-  { GD_S_STONE,			1, 10	},
-  { GD_S_NUT,			1, 8	}, /* nut falling is relatively silent, so low precedence. */
-  { GD_S_NUT_CRACK,		1, 12	}, /* higher precedence than a stone bouncing. */
-  { GD_S_DIRT_BALL,		1, 8	}, /* sligthly lower precedence, as stones and diamonds should be "louder" */
-  { GD_S_NITRO,			1, 10	},
-  { GD_S_FALLING_WALL,		1, 10	},
-  { GD_S_EXPANDING_WALL,	1, 10	},
-  { GD_S_WALL_REAPPEAR,		1, 9	},
-  { GD_S_DIAMOND_RANDOM,	1, 10	},
-  { GD_S_DIAMOND_1,		1, 10	},
-  { GD_S_DIAMOND_2,		1, 10	},
-  { GD_S_DIAMOND_3,		1, 10	},
-  { GD_S_DIAMOND_4,		1, 10	},
-  { GD_S_DIAMOND_5,		1, 10	},
-  { GD_S_DIAMOND_6,		1, 10	},
-  { GD_S_DIAMOND_7,		1, 10	},
-  { GD_S_DIAMOND_8,		1, 10	},
-  { GD_S_DIAMOND_COLLECT,	1, 100	}, /* diamond collect sound has precedence over everything. */
+  { GD_S_STONE,				1, 10	},
+  /* nut falling is relatively silent, so low precedence. */
+  { GD_S_NUT,				1, 8	},
+  /* higher precedence than a stone bouncing. */
+  { GD_S_NUT_CRACKING,			1, 12	},
+  /* sligthly lower precedence, as stones and diamonds should be "louder" */
+  { GD_S_DIRT_BALL,			1, 8	},
+  { GD_S_NITRO_PACK,			1, 10	},
+  { GD_S_FALLING_WALL,			1, 10	},
+  { GD_S_EXPANDING_WALL,		1, 10	},
+  { GD_S_WALL_REAPPEARING,		1, 9	},
+  { GD_S_DIAMOND_RANDOM,		1, 10	},
+  { GD_S_DIAMOND_1,			1, 10	},
+  { GD_S_DIAMOND_2,			1, 10	},
+  { GD_S_DIAMOND_3,			1, 10	},
+  { GD_S_DIAMOND_4,			1, 10	},
+  { GD_S_DIAMOND_5,			1, 10	},
+  { GD_S_DIAMOND_6,			1, 10	},
+  { GD_S_DIAMOND_7,			1, 10	},
+  { GD_S_DIAMOND_8,			1, 10	},
+  /* diamond collect sound has precedence over everything. */
+  { GD_S_DIAMOND_COLLECTING,		1, 100	},
 
   /* collect sounds have higher precedence than falling sounds and the like. */
-  { GD_S_SKELETON_COLLECT,	1, 100	},
-  { GD_S_PNEUMATIC_COLLECT,	1, 50	},
-  { GD_S_BOMB_COLLECT,		1, 50	},
-  { GD_S_CLOCK_COLLECT,		1, 50	},
-  { GD_S_SWEET_COLLECT,		1, 50	},
-  { GD_S_KEY_COLLECT,		1, 50	},
-  { GD_S_DIAMOND_KEY_COLLECT,	1, 50	},
-  { GD_S_SLIME,			1, 5	}, /* slime has lower precedence than diamond and stone falling sounds. */
-  { GD_S_LAVA,			1, 5	}, /* lava has low precedence, too. */
-  { GD_S_REPLICATOR,		1, 5	},
-  { GD_S_ACID_SPREAD,		1, 3	}, /* same for acid, even lower. */
-  { GD_S_BLADDER_MOVE,		1, 5	}, /* same for bladder. */
-  { GD_S_BLADDER_CONVERT,	1, 8	},
-  { GD_S_BLADDER_SPENDER,	1, 8	},
-  { GD_S_BITER_EAT,		1, 3	}, /* very low precedence. biters tend to produce too much sound. */
+  { GD_S_SKELETON_COLLECTING,		1, 100	},
+  { GD_S_PNEUMATIC_COLLECTING,		1, 50	},
+  { GD_S_BOMB_COLLECTING,		1, 50	},
+  { GD_S_CLOCK_COLLECTING,		1, 50	},
+  { GD_S_SWEET_COLLECTING,		1, 50	},
+  { GD_S_KEY_COLLECTING,		1, 50	},
+  { GD_S_DIAMOND_KEY_COLLECTING,	1, 50	},
+  { GD_S_SLIME,				1, 5	}, /* slime has lower precedence than diamond and stone falling sounds. */
+  { GD_S_LAVA,				1, 5	}, /* lava has low precedence, too. */
+  { GD_S_REPLICATOR,			1, 5	},
+  { GD_S_ACID_SPREADING,		1, 3	}, /* same for acid, even lower. */
+  { GD_S_BLADDER_MOVING,		1, 5	}, /* same for bladder. */
+  { GD_S_BLADDER_CONVERTING,		1, 8	},
+  { GD_S_BLADDER_SPENDER,		1, 8	},
+  { GD_S_BITER_EATING,			1, 3	}, /* very low precedence. biters tend to produce too much sound. */
 
   /* channel2 sounds. */
-  { GD_S_DOOR_OPEN,		2, 10	},
-  { GD_S_WALK_EARTH,		2, 10	},
-  { GD_S_WALK_EMPTY,		2, 10	},
-  { GD_S_STIRRING,		2, 10	},
-  { GD_S_BOX_PUSH,		2, 10	},
-  { GD_S_TELEPORTER,		2, 10	},
-  { GD_S_TIMEOUT_10,		2, 20	}, /* timeout sounds have increasing precedence so they are always started */
-  { GD_S_TIMEOUT_9,		2, 21	}, /* timeout sounds are examples which do not need "force restart" flag. */
-  { GD_S_TIMEOUT_8,		2, 22	},
-  { GD_S_TIMEOUT_7,		2, 23	},
-  { GD_S_TIMEOUT_6,		2, 24	},
-  { GD_S_TIMEOUT_5,		2, 25	},
-  { GD_S_TIMEOUT_4,		2, 26	},
-  { GD_S_TIMEOUT_3,		2, 27	},
-  { GD_S_TIMEOUT_2,		2, 28	},
-  { GD_S_TIMEOUT_1,		2, 29	},
-  { GD_S_TIMEOUT_0,		2, 150, GD_SP_FORCE	},
-  { GD_S_EXPLOSION,		2, 100, GD_SP_FORCE	},
-  { GD_S_BOMB_EXPLOSION,	2, 100, GD_SP_FORCE	},
-  { GD_S_GHOST_EXPLOSION,	2, 100, GD_SP_FORCE	},
-  { GD_S_VOODOO_EXPLOSION,	2, 100, GD_SP_FORCE	},
-  { GD_S_NITRO_EXPLOSION,	2, 100, GD_SP_FORCE	},
-  { GD_S_BOMB_PLACE,		2, 10	},
-  { GD_S_FINISHED,		2, 15,  GD_SP_FORCE | GD_SP_LOOPED	}, /* precedence larger than normal, but smaller than timeout sounds */
-  { GD_S_SWITCH_BITER,		2, 10	},
-  { GD_S_SWITCH_CREATURES,	2, 10	},
-  { GD_S_SWITCH_GRAVITY,	2, 10	},
-  { GD_S_SWITCH_EXPANDING,	2, 10	},
-  { GD_S_SWITCH_CONVEYOR,	2, 10	},
-  { GD_S_SWITCH_REPLICATOR,	2, 10	},
+  { GD_S_DOOR_OPENING,			2, 10	},
+  { GD_S_DIRT_WALKING,			2, 10	},
+  { GD_S_EMPTY_WALKING,			2, 10	},
+  { GD_S_STIRRING,			2, 10	},
+  { GD_S_BOX_PUSHING,			2, 10	},
+  { GD_S_TELEPORTER,			2, 10	},
+  { GD_S_TIMEOUT_10,			2, 20	}, /* timeout sounds have increasing precedence so they are always started */
+  { GD_S_TIMEOUT_9,			2, 21	}, /* timeout sounds are examples which do not need "force restart" flag. */
+  { GD_S_TIMEOUT_8,			2, 22	},
+  { GD_S_TIMEOUT_7,			2, 23	},
+  { GD_S_TIMEOUT_6,			2, 24	},
+  { GD_S_TIMEOUT_5,			2, 25	},
+  { GD_S_TIMEOUT_4,			2, 26	},
+  { GD_S_TIMEOUT_3,			2, 27	},
+  { GD_S_TIMEOUT_2,			2, 28	},
+  { GD_S_TIMEOUT_1,			2, 29	},
+  { GD_S_TIMEOUT_0,			2, 150, GD_SP_FORCE	},
+  { GD_S_EXPLODING,			2, 100, GD_SP_FORCE	},
+  { GD_S_BOMB_EXPLODING,		2, 100, GD_SP_FORCE	},
+  { GD_S_GHOST_EXPLODING,		2, 100, GD_SP_FORCE	},
+  { GD_S_VOODOO_EXPLODING,		2, 100, GD_SP_FORCE	},
+  { GD_S_NITRO_PACK_EXPLODING,		2, 100, GD_SP_FORCE	},
+  { GD_S_BOMB_PLACING,			2, 10	},
+  { GD_S_FINISHED,			2, 15,  GD_SP_FORCE | GD_SP_LOOPED	}, /* precedence larger than normal, but smaller than timeout sounds */
+  { GD_S_SWITCH_BITER,			2, 10	},
+  { GD_S_SWITCH_CREATURES,		2, 10	},
+  { GD_S_SWITCH_GRAVITY,		2, 10	},
+  { GD_S_SWITCH_EXPANDING,		2, 10	},
+  { GD_S_SWITCH_CONVEYOR,		2, 10	},
+  { GD_S_SWITCH_REPLICATOR,		2, 10	},
 
   /* channel 3 sounds. */
-  { GD_S_AMOEBA,		3, 30,  GD_SP_LOOPED	},
-  { GD_S_AMOEBA_MAGIC,		3, 40,  GD_SP_LOOPED	},
-  { GD_S_MAGIC_WALL,		3, 35,  GD_SP_LOOPED	},
-  { GD_S_COVER,			3, 100, GD_SP_LOOPED	},
-  { GD_S_PNEUMATIC_HAMMER,	3, 50,  GD_SP_LOOPED	},
-  { GD_S_WATER,			3, 20,  GD_SP_LOOPED	},
-  { GD_S_CRACK,			3, 150	},
-  { GD_S_GRAVITY_CHANGE,	3, 60	},
+  { GD_S_AMOEBA,			3, 30,  GD_SP_LOOPED	},
+  { GD_S_AMOEBA_MAGIC,			3, 40,  GD_SP_LOOPED	},
+  { GD_S_MAGIC_WALL,			3, 35,  GD_SP_LOOPED	},
+  { GD_S_COVERING,			3, 100, GD_SP_LOOPED	},
+  { GD_S_PNEUMATIC_HAMMER,		3, 50,  GD_SP_LOOPED	},
+  { GD_S_WATER,				3, 20,  GD_SP_LOOPED	},
+  { GD_S_CRACKING,			3, 150	},
+  { GD_S_GRAVITY_CHANGING,		3, 60	},
 
   /* other sounds */
   /* the bonus life sound has nothing to do with the cave. */
   /* playing on channel 4. */
-  { GD_S_BONUS_LIFE,		4, 0	},
+  { GD_S_BONUS_LIFE,			4, 0	},
 };
 
 struct GdSoundInfo
