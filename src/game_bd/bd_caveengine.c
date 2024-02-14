@@ -136,8 +136,7 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
   {
     case O_NUT:
     case O_NUT_F:
-      if (cave->nut_sound)
-	gd_sound_play(cave, GD_S_NUT, element, x, y);
+      gd_sound_play(cave, GD_S_NUT, element, x, y);
       break;
 
     case O_STONE:
@@ -148,20 +147,17 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
     case O_MEGA_STONE_F:
     case O_WAITING_STONE:
     case O_CHASING_STONE:
-      if (cave->stone_sound)
-	gd_sound_play(cave, GD_S_STONE, element, x, y);
+      gd_sound_play(cave, GD_S_STONE, element, x, y);
       break;
 
     case O_NITRO_PACK:
     case O_NITRO_PACK_F:
-      if (cave->nitro_sound)
-	gd_sound_play(cave, GD_S_NITRO, element, x, y);
+      gd_sound_play(cave, GD_S_NITRO, element, x, y);
       break;
 
     case O_FALLING_WALL:
     case O_FALLING_WALL_F:
-      if (cave->falling_wall_sound)
-	gd_sound_play(cave, GD_S_FALLING_WALL, element, x, y);
+      gd_sound_play(cave, GD_S_FALLING_WALL, element, x, y);
       break;
 
     case O_H_EXPANDING_WALL:
@@ -170,54 +166,45 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
     case O_H_EXPANDING_STEEL_WALL:
     case O_V_EXPANDING_STEEL_WALL:
     case O_EXPANDING_STEEL_WALL:
-      if (cave->expanding_wall_sound)
-	gd_sound_play(cave, GD_S_EXPANDING_WALL, element, x, y);
+      gd_sound_play(cave, GD_S_EXPANDING_WALL, element, x, y);
       break;
 
     case O_DIAMOND:
     case O_DIAMOND_F:
     case O_FLYING_DIAMOND:
     case O_FLYING_DIAMOND_F:
-      if (cave->diamond_sound)
-	gd_sound_play(cave, GD_S_DIAMOND_RANDOM, element, x, y);
+      gd_sound_play(cave, GD_S_DIAMOND_RANDOM, element, x, y);
       break;
 
     case O_BLADDER_SPENDER:
-      if (cave->bladder_spender_sound)
-	gd_sound_play(cave, GD_S_BLADDER_SPENDER, element, x, y);
+      gd_sound_play(cave, GD_S_BLADDER_SPENDER, element, x, y);
       break;
 
     case O_PRE_CLOCK_1:
-      if (cave->bladder_convert_sound)
-	gd_sound_play(cave, GD_S_BLADDER_CONVERT, element, x, y);
+      gd_sound_play(cave, GD_S_BLADDER_CONVERT, element, x, y);
       break;
 
     case O_SLIME:
-      if (cave->slime_sound)
-	gd_sound_play(cave, GD_S_SLIME, element, x, y);
+      gd_sound_play(cave, GD_S_SLIME, element, x, y);
       break;
 
     case O_LAVA:
-      if (cave->lava_sound)
-	gd_sound_play(cave, GD_S_LAVA, element, x, y);
+      gd_sound_play(cave, GD_S_LAVA, element, x, y);
       break;
 
     case O_ACID:
-      if (cave->acid_spread_sound)
-	gd_sound_play(cave, GD_S_ACID_SPREAD, element, x, y);
+      gd_sound_play(cave, GD_S_ACID_SPREAD, element, x, y);
       break;
 
     case O_BLADDER:
-      if (cave->bladder_sound)
-	gd_sound_play(cave, GD_S_BLADDER_MOVE, element, x, y);
+      gd_sound_play(cave, GD_S_BLADDER_MOVE, element, x, y);
       break;
 
     case O_BITER_1:
     case O_BITER_2:
     case O_BITER_3:
     case O_BITER_4:
-      if (cave->biter_sound)
-	gd_sound_play(cave, GD_S_BITER_EAT, element, x, y);
+      gd_sound_play(cave, GD_S_BITER_EAT, element, x, y);
       break;
 
     case O_DIRT_BALL:
@@ -1215,8 +1202,7 @@ static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y,
     store(cave, x, y, bouncing);
     store_dir(cave, x, y, fall_dir, cave->nut_turns_to_when_crushed);
 
-    if (cave->nut_sound)
-      gd_sound_play(cave, GD_S_NUT_CRACK, O_NUT, x, y);
+    gd_sound_play(cave, GD_S_NUT_CRACK, O_NUT, x, y);
 
     return TRUE;
   }
@@ -2428,7 +2414,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    }
 
 	    /* if biter did move, we had sound. play it. */
-	    if (made_sound_of!=O_NONE)
+	    if (made_sound_of != O_NONE)
 	      play_sound_of_element(cave, made_sound_of, x, y);
 	  }
 	  break;
@@ -3290,7 +3276,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   /* cave 3 sounds. precedence is controlled by the sound_play function. */
   /* but we have to check amoeba&magic together as they had a different gritty sound when mixed */
-  if (found_water && cave->water_sound)
+  if (found_water)
     gd_sound_play(cave, GD_S_WATER, O_WATER, -1, -1);
 
   magic_sound = (cave->magic_wall_state == GD_MW_ACTIVE &&
@@ -3320,7 +3306,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   }
 
   /* pneumatic hammer sound - overrides everything. */
-  if (cave->pneumatic_hammer_active_delay > 0 && cave->pneumatic_hammer_sound)
+  if (cave->pneumatic_hammer_active_delay > 0)
     gd_sound_play(cave, GD_S_PNEUMATIC_HAMMER, O_PNEUMATIC_HAMMER, -1, -1);
 
   /* CAVE VARIABLES */
@@ -3400,8 +3386,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     if (cave->gravity_will_change == 0)
     {
       cave->gravity = cave->gravity_next_direction;
-      if (cave->gravity_change_sound)
-	gd_sound_play(cave, GD_S_GRAVITY_CHANGE, O_GRAVITY_SWITCH, -1, -1);    /* takes precedence over amoeba and magic wall sound */
+      gd_sound_play(cave, GD_S_GRAVITY_CHANGE, O_GRAVITY_SWITCH, -1, -1);    /* takes precedence over amoeba and magic wall sound */
     }
   }
 
@@ -3414,8 +3399,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
     if (cave->creatures_direction_will_change == 0)
     {
-      if (cave->creature_direction_auto_change_sound)
-	gd_sound_play(cave, GD_S_SWITCH_CREATURES, O_CREATURE_SWITCH, -1, -1);
+      gd_sound_play(cave, GD_S_SWITCH_CREATURES, O_CREATURE_SWITCH, -1, -1);
 
       cave->creatures_backwards = !cave->creatures_backwards;
       cave->creatures_direction_will_change =
