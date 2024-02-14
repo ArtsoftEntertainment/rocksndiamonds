@@ -135,29 +135,51 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
   switch (element)
   {
     case O_NUT:
+      gd_sound_play(cave, GD_S_NUT_FALLING, element, x, y);
+      break;
+
     case O_NUT_F:
-      gd_sound_play(cave, GD_S_NUT, element, x, y);
+      gd_sound_play(cave, GD_S_NUT_IMPACT, element, x, y);
       break;
 
     case O_STONE:
+      gd_sound_play(cave, GD_S_STONE_FALLING, element, x, y);
+      break;
+
     case O_STONE_F:
+      gd_sound_play(cave, GD_S_STONE_IMPACT, element, x, y);
+      break;
+
     case O_FLYING_STONE:
+      gd_sound_play(cave, GD_S_FLYING_STONE_FALLING, element, x, y);
+      break;
+
     case O_FLYING_STONE_F:
+      gd_sound_play(cave, GD_S_FLYING_STONE_IMPACT, element, x, y);
+      break;
+
     case O_MEGA_STONE:
+      gd_sound_play(cave, GD_S_MEGA_STONE_FALLING, element, x, y);
+      break;
+
     case O_MEGA_STONE_F:
-    case O_WAITING_STONE:
-    case O_CHASING_STONE:
-      gd_sound_play(cave, GD_S_STONE, element, x, y);
+      gd_sound_play(cave, GD_S_MEGA_STONE_IMPACT, element, x, y);
       break;
 
     case O_NITRO_PACK:
+      gd_sound_play(cave, GD_S_NITRO_PACK_FALLING, element, x, y);
+      break;
+
     case O_NITRO_PACK_F:
-      gd_sound_play(cave, GD_S_NITRO_PACK, element, x, y);
+      gd_sound_play(cave, GD_S_NITRO_PACK_IMPACT, element, x, y);
       break;
 
     case O_FALLING_WALL:
+      gd_sound_play(cave, GD_S_FALLING_WALL_FALLING, element, x, y);
+      break;
+
     case O_FALLING_WALL_F:
-      gd_sound_play(cave, GD_S_FALLING_WALL, element, x, y);
+      gd_sound_play(cave, GD_S_FALLING_WALL_IMPACT, element, x, y);
       break;
 
     case O_H_EXPANDING_WALL:
@@ -170,10 +192,19 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       break;
 
     case O_DIAMOND:
+      gd_sound_play(cave, GD_S_DIAMOND_FALLING_RANDOM, element, x, y);
+      break;
+
     case O_DIAMOND_F:
+      gd_sound_play(cave, GD_S_DIAMOND_IMPACT_RANDOM, element, x, y);
+      break;
+
     case O_FLYING_DIAMOND:
+      gd_sound_play(cave, GD_S_FLYING_DIAMOND_FALLING_RANDOM, element, x, y);
+      break;
+
     case O_FLYING_DIAMOND_F:
-      gd_sound_play(cave, GD_S_DIAMOND_RANDOM, element, x, y);
+      gd_sound_play(cave, GD_S_FLYING_DIAMOND_IMPACT_RANDOM, element, x, y);
       break;
 
     case O_BLADDER_SPENDER:
@@ -208,10 +239,62 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       break;
 
     case O_DIRT_BALL:
+      gd_sound_play(cave, GD_S_DIRT_BALL_FALLING, element, x, y);
+      break;
+
     case O_DIRT_BALL_F:
+      gd_sound_play(cave, GD_S_DIRT_BALL_IMPACT, element, x, y);
+      break;
+
     case O_DIRT_LOOSE:
+      gd_sound_play(cave, GD_S_DIRT_LOOSE_FALLING, element, x, y);
+      break;
+
     case O_DIRT_LOOSE_F:
-      gd_sound_play(cave, GD_S_DIRT_BALL, element, x, y);
+      gd_sound_play(cave, GD_S_DIRT_LOOSE_IMPACT, element, x, y);
+      break;
+
+    default:
+      /* do nothing. */
+      break;
+  }
+}
+
+/* play sound of given element being pushed. */
+static void play_sound_of_element_pushing(GdCave *cave, GdElement element, int x, int y)
+{
+  switch (element)
+  {
+    case O_NUT:
+      gd_sound_play(cave, GD_S_NUT_PUSHING, element, x, y);
+      break;
+
+    case O_STONE:
+      gd_sound_play(cave, GD_S_STONE_PUSHING, element, x, y);
+      break;
+
+    case O_FLYING_STONE:
+      gd_sound_play(cave, GD_S_FLYING_STONE_PUSHING, element, x, y);
+      break;
+
+    case O_MEGA_STONE:
+      gd_sound_play(cave, GD_S_MEGA_STONE_PUSHING, element, x, y);
+      break;
+
+    case O_WAITING_STONE:
+      gd_sound_play(cave, GD_S_WAITING_STONE_PUSHING, element, x, y);
+      break;
+
+    case O_CHASING_STONE:
+      gd_sound_play(cave, GD_S_CHASING_STONE_PUSHING, element, x, y);
+      break;
+
+    case O_NITRO_PACK:
+      gd_sound_play(cave, GD_S_NITRO_PACK_PUSHING, element, x, y);
+      break;
+
+    case O_BLADDER:
+      gd_sound_play(cave, GD_S_BLADDER_PUSHING, element, x, y);
       break;
 
     default:
@@ -802,7 +885,8 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
     case O_FLYING_DIAMOND:
       // prevent diamond sounds for O_SKELETON (see below)
       if (x != -1 && y != -1)
-	gd_sound_play(cave, GD_S_DIAMOND_COLLECTING, object, x, y);
+	gd_sound_play(cave, (object == O_DIAMOND ? GD_S_DIAMOND_COLLECTING :
+			     GD_S_FLYING_DIAMOND_COLLECTING), object, x, y);
 
       cave->score += cave->diamond_value;
       cave->diamonds_collected++;
@@ -973,7 +1057,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	{
 	  /* if decided that he will be able to push, */
 	  store_dir(cave, x, y, GD_MV_TWICE + player_move, what);
-	  play_sound_of_element(cave, what, x, y);
+	  play_sound_of_element_pushing(cave, what, x, y);
 	  result = TRUE;
 	}
       }
@@ -1044,7 +1128,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	}
 
 	if (result)
-	  play_sound_of_element(cave, O_BLADDER, x, y);
+	  play_sound_of_element_pushing(cave, O_BLADDER, x, y);
       }
       break;
 

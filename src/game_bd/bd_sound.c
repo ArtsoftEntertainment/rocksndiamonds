@@ -77,28 +77,74 @@ static SoundProperty sound_flags[] =
 
   /* channel 1 sounds. */
   /* CHANNEL 1 SOUNDS ARE ALWAYS RESTARTED, so no need for GD_SP_FORCE flag. */
-  { GD_S_STONE,				1, 10	},
+  { GD_S_STONE_PUSHING,			1, 10	},
+  { GD_S_STONE_FALLING,			1, 10	},
+  { GD_S_STONE_IMPACT,			1, 10	},
+  { GD_S_MEGA_STONE_PUSHING,		1, 10	},
+  { GD_S_MEGA_STONE_FALLING,		1, 10	},
+  { GD_S_MEGA_STONE_IMPACT,		1, 10	},
+  { GD_S_FLYING_STONE_PUSHING,		1, 10	},
+  { GD_S_FLYING_STONE_FALLING,		1, 10	},
+  { GD_S_FLYING_STONE_IMPACT,		1, 10	},
+  { GD_S_WAITING_STONE_PUSHING,		1, 10	},
+  { GD_S_CHASING_STONE_PUSHING,		1, 10	},
   /* nut falling is relatively silent, so low precedence. */
-  { GD_S_NUT,				1, 8	},
+  { GD_S_NUT_PUSHING,			1, 8	},
+  { GD_S_NUT_FALLING,			1, 8	},
+  { GD_S_NUT_IMPACT,			1, 8	},
   /* higher precedence than a stone bouncing. */
   { GD_S_NUT_CRACKING,			1, 12	},
   /* sligthly lower precedence, as stones and diamonds should be "louder" */
-  { GD_S_DIRT_BALL,			1, 8	},
-  { GD_S_NITRO_PACK,			1, 10	},
-  { GD_S_FALLING_WALL,			1, 10	},
+  { GD_S_DIRT_BALL_FALLING,		1, 8	},
+  { GD_S_DIRT_BALL_IMPACT,		1, 8	},
+  { GD_S_DIRT_LOOSE_FALLING,		1, 8	},
+  { GD_S_DIRT_LOOSE_IMPACT,		1, 8	},
+  { GD_S_NITRO_PACK_PUSHING,		1, 10	},
+  { GD_S_NITRO_PACK_FALLING,		1, 10	},
+  { GD_S_NITRO_PACK_IMPACT,		1, 10	},
+  { GD_S_FALLING_WALL_FALLING,		1, 10	},
+  { GD_S_FALLING_WALL_IMPACT,		1, 10	},
   { GD_S_EXPANDING_WALL,		1, 10	},
   { GD_S_WALL_REAPPEARING,		1, 9	},
-  { GD_S_DIAMOND_RANDOM,		1, 10	},
-  { GD_S_DIAMOND_1,			1, 10	},
-  { GD_S_DIAMOND_2,			1, 10	},
-  { GD_S_DIAMOND_3,			1, 10	},
-  { GD_S_DIAMOND_4,			1, 10	},
-  { GD_S_DIAMOND_5,			1, 10	},
-  { GD_S_DIAMOND_6,			1, 10	},
-  { GD_S_DIAMOND_7,			1, 10	},
-  { GD_S_DIAMOND_8,			1, 10	},
+  { GD_S_DIAMOND_FALLING_RANDOM,	1, 10	},
+  { GD_S_DIAMOND_FALLING_1,		1, 10	},
+  { GD_S_DIAMOND_FALLING_2,		1, 10	},
+  { GD_S_DIAMOND_FALLING_3,		1, 10	},
+  { GD_S_DIAMOND_FALLING_4,		1, 10	},
+  { GD_S_DIAMOND_FALLING_5,		1, 10	},
+  { GD_S_DIAMOND_FALLING_6,		1, 10	},
+  { GD_S_DIAMOND_FALLING_7,		1, 10	},
+  { GD_S_DIAMOND_FALLING_8,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_RANDOM,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_1,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_2,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_3,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_4,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_5,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_6,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_7,		1, 10	},
+  { GD_S_DIAMOND_IMPACT_8,		1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_RANDOM,	1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_1,	1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_2,	1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_3,	1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_4,	1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_5,	1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_6,	1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_7,	1, 10	},
+  { GD_S_FLYING_DIAMOND_FALLING_8,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_RANDOM,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_1,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_2,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_3,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_4,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_5,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_6,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_7,	1, 10	},
+  { GD_S_FLYING_DIAMOND_IMPACT_8,	1, 10	},
   /* diamond collect sound has precedence over everything. */
   { GD_S_DIAMOND_COLLECTING,		1, 100	},
+  { GD_S_FLYING_DIAMOND_COLLECTING,	1, 100	},
 
   /* collect sounds have higher precedence than falling sounds and the like. */
   { GD_S_SKELETON_COLLECTING,		1, 100	},
@@ -113,6 +159,7 @@ static SoundProperty sound_flags[] =
   { GD_S_REPLICATOR,			1, 5	},
   { GD_S_ACID_SPREADING,		1, 3	}, /* same for acid, even lower. */
   { GD_S_BLADDER_MOVING,		1, 5	}, /* same for bladder. */
+  { GD_S_BLADDER_PUSHING,		1, 5	},
   { GD_S_BLADDER_CONVERTING,		1, 8	},
   { GD_S_BLADDER_SPENDER,		1, 8	},
   { GD_S_BITER_EATING,			1, 3	}, /* very low precedence. biters tend to produce too much sound. */
@@ -236,24 +283,63 @@ static void play_sound(int channel, GdSound sound)
 {
   /* channel 1 and channel 4 are used alternating */
   /* channel 2 and channel 5 are used alternating */
-  static const GdSound diamond_sounds[] =
+  static const GdSound diamond_falling_sounds[] =
   {
-    GD_S_DIAMOND_1,
-    GD_S_DIAMOND_2,
-    GD_S_DIAMOND_3,
-    GD_S_DIAMOND_4,
-    GD_S_DIAMOND_5,
-    GD_S_DIAMOND_6,
-    GD_S_DIAMOND_7,
-    GD_S_DIAMOND_8,
+    GD_S_DIAMOND_FALLING_1,
+    GD_S_DIAMOND_FALLING_2,
+    GD_S_DIAMOND_FALLING_3,
+    GD_S_DIAMOND_FALLING_4,
+    GD_S_DIAMOND_FALLING_5,
+    GD_S_DIAMOND_FALLING_6,
+    GD_S_DIAMOND_FALLING_7,
+    GD_S_DIAMOND_FALLING_8,
+  };
+  static const GdSound diamond_impact_sounds[] =
+  {
+    GD_S_DIAMOND_IMPACT_1,
+    GD_S_DIAMOND_IMPACT_2,
+    GD_S_DIAMOND_IMPACT_3,
+    GD_S_DIAMOND_IMPACT_4,
+    GD_S_DIAMOND_IMPACT_5,
+    GD_S_DIAMOND_IMPACT_6,
+    GD_S_DIAMOND_IMPACT_7,
+    GD_S_DIAMOND_IMPACT_8,
+  };
+  static const GdSound flying_diamond_falling_sounds[] =
+  {
+    GD_S_FLYING_DIAMOND_FALLING_1,
+    GD_S_FLYING_DIAMOND_FALLING_2,
+    GD_S_FLYING_DIAMOND_FALLING_3,
+    GD_S_FLYING_DIAMOND_FALLING_4,
+    GD_S_FLYING_DIAMOND_FALLING_5,
+    GD_S_FLYING_DIAMOND_FALLING_6,
+    GD_S_FLYING_DIAMOND_FALLING_7,
+    GD_S_FLYING_DIAMOND_FALLING_8,
+  };
+  static const GdSound flying_diamond_impact_sounds[] =
+  {
+    GD_S_FLYING_DIAMOND_IMPACT_1,
+    GD_S_FLYING_DIAMOND_IMPACT_2,
+    GD_S_FLYING_DIAMOND_IMPACT_3,
+    GD_S_FLYING_DIAMOND_IMPACT_4,
+    GD_S_FLYING_DIAMOND_IMPACT_5,
+    GD_S_FLYING_DIAMOND_IMPACT_6,
+    GD_S_FLYING_DIAMOND_IMPACT_7,
+    GD_S_FLYING_DIAMOND_IMPACT_8,
   };
 
   if (sound == GD_S_NONE)
     return;
 
   /* change diamond falling random to a selected diamond falling sound. */
-  if (sound == GD_S_DIAMOND_RANDOM)
-    sound = diamond_sounds[g_random_int_range(0, G_N_ELEMENTS(diamond_sounds))];
+  if (sound == GD_S_DIAMOND_FALLING_RANDOM)
+    sound = diamond_falling_sounds[g_random_int_range(0, 8)];
+  else if (sound == GD_S_DIAMOND_IMPACT_RANDOM)
+    sound = diamond_impact_sounds[g_random_int_range(0, 8)];
+  else if (sound == GD_S_FLYING_DIAMOND_FALLING_RANDOM)
+    sound = flying_diamond_falling_sounds[g_random_int_range(0, 8)];
+  else if (sound == GD_S_FLYING_DIAMOND_IMPACT_RANDOM)
+    sound = flying_diamond_impact_sounds[g_random_int_range(0, 8)];
 
   /* channel 1 may have been changed to channel 4 above. */
 

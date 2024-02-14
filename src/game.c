@@ -15537,11 +15537,35 @@ static int getSoundAction_BD(int sample)
 {
   switch (sample)
   {
-    case GD_S_STONE:
-    case GD_S_NUT:
-    case GD_S_DIRT_BALL:
-    case GD_S_NITRO_PACK:
-    case GD_S_FALLING_WALL:
+    case GD_S_STONE_PUSHING:
+    case GD_S_MEGA_STONE_PUSHING:
+    case GD_S_FLYING_STONE_PUSHING:
+    case GD_S_WAITING_STONE_PUSHING:
+    case GD_S_CHASING_STONE_PUSHING:
+    case GD_S_NUT_PUSHING:
+    case GD_S_NITRO_PACK_PUSHING:
+    case GD_S_BLADDER_PUSHING:
+    case GD_S_BOX_PUSHING:
+      return ACTION_PUSHING;
+
+    case GD_S_STONE_FALLING:
+    case GD_S_MEGA_STONE_FALLING:
+    case GD_S_FLYING_STONE_FALLING:
+    case GD_S_NUT_FALLING:
+    case GD_S_DIRT_BALL_FALLING:
+    case GD_S_DIRT_LOOSE_FALLING:
+    case GD_S_NITRO_PACK_FALLING:
+    case GD_S_FALLING_WALL_FALLING:
+      return ACTION_FALLING;
+
+    case GD_S_STONE_IMPACT:
+    case GD_S_MEGA_STONE_IMPACT:
+    case GD_S_FLYING_STONE_IMPACT:
+    case GD_S_NUT_IMPACT:
+    case GD_S_DIRT_BALL_IMPACT:
+    case GD_S_DIRT_LOOSE_IMPACT:
+    case GD_S_NITRO_PACK_IMPACT:
+    case GD_S_FALLING_WALL_IMPACT:
       return ACTION_IMPACT;
 
     case GD_S_NUT_CRACKING:
@@ -15555,6 +15579,7 @@ static int getSoundAction_BD(int sample)
       return ACTION_GROWING;
 
     case GD_S_DIAMOND_COLLECTING:
+    case GD_S_FLYING_DIAMOND_COLLECTING:
     case GD_S_SKELETON_COLLECTING:
     case GD_S_PNEUMATIC_COLLECTING:
     case GD_S_BOMB_COLLECTING:
@@ -15598,9 +15623,6 @@ static int getSoundAction_BD(int sample)
     case GD_S_STIRRING:
       return ACTION_ACTIVATING;
 
-    case GD_S_BOX_PUSHING:
-      return ACTION_PUSHING;
-
     case GD_S_TELEPORTER:
       return ACTION_PASSING;
 
@@ -15613,21 +15635,47 @@ static int getSoundAction_BD(int sample)
 
     case GD_S_COVERING:
     case GD_S_AMOEBA:
-    case GD_S_AMOEBA_MAGIC:
     case GD_S_MAGIC_WALL:
     case GD_S_PNEUMATIC_HAMMER:
     case GD_S_WATER:
       return ACTION_ACTIVE;
 
-    case GD_S_DIAMOND_RANDOM:
-    case GD_S_DIAMOND_1:
-    case GD_S_DIAMOND_2:
-    case GD_S_DIAMOND_3:
-    case GD_S_DIAMOND_4:
-    case GD_S_DIAMOND_5:
-    case GD_S_DIAMOND_6:
-    case GD_S_DIAMOND_7:
-    case GD_S_DIAMOND_8:
+    case GD_S_DIAMOND_FALLING_RANDOM:
+    case GD_S_DIAMOND_FALLING_1:
+    case GD_S_DIAMOND_FALLING_2:
+    case GD_S_DIAMOND_FALLING_3:
+    case GD_S_DIAMOND_FALLING_4:
+    case GD_S_DIAMOND_FALLING_5:
+    case GD_S_DIAMOND_FALLING_6:
+    case GD_S_DIAMOND_FALLING_7:
+    case GD_S_DIAMOND_FALLING_8:
+    case GD_S_DIAMOND_IMPACT_RANDOM:
+    case GD_S_DIAMOND_IMPACT_1:
+    case GD_S_DIAMOND_IMPACT_2:
+    case GD_S_DIAMOND_IMPACT_3:
+    case GD_S_DIAMOND_IMPACT_4:
+    case GD_S_DIAMOND_IMPACT_5:
+    case GD_S_DIAMOND_IMPACT_6:
+    case GD_S_DIAMOND_IMPACT_7:
+    case GD_S_DIAMOND_IMPACT_8:
+    case GD_S_FLYING_DIAMOND_FALLING_RANDOM:
+    case GD_S_FLYING_DIAMOND_FALLING_1:
+    case GD_S_FLYING_DIAMOND_FALLING_2:
+    case GD_S_FLYING_DIAMOND_FALLING_3:
+    case GD_S_FLYING_DIAMOND_FALLING_4:
+    case GD_S_FLYING_DIAMOND_FALLING_5:
+    case GD_S_FLYING_DIAMOND_FALLING_6:
+    case GD_S_FLYING_DIAMOND_FALLING_7:
+    case GD_S_FLYING_DIAMOND_FALLING_8:
+    case GD_S_FLYING_DIAMOND_IMPACT_RANDOM:
+    case GD_S_FLYING_DIAMOND_IMPACT_1:
+    case GD_S_FLYING_DIAMOND_IMPACT_2:
+    case GD_S_FLYING_DIAMOND_IMPACT_3:
+    case GD_S_FLYING_DIAMOND_IMPACT_4:
+    case GD_S_FLYING_DIAMOND_IMPACT_5:
+    case GD_S_FLYING_DIAMOND_IMPACT_6:
+    case GD_S_FLYING_DIAMOND_IMPACT_7:
+    case GD_S_FLYING_DIAMOND_IMPACT_8:
     case GD_S_TIMEOUT_0:
     case GD_S_TIMEOUT_1:
     case GD_S_TIMEOUT_2:
@@ -15640,10 +15688,12 @@ static int getSoundAction_BD(int sample)
     case GD_S_TIMEOUT_9:
     case GD_S_TIMEOUT_10:
     case GD_S_BONUS_LIFE:
-      // kludge to prevent playing as loop sound
+      // trigger special post-processing (and force sound to be non-looping)
       return ACTION_OTHER;
 
+    case GD_S_AMOEBA_MAGIC:
     case GD_S_FINISHED:
+      // trigger special post-processing (and force sound to be looping)
       return ACTION_DEFAULT;
 
     default:
@@ -15662,30 +15712,75 @@ static int getSoundEffect_BD(int element_bd, int sample)
       sound_action != ACTION_DEFAULT)
     return sound_effect;
 
-  // special sounds
+  // special post-processing for some sounds
   switch (sample)
   {
-    case GD_S_DIAMOND_RANDOM:
-      nr = GetSimpleRandom(8);
+    case GD_S_DIAMOND_FALLING_RANDOM:
+    case GD_S_DIAMOND_FALLING_1:
+    case GD_S_DIAMOND_FALLING_2:
+    case GD_S_DIAMOND_FALLING_3:
+    case GD_S_DIAMOND_FALLING_4:
+    case GD_S_DIAMOND_FALLING_5:
+    case GD_S_DIAMOND_FALLING_6:
+    case GD_S_DIAMOND_FALLING_7:
+    case GD_S_DIAMOND_FALLING_8:
+      nr = (sample == GD_S_DIAMOND_FALLING_RANDOM ? GetSimpleRandom(8) :
+	    sample - GD_S_DIAMOND_FALLING_1);
+      sound_effect = SND_BD_DIAMOND_FALLING_RANDOM_1 + nr;
+
+      if (getSoundInfoEntryFilename(sound_effect) == NULL)
+	sound_effect = SND_BD_DIAMOND_FALLING;
+      break;
+
+    case GD_S_DIAMOND_IMPACT_RANDOM:
+    case GD_S_DIAMOND_IMPACT_1:
+    case GD_S_DIAMOND_IMPACT_2:
+    case GD_S_DIAMOND_IMPACT_3:
+    case GD_S_DIAMOND_IMPACT_4:
+    case GD_S_DIAMOND_IMPACT_5:
+    case GD_S_DIAMOND_IMPACT_6:
+    case GD_S_DIAMOND_IMPACT_7:
+    case GD_S_DIAMOND_IMPACT_8:
+      nr = (sample == GD_S_DIAMOND_IMPACT_RANDOM ? GetSimpleRandom(8) :
+	    sample - GD_S_DIAMOND_IMPACT_1);
       sound_effect = SND_BD_DIAMOND_IMPACT_RANDOM_1 + nr;
 
       if (getSoundInfoEntryFilename(sound_effect) == NULL)
 	sound_effect = SND_BD_DIAMOND_IMPACT;
       break;
 
-    case GD_S_DIAMOND_1:
-    case GD_S_DIAMOND_2:
-    case GD_S_DIAMOND_3:
-    case GD_S_DIAMOND_4:
-    case GD_S_DIAMOND_5:
-    case GD_S_DIAMOND_6:
-    case GD_S_DIAMOND_7:
-    case GD_S_DIAMOND_8:
-      nr = sample - GD_S_DIAMOND_1;
-      sound_effect = SND_BD_DIAMOND_IMPACT_RANDOM_1 + nr;
+    case GD_S_FLYING_DIAMOND_FALLING_RANDOM:
+    case GD_S_FLYING_DIAMOND_FALLING_1:
+    case GD_S_FLYING_DIAMOND_FALLING_2:
+    case GD_S_FLYING_DIAMOND_FALLING_3:
+    case GD_S_FLYING_DIAMOND_FALLING_4:
+    case GD_S_FLYING_DIAMOND_FALLING_5:
+    case GD_S_FLYING_DIAMOND_FALLING_6:
+    case GD_S_FLYING_DIAMOND_FALLING_7:
+    case GD_S_FLYING_DIAMOND_FALLING_8:
+      nr = (sample == GD_S_FLYING_DIAMOND_FALLING_RANDOM ? GetSimpleRandom(8) :
+	    sample - GD_S_FLYING_DIAMOND_FALLING_1);
+      sound_effect = SND_BD_FLYING_DIAMOND_FALLING_RANDOM_1 + nr;
 
       if (getSoundInfoEntryFilename(sound_effect) == NULL)
-	sound_effect = SND_BD_DIAMOND_IMPACT;
+	sound_effect = SND_BD_FLYING_DIAMOND_FALLING;
+      break;
+
+    case GD_S_FLYING_DIAMOND_IMPACT_RANDOM:
+    case GD_S_FLYING_DIAMOND_IMPACT_1:
+    case GD_S_FLYING_DIAMOND_IMPACT_2:
+    case GD_S_FLYING_DIAMOND_IMPACT_3:
+    case GD_S_FLYING_DIAMOND_IMPACT_4:
+    case GD_S_FLYING_DIAMOND_IMPACT_5:
+    case GD_S_FLYING_DIAMOND_IMPACT_6:
+    case GD_S_FLYING_DIAMOND_IMPACT_7:
+    case GD_S_FLYING_DIAMOND_IMPACT_8:
+      nr = (sample == GD_S_FLYING_DIAMOND_IMPACT_RANDOM ? GetSimpleRandom(8) :
+	    sample - GD_S_FLYING_DIAMOND_IMPACT_1);
+      sound_effect = SND_BD_FLYING_DIAMOND_IMPACT_RANDOM_1 + nr;
+
+      if (getSoundInfoEntryFilename(sound_effect) == NULL)
+	sound_effect = SND_BD_FLYING_DIAMOND_IMPACT;
       break;
 
     case GD_S_TIMEOUT_0:
@@ -15706,12 +15801,16 @@ static int getSoundEffect_BD(int element_bd, int sample)
 	sound_effect = SND_GAME_RUNNING_OUT_OF_TIME;
       break;
 
-    case GD_S_FINISHED:
-      sound_effect = SND_GAME_LEVELTIME_BONUS;
-      break;
-
     case GD_S_BONUS_LIFE:
       sound_effect = SND_GAME_HEALTH_BONUS;
+      break;
+
+    case GD_S_AMOEBA_MAGIC:
+      sound_effect = SND_BD_AMOEBA_OTHER;
+      break;
+
+    case GD_S_FINISHED:
+      sound_effect = SND_GAME_LEVELTIME_BONUS;
       break;
 
     default:
@@ -15732,7 +15831,14 @@ void PlayLevelSound_BD(int xx, int yy, int element_bd, int sample)
   int x = xx - offset;
   int y = yy - offset;
 
-  if (sound_action == ACTION_OTHER)
+  // some sound actions are always looping in native BD game engine
+  if (sound_action == ACTION_DEFAULT)
+    is_loop_sound = TRUE;
+
+  // some sound actions are always non-looping in native BD game engine
+  if (sound_action == ACTION_FALLING ||
+      sound_action == ACTION_MOVING ||
+      sound_action == ACTION_OTHER)
     is_loop_sound = FALSE;
 
   if (sound_effect != SND_UNDEFINED)
