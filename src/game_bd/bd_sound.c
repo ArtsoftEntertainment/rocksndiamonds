@@ -269,6 +269,10 @@ void gd_sound_init(void)
 {
   int i;
 
+  for (i = 0; i < GD_S_MAX; i++)
+    if (sound_flags[i].sound != i)
+      Fail("sound db index mismatch: %d", i);
+
   for (i = 0; i < MAX_CHANNELS; i++)
     snd_playing[i] = GD_S_NONE;
 }
