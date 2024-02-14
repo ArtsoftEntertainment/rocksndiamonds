@@ -673,8 +673,7 @@ static void explode(GdCave *cave, int x, int y)
   }
 }
 
-static void inline
-explode_dir(GdCave *cave, const int x, const int y, GdDirection dir)
+static void inline explode_dir(GdCave *cave, const int x, const int y, GdDirection dir)
 {
   explode(cave, x + gd_dx[dir], y + gd_dy[dir]);
 }
@@ -685,7 +684,7 @@ explode_dir(GdCave *cave, const int x, const int y, GdDirection dir)
   returns other element if something other appears there and he can't move.
   cave pointer is needed to know the diamond values.
 */
-static GdElement player_get_element (GdCave* cave, const GdElement object, int x, int y)
+static GdElement player_get_element(GdCave* cave, const GdElement object, int x, int y)
 {
   int i;
 
