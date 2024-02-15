@@ -1277,7 +1277,7 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
 
   rand = g_rand_new_with_seed(seed);
   /* for c64 random, use the 2*8 lsb. */
-  gd_c64_random_set_seed(&c64_rand, seed/256%256, seed%256);
+  gd_c64_random_set_seed(&c64_rand, seed / 256 % 256, seed % 256);
 
   /* change coordinates if not in correct order */
   if (y1 > y2)

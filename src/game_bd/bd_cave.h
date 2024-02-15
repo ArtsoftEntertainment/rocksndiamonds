@@ -253,7 +253,7 @@ typedef enum _direction
   GD_MV_LEFT		= 7,
   GD_MV_UP_LEFT		= 8,
 
-  /* to be able to type GD_MV_TWICE+GD_MV_DOWN, for example */
+  /* to be able to type GD_MV_TWICE + GD_MV_DOWN, for example */
   GD_MV_TWICE		= 8,
 
   /* directions * 2 */

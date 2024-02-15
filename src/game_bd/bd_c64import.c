@@ -698,7 +698,7 @@ static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_by
     }
     else
     {
-      /* object is code&3f, object type is upper 2 bits */
+      /* object is code & 3f, object type is upper 2 bits */
       elem = import_func(code & 0x3F, index);
 
       switch ((code >> 6) & 3)
@@ -2138,14 +2138,14 @@ static int cave_copy_from_crli(GdCave *cave, const guint8 *data, int remaining_b
   if (uncompressed[0x380])
     cave->creatures_direction_auto_change_time = uncompressed[0x381];
 
-  cave->colorb = gd_c64_color(uncompressed[0x384]&0xf);    /* border */
-  cave->color0 = gd_c64_color(uncompressed[0x385]&0xf);
-  cave->color1 = gd_c64_color(uncompressed[0x386]&0xf);
-  cave->color2 = gd_c64_color(uncompressed[0x387]&0xf);
-  cave->color3 = gd_c64_color(uncompressed[0x388]&0x7);     /* lower 3 bits only! */
+  cave->colorb = gd_c64_color(uncompressed[0x384] & 0xf);    /* border */
+  cave->color0 = gd_c64_color(uncompressed[0x385] & 0xf);
+  cave->color1 = gd_c64_color(uncompressed[0x386] & 0xf);
+  cave->color2 = gd_c64_color(uncompressed[0x387] & 0xf);
+  cave->color3 = gd_c64_color(uncompressed[0x388] & 0x7);    /* lower 3 bits only! */
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
-  cave->intermission = uncompressed[0x389]!=0;
+  cave->intermission = uncompressed[0x389] != 0;
 
   /* if it is intermission but not scrollable */
   if (cave->intermission && !uncompressed[0x38c])

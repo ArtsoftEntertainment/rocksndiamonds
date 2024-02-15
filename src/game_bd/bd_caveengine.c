@@ -489,7 +489,7 @@ static inline boolean is_element_dir(const GdCave *cave, const int x, const int 
 static inline boolean is_space_dir(const GdCave *cave, const int x, const int y,
 				   const GdDirection dir)
 {
-  GdElement e = get_dir(cave, x, y, dir)&O_MASK;
+  GdElement e = get_dir(cave, x, y, dir) & O_MASK;
 
   return (e == O_SPACE || e == O_LAVA);
 }
@@ -519,7 +519,7 @@ static inline void store_sc(GdCave *cave, const int x, const int y, const GdElem
 static inline void store_dir(GdCave *cave, const int x, const int y,
 			     const GdDirection dir, const GdElement element)
 {
-  store(cave, x + gd_dx[dir], y + gd_dy[dir], element|SCANNED);
+  store(cave, x + gd_dx[dir], y + gd_dy[dir], element | SCANNED);
 }
 
 /* store an element to a neighbouring cell */
@@ -1600,7 +1600,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     {
       /* if we find a scanned element, change it to the normal one, and that's all. */
       /* this is required, for example for chasing stones, which have moved, always passing slime! */
-      if (get(cave, x, y)&SCANNED)
+      if (get(cave, x, y) & SCANNED)
       {
 	store(cave, x, y, get(cave, x, y) & ~SCANNED);
 
