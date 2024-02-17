@@ -294,6 +294,7 @@ static boolean use_native_bd_graphics_engine(void)
 
 int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 {
+  GdCave *cave = game->cave;
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) = BlitBitmap;
   static int show_flash_count = 0;
   boolean show_flash = FALSE;
@@ -305,7 +306,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
   if (game->itermax != game->itermax_last)
     redraw_all = TRUE;
 
-  if (!game->cave->gate_open_flash)
+  if (!cave->gate_open_flash)
   {
     show_flash_count = 0;
   }
@@ -327,9 +328,9 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 
   /* here we draw all cells to be redrawn. we do not take scrolling area into
      consideration - sdl will do the clipping. */
-  for (y = game->cave->y1, yd = 0; y <= game->cave->y2; y++, yd++)
+  for (y = cave->y1, yd = 0; y <= cave->y2; y++, yd++)
   {
-    for (x = game->cave->x1, xd = 0; x <= game->cave->x2; x++, xd++)
+    for (x = cave->x1, xd = 0; x <= cave->x2; x++, xd++)
     {
       /* potential movement direction of game element */
       int dir = game->dir_buffer[y][x];
@@ -374,13 +375,13 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	  /* get cave field position the game element is moving from */
 	  int dx = (dir == GD_MV_LEFT ? +1 : dir == GD_MV_RIGHT ? -1 : 0);
 	  int dy = (dir == GD_MV_UP   ? +1 : dir == GD_MV_DOWN  ? -1 : 0);
-	  int old_x = game->cave->getx(game->cave, x + dx, y + dy);
-	  int old_y = game->cave->gety(game->cave, x + dx, y + dy);
+	  int old_x = cave->getx(cave, x + dx, y + dy);
+	  int old_y = cave->gety(cave, x + dx, y + dy);
 
-	  if (old_x >= game->cave->x1 &&
-	      old_x <= game->cave->x2 &&
-	      old_y >= game->cave->y1 &&
-	      old_y <= game->cave->y2)
+	  if (old_x >= cave->x1 &&
+	      old_x <= cave->x2 &&
+	      old_y >= cave->y1 &&
+	      old_y <= cave->y2)
 	  {
 	    if (game->dir_buffer[old_y][old_x] == GD_MV_STILL)
 	    {
