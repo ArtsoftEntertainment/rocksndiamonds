@@ -300,7 +300,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
   boolean show_flash = FALSE;
   boolean redraw_all = force_redraw;
   int scroll_y_aligned = scroll_y;
-  int x, y, xd, yd;
+  int x, y;
 
   /* force redraw if maximum number of cycles has changed (to redraw moving elements) */
   if (game->itermax != game->itermax_last)
@@ -328,9 +328,9 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 
   /* here we draw all cells to be redrawn. we do not take scrolling area into
      consideration - sdl will do the clipping. */
-  for (y = cave->y1, yd = 0; y <= cave->y2; y++, yd++)
+  for (y = cave->y1; y <= cave->y2; y++)
   {
-    for (x = cave->x1, xd = 0; x <= cave->x2; x++, xd++)
+    for (x = cave->x1; x <= cave->x2; x++)
     {
       /* potential movement direction of game element */
       int dir = game->dir_buffer[y][x];
