@@ -156,9 +156,9 @@ GdElements gd_elements[] =
   { O_FLYING_STONE_F, N_("Flying stone, flying"), 0, "FLYINGBOULDERf", 0, i_flying_stone_f, i_flying_stone_f, 357, 156 },    /* has ckdelay */
   { O_MEGA_STONE, N_("Mega stone"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP, "MEGABOULDER", 0, 272, 272, 272, 156 },    /* has ckdelay */
   { O_MEGA_STONE_F, N_("Mega stone, falling"), 0, "MEGABOULDERf", 0, i_mega_stone_falling, i_mega_stone_falling, 272, 156 },    /* has ckdelay */
-  { O_DIAMOND, N_("Diamond"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP, "DIAMOND", 'd', 248, -248, -248, 156 },    /* has ckdelay */
+  { O_DIAMOND, N_("Diamond"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP|P_COLLECTIBLE, "DIAMOND", 'd', 248, -248, -248, 156 },    /* has ckdelay */
   { O_DIAMOND_F, N_("Diamond, falling"), 0, "DIAMONDf", 'D', i_diamond_f, i_diamond_f, -248, 156 },    /* has ckdelay */
-  { O_FLYING_DIAMOND, N_("Flying diamond"), P_SLOPED|P_MOVED_BY_CONVEYOR_BOTTOM, "FLYINGDIAMOND", 0, 344, -344, -344, 156 },    /* has ckdelay */
+  { O_FLYING_DIAMOND, N_("Flying diamond"), P_SLOPED|P_MOVED_BY_CONVEYOR_BOTTOM|P_COLLECTIBLE, "FLYINGDIAMOND", 0, 344, -344, -344, 156 },    /* has ckdelay */
   { O_FLYING_DIAMOND_F, N_("Flying diamond, flying"), 0, "FLYINGDIAMONDf", 0, i_flying_diamond_f, i_flying_diamond_f, -344, 156 },    /* has ckdelay */
   { O_NUT, N_("Nut"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP, "NUT", 0, 358, 358, 358, 156 },    /* has ckdelay */
   { O_NUT_F, N_("Nut, falling"), 0, "NUTf", 0, i_nut_f, i_nut_f, 358, 156 },    /* has ckdelay */
@@ -184,20 +184,20 @@ GdElements gd_elements[] =
   { O_GRAVESTONE, N_("Gravestone"), P_NON_EXPLODABLE, "GRAVESTONE", 'G', 9, 9, 9 },
   { O_STONE_GLUED, N_("Glued stone"), P_SLOPED, "GLUEDBOULDER", 0, i_stone_glued, i_stone_glued, 1 },
   { O_DIAMOND_GLUED, N_("Glued diamond"), P_SLOPED, "GLUEDDIAMOND", 0, i_diamond_glued, i_diamond_glued, -248 },
-  { O_DIAMOND_KEY, N_("Diamond key"), 0, "DIAMONDRELEASEKEY", 0, 11, 11, 11 },
+  { O_DIAMOND_KEY, N_("Diamond key"), P_COLLECTIBLE, "DIAMONDRELEASEKEY", 0, 11, 11, 11 },
   { O_TRAPPED_DIAMOND, N_("Trapped diamond"), P_NON_EXPLODABLE, "TRAPPEDDIAMOND", 0, 10, 10, 10 },
-  { O_CLOCK, N_("Clock"), 0, "CLOCK", 0, 16, 16, 16 },
+  { O_CLOCK, N_("Clock"), P_COLLECTIBLE, "CLOCK", 0, 16, 16, 16 },
   { O_DIRT_GLUED, N_("Glued dirt"), 0, "GLUEDDIRT", 0, i_dirt_glued, i_dirt_glued, 2 },
-  { O_KEY_1, N_("Key 1"), 0, "KEY1", 0, 67, 67, 67 },
-  { O_KEY_2, N_("Key 2"), 0, "KEY2", 0, 68, 68, 68 },
-  { O_KEY_3, N_("Key 3"), 0, "KEY3", 0, 69, 69, 69 },
+  { O_KEY_1, N_("Key 1"), P_COLLECTIBLE, "KEY1", 0, 67, 67, 67 },
+  { O_KEY_2, N_("Key 2"), P_COLLECTIBLE, "KEY2", 0, 68, 68, 68 },
+  { O_KEY_3, N_("Key 3"), P_COLLECTIBLE, "KEY3", 0, 69, 69, 69 },
   { O_DOOR_1, N_("Door 1"), 0, "DOOR1", 0, 64, 64, 64 },
   { O_DOOR_2, N_("Door 2"), 0, "DOOR2", 0, 65, 65, 65 },
   { O_DOOR_3, N_("Door 3"), 0, "DOOR3", 0, 66, 66, 66 },
 
   { O_POT, N_("Pot"), 0, "POT", 0, 63, 63, 63 },
   { O_GRAVITY_SWITCH, N_("Gravity switch"), 0, "GRAVITY_SWITCH", 0, 274, 274, 274 },
-  { O_PNEUMATIC_HAMMER, N_("Pneumatic hammer"), 0, "PNEUMATIC_HAMMER", 0, 62, 62, 62 },
+  { O_PNEUMATIC_HAMMER, N_("Pneumatic hammer"), P_COLLECTIBLE, "PNEUMATIC_HAMMER", 0, 62, 62, 62 },
   { O_TELEPORTER, N_("Teleporter"), 0, "TELEPORTER", 0, 61, 61, 61 },
   { O_SKELETON, N_("Skeleton"), 0, "SKELETON", 0, 273, 273, 273 },
   { O_WATER, N_("Water"), 0, "WATER", 0, 96, -96, -96, 100 },    /* has ckdelay */
@@ -239,7 +239,7 @@ GdElements gd_elements[] =
   { O_CONVEYOR_LEFT, N_("Conveyor belt (left)"), P_NON_EXPLODABLE, "CONVEYORLEFT", 0, i_conveyor_left, -328, -328, 256  },    /* has ckdelay */
   { O_CONVEYOR_RIGHT, N_("Conveyor belt (right)"), P_NON_EXPLODABLE, "CONVEYORRIGHT", 0, i_conveyor_right, -320, -320  },
   { O_LAVA, N_("Lava"), P_NON_EXPLODABLE, "LAVA", 0, 312, -312, -312 },
-  { O_SWEET, N_("Sweet"), 0, "SWEET", 0, 8, 8, 8 },
+  { O_SWEET, N_("Sweet"), P_COLLECTIBLE, "SWEET", 0, 8, 8, 8 },
   { O_VOODOO, N_("Voodoo doll"), P_BLOWS_UP_FLIES, "DUMMY", 'F', 7, 7, 7 },
   { O_SLIME, N_("Slime"), 0, "SLIME", 's', 200, -200, -200, 211 },    /* has ckdelay */
   { O_BLADDER, N_("Bladder"), 0, "BLADDER", 0, 176, -176, -176, 267 },    /* has ckdelay */
@@ -292,7 +292,7 @@ GdElements gd_elements[] =
   { O_PLAYER_GLUED, N_("Glued player"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT, "GUYGLUED", 0, i_player_glued, i_player_glued, 35 },    /* is not a real player! so active x, y will not find it. no P_PLAYER bit! */
   { O_PLAYER_STIRRING, N_("Player stirring"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYSTIRRING", 0, 256, -256, -256 },
 
-  { O_BOMB, N_("Bomb"), 0, "BOMB", 0, 48, 48, 48 },
+  { O_BOMB, N_("Bomb"), P_COLLECTIBLE, "BOMB", 0, 48, 48, 48 },
   { O_BOMB_TICK_1, N_("Ticking bomb (1)"), P_EXPLOSION_FIRST_STAGE, "IGNITEDBOMB1", 0, 49, 49, 49 },
   { O_BOMB_TICK_2, N_("Ticking bomb (2)"), 0, "IGNITEDBOMB2", 0, 50, 50, 50 },
   { O_BOMB_TICK_3, N_("Ticking bomb (3)"), 0, "IGNITEDBOMB3", 0, 51, 51, 51 },
@@ -364,11 +364,11 @@ GdElements gd_elements[] =
   { O_OUTBOX_CLOSED, NULL, 0, NULL, 0, 22, 22, 22 },    /* game graphics - also for imported diego effects, but don't know if it is used anywhere in original games */
   { O_OUTBOX_OPEN, NULL, 0, NULL, 0, 23, 23, 23 },
   { O_COVERED, NULL, 0, NULL, 0, 128, -128, -128 },
-  { O_PLAYER_LEFT, NULL, 0, NULL, 0, 232, -232, -232 },
-  { O_PLAYER_RIGHT, NULL, 0, NULL, 0, 240, -240, -240 },
-  { O_PLAYER_TAP, NULL, 0, NULL, 0, 216, -216, -216 },
-  { O_PLAYER_BLINK, NULL, 0, NULL, 0, 208, -208, -208 },
-  { O_PLAYER_TAP_BLINK, NULL, 0, NULL, 0, 224, -224, -224 },
+  { O_PLAYER_LEFT, NULL, P_PLAYER, NULL, 0, 232, -232, -232 },
+  { O_PLAYER_RIGHT, NULL, P_PLAYER, NULL, 0, 240, -240, -240 },
+  { O_PLAYER_TAP, NULL, P_PLAYER, NULL, 0, 216, -216, -216 },
+  { O_PLAYER_BLINK, NULL, P_PLAYER, NULL, 0, 208, -208, -208 },
+  { O_PLAYER_TAP_BLINK, NULL, P_PLAYER, NULL, 0, 224, -224, -224 },
   { O_CREATURE_SWITCH_ON, NULL, 0, NULL, 0, 19, 19, 19 },
   { O_EXPANDING_WALL_SWITCH_HORIZ, NULL, 0, NULL, 0, 40, 40, 40 },
   { O_EXPANDING_WALL_SWITCH_VERT, NULL, 0, NULL, 0, 41, 41, 41 },

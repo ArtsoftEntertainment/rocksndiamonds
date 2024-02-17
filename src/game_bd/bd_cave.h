@@ -179,6 +179,8 @@ enum _element_property
   E_P_PLAYER,                   /* easier to find out if it is a player element */
   E_P_MOVED_BY_CONVEYOR_TOP,    /* can be moved by conveyor belt */
   E_P_MOVED_BY_CONVEYOR_BOTTOM, /* can be moved UNDER the conveyor belt */
+
+  E_P_COLLECTIBLE,              /* can be collected */
 };
 
 /* properties */
@@ -209,6 +211,8 @@ enum _element_property
 #define P_PLAYER			(1 << E_P_PLAYER)
 #define P_MOVED_BY_CONVEYOR_TOP		(1 << E_P_MOVED_BY_CONVEYOR_TOP)
 #define P_MOVED_BY_CONVEYOR_BOTTOM	(1 << E_P_MOVED_BY_CONVEYOR_BOTTOM)
+
+#define P_COLLECTIBLE			(1 << E_P_COLLECTIBLE)
 
 /* These are states of the magic wall. */
 typedef enum _magic_wall_state
