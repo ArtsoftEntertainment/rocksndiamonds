@@ -31,6 +31,10 @@ void gd_game_free(GdGame *game)
 
   if (game->element_buffer)
     gd_cave_map_free(game->element_buffer);
+  if (game->last_element_buffer)
+    gd_cave_map_free(game->last_element_buffer);
+  if (game->dir_buffer)
+    gd_cave_map_free(game->dir_buffer);
   if (game->gfx_buffer)
     gd_cave_map_free(game->gfx_buffer);
 
@@ -140,6 +144,16 @@ static void load_cave(GdGame *game)
     gd_cave_map_free(game->element_buffer);
   game->element_buffer = NULL;
 
+  /* delete last element buffer */
+  if (game->last_element_buffer)
+    gd_cave_map_free(game->last_element_buffer);
+  game->last_element_buffer = NULL;
+
+  /* delete direction buffer */
+  if (game->dir_buffer)
+    gd_cave_map_free(game->dir_buffer);
+  game->dir_buffer = NULL;
+
   /* delete gfx buffer */
   if (game->gfx_buffer)
     gd_cave_map_free(game->gfx_buffer);
@@ -170,6 +184,20 @@ static void load_cave(GdGame *game)
   for (y = 0; y < game->cave->h; y++)
     for (x = 0; x < game->cave->w; x++)
       game->element_buffer[y][x] = O_NONE;
+
+  /* create new last element buffer */
+  game->last_element_buffer = gd_cave_map_new(game->cave, int);
+
+  for (y = 0; y < game->cave->h; y++)
+    for (x = 0; x < game->cave->w; x++)
+      game->last_element_buffer[y][x] = O_NONE;
+
+  /* create new direction buffer */
+  game->dir_buffer = gd_cave_map_new(game->cave, int);
+
+  for (y = 0; y < game->cave->h; y++)
+    for (x = 0; x < game->cave->w; x++)
+      game->dir_buffer[y][x] = GD_MV_STILL;
 
   /* create new gfx buffer */
   game->gfx_buffer = gd_cave_map_new(game->cave, int);
@@ -455,12 +483,34 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
     if (allow_iterate)
       game->milliseconds_game += millisecs_elapsed;
 
+    /* increment cycle (frame) counter for the current cave iteration */
+    game->itercycle++;
+
     if (game->milliseconds_game >= cavespeed)
     {
       GdPlayerState pl;
 
       game->milliseconds_game -= cavespeed;
       pl = game->cave->player_state;
+
+      /* initialize buffers for last cave element and direction for next iteration */
+      for (y = 0; y < game->cave->h; y++)
+      {
+	for (x = 0; x < game->cave->w; x++)
+	{
+	  game->last_element_buffer[y][x] = game->element_buffer[y][x];
+	  game->dir_buffer[y][x] = GD_MV_STILL;
+	}
+      }
+
+      /* store last maximum number of cycles (to force redraw if changed) */
+      game->itermax_last = game->itermax;
+
+      /* update maximum number of cycles (frame) per cave iteration */
+      game->itermax = game->itercycle;
+
+      /* reset cycle (frame) counter for the next cave iteration */
+      game->itercycle = 0;
 
       iterate_cave(game, game->player_move, game->player_fire);
 

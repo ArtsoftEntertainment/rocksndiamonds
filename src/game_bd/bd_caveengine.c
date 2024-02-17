@@ -526,6 +526,19 @@ static inline boolean is_space_dir(const GdCave *cave, const int x, const int y,
   return (e == O_SPACE || e == O_LAVA);
 }
 
+static inline void store_dir_buffer(GdCave *cave, const int x, const int y, const GdDirection dir)
+{
+  /* raw values without range correction */
+  int raw_x = x + gd_dx[dir];
+  int raw_y = y + gd_dy[dir];
+  /* final values with range correction */
+  int new_x = getx(cave, raw_x, raw_y);
+  int new_y = gety(cave, raw_x, raw_y);
+  int new_dir = (dir > GD_MV_TWICE ? dir - GD_MV_TWICE : dir);
+
+  game_bd.game->dir_buffer[new_y][new_x] = new_dir;
+}
+
 /* store an element at the given position */
 static inline void store(GdCave *cave, const int x, const int y, const GdElement element)
 {
@@ -551,6 +564,7 @@ static inline void store_sc(GdCave *cave, const int x, const int y, const GdElem
 static inline void store_dir(GdCave *cave, const int x, const int y,
 			     const GdDirection dir, const GdElement element)
 {
+  store_dir_buffer(cave, x, y, dir);
   store(cave, x + gd_dx[dir], y + gd_dy[dir], element | SCANNED);
 }
 
@@ -558,6 +572,7 @@ static inline void store_dir(GdCave *cave, const int x, const int y,
 static inline void store_dir_no_scanned(GdCave *cave, const int x, const int y,
 					const GdDirection dir, const GdElement element)
 {
+  store_dir_buffer(cave, x, y, dir);
   store(cave, x + gd_dx[dir], y + gd_dy[dir], element);
 }
 

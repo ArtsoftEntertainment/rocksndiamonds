@@ -269,6 +269,10 @@ void InitGameEngine_BD(void)
 
   game_bd.game = gd_game_new(native_bd_level.cave_nr, native_bd_level.level_nr);
 
+  game_bd.game->itercycle = 0;
+  game_bd.game->itermax = 8;	// default; dynamically changed at runtime
+  game_bd.game->itermax_last = game_bd.game->itermax;
+
   // default: start with completely covered playfield
   int next_state = GAME_INT_START_UNCOVER + 1;
 

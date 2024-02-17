@@ -301,6 +301,10 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
   int scroll_y_aligned = scroll_y;
   int x, y, xd, yd;
 
+  /* force redraw if maximum number of cycles has changed (to redraw moving elements) */
+  if (game->itermax != game->itermax_last)
+    redraw_all = TRUE;
+
   if (!game->cave->gate_open_flash)
   {
     show_flash_count = 0;
@@ -327,8 +331,15 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
   {
     for (x = game->cave->x1, xd = 0; x <= game->cave->x2; x++, xd++)
     {
-      if (redraw_all || game->gfx_buffer[y][x] & GD_REDRAW)
+      /* potential movement direction of game element */
+      int dir = game->dir_buffer[y][x];
+
+      if (redraw_all || game->gfx_buffer[y][x] & GD_REDRAW || dir != GD_MV_STILL)
       {
+	/* skip redrawing already drawn element with movement */
+	if (game->element_buffer[y][x] & SKIPPED)
+	  continue;
+
 	/* if it needs to be redrawn */
 	SDL_Rect offset;
 
@@ -345,6 +356,57 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
 	int width  = g->width  * TILESIZE_VAR / TILESIZE;
 	int height = g->height * TILESIZE_VAR / TILESIZE;
+	boolean use_smooth_movements = TRUE;
+
+	/* if game element is just moving, draw movement animation between two tiles */
+	if (use_smooth_movements && dir != GD_MV_STILL)
+	{
+	  if (!(game->last_element_buffer[y][x] & SKIPPED))
+	  {
+	    /* redraw previous game element on the cave field the new element is moving to */
+	    int tile_old = game->last_element_buffer[y][x] & ~SKIPPED;
+	    struct GraphicInfo_BD *g_old = &graphic_info_bd_object[tile_old][frame];
+
+	    blit_bitmap(g_old->bitmap, dest, g_old->src_x, g_old->src_y, width, height,
+			offset.x, offset.y);
+	  }
+
+	  /* get cave field position the game element is moving from */
+	  int dx = (dir == GD_MV_LEFT ? +1 : dir == GD_MV_RIGHT ? -1 : 0);
+	  int dy = (dir == GD_MV_UP   ? +1 : dir == GD_MV_DOWN  ? -1 : 0);
+	  int old_x = game->cave->getx(game->cave, x + dx, y + dy);
+	  int old_y = game->cave->gety(game->cave, x + dx, y + dy);
+
+	  if (old_x >= game->cave->x1 &&
+	      old_x <= game->cave->x2 &&
+	      old_y >= game->cave->y1 &&
+	      old_y <= game->cave->y2)
+	  {
+	    if (game->dir_buffer[old_y][old_x] == GD_MV_STILL)
+	    {
+	      /* redraw game element on the cave field the element is moving from */
+	      int tile_from = game->element_buffer[old_y][old_x];
+	      struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][0];
+
+	      blit_bitmap(g_from->bitmap, dest, g_from->src_x, g_from->src_y, width, height,
+			  offset.x + dx * cell_size, offset.y + dy * cell_size);
+
+	      game->element_buffer[old_y][old_x] |= SKIPPED;
+	    }
+	    else
+	    {
+	      /* if old tile also moving (like pushing player), do not redraw it again */
+	      game->last_element_buffer[old_y][old_x] |= SKIPPED;
+	    }
+	  }
+
+	  /* get shifted position between cave fields the game element is moving from/to */
+	  int itercycle = MIN(MAX(0, game->itermax - game->itercycle - 1), game->itermax);
+	  int shift = cell_size * itercycle / game->itermax;
+
+	  offset.x += dx * shift;
+	  offset.y += dy * shift;
+	}
 
 	blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, width, height, offset.x, offset.y);
 

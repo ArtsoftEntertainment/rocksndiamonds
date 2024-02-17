@@ -92,7 +92,12 @@ typedef struct _gd_game
 
   int state_counter;        /* counter used to control the game flow, rendering of caves */
   int **element_buffer;
+  int **last_element_buffer;
+  int **dir_buffer;
   int **gfx_buffer;         /* contains the indexes to the cells; created by *start_level, deleted by *stop_game */
+  int itercycle;
+  int itermax;
+  int itermax_last;
   int animcycle;
   int milliseconds_game;
   int milliseconds_anim;
