@@ -318,7 +318,9 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int tile = game->element_buffer[y][x];
   int frame = game->animcycle;
   struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
-  boolean use_smooth_movements = TRUE;
+  boolean use_smooth_movements =
+    ((setup.bd_smooth_movements == TRUE) ||
+     (setup.bd_smooth_movements == AUTO && !use_native_bd_graphics_engine()));
 
 #if DO_GFX_SANITY_CHECK
   if (use_native_bd_graphics_engine() && !setup.small_game_graphics && !program.headless)

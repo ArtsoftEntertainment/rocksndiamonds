@@ -9818,6 +9818,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.bd_scroll_delay,			"bd_scroll_delay"
   },
   {
+    TYPE_SWITCH3,
+    &setup.bd_smooth_movements,			"bd_smooth_movements"
+  },
+  {
     TYPE_SWITCH,
     &setup.sp_show_border_elements,		"sp_show_border_elements"
   },
@@ -10636,6 +10640,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_skip_uncovering = FALSE;
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;
+  si->bd_smooth_movements = AUTO;
   si->sp_show_border_elements = FALSE;
   si->small_game_graphics = FALSE;
   si->show_load_save_buttons = FALSE;

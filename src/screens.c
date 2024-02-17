@@ -7469,6 +7469,7 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_SWITCH,	&setup.bd_skip_uncovering,	"Skip (un)covering screen:"	},
   { TYPE_SWITCH,	&setup.bd_skip_hatching,	"Skip hatching player:"		},
   { TYPE_SWITCH,	&setup.bd_scroll_delay,		"Scroll Delay:"			},
+  { TYPE_YES_NO_AUTO,	&setup.bd_smooth_movements,	"Smooth Element Movement:"	},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Emerald Mine"			},
   { TYPE_SWITCH,	&setup.forced_scroll_delay,	"Scroll Delay:"			},
