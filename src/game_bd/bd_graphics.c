@@ -216,6 +216,9 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   /* caught up with the desired position. smaller is better. */
   int scroll_speed = cell_size * 20 / game->cave->speed;
 
+  if (!setup.bd_scroll_delay)
+    exact_scroll = TRUE;
+
   if (immediate)
     scroll_speed = cell_size * MAX(game->cave->w, game->cave->h);
 
