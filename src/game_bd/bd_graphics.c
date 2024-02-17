@@ -292,6 +292,12 @@ static boolean use_native_bd_graphics_engine(void)
 }
 #endif
 
+/* returns true if the element is a player */
+static inline boolean is_player(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_PLAYER) != 0;
+}
+
 /* returns true if the element is collectible */
 static inline boolean is_collectible(const int element)
 {
@@ -382,6 +388,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	  int old_y = cave->gety(cave, x + dx, y + dy);
 	  int tile_from = game->element_buffer[old_y][old_x];
 	  struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][frame];
+	  boolean old_is_player = is_player(tile_from);
 	  boolean old_is_moving = (game->dir_buffer[old_y][old_x] != GD_MV_STILL);
 	  boolean old_is_visible = (old_x >= cave->x1 &&
 				    old_x <= cave->x2 &&
@@ -390,7 +397,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 
 	  if (old_is_visible)
 	  {
-	    if (!old_is_moving)
+	    if (!old_is_moving && !old_is_player)
 	    {
 	      /* redraw game element on the cave field the element is moving from */
 	      blit_bitmap(g_from->bitmap, dest, g_from->src_x, g_from->src_y, cell_size, cell_size,
@@ -411,6 +418,14 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 
 	  blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size,
 		      sx + dx * shift, sy + dy * shift);
+
+	  /* special case: redraw player snapping a game element */
+	  if (old_is_visible && old_is_player && !old_is_moving)
+	  {
+	    /* redraw game element on the cave field the element is moving from */
+	    blit_bitmap(g_from->bitmap, dest, g_from->src_x, g_from->src_y, cell_size, cell_size,
+			sx + dx * cell_size, sy + dy * cell_size);
+	  }
 	}
 	else
 	{
