@@ -369,13 +369,13 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	  if (!(game->last_element_buffer[y][x] & SKIPPED))
 	  {
 	    /* redraw previous game element on the cave field the new element is moving to */
-	    int tile_old = game->last_element_buffer[y][x];
+	    int tile_last = game->last_element_buffer[y][x];
 
 	    /* only redraw previous game element if it is not collectible (like dirt etc.) */
-	    if (is_collectible(tile_old))
-	      tile_old = O_SPACE;
+	    if (is_collectible(tile_last))
+	      tile_last = O_SPACE;
 
-	    struct GraphicInfo_BD *g_old = &graphic_info_bd_object[tile_old][frame];
+	    struct GraphicInfo_BD *g_old = &graphic_info_bd_object[tile_last][frame];
 
 	    blit_bitmap(g_old->bitmap, dest, g_old->src_x, g_old->src_y, cell_size, cell_size,
 			sx, sy);
