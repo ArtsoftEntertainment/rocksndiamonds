@@ -292,6 +292,12 @@ static boolean use_native_bd_graphics_engine(void)
 }
 #endif
 
+/* returns true if the element is collectible */
+static inline boolean is_collectible(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_COLLECTIBLE) != 0;
+}
+
 int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 {
   GdCave *cave = game->cave;
@@ -358,6 +364,11 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	  {
 	    /* redraw previous game element on the cave field the new element is moving to */
 	    int tile_old = game->last_element_buffer[y][x];
+
+	    /* only redraw previous game element if it is not collectible (like dirt etc.) */
+	    if (is_collectible(tile_old))
+	      tile_old = O_SPACE;
+
 	    struct GraphicInfo_BD *g_old = &graphic_info_bd_object[tile_old][frame];
 
 	    blit_bitmap(g_old->bitmap, dest, g_old->src_x, g_old->src_y, cell_size, cell_size,
