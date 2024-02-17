@@ -369,18 +369,19 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	  int dy = (dir == GD_MV_UP   ? +1 : dir == GD_MV_DOWN  ? -1 : 0);
 	  int old_x = cave->getx(cave, x + dx, y + dy);
 	  int old_y = cave->gety(cave, x + dx, y + dy);
+	  int tile_from = game->element_buffer[old_y][old_x];
+	  struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][frame];
+	  boolean old_is_moving = (game->dir_buffer[old_y][old_x] != GD_MV_STILL);
+	  boolean old_is_visible = (old_x >= cave->x1 &&
+				    old_x <= cave->x2 &&
+				    old_y >= cave->y1 &&
+				    old_y <= cave->y2);
 
-	  if (old_x >= cave->x1 &&
-	      old_x <= cave->x2 &&
-	      old_y >= cave->y1 &&
-	      old_y <= cave->y2)
+	  if (old_is_visible)
 	  {
-	    if (game->dir_buffer[old_y][old_x] == GD_MV_STILL)
+	    if (!old_is_moving)
 	    {
 	      /* redraw game element on the cave field the element is moving from */
-	      int tile_from = game->element_buffer[old_y][old_x];
-	      struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][0];
-
 	      blit_bitmap(g_from->bitmap, dest, g_from->src_x, g_from->src_y, cell_size, cell_size,
 			  sx + dx * cell_size, sy + dy * cell_size);
 
@@ -388,7 +389,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	    }
 	    else
 	    {
-	      /* if old tile also moving (like pushing player), do not redraw it again */
+	      /* if old tile also moving (like pushing player), do not redraw tile background */
 	      game->last_element_buffer[old_y][old_x] |= SKIPPED;
 	    }
 	  }
@@ -397,11 +398,13 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	  int itercycle = MIN(MAX(0, game->itermax - game->itercycle - 1), game->itermax);
 	  int shift = cell_size * itercycle / game->itermax;
 
-	  sx += dx * shift;
-	  sy += dy * shift;
+	  blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size,
+		      sx + dx * shift, sy + dy * shift);
 	}
-
-	blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
+	else
+	{
+	  blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
+	}
 
 #if DO_GFX_SANITY_CHECK
 	if (use_native_bd_graphics_engine() && !setup.small_game_graphics && !program.headless)
