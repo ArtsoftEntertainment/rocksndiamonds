@@ -341,22 +341,14 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	if (game->element_buffer[y][x] & SKIPPED)
 	  continue;
 
-	/* if it needs to be redrawn */
-	SDL_Rect offset;
-
-	/* sdl_blitsurface destroys offset, so we have to set y here, too.
-	   (ie. in every iteration) */
-	offset.y = y * cell_size - scroll_y_aligned;
-	offset.x = x * cell_size - scroll_x;
-
 	/* now we have drawn it */
 	game->gfx_buffer[y][x] = game->gfx_buffer[y][x] & ~GD_REDRAW;
 
+	int sx = x * cell_size - scroll_x;
+	int sy = y * cell_size - scroll_y_aligned;
 	int tile = game->element_buffer[y][x];
 	int frame = game->animcycle;
 	struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
-	int width  = g->width  * TILESIZE_VAR / TILESIZE;
-	int height = g->height * TILESIZE_VAR / TILESIZE;
 	boolean use_smooth_movements = TRUE;
 
 	/* if game element is just moving, draw movement animation between two tiles */
@@ -368,8 +360,8 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	    int tile_old = game->last_element_buffer[y][x] & ~SKIPPED;
 	    struct GraphicInfo_BD *g_old = &graphic_info_bd_object[tile_old][frame];
 
-	    blit_bitmap(g_old->bitmap, dest, g_old->src_x, g_old->src_y, width, height,
-			offset.x, offset.y);
+	    blit_bitmap(g_old->bitmap, dest, g_old->src_x, g_old->src_y, cell_size, cell_size,
+			sx, sy);
 	  }
 
 	  /* get cave field position the game element is moving from */
@@ -389,8 +381,8 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	      int tile_from = game->element_buffer[old_y][old_x];
 	      struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][0];
 
-	      blit_bitmap(g_from->bitmap, dest, g_from->src_x, g_from->src_y, width, height,
-			  offset.x + dx * cell_size, offset.y + dy * cell_size);
+	      blit_bitmap(g_from->bitmap, dest, g_from->src_x, g_from->src_y, cell_size, cell_size,
+			  sx + dx * cell_size, sy + dy * cell_size);
 
 	      game->element_buffer[old_y][old_x] |= SKIPPED;
 	    }
@@ -405,11 +397,11 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
 	  int itercycle = MIN(MAX(0, game->itermax - game->itercycle - 1), game->itermax);
 	  int shift = cell_size * itercycle / game->itermax;
 
-	  offset.x += dx * shift;
-	  offset.y += dy * shift;
+	  sx += dx * shift;
+	  sy += dy * shift;
 	}
 
-	blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, width, height, offset.x, offset.y);
+	blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
 
 #if DO_GFX_SANITY_CHECK
 	if (use_native_bd_graphics_engine() && !setup.small_game_graphics && !program.headless)
