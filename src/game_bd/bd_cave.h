@@ -550,7 +550,13 @@ typedef struct _gd_cave
   boolean pneumatic_hammer_sound;
 
   /* internal variables, used during the game. private data :) */
-  GdElement* (*getp) (const struct _gd_cave*, int x, int y);    /* returns a pointer to the element at x, y. this points to a perfect border or a line shifting get function. */
+
+  /* returns range corrected x/y position (points to perfect or line shifting get function) */
+  int (*getx) (const struct _gd_cave*, int x, int y);
+  int (*gety) (const struct _gd_cave*, int x, int y);
+
+  /* returns pointer to element at x, y (points to perfect border or a line shifting get function) */
+  GdElement* (*getp) (const struct _gd_cave*, int x, int y);
 
   boolean hatched;            /* hatching has happened. (timers may run, ...) */
   boolean gate_open;            /* self-explaining */

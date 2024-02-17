@@ -303,6 +303,38 @@ static void play_sound_of_element_pushing(GdCave *cave, GdElement element, int x
   }
 }
 
+static inline int getx(const GdCave *cave, const int x, const int y)
+{
+  return cave->getx(cave, x, y);
+}
+
+static inline int gety(const GdCave *cave, const int x, const int y)
+{
+  return cave->gety(cave, x, y);
+}
+
+/* perfect (non-lineshifting) GET x/y functions; returns range corrected x/y position */
+static inline int getx_perfect(const GdCave *cave, const int x, const int y)
+{
+  return (x + cave->w) % cave->w;
+}
+
+static inline int gety_perfect(const GdCave *cave, const int x, const int y)
+{
+  return (y + cave->h) % cave->h;
+}
+
+/* line shifting GET x/y function; returns range corrected x/y position */
+static inline int getx_shift(const GdCave *cave, int x, int y)
+{
+  return (x + cave->w) % cave->w;
+}
+
+static inline int gety_shift(const GdCave *cave, int x, int y)
+{
+  return ((x < 0 ? y - 1 : x >= cave->w ? y + 1 : y) + cave->h) % cave->h;
+}
+
 static inline GdElement *getp(const GdCave *cave, const int x, const int y)
 {
   return cave->getp(cave, x, y);
@@ -1517,9 +1549,17 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   /* set cave get function; to implement perfect or lineshifting borders */
   if (cave->lineshift)
+  {
     cave->getp = getp_shift;
+    cave->getx = getx_shift;
+    cave->gety = gety_shift;
+  }
   else
+  {
     cave->getp = getp_perfect;
+    cave->getx = getx_perfect;
+    cave->gety = gety_perfect;
+  }
 
   /* increment this. if the scan routine comes across player, clears it (sets to zero). */
   if (cave->player_seen_ago < 100)
