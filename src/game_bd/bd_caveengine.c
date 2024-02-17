@@ -1709,8 +1709,11 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    /* try to push element; if successful, break  */
 	    push = do_push(cave, x, y, player_move, player_fire);
 	    if (push)
+	    {
 	      remains = O_SPACE;
+	    }
 	    else
+	    {
 	      switch (what)
 	      {
 		case O_BOMB:
@@ -1758,9 +1761,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		default:
 		  /* get element - process others.
 		     if cannot get, player_get_element will return the same */
-		  remains = player_get_element (cave, what, x, y);
+		  remains = player_get_element(cave, what, x, y);
 		  break;
 	      }
+	    }
 
 	    if (remains != what || remains == O_SPACE)
 	    {
@@ -1825,7 +1829,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	    /* player fire is false... */
 	    if (do_push(cave, x, y, player_move, FALSE))
+	    {
 	      remains = O_SPACE;
+	    }
 	    else
 	    {
 	      switch (what)
