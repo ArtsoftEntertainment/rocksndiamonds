@@ -16473,6 +16473,10 @@ void ModifyPauseButtons(void)
   };
   int i;
 
+  // do not redraw pause button on closed door (may happen when restarting game)
+  if (!(GetDoorState() & DOOR_OPEN_1))
+    return;
+
   for (i = 0; ids[i] > -1; i++)
     ModifyGadget(game_gadget[ids[i]], GDI_CHECKED, tape.pausing, GDI_END);
 }
