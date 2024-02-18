@@ -123,6 +123,8 @@ struct GameButtonInfo
   struct XY pause2;
   struct XY load;
 
+  struct XY restart;
+
   struct XY sound_music;
   struct XY sound_loops;
   struct XY sound_simple;
@@ -131,12 +133,15 @@ struct GameButtonInfo
   struct XY panel_pause;
   struct XY panel_play;
 
+  struct XY panel_restart;
+
   struct XY panel_sound_music;
   struct XY panel_sound_loops;
   struct XY panel_sound_simple;
 
   struct XY touch_stop;
   struct XY touch_pause;
+  struct XY touch_restart;
 };
 
 struct GameSnapshotInfo

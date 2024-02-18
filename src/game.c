@@ -1017,19 +1017,22 @@ static struct GamePanelControlInfo game_panel_controls[] =
 #define GAME_CTRL_ID_SAVE		5
 #define GAME_CTRL_ID_PAUSE2		6
 #define GAME_CTRL_ID_LOAD		7
-#define GAME_CTRL_ID_PANEL_STOP		8
-#define GAME_CTRL_ID_PANEL_PAUSE	9
-#define GAME_CTRL_ID_PANEL_PLAY		10
-#define GAME_CTRL_ID_TOUCH_STOP		11
-#define GAME_CTRL_ID_TOUCH_PAUSE	12
-#define SOUND_CTRL_ID_MUSIC		13
-#define SOUND_CTRL_ID_LOOPS		14
-#define SOUND_CTRL_ID_SIMPLE		15
-#define SOUND_CTRL_ID_PANEL_MUSIC	16
-#define SOUND_CTRL_ID_PANEL_LOOPS	17
-#define SOUND_CTRL_ID_PANEL_SIMPLE	18
+#define GAME_CTRL_ID_RESTART		8
+#define GAME_CTRL_ID_PANEL_STOP		9
+#define GAME_CTRL_ID_PANEL_PAUSE	10
+#define GAME_CTRL_ID_PANEL_PLAY		11
+#define GAME_CTRL_ID_PANEL_RESTART	12
+#define GAME_CTRL_ID_TOUCH_STOP		13
+#define GAME_CTRL_ID_TOUCH_PAUSE	14
+#define GAME_CTRL_ID_TOUCH_RESTART	15
+#define SOUND_CTRL_ID_MUSIC		16
+#define SOUND_CTRL_ID_LOOPS		17
+#define SOUND_CTRL_ID_SIMPLE		18
+#define SOUND_CTRL_ID_PANEL_MUSIC	19
+#define SOUND_CTRL_ID_PANEL_LOOPS	20
+#define SOUND_CTRL_ID_PANEL_SIMPLE	21
 
-#define NUM_GAME_BUTTONS		19
+#define NUM_GAME_BUTTONS		22
 
 
 // forward declaration for internal use
@@ -16247,6 +16250,11 @@ static struct
     TRUE, FALSE,				"load game"
   },
   {
+    IMG_GFX_GAME_BUTTON_RESTART,		&game.button.restart,
+    GAME_CTRL_ID_RESTART,			NULL,
+    TRUE, FALSE,				"restart game"
+  },
+  {
     IMG_GFX_GAME_BUTTON_PANEL_STOP,		&game.button.panel_stop,
     GAME_CTRL_ID_PANEL_STOP,			NULL,
     FALSE, FALSE,				"stop game"
@@ -16262,6 +16270,11 @@ static struct
     FALSE, FALSE,				"play game"
   },
   {
+    IMG_GFX_GAME_BUTTON_PANEL_RESTART,		&game.button.panel_restart,
+    GAME_CTRL_ID_PANEL_RESTART,			NULL,
+    FALSE, FALSE,				"restart game"
+  },
+  {
     IMG_GFX_GAME_BUTTON_TOUCH_STOP,		&game.button.touch_stop,
     GAME_CTRL_ID_TOUCH_STOP,			NULL,
     FALSE, TRUE,				"stop game"
@@ -16270,6 +16283,11 @@ static struct
     IMG_GFX_GAME_BUTTON_TOUCH_PAUSE,		&game.button.touch_pause,
     GAME_CTRL_ID_TOUCH_PAUSE,			NULL,
     FALSE, TRUE,				"pause game"
+  },
+  {
+    IMG_GFX_GAME_BUTTON_TOUCH_RESTART,		&game.button.touch_restart,
+    GAME_CTRL_ID_TOUCH_RESTART,			NULL,
+    FALSE, TRUE,				"restart game"
   },
   {
     IMG_GFX_GAME_BUTTON_SOUND_MUSIC,		&game.button.sound_music,
@@ -16350,7 +16368,10 @@ void CreateGameButtons(void)
 	id == GAME_CTRL_ID_PLAY ||
 	id == GAME_CTRL_ID_PANEL_PLAY ||
 	id == GAME_CTRL_ID_SAVE ||
-	id == GAME_CTRL_ID_LOAD)
+	id == GAME_CTRL_ID_LOAD ||
+	id == GAME_CTRL_ID_RESTART ||
+	id == GAME_CTRL_ID_PANEL_RESTART ||
+	id == GAME_CTRL_ID_TOUCH_RESTART)
     {
       button_type = GD_TYPE_NORMAL_BUTTON;
       checked = FALSE;
@@ -16696,6 +16717,13 @@ static void HandleGameButtonsExt(int id, int button)
 
     case GAME_CTRL_ID_LOAD:
       TapeQuickLoad();
+      break;
+
+    case GAME_CTRL_ID_RESTART:
+    case GAME_CTRL_ID_PANEL_RESTART:
+    case GAME_CTRL_ID_TOUCH_RESTART:
+      TapeRestartGame();
+
       break;
 
     case SOUND_CTRL_ID_MUSIC:

@@ -6420,6 +6420,13 @@ struct ConfigInfo image_config[] =
   { "gfx.game.button.load.height",		"30"			},
   { "gfx.game.button.load.pressed_xoffset",	"-100"			},
 
+  { "gfx.game.button.restart",			"RocksDoor2.png"	},
+  { "gfx.game.button.restart.x",		"200"			},
+  { "gfx.game.button.restart.y",		"50"			},
+  { "gfx.game.button.restart.width",		"30"			},
+  { "gfx.game.button.restart.height",		"30"			},
+  { "gfx.game.button.restart.pressed_xoffset",	"30"			},
+
   { "gfx.game.button.sound_music",		"RocksDoor.png"		},
   { "gfx.game.button.sound_music.x",		"305"			},
   { "gfx.game.button.sound_music.y",		"245"			},
@@ -6445,6 +6452,7 @@ struct ConfigInfo image_config[] =
   { "gfx.game.button.panel_stop",		UNDEFINED_FILENAME	},
   { "gfx.game.button.panel_pause",		UNDEFINED_FILENAME	},
   { "gfx.game.button.panel_play",		UNDEFINED_FILENAME	},
+  { "gfx.game.button.panel_restart",		UNDEFINED_FILENAME	},
 
   { "gfx.game.button.panel_sound_music",	UNDEFINED_FILENAME	},
   { "gfx.game.button.panel_sound_loops",	UNDEFINED_FILENAME	},
@@ -6463,6 +6471,13 @@ struct ConfigInfo image_config[] =
   { "gfx.game.button.touch_pause.height",	"60"			},
   { "gfx.game.button.touch_pause.pressed_xoffset", "-200"		},
   { "gfx.game.button.touch_pause.active_yoffset", "60"			},
+
+  { "gfx.game.button.touch_restart",		"RocksTouch.png"	},
+  { "gfx.game.button.touch_restart.x",		"210"			},
+  { "gfx.game.button.touch_restart.y",		"240"			},
+  { "gfx.game.button.touch_restart.width",	"60"			},
+  { "gfx.game.button.touch_restart.height",	"60"			},
+  { "gfx.game.button.touch_restart.pressed_xoffset", "-200"		},
 
   { "gfx.tape.button.eject",			"RocksDoor.png"		},
   { "gfx.tape.button.eject.x",			"305"			},
@@ -9733,6 +9748,8 @@ struct ConfigInfo image_config[] =
   { "game.button.pause2.y",			"-1"			},
   { "game.button.load.x",			"-1"			},
   { "game.button.load.y",			"-1"			},
+  { "game.button.restart.x",			"-1"			},
+  { "game.button.restart.y",			"-1"			},
   { "game.button.sound_music.x",		"5"			},
   { "game.button.sound_music.y",		"245"			},
   { "game.button.sound_loops.x",		"35"			},
@@ -9746,6 +9763,8 @@ struct ConfigInfo image_config[] =
   { "game.button.panel_pause.y",		"-1"			},
   { "game.button.panel_play.x",			"-1"			},
   { "game.button.panel_play.y",			"-1"			},
+  { "game.button.panel_restart.x",		"-1"			},
+  { "game.button.panel_restart.y",		"-1"			},
   { "game.button.panel_sound_music.x",		"-1"			},
   { "game.button.panel_sound_music.y",		"-1"			},
   { "game.button.panel_sound_loops.x",		"-1"			},
@@ -9757,6 +9776,8 @@ struct ConfigInfo image_config[] =
   { "game.button.touch_stop.y",			"0"			},
   { "game.button.touch_pause.x",		"-60"			},
   { "game.button.touch_pause.y",		"0"			},
+  { "game.button.touch_restart.x",		"-1"			},
+  { "game.button.touch_restart.y",		"-1"			},
 
   { "tape.button.eject.x",			"5"			},
   { "tape.button.eject.y",			"77"			},
