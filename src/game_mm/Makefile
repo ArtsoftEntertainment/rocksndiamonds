@@ -57,6 +57,9 @@ clean:
 depend:
 	for i in $(SRCS); do $(CPP) $(CFLAGS) -M $$i; done > .depend
 
+depend-clean:
+	$(RM) .depend
+
 ifeq (.depend,$(wildcard .depend))
 include .depend
 endif

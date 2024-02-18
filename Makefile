@@ -116,6 +116,9 @@ tags:
 depend dep:
 	$(MAKE_CMD) depend
 
+depend-clean dep-clean:
+	$(MAKE_CMD) depend-clean
+
 enginetest: all
 	$(MAKE_ENGINETEST)
 

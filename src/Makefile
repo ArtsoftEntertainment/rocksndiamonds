@@ -413,6 +413,14 @@ depend:
 	$(MAKE) -C $(GAME_MM_DIR) depend
 	for i in $(SRCS); do $(CPP) $(CFLAGS) -M $$i; done > .depend
 
+depend-clean:
+	$(MAKE) -C $(LIBGAME_DIR) depend-clean
+	$(MAKE) -C $(GAME_BD_DIR) depend-clean
+	$(MAKE) -C $(GAME_EM_DIR) depend-clean
+	$(MAKE) -C $(GAME_SP_DIR) depend-clean
+	$(MAKE) -C $(GAME_MM_DIR) depend-clean
+	$(RM) .depend
+
 ifeq (.depend,$(wildcard .depend))
 include .depend
 endif
