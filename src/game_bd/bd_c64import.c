@@ -813,7 +813,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
 
   gd_cave_set_engine_defaults(cave, GD_ENGINE_BD2);
 
-  if (format==GD_FORMAT_BD2_ATARI)
+  if (format == GD_FORMAT_BD2_ATARI)
     cave->scheduling = GD_SCHEDULING_BD2_PLCK_ATARI;
 
   /* set visible size for intermission */
@@ -829,11 +829,11 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
   for (i = 0; i < 5; i++)
   {
     /* 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02. */
-    cave->level_amoeba_time[i] = data[0]==0 ? 999 : data[0];
+    cave->level_amoeba_time[i] = data[0] == 0 ? 999 : data[0];
     cave->level_rand[i] = data[13 + i];
 
     /* gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed */
-    cave->level_diamonds[i] = data[8 + i]==0 ? 1000 : data[8 + i];
+    cave->level_diamonds[i] = data[8 + i] == 0 ? 1000 : data[8 + i];
     cave->level_time[i] = data[3 + i];
     cave->level_magic_wall_time[i] = data[0];
   }
@@ -1231,7 +1231,7 @@ static int cave_copy_from_plck(GdCave *cave, const guint8 *data,
     cave->map[cave->h - 1][x] = O_STEEL;
 
   /*
-    if (steels && data[0]==0x55)
+    if (steels && data[0] == 0x55)
     cave->map[cave->h - 1][0] = cave->map[cave->h - 1][1] = O_STEEL;
   */
 
@@ -2194,7 +2194,7 @@ static int cave_copy_from_crli(GdCave *cave, const guint8 *data, int remaining_b
   }
 
   cave->biter_delay_frame = uncompressed[0x394];
-  cave->magic_wall_stops_amoeba = uncompressed[0x395]==0;    /* negated!! */
+  cave->magic_wall_stops_amoeba = uncompressed[0x395] == 0;    /* negated!! */
   cave->bomb_explosion_effect = import(uncompressed[0x396], 0x396);
   cave->explosion_effect = import(uncompressed[0x397], 0x397);
   cave->stone_bouncing_effect = import(uncompressed[0x398], 0x398);
@@ -2320,7 +2320,7 @@ GList *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
   }
 
   format = gd_caveset_imported_get_format(buf);
-  if (format==GD_FORMAT_UNKNOWN)
+  if (format == GD_FORMAT_UNKNOWN)
   {
     Warn("buffer does not contain a GDash datafile");
     return NULL;
@@ -2496,7 +2496,7 @@ GList *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
 
   /* use numbering instead of letters, if following formats or too many caves
      (as we would run out of letters) */
-  numbering = format == GD_FORMAT_PLC || format==GD_FORMAT_CRLI || g_list_length(caveset) > 26;
+  numbering = format == GD_FORMAT_PLC || format == GD_FORMAT_CRLI || g_list_length(caveset) > 26;
 
   for (iter = caveset; iter != NULL; iter = iter->next)
   {

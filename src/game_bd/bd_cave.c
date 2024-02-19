@@ -548,7 +548,7 @@ void gd_cave_free(GdCave *cave)
 
   /* free GStrings */
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
-    if (gd_cave_properties[i].type==GD_TYPE_LONGSTRING)
+    if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
       g_string_free(G_STRUCT_MEMBER(GString *, cave, gd_cave_properties[i].offset), TRUE);
 
   /* map */
@@ -596,7 +596,7 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
 
   /* for longstrings */
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
-    if (gd_cave_properties[i].type==GD_TYPE_LONGSTRING)
+    if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
       G_STRUCT_MEMBER(GString *, dest, gd_cave_properties[i].offset) =
 	g_string_new(G_STRUCT_MEMBER(GString *, src, gd_cave_properties[i].offset)->str);
 
@@ -879,9 +879,9 @@ void gd_cave_auto_shrink(GdCave *cave)
 	  case O_INBOX:
 	    /* shrink only lines, which have only ONE player or outbox.
 	       this is for bd4 intermission 2, for example. */
-	    if (empty==STEEL_OR_OTHER)
+	    if (empty == STEEL_OR_OTHER)
 	      empty = NO_SHRINK;
-	    if (empty==STEEL_ONLY)
+	    if (empty == STEEL_ONLY)
 	      empty = STEEL_OR_OTHER;
 	    break;
 
@@ -914,9 +914,9 @@ void gd_cave_auto_shrink(GdCave *cave)
 	  case O_PRE_OUTBOX:
 	  case O_PRE_INVIS_OUTBOX:
 	  case O_INBOX:
-	    if (empty==STEEL_OR_OTHER)
+	    if (empty == STEEL_OR_OTHER)
 	      empty = NO_SHRINK;
-	    if (empty==STEEL_ONLY)
+	    if (empty == STEEL_ONLY)
 	      empty = STEEL_OR_OTHER;
 	    break;
 
@@ -951,9 +951,9 @@ void gd_cave_auto_shrink(GdCave *cave)
 	  case O_PRE_OUTBOX:
 	  case O_PRE_INVIS_OUTBOX:
 	  case O_INBOX:
-	    if (empty==STEEL_OR_OTHER)
+	    if (empty == STEEL_OR_OTHER)
 	      empty = NO_SHRINK;
-	    if (empty==STEEL_ONLY)
+	    if (empty == STEEL_ONLY)
 	      empty = STEEL_OR_OTHER;
 	    break;
 

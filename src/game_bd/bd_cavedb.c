@@ -994,7 +994,7 @@ void gd_cave_db_init(void)
     gd_create_char_to_element_table();
     g_print("Free characters: ");
     for (i = 32; i < 128; i++)
-    if (gd_char_to_element[i]==O_UNKNOWN)
+    if (gd_char_to_element[i] == O_UNKNOWN)
     g_print("%c", i);
     g_print("\n");
   */

@@ -1347,10 +1347,10 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y,
   {
     play_sound_of_element(cave, O_DIAMOND, x, y);    /* always play diamond sound */
 
-    if (cave->magic_wall_state==GD_MW_DORMANT)
+    if (cave->magic_wall_state == GD_MW_DORMANT)
       cave->magic_wall_state = GD_MW_ACTIVE;
 
-    if (cave->magic_wall_state==GD_MW_ACTIVE &&
+    if (cave->magic_wall_state == GD_MW_ACTIVE &&
 	is_space_dir(cave, x, y, GD_MV_TWICE+fall_dir))
     {
       /* if magic wall active and place underneath, it turns element
@@ -1856,10 +1856,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		     player_move parameter) */
 		  /* only allow changing direction if the new dir is not diagonal */
 		  if (cave->gravity_switch_active &&
-		      (player_move==GD_MV_LEFT ||
-		       player_move==GD_MV_RIGHT ||
-		       player_move==GD_MV_UP ||
-		       player_move==GD_MV_DOWN))
+		      (player_move == GD_MV_LEFT ||
+		       player_move == GD_MV_RIGHT ||
+		       player_move == GD_MV_UP ||
+		       player_move == GD_MV_DOWN))
 		  {
 		    gd_sound_play(cave, GD_S_SWITCH_GRAVITY, what, x, y);
 		    cave->gravity_will_change =
@@ -2636,7 +2636,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    /* is space over the bladder? */
 	    if (is_space_dir(cave, x, y, opposite[grav_compat]))
 	    {
-	      if (get(cave, x, y)==O_BLADDER_8)
+	      if (get(cave, x, y) == O_BLADDER_8)
 	      {
 		/* if it is a bladder 8, really move up */
 		move(cave, x, y, opposite[grav_compat], O_BLADDER_1);
@@ -2754,7 +2754,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		}
 
 	      /* if alive, check in which dir to grow (or not) */
-	      if (cave->amoeba_state==GD_AM_AWAKE)
+	      if (cave->amoeba_state == GD_AM_AWAKE)
 	      {
 		if (g_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_growth_prob)
 		{
@@ -2918,8 +2918,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  if (((get(cave, x, y) == O_H_EXPANDING_WALL ||
 		get(cave, x, y) == O_H_EXPANDING_STEEL_WALL) &&
 	       !cave->expanding_wall_changed) ||
-	      ((get(cave, x, y)==O_V_EXPANDING_WALL ||
-		get(cave, x, y)==O_V_EXPANDING_STEEL_WALL) &&
+	      ((get(cave, x, y) == O_V_EXPANDING_WALL ||
+		get(cave, x, y) == O_V_EXPANDING_STEEL_WALL) &&
 	       cave->expanding_wall_changed))
 	  {
 	    if (is_space_dir(cave, x, y, GD_MV_LEFT))
@@ -3044,13 +3044,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  store_dir(cave, x, y, oppos, O_BLADDER_1);
 		  play_sound_of_element(cave, O_SLIME, x, y);
 		}
-		else if (get_dir(cave, x, y, grav)==O_FLYING_STONE)
+		else if (get_dir(cave, x, y, grav) == O_FLYING_STONE)
 		{
 		  store_dir(cave, x, y, grav, O_SPACE);
 		  store_dir(cave, x, y, oppos, O_FLYING_STONE_F);
 		  play_sound_of_element(cave, O_SLIME, x, y);
 		}
-		else if (get_dir(cave, x, y, grav)==O_FLYING_DIAMOND)
+		else if (get_dir(cave, x, y, grav) == O_FLYING_DIAMOND)
 		{
 		  store_dir(cave, x, y, grav, O_SPACE);
 		  store_dir(cave, x, y, oppos, O_FLYING_DIAMOND_F);
@@ -3367,7 +3367,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   /* this loop finds the coordinates of the player. needed for scrolling and chasing stone.*/
   /* but we only do this, if a living player was found. if not yet, the setup
      routine coordinates are used */
-  if (cave->player_state==GD_PL_LIVING)
+  if (cave->player_state == GD_PL_LIVING)
   {
     if (cave->active_is_first_found)
     {

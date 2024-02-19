@@ -1624,7 +1624,7 @@ void DrawLaser(int start_edge, int mode)
 	  continue;
 
 #if 0
-	Debug("game:mm:DrawLaser", "DL_LASER_ENABLED: i==%d: %d, %d",
+	Debug("game:mm:DrawLaser", "DL_LASER_ENABLED: i == %d: %d, %d",
 	      i, laser.beamer_edge[i], tmp_start_edge);
 #endif
 

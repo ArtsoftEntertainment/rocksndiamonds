@@ -1318,7 +1318,7 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
       if (randm < object->random_fill_probability[3])
 	element = object->random_fill[3];
 
-      if (object->element==O_NONE ||
+      if (object->element == O_NONE ||
 	  gd_cave_get_rc(cave, x, y) == object->element)
 	gd_cave_store_rc(cave, x, y, element, object);
     }

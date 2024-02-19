@@ -107,17 +107,17 @@ static boolean attrib_is_valid_for_cave(const char *attrib)
   int i;
 
   /* bdcff engine flag............ */
-  if (strcasecmp(attrib, "Engine")==0)
+  if (strcasecmp(attrib, "Engine") == 0)
     return TRUE;
 
   /* old flags - for compatibility */
-  if (strcasecmp(attrib, "BD1Scheduling")==0)
+  if (strcasecmp(attrib, "BD1Scheduling") == 0)
     return TRUE;
 
-  if (strcasecmp(attrib, "SnapExplosions")==0)
+  if (strcasecmp(attrib, "SnapExplosions") == 0)
     return TRUE;
 
-  if (strcasecmp(attrib, "AmoebaProperties")==0)
+  if (strcasecmp(attrib, "AmoebaProperties") == 0)
     return TRUE;
 
   /* search in property database */
