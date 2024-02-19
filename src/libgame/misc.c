@@ -1295,6 +1295,19 @@ char **getSplitStringArray(const char *s, const char *separators, int max_tokens
   return tokens;
 }
 
+void freeStringArray(char **s_array)
+{
+  int i;
+
+  if (s_array == NULL)
+    return;
+
+  for (i = 0; s_array[i] != NULL; i++)
+    checked_free(s_array[i]);
+
+  checked_free(s_array);
+}
+
 boolean strEqual(const char *s1, const char *s2)
 {
   return (s1 == NULL && s2 == NULL ? TRUE  :
