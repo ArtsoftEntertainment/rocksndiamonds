@@ -1295,6 +1295,19 @@ char **getSplitStringArray(const char *s, const char *separators, int max_tokens
   return tokens;
 }
 
+int getStringArrayLength(char **s_array)
+{
+  int num_strings = 0;
+
+  if (s_array == NULL)
+    return 0;
+
+  while (s_array[num_strings] != NULL)
+    num_strings++;
+
+  return num_strings;
+}
+
 void freeStringArray(char **s_array)
 {
   int i;
