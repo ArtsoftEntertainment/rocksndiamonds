@@ -1239,6 +1239,62 @@ void setString(char **old_value, const char *new_value)
   *old_value = getStringCopy(new_value);
 }
 
+char **getSplitStringArray(const char *s, const char *separators, int max_tokens)
+{
+  const char *s_ptr, *s_last = s;
+  byte separator_table[256] = { FALSE };
+  int num_tokens;
+  char **tokens = NULL;
+
+  if (s == NULL)
+    return NULL;
+
+  if (separators == NULL)
+    return NULL;
+
+  if (max_tokens < 1)
+    max_tokens = INT_MAX;
+
+  // if string is empty, return empty array
+  if (*s == '\0')
+  {
+    tokens = checked_malloc(sizeof(char *));
+    tokens[0] = NULL;
+
+    return tokens;
+  }
+
+  // initialize separator table for all characters in separators string
+  for (s_ptr = separators; *s_ptr != '\0'; s_ptr++)
+    separator_table[*(byte *)s_ptr] = TRUE;
+
+  // count number of tokens in string
+  for (num_tokens = 1, s_ptr = s; *s_ptr != '\0'; s_ptr++)
+    if (separator_table[*(byte *)s_ptr] && num_tokens < max_tokens)
+      num_tokens++;
+
+  // allocate array for determined number of tokens
+  tokens = checked_malloc((num_tokens + 1) * sizeof(char *));
+
+  // copy all but last separated sub-strings to array
+  for (num_tokens = 0, s_ptr = s; *s_ptr != '\0'; s_ptr++)
+  {
+    if (separator_table[*(byte *)s_ptr] && num_tokens + 1 < max_tokens)
+    {
+      tokens[num_tokens++] = getStringCopyN(s_last, s_ptr - s_last);
+      s_last = s_ptr + 1;
+    }
+  }
+
+  // copy last separated sub-string to array
+  tokens[num_tokens++] = getStringCopyN(s_last, s_ptr - s_last);
+
+  // terminate array
+  tokens[num_tokens] = NULL;
+
+  return tokens;
+}
+
 boolean strEqual(const char *s1, const char *s2)
 {
   return (s1 == NULL && s2 == NULL ? TRUE  :

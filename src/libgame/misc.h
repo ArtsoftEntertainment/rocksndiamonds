@@ -181,6 +181,7 @@ char *getStringCopyN(const char *, int);
 char *getStringCopyNStatic(const char *, int);
 char *getStringToLower(const char *);
 void setString(char **, const char *);
+char **getSplitStringArray(const char *s, const char *, int);
 boolean strEqual(const char *, const char *);
 boolean strEqualN(const char *, const char *, int);
 boolean strEqualCase(const char *, const char *);
