@@ -191,7 +191,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
 	GString *str = *(GString **)value;
 	char *compressed;
 
-	compressed = g_strcompress(param);
+	compressed = getUnescapedString(param);
 	g_string_assign(str, compressed);
 	free(compressed);
 
