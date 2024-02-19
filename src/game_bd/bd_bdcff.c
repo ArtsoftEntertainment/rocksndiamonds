@@ -151,7 +151,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
   boolean was_string;
 
   params = getSplitStringArray(param, " ", -1);
-  paramcount = g_strv_length(params);
+  paramcount = getStringArrayLength(params);
   identifier_found = FALSE;
 
   /* check all known tags. do not exit this loop if identifier_found == true...
@@ -676,7 +676,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
   default_cave = gd_cave_new();
   cave = default_cave;
 
-  linenum = g_strv_length(lines);
+  linenum = getStringArrayLength(lines);
 
   for (lineno = 0; lineno < linenum; lineno++)
   {
@@ -1051,7 +1051,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	params = getSplitStringArray(param, " ", -1);
 
 	/* an effect command has two parameters */
-	if (g_strv_length(params) == 2)
+	if (getStringArrayLength(params) == 2)
 	{
 	  int i;
 
