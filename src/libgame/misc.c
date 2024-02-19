@@ -1321,6 +1321,96 @@ void freeStringArray(char **s_array)
   checked_free(s_array);
 }
 
+char *getUnescapedString(const char *s)
+{
+  const char *s_ptr = s;
+  const char *octal_ptr;
+  char *s_unescaped;
+  char *s_unescaped_ptr;
+
+  if (s == NULL)
+    return NULL;
+
+  s_unescaped = checked_malloc(strlen(s) + 1);
+  s_unescaped_ptr = s_unescaped;
+
+  while (*s_ptr != '\0')
+  {
+    if (*s_ptr == '\\')
+    {
+      s_ptr++;
+
+      switch (*s_ptr)
+      {
+	case '\0':
+	  Warn("getUnescapedString: trailing \\");
+	  goto out;
+
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	  *s_unescaped_ptr = 0;
+	  octal_ptr = s_ptr;
+
+	  while (s_ptr < octal_ptr + 3 && *s_ptr >= '0' && *s_ptr <= '7')
+	  {
+	    *s_unescaped_ptr = (*s_unescaped_ptr * 8) + (*s_ptr - '0');
+	    s_ptr++;
+	  }
+
+	  s_unescaped_ptr++;
+	  s_ptr--;
+	  break;
+
+	case 'b':
+	  *s_unescaped_ptr++ = '\b';
+	  break;
+
+	case 'f':
+	  *s_unescaped_ptr++ = '\f';
+	  break;
+
+	case 'n':
+	  *s_unescaped_ptr++ = '\n';
+	  break;
+
+	case 'r':
+	  *s_unescaped_ptr++ = '\r';
+	  break;
+
+	case 't':
+	  *s_unescaped_ptr++ = '\t';
+	  break;
+
+	case 'v':
+	  *s_unescaped_ptr++ = '\v';
+	  break;
+
+	default:
+	  /* also handles \" and \\ */
+	  *s_unescaped_ptr++ = *s_ptr;
+	  break;
+      }
+    }
+    else
+    {
+      *s_unescaped_ptr++ = *s_ptr;
+    }
+
+    s_ptr++;
+  }
+
+ out:
+  *s_unescaped_ptr = '\0';
+
+  return s_unescaped;
+}
+
 boolean strEqual(const char *s1, const char *s2)
 {
   return (s1 == NULL && s2 == NULL ? TRUE  :
