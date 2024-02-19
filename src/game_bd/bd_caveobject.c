@@ -617,7 +617,7 @@ GdObject *gd_object_new_from_string(char *str)
     if (words)
       g_strfreev(words);
 
-    words = g_strsplit_set(param, " ", -1);
+    words = getSplitStringArray(param, " ", -1);
     l = g_strv_length(words);
 
     if (l < 10 || l > 19)

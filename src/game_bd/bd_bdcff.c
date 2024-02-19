@@ -150,7 +150,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
   int i;
   boolean was_string;
 
-  params = g_strsplit_set(param, " ", -1);
+  params = getSplitStringArray(param, " ", -1);
   paramcount = g_strv_length(params);
   identifier_found = FALSE;
 
@@ -347,7 +347,7 @@ static boolean replay_store_more_from_bdcff(GdReplay *replay, const char *param)
   int i;
   boolean result = TRUE;
 
-  split = g_strsplit_set(param, " ", -1);
+  split = getSplitStringArray(param, " ", -1);
 
   for (i = 0; split[i] != 0; i++)
     result = result && replay_store_from_bdcff(replay, split[i]);
@@ -403,7 +403,7 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
   char **params;
   boolean identifier_found;
 
-  params = g_strsplit_set(param, " ", -1);
+  params = getSplitStringArray(param, " ", -1);
   identifier_found = FALSE;
 
   if (strcasecmp(attrib, "SnapExplosions") == 0)
@@ -669,7 +669,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
   replay_tags = g_hash_table_new_full(gd_str_case_hash, gd_str_case_equal, free, free);
 
   /* split into lines */
-  lines = g_strsplit_set (contents, "\n", 0);
+  lines = getSplitStringArray (contents, "\n", 0);
 
   /* attributes read will be set in cave. if no [cave]; they are stored
      in the default cave; like in a [game] */
@@ -1048,7 +1048,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	/* CHECK IF IT IS AN EFFECT */
 	char **params;
 
-	params = g_strsplit_set(param, " ", -1);
+	params = getSplitStringArray(param, " ", -1);
 
 	/* an effect command has two parameters */
 	if (g_strv_length(params) == 2)
