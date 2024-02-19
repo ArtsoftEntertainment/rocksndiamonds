@@ -82,7 +82,7 @@ static boolean replay_store_from_bdcff(GdReplay *replay, const char *str)
 	break;
 
       default:
-	if (g_ascii_isdigit(str[i]))
+	if (str[i] >= '0' && str[i] <= '9')
 	{
 	  if (!num)
 	    num = str + i;
