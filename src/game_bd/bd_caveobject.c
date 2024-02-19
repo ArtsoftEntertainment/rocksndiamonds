@@ -615,7 +615,7 @@ GdObject *gd_object_new_from_string(char *str)
       return NULL;
 
     if (words)
-      g_strfreev(words);
+      freeStringArray(words);
 
     words = getSplitStringArray(param, " ", -1);
     l = g_strv_length(words);

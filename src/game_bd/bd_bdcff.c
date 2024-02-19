@@ -330,7 +330,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
   if (identifier_found && !was_string && paramindex < paramcount)
     Warn("excess parameters for attribute '%s': '%s'", attrib, params[paramindex]);
 
-  g_strfreev(params);
+  freeStringArray(params);
 
   return identifier_found;
 }
@@ -352,7 +352,7 @@ static boolean replay_store_more_from_bdcff(GdReplay *replay, const char *param)
   for (i = 0; split[i] != 0; i++)
     result = result && replay_store_from_bdcff(replay, split[i]);
 
-  g_strfreev(split);
+  freeStringArray(split);
 
   return result;
 }
@@ -482,7 +482,7 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
     identifier_found = struct_set_property(cave, gd_cave_properties, attrib, param, cave->w * cave->h);
   }
 
-  g_strfreev(params);
+  freeStringArray(params);
 
   /* a ghrfunc should return true if the identifier is to be removed */
   return identifier_found;
@@ -1095,7 +1095,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	else
 	  Warn("invalid effect specification '%s'", param);
 
-	g_strfreev(params);
+	freeStringArray(params);
       }
       else
       {
@@ -1149,7 +1149,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
     Warn(_("Invalid BDCFF: [game] section has drawing objects defined"));
 
   /* cleanup */
-  g_strfreev (lines);
+  freeStringArray(lines);
   g_hash_table_destroy(tags);
   g_hash_table_destroy(replay_tags);
   gd_cave_free(default_cave);
