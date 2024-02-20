@@ -443,18 +443,12 @@ guint gd_str_case_hash(gconstpointer v)
 */
 GdCave *gd_cave_new(void)
 {
-  int i;
   GdCave *cave;
 
   cave = checked_calloc(sizeof(GdCave));
 
   /* hash table which stores unknown tags as strings. */
   cave->tags = g_hash_table_new_full(gd_str_case_hash, gd_str_case_equal, free, free);
-
-  /* for strings */
-  for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
-    if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
-      G_STRUCT_MEMBER(GString *, cave, gd_cave_properties[i].offset) = g_string_new(NULL);
 
   gd_cave_set_gdash_defaults(cave);
 
@@ -546,10 +540,10 @@ void gd_cave_free(GdCave *cave)
   if (cave->random)    /* random generator is a GRand * */
     g_rand_free(cave->random);
 
-  /* free GStrings */
+  /* free strings */
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
     if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
-      g_string_free(G_STRUCT_MEMBER(GString *, cave, gd_cave_properties[i].offset), TRUE);
+      checked_free(G_STRUCT_MEMBER(char *, cave, gd_cave_properties[i].offset));
 
   /* map */
   gd_cave_map_free(cave->map);
@@ -597,8 +591,8 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
   /* for longstrings */
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
     if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
-      G_STRUCT_MEMBER(GString *, dest, gd_cave_properties[i].offset) =
-	g_string_new(G_STRUCT_MEMBER(GString *, src, gd_cave_properties[i].offset)->str);
+      G_STRUCT_MEMBER(char *, dest, gd_cave_properties[i].offset) =
+	getStringCopy(G_STRUCT_MEMBER(char *, src, gd_cave_properties[i].offset));
 
   /* no reason to copy this */
   dest->objects_order = NULL;
@@ -1396,8 +1390,6 @@ GdReplay *gd_replay_new(void)
 
   rep = checked_calloc(sizeof(GdReplay));
 
-  /* create dynamic objects */
-  rep->comment = g_string_new(NULL);
   rep->movements = g_byte_array_new();
 
   return rep;
@@ -1410,7 +1402,7 @@ GdReplay *gd_replay_new_from_replay(GdReplay *orig)
   rep = g_memdup(orig, sizeof(GdReplay));
 
   /* replicate dynamic data */
-  rep->comment = g_string_new(orig->comment->str);
+  rep->comment = getStringCopy(orig->comment);
   rep->movements = g_byte_array_new();
   g_byte_array_append(rep->movements, orig->movements->data, orig->movements->len);
 
@@ -1420,7 +1412,7 @@ GdReplay *gd_replay_new_from_replay(GdReplay *orig)
 void gd_replay_free(GdReplay *replay)
 {
   g_byte_array_free(replay->movements, TRUE);
-  g_string_free(replay->comment, TRUE);
+  checked_free(replay->comment);
   free(replay);
 }
 

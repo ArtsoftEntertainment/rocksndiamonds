@@ -188,12 +188,10 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
 
       if (prop_desc[i].type == GD_TYPE_LONGSTRING)
       {
-	GString *str = *(GString **)value;
-	char *compressed;
+	char **str = (char **)value;
 
-	compressed = getUnescapedString(param);
-	g_string_assign(str, compressed);
-	free(compressed);
+	checked_free(*str);
+	*str = getUnescapedString(param);
 
 	/* remember this to skip checking the number of parameters at the end of the function */
 	was_string = TRUE;

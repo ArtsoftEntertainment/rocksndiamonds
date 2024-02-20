@@ -322,7 +322,7 @@ typedef struct _gd_cave_replay
 
   GdString player_name;     /* who played this */
   GdString date;            /* when played */
-  GString *comment;         /* some comments from the player */
+  char *comment;            /* some comments from the player */
 
   int score;                /* score collected */
   int duration;             /* number of seconds played */
@@ -366,8 +366,8 @@ typedef struct _gd_cave
   GdString difficulty;        /* difficulty of the game, for info purposes */
   GdString www;                /* link to author's webpage */
   GdString date;                /* date of creation */
-  GString *story;                /* story for the cave - will be shown when the cave is played. */
-  GString *remark;            /* some note */
+  char *story;                  /* story for the cave - will be shown when the cave is played. */
+  char *remark;                 /* some note */
 
   GdString charset;            /* these are not used by gdash */
   GdString fontset;

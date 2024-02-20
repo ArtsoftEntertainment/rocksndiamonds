@@ -84,15 +84,8 @@ static GdPropertyDefault caveset_defaults[] =
 GdCavesetData *gd_caveset_data_new(void)
 {
   GdCavesetData *data;
-  int i;
 
   data = checked_calloc(sizeof(GdCavesetData));
-
-  /* create strings */
-  for (i = 0; gd_caveset_properties[i].identifier != NULL; i++)
-    if (gd_caveset_properties[i].type == GD_TYPE_LONGSTRING)
-      G_STRUCT_MEMBER(GString *, data, gd_caveset_properties[i].offset) =
-	g_string_new(NULL);
 
   gd_struct_set_defaults_from_array(data, gd_caveset_properties, caveset_defaults);
 
@@ -106,7 +99,7 @@ void gd_caveset_data_free(GdCavesetData *data)
   /* free strings */
   for (i = 0; gd_caveset_properties[i].identifier != NULL; i++)
     if (gd_caveset_properties[i].type == GD_TYPE_LONGSTRING)
-      g_string_free(G_STRUCT_MEMBER(GString *, data, gd_caveset_properties[i].offset), TRUE);
+      checked_free(G_STRUCT_MEMBER(char *, data, gd_caveset_properties[i].offset));
 
   free(data);
 }

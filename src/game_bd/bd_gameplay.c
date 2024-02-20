@@ -397,8 +397,8 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 
     /* if we have a story... */
 #if 0
-    if (game->show_story && game->original_cave && game->original_cave->story->len != 0)
-      Info("Cave Story: %s", game->original_cave->story->str);
+    if (game->show_story && game->original_cave && game->original_cave->story != NULL)
+      Info("Cave Story: %s", game->original_cave->story);
 #endif
 
     counter_next = GAME_INT_START_UNCOVER;

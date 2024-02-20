@@ -31,11 +31,11 @@ typedef struct _gd_caveset_data
   GdString www;                 /* link to author's webpage */
   GdString date;                /* date of creation */
 
-  GString *story;               /* story for the caves */
-  GString *remark;              /* notes about the game */
+  char *story;                  /* story for the caves */
+  char *remark;                 /* notes about the game */
     
-  GString *title_screen;        /* base64-encoded title screen image */
-  GString *title_screen_scroll; /* scrolling background for title screen image */
+  char *title_screen;           /* base64-encoded title screen image */
+  char *title_screen_scroll;    /* scrolling background for title screen image */
 
   GdString charset;             /* these are not used by gdash */
   GdString fontset;
