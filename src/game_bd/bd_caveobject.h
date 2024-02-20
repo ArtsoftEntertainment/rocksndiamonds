@@ -93,7 +93,6 @@ GdObject *gd_object_new_random_fill(GdObjectLevels levels, int x1, int y1, int x
 GdObject *gd_object_new_copy_paste(GdObjectLevels levels, int x1, int y1, int x2, int y2, int dx, int dy, boolean mirror, boolean flip);
 
 void gd_cave_draw_object(GdCave *cave, const GdObject *object, int level);
-char *gd_object_get_bdcff(const GdObject *object);
 GdObject *gd_object_new_from_string(char *str);
 
 GdCave *gd_cave_new_rendered(const GdCave *data, const int level, guint32 seed);
