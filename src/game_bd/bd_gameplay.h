@@ -54,14 +54,6 @@
 /* ... 8 frames of cover animation */
 #define GAME_INT_COVER_ALL		108
 
-typedef enum _gd_gametype
-{
-  GD_GAMETYPE_NORMAL,
-  GD_GAMETYPE_SNAPSHOT,
-  GD_GAMETYPE_TEST,
-  GD_GAMETYPE_REPLAY,
-  GD_GAMETYPE_CONTINUE_REPLAY,
-} GdGameType;
 
 typedef struct _gd_game
 {
@@ -73,15 +65,8 @@ typedef struct _gd_game
   boolean player_move_stick;
   boolean player_fire;
 
-  GdGameType type;
-
   GdCave *cave;             /* Copy of the cave. This is the iterated, changed (ruined...) one */
   GdCave *original_cave;    /* original cave from caveset. used to record highscore */
-
-  GdReplay *replay_record;
-  GdReplay *replay_from;
-
-  GList *replays_recorded;
 
   boolean out_of_window;   /* will be set to true, if player is not visible in the window, and we have to wait for scrolling */
 
@@ -126,7 +111,6 @@ void gd_game_free(GdGame *gameplay);
 GdGame *gd_game_new(const int cave, const int level);
 GdGame *gd_game_new_snapshot(GdCave *snapshot);
 GdGame *gd_game_new_test(GdCave *cave, int level);
-GdGame *gd_game_new_replay(GdCave *cave, GdReplay *replay);
 
 void play_game_func(GdGame *game, int action);
 

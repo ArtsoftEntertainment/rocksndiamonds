@@ -43,64 +43,16 @@ void gd_game_free(GdGame *game)
   if (game->cave)
     gd_cave_free(game->cave);
 
-  /* if we recorded some replays during this run, we check them.
-     we remove those which are too short */
-  if (game->replays_recorded)
-  {
-    GList *citer;
-
-    /* check all caves */
-    for (citer = gd_caveset; citer != NULL; citer = citer->next)
-    {
-      GdCave *cave = (GdCave *)citer->data;
-      GList *riter;
-
-      /* check replays of all caves */
-      for (riter = cave->replays; riter != NULL; )
-      {
-	GdReplay *replay = (GdReplay *)riter->data;
-
-	/* remember next iter, as we may delete the current */
-	GList *nextrep = riter->next;
-
-	/* if we recorded this replay now, and it is too short, we delete it */
-	/* but do not delete successful ones! */
-	if (g_list_find(game->replays_recorded, replay) &&
-	    (replay->movements->len < 16) &&
-	    (!replay->success))
-	{
-	  /* delete from list */
-	  cave->replays = g_list_delete_link(cave->replays, riter);
-
-	  /* also free replay */
-	  gd_replay_free(replay);
-	}
-
-	riter = nextrep;
-      }
-    }
-
-    /* free the list of newly recorded replays, as we checked them */
-    g_list_free(game->replays_recorded);
-    game->replays_recorded = NULL;
-  }
-
   free(game);
 }
 
 /* add bonus life. if sound enabled, play sound, too. */
 static void add_bonus_life(GdGame *game, boolean inform_user)
 {
-  /* only inform about bonus life when playing a game */
-  /* or when testing the cave (so the user can see that a bonus life can be earned in that cave */
-  if (game->type == GD_GAMETYPE_NORMAL ||
-      game->type == GD_GAMETYPE_TEST)
+  if (inform_user)
   {
-    if (inform_user)
-    {
-      gd_sound_play_bonus_life();
-      game->bonus_life_flash = 100;
-    }
+    gd_sound_play_bonus_life();
+    game->bonus_life_flash = 100;
   }
 
   /* really increment number of lifes? only in a real game, nowhere else. */
@@ -124,10 +76,6 @@ static void increment_score(GdGame *game, int increment)
   i = game->player_score / gd_caveset_data->bonus_life_score;
   game->player_score += increment;
   game->cave_score += increment;
-
-  /* also record to replay */
-  if (game->replay_record)
-    game->replay_record->score += increment;
 
   /* if score crossed bonus_life_score point boundary, player won a bonus life */
   if (game->player_score / gd_caveset_data->bonus_life_score > i)
@@ -235,35 +183,9 @@ GdGame *gd_game_new(const int cave, const int level)
   game->player_move_stick = FALSE;
   game->player_fire = FALSE;
 
-  game->type = GD_GAMETYPE_NORMAL;
   game->state_counter = GAME_INT_LOAD_CAVE;
 
   game->show_story = TRUE;
-
-  return game;
-}
-
-/* starts a new snapshot playing */
-GdGame *gd_game_new_replay(GdCave *cave, GdReplay *replay)
-{
-  GdGame *game;
-
-  game = checked_calloc(sizeof(GdGame));
-
-  gd_strcpy(game->player_name, "");
-
-  game->player_lives = 0;
-  game->player_score = 0;
-
-  game->player_move = GD_MV_STILL;
-  game->player_move_stick = FALSE;
-  game->player_fire = FALSE;
-
-  game->original_cave = cave;
-  game->replay_from = replay;
-
-  game->type = GD_GAMETYPE_REPLAY;
-  game->state_counter = GAME_INT_LOAD_CAVE;
 
   return game;
 }
@@ -272,38 +194,9 @@ static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire)
 {
   boolean suicide = FALSE;
 
-  /* if we are playing a replay, but the user intervents, continue as a snapshot. */
-  /* do not trigger this for fire, as it would not be too intuitive. */
-  if (game->type == GD_GAMETYPE_REPLAY)
-  {
-    if (player_move != GD_MV_STILL)
-    {
-      game->type = GD_GAMETYPE_CONTINUE_REPLAY;
-      game->replay_from = NULL;
-    }
-  }
-
   /* ANYTHING EXCEPT A TIMEOUT, WE ITERATE THE CAVE */
   if (game->cave->player_state != GD_PL_TIMEOUT)
   {
-    /* IF PLAYING FROM REPLAY, OVERWRITE KEYPRESS VARIABLES FROM REPLAY */
-    if (game->type == GD_GAMETYPE_REPLAY)
-    {
-      boolean result;
-
-      /* if the user does touch the keyboard, we immediately exit replay,
-	 and he can continue playing */
-      result = gd_replay_get_next_movement(game->replay_from, &player_move, &fire, &suicide);
-      /* if could not get move from snapshot, continue from keyboard input. */
-      if (!result)
-	game->replay_no_more_movements++;
-
-      /* if no more available movements, and the user does not do anything,
-	 we cover cave and stop game. */
-      if (game->replay_no_more_movements > 15)
-	game->state_counter = GAME_INT_COVER_START;
-    }
-
     if (TapeIsPlaying_ReplayBD())
     {
       byte *action_rnd = TapePlayAction_BD();
@@ -320,9 +213,6 @@ static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire)
     /* iterate cave */
     gd_cave_iterate(game->cave, player_move, fire, suicide);
 
-    if (game->replay_record)
-      gd_replay_store_movement(game->replay_record, player_move, fire, suicide);
-
     if (game->cave->score)
       increment_score(game, game->cave->score);
 
@@ -338,9 +228,6 @@ static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire)
       /* one life extra for completing intermission */
       add_bonus_life(game, FALSE);
     }
-
-    if (game->replay_record)
-      game->replay_record->success = TRUE;
 
     /* start adding points for remaining time */
     game->state_counter = GAME_INT_CHECK_BONUS_TIME;
@@ -596,7 +483,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
     /* if no more lives, game is over. */
     counter_next = game->state_counter;
 
-    if (game->type == GD_GAMETYPE_NORMAL && game->player_lives == 0)
+    if (game->player_lives == 0)
       return_state = GD_GAME_NO_MORE_LIVES;
     else
       return_state = GD_GAME_NOTHING;
@@ -664,19 +551,10 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
   {
     /* cover all + 1 */
 
-    /* if this is a normal game: */
-    if (game->type == GD_GAMETYPE_NORMAL)
-    {
-      if (game->player_lives != 0)
-	return_state = GD_GAME_NOTHING;    /* and go to next level */
-      else
-	return_state = GD_GAME_GAME_OVER;
-    }
+    if (game->player_lives != 0)
+      return_state = GD_GAME_NOTHING;    /* and go to next level */
     else
-    {
-      /* for snapshots and replays and the like, this is the end. */
-      return_state = GD_GAME_STOP;
-    }
+      return_state = GD_GAME_GAME_OVER;
   }
 
   /* draw the cave */

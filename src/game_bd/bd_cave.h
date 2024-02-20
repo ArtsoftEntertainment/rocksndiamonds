@@ -712,7 +712,6 @@ GdReplay *gd_replay_new(void);
 GdReplay *gd_replay_new_from_replay(GdReplay *orig);
 void gd_replay_free(GdReplay *replay);
 void gd_replay_store_movement(GdReplay *replay, GdDirection player_move, boolean player_fire, boolean suicide);
-boolean gd_replay_get_next_movement(GdReplay *replay, GdDirection *player_move, boolean *player_fire, boolean *suicide);
 
 guint32 gd_cave_adler_checksum(GdCave *cave);
 void gd_cave_adler_checksum_more(GdCave *cave, guint32 *a, guint32 *b);

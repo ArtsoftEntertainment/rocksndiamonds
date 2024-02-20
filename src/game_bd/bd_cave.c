@@ -1429,26 +1429,6 @@ void gd_replay_store_movement(GdReplay *replay, GdDirection player_move,
   g_byte_array_append(replay->movements, data, 1);
 }
 
-/* get next available movement from a replay; store variables to player_move,
-   player_fire, suicide */
-/* return true if successful */
-boolean gd_replay_get_next_movement(GdReplay *replay, GdDirection *player_move,
-				    boolean *player_fire, boolean *suicide)
-{
-  guint8 data;
-
-  /* if no more available movements */
-  if (replay->current_playing_pos >= replay->movements->len)
-    return FALSE;
-
-  data = replay->movements->data[replay->current_playing_pos++];
-  *suicide = (data & GD_REPLAY_SUICIDE_MASK) != 0;
-  *player_fire = (data & GD_REPLAY_FIRE_MASK) != 0;
-  *player_move = (data & GD_REPLAY_MOVE_MASK);
-
-  return TRUE;
-}
-
 /* calculate adler checksum for a rendered cave; this can be used for more caves. */
 void gd_cave_adler_checksum_more(GdCave *cave, guint32 *a, guint32 *b)
 {
