@@ -167,6 +167,7 @@ enum _element_property
   E_P_BLOWS_UP_FLIES,   /* flies blow up, if they touch this */
   E_P_EXPLODES_BY_HIT,  /* explodes if hit by a stone */
 
+  E_P_EXPLOSION,                /* set for every stage of every explosion. */
   E_P_EXPLOSION_FIRST_STAGE,    /* set for first stage of every explosion.
 				   helps slower/faster explosions changing */
 
@@ -202,6 +203,7 @@ enum _element_property
 #define P_BLOWS_UP_FLIES		(1 << E_P_BLOWS_UP_FLIES)
 
 #define P_EXPLODES_BY_HIT		(1 << E_P_EXPLODES_BY_HIT)
+#define P_EXPLOSION			(1 << E_P_EXPLOSION)
 #define P_EXPLOSION_FIRST_STAGE		(1 << E_P_EXPLOSION_FIRST_STAGE)
 
 #define P_NON_EXPLODABLE		(1 << E_P_NON_EXPLODABLE)

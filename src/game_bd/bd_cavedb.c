@@ -314,11 +314,11 @@ GdElements gd_elements[] =
   { O_PRE_DIA_3, N_("Diamond birth (3)"), 0, "DIAMONDBIRTH3", 0, 58, 58, 58, 280 },    /* has ckdelay */
   { O_PRE_DIA_4, N_("Diamond birth (4)"), 0, "DIAMONDBIRTH4", 0, 59, 59, 59, 280 },    /* has ckdelay */
   { O_PRE_DIA_5, N_("Diamond birth (5)"), 0, "DIAMONDBIRTH5", 0, 60, 60, 60, 280 },    /* has ckdelay */
-  { O_EXPLODE_1, N_("Explosion (1)"), P_EXPLOSION_FIRST_STAGE, "EXPLOSION1", 0, 43, 43, 43, 280 },    /* has ckdelay */
-  { O_EXPLODE_2, N_("Explosion (2)"), 0, "EXPLOSION2", 0, 44, 44, 44, 280 },    /* has ckdelay */
-  { O_EXPLODE_3, N_("Explosion (3)"), 0, "EXPLOSION3", 0, 45, 45, 45, 280 },    /* has ckdelay */
-  { O_EXPLODE_4, N_("Explosion (4)"), 0, "EXPLOSION4", 0, 46, 46, 46, 280 },    /* has ckdelay */
-  { O_EXPLODE_5, N_("Explosion (5)"), 0, "EXPLOSION5", 0, 47, 47, 47, 280 },    /* has ckdelay */
+  { O_EXPLODE_1, N_("Explosion (1)"), P_EXPLOSION | P_EXPLOSION_FIRST_STAGE, "EXPLOSION1", 0, 43, 43, 43, 280 },    /* has ckdelay */
+  { O_EXPLODE_2, N_("Explosion (2)"), P_EXPLOSION, "EXPLOSION2", 0, 44, 44, 44, 280 },    /* has ckdelay */
+  { O_EXPLODE_3, N_("Explosion (3)"), P_EXPLOSION, "EXPLOSION3", 0, 45, 45, 45, 280 },    /* has ckdelay */
+  { O_EXPLODE_4, N_("Explosion (4)"), P_EXPLOSION, "EXPLOSION4", 0, 46, 46, 46, 280 },    /* has ckdelay */
+  { O_EXPLODE_5, N_("Explosion (5)"), P_EXPLOSION, "EXPLOSION5", 0, 47, 47, 47, 280 },    /* has ckdelay */
   { O_PRE_STONE_1, N_("Stone birth (1)"), P_EXPLOSION_FIRST_STAGE, "BOULDERBIRTH1", 0, 36, 36, 36, 280 },    /* has ckdelay */
   { O_PRE_STONE_2, N_("Stone birth (2)"), 0, "BOULDERBIRTH2", 0, 37, 37, 37, 280 },    /* has ckdelay */
   { O_PRE_STONE_3, N_("Stone birth (3)"), 0, "BOULDERBIRTH3", 0, 38, 38, 38, 280 },    /* has ckdelay */
@@ -327,26 +327,26 @@ GdElements gd_elements[] =
   { O_PRE_STEEL_2, N_("Steel birth (2)"), 0, "STEELWALLBIRTH2", 0, 25, 25, 25, 280 },    /* has ckdelay */
   { O_PRE_STEEL_3, N_("Steel birth (3)"), 0, "STEELWALLBIRTH3", 0, 26, 26, 26, 280 },    /* has ckdelay */
   { O_PRE_STEEL_4, N_("Steel birth (4)"), 0, "STEELWALLBIRTH4", 0, 27, 27, 27, 280 },    /* has ckdelay */
-  { O_GHOST_EXPL_1, N_("Ghost explosion (1)"), P_EXPLOSION_FIRST_STAGE, "GHOSTEXPLOSION1", 0, 80, 80, 80, 280 },    /* has ckdelay */
-  { O_GHOST_EXPL_2, N_("Ghost explosion (2)"), 0, "GHOSTEXPLOSION2", 0, 81, 81, 81, 280 },    /* has ckdelay */
-  { O_GHOST_EXPL_3, N_("Ghost explosion (3)"), 0, "GHOSTEXPLOSION3", 0, 82, 82, 82, 280 },    /* has ckdelay */
-  { O_GHOST_EXPL_4, N_("Ghost explosion (4)"), 0, "GHOSTEXPLOSION4", 0, 83, 83, 83, 280 },    /* has ckdelay */
-  { O_BOMB_EXPL_1, N_("Bomb explosion (1)"), P_EXPLOSION_FIRST_STAGE, "BOMBEXPLOSION1", 0, 84, 84, 84, 280 },    /* has ckdelay */
-  { O_BOMB_EXPL_2, N_("Bomb explosion (2)"), 0, "BOMBEXPLOSION2", 0, 85, 85, 85, 280 },    /* has ckdelay */
-  { O_BOMB_EXPL_3, N_("Bomb explosion (3)"), 0, "BOMBEXPLOSION3", 0, 86, 86, 86, 280 },    /* has ckdelay */
-  { O_BOMB_EXPL_4, N_("Bomb explosion (4)"), 0, "BOMBEXPLOSION4", 0, 87, 87, 87, 280 },    /* has ckdelay */
-  { O_NITRO_EXPL_1, N_("Nitro pack explosion (1)"), P_EXPLOSION_FIRST_STAGE, "NITROEXPLOSION1", 0, 44, 44, 44, 280 },    /* has ckdelay */
-  { O_NITRO_EXPL_2, N_("Nitro pack explosion (2)"), 0, "NITROEXPLOSION2", 0, 45, 45, 45, 280 },    /* has ckdelay */
-  { O_NITRO_EXPL_3, N_("Nitro pack explosion (3)"), 0, "NITROEXPLOSION3", 0, 46, 46, 46, 280 },    /* has ckdelay */
-  { O_NITRO_EXPL_4, N_("Nitro pack explosion (4)"), 0, "NITROEXPLOSION4", 0, 47, 47, 47, 280 },    /* has ckdelay */
-  { O_AMOEBA_2_EXPL_1, N_("Amoeba 2 explosion (1)"), P_EXPLOSION_FIRST_STAGE, "AMOEBA2EXPLOSION1", 0, 292, 292, 292, 280 },    /* has ckdelay */
-  { O_AMOEBA_2_EXPL_2, N_("Amoeba 2 explosion (2)"), 0, "AMOEBA2EXPLOSION2", 0, 293, 293, 293, 280 },    /* has ckdelay */
-  { O_AMOEBA_2_EXPL_3, N_("Amoeba 2 explosion (3)"), 0, "AMOEBA2EXPLOSION3", 0, 294, 294, 294, 280 },    /* has ckdelay */
-  { O_AMOEBA_2_EXPL_4, N_("Amoeba 2 explosion (4)"), 0, "AMOEBA2EXPLOSION4", 0, 295, 295, 295, 280 },    /* has ckdelay */
-  { O_NUT_EXPL_1, N_("Nut explosion (1)"), P_SLOPED | P_EXPLOSION_FIRST_STAGE, "NUTEXPLOSION1", 0, 360, 360, 360, 280 },    /* has ckdelay */
-  { O_NUT_EXPL_2, N_("Nut explosion (2)"), P_SLOPED, "NUTEXPLOSION2", 0, 361, 361, 361, 280 },    /* has ckdelay */        /* these are rounded!! */
-  { O_NUT_EXPL_3, N_("Nut explosion (3)"), P_SLOPED, "NUTEXPLOSION3", 0, 362, 362, 362, 280 },    /* has ckdelay */
-  { O_NUT_EXPL_4, N_("Nut explosion (4)"), P_SLOPED, "NUTEXPLOSION4", 0, 363, 363, 363, 280 },    /* has ckdelay */
+  { O_GHOST_EXPL_1, N_("Ghost explosion (1)"), P_EXPLOSION | P_EXPLOSION_FIRST_STAGE, "GHOSTEXPLOSION1", 0, 80, 80, 80, 280 },    /* has ckdelay */
+  { O_GHOST_EXPL_2, N_("Ghost explosion (2)"), P_EXPLOSION, "GHOSTEXPLOSION2", 0, 81, 81, 81, 280 },    /* has ckdelay */
+  { O_GHOST_EXPL_3, N_("Ghost explosion (3)"), P_EXPLOSION, "GHOSTEXPLOSION3", 0, 82, 82, 82, 280 },    /* has ckdelay */
+  { O_GHOST_EXPL_4, N_("Ghost explosion (4)"), P_EXPLOSION, "GHOSTEXPLOSION4", 0, 83, 83, 83, 280 },    /* has ckdelay */
+  { O_BOMB_EXPL_1, N_("Bomb explosion (1)"), P_EXPLOSION | P_EXPLOSION_FIRST_STAGE, "BOMBEXPLOSION1", 0, 84, 84, 84, 280 },    /* has ckdelay */
+  { O_BOMB_EXPL_2, N_("Bomb explosion (2)"), P_EXPLOSION, "BOMBEXPLOSION2", 0, 85, 85, 85, 280 },    /* has ckdelay */
+  { O_BOMB_EXPL_3, N_("Bomb explosion (3)"), P_EXPLOSION, "BOMBEXPLOSION3", 0, 86, 86, 86, 280 },    /* has ckdelay */
+  { O_BOMB_EXPL_4, N_("Bomb explosion (4)"), P_EXPLOSION, "BOMBEXPLOSION4", 0, 87, 87, 87, 280 },    /* has ckdelay */
+  { O_NITRO_EXPL_1, N_("Nitro pack explosion (1)"), P_EXPLOSION | P_EXPLOSION_FIRST_STAGE, "NITROEXPLOSION1", 0, 44, 44, 44, 280 },    /* has ckdelay */
+  { O_NITRO_EXPL_2, N_("Nitro pack explosion (2)"), P_EXPLOSION, "NITROEXPLOSION2", 0, 45, 45, 45, 280 },    /* has ckdelay */
+  { O_NITRO_EXPL_3, N_("Nitro pack explosion (3)"), P_EXPLOSION, "NITROEXPLOSION3", 0, 46, 46, 46, 280 },    /* has ckdelay */
+  { O_NITRO_EXPL_4, N_("Nitro pack explosion (4)"), P_EXPLOSION, "NITROEXPLOSION4", 0, 47, 47, 47, 280 },    /* has ckdelay */
+  { O_AMOEBA_2_EXPL_1, N_("Amoeba 2 explosion (1)"), P_EXPLOSION | P_EXPLOSION_FIRST_STAGE, "AMOEBA2EXPLOSION1", 0, 292, 292, 292, 280 },    /* has ckdelay */
+  { O_AMOEBA_2_EXPL_2, N_("Amoeba 2 explosion (2)"), P_EXPLOSION, "AMOEBA2EXPLOSION2", 0, 293, 293, 293, 280 },    /* has ckdelay */
+  { O_AMOEBA_2_EXPL_3, N_("Amoeba 2 explosion (3)"), P_EXPLOSION, "AMOEBA2EXPLOSION3", 0, 294, 294, 294, 280 },    /* has ckdelay */
+  { O_AMOEBA_2_EXPL_4, N_("Amoeba 2 explosion (4)"), P_EXPLOSION, "AMOEBA2EXPLOSION4", 0, 295, 295, 295, 280 },    /* has ckdelay */
+  { O_NUT_EXPL_1, N_("Nut explosion (1)"), P_SLOPED | P_EXPLOSION | P_EXPLOSION_FIRST_STAGE, "NUTEXPLOSION1", 0, 360, 360, 360, 280 },    /* has ckdelay */
+  { O_NUT_EXPL_2, N_("Nut explosion (2)"), P_SLOPED | P_EXPLOSION, "NUTEXPLOSION2", 0, 361, 361, 361, 280 },    /* has ckdelay */        /* these are rounded!! */
+  { O_NUT_EXPL_3, N_("Nut explosion (3)"), P_SLOPED | P_EXPLOSION, "NUTEXPLOSION3", 0, 362, 362, 362, 280 },    /* has ckdelay */
+  { O_NUT_EXPL_4, N_("Nut explosion (4)"), P_SLOPED | P_EXPLOSION, "NUTEXPLOSION4", 0, 363, 363, 363, 280 },    /* has ckdelay */
 
   { O_PLAYER_PNEUMATIC_LEFT, NULL /* Player using hammer, left */, P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYHAMMERl", 0, 265, 265, 265 },
   { O_PLAYER_PNEUMATIC_RIGHT, NULL /* Player using hammer, right */, P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYHAMMERr", 0, 268, 268, 268 },

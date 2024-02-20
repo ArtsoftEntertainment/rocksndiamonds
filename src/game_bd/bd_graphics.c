@@ -307,6 +307,12 @@ static inline boolean is_collectible(const int element)
   return (gd_elements[element & O_MASK].properties & P_COLLECTIBLE) != 0;
 }
 
+/* returns true if the element is exploding */
+static inline boolean is_explosion(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_EXPLOSION) != 0;
+}
+
 static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean draw_masked)
 {
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
@@ -321,6 +327,10 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   boolean use_smooth_movements =
     ((setup.bd_smooth_movements == TRUE) ||
      (setup.bd_smooth_movements == AUTO && !use_native_bd_graphics_engine()));
+
+  // do not use smooth movement animation for exploding game elements (like player)
+  if (is_explosion(tile) && dir != GD_MV_STILL)
+    use_smooth_movements = FALSE;
 
 #if DO_GFX_SANITY_CHECK
   if (use_native_bd_graphics_engine() && !setup.small_game_graphics && !program.headless)
