@@ -1609,7 +1609,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       for (x = 0; x < cave->w; x++)
       {
 	/* timer for the cell > 0? */
-	if (cave->hammered_reappear[y][x]>0)
+	if (cave->hammered_reappear[y][x] > 0)
 	{
 	  /* decrease timer */
 	  cave->hammered_reappear[y][x]--;

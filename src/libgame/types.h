@@ -36,41 +36,41 @@ typedef unsigned char byte;
 #undef AUTO
 #endif
 
-#define TRUE		1
-#define FALSE		0
-#define AUTO		-1
+#define TRUE			1
+#define FALSE			0
+#define AUTO			-1
 
 #ifndef MIN
-#define MIN(a, b) 	((a) < (b) ? (a) : (b))
+#define MIN(a, b) 		((a) < (b) ? (a) : (b))
 #endif
 
 #ifndef MAX
-#define MAX(a, b) 	((a) > (b) ? (a) : (b))
+#define MAX(a, b) 		((a) > (b) ? (a) : (b))
 #endif
 
 #ifndef ABS
-#define ABS(a)		((a) < 0 ? -(a) : (a))
+#define ABS(a)			((a) < 0 ? -(a) : (a))
 #endif
 
 #ifndef SIGN
-#define SIGN(a)		((a) < 0 ? -1 : ((a) > 0 ? 1 : 0))
+#define SIGN(a)			((a) < 0 ? -1 : ((a) > 0 ? 1 : 0))
 #endif
 
 #ifndef ODD
-#define ODD(a)		(((a) & 1) == 1)
+#define ODD(a)			(((a) & 1) == 1)
 #endif
 
 #ifndef EVEN
-#define EVEN(a)		(((a) & 1) == 0)
+#define EVEN(a)			(((a) & 1) == 0)
 #endif
 
-#define ARRAY_SIZE(array)		(sizeof(array) / sizeof(array[0]))
+#define ARRAY_SIZE(array)	(sizeof(array) / sizeof(array[0]))
 
-#define PTR_TO_INT(p)	((int) (long) (p))
-#define PTR_TO_UINT(p)	((unsigned int) (unsigned long) (p))
+#define PTR_TO_INT(p)		((int) (long) (p))
+#define PTR_TO_UINT(p)		((unsigned int) (unsigned long) (p))
 
-#define INT_TO_PTR(i)	((void *) (long) (i))
-#define UINT_TO_PTR(u)	((void *) (unsigned long) (u))
+#define INT_TO_PTR(i)		((void *) (long) (i))
+#define UINT_TO_PTR(u)		((void *) (unsigned long) (u))
 
 
 struct ListNode

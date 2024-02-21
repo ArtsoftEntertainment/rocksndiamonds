@@ -838,7 +838,7 @@ static void mazegen(GRand *rand, boolean **maze, int width, int height, int x, i
     /* if no horizontal movement possible, choose vertical */
     if (dir == 2 && (dirmask & 12) == 0)
       dir = 0;
-    else if (dir == 0 && (dirmask&3) == 0)    /* and vice versa */
+    else if (dir == 0 && (dirmask & 3) == 0)    /* and vice versa */
       dir = 2;
 
     dir += g_rand_int_range(rand, 0, 2);                /* dir */

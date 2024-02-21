@@ -967,13 +967,13 @@ void gd_cave_db_init(void)
     }
 
     /* we do not like generated pixbufs for games. only those that are in the png. */
-    if (ABS(gd_elements[i].image_game)>GD_NUM_OF_CELLS_X*GD_NUM_OF_CELLS_Y)
+    if (ABS(gd_elements[i].image_game) > GD_NUM_OF_CELLS_X * GD_NUM_OF_CELLS_Y)
       Error("game pixbuf for element %x (%s) bigger than png size", i, gd_elements[i].name);
 
     if (gd_elements[i].image < 0)
       Error("editor pixbuf for element %x (%s) should not be animated", i, gd_elements[i].name);
 
-    if (gd_elements[i].properties&P_CAN_BE_HAMMERED && gd_element_get_hammered((GdElement) i) == O_NONE)
+    if (gd_elements[i].properties & P_CAN_BE_HAMMERED && gd_element_get_hammered((GdElement) i) == O_NONE)
       Error("element %x (%s) can be hammered, but get_hammered_element does not define another one", i, gd_elements[i].name);
   }
 
@@ -1072,7 +1072,7 @@ void gd_cave_db_init(void)
       /* other types */
       /* check if its pointer is not the same as another one's */
       /* +1 is added so it is never zero */
-      if (!(gd_cave_properties[i].flags&GD_DONT_SAVE) && strcmp(gd_cave_properties[i].identifier, "") == 0)
+      if (!(gd_cave_properties[i].flags & GD_DONT_SAVE) && strcmp(gd_cave_properties[i].identifier, "") == 0)
       {
 	Error ("property should have a bdcff identifier: line %d, name %s",
 	       i, gd_cave_properties[i].name);
