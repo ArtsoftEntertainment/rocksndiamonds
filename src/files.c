@@ -11982,7 +11982,7 @@ static int get_anim_action_parameter_value(char *token)
   {
     if (isURL(token))
     {
-      result = get_hash_from_key(token);	// unsigned int => int
+      result = get_hash_from_string(token);	// unsigned int => int
       result = ABS(result);			// may be negative now
       result += (result < MAX_IMAGE_FILES ? MAX_IMAGE_FILES : 0);
 
@@ -12084,7 +12084,7 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
   else if (strEqual(suffix, ".class"))
   {
     result = (strEqual(value, ARG_UNDEFINED) ? ARG_UNDEFINED_VALUE :
-	      get_hash_from_key(value));
+	      get_hash_from_string(value));
   }
   else if (strEqual(suffix, ".style"))
   {

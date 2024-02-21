@@ -725,7 +725,7 @@ char *getScoreTapeBasename(char *name)
 
   sprintf(timestamp, "%s", getCurrentTimestamp());
   sprintf(basename_raw, "%s-%s", timestamp, name);
-  sprintf(basename, "%s-%08x", timestamp, get_hash_from_key(basename_raw));
+  sprintf(basename, "%s-%08x", timestamp, get_hash_from_string(basename_raw));
 
   return basename;
 }
@@ -2281,7 +2281,7 @@ DEFINE_HASHTABLE_REMOVE(remove_hash_entry, char, char);
 #define remove_hash_entry hashtable_remove
 #endif
 
-unsigned int get_hash_from_key(void *key)
+unsigned int get_hash_from_string(void *key)
 {
   /*
     djb2
@@ -2311,7 +2311,7 @@ unsigned int get_hash_from_key(void *key)
   return hash;
 }
 
-int hash_keys_are_equal(void *key1, void *key2)
+int hash_key_strings_are_equal(void *key1, void *key2)
 {
   return (strEqual((char *)key1, (char *)key2));
 }
@@ -2319,7 +2319,7 @@ int hash_keys_are_equal(void *key1, void *key2)
 SetupFileHash *newSetupFileHash(void)
 {
   SetupFileHash *new_hash =
-    create_hashtable(16, 0.75, get_hash_from_key, hash_keys_are_equal);
+    create_hashtable(16, 0.75, get_hash_from_string, hash_key_strings_are_equal);
 
   if (new_hash == NULL)
     Fail("create_hashtable() failed -- out of memory");

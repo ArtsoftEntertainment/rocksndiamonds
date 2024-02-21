@@ -2722,7 +2722,7 @@ static void DisplayGameControlValues(void)
     if (PANEL_DEACTIVATED(pos))
       continue;
 
-    if (pos->class == get_hash_from_key("extra_panel_items") &&
+    if (pos->class == get_hash_from_string("extra_panel_items") &&
 	!setup.prefer_extra_panel_items)
       continue;
 
@@ -2814,7 +2814,7 @@ static void DisplayGameControlValues(void)
       int width, height;
       int dst_x = PANEL_XPOS(pos);
       int dst_y = PANEL_YPOS(pos);
-      boolean skip = (pos->class == get_hash_from_key("mm_engine_only") &&
+      boolean skip = (pos->class == get_hash_from_string("mm_engine_only") &&
 		      level.game_engine_type != GAME_ENGINE_TYPE_MM);
 
       if (graphic != IMG_UNDEFINED && !skip)
