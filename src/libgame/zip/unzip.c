@@ -122,8 +122,8 @@ typedef struct
     zlib_filefunc64_32_def z_filefunc;
 
     voidpf   filestream;                /* io structore of the zipfile */
-    uint16_t compression_method;        /* compression method (0==store) */
-    uint64_t byte_before_the_zipfile;   /* byte before the zipfile, (>0 for sfx) */
+    uint16_t compression_method;        /* compression method (0 == store) */
+    uint64_t byte_before_the_zipfile;   /* byte before the zipfile, (> 0 for sfx) */
     int      raw;
 } file_in_zip64_read_info_s;
 

@@ -176,7 +176,7 @@ extern int ZEXPORT unzOpenCurrentFilePassword(unzFile file, const char *password
 
 extern int ZEXPORT unzOpenCurrentFile2(unzFile file, int *method, int *level, int raw);
 /* Same as unzOpenCurrentFile, but open for read raw the file (not uncompress)
-   if raw==1 *method will receive method of compression, *level will receive level of compression
+   if raw == 1 *method will receive method of compression, *level will receive level of compression
 
    NOTE: you can set level parameter as NULL (if you did not want known level,
          but you CANNOT set method parameter as NULL */

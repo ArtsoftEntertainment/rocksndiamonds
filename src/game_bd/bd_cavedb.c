@@ -949,10 +949,10 @@ void gd_cave_db_init(void)
     lowercase_names = FALSE;
 
   /* check element database for faults. */
-  for (i = 0; gd_elements[i].element!=-1; i++)
+  for (i = 0; gd_elements[i].element != -1; i++)
   {
     if (gd_elements[i].element != i)
-      Error("element: i:0x%x!=0x%x", i, gd_elements[i].element);
+      Error("element: i:0x%x != 0x%x", i, gd_elements[i].element);
 
     /* if it has a name, create a lowercase name (of the translated one).
        will be used by the editor */
@@ -1079,7 +1079,7 @@ void gd_cave_db_init(void)
       }
 
       another_prop = g_hash_table_lookup(pointers, GINT_TO_POINTER(gd_cave_properties[i].offset + 1));
-      if (another_prop!=NULL)
+      if (another_prop != NULL)
       {
 	Error("property %s has the same pointer as property %s",
 	      gd_cave_properties[i].identifier, another_prop);

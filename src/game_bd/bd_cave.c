@@ -247,7 +247,7 @@ void gd_create_char_to_element_table(void)
 
     if (c)
     {
-      if (gd_char_to_element[c]!=O_UNKNOWN)
+      if (gd_char_to_element[c] != O_UNKNOWN)
 	Warn("Character %c already used for element %x", c, gd_char_to_element[c]);
 
       gd_char_to_element[c] = i;
@@ -1293,7 +1293,7 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
 
   /* player with bomb does not blink or tap - no graphics drawn for that.
      running is drawn using w/o bomb cells */
-  if (cave->last_direction!=GD_MV_STILL)
+  if (cave->last_direction != GD_MV_STILL)
   {
     elemmapping[O_PLAYER_BOMB] = map;
     elemdrawing[O_PLAYER_BOMB] = draw;

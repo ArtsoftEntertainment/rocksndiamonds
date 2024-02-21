@@ -1680,7 +1680,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  cave->player_seen_ago = 0;
 	  /* bd4 intermission caves have many players. so if one of them has exited,
 	   * do not change the flag anymore. so this if () is needed */
-	  if (cave->player_state!=GD_PL_EXITED)
+	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
 	  /* check for pneumatic hammer things */
@@ -1898,7 +1898,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  cave->player_seen_ago = 0;
 	  /* bd4 intermission caves have many players. so if one of them has exited,
 	   * do not change the flag anymore. so this if () is needed */
-	  if (cave->player_state!=GD_PL_EXITED)
+	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
 	  if (player_fire)
@@ -1921,7 +1921,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 
 	  cave->player_seen_ago = 0;
-	  if (cave->player_state!=GD_PL_EXITED)
+	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
 	  /* if hammering time is up, becomes a normal player again. */
