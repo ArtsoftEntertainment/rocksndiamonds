@@ -10289,7 +10289,7 @@ static void MapScreenGadgets(int num_entries)
     MapGadget(screen_gadget[scrollbar_info[i].gadget_id]);
 }
 
-static void UnmapScreenGadgets()
+static void UnmapScreenGadgets(void)
 {
   int i;
 

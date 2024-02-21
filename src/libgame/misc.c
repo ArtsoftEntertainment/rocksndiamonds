@@ -620,12 +620,12 @@ static unsigned int mainCounter(int mode)
   return current_ms - base_ms;
 }
 
-void InitCounter()		// set counter back to zero
+void InitCounter(void)		// set counter back to zero
 {
   mainCounter(INIT_COUNTER);
 }
 
-unsigned int Counter()	// get milliseconds since last call of InitCounter()
+unsigned int Counter(void)	// get milliseconds since last call of InitCounter()
 {
   return mainCounter(READ_COUNTER);
 }

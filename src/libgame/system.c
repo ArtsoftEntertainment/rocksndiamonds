@@ -121,7 +121,7 @@ void InitNetworkInfo(boolean enabled, boolean connected, boolean serveronly,
   network.is_server_thread = FALSE;
 }
 
-void InitRuntimeInfo()
+void InitRuntimeInfo(void)
 {
 #if defined(HAS_TOUCH_DEVICE)
   runtime.uses_touch_device = TRUE;
