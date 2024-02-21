@@ -6196,7 +6196,6 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
   boolean invalid_playfield_char = FALSE;
   boolean load_xsb_to_ces = check_special_flags("load_xsb_to_ces");
   int file_level_nr = 0;
-  int line_nr = 0;
   int x = 0, y = 0;		// initialized to make compilers happy
 
   last_comment[0] = '\0';
@@ -6237,10 +6236,6 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
     // read next line of input file
     if (!getStringFromFile(file, line, MAX_LINE_LEN))
       break;
-
-    // check if line was completely read and is terminated by line break
-    if (strlen(line) > 0 && line[strlen(line) - 1] == '\n')
-      line_nr++;
 
     // cut trailing line break (this can be newline and/or carriage return)
     for (line_ptr = &line[strlen(line)]; line_ptr >= line; line_ptr--)
