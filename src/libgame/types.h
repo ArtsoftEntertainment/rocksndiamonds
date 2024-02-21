@@ -66,6 +66,12 @@ typedef unsigned char byte;
 
 #define ARRAY_SIZE(array)		(sizeof(array) / sizeof(array[0]))
 
+#define PTR_TO_INT(p)	((int) (long) (p))
+#define PTR_TO_UINT(p)	((unsigned int) (unsigned long) (p))
+
+#define INT_TO_PTR(i)	((void *) (long) (i))
+#define UINT_TO_PTR(u)	((void *) (unsigned long) (u))
+
 
 struct ListNode
 {

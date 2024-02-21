@@ -2311,9 +2311,21 @@ unsigned int get_hash_from_string(void *key)
   return hash;
 }
 
+unsigned int get_hash_from_integer(void *key)
+{
+  unsigned int hash = PTR_TO_UINT(key);
+
+  return hash;
+}
+
 int hash_key_strings_are_equal(void *key1, void *key2)
 {
   return (strEqual((char *)key1, (char *)key2));
+}
+
+int hash_key_integers_are_equal(void *key1, void *key2)
+{
+  return (key1 == key2);
 }
 
 SetupFileHash *newSetupFileHash(void)
