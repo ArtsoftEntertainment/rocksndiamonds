@@ -11317,9 +11317,9 @@ static unsigned int test_uuid_random_function_better(int max)
 static void TestGeneratingUUIDs_RunTest(int nr, int always_seed, int num_uuids)
 {
   struct hashtable *hash_seeds =
-    create_hashtable(16, 0.75, get_hash_from_string, hash_key_strings_are_equal);
+    create_hashtable(get_hash_from_string, hash_key_strings_are_equal, free, NULL);
   struct hashtable *hash_uuids =
-    create_hashtable(16, 0.75, get_hash_from_string, hash_key_strings_are_equal);
+    create_hashtable(get_hash_from_string, hash_key_strings_are_equal, free, NULL);
   static char message[100];
   int i;
 
@@ -11398,8 +11398,8 @@ static void TestGeneratingUUIDs_RunTest(int nr, int always_seed, int num_uuids)
 
   Request(message, REQ_CONFIRM);
 
-  hashtable_destroy(hash_seeds, 0);
-  hashtable_destroy(hash_uuids, 0);
+  hashtable_destroy(hash_seeds);
+  hashtable_destroy(hash_uuids);
 }
 
 void TestGeneratingUUIDs(void)

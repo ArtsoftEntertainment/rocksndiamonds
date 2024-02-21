@@ -45,7 +45,7 @@
  *      static unsigned int         hash_from_key_fn( void *k );
  *      static int                  keys_equal_fn ( void *key1, void *key2 );
  *
- *      h = create_hashtable(16, 0.75, hash_from_key_fn, keys_equal_fn);
+ *      h = create_hashtable(16, 0.75, hash_from_key_fn, keys_equal_fn, free, free);
  *      k = (struct some_key *)     malloc(sizeof(struct some_key));
  *      v = (struct some_value *)   malloc(sizeof(struct some_value));
  *
@@ -109,6 +109,8 @@ struct hashtable
   unsigned int loadlimit;
   unsigned int (*hashfn) (void *k);
   int (*eqfn) (void *k1, void *k2);
+  void (*freekfn) (void *k);
+  void (*freevfn) (void *v);
 };
 
 /*****************************************************************************/
@@ -121,28 +123,39 @@ struct hashtable_itr
 
 
 /*****************************************************************************
- * create_hashtable
+ * create_hashtable_ext
    
  * @name                    create_hashtable
  * @param   minsize         minimum initial size of hashtable
  * @param   maxloadfactor   maximum ratio entries / tablesize
  * @param   hashfunction    function for hashing keys
  * @param   key_eq_fn       function for determining key equality
+ * @param   key_free_fn     function for freeing keys
+ * @param   value_free_fn   function for freeing values
  * @return                  newly created hashtable or NULL on failure
  */
 
 struct hashtable *
-create_hashtable(unsigned int minsize, float maxloadfactor,
-                 unsigned int (*hashfunction) (void*),
-                 int (*key_eq_fn) (void*, void*));
+create_hashtable_ext(unsigned int minsize, float maxloadfactor,
+                     unsigned int (*hashfunction) (void*),
+                     int (*key_eq_fn) (void*, void*),
+                     void (*key_free_fn) (void*),
+                     void (*value_free_fn) (void*));
+
+/* wrapper function using reasonable default values for some parameters */
+struct hashtable *
+create_hashtable(unsigned int (*hashfunction) (void*),
+                 int (*key_eq_fn) (void*, void*),
+                 void (*key_free_fn) (void*),
+                 void (*value_free_fn) (void*));
 
 /*****************************************************************************
  * hashtable_insert
    
  * @name        hashtable_insert
  * @param   h   the hashtable to insert into
- * @param   k   the key - hashtable claims ownership and will free on removal
- * @param   v   the value - does not claim ownership
+ * @param   k   the key   - will be freed on removal if free function defined
+ * @param   v   the value - will be freed on removal if free function defined
  * @return      non-zero for successful insertion
  *
  * This function will cause the table to expand if the insertion would take
@@ -188,7 +201,7 @@ static int fnname (struct hashtable *h, keytype *k, valuetype *v) \
    
  * @name        hashtable_search
  * @param   h   the hashtable to search
- * @param   k   the key to search for  - does not claim ownership
+ * @param   k   the key to search for
  * @return      the value associated with the key, or NULL if none found
  */
 
@@ -206,7 +219,7 @@ static valuetype * fnname (struct hashtable *h, keytype *k) \
    
  * @name        hashtable_remove
  * @param   h   the hashtable to remove the item from
- * @param   k   the key to search for  - does not claim ownership
+ * @param   k   the key to search for
  * @return      the value associated with the key, or NULL if none found
  */
 
@@ -234,11 +247,10 @@ hashtable_count(struct hashtable *h);
  * hashtable_destroy
    
  * @name        hashtable_destroy
- * @param       free_values     whether to call 'free' on the remaining values
  */
 
 void
-hashtable_destroy(struct hashtable *h, int free_values);
+hashtable_destroy(struct hashtable *h);
 
 
 /*****************************************************************************/

@@ -2331,7 +2331,7 @@ int hash_key_integers_are_equal(void *key1, void *key2)
 SetupFileHash *newSetupFileHash(void)
 {
   SetupFileHash *new_hash =
-    create_hashtable(16, 0.75, get_hash_from_string, hash_key_strings_are_equal);
+    create_hashtable(get_hash_from_string, hash_key_strings_are_equal, free, free);
 
   if (new_hash == NULL)
     Fail("create_hashtable() failed -- out of memory");
@@ -2344,7 +2344,7 @@ void freeSetupFileHash(SetupFileHash *hash)
   if (hash == NULL)
     return;
 
-  hashtable_destroy(hash, 1);	// 1 == also free values stored in hash
+  hashtable_destroy(hash);
 }
 
 char *getHashEntry(SetupFileHash *hash, char *token)

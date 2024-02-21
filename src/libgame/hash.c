@@ -41,9 +41,11 @@
 
 /*****************************************************************************/
 struct hashtable *
-create_hashtable(unsigned int minsize, float maxloadfactor,
-                 unsigned int (*hashf) (void*),
-                 int (*eqf) (void*, void*))
+create_hashtable_ext(unsigned int minsize, float maxloadfactor,
+		     unsigned int (*hashf) (void*),
+		     int (*eqf) (void*, void*),
+                     void (*freekfn) (void*),
+                     void (*freevfn) (void*))
 {
   struct hashtable *h;
   unsigned int i, size = 1u;
@@ -78,8 +80,19 @@ create_hashtable(unsigned int minsize, float maxloadfactor,
   h->hashfn       = hashf;
   h->eqfn         = eqf;
   h->loadlimit    = (unsigned int) ((float)size * maxloadfactor);
+  h->freekfn      = freekfn;
+  h->freevfn      = freevfn;
 
   return h;
+}
+
+struct hashtable *
+create_hashtable(unsigned int (*hashf) (void*),
+                 int (*eqf) (void*, void*),
+                 void (*freekfn) (void*),
+                 void (*freevfn) (void*))
+{
+  return create_hashtable_ext(16, 0.75, hashf, eqf, freekfn, freevfn);
 }
 
 /*****************************************************************************/
@@ -242,7 +255,8 @@ hashtable_change(struct hashtable *h, void *k, void *v)
     /* Check hash value to short circuit heavier comparison */
     if ((hashvalue == e->h) && (h->eqfn(k, e->k)))
     {
-      free(e->v);
+      if (h->freevfn != NULL)
+	h->freevfn(e->v);
       e->v = v;
 
       return -1;
@@ -298,8 +312,13 @@ hashtable_remove(struct hashtable *h, void *k)
     {
       *pE = e->next;
       h->entrycount--;
-      v = e->v;
-      free(e->k);
+      v = NULL;
+      if (h->freekfn != NULL)
+	h->freekfn(e->k);
+      if (h->freevfn != NULL)
+	h->freevfn(e->v);
+      else
+	v = e->v;
       free(e);
 
       return v;
@@ -315,7 +334,7 @@ hashtable_remove(struct hashtable *h, void *k)
 /*****************************************************************************/
 /* destroy */
 void
-hashtable_destroy(struct hashtable *h, int free_values)
+hashtable_destroy(struct hashtable *h)
 {
   unsigned int i;
   struct entry *e, *f;
@@ -329,10 +348,10 @@ hashtable_destroy(struct hashtable *h, int free_values)
     {
       f = e;
       e = e->next;
-      free(f->k);
-
-      if (free_values)
-	free(f->v);
+      if (h->freekfn != NULL)
+	h->freekfn(f->k);
+      if (h->freevfn != NULL)
+	h->freevfn(f->v);
 
       free(f);
     }
@@ -341,7 +360,6 @@ hashtable_destroy(struct hashtable *h, int free_values)
   free(h->table);
   free(h);
 }
-
 
 /*****************************************************************************/
 /* hashtable_iterator    - iterator constructor */
