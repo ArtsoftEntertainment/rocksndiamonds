@@ -930,7 +930,7 @@ GdElement gd_element_get_hammered(GdElement elem)
 void gd_cave_db_init(void)
 {
   int i;
-  GHashTable *pointers;
+  struct hashtable *pointers;
   boolean lowercase_names = TRUE;
 
   /* TRANSLATORS: some languages (for example, german) do not have lowercase nouns. */
@@ -1000,7 +1000,7 @@ void gd_cave_db_init(void)
   */
 
   /* check the cave property database for faults. */
-  pointers = g_hash_table_new(g_direct_hash, g_direct_equal);
+  pointers = create_hashtable(get_hash_from_integer, hash_key_integers_are_equal, NULL, NULL);
 
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
   {
@@ -1078,7 +1078,8 @@ void gd_cave_db_init(void)
 	       i, gd_cave_properties[i].name);
       }
 
-      another_prop = g_hash_table_lookup(pointers, GINT_TO_POINTER(gd_cave_properties[i].offset + 1));
+      another_prop = hashtable_search(pointers, INT_TO_PTR(gd_cave_properties[i].offset + 1));
+
       if (another_prop != NULL)
       {
 	Error("property %s has the same pointer as property %s",
@@ -1087,11 +1088,11 @@ void gd_cave_db_init(void)
       else
       {
 	/* value is the identifier, so we can report the OLD one if the check fails */
-	g_hash_table_insert(pointers, GINT_TO_POINTER(gd_cave_properties[i].offset + 1),
-			    gd_cave_properties[i].identifier);
+	hashtable_insert(pointers, INT_TO_PTR(gd_cave_properties[i].offset + 1),
+			 gd_cave_properties[i].identifier);
       }
     }
   }
 
-  g_hash_table_destroy(pointers);
+  hashtable_destroy(pointers);
 }
