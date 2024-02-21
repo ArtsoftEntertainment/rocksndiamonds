@@ -2370,12 +2370,12 @@ void setHashEntry(SetupFileHash *hash, char *token, char *value)
       Fail("cannot insert into hash -- aborting");
 }
 
-char *removeHashEntry(SetupFileHash *hash, char *token)
+void removeHashEntry(SetupFileHash *hash, char *token)
 {
   if (hash == NULL)
-    return NULL;
+    return;
 
-  return remove_hash_entry(hash, token);
+  remove_hash_entry(hash, token);
 }
 
 #if ENABLE_UNUSED_CODE
