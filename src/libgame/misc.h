@@ -179,6 +179,7 @@ char *getImg3(const char *, const char *, const char *);
 char *getStringCopy(const char *);
 char *getStringCopyN(const char *, int);
 char *getStringCopyNStatic(const char *, int);
+char *getStringToUpper(const char *);
 char *getStringToLower(const char *);
 void setString(char **, const char *);
 char **getSplitStringArray(const char *s, const char *, int);
