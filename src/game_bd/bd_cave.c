@@ -81,7 +81,7 @@ static const char* scheduling_filename[] =
   "bd2ckatari"
 };
 
-static GHashTable *name_to_element;
+static struct hashtable *name_to_element;
 GdElement gd_char_to_element[256];
 
 /* color of flashing the screen, gate opening to exit */
@@ -276,8 +276,7 @@ void gd_cave_init(void)
   /* put names to a hash table */
   /* this is a helper for file read operations */
   /* maps g_strdupped strings to elemenets (integers) */
-  name_to_element = g_hash_table_new_full(gd_str_case_hash, gd_str_case_equal,
-					  free, NULL);
+  name_to_element = create_hashtable(str_case_hash, str_case_equal, NULL, NULL);
 
   for (i = 0; i < O_MAX; i++)
   {
@@ -285,36 +284,36 @@ void gd_cave_init(void)
 
     key = g_ascii_strup(gd_elements[i].filename, -1);
 
-    if (g_hash_table_lookup_extended(name_to_element, key, NULL, NULL))
+    if (hashtable_exists(name_to_element, key))		/* hash value may be 0 */
       Warn("Name %s already used for element %x", key, i);
 
-    g_hash_table_insert(name_to_element, key, GINT_TO_POINTER(i));
+    hashtable_insert(name_to_element, key, INT_TO_PTR(i));
     /* ^^^ do not free "key", as hash table needs it during the whole time! */
 
     key = g_strdup_printf("SCANNED_%s", key);        /* new string */
 
-    g_hash_table_insert(name_to_element, key, GINT_TO_POINTER(i));
+    hashtable_insert(name_to_element, key, INT_TO_PTR(i));
     /* once again, do not free "key" ^^^ */
   }
 
   /* for compatibility with tim stridmann's memorydump->bdcff converter... .... ... */
-  g_hash_table_insert(name_to_element, "HEXPANDING_WALL", GINT_TO_POINTER(O_H_EXPANDING_WALL));
-  g_hash_table_insert(name_to_element, "FALLING_DIAMOND", GINT_TO_POINTER(O_DIAMOND_F));
-  g_hash_table_insert(name_to_element, "FALLING_BOULDER", GINT_TO_POINTER(O_STONE_F));
-  g_hash_table_insert(name_to_element, "EXPLOSION1S", GINT_TO_POINTER(O_EXPLODE_1));
-  g_hash_table_insert(name_to_element, "EXPLOSION2S", GINT_TO_POINTER(O_EXPLODE_2));
-  g_hash_table_insert(name_to_element, "EXPLOSION3S", GINT_TO_POINTER(O_EXPLODE_3));
-  g_hash_table_insert(name_to_element, "EXPLOSION4S", GINT_TO_POINTER(O_EXPLODE_4));
-  g_hash_table_insert(name_to_element, "EXPLOSION5S", GINT_TO_POINTER(O_EXPLODE_5));
-  g_hash_table_insert(name_to_element, "EXPLOSION1D", GINT_TO_POINTER(O_PRE_DIA_1));
-  g_hash_table_insert(name_to_element, "EXPLOSION2D", GINT_TO_POINTER(O_PRE_DIA_2));
-  g_hash_table_insert(name_to_element, "EXPLOSION3D", GINT_TO_POINTER(O_PRE_DIA_3));
-  g_hash_table_insert(name_to_element, "EXPLOSION4D", GINT_TO_POINTER(O_PRE_DIA_4));
-  g_hash_table_insert(name_to_element, "EXPLOSION5D", GINT_TO_POINTER(O_PRE_DIA_5));
-  g_hash_table_insert(name_to_element, "WALL2", GINT_TO_POINTER(O_STEEL_EXPLODABLE));
+  hashtable_insert(name_to_element, "HEXPANDING_WALL", INT_TO_PTR(O_H_EXPANDING_WALL));
+  hashtable_insert(name_to_element, "FALLING_DIAMOND", INT_TO_PTR(O_DIAMOND_F));
+  hashtable_insert(name_to_element, "FALLING_BOULDER", INT_TO_PTR(O_STONE_F));
+  hashtable_insert(name_to_element, "EXPLOSION1S", INT_TO_PTR(O_EXPLODE_1));
+  hashtable_insert(name_to_element, "EXPLOSION2S", INT_TO_PTR(O_EXPLODE_2));
+  hashtable_insert(name_to_element, "EXPLOSION3S", INT_TO_PTR(O_EXPLODE_3));
+  hashtable_insert(name_to_element, "EXPLOSION4S", INT_TO_PTR(O_EXPLODE_4));
+  hashtable_insert(name_to_element, "EXPLOSION5S", INT_TO_PTR(O_EXPLODE_5));
+  hashtable_insert(name_to_element, "EXPLOSION1D", INT_TO_PTR(O_PRE_DIA_1));
+  hashtable_insert(name_to_element, "EXPLOSION2D", INT_TO_PTR(O_PRE_DIA_2));
+  hashtable_insert(name_to_element, "EXPLOSION3D", INT_TO_PTR(O_PRE_DIA_3));
+  hashtable_insert(name_to_element, "EXPLOSION4D", INT_TO_PTR(O_PRE_DIA_4));
+  hashtable_insert(name_to_element, "EXPLOSION5D", INT_TO_PTR(O_PRE_DIA_5));
+  hashtable_insert(name_to_element, "WALL2", INT_TO_PTR(O_STEEL_EXPLODABLE));
 
   /* compatibility with old bd-faq (pre disassembly of bladder) */
-  g_hash_table_insert(name_to_element, "BLADDERd9", GINT_TO_POINTER(O_BLADDER_8));
+  hashtable_insert(name_to_element, "BLADDERd9", INT_TO_PTR(O_BLADDER_8));
 
   /* create table to show errors at the start of the application */
   gd_create_char_to_element_table();
@@ -324,7 +323,7 @@ void gd_cave_init(void)
 GdElement gd_get_element_from_string (const char *string)
 {
   char *upper = g_ascii_strup(string, -1);
-  gpointer value;
+  void *value;
   boolean found;
 
   if (!string)
@@ -333,12 +332,15 @@ GdElement gd_get_element_from_string (const char *string)
     return O_UNKNOWN;
   }
 
-  found = g_hash_table_lookup_extended(name_to_element, upper, NULL, &value);
+  found = hashtable_exists(name_to_element, upper);	/* hash value may be 0 */
+  if (found)
+    value = hashtable_search(name_to_element, upper);
   free(upper);
   if (found)
-    return (GdElement) (GPOINTER_TO_INT(value));
+    return (GdElement) (PTR_TO_INT(value));
 
-  Warn("Invalid string representing element: %s", string);
+  Warn("Invalid string representing element: '%s'", string);
+
   return O_UNKNOWN;
 }
 
@@ -418,6 +420,22 @@ int gd_add_highscore(GdHighScore *highscores, const char *name, int score)
       return i;
 
   return -1;
+}
+
+/* for the case-insensitive hash keys */
+int str_case_equal(void *s1, void *s2)
+{
+  return strcasecmp(s1, s2) == 0;
+}
+
+unsigned int str_case_hash(void *v)
+{
+  char *upper = getStringToUpper(v);
+  unsigned int hash = get_hash_from_string(upper);
+
+  free(upper);
+
+  return hash;
 }
 
 /* for the case-insensitive hash keys */

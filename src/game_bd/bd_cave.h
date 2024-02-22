@@ -644,6 +644,10 @@ GdElement gd_get_element_from_string(const char *string);
 void gd_cave_init(void);
 
 /* for cave tags hash table */
+int str_case_equal(void *s1, void *s2);
+unsigned int str_case_hash(void *v);
+
+/* for cave tags hash table */
 boolean gd_str_case_equal(gconstpointer s1, gconstpointer s2);
 guint gd_str_case_hash(gconstpointer v);
 
