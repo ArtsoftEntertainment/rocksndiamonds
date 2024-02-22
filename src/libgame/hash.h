@@ -197,6 +197,24 @@ static int fnname (struct hashtable *h, keytype *k, valuetype *v) \
 }
 
 /*****************************************************************************
+ * hashtable_exists
+   
+ * @name        hashtable_exists
+ * @param   h   the hashtable to search
+ * @param   k   the key to search for
+ * @return      non-zero if key exists, else zero
+ */
+
+int
+hashtable_exists(struct hashtable *h, void *k);
+
+#define DEFINE_HASHTABLE_EXISTS(fnname, keytype, valuetype) \
+static int fnname (struct hashtable *h, keytype *k) \
+{ \
+  return hashtable_exists(h, k); \
+}
+
+/*****************************************************************************
  * hashtable_search
    
  * @name        hashtable_search

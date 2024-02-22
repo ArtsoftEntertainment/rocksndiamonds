@@ -269,6 +269,29 @@ hashtable_change(struct hashtable *h, void *k, void *v)
 }
 
 /*****************************************************************************/
+int /* checks if key exists */
+hashtable_exists(struct hashtable *h, void *k)
+{
+  struct entry *e;
+  unsigned int hashvalue, index;
+
+  hashvalue = hash(h, k);
+  index = indexFor(h->tablelength, hashvalue);
+  e = h->table[index];
+
+  while (e != NULL)
+  {
+    /* Check hash value to short circuit heavier comparison */
+    if ((hashvalue == e->h) && (h->eqfn(k, e->k)))
+      return 1;
+
+    e = e->next;
+  }
+
+  return 0;
+}
+
+/*****************************************************************************/
 void * /* returns value associated with key */
 hashtable_search(struct hashtable *h, void *k)
 {
