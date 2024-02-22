@@ -332,6 +332,10 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   if (is_explosion(tile) && dir != GD_MV_STILL)
     use_smooth_movements = FALSE;
 
+  // do not use smooth movement animation for player entering exit (engine stopped)
+  if (cave->player_state == GD_PL_EXITED)
+    use_smooth_movements = FALSE;
+
 #if DO_GFX_SANITY_CHECK
   if (use_native_bd_graphics_engine() && !setup.small_game_graphics && !program.headless)
   {
