@@ -493,7 +493,7 @@ static void cave_report_and_copy_unknown_tags_func(char *attrib, char *param, gp
 
   Warn("unknown tag '%s'", attrib);
 
-  g_hash_table_insert(cave->tags, g_strdup(attrib), g_strdup(param));
+  g_hash_table_insert(cave->tags, getStringCopy(attrib), getStringCopy(param));
 }
 
 /* having read all strings belonging to the cave, process it. */
@@ -956,7 +956,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
       /* own tag: not too much thinking :P */
       if (reading_replay)
       {
-	g_hash_table_insert(replay_tags, g_strdup(attrib), g_strdup(param));
+	g_hash_table_insert(replay_tags, getStringCopy(attrib), getStringCopy(param));
       }
       else if (reading_mapcodes)
       {
@@ -1111,7 +1111,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	  {
 	    /* it must be a default setting for all caves. is it a valid identifier? */
 	    /* yes, it is. add to the hash table, which will be copied for all caves. */
-	    g_hash_table_insert(tags, g_strdup(attrib), g_strdup(param));
+	    g_hash_table_insert(tags, getStringCopy(attrib), getStringCopy(param));
 	  }
 	  else
 	    /* unknown setting - report. */
@@ -1122,7 +1122,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	  /* we are reading a [cave] */
 	  /* cave settings are immediately added to cave hash table. */
 	  /* if it is unknown, we have to remember it, and save it again. */
-	  g_hash_table_insert(tags, g_strdup(attrib), g_strdup(param));
+	  g_hash_table_insert(tags, getStringCopy(attrib), getStringCopy(param));
 	}
       }
 

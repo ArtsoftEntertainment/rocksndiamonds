@@ -275,7 +275,7 @@ void gd_cave_init(void)
 
   /* put names to a hash table */
   /* this is a helper for file read operations */
-  /* maps g_strdupped strings to elemenets (integers) */
+  /* maps copied strings to elements (integers) */
   name_to_element = create_hashtable(str_case_hash, str_case_equal, NULL, NULL);
 
   for (i = 0; i < O_MAX; i++)
@@ -290,7 +290,7 @@ void gd_cave_init(void)
     hashtable_insert(name_to_element, key, INT_TO_PTR(i));
     /* ^^^ do not free "key", as hash table needs it during the whole time! */
 
-    key = g_strdup_printf("SCANNED_%s", key);        /* new string */
+    key = getStringCat2("SCANNED_", key);		/* new string */
 
     hashtable_insert(name_to_element, key, INT_TO_PTR(i));
     /* once again, do not free "key" ^^^ */
@@ -586,7 +586,7 @@ void gd_cave_free(GdCave *cave)
 
 static void hash_copy_foreach(const char *key, const char *value, GHashTable *dest)
 {
-  g_hash_table_insert(dest, g_strdup(key), g_strdup(value));
+  g_hash_table_insert(dest, getStringCopy(key), getStringCopy(value));
 }
 
 /* copy cave from src to destination, with duplicating dynamically allocated data */
