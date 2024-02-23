@@ -578,7 +578,7 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
   int i;
 
   /* copy entire data */
-  g_memmove(dest, src, sizeof(GdCave));
+  memmove(dest, src, sizeof(GdCave));
 
   /* but duplicate dynamic data */
   dest->tags = create_hashtable(gd_str_case_hash, gd_str_case_equal, free, free);
