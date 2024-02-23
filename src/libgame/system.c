@@ -938,6 +938,12 @@ void BlitBitmapMasked(Bitmap *src_bitmap, Bitmap *dst_bitmap,
 		      int src_x, int src_y, int width, int height,
 		      int dst_x, int dst_y)
 {
+  if (program.headless)
+    return;
+
+  if (src_bitmap == NULL || dst_bitmap == NULL)
+    return;
+
   if (DrawingDeactivated(dst_x, dst_y))
     return;
 
