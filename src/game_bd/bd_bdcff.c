@@ -387,10 +387,10 @@ static boolean replay_process_tags_func(const char *attrib, const char *param, G
 }
 
 /* ... */
-static void replay_process_tags(GdReplay *replay, GHashTable *tags)
+static void replay_process_tags(GdReplay *replay, HashTable *tags)
 {
   /* process all tags */
-  g_hash_table_foreach_remove(tags, (GHRFunc) replay_process_tags_func, replay);
+  hashtable_foreach_remove(tags, (hashtable_remove_fn)replay_process_tags_func, replay);
 }
 
 /* a GHashTable foreach func.
@@ -493,33 +493,33 @@ static void cave_report_and_copy_unknown_tags_func(char *attrib, char *param, gp
 
   Warn("unknown tag '%s'", attrib);
 
-  g_hash_table_insert(cave->tags, getStringCopy(attrib), getStringCopy(param));
+  hashtable_insert(cave->tags, getStringCopy(attrib), getStringCopy(param));
 }
 
 /* having read all strings belonging to the cave, process it. */
-static void cave_process_tags(GdCave *cave, GHashTable *tags, GList *maplines)
+static void cave_process_tags(GdCave *cave, HashTable *tags, GList *maplines)
 {
   char *value;
 
   /* first check cave name, so we can report errors correctly (saying that GdCave xy: error foobar) */
-  value = g_hash_table_lookup(tags, "Name");
+  value = hashtable_search(tags, "Name");
   if (value)
     cave_process_tags_func("Name", value, cave);
 
   /* process lame engine tag first so its settings may be overwritten later */
-  value = g_hash_table_lookup(tags, "Engine");
+  value = hashtable_search(tags, "Engine");
   if (value)
   {
     cave_process_tags_func("Engine", value, cave);
-    g_hash_table_remove(tags, "Engine");
+    hashtable_remove(tags, "Engine");
   }
 
   /* check if this is an intermission, so we can set to cavesize or intermissionsize */
-  value = g_hash_table_lookup(tags, "Intermission");
+  value = hashtable_search(tags, "Intermission");
   if (value)
   {
     cave_process_tags_func("Intermission", value, cave);
-    g_hash_table_remove(tags, "Intermission");
+    hashtable_remove(tags, "Intermission");
   }
 
   if (cave->intermission)
@@ -544,39 +544,39 @@ static void cave_process_tags(GdCave *cave, GHashTable *tags, GList *maplines)
   }
 
   /* process size at the beginning... as ratio types depend on this. */
-  value = g_hash_table_lookup(tags, "Size");
+  value = hashtable_search(tags, "Size");
   if (value)
   {
     cave_process_tags_func("Size", value, cave);
-    g_hash_table_remove(tags, "Size");
+    hashtable_remove(tags, "Size");
   }
 
   /* these are read from the hash table, but also have some implications */
   /* we do not delete them from the hash table here; as _their values will be processed later_. */
   /* here we only set their implicite meanings. */
   /* these also set predictability */
-  if (g_hash_table_lookup(tags, "SlimePermeability"))
+  if (hashtable_search(tags, "SlimePermeability"))
     cave->slime_predictable = FALSE;
 
-  if (g_hash_table_lookup(tags, "SlimePermeabilityC64"))
+  if (hashtable_search(tags, "SlimePermeabilityC64"))
     cave->slime_predictable = TRUE;
 
   /* these set scheduling type. framedelay takes precedence, if there are both; so we check it later. */
-  if (g_hash_table_lookup(tags, "CaveDelay"))
+  if (hashtable_search(tags, "CaveDelay"))
   {
     /* only set scheduling type, when it is not the gdash-default. */
     /* this allows settings cavescheduling = bd1 in the [game] section, for example. */
     /* in that case, this one will not overwrite it. */
     if (cave->scheduling == GD_SCHEDULING_MILLISECONDS)
       cave->scheduling = GD_SCHEDULING_PLCK;
-    }
+  }
 
-  if (g_hash_table_lookup(tags, "FrameTime"))
+  if (hashtable_search(tags, "FrameTime"))
     /* but if the cave has a frametime setting, always switch to milliseconds. */
     cave->scheduling = GD_SCHEDULING_MILLISECONDS;
 
   /* process all tags */
-  g_hash_table_foreach_remove(tags, (GHRFunc) cave_process_tags_func, cave);
+  hashtable_foreach_remove(tags, (hashtable_remove_fn)cave_process_tags_func, cave);
 
   /* and at the end, when read all tags (especially the size= tag) */
   /* process map, if any. */
@@ -653,7 +653,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
   GdString version_read = "0.32";
   GList *mapstrings = NULL;
   int linenum;
-  GHashTable *tags, *replay_tags;
+  HashTable *tags, *replay_tags;
   GdObjectLevels levels = GD_OBJECT_LEVEL_ALL;
   GdCave *default_cave;
 
@@ -663,8 +663,8 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
   set_intermissionsize_defaults();
   gd_create_char_to_element_table();
 
-  tags = g_hash_table_new_full(gd_str_case_hash, gd_str_case_equal, free, free);
-  replay_tags = g_hash_table_new_full(gd_str_case_hash, gd_str_case_equal, free, free);
+  tags        = create_hashtable(gd_str_case_hash, gd_str_case_equal, free, free);
+  replay_tags = create_hashtable(gd_str_case_hash, gd_str_case_equal, free, free);
 
   /* split into lines */
   lines = getSplitStringArray (contents, "\n", 0);
@@ -718,9 +718,9 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	g_list_free(mapstrings);
 	mapstrings = NULL;
 
-	if (g_hash_table_size(tags) != 0)
-	  g_hash_table_foreach(tags, (GHFunc) cave_report_and_copy_unknown_tags_func, cave);
-	g_hash_table_remove_all(tags);
+	hashtable_foreach(tags, (hashtable_fn)cave_report_and_copy_unknown_tags_func, cave);
+	hashtable_remove_all(tags);
+
 	/* set this to point the pseudo-cave which holds default values */
 	cave = default_cave;
       }
@@ -807,8 +807,8 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 #endif
 
 	/* report any remaining unknown tags */
-	g_hash_table_foreach(replay_tags, (GHFunc) replay_report_unknown_tags_func, NULL);
-	g_hash_table_remove_all(replay_tags);
+	hashtable_foreach(replay_tags, (hashtable_fn)replay_report_unknown_tags_func, NULL);
+	hashtable_remove_all(replay_tags);
 
 	if (replay->movements->len != 0)
 	{
@@ -956,7 +956,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
       /* own tag: not too much thinking :P */
       if (reading_replay)
       {
-	g_hash_table_insert(replay_tags, getStringCopy(attrib), getStringCopy(param));
+	hashtable_insert(replay_tags, getStringCopy(attrib), getStringCopy(param));
       }
       else if (reading_mapcodes)
       {
@@ -1111,7 +1111,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	  {
 	    /* it must be a default setting for all caves. is it a valid identifier? */
 	    /* yes, it is. add to the hash table, which will be copied for all caves. */
-	    g_hash_table_insert(tags, getStringCopy(attrib), getStringCopy(param));
+	    hashtable_insert(tags, getStringCopy(attrib), getStringCopy(param));
 	  }
 	  else
 	    /* unknown setting - report. */
@@ -1122,7 +1122,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	  /* we are reading a [cave] */
 	  /* cave settings are immediately added to cave hash table. */
 	  /* if it is unknown, we have to remember it, and save it again. */
-	  g_hash_table_insert(tags, getStringCopy(attrib), getStringCopy(param));
+	  hashtable_insert(tags, getStringCopy(attrib), getStringCopy(param));
 	}
       }
 
@@ -1148,8 +1148,8 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 
   /* cleanup */
   freeStringArray(lines);
-  g_hash_table_destroy(tags);
-  g_hash_table_destroy(replay_tags);
+  hashtable_destroy(tags);
+  hashtable_destroy(replay_tags);
   gd_cave_free(default_cave);
 
   /* old bdcff files hack. explanation follows. */

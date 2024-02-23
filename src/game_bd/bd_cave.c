@@ -276,7 +276,7 @@ void gd_cave_init(void)
   /* put names to a hash table */
   /* this is a helper for file read operations */
   /* maps copied strings to elements (integers) */
-  name_to_element = create_hashtable(str_case_hash, str_case_equal, NULL, NULL);
+  name_to_element = create_hashtable(gd_str_case_hash, gd_str_case_equal, NULL, NULL);
 
   for (i = 0; i < O_MAX; i++)
   {
@@ -423,35 +423,18 @@ int gd_add_highscore(GdHighScore *highscores, const char *name, int score)
 }
 
 /* for the case-insensitive hash keys */
-int str_case_equal(void *s1, void *s2)
+int gd_str_case_equal(void *s1, void *s2)
 {
   return strcasecmp(s1, s2) == 0;
 }
 
-unsigned int str_case_hash(void *v)
+unsigned int gd_str_case_hash(void *v)
 {
   char *upper = getStringToUpper(v);
   unsigned int hash = get_hash_from_string(upper);
 
   free(upper);
 
-  return hash;
-}
-
-/* for the case-insensitive hash keys */
-boolean gd_str_case_equal(gconstpointer s1, gconstpointer s2)
-{
-  return strcasecmp(s1, s2) == 0;
-}
-
-guint gd_str_case_hash(gconstpointer v)
-{
-  char *upper;
-  guint hash;
-
-  upper = g_ascii_strup(v, -1);
-  hash = g_str_hash(v);
-  free(upper);
   return hash;
 }
 
@@ -466,7 +449,7 @@ GdCave *gd_cave_new(void)
   cave = checked_calloc(sizeof(GdCave));
 
   /* hash table which stores unknown tags as strings. */
-  cave->tags = g_hash_table_new_full(gd_str_case_hash, gd_str_case_equal, free, free);
+  cave->tags = create_hashtable(gd_str_case_hash, gd_str_case_equal, free, free);
 
   gd_cave_set_gdash_defaults(cave);
 
@@ -553,7 +536,7 @@ void gd_cave_free(GdCave *cave)
     return;
 
   if (cave->tags)
-    g_hash_table_destroy(cave->tags);
+    hashtable_destroy(cave->tags);
 
   if (cave->random)    /* random generator is a GRand * */
     g_rand_free(cave->random);
@@ -584,9 +567,9 @@ void gd_cave_free(GdCave *cave)
   free (cave);
 }
 
-static void hash_copy_foreach(const char *key, const char *value, GHashTable *dest)
+static void hash_copy_foreach(const char *key, const char *value, HashTable *dest)
 {
-  g_hash_table_insert(dest, getStringCopy(key), getStringCopy(value));
+  hashtable_insert(dest, getStringCopy(key), getStringCopy(value));
 }
 
 /* copy cave from src to destination, with duplicating dynamically allocated data */
@@ -598,10 +581,10 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
   g_memmove(dest, src, sizeof(GdCave));
 
   /* but duplicate dynamic data */
-  dest->tags = g_hash_table_new_full(gd_str_case_hash, gd_str_case_equal,
-				     free, free);
+  dest->tags = create_hashtable(gd_str_case_hash, gd_str_case_equal, free, free);
+
   if (src->tags)
-    g_hash_table_foreach(src->tags, (GHFunc) hash_copy_foreach, dest->tags);
+    hashtable_foreach(src->tags, (hashtable_fn)hash_copy_foreach, dest->tags);
 
   dest->map = gd_cave_map_dup(src, map);
   dest->hammered_reappear = gd_cave_map_dup(src, hammered_reappear);

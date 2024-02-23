@@ -377,7 +377,7 @@ typedef struct _gd_cave
   /* and this one the highscores */
   GdHighScore highscore[GD_HIGHSCORE_NUM];
 
-  GHashTable *tags;            /* stores read-but-not-understood strings from bdcff, so we can save them later. */
+  HashTable *tags;      /* stores read-but-not-understood strings from bdcff, so we can save them later. */
 
   GdElement **map;            /* pointer to data for map, non-null if has a map */
   GList *objects;
@@ -644,12 +644,8 @@ GdElement gd_get_element_from_string(const char *string);
 void gd_cave_init(void);
 
 /* for cave tags hash table */
-int str_case_equal(void *s1, void *s2);
-unsigned int str_case_hash(void *v);
-
-/* for cave tags hash table */
-boolean gd_str_case_equal(gconstpointer s1, gconstpointer s2);
-guint gd_str_case_hash(gconstpointer v);
+int gd_str_case_equal(void *s1, void *s2);
+unsigned int gd_str_case_hash(void *v);
 
 /* cave highscore functions */
 int gd_highscore_compare(gconstpointer a, gconstpointer b);
