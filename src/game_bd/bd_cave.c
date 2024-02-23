@@ -282,7 +282,7 @@ void gd_cave_init(void)
   {
     char *key;
 
-    key = g_ascii_strup(gd_elements[i].filename, -1);
+    key = getStringToUpper(gd_elements[i].filename);
 
     if (hashtable_exists(name_to_element, key))		/* hash value may be 0 */
       Warn("Name %s already used for element %x", key, i);
@@ -322,7 +322,7 @@ void gd_cave_init(void)
 /* search the element database for the specified name, and return the element */
 GdElement gd_get_element_from_string (const char *string)
 {
-  char *upper = g_ascii_strup(string, -1);
+  char *upper = getStringToUpper(string);
   void *value;
   boolean found;
 
