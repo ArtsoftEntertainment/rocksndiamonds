@@ -318,11 +318,11 @@ static void brc_import(guint8 *data)
       imported[level * 20 + cavenum] = cave;
 
       if (cavenum < 16)
-	g_snprintf(cave->name, sizeof(GdString), "Cave %c/%d", 'A' + cavenum,
-		   level + 1);
+	snprintf(cave->name, sizeof(GdString), "Cave %c/%d", 'A' + cavenum,
+		 level + 1);
       else
-	g_snprintf(cave->name, sizeof(GdString), "Intermission %d/%d",
-		   cavenum - 15, level + 1);
+	snprintf(cave->name, sizeof(GdString), "Intermission %d/%d",
+		 cavenum - 15, level + 1);
 
       /* fixed intermission caves; are smaller. */
       if (cavenum >= 16)

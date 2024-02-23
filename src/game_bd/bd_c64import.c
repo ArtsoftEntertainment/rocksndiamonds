@@ -2355,9 +2355,9 @@ List *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
 
 	/* no name, so we make up one */
 	if (newcave->intermission)
-	  g_snprintf(newcave->name, sizeof(newcave->name), _("Intermission %d"), cavenum - 15);
+	  snprintf(newcave->name, sizeof(newcave->name), _("Intermission %d"), cavenum - 15);
 	else
-	  g_snprintf(newcave->name, sizeof(newcave->name), _("Cave %c"), 'A' + cavenum);
+	  snprintf(newcave->name, sizeof(newcave->name), _("Cave %c"), 'A' + cavenum);
 
 	switch(format)
 	{
@@ -2407,9 +2407,9 @@ List *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
 
 	newcave->selectable = cavenum % 5 == 0;    /* original selection scheme */
 	if (newcave->intermission)
-	  g_snprintf(newcave->name, sizeof(newcave->name), _("Intermission %d"), cavenum / 5 + 1);
+	  snprintf(newcave->name, sizeof(newcave->name), _("Intermission %d"), cavenum / 5 + 1);
 	else
-	  g_snprintf(newcave->name, sizeof(newcave->name), _("Cave %c"), 'A'+(cavenum % 5 + cavenum / 5 * 4));
+	  snprintf(newcave->name, sizeof(newcave->name), _("Cave %c"), 'A'+(cavenum % 5 + cavenum / 5 * 4));
 
 	cavelength = cave_copy_from_dlb (newcave, buf + bufp, length - bufp);
 	break;
@@ -2509,14 +2509,14 @@ List *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
     {
       /* intermission */
       if (numbering)
-	g_snprintf(cave->name, sizeof(cave->name), _("Intermission %02d"), num);
+	snprintf(cave->name, sizeof(cave->name), _("Intermission %02d"), num);
       else
-	g_snprintf(cave->name, sizeof(cave->name), _("Intermission %d"), intermissionnum);
+	snprintf(cave->name, sizeof(cave->name), _("Intermission %d"), intermissionnum);
     } else {
       if (numbering)
-	g_snprintf(cave->name, sizeof(cave->name), _("Cave %02d"), num);
+	snprintf(cave->name, sizeof(cave->name), _("Cave %02d"), num);
       else
-	g_snprintf(cave->name, sizeof(cave->name), _("Cave %c"), 'A' - 1 + cavenum);
+	snprintf(cave->name, sizeof(cave->name), _("Cave %c"), 'A' - 1 + cavenum);
     }
 
     num++;
