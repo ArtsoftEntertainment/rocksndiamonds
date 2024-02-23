@@ -497,7 +497,7 @@ static void cave_report_and_copy_unknown_tags_func(char *attrib, char *param, gp
 }
 
 /* having read all strings belonging to the cave, process it. */
-static void cave_process_tags(GdCave *cave, HashTable *tags, GList *maplines)
+static void cave_process_tags(GdCave *cave, HashTable *tags, List *maplines)
 {
   char *value;
 
@@ -584,8 +584,8 @@ static void cave_process_tags(GdCave *cave, HashTable *tags, GList *maplines)
   /* some old bdcff files use smaller intermissions than the one specified. */
   if (maplines)
   {
-    int x, y, length = g_list_length(maplines);
-    GList *iter;
+    int x, y, length = list_length(maplines);
+    List *iter;
 
     /* create map and fill with initial border, in case that map strings are shorter or somewhat */
     cave->map = gd_cave_map_new(cave, GdElement);
@@ -642,7 +642,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
   char **lines;
   int lineno;
   GdCave *cave;
-  GList *iter;
+  List *iter;
   boolean reading_replay = FALSE;
   boolean reading_map = FALSE;
   boolean reading_mapcodes = FALSE;
@@ -651,7 +651,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
   boolean reading_bdcff_demo = FALSE;
   /* assume version to be 0.32, also when the file does not specify it explicitly */
   GdString version_read = "0.32";
-  GList *mapstrings = NULL;
+  List *mapstrings = NULL;
   int linenum;
   HashTable *tags, *replay_tags;
   GdObjectLevels levels = GD_OBJECT_LEVEL_ALL;
@@ -701,7 +701,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	if (mapstrings)
 	{
 	  Warn("incorrect file format: new [cave] section, but already read some map lines");
-	  g_list_free(mapstrings);
+	  list_free(mapstrings);
 	  mapstrings = NULL;
 	}
 
@@ -710,12 +710,12 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 
 	/* ... to be able to create a copy for a new cave. */
 	cave = gd_cave_new_from_cave(default_cave);
-	gd_caveset = g_list_append (gd_caveset, cave);
+	gd_caveset = list_append (gd_caveset, cave);
       }
       else if (strcasecmp(line, "[/cave]") == 0)
       {
 	cave_process_tags(cave, tags, mapstrings);
-	g_list_free(mapstrings);
+	list_free(mapstrings);
 	mapstrings = NULL;
 
 	hashtable_foreach(tags, (hashtable_fn)cave_report_and_copy_unknown_tags_func, cave);
@@ -730,7 +730,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	if (mapstrings != NULL)
 	{
 	  Warn("incorrect file format: new [map] section, but already read some map lines");
-	  g_list_free(mapstrings);
+	  list_free(mapstrings);
 	  mapstrings = NULL;
 	}
       }
@@ -773,7 +773,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	  replay = gd_replay_new();
 	  replay->saved = TRUE;
 	  replay->success = TRUE;   /* we think that it is a successful demo */
-	  cave->replays = g_list_append(cave->replays, replay);
+	  cave->replays = list_append(cave->replays, replay);
 	  gd_strcpy(replay->player_name, "???");    /* name not saved */
 	}
 	else
@@ -812,7 +812,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 
 	if (replay->movements->len != 0)
 	{
-	  cave->replays = g_list_append(cave->replays, replay);
+	  cave->replays = list_append(cave->replays, replay);
 	}
 	else
 	{
@@ -877,7 +877,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
     if (reading_map)
     {
       /* just append to the mapstrings list. we will process it later */
-      mapstrings = g_list_append(mapstrings, line);
+      mapstrings = list_append(mapstrings, line);
 
       continue;
     }
@@ -912,13 +912,13 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
     if (reading_bdcff_demo)
     {
       GdReplay *replay;
-      GList *iter;
+      List *iter;
 
       /* demo must be in [cave] section. we already showed an error message for this. */
       if (cave == default_cave)
 	continue;
 
-      iter = g_list_last(cave->replays);
+      iter = list_last(cave->replays);
 
       replay = (GdReplay *)iter->data;
       replay_store_more_from_bdcff(replay, line);
@@ -934,7 +934,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
       if (new_object)
       {
 	new_object->levels = levels;    /* apply levels to new object */
-	cave->objects = g_list_append(cave->objects, new_object);
+	cave->objects = list_append(cave->objects, new_object);
       }
       else
       {
@@ -1135,7 +1135,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
   if (mapstrings)
   {
     Warn("incorrect file format: end of file, but still have some map lines read");
-    g_list_free(mapstrings);
+    list_free(mapstrings);
     mapstrings = NULL;
   }
 
@@ -1163,7 +1163,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 
   if (strEqual(version_read, "0.32"))
   {
-    GList *iter;
+    List *iter;
 
     Warn("No BDCFF version, or 0.32. Using unspecified-intermission-size hack.");
 
@@ -1194,12 +1194,12 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	object.element = cave->initial_border;
 	object.fill_element = cave->initial_border;
 
-	cave->objects = g_list_prepend(cave->objects, getMemCopy(&object, sizeof(object)));
+	cave->objects = list_prepend(cave->objects, getMemCopy(&object, sizeof(object)));
 
 	object.x1 = 19;
 	object.y1 = 0;    /* 19, as it is also the border */
 
-	cave->objects = g_list_prepend(cave->objects, getMemCopy(&object, sizeof(object)));    /* another */
+	cave->objects = list_prepend(cave->objects, getMemCopy(&object, sizeof(object)));    /* another */
       }
     }
   }

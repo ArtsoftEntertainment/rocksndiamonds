@@ -22,7 +22,7 @@
 
 
 /* this stores the caves. */
-GList *gd_caveset;
+List *gd_caveset;
 
 /* the data of the caveset: name, highscore, max number of lives, etc. */
 GdCavesetData *gd_caveset_data;
@@ -115,8 +115,8 @@ void gd_caveset_clear(void)
 {
   if (gd_caveset)
   {
-    g_list_foreach(gd_caveset, (GFunc) gd_cave_free, NULL);
-    g_list_free(gd_caveset);
+    list_foreach(gd_caveset, (list_fn) gd_cave_free, NULL);
+    list_free(gd_caveset);
     gd_caveset = NULL;
   }
 
@@ -135,13 +135,13 @@ void gd_caveset_clear(void)
 /* return number of caves currently in memory. */
 int gd_caveset_count(void)
 {
-  return g_list_length(gd_caveset);
+  return list_length(gd_caveset);
 }
 
 /* return index of first selectable cave */
 static int caveset_first_selectable_cave_index(void)
 {
-  GList *iter;
+  List *iter;
   int i;
 
   for (i = 0, iter = gd_caveset; iter != NULL; i++, iter = iter->next)
@@ -161,7 +161,7 @@ static int caveset_first_selectable_cave_index(void)
 /* return a cave identified by its index */
 GdCave *gd_return_nth_cave(const int cave)
 {
-  return g_list_nth_data(gd_caveset, cave);
+  return list_nth_data(gd_caveset, cave);
 }
 
 /* get a selected cave from the loaded caveset (original, unmodified cave) */
@@ -469,7 +469,7 @@ static void brc_import(guint8 *data)
 
       /* append to caveset or forget it. */
       if (!only_dirt)
-	gd_caveset = g_list_append(gd_caveset, cave);
+	gd_caveset = list_append(gd_caveset, cave);
       else
 	gd_cave_free(cave);
     }
@@ -508,7 +508,7 @@ boolean gd_caveset_load_from_file(char *filename)
   gsize length;
   char *buf;
   boolean read;
-  GList *new_caveset;
+  List *new_caveset;
   struct stat st;
 
   if (g_stat(filename, &st) != 0)
@@ -606,7 +606,7 @@ boolean gd_caveset_load_from_file(char *filename)
 
 int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean repair)
 {
-  GList *riter;
+  List *riter;
   int wrong = 0;
 
   riter = cave->replays;
@@ -615,7 +615,7 @@ int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean 
     GdReplay *replay = (GdReplay *)riter->data;
     guint32 checksum;
     GdCave *rendered;
-    GList *next = riter->next;
+    List *next = riter->next;
 
     rendered = gd_cave_new_rendered(cave, replay->level, replay->seed);
     checksum = gd_cave_adler_checksum(rendered);
@@ -646,7 +646,7 @@ int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean 
 	if (remove)
 	{
 	  /* may remove */
-	  cave->replays = g_list_remove_link(cave->replays, riter);
+	  cave->replays = list_remove_link(cave->replays, riter);
 	  gd_replay_free(replay);
 	}
       }
@@ -661,7 +661,7 @@ int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean 
 
 boolean gd_caveset_has_replays(void)
 {
-  GList *citer;
+  List *citer;
 
   /* for all caves */
   for (citer = gd_caveset; citer != NULL; citer = citer->next)

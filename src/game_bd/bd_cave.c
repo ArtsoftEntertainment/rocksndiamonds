@@ -556,12 +556,12 @@ void gd_cave_free(GdCave *cave)
   gd_cave_map_free(cave->hammered_reappear);
 
   /* free objects */
-  g_list_foreach(cave->objects, (GFunc) free, NULL);
-  g_list_free (cave->objects);
+  list_foreach(cave->objects, (list_fn) free, NULL);
+  list_free(cave->objects);
 
   /* free replays */
-  g_list_foreach(cave->replays, (GFunc) gd_replay_free, NULL);
-  g_list_free(cave->replays);
+  list_foreach(cave->replays, (list_fn) gd_replay_free, NULL);
+  list_free(cave->replays);
 
   /* freeing main pointer */
   free (cave);
@@ -601,21 +601,21 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
   /* copy objects list */
   if (src->objects)
   {
-    GList *iter;
+    List *iter;
 
     dest->objects = NULL;    /* new empty list */
     for (iter = src->objects; iter != NULL; iter = iter->next) /* do a deep copy */
-      dest->objects = g_list_append(dest->objects, getMemCopy (iter->data, sizeof (GdObject)));
+      dest->objects = list_append(dest->objects, getMemCopy (iter->data, sizeof (GdObject)));
   }
 
   /* copy replays */
   if (src->replays)
   {
-    GList *iter;
+    List *iter;
 
     dest->replays = NULL;
     for (iter = src->replays; iter != NULL; iter = iter->next) /* do a deep copy */
-      dest->replays = g_list_append(dest->replays, gd_replay_new_from_replay(iter->data));
+      dest->replays = list_append(dest->replays, gd_replay_new_from_replay(iter->data));
   }
 
   /* copy random number generator */

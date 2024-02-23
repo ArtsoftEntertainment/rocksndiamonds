@@ -52,7 +52,7 @@ typedef struct _gd_caveset_data
 extern const GdStructDescriptor gd_caveset_properties[];
 
 extern GdCavesetData *gd_caveset_data;
-extern GList *gd_caveset;
+extern List *gd_caveset;
 extern boolean gd_caveset_edited;
 extern int gd_caveset_last_selected;
 extern int gd_caveset_last_selected_level;

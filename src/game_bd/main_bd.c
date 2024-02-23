@@ -137,7 +137,7 @@ boolean LoadNativeLevel_BD(char *filename, int level_pos, boolean level_info_onl
   // check if this cave has any replays
   if (native_bd_level.cave->replays != NULL)
   {
-    GList *item = native_bd_level.cave->replays;
+    List *item = native_bd_level.cave->replays;
 
     // try to find replay that was recorded for this difficulty level
     while (item != NULL &&

@@ -690,7 +690,7 @@ static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_by
 	{
 	  int pos = x1 + y1 * 40 + y * dy * 40 + x * dx;
 
-	  cave->objects = g_list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, pos % 40, pos / 40, elem));
+	  cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, pos % 40, pos / 40, elem));
 	}
       }
 
@@ -710,7 +710,7 @@ static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_by
 	  if (x1 >= cave->w || y1 >= cave->h)
 	    Warn("invalid point coordinates %d,%d at byte %d", x1, y1, index);
 
-	  cave->objects = g_list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	  cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
 
 	  index += 3;
 	  break;
@@ -742,7 +742,7 @@ static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_by
 		y2 >= cave->h)
 	      Warn("invalid line coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	    cave->objects = g_list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	    cave->objects = list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
 	  }
 
 	  index += 5;
@@ -760,7 +760,7 @@ static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_by
 	      y2 >= cave->h)
 	    Warn("invalid filled rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	  cave->objects = g_list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem, import_func(data[index + 5], index + 5)));
+	  cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem, import_func(data[index + 5], index + 5)));
 
 	  index += 6;
 	  break;
@@ -777,7 +777,7 @@ static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_by
 	      y2 >= cave->h)
 	    Warn("invalid rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	  cave->objects = g_list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	  cave->objects = list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
 
 	  index += 5;
 	  break;
@@ -882,7 +882,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
 	    y2 >= cave->h)
 	  Warn("invalid line coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	cave->objects = list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
 
 	index += 6;
 	break;
@@ -900,7 +900,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
 	    y2 >= cave->h)
 	  Warn("invalid rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	cave->objects = list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
 
 	index += 6;
 	break;
@@ -918,7 +918,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
 	    y2 >= cave->h)
 	  Warn("invalid filled rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem, bd1_import(data[index+6], index+6)));
+	cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem, bd1_import(data[index+6], index+6)));
 
 	index += 7;
 	break;
@@ -932,7 +932,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
 	    y1 >= cave->h)
 	  Warn("invalid point coordinates %d,%d at byte %d", x1, y1, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
 
 	index += 4;
 	break;
@@ -960,7 +960,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
 	    y2 >= cave->h)
 	  Warn("invalid raster coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_raster(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, elem));
+	cave->objects = list_append(cave->objects, gd_object_new_raster(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, elem));
 
 	index += 8;
 	break;
@@ -995,7 +995,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
 	  {
 	    /* for (8 bits in a byte) */
 	    if ((val & 1) != 0) /* convert to single points... */
-	      cave->objects = g_list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	      cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
 
 	    val >>= 1;
 	    x1++;   /* next cave pos */
@@ -1015,7 +1015,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
       case 6:                /* JOIN */
 	dy = data[index + 3] / 40;
 	dx = data[index + 3] % 40;    /* same byte!!! */
-	cave->objects = g_list_append(cave->objects, gd_object_new_join(GD_OBJECT_LEVEL_ALL, dx, dy, bd1_import(data[index+1], index+1), bd1_import(data[index+2], index+2)));
+	cave->objects = list_append(cave->objects, gd_object_new_join(GD_OBJECT_LEVEL_ALL, dx, dy, bd1_import(data[index+1], index+1), bd1_import(data[index+2], index+2)));
 
 	index += 4;
 	break;
@@ -1752,7 +1752,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
 	if (x1 >= cave->w || y1 >= cave->h)
 	  Warn("invalid point coordinates %d,%d at byte %d", x1, y1, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
 
 	index += 4;
 	break;
@@ -1770,7 +1770,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
 	    y2 >= cave->h)
 	  Warn("invalid rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	cave->objects = list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
 
 	index += 6;
 	break;
@@ -1788,7 +1788,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
 	  Warn("invalid filled rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
 	/* border and inside of fill is the same element. */
-	cave->objects = g_list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, crazydream_import_table[data[index + 1]], crazydream_import_table[data[index + 1]]));
+	cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, crazydream_import_table[data[index + 1]], crazydream_import_table[data[index + 1]]));
 
 	index += 6;
 	break;
@@ -1812,7 +1812,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
 	{
 	  for (i = 0; i < length; i++)
 	  {
-	    cave->objects = g_list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	    cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
 	    x1 += nx;
 	    y1 += ny;
 	  }
@@ -1826,7 +1826,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
 	      y2 >= cave->h)
 	    Warn("invalid line coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index - 5);
 
-	  cave->objects = g_list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	  cave->objects = list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
 	}
 
 	index += 6;
@@ -1863,7 +1863,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
 	    dy + ch > cave->h)
 	  Warn("invalid paste coordinates %d,%d at byte %d", dx, dy, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_copy_paste(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, FALSE, FALSE));
+	cave->objects = list_append(cave->objects, gd_object_new_copy_paste(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, FALSE, FALSE));
 
 	index += 3;
 	break;
@@ -1890,7 +1890,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
 	    y2 >= cave->h)
 	  Warn("invalid raster coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = g_list_append(cave->objects, gd_object_new_raster(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, elem));
+	cave->objects = list_append(cave->objects, gd_object_new_raster(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, elem));
 
 	index += 8;
 	break;
@@ -1933,7 +1933,7 @@ static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const in
     gint32 prob[4] = { 37, 32, 2, 0 };
     gint32 seeds[5] = { -1, -1, -1, -1, -1 };
 
-    cave->objects = g_list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
+    cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
   }
 
   if (strEqual(cave->name, "Roll dice now!") && checksum == 235)
@@ -1942,13 +1942,13 @@ static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const in
     gint32 prob[4] = { 0x18, 0x08, 0, 0 };
     gint32 seeds[5] = { -1, -1, -1, -1, -1 };
 
-    cave->objects = g_list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
+    cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
   }
 
   if (strEqual(cave->name, "Random maze") && checksum == 24)
   {
     gint32 seeds[5] = { -1, -1, -1, -1, -1 };
-    cave->objects = g_list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 1, 4, 35, 20, 1, 1, O_NONE, O_DIRT, 50, seeds));
+    cave->objects = list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 1, 4, 35, 20, 1, 1, O_NONE, O_DIRT, 50, seeds));
   }
 
   if (strEqual(cave->name, "Metamorphosis") && checksum == 53)
@@ -1957,8 +1957,8 @@ static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const in
     GdElement rand[4] = { O_STONE, O_DIRT, O_DIRT, O_DIRT };
     gint32 prob[4] = { 0x18, 0, 0, 0 };
 
-    cave->objects = g_list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, 1, 3, O_NONE, O_BLADDER_SPENDER, 50, seeds));
-    cave->objects = g_list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
+    cave->objects = list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, 1, 3, O_NONE, O_BLADDER_SPENDER, 50, seeds));
+    cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
     cave->creatures_backwards = TRUE;    /* for some reason, this level worked like that */
   }
 
@@ -1966,10 +1966,10 @@ static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const in
   {
     gint32 seeds[5] = { -1, -1, -1, -1, -1 };
 
-    cave->objects = g_list_append(cave->objects, gd_object_new_maze_unicursal(GD_OBJECT_LEVEL_ALL, 1, 1, 35, 19, 1, 1, O_BRICK, O_PRE_DIA_1, 50, seeds));
+    cave->objects = list_append(cave->objects, gd_object_new_maze_unicursal(GD_OBJECT_LEVEL_ALL, 1, 1, 35, 19, 1, 1, O_BRICK, O_PRE_DIA_1, 50, seeds));
 
     /* a point which "breaks" the unicursal maze, making it one very long path */
-    cave->objects = g_list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, 35, 18, O_BRICK));
+    cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, 35, 18, O_BRICK));
   }
 }
 
@@ -2295,14 +2295,14 @@ GdCavefileFormat gd_caveset_imported_get_format(const guint8 *buf)
 /*
   Load caveset from memory buffer.
   Loads the caveset from a memory buffer.
-  returns: GList * of caves.
+  returns: List * of caves.
 */
-GList *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
+List *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
 {
   boolean numbering;
   int cavenum, intermissionnum, num;
   int cavelength, bufp;
-  GList *caveset = NULL, *iter;
+  List *caveset = NULL, *iter;
   guint32 encodedlength;
   GdCavefileFormat format;
 
@@ -2335,7 +2335,7 @@ GList *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
   while (bufp < length)
   {
     GdCave *newcave;
-    /* default is to append cave to caveset; g_list_insert appends when pos = -1 */
+    /* default is to append cave to caveset; list_insert appends when pos = -1 */
     int insertpos = -1;
 
     newcave = gd_cave_new();
@@ -2441,7 +2441,7 @@ GList *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
     }
     else
     {
-      caveset = g_list_insert(caveset, newcave, insertpos);
+      caveset = list_insert(caveset, newcave, insertpos);
     }
 
     cavenum++;
@@ -2463,11 +2463,11 @@ GList *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
     if ((buf[2 + 0x1f0] != buf[2 + 0x1f1] - 1) ||
 	(buf[2 + 0x1f0] != 0x19 && buf[2 + 0x1f0] != 0x0e))
     {
-      GList *iter;
+      List *iter;
       int n;
       boolean standard;
 
-      standard = (g_list_length(caveset)%5) == 0;    /* cave count % 5 != 0 -> nonstandard */
+      standard = (list_length(caveset)%5) == 0;    /* cave count % 5 != 0 -> nonstandard */
 
       for (n = 0, iter = caveset; iter != NULL; n++, iter = iter->next)
       {
@@ -2496,7 +2496,7 @@ GList *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
 
   /* use numbering instead of letters, if following formats or too many caves
      (as we would run out of letters) */
-  numbering = format == GD_FORMAT_PLC || format == GD_FORMAT_CRLI || g_list_length(caveset) > 26;
+  numbering = format == GD_FORMAT_PLC || format == GD_FORMAT_CRLI || list_length(caveset) > 26;
 
   for (iter = caveset; iter != NULL; iter = iter->next)
   {

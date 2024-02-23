@@ -380,8 +380,8 @@ typedef struct _gd_cave
   HashTable *tags;      /* stores read-but-not-understood strings from bdcff, so we can save them later. */
 
   GdElement **map;            /* pointer to data for map, non-null if has a map */
-  GList *objects;
-  GList *replays;
+  List *objects;
+  List *replays;
 
   boolean intermission;        /* is this cave an intermission? */
   boolean intermission_instantlife;    /* one life extra, if the intermission is reached */

@@ -1321,7 +1321,7 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const guint32 
   GdCave *cave;
   GdElement element;
   int x, y;
-  GList *iter;
+  List *iter;
 
   /* make a copy */
   cave = gd_cave_new_from_cave(data);
@@ -1425,7 +1425,7 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const guint32 
   }
 
   /* render cave objects above random data or map */
-  for (iter = data->objects; iter; iter = g_list_next(iter))
+  for (iter = data->objects; iter; iter = list_next(iter))
   {
     GdObject *object = (GdObject *)iter->data;
 
@@ -1475,6 +1475,6 @@ void gd_flatten_cave(GdCave *cave, const int level)
   gd_cave_free(rendered);
 
   /* forget objects */
-  g_list_foreach(cave->objects, (GFunc) free, NULL);
+  list_foreach(cave->objects, (list_fn) free, NULL);
   cave->objects = NULL;
 }
