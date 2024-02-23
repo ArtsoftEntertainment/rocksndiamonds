@@ -1194,12 +1194,12 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	object.element = cave->initial_border;
 	object.fill_element = cave->initial_border;
 
-	cave->objects = g_list_prepend(cave->objects, g_memdup(&object, sizeof(object)));
+	cave->objects = g_list_prepend(cave->objects, getMemCopy(&object, sizeof(object)));
 
 	object.x1 = 19;
 	object.y1 = 0;    /* 19, as it is also the border */
 
-	cave->objects = g_list_prepend(cave->objects, g_memdup(&object, sizeof(object)));    /* another */
+	cave->objects = g_list_prepend(cave->objects, getMemCopy(&object, sizeof(object)));    /* another */
       }
     }
   }

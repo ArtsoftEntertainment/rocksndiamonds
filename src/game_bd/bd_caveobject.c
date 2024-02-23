@@ -313,7 +313,7 @@ GdObject *gd_object_new_from_string(char *str)
     {
       object.element = gd_get_element_from_string(elem0);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -327,7 +327,7 @@ GdObject *gd_object_new_from_string(char *str)
     {
       object.element = gd_get_element_from_string(elem0);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -341,7 +341,7 @@ GdObject *gd_object_new_from_string(char *str)
       object.type = GD_RECTANGLE;
       object.element = gd_get_element_from_string (elem0);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -360,14 +360,14 @@ GdObject *gd_object_new_from_string(char *str)
       object.element = gd_get_element_from_string (elem0);
       object.fill_element = gd_get_element_from_string (elem1);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     if (paramcount == 5)
     {
       object.element = object.fill_element = gd_get_element_from_string (elem0);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -387,7 +387,7 @@ GdObject *gd_object_new_from_string(char *str)
       object.type = GD_RASTER;
       object.element = gd_get_element_from_string (elem0);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -403,7 +403,7 @@ GdObject *gd_object_new_from_string(char *str)
       object.element = gd_get_element_from_string (elem0);
       object.fill_element = gd_get_element_from_string (elem1);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -418,7 +418,7 @@ GdObject *gd_object_new_from_string(char *str)
       object.fill_element = gd_get_element_from_string (elem0);
       object.element = gd_get_element_from_string (elem1);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -433,7 +433,7 @@ GdObject *gd_object_new_from_string(char *str)
       object.fill_element = gd_get_element_from_string (elem0);
       object.element = gd_get_element_from_string (elem1);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -463,7 +463,7 @@ GdObject *gd_object_new_from_string(char *str)
       object.element = gd_get_element_from_string (elem0);
       object.fill_element = gd_get_element_from_string (elem1);
 
-      return g_memdup(&object, sizeof (GdObject));
+      return getMemCopy(&object, sizeof (GdObject));
     }
 
     return NULL;
@@ -519,7 +519,7 @@ GdObject *gd_object_new_from_string(char *str)
     if (l > 10 && l % 2 == 1)
       object.element = gd_get_element_from_string(words[l - 1]);
 
-    return g_memdup(&object, sizeof (GdObject));
+    return getMemCopy(&object, sizeof (GdObject));
   }
 
   /* COPY PASTE OBJECT */
@@ -550,7 +550,7 @@ GdObject *gd_object_new_from_string(char *str)
     else
       Warn("invalid setting for copypaste flip property: %s", flip);
 
-    return g_memdup(&object, sizeof(GdObject));
+    return getMemCopy(&object, sizeof(GdObject));
   }
 
   return NULL;
