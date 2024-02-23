@@ -27,6 +27,8 @@
 #include "setup.h"
 #include "misc.h"
 #include "http.h"
+#include "hash.h"
+#include "list.h"
 #include "base64.h"
 #include "zip/miniunz.h"
 
