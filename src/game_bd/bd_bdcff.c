@@ -254,7 +254,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
 	    break;
 
 	  case GD_TYPE_PROBABILITY:
-	    res = g_ascii_strtod(params[paramindex], NULL);
+	    res = strtod(params[paramindex], NULL);
 	    if (errno == 0 && res >= 0 && res <= 1)
 	    {
 	      /* fill all remaining items in array - may be only one */
@@ -268,7 +268,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
 	    break;
 
 	  case GD_TYPE_RATIO:
-	    res = g_ascii_strtod (params[paramindex], NULL);
+	    res = strtod (params[paramindex], NULL);
 	    if (errno == 0 && res >= 0 && res <= 1)
 	    {
 	      for (k = j; k < prop_desc[i].count; k++)
