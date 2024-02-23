@@ -45,7 +45,7 @@ char *gd_caveset_extensions[] =
   NULL
 };
 
-#define CAVESET_OFFSET(property) (G_STRUCT_OFFSET(GdCavesetData, property))
+#define CAVESET_OFFSET(property) (STRUCT_OFFSET(GdCavesetData, property))
 
 const GdStructDescriptor gd_caveset_properties[] =
 {

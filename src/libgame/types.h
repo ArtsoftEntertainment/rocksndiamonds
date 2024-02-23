@@ -72,6 +72,8 @@ typedef unsigned char byte;
 #define INT_TO_PTR(i)		((void *) (long) (i))
 #define UINT_TO_PTR(u)		((void *) (unsigned long) (u))
 
+#define STRUCT_OFFSET(s, m)	(offsetof(s, m))
+
 
 struct ListNode
 {

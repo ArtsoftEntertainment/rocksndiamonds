@@ -410,40 +410,40 @@ const GdStructDescriptor gd_cave_properties[] =
 {
   /* default data */
   {"", GD_TAB, 0, N_("Cave data")},
-  {"Name", GD_TYPE_STRING, 0, N_("Name"), G_STRUCT_OFFSET(GdCave, name), 1, N_("Name of game")},
-  {"Description", GD_TYPE_STRING, 0, N_("Description"), G_STRUCT_OFFSET(GdCave, description), 1, N_("Some words about the game")},
-  {"Author", GD_TYPE_STRING, 0, N_("Author"), G_STRUCT_OFFSET(GdCave, author), 1, N_("Name of author")},
-  {"Date", GD_TYPE_STRING, 0, N_("Date"), G_STRUCT_OFFSET(GdCave, date), 1, N_("Date of creation")},
-  {"WWW", GD_TYPE_STRING, 0, N_("WWW"), G_STRUCT_OFFSET(GdCave, www), 1, N_("Web page or e-mail address")},
-  {"Difficulty", GD_TYPE_STRING, 0, N_("Difficulty"), G_STRUCT_OFFSET(GdCave, difficulty), 1, N_("Difficulty (informative)")},
+  {"Name", GD_TYPE_STRING, 0, N_("Name"), STRUCT_OFFSET(GdCave, name), 1, N_("Name of game")},
+  {"Description", GD_TYPE_STRING, 0, N_("Description"), STRUCT_OFFSET(GdCave, description), 1, N_("Some words about the game")},
+  {"Author", GD_TYPE_STRING, 0, N_("Author"), STRUCT_OFFSET(GdCave, author), 1, N_("Name of author")},
+  {"Date", GD_TYPE_STRING, 0, N_("Date"), STRUCT_OFFSET(GdCave, date), 1, N_("Date of creation")},
+  {"WWW", GD_TYPE_STRING, 0, N_("WWW"), STRUCT_OFFSET(GdCave, www), 1, N_("Web page or e-mail address")},
+  {"Difficulty", GD_TYPE_STRING, 0, N_("Difficulty"), STRUCT_OFFSET(GdCave, difficulty), 1, N_("Difficulty (informative)")},
 
-  {"Selectable", GD_TYPE_BOOLEAN, 0, N_("Selectable as start"), G_STRUCT_OFFSET(GdCave, selectable), 1, N_("This sets whether the game can be started at this cave.")},
-  {"Intermission", GD_TYPE_BOOLEAN, GD_ALWAYS_SAVE, N_("Intermission"), G_STRUCT_OFFSET(GdCave, intermission), 1, N_("Intermission caves are usually small and fast caves, which are not required to be solved. The player will not lose a life if he is not successful. The game always proceeds to the next cave.")},
-  {"IntermissionProperties.instantlife", GD_TYPE_BOOLEAN, 0, N_("   Instant life"), G_STRUCT_OFFSET(GdCave, intermission_instantlife), 1, N_("If true, an extra life is given to the player, when the intermission cave is reached.")},
-  {"IntermissionProperties.rewardlife", GD_TYPE_BOOLEAN, 0, N_("   Reward life"), G_STRUCT_OFFSET(GdCave, intermission_rewardlife), 1, N_("If true, an extra life is given to the player, when the intermission cave is successfully finished.")},
-  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE, N_("Width"), G_STRUCT_OFFSET(GdCave, w), 1, N_("Width of cave. The standard size for a cave is 40x22, and 20x12 for an intermission."), 12, 128},
-  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE, N_("Height"), G_STRUCT_OFFSET(GdCave, h), 1, N_("Height of cave. The standard size for a cave is 40x22, and 20x12 for an intermission."), 12, 128},
-  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE|GD_DONT_SHOW_IN_EDITOR, N_("Visible, left"), G_STRUCT_OFFSET(GdCave, x1), 1, N_("Visible parts of the cave, upper left and lower right corner."), 0, 127},
-  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE|GD_DONT_SHOW_IN_EDITOR, N_("Visible, upper"), G_STRUCT_OFFSET(GdCave, y1), 1, N_("Visible parts of the cave, upper left and lower right corner."), 0, 127},
-  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE|GD_DONT_SHOW_IN_EDITOR, N_("Visible, right"), G_STRUCT_OFFSET(GdCave, x2), 1, N_("Visible parts of the cave, upper left and lower right corner."), 0, 127},
-  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE|GD_DONT_SHOW_IN_EDITOR, N_("Visible, lower"), G_STRUCT_OFFSET(GdCave, y2), 1, N_("Visible parts of the cave, upper left and lower right corner."), 0, 127},
-  {"Charset", GD_TYPE_STRING, 0, N_("Character set"), G_STRUCT_OFFSET(GdCave, charset), 1, N_("Theme used for displaying the game. Not used by GDash.")},
-  {"Fontset", GD_TYPE_STRING, 0, N_("Font set"), G_STRUCT_OFFSET(GdCave, fontset), 1, N_("Font used during the game. Not used by GDash.")},
+  {"Selectable", GD_TYPE_BOOLEAN, 0, N_("Selectable as start"), STRUCT_OFFSET(GdCave, selectable), 1, N_("This sets whether the game can be started at this cave.")},
+  {"Intermission", GD_TYPE_BOOLEAN, GD_ALWAYS_SAVE, N_("Intermission"), STRUCT_OFFSET(GdCave, intermission), 1, N_("Intermission caves are usually small and fast caves, which are not required to be solved. The player will not lose a life if he is not successful. The game always proceeds to the next cave.")},
+  {"IntermissionProperties.instantlife", GD_TYPE_BOOLEAN, 0, N_("   Instant life"), STRUCT_OFFSET(GdCave, intermission_instantlife), 1, N_("If true, an extra life is given to the player, when the intermission cave is reached.")},
+  {"IntermissionProperties.rewardlife", GD_TYPE_BOOLEAN, 0, N_("   Reward life"), STRUCT_OFFSET(GdCave, intermission_rewardlife), 1, N_("If true, an extra life is given to the player, when the intermission cave is successfully finished.")},
+  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE, N_("Width"), STRUCT_OFFSET(GdCave, w), 1, N_("Width of cave. The standard size for a cave is 40x22, and 20x12 for an intermission."), 12, 128},
+  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE, N_("Height"), STRUCT_OFFSET(GdCave, h), 1, N_("Height of cave. The standard size for a cave is 40x22, and 20x12 for an intermission."), 12, 128},
+  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE|GD_DONT_SHOW_IN_EDITOR, N_("Visible, left"), STRUCT_OFFSET(GdCave, x1), 1, N_("Visible parts of the cave, upper left and lower right corner."), 0, 127},
+  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE|GD_DONT_SHOW_IN_EDITOR, N_("Visible, upper"), STRUCT_OFFSET(GdCave, y1), 1, N_("Visible parts of the cave, upper left and lower right corner."), 0, 127},
+  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE|GD_DONT_SHOW_IN_EDITOR, N_("Visible, right"), STRUCT_OFFSET(GdCave, x2), 1, N_("Visible parts of the cave, upper left and lower right corner."), 0, 127},
+  {"Size", GD_TYPE_INT, GD_ALWAYS_SAVE|GD_DONT_SHOW_IN_EDITOR, N_("Visible, lower"), STRUCT_OFFSET(GdCave, y2), 1, N_("Visible parts of the cave, upper left and lower right corner."), 0, 127},
+  {"Charset", GD_TYPE_STRING, 0, N_("Character set"), STRUCT_OFFSET(GdCave, charset), 1, N_("Theme used for displaying the game. Not used by GDash.")},
+  {"Fontset", GD_TYPE_STRING, 0, N_("Font set"), STRUCT_OFFSET(GdCave, fontset), 1, N_("Font used during the game. Not used by GDash.")},
 
   /* notes - a tab on its own */
-  {"Story", GD_TYPE_LONGSTRING, 0, N_("Story"), G_STRUCT_OFFSET(GdCave, story), 1, N_("Story for the cave. It will be shown when the cave is played.")},
+  {"Story", GD_TYPE_LONGSTRING, 0, N_("Story"), STRUCT_OFFSET(GdCave, story), 1, N_("Story for the cave. It will be shown when the cave is played.")},
 
   /* remark - also a tab on its own */
-  {"Remark", GD_TYPE_LONGSTRING, 0, N_("Remark"), G_STRUCT_OFFSET(GdCave, remark), 1, N_("Remark (informative). Can contain supplementary information about the design of the cave. It is not shown during the game, only when the user requests the cave info dialog, so can also contain spoilers and hints.")},
+  {"Remark", GD_TYPE_LONGSTRING, 0, N_("Remark"), STRUCT_OFFSET(GdCave, remark), 1, N_("Remark (informative). Can contain supplementary information about the design of the cave. It is not shown during the game, only when the user requests the cave info dialog, so can also contain spoilers and hints.")},
 
   {"", GD_TAB, 0, N_("Colors")},
-  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Border color"), G_STRUCT_OFFSET(GdCave, colorb), 1, N_("Border color for C64 graphics. Only for compatibility, not used by GDash.")},
-  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Background color"), G_STRUCT_OFFSET(GdCave, color0), 1, N_("Background color for C64 graphics")},
-  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Color 1 (dirt)"), G_STRUCT_OFFSET(GdCave, color1), 1, N_("Foreground color 1 for C64 graphics")},
-  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Color 2 (steel wall)"), G_STRUCT_OFFSET(GdCave, color2), 1, N_("Foreground color 2 for C64 graphics")},
-  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Color 3 (brick wall)"), G_STRUCT_OFFSET(GdCave, color3), 1, N_("Foreground color 3 for C64 graphics")},
-  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Amoeba color"), G_STRUCT_OFFSET(GdCave, color4), 1, N_("Amoeba color for C64 graphics")},
-  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Slime color"), G_STRUCT_OFFSET(GdCave, color5), 1, N_("Slime color for C64 graphics")},
+  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Border color"), STRUCT_OFFSET(GdCave, colorb), 1, N_("Border color for C64 graphics. Only for compatibility, not used by GDash.")},
+  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Background color"), STRUCT_OFFSET(GdCave, color0), 1, N_("Background color for C64 graphics")},
+  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Color 1 (dirt)"), STRUCT_OFFSET(GdCave, color1), 1, N_("Foreground color 1 for C64 graphics")},
+  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Color 2 (steel wall)"), STRUCT_OFFSET(GdCave, color2), 1, N_("Foreground color 2 for C64 graphics")},
+  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Color 3 (brick wall)"), STRUCT_OFFSET(GdCave, color3), 1, N_("Foreground color 3 for C64 graphics")},
+  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Amoeba color"), STRUCT_OFFSET(GdCave, color4), 1, N_("Amoeba color for C64 graphics")},
+  {"Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE, N_("Slime color"), STRUCT_OFFSET(GdCave, color5), 1, N_("Slime color for C64 graphics")},
 
   /* difficulty */
   {"", GD_TAB, 0, N_("Difficulty")},
@@ -676,17 +676,17 @@ const GdStructDescriptor gd_replay_properties[] =
 {
   /* default data */
   {"", GD_TAB, 0, N_("Replay")},
-  {"Level", GD_TYPE_INT, 0, NULL, G_STRUCT_OFFSET(GdReplay, level), 1, NULL},
-  {"RandomSeed", GD_TYPE_INT, 0, NULL, G_STRUCT_OFFSET(GdReplay, seed), 1, NULL},
-  //    {"Saved", GD_TYPE_BOOLEAN, 0, NULL, G_STRUCT_OFFSET(GdReplay, saved), 1, NULL},        /* no need to state in bdcff, as saved replays are saved ones :) */
-  {"Player", GD_TYPE_STRING, 0, NULL, G_STRUCT_OFFSET(GdReplay, player_name), 1, NULL},
-  {"Date", GD_TYPE_STRING, 0, NULL, G_STRUCT_OFFSET(GdReplay, date), 1, NULL},
-  {"Comment", GD_TYPE_LONGSTRING, 0, NULL, G_STRUCT_OFFSET(GdReplay, comment), 1, NULL},
-  {"RecordedWith", GD_TYPE_STRING, 0, NULL, G_STRUCT_OFFSET(GdReplay, recorded_with), 1, NULL},
-  {"Score", GD_TYPE_INT, 0, NULL, G_STRUCT_OFFSET(GdReplay, score), 1, NULL},
-  {"Duration", GD_TYPE_INT, 0, NULL, G_STRUCT_OFFSET(GdReplay, duration), 1, NULL},
-  {"Success", GD_TYPE_BOOLEAN, 0, NULL, G_STRUCT_OFFSET(GdReplay, success), 1, NULL},
-  {"Checksum", GD_TYPE_INT, 0, NULL, G_STRUCT_OFFSET(GdReplay, checksum), 1, NULL},
+  {"Level", GD_TYPE_INT, 0, NULL, STRUCT_OFFSET(GdReplay, level), 1, NULL},
+  {"RandomSeed", GD_TYPE_INT, 0, NULL, STRUCT_OFFSET(GdReplay, seed), 1, NULL},
+  //    {"Saved", GD_TYPE_BOOLEAN, 0, NULL, STRUCT_OFFSET(GdReplay, saved), 1, NULL},        /* no need to state in bdcff, as saved replays are saved ones :) */
+  {"Player", GD_TYPE_STRING, 0, NULL, STRUCT_OFFSET(GdReplay, player_name), 1, NULL},
+  {"Date", GD_TYPE_STRING, 0, NULL, STRUCT_OFFSET(GdReplay, date), 1, NULL},
+  {"Comment", GD_TYPE_LONGSTRING, 0, NULL, STRUCT_OFFSET(GdReplay, comment), 1, NULL},
+  {"RecordedWith", GD_TYPE_STRING, 0, NULL, STRUCT_OFFSET(GdReplay, recorded_with), 1, NULL},
+  {"Score", GD_TYPE_INT, 0, NULL, STRUCT_OFFSET(GdReplay, score), 1, NULL},
+  {"Duration", GD_TYPE_INT, 0, NULL, STRUCT_OFFSET(GdReplay, duration), 1, NULL},
+  {"Success", GD_TYPE_BOOLEAN, 0, NULL, STRUCT_OFFSET(GdReplay, success), 1, NULL},
+  {"Checksum", GD_TYPE_INT, 0, NULL, STRUCT_OFFSET(GdReplay, checksum), 1, NULL},
 
   {NULL}  /* end of array */
 };

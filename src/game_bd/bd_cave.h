@@ -628,7 +628,7 @@ typedef struct _gd_cave
 } GdCave;
 
 
-#define CAVE_OFFSET(property) (G_STRUCT_OFFSET(GdCave, property))
+#define CAVE_OFFSET(property) (STRUCT_OFFSET(GdCave, property))
 
 /* arrays for movements */
 /* also no1 and bd2 cave data import helpers; line direction coordinates */
