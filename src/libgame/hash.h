@@ -297,4 +297,64 @@ hashtable_iterator_value(struct hashtable_itr *i);
 int
 hashtable_iterator_advance(struct hashtable_itr *itr);
 
+
+/*****************************************************************************/
+/* hashtable_fn - prototype of function to call for hashtable entry
+
+ * @name        hashtable_fn
+ * @param   k   the key of the current hash entry
+ * @param   v   the value of the current hash entry
+ * @param   u   additional user data
+ */
+
+typedef void (*hashtable_fn) (void *k, void *v, void *u);
+
+/*****************************************************************************/
+/* hashtable_foreach - call function for all hashtable entries
+
+ * @name        hashtable_foreach
+ * @param   h   the hashtable to iterate through
+ * @param   fn  the function to call for each entry
+ */
+
+void
+hashtable_foreach(struct hashtable *h, hashtable_fn fn, void *userdata);
+
+/*****************************************************************************/
+/* hashtable_remove_fn - prototype of function to call for hashtable entry
+
+ * @name        hashtable_remove_fn
+ * @param   k   the key of the current hash entry
+ * @param   v   the value of the current hash entry
+ * @param   u   additional user data
+ * @return      non-zero if entry should be removed, else zero
+ */
+
+typedef int (*hashtable_remove_fn) (void *k, void *v, void *u);
+
+/*****************************************************************************/
+/* hashtable_foreach_remove - call function for all hashtable entries and remove them,
+ *                            if function returned 1
+ *                            returns the number of removed entries
+
+ * @name        hashtable_foreach_remove
+ * @param   h   the hashtable to iterate through
+ * @param   fn  the function to call for each entry
+ * @return      the number of removed entries
+ */
+
+unsigned int
+hashtable_foreach_remove(struct hashtable *h, hashtable_remove_fn fn, void *userdata);
+
+/*****************************************************************************/
+/* hashtable_remove_all - remove_all hashtable entries
+
+ * @name        hashtable_remove
+ * @param   h   the hashtable to remove all entries from
+ * @return      the number of removed entries
+ */
+
+unsigned int
+hashtable_remove_all(struct hashtable *h);
+
 #endif

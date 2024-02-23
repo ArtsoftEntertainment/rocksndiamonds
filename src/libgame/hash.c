@@ -483,3 +483,106 @@ hashtable_iterator_advance(struct hashtable_itr *itr)
 
   return -1;
 }
+
+/*****************************************************************************/
+/* call function for all hashtable entries */
+void
+hashtable_foreach(struct hashtable *h, hashtable_fn fn, void *userdata)
+{
+  if (h == NULL)
+    return;
+
+  if (hashtable_count(h) == 0)
+    return;
+
+  struct hashtable_itr *itr = hashtable_iterator(h);
+
+  do
+  {
+    fn(hashtable_iterator_key(itr), hashtable_iterator_value(itr), userdata);
+  }
+  while (hashtable_iterator_advance(itr));
+
+  free(itr);
+}
+
+/*****************************************************************************/
+/* call function for all hashtable entries and remove them, if function returned 1 */
+unsigned int
+hashtable_foreach_remove(struct hashtable *h, hashtable_remove_fn fn, void *userdata)
+{
+  if (h == NULL)
+    return 0;
+
+  if (hashtable_count(h) == 0)
+    return 0;
+
+  struct hashtable *remove = create_hashtable(h->hashfn, h->eqfn, NULL, NULL);
+  struct hashtable_itr *itr = hashtable_iterator(h);
+
+  do
+  {
+    if (fn(hashtable_iterator_key(itr), hashtable_iterator_value(itr), userdata))
+      hashtable_insert(remove, hashtable_iterator_key(itr), "1");
+  }
+  while (hashtable_iterator_advance(itr));
+
+  free(itr);
+
+  struct hashtable_itr *itr_remove = hashtable_iterator(remove);
+  unsigned int num_removed = 0;
+
+  do
+  {
+    hashtable_remove(h, hashtable_iterator_key(itr_remove));
+    num_removed++;
+  }
+  while (hashtable_iterator_advance(itr_remove));
+
+  free(itr_remove);
+
+  hashtable_destroy(remove);
+
+  return num_removed;
+}
+
+/*****************************************************************************/
+/* remove_all hashtable entries */
+unsigned int
+hashtable_remove_all(struct hashtable *h)
+{
+  /* TODO: this function should directly remove all hashtable entries */
+
+  if (h == NULL)
+    return 0;
+
+  if (hashtable_count(h) == 0)
+    return 0;
+
+  struct hashtable *remove = create_hashtable(h->hashfn, h->eqfn, NULL, NULL);
+  struct hashtable_itr *itr = hashtable_iterator(h);
+
+  do
+  {
+    hashtable_insert(remove, hashtable_iterator_key(itr), "1");
+  }
+  while (hashtable_iterator_advance(itr));
+
+  free(itr);
+
+  struct hashtable_itr *itr_remove = hashtable_iterator(remove);
+  unsigned int num_removed = 0;
+
+  do
+  {
+    hashtable_remove(h, hashtable_iterator_key(itr_remove));
+    num_removed++;
+  }
+  while (hashtable_iterator_advance(itr_remove));
+
+  free(itr_remove);
+
+  hashtable_destroy(remove);
+
+  return num_removed;
+}
