@@ -188,6 +188,11 @@ char **getSplitStringArray(const char *s, const char *, int);
 int getStringArrayLength(char **);
 void freeStringArray(char **);
 char *getUnescapedString(const char *);
+
+char *chugString(char *);
+char *chompString(char *);
+char *stripString(char *);
+
 boolean strEqual(const char *, const char *);
 boolean strEqualN(const char *, const char *, int);
 boolean strEqualCase(const char *, const char *);

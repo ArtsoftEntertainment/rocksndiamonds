@@ -1441,6 +1441,44 @@ char *getUnescapedString(const char *s)
   return s_unescaped;
 }
 
+char *chugString(char *s)
+{
+  if (s == NULL)
+    return NULL;
+
+  char *start;
+
+  for (start = (char *)s; *start && isspace(*start); start++)
+    ;
+
+  memmove(s, start, strlen(start) + 1);
+
+  return s;
+}
+
+char *chompString(char *s)
+{
+  if (s == NULL)
+    return NULL;
+
+  int len = strlen(s);
+
+  while (len--)
+  {
+    if (isspace(s[len]))
+      s[len] = '\0';
+    else
+      break;
+  }
+
+  return s;
+}
+
+char *stripString(char *s)
+{
+  return chugString(chompString(s));
+}
+
 boolean strEqual(const char *s1, const char *s2)
 {
   return (s1 == NULL && s2 == NULL ? TRUE  :
