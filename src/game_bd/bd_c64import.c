@@ -1452,7 +1452,7 @@ static int cave_copy_from_1stb(GdCave *cave, const guint8 *data, int remaining_b
       c = ' ';    /* don't know this, so change to space */
 
     if (i > 0)
-      c = g_ascii_tolower(c);
+      c = tolower(c);
 
     cave->name[i] = c;
   }
@@ -1581,7 +1581,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
     else
       c = ' ';
     if (i > 0)
-      c = g_ascii_tolower(c);
+      c = tolower(c);
 
     cave->name[i] = c;
   }
@@ -2028,7 +2028,7 @@ static int cave_copy_from_crli(GdCave *cave, const guint8 *data, int remaining_b
 	c = ' ';
 
       if (i > 0)
-	c = g_ascii_tolower(c);
+	c = tolower(c);
 
       cave->name[i] = c;
     }
