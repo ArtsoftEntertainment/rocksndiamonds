@@ -121,6 +121,8 @@ struct hashtable_itr
   unsigned int index;
 };
 
+typedef struct hashtable HashTable;
+
 
 /*****************************************************************************
  * create_hashtable_ext

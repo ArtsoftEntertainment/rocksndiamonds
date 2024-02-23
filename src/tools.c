@@ -11316,9 +11316,9 @@ static unsigned int test_uuid_random_function_better(int max)
 
 static void TestGeneratingUUIDs_RunTest(int nr, int always_seed, int num_uuids)
 {
-  struct hashtable *hash_seeds =
+  HashTable *hash_seeds =
     create_hashtable(get_hash_from_string, hash_key_strings_are_equal, free, NULL);
-  struct hashtable *hash_uuids =
+  HashTable *hash_uuids =
     create_hashtable(get_hash_from_string, hash_key_strings_are_equal, free, NULL);
   static char message[100];
   int i;

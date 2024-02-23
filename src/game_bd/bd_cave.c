@@ -81,7 +81,7 @@ static const char* scheduling_filename[] =
   "bd2ckatari"
 };
 
-static struct hashtable *name_to_element;
+static HashTable *name_to_element;
 GdElement gd_char_to_element[256];
 
 /* color of flashing the screen, gate opening to exit */

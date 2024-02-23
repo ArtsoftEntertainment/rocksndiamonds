@@ -930,7 +930,7 @@ GdElement gd_element_get_hammered(GdElement elem)
 void gd_cave_db_init(void)
 {
   int i;
-  struct hashtable *pointers;
+  HashTable *pointers;
   boolean lowercase_names = TRUE;
 
   /* TRANSLATORS: some languages (for example, german) do not have lowercase nouns. */
