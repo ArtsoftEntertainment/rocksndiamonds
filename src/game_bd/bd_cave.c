@@ -416,7 +416,7 @@ int gd_add_highscore(GdHighScore *highscores, const char *name, int score)
   qsort(highscores, GD_HIGHSCORE_NUM, sizeof(GdHighScore), gd_highscore_compare);
 
   for (i = 0; i < GD_HIGHSCORE_NUM; i++)
-    if (g_str_equal(highscores[i].name, name) && highscores[i].score == score)
+    if (strEqual(highscores[i].name, name) && highscores[i].score == score)
       return i;
 
   return -1;
