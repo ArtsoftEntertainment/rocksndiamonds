@@ -255,7 +255,7 @@ GAME_SP = $(GAME_SP_DIR)/game_sp.a
 GAME_MM_DIR = game_mm
 GAME_MM = $(GAME_MM_DIR)/game_mm.a
 
-RNDLIBS = $(LIBGAME) $(GAME_BD) $(GAME_EM) $(GAME_SP) $(GAME_MM)
+RNDLIBS = $(GAME_BD) $(GAME_EM) $(GAME_SP) $(GAME_MM) $(LIBGAME)
 AUTOCONF = conf_gfx.h conf_snd.h conf_mus.h
 
 ICONBASE = windows_icon
