@@ -1088,6 +1088,24 @@ char *getBasePath(char *filename)
 // various string functions
 // ----------------------------------------------------------------------------
 
+void *getMemCopy(const void *m, size_t size)
+{
+  void *m_copy;
+
+  if (m == NULL)
+    return NULL;
+
+  m_copy = checked_malloc(size);
+  memcpy(m_copy, m, size);
+
+  return m_copy;
+}
+
+
+// ----------------------------------------------------------------------------
+// various string functions
+// ----------------------------------------------------------------------------
+
 char *getStringCat2WithSeparator(const char *s1,
 				 const char *s2,
 				 const char *sep)

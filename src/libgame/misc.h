@@ -168,6 +168,8 @@ char *getBaseName(char *);
 char *getBaseNamePtr(char *);
 char *getBaseNameNoSuffix(char *);
 
+void *getMemCopy(const void *, size_t);
+
 char *getStringCat2WithSeparator(const char *, const char *, const char *);
 char *getStringCat3WithSeparator(const char *, const char *, const char *, const char *);
 char *getStringCat2(const char *, const char *);
