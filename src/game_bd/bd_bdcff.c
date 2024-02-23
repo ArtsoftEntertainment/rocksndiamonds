@@ -884,7 +884,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 
     /* strip leading and trailing spaces AFTER checking if we are reading a map.
        map lines might begin or end with spaces */
-    g_strstrip(line);
+    stripString(line);
 
     if (reading_highscore)
     {

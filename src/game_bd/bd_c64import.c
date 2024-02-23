@@ -1165,7 +1165,7 @@ static int cave_copy_from_plck(GdCave *cave, const guint8 *data,
     for (j = 0; j < 12; j++)
       cave->name[j] = data[0x1f2 + j];
 
-    g_strchomp(cave->name);    /* remove spaces */
+    chompString(cave->name);    /* remove spaces */
   }
   else
   {
@@ -1457,7 +1457,7 @@ static int cave_copy_from_1stb(GdCave *cave, const guint8 *data, int remaining_b
     cave->name[i] = c;
   }
 
-  g_strchomp(cave->name);
+  chompString(cave->name);
 
   cave->intermission = data[0x389] != 0;
 
@@ -1586,7 +1586,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
     cave->name[i] = c;
   }
 
-  g_strchomp(cave->name);    /* remove trailing and leading spaces */
+  chompString(cave->name);    /* remove trailing and leading spaces */
 
   cave->selectable = data[14] != 0;
 
@@ -2033,7 +2033,7 @@ static int cave_copy_from_crli(GdCave *cave, const guint8 *data, int remaining_b
       cave->name[i] = c;
     }
 
-    g_strchomp(cave->name);    /* remove trailing and leading spaces */
+    chompString(cave->name);    /* remove trailing and leading spaces */
   }
 
   /* uncompress rle data */
