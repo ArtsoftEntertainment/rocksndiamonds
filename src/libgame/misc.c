@@ -1085,7 +1085,7 @@ char *getBasePath(char *filename)
 
 
 // ----------------------------------------------------------------------------
-// various string functions
+// various memory functions
 // ----------------------------------------------------------------------------
 
 void *getMemCopy(const void *m, size_t size)
