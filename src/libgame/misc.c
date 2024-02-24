@@ -1085,24 +1085,6 @@ char *getBasePath(char *filename)
 
 
 // ----------------------------------------------------------------------------
-// various memory functions
-// ----------------------------------------------------------------------------
-
-void *getMemCopy(const void *m, size_t size)
-{
-  void *m_copy;
-
-  if (m == NULL)
-    return NULL;
-
-  m_copy = checked_malloc(size);
-  memcpy(m_copy, m, size);
-
-  return m_copy;
-}
-
-
-// ----------------------------------------------------------------------------
 // various string functions
 // ----------------------------------------------------------------------------
 
@@ -1900,6 +1882,19 @@ void clear_mem(void *ptr, unsigned int size)
 #else
   memset(ptr, 0, size);
 #endif
+}
+
+void *get_memcpy(const void *m, size_t size)
+{
+  void *m_copy;
+
+  if (m == NULL)
+    return NULL;
+
+  m_copy = checked_malloc(size);
+  memcpy(m_copy, m, size);
+
+  return m_copy;
 }
 
 

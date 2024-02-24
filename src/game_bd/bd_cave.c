@@ -506,7 +506,7 @@ gpointer gd_cave_map_dup_size(const GdCave *cave, const gpointer map, const int 
     return NULL;
 
   rows = checked_malloc((cave->h) * sizeof(gpointer));
-  rows[0] = getMemCopy (maplines[0], cell_size * cave->w * cave->h);
+  rows[0] = get_memcpy (maplines[0], cell_size * cave->w * cave->h);
 
   for (y = 1; y < cave->h; y++)
     rows[y] = (char *)rows[0] + cell_size * cave->w * y;
@@ -605,7 +605,7 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
 
     dest->objects = NULL;    /* new empty list */
     for (iter = src->objects; iter != NULL; iter = iter->next) /* do a deep copy */
-      dest->objects = list_append(dest->objects, getMemCopy (iter->data, sizeof (GdObject)));
+      dest->objects = list_append(dest->objects, get_memcpy (iter->data, sizeof (GdObject)));
   }
 
   /* copy replays */
@@ -1400,7 +1400,7 @@ GdReplay *gd_replay_new_from_replay(GdReplay *orig)
 {
   GdReplay *rep;
 
-  rep = getMemCopy(orig, sizeof(GdReplay));
+  rep = get_memcpy(orig, sizeof(GdReplay));
 
   /* replicate dynamic data */
   rep->comment = getStringCopy(orig->comment);

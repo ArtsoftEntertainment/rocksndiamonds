@@ -168,8 +168,6 @@ char *getBaseName(char *);
 char *getBaseNamePtr(char *);
 char *getBaseNameNoSuffix(char *);
 
-void *getMemCopy(const void *, size_t);
-
 char *getStringCat2WithSeparator(const char *, const char *, const char *);
 char *getStringCat3WithSeparator(const char *, const char *, const char *, const char *);
 char *getStringCat2(const char *, const char *);
@@ -212,6 +210,7 @@ void *checked_calloc(unsigned int);
 void *checked_realloc(void *, unsigned int);
 void checked_free(void *);
 void clear_mem(void *, unsigned int);
+void *get_memcpy(const void *, size_t);
 
 void swap_numbers(int *, int *);
 void swap_number_pairs(int *, int *, int *, int *);
