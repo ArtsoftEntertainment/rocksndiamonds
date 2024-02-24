@@ -476,13 +476,13 @@ static void brc_import(guint8 *data)
   }
 }
 
-static void caveset_name_set_from_filename(const char *filename)
+static void caveset_name_set_from_filename(char *filename)
 {
   char *name;
   char *c;
 
   /* make up a caveset name from the filename. */
-  name = g_path_get_basename(filename);
+  name = getBaseName(filename);
   gd_strcpy(gd_caveset_data->name, name);
   free(name);
 
@@ -511,7 +511,7 @@ boolean gd_caveset_load_from_file(char *filename)
   List *new_caveset;
   struct stat st;
 
-  if (g_stat(filename, &st) != 0)
+  if (stat(filename, &st) != 0)
   {
     Warn("cannot stat() file");
 
