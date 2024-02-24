@@ -205,7 +205,6 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   boolean out_of_window;
   int player_x, player_y, visible_x, visible_y;
   boolean changed;
-  int scroll_divisor;
 
   /* max scrolling speed depends on the speed of the cave. */
   /* game moves cell_size_game * 1s / cave time pixels in a second. */
@@ -231,13 +230,6 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
 
   /* cell_size contains the scaled size, but we need the original. */
   changed = FALSE;
-
-  /* some sort of scrolling speed.
-     with larger cells, the divisor must be smaller, so the scrolling faster. */
-  scroll_divisor = 256 / cell_size;
-
-  /* fine scrolling is 50hz (normal would be 25hz only) */
-  scroll_divisor *= 2;
 
   if (cave_scroll(visible_x, play_area_w, player_x * cell_size + cell_size / 2 - play_area_w / 2,
 		  exact_scroll, &scroll_x, &scroll_desired_x, scroll_speed))
