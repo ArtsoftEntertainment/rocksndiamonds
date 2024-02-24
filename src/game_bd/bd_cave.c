@@ -778,18 +778,6 @@ void gd_cave_c64_random_set_seed(GdCave *cave, int seed1, int seed2)
 }
 
 /*
-  select random colors for a given cave.
-  this function will select colors so that they should look somewhat nice; for example
-  brick walls won't be the darkest color, for example.
-*/
-static inline void swap(int *i1, int *i2)
-{
-  int t = *i1;
-  *i1 = *i2;
-  *i2 = t;
-}
-
-/*
   shrink cave
   if last line or last row is just steel wall (or (invisible) outbox).
   used after loading a game for playing.
