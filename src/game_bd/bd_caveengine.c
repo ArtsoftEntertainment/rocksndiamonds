@@ -2260,7 +2260,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  {
 	    const GdDirection *creature_move;
 	    boolean ccw = rotates_ccw(cave, x, y);    /* check if default is counterclockwise */
-	    GdElement base;    /* base element number (which is like O_***_1) */
+	    GdElement base = -1;    /* base element number (which is like O_***_1) */
 	    int dir, dirn, dirp;    /* direction */
 
 	    if (get(cave, x, y) >= O_FIREFLY_1 &&
@@ -2279,7 +2279,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		     get(cave, x, y) <= O_ALT_BUTTER_4)
 	      base = O_ALT_BUTTER_1;
 
-	    dir = get(cave, x, y)-base;    /* facing where */
+	    dir = get(cave, x, y) - base;    /* facing where */
 	    creature_move = cave->creatures_backwards ? creature_chdir : creature_dir;
 
 	    /* now change direction if backwards */
