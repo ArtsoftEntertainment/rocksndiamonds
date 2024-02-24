@@ -158,7 +158,9 @@ static void load_cave(GdGame *game)
 GdCave *gd_create_snapshot(GdGame *game)
 {
   GdCave *snapshot;
-  g_return_val_if_fail (game->cave != NULL, NULL);
+
+  if (game->cave == NULL)
+    return NULL;
 
   /* make an exact copy */
   snapshot = gd_cave_new_from_cave(game->cave);
