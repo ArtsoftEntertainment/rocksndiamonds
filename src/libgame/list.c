@@ -80,7 +80,7 @@
 List *
 list_alloc (void)
 {
-  return calloc(1, sizeof(List));
+  return checked_calloc(sizeof(List));
 }
 
 /**
@@ -110,7 +110,7 @@ list_free (List *list)
   {
     void *current = slice;
     slice = *(void**) (current + next_offset);
-    free(current);
+    checked_free(current);
   }
 }
 
@@ -132,7 +132,7 @@ list_free (List *list)
 void
 list_free_1 (List *list)
 {
-  free(list);
+  checked_free(list);
 }
 
 /**
@@ -171,7 +171,7 @@ list_append (List *list, void *data)
   List *new_list;
   List *last;
 
-  new_list = malloc(sizeof(List));
+  new_list = checked_malloc(sizeof(List));
   new_list->data = data;
   new_list->next = NULL;
 
@@ -220,7 +220,7 @@ list_prepend (List *list, void *data)
 {
   List *new_list;
 
-  new_list = malloc(sizeof(List));
+  new_list = checked_malloc(sizeof(List));
   new_list->data = data;
   new_list->next = list;
 
@@ -266,7 +266,7 @@ list_insert (List *list, void *data, int position)
   if (!tmp_list)
     return list_append(list, data);
 
-  new_list = malloc(sizeof(List));
+  new_list = checked_malloc(sizeof(List));
   new_list->data = data;
   new_list->prev = tmp_list->prev;
   tmp_list->prev->next = new_list;
@@ -426,7 +426,7 @@ List *
 list_delete_link (List *list, List *link_)
 {
   list = _list_remove_link(list, link_);
-  free(link_);
+  checked_free(link_);
 
   return list;
 }
@@ -492,7 +492,7 @@ list_copy_deep (List *list, list_copy_fn func, void *user_data)
   {
     List *last;
 
-    new_list = malloc(sizeof(List));
+    new_list = checked_malloc(sizeof(List));
 
     if (func)
       new_list->data = func (list->data, user_data);
@@ -505,7 +505,7 @@ list_copy_deep (List *list, list_copy_fn func, void *user_data)
 
     while (list)
     {
-      last->next = malloc(sizeof(List));
+      last->next = checked_malloc(sizeof(List));
       last->next->prev = last;
       last = last->next;
 
