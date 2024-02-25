@@ -960,7 +960,7 @@ void gd_cave_db_init(void)
     {
       if (lowercase_names)
 	/* the function allocates a new string, but it is needed as long as the app is running */
-	gd_elements[i].lowercase_name = g_utf8_strdown(gettext(gd_elements[i].name), -1);
+	gd_elements[i].lowercase_name = getStringToLower(gettext(gd_elements[i].name));
       else
 	/* only translate, no lowercase. */
 	gd_elements[i].lowercase_name = gettext(gd_elements[i].name);
