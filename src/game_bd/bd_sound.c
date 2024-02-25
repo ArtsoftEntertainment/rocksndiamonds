@@ -333,13 +333,13 @@ static void play_sound(int channel, GdSound sound)
 
   /* change diamond falling random to a selected diamond falling sound. */
   if (sound == GD_S_DIAMOND_FALLING_RANDOM)
-    sound = diamond_falling_sounds[g_random_int_range(0, 8)];
+    sound = diamond_falling_sounds[gd_random_int_range(0, 8)];
   else if (sound == GD_S_DIAMOND_IMPACT_RANDOM)
-    sound = diamond_impact_sounds[g_random_int_range(0, 8)];
+    sound = diamond_impact_sounds[gd_random_int_range(0, 8)];
   else if (sound == GD_S_FLYING_DIAMOND_FALLING_RANDOM)
-    sound = flying_diamond_falling_sounds[g_random_int_range(0, 8)];
+    sound = flying_diamond_falling_sounds[gd_random_int_range(0, 8)];
   else if (sound == GD_S_FLYING_DIAMOND_IMPACT_RANDOM)
-    sound = flying_diamond_impact_sounds[g_random_int_range(0, 8)];
+    sound = flying_diamond_impact_sounds[gd_random_int_range(0, 8)];
 
   /* channel 1 may have been changed to channel 4 above. */
 

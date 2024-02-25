@@ -538,8 +538,8 @@ void gd_cave_free(GdCave *cave)
   if (cave->tags)
     hashtable_destroy(cave->tags);
 
-  if (cave->random)    /* random generator is a GRand * */
-    g_rand_free(cave->random);
+  if (cave->random)    /* random generator is a GdRand * */
+    gd_rand_free(cave->random);
 
   /* free strings */
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
@@ -620,7 +620,7 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
 
   /* copy random number generator */
   if (src->random)
-    dest->random = g_rand_copy(src->random);
+    dest->random = gd_rand_copy(src->random);
 }
 
 /* create new cave, which is a copy of the cave given. */
@@ -1146,10 +1146,10 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
     {
       /* blinking and tapping is started at the beginning of animation sequences. */
       /* 1/4 chance of blinking, every sequence. */
-      player_blinking = g_random_int_range(0, 4) == 0;
+      player_blinking = gd_random_int_range(0, 4) == 0;
 
       /* 1/16 chance of starting or stopping tapping. */
-      if (g_random_int_range(0, 16) == 0)
+      if (gd_random_int_range(0, 16) == 0)
 	player_tapping = !player_tapping;
     }
   }

@@ -823,7 +823,7 @@ static void draw_join(GdCave *cave, const GdObject *object)
 
 /* create a maze in a boolean **maze. */
 /* recursive algorithm. */
-static void mazegen(GRand *rand, boolean **maze, int width, int height, int x, int y, int horiz)
+static void mazegen(GdRand *rand, boolean **maze, int width, int height, int x, int y, int horiz)
 {
   int dirmask = 15;
 
@@ -833,7 +833,7 @@ static void mazegen(GRand *rand, boolean **maze, int width, int height, int x, i
     int dir;
 
     /* horiz or vert */
-    dir = g_rand_int_range(rand, 0, 100) <horiz ? 2 : 0;
+    dir = gd_rand_int_range(rand, 0, 100) < horiz ? 2 : 0;
 
     /* if no horizontal movement possible, choose vertical */
     if (dir == 2 && (dirmask & 12) == 0)
@@ -841,7 +841,7 @@ static void mazegen(GRand *rand, boolean **maze, int width, int height, int x, i
     else if (dir == 0 && (dirmask & 3) == 0)    /* and vice versa */
       dir = 2;
 
-    dir += g_rand_int_range(rand, 0, 2);                /* dir */
+    dir += gd_rand_int_range(rand, 0, 2);                /* dir */
     if (dirmask & (1 << dir))
     {
       dirmask &= ~(1 << dir);
@@ -884,7 +884,7 @@ static void mazegen(GRand *rand, boolean **maze, int width, int height, int x, i
   }
 }
 
-static void braidmaze(GRand *rand, boolean **maze, int w, int h)
+static void braidmaze(GdRand *rand, boolean **maze, int w, int h)
 {
   int x, y;
 
@@ -932,7 +932,7 @@ static void braidmaze(GRand *rand, boolean **maze, int w, int h)
       if (closed == 3 && dirs != 0)
       {
 	/* make up a random direction, and open in that direction, so dead end is removed */
-	int dir = closed_dirs[g_rand_int_range(rand, 0, dirs)];
+	int dir = closed_dirs[gd_rand_int_range(rand, 0, dirs)];
 
 	switch (dir)
 	{
@@ -960,7 +960,7 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
   int y2 = object->y2;
   int w, h, path, wall;
   int xk, yk;
-  GRand *rand;
+  GdRand *rand;
   int i,j;
 
   /* change coordinates if not in correct order */
@@ -1023,8 +1023,8 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
   /* start generation, if map is big enough.
      otherwise the application would crash, as the editor places maze objects
      during mouse click & drag that have no sense */
-  rand = g_rand_new_with_seed(object->seed[level] == -1 ?
-			      g_rand_int(cave->random) : object->seed[level]);
+  rand = gd_rand_new_with_seed(object->seed[level] == -1 ?
+			       gd_rand_int(cave->random) : object->seed[level]);
 
   if (w >= 1 && h >= 1)
     mazegen(rand, map, w, h, 0, 0, object->horiz);
@@ -1032,7 +1032,7 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
   if (object->type == GD_MAZE_BRAID)
     braidmaze(rand, map, w, h);
 
-  g_rand_free(rand);
+  gd_rand_free(rand);
 
   if (w >= 1 && h >= 1 && object->type == GD_MAZE_UNICURSAL)
   {
@@ -1137,17 +1137,17 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
   int y1 = object->y1;
   int x2 = object->x2;
   int y2 = object->y2;
-  GRand *rand;
+  GdRand *rand;
   GdC64RandomGenerator c64_rand;
   guint32 seed;
 
   /* -1 means that it should be different every time played. */
   if (object->seed[level] == -1)
-    seed = g_rand_int(cave->random);
+    seed = gd_rand_int(cave->random);
   else
     seed = object->seed[level];
 
-  rand = g_rand_new_with_seed(seed);
+  rand = gd_rand_new_with_seed(seed);
   /* for c64 random, use the 2*8 lsb. */
   gd_c64_random_set_seed(&c64_rand, seed / 256 % 256, seed % 256);
 
@@ -1178,7 +1178,7 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
 	randm = gd_c64_random(&c64_rand);
       else
 	/* use the much better glib random generator */
-	randm = g_rand_int_range(rand, 0, 256);
+	randm = gd_rand_int_range(rand, 0, 256);
 
       element = object->fill_element;
       if (randm < object->random_fill_probability[0])
@@ -1196,7 +1196,7 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
     }
   }
 
-  g_rand_free(rand);
+  gd_rand_free(rand);
 }
 
 
@@ -1328,7 +1328,7 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const guint32 
   cave->rendered = level + 1;
 
   cave->render_seed = seed;
-  cave->random = g_rand_new_with_seed(cave->render_seed);
+  cave->random = gd_rand_new_with_seed(cave->render_seed);
 
   /* maps needed during drawing and gameplay */
   cave->objects_order = gd_cave_map_new(cave, gpointer);
@@ -1356,8 +1356,8 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const guint32 
     /* IF CAVE HAS NO MAP, USE THE RANDOM NUMBER GENERATOR */
     /* init c64 randomgenerator */
     if (data->level_rand[level] < 0)
-      gd_cave_c64_random_set_seed(cave, g_rand_int_range(cave->random, 0, 256),
-				  g_rand_int_range(cave->random, 0, 256));
+      gd_cave_c64_random_set_seed(cave, gd_rand_int_range(cave->random, 0, 256),
+				  gd_rand_int_range(cave->random, 0, 256));
     else
       gd_cave_c64_random_set_seed(cave, 0, data->level_rand[level]);
 
@@ -1374,7 +1374,7 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const guint32 
 
 	if (data->level_rand[level] < 0)
 	  /* use the much better glib random generator */
-	  randm = g_rand_int_range(cave->random, 0, 256);
+	  randm = gd_rand_int_range(cave->random, 0, 256);
 	else
 	  /* use c64 */
 	  randm = gd_cave_c64_random(cave);

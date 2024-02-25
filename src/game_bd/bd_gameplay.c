@@ -328,8 +328,8 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
        * this way the uncovering is the same speed also for intermissions. */
       for (j = 0; j < game->cave->w * game->cave->h / 40; j++)
       {
-	y = g_random_int_range(0, game->cave->h);
-	x = g_random_int_range(0, game->cave->w);
+	y = gd_random_int_range(0, game->cave->h);
+	x = gd_random_int_range(0, game->cave->w);
 
 	game->cave->map[y][x] &= ~COVERED;
       }
@@ -530,7 +530,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 
       /* covering eight times faster than uncovering. */
       for (j = 0; j < game->cave->w * game->cave->h * 8 / 40; j++)
-	game->cave->map[g_random_int_range(0, game->cave->h)][g_random_int_range (0, game->cave->w)] |= COVERED;
+	game->cave->map[gd_random_int_range(0, game->cave->h)][gd_random_int_range (0, game->cave->w)] |= COVERED;
     }
 
     return_state = GD_GAME_NOTHING;

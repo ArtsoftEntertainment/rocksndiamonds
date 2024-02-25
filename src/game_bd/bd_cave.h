@@ -20,6 +20,7 @@
 #include <glib.h>
 
 #include "bd_elements.h"
+#include "bd_random.h"
 
 
 // colors
@@ -567,7 +568,7 @@ typedef struct _gd_cave
   boolean hatched;            /* hatching has happened. (timers may run, ...) */
   boolean gate_open;            /* self-explaining */
   guint32 render_seed;        /* the seed value, which was used to render the cave, is saved here. will be used by record&playback */
-  GRand *random;                /* random number generator of rendered cave */
+  GdRand *random;               /* random number generator of rendered cave */
   int rendered;                /* if not zero, rendered at level x */
   int timing_factor;            /* number of "milliseconds" in each second :) 1000 for ntsc, 1200 for pal. */
   gpointer **objects_order;    /* two-dimensional map of cave; each cell is a pointer to the drawing object, which created this element. NULL if map or random. */

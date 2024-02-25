@@ -243,7 +243,7 @@ unsigned int InitEngineRandom_BD(int seed)
   if (seed == NEW_RANDOMIZE)
   {
     // get randomly selected seed to render the cave
-    seed = g_random_int_range(0, GD_CAVE_SEED_MAX);
+    seed = gd_random_int_range(0, GD_CAVE_SEED_MAX);
   }
 
   game_bd.random_seed = seed;

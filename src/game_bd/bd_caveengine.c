@@ -1100,7 +1100,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	}
 
 	if (is_space_dir(cave, x, y, GD_MV_TWICE + player_move) &&
-	    g_rand_int_range(cave->random, 0, 1000000) < prob)
+	    gd_rand_int_range(cave->random, 0, 1000000) < prob)
 	{
 	  /* if decided that he will be able to push, */
 	  store_dir(cave, x, y, GD_MV_TWICE + player_move, what);
@@ -2337,7 +2337,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  {
 	    int px = cave->px[0];
 	    int py = cave->py[0];
-	    boolean horizontal = g_rand_boolean(cave->random);
+	    boolean horizontal = gd_rand_boolean(cave->random);
 	    boolean dont_move = FALSE;
 	    int i = 3;
 
@@ -2711,7 +2711,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      };
 	      GdDirection random_dir;
 
-	      random_dir = dirs[g_rand_int_range(cave->random, 0, G_N_ELEMENTS(dirs))];
+	      random_dir = dirs[gd_rand_int_range(cave->random, 0, G_N_ELEMENTS(dirs))];
 	      if (is_space_dir(cave, x, y, random_dir))
 	      {
 		move(cave, x, y, random_dir, O_GHOST);
@@ -2756,9 +2756,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      /* if alive, check in which dir to grow (or not) */
 	      if (cave->amoeba_state == GD_AM_AWAKE)
 	      {
-		if (g_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_growth_prob)
+		if (gd_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_growth_prob)
 		{
-		  switch (g_rand_int_range(cave->random, 0, 4))
+		  switch (gd_rand_int_range(cave->random, 0, 4))
 		  {
 		    /* decided to grow, choose a random direction. */
 		    case 0:    /* let this be up. numbers indifferent. */
@@ -2824,9 +2824,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 		/* if it is alive, decide if it attempts to grow */
 		if (cave->amoeba_2_state == GD_AM_AWAKE)
-		  if (g_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_2_growth_prob)
+		  if (gd_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_2_growth_prob)
 		  {
-		    switch (g_rand_int_range(cave->random, 0, 4))
+		    switch (gd_rand_int_range(cave->random, 0, 4))
 		    {
 		      /* decided to grow, choose a random direction. */
 		      case 0:    /* let this be up. numbers indifferent. */
@@ -2857,7 +2857,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	case O_ACID:
 	  /* choose randomly, if it spreads */
-	  if (g_rand_int_range(cave->random, 0, 1000000) <= cave->acid_spread_ratio)
+	  if (gd_rand_int_range(cave->random, 0, 1000000) <= cave->acid_spread_ratio)
 	  {
 	    /* the current one explodes */
 	    store(cave, x, y, cave->acid_turns_to);
@@ -2985,12 +2985,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  (rrr & cave->slime_permeability_c64) == 0);
 #endif
 	  /*
-	   * unpredictable: g_rand_int
+	   * unpredictable: gd_rand_int
 	   * predictable: c64 predictable random generator.
 	   *    for predictable, a random number is generated,
 	   *	whether or not it is even possible that the stone will be able to pass.
 	   */
-	  if (cave->slime_predictable ? ((rrr /* XXX */ & cave->slime_permeability_c64) == 0) : g_rand_int_range(cave->random, 0, 1000000) < cave->slime_permeability)
+	  if (cave->slime_predictable ? ((rrr /* XXX */ & cave->slime_permeability_c64) == 0) : gd_rand_int_range(cave->random, 0, 1000000) < cave->slime_permeability)
 	  {
 	    GdDirection grav = cave->gravity;
 	    GdDirection oppos = opposite[cave->gravity];
@@ -3201,7 +3201,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      O_WAITING_STONE, O_BITER_1
 	    };
 
-	    store(cave, x, y, ghost_explode[g_rand_int_range(cave->random, 0, G_N_ELEMENTS(ghost_explode))]);
+	    store(cave, x, y, ghost_explode[gd_rand_int_range(cave->random, 0, G_N_ELEMENTS(ghost_explode))]);
 	  }
 	  break;
 
