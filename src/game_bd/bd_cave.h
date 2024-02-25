@@ -152,6 +152,9 @@ void gd_struct_set_defaults_from_array(gpointer str, const GdStructDescriptor *p
    for example diamond + arrow = falling diamond */
 #define GD_NUM_OF_CELLS (GD_NUM_OF_CELLS_X*GD_NUM_OF_CELLS_Y+80)
 
+/* maximum replay size (maximum seconds x game cycles per second) */
+#define MAX_REPLAY_LEN	(10000 * FRAMES_PER_SECOND / 8)
+
 extern const GdColor gd_flash_color;
 extern const GdColor gd_select_color;
 
@@ -313,6 +316,12 @@ typedef struct _highscore
   int score;
 } GdHighScore;
 
+typedef struct _replay_movements
+{
+  unsigned char data[MAX_REPLAY_LEN];
+  unsigned int len;
+} GdReplayMovements;
+
 /* maximum seed value for the cave random generator. should be smaller than a signed int. */
 #define GD_CAVE_SEED_MAX	(1 << 30)
 
@@ -333,7 +342,7 @@ typedef struct _gd_cave_replay
   guint32 checksum;         /* checksum of the rendered cave. */
 
   boolean wrong_checksum;
-  GByteArray *movements;
+  GdReplayMovements *movements;
   int current_playing_pos;
 } GdReplay;
 

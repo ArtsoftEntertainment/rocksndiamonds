@@ -1378,8 +1378,7 @@ GdReplay *gd_replay_new(void)
   GdReplay *rep;
 
   rep = checked_calloc(sizeof(GdReplay));
-
-  rep->movements = g_byte_array_new();
+  rep->movements = checked_calloc(sizeof(GdReplayMovements));
 
   return rep;
 }
@@ -1392,15 +1391,14 @@ GdReplay *gd_replay_new_from_replay(GdReplay *orig)
 
   /* replicate dynamic data */
   rep->comment = getStringCopy(orig->comment);
-  rep->movements = g_byte_array_new();
-  g_byte_array_append(rep->movements, orig->movements->data, orig->movements->len);
+  rep->movements = get_memcpy(orig->movements, sizeof(GdReplayMovements));
 
   return rep;
 }
 
 void gd_replay_free(GdReplay *replay)
 {
-  g_byte_array_free(replay->movements, TRUE);
+  checked_free(replay->movements);
   checked_free(replay->comment);
   free(replay);
 }
@@ -1415,7 +1413,13 @@ void gd_replay_store_movement(GdReplay *replay, GdDirection player_move,
 	     (player_fire ? GD_REPLAY_FIRE_MASK : 0) |
 	     (suicide ? GD_REPLAY_SUICIDE_MASK : 0));
 
-  g_byte_array_append(replay->movements, data, 1);
+  if (replay->movements->len < MAX_REPLAY_LEN)
+  {
+    replay->movements->data[replay->movements->len++] = data[0];
+
+    if (replay->movements->len == MAX_REPLAY_LEN)
+      Warn("BD replay truncated: size exceeds maximum replay size %d", MAX_REPLAY_LEN);
+  }
 }
 
 /* calculate adler checksum for a rendered cave; this can be used for more caves. */
