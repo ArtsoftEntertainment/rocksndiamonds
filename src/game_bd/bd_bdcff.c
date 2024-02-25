@@ -254,6 +254,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
 	    break;
 
 	  case GD_TYPE_PROBABILITY:
+	    errno = 0;	/* must be reset before calling strtod() to detect overflow/underflow */
 	    res = strtod(params[paramindex], NULL);
 	    if (errno == 0 && res >= 0 && res <= 1)
 	    {
@@ -268,6 +269,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
 	    break;
 
 	  case GD_TYPE_RATIO:
+	    errno = 0;	/* must be reset before calling strtod() to detect overflow/underflow */
 	    res = strtod (params[paramindex], NULL);
 	    if (errno == 0 && res >= 0 && res <= 1)
 	    {
