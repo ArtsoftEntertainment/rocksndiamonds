@@ -504,12 +504,11 @@ static void caveset_name_set_from_filename(char *filename)
 */
 boolean gd_caveset_load_from_file(char *filename)
 {
-  GError *error = NULL;
   gsize length;
   char *buf;
-  boolean read;
   List *new_caveset;
   struct stat st;
+  File *file;
 
   if (stat(filename, &st) != 0)
   {
@@ -525,12 +524,22 @@ boolean gd_caveset_load_from_file(char *filename)
     return FALSE;
   }
 
-  read = g_file_get_contents (filename, &buf, &length, &error);
-  if (!read)
+  if (!(file = openFile(filename, MODE_READ)))
   {
-    Warn("%s", error->message);
+    Warn("cannot open file '%s'", filename);
 
-    g_error_free(error);
+    return FALSE;
+  }
+
+  buf = checked_malloc(st.st_size + 1);
+  length = readFile(file, buf, 1, st.st_size);
+  buf[length] = '\0';
+
+  closeFile(file);
+
+  if (length < st.st_size)
+  {
+    Warn("cannot read file '%s'", filename);
 
     return FALSE;
   }
