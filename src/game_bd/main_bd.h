@@ -39,6 +39,7 @@
 #include "bd_gameplay.h"
 #include "bd_c64import.h"
 #include "bd_graphics.h"
+#include "bd_random.h"
 #include "bd_sound.h"
 
 
