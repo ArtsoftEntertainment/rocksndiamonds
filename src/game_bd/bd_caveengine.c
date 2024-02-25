@@ -30,8 +30,6 @@
  * The player_get function will also behave for lava as it does for space.
  */
 
-#include <glib.h>
-
 #include "main_bd.h"
 
 
@@ -2521,7 +2519,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    int i;
 	    GdElement made_sound_of = O_NONE;
 
-	    for (i = 0; i < G_N_ELEMENTS (biter_try); i++)
+	    for (i = 0; i < ARRAY_SIZE (biter_try); i++)
 	    {
 	      if (is_element_dir(cave, x, y, biter_move[dir], biter_try[i]))
 	      {
@@ -2546,7 +2544,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      }
 	    }
 
-	    if (i == G_N_ELEMENTS(biter_try))
+	    if (i == ARRAY_SIZE(biter_try))
 	      /* i = number of elements in array: could not move, so just turn */
 	      store(cave, x, y, O_BITER_1 + dirp);
 	    else if (biter_try[i] == O_STONE)
@@ -2711,7 +2709,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      };
 	      GdDirection random_dir;
 
-	      random_dir = dirs[gd_rand_int_range(cave->random, 0, G_N_ELEMENTS(dirs))];
+	      random_dir = dirs[gd_rand_int_range(cave->random, 0, ARRAY_SIZE(dirs))];
 	      if (is_space_dir(cave, x, y, random_dir))
 	      {
 		move(cave, x, y, random_dir, O_GHOST);
@@ -3201,7 +3199,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      O_WAITING_STONE, O_BITER_1
 	    };
 
-	    store(cave, x, y, ghost_explode[gd_rand_int_range(cave->random, 0, G_N_ELEMENTS(ghost_explode))]);
+	    store(cave, x, y, ghost_explode[gd_rand_int_range(cave->random, 0, ARRAY_SIZE(ghost_explode))]);
 	  }
 	  break;
 
@@ -3404,14 +3402,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   }
 
   /* record coordinates of player for chasing stone */
-  for (i = 0; i < G_N_ELEMENTS(cave->px) - 1; i++)
+  for (i = 0; i < ARRAY_SIZE(cave->px) - 1; i++)
   {
     cave->px[i] = cave->px[i + 1];
     cave->py[i] = cave->py[i + 1];
   }
 
-  cave->px[G_N_ELEMENTS(cave->px) - 1] = cave->player_x;
-  cave->py[G_N_ELEMENTS(cave->py) - 1] = cave->player_y;
+  cave->px[ARRAY_SIZE(cave->px) - 1] = cave->player_x;
+  cave->py[ARRAY_SIZE(cave->py) - 1] = cave->player_y;
 
   /* SCHEDULING */
 

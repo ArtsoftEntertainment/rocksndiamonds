@@ -17,8 +17,6 @@
 #ifndef BD_CAVESET_H
 #define BD_CAVESET_H
 
-#include <glib.h>
-
 #include "main_bd.h"
 
 
@@ -61,7 +59,7 @@ extern char *gd_caveset_extensions[];
 
 /* #included cavesets; configdir passed to look for .hsc file */
 boolean gd_caveset_load_from_internal(int caveset, const char *configdir);
-const gchar **gd_caveset_get_internal_game_names(void);
+const char **gd_caveset_get_internal_game_names(void);
 
 /* caveset load from file */
 boolean gd_caveset_load_from_file(char *filename);

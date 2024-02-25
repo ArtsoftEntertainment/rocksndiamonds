@@ -17,8 +17,6 @@
 #ifndef BD_GAMEPLAY_H
 #define BD_GAMEPLAY_H
 
-#include <glib.h>
-
 #include "bd_cave.h"
 
 

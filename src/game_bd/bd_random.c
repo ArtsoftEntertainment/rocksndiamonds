@@ -38,6 +38,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <time.h>
 
 #if defined(PLATFORM_WINDOWS)
 #include <process.h>	/* for getpid() */

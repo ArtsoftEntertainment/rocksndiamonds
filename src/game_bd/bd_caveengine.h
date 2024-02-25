@@ -17,8 +17,6 @@
 #ifndef BD_CAVEENGINE_H
 #define BD_CAVEENGINE_H
 
-#include <glib.h>
-
 #include "bd_cave.h"
 
 

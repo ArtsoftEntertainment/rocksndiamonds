@@ -17,9 +17,6 @@
 #ifndef BD_BDCFF_H
 #define BD_BDCFF_H
 
-#include <glib.h>
-
 boolean gd_caveset_load_from_bdcff(const char *contents);
-void gd_caveset_save_to_bdcff(GPtrArray *out);
 
 #endif	// BD_BDCFF_H

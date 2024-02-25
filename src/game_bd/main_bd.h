@@ -65,6 +65,17 @@ extern int			SX, SY;
 #define SXSIZE			(SCR_FIELDX * TILEX)
 #define SYSIZE			(SCR_FIELDY * TILEY)
 
+/* compatibility macros */
+
+#define gettext(String) (String)
+#define      N_(String) (String)
+#define       _(String) (String)
+
+#define STRUCT_MEMBER_P(struct_p, struct_offset)   \
+  ((void *) ((byte *) (struct_p) + (long) (struct_offset)))
+#define STRUCT_MEMBER(member_type, struct_p, struct_offset)   \
+  (*(member_type*) STRUCT_MEMBER_P ((struct_p), (struct_offset)))
+
 
 // ----------------------------------------------------------------------------
 // data structure definitions

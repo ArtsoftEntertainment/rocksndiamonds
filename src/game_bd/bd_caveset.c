@@ -14,9 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <glib.h>
-#include <glib/gi18n.h>
-#include <glib/gstdio.h>
+#include <sys/stat.h>
 
 #include "main_bd.h"
 
@@ -99,7 +97,7 @@ void gd_caveset_data_free(GdCavesetData *data)
   /* free strings */
   for (i = 0; gd_caveset_properties[i].identifier != NULL; i++)
     if (gd_caveset_properties[i].type == GD_TYPE_LONGSTRING)
-      checked_free(G_STRUCT_MEMBER(char *, data, gd_caveset_properties[i].offset));
+      checked_free(STRUCT_MEMBER(char *, data, gd_caveset_properties[i].offset));
 
   free(data);
 }
@@ -257,9 +255,9 @@ static GdColor brc_color_table_comp[] =
   0x3526ff,
 };
 
-static GdElement brc_effect(guint8 byt)
+static GdElement brc_effect(byte byt)
 {
-  if (byt >= G_N_ELEMENTS(brc_effect_table))
+  if (byt >= ARRAY_SIZE(brc_effect_table))
   {
     Warn("invalid element identifier for brc effect: %02x", byt);
 
@@ -269,7 +267,7 @@ static GdElement brc_effect(guint8 byt)
   return brc_effect_table[byt];
 }
 
-static void brc_import(guint8 *data)
+static void brc_import(byte *data)
 {
   int x, y;
   int level;
@@ -337,12 +335,12 @@ static void brc_import(guint8 *data)
       {
 	for (x = 0; x < cave->w; x++)
 	{
-	  guint8 import;
+	  byte import;
 
 	  import = data[y + level * 24 + cavenum * 24 * 5 + x * 24 * 5 * 20];
 
 	  // if (i == printcave) g_print("%2x", import);
-	  if (import < G_N_ELEMENTS(brc_import_table))
+	  if (import < ARRAY_SIZE(brc_import_table))
 	    cave->map[y][x] = brc_import_table[import];
 	  else
 	    cave->map[y][x] = O_UNKNOWN;
@@ -410,7 +408,7 @@ static void brc_import(guint8 *data)
       cave->intermission = (cavenum >= 16 || data[14 * c + datapos + 1] != 0);
 
       /* colors */
-      colind = data[31 * c + datapos] % G_N_ELEMENTS(brc_color_table);
+      colind = data[31 * c + datapos] % ARRAY_SIZE(brc_color_table);
       cave->colorb = 0x000000;    /* fixed rgb black */
       cave->color0 = 0x000000;    /* fixed rgb black */
       cave->color1 = brc_color_table[colind];
@@ -504,7 +502,7 @@ static void caveset_name_set_from_filename(char *filename)
 */
 boolean gd_caveset_load_from_file(char *filename)
 {
-  gsize length;
+  size_t length;
   char *buf;
   List *new_caveset;
   struct stat st;
@@ -559,7 +557,7 @@ boolean gd_caveset_load_from_file(char *filename)
   if (strSuffix(filename, ".brc") ||
       strSuffix(filename, "*.BRC"))
   {
-    brc_import((guint8 *) buf);
+    brc_import((byte *) buf);
     gd_caveset_edited = FALSE;    /* newly loaded cave is not edited */
     gd_caveset_last_selected = caveset_first_selectable_cave_index();
     gd_caveset_last_selected_level = 0;
@@ -570,7 +568,7 @@ boolean gd_caveset_load_from_file(char *filename)
   }
 
   /* BDCFF */
-  if (gd_caveset_imported_get_format((guint8 *) buf) == GD_FORMAT_UNKNOWN)
+  if (gd_caveset_imported_get_format((byte *) buf) == GD_FORMAT_UNKNOWN)
   {
     /* try to load as bdcff */
     boolean result;
@@ -589,7 +587,7 @@ boolean gd_caveset_load_from_file(char *filename)
   }
 
   /* try to load as a binary file, as we know the format */
-  new_caveset = gd_caveset_import_from_buffer ((guint8 *) buf, length);
+  new_caveset = gd_caveset_import_from_buffer ((byte *) buf, length);
   free(buf);
 
   /* if unable to load, exit here. error was reported by import_from_buffer() */
@@ -622,7 +620,7 @@ int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean 
   while (riter != NULL)
   {
     GdReplay *replay = (GdReplay *)riter->data;
-    guint32 checksum;
+    unsigned int checksum;
     GdCave *rendered;
     List *next = riter->next;
 

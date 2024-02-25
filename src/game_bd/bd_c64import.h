@@ -17,8 +17,6 @@
 #ifndef BD_CAVEIMPORT_H
 #define BD_CAVEIMPORT_H
 
-#include <glib.h>
-
 #include "bd_cave.h"
 
 
@@ -58,8 +56,8 @@ typedef enum _gd_engine
 
 extern const char *gd_engines[];
 
-GdCavefileFormat gd_caveset_imported_get_format(const guint8 *buf);
-List* gd_caveset_import_from_buffer (const guint8 *buf, gsize length);
+GdCavefileFormat gd_caveset_imported_get_format(const unsigned char *buf);
+List* gd_caveset_import_from_buffer (const unsigned char *buf, size_t length);
 
 void gd_cave_set_engine_defaults(GdCave *cave, GdEngine engine);
 GdEngine gd_cave_get_engine_from_string(const char *param);

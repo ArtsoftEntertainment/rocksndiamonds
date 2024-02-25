@@ -14,9 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <glib.h>
-#include <glib/gi18n.h>
-
 #include "main_bd.h"
 
 
@@ -105,7 +102,7 @@ GdDirection gd_direction_from_string(const char *str)
 {
   int i;
 
-  for (i = 1; i<G_N_ELEMENTS(direction_filename); i++)
+  for (i = 1; i < ARRAY_SIZE(direction_filename); i++)
     if (strcasecmp(str, direction_filename[i]) == 0)
       return (GdDirection) i;
 
@@ -128,7 +125,7 @@ GdScheduling gd_scheduling_from_string(const char *str)
 {
   int i;
 
-  for (i = 0; i < G_N_ELEMENTS(scheduling_filename); i++)
+  for (i = 0; i < ARRAY_SIZE(scheduling_filename); i++)
     if (strcasecmp(str, scheduling_filename[i]) == 0)
       return (GdScheduling) i;
 
@@ -143,7 +140,7 @@ GdScheduling gd_scheduling_from_string(const char *str)
   "properties" describes the structure and its pointers,
   "defaults" are the pieces of data which will be copied to str.
 */
-void gd_struct_set_defaults_from_array(gpointer str,
+void gd_struct_set_defaults_from_array(void *str,
 				       const GdStructDescriptor *properties,
 				       GdPropertyDefault *defaults)
 {
@@ -151,7 +148,7 @@ void gd_struct_set_defaults_from_array(gpointer str,
 
   for (i = 0; defaults[i].offset != -1; i++)
   {
-    gpointer pvalue = G_STRUCT_MEMBER_P(str, defaults[i].offset);
+    void *pvalue = STRUCT_MEMBER_P(str, defaults[i].offset);
     /* these point to the same, but to avoid the awkward cast syntax */
     int *ivalue = pvalue;
     GdElement *evalue = pvalue;
@@ -237,7 +234,7 @@ void gd_create_char_to_element_table(void)
   int i;
 
   /* fill all with unknown */
-  for (i = 0; i < G_N_ELEMENTS(gd_char_to_element); i++)
+  for (i = 0; i < ARRAY_SIZE(gd_char_to_element); i++)
     gd_char_to_element[i] = O_UNKNOWN;
 
   /* then set fixed characters */
@@ -256,7 +253,7 @@ void gd_create_char_to_element_table(void)
 }
 
 /* search the element database for the specified character, and return the element. */
-GdElement gd_get_element_from_character (guint8 character)
+GdElement gd_get_element_from_character (byte character)
 {
   if (gd_char_to_element[character] != O_UNKNOWN)
     return gd_char_to_element[character];
@@ -368,7 +365,7 @@ void gd_cave_set_gdash_defaults(GdCave* cave)
 }
 
 /* for quicksort. compares two highscores. */
-int gd_highscore_compare(gconstpointer a, gconstpointer b)
+int gd_highscore_compare(const void *a, const void *b)
 {
   const GdHighScore *ha = a;
   const GdHighScore *hb = b;
@@ -476,12 +473,12 @@ GdCave *gd_cave_new(void)
   allocate a cave map-like array, and initialize to zero.
   one cell is cell_size bytes long.
 */
-gpointer gd_cave_map_new_for_cave(const GdCave *cave, const int cell_size)
+void *gd_cave_map_new_for_cave(const GdCave *cave, const int cell_size)
 {
-  gpointer *rows;                /* this is void**, pointer to array of ... */
+  void **rows;                /* this is void**, pointer to array of ... */
   int y;
 
-  rows = checked_malloc((cave->h) * sizeof(gpointer));
+  rows = checked_malloc((cave->h) * sizeof(void *));
   rows[0] = checked_calloc(cell_size * cave->w * cave->h);
 
   for (y = 1; y < cave->h; y++)
@@ -496,16 +493,16 @@ gpointer gd_cave_map_new_for_cave(const GdCave *cave, const int cell_size)
 
   if map is null, this also returns null.
 */
-gpointer gd_cave_map_dup_size(const GdCave *cave, const gpointer map, const int cell_size)
+void *gd_cave_map_dup_size(const GdCave *cave, const void *map, const int cell_size)
 {
-  gpointer *rows;
-  gpointer *maplines = (gpointer *)map;
+  void **rows;
+  void **maplines = (void **)map;
   int y;
 
   if (!map)
     return NULL;
 
-  rows = checked_malloc((cave->h) * sizeof(gpointer));
+  rows = checked_malloc((cave->h) * sizeof(void *));
   rows[0] = get_memcpy (maplines[0], cell_size * cave->w * cave->h);
 
   for (y = 1; y < cave->h; y++)
@@ -514,9 +511,9 @@ gpointer gd_cave_map_dup_size(const GdCave *cave, const gpointer map, const int 
   return rows;
 }
 
-void gd_cave_map_free(gpointer map)
+void gd_cave_map_free(void *map)
 {
-  gpointer *maplines = (gpointer *) map;
+  void **maplines = (void **) map;
 
   if (!map)
     return;
@@ -544,7 +541,7 @@ void gd_cave_free(GdCave *cave)
   /* free strings */
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
     if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
-      checked_free(G_STRUCT_MEMBER(char *, cave, gd_cave_properties[i].offset));
+      checked_free(STRUCT_MEMBER(char *, cave, gd_cave_properties[i].offset));
 
   /* map */
   gd_cave_map_free(cave->map);
@@ -592,8 +589,8 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
   /* for longstrings */
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
     if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
-      G_STRUCT_MEMBER(char *, dest, gd_cave_properties[i].offset) =
-	getStringCopy(G_STRUCT_MEMBER(char *, src, gd_cave_properties[i].offset));
+      STRUCT_MEMBER(char *, dest, gd_cave_properties[i].offset) =
+	getStringCopy(STRUCT_MEMBER(char *, src, gd_cave_properties[i].offset));
 
   /* no reason to copy this */
   dest->objects_order = NULL;
@@ -1407,7 +1404,7 @@ void gd_replay_free(GdReplay *replay)
 void gd_replay_store_movement(GdReplay *replay, GdDirection player_move,
 			      boolean player_fire, boolean suicide)
 {
-  guint8 data[1];
+  byte data[1];
 
   data[0] = ((player_move) |
 	     (player_fire ? GD_REPLAY_FIRE_MASK : 0) |
@@ -1423,7 +1420,7 @@ void gd_replay_store_movement(GdReplay *replay, GdDirection player_move,
 }
 
 /* calculate adler checksum for a rendered cave; this can be used for more caves. */
-void gd_cave_adler_checksum_more(GdCave *cave, guint32 *a, guint32 *b)
+void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b)
 {
   int x, y;
 
@@ -1439,11 +1436,10 @@ void gd_cave_adler_checksum_more(GdCave *cave, guint32 *a, guint32 *b)
 }
 
 /* calculate adler checksum for a single rendered cave. */
-guint32
-gd_cave_adler_checksum(GdCave *cave)
+unsigned int gd_cave_adler_checksum(GdCave *cave)
 {
-  guint32 a = 1;
-  guint32 b = 0;
+  unsigned int a = 1;
+  unsigned int b = 0;
 
   gd_cave_adler_checksum_more(cave, &a, &b);
   return (b << 16) + a;

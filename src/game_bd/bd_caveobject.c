@@ -14,9 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <glib.h>
-#include <glib/gi18n.h>
-
 #include "main_bd.h"
 
 
@@ -163,7 +160,7 @@ GdObject *gd_object_new_floodfill_replace(GdObjectLevels levels, int x1, int y1,
 
 GdObject *gd_object_new_maze(GdObjectLevels levels, int x1, int y1, int x2, int y2,
 			     int wall_w, int path_w, GdElement wall_e, GdElement path_e,
-			     int horiz_percent, const gint32 seed[5])
+			     int horiz_percent, const int seed[5])
 {
   int i;
   GdObject *newobj = checked_calloc(sizeof(GdObject));
@@ -188,7 +185,7 @@ GdObject *gd_object_new_maze(GdObjectLevels levels, int x1, int y1, int x2, int 
 
 GdObject *gd_object_new_maze_unicursal(GdObjectLevels levels, int x1, int y1, int x2, int y2,
 				       int wall_w, int path_w, GdElement wall_e, GdElement path_e,
-				       int horiz_percent, const gint32 seed[5])
+				       int horiz_percent, const int seed[5])
 {
   int i;
   GdObject *newobj = checked_calloc(sizeof(GdObject));
@@ -213,7 +210,7 @@ GdObject *gd_object_new_maze_unicursal(GdObjectLevels levels, int x1, int y1, in
 
 GdObject *gd_object_new_maze_braid(GdObjectLevels levels, int x1, int y1, int x2, int y2,
 				   int wall_w, int path_w, GdElement wall_e, GdElement path_e,
-				   int horiz_percent, const gint32 seed[5])
+				   int horiz_percent, const int seed[5])
 {
   int i;
   GdObject *newobj = checked_calloc(sizeof(GdObject));
@@ -237,8 +234,8 @@ GdObject *gd_object_new_maze_braid(GdObjectLevels levels, int x1, int y1, int x2
 }
 
 GdObject *gd_object_new_random_fill(GdObjectLevels levels, int x1, int y1, int x2, int y2,
-				    const gint32 seed[5], GdElement initial,
-				    const GdElement random[4], const gint32 prob[4],
+				    const int seed[5], GdElement initial,
+				    const GdElement random[4], const int prob[4],
 				    GdElement replace_only, boolean c64)
 {
   int i;
@@ -1139,7 +1136,7 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
   int y2 = object->y2;
   GdRand *rand;
   GdC64RandomGenerator c64_rand;
-  guint32 seed;
+  unsigned int seed;
 
   /* -1 means that it should be different every time played. */
   if (object->seed[level] == -1)
@@ -1316,7 +1313,7 @@ void gd_cave_draw_object(GdCave *cave, const GdObject *object, int level)
 }
 
 /* load cave to play... also can be called rendering the cave elements */
-GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const guint32 seed)
+GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned int seed)
 {
   GdCave *cave;
   GdElement element;
@@ -1331,7 +1328,7 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const guint32 
   cave->random = gd_rand_new_with_seed(cave->render_seed);
 
   /* maps needed during drawing and gameplay */
-  cave->objects_order = gd_cave_map_new(cave, gpointer);
+  cave->objects_order = gd_cave_map_new(cave, void *);
 
   cave->time                   = data->level_time[level];
   cave->timevalue              = data->level_timevalue[level];

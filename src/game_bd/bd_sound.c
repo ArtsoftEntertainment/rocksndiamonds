@@ -14,8 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <glib.h>
-
 #include "main_bd.h"
 
 
@@ -368,7 +366,7 @@ void gd_sound_off(void)
   int i;
 
   /* stop all sounds. */
-  for (i = 0; i < G_N_ELEMENTS(snd_playing); i++)
+  for (i = 0; i < ARRAY_SIZE(snd_playing); i++)
     halt_channel(i);
 }
 

@@ -156,14 +156,6 @@ endif
 CFLAGS = $(OPTIONS) $(ANALYZE) $(SYS_CFLAGS)  $(EXTRA_CFLAGS) $(CONFIG)
 LDFLAGS =           $(ANALYZE) $(SYS_LDFLAGS) $(EXTRA_LDFLAGS)
 
-# !!! DEPENDENCY TO GLIB SHOULD BE REMOVED AGAIN !!!
-GLIB_CFLAGS  := $(shell pkg-config --cflags glib-2.0)
-GLIB_LDFLAGS := $(shell pkg-config --libs   glib-2.0)
-
-CFLAGS  := $(CFLAGS)  $(GLIB_CFLAGS)
-LDFLAGS := $(LDFLAGS) $(GLIB_LDFLAGS)
-# !!! DEPENDENCY TO GLIB SHOULD BE REMOVED AGAIN !!!
-
 
 SRCS =	main.c		\
 	conf_gfx.c	\

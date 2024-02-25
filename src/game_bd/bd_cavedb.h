@@ -17,8 +17,6 @@
 #ifndef BD_CAVEDB_H
 #define BD_CAVEDB_H
 
-#include <glib.h>
-
 #include "bd_cave.h"
 
 

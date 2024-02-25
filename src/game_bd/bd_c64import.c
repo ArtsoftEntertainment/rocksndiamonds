@@ -14,9 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <glib.h>
-#include <glib/gi18n.h>
-
 #include "main_bd.h"
 
 
@@ -435,9 +432,9 @@ static int slime_shift_msb(int c64_data)
   return perm;
 }
 
-static GdElement bd1_import(guint8 c, int i)
+static GdElement bd1_import(byte c, int i)
 {
-  if (c < G_N_ELEMENTS(bd1_import_table))
+  if (c < ARRAY_SIZE(bd1_import_table))
     return bd1_import_table[c];
 
   Warn("Invalid BD1 element in imported file at cave data %d: %d", i, c);
@@ -446,7 +443,7 @@ static GdElement bd1_import(guint8 c, int i)
 }
 
 /* deluxe caves 1 contained a special element, non-sloped brick. */
-static GdElement deluxecaves_1_import(guint8 c, int i)
+static GdElement deluxecaves_1_import(byte c, int i)
 {
   GdElement e = bd1_import(c, i);
 
@@ -456,9 +453,9 @@ static GdElement deluxecaves_1_import(guint8 c, int i)
   return e;
 }
 
-static GdElement firstboulder_import(guint8 c, int i)
+static GdElement firstboulder_import(byte c, int i)
 {
-  if (c < G_N_ELEMENTS(firstboulder_import_table))
+  if (c < ARRAY_SIZE(firstboulder_import_table))
     return firstboulder_import_table[c];
 
   Warn("Invalid 1stB element in imported file at cave data %d: %d", i, c);
@@ -466,9 +463,9 @@ static GdElement firstboulder_import(guint8 c, int i)
   return O_UNKNOWN;
 }
 
-static GdElement crazylight_import(guint8 c, int i)
+static GdElement crazylight_import(byte c, int i)
 {
-  if (c < G_N_ELEMENTS(gd_crazylight_import_table))
+  if (c < ARRAY_SIZE(gd_crazylight_import_table))
     return gd_crazylight_import_table[c] & O_MASK;    /* & O_MASK: do not import "scanned" flag */
 
   Warn("Invalid CrLi element in imported file at cave data %d: %d", i, c);
@@ -568,16 +565,16 @@ GdEngine gd_cave_get_engine_from_string(const char *param)
 */
 
 /* import bd1 cave data into our format. */
-static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_bytes,
+static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_bytes,
 			      GdCavefileFormat format)
 {
   int length, direction;
   int index;
   int level;
   int x1, y1, x2, y2;
-  guint8 code;
+  byte code;
   GdElement elem;
-  GdElement (* import_func) (guint8 c, int i);
+  GdElement (* import_func) (byte c, int i);
   int i;
 
   /* cant be shorted than this: header + no objects + delimiter */
@@ -718,7 +715,7 @@ static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_by
 	case 1:                /* 01: LINE */
 	  x1 = data[index + 1];
 	  y1 = data[index + 2] - 2;
-	  length = (gint8)data[index + 3] - 1;
+	  length = (byte)data[index + 3] - 1;
 	  direction = data[index + 4];
 
 	  if (length < 0)
@@ -796,7 +793,7 @@ static int cave_copy_from_bd1(GdCave *cave, const guint8 *data, int remaining_by
 
 /* import bd2 cave data into our format. return number of bytes if pointer passed.
    this is pretty much the same as above, only the encoding was different. */
-static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_bytes,
+static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_bytes,
 			      GdCavefileFormat format)
 {
   int index;
@@ -1107,7 +1104,7 @@ static int cave_copy_from_bd2(GdCave *cave, const guint8 *data, int remaining_by
 
 /* import plck cave data into our format.
    length is always 512 bytes, and contains if it is an intermission cave. */
-static int cave_copy_from_plck(GdCave *cave, const guint8 *data,
+static int cave_copy_from_plck(GdCave *cave, const byte *data,
 			       int remaining_bytes, GdCavefileFormat format)
 {
   /* i don't really think that all this table is needed, but included to be complete. */
@@ -1270,9 +1267,9 @@ static int cave_copy_from_plck(GdCave *cave, const guint8 *data,
 }
 
 /* no one's delight boulder dash essentially: rle compressed plck maps. */
-static int cave_copy_from_dlb(GdCave *cave, const guint8 *data, int remaining_bytes)
+static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_bytes)
 {
-  guint8 decomp[512];
+  byte decomp[512];
   enum
   {
     START,        /* initial state */
@@ -1281,7 +1278,7 @@ static int cave_copy_from_dlb(GdCave *cave, const guint8 *data, int remaining_by
     NORMAL        /* normal, copy bytes till separator */
   } state;
   int pos, cavepos, i, x, y;
-  guint8 byte, separator;
+  byte byte, separator;
 
   gd_cave_set_engine_defaults(cave, GD_ENGINE_PLCK); /* essentially the plck engine */
 
@@ -1420,7 +1417,7 @@ static int cave_copy_from_dlb(GdCave *cave, const guint8 *data, int remaining_by
 }
 
 /* import plck cave data into our format. */
-static int cave_copy_from_1stb(GdCave *cave, const guint8 *data, int remaining_bytes)
+static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_bytes)
 {
   int i;
   int x, y;
@@ -1559,10 +1556,10 @@ static int cave_copy_from_1stb(GdCave *cave, const guint8 *data, int remaining_b
 }
 
 /* crazy dream 7 */
-static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining_bytes)
+static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_bytes)
 {
   int i, index;
-  guint8 checksum;
+  byte checksum;
 
   /* if we have name, convert */
   gd_strcpy(cave->name, "              ");
@@ -1916,9 +1913,9 @@ static int cave_copy_from_crdr_7(GdCave *cave, const guint8 *data, int remaining
   return 15 + 0x49 + index;
 }
 
-static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const int length)
+static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int length)
 {
-  guint8 checksum;
+  byte checksum;
   int i;
 
   /* crazy dream 9 hack */
@@ -1930,8 +1927,8 @@ static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const in
   if (strEqual(cave->name, "Rockfall") && checksum == 134)
   {
     GdElement rand[4] = { O_DIAMOND, O_STONE, O_ACID, O_DIRT };
-    gint32 prob[4] = { 37, 32, 2, 0 };
-    gint32 seeds[5] = { -1, -1, -1, -1, -1 };
+    int prob[4] = { 37, 32, 2, 0 };
+    int seeds[5] = { -1, -1, -1, -1, -1 };
 
     cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
   }
@@ -1939,23 +1936,23 @@ static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const in
   if (strEqual(cave->name, "Roll dice now!") && checksum == 235)
   {
     GdElement rand[4] = { O_STONE, O_BUTTER_3, O_DIRT, O_DIRT };
-    gint32 prob[4] = { 0x18, 0x08, 0, 0 };
-    gint32 seeds[5] = { -1, -1, -1, -1, -1 };
+    int prob[4] = { 0x18, 0x08, 0, 0 };
+    int seeds[5] = { -1, -1, -1, -1, -1 };
 
     cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
   }
 
   if (strEqual(cave->name, "Random maze") && checksum == 24)
   {
-    gint32 seeds[5] = { -1, -1, -1, -1, -1 };
+    int seeds[5] = { -1, -1, -1, -1, -1 };
     cave->objects = list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 1, 4, 35, 20, 1, 1, O_NONE, O_DIRT, 50, seeds));
   }
 
   if (strEqual(cave->name, "Metamorphosis") && checksum == 53)
   {
-    gint32 seeds[5] = { -1, -1, -1, -1, -1 };
+    int seeds[5] = { -1, -1, -1, -1, -1 };
     GdElement rand[4] = { O_STONE, O_DIRT, O_DIRT, O_DIRT };
-    gint32 prob[4] = { 0x18, 0, 0, 0 };
+    int prob[4] = { 0x18, 0, 0, 0 };
 
     cave->objects = list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, 1, 3, O_NONE, O_BLADDER_SPENDER, 50, seeds));
     cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
@@ -1964,7 +1961,7 @@ static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const in
 
   if (strEqual(cave->name, "All the way") && checksum == 33)
   {
-    gint32 seeds[5] = { -1, -1, -1, -1, -1 };
+    int seeds[5] = { -1, -1, -1, -1, -1 };
 
     cave->objects = list_append(cave->objects, gd_object_new_maze_unicursal(GD_OBJECT_LEVEL_ALL, 1, 1, 35, 19, 1, 1, O_BRICK, O_PRE_DIA_1, 50, seeds));
 
@@ -1974,9 +1971,9 @@ static void crazy_dream_9_add_specials(GdCave *cave, const guint8 *buf, const in
 }
 
 /* crazy light contruction kit */
-static int cave_copy_from_crli(GdCave *cave, const guint8 *data, int remaining_bytes)
+static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_bytes)
 {
-  guint8 uncompressed[1024];
+  byte uncompressed[1024];
   int datapos, cavepos, i, x, y;
   boolean cavefile;
   const char *versions[] = { "V2.2", "V2.6", "V3.0" };
@@ -1987,7 +1984,7 @@ static int cave_copy_from_crli(GdCave *cave, const guint8 *data, int remaining_b
     V2_6,
     V3_0
   } version = none;
-  GdElement (*import) (guint8 c, int i) = NULL;    /* import function */
+  GdElement (*import) (byte c, int i) = NULL;    /* import function */
 
   gd_cave_set_engine_defaults(cave, GD_ENGINE_CRLI);
 
@@ -2077,7 +2074,7 @@ static int cave_copy_from_crli(GdCave *cave, const guint8 *data, int remaining_b
   }
 
   /* check crli version */
-  for (i = 0; i < G_N_ELEMENTS(versions); i++)
+  for (i = 0; i < ARRAY_SIZE(versions); i++)
     if (memcmp((char *)uncompressed + 0x3a0, versions[i], 4) == 0)
       version = i + 1;
 
@@ -2249,7 +2246,7 @@ static int cave_copy_from_crli(GdCave *cave, const guint8 *data, int remaining_b
   return datapos;
 }
 
-GdCavefileFormat gd_caveset_imported_get_format(const guint8 *buf)
+GdCavefileFormat gd_caveset_imported_get_format(const byte *buf)
 {
   const char *s_bd1       = "GDashBD1";
   const char *s_bd1_atari = "GDashB1A";
@@ -2297,13 +2294,13 @@ GdCavefileFormat gd_caveset_imported_get_format(const guint8 *buf)
   Loads the caveset from a memory buffer.
   returns: List * of caves.
 */
-List *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
+List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 {
   boolean numbering;
   int cavenum, intermissionnum, num;
   int cavelength, bufp;
   List *caveset = NULL, *iter;
-  guint32 encodedlength;
+  unsigned int encodedlength;
   GdCavefileFormat format;
 
   if (length != -1 && length < 12)
@@ -2312,7 +2309,7 @@ List *gd_caveset_import_from_buffer (const guint8 *buf, gsize length)
     return NULL;
   }
 
-  encodedlength = GUINT32_FROM_LE(*((guint32 *)(buf + 8)));
+  encodedlength = (unsigned int)(*((unsigned int *)(buf + 8)));
   if (length != -1 && encodedlength != length - 12)
   {
     Warn("file length and data size mismatch in GDash datafile");

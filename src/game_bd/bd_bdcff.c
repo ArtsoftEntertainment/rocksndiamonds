@@ -14,9 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <glib.h>
-#include <glib/gi18n.h>
-
 #include <errno.h>
 
 #include "main_bd.h"
@@ -140,7 +137,7 @@ static boolean attrib_is_valid_for_caveset(const char *attrib)
   return FALSE;
 }
 
-static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_desc,
+static boolean struct_set_property(void *str, const GdStructDescriptor *prop_desc,
 				   const char *attrib, const char *param, int ratio)
 {
   char **params;
@@ -163,7 +160,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
     if (strcasecmp(prop_desc[i].identifier, attrib) == 0)
     {
       /* found the identifier */
-      gpointer value = G_STRUCT_MEMBER_P(str, prop_desc[i].offset);
+      void *value = STRUCT_MEMBER_P(str, prop_desc[i].offset);
 
       /* these point to the same, but to avoid the awkward cast syntax */
       int *ivalue = value;
@@ -204,7 +201,7 @@ static boolean struct_set_property(gpointer str, const GdStructDescriptor *prop_
       for (j = 0; j < prop_desc[i].count && params[paramindex] != NULL; j++)
       {
 	boolean success = FALSE;
-	gdouble res;
+	double res;
 
 	switch (prop_desc[i].type)
 	{
@@ -358,7 +355,7 @@ static boolean replay_store_more_from_bdcff(GdReplay *replay, const char *param)
 }
 
 /* report all remaining tags; called after the above function. */
-static void replay_report_unknown_tags_func(const char *attrib, const char *param, gpointer data)
+static void replay_report_unknown_tags_func(const char *attrib, const char *param, void *data)
 {
   Warn("unknown replay tag '%s'", attrib);
 }
@@ -489,7 +486,7 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
 }
 
 /* report all remaining tags; called after the above function. */
-static void cave_report_and_copy_unknown_tags_func(char *attrib, char *param, gpointer data)
+static void cave_report_and_copy_unknown_tags_func(char *attrib, char *param, void *data)
 {
   GdCave *cave = (GdCave *)data;
 
@@ -1062,7 +1059,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 		strcasecmp(params[0], gd_cave_properties[i].identifier) == 0)
 	    {
 	      /* found identifier */
-	      gpointer value = G_STRUCT_MEMBER_P (cave, gd_cave_properties[i].offset);
+	      void *value = STRUCT_MEMBER_P (cave, gd_cave_properties[i].offset);
 
 	      *((GdElement *) value) = gd_get_element_from_string (params[1]);
 	      break;

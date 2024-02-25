@@ -14,8 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <glib.h>
-
 #include "main_bd.h"
 
 
@@ -53,7 +51,7 @@ static int scroll_x, scroll_y;
 /* quit, global variable which is set to true if the application should quit */
 boolean gd_quit = FALSE;
 
-const guint8 *gd_keystate;
+const byte *gd_keystate;
 
 static int cell_size = 0;
 

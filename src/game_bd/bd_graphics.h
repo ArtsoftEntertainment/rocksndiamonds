@@ -17,17 +17,15 @@
 #ifndef BD_GRAPHICS_H
 #define BD_GRAPHICS_H
 
-#include <SDL.h>
-
 #include "bd_cave.h"
 #include "bd_gameplay.h"
 
 
 extern Bitmap *gd_screen_bitmap;
 
-extern const Uint8 *gd_keystate;
+extern const unsigned char *gd_keystate;
 
-typedef guint32 GdColor;
+typedef unsigned int GdColor;
 
 void set_cell_size(int s);
 void set_play_area(int w, int h);

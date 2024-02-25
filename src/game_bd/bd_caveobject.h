@@ -17,8 +17,6 @@
 #ifndef BD_CAVEOBJECT_H
 #define BD_CAVEOBJECT_H
 
-#include <glib.h>
-
 #include "bd_cave.h"
 
 
@@ -67,7 +65,7 @@ typedef struct _gd_object
   int dx, dy;               /* distance of elements for raster or join */
   GdElement element, fill_element;   /* element type */
 
-  gint32 seed[5];           /* for maze and random fill */
+  int seed[5];              /* for maze and random fill */
   int horiz;                /* for maze */
 
   boolean mirror, flip;     /* for copy */
@@ -86,16 +84,16 @@ GdObject *gd_object_new_raster(GdObjectLevels levels, int x1, int y1, int x2, in
 GdObject *gd_object_new_join(GdObjectLevels levels, int dx, int dy, GdElement search, GdElement replace);
 GdObject *gd_object_new_floodfill_border(GdObjectLevels levels, int x1, int y1, GdElement fill, GdElement border);
 GdObject *gd_object_new_floodfill_replace(GdObjectLevels levels, int x1, int y1, GdElement fill, GdElement to_replace);
-GdObject *gd_object_new_maze(GdObjectLevels levels, int x1, int y1, int x2, int y2, int wall_w, int path_w, GdElement wall_e, GdElement path_e, int horiz_percent, const gint32 seed[5]);
-GdObject *gd_object_new_maze_unicursal(GdObjectLevels levels, int x1, int y1, int x2, int y2, int wall_w, int path_w, GdElement wall_e, GdElement path_e, int horiz_percent, const gint32 seed[5]);
-GdObject *gd_object_new_maze_braid(GdObjectLevels levels, int x1, int y1, int x2, int y2, int wall_w, int path_w, GdElement wall_e, GdElement path_e, int horiz_percent, const gint32 seed[5]);
-GdObject *gd_object_new_random_fill(GdObjectLevels levels, int x1, int y1, int x2, int y2, const gint32 seed[5], GdElement initial, const GdElement random[4], const gint32 prob[4], GdElement replace_only, boolean c64);
+GdObject *gd_object_new_maze(GdObjectLevels levels, int x1, int y1, int x2, int y2, int wall_w, int path_w, GdElement wall_e, GdElement path_e, int horiz_percent, const int seed[5]);
+GdObject *gd_object_new_maze_unicursal(GdObjectLevels levels, int x1, int y1, int x2, int y2, int wall_w, int path_w, GdElement wall_e, GdElement path_e, int horiz_percent, const int seed[5]);
+GdObject *gd_object_new_maze_braid(GdObjectLevels levels, int x1, int y1, int x2, int y2, int wall_w, int path_w, GdElement wall_e, GdElement path_e, int horiz_percent, const int seed[5]);
+GdObject *gd_object_new_random_fill(GdObjectLevels levels, int x1, int y1, int x2, int y2, const int seed[5], GdElement initial, const GdElement random[4], const int prob[4], GdElement replace_only, boolean c64);
 GdObject *gd_object_new_copy_paste(GdObjectLevels levels, int x1, int y1, int x2, int y2, int dx, int dy, boolean mirror, boolean flip);
 
 void gd_cave_draw_object(GdCave *cave, const GdObject *object, int level);
 GdObject *gd_object_new_from_string(char *str);
 
-GdCave *gd_cave_new_rendered(const GdCave *data, const int level, guint32 seed);
+GdCave *gd_cave_new_rendered(const GdCave *data, const int level, unsigned int seed);
 void gd_flatten_cave(GdCave *cave, const int level);
 
 #endif	// BD_CAVEOBJECT_H
