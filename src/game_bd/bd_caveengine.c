@@ -2976,13 +2976,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 #if 1
 	  ; // to make compilers happy ...
 #else
-	  g_print("Step[%03d]", cave->frame); /* XXX */
+	  Info("Step[%03d]", cave->frame); /* XXX */
 #endif
 	  int rrr = gd_cave_c64_random(cave);
 #if 1
 #else
-	  g_print(".Rand[%03d].Perm[%03d].Result[%d]\n", rrr, cave->slime_permeability_c64,
-		  (rrr & cave->slime_permeability_c64) == 0);
+	  Info(".Rand[%03d].Perm[%03d].Result[%d]\n", rrr, cave->slime_permeability_c64,
+	       (rrr & cave->slime_permeability_c64) == 0);
 #endif
 	  /*
 	   * unpredictable: gd_rand_int
