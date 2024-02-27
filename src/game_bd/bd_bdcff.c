@@ -398,9 +398,11 @@ static void replay_process_tags(GdReplay *replay, HashTable *tags)
 static boolean cave_process_tags_func(const char *attrib, const char *param, GdCave *cave)
 {
   char **params;
+  int paramcount;
   boolean identifier_found;
 
   params = getSplitStringArray(param, " ", -1);
+  paramcount = getStringArrayLength(params);
   identifier_found = FALSE;
 
   if (strcasecmp(attrib, "SnapExplosions") == 0)
@@ -462,17 +464,65 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
   else if (strcasecmp(attrib, "Colors") == 0)
   {
     /* colors attribute is a mess, have to process explicitly */
+    boolean ok = TRUE;
 
     /* Colors = [border background] foreground1 foreground2 foreground3 [amoeba slime] */
     identifier_found = TRUE;
 
-    cave->colorb = GD_GDASH_BLACK;    /* border - black */
-    cave->color0 = GD_GDASH_BLACK;    /* background - black */
-    cave->color1 = GD_GDASH_RED;
-    cave->color2 = GD_GDASH_PURPLE;
-    cave->color3 = GD_GDASH_YELLOW;
-    cave->color4 = cave->color3;    /* amoeba */
-    cave->color5 = cave->color1;    /* slime */
+    if (paramcount == 3)
+    {
+      /* only color1,2,3 */
+      cave->colorb = gd_c64_color(0);    /* border - black */
+      cave->color0 = gd_c64_color(0);    /* background - black */
+      cave->color1 = gd_color_get_from_string(params[0]);
+      cave->color2 = gd_color_get_from_string(params[1]);
+      cave->color3 = gd_color_get_from_string(params[2]);
+      cave->color4 = cave->color3;    /* amoeba */
+      cave->color5 = cave->color1;    /* slime */
+    }
+    else if (paramcount == 5)
+    {
+      /* bg,color0,1,2,3 */
+      cave->colorb = gd_color_get_from_string(params[0]);
+      cave->color0 = gd_color_get_from_string(params[1]);
+      cave->color1 = gd_color_get_from_string(params[2]);
+      cave->color2 = gd_color_get_from_string(params[3]);
+      cave->color3 = gd_color_get_from_string(params[4]);
+      cave->color4 = cave->color3;    /* amoeba */
+      cave->color5 = cave->color1;    /* slime */
+    }
+    else if (paramcount == 7)
+    {
+      /* bg,color0,1,2,3,amoeba,slime */
+      cave->colorb = gd_color_get_from_string(params[0]);
+      cave->color0 = gd_color_get_from_string(params[1]);
+      cave->color1 = gd_color_get_from_string(params[2]);
+      cave->color2 = gd_color_get_from_string(params[3]);
+      cave->color3 = gd_color_get_from_string(params[4]);
+      cave->color4 = gd_color_get_from_string(params[5]);    /* amoeba */
+      cave->color5 = gd_color_get_from_string(params[6]);    /* slime */
+    }
+    else
+    {
+      Warn("invalid number of color strings: %s", param);
+
+      ok = FALSE;
+    }
+
+    /* now check and maybe make up some new. */
+    if (!ok ||
+	gd_color_is_unknown(cave->colorb) ||
+	gd_color_is_unknown(cave->color0) ||
+	gd_color_is_unknown(cave->color1) ||
+	gd_color_is_unknown(cave->color2) ||
+	gd_color_is_unknown(cave->color3) ||
+	gd_color_is_unknown(cave->color4) ||
+	gd_color_is_unknown(cave->color5))
+    {
+      Warn("created a new C64 color scheme.");
+
+      gd_cave_set_random_c64_colors(cave);    /* just create some random */
+    }
   }
   else
   {

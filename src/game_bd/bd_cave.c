@@ -774,6 +774,38 @@ void gd_cave_c64_random_set_seed(GdCave *cave, int seed1, int seed2)
   gd_c64_random_set_seed(&cave->c64_rand, seed1, seed2);
 }
 
+void gd_cave_set_random_c64_colors(GdCave *cave)
+{
+  const int bright_colors[] = { 1, 3, 7 };
+  const int dark_colors[] = { 2, 6, 8, 9, 11 };
+
+  /* always black */
+  cave->colorb = gd_c64_color(0);
+  cave->color0 = gd_c64_color(0);
+
+  /* choose some bright color for brick */
+  cave->color3 = gd_c64_color(bright_colors[gd_random_int_range(0, ARRAY_SIZE(bright_colors))]);
+
+  /* choose a dark color for dirt, but should not be == color of brick */
+  do
+  {
+    cave->color1 = gd_c64_color(dark_colors[gd_random_int_range(0, ARRAY_SIZE(dark_colors))]);
+  }
+  while (cave->color1 == cave->color3);    /* so it is not the same as color 1 */
+
+  /* choose any but black for steel wall, but should not be == brick or dirt */
+  do
+  {
+    /* between 1 and 15 - do not use black for this. */
+    cave->color2 = gd_c64_color(gd_random_int_range(1, 16));
+  }
+  while (cave->color1 == cave->color2 || cave->color2 == cave->color3);    /* so colors are not the same */
+
+  /* copy amoeba and slime color */
+  cave->color4 = cave->color3;
+  cave->color5 = cave->color1;
+}
+
 /*
   shrink cave
   if last line or last row is just steel wall (or (invisible) outbox).

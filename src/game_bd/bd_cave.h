@@ -623,6 +623,7 @@ unsigned int gd_c64_random(GdC64RandomGenerator *rand);
 unsigned int gd_cave_c64_random(GdCave *);
 void gd_c64_random_set_seed(GdC64RandomGenerator *rand, int seed1, int seed2);
 void gd_cave_c64_random_set_seed(GdCave *cave, int seed1, int seed2);
+void gd_cave_set_random_c64_colors(GdCave *cave);
 
 /* support */
 void *gd_cave_map_new_for_cave(const GdCave *cave, const int cell_size);
