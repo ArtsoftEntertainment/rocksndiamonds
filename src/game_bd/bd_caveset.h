@@ -64,7 +64,7 @@ const char **gd_caveset_get_internal_game_names(void);
 /* caveset load from file */
 boolean gd_caveset_load_from_file(char *filename);
 /* caveset save to bdcff file */
-boolean gd_caveset_save(const char *filename);
+boolean gd_caveset_save_to_file(const char *filename);
 
 /* misc caveset functions */
 int gd_caveset_count(void);

@@ -26,6 +26,91 @@ GdObjectLevels gd_levels_mask[] =
   GD_OBJECT_LEVEL5
 };
 
+/* bdcff text description of object. caller should free string. */
+char *gd_object_get_bdcff(const GdObject *object)
+{
+  char *str = NULL;
+  int j;
+  const char *type;
+
+  switch (object->type)
+  {
+    case GD_POINT:
+      return getStringPrint("Point=%d %d %s", object->x1, object->y1, gd_elements[object->element].filename);
+
+    case GD_LINE:
+      return getStringPrint("Line=%d %d %d %d %s", object->x1, object->y1, object->x2, object->y2, gd_elements[object->element].filename);
+
+    case GD_RECTANGLE:
+      return getStringPrint("Rectangle=%d %d %d %d %s", object->x1, object->y1, object->x2, object->y2, gd_elements[object->element].filename);
+
+    case GD_FILLED_RECTANGLE:
+      /* if elements are not the same */
+      if (object->fill_element!=object->element)
+	return getStringPrint("FillRect=%d %d %d %d %s %s", object->x1, object->y1, object->x2, object->y2, gd_elements[object->element].filename, gd_elements[object->fill_element].filename);
+      /* they are the same */
+      return getStringPrint("FillRect=%d %d %d %d %s", object->x1, object->y1, object->x2, object->y2, gd_elements[object->element].filename);
+
+    case GD_RASTER:
+      return getStringPrint("Raster=%d %d %d %d %d %d %s", object->x1, object->y1, (object->x2-object->x1)/object->dx+1, (object->y2-object->y1)/object->dy+1, object->dx, object->dy, gd_elements[object->element].filename);
+
+    case GD_JOIN:
+      return getStringPrint("Add=%d %d %s %s", object->dx, object->dy, gd_elements[object->element].filename, gd_elements[object->fill_element].filename);
+
+    case GD_FLOODFILL_BORDER:
+      return getStringPrint("BoundaryFill=%d %d %s %s", object->x1, object->y1, gd_elements[object->fill_element].filename, gd_elements[object->element].filename);
+
+    case GD_FLOODFILL_REPLACE:
+      return getStringPrint("FloodFill=%d %d %s %s", object->x1, object->y1, gd_elements[object->fill_element].filename, gd_elements[object->element].filename);
+
+    case GD_MAZE:
+    case GD_MAZE_UNICURSAL:
+    case GD_MAZE_BRAID:
+      switch(object->type)
+      {
+	case GD_MAZE:
+	  type = "perfect";
+	  break;
+
+	case GD_MAZE_UNICURSAL:
+	  type = "unicursal";
+	  break;
+
+	case GD_MAZE_BRAID:
+	  type = "braid";
+	  break;
+
+	default:
+	  /* never reached */
+	  break;
+      }
+
+      return getStringPrint("Maze=%d %d %d %d %d %d %d %d %d %d %d %d %s %s %s", object->x1, object->y1, object->x2, object->y2, object->dx, object->dy, object->horiz, object->seed[0], object->seed[1], object->seed[2], object->seed[3], object->seed[4], gd_elements[object->element].filename, gd_elements[object->fill_element].filename, type);
+
+    case GD_RANDOM_FILL:
+      appendStringPrint(&str, "%s=%d %d %d %d %d %d %d %d %d %s", object->c64_random?"RandomFillC64":"RandomFill", object->x1, object->y1, object->x2, object->y2, object->seed[0], object->seed[1], object->seed[2], object->seed[3], object->seed[4], gd_elements[object->fill_element].filename);
+
+      /* seed and initial fill */
+      for (j = 0; j < 4; j++)
+	if (object->random_fill_probability[j] != 0)
+	  appendStringPrint(&str, " %s %d", gd_elements[object->random_fill[j]].filename, object->random_fill_probability[j]);
+
+      if (object->element != O_NONE)
+	appendStringPrint(&str, " %s", gd_elements[object->element].filename);
+
+      return str;
+
+    case GD_COPY_PASTE:
+      return getStringPrint("CopyPaste=%d %d %d %d %d %d %s %s", object->x1, object->y1, object->x2, object->y2, object->dx, object->dy, object->mirror?"mirror":"nomirror", object->flip?"flip":"noflip");
+
+    case NONE:
+      /* never reached */
+      break;
+  }
+
+  return NULL;
+}
+
 /* create an INDIVIDUAL POINT CAVE OBJECT */
 GdObject *gd_object_new_point(GdObjectLevels levels, int x, int y, GdElement elem)
 {

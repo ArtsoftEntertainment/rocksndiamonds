@@ -1265,3 +1265,505 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
   /* if there was some error message - return fail XXX */
   return TRUE;
 }
+
+/********************************************************************************
+ *
+ * BDCFF saving
+ *
+ */
+
+#define GD_PTR_ARRAY_MINIMUM_INITIAL_SIZE	64
+
+GdPtrArray *gd_ptr_array_sized_new(unsigned int size)
+{
+  GdPtrArray *array = checked_calloc(sizeof(GdPtrArray));
+
+  array->data = checked_calloc(size * sizeof(void *));
+  array->size_allocated = size;
+  array->size_initial = size;
+  array->size = 0;
+
+  return array;
+}
+
+GdPtrArray *gd_ptr_array_new(void)
+{
+  return gd_ptr_array_sized_new(GD_PTR_ARRAY_MINIMUM_INITIAL_SIZE);
+}
+
+void gd_ptr_array_add(GdPtrArray *array, void *data)
+{
+  if (array->size == array->size_allocated)
+  {
+    array->size_allocated += array->size_initial;
+    array->data = checked_realloc(array->data, array->size_allocated * sizeof(void *));
+  }
+
+  array->data[array->size++] = data;
+}
+
+boolean gd_ptr_array_remove(GdPtrArray *array, void *data)
+{
+  int i, j;
+
+  for (i = 0; i < array->size; i++)
+  {
+    if (array->data[i] == data)
+    {
+      checked_free(array->data[i]);
+
+      for (j = i; j < array->size - 1; j++)
+	array->data[j] = array->data[j + 1];
+
+      array->size--;
+
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+void gd_ptr_array_free(GdPtrArray *array, boolean free_data)
+{
+  int i;
+
+  if (free_data)
+  {
+    for (i = 0; i < array->size; i++)
+      checked_free(array->data[i]);
+  }
+
+  checked_free(array);
+}
+
+/* ratio: max cave size for GD_TYPE_RATIO. should be set to cave->w*cave->h when calling */
+static void save_properties(GdPtrArray *out, void *str, void *str_def,
+			    const GdStructDescriptor *prop_desc, int ratio)
+{
+  int i, j;
+  boolean parameter_written = FALSE, should_write = FALSE;
+  char *line = NULL;
+  const char *identifier = NULL;
+
+  for (i = 0; prop_desc[i].identifier != NULL; i++)
+  {
+    void *value, *default_value;
+
+    if (prop_desc[i].type == GD_TAB || prop_desc[i].type == GD_LABEL)
+      /* used only by the gui */
+      continue;
+
+    /* these are handled explicitly */
+    if (prop_desc[i].flags & GD_DONT_SAVE)
+      continue;
+
+    /* string data */
+    /* write together with identifier, as one string per line. */
+    if (prop_desc[i].type == GD_TYPE_STRING)
+    {
+      /* treat strings as special - do not even write identifier if no string. */
+      char *text = STRUCT_MEMBER_P(str, prop_desc[i].offset);
+
+      if (strlen(text) > 0)
+	gd_ptr_array_add(out, getStringPrint("%s=%s", prop_desc[i].identifier, text));
+
+      continue;
+    }
+
+    /* dynamic string: need to escape newlines */
+    if (prop_desc[i].type == GD_TYPE_LONGSTRING)
+    {
+      char *string = STRUCT_MEMBER(char *, str, prop_desc[i].offset);
+
+      if (string != NULL && strlen(string) > 0)
+      {
+	char *escaped = getEscapedString(string);
+
+	gd_ptr_array_add(out, getStringPrint("%s=%s", prop_desc[i].identifier, escaped));
+
+	checked_free(escaped);
+      }
+
+      continue;
+    }
+
+    /* if identifier differs from the previous, write out the line collected, and start a new one */
+    if (identifier == NULL || !strEqual(prop_desc[i].identifier, identifier))
+    {
+      if (should_write)
+      {
+	/* write lines only which carry information other than the default settings */
+	gd_ptr_array_add(out, getStringCopy(line));
+      }
+
+      if (prop_desc[i].type == GD_TYPE_EFFECT)
+	setStringPrint(&line, "Effect=");
+      else
+	setStringPrint(&line, "%s=", prop_desc[i].identifier);
+
+      parameter_written = FALSE;    /* no value written yet */
+      should_write = FALSE;
+
+      /* remember identifier */
+      identifier = prop_desc[i].identifier;
+    }
+
+    /* if we always save this identifier, remember now */
+    if (prop_desc[i].flags & GD_ALWAYS_SAVE)
+      should_write = TRUE;
+
+    value         = STRUCT_MEMBER_P(str,     prop_desc[i].offset);
+    default_value = STRUCT_MEMBER_P(str_def, prop_desc[i].offset);
+
+    for (j = 0; j < prop_desc[i].count; j++)
+    {
+      /* separate values by spaces. of course no space required for the first one */
+      if (parameter_written)
+	appendStringPrint(&line, " ");
+
+      parameter_written = TRUE;    /* at least one value written, so write space the next time */
+
+      switch (prop_desc[i].type)
+      {
+	case GD_TYPE_BOOLEAN:
+	  appendStringPrint(&line, "%s", ((boolean *) value)[j] ? "true" : "false");
+	  if (((boolean *) value)[j] != ((boolean *) default_value)[j])
+	    should_write = TRUE;
+	  break;
+
+	case GD_TYPE_INT:
+	  appendStringPrint(&line, "%d", ((int *) value)[j]);
+	  if (((int *) value)[j] != ((int *) default_value)[j])
+	    should_write = TRUE;
+	  break;
+
+	case GD_TYPE_RATIO:
+	  appendStringPrint(&line, "%6.5f", ((int *) value)[j] / (double)ratio);
+	  if (((int *) value)[j] != ((int *) default_value)[j])
+	    should_write = TRUE;
+	  break;
+
+	case GD_TYPE_PROBABILITY:
+	  appendStringPrint(&line, "%6.5f", ((int *) value)[j] / 1E6);   /* probabilities are stored as *1E6 */
+
+	  if (((double *) value)[j] != ((double *) default_value)[j])
+	    should_write = TRUE;
+	  break;
+
+	case GD_TYPE_ELEMENT:
+	  appendStringPrint(&line, "%s", gd_elements[((GdElement *) value)[j]].filename);
+	  if (((GdElement *) value)[j] != ((GdElement *) default_value)[j])
+	    should_write = TRUE;
+	  break;
+
+	case GD_TYPE_EFFECT:
+	  /* for effects, the property identifier is the effect name. "Effect=" is hardcoded; see above. */
+	  appendStringPrint(&line, "%s %s", prop_desc[i].identifier, gd_elements[((GdElement *) value)[j]].filename);
+	  if (((GdElement *) value)[j] != ((GdElement *) default_value)[j])
+	    should_write = TRUE;
+	  break;
+
+	case GD_TYPE_COLOR:
+	  appendStringPrint(&line, "%s", gd_color_get_string(((GdColor *) value)[j]));
+	  should_write = TRUE;
+	  break;
+
+	case GD_TYPE_DIRECTION:
+	  appendStringPrint(&line, "%s", gd_direction_get_filename(((GdDirection *) value)[j]));
+	  if (((GdDirection *) value)[j] != ((GdDirection *) default_value)[j])
+	    should_write = TRUE;
+	  break;
+
+	case GD_TYPE_SCHEDULING:
+	  appendStringPrint(&line, "%s", gd_scheduling_get_filename(((GdScheduling *) value)[j]));
+	  if (((GdScheduling *) value)[j] != ((GdScheduling *) default_value)[j])
+	    should_write = TRUE;
+	  break;
+
+	case GD_TAB:
+	case GD_LABEL:
+	  /* used by the editor ui */
+	  break;
+
+	case GD_TYPE_STRING:
+	case GD_TYPE_LONGSTRING:
+	  /* never reached */
+	  break;
+      }
+    }
+  }
+
+  /* write remaining data */
+  if (should_write)
+    gd_ptr_array_add(out, getStringCopy(line));
+
+  checked_free(line);
+}
+
+/* remove a line from the list of strings. */
+/* the prefix should be a property; add an equal sign! so properties which have names like
+   "slime" and "slimeproperties" won't match each other. */
+static void cave_properties_remove(GdPtrArray *out, const char *prefix)
+{
+  int i;
+
+  if (!strSuffix(prefix, "="))
+    Warn("string '%s' should have suffix '='", prefix);
+
+  /* search for strings which match, and set them to NULL. */
+  /* also free them. */
+  for (i = 0; i < out->size; i++)
+  {
+    if (strPrefix(gd_ptr_array_index(out, i), prefix))
+    {
+      checked_free(gd_ptr_array_index(out, i));
+      gd_ptr_array_index(out, i) = NULL;
+    }
+  }
+
+  /* remove all "null" occurrences */
+  while (gd_ptr_array_remove(out, NULL))
+    ;
+}
+
+/* output properties of a structure to a file. */
+/* list_foreach func, so "out" is the last parameter! */
+static void caveset_save_cave_func(GdCave *cave, GdPtrArray *out)
+{
+  GdCave *default_cave;
+  GdPtrArray *this_out;
+  char *line = NULL;    /* used for various purposes */
+  int i;
+
+  gd_ptr_array_add(out, getStringCopy(""));
+  gd_ptr_array_add(out, getStringCopy("[cave]"));
+
+  /* first add the properties to a local ptr array. */
+  /* later, some are deleted (slime permeability, for example) - this is needed because of the inconsistencies of the bdcff. */
+  /* finally, remaining will be added to the normal "out" array. */
+  this_out = gd_ptr_array_new();
+
+  default_cave = gd_cave_new();
+  save_properties(this_out, cave, default_cave, gd_cave_properties, cave->w * cave->h);
+  gd_cave_free(default_cave);
+
+  /* properties which are handled explicitly. these cannot be handled easily above,
+     as they have some special meaning. for example, slime_permeability=x sets permeability to
+     x, and sets predictable to false. bdcff format is simply inconsistent in these aspects. */
+
+  /* slime permeability is always set explicitly, as it also sets predictability. */
+  if (cave->slime_predictable)
+    /* if slime is predictable, remove permeab. flag, as that would imply unpredictable slime. */
+    cave_properties_remove(this_out, "SlimePermeability=");
+  else
+    /* if slime is UNpredictable, remove permeabc64 flag, as that would imply predictable slime. */
+    cave_properties_remove(this_out, "SlimePermeabilityC64=");
+
+  /* add tags to output, and free local array */
+  for (i = 0; i < this_out->size; i++)
+    gd_ptr_array_add(out, gd_ptr_array_index(this_out, i));
+
+  /* do not free data pointers, which were just added to array "out" */
+  gd_ptr_array_free(this_out, FALSE);
+
+#if 0
+  /* save unknown tags as they are */
+  if (cave->tags)
+  {
+    List *hashkeys;
+    List *iter;
+
+    hashkeys = g_hash_table_get_keys(cave->tags);
+    for (iter = hashkeys; iter != NULL; iter = iter->next)
+    {
+      gchar *key = (gchar *)iter->data;
+
+      gd_ptr_array_add(out, getStringPrint("%s=%s", key, (const char *) g_hash_table_lookup(cave->tags, key)));
+    }
+
+    list_free(hashkeys);
+  }
+#endif
+
+  /* map */
+  if (cave->map)
+  {
+    int x, y;
+
+    gd_ptr_array_add(out, getStringCopy(""));
+    gd_ptr_array_add(out, getStringCopy("[map]"));
+
+    line = checked_calloc(cave->w + 1);
+
+    /* save map */
+    for (y = 0; y < cave->h; y++)
+    {
+      for (x = 0; x < cave->w; x++)
+      {
+	/* check if character is non-zero; the ...save() should have assigned a character to every element */
+	if (gd_elements[cave->map[y][x]].character_new == 0)
+	  Warn("gd_elements[cave->map[y][x]].character_new should be non-zero");
+
+	line[x] = gd_elements[cave->map[y][x]].character_new;
+      }
+
+      gd_ptr_array_add(out, getStringCopy(line));
+    }
+
+    gd_ptr_array_add(out, getStringCopy("[/map]"));
+  }
+
+  /* save drawing objects */
+  if (cave->objects)
+  {
+    List *listiter;
+
+    gd_ptr_array_add(out, getStringCopy(""));
+    gd_ptr_array_add(out, getStringCopy("[objects]"));
+
+    for (listiter = cave->objects; listiter; listiter = list_next(listiter))
+    {
+      GdObject *object = listiter->data;
+      char *text;
+
+      /* not for all levels? */
+      if (object->levels != GD_OBJECT_LEVEL_ALL)
+      {
+	int i;
+	boolean once;    /* true if already written one number */
+
+	setStringPrint(&line, "[Level=");
+	once = FALSE;
+
+	for (i = 0; i < 5; i++)
+	{
+	  if (object->levels & gd_levels_mask[i])
+	  {
+	    if (once)    /* if written at least one number so far, we need a comma */
+	      appendStringPrint(&line, ",");
+
+	    appendStringPrint(&line, "%d", i+1);
+	    once = TRUE;
+	  }
+	}
+
+	appendStringPrint(&line, "]");
+	gd_ptr_array_add(out, getStringCopy(line));
+      }
+
+      text = gd_object_get_bdcff(object);
+      gd_ptr_array_add(out, getStringCopy(text));
+      checked_free(text);
+
+      if (object->levels != GD_OBJECT_LEVEL_ALL)
+	gd_ptr_array_add(out, getStringCopy("[/Level]"));
+    }
+
+    gd_ptr_array_add(out, getStringCopy("[/objects]"));
+  }
+
+  gd_ptr_array_add(out, getStringCopy("[/cave]"));
+
+  checked_free(line);
+}
+
+/* save cave in bdcff format. */
+/* "out" will be added lines of bdcff description. */
+GdPtrArray *gd_caveset_save_to_bdcff(void)
+{
+  GdPtrArray *out = gd_ptr_array_sized_new(512);
+  GdCavesetData *default_caveset;
+  boolean write_mapcodes = FALSE;
+  List *iter;
+  int i;
+
+  /* check if we need an own mapcode table ------ */
+  /* copy original characters to character_new fields; new elements will be added to that one */
+  for (i = 0; i < O_MAX; i++)
+    gd_elements[i].character_new = gd_elements[i].character;
+
+  /* also regenerate this table as we use it */
+  gd_create_char_to_element_table();
+
+  /* check all caves */
+  for (iter = gd_caveset; iter != NULL; iter = iter->next)
+  {
+    GdCave *cave = (GdCave *)iter->data;
+
+    /* if they have a map (random elements+object based maps do not need characters) */
+    if (cave->map)
+    {
+      int x, y;
+
+      /* check every element of map */
+      for(y = 0; y < cave->h; y++)
+	for (x = 0; x < cave->w; x++)
+	{
+	  GdElement e = cave->map[y][x];
+
+	  /* if no character assigned */
+	  if (gd_elements[e].character_new == 0)
+	  {
+	    int j;
+
+	    /* we found at least one, so later we have to write the mapcodes */
+	    write_mapcodes = TRUE;
+
+	    /* find a character which is not yet used for any element */
+	    for (j = 32; j < 128; j++)
+	    {
+	      /* the string contains the characters which should not be used. */
+	      if (strchr("<>&[]/=\\", j) == NULL && gd_char_to_element[j] == O_UNKNOWN)
+		break;
+	    }
+
+	    /* if no more space... XXX we should rather report to the user */
+	    if (j == 128)
+	      Warn("variable j should be != 128");
+
+	    gd_elements[e].character_new = j;
+
+	    /* we also record to this table, as we use it ^^ a few lines above */
+	    gd_char_to_element[j] = e;
+	  }
+	}
+    }
+  }
+
+  gd_ptr_array_add(out, getStringCopy("[BDCFF]"));
+  gd_ptr_array_add(out, getStringPrint("Version=%s", BDCFF_VERSION));
+
+  /* this flag was set above if we need to write mapcodes */
+  if (write_mapcodes)
+  {
+    int i;
+
+    gd_ptr_array_add(out, getStringCopy("[mapcodes]"));
+    gd_ptr_array_add(out, getStringCopy("Length=1"));
+
+    for (i = 0; i < O_MAX; i++)
+    {
+      /* if no character assigned by specification BUT (AND) we assigned one */
+      if (gd_elements[i].character == 0 && gd_elements[i].character_new != 0)
+	gd_ptr_array_add(out, getStringPrint("%c=%s", gd_elements[i].character_new, gd_elements[i].filename));
+    }
+
+    gd_ptr_array_add(out, getStringCopy("[/mapcodes]"));
+  }
+
+  gd_ptr_array_add(out, getStringCopy("[game]"));
+
+  default_caveset = gd_caveset_data_new();
+  save_properties(out, gd_caveset_data, default_caveset, gd_caveset_properties, 0);
+  gd_caveset_data_free(default_caveset);
+  gd_ptr_array_add(out, getStringCopy("Levels=5"));
+
+  list_foreach(gd_caveset, (list_fn)caveset_save_cave_func, out);
+
+  gd_ptr_array_add(out, getStringCopy("[/game]"));
+  gd_ptr_array_add(out, getStringCopy("[/BDCFF]"));
+
+  /* saved to ptrarray */
+  return out;
+}

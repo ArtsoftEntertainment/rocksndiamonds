@@ -611,6 +611,41 @@ boolean gd_caveset_load_from_file(char *filename)
   return TRUE;
 }
 
+boolean gd_caveset_save_to_file(const char *filename)
+{
+  GdPtrArray *saved = gd_caveset_save_to_bdcff();
+  boolean success;
+  File *file;
+  int i;
+
+  if ((file = openFile(filename, MODE_WRITE)) != NULL)
+  {
+    for (i = 0; i < saved->size; i++)
+    {
+      writeFile(file, saved->data[i], 1, strlen(saved->data[i]));
+      writeFile(file, "\n", 1, 1);
+    }
+
+    closeFile(file);
+
+    /* remember that it is saved */
+    gd_caveset_edited = FALSE;
+
+    success = TRUE;
+  }
+  else
+  {
+    Warn("cannot open file '%s'", filename);
+
+    success = FALSE;
+  }
+
+  gd_ptr_array_free(saved, TRUE);
+
+  return success;
+}
+
+
 int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean repair)
 {
   List *riter;
