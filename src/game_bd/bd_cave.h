@@ -18,67 +18,8 @@
 #define BD_CAVE_H
 
 #include "bd_elements.h"
+#include "bd_colors.h"
 #include "bd_random.h"
-
-
-// colors
-
-typedef unsigned int GdColor;
-
-/* color internal:
-   XXRRGGBB;
-   XX is 0 for RGB,
-         1 for c64 colors (bb=index)
-         3 for c64dtv (bb=index)
-         2 for atari colors (bb=index)
-*/
-
-typedef enum _color_type
-{
-  GD_COLOR_TYPE_RGB	= 0,
-  GD_COLOR_TYPE_C64	= 1,
-  GD_COLOR_TYPE_C64DTV	= 2,
-  GD_COLOR_TYPE_ATARI	= 3,
-
-  GD_COLOR_TYPE_UNKNOWN    /* should be the last one */
-} GdColorType;
-
-/* traditional c64 color indexes. */
-#define GD_COLOR_INDEX_BLACK		(0)
-#define GD_COLOR_INDEX_WHITE		(1)
-#define GD_COLOR_INDEX_RED		(2)
-#define GD_COLOR_INDEX_CYAN		(3)
-#define GD_COLOR_INDEX_PURPLE		(4)
-#define GD_COLOR_INDEX_GREEN		(5)
-#define GD_COLOR_INDEX_BLUE		(6)
-#define GD_COLOR_INDEX_YELLOW		(7)
-#define GD_COLOR_INDEX_ORANGE		(8)
-#define GD_COLOR_INDEX_BROWN		(9)
-#define GD_COLOR_INDEX_LIGHTRED		(10)
-#define GD_COLOR_INDEX_GRAY1		(11)
-#define GD_COLOR_INDEX_GRAY2		(12)
-#define GD_COLOR_INDEX_LIGHTGREEN	(13)
-#define GD_COLOR_INDEX_LIGHTBLUE	(14)
-#define GD_COLOR_INDEX_GRAY3		(15)
-
-#define GD_GDASH_BLACK		(0x000000)
-#define GD_GDASH_WHITE		(0xFFFFFF)
-#define GD_GDASH_RED		(0x880000)
-#define GD_GDASH_CYAN		(0xAAFFEE)
-#define GD_GDASH_PURPLE		(0xCC44CC)
-#define GD_GDASH_GREEN		(0x00CC55)
-#define GD_GDASH_BLUE		(0x0000AA)
-#define GD_GDASH_YELLOW		(0xEEEE77)
-#define GD_GDASH_ORANGE		(0xDD8855)
-#define GD_GDASH_BROWN		(0x664400)
-#define GD_GDASH_LIGHTRED	(0xFF7777)
-#define GD_GDASH_GRAY1		(0x333333)
-#define GD_GDASH_GRAY2		(0x777777)
-#define GD_GDASH_LIGHTGREEN	(0xAAFF66)
-#define GD_GDASH_LIGHTBLUE	(0x0088FF)
-#define GD_GDASH_GRAY3		(0xBBBBBB)
-
-#define GD_COLOR_INVALID (0xFFFFFFFF)
 
 
 /******************************************
@@ -724,7 +665,5 @@ void gd_replay_store_movement(GdReplay *replay, GdDirection player_move, boolean
 
 unsigned int gd_cave_adler_checksum(GdCave *cave);
 void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b);
-
-GdColor gd_c64_color(int);
 
 #endif	// BD_CAVE_H

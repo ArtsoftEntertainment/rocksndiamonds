@@ -1444,9 +1444,3 @@ unsigned int gd_cave_adler_checksum(GdCave *cave)
   gd_cave_adler_checksum_more(cave, &a, &b);
   return (b << 16) + a;
 }
-
-/* return c64 color with index. */
-GdColor gd_c64_color(int index)
-{
-  return (GD_COLOR_TYPE_C64 << 24) + index;
-}

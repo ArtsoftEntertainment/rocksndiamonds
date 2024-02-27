@@ -26,6 +26,7 @@ SRCS =	main_bd.c	\
 	bd_c64import.c	\
 	bd_gameplay.c	\
 	bd_graphics.c	\
+	bd_colors.c	\
 	bd_random.c	\
 	bd_sound.c
 
@@ -39,6 +40,7 @@ OBJS =	main_bd.o	\
 	bd_c64import.o	\
 	bd_gameplay.o	\
 	bd_graphics.o	\
+	bd_colors.o	\
 	bd_random.o	\
 	bd_sound.o
 
