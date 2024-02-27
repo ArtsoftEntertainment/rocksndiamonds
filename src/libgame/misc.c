@@ -1244,6 +1244,55 @@ char *getStringToLower(const char *s)
   return s_copy;
 }
 
+static char *getStringVPrint(char *format, va_list ap)
+{
+  char s[MAX_LINE_LEN];
+
+  vsnprintf(s, MAX_LINE_LEN, format, ap);	// may truncate output string
+
+  return getStringCopy(s);
+}
+
+char *getStringPrint(char *format, ...)
+{
+  va_list ap;
+  char *s;
+
+  va_start(ap, format);
+  s = getStringVPrint(format, ap);
+  va_end(ap);
+
+  return s;
+}
+
+void setStringPrint(char **s, char *format, ...)
+{
+  va_list ap;
+
+  checked_free(*s);
+
+  va_start(ap, format);
+  *s = getStringVPrint(format, ap);
+  va_end(ap);
+}
+
+void appendStringPrint(char **s_old, char *format, ...)
+{
+  va_list ap;
+  char *s_new;
+
+  va_start(ap, format);
+  s_new = getStringVPrint(format, ap);
+  va_end(ap);
+
+  char *s_combined = getStringCat2(*s_old, s_new);
+
+  checked_free(*s_old);
+  checked_free(s_new);
+
+  *s_old = s_combined;
+}
+
 void setString(char **old_value, const char *new_value)
 {
   checked_free(*old_value);
@@ -1331,6 +1380,86 @@ void freeStringArray(char **s_array)
     checked_free(s_array[i]);
 
   checked_free(s_array);
+}
+
+char *getEscapedString(const char *s)
+{
+  const unsigned char *s_ptr = (unsigned char *)s;
+  char *s_escaped;
+  char *s_escaped_ptr;
+
+  if (s == NULL)
+    return NULL;
+
+  /* Each source byte needs maximally four target chars (\777) */
+  s_escaped = checked_malloc(strlen(s) * 4 + 1);
+  s_escaped_ptr = s_escaped;
+
+  while (*s_ptr != '\0')
+  {
+    switch (*s_ptr)
+    {
+      case '\b':
+	*s_escaped_ptr++ = '\\';
+	*s_escaped_ptr++ = 'b';
+	break;
+
+      case '\f':
+	*s_escaped_ptr++ = '\\';
+	*s_escaped_ptr++ = 'f';
+	break;
+
+      case '\n':
+	*s_escaped_ptr++ = '\\';
+	*s_escaped_ptr++ = 'n';
+	break;
+
+      case '\r':
+	*s_escaped_ptr++ = '\\';
+	*s_escaped_ptr++ = 'r';
+	break;
+
+      case '\t':
+	*s_escaped_ptr++ = '\\';
+	*s_escaped_ptr++ = 't';
+	break;
+
+      case '\v':
+	*s_escaped_ptr++ = '\\';
+	*s_escaped_ptr++ = 'v';
+	break;
+
+      case '\\':
+	*s_escaped_ptr++ = '\\';
+	*s_escaped_ptr++ = '\\';
+	break;
+
+      case '"':
+	*s_escaped_ptr++ = '\\';
+	*s_escaped_ptr++ = '"';
+	break;
+
+      default:
+	if ((*s_ptr < ' ') || (*s_ptr >= 0177))
+	{
+	  *s_escaped_ptr++ = '\\';
+	  *s_escaped_ptr++ = '0' + (((*s_ptr) >> 6) & 07);
+	  *s_escaped_ptr++ = '0' + (((*s_ptr) >> 3) & 07);
+	  *s_escaped_ptr++ = '0' + ( (*s_ptr)       & 07);
+	}
+	else
+	{
+	  *s_escaped_ptr++ = *s_ptr;
+	}
+	break;
+    }
+
+    s_ptr++;
+  }
+
+  *s_escaped_ptr = '\0';
+
+  return s_escaped;
 }
 
 char *getUnescapedString(const char *s)

@@ -181,10 +181,14 @@ char *getStringCopyN(const char *, int);
 char *getStringCopyNStatic(const char *, int);
 char *getStringToUpper(const char *);
 char *getStringToLower(const char *);
+char *getStringPrint(char *, ...);
+void setStringPrint(char **, char *, ...);
+void appendStringPrint(char **, char *, ...);
 void setString(char **, const char *);
 char **getSplitStringArray(const char *s, const char *, int);
 int getStringArrayLength(char **);
 void freeStringArray(char **);
+char *getEscapedString(const char *);
 char *getUnescapedString(const char *);
 
 char *chugString(char *);
