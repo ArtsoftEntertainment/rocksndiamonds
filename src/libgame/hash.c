@@ -529,17 +529,21 @@ hashtable_foreach_remove(struct hashtable *h, hashtable_remove_fn fn, void *user
 
   free(itr);
 
-  struct hashtable_itr *itr_remove = hashtable_iterator(remove);
   unsigned int num_removed = 0;
 
-  do
+  if (hashtable_count(remove) > 0)
   {
-    hashtable_remove(h, hashtable_iterator_key(itr_remove));
-    num_removed++;
-  }
-  while (hashtable_iterator_advance(itr_remove));
+    struct hashtable_itr *itr_remove = hashtable_iterator(remove);
 
-  free(itr_remove);
+    do
+    {
+      hashtable_remove(h, hashtable_iterator_key(itr_remove));
+      num_removed++;
+    }
+    while (hashtable_iterator_advance(itr_remove));
+
+    free(itr_remove);
+  }
 
   hashtable_destroy(remove);
 
