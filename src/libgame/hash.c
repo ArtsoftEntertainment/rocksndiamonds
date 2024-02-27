@@ -423,18 +423,24 @@ hashtable_iterator(struct hashtable *h)
 /* key - return the key of the (key, value) pair at the current position */
 
 void *
-hashtable_iterator_key(struct hashtable_itr *i)
+hashtable_iterator_key(struct hashtable_itr *itr)
 {
-  return i->e->k;
+  if (itr == NULL || itr->e == NULL)
+    return NULL;
+
+  return itr->e->k;
 }
 
 /*****************************************************************************/
 /* value - return the value of the (key, value) pair at the current position */
 
 void *
-hashtable_iterator_value(struct hashtable_itr *i)
+hashtable_iterator_value(struct hashtable_itr *itr)
 {
-  return i->e->v;
+  if (itr == NULL || itr->e == NULL)
+    return NULL;
+
+  return itr->e->v;
 }
 
 /*****************************************************************************/
