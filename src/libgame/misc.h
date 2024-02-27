@@ -278,7 +278,7 @@ void deleteNodeFromList(ListNode **, char *, void (*function)(void *));
 ListNode *getNodeFromKey(ListNode *, char *);
 int getNumNodes(ListNode *);
 
-File *openFile(char *, char *);
+File *openFile(const char *, const char *);
 int closeFile(File *);
 int checkEndOfFile(File *);
 size_t readFile(File *, void *, size_t, size_t);
@@ -286,8 +286,8 @@ size_t writeFile(File *, void *, size_t, size_t);
 int seekFile(File *, long, int);
 int getByteFromFile(File *);
 char *getStringFromFile(File *, char *, int);
-int copyFile(char *, char *);
-boolean touchFile(char *);
+int copyFile(const char *, const char *);
+boolean touchFile(const char *);
 
 Directory *openDirectory(char *);
 int closeDirectory(Directory *);

@@ -3098,7 +3098,7 @@ static void dumpList(ListNode *node_first)
 
 #define MAX_BUFFER_SIZE			4096
 
-File *openFile(char *filename, char *mode)
+File *openFile(const char *filename, const char *mode)
 {
   File *file = checked_calloc(sizeof(File));
 
@@ -3254,7 +3254,7 @@ char *getStringFromFile(File *file, char *line, int size)
   return fgets(line, size, file->file);
 }
 
-int copyFile(char *filename_from, char *filename_to)
+int copyFile(const char *filename_from, const char *filename_to)
 {
   File *file_from, *file_to;
 
@@ -3284,7 +3284,7 @@ int copyFile(char *filename_from, char *filename_to)
   return 0;
 }
 
-boolean touchFile(char *filename)
+boolean touchFile(const char *filename)
 {
   FILE *file;
 
