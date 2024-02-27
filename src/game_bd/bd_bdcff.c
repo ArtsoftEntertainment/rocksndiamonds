@@ -1113,8 +1113,10 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	    hashtable_insert(tags, getStringCopy(attrib), getStringCopy(param));
 	  }
 	  else
+	  {
 	    /* unknown setting - report. */
 	    Warn("invalid attribute for [game] '%s'", attrib);
+	  }
 	}
 	else
 	{
