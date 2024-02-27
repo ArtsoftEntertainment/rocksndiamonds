@@ -98,6 +98,7 @@ void InitGfxBuffers_BD(void);
 void setLevelInfoToDefaults_BD_Ext(int, int);
 void setLevelInfoToDefaults_BD(void);
 boolean LoadNativeLevel_BD(char *, int, boolean);
+boolean SaveNativeLevel_BD(char *);
 
 unsigned int InitEngineRandom_BD(int);
 void InitGameEngine_BD(void);

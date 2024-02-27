@@ -154,6 +154,11 @@ boolean LoadNativeLevel_BD(char *filename, int level_pos, boolean level_info_onl
   return TRUE;
 }
 
+boolean SaveNativeLevel_BD(char *filename)
+{
+  return gd_caveset_save_to_file(filename);
+}
+
 
 // ============================================================================
 // game engine functions

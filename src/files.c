@@ -6491,7 +6491,17 @@ void CopyNativeLevel_Native_to_RND(struct LevelInfo *level)
 
 void SaveNativeLevel(struct LevelInfo *level)
 {
-  if (level->game_engine_type == GAME_ENGINE_TYPE_SP)
+  if (level->game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    char *basename = getSingleLevelBasenameExt(level->file_info.nr, "bd");
+    char *filename = getLevelFilenameFromBasename(basename);
+
+    CopyNativeLevel_RND_to_BD(level);
+    // CopyNativeTape_RND_to_BD(level);
+
+    SaveNativeLevel_BD(filename);
+  }
+  else if (level->game_engine_type == GAME_ENGINE_TYPE_SP)
   {
     char *basename = getSingleLevelBasenameExt(level->file_info.nr, "sp");
     char *filename = getLevelFilenameFromBasename(basename);
