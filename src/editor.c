@@ -679,6 +679,7 @@ enum
   GADGET_ID_CAN_FALL_INTO_ACID,
   GADGET_ID_CAN_MOVE_INTO_ACID,
   GADGET_ID_DONT_COLLIDE_WITH,
+  GADGET_ID_BD_DIAGONAL_MOVEMENTS,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -994,6 +995,7 @@ enum
   ED_CHECKBUTTON_ID_CAN_FALL_INTO_ACID,
   ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID,
   ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH,
+  ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3327,6 +3329,13 @@ static struct
     &custom_element_properties[EP_DONT_COLLIDE_WITH],
     NULL, NULL,
     "deadly when colliding with",	"element is deadly when hitting player"
+  },
+  {
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_DIAGONAL_MOVEMENTS,	GADGET_ID_NONE,
+    &level.bd_diagonal_movements,
+    NULL, NULL,
+    "can move diagonally",		"player can move diagonally"
   },
   {
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
@@ -10331,6 +10340,7 @@ static boolean checkPropertiesConfig(int element)
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
       MAYBE_DONT_COLLIDE_WITH(element) ||
+      element == EL_BD_PLAYER ||
       element == EL_SOKOBAN_OBJECT ||
       element == EL_SOKOBAN_FIELD_EMPTY ||
       element == EL_SOKOBAN_FIELD_FULL)
@@ -10564,6 +10574,9 @@ static void DrawPropertiesConfig(void)
       DrawPlayerInitialInventoryArea(properties_element);
     }
   }
+
+  if (properties_element == EL_BD_PLAYER)
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS);
 
   if (IS_GEM(properties_element))
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS);

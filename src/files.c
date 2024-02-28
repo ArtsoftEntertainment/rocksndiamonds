@@ -563,6 +563,15 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.initial_inventory_size[3],	1, MAX_INITIAL_INVENTORY_SIZE
   },
 
+  // (these values are only valid for BD style levels)
+  {
+    EL_BD_PLAYER,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_diagonal_movements,		FALSE
+  },
+
+  // (the following values are related to various game elements)
+
   {
     EL_EMERALD,				-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
@@ -3710,6 +3719,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->level_speed[0]			= 160;	// set cave speed
 
+  cave->diagonal_movements		= level->bd_diagonal_movements;
+
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
 
@@ -3734,6 +3745,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->score[SC_TIME_BONUS]	= cave->level_timevalue[bd_level_nr];
   level->score[SC_DIAMOND]	= cave->diamond_value;
+
+  level->bd_diagonal_movements	= cave->diagonal_movements;
 
   strncpy(level->name, cave->name, MAX_LEVEL_NAME_LEN);
   level->name[MAX_LEVEL_NAME_LEN] = '\0';

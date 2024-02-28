@@ -3466,6 +3466,7 @@ struct LevelInfo
   int initial_inventory_size[MAX_PLAYERS];
   int initial_inventory_content[MAX_PLAYERS][MAX_INITIAL_INVENTORY_SIZE];
 
+  boolean bd_diagonal_movements;	// BD style diagonal movements
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean use_spring_bug;		// for compatibility with old levels
