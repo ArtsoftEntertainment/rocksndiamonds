@@ -34,4 +34,6 @@ byte *TapePlayAction_BD(void);
 byte *TapeCorrectAction_BD(byte *);
 boolean TapeIsPlaying_ReplayBD(void);
 
+char *getCurrentLevelsetName(void);
+
 #endif	// IMPORT_BD_H

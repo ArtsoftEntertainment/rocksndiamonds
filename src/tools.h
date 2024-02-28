@@ -310,6 +310,8 @@ boolean CheckFadeAll(void);
 void OpenURL(char *);
 void OpenURLFromHash(SetupFileHash *, int);
 
+char *getCurrentLevelsetName(void);
+
 void TestGeneratingUUIDs(void);
 
 #endif	// TOOLS_H
