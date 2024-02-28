@@ -6491,26 +6491,40 @@ void CopyNativeLevel_Native_to_RND(struct LevelInfo *level)
 
 void SaveNativeLevel(struct LevelInfo *level)
 {
+  // saving native level files only supported for some game engines
+  if (level->game_engine_type != GAME_ENGINE_TYPE_BD &&
+      level->game_engine_type != GAME_ENGINE_TYPE_SP)
+    return;
+
+  char *file_ext = (level->game_engine_type == GAME_ENGINE_TYPE_BD ? "bd" :
+		    level->game_engine_type == GAME_ENGINE_TYPE_SP ? "sp" : "");
+  char *basename = getSingleLevelBasenameExt(level->file_info.nr, file_ext);
+  char *filename = getLevelFilenameFromBasename(basename);
+
+  if (fileExists(filename) && !Request("Native level file already exists! Overwrite it?", REQ_ASK))
+    return;
+
+  boolean success = FALSE;
+
   if (level->game_engine_type == GAME_ENGINE_TYPE_BD)
   {
-    char *basename = getSingleLevelBasenameExt(level->file_info.nr, "bd");
-    char *filename = getLevelFilenameFromBasename(basename);
-
     CopyNativeLevel_RND_to_BD(level);
     // CopyNativeTape_RND_to_BD(level);
 
-    SaveNativeLevel_BD(filename);
+    success = SaveNativeLevel_BD(filename);
   }
   else if (level->game_engine_type == GAME_ENGINE_TYPE_SP)
   {
-    char *basename = getSingleLevelBasenameExt(level->file_info.nr, "sp");
-    char *filename = getLevelFilenameFromBasename(basename);
-
     CopyNativeLevel_RND_to_SP(level);
     CopyNativeTape_RND_to_SP(level);
 
-    SaveNativeLevel_SP(filename);
+    success = SaveNativeLevel_SP(filename);
   }
+
+  if (success)
+    Request("Native level file saved!", REQ_CONFIRM);
+  else
+    Request("Failed to save native level file!", REQ_CONFIRM);
 }
 
 

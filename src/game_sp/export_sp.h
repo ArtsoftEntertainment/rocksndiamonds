@@ -190,7 +190,7 @@ unsigned int InitEngineRandom_SP(int);
 void setLevelInfoToDefaults_SP(void);
 void copyInternalEngineVars_SP(void);
 boolean LoadNativeLevel_SP(char *, int, boolean);
-void SaveNativeLevel_SP(char *);
+boolean SaveNativeLevel_SP(char *);
 
 int getFieldbufferOffsetX_SP(void);
 int getFieldbufferOffsetY_SP(void);

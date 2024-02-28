@@ -512,7 +512,7 @@ boolean LoadNativeLevel_SP(char *filename, int level_pos,
   return TRUE;
 }
 
-void SaveNativeLevel_SP(char *filename)
+boolean SaveNativeLevel_SP(char *filename)
 {
   LevelInfoType *header = &native_sp_level.header;
   FILE *file;
@@ -522,7 +522,7 @@ void SaveNativeLevel_SP(char *filename)
   {
     Warn("cannot save native level file '%s'", filename);
 
-    return;
+    return FALSE;
   }
 
   // write level playfield (width * height == 60 * 24 tiles == 1440 bytes)
@@ -573,4 +573,6 @@ void SaveNativeLevel_SP(char *filename)
   }
 
   fclose(file);
+
+  return TRUE;
 }
