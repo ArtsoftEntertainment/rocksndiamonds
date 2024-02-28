@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* IMPORTANT NOTES */
+// IMPORTANT NOTES
 
 /*
  * LAVA.
@@ -33,7 +33,7 @@
 #include "main_bd.h"
 
 
-/* for gravity */
+// for gravity
 static const GdDirection ccw_eighth[] =
 {
   GD_MV_STILL,
@@ -99,7 +99,7 @@ static const GdDirection opposite[] =
   GD_MV_DOWN_RIGHT
 };
 
-/* sets timeout sound. */
+// sets timeout sound.
 void gd_cave_set_seconds_sound(GdCave *cave)
 {
   // when not counting bonus time, timeout sounds will be played by main game engine;
@@ -108,9 +108,9 @@ void gd_cave_set_seconds_sound(GdCave *cave)
       !game.use_native_bd_sound_engine)
     return;
 
-  /* this is an integer division, so 0 seconds can be 0.5 seconds... */
-  /* also, when this reaches 8, the player still has 8.9999 seconds.
-     so the sound is played at almost t = 9s. */
+  // this is an integer division, so 0 seconds can be 0.5 seconds...
+  // also, when this reaches 8, the player still has 8.9999 seconds.
+  // so the sound is played at almost t = 9s.
   switch (cave->time / cave->timing_factor)
   {
     case 9: gd_sound_play(cave, GD_S_TIMEOUT_10, O_NONE, -1, -1); break;
@@ -126,10 +126,10 @@ void gd_cave_set_seconds_sound(GdCave *cave)
   }
 }
 
-/* play diamond or stone sound of given element. */
+// play diamond or stone sound of given element.
 static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
 {
-  /* stone and diamond fall sounds. */
+  // stone and diamond fall sounds.
   switch (element)
   {
     case O_NUT:
@@ -253,12 +253,12 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       break;
 
     default:
-      /* do nothing. */
+      // do nothing.
       break;
   }
 }
 
-/* play sound of given element being pushed. */
+// play sound of given element being pushed.
 static void play_sound_of_element_pushing(GdCave *cave, GdElement element, int x, int y)
 {
   switch (element)
@@ -296,7 +296,7 @@ static void play_sound_of_element_pushing(GdCave *cave, GdElement element, int x
       break;
 
     default:
-      /* do nothing. */
+      // do nothing.
       break;
   }
 }
@@ -311,7 +311,7 @@ static inline int gety(const GdCave *cave, const int x, const int y)
   return cave->gety(cave, x, y);
 }
 
-/* perfect (non-lineshifting) GET x/y functions; returns range corrected x/y position */
+// perfect (non-lineshifting) GET x/y functions; returns range corrected x/y position
 static inline int getx_perfect(const GdCave *cave, const int x, const int y)
 {
   return (x + cave->w) % cave->w;
@@ -322,7 +322,7 @@ static inline int gety_perfect(const GdCave *cave, const int x, const int y)
   return (y + cave->h) % cave->h;
 }
 
-/* line shifting GET x/y function; returns range corrected x/y position */
+// line shifting GET x/y function; returns range corrected x/y position
 static inline int getx_shift(const GdCave *cave, int x, int y)
 {
   return (x + cave->w) % cave->w;
@@ -344,7 +344,7 @@ static inline GdElement *getp(const GdCave *cave, const int x, const int y)
 */
 static inline GdElement *getp_perfect(const GdCave *cave, const int x, const int y)
 {
-  /* (x + n) mod n: this works also for x >= n and -n + 1 < x < 0 */
+  // (x + n) mod n: this works also for x >= n and -n + 1 < x < 0
   return &(cave->map[(y + cave->h) % cave->h][(x + cave->w) % cave->w]);
 }
 
@@ -376,7 +376,7 @@ static inline GdElement get(const GdCave *cave, const int x, const int y)
   return *getp(cave, x, y);
 }
 
-/* returns an element which is somewhere near x,y */
+// returns an element which is somewhere near x,y
 static inline GdElement get_dir(const GdCave *cave, const int x, const int y,
 				const GdDirection dir)
 {
@@ -389,21 +389,21 @@ static inline boolean explodes_by_hit_dir(const GdCave *cave, const int x,
   return (gd_elements[get_dir(cave, x, y, dir) & O_MASK].properties & P_EXPLODES_BY_HIT) != 0;
 }
 
-/* returns true if the element is not explodable, for example the steel wall */
+// returns true if the element is not explodable, for example the steel wall
 static inline boolean non_explodable(const GdCave *cave, const int x, const int y)
 {
   return (gd_elements[get(cave, x,y) & O_MASK].properties & P_NON_EXPLODABLE) != 0;
 }
 
-/* returns true if the element can be eaten by the amoeba, eg. space and dirt. */
+// returns true if the element can be eaten by the amoeba, eg. space and dirt.
 static inline boolean amoeba_eats_dir(const GdCave *cave, const int x, const int y,
 				      const GdDirection dir)
 {
   return (gd_elements[get_dir(cave, x, y, dir) & O_MASK].properties & P_AMOEBA_CONSUMES) != 0;
 }
 
-/* returns true if the element is sloped, so stones and diamonds roll down on it.
-   for example a stone or brick wall */
+// returns true if the element is sloped, so stones and diamonds roll down on it.
+// for example a stone or brick wall
 static inline boolean sloped_dir(const GdCave *cave, const int x, const int y,
 				 const GdDirection dir, const GdDirection slop)
 {
@@ -428,8 +428,8 @@ static inline boolean sloped_dir(const GdCave *cave, const int x, const int y,
   return FALSE;
 }
 
-/* returns true if the element is sloped for bladder movement
-   (brick = yes, diamond = no, for example) */
+// returns true if the element is sloped for bladder movement
+// (brick = yes, diamond = no, for example)
 static inline boolean sloped_for_bladder_dir (const GdCave *cave, const int x, const int y,
 					      const GdDirection dir)
 {
@@ -442,19 +442,19 @@ static inline boolean blows_up_flies_dir(const GdCave *cave, const int x, const 
     return (gd_elements[get_dir(cave, x, y, dir) & O_MASK].properties & P_BLOWS_UP_FLIES) != 0;
 }
 
-/* returns true if the element is a counter-clockwise creature */
+// returns true if the element is a counter-clockwise creature
 static inline boolean rotates_ccw (const GdCave *cave, const int x, const int y)
 {
   return (gd_elements[get(cave, x, y) & O_MASK].properties & P_CCW) != 0;
 }
 
-/* returns true if the element is a player */
+// returns true if the element is a player
 static inline boolean is_player(const GdCave *cave, const int x, const int y)
 {
   return (gd_elements[get(cave, x, y) & O_MASK].properties & P_PLAYER) != 0;
 }
 
-/* returns true if the element is a player */
+// returns true if the element is a player
 static inline boolean is_player_dir(const GdCave *cave, const int x, const int y,
 				    const GdDirection dir)
 {
@@ -467,20 +467,20 @@ static inline boolean can_be_hammered_dir(const GdCave *cave, const int x, const
   return (gd_elements[get_dir(cave, x, y, dir) & O_MASK].properties & P_CAN_BE_HAMMERED) != 0;
 }
 
-/* returns true if the element is explodable and explodes to space, for example the player */
+// returns true if the element is explodable and explodes to space, for example the player
 static inline boolean is_first_stage_of_explosion(const GdCave *cave, const int x, const int y)
 {
   return (gd_elements[get(cave, x, y) & O_MASK].properties & P_EXPLOSION_FIRST_STAGE) != 0;
 }
 
-/* returns true if the element is moved by the conveyor belt */
+// returns true if the element is moved by the conveyor belt
 static inline boolean moved_by_conveyor_top_dir(const GdCave *cave, const int x, const int y,
 						const GdDirection dir)
 {
   return (gd_elements[get_dir(cave, x, y, dir) & O_MASK].properties & P_MOVED_BY_CONVEYOR_TOP) != 0;
 }
 
-/* returns true if the element is moved by the conveyor belt */
+// returns true if the element is moved by the conveyor belt
 static inline boolean moved_by_conveyor_bottom_dir(const GdCave *cave, const int x, const int y,
 						   const GdDirection dir)
 {
@@ -493,29 +493,29 @@ static inline boolean is_scanned_dir(const GdCave *cave, const int x, const int 
   return (get_dir(cave, x, y, dir) & SCANNED) != 0;
 }
 
-/* returns true if neighbouring element is "e" */
-/* treats dirt specially */
-/* treats lava specially */
+// returns true if neighbouring element is "e"
+// treats dirt specially
+// treats lava specially
 static inline boolean is_element_dir(const GdCave *cave, const int x, const int y,
 				     const GdDirection dir, GdElement e)
 {
   GdElement examined = get_dir(cave, x, y, dir);
 
-  /* if it is a dirt-like, change to dirt, so equality will evaluate to true */
+  // if it is a dirt-like, change to dirt, so equality will evaluate to true
   if (gd_elements[examined & O_MASK].properties & P_DIRT)
     examined = O_DIRT;
 
   if (gd_elements[e & O_MASK].properties & P_DIRT)
     e = O_DIRT;
 
-  /* if the element on the map is a lava, it should be like space */
+  // if the element on the map is a lava, it should be like space
   if (examined == O_LAVA)
     examined = O_SPACE;
 
   return (e == examined);
 }
 
-/* returns true if neighbouring element is space */
+// returns true if neighbouring element is space
 static inline boolean is_space_dir(const GdCave *cave, const int x, const int y,
 				   const GdDirection dir)
 {
@@ -526,10 +526,11 @@ static inline boolean is_space_dir(const GdCave *cave, const int x, const int y,
 
 static inline void store_dir_buffer(GdCave *cave, const int x, const int y, const GdDirection dir)
 {
-  /* raw values without range correction */
+  // raw values without range correction
   int raw_x = x + gd_dx[dir];
   int raw_y = y + gd_dy[dir];
-  /* final values with range correction */
+
+  // final values with range correction
   int new_x = getx(cave, raw_x, raw_y);
   int new_y = gety(cave, raw_x, raw_y);
   int new_dir = (dir > GD_MV_TWICE ? dir - GD_MV_TWICE : dir);
@@ -537,7 +538,7 @@ static inline void store_dir_buffer(GdCave *cave, const int x, const int y, cons
   game_bd.game->dir_buffer[new_y][new_x] = new_dir;
 }
 
-/* store an element at the given position */
+// store an element at the given position
 static inline void store(GdCave *cave, const int x, const int y, const GdElement element)
 {
   GdElement *e = getp(cave, x, y);
@@ -552,13 +553,13 @@ static inline void store(GdCave *cave, const int x, const int y, const GdElement
   *e = element;
 }
 
-/* store an element with SCANNED flag turned on */
+// store an element with SCANNED flag turned on
 static inline void store_sc(GdCave *cave, const int x, const int y, const GdElement element)
 {
   store(cave, x, y, element | SCANNED);
 }
 
-/* store an element to a neighbouring cell */
+// store an element to a neighbouring cell
 static inline void store_dir(GdCave *cave, const int x, const int y,
 			     const GdDirection dir, const GdElement element)
 {
@@ -566,7 +567,7 @@ static inline void store_dir(GdCave *cave, const int x, const int y,
   store(cave, x + gd_dx[dir], y + gd_dy[dir], element | SCANNED);
 }
 
-/* store an element to a neighbouring cell */
+// store an element to a neighbouring cell
 static inline void store_dir_no_scanned(GdCave *cave, const int x, const int y,
 					const GdDirection dir, const GdElement element)
 {
@@ -574,7 +575,7 @@ static inline void store_dir_no_scanned(GdCave *cave, const int x, const int y,
   store(cave, x + gd_dx[dir], y + gd_dy[dir], element);
 }
 
-/* move element to direction; then place space at x, y */
+// move element to direction; then place space at x, y
 static inline void move(GdCave *cave, const int x, const int y,
 			const GdDirection dir, const GdElement e)
 {
@@ -582,8 +583,8 @@ static inline void move(GdCave *cave, const int x, const int y,
   store(cave, x, y, O_SPACE);
 }
 
-/* increment a cave element; can be used for elements which are one after
-   the other, for example bladder1, bladder2, bladder3... */
+// increment a cave element; can be used for elements which are one after
+// the other, for example bladder1, bladder2, bladder3...
 static inline void next(GdCave *cave, const int x, const int y)
 {
   (*getp(cave, x, y))++;
@@ -598,23 +599,23 @@ static void cell_explode(GdCave *cave, int x, int y, GdElement explode_to)
     cave->voodoo_touched = TRUE;
 
   if (get(cave, x, y) == O_VOODOO && !cave->voodoo_disappear_in_explosion)
-    /* voodoo turns into a time penalty */
+    // voodoo turns into a time penalty
     store_sc(cave, x, y, O_TIME_PENALTY);
   else if (get(cave, x, y) == O_NITRO_PACK ||
 	   get(cave, x, y) == O_NITRO_PACK_F)
-    /* nitro pack inside an explosion - it is now triggered */
+    // nitro pack inside an explosion - it is now triggered
     store_sc(cave, x, y, O_NITRO_PACK_EXPLODE);
   else
-    /* for everything else */
+    // for everything else
     store_sc(cave, x, y, explode_to);
 }
 
-/* a creature explodes to a 3x3 something. */
+// a creature explodes to a 3x3 something.
 static void creature_explode(GdCave *cave, int x, int y, GdElement explode_to)
 {
   int xx, yy;
 
-  /* the processing of an explosion took pretty much time: processing 3x3 = 9 elements */
+  // the processing of an explosion took pretty much time: processing 3x3 = 9 elements
   cave->ckdelay += 1200;
   gd_sound_play(cave, GD_S_EXPLODING, get(cave, x, y), x, y);
 
@@ -627,7 +628,7 @@ static void nitro_explode(GdCave *cave, int x, int y)
 {
   int xx, yy;
 
-  /* the processing of an explosion took pretty much time: processing 3x3 = 9 elements */
+  // the processing of an explosion took pretty much time: processing 3x3 = 9 elements
   cave->ckdelay += 1200;
   gd_sound_play(cave, GD_S_NITRO_PACK_EXPLODING, get(cave, x, y), x, y);
 
@@ -635,42 +636,44 @@ static void nitro_explode(GdCave *cave, int x, int y)
     for (xx = x - 1; xx <= x + 1; xx++)
       cell_explode(cave, xx, yy, O_NITRO_EXPL_1);
 
-  /* the current cell is explicitly changed into a nitro expl,
-     as cell_explode changes it to a triggered nitro pack */
+  // the current cell is explicitly changed into a nitro expl,
+  // as cell_explode changes it to a triggered nitro pack
   store_sc(cave, x, y, O_NITRO_EXPL_1);
 }
 
-/* a voodoo explodes, leaving a 3x3 steel and a time penalty behind. */
+// a voodoo explodes, leaving a 3x3 steel and a time penalty behind.
 static void voodoo_explode(GdCave *cave, int x, int y)
 {
   int xx, yy;
 
-  /* the processing of an explosion took pretty much time: processing 3x3 = 9 elements */
+  // the processing of an explosion took pretty much time: processing 3x3 = 9 elements
   cave->ckdelay += 1000;
 
   gd_sound_play(cave, GD_S_VOODOO_EXPLODING, get(cave, x, y), x, y);
   if (cave->voodoo_any_hurt_kills_player)
     cave->voodoo_touched = TRUE;
 
-  /* voodoo explodes to 3x3 steel */
+  // voodoo explodes to 3x3 steel
   for (yy = y - 1; yy <= y + 1; yy++)
     for (xx = x - 1; xx <= x + 1; xx++)
       store_sc(cave, xx, yy, O_PRE_STEEL_1);
 
-  /* middle is a time penalty (which will be turned into a gravestone) */
+  // middle is a time penalty (which will be turned into a gravestone)
   store_sc(cave, x, y, O_TIME_PENALTY);
 }
 
-/* a bomb does not explode the voodoo, neither does the ghost.
-   this function check this, and stores the new element or not.
-   destroying the voodoo is also controlled by the
-   voodoo_disappear_in_explosion flag. */
+/*
+  a bomb does not explode the voodoo, neither does the ghost.
+  this function check this, and stores the new element or not.
+  destroying the voodoo is also controlled by the
+  voodoo_disappear_in_explosion flag.
+*/
 static void explode_try_skip_voodoo(GdCave *cave, const int x, const int y, const GdElement expl)
 {
   if (non_explodable (cave, x, y))
     return;
 
-  /* bomb does not explode voodoo */
+  // bomb does not explode voodoo
   if (!cave->voodoo_disappear_in_explosion && get(cave, x, y) == O_VOODOO)
     return;
 
@@ -680,12 +683,12 @@ static void explode_try_skip_voodoo(GdCave *cave, const int x, const int y, cons
   store_sc (cave, x, y, expl);
 }
 
-/* X shaped ghost explosion; does not touch voodoo! */
+// X shaped ghost explosion; does not touch voodoo!
 static void ghost_explode(GdCave *cave, const int x, const int y)
 {
   gd_sound_play(cave, GD_S_GHOST_EXPLODING, get(cave, x, y), x, y);
 
-  /* the processing of an explosion took pretty much time: processing 5 elements */
+  // the processing of an explosion took pretty much time: processing 5 elements
   cave->ckdelay += 650;
 
   explode_try_skip_voodoo(cave, x,     y,     O_GHOST_EXPL_1);
@@ -695,12 +698,12 @@ static void ghost_explode(GdCave *cave, const int x, const int y)
   explode_try_skip_voodoo(cave, x + 1, y - 1, O_GHOST_EXPL_1);
 }
 
-/* +shaped bomb explosion; does not touch voodoo! */
+// +shaped bomb explosion; does not touch voodoo!
 static void bomb_explode(GdCave *cave, const int x, const int y)
 {
   gd_sound_play(cave, GD_S_BOMB_EXPLODING, get(cave, x, y), x, y);
 
-  /* the processing of an explosion took pretty much time: processing 5 elements */
+  // the processing of an explosion took pretty much time: processing 5 elements
   cave->ckdelay += 650;
 
   explode_try_skip_voodoo(cave, x,     y,     O_BOMB_EXPL_1);
@@ -823,7 +826,7 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
       gd_sound_play(cave, GD_S_DIAMOND_KEY_COLLECTING, object, x, y);
       return O_SPACE;
 
-    /* KEYS AND DOORS */
+    // KEYS AND DOORS
     case O_KEY_1:
       gd_sound_play(cave, GD_S_KEY_COLLECTING, object, x, y);
       cave->key1++;
@@ -860,40 +863,40 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
       cave->key3--;
       return O_SPACE;
 
-    /* SWITCHES */
-    case O_CREATURE_SWITCH:        /* creatures change direction. */
+    // SWITCHES
+    case O_CREATURE_SWITCH:        // creatures change direction.
       gd_sound_play(cave, GD_S_SWITCH_CREATURES, object, x, y);
       cave->creatures_backwards = !cave->creatures_backwards;
       return object;
 
-    case O_EXPANDING_WALL_SWITCH:        /* expanding wall change direction. */
+    case O_EXPANDING_WALL_SWITCH:        // expanding wall change direction.
       gd_sound_play(cave, GD_S_SWITCH_EXPANDING, object, x, y);
       cave->expanding_wall_changed = !cave->expanding_wall_changed;
       return object;
 
-    case O_BITER_SWITCH:        /* biter change delay */
+    case O_BITER_SWITCH:        // biter change delay
       gd_sound_play(cave, GD_S_SWITCH_BITER, object, x, y);
       cave->biter_delay_frame++;
       if (cave->biter_delay_frame == 4)
 	cave->biter_delay_frame = 0;
       return object;
 
-    case O_REPLICATOR_SWITCH:    /* replicator on/off switch */
+    case O_REPLICATOR_SWITCH:    // replicator on/off switch
       gd_sound_play(cave, GD_S_SWITCH_REPLICATOR, object, x, y);
       cave->replicators_active = !cave->replicators_active;
       return object;
 
-    case O_CONVEYOR_SWITCH:    /* conveyor belts on/off */
+    case O_CONVEYOR_SWITCH:    // conveyor belts on/off
       gd_sound_play(cave, GD_S_SWITCH_CONVEYOR, object, x, y);
       cave->conveyor_belts_active = !cave->conveyor_belts_active;
       return object;
 
-    case O_CONVEYOR_DIR_SWITCH: /* conveyor belts switch direction */
+    case O_CONVEYOR_DIR_SWITCH: // conveyor belts switch direction
       gd_sound_play(cave, GD_S_SWITCH_CONVEYOR, object, x, y);
       cave->conveyor_belts_direction_changed = !cave->conveyor_belts_direction_changed;
       return object;
 
-    /* USUAL STUFF */
+    // USUAL STUFF
     case O_DIRT:
     case O_DIRT2:
     case O_STEEL_EATABLE:
@@ -918,12 +921,12 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
       return O_SPACE;
 
     case O_CLOCK:
-      /* bonus time */
+      // bonus time
       gd_sound_play(cave, GD_S_CLOCK_COLLECTING, object, x, y);
       cave->time += cave->time_bonus * cave->timing_factor;
       if (cave->time > cave->max_time * cave->timing_factor)
 	cave->time -= cave->max_time * cave->timing_factor;
-      /* no space, rather a dirt remains there... */
+      // no space, rather a dirt remains there...
       return O_DIRT;
 
     case O_DIAMOND:
@@ -940,7 +943,7 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
       {
 	cave->gate_open = TRUE;
 
-	/* extra is worth more points. */
+	// extra is worth more points.
 	cave->diamond_value = cave->extra_diamond_value;
 
 	cave->gate_open_flash = 1;
@@ -952,26 +955,26 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
     case O_SKELETON:
       cave->skeletons_collected++;
 
-      /* as if player got a diamond */
+      // as if player got a diamond
       for (i = 0; i < cave->skeletons_worth_diamonds; i++)
 	player_get_element(cave, O_DIAMOND, -1, -1);
 
-      /* _after_ calling get_element for the fake diamonds, so we overwrite its sounds */
+      // _after_ calling get_element for the fake diamonds, so we overwrite its sounds
       gd_sound_play(cave, GD_S_SKELETON_COLLECTING, object, x, y);
       return O_SPACE;
 
     case O_OUTBOX:
     case O_INVIS_OUTBOX:
-      cave->player_state = GD_PL_EXITED;    /* player now exits the cave! */
+      cave->player_state = GD_PL_EXITED;    // player now exits the cave!
       return O_SPACE;
 
     case O_SPACE:
-    case O_LAVA:    /* player goes into lava, as if it was space */
+    case O_LAVA:    // player goes into lava, as if it was space
       gd_sound_play(cave, GD_S_EMPTY_WALKING, object, x, y);
       return O_SPACE;
 
     default:
-      /* the object will remain there. */
+      // the object will remain there.
       return object;
   }
 }
@@ -994,7 +997,7 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
 
   do
   {
-    /* jump to next element; wrap around columns and rows. */
+    // jump to next element; wrap around columns and rows.
     tx++;
 
     if (tx >= cave->w)
@@ -1006,25 +1009,25 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
 	ty = 0;
     }
 
-    /* if we found a teleporter... */
+    // if we found a teleporter...
     if (get(cave, tx, ty) == O_TELEPORTER &&
 	is_space_dir(cave, tx, ty, player_move))
     {
-      /* new player appears near teleporter found */
+      // new player appears near teleporter found
       store_dir(cave, tx, ty, player_move, get(cave, px, py));
 
-      /* current player disappears */
+      // current player disappears
       store(cave, px, py, O_SPACE);
 
       gd_sound_play(cave, GD_S_TELEPORTER, O_TELEPORTER, tx, ty);
 
-      return TRUE;    /* return true as teleporter worked */
+      return TRUE;    // return true as teleporter worked
     }
   }
-  /* loop until we get back to original coordinates */
+  // loop until we get back to original coordinates
   while (tx != px || ty != py);
 
-  /* return false as we did not find any usable teleporter */
+  // return false as we did not find any usable teleporter
   return FALSE;
 }
 
@@ -1038,7 +1041,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
   boolean result;
   GdElement what = get_dir(cave, x, y, player_move);
 
-  /* gravity for falling wall, bladder, ... */
+  // gravity for falling wall, bladder, ...
   GdDirection grav_compat = cave->gravity_affects_all ? cave->gravity : GD_MV_DOWN;
 
   result = FALSE;
@@ -1052,10 +1055,10 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
     case O_MEGA_STONE:
     case O_FLYING_STONE:
     case O_NUT:
-      /* pushing some kind of stone or nut */
-      /* directions possible: 90degrees cw or ccw to current gravity. */
-      /* only push if player dir is orthogonal to gravity,
-	 ie. gravity down, pushing left & right possible */
+      // pushing some kind of stone or nut
+      // directions possible: 90degrees cw or ccw to current gravity.
+      // only push if player dir is orthogonal to gravity,
+      // ie. gravity down, pushing left & right possible
       if (player_move == ccw_fourth[cave->gravity] ||
 	  player_move == cw_fourth[cave->gravity])
       {
@@ -1063,22 +1066,22 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 
 	prob = 0;
 
-	/* different probabilities for different elements. */
+	// different probabilities for different elements.
 	switch (what)
 	{
 	  case O_WAITING_STONE:
-	    /* waiting stones are light, can always push */
+	    // waiting stones are light, can always push
 	    prob = 1000000;
 	    break;
 
 	  case O_CHASING_STONE:
-	    /* chasing can be pushed if player is turbo */
+	    // chasing can be pushed if player is turbo
 	    if (cave->sweet_eaten)
 	      prob = 1000000;
 	    break;
 
 	  case O_MEGA_STONE:
-	    /* mega may(!) be pushed if player is turbo */
+	    // mega may(!) be pushed if player is turbo
 	    if (cave->mega_stones_pushable_with_sweet && cave->sweet_eaten)
 	      prob = 1000000;
 	    break;
@@ -1088,9 +1091,9 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	  case O_FLYING_STONE:
 	  case O_NITRO_PACK:
 	    if (cave->sweet_eaten)
-	      prob = cave->pushing_stone_prob_sweet; /* probability with sweet */
+	      prob = cave->pushing_stone_prob_sweet; // probability with sweet
 	    else
-	      prob = cave->pushing_stone_prob; /* probability without sweet. */
+	      prob = cave->pushing_stone_prob; // probability without sweet.
 	    break;
 
 	  default:
@@ -1100,7 +1103,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	if (is_space_dir(cave, x, y, GD_MV_TWICE + player_move) &&
 	    gd_rand_int_range(cave->random, 0, 1000000) < prob)
 	{
-	  /* if decided that he will be able to push, */
+	  // if decided that he will be able to push,
 	  store_dir(cave, x, y, GD_MV_TWICE + player_move, what);
 	  play_sound_of_element_pushing(cave, what, x, y);
 	  result = TRUE;
@@ -1117,58 +1120,58 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
     case O_BLADDER_6:
     case O_BLADDER_7:
     case O_BLADDER_8:
-      /* pushing a bladder. keep in mind that after pushing, we always get an O_BLADDER,
-       * not an O_BLADDER_x. */
-      /* there is no "delayed" state of a bladder, so we use store_dir_no_scanned! */
+      // pushing a bladder. keep in mind that after pushing, we always get an O_BLADDER,
+      // not an O_BLADDER_x.
+      // there is no "delayed" state of a bladder, so we use store_dir_no_scanned!
 
-      /* first check: we cannot push a bladder "up" */
+      // first check: we cannot push a bladder "up"
       if (player_move != opposite[grav_compat])
       {
-	/* pushing a bladder "down". p = player, o = bladder, 1, 2, 3 = directions to check. */
-	/* player moving in the direction of gravity. */
-	/*  p   p  g  */
-	/* 2o3  |  |  */
-	/*  1   v  v  */
+	// pushing a bladder "down". p = player, o = bladder, 1, 2, 3 = directions to check.
+	// player moving in the direction of gravity.
+	//  p   p  g
+	// 2o3  |  |
+	//  1   v  v
 	if (player_move == grav_compat)
 	{
-	  /* pushing bladder down */
+	  // pushing bladder down
 	  if (is_space_dir(cave, x, y, GD_MV_TWICE + player_move))
 	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER), result = TRUE;
-	  /* if no space to push down, maybe left (down-left to player) */
+	  // if no space to push down, maybe left (down-left to player)
 	  else if (is_space_dir(cave, x, y, cw_eighth[grav_compat]))
 
-	    /* left is "down, turned right (cw)" */
+	    // left is "down, turned right (cw)"
 	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER), result = TRUE;
-	  /* if not, maybe right (down-right to player) */
+	  // if not, maybe right (down-right to player)
 	  else if (is_space_dir(cave, x, y, ccw_eighth[grav_compat]))
 	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER), result = TRUE;
 	}
 
-	/* pushing a bladder "left". p = player, o = bladder, 1, 2, 3 = directions to check. */
-	/*  3        g */
-	/* 1op  <-p  | */
-	/*  2        v */
+	// pushing a bladder "left". p = player, o = bladder, 1, 2, 3 = directions to check.
+	//  3        g
+	// 1op  <-p  |
+	//  2        v
 	else if (player_move == cw_fourth[grav_compat])
 	{
-	  if (is_space_dir(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat]))    /* pushing it left */
+	  if (is_space_dir(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat]))    // pushing it left
 	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_space_dir(cave, x, y, cw_eighth[grav_compat]))    /* maybe down, and player will move left */
+	  else if (is_space_dir(cave, x, y, cw_eighth[grav_compat]))    // maybe down, and player will move left
 	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_space_dir(cave, x, y, cw_eighth[player_move]))    /* maybe up, and player will move left */
+	  else if (is_space_dir(cave, x, y, cw_eighth[player_move]))    // maybe up, and player will move left
 	    store_dir_no_scanned(cave, x, y, cw_eighth[player_move], O_BLADDER), result = TRUE;
 	}
 
-	/* pushing a bladder "right". p = player, o = bladder, 1, 2, 3 = directions to check. */
-	/*  3        g */
-	/* po1  p-<  | */
-	/*  2        v */
+	// pushing a bladder "right". p = player, o = bladder, 1, 2, 3 = directions to check.
+	//  3        g
+	// po1  p-<  |
+	//  2        v
 	else if (player_move == ccw_fourth[grav_compat])
 	{
-	  if (is_space_dir(cave, x, y, GD_MV_TWICE + player_move))    /* pushing it right */
+	  if (is_space_dir(cave, x, y, GD_MV_TWICE + player_move))    // pushing it right
 	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER), result = TRUE;
-	  else if (is_space_dir(cave, x, y, ccw_eighth[grav_compat]))    /* maybe down, and player will move right */
+	  else if (is_space_dir(cave, x, y, ccw_eighth[grav_compat]))    // maybe down, and player will move right
 	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_space_dir(cave, x, y, ccw_eighth[player_move]))    /* maybe up, and player will move right */
+	  else if (is_space_dir(cave, x, y, ccw_eighth[player_move]))    // maybe up, and player will move right
 	    store_dir_no_scanned(cave, x, y, ccw_eighth[player_move], O_BLADDER), result = TRUE;
 	}
 
@@ -1178,20 +1181,20 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
       break;
 
     case O_BOX:
-      /* a box is only pushed with the fire pressed */
+      // a box is only pushed with the fire pressed
       if (player_fire)
       {
-	/* but always with 100% probability */
+	// but always with 100% probability
 	switch (player_move)
 	{
 	  case GD_MV_LEFT:
 	  case GD_MV_RIGHT:
 	  case GD_MV_UP:
 	  case GD_MV_DOWN:
-	    /* pushing in some dir, two steps in that dir - is there space? */
+	    // pushing in some dir, two steps in that dir - is there space?
 	    if (is_space_dir(cave, x, y, player_move + GD_MV_TWICE))
 	    {
-	      /* yes, so push. */
+	      // yes, so push.
 	      store_dir(cave, x, y, player_move + GD_MV_TWICE, O_BOX);
 	      result = TRUE;
 	      gd_sound_play(cave, GD_S_BOX_PUSHING, what, x, y);
@@ -1199,13 +1202,13 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	    break;
 
 	  default:
-	    /* push in no other directions possible */
+	    // push in no other directions possible
 	    break;
 	}
       }
       break;
 
-      /* pushing of other elements not possible */
+      // pushing of other elements not possible
     default:
       break;
   }
@@ -1213,12 +1216,12 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
   return result;
 }
 
-/* from the key press booleans, create a direction */
+// from the key press booleans, create a direction
 GdDirection gd_direction_from_keypress(boolean up, boolean down, boolean left, boolean right)
 {
   GdDirection player_move;
 
-  /* from the key press booleans, create a direction */
+  // from the key press booleans, create a direction
   if (up && right)
     player_move = GD_MV_UP_RIGHT;
   else if (down && right)
@@ -1241,7 +1244,7 @@ GdDirection gd_direction_from_keypress(boolean up, boolean down, boolean left, b
   return player_move;
 }
 
-/* clear these to no sound; and they will be set during iteration. */
+// clear these to no sound; and they will be set during iteration.
 void gd_cave_clear_sounds(GdCave *cave)
 {
   cave->sound1 = GD_S_NONE;
@@ -1257,28 +1260,28 @@ static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direct
 
   if (is_space_dir(cave, x, y, falling_direction))
   {
-    /* beginning to fall */
+    // beginning to fall
     play_sound_of_element(cave, get(cave, x, y), x, y);
     move(cave, x, y, falling_direction, falling_element);
   }
 
-  /* check if it is on a sloped element, and it can roll. */
-  /* for example, sloped wall looks like: */
-  /*  /| */
-  /* /_| */
-  /* this is tagged as sloped up&left. */
-  /* first check if the stone or diamond is coming from "up" (ie. opposite of gravity) */
-  /* then check the direction to roll (left or right) */
-  /* this way, gravity can also be pointing right, and the above slope will work as one would expect */
+  // check if it is on a sloped element, and it can roll.
+  // for example, sloped wall looks like:
+  //  /|
+  // /_|
+  // this is tagged as sloped up&left.
+  // first check if the stone or diamond is coming from "up" (ie. opposite of gravity)
+  // then check the direction to roll (left or right)
+  // this way, gravity can also be pointing right, and the above slope will work as one would expect
   else if (sloped_dir(cave, x, y, falling_direction, opposite[falling_direction]))
   {
-    /* rolling down, if sitting on a sloped object  */
+    // rolling down, if sitting on a sloped object
     if (sloped_dir(cave, x, y, falling_direction, cw_fourth[falling_direction]) &&
 	is_space_dir(cave, x, y, cw_fourth[falling_direction]) &&
 	is_space_dir(cave, x, y, cw_eighth[falling_direction]))
     {
-      /* rolling left? - keep in mind that ccw_fourth rotates gravity ccw,
-	 so here we use cw_fourth */
+      // rolling left? - keep in mind that ccw_fourth rotates gravity ccw,
+      // so here we use cw_fourth
       play_sound_of_element(cave, get(cave, x, y), x, y);
       move(cave, x, y, cw_fourth[falling_direction], falling_element);
     }
@@ -1286,7 +1289,7 @@ static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direct
 	     is_space_dir(cave, x, y, ccw_fourth[falling_direction]) &&
 	     is_space_dir(cave, x, y, ccw_eighth[falling_direction]))
     {
-      /* rolling right? */
+      // rolling right?
       play_sound_of_element(cave, get(cave, x, y), x, y);
       move(cave, x, y, ccw_fourth[falling_direction], falling_element);
     }
@@ -1298,7 +1301,7 @@ static boolean do_fall_try_crush_voodoo(GdCave *cave, int x, int y, GdDirection 
   if (get_dir(cave, x, y, fall_dir) == O_VOODOO &&
       cave->voodoo_dies_by_stone)
   {
-    /* this is a 1stB-style vodo. explodes by stone, collects diamonds */
+    // this is a 1stB-style vodo. explodes by stone, collects diamonds
     explode_dir(cave, x, y, fall_dir);
     return TRUE;
   }
@@ -1311,9 +1314,9 @@ static boolean do_fall_try_eat_voodoo(GdCave *cave, int x, int y, GdDirection fa
   if (get_dir(cave, x, y, fall_dir) == O_VOODOO &&
       cave->voodoo_collects_diamonds)
   {
-    /* this is a 1stB-style voodoo. explodes by stone, collects diamonds */
-    player_get_element(cave, O_DIAMOND, x, y);   /* as if player got diamond */
-    store(cave, x, y, O_SPACE);    /* diamond disappears */
+    // this is a 1stB-style voodoo. explodes by stone, collects diamonds
+    player_get_element(cave, O_DIAMOND, x, y);   // as if player got diamond
+    store(cave, x, y, O_SPACE);    // diamond disappears
     return TRUE;
   }
   else
@@ -1326,7 +1329,7 @@ static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y,
   if (get_dir(cave, x, y, fall_dir) == O_NUT ||
       get_dir(cave, x, y, fall_dir) == O_NUT_F)
   {
-    /* stones */
+    // stones
     store(cave, x, y, bouncing);
     store_dir(cave, x, y, fall_dir, cave->nut_turns_to_when_crushed);
 
@@ -1343,7 +1346,7 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y,
 {
   if (get_dir(cave, x, y, fall_dir) == O_MAGIC_WALL)
   {
-    play_sound_of_element(cave, O_DIAMOND, x, y);    /* always play diamond sound */
+    play_sound_of_element(cave, O_DIAMOND, x, y);    // always play diamond sound
 
     if (cave->magic_wall_state == GD_MW_DORMANT)
       cave->magic_wall_state = GD_MW_ACTIVE;
@@ -1351,12 +1354,12 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y,
     if (cave->magic_wall_state == GD_MW_ACTIVE &&
 	is_space_dir(cave, x, y, GD_MV_TWICE+fall_dir))
     {
-      /* if magic wall active and place underneath, it turns element
-	 into anything the effect says to do. */
+      // if magic wall active and place underneath, it turns element
+      // into anything the effect says to do.
       store_dir(cave, x, y, GD_MV_TWICE+fall_dir, magic);
     }
 
-    /* active or non-active or anything, element falling in will always disappear */
+    // active or non-active or anything, element falling in will always disappear
     store(cave, x, y, O_SPACE);
 
     return TRUE;
@@ -1381,31 +1384,31 @@ static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
 {
   if (is_space_dir(cave, x, y, fall_dir))
   {
-    /* falling further */
+    // falling further
     move(cave, x, y, fall_dir, get(cave, x, y));
 
     return TRUE;
   }
 
-  /* check if it is on a sloped element, and it can roll. */
-  /* for example, sloped wall looks like: */
-  /*  /| */
-  /* /_| */
-  /* this is tagged as sloped up&left. */
-  /* first check if the stone or diamond is coming from "up" (ie. opposite of gravity) */
-  /* then check the direction to roll (left or right) */
-  /* this way, gravity can also be pointing right, and the above slope will work as one would expect */
+  // check if it is on a sloped element, and it can roll.
+  // for example, sloped wall looks like:
+  //  /|
+  // /_|
+  // this is tagged as sloped up&left.
+  // first check if the stone or diamond is coming from "up" (ie. opposite of gravity)
+  // then check the direction to roll (left or right)
+  // this way, gravity can also be pointing right, and the above slope will work as one would expect
 
   if (sloped_dir(cave, x, y, fall_dir, opposite[fall_dir]))
   {
-    /* sloped element, falling to left or right */
+    // sloped element, falling to left or right
     if (sloped_dir(cave, x, y, fall_dir, cw_fourth[fall_dir]) &&
 	is_space_dir(cave, x, y, cw_eighth[fall_dir]) &&
 	is_space_dir(cave, x, y, cw_fourth[fall_dir]))
     {
       play_sound_of_element(cave, get(cave, x, y), x, y);
 
-      /* try to roll left first - see O_STONE to understand why cw_fourth */
+      // try to roll left first - see O_STONE to understand why cw_fourth
       move(cave, x, y, cw_fourth[fall_dir], get(cave, x, y));
     }
     else if (sloped_dir(cave, x, y, fall_dir, ccw_fourth[fall_dir]) &&
@@ -1414,12 +1417,12 @@ static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
     {
       play_sound_of_element(cave, get(cave, x, y), x, y);
 
-      /* if not, try to roll right */
+      // if not, try to roll right
       move(cave, x, y, ccw_fourth[fall_dir], get(cave, x, y));
     }
     else
     {
-      /* cannot roll in any direction, so it stops */
+      // cannot roll in any direction, so it stops
       play_sound_of_element(cave, get(cave, x, y), x, y);
       store(cave, x, y, bouncing);
     }
@@ -1427,7 +1430,7 @@ static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
     return TRUE;
   }
 
-  /* any other element, stops */
+  // any other element, stops
   play_sound_of_element(cave, get(cave, x, y), x, y);
   store(cave, x, y, bouncing);
   return TRUE;
@@ -1435,48 +1438,48 @@ static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
 
 static void update_cave_speed(GdCave *cave)
 {
-  /* update timing calculated by iterating and counting elements which were slow to process on c64 */
+  // update timing calculated by iterating and counting elements which were slow to process on c64
   switch (cave->scheduling)
   {
     case GD_SCHEDULING_MILLISECONDS:
-      /* cave->speed already contains the milliseconds value, do not touch it */
+      // cave->speed already contains the milliseconds value, do not touch it
       break;
 
     case GD_SCHEDULING_BD1:
       if (!cave->intermission)
-	/* non-intermissions */
+	// non-intermissions
 	cave->speed = (88 + 3.66 * cave->c64_timing + (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000);
       else
-	/* intermissions were quicker, as only lines 1-12 were processed by the engine. */
+	// intermissions were quicker, as only lines 1-12 were processed by the engine.
 	cave->speed = (60 + 3.66 * cave->c64_timing + (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000);
       break;
 
     case GD_SCHEDULING_BD1_ATARI:
-      /* about 20ms/frame faster than c64 version */
+      // about 20ms/frame faster than c64 version
       if (!cave->intermission)
-	cave->speed = (74 + 3.2 * cave->c64_timing + (cave->ckdelay) / 1000);            /* non-intermissions */
+	cave->speed = (74 + 3.2 * cave->c64_timing + (cave->ckdelay) / 1000);            // non-intermissions
       else
-	cave->speed = (65 + 2.88 * cave->c64_timing + (cave->ckdelay) / 1000);        /* for intermissions */
+	cave->speed = (65 + 2.88 * cave->c64_timing + (cave->ckdelay) / 1000);        // for intermissions
       break;
 
     case GD_SCHEDULING_BD2:
-      /* 60 is a guess. */
+      // 60 is a guess.
       cave->speed = MAX(60 + (cave->ckdelay + cave->ckdelay_extra_for_animation)/1000, cave->c64_timing * 20);
       break;
 
     case GD_SCHEDULING_PLCK:
-      /* 65 is totally empty cave in construction kit, with delay = 0) */
+      // 65 is totally empty cave in construction kit, with delay = 0)
       cave->speed = MAX(65 + cave->ckdelay / 1000, cave->c64_timing * 20);
       break;
 
     case GD_SCHEDULING_BD2_PLCK_ATARI:
-      /* a really fast engine; timing works like c64 plck. */
-      /* 40 ms was measured in the construction kit, with delay = 0 */
+      // a really fast engine; timing works like c64 plck.
+      // 40 ms was measured in the construction kit, with delay = 0
       cave->speed = MAX(40 + cave->ckdelay / 1000, cave->c64_timing * 20);
       break;
 
     case GD_SCHEDULING_CRDR:
-      if (cave->hammered_walls_reappear) /* this made the engine very slow. */
+      if (cave->hammered_walls_reappear) // this made the engine very slow.
 	cave->ckdelay += 60000;
       cave->speed = MAX(130 + cave->ckdelay / 1000, cave->c64_timing * 20);
       break;
@@ -1486,30 +1489,30 @@ static void update_cave_speed(GdCave *cave)
   }
 }
 
-/* process a cave. */
+// process a cave.
 void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire, boolean suicide)
 {
   int x, y, i;
 
-  /* for border scan */
+  // for border scan
   int ymin, ymax;
 
-  /* amoeba found to be enclosed. if not, this is cleared */
+  // amoeba found to be enclosed. if not, this is cleared
   boolean amoeba_found_enclosed, amoeba_2_found_enclosed;
 
-  /* counting the number of amoebas. after scan, check if too much */
+  // counting the number of amoebas. after scan, check if too much
   int amoeba_count, amoeba_2_count;
 
-  /* cave scan found water - for sound */
+  // cave scan found water - for sound
   boolean found_water;
 
   boolean inbox_toggle;
   boolean start_signal;
 
-  /* gravity for falling wall, bladder, ... */
+  // gravity for falling wall, bladder, ...
   GdDirection grav_compat = cave->gravity_affects_all ? cave->gravity : GD_MV_DOWN;
 
-  /* directions for o_something_1, 2, 3 and 4 (creatures) */
+  // directions for o_something_1, 2, 3 and 4 (creatures)
   static const GdDirection creature_dir[] =
   {
     GD_MV_LEFT,
@@ -1526,7 +1529,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   };
   int time_decrement_sec;
 
-  /* biters eating elements preference, they try to go in this order */
+  // biters eating elements preference, they try to go in this order
   GdElement biter_try[] =
   {
     O_DIRT,
@@ -1538,8 +1541,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   gd_cave_clear_sounds(cave);
 
-  /* if diagonal movements not allowed, */
-  /* horizontal movements have precedence. [BROADRIBB] */
+  // if diagonal movements not allowed,
+  // horizontal movements have precedence. [BROADRIBB]
   if (!cave->diagonal_movements)
   {
     switch (player_move)
@@ -1555,12 +1558,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	break;
 
       default:
-	/* no correction needed */
+	// no correction needed
 	break;
     }
   }
 
-  /* set cave get function; to implement perfect or lineshifting borders */
+  // set cave get function; to implement perfect or lineshifting borders
   if (cave->lineshift)
   {
     cave->getp = getp_shift;
@@ -1574,45 +1577,45 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     cave->gety = gety_perfect;
   }
 
-  /* increment this. if the scan routine comes across player, clears it (sets to zero). */
+  // increment this. if the scan routine comes across player, clears it (sets to zero).
   if (cave->player_seen_ago < 100)
     cave->player_seen_ago++;
 
   if (cave->pneumatic_hammer_active_delay > 0)
     cave->pneumatic_hammer_active_delay--;
 
-  /* inboxes and outboxes flash with the rhythm of the game, not the display.
-   * also, a player can be born only from an open, not from a steel-wall-like inbox. */
+  // inboxes and outboxes flash with the rhythm of the game, not the display.
+  // also, a player can be born only from an open, not from a steel-wall-like inbox.
   cave->inbox_flash_toggle = !cave->inbox_flash_toggle;
   inbox_toggle = cave->inbox_flash_toggle;
 
   if (cave->gate_open_flash > 0)
     cave->gate_open_flash--;
 
-  /* score collected this frame */
+  // score collected this frame
   cave->score = 0;
 
-  /* suicide only kills the active player */
-  /* player_x, player_y was set by the previous iterate routine, or the cave setup. */
-  /* we must check if there is a player or not - he may have exploded or something like that */
+  // suicide only kills the active player
+  // player_x, player_y was set by the previous iterate routine, or the cave setup.
+  // we must check if there is a player or not - he may have exploded or something like that
   if (suicide && cave->player_state == GD_PL_LIVING &&
       is_player(cave, cave->player_x, cave->player_y))
     store(cave, cave->player_x, cave->player_y, O_EXPLODE_1);
 
-  /* check for walls reappearing */
+  // check for walls reappearing
   if (cave->hammered_reappear)
   {
     for (y = 0; y < cave->h; y++)
     {
       for (x = 0; x < cave->w; x++)
       {
-	/* timer for the cell > 0? */
+	// timer for the cell > 0?
 	if (cave->hammered_reappear[y][x] > 0)
 	{
-	  /* decrease timer */
+	  // decrease timer
 	  cave->hammered_reappear[y][x]--;
 
-	  /* check if it became zero */
+	  // check if it became zero
 	  if (cave->hammered_reappear[y][x] == 0)
 	  {
 	    store(cave, x, y, O_BRICK);
@@ -1623,9 +1626,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     }
   }
 
-  /* variables to check during the scan */
+  // variables to check during the scan
 
-  /* will be set to false if any of the amoeba is found free. */
+  // will be set to false if any of the amoeba is found free.
   amoeba_found_enclosed = TRUE;
   amoeba_2_found_enclosed = TRUE;
   amoeba_count = 0;
@@ -1634,7 +1637,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   cave->ckdelay = 0;
   time_decrement_sec = 0;
 
-  /* check whether to scan the first and last line */
+  // check whether to scan the first and last line
   if (cave->border_scan_first_and_last)
   {
     ymin = 0;
@@ -1646,13 +1649,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     ymax = cave->h - 2;
   }
 
-  /* the cave scan routine */
+  // the cave scan routine
   for (y = ymin; y <= ymax; y++)
   {
     for (x = 0; x < cave->w; x++)
     {
-      /* if we find a scanned element, change it to the normal one, and that's all. */
-      /* this is required, for example for chasing stones, which have moved, always passing slime! */
+      // if we find a scanned element, change it to the normal one, and that's all.
+      // this is required, for example for chasing stones, which have moved, always passing slime!
       if (get(cave, x, y) & SCANNED)
       {
 	store(cave, x, y, get(cave, x, y) & ~SCANNED);
@@ -1660,14 +1663,15 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	continue;
       }
 
-      /* add the ckdelay correction value for every element seen. */
+      // add the ckdelay correction value for every element seen.
       cave->ckdelay += gd_elements[get(cave, x, y)].ckdelay;
 
       switch (get(cave, x, y))
       {
-	/*
-	 *     P L A Y E R S
-	 */
+	// ============================================================================
+	//    P L A Y E R S
+	// ============================================================================
+
 	case O_PLAYER:
 	  if (cave->kill_player)
 	  {
@@ -1676,14 +1680,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 
 	  cave->player_seen_ago = 0;
-	  /* bd4 intermission caves have many players. so if one of them has exited,
-	   * do not change the flag anymore. so this if () is needed */
+	  // bd4 intermission caves have many players. so if one of them has exited,
+	  // do not change the flag anymore. so this if () is needed
 	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
-	  /* check for pneumatic hammer things */
-	  /* 1) press fire, 2) have pneumatic hammer 4) space on left or right
-	     for hammer 5) stand on something */
+	  // check for pneumatic hammer things
+	  // 1) press fire, 2) have pneumatic hammer 4) space on left or right
+	  // for hammer 5) stand on something
 	  if (player_fire && cave->got_pneumatic_hammer &&
 	      is_space_dir(cave, x, y, player_move) &&
 	      !is_space_dir(cave, x, y, GD_MV_DOWN))
@@ -1694,7 +1698,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      cave->pneumatic_hammer_active_delay = cave->pneumatic_hammer_frame;
 	      store_dir(cave, x, y, GD_MV_LEFT, O_PNEUMATIC_ACTIVE_LEFT);
 	      store(cave, x, y, O_PLAYER_PNEUMATIC_LEFT);
-	      break;    /* finished. */
+	      break;    // finished.
 	    }
 
 	    if (player_move == GD_MV_RIGHT &&
@@ -1703,23 +1707,23 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      cave->pneumatic_hammer_active_delay = cave->pneumatic_hammer_frame;
 	      store_dir(cave, x, y, GD_MV_RIGHT, O_PNEUMATIC_ACTIVE_RIGHT);
 	      store(cave, x, y, O_PLAYER_PNEUMATIC_RIGHT);
-	      break;    /* finished. */
+	      break;    // finished.
 	    }
 	  }
 
 	  if (player_move != GD_MV_STILL)
 	  {
-	    /* only do every check if he is not moving */
+	    // only do every check if he is not moving
 	    GdElement what = get_dir(cave, x, y, player_move);
 	    GdElement remains = what;
 	    boolean push;
 
-	    /* if we are 'eating' a teleporter, and the function returns true
-	       (teleporting worked), break here */
+	    // if we are 'eating' a teleporter, and the function returns true
+	    // (teleporting worked), break here
 	    if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
 	      break;
 
-	    /* try to push element; if successful, break  */
+	    // try to push element; if successful, break
 	    push = do_push(cave, x, y, player_move, player_fire);
 	    if (push)
 	    {
@@ -1730,9 +1734,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      switch (what)
 	      {
 		case O_BOMB:
-		  /* if its a bomb, remember he now has one. */
-		  /* we do not change the "remains" and "what" variables,
-		     so that part of the code will be ineffective */
+		  // if its a bomb, remember he now has one.
+		  // we do not change the "remains" and "what" variables,
+		  // so that part of the code will be ineffective
 		  gd_sound_play(cave, GD_S_BOMB_COLLECTING, what, x, y);
 		  store_dir(cave, x, y, player_move, O_SPACE);
 
@@ -1743,8 +1747,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  break;
 
 		case O_POT:
-		  /* we do not change the "remains" and "what" variables,
-		     so that part of the code will be ineffective */
+		  // we do not change the "remains" and "what" variables,
+		  // so that part of the code will be ineffective
 		  if (!player_fire && !cave->gravity_switch_active &&
 		      cave->skeletons_collected >= cave->skeletons_needed_for_pot)
 		  {
@@ -1755,8 +1759,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  break;
 
 		case O_GRAVITY_SWITCH:
-		  /* (we cannot use player_get for this as it does not have player_move parameter) */
-		  /* only allow changing direction if the new dir is not diagonal */
+		  // (we cannot use player_get for this as it does not have player_move parameter)
+		  // only allow changing direction if the new dir is not diagonal
 		  if (cave->gravity_switch_active &&
 		      (player_move == GD_MV_LEFT ||
 		       player_move == GD_MV_RIGHT ||
@@ -1772,8 +1776,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  break;
 
 		default:
-		  /* get element - process others.
-		     if cannot get, player_get_element will return the same */
+		  // get element - process others.
+		  // if cannot get, player_get_element will return the same
 		  remains = player_get_element(cave, what, x, y);
 		  break;
 	      }
@@ -1781,26 +1785,26 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	    if (remains != what || remains == O_SPACE)
 	    {
-	      /* if anything changed, apply the change. */
+	      // if anything changed, apply the change.
 
-	      /* if snapping anything and we have snapping explosions set.
-		 but these is not true for pushing. */
+	      // if snapping anything and we have snapping explosions set.
+	      // but these is not true for pushing.
 	      if (remains == O_SPACE && player_fire && !push)
 		remains = cave->snap_element;
 
 	      if (remains != O_SPACE || player_fire)
-		/* if any other element than space, player cannot move.
-		   also if pressing fire, will not move. */
+		// if any other element than space, player cannot move.
+		// also if pressing fire, will not move.
 		store_dir(cave, x, y, player_move, remains);
 	      else
-		/* if space remains there, the player moves. */
+		// if space remains there, the player moves.
 		move(cave, x, y, player_move, O_PLAYER);
 	    }
 	  }
 	  break;
 
 	case O_PLAYER_BOMB:
-	  /* much simpler; cannot steal stones */
+	  // much simpler; cannot steal stones
 	  if (cave->kill_player)
 	  {
 	    explode(cave, x, y);
@@ -1808,39 +1812,39 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 
 	  cave->player_seen_ago = 0;
-	  /* bd4 intermission caves have many players. so if one of them has exited,
-	   * do not change the flag anymore. so this if () is needed */
+	  // bd4 intermission caves have many players. so if one of them has exited,
+	  // do not change the flag anymore. so this if () is needed
 	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
 	  if (player_move != GD_MV_STILL)
 	  {
-	    /* if the player does not move, nothing to do */
+	    // if the player does not move, nothing to do
 	    GdElement what = get_dir(cave, x, y, player_move);
 	    GdElement remains = what;
 
 	    if (player_fire)
 	    {
-	      /* placing a bomb into empty space or dirt */
+	      // placing a bomb into empty space or dirt
 	      if (is_space_dir(cave, x, y, player_move) ||
 		  is_element_dir(cave, x, y, player_move, O_DIRT))
 	      {
 		store_dir(cave, x, y, player_move, O_BOMB_TICK_1);
 
-		/* placed bomb, he is normal player again */
+		// placed bomb, he is normal player again
 		store(cave, x, y, O_PLAYER);
 		gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
 	      }
 	      break;
 	    }
 
-	    /* pushing and collecting */
-	    /* if we are 'eating' a teleporter, and the function returns true
-	       (teleporting worked), break here */
+	    // pushing and collecting
+	    // if we are 'eating' a teleporter, and the function returns true
+	    // (teleporting worked), break here
 	    if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
 	      break;
 
-	    /* player fire is false... */
+	    // player fire is false...
 	    if (do_push(cave, x, y, player_move, FALSE))
 	    {
 	      remains = O_SPACE;
@@ -1850,9 +1854,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      switch (what)
 	      {
 		case O_GRAVITY_SWITCH:
-		  /* (we cannot use player_get for this as it does not have
-		     player_move parameter) */
-		  /* only allow changing direction if the new dir is not diagonal */
+		  // (we cannot use player_get for this as it does not have
+		  // player_move parameter)
+		  // only allow changing direction if the new dir is not diagonal
 		  if (cave->gravity_switch_active &&
 		      (player_move == GD_MV_LEFT ||
 		       player_move == GD_MV_RIGHT ||
@@ -1868,16 +1872,16 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  break;
 
 		default:
-		  /* get element. if cannot get, player_get_element will return the same */
+		  // get element. if cannot get, player_get_element will return the same
 		  remains = player_get_element (cave, what, x, y);
 		  break;
 	      }
 	    }
 
-	    /* if element changed, OR there is space, move. */
+	    // if element changed, OR there is space, move.
 	    if (remains != what || remains == O_SPACE)
 	    {
-	      /* if anything changed, apply the change. */
+	      // if anything changed, apply the change.
 	      move(cave, x, y, player_move, O_PLAYER_BOMB);
 	    }
 	  }
@@ -1890,28 +1894,28 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    break;
 	  }
 
-	  /* stirring sound, if no other walking sound or explosion */
+	  // stirring sound, if no other walking sound or explosion
 	  gd_sound_play(cave, GD_S_STIRRING, O_PLAYER_STIRRING, x, y);
 
 	  cave->player_seen_ago = 0;
-	  /* bd4 intermission caves have many players. so if one of them has exited,
-	   * do not change the flag anymore. so this if () is needed */
+	  // bd4 intermission caves have many players. so if one of them has exited,
+	  // do not change the flag anymore. so this if () is needed
 	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
 	  if (player_fire)
 	  {
-	    /* player "exits" stirring the pot by pressing fire */
+	    // player "exits" stirring the pot by pressing fire
 	    cave->gravity_disabled = FALSE;
 	    store(cave, x, y, O_PLAYER);
 	    cave->gravity_switch_active = TRUE;
 	  }
 	  break;
 
-	  /* player holding pneumatic hammer */
+	  // player holding pneumatic hammer
 	case O_PLAYER_PNEUMATIC_LEFT:
 	case O_PLAYER_PNEUMATIC_RIGHT:
-	  /* usual player stuff */
+	  // usual player stuff
 	  if (cave->kill_player)
 	  {
 	    explode(cave, x, y);
@@ -1922,32 +1926,32 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
-	  /* if hammering time is up, becomes a normal player again. */
+	  // if hammering time is up, becomes a normal player again.
 	  if (cave->pneumatic_hammer_active_delay == 0)
 	    store(cave, x, y, O_PLAYER);
 	  break;
 
-	  /* the active pneumatic hammer itself */
+	  // the active pneumatic hammer itself
 	case O_PNEUMATIC_ACTIVE_RIGHT:
 	case O_PNEUMATIC_ACTIVE_LEFT:
 	  if (cave->pneumatic_hammer_active_delay == 0)
 	  {
 	    GdElement new_elem;
 
-	    /* pneumatic hammer element disappears */
+	    // pneumatic hammer element disappears
 	    store(cave, x, y, O_SPACE);
 
-	    /* which is the new element which appears after that one is hammered? */
+	    // which is the new element which appears after that one is hammered?
 	    new_elem = gd_element_get_hammered(get_dir(cave, x, y, GD_MV_DOWN));
 
-	    /* if there is a new element, display it */
-	    /* O_NONE might be returned, for example if the element being
-	       hammered explodes during hammering (by a nearby explosion) */
+	    // if there is a new element, display it
+	    // O_NONE might be returned, for example if the element being
+	    // hammered explodes during hammering (by a nearby explosion)
 	    if (new_elem != O_NONE)
 	    {
 	      store_dir(cave, x, y, GD_MV_DOWN, new_elem);
 
-	      /* and if walls reappear, remember it in array */
+	      // and if walls reappear, remember it in array
 	      if (cave->hammered_walls_reappear)
 	      {
 		int wall_y;
@@ -1959,55 +1963,57 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	  /*
-	   *     S T O N E S,   D I A M O N D S
-	   */
-	case O_STONE:    /* standing stone */
+	  // ============================================================================
+	  //    S T O N E S,   D I A M O N D S
+	  // ============================================================================
+
+	case O_STONE:           // standing stone
 	  do_start_fall(cave, x, y, cave->gravity, cave->stone_falling_effect);
 	  break;
 
-	case O_MEGA_STONE:    /* standing mega_stone */
+	case O_MEGA_STONE:      // standing mega_stone
 	  do_start_fall(cave, x, y, cave->gravity, O_MEGA_STONE_F);
 	  break;
 
-	case O_DIAMOND:    /* standing diamond */
+	case O_DIAMOND:         // standing diamond
 	  do_start_fall(cave, x, y, cave->gravity, cave->diamond_falling_effect);
 	  break;
 
-	case O_NUT:    /* standing nut */
+	case O_NUT:             // standing nut
 	  do_start_fall(cave, x, y, cave->gravity, O_NUT_F);
 	  break;
 
-	case O_DIRT_BALL:    /* standing dirt ball */
+	case O_DIRT_BALL:       // standing dirt ball
 	  do_start_fall(cave, x, y, cave->gravity, O_DIRT_BALL_F);
 	  break;
 
-	case O_DIRT_LOOSE:    /* standing loose dirt */
+	case O_DIRT_LOOSE:      // standing loose dirt
 	  do_start_fall(cave, x, y, cave->gravity, O_DIRT_LOOSE_F);
 	  break;
 
-	case O_FLYING_STONE:    /* standing stone */
+	case O_FLYING_STONE:    // standing stone
 	  do_start_fall(cave, x, y, opposite[cave->gravity], O_FLYING_STONE_F);
 	  break;
 
-	case O_FLYING_DIAMOND:    /* standing diamond */
+	case O_FLYING_DIAMOND:  // standing diamond
 	  do_start_fall(cave, x, y, opposite[cave->gravity], O_FLYING_DIAMOND_F);
 	  break;
 
-	  /*
-	   *     F A L L I N G    E L E M E N T S,    F L Y I N G   S T O N E S,   D I A M O N D S
-	   */
-	case O_DIRT_BALL_F:    /* falling dirt ball */
+	  // ============================================================================
+	  //    F A L L I N G    E L E M E N T S,    F L Y I N G   S T O N E S,   D I A M O N D S
+	  // ============================================================================
+
+	case O_DIRT_BALL_F:     // falling dirt ball
 	  if (!cave->gravity_disabled)
 	    do_fall_roll_or_stop(cave, x, y, cave->gravity, O_DIRT_BALL);
 	  break;
 
-	case O_DIRT_LOOSE_F:    /* falling loose dirt */
+	case O_DIRT_LOOSE_F:    // falling loose dirt
 	  if (!cave->gravity_disabled)
 	    do_fall_roll_or_stop(cave, x, y, cave->gravity, O_DIRT_LOOSE);
 	  break;
 
-	case O_STONE_F:    /* falling stone */
+	case O_STONE_F:         // falling stone
 	  if (!cave->gravity_disabled)
 	  {
 	    if (do_fall_try_crush_voodoo(cave, x, y, cave->gravity))
@@ -2026,7 +2032,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	case O_MEGA_STONE_F:    /* falling mega */
+	case O_MEGA_STONE_F:    // falling mega
 	  if (!cave->gravity_disabled)
 	  {
 	    if (do_fall_try_crush_voodoo(cave, x, y, cave->gravity))
@@ -2045,7 +2051,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	case O_DIAMOND_F:    /* falling diamond */
+	case O_DIAMOND_F:       // falling diamond
 	  if (!cave->gravity_disabled)
 	  {
 	    if (do_fall_try_eat_voodoo(cave, x, y, cave->gravity))
@@ -2061,7 +2067,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	case O_NUT_F:    /* falling nut */
+	case O_NUT_F:           // falling nut
 	  if (!cave->gravity_disabled)
 	  {
 	    if (do_fall_try_magic(cave, x, y, cave->gravity, cave->magic_nut_to))
@@ -2074,7 +2080,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	case O_FLYING_STONE_F:    /* falling stone */
+	case O_FLYING_STONE_F:  // falling stone
 	  if (!cave->gravity_disabled)
 	  {
 	    GdDirection fall_dir = opposite[cave->gravity];
@@ -2095,7 +2101,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	case O_FLYING_DIAMOND_F:    /* falling diamond */
+	case O_FLYING_DIAMOND_F:    // falling diamond
 	  if (!cave->gravity_disabled)
 	  {
 	    GdDirection fall_dir = opposite[cave->gravity];
@@ -2113,88 +2119,89 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	  /*
-	   * N I T R O    P A C K
-	   */
-	case O_NITRO_PACK:    /* standing nitro pack */
+	  // ============================================================================
+	  //    N I T R O    P A C K
+	  // ============================================================================
+
+	case O_NITRO_PACK:      // standing nitro pack
 	  do_start_fall(cave, x, y, cave->gravity, O_NITRO_PACK_F);
 	  break;
 
-	case O_NITRO_PACK_F:    /* falling nitro pack */
+	case O_NITRO_PACK_F:    // falling nitro pack
 	  if (!cave->gravity_disabled)
 	  {
-	    if (is_space_dir(cave, x, y, cave->gravity))    /* if space, falling further */
+	    if (is_space_dir(cave, x, y, cave->gravity))    // if space, falling further
 	      move(cave, x, y, cave->gravity, get(cave, x, y));
 	    else if (do_fall_try_magic(cave, x, y, cave->gravity, cave->magic_nitro_pack_to))
 	    {
-	      /* try magic wall; if true, function did the work */
+	      // try magic wall; if true, function did the work
 	    }
 	    else if (is_element_dir(cave, x, y, cave->gravity, O_DIRT))
 	    {
-	      /* falling on a dirt, it does NOT explode - just stops at its place. */
+	      // falling on a dirt, it does NOT explode - just stops at its place.
 	      play_sound_of_element(cave, O_NITRO_PACK, x, y);
 	      store(cave, x, y, O_NITRO_PACK);
 	    }
 	    else
-	      /* falling on any other element it explodes */
+	      // falling on any other element it explodes
 	      explode(cave, x, y);
 	  }
 	  break;
 
-	case O_NITRO_PACK_EXPLODE:    /* a triggered nitro pack */
+	case O_NITRO_PACK_EXPLODE:    // a triggered nitro pack
 	  explode(cave, x, y);
 	  break;
 
-	  /*
-	   *     C R E A T U R E S
-	   */
+	  // ============================================================================
+	  //    C R E A T U R E S
+	  // ============================================================================
 
 	case O_COW_1:
 	case O_COW_2:
 	case O_COW_3:
 	case O_COW_4:
-	  /* if cannot move in any direction, becomes an enclosed cow */
+	  // if cannot move in any direction, becomes an enclosed cow
 	  if (!is_space_dir(cave, x, y, GD_MV_UP) && !is_space_dir(cave, x, y, GD_MV_DOWN) &&
 	      !is_space_dir(cave, x, y, GD_MV_LEFT) && !is_space_dir(cave, x, y, GD_MV_RIGHT))
 	    store(cave, x, y, O_COW_ENCLOSED_1);
 	  else
 	  {
-	    /* THIS IS THE CREATURE MOVE thing copied. */
+	    // THIS IS THE CREATURE MOVE thing copied.
 	    const GdDirection *creature_move;
-	    boolean ccw = rotates_ccw(cave, x, y);    /* check if default is counterclockwise */
-	    GdElement base;    /* base element number (which is like O_***_1) */
-	    int dir, dirn, dirp;    /* direction */
+	    boolean ccw = rotates_ccw(cave, x, y);    // check if default is counterclockwise
+	    GdElement base;    // base element number (which is like O_***_1)
+	    int dir, dirn, dirp;    // direction
 
 	    base = O_COW_1;
 
-	    dir = get(cave, x, y)-base;    /* facing where */
+	    dir = get(cave, x, y)-base;    // facing where
 	    creature_move = cave->creatures_backwards ? creature_chdir : creature_dir;
 
-	    /* now change direction if backwards */
+	    // now change direction if backwards
 	    if (cave->creatures_backwards)
 	      ccw = !ccw;
 
 	    if (ccw)
 	    {
-	      dirn = (dir + 3) & 3;    /* fast turn */
-	      dirp = (dir + 1) & 3;    /* slow turn */
+	      dirn = (dir + 3) & 3;    // fast turn
+	      dirp = (dir + 1) & 3;    // slow turn
 	    }
 	    else
 	    {
-	      dirn = (dir + 1) & 3;    /* fast turn */
-	      dirp = (dir + 3) & 3;    /* slow turn */
+	      dirn = (dir + 1) & 3;    // fast turn
+	      dirp = (dir + 3) & 3;    // slow turn
 	    }
 
 	    if (is_space_dir(cave, x, y, creature_move[dirn]))
-	      move(cave, x, y, creature_move[dirn], base + dirn);    /* turn and move to preferred dir */
+	      move(cave, x, y, creature_move[dirn], base + dirn);    // turn and move to preferred dir
 	    else if (is_space_dir(cave, x, y, creature_move[dir]))
-	      move(cave, x, y, creature_move[dir], base + dir);    /* go on */
+	      move(cave, x, y, creature_move[dir], base + dir);    // go on
 	    else
-	      store(cave, x, y, base + dirp);    /* turn in place if nothing else possible */
+	      store(cave, x, y, base + dirp);    // turn in place if nothing else possible
 	  }
 	  break;
 
-	  /* enclosed cows wait some time before turning to a skeleton */
+	  // enclosed cows wait some time before turning to a skeleton
 	case O_COW_ENCLOSED_1:
 	case O_COW_ENCLOSED_2:
 	case O_COW_ENCLOSED_3:
@@ -2240,26 +2247,26 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_STONEFLY_2:
 	case O_STONEFLY_3:
 	case O_STONEFLY_4:
-	  /* check if touches a voodoo */
+	  // check if touches a voodoo
 	  if (get_dir(cave, x, y, GD_MV_LEFT)  == O_VOODOO ||
 	      get_dir(cave, x, y, GD_MV_RIGHT) == O_VOODOO ||
 	      get_dir(cave, x, y, GD_MV_UP)    == O_VOODOO ||
 	      get_dir(cave, x, y, GD_MV_DOWN)  == O_VOODOO)
 	    cave->voodoo_touched = TRUE;
 
-	  /* check if touches something bad and should explode (includes voodoo by the flags) */
+	  // check if touches something bad and should explode (includes voodoo by the flags)
 	  if (blows_up_flies_dir(cave, x, y, GD_MV_DOWN) ||
 	      blows_up_flies_dir(cave, x, y, GD_MV_UP) ||
 	      blows_up_flies_dir(cave, x, y, GD_MV_LEFT) ||
 	      blows_up_flies_dir(cave, x, y, GD_MV_RIGHT))
 	    explode (cave, x, y);
-	  /* otherwise move */
+	  // otherwise move
 	  else
 	  {
 	    const GdDirection *creature_move;
-	    boolean ccw = rotates_ccw(cave, x, y);    /* check if default is counterclockwise */
-	    GdElement base = -1;    /* base element number (which is like O_***_1) */
-	    int dir, dirn, dirp;    /* direction */
+	    boolean ccw = rotates_ccw(cave, x, y);    // check if default is counterclockwise
+	    GdElement base = -1;    // base element number (which is like O_***_1)
+	    int dir, dirn, dirp;    // direction
 
 	    if (get(cave, x, y) >= O_FIREFLY_1 &&
 		get(cave, x, y) <= O_FIREFLY_4)
@@ -2277,55 +2284,55 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		     get(cave, x, y) <= O_ALT_BUTTER_4)
 	      base = O_ALT_BUTTER_1;
 
-	    dir = get(cave, x, y) - base;    /* facing where */
+	    dir = get(cave, x, y) - base;    // facing where
 	    creature_move = cave->creatures_backwards ? creature_chdir : creature_dir;
 
-	    /* now change direction if backwards */
+	    // now change direction if backwards
 	    if (cave->creatures_backwards)
 	      ccw = !ccw;
 
 	    if (ccw)
 	    {
-	      dirn = (dir + 3) & 3;    /* fast turn */
-	      dirp = (dir + 1) & 3;    /* slow turn */
+	      dirn = (dir + 3) & 3;    // fast turn
+	      dirp = (dir + 1) & 3;    // slow turn
 	    }
 	    else
 	    {
-	      dirn = (dir + 1) & 3;    /* fast turn */
-	      dirp = (dir + 3) & 3;    /* slow turn */
+	      dirn = (dir + 1) & 3;    // fast turn
+	      dirp = (dir + 3) & 3;    // slow turn
 	    }
 
 	    if (is_space_dir(cave, x, y, creature_move[dirn]))
-	      move(cave, x, y, creature_move[dirn], base + dirn);    /* turn and move to preferred dir */
+	      move(cave, x, y, creature_move[dirn], base + dirn);    // turn and move to preferred dir
 	    else if (is_space_dir(cave, x, y, creature_move[dir]))
-	      move(cave, x, y, creature_move[dir], base + dir);    /* go on */
+	      move(cave, x, y, creature_move[dir], base + dir);    // go on
 	    else
-	      store(cave, x, y, base + dirp);    /* turn in place if nothing else possible */
+	      store(cave, x, y, base + dirp);    // turn in place if nothing else possible
 	  }
 	  break;
 
 	case O_WAITING_STONE:
 	  if (is_space_dir(cave, x, y, grav_compat))
 	  {
-	    /* beginning to fall */
-	    /* it wakes up. */
+	    // beginning to fall
+	    // it wakes up.
 	    move(cave, x, y, grav_compat, O_CHASING_STONE);
 	  }
 	  else if (sloped_dir(cave, x, y, grav_compat, opposite[grav_compat]))
 	  {
-	    /* rolling down a brick wall or a stone */
+	    // rolling down a brick wall or a stone
 	    if (sloped_dir(cave, x, y, grav_compat, cw_fourth[grav_compat]) &&
 		is_space_dir(cave, x, y, cw_fourth[grav_compat]) &&
 		is_space_dir(cave, x, y, cw_eighth[grav_compat]))
 	    {
-	      /* maybe rolling left - see case O_STONE to understand why we use cw_fourth here */
+	      // maybe rolling left - see case O_STONE to understand why we use cw_fourth here
 	      move(cave, x, y, cw_fourth[grav_compat], O_WAITING_STONE);
 	    }
 	    else if (sloped_dir(cave, x, y, grav_compat, ccw_fourth[grav_compat]) &&
 		     is_space_dir(cave, x, y, ccw_fourth[grav_compat]) &&
 		     is_space_dir(cave, x, y, ccw_eighth[grav_compat]))
 	    {
-	      /* or maybe right */
+	      // or maybe right
 	      move(cave, x, y, ccw_fourth[grav_compat], O_WAITING_STONE);
 	    }
 	  }
@@ -2339,16 +2346,17 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    boolean dont_move = FALSE;
 	    int i = 3;
 
-	    /* try to move... */
+	    // try to move...
 	    while (1)
 	    {
 	      if (horizontal)
 	      {
-		/*********************************/
-		/* check for a horizontal movement */
+		// ------------------------------------------------------------
+		// check for a horizontal movement
+		// ------------------------------------------------------------
 		if (px == x)
 		{
-		  /* if coordinates are the same */
+		  // if coordinates are the same
 		  i -= 1;
 		  horizontal = !horizontal;
 
@@ -2382,11 +2390,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      }
 	      else
 	      {
-		/********************************/
-		/* check for a vertical movement */
+		// ------------------------------------------------------------
+		// check for a vertical movement
+		// ------------------------------------------------------------
 		if (py == y)
 		{
-		  /* if coordinates are the same */
+		  // if coordinates are the same
 		  i -= 1;
 		  horizontal = !horizontal;
 		  if (i == 2)
@@ -2424,12 +2433,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      break;
 	    }
 
-	    /* if we should move in both directions, but can not move in any, stop. */
+	    // if we should move in both directions, but can not move in any, stop.
 	    if (!dont_move)
 	    {
 	      if (horizontal)
 	      {
-		/* check for horizontal */
+		// check for horizontal
 		if (x >= px)
 		{
 		  if (is_space_dir(cave, x, y, GD_MV_UP) &&
@@ -2451,7 +2460,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      }
 	      else
 	      {
-		/* check for vertical */
+		// check for vertical
 		if (y >= py)
 		{
 		  if (is_space_dir(cave, x, y, GD_MV_LEFT) &&
@@ -2480,14 +2489,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      cave->replicators_active &&
 	      !cave->gravity_disabled)
 	  {
-	    /* only replicate, if space is under it. */
-	    /* do not replicate players! */
-	    /* also obeys gravity settings. */
-	    /* only replicate element if it is not a scanned one */
-	    /* do not replicate space... that condition looks like it
-	       makes no sense, but otherwise it generates SCANNED spaces,
-	       which cannot be "collected" by the player, so he cannot run
-	       under a replicator */
+	    // only replicate, if space is under it.
+	    // do not replicate players!
+	    // also obeys gravity settings.
+	    // only replicate element if it is not a scanned one
+	    // do not replicate space... that condition looks like it
+	    // makes no sense, but otherwise it generates SCANNED spaces,
+	    // which cannot be "collected" by the player, so he cannot run
+	    // under a replicator
 	    if (is_space_dir(cave, x, y, cave->gravity) &&
 		!is_player_dir(cave, x, y, opposite[cave->gravity]) &&
 		!is_space_dir(cave, x, y, opposite[cave->gravity]))
@@ -2512,7 +2521,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      GD_MV_LEFT
 	    };
 
-	    /* direction, last two bits 0..3 */
+	    // direction, last two bits 0..3
 	    int dir = get(cave, x, y) - O_BITER_1;
 	    int dirn = (dir + 3) & 3;
 	    int dirp = (dir + 1) & 3;
@@ -2525,37 +2534,37 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      {
 		move(cave, x, y, biter_move[dir], O_BITER_1 + dir);
 		if (biter_try[i] != O_SPACE)
-		  made_sound_of = O_BITER_1;    /* sound of a biter eating */
+		  made_sound_of = O_BITER_1;    // sound of a biter eating
 		break;
 	      }
 	      else if (is_element_dir(cave, x, y, biter_move[dirn], biter_try[i]))
 	      {
 		move(cave, x, y, biter_move[dirn], O_BITER_1 + dirn);
 		if (biter_try[i] != O_SPACE)
-		  made_sound_of = O_BITER_1;    /* sound of a biter eating */
+		  made_sound_of = O_BITER_1;    // sound of a biter eating
 		break;
 	      }
 	      else if (is_element_dir(cave, x, y, biter_move[dirp], biter_try[i]))
 	      {
 		move(cave, x, y, biter_move[dirp], O_BITER_1 + dirp);
 		if (biter_try[i] != O_SPACE)
-		  made_sound_of = O_BITER_1;    /* sound of a biter eating */
+		  made_sound_of = O_BITER_1;    // sound of a biter eating
 		break;
 	      }
 	    }
 
 	    if (i == ARRAY_SIZE(biter_try))
-	      /* i = number of elements in array: could not move, so just turn */
+	      // i = number of elements in array: could not move, so just turn
 	      store(cave, x, y, O_BITER_1 + dirp);
 	    else if (biter_try[i] == O_STONE)
 	    {
-	      /* if there was a stone there, where we moved...
-		 do not eat stones, just throw them back */
+	      // if there was a stone there, where we moved...
+	      // do not eat stones, just throw them back
 	      store(cave, x, y, O_STONE);
 	      made_sound_of = O_STONE;
 	    }
 
-	    /* if biter did move, we had sound. play it. */
+	    // if biter did move, we had sound. play it.
 	    if (made_sound_of != O_NONE)
 	      play_sound_of_element(cave, made_sound_of, x, y);
 	  }
@@ -2565,44 +2574,44 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_DRAGONFLY_2:
 	case O_DRAGONFLY_3:
 	case O_DRAGONFLY_4:
-	  /* check if touches a voodoo */
+	  // check if touches a voodoo
 	  if (get_dir(cave, x, y, GD_MV_LEFT)  == O_VOODOO ||
 	      get_dir(cave, x, y, GD_MV_RIGHT) == O_VOODOO ||
 	      get_dir(cave, x, y, GD_MV_UP)    == O_VOODOO ||
 	      get_dir(cave, x, y, GD_MV_DOWN)  == O_VOODOO)
 	    cave->voodoo_touched = TRUE;
 
-	  /* check if touches something bad and should explode (includes voodoo by the flags) */
+	  // check if touches something bad and should explode (includes voodoo by the flags)
 	  if (blows_up_flies_dir(cave, x, y, GD_MV_DOWN) ||
 	      blows_up_flies_dir(cave, x, y, GD_MV_UP) ||
 	      blows_up_flies_dir(cave, x, y, GD_MV_LEFT) ||
 	      blows_up_flies_dir(cave, x, y, GD_MV_RIGHT))
 	    explode (cave, x, y);
-	  /* otherwise move */
+	  // otherwise move
 	  else
 	  {
 	    const GdDirection *creature_move;
-	    boolean ccw = rotates_ccw(cave, x, y);    /* check if default is counterclockwise */
-	    GdElement base = O_DRAGONFLY_1;    /* base element number (which is like O_***_1) */
-	    int dir, dirn;    /* direction */
+	    boolean ccw = rotates_ccw(cave, x, y);    // check if default is counterclockwise
+	    GdElement base = O_DRAGONFLY_1;    // base element number (which is like O_***_1)
+	    int dir, dirn;    // direction
 
-	    dir = get(cave, x, y)-base;    /* facing where */
+	    dir = get(cave, x, y)-base;    // facing where
 	    creature_move = cave->creatures_backwards ? creature_chdir : creature_dir;
 
-	    /* now change direction if backwards */
+	    // now change direction if backwards
 	    if (cave->creatures_backwards)
 	      ccw = !ccw;
 
 	    if (ccw)
-	      dirn = (dir + 3) & 3;    /* fast turn */
+	      dirn = (dir + 3) & 3;    // fast turn
 	    else
-	      dirn = (dir + 1) & 3;    /* fast turn */
+	      dirn = (dir + 1) & 3;    // fast turn
 
-	    /* if can move forward, does so. */
+	    // if can move forward, does so.
 	    if (is_space_dir(cave, x, y, creature_move[dir]))
 	      move(cave, x, y, creature_move[dir], base + dir);
 	    else
-	      /* otherwise turns 90 degrees in place. */
+	      // otherwise turns 90 degrees in place.
 	      store(cave, x, y, base + dirn);
 	  }
 	  break;
@@ -2619,33 +2628,33 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_BLADDER_6:
 	case O_BLADDER_7:
 	case O_BLADDER_8:
-	  /* bladder with any delay state: try to convert to clock. */
+	  // bladder with any delay state: try to convert to clock.
 	  if (is_element_dir(cave, x, y, opposite[grav_compat], cave->bladder_converts_by) ||
 	      is_element_dir(cave, x, y, cw_fourth[grav_compat], cave->bladder_converts_by) || is_element_dir(cave, x, y, ccw_fourth[grav_compat], cave->bladder_converts_by))
 	  {
-	    /* if touches the specified element, let it be a clock */
+	    // if touches the specified element, let it be a clock
 	    store(cave, x, y, O_PRE_CLOCK_1);
 
-	    /* plays the bladder convert sound */
+	    // plays the bladder convert sound
 	    play_sound_of_element(cave, O_PRE_CLOCK_1, x, y);
 	  }
 	  else
 	  {
-	    /* is space over the bladder? */
+	    // is space over the bladder?
 	    if (is_space_dir(cave, x, y, opposite[grav_compat]))
 	    {
 	      if (get(cave, x, y) == O_BLADDER_8)
 	      {
-		/* if it is a bladder 8, really move up */
+		// if it is a bladder 8, really move up
 		move(cave, x, y, opposite[grav_compat], O_BLADDER_1);
 		play_sound_of_element(cave, O_BLADDER, x, y);
 	      }
 	      else
-		/* if smaller delay, just increase delay. */
+		// if smaller delay, just increase delay.
 		next(cave, x, y);
 	    }
 	    else
-	      /* if not space, is something sloped over the bladder? */
+	      // if not space, is something sloped over the bladder?
 	      if (sloped_for_bladder_dir(cave, x, y, opposite[grav_compat]) &&
 		  sloped_dir(cave, x, y, opposite[grav_compat], opposite[grav_compat]))
 	      {
@@ -2653,35 +2662,35 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		    is_space_dir(cave, x, y, ccw_fourth[opposite[grav_compat]]) &&
 		    is_space_dir(cave, x, y, ccw_eighth[opposite[grav_compat]]))
 		{
-		  /* rolling up, to left */
+		  // rolling up, to left
 		  if (get(cave, x, y) == O_BLADDER_8)
 		  {
-		    /* if it is a bladder 8, really roll */
+		    // if it is a bladder 8, really roll
 		    move(cave, x, y, ccw_fourth[opposite[grav_compat]], O_BLADDER_8);
 		    play_sound_of_element(cave, O_BLADDER, x, y);
 		  }
 		  else
-		    /* if smaller delay, just increase delay. */
+		    // if smaller delay, just increase delay.
 		    next(cave, x, y);
 		}
 		else if (sloped_dir(cave, x, y, opposite[grav_compat], cw_fourth[opposite[grav_compat]]) &&
 			 is_space_dir(cave, x, y, cw_fourth[opposite[grav_compat]]) &&
 			 is_space_dir(cave, x, y, cw_eighth[opposite[grav_compat]]))
 		{
-		  /* rolling up, to left */
+		  // rolling up, to left
 		  if (get(cave, x, y) == O_BLADDER_8)
 		  {
-		    /* if it is a bladder 8, really roll */
+		    // if it is a bladder 8, really roll
 		    move(cave, x, y, cw_fourth[opposite[grav_compat]], O_BLADDER_8);
 		    play_sound_of_element(cave, O_BLADDER, x, y);
 		  }
 		  else
-		    /* if smaller delay, just increase delay. */
+		    // if smaller delay, just increase delay.
 		    next(cave, x, y);
 		}
 	      }
 
-	    /* no space, no sloped thing over it - store bladder 1 and that is for now. */
+	    // no space, no sloped thing over it - store bladder 1 and that is for now.
 	      else
 		store(cave, x, y, O_BLADDER_1);
 	  }
@@ -2697,7 +2706,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  {
 	    int i;
 
-	    /* the ghost is given four possibilities to move. */
+	    // the ghost is given four possibilities to move.
 	    for (i = 0; i < 4; i++)
 	    {
 	      static GdDirection dirs[] =
@@ -2713,15 +2722,15 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      if (is_space_dir(cave, x, y, random_dir))
 	      {
 		move(cave, x, y, random_dir, O_GHOST);
-		break;    /* ghost did move -> exit loop */
+		break;    // ghost did move -> exit loop
 	      }
 	    }
 	  }
 	  break;
 
-	  /*
-	   *     A C T I V E    E L E M E N T S
-	   */
+	  // ============================================================================
+	  //    A C T I V E    E L E M E N T S
+	  // ============================================================================
 
 	case O_AMOEBA:
 	  amoeba_count++;
@@ -2737,44 +2746,43 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	    case GD_AM_SLEEPING:
 	    case GD_AM_AWAKE:
-	      /* if no amoeba found during THIS SCAN yet, which was able to grow, check this one. */
+	      // if no amoeba found during THIS SCAN yet, which was able to grow, check this one.
 	      if (amoeba_found_enclosed)
-		/* if still found enclosed, check all four directions,
-		   if this one is able to grow. */
+		// if still found enclosed, check all four directions, if this one is able to grow.
 		if (amoeba_eats_dir(cave, x, y, GD_MV_UP) ||
 		    amoeba_eats_dir(cave, x, y, GD_MV_DOWN) ||
 		    amoeba_eats_dir(cave, x, y, GD_MV_LEFT) ||
 		    amoeba_eats_dir(cave, x, y, GD_MV_RIGHT))
 		{
-		  /* not enclosed. this is a local (per scan) flag! */
+		  // not enclosed. this is a local (per scan) flag!
 		  amoeba_found_enclosed = FALSE;
 		  cave->amoeba_state = GD_AM_AWAKE;
 		}
 
-	      /* if alive, check in which dir to grow (or not) */
+	      // if alive, check in which dir to grow (or not)
 	      if (cave->amoeba_state == GD_AM_AWAKE)
 	      {
 		if (gd_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_growth_prob)
 		{
 		  switch (gd_rand_int_range(cave->random, 0, 4))
 		  {
-		    /* decided to grow, choose a random direction. */
-		    case 0:    /* let this be up. numbers indifferent. */
+		    // decided to grow, choose a random direction.
+		    case 0:    // let this be up. numbers indifferent.
 		      if (amoeba_eats_dir(cave, x, y, GD_MV_UP))
 			store_dir(cave, x, y, GD_MV_UP, O_AMOEBA);
 		      break;
 
-		    case 1:    /* down */
+		    case 1:    // down
 		      if (amoeba_eats_dir(cave, x, y, GD_MV_DOWN))
 			store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA);
 		      break;
 
-		    case 2:    /* left */
+		    case 2:    // left
 		      if (amoeba_eats_dir(cave, x, y, GD_MV_LEFT))
 			store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA);
 		      break;
 
-		    case 3:    /* right */
+		    case 3:    // right
 		      if (amoeba_eats_dir(cave, x, y, GD_MV_RIGHT))
 			store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA);
 		      break;
@@ -2788,7 +2796,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	case O_AMOEBA_2:
 	  amoeba_2_count++;
-	  /* check if it is touching an amoeba, and explosion is enabled */
+	  // check if it is touching an amoeba, and explosion is enabled
 	  if (cave->amoeba_2_explodes_by_amoeba &&
 	      (is_element_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA) ||
 	       is_element_dir(cave, x, y, GD_MV_UP, O_AMOEBA) ||
@@ -2808,41 +2816,41 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	      case GD_AM_SLEEPING:
 	      case GD_AM_AWAKE:
-		/* if no amoeba found during THIS SCAN yet, which was able to grow, check this one. */
+		// if no amoeba found during THIS SCAN yet, which was able to grow, check this one.
 		if (amoeba_2_found_enclosed)
 		  if (amoeba_eats_dir(cave, x, y, GD_MV_UP) ||
 		      amoeba_eats_dir(cave, x, y, GD_MV_DOWN) ||
 		      amoeba_eats_dir(cave, x, y, GD_MV_LEFT) ||
 		      amoeba_eats_dir(cave, x, y, GD_MV_RIGHT))
 		  {
-		    /* not enclosed. this is a local (per scan) flag! */
+		    // not enclosed. this is a local (per scan) flag!
 		    amoeba_2_found_enclosed = FALSE;
 		    cave->amoeba_2_state = GD_AM_AWAKE;
 		  }
 
-		/* if it is alive, decide if it attempts to grow */
+		// if it is alive, decide if it attempts to grow
 		if (cave->amoeba_2_state == GD_AM_AWAKE)
 		  if (gd_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_2_growth_prob)
 		  {
 		    switch (gd_rand_int_range(cave->random, 0, 4))
 		    {
-		      /* decided to grow, choose a random direction. */
-		      case 0:    /* let this be up. numbers indifferent. */
+		      // decided to grow, choose a random direction.
+		      case 0:    // let this be up. numbers indifferent.
 			if (amoeba_eats_dir(cave, x, y, GD_MV_UP))
 			  store_dir(cave, x, y, GD_MV_UP, O_AMOEBA_2);
 			break;
 
-		      case 1:    /* down */
+		      case 1:    // down
 			if (amoeba_eats_dir(cave, x, y, GD_MV_DOWN))
 			  store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA_2);
 			break;
 
-		      case 2:    /* left */
+		      case 2:    // left
 			if (amoeba_eats_dir(cave, x, y, GD_MV_LEFT))
 			  store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA_2);
 			break;
 
-		      case 3:    /* right */
+		      case 3:    // right
 			if (amoeba_eats_dir(cave, x, y, GD_MV_RIGHT))
 			  store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA_2);
 			break;
@@ -2854,13 +2862,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_ACID:
-	  /* choose randomly, if it spreads */
+	  // choose randomly, if it spreads
 	  if (gd_rand_int_range(cave->random, 0, 1000000) <= cave->acid_spread_ratio)
 	  {
-	    /* the current one explodes */
+	    // the current one explodes
 	    store(cave, x, y, cave->acid_turns_to);
 
-	    /* and if neighbours are eaten, put acid there. */
+	    // and if neighbours are eaten, put acid there.
 	    if (is_element_dir(cave, x, y, GD_MV_UP, cave->acid_eats_this))
 	    {
 	      play_sound_of_element(cave, O_ACID, x, y);
@@ -2891,7 +2899,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  found_water = TRUE;
 	  if (!cave->water_does_not_flow_down &&
 	      is_space_dir(cave, x, y, GD_MV_DOWN))
-	    /* emulating the odd behaviour in crdr */
+	    // emulating the odd behaviour in crdr
 	    store_dir(cave, x, y, GD_MV_DOWN, O_WATER_1);
 
 	  if (is_space_dir(cave, x, y, GD_MV_UP))
@@ -2912,7 +2920,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_V_EXPANDING_WALL:
 	case O_H_EXPANDING_STEEL_WALL:
 	case O_V_EXPANDING_STEEL_WALL:
-	  /* checks first if direction is changed. */
+	  // checks first if direction is changed.
 	  if (((get(cave, x, y) == O_H_EXPANDING_WALL ||
 		get(cave, x, y) == O_H_EXPANDING_STEEL_WALL) &&
 	       !cave->expanding_wall_changed) ||
@@ -2947,7 +2955,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	case O_EXPANDING_WALL:
 	case O_EXPANDING_STEEL_WALL:
-	  /* the wall which grows in all four directions. */
+	  // the wall which grows in all four directions.
 	  if (is_space_dir(cave, x, y, GD_MV_LEFT))
 	  {
 	    store_dir(cave, x, y, GD_MV_LEFT, get(cave, x, y));
@@ -2974,7 +2982,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 #if 1
 	  ; // to make compilers happy ...
 #else
-	  Info("Step[%03d]", cave->frame); /* XXX */
+	  Info("Step[%03d]", cave->frame); // XXX
 #endif
 	  int rrr = gd_cave_c64_random(cave);
 #if 1
@@ -2993,12 +3001,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    GdDirection grav = cave->gravity;
 	    GdDirection oppos = opposite[cave->gravity];
 
-	    /* space under the slime? elements may pass from top to bottom then. */
+	    // space under the slime? elements may pass from top to bottom then.
 	    if (is_space_dir(cave, x, y, grav))
 	    {
 	      if (get_dir(cave, x, y, oppos) == cave->slime_eats_1)
 	      {
-		/* output a falling xy under */
+		// output a falling xy under
 		store_dir(cave, x, y, grav, cave->slime_converts_1);
 
 		store_dir(cave, x, y, oppos, O_SPACE);
@@ -3018,26 +3026,26 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      }
 	      else if (get_dir(cave, x, y, oppos) == O_WAITING_STONE)
 	      {
-		/* waiting stones pass without awakening */
+		// waiting stones pass without awakening
 		store_dir(cave, x, y, grav, O_WAITING_STONE);
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
 	      else if (get_dir(cave, x, y, oppos) == O_CHASING_STONE)
 	      {
-		/* chasing stones pass */
+		// chasing stones pass
 		store_dir(cave, x, y, grav, O_CHASING_STONE);
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
 	    }
 	    else
-	      /* or space over the slime? elements may pass from bottom to up then. */
+	      // or space over the slime? elements may pass from bottom to up then.
 	      if (is_space_dir(cave, x, y, oppos))
 	      {
 		if (get_dir(cave, x, y, grav) == O_BLADDER)
 		{
-		  /* bladders move UP the slime */
+		  // bladders move UP the slime
 		  store_dir(cave, x, y, grav, O_SPACE);
 		  store_dir(cave, x, y, oppos, O_BLADDER_1);
 		  play_sound_of_element(cave, O_SLIME, x, y);
@@ -3061,22 +3069,22 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_FALLING_WALL:
 	  if (is_space_dir(cave, x, y, grav_compat))
 	  {
-	    /* try falling if space under. */
+	    // try falling if space under.
 	    int yy;
 
 	    for (yy = y + 1; yy < y + cave->h; yy++)
-	      /* yy < y + cave->h is to check everything OVER the wall - since caves wrap around !! */
+	      // yy < y + cave->h is to check everything OVER the wall - since caves wrap around !!
 	      if (get(cave, x, yy) != O_SPACE)
-		/* stop cycle when other than space */
+		// stop cycle when other than space
 		break;
 
-	    /* if scanning stopped by a player... start falling! */
+	    // if scanning stopped by a player... start falling!
 	    if (get(cave, x, yy) == O_PLAYER ||
 		get(cave, x, yy) == O_PLAYER_GLUED ||
 		get(cave, x, yy) == O_PLAYER_BOMB)
 	    {
 	      move(cave, x, y, grav_compat, O_FALLING_WALL_F);
-	      /* no sound when the falling wall starts falling! */
+	      // no sound when the falling wall starts falling!
 	    }
 	  }
 	  break;
@@ -3087,48 +3095,48 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    case O_PLAYER:
 	    case O_PLAYER_GLUED:
 	    case O_PLAYER_BOMB:
-	      /* if player under, it explodes - the falling wall, not the player! */
+	      // if player under, it explodes - the falling wall, not the player!
 	      explode(cave, x, y);
 	      break;
 
 	    case O_SPACE:
-	      /* continue falling */
+	      // continue falling
 	      move(cave, x, y, grav_compat, O_FALLING_WALL_F);
 	      break;
 
 	    default:
-	      /* stop */
+	      // stop
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
 	      store(cave, x, y, O_FALLING_WALL);
 	      break;
 	  }
 	  break;
 
-	  /*
-	   * C O N V E Y O R    B E L T S
-	   */
+	  // ============================================================================
+	  //    C O N V E Y O R    B E L T S
+	  // ============================================================================
 
 	case O_CONVEYOR_RIGHT:
 	case O_CONVEYOR_LEFT:
-	  /* only works if gravity is up or down!!! */
-	  /* first, check for gravity and running belts. */
+	  // only works if gravity is up or down!!!
+	  // first, check for gravity and running belts.
 	  if (!cave->gravity_disabled && cave->conveyor_belts_active)
 	  {
 	    const GdDirection *dir;
 	    boolean left;
 
-	    /* decide direction */
+	    // decide direction
 	    left = get(cave, x, y) != O_CONVEYOR_RIGHT;
 	    if (cave->conveyor_belts_direction_changed)
 	      left = !left;
 	    dir = left ? ccw_eighth : cw_eighth;
 
-	    /* CHECK IF IT CONVEYS THE ELEMENT ABOVE IT */
-	    /* if gravity is normal, and the conveyor belt has something
-	       ABOVE which can be moved
-	       OR
-	       the gravity is up, so anything that should float now goes
-	       DOWN and touches the conveyor */
+	    // CHECK IF IT CONVEYS THE ELEMENT ABOVE IT
+	    // if gravity is normal, and the conveyor belt has something
+	    // ABOVE which can be moved
+	    // OR
+	    // the gravity is up, so anything that should float now goes
+	    // DOWN and touches the conveyor
 	    if ((cave->gravity == GD_MV_DOWN &&
 		 moved_by_conveyor_top_dir(cave, x, y, GD_MV_UP)) ||
 		(cave->gravity == GD_MV_UP &&
@@ -3137,12 +3145,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      if (!is_scanned_dir(cave, x, y, GD_MV_UP) &&
 		  is_space_dir(cave, x, y, dir[GD_MV_UP]))
 	      {
-		store_dir(cave, x, y, dir[GD_MV_UP], get_dir(cave, x, y, GD_MV_UP));    /* move */
-		store_dir(cave, x, y, GD_MV_UP, O_SPACE);    /* and place a space. */
+		store_dir(cave, x, y, dir[GD_MV_UP], get_dir(cave, x, y, GD_MV_UP));    // move
+		store_dir(cave, x, y, GD_MV_UP, O_SPACE);    // and place a space.
 	      }
 	    }
 
-	    /* CHECK IF IT CONVEYS THE ELEMENT BELOW IT */
+	    // CHECK IF IT CONVEYS THE ELEMENT BELOW IT
 	    if ((cave->gravity == GD_MV_UP &&
 		 moved_by_conveyor_top_dir(cave, x, y, GD_MV_DOWN)) ||
 		(cave->gravity == GD_MV_DOWN &&
@@ -3151,16 +3159,16 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      if (!is_scanned_dir(cave, x, y, GD_MV_DOWN) &&
 		  is_space_dir(cave, x, y, dir[GD_MV_DOWN]))
 	      {
-		store_dir(cave, x, y, dir[GD_MV_DOWN], get_dir(cave, x, y, GD_MV_DOWN));    /* move */
-		store_dir(cave, x, y, GD_MV_DOWN, O_SPACE);    /* and clear. */
+		store_dir(cave, x, y, dir[GD_MV_DOWN], get_dir(cave, x, y, GD_MV_DOWN));    // move
+		store_dir(cave, x, y, GD_MV_DOWN, O_SPACE);    // and clear.
 	      }
 	    }
 	  }
 	  break;
 
-	  /*
-	   * S I M P L E   C H A N G I N G;   E X P L O S I O N S
-	   */
+	  // ============================================================================
+	  //    S I M P L E   C H A N G I N G;   E X P L O S I O N S
+	  // ============================================================================
 
 	case O_EXPLODE_5:
 	  store(cave, x, y, cave->explosion_effect);
@@ -3221,17 +3229,17 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_PRE_OUTBOX:
-	  if (cave->gate_open) /* if no more diamonds needed */
-	    store(cave, x, y, O_OUTBOX);    /* open outbox */
+	  if (cave->gate_open) // if no more diamonds needed
+	    store(cave, x, y, O_OUTBOX);    // open outbox
 	  break;
 
 	case O_PRE_INVIS_OUTBOX:
-	  if (cave->gate_open)    /* if no more diamonds needed */
-	    store(cave, x, y, O_INVIS_OUTBOX);    /* open outbox. invisible one :P */
+	  if (cave->gate_open)    // if no more diamonds needed
+	    store(cave, x, y, O_INVIS_OUTBOX);    // open outbox. invisible one :P
 	  break;
 
 	case O_INBOX:
-	  if (cave->hatched && !inbox_toggle)    /* if it is time of birth */
+	  if (cave->hatched && !inbox_toggle)    // if it is time of birth
 	    store(cave, x, y, O_PRE_PL_1);
 	  inbox_toggle = !inbox_toggle;
 	  break;
@@ -3280,7 +3288,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_AMOEBA_2_EXPL_1:
 	case O_AMOEBA_2_EXPL_2:
 	case O_AMOEBA_2_EXPL_3:
-	  /* simply the next identifier */
+	  // simply the next identifier
 	  next(cave, x, y);
 	  break;
 
@@ -3299,8 +3307,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_WATER_13:
 	case O_WATER_14:
 	case O_WATER_15:
-	  found_water = TRUE;    /* for sound */
-	  /* simply the next identifier */
+	  found_water = TRUE;    // for sound
+	  // simply the next identifier
 	  next(cave, x, y);
 	  break;
 
@@ -3314,17 +3322,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	default:
-	  /* other inanimate elements that do nothing */
+	  // other inanimate elements that do nothing
 	  break;
       }
     }
   }
 
-  /* POSTPROCESSING */
 
-  /* another scan-like routine: */
-  /* short explosions (for example, in bd1) started with explode_2. */
-  /* internally we use explode_1; and change it to explode_2 if needed. */
+  // ============================================================================
+  // POSTPROCESSING
+  // ============================================================================
+
+  // another scan-like routine:
+  // short explosions (for example, in bd1) started with explode_2.
+  // internally we use explode_1; and change it to explode_2 if needed.
   if (cave->short_explosions)
   {
     for (y = 0; y < cave->h; y++)
@@ -3333,18 +3344,18 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       {
 	if (is_first_stage_of_explosion(cave, x, y))
 	{
-	  next(cave, x, y);    /* select next frame of explosion */
+	  next(cave, x, y);    // select next frame of explosion
 
-	  /* forget scanned flag immediately */
+	  // forget scanned flag immediately
 	  store(cave, x, y, get(cave, x, y) & ~SCANNED);
 	}
       }
     }
   }
 
-  /* finally: forget "scanned" flags for objects. */
-  /* also, check for time penalties. */
-  /* these is something like an effect table, but we do not really use one. */
+  // finally: forget "scanned" flags for objects.
+  // also, check for time penalties.
+  // these is something like an effect table, but we do not really use one.
   for (y = 0; y < cave->h; y++)
   {
     for (x = 0; x < cave->w; x++)
@@ -3356,27 +3367,27 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       {
 	store(cave, x, y, O_GRAVESTONE);
 
-	/* there is time penalty for destroying the voodoo */
+	// there is time penalty for destroying the voodoo
 	time_decrement_sec += cave->time_penalty;
       }
     }
   }
 
-  /* this loop finds the coordinates of the player. needed for scrolling and chasing stone.*/
-  /* but we only do this, if a living player was found. if not yet, the setup
-     routine coordinates are used */
+  // this loop finds the coordinates of the player. needed for scrolling and chasing stone.
+  // but we only do this, if a living player was found. if not yet, the setup
+  // routine coordinates are used
   if (cave->player_state == GD_PL_LIVING)
   {
     if (cave->active_is_first_found)
     {
-      /* to be 1stb compatible, we do everything backwards. */
+      // to be 1stb compatible, we do everything backwards.
       for (y = cave->h - 1; y >= 0; y--)
       {
 	for (x = cave->w - 1; x >= 0; x--)
 	{
 	  if (is_player(cave, x, y))
 	  {
-	    /* here we remember the coordinates. */
+	    // here we remember the coordinates.
 	    cave->player_x = x;
 	    cave->player_y = y;
 	  }
@@ -3385,14 +3396,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     }
     else
     {
-      /* as in the original: look for the last one */
+      // as in the original: look for the last one
       for (y = 0; y < cave->h; y++)
       {
 	for (x = 0; x < cave->w; x++)
 	{
 	  if (is_player(cave, x, y))
 	  {
-	    /* here we remember the coordinates. */
+	    // here we remember the coordinates.
 	    cave->player_x = x;
 	    cave->player_y = y;
 	  }
@@ -3401,7 +3412,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     }
   }
 
-  /* record coordinates of player for chasing stone */
+  // record coordinates of player for chasing stone
   for (i = 0; i < ARRAY_SIZE(cave->px) - 1; i++)
   {
     cave->px[i] = cave->px[i + 1];
@@ -3411,13 +3422,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   cave->px[ARRAY_SIZE(cave->px) - 1] = cave->player_x;
   cave->py[ARRAY_SIZE(cave->py) - 1] = cave->player_y;
 
-  /* SCHEDULING */
+  // SCHEDULING
 
-  /* update timing calculated by iterating and counting elements */
+  // update timing calculated by iterating and counting elements
   update_cave_speed(cave);
 
-  /* cave 3 sounds. precedence is controlled by the sound_play function. */
-  /* but we have to check amoeba&magic together as they had a different gritty sound when mixed */
+  // cave 3 sounds. precedence is controlled by the sound_play function.
+  // but we have to check amoeba&magic together as they had a different gritty sound when mixed
   if (found_water)
     gd_sound_play(cave, GD_S_WATER, O_WATER, -1, -1);
 
@@ -3447,25 +3458,28 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       play_sound_of_element(cave, O_AMOEBA, x, y);
   }
 
-  /* pneumatic hammer sound - overrides everything. */
+  // pneumatic hammer sound - overrides everything.
   if (cave->pneumatic_hammer_active_delay > 0)
     gd_sound_play(cave, GD_S_PNEUMATIC_HAMMER, O_PNEUMATIC_HAMMER, -1, -1);
 
-  /* CAVE VARIABLES */
 
-  /* PLAYER */
+  // ============================================================================
+  // CAVE VARIABLES
+  // ============================================================================
 
-  /* check if player is alive. */
+  // PLAYER
+
+  // check if player is alive.
   if ((cave->player_state == GD_PL_LIVING && cave->player_seen_ago > 15) || cave->kill_player)
     cave->player_state = GD_PL_DIED;
 
-  /* check if any voodoo exploded, and kill players the next scan if that happended. */
+  // check if any voodoo exploded, and kill players the next scan if that happended.
   if (cave->voodoo_touched)
     cave->kill_player = TRUE;
 
-  /* AMOEBA */
+  // AMOEBA
 
-  /* check flags after evaluating. */
+  // check flags after evaluating.
   if (cave->amoeba_state == GD_AM_AWAKE)
   {
     if (amoeba_count >= cave->amoeba_max_count)
@@ -3474,14 +3488,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       cave->amoeba_state = GD_AM_ENCLOSED;
     }
 
-  /* amoeba can also be turned into diamond by magic wall */
+  // amoeba can also be turned into diamond by magic wall
   if (cave->magic_wall_stops_amoeba && cave->magic_wall_state == GD_MW_ACTIVE)
     cave->amoeba_state = GD_AM_ENCLOSED;
 
-  /* AMOEBA 2 */
+  // AMOEBA 2
   if (cave->amoeba_2_state == GD_AM_AWAKE)
   {
-    /* check flags after evaluating. */
+    // check flags after evaluating.
     if (amoeba_2_count >= cave->amoeba_2_max_count)
       cave->amoeba_2_state = GD_AM_TOO_BIG;
 
@@ -3489,17 +3503,17 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       cave->amoeba_2_state = GD_AM_ENCLOSED;
   }
 
-  /* amoeba 2 can also be turned into diamond by magic wall */
+  // amoeba 2 can also be turned into diamond by magic wall
   if (cave->magic_wall_stops_amoeba && cave->magic_wall_state == GD_MW_ACTIVE)
     cave->amoeba_2_state = GD_AM_ENCLOSED;
 
-  /* now check times. --------------------------- */
-  /* decrement time if a voodoo was killed. */
+  // now check times. ---------------------------
+  // decrement time if a voodoo was killed.
   cave->time -= time_decrement_sec * cave->timing_factor;
   if (cave->time < 0)
     cave->time = 0;
 
-  /* only decrement time when player is already born. */
+  // only decrement time when player is already born.
   if (cave->hatched)
   {
     int secondsbefore, secondsafter;
@@ -3511,14 +3525,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
     secondsafter = cave->time / cave->timing_factor;
     if (cave->time / cave->timing_factor < 10)
-      /* if less than 10 seconds, no walking sound, but play explosion sound */
+      // if less than 10 seconds, no walking sound, but play explosion sound
       gd_sound_play(cave, GD_S_NONE, O_NONE, -1, -1);
 
     if (secondsbefore != secondsafter)
       gd_cave_set_seconds_sound(cave);
   }
 
-  /* a gravity switch was activated; seconds counting down */
+  // a gravity switch was activated; seconds counting down
   if (cave->gravity_will_change > 0)
   {
     cave->gravity_will_change -= cave->speed;
@@ -3528,11 +3542,11 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     if (cave->gravity_will_change == 0)
     {
       cave->gravity = cave->gravity_next_direction;
-      gd_sound_play(cave, GD_S_GRAVITY_CHANGING, O_GRAVITY_SWITCH, -1, -1);    /* takes precedence over amoeba and magic wall sound */
+      gd_sound_play(cave, GD_S_GRAVITY_CHANGING, O_GRAVITY_SWITCH, -1, -1);    // takes precedence over amoeba and magic wall sound
     }
   }
 
-  /* creatures direction automatically change */
+  // creatures direction automatically change
   if (cave->creatures_direction_will_change > 0)
   {
     cave->creatures_direction_will_change -= cave->speed;
@@ -3549,7 +3563,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     }
   }
 
-  /* magic wall; if active&wait or not wait for hatching */
+  // magic wall; if active&wait or not wait for hatching
   if (cave->magic_wall_state == GD_MW_ACTIVE &&
       (cave->hatched || !cave->magic_timer_wait_for_hatching))
   {
@@ -3560,7 +3574,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       cave->magic_wall_state = GD_MW_EXPIRED;
   }
 
-  /* we may wait for hatching, when starting amoeba */
+  // we may wait for hatching, when starting amoeba
   if (cave->amoeba_timer_started_immediately ||
       (cave->amoeba_state == GD_AM_AWAKE &&
        (cave->hatched || !cave->amoeba_timer_wait_for_hatching)))
@@ -3572,7 +3586,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       cave->amoeba_growth_prob = cave->amoeba_fast_growth_prob;
   }
 
-  /* we may wait for hatching, when starting amoeba */
+  // we may wait for hatching, when starting amoeba
   if (cave->amoeba_timer_started_immediately ||
       (cave->amoeba_2_state == GD_AM_AWAKE &&
        (cave->hatched || !cave->amoeba_timer_wait_for_hatching)))
@@ -3584,18 +3598,18 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       cave->amoeba_2_growth_prob = cave->amoeba_2_fast_growth_prob;
   }
 
-  /* check for player hatching. */
+  // check for player hatching.
   start_signal = FALSE;
 
-  /* if not the c64 scheduling, but the correct frametime is used,
-     hatching delay should always be decremented. */
-  /* otherwise, the if (millisecs...) condition below will set this. */
+  // if not the c64 scheduling, but the correct frametime is used,
+  // hatching delay should always be decremented.
+  // otherwise, the if (millisecs...) condition below will set this.
   if (cave->scheduling == GD_SCHEDULING_MILLISECONDS)
   {
-    /* NON-C64 scheduling */
+    // NON-C64 scheduling
     if (cave->hatching_delay_frame > 0)
     {
-      /* for milliseconds-based, non-c64 schedulings, hatching delay means frames. */
+      // for milliseconds-based, non-c64 schedulings, hatching delay means frames.
       cave->hatching_delay_frame--;
       if (cave->hatching_delay_frame == 0)
 	start_signal = TRUE;
@@ -3603,10 +3617,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   }
   else
   {
-    /* C64 scheduling */
+    // C64 scheduling
     if (cave->hatching_delay_time > 0)
     {
-      /* for c64 schedulings, hatching delay means milliseconds. */
+      // for c64 schedulings, hatching delay means milliseconds.
       cave->hatching_delay_time -= cave->speed;
       if (cave->hatching_delay_time <= 0)
       {
@@ -3616,18 +3630,18 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     }
   }
 
-  /* if decremented hatching, and it became zero: */
+  // if decremented hatching, and it became zero:
   if (start_signal)
   {
-    /* THIS IS THE CAVE START SIGNAL */
+    // THIS IS THE CAVE START SIGNAL
 
-    /* record that now the cave is in its normal state */
+    // record that now the cave is in its normal state
     cave->hatched = TRUE;
 
-    /* if diamonds needed is below zero, we count the available diamonds now. */
+    // if diamonds needed is below zero, we count the available diamonds now.
     gd_cave_count_diamonds(cave);
 
-    /* setup direction auto change */
+    // setup direction auto change
     if (cave->creatures_direction_auto_change_time)
     {
       cave->creatures_direction_will_change =
@@ -3640,24 +3654,27 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     gd_sound_play(cave, GD_S_CRACKING, O_INBOX, -1, -1);
   }
 
-  /* for biters */
+  // for biters
   if (cave->biters_wait_frame == 0)
     cave->biters_wait_frame = cave->biter_delay_frame;
   else
     cave->biters_wait_frame--;
 
-  /* replicators delay */
+  // replicators delay
   if (cave->replicators_wait_frame == 0)
     cave->replicators_wait_frame = cave->replicator_delay_frame;
   else
     cave->replicators_wait_frame--;
 
-  /* LAST THOUGTS */
+
+  // ============================================================================
+  // LAST THOUGTS
+  // ============================================================================
 
 #if 1
-  /* check if cave failed by timeout is done in main game engine */
+  // check if cave failed by timeout is done in main game engine
 #else
-  /* check if cave failed by timeout */
+  // check if cave failed by timeout
   if (cave->player_state == GD_PL_LIVING && cave->time == 0)
   {
     gd_cave_clear_sounds(cave);
@@ -3666,12 +3683,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   }
 #endif
 
-  /* set these for drawing. */
+  // set these for drawing.
   cave->last_direction = player_move;
-  /* here we remember last movements for animation. this is needed here,
-     as animation is in sync with the game, not the keyboard directly.
-     (for example, after exiting the cave, the player was "running" in the
-     original, till bonus points were counted for remaining time and so on. */
+
+  // here we remember last movements for animation. this is needed here,
+  // as animation is in sync with the game, not the keyboard directly.
+  // (for example, after exiting the cave, the player was "running" in the
+  // original, till bonus points were counted for remaining time and so on.
   if (player_move == GD_MV_LEFT ||
       player_move == GD_MV_UP_LEFT ||
       player_move == GD_MV_DOWN_LEFT)
@@ -3682,7 +3700,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       player_move == GD_MV_DOWN_RIGHT)
     cave->last_horizontal_direction = GD_MV_RIGHT;
 
-  cave->frame++;  /* XXX */
+  cave->frame++;  // XXX
 }
 
 void set_initial_cave_speed(GdCave *cave)
@@ -3690,13 +3708,13 @@ void set_initial_cave_speed(GdCave *cave)
   int ymin, ymax;
   int x, y;
 
-  /* set cave get function; to implement perfect or lineshifting borders */
+  // set cave get function; to implement perfect or lineshifting borders
   if (cave->lineshift)
     cave->getp = getp_shift;
   else
     cave->getp = getp_perfect;
 
-  /* check whether to scan the first and last line */
+  // check whether to scan the first and last line
   if (cave->border_scan_first_and_last)
   {
     ymin = 0;
@@ -3712,11 +3730,11 @@ void set_initial_cave_speed(GdCave *cave)
   {
     for (x = 0; x < cave->w; x++)
     {
-      /* add the ckdelay correction value for every element seen. */
+      // add the ckdelay correction value for every element seen.
       cave->ckdelay += gd_elements[get(cave, x, y)].ckdelay;
     }
   }
 
-  /* update timing calculated by iterating and counting elements */
+  // update timing calculated by iterating and counting elements
   update_cave_speed(cave);
 }

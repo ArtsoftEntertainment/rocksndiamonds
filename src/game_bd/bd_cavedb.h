@@ -27,7 +27,7 @@ extern const GdStructDescriptor gd_replay_properties[];
 
 extern GdPropertyDefault gd_cave_defaults_gdash[];
 
-/* do some checks on the cave db */
+// do some checks on the cave db
 void gd_cave_db_init(void);
 GdElement gd_element_get_hammered(GdElement elem);
 

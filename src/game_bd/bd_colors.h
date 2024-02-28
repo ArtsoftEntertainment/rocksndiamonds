@@ -35,10 +35,10 @@ typedef enum _color_type
   GD_COLOR_TYPE_C64DTV	= 2,
   GD_COLOR_TYPE_ATARI	= 3,
 
-  GD_COLOR_TYPE_UNKNOWN    /* should be the last one */
+  GD_COLOR_TYPE_UNKNOWN         // should be the last one
 } GdColorType;
 
-/* traditional c64 color indexes. */
+// traditional c64 color indexes.
 #define GD_COLOR_INDEX_BLACK		(0)
 #define GD_COLOR_INDEX_WHITE		(1)
 #define GD_COLOR_INDEX_RED		(2)
@@ -78,7 +78,7 @@ typedef enum _color_type
 #define GD_COLOR_INVALID		(0xFFFFFFFF)
 
 
-/* color */
+// color
 GdColor gd_c64_color(int index);
 GdColor gd_atari_color(int index);
 GdColor gd_c64dtv_color(int index);

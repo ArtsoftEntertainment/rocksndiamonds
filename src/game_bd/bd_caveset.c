@@ -19,20 +19,20 @@
 #include "main_bd.h"
 
 
-/* this stores the caves. */
+// this stores the caves.
 List *gd_caveset;
 
-/* the data of the caveset: name, highscore, max number of lives, etc. */
+// the data of the caveset: name, highscore, max number of lives, etc.
 GdCavesetData *gd_caveset_data;
 
-/* is set to true, when the caveset was edited since the last save. */
+// is set to true, when the caveset was edited since the last save.
 boolean gd_caveset_edited;
 
-/* last selected-to-play cave */
+// last selected-to-play cave
 int gd_caveset_last_selected;
 int gd_caveset_last_selected_level;
 
-/* list of possible extensions which can be opened */
+// list of possible extensions which can be opened
 char *gd_caveset_extensions[] =
 {
   "*.gds",
@@ -47,7 +47,7 @@ char *gd_caveset_extensions[] =
 
 const GdStructDescriptor gd_caveset_properties[] =
 {
-  /* default data */
+  // default data
   {"", GD_TAB, 0, N_("Caveset data")},
   {"Name", GD_TYPE_STRING, 0, N_("Name"), CAVESET_OFFSET(name), 1, N_("Name of the game")},
   {"Description", GD_TYPE_STRING, 0, N_("Description"), CAVESET_OFFSET(description), 1, N_("Some words about the game")},
@@ -71,7 +71,7 @@ const GdStructDescriptor gd_caveset_properties[] =
 
 static GdPropertyDefault caveset_defaults[] =
 {
-  /* default data */
+  // default data
   {CAVESET_OFFSET(initial_lives), 3},
   {CAVESET_OFFSET(maximum_lives), 9},
   {CAVESET_OFFSET(bonus_life_score), 500},
@@ -94,7 +94,7 @@ void gd_caveset_data_free(GdCavesetData *data)
 {
   int i;
 
-  /* free strings */
+  // free strings
   for (i = 0; gd_caveset_properties[i].identifier != NULL; i++)
     if (gd_caveset_properties[i].type == GD_TYPE_LONGSTRING)
       checked_free(STRUCT_MEMBER(char *, data, gd_caveset_properties[i].offset));
@@ -102,13 +102,11 @@ void gd_caveset_data_free(GdCavesetData *data)
   free(data);
 }
 
-/******************************************************************************
- *
- * Misc caveset functions
- *
- */
+// ============================================================================
+// Misc caveset functions
+// ============================================================================
 
-/** Clears all caves in the caveset. also to be called at application start */
+// Clears all caves in the caveset. also to be called at application start
 void gd_caveset_clear(void)
 {
   if (gd_caveset)
@@ -124,19 +122,19 @@ void gd_caveset_clear(void)
     gd_caveset_data = NULL;
   }
 
-  /* always newly create this */
-  /* create pseudo cave containing default values */
+  // always newly create this
+  // create pseudo cave containing default values
   gd_caveset_data = gd_caveset_data_new();
   gd_strcpy(gd_caveset_data->name, getCurrentLevelsetName());
 }
 
-/* return number of caves currently in memory. */
+// return number of caves currently in memory.
 int gd_caveset_count(void)
 {
   return list_length(gd_caveset);
 }
 
-/* return index of first selectable cave */
+// return index of first selectable cave
 static int caveset_first_selectable_cave_index(void)
 {
   List *iter;
@@ -152,50 +150,50 @@ static int caveset_first_selectable_cave_index(void)
 
   Warn("no selectable cave in caveset!");
 
-  /* and return the first one. */
+  // and return the first one.
   return 0;
 }
 
-/* return a cave identified by its index */
+// return a cave identified by its index
 GdCave *gd_return_nth_cave(const int cave)
 {
   return list_nth_data(gd_caveset, cave);
 }
 
-/* get a selected cave from the loaded caveset (original, unmodified cave) */
+// get a selected cave from the loaded caveset (original, unmodified cave)
 GdCave *gd_get_original_cave_from_caveset(const int cave)
 {
-  /* get specified cave from caveset already stored in memory */
+  // get specified cave from caveset already stored in memory
   GdCave *original_cave = gd_return_nth_cave(cave);
 
   return original_cave;
 }
 
-/* get a selected cave from the loaded caveset (cave prepared for playing) */
+// get a selected cave from the loaded caveset (cave prepared for playing)
 GdCave *gd_get_prepared_cave_from_caveset(const int cave, const int level)
 {
-  /* get specified cave from caveset already stored in memory */
+  // get specified cave from caveset already stored in memory
   GdCave *original_cave = gd_return_nth_cave(cave);
 
-  /* get prepared cave from original cave */
+  // get prepared cave from original cave
   GdCave *prepared_cave = gd_get_prepared_cave(original_cave, level);
 
   return prepared_cave;
 }
 
-/* get a cave prepared for playing from a given original, unmodified cave (with seed) */
+// get a cave prepared for playing from a given original, unmodified cave (with seed)
 GdCave *gd_get_prepared_cave(const GdCave *original_cave, const int level)
 {
-  /* get rendered cave using the selected seed for playing */
+  // get rendered cave using the selected seed for playing
   GdCave *prepared_cave = gd_cave_new_rendered(original_cave, level, game_bd.random_seed);
 
-  /* initialize some cave variables (like player position) */
+  // initialize some cave variables (like player position)
   gd_cave_setup_for_game(prepared_cave);
 
   return prepared_cave;
 }
 
-/* colors: 4: purple  3: ciklamen 2: orange 1: blue 0: green */
+// colors: 4: purple  3: ciklamen 2: orange 1: blue 0: green
 static GdElement brc_import_table[] =
 {
   /* 0 */
@@ -272,23 +270,23 @@ static void brc_import(byte *data)
   int x, y;
   int level;
 
-  /* we import 100 caves, and the put them in the correct order. */
+  // we import 100 caves, and the put them in the correct order.
   GdCave *imported[100];
   boolean import_effect;
 
   gd_caveset_clear();
 
-  /* this is some kind of a version number */
+  // this is some kind of a version number
   import_effect = FALSE;
 
   switch (data[23])
   {
     case 0x0:
-      /* nothing to do */
+      // nothing to do
       break;
 
     case 0xde:
-      /* import effects */
+      // import effects
       import_effect = TRUE;
       break;
 
@@ -306,7 +304,7 @@ static void brc_import(byte *data)
     {
       GdCave *cave;
 
-      /* 5 levels, 20 caves, 24 bytes - max 40*2 properties for each cave */
+      // 5 levels, 20 caves, 24 bytes - max 40*2 properties for each cave
       int c = 5 * 20 * 24;
 
       int datapos = (cavenum * 5 +level) * 24 + 22;
@@ -322,7 +320,7 @@ static void brc_import(byte *data)
 	snprintf(cave->name, sizeof(GdString), "Intermission %d/%d",
 		 cavenum - 15, level + 1);
 
-      /* fixed intermission caves; are smaller. */
+      // fixed intermission caves; are smaller.
       if (cavenum >= 16)
       {
 	cave->w = 20;
@@ -355,67 +353,69 @@ static void brc_import(byte *data)
 	cave->level_amoeba_time[i]      = data[5 * c + datapos];
 	cave->level_amoeba_threshold[i] = data[6 * c + datapos];
 
-	/* bonus time: 100 was added, so it could also be negative */
+	// bonus time: 100 was added, so it could also be negative
 	cave->level_bonus_time[i]      = (int)data[11 * c + datapos + 1] - 100;
 	cave->level_hatching_delay_frame[i] = data[10 * c + datapos];
 
-	/* this was not set in boulder remake. */
+	// this was not set in boulder remake.
 	cave->level_speed[i] = 150;
       }
 
       cave->diamond_value = data[2 * c + datapos];
       cave->extra_diamond_value = data[3 * c +datapos];
 
-      /* BRC PROBABILITIES */
-      /* a typical code example:
-	 46:if (random(slime*4)<4) and (tab[x,y+2] = 0) then
-	 Begin tab[x,y]:=0;col[x,y+2]:=col[x,y];tab[x,y+2]:=27;mat[x,y+2]:=9;Voice4:=2;end;
-	 where slime is the byte loaded from the file as it is.
-	 pascal random function generates a random number between 0..limit-1, inclusive, for random(limit).
+      // BRC PROBABILITIES
+      /*
+	a typical code example:
+	46:if (random(slime*4)<4) and (tab[x,y+2] = 0) then
+	Begin tab[x,y]:=0;col[x,y+2]:=col[x,y];tab[x,y+2]:=27;mat[x,y+2]:=9;Voice4:=2;end;
+	where slime is the byte loaded from the file as it is.
+	pascal random function generates a random number between 0..limit-1,
+	inclusive, for random(limit).
 
-	 so a random number between 0..limit*4-1 is generated.
-	 for limit=1, 0..3, which is always < 4, so P=1.
-	 for limit=2, 0..7, 0..7 is < 4 in P=50%.
-	 for limit=3, 0..11, is < 4 in P=33%.
-	 So the probability is exactly 100%/limit.
-	 just make sure we do not divide by zero for some broken input.
+	so a random number between 0..limit*4-1 is generated.
+	for limit=1, 0..3, which is always < 4, so P=1.
+	for limit=2, 0..7, 0..7 is < 4 in P=50%.
+	for limit=3, 0..11, is < 4 in P=33%.
+	So the probability is exactly 100%/limit.
+	just make sure we do not divide by zero for some broken input.
       */
 
       if (data[7 * c + datapos] == 0)
 	Warn("amoeba growth cannot be zero, error at byte %d",
 	     data[7 * c + datapos]);
       else
-	cave->amoeba_growth_prob = 1E6 / data[7 * c + datapos] + 0.5; /* 0.5 for rounding */
+	cave->amoeba_growth_prob = 1E6 / data[7 * c + datapos] + 0.5; // 0.5 for rounding
 
       if (data[8 * c + datapos] == 0)
 	Warn("amoeba growth cannot be zero, error at byte %d",
 	     data[8 * c + datapos]);
       else
-	cave->amoeba_fast_growth_prob = 1E6 / data[8 * c + datapos] + 0.5; /* 0.5 for rounding */
+	cave->amoeba_fast_growth_prob = 1E6 / data[8 * c + datapos] + 0.5; // 0.5 for rounding
 
       cave->slime_predictable = FALSE;
 
       for (i = 0; i < 5; i++)
-	cave->level_slime_permeability[i] = 1E6 / data[9 * c + datapos] + 0.5;   /* 0.5 for rounding */
+	cave->level_slime_permeability[i] = 1E6 / data[9 * c + datapos] + 0.5;   // 0.5 for rounding
 
-      /* probability -> *1E6 */
+      // probability -> *1E6
       cave->acid_spread_ratio = 1E6 / data[10 * c + datapos] + 0.5;
 
-      /* br only allowed values 1..8 in here, but works the same way. prob -> *1E6 */
+      // br only allowed values 1..8 in here, but works the same way. prob -> *1E6
       cave->pushing_stone_prob = 1E6 / data[11 * c + datapos] + 0.5;
 
       cave->magic_wall_stops_amoeba = (data[12 * c + datapos + 1] != 0);
       cave->intermission = (cavenum >= 16 || data[14 * c + datapos + 1] != 0);
 
-      /* colors */
+      // colors
       colind = data[31 * c + datapos] % ARRAY_SIZE(brc_color_table);
-      cave->colorb = 0x000000;    /* fixed rgb black */
-      cave->color0 = 0x000000;    /* fixed rgb black */
+      cave->colorb = 0x000000;    // fixed rgb black
+      cave->color0 = 0x000000;    // fixed rgb black
       cave->color1 = brc_color_table[colind];
-      cave->color2 = brc_color_table_comp[colind];    /* complement */
-      cave->color3 = 0xffffff;    /* white for brick */
-      cave->color4 = 0xe5ad23;    /* fixed for amoeba */
-      cave->color5 = 0x8af713;    /* fixed for slime */
+      cave->color2 = brc_color_table_comp[colind];    // complement
+      cave->color3 = 0xffffff;    // white for brick
+      cave->color4 = 0xe5ad23;    // fixed for amoeba
+      cave->color5 = 0x8af713;    // fixed for slime
 
       if (import_effect)
       {
@@ -424,24 +424,26 @@ static void brc_import(byte *data)
 	cave->explosion_effect       = brc_effect(data[16 * c + datapos + 1]);
 	cave->bomb_explosion_effect  = brc_effect(data[17 * c + datapos + 1]);
 
-	/* 18 solid bomb explode to */
+	// 18 solid bomb explode to
 	cave->diamond_birth_effect    = brc_effect(data[19 * c + datapos + 1]);
 	cave->stone_bouncing_effect   = brc_effect(data[20 * c + datapos + 1]);
 	cave->diamond_bouncing_effect = brc_effect(data[21 * c + datapos + 1]);
 	cave->magic_diamond_to        = brc_effect(data[22 * c + datapos + 1]);
 	cave->acid_eats_this          = brc_effect(data[23 * c + datapos + 1]);
 
-	/* slime eats:
-	   (diamond,boulder,bomb),
-	   (diamond,boulder),
-	   (diamond,bomb),
-	   (boulder,bomb) */
+	/*
+	  slime eats:
+	  (diamond,boulder,bomb),
+	  (diamond,boulder),
+	  (diamond,bomb),
+	  (boulder,bomb)
+	*/
 	cave->amoeba_enclosed_effect = brc_effect(data[14 * c + datapos + 1]);
       }
     }
   }
 
-  /* put them in the caveset - take correct order into consideration. */
+  // put them in the caveset - take correct order into consideration.
   for (level = 0; level < 5; level++)
   {
     int cavenum;
@@ -456,8 +458,8 @@ static void brc_import(byte *data)
       boolean only_dirt;
       int x, y;
 
-      /* check if cave contains only dirt.
-	 that is an empty cave, and do not import. */
+      // check if cave contains only dirt.
+      // that is an empty cave, and do not import.
       only_dirt = TRUE;
 
       for (y = 1; y < cave->h - 1 && only_dirt; y++)
@@ -465,7 +467,7 @@ static void brc_import(byte *data)
 	  if (cave->map[y][x] != O_DIRT)
 	    only_dirt = FALSE;
 
-      /* append to caveset or forget it. */
+      // append to caveset or forget it.
       if (!only_dirt)
 	gd_caveset = list_append(gd_caveset, cave);
       else
@@ -479,26 +481,27 @@ static void caveset_name_set_from_filename(char *filename)
   char *name;
   char *c;
 
-  /* make up a caveset name from the filename. */
+  // make up a caveset name from the filename.
   name = getBaseName(filename);
   gd_strcpy(gd_caveset_data->name, name);
   free(name);
 
-  /* convert underscores to spaces */
+  // convert underscores to spaces
   while ((c = strchr (gd_caveset_data->name, '_')) != NULL)
     *c = ' ';
 
-  /* remove extension */
+  // remove extension
   if ((c = strrchr (gd_caveset_data->name, '.')) != NULL)
     *c = 0;
 }
 
-/* Load caveset from file.
-   Loads the caveset from a file.
+/*
+  Load caveset from file.
+  Loads the caveset from a file.
 
-   File type is autodetected by extension.
-   param filename: Name of file.
-   result: FALSE if failed
+  File type is autodetected by extension.
+  param filename: Name of file.
+  result: FALSE if failed
 */
 boolean gd_caveset_load_from_file(char *filename)
 {
@@ -545,7 +548,7 @@ boolean gd_caveset_load_from_file(char *filename)
   if (strSuffix(filename, ".brc") ||
       strSuffix(filename, ".BRC"))
   {
-    /* loading a boulder remake file */
+    // loading a boulder remake file
     if (length != 96000)
     {
       Warn("BRC files must be 96000 bytes long");
@@ -558,7 +561,7 @@ boolean gd_caveset_load_from_file(char *filename)
       strSuffix(filename, ".BRC"))
   {
     brc_import((byte *) buf);
-    gd_caveset_edited = FALSE;    /* newly loaded cave is not edited */
+    gd_caveset_edited = FALSE;    // newly loaded cave is not edited
     gd_caveset_last_selected = caveset_first_selectable_cave_index();
     gd_caveset_last_selected_level = 0;
     free(buf);
@@ -567,16 +570,16 @@ boolean gd_caveset_load_from_file(char *filename)
     return TRUE;
   }
 
-  /* BDCFF */
+  // BDCFF
   if (gd_caveset_imported_get_format((byte *) buf) == GD_FORMAT_UNKNOWN)
   {
-    /* try to load as bdcff */
+    // try to load as bdcff
     boolean result;
 
-    /* bdcff: start another function */
+    // bdcff: start another function
     result = gd_caveset_load_from_bdcff(buf);
 
-    /* newly loaded file is not edited. */
+    // newly loaded file is not edited.
     gd_caveset_edited = FALSE;
 
     gd_caveset_last_selected = caveset_first_selectable_cave_index();
@@ -586,22 +589,22 @@ boolean gd_caveset_load_from_file(char *filename)
     return result;
   }
 
-  /* try to load as a binary file, as we know the format */
+  // try to load as a binary file, as we know the format
   new_caveset = gd_caveset_import_from_buffer ((byte *) buf, length);
   free(buf);
 
-  /* if unable to load, exit here. error was reported by import_from_buffer() */
+  // if unable to load, exit here. error was reported by import_from_buffer()
   if (!new_caveset)
     return FALSE;
 
-  /* no serious error :) */
+  // no serious error :)
 
-  /* only clear caveset here. if file read was unsuccessful, caveset remains in memory. */
+  // only clear caveset here. if file read was unsuccessful, caveset remains in memory.
   gd_caveset_clear();
 
   gd_caveset = new_caveset;
 
-  /* newly loaded cave is not edited */
+  // newly loaded cave is not edited
   gd_caveset_edited = FALSE;
 
   gd_caveset_last_selected = caveset_first_selectable_cave_index();
@@ -628,7 +631,7 @@ boolean gd_caveset_save_to_file(const char *filename)
 
     closeFile(file);
 
-    /* remember that it is saved */
+    // remember that it is saved
     gd_caveset_edited = FALSE;
 
     success = TRUE;
@@ -665,18 +668,18 @@ int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean 
 
     replay->wrong_checksum = FALSE;
 
-    /* count wrong ones... the checksum might be changed later to "repair" */
+    // count wrong ones... the checksum might be changed later to "repair"
     if (replay->checksum != 0 && checksum != replay->checksum)
       wrong++;
 
     if (replay->checksum == 0 || repair)
     {
-      /* if no checksum found, add one. or if repair requested, overwrite old one. */
+      // if no checksum found, add one. or if repair requested, overwrite old one.
       replay->checksum = checksum;
     }
     else
     {
-      /* if has a checksum, compare with this one. */
+      // if has a checksum, compare with this one.
       if (replay->checksum != checksum)
       {
 	replay->wrong_checksum = TRUE;
@@ -687,14 +690,14 @@ int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean 
 
 	if (remove)
 	{
-	  /* may remove */
+	  // may remove
 	  cave->replays = list_remove_link(cave->replays, riter);
 	  gd_replay_free(replay);
 	}
       }
     }
 
-    /* advance to next list item which we remembered. the current one might have been deleted */
+    // advance to next list item which we remembered. the current one might have been deleted
     riter = next;
   }
 
@@ -705,7 +708,7 @@ boolean gd_caveset_has_replays(void)
 {
   List *citer;
 
-  /* for all caves */
+  // for all caves
   for (citer = gd_caveset; citer != NULL; citer = citer->next)
   {
     GdCave *cave = (GdCave *)citer->data;
@@ -714,6 +717,6 @@ boolean gd_caveset_has_replays(void)
       return TRUE;
   }
 
-  /* if neither of the caves had a replay, */
+  // if neither of the caves had a replay,
   return FALSE;
 }

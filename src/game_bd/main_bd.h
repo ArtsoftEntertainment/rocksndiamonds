@@ -48,7 +48,7 @@
 // constant definitions
 // ----------------------------------------------------------------------------
 
-/* screen sizes and positions for BD engine */
+// screen sizes and positions for BD engine
 
 #define TILESIZE		32
 
@@ -59,14 +59,14 @@ extern int			TILESIZE_VAR;
 
 extern int			SCR_FIELDX, SCR_FIELDY;
 
-/* often used screen positions */
+// often used screen positions
 
 extern int			SX, SY;
 
 #define SXSIZE			(SCR_FIELDX * TILEX)
 #define SYSIZE			(SCR_FIELDY * TILEY)
 
-/* compatibility macros */
+// compatibility macros
 
 #define gettext(String) (String)
 #define      N_(String) (String)

@@ -17,8 +17,8 @@
 #include "main_bd.h"
 
 
-/* arrays for movements */
-/* also no1 and bd2 cave data import helpers; line direction coordinates */
+// arrays for movements
+// also no1 and bd2 cave data import helpers; line direction coordinates
 const int gd_dx[] =
 {
   0, 0, 1, 1, 1, 0, -1, -1, -1, 0, 2, 2, 2, 0, -2, -2, -2
@@ -28,8 +28,8 @@ const int gd_dy[] =
   0, -1, -1, 0, 1, 1, 1, 0, -1, -2, -2, 0, 2, 2, 2, 0, -2
 };
 
-/* TRANSLATORS:
-   None here means "no direction to move"; when there is no gravity while stirring the pot. */
+// TRANSLATORS:
+// None here means "no direction to move"; when there is no gravity while stirring the pot.
 static const char* direction_name[] =
 {
   N_("None"),
@@ -81,13 +81,13 @@ static const char* scheduling_filename[] =
 static HashTable *name_to_element;
 GdElement gd_char_to_element[256];
 
-/* color of flashing the screen, gate opening to exit */
+// color of flashing the screen, gate opening to exit
 const GdColor gd_flash_color = 0xFFFFC0;
 
-/* selected object in editor */
+// selected object in editor
 const GdColor gd_select_color = 0x8080FF;
 
-/* direction to string and vice versa */
+// direction to string and vice versa
 const char *gd_direction_get_visible_name(GdDirection dir)
 {
   return direction_name[dir];
@@ -110,7 +110,7 @@ GdDirection gd_direction_from_string(const char *str)
   return GD_MV_DOWN;
 }
 
-/* scheduling name to string and vice versa */
+// scheduling name to string and vice versa
 const char *gd_scheduling_get_filename(GdScheduling sched)
 {
   return scheduling_filename[sched];
@@ -149,7 +149,7 @@ void gd_struct_set_defaults_from_array(void *str,
   for (i = 0; defaults[i].offset != -1; i++)
   {
     void *pvalue = STRUCT_MEMBER_P(str, defaults[i].offset);
-    /* these point to the same, but to avoid the awkward cast syntax */
+    // these point to the same, but to avoid the awkward cast syntax
     int *ivalue = pvalue;
     GdElement *evalue = pvalue;
     GdDirection *dvalue = pvalue;
@@ -158,7 +158,7 @@ void gd_struct_set_defaults_from_array(void *str,
     GdColor *cvalue = pvalue;
     int j, n;
 
-    /* check which property we are talking about: find it in gd_cave_properties. */
+    // check which property we are talking about: find it in gd_cave_properties.
     n = defaults[i].property_index;
     if (n == 0)
     {
@@ -166,25 +166,25 @@ void gd_struct_set_defaults_from_array(void *str,
 	     properties[n].offset != defaults[i].offset)
 	n++;
 
-      /* remember so we will be fast later*/
+      // remember so we will be fast later
       defaults[i].property_index = n;
     }
 
-    /* some properties are arrays. this loop fills all with the same values */
+    // some properties are arrays. this loop fills all with the same values
     for (j = 0; j < properties[n].count; j++)
     {
       switch (properties[n].type)
       {
-	/* these are for the gui; do nothing */
+	// these are for the gui; do nothing
 	case GD_TAB:
 	case GD_LABEL:
-	  /* no default value for strings */
+	  // no default value for strings
 	case GD_TYPE_STRING:
 	case GD_TYPE_LONGSTRING:
 	  break;
 
 	case GD_TYPE_RATIO:
-	  /* this is also an integer, difference is only when saving to bdcff */
+	  // this is also an integer, difference is only when saving to bdcff
 	case GD_TYPE_INT:
 	  if (defaults[i].defval < properties[n].min ||
 	      defaults[i].defval > properties[n].max)
@@ -193,7 +193,7 @@ void gd_struct_set_defaults_from_array(void *str,
 	  break;
 
 	case GD_TYPE_PROBABILITY:
-	  /* floats are stored as integer, /million; but are integers */
+	  // floats are stored as integer, /million; but are integers
 	  if (defaults[i].defval < 0 ||
 	      defaults[i].defval > 1000000)
 	    Warn("integer property %s out of range", properties[n].identifier);
@@ -225,19 +225,20 @@ void gd_struct_set_defaults_from_array(void *str,
   }
 }
 
-/* creates the character->element conversion table; using
-   the fixed-in-the-bdcff characters. later, this table
-   may be filled with more elements.
+/*
+  creates the character->element conversion table; using
+  the fixed-in-the-bdcff characters. later, this table
+  may be filled with more elements.
 */
 void gd_create_char_to_element_table(void)
 {
   int i;
 
-  /* fill all with unknown */
+  // fill all with unknown
   for (i = 0; i < ARRAY_SIZE(gd_char_to_element); i++)
     gd_char_to_element[i] = O_UNKNOWN;
 
-  /* then set fixed characters */
+  // then set fixed characters
   for (i = 0; i < O_MAX; i++)
   {
     int c = gd_elements[i].character;
@@ -252,7 +253,7 @@ void gd_create_char_to_element_table(void)
   }
 }
 
-/* search the element database for the specified character, and return the element. */
+// search the element database for the specified character, and return the element.
 GdElement gd_get_element_from_character (byte character)
 {
   if (gd_char_to_element[character] != O_UNKNOWN)
@@ -270,9 +271,9 @@ void gd_cave_init(void)
 {
   int i;
 
-  /* put names to a hash table */
-  /* this is a helper for file read operations */
-  /* maps copied strings to elements (integers) */
+  // put names to a hash table
+  // this is a helper for file read operations
+  // maps copied strings to elements (integers)
   name_to_element = create_hashtable(gd_str_case_hash, gd_str_case_equal, NULL, NULL);
 
   for (i = 0; i < O_MAX; i++)
@@ -281,19 +282,19 @@ void gd_cave_init(void)
 
     key = getStringToUpper(gd_elements[i].filename);
 
-    if (hashtable_exists(name_to_element, key))		/* hash value may be 0 */
+    if (hashtable_exists(name_to_element, key))		// hash value may be 0
       Warn("Name %s already used for element %x", key, i);
 
     hashtable_insert(name_to_element, key, INT_TO_PTR(i));
-    /* ^^^ do not free "key", as hash table needs it during the whole time! */
+    // ^^^ do not free "key", as hash table needs it during the whole time!
 
-    key = getStringCat2("SCANNED_", key);		/* new string */
+    key = getStringCat2("SCANNED_", key);		// new string
 
     hashtable_insert(name_to_element, key, INT_TO_PTR(i));
-    /* once again, do not free "key" ^^^ */
+    // once again, do not free "key" ^^^
   }
 
-  /* for compatibility with tim stridmann's memorydump->bdcff converter... .... ... */
+  // for compatibility with tim stridmann's memorydump->bdcff converter... .... ...
   hashtable_insert(name_to_element, "HEXPANDING_WALL", INT_TO_PTR(O_H_EXPANDING_WALL));
   hashtable_insert(name_to_element, "FALLING_DIAMOND", INT_TO_PTR(O_DIAMOND_F));
   hashtable_insert(name_to_element, "FALLING_BOULDER", INT_TO_PTR(O_STONE_F));
@@ -309,14 +310,14 @@ void gd_cave_init(void)
   hashtable_insert(name_to_element, "EXPLOSION5D", INT_TO_PTR(O_PRE_DIA_5));
   hashtable_insert(name_to_element, "WALL2", INT_TO_PTR(O_STEEL_EXPLODABLE));
 
-  /* compatibility with old bd-faq (pre disassembly of bladder) */
+  // compatibility with old bd-faq (pre disassembly of bladder)
   hashtable_insert(name_to_element, "BLADDERd9", INT_TO_PTR(O_BLADDER_8));
 
-  /* create table to show errors at the start of the application */
+  // create table to show errors at the start of the application
   gd_create_char_to_element_table();
 }
 
-/* search the element database for the specified name, and return the element */
+// search the element database for the specified name, and return the element
 GdElement gd_get_element_from_string (const char *string)
 {
   char *upper = getStringToUpper(string);
@@ -329,7 +330,7 @@ GdElement gd_get_element_from_string (const char *string)
     return O_UNKNOWN;
   }
 
-  found = hashtable_exists(name_to_element, upper);	/* hash value may be 0 */
+  found = hashtable_exists(name_to_element, upper);	// hash value may be 0
   if (found)
     value = hashtable_search(name_to_element, upper);
   free(upper);
@@ -356,7 +357,7 @@ void gd_cave_set_gdash_defaults(GdCave* cave)
 
   gd_cave_set_defaults_from_array(cave, gd_cave_defaults_gdash);
 
-  /* these did not fit into the descriptor array */
+  // these did not fit into the descriptor array
   for (i = 0; i < 5; i++)
   {
     cave->level_rand[i] = i;
@@ -364,7 +365,7 @@ void gd_cave_set_gdash_defaults(GdCave* cave)
   }
 }
 
-/* for quicksort. compares two highscores. */
+// for quicksort. compares two highscores.
 int gd_highscore_compare(const void *a, const void *b)
 {
   const GdHighScore *ha = a;
@@ -388,10 +389,10 @@ boolean gd_has_highscore(GdHighScore *hs)
   return hs[0].score > 0;
 }
 
-/* return true if score achieved is a highscore */
+// return true if score achieved is a highscore
 boolean gd_is_highscore(GdHighScore *scores, int score)
 {
-  /* if score is above zero AND bigger than the last one */
+  // if score is above zero AND bigger than the last one
   if (score > 0 && score > scores[GD_HIGHSCORE_NUM-1].score)
     return TRUE;
 
@@ -405,11 +406,11 @@ int gd_add_highscore(GdHighScore *highscores, const char *name, int score)
   if (!gd_is_highscore(highscores, score))
     return -1;
 
-  /* overwrite the last one */
+  // overwrite the last one
   gd_strcpy(highscores[GD_HIGHSCORE_NUM-1].name, name);
   highscores[GD_HIGHSCORE_NUM-1].score = score;
 
-  /* and sort */
+  // and sort
   qsort(highscores, GD_HIGHSCORE_NUM, sizeof(GdHighScore), gd_highscore_compare);
 
   for (i = 0; i < GD_HIGHSCORE_NUM; i++)
@@ -419,7 +420,7 @@ int gd_add_highscore(GdHighScore *highscores, const char *name, int score)
   return -1;
 }
 
-/* for the case-insensitive hash keys */
+// for the case-insensitive hash keys
 int gd_str_case_equal(void *s1, void *s2)
 {
   return strcasecmp(s1, s2) == 0;
@@ -445,7 +446,7 @@ GdCave *gd_cave_new(void)
 
   cave = checked_calloc(sizeof(GdCave));
 
-  /* hash table which stores unknown tags as strings. */
+  // hash table which stores unknown tags as strings.
   cave->tags = create_hashtable(gd_str_case_hash, gd_str_case_equal, free, free);
 
   gd_cave_set_gdash_defaults(cave);
@@ -453,20 +454,21 @@ GdCave *gd_cave_new(void)
   return cave;
 }
 
-/* cave maps.
-   cave maps are continuous areas in memory. the allocated memory
-   is width * height * bytes_per_cell long.
-   the cave map[0] stores the pointer given by g_malloc().
-   the map itself is also an allocated array of pointers to the
-   beginning of rows.
-   therefore:
-   rows = new (pointers to rows);
-   rows[0] = new map
-   rows[1..h-1] = rows[0] + width * bytes
+/*
+  cave maps.
+  cave maps are continuous areas in memory. the allocated memory
+  is width * height * bytes_per_cell long.
+  the cave map[0] stores the pointer given by g_malloc().
+  the map itself is also an allocated array of pointers to the
+  beginning of rows.
+  therefore:
+  rows = new (pointers to rows);
+  rows[0] = new map
+  rows[1..h-1] = rows[0] + width * bytes
 
-   freeing this:
-   free(rows[0])
-   free(rows)
+  freeing this:
+  free(rows[0])
+  free(rows)
 */
 
 /*
@@ -475,14 +477,14 @@ GdCave *gd_cave_new(void)
 */
 void *gd_cave_map_new_for_cave(const GdCave *cave, const int cell_size)
 {
-  void **rows;                /* this is void**, pointer to array of ... */
+  void **rows;                // this is void**, pointer to array of ...
   int y;
 
   rows = checked_malloc((cave->h) * sizeof(void *));
   rows[0] = checked_calloc(cell_size * cave->w * cave->h);
 
   for (y = 1; y < cave->h; y++)
-    /* base pointer + num_of_bytes_per_element * width * number_of_row; as sizeof(char) = 1 */
+    // base pointer + num_of_bytes_per_element * width * number_of_row; as sizeof(char) = 1
     rows[y] = (char *)rows[0] + cell_size * cave->w * y;
 
   return rows;
@@ -535,32 +537,32 @@ void gd_cave_free(GdCave *cave)
   if (cave->tags)
     hashtable_destroy(cave->tags);
 
-  if (cave->random)    /* random generator is a GdRand * */
+  if (cave->random)    // random generator is a GdRand *
     gd_rand_free(cave->random);
 
-  /* free strings */
+  // free strings
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
     if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
       checked_free(STRUCT_MEMBER(char *, cave, gd_cave_properties[i].offset));
 
-  /* map */
+  // map
   gd_cave_map_free(cave->map);
 
-  /* rendered data */
+  // rendered data
   gd_cave_map_free(cave->objects_order);
 
-  /* hammered walls to reappear data */
+  // hammered walls to reappear data
   gd_cave_map_free(cave->hammered_reappear);
 
-  /* free objects */
+  // free objects
   list_foreach(cave->objects, (list_fn) free, NULL);
   list_free(cave->objects);
 
-  /* free replays */
+  // free replays
   list_foreach(cave->replays, (list_fn) gd_replay_free, NULL);
   list_free(cave->replays);
 
-  /* freeing main pointer */
+  // freeing main pointer
   free (cave);
 }
 
@@ -569,15 +571,15 @@ static void hash_copy_foreach(const char *key, const char *value, HashTable *des
   hashtable_insert(dest, getStringCopy(key), getStringCopy(value));
 }
 
-/* copy cave from src to destination, with duplicating dynamically allocated data */
+// copy cave from src to destination, with duplicating dynamically allocated data
 void gd_cave_copy(GdCave *dest, const GdCave *src)
 {
   int i;
 
-  /* copy entire data */
+  // copy entire data
   memmove(dest, src, sizeof(GdCave));
 
-  /* but duplicate dynamic data */
+  // but duplicate dynamic data
   dest->tags = create_hashtable(gd_str_case_hash, gd_str_case_equal, free, free);
 
   if (src->tags)
@@ -586,41 +588,41 @@ void gd_cave_copy(GdCave *dest, const GdCave *src)
   dest->map = gd_cave_map_dup(src, map);
   dest->hammered_reappear = gd_cave_map_dup(src, hammered_reappear);
 
-  /* for longstrings */
+  // for longstrings
   for (i = 0; gd_cave_properties[i].identifier != NULL; i++)
     if (gd_cave_properties[i].type == GD_TYPE_LONGSTRING)
       STRUCT_MEMBER(char *, dest, gd_cave_properties[i].offset) =
 	getStringCopy(STRUCT_MEMBER(char *, src, gd_cave_properties[i].offset));
 
-  /* no reason to copy this */
+  // no reason to copy this
   dest->objects_order = NULL;
 
-  /* copy objects list */
+  // copy objects list
   if (src->objects)
   {
     List *iter;
 
-    dest->objects = NULL;    /* new empty list */
-    for (iter = src->objects; iter != NULL; iter = iter->next) /* do a deep copy */
+    dest->objects = NULL;    // new empty list
+    for (iter = src->objects; iter != NULL; iter = iter->next) // do a deep copy
       dest->objects = list_append(dest->objects, get_memcpy (iter->data, sizeof (GdObject)));
   }
 
-  /* copy replays */
+  // copy replays
   if (src->replays)
   {
     List *iter;
 
     dest->replays = NULL;
-    for (iter = src->replays; iter != NULL; iter = iter->next) /* do a deep copy */
+    for (iter = src->replays; iter != NULL; iter = iter->next) // do a deep copy
       dest->replays = list_append(dest->replays, gd_replay_new_from_replay(iter->data));
   }
 
-  /* copy random number generator */
+  // copy random number generator
   if (src->random)
     dest->random = gd_rand_copy(src->random);
 }
 
-/* create new cave, which is a copy of the cave given. */
+// create new cave, which is a copy of the cave given.
 GdCave *gd_cave_new_from_cave(const GdCave *orig)
 {
   GdCave *cave;
@@ -636,24 +638,25 @@ GdCave *gd_cave_new_from_cave(const GdCave *orig)
   Performs range checking.
   If wraparound objects are selected, wraps around x coordinates, with or without lineshift.
   (The y coordinate is not wrapped, as it did not work like that on the c64)
-  order is a pointer to the GdObject describing this object. Thus the editor can identify which cell was created by which object.
+  order is a pointer to the GdObject describing this object. Thus the editor can identify
+  which cell was created by which object.
 */
 void gd_cave_store_rc(GdCave *cave, int x, int y, const GdElement element, const void *order)
 {
-  /* if we do not need to draw, exit now */
+  // if we do not need to draw, exit now
   if (element == O_NONE)
     return;
 
-  /* check bounds */
+  // check bounds
   if (cave->wraparound_objects)
   {
     if (cave->lineshift)
     {
-      /* fit x coordinate within range, with correcting y at the same time */
+      // fit x coordinate within range, with correcting y at the same time
       while (x < 0)
       {
-	x += cave->w;    /* out of bounds on the left... */
-	y--;             /* previous row */
+	x += cave->w;    // out of bounds on the left...
+	y--;             // previous row
       }
 
       while (x >= cave->w)
@@ -662,20 +665,20 @@ void gd_cave_store_rc(GdCave *cave, int x, int y, const GdElement element, const
 	y++;
       }
 
-      /* lineshifting does not fix the y coordinates.
-	 if out of bounds, element will not be displayed. */
-      /* if such an object appeared in the c64 game, well, it was a buffer overrun. */
+      // lineshifting does not fix the y coordinates.
+      // if out of bounds, element will not be displayed.
+      // if such an object appeared in the c64 game, well, it was a buffer overrun.
     }
     else
     {
-      /* non lineshifting: changing x does not change y coordinate. */
+      // non lineshifting: changing x does not change y coordinate.
       while (x < 0)
 	x += cave->w;
 
       while (x >= cave->w)
 	x -= cave->w;
 
-      /* after that, fix y coordinate */
+      // after that, fix y coordinate
       while (y < 0)
 	y += cave->h;
 
@@ -684,8 +687,8 @@ void gd_cave_store_rc(GdCave *cave, int x, int y, const GdElement element, const
     }
   }
 
-  /* if the above wraparound code fixed the coordinates, this will always be true. */
-  /* but see the above comment for lineshifting y coordinate */
+  // if the above wraparound code fixed the coordinates, this will always be true.
+  // but see the above comment for lineshifting y coordinate
   if (x >= 0 && x < cave->w && y >= 0 && y < cave->h)
   {
     cave->map[y][x] = element;
@@ -695,16 +698,16 @@ void gd_cave_store_rc(GdCave *cave, int x, int y, const GdElement element, const
 
 GdElement gd_cave_get_rc(const GdCave *cave, int x, int y)
 {
-  /* always fix coordinates as if cave was wraparound. */
+  // always fix coordinates as if cave was wraparound.
 
-  /* fix x coordinate */
+  // fix x coordinate
   if (cave->lineshift)
   {
-    /* fit x coordinate within range, with correcting y at the same time */
+    // fit x coordinate within range, with correcting y at the same time
     while (x < 0)
     {
-      x += cave->w;    /* out of bounds on the left... */
-      y--;             /* previous row */
+      x += cave->w;    // out of bounds on the left...
+      y--;             // previous row
     }
     while (x >= cave->w)
     {
@@ -714,7 +717,7 @@ GdElement gd_cave_get_rc(const GdCave *cave, int x, int y)
   }
   else
   {
-    /* non lineshifting: changing x does not change y coordinate. */
+    // non lineshifting: changing x does not change y coordinate.
     while (x < 0)
       x += cave->w;
 
@@ -722,7 +725,7 @@ GdElement gd_cave_get_rc(const GdCave *cave, int x, int y)
       x -= cave->w;
   }
 
-  /* after that, fix y coordinate */
+  // after that, fix y coordinate
   while (y < 0)
     y += cave->h;
 
@@ -779,29 +782,29 @@ void gd_cave_set_random_c64_colors(GdCave *cave)
   const int bright_colors[] = { 1, 3, 7 };
   const int dark_colors[] = { 2, 6, 8, 9, 11 };
 
-  /* always black */
+  // always black
   cave->colorb = gd_c64_color(0);
   cave->color0 = gd_c64_color(0);
 
-  /* choose some bright color for brick */
+  // choose some bright color for brick
   cave->color3 = gd_c64_color(bright_colors[gd_random_int_range(0, ARRAY_SIZE(bright_colors))]);
 
-  /* choose a dark color for dirt, but should not be == color of brick */
+  // choose a dark color for dirt, but should not be == color of brick
   do
   {
     cave->color1 = gd_c64_color(dark_colors[gd_random_int_range(0, ARRAY_SIZE(dark_colors))]);
   }
-  while (cave->color1 == cave->color3);    /* so it is not the same as color 1 */
+  while (cave->color1 == cave->color3);    // so it is not the same as color 1
 
-  /* choose any but black for steel wall, but should not be == brick or dirt */
+  // choose any but black for steel wall, but should not be == brick or dirt
   do
   {
-    /* between 1 and 15 - do not use black for this. */
+    // between 1 and 15 - do not use black for this.
     cave->color2 = gd_c64_color(gd_random_int_range(1, 16));
   }
-  while (cave->color1 == cave->color2 || cave->color2 == cave->color3);    /* so colors are not the same */
+  while (cave->color1 == cave->color2 || cave->color2 == cave->color3);    // so colors are not the same
 
-  /* copy amoeba and slime color */
+  // copy amoeba and slime color
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
 }
@@ -824,15 +827,15 @@ void gd_cave_auto_shrink(GdCave *cave)
   }
   empty;
 
-  /* set to maximum size, then try to shrink */
+  // set to maximum size, then try to shrink
   cave->x1 = 0;
   cave->y1 = 0;
   cave->x2 = cave->w - 1;
   cave->y2 = cave->h - 1;
 
-  /* search for empty, steel-wall-only last rows. */
-  /* clear all lines, which are only steel wall.
-   * and clear only one line, which is steel wall, but also has a player or an outbox. */
+  // search for empty, steel-wall-only last rows.
+  // clear all lines, which are only steel wall.
+  // and clear only one line, which is steel wall, but also has a player or an outbox.
   empty = STEEL_ONLY;
 
   do
@@ -843,7 +846,7 @@ void gd_cave_auto_shrink(GdCave *cave)
       {
 	switch (gd_cave_get_rc (cave, x, y))
 	{
-	  /* if steels only, this is to be deleted. */
+	  // if steels only, this is to be deleted.
 	  case O_STEEL:
 	    break;
 
@@ -853,26 +856,26 @@ void gd_cave_auto_shrink(GdCave *cave)
 	    if (empty == STEEL_OR_OTHER)
 	      empty = NO_SHRINK;
 
-	    /* if this, delete only this one, and exit. */
+	    // if this, delete only this one, and exit.
 	    if (empty == STEEL_ONLY)
 	      empty = STEEL_OR_OTHER;
 	    break;
 
 	  default:
-	    /* anything else, that should be left in the cave. */
+	    // anything else, that should be left in the cave.
 	    empty = NO_SHRINK;
 	    break;
 	}
       }
     }
 
-    /* shrink if full steel or steel and player/outbox. */
+    // shrink if full steel or steel and player/outbox.
     if (empty != NO_SHRINK)
-      cave->y2--;            /* one row shorter */
+      cave->y2--;            // one row shorter
   }
-  while (empty == STEEL_ONLY);    /* if found just steels, repeat. */
+  while (empty == STEEL_ONLY);    // if found just steels, repeat.
 
-  /* search for empty, steel-wall-only first rows. */
+  // search for empty, steel-wall-only first rows.
   empty = STEEL_ONLY;
 
   do
@@ -889,8 +892,8 @@ void gd_cave_auto_shrink(GdCave *cave)
 	  case O_PRE_OUTBOX:
 	  case O_PRE_INVIS_OUTBOX:
 	  case O_INBOX:
-	    /* shrink only lines, which have only ONE player or outbox.
-	       this is for bd4 intermission 2, for example. */
+	    // shrink only lines, which have only ONE player or outbox.
+	    // this is for bd4 intermission 2, for example.
 	    if (empty == STEEL_OR_OTHER)
 	      empty = NO_SHRINK;
 	    if (empty == STEEL_ONLY)
@@ -907,9 +910,9 @@ void gd_cave_auto_shrink(GdCave *cave)
     if (empty != NO_SHRINK)
       cave->y1++;
   }
-  while (empty == STEEL_ONLY);    /* if found one, repeat. */
+  while (empty == STEEL_ONLY);    // if found one, repeat.
 
-  /* empty last columns. */
+  // empty last columns.
   empty = STEEL_ONLY;
 
   do
@@ -939,14 +942,14 @@ void gd_cave_auto_shrink(GdCave *cave)
       }
     }
 
-    /* just remember that one column shorter.
-       free will know the size of memchunk, no need to realloc! */
+    // just remember that one column shorter.
+    // free will know the size of memchunk, no need to realloc!
     if (empty != NO_SHRINK)
       cave->x2--;
   }
-  while (empty == STEEL_ONLY);    /* if found one, repeat. */
+  while (empty == STEEL_ONLY);    // if found one, repeat.
 
-  /* empty first columns. */
+  // empty first columns.
   empty = STEEL_ONLY;
 
   do
@@ -979,16 +982,17 @@ void gd_cave_auto_shrink(GdCave *cave)
     if (empty != NO_SHRINK)
       cave->x1++;
   }
-  while (empty == STEEL_ONLY);    /* if found one, repeat. */
+  while (empty == STEEL_ONLY);    // if found one, repeat.
 }
 
-/* check if cave visible part coordinates
-   are outside cave sizes, or not in the right order.
-   correct them if needed.
+/*
+  check if cave visible part coordinates
+  are outside cave sizes, or not in the right order.
+  correct them if needed.
 */
 void gd_cave_correct_visible_size(GdCave *cave)
 {
-  /* change visible coordinates if they do not point to upperleft and lowerright */
+  // change visible coordinates if they do not point to upperleft and lowerright
   if (cave->x2 < cave->x1)
   {
     int t = cave->x2;
@@ -1065,18 +1069,18 @@ static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
     cave->ckdelay_extra_for_animation += 2600;
 }
 
-/* do some init - setup some cave variables before the game. */
+// do some init - setup some cave variables before the game.
 void gd_cave_setup_for_game(GdCave *cave)
 {
   int x, y;
 
   cave_set_ckdelay_extra_for_animation(cave);
 
-  /* find the player which will be the one to scroll to at the beginning of the game
-     (before the player's birth) */
+  // find the player which will be the one to scroll to at the beginning of the game
+  // (before the player's birth)
   if (cave->active_is_first_found)
   {
-    /* uppermost player is active */
+    // uppermost player is active
     for (y = cave->h - 1; y >= 0; y--)
     { 
      for (x = cave->w - 1; x >= 0; x--)
@@ -1091,7 +1095,7 @@ void gd_cave_setup_for_game(GdCave *cave)
   }
   else
   {
-    /* lowermost player is active */
+    // lowermost player is active
     for (y = 0; y < cave->h; y++)
     {
       for (x = 0; x < cave->w; x++)
@@ -1105,7 +1109,7 @@ void gd_cave_setup_for_game(GdCave *cave)
     }
   }
 
-  /* select number of milliseconds (for pal and ntsc) */
+  // select number of milliseconds (for pal and ntsc)
   cave->timing_factor = cave->pal_timing ? 1200 : 1000;
 
   cave->time			*= cave->timing_factor;
@@ -1118,16 +1122,16 @@ void gd_cave_setup_for_game(GdCave *cave)
     cave->hammered_reappear = gd_cave_map_new(cave, int);
 }
 
-/* cave diamonds needed can be set to n<=0. */
-/* if so, count the diamonds at the time of the hatching, and decrement that value from */
-/* the number of diamonds found. */
-/* of course, this function is to be called from the cave engine, at the exact time of hatching. */
+// cave diamonds needed can be set to n<=0.
+// if so, count the diamonds at the time of the hatching, and decrement that value from
+// the number of diamonds found.
+// of course, this function is to be called from the cave engine, at the exact time of hatching.
 void gd_cave_count_diamonds(GdCave *cave)
 {
   int x, y;
 
-  /* if automatically counting diamonds. if this was negative,
-   * the sum will be this less than the number of all the diamonds in the cave */
+  // if automatically counting diamonds. if this was negative,
+  // the sum will be this less than the number of all the diamonds in the cave
   if (cave->diamonds_needed <= 0)
   {
     for (y = 0; y < cave->h; y++)
@@ -1135,23 +1139,24 @@ void gd_cave_count_diamonds(GdCave *cave)
 	if (cave->map[y][x] == O_DIAMOND)
 	  cave->diamonds_needed++;
 
-    /* if still below zero, let this be 0, so gate will be open immediately */
+    // if still below zero, let this be 0, so gate will be open immediately
     if (cave->diamonds_needed < 0)
       cave->diamonds_needed = 0;
   }
 }
 
-/* takes a cave and a gfx buffer, and fills the buffer with cell indexes.
-   the indexes might change if bonus life flash is active (small lines in
-   "SPACE" cells),
-   for the paused state (which is used in gdash but not in sdash) - yellowish
-   color.
-   also one can select the animation frame (0..7) to draw the cave on. so the
-   caller manages
-   increasing that.
+/*
+  takes a cave and a gfx buffer, and fills the buffer with cell indexes.
+  the indexes might change if bonus life flash is active (small lines in
+  "SPACE" cells),
+  for the paused state (which is used in gdash but not in sdash) - yellowish
+  color.
+  also one can select the animation frame (0..7) to draw the cave on. so the
+  caller manages
+  increasing that.
 
-   if a cell is changed, it is flagged with GD_REDRAW; the flag can be cleared
-   by the caller.
+  if a cell is changed, it is flagged with GD_REDRAW; the flag can be cleared
+  by the caller.
 */
 void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox)
@@ -1164,20 +1169,20 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
 
   if (cave->last_direction)
   {
-    /* he is moving, so stop blinking and tapping. */
+    // he is moving, so stop blinking and tapping.
     player_blinking = 0;
     player_tapping = 0;
   }
   else
   {
-    /* he is idle, so animations can be done. */
+    // he is idle, so animations can be done.
     if (animcycle == 0)
     {
-      /* blinking and tapping is started at the beginning of animation sequences. */
-      /* 1/4 chance of blinking, every sequence. */
+      // blinking and tapping is started at the beginning of animation sequences.
+      // 1/4 chance of blinking, every sequence.
       player_blinking = gd_random_int_range(0, 4) == 0;
 
-      /* 1/16 chance of starting or stopping tapping. */
+      // 1/16 chance of starting or stopping tapping.
       if (gd_random_int_range(0, 16) == 0)
 	player_tapping = !player_tapping;
     }
@@ -1211,11 +1216,11 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
   elemdrawing[O_REPLICATOR_SWITCH] = gd_elements[cave->replicators_active ? O_REPLICATOR_SWITCH_ON : O_REPLICATOR_SWITCH_OFF].image_game;
 
   if (cave->replicators_active)
-    /* if the replicators are active, animate them. */
+    // if the replicators are active, animate them.
     elemmapping[O_REPLICATOR] = O_REPLICATOR_ACTIVE;
 
   if (!cave->replicators_active)
-    /* if the replicators are inactive, do not animate them. */
+    // if the replicators are inactive, do not animate them.
     elemdrawing[O_REPLICATOR] = ABS(elemdrawing[O_REPLICATOR]);
 
   elemmapping[O_CONVEYOR_SWITCH] = (cave->conveyor_belts_active ? O_CONVEYOR_SWITCH_ON : O_CONVEYOR_SWITCH_OFF);
@@ -1223,7 +1228,7 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
 
   if (cave->conveyor_belts_direction_changed)
   {
-    /* if direction is changed, animation is changed. */
+    // if direction is changed, animation is changed.
     int temp;
 
     elemmapping[O_CONVEYOR_LEFT] = O_CONVEYOR_RIGHT;
@@ -1244,23 +1249,23 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
 
   if (cave->conveyor_belts_active)
   {
-    /* keep potentially changed direction */
+    // keep potentially changed direction
     int offset = (O_CONVEYOR_LEFT_ACTIVE - O_CONVEYOR_LEFT);
 
-    /* if they are running, animate them. */
+    // if they are running, animate them.
     elemmapping[O_CONVEYOR_LEFT]  += offset;
     elemmapping[O_CONVEYOR_RIGHT] += offset;
   }
   if (!cave->conveyor_belts_active)
   {
-    /* if they are not running, do not animate them. */
+    // if they are not running, do not animate them.
     elemdrawing[O_CONVEYOR_LEFT] = ABS(elemdrawing[O_CONVEYOR_LEFT]);
     elemdrawing[O_CONVEYOR_RIGHT] = ABS(elemdrawing[O_CONVEYOR_RIGHT]);
   }
 
   if (animcycle & 2)
   {
-    /* also a hack, like biter_switch */
+    // also a hack, like biter_switch
     elemdrawing[O_PNEUMATIC_ACTIVE_LEFT]  += 2;
     elemdrawing[O_PNEUMATIC_ACTIVE_RIGHT] += 2;
     elemdrawing[O_PLAYER_PNEUMATIC_LEFT]  += 2;
@@ -1269,7 +1274,7 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
 
   if ((cave->last_direction) == GD_MV_STILL)
   {
-    /* player is idle. */
+    // player is idle.
     if (player_blinking && player_tapping)
     {
       map = O_PLAYER_TAP_BLINK;
@@ -1298,7 +1303,7 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
   }
   else
   {
-    /* of course this is GD_MV_RIGHT. */
+    // of course this is GD_MV_RIGHT.
     map = O_PLAYER_RIGHT;
     draw = gd_elements[O_PLAYER_RIGHT].image_game;
   }
@@ -1309,8 +1314,8 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
   elemdrawing[O_PLAYER] = draw;
   elemdrawing[O_PLAYER_GLUED] = draw;
 
-  /* player with bomb does not blink or tap - no graphics drawn for that.
-     running is drawn using w/o bomb cells */
+  // player with bomb does not blink or tap - no graphics drawn for that.
+  // running is drawn using w/o bomb cells */
   if (cave->last_direction != GD_MV_STILL)
   {
     elemmapping[O_PLAYER_BOMB] = map;
@@ -1323,26 +1328,26 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
   elemmapping[O_OUTBOX] = (cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED);
   elemdrawing[O_OUTBOX] = gd_elements[cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED].image_game;
 
-  /* hack, not fit into gd_elements */
+  // hack, not fit into gd_elements
   elemmapping[O_BITER_SWITCH] = O_BITER_SWITCH_1 + cave->biter_delay_frame;
-  /* hack, not fit into gd_elements */
+  // hack, not fit into gd_elements
   elemdrawing[O_BITER_SWITCH] = gd_elements[O_BITER_SWITCH].image_game + cave->biter_delay_frame;
 
-  /* visual effects */
+  // visual effects
   elemmapping[O_DIRT] = cave->dirt_looks_like;
   elemmapping[O_EXPANDING_WALL] = cave->expanding_wall_looks_like;
   elemmapping[O_V_EXPANDING_WALL] = cave->expanding_wall_looks_like;
   elemmapping[O_H_EXPANDING_WALL] = cave->expanding_wall_looks_like;
   elemmapping[O_AMOEBA_2] = cave->amoeba_2_looks_like;
 
-  /* visual effects */
+  // visual effects
   elemdrawing[O_DIRT] = elemdrawing[cave->dirt_looks_like];
   elemdrawing[O_EXPANDING_WALL] = elemdrawing[cave->expanding_wall_looks_like];
   elemdrawing[O_V_EXPANDING_WALL] = elemdrawing[cave->expanding_wall_looks_like];
   elemdrawing[O_H_EXPANDING_WALL] = elemdrawing[cave->expanding_wall_looks_like];
   elemdrawing[O_AMOEBA_2] = elemdrawing[cave->amoeba_2_looks_like];
 
-  /* change only graphically */
+  // change only graphically
   if (hate_invisible_outbox)
   {
     elemmapping[O_PRE_INVIS_OUTBOX] = O_PRE_OUTBOX;
@@ -1361,27 +1366,27 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
     {
       GdElement actual = cave->map[y][x];
 
-      /* if covered, real element is not important */
+      // if covered, real element is not important
       if (actual & COVERED)
 	map = O_COVERED;
       else
 	map = elemmapping[actual];
 
-      /* if covered, real element is not important */
+      // if covered, real element is not important
       if (actual & COVERED)
 	draw = gd_elements[O_COVERED].image_game;
       else
 	draw = elemdrawing[actual];
 
-      /* if negative, animated. */
+      // if negative, animated.
       if (draw < 0)
 	draw = -draw + animcycle;
 
-      /* flash */
+      // flash
       if (cave->gate_open_flash)
 	draw += GD_NUM_OF_CELLS;
 
-      /* set to buffer, with caching */
+      // set to buffer, with caching
       if (element_buffer[y][x] != map)
 	element_buffer[y][x] = map;
 
@@ -1391,12 +1396,15 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
   }
 }
 
-/* cave time is rounded _UP_ to seconds. so at the exact moment when it
-   changes from
-   2sec remaining to 1sec remaining, the player has exactly one second.
-   when it changes
-   to zero, it is the exact moment of timeout. */
-/* internal time is milliseconds (or 1200 milliseconds for pal timing). */
+/*
+  cave time is rounded _UP_ to seconds. so at the exact moment when it
+  changes from
+  2sec remaining to 1sec remaining, the player has exactly one second.
+  when it changes
+  to zero, it is the exact moment of timeout.
+
+  internal time is milliseconds (or 1200 milliseconds for pal timing).
+*/
 int gd_cave_time_show(const GdCave *cave, int internal_time)
 {
   return (internal_time + cave->timing_factor - 1) / cave->timing_factor;
@@ -1418,7 +1426,7 @@ GdReplay *gd_replay_new_from_replay(GdReplay *orig)
 
   rep = get_memcpy(orig, sizeof(GdReplay));
 
-  /* replicate dynamic data */
+  // replicate dynamic data
   rep->comment = getStringCopy(orig->comment);
   rep->movements = get_memcpy(orig->movements, sizeof(GdReplayMovements));
 
@@ -1432,7 +1440,7 @@ void gd_replay_free(GdReplay *replay)
   free(replay);
 }
 
-/* store movement in a replay */
+// store movement in a replay
 void gd_replay_store_movement(GdReplay *replay, GdDirection player_move,
 			      boolean player_fire, boolean suicide)
 {
@@ -1451,7 +1459,7 @@ void gd_replay_store_movement(GdReplay *replay, GdDirection player_move,
   }
 }
 
-/* calculate adler checksum for a rendered cave; this can be used for more caves. */
+// calculate adler checksum for a rendered cave; this can be used for more caves.
 void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b)
 {
   int x, y;
@@ -1467,7 +1475,7 @@ void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b)
     }
 }
 
-/* calculate adler checksum for a single rendered cave. */
+// calculate adler checksum for a single rendered cave.
 unsigned int gd_cave_adler_checksum(GdCave *cave)
 {
   unsigned int a = 1;

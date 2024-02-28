@@ -41,7 +41,7 @@
 #include <time.h>
 
 #if defined(PLATFORM_WINDOWS)
-#include <process.h>	/* for getpid() */
+#include <process.h>	// for getpid()
 #endif
 
 #include "main_bd.h"
@@ -54,14 +54,14 @@
  * accessed through the gd_rand_* functions.
  **/
 
-/* Period parameters */
+// Period parameters
 #define N 624
 #define M 397
-#define MATRIX_A   0x9908b0df /* constant vector a */
-#define UPPER_MASK 0x80000000 /* most significant w-r bits */
-#define LOWER_MASK 0x7fffffff /* least significant r bits */
+#define MATRIX_A   0x9908b0df // constant vector a
+#define UPPER_MASK 0x80000000 // most significant w-r bits
+#define LOWER_MASK 0x7fffffff // least significant r bits
 
-/* Tempering parameters */
+// Tempering parameters
 #define TEMPERING_MASK_B 0x9d2c5680
 #define TEMPERING_MASK_C 0xefc60000
 #define TEMPERING_SHIFT_U(y)  (y >> 11)
@@ -71,7 +71,7 @@
 
 struct _GdRand
 {
-  unsigned int mt[N]; /* the array for the state vector  */
+  unsigned int mt[N]; // the array for the state vector
   unsigned int mti;
 };
 
@@ -176,7 +176,7 @@ gd_rand_new (void)
     seed[2] = getpid ();
     seed[3] = getppid ();
   }
-#else /* PLATFORM_WINDOWS */
+#else // PLATFORM_WINDOWS
   /* rand_s() is only available since Visual Studio 2005 and
    * MinGW-w64 has a wrapper that will emulate rand_s() if it's not in msvcrt
    */
@@ -254,9 +254,9 @@ gd_rand_set_seed (GdRand *rand, unsigned int seed)
   if (rand == NULL)
     return;
 
-  /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
-  /* In the previous version (see above), MSBs of the    */
-  /* seed affect only MSBs of the array mt[].            */
+  // See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier.
+  // In the previous version (see above), MSBs of the
+  // seed affect only MSBs of the array mt[].
 
   rand->mt[0] = seed;
   for (rand->mti = 1; rand->mti < N; rand->mti++)
@@ -295,8 +295,8 @@ gd_rand_set_seed_array (GdRand *rand, const unsigned int *seed, unsigned int see
   for (; k; k--)
   {
     rand->mt[i] = ((rand->mt[i] ^ ((rand->mt[i - 1] ^ (rand->mt[i - 1] >> 30)) * 1664525UL))
-		   + seed[j] + j);	/* non linear */
-    rand->mt[i] &= 0xffffffffUL;	/* for WORDSIZE > 32 machines */
+		   + seed[j] + j);	// non linear
+    rand->mt[i] &= 0xffffffffUL;	// for WORDSIZE > 32 machines
     i++;
     j++;
 
@@ -313,8 +313,8 @@ gd_rand_set_seed_array (GdRand *rand, const unsigned int *seed, unsigned int see
   for (k = N - 1; k; k--)
   {
     rand->mt[i] = ((rand->mt[i] ^ ((rand->mt[i - 1] ^ (rand->mt[i - 1] >> 30)) * 1566083941UL))
-		   - i);		/* non linear */
-    rand->mt[i] &= 0xffffffffUL;	/* for WORDSIZE > 32 machines */
+		   - i);		// non linear
+    rand->mt[i] &= 0xffffffffUL;	// for WORDSIZE > 32 machines
     i++;
 
     if (i >= N)
@@ -324,7 +324,7 @@ gd_rand_set_seed_array (GdRand *rand, const unsigned int *seed, unsigned int see
     }
   }
 
-  rand->mt[0] = 0x80000000UL;		/* MSB is 1; assuring non-zero initial array */
+  rand->mt[0] = 0x80000000UL;		// MSB is 1; assuring non-zero initial array
 }
 
 /**
@@ -350,14 +350,14 @@ gd_rand_int (GdRand *rand)
 {
   unsigned int y;
   static const unsigned int mag01[2] = { 0x0, MATRIX_A };
-  /* mag01[x] = x * MATRIX_A  for x=0,1 */
+  // mag01[x] = x * MATRIX_A  for x=0,1
 
   if (rand == NULL)
     return 0;
 
   if (rand->mti >= N)
   {
-    /* generate N words at one time */
+    // generate N words at one time
     int kk;
 
     for (kk = 0; kk < N - M; kk++)
@@ -414,9 +414,9 @@ gd_rand_int_range (GdRand *rand, int begin, int end)
    * multiple of dist less or equal 2^32.
    */
   unsigned int maxvalue;
-  if (dist <= 0x80000000u) /* 2^31 */
+  if (dist <= 0x80000000u) // 2^31
   {
-    /* maxvalue = 2^32 - 1 - (2^32 % dist) */
+    // maxvalue = 2^32 - 1 - (2^32 % dist)
     unsigned int leftover = (0x80000000u % dist) * 2;
     if (leftover >= dist) leftover -= dist;
     maxvalue = 0xffffffffu - leftover;
@@ -440,7 +440,7 @@ get_global_random (void)
 {
   static GdRand *global_random;
 
-  /* called while locked */
+  // called while locked
   if (!global_random)
     global_random = gd_rand_new();
 

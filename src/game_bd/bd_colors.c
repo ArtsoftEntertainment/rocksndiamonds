@@ -37,31 +37,31 @@ static char *c64_color_names[] =
   "Gray3",
 };
 
-/* return c64 color with index. */
+// return c64 color with index.
 GdColor gd_c64_color(int index)
 {
   return (GD_COLOR_TYPE_C64 << 24) + index;
 }
 
-/* return atari color with index. */
+// return atari color with index.
 GdColor gd_atari_color(int index)
 {
   return (GD_COLOR_TYPE_ATARI << 24) + index;
 }
 
-/* return c64dtv color with index. */
+// return c64dtv color with index.
 GdColor gd_c64dtv_color(int index)
 {
   return (GD_COLOR_TYPE_C64DTV << 24) + index;
 }
 
-/* return "unknown color" */
+// return "unknown color"
 static GdColor unknown_color(void)
 {
   return (GD_COLOR_TYPE_UNKNOWN << 24);
 }
 
-/* make up GdColor from r,g,b values. */
+// make up GdColor from r,g,b values.
 GdColor gd_color_get_from_rgb(int r, int g, int b)
 {
   return (GD_COLOR_TYPE_RGB << 24) + (r << 16) + (g << 8) + b;
@@ -75,7 +75,7 @@ GdColor gd_color_get_from_string(const char *color)
     if (strEqualCase(color, c64_color_names[i]))
       return gd_c64_color(i);
 
-  /* we do not use sscanf(color, "atari..." as may be lowercase */
+  // we do not use sscanf(color, "atari..." as may be lowercase
   if (strEqualCaseN(color, "Atari", strlen("Atari")))
   {
     const char *b = color + strlen("Atari");
@@ -89,7 +89,7 @@ GdColor gd_color_get_from_string(const char *color)
     return unknown_color();
   }
 
-  /* we do not use sscanf(color, "c64dtv..." as may be lowercase */
+  // we do not use sscanf(color, "c64dtv..." as may be lowercase
   if (strEqualCaseN(color, "C64DTV", strlen("C64DTV")))
   {
     const char *b = color + strlen("C64DTV");
@@ -103,7 +103,7 @@ GdColor gd_color_get_from_string(const char *color)
     return unknown_color();
   }
 
-  /* may or may not have a # */
+  // may or may not have a #
   if (color[0] == '#')
     color++;
 
@@ -166,14 +166,14 @@ boolean gd_color_is_unknown(GdColor color)
 
 GdColor gd_gdash_color(int c)
 {
-  /* these values are taken from the title screen, drawn by cws. */
-  /* so menus and everything else will look nice! */
-  /* the 16 colors that can be used are the same as on c64. */
-  /* "Black", "White", "Red", "Cyan", "Purple", "Green", "Blue", "Yellow", */
-  /* "Orange", "Brown", "LightRed", "Gray1", "Gray2", "LightGreen", "LightBlue", "Gray3", */
-  /* not in the png: cyan, purple. gray3 is darker in the png. */
-  /* 17th color is the player's leg in the png. i not connected it to any c64 */
-  /* color, but it is used for theme images for example. */
+  // these values are taken from the title screen, drawn by cws.
+  // so menus and everything else will look nice!
+  // the 16 colors that can be used are the same as on c64.
+  // "Black", "White", "Red", "Cyan", "Purple", "Green", "Blue", "Yellow",
+  // "Orange", "Brown", "LightRed", "Gray1", "Gray2", "LightGreen", "LightBlue", "Gray3",
+  // not in the png: cyan, purple. gray3 is darker in the png.
+  // 17th color is the player's leg in the png. i not connected it to any c64
+  // color, but it is used for theme images for example.
   const GdColor gdash_colors[] =
   {
     0x000000, 0xffffff, 0xe33939, 0x55aaaa, 0xaa55aa, 0x71aa55, 0x0039ff, 0xffff55,

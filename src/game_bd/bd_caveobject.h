@@ -22,20 +22,20 @@
 
 typedef enum _gd_object_type
 {
-  NONE,                     /* this one to be zero. */
-  GD_POINT,                 /* single point of object1 */
-  GD_LINE,                  /* line from (1) to (2) of object1 */
-  GD_RECTANGLE,             /* rectangle with corners (1) and (2) of object1 */
-  GD_FILLED_RECTANGLE,      /* rectangle with corners (1) and (2) of object1, filled with object2 */
-  GD_RASTER,                /* aligned plots */
-  GD_JOIN,                  /* every object1 has an object2 next to it, relative (dx,dy) */
-  GD_FLOODFILL_REPLACE,     /* fill by replacing */
-  GD_FLOODFILL_BORDER,      /* fill to another element, a border */
-  GD_MAZE,                  /* maze */
-  GD_MAZE_UNICURSAL,        /* unicursal maze */
-  GD_MAZE_BRAID,            /* braid maze */
-  GD_RANDOM_FILL,           /* random fill */
-  GD_COPY_PASTE,            /* copy & paste with optional mirror and flip */
+  NONE,                     // this one to be zero.
+  GD_POINT,                 // single point of object1
+  GD_LINE,                  // line from (1) to (2) of object1
+  GD_RECTANGLE,             // rectangle with corners (1) and (2) of object1
+  GD_FILLED_RECTANGLE,      // rectangle with corners (1) and (2) of object1, filled with object2
+  GD_RASTER,                // aligned plots
+  GD_JOIN,                  // every object1 has an object2 next to it, relative (dx,dy)
+  GD_FLOODFILL_REPLACE,     // fill by replacing
+  GD_FLOODFILL_BORDER,      // fill to another element, a border
+  GD_MAZE,                  // maze
+  GD_MAZE_UNICURSAL,        // unicursal maze
+  GD_MAZE_BRAID,            // braid maze
+  GD_RANDOM_FILL,           // random fill
+  GD_COPY_PASTE,            // copy & paste with optional mirror and flip
 } GdObjectType;
 
 typedef enum _gd_object_levels
@@ -57,20 +57,20 @@ extern GdObjectLevels gd_levels_mask[];
 
 typedef struct _gd_object
 {
-  GdObjectType type;        /* type */
-  GdObjectLevels levels;    /* levels to show this object on */
+  GdObjectType type;                    // type
+  GdObjectLevels levels;                // levels to show this object on
 
-  int x1, y1;               /* (first) coordinate */
-  int x2, y2;               /* second coordinate */
-  int dx, dy;               /* distance of elements for raster or join */
-  GdElement element, fill_element;   /* element type */
+  int x1, y1;                           // (first) coordinate
+  int x2, y2;                           // second coordinate
+  int dx, dy;                           // distance of elements for raster or join
+  GdElement element, fill_element;      // element type
 
-  int seed[5];              /* for maze and random fill */
-  int horiz;                /* for maze */
+  int seed[5];                          // for maze and random fill
+  int horiz;                            // for maze
 
-  boolean mirror, flip;     /* for copy */
+  boolean mirror, flip;                 // for copy
 
-  boolean c64_random;       /* random fill objects: use c64 random generator */
+  boolean c64_random;                   // random fill objects: use c64 random generator
 
   GdElement random_fill[4];
   int random_fill_probability[4];

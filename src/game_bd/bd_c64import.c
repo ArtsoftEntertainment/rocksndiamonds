@@ -17,10 +17,10 @@
 #include "main_bd.h"
 
 
-/* make all caves selectable. */
+// make all caves selectable.
 static boolean gd_import_as_all_caves_selectable = TRUE;
 
-/* conversion table for imported bd1 caves. */
+// conversion table for imported bd1 caves.
 static const GdElement bd1_import_table[] =
 {
   /*  0 */ O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
@@ -29,7 +29,8 @@ static const GdElement bd1_import_table[] =
   /*  c */ O_FIREFLY_1, O_FIREFLY_2, O_FIREFLY_3, O_FIREFLY_4,
   /* 10 */ O_STONE, O_STONE, O_STONE_F, O_STONE_F,
   /* 14 */ O_DIAMOND, O_DIAMOND, O_DIAMOND_F, O_DIAMOND_F,
-  /* 18 */ O_ACID, O_ACID, O_EXPLODE_1, O_EXPLODE_2,    /* ACID: marek roth extension in crazy dream 3 */
+  // ----- ACID: marek roth extension in crazy dream 3
+  /* 18 */ O_ACID, O_ACID, O_EXPLODE_1, O_EXPLODE_2,
   /* 1c */ O_EXPLODE_3, O_EXPLODE_4, O_EXPLODE_5, O_PRE_DIA_1,
   /* 20 */ O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4, O_PRE_DIA_5,
   /* 24 */ O_PRE_DIA_5, O_INBOX, O_PRE_PL_1, O_PRE_PL_2,
@@ -41,7 +42,7 @@ static const GdElement bd1_import_table[] =
   /* 3c */ O_VOODOO, O_INVIS_OUTBOX, O_SLIME, O_UNKNOWN
 };
 
-/* conversion table for imported plck caves. */
+// conversion table for imported plck caves.
 static const GdElement plck_import_nybble[] =
 {
   /*  0 */ O_STONE, O_DIAMOND, O_MAGIC_WALL, O_BRICK,
@@ -50,7 +51,7 @@ static const GdElement plck_import_nybble[] =
   /* 12 */ O_PRE_INVIS_OUTBOX, O_PRE_OUTBOX, O_INBOX, O_SPACE
 };
 
-/* conversion table for imported 1stb caves. */
+// conversion table for imported 1stb caves.
 static const GdElement firstboulder_import_table[] =
 {
   /*  0 */ O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
@@ -63,7 +64,8 @@ static const GdElement firstboulder_import_table[] =
   /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1,
   /* 20 */ O_PRE_DIA_1, O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4,
   /* 24 */ O_PRE_DIA_5, O_INBOX, O_PRE_PL_1, O_PRE_PL_2,
-  /* 28 */ O_PRE_PL_3, O_CLOCK, O_H_EXPANDING_WALL, O_H_EXPANDING_WALL,    /* CLOCK: not mentioned in marek's bd inside faq */
+  // ----- CLOCK: not mentioned in marek's bd inside faq
+  /* 28 */ O_PRE_PL_3, O_CLOCK, O_H_EXPANDING_WALL, O_H_EXPANDING_WALL,
   /* 2c */ O_CREATURE_SWITCH, O_CREATURE_SWITCH, O_EXPANDING_WALL_SWITCH, O_EXPANDING_WALL_SWITCH,
   /* 30 */ O_BUTTER_3, O_BUTTER_4, O_BUTTER_1, O_BUTTER_2,
   /* 34 */ O_BUTTER_3, O_BUTTER_4, O_BUTTER_1, O_BUTTER_2,
@@ -87,7 +89,7 @@ static const GdElement firstboulder_import_table[] =
   /* 7c */ O_BITER_1, O_BITER_2, O_BITER_3, O_BITER_4,
 };
 
-/* conversion table for imported crazy dream caves. */
+// conversion table for imported crazy dream caves.
 static const GdElement crazydream_import_table[] =
 {
   /*  0 */ O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
@@ -97,10 +99,11 @@ static const GdElement crazydream_import_table[] =
   /* 10 */ O_STONE, O_STONE, O_STONE_F, O_STONE_F,
   /* 14 */ O_DIAMOND, O_DIAMOND, O_DIAMOND_F, O_DIAMOND_F,
   /* 18 */ O_PRE_CLOCK_1, O_PRE_CLOCK_2, O_PRE_CLOCK_3, O_PRE_CLOCK_4,
-  /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1,    /* 6 different stages */
+  /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1, // 6 different stages
   /* 20 */ O_PRE_DIA_1, O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4,
   /* 24 */ O_PRE_DIA_5, O_INBOX, O_PRE_PL_1, O_PRE_PL_2,
-  /* 28 */ O_PRE_PL_3, O_CLOCK, O_H_EXPANDING_WALL, O_H_EXPANDING_WALL,    /* CLOCK: not mentioned in marek's bd inside faq */
+  // ----- CLOCK: not mentioned in marek's bd inside faq
+  /* 28 */ O_PRE_PL_3, O_CLOCK, O_H_EXPANDING_WALL, O_H_EXPANDING_WALL,
   /* 2c */ O_CREATURE_SWITCH, O_CREATURE_SWITCH, O_EXPANDING_WALL_SWITCH, O_EXPANDING_WALL_SWITCH,
   /* 30 */ O_BUTTER_3, O_BUTTER_4, O_BUTTER_1, O_BUTTER_2,
   /* 34 */ O_BUTTER_3, O_BUTTER_4, O_BUTTER_1, O_BUTTER_2,
@@ -159,7 +162,7 @@ static const GdElement crazydream_import_table[] =
   /* fc */ O_WATER, O_WATER, O_WATER, O_WATER,
 };
 
-/* conversion table for imported 1stb caves. */
+// conversion table for imported 1stb caves.
 const GdElement gd_crazylight_import_table[] =
 {
   /*  0 */ O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
@@ -169,10 +172,11 @@ const GdElement gd_crazylight_import_table[] =
   /* 10 */ O_STONE, O_STONE|SCANNED, O_STONE_F, O_STONE_F|SCANNED,
   /* 14 */ O_DIAMOND, O_DIAMOND|SCANNED, O_DIAMOND_F, O_DIAMOND_F|SCANNED,
   /* 18 */ O_PRE_CLOCK_1, O_PRE_CLOCK_2, O_PRE_CLOCK_3, O_PRE_CLOCK_4,
-  /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1,    /* 6 different stages, the first is the pre_dia_0 */
+  /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1, // 6 different stages, the first is the pre_dia_0
   /* 20 */ O_PRE_DIA_1, O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4,
   /* 24 */ O_PRE_DIA_5, O_INBOX, O_PRE_PL_1, O_PRE_PL_2,
-  /* 28 */ O_PRE_PL_3, O_CLOCK, O_H_EXPANDING_WALL, O_H_EXPANDING_WALL|SCANNED,    /* CLOCK: not mentioned in marek's bd inside faq */
+  // ----- CLOCK: not mentioned in marek's bd inside faq
+  /* 28 */ O_PRE_PL_3, O_CLOCK, O_H_EXPANDING_WALL, O_H_EXPANDING_WALL|SCANNED,
   /* 2c */ O_CREATURE_SWITCH, O_CREATURE_SWITCH, O_EXPANDING_WALL_SWITCH, O_EXPANDING_WALL_SWITCH,
   /* 30 */ O_BUTTER_3, O_BUTTER_4, O_BUTTER_1, O_BUTTER_2,
   /* 34 */ O_BUTTER_3|SCANNED, O_BUTTER_4|SCANNED, O_BUTTER_1|SCANNED, O_BUTTER_2|SCANNED,
@@ -252,7 +256,7 @@ GdPropertyDefault gd_defaults_bd2[] =
   {CAVE_OFFSET(level_hatching_delay_time[0]), 2},
   {CAVE_OFFSET(intermission_instantlife), TRUE},
   {CAVE_OFFSET(intermission_rewardlife), FALSE},
-  {CAVE_OFFSET(magic_wall_stops_amoeba), FALSE},    /* marek roth bd inside faq 3.0 */
+  {CAVE_OFFSET(magic_wall_stops_amoeba), FALSE},    // marek roth bd inside faq 3.0
   {CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE},
   {CAVE_OFFSET(pushing_stone_prob), 250000},
   {CAVE_OFFSET(pushing_stone_prob_sweet), 1000000},
@@ -330,7 +334,7 @@ GdPropertyDefault gd_defaults_1stb[] =
 
   {CAVE_OFFSET(pal_timing), TRUE},
   {CAVE_OFFSET(scheduling), GD_SCHEDULING_PLCK},
-  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1},    /* not immediately to diamond, but with animation */
+  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1},    // not immediately to diamond, but with animation
   {CAVE_OFFSET(dirt_looks_like), O_DIRT2},
 
   {-1},
@@ -363,10 +367,10 @@ GdPropertyDefault gd_defaults_crdr_7[] =
 
   {CAVE_OFFSET(pal_timing), TRUE},
   {CAVE_OFFSET(scheduling), GD_SCHEDULING_CRDR},
-  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1},    /* not immediately to diamond, but with animation */
+  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1}, // not immediately to diamond, but with animation
   {CAVE_OFFSET(water_does_not_flow_down), TRUE},
-  {CAVE_OFFSET(skeletons_worth_diamonds), 1},    /* in crdr, skeletons can also be used to open the gate */
-  {CAVE_OFFSET(gravity_affects_all), FALSE},    /* the intermission "survive" needs this flag */
+  {CAVE_OFFSET(skeletons_worth_diamonds), 1},         // in crdr, skeletons can also be used to open the gate
+  {CAVE_OFFSET(gravity_affects_all), FALSE},          // the intermission "survive" needs this flag
 
   {-1},
 };
@@ -397,17 +401,18 @@ GdPropertyDefault gd_defaults_crli[] =
 
   {CAVE_OFFSET(pal_timing), TRUE},
   {CAVE_OFFSET(scheduling), GD_SCHEDULING_PLCK},
-  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1},    /* not immediately to diamond, but with animation */
+  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1},    // not immediately to diamond, but with animation
 
   {-1},
 };
 
-/* internal character (letter) codes in c64 games.
-   missing: "triple line" after >, diamond between ()s, player's head after )
-   used for converting names of caves imported from crli and other types of binary data */
-const char gd_bd_internal_chars[] = "            ,!./0123456789:*<=>  ABCDEFGHIJKLMNOPQRSTUVWXYZ( ) _";
+// internal character (letter) codes in c64 games.
+// missing: "triple line" after >, diamond between ()s, player's head after )
+// used for converting names of caves imported from crli and other types of binary data
+const char gd_bd_internal_chars[] =
+  "            ,!./0123456789:*<=>  ABCDEFGHIJKLMNOPQRSTUVWXYZ( ) _";
 
-/* used for bdcff engine flag. */
+// used for bdcff engine flag.
 const char *gd_engines[] =
 {
   "BD1",
@@ -418,7 +423,7 @@ const char *gd_engines[] =
   "CrLi"
 };
 
-/* to convert predictable slime values to bit masks */
+// to convert predictable slime values to bit masks
 static int slime_shift_msb(int c64_data)
 {
   int i, perm;
@@ -426,7 +431,7 @@ static int slime_shift_msb(int c64_data)
   perm = 0;
 
   for (i = 0; i < c64_data; i++)
-    /* shift in this many msb 1's */
+    // shift in this many msb 1's
     perm = (0x100|perm) >> 1;
 
   return perm;
@@ -442,7 +447,7 @@ static GdElement bd1_import(byte c, int i)
   return O_UNKNOWN;
 }
 
-/* deluxe caves 1 contained a special element, non-sloped brick. */
+// deluxe caves 1 contained a special element, non-sloped brick.
 static GdElement deluxecaves_1_import(byte c, int i)
 {
   GdElement e = bd1_import(c, i);
@@ -466,7 +471,7 @@ static GdElement firstboulder_import(byte c, int i)
 static GdElement crazylight_import(byte c, int i)
 {
   if (c < ARRAY_SIZE(gd_crazylight_import_table))
-    return gd_crazylight_import_table[c] & O_MASK;    /* & O_MASK: do not import "scanned" flag */
+    return gd_crazylight_import_table[c] & O_MASK;    // & O_MASK: do not import "scanned" flag
 
   Warn("Invalid CrLi element in imported file at cave data %d: %d", i, c);
 
@@ -501,7 +506,7 @@ GdPropertyDefault *gd_get_engine_default_array(GdEngine engine)
       return gd_defaults_crli;
       break;
 
-      /* to avoid compiler warning */
+      // to avoid compiler warning
     case GD_ENGINE_INVALID:
       break;
   }
@@ -513,8 +518,8 @@ void gd_cave_set_engine_defaults(GdCave *cave, GdEngine engine)
 {
   gd_cave_set_defaults_from_array(cave, gd_get_engine_default_array(engine));
 
-  /* these have hardcoded ckdelay. */
-  /* setting this ckdelay array does not fit into the gd_struct_default scheme. */
+  // these have hardcoded ckdelay.
+  // setting this ckdelay array does not fit into the gd_struct_default scheme.
   if (engine == GD_ENGINE_BD1)
   {
     cave->level_ckdelay[0] = 12;
@@ -526,11 +531,11 @@ void gd_cave_set_engine_defaults(GdCave *cave, GdEngine engine)
 
   if (engine == GD_ENGINE_BD2)
   {
-    cave->level_ckdelay[0] = 9;    /* 180ms */
-    cave->level_ckdelay[1] = 8;    /* 160ms */
-    cave->level_ckdelay[2] = 7;    /* 140ms */
-    cave->level_ckdelay[3] = 6;    /* 120ms */
-    cave->level_ckdelay[4] = 6;    /* 120ms (!) not faster than level4 */
+    cave->level_ckdelay[0] = 9;    // 180ms
+    cave->level_ckdelay[1] = 8;    // 160ms
+    cave->level_ckdelay[2] = 7;    // 140ms
+    cave->level_ckdelay[3] = 6;    // 120ms
+    cave->level_ckdelay[4] = 6;    // 120ms (!) not faster than level4
   }
 }
 
@@ -545,13 +550,13 @@ GdEngine gd_cave_get_engine_from_string(const char *param)
   return GD_ENGINE_INVALID;
 }
 
-/****************************************************************************
- *
- * cave import routines.
- * take a cave, data, and maybe remaining bytes.
- * return the number of bytes read, -1 if error.
- *
- ****************************************************************************/
+// ============================================================================
+//
+// cave import routines.
+// take a cave, data, and maybe remaining bytes.
+// return the number of bytes read, -1 if error.
+//
+// ============================================================================
 
 /*
   take care of required diamonds values == 0 or > 100.
@@ -564,7 +569,7 @@ GdEngine gd_cave_get_engine_from_string(const char *param)
   http://www.boulder-dash.nl/forum/viewtopic.php?t=88
 */
 
-/* import bd1 cave data into our format. */
+// import bd1 cave data into our format.
 static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_bytes,
 			      GdCavefileFormat format)
 {
@@ -577,7 +582,7 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
   GdElement (* import_func) (byte c, int i);
   int i;
 
-  /* cant be shorted than this: header + no objects + delimiter */
+  // cant be shorted than this: header + no objects + delimiter
   if (remaining_bytes < 33)
   {
     Error("truncated BD1 cave data, %d bytes", remaining_bytes);
@@ -595,14 +600,14 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
   else
     import_func = bd1_import;
 
-  /* set visible size for intermission */
+  // set visible size for intermission
   if (cave->intermission)
   {
     cave->x2 = 19;
     cave->y2 = 11;
   }
 
-  /* cave number data[0] */
+  // cave number data[0]
   cave->diamond_value = data[2];
   cave->extra_diamond_value = data[3];
 
@@ -610,47 +615,48 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
   {
     cave->level_amoeba_time[level] = data[1];
 
-    /* 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02. */
+    // 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
     if (cave->level_amoeba_time[level] == 0)
       cave->level_amoeba_time[level] = 999;
 
     cave->level_magic_wall_time[level] = data[1];
     cave->level_rand[level] = data[4 + level];
-    cave->level_diamonds[level] = data[9 + level] % 100;    /* check comment above */
+    cave->level_diamonds[level] = data[9 + level] % 100;    // check comment above
 
-    /* gate opening is checked AFTER adding to diamonds collected, so 0 here means 100 to collect */
+    // gate opening is checked AFTER adding to diamonds collected, so 0 here means 100 to collect
     if (cave->level_diamonds[level] == 0)
       cave->level_diamonds[level] = 100;
     cave->level_time[level] = data[14 + level];
   }
 
-  /* LogicDeLuxe extension: acid
-     $16 Acid speed (unused in the original BD1)
-     $17 Bit 2: if set, Acid's original position converts to explosion puff during spreading.
-     Otherwise, Acid remains intact, ie. it's just growing. (unused in the original BD1)
-     $1C Acid eats this element. (also Probability of element 1)
+  /*
+    LogicDeLuxe extension: acid
+    $16 Acid speed (unused in the original BD1)
+    $17 Bit 2: if set, Acid's original position converts to explosion puff during spreading.
+    Otherwise, Acid remains intact, ie. it's just growing. (unused in the original BD1)
+    $1C Acid eats this element. (also Probability of element 1)
 
-     there is no problem importing these; as other bd1 caves did not contain acid at all,
-     so it does not matter how we set the values.
+    there is no problem importing these; as other bd1 caves did not contain acid at all,
+    so it does not matter how we set the values.
   */
 
-  /* 0x1c index: same as probability1 !!!!! don't be surprised. we do a &0x3f because of this */
+  // 0x1c index: same as probability1 !!!!! don't be surprised. we do a &0x3f because of this
   cave->acid_eats_this = import_func(data[0x1c] & 0x3F, 0x1c);
 
-  /* acid speed, *1e6 as probabilities are stored in int */
+  // acid speed, *1e6 as probabilities are stored in int
   cave->acid_spread_ratio = data[0x16] / 255.0 * 1E6 + 0.5;
 
   cave->acid_turns_to = (data[0x17] & (1 << 2)) ? O_EXPLODE_3 : O_ACID;
 
-  cave->colorb = GD_GDASH_BLACK;    /* border - black */
-  cave->color0 = GD_GDASH_BLACK;    /* background - black */
+  cave->colorb = GD_GDASH_BLACK;    // border - black
+  cave->color0 = GD_GDASH_BLACK;    // background - black
   cave->color1= GD_GDASH_RED;
   cave->color2 = GD_GDASH_PURPLE;
   cave->color3 = GD_GDASH_YELLOW;
-  cave->color4 = cave->color3;    /* in bd1, amoeba was color3 */
-  cave->color5 = cave->color3;    /* no slime, but let it be color 3 */
+  cave->color4 = cave->color3;    // in bd1, amoeba was color3
+  cave->color5 = cave->color3;    // no slime, but let it be color 3
 
-  /* random fill */
+  // random fill
   for (i = 0; i < 4; i++)
   {
     cave->random_fill[i] = import_func(data[24 + i], 24 + i);
@@ -666,13 +672,13 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
   {
     code = data[index];
 
-    /* crazy dream 3 extension: */
+    // crazy dream 3 extension:
     if (code == 0x0f)
     {
       int x1, y1, nx, ny, dx, dy;
       int x, y;
 
-      /* as this one uses nonstandard dx dy values, create points instead */
+      // as this one uses nonstandard dx dy values, create points instead
       elem = import_func(data[index + 1], index + 1);
       x1 = data[index + 2];
       y1 = data[index + 3] - 2;
@@ -695,12 +701,12 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
     }
     else
     {
-      /* object is code & 3f, object type is upper 2 bits */
+      // object is code & 3f, object type is upper 2 bits
       elem = import_func(code & 0x3F, index);
 
       switch ((code >> 6) & 3)
       {
-	case 0:                /* 00: POINT */
+	case 0:                // 00: POINT
 	  x1 = data[index + 1];
 	  y1 = data[index + 2] - 2;
 
@@ -712,7 +718,7 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 	  index += 3;
 	  break;
 
-	case 1:                /* 01: LINE */
+	case 1:                // 01: LINE
 	  x1 = data[index + 1];
 	  y1 = data[index + 2] - 2;
 	  length = (byte)data[index + 3] - 1;
@@ -745,11 +751,11 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 	  index += 5;
 	  break;
 
-	case 2:                /* 10: FILLED RECTANGLE */
+	case 2:                // 10: FILLED RECTANGLE
 	  x1 = data[index + 1];
 	  y1 = data[index + 2] - 2;
-	  x2 = x1 + data[index + 3] - 1;    /* width */
-	  y2 = y1 + data[index + 4] - 1;    /* height */
+	  x2 = x1 + data[index + 3] - 1;    // width
+	  y2 = y1 + data[index + 4] - 1;    // height
 
 	  if (x1 >= cave->w ||
 	      y1 >= cave->h ||
@@ -762,7 +768,7 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 	  index += 6;
 	  break;
 
-	case 3:                /* 11: OPEN RECTANGLE (OUTLINE) */
+	case 3:                // 11: OPEN RECTANGLE (OUTLINE)
 	  x1 = data[index + 1];
 	  y1 = data[index + 2] - 2;
 	  x2 = x1 + data[index + 3] - 1;
@@ -791,8 +797,8 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
   return index + 1;
 }
 
-/* import bd2 cave data into our format. return number of bytes if pointer passed.
-   this is pretty much the same as above, only the encoding was different. */
+// import bd2 cave data into our format. return number of bytes if pointer passed.
+// this is pretty much the same as above, only the encoding was different.
 static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_bytes,
 			      GdCavefileFormat format)
 {
@@ -813,7 +819,7 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
   if (format == GD_FORMAT_BD2_ATARI)
     cave->scheduling = GD_SCHEDULING_BD2_PLCK_ATARI;
 
-  /* set visible size for intermission */
+  // set visible size for intermission
   if (cave->intermission)
   {
     cave->x2 = 19;
@@ -825,11 +831,11 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 
   for (i = 0; i < 5; i++)
   {
-    /* 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02. */
+    // 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
     cave->level_amoeba_time[i] = data[0] == 0 ? 999 : data[0];
     cave->level_rand[i] = data[13 + i];
 
-    /* gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed */
+    // gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed
     cave->level_diamonds[i] = data[8 + i] == 0 ? 1000 : data[8 + i];
     cave->level_time[i] = data[3 + i];
     cave->level_magic_wall_time[i] = data[0];
@@ -855,12 +861,12 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 
     switch (data[index])
     {
-      case 0:                /* LINE */
+      case 0:                // LINE
 	elem = bd1_import(data[index + 1], index + 1);
 	y1 = data[index + 2];
 	x1 = data[index + 3];
 
-	/* they are multiplied by two - 0 is up, 2 is upright, 4 is right... */
+	// they are multiplied by two - 0 is up, 2 is upright, 4 is right...
 	direction = data[index + 4] / 2;
 	length = data[index + 5] - 1;
 
@@ -884,11 +890,11 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	index += 6;
 	break;
 
-      case 1:                /* OPEN RECTANGLE */
+      case 1:                // OPEN RECTANGLE
 	elem = bd1_import(data[index + 1], index + 1);
 	y1 = data[index + 2];
 	x1 = data[index + 3];
-	y2 = y1 + data[index + 4] - 1;    /* height */
+	y2 = y1 + data[index + 4] - 1;    // height
 	x2 = x1 + data[index + 5] - 1;
 
 	if (x1 >= cave->w ||
@@ -902,7 +908,7 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	index += 6;
 	break;
 
-      case 2:                /* FILLED RECTANGLE */
+      case 2:                // FILLED RECTANGLE
 	elem = bd1_import(data[index + 1], index + 1);
 	y1 = data[index + 2];
 	x1 = data[index + 3];
@@ -920,7 +926,7 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	index += 7;
 	break;
 
-      case 3:                /* POINT */
+      case 3:                // POINT
 	elem = bd1_import(data[index + 1], index + 1);
 	y1 = data[index + 2];
 	x1 = data[index + 3];
@@ -934,18 +940,18 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	index += 4;
 	break;
 
-      case 4:                /* RASTER */
+      case 4:                // RASTER
 	elem = bd1_import(data[index + 1], index + 1);
-	y1 = data[index + 2];   /* starting pos */
+	y1 = data[index + 2];     // starting pos
 	x1 = data[index + 3];
-	ny = data[index + 4] - 1; /* number of elements */
+	ny = data[index + 4] - 1; // number of elements
 	nx = data[index + 5] - 1;
-	dy = data[index + 6];   /* displacement */
+	dy = data[index + 6];     // displacement
 	dx = data[index + 7];
-	y2 = y1 + dy * ny;    /* calculate rectangle */
+	y2 = y1 + dy * ny;        // calculate rectangle
 	x2 = x1 + dx * nx;
 
-	/* guess this has to be here, after x2,y2 calculation, because of some bugs in imported data */
+	// guess this has to be here, after x2,y2 calculation, because of some bugs in imported data
 	if (dy < 1)
 	  dy = 1;
 	if (dx < 1)
@@ -963,18 +969,18 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	break;
 
       case 5:
-	/* profi boulder extension: bitmap */
+	// profi boulder extension: bitmap
 	elem = bd1_import(data[index + 1], index + 1);
-	bytes = data[index + 2];    /* number of bytes in bitmap */
+	bytes = data[index + 2];    // number of bytes in bitmap
 
 	if (bytes >= cave->w * cave->h / 8)
 	  Warn("invalid bitmap length at byte %d", index - 4);
 
 	addr = 0;
-	addr += data[index + 3];    /*msb */
-	addr += data[index + 4] << 8;    /*lsb */
+	addr += data[index + 3];         // msb
+	addr += data[index + 4] << 8;    // lsb
 
-	/* this was a pointer to the cave work memory (used during game). */
+	// this was a pointer to the cave work memory (used during game).
 	addr -= 0x0850;
 
 	if (addr >= cave->w * cave->h)
@@ -985,40 +991,40 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 
 	for (i = 0; i < bytes; i++)
 	{
-	  /* for ("bytes" number of bytes) */
+	  // for ("bytes" number of bytes)
 	  val = data[index + 5 + i];
 
 	  for (n = 0; n < 8; n++)
 	  {
-	    /* for (8 bits in a byte) */
-	    if ((val & 1) != 0) /* convert to single points... */
+	    // for (8 bits in a byte)
+	    if ((val & 1) != 0) // convert to single points...
 	      cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
 
 	    val >>= 1;
-	    x1++;   /* next cave pos */
+	    x1++;   // next cave pos
 
 	    if (x1 >= cave->w)
 	    {
-	      /* maybe next line in map */
+	      // maybe next line in map
 	      x1 = 0;
 	      y1++;
 	    }
 	  }
 	}
 
-	index += 5 + bytes;    /* 5 description bytes and "bytes" data bytes */
+	index += 5 + bytes;    // 5 description bytes and "bytes" data bytes
 	break;
 
-      case 6:                /* JOIN */
+      case 6:                // JOIN
 	dy = data[index + 3] / 40;
-	dx = data[index + 3] % 40;    /* same byte!!! */
+	dx = data[index + 3] % 40;    // same byte!!!
 	cave->objects = list_append(cave->objects, gd_object_new_join(GD_OBJECT_LEVEL_ALL, dx, dy, bd1_import(data[index+1], index+1), bd1_import(data[index+2], index+2)));
 
 	index += 4;
 	break;
 
-      case 7:             /* SLIME PERMEABILITY */
-	/* interesting this is set here, and not in the cave header */
+      case 7:             // SLIME PERMEABILITY
+	// interesting this is set here, and not in the cave header
 	for (i = 0; i < 5; i++)
 	  cave->level_slime_permeability_c64[i] = data[index + 1];
 
@@ -1026,8 +1032,8 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	break;
 
       case 9:
-	/* profi boulder extension by player: plck-like cave map. the import
-	   routine (any2gdash) inserts it here. */
+	// profi boulder extension by player: plck-like cave map. the import
+	// routine (any2gdash) inserts it here.
 	if (cave->map != NULL)
 	{
 	  Error("contains more than one PLCK map");
@@ -1038,32 +1044,32 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 
 	for (x = 0; x < cave->w; x++)
 	{
-	  /* fill the first and the last row with steel wall. */
+	  // fill the first and the last row with steel wall.
 	  cave->map[0][x] = O_STEEL;
 	  cave->map[cave->h - 1][x] = O_STEEL;
 	}
 
-	n = 0;    /* number of bytes read from map */
+	n = 0;    // number of bytes read from map
 
-	/* the first and the last rows are not stored. */
+	// the first and the last rows are not stored.
 	for (y = 1; y < cave->h - 1; y++)
 	{
 	  for (x = 0; x < cave->w; x += 2)
 	  {
-	    cave->map[y][x]     = plck_import_nybble[data[index + 3 + n] >> 4];    /* msb 4 bits */
-	    cave->map[y][x + 1] = plck_import_nybble[data[index + 3 + n] % 16];    /* lsb 4 bits */
+	    cave->map[y][x]     = plck_import_nybble[data[index + 3 + n] >> 4];    // msb 4 bits
+	    cave->map[y][x + 1] = plck_import_nybble[data[index + 3 + n] % 16];    // lsb 4 bits
 	    n++;
 	  }
 	}
 
-	/* the position of inbox is stored. this is to check the cave */
+	// the position of inbox is stored. this is to check the cave
 	ry = data[index + 1] - 2;
 	rx = data[index + 2];
 
-	/* at the start of the cave, bd scrolled to the last player placed during the drawing
-	   (setup) of the cave.
-	   i think this is why a map also stored the coordinates of the player - we can use
-	   this to check its integrity */
+	// at the start of the cave, bd scrolled to the last player placed during the drawing
+	// (setup) of the cave.
+	// i think this is why a map also stored the coordinates of the player - we can use
+	// this to check its integrity
 	if (rx >= cave->w || ry < 0 ||
 	    ry >= cave->h || cave->map[ry][rx] != O_INBOX)
 	  Warn ("embedded PLCK map may be corrupted, player coordinates %d,%d", rx, rx);
@@ -1074,7 +1080,7 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
       default:
 	Warn ("unknown bd2 extension no. %02x at byte %d", data[index], index);
 
-	index += 1;    /* skip that byte */
+	index += 1;    // skip that byte
     }
   }
 
@@ -1084,32 +1090,32 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
     return -1;
   }
 
-  /* skip delimiter */
+  // skip delimiter
   index++;
 
-  /* animation byte - told the engine which objects to animate - to make game faster */
+  // animation byte - told the engine which objects to animate - to make game faster
   index++;
 
-  /* the colors from the memory dump are appended here by any2gdash */
-  cave->colorb = GD_GDASH_BLACK;    /* border - black */
-  cave->color0 = GD_GDASH_BLACK;    /* background - black */
+  // the colors from the memory dump are appended here by any2gdash
+  cave->colorb = GD_GDASH_BLACK;    // border - black
+  cave->color0 = GD_GDASH_BLACK;    // background - black
   cave->color1 = GD_GDASH_RED;
   cave->color2 = GD_GDASH_PURPLE;
   cave->color3 = GD_GDASH_YELLOW;
-  cave->color4 = cave->color3;    /* in bd1, amoeba was color3 */
-  cave->color5 = cave->color3;    /* no slime, but let it be color 3 */
+  cave->color4 = cave->color3;      // in bd1, amoeba was color3
+  cave->color5 = cave->color3;      // no slime, but let it be color 3
 
   return index;
 }
 
-/* import plck cave data into our format.
-   length is always 512 bytes, and contains if it is an intermission cave. */
+// import plck cave data into our format.
+// length is always 512 bytes, and contains if it is an intermission cave.
 static int cave_copy_from_plck(GdCave *cave, const byte *data,
 			       int remaining_bytes, GdCavefileFormat format)
 {
-  /* i don't really think that all this table is needed, but included to be complete. */
-  /* this is for the dirt and expanding wall looks like effect. */
-  /* it also contains the individual frames */
+  // i don't really think that all this table is needed, but included to be complete.
+  // this is for the dirt and expanding wall looks like effect.
+  // it also contains the individual frames
   static GdElement plck_graphic_table[] =
   {
     /* 3000 */ O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
@@ -1141,32 +1147,32 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
 
   if (cave->intermission)
   {
-    /* set visible size for intermission */
+    // set visible size for intermission
     cave->x2 = 19;
     cave->y2 = 11;
   }
 
-  /* cave selection table, was not part of cave data, rather given in game packers.
-   * if a new enough version of any2gdash is used, it will put information after the cave.
-   * detect this here and act accordingly */
+  // cave selection table, was not part of cave data, rather given in game packers.
+  // if a new enough version of any2gdash is used, it will put information after the cave.
+  // detect this here and act accordingly
   if ((data[0x1f0] == data[0x1f1] - 1) &&
       (data[0x1f0] == 0x19 ||
        data[0x1f0] == 0x0e))
   {
     int j;
 
-    /* found selection table */
+    // found selection table
     cave->selectable = data[0x1f0] == 0x19;
     gd_strcpy(cave->name, "              ");
 
     for (j = 0; j < 12; j++)
       cave->name[j] = data[0x1f2 + j];
 
-    chompString(cave->name);    /* remove spaces */
+    chompString(cave->name);    // remove spaces
   }
   else
   {
-    /* no selection info found, let intermissions be unselectable */
+    // no selection info found, let intermissions be unselectable
     cave->selectable = !cave->intermission;
   }
 
@@ -1175,17 +1181,17 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
 
   for (i = 0; i < 5; i++)
   {
-    /* plck doesnot really have levels, so just duplicate data five times */
+    // plck doesnot really have levels, so just duplicate data five times
     cave->level_amoeba_time[i] = data[0x1c4];
 
-    /* immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02. */
+    // immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
     if (cave->level_amoeba_time[i] == 0)
       cave->level_amoeba_time[i] = 999;
 
     cave->level_time[i] = data[0x1ba];
     cave->level_diamonds[i] = data[0x1bc];
 
-    /* gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed */
+    // gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed
     if (cave->level_diamonds[i] == 0)
       cave->level_diamonds[i] = 1000;
 
@@ -1194,36 +1200,37 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     cave->level_slime_permeability_c64[i] = slime_shift_msb(data[0x1c2]);
   }
 
-  cave->colorb = GD_GDASH_BLACK;    /* border - black */
-  cave->color0 = GD_GDASH_BLACK;    /* background - black */
+  cave->colorb = GD_GDASH_BLACK;    // border - black
+  cave->color0 = GD_GDASH_BLACK;    // background - black
   cave->color1 = GD_GDASH_RED;
   cave->color2 = GD_GDASH_PURPLE;
   cave->color3 = GD_GDASH_YELLOW;
-  cave->color4 = cave->color3;    /* in bd1, amoeba was color3 */
-  cave->color5 = cave->color3;    /* no slime, but let it be color 3 */
+  cave->color4 = cave->color3;      // in bd1, amoeba was color3
+  cave->color5 = cave->color3;      // no slime, but let it be color 3
 
-  /* ... the cave is stored like a map. */
+  // ... the cave is stored like a map.
   cave->map = gd_cave_map_new(cave, GdElement);
 
-  /* cave map looked like this. */
-  /* two rows of steel wall ($44's), then cave description, 20 bytes (40 nybbles) for each line. */
-  /* the bottom and top lines were not stored... originally. */
-  /* some games write to the top line; so we import that, too. */
-  /* also dlp 155 allowed writing to the bottom line; the first 20 $44-s now store the bottom line. */
-  /* so the cave is essentially shifted one row down in the file: cave->map[y][x] = data[... y+1 mod height ][x] */
+  // cave map looked like this.
+  // two rows of steel wall ($44's), then cave description, 20 bytes (40 nybbles) for each line.
+  // the bottom and top lines were not stored... originally.
+  // some games write to the top line; so we import that, too.
+  // also dlp 155 allowed writing to the bottom line; the first 20 $44-s now store the bottom line.
+  // so the cave is essentially shifted one row down in the file:
+  // cave->map[y][x] = data[... y+1 mod height ][x]
   for (y = 0; y < cave->h; y++)
   {
     for (x = 0; x < cave->w; x += 2)
     {
-      /* msb 4 bits: we do not check index ranges, as >>4 and %16 will result in 0..15 */
+      // msb 4 bits: we do not check index ranges, as >>4 and %16 will result in 0..15
       cave->map[y][x]     = plck_import_nybble[data[((y + 1) % cave->h) * 20 + x / 2] >> 4];
 
-      /* lsb 4 bits */
+      // lsb 4 bits
       cave->map[y][x + 1] = plck_import_nybble[data[((y + 1) % cave->h) * 20 + x / 2] % 16];
     }
   }
 
-  /* FOR NOW, WE DO NOT IMPORT THE BOTTOM BORDER */
+  // FOR NOW, WE DO NOT IMPORT THE BOTTOM BORDER
   for (x = 0; x < cave->w; x++)
     cave->map[cave->h - 1][x] = O_STEEL;
 
@@ -1232,8 +1239,8 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     cave->map[cave->h - 1][0] = cave->map[cave->h - 1][1] = O_STEEL;
   */
 
-  /* check for diego-effects */
-  /* c64 magic values (byte sequences)  0x20 0x90 0x46, also 0xa9 0x1c 0x85 */
+  // check for diego-effects
+  // c64 magic values (byte sequences)  0x20 0x90 0x46, also 0xa9 0x1c 0x85
   if ((data[0x1e5] == 0x20 &&
        data[0x1e6] == 0x90 &&
        data[0x1e7] == 0x46) ||
@@ -1241,21 +1248,23 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
        data[0x1e6] == 0x1c &&
        data[0x1e7] == 0x85))
   {
-    /* diego effects enabled. */
+    // diego effects enabled.
     cave->stone_bouncing_effect = bd1_import(data[0x1ea], 0x1ea);
     cave->diamond_falling_effect = bd1_import(data[0x1eb], 0x1eb);
 
-    /* explosions: 0x1e was explosion 5, if this is set to default, we also do not read it,
-       as in our engine this would cause an O_EXPLODE_5 to stay there. */
+    // explosions: 0x1e was explosion 5, if this is set to default, we also do not read it,
+    // as in our engine this would cause an O_EXPLODE_5 to stay there.
     if (data[0x1ec] != 0x1e)
       cave->explosion_effect = bd1_import(data[0x1ec], 0x1ec);
 
-    /* pointer to element graphic.
-       two bytes/column (one element), that is data[xxx] % 16 / 2.
-       also there are 16bytes/row.
-       that is, 0x44 = stone, upper left character. 0x45 = upper right,
-       0x54 = lower right, 0x55 = lower right.
-       so high nybble must be shifted right twice -> data[xxx]/16*4. */
+    /*
+      pointer to element graphic.
+      two bytes/column (one element), that is data[xxx] % 16 / 2.
+      also there are 16bytes/row.
+      that is, 0x44 = stone, upper left character. 0x45 = upper right,
+      0x54 = lower right, 0x55 = lower right.
+      so high nybble must be shifted right twice -> data[xxx]/16*4.
+    */
     cave->dirt_looks_like           = plck_graphic_table[(data[0x1ed] / 16) * 4 + (data[0x1ed] % 16) / 2];
     cave->expanding_wall_looks_like = plck_graphic_table[(data[0x1ee] / 16) * 4 + (data[0x1ee] % 16) / 2];
 
@@ -1266,36 +1275,36 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
   return 512;
 }
 
-/* no one's delight boulder dash essentially: rle compressed plck maps. */
+// no one's delight boulder dash essentially: rle compressed plck maps.
 static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_bytes)
 {
   byte decomp[512];
   enum
   {
-    START,        /* initial state */
-    SEPARATOR,    /* got a separator */
-    RLE,          /* after a separator, got the byte to duplicate */
-    NORMAL        /* normal, copy bytes till separator */
+    START,        // initial state
+    SEPARATOR,    // got a separator
+    RLE,          // after a separator, got the byte to duplicate
+    NORMAL        // normal, copy bytes till separator
   } state;
   int pos, cavepos, i, x, y;
   byte byte, separator;
 
-  gd_cave_set_engine_defaults(cave, GD_ENGINE_PLCK); /* essentially the plck engine */
+  gd_cave_set_engine_defaults(cave, GD_ENGINE_PLCK); // essentially the plck engine
 
   for (i = 0; i < 5; i++)
   {
-    /* does not really have levels, so just duplicate data five times */
+    // does not really have levels, so just duplicate data five times
     cave->level_time[i] = data[1];
     cave->level_diamonds[i] = data[2];
 
-    /* gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed */
+    // gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed
     if (cave->level_diamonds[i] == 0)
       cave->level_diamonds[i] = 1000;
 
     cave->level_ckdelay[i] = data[0];
     cave->level_amoeba_time[i] = data[6];
 
-    /* 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02. */
+    // 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
     if (cave->level_amoeba_time[i] == 0)
       cave->level_amoeba_time[i] = 999;
 
@@ -1306,22 +1315,22 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
   cave->diamond_value = data[3];
   cave->extra_diamond_value = data[4];
 
-  /* then 5 color bytes follow */
-  cave->colorb = gd_c64_color(data[8]  & 0xf);    /* border */
+  // then 5 color bytes follow
+  cave->colorb = gd_c64_color(data[8]  & 0xf);    // border
   cave->color0 = gd_c64_color(data[9]  & 0xf);
   cave->color1 = gd_c64_color(data[10] & 0xf);
   cave->color2 = gd_c64_color(data[11] & 0xf);
-  cave->color3 = gd_c64_color(data[12] & 0x7);     /* lower 3 bits only! */
-  cave->color4 = cave->color3;    /* in plck, amoeba was color3 */
-  cave->color5 = cave->color3;    /* same for slime */
+  cave->color3 = gd_c64_color(data[12] & 0x7);    // lower 3 bits only!
+  cave->color4 = cave->color3;                    // in plck, amoeba was color3
+  cave->color5 = cave->color3;                    // same for slime
 
-  /* cave map */
-  pos = 13;    /* those 13 bytes were the cave values above */
+  // cave map
+  pos = 13;                     // those 13 bytes were the cave values above
   cavepos = 0;
-  byte = 0;                    /* just to get rid of compiler warning */
-  separator = 0;               /* just to get rid of compiler warning */
+  byte = 0;                     // just to get rid of compiler warning
+  separator = 0;                // just to get rid of compiler warning
 
-  /* employ a state machine. */
+  // employ a state machine.
   state = START;
 
   while (cavepos < 400 && pos < remaining_bytes)
@@ -1329,25 +1338,25 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
     switch (state)
     {
       case START:
-	/* first byte is a separator. remember it */
+	// first byte is a separator. remember it
 	separator = data[pos];
 
-	/* after the first separator, no rle data, just copy. */
+	// after the first separator, no rle data, just copy.
 	state = NORMAL;
 	break;
 
       case SEPARATOR:
-	/* we had a separator. remember this byte, as this will be duplicated (or more) */
+	// we had a separator. remember this byte, as this will be duplicated (or more)
 	byte = data[pos];
 	state = RLE;
 	break;
 
       case RLE:
-	/* we had the first byte, duplicate this n times. */
+	// we had the first byte, duplicate this n times.
 	if (data[pos] == 0xff)
 	{
-	  /* if it is a 0xff, we will have another byte, which is also a length specifier. */
-	  /* and for this one, duplicate only 254 times */
+	  // if it is a 0xff, we will have another byte, which is also a length specifier.
+	  // and for this one, duplicate only 254 times
 	  if (cavepos + 254 > 400)
 	  {
 	    Error("DLB import error: RLE data overflows buffer");
@@ -1359,7 +1368,7 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
 	}
 	else
 	{
-	  /* if not 0xff, duplicate n times and back to copy mode */
+	  // if not 0xff, duplicate n times and back to copy mode
 	  if (cavepos + data[pos] > 400)
 	  {
 	    Error("DLB import error: RLE data overflows buffer");
@@ -1374,11 +1383,11 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
 	break;
 
       case NORMAL:
-	/* bytes duplicated; now only copy the remaining, till the next separator. */
+	// bytes duplicated; now only copy the remaining, till the next separator.
 	if (data[pos] == separator)
 	  state = SEPARATOR;
 	else
-	  decomp[cavepos++] = data[pos];    /* copy this byte and state is still NORMAL */
+	  decomp[cavepos++] = data[pos];    // copy this byte and state is still NORMAL
 	break;
     }
 
@@ -1391,12 +1400,12 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
     return -1;
   }
 
-  /* process uncompressed map */
+  // process uncompressed map
   cave->map = gd_cave_map_new(cave, GdElement);
 
   for (x = 0; x < cave->w; x++)
   {
-    /* fill the first and the last row with steel wall. */
+    // fill the first and the last row with steel wall.
     cave->map[0][x] = O_STEEL;
     cave->map[cave->h - 1][x] = O_STEEL;
   }
@@ -1405,18 +1414,18 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
   {
     for (x = 0; x < cave->w; x += 2)
     {
-      /* msb 4 bits */
+      // msb 4 bits
       cave->map[y][x]     = plck_import_nybble[decomp[((y - 1) * cave->w + x) / 2] >> 4];
-      /* lsb 4 bits */
+      // lsb 4 bits
       cave->map[y][x + 1] = plck_import_nybble[decomp[((y - 1) * cave->w + x) / 2] % 16];
     }
   }
 
-  /* return number of bytes read from buffer */
+  // return number of bytes read from buffer
   return pos;
 }
 
-/* import plck cave data into our format. */
+// import plck cave data into our format.
 static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_bytes)
 {
   int i;
@@ -1431,14 +1440,14 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
 
   gd_cave_set_engine_defaults(cave, GD_ENGINE_1STB);
 
-  /* copy name */
+  // copy name
   gd_strcpy(cave->name, "              ");
 
   for (i = 0; i < 14; i++)
   {
     int c = data[0x3a0 + i];
 
-    /* import cave name; a conversion table is used for each character */
+    // import cave name; a conversion table is used for each character
     if (c < 0x40)
       c = gd_bd_internal_chars[c];
     else if (c == 0x74)
@@ -1446,7 +1455,7 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
     else if (c == 0x76)
       c = '?';
     else
-      c = ' ';    /* don't know this, so change to space */
+      c = ' ';    // don't know this, so change to space
 
     if (i > 0)
       c = tolower(c);
@@ -1458,7 +1467,7 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
 
   cave->intermission = data[0x389] != 0;
 
-  /* if it is intermission but not scrollable */
+  // if it is intermission but not scrollable
   if (cave->intermission && !data[0x38c])
   {
     cave->x2 = 19;
@@ -1470,23 +1479,23 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
 
   for (i = 0; i < 5; i++)
   {
-    /* plck doesnot really have levels, so just duplicate data five times */
+    // plck doesnot really have levels, so just duplicate data five times
     cave->level_time[i] = 100 * data[0x370] + 10 * data[0x370+1] + data[0x370 + 2];
 
-    /* same as gate opening after 0 diamonds */
+    // same as gate opening after 0 diamonds
     if (cave->level_time[i] == 0)
       cave->level_time[i] = 1000;
 
     cave->level_diamonds[i] = 100 * data[0x373] + 10 * data[0x373 + 1] + data[0x373 + 2];
 
-    /* gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 (!) needed */
+    // gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 (!) needed
     if (cave->level_diamonds[i] == 0)
       cave->level_diamonds[i] = 1000;
 
     cave->level_ckdelay[i] = data[0x38a];
     cave->level_amoeba_time[i] = 256 * (int)data[0x37c] + data[0x37d];
 
-    /* 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02. */
+    // 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
     if (cave->level_amoeba_time[i] == 0)
       cave->level_amoeba_time[i] = 999;
 
@@ -1497,16 +1506,16 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
     cave->level_amoeba_threshold[i] = 256 * (int)data[0x390] + data[0x390 + 1];
   }
 
-  /* also has no random data... */
-  cave->colorb = gd_c64_color(data[0x384] & 0xf);    /* border */
+  // also has no random data...
+  cave->colorb = gd_c64_color(data[0x384] & 0xf);    // border
   cave->color0 = gd_c64_color(data[0x385] & 0xf);
   cave->color1 = gd_c64_color(data[0x386] & 0xf);
   cave->color2 = gd_c64_color(data[0x387] & 0xf);
-  cave->color3 = gd_c64_color(data[0x388] & 0x7);     /* lower 3 bits only! */
+  cave->color3 = gd_c64_color(data[0x388] & 0x7);     // lower 3 bits only!
   cave->color4 = cave->color1;
   cave->color5 = cave->color1;
 
-  cave->amoeba_growth_prob = (4.0 * 1E6 / (data[0x382] + 1)) + 0.5;   /* probabilities store *1M */
+  cave->amoeba_growth_prob = (4.0 * 1E6 / (data[0x382] + 1)) + 0.5;   // probabilities store *1M
   if (cave->amoeba_growth_prob > 1000000)
     cave->amoeba_growth_prob = 1000000;
 
@@ -1519,7 +1528,7 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
   else
     cave->diagonal_movements = data[0x381] != 0;
 
-  /* ... the cave is stored like a map. */
+  // ... the cave is stored like a map.
   cave->map = gd_cave_map_new(cave, GdElement);
   for (y = 0; y < cave->h; y++)
     for (x = 0; x < cave->w; x++)
@@ -1527,14 +1536,14 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
 
   cave->magic_wall_sound = data[0x38d] == 0xf1;
 
-  /* 2d was a normal switch, 2e a changed one. */
+  // 2d was a normal switch, 2e a changed one.
   cave->creatures_backwards = data[0x38f] == 0x2d;
 
-  /* 2e horizontal, 2f vertical. */
+  // 2e horizontal, 2f vertical.
   cave->expanding_wall_changed = data[0x38e] == 0x2f;
 
   cave->biter_delay_frame	= data[0x394];
-  cave->magic_wall_stops_amoeba	= data[0x395] == 0;    /* negated!! */
+  cave->magic_wall_stops_amoeba	= data[0x395] == 0;    // negated!!
 
   cave->bomb_explosion_effect	= firstboulder_import(data[0x396], 0x396);
   cave->explosion_effect	= firstboulder_import(data[0x397], 0x397);
@@ -1551,24 +1560,24 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
   cave->slime_converts_2	= firstboulder_import(data[0x39f] + 3, 0x39f);
   cave->magic_diamond_to	= firstboulder_import(data[0x39a], 0x39a);
 
-  /* length is always 1024 bytes */
+  // length is always 1024 bytes
   return 1024;
 }
 
-/* crazy dream 7 */
+// crazy dream 7
 static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_bytes)
 {
   int i, index;
   byte checksum;
 
-  /* if we have name, convert */
+  // if we have name, convert
   gd_strcpy(cave->name, "              ");
 
   for (i = 0; i < 14; i++)
   {
     int c = data[i];
 
-    /* import cave name; a conversion table is used for each character */
+    // import cave name; a conversion table is used for each character
     if (c < 0x40)
       c = gd_bd_internal_chars[c];
     else if (c == 0x74)
@@ -1583,11 +1592,11 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
     cave->name[i] = c;
   }
 
-  chompString(cave->name);    /* remove trailing and leading spaces */
+  chompString(cave->name);    // remove trailing and leading spaces
 
   cave->selectable = data[14] != 0;
 
-  /* jump 15 bytes, 14 was the name and 15 selectability */
+  // jump 15 bytes, 14 was the name and 15 selectability
   data += 15;
 
   if (memcmp((char *)data + 0x30, "V4\0020", 4) != 0)
@@ -1599,13 +1608,13 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   {
     cave->level_time[i] = (int)data[0x0] * 100 + data[0x1] * 10 + data[0x2];
 
-    /* same as gate opening after 0 diamonds */
+    // same as gate opening after 0 diamonds
     if (cave->level_time[i] == 0)
       cave->level_time[i] = 1000;
 
     cave->level_diamonds[i] = (int)data[0x3] * 100 + data[0x4] * 10 + data[0x5];
 
-    /* gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 (!) needed */
+    // gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 (!) needed
     if (cave->level_diamonds[i] == 0)
       cave->level_diamonds[i] = 1000;
 
@@ -1613,7 +1622,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
     cave->level_rand[i] = data[0x40];
     cave->level_amoeba_time[i] = (int)data[0xC] * 256 + data[0xD];
 
-    /* 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02. */
+    // 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
     if (cave->level_amoeba_time[i] == 0)
       cave->level_amoeba_time[i] = 999;
 
@@ -1632,34 +1641,35 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   if (data[0x10])
     cave->creatures_direction_auto_change_time = data[0x11];
 
-  cave->colorb = gd_c64_color(data[0x14] & 0xf);    /* border */
+  cave->colorb = gd_c64_color(data[0x14] & 0xf);    // border
   cave->color0 = gd_c64_color(data[0x15] & 0xf);
   cave->color1 = gd_c64_color(data[0x16] & 0xf);
   cave->color2 = gd_c64_color(data[0x17] & 0xf);
-  cave->color3 = gd_c64_color(data[0x18] & 0x7);     /* lower 3 bits only! */
+  cave->color3 = gd_c64_color(data[0x18] & 0x7);    // lower 3 bits only!
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
   cave->intermission = data[0x19] != 0;
 
-  /* if it is intermission but not scrollable */
+  // if it is intermission but not scrollable
   if (cave->intermission && !data[0x1c])
   {
     cave->x2 = 19;
     cave->y2 = 11;
   }
 
-  /* AMOEBA in crazy dash 8:
-     jsr $2500      ; generate true random
-     and $94        ; binary and the current "probability"
-     cmp #$04       ; compare to 4
-     bcs out        ; jump out (do not expand) if carry set, ie. result was less than 4.
+  /*
+    AMOEBA in crazy dash 8:
+    jsr $2500      ; generate true random
+    and $94        ; binary and the current "probability"
+    cmp #$04       ; compare to 4
+    bcs out        ; jump out (do not expand) if carry set, ie. result was less than 4.
 
-     prob values can be like num = 3, 7, 15, 31, 63, ... n lsb bits count.
-     0..3>=4?  0..7>=4?  0..15>=4? and similar.
-     this way, probability of growing is 4/(num+1)
+    prob values can be like num = 3, 7, 15, 31, 63, ... n lsb bits count.
+    0..3>=4?  0..7>=4?  0..15>=4? and similar.
+    this way, probability of growing is 4/(num+1)
   */
 
-  cave->amoeba_growth_prob = (4.0 * 1E6 / (data[0x12] + 1)) + 0.5;   /* probabilities store * 1M */
+  cave->amoeba_growth_prob = (4.0 * 1E6 / (data[0x12] + 1)) + 0.5;   // probabilities store * 1M
   if (cave->amoeba_growth_prob > 1000000)
     cave->amoeba_growth_prob = 1000000;
 
@@ -1667,13 +1677,13 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   if (cave->amoeba_fast_growth_prob > 1000000)
     cave->amoeba_fast_growth_prob = 1000000;
 
-  /* expanding wall direction change - 2e horizontal, 2f vertical */
+  // expanding wall direction change - 2e horizontal, 2f vertical
   cave->expanding_wall_changed = data[0x1e] == 0x2f;
 
-  /* 2c was a normal switch, 2d a changed one. */
+  // 2c was a normal switch, 2d a changed one.
   cave->creatures_backwards	= data[0x1f] == 0x2d;
   cave->biter_delay_frame	= data[0x24];
-  cave->magic_wall_stops_amoeba	= data[0x25] == 0;    /* negated!! */
+  cave->magic_wall_stops_amoeba	= data[0x25] == 0;    // negated!!
 
   cave->bomb_explosion_effect	= crazydream_import_table[data[0x26]];
   cave->explosion_effect	= crazydream_import_table[data[0x27]];
@@ -1704,7 +1714,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
     ie. random<=ratio, then acid grows.
   */
 
-  /* 1e6, probabilities are stored as int */
+  // 1e6, probabilities are stored as int
   cave->acid_spread_ratio = data[0x38] / 255.0 * 1E6 + 0.5;
 
   cave->acid_eats_this = crazydream_import_table[data[0x39]];
@@ -1718,7 +1728,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 
   cave->snap_element = ((data[0x3a] & 4) != 0) ? O_EXPLODE_1 : O_SPACE;
 
-  /* we do not know the values for these, so do not import */
+  // we do not know the values for these, so do not import
   //    cave->dirt_looks_like... data[0x3c]
   //    cave->expanding_wall_looks_like... data[0x3b]
   for (i = 0; i < 4; i++)
@@ -1737,12 +1747,12 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
     int nx, ny;
     int length, direction;
 
-    /* for copy&paste; copy&paste are different objects, static = ugly solution :) */
+    // for copy&paste; copy&paste are different objects, static = ugly solution :)
     static int cx1, cy1, cw, ch;
 
     switch (data[index])
     {
-      case 1:    /* point */
+      case 1:    // point
 	elem = crazydream_import_table[data[index + 1]];
 	x1 = data[index + 2];
 	y1 = data[index + 3];
@@ -1754,12 +1764,12 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	index += 4;
 	break;
 
-      case 2: /* rectangle */
+      case 2: // rectangle
 	elem = crazydream_import_table[data[index + 1]];
 	x1 = data[index + 2];
 	y1 = data[index + 3];
 	x2 = x1 + data[index + 4] - 1;
-	y2 = y1 + data[index + 5] - 1;    /* height */
+	y2 = y1 + data[index + 5] - 1;    // height
 
 	if (x1 >= cave->w ||
 	    y1 >= cave->h ||
@@ -1772,7 +1782,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	index += 6;
 	break;
 
-      case 3: /* fillrect */
+      case 3: // fillrect
 	x1 = data[index + 2];
 	y1 = data[index + 3];
 	x2 = x1 + data[index + 4] - 1;
@@ -1784,13 +1794,13 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	    y2 >= cave->h)
 	  Warn("invalid filled rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	/* border and inside of fill is the same element. */
+	// border and inside of fill is the same element.
 	cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, crazydream_import_table[data[index + 1]], crazydream_import_table[data[index + 1]]));
 
 	index += 6;
 	break;
 
-      case 4: /* line */
+      case 4: // line
 	elem = crazydream_import_table[data[index + 1]];
 	if (elem == O_UNKNOWN)
 	  Warn("unknown element at %d: %x", index + 1, data[index + 1]);
@@ -1804,7 +1814,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	x2 = x1 + (length - 1) * nx;
 	y2 = y1 + (length - 1) * ny;
 
-	/* if either is bigger than one, we cannot treat this as a line. create points instead */
+	// if either is bigger than one, we cannot treat this as a line. create points instead
 	if (ABS(nx) >= 2 || ABS(ny) >= 2)
 	{
 	  for (i = 0; i < length; i++)
@@ -1816,7 +1826,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	}
 	else
 	{
-	  /* this is a normal line, and will be appended. only do the checking here */
+	  // this is a normal line, and will be appended. only do the checking here
 	  if (x1 >= cave->w ||
 	      y1 >= cave->h ||
 	      x2 >= cave->w ||
@@ -1829,7 +1839,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	index += 6;
 	break;
 
-      case 6: /* copy */
+      case 6: // copy
 	cx1 = data[index + 1];
 	cy1 = data[index + 2];
 	cw = data[index + 3];
@@ -1844,14 +1854,14 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	index += 5;
 	break;
 
-      case 7: /* paste */
+      case 7: // paste
 	x1 = cx1;
 	y1 = cy1;
 
-	/* original stored width and height, we store the coordinates of the source area */
+	// original stored width and height, we store the coordinates of the source area
 	x2 = cx1 + cw - 1;
 	y2 = cy1 + ch - 1;
-	dx = data[index + 1];    /* new pos */
+	dx = data[index + 1];    // new pos
 	dy = data[index + 2];
 
 	if (dx >= cave->w ||
@@ -1865,7 +1875,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	index += 3;
 	break;
 
-      case 11: /* raster */
+      case 11: // raster
 	elem = crazydream_import_table[data[index + 1]];
 	x1 = data[index + 2];
 	y1 = data[index + 3];
@@ -1873,7 +1883,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	dy = data[index + 5];
 	nx = data[index + 6] - 1;
 	ny = data[index + 7] - 1;
-	x2 = x1 + dx * nx;    /* calculate rectangle we use */
+	x2 = x1 + dx * nx;    // calculate rectangle we use
 	y2 = y1 + dy * ny;
 
 	if (dx < 1)
@@ -1894,14 +1904,14 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 
       default:
 	Warn ("unknown crdr extension no. %02x at byte %d", data[index], index);
-	index += 1;    /* skip that byte */
+	index += 1;    // skip that byte
 	break;
     }
   }
 
-  index++;    /* skip $ff */
+  index++;    // skip $ff
 
-  /* crazy dream 7 hack */
+  // crazy dream 7 hack
   checksum = 0;
 
   for (i = 0; i < 0x3b0; i++)
@@ -1918,12 +1928,12 @@ static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int 
   byte checksum;
   int i;
 
-  /* crazy dream 9 hack */
+  // crazy dream 9 hack
   checksum = 0;
   for (i = 0; i < length; i++)
     checksum = checksum^buf[i];
 
-  /* check cave name and the checksum. both are hardcoded here */
+  // check cave name and the checksum. both are hardcoded here
   if (strEqual(cave->name, "Rockfall") && checksum == 134)
   {
     GdElement rand[4] = { O_DIAMOND, O_STONE, O_ACID, O_DIRT };
@@ -1956,7 +1966,7 @@ static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int 
 
     cave->objects = list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, 1, 3, O_NONE, O_BLADDER_SPENDER, 50, seeds));
     cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
-    cave->creatures_backwards = TRUE;    /* for some reason, this level worked like that */
+    cave->creatures_backwards = TRUE;    // for some reason, this level worked like that
   }
 
   if (strEqual(cave->name, "All the way") && checksum == 33)
@@ -1965,12 +1975,12 @@ static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int 
 
     cave->objects = list_append(cave->objects, gd_object_new_maze_unicursal(GD_OBJECT_LEVEL_ALL, 1, 1, 35, 19, 1, 1, O_BRICK, O_PRE_DIA_1, 50, seeds));
 
-    /* a point which "breaks" the unicursal maze, making it one very long path */
+    // a point which "breaks" the unicursal maze, making it one very long path
     cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, 35, 18, O_BRICK));
   }
 }
 
-/* crazy light contruction kit */
+// crazy light contruction kit
 static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_bytes)
 {
   byte uncompressed[1024];
@@ -1980,32 +1990,32 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   enum
   {
     none,
-    V2_2,    /* XXX whats the difference between 2.2 and 2.6?*/
+    V2_2,    // XXX whats the difference between 2.2 and 2.6?
     V2_6,
     V3_0
   } version = none;
-  GdElement (*import) (byte c, int i) = NULL;    /* import function */
+  GdElement (*import) (byte c, int i) = NULL;    // import function
 
   gd_cave_set_engine_defaults(cave, GD_ENGINE_CRLI);
 
-  /* detect if this is a cavefile */
+  // detect if this is a cavefile
   if (data[0] == 0 &&
       data[1] == 0xc4 &&
       data[2] == 'D' &&
       data[3] == 'L' &&
       data[4] == 'P')
   {
-    datapos = 5;    /* cavefile, skipping 0x00 0xc4 D L P */
+    datapos = 5;    // cavefile, skipping 0x00 0xc4 D L P
     cavefile = TRUE;
   }
   else
   {
-    /* converted from snapshot, skip "selectable" and 14byte name */
+    // converted from snapshot, skip "selectable" and 14byte name
     datapos = 15;
     cavefile = FALSE;
   }
 
-  /* if we have name, convert */
+  // if we have name, convert
   if (!cavefile)
   {
     gd_strcpy(cave->name, "              ");
@@ -2014,7 +2024,7 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
     {
       int c = data[i + 1];
 
-      /* import cave name; a conversion table is used for each character */
+      // import cave name; a conversion table is used for each character
       if (c < 0x40)
 	c = gd_bd_internal_chars[c];
       else if (c == 0x74)
@@ -2030,15 +2040,15 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
       cave->name[i] = c;
     }
 
-    chompString(cave->name);    /* remove trailing and leading spaces */
+    chompString(cave->name);    // remove trailing and leading spaces
   }
 
-  /* uncompress rle data */
+  // uncompress rle data
   cavepos = 0;
 
   while (cavepos < 0x3b0)
   {
-    /* <- loop until the uncompressed reaches its size */
+    // <- loop until the uncompressed reaches its size
     if (datapos >= remaining_bytes)
     {
       Error("truncated crli cave data");
@@ -2047,7 +2057,7 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
 
     if (data[datapos] == 0xbf)
     {
-      /* magic value 0xbf is the escape byte */
+      // magic value 0xbf is the escape byte
       if (datapos + 2 >= remaining_bytes)
       {
 	Error("truncated crli cave data");
@@ -2056,12 +2066,12 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
 
       if (data[datapos + 2] + datapos >= sizeof(uncompressed))
       {
-	/* we would run out of buffer, this must be some error */
+	// we would run out of buffer, this must be some error
 	Error("invalid crli cave data - RLE length value is too big");
 	return -1;
       }
 
-      /* 0xbf, number, byte to dup */
+      // 0xbf, number, byte to dup
       for (i = 0; i < data[datapos + 2]; i++)
 	uncompressed[cavepos++] = data[datapos + 1];
 
@@ -2073,12 +2083,12 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
     }
   }
 
-  /* check crli version */
+  // check crli version
   for (i = 0; i < ARRAY_SIZE(versions); i++)
     if (memcmp((char *)uncompressed + 0x3a0, versions[i], 4) == 0)
       version = i + 1;
 
-  /* v3.0 has falling wall and box, and no ghost. */
+  // v3.0 has falling wall and box, and no ghost.
   import = version >= V3_0 ? crazylight_import : firstboulder_import;
 
   if (version == none)
@@ -2087,7 +2097,7 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
     import = crazylight_import;
   }
 
-  /* process map */
+  // process map
   cave->map = gd_cave_map_new(cave, GdElement);
 
   for (y = 0; y < cave->h; y++)
@@ -2100,25 +2110,25 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
     }
   }
 
-  /* crli has no levels */
+  // crli has no levels
   for (i = 0; i < 5; i++)
   {
     cave->level_time[i] = (int)uncompressed[0x370] * 100 + uncompressed[0x371] * 10 + uncompressed[0x372];
 
-    /* same as gate opening after 0 diamonds */
+    // same as gate opening after 0 diamonds
     if (cave->level_time[i] == 0)
       cave->level_time[i] = 1000;
 
     cave->level_diamonds[i] = (int)uncompressed[0x373] * 100 + uncompressed[0x374] * 10 + uncompressed[0x375];
 
-    /* gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 (!) needed */
+    // gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 (!) needed
     if (cave->level_diamonds[i] == 0)
       cave->level_diamonds[i] = 1000;
 
     cave->level_ckdelay[i] = uncompressed[0x38A];
     cave->level_amoeba_time[i] = (int)uncompressed[0x37C] * 256 + uncompressed[0x37D];
 
-    /* 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02. */
+    // 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
     if (cave->level_amoeba_time[i] == 0)
       cave->level_amoeba_time[i] = 999;
 
@@ -2135,34 +2145,35 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   if (uncompressed[0x380])
     cave->creatures_direction_auto_change_time = uncompressed[0x381];
 
-  cave->colorb = gd_c64_color(uncompressed[0x384] & 0xf);    /* border */
+  cave->colorb = gd_c64_color(uncompressed[0x384] & 0xf);    // border
   cave->color0 = gd_c64_color(uncompressed[0x385] & 0xf);
   cave->color1 = gd_c64_color(uncompressed[0x386] & 0xf);
   cave->color2 = gd_c64_color(uncompressed[0x387] & 0xf);
-  cave->color3 = gd_c64_color(uncompressed[0x388] & 0x7);    /* lower 3 bits only! */
+  cave->color3 = gd_c64_color(uncompressed[0x388] & 0x7);    // lower 3 bits only!
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
   cave->intermission = uncompressed[0x389] != 0;
 
-  /* if it is intermission but not scrollable */
+  // if it is intermission but not scrollable
   if (cave->intermission && !uncompressed[0x38c])
   {
     cave->x2 = 19;
     cave->y2 = 11;
   }
 
-  /* AMOEBA in crazy dash 8:
-     jsr $2500        ; generate true random
-     and $94            ; binary and the current "probability"
-     cmp #$04        ; compare to 4
-     bcs out            ; jump out (do not expand) if carry set, ie. result was less than 4.
+  /*
+    AMOEBA in crazy dash 8:
+    jsr $2500        ; generate true random
+    and $94            ; binary and the current "probability"
+    cmp #$04        ; compare to 4
+    bcs out            ; jump out (do not expand) if carry set, ie. result was less than 4.
 
-     prob values can be like num = 3, 7, 15, 31, 63, ... n lsb bits count.
-     0..3>=4?  0..7>=4?  0..15>=4? and similar.
-     this way, probability of growing is 4/(num+1)
+    prob values can be like num = 3, 7, 15, 31, 63, ... n lsb bits count.
+    0..3>=4?  0..7>=4?  0..15>=4? and similar.
+    this way, probability of growing is 4/(num+1)
   */
 
-  /* probabilities store * 1M */
+  // probabilities store * 1M
   cave->amoeba_growth_prob = (1E6 * 4.0 / (uncompressed[0x382] + 1)) + 0.5;
 
   if (cave->amoeba_growth_prob > 1000000)
@@ -2173,11 +2184,11 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   if (cave->amoeba_fast_growth_prob > 1000000)
     cave->amoeba_fast_growth_prob = 1000000;
 
-  /* 2c was a normal switch, 2d a changed one. */
+  // 2c was a normal switch, 2d a changed one.
   cave->creatures_backwards = uncompressed[0x38f] == 0x2d;
   cave->magic_wall_sound = uncompressed[0x38d] == 0xf1;
 
-  /* 2e horizontal, 2f vertical. we implement this by changing them */
+  // 2e horizontal, 2f vertical. we implement this by changing them
   if (uncompressed[0x38e] == 0x2f)
   {
     for (y = 0; y < cave->h; y++)
@@ -2191,7 +2202,7 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   }
 
   cave->biter_delay_frame = uncompressed[0x394];
-  cave->magic_wall_stops_amoeba = uncompressed[0x395] == 0;    /* negated!! */
+  cave->magic_wall_stops_amoeba = uncompressed[0x395] == 0;    // negated!!
   cave->bomb_explosion_effect = import(uncompressed[0x396], 0x396);
   cave->explosion_effect = import(uncompressed[0x397], 0x397);
   cave->stone_bouncing_effect = import(uncompressed[0x398], 0x398);
@@ -2206,7 +2217,7 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   cave->slime_eats_2 = import(uncompressed[0x39f], 0x39f);
   cave->slime_converts_2 = import(uncompressed[0x39f] + 3, 0x39f);
 
-  /* v3.0 has some new properties. */
+  // v3.0 has some new properties.
   if (version >= V3_0)
   {
     cave->diagonal_movements = uncompressed[0x3a4] != 0;
@@ -2222,7 +2233,7 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
       ie. random<=ratio, then acid grows.
     */
 
-    /* * 1e6, probabilities are stored as int */
+    // * 1e6, probabilities are stored as int
     cave->acid_spread_ratio = uncompressed[0x3a8] / 255.0 * 1E6;
     cave->acid_eats_this = import(uncompressed[0x3a9], 0x3a9);
     cave->expanding_wall_looks_like = import(uncompressed[0x3ab], 0x3ab);
@@ -2230,8 +2241,8 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   }
   else
   {
-    /* version is <= 3.0, so this is a 1stb cave. */
-    /* the only parameters, for which this matters, are these: */
+    // version is <= 3.0, so this is a 1stb cave.
+    // the only parameters, for which this matters, are these:
     if (uncompressed[0x380] != 0)
       cave->creatures_direction_auto_change_time = uncompressed[0x381];
     else
@@ -2239,9 +2250,9 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   }
 
   if (cavefile)
-    cave->selectable = !cave->intermission;    /* best we can do */
+    cave->selectable = !cave->intermission;     // best we can do
   else
-    cave->selectable = !data[0];    /* given by converter */
+    cave->selectable = !data[0];                // given by converter
 
   return datapos;
 }
@@ -2289,11 +2300,13 @@ GdCavefileFormat gd_caveset_imported_get_format(const byte *buf)
   return GD_FORMAT_UNKNOWN;
 }
 
-/*
-  Load caveset from memory buffer.
-  Loads the caveset from a memory buffer.
-  returns: List * of caves.
-*/
+
+// ----------------------------------------------------------------------------
+//  Load caveset from memory buffer.
+//  Loads the caveset from a memory buffer.
+//  returns: List * of caves.
+// ----------------------------------------------------------------------------
+
 List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 {
   boolean numbering;
@@ -2332,25 +2345,25 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
   while (bufp < length)
   {
     GdCave *newcave;
-    /* default is to append cave to caveset; list_insert appends when pos = -1 */
+    // default is to append cave to caveset; list_insert appends when pos = -1
     int insertpos = -1;
 
     newcave = gd_cave_new();
 
-    cavelength = 0;    /* to avoid compiler warning */
+    cavelength = 0;    // to avoid compiler warning
 
     switch (format)
     {
-      case GD_FORMAT_BD1:                /* boulder dash 1 */
-      case GD_FORMAT_BD1_ATARI:          /* boulder dash 1, atari version */
-      case GD_FORMAT_DC1:                /* deluxe caves 1 */
-      case GD_FORMAT_BD2:                /* boulder dash 2 */
-      case GD_FORMAT_BD2_ATARI:          /* boulder dash 2 */
-	/* these are not in the data so we guess */
+      case GD_FORMAT_BD1:                // boulder dash 1
+      case GD_FORMAT_BD1_ATARI:          // boulder dash 1, atari version
+      case GD_FORMAT_DC1:                // deluxe caves 1
+      case GD_FORMAT_BD2:                // boulder dash 2
+      case GD_FORMAT_BD2_ATARI:          // boulder dash 2
+	// these are not in the data so we guess
 	newcave->selectable = (cavenum < 16) && (cavenum % 4 == 0);
 	newcave->intermission = cavenum > 15;
 
-	/* no name, so we make up one */
+	// no name, so we make up one
 	if (newcave->intermission)
 	  snprintf(newcave->name, sizeof(newcave->name), _("Intermission %d"), cavenum - 15);
 	else
@@ -2372,8 +2385,8 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 	    break;
 	};
 
-	/* original bd1 had level order ABCDEFGH... and then the last four were the intermissions.
-	 * those should be inserted between D-E, H-I... caves. */
+	// original bd1 had level order ABCDEFGH... and then the last four were the intermissions.
+	// those should be inserted between D-E, H-I... caves.
 	if (cavenum > 15)
 	  insertpos = (cavenum - 15) * 5 - 1;
 	break;
@@ -2381,28 +2394,28 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
       case GD_FORMAT_FIRSTB:
 	cavelength = cave_copy_from_1stb(newcave, buf + bufp, length - bufp);
 
-	/* every fifth cave (4+1 intermission) is selectable. */
+	// every fifth cave (4+1 intermission) is selectable.
 	newcave->selectable = cavenum % 5 == 0;
 	break;
 
-      case GD_FORMAT_PLC:                /* peter liepa construction kit */
-      case GD_FORMAT_PLC_ATARI:          /* peter liepa construction kit, atari version */
+      case GD_FORMAT_PLC:                // peter liepa construction kit
+      case GD_FORMAT_PLC_ATARI:          // peter liepa construction kit, atari version
 	cavelength = cave_copy_from_plck(newcave, buf + bufp, length - bufp, format);
 	break;
 
       case GD_FORMAT_DLB:
-	/* no one's delight boulder dash, something like rle compressed plck caves */
-	/* but there are 20 of them, as if it was a bd1 or bd2 game. also num%5 = 4 is intermission. */
-	/* we have to set intermission flag on our own, as the file did not contain the info explicitly */
+	// no one's delight boulder dash, something like rle compressed plck caves
+	// but there are 20 of them, as if it was a bd1 or bd2 game. also num%5 = 4 is intermission.
+	// we have to set intermission flag on our own, as the file did not contain the info explicitly
 	newcave->intermission = (cavenum % 5) == 4;
 	if (newcave->intermission)
 	{
-	  /* also set visible size */
+	  // also set visible size
 	  newcave->x2 = 19;
 	  newcave->y2 = 11;
 	}
 
-	newcave->selectable = cavenum % 5 == 0;    /* original selection scheme */
+	newcave->selectable = cavenum % 5 == 0;    // original selection scheme
 	if (newcave->intermission)
 	  snprintf(newcave->name, sizeof(newcave->name), _("Intermission %d"), cavenum / 5 + 1);
 	else
@@ -2444,7 +2457,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
     cavenum++;
     bufp += cavelength;
 
-    /* hack: some dlb files contain junk data after 20 caves. */
+    // hack: some dlb files contain junk data after 20 caves.
     if (format == GD_FORMAT_DLB && cavenum == 20)
     {
       if (bufp < length)
@@ -2453,10 +2466,10 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
     }
   }
 
-  /* try to detect if plc caves are in standard layout. */
-  /* that is, caveset looks like an original, (4 cave,1 intermission)+ */
+  // try to detect if plc caves are in standard layout.
+  // that is, caveset looks like an original, (4 cave,1 intermission)+
   if (format == GD_FORMAT_PLC)
-    /* if no selection table stored by any2gdash */
+    // if no selection table stored by any2gdash
     if ((buf[2 + 0x1f0] != buf[2 + 0x1f1] - 1) ||
 	(buf[2 + 0x1f0] != 0x19 && buf[2 + 0x1f0] != 0x0e))
     {
@@ -2464,7 +2477,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
       int n;
       boolean standard;
 
-      standard = (list_length(caveset)%5) == 0;    /* cave count % 5 != 0 -> nonstandard */
+      standard = (list_length(caveset)%5) == 0;    // cave count % 5 != 0 -> nonstandard
 
       for (n = 0, iter = caveset; iter != NULL; n++, iter = iter->next)
       {
@@ -2472,39 +2485,39 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 
 	if ((n % 5 == 4 && !cave->intermission) ||
 	    (n % 5 != 4 && cave->intermission))
-	  standard = FALSE;    /* 4 cave, 1 intermission */
+	  standard = FALSE;    // 4 cave, 1 intermission
       }
 
-      /* if test passed, update selectability */
+      // if test passed, update selectability
       if (standard)
 	for (n = 0, iter = caveset; iter != NULL; n++, iter = iter->next)
 	{
 	  GdCave *cave = iter->data;
 
-	  /* update "selectable" */
+	  // update "selectable"
 	  cave->selectable = (n % 5) == 0;
 	}
     }
 
-  /* try to give some names for the caves */
+  // try to give some names for the caves
   cavenum = 1;
   intermissionnum = 1;
   num = 1;
 
-  /* use numbering instead of letters, if following formats or too many caves
-     (as we would run out of letters) */
+  // use numbering instead of letters, if following formats or too many caves
+  // (as we would run out of letters)
   numbering = format == GD_FORMAT_PLC || format == GD_FORMAT_CRLI || list_length(caveset) > 26;
 
   for (iter = caveset; iter != NULL; iter = iter->next)
   {
     GdCave *cave = (GdCave *)iter->data;
 
-    if (!strEqual(cave->name, ""))    /* if it already has a name, skip */
+    if (!strEqual(cave->name, ""))    // if it already has a name, skip
       continue;
 
     if (cave->intermission)
     {
-      /* intermission */
+      // intermission
       if (numbering)
 	snprintf(cave->name, sizeof(cave->name), _("Intermission %02d"), num);
       else
@@ -2523,15 +2536,15 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
       cavenum++;
   }
 
-  /* if the user requests, we make all caves selectable. intermissions not. */
+  // if the user requests, we make all caves selectable. intermissions not.
   if (gd_import_as_all_caves_selectable)
   {
     for (iter = caveset; iter != NULL; iter = iter->next)
     {
       GdCave *cave = (GdCave *)iter->data;
 
-      /* make selectable if not an intermission. */
-      /* also selectable, if it was selectable originally, for some reason. */
+      // make selectable if not an intermission.
+      // also selectable, if it was selectable originally, for some reason.
       cave->selectable = cave->selectable || !cave->intermission;
     }
   }
@@ -2539,8 +2552,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
   return caveset;
 }
 
-/* to be called at program start. */
-void
-gd_c64_import_init_tables(void)
+// to be called at program start.
+void gd_c64_import_init_tables(void)
 {
 }

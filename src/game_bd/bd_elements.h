@@ -18,7 +18,7 @@
 #define BD_ELEMENTS_H
 
 
-/* These are the objects in caves. */
+// These are the objects in caves.
 typedef enum _element
 {
   O_SPACE,
@@ -249,21 +249,21 @@ typedef enum _element
   O_NUT_EXPL_3,
   O_NUT_EXPL_4,
 
-  /* these are used internally for the pneumatic hammer, and should not be used in the editor! */
-  /* (not even as an effect destination or something like that) */
+  // these are used internally for the pneumatic hammer, and should not be used in the editor!
+  // (not even as an effect destination or something like that)
   O_PLAYER_PNEUMATIC_LEFT,
   O_PLAYER_PNEUMATIC_RIGHT,
   O_PNEUMATIC_ACTIVE_LEFT,
   O_PNEUMATIC_ACTIVE_RIGHT,
 
-  O_UNKNOWN,	/* unknown element imported or read from bdcff */
-  O_NONE,	/* do not draw this element when creating cave; can be used,
-		   for example, to skip drawing a maze's path */
+  O_UNKNOWN,	// unknown element imported or read from bdcff
+  O_NONE,	// do not draw this element when creating cave; can be used,
+	        // for example, to skip drawing a maze's path
 
-  O_MAX,	/* remembering last index: this should get an integer value
-		   which is 1 more than the one above. */
+  O_MAX,	// remembering last index: this should get an integer value
+		// which is 1 more than the one above.
 
-  /* fake elements to help drawing */
+  // fake elements to help drawing
   O_FAKE_BONUS,
   O_INBOX_CLOSED,
   O_INBOX_OPEN,
@@ -310,7 +310,7 @@ typedef enum _element
   COVERED = 0x200,
   SKIPPED = 0x400,
 
-  /* binary AND this to elements to get rid of properties above. */
+  // binary AND this to elements to get rid of properties above.
   O_MASK = ~(SCANNED | COVERED | SKIPPED)
 } GdElement;
 
@@ -344,7 +344,7 @@ typedef enum _sound
   GD_S_FALLING_WALL_IMPACT,
   GD_S_EXPANDING_WALL,
   GD_S_WALL_REAPPEARING,
-  GD_S_DIAMOND_FALLING_RANDOM,		/* randomly select a diamond falling sound */
+  GD_S_DIAMOND_FALLING_RANDOM,		// randomly select a diamond falling sound
   GD_S_DIAMOND_FALLING_1,
   GD_S_DIAMOND_FALLING_2,
   GD_S_DIAMOND_FALLING_3,
@@ -353,7 +353,7 @@ typedef enum _sound
   GD_S_DIAMOND_FALLING_6,
   GD_S_DIAMOND_FALLING_7,
   GD_S_DIAMOND_FALLING_8,
-  GD_S_DIAMOND_IMPACT_RANDOM,		/* randomly select a diamond impact sound */
+  GD_S_DIAMOND_IMPACT_RANDOM,		// randomly select a diamond impact sound
   GD_S_DIAMOND_IMPACT_1,
   GD_S_DIAMOND_IMPACT_2,
   GD_S_DIAMOND_IMPACT_3,
@@ -362,7 +362,7 @@ typedef enum _sound
   GD_S_DIAMOND_IMPACT_6,
   GD_S_DIAMOND_IMPACT_7,
   GD_S_DIAMOND_IMPACT_8,
-  GD_S_FLYING_DIAMOND_FALLING_RANDOM,	/* randomly select a flying diamond falling sound */
+  GD_S_FLYING_DIAMOND_FALLING_RANDOM,	// randomly select a flying diamond falling sound
   GD_S_FLYING_DIAMOND_FALLING_1,
   GD_S_FLYING_DIAMOND_FALLING_2,
   GD_S_FLYING_DIAMOND_FALLING_3,
@@ -371,7 +371,7 @@ typedef enum _sound
   GD_S_FLYING_DIAMOND_FALLING_6,
   GD_S_FLYING_DIAMOND_FALLING_7,
   GD_S_FLYING_DIAMOND_FALLING_8,
-  GD_S_FLYING_DIAMOND_IMPACT_RANDOM,	/* randomly select a flying diamond impact sound */
+  GD_S_FLYING_DIAMOND_IMPACT_RANDOM,	// randomly select a flying diamond impact sound
   GD_S_FLYING_DIAMOND_IMPACT_1,
   GD_S_FLYING_DIAMOND_IMPACT_2,
   GD_S_FLYING_DIAMOND_IMPACT_3,
@@ -422,7 +422,7 @@ typedef enum _sound
   GD_S_VOODOO_EXPLODING,
   GD_S_NITRO_PACK_EXPLODING,
   GD_S_BOMB_PLACING,
-  GD_S_FINISHED,		/* loop */
+  GD_S_FINISHED,		// loop
   GD_S_SWITCH_BITER,
   GD_S_SWITCH_CREATURES,
   GD_S_SWITCH_GRAVITY,
@@ -430,12 +430,12 @@ typedef enum _sound
   GD_S_SWITCH_CONVEYOR,
   GD_S_SWITCH_REPLICATOR,
 
-  GD_S_AMOEBA,			/* loop */
-  GD_S_AMOEBA_MAGIC,		/* loop */
-  GD_S_MAGIC_WALL,		/* loop */
-  GD_S_COVERING,		/* loop */
-  GD_S_PNEUMATIC_HAMMER,	/* loop */
-  GD_S_WATER,			/* loop */
+  GD_S_AMOEBA,			// loop
+  GD_S_AMOEBA_MAGIC,		// loop
+  GD_S_MAGIC_WALL,		// loop
+  GD_S_COVERING,		// loop
+  GD_S_PNEUMATIC_HAMMER,	// loop
+  GD_S_WATER,			// loop
 
   GD_S_CRACKING,
   GD_S_GRAVITY_CHANGING,

@@ -20,7 +20,7 @@
 #include "bd_cave.h"
 
 
-/* the game itself */
+// the game itself
 GdDirection gd_direction_from_keypress(boolean up, boolean down, boolean left, boolean right);
 void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire, boolean suicide);
 void set_initial_cave_speed(GdCave *cave);

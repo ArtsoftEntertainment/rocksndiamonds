@@ -26,7 +26,7 @@ GdObjectLevels gd_levels_mask[] =
   GD_OBJECT_LEVEL5
 };
 
-/* bdcff text description of object. caller should free string. */
+// bdcff text description of object. caller should free string.
 char *gd_object_get_bdcff(const GdObject *object)
 {
   char *str = NULL;
@@ -45,10 +45,10 @@ char *gd_object_get_bdcff(const GdObject *object)
       return getStringPrint("Rectangle=%d %d %d %d %s", object->x1, object->y1, object->x2, object->y2, gd_elements[object->element].filename);
 
     case GD_FILLED_RECTANGLE:
-      /* if elements are not the same */
+      // if elements are not the same
       if (object->fill_element!=object->element)
 	return getStringPrint("FillRect=%d %d %d %d %s %s", object->x1, object->y1, object->x2, object->y2, gd_elements[object->element].filename, gd_elements[object->fill_element].filename);
-      /* they are the same */
+      // they are the same
       return getStringPrint("FillRect=%d %d %d %d %s", object->x1, object->y1, object->x2, object->y2, gd_elements[object->element].filename);
 
     case GD_RASTER:
@@ -81,7 +81,7 @@ char *gd_object_get_bdcff(const GdObject *object)
 	  break;
 
 	default:
-	  /* never reached */
+	  // never reached
 	  break;
       }
 
@@ -90,7 +90,7 @@ char *gd_object_get_bdcff(const GdObject *object)
     case GD_RANDOM_FILL:
       appendStringPrint(&str, "%s=%d %d %d %d %d %d %d %d %d %s", object->c64_random?"RandomFillC64":"RandomFill", object->x1, object->y1, object->x2, object->y2, object->seed[0], object->seed[1], object->seed[2], object->seed[3], object->seed[4], gd_elements[object->fill_element].filename);
 
-      /* seed and initial fill */
+      // seed and initial fill
       for (j = 0; j < 4; j++)
 	if (object->random_fill_probability[j] != 0)
 	  appendStringPrint(&str, " %s %d", gd_elements[object->random_fill[j]].filename, object->random_fill_probability[j]);
@@ -104,14 +104,14 @@ char *gd_object_get_bdcff(const GdObject *object)
       return getStringPrint("CopyPaste=%d %d %d %d %d %d %s %s", object->x1, object->y1, object->x2, object->y2, object->dx, object->dy, object->mirror?"mirror":"nomirror", object->flip?"flip":"noflip");
 
     case NONE:
-      /* never reached */
+      // never reached
       break;
   }
 
   return NULL;
 }
 
-/* create an INDIVIDUAL POINT CAVE OBJECT */
+// create an INDIVIDUAL POINT CAVE OBJECT
 GdObject *gd_object_new_point(GdObjectLevels levels, int x, int y, GdElement elem)
 {
   GdObject *newobj = checked_calloc(sizeof(GdObject));
@@ -125,7 +125,7 @@ GdObject *gd_object_new_point(GdObjectLevels levels, int x, int y, GdElement ele
   return newobj;
 }
 
-/* create a LINE OBJECT */
+// create a LINE OBJECT
 GdObject *gd_object_new_line(GdObjectLevels levels, int x1, int y1, int x2, int y2,
 			     GdElement elem)
 {
@@ -142,7 +142,7 @@ GdObject *gd_object_new_line(GdObjectLevels levels, int x1, int y1, int x2, int 
   return newobj;
 }
 
-/* create a RECTANGLE OBJECT */
+// create a RECTANGLE OBJECT
 GdObject *gd_object_new_rectangle(GdObjectLevels levels, int x1, int y1, int x2, int y2,
 				  GdElement elem)
 {
@@ -159,7 +159,7 @@ GdObject *gd_object_new_rectangle(GdObjectLevels levels, int x1, int y1, int x2,
   return newobj;
 }
 
-/* create a RECTANGLE OBJECT */
+// create a RECTANGLE OBJECT
 GdObject *gd_object_new_filled_rectangle(GdObjectLevels levels, int x1, int y1, int x2, int y2,
 					 GdElement elem, GdElement fill_elem)
 {
@@ -177,7 +177,7 @@ GdObject *gd_object_new_filled_rectangle(GdObjectLevels levels, int x1, int y1, 
   return newobj;
 }
 
-/* create a raster object */
+// create a raster object
 GdObject *gd_object_new_raster(GdObjectLevels levels, int x1, int y1, int x2, int y2,
 			       int dx, int dy, GdElement elem)
 {
@@ -196,7 +196,7 @@ GdObject *gd_object_new_raster(GdObjectLevels levels, int x1, int y1, int x2, in
   return newobj;
 }
 
-/* create a raster object */
+// create a raster object
 GdObject *gd_object_new_join(GdObjectLevels levels, int dx, int dy,
 			     GdElement search, GdElement replace)
 {
@@ -212,7 +212,7 @@ GdObject *gd_object_new_join(GdObjectLevels levels, int dx, int dy,
   return newobj;
 }
 
-/* create a new boundary fill object */
+// create a new boundary fill object
 GdObject *gd_object_new_floodfill_border(GdObjectLevels levels, int x1, int y1,
 					 GdElement fill, GdElement border)
 {
@@ -368,9 +368,8 @@ GdObject *gd_object_new_copy_paste(GdObjectLevels levels, int x1, int y1, int x2
   return newobj;
 }
 
-/* create new object from bdcff description.
-   return new object if ok; return null if failed.
- */
+// create new object from bdcff description.
+// return new object if ok; return null if failed.
 GdObject *gd_object_new_from_string(char *str)
 {
   char *equalsign;
@@ -382,12 +381,12 @@ GdObject *gd_object_new_from_string(char *str)
   if (!equalsign)
     return NULL;
 
-  /* split string by replacing the equal sign with zero */
+  // split string by replacing the equal sign with zero
   *equalsign = '\0';
   name = str;
   param = equalsign + 1;
 
-  /* INDIVIDUAL POINT CAVE OBJECT */
+  // INDIVIDUAL POINT CAVE OBJECT
   if (strcasecmp(name, "Point") == 0)
   {
     object.type = GD_POINT;
@@ -401,7 +400,7 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* LINE OBJECT */
+  // LINE OBJECT
   if (strcasecmp(name, "Line") == 0)
   {
     object.type = GD_LINE;
@@ -415,7 +414,7 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* RECTANGLE OBJECT */
+  // RECTANGLE OBJECT
   if (strcasecmp(name, "Rectangle") == 0)
   {
     if (sscanf(param, "%d %d %d %d %s", &object.x1, &object.y1, &object.x2, &object.y2, elem0) == 5)
@@ -429,7 +428,7 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* FILLED RECTANGLE OBJECT */
+  // FILLED RECTANGLE OBJECT
   if (strcasecmp(name, "FillRect") == 0)
   {
     int paramcount;
@@ -455,7 +454,7 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* RASTER */
+  // RASTER
   if (strcasecmp(name, "Raster") == 0)
   {
     int nx, ny;
@@ -475,7 +474,7 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* JOIN */
+  // JOIN
   if (strcasecmp(name, "Join") == 0 ||
       strcasecmp(name, "Add") == 0)
   {
@@ -491,7 +490,7 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* FILL TO BORDER OBJECT */
+  // FILL TO BORDER OBJECT
   if (strcasecmp(name, "BoundaryFill") == 0)
   {
     if (sscanf(param, "%d %d %s %s", &object.x1, &object.y1, elem0, elem1) == 4)
@@ -506,7 +505,7 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* REPLACE FILL OBJECT */
+  // REPLACE FILL OBJECT
   if (strcasecmp(name, "FloodFill") == 0)
   {
     if (sscanf(param, "%d %d %s %s", &object.x1, &object.y1, elem0, elem1) == 4)
@@ -521,9 +520,9 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* MAZE OBJECT */
-  /* MAZE UNICURSAL OBJECT */
-  /* BRAID MAZE OBJECT */
+  // MAZE OBJECT
+  // MAZE UNICURSAL OBJECT
+  // BRAID MAZE OBJECT
   if (strcasecmp(name, "Maze") == 0)
   {
     char type[100] = "perfect";
@@ -551,7 +550,7 @@ GdObject *gd_object_new_from_string(char *str)
     return NULL;
   }
 
-  /* RANDOM FILL OBJECT */
+  // RANDOM FILL OBJECT
   if (strcasecmp(name, "RandomFill") == 0 ||
       strcasecmp(name, "RandomFillC64") == 0)
   {
@@ -560,7 +559,7 @@ GdObject *gd_object_new_from_string(char *str)
 
     object.type = GD_RANDOM_FILL;
     if (strcasecmp(name, "RandomFillC64") == 0)
-      /* totally the same, but uses c64 random generator */
+      // totally the same, but uses c64 random generator
       object.c64_random = TRUE;
     else
       object.c64_random = FALSE;
@@ -604,7 +603,7 @@ GdObject *gd_object_new_from_string(char *str)
     return get_memcpy(&object, sizeof (GdObject));
   }
 
-  /* COPY PASTE OBJECT */
+  // COPY PASTE OBJECT
   if (strcasecmp(name, "CopyPaste") == 0)
   {
     char mirror[100] = "nomirror";
@@ -616,7 +615,7 @@ GdObject *gd_object_new_from_string(char *str)
     if (sscanf(param, "%d %d %d %d %d %d %s %s", &object.x1, &object.y1, &object.x2, &object.y2, &object.dx, &object.dy, mirror, flip) < 6)
       return NULL;
 
-    /* MIRROR PROPERTY */
+    // MIRROR PROPERTY
     if (strcasecmp(mirror, "mirror") == 0)
       object.mirror = TRUE;
     else if (strcasecmp(mirror, "nomirror") == 0)
@@ -624,7 +623,7 @@ GdObject *gd_object_new_from_string(char *str)
     else
       Warn("invalid setting for copypaste mirror property: %s", mirror);
 
-    /* FLIP PROPERTY */
+    // FLIP PROPERTY
     if (strcasecmp(flip, "flip") == 0)
       object.flip = TRUE;
     else if (strcasecmp(flip, "noflip") == 0)
@@ -638,7 +637,7 @@ GdObject *gd_object_new_from_string(char *str)
   return NULL;
 }
 
-/** drawing a line, using bresenham's */
+// drawing a line, using bresenham's
 static void draw_line (GdCave *cave, const GdObject *object)
 {
   int x, y, x1, y1, x2, y2;
@@ -697,7 +696,7 @@ static void draw_line (GdCave *cave, const GdObject *object)
 
 static void draw_fill_replace_proc(GdCave *cave, int x, int y, const GdObject *object)
 {
-  /* fill with border so we do not come back */
+  // fill with border so we do not come back
   gd_cave_store_rc(cave, x, y, object->fill_element, object);
 
   if (x > 0 && gd_cave_get_rc(cave, x - 1, y) == object->element)
@@ -715,7 +714,7 @@ static void draw_fill_replace_proc(GdCave *cave, int x, int y, const GdObject *o
 
 static void draw_fill_replace (GdCave *cave, const GdObject *object)
 {
-  /* check bounds */
+  // check bounds
   if (object->x1 < 0 ||
       object->y1 < 0 ||
       object->x1 >= cave->w ||
@@ -725,13 +724,13 @@ static void draw_fill_replace (GdCave *cave, const GdObject *object)
   if (object->element == object->fill_element)
     return;
 
-  /* this procedure fills the area with the object->element. */
+  // this procedure fills the area with the object->element.
   draw_fill_replace_proc(cave, object->x1, object->y1, object);
 }
 
 static void draw_fill_border_proc (GdCave *cave, int x, int y, const GdObject *object)
 {
-  /* fill with border so we do not come back */
+  // fill with border so we do not come back
   gd_cave_store_rc(cave, x, y, object->element, object);
 
   if (x > 0 && gd_cave_get_rc(cave, x - 1, y) != object->element)
@@ -751,30 +750,30 @@ static void draw_fill_border (GdCave *cave, const GdObject *object)
 {
   int x, y;
 
-  /* check bounds */
+  // check bounds
   if (object->x1 < 0 ||
       object->y1 < 0 ||
       object->x1 >= cave->w ||
       object->y1 >= cave->h)
     return;
 
-  /* this procedure fills the area with the object->element. */
+  // this procedure fills the area with the object->element.
   draw_fill_border_proc(cave, object->x1, object->y1, object);
 
-  /* after the fill, we change all filled cells to the fill_element. */
-  /* we find those by looking at the object_order[][] */
+  // after the fill, we change all filled cells to the fill_element.
+  // we find those by looking at the object_order[][]
   for (y = 0; y < cave->h; y++)
     for (x = 0; x < cave->w; x++)
       if (cave->objects_order[y][x] == object)
 	cave->map[y][x] = object->fill_element;
 }
 
-/* rectangle, frame only */
+// rectangle, frame only
 static void draw_rectangle(GdCave *cave, const GdObject *object)
 {
   int x1, y1, x2, y2, x, y;
 
-  /* reorder coordinates if not drawing from northwest to southeast */
+  // reorder coordinates if not drawing from northwest to southeast
   x1 = object->x1;
   y1 = object->y1, x2 = object->x2;
   y2 = object->y2;
@@ -806,12 +805,12 @@ static void draw_rectangle(GdCave *cave, const GdObject *object)
   }
 }
 
-/* rectangle, filled one */
+// rectangle, filled one
 static void draw_filled_rectangle(GdCave *cave, const GdObject *object)
 {
   int x1, y1, x2, y2, x, y;
 
-  /* reorder coordinates if not drawing from northwest to southeast */
+  // reorder coordinates if not drawing from northwest to southeast
   x1 = object->x1;
   y1 = object->y1, x2 = object->x2;
   y2 = object->y2;
@@ -838,13 +837,13 @@ static void draw_filled_rectangle(GdCave *cave, const GdObject *object)
 				    x == object->x2) ? object->element : object->fill_element, object);
 }
 
-/* something like ordered fill, increment is dx and dy. */
+// something like ordered fill, increment is dx and dy.
 static void draw_raster(GdCave *cave, const GdObject *object)
 {
   int x, y, x1, y1, x2, y2;
   int dx, dy;
 
-  /* reorder coordinates if not drawing from northwest to southeast */
+  // reorder coordinates if not drawing from northwest to southeast
   x1 = object->x1;
   y1 = object->y1;
   x2 = object->x2;
@@ -879,7 +878,7 @@ static void draw_raster(GdCave *cave, const GdObject *object)
       gd_cave_store_rc(cave, x, y, object->element, object);
 }
 
-/* find every object, and put fill_element next to it. relative coordinates dx,dy */
+// find every object, and put fill_element next to it. relative coordinates dx,dy
 static void draw_join(GdCave *cave, const GdObject *object)
 {
   int x, y;
@@ -892,8 +891,8 @@ static void draw_join(GdCave *cave, const GdObject *object)
       {
 	int nx = x + object->dx;
 	int ny = y + object->dy;
-	/* this one implements wraparound for joins.
-	   it is needed by many caves in profi boulder series */
+	// this one implements wraparound for joins.
+	// it is needed by many caves in profi boulder series
 	while (nx >= cave->w)
 	  nx -= cave->w, ny++;
 
@@ -903,8 +902,8 @@ static void draw_join(GdCave *cave, const GdObject *object)
   }
 }
 
-/* create a maze in a boolean **maze. */
-/* recursive algorithm. */
+// create a maze in a boolean **maze.
+// recursive algorithm.
 static void mazegen(GdRand *rand, boolean **maze, int width, int height, int x, int y, int horiz)
 {
   int dirmask = 15;
@@ -914,23 +913,23 @@ static void mazegen(GdRand *rand, boolean **maze, int width, int height, int x, 
   {
     int dir;
 
-    /* horiz or vert */
+    // horiz or vert
     dir = gd_rand_int_range(rand, 0, 100) < horiz ? 2 : 0;
 
-    /* if no horizontal movement possible, choose vertical */
+    // if no horizontal movement possible, choose vertical
     if (dir == 2 && (dirmask & 12) == 0)
       dir = 0;
-    else if (dir == 0 && (dirmask & 3) == 0)    /* and vice versa */
+    else if (dir == 0 && (dirmask & 3) == 0)    // and vice versa
       dir = 2;
 
-    dir += gd_rand_int_range(rand, 0, 2);                /* dir */
+    dir += gd_rand_int_range(rand, 0, 2);                // dir
     if (dirmask & (1 << dir))
     {
       dirmask &= ~(1 << dir);
 
       switch (dir)
       {
-	case 0:    /* up */
+	case 0:    // up
 	  if (y >= 2 && !maze[y - 2][x])
 	  {
 	    maze[y - 1][x] = TRUE;
@@ -938,21 +937,21 @@ static void mazegen(GdRand *rand, boolean **maze, int width, int height, int x, 
 	  }
 	  break;
 
-	case 1:    /* down */
+	case 1:    // down
 	  if (y < height-2 && !maze[y + 2][x]) {
 	    maze[y + 1][x] = TRUE;
 	    mazegen(rand, maze, width, height, x, y + 2, horiz);
 	  }
 	  break;
 
-	case 2:    /* left */
+	case 2:    // left
 	  if (x >= 2 && !maze[y][x - 2]) {
 	    maze[y][x - 1] = TRUE;
 	    mazegen(rand, maze, width, height, x - 2, y, horiz);
 	  }
 	  break;
 
-	case 3:    /* right */
+	case 3:    // right
 	  if (x < width - 2 && !maze[y][x + 2]) {
 	    maze[y][x + 1] = TRUE;
 	    mazegen(rand, maze, width, height, x + 2, y, horiz);
@@ -977,18 +976,18 @@ static void braidmaze(GdRand *rand, boolean **maze, int w, int h)
       int closed = 0, dirs = 0;
       int closed_dirs[4];
 
-      /* if it is the edge of the map, OR no path carved, then we can't go in that direction. */
+      // if it is the edge of the map, OR no path carved, then we can't go in that direction.
       if (x < 1 || !maze[y][x - 1])
       {
-	/* closed from this side. */
+	// closed from this side.
 	closed++;
 
-	/* if not the edge, we might open this wall (carve a path) to remove a dead end */
+	// if not the edge, we might open this wall (carve a path) to remove a dead end
 	if (x > 0)
 	  closed_dirs[dirs++] = GD_MV_LEFT;
       }
 
-      /* other 3 directions similar */
+      // other 3 directions similar
       if (y < 1 || !maze[y - 1][x])
       {
 	closed++;
@@ -1009,11 +1008,11 @@ static void braidmaze(GdRand *rand, boolean **maze, int w, int h)
 	  closed_dirs[dirs++] = GD_MV_DOWN;
       }
 
-      /* if closed from 3 sides, then it is a dead end. also check dirs != 0,
-	 that might fail for a 1x1 maze :) */
+      // if closed from 3 sides, then it is a dead end. also check dirs != 0,
+      // that might fail for a 1x1 maze :)
       if (closed == 3 && dirs != 0)
       {
-	/* make up a random direction, and open in that direction, so dead end is removed */
+	// make up a random direction, and open in that direction, so dead end is removed
 	int dir = closed_dirs[gd_rand_int_range(rand, 0, dirs)];
 
 	switch (dir)
@@ -1045,7 +1044,7 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
   GdRand *rand;
   int i,j;
 
-  /* change coordinates if not in correct order */
+  // change coordinates if not in correct order
   if (y1 > y2)
   {
     y = y1;
@@ -1068,43 +1067,44 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
   if (path < 1)
     path = 1;
 
-  /* calculate the width and height of the maze.
-     n = number of passages, path = path width, wall = wall width, maze = maze width.
-     if given the number of passages, the width of the maze is:
+  /*
+    calculate the width and height of the maze.
+    n = number of passages, path = path width, wall = wall width, maze = maze width.
+    if given the number of passages, the width of the maze is:
 
-     n * path + (n - 1) * wall = maze
-     n * path + n * wall - wall = maze
-     n * (path + wall) = maze + wall
-     n = (maze + wall) / (path + wall)
+    n * path + (n - 1) * wall = maze
+    n * path + n * wall - wall = maze
+    n * (path + wall) = maze + wall
+    n = (maze + wall) / (path + wall)
   */
 
-  /* number of passages for each side */
+  // number of passages for each side
   w = (x2 - x1 + 1 + wall) / (path + wall);
   h = (y2 - y1 + 1 + wall) / (path + wall);
 
-  /* and we calculate the size of the internal map */
+  // and we calculate the size of the internal map
   if (object->type == GD_MAZE_UNICURSAL)
   {
-    /* for unicursal maze, width and height must be mod2 = 0,
-       and we will convert to paths & walls later */
+    // for unicursal maze, width and height must be mod2 = 0,
+    // and we will convert to paths & walls later
     w = w / 2 * 2;
     h = h / 2 * 2;
   }
   else
   {
-    /* for normal maze */
+    // for normal maze
     w = 2 * (w - 1) + 1;
     h = 2 * (h - 1) + 1;
   }
 
-  /* twodimensional boolean array to generate map in */
+  // twodimensional boolean array to generate map in
   map = checked_malloc((h) * sizeof(boolean *));
   for (y = 0; y < h; y++)
     map[y] = checked_calloc(w * sizeof(boolean));
 
-  /* start generation, if map is big enough.
-     otherwise the application would crash, as the editor places maze objects
-     during mouse click & drag that have no sense */
+  // start generation, if map is big enough.
+  // otherwise the application would crash, as the editor places maze objects
+  // during mouse click & drag that have no sense
   rand = gd_rand_new_with_seed(object->seed[level] == -1 ?
 			       gd_rand_int(cave->random) : object->seed[level]);
 
@@ -1120,7 +1120,7 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
   {
     boolean **unicursal;
 
-    /* convert to unicursal maze */
+    // convert to unicursal maze
     /* original:
         xxx x
           x x
@@ -1159,18 +1159,18 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
       }
     }
 
-    /* free original map */
+    // free original map
     for (y = 0; y < h; y++)
       free(map[y]);
     free(map);
 
-    /* change to new map - the unicursal maze */
+    // change to new map - the unicursal maze
     map = unicursal;
     h = h * 2 - 1;
     w = w * 2 - 1;
   }
 
-  /* copy map to cave with correct elements and size */
+  // copy map to cave with correct elements and size
   /* now copy the map into the cave. the copying works like this...
      pwpwp
      xxxxx p
@@ -1193,7 +1193,7 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
 	for (j = 0; j < (x % 2 == 0 ? path : wall); j++)
 	  gd_cave_store_rc(cave, xk++, yk, map[y][x] ? object->fill_element : object->element, object);
 
-      /* if width is smaller than requested, fill with wall */
+      // if width is smaller than requested, fill with wall
       for(x = xk; x <= x2; x++)
 	gd_cave_store_rc(cave, x, yk, object->element, object);
 
@@ -1201,12 +1201,12 @@ static void draw_maze(GdCave *cave, const GdObject *object, int level)
     }
   }
 
-  /* if height is smaller than requested, fill with wall */
+  // if height is smaller than requested, fill with wall
   for (y = yk; y <= y2; y++)
     for (x = x1; x <= x2; x++)
       gd_cave_store_rc(cave, x, y, object->element, object);
 
-  /* free map */
+  // free map
   for (y = 0; y < h; y++)
     free(map[y]);
   free(map);
@@ -1223,17 +1223,17 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
   GdC64RandomGenerator c64_rand;
   unsigned int seed;
 
-  /* -1 means that it should be different every time played. */
+  // -1 means that it should be different every time played.
   if (object->seed[level] == -1)
     seed = gd_rand_int(cave->random);
   else
     seed = object->seed[level];
 
   rand = gd_rand_new_with_seed(seed);
-  /* for c64 random, use the 2*8 lsb. */
+  // for c64 random, use the 2*8 lsb.
   gd_c64_random_set_seed(&c64_rand, seed / 256 % 256, seed % 256);
 
-  /* change coordinates if not in correct order */
+  // change coordinates if not in correct order
   if (y1 > y2)
   {
     y = y1;
@@ -1256,10 +1256,10 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
       GdElement element;
 
       if (object->c64_random)
-	/* use c64 random generator */
+	// use c64 random generator
 	randm = gd_c64_random(&c64_rand);
       else
-	/* use the much better glib random generator */
+	// use the much better glib random generator
 	randm = gd_rand_int_range(rand, 0, 256);
 
       element = object->fill_element;
@@ -1285,11 +1285,11 @@ static void draw_random_fill(GdCave *cave, const GdObject *object, int level)
 static void draw_copy_paste(GdCave *cave, const GdObject *object)
 {
   int x1 = object->x1, y1 = object->y1, x2 = object->x2, y2 = object->y2;
-  int x, y;    /* iterators */
+  int x, y;    // iterators
   int w, h;
   GdElement *clipboard;
 
-  /* reorder coordinates if not drawing from northwest to southeast */
+  // reorder coordinates if not drawing from northwest to southeast
   if (x2 < x1)
   {
     x = x2;
@@ -1309,7 +1309,7 @@ static void draw_copy_paste(GdCave *cave, const GdObject *object)
 
   clipboard = checked_malloc((w * h) * sizeof(GdElement));
 
-  /* copy to "clipboard" */
+  // copy to "clipboard"
   for (y = 0; y < h; y++)
     for (x = 0; x < w; x++)
       clipboard[y * w + x] = gd_cave_get_rc(cave, x + x1, y + y1);
@@ -1326,7 +1326,7 @@ static void draw_copy_paste(GdCave *cave, const GdObject *object)
 
       xdest = object->mirror ? w - 1 - x : x;
 
-      /* dx and dy are used here are "paste to" coordinates */
+      // dx and dy are used here are "paste to" coordinates
       gd_cave_store_rc(cave, object->dx + xdest, object->dy + ydest,
 		       clipboard[y * w + x], object);
     }
@@ -1335,14 +1335,14 @@ static void draw_copy_paste(GdCave *cave, const GdObject *object)
   free(clipboard);
 }
 
-/* draw the specified game object into cave's data.
-   also remember, which cell was set by which cave object. */
+// draw the specified game object into cave's data.
+// also remember, which cell was set by which cave object.
 void gd_cave_draw_object(GdCave *cave, const GdObject *object, int level)
 {
   switch (object->type)
   {
     case GD_POINT:
-      /* single point */
+      // single point
       gd_cave_store_rc(cave, object->x1, object->y1, object->element, object);
       break;
 
@@ -1397,7 +1397,7 @@ void gd_cave_draw_object(GdCave *cave, const GdObject *object, int level)
   }
 }
 
-/* load cave to play... also can be called rendering the cave elements */
+// load cave to play... also can be called rendering the cave elements
 GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned int seed)
 {
   GdCave *cave;
@@ -1405,14 +1405,14 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
   int x, y;
   List *iter;
 
-  /* make a copy */
+  // make a copy
   cave = gd_cave_new_from_cave(data);
   cave->rendered = level + 1;
 
   cave->render_seed = seed;
   cave->random = gd_rand_new_with_seed(cave->render_seed);
 
-  /* maps needed during drawing and gameplay */
+  // maps needed during drawing and gameplay
   cave->objects_order = gd_cave_map_new(cave, void *);
 
   cave->time                   = data->level_time[level];
@@ -1432,22 +1432,23 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 
   if (!cave->map)
   {
-    /* if we have no map, fill with predictable random generator. */
+    // if we have no map, fill with predictable random generator.
     cave->map = gd_cave_map_new(cave, GdElement);
 
-    /* IF CAVE HAS NO MAP, USE THE RANDOM NUMBER GENERATOR */
-    /* init c64 randomgenerator */
+    // IF CAVE HAS NO MAP, USE THE RANDOM NUMBER GENERATOR
+    // init c64 randomgenerator
     if (data->level_rand[level] < 0)
       gd_cave_c64_random_set_seed(cave, gd_rand_int_range(cave->random, 0, 256),
 				  gd_rand_int_range(cave->random, 0, 256));
     else
       gd_cave_c64_random_set_seed(cave, 0, data->level_rand[level]);
 
-    /* generate random fill
-     * start from row 1 (0 skipped), and fill also the borders on left and right hand side,
-     * as c64 did. this way works the original random generator the right way.
-     * also, do not fill last row, that is needed for the random seeds to be correct
-     * after filling! predictable slime will use it. */
+    // generate random fill
+    //
+    // start from row 1 (0 skipped), and fill also the borders on left and right hand side,
+    // as c64 did. this way works the original random generator the right way.
+    // also, do not fill last row, that is needed for the random seeds to be correct
+    // after filling! predictable slime will use it.
     for (y = 1; y < cave->h - 1; y++)
     {
       for (x = 0; x < cave->w; x++)
@@ -1455,10 +1456,10 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 	unsigned int randm;
 
 	if (data->level_rand[level] < 0)
-	  /* use the much better glib random generator */
+	  // use the much better glib random generator
 	  randm = gd_rand_int_range(cave->random, 0, 256);
 	else
-	  /* use c64 */
+	  // use c64
 	  randm = gd_cave_c64_random(cave);
 
 	element = data->initial_fill;
@@ -1475,7 +1476,7 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
       }
     }
 
-    /* draw initial border */
+    // draw initial border
     for (y = 0; y < cave->h; y++)
     {
       gd_cave_store_rc(cave, 0,           y, cave->initial_border, NULL);
@@ -1490,23 +1491,23 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
   }
   else
   {
-    /* IF CAVE HAS A MAP, SIMPLY USE IT... no need to fill with random elements */
+    // IF CAVE HAS A MAP, SIMPLY USE IT... no need to fill with random elements
 
-    /* initialize c64 predictable random for slime.
-       the values were taken from afl bd, see docs/internals.txt */
+    // initialize c64 predictable random for slime.
+    // the values were taken from afl bd, see docs/internals.txt
     gd_cave_c64_random_set_seed(cave, 0, 0x1e);
   }
 
   if (data->level_slime_seed_c64[level] != -1)
   {
-    /* if a specific slime seed is requested, change it now. */
+    // if a specific slime seed is requested, change it now.
 
     gd_cave_c64_random_set_seed(cave,
 				data->level_slime_seed_c64[level] / 256,
 				data->level_slime_seed_c64[level] % 256);
   }
 
-  /* render cave objects above random data or map */
+  // render cave objects above random data or map
   for (iter = data->objects; iter; iter = list_next(iter))
   {
     GdObject *object = (GdObject *)iter->data;
@@ -1515,17 +1516,17 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
       gd_cave_draw_object(cave, iter->data, level);
   }
 
-  /* check if we use c64 ckdelay or milliseconds for timing */
+  // check if we use c64 ckdelay or milliseconds for timing
   if (cave->scheduling == GD_SCHEDULING_MILLISECONDS)
-    cave->speed = data->level_speed[level];        /* exact timing */
+    cave->speed = data->level_speed[level];        // exact timing
   else
   {
-    /* delay loop based timing... set something for first iteration,
-       then later it will be calculated */
+    // delay loop based timing... set something for first iteration,
+    // then later it will be calculated
     cave->speed = 120;
 
-    /* this one may be used by iterate routine to calculate actual delay
-       if c64scheduling is selected */
+    // this one may be used by iterate routine to calculate actual delay
+    // if c64scheduling is selected
     cave->c64_timing = data->level_ckdelay[level];
   }
 
@@ -1535,10 +1536,10 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 }
 
 /*
-   render cave at specified level.
-   copy result to the map; remove objects.
-   the cave will be map-based.
- */
+  render cave at specified level.
+  copy result to the map; remove objects.
+  the cave will be map-based.
+*/
 void gd_flatten_cave(GdCave *cave, const int level)
 {
   GdCave *rendered;
@@ -1546,17 +1547,17 @@ void gd_flatten_cave(GdCave *cave, const int level)
   if (cave == NULL)
     return;
 
-  /* render cave at specified level to obtain map. seed = 0 */
+  // render cave at specified level to obtain map. seed = 0
   rendered = gd_cave_new_rendered(cave, level, 0);
 
-  /* forget old map without objects */
+  // forget old map without objects
   gd_cave_map_free(cave->map);
 
-  /* copy new map to cave */
+  // copy new map to cave
   cave->map = gd_cave_map_dup(rendered, map);
   gd_cave_free(rendered);
 
-  /* forget objects */
+  // forget objects
   list_foreach(cave->objects, (list_fn) free, NULL);
   cave->objects = NULL;
 }
