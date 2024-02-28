@@ -52,7 +52,7 @@ struct GamePanelInfo
 {
   struct TextPosInfo level_number;
   struct TextPosInfo gems;
-  struct TextPosInfo gems_total;
+  struct TextPosInfo gems_needed;
   struct TextPosInfo gems_collected;
   struct TextPosInfo gems_score;
   struct TextPosInfo inventory_count;

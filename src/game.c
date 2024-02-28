@@ -89,7 +89,7 @@
 // game panel display and control definitions
 #define GAME_PANEL_LEVEL_NUMBER			0
 #define GAME_PANEL_GEMS				1
-#define GAME_PANEL_GEMS_TOTAL			2
+#define GAME_PANEL_GEMS_NEEDED			2
 #define GAME_PANEL_GEMS_COLLECTED		3
 #define GAME_PANEL_GEMS_SCORE			4
 #define GAME_PANEL_INVENTORY_COUNT		5
@@ -246,8 +246,8 @@ static struct GamePanelControlInfo game_panel_controls[] =
     TYPE_INTEGER,
   },
   {
-    GAME_PANEL_GEMS_TOTAL,
-    &game.panel.gems_total,
+    GAME_PANEL_GEMS_NEEDED,
+    &game.panel.gems_needed,
     TYPE_INTEGER,
   },
   {
@@ -2291,10 +2291,10 @@ static void UpdateGameControlValues(void)
 	      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 	      game_mm.kettles_still_needed :
 	      game.gems_still_needed);
-  int gems_total = level.gems_needed;
+  int gems_needed = level.gems_needed;
   int gems_collected = (level.game_engine_type == GAME_ENGINE_TYPE_BD ?
 			game_bd.game->cave->diamonds_collected :
-			gems_total - gems);
+			gems_needed - gems);
   int gems_score = (level.game_engine_type == GAME_ENGINE_TYPE_BD ?
 		    game_bd.game->cave->diamond_value :
 		    level.score[SC_EMERALD]);
@@ -2325,7 +2325,7 @@ static void UpdateGameControlValues(void)
   // used instead of "level_nr" (for network games)
   game_panel_controls[GAME_PANEL_LEVEL_NUMBER].value = levelset.level_nr;
   game_panel_controls[GAME_PANEL_GEMS].value = gems;
-  game_panel_controls[GAME_PANEL_GEMS_TOTAL].value = gems_total;
+  game_panel_controls[GAME_PANEL_GEMS_NEEDED].value = gems_needed;
   game_panel_controls[GAME_PANEL_GEMS_COLLECTED].value = gems_collected;
   game_panel_controls[GAME_PANEL_GEMS_SCORE].value = gems_score;
 
