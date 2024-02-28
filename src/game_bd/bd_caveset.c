@@ -555,7 +555,7 @@ boolean gd_caveset_load_from_file(char *filename)
   }
 
   if (strSuffix(filename, ".brc") ||
-      strSuffix(filename, "*.BRC"))
+      strSuffix(filename, ".BRC"))
   {
     brc_import((byte *) buf);
     gd_caveset_edited = FALSE;    /* newly loaded cave is not edited */
