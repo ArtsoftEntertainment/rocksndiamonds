@@ -3764,7 +3764,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "bd_expandable_wall",
-    "wall",
+    "bd_expandable_wall",
     "growing wall (horizontal, BD style)"
   },
   {
@@ -6509,7 +6509,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "bd_sand_glued",
-    "bd_sane_glued",
+    "bd_sand_glued",
     "glued sand"
   },
   {
@@ -6539,7 +6539,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "bd_wall_diggable",
-    "bd_wall_diggable",
+    "bd_wall",
     "diggable wall"
   },
   {
@@ -6549,22 +6549,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "bd_wall_key_1",
-    "bd_wall_key",
+    "bd_wall",
     "wall with key 1"
   },
   {
     "bd_wall_key_2",
-    "bd_wall_key",
+    "bd_wall",
     "wall with key 2"
   },
   {
     "bd_wall_key_3",
-    "bd_wall_key",
+    "bd_wall",
     "wall with key 3"
   },
   {
     "bd_falling_wall",
-    "bd_falling_wall",
+    "bd_wall",
     "falling wall"
   },
   {
@@ -6594,12 +6594,12 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "bd_steelwall_explodable",
-    "bd_steelwall_explodable",
+    "bd_steelwall",
     "explodable steel wall"
   },
   {
     "bd_steelwall_diggable",
-    "bd_steelwall_diggable",
+    "bd_steelwall",
     "diggable steel wall"
   },
   {
