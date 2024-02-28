@@ -37,18 +37,18 @@
 // constant definitions
 // ----------------------------------------------------------------------------
 
-/* values for native Emerald Mine game version */
+// values for native Emerald Mine game version
 #define FILE_VERSION_EM_UNKNOWN	0
 #define FILE_VERSION_EM_V1	1
 #define FILE_VERSION_EM_V2	2
 #define FILE_VERSION_EM_V3	3
-#define FILE_VERSION_EM_V4	4	/* (there really was no version 4) */
+#define FILE_VERSION_EM_V4	4	// (there really was no version 4)
 #define FILE_VERSION_EM_V5	5
 #define FILE_VERSION_EM_V6	6
 
 #define FILE_VERSION_EM_ACTUAL	FILE_VERSION_EM_V6
 
-/* screen sizes and positions for EM engine */
+// screen sizes and positions for EM engine
 
 #define TILESIZE		32
 
@@ -62,14 +62,14 @@ extern int			SCR_FIELDX, SCR_FIELDY;
 #define MAX_BUF_XSIZE		(SCR_FIELDX + 2 * CAVE_BUFFER_XOFFSET)
 #define MAX_BUF_YSIZE		(SCR_FIELDY + 2 * CAVE_BUFFER_YOFFSET)
 
-/* often used screen positions */
+// often used screen positions
 
 extern int			SX, SY;
 
 #define SXSIZE			(SCR_FIELDX * TILEX)
 #define SYSIZE			(SCR_FIELDY * TILEY)
 
-/* other settings */
+// other settings
 #define PLAY_ELEMENT_SOUND	FALSE
 
 

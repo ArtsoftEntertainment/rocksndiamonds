@@ -12,15 +12,19 @@
 #ifndef IMPORT_EM_H
 #define IMPORT_EM_H
 
+// ============================================================================
+// functions and definitions imported from main program to game_em
+// ============================================================================
+
 #include "../libgame/libgame.h"
 #include "../game.h"
 
 #include "export_em.h"
 
 
-// ============================================================================
-// functions and definitions exported from main program to game_em
-// ============================================================================
+// ----------------------------------------------------------------------------
+// imported functions
+// ----------------------------------------------------------------------------
 
 void UpdateEngineValues(int, int, int, int);
 

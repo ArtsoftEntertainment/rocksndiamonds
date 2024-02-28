@@ -12,6 +12,10 @@
 #ifndef IMPORT_MM_H
 #define IMPORT_MM_H
 
+// ============================================================================
+// functions and definitions imported from main program to game_mm
+// ============================================================================
+
 #include "../libgame/libgame.h"
 #include "../conf_gfx.h"
 #include "../game.h"
@@ -19,9 +23,9 @@
 #include "export_mm.h"
 
 
-// ============================================================================
-// functions and definitions exported from main program to game_mm
-// ============================================================================
+// ----------------------------------------------------------------------------
+// imported functions
+// ----------------------------------------------------------------------------
 
 void SetDrawtoField(int);
 void BackToFront(void);

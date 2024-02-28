@@ -12,15 +12,19 @@
 #ifndef IMPORT_BD_H
 #define IMPORT_BD_H
 
+// ============================================================================
+// functions and definitions imported from main program to game_bd
+// ============================================================================
+
 #include "../libgame/libgame.h"
 #include "../game.h"
 
 #include "export_bd.h"
 
 
-// ============================================================================
-// functions and definitions exported from main program to game_bd
-// ============================================================================
+// ----------------------------------------------------------------------------
+// imported functions
+// ----------------------------------------------------------------------------
 
 void InitGraphicInfo_BD(void);
 

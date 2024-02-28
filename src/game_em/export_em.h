@@ -88,7 +88,7 @@ struct GraphicInfo_EM
   boolean has_crumbled_graphics;
   boolean preserve_background;
 
-  int unique_identifier;	/* used to identify needed screen updates */
+  int unique_identifier;	// used to identify needed screen updates
 };
 
 struct EngineSnapshotInfo_EM

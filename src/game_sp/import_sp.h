@@ -12,6 +12,10 @@
 #ifndef IMPORT_SP_H
 #define IMPORT_SP_H
 
+// ============================================================================
+// functions and definitions imported from main program to game_sp
+// ============================================================================
+
 #include "../libgame/libgame.h"
 #include "../conf_gfx.h"
 #include "../game.h"
@@ -19,9 +23,9 @@
 #include "export_sp.h"
 
 
-// ============================================================================
-// functions and definitions exported from main program to game_sp
-// ============================================================================
+// ----------------------------------------------------------------------------
+// imported functions
+// ----------------------------------------------------------------------------
 
 void CheckSingleStepMode_SP(boolean, boolean);
 
