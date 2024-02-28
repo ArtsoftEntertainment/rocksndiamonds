@@ -156,6 +156,11 @@ boolean LoadNativeLevel_BD(char *filename, int level_pos, boolean level_info_onl
 
 boolean SaveNativeLevel_BD(char *filename)
 {
+  GdCave *cave = gd_cave_new_from_cave(native_bd_level.cave);
+
+  gd_caveset_clear();
+  gd_caveset = list_append(gd_caveset, cave);
+
   return gd_caveset_save_to_file(filename);
 }
 
