@@ -1378,6 +1378,7 @@ static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
 static struct
 {
+  int gadget_type_id;
   int x, y;
   int min_value, max_value;
   int gadget_id_down, gadget_id_up;
@@ -1390,6 +1391,7 @@ static struct
   // ---------- current level number ------------------------------------------
 
   {
+    ED_COUNTER_ID_SELECT_LEVEL,
     -1, -1,	// these values are not constant, but can change at runtime
     1,					100,
     GADGET_ID_SELECT_LEVEL_DOWN,	GADGET_ID_SELECT_LEVEL_UP,
@@ -1401,6 +1403,7 @@ static struct
   // ---------- level and editor settings -------------------------------------
 
   {
+    ED_COUNTER_ID_LEVEL_XSIZE,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(4),
     MIN_LEV_FIELDX,			MAX_LEV_FIELDX,
     GADGET_ID_LEVEL_XSIZE_DOWN,		GADGET_ID_LEVEL_XSIZE_UP,
@@ -1409,6 +1412,7 @@ static struct
     "playfield size:",			NULL, "width",
   },
   {
+    ED_COUNTER_ID_LEVEL_YSIZE,
     -1,					ED_LEVEL_SETTINGS_YPOS(4),
     MIN_LEV_FIELDY,			MAX_LEV_FIELDY,
     GADGET_ID_LEVEL_YSIZE_DOWN,		GADGET_ID_LEVEL_YSIZE_UP,
@@ -1417,6 +1421,7 @@ static struct
     NULL,				" ", "height",
   },
   {
+    ED_COUNTER_ID_LEVEL_GEMSLIMIT,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(5),
     0,					999,
     GADGET_ID_LEVEL_GEMSLIMIT_DOWN,	GADGET_ID_LEVEL_GEMSLIMIT_UP,
@@ -1425,6 +1430,7 @@ static struct
     NULL,				"number of gems to collect:", NULL
   },
   {
+    ED_COUNTER_ID_LEVEL_TIMELIMIT,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(8),
     0,					9999,
     GADGET_ID_LEVEL_TIMELIMIT_DOWN,	GADGET_ID_LEVEL_TIMELIMIT_UP,
@@ -1433,6 +1439,7 @@ static struct
     "time or step limit to solve level:", NULL, NULL
   },
   {
+    ED_COUNTER_ID_LEVEL_TIMESCORE,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(10),
     0,					999,
     GADGET_ID_LEVEL_TIMESCORE_DOWN,	GADGET_ID_LEVEL_TIMESCORE_UP,
@@ -1441,6 +1448,7 @@ static struct
     "score for time or steps left:",	NULL, NULL
   },
   {
+    ED_COUNTER_ID_LEVEL_RANDOM_SEED,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(13),
     0,					9999,
     GADGET_ID_LEVEL_RANDOM_SEED_DOWN,	GADGET_ID_LEVEL_RANDOM_SEED_UP,
@@ -1449,6 +1457,7 @@ static struct
     NULL,				"random seed:", "(0 => random)"
   },
   {
+    ED_COUNTER_ID_LEVELSET_NUM_LEVELS,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(4),
     1,					MAX_LEVELS,
     GADGET_ID_LEVELSET_NUM_LEVELS_DOWN,	GADGET_ID_LEVELSET_NUM_LEVELS_UP,
@@ -1457,6 +1466,7 @@ static struct
     "number of levels:",		NULL, NULL,
   },
   {
+    ED_COUNTER_ID_LEVEL_RANDOM,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(0),
     1,					100,
     GADGET_ID_LEVEL_RANDOM_DOWN,	GADGET_ID_LEVEL_RANDOM_UP,
@@ -1468,6 +1478,7 @@ static struct
   // ---------- element settings: configure (various elements) ----------------
 
   {
+    ED_COUNTER_ID_ELEMENT_VALUE1,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     MIN_SCORE,				MAX_SCORE,
     GADGET_ID_ELEMENT_VALUE1_DOWN,	GADGET_ID_ELEMENT_VALUE1_UP,
@@ -1476,6 +1487,7 @@ static struct
     NULL,				NULL, NULL
   },
   {
+    ED_COUNTER_ID_ELEMENT_VALUE2,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     MIN_SCORE,				MAX_SCORE,
     GADGET_ID_ELEMENT_VALUE2_DOWN,	GADGET_ID_ELEMENT_VALUE2_UP,
@@ -1484,6 +1496,7 @@ static struct
     NULL,				NULL, NULL
   },
   {
+    ED_COUNTER_ID_ELEMENT_VALUE3,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     MIN_SCORE,				MAX_SCORE,
     GADGET_ID_ELEMENT_VALUE3_DOWN,	GADGET_ID_ELEMENT_VALUE3_UP,
@@ -1492,6 +1505,7 @@ static struct
     NULL,				NULL, NULL
   },
   {
+    ED_COUNTER_ID_ELEMENT_VALUE4,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     MIN_SCORE,				MAX_SCORE,
     GADGET_ID_ELEMENT_VALUE4_DOWN,	GADGET_ID_ELEMENT_VALUE4_UP,
@@ -1500,6 +1514,7 @@ static struct
     NULL,				NULL, NULL
   },
   {
+    ED_COUNTER_ID_YAMYAM_CONTENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     MIN_ELEMENT_CONTENTS,		MAX_ELEMENT_CONTENTS,
     GADGET_ID_YAMYAM_CONTENT_DOWN,	GADGET_ID_YAMYAM_CONTENT_UP,
@@ -1508,6 +1523,7 @@ static struct
     NULL,				NULL, "number of content areas"
   },
   {
+    ED_COUNTER_ID_BALL_CONTENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
     MIN_ELEMENT_CONTENTS,		MAX_ELEMENT_CONTENTS,
     GADGET_ID_BALL_CONTENT_DOWN,	GADGET_ID_BALL_CONTENT_UP,
@@ -1516,6 +1532,7 @@ static struct
     NULL,				NULL, "number of content areas"
   },
   {
+    ED_COUNTER_ID_ANDROID_CONTENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
     MIN_ANDROID_ELEMENTS,		MAX_ANDROID_ELEMENTS,
     GADGET_ID_ANDROID_CONTENT_DOWN,	GADGET_ID_ANDROID_CONTENT_UP,
@@ -1524,6 +1541,7 @@ static struct
     NULL,				NULL, "number of clonable elements"
   },
   {
+    ED_COUNTER_ID_ENVELOPE_XSIZE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     MIN_ENVELOPE_XSIZE,			MAX_ENVELOPE_XSIZE,
     GADGET_ID_ENVELOPE_XSIZE_DOWN,	GADGET_ID_ENVELOPE_XSIZE_UP,
@@ -1532,6 +1550,7 @@ static struct
     NULL,				NULL, "width",
   },
   {
+    ED_COUNTER_ID_ENVELOPE_YSIZE,
     -1,					ED_ELEMENT_SETTINGS_YPOS(0),
     MIN_ENVELOPE_YSIZE,			MAX_ENVELOPE_YSIZE,
     GADGET_ID_ENVELOPE_YSIZE_DOWN,	GADGET_ID_ENVELOPE_YSIZE_UP,
@@ -1540,6 +1559,7 @@ static struct
     NULL,				" ", "height",
   },
   {
+    ED_COUNTER_ID_INVENTORY_SIZE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     MIN_INITIAL_INVENTORY_SIZE,		MAX_INITIAL_INVENTORY_SIZE,
     GADGET_ID_INVENTORY_SIZE_DOWN,	GADGET_ID_INVENTORY_SIZE_UP,
@@ -1548,6 +1568,7 @@ static struct
     NULL,				NULL, "number of inventory elements"
   },
   {
+    ED_COUNTER_ID_MM_BALL_CONTENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     MIN_ELEMENTS_IN_GROUP,		MAX_MM_BALL_CONTENTS,
     GADGET_ID_MM_BALL_CONTENT_DOWN,	GADGET_ID_MM_BALL_CONTENT_UP,
@@ -1559,6 +1580,7 @@ static struct
   // ---------- element settings: configure 1 (custom elements) ---------------
 
   {
+    ED_COUNTER_ID_CUSTOM_SCORE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(5),
     MIN_SCORE,				MAX_SCORE,
     GADGET_ID_CUSTOM_SCORE_DOWN,	GADGET_ID_CUSTOM_SCORE_UP,
@@ -1567,6 +1589,7 @@ static struct
     NULL,				"CE score", " "
   },
   {
+    ED_COUNTER_ID_CUSTOM_GEMCOUNT,
     -1,					ED_ELEMENT_SETTINGS_YPOS(5),
     MIN_COLLECT_COUNT,			MAX_COLLECT_COUNT,
     GADGET_ID_CUSTOM_GEMCOUNT_DOWN,	GADGET_ID_CUSTOM_GEMCOUNT_UP,
@@ -1575,6 +1598,7 @@ static struct
     NULL,				"CE count", NULL
   },
   {
+    ED_COUNTER_ID_CUSTOM_VALUE_FIX,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
     0,					9999,
     GADGET_ID_CUSTOM_VALUE_FIX_DOWN,	GADGET_ID_CUSTOM_VALUE_FIX_UP,
@@ -1583,6 +1607,7 @@ static struct
     NULL,				"CE value", NULL
   },
   {
+    ED_COUNTER_ID_CUSTOM_VALUE_RND,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
     0,					9999,
     GADGET_ID_CUSTOM_VALUE_RND_DOWN,	GADGET_ID_CUSTOM_VALUE_RND_UP,
@@ -1591,6 +1616,7 @@ static struct
     NULL,				"+random", NULL
   },
   {
+    ED_COUNTER_ID_PUSH_DELAY_FIX,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(6),
     0,					999,
     GADGET_ID_PUSH_DELAY_FIX_DOWN,	GADGET_ID_PUSH_DELAY_FIX_UP,
@@ -1599,6 +1625,7 @@ static struct
     NULL,				"push delay", NULL
   },
   {
+    ED_COUNTER_ID_PUSH_DELAY_RND,
     -1,					ED_ELEMENT_SETTINGS_YPOS(6),
     0,					999,
     GADGET_ID_PUSH_DELAY_RND_DOWN,	GADGET_ID_PUSH_DELAY_RND_UP,
@@ -1607,6 +1634,7 @@ static struct
     NULL,				"+random", NULL
   },
   {
+    ED_COUNTER_ID_DROP_DELAY_FIX,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(7),
     0,					999,
     GADGET_ID_DROP_DELAY_FIX_DOWN,	GADGET_ID_DROP_DELAY_FIX_UP,
@@ -1615,6 +1643,7 @@ static struct
     NULL,				"drop delay", NULL
   },
   {
+    ED_COUNTER_ID_DROP_DELAY_RND,
     -1,					ED_ELEMENT_SETTINGS_YPOS(7),
     0,					999,
     GADGET_ID_DROP_DELAY_RND_DOWN,	GADGET_ID_DROP_DELAY_RND_UP,
@@ -1626,6 +1655,7 @@ static struct
   // ---------- element settings: configure 2 (custom elements) ---------------
 
   {
+    ED_COUNTER_ID_MOVE_DELAY_FIX,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(5),
     0,					999,
     GADGET_ID_MOVE_DELAY_FIX_DOWN,	GADGET_ID_MOVE_DELAY_FIX_UP,
@@ -1634,6 +1664,7 @@ static struct
     NULL,				"move delay", NULL
   },
   {
+    ED_COUNTER_ID_MOVE_DELAY_RND,
     -1,					ED_ELEMENT_SETTINGS_YPOS(5),
     0,					999,
     GADGET_ID_MOVE_DELAY_RND_DOWN,	GADGET_ID_MOVE_DELAY_RND_UP,
@@ -1642,6 +1673,7 @@ static struct
     NULL,				"+random", NULL
   },
   {
+    ED_COUNTER_ID_STEP_DELAY_FIX,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(6),
     0,					999,
     GADGET_ID_STEP_DELAY_FIX_DOWN,	GADGET_ID_STEP_DELAY_FIX_UP,
@@ -1650,6 +1682,7 @@ static struct
     NULL,				"step delay", NULL
   },
   {
+    ED_COUNTER_ID_STEP_DELAY_RND,
     -1,					ED_ELEMENT_SETTINGS_YPOS(6),
     0,					999,
     GADGET_ID_STEP_DELAY_RND_DOWN,	GADGET_ID_STEP_DELAY_RND_UP,
@@ -1658,6 +1691,7 @@ static struct
     NULL,				"+random", NULL
   },
   {
+    ED_COUNTER_ID_EXPLOSION_DELAY,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(13),
     0,					999,
     GADGET_ID_EXPLOSION_DELAY_DOWN,	GADGET_ID_EXPLOSION_DELAY_UP,
@@ -1666,6 +1700,7 @@ static struct
     NULL,				"explosion delay", NULL
   },
   {
+    ED_COUNTER_ID_IGNITION_DELAY,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(14),
     0,					999,
     GADGET_ID_IGNITION_DELAY_DOWN,	GADGET_ID_IGNITION_DELAY_UP,
@@ -1677,6 +1712,7 @@ static struct
   // ---------- element settings: configure (group elements) ------------------
 
   {
+    ED_COUNTER_ID_GROUP_CONTENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     MIN_ELEMENTS_IN_GROUP,		MAX_ELEMENTS_IN_GROUP,
     GADGET_ID_GROUP_CONTENT_DOWN,	GADGET_ID_GROUP_CONTENT_UP,
@@ -1688,6 +1724,7 @@ static struct
   // ---------- element settings: advanced (custom elements) ------------------
 
   {
+    ED_COUNTER_ID_CHANGE_DELAY_FIX,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(2),
     0,					999,
     GADGET_ID_CHANGE_DELAY_FIX_DOWN,	GADGET_ID_CHANGE_DELAY_FIX_UP,
@@ -1696,6 +1733,7 @@ static struct
     NULL,				"CE delay", NULL,
   },
   {
+    ED_COUNTER_ID_CHANGE_DELAY_RND,
     -1,					ED_ELEMENT_SETTINGS_YPOS(2),
     0,					999,
     GADGET_ID_CHANGE_DELAY_RND_DOWN,	GADGET_ID_CHANGE_DELAY_RND_UP,
@@ -1704,6 +1742,7 @@ static struct
     NULL,				"+random", NULL
   },
   {
+    ED_COUNTER_ID_CHANGE_CONT_RND,
     ED_ELEMENT_SETTINGS_XPOS(3),	ED_ELEMENT_SETTINGS_YPOS(12),
     0,					100,
     GADGET_ID_CHANGE_CONT_RND_DOWN,	GADGET_ID_CHANGE_CONT_RND_UP,
@@ -1715,6 +1754,7 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int x, y;
   int gadget_id;
   int size;
@@ -1723,6 +1763,7 @@ static struct
 } textinput_info[ED_NUM_TEXTINPUT] =
 {
   {
+    ED_TEXTINPUT_ID_LEVEL_NAME,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_LEVEL_NAME,
     MAX_LEVEL_NAME_LEN,
@@ -1730,6 +1771,7 @@ static struct
     "Title:", "Title for this level"
   },
   {
+    ED_TEXTINPUT_ID_LEVEL_AUTHOR,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_LEVEL_AUTHOR,
     MAX_LEVEL_AUTHOR_LEN,
@@ -1737,6 +1779,7 @@ static struct
     "Author:", "Author for this level"
   },
   {
+    ED_TEXTINPUT_ID_LEVELSET_NAME,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_LEVELSET_NAME,
     MAX_LEVEL_NAME_LEN,
@@ -1744,6 +1787,7 @@ static struct
     "Title:", "Title for this or new level set"
   },
   {
+    ED_TEXTINPUT_ID_LEVELSET_AUTHOR,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_LEVELSET_AUTHOR,
     MAX_LEVEL_AUTHOR_LEN,
@@ -1751,6 +1795,7 @@ static struct
     "Author:", "Author for this or new level set"
   },
   {
+    ED_TEXTINPUT_ID_ELEMENT_NAME,
     -1, -1,	// these values are not constant, but can change at runtime
     GADGET_ID_ELEMENT_NAME,
     MAX_ELEMENT_NAME_LEN - 2,		// currently 2 chars less editable
@@ -1761,6 +1806,7 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int x, y;
   int gadget_id;
   int xsize, ysize;
@@ -1769,6 +1815,7 @@ static struct
 } textarea_info[ED_NUM_TEXTAREAS] =
 {
   {
+    ED_TEXTAREA_ID_ENVELOPE_INFO,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_ENVELOPE_INFO,
     MAX_ENVELOPE_XSIZE, MAX_ENVELOPE_YSIZE,
@@ -2517,6 +2564,7 @@ action_arg_options[] =
 
 static struct
 {
+  int gadget_type_id;
   int x, y;
   int gadget_id;
   int gadget_id_align;
@@ -2529,6 +2577,7 @@ static struct
   // ---------- level and editor settings -------------------------------------
 
   {
+    ED_SELECTBOX_ID_TIME_OR_STEPS,
     -1,					ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_TIME_OR_STEPS,		GADGET_ID_LEVEL_TIMELIMIT_UP,
     -1,
@@ -2537,6 +2586,7 @@ static struct
     NULL, NULL, "(0 => no limit)",	"time or step limit"
   },
   {
+    ED_SELECTBOX_ID_TIME_SCORE_BASE,
     -1,					ED_LEVEL_SETTINGS_YPOS(10),
     GADGET_ID_TIME_SCORE_BASE,		GADGET_ID_LEVEL_TIMESCORE_UP,
     -1,
@@ -2545,6 +2595,7 @@ static struct
     NULL, NULL, NULL,			"time score for 1 or 10 seconds/steps"
   },
   {
+    ED_SELECTBOX_ID_GAME_ENGINE_TYPE,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(12),
     GADGET_ID_GAME_ENGINE_TYPE,		GADGET_ID_NONE,
     -1,
@@ -2553,6 +2604,7 @@ static struct
     NULL, "game engine:", NULL,		"game engine"
   },
   {
+    ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(10),
     GADGET_ID_LEVELSET_SAVE_MODE,	GADGET_ID_NONE,
     -1,
@@ -2564,6 +2616,7 @@ static struct
   // ---------- element settings: configure (several elements) ----------------
 
   {
+    ED_SELECTBOX_ID_WIND_DIRECTION,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     GADGET_ID_WIND_DIRECTION,		GADGET_ID_NONE,
     -1,
@@ -2572,6 +2625,7 @@ static struct
     NULL, "initial wind direction:", NULL,	"initial wind direction"
   },
   {
+    ED_SELECTBOX_ID_PLAYER_SPEED,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(7),
     GADGET_ID_PLAYER_SPEED,		GADGET_ID_NONE,
     -1,
@@ -2580,6 +2634,7 @@ static struct
     NULL, "initial player speed:", NULL,	"initial player speed"
   },
   {
+    ED_SELECTBOX_ID_MM_BALL_CHOICE_MODE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_MM_BALL_CHOICE_MODE,	GADGET_ID_NONE,
     -1,
@@ -2591,6 +2646,7 @@ static struct
   // ---------- element settings: configure 1 (custom elements) ---------------
 
   {
+    ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_CUSTOM_ACCESS_TYPE,	GADGET_ID_NONE,
     -1,
@@ -2599,6 +2655,7 @@ static struct
     NULL, NULL, NULL,			"type of access to this field"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_ACCESS_LAYER,
     -1,					ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_CUSTOM_ACCESS_LAYER,	GADGET_ID_CUSTOM_ACCESS_TYPE,
     -1,
@@ -2607,6 +2664,7 @@ static struct
     NULL, NULL, NULL,			"layer of access for this field"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_ACCESS_PROTECTED,
     -1,					ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_CUSTOM_ACCESS_PROTECTED,	GADGET_ID_CUSTOM_ACCESS_LAYER,
     -1,
@@ -2615,6 +2673,7 @@ static struct
     NULL, NULL, NULL,			"protected access for this field"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_ACCESS_DIRECTION,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_CUSTOM_ACCESS_DIRECTION,	GADGET_ID_NONE,
     -1,
@@ -2623,6 +2682,7 @@ static struct
     NULL, "from", NULL,			"access direction for this field"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_WALK_TO_ACTION,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_CUSTOM_WALK_TO_ACTION,	GADGET_ID_NONE,
     -1,
@@ -2634,6 +2694,7 @@ static struct
   // ---------- element settings: configure 2 (custom elements) ---------------
 
   {
+    ED_SELECTBOX_ID_CUSTOM_MOVE_PATTERN,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_CUSTOM_MOVE_PATTERN,	GADGET_ID_NONE,
     -1,
@@ -2642,6 +2703,7 @@ static struct
     NULL, "can move", NULL,		"element move pattern"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_MOVE_DIRECTION,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_CUSTOM_MOVE_DIRECTION,	GADGET_ID_NONE,
     -1,
@@ -2650,6 +2712,7 @@ static struct
     NULL, "starts moving", NULL,	"initial element move direction"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_MOVE_STEPSIZE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_CUSTOM_MOVE_STEPSIZE,	GADGET_ID_NONE,
     -1,
@@ -2658,6 +2721,7 @@ static struct
     NULL, "move/fall speed", NULL,	"speed of element movement"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_MOVE_LEAVE_TYPE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_CUSTOM_MOVE_LEAVE_TYPE,	GADGET_ID_NONE,
     -1,
@@ -2669,6 +2733,7 @@ static struct
     NULL, "            can", ":",	"leave behind or change element"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_SMASH_TARGETS,
     -1,					ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CUSTOM_SMASH_TARGETS,	GADGET_ID_CUSTOM_CAN_SMASH,
     -1,
@@ -2677,6 +2742,7 @@ static struct
     NULL, "can smash", NULL,		"elements that can be smashed"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_SLIPPERY_TYPE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CUSTOM_SLIPPERY_TYPE,	GADGET_ID_NONE,
     -1,
@@ -2685,6 +2751,7 @@ static struct
     NULL, "slippery", NULL,		"where other elements fall down"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_DEADLINESS,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_CUSTOM_DEADLINESS,	GADGET_ID_NONE,
     -1,
@@ -2693,6 +2760,7 @@ static struct
     NULL, "deadly when", NULL,		"deadliness of element"
   },
   {
+    ED_SELECTBOX_ID_CUSTOM_EXPLOSION_TYPE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CUSTOM_EXPLOSION_TYPE,	GADGET_ID_NONE,
     -1,
@@ -2704,6 +2772,7 @@ static struct
   // ---------- element settings: advanced (custom elements) ------------------
 
   {
+    ED_SELECTBOX_ID_CHANGE_TIME_UNITS,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_CHANGE_TIME_UNITS,	GADGET_ID_NONE,
     -1,
@@ -2712,6 +2781,7 @@ static struct
     NULL, "delay time given in", NULL,	"delay time units for change"
   },
   {
+    ED_SELECTBOX_ID_CHANGE_DIRECT_ACTION,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_CHANGE_DIRECT_ACTION,	GADGET_ID_NONE,
     -1,
@@ -2720,6 +2790,7 @@ static struct
     NULL, NULL, NULL,			"type of direct action"
   },
   {
+    ED_SELECTBOX_ID_CHANGE_OTHER_ACTION,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(5),
     GADGET_ID_CHANGE_OTHER_ACTION,	GADGET_ID_NONE,
     -1,
@@ -2728,6 +2799,7 @@ static struct
     NULL, NULL, "element:",		"type of other element action"
   },
   {
+    ED_SELECTBOX_ID_CHANGE_SIDE,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(6),
     GADGET_ID_CHANGE_SIDE,		GADGET_ID_NONE,
     -1,
@@ -2736,6 +2808,7 @@ static struct
     NULL, "at", "side",			"element side triggering change"
   },
   {
+    ED_SELECTBOX_ID_CHANGE_PLAYER,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(7),
     GADGET_ID_CHANGE_PLAYER,		GADGET_ID_NONE,
     -1,
@@ -2744,6 +2817,7 @@ static struct
     NULL, "player:", " ",		"player that causes change"
   },
   {
+    ED_SELECTBOX_ID_CHANGE_PAGE,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(7),
     GADGET_ID_CHANGE_PAGE,		GADGET_ID_CHANGE_PLAYER,
     -1,
@@ -2752,6 +2826,7 @@ static struct
     NULL, "page:", NULL,		"change page that causes change"
   },
   {
+    ED_SELECTBOX_ID_CHANGE_REPLACE_WHEN,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_CHANGE_REPLACE_WHEN,	GADGET_ID_NONE,
     -1,
@@ -2760,6 +2835,7 @@ static struct
     NULL, "replace when", NULL,		"which elements can be replaced"
   },
   {
+    ED_SELECTBOX_ID_ACTION_TYPE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(13),
     GADGET_ID_ACTION_TYPE,		GADGET_ID_NONE,
     15,
@@ -2768,6 +2844,7 @@ static struct
     NULL, NULL, NULL,			"action on specified condition"
   },
   {
+    ED_SELECTBOX_ID_ACTION_MODE,
     -1,					ED_ELEMENT_SETTINGS_YPOS(13),
     GADGET_ID_ACTION_MODE,		GADGET_ID_ACTION_TYPE,
     -1,
@@ -2776,6 +2853,7 @@ static struct
     NULL, NULL, NULL,			"action operator"
   },
   {
+    ED_SELECTBOX_ID_ACTION_ARG,
     -1,					ED_ELEMENT_SETTINGS_YPOS(13),
     GADGET_ID_ACTION_ARG,		GADGET_ID_ACTION_MODE,
     -1,
@@ -2784,6 +2862,7 @@ static struct
     NULL, NULL, NULL,			"action parameter"
   },
   {
+    ED_SELECTBOX_ID_SELECT_CHANGE_PAGE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_SELECT_CHANGE_PAGE,	GADGET_ID_NONE,
     3,
@@ -2795,6 +2874,7 @@ static struct
   // ---------- element settings: configure (group elements) ------------------
 
   {
+    ED_SELECTBOX_ID_GROUP_CHOICE_MODE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_GROUP_CHOICE_MODE,	GADGET_ID_NONE,
     -1,
@@ -2806,6 +2886,7 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int x, y;
   int gadget_id;
   int gadget_id_align;
@@ -2817,18 +2898,21 @@ static struct
   // ---------- level and editor settings (tabs) ------------------------------
 
   {
+    ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL,
     ED_LEVEL_TABS_XPOS(0),		ED_LEVEL_TABS_YPOS(0),
     GADGET_ID_LEVELCONFIG_LEVEL,	GADGET_ID_NONE,
     8,					"Level",
     NULL, NULL, NULL,			"Configure level settings"
   },
   {
+    ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET,
     -1,					-1,
     GADGET_ID_LEVELCONFIG_LEVELSET,	GADGET_ID_LEVELCONFIG_LEVEL,
     8,					"Levelset",
     NULL, NULL, NULL,			"Update this or create new level set"
   },
   {
+    ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR,
     -1,					-1,
     GADGET_ID_LEVELCONFIG_EDITOR,	GADGET_ID_LEVELCONFIG_LEVELSET,
     8,					"Editor",
@@ -2838,30 +2922,35 @@ static struct
   // ---------- element settings (tabs) ---------------------------------------
 
   {
+    ED_TEXTBUTTON_ID_PROPERTIES_INFO,
     ED_ELEMENT_TABS_XPOS(0),		ED_ELEMENT_TABS_YPOS(0),
     GADGET_ID_PROPERTIES_INFO,		GADGET_ID_NONE,
     8,					"Info",
     NULL, NULL, NULL,			"Show information about element"
   },
   {
+    ED_TEXTBUTTON_ID_PROPERTIES_CONFIG,
     -1,					-1,
     GADGET_ID_PROPERTIES_CONFIG,	GADGET_ID_PROPERTIES_INFO,
     8,					"Config",
     NULL, NULL, NULL,			"Configure element properties"
   },
   {
+    ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_1,
     -1,					-1,
     GADGET_ID_PROPERTIES_CONFIG_1,	GADGET_ID_PROPERTIES_INFO,
     8,					"Config 1",
     NULL, NULL, NULL,			"Configure element properties, part 1"
   },
   {
+    ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_2,
     -1,					-1,
     GADGET_ID_PROPERTIES_CONFIG_2,	GADGET_ID_PROPERTIES_CONFIG_1,
     8,					"Config 2",
     NULL, NULL, NULL,			"Configure element properties, part 2"
   },
   {
+    ED_TEXTBUTTON_ID_PROPERTIES_CHANGE,
     -1,					-1,
     GADGET_ID_PROPERTIES_CHANGE,	GADGET_ID_PROPERTIES_CONFIG_2,
     8,					"Change",
@@ -2871,12 +2960,14 @@ static struct
   // ---------- level and editor settings (buttons) ---------------------------
 
   {
+    ED_TEXTBUTTON_ID_SAVE_LEVELSET,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(10),
     GADGET_ID_SAVE_LEVELSET,		GADGET_ID_LEVELSET_SAVE_MODE,
     -1,					"Save",
     NULL, NULL, NULL,			"Update or create level set"
   },
   {
+    ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_2,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_SAVE_AS_TEMPLATE_2,	GADGET_ID_NONE,
     -1,					"Save",
@@ -2887,6 +2978,7 @@ static struct
   // ---------- element settings (buttons) ------------------------------------
 
   {
+    ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_1,
     -1,					-1,
     GADGET_ID_SAVE_AS_TEMPLATE_1,	GADGET_ID_CUSTOM_USE_TEMPLATE_1,
     -1,					"Save",
@@ -2894,12 +2986,14 @@ static struct
     "Save current settings as new template"
   },
   {
+    ED_TEXTBUTTON_ID_ADD_CHANGE_PAGE,
     -1,					-1,
     GADGET_ID_ADD_CHANGE_PAGE,		GADGET_ID_PASTE_CHANGE_PAGE,
     -1,					"New",
     NULL, NULL, NULL,			"Add new change page"
   },
   {
+    ED_TEXTBUTTON_ID_DEL_CHANGE_PAGE,
     -1,					-1,
     GADGET_ID_DEL_CHANGE_PAGE,		GADGET_ID_ADD_CHANGE_PAGE,
     -1,					"Delete",
@@ -2909,6 +3003,7 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int graphic;
   int x, y;
   int gadget_id;
@@ -2917,24 +3012,28 @@ static struct
 } graphicbutton_info[ED_NUM_GRAPHICBUTTONS] =
 {
   {
+    ED_GRAPHICBUTTON_ID_PREV_CHANGE_PAGE,
     IMG_EDITOR_COUNTER_DOWN,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_PREV_CHANGE_PAGE,		GADGET_ID_NONE,
     NULL, NULL,				"select previous change page"
   },
   {
+    ED_GRAPHICBUTTON_ID_NEXT_CHANGE_PAGE,
     IMG_EDITOR_COUNTER_UP,
     -1,					ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_NEXT_CHANGE_PAGE,		GADGET_ID_SELECT_CHANGE_PAGE,
     NULL, "change page",		"select next change page"
   },
   {
+    ED_GRAPHICBUTTON_ID_COPY_CHANGE_PAGE,
     IMG_GFX_EDITOR_BUTTON_CP_COPY,
     -1,					ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_COPY_CHANGE_PAGE,		GADGET_ID_NEXT_CHANGE_PAGE,
     " ", NULL,				"copy settings from this change page"
   },
   {
+    ED_GRAPHICBUTTON_ID_PASTE_CHANGE_PAGE,
     IMG_GFX_EDITOR_BUTTON_CP_PASTE,
     -1,					ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_PASTE_CHANGE_PAGE,	GADGET_ID_COPY_CHANGE_PAGE,
@@ -2949,37 +3048,44 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int graphic;
   int gadget_id;
   char *infotext;
 } scrollbutton_info[ED_NUM_SCROLLBUTTONS] =
 {
   {
+    ED_SCROLLBUTTON_ID_AREA_UP,
     IMG_EDITOR_PLAYFIELD_SCROLL_UP,
     GADGET_ID_SCROLL_UP,
     "scroll level editing area up"
   },
   {
+    ED_SCROLLBUTTON_ID_AREA_DOWN,
     IMG_EDITOR_PLAYFIELD_SCROLL_DOWN,
     GADGET_ID_SCROLL_DOWN,
     "scroll level editing area down"
   },
   {
+    ED_SCROLLBUTTON_ID_AREA_LEFT,
     IMG_EDITOR_PLAYFIELD_SCROLL_LEFT,
     GADGET_ID_SCROLL_LEFT,
     "scroll level editing area left"
   },
   {
+    ED_SCROLLBUTTON_ID_AREA_RIGHT,
     IMG_EDITOR_PLAYFIELD_SCROLL_RIGHT,
     GADGET_ID_SCROLL_RIGHT,
     "scroll level editing area right"
   },
   {
+    ED_SCROLLBUTTON_ID_LIST_UP,
     IMG_EDITOR_PALETTE_SCROLL_UP,
     GADGET_ID_SCROLL_LIST_UP,
     "scroll element list up ('Page Up')"
   },
   {
+    ED_SCROLLBUTTON_ID_LIST_DOWN,
     IMG_EDITOR_PALETTE_SCROLL_DOWN,
     GADGET_ID_SCROLL_LIST_DOWN,
     "scroll element list down ('Page Down')"
@@ -2996,6 +3102,7 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int graphic;
   int type;
   int gadget_id;
@@ -3003,18 +3110,21 @@ static struct
 } scrollbar_info[ED_NUM_SCROLLBARS] =
 {
   {
+    ED_SCROLLBAR_ID_AREA_HORIZONTAL,
     IMG_EDITOR_PLAYFIELD_SCROLLBAR,
     GD_TYPE_SCROLLBAR_HORIZONTAL,
     GADGET_ID_SCROLL_HORIZONTAL,
     "scroll level editing area horizontally"
   },
   {
+    ED_SCROLLBAR_ID_AREA_VERTICAL,
     IMG_EDITOR_PLAYFIELD_SCROLLBAR,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_VERTICAL,
     "scroll level editing area vertically"
   },
   {
+    ED_SCROLLBAR_ID_LIST_VERTICAL,
     IMG_EDITOR_PALETTE_SCROLLBAR,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_LIST_VERTICAL,
@@ -3025,6 +3135,7 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int x, y;
   int gadget_id;
   int gadget_id_align;
@@ -3035,6 +3146,7 @@ static struct
 } radiobutton_info[ED_NUM_RADIOBUTTONS] =
 {
   {
+    ED_RADIOBUTTON_ID_PERCENTAGE,
     -1,					ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_RANDOM_PERCENTAGE,	GADGET_ID_LEVEL_RANDOM_UP,
     RADIO_NR_RANDOM_ELEMENTS,
@@ -3042,6 +3154,7 @@ static struct
     " ", "percentage",			"use percentage for random elements"
   },
   {
+    ED_RADIOBUTTON_ID_QUANTITY,
     -1,					ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_RANDOM_QUANTITY,		GADGET_ID_RANDOM_PERCENTAGE,
     RADIO_NR_RANDOM_ELEMENTS,
@@ -3052,6 +3165,7 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int x, y;
   int gadget_id;
   int gadget_id_align;
@@ -3062,6 +3176,7 @@ static struct
   // ---------- level and editor settings -------------------------------------
 
   {
+    ED_CHECKBUTTON_ID_AUTO_COUNT_GEMS,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_AUTO_COUNT_GEMS,		GADGET_ID_NONE,
     &level.auto_count_gems,
@@ -3069,6 +3184,7 @@ static struct
     "automatically count gems needed",	"set counter to number of gems"
   },
   {
+    ED_CHECKBUTTON_ID_RATE_TIME_OVER_SCORE,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(11),
     GADGET_ID_RATE_TIME_OVER_SCORE,	GADGET_ID_NONE,
     &level.rate_time_over_score,
@@ -3076,6 +3192,7 @@ static struct
     "rate time/steps used over score",	"sort high scores by playing time/steps"
   },
   {
+    ED_CHECKBUTTON_ID_USE_LEVELSET_ARTWORK,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_USE_LEVELSET_ARTWORK,	GADGET_ID_NONE,
     &levelset_use_levelset_artwork,
@@ -3083,6 +3200,7 @@ static struct
     "use current custom artwork",	"use custom artwork of this level set"
   },
   {
+    ED_CHECKBUTTON_ID_COPY_LEVEL_TEMPLATE,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_COPY_LEVEL_TEMPLATE,	GADGET_ID_NONE,
     &levelset_copy_level_template,
@@ -3090,6 +3208,7 @@ static struct
     "copy current level template",	"copy level template of this level set"
   },
   {
+    ED_CHECKBUTTON_ID_RANDOM_RESTRICTED,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(1),
     GADGET_ID_RANDOM_RESTRICTED,	GADGET_ID_NONE,
     &random_placement_background_restricted,
@@ -3097,6 +3216,7 @@ static struct
     "restrict random placement to:",	"set random placement restriction"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_3,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(4),
     GADGET_ID_CUSTOM_USE_TEMPLATE_3,	GADGET_ID_NONE,
     &setup.editor.use_template_for_new_levels,
@@ -3104,6 +3224,7 @@ static struct
     "use template for new levels",	"use template for level properties"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_2,
     ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(5),
     GADGET_ID_CUSTOM_USE_TEMPLATE_2,	GADGET_ID_NONE,
     &level.use_custom_template,
@@ -3114,6 +3235,7 @@ static struct
   // ---------- element settings: configure (various elements) ----------------
 
   {
+    ED_CHECKBUTTON_ID_STICK_ELEMENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     GADGET_ID_STICK_ELEMENT,		GADGET_ID_NONE,
     &stick_element_properties_window,
@@ -3121,6 +3243,7 @@ static struct
     "stick this screen to edit content","stick this screen to edit content"
   },
   {
+    ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_EM_SLIPPERY_GEMS,		GADGET_ID_NONE,
     &level.em_slippery_gems,
@@ -3128,6 +3251,7 @@ static struct
     "slip down from certain flat walls","use EM/DC style slipping behaviour"
   },
   {
+    ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_EM_EXPLODES_BY_FIRE,	GADGET_ID_NONE,
     &level.em_explodes_by_fire,
@@ -3135,6 +3259,7 @@ static struct
     "explodes with chain reaction",	"use R'n'D style explosion behaviour"
   },
   {
+    ED_CHECKBUTTON_ID_USE_SPRING_BUG,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_USE_SPRING_BUG,		GADGET_ID_NONE,
     &level.use_spring_bug,
@@ -3142,6 +3267,7 @@ static struct
     "use spring pushing bug",		"use odd spring pushing behaviour"
   },
   {
+    ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_USE_TIME_ORB_BUG,		GADGET_ID_NONE,
     &level.use_time_orb_bug,
@@ -3149,6 +3275,7 @@ static struct
     "use time orb bug",			"use odd time orb behaviour"
   },
   {
+    ED_CHECKBUTTON_ID_USE_LIFE_BUGS,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
     GADGET_ID_USE_LIFE_BUGS,		GADGET_ID_NONE,
     &level.use_life_bugs,
@@ -3156,6 +3283,7 @@ static struct
     "use buggy element behaviour",	"use odd (historic) element behaviour"
   },
   {
+    ED_CHECKBUTTON_ID_RANDOM_BALL_CONTENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_RANDOM_BALL_CONTENT,	GADGET_ID_NONE,
     &level.ball_random,
@@ -3163,6 +3291,7 @@ static struct
     "create single random element",	"only create one element from content"
   },
   {
+    ED_CHECKBUTTON_ID_INITIAL_BALL_ACTIVE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_INITIAL_BALL_ACTIVE,	GADGET_ID_NONE,
     &level.ball_active_initial,
@@ -3170,6 +3299,7 @@ static struct
     "magic ball initially activated",	"activate magic ball after level start"
   },
   {
+    ED_CHECKBUTTON_ID_GROW_INTO_DIGGABLE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     GADGET_ID_GROW_INTO_DIGGABLE,	GADGET_ID_NONE,
     &level.grow_into_diggable,
@@ -3177,6 +3307,7 @@ static struct
     "can grow into anything diggable",	"grow into more than just sand"
   },
   {
+    ED_CHECKBUTTON_ID_SB_FIELDS_NEEDED,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     GADGET_ID_SB_FIELDS_NEEDED,		GADGET_ID_NONE,
     &level.sb_fields_needed,
@@ -3184,6 +3315,7 @@ static struct
     "all fields need to be filled",	"require all SB fields to be solved"
   },
   {
+    ED_CHECKBUTTON_ID_SB_OBJECTS_NEEDED,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     GADGET_ID_SB_OBJECTS_NEEDED,	GADGET_ID_NONE,
     &level.sb_objects_needed,
@@ -3191,6 +3323,7 @@ static struct
     "all objects need to be placed",	"require all SB objects to be solved"
   },
   {
+    ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_AUTO_EXIT_SOKOBAN,	GADGET_ID_NONE,
     &level.auto_exit_sokoban,
@@ -3198,6 +3331,7 @@ static struct
     "exit level if all tasks solved",	"automatically finish Sokoban levels"
   },
   {
+    ED_CHECKBUTTON_ID_SOLVED_BY_ONE_PLAYER,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_SOLVED_BY_ONE_PLAYER,	GADGET_ID_NONE,
     &level.solved_by_one_player,
@@ -3205,6 +3339,7 @@ static struct
     "only one player must enter exit",	"level solved by first player in exit"
   },
   {
+    ED_CHECKBUTTON_ID_FINISH_DIG_COLLECT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_FINISH_DIG_COLLECT,	GADGET_ID_NONE,
     &level.finish_dig_collect,
@@ -3212,6 +3347,7 @@ static struct
     "CE action on finished dig/collect", "only finished dig/collect triggers CE"
   },
   {
+    ED_CHECKBUTTON_ID_KEEP_WALKABLE_CE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_KEEP_WALKABLE_CE,		GADGET_ID_NONE,
     &level.keep_walkable_ce,
@@ -3219,6 +3355,7 @@ static struct
     "keep walkable CE changed to player", "keep CE changing to player if walkable"
   },
   {
+    ED_CHECKBUTTON_ID_CONTINUOUS_SNAPPING,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CONTINUOUS_SNAPPING,	GADGET_ID_NONE,
     &level.continuous_snapping,
@@ -3226,6 +3363,7 @@ static struct
     "continuous snapping",		"use snapping without releasing key"
   },
   {
+    ED_CHECKBUTTON_ID_BLOCK_SNAP_FIELD,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_BLOCK_SNAP_FIELD,		GADGET_ID_NONE,
     &level.block_snap_field,
@@ -3233,6 +3371,7 @@ static struct
     "block snapped field when snapping", "use snapping delay to show animation"
   },
   {
+    ED_CHECKBUTTON_ID_BLOCK_LAST_FIELD,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_BLOCK_LAST_FIELD,		GADGET_ID_NONE,
     &level.block_last_field,
@@ -3240,6 +3379,7 @@ static struct
     "block last field when moving",	"player blocks last field when moving"
   },
   {
+    ED_CHECKBUTTON_ID_SP_BLOCK_LAST_FIELD,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_SP_BLOCK_LAST_FIELD,	GADGET_ID_NONE,
     &level.sp_block_last_field,
@@ -3247,6 +3387,7 @@ static struct
     "block last field when moving",	"player blocks last field when moving"
   },
   {
+    ED_CHECKBUTTON_ID_INSTANT_RELOCATION,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_INSTANT_RELOCATION,	GADGET_ID_NONE,
     &level.instant_relocation,
@@ -3254,6 +3395,7 @@ static struct
     "no scrolling when relocating",	"player gets relocated without delay"
   },
   {
+    ED_CHECKBUTTON_ID_SHIFTED_RELOCATION,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_SHIFTED_RELOCATION,	GADGET_ID_NONE,
     &level.shifted_relocation,
@@ -3261,6 +3403,7 @@ static struct
     "no centering when relocating",	"level not centered after relocation"
   },
   {
+    ED_CHECKBUTTON_ID_LAZY_RELOCATION,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
     GADGET_ID_LAZY_RELOCATION,		GADGET_ID_NONE,
     &level.lazy_relocation,
@@ -3268,6 +3411,7 @@ static struct
     "only redraw off-screen relocation","no redraw if relocation target visible"
   },
   {
+    ED_CHECKBUTTON_ID_USE_START_ELEMENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_USE_START_ELEMENT,	GADGET_ID_NONE,
     &level.use_start_element[0],
@@ -3275,6 +3419,7 @@ static struct
     "use level start element:",	       "start level at this element's position"
   },
   {
+    ED_CHECKBUTTON_ID_USE_ARTWORK_ELEMENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_USE_ARTWORK_ELEMENT,	GADGET_ID_NONE,
     &level.use_artwork_element[0],
@@ -3282,6 +3427,7 @@ static struct
     "use artwork from element:",	"use player artwork from other element"
   },
   {
+    ED_CHECKBUTTON_ID_USE_EXPLOSION_ELEMENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_USE_EXPLOSION_ELEMENT,	GADGET_ID_NONE,
     &level.use_explosion_element[0],
@@ -3289,6 +3435,7 @@ static struct
     "use explosion from element:",	"use explosion properties from element"
   },
   {
+    ED_CHECKBUTTON_ID_INITIAL_GRAVITY,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(13),
     GADGET_ID_INITIAL_GRAVITY,		GADGET_ID_NONE,
     &level.initial_player_gravity[0],
@@ -3296,6 +3443,7 @@ static struct
     "use initial gravity",		"set initial player gravity"
   },
   {
+    ED_CHECKBUTTON_ID_USE_INITIAL_INVENTORY,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_USE_INITIAL_INVENTORY,	GADGET_ID_NONE,
     &level.use_initial_inventory[0],
@@ -3303,6 +3451,7 @@ static struct
     "use initial inventory:",		"use collected elements on level start"
   },
   {
+    ED_CHECKBUTTON_ID_CAN_PASS_TO_WALKABLE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(6),
     GADGET_ID_CAN_PASS_TO_WALKABLE,	GADGET_ID_NONE,
     &level.can_pass_to_walkable,
@@ -3310,6 +3459,7 @@ static struct
     "can pass to walkable element",	"player can pass to empty or walkable"
   },
   {
+    ED_CHECKBUTTON_ID_CAN_FALL_INTO_ACID,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_CAN_FALL_INTO_ACID,	GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE_INTO_ACID],
@@ -3317,6 +3467,7 @@ static struct
     "can fall into acid (with gravity)","player can fall into acid pool"
   },
   {
+    ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     GADGET_ID_CAN_MOVE_INTO_ACID,	GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE_INTO_ACID],
@@ -3324,6 +3475,7 @@ static struct
     "can move into acid",		"element can move into acid pool"
   },
   {
+    ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_DONT_COLLIDE_WITH,	GADGET_ID_NONE,
     &custom_element_properties[EP_DONT_COLLIDE_WITH],
@@ -3331,6 +3483,7 @@ static struct
     "deadly when colliding with",	"element is deadly when hitting player"
   },
   {
+    ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
     GADGET_ID_BD_DIAGONAL_MOVEMENTS,	GADGET_ID_NONE,
     &level.bd_diagonal_movements,
@@ -3338,6 +3491,7 @@ static struct
     "can move diagonally",		"player can move diagonally"
   },
   {
+    ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_ENVELOPE_AUTOWRAP,	GADGET_ID_NONE,
     &level.envelope[0].autowrap,
@@ -3345,6 +3499,7 @@ static struct
     "auto-wrap",			"automatically wrap envelope text"
   },
   {
+    ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
     -1,					ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_ENVELOPE_CENTERED,	GADGET_ID_ENVELOPE_AUTOWRAP,
     &level.envelope[0].centered,
@@ -3352,6 +3507,7 @@ static struct
     "centered",				"automatically center envelope text"
   },
   {
+    ED_CHECKBUTTON_ID_MM_LASER_RED,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_MM_LASER_RED,		GADGET_ID_NONE,
     &level.mm_laser_red,
@@ -3359,6 +3515,7 @@ static struct
     "red",				"use red color components in laser"
   },
   {
+    ED_CHECKBUTTON_ID_MM_LASER_GREEN,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_MM_LASER_GREEN,		GADGET_ID_NONE,
     &level.mm_laser_green,
@@ -3366,6 +3523,7 @@ static struct
     "green",				"use green color components in laser"
   },
   {
+    ED_CHECKBUTTON_ID_MM_LASER_BLUE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_MM_LASER_BLUE,		GADGET_ID_NONE,
     &level.mm_laser_blue,
@@ -3373,6 +3531,7 @@ static struct
     "blue",				"use blue color components in laser"
   },
   {
+    ED_CHECKBUTTON_ID_DF_LASER_RED,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_DF_LASER_RED,		GADGET_ID_NONE,
     &level.df_laser_red,
@@ -3380,6 +3539,7 @@ static struct
     "red",				"use red color components in laser"
   },
   {
+    ED_CHECKBUTTON_ID_DF_LASER_GREEN,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_DF_LASER_GREEN,		GADGET_ID_NONE,
     &level.df_laser_green,
@@ -3387,6 +3547,7 @@ static struct
     "green",				"use green color components in laser"
   },
   {
+    ED_CHECKBUTTON_ID_DF_LASER_BLUE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_DF_LASER_BLUE,		GADGET_ID_NONE,
     &level.df_laser_blue,
@@ -3394,6 +3555,7 @@ static struct
     "blue",				"use blue color components in laser"
   },
   {
+    ED_CHECKBUTTON_ID_ROTATE_MM_BALL_CONTENT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
     GADGET_ID_ROTATE_MM_BALL_CONTENT,	GADGET_ID_NONE,
     &level.rotate_mm_ball_content,
@@ -3401,6 +3563,7 @@ static struct
     "randomly rotate created content",	"randomly rotate newly created content"
   },
   {
+    ED_CHECKBUTTON_ID_EXPLODE_MM_BALL,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(6),
     GADGET_ID_EXPLODE_MM_BALL,		GADGET_ID_NONE,
     &level.explode_mm_ball,
@@ -3411,6 +3574,7 @@ static struct
   // ---------- element settings: configure 1 (custom elements) ---------------
 
   {
+    ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_CUSTOM_USE_GRAPHIC,	GADGET_ID_NONE,
     &custom_element.use_gfx_element,
@@ -3418,6 +3582,7 @@ static struct
     "use graphic of element:",		"use existing element graphic"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_1,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_CUSTOM_USE_TEMPLATE_1,	GADGET_ID_NONE,
     &level.use_custom_template,
@@ -3425,6 +3590,7 @@ static struct
     "use template",			"use template for custom properties"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_ACCESSIBLE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_CUSTOM_ACCESSIBLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_ACCESSIBLE],
@@ -3432,6 +3598,7 @@ static struct
     NULL,				"player can walk to or pass this field"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_GRAV_REACHABLE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CUSTOM_GRAV_REACHABLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_GRAVITY_REACHABLE],
@@ -3439,6 +3606,7 @@ static struct
     "reachable despite gravity",	"player can walk/dig despite gravity"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_USE_LAST_VALUE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CUSTOM_USE_LAST_VALUE,	GADGET_ID_NONE,
     &custom_element.use_last_ce_value,
@@ -3446,6 +3614,7 @@ static struct
     "use last CE value after change",	"use last CE value after change"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_WALK_TO_OBJECT,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_CUSTOM_WALK_TO_OBJECT,	GADGET_ID_NONE,
     &custom_element_properties[EP_WALK_TO_OBJECT],
@@ -3453,6 +3622,7 @@ static struct
     NULL,				"player can dig/collect/push element"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CUSTOM_INDESTRUCTIBLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_INDESTRUCTIBLE],
@@ -3463,6 +3633,7 @@ static struct
   // ---------- element settings: configure 2 (custom elements) ---------------
 
   {
+    ED_CHECKBUTTON_ID_CUSTOM_CAN_MOVE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_CUSTOM_CAN_MOVE,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE],
@@ -3470,6 +3641,7 @@ static struct
     NULL,				"element can move with some pattern"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_CAN_FALL,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CUSTOM_CAN_FALL,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_FALL],
@@ -3477,6 +3649,7 @@ static struct
     "can fall",				"element can fall down"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_CAN_SMASH,
     -1,					ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CUSTOM_CAN_SMASH,		GADGET_ID_CUSTOM_CAN_FALL,
     &custom_element_properties[EP_CAN_SMASH],
@@ -3484,6 +3657,7 @@ static struct
     NULL,				"element can smash other elements"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_SLIPPERY,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CUSTOM_SLIPPERY,		GADGET_ID_NONE,
     &custom_element_properties[EP_SLIPPERY],
@@ -3491,6 +3665,7 @@ static struct
     NULL,				"other elements can fall down from it"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_DEADLY,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
     GADGET_ID_CUSTOM_DEADLY,		GADGET_ID_NONE,
     &custom_element_properties[EP_DEADLY],
@@ -3498,6 +3673,7 @@ static struct
     NULL,				"element can kill the player"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_CAN_EXPLODE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CUSTOM_CAN_EXPLODE,	GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_EXPLODE],
@@ -3505,6 +3681,7 @@ static struct
     NULL,				"element can explode"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_FIRE,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_CUSTOM_EXPLODE_FIRE,	GADGET_ID_NONE,
     &custom_element_properties[EP_EXPLODES_BY_FIRE],
@@ -3512,6 +3689,7 @@ static struct
     "by fire",				"element can explode by fire/explosion"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_SMASH,
     -1,					ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_CUSTOM_EXPLODE_SMASH,	GADGET_ID_CUSTOM_EXPLODE_FIRE,
     &custom_element_properties[EP_EXPLODES_SMASHED],
@@ -3519,6 +3697,7 @@ static struct
     "smashed",				"element can explode when smashed"
   },
   {
+    ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_IMPACT,
     -1,					ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_CUSTOM_EXPLODE_IMPACT,	GADGET_ID_CUSTOM_EXPLODE_SMASH,
     &custom_element_properties[EP_EXPLODES_IMPACT],
@@ -3529,6 +3708,7 @@ static struct
   // ---------- element settings: advanced (custom elements) ------------------
 
   {
+    ED_CHECKBUTTON_ID_CUSTOM_CAN_CHANGE,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_CUSTOM_CAN_CHANGE,	GADGET_ID_NONE,
     &custom_element_change.can_change,
@@ -3536,6 +3716,7 @@ static struct
     "element changes to:",		"change element on specified condition"
   },
   {
+    ED_CHECKBUTTON_ID_CHANGE_DELAY,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_CHANGE_DELAY,		GADGET_ID_NONE,
     &custom_element_change_events[CE_DELAY],
@@ -3543,6 +3724,7 @@ static struct
     NULL,				"element changes after delay"
   },
   {
+    ED_CHECKBUTTON_ID_CHANGE_BY_DIRECT_ACT,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(4),
     GADGET_ID_CHANGE_BY_DIRECT_ACT,	GADGET_ID_NONE,
     &custom_element_change_events[CE_BY_DIRECT_ACTION],
@@ -3550,6 +3732,7 @@ static struct
     NULL,				"element changes by direct action"
   },
   {
+    ED_CHECKBUTTON_ID_CHANGE_BY_OTHER_ACT,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(5),
     GADGET_ID_CHANGE_BY_OTHER_ACT,	GADGET_ID_NONE,
     &custom_element_change_events[CE_BY_OTHER_ACTION],
@@ -3557,6 +3740,7 @@ static struct
     NULL,				"element changes by other element"
   },
   {
+    ED_CHECKBUTTON_ID_CHANGE_USE_EXPLOSION,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(8),
     GADGET_ID_CHANGE_USE_EXPLOSION,	GADGET_ID_NONE,
     &custom_element_change.explode,
@@ -3564,6 +3748,7 @@ static struct
     "explode instead of change",	"element explodes instead of change"
   },
   {
+    ED_CHECKBUTTON_ID_CHANGE_USE_CONTENT,
     ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(9),
     GADGET_ID_CHANGE_USE_CONTENT,	GADGET_ID_NONE,
     &custom_element_change.use_target_content,
@@ -3571,6 +3756,7 @@ static struct
     "use extended change target:",	"element changes to more elements"
   },
   {
+    ED_CHECKBUTTON_ID_CHANGE_ONLY_COMPLETE,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(11),
     GADGET_ID_CHANGE_ONLY_COMPLETE,	GADGET_ID_NONE,
     &custom_element_change.only_if_complete,
@@ -3578,6 +3764,7 @@ static struct
     "replace all or nothing",		"only replace when all can be changed"
   },
   {
+    ED_CHECKBUTTON_ID_CHANGE_USE_RANDOM,
     ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(12),
     GADGET_ID_CHANGE_USE_RANDOM,	GADGET_ID_NONE,
     &custom_element_change.use_random_replace,
@@ -3585,6 +3772,7 @@ static struct
     NULL,				"use percentage for random replace"
   },
   {
+    ED_CHECKBUTTON_ID_CHANGE_HAS_ACTION,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(13),
     GADGET_ID_CHANGE_HAS_ACTION,	GADGET_ID_NONE,
     &custom_element_change.has_action,
@@ -3595,6 +3783,7 @@ static struct
 
 static struct
 {
+  int gadget_type_id;
   int x, y;
   int xoffset, yoffset;
   int gadget_id;
@@ -3607,6 +3796,7 @@ static struct
   // ---------- level playfield content ---------------------------------------
 
   {
+    ED_DRAWING_ID_DRAWING_LEVEL,
     0,					0,
     0,					0,
     GADGET_ID_DRAWING_LEVEL,		GADGET_ID_NONE,
@@ -3618,6 +3808,7 @@ static struct
   // ---------- yam yam content -----------------------------------------------
 
   {
+    ED_DRAWING_ID_YAMYAM_CONTENT_0,
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(0),	ED_AREA_YAMYAM_CONTENT_YOFF(0),
     GADGET_ID_YAMYAM_CONTENT_0,		GADGET_ID_NONE,
@@ -3625,6 +3816,7 @@ static struct
     NULL, NULL, NULL, "1",		NULL
   },
   {
+    ED_DRAWING_ID_YAMYAM_CONTENT_1,
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(1),	ED_AREA_YAMYAM_CONTENT_YOFF(1),
     GADGET_ID_YAMYAM_CONTENT_1,		GADGET_ID_NONE,
@@ -3632,6 +3824,7 @@ static struct
     NULL, NULL, NULL, "2",		NULL
   },
   {
+    ED_DRAWING_ID_YAMYAM_CONTENT_2,
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(2),	ED_AREA_YAMYAM_CONTENT_YOFF(2),
     GADGET_ID_YAMYAM_CONTENT_2,		GADGET_ID_NONE,
@@ -3639,6 +3832,7 @@ static struct
     NULL, NULL, NULL, "3",		NULL
   },
   {
+    ED_DRAWING_ID_YAMYAM_CONTENT_3,
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(3),	ED_AREA_YAMYAM_CONTENT_YOFF(3),
     GADGET_ID_YAMYAM_CONTENT_3,		GADGET_ID_NONE,
@@ -3646,6 +3840,7 @@ static struct
     NULL, NULL, NULL, "4",		NULL
   },
   {
+    ED_DRAWING_ID_YAMYAM_CONTENT_4,
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(4),	ED_AREA_YAMYAM_CONTENT_YOFF(4),
     GADGET_ID_YAMYAM_CONTENT_4,		GADGET_ID_NONE,
@@ -3653,6 +3848,7 @@ static struct
     NULL, NULL, NULL, "5",		NULL
   },
   {
+    ED_DRAWING_ID_YAMYAM_CONTENT_5,
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(5),	ED_AREA_YAMYAM_CONTENT_YOFF(5),
     GADGET_ID_YAMYAM_CONTENT_5,		GADGET_ID_NONE,
@@ -3660,6 +3856,7 @@ static struct
     NULL, NULL, NULL, "6",		NULL
   },
   {
+    ED_DRAWING_ID_YAMYAM_CONTENT_6,
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(6),	ED_AREA_YAMYAM_CONTENT_YOFF(6),
     GADGET_ID_YAMYAM_CONTENT_6,		GADGET_ID_NONE,
@@ -3667,6 +3864,7 @@ static struct
     NULL, NULL, NULL, "7",		NULL
   },
   {
+    ED_DRAWING_ID_YAMYAM_CONTENT_7,
     ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
     ED_AREA_YAMYAM_CONTENT_XOFF(7),	ED_AREA_YAMYAM_CONTENT_YOFF(7),
     GADGET_ID_YAMYAM_CONTENT_7,		GADGET_ID_NONE,
@@ -3677,6 +3875,7 @@ static struct
   // ---------- magic ball content --------------------------------------------
 
   {
+    ED_DRAWING_ID_MAGIC_BALL_CONTENT_0,
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(0),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(0),
     GADGET_ID_MAGIC_BALL_CONTENT_0,	GADGET_ID_NONE,
@@ -3684,6 +3883,7 @@ static struct
     NULL, NULL, NULL, "1",		NULL
   },
   {
+    ED_DRAWING_ID_MAGIC_BALL_CONTENT_1,
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(1),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(1),
     GADGET_ID_MAGIC_BALL_CONTENT_1,	GADGET_ID_NONE,
@@ -3691,6 +3891,7 @@ static struct
     NULL, NULL, NULL, "2",		NULL
   },
   {
+    ED_DRAWING_ID_MAGIC_BALL_CONTENT_2,
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(2),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(2),
     GADGET_ID_MAGIC_BALL_CONTENT_2,	GADGET_ID_NONE,
@@ -3698,6 +3899,7 @@ static struct
     NULL, NULL, NULL, "3",		NULL
   },
   {
+    ED_DRAWING_ID_MAGIC_BALL_CONTENT_3,
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(3),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(3),
     GADGET_ID_MAGIC_BALL_CONTENT_3,	GADGET_ID_NONE,
@@ -3705,6 +3907,7 @@ static struct
     NULL, NULL, NULL, "4",		NULL
   },
   {
+    ED_DRAWING_ID_MAGIC_BALL_CONTENT_4,
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(4),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(4),
     GADGET_ID_MAGIC_BALL_CONTENT_4,	GADGET_ID_NONE,
@@ -3712,6 +3915,7 @@ static struct
     NULL, NULL, NULL, "5",		NULL
   },
   {
+    ED_DRAWING_ID_MAGIC_BALL_CONTENT_5,
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(5),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(5),
     GADGET_ID_MAGIC_BALL_CONTENT_5,	GADGET_ID_NONE,
@@ -3719,6 +3923,7 @@ static struct
     NULL, NULL, NULL, "6",		NULL
   },
   {
+    ED_DRAWING_ID_MAGIC_BALL_CONTENT_6,
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(6),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(6),
     GADGET_ID_MAGIC_BALL_CONTENT_6,	GADGET_ID_NONE,
@@ -3726,6 +3931,7 @@ static struct
     NULL, NULL, NULL, "7",		NULL
   },
   {
+    ED_DRAWING_ID_MAGIC_BALL_CONTENT_7,
     ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
     ED_AREA_MAGIC_BALL_CONTENT_XOFF(7),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(7),
     GADGET_ID_MAGIC_BALL_CONTENT_7,	GADGET_ID_NONE,
@@ -3736,6 +3942,7 @@ static struct
   // ---------- android content -----------------------------------------------
 
   {
+    ED_DRAWING_ID_ANDROID_CONTENT,
     ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(6),
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_ANDROID_CONTENT,		GADGET_ID_NONE,
@@ -3746,6 +3953,7 @@ static struct
   // ---------- amoeba content ------------------------------------------------
 
   {
+    ED_DRAWING_ID_AMOEBA_CONTENT,
     ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(3),
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_AMOEBA_CONTENT,		GADGET_ID_NONE,
@@ -3756,6 +3964,7 @@ static struct
   // ---------- level start element -------------------------------------------
 
   {
+    ED_DRAWING_ID_START_ELEMENT,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(10),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_START_ELEMENT,		GADGET_ID_USE_START_ELEMENT,
@@ -3766,6 +3975,7 @@ static struct
   // ---------- player artwork element ----------------------------------------
 
   {
+    ED_DRAWING_ID_ARTWORK_ELEMENT,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(11),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_ARTWORK_ELEMENT,		GADGET_ID_USE_ARTWORK_ELEMENT,
@@ -3776,6 +3986,7 @@ static struct
   // ---------- player explosion element --------------------------------------
 
   {
+    ED_DRAWING_ID_EXPLOSION_ELEMENT,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(12),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_EXPLOSION_ELEMENT,	GADGET_ID_USE_EXPLOSION_ELEMENT,
@@ -3786,6 +3997,7 @@ static struct
   // ---------- player initial inventory --------------------------------------
 
   {
+    ED_DRAWING_ID_INVENTORY_CONTENT,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(1),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_INVENTORY_CONTENT,	GADGET_ID_USE_INITIAL_INVENTORY,
@@ -3796,6 +4008,7 @@ static struct
   // ---------- gray ball content -----------------------------------------
 
   {
+    ED_DRAWING_ID_MM_BALL_CONTENT,
     ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(2),
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_MM_BALL_CONTENT,		GADGET_ID_NONE,
@@ -3808,6 +4021,7 @@ static struct
   // ---------- custom graphic ------------------------------------------------
 
   {
+    ED_DRAWING_ID_CUSTOM_GRAPHIC,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(1),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_GRAPHIC,		GADGET_ID_CUSTOM_USE_GRAPHIC,
@@ -3820,6 +4034,7 @@ static struct
   // ---------- custom content (when exploding) -------------------------------
 
   {
+    ED_DRAWING_ID_CUSTOM_CONTENT,
     -1,					ED_AREA_3X3_SETTINGS_YPOS(11),
     0,					ED_AREA_3X3_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CONTENT,		GADGET_ID_NONE,	// align three rows
@@ -3830,6 +4045,7 @@ static struct
   // ---------- custom enter and leave element (when moving) ------------------
 
   {
+    ED_DRAWING_ID_CUSTOM_MOVE_ENTER,
     ED_AREA_1X1_SETTINGS_XPOS(1),	ED_AREA_1X1_SETTINGS_YPOS(3),
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_MOVE_ENTER,	GADGET_ID_NONE,
@@ -3837,6 +4053,7 @@ static struct
     "can dig:", " ", NULL, NULL,	"element that can be digged/collected"
   },
   {
+    ED_DRAWING_ID_CUSTOM_MOVE_LEAVE,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(3),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_MOVE_LEAVE,	GADGET_ID_CUSTOM_MOVE_LEAVE_TYPE,
@@ -3849,6 +4066,7 @@ static struct
   // ---------- custom change target ------------------------------------------
 
   {
+    ED_DRAWING_ID_CUSTOM_CHANGE_TARGET,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(1),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_TARGET,	GADGET_ID_CUSTOM_CAN_CHANGE,
@@ -3859,6 +4077,7 @@ static struct
   // ---------- custom change content (extended change target) ----------------
 
   {
+    ED_DRAWING_ID_CUSTOM_CHANGE_CONTENT,
     -1,					ED_AREA_3X3_SETTINGS_YPOS(9),
     0,					ED_AREA_3X3_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_CONTENT,	GADGET_ID_NONE,	// align three rows
@@ -3869,6 +4088,7 @@ static struct
   // ---------- custom change trigger (element causing change) ----------------
 
   {
+    ED_DRAWING_ID_CUSTOM_CHANGE_TRIGGER,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(5),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_TRIGGER,	GADGET_ID_CHANGE_OTHER_ACTION,
@@ -3879,6 +4099,7 @@ static struct
   // ---------- custom change action (element used for action) ----------------
 
   {
+    ED_DRAWING_ID_CUSTOM_CHANGE_ACTION,
     -1,					ED_AREA_1X1_SETTINGS_YPOS(13),
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_ACTION,	GADGET_ID_ACTION_ARG,
@@ -3889,6 +4110,7 @@ static struct
   // ---------- group element content -----------------------------------------
 
   {
+    ED_DRAWING_ID_GROUP_CONTENT,
     ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(2),
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_GROUP_CONTENT,		GADGET_ID_NONE,
@@ -3899,6 +4121,7 @@ static struct
   // ---------- random background (for random painting) -----------------------
 
   {
+    ED_DRAWING_ID_RANDOM_BACKGROUND,
     -1,					ED_AREA_1X1_LSETTINGS_YPOS(1),
     0,					ED_AREA_1X1_LSETTINGS_YOFF,
     GADGET_ID_RANDOM_BACKGROUND,	GADGET_ID_RANDOM_RESTRICTED,
@@ -6557,6 +6780,7 @@ static void CreateControlButtons(void)
   // create toolbox buttons
   for (i = 0; i < ED_NUM_CTRL_BUTTONS; i++)
   {
+    int type_id = controlbutton_info[i].gadget_id;	// same as gadget ID here
     int id = controlbutton_info[i].gadget_id;
     int type = controlbutton_info[i].gadget_type;
     int graphic = controlbutton_info[i].graphic;
@@ -6579,6 +6803,9 @@ static void CreateControlButtons(void)
     unsigned int event_mask;
     int radio_button_nr = RADIO_NR_NONE;
     boolean checked = FALSE;
+
+    if (type_id != i)
+      Fail("'controlbutton_info' structure corrupted at index %d -- please fix", i);
 
     if (type == GD_TYPE_RADIO_BUTTON)
     {
@@ -6640,7 +6867,7 @@ static void CreateControlButtons(void)
     }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_IMAGE_ID, graphic,
 		      GDI_INFO_TEXT, controlbutton_info[i].infotext,
 		      GDI_X, x,
@@ -6689,6 +6916,7 @@ static void CreateControlButtons(void)
   for (i = 0; i < ED_NUM_SCROLLBUTTONS; i++)
   {
     int id = scrollbutton_info[i].gadget_id;
+    int type_id = scrollbutton_info[i].gadget_type_id;
     int graphic = scrollbutton_info[i].graphic;
     struct GraphicInfo *gd = &graphic_info[graphic];
     Bitmap *gd_bitmap = gd->bitmap;
@@ -6701,6 +6929,9 @@ static void CreateControlButtons(void)
     int x = scrollbutton_pos[i].x;
     int y = scrollbutton_pos[i].y;
     unsigned int event_mask = GD_EVENT_PRESSED | GD_EVENT_REPEATED;
+
+    if (type_id != i)
+      Fail("'scrollbutton_info' structure corrupted at index %d -- please fix", i);
 
     if (id == GADGET_ID_SCROLL_LIST_UP ||
 	id == GADGET_ID_SCROLL_LIST_DOWN)
@@ -6715,7 +6946,7 @@ static void CreateControlButtons(void)
     }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_IMAGE_ID, graphic,
 		      GDI_INFO_TEXT, scrollbutton_info[i].infotext,
 		      GDI_X, x,
@@ -6740,6 +6971,7 @@ static void CreateControlButtons(void)
   // create buttons for element list
   for (i = 0; i < ED_NUM_ELEMENTLIST_BUTTONS; i++)
   {
+    int type_id = i;
     int id = GADGET_ID_ELEMENTLIST_FIRST + i;
     int graphic = IMG_EDITOR_PALETTE_BUTTON;
     struct GraphicInfo *gd = &graphic_info[graphic];
@@ -6764,7 +6996,7 @@ static void CreateControlButtons(void)
     deco_ypos = (gd->height - tile_size) / 2;
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_IMAGE_ID, graphic,
 		      GDI_INFO_TEXT, getElementInfoText(element),
 		      GDI_X, x,
@@ -6798,9 +7030,13 @@ static void CreateCounterButtons(void)
 
   for (i = 0; i < ED_NUM_COUNTERBUTTONS; i++)
   {
-    int j;
+    int type_id = counterbutton_info[i].gadget_type_id;
     int x = SX + ED_SETTINGS_X(counterbutton_info[i].x); // down count button
     int y = SY + ED_SETTINGS_Y(counterbutton_info[i].y);
+    int j;
+
+    if (type_id != i)
+      Fail("'counterbutton_info' structure corrupted at index %d -- please fix", i);
 
     // determine horizontal position to the right of specified gadget
     if (counterbutton_info[i].gadget_id_align != GADGET_ID_NONE)
@@ -6860,7 +7096,7 @@ static void CreateCounterButtons(void)
 	      (j == 0 ? "decrease" : "increase"));
 
       gi = CreateGadget(GDI_CUSTOM_ID, id,
-			GDI_CUSTOM_TYPE_ID, i,
+			GDI_CUSTOM_TYPE_ID, type_id,
 			GDI_IMAGE_ID, graphic,
 			GDI_INFO_TEXT, infotext,
 			GDI_X, x,
@@ -6917,7 +7153,7 @@ static void CreateCounterButtons(void)
 	gd_y2 = gd->src_y + gd->active_yoffset;
 
 	gi = CreateGadget(GDI_CUSTOM_ID, id,
-			  GDI_CUSTOM_TYPE_ID, i,
+			  GDI_CUSTOM_TYPE_ID, type_id,
 			  GDI_IMAGE_ID, graphic,
 			  GDI_INFO_TEXT, "enter counter value",
 			  GDI_X, x,
@@ -6963,6 +7199,7 @@ static void CreateDrawingAreas(void)
   {
     struct GadgetInfo *gi;
     int id = drawingarea_info[i].gadget_id;
+    int type_id = drawingarea_info[i].gadget_type_id;
     int x = SX + ED_AREA_SETTINGS_X(drawingarea_info[i]);
     int y = SY + ED_AREA_SETTINGS_Y(drawingarea_info[i]);
     int area_xsize = drawingarea_info[i].area_xsize;
@@ -6972,6 +7209,9 @@ static void CreateDrawingAreas(void)
     unsigned int event_mask =
       GD_EVENT_PRESSED | GD_EVENT_RELEASED | GD_EVENT_MOVING |
       GD_EVENT_OFF_BORDERS | GD_EVENT_PIXEL_PRECISE;
+
+    if (type_id != i)
+      Fail("'drawingarea_info' structure corrupted at index %d -- please fix", i);
 
     // determine horizontal position to the right of specified gadget
     if (drawingarea_info[i].gadget_id_align != GADGET_ID_NONE)
@@ -6983,7 +7223,7 @@ static void CreateDrawingAreas(void)
       x += getTextWidthForDrawingArea(drawingarea_info[i].text_left);
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_X, x,
 		      GDI_Y, y,
 		      GDI_TYPE, GD_TYPE_DRAWING_AREA,
@@ -7019,7 +7259,11 @@ static void CreateTextInputGadgets(void)
     unsigned int event_mask = GD_EVENT_TEXT_RETURN | GD_EVENT_TEXT_LEAVING;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = textinput_info[i].gadget_id;
+    int type_id = textinput_info[i].gadget_type_id;
     int x, y;
+
+    if (type_id != i)
+      Fail("'textinput_info' structure corrupted at index %d -- please fix", i);
 
     if (i == ED_TEXTINPUT_ID_ELEMENT_NAME)
     {
@@ -7047,7 +7291,7 @@ static void CreateTextInputGadgets(void)
     infotext[max_infotext_len] = '\0';
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_INFO_TEXT, infotext,
 		      GDI_X, SX + x,
 		      GDI_Y, SY + y,
@@ -7088,14 +7332,18 @@ static void CreateTextAreaGadgets(void)
     unsigned int event_mask = GD_EVENT_TEXT_LEAVING;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = textarea_info[i].gadget_id;
+    int type_id = textarea_info[i].gadget_type_id;
     int area_xsize = textarea_info[i].xsize;
     int area_ysize = textarea_info[i].ysize;
+
+    if (type_id != i)
+      Fail("'textarea_info' structure corrupted at index %d -- please fix", i);
 
     sprintf(infotext, "Enter %s", textarea_info[i].infotext);
     infotext[max_infotext_len] = '\0';
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_INFO_TEXT, infotext,
 		      GDI_X, SX + ED_SETTINGS_X(textarea_info[i].x),
 		      GDI_Y, SY + ED_SETTINGS_Y(textarea_info[i].y),
@@ -7136,10 +7384,14 @@ static void CreateSelectboxGadgets(void)
     struct GadgetInfo *gi;
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int id = selectbox_info[i].gadget_id;
+    int type_id = selectbox_info[i].gadget_type_id;
     int x = SX + ED_SETTINGS_X(selectbox_info[i].x);
     int y = SY + ED_SETTINGS_Y(selectbox_info[i].y);
     unsigned int event_mask =
       GD_EVENT_RELEASED | GD_EVENT_TEXT_RETURN | GD_EVENT_TEXT_LEAVING;
+
+    if (type_id != i)
+      Fail("'selectbox_info' structure corrupted at index %d -- please fix", i);
 
     if (selectbox_info[i].size == -1)	// dynamically determine size
     {
@@ -7168,7 +7420,7 @@ static void CreateSelectboxGadgets(void)
     infotext[max_infotext_len] = '\0';
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_INFO_TEXT, infotext,
 		      GDI_X, x,
 		      GDI_Y, y,
@@ -7206,6 +7458,7 @@ static void CreateTextbuttonGadgets(void)
   for (i = 0; i < ED_NUM_TEXTBUTTONS; i++)
   {
     int id = textbutton_info[i].gadget_id;
+    int type_id = textbutton_info[i].gadget_type_id;
     int is_tab_button =
       ((id >= GADGET_ID_LEVELCONFIG_LEVEL && id <= GADGET_ID_LEVELCONFIG_EDITOR) ||
        (id >= GADGET_ID_PROPERTIES_INFO && id <= GADGET_ID_PROPERTIES_CHANGE));
@@ -7227,6 +7480,9 @@ static void CreateTextbuttonGadgets(void)
     char infotext[MAX_OUTPUT_LINESIZE + 1];
     int x = SX + ED_SETTINGS_X(textbutton_info[i].x);
     int y = SY + ED_SETTINGS_Y(textbutton_info[i].y);
+
+    if (type_id != i)
+      Fail("'textbutton_info' structure corrupted at index %d -- please fix", i);
 
     if (textbutton_info[i].size == -1)	// dynamically determine size
       textbutton_info[i].size = strlen(textbutton_info[i].text);
@@ -7250,7 +7506,7 @@ static void CreateTextbuttonGadgets(void)
       x += getTextWidthForGadget(textbutton_info[i].text_left);
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_IMAGE_ID, graphic,
 		      GDI_INFO_TEXT, infotext,
 		      GDI_X, x,
@@ -7289,6 +7545,7 @@ static void CreateGraphicbuttonGadgets(void)
   for (i = 0; i < ED_NUM_GRAPHICBUTTONS; i++)
   {
     int id = graphicbutton_info[i].gadget_id;
+    int type_id = graphicbutton_info[i].gadget_type_id;
     int x = SX + ED_SETTINGS_X(graphicbutton_info[i].x);
     int y = SY + ED_SETTINGS_Y(graphicbutton_info[i].y);
     int graphic = graphicbutton_info[i].graphic;
@@ -7298,6 +7555,9 @@ static void CreateGraphicbuttonGadgets(void)
     int gd_x2 = gd->src_x + gd->pressed_xoffset;
     int gd_y2 = gd->src_y + gd->pressed_yoffset;
     unsigned int event_mask = GD_EVENT_RELEASED;
+
+    if (type_id != i)
+      Fail("'graphicbutton_info' structure corrupted at index %d -- please fix", i);
 
     // determine horizontal position to the right of specified gadget
     if (graphicbutton_info[i].gadget_id_align != GADGET_ID_NONE)
@@ -7309,7 +7569,7 @@ static void CreateGraphicbuttonGadgets(void)
       x += getTextWidthForGadget(graphicbutton_info[i].text_left);
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_IMAGE_ID, graphic,
 		      GDI_INFO_TEXT, graphicbutton_info[i].infotext,
 		      GDI_X, x,
@@ -7381,6 +7641,7 @@ static void CreateScrollbarGadgets(void)
   for (i = 0; i < ED_NUM_SCROLLBARS; i++)
   {
     int id = scrollbar_info[i].gadget_id;
+    int type_id = scrollbar_info[i].gadget_type_id;
     int graphic = scrollbar_info[i].graphic;
     struct GraphicInfo *gd = &graphic_info[graphic];
     int gd_x1 = gd->src_x;
@@ -7390,6 +7651,9 @@ static void CreateScrollbarGadgets(void)
     struct GadgetInfo *gi;
     int items_max, items_visible, item_position;
     unsigned int event_mask = GD_EVENT_MOVING | GD_EVENT_OFF_BORDERS;
+
+    if (type_id != i)
+      Fail("'scrollbar_info' structure corrupted at index %d -- please fix", i);
 
     if (i == ED_SCROLLBAR_ID_LIST_VERTICAL)
     {
@@ -7414,7 +7678,7 @@ static void CreateScrollbarGadgets(void)
     }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_IMAGE_ID, graphic,
 		      GDI_INFO_TEXT, scrollbar_info[i].infotext,
 		      GDI_X, scrollbar_pos[i].x,
@@ -7453,6 +7717,7 @@ static void CreateCheckbuttonGadgets(void)
   for (i = 0; i < ED_NUM_CHECKBUTTONS; i++)
   {
     int id = checkbutton_info[i].gadget_id;
+    int type_id = checkbutton_info[i].gadget_type_id;
     int graphic = (id == GADGET_ID_STICK_ELEMENT ? IMG_EDITOR_STICKYBUTTON :
 		   IMG_EDITOR_CHECKBOX);
     struct GraphicInfo *gd = &graphic_info[graphic];
@@ -7468,6 +7733,9 @@ static void CreateCheckbuttonGadgets(void)
     int y = SY + ED_SETTINGS_Y(checkbutton_info[i].y);
     unsigned int event_mask = GD_EVENT_PRESSED;
 
+    if (type_id != i)
+      Fail("'checkbutton_info' structure corrupted at index %d -- please fix", i);
+
     // determine horizontal position to the right of specified gadget
     if (checkbutton_info[i].gadget_id_align != GADGET_ID_NONE)
       x = (right_gadget_border[checkbutton_info[i].gadget_id_align] +
@@ -7478,7 +7746,7 @@ static void CreateCheckbuttonGadgets(void)
       x += getTextWidthForGadget(checkbutton_info[i].text_left);
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_IMAGE_ID, graphic,
 		      GDI_INFO_TEXT, checkbutton_info[i].infotext,
 		      GDI_X, x,
@@ -7523,9 +7791,13 @@ static void CreateRadiobuttonGadgets(void)
   for (i = 0; i < ED_NUM_RADIOBUTTONS; i++)
   {
     int id = radiobutton_info[i].gadget_id;
+    int type_id = radiobutton_info[i].gadget_type_id;
     int x = SX + ED_SETTINGS_X(radiobutton_info[i].x);
     int y = SY + ED_SETTINGS_Y(radiobutton_info[i].y);
     unsigned int event_mask = GD_EVENT_PRESSED;
+
+    if (type_id != i)
+      Fail("'radiobutton_info' structure corrupted at index %d -- please fix", i);
 
     int checked =
       (*radiobutton_info[i].value == radiobutton_info[i].checked_value);
@@ -7540,7 +7812,7 @@ static void CreateRadiobuttonGadgets(void)
       x += getTextWidthForGadget(radiobutton_info[i].text_left);
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
-		      GDI_CUSTOM_TYPE_ID, i,
+		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_IMAGE_ID, graphic,
 		      GDI_INFO_TEXT, radiobutton_info[i].infotext,
 		      GDI_X, x,
