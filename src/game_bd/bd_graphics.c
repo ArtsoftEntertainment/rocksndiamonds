@@ -39,6 +39,11 @@
 #define GD_KEY_CHAR		12
 #define GD_COMMENT_CHAR		13
 
+// pointer to tile bitmap (which may be prepared with level-specific colors)
+static Bitmap *gd_tile_bitmap = NULL;
+// pointer to reference tile bitmap (without level-specific colors)
+static Bitmap *gd_tile_bitmap_reference = NULL;
+
 // screen area
 Bitmap *gd_screen_bitmap = NULL;
 
@@ -56,6 +61,38 @@ static int cell_size = 0;
 
 // graphic info for game objects/frames and players/actions/frames
 struct GraphicInfo_BD graphic_info_bd_object[O_MAX_ALL][8];
+
+static inline int c64_png_colors(int r, int g, int b, int a)
+{
+  static const int c64_png_cols[] =
+  {
+    // ABGR
+
+    /* 0000 */ 0,	// transparent
+    /* 0001 */ 0,
+    /* 0010 */ 0,
+    /* 0011 */ 0,
+    /* 0100 */ 0,
+    /* 0101 */ 0,
+    /* 0110 */ 0,
+    /* 0111 */ 0,
+    /* 1000 */ 1,	// black - background
+    /* 1001 */ 2,	// red - foreg1
+    /* 1010 */ 5,	// green - amoeba
+    /* 1011 */ 4,	// yellow - foreg3
+    /* 1100 */ 6,	// blue - slime
+    /* 1101 */ 3,	// purple - foreg2
+    /* 1110 */ 7,	// black around arrows (used in editor) is coded as cyan
+    /* 1111 */ 8,	// white is the arrow
+  };
+
+  int c = ((a >> 7) * 8 +
+	   (b >> 7) * 4 +
+	   (g >> 7) * 2 +
+	   (r >> 7) * 1);
+
+  return c64_png_cols[c];
+}
 
 void set_cell_size(int s)
 {
@@ -277,6 +314,190 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   return out_of_window;
 }
 
+// returns true, if the given surface seems to be a c64 imported image.
+static boolean surface_has_c64_colors(SDL_Surface *surface)
+{
+  boolean has_c64_colors = TRUE;	// default: assume C64 colors
+  const unsigned char *p;
+  int x, y;
+
+  if (surface->format->BytesPerPixel != 4)
+    return FALSE;
+
+  SDL_LockSurface(surface);
+
+  for (y = 0; y < surface->h && has_c64_colors; y++)
+  {
+    p = ((unsigned char *)surface->pixels) + y * surface->pitch;
+
+    for (x = 0; x < surface->w * surface->format->BytesPerPixel && has_c64_colors; x++)
+      if (p[x] != 0 && p[x] != 255)
+	has_c64_colors = FALSE;
+  }
+
+  SDL_UnlockSurface(surface);
+
+  return has_c64_colors;
+}
+
+// sets one of the colors in the indexed palette of an sdl surface to a GdColor.
+static void set_surface_palette_color(SDL_Surface *surface, int index, GdColor col)
+{
+  if (surface->format->BytesPerPixel != 1)
+    return;
+
+  SDL_Color c;
+
+  c.r = gd_color_get_r(col);
+  c.g = gd_color_get_g(col);
+  c.b = gd_color_get_b(col);
+
+  SDL_SetPaletteColors(surface->format->palette, &c, index, 1);
+}
+
+// takes a c64_gfx.png-coded 32-bit surface, and creates a paletted surface in our internal format.
+static SDL_Surface *get_tile_surface_c64(SDL_Surface *surface, int scale_down_factor)
+{
+  static SDL_Surface *tile_surface_c64 = NULL;
+  static unsigned char *pixels = NULL;
+  int width  = surface->w;
+  int height = surface->h;
+  int out = 0;
+  int x, y;
+
+  if (!surface_has_c64_colors(surface))
+    return NULL;
+
+  if (surface->format->BytesPerPixel != 4)
+    Fail("C64 style surface has wrong color depth -- should not happen");
+
+  if (tile_surface_c64 != NULL)
+    SDL_FreeSurface(tile_surface_c64);
+
+  checked_free(pixels);
+
+  pixels = checked_malloc(width * height);
+
+  SDL_LockSurface(surface);
+
+  for (y = 0; y < height; y++)
+  {
+    unsigned int *p = (unsigned int *)((char *)surface->pixels + y * surface->pitch);
+
+    for (x = 0; x < width; x++)
+    {
+      int r = (p[x] & surface->format->Rmask) >> surface->format->Rshift << surface->format->Rloss;
+      int g = (p[x] & surface->format->Gmask) >> surface->format->Gshift << surface->format->Gloss;
+      int b = (p[x] & surface->format->Bmask) >> surface->format->Bshift << surface->format->Bloss;
+      // should be:
+      // a = (p[x]&surface->format->Amask) >> surface->format->Ashift << surface->format->Aloss;
+      // but we do not use the alpha channel in sdash, so we just use 255 (max alpha)
+
+      pixels[out++] = c64_png_colors(r, g, b, 255);
+    }
+  }
+
+  SDL_UnlockSurface(surface);
+
+  // create new surface from pixel data
+  tile_surface_c64 =
+    SDL_CreateRGBSurfaceFrom((void *)pixels, width, height, 8, width, 0, 0, 0, 0);
+
+  if (tile_surface_c64 == NULL)
+    Fail("SDL_CreateRGBSurfaceFrom() failed: %s", SDL_GetError());
+
+  if (scale_down_factor > 1)
+  {
+    SDL_Surface *surface_old = tile_surface_c64;
+    int width_scaled  = width  / scale_down_factor;
+    int height_scaled = height / scale_down_factor;
+
+    // replace surface with scaled-down variant
+    tile_surface_c64 = SDLZoomSurface(surface_old, width_scaled, height_scaled);
+
+    // free previous (non-scaled) surface
+    SDL_FreeSurface(surface_old);
+  }
+
+  return tile_surface_c64;
+}
+
+static Bitmap *get_tile_bitmap_c64(GdCave *cave, SDL_Surface *surface)
+{
+  static Bitmap *tile_bitmap_c64 = NULL;
+
+  if (surface == NULL)
+    return NULL;
+
+  if (tile_bitmap_c64 != NULL)
+    FreeBitmap(tile_bitmap_c64);
+
+  // set surface color palette to cave colors
+  set_surface_palette_color(surface, 0, 0);
+  set_surface_palette_color(surface, 1, gd_color_get_rgb(cave->color0));
+  set_surface_palette_color(surface, 2, gd_color_get_rgb(cave->color1));
+  set_surface_palette_color(surface, 3, gd_color_get_rgb(cave->color2));
+  set_surface_palette_color(surface, 4, gd_color_get_rgb(cave->color3));
+  set_surface_palette_color(surface, 5, gd_color_get_rgb(cave->color4));
+  set_surface_palette_color(surface, 6, gd_color_get_rgb(cave->color5));
+  set_surface_palette_color(surface, 7, 0);
+  set_surface_palette_color(surface, 8, 0);
+
+  // create bitmap from C64 surface
+  tile_bitmap_c64 = SDLGetBitmapFromSurface(surface);
+
+  return tile_bitmap_c64;
+}
+
+void gd_prepare_tile_bitmap(GdCave *cave, Bitmap *bitmap, int scale_down_factor)
+{
+  static SDL_Surface *tile_surface_c64 = NULL;
+  static Bitmap *gd_tile_bitmap_original = NULL;
+
+  // check if tile bitmap has changed (different artwork or tile size selected)
+  if (bitmap != gd_tile_bitmap_original)
+  {
+    // check if tile bitmap has limited C64 style colors
+    tile_surface_c64 = get_tile_surface_c64(bitmap->surface, scale_down_factor);
+
+    // store original tile bitmap from current artwork set
+    gd_tile_bitmap_original = bitmap;
+
+    // store reference tile bitmap from current artwork set (may be changed later)
+    gd_tile_bitmap_reference = bitmap;
+  }
+
+  // check if tile bitmap should be colored for next game
+  if (tile_surface_c64 != NULL)
+  {
+    // set tile bitmap to bitmap with level-specific colors
+    gd_tile_bitmap = get_tile_bitmap_c64(cave, tile_surface_c64);
+  }
+  else
+  {
+    // no special tile bitmap available for this artwork set
+    gd_tile_bitmap = NULL;
+  }
+}
+
+void gd_set_tile_bitmap_reference(Bitmap *bitmap)
+{
+  gd_tile_bitmap_reference = bitmap;
+}
+
+Bitmap *gd_get_tile_bitmap(Bitmap *bitmap)
+{
+  // if no special tile bitmap available, keep using default tile bitmap
+  if (gd_tile_bitmap == NULL)
+    return bitmap;
+
+  // if default bitmap refers to tile bitmap, use special tile bitmap
+  if (bitmap == gd_tile_bitmap_reference)
+    return gd_tile_bitmap;
+
+  return bitmap;
+}
+
 #if DO_GFX_SANITY_CHECK
 // workaround to prevent variable name scope problem
 static boolean use_native_bd_graphics_engine(void)
@@ -338,6 +559,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int tile = game->element_buffer[y][x];
   int frame = game->animcycle;
   struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
+  Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
   boolean is_movable = (can_move(tile) || can_fall(tile) || is_pushable(tile) || is_player(tile));
   boolean is_movable_or_diggable = (is_movable || is_diggable(game->last_element_buffer[y][x]));
   boolean is_moving = (is_movable_or_diggable && dir != GD_MV_STILL);
@@ -375,7 +597,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   // if game element not moving (or no smooth movements requested), simply draw tile
   if (!is_moving || !use_smooth_movements)
   {
-    blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
+    blit_bitmap(tile_bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
 
     return;
   }
@@ -392,8 +614,9 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
       tile_last = O_SPACE;
 
     struct GraphicInfo_BD *g_old = &graphic_info_bd_object[tile_last][frame];
+    Bitmap *tile_bitmap_old = gd_get_tile_bitmap(g_old->bitmap);
 
-    blit_bitmap(g_old->bitmap, dest, g_old->src_x, g_old->src_y, cell_size, cell_size, sx, sy);
+    blit_bitmap(tile_bitmap_old, dest, g_old->src_x, g_old->src_y, cell_size, cell_size, sx, sy);
   }
 
   // get cave field position the game element is moving from
@@ -403,6 +626,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int old_y = cave->gety(cave, x + dx, y + dy);
   int tile_from = game->element_buffer[old_y][old_x] & ~SKIPPED;   // should never be skipped
   struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][frame];
+  Bitmap *tile_bitmap_from = gd_get_tile_bitmap(g_from->bitmap);
   boolean old_is_player = is_player(tile_from);
   boolean old_is_moving = (game->dir_buffer[old_y][old_x] != GD_MV_STILL);
   boolean old_is_visible = (old_x >= cave->x1 &&
@@ -414,7 +638,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     if (!old_is_moving && !old_is_player)
     {
       // redraw game element on the cave field the element is moving from
-      blit_bitmap(g_from->bitmap, dest, g_from->src_x, g_from->src_y, cell_size, cell_size,
+      blit_bitmap(tile_bitmap_from, dest, g_from->src_x, g_from->src_y, cell_size, cell_size,
 		  sx + dx * cell_size, sy + dy * cell_size);
 
       game->element_buffer[old_y][old_x] |= SKIPPED;
@@ -430,14 +654,14 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int itercycle = MIN(MAX(0, game->itermax - game->itercycle - 1), game->itermax);
   int shift = cell_size * itercycle / game->itermax;
 
-  blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size,
+  blit_bitmap(tile_bitmap, dest, g->src_x, g->src_y, cell_size, cell_size,
 	      sx + dx * shift, sy + dy * shift);
 
   // special case: redraw player snapping a game element
   if (old_is_visible && old_is_player && !old_is_moving)
   {
     // redraw game element on the cave field the element is moving from
-    blit_bitmap(g_from->bitmap, dest, g_from->src_x, g_from->src_y, cell_size, cell_size,
+    blit_bitmap(tile_bitmap_from, dest, g_from->src_x, g_from->src_y, cell_size, cell_size,
 		sx + dx * cell_size, sy + dy * cell_size);
   }
 }

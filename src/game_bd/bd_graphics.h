@@ -35,6 +35,10 @@ int get_play_area_h(void);
 
 void gd_init_keystate(void);
 
+void gd_prepare_tile_bitmap(GdCave *cave, Bitmap *bitmap, int scale_down_factor);
+void gd_set_tile_bitmap_reference(Bitmap *bitmap);
+Bitmap *gd_get_tile_bitmap(Bitmap *bitmap);
+
 int gd_drawcave(Bitmap *dest, GdGame *gameplay, boolean);
 boolean gd_scroll(GdGame *gameplay, boolean exact_scroll, boolean immediate);
 void gd_scroll_to_origin(void);

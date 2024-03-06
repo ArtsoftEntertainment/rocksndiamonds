@@ -248,6 +248,13 @@ static void UpdateGameDoorValues_BD(void)
   }
 }
 
+static void PrepareGameTileBitmap_BD(void)
+{
+  struct GraphicInfo_BD *g = &graphic_info_bd_object[O_STONE][0];
+
+  gd_prepare_tile_bitmap(native_bd_level.cave, g->bitmap, 1);
+}
+
 unsigned int InitEngineRandom_BD(int seed)
 {
   if (seed == NEW_RANDOMIZE)
@@ -282,6 +289,9 @@ void InitGameEngine_BD(void)
   game_bd.game->itercycle = 0;
   game_bd.game->itermax = 8;	// default; dynamically changed at runtime
   game_bd.game->itermax_last = game_bd.game->itermax;
+
+  // prepare tile bitmap with level-specific colors, if available
+  PrepareGameTileBitmap_BD();
 
   // default: start with completely covered playfield
   int next_state = GAME_INT_START_UNCOVER + 1;
