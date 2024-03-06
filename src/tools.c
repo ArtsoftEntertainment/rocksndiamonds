@@ -3465,11 +3465,27 @@ void DrawMiniLevel(int size_x, int size_y, int scroll_x, int scroll_y)
   redraw_mask |= REDRAW_FIELD;
 }
 
+static int getPreviewLevelWidth(void)
+{
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    return (level.native_bd_level->cave->x2 - level.native_bd_level->cave->x1 + 1);
+
+  return lev_fieldx;
+}
+
+static int getPreviewLevelHeight(void)
+{
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    return (level.native_bd_level->cave->y2 - level.native_bd_level->cave->y1 + 1);
+
+  return lev_fieldy;
+}
+
 static void DrawPreviewLevelPlayfield(int from_x, int from_y)
 {
   boolean show_level_border = (BorderElement != EL_EMPTY);
-  int level_xsize = lev_fieldx + (show_level_border ? 2 : 0);
-  int level_ysize = lev_fieldy + (show_level_border ? 2 : 0);
+  int level_xsize = getPreviewLevelWidth()  + (show_level_border ? 2 : 0);
+  int level_ysize = getPreviewLevelHeight() + (show_level_border ? 2 : 0);
   int tile_size = preview.tile_size;
   int preview_width  = preview.xsize * tile_size;
   int preview_height = preview.ysize * tile_size;
