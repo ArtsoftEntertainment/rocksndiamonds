@@ -398,7 +398,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int dy = (dir == GD_MV_UP   ? +1 : dir == GD_MV_DOWN  ? -1 : 0);
   int old_x = cave->getx(cave, x + dx, y + dy);
   int old_y = cave->gety(cave, x + dx, y + dy);
-  int tile_from = game->element_buffer[old_y][old_x];
+  int tile_from = game->element_buffer[old_y][old_x] & ~SKIPPED;   // should never be skipped
   struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][frame];
   boolean old_is_player = is_player(tile_from);
   boolean old_is_moving = (game->dir_buffer[old_y][old_x] != GD_MV_STILL);
