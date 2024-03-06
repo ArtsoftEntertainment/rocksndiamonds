@@ -100,6 +100,10 @@ void setLevelInfoToDefaults_BD(void);
 boolean LoadNativeLevel_BD(char *, int, boolean);
 boolean SaveNativeLevel_BD(char *);
 
+void PreparePreviewTileBitmap_BD(Bitmap *, int);
+void SetPreviewTileBitmapReference_BD(Bitmap *);
+Bitmap *GetPreviewTileBitmap_BD(Bitmap *);
+
 unsigned int InitEngineRandom_BD(int);
 void InitGameEngine_BD(void);
 void GameActions_BD(byte[MAX_PLAYERS]);

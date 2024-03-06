@@ -255,6 +255,21 @@ static void PrepareGameTileBitmap_BD(void)
   gd_prepare_tile_bitmap(native_bd_level.cave, g->bitmap, 1);
 }
 
+void PreparePreviewTileBitmap_BD(Bitmap *bitmap, int scale_down_factor)
+{
+  gd_prepare_tile_bitmap(native_bd_level.cave, bitmap, scale_down_factor);
+}
+
+void SetPreviewTileBitmapReference_BD(Bitmap *bitmap)
+{
+  gd_set_tile_bitmap_reference(bitmap);
+}
+
+Bitmap *GetPreviewTileBitmap_BD(Bitmap *bitmap)
+{
+  return gd_get_tile_bitmap(bitmap);
+}
+
 unsigned int InitEngineRandom_BD(int seed)
 {
   if (seed == NEW_RANDOMIZE)
