@@ -3838,15 +3838,17 @@ static void PreparePreviewTileBitmap(void)
   int scale_down_factor = original_tilesize / preview.tile_size;
   Bitmap *src_bitmap;
   int src_x, src_y;
-  int element = EL_BD_ROCK;
-  int graphic = el2preimg(element);
+  int element_template = EL_BD_GAME_GRAPHICS_COLOR_TEMPLATE;
+  int graphic_template = el2preimg(element_template);
+  int element_default = EL_BD_ROCK;
+  int graphic_default = el2preimg(element_default);
 
   // create special preview bitmap and scale it down to preview tile size
-  getSizedGraphicSource(graphic, 0, original_tilesize, &src_bitmap, &src_x, &src_y);
+  getSizedGraphicSource(graphic_template, 0, original_tilesize, &src_bitmap, &src_x, &src_y);
   PreparePreviewTileBitmap_BD(src_bitmap, scale_down_factor);
 
   // force using special preview bitmap to replace original preview bitmap
-  getSizedGraphicSource(graphic, 0, preview.tile_size, &src_bitmap, &src_x, &src_y);
+  getSizedGraphicSource(graphic_default, 0, preview.tile_size, &src_bitmap, &src_x, &src_y);
   SetPreviewTileBitmapReference_BD(src_bitmap);
 }
 
@@ -10155,6 +10157,20 @@ void InitGraphicInfo_BD(void)
       g_bd->height = TILEY;
     }
   }
+
+  // game graphics template for level-specific colors for native BD levels
+  int graphic = IMG_BD_GAME_GRAPHICS_COLOR_TEMPLATE;
+  struct GraphicInfo_BD *g_bd = &graphic_info_bd_color_template;
+  Bitmap *src_bitmap;
+  int src_x, src_y;
+
+  getGraphicSourceExt(graphic, 0, &src_bitmap, &src_x, &src_y, FALSE);
+
+  g_bd->bitmap = src_bitmap;
+  g_bd->src_x  = src_x;
+  g_bd->src_y  = src_y;
+  g_bd->width  = TILEX;
+  g_bd->height = TILEY;
 }
 
 void InitGraphicInfo_EM(void)

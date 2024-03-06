@@ -61,6 +61,8 @@ static int cell_size = 0;
 
 // graphic info for game objects/frames and players/actions/frames
 struct GraphicInfo_BD graphic_info_bd_object[O_MAX_ALL][8];
+// graphic info for game graphics template for level-specific colors
+struct GraphicInfo_BD graphic_info_bd_color_template;
 
 static inline int c64_png_colors(int r, int g, int b, int a)
 {

@@ -7869,6 +7869,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
+    "bd_game_graphics_color_template",
+    "-",
+    "-"
+  },
+  {
     "internal_clipboard_custom",
     "internal",
     "empty custom element"

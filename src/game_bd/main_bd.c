@@ -250,9 +250,11 @@ static void UpdateGameDoorValues_BD(void)
 
 static void PrepareGameTileBitmap_BD(void)
 {
-  struct GraphicInfo_BD *g = &graphic_info_bd_object[O_STONE][0];
+  struct GraphicInfo_BD *g_template = &graphic_info_bd_color_template;
+  struct GraphicInfo_BD *g_default  = &graphic_info_bd_object[O_STONE][0];
 
-  gd_prepare_tile_bitmap(native_bd_level.cave, g->bitmap, 1);
+  gd_prepare_tile_bitmap(native_bd_level.cave, g_template->bitmap, 1);
+  gd_set_tile_bitmap_reference(g_default->bitmap);
 }
 
 void PreparePreviewTileBitmap_BD(Bitmap *bitmap, int scale_down_factor)
