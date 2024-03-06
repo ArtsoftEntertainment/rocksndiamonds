@@ -624,7 +624,7 @@ Bitmap *CreateBitmap(int width, int height, int depth)
   int real_height = MAX(1, height);	// prevent zero bitmap height
   int real_depth  = GetRealDepth(depth);
 
-  SDLCreateBitmapContent(new_bitmap, real_width, real_height, real_depth);
+  new_bitmap->surface = SDLCreateNativeSurface(real_width, real_height, real_depth);
 
   new_bitmap->width  = real_width;
   new_bitmap->height = real_height;

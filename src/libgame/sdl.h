@@ -399,6 +399,7 @@ void SDLSetAlpha(SDL_Surface *, boolean, int);
 const char *SDLGetRendererName(void);
 boolean SDLSetNativeSurface(SDL_Surface **);
 SDL_Surface *SDLGetNativeSurface(SDL_Surface *);
+SDL_Surface *SDLCreateNativeSurface(int, int, int);
 void SDLCreateBitmapTextures(Bitmap *);
 void SDLFreeBitmapTextures(Bitmap *);
 
@@ -420,7 +421,6 @@ void SDLLimitScreenUpdates(boolean);
 void SDLInitVideoDisplay(void);
 void SDLInitVideoBuffer(boolean);
 boolean SDLSetVideoMode(boolean);
-void SDLCreateBitmapContent(Bitmap *, int, int, int);
 void SDLFreeBitmapPointers(Bitmap *);
 void SDLBlitSurface(SDL_Surface *, SDL_Surface *, int, int, int, int, int, int);
 void SDLCopyArea(Bitmap *, Bitmap *, int, int, int, int, int, int, int);

@@ -468,6 +468,21 @@ boolean SDLSetNativeSurface(SDL_Surface **surface)
   return TRUE;
 }
 
+SDL_Surface *SDLCreateNativeSurface(int width, int height, int depth)
+{
+  if (program.headless)
+    return NULL;
+
+  SDL_Surface *surface = SDL_CreateRGBSurface(SURFACE_FLAGS, width, height, depth, 0,0,0, 0);
+
+  if (surface == NULL)
+    Fail("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
+
+  SDLSetNativeSurface(&surface);
+
+  return surface;
+}
+
 static SDL_Texture *SDLCreateTextureFromSurface(SDL_Surface *surface)
 {
   if (program.headless)
@@ -978,23 +993,6 @@ void SDLSetScreenVsyncMode(char *vsync_mode)
 void SDLRedrawWindow(void)
 {
   UpdateScreen_WithoutFrameDelay(NULL);
-}
-
-void SDLCreateBitmapContent(Bitmap *bitmap, int width, int height,
-			    int depth)
-{
-  if (program.headless)
-    return;
-
-  SDL_Surface *surface =
-    SDL_CreateRGBSurface(SURFACE_FLAGS, width, height, depth, 0,0,0, 0);
-
-  if (surface == NULL)
-    Fail("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
-
-  SDLSetNativeSurface(&surface);
-
-  bitmap->surface = surface;
 }
 
 void SDLFreeBitmapPointers(Bitmap *bitmap)
