@@ -453,15 +453,17 @@ void gd_prepare_tile_bitmap(GdCave *cave, Bitmap *bitmap, int scale_down_factor)
 {
   static SDL_Surface *tile_surface_c64 = NULL;
   static Bitmap *gd_tile_bitmap_original = NULL;
+  static int scale_down_factor_last = -1;
 
   // check if tile bitmap has changed (different artwork or tile size selected)
-  if (bitmap != gd_tile_bitmap_original)
+  if (bitmap != gd_tile_bitmap_original || scale_down_factor != scale_down_factor_last)
   {
     // check if tile bitmap has limited C64 style colors
     tile_surface_c64 = get_tile_surface_c64(bitmap->surface, scale_down_factor);
 
-    // store original tile bitmap from current artwork set
+    // store original tile bitmap from current artwork set and scaling factor
     gd_tile_bitmap_original = bitmap;
+    scale_down_factor_last = scale_down_factor;
 
     // store reference tile bitmap from current artwork set (may be changed later)
     gd_tile_bitmap_reference = bitmap;
