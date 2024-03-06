@@ -1835,6 +1835,28 @@ static void InitPlayerField(int x, int y, int element, boolean init_game)
   }
 }
 
+static void InitFieldForEngine_RND(int x, int y)
+{
+  int element = Tile[x][y];
+
+  // convert BD engine elements to corresponding R'n'D engine elements
+  element = (element == EL_BD_EMPTY		? EL_EMPTY :
+	     element == EL_BD_INBOX		? EL_PLAYER_1 :
+	     element == EL_BD_SAND		? EL_SAND :
+	     element == EL_BD_STEELWALL		? EL_STEELWALL :
+	     element == EL_BD_EXIT_CLOSED	? EL_EXIT_CLOSED :
+	     element == EL_BD_EXIT_OPEN		? EL_EXIT_OPEN :
+	     element);
+
+  Tile[x][y] = element;
+}
+
+static void InitFieldForEngine(int x, int y)
+{
+  if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
+    InitFieldForEngine_RND(x, y);
+}
+
 static void InitField(int x, int y, boolean init_game)
 {
   int element = Tile[x][y];
@@ -4007,6 +4029,8 @@ void InitGame(void)
 
   SCAN_PLAYFIELD(x, y)
   {
+    InitFieldForEngine(x, y);
+
     if (emulate_bd && !IS_BD_ELEMENT(Tile[x][y]))
       emulate_bd = FALSE;
     if (emulate_sp && !IS_SP_ELEMENT(Tile[x][y]))
