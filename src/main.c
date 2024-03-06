@@ -6463,9 +6463,9 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "slope (DF style) (315\xb0)"
   },
   {
-    "bd_player",
-    "bd_player",
-    "player"
+    "bd_empty_space",
+    "empty_space",
+    "empty space"
   },
   {
     "bd_sand",
@@ -7096,6 +7096,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "bd_nitro_pack",
     "bd_nitro_pack",
     "nitro pack"
+  },
+  {
+    "bd_player",
+    "bd_player",
+    "player"
   },
   {
     "bd_player_with_bomb",

@@ -1993,7 +1993,8 @@
 #define EL_DF_END_2				EL_DF_SLOPE_END
 
 // BD style elements
-#define EL_BD_PLAYER				1253
+#define EL_BD_EMPTY_SPACE			1253
+#define EL_BD_EMPTY				EL_BD_EMPTY_SPACE
 #define EL_BD_SAND				1254
 #define EL_BD_SAND_2				1255
 #define EL_BD_SAND_BALL				1256
@@ -2120,13 +2121,14 @@
 #define EL_BD_DRAGONFLY_DOWN			1377
 #define EL_BD_BOMB				1378
 #define EL_BD_NITRO_PACK			1379
-#define EL_BD_PLAYER_WITH_BOMB			1380
-#define EL_BD_PLAYER_GLUED			1381
-#define EL_BD_PLAYER_STIRRING			1382
-#define EL_BD_FAKE_BONUS			1383
-#define EL_BD_COVERED				1384
+#define EL_BD_PLAYER				1380
+#define EL_BD_PLAYER_WITH_BOMB			1381
+#define EL_BD_PLAYER_GLUED			1382
+#define EL_BD_PLAYER_STIRRING			1383
+#define EL_BD_FAKE_BONUS			1384
+#define EL_BD_COVERED				1385
 
-#define NUM_FILE_ELEMENTS			1385
+#define NUM_FILE_ELEMENTS			1386
 
 
 // "real" (and therefore drawable) runtime elements
