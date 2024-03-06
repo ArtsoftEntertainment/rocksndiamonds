@@ -2233,7 +2233,7 @@ static int zoomSurfaceY(SDL_Surface * src, SDL_Surface * dst)
 }
 
 // ----------------------------------------------------------------------------
-// zoomSurface()
+// SDLZoomSurface()
 //
 // Zooms a 32bit or 8bit 'src' surface to newly created 'dst' surface.
 // 'zoomx' and 'zoomy' are scaling factors for width and height.
@@ -2241,7 +2241,7 @@ static int zoomSurfaceY(SDL_Surface * src, SDL_Surface * dst)
 // into a 32bit RGBA format on the fly.
 // ----------------------------------------------------------------------------
 
-static SDL_Surface *zoomSurface(SDL_Surface *src, int dst_width, int dst_height)
+SDL_Surface *SDLZoomSurface(SDL_Surface *src, int dst_width, int dst_height)
 {
   SDL_Surface *zoom_src = NULL;
   SDL_Surface *zoom_dst = NULL;
@@ -2352,7 +2352,7 @@ Bitmap *SDLZoomBitmap(Bitmap *src_bitmap, int dst_width, int dst_height)
   dst_bitmap->height = dst_height;
 
   // create zoomed temporary surface from source surface
-  dst_surface = zoomSurface(src_surface, dst_width, dst_height);
+  dst_surface = SDLZoomSurface(src_surface, dst_width, dst_height);
 
   // create native format destination surface from zoomed temporary surface
   SDLSetNativeSurface(&dst_surface);

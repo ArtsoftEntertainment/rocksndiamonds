@@ -435,6 +435,7 @@ void SDLPutPixel(Bitmap *, int, int, Pixel);
 
 void SDLCopyInverseMasked(Bitmap *, Bitmap *, int, int, int, int, int, int);
 
+SDL_Surface *SDLZoomSurface(SDL_Surface *, int, int);
 Bitmap *SDLZoomBitmap(Bitmap *, int, int);
 
 Bitmap *SDLLoadImage(char *);
