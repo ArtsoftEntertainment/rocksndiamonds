@@ -119,16 +119,16 @@ enum _generated_cells_indexes
 GdElements gd_elements[] =
 {
   { O_SPACE, N_("Space"), P_AMOEBA_CONSUMES, "SPACE", ' ', 0, 0, 0 },
-  { O_DIRT, N_("Dirt"), P_AMOEBA_CONSUMES|P_VISUAL_EFFECT|P_DIRT, "DIRT", '.', 2, 2, 2 },
-  { O_DIRT_SLOPED_UP_RIGHT, N_("Sloped dirt (up & right)"), P_DIRT|P_SLOPED_UP|P_SLOPED_RIGHT|P_AMOEBA_CONSUMES, "DIRTSLOPEDUPRIGHT", 0, 280, 280, 280 },
-  { O_DIRT_SLOPED_UP_LEFT, N_("Sloped dirt (up & left)"), P_DIRT|P_SLOPED_UP|P_SLOPED_LEFT|P_AMOEBA_CONSUMES, "DIRTSLOPEDUPLEFT", 0, 281, 281, 281 },
-  { O_DIRT_SLOPED_DOWN_LEFT, N_("Sloped dirt (down & left)"), P_DIRT|P_SLOPED_DOWN|P_SLOPED_LEFT|P_AMOEBA_CONSUMES, "DIRTSLOPEDDOWNLEFT", 0, 282, 282, 282 },
-  { O_DIRT_SLOPED_DOWN_RIGHT, N_("Sloped dirt (down & right)"), P_DIRT|P_SLOPED_DOWN|P_SLOPED_RIGHT|P_AMOEBA_CONSUMES, "DIRTSLOPEDDOWNRIGHT", 0, 283, 283, 283 },
-  { O_DIRT_BALL, N_("Dirt ball"), P_DIRT|P_SLOPED|P_AMOEBA_CONSUMES|P_MOVED_BY_CONVEYOR_TOP, "DIRTBALL", 0, 289, 289, 289, 120 },    // has ckdelay
-  { O_DIRT_BALL_F, N_("Dirt ball (falling)"), 0, "DIRTBALLf", 0, 289, 289, 289, 120 },    // has ckdelay
-  { O_DIRT_LOOSE, N_("Loose dirt"), P_DIRT|P_AMOEBA_CONSUMES|P_MOVED_BY_CONVEYOR_TOP, "DIRTLOOSE", 0, 352, 352, 352, 60 },    // has ckdelay
-  { O_DIRT_LOOSE_F, N_("Loose dirt (falling)"), 0, "DIRTLOOSEf", 0, 352, 352, 352, 60 },    // has ckdelay
-  { O_DIRT2, N_("Dirt 2"), P_DIRT|P_AMOEBA_CONSUMES, "DIRT2", 0, 3, 3, 3 },
+  { O_DIRT, N_("Dirt"), P_AMOEBA_CONSUMES | P_VISUAL_EFFECT | P_DIRT | P_DIGGABLE, "DIRT", '.', 2, 2, 2 },
+  { O_DIRT_SLOPED_UP_RIGHT, N_("Sloped dirt (up & right)"), P_DIRT | P_SLOPED_UP | P_SLOPED_RIGHT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDUPRIGHT", 0, 280, 280, 280 },
+  { O_DIRT_SLOPED_UP_LEFT, N_("Sloped dirt (up & left)"), P_DIRT | P_SLOPED_UP | P_SLOPED_LEFT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDUPLEFT", 0, 281, 281, 281 },
+  { O_DIRT_SLOPED_DOWN_LEFT, N_("Sloped dirt (down & left)"), P_DIRT | P_SLOPED_DOWN | P_SLOPED_LEFT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDDOWNLEFT", 0, 282, 282, 282 },
+  { O_DIRT_SLOPED_DOWN_RIGHT, N_("Sloped dirt (down & right)"), P_DIRT | P_SLOPED_DOWN | P_SLOPED_RIGHT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDDOWNRIGHT", 0, 283, 283, 283 },
+  { O_DIRT_BALL, N_("Dirt ball"), P_DIRT | P_SLOPED | P_AMOEBA_CONSUMES | P_MOVED_BY_CONVEYOR_TOP | P_DIGGABLE, "DIRTBALL", 0, 289, 289, 289, 120 },    // has ckdelay
+  { O_DIRT_BALL_F, N_("Dirt ball (falling)"), P_CAN_FALL | P_DIGGABLE, "DIRTBALLf", 0, 289, 289, 289, 120 },    // has ckdelay
+  { O_DIRT_LOOSE, N_("Loose dirt"), P_DIRT | P_AMOEBA_CONSUMES | P_MOVED_BY_CONVEYOR_TOP | P_DIGGABLE, "DIRTLOOSE", 0, 352, 352, 352, 60 },    // has ckdelay
+  { O_DIRT_LOOSE_F, N_("Loose dirt (falling)"), P_CAN_FALL, "DIRTLOOSEf", 0, 352, 352, 352, 60 },    // has ckdelay
+  { O_DIRT2, N_("Dirt 2"), P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRT2", 0, 3, 3, 3 },
   { O_BRICK, N_("Brick wall"), P_SLOPED|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED, "WALL", 'w', 5, 5, 5 },
   { O_BRICK_SLOPED_UP_RIGHT, N_("Sloped brick wall (up & right)"), P_SLOPED_UP|P_SLOPED_RIGHT|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED, "WALLSLOPEDUPRIGHT", 0, 276, 276, 276 },
   { O_BRICK_SLOPED_UP_LEFT, N_("Sloped brick wall (up & left)"), P_SLOPED_UP|P_SLOPED_LEFT|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED, "WALLSLOPEDUPLEFT", 0, 277, 277, 277 },
@@ -146,21 +146,21 @@ GdElements gd_elements[] =
   { O_STEEL_SLOPED_DOWN_LEFT, N_("Sloped steel wall (down & left)"), P_SLOPED_DOWN|P_SLOPED_LEFT|P_NON_EXPLODABLE, "STEELWALLSLOPEDDOWNLEFT", 0, 286, 286, 286 },
   { O_STEEL_SLOPED_DOWN_RIGHT, N_("Sloped steel wall (down & right)"), P_SLOPED_DOWN|P_SLOPED_RIGHT|P_NON_EXPLODABLE, "STEELWALLSLOPEDDOWNRIGHT", 0, 287, 287, 287 },
   { O_STEEL_EXPLODABLE, N_("Explodable steel wall"), P_CAN_BE_HAMMERED, "STEELWALLDESTRUCTABLE", 'E', 72, 72, 4 },
-  { O_STEEL_EATABLE, N_("Eatable steel wall"), 0, "STEELWALLEATABLE", 0, i_steel_eatable, i_steel_eatable, 4 },
-  { O_BRICK_EATABLE, N_("Eatable brick wall"), 0, "WALLEATABLE", 0, i_brick_eatable, i_brick_eatable, 5 },
-  { O_STONE, N_("Stone"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP, "BOULDER", 'r', 1, 1, 1, 156 },    // has ckdelay
-  { O_STONE_F, N_("Stone, falling"), 0, "BOULDERf", 'R', i_stone_f, i_stone_f, 1, 156 },    // has ckdelay
-  { O_FLYING_STONE, N_("Flying stone"), P_SLOPED|P_MOVED_BY_CONVEYOR_BOTTOM, "FLYINGBOULDER", 0, 357, 357, 357, 156 },    // has ckdelay
-  { O_FLYING_STONE_F, N_("Flying stone, flying"), 0, "FLYINGBOULDERf", 0, i_flying_stone_f, i_flying_stone_f, 357, 156 },    // has ckdelay
-  { O_MEGA_STONE, N_("Mega stone"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP, "MEGABOULDER", 0, 272, 272, 272, 156 },    // has ckdelay
-  { O_MEGA_STONE_F, N_("Mega stone, falling"), 0, "MEGABOULDERf", 0, i_mega_stone_falling, i_mega_stone_falling, 272, 156 },    // has ckdelay
+  { O_STEEL_EATABLE, N_("Eatable steel wall"), P_DIGGABLE, "STEELWALLEATABLE", 0, i_steel_eatable, i_steel_eatable, 4 },
+  { O_BRICK_EATABLE, N_("Eatable brick wall"), P_DIGGABLE, "WALLEATABLE", 0, i_brick_eatable, i_brick_eatable, 5 },
+  { O_STONE, N_("Stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE, "BOULDER", 'r', 1, 1, 1, 156 },    // has ckdelay
+  { O_STONE_F, N_("Stone, falling"), P_CAN_FALL, "BOULDERf", 'R', i_stone_f, i_stone_f, 1, 156 },    // has ckdelay
+  { O_FLYING_STONE, N_("Flying stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_BOTTOM | P_PUSHABLE, "FLYINGBOULDER", 0, 357, 357, 357, 156 },    // has ckdelay
+  { O_FLYING_STONE_F, N_("Flying stone, flying"), P_CAN_FALL, "FLYINGBOULDERf", 0, i_flying_stone_f, i_flying_stone_f, 357, 156 },    // has ckdelay
+  { O_MEGA_STONE, N_("Mega stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE, "MEGABOULDER", 0, 272, 272, 272, 156 },    // has ckdelay
+  { O_MEGA_STONE_F, N_("Mega stone, falling"), P_CAN_FALL, "MEGABOULDERf", 0, i_mega_stone_falling, i_mega_stone_falling, 272, 156 },    // has ckdelay
   { O_DIAMOND, N_("Diamond"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP|P_COLLECTIBLE, "DIAMOND", 'd', 248, -248, -248, 156 },    // has ckdelay
-  { O_DIAMOND_F, N_("Diamond, falling"), 0, "DIAMONDf", 'D', i_diamond_f, i_diamond_f, -248, 156 },    // has ckdelay
+  { O_DIAMOND_F, N_("Diamond, falling"), P_CAN_FALL, "DIAMONDf", 'D', i_diamond_f, i_diamond_f, -248, 156 },    // has ckdelay
   { O_FLYING_DIAMOND, N_("Flying diamond"), P_SLOPED|P_MOVED_BY_CONVEYOR_BOTTOM|P_COLLECTIBLE, "FLYINGDIAMOND", 0, 344, -344, -344, 156 },    // has ckdelay
-  { O_FLYING_DIAMOND_F, N_("Flying diamond, flying"), 0, "FLYINGDIAMONDf", 0, i_flying_diamond_f, i_flying_diamond_f, -344, 156 },    // has ckdelay
-  { O_NUT, N_("Nut"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP, "NUT", 0, 358, 358, 358, 156 },    // has ckdelay
-  { O_NUT_F, N_("Nut, falling"), 0, "NUTf", 0, i_nut_f, i_nut_f, 358, 156 },    // has ckdelay
-  { O_BLADDER_SPENDER, N_("Bladder Spender"), 0, "BLADDERSPENDER", 0, 6, 6, 6, 20 },    // has ckdelay
+  { O_FLYING_DIAMOND_F, N_("Flying diamond, flying"), P_CAN_FALL, "FLYINGDIAMONDf", 0, i_flying_diamond_f, i_flying_diamond_f, -344, 156 },    // has ckdelay
+  { O_NUT, N_("Nut"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE, "NUT", 0, 358, 358, 358, 156 },    // has ckdelay
+  { O_NUT_F, N_("Nut, falling"), P_CAN_FALL, "NUTf", 0, i_nut_f, i_nut_f, 358, 156 },    // has ckdelay
+  { O_BLADDER_SPENDER, N_("Bladder Spender"), P_PUSHABLE, "BLADDERSPENDER", 0, 6, 6, 6, 20 },    // has ckdelay
   { O_INBOX, N_("Inbox"), 0, "INBOX", 'P', 35, 35, 22 },
   { O_H_EXPANDING_WALL, N_("Expanding wall, horizontal"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED, "HEXPANDINGWALL", 'x', i_h_expanding_wall, i_h_expanding_wall, 5, 111 },    // has ckdelay
   { O_V_EXPANDING_WALL, N_("Expanding wall, vertical"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED, "VEXPANDINGWALL", 'v', i_v_expanding_wall, i_v_expanding_wall, 5, 111 },    // has ckdelay
@@ -176,7 +176,7 @@ GdElements gd_elements[] =
   { O_CONVEYOR_DIR_SWITCH, N_("Conveyor belt direction switch"), 0, "CONVEYORDIRECTIONSWITCH", 0, 353, 353, 353 },
   { O_ACID, N_("Acid"), 0, "ACID", 0, 20, 20, 20, 128 },    // has ckdelay
   { O_FALLING_WALL, N_("Falling wall"), P_CAN_BE_HAMMERED, "FALLINGWALL", 0, i_falling_wall, i_falling_wall, 5, 80 },    // has ckdelay
-  { O_FALLING_WALL_F, N_("Falling wall, falling"), P_CAN_BE_HAMMERED, "FALLINGWALLf", 0, i_falling_wall_falling, i_falling_wall_falling, 5, 80 },    // has ckdelay
+  { O_FALLING_WALL_F, N_("Falling wall, falling"), P_CAN_BE_HAMMERED | P_CAN_FALL, "FALLINGWALLf", 0, i_falling_wall_falling, i_falling_wall_falling, 5, 80 },    // has ckdelay
   { O_BOX, N_("Box"), 0, "SOKOBANBOX", 0, 21, 21, 21 },
   { O_TIME_PENALTY, N_("Time penalty"), P_NON_EXPLODABLE, "TIMEPENALTY", 0, i_time_penalty, i_time_penalty, 9 },
   { O_GRAVESTONE, N_("Gravestone"), P_NON_EXPLODABLE, "GRAVESTONE", 'G', 9, 9, 9 },
@@ -215,10 +215,10 @@ GdElements gd_elements[] =
   { O_WATER_14, N_("Water (14)"), 0, "WATER14", 0, 96, -96, -96 },
   { O_WATER_15, N_("Water (15)"), 0, "WATER15", 0, 96, -96, -96 },
   { O_WATER_16, N_("Water (16)"), 0, "WATER16", 0, 96, -96, -96 },
-  { O_COW_1, N_("Cow (left)"), P_CCW, "COWl", 0, i_cow_1, -88, -88, 384 },    // has ckdelay
-  { O_COW_2, N_("Cow (up)"), P_CCW, "COWu", 0, i_cow_2, -88, -88, 384 },      // has ckdelay
-  { O_COW_3, N_("Cow (right)"), P_CCW, "COWr", 0, i_cow_3, -88, -88, 384 },   // has ckdelay
-  { O_COW_4, N_("Cow (down)"), P_CCW, "COWd", 0, i_cow_4, -88, -88, 384 },    // has ckdelay
+  { O_COW_1, N_("Cow (left)"), P_CCW | P_CAN_MOVE, "COWl", 0, i_cow_1, -88, -88, 384 },    // has ckdelay
+  { O_COW_2, N_("Cow (up)"), P_CCW | P_CAN_MOVE, "COWu", 0, i_cow_2, -88, -88, 384 },      // has ckdelay
+  { O_COW_3, N_("Cow (right)"), P_CCW | P_CAN_MOVE, "COWr", 0, i_cow_3, -88, -88, 384 },   // has ckdelay
+  { O_COW_4, N_("Cow (down)"), P_CCW | P_CAN_MOVE, "COWd", 0, i_cow_4, -88, -88, 384 },    // has ckdelay
   { O_COW_ENCLOSED_1, N_("Cow (enclosed, 1)"), 0, "COW_ENCLOSED1", 0, i_cow_enclosed, -88, -88, 120 },    // has ckdelay
   { O_COW_ENCLOSED_2, N_("Cow (enclosed, 2)"), 0, "COW_ENCLOSED2", 0, i_cow_enclosed, -88, -88, 120 },    // has ckdelay
   { O_COW_ENCLOSED_3, N_("Cow (enclosed, 3)"), 0, "COW_ENCLOSED3", 0, i_cow_enclosed, -88, -88, 120 },    // has ckdelay
@@ -231,8 +231,8 @@ GdElements gd_elements[] =
   { O_WALLED_KEY_2, N_("Walled key 2"), P_CAN_BE_HAMMERED, "WALLED_KEY2", 0, i_walled_key_2, i_walled_key_2, 5 },
   { O_WALLED_KEY_3, N_("Walled key 3"), P_CAN_BE_HAMMERED, "WALLED_KEY3", 0, i_walled_key_3, i_walled_key_3, 5 },
 
-  { O_AMOEBA, N_("Amoeba"), P_BLOWS_UP_FLIES, "AMOEBA", 'a', 192, -192, -192, 260 },    // has ckdelay
-  { O_AMOEBA_2, N_("Amoeba 2"), P_BLOWS_UP_FLIES|P_VISUAL_EFFECT, "AMOEBA2", 0, 296, -296, -296, 260 },    // has ckdelay
+  { O_AMOEBA, N_("Amoeba"), P_BLOWS_UP_FLIES | P_CAN_MOVE, "AMOEBA", 'a', 192, -192, -192, 260 },    // has ckdelay
+  { O_AMOEBA_2, N_("Amoeba 2"), P_BLOWS_UP_FLIES | P_CAN_MOVE | P_VISUAL_EFFECT, "AMOEBA2", 0, 296, -296, -296, 260 },    // has ckdelay
   { O_REPLICATOR, N_("Replicator"), P_NON_EXPLODABLE, "REPLICATOR", 0, 304, 304, 304, 210 },    // has ckdelay
   { O_CONVEYOR_LEFT, N_("Conveyor belt (left)"), P_NON_EXPLODABLE, "CONVEYORLEFT", 0, i_conveyor_left, -328, -328, 256  },    // has ckdelay
   { O_CONVEYOR_RIGHT, N_("Conveyor belt (right)"), P_NON_EXPLODABLE, "CONVEYORRIGHT", 0, i_conveyor_right, -320, -320  },
@@ -250,37 +250,37 @@ GdElements gd_elements[] =
   { O_BLADDER_7, N_("Bladder (7)"), 0, "BLADDERd7", 0, 176, -176, -176 },
   { O_BLADDER_8, N_("Bladder (8)"), 0, "BLADDERd8", 0, 176, -176, -176 },
 
-  { O_WAITING_STONE, N_("Waiting stone"), P_SLOPED, "WAITINGBOULDER", 0, i_waiting_stone, i_waiting_stone, 1, 176 },    // has ckdelay
-  { O_CHASING_STONE, N_("Chasing stone"), P_SLOPED, "CHASINGBOULDER", 0, 17, 17, 17, 269 },    // has ckdelay
-  { O_GHOST, N_("Ghost"), 0, "GHOST", 'g', 160, -160, -160, 50 },    // has ckdelay
-  { O_FIREFLY_1, N_("Guard, left"), P_EXPLODES_BY_HIT | P_CCW, "FIREFLYl", 'Q', i_guard_1, -136, -136, 384 },    // has ckdelay
-  { O_FIREFLY_2, N_("Guard, up"), P_EXPLODES_BY_HIT | P_CCW, "FIREFLYu", 'o', i_guard_2, -136, -136, 384 },      // has ckdelay
-  { O_FIREFLY_3, N_("Guard, right"), P_EXPLODES_BY_HIT | P_CCW, "FIREFLYr", 'O', i_guard_3, -136, -136, 384 },   // has ckdelay
-  { O_FIREFLY_4, N_("Guard, down"), P_EXPLODES_BY_HIT | P_CCW, "FIREFLYd", 'q', i_guard_4, -136, -136, 384 },    // has ckdelay
-  { O_ALT_FIREFLY_1, N_("Alternative guard, left"), P_EXPLODES_BY_HIT, "A_FIREFLYl", 0, i_alt_guard_1, -104, -104, 384 },    // has ckdelay
-  { O_ALT_FIREFLY_2, N_("Alternative guard, up"), P_EXPLODES_BY_HIT, "A_FIREFLYu", 0, i_alt_guard_2, -104, -104, 384 },      // has ckdelay
-  { O_ALT_FIREFLY_3, N_("Alternative guard, right"), P_EXPLODES_BY_HIT, "A_FIREFLYr", 0, i_alt_guard_3, -104, -104, 384 },   // has ckdelay
-  { O_ALT_FIREFLY_4, N_("Alternative guard, down"), P_EXPLODES_BY_HIT, "A_FIREFLYd", 0, i_alt_guard_4, -104, -104, 384 },    // has ckdelay
-  { O_BUTTER_1, N_("Butterfly, left"), P_EXPLODES_BY_HIT, "BUTTERFLYl", 'C', i_butter_1, -144, -144, 384 },    // has ckdelay
-  { O_BUTTER_2, N_("Butterfly, up"), P_EXPLODES_BY_HIT, "BUTTERFLYu", 'b', i_butter_2, -144, -144, 384 },      // has ckdelay
-  { O_BUTTER_3, N_("Butterfly, right"), P_EXPLODES_BY_HIT, "BUTTERFLYr", 'B', i_butter_3, -144, -144, 384 },   // has ckdelay
-  { O_BUTTER_4, N_("Butterfly, down"), P_EXPLODES_BY_HIT, "BUTTERFLYd", 'c', i_butter_4, -144, -144, 384 },    // has ckdelay
-  { O_ALT_BUTTER_1, N_("Alternative butterfly, left"), P_EXPLODES_BY_HIT | P_CCW, "A_BUTTERFLYl", 0, i_alt_butter_1, -112, -112, 384 },    // has ckdelay
-  { O_ALT_BUTTER_2, N_("Alternative butterfly, up"), P_EXPLODES_BY_HIT | P_CCW, "A_BUTTERFLYu", 0, i_alt_butter_2, -112, -112, 384 },      // has ckdelay
-  { O_ALT_BUTTER_3, N_("Alternative butterfly, right"), P_EXPLODES_BY_HIT | P_CCW, "A_BUTTERFLYr", 0, i_alt_butter_3, -112, -112, 384 },   // has ckdelay
-  { O_ALT_BUTTER_4, N_("Alternative butterfly, down"), P_EXPLODES_BY_HIT | P_CCW, "A_BUTTERFLYd", 0, i_alt_butter_4, -112, -112, 384 },    // has ckdelay
-  { O_STONEFLY_1, N_("Stonefly, left"), P_EXPLODES_BY_HIT, "STONEFLYl", 0, i_stonefly_1, -152, -152, 384 },    // has ckdelay
-  { O_STONEFLY_2, N_("Stonefly, up"), P_EXPLODES_BY_HIT, "STONEFLYu", 0, i_stonefly_2, -152, -152, 384 },      // has ckdelay
-  { O_STONEFLY_3, N_("Stonefly, right"), P_EXPLODES_BY_HIT, "STONEFLYr", 0, i_stonefly_3, -152, -152, 384 },   // has ckdelay
-  { O_STONEFLY_4, N_("Stonefly, down"), P_EXPLODES_BY_HIT, "STONEFLYd", 0, i_stonefly_4, -152, -152, 384 },    // has ckdelay
-  { O_BITER_1, N_("Biter, up"), 0, "BITERu", 0, i_biter_1, -168, -168, 518 },    // has ckdelay
-  { O_BITER_2, N_("Biter, right"), 0, "BITERr", 0, i_biter_2, -168, -168, 518 },    // has ckdelay
-  { O_BITER_3, N_("Biter, down"), 0, "BITERd", 0, i_biter_3, -168, -168, 518 },    // has ckdelay
-  { O_BITER_4, N_("Biter, left"), 0, "BITERl", 0, i_biter_4, -168, -168, 518 },    // has ckdelay
-  { O_DRAGONFLY_1, N_("Dragonfly, left"), P_EXPLODES_BY_HIT|P_CCW, "DRAGONFLYl", 0, i_dragonfly_1, -336, -336, 256  },    // has ckdelay
-  { O_DRAGONFLY_2, N_("Dragonfly, up"), P_EXPLODES_BY_HIT|P_CCW, "DRAGONFLYu", 0, i_dragonfly_2, -336, -336, 256  },      // has ckdelay
-  { O_DRAGONFLY_3, N_("Dragonfly, right"), P_EXPLODES_BY_HIT|P_CCW, "DRAGONFLYr", 0, i_dragonfly_3, -336, -336, 256  },   // has ckdelay
-  { O_DRAGONFLY_4, N_("Dragonfly, down"), P_EXPLODES_BY_HIT|P_CCW, "DRAGONFLYd", 0, i_dragonfly_4, -336, -336, 256  },    // has ckdelay
+  { O_WAITING_STONE, N_("Waiting stone"), P_SLOPED | P_PUSHABLE, "WAITINGBOULDER", 0, i_waiting_stone, i_waiting_stone, 1, 176 },    // has ckdelay
+  { O_CHASING_STONE, N_("Chasing stone"), P_SLOPED | P_CAN_MOVE | P_PUSHABLE, "CHASINGBOULDER", 0, 17, 17, 17, 269 },    // has ckdelay
+  { O_GHOST, N_("Ghost"), P_CAN_MOVE, "GHOST", 'g', 160, -160, -160, 50 },    // has ckdelay
+  { O_FIREFLY_1, N_("Guard, left"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "FIREFLYl", 'Q', i_guard_1, -136, -136, 384 },    // has ckdelay
+  { O_FIREFLY_2, N_("Guard, up"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "FIREFLYu", 'o', i_guard_2, -136, -136, 384 },      // has ckdelay
+  { O_FIREFLY_3, N_("Guard, right"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "FIREFLYr", 'O', i_guard_3, -136, -136, 384 },   // has ckdelay
+  { O_FIREFLY_4, N_("Guard, down"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "FIREFLYd", 'q', i_guard_4, -136, -136, 384 },    // has ckdelay
+  { O_ALT_FIREFLY_1, N_("Alternative guard, left"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "A_FIREFLYl", 0, i_alt_guard_1, -104, -104, 384 },    // has ckdelay
+  { O_ALT_FIREFLY_2, N_("Alternative guard, up"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "A_FIREFLYu", 0, i_alt_guard_2, -104, -104, 384 },      // has ckdelay
+  { O_ALT_FIREFLY_3, N_("Alternative guard, right"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "A_FIREFLYr", 0, i_alt_guard_3, -104, -104, 384 },   // has ckdelay
+  { O_ALT_FIREFLY_4, N_("Alternative guard, down"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "A_FIREFLYd", 0, i_alt_guard_4, -104, -104, 384 },    // has ckdelay
+  { O_BUTTER_1, N_("Butterfly, left"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "BUTTERFLYl", 'C', i_butter_1, -144, -144, 384 },    // has ckdelay
+  { O_BUTTER_2, N_("Butterfly, up"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "BUTTERFLYu", 'b', i_butter_2, -144, -144, 384 },      // has ckdelay
+  { O_BUTTER_3, N_("Butterfly, right"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "BUTTERFLYr", 'B', i_butter_3, -144, -144, 384 },   // has ckdelay
+  { O_BUTTER_4, N_("Butterfly, down"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "BUTTERFLYd", 'c', i_butter_4, -144, -144, 384 },    // has ckdelay
+  { O_ALT_BUTTER_1, N_("Alternative butterfly, left"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "A_BUTTERFLYl", 0, i_alt_butter_1, -112, -112, 384 },    // has ckdelay
+  { O_ALT_BUTTER_2, N_("Alternative butterfly, up"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "A_BUTTERFLYu", 0, i_alt_butter_2, -112, -112, 384 },      // has ckdelay
+  { O_ALT_BUTTER_3, N_("Alternative butterfly, right"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "A_BUTTERFLYr", 0, i_alt_butter_3, -112, -112, 384 },   // has ckdelay
+  { O_ALT_BUTTER_4, N_("Alternative butterfly, down"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "A_BUTTERFLYd", 0, i_alt_butter_4, -112, -112, 384 },    // has ckdelay
+  { O_STONEFLY_1, N_("Stonefly, left"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "STONEFLYl", 0, i_stonefly_1, -152, -152, 384 },    // has ckdelay
+  { O_STONEFLY_2, N_("Stonefly, up"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "STONEFLYu", 0, i_stonefly_2, -152, -152, 384 },      // has ckdelay
+  { O_STONEFLY_3, N_("Stonefly, right"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "STONEFLYr", 0, i_stonefly_3, -152, -152, 384 },   // has ckdelay
+  { O_STONEFLY_4, N_("Stonefly, down"), P_EXPLODES_BY_HIT | P_CAN_MOVE, "STONEFLYd", 0, i_stonefly_4, -152, -152, 384 },    // has ckdelay
+  { O_BITER_1, N_("Biter, up"), P_CAN_MOVE, "BITERu", 0, i_biter_1, -168, -168, 518 },    // has ckdelay
+  { O_BITER_2, N_("Biter, right"), P_CAN_MOVE, "BITERr", 0, i_biter_2, -168, -168, 518 },    // has ckdelay
+  { O_BITER_3, N_("Biter, down"), P_CAN_MOVE, "BITERd", 0, i_biter_3, -168, -168, 518 },    // has ckdelay
+  { O_BITER_4, N_("Biter, left"), P_CAN_MOVE, "BITERl", 0, i_biter_4, -168, -168, 518 },    // has ckdelay
+  { O_DRAGONFLY_1, N_("Dragonfly, left"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "DRAGONFLYl", 0, i_dragonfly_1, -336, -336, 256  },    // has ckdelay
+  { O_DRAGONFLY_2, N_("Dragonfly, up"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "DRAGONFLYu", 0, i_dragonfly_2, -336, -336, 256  },      // has ckdelay
+  { O_DRAGONFLY_3, N_("Dragonfly, right"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "DRAGONFLYr", 0, i_dragonfly_3, -336, -336, 256  },   // has ckdelay
+  { O_DRAGONFLY_4, N_("Dragonfly, down"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "DRAGONFLYd", 0, i_dragonfly_4, -336, -336, 256  },    // has ckdelay
 
   { O_PRE_PL_1, N_("Player birth (1)"), 0, "GUYBIRTH1", 0, 32, 32, 32 },
   { O_PRE_PL_2, N_("Player birth (2)"), 0, "GUYBIRTH2", 0, 33, 33, 33 },
@@ -299,8 +299,8 @@ GdElements gd_elements[] =
   { O_BOMB_TICK_6, N_("Ticking bomb (6)"), 0, "IGNITEDBOMB6", 0, 54, 54, 54 },
   { O_BOMB_TICK_7, N_("Ticking bomb (7)"), 0, "IGNITEDBOMB7", 0, 55, 55, 55 },
 
-  { O_NITRO_PACK, N_("Nitro pack"), P_SLOPED|P_EXPLODES_BY_HIT|P_MOVED_BY_CONVEYOR_TOP, "NITRO", 0, 288, 288, 288 },
-  { O_NITRO_PACK_F, N_("Nitro pack, falling"), P_EXPLODES_BY_HIT, "NITROf", 0, i_nitro_pack_f, i_nitro_pack_f, 288 },
+  { O_NITRO_PACK, N_("Nitro pack"), P_SLOPED | P_EXPLODES_BY_HIT | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE, "NITRO", 0, 288, 288, 288 },
+  { O_NITRO_PACK_F, N_("Nitro pack, falling"), P_EXPLODES_BY_HIT | P_CAN_FALL, "NITROf", 0, i_nitro_pack_f, i_nitro_pack_f, 288 },
   { O_NITRO_PACK_EXPLODE, N_("Nitro pack, triggered"), P_EXPLODES_BY_HIT, "NITROtriggered", 0, i_nitro_explode, i_nitro_explode, 288 },
 
   { O_PRE_CLOCK_1, N_("Clock birth (1)"), P_EXPLOSION_FIRST_STAGE, "CLOCKBIRTH1", 0, 28, 28, 28, 280 },    // has ckdelay

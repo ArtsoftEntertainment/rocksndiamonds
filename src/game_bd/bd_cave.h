@@ -121,7 +121,11 @@ enum _element_property
   E_P_MOVED_BY_CONVEYOR_TOP,    // can be moved by conveyor belt
   E_P_MOVED_BY_CONVEYOR_BOTTOM, // can be moved UNDER the conveyor belt
 
+  E_P_DIGGABLE,                 // can be digged
   E_P_COLLECTIBLE,              // can be collected
+  E_P_PUSHABLE,                 // can be pushed
+  E_P_CAN_MOVE,                 // can move
+  E_P_CAN_FALL,                 // can fall
 };
 
 // properties
@@ -154,7 +158,11 @@ enum _element_property
 #define P_MOVED_BY_CONVEYOR_TOP		(1 << E_P_MOVED_BY_CONVEYOR_TOP)
 #define P_MOVED_BY_CONVEYOR_BOTTOM	(1 << E_P_MOVED_BY_CONVEYOR_BOTTOM)
 
+#define P_DIGGABLE			(1 << E_P_DIGGABLE)
 #define P_COLLECTIBLE			(1 << E_P_COLLECTIBLE)
+#define P_PUSHABLE			(1 << E_P_PUSHABLE)
+#define P_CAN_MOVE			(1 << E_P_CAN_MOVE)
+#define P_CAN_FALL			(1 << E_P_CAN_FALL)
 
 // These are states of the magic wall.
 typedef enum _magic_wall_state
