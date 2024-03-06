@@ -338,6 +338,9 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int tile = game->element_buffer[y][x];
   int frame = game->animcycle;
   struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
+  boolean is_movable = (can_move(tile) || can_fall(tile) || is_pushable(tile) || is_player(tile));
+  boolean is_movable_or_diggable = (is_movable || is_diggable(game->last_element_buffer[y][x]));
+  boolean is_moving = (is_movable_or_diggable && dir != GD_MV_STILL);
   boolean use_smooth_movements =
     ((setup.bd_smooth_movements == TRUE) ||
      (setup.bd_smooth_movements == AUTO && !use_native_bd_graphics_engine()));
@@ -370,7 +373,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 #endif
 
   // if game element not moving (or no smooth movements requested), simply draw tile
-  if (dir == GD_MV_STILL || !use_smooth_movements)
+  if (!is_moving || !use_smooth_movements)
   {
     blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
 
@@ -406,7 +409,6 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 			    old_x <= cave->x2 &&
 			    old_y >= cave->y1 &&
 			    old_y <= cave->y2);
-
   if (old_is_visible)
   {
     if (!old_is_moving && !old_is_player)
