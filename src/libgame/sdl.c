@@ -502,6 +502,31 @@ SDL_Surface *SDLCreateNativeSurface(int width, int height, int depth)
   return surface;
 }
 
+Bitmap *SDLGetBitmapFromSurface(SDL_Surface *surface)
+{
+  int width  = surface->w;
+  int height = surface->h;
+  int depth  = video.default_depth;
+  Bitmap *bitmap = CreateBitmap(width, height, depth);
+
+  // free default surface (not needed anymore)
+  SDL_FreeSurface(bitmap->surface);
+
+  // get native, non-transparent surface from original surface
+  bitmap->surface = SDLGetOpaqueSurface(surface);
+
+  // get native, potentially transparent surface from original surface
+  bitmap->surface_masked = SDLGetNativeSurface(surface);
+
+  // set black pixel to transparent if no alpha channel / transparent color
+  if (!SDLHasAlpha(bitmap->surface_masked) &&
+      !SDLHasColorKey(bitmap->surface_masked))
+    SDL_SetColorKey(bitmap->surface_masked, SET_TRANSPARENT_PIXEL,
+		    SDL_MapRGB(bitmap->surface_masked->format, 0x00, 0x00, 0x00));
+
+  return bitmap;
+}
+
 static SDL_Texture *SDLCreateTextureFromSurface(SDL_Surface *surface)
 {
   if (program.headless)
