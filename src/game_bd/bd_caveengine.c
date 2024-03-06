@@ -3040,6 +3040,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      }
 	    }
 	    else
+	    {
 	      // or space over the slime? elements may pass from bottom to up then.
 	      if (is_space_dir(cave, x, y, oppos))
 	      {
@@ -3063,6 +3064,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  play_sound_of_element(cave, O_SLIME, x, y);
 		}
 	      }
+	    }
 	  }
 	  break;
 
