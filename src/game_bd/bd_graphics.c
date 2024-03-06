@@ -291,10 +291,34 @@ static inline boolean is_player(const int element)
   return (gd_elements[element & O_MASK].properties & P_PLAYER) != 0;
 }
 
+// returns true if the element is diggable
+static inline boolean is_diggable(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_DIGGABLE) != 0;
+}
+
 // returns true if the element is collectible
 static inline boolean is_collectible(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_COLLECTIBLE) != 0;
+}
+
+// returns true if the element is pushable
+static inline boolean is_pushable(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_PUSHABLE) != 0;
+}
+
+// returns true if the element can move
+static inline boolean can_move(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_CAN_MOVE) != 0;
+}
+
+// returns true if the element can fall
+static inline boolean can_fall(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_CAN_FALL) != 0;
 }
 
 // returns true if the element is exploding
