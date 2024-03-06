@@ -415,6 +415,25 @@ const char *SDLGetRendererName(void)
   return renderer_info.name;
 }
 
+static SDL_Surface *SDLGetOpaqueSurface(SDL_Surface *surface)
+{
+  SDL_Surface *new_surface;
+
+  if (surface == NULL)
+    return NULL;
+
+  if ((new_surface = SDLGetNativeSurface(surface)) == NULL)
+    Fail("SDLGetNativeSurface() failed");
+
+  // remove alpha channel from native non-transparent surface, if defined
+  SDLSetAlpha(new_surface, FALSE, 0);
+
+  // remove transparent color from native non-transparent surface, if defined
+  SDL_SetColorKey(new_surface, UNSET_TRANSPARENT_PIXEL, 0);
+
+  return new_surface;
+}
+
 SDL_Surface *SDLGetNativeSurface(SDL_Surface *surface)
 {
   SDL_PixelFormat format;
@@ -2318,25 +2337,6 @@ SDL_Surface *SDLZoomSurface(SDL_Surface *src, int dst_width, int dst_height)
 
   // return destination surface
   return zoom_dst;
-}
-
-static SDL_Surface *SDLGetOpaqueSurface(SDL_Surface *surface)
-{
-  SDL_Surface *new_surface;
-
-  if (surface == NULL)
-    return NULL;
-
-  if ((new_surface = SDLGetNativeSurface(surface)) == NULL)
-    Fail("SDLGetNativeSurface() failed");
-
-  // remove alpha channel from native non-transparent surface, if defined
-  SDLSetAlpha(new_surface, FALSE, 0);
-
-  // remove transparent color from native non-transparent surface, if defined
-  SDL_SetColorKey(new_surface, UNSET_TRANSPARENT_PIXEL, 0);
-
-  return new_surface;
 }
 
 Bitmap *SDLZoomBitmap(Bitmap *src_bitmap, int dst_width, int dst_height)
