@@ -605,7 +605,7 @@ void play_game_func(GdGame *game, int action)
   switch (state)
   {
     case GD_GAME_CAVE_LOADED:
-      // select colors, prepare drawing etc.
+      // scroll to start position
       gd_scroll_to_origin();
 
       // fill whole screen with black - cave might be smaller than previous!
