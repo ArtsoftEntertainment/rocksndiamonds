@@ -383,7 +383,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
       {
 	for (x = 0; x < game->cave->w; x++)
 	{
-	  game->last_element_buffer[y][x] = game->element_buffer[y][x];
+	  game->last_element_buffer[y][x] = game->element_buffer[y][x] & ~SKIPPED;
 	  game->dir_buffer[y][x] = GD_MV_STILL;
 	}
       }
