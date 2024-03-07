@@ -613,8 +613,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     // redraw previous game element on the cave field the new element is moving to
     int tile_last = game->last_element_buffer[y][x];
 
-    // only redraw previous game element if it is not collectible (like dirt etc.)
-    if (is_collectible(tile_last))
+    // only redraw previous game element if it is diggable (like dirt etc.)
+    if (!is_diggable(tile_last))
       tile_last = O_SPACE;
 
     struct GraphicInfo_BD *g_old = &graphic_info_bd_object[tile_last][frame];
@@ -650,7 +650,9 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     else
     {
       // if old tile also moving (like pushing player), do not redraw tile background
-      game->last_element_buffer[old_y][old_x] |= SKIPPED;
+      // (but redraw if tile and old tile are moving/falling into different directions)
+      if (game->dir_buffer[old_y][old_x] == game->dir_buffer[y][x])
+	game->last_element_buffer[old_y][old_x] |= SKIPPED;
     }
   }
 
