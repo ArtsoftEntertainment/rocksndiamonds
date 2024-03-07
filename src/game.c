@@ -1841,6 +1841,7 @@ static void InitFieldForEngine_RND(int x, int y)
 
   // convert BD engine elements to corresponding R'n'D engine elements
   element = (element == EL_BD_EMPTY		? EL_EMPTY :
+	     element == EL_BD_PLAYER		? EL_PLAYER_1 :
 	     element == EL_BD_INBOX		? EL_PLAYER_1 :
 	     element == EL_BD_SAND		? EL_SAND :
 	     element == EL_BD_STEELWALL		? EL_STEELWALL :
