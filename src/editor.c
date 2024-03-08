@@ -8238,7 +8238,7 @@ static void MapMainDrawingArea(void)
     no_vertical_scrollbar   = (lev_fieldy <= ed_fieldy);
   }
 
-  for (i=ED_SCROLLBUTTON_ID_AREA_FIRST; i <= ED_SCROLLBUTTON_ID_AREA_LAST; i++)
+  for (i = ED_SCROLLBUTTON_ID_AREA_FIRST; i <= ED_SCROLLBUTTON_ID_AREA_LAST; i++)
   {
     if (((i == ED_SCROLLBUTTON_ID_AREA_LEFT ||
 	  i == ED_SCROLLBUTTON_ID_AREA_RIGHT) &&
@@ -9976,11 +9976,11 @@ static void DrawLevelConfigEditor(void)
     MapCounterButtons(i);
 
   // draw checkbutton gadgets
-  for (i=ED_CHECKBUTTON_ID_EDITOR_FIRST; i<= ED_CHECKBUTTON_ID_EDITOR_LAST; i++)
+  for (i = ED_CHECKBUTTON_ID_EDITOR_FIRST; i <= ED_CHECKBUTTON_ID_EDITOR_LAST; i++)
     MapCheckbuttonGadget(i);
 
   // draw radiobutton gadgets
-  for (i=ED_RADIOBUTTON_ID_EDITOR_FIRST; i<= ED_RADIOBUTTON_ID_EDITOR_LAST; i++)
+  for (i = ED_RADIOBUTTON_ID_EDITOR_FIRST; i <= ED_RADIOBUTTON_ID_EDITOR_LAST; i++)
     MapRadiobuttonGadget(i);
 
   // draw drawing area
