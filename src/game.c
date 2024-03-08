@@ -4906,6 +4906,27 @@ static void LevelSolved(void)
   LevelSolved_SetFinalGameValues();
 }
 
+static void AdvanceToNextLevel(void)
+{
+  if (setup.increment_levels &&
+      level_nr < leveldir_current->last_level &&
+      !network_playing)
+  {
+    level_nr++;		// advance to next level
+    TapeErase();	// start with empty tape
+
+    if (setup.auto_play_next_level)
+    {
+      scores.continue_playing = TRUE;
+      scores.next_level_nr = level_nr;
+
+      LoadLevel(level_nr);
+
+      SaveLevelSetup_SeriesInfo();
+    }
+  }
+}
+
 void GameWon(void)
 {
   static int time_count_steps;
@@ -5183,23 +5204,8 @@ void GameEnd(void)
   // save score and score tape before potentially erasing tape below
   NewHighScore(last_level_nr, tape_saved);
 
-  if (setup.increment_levels &&
-      level_nr < leveldir_current->last_level &&
-      !network_playing)
-  {
-    level_nr++;		// advance to next level
-    TapeErase();	// start with empty tape
-
-    if (setup.auto_play_next_level)
-    {
-      scores.continue_playing = TRUE;
-      scores.next_level_nr = level_nr;
-
-      LoadLevel(level_nr);
-
-      SaveLevelSetup_SeriesInfo();
-    }
-  }
+  // increment and load next level (if possible and not configured otherwise)
+  AdvanceToNextLevel();
 
   if (scores.last_added >= 0 && setup.show_scores_after_game)
   {
