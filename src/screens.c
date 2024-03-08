@@ -2131,8 +2131,10 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
   if (setup.handicap && new_level_nr > leveldir_current->handicap_level)
   {
     // skipping levels is only allowed when trying to skip single level
-    if (setup.skip_levels && new_level_nr == old_level_nr + 1 &&
-	Request("Level still unsolved! Skip it anyway?", REQ_ASK))
+    // (also, skipping BD style intermission levels is always possible)
+    if (new_level_nr == old_level_nr + 1 &&
+	(level.bd_intermission ||
+	 (setup.skip_levels && Request("Level still unsolved! Skip it anyway?", REQ_ASK))))
     {
       leveldir_current->handicap_level++;
       SaveLevelSetup_SeriesInfo();
