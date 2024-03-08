@@ -457,6 +457,9 @@ void gd_prepare_tile_bitmap(GdCave *cave, Bitmap *bitmap, int scale_down_factor)
   static Bitmap *gd_tile_bitmap_original = NULL;
   static int scale_down_factor_last = -1;
 
+  if (program.headless)
+    return;
+
   // check if tile bitmap has changed (different artwork or tile size selected)
   if (bitmap != gd_tile_bitmap_original || scale_down_factor != scale_down_factor_last)
   {
