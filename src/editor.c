@@ -649,6 +649,7 @@ enum
   GADGET_ID_RANDOM_PERCENTAGE,
   GADGET_ID_RANDOM_QUANTITY,
   GADGET_ID_RANDOM_RESTRICTED,
+  GADGET_ID_BD_INTERMISSION,
   GADGET_ID_STICK_ELEMENT,
   GADGET_ID_EM_SLIPPERY_GEMS,
   GADGET_ID_EM_EXPLODES_BY_FIRE,
@@ -966,6 +967,7 @@ enum
   ED_CHECKBUTTON_ID_RANDOM_RESTRICTED,
   ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_3,
   ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_2,
+  ED_CHECKBUTTON_ID_BD_INTERMISSION,
   ED_CHECKBUTTON_ID_STICK_ELEMENT,
   ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
   ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
@@ -1045,6 +1047,9 @@ enum
 
 #define ED_CHECKBUTTON_ID_EDITOR_FIRST	ED_CHECKBUTTON_ID_RANDOM_RESTRICTED
 #define ED_CHECKBUTTON_ID_EDITOR_LAST	ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_2
+
+#define ED_CHECKBUTTON_ID_ENGINE_FIRST	ED_CHECKBUTTON_ID_BD_INTERMISSION
+#define ED_CHECKBUTTON_ID_ENGINE_LAST	ED_CHECKBUTTON_ID_BD_INTERMISSION
 
 #define ED_CHECKBUTTON_ID_CUSTOM1_FIRST	ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC
 #define ED_CHECKBUTTON_ID_CUSTOM1_LAST	ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE
@@ -3240,6 +3245,14 @@ static struct
     &level.use_custom_template,
     NULL, NULL,
     "use template for custom elements",	"use template for custom properties"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_INTERMISSION,
+    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(0),
+    GADGET_ID_BD_INTERMISSION,		GADGET_ID_NONE,
+    &level.bd_intermission,
+    "Boulder Dash game engine settings:", NULL,
+    "intermission",			"level is an intermission level"
   },
 
   // ---------- element settings: configure (various elements) ----------------
@@ -9992,6 +10005,11 @@ static void DrawLevelConfigEditor(void)
 
 static void DrawLevelConfigEngine(void)
 {
+  int i;
+
+  // draw checkbutton gadgets
+  for (i = ED_CHECKBUTTON_ID_ENGINE_FIRST; i <= ED_CHECKBUTTON_ID_ENGINE_LAST; i++)
+    MapCheckbuttonGadget(i);
 }
 
 static void DrawLevelConfigWindow(void)

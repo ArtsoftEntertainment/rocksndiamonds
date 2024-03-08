@@ -275,6 +275,12 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
+    &li.bd_intermission,		FALSE
+  },
+
+  {
+    -1,					-1,
     -1,					-1,
     NULL,				-1
   }
@@ -3719,6 +3725,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->level_speed[0]			= 160;	// set cave speed
 
+  cave->intermission			= level->bd_intermission;
   cave->diagonal_movements		= level->bd_diagonal_movements;
 
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -3746,6 +3753,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->score[SC_TIME_BONUS]	= cave->level_timevalue[bd_level_nr];
   level->score[SC_DIAMOND]	= cave->diamond_value;
 
+  level->bd_intermission	= cave->intermission;
   level->bd_diagonal_movements	= cave->diagonal_movements;
 
   strncpy(level->name, cave->name, MAX_LEVEL_NAME_LEN);
