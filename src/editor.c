@@ -606,6 +606,7 @@ enum
   GADGET_ID_LEVELCONFIG_LEVEL,
   GADGET_ID_LEVELCONFIG_LEVELSET,
   GADGET_ID_LEVELCONFIG_EDITOR,
+  GADGET_ID_LEVELCONFIG_ENGINE,
   GADGET_ID_PROPERTIES_INFO,
   GADGET_ID_PROPERTIES_CONFIG,
   GADGET_ID_PROPERTIES_CONFIG_1,
@@ -917,6 +918,7 @@ enum
   ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL,
   ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET,
   ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR,
+  ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE,
   ED_TEXTBUTTON_ID_PROPERTIES_INFO,
   ED_TEXTBUTTON_ID_PROPERTIES_CONFIG,
   ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_1,
@@ -932,7 +934,7 @@ enum
 };
 
 #define ED_TAB_BUTTON_ID_LEVELCONFIG_FIRST ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL
-#define ED_TAB_BUTTON_ID_LEVELCONFIG_LAST  ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR
+#define ED_TAB_BUTTON_ID_LEVELCONFIG_LAST  ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE
 
 #define ED_TAB_BUTTON_ID_PROPERTIES_FIRST ED_TEXTBUTTON_ID_PROPERTIES_INFO
 #define ED_TAB_BUTTON_ID_PROPERTIES_LAST  ED_TEXTBUTTON_ID_PROPERTIES_CHANGE
@@ -1136,6 +1138,7 @@ enum
 #define ED_MODE_LEVELCONFIG_LEVEL	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL
 #define ED_MODE_LEVELCONFIG_LEVELSET	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET
 #define ED_MODE_LEVELCONFIG_EDITOR	ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR
+#define ED_MODE_LEVELCONFIG_ENGINE	ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE
 
 // sub-screens in the element properties section
 #define ED_MODE_PROPERTIES_INFO		ED_TEXTBUTTON_ID_PROPERTIES_INFO
@@ -2917,6 +2920,13 @@ static struct
     GADGET_ID_LEVELCONFIG_EDITOR,	GADGET_ID_LEVELCONFIG_LEVELSET,
     8,					"Editor",
     NULL, NULL, NULL,			"Configure editor settings"
+  },
+  {
+    ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE,
+    -1,					-1,
+    GADGET_ID_LEVELCONFIG_ENGINE,	GADGET_ID_LEVELCONFIG_EDITOR,
+    8,					"Engine",
+    NULL, NULL, NULL,			"Configure engine settings"
   },
 
   // ---------- element settings (tabs) ---------------------------------------
@@ -7460,7 +7470,7 @@ static void CreateTextbuttonGadgets(void)
     int id = textbutton_info[i].gadget_id;
     int type_id = textbutton_info[i].gadget_type_id;
     int is_tab_button =
-      ((id >= GADGET_ID_LEVELCONFIG_LEVEL && id <= GADGET_ID_LEVELCONFIG_EDITOR) ||
+      ((id >= GADGET_ID_LEVELCONFIG_LEVEL && id <= GADGET_ID_LEVELCONFIG_ENGINE) ||
        (id >= GADGET_ID_PROPERTIES_INFO && id <= GADGET_ID_PROPERTIES_CHANGE));
     int graphic =
       (is_tab_button ? IMG_EDITOR_TABBUTTON : IMG_EDITOR_TEXTBUTTON);
@@ -9776,9 +9786,13 @@ static void DrawLevelConfigTabulatorGadgets(void)
 {
   struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELCONFIG_LEVEL];
   Pixel tab_color = getTabulatorBarColor();
-  int id_first = ED_TAB_BUTTON_ID_LEVELCONFIG_FIRST;
-  int id_last  = ED_TAB_BUTTON_ID_LEVELCONFIG_LAST;
+  int id_first = ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL;
+  int id_last  = ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR;
   int i;
+
+  // draw additional "engine" tabulator when using native BD engine
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    id_last = ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE;
 
   for (i = id_first; i <= id_last; i++)
   {
@@ -9976,6 +9990,10 @@ static void DrawLevelConfigEditor(void)
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_2);
 }
 
+static void DrawLevelConfigEngine(void)
+{
+}
+
 static void DrawLevelConfigWindow(void)
 {
   char *text = "Global Settings";
@@ -10003,6 +10021,8 @@ static void DrawLevelConfigWindow(void)
     DrawLevelConfigLevelSet();
   else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_EDITOR)
     DrawLevelConfigEditor();
+  else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE)
+    DrawLevelConfigEngine();
 }
 
 static void DrawCustomContentArea(void)
@@ -14465,7 +14485,10 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
   }
   else if (type_id == ED_SELECTBOX_ID_GAME_ENGINE_TYPE)
   {
-    // update element selection list
+    // show or hide "engine" tabulator depending on game engine type
+    DrawLevelConfigWindow();
+
+    // update element selection list depending on game engine type
     ReinitializeElementList();
     ModifyEditorElementList();
   }
