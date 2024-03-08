@@ -898,6 +898,17 @@
 					 (e) == EL_PEARL          ? EL_BOMB    :    \
 					 (e) == EL_CRYSTAL        ? EL_CRYSTAL :    \
 					 EL_ROCK)
+
+#define IS_BD_PLAYER_ELEMENT(e)		((e) == EL_BD_INBOX ||			\
+					 (e) == EL_BD_PLAYER ||			\
+					 (e) == EL_BD_PLAYER_WITH_BOMB ||	\
+					 (e) == EL_BD_PLAYER_GLUED ||		\
+					 (e) == EL_BD_PLAYER_STIRRING)
+
+#define IS_SOKOBAN_OBJECT_OR_FIELD(e)	((e) == EL_SOKOBAN_OBJECT ||		\
+					 (e) == EL_SOKOBAN_FIELD_EMPTY ||	\
+					 (e) == EL_SOKOBAN_FIELD_FULL)
+
 #define IS_DRAWABLE(e)			((e) < EL_BLOCKED)
 #define IS_NOT_DRAWABLE(e)		((e) >= EL_BLOCKED)
 #define TAPE_IS_EMPTY(x)		((x).length == 0)

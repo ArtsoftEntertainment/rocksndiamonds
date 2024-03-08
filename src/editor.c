@@ -10608,14 +10608,12 @@ static boolean checkPropertiesConfig(int element)
       IS_MM_MCDUFFIN(element) ||
       IS_DF_LASER(element) ||
       IS_PLAYER_ELEMENT(element) ||
+      IS_BD_PLAYER_ELEMENT(element) ||
+      IS_SOKOBAN_OBJECT_OR_FIELD(element) ||
       HAS_EDITOR_CONTENT(element) ||
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
-      MAYBE_DONT_COLLIDE_WITH(element) ||
-      element == EL_BD_PLAYER ||
-      element == EL_SOKOBAN_OBJECT ||
-      element == EL_SOKOBAN_FIELD_EMPTY ||
-      element == EL_SOKOBAN_FIELD_FULL)
+      MAYBE_DONT_COLLIDE_WITH(element))
     return TRUE;
   else
     for (i = 0; elements_with_counter[i].element != -1; i++)
@@ -10847,7 +10845,7 @@ static void DrawPropertiesConfig(void)
     }
   }
 
-  if (properties_element == EL_BD_PLAYER)
+  if (IS_BD_PLAYER_ELEMENT(properties_element))
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS);
 
   if (IS_GEM(properties_element))
