@@ -5162,7 +5162,11 @@ void GameEnd(void)
   int last_level_nr = levelset.level_nr;
   boolean tape_saved = FALSE;
 
-  game.LevelSolved_GameEnd = TRUE;
+  // Important note: This function is not only called after "GameWon()", but also after
+  // "game over" (if automatically asking for restarting the game is disabled in setup)
+
+  if (game.LevelSolved)
+    game.LevelSolved_GameEnd = TRUE;
 
   if (game.LevelSolved_SaveTape && !score_info_tape_play)
   {
@@ -5189,7 +5193,7 @@ void GameEnd(void)
     return;
   }
 
-  if (!game.LevelSolved_SaveScore)
+  if (!game.GamePlayed || (!game.LevelSolved_SaveScore && !level.bd_intermission))
   {
     SetGameStatus(GAME_MODE_MAIN);
 
@@ -5206,12 +5210,13 @@ void GameEnd(void)
   }
 
   // save score and score tape before potentially erasing tape below
-  NewHighScore(last_level_nr, tape_saved);
+  if (game.LevelSolved_SaveScore)
+    NewHighScore(last_level_nr, tape_saved);
 
   // increment and load next level (if possible and not configured otherwise)
   AdvanceToNextLevel();
 
-  if (scores.last_added >= 0 && setup.show_scores_after_game)
+  if (game.LevelSolved_SaveScore && scores.last_added >= 0 && setup.show_scores_after_game)
   {
     SetGameStatus(GAME_MODE_SCORES);
 
