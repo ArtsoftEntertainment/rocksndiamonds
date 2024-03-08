@@ -4906,7 +4906,7 @@ static void LevelSolved(void)
   LevelSolved_SetFinalGameValues();
 }
 
-static void AdvanceToNextLevel(void)
+static boolean AdvanceToNextLevel(void)
 {
   if (setup.increment_levels &&
       level_nr < leveldir_current->last_level &&
@@ -4924,7 +4924,11 @@ static void AdvanceToNextLevel(void)
 
       SaveLevelSetup_SeriesInfo();
     }
+
+    return TRUE;
   }
+
+  return FALSE;
 }
 
 void GameWon(void)
@@ -16280,7 +16284,17 @@ static void RequestRestartGame(void)
   int request_mode = (has_started_game ? REQ_ASK : REQ_CONFIRM);
   int door_state = DOOR_CLOSE_1;
 
-  if (Request(message, request_mode | REQ_STAY_OPEN) && has_started_game)
+  boolean restart_wanted = (Request(message, request_mode | REQ_STAY_OPEN) && has_started_game);
+
+  // if no restart wanted, continue with next level for BD style intermission levels
+  if (!restart_wanted && !level_editor_test_game && level.bd_intermission)
+  {
+    boolean success = AdvanceToNextLevel();
+
+    restart_wanted = (success && setup.auto_play_next_level);
+  }
+
+  if (restart_wanted)
   {
     CloseDoor(door_state);
 
