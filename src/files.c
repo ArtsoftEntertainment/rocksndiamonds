@@ -3771,12 +3771,16 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_intermission		= cave->intermission;
   level->bd_diagonal_movements		= cave->diagonal_movements;
 
-  strncpy(level->name, cave->name, MAX_LEVEL_NAME_LEN);
+  char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
+
+  strncpy(level->name, cave_name, MAX_LEVEL_NAME_LEN);
   level->name[MAX_LEVEL_NAME_LEN] = '\0';
 
   for (x = 0; x < level->fieldx; x++)
     for (y = 0; y < level->fieldy; y++)
       level->field[x][y] = map_element_BD_to_RND(cave->map[y][x]);
+
+  checked_free(cave_name);
 }
 
 static void setTapeInfoToDefaults(void);
