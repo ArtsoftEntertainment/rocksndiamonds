@@ -281,7 +281,13 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(15),
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(15),
+    &li.bd_scheduling_type,		GD_SCHEDULING_MILLISECONDS
+  },
+
+  {
+    -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(16),
     &li.bd_pal_timing,			FALSE
   },
 
@@ -3729,6 +3735,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->level_speed[0]			= 160;	// set cave speed
 
+  cave->scheduling			= level->bd_scheduling_type;
   cave->pal_timing			= level->bd_pal_timing;
   cave->intermission			= level->bd_intermission;
   cave->diagonal_movements		= level->bd_diagonal_movements;
@@ -3759,6 +3766,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->score[SC_EMERALD]		= cave->diamond_value;
   level->score[SC_DIAMOND_EXTRA]	= cave->extra_diamond_value;
 
+  level->bd_scheduling_type		= cave->scheduling;
   level->bd_pal_timing			= cave->pal_timing;
   level->bd_intermission		= cave->intermission;
   level->bd_diagonal_movements		= cave->diagonal_movements;

@@ -571,6 +571,7 @@ enum
   GADGET_ID_TIME_OR_STEPS,
   GADGET_ID_TIME_SCORE_BASE,
   GADGET_ID_GAME_ENGINE_TYPE,
+  GADGET_ID_BD_SCHEDULING_TYPE,
   GADGET_ID_LEVELSET_SAVE_MODE,
   GADGET_ID_WIND_DIRECTION,
   GADGET_ID_PLAYER_SPEED,
@@ -865,6 +866,7 @@ enum
   ED_SELECTBOX_ID_TIME_OR_STEPS,
   ED_SELECTBOX_ID_TIME_SCORE_BASE,
   ED_SELECTBOX_ID_GAME_ENGINE_TYPE,
+  ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
   ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
   ED_SELECTBOX_ID_WIND_DIRECTION,
   ED_SELECTBOX_ID_PLAYER_SPEED,
@@ -903,6 +905,9 @@ enum
 
 #define ED_SELECTBOX_ID_LEVELSET_FIRST	ED_SELECTBOX_ID_LEVELSET_SAVE_MODE
 #define ED_SELECTBOX_ID_LEVELSET_LAST	ED_SELECTBOX_ID_LEVELSET_SAVE_MODE
+
+#define ED_SELECTBOX_ID_ENGINE_FIRST	ED_SELECTBOX_ID_BD_SCHEDULING_TYPE
+#define ED_SELECTBOX_ID_ENGINE_LAST	ED_SELECTBOX_ID_BD_SCHEDULING_TYPE
 
 #define ED_SELECTBOX_ID_CUSTOM1_FIRST	ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE
 #define ED_SELECTBOX_ID_CUSTOM1_LAST	ED_SELECTBOX_ID_CUSTOM_WALK_TO_ACTION
@@ -2530,6 +2535,19 @@ static struct ValueTextInfo options_group_choice_mode[] =
   { -1,				NULL				}
 };
 
+static struct ValueTextInfo options_bd_scheduling_type[] =
+{
+  { GD_SCHEDULING_MILLISECONDS,	"Milliseconds"			},
+  { GD_SCHEDULING_BD1,		"BD1"				},
+  { GD_SCHEDULING_BD2,		"BD2"				},
+  { GD_SCHEDULING_PLCK,		"Construction Kit"		},
+  { GD_SCHEDULING_CRDR,		"Crazy Dream 7"			},
+  { GD_SCHEDULING_BD1_ATARI,	"Atari BD1"			},
+  { GD_SCHEDULING_BD2_PLCK_ATARI,"Atari BD2 / PLCK"		},
+
+  { -1,				NULL				}
+};
+
 static struct ValueTextInfo *action_arg_modes[] =
 {
   options_action_mode_none,
@@ -2612,6 +2630,15 @@ static struct
     options_game_engine_type,
     &level.game_engine_type,
     NULL, "game engine:", NULL,		"game engine"
+  },
+  {
+    ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
+    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(1),
+    GADGET_ID_BD_SCHEDULING_TYPE,	GADGET_ID_NONE,
+    -1,
+    options_bd_scheduling_type,
+    &level.bd_scheduling_type,
+    NULL, "scheduling type:", NULL,	"level timing"
   },
   {
     ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
@@ -3258,7 +3285,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_PAL_TIMING,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(1),
+    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_BD_PAL_TIMING,		GADGET_ID_NONE,
     &level.bd_pal_timing,
     NULL, NULL,
@@ -10020,6 +10047,10 @@ static void DrawLevelConfigEngine(void)
   // draw checkbutton gadgets
   for (i = ED_CHECKBUTTON_ID_ENGINE_FIRST; i <= ED_CHECKBUTTON_ID_ENGINE_LAST; i++)
     MapCheckbuttonGadget(i);
+
+  // draw selectbox gadgets
+  for (i = ED_SELECTBOX_ID_ENGINE_FIRST; i <= ED_SELECTBOX_ID_ENGINE_LAST; i++)
+    MapSelectboxGadget(i);
 }
 
 static void DrawLevelConfigWindow(void)

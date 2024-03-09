@@ -3480,6 +3480,7 @@ struct LevelInfo
   int initial_inventory_size[MAX_PLAYERS];
   int initial_inventory_content[MAX_PLAYERS][MAX_INITIAL_INVENTORY_SIZE];
 
+  boolean bd_scheduling_type;		// BD engine scheduling type
   boolean bd_pal_timing;		// BD engine special timing
   boolean bd_intermission;		// BD level is intermission
   boolean bd_diagonal_movements;	// BD style diagonal movements
