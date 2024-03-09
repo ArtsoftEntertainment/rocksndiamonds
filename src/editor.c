@@ -10890,7 +10890,8 @@ static void DrawPropertiesConfig(void)
   if (IS_BD_PLAYER_ELEMENT(properties_element))
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS);
 
-  if (IS_GEM(properties_element))
+  // special case: slippery walls option for gems only available in R'n'D game engine
+  if (IS_GEM(properties_element) && level.game_engine_type == GAME_ENGINE_TYPE_RND)
   {
     checkbutton_info[ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS].y =
       ED_ELEMENT_SETTINGS_XPOS(properties_element == EL_BD_DIAMOND ? 2 : 1);
