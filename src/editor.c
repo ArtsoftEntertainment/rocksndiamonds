@@ -10636,6 +10636,10 @@ static boolean checkPropertiesConfig(int element)
 {
   int i;
 
+  // special case: empty space customization only available in R'n'D game engine
+  if (element == EL_EMPTY_SPACE && level.game_engine_type != GAME_ENGINE_TYPE_RND)
+    return FALSE;
+
   if (IS_GEM(element) ||
       IS_CUSTOM_ELEMENT(element) ||
       IS_GROUP_ELEMENT(element) ||
