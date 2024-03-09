@@ -1071,7 +1071,7 @@
 #define SC_PEARL				12
 #define SC_SHIELD				13
 #define SC_ELEM_BONUS				14
-#define SC_UNKNOWN_15				15
+#define SC_DIAMOND_EXTRA			15
 
 #define LEVEL_SCORE_ELEMENTS			16	// level elements with score
 

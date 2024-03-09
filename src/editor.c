@@ -10486,6 +10486,7 @@ static void DrawPropertiesInfo(void)
 }
 
 #define TEXT_COLLECTING		"Score for collecting"
+#define TEXT_COLLECTING_EXTRA	"Extra score for collecting"
 #define TEXT_SMASHING		"Score for smashing"
 #define TEXT_SLURPING		"Score for slurping robot"
 #define TEXT_CRACKING		"Score for cracking"
@@ -10514,6 +10515,7 @@ static struct
 {
   { EL_EMERALD,		&level.score[SC_EMERALD],	TEXT_COLLECTING	},
   { EL_BD_DIAMOND,	&level.score[SC_EMERALD],	TEXT_COLLECTING	},
+  { EL_BD_DIAMOND,	&level.score[SC_DIAMOND_EXTRA],	TEXT_COLLECTING_EXTRA },
   { EL_EMERALD_YELLOW,	&level.score[SC_EMERALD],	TEXT_COLLECTING	},
   { EL_EMERALD_RED,	&level.score[SC_EMERALD],	TEXT_COLLECTING	},
   { EL_EMERALD_PURPLE,	&level.score[SC_EMERALD],	TEXT_COLLECTING	},
@@ -10887,7 +10889,12 @@ static void DrawPropertiesConfig(void)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS);
 
   if (IS_GEM(properties_element))
+  {
+    checkbutton_info[ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS].y =
+      ED_ELEMENT_SETTINGS_XPOS(properties_element == EL_BD_DIAMOND ? 2 : 1);
+
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS);
+  }
 
   if (properties_element == EL_EM_DYNAMITE)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE);

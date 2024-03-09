@@ -576,6 +576,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_diagonal_movements,		FALSE
   },
 
+  {
+    EL_BD_DIAMOND,			-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
+    &li.score[SC_DIAMOND_EXTRA],	20
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -956,14 +962,6 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     EL_MM_LIGHTBALL,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.score[SC_ELEM_BONUS],		10
-  },
-
-  // ---------- unused values -------------------------------------------------
-
-  {
-    EL_UNKNOWN,				SAVE_CONF_NEVER,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_UNKNOWN_15],		10
   },
 
   {
@@ -3720,8 +3718,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
     cave->level_timevalue[i]		= level->score[SC_TIME_BONUS];
   }
 
-  cave->diamond_value			= level->score[SC_DIAMOND];
-  cave->extra_diamond_value		= level->score[SC_DIAMOND];
+  cave->diamond_value			= level->score[SC_EMERALD];
+  cave->extra_diamond_value		= level->score[SC_DIAMOND_EXTRA];
 
   cave->level_speed[0]			= 160;	// set cave speed
 
@@ -3746,15 +3744,16 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->fieldx = MIN(cave->w, MAX_LEV_FIELDX);
   level->fieldy = MIN(cave->h, MAX_LEV_FIELDY);
 
-  level->time			= cave->level_time[bd_level_nr];
-  level->gems_needed		= cave->level_diamonds[bd_level_nr];
-  level->time_magic_wall	= cave->level_magic_wall_time[bd_level_nr];
+  level->time				= cave->level_time[bd_level_nr];
+  level->gems_needed			= cave->level_diamonds[bd_level_nr];
+  level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
 
-  level->score[SC_TIME_BONUS]	= cave->level_timevalue[bd_level_nr];
-  level->score[SC_DIAMOND]	= cave->diamond_value;
+  level->score[SC_TIME_BONUS]		= cave->level_timevalue[bd_level_nr];
+  level->score[SC_EMERALD]		= cave->diamond_value;
+  level->score[SC_DIAMOND_EXTRA]	= cave->extra_diamond_value;
 
-  level->bd_intermission	= cave->intermission;
-  level->bd_diagonal_movements	= cave->diagonal_movements;
+  level->bd_intermission		= cave->intermission;
+  level->bd_diagonal_movements		= cave->diagonal_movements;
 
   strncpy(level->name, cave->name, MAX_LEVEL_NAME_LEN);
   level->name[MAX_LEVEL_NAME_LEN] = '\0';
