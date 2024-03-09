@@ -10486,7 +10486,7 @@ static void DrawPropertiesInfo(void)
 }
 
 #define TEXT_COLLECTING		"Score for collecting"
-#define TEXT_COLLECTING_EXTRA	"Extra score for collecting"
+#define TEXT_COLLECTING_EXTRA	"Score for extra diamonds"
 #define TEXT_SMASHING		"Score for smashing"
 #define TEXT_SLURPING		"Score for slurping robot"
 #define TEXT_CRACKING		"Score for cracking"
