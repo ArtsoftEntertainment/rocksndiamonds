@@ -305,6 +305,18 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(18),
+    &li.bd_hatching_delay_cycles,	21
+  },
+
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(19),
+    &li.bd_hatching_delay_seconds,	2
+  },
+
+  {
+    -1,					-1,
     -1,					-1,
     NULL,				-1
   }
@@ -3742,6 +3754,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
     cave->level_speed[i]		= level->bd_cycle_delay_ms;
     cave->level_ckdelay[i]		= level->bd_cycle_delay_c64;
+    cave->level_hatching_delay_frame[i]	= level->bd_hatching_delay_cycles;
+    cave->level_hatching_delay_time[i]	= level->bd_hatching_delay_seconds;
 
     cave->level_timevalue[i]		= level->score[SC_TIME_BONUS];
   }
@@ -3778,6 +3792,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->bd_cycle_delay_ms		= cave->level_speed[bd_level_nr];
   level->bd_cycle_delay_c64		= cave->level_ckdelay[bd_level_nr];
+  level->bd_hatching_delay_cycles	= cave->level_hatching_delay_frame[bd_level_nr];
+  level->bd_hatching_delay_seconds	= cave->level_hatching_delay_time[bd_level_nr];
 
   level->score[SC_TIME_BONUS]		= cave->level_timevalue[bd_level_nr];
   level->score[SC_EMERALD]		= cave->diamond_value;
