@@ -3480,12 +3480,12 @@ struct LevelInfo
   int initial_inventory_size[MAX_PLAYERS];
   int initial_inventory_content[MAX_PLAYERS][MAX_INITIAL_INVENTORY_SIZE];
 
-  boolean bd_scheduling_type;		// BD engine scheduling type
-  boolean bd_pal_timing;		// BD engine special timing
-  boolean bd_cycle_delay_ms;		// BD game cycle delay (in milliseconds)
-  boolean bd_cycle_delay_c64;		// BD game cycle delay (in C64 game units)
-  boolean bd_hatching_delay_cycles;	// BD hatching delay (in game cycles)
-  boolean bd_hatching_delay_seconds;	// BD hatching delay (in seconds)
+  int bd_cycle_delay_ms;		// BD game cycle delay (in milliseconds)
+  int bd_cycle_delay_c64;		// BD game cycle delay (in C64 game units)
+  int bd_hatching_delay_cycles;		// BD hatching delay (in game cycles)
+  int bd_hatching_delay_seconds;	// BD hatching delay (in seconds)
+  int bd_scheduling_type;		// BD engine scheduling type
+  boolean bd_pal_timing;		// BD engine uses special PAL timing
   boolean bd_intermission;		// BD level is intermission
   boolean bd_diagonal_movements;	// BD style diagonal movements
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
