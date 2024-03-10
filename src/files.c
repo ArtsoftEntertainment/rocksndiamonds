@@ -293,6 +293,18 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(6),
+    &li.bd_cycle_delay_ms,		200
+  },
+
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(17),
+    &li.bd_cycle_delay_c64,		0
+  },
+
+  {
+    -1,					-1,
     -1,					-1,
     NULL,				-1
   }
@@ -3727,13 +3739,15 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
     cave->level_time[i]			= level->time;
     cave->level_diamonds[i]		= level->gems_needed;
     cave->level_magic_wall_time[i]	= level->time_magic_wall;
+
+    cave->level_speed[i]		= level->bd_cycle_delay_ms;
+    cave->level_ckdelay[i]		= level->bd_cycle_delay_c64;
+
     cave->level_timevalue[i]		= level->score[SC_TIME_BONUS];
   }
 
   cave->diamond_value			= level->score[SC_EMERALD];
   cave->extra_diamond_value		= level->score[SC_DIAMOND_EXTRA];
-
-  cave->level_speed[0]			= 160;	// set cave speed
 
   cave->scheduling			= level->bd_scheduling_type;
   cave->pal_timing			= level->bd_pal_timing;
@@ -3761,6 +3775,9 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->time				= cave->level_time[bd_level_nr];
   level->gems_needed			= cave->level_diamonds[bd_level_nr];
   level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
+
+  level->bd_cycle_delay_ms		= cave->level_speed[bd_level_nr];
+  level->bd_cycle_delay_c64		= cave->level_ckdelay[bd_level_nr];
 
   level->score[SC_TIME_BONUS]		= cave->level_timevalue[bd_level_nr];
   level->score[SC_EMERALD]		= cave->diamond_value;

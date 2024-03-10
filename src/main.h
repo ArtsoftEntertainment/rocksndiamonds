@@ -3482,6 +3482,8 @@ struct LevelInfo
 
   boolean bd_scheduling_type;		// BD engine scheduling type
   boolean bd_pal_timing;		// BD engine special timing
+  boolean bd_cycle_delay_ms;		// BD game cycle delay (in milliseconds)
+  boolean bd_cycle_delay_c64;		// BD game cycle delay (in C64 game units)
   boolean bd_intermission;		// BD level is intermission
   boolean bd_diagonal_movements;	// BD style diagonal movements
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour

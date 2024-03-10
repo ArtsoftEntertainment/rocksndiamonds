@@ -429,6 +429,12 @@ enum
   GADGET_ID_LEVELSET_NUM_LEVELS_DOWN,
   GADGET_ID_LEVELSET_NUM_LEVELS_TEXT,
   GADGET_ID_LEVELSET_NUM_LEVELS_UP,
+  GADGET_ID_BD_CYCLE_DELAY_MS_DOWN,
+  GADGET_ID_BD_CYCLE_DELAY_MS_TEXT,
+  GADGET_ID_BD_CYCLE_DELAY_MS_UP,
+  GADGET_ID_BD_CYCLE_DELAY_C64_DOWN,
+  GADGET_ID_BD_CYCLE_DELAY_C64_TEXT,
+  GADGET_ID_BD_CYCLE_DELAY_C64_UP,
   GADGET_ID_ELEMENT_VALUE1_DOWN,
   GADGET_ID_ELEMENT_VALUE1_TEXT,
   GADGET_ID_ELEMENT_VALUE1_UP,
@@ -752,6 +758,8 @@ enum
   ED_COUNTER_ID_LEVEL_RANDOM_SEED,
   ED_COUNTER_ID_LEVELSET_NUM_LEVELS,
   ED_COUNTER_ID_LEVEL_RANDOM,
+  ED_COUNTER_ID_BD_CYCLE_DELAY_MS,
+  ED_COUNTER_ID_BD_CYCLE_DELAY_C64,
   ED_COUNTER_ID_ELEMENT_VALUE1,
   ED_COUNTER_ID_ELEMENT_VALUE2,
   ED_COUNTER_ID_ELEMENT_VALUE3,
@@ -1488,6 +1496,24 @@ static struct
     GADGET_ID_LEVEL_RANDOM_TEXT,	GADGET_ID_NONE,
     &random_placement_value,
     "random element placement:",	NULL, "in"
+  },
+  {
+    ED_COUNTER_ID_BD_CYCLE_DELAY_MS,
+    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(3),
+    50,					500,
+    GADGET_ID_BD_CYCLE_DELAY_MS_DOWN,	GADGET_ID_BD_CYCLE_DELAY_MS_UP,
+    GADGET_ID_BD_CYCLE_DELAY_MS_TEXT,	GADGET_ID_NONE,
+    &level.bd_cycle_delay_ms,
+    NULL,				NULL, "game cycle delay (ms)"
+  },
+  {
+    ED_COUNTER_ID_BD_CYCLE_DELAY_C64,
+    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(3),
+    0,					32,
+    GADGET_ID_BD_CYCLE_DELAY_C64_DOWN,	GADGET_ID_BD_CYCLE_DELAY_C64_UP,
+    GADGET_ID_BD_CYCLE_DELAY_C64_TEXT,	GADGET_ID_NONE,
+    &level.bd_cycle_delay_c64,
+    NULL,				NULL, "game cycle delay (C64-style)"
   },
 
   // ---------- element settings: configure (various elements) ----------------
@@ -10044,6 +10070,12 @@ static void DrawLevelConfigEngine(void)
 {
   int i;
 
+  // draw counter gadgets
+  if (level.bd_scheduling_type == GD_SCHEDULING_MILLISECONDS)
+    MapCounterButtons(ED_COUNTER_ID_BD_CYCLE_DELAY_MS);
+  else
+    MapCounterButtons(ED_COUNTER_ID_BD_CYCLE_DELAY_C64);
+
   // draw checkbutton gadgets
   for (i = ED_CHECKBUTTON_ID_ENGINE_FIRST; i <= ED_CHECKBUTTON_ID_ENGINE_LAST; i++)
     MapCheckbuttonGadget(i);
@@ -14560,6 +14592,11 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
     // update element selection list depending on game engine type
     ReinitializeElementList();
     ModifyEditorElementList();
+  }
+  else if (type_id == ED_SELECTBOX_ID_BD_SCHEDULING_TYPE)
+  {
+    // update BD cycle delay counter gadgets depending on BD scheduling type
+    DrawLevelConfigWindow();
   }
 
   // do not mark level as modified for certain non-level-changing gadgets
