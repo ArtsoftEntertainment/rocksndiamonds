@@ -317,6 +317,12 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(20),
+    &li.bd_line_shifting_borders,	FALSE
+  },
+
+  {
+    -1,					-1,
     -1,					-1,
     NULL,				-1
   }
@@ -3768,6 +3774,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->intermission			= level->bd_intermission;
   cave->diagonal_movements		= level->bd_diagonal_movements;
 
+  cave->lineshift			= level->bd_line_shifting_borders;
+
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
 
@@ -3803,6 +3811,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_pal_timing			= cave->pal_timing;
   level->bd_intermission		= cave->intermission;
   level->bd_diagonal_movements		= cave->diagonal_movements;
+
+  level->bd_line_shifting_borders	= cave->lineshift;
 
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
 
