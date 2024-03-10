@@ -4427,7 +4427,7 @@ static int editor_el_boulderdash_native[] =
   EL_BD_AMOEBA,
   EL_BD_BUTTERFLY_UP,
   EL_BD_FIREFLY_UP,
-  EL_EXIT_CLOSED,
+  EL_BD_EXIT_CLOSED,
 
   EL_BD_BUTTERFLY_LEFT,
   EL_BD_FIREFLY_LEFT,
@@ -4437,7 +4437,7 @@ static int editor_el_boulderdash_native[] =
   EL_BD_INBOX,
   EL_BD_BUTTERFLY_DOWN,
   EL_BD_FIREFLY_DOWN,
-  EL_EXIT_OPEN,
+  EL_BD_EXIT_OPEN,
 
   EL_BD_AMOEBA_2,
   EL_BD_BUTTERFLY_2_UP,
