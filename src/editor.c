@@ -2537,15 +2537,15 @@ static struct ValueTextInfo options_group_choice_mode[] =
 
 static struct ValueTextInfo options_bd_scheduling_type[] =
 {
-  { GD_SCHEDULING_MILLISECONDS,	"Milliseconds"			},
-  { GD_SCHEDULING_BD1,		"BD1"				},
-  { GD_SCHEDULING_BD2,		"BD2"				},
-  { GD_SCHEDULING_PLCK,		"Construction Kit"		},
-  { GD_SCHEDULING_CRDR,		"Crazy Dream 7"			},
-  { GD_SCHEDULING_BD1_ATARI,	"Atari BD1"			},
-  { GD_SCHEDULING_BD2_PLCK_ATARI,"Atari BD2 / PLCK"		},
+  { GD_SCHEDULING_MILLISECONDS,	  "Milliseconds"		},
+  { GD_SCHEDULING_BD1,		  "BD1"				},
+  { GD_SCHEDULING_BD2,		  "BD2"				},
+  { GD_SCHEDULING_PLCK,		  "Construction Kit"		},
+  { GD_SCHEDULING_CRDR,		  "Crazy Dream 7"		},
+  { GD_SCHEDULING_BD1_ATARI,	  "Atari BD1"			},
+  { GD_SCHEDULING_BD2_PLCK_ATARI, "Atari BD2 / PLCK"		},
 
-  { -1,				NULL				}
+  { -1,				  NULL				}
 };
 
 static struct ValueTextInfo *action_arg_modes[] =
