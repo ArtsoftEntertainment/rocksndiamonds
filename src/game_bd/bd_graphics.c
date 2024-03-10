@@ -261,6 +261,13 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   player_x = game->cave->player_x - game->cave->x1; // cell coordinates of player
   player_y = game->cave->player_y - game->cave->y1;
 
+  // when wrapping around to opposite level border, use faster scrolling
+  if (game->cave->player_x == game->cave->x1 ||
+      game->cave->player_x == game->cave->x2 ||
+      game->cave->player_y == game->cave->y1 ||
+      game->cave->player_y == game->cave->y2)
+    scroll_speed *= 4;
+
   // pixel size of visible part of the cave (may be smaller in intermissions)
   visible_x = (game->cave->x2 - game->cave->x1 + 1) * cell_size;
   visible_y = (game->cave->y2 - game->cave->y1 + 1) * cell_size;
