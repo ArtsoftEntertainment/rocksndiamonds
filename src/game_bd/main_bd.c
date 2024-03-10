@@ -386,6 +386,19 @@ void GameActions_BD(byte action[MAX_PLAYERS])
 
   play_game_func(game_bd.game, action[0]);
 
+  // scroll without iterating engine if player out of sight (mainly due to wrap-around)
+  // (this is needed to prevent broken tapes in case of viewport or tile size changes)
+  while (game_bd.game->out_of_window)
+  {
+    RedrawPlayfield_BD(TRUE);
+
+    BlitScreenToBitmap_BD(backbuffer);
+
+    BackToFront();
+
+    play_game_func(game_bd.game, action[0]);
+  }
+
   RedrawPlayfield_BD(FALSE);
 
   UpdateGameDoorValues_BD();
