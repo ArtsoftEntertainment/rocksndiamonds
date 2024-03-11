@@ -6645,7 +6645,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_inbox",
     "bd_inbox",
-    "inbox"
+    "inbox with player"
   },
   {
     "bd_exit_closed",
