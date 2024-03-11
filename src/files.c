@@ -3754,36 +3754,48 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   for (i = 0; i < 5; i++)
   {
+    // level settings
     cave->level_time[i]			= level->time;
     cave->level_diamonds[i]		= level->gems_needed;
     cave->level_magic_wall_time[i]	= level->time_magic_wall;
 
+    // game timing
     cave->level_speed[i]		= level->bd_cycle_delay_ms;
     cave->level_ckdelay[i]		= level->bd_cycle_delay_c64;
     cave->level_hatching_delay_frame[i]	= level->bd_hatching_delay_cycles;
     cave->level_hatching_delay_time[i]	= level->bd_hatching_delay_seconds;
 
+    // scores
     cave->level_timevalue[i]		= level->score[SC_TIME_BONUS];
   }
 
+  // scores
   cave->diamond_value			= level->score[SC_EMERALD];
   cave->extra_diamond_value		= level->score[SC_DIAMOND_EXTRA];
 
+  // game timing
   cave->scheduling			= level->bd_scheduling_type;
   cave->pal_timing			= level->bd_pal_timing;
-  cave->intermission			= level->bd_intermission;
-  cave->diagonal_movements		= level->bd_diagonal_movements;
-  cave->active_is_first_found		= level->bd_topmost_player_active;
 
+  // compatibility settings
   cave->lineshift			= level->bd_line_shifting_borders;
   cave->wraparound_objects		= level->bd_wraparound_objects;
   cave->border_scan_first_and_last	= level->bd_scan_first_and_last_row;
   cave->short_explosions		= level->bd_short_explosions;
   cave->gravity_affects_all		= level->bd_gravity_affects_all;
 
+  // level type
+  cave->intermission			= level->bd_intermission;
+
+  // player properties
+  cave->diagonal_movements		= level->bd_diagonal_movements;
+  cave->active_is_first_found		= level->bd_topmost_player_active;
+
+  // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
 
+  // playfield elements
   for (x = 0; x < cave->w; x++)
     for (y = 0; y < cave->h; y++)
       cave->map[y][x] = map_element_RND_to_BD(level->field[x][y]);
@@ -3799,36 +3811,47 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->fieldx = MIN(cave->w, MAX_LEV_FIELDX);
   level->fieldy = MIN(cave->h, MAX_LEV_FIELDY);
 
+  // level settings
   level->time				= cave->level_time[bd_level_nr];
   level->gems_needed			= cave->level_diamonds[bd_level_nr];
   level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
 
+  // game timing
   level->bd_cycle_delay_ms		= cave->level_speed[bd_level_nr];
   level->bd_cycle_delay_c64		= cave->level_ckdelay[bd_level_nr];
   level->bd_hatching_delay_cycles	= cave->level_hatching_delay_frame[bd_level_nr];
   level->bd_hatching_delay_seconds	= cave->level_hatching_delay_time[bd_level_nr];
 
+  // scores
   level->score[SC_TIME_BONUS]		= cave->level_timevalue[bd_level_nr];
   level->score[SC_EMERALD]		= cave->diamond_value;
   level->score[SC_DIAMOND_EXTRA]	= cave->extra_diamond_value;
 
+  // game timing
   level->bd_scheduling_type		= cave->scheduling;
   level->bd_pal_timing			= cave->pal_timing;
-  level->bd_intermission		= cave->intermission;
-  level->bd_diagonal_movements		= cave->diagonal_movements;
-  level->bd_topmost_player_active	= cave->active_is_first_found;
 
+  // compatibility settings
   level->bd_line_shifting_borders	= cave->lineshift;
   level->bd_wraparound_objects		= cave->wraparound_objects;
   level->bd_scan_first_and_last_row	= cave->border_scan_first_and_last;
   level->bd_short_explosions		= cave->short_explosions;
   level->bd_gravity_affects_all		= cave->gravity_affects_all;
 
+  // level type
+  level->bd_intermission		= cave->intermission;
+
+  // player properties
+  level->bd_diagonal_movements		= cave->diagonal_movements;
+  level->bd_topmost_player_active	= cave->active_is_first_found;
+
+  // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
 
   strncpy(level->name, cave_name, MAX_LEVEL_NAME_LEN);
   level->name[MAX_LEVEL_NAME_LEN] = '\0';
 
+  // playfield elements
   for (x = 0; x < level->fieldx; x++)
     for (y = 0; y < level->fieldy; y++)
       level->field[x][y] = map_element_BD_to_RND(cave->map[y][x]);
