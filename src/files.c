@@ -335,6 +335,12 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
 
   {
     -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(23),
+    &li.bd_short_explosions,		TRUE
+  },
+
+  {
+    -1,					-1,
     -1,					-1,
     NULL,				-1
   }
@@ -3789,6 +3795,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->lineshift			= level->bd_line_shifting_borders;
   cave->wraparound_objects		= level->bd_wraparound_objects;
   cave->border_scan_first_and_last	= level->bd_scan_first_and_last_row;
+  cave->short_explosions		= level->bd_short_explosions;
 
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -3829,6 +3836,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_line_shifting_borders	= cave->lineshift;
   level->bd_wraparound_objects		= cave->wraparound_objects;
   level->bd_scan_first_and_last_row	= cave->border_scan_first_and_last;
+  level->bd_short_explosions		= cave->short_explosions;
 
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
 
