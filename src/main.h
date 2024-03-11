@@ -3487,7 +3487,6 @@ struct LevelInfo
   int bd_scheduling_type;		// BD engine scheduling type
   boolean bd_pal_timing;		// BD engine uses special PAL timing
   boolean bd_line_shifting_borders;	// BD engine uses line-shifting wrap-around
-  boolean bd_wraparound_objects;	// BD cave object rendering uses wrap-around
   boolean bd_scan_first_and_last_row;	// BD engine scans top and bottom border rows
   boolean bd_short_explosions;		// BD engine uses four game cycles for explosions
   boolean bd_gravity_affects_all;	// BD engine gravity affects all falling objects

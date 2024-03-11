@@ -298,21 +298,16 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(21),
-    &li.bd_wraparound_objects,		FALSE
-  },
-  {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(22),
     &li.bd_scan_first_and_last_row,	TRUE
   },
   {
     -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(23),
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(22),
     &li.bd_short_explosions,		TRUE
   },
   {
     -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(24),
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(23),
     &li.bd_gravity_affects_all,		TRUE
   },
 
@@ -3789,7 +3784,6 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   // compatibility settings
   cave->lineshift			= level->bd_line_shifting_borders;
-  cave->wraparound_objects		= level->bd_wraparound_objects;
   cave->border_scan_first_and_last	= level->bd_scan_first_and_last_row;
   cave->short_explosions		= level->bd_short_explosions;
   cave->gravity_affects_all		= level->bd_gravity_affects_all;
@@ -3846,7 +3840,6 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   // compatibility settings
   level->bd_line_shifting_borders	= cave->lineshift;
-  level->bd_wraparound_objects		= cave->wraparound_objects;
   level->bd_scan_first_and_last_row	= cave->border_scan_first_and_last;
   level->bd_short_explosions		= cave->short_explosions;
   level->bd_gravity_affects_all		= cave->gravity_affects_all;
