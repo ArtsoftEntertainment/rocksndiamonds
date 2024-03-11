@@ -1571,7 +1571,7 @@ static struct
     GADGET_ID_BD_PUSHING_PROB_DOWN,	GADGET_ID_BD_PUSHING_PROB_UP,
     GADGET_ID_BD_PUSHING_PROB_TEXT,	GADGET_ID_NONE,
     &level.bd_pushing_prob,
-    NULL,				NULL, "probability to push rocks"
+    NULL,				NULL, "push probability"
   },
   {
     ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET,
@@ -1580,7 +1580,7 @@ static struct
     GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_DOWN,	GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_UP,
     GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_TEXT,	GADGET_ID_NONE,
     &level.bd_pushing_prob_with_sweet,
-    NULL,				NULL, "as above, after eating sweet"
+    NULL,				NULL, "push probability with sweet"
   },
   {
     ED_COUNTER_ID_ELEMENT_VALUE1,
@@ -8133,17 +8133,10 @@ static void MapCounterButtons(int id)
 
   ModifyEditorCounterValue(id, *counterbutton_info[id].value);
 
-  // set position for "value[1,2,3,4]" counter gadgets (score in most cases)
-  if (id >= ED_COUNTER_ID_ELEMENT_VALUE1 &&
-      id <= ED_COUNTER_ID_ELEMENT_VALUE4)
-  {
-    ModifyGadget(gi_down, GDI_Y,
-		 SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
-    ModifyGadget(gi_text, GDI_Y,
-		 SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
-    ModifyGadget(gi_up,   GDI_Y,
-		 SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
-  }
+  // set position for counter gadgets with dynamically determined position
+  ModifyGadget(gi_down, GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
+  ModifyGadget(gi_text, GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
+  ModifyGadget(gi_up,   GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
 
   // vertical position might have changed after setting position above
   y = gi_up->y + yoffset;
@@ -10831,6 +10824,10 @@ static boolean checkPropertiesConfig(int element)
   if (element == EL_EMPTY_SPACE && level.game_engine_type != GAME_ENGINE_TYPE_RND)
     return FALSE;
 
+  // special case: BD style rock customization only available in BD game engine
+  if (element == EL_BD_ROCK && level.game_engine_type != GAME_ENGINE_TYPE_BD)
+    return FALSE;
+
   if (IS_GEM(element) ||
       IS_CUSTOM_ELEMENT(element) ||
       IS_GROUP_ELEMENT(element) ||
@@ -10846,12 +10843,19 @@ static boolean checkPropertiesConfig(int element)
       HAS_EDITOR_CONTENT(element) ||
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
-      MAYBE_DONT_COLLIDE_WITH(element))
+      MAYBE_DONT_COLLIDE_WITH(element) ||
+      element == EL_BD_ROCK ||
+      element == EL_BD_MEGA_ROCK ||
+      element == EL_BD_SWEET)
+  {
     return TRUE;
+  }
   else
+  {
     for (i = 0; elements_with_counter[i].element != -1; i++)
       if (elements_with_counter[i].element == element)
 	return TRUE;
+  }
 
   return FALSE;
 }
@@ -10937,6 +10941,12 @@ static void DrawPropertiesConfig(void)
   {
     if (elements_with_counter[i].element == properties_element)
     {
+      // special case: score for extra diamonds only available in BD game engine
+      if (elements_with_counter[i].element == EL_BD_DIAMOND &&
+	  elements_with_counter[i].value == &level.score[SC_DIAMOND_EXTRA] &&
+	  level.game_engine_type != GAME_ENGINE_TYPE_BD)
+	continue;
+
       int counter_id = ED_COUNTER_ID_ELEMENT_VALUE1 + num_element_counters;
 
       counterbutton_info[counter_id].y =
@@ -11080,6 +11090,13 @@ static void DrawPropertiesConfig(void)
 
   if (IS_BD_PLAYER_ELEMENT(properties_element))
   {
+    counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB].y =
+      ED_ELEMENT_SETTINGS_YPOS(2);
+    counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET].y =
+      ED_ELEMENT_SETTINGS_YPOS(3);
+    checkbutton_info[ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET].y =
+      ED_ELEMENT_SETTINGS_YPOS(4);
+
     // draw checkbutton gadgets
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_TOPMOST_PLAYER_ACTIVE);
@@ -11090,14 +11107,32 @@ static void DrawPropertiesConfig(void)
     MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET);
   }
 
+  if (properties_element == EL_BD_ROCK && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB].y =
+      ED_ELEMENT_SETTINGS_YPOS(0);
+    counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET].y =
+      ED_ELEMENT_SETTINGS_YPOS(1);
+
+    MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB);
+    MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET);
+  }
+
+  if (properties_element == EL_BD_MEGA_ROCK ||
+      properties_element == EL_BD_SWEET)
+  {
+    counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET].y =
+      ED_ELEMENT_SETTINGS_YPOS(0);
+    checkbutton_info[ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET].y =
+      ED_ELEMENT_SETTINGS_YPOS(1);
+
+    MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET);
+  }
+
   // special case: slippery walls option for gems only available in R'n'D game engine
   if (IS_GEM(properties_element) && level.game_engine_type == GAME_ENGINE_TYPE_RND)
-  {
-    checkbutton_info[ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS].y =
-      ED_ELEMENT_SETTINGS_XPOS(properties_element == EL_BD_DIAMOND ? 2 : 1);
-
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS);
-  }
 
   if (properties_element == EL_EM_DYNAMITE)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE);
