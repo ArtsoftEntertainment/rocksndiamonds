@@ -617,6 +617,21 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_topmost_player_active,	TRUE
   },
+  {
+    EL_BD_PLAYER,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
+    &li.bd_pushing_prob,		25
+  },
+  {
+    EL_BD_PLAYER,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(4),
+    &li.bd_pushing_prob_with_sweet,	100
+  },
+  {
+    EL_BD_PLAYER,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(5),
+    &li.bd_push_mega_rock_with_sweet,	FALSE
+  },
 
   {
     EL_BD_DIAMOND,			-1,
@@ -3790,6 +3805,9 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   // player properties
   cave->diagonal_movements		= level->bd_diagonal_movements;
   cave->active_is_first_found		= level->bd_topmost_player_active;
+  cave->pushing_stone_prob		= level->bd_pushing_prob            * 10000;
+  cave->pushing_stone_prob_sweet	= level->bd_pushing_prob_with_sweet * 10000;
+  cave->mega_stones_pushable_with_sweet	= level->bd_push_mega_rock_with_sweet;
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -3844,6 +3862,9 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   // player properties
   level->bd_diagonal_movements		= cave->diagonal_movements;
   level->bd_topmost_player_active	= cave->active_is_first_found;
+  level->bd_pushing_prob		= cave->pushing_stone_prob       / 10000;
+  level->bd_pushing_prob_with_sweet	= cave->pushing_stone_prob_sweet / 10000;
+  level->bd_push_mega_rock_with_sweet	= cave->mega_stones_pushable_with_sweet;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
