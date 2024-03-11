@@ -641,6 +641,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_diagonal_movements,		FALSE
   },
+  {
+    EL_BD_PLAYER,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    &li.bd_topmost_player_active,	TRUE
+  },
 
   {
     EL_BD_DIAMOND,			-1,
@@ -3797,6 +3802,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->pal_timing			= level->bd_pal_timing;
   cave->intermission			= level->bd_intermission;
   cave->diagonal_movements		= level->bd_diagonal_movements;
+  cave->active_is_first_found		= level->bd_topmost_player_active;
 
   cave->lineshift			= level->bd_line_shifting_borders;
   cave->wraparound_objects		= level->bd_wraparound_objects;
@@ -3839,6 +3845,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_pal_timing			= cave->pal_timing;
   level->bd_intermission		= cave->intermission;
   level->bd_diagonal_movements		= cave->diagonal_movements;
+  level->bd_topmost_player_active	= cave->active_is_first_found;
 
   level->bd_line_shifting_borders	= cave->lineshift;
   level->bd_wraparound_objects		= cave->wraparound_objects;

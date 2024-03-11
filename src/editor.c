@@ -700,6 +700,7 @@ enum
   GADGET_ID_CAN_MOVE_INTO_ACID,
   GADGET_ID_DONT_COLLIDE_WITH,
   GADGET_ID_BD_DIAGONAL_MOVEMENTS,
+  GADGET_ID_BD_TOPMOST_PLAYER_ACTIVE,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1031,6 +1032,7 @@ enum
   ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID,
   ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH,
   ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS,
+  ED_CHECKBUTTON_ID_BD_TOPMOST_PLAYER_ACTIVE,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3641,6 +3643,14 @@ static struct
     &level.bd_diagonal_movements,
     NULL, NULL,
     "can move diagonally",		"player can move diagonally"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_TOPMOST_PLAYER_ACTIVE,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_TOPMOST_PLAYER_ACTIVE,	GADGET_ID_NONE,
+    &level.bd_topmost_player_active,
+    NULL, NULL,
+    "topmost player is active",		"use first player found on playfield"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -11033,7 +11043,10 @@ static void DrawPropertiesConfig(void)
   }
 
   if (IS_BD_PLAYER_ELEMENT(properties_element))
+  {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_TOPMOST_PLAYER_ACTIVE);
+  }
 
   // special case: slippery walls option for gems only available in R'n'D game engine
   if (IS_GEM(properties_element) && level.game_engine_type == GAME_ENGINE_TYPE_RND)
