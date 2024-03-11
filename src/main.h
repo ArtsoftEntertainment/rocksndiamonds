@@ -3487,6 +3487,7 @@ struct LevelInfo
   int bd_scheduling_type;		// BD engine scheduling type
   boolean bd_pal_timing;		// BD engine uses special PAL timing
   boolean bd_line_shifting_borders;	// BD engine uses line-shifting wrap-around
+  boolean bd_wraparound_objects;	// BD cave object rendering uses wrap-around
   boolean bd_intermission;		// BD level is intermission
   boolean bd_diagonal_movements;	// BD style diagonal movements
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
