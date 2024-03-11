@@ -3347,10 +3347,10 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_LINE_SHIFTING_BORDERS,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(5),
+    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_LINE_SHIFTING_BORDERS,	GADGET_ID_NONE,
     &level.bd_line_shifting_borders,
-    NULL, NULL,
+    "Compatibility settings:", NULL,
     "line-shifting borders",		"use line-shifting wrap-around"
   },
 
