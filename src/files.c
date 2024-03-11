@@ -3760,37 +3760,32 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   GdCave *cave = NULL;	// will be changed below
   int cave_w = MIN(level->fieldx, MAX_PLAYFIELD_WIDTH);
   int cave_h = MIN(level->fieldy, MAX_PLAYFIELD_HEIGHT);
-  int i, x, y;
+  int x, y;
 
   setLevelInfoToDefaults_BD_Ext(cave_w, cave_h);
 
   // cave and map newly allocated when set to defaults above
   cave = level_bd->cave;
 
-  for (i = 0; i < 5; i++)
-  {
-    // level settings
-    cave->level_time[i]			= level->time;
-    cave->level_diamonds[i]		= level->gems_needed;
-    cave->level_magic_wall_time[i]	= level->time_magic_wall;
+  // level type
+  cave->intermission			= level->bd_intermission;
 
-    // game timing
-    cave->level_speed[i]		= level->bd_cycle_delay_ms;
-    cave->level_ckdelay[i]		= level->bd_cycle_delay_c64;
-    cave->level_hatching_delay_frame[i]	= level->bd_hatching_delay_cycles;
-    cave->level_hatching_delay_time[i]	= level->bd_hatching_delay_seconds;
-
-    // scores
-    cave->level_timevalue[i]		= level->score[SC_TIME_BONUS];
-  }
-
-  // scores
-  cave->diamond_value			= level->score[SC_EMERALD];
-  cave->extra_diamond_value		= level->score[SC_DIAMOND_EXTRA];
+  // level settings
+  cave->level_time[0]			= level->time;
+  cave->level_diamonds[0]		= level->gems_needed;
 
   // game timing
   cave->scheduling			= level->bd_scheduling_type;
   cave->pal_timing			= level->bd_pal_timing;
+  cave->level_speed[0]			= level->bd_cycle_delay_ms;
+  cave->level_ckdelay[0]		= level->bd_cycle_delay_c64;
+  cave->level_hatching_delay_frame[0]	= level->bd_hatching_delay_cycles;
+  cave->level_hatching_delay_time[0]	= level->bd_hatching_delay_seconds;
+
+  // scores
+  cave->level_timevalue[0]		= level->score[SC_TIME_BONUS];
+  cave->diamond_value			= level->score[SC_EMERALD];
+  cave->extra_diamond_value		= level->score[SC_DIAMOND_EXTRA];
 
   // compatibility settings
   cave->lineshift			= level->bd_line_shifting_borders;
@@ -3799,15 +3794,15 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->short_explosions		= level->bd_short_explosions;
   cave->gravity_affects_all		= level->bd_gravity_affects_all;
 
-  // level type
-  cave->intermission			= level->bd_intermission;
-
   // player properties
   cave->diagonal_movements		= level->bd_diagonal_movements;
   cave->active_is_first_found		= level->bd_topmost_player_active;
   cave->pushing_stone_prob		= level->bd_pushing_prob            * 10000;
   cave->pushing_stone_prob_sweet	= level->bd_pushing_prob_with_sweet * 10000;
   cave->mega_stones_pushable_with_sweet	= level->bd_push_mega_rock_with_sweet;
+
+  // element properties
+  cave->level_magic_wall_time[0]	= level->time_magic_wall;
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -3829,12 +3824,16 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->fieldx = MIN(cave->w, MAX_LEV_FIELDX);
   level->fieldy = MIN(cave->h, MAX_LEV_FIELDY);
 
+  // level type
+  level->bd_intermission		= cave->intermission;
+
   // level settings
   level->time				= cave->level_time[bd_level_nr];
   level->gems_needed			= cave->level_diamonds[bd_level_nr];
-  level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
 
   // game timing
+  level->bd_scheduling_type		= cave->scheduling;
+  level->bd_pal_timing			= cave->pal_timing;
   level->bd_cycle_delay_ms		= cave->level_speed[bd_level_nr];
   level->bd_cycle_delay_c64		= cave->level_ckdelay[bd_level_nr];
   level->bd_hatching_delay_cycles	= cave->level_hatching_delay_frame[bd_level_nr];
@@ -3845,10 +3844,6 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->score[SC_EMERALD]		= cave->diamond_value;
   level->score[SC_DIAMOND_EXTRA]	= cave->extra_diamond_value;
 
-  // game timing
-  level->bd_scheduling_type		= cave->scheduling;
-  level->bd_pal_timing			= cave->pal_timing;
-
   // compatibility settings
   level->bd_line_shifting_borders	= cave->lineshift;
   level->bd_wraparound_objects		= cave->wraparound_objects;
@@ -3856,15 +3851,15 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_short_explosions		= cave->short_explosions;
   level->bd_gravity_affects_all		= cave->gravity_affects_all;
 
-  // level type
-  level->bd_intermission		= cave->intermission;
-
   // player properties
   level->bd_diagonal_movements		= cave->diagonal_movements;
   level->bd_topmost_player_active	= cave->active_is_first_found;
   level->bd_pushing_prob		= cave->pushing_stone_prob       / 10000;
   level->bd_pushing_prob_with_sweet	= cave->pushing_stone_prob_sweet / 10000;
   level->bd_push_mega_rock_with_sweet	= cave->mega_stones_pushable_with_sweet;
+
+  // element properties
+  level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
