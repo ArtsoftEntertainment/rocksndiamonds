@@ -165,7 +165,6 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.game_engine_type,		GAME_ENGINE_TYPE_RND
   },
-
   {
     -1,					SAVE_CONF_ALWAYS,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
@@ -176,169 +175,141 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
     &li.fieldy,				STD_LEV_FIELDY
   },
-
   {
     -1,					SAVE_CONF_ALWAYS,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(3),
     &li.time,				100
   },
-
   {
     -1,					SAVE_CONF_ALWAYS,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(4),
     &li.gems_needed,			0
   },
-
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(2),
     &li.random_seed,			0
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.use_step_counter,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_BITFIELD,			CONF_VALUE_8_BIT(4),
     &li.wind_direction_initial,		MV_NONE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(5),
     &li.em_slippery_gems,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(6),
     &li.use_custom_template,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_BITFIELD,			CONF_VALUE_32_BIT(1),
     &li.can_move_into_acid_bits,	~0	// default: everything can
   },
-
   {
     -1,					-1,
     TYPE_BITFIELD,			CONF_VALUE_8_BIT(7),
     &li.dont_collide_with_bits,		~0	// default: always deadly
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(8),
     &li.em_explodes_by_fire,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(5),
     &li.score[SC_TIME_BONUS],		1
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
     &li.auto_exit_sokoban,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(10),
     &li.auto_count_gems,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(11),
     &li.solved_by_one_player,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(12),
     &li.time_score_base,		1
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
     &li.rate_time_over_score,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
     &li.bd_intermission,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(15),
     &li.bd_scheduling_type,		GD_SCHEDULING_MILLISECONDS
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(16),
     &li.bd_pal_timing,			FALSE
   },
-
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(6),
     &li.bd_cycle_delay_ms,		200
   },
-
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(17),
     &li.bd_cycle_delay_c64,		0
   },
-
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(18),
     &li.bd_hatching_delay_cycles,	21
   },
-
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(19),
     &li.bd_hatching_delay_seconds,	2
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(20),
     &li.bd_line_shifting_borders,	FALSE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(21),
     &li.bd_wraparound_objects,		FALSE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(22),
     &li.bd_scan_first_and_last_row,	TRUE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(23),
     &li.bd_short_explosions,		TRUE
   },
-
   {
     -1,					-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(24),
