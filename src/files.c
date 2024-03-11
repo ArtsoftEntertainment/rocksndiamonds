@@ -634,6 +634,17 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.score[SC_DIAMOND_EXTRA],	20
   },
 
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_magic_wall_wait_hatching,	FALSE
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    &li.bd_magic_wall_stops_amoeba,	TRUE
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -3797,6 +3808,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   // element properties
   cave->level_magic_wall_time[0]	= level->time_magic_wall;
+  cave->magic_timer_wait_for_hatching	= level->bd_magic_wall_wait_hatching;
+  cave->magic_wall_stops_amoeba		= level->bd_magic_wall_stops_amoeba;
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -3853,6 +3866,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   // element properties
   level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
+  level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
+  level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

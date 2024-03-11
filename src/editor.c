@@ -708,6 +708,8 @@ enum
   GADGET_ID_BD_DIAGONAL_MOVEMENTS,
   GADGET_ID_BD_TOPMOST_PLAYER_ACTIVE,
   GADGET_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET,
+  GADGET_ID_BD_MAGIC_WALL_WAIT_HATCHING,
+  GADGET_ID_BD_MAGIC_WALL_STOPS_AMOEBA,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1043,6 +1045,8 @@ enum
   ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS,
   ED_CHECKBUTTON_ID_BD_TOPMOST_PLAYER_ACTIVE,
   ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET,
+  ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING,
+  ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3687,6 +3691,22 @@ static struct
     &level.bd_push_mega_rock_with_sweet,
     NULL, NULL,
     "mega rocks pushable with sweet",	"push mega rocks after eating sweet"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_MAGIC_WALL_WAIT_HATCHING, GADGET_ID_NONE,
+    &level.bd_magic_wall_wait_hatching,
+    NULL, NULL,
+    "wait for player's birth",		"timer start waits for player's birth"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_BD_MAGIC_WALL_STOPS_AMOEBA, GADGET_ID_NONE,
+    &level.bd_magic_wall_stops_amoeba,
+    NULL, NULL,
+    "turn amoeba to diamonds",		"activation changes amoeba to diamonds"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -11128,6 +11148,12 @@ static void DrawPropertiesConfig(void)
 
     MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET);
+  }
+
+  if (properties_element == EL_BD_MAGIC_WALL)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA);
   }
 
   // special case: slippery walls option for gems only available in R'n'D game engine
