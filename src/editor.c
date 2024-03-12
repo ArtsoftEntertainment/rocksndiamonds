@@ -556,6 +556,12 @@ enum
   GADGET_ID_MAGIC_BALL_CONTENT_7,
   GADGET_ID_ANDROID_CONTENT,
   GADGET_ID_AMOEBA_CONTENT,
+  GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG,
+  GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED,
+  GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
+  GADGET_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
+  GADGET_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
+  GADGET_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -710,6 +716,9 @@ enum
   GADGET_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET,
   GADGET_ID_BD_MAGIC_WALL_WAIT_HATCHING,
   GADGET_ID_BD_MAGIC_WALL_STOPS_AMOEBA,
+  GADGET_ID_BD_AMOEBA_WAIT_FOR_HATCHING,
+  GADGET_ID_BD_AMOEBA_START_IMMEDIATELY,
+  GADGET_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1047,6 +1056,9 @@ enum
   ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET,
   ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING,
   ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA,
+  ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING,
+  ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY,
+  ED_CHECKBUTTON_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -1142,6 +1154,12 @@ enum
   ED_DRAWING_ID_MAGIC_BALL_CONTENT_7,
   ED_DRAWING_ID_ANDROID_CONTENT,
   ED_DRAWING_ID_AMOEBA_CONTENT,
+  ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG,
+  ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED,
+  ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
+  ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
+  ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
+  ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -3709,6 +3727,30 @@ static struct
     "turn amoeba to diamonds",		"activation changes amoeba to diamonds"
   },
   {
+    ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_AMOEBA_WAIT_FOR_HATCHING, GADGET_ID_NONE,
+    &level.bd_amoeba_wait_for_hatching,
+    NULL, NULL,
+    "wait for player's birth",		"timer start waits for player's birth"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_BD_AMOEBA_START_IMMEDIATELY, GADGET_ID_NONE,
+    &level.bd_amoeba_start_immediately,
+    NULL, NULL,
+    "start growing immediately",	"start slow growth time immediately"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
+    GADGET_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA, GADGET_ID_NONE,
+    &level.bd_amoeba_2_explode_by_amoeba,
+    NULL, NULL,
+    "explodes if touched by amoeba",	"amoeba 2 explodes if touched by amoeba"
+  },
+  {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_ENVELOPE_AUTOWRAP,	GADGET_ID_NONE,
@@ -4177,6 +4219,60 @@ static struct
     GADGET_ID_AMOEBA_CONTENT,		GADGET_ID_NONE,
     &level.amoeba_content,		1, 1,
     "content:", NULL, NULL, NULL,	"amoeba content"
+  },
+
+  // ---------- BD amoeba content ------------------------------------------------
+
+  {
+    ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(7),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG, GADGET_ID_NONE,
+    &level.bd_amoeba_content_too_big,	1, 1,
+    "if too big, changes to:", NULL, NULL, NULL,	"BD amoeba content if too big"
+  },
+  {
+    ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(8),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED, GADGET_ID_NONE,
+    &level.bd_amoeba_content_enclosed,	1, 1,
+    "if enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba content if enclosed"
+  },
+
+  // ---------- BD amoeba 2 content ------------------------------------------------
+
+  {
+    ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(7),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG, GADGET_ID_NONE,
+    &level.bd_amoeba_2_content_too_big,	1, 1,
+    "if too big, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if too big"
+  },
+  {
+    ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(8),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_2_CONTENT_ENCLOSED, GADGET_ID_NONE,
+    &level.bd_amoeba_2_content_enclosed,	1, 1,
+    "if enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if enclosed"
+  },
+  {
+    ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(10),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_2_CONTENT_EXPLODING, GADGET_ID_NONE,
+    &level.bd_amoeba_2_content_exploding,	1, 1,
+    "if exploding, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if exploding"
+  },
+  {
+    ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(11),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,	GADGET_ID_NONE,
+    &level.bd_amoeba_2_content_looks_like,	1, 1,
+    "use graphic of element:", NULL, NULL, NULL,	"BD amoeba 2 looks like this element"
   },
 
   // ---------- level start element -------------------------------------------
@@ -10695,6 +10791,10 @@ static void DrawPropertiesInfo(void)
 #define TEXT_SLURPING		"Score for slurping robot"
 #define TEXT_CRACKING		"Score for cracking"
 #define TEXT_AMOEBA_SPEED	"Speed of amoeba growth"
+#define TEXT_AMOEBA_THRESHOED	"Size for turning to rocks"
+#define TEXT_AMOEBA_SLOW_TIME	"Slow growth time (seconds)"
+#define TEXT_AMOEBA_SLOW_RATE	"Slow growth rate (percent)"
+#define TEXT_AMOEBA_FAST_RATE	"Fast growth rate (percent)"
 #define TEXT_DURATION		"Duration when activated"
 #define TEXT_DELAY_ON		"Delay before activating"
 #define TEXT_DELAY_OFF		"Delay before deactivating"
@@ -10797,6 +10897,14 @@ static struct
   { EL_AMOEBA_FULL,		&level.amoeba_speed,		TEXT_AMOEBA_SPEED	},
   { EL_BD_AMOEBA,		&level.amoeba_speed,		TEXT_AMOEBA_SPEED	},
   { EL_EMC_DRIPPER,		&level.amoeba_speed,		TEXT_AMOEBA_SPEED	},
+  { EL_BD_AMOEBA,		&level.bd_amoeba_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
+  { EL_BD_AMOEBA,		&level.bd_amoeba_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
+  { EL_BD_AMOEBA,		&level.bd_amoeba_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE	},
+  { EL_BD_AMOEBA,		&level.bd_amoeba_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE	},
+  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
+  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
+  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE	},
+  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE	},
   { EL_MAGIC_WALL,		&level.time_magic_wall,		TEXT_DURATION		},
   { EL_BD_MAGIC_WALL,		&level.time_magic_wall,		TEXT_DURATION		},
   { EL_DC_MAGIC_WALL,		&level.time_magic_wall,		TEXT_DURATION		},
@@ -10967,6 +11075,18 @@ static void DrawPropertiesConfig(void)
 	  level.game_engine_type != GAME_ENGINE_TYPE_BD)
 	continue;
 
+      // special case: some amoeba counters only available in BD game engine
+      if (elements_with_counter[i].element == EL_BD_AMOEBA &&
+	  elements_with_counter[i].value != &level.amoeba_speed &&
+	  level.game_engine_type != GAME_ENGINE_TYPE_BD)
+	continue;
+
+      // special case: some amoeba counters only available in R'n'D game engine
+      if (elements_with_counter[i].element == EL_BD_AMOEBA &&
+	  elements_with_counter[i].value == &level.amoeba_speed &&
+	  level.game_engine_type == GAME_ENGINE_TYPE_BD)
+	continue;
+
       int counter_id = ED_COUNTER_ID_ELEMENT_VALUE1 + num_element_counters;
 
       counterbutton_info[counter_id].y =
@@ -10978,6 +11098,12 @@ static void DrawPropertiesConfig(void)
 		(properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 		num_element_counters);
 
+      // special case: set amoeba counters for BD game engine separately
+      if ((properties_element == EL_BD_AMOEBA && level.game_engine_type == GAME_ENGINE_TYPE_BD) ||
+	  (properties_element == EL_BD_AMOEBA_2))
+	counterbutton_info[counter_id].y =
+	  ED_ELEMENT_SETTINGS_YPOS(3 + num_element_counters);
+
       counterbutton_info[counter_id].value = elements_with_counter[i].value;
       counterbutton_info[counter_id].text_right = elements_with_counter[i].text;
 
@@ -10986,6 +11112,12 @@ static void DrawPropertiesConfig(void)
       {
 	counterbutton_info[counter_id].min_value = 0;	// min neighbours
 	counterbutton_info[counter_id].max_value = 8;	// max neighbours
+      }
+      else if (strEqual(elements_with_counter[i].text, TEXT_AMOEBA_SLOW_RATE) ||
+	       strEqual(elements_with_counter[i].text, TEXT_AMOEBA_FAST_RATE))
+      {
+	counterbutton_info[counter_id].min_value = 0;	// min percent
+	counterbutton_info[counter_id].max_value = 100;	// max percent
       }
       else
       {
@@ -11007,7 +11139,26 @@ static void DrawPropertiesConfig(void)
     // draw stickybutton gadget
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_STICK_ELEMENT);
 
-    if (IS_AMOEBOID(properties_element))
+    if (properties_element == EL_BD_AMOEBA && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    {
+      MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING);
+      MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY);
+
+      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG);
+      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED);
+    }
+    else if (properties_element == EL_BD_AMOEBA_2)
+    {
+      MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING);
+      MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY);
+      MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA);
+
+      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_TOO_BIG);
+      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_ENCLOSED);
+      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_EXPLODING);
+      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE);
+    }
+    else if (IS_AMOEBOID(properties_element))
       MapDrawingArea(ED_DRAWING_ID_AMOEBA_CONTENT);
     else if (properties_element == EL_YAMYAM ||
 	     properties_element == EL_YAMYAM_LEFT ||
@@ -11194,7 +11345,7 @@ static void DrawPropertiesConfig(void)
       properties_element == EL_BIOMAZE)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_LIFE_BUGS);
 
-  if (CAN_GROW(properties_element))
+  if (CAN_GROW(properties_element) && level.game_engine_type != GAME_ENGINE_TYPE_BD)
   {
     checkbutton_info[ED_CHECKBUTTON_ID_GROW_INTO_DIGGABLE].y =
       ED_ELEMENT_SETTINGS_YPOS(HAS_EDITOR_CONTENT(properties_element) ? 1 : 0);

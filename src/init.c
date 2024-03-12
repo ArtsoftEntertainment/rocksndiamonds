@@ -4278,6 +4278,7 @@ void InitElementPropertiesStatic(void)
     EL_AMOEBA_DRY,
     EL_AMOEBA_FULL,
     EL_BD_AMOEBA,
+    EL_BD_AMOEBA_2,
     EL_EMC_MAGIC_BALL,
     EL_EMC_ANDROID,
     EL_MM_GRAY_BALL,

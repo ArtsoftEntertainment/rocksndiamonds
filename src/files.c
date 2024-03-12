@@ -602,6 +602,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   // (these values are only valid for BD style levels)
+  // (some values for BD style amoeba following below)
   {
     EL_BD_PLAYER,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
@@ -707,6 +708,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.score[SC_CRYSTAL],		10
   },
 
+  // (amoeba values used by R'n'D game engine only)
   {
     EL_BD_AMOEBA,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
@@ -721,6 +723,93 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     EL_BD_AMOEBA,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.grow_into_diggable,		TRUE
+  },
+  // (amoeba values used by BD game engine only)
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    &li.bd_amoeba_wait_for_hatching,	FALSE
+  },
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
+    &li.bd_amoeba_start_immediately,	TRUE
+  },
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
+    &li.bd_amoeba_2_explode_by_amoeba,	TRUE
+  },
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(3),
+    &li.bd_amoeba_threshold_too_big,	200
+  },
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(4),
+    &li.bd_amoeba_slow_growth_time,	200
+  },
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(5),
+    &li.bd_amoeba_slow_growth_rate,	3
+  },
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(6),
+    &li.bd_amoeba_fast_growth_rate,	25
+  },
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
+    &li.bd_amoeba_content_too_big,	EL_BD_ROCK
+  },
+  {
+    EL_BD_AMOEBA,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
+    &li.bd_amoeba_content_enclosed,	EL_BD_DIAMOND
+  },
+
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(3),
+    &li.bd_amoeba_2_threshold_too_big,	200
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(4),
+    &li.bd_amoeba_2_slow_growth_time,	200
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(5),
+    &li.bd_amoeba_2_slow_growth_rate,	3
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(6),
+    &li.bd_amoeba_2_fast_growth_rate,	25
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
+    &li.bd_amoeba_2_content_too_big,	EL_BD_ROCK
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
+    &li.bd_amoeba_2_content_enclosed,	EL_BD_DIAMOND
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
+    &li.bd_amoeba_2_content_exploding,	EL_EMPTY
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(8),
+    &li.bd_amoeba_2_content_looks_like,	EL_BD_AMOEBA_2
   },
 
   {
@@ -3810,6 +3899,24 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->level_magic_wall_time[0]	= level->time_magic_wall;
   cave->magic_timer_wait_for_hatching	= level->bd_magic_wall_wait_hatching;
   cave->magic_wall_stops_amoeba		= level->bd_magic_wall_stops_amoeba;
+  cave->amoeba_timer_wait_for_hatching	= level->bd_amoeba_wait_for_hatching;
+  cave->amoeba_timer_started_immediately= level->bd_amoeba_start_immediately;
+  cave->amoeba_2_explodes_by_amoeba	= level->bd_amoeba_2_explode_by_amoeba;
+  cave->level_amoeba_threshold[0]	= level->bd_amoeba_threshold_too_big;
+  cave->level_amoeba_time[0]		= level->bd_amoeba_slow_growth_time;
+  cave->amoeba_growth_prob		= level->bd_amoeba_slow_growth_rate * 10000;
+  cave->amoeba_fast_growth_prob		= level->bd_amoeba_fast_growth_rate * 10000;
+  cave->level_amoeba_2_threshold[0]	= level->bd_amoeba_2_threshold_too_big;
+  cave->level_amoeba_2_time[0]		= level->bd_amoeba_2_slow_growth_time;
+  cave->amoeba_2_growth_prob		= level->bd_amoeba_2_slow_growth_rate * 10000;
+  cave->amoeba_2_fast_growth_prob	= level->bd_amoeba_2_fast_growth_rate * 10000;
+
+  cave->amoeba_too_big_effect	    = map_element_RND_to_BD(level->bd_amoeba_content_too_big);
+  cave->amoeba_enclosed_effect	    = map_element_RND_to_BD(level->bd_amoeba_content_enclosed);
+  cave->amoeba_2_too_big_effect     = map_element_RND_to_BD(level->bd_amoeba_2_content_too_big);
+  cave->amoeba_2_enclosed_effect    = map_element_RND_to_BD(level->bd_amoeba_2_content_enclosed);
+  cave->amoeba_2_explosion_effect   = map_element_RND_to_BD(level->bd_amoeba_2_content_exploding);
+  cave->amoeba_2_looks_like	    = map_element_RND_to_BD(level->bd_amoeba_2_content_looks_like);
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -3868,6 +3975,24 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
   level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
   level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
+  level->bd_amoeba_wait_for_hatching	= cave->amoeba_timer_wait_for_hatching;
+  level->bd_amoeba_start_immediately	= cave->amoeba_timer_started_immediately;
+  level->bd_amoeba_2_explode_by_amoeba	= cave->amoeba_2_explodes_by_amoeba;
+  level->bd_amoeba_threshold_too_big	= cave->level_amoeba_threshold[0];
+  level->bd_amoeba_slow_growth_time	= cave->level_amoeba_time[0];
+  level->bd_amoeba_slow_growth_rate	= cave->amoeba_growth_prob      / 10000;
+  level->bd_amoeba_fast_growth_rate	= cave->amoeba_fast_growth_prob / 10000;
+  level->bd_amoeba_2_threshold_too_big	= cave->level_amoeba_2_threshold[0];
+  level->bd_amoeba_2_slow_growth_time	= cave->level_amoeba_2_time[0];
+  level->bd_amoeba_2_slow_growth_rate	= cave->amoeba_2_growth_prob      / 10000;
+  level->bd_amoeba_2_fast_growth_rate	= cave->amoeba_2_fast_growth_prob / 10000;
+
+  level->bd_amoeba_content_too_big	= map_element_BD_to_RND(cave->amoeba_too_big_effect);
+  level->bd_amoeba_content_enclosed	= map_element_BD_to_RND(cave->amoeba_enclosed_effect);
+  level->bd_amoeba_2_content_too_big	= map_element_BD_to_RND(cave->amoeba_2_too_big_effect);
+  level->bd_amoeba_2_content_enclosed	= map_element_BD_to_RND(cave->amoeba_2_enclosed_effect);
+  level->bd_amoeba_2_content_exploding	= map_element_BD_to_RND(cave->amoeba_2_explosion_effect);
+  level->bd_amoeba_2_content_looks_like	= map_element_BD_to_RND(cave->amoeba_2_looks_like);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

@@ -3498,6 +3498,23 @@ struct LevelInfo
   boolean bd_push_mega_rock_with_sweet;	// BD player can push mega rocks after eating sweet
   boolean bd_magic_wall_wait_hatching;	// BD magic wall waits for player's birth
   boolean bd_magic_wall_stops_amoeba;	// BD magic wall turns amoeba to diamonds
+  boolean bd_amoeba_wait_for_hatching;	// BD amoeba waits for player's birth
+  boolean bd_amoeba_start_immediately;	// BD amoeba growth starts immediately
+  boolean bd_amoeba_2_explode_by_amoeba;// BD amoeba 2 explodes if touched by BD amoeba
+  int bd_amoeba_threshold_too_big;	// BD amoeba turns to stones if threshold reached
+  int bd_amoeba_slow_growth_time;	// BD amoeba slow growth time (in seconds)
+  int bd_amoeba_slow_growth_rate;	// BD amoeba slow growth rate (in percent)
+  int bd_amoeba_fast_growth_rate;	// BD amoeba fast growth rate (in percent)
+  int bd_amoeba_content_too_big;	// BD amoeba changes to this element if too big
+  int bd_amoeba_content_enclosed;	// BD amoeba changes to this element if enclosed
+  int bd_amoeba_2_threshold_too_big;	// BD amoeba 2 turns to stones if threshold reached
+  int bd_amoeba_2_slow_growth_time;	// BD amoeba 2 slow growth time (in seconds)
+  int bd_amoeba_2_slow_growth_rate;	// BD amoeba 2 slow growth rate (in percent)
+  int bd_amoeba_2_fast_growth_rate;	// BD amoeba 2 fast growth rate (in percent)
+  int bd_amoeba_2_content_too_big;	// BD amoeba 2 changes to this element if too big
+  int bd_amoeba_2_content_enclosed;	// BD amoeba 2 changes to this element if enclosed
+  int bd_amoeba_2_content_exploding;	// BD amoeba 2 changes to this element if exploding
+  int bd_amoeba_2_content_looks_like;	// BD amoeba 2 looks like this other game element
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean use_spring_bug;		// for compatibility with old levels
