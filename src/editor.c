@@ -6406,7 +6406,7 @@ static int getTextWidthForDrawingArea(char *text)
   if (text == NULL)
     return 0;
 
-  return (getTextWidth(text, FONT_TEXT_1) + ED_DRAWINGAREA_TEXT_DISTANCE);
+  return (getTextWidth(text, FONT_TEXT_1) + ED_DRAWINGAREA_BORDER_SIZE);
 }
 
 static int getRightGadgetBorder(struct GadgetInfo *gi, char *text)
@@ -8313,7 +8313,7 @@ static void MapDrawingArea(int id)
   int area_ysize = gi->drawing.area_ysize;
   int xoffset_left = getTextWidthForDrawingArea(drawingarea_info[id].text_left);
   int xoffset_below = getTextWidth(drawingarea_info[id].text_below, font_nr);
-  int x_left  = gi->x - xoffset_left;
+  int x_left  = gi->x - xoffset_left - ED_DRAWINGAREA_BORDER_SIZE;
   int x_right = gi->x + gi->width + ED_DRAWINGAREA_TEXT_DISTANCE;
   int x_above = gi->x - ED_DRAWINGAREA_BORDER_SIZE;
   int x_below = gi->x + (gi->width - xoffset_below) / 2;
