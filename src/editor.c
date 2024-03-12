@@ -8250,9 +8250,12 @@ static void MapCounterButtons(int id)
   ModifyEditorCounterValue(id, *counterbutton_info[id].value);
 
   // set position for counter gadgets with dynamically determined position
-  ModifyGadget(gi_down, GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
-  ModifyGadget(gi_text, GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
-  ModifyGadget(gi_up,   GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
+  if (id != ED_COUNTER_ID_SELECT_LEVEL)
+  {
+    ModifyGadget(gi_down, GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
+    ModifyGadget(gi_text, GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
+    ModifyGadget(gi_up,   GDI_Y, SY + ED_SETTINGS_Y(counterbutton_info[id].y), GDI_END);
+  }
 
   // vertical position might have changed after setting position above
   y = gi_up->y + yoffset;
