@@ -2455,8 +2455,7 @@ boolean HandleGadgetsKeyInput(Key key)
     int cursor_pos = gi->textinput.cursor_position;
     char letter = getCharFromKey(key);
     boolean legal_letter = (gi->type == GD_TYPE_TEXT_INPUT_NUMERIC ?
-			    letter >= '0' && letter <= '9' :
-			    letter != 0);
+			    (letter >= '0' && letter <= '9') || letter == '-' : letter != 0);
 
     if (legal_letter && text_length < gi->textinput.size)
     {
