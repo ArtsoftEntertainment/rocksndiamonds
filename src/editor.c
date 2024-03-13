@@ -11043,8 +11043,7 @@ static void DrawPropertiesConfig(void)
     int xpos = ED_ELEMENT_SETTINGS_X(0);
     int ypos = ED_ELEMENT_SETTINGS_Y(0) + ED_GADGET_SMALL_DISTANCE;
 
-    PrintInfoText("No configuration options available.",
-		  FONT_TEXT_1, xpos, ypos);
+    PrintInfoText("No configuration options available.", FONT_TEXT_1, xpos, ypos);
 
     return;
   }
@@ -11052,58 +11051,56 @@ static void DrawPropertiesConfig(void)
   // check if there are elements where a value can be chosen for
   for (i = 0; elements_with_counter[i].element != -1; i++)
   {
-    if (elements_with_counter[i].element == properties_element)
-    {
-      // special case: score for extra diamonds only available in BD game engine
-      if (elements_with_counter[i].element == EL_BD_DIAMOND &&
-	  elements_with_counter[i].value == &level.score[SC_DIAMOND_EXTRA] &&
-	  level.game_engine_type != GAME_ENGINE_TYPE_BD)
-	continue;
+    if (elements_with_counter[i].element != properties_element)
+      continue;
 
-      // special case: some amoeba counters only available in BD game engine
-      if (elements_with_counter[i].element == EL_BD_AMOEBA &&
-	  elements_with_counter[i].value != &level.amoeba_speed &&
-	  level.game_engine_type != GAME_ENGINE_TYPE_BD)
-	continue;
+    // special case: score for extra diamonds only available in BD game engine
+    if (elements_with_counter[i].element == EL_BD_DIAMOND &&
+	elements_with_counter[i].value == &level.score[SC_DIAMOND_EXTRA] &&
+	level.game_engine_type != GAME_ENGINE_TYPE_BD)
+      continue;
 
-      // special case: some amoeba counters only available in R'n'D game engine
-      if (elements_with_counter[i].element == EL_BD_AMOEBA &&
-	  elements_with_counter[i].value == &level.amoeba_speed &&
-	  level.game_engine_type == GAME_ENGINE_TYPE_BD)
-	continue;
+    // special case: some amoeba counters only available in BD game engine
+    if (elements_with_counter[i].element == EL_BD_AMOEBA &&
+	elements_with_counter[i].value != &level.amoeba_speed &&
+	level.game_engine_type != GAME_ENGINE_TYPE_BD)
+      continue;
 
-      int counter_id = ED_COUNTER_ID_ELEMENT_VALUE1 + num_element_counters;
+    // special case: some amoeba counters only available in R'n'D game engine
+    if (elements_with_counter[i].element == EL_BD_AMOEBA &&
+	elements_with_counter[i].value == &level.amoeba_speed &&
+	level.game_engine_type == GAME_ENGINE_TYPE_BD)
+      continue;
 
-      counterbutton_info[counter_id].y =
-	ED_ELEMENT_SETTINGS_YPOS(
-		(HAS_EDITOR_CONTENT(properties_element)      ? 1 : 0) +
-		(CAN_GROW(properties_element)                ? 1 : 0) +
-		(COULD_MOVE_INTO_ACID(properties_element)    ? 1 : 0) +
-		(MAYBE_DONT_COLLIDE_WITH(properties_element) ? 1 : 0) +
-		(properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
-		num_element_counters);
+    int counter_id = ED_COUNTER_ID_ELEMENT_VALUE1 + num_element_counters;
 
-      // special case: set amoeba counters for BD game engine separately
-      if ((properties_element == EL_BD_AMOEBA && level.game_engine_type == GAME_ENGINE_TYPE_BD) ||
-	  (properties_element == EL_BD_AMOEBA_2))
-	counterbutton_info[counter_id].y =
-	  ED_ELEMENT_SETTINGS_YPOS(3 + num_element_counters);
+    counterbutton_info[counter_id].y =
+      ED_ELEMENT_SETTINGS_YPOS((HAS_EDITOR_CONTENT(properties_element)      ? 1 : 0) +
+			       (CAN_GROW(properties_element)                ? 1 : 0) +
+			       (COULD_MOVE_INTO_ACID(properties_element)    ? 1 : 0) +
+			       (MAYBE_DONT_COLLIDE_WITH(properties_element) ? 1 : 0) +
+			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
+			       num_element_counters);
 
-      counterbutton_info[counter_id].value      = elements_with_counter[i].value;
-      counterbutton_info[counter_id].text_right = elements_with_counter[i].text;
-      counterbutton_info[counter_id].min_value  = elements_with_counter[i].min_value;
-      counterbutton_info[counter_id].max_value  = elements_with_counter[i].max_value;
+    // special case: set amoeba counters for BD game engine separately
+    if ((properties_element == EL_BD_AMOEBA && level.game_engine_type == GAME_ENGINE_TYPE_BD) ||
+	(properties_element == EL_BD_AMOEBA_2))
+      counterbutton_info[counter_id].y = ED_ELEMENT_SETTINGS_YPOS(3 + num_element_counters);
 
-      // default: counter values between 0 and 999
-      if (counterbutton_info[counter_id].max_value == 0)
-	counterbutton_info[counter_id].max_value = 999;
+    counterbutton_info[counter_id].value      = elements_with_counter[i].value;
+    counterbutton_info[counter_id].text_right = elements_with_counter[i].text;
+    counterbutton_info[counter_id].min_value  = elements_with_counter[i].min_value;
+    counterbutton_info[counter_id].max_value  = elements_with_counter[i].max_value;
 
-      MapCounterButtons(counter_id);
+    // default: counter values between 0 and 999
+    if (counterbutton_info[counter_id].max_value == 0)
+      counterbutton_info[counter_id].max_value = 999;
 
-      num_element_counters++;
-      if (num_element_counters >= max_num_element_counters)
-	break;
-    }
+    MapCounterButtons(counter_id);
+
+    num_element_counters++;
+    if (num_element_counters >= max_num_element_counters)
+      break;
   }
 
   if (HAS_EDITOR_CONTENT(properties_element))
