@@ -10793,6 +10793,8 @@ static struct
   int element;
   int *value;
   char *text;
+  int min_value;
+  int max_value;
 } elements_with_counter[] =
 {
   { EL_EMERALD,			&level.score[SC_EMERALD],		TEXT_COLLECTING		},
@@ -10877,12 +10879,16 @@ static struct
   { EL_EMC_DRIPPER,		&level.amoeba_speed,			TEXT_AMOEBA_SPEED	},
   { EL_BD_AMOEBA,		&level.bd_amoeba_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
   { EL_BD_AMOEBA,		&level.bd_amoeba_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
-  { EL_BD_AMOEBA,		&level.bd_amoeba_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE	},
-  { EL_BD_AMOEBA,		&level.bd_amoeba_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE	},
+  { EL_BD_AMOEBA,		&level.bd_amoeba_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
+				0, 100								},
+  { EL_BD_AMOEBA,		&level.bd_amoeba_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
+				0, 100								},
   { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
   { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
-  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE	},
-  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE	},
+  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
+				0, 100								},
+  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
+				0, 100								},
   { EL_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
   { EL_BD_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
   { EL_DC_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
@@ -10896,14 +10902,14 @@ static struct
   { EL_BD_CLOCK,		&level.bd_clock_extra_time,		TEXT_TIME_BONUS		},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
-  { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1	},
-  { EL_GAME_OF_LIFE,		&level.game_of_life[1],			TEXT_GAME_OF_LIFE_2	},
-  { EL_GAME_OF_LIFE,		&level.game_of_life[2],			TEXT_GAME_OF_LIFE_3	},
-  { EL_GAME_OF_LIFE,		&level.game_of_life[3],			TEXT_GAME_OF_LIFE_4	},
-  { EL_BIOMAZE,			&level.biomaze[0],			TEXT_GAME_OF_LIFE_1	},
-  { EL_BIOMAZE,			&level.biomaze[1],			TEXT_GAME_OF_LIFE_2	},
-  { EL_BIOMAZE,			&level.biomaze[2],			TEXT_GAME_OF_LIFE_3	},
-  { EL_BIOMAZE,			&level.biomaze[3],			TEXT_GAME_OF_LIFE_4	},
+  { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
+  { EL_GAME_OF_LIFE,		&level.game_of_life[1],			TEXT_GAME_OF_LIFE_2,0,8	},
+  { EL_GAME_OF_LIFE,		&level.game_of_life[2],			TEXT_GAME_OF_LIFE_3,0,8	},
+  { EL_GAME_OF_LIFE,		&level.game_of_life[3],			TEXT_GAME_OF_LIFE_4,0,8	},
+  { EL_BIOMAZE,			&level.biomaze[0],			TEXT_GAME_OF_LIFE_1,0,8	},
+  { EL_BIOMAZE,			&level.biomaze[1],			TEXT_GAME_OF_LIFE_2,0,8	},
+  { EL_BIOMAZE,			&level.biomaze[2],			TEXT_GAME_OF_LIFE_3,0,8	},
+  { EL_BIOMAZE,			&level.biomaze[3],			TEXT_GAME_OF_LIFE_4,0,8	},
   { EL_EMC_ANDROID,		&level.android_move_time,		TEXT_MOVE_SPEED		},
   { EL_EMC_ANDROID,		&level.android_clone_time,		TEXT_CLONE_SPEED	},
   { EL_EMC_MAGIC_BALL,		&level.ball_time,			TEXT_BALL_DELAY		},
@@ -11083,27 +11089,14 @@ static void DrawPropertiesConfig(void)
 	counterbutton_info[counter_id].y =
 	  ED_ELEMENT_SETTINGS_YPOS(3 + num_element_counters);
 
-      counterbutton_info[counter_id].value = elements_with_counter[i].value;
+      counterbutton_info[counter_id].value      = elements_with_counter[i].value;
       counterbutton_info[counter_id].text_right = elements_with_counter[i].text;
+      counterbutton_info[counter_id].min_value  = elements_with_counter[i].min_value;
+      counterbutton_info[counter_id].max_value  = elements_with_counter[i].max_value;
 
-      if (properties_element == EL_GAME_OF_LIFE ||
-	  properties_element == EL_BIOMAZE)
-      {
-	counterbutton_info[counter_id].min_value = 0;	// min neighbours
-	counterbutton_info[counter_id].max_value = 8;	// max neighbours
-      }
-      else if (strEqual(elements_with_counter[i].text, TEXT_AMOEBA_SLOW_RATE) ||
-	       strEqual(elements_with_counter[i].text, TEXT_AMOEBA_FAST_RATE))
-      {
-	counterbutton_info[counter_id].min_value = 0;	// min percent
-	counterbutton_info[counter_id].max_value = 100;	// max percent
-      }
-      else
-      {
-	// !!! CHANGE THIS FOR CERTAIN ELEMENTS !!!
-	counterbutton_info[counter_id].min_value = MIN_SCORE;
-	counterbutton_info[counter_id].max_value = MAX_SCORE;
-      }
+      // default: counter values between 0 and 999
+      if (counterbutton_info[counter_id].max_value == 0)
+	counterbutton_info[counter_id].max_value = 999;
 
       MapCounterButtons(counter_id);
 
