@@ -10893,6 +10893,7 @@ static struct
   { EL_LIGHT_SWITCH_ACTIVE,	&level.time_light,		TEXT_DURATION		},
   { EL_SHIELD_NORMAL,		&level.shield_normal_time,	TEXT_DURATION		},
   { EL_SHIELD_DEADLY,		&level.shield_deadly_time,	TEXT_DURATION		},
+  { EL_BD_CLOCK,		&level.bd_clock_extra_time,	TEXT_TIME_BONUS		},
   { EL_EXTRA_TIME,		&level.extra_time,		TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,		TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],		TEXT_GAME_OF_LIFE_1	},

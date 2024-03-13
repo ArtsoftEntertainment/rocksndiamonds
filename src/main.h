@@ -3515,6 +3515,7 @@ struct LevelInfo
   int bd_amoeba_2_content_enclosed;	// BD amoeba 2 changes to this element if enclosed
   int bd_amoeba_2_content_exploding;	// BD amoeba 2 changes to this element if exploding
   int bd_amoeba_2_content_looks_like;	// BD amoeba 2 looks like this other game element
+  int bd_clock_extra_time;		// BD engine extra time when collecting clock
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean use_spring_bug;		// for compatibility with old levels

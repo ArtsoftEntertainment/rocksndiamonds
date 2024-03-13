@@ -646,6 +646,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_magic_wall_stops_amoeba,	TRUE
   },
 
+  {
+    EL_BD_CLOCK,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
+    &li.bd_clock_extra_time,		30
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -3896,6 +3902,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->mega_stones_pushable_with_sweet	= level->bd_push_mega_rock_with_sweet;
 
   // element properties
+  cave->level_bonus_time[0]		= level->bd_clock_extra_time;
   cave->level_magic_wall_time[0]	= level->time_magic_wall;
   cave->magic_timer_wait_for_hatching	= level->bd_magic_wall_wait_hatching;
   cave->magic_wall_stops_amoeba		= level->bd_magic_wall_stops_amoeba;
@@ -3972,6 +3979,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_push_mega_rock_with_sweet	= cave->mega_stones_pushable_with_sweet;
 
   // element properties
+  level->bd_clock_extra_time		= cave->level_bonus_time[0];
   level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
   level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
   level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
