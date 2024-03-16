@@ -719,6 +719,10 @@ enum
   GADGET_ID_BD_AMOEBA_WAIT_FOR_HATCHING,
   GADGET_ID_BD_AMOEBA_START_IMMEDIATELY,
   GADGET_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA,
+  GADGET_ID_BD_VOODOO_COLLECTS_DIAMONDS,
+  GADGET_ID_BD_VOODOO_HURT_KILLS_PLAYER,
+  GADGET_ID_BD_VOODOO_DIES_BY_ROCK,
+  GADGET_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1059,6 +1063,10 @@ enum
   ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING,
   ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY,
   ED_CHECKBUTTON_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA,
+  ED_CHECKBUTTON_ID_BD_VOODOO_COLLECTS_DIAMONDS,
+  ED_CHECKBUTTON_ID_BD_VOODOO_HURT_KILLS_PLAYER,
+  ED_CHECKBUTTON_ID_BD_VOODOO_DIES_BY_ROCK,
+  ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3749,6 +3757,38 @@ static struct
     &level.bd_amoeba_2_explode_by_amoeba,
     NULL, NULL,
     "explodes if touched by amoeba",	"amoeba 2 explodes if touched by amoeba"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_VOODOO_COLLECTS_DIAMONDS,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_VOODOO_COLLECTS_DIAMONDS, GADGET_ID_NONE,
+    &level.bd_voodoo_collects_diamonds,
+    NULL, NULL,
+    "can collect diamonds",		"can collect diamonds for the player"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_VOODOO_HURT_KILLS_PLAYER,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_VOODOO_HURT_KILLS_PLAYER, GADGET_ID_NONE,
+    &level.bd_voodoo_hurt_kills_player,
+    NULL, NULL,
+    "player is killed if hurt",		"if hurt in any way, player is killed"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_VOODOO_DIES_BY_ROCK,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_BD_VOODOO_DIES_BY_ROCK,	GADGET_ID_NONE,
+    &level.bd_voodoo_dies_by_rock,
+    NULL, NULL,
+    "killed by falling rock",		"can be killed by a falling rock"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_BD_VOODOO_VANISH_BY_EXPLOSION, GADGET_ID_NONE,
+    &level.bd_voodoo_vanish_by_explosion,
+    NULL, NULL,
+    "disappears in explosions",		"can be destroyed by explosions"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -10787,6 +10827,7 @@ static void DrawPropertiesInfo(void)
 #define TEXT_GAME_OF_LIFE_3	"Min neighbours to create"
 #define TEXT_GAME_OF_LIFE_4	"Max neighbours to create"
 #define TEXT_TIME_BONUS		"Extra time to solve level"
+#define TEXT_TIME_PENALTY	"Time penalty if destroyed"
 
 static struct
 {
@@ -10901,6 +10942,8 @@ static struct
   { EL_SHIELD_DEADLY,		&level.shield_deadly_time,		TEXT_DURATION		},
   { EL_BD_CLOCK,		&level.bd_clock_extra_time,		TEXT_TIME_BONUS,
 				-100, 100							},
+  { EL_BD_VOODOO_DOLL,		&level.bd_voodoo_penalty_time,		TEXT_TIME_PENALTY,
+				0, 100								},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
@@ -10960,7 +11003,8 @@ static boolean checkPropertiesConfig(int element)
       MAYBE_DONT_COLLIDE_WITH(element) ||
       element == EL_BD_ROCK ||
       element == EL_BD_MEGA_ROCK ||
-      element == EL_BD_SWEET)
+      element == EL_BD_SWEET ||
+      element == EL_BD_VOODOO_DOLL)
   {
     return TRUE;
   }
@@ -11080,6 +11124,7 @@ static void DrawPropertiesConfig(void)
 			       (CAN_GROW(properties_element)                ? 1 : 0) +
 			       (COULD_MOVE_INTO_ACID(properties_element)    ? 1 : 0) +
 			       (MAYBE_DONT_COLLIDE_WITH(properties_element) ? 1 : 0) +
+			       (properties_element == EL_BD_VOODOO_DOLL     ? 4 : 0) +
 			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 			       num_element_counters);
 
@@ -11269,6 +11314,14 @@ static void DrawPropertiesConfig(void)
 
     MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET);
+  }
+
+  if (properties_element == EL_BD_VOODOO_DOLL)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_COLLECTS_DIAMONDS);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_HURT_KILLS_PLAYER);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_DIES_BY_ROCK);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION);
   }
 
   if (properties_element == EL_BD_MAGIC_WALL)

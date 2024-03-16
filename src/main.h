@@ -3516,6 +3516,11 @@ struct LevelInfo
   int bd_amoeba_2_content_exploding;	// BD amoeba 2 changes to this element if exploding
   int bd_amoeba_2_content_looks_like;	// BD amoeba 2 looks like this other game element
   int bd_clock_extra_time;		// BD engine extra time when collecting clock
+  boolean bd_voodoo_collects_diamonds;	// BD voodoo doll can collect diamonds for the player
+  boolean bd_voodoo_hurt_kills_player;	// BD voodoo doll hurt in any way, player is killed
+  boolean bd_voodoo_dies_by_rock;	// BD voodoo doll can be killed by a falling rock
+  boolean bd_voodoo_vanish_by_explosion;// BD voodoo doll can be destroyed by explosions
+  int bd_voodoo_penalty_time;		// BD engine penalty time when voodoo doll destroyed
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean use_spring_bug;		// for compatibility with old levels
