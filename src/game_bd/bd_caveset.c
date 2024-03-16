@@ -118,7 +118,7 @@ void gd_caveset_clear(void)
 
   if (gd_caveset_data)
   {
-    free(gd_caveset_data);
+    gd_caveset_data_free(gd_caveset_data);
     gd_caveset_data = NULL;
   }
 
