@@ -45,6 +45,8 @@ typedef struct _gd_caveset_data
 
   // and this one the highscores
   GdHighScore highscore[GD_HIGHSCORE_NUM];
+
+  char *levelset_subdir;	// current level set identifier
 } GdCavesetData;
 
 extern const GdStructDescriptor gd_caveset_properties[];

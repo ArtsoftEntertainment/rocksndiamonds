@@ -87,6 +87,8 @@ GdCavesetData *gd_caveset_data_new(void)
 
   gd_struct_set_defaults_from_array(data, gd_caveset_properties, caveset_defaults);
 
+  data->levelset_subdir = getStringCopy(leveldir_current->subdir);
+
   return data;
 }
 
@@ -99,7 +101,9 @@ void gd_caveset_data_free(GdCavesetData *data)
     if (gd_caveset_properties[i].type == GD_TYPE_LONGSTRING)
       checked_free(STRUCT_MEMBER(char *, data, gd_caveset_properties[i].offset));
 
-  free(data);
+  checked_free(data->levelset_subdir);
+
+  checked_free(data);
 }
 
 // ============================================================================
