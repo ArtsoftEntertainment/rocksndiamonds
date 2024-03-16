@@ -44,6 +44,9 @@ static Bitmap *gd_tile_bitmap = NULL;
 // pointer to reference tile bitmap (without level-specific colors)
 static Bitmap *gd_tile_bitmap_reference = NULL;
 
+// optional title screen bitmap
+static Bitmap *gd_title_screen_bitmap = NULL;
+
 // screen area
 Bitmap *gd_screen_bitmap = NULL;
 
@@ -738,4 +741,114 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
   }
 
   return 0;
+}
+
+static SDL_Surface *get_surface_from_raw_data(const unsigned char *data, int size)
+{
+  SDL_RWops *rwop = SDL_RWFromConstMem(data, size);
+  SDL_Surface *surface = IMG_Load_RW(rwop, 1);	// 1 = automatically closes rwop
+
+  return surface;
+}
+
+static SDL_Surface *get_surface_from_base64(const char *base64_data)
+{
+  int decoded_data_size = base64_decoded_size(base64_data);
+  unsigned char *decoded_data = checked_malloc(decoded_data_size);
+
+  base64_decode(decoded_data, base64_data);
+
+  SDL_Surface *surface = get_surface_from_raw_data(decoded_data, decoded_data_size);
+
+  checked_free(decoded_data);
+
+  return surface;
+}
+
+static SDL_Surface *get_title_screen_surface(void)
+{
+  if (gd_caveset_data == NULL || gd_caveset_data->title_screen == NULL)
+    return NULL;
+
+  SDL_Surface *surface = get_surface_from_base64(gd_caveset_data->title_screen);
+
+  if (surface == NULL)
+    return NULL;
+
+  // create target surface
+  SDL_Surface *target = SDL_CreateRGBSurface(0, surface->w, surface->h, 32, 0, 0, 0, 0);
+
+  // check for transparency and background tile
+  if (surface->format->Amask != 0 && gd_caveset_data->title_screen_scroll != NULL)
+  {
+    SDL_Surface *tile = get_surface_from_base64(gd_caveset_data->title_screen_scroll);
+
+    if (tile != NULL)
+    {
+      int x, y;
+
+      // create background surface
+      SDL_Surface *back = SDL_CreateRGBSurface(0, surface->w, surface->h, 32, 0, 0, 0, 0);
+
+      // fill background surface with tile
+      for (y = 0; y < surface->h; y += tile->h)
+        for (x = 0; x < surface->w; x += tile->w)
+	  SDLBlitSurface(tile, back, 0, 0, tile->w, tile->h, x, y);
+
+      // copy masked screen over background surface
+      SDLBlitSurface(back, target, 0, 0, surface->w, surface->h, 0, 0);
+
+      // free temporary surfaces
+      SDL_FreeSurface(tile);
+      SDL_FreeSurface(back);
+    }
+  }
+
+  SDLBlitSurface(surface, target, 0, 0, surface->w, surface->h, 0, 0);
+
+  SDL_FreeSurface(surface);
+
+  return target;
+}
+
+static void set_title_screen_bitmap(void)
+{
+  if (gd_title_screen_bitmap != NULL)
+    FreeBitmap(gd_title_screen_bitmap);
+
+  gd_title_screen_bitmap = NULL;
+
+  SDL_Surface *surface = get_title_screen_surface();
+
+  if (surface == NULL)
+    return;
+
+  int width_scaled  = surface->w * 2;
+  int height_scaled = surface->h * 2;
+  SDL_Surface *surface_scaled = SDLZoomSurface(surface, width_scaled, height_scaled);
+
+  gd_title_screen_bitmap = SDLGetBitmapFromSurface(surface_scaled);
+
+  SDL_FreeSurface(surface);
+  SDL_FreeSurface(surface_scaled);
+}
+
+Bitmap *gd_get_title_screen_bitmap(void)
+{
+  static char *levelset_subdir_last = NULL;
+
+  if (gd_caveset_data == NULL || gd_caveset_data->title_screen == NULL)
+    return NULL;
+
+  // check if stored cave set is used as current level set (may be outdated)
+  if (!strEqual(gd_caveset_data->levelset_subdir, leveldir_current->subdir))
+    return NULL;
+
+  // check if stored cave set has changed
+  if (!strEqual(gd_caveset_data->levelset_subdir, levelset_subdir_last))
+    set_title_screen_bitmap();
+
+  setString(&levelset_subdir_last, gd_caveset_data->levelset_subdir);
+
+  return gd_title_screen_bitmap;
 }
