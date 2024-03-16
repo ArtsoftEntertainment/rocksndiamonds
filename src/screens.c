@@ -1785,6 +1785,15 @@ void DrawMainMenu(void)
   // store first level of this level set for "level_nr" style animations
   SetAnimationFirstLevel(leveldir_current->first_level);
 
+  // level_nr may have been set to value over handicap with level editor
+  if (setup.handicap && level_nr > leveldir_current->handicap_level)
+    level_nr = leveldir_current->handicap_level;
+
+  LoadLevel(level_nr);
+  LoadScore(level_nr);
+
+  SaveLevelSetup_SeriesInfo();
+
   // needed if last screen (level choice) changed graphics, sounds or music
   ReloadCustomArtwork(0);
 
@@ -1809,15 +1818,6 @@ void DrawMainMenu(void)
   ChangeViewportPropertiesIfNeeded();
 
   SetDrawtoField(DRAW_TO_BACKBUFFER);
-
-  // level_nr may have been set to value over handicap with level editor
-  if (setup.handicap && level_nr > leveldir_current->handicap_level)
-    level_nr = leveldir_current->handicap_level;
-
-  LoadLevel(level_nr);
-  LoadScore(level_nr);
-
-  SaveLevelSetup_SeriesInfo();
 
   // set this after "ChangeViewportPropertiesIfNeeded()" (which may reset it)
   SetDrawDeactivationMask(REDRAW_NONE);
