@@ -67,8 +67,25 @@
 				 (c) == FONT_ASCII_DOWN	     ? 111 :	\
 				 (c))
 
+#define MAP_FONT_ASCII_EXT(c)	((c) == CHAR_BYTE_COPYRIGHT  ? 128 :	\
+				 (c) == CHAR_BYTE_UMLAUT_A   ? 129 :	\
+				 (c) == CHAR_BYTE_UMLAUT_O   ? 130 :	\
+				 (c) == CHAR_BYTE_UMLAUT_U   ? 131 :	\
+				 (c) == CHAR_BYTE_DEGREE     ? 132 :	\
+				 (c) == CHAR_BYTE_REGISTERED ? 133 :	\
+				 (c) == FONT_ASCII_CURSOR    ? 134 :	\
+				 (c) == CHAR_BYTE_UMLAUT_a   ? 135 :	\
+				 (c) == CHAR_BYTE_UMLAUT_o   ? 136 :	\
+				 (c) == CHAR_BYTE_UMLAUT_u   ? 137 :	\
+				 (c) == CHAR_BYTE_SHARP_S    ? 138 :	\
+				 (c) == FONT_ASCII_BUTTON    ? 141 :	\
+				 (c) == FONT_ASCII_UP	     ? 142 :	\
+				 (c) == FONT_ASCII_DOWN	     ? 143 :	\
+				 (c))
+
 // 64 regular ordered ASCII characters, 6 special characters, 1 cursor char.
 #define MIN_NUM_CHARS_PER_FONT			64
+#define NUM_CHARS_PER_FONT_EXT			112
 #define DEFAULT_NUM_CHARS_PER_FONT		(MIN_NUM_CHARS_PER_FONT + 6 +1)
 #define DEFAULT_NUM_CHARS_PER_LINE		16
 
