@@ -1142,8 +1142,13 @@ static void InitializeTitleControls_CheckTitleInfo(boolean initial)
     int graphic = getTitleScreenGraphic(i, initial);
     Bitmap *bitmap = graphic_info[graphic].bitmap;
     int sort_priority = graphic_info[graphic].sort_priority;
+    boolean has_title_screen = (bitmap != NULL);
 
-    if (bitmap != NULL)
+    // check for optional title screen of native BD style level set
+    if (!has_title_screen && level.game_engine_type == GAME_ENGINE_TYPE_BD && !initial && i == 0)
+      has_title_screen = (GetTitleScreen_BD() != NULL);
+
+    if (has_title_screen)
       InitializeTitleControlsExt_AddTitleInfo(TRUE, initial, i, sort_priority);
   }
 
@@ -1604,6 +1609,20 @@ static void DrawTitleScreenImage(int nr, boolean initial)
   int src_x = graphic_info[graphic].src_x;
   int src_y = graphic_info[graphic].src_y;
   int dst_x, dst_y;
+
+  // check for optional title screen of native BD style level set
+  if (bitmap == NULL && level.game_engine_type == GAME_ENGINE_TYPE_BD && !initial && nr == 0)
+  {
+    bitmap = GetTitleScreen_BD();
+
+    if (bitmap != NULL)
+    {
+      width  = bitmap->width;
+      height = bitmap->height;
+      src_x = 0;
+      src_y = 0;
+    }
+  }
 
   if (bitmap == NULL)
     return;
