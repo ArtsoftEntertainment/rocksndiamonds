@@ -724,6 +724,7 @@ enum
   GADGET_ID_BD_VOODOO_HURT_KILLS_PLAYER,
   GADGET_ID_BD_VOODOO_DIES_BY_ROCK,
   GADGET_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
+  GADGET_ID_BD_SLIME_IS_PREDICTABLE,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1068,6 +1069,7 @@ enum
   ED_CHECKBUTTON_ID_BD_VOODOO_HURT_KILLS_PLAYER,
   ED_CHECKBUTTON_ID_BD_VOODOO_DIES_BY_ROCK,
   ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
+  ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3791,6 +3793,14 @@ static struct
     &level.bd_voodoo_vanish_by_explosion,
     NULL, NULL,
     "disappears in explosions",		"can be destroyed by explosions"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_SLIME_IS_PREDICTABLE, GADGET_ID_NONE,
+    &level.bd_slime_is_predictable,
+    NULL, NULL,
+    "slime is predictable",		"use predictable random numbers"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -10841,6 +10851,9 @@ static void DrawPropertiesInfo(void)
 #define TEXT_GAME_OF_LIFE_4	"Max neighbours to create"
 #define TEXT_TIME_BONUS		"Extra time to solve level"
 #define TEXT_TIME_PENALTY	"Time penalty if destroyed"
+#define TEXT_PERMEABILITY_RATE	"slime permeability rate"
+#define TEXT_PERMEABILITY_BITS	"slime permeability bits"
+#define TEXT_RANDOM_SEED	"slime random number seed"
 
 static struct
 {
@@ -10957,6 +10970,12 @@ static struct
 				-100, 100							},
   { EL_BD_VOODOO_DOLL,		&level.bd_voodoo_penalty_time,		TEXT_TIME_PENALTY,
 				0, 100								},
+  { EL_BD_SLIME,		&level.bd_slime_permeability_rate,	TEXT_PERMEABILITY_RATE,
+				0, 100								},
+  { EL_BD_SLIME,		&level.bd_slime_permeability_bits_c64,	TEXT_PERMEABILITY_BITS,
+				0, 255								},
+  { EL_BD_SLIME,		&level.bd_slime_random_seed_c64,	TEXT_RANDOM_SEED,
+				-1, 65535							},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
@@ -11138,6 +11157,7 @@ static void DrawPropertiesConfig(void)
 			       (COULD_MOVE_INTO_ACID(properties_element)    ? 1 : 0) +
 			       (MAYBE_DONT_COLLIDE_WITH(properties_element) ? 1 : 0) +
 			       (properties_element == EL_BD_VOODOO_DOLL     ? 4 : 0) +
+			       (properties_element == EL_BD_SLIME           ? 1 : 0) +
 			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 			       num_element_counters);
 
@@ -11338,6 +11358,11 @@ static void DrawPropertiesConfig(void)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_HURT_KILLS_PLAYER);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_DIES_BY_ROCK);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION);
+  }
+
+  if (properties_element == EL_BD_SLIME)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE);
   }
 
   if (properties_element == EL_BD_MAGIC_WALL)

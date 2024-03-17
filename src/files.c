@@ -683,6 +683,26 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_voodoo_penalty_time,		30
   },
 
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_slime_is_predictable,	TRUE
+  },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
+    &li.bd_slime_permeability_rate,	100
+  },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
+    &li.bd_slime_permeability_bits_c64,	0
+  },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(1),
+    &li.bd_slime_random_seed_c64,	-1
+  },
 
   // (the following values are related to various game elements)
 
@@ -3963,6 +3983,11 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->amoeba_2_explosion_effect   = map_element_RND_to_BD(level->bd_amoeba_2_content_exploding);
   cave->amoeba_2_looks_like	    = map_element_RND_to_BD(level->bd_amoeba_2_content_looks_like);
 
+  cave->slime_predictable		= level->bd_slime_is_predictable;
+  cave->level_slime_permeability[0]	= level->bd_slime_permeability_rate * 10000;
+  cave->level_slime_permeability_c64[0]	= level->bd_slime_permeability_bits_c64;
+  cave->level_slime_seed_c64[0]		= level->bd_slime_random_seed_c64;
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4045,6 +4070,11 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_amoeba_2_content_enclosed	= map_element_BD_to_RND(cave->amoeba_2_enclosed_effect);
   level->bd_amoeba_2_content_exploding	= map_element_BD_to_RND(cave->amoeba_2_explosion_effect);
   level->bd_amoeba_2_content_looks_like	= map_element_BD_to_RND(cave->amoeba_2_looks_like);
+
+  level->bd_slime_is_predictable	= cave->slime_predictable;
+  level->bd_slime_permeability_rate	= cave->level_slime_permeability[0] / 10000;
+  level->bd_slime_permeability_bits_c64	= cave->level_slime_permeability_c64[0];
+  level->bd_slime_random_seed_c64	= cave->level_slime_seed_c64[0];
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
