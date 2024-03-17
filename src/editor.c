@@ -556,6 +556,7 @@ enum
   GADGET_ID_MAGIC_BALL_CONTENT_7,
   GADGET_ID_ANDROID_CONTENT,
   GADGET_ID_AMOEBA_CONTENT,
+  GADGET_ID_BD_SNAP_ELEMENT,
   GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG,
   GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED,
   GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
@@ -1162,6 +1163,7 @@ enum
   ED_DRAWING_ID_MAGIC_BALL_CONTENT_7,
   ED_DRAWING_ID_ANDROID_CONTENT,
   ED_DRAWING_ID_AMOEBA_CONTENT,
+  ED_DRAWING_ID_BD_SNAP_ELEMENT,
   ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG,
   ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED,
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
@@ -4261,7 +4263,18 @@ static struct
     "content:", NULL, NULL, NULL,	"amoeba content"
   },
 
-  // ---------- BD amoeba content ------------------------------------------------
+  // ---------- BD snap element -----------------------------------------------
+
+  {
+    ED_DRAWING_ID_BD_SNAP_ELEMENT,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(5),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SNAP_ELEMENT,		GADGET_ID_NONE,
+    &level.bd_snap_element,		1, 1,
+    "snap element:", NULL, NULL, NULL,	"element created when snapping"
+  },
+
+  // ---------- BD amoeba content ---------------------------------------------
 
   {
     ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG,
@@ -4280,7 +4293,7 @@ static struct
     "if enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba content if enclosed"
   },
 
-  // ---------- BD amoeba 2 content ------------------------------------------------
+  // ---------- BD amoeba 2 content -------------------------------------------
 
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
@@ -11291,6 +11304,9 @@ static void DrawPropertiesConfig(void)
     // draw counter gadgets
     MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB);
     MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET);
+
+    // draw drawing area gadgets
+    MapDrawingArea(ED_DRAWING_ID_BD_SNAP_ELEMENT);
   }
 
   if (properties_element == EL_BD_ROCK && level.game_engine_type == GAME_ENGINE_TYPE_BD)

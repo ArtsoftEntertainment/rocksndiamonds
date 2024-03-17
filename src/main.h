@@ -3493,6 +3493,7 @@ struct LevelInfo
   boolean bd_intermission;		// BD level is intermission
   boolean bd_diagonal_movements;	// BD style diagonal movements
   boolean bd_topmost_player_active;	// BD engine uses first player found on playfield
+  int bd_snap_element;			// BD element that is created when player is snapping
   int bd_pushing_prob;			// BD player probability to push rocks
   int bd_pushing_prob_with_sweet;	// BD player probability to push rocks after eating sweet
   boolean bd_push_mega_rock_with_sweet;	// BD player can push mega rocks after eating sweet
