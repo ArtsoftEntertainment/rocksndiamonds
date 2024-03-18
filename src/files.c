@@ -4043,24 +4043,24 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_snap_element		= map_element_BD_to_RND(cave->snap_element);
 
   // element properties
-  level->bd_clock_extra_time		= cave->level_bonus_time[0];
+  level->bd_clock_extra_time		= cave->level_bonus_time[bd_level_nr];
   level->bd_voodoo_collects_diamonds	= cave->voodoo_collects_diamonds;
   level->bd_voodoo_hurt_kills_player	= cave->voodoo_any_hurt_kills_player;
   level->bd_voodoo_dies_by_rock		= cave->voodoo_dies_by_stone;
   level->bd_voodoo_vanish_by_explosion	= cave->voodoo_disappear_in_explosion;
-  level->bd_voodoo_penalty_time		= cave->level_penalty_time[0];
+  level->bd_voodoo_penalty_time		= cave->level_penalty_time[bd_level_nr];
   level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
   level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
   level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
   level->bd_amoeba_wait_for_hatching	= cave->amoeba_timer_wait_for_hatching;
   level->bd_amoeba_start_immediately	= cave->amoeba_timer_started_immediately;
   level->bd_amoeba_2_explode_by_amoeba	= cave->amoeba_2_explodes_by_amoeba;
-  level->bd_amoeba_threshold_too_big	= cave->level_amoeba_threshold[0];
-  level->bd_amoeba_slow_growth_time	= cave->level_amoeba_time[0];
+  level->bd_amoeba_threshold_too_big	= cave->level_amoeba_threshold[bd_level_nr];
+  level->bd_amoeba_slow_growth_time	= cave->level_amoeba_time[bd_level_nr];
   level->bd_amoeba_slow_growth_rate	= cave->amoeba_growth_prob      / 10000;
   level->bd_amoeba_fast_growth_rate	= cave->amoeba_fast_growth_prob / 10000;
-  level->bd_amoeba_2_threshold_too_big	= cave->level_amoeba_2_threshold[0];
-  level->bd_amoeba_2_slow_growth_time	= cave->level_amoeba_2_time[0];
+  level->bd_amoeba_2_threshold_too_big	= cave->level_amoeba_2_threshold[bd_level_nr];
+  level->bd_amoeba_2_slow_growth_time	= cave->level_amoeba_2_time[bd_level_nr];
   level->bd_amoeba_2_slow_growth_rate	= cave->amoeba_2_growth_prob      / 10000;
   level->bd_amoeba_2_fast_growth_rate	= cave->amoeba_2_fast_growth_prob / 10000;
 
@@ -4072,9 +4072,9 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_amoeba_2_content_looks_like	= map_element_BD_to_RND(cave->amoeba_2_looks_like);
 
   level->bd_slime_is_predictable	= cave->slime_predictable;
-  level->bd_slime_permeability_rate	= cave->level_slime_permeability[0] / 10000;
-  level->bd_slime_permeability_bits_c64	= cave->level_slime_permeability_c64[0];
-  level->bd_slime_random_seed_c64	= cave->level_slime_seed_c64[0];
+  level->bd_slime_permeability_rate	= cave->level_slime_permeability[bd_level_nr] / 10000;
+  level->bd_slime_permeability_bits_c64	= cave->level_slime_permeability_c64[bd_level_nr];
+  level->bd_slime_random_seed_c64	= cave->level_slime_seed_c64[bd_level_nr];
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
