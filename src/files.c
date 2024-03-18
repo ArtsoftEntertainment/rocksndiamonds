@@ -310,6 +310,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(23),
     &li.bd_gravity_affects_all,		TRUE
   },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(24),
+    &li.bd_cave_random_seed_c64,	0
+  },
 
   {
     -1,					-1,
@@ -3984,9 +3989,11 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->amoeba_2_looks_like	    = map_element_RND_to_BD(level->bd_amoeba_2_content_looks_like);
 
   cave->slime_predictable		= level->bd_slime_is_predictable;
+  cave->slime_correct_random		= level->bd_slime_correct_random;
   cave->level_slime_permeability[0]	= level->bd_slime_permeability_rate * 10000;
   cave->level_slime_permeability_c64[0]	= level->bd_slime_permeability_bits_c64;
   cave->level_slime_seed_c64[0]		= level->bd_slime_random_seed_c64;
+  cave->level_rand[0]			= level->bd_cave_random_seed_c64;
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -4072,9 +4079,11 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_amoeba_2_content_looks_like	= map_element_BD_to_RND(cave->amoeba_2_looks_like);
 
   level->bd_slime_is_predictable	= cave->slime_predictable;
+  level->bd_slime_correct_random	= cave->slime_correct_random;
   level->bd_slime_permeability_rate	= cave->level_slime_permeability[bd_level_nr] / 10000;
   level->bd_slime_permeability_bits_c64	= cave->level_slime_permeability_c64[bd_level_nr];
   level->bd_slime_random_seed_c64	= cave->level_slime_seed_c64[bd_level_nr];
+  level->bd_cave_random_seed_c64	= cave->level_rand[bd_level_nr];
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

@@ -3523,9 +3523,11 @@ struct LevelInfo
   boolean bd_voodoo_vanish_by_explosion;// BD voodoo doll can be destroyed by explosions
   int bd_voodoo_penalty_time;		// BD engine penalty time when voodoo doll destroyed
   boolean bd_slime_is_predictable;	// BD slime uses predictable random number generator
+  boolean bd_slime_correct_random;	// BD slime needs corrected random number generator
   int bd_slime_permeability_rate;	// BD slime permeability rate for unpredictable slime
   int bd_slime_permeability_bits_c64;	// BD slime permeability bits for predictable slime
   int bd_slime_random_seed_c64;		// BD slime random number seed for predictable slime
+  int bd_cave_random_seed_c64;		// BD cave random number seed for predictable slime
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean use_spring_bug;		// for compatibility with old levels

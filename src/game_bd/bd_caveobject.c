@@ -1488,6 +1488,9 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
       gd_cave_store_rc(cave, x,           0, cave->initial_border, NULL);
       gd_cave_store_rc(cave, x, cave->h - 1, cave->initial_border, NULL);
     }
+
+    // store if random number generator needs correction for static random seed
+    cave->slime_correct_random = (data->level_rand[level] >= 0);
   }
   else
   {
@@ -1496,6 +1499,18 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
     // initialize c64 predictable random for slime.
     // the values were taken from afl bd, see docs/internals.txt
     gd_cave_c64_random_set_seed(cave, 0, 0x1e);
+
+    // correct random number generator if cave was rendered with static random seed
+    if (cave->slime_correct_random)
+    {
+      int i;
+
+      // set static random seed used when rendering the cave
+      gd_cave_c64_random_set_seed(cave, 0, data->level_rand[level]);
+
+      for (i = 0; i < cave->w * (cave->h - 2); i++)
+	gd_cave_c64_random(cave);
+    }
   }
 
   if (data->level_slime_seed_c64[level] != -1)

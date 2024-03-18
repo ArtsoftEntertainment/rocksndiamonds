@@ -432,6 +432,7 @@ typedef struct _gd_cave
   int level_slime_permeability_c64[5];  // Appearing in bd 2
   int level_slime_seed_c64[5];          // predictable slime random seed
   boolean slime_predictable;            // predictable random start for slime. yes for plck.
+  boolean slime_correct_random;         // correct random number generator for rendered caves
   GdElement slime_eats_1, slime_converts_1; // slime eats element x and converts to element x;
                                             // for example diamond -> falling diamond
   GdElement slime_eats_2, slime_converts_2; // this is usually stone -> stone_f
