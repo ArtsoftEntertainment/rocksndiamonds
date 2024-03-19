@@ -3528,6 +3528,10 @@ struct LevelInfo
   int bd_slime_permeability_bits_c64;	// BD slime permeability bits for predictable slime
   int bd_slime_random_seed_c64;		// BD slime random number seed for predictable slime
   int bd_cave_random_seed_c64;		// BD cave random number seed for predictable slime
+  int bd_acid_eats_element;		// BD acid eats this game element when spreading
+  int bd_acid_spread_rate;		// BD acid probability of spreading (in percent)
+  int bd_acid_turns_to_element;		// BD acid target element after spreading
+
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean use_spring_bug;		// for compatibility with old levels

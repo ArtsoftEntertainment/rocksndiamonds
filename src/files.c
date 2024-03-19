@@ -709,6 +709,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_slime_random_seed_c64,	-1
   },
 
+  {
+    EL_BD_ACID,				-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_acid_eats_element,		EL_BD_SAND
+  },
+  {
+    EL_BD_ACID,				-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
+    &li.bd_acid_spread_rate,		3
+  },
+  {
+    EL_BD_ACID,				-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
+    &li.bd_acid_turns_to_element,	EL_EMPTY
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -3995,6 +4011,10 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->level_slime_seed_c64[0]		= level->bd_slime_random_seed_c64;
   cave->level_rand[0]			= level->bd_cave_random_seed_c64;
 
+  cave->acid_eats_this			= map_element_RND_to_BD(level->bd_acid_eats_element);
+  cave->acid_spread_ratio		= level->bd_acid_spread_rate * 10000;
+  cave->acid_turns_to			= map_element_RND_to_BD(level->bd_acid_turns_to_element);
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4084,6 +4104,10 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_slime_permeability_bits_c64	= cave->level_slime_permeability_c64[bd_level_nr];
   level->bd_slime_random_seed_c64	= cave->level_slime_seed_c64[bd_level_nr];
   level->bd_cave_random_seed_c64	= cave->level_rand[bd_level_nr];
+
+  level->bd_acid_eats_element		= map_element_BD_to_RND(cave->acid_eats_this);
+  level->bd_acid_spread_rate		= cave->acid_spread_ratio / 10000;
+  level->bd_acid_turns_to_element	= map_element_BD_to_RND(cave->acid_turns_to);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

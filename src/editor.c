@@ -563,6 +563,8 @@ enum
   GADGET_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
   GADGET_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
   GADGET_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
+  GADGET_ID_BD_ACID_EATS_ELEMENT,
+  GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1172,6 +1174,8 @@ enum
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
+  ED_DRAWING_ID_BD_ACID_EATS_ELEMENT,
+  ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4336,6 +4340,22 @@ static struct
     GADGET_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_looks_like,	1, 1,
     "use graphic of element:", NULL, NULL, NULL,	"BD amoeba 2 looks like this element"
+  },
+  {
+    ED_DRAWING_ID_BD_ACID_EATS_ELEMENT,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_ACID_EATS_ELEMENT,	GADGET_ID_NONE,
+    &level.bd_acid_eats_element,	1, 1,
+    "can eat:", NULL, NULL, NULL,		"eats this element when spreading"
+  },
+  {
+    ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(3),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,	GADGET_ID_NONE,
+    &level.bd_acid_turns_to_element,	1, 1,
+    "can leave behind:", NULL, NULL, NULL,	"turns to this element after spreading"
   },
 
   // ---------- level start element -------------------------------------------
@@ -10854,6 +10874,7 @@ static void DrawPropertiesInfo(void)
 #define TEXT_PERMEABILITY_RATE	"slime permeability rate"
 #define TEXT_PERMEABILITY_BITS	"slime permeability bits"
 #define TEXT_RANDOM_SEED	"slime random number seed"
+#define TEXT_ACID_SPREAD_RATE	"Spread rate (percent)"
 
 static struct
 {
@@ -10976,6 +10997,8 @@ static struct
 				0, 255								},
   { EL_BD_SLIME,		&level.bd_slime_random_seed_c64,	TEXT_RANDOM_SEED,
 				-1, 65535							},
+  { EL_BD_ACID,			&level.bd_acid_spread_rate,		TEXT_ACID_SPREAD_RATE,
+				0, 100								},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
@@ -11158,6 +11181,7 @@ static void DrawPropertiesConfig(void)
 			       (MAYBE_DONT_COLLIDE_WITH(properties_element) ? 1 : 0) +
 			       (properties_element == EL_BD_VOODOO_DOLL     ? 4 : 0) +
 			       (properties_element == EL_BD_SLIME           ? 1 : 0) +
+			       (properties_element == EL_BD_ACID            ? 1 : 0) +
 			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 			       num_element_counters);
 
@@ -11208,6 +11232,11 @@ static void DrawPropertiesConfig(void)
     }
     else if (IS_AMOEBOID(properties_element))
       MapDrawingArea(ED_DRAWING_ID_AMOEBA_CONTENT);
+    else if (properties_element == EL_BD_ACID)
+    {
+      MapDrawingArea(ED_DRAWING_ID_BD_ACID_EATS_ELEMENT);
+      MapDrawingArea(ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT);
+    }
     else if (properties_element == EL_YAMYAM ||
 	     properties_element == EL_YAMYAM_LEFT ||
 	     properties_element == EL_YAMYAM_RIGHT ||
