@@ -253,7 +253,7 @@ typedef struct _elements
 } GdElements;
 
 
-typedef char GdString[128];
+typedef char GdString[MAX_LINE_LEN];
 
 typedef struct _highscore
 {
