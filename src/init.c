@@ -4285,6 +4285,7 @@ void InitElementPropertiesStatic(void)
     EL_BD_BITER_UP,
     EL_BD_BITER_LEFT,
     EL_BD_BITER_DOWN,
+    EL_BD_BLADDER,
     EL_EMC_MAGIC_BALL,
     EL_EMC_ANDROID,
     EL_MM_GRAY_BALL,

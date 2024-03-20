@@ -736,6 +736,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_biter_eats_element,		EL_BD_DIAMOND
   },
 
+  {
+    EL_BD_BLADDER,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_bladder_converts_by_element,	EL_BD_VOODOO_DOLL
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -4029,6 +4035,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->biter_delay_frame		= level->bd_biter_move_delay;
   cave->biter_eat			= map_element_RND_to_BD(level->bd_biter_eats_element);
 
+  cave->bladder_converts_by	    = map_element_RND_to_BD(level->bd_bladder_converts_by_element);
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4125,6 +4133,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->bd_biter_move_delay		= cave->biter_delay_frame;
   level->bd_biter_eats_element		= map_element_BD_to_RND(cave->biter_eat);
+
+  level->bd_bladder_converts_by_element	= map_element_BD_to_RND(cave->bladder_converts_by);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

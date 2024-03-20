@@ -566,6 +566,7 @@ enum
   GADGET_ID_BD_ACID_EATS_ELEMENT,
   GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,
   GADGET_ID_BD_BITER_EATS_ELEMENT,
+  GADGET_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1178,6 +1179,7 @@ enum
   ED_DRAWING_ID_BD_ACID_EATS_ELEMENT,
   ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT,
   ED_DRAWING_ID_BD_BITER_EATS_ELEMENT,
+  ED_DRAWING_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4366,6 +4368,14 @@ static struct
     GADGET_ID_BD_BITER_EATS_ELEMENT,	GADGET_ID_NONE,
     &level.bd_biter_eats_element,	1, 1,
     "Can eat:", NULL, NULL, NULL,	"Eats this element when moving"
+  },
+  {
+    ED_DRAWING_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_BLADDER_CONVERTS_BY_ELEMENT, GADGET_ID_NONE,
+    &level.bd_bladder_converts_by_element,	1, 1,
+    "Turns to clock by touching:", NULL, NULL, NULL,	"Turns to clock by touching element"
   },
 
   // ---------- level start element -------------------------------------------
@@ -11262,6 +11272,10 @@ static void DrawPropertiesConfig(void)
     else if (IS_BD_BITER(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_BITER_EATS_ELEMENT);
+    }
+    else if (properties_element == EL_BD_BLADDER)
+    {
+      MapDrawingArea(ED_DRAWING_ID_BD_BLADDER_CONVERTS_BY_ELEMENT);
     }
     else if (properties_element == EL_YAMYAM ||
 	     properties_element == EL_YAMYAM_LEFT ||

@@ -3539,6 +3539,7 @@ struct LevelInfo
   int bd_acid_turns_to_element;		// BD acid target element after spreading
   int bd_biter_move_delay;		// BD biter delay between movements (in BD frames)
   int bd_biter_eats_element;		// BD biter eats this game element when moving
+  int bd_bladder_converts_by_element;	// BD bladder converts to clock by touching this element
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
