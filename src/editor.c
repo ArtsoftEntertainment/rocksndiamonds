@@ -1279,82 +1279,82 @@ static struct
   {
     IMG_GFX_EDITOR_BUTTON_DRAW_SINGLE,		GADGET_ID_SINGLE_ITEMS,
     &editor.button.draw_single,			GD_TYPE_RADIO_BUTTON,
-    "draw single items",			's'
+    "Draw single items",			's'
   },
   {
     IMG_GFX_EDITOR_BUTTON_DRAW_CONNECTED,	GADGET_ID_CONNECTED_ITEMS,
     &editor.button.draw_connected,		GD_TYPE_RADIO_BUTTON,
-    "draw connected items",			'd'
+    "Draw connected items",			'd'
   },
   {
     IMG_GFX_EDITOR_BUTTON_DRAW_LINE,		GADGET_ID_LINE,
     &editor.button.draw_line,			GD_TYPE_RADIO_BUTTON,
-    "draw lines",				'l'
+    "Draw lines",				'l'
   },
   {
     IMG_GFX_EDITOR_BUTTON_DRAW_ARC,		GADGET_ID_ARC,
     &editor.button.draw_arc,			GD_TYPE_RADIO_BUTTON,
-    "draw arcs",				'a'
+    "Draw arcs",				'a'
   },
   {
     IMG_GFX_EDITOR_BUTTON_DRAW_RECTANGLE,	GADGET_ID_RECTANGLE,
     &editor.button.draw_rectangle,		GD_TYPE_RADIO_BUTTON,
-    "draw outline rectangles",			'r'
+    "Draw outline rectangles",			'r'
   },
   {
     IMG_GFX_EDITOR_BUTTON_DRAW_FILLED_BOX,	GADGET_ID_FILLED_BOX,
     &editor.button.draw_filled_box,		GD_TYPE_RADIO_BUTTON,
-    "draw filled rectangles",			'R'
+    "Draw filled rectangles",			'R'
   },
   {
     IMG_GFX_EDITOR_BUTTON_ROTATE_UP,		GADGET_ID_WRAP_UP,
     &editor.button.rotate_up,			GD_TYPE_NORMAL_BUTTON,
-    "wrap (rotate) level up",			0
+    "Wrap (rotate) level up",			0
   },
   {
     IMG_GFX_EDITOR_BUTTON_DRAW_TEXT,		GADGET_ID_TEXT,
     &editor.button.draw_text,			GD_TYPE_RADIO_BUTTON,
-    "enter text elements",			't'
+    "Enter text elements",			't'
   },
   {
     IMG_GFX_EDITOR_BUTTON_FLOOD_FILL,		GADGET_ID_FLOOD_FILL,
     &editor.button.flood_fill,			GD_TYPE_RADIO_BUTTON,
-    "flood fill",				'f'
+    "Flood fill",				'f'
   },
   {
     IMG_GFX_EDITOR_BUTTON_ROTATE_LEFT,		GADGET_ID_WRAP_LEFT,
     &editor.button.rotate_left,			GD_TYPE_NORMAL_BUTTON,
-    "wrap (rotate) level left",			0
+    "Wrap (rotate) level left",			0
   },
   {
     IMG_GFX_EDITOR_BUTTON_ZOOM_LEVEL,		GADGET_ID_ZOOM,
     &editor.button.zoom_level,			GD_TYPE_NORMAL_BUTTON,
-    "zoom level tile size",			'+'
+    "Zoom level tile size",			'+'
   },
   {
     IMG_GFX_EDITOR_BUTTON_ROTATE_RIGHT,		GADGET_ID_WRAP_RIGHT,
     &editor.button.rotate_right,		GD_TYPE_NORMAL_BUTTON,
-    "wrap (rotate) level right",		0
+    "Wrap (rotate) level right",		0
   },
   {
     IMG_GFX_EDITOR_BUTTON_DRAW_RANDOM,		GADGET_ID_RANDOM_PLACEMENT,
     &editor.button.draw_random,			GD_TYPE_NORMAL_BUTTON,
-    "random element placement",			0
+    "Random element placement",			0
   },
   {
     IMG_GFX_EDITOR_BUTTON_GRAB_BRUSH,		GADGET_ID_GRAB_BRUSH,
     &editor.button.grab_brush,			GD_TYPE_RADIO_BUTTON,
-    "grab brush",				'b'
+    "Grab brush",				'b'
   },
   {
     IMG_GFX_EDITOR_BUTTON_ROTATE_DOWN,		GADGET_ID_WRAP_DOWN,
     &editor.button.rotate_down,			GD_TYPE_NORMAL_BUTTON,
-    "wrap (rotate) level down",			0
+    "Wrap (rotate) level down",			0
   },
   {
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,		GADGET_ID_PICK_ELEMENT,
     &editor.button.pick_element,		GD_TYPE_RADIO_BUTTON,
-    "pick drawing element",			','
+    "Pick drawing element",			','
   },
 
   // ---------- level control buttons -----------------------------------------
@@ -1362,32 +1362,32 @@ static struct
   {
     IMG_GFX_EDITOR_BUTTON_UNDO,			GADGET_ID_UNDO,
     &editor.button.undo,			GD_TYPE_NORMAL_BUTTON,
-    "undo/redo last operation",			'u'
+    "Undo/redo last operation",			'u'
   },
   {
     IMG_GFX_EDITOR_BUTTON_CONF,			GADGET_ID_CONF,
     &editor.button.conf,			GD_TYPE_NORMAL_BUTTON,
-    "level and editor settings",		'I'
+    "Level and editor settings",		'I'
   },
   {
     IMG_GFX_EDITOR_BUTTON_SAVE,			GADGET_ID_SAVE,
     &editor.button.save,			GD_TYPE_NORMAL_BUTTON,
-    "save level",				'S'
+    "Save level",				'S'
   },
   {
     IMG_GFX_EDITOR_BUTTON_CLEAR,		GADGET_ID_CLEAR,
     &editor.button.clear,			GD_TYPE_NORMAL_BUTTON,
-    "clear level",				'C'
+    "Clear level",				'C'
   },
   {
     IMG_GFX_EDITOR_BUTTON_TEST,			GADGET_ID_TEST,
     &editor.button.test,			GD_TYPE_NORMAL_BUTTON,
-    "test level",				'T'
+    "Test level",				'T'
   },
   {
     IMG_GFX_EDITOR_BUTTON_EXIT,			GADGET_ID_EXIT,
     &editor.button.exit,			GD_TYPE_NORMAL_BUTTON,
-    "exit level editor",			'E'
+    "Exit level editor",			'E'
   },
 
   // ---------- CE and GE control buttons -------------------------------------
@@ -1395,27 +1395,27 @@ static struct
   {
     IMG_GFX_EDITOR_BUTTON_CE_COPY_FROM,		GADGET_ID_CUSTOM_COPY_FROM,
     &editor.button.ce_copy_from,		GD_TYPE_RADIO_BUTTON,
-    "copy settings from other element",		0
+    "Copy settings from other element",		0
   },
   {
     IMG_GFX_EDITOR_BUTTON_CE_COPY_TO,		GADGET_ID_CUSTOM_COPY_TO,
     &editor.button.ce_copy_to,			GD_TYPE_RADIO_BUTTON,
-    "copy settings to other element",		0
+    "Copy settings to other element",		0
   },
   {
     IMG_GFX_EDITOR_BUTTON_CE_SWAP,		GADGET_ID_CUSTOM_EXCHANGE,
     &editor.button.ce_swap,			GD_TYPE_RADIO_BUTTON,
-    "exchange element with other element",	0
+    "Exchange element with other element",	0
   },
   {
     IMG_GFX_EDITOR_BUTTON_CE_COPY,		GADGET_ID_CUSTOM_COPY,
     &editor.button.ce_copy,			GD_TYPE_NORMAL_BUTTON,
-    "copy settings from this element",		0
+    "Copy settings from this element",		0
   },
   {
     IMG_GFX_EDITOR_BUTTON_CE_PASTE,		GADGET_ID_CUSTOM_PASTE,
     &editor.button.ce_paste,			GD_TYPE_NORMAL_BUTTON,
-    "paste settings to this element",		0
+    "Paste settings to this element",		0
   },
 
   // ---------- palette control buttons ---------------------------------------
@@ -1423,27 +1423,27 @@ static struct
   {
     IMG_GFX_EDITOR_BUTTON_PROPERTIES,		GADGET_ID_PROPERTIES,
     &editor.button.properties,			GD_TYPE_NORMAL_BUTTON,
-    "properties of drawing element",		'p'
+    "Properties of drawing element",		'p'
   },
   {
     IMG_GFX_EDITOR_BUTTON_ELEMENT_LEFT,		GADGET_ID_ELEMENT_LEFT,
     &editor.button.element_left,		GD_TYPE_NORMAL_BUTTON,
-    "properties of drawing element 1",		'1'
+    "Properties of drawing element 1",		'1'
   },
   {
     IMG_GFX_EDITOR_BUTTON_ELEMENT_MIDDLE,	GADGET_ID_ELEMENT_MIDDLE,
     &editor.button.element_middle,		GD_TYPE_NORMAL_BUTTON,
-    "properties of drawing element 2",		'2'
+    "Properties of drawing element 2",		'2'
   },
   {
     IMG_GFX_EDITOR_BUTTON_ELEMENT_RIGHT,	GADGET_ID_ELEMENT_RIGHT,
     &editor.button.element_right,		GD_TYPE_NORMAL_BUTTON,
-    "properties of drawing element 3",		'3'
+    "Properties of drawing element 3",		'3'
   },
   {
     IMG_GFX_EDITOR_BUTTON_PALETTE,		GADGET_ID_PALETTE,
     &editor.button.palette,			GD_TYPE_NORMAL_BUTTON,
-    "show list of elements",			'e'
+    "Show list of elements",			'e'
   }
 };
 
@@ -1498,7 +1498,7 @@ static struct
     GADGET_ID_LEVEL_XSIZE_DOWN,		GADGET_ID_LEVEL_XSIZE_UP,
     GADGET_ID_LEVEL_XSIZE_TEXT,		GADGET_ID_NONE,
     &level.fieldx,
-    "playfield size:",			NULL, "width",
+    "Playfield size:",			NULL, "Width",
   },
   {
     ED_COUNTER_ID_LEVEL_YSIZE,
@@ -1507,7 +1507,7 @@ static struct
     GADGET_ID_LEVEL_YSIZE_DOWN,		GADGET_ID_LEVEL_YSIZE_UP,
     GADGET_ID_LEVEL_YSIZE_TEXT,		GADGET_ID_LEVEL_XSIZE_UP,
     &level.fieldy,
-    NULL,				" ", "height",
+    NULL,				" ", "Height",
   },
   {
     ED_COUNTER_ID_LEVEL_GEMSLIMIT,
@@ -1516,7 +1516,7 @@ static struct
     GADGET_ID_LEVEL_GEMSLIMIT_DOWN,	GADGET_ID_LEVEL_GEMSLIMIT_UP,
     GADGET_ID_LEVEL_GEMSLIMIT_TEXT,	GADGET_ID_NONE,
     &level.gems_needed,
-    NULL,				"number of gems to collect:", NULL
+    NULL,				"Number of gems to collect:", NULL
   },
   {
     ED_COUNTER_ID_LEVEL_TIMELIMIT,
@@ -1525,7 +1525,7 @@ static struct
     GADGET_ID_LEVEL_TIMELIMIT_DOWN,	GADGET_ID_LEVEL_TIMELIMIT_UP,
     GADGET_ID_LEVEL_TIMELIMIT_TEXT,	GADGET_ID_NONE,
     &level.time,
-    "time or step limit to solve level:", NULL, NULL
+    "Time or step limit to solve level:", NULL, NULL
   },
   {
     ED_COUNTER_ID_LEVEL_TIMESCORE,
@@ -1534,7 +1534,7 @@ static struct
     GADGET_ID_LEVEL_TIMESCORE_DOWN,	GADGET_ID_LEVEL_TIMESCORE_UP,
     GADGET_ID_LEVEL_TIMESCORE_TEXT,	GADGET_ID_NONE,
     &level.score[SC_TIME_BONUS],
-    "score for time or steps left:",	NULL, NULL
+    "Score for time or steps left:",	NULL, NULL
   },
   {
     ED_COUNTER_ID_LEVEL_RANDOM_SEED,
@@ -1543,7 +1543,7 @@ static struct
     GADGET_ID_LEVEL_RANDOM_SEED_DOWN,	GADGET_ID_LEVEL_RANDOM_SEED_UP,
     GADGET_ID_LEVEL_RANDOM_SEED_TEXT,	GADGET_ID_NONE,
     &level.random_seed,
-    NULL,				"random seed:", "(0 => random)"
+    NULL,				"Random seed:", "(0 => random)"
   },
   {
     ED_COUNTER_ID_LEVELSET_NUM_LEVELS,
@@ -1552,7 +1552,7 @@ static struct
     GADGET_ID_LEVELSET_NUM_LEVELS_DOWN,	GADGET_ID_LEVELSET_NUM_LEVELS_UP,
     GADGET_ID_LEVELSET_NUM_LEVELS_TEXT,	GADGET_ID_NONE,
     &levelset_num_levels,
-    "number of levels:",		NULL, NULL,
+    "Number of levels:",		NULL, NULL,
   },
   {
     ED_COUNTER_ID_LEVEL_RANDOM,
@@ -1561,7 +1561,7 @@ static struct
     GADGET_ID_LEVEL_RANDOM_DOWN,	GADGET_ID_LEVEL_RANDOM_UP,
     GADGET_ID_LEVEL_RANDOM_TEXT,	GADGET_ID_NONE,
     &random_placement_value,
-    "random element placement:",	NULL, "in"
+    "Random element placement:",	NULL, "in"
   },
   {
     ED_COUNTER_ID_BD_CYCLE_DELAY_MS,
@@ -1570,7 +1570,7 @@ static struct
     GADGET_ID_BD_CYCLE_DELAY_MS_DOWN,	GADGET_ID_BD_CYCLE_DELAY_MS_UP,
     GADGET_ID_BD_CYCLE_DELAY_MS_TEXT,	GADGET_ID_NONE,
     &level.bd_cycle_delay_ms,
-    NULL,				NULL, "game cycle delay (ms)"
+    NULL,				NULL, "Game cycle delay (ms)"
   },
   {
     ED_COUNTER_ID_BD_CYCLE_DELAY_C64,
@@ -1579,7 +1579,7 @@ static struct
     GADGET_ID_BD_CYCLE_DELAY_C64_DOWN,	GADGET_ID_BD_CYCLE_DELAY_C64_UP,
     GADGET_ID_BD_CYCLE_DELAY_C64_TEXT,	GADGET_ID_NONE,
     &level.bd_cycle_delay_c64,
-    NULL,				NULL, "game cycle delay (C64-style)"
+    NULL,				NULL, "Game cycle delay (C64-style)"
   },
   {
     ED_COUNTER_ID_BD_HATCHING_DELAY_CYCLES,
@@ -1588,7 +1588,7 @@ static struct
     GADGET_ID_BD_HATCHING_DELAY_CYCLES_DOWN,	GADGET_ID_BD_HATCHING_DELAY_CYCLES_UP,
     GADGET_ID_BD_HATCHING_DELAY_CYCLES_TEXT,	GADGET_ID_NONE,
     &level.bd_hatching_delay_cycles,
-    NULL,				NULL, "hatching delay (cycles)"
+    NULL,				NULL, "Hatching delay (cycles)"
   },
   {
     ED_COUNTER_ID_BD_HATCHING_DELAY_SECONDS,
@@ -1597,7 +1597,7 @@ static struct
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_DOWN,	GADGET_ID_BD_HATCHING_DELAY_SECONDS_UP,
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_TEXT,	GADGET_ID_NONE,
     &level.bd_hatching_delay_seconds,
-    NULL,				NULL, "hatching delay (seconds)"
+    NULL,				NULL, "Hatching delay (seconds)"
   },
 
   // ---------- element settings: configure (various elements) ----------------
@@ -1609,7 +1609,7 @@ static struct
     GADGET_ID_BD_PUSHING_PROB_DOWN,	GADGET_ID_BD_PUSHING_PROB_UP,
     GADGET_ID_BD_PUSHING_PROB_TEXT,	GADGET_ID_NONE,
     &level.bd_pushing_prob,
-    NULL,				NULL, "push probability"
+    NULL,				NULL, "Push probability"
   },
   {
     ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET,
@@ -1618,7 +1618,7 @@ static struct
     GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_DOWN,	GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_UP,
     GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_TEXT,	GADGET_ID_NONE,
     &level.bd_pushing_prob_with_sweet,
-    NULL,				NULL, "push probability with sweet"
+    NULL,				NULL, "Push probability with sweet"
   },
   {
     ED_COUNTER_ID_ELEMENT_VALUE1,
@@ -1663,7 +1663,7 @@ static struct
     GADGET_ID_YAMYAM_CONTENT_DOWN,	GADGET_ID_YAMYAM_CONTENT_UP,
     GADGET_ID_YAMYAM_CONTENT_TEXT,	GADGET_ID_NONE,
     &level.num_yamyam_contents,
-    NULL,				NULL, "number of content areas"
+    NULL,				NULL, "Number of content areas"
   },
   {
     ED_COUNTER_ID_BALL_CONTENT,
@@ -1672,7 +1672,7 @@ static struct
     GADGET_ID_BALL_CONTENT_DOWN,	GADGET_ID_BALL_CONTENT_UP,
     GADGET_ID_BALL_CONTENT_TEXT,	GADGET_ID_NONE,
     &level.num_ball_contents,
-    NULL,				NULL, "number of content areas"
+    NULL,				NULL, "Number of content areas"
   },
   {
     ED_COUNTER_ID_ANDROID_CONTENT,
@@ -1681,7 +1681,7 @@ static struct
     GADGET_ID_ANDROID_CONTENT_DOWN,	GADGET_ID_ANDROID_CONTENT_UP,
     GADGET_ID_ANDROID_CONTENT_TEXT,	GADGET_ID_NONE,
     &level.num_android_clone_elements,
-    NULL,				NULL, "number of clonable elements"
+    NULL,				NULL, "Number of clonable elements"
   },
   {
     ED_COUNTER_ID_ENVELOPE_XSIZE,
@@ -1690,7 +1690,7 @@ static struct
     GADGET_ID_ENVELOPE_XSIZE_DOWN,	GADGET_ID_ENVELOPE_XSIZE_UP,
     GADGET_ID_ENVELOPE_XSIZE_TEXT,	GADGET_ID_NONE,
     NULL,				// will be set when used
-    NULL,				NULL, "width",
+    NULL,				NULL, "Width",
   },
   {
     ED_COUNTER_ID_ENVELOPE_YSIZE,
@@ -1699,7 +1699,7 @@ static struct
     GADGET_ID_ENVELOPE_YSIZE_DOWN,	GADGET_ID_ENVELOPE_YSIZE_UP,
     GADGET_ID_ENVELOPE_YSIZE_TEXT,	GADGET_ID_ENVELOPE_XSIZE_UP,
     NULL,				// will be set when used
-    NULL,				" ", "height",
+    NULL,				" ", "Height",
   },
   {
     ED_COUNTER_ID_INVENTORY_SIZE,
@@ -1708,7 +1708,7 @@ static struct
     GADGET_ID_INVENTORY_SIZE_DOWN,	GADGET_ID_INVENTORY_SIZE_UP,
     GADGET_ID_INVENTORY_SIZE_TEXT,	GADGET_ID_NONE,
     &level.initial_inventory_size[0],
-    NULL,				NULL, "number of inventory elements"
+    NULL,				NULL, "Number of inventory elements"
   },
   {
     ED_COUNTER_ID_MM_BALL_CONTENT,
@@ -1717,7 +1717,7 @@ static struct
     GADGET_ID_MM_BALL_CONTENT_DOWN,	GADGET_ID_MM_BALL_CONTENT_UP,
     GADGET_ID_MM_BALL_CONTENT_TEXT,	GADGET_ID_NONE,
     &level.num_mm_ball_contents,
-    NULL,				NULL, "number of content elements"
+    NULL,				NULL, "Number of content elements"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -1765,7 +1765,7 @@ static struct
     GADGET_ID_PUSH_DELAY_FIX_DOWN,	GADGET_ID_PUSH_DELAY_FIX_UP,
     GADGET_ID_PUSH_DELAY_FIX_TEXT,	GADGET_ID_NONE,
     &custom_element.push_delay_fixed,
-    NULL,				"push delay", NULL
+    NULL,				"Push delay", NULL
   },
   {
     ED_COUNTER_ID_PUSH_DELAY_RND,
@@ -1783,7 +1783,7 @@ static struct
     GADGET_ID_DROP_DELAY_FIX_DOWN,	GADGET_ID_DROP_DELAY_FIX_UP,
     GADGET_ID_DROP_DELAY_FIX_TEXT,	GADGET_ID_NONE,
     &custom_element.drop_delay_fixed,
-    NULL,				"drop delay", NULL
+    NULL,				"Drop delay", NULL
   },
   {
     ED_COUNTER_ID_DROP_DELAY_RND,
@@ -1804,7 +1804,7 @@ static struct
     GADGET_ID_MOVE_DELAY_FIX_DOWN,	GADGET_ID_MOVE_DELAY_FIX_UP,
     GADGET_ID_MOVE_DELAY_FIX_TEXT,	GADGET_ID_NONE,
     &custom_element.move_delay_fixed,
-    NULL,				"move delay", NULL
+    NULL,				"Move delay", NULL
   },
   {
     ED_COUNTER_ID_MOVE_DELAY_RND,
@@ -1822,7 +1822,7 @@ static struct
     GADGET_ID_STEP_DELAY_FIX_DOWN,	GADGET_ID_STEP_DELAY_FIX_UP,
     GADGET_ID_STEP_DELAY_FIX_TEXT,	GADGET_ID_NONE,
     &custom_element.step_delay_fixed,
-    NULL,				"step delay", NULL
+    NULL,				"Step delay", NULL
   },
   {
     ED_COUNTER_ID_STEP_DELAY_RND,
@@ -1840,7 +1840,7 @@ static struct
     GADGET_ID_EXPLOSION_DELAY_DOWN,	GADGET_ID_EXPLOSION_DELAY_UP,
     GADGET_ID_EXPLOSION_DELAY_TEXT,	GADGET_ID_NONE,
     &custom_element.explosion_delay,
-    NULL,				"explosion delay", NULL
+    NULL,				"Explosion delay", NULL
   },
   {
     ED_COUNTER_ID_IGNITION_DELAY,
@@ -1849,7 +1849,7 @@ static struct
     GADGET_ID_IGNITION_DELAY_DOWN,	GADGET_ID_IGNITION_DELAY_UP,
     GADGET_ID_IGNITION_DELAY_TEXT,	GADGET_ID_NONE,
     &custom_element.ignition_delay,
-    NULL,				"ignition delay", "(by fire)"
+    NULL,				"Ignition delay", "(by fire)"
   },
 
   // ---------- element settings: configure (group elements) ------------------
@@ -1861,7 +1861,7 @@ static struct
     GADGET_ID_GROUP_CONTENT_DOWN,	GADGET_ID_GROUP_CONTENT_UP,
     GADGET_ID_GROUP_CONTENT_TEXT,	GADGET_ID_NONE,
     &group_element_info.num_elements,
-    NULL,				NULL, "number of elements in group"
+    NULL,				NULL, "Number of elements in group"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
@@ -1891,7 +1891,7 @@ static struct
     GADGET_ID_CHANGE_CONT_RND_DOWN,	GADGET_ID_CHANGE_CONT_RND_UP,
     GADGET_ID_CHANGE_CONT_RND_TEXT,	GADGET_ID_NONE,
     &custom_element_change.random_percentage,
-    NULL,				"use random replace:", "%"
+    NULL,				"Use random replace:", "%"
   },
 };
 
@@ -2739,7 +2739,7 @@ static struct
     -1,
     options_time_or_steps,
     &level.use_step_counter,
-    NULL, NULL, "(0 => no limit)",	"time or step limit"
+    NULL, NULL, "(0 => no limit)",	"Select time or step limit"
   },
   {
     ED_SELECTBOX_ID_TIME_SCORE_BASE,
@@ -2748,7 +2748,7 @@ static struct
     -1,
     options_time_score_base,
     &level.time_score_base,
-    NULL, NULL, NULL,			"time score for 1 or 10 seconds/steps"
+    NULL, NULL, NULL,			"Select time score for 1 or 10 seconds/steps"
   },
   {
     ED_SELECTBOX_ID_GAME_ENGINE_TYPE,
@@ -2757,7 +2757,7 @@ static struct
     -1,
     options_game_engine_type,
     &level.game_engine_type,
-    NULL, "game engine:", NULL,		"game engine"
+    NULL, "Game engine:", NULL,		"Select game engine"
   },
   {
     ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
@@ -2766,7 +2766,7 @@ static struct
     -1,
     options_bd_scheduling_type,
     &level.bd_scheduling_type,
-    NULL, "scheduling type:", NULL,	"level timing"
+    NULL, "Scheduling type:", NULL,	"Select level timing"
   },
   {
     ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
@@ -2775,7 +2775,7 @@ static struct
     -1,
     options_levelset_save_mode,
     &levelset_save_mode,
-    "Action:", NULL, NULL,		"action when saving level set"
+    "Action:", NULL, NULL,		"Select action when saving level set"
   },
 
   // ---------- element settings: configure (several elements) ----------------
@@ -2787,7 +2787,7 @@ static struct
     -1,
     options_wind_direction,
     &level.wind_direction_initial,
-    NULL, "initial wind direction:", NULL,	"initial wind direction"
+    NULL, "Initial wind direction:", NULL,	"Select initial wind direction"
   },
   {
     ED_SELECTBOX_ID_PLAYER_SPEED,
@@ -2796,7 +2796,7 @@ static struct
     -1,
     options_player_speed,
     &level.initial_player_stepsize[0],
-    NULL, "initial player speed:", NULL,	"initial player speed"
+    NULL, "Initial player speed:", NULL,	"Select initial player speed"
   },
   {
     ED_SELECTBOX_ID_MM_BALL_CHOICE_MODE,
@@ -2805,7 +2805,7 @@ static struct
     -1,
     options_group_choice_mode,
     &level.mm_ball_choice_mode,
-    NULL, "choice type:", NULL,		"type of content choice"
+    NULL, "Choice type:", NULL,		"Select type of content choice"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -2817,7 +2817,7 @@ static struct
     -1,
     options_access_type,
     &custom_element.access_type,
-    NULL, NULL, NULL,			"type of access to this field"
+    NULL, NULL, NULL,			"Select type of access to this field"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_ACCESS_LAYER,
@@ -2826,7 +2826,7 @@ static struct
     -1,
     options_access_layer,
     &custom_element.access_layer,
-    NULL, NULL, NULL,			"layer of access for this field"
+    NULL, NULL, NULL,			"Select layer of access for this field"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_ACCESS_PROTECTED,
@@ -2835,7 +2835,7 @@ static struct
     -1,
     options_access_protected,
     &custom_element.access_protected,
-    NULL, NULL, NULL,			"protected access for this field"
+    NULL, NULL, NULL,			"Select protected access for this field"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_ACCESS_DIRECTION,
@@ -2844,7 +2844,7 @@ static struct
     -1,
     options_access_direction,
     &custom_element.access_direction,
-    NULL, "from", NULL,			"access direction for this field"
+    NULL, "from", NULL,			"Select access direction for this field"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_WALK_TO_ACTION,
@@ -2853,7 +2853,7 @@ static struct
     -1,
     options_walk_to_action,
     &custom_element.walk_to_action,
-    NULL, NULL, NULL,			"diggable/collectible/pushable"
+    NULL, NULL, NULL,			"Select diggable/collectible/pushable"
   },
 
   // ---------- element settings: configure 2 (custom elements) ---------------
@@ -2865,7 +2865,7 @@ static struct
     -1,
     options_move_pattern,
     &custom_element.move_pattern,
-    NULL, "can move", NULL,		"element move pattern"
+    NULL, "Can move", NULL,		"Select element move pattern"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_MOVE_DIRECTION,
@@ -2874,7 +2874,7 @@ static struct
     -1,
     options_move_direction,
     &custom_element.move_direction_initial,
-    NULL, "starts moving", NULL,	"initial element move direction"
+    NULL, "Starts moving", NULL,	"Select initial element move direction"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_MOVE_STEPSIZE,
@@ -2883,7 +2883,7 @@ static struct
     -1,
     options_move_stepsize,
     &custom_element.move_stepsize,
-    NULL, "move/fall speed", NULL,	"speed of element movement"
+    NULL, "Move/fall speed", NULL,	"Select speed of element movement"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_MOVE_LEAVE_TYPE,
@@ -2895,7 +2895,7 @@ static struct
     // left text with leading spaces to place gadget next to "can dig" gadget
     // (needed because drawing area gadgets created after selectbox gadgets)
     // NULL, "can dig:    can", ":",	"leave behind or change element"
-    NULL, "            can", ":",	"leave behind or change element"
+    NULL, "            Can", ":",	"Select leave behind or change element"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_SMASH_TARGETS,
@@ -2904,7 +2904,7 @@ static struct
     -1,
     options_smash_targets,
     &custom_element.smash_targets,
-    NULL, "can smash", NULL,		"elements that can be smashed"
+    NULL, "Can smash", NULL,		"Select elements that can be smashed"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_SLIPPERY_TYPE,
@@ -2913,7 +2913,7 @@ static struct
     -1,
     options_slippery_type,
     &custom_element.slippery_type,
-    NULL, "slippery", NULL,		"where other elements fall down"
+    NULL, "Slippery", NULL,		"Select where other elements fall down"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_DEADLINESS,
@@ -2922,7 +2922,7 @@ static struct
     -1,
     options_deadliness,
     &custom_element.deadliness,
-    NULL, "deadly when", NULL,		"deadliness of element"
+    NULL, "Deadly when", NULL,		"Select deadliness of element"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_EXPLOSION_TYPE,
@@ -2931,7 +2931,7 @@ static struct
     -1,
     options_explosion_type,
     &custom_element.explosion_type,
-    NULL, "can explode", NULL,		"explosion type"
+    NULL, "Can explode", NULL,		"Select explosion type"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
@@ -2943,7 +2943,7 @@ static struct
     -1,
     options_time_units,
     &custom_element_change.delay_frames,
-    NULL, "delay time given in", NULL,	"delay time units for change"
+    NULL, "Delay time given in", NULL,	"Select delay time units for change"
   },
   {
     ED_SELECTBOX_ID_CHANGE_DIRECT_ACTION,
@@ -2952,7 +2952,7 @@ static struct
     -1,
     options_change_direct_action,
     &custom_element_change.direct_action,
-    NULL, NULL, NULL,			"type of direct action"
+    NULL, NULL, NULL,			"Select type of direct action"
   },
   {
     ED_SELECTBOX_ID_CHANGE_OTHER_ACTION,
@@ -2961,7 +2961,7 @@ static struct
     -1,
     options_change_other_action,
     &custom_element_change.other_action,
-    NULL, NULL, "element:",		"type of other element action"
+    NULL, NULL, "element:",		"Select type of other element action"
   },
   {
     ED_SELECTBOX_ID_CHANGE_SIDE,
@@ -2970,7 +2970,7 @@ static struct
     -1,
     options_change_trigger_side,
     &custom_element_change.trigger_side,
-    NULL, "at", "side",			"element side triggering change"
+    NULL, "at", "side",			"Select element side triggering change"
   },
   {
     ED_SELECTBOX_ID_CHANGE_PLAYER,
@@ -2979,7 +2979,7 @@ static struct
     -1,
     options_change_trigger_player,
     &custom_element_change.trigger_player,
-    NULL, "player:", " ",		"player that causes change"
+    NULL, "Player:", " ",		"Select player that causes change"
   },
   {
     ED_SELECTBOX_ID_CHANGE_PAGE,
@@ -2988,7 +2988,7 @@ static struct
     -1,
     options_change_trigger_page,
     &custom_element_change.trigger_page,
-    NULL, "page:", NULL,		"change page that causes change"
+    NULL, "Page:", NULL,		"Select change page that causes change"
   },
   {
     ED_SELECTBOX_ID_CHANGE_REPLACE_WHEN,
@@ -2997,7 +2997,7 @@ static struct
     -1,
     options_change_replace_when,
     &custom_element_change.replace_when,
-    NULL, "replace when", NULL,		"which elements can be replaced"
+    NULL, "Replace when", NULL,		"Select which elements can be replaced"
   },
   {
     ED_SELECTBOX_ID_ACTION_TYPE,
@@ -3006,7 +3006,7 @@ static struct
     15,
     options_action_type,
     &custom_element_change.action_type,
-    NULL, NULL, NULL,			"action on specified condition"
+    NULL, NULL, NULL,			"Select action on specified condition"
   },
   {
     ED_SELECTBOX_ID_ACTION_MODE,
@@ -3015,7 +3015,7 @@ static struct
     -1,
     options_action_mode_none,
     &custom_element_change.action_mode,
-    NULL, NULL, NULL,			"action operator"
+    NULL, NULL, NULL,			"Select action operator"
   },
   {
     ED_SELECTBOX_ID_ACTION_ARG,
@@ -3024,7 +3024,7 @@ static struct
     -1,
     options_action_arg_none,
     &custom_element_change.action_arg,
-    NULL, NULL, NULL,			"action parameter"
+    NULL, NULL, NULL,			"Select action parameter"
   },
   {
     ED_SELECTBOX_ID_SELECT_CHANGE_PAGE,
@@ -3033,7 +3033,7 @@ static struct
     3,
     options_change_page,
     &custom_element.current_change_page,
-    NULL, NULL, NULL,			"element change page"
+    NULL, NULL, NULL,			"Select element change page"
   },
 
   // ---------- element settings: configure (group elements) ------------------
@@ -3045,7 +3045,7 @@ static struct
     -1,
     options_group_choice_mode,
     &group_element_info.choice_mode,
-    NULL, "choice type:", NULL,		"type of group element choice"
+    NULL, "Choice type:", NULL,		"Select type of group element choice"
   },
 };
 
@@ -3188,28 +3188,28 @@ static struct
     IMG_EDITOR_COUNTER_DOWN,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_PREV_CHANGE_PAGE,		GADGET_ID_NONE,
-    NULL, NULL,				"select previous change page"
+    NULL, NULL,				"Select previous change page"
   },
   {
     ED_GRAPHICBUTTON_ID_NEXT_CHANGE_PAGE,
     IMG_EDITOR_COUNTER_UP,
     -1,					ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_NEXT_CHANGE_PAGE,		GADGET_ID_SELECT_CHANGE_PAGE,
-    NULL, "change page",		"select next change page"
+    NULL, "Change page",		"Select next change page"
   },
   {
     ED_GRAPHICBUTTON_ID_COPY_CHANGE_PAGE,
     IMG_GFX_EDITOR_BUTTON_CP_COPY,
     -1,					ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_COPY_CHANGE_PAGE,		GADGET_ID_NEXT_CHANGE_PAGE,
-    " ", NULL,				"copy settings from this change page"
+    " ", NULL,				"Copy settings from this change page"
   },
   {
     ED_GRAPHICBUTTON_ID_PASTE_CHANGE_PAGE,
     IMG_GFX_EDITOR_BUTTON_CP_PASTE,
     -1,					ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_PASTE_CHANGE_PAGE,	GADGET_ID_COPY_CHANGE_PAGE,
-    NULL, NULL,				"paste settings to this change page"
+    NULL, NULL,				"Paste settings to this change page"
   },
 };
 
@@ -3230,37 +3230,37 @@ static struct
     ED_SCROLLBUTTON_ID_AREA_UP,
     IMG_EDITOR_PLAYFIELD_SCROLL_UP,
     GADGET_ID_SCROLL_UP,
-    "scroll level editing area up"
+    "Scroll level editing area up"
   },
   {
     ED_SCROLLBUTTON_ID_AREA_DOWN,
     IMG_EDITOR_PLAYFIELD_SCROLL_DOWN,
     GADGET_ID_SCROLL_DOWN,
-    "scroll level editing area down"
+    "Scroll level editing area down"
   },
   {
     ED_SCROLLBUTTON_ID_AREA_LEFT,
     IMG_EDITOR_PLAYFIELD_SCROLL_LEFT,
     GADGET_ID_SCROLL_LEFT,
-    "scroll level editing area left"
+    "Scroll level editing area left"
   },
   {
     ED_SCROLLBUTTON_ID_AREA_RIGHT,
     IMG_EDITOR_PLAYFIELD_SCROLL_RIGHT,
     GADGET_ID_SCROLL_RIGHT,
-    "scroll level editing area right"
+    "Scroll level editing area right"
   },
   {
     ED_SCROLLBUTTON_ID_LIST_UP,
     IMG_EDITOR_PALETTE_SCROLL_UP,
     GADGET_ID_SCROLL_LIST_UP,
-    "scroll element list up ('Page Up')"
+    "Scroll element list up ('Page Up')"
   },
   {
     ED_SCROLLBUTTON_ID_LIST_DOWN,
     IMG_EDITOR_PALETTE_SCROLL_DOWN,
     GADGET_ID_SCROLL_LIST_DOWN,
-    "scroll element list down ('Page Down')"
+    "Scroll element list down ('Page Down')"
   },
 };
 
@@ -3286,21 +3286,21 @@ static struct
     IMG_EDITOR_PLAYFIELD_SCROLLBAR,
     GD_TYPE_SCROLLBAR_HORIZONTAL,
     GADGET_ID_SCROLL_HORIZONTAL,
-    "scroll level editing area horizontally"
+    "Scroll level editing area horizontally"
   },
   {
     ED_SCROLLBAR_ID_AREA_VERTICAL,
     IMG_EDITOR_PLAYFIELD_SCROLLBAR,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_VERTICAL,
-    "scroll level editing area vertically"
+    "Scroll level editing area vertically"
   },
   {
     ED_SCROLLBAR_ID_LIST_VERTICAL,
     IMG_EDITOR_PALETTE_SCROLLBAR,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_LIST_VERTICAL,
-    "scroll element list vertically"
+    "Scroll element list vertically"
   }
 };
 
@@ -3323,7 +3323,7 @@ static struct
     GADGET_ID_RANDOM_PERCENTAGE,	GADGET_ID_LEVEL_RANDOM_UP,
     RADIO_NR_RANDOM_ELEMENTS,
     &random_placement_method,		RANDOM_USE_PERCENTAGE,
-    " ", "percentage",			"use percentage for random elements"
+    " ", "percentage",			"Use percentage for random elements"
   },
   {
     ED_RADIOBUTTON_ID_QUANTITY,
@@ -3331,7 +3331,7 @@ static struct
     GADGET_ID_RANDOM_QUANTITY,		GADGET_ID_RANDOM_PERCENTAGE,
     RADIO_NR_RANDOM_ELEMENTS,
     &random_placement_method,		RANDOM_USE_QUANTITY,
-    " ", "quantity",			"use quantity for random elements"
+    " ", "quantity",			"Use quantity for random elements"
   }
 };
 
@@ -3353,7 +3353,7 @@ static struct
     GADGET_ID_AUTO_COUNT_GEMS,		GADGET_ID_NONE,
     &level.auto_count_gems,
     NULL, NULL,
-    "automatically count gems needed",	"set counter to number of gems"
+    "Automatically count gems needed",	"Set counter to number of gems"
   },
   {
     ED_CHECKBUTTON_ID_RATE_TIME_OVER_SCORE,
@@ -3361,7 +3361,7 @@ static struct
     GADGET_ID_RATE_TIME_OVER_SCORE,	GADGET_ID_NONE,
     &level.rate_time_over_score,
     NULL, NULL,
-    "rate time/steps used over score",	"sort high scores by playing time/steps"
+    "Rate time/steps used over score",	"Sort high scores by playing time/steps"
   },
   {
     ED_CHECKBUTTON_ID_USE_LEVELSET_ARTWORK,
@@ -3369,7 +3369,7 @@ static struct
     GADGET_ID_USE_LEVELSET_ARTWORK,	GADGET_ID_NONE,
     &levelset_use_levelset_artwork,
     NULL, NULL,
-    "use current custom artwork",	"use custom artwork of this level set"
+    "Use current custom artwork",	"Use custom artwork of this level set"
   },
   {
     ED_CHECKBUTTON_ID_COPY_LEVEL_TEMPLATE,
@@ -3377,7 +3377,7 @@ static struct
     GADGET_ID_COPY_LEVEL_TEMPLATE,	GADGET_ID_NONE,
     &levelset_copy_level_template,
     NULL, NULL,
-    "copy current level template",	"copy level template of this level set"
+    "Copy current level template",	"Copy level template of this level set"
   },
   {
     ED_CHECKBUTTON_ID_RANDOM_RESTRICTED,
@@ -3385,7 +3385,7 @@ static struct
     GADGET_ID_RANDOM_RESTRICTED,	GADGET_ID_NONE,
     &random_placement_background_restricted,
     NULL, NULL,
-    "restrict random placement to:",	"set random placement restriction"
+    "Restrict random placement to:",	"Set random placement restriction"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_3,
@@ -3393,7 +3393,7 @@ static struct
     GADGET_ID_CUSTOM_USE_TEMPLATE_3,	GADGET_ID_NONE,
     &setup.editor.use_template_for_new_levels,
     "Template for new levels and CE/GE:", NULL,
-    "use template for new levels",	"use template for level properties"
+    "Use template for new levels",	"Use template for level properties"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_2,
@@ -3401,7 +3401,7 @@ static struct
     GADGET_ID_CUSTOM_USE_TEMPLATE_2,	GADGET_ID_NONE,
     &level.use_custom_template,
     NULL, NULL,
-    "use template for custom elements",	"use template for custom properties"
+    "Use template for custom elements",	"Use template for custom properties"
   },
   {
     ED_CHECKBUTTON_ID_BD_INTERMISSION,
@@ -3409,7 +3409,7 @@ static struct
     GADGET_ID_BD_INTERMISSION,		GADGET_ID_NONE,
     &level.bd_intermission,
     "Boulder Dash game engine settings:", NULL,
-    "intermission",			"level is an intermission level"
+    "Intermission",			"Level is an intermission level"
   },
   {
     ED_CHECKBUTTON_ID_BD_PAL_TIMING,
@@ -3417,7 +3417,7 @@ static struct
     GADGET_ID_BD_PAL_TIMING,		GADGET_ID_NONE,
     &level.bd_pal_timing,
     NULL, NULL,
-    "PAL timing",			"use slower timer (like PAL C64)"
+    "PAL timing",			"Use slower timer (like PAL C64)"
   },
   {
     ED_CHECKBUTTON_ID_BD_LINE_SHIFTING_BORDERS,
@@ -3425,7 +3425,7 @@ static struct
     GADGET_ID_BD_LINE_SHIFTING_BORDERS,	GADGET_ID_NONE,
     &level.bd_line_shifting_borders,
     "Compatibility settings:", NULL,
-    "line-shifting borders",		"use line-shifting wrap-around"
+    "Line-shifting borders",		"Use line-shifting wrap-around"
   },
   {
     ED_CHECKBUTTON_ID_BD_SCAN_FIRST_AND_LAST_ROW,
@@ -3433,7 +3433,7 @@ static struct
     GADGET_ID_BD_SCAN_FIRST_AND_LAST_ROW, GADGET_ID_NONE,
     &level.bd_scan_first_and_last_row,
     NULL, NULL,
-    "scan first and last row",		"also process top/bottom border rows"
+    "Scan first and last row",		"Also process top/bottom border rows"
   },
   {
     ED_CHECKBUTTON_ID_BD_SHORT_EXPLOSIONS,
@@ -3441,7 +3441,7 @@ static struct
     GADGET_ID_BD_SHORT_EXPLOSIONS,	GADGET_ID_NONE,
     &level.bd_short_explosions,
     NULL, NULL,
-    "short explosions",			"use four game cycles for explosions"
+    "Short explosions",			"Use four game cycles for explosions"
   },
   {
     ED_CHECKBUTTON_ID_BD_GRAVITY_AFFECTS_ALL,
@@ -3449,7 +3449,7 @@ static struct
     GADGET_ID_BD_GRAVITY_AFFECTS_ALL,	GADGET_ID_NONE,
     &level.bd_gravity_affects_all,
     NULL, NULL,
-    "gravity change affects everything", "gravity affects all falling objects"
+    "Gravity change affects everything", "Gravity affects all falling objects"
   },
 
   // ---------- element settings: configure (various elements) ----------------
@@ -3460,7 +3460,7 @@ static struct
     GADGET_ID_STICK_ELEMENT,		GADGET_ID_NONE,
     &stick_element_properties_window,
     NULL, NULL,
-    "stick this screen to edit content","stick this screen to edit content"
+    "Stick this screen to edit content","Stick this screen to edit content"
   },
   {
     ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
@@ -3468,7 +3468,7 @@ static struct
     GADGET_ID_EM_SLIPPERY_GEMS,		GADGET_ID_NONE,
     &level.em_slippery_gems,
     NULL, NULL,
-    "slip down from certain flat walls","use EM/DC style slipping behaviour"
+    "Slip down from certain flat walls","Use EM/DC style slipping behaviour"
   },
   {
     ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
@@ -3476,7 +3476,7 @@ static struct
     GADGET_ID_EM_EXPLODES_BY_FIRE,	GADGET_ID_NONE,
     &level.em_explodes_by_fire,
     NULL, NULL,
-    "explodes with chain reaction",	"use R'n'D style explosion behaviour"
+    "Explodes with chain reaction",	"Use R'n'D style explosion behaviour"
   },
   {
     ED_CHECKBUTTON_ID_USE_SPRING_BUG,
@@ -3484,7 +3484,7 @@ static struct
     GADGET_ID_USE_SPRING_BUG,		GADGET_ID_NONE,
     &level.use_spring_bug,
     NULL, NULL,
-    "use spring pushing bug",		"use odd spring pushing behaviour"
+    "Use spring pushing bug",		"Use odd spring pushing behaviour"
   },
   {
     ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
@@ -3492,7 +3492,7 @@ static struct
     GADGET_ID_USE_TIME_ORB_BUG,		GADGET_ID_NONE,
     &level.use_time_orb_bug,
     NULL, NULL,
-    "use time orb bug",			"use odd time orb behaviour"
+    "Use time orb bug",			"Use odd time orb behaviour"
   },
   {
     ED_CHECKBUTTON_ID_USE_LIFE_BUGS,
@@ -3500,7 +3500,7 @@ static struct
     GADGET_ID_USE_LIFE_BUGS,		GADGET_ID_NONE,
     &level.use_life_bugs,
     NULL, NULL,
-    "use buggy element behaviour",	"use odd (historic) element behaviour"
+    "Use buggy element behaviour",	"Use odd (historic) element behaviour"
   },
   {
     ED_CHECKBUTTON_ID_RANDOM_BALL_CONTENT,
@@ -3508,7 +3508,7 @@ static struct
     GADGET_ID_RANDOM_BALL_CONTENT,	GADGET_ID_NONE,
     &level.ball_random,
     NULL, NULL,
-    "create single random element",	"only create one element from content"
+    "Create single random element",	"Only create one element from content"
   },
   {
     ED_CHECKBUTTON_ID_INITIAL_BALL_ACTIVE,
@@ -3516,7 +3516,7 @@ static struct
     GADGET_ID_INITIAL_BALL_ACTIVE,	GADGET_ID_NONE,
     &level.ball_active_initial,
     NULL, NULL,
-    "magic ball initially activated",	"activate magic ball after level start"
+    "Magic ball initially activated",	"Activate magic ball after level start"
   },
   {
     ED_CHECKBUTTON_ID_GROW_INTO_DIGGABLE,
@@ -3524,7 +3524,7 @@ static struct
     GADGET_ID_GROW_INTO_DIGGABLE,	GADGET_ID_NONE,
     &level.grow_into_diggable,
     NULL, NULL,
-    "can grow into anything diggable",	"grow into more than just sand"
+    "Can grow into anything diggable",	"Grow into more than just sand"
   },
   {
     ED_CHECKBUTTON_ID_SB_FIELDS_NEEDED,
@@ -3532,7 +3532,7 @@ static struct
     GADGET_ID_SB_FIELDS_NEEDED,		GADGET_ID_NONE,
     &level.sb_fields_needed,
     NULL, NULL,
-    "all fields need to be filled",	"require all SB fields to be solved"
+    "All fields need to be filled",	"Require all SB fields to be solved"
   },
   {
     ED_CHECKBUTTON_ID_SB_OBJECTS_NEEDED,
@@ -3540,7 +3540,7 @@ static struct
     GADGET_ID_SB_OBJECTS_NEEDED,	GADGET_ID_NONE,
     &level.sb_objects_needed,
     NULL, NULL,
-    "all objects need to be placed",	"require all SB objects to be solved"
+    "All objects need to be placed",	"Require all SB objects to be solved"
   },
   {
     ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN,
@@ -3548,7 +3548,7 @@ static struct
     GADGET_ID_AUTO_EXIT_SOKOBAN,	GADGET_ID_NONE,
     &level.auto_exit_sokoban,
     NULL, NULL,
-    "exit level if all tasks solved",	"automatically finish Sokoban levels"
+    "Exit level if all tasks solved",	"Automatically finish Sokoban levels"
   },
   {
     ED_CHECKBUTTON_ID_SOLVED_BY_ONE_PLAYER,
@@ -3556,7 +3556,7 @@ static struct
     GADGET_ID_SOLVED_BY_ONE_PLAYER,	GADGET_ID_NONE,
     &level.solved_by_one_player,
     NULL, NULL,
-    "only one player must enter exit",	"level solved by first player in exit"
+    "Only one player must enter exit",	"Level solved by first player in exit"
   },
   {
     ED_CHECKBUTTON_ID_FINISH_DIG_COLLECT,
@@ -3564,7 +3564,7 @@ static struct
     GADGET_ID_FINISH_DIG_COLLECT,	GADGET_ID_NONE,
     &level.finish_dig_collect,
     NULL, NULL,
-    "CE action on finished dig/collect", "only finished dig/collect triggers CE"
+    "CE action on finished dig/collect", "Only finished dig/collect triggers CE"
   },
   {
     ED_CHECKBUTTON_ID_KEEP_WALKABLE_CE,
@@ -3572,7 +3572,7 @@ static struct
     GADGET_ID_KEEP_WALKABLE_CE,		GADGET_ID_NONE,
     &level.keep_walkable_ce,
     NULL, NULL,
-    "keep walkable CE changed to player", "keep CE changing to player if walkable"
+    "Keep walkable CE changed to player", "Keep CE changing to player if walkable"
   },
   {
     ED_CHECKBUTTON_ID_CONTINUOUS_SNAPPING,
@@ -3580,7 +3580,7 @@ static struct
     GADGET_ID_CONTINUOUS_SNAPPING,	GADGET_ID_NONE,
     &level.continuous_snapping,
     NULL, NULL,
-    "continuous snapping",		"use snapping without releasing key"
+    "Continuous snapping",		"Use snapping without releasing key"
   },
   {
     ED_CHECKBUTTON_ID_BLOCK_SNAP_FIELD,
@@ -3588,7 +3588,7 @@ static struct
     GADGET_ID_BLOCK_SNAP_FIELD,		GADGET_ID_NONE,
     &level.block_snap_field,
     NULL, NULL,
-    "block snapped field when snapping", "use snapping delay to show animation"
+    "Block snapped field when snapping", "Use snapping delay to show animation"
   },
   {
     ED_CHECKBUTTON_ID_BLOCK_LAST_FIELD,
@@ -3596,7 +3596,7 @@ static struct
     GADGET_ID_BLOCK_LAST_FIELD,		GADGET_ID_NONE,
     &level.block_last_field,
     NULL, NULL,
-    "block last field when moving",	"player blocks last field when moving"
+    "Block last field when moving",	"Player blocks last field when moving"
   },
   {
     ED_CHECKBUTTON_ID_SP_BLOCK_LAST_FIELD,
@@ -3604,7 +3604,7 @@ static struct
     GADGET_ID_SP_BLOCK_LAST_FIELD,	GADGET_ID_NONE,
     &level.sp_block_last_field,
     NULL, NULL,
-    "block last field when moving",	"player blocks last field when moving"
+    "Block last field when moving",	"Player blocks last field when moving"
   },
   {
     ED_CHECKBUTTON_ID_INSTANT_RELOCATION,
@@ -3612,7 +3612,7 @@ static struct
     GADGET_ID_INSTANT_RELOCATION,	GADGET_ID_NONE,
     &level.instant_relocation,
     NULL, NULL,
-    "no scrolling when relocating",	"player gets relocated without delay"
+    "No scrolling when relocating",	"Player gets relocated without delay"
   },
   {
     ED_CHECKBUTTON_ID_SHIFTED_RELOCATION,
@@ -3620,7 +3620,7 @@ static struct
     GADGET_ID_SHIFTED_RELOCATION,	GADGET_ID_NONE,
     &level.shifted_relocation,
     NULL, NULL,
-    "no centering when relocating",	"level not centered after relocation"
+    "No centering when relocating",	"Level not centered after relocation"
   },
   {
     ED_CHECKBUTTON_ID_LAZY_RELOCATION,
@@ -3628,7 +3628,7 @@ static struct
     GADGET_ID_LAZY_RELOCATION,		GADGET_ID_NONE,
     &level.lazy_relocation,
     NULL, NULL,
-    "only redraw off-screen relocation","no redraw if relocation target visible"
+    "Only redraw off-screen relocation","No redraw if relocation target visible"
   },
   {
     ED_CHECKBUTTON_ID_USE_START_ELEMENT,
@@ -3636,7 +3636,7 @@ static struct
     GADGET_ID_USE_START_ELEMENT,	GADGET_ID_NONE,
     &level.use_start_element[0],
     NULL, NULL,
-    "use level start element:",	       "start level at this element's position"
+    "Use level start element:",	       "Start level at this element's position"
   },
   {
     ED_CHECKBUTTON_ID_USE_ARTWORK_ELEMENT,
@@ -3644,7 +3644,7 @@ static struct
     GADGET_ID_USE_ARTWORK_ELEMENT,	GADGET_ID_NONE,
     &level.use_artwork_element[0],
     NULL, NULL,
-    "use artwork from element:",	"use player artwork from other element"
+    "Use artwork from element:",	"Use player artwork from other element"
   },
   {
     ED_CHECKBUTTON_ID_USE_EXPLOSION_ELEMENT,
@@ -3652,7 +3652,7 @@ static struct
     GADGET_ID_USE_EXPLOSION_ELEMENT,	GADGET_ID_NONE,
     &level.use_explosion_element[0],
     NULL, NULL,
-    "use explosion from element:",	"use explosion properties from element"
+    "Use explosion from element:",	"Use explosion properties from element"
   },
   {
     ED_CHECKBUTTON_ID_INITIAL_GRAVITY,
@@ -3660,7 +3660,7 @@ static struct
     GADGET_ID_INITIAL_GRAVITY,		GADGET_ID_NONE,
     &level.initial_player_gravity[0],
     NULL, NULL,
-    "use initial gravity",		"set initial player gravity"
+    "Use initial gravity",		"Set initial player gravity"
   },
   {
     ED_CHECKBUTTON_ID_USE_INITIAL_INVENTORY,
@@ -3668,7 +3668,7 @@ static struct
     GADGET_ID_USE_INITIAL_INVENTORY,	GADGET_ID_NONE,
     &level.use_initial_inventory[0],
     NULL, NULL,
-    "use initial inventory:",		"use collected elements on level start"
+    "Use initial inventory:",		"Use collected elements on level start"
   },
   {
     ED_CHECKBUTTON_ID_CAN_PASS_TO_WALKABLE,
@@ -3676,7 +3676,7 @@ static struct
     GADGET_ID_CAN_PASS_TO_WALKABLE,	GADGET_ID_NONE,
     &level.can_pass_to_walkable,
     NULL, NULL,
-    "can pass to walkable element",	"player can pass to empty or walkable"
+    "Can pass to walkable element",	"Player can pass to empty or walkable"
   },
   {
     ED_CHECKBUTTON_ID_CAN_FALL_INTO_ACID,
@@ -3684,7 +3684,7 @@ static struct
     GADGET_ID_CAN_FALL_INTO_ACID,	GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE_INTO_ACID],
     NULL, NULL,
-    "can fall into acid (with gravity)","player can fall into acid pool"
+    "Can fall into acid (with gravity)","Player can fall into acid pool"
   },
   {
     ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID,
@@ -3692,7 +3692,7 @@ static struct
     GADGET_ID_CAN_MOVE_INTO_ACID,	GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE_INTO_ACID],
     NULL, NULL,
-    "can move into acid",		"element can move into acid pool"
+    "Can move into acid",		"Element can move into acid pool"
   },
   {
     ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH,
@@ -3700,7 +3700,7 @@ static struct
     GADGET_ID_DONT_COLLIDE_WITH,	GADGET_ID_NONE,
     &custom_element_properties[EP_DONT_COLLIDE_WITH],
     NULL, NULL,
-    "deadly when colliding with",	"element is deadly when hitting player"
+    "Deadly when colliding with",	"Element is deadly when hitting player"
   },
   {
     ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS,
@@ -3708,7 +3708,7 @@ static struct
     GADGET_ID_BD_DIAGONAL_MOVEMENTS,	GADGET_ID_NONE,
     &level.bd_diagonal_movements,
     NULL, NULL,
-    "can move diagonally",		"player can move diagonally"
+    "Can move diagonally",		"Player can move diagonally"
   },
   {
     ED_CHECKBUTTON_ID_BD_TOPMOST_PLAYER_ACTIVE,
@@ -3716,7 +3716,7 @@ static struct
     GADGET_ID_BD_TOPMOST_PLAYER_ACTIVE,	GADGET_ID_NONE,
     &level.bd_topmost_player_active,
     NULL, NULL,
-    "topmost player is active",		"use first player found on playfield"
+    "Topmost player is active",		"Use first player found on playfield"
   },
   {
     ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET,
@@ -3724,7 +3724,7 @@ static struct
     GADGET_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET, GADGET_ID_NONE,
     &level.bd_push_mega_rock_with_sweet,
     NULL, NULL,
-    "mega rocks pushable with sweet",	"push mega rocks after eating sweet"
+    "Mega rocks pushable with sweet",	"Push mega rocks after eating sweet"
   },
   {
     ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING,
@@ -3732,7 +3732,7 @@ static struct
     GADGET_ID_BD_MAGIC_WALL_WAIT_HATCHING, GADGET_ID_NONE,
     &level.bd_magic_wall_wait_hatching,
     NULL, NULL,
-    "wait for player's birth",		"timer start waits for player's birth"
+    "Wait for player's birth",		"Timer start waits for player's birth"
   },
   {
     ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA,
@@ -3740,7 +3740,7 @@ static struct
     GADGET_ID_BD_MAGIC_WALL_STOPS_AMOEBA, GADGET_ID_NONE,
     &level.bd_magic_wall_stops_amoeba,
     NULL, NULL,
-    "turn amoeba to diamonds",		"activation changes amoeba to diamonds"
+    "Turn amoeba to diamonds",		"Activation changes amoeba to diamonds"
   },
   {
     ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING,
@@ -3748,7 +3748,7 @@ static struct
     GADGET_ID_BD_AMOEBA_WAIT_FOR_HATCHING, GADGET_ID_NONE,
     &level.bd_amoeba_wait_for_hatching,
     NULL, NULL,
-    "wait for player's birth",		"timer start waits for player's birth"
+    "Wait for player's birth",		"Timer start waits for player's birth"
   },
   {
     ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY,
@@ -3756,7 +3756,7 @@ static struct
     GADGET_ID_BD_AMOEBA_START_IMMEDIATELY, GADGET_ID_NONE,
     &level.bd_amoeba_start_immediately,
     NULL, NULL,
-    "start growing immediately",	"start slow growth time immediately"
+    "Start growing immediately",	"Start slow growth time immediately"
   },
   {
     ED_CHECKBUTTON_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA,
@@ -3764,7 +3764,7 @@ static struct
     GADGET_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA, GADGET_ID_NONE,
     &level.bd_amoeba_2_explode_by_amoeba,
     NULL, NULL,
-    "explodes if touched by amoeba",	"amoeba 2 explodes if touched by amoeba"
+    "Explodes if touched by amoeba",	"Amoeba 2 explodes if touched by amoeba"
   },
   {
     ED_CHECKBUTTON_ID_BD_VOODOO_COLLECTS_DIAMONDS,
@@ -3772,7 +3772,7 @@ static struct
     GADGET_ID_BD_VOODOO_COLLECTS_DIAMONDS, GADGET_ID_NONE,
     &level.bd_voodoo_collects_diamonds,
     NULL, NULL,
-    "can collect diamonds",		"can collect diamonds for the player"
+    "Can collect diamonds",		"Can collect diamonds for the player"
   },
   {
     ED_CHECKBUTTON_ID_BD_VOODOO_HURT_KILLS_PLAYER,
@@ -3780,7 +3780,7 @@ static struct
     GADGET_ID_BD_VOODOO_HURT_KILLS_PLAYER, GADGET_ID_NONE,
     &level.bd_voodoo_hurt_kills_player,
     NULL, NULL,
-    "player is killed if hurt",		"if hurt in any way, player is killed"
+    "Player is killed if hurt",		"If hurt in any way, player is killed"
   },
   {
     ED_CHECKBUTTON_ID_BD_VOODOO_DIES_BY_ROCK,
@@ -3788,7 +3788,7 @@ static struct
     GADGET_ID_BD_VOODOO_DIES_BY_ROCK,	GADGET_ID_NONE,
     &level.bd_voodoo_dies_by_rock,
     NULL, NULL,
-    "killed by falling rock",		"can be killed by a falling rock"
+    "Killed by falling rock",		"Can be killed by a falling rock"
   },
   {
     ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
@@ -3796,7 +3796,7 @@ static struct
     GADGET_ID_BD_VOODOO_VANISH_BY_EXPLOSION, GADGET_ID_NONE,
     &level.bd_voodoo_vanish_by_explosion,
     NULL, NULL,
-    "disappears in explosions",		"can be destroyed by explosions"
+    "Disappears in explosions",		"Can be destroyed by explosions"
   },
   {
     ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE,
@@ -3804,7 +3804,7 @@ static struct
     GADGET_ID_BD_SLIME_IS_PREDICTABLE, GADGET_ID_NONE,
     &level.bd_slime_is_predictable,
     NULL, NULL,
-    "slime is predictable",		"use predictable random numbers"
+    "Slime is predictable",		"Use predictable random numbers"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -3812,7 +3812,7 @@ static struct
     GADGET_ID_ENVELOPE_AUTOWRAP,	GADGET_ID_NONE,
     &level.envelope[0].autowrap,
     NULL, NULL,
-    "auto-wrap",			"automatically wrap envelope text"
+    "Auto-wrap",			"Automatically wrap envelope text"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
@@ -3820,15 +3820,15 @@ static struct
     GADGET_ID_ENVELOPE_CENTERED,	GADGET_ID_ENVELOPE_AUTOWRAP,
     &level.envelope[0].centered,
     NULL, " ",
-    "centered",				"automatically center envelope text"
+    "Centered",				"Automatically center envelope text"
   },
   {
     ED_CHECKBUTTON_ID_MM_LASER_RED,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_MM_LASER_RED,		GADGET_ID_NONE,
     &level.mm_laser_red,
-    "choose color components for laser:", NULL,
-    "red",				"use red color components in laser"
+    "Choose color components for laser:", NULL,
+    "Red",				"Use red color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_MM_LASER_GREEN,
@@ -3836,7 +3836,7 @@ static struct
     GADGET_ID_MM_LASER_GREEN,		GADGET_ID_NONE,
     &level.mm_laser_green,
     NULL, NULL,
-    "green",				"use green color components in laser"
+    "Green",				"Use green color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_MM_LASER_BLUE,
@@ -3844,15 +3844,15 @@ static struct
     GADGET_ID_MM_LASER_BLUE,		GADGET_ID_NONE,
     &level.mm_laser_blue,
     NULL, NULL,
-    "blue",				"use blue color components in laser"
+    "Blue",				"Use blue color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_DF_LASER_RED,
     ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
     GADGET_ID_DF_LASER_RED,		GADGET_ID_NONE,
     &level.df_laser_red,
-    "choose color components for laser:", NULL,
-    "red",				"use red color components in laser"
+    "Choose color components for laser:", NULL,
+    "Red",				"Use red color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_DF_LASER_GREEN,
@@ -3860,7 +3860,7 @@ static struct
     GADGET_ID_DF_LASER_GREEN,		GADGET_ID_NONE,
     &level.df_laser_green,
     NULL, NULL,
-    "green",				"use green color components in laser"
+    "Green",				"Use green color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_DF_LASER_BLUE,
@@ -3868,7 +3868,7 @@ static struct
     GADGET_ID_DF_LASER_BLUE,		GADGET_ID_NONE,
     &level.df_laser_blue,
     NULL, NULL,
-    "blue",				"use blue color components in laser"
+    "Blue",				"Use blue color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_ROTATE_MM_BALL_CONTENT,
@@ -3876,7 +3876,7 @@ static struct
     GADGET_ID_ROTATE_MM_BALL_CONTENT,	GADGET_ID_NONE,
     &level.rotate_mm_ball_content,
     NULL, NULL,
-    "randomly rotate created content",	"randomly rotate newly created content"
+    "Randomly rotate created content",	"Randomly rotate newly created content"
   },
   {
     ED_CHECKBUTTON_ID_EXPLODE_MM_BALL,
@@ -3884,7 +3884,7 @@ static struct
     GADGET_ID_EXPLODE_MM_BALL,		GADGET_ID_NONE,
     &level.explode_mm_ball,
     NULL, NULL,
-    "explode ball instead of melting",	"use explosion to release ball content"
+    "Explode ball instead of melting",	"Use explosion to release ball content"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -3895,7 +3895,7 @@ static struct
     GADGET_ID_CUSTOM_USE_GRAPHIC,	GADGET_ID_NONE,
     &custom_element.use_gfx_element,
     NULL, NULL,
-    "use graphic of element:",		"use existing element graphic"
+    "Use graphic of element:",		"Use existing element graphic"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_1,
@@ -3903,7 +3903,7 @@ static struct
     GADGET_ID_CUSTOM_USE_TEMPLATE_1,	GADGET_ID_NONE,
     &level.use_custom_template,
     NULL, NULL,
-    "use template",			"use template for custom properties"
+    "Use template",			"Use template for custom properties"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_ACCESSIBLE,
@@ -3911,7 +3911,7 @@ static struct
     GADGET_ID_CUSTOM_ACCESSIBLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_ACCESSIBLE],
     NULL, NULL,
-    NULL,				"player can walk to or pass this field"
+    NULL,				"Player can walk to or pass this field"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_GRAV_REACHABLE,
@@ -3919,7 +3919,7 @@ static struct
     GADGET_ID_CUSTOM_GRAV_REACHABLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_GRAVITY_REACHABLE],
     NULL, NULL,
-    "reachable despite gravity",	"player can walk/dig despite gravity"
+    "Reachable despite gravity",	"Player can walk/dig despite gravity"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_LAST_VALUE,
@@ -3927,7 +3927,7 @@ static struct
     GADGET_ID_CUSTOM_USE_LAST_VALUE,	GADGET_ID_NONE,
     &custom_element.use_last_ce_value,
     NULL, NULL,
-    "use last CE value after change",	"use last CE value after change"
+    "Use last CE value after change",	"Use last CE value after change"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_WALK_TO_OBJECT,
@@ -3935,7 +3935,7 @@ static struct
     GADGET_ID_CUSTOM_WALK_TO_OBJECT,	GADGET_ID_NONE,
     &custom_element_properties[EP_WALK_TO_OBJECT],
     NULL, NULL,
-    NULL,				"player can dig/collect/push element"
+    NULL,				"Player can dig/collect/push element"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE,
@@ -3943,7 +3943,7 @@ static struct
     GADGET_ID_CUSTOM_INDESTRUCTIBLE,	GADGET_ID_NONE,
     &custom_element_properties[EP_INDESTRUCTIBLE],
     NULL, NULL,
-    "indestructible",			"element is indestructible"
+    "Indestructible",			"Element is indestructible"
   },
 
   // ---------- element settings: configure 2 (custom elements) ---------------
@@ -3954,7 +3954,7 @@ static struct
     GADGET_ID_CUSTOM_CAN_MOVE,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE],
     NULL, NULL,
-    NULL,				"element can move with some pattern"
+    NULL,				"Element can move with some pattern"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_CAN_FALL,
@@ -3962,7 +3962,7 @@ static struct
     GADGET_ID_CUSTOM_CAN_FALL,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_FALL],
     NULL, NULL,
-    "can fall",				"element can fall down"
+    "Can fall",				"Element can fall down"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_CAN_SMASH,
@@ -3970,7 +3970,7 @@ static struct
     GADGET_ID_CUSTOM_CAN_SMASH,		GADGET_ID_CUSTOM_CAN_FALL,
     &custom_element_properties[EP_CAN_SMASH],
     NULL, " ",
-    NULL,				"element can smash other elements"
+    NULL,				"Element can smash other elements"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_SLIPPERY,
@@ -3978,7 +3978,7 @@ static struct
     GADGET_ID_CUSTOM_SLIPPERY,		GADGET_ID_NONE,
     &custom_element_properties[EP_SLIPPERY],
     NULL, NULL,
-    NULL,				"other elements can fall down from it"
+    NULL,				"Other elements can fall down from it"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_DEADLY,
@@ -3986,7 +3986,7 @@ static struct
     GADGET_ID_CUSTOM_DEADLY,		GADGET_ID_NONE,
     &custom_element_properties[EP_DEADLY],
     NULL, NULL,
-    NULL,				"element can kill the player"
+    NULL,				"Element can kill the player"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_CAN_EXPLODE,
@@ -3994,7 +3994,7 @@ static struct
     GADGET_ID_CUSTOM_CAN_EXPLODE,	GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_EXPLODE],
     NULL, NULL,
-    NULL,				"element can explode"
+    NULL,				"Element can explode"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_FIRE,
@@ -4002,7 +4002,7 @@ static struct
     GADGET_ID_CUSTOM_EXPLODE_FIRE,	GADGET_ID_NONE,
     &custom_element_properties[EP_EXPLODES_BY_FIRE],
     NULL, NULL,
-    "by fire",				"element can explode by fire/explosion"
+    "By fire",				"Element can explode by fire/explosion"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_SMASH,
@@ -4010,7 +4010,7 @@ static struct
     GADGET_ID_CUSTOM_EXPLODE_SMASH,	GADGET_ID_CUSTOM_EXPLODE_FIRE,
     &custom_element_properties[EP_EXPLODES_SMASHED],
     NULL, " ",
-    "smashed",				"element can explode when smashed"
+    "Smashed",				"Element can explode when smashed"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_IMPACT,
@@ -4018,7 +4018,7 @@ static struct
     GADGET_ID_CUSTOM_EXPLODE_IMPACT,	GADGET_ID_CUSTOM_EXPLODE_SMASH,
     &custom_element_properties[EP_EXPLODES_IMPACT],
     NULL, " ",
-    "impact",				"element can explode on impact"
+    "Impact",				"Element can explode on impact"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
@@ -4029,7 +4029,7 @@ static struct
     GADGET_ID_CUSTOM_CAN_CHANGE,	GADGET_ID_NONE,
     &custom_element_change.can_change,
     NULL, NULL,
-    "element changes to:",		"change element on specified condition"
+    "Element changes to:",		"Change element on specified condition"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_DELAY,
@@ -4037,7 +4037,7 @@ static struct
     GADGET_ID_CHANGE_DELAY,		GADGET_ID_NONE,
     &custom_element_change_events[CE_DELAY],
     NULL, NULL,
-    NULL,				"element changes after delay"
+    NULL,				"Element changes after delay"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_BY_DIRECT_ACT,
@@ -4045,7 +4045,7 @@ static struct
     GADGET_ID_CHANGE_BY_DIRECT_ACT,	GADGET_ID_NONE,
     &custom_element_change_events[CE_BY_DIRECT_ACTION],
     NULL, NULL,
-    NULL,				"element changes by direct action"
+    NULL,				"Element changes by direct action"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_BY_OTHER_ACT,
@@ -4053,7 +4053,7 @@ static struct
     GADGET_ID_CHANGE_BY_OTHER_ACT,	GADGET_ID_NONE,
     &custom_element_change_events[CE_BY_OTHER_ACTION],
     NULL, NULL,
-    NULL,				"element changes by other element"
+    NULL,				"Element changes by other element"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_USE_EXPLOSION,
@@ -4061,7 +4061,7 @@ static struct
     GADGET_ID_CHANGE_USE_EXPLOSION,	GADGET_ID_NONE,
     &custom_element_change.explode,
     NULL, NULL,
-    "explode instead of change",	"element explodes instead of change"
+    "Explode instead of change",	"Element explodes instead of change"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_USE_CONTENT,
@@ -4069,7 +4069,7 @@ static struct
     GADGET_ID_CHANGE_USE_CONTENT,	GADGET_ID_NONE,
     &custom_element_change.use_target_content,
     NULL, NULL,
-    "use extended change target:",	"element changes to more elements"
+    "Use extended change target:",	"Element changes to more elements"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_ONLY_COMPLETE,
@@ -4077,7 +4077,7 @@ static struct
     GADGET_ID_CHANGE_ONLY_COMPLETE,	GADGET_ID_NONE,
     &custom_element_change.only_if_complete,
     NULL, NULL,
-    "replace all or nothing",		"only replace when all can be changed"
+    "Replace all or nothing",		"Only replace when all can be changed"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_USE_RANDOM,
@@ -4085,7 +4085,7 @@ static struct
     GADGET_ID_CHANGE_USE_RANDOM,	GADGET_ID_NONE,
     &custom_element_change.use_random_replace,
     NULL, NULL,
-    NULL,				"use percentage for random replace"
+    NULL,				"Use percentage for random replace"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_HAS_ACTION,
@@ -4093,7 +4093,7 @@ static struct
     GADGET_ID_CHANGE_HAS_ACTION,	GADGET_ID_NONE,
     &custom_element_change.has_action,
     NULL, NULL,
-    NULL,				"execute action on specified condition"
+    NULL,				"Execute action on specified condition"
   },
 };
 
@@ -4263,7 +4263,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_ANDROID_CONTENT,		GADGET_ID_NONE,
     &level.android_clone_element[0],	MAX_ANDROID_ELEMENTS, 1,
-    NULL, NULL, "elements:", NULL,	"elements android can clone"
+    NULL, NULL, "Elements:", NULL,	"Elements android can clone"
   },
 
   // ---------- amoeba content ------------------------------------------------
@@ -4274,7 +4274,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_AMOEBA_CONTENT,		GADGET_ID_NONE,
     &level.amoeba_content,		1, 1,
-    "content:", NULL, NULL, NULL,	"amoeba content"
+    "Content:", NULL, NULL, NULL,	"Amoeba content"
   },
 
   // ---------- BD snap element -----------------------------------------------
@@ -4285,7 +4285,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_SNAP_ELEMENT,		GADGET_ID_NONE,
     &level.bd_snap_element,		1, 1,
-    "snap element:", NULL, NULL, NULL,	"element created when snapping"
+    "Snap element:", NULL, NULL, NULL,	"Element created when snapping"
   },
 
   // ---------- BD amoeba content ---------------------------------------------
@@ -4296,7 +4296,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG, GADGET_ID_NONE,
     &level.bd_amoeba_content_too_big,	1, 1,
-    "if too big, changes to:", NULL, NULL, NULL,	"BD amoeba content if too big"
+    "If too big, changes to:", NULL, NULL, NULL,	"BD amoeba content if too big"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED,
@@ -4304,7 +4304,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED, GADGET_ID_NONE,
     &level.bd_amoeba_content_enclosed,	1, 1,
-    "if enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba content if enclosed"
+    "If enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba content if enclosed"
   },
 
   // ---------- BD amoeba 2 content -------------------------------------------
@@ -4315,7 +4315,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG, GADGET_ID_NONE,
     &level.bd_amoeba_2_content_too_big,	1, 1,
-    "if too big, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if too big"
+    "If too big, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if too big"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
@@ -4323,7 +4323,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_ENCLOSED, GADGET_ID_NONE,
     &level.bd_amoeba_2_content_enclosed,	1, 1,
-    "if enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if enclosed"
+    "If enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if enclosed"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
@@ -4331,7 +4331,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_EXPLODING, GADGET_ID_NONE,
     &level.bd_amoeba_2_content_exploding,	1, 1,
-    "if exploding, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if exploding"
+    "If exploding, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if exploding"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
@@ -4339,7 +4339,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_looks_like,	1, 1,
-    "use graphic of element:", NULL, NULL, NULL,	"BD amoeba 2 looks like this element"
+    "Use graphic of element:", NULL, NULL, NULL,	"BD amoeba 2 looks like this element"
   },
   {
     ED_DRAWING_ID_BD_ACID_EATS_ELEMENT,
@@ -4347,7 +4347,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_ACID_EATS_ELEMENT,	GADGET_ID_NONE,
     &level.bd_acid_eats_element,	1, 1,
-    "can eat:", NULL, NULL, NULL,		"eats this element when spreading"
+    "Can eat:", NULL, NULL, NULL,		"Eats this element when spreading"
   },
   {
     ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT,
@@ -4355,7 +4355,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,	GADGET_ID_NONE,
     &level.bd_acid_turns_to_element,	1, 1,
-    "can leave behind:", NULL, NULL, NULL,	"turns to this element after spreading"
+    "Can leave behind:", NULL, NULL, NULL,	"Turns to this element after spreading"
   },
 
   // ---------- level start element -------------------------------------------
@@ -4366,7 +4366,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_START_ELEMENT,		GADGET_ID_USE_START_ELEMENT,
     &level.start_element[0],		1, 1,
-    NULL, NULL, NULL, NULL,		"level start element"
+    NULL, NULL, NULL, NULL,		"Level start element"
   },
 
   // ---------- player artwork element ----------------------------------------
@@ -4377,7 +4377,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_ARTWORK_ELEMENT,		GADGET_ID_USE_ARTWORK_ELEMENT,
     &level.artwork_element[0],		1, 1,
-    NULL, NULL, NULL, NULL,		"element for player artwork"
+    NULL, NULL, NULL, NULL,		"Element for player artwork"
   },
 
   // ---------- player explosion element --------------------------------------
@@ -4388,7 +4388,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_EXPLOSION_ELEMENT,	GADGET_ID_USE_EXPLOSION_ELEMENT,
     &level.explosion_element[0],	1, 1,
-    NULL, NULL, NULL, NULL,		"element for player explosion"
+    NULL, NULL, NULL, NULL,		"Element for player explosion"
   },
 
   // ---------- player initial inventory --------------------------------------
@@ -4399,7 +4399,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_INVENTORY_CONTENT,	GADGET_ID_USE_INITIAL_INVENTORY,
     &level.initial_inventory_content[0][0], MAX_INITIAL_INVENTORY_SIZE, 1,
-    NULL, NULL, NULL, NULL,		"content for initial inventory"
+    NULL, NULL, NULL, NULL,		"Content for initial inventory"
   },
 
   // ---------- gray ball content -----------------------------------------
@@ -4410,7 +4410,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_MM_BALL_CONTENT,		GADGET_ID_NONE,
     &level.mm_ball_content[0],		MAX_MM_BALL_CONTENTS, 1,
-    "content:", NULL, NULL, NULL,	"content for gray ball"
+    "Content:", NULL, NULL, NULL,	"Content for gray ball"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -4423,7 +4423,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_GRAPHIC,		GADGET_ID_CUSTOM_USE_GRAPHIC,
     &custom_element.gfx_element_initial, 1, 1,
-    NULL, NULL, NULL, NULL,		"custom graphic element"
+    NULL, NULL, NULL, NULL,		"Custom graphic element"
   },
 
   // ---------- element settings: configure 2 (custom elements) ---------------
@@ -4436,7 +4436,7 @@ static struct
     0,					ED_AREA_3X3_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CONTENT,		GADGET_ID_NONE,	// align three rows
     &custom_element.content.e[0][0],	3, 3,
-    "content:", NULL, NULL, NULL,	NULL
+    "Content:", NULL, NULL, NULL,	NULL
   },
 
   // ---------- custom enter and leave element (when moving) ------------------
@@ -4447,7 +4447,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_MOVE_ENTER,	GADGET_ID_NONE,
     &custom_element.move_enter_element,	1, 1,
-    "can dig:", " ", NULL, NULL,	"element that can be digged/collected"
+    "Can dig:", " ", NULL, NULL,	"Element that can be digged/collected"
   },
   {
     ED_DRAWING_ID_CUSTOM_MOVE_LEAVE,
@@ -4455,7 +4455,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_MOVE_LEAVE,	GADGET_ID_CUSTOM_MOVE_LEAVE_TYPE,
     &custom_element.move_leave_element,	1, 1,
-    NULL, NULL, NULL, NULL,		"element that will be left behind"
+    NULL, NULL, NULL, NULL,		"Element that will be left behind"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
@@ -4468,7 +4468,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_TARGET,	GADGET_ID_CUSTOM_CAN_CHANGE,
     &custom_element_change.target_element, 1, 1,
-    NULL, "after/when:", NULL, NULL,	"new target element after change"
+    NULL, "after/when:", NULL, NULL,	"New target element after change"
   },
 
   // ---------- custom change content (extended change target) ----------------
@@ -4479,7 +4479,7 @@ static struct
     0,					ED_AREA_3X3_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_CONTENT,	GADGET_ID_NONE,	// align three rows
     &custom_element_change.target_content.e[0][0], 3, 3,
-    NULL, NULL, NULL, NULL,		"new extended elements after change"
+    NULL, NULL, NULL, NULL,		"New extended elements after change"
   },
 
   // ---------- custom change trigger (element causing change) ----------------
@@ -4490,7 +4490,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_TRIGGER,	GADGET_ID_CHANGE_OTHER_ACTION,
     &custom_element_change.initial_trigger_element, 1, 1,
-    NULL, NULL, NULL, NULL,		"other element triggering change"
+    NULL, NULL, NULL, NULL,		"Other element triggering change"
   },
 
   // ---------- custom change action (element used for action) ----------------
@@ -4501,7 +4501,7 @@ static struct
     0,					ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_CUSTOM_CHANGE_ACTION,	GADGET_ID_ACTION_ARG,
     &custom_element_change.action_element, 1, 1,
-    NULL, NULL, NULL, NULL,		"element used as action parameter"
+    NULL, NULL, NULL, NULL,		"Element used as action parameter"
   },
 
   // ---------- group element content -----------------------------------------
@@ -4512,7 +4512,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_GROUP_CONTENT,		GADGET_ID_NONE,
     &group_element_info.element[0],	MAX_ELEMENTS_IN_GROUP, 1,
-    "content:", NULL, NULL, NULL,	NULL
+    "Content:", NULL, NULL, NULL,	NULL
   },
 
   // ---------- random background (for random painting) -----------------------
@@ -4523,7 +4523,7 @@ static struct
     0,					ED_AREA_1X1_LSETTINGS_YOFF,
     GADGET_ID_RANDOM_BACKGROUND,	GADGET_ID_RANDOM_RESTRICTED,
     &random_placement_background_element, 1, 1,
-    NULL, NULL, NULL, NULL,		"random placement background"
+    NULL, NULL, NULL, NULL,		"Random placement background"
   },
 };
 
@@ -7465,7 +7465,7 @@ static void CreateCounterButtons(void)
       gd_y2 = gd->src_y + gd->pressed_yoffset;
 
       sprintf(infotext, "%s counter value by 1, 5 or 10",
-	      (j == 0 ? "decrease" : "increase"));
+	      (j == 0 ? "Decrease" : "Increase"));
 
       gi = CreateGadget(GDI_CUSTOM_ID, id,
 			GDI_CUSTOM_TYPE_ID, type_id,
@@ -7527,7 +7527,7 @@ static void CreateCounterButtons(void)
 	gi = CreateGadget(GDI_CUSTOM_ID, id,
 			  GDI_CUSTOM_TYPE_ID, type_id,
 			  GDI_IMAGE_ID, graphic,
-			  GDI_INFO_TEXT, "enter counter value",
+			  GDI_INFO_TEXT, "Enter counter value",
 			  GDI_X, x,
 			  GDI_Y, y,
 			  GDI_TYPE, GD_TYPE_TEXT_INPUT_NUMERIC,
@@ -7742,6 +7742,7 @@ static void CreateTextAreaGadgets(void)
 static void CreateSelectboxGadgets(void)
 {
   int max_infotext_len = getMaxInfoTextLength();
+
   int i, j;
 
   for (i = 0; i < ED_NUM_SELECTBOX; i++)
@@ -7788,7 +7789,7 @@ static void CreateSelectboxGadgets(void)
     if (selectbox_info[i].text_left != NULL)
       x += getTextWidthForGadget(selectbox_info[i].text_left);
 
-    sprintf(infotext, "Select %s", selectbox_info[i].infotext);
+    sprintf(infotext, "%s", selectbox_info[i].infotext);
     infotext[max_infotext_len] = '\0';
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,

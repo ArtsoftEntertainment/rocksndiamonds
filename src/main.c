@@ -200,132 +200,132 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "empty_space",
     "empty_space",
-    "empty space"
+    "Empty space"
   },
   {
     "sand",
     "sand",
-    "sand"
+    "Sand"
   },
   {
     "wall",
     "wall",
-    "normal wall"
+    "Normal wall"
   },
   {
     "wall_slippery",
     "wall",
-    "slippery wall"
+    "Slippery wall"
   },
   {
     "rock",
     "rock",
-    "rock"
+    "Rock"
   },
   {
     "key_obsolete",
     "obsolete",
-    "key (OBSOLETE)"
+    "Key (obsolete)"
   },
   {
     "emerald",
     "emerald",
-    "emerald"
+    "Emerald"
   },
   {
     "exit_closed",
     "exit",
-    "closed exit"
+    "Closed exit"
   },
   {
     "player_obsolete",
     "obsolete",
-    "player (OBSOLETE)"
+    "Player (obsolete)"
   },
   {
     "bug",
     "bug",
-    "bug (random start direction)"
+    "Bug (random start direction)"
   },
   {
     "spaceship",
     "spaceship",
-    "spaceship (random start direction)"
+    "Spaceship (random start direction)"
   },
   {
     "yamyam",
     "yamyam",
-    "yam yam (random start direction)"
+    "Yam yam (random start direction)"
   },
   {
     "robot",
     "robot",
-    "robot"
+    "Robot"
   },
   {
     "steelwall",
     "steelwall",
-    "steel wall"
+    "Steel wall"
   },
   {
     "diamond",
     "diamond",
-    "diamond"
+    "Diamond"
   },
   {
     "amoeba_dead",
     "amoeba",
-    "dead amoeba"
+    "Dead amoeba"
   },
   {
     "quicksand_empty",
     "quicksand",
-    "quicksand (empty)"
+    "Quicksand (empty)"
   },
   {
     "quicksand_full",
     "quicksand",
-    "quicksand (with rock)"
+    "Quicksand (with rock)"
   },
   {
     "amoeba_drop",
     "amoeba",
-    "amoeba drop"
+    "Amoeba drop"
   },
   {
     "bomb",
     "bomb",
-    "bomb"
+    "Bomb"
   },
   {
     "magic_wall",
     "magic_wall",
-    "magic wall"
+    "Magic wall"
   },
   {
     "speed_pill",
     "speed_pill",
-    "speed pill"
+    "Speed pill"
   },
   {
     "acid",
     "acid",
-    "acid"
+    "Acid"
   },
   {
     "amoeba_wet",
     "amoeba",
-    "dropping amoeba (EM style)"
+    "Dropping amoeba (EM style)"
   },
   {
     "amoeba_dry",
     "amoeba",
-    "normal amoeba"
+    "Normal amoeba"
   },
   {
     "nut",
     "nut",
-    "nut with emerald"
+    "Nut with emerald"
   },
   {
     "game_of_life",
@@ -335,1212 +335,1212 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "biomaze",
     "biomaze",
-    "biomaze"
+    "Biomaze"
   },
   {
     "dynamite.active",
     "dynamite",
-    "burning dynamite"
+    "Burning dynamite"
   },
   {
     "stoneblock",
     "wall",
-    "wall"
+    "Wall"
   },
   {
     "robot_wheel",
     "robot_wheel",
-    "magic wheel"
+    "Magic wheel"
   },
   {
     "robot_wheel.active",
     "robot_wheel",
-    "magic wheel (running)"
+    "Magic wheel (running)"
   },
   {
     "key_1",
     "key",
-    "key 1"
+    "Key 1"
   },
   {
     "key_2",
     "key",
-    "key 2"
+    "Key 2"
   },
   {
     "key_3",
     "key",
-    "key 3"
+    "Key 3"
   },
   {
     "key_4",
     "key",
-    "key 4"
+    "Key 4"
   },
   {
     "gate_1",
     "gate",
-    "door 1"
+    "Door 1"
   },
   {
     "gate_2",
     "gate",
-    "door 2"
+    "Door 2"
   },
   {
     "gate_3",
     "gate",
-    "door 3"
+    "Door 3"
   },
   {
     "gate_4",
     "gate",
-    "door 4"
+    "Door 4"
   },
   {
     "gate_1_gray",
     "gate",
-    "gray door (opened by key 1)"
+    "Gray door (opened by key 1)"
   },
   {
     "gate_2_gray",
     "gate",
-    "gray door (opened by key 2)"
+    "Gray door (opened by key 2)"
   },
   {
     "gate_3_gray",
     "gate",
-    "gray door (opened by key 3)"
+    "Gray door (opened by key 3)"
   },
   {
     "gate_4_gray",
     "gate",
-    "gray door (opened by key 4)"
+    "Gray door (opened by key 4)"
   },
   {
     "dynamite",
     "dynamite",
-    "dynamite"
+    "Dynamite"
   },
   {
     "pacman",
     "pacman",
-    "pac man (random start direction)"
+    "Pac man (random start direction)"
   },
   {
     "invisible_wall",
     "wall",
-    "invisible normal wall"
+    "Invisible normal wall"
   },
   {
     "lamp",
     "lamp",
-    "lamp (off)"
+    "Lamp (off)"
   },
   {
     "lamp.active",
     "lamp",
-    "lamp (on)"
+    "Lamp (on)"
   },
   {
     "wall_emerald",
     "wall",
-    "wall with emerald"
+    "Wall with emerald"
   },
   {
     "wall_diamond",
     "wall",
-    "wall with diamond"
+    "Wall with diamond"
   },
   {
     "amoeba_full",
     "amoeba",
-    "amoeba with content"
+    "Amoeba with content"
   },
   {
     "bd_amoeba",
     "bd_amoeba",
-    "amoeba (BD style)"
+    "Amoeba (BD style)"
   },
   {
     "time_orb_full",
     "time_orb_full",
-    "time orb (full)"
+    "Time orb (full)"
   },
   {
     "time_orb_empty",
     "time_orb_empty",
-    "time orb (empty)"
+    "Time orb (empty)"
   },
   {
     "expandable_wall",
     "wall",
-    "growing wall (horizontal, visible)"
+    "Growing wall (horizontal, visible)"
   },
   {
     "bd_diamond",
     "bd_diamond",
-    "diamond (BD style)"
+    "Diamond (BD style)"
   },
   {
     "emerald_yellow",
     "emerald",
-    "yellow emerald"
+    "Yellow emerald"
   },
   {
     "wall_bd_diamond",
     "wall",
-    "wall with BD style diamond"
+    "Wall with BD style diamond"
   },
   {
     "wall_emerald_yellow",
     "wall",
-    "wall with yellow emerald"
+    "Wall with yellow emerald"
   },
   {
     "dark_yamyam",
     "dark_yamyam",
-    "dark yam yam"
+    "Dark yam yam"
   },
   {
     "bd_magic_wall",
     "bd_magic_wall",
-    "magic wall (BD style)"
+    "Magic wall (BD style)"
   },
   {
     "invisible_steelwall",
     "steelwall",
-    "invisible steel wall"
+    "Invisible steel wall"
   },
   {
     "sokoban_field_player",
     "sokoban",
-    "sokoban field with player"
+    "Sokoban field with player"
   },
   {
     "dynabomb_increase_number",
     "dynabomb",
-    "increases number of bombs"
+    "Increases number of bombs"
   },
   {
     "dynabomb_increase_size",
     "dynabomb",
-    "increases explosion size"
+    "Increases explosion size"
   },
   {
     "dynabomb_increase_power",
     "dynabomb",
-    "increases power of explosion"
+    "Increases power of explosion"
   },
   {
     "sokoban_object",
     "sokoban",
-    "sokoban object"
+    "Sokoban object"
   },
   {
     "sokoban_field_empty",
     "sokoban",
-    "sokoban empty field"
+    "Sokoban empty field"
   },
   {
     "sokoban_field_full",
     "sokoban",
-    "sokoban field with object"
+    "Sokoban field with object"
   },
   {
     "bd_butterfly.right",
     "bd_butterfly",
-    "butterfly (starts moving right)"
+    "Butterfly (starts moving right)"
   },
   {
     "bd_butterfly.up",
     "bd_butterfly",
-    "butterfly (starts moving up)"
+    "Butterfly (starts moving up)"
   },
   {
     "bd_butterfly.left",
     "bd_butterfly",
-    "butterfly (starts moving left)"
+    "Butterfly (starts moving left)"
   },
   {
     "bd_butterfly.down",
     "bd_butterfly",
-    "butterfly (starts moving down)"
+    "Butterfly (starts moving down)"
   },
   {
     "bd_firefly.right",
     "bd_firefly",
-    "firefly (starts moving right)"
+    "Firefly (starts moving right)"
   },
   {
     "bd_firefly.up",
     "bd_firefly",
-    "firefly (starts moving up)"
+    "Firefly (starts moving up)"
   },
   {
     "bd_firefly.left",
     "bd_firefly",
-    "firefly (starts moving left)"
+    "Firefly (starts moving left)"
   },
   {
     "bd_firefly.down",
     "bd_firefly",
-    "firefly (starts moving down)"
+    "Firefly (starts moving down)"
   },
   {
     "bd_butterfly",
     "bd_butterfly",
-    "butterfly (random start direction)"
+    "Butterfly (random start direction)"
   },
   {
     "bd_firefly",
     "bd_firefly",
-    "firefly (random start direction)"
+    "Firefly (random start direction)"
   },
   {
     "player_1",
     "player",
-    "player 1"
+    "Player 1"
   },
   {
     "player_2",
     "player",
-    "player 2"
+    "Player 2"
   },
   {
     "player_3",
     "player",
-    "player 3"
+    "Player 3"
   },
   {
     "player_4",
     "player",
-    "player 4"
+    "Player 4"
   },
   {
     "bug.right",
     "bug",
-    "bug (starts moving right)"
+    "Bug (starts moving right)"
   },
   {
     "bug.up",
     "bug",
-    "bug (starts moving up)"
+    "Bug (starts moving up)"
   },
   {
     "bug.left",
     "bug",
-    "bug (starts moving left)"
+    "Bug (starts moving left)"
   },
   {
     "bug.down",
     "bug",
-    "bug (starts moving down)"
+    "Bug (starts moving down)"
   },
   {
     "spaceship.right",
     "spaceship",
-    "spaceship (starts moving right)"
+    "Spaceship (starts moving right)"
   },
   {
     "spaceship.up",
     "spaceship",
-    "spaceship (starts moving up)"
+    "Spaceship (starts moving up)"
   },
   {
     "spaceship.left",
     "spaceship",
-    "spaceship (starts moving left)"
+    "Spaceship (starts moving left)"
   },
   {
     "spaceship.down",
     "spaceship",
-    "spaceship (starts moving down)"
+    "Spaceship (starts moving down)"
   },
   {
     "pacman.right",
     "pacman",
-    "pac man (starts moving right)"
+    "Pac man (starts moving right)"
   },
   {
     "pacman.up",
     "pacman",
-    "pac man (starts moving up)"
+    "Pac man (starts moving up)"
   },
   {
     "pacman.left",
     "pacman",
-    "pac man (starts moving left)"
+    "Pac man (starts moving left)"
   },
   {
     "pacman.down",
     "pacman",
-    "pac man (starts moving down)"
+    "Pac man (starts moving down)"
   },
   {
     "emerald_red",
     "emerald",
-    "red emerald"
+    "Red emerald"
   },
   {
     "emerald_purple",
     "emerald",
-    "purple emerald"
+    "Purple emerald"
   },
   {
     "wall_emerald_red",
     "wall",
-    "wall with red emerald"
+    "Wall with red emerald"
   },
   {
     "wall_emerald_purple",
     "wall",
-    "wall with purple emerald"
+    "Wall with purple emerald"
   },
   {
     "acid_pool_topleft",
     "wall",
-    "acid pool (top left)"
+    "Acid pool (top left)"
   },
   {
     "acid_pool_topright",
     "wall",
-    "acid pool (top right)"
+    "Acid pool (top right)"
   },
   {
     "acid_pool_bottomleft",
     "wall",
-    "acid pool (bottom left)"
+    "Acid pool (bottom left)"
   },
   {
     "acid_pool_bottom",
     "wall",
-    "acid pool (bottom)"
+    "Acid pool (bottom)"
   },
   {
     "acid_pool_bottomright",
     "wall",
-    "acid pool (bottom right)"
+    "Acid pool (bottom right)"
   },
   {
     "bd_wall",
     "wall",
-    "normal wall (BD style)"
+    "Normal wall (BD style)"
   },
   {
     "bd_rock",
     "bd_rock",
-    "rock (BD style)"
+    "Rock (BD style)"
   },
   {
     "exit_open",
     "exit",
-    "open exit"
+    "Open exit"
   },
   {
     "black_orb",
     "black_orb",
-    "black orb bomb"
+    "Black orb bomb"
   },
   {
     "amoeba_to_diamond",
     "amoeba",
-    "amoeba"
+    "Amoeba"
   },
   {
     "mole",
     "mole",
-    "mole (random start direction)"
+    "Mole (random start direction)"
   },
   {
     "penguin",
     "penguin",
-    "penguin"
+    "Penguin"
   },
   {
     "satellite",
     "satellite",
-    "satellite"
+    "Satellite"
   },
   {
     "arrow_left",
     "arrow",
-    "arrow left"
+    "Arrow left"
   },
   {
     "arrow_right",
     "arrow",
-    "arrow right"
+    "Arrow right"
   },
   {
     "arrow_up",
     "arrow",
-    "arrow up"
+    "Arrow up"
   },
   {
     "arrow_down",
     "arrow",
-    "arrow down"
+    "Arrow down"
   },
   {
     "pig",
     "pig",
-    "pig"
+    "Pig"
   },
   {
     "dragon",
     "dragon",
-    "fire breathing dragon"
+    "Fire breathing dragon"
   },
   {
     "em_key_1_file_obsolete",
     "obsolete",
-    "key (OBSOLETE)"
+    "Key (obsolete)"
   },
   {
     "char_space",
     "char",
-    "letter ' '"
+    "Letter ' '"
   },
   {
     "char_exclam",
     "char",
-    "letter '!'"
+    "Letter '!'"
   },
   {
     "char_quotedbl",
     "char",
-    "letter '\"'"
+    "Letter '\"'"
   },
   {
     "char_numbersign",
     "char",
-    "letter '#'"
+    "Letter '#'"
   },
   {
     "char_dollar",
     "char",
-    "letter '$'"
+    "Letter '$'"
   },
   {
     "char_percent",
     "char",
-    "letter '%'"
+    "Letter '%'"
   },
   {
     "char_ampersand",
     "char",
-    "letter '&'"
+    "Letter '&'"
   },
   {
     "char_apostrophe",
     "char",
-    "letter '''"
+    "Letter '''"
   },
   {
     "char_parenleft",
     "char",
-    "letter '('"
+    "Letter '('"
   },
   {
     "char_parenright",
     "char",
-    "letter ')'"
+    "Letter ')'"
   },
   {
     "char_asterisk",
     "char",
-    "letter '*'"
+    "Letter '*'"
   },
   {
     "char_plus",
     "char",
-    "letter '+'"
+    "Letter '+'"
   },
   {
     "char_comma",
     "char",
-    "letter ','"
+    "Letter ','"
   },
   {
     "char_minus",
     "char",
-    "letter '-'"
+    "Letter '-'"
   },
   {
     "char_period",
     "char",
-    "letter '.'"
+    "Letter '.'"
   },
   {
     "char_slash",
     "char",
-    "letter '/'"
+    "Letter '/'"
   },
   {
     "char_0",
     "char",
-    "letter '0'"
+    "Letter '0'"
   },
   {
     "char_1",
     "char",
-    "letter '1'"
+    "Letter '1'"
   },
   {
     "char_2",
     "char",
-    "letter '2'"
+    "Letter '2'"
   },
   {
     "char_3",
     "char",
-    "letter '3'"
+    "Letter '3'"
   },
   {
     "char_4",
     "char",
-    "letter '4'"
+    "Letter '4'"
   },
   {
     "char_5",
     "char",
-    "letter '5'"
+    "Letter '5'"
   },
   {
     "char_6",
     "char",
-    "letter '6'"
+    "Letter '6'"
   },
   {
     "char_7",
     "char",
-    "letter '7'"
+    "Letter '7'"
   },
   {
     "char_8",
     "char",
-    "letter '8'"
+    "Letter '8'"
   },
   {
     "char_9",
     "char",
-    "letter '9'"
+    "Letter '9'"
   },
   {
     "char_colon",
     "char",
-    "letter ':'"
+    "Letter ':'"
   },
   {
     "char_semicolon",
     "char",
-    "letter ';'"
+    "Letter ';'"
   },
   {
     "char_less",
     "char",
-    "letter '<'"
+    "Letter '<'"
   },
   {
     "char_equal",
     "char",
-    "letter '='"
+    "Letter '='"
   },
   {
     "char_greater",
     "char",
-    "letter '>'"
+    "Letter '>'"
   },
   {
     "char_question",
     "char",
-    "letter '?'"
+    "Letter '?'"
   },
   {
     "char_at",
     "char",
-    "letter '@'"
+    "Letter '@'"
   },
   {
     "char_a",
     "char",
-    "letter 'A'"
+    "Letter 'A'"
   },
   {
     "char_b",
     "char",
-    "letter 'B'"
+    "Letter 'B'"
   },
   {
     "char_c",
     "char",
-    "letter 'C'"
+    "Letter 'C'"
   },
   {
     "char_d",
     "char",
-    "letter 'D'"
+    "Letter 'D'"
   },
   {
     "char_e",
     "char",
-    "letter 'E'"
+    "Letter 'E'"
   },
   {
     "char_f",
     "char",
-    "letter 'F'"
+    "Letter 'F'"
   },
   {
     "char_g",
     "char",
-    "letter 'G'"
+    "Letter 'G'"
   },
   {
     "char_h",
     "char",
-    "letter 'H'"
+    "Letter 'H'"
   },
   {
     "char_i",
     "char",
-    "letter 'I'"
+    "Letter 'I'"
   },
   {
     "char_j",
     "char",
-    "letter 'J'"
+    "Letter 'J'"
   },
   {
     "char_k",
     "char",
-    "letter 'K'"
+    "Letter 'K'"
   },
   {
     "char_l",
     "char",
-    "letter 'L'"
+    "Letter 'L'"
   },
   {
     "char_m",
     "char",
-    "letter 'M'"
+    "Letter 'M'"
   },
   {
     "char_n",
     "char",
-    "letter 'N'"
+    "Letter 'N'"
   },
   {
     "char_o",
     "char",
-    "letter 'O'"
+    "Letter 'O'"
   },
   {
     "char_p",
     "char",
-    "letter 'P'"
+    "Letter 'P'"
   },
   {
     "char_q",
     "char",
-    "letter 'Q'"
+    "Letter 'Q'"
   },
   {
     "char_r",
     "char",
-    "letter 'R'"
+    "Letter 'R'"
   },
   {
     "char_s",
     "char",
-    "letter 'S'"
+    "Letter 'S'"
   },
   {
     "char_t",
     "char",
-    "letter 'T'"
+    "Letter 'T'"
   },
   {
     "char_u",
     "char",
-    "letter 'U'"
+    "Letter 'U'"
   },
   {
     "char_v",
     "char",
-    "letter 'V'"
+    "Letter 'V'"
   },
   {
     "char_w",
     "char",
-    "letter 'W'"
+    "Letter 'W'"
   },
   {
     "char_x",
     "char",
-    "letter 'X'"
+    "Letter 'X'"
   },
   {
     "char_y",
     "char",
-    "letter 'Y'"
+    "Letter 'Y'"
   },
   {
     "char_z",
     "char",
-    "letter 'Z'"
+    "Letter 'Z'"
   },
   {
     "char_bracketleft",
     "char",
-    "letter '['"
+    "Letter '['"
   },
   {
     "char_backslash",
     "char",
-    "letter '\\'"
+    "Letter '\\'"
   },
   {
     "char_bracketright",
     "char",
-    "letter ']'"
+    "Letter ']'"
   },
   {
     "char_asciicircum",
     "char",
-    "letter '^'"
+    "Letter '^'"
   },
   {
     "char_underscore",
     "char",
-    "letter '_'"
+    "Letter '_'"
   },
   {
     "char_copyright",
     "char",
-    "letter '\xa9'"
+    "Letter '\xa9'"
   },
   {
     "char_aumlaut",
     "char",
-    "letter '\xc4'"
+    "Letter '\xc4'"
   },
   {
     "char_oumlaut",
     "char",
-    "letter '\xd6'"
+    "Letter '\xd6'"
   },
   {
     "char_uumlaut",
     "char",
-    "letter '\xdc'"
+    "Letter '\xdc'"
   },
   {
     "char_degree",
     "char",
-    "letter '\xb0'"
+    "Letter '\xb0'"
   },
   {
     "char_trademark",
     "char",
-    "letter '\xae'"
+    "Letter '\xae'"
   },
   {
     "char_cursor",
     "char",
-    "letter '\xa0'"
+    "Letter '\xa0'"
   },
   {
     "char_unused",
     "char",
-    "letter ''"
+    "Letter ''"
   },
   {
     "char_unused",
     "char",
-    "letter ''"
+    "Letter ''"
   },
   {
     "char_unused",
     "char",
-    "letter ''"
+    "Letter ''"
   },
   {
     "char_unused",
     "char",
-    "letter ''"
+    "Letter ''"
   },
   {
     "char_unused",
     "char",
-    "letter ''"
+    "Letter ''"
   },
   {
     "char_unused",
     "char",
-    "letter ''"
+    "Letter ''"
   },
   {
     "char_button",
     "char",
-    "letter 'button'"
+    "Letter 'button'"
   },
   {
     "char_up",
     "char",
-    "letter 'up'"
+    "Letter 'up'"
   },
   {
     "char_down",
     "char",
-    "letter 'down'"
+    "Letter 'down'"
   },
   {
     "expandable_wall_horizontal",
     "wall",
-    "growing wall (horizontal)"
+    "Growing wall (horizontal)"
   },
   {
     "expandable_wall_vertical",
     "wall",
-    "growing wall (vertical)"
+    "Growing wall (vertical)"
   },
   {
     "expandable_wall_any",
     "wall",
-    "growing wall (any direction)"
+    "Growing wall (any direction)"
   },
   {
     "em_gate_1",
     "gate",
-    "door 1 (EM style)"
+    "Door 1 (EM style)"
   },
   {
     "em_gate_2",
     "gate",
-    "door 2 (EM style)"
+    "Door 2 (EM style)"
   },
   {
     "em_gate_3",
     "gate",
-    "door 3 (EM style)"
+    "Door 3 (EM style)"
   },
   {
     "em_gate_4",
     "gate",
-    "door 4 (EM style)"
+    "Door 4 (EM style)"
   },
   {
     "em_key_2_file_obsolete",
     "obsolete",
-    "key (OBSOLETE)"
+    "Key (obsolete)"
   },
   {
     "em_key_3_file_obsolete",
     "obsolete",
-    "key (OBSOLETE)"
+    "Key (obsolete)"
   },
   {
     "em_key_4_file_obsolete",
     "obsolete",
-    "key (OBSOLETE)"
+    "Key (obsolete)"
   },
   {
     "sp_empty_space",
     "empty_space",
-    "empty space"
+    "Empty space"
   },
   {
     "sp_zonk",
     "sp_zonk",
-    "zonk"
+    "Zonk"
   },
   {
     "sp_base",
     "sp_base",
-    "base"
+    "Base"
   },
   {
     "sp_murphy",
     "player",
-    "murphy"
+    "Murphy"
   },
   {
     "sp_infotron",
     "sp_infotron",
-    "infotron"
+    "Infotron"
   },
   {
     "sp_chip_single",
     "wall",
-    "chip (single)"
+    "Chip (single)"
   },
   {
     "sp_hardware_gray",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_exit_closed",
     "sp_exit",
-    "exit"
+    "Exit"
   },
   {
     "sp_disk_orange",
     "sp_disk_orange",
-    "orange disk"
+    "Orange disk"
   },
   {
     "sp_port_right",
     "sp_port",
-    "port (leading right)"
+    "Port (leading right)"
   },
   {
     "sp_port_down",
     "sp_port",
-    "port (leading down)"
+    "Port (leading down)"
   },
   {
     "sp_port_left",
     "sp_port",
-    "port (leading left)"
+    "Port (leading left)"
   },
   {
     "sp_port_up",
     "sp_port",
-    "port (leading up)"
+    "Port (leading up)"
   },
   {
     "sp_gravity_port_right",
     "sp_gravity_port",
-    "gravity-on/off port (leading right)"
+    "Gravity-on/off port (leading right)"
   },
   {
     "sp_gravity_port_down",
     "sp_gravity_port",
-    "gravity-on/off port (leading down)"
+    "Gravity-on/off port (leading down)"
   },
   {
     "sp_gravity_port_left",
     "sp_gravity_port",
-    "gravity-on/off port (leading left)"
+    "Gravity-on/off port (leading left)"
   },
   {
     "sp_gravity_port_up",
     "sp_gravity_port",
-    "gravity-on/off port (leading up)"
+    "Gravity-on/off port (leading up)"
   },
   {
     "sp_sniksnak",
     "sp_sniksnak",
-    "snik snak"
+    "Snik snak"
   },
   {
     "sp_disk_yellow",
     "sp_disk_yellow",
-    "yellow disk"
+    "Yellow disk"
   },
   {
     "sp_terminal",
     "sp_terminal",
-    "terminal"
+    "Terminal"
   },
   {
     "sp_disk_red",
     "dynamite",
-    "red disk"
+    "Red disk"
   },
   {
     "sp_port_vertical",
     "sp_port",
-    "port (vertical)"
+    "Port (vertical)"
   },
   {
     "sp_port_horizontal",
     "sp_port",
-    "port (horizontal)"
+    "Port (horizontal)"
   },
   {
     "sp_port_any",
     "sp_port",
-    "port (any direction)"
+    "Port (any direction)"
   },
   {
     "sp_electron",
     "sp_electron",
-    "electron"
+    "Electron"
   },
   {
     "sp_buggy_base",
     "sp_buggy_base",
-    "buggy base"
+    "Buggy base"
   },
   {
     "sp_chip_left",
     "wall",
-    "chip (left half)"
+    "Chip (left half)"
   },
   {
     "sp_chip_right",
     "wall",
-    "chip (right half)"
+    "Chip (right half)"
   },
   {
     "sp_hardware_base_1",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_green",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_blue",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_red",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_yellow",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_base_2",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_base_3",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_base_4",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_base_5",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_hardware_base_6",
     "wall",
-    "hardware"
+    "Hardware"
   },
   {
     "sp_chip_top",
     "wall",
-    "chip (upper half)"
+    "Chip (upper half)"
   },
   {
     "sp_chip_bottom",
     "wall",
-    "chip (lower half)"
+    "Chip (lower half)"
   },
   {
     "em_gate_1_gray",
     "gate",
-    "gray door (EM style, key 1)"
+    "Gray door (EM style, key 1)"
   },
   {
     "em_gate_2_gray",
     "gate",
-    "gray door (EM style, key 2)"
+    "Gray door (EM style, key 2)"
   },
   {
     "em_gate_3_gray",
     "gate",
-    "gray door (EM style, key 3)"
+    "Gray door (EM style, key 3)"
   },
   {
     "em_gate_4_gray",
     "gate",
-    "gray door (EM style, key 4)"
+    "Gray door (EM style, key 4)"
   },
   {
     "em_dynamite",
     "dynamite",
-    "dynamite (EM style)"
+    "Dynamite (EM style)"
   },
   {
     "em_dynamite.active",
     "dynamite",
-    "burning dynamite (EM style)"
+    "Burning dynamite (EM style)"
   },
   {
     "pearl",
     "pearl",
-    "pearl"
+    "Pearl"
   },
   {
     "crystal",
     "crystal",
-    "crystal"
+    "Crystal"
   },
   {
     "wall_pearl",
     "wall",
-    "wall with pearl"
+    "Wall with pearl"
   },
   {
     "wall_crystal",
     "wall",
-    "wall with crystal"
+    "Wall with crystal"
   },
   {
     "dc_gate_white",
     "gate",
-    "white door"
+    "White door"
   },
   {
     "dc_gate_white_gray",
     "gate",
-    "gray door (opened by white key)"
+    "Gray door (opened by white key)"
   },
   {
     "dc_key_white",
     "key",
-    "white key"
+    "White key"
   },
   {
     "shield_normal",
     "shield_normal",
-    "shield (normal)"
+    "Shield (normal)"
   },
   {
     "extra_time",
     "extra_time",
-    "extra time"
+    "Extra time"
   },
   {
     "switchgate_open",
     "switchgate",
-    "switch gate (open)"
+    "Switch gate (open)"
   },
   {
     "switchgate_closed",
     "switchgate",
-    "switch gate (closed)"
+    "Switch gate (closed)"
   },
   {
     "switchgate_switch_up",
     "switchgate_switch",
-    "switch for switch gate"
+    "Switch for switch gate"
   },
   {
     "switchgate_switch_down",
     "switchgate_switch",
-    "switch for switch gate"
+    "Switch for switch gate"
   },
   {
     "unused_269",
@@ -1555,242 +1555,242 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "conveyor_belt_1_left",
     "conveyor_belt",
-    "conveyor belt 1 (left)"
+    "Conveyor belt 1 (left)"
   },
   {
     "conveyor_belt_1_middle",
     "conveyor_belt",
-    "conveyor belt 1 (middle)"
+    "Conveyor belt 1 (middle)"
   },
   {
     "conveyor_belt_1_right",
     "conveyor_belt",
-    "conveyor belt 1 (right)"
+    "Conveyor belt 1 (right)"
   },
   {
     "conveyor_belt_1_switch_left",
     "conveyor_belt_switch",
-    "switch for conveyor belt 1 (left)"
+    "Switch for conveyor belt 1 (left)"
   },
   {
     "conveyor_belt_1_switch_middle",
     "conveyor_belt_switch",
-    "switch for conveyor belt 1 (middle)"
+    "Switch for conveyor belt 1 (middle)"
   },
   {
     "conveyor_belt_1_switch_right",
     "conveyor_belt_switch",
-    "switch for conveyor belt 1 (right)"
+    "Switch for conveyor belt 1 (right)"
   },
   {
     "conveyor_belt_2_left",
     "conveyor_belt",
-    "conveyor belt 2 (left)"
+    "Conveyor belt 2 (left)"
   },
   {
     "conveyor_belt_2_middle",
     "conveyor_belt",
-    "conveyor belt 2 (middle)"
+    "Conveyor belt 2 (middle)"
   },
   {
     "conveyor_belt_2_right",
     "conveyor_belt",
-    "conveyor belt 2 (right)"
+    "Conveyor belt 2 (right)"
   },
   {
     "conveyor_belt_2_switch_left",
     "conveyor_belt_switch",
-    "switch for conveyor belt 2 (left)"
+    "Switch for conveyor belt 2 (left)"
   },
   {
     "conveyor_belt_2_switch_middle",
     "conveyor_belt_switch",
-    "switch for conveyor belt 2 (middle)"
+    "Switch for conveyor belt 2 (middle)"
   },
   {
     "conveyor_belt_2_switch_right",
     "conveyor_belt_switch",
-    "switch for conveyor belt 2 (right)"
+    "Switch for conveyor belt 2 (right)"
   },
   {
     "conveyor_belt_3_left",
     "conveyor_belt",
-    "conveyor belt 3 (left)"
+    "Conveyor belt 3 (left)"
   },
   {
     "conveyor_belt_3_middle",
     "conveyor_belt",
-    "conveyor belt 3 (middle)"
+    "Conveyor belt 3 (middle)"
   },
   {
     "conveyor_belt_3_right",
     "conveyor_belt",
-    "conveyor belt 3 (right)"
+    "Conveyor belt 3 (right)"
   },
   {
     "conveyor_belt_3_switch_left",
     "conveyor_belt_switch",
-    "switch for conveyor belt 3 (left)"
+    "Switch for conveyor belt 3 (left)"
   },
   {
     "conveyor_belt_3_switch_middle",
     "conveyor_belt_switch",
-    "switch for conveyor belt 3 (middle)"
+    "Switch for conveyor belt 3 (middle)"
   },
   {
     "conveyor_belt_3_switch_right",
     "conveyor_belt_switch",
-    "switch for conveyor belt 3 (right)"
+    "Switch for conveyor belt 3 (right)"
   },
   {
     "conveyor_belt_4_left",
     "conveyor_belt",
-    "conveyor belt 4 (left)"
+    "Conveyor belt 4 (left)"
   },
   {
     "conveyor_belt_4_middle",
     "conveyor_belt",
-    "conveyor belt 4 (middle)"
+    "Conveyor belt 4 (middle)"
   },
   {
     "conveyor_belt_4_right",
     "conveyor_belt",
-    "conveyor belt 4 (right)"
+    "Conveyor belt 4 (right)"
   },
   {
     "conveyor_belt_4_switch_left",
     "conveyor_belt_switch",
-    "switch for conveyor belt 4 (left)"
+    "Switch for conveyor belt 4 (left)"
   },
   {
     "conveyor_belt_4_switch_middle",
     "conveyor_belt_switch",
-    "switch for conveyor belt 4 (middle)"
+    "Switch for conveyor belt 4 (middle)"
   },
   {
     "conveyor_belt_4_switch_right",
     "conveyor_belt_switch",
-    "switch for conveyor belt 4 (right)"
+    "Switch for conveyor belt 4 (right)"
   },
   {
     "landmine",
     "landmine",
-    "land mine (not removable)"
+    "Land mine (not removable)"
   },
   {
     "envelope_obsolete",
     "obsolete",
-    "envelope (OBSOLETE)"
+    "Envelope (obsolete)"
   },
   {
     "light_switch",
     "light_switch",
-    "light switch (off)"
+    "Light switch (off)"
   },
   {
     "light_switch.active",
     "light_switch",
-    "light switch (on)"
+    "Light switch (on)"
   },
   {
     "sign_exclamation",
     "sign",
-    "sign (exclamation)"
+    "Sign (exclamation)"
   },
   {
     "sign_radioactivity",
     "sign",
-    "sign (radio activity)"
+    "Sign (radio activity)"
   },
   {
     "sign_stop",
     "sign",
-    "sign (stop)"
+    "Sign (stop)"
   },
   {
     "sign_wheelchair",
     "sign",
-    "sign (wheel chair)"
+    "Sign (wheel chair)"
   },
   {
     "sign_parking",
     "sign",
-    "sign (parking)"
+    "Sign (parking)"
   },
   {
     "sign_no_entry",
     "sign",
-    "sign (no entry)"
+    "Sign (no entry)"
   },
   {
     "sign_unused_1",
     "sign",
-    "sign (unused)"
+    "Sign (unused)"
   },
   {
     "sign_give_way",
     "sign",
-    "sign (give way)"
+    "Sign (give way)"
   },
   {
     "sign_entry_forbidden",
     "sign",
-    "sign (entry forbidden)"
+    "Sign (entry forbidden)"
   },
   {
     "sign_emergency_exit",
     "sign",
-    "sign (emergency exit)"
+    "Sign (emergency exit)"
   },
   {
     "sign_yin_yang",
     "sign",
-    "sign (yin yang)"
+    "Sign (yin yang)"
   },
   {
     "sign_unused_2",
     "sign",
-    "sign (unused)"
+    "Sign (unused)"
   },
   {
     "mole.left",
     "mole",
-    "mole (starts moving left)"
+    "Mole (starts moving left)"
   },
   {
     "mole.right",
     "mole",
-    "mole (starts moving right)"
+    "Mole (starts moving right)"
   },
   {
     "mole.up",
     "mole",
-    "mole (starts moving up)"
+    "Mole (starts moving up)"
   },
   {
     "mole.down",
     "mole",
-    "mole (starts moving down)"
+    "Mole (starts moving down)"
   },
   {
     "steelwall_slippery",
     "steelwall",
-    "slippery steel wall"
+    "Slippery steel wall"
   },
   {
     "invisible_sand",
     "sand",
-    "invisible sand"
+    "Invisible sand"
   },
   {
     "dx_unknown_15",
     "unknown",
-    "dx unknown element 15"
+    "DX unknown element 15"
   },
   {
     "dx_unknown_42",
     "unknown",
-    "dx unknown element 42"
+    "DX unknown element 42"
   },
   {
     "unused_319",
@@ -1805,187 +1805,187 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "shield_deadly",
     "shield_deadly",
-    "shield (deadly, kills enemies)"
+    "Shield (deadly, kills enemies)"
   },
   {
     "timegate_open",
     "timegate",
-    "time gate (open)"
+    "Time gate (open)"
   },
   {
     "timegate_closed",
     "timegate",
-    "time gate (closed)"
+    "Time gate (closed)"
   },
   {
     "timegate_switch.active",
     "timegate_switch",
-    "switch for time gate"
+    "Switch for time gate"
   },
   {
     "timegate_switch",
     "timegate_switch",
-    "switch for time gate"
+    "Switch for time gate"
   },
   {
     "balloon",
     "balloon",
-    "balloon"
+    "Balloon"
   },
   {
     "balloon_switch_left",
     "balloon_switch",
-    "wind switch (left)"
+    "Wind switch (left)"
   },
   {
     "balloon_switch_right",
     "balloon_switch",
-    "wind switch (right)"
+    "Wind switch (right)"
   },
   {
     "balloon_switch_up",
     "balloon_switch",
-    "wind switch (up)"
+    "Wind switch (up)"
   },
   {
     "balloon_switch_down",
     "balloon_switch",
-    "wind switch (down)"
+    "Wind switch (down)"
   },
   {
     "balloon_switch_any",
     "balloon_switch",
-    "wind switch (any direction)"
+    "Wind switch (any direction)"
   },
   {
     "emc_steelwall_1",
     "steelwall",
-    "steel wall 1 (EMC style)"
+    "Steel wall 1 (EMC style)"
   },
   {
     "emc_steelwall_2",
     "steelwall",
-    "steel wall 2 (EMC style)"
+    "Steel wall 2 (EMC style)"
   },
   {
     "emc_steelwall_3",
     "steelwall",
-    "steel wall 3 (EMC style)"
+    "Steel wall 3 (EMC style)"
   },
   {
     "emc_steelwall_4",
     "steelwall",
-    "steel wall 4 (EMC style)"
+    "Steel wall 4 (EMC style)"
   },
   {
     "emc_wall_1",
     "wall",
-    "normal wall 1 (EMC style)"
+    "Normal wall 1 (EMC style)"
   },
   {
     "emc_wall_2",
     "wall",
-    "normal wall 2 (EMC style)"
+    "Normal wall 2 (EMC style)"
   },
   {
     "emc_wall_3",
     "wall",
-    "normal wall 3 (EMC style)"
+    "Normal wall 3 (EMC style)"
   },
   {
     "emc_wall_4",
     "wall",
-    "normal wall 4 (EMC style)"
+    "Normal wall 4 (EMC style)"
   },
   {
     "emc_wall_5",
     "wall",
-    "normal wall 5 (EMC style)"
+    "Normal wall 5 (EMC style)"
   },
   {
     "emc_wall_6",
     "wall",
-    "normal wall 6 (EMC style)"
+    "Normal wall 6 (EMC style)"
   },
   {
     "emc_wall_7",
     "wall",
-    "normal wall 7 (EMC style)"
+    "Normal wall 7 (EMC style)"
   },
   {
     "emc_wall_8",
     "wall",
-    "normal wall 8 (EMC style)"
+    "Normal wall 8 (EMC style)"
   },
   {
     "tube_any",
     "tube",
-    "tube (any direction)"
+    "Tube (any direction)"
   },
   {
     "tube_vertical",
     "tube",
-    "tube (vertical)"
+    "Tube (vertical)"
   },
   {
     "tube_horizontal",
     "tube",
-    "tube (horizontal)"
+    "Tube (horizontal)"
   },
   {
     "tube_vertical_left",
     "tube",
-    "tube (vertical & left)"
+    "Tube (vertical & left)"
   },
   {
     "tube_vertical_right",
     "tube",
-    "tube (vertical & right)"
+    "Tube (vertical & right)"
   },
   {
     "tube_horizontal_up",
     "tube",
-    "tube (horizontal & up)"
+    "Tube (horizontal & up)"
   },
   {
     "tube_horizontal_down",
     "tube",
-    "tube (horizontal & down)"
+    "Tube (horizontal & down)"
   },
   {
     "tube_left_up",
     "tube",
-    "tube (left & up)"
+    "Tube (left & up)"
   },
   {
     "tube_left_down",
     "tube",
-    "tube (left & down)"
+    "Tube (left & down)"
   },
   {
     "tube_right_up",
     "tube",
-    "tube (right & up)"
+    "Tube (right & up)"
   },
   {
     "tube_right_down",
     "tube",
-    "tube (right & down)"
+    "Tube (right & down)"
   },
   {
     "spring",
     "spring",
-    "spring"
+    "Spring"
   },
   {
     "trap",
     "trap",
-    "trap"
+    "Trap"
   },
   {
     "dx_supabomb",
     "bomb",
-    "stable bomb (DX style)"
+    "Stable bomb (DX style)"
   },
   {
     "unused_358",
@@ -2000,1727 +2000,1727 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "custom_1",
     "custom",
-    "custom element 1"
+    "Custom element 1"
   },
   {
     "custom_2",
     "custom",
-    "custom element 2"
+    "Custom element 2"
   },
   {
     "custom_3",
     "custom",
-    "custom element 3"
+    "Custom element 3"
   },
   {
     "custom_4",
     "custom",
-    "custom element 4"
+    "Custom element 4"
   },
   {
     "custom_5",
     "custom",
-    "custom element 5"
+    "Custom element 5"
   },
   {
     "custom_6",
     "custom",
-    "custom element 6"
+    "Custom element 6"
   },
   {
     "custom_7",
     "custom",
-    "custom element 7"
+    "Custom element 7"
   },
   {
     "custom_8",
     "custom",
-    "custom element 8"
+    "Custom element 8"
   },
   {
     "custom_9",
     "custom",
-    "custom element 9"
+    "Custom element 9"
   },
   {
     "custom_10",
     "custom",
-    "custom element 10"
+    "Custom element 10"
   },
   {
     "custom_11",
     "custom",
-    "custom element 11"
+    "Custom element 11"
   },
   {
     "custom_12",
     "custom",
-    "custom element 12"
+    "Custom element 12"
   },
   {
     "custom_13",
     "custom",
-    "custom element 13"
+    "Custom element 13"
   },
   {
     "custom_14",
     "custom",
-    "custom element 14"
+    "Custom element 14"
   },
   {
     "custom_15",
     "custom",
-    "custom element 15"
+    "Custom element 15"
   },
   {
     "custom_16",
     "custom",
-    "custom element 16"
+    "Custom element 16"
   },
   {
     "custom_17",
     "custom",
-    "custom element 17"
+    "Custom element 17"
   },
   {
     "custom_18",
     "custom",
-    "custom element 18"
+    "Custom element 18"
   },
   {
     "custom_19",
     "custom",
-    "custom element 19"
+    "Custom element 19"
   },
   {
     "custom_20",
     "custom",
-    "custom element 20"
+    "Custom element 20"
   },
   {
     "custom_21",
     "custom",
-    "custom element 21"
+    "Custom element 21"
   },
   {
     "custom_22",
     "custom",
-    "custom element 22"
+    "Custom element 22"
   },
   {
     "custom_23",
     "custom",
-    "custom element 23"
+    "Custom element 23"
   },
   {
     "custom_24",
     "custom",
-    "custom element 24"
+    "Custom element 24"
   },
   {
     "custom_25",
     "custom",
-    "custom element 25"
+    "Custom element 25"
   },
   {
     "custom_26",
     "custom",
-    "custom element 26"
+    "Custom element 26"
   },
   {
     "custom_27",
     "custom",
-    "custom element 27"
+    "Custom element 27"
   },
   {
     "custom_28",
     "custom",
-    "custom element 28"
+    "Custom element 28"
   },
   {
     "custom_29",
     "custom",
-    "custom element 29"
+    "Custom element 29"
   },
   {
     "custom_30",
     "custom",
-    "custom element 30"
+    "Custom element 30"
   },
   {
     "custom_31",
     "custom",
-    "custom element 31"
+    "Custom element 31"
   },
   {
     "custom_32",
     "custom",
-    "custom element 32"
+    "Custom element 32"
   },
   {
     "custom_33",
     "custom",
-    "custom element 33"
+    "Custom element 33"
   },
   {
     "custom_34",
     "custom",
-    "custom element 34"
+    "Custom element 34"
   },
   {
     "custom_35",
     "custom",
-    "custom element 35"
+    "Custom element 35"
   },
   {
     "custom_36",
     "custom",
-    "custom element 36"
+    "Custom element 36"
   },
   {
     "custom_37",
     "custom",
-    "custom element 37"
+    "Custom element 37"
   },
   {
     "custom_38",
     "custom",
-    "custom element 38"
+    "Custom element 38"
   },
   {
     "custom_39",
     "custom",
-    "custom element 39"
+    "Custom element 39"
   },
   {
     "custom_40",
     "custom",
-    "custom element 40"
+    "Custom element 40"
   },
   {
     "custom_41",
     "custom",
-    "custom element 41"
+    "Custom element 41"
   },
   {
     "custom_42",
     "custom",
-    "custom element 42"
+    "Custom element 42"
   },
   {
     "custom_43",
     "custom",
-    "custom element 43"
+    "Custom element 43"
   },
   {
     "custom_44",
     "custom",
-    "custom element 44"
+    "Custom element 44"
   },
   {
     "custom_45",
     "custom",
-    "custom element 45"
+    "Custom element 45"
   },
   {
     "custom_46",
     "custom",
-    "custom element 46"
+    "Custom element 46"
   },
   {
     "custom_47",
     "custom",
-    "custom element 47"
+    "Custom element 47"
   },
   {
     "custom_48",
     "custom",
-    "custom element 48"
+    "Custom element 48"
   },
   {
     "custom_49",
     "custom",
-    "custom element 49"
+    "Custom element 49"
   },
   {
     "custom_50",
     "custom",
-    "custom element 50"
+    "Custom element 50"
   },
   {
     "custom_51",
     "custom",
-    "custom element 51"
+    "Custom element 51"
   },
   {
     "custom_52",
     "custom",
-    "custom element 52"
+    "Custom element 52"
   },
   {
     "custom_53",
     "custom",
-    "custom element 53"
+    "Custom element 53"
   },
   {
     "custom_54",
     "custom",
-    "custom element 54"
+    "Custom element 54"
   },
   {
     "custom_55",
     "custom",
-    "custom element 55"
+    "Custom element 55"
   },
   {
     "custom_56",
     "custom",
-    "custom element 56"
+    "Custom element 56"
   },
   {
     "custom_57",
     "custom",
-    "custom element 57"
+    "Custom element 57"
   },
   {
     "custom_58",
     "custom",
-    "custom element 58"
+    "Custom element 58"
   },
   {
     "custom_59",
     "custom",
-    "custom element 59"
+    "Custom element 59"
   },
   {
     "custom_60",
     "custom",
-    "custom element 60"
+    "Custom element 60"
   },
   {
     "custom_61",
     "custom",
-    "custom element 61"
+    "Custom element 61"
   },
   {
     "custom_62",
     "custom",
-    "custom element 62"
+    "Custom element 62"
   },
   {
     "custom_63",
     "custom",
-    "custom element 63"
+    "Custom element 63"
   },
   {
     "custom_64",
     "custom",
-    "custom element 64"
+    "Custom element 64"
   },
   {
     "custom_65",
     "custom",
-    "custom element 65"
+    "Custom element 65"
   },
   {
     "custom_66",
     "custom",
-    "custom element 66"
+    "Custom element 66"
   },
   {
     "custom_67",
     "custom",
-    "custom element 67"
+    "Custom element 67"
   },
   {
     "custom_68",
     "custom",
-    "custom element 68"
+    "Custom element 68"
   },
   {
     "custom_69",
     "custom",
-    "custom element 69"
+    "Custom element 69"
   },
   {
     "custom_70",
     "custom",
-    "custom element 70"
+    "Custom element 70"
   },
   {
     "custom_71",
     "custom",
-    "custom element 71"
+    "Custom element 71"
   },
   {
     "custom_72",
     "custom",
-    "custom element 72"
+    "Custom element 72"
   },
   {
     "custom_73",
     "custom",
-    "custom element 73"
+    "Custom element 73"
   },
   {
     "custom_74",
     "custom",
-    "custom element 74"
+    "Custom element 74"
   },
   {
     "custom_75",
     "custom",
-    "custom element 75"
+    "Custom element 75"
   },
   {
     "custom_76",
     "custom",
-    "custom element 76"
+    "Custom element 76"
   },
   {
     "custom_77",
     "custom",
-    "custom element 77"
+    "Custom element 77"
   },
   {
     "custom_78",
     "custom",
-    "custom element 78"
+    "Custom element 78"
   },
   {
     "custom_79",
     "custom",
-    "custom element 79"
+    "Custom element 79"
   },
   {
     "custom_80",
     "custom",
-    "custom element 80"
+    "Custom element 80"
   },
   {
     "custom_81",
     "custom",
-    "custom element 81"
+    "Custom element 81"
   },
   {
     "custom_82",
     "custom",
-    "custom element 82"
+    "Custom element 82"
   },
   {
     "custom_83",
     "custom",
-    "custom element 83"
+    "Custom element 83"
   },
   {
     "custom_84",
     "custom",
-    "custom element 84"
+    "Custom element 84"
   },
   {
     "custom_85",
     "custom",
-    "custom element 85"
+    "Custom element 85"
   },
   {
     "custom_86",
     "custom",
-    "custom element 86"
+    "Custom element 86"
   },
   {
     "custom_87",
     "custom",
-    "custom element 87"
+    "Custom element 87"
   },
   {
     "custom_88",
     "custom",
-    "custom element 88"
+    "Custom element 88"
   },
   {
     "custom_89",
     "custom",
-    "custom element 89"
+    "Custom element 89"
   },
   {
     "custom_90",
     "custom",
-    "custom element 90"
+    "Custom element 90"
   },
   {
     "custom_91",
     "custom",
-    "custom element 91"
+    "Custom element 91"
   },
   {
     "custom_92",
     "custom",
-    "custom element 92"
+    "Custom element 92"
   },
   {
     "custom_93",
     "custom",
-    "custom element 93"
+    "Custom element 93"
   },
   {
     "custom_94",
     "custom",
-    "custom element 94"
+    "Custom element 94"
   },
   {
     "custom_95",
     "custom",
-    "custom element 95"
+    "Custom element 95"
   },
   {
     "custom_96",
     "custom",
-    "custom element 96"
+    "Custom element 96"
   },
   {
     "custom_97",
     "custom",
-    "custom element 97"
+    "Custom element 97"
   },
   {
     "custom_98",
     "custom",
-    "custom element 98"
+    "Custom element 98"
   },
   {
     "custom_99",
     "custom",
-    "custom element 99"
+    "Custom element 99"
   },
   {
     "custom_100",
     "custom",
-    "custom element 100"
+    "Custom element 100"
   },
   {
     "custom_101",
     "custom",
-    "custom element 101"
+    "Custom element 101"
   },
   {
     "custom_102",
     "custom",
-    "custom element 102"
+    "Custom element 102"
   },
   {
     "custom_103",
     "custom",
-    "custom element 103"
+    "Custom element 103"
   },
   {
     "custom_104",
     "custom",
-    "custom element 104"
+    "Custom element 104"
   },
   {
     "custom_105",
     "custom",
-    "custom element 105"
+    "Custom element 105"
   },
   {
     "custom_106",
     "custom",
-    "custom element 106"
+    "Custom element 106"
   },
   {
     "custom_107",
     "custom",
-    "custom element 107"
+    "Custom element 107"
   },
   {
     "custom_108",
     "custom",
-    "custom element 108"
+    "Custom element 108"
   },
   {
     "custom_109",
     "custom",
-    "custom element 109"
+    "Custom element 109"
   },
   {
     "custom_110",
     "custom",
-    "custom element 110"
+    "Custom element 110"
   },
   {
     "custom_111",
     "custom",
-    "custom element 111"
+    "Custom element 111"
   },
   {
     "custom_112",
     "custom",
-    "custom element 112"
+    "Custom element 112"
   },
   {
     "custom_113",
     "custom",
-    "custom element 113"
+    "Custom element 113"
   },
   {
     "custom_114",
     "custom",
-    "custom element 114"
+    "Custom element 114"
   },
   {
     "custom_115",
     "custom",
-    "custom element 115"
+    "Custom element 115"
   },
   {
     "custom_116",
     "custom",
-    "custom element 116"
+    "Custom element 116"
   },
   {
     "custom_117",
     "custom",
-    "custom element 117"
+    "Custom element 117"
   },
   {
     "custom_118",
     "custom",
-    "custom element 118"
+    "Custom element 118"
   },
   {
     "custom_119",
     "custom",
-    "custom element 119"
+    "Custom element 119"
   },
   {
     "custom_120",
     "custom",
-    "custom element 120"
+    "Custom element 120"
   },
   {
     "custom_121",
     "custom",
-    "custom element 121"
+    "Custom element 121"
   },
   {
     "custom_122",
     "custom",
-    "custom element 122"
+    "Custom element 122"
   },
   {
     "custom_123",
     "custom",
-    "custom element 123"
+    "Custom element 123"
   },
   {
     "custom_124",
     "custom",
-    "custom element 124"
+    "Custom element 124"
   },
   {
     "custom_125",
     "custom",
-    "custom element 125"
+    "Custom element 125"
   },
   {
     "custom_126",
     "custom",
-    "custom element 126"
+    "Custom element 126"
   },
   {
     "custom_127",
     "custom",
-    "custom element 127"
+    "Custom element 127"
   },
   {
     "custom_128",
     "custom",
-    "custom element 128"
+    "Custom element 128"
   },
   {
     "custom_129",
     "custom",
-    "custom element 129"
+    "Custom element 129"
   },
   {
     "custom_130",
     "custom",
-    "custom element 130"
+    "Custom element 130"
   },
   {
     "custom_131",
     "custom",
-    "custom element 131"
+    "Custom element 131"
   },
   {
     "custom_132",
     "custom",
-    "custom element 132"
+    "Custom element 132"
   },
   {
     "custom_133",
     "custom",
-    "custom element 133"
+    "Custom element 133"
   },
   {
     "custom_134",
     "custom",
-    "custom element 134"
+    "Custom element 134"
   },
   {
     "custom_135",
     "custom",
-    "custom element 135"
+    "Custom element 135"
   },
   {
     "custom_136",
     "custom",
-    "custom element 136"
+    "Custom element 136"
   },
   {
     "custom_137",
     "custom",
-    "custom element 137"
+    "Custom element 137"
   },
   {
     "custom_138",
     "custom",
-    "custom element 138"
+    "Custom element 138"
   },
   {
     "custom_139",
     "custom",
-    "custom element 139"
+    "Custom element 139"
   },
   {
     "custom_140",
     "custom",
-    "custom element 140"
+    "Custom element 140"
   },
   {
     "custom_141",
     "custom",
-    "custom element 141"
+    "Custom element 141"
   },
   {
     "custom_142",
     "custom",
-    "custom element 142"
+    "Custom element 142"
   },
   {
     "custom_143",
     "custom",
-    "custom element 143"
+    "Custom element 143"
   },
   {
     "custom_144",
     "custom",
-    "custom element 144"
+    "Custom element 144"
   },
   {
     "custom_145",
     "custom",
-    "custom element 145"
+    "Custom element 145"
   },
   {
     "custom_146",
     "custom",
-    "custom element 146"
+    "Custom element 146"
   },
   {
     "custom_147",
     "custom",
-    "custom element 147"
+    "Custom element 147"
   },
   {
     "custom_148",
     "custom",
-    "custom element 148"
+    "Custom element 148"
   },
   {
     "custom_149",
     "custom",
-    "custom element 149"
+    "Custom element 149"
   },
   {
     "custom_150",
     "custom",
-    "custom element 150"
+    "Custom element 150"
   },
   {
     "custom_151",
     "custom",
-    "custom element 151"
+    "Custom element 151"
   },
   {
     "custom_152",
     "custom",
-    "custom element 152"
+    "Custom element 152"
   },
   {
     "custom_153",
     "custom",
-    "custom element 153"
+    "Custom element 153"
   },
   {
     "custom_154",
     "custom",
-    "custom element 154"
+    "Custom element 154"
   },
   {
     "custom_155",
     "custom",
-    "custom element 155"
+    "Custom element 155"
   },
   {
     "custom_156",
     "custom",
-    "custom element 156"
+    "Custom element 156"
   },
   {
     "custom_157",
     "custom",
-    "custom element 157"
+    "Custom element 157"
   },
   {
     "custom_158",
     "custom",
-    "custom element 158"
+    "Custom element 158"
   },
   {
     "custom_159",
     "custom",
-    "custom element 159"
+    "Custom element 159"
   },
   {
     "custom_160",
     "custom",
-    "custom element 160"
+    "Custom element 160"
   },
   {
     "custom_161",
     "custom",
-    "custom element 161"
+    "Custom element 161"
   },
   {
     "custom_162",
     "custom",
-    "custom element 162"
+    "Custom element 162"
   },
   {
     "custom_163",
     "custom",
-    "custom element 163"
+    "Custom element 163"
   },
   {
     "custom_164",
     "custom",
-    "custom element 164"
+    "Custom element 164"
   },
   {
     "custom_165",
     "custom",
-    "custom element 165"
+    "Custom element 165"
   },
   {
     "custom_166",
     "custom",
-    "custom element 166"
+    "Custom element 166"
   },
   {
     "custom_167",
     "custom",
-    "custom element 167"
+    "Custom element 167"
   },
   {
     "custom_168",
     "custom",
-    "custom element 168"
+    "Custom element 168"
   },
   {
     "custom_169",
     "custom",
-    "custom element 169"
+    "Custom element 169"
   },
   {
     "custom_170",
     "custom",
-    "custom element 170"
+    "Custom element 170"
   },
   {
     "custom_171",
     "custom",
-    "custom element 171"
+    "Custom element 171"
   },
   {
     "custom_172",
     "custom",
-    "custom element 172"
+    "Custom element 172"
   },
   {
     "custom_173",
     "custom",
-    "custom element 173"
+    "Custom element 173"
   },
   {
     "custom_174",
     "custom",
-    "custom element 174"
+    "Custom element 174"
   },
   {
     "custom_175",
     "custom",
-    "custom element 175"
+    "Custom element 175"
   },
   {
     "custom_176",
     "custom",
-    "custom element 176"
+    "Custom element 176"
   },
   {
     "custom_177",
     "custom",
-    "custom element 177"
+    "Custom element 177"
   },
   {
     "custom_178",
     "custom",
-    "custom element 178"
+    "Custom element 178"
   },
   {
     "custom_179",
     "custom",
-    "custom element 179"
+    "Custom element 179"
   },
   {
     "custom_180",
     "custom",
-    "custom element 180"
+    "Custom element 180"
   },
   {
     "custom_181",
     "custom",
-    "custom element 181"
+    "Custom element 181"
   },
   {
     "custom_182",
     "custom",
-    "custom element 182"
+    "Custom element 182"
   },
   {
     "custom_183",
     "custom",
-    "custom element 183"
+    "Custom element 183"
   },
   {
     "custom_184",
     "custom",
-    "custom element 184"
+    "Custom element 184"
   },
   {
     "custom_185",
     "custom",
-    "custom element 185"
+    "Custom element 185"
   },
   {
     "custom_186",
     "custom",
-    "custom element 186"
+    "Custom element 186"
   },
   {
     "custom_187",
     "custom",
-    "custom element 187"
+    "Custom element 187"
   },
   {
     "custom_188",
     "custom",
-    "custom element 188"
+    "Custom element 188"
   },
   {
     "custom_189",
     "custom",
-    "custom element 189"
+    "Custom element 189"
   },
   {
     "custom_190",
     "custom",
-    "custom element 190"
+    "Custom element 190"
   },
   {
     "custom_191",
     "custom",
-    "custom element 191"
+    "Custom element 191"
   },
   {
     "custom_192",
     "custom",
-    "custom element 192"
+    "Custom element 192"
   },
   {
     "custom_193",
     "custom",
-    "custom element 193"
+    "Custom element 193"
   },
   {
     "custom_194",
     "custom",
-    "custom element 194"
+    "Custom element 194"
   },
   {
     "custom_195",
     "custom",
-    "custom element 195"
+    "Custom element 195"
   },
   {
     "custom_196",
     "custom",
-    "custom element 196"
+    "Custom element 196"
   },
   {
     "custom_197",
     "custom",
-    "custom element 197"
+    "Custom element 197"
   },
   {
     "custom_198",
     "custom",
-    "custom element 198"
+    "Custom element 198"
   },
   {
     "custom_199",
     "custom",
-    "custom element 199"
+    "Custom element 199"
   },
   {
     "custom_200",
     "custom",
-    "custom element 200"
+    "Custom element 200"
   },
   {
     "custom_201",
     "custom",
-    "custom element 201"
+    "Custom element 201"
   },
   {
     "custom_202",
     "custom",
-    "custom element 202"
+    "Custom element 202"
   },
   {
     "custom_203",
     "custom",
-    "custom element 203"
+    "Custom element 203"
   },
   {
     "custom_204",
     "custom",
-    "custom element 204"
+    "Custom element 204"
   },
   {
     "custom_205",
     "custom",
-    "custom element 205"
+    "Custom element 205"
   },
   {
     "custom_206",
     "custom",
-    "custom element 206"
+    "Custom element 206"
   },
   {
     "custom_207",
     "custom",
-    "custom element 207"
+    "Custom element 207"
   },
   {
     "custom_208",
     "custom",
-    "custom element 208"
+    "Custom element 208"
   },
   {
     "custom_209",
     "custom",
-    "custom element 209"
+    "Custom element 209"
   },
   {
     "custom_210",
     "custom",
-    "custom element 210"
+    "Custom element 210"
   },
   {
     "custom_211",
     "custom",
-    "custom element 211"
+    "Custom element 211"
   },
   {
     "custom_212",
     "custom",
-    "custom element 212"
+    "Custom element 212"
   },
   {
     "custom_213",
     "custom",
-    "custom element 213"
+    "Custom element 213"
   },
   {
     "custom_214",
     "custom",
-    "custom element 214"
+    "Custom element 214"
   },
   {
     "custom_215",
     "custom",
-    "custom element 215"
+    "Custom element 215"
   },
   {
     "custom_216",
     "custom",
-    "custom element 216"
+    "Custom element 216"
   },
   {
     "custom_217",
     "custom",
-    "custom element 217"
+    "Custom element 217"
   },
   {
     "custom_218",
     "custom",
-    "custom element 218"
+    "Custom element 218"
   },
   {
     "custom_219",
     "custom",
-    "custom element 219"
+    "Custom element 219"
   },
   {
     "custom_220",
     "custom",
-    "custom element 220"
+    "Custom element 220"
   },
   {
     "custom_221",
     "custom",
-    "custom element 221"
+    "Custom element 221"
   },
   {
     "custom_222",
     "custom",
-    "custom element 222"
+    "Custom element 222"
   },
   {
     "custom_223",
     "custom",
-    "custom element 223"
+    "Custom element 223"
   },
   {
     "custom_224",
     "custom",
-    "custom element 224"
+    "Custom element 224"
   },
   {
     "custom_225",
     "custom",
-    "custom element 225"
+    "Custom element 225"
   },
   {
     "custom_226",
     "custom",
-    "custom element 226"
+    "Custom element 226"
   },
   {
     "custom_227",
     "custom",
-    "custom element 227"
+    "Custom element 227"
   },
   {
     "custom_228",
     "custom",
-    "custom element 228"
+    "Custom element 228"
   },
   {
     "custom_229",
     "custom",
-    "custom element 229"
+    "Custom element 229"
   },
   {
     "custom_230",
     "custom",
-    "custom element 230"
+    "Custom element 230"
   },
   {
     "custom_231",
     "custom",
-    "custom element 231"
+    "Custom element 231"
   },
   {
     "custom_232",
     "custom",
-    "custom element 232"
+    "Custom element 232"
   },
   {
     "custom_233",
     "custom",
-    "custom element 233"
+    "Custom element 233"
   },
   {
     "custom_234",
     "custom",
-    "custom element 234"
+    "Custom element 234"
   },
   {
     "custom_235",
     "custom",
-    "custom element 235"
+    "Custom element 235"
   },
   {
     "custom_236",
     "custom",
-    "custom element 236"
+    "Custom element 236"
   },
   {
     "custom_237",
     "custom",
-    "custom element 237"
+    "Custom element 237"
   },
   {
     "custom_238",
     "custom",
-    "custom element 238"
+    "Custom element 238"
   },
   {
     "custom_239",
     "custom",
-    "custom element 239"
+    "Custom element 239"
   },
   {
     "custom_240",
     "custom",
-    "custom element 240"
+    "Custom element 240"
   },
   {
     "custom_241",
     "custom",
-    "custom element 241"
+    "Custom element 241"
   },
   {
     "custom_242",
     "custom",
-    "custom element 242"
+    "Custom element 242"
   },
   {
     "custom_243",
     "custom",
-    "custom element 243"
+    "Custom element 243"
   },
   {
     "custom_244",
     "custom",
-    "custom element 244"
+    "Custom element 244"
   },
   {
     "custom_245",
     "custom",
-    "custom element 245"
+    "Custom element 245"
   },
   {
     "custom_246",
     "custom",
-    "custom element 246"
+    "Custom element 246"
   },
   {
     "custom_247",
     "custom",
-    "custom element 247"
+    "Custom element 247"
   },
   {
     "custom_248",
     "custom",
-    "custom element 248"
+    "Custom element 248"
   },
   {
     "custom_249",
     "custom",
-    "custom element 249"
+    "Custom element 249"
   },
   {
     "custom_250",
     "custom",
-    "custom element 250"
+    "Custom element 250"
   },
   {
     "custom_251",
     "custom",
-    "custom element 251"
+    "Custom element 251"
   },
   {
     "custom_252",
     "custom",
-    "custom element 252"
+    "Custom element 252"
   },
   {
     "custom_253",
     "custom",
-    "custom element 253"
+    "Custom element 253"
   },
   {
     "custom_254",
     "custom",
-    "custom element 254"
+    "Custom element 254"
   },
   {
     "custom_255",
     "custom",
-    "custom element 255"
+    "Custom element 255"
   },
   {
     "custom_256",
     "custom",
-    "custom element 256"
+    "Custom element 256"
   },
   {
     "em_key_1",
     "key",
-    "key 1 (EM style)"
+    "Key 1 (EM style)"
     },
   {
     "em_key_2",
     "key",
-    "key 2 (EM style)"
+    "Key 2 (EM style)"
     },
   {
     "em_key_3",
     "key",
-    "key 3 (EM style)"
+    "Key 3 (EM style)"
   },
   {
     "em_key_4",
     "key",
-    "key 4 (EM style)"
+    "Key 4 (EM style)"
   },
   {
     "envelope_1",
     "envelope",
-    "mail envelope 1"
+    "Mail envelope 1"
   },
   {
     "envelope_2",
     "envelope",
-    "mail envelope 2"
+    "Mail envelope 2"
   },
   {
     "envelope_3",
     "envelope",
-    "mail envelope 3"
+    "Mail envelope 3"
   },
   {
     "envelope_4",
     "envelope",
-    "mail envelope 4"
+    "Mail envelope 4"
   },
   {
     "group_1",
     "group",
-    "group element 1"
+    "Group element 1"
   },
   {
     "group_2",
     "group",
-    "group element 2"
+    "Group element 2"
   },
   {
     "group_3",
     "group",
-    "group element 3"
+    "Group element 3"
   },
   {
     "group_4",
     "group",
-    "group element 4"
+    "Group element 4"
   },
   {
     "group_5",
     "group",
-    "group element 5"
+    "Group element 5"
   },
   {
     "group_6",
     "group",
-    "group element 6"
+    "Group element 6"
   },
   {
     "group_7",
     "group",
-    "group element 7"
+    "Group element 7"
   },
   {
     "group_8",
     "group",
-    "group element 8"
+    "Group element 8"
   },
   {
     "group_9",
     "group",
-    "group element 9"
+    "Group element 9"
   },
   {
     "group_10",
     "group",
-    "group element 10"
+    "Group element 10"
   },
   {
     "group_11",
     "group",
-    "group element 11"
+    "Group element 11"
   },
   {
     "group_12",
     "group",
-    "group element 12"
+    "Group element 12"
   },
   {
     "group_13",
     "group",
-    "group element 13"
+    "Group element 13"
   },
   {
     "group_14",
     "group",
-    "group element 14"
+    "Group element 14"
   },
   {
     "group_15",
     "group",
-    "group element 15"
+    "Group element 15"
   },
   {
     "group_16",
     "group",
-    "group element 16"
+    "Group element 16"
   },
   {
     "group_17",
     "group",
-    "group element 17"
+    "Group element 17"
   },
   {
     "group_18",
     "group",
-    "group element 18"
+    "Group element 18"
   },
   {
     "group_19",
     "group",
-    "group element 19"
+    "Group element 19"
   },
   {
     "group_20",
     "group",
-    "group element 20"
+    "Group element 20"
   },
   {
     "group_21",
     "group",
-    "group element 21"
+    "Group element 21"
   },
   {
     "group_22",
     "group",
-    "group element 22"
+    "Group element 22"
   },
   {
     "group_23",
     "group",
-    "group element 23"
+    "Group element 23"
   },
   {
     "group_24",
     "group",
-    "group element 24"
+    "Group element 24"
   },
   {
     "group_25",
     "group",
-    "group element 25"
+    "Group element 25"
   },
   {
     "group_26",
     "group",
-    "group element 26"
+    "Group element 26"
   },
   {
     "group_27",
     "group",
-    "group element 27"
+    "Group element 27"
   },
   {
     "group_28",
     "group",
-    "group element 28"
+    "Group element 28"
   },
   {
     "group_29",
     "group",
-    "group element 29"
+    "Group element 29"
   },
   {
     "group_30",
     "group",
-    "group element 30"
+    "Group element 30"
   },
   {
     "group_31",
     "group",
-    "group element 31"
+    "Group element 31"
   },
   {
     "group_32",
     "group",
-    "group element 32"
+    "Group element 32"
   },
   {
     "unknown",
     "unknown",
-    "unknown element"
+    "Unknown element"
   },
   {
     "trigger_element",
     "trigger",
-    "element triggering change"
+    "Element triggering change"
   },
   {
     "trigger_player",
     "trigger",
-    "player triggering change"
+    "Player triggering change"
   },
   {
     "sp_gravity_on_port_right",
     "sp_gravity_on_port",
-    "gravity-on port (leading right)"
+    "Gravity-on port (leading right)"
   },
   {
     "sp_gravity_on_port_down",
     "sp_gravity_on_port",
-    "gravity-on port (leading down)"
+    "Gravity-on port (leading down)"
   },
   {
     "sp_gravity_on_port_left",
     "sp_gravity_on_port",
-    "gravity-on port (leading left)"
+    "Gravity-on port (leading left)"
   },
   {
     "sp_gravity_on_port_up",
     "sp_gravity_on_port",
-    "gravity-on port (leading up)"
+    "Gravity-on port (leading up)"
   },
   {
     "sp_gravity_off_port_right",
     "sp_gravity_off_port",
-    "gravity-off port (leading right)"
+    "Gravity-off port (leading right)"
   },
   {
     "sp_gravity_off_port_down",
     "sp_gravity_off_port",
-    "gravity-off port (leading down)"
+    "Gravity-off port (leading down)"
   },
   {
     "sp_gravity_off_port_left",
     "sp_gravity_off_port",
-    "gravity-off port (leading left)"
+    "Gravity-off port (leading left)"
   },
   {
     "sp_gravity_off_port_up",
     "sp_gravity_off_port",
-    "gravity-off port (leading up)"
+    "Gravity-off port (leading up)"
   },
   {
     "balloon_switch_none",
     "balloon_switch",
-    "wind switch (off)"
+    "Wind switch (off)"
   },
   {
     "emc_gate_5",
     "gate",
-    "door 5 (EMC style)",
+    "Door 5 (EMC style)",
   },
   {
     "emc_gate_6",
     "gate",
-    "door 6 (EMC style)",
+    "Door 6 (EMC style)",
   },
   {
     "emc_gate_7",
     "gate",
-    "door 7 (EMC style)",
+    "Door 7 (EMC style)",
   },
   {
     "emc_gate_8",
     "gate",
-    "door 8 (EMC style)",
+    "Door 8 (EMC style)",
   },
   {
     "emc_gate_5_gray",
     "gate",
-    "gray door (EMC style, key 5)",
+    "Gray door (EMC style, key 5)",
   },
   {
     "emc_gate_6_gray",
     "gate",
-    "gray door (EMC style, key 6)",
+    "Gray door (EMC style, key 6)",
   },
   {
     "emc_gate_7_gray",
     "gate",
-    "gray door (EMC style, key 7)",
+    "Gray door (EMC style, key 7)",
   },
   {
     "emc_gate_8_gray",
     "gate",
-    "gray door (EMC style, key 8)",
+    "Gray door (EMC style, key 8)",
   },
   {
     "emc_key_5",
     "key",
-    "key 5 (EMC style)",
+    "Key 5 (EMC style)",
   },
   {
     "emc_key_6",
     "key",
-    "key 6 (EMC style)",
+    "Key 6 (EMC style)",
   },
   {
     "emc_key_7",
     "key",
-    "key 7 (EMC style)",
+    "Key 7 (EMC style)",
   },
   {
     "emc_key_8",
     "key",
-    "key 8 (EMC style)",
+    "Key 8 (EMC style)",
   },
   {
     "emc_android",
     "emc_android",
-    "android",
+    "Android",
   },
   {
     "emc_grass",
     "emc_grass",
-    "grass",
+    "Grass",
   },
   {
     "emc_magic_ball",
     "emc_magic_ball",
-    "magic ball",
+    "Magic ball",
   },
   {
     "emc_magic_ball.active",
     "emc_magic_ball",
-    "magic ball (activated)",
+    "Magic ball (activated)",
   },
   {
     "emc_magic_ball_switch",
     "emc_magic_ball_switch",
-    "magic ball switch (off)",
+    "Magic ball switch (off)",
   },
   {
     "emc_magic_ball_switch.active",
     "emc_magic_ball_switch",
-    "magic ball switch (on)",
+    "Magic ball switch (on)",
   },
   {
     "emc_spring_bumper",
     "emc_spring_bumper",
-    "spring bumper",
+    "Spring bumper",
   },
   {
     "emc_plant",
     "emc_plant",
-    "plant",
+    "Plant",
   },
   {
     "emc_lenses",
     "emc_lenses",
-    "lenses",
+    "Lenses",
   },
   {
     "emc_magnifier",
     "emc_magnifier",
-    "magnifier",
+    "Magnifier",
   },
   {
     "emc_wall_9",
     "wall",
-    "normal wall 9 (EMC style)"
+    "Normal wall 9 (EMC style)"
   },
   {
     "emc_wall_10",
     "wall",
-    "normal wall 10 (EMC style)"
+    "Normal wall 10 (EMC style)"
   },
   {
     "emc_wall_11",
     "wall",
-    "normal wall 11 (EMC style)"
+    "Normal wall 11 (EMC style)"
   },
   {
     "emc_wall_12",
     "wall",
-    "normal wall 12 (EMC style)"
+    "Normal wall 12 (EMC style)"
   },
   {
     "emc_wall_13",
     "wall",
-    "normal wall 13 (EMC style)"
+    "Normal wall 13 (EMC style)"
   },
   {
     "emc_wall_14",
     "wall",
-    "normal wall 14 (EMC style)"
+    "Normal wall 14 (EMC style)"
   },
   {
     "emc_wall_15",
     "wall",
-    "normal wall 15 (EMC style)"
+    "Normal wall 15 (EMC style)"
   },
   {
     "emc_wall_16",
     "wall",
-    "normal wall 16 (EMC style)"
+    "Normal wall 16 (EMC style)"
   },
   {
     "emc_wall_slippery_1",
     "wall",
-    "slippery wall 1 (EMC style)"
+    "Slippery wall 1 (EMC style)"
   },
   {
     "emc_wall_slippery_2",
     "wall",
-    "slippery wall 2 (EMC style)"
+    "Slippery wall 2 (EMC style)"
   },
   {
     "emc_wall_slippery_3",
     "wall",
-    "slippery wall 3 (EMC style)"
+    "Slippery wall 3 (EMC style)"
   },
   {
     "emc_wall_slippery_4",
     "wall",
-    "slippery wall 4 (EMC style)"
+    "Slippery wall 4 (EMC style)"
   },
   {
     "emc_fake_grass",
     "fake_grass",
-    "fake grass"
+    "Fake grass"
   },
   {
     "emc_fake_acid",
     "fake_acid",
-    "fake acid"
+    "Fake acid"
   },
   {
     "emc_dripper",
     "dripper",
-    "dripper"
+    "Dripper"
   },
   {
     "trigger_ce_value",
@@ -3745,27 +3745,27 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "yamyam.left",
     "yamyam",
-    "yam yam (starts moving left)"
+    "Yam yam (starts moving left)"
   },
   {
     "yamyam.right",
     "yamyam",
-    "yam yam (starts moving right)"
+    "Yam yam (starts moving right)"
   },
   {
     "yamyam.up",
     "yamyam",
-    "yam yam (starts moving up)"
+    "Yam yam (starts moving up)"
   },
   {
     "yamyam.down",
     "yamyam",
-    "yam yam (starts moving down)"
+    "Yam yam (starts moving down)"
   },
   {
     "bd_expandable_wall",
     "bd_expandable_wall",
-    "growing wall (horizontal, BD style)"
+    "Growing wall (horizontal, BD style)"
   },
   {
     "prev_ce_8",
@@ -3810,7 +3810,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "self",
     "self",
-    "the current custom element"
+    "The current custom element"
   },
   {
     "next_ce_1",
@@ -3855,772 +3855,772 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "any_element",
     "any_element",
-    "this element matches any element"
+    "This element matches any element"
   },
   {
     "steel_char_space",
     "steel_char",
-    "steel letter ' '"
+    "Steel letter ' '"
   },
   {
     "steel_char_exclam",
     "steel_char",
-    "steel letter '!'"
+    "Steel letter '!'"
   },
   {
     "steel_char_quotedbl",
     "steel_char",
-    "steel letter '\"'"
+    "Steel letter '\"'"
   },
   {
     "steel_char_numbersign",
     "steel_char",
-    "steel letter '#'"
+    "Steel letter '#'"
   },
   {
     "steel_char_dollar",
     "steel_char",
-    "steel letter '$'"
+    "Steel letter '$'"
   },
   {
     "steel_char_percent",
     "steel_char",
-    "steel letter '%'"
+    "Steel letter '%'"
   },
   {
     "steel_char_ampersand",
     "steel_char",
-    "steel letter '&'"
+    "Steel letter '&'"
   },
   {
     "steel_char_apostrophe",
     "steel_char",
-    "steel letter '''"
+    "Steel letter '''"
   },
   {
     "steel_char_parenleft",
     "steel_char",
-    "steel letter '('"
+    "Steel letter '('"
   },
   {
     "steel_char_parenright",
     "steel_char",
-    "steel letter ')'"
+    "Steel letter ')'"
   },
   {
     "steel_char_asterisk",
     "steel_char",
-    "steel letter '*'"
+    "Steel letter '*'"
   },
   {
     "steel_char_plus",
     "steel_char",
-    "steel letter '+'"
+    "Steel letter '+'"
   },
   {
     "steel_char_comma",
     "steel_char",
-    "steel letter ','"
+    "Steel letter ','"
   },
   {
     "steel_char_minus",
     "steel_char",
-    "steel letter '-'"
+    "Steel letter '-'"
   },
   {
     "steel_char_period",
     "steel_char",
-    "steel letter '.'"
+    "Steel letter '.'"
   },
   {
     "steel_char_slash",
     "steel_char",
-    "steel letter '/'"
+    "Steel letter '/'"
   },
   {
     "steel_char_0",
     "steel_char",
-    "steel letter '0'"
+    "Steel letter '0'"
   },
   {
     "steel_char_1",
     "steel_char",
-    "steel letter '1'"
+    "Steel letter '1'"
   },
   {
     "steel_char_2",
     "steel_char",
-    "steel letter '2'"
+    "Steel letter '2'"
   },
   {
     "steel_char_3",
     "steel_char",
-    "steel letter '3'"
+    "Steel letter '3'"
   },
   {
     "steel_char_4",
     "steel_char",
-    "steel letter '4'"
+    "Steel letter '4'"
   },
   {
     "steel_char_5",
     "steel_char",
-    "steel letter '5'"
+    "Steel letter '5'"
   },
   {
     "steel_char_6",
     "steel_char",
-    "steel letter '6'"
+    "Steel letter '6'"
   },
   {
     "steel_char_7",
     "steel_char",
-    "steel letter '7'"
+    "Steel letter '7'"
   },
   {
     "steel_char_8",
     "steel_char",
-    "steel letter '8'"
+    "Steel letter '8'"
   },
   {
     "steel_char_9",
     "steel_char",
-    "steel letter '9'"
+    "Steel letter '9'"
   },
   {
     "steel_char_colon",
     "steel_char",
-    "steel letter ':'"
+    "Steel letter ':'"
   },
   {
     "steel_char_semicolon",
     "steel_char",
-    "steel letter ';'"
+    "Steel letter ';'"
   },
   {
     "steel_char_less",
     "steel_char",
-    "steel letter '<'"
+    "Steel letter '<'"
   },
   {
     "steel_char_equal",
     "steel_char",
-    "steel letter '='"
+    "Steel letter '='"
   },
   {
     "steel_char_greater",
     "steel_char",
-    "steel letter '>'"
+    "Steel letter '>'"
   },
   {
     "steel_char_question",
     "steel_char",
-    "steel letter '?'"
+    "Steel letter '?'"
   },
   {
     "steel_char_at",
     "steel_char",
-    "steel letter '@'"
+    "Steel letter '@'"
   },
   {
     "steel_char_a",
     "steel_char",
-    "steel letter 'A'"
+    "Steel letter 'A'"
   },
   {
     "steel_char_b",
     "steel_char",
-    "steel letter 'B'"
+    "Steel letter 'B'"
   },
   {
     "steel_char_c",
     "steel_char",
-    "steel letter 'C'"
+    "Steel letter 'C'"
   },
   {
     "steel_char_d",
     "steel_char",
-    "steel letter 'D'"
+    "Steel letter 'D'"
   },
   {
     "steel_char_e",
     "steel_char",
-    "steel letter 'E'"
+    "Steel letter 'E'"
   },
   {
     "steel_char_f",
     "steel_char",
-    "steel letter 'F'"
+    "Steel letter 'F'"
   },
   {
     "steel_char_g",
     "steel_char",
-    "steel letter 'G'"
+    "Steel letter 'G'"
   },
   {
     "steel_char_h",
     "steel_char",
-    "steel letter 'H'"
+    "Steel letter 'H'"
   },
   {
     "steel_char_i",
     "steel_char",
-    "steel letter 'I'"
+    "Steel letter 'I'"
   },
   {
     "steel_char_j",
     "steel_char",
-    "steel letter 'J'"
+    "Steel letter 'J'"
   },
   {
     "steel_char_k",
     "steel_char",
-    "steel letter 'K'"
+    "Steel letter 'K'"
   },
   {
     "steel_char_l",
     "steel_char",
-    "steel letter 'L'"
+    "Steel letter 'L'"
   },
   {
     "steel_char_m",
     "steel_char",
-    "steel letter 'M'"
+    "Steel letter 'M'"
   },
   {
     "steel_char_n",
     "steel_char",
-    "steel letter 'N'"
+    "Steel letter 'N'"
   },
   {
     "steel_char_o",
     "steel_char",
-    "steel letter 'O'"
+    "Steel letter 'O'"
   },
   {
     "steel_char_p",
     "steel_char",
-    "steel letter 'P'"
+    "Steel letter 'P'"
   },
   {
     "steel_char_q",
     "steel_char",
-    "steel letter 'Q'"
+    "Steel letter 'Q'"
   },
   {
     "steel_char_r",
     "steel_char",
-    "steel letter 'R'"
+    "Steel letter 'R'"
   },
   {
     "steel_char_s",
     "steel_char",
-    "steel letter 'S'"
+    "Steel letter 'S'"
   },
   {
     "steel_char_t",
     "steel_char",
-    "steel letter 'T'"
+    "Steel letter 'T'"
   },
   {
     "steel_char_u",
     "steel_char",
-    "steel letter 'U'"
+    "Steel letter 'U'"
   },
   {
     "steel_char_v",
     "steel_char",
-    "steel letter 'V'"
+    "Steel letter 'V'"
   },
   {
     "steel_char_w",
     "steel_char",
-    "steel letter 'W'"
+    "Steel letter 'W'"
   },
   {
     "steel_char_x",
     "steel_char",
-    "steel letter 'X'"
+    "Steel letter 'X'"
   },
   {
     "steel_char_y",
     "steel_char",
-    "steel letter 'Y'"
+    "Steel letter 'Y'"
   },
   {
     "steel_char_z",
     "steel_char",
-    "steel letter 'Z'"
+    "Steel letter 'Z'"
   },
   {
     "steel_char_bracketleft",
     "steel_char",
-    "steel letter '['"
+    "Steel letter '['"
   },
   {
     "steel_char_backslash",
     "steel_char",
-    "steel letter '\\'"
+    "Steel letter '\\'"
   },
   {
     "steel_char_bracketright",
     "steel_char",
-    "steel letter ']'"
+    "Steel letter ']'"
   },
   {
     "steel_char_asciicircum",
     "steel_char",
-    "steel letter '^'"
+    "Steel letter '^'"
   },
   {
     "steel_char_underscore",
     "steel_char",
-    "steel letter '_'"
+    "Steel letter '_'"
   },
   {
     "steel_char_copyright",
     "steel_char",
-    "steel letter '\xa9'"
+    "Steel letter '\xa9'"
   },
   {
     "steel_char_aumlaut",
     "steel_char",
-    "steel letter '\xc4'"
+    "Steel letter '\xc4'"
   },
   {
     "steel_char_oumlaut",
     "steel_char",
-    "steel letter '\xd6'"
+    "Steel letter '\xd6'"
   },
   {
     "steel_char_uumlaut",
     "steel_char",
-    "steel letter '\xdc'"
+    "Steel letter '\xdc'"
   },
   {
     "steel_char_degree",
     "steel_char",
-    "steel letter '\xb0'"
+    "Steel letter '\xb0'"
   },
   {
     "steel_char_trademark",
     "steel_char",
-    "steel letter '\xae'"
+    "Steel letter '\xae'"
   },
   {
     "steel_char_cursor",
     "steel_char",
-    "steel letter '\xa0'"
+    "Steel letter '\xa0'"
   },
   {
     "steel_char_unused",
     "steel_char",
-    "steel letter ''"
+    "Steel letter ''"
   },
   {
     "steel_char_unused",
     "steel_char",
-    "steel letter ''"
+    "Steel letter ''"
   },
   {
     "steel_char_unused",
     "steel_char",
-    "steel letter ''"
+    "Steel letter ''"
   },
   {
     "steel_char_unused",
     "steel_char",
-    "steel letter ''"
+    "Steel letter ''"
   },
   {
     "steel_char_unused",
     "steel_char",
-    "steel letter ''"
+    "Steel letter ''"
   },
   {
     "steel_char_unused",
     "steel_char",
-    "steel letter ''"
+    "Steel letter ''"
   },
   {
     "steel_char_button",
     "steel_char",
-    "steel letter 'button'"
+    "Steel letter 'button'"
   },
   {
     "steel_char_up",
     "steel_char",
-    "steel letter 'up'"
+    "Steel letter 'up'"
   },
   {
     "steel_char_down",
     "steel_char",
-    "steel letter 'down'"
+    "Steel letter 'down'"
   },
   {
     "sperms",
     "frankie",
-    "sperms"
+    "Sperms"
   },
   {
     "bullet",
     "frankie",
-    "bullet"
+    "Bullet"
   },
   {
     "heart",
     "frankie",
-    "heart"
+    "Heart"
   },
   {
     "cross",
     "frankie",
-    "cross"
+    "Cross"
   },
   {
     "frankie",
     "frankie",
-    "frankie"
+    "Frankie"
   },
   {
     "sign_sperms",
     "sign",
-    "sign (sperms)"
+    "Sign (sperms)"
   },
   {
     "sign_bullet",
     "sign",
-    "sign (bullet)"
+    "Sign (bullet)"
   },
   {
     "sign_heart",
     "sign",
-    "sign (heart)"
+    "Sign (heart)"
   },
   {
     "sign_cross",
     "sign",
-    "sign (cross)"
+    "Sign (cross)"
   },
   {
     "sign_frankie",
     "sign",
-    "sign (frankie)"
+    "Sign (frankie)"
   },
   {
     "steel_exit_closed",
     "steel_exit",
-    "closed steel exit"
+    "Closed steel exit"
   },
   {
     "steel_exit_open",
     "steel_exit",
-    "open steel exit"
+    "Open steel exit"
   },
   {
     "dc_steelwall_1_left",
     "steelwall",
-    "steel wall 1 (left)"
+    "Steel wall 1 (left)"
   },
   {
     "dc_steelwall_1_right",
     "steelwall",
-    "steel wall 1 (right)"
+    "Steel wall 1 (right)"
   },
   {
     "dc_steelwall_1_top",
     "steelwall",
-    "steel wall 1 (top)"
+    "Steel wall 1 (top)"
   },
   {
     "dc_steelwall_1_bottom",
     "steelwall",
-    "steel wall 1 (bottom)"
+    "Steel wall 1 (bottom)"
   },
   {
     "dc_steelwall_1_horizontal",
     "steelwall",
-    "steel wall 1 (top/bottom)"
+    "Steel wall 1 (top/bottom)"
   },
   {
     "dc_steelwall_1_vertical",
     "steelwall",
-    "steel wall 1 (left/right)"
+    "Steel wall 1 (left/right)"
   },
   {
     "dc_steelwall_1_topleft",
     "steelwall",
-    "steel wall 1 (top/left)"
+    "Steel wall 1 (top/left)"
   },
   {
     "dc_steelwall_1_topright",
     "steelwall",
-    "steel wall 1 (top/right)"
+    "Steel wall 1 (top/right)"
   },
   {
     "dc_steelwall_1_bottomleft",
     "steelwall",
-    "steel wall 1 (bottom/left)"
+    "Steel wall 1 (bottom/left)"
   },
   {
     "dc_steelwall_1_bottomright",
     "steelwall",
-    "steel wall 1 (bottom/right)"
+    "Steel wall 1 (bottom/right)"
   },
   {
     "dc_steelwall_1_topleft_2",
     "steelwall",
-    "steel wall 1 (top/left corner)"
+    "Steel wall 1 (top/left corner)"
   },
   {
     "dc_steelwall_1_topright_2",
     "steelwall",
-    "steel wall 1 (top/right corner)"
+    "Steel wall 1 (top/right corner)"
   },
   {
     "dc_steelwall_1_bottomleft_2",
     "steelwall",
-    "steel wall 1 (bottom/left corner)"
+    "Steel wall 1 (bottom/left corner)"
   },
   {
     "dc_steelwall_1_bottomright_2",
     "steelwall",
-    "steel wall 1 (bottom/right corner)"
+    "Steel wall 1 (bottom/right corner)"
   },
   {
     "dc_steelwall_2_left",
     "steelwall",
-    "steel wall 2 (left)"
+    "Steel wall 2 (left)"
   },
   {
     "dc_steelwall_2_right",
     "steelwall",
-    "steel wall 2 (right)"
+    "Steel wall 2 (right)"
   },
   {
     "dc_steelwall_2_top",
     "steelwall",
-    "steel wall 2 (top)"
+    "Steel wall 2 (top)"
   },
   {
     "dc_steelwall_2_bottom",
     "steelwall",
-    "steel wall 2 (bottom)"
+    "Steel wall 2 (bottom)"
   },
   {
     "dc_steelwall_2_horizontal",
     "steelwall",
-    "steel wall 2 (horizontal)"
+    "Steel wall 2 (horizontal)"
   },
   {
     "dc_steelwall_2_vertical",
     "steelwall",
-    "steel wall 2 (vertical)"
+    "Steel wall 2 (vertical)"
   },
   {
     "dc_steelwall_2_middle",
     "steelwall",
-    "steel wall 2 (middle)"
+    "Steel wall 2 (middle)"
   },
   {
     "dc_steelwall_2_single",
     "steelwall",
-    "steel wall 2 (single)"
+    "Steel wall 2 (single)"
   },
   {
     "dc_switchgate_switch_up",
     "switchgate_switch",
-    "switch for switch gate (steel)"
+    "Switch for switch gate (steel)"
   },
   {
     "dc_switchgate_switch_down",
     "switchgate_switch",
-    "switch for switch gate (steel)"
+    "Switch for switch gate (steel)"
   },
   {
     "dc_timegate_switch",
     "timegate_switch",
-    "switch for time gate (steel)"
+    "Switch for time gate (steel)"
   },
   {
     "dc_timegate_switch.active",
     "timegate_switch",
-    "switch for time gate (steel)"
+    "Switch for time gate (steel)"
   },
   {
     "dc_landmine",
     "dc_landmine",
-    "land mine (DC style, removable)"
+    "Land mine (DC style, removable)"
   },
   {
     "expandable_steelwall",
     "steelwall",
-    "growing steel wall"
+    "Growing steel wall"
   },
   {
     "expandable_steelwall_horizontal",
     "steelwall",
-    "growing steel wall (horizontal)"
+    "Growing steel wall (horizontal)"
   },
   {
     "expandable_steelwall_vertical",
     "steelwall",
-    "growing steel wall (vertical)"
+    "Growing steel wall (vertical)"
   },
   {
     "expandable_steelwall_any",
     "steelwall",
-    "growing steel wall (any direction)"
+    "Growing steel wall (any direction)"
   },
   {
     "em_exit_closed",
     "em_exit",
-    "closed exit (EM style)"
+    "Closed exit (EM style)"
   },
   {
     "em_exit_open",
     "em_exit",
-    "open exit (EM style)"
+    "Open exit (EM style)"
   },
   {
     "em_steel_exit_closed",
     "em_steel_exit",
-    "closed steel exit (EM style)"
+    "Closed steel exit (EM style)"
   },
   {
     "em_steel_exit_open",
     "em_steel_exit",
-    "open steel exit (EM style)"
+    "Open steel exit (EM style)"
   },
   {
     "dc_gate_fake_gray",
     "gate",
-    "gray door (opened by no key)"
+    "Gray door (opened by no key)"
   },
   {
     "dc_magic_wall",
     "dc_magic_wall",
-    "magic wall (DC style)"
+    "Magic wall (DC style)"
   },
   {
     "quicksand_fast_empty",
     "quicksand",
-    "fast quicksand (empty)"
+    "Fast quicksand (empty)"
   },
   {
     "quicksand_fast_full",
     "quicksand",
-    "fast quicksand (with rock)"
+    "Fast quicksand (with rock)"
   },
   {
     "from_level_template",
     "from_level_template",
-    "element taken from level template"
+    "Element taken from level template"
   },
   {
     "mm_empty_space",
     "empty_space",
-    "empty space"
+    "Empty space"
   },
   {
     "mm_mirror_1",
     "mm_mirror",
-    "mirror (0\xb0)"
+    "Mirror (0\xb0)"
   },
   {
     "mm_mirror_2",
     "mm_mirror",
-    "mirror (11.25\xb0)"
+    "Mirror (11.25\xb0)"
   },
   {
     "mm_mirror_3",
     "mm_mirror",
-    "mirror (22.5\xb0)"
+    "Mirror (22.5\xb0)"
   },
   {
     "mm_mirror_4",
     "mm_mirror",
-    "mirror (33.75\xb0)"
+    "Mirror (33.75\xb0)"
   },
   {
     "mm_mirror_5",
     "mm_mirror",
-    "mirror (45\xb0)"
+    "Mirror (45\xb0)"
   },
   {
     "mm_mirror_6",
     "mm_mirror",
-    "mirror (56.25\xb0)"
+    "Mirror (56.25\xb0)"
   },
   {
     "mm_mirror_7",
     "mm_mirror",
-    "mirror (67.5\xb0)"
+    "Mirror (67.5\xb0)"
   },
   {
     "mm_mirror_8",
     "mm_mirror",
-    "mirror (78.75\xb0)"
+    "Mirror (78.75\xb0)"
   },
   {
     "mm_mirror_9",
     "mm_mirror",
-    "mirror (90\xb0)"
+    "Mirror (90\xb0)"
   },
   {
     "mm_mirror_10",
     "mm_mirror",
-    "mirror (101.25\xb0)"
+    "Mirror (101.25\xb0)"
   },
   {
     "mm_mirror_11",
     "mm_mirror",
-    "mirror (112.5\xb0)"
+    "Mirror (112.5\xb0)"
   },
   {
     "mm_mirror_12",
     "mm_mirror",
-    "mirror (123.75\xb0)"
+    "Mirror (123.75\xb0)"
   },
   {
     "mm_mirror_13",
     "mm_mirror",
-    "mirror (135\xb0)"
+    "Mirror (135\xb0)"
   },
   {
     "mm_mirror_14",
     "mm_mirror",
-    "mirror (146.25\xb0)"
+    "Mirror (146.25\xb0)"
   },
   {
     "mm_mirror_15",
     "mm_mirror",
-    "mirror (157.5\xb0)"
+    "Mirror (157.5\xb0)"
   },
   {
     "mm_mirror_16",
     "mm_mirror",
-    "mirror (168.75\xb0)"
+    "Mirror (168.75\xb0)"
   },
   {
     "mm_steel_grid_fixed_1",
     "mm_steel_grid_fixed",
-    "fixed steel polarizer (0\xb0)"
+    "Fixed steel polarizer (0\xb0)"
   },
   {
     "mm_steel_grid_fixed_2",
     "mm_steel_grid_fixed",
-    "fixed steel polarizer (90\xb0)"
+    "Fixed steel polarizer (90\xb0)"
   },
   {
     "mm_steel_grid_fixed_3",
     "mm_steel_grid_fixed",
-    "fixed steel polarizer (45\xb0)"
+    "Fixed steel polarizer (45\xb0)"
   },
   {
     "mm_steel_grid_fixed_4",
     "mm_steel_grid_fixed",
-    "fixed steel polarizer (135\xb0)"
+    "Fixed steel polarizer (135\xb0)"
   },
   {
     "mm_mcduffin.right",
@@ -4645,1577 +4645,1577 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "mm_exit_closed",
     "mm_exit",
-    "closed exit (MM style)"
+    "Closed exit (MM style)"
   },
   {
     "mm_exit_opening_1",
     "mm_exit",
-    "opening exit 1"
+    "Opening exit 1"
   },
   {
     "mm_exit_opening_2",
     "mm_exit",
-    "opening exit 2"
+    "Opening exit 2"
   },
   {
     "mm_exit_open",
     "mm_exit",
-    "open exit (MM style)"
+    "Open exit (MM style)"
   },
   {
     "mm_kettle",
     "mm_kettle",
-    "magic cauldron"
+    "Magic cauldron"
   },
   {
     "mm_bomb",
     "mm_bomb",
-    "bomb (MM style)"
+    "Bomb (MM style)"
   },
   {
     "mm_prism",
     "mm_prism",
-    "prism"
+    "Prism"
   },
   {
     "mm_steel_wall_1",
     "mm_steel_wall",
-    "steel wall 1 (MM style)"
+    "Steel wall 1 (MM style)"
   },
   {
     "mm_steel_wall_2",
     "mm_steel_wall",
-    "steel wall 2 (MM style)"
+    "Steel wall 2 (MM style)"
   },
   {
     "mm_steel_wall_3",
     "mm_steel_wall",
-    "steel wall 3 (MM style)"
+    "Steel wall 3 (MM style)"
   },
   {
     "mm_steel_wall_4",
     "mm_steel_wall",
-    "steel wall 4 (MM style)"
+    "Steel wall 4 (MM style)"
   },
   {
     "mm_steel_wall_5",
     "mm_steel_wall",
-    "steel wall 5 (MM style)"
+    "Steel wall 5 (MM style)"
   },
   {
     "mm_steel_wall_6",
     "mm_steel_wall",
-    "steel wall 6 (MM style)"
+    "Steel wall 6 (MM style)"
   },
   {
     "mm_steel_wall_7",
     "mm_steel_wall",
-    "steel wall 7 (MM style)"
+    "Steel wall 7 (MM style)"
   },
   {
     "mm_steel_wall_8",
     "mm_steel_wall",
-    "steel wall 8 (MM style)"
+    "Steel wall 8 (MM style)"
   },
   {
     "mm_steel_wall_9",
     "mm_steel_wall",
-    "steel wall 9 (MM style)"
+    "Steel wall 9 (MM style)"
   },
   {
     "mm_steel_wall_10",
     "mm_steel_wall",
-    "steel wall 10 (MM style)"
+    "Steel wall 10 (MM style)"
   },
   {
     "mm_steel_wall_11",
     "mm_steel_wall",
-    "steel wall 11 (MM style)"
+    "Steel wall 11 (MM style)"
   },
   {
     "mm_steel_wall_12",
     "mm_steel_wall",
-    "steel wall 12 (MM style)"
+    "Steel wall 12 (MM style)"
   },
   {
     "mm_steel_wall_13",
     "mm_steel_wall",
-    "steel wall 13 (MM style)"
+    "Steel wall 13 (MM style)"
   },
   {
     "mm_steel_wall_14",
     "mm_steel_wall",
-    "steel wall 14 (MM style)"
+    "Steel wall 14 (MM style)"
   },
   {
     "mm_steel_wall_15",
     "mm_steel_wall",
-    "steel wall 15 (MM style)"
+    "Steel wall 15 (MM style)"
   },
   {
     "mm_steel_wall_16",
     "mm_steel_wall",
-    "steel wall 16 (MM style)"
+    "Steel wall 16 (MM style)"
   },
   {
     "mm_wooden_wall_1",
     "mm_wooden_wall",
-    "wooden wall 1 (MM style)"
+    "Wooden wall 1 (MM style)"
   },
   {
     "mm_wooden_wall_2",
     "mm_wooden_wall",
-    "wooden wall 2 (MM style)"
+    "Wooden wall 2 (MM style)"
   },
   {
     "mm_wooden_wall_3",
     "mm_wooden_wall",
-    "wooden wall 3 (MM style)"
+    "Wooden wall 3 (MM style)"
   },
   {
     "mm_wooden_wall_4",
     "mm_wooden_wall",
-    "wooden wall 4 (MM style)"
+    "Wooden wall 4 (MM style)"
   },
   {
     "mm_wooden_wall_5",
     "mm_wooden_wall",
-    "wooden wall 5 (MM style)"
+    "Wooden wall 5 (MM style)"
   },
   {
     "mm_wooden_wall_6",
     "mm_wooden_wall",
-    "wooden wall 6 (MM style)"
+    "Wooden wall 6 (MM style)"
   },
   {
     "mm_wooden_wall_7",
     "mm_wooden_wall",
-    "wooden wall 7 (MM style)"
+    "Wooden wall 7 (MM style)"
   },
   {
     "mm_wooden_wall_8",
     "mm_wooden_wall",
-    "wooden wall 8 (MM style)"
+    "Wooden wall 8 (MM style)"
   },
   {
     "mm_wooden_wall_9",
     "mm_wooden_wall",
-    "wooden wall 9 (MM style)"
+    "Wooden wall 9 (MM style)"
   },
   {
     "mm_wooden_wall_10",
     "mm_wooden_wall",
-    "wooden wall 10 (MM style)"
+    "Wooden wall 10 (MM style)"
   },
   {
     "mm_wooden_wall_11",
     "mm_wooden_wall",
-    "wooden wall 11 (MM style)"
+    "Wooden wall 11 (MM style)"
   },
   {
     "mm_wooden_wall_12",
     "mm_wooden_wall",
-    "wooden wall 12 (MM style)"
+    "Wooden wall 12 (MM style)"
   },
   {
     "mm_wooden_wall_13",
     "mm_wooden_wall",
-    "wooden wall 13 (MM style)"
+    "Wooden wall 13 (MM style)"
   },
   {
     "mm_wooden_wall_14",
     "mm_wooden_wall",
-    "wooden wall 14 (MM style)"
+    "Wooden wall 14 (MM style)"
   },
   {
     "mm_wooden_wall_15",
     "mm_wooden_wall",
-    "wooden wall 15 (MM style)"
+    "Wooden wall 15 (MM style)"
   },
   {
     "mm_wooden_wall_16",
     "mm_wooden_wall",
-    "wooden wall 16 (MM style)"
+    "Wooden wall 16 (MM style)"
   },
   {
     "mm_ice_wall_1",
     "mm_ice_wall",
-    "ice wall 1"
+    "Ice wall 1"
   },
   {
     "mm_ice_wall_2",
     "mm_ice_wall",
-    "ice wall 2"
+    "Ice wall 2"
   },
   {
     "mm_ice_wall_3",
     "mm_ice_wall",
-    "ice wall 3"
+    "Ice wall 3"
   },
   {
     "mm_ice_wall_4",
     "mm_ice_wall",
-    "ice wall 4"
+    "Ice wall 4"
   },
   {
     "mm_ice_wall_5",
     "mm_ice_wall",
-    "ice wall 5"
+    "Ice wall 5"
   },
   {
     "mm_ice_wall_6",
     "mm_ice_wall",
-    "ice wall 6"
+    "Ice wall 6"
   },
   {
     "mm_ice_wall_7",
     "mm_ice_wall",
-    "ice wall 7"
+    "Ice wall 7"
   },
   {
     "mm_ice_wall_8",
     "mm_ice_wall",
-    "ice wall 8"
+    "Ice wall 8"
   },
   {
     "mm_ice_wall_9",
     "mm_ice_wall",
-    "ice wall 9"
+    "Ice wall 9"
   },
   {
     "mm_ice_wall_10",
     "mm_ice_wall",
-    "ice wall 10"
+    "Ice wall 10"
   },
   {
     "mm_ice_wall_11",
     "mm_ice_wall",
-    "ice wall 11"
+    "Ice wall 11"
   },
   {
     "mm_ice_wall_12",
     "mm_ice_wall",
-    "ice wall 12"
+    "Ice wall 12"
   },
   {
     "mm_ice_wall_13",
     "mm_ice_wall",
-    "ice wall 13"
+    "Ice wall 13"
   },
   {
     "mm_ice_wall_14",
     "mm_ice_wall",
-    "ice wall 14"
+    "Ice wall 14"
   },
   {
     "mm_ice_wall_15",
     "mm_ice_wall",
-    "ice wall 15"
+    "Ice wall 15"
   },
   {
     "mm_ice_wall_16",
     "mm_ice_wall",
-    "ice wall 16"
+    "Ice wall 16"
   },
   {
     "mm_amoeba_wall_1",
     "mm_amoeba_wall",
-    "amoeba wall 1"
+    "Amoeba wall 1"
   },
   {
     "mm_amoeba_wall_2",
     "mm_amoeba_wall",
-    "amoeba wall 2"
+    "Amoeba wall 2"
   },
   {
     "mm_amoeba_wall_3",
     "mm_amoeba_wall",
-    "amoeba wall 3"
+    "Amoeba wall 3"
   },
   {
     "mm_amoeba_wall_4",
     "mm_amoeba_wall",
-    "amoeba wall 4"
+    "Amoeba wall 4"
   },
   {
     "mm_amoeba_wall_5",
     "mm_amoeba_wall",
-    "amoeba wall 5"
+    "Amoeba wall 5"
   },
   {
     "mm_amoeba_wall_6",
     "mm_amoeba_wall",
-    "amoeba wall 6"
+    "Amoeba wall 6"
   },
   {
     "mm_amoeba_wall_7",
     "mm_amoeba_wall",
-    "amoeba wall 7"
+    "Amoeba wall 7"
   },
   {
     "mm_amoeba_wall_8",
     "mm_amoeba_wall",
-    "amoeba wall 8"
+    "Amoeba wall 8"
   },
   {
     "mm_amoeba_wall_9",
     "mm_amoeba_wall",
-    "amoeba wall 9"
+    "Amoeba wall 9"
   },
   {
     "mm_amoeba_wall_10",
     "mm_amoeba_wall",
-    "amoeba wall 10"
+    "Amoeba wall 10"
   },
   {
     "mm_amoeba_wall_11",
     "mm_amoeba_wall",
-    "amoeba wall 11"
+    "Amoeba wall 11"
   },
   {
     "mm_amoeba_wall_12",
     "mm_amoeba_wall",
-    "amoeba wall 12"
+    "Amoeba wall 12"
   },
   {
     "mm_amoeba_wall_13",
     "mm_amoeba_wall",
-    "amoeba wall 13"
+    "Amoeba wall 13"
   },
   {
     "mm_amoeba_wall_14",
     "mm_amoeba_wall",
-    "amoeba wall 14"
+    "Amoeba wall 14"
   },
   {
     "mm_amoeba_wall_15",
     "mm_amoeba_wall",
-    "amoeba wall 15"
+    "Amoeba wall 15"
   },
   {
     "mm_amoeba_wall_16",
     "mm_amoeba_wall",
-    "amoeba wall 16"
+    "Amoeba wall 16"
   },
   {
     "mm_wooden_block",
     "mm_wooden_block",
-    "wooden block"
+    "Wooden block"
   },
   {
     "mm_gray_ball",
     "mm_gray_ball",
-    "gray ball"
+    "Gray ball"
   },
   {
     "mm_teleporter_1",
     "mm_teleporter",
-    "teleporter (0\xb0)"
+    "Teleporter (0\xb0)"
   },
   {
     "mm_teleporter_2",
     "mm_teleporter",
-    "teleporter (22.5\xb0)"
+    "Teleporter (22.5\xb0)"
   },
   {
     "mm_teleporter_3",
     "mm_teleporter",
-    "teleporter (45\xb0)"
+    "Teleporter (45\xb0)"
   },
   {
     "mm_teleporter_4",
     "mm_teleporter",
-    "teleporter (67.5\xb0)"
+    "Teleporter (67.5\xb0)"
   },
   {
     "mm_teleporter_5",
     "mm_teleporter",
-    "teleporter (90\xb0)"
+    "Teleporter (90\xb0)"
   },
   {
     "mm_teleporter_6",
     "mm_teleporter",
-    "teleporter (112.5\xb0)"
+    "Teleporter (112.5\xb0)"
   },
   {
     "mm_teleporter_7",
     "mm_teleporter",
-    "teleporter (135\xb0)"
+    "Teleporter (135\xb0)"
   },
   {
     "mm_teleporter_8",
     "mm_teleporter",
-    "teleporter (157.5\xb0)"
+    "Teleporter (157.5\xb0)"
   },
   {
     "mm_teleporter_9",
     "mm_teleporter",
-    "teleporter (180\xb0)"
+    "Teleporter (180\xb0)"
   },
   {
     "mm_teleporter_10",
     "mm_teleporter",
-    "teleporter (202.5\xb0)"
+    "Teleporter (202.5\xb0)"
   },
   {
     "mm_teleporter_11",
     "mm_teleporter",
-    "teleporter (225\xb0)"
+    "Teleporter (225\xb0)"
   },
   {
     "mm_teleporter_12",
     "mm_teleporter",
-    "teleporter (247.5\xb0)"
+    "Teleporter (247.5\xb0)"
   },
   {
     "mm_teleporter_13",
     "mm_teleporter",
-    "teleporter (270\xb0)"
+    "Teleporter (270\xb0)"
   },
   {
     "mm_teleporter_14",
     "mm_teleporter",
-    "teleporter (292.5\xb0)"
+    "Teleporter (292.5\xb0)"
   },
   {
     "mm_teleporter_15",
     "mm_teleporter",
-    "teleporter (315\xb0)"
+    "Teleporter (315\xb0)"
   },
   {
     "mm_teleporter_16",
     "mm_teleporter",
-    "teleporter (337.5\xb0)"
+    "Teleporter (337.5\xb0)"
   },
   {
     "mm_fuse.active",
     "mm_fuse",
-    "fuse (on)"
+    "Fuse (on)"
   },
   {
     "mm_pacman.right",
     "mm_pacman",
-    "pac man (starts moving right)"
+    "Pac man (starts moving right)"
   },
   {
     "mm_pacman.up",
     "mm_pacman",
-    "pac man (starts moving up)"
+    "Pac man (starts moving up)"
   },
   {
     "mm_pacman.left",
     "mm_pacman",
-    "pac man (starts moving left)"
+    "Pac man (starts moving left)"
   },
   {
     "mm_pacman.down",
     "mm_pacman",
-    "pac man (starts moving down)"
+    "Pac man (starts moving down)"
   },
   {
     "mm_polarizer_1",
     "mm_polarizer",
-    "polarizer (0\xb0)"
+    "Polarizer (0\xb0)"
   },
   {
     "mm_polarizer_2",
     "mm_polarizer",
-    "polarizer (11.25\xb0)"
+    "Polarizer (11.25\xb0)"
   },
   {
     "mm_polarizer_3",
     "mm_polarizer",
-    "polarizer (22.5\xb0)"
+    "Polarizer (22.5\xb0)"
   },
   {
     "mm_polarizer_4",
     "mm_polarizer",
-    "polarizer (33.75\xb0)"
+    "Polarizer (33.75\xb0)"
   },
   {
     "mm_polarizer_5",
     "mm_polarizer",
-    "polarizer (45\xb0)"
+    "Polarizer (45\xb0)"
   },
   {
     "mm_polarizer_6",
     "mm_polarizer",
-    "polarizer (56.25\xb0)"
+    "Polarizer (56.25\xb0)"
   },
   {
     "mm_polarizer_7",
     "mm_polarizer",
-    "polarizer (67.5\xb0)"
+    "Polarizer (67.5\xb0)"
   },
   {
     "mm_polarizer_8",
     "mm_polarizer",
-    "polarizer (78.75\xb0)"
+    "Polarizer (78.75\xb0)"
   },
   {
     "mm_polarizer_9",
     "mm_polarizer",
-    "polarizer (90\xb0)"
+    "Polarizer (90\xb0)"
   },
   {
     "mm_polarizer_10",
     "mm_polarizer",
-    "polarizer (101.25\xb0)"
+    "Polarizer (101.25\xb0)"
   },
   {
     "mm_polarizer_11",
     "mm_polarizer",
-    "polarizer (112.5\xb0)"
+    "Polarizer (112.5\xb0)"
   },
   {
     "mm_polarizer_12",
     "mm_polarizer",
-    "polarizer (123.75\xb0)"
+    "Polarizer (123.75\xb0)"
   },
   {
     "mm_polarizer_13",
     "mm_polarizer",
-    "polarizer (135\xb0)"
+    "Polarizer (135\xb0)"
   },
   {
     "mm_polarizer_14",
     "mm_polarizer",
-    "polarizer (146.25\xb0)"
+    "Polarizer (146.25\xb0)"
   },
   {
     "mm_polarizer_15",
     "mm_polarizer",
-    "polarizer (157.5\xb0)"
+    "Polarizer (157.5\xb0)"
   },
   {
     "mm_polarizer_16",
     "mm_polarizer",
-    "polarizer (168.75\xb0)"
+    "Polarizer (168.75\xb0)"
   },
   {
     "mm_polarizer_cross_1",
     "mm_polarizer_cross",
-    "two-way polarizer (0\xb0)"
+    "Two-way polarizer (0\xb0)"
   },
   {
     "mm_polarizer_cross_2",
     "mm_polarizer_cross",
-    "two-way polarizer (22.5\xb0)"
+    "Two-way polarizer (22.5\xb0)"
   },
   {
     "mm_polarizer_cross_3",
     "mm_polarizer_cross",
-    "two-way polarizer (45\xb0)"
+    "Two-way polarizer (45\xb0)"
   },
   {
     "mm_polarizer_cross_4",
     "mm_polarizer_cross",
-    "two-way polarizer (67.5\xb0)"
+    "Two-way polarizer (67.5\xb0)"
   },
   {
     "mm_mirror_fixed_1",
     "mm_mirror_fixed",
-    "fixed mirror (0\xb0)"
+    "Fixed mirror (0\xb0)"
   },
   {
     "mm_mirror_fixed_2",
     "mm_mirror_fixed",
-    "fixed mirror (45\xb0)"
+    "Fixed mirror (45\xb0)"
   },
   {
     "mm_mirror_fixed_3",
     "mm_mirror_fixed",
-    "fixed mirror (90\xb0)"
+    "Fixed mirror (90\xb0)"
   },
   {
     "mm_mirror_fixed_4",
     "mm_mirror_fixed",
-    "fixed mirror (135\xb0)"
+    "Fixed mirror (135\xb0)"
   },
   {
     "mm_steel_lock",
     "mm_steel_lock",
-    "steel lock"
+    "Steel lock"
   },
   {
     "mm_key",
     "mm_key",
-    "key (MM style)"
+    "Key (MM style)"
   },
   {
     "mm_lightbulb",
     "mm_lightbulb",
-    "light bulb (off)"
+    "Light bulb (off)"
   },
   {
     "mm_lightbulb.active",
     "mm_lightbulb",
-    "light bulb (on)"
+    "Light bulb (on)"
   },
   {
     "mm_lightball",
     "mm_lightball",
-    "bonus ball"
+    "Bonus ball"
   },
   {
     "mm_steel_block",
     "mm_steel_block",
-    "steel block"
+    "Steel block"
   },
   {
     "mm_wooden_lock",
     "mm_wooden_lock",
-    "wooden lock"
+    "Wooden lock"
   },
   {
     "mm_fuel_full",
     "mm_fuel",
-    "extra energy ball (full)"
+    "Extra energy ball (full)"
   },
   {
     "mm_wooden_grid_fixed_1",
     "mm_wooden_grid_fixed",
-    "fixed wooden polarizer (0\xb0)"
+    "Fixed wooden polarizer (0\xb0)"
   },
   {
     "mm_wooden_grid_fixed_2",
     "mm_wooden_grid_fixed",
-    "fixed wooden polarizer (90\xb0)"
+    "Fixed wooden polarizer (90\xb0)"
   },
   {
     "mm_wooden_grid_fixed_3",
     "mm_wooden_grid_fixed",
-    "fixed wooden polarizer (45\xb0)"
+    "Fixed wooden polarizer (45\xb0)"
   },
   {
     "mm_wooden_grid_fixed_4",
     "mm_wooden_grid_fixed",
-    "fixed wooden polarizer (135\xb0)"
+    "Fixed wooden polarizer (135\xb0)"
   },
   {
     "mm_fuel_empty",
     "mm_fuel",
-    "extra energy ball (empty)"
+    "Extra energy ball (empty)"
   },
   {
     "mm_envelope_1",
     "mm_envelope",
-    "mail envelope 1 (MM style)"
+    "Mail envelope 1 (MM style)"
   },
   {
     "mm_envelope_2",
     "mm_envelope",
-    "mail envelope 2 (MM style)"
+    "Mail envelope 2 (MM style)"
   },
   {
     "mm_envelope_3",
     "mm_envelope",
-    "mail envelope 3 (MM style)"
+    "Mail envelope 3 (MM style)"
   },
   {
     "mm_envelope_4",
     "mm_envelope",
-    "mail envelope 4 (MM style)"
+    "Mail envelope 4 (MM style)"
   },
   {
     "df_mirror_1",
     "df_mirror",
-    "mirror (DF style) (0\xb0)"
+    "Mirror (DF style) (0\xb0)"
   },
   {
     "df_mirror_2",
     "df_mirror",
-    "mirror (DF style) (11.25\xb0)"
+    "Mirror (DF style) (11.25\xb0)"
   },
   {
     "df_mirror_3",
     "df_mirror",
-    "mirror (DF style) (22.5\xb0)"
+    "Mirror (DF style) (22.5\xb0)"
   },
   {
     "df_mirror_4",
     "df_mirror",
-    "mirror (DF style) (33.75\xb0)"
+    "Mirror (DF style) (33.75\xb0)"
   },
   {
     "df_mirror_5",
     "df_mirror",
-    "mirror (DF style) (45\xb0)"
+    "Mirror (DF style) (45\xb0)"
   },
   {
     "df_mirror_6",
     "df_mirror",
-    "mirror (DF style) (56.25\xb0)"
+    "Mirror (DF style) (56.25\xb0)"
   },
   {
     "df_mirror_7",
     "df_mirror",
-    "mirror (DF style) (67.5\xb0)"
+    "Mirror (DF style) (67.5\xb0)"
   },
   {
     "df_mirror_8",
     "df_mirror",
-    "mirror (DF style) (78.75\xb0)"
+    "Mirror (DF style) (78.75\xb0)"
   },
   {
     "df_mirror_9",
     "df_mirror",
-    "mirror (DF style) (90\xb0)"
+    "Mirror (DF style) (90\xb0)"
   },
   {
     "df_mirror_10",
     "df_mirror",
-    "mirror (DF style) (101.25\xb0)"
+    "Mirror (DF style) (101.25\xb0)"
   },
   {
     "df_mirror_11",
     "df_mirror",
-    "mirror (DF style) (112.5\xb0)"
+    "Mirror (DF style) (112.5\xb0)"
   },
   {
     "df_mirror_12",
     "df_mirror",
-    "mirror (DF style) (123.75\xb0)"
+    "Mirror (DF style) (123.75\xb0)"
   },
   {
     "df_mirror_13",
     "df_mirror",
-    "mirror (DF style) (135\xb0)"
+    "Mirror (DF style) (135\xb0)"
   },
   {
     "df_mirror_14",
     "df_mirror",
-    "mirror (DF style) (146.25\xb0)"
+    "Mirror (DF style) (146.25\xb0)"
   },
   {
     "df_mirror_15",
     "df_mirror",
-    "mirror (DF style) (157.5\xb0)"
+    "Mirror (DF style) (157.5\xb0)"
   },
   {
     "df_mirror_16",
     "df_mirror",
-    "mirror (DF style) (168.75\xb0)"
+    "Mirror (DF style) (168.75\xb0)"
   },
   {
     "df_wooden_grid_fixed_1",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (DF) (0\xb0)"
+    "Fixed wooden polarizer (DF) (0\xb0)"
   },
   {
     "df_wooden_grid_fixed_2",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (DF) (22.5\xb0)"
+    "Fixed wooden polarizer (DF) (22.5\xb0)"
   },
   {
     "df_wooden_grid_fixed_3",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (DF) (45\xb0)"
+    "Fixed wooden polarizer (DF) (45\xb0)"
   },
   {
     "df_wooden_grid_fixed_4",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (DF) (67.5\xb0)"
+    "Fixed wooden polarizer (DF) (67.5\xb0)"
   },
   {
     "df_wooden_grid_fixed_5",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (DF) (90\xb0)"
+    "Fixed wooden polarizer (DF) (90\xb0)"
   },
   {
     "df_wooden_grid_fixed_6",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (DF) (112.5\xb0)"
+    "Fixed wooden polarizer (DF) (112.5\xb0)"
   },
   {
     "df_wooden_grid_fixed_7",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (DF) (135\xb0)"
+    "Fixed wooden polarizer (DF) (135\xb0)"
   },
   {
     "df_wooden_grid_fixed_8",
     "df_wooden_grid_fixed",
-    "fixed wooden polarizer (DF) (157.5\xb0)"
+    "Fixed wooden polarizer (DF) (157.5\xb0)"
   },
   {
     "df_steel_grid_fixed_1",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (DF) (0\xb0)"
+    "Fixed steel polarizer (DF) (0\xb0)"
   },
   {
     "df_steel_grid_fixed_2",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (DF) (22.5\xb0)"
+    "Fixed steel polarizer (DF) (22.5\xb0)"
   },
   {
     "df_steel_grid_fixed_3",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (DF) (45\xb0)"
+    "Fixed steel polarizer (DF) (45\xb0)"
   },
   {
     "df_steel_grid_fixed_4",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (DF) (67.5\xb0)"
+    "Fixed steel polarizer (DF) (67.5\xb0)"
   },
   {
     "df_steel_grid_fixed_5",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (DF) (90\xb0)"
+    "Fixed steel polarizer (DF) (90\xb0)"
   },
   {
     "df_steel_grid_fixed_6",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (DF) (112.5\xb0)"
+    "Fixed steel polarizer (DF) (112.5\xb0)"
   },
   {
     "df_steel_grid_fixed_7",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (DF) (135\xb0)"
+    "Fixed steel polarizer (DF) (135\xb0)"
   },
   {
     "df_steel_grid_fixed_8",
     "df_steel_grid_fixed",
-    "fixed steel polarizer (DF) (157.5\xb0)"
+    "Fixed steel polarizer (DF) (157.5\xb0)"
   },
   {
     "df_wooden_wall_1",
     "df_wooden_wall",
-    "wooden wall 1 (DF style)"
+    "Wooden wall 1 (DF style)"
   },
   {
     "df_wooden_wall_2",
     "df_wooden_wall",
-    "wooden wall 2 (DF style)"
+    "Wooden wall 2 (DF style)"
   },
   {
     "df_wooden_wall_3",
     "df_wooden_wall",
-    "wooden wall 3 (DF style)"
+    "Wooden wall 3 (DF style)"
   },
   {
     "df_wooden_wall_4",
     "df_wooden_wall",
-    "wooden wall 4 (DF style)"
+    "Wooden wall 4 (DF style)"
   },
   {
     "df_wooden_wall_5",
     "df_wooden_wall",
-    "wooden wall 5 (DF style)"
+    "Wooden wall 5 (DF style)"
   },
   {
     "df_wooden_wall_6",
     "df_wooden_wall",
-    "wooden wall 6 (DF style)"
+    "Wooden wall 6 (DF style)"
   },
   {
     "df_wooden_wall_7",
     "df_wooden_wall",
-    "wooden wall 7 (DF style)"
+    "Wooden wall 7 (DF style)"
   },
   {
     "df_wooden_wall_8",
     "df_wooden_wall",
-    "wooden wall 8 (DF style)"
+    "Wooden wall 8 (DF style)"
   },
   {
     "df_wooden_wall_9",
     "df_wooden_wall",
-    "wooden wall 9 (DF style)"
+    "Wooden wall 9 (DF style)"
   },
   {
     "df_wooden_wall_10",
     "df_wooden_wall",
-    "wooden wall 10 (DF style)"
+    "Wooden wall 10 (DF style)"
   },
   {
     "df_wooden_wall_11",
     "df_wooden_wall",
-    "wooden wall 11 (DF style)"
+    "Wooden wall 11 (DF style)"
   },
   {
     "df_wooden_wall_12",
     "df_wooden_wall",
-    "wooden wall 12 (DF style)"
+    "Wooden wall 12 (DF style)"
   },
   {
     "df_wooden_wall_13",
     "df_wooden_wall",
-    "wooden wall 13 (DF style)"
+    "Wooden wall 13 (DF style)"
   },
   {
     "df_wooden_wall_14",
     "df_wooden_wall",
-    "wooden wall 14 (DF style)"
+    "Wooden wall 14 (DF style)"
   },
   {
     "df_wooden_wall_15",
     "df_wooden_wall",
-    "wooden wall 15 (DF style)"
+    "Wooden wall 15 (DF style)"
   },
   {
     "df_wooden_wall_16",
     "df_wooden_wall",
-    "wooden wall 16 (DF style)"
+    "Wooden wall 16 (DF style)"
   },
   {
     "df_steel_wall_1",
     "df_steel_wall",
-    "steel wall 1 (DF style)"
+    "Steel wall 1 (DF style)"
   },
   {
     "df_steel_wall_2",
     "df_steel_wall",
-    "steel wall 2 (DF style)"
+    "Steel wall 2 (DF style)"
   },
   {
     "df_steel_wall_3",
     "df_steel_wall",
-    "steel wall 3 (DF style)"
+    "Steel wall 3 (DF style)"
   },
   {
     "df_steel_wall_4",
     "df_steel_wall",
-    "steel wall 4 (DF style)"
+    "Steel wall 4 (DF style)"
   },
   {
     "df_steel_wall_5",
     "df_steel_wall",
-    "steel wall 5 (DF style)"
+    "Steel wall 5 (DF style)"
   },
   {
     "df_steel_wall_6",
     "df_steel_wall",
-    "steel wall 6 (DF style)"
+    "Steel wall 6 (DF style)"
   },
   {
     "df_steel_wall_7",
     "df_steel_wall",
-    "steel wall 7 (DF style)"
+    "Steel wall 7 (DF style)"
   },
   {
     "df_steel_wall_8",
     "df_steel_wall",
-    "steel wall 8 (DF style)"
+    "Steel wall 8 (DF style)"
   },
   {
     "df_steel_wall_9",
     "df_steel_wall",
-    "steel wall 9 (DF style)"
+    "Steel wall 9 (DF style)"
   },
   {
     "df_steel_wall_10",
     "df_steel_wall",
-    "steel wall 10 (DF style)"
+    "Steel wall 10 (DF style)"
   },
   {
     "df_steel_wall_11",
     "df_steel_wall",
-    "steel wall 11 (DF style)"
+    "Steel wall 11 (DF style)"
   },
   {
     "df_steel_wall_12",
     "df_steel_wall",
-    "steel wall 12 (DF style)"
+    "Steel wall 12 (DF style)"
   },
   {
     "df_steel_wall_13",
     "df_steel_wall",
-    "steel wall 13 (DF style)"
+    "Steel wall 13 (DF style)"
   },
   {
     "df_steel_wall_14",
     "df_steel_wall",
-    "steel wall 14 (DF style)"
+    "Steel wall 14 (DF style)"
   },
   {
     "df_steel_wall_15",
     "df_steel_wall",
-    "steel wall 15 (DF style)"
+    "Steel wall 15 (DF style)"
   },
   {
     "df_steel_wall_16",
     "df_steel_wall",
-    "steel wall 16 (DF style)"
+    "Steel wall 16 (DF style)"
   },
   {
     "df_empty_space",
     "empty_space",
-    "empty space"
+    "Empty space"
   },
   {
     "df_cell",
     "df_cell",
-    "cell"
+    "Cell"
   },
   {
     "df_mine",
     "df_mine",
-    "mine"
+    "Mine"
   },
   {
     "df_refractor",
     "df_refractor",
-    "refractor"
+    "Refractor"
   },
   {
     "df_laser.right",
     "df_laser",
-    "laser cannon (shooting right)"
+    "Laser cannon (shooting right)"
   },
   {
     "df_laser.up",
     "df_laser",
-    "laser cannon (shooting up)"
+    "Laser cannon (shooting up)"
   },
   {
     "df_laser.left",
     "df_laser",
-    "laser cannon (shooting left)"
+    "Laser cannon (shooting left)"
   },
   {
     "df_laser.down",
     "df_laser",
-    "laser cannon (shooting down)"
+    "Laser cannon (shooting down)"
   },
   {
     "df_receiver.right",
     "df_receiver",
-    "laser receiver (directed right)"
+    "Laser receiver (directed right)"
   },
   {
     "df_receiver.up",
     "df_receiver",
-    "laser receiver (directed up)"
+    "Laser receiver (directed up)"
   },
   {
     "df_receiver.left",
     "df_receiver",
-    "laser receiver (directed left)"
+    "Laser receiver (directed left)"
   },
   {
     "df_receiver.down",
     "df_receiver",
-    "laser receiver (directed down)"
+    "Laser receiver (directed down)"
   },
   {
     "df_fibre_optic_red_1",
     "df_fibre_optic",
-    "red fibre optic (part 1)"
+    "Red fibre optic (part 1)"
   },
   {
     "df_fibre_optic_red_2",
     "df_fibre_optic",
-    "red fibre optic (part 2)"
+    "Red fibre optic (part 2)"
   },
   {
     "df_fibre_optic_yellow_1",
     "df_fibre_optic",
-    "yellow fibre optic (part 1)"
+    "Yellow fibre optic (part 1)"
   },
   {
     "df_fibre_optic_yellow_2",
     "df_fibre_optic",
-    "yellow fibre optic (part 2)"
+    "Yellow fibre optic (part 2)"
   },
   {
     "df_fibre_optic_green_1",
     "df_fibre_optic",
-    "green fibre optic (part 1)"
+    "Green fibre optic (part 1)"
   },
   {
     "df_fibre_optic_green_2",
     "df_fibre_optic",
-    "green fibre optic (part 2)"
+    "Green fibre optic (part 2)"
   },
   {
     "df_fibre_optic_blue_1",
     "df_fibre_optic",
-    "blue fibre optic (part 1)"
+    "Blue fibre optic (part 1)"
   },
   {
     "df_fibre_optic_blue_2",
     "df_fibre_optic",
-    "blue fibre optic (part 2)"
+    "Blue fibre optic (part 2)"
   },
   {
     "df_mirror_rotating_1",
     "df_mirror_rotating",
-    "rotating mirror (0\xb0)"
+    "Rotating mirror (0\xb0)"
   },
   {
     "df_mirror_rotating_2",
     "df_mirror_rotating",
-    "rotating mirror (11.25\xb0)"
+    "Rotating mirror (11.25\xb0)"
   },
   {
     "df_mirror_rotating_3",
     "df_mirror_rotating",
-    "rotating mirror (22.5\xb0)"
+    "Rotating mirror (22.5\xb0)"
   },
   {
     "df_mirror_rotating_4",
     "df_mirror_rotating",
-    "rotating mirror (33.75\xb0)"
+    "Rotating mirror (33.75\xb0)"
   },
   {
     "df_mirror_rotating_5",
     "df_mirror_rotating",
-    "rotating mirror (45\xb0)"
+    "Rotating mirror (45\xb0)"
   },
   {
     "df_mirror_rotating_6",
     "df_mirror_rotating",
-    "rotating mirror (56.25\xb0)"
+    "Rotating mirror (56.25\xb0)"
   },
   {
     "df_mirror_rotating_7",
     "df_mirror_rotating",
-    "rotating mirror (67.5\xb0)"
+    "Rotating mirror (67.5\xb0)"
   },
   {
     "df_mirror_rotating_8",
     "df_mirror_rotating",
-    "rotating mirror (78.75\xb0)"
+    "Rotating mirror (78.75\xb0)"
   },
   {
     "df_mirror_rotating_9",
     "df_mirror_rotating",
-    "rotating mirror (90\xb0)"
+    "Rotating mirror (90\xb0)"
   },
   {
     "df_mirror_rotating_10",
     "df_mirror_rotating",
-    "rotating mirror (101.25\xb0)"
+    "Rotating mirror (101.25\xb0)"
   },
   {
     "df_mirror_rotating_11",
     "df_mirror_rotating",
-    "rotating mirror (112.5\xb0)"
+    "Rotating mirror (112.5\xb0)"
   },
   {
     "df_mirror_rotating_12",
     "df_mirror_rotating",
-    "rotating mirror (123.75\xb0)"
+    "Rotating mirror (123.75\xb0)"
   },
   {
     "df_mirror_rotating_13",
     "df_mirror_rotating",
-    "rotating mirror (135\xb0)"
+    "Rotating mirror (135\xb0)"
   },
   {
     "df_mirror_rotating_14",
     "df_mirror_rotating",
-    "rotating mirror (146.25\xb0)"
+    "Rotating mirror (146.25\xb0)"
   },
   {
     "df_mirror_rotating_15",
     "df_mirror_rotating",
-    "rotating mirror (157.5\xb0)"
+    "Rotating mirror (157.5\xb0)"
   },
   {
     "df_mirror_rotating_16",
     "df_mirror_rotating",
-    "rotating mirror (168.75\xb0)"
+    "Rotating mirror (168.75\xb0)"
   },
   {
     "df_wooden_grid_rotating_1",
     "df_wooden_grid_rotating",
-    "rotating wooden polarizer (0\xb0)"
+    "Rotating wooden polarizer (0\xb0)"
   },
   {
     "df_wooden_grid_rotating_2",
     "df_wooden_grid_rotating",
-    "rotating wooden polarizer (22.5\xb0)"
+    "Rotating wooden polarizer (22.5\xb0)"
   },
   {
     "df_wooden_grid_rotating_3",
     "df_wooden_grid_rotating",
-    "rotating wooden polarizer (45\xb0)"
+    "Rotating wooden polarizer (45\xb0)"
   },
   {
     "df_wooden_grid_rotating_4",
     "df_wooden_grid_rotating",
-    "rotating wooden polarizer (67.5\xb0)"
+    "Rotating wooden polarizer (67.5\xb0)"
   },
   {
     "df_wooden_grid_rotating_5",
     "df_wooden_grid_rotating",
-    "rotating wooden polarizer (90\xb0)"
+    "Rotating wooden polarizer (90\xb0)"
   },
   {
     "df_wooden_grid_rotating_6",
     "df_wooden_grid_rotating",
-    "rotating wooden polarizer (112.5\xb0)"
+    "Rotating wooden polarizer (112.5\xb0)"
   },
   {
     "df_wooden_grid_rotating_7",
     "df_wooden_grid_rotating",
-    "rotating wooden polarizer (135\xb0)"
+    "Rotating wooden polarizer (135\xb0)"
   },
   {
     "df_wooden_grid_rotating_8",
     "df_wooden_grid_rotating",
-    "rotating wooden polarizer (157.5\xb0)"
+    "Rotating wooden polarizer (157.5\xb0)"
   },
   {
     "df_steel_grid_rotating_1",
     "df_steel_grid_rotating",
-    "rotating steel polarizer (0\xb0)"
+    "Rotating steel polarizer (0\xb0)"
   },
   {
     "df_steel_grid_rotating_2",
     "df_steel_grid_rotating",
-    "rotating steel polarizer (22.5\xb0)"
+    "Rotating steel polarizer (22.5\xb0)"
   },
   {
     "df_steel_grid_rotating_3",
     "df_steel_grid_rotating",
-    "rotating steel polarizer (45\xb0)"
+    "Rotating steel polarizer (45\xb0)"
   },
   {
     "df_steel_grid_rotating_4",
     "df_steel_grid_rotating",
-    "rotating steel polarizer (67.5\xb0)"
+    "Rotating steel polarizer (67.5\xb0)"
   },
   {
     "df_steel_grid_rotating_5",
     "df_steel_grid_rotating",
-    "rotating steel polarizer (90\xb0)"
+    "Rotating steel polarizer (90\xb0)"
   },
   {
     "df_steel_grid_rotating_6",
     "df_steel_grid_rotating",
-    "rotating steel polarizer (112.5\xb0)"
+    "Rotating steel polarizer (112.5\xb0)"
   },
   {
     "df_steel_grid_rotating_7",
     "df_steel_grid_rotating",
-    "rotating steel polarizer (135\xb0)"
+    "Rotating steel polarizer (135\xb0)"
   },
   {
     "df_steel_grid_rotating_8",
     "df_steel_grid_rotating",
-    "rotating steel polarizer (157.5\xb0)"
+    "Rotating steel polarizer (157.5\xb0)"
   },
   {
     "mm_teleporter_red_1",
     "mm_teleporter",
-    "red teleporter (0\xb0)"
+    "Red teleporter (0\xb0)"
   },
   {
     "mm_teleporter_red_2",
     "mm_teleporter",
-    "red teleporter (22.5\xb0)"
+    "Red teleporter (22.5\xb0)"
   },
   {
     "mm_teleporter_red_3",
     "mm_teleporter",
-    "red teleporter (45\xb0)"
+    "Red teleporter (45\xb0)"
   },
   {
     "mm_teleporter_red_4",
     "mm_teleporter",
-    "red teleporter (67.5\xb0)"
+    "Red teleporter (67.5\xb0)"
   },
   {
     "mm_teleporter_red_5",
     "mm_teleporter",
-    "red teleporter (90\xb0)"
+    "Red teleporter (90\xb0)"
   },
   {
     "mm_teleporter_red_6",
     "mm_teleporter",
-    "red teleporter (112.5\xb0)"
+    "Red teleporter (112.5\xb0)"
   },
   {
     "mm_teleporter_red_7",
     "mm_teleporter",
-    "red teleporter (135\xb0)"
+    "Red teleporter (135\xb0)"
   },
   {
     "mm_teleporter_red_8",
     "mm_teleporter",
-    "red teleporter (157.5\xb0)"
+    "Red teleporter (157.5\xb0)"
   },
   {
     "mm_teleporter_red_9",
     "mm_teleporter",
-    "red teleporter (180\xb0)"
+    "Red teleporter (180\xb0)"
   },
   {
     "mm_teleporter_red_10",
     "mm_teleporter",
-    "red teleporter (202.5\xb0)"
+    "Red teleporter (202.5\xb0)"
   },
   {
     "mm_teleporter_red_11",
     "mm_teleporter",
-    "red teleporter (225\xb0)"
+    "Red teleporter (225\xb0)"
   },
   {
     "mm_teleporter_red_12",
     "mm_teleporter",
-    "red teleporter (247.5\xb0)"
+    "Red teleporter (247.5\xb0)"
   },
   {
     "mm_teleporter_red_13",
     "mm_teleporter",
-    "red teleporter (270\xb0)"
+    "Red teleporter (270\xb0)"
   },
   {
     "mm_teleporter_red_14",
     "mm_teleporter",
-    "red teleporter (292.5\xb0)"
+    "Red teleporter (292.5\xb0)"
   },
   {
     "mm_teleporter_red_15",
     "mm_teleporter",
-    "red teleporter (315\xb0)"
+    "Red teleporter (315\xb0)"
   },
   {
     "mm_teleporter_red_16",
     "mm_teleporter",
-    "red teleporter (337.5\xb0)"
+    "Red teleporter (337.5\xb0)"
   },
   {
     "mm_teleporter_yellow_1",
     "mm_teleporter",
-    "yellow teleporter (0\xb0)"
+    "Yellow teleporter (0\xb0)"
   },
   {
     "mm_teleporter_yellow_2",
     "mm_teleporter",
-    "yellow teleporter (22.5\xb0)"
+    "Yellow teleporter (22.5\xb0)"
   },
   {
     "mm_teleporter_yellow_3",
     "mm_teleporter",
-    "yellow teleporter (45\xb0)"
+    "Yellow teleporter (45\xb0)"
   },
   {
     "mm_teleporter_yellow_4",
     "mm_teleporter",
-    "yellow teleporter (67.5\xb0)"
+    "Yellow teleporter (67.5\xb0)"
   },
   {
     "mm_teleporter_yellow_5",
     "mm_teleporter",
-    "yellow teleporter (90\xb0)"
+    "Yellow teleporter (90\xb0)"
   },
   {
     "mm_teleporter_yellow_6",
     "mm_teleporter",
-    "yellow teleporter (112.5\xb0)"
+    "Yellow teleporter (112.5\xb0)"
   },
   {
     "mm_teleporter_yellow_7",
     "mm_teleporter",
-    "yellow teleporter (135\xb0)"
+    "Yellow teleporter (135\xb0)"
   },
   {
     "mm_teleporter_yellow_8",
     "mm_teleporter",
-    "yellow teleporter (157.5\xb0)"
+    "Yellow teleporter (157.5\xb0)"
   },
   {
     "mm_teleporter_yellow_9",
     "mm_teleporter",
-    "yellow teleporter (180\xb0)"
+    "Yellow teleporter (180\xb0)"
   },
   {
     "mm_teleporter_yellow_10",
     "mm_teleporter",
-    "yellow teleporter (202.5\xb0)"
+    "Yellow teleporter (202.5\xb0)"
   },
   {
     "mm_teleporter_yellow_11",
     "mm_teleporter",
-    "yellow teleporter (225\xb0)"
+    "Yellow teleporter (225\xb0)"
   },
   {
     "mm_teleporter_yellow_12",
     "mm_teleporter",
-    "yellow teleporter (247.5\xb0)"
+    "Yellow teleporter (247.5\xb0)"
   },
   {
     "mm_teleporter_yellow_13",
     "mm_teleporter",
-    "yellow teleporter (270\xb0)"
+    "Yellow teleporter (270\xb0)"
   },
   {
     "mm_teleporter_yellow_14",
     "mm_teleporter",
-    "yellow teleporter (292.5\xb0)"
+    "Yellow teleporter (292.5\xb0)"
   },
   {
     "mm_teleporter_yellow_15",
     "mm_teleporter",
-    "yellow teleporter (315\xb0)"
+    "Yellow teleporter (315\xb0)"
   },
   {
     "mm_teleporter_yellow_16",
     "mm_teleporter",
-    "yellow teleporter (337.5\xb0)"
+    "Yellow teleporter (337.5\xb0)"
   },
   {
     "mm_teleporter_green_1",
     "mm_teleporter",
-    "green teleporter (0\xb0)"
+    "Green teleporter (0\xb0)"
   },
   {
     "mm_teleporter_green_2",
     "mm_teleporter",
-    "green teleporter (22.5\xb0)"
+    "Green teleporter (22.5\xb0)"
   },
   {
     "mm_teleporter_green_3",
     "mm_teleporter",
-    "green teleporter (45\xb0)"
+    "Green teleporter (45\xb0)"
   },
   {
     "mm_teleporter_green_4",
     "mm_teleporter",
-    "green teleporter (67.5\xb0)"
+    "Green teleporter (67.5\xb0)"
   },
   {
     "mm_teleporter_green_5",
     "mm_teleporter",
-    "green teleporter (90\xb0)"
+    "Green teleporter (90\xb0)"
   },
   {
     "mm_teleporter_green_6",
     "mm_teleporter",
-    "green teleporter (112.5\xb0)"
+    "Green teleporter (112.5\xb0)"
   },
   {
     "mm_teleporter_green_7",
     "mm_teleporter",
-    "green teleporter (135\xb0)"
+    "Green teleporter (135\xb0)"
   },
   {
     "mm_teleporter_green_8",
     "mm_teleporter",
-    "green teleporter (157.5\xb0)"
+    "Green teleporter (157.5\xb0)"
   },
   {
     "mm_teleporter_green_9",
     "mm_teleporter",
-    "green teleporter (180\xb0)"
+    "Green teleporter (180\xb0)"
   },
   {
     "mm_teleporter_green_10",
     "mm_teleporter",
-    "green teleporter (202.5\xb0)"
+    "Green teleporter (202.5\xb0)"
   },
   {
     "mm_teleporter_green_11",
     "mm_teleporter",
-    "green teleporter (225\xb0)"
+    "Green teleporter (225\xb0)"
   },
   {
     "mm_teleporter_green_12",
     "mm_teleporter",
-    "green teleporter (247.5\xb0)"
+    "Green teleporter (247.5\xb0)"
   },
   {
     "mm_teleporter_green_13",
     "mm_teleporter",
-    "green teleporter (270\xb0)"
+    "Green teleporter (270\xb0)"
   },
   {
     "mm_teleporter_green_14",
     "mm_teleporter",
-    "green teleporter (292.5\xb0)"
+    "Green teleporter (292.5\xb0)"
   },
   {
     "mm_teleporter_green_15",
     "mm_teleporter",
-    "green teleporter (315\xb0)"
+    "Green teleporter (315\xb0)"
   },
   {
     "mm_teleporter_green_16",
     "mm_teleporter",
-    "green teleporter (337.5\xb0)"
+    "Green teleporter (337.5\xb0)"
   },
   {
     "mm_teleporter_blue_1",
     "mm_teleporter",
-    "blue teleporter (0\xb0)"
+    "Blue teleporter (0\xb0)"
   },
   {
     "mm_teleporter_blue_2",
     "mm_teleporter",
-    "blue teleporter (22.5\xb0)"
+    "Blue teleporter (22.5\xb0)"
   },
   {
     "mm_teleporter_blue_3",
     "mm_teleporter",
-    "blue teleporter (45\xb0)"
+    "Blue teleporter (45\xb0)"
   },
   {
     "mm_teleporter_blue_4",
     "mm_teleporter",
-    "blue teleporter (67.5\xb0)"
+    "Blue teleporter (67.5\xb0)"
   },
   {
     "mm_teleporter_blue_5",
     "mm_teleporter",
-    "blue teleporter (90\xb0)"
+    "Blue teleporter (90\xb0)"
   },
   {
     "mm_teleporter_blue_6",
     "mm_teleporter",
-    "blue teleporter (112.5\xb0)"
+    "Blue teleporter (112.5\xb0)"
   },
   {
     "mm_teleporter_blue_7",
     "mm_teleporter",
-    "blue teleporter (135\xb0)"
+    "Blue teleporter (135\xb0)"
   },
   {
     "mm_teleporter_blue_8",
     "mm_teleporter",
-    "blue teleporter (157.5\xb0)"
+    "Blue teleporter (157.5\xb0)"
   },
   {
     "mm_teleporter_blue_9",
     "mm_teleporter",
-    "blue teleporter (180\xb0)"
+    "Blue teleporter (180\xb0)"
   },
   {
     "mm_teleporter_blue_10",
     "mm_teleporter",
-    "blue teleporter (202.5\xb0)"
+    "Blue teleporter (202.5\xb0)"
   },
   {
     "mm_teleporter_blue_11",
     "mm_teleporter",
-    "blue teleporter (225\xb0)"
+    "Blue teleporter (225\xb0)"
   },
   {
     "mm_teleporter_blue_12",
     "mm_teleporter",
-    "blue teleporter (247.5\xb0)"
+    "Blue teleporter (247.5\xb0)"
   },
   {
     "mm_teleporter_blue_13",
     "mm_teleporter",
-    "blue teleporter (270\xb0)"
+    "Blue teleporter (270\xb0)"
   },
   {
     "mm_teleporter_blue_14",
     "mm_teleporter",
-    "blue teleporter (292.5\xb0)"
+    "Blue teleporter (292.5\xb0)"
   },
   {
     "mm_teleporter_blue_15",
     "mm_teleporter",
-    "blue teleporter (315\xb0)"
+    "Blue teleporter (315\xb0)"
   },
   {
     "mm_teleporter_blue_16",
     "mm_teleporter",
-    "blue teleporter (337.5\xb0)"
+    "Blue teleporter (337.5\xb0)"
   },
   {
     "mm_mcduffin",
@@ -6225,907 +6225,907 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "mm_pacman",
     "mm_pacman",
-    "pac man (MM style)"
+    "Pac man (MM style)"
   },
   {
     "mm_fuse",
     "mm_fuse",
-    "fuse (off)",
+    "Fuse (off)",
   },
   {
     "mm_steel_wall",
     "mm_steel_wall",
-    "steel wall (MM style)",
+    "Steel wall (MM style)",
   },
   {
     "mm_wooden_wall",
     "mm_wooden_wall",
-    "wooden wall (MM style)",
+    "Wooden wall (MM style)",
   },
   {
     "mm_ice_wall",
     "mm_ice_wall",
-    "ice wall",
+    "Ice wall",
   },
   {
     "mm_amoeba_wall",
     "mm_amoeba_wall",
-    "amoeba wall",
+    "Amoeba wall",
   },
   {
     "df_laser",
     "df_laser",
-    "laser cannon"
+    "Laser cannon"
   },
   {
     "df_receiver",
     "df_receiver",
-    "laser receiver"
+    "Laser receiver"
   },
   {
     "df_steel_wall",
     "df_steel_wall",
-    "steel wall (DF style)",
+    "Steel wall (DF style)",
   },
   {
     "df_wooden_wall",
     "df_wooden_wall",
-    "wooden wall (DF style)",
+    "Wooden wall (DF style)",
   },
   {
     "spring.left",
     "spring",
-    "spring (starts moving left)"
+    "Spring (starts moving left)"
   },
   {
     "spring.right",
     "spring",
-    "spring (starts moving right)"
+    "Spring (starts moving right)"
   },
   {
     "empty_space_1",
     "empty_space",
-    "empty space 1"
+    "Empty space 1"
   },
   {
     "empty_space_2",
     "empty_space",
-    "empty space 2"
+    "Empty space 2"
   },
   {
     "empty_space_3",
     "empty_space",
-    "empty space 3"
+    "Empty space 3"
   },
   {
     "empty_space_4",
     "empty_space",
-    "empty space 4"
+    "Empty space 4"
   },
   {
     "empty_space_5",
     "empty_space",
-    "empty space 5"
+    "Empty space 5"
   },
   {
     "empty_space_6",
     "empty_space",
-    "empty space 6"
+    "Empty space 6"
   },
   {
     "empty_space_7",
     "empty_space",
-    "empty space 7"
+    "Empty space 7"
   },
   {
     "empty_space_8",
     "empty_space",
-    "empty space 8"
+    "Empty space 8"
   },
   {
     "empty_space_9",
     "empty_space",
-    "empty space 9"
+    "Empty space 9"
   },
   {
     "empty_space_10",
     "empty_space",
-    "empty space 10"
+    "Empty space 10"
   },
   {
     "empty_space_11",
     "empty_space",
-    "empty space 11"
+    "Empty space 11"
   },
   {
     "empty_space_12",
     "empty_space",
-    "empty space 12"
+    "Empty space 12"
   },
   {
     "empty_space_13",
     "empty_space",
-    "empty space 13"
+    "Empty space 13"
   },
   {
     "empty_space_14",
     "empty_space",
-    "empty space 14"
+    "Empty space 14"
   },
   {
     "empty_space_15",
     "empty_space",
-    "empty space 15"
+    "Empty space 15"
   },
   {
     "empty_space_16",
     "empty_space",
-    "empty space 16"
+    "Empty space 16"
   },
   {
     "df_mirror_fixed_1",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (0\xb0)"
+    "Fixed mirror (DF style) (0\xb0)"
   },
   {
     "df_mirror_fixed_2",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (11.25\xb0)"
+    "Fixed mirror (DF style) (11.25\xb0)"
   },
   {
     "df_mirror_fixed_3",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (22.5\xb0)"
+    "Fixed mirror (DF style) (22.5\xb0)"
   },
   {
     "df_mirror_fixed_4",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (33.75\xb0)"
+    "Fixed mirror (DF style) (33.75\xb0)"
   },
   {
     "df_mirror_fixed_5",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (45\xb0)"
+    "Fixed mirror (DF style) (45\xb0)"
   },
   {
     "df_mirror_fixed_6",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (56.25\xb0)"
+    "Fixed mirror (DF style) (56.25\xb0)"
   },
   {
     "df_mirror_fixed_7",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (67.5\xb0)"
+    "Fixed mirror (DF style) (67.5\xb0)"
   },
   {
     "df_mirror_fixed_8",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (78.75\xb0)"
+    "Fixed mirror (DF style) (78.75\xb0)"
   },
   {
     "df_mirror_fixed_9",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (90\xb0)"
+    "Fixed mirror (DF style) (90\xb0)"
   },
   {
     "df_mirror_fixed_10",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (101.25\xb0)"
+    "Fixed mirror (DF style) (101.25\xb0)"
   },
   {
     "df_mirror_fixed_11",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (112.5\xb0)"
+    "Fixed mirror (DF style) (112.5\xb0)"
   },
   {
     "df_mirror_fixed_12",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (123.75\xb0)"
+    "Fixed mirror (DF style) (123.75\xb0)"
   },
   {
     "df_mirror_fixed_13",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (135\xb0)"
+    "Fixed mirror (DF style) (135\xb0)"
   },
   {
     "df_mirror_fixed_14",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (146.25\xb0)"
+    "Fixed mirror (DF style) (146.25\xb0)"
   },
   {
     "df_mirror_fixed_15",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (157.5\xb0)"
+    "Fixed mirror (DF style) (157.5\xb0)"
   },
   {
     "df_mirror_fixed_16",
     "df_mirror_fixed",
-    "fixed mirror (DF style) (168.75\xb0)"
+    "Fixed mirror (DF style) (168.75\xb0)"
   },
   {
     "df_slope_1",
     "df_slope",
-    "slope (DF style) (45\xb0)"
+    "Slope (DF style) (45\xb0)"
   },
   {
     "df_slope_2",
     "df_slope",
-    "slope (DF style) (135\xb0)"
+    "Slope (DF style) (135\xb0)"
   },
   {
     "df_slope_3",
     "df_slope",
-    "slope (DF style) (225\xb0)"
+    "Slope (DF style) (225\xb0)"
   },
   {
     "df_slope_4",
     "df_slope",
-    "slope (DF style) (315\xb0)"
+    "Slope (DF style) (315\xb0)"
   },
   {
     "bd_empty_space",
     "empty_space",
-    "empty space"
+    "Empty space"
   },
   {
     "bd_sand",
     "bd_sand",
-    "sand"
+    "Sand"
   },
   {
     "bd_sand_2",
     "bd_sand",
-    "sand 2"
+    "Sand 2"
   },
   {
     "bd_sand_ball",
     "bd_sand_ball",
-    "sand ball"
+    "Sand ball"
   },
   {
     "bd_sand_loose",
     "bd_sand_loose",
-    "sand (loose)"
+    "Sand (loose)"
   },
   {
     "bd_sand_sloped_up_right",
     "bd_sand_sloped",
-    "sand (sloped up right)"
+    "Sand (sloped up right)"
   },
   {
     "bd_sand_sloped_up_left",
     "bd_sand_sloped",
-    "sand (sloped up left)"
+    "Sand (sloped up left)"
   },
   {
     "bd_sand_sloped_down_left",
     "bd_sand_sloped",
-    "sand (sloped down left)"
+    "Sand (sloped down left)"
   },
   {
     "bd_sand_sloped_down_right",
     "bd_sand_sloped",
-    "sand (sloped down right)"
+    "Sand (sloped down right)"
   },
   {
     "bd_sand_glued",
     "bd_sand_glued",
-    "glued sand"
+    "Glued sand"
   },
   {
     "bd_wall_sloped_up_right",
     "bd_wall_sloped",
-    "wall (sloped up right)"
+    "Wall (sloped up right)"
   },
   {
     "bd_wall_sloped_up_left",
     "bd_wall_sloped",
-    "wall (sloped up left)"
+    "Wall (sloped up left)"
   },
   {
     "bd_wall_sloped_down_left",
     "bd_wall_sloped",
-    "wall (sloped down left)"
+    "Wall (sloped down left)"
   },
   {
     "bd_wall_sloped_down_right",
     "bd_wall_sloped",
-    "wall (sloped down right)"
+    "Wall (sloped down right)"
   },
   {
     "bd_wall_non_sloped",
     "bd_wall",
-    "wall (non sloped)"
+    "Wall (non sloped)"
   },
   {
     "bd_wall_diggable",
     "bd_wall",
-    "diggable wall"
+    "Diggable wall"
   },
   {
     "bd_wall_diamond",
     "bd_wall",
-    "wall with diamond"
+    "Wall with diamond"
   },
   {
     "bd_wall_key_1",
     "bd_wall",
-    "wall with key 1"
+    "Wall with key 1"
   },
   {
     "bd_wall_key_2",
     "bd_wall",
-    "wall with key 2"
+    "Wall with key 2"
   },
   {
     "bd_wall_key_3",
     "bd_wall",
-    "wall with key 3"
+    "Wall with key 3"
   },
   {
     "bd_falling_wall",
     "bd_wall",
-    "falling wall"
+    "Falling wall"
   },
   {
     "bd_steelwall",
     "bd_steelwall",
-    "steel wall"
+    "Steel wall"
   },
   {
     "bd_steelwall_sloped_up_right",
     "bd_steelwall_sloped",
-    "steel wall (sloped up right)"
+    "Steel wall (sloped up right)"
   },
   {
     "bd_steelwall_sloped_up_left",
     "bd_steelwall_sloped",
-    "steel wall (sloped up left)"
+    "Steel wall (sloped up left)"
   },
   {
     "bd_steelwall_sloped_down_left",
     "bd_steelwall_sloped",
-    "steel wall (sloped down left)"
+    "Steel wall (sloped down left)"
   },
   {
     "bd_steelwall_sloped_down_right",
     "bd_steelwall_sloped",
-    "steel wall (sloped down right)"
+    "Steel wall (sloped down right)"
   },
   {
     "bd_steelwall_explodable",
     "bd_steelwall",
-    "explodable steel wall"
+    "Explodable steel wall"
   },
   {
     "bd_steelwall_diggable",
     "bd_steelwall",
-    "diggable steel wall"
+    "Diggable steel wall"
   },
   {
     "bd_expandable_wall_horizontal",
     "bd_expandable_wall",
-    "expandable wall (horizontal)"
+    "Expandable wall (horizontal)"
   },
   {
     "bd_expandable_wall_vertical",
     "bd_expandable_wall",
-    "expandable wall (vertical)"
+    "Expandable wall (vertical)"
   },
   {
     "bd_expandable_wall_any",
     "bd_expandable_wall",
-    "expandable wall (any direction)"
+    "Expandable wall (any direction)"
   },
   {
     "bd_expandable_steelwall_horizontal",
     "bd_expandable_steelwall",
-    "expandable steelwall (horizontal)"
+    "Expandable steelwall (horizontal)"
   },
   {
     "bd_expandable_steelwall_vertical",
     "bd_expandable_steelwall",
-    "expandable steelwall (vertical)"
+    "Expandable steelwall (vertical)"
   },
   {
     "bd_expandable_steelwall_any",
     "bd_expandable_steelwall",
-    "expandable steelwall (any direction)"
+    "Expandable steelwall (any direction)"
   },
   {
     "bd_expandable_wall_switch_horizontal",
     "bd_expandable_wall_switch",
-    "switch for expandable wall (horizontal)"
+    "Switch for expandable wall (horizontal)"
   },
   {
     "bd_expandable_wall_switch_vertical",
     "bd_expandable_wall_switch",
-    "switch for expandable wall (vertical)"
+    "Switch for expandable wall (vertical)"
   },
   {
     "bd_inbox",
     "bd_inbox",
-    "inbox with player"
+    "Inbox with player"
   },
   {
     "bd_exit_closed",
     "bd_exit",
-    "closed exit"
+    "Closed exit"
   },
   {
     "bd_exit_open",
     "bd_exit",
-    "open exit"
+    "Open exit"
   },
   {
     "bd_invisible_exit_closed",
     "bd_invisible_exit",
-    "invisible exit (closed)"
+    "Invisible exit (closed)"
   },
   {
     "bd_invisible_exit_open",
     "bd_invisible_exit",
-    "invisible exit (open)"
+    "Invisible exit (open)"
   },
   {
     "bd_flying_rock",
     "bd_flying_rock",
-    "flying rock"
+    "Flying rock"
   },
   {
     "bd_mega_rock",
     "bd_mega_rock",
-    "mega rock"
+    "Mega rock"
   },
   {
     "bd_rock_glued",
     "bd_rock_glued",
-    "glued rock"
+    "Glued rock"
   },
   {
     "bd_flying_diamond",
     "bd_flying_diamond",
-    "flying diamond"
+    "Flying diamond"
   },
   {
     "bd_diamond_glued",
     "bd_diamond_glued",
-    "glued diamond"
+    "Glued diamond"
   },
   {
     "bd_diamond_key",
     "bd_diamond_key",
-    "diamond key"
+    "Diamond key"
   },
   {
     "bd_trapped_diamond",
     "bd_trapped_diamond",
-    "trapped diamond"
+    "Trapped diamond"
   },
   {
     "bd_nut",
     "bd_nut",
-    "nut with diamond"
+    "Nut with diamond"
   },
   {
     "bd_amoeba_2",
     "bd_amoeba",
-    "amoeba 2 (BD style)"
+    "Amoeba 2 (BD style)"
   },
   {
     "bd_bladder",
     "bd_bladder",
-    "bladder"
+    "Bladder"
   },
   {
     "bd_bladder_spender",
     "bd_bladder_spender",
-    "bladder spender"
+    "Bladder spender"
   },
   {
     "bd_creature_switch",
     "bd_creature_switch",
-    "switch for creature (off)"
+    "Switch for creature (off)"
   },
   {
     "bd_creature_switch.active",
     "bd_creature_switch",
-    "switch for creature (on)"
+    "Switch for creature (on)"
   },
   {
     "bd_biter_switch_1",
     "bd_biter_switch",
-    "switch for biter"
+    "Switch for biter"
   },
   {
     "bd_biter_switch_2",
     "bd_biter_switch",
-    "switch for biter"
+    "Switch for biter"
   },
   {
     "bd_biter_switch_3",
     "bd_biter_switch",
-    "switch for biter"
+    "Switch for biter"
   },
   {
     "bd_biter_switch_4",
     "bd_biter_switch",
-    "switch for biter"
+    "Switch for biter"
   },
   {
     "bd_replicator",
     "bd_replicator",
-    "replicator"
+    "Replicator"
   },
   {
     "bd_replicator.active",
     "bd_replicator",
-    "replicator (active)"
+    "Replicator (active)"
   },
   {
     "bd_replicator_switch",
     "bd_replicator_switch",
-    "switch for replicator (off)"
+    "Switch for replicator (off)"
   },
   {
     "bd_replicator_switch.active",
     "bd_replicator_switch",
-    "switch for replicator (on)"
+    "Switch for replicator (on)"
   },
   {
     "bd_conveyor_left",
     "bd_conveyor",
-    "conveyor belt (left)"
+    "Conveyor belt (left)"
   },
   {
     "bd_conveyor_left.active",
     "bd_conveyor",
-    "conveyor belt (left) (active)"
+    "Conveyor belt (left) (active)"
   },
   {
     "bd_conveyor_right",
     "bd_conveyor",
-    "conveyor belt (right)"
+    "Conveyor belt (right)"
   },
   {
     "bd_conveyor_right.active",
     "bd_conveyor",
-    "conveyor belt (right) (active)"
+    "Conveyor belt (right) (active)"
   },
   {
     "bd_conveyor_switch",
     "bd_conveyor_switch",
-    "switch for conveyor belt (off)"
+    "Switch for conveyor belt (off)"
   },
   {
     "bd_conveyor_switch.active",
     "bd_conveyor_switch",
-    "switch for conveyor belt (on)"
+    "Switch for conveyor belt (on)"
   },
   {
     "bd_conveyor_dir_switch_left",
     "bd_conveyor_dir_switch",
-    "switch for conveyor belt direction (left)"
+    "Switch for conveyor belt direction (left)"
   },
   {
     "bd_conveyor_dir_switch_right",
     "bd_conveyor_dir_switch",
-    "switch for conveyor belt direction (right)"
+    "Switch for conveyor belt direction (right)"
   },
   {
     "bd_gravity_switch",
     "bd_gravity_switch",
-    "gravity switch"
+    "Gravity switch"
   },
   {
     "bd_gravity_switch.active",
     "bd_gravity_switch",
-    "gravity switch (active)"
+    "Gravity switch (active)"
   },
   {
     "bd_acid",
     "bd_acid",
-    "acid"
+    "Acid"
   },
   {
     "bd_box",
     "bd_box",
-    "box"
+    "Box"
   },
   {
     "bd_time_penalty",
     "bd_time_penalty",
-    "time penalty"
+    "Time penalty"
   },
   {
     "bd_gravestone",
     "bd_gravestone",
-    "gravestone"
+    "Gravestone"
   },
   {
     "bd_clock",
     "bd_clock",
-    "clock"
+    "Clock"
   },
   {
     "bd_pot",
     "bd_pot",
-    "pot"
+    "Pot"
   },
   {
     "bd_pneumatic_hammer",
     "bd_pneumatic_hammer",
-    "pneumatic hammer"
+    "Pneumatic hammer"
   },
   {
     "bd_teleporter",
     "bd_teleporter",
-    "teleporter"
+    "Teleporter"
   },
   {
     "bd_skeleton",
     "bd_skeleton",
-    "skeleton"
+    "Skeleton"
   },
   {
     "bd_water",
     "bd_water",
-    "water"
+    "Water"
   },
   {
     "bd_key_1",
     "bd_key",
-    "key 1"
+    "Key 1"
     },
   {
     "bd_key_2",
     "bd_key",
-    "key 2"
+    "Key 2"
     },
   {
     "bd_key_3",
     "bd_key",
-    "key 3"
+    "Key 3"
   },
   {
     "bd_gate_1",
     "bd_gate",
-    "door 1"
+    "Door 1"
   },
   {
     "bd_gate_2",
     "bd_gate",
-    "door 2"
+    "Door 2"
   },
   {
     "bd_gate_3",
     "bd_gate",
-    "door 3"
+    "Door 3"
   },
   {
     "bd_lava",
     "bd_lava",
-    "lava"
+    "Lava"
   },
   {
     "bd_sweet",
     "bd_sweet",
-    "sweet"
+    "Sweet"
   },
   {
     "bd_voodoo_doll",
     "bd_voodoo_doll",
-    "voodoo doll"
+    "Voodoo doll"
   },
   {
     "bd_slime",
     "bd_slime",
-    "slime"
+    "Slime"
   },
   {
     "bd_waiting_rock",
     "bd_waiting_rock",
-    "waiting rock"
+    "Waiting rock"
   },
   {
     "bd_chasing_rock",
     "bd_chasing_rock",
-    "chasing rock"
+    "Chasing rock"
   },
   {
     "bd_ghost",
     "bd_ghost",
-    "ghost"
+    "Ghost"
   },
   {
     "bd_cow",
     "bd_cow",
-    "cow (random start direction)"
+    "Cow (random start direction)"
   },
   {
     "bd_cow.left",
     "bd_cow",
-    "cow (starts moving left)"
+    "Cow (starts moving left)"
   },
   {
     "bd_cow.up",
     "bd_cow",
-    "cow (starts moving up)"
+    "Cow (starts moving up)"
   },
   {
     "bd_cow.right",
     "bd_cow",
-    "cow (starts moving right)"
+    "Cow (starts moving right)"
   },
   {
     "bd_cow.down",
     "bd_cow",
-    "cow (starts moving down)"
+    "Cow (starts moving down)"
   },
   {
     "bd_butterfly_2",
     "bd_butterfly",
-    "butterfly 2 (random start direction)"
+    "Butterfly 2 (random start direction)"
   },
   {
     "bd_butterfly_2.right",
     "bd_butterfly",
-    "butterfly 2 (starts moving right)"
+    "Butterfly 2 (starts moving right)"
   },
   {
     "bd_butterfly_2.up",
     "bd_butterfly",
-    "butterfly 2 (starts moving up)"
+    "Butterfly 2 (starts moving up)"
   },
   {
     "bd_butterfly_2.left",
     "bd_butterfly",
-    "butterfly 2 (starts moving left)"
+    "Butterfly 2 (starts moving left)"
   },
   {
     "bd_butterfly_2.down",
     "bd_butterfly",
-    "butterfly 2 (starts moving down)"
+    "Butterfly 2 (starts moving down)"
   },
   {
     "bd_firefly_2",
     "bd_firefly",
-    "firefly 2 (random start direction)"
+    "Firefly 2 (random start direction)"
   },
   {
     "bd_firefly_2.right",
     "bd_firefly",
-    "firefly 2 (starts moving right)"
+    "Firefly 2 (starts moving right)"
   },
   {
     "bd_firefly_2.up",
     "bd_firefly",
-    "firefly 2 (starts moving up)"
+    "Firefly 2 (starts moving up)"
   },
   {
     "bd_firefly_2.left",
     "bd_firefly",
-    "firefly 2 (starts moving left)"
+    "Firefly 2 (starts moving left)"
   },
   {
     "bd_firefly_2.down",
     "bd_firefly",
-    "firefly 2 (starts moving down)"
+    "Firefly 2 (starts moving down)"
   },
   {
     "bd_stonefly",
     "bd_stonefly",
-    "stonefly (random start direction)"
+    "Stonefly (random start direction)"
   },
   {
     "bd_stonefly.right",
     "bd_stonefly",
-    "stonefly (starts moving right)"
+    "Stonefly (starts moving right)"
   },
   {
     "bd_stonefly.up",
     "bd_stonefly",
-    "stonefly (starts moving up)"
+    "Stonefly (starts moving up)"
   },
   {
     "bd_stonefly.left",
     "bd_stonefly",
-    "stonefly (starts moving left)"
+    "Stonefly (starts moving left)"
   },
   {
     "bd_stonefly.down",
     "bd_stonefly",
-    "stonefly (starts moving down)"
+    "Stonefly (starts moving down)"
   },
   {
     "bd_biter",
     "bd_biter",
-    "biter (random start direction)"
+    "Biter (random start direction)"
   },
   {
     "bd_biter.right",
     "bd_biter",
-    "biter (starts moving right)"
+    "Biter (starts moving right)"
   },
   {
     "bd_biter.up",
     "bd_biter",
-    "biter (starts moving up)"
+    "Biter (starts moving up)"
   },
   {
     "bd_biter.left",
     "bd_biter",
-    "biter (starts moving left)"
+    "Biter (starts moving left)"
   },
   {
     "bd_biter.down",
     "bd_biter",
-    "biter (starts moving down)"
+    "Biter (starts moving down)"
   },
   {
     "bd_dragonfly",
     "bd_dragonfly",
-    "dragonfly (random start direction)"
+    "Dragonfly (random start direction)"
   },
   {
     "bd_dragonfly.right",
     "bd_dragonfly",
-    "dragonfly (starts moving right)"
+    "Dragonfly (starts moving right)"
   },
   {
     "bd_dragonfly.up",
     "bd_dragonfly",
-    "dragonfly (starts moving up)"
+    "Dragonfly (starts moving up)"
   },
   {
     "bd_dragonfly.left",
     "bd_dragonfly",
-    "dragonfly (starts moving left)"
+    "Dragonfly (starts moving left)"
   },
   {
     "bd_dragonfly.down",
     "bd_dragonfly",
-    "dragonfly (starts moving down)"
+    "Dragonfly (starts moving down)"
   },
   {
     "bd_bomb",
     "bd_bomb",
-    "bomb"
+    "Bomb"
   },
   {
     "bd_nitro_pack",
     "bd_nitro_pack",
-    "nitro pack"
+    "Nitro pack"
   },
   {
     "bd_player",
     "bd_player",
-    "player"
+    "Player"
   },
   {
     "bd_player_with_bomb",
     "bd_player",
-    "player with bomb",
+    "Player with bomb",
   },
   {
     "bd_player_glued",
     "bd_player",
-    "glued player",
+    "Glued player",
   },
   {
     "bd_player_stirring",
     "bd_player",
-    "stirring player"
+    "Stirring player"
   },
   {
     "bd_fake_bonus",
     "bd_fake_bonus",
-    "fake bonus"
+    "Fake bonus"
   },
   {
     "bd_covered",
     "bd_covered",
-    "covered"
+    "Covered"
   },
 
   // --------------------------------------------------------------------------
@@ -7486,12 +7486,12 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "emc_dripper.active",
     "dripper",
-    "dripper"
+    "Dripper"
   },
   {
     "emc_spring_bumper.active",
     "emc_spring_bumper",
-    "spring bumper",
+    "Spring bumper",
   },
   {
     "mm_exit.opening",
@@ -7526,32 +7526,32 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "mm_pacman.eating.right",
     "mm_pacman",
-    "pac man (eating right)"
+    "Pac man (eating right)"
   },
   {
     "mm_pacman.eating.up",
     "mm_pacman",
-    "pac man (eating up)"
+    "Pac man (eating up)"
   },
   {
     "mm_pacman.eating.left",
     "mm_pacman",
-    "pac man (eating left)"
+    "Pac man (eating left)"
   },
   {
     "mm_pacman.eating.down",
     "mm_pacman",
-    "pac man (eating down)"
+    "Pac man (eating down)"
   },
   {
     "mm_bomb.active",
     "mm_bomb",
-    "active bomb (MM style)"
+    "Active bomb (MM style)"
   },
   {
     "df_mine.active",
     "df_mine",
-    "active mine"
+    "Active mine"
   },
 
   // --------------------------------------------------------------------------
@@ -7876,17 +7876,17 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "internal_clipboard_custom",
     "internal",
-    "empty custom element"
+    "Empty custom element"
   },
   {
     "internal_clipboard_change",
     "internal",
-    "empty change page"
+    "Empty change page"
   },
   {
     "internal_clipboard_group",
     "internal",
-    "empty group element"
+    "Empty group element"
   },
   {
     "internal_dummy",
@@ -7896,192 +7896,192 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "internal_cascade_bd",
     "internal",
-    "show Boulder Dash elements"
+    "Show Boulder Dash elements"
   },
   {
     "internal_cascade_bd.active",
     "internal",
-    "hide Boulder Dash elements"
+    "Hide Boulder Dash elements"
   },
   {
     "internal_cascade_bd_native",
     "internal",
-    "show native Boulder Dash elements"
+    "Show native Boulder Dash elements"
   },
   {
     "internal_cascade_bd_native.active",
     "internal",
-    "hide native Boulder Dash elements"
+    "Hide native Boulder Dash elements"
   },
   {
     "internal_cascade_em",
     "internal",
-    "show Emerald Mine elements"
+    "Show Emerald Mine elements"
   },
   {
     "internal_cascade_em.active",
     "internal",
-    "hide Emerald Mine elements"
+    "Hide Emerald Mine elements"
   },
   {
     "internal_cascade_emc",
     "internal",
-    "show Emerald Mine Club elements"
+    "Show Emerald Mine Club elements"
   },
   {
     "internal_cascade_emc.active",
     "internal",
-    "hide Emerald Mine Club elements"
+    "Hide Emerald Mine Club elements"
   },
   {
     "internal_cascade_rnd",
     "internal",
-    "show Rocks'n'Diamonds elements"
+    "Show Rocks'n'Diamonds elements"
   },
   {
     "internal_cascade_rnd.active",
     "internal",
-    "hide Rocks'n'Diamonds elements"
+    "Hide Rocks'n'Diamonds elements"
   },
   {
     "internal_cascade_sb",
     "internal",
-    "show Sokoban elements"
+    "Show Sokoban elements"
   },
   {
     "internal_cascade_sb.active",
     "internal",
-    "hide Sokoban elements"
+    "Hide Sokoban elements"
   },
   {
     "internal_cascade_sp",
     "internal",
-    "show Supaplex elements"
+    "Show Supaplex elements"
   },
   {
     "internal_cascade_sp.active",
     "internal",
-    "hide Supaplex elements"
+    "Hide Supaplex elements"
   },
   {
     "internal_cascade_dc",
     "internal",
-    "show Diamond Caves II elements"
+    "Show Diamond Caves II elements"
   },
   {
     "internal_cascade_dc.active",
     "internal",
-    "hide Diamond Caves II elements"
+    "Hide Diamond Caves II elements"
   },
   {
     "internal_cascade_dx",
     "internal",
-    "show DX Boulderdash elements"
+    "Show DX Boulderdash elements"
   },
   {
     "internal_cascade_dx.active",
     "internal",
-    "hide DX Boulderdash elements"
+    "Hide DX Boulderdash elements"
   },
   {
     "internal_cascade_mm",
     "internal",
-    "show Mirror Magic elements"
+    "Show Mirror Magic elements"
   },
   {
     "internal_cascade_mm.active",
     "internal",
-    "hide Mirror Magic elements"
+    "Hide Mirror Magic elements"
   },
   {
     "internal_cascade_df",
     "internal",
-    "show Deflektor elements"
+    "Show Deflektor elements"
   },
   {
     "internal_cascade_df.active",
     "internal",
-    "hide Deflektor elements"
+    "Hide Deflektor elements"
   },
   {
     "internal_cascade_chars",
     "internal",
-    "show text elements"
+    "Show text elements"
   },
   {
     "internal_cascade_chars.active",
     "internal",
-    "hide text elements"
+    "Hide text elements"
   },
   {
     "internal_cascade_steel_chars",
     "internal",
-    "show steel text elements"
+    "Show steel text elements"
   },
   {
     "internal_cascade_steel_chars.active",
     "internal",
-    "hide steel text elements"
+    "Hide steel text elements"
   },
   {
     "internal_cascade_ce",
     "internal",
-    "show custom elements"
+    "Show custom elements"
   },
   {
     "internal_cascade_ce.active",
     "internal",
-    "hide custom elements"
+    "Hide custom elements"
   },
   {
     "internal_cascade_ge",
     "internal",
-    "show group elements"
+    "Show group elements"
   },
   {
     "internal_cascade_ge.active",
     "internal",
-    "hide group elements"
+    "Hide group elements"
   },
   {
     "internal_cascade_es",
     "internal",
-    "show empty space elements"
+    "Show empty space elements"
   },
   {
     "internal_cascade_es.active",
     "internal",
-    "hide empty space elements"
+    "Hide empty space elements"
   },
   {
     "internal_cascade_ref",
     "internal",
-    "show reference elements"
+    "Show reference elements"
   },
   {
     "internal_cascade_ref.active",
     "internal",
-    "hide reference elements"
+    "Hide reference elements"
   },
   {
     "internal_cascade_user",
     "internal",
-    "show user defined elements"
+    "Show user defined elements"
   },
   {
     "internal_cascade_user.active",
     "internal",
-    "hide user defined elements"
+    "Hide user defined elements"
   },
   {
     "internal_cascade_dynamic",
     "internal",
-    "show elements used in this level"
+    "Show elements used in this level"
   },
   {
     "internal_cascade_dynamic.active",
     "internal",
-    "hide elements used in this level"
+    "Hide elements used in this level"
   },
 
   // keyword to stop parser: "ELEMENT_INFO_END" <-- do not change!
