@@ -725,6 +725,17 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_acid_turns_to_element,	EL_EMPTY
   },
 
+  {
+    EL_BD_BITER,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
+    &li.bd_biter_move_delay,		0
+  },
+  {
+    EL_BD_BITER,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_biter_eats_element,		EL_BD_DIAMOND
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -4015,6 +4026,9 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->acid_spread_ratio		= level->bd_acid_spread_rate * 10000;
   cave->acid_turns_to			= map_element_RND_to_BD(level->bd_acid_turns_to_element);
 
+  cave->biter_delay_frame		= level->bd_biter_move_delay;
+  cave->biter_eat			= map_element_RND_to_BD(level->bd_biter_eats_element);
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4108,6 +4122,9 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_acid_eats_element		= map_element_BD_to_RND(cave->acid_eats_this);
   level->bd_acid_spread_rate		= cave->acid_spread_ratio / 10000;
   level->bd_acid_turns_to_element	= map_element_BD_to_RND(cave->acid_turns_to);
+
+  level->bd_biter_move_delay		= cave->biter_delay_frame;
+  level->bd_biter_eats_element		= map_element_BD_to_RND(cave->biter_eat);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

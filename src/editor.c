@@ -565,6 +565,7 @@ enum
   GADGET_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
   GADGET_ID_BD_ACID_EATS_ELEMENT,
   GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,
+  GADGET_ID_BD_BITER_EATS_ELEMENT,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1176,6 +1177,7 @@ enum
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
   ED_DRAWING_ID_BD_ACID_EATS_ELEMENT,
   ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT,
+  ED_DRAWING_ID_BD_BITER_EATS_ELEMENT,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4356,6 +4358,14 @@ static struct
     GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,	GADGET_ID_NONE,
     &level.bd_acid_turns_to_element,	1, 1,
     "Can leave behind:", NULL, NULL, NULL,	"Turns to this element after spreading"
+  },
+  {
+    ED_DRAWING_ID_BD_BITER_EATS_ELEMENT,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(2),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_BITER_EATS_ELEMENT,	GADGET_ID_NONE,
+    &level.bd_biter_eats_element,	1, 1,
+    "Can eat:", NULL, NULL, NULL,	"Eats this element when moving"
   },
 
   // ---------- level start element -------------------------------------------
@@ -10876,6 +10886,7 @@ static void DrawPropertiesInfo(void)
 #define TEXT_PERMEABILITY_BITS	"slime permeability bits"
 #define TEXT_RANDOM_SEED	"slime random number seed"
 #define TEXT_ACID_SPREAD_RATE	"Spread rate (percent)"
+#define TEXT_BITER_MOVE_DELAY	"Move delay (BD frames)"
 
 static struct
 {
@@ -11000,6 +11011,16 @@ static struct
 				-1, 65535							},
   { EL_BD_ACID,			&level.bd_acid_spread_rate,		TEXT_ACID_SPREAD_RATE,
 				0, 100								},
+  { EL_BD_BITER,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+				0, 3								},
+  { EL_BD_BITER_RIGHT,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+				0, 3								},
+  { EL_BD_BITER_UP,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+				0, 3								},
+  { EL_BD_BITER_LEFT,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+				0, 3								},
+  { EL_BD_BITER_DOWN,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+				0, 3								},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
@@ -11237,6 +11258,10 @@ static void DrawPropertiesConfig(void)
     {
       MapDrawingArea(ED_DRAWING_ID_BD_ACID_EATS_ELEMENT);
       MapDrawingArea(ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT);
+    }
+    else if (IS_BD_BITER(properties_element))
+    {
+      MapDrawingArea(ED_DRAWING_ID_BD_BITER_EATS_ELEMENT);
     }
     else if (properties_element == EL_YAMYAM ||
 	     properties_element == EL_YAMYAM_LEFT ||

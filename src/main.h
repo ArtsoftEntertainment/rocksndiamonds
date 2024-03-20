@@ -905,6 +905,12 @@
 					 (e) == EL_BD_PLAYER_GLUED ||		\
 					 (e) == EL_BD_PLAYER_STIRRING)
 
+#define IS_BD_BITER(e)			((e) == EL_BD_BITER ||			\
+					 (e) == EL_BD_BITER_RIGHT ||		\
+					 (e) == EL_BD_BITER_UP ||		\
+					 (e) == EL_BD_BITER_LEFT ||		\
+					 (e) == EL_BD_BITER_DOWN)
+
 #define IS_SOKOBAN_OBJECT_OR_FIELD(e)	((e) == EL_SOKOBAN_OBJECT ||		\
 					 (e) == EL_SOKOBAN_FIELD_EMPTY ||	\
 					 (e) == EL_SOKOBAN_FIELD_FULL)
@@ -3531,6 +3537,8 @@ struct LevelInfo
   int bd_acid_eats_element;		// BD acid eats this game element when spreading
   int bd_acid_spread_rate;		// BD acid probability of spreading (in percent)
   int bd_acid_turns_to_element;		// BD acid target element after spreading
+  int bd_biter_move_delay;		// BD biter delay between movements (in BD frames)
+  int bd_biter_eats_element;		// BD biter eats this game element when moving
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
