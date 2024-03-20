@@ -742,6 +742,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_bladder_converts_by_element,	EL_BD_VOODOO_DOLL
   },
 
+  {
+    EL_BD_EXPANDABLE_WALL_ANY,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_change_expanding_wall,	FALSE
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -4037,6 +4043,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->bladder_converts_by	    = map_element_RND_to_BD(level->bd_bladder_converts_by_element);
 
+  cave->expanding_wall_changed		= level->bd_change_expanding_wall;
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4135,6 +4143,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_biter_eats_element		= map_element_BD_to_RND(cave->biter_eat);
 
   level->bd_bladder_converts_by_element	= map_element_BD_to_RND(cave->bladder_converts_by);
+
+  level->bd_change_expanding_wall	= cave->expanding_wall_changed;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

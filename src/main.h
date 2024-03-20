@@ -911,6 +911,13 @@
 					 (e) == EL_BD_BITER_LEFT ||		\
 					 (e) == EL_BD_BITER_DOWN)
 
+#define IS_BD_EXPANDABLE_WALL(e)	((e) == EL_BD_EXPANDABLE_WALL_HORIZONTAL ||	\
+					 (e) == EL_BD_EXPANDABLE_WALL_VERTICAL ||	\
+					 (e) == EL_BD_EXPANDABLE_WALL_ANY ||		\
+					 (e) == EL_BD_EXPANDABLE_STEELWALL_HORIZONTAL ||\
+					 (e) == EL_BD_EXPANDABLE_STEELWALL_VERTICAL ||	\
+					 (e) == EL_BD_EXPANDABLE_STEELWALL_ANY)
+
 #define IS_SOKOBAN_OBJECT_OR_FIELD(e)	((e) == EL_SOKOBAN_OBJECT ||		\
 					 (e) == EL_SOKOBAN_FIELD_EMPTY ||	\
 					 (e) == EL_SOKOBAN_FIELD_FULL)
@@ -3540,6 +3547,7 @@ struct LevelInfo
   int bd_biter_move_delay;		// BD biter delay between movements (in BD frames)
   int bd_biter_eats_element;		// BD biter eats this game element when moving
   int bd_bladder_converts_by_element;	// BD bladder converts to clock by touching this element
+  boolean bd_change_expanding_wall;	// BD expanding wall direction is changed if enabled
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

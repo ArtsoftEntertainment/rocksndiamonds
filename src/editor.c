@@ -729,6 +729,7 @@ enum
   GADGET_ID_BD_VOODOO_DIES_BY_ROCK,
   GADGET_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
   GADGET_ID_BD_SLIME_IS_PREDICTABLE,
+  GADGET_ID_BD_CHANGE_EXPANDING_WALL,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1074,6 +1075,7 @@ enum
   ED_CHECKBUTTON_ID_BD_VOODOO_DIES_BY_ROCK,
   ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
   ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE,
+  ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3809,6 +3811,14 @@ static struct
     &level.bd_slime_is_predictable,
     NULL, NULL,
     "Slime is predictable",		"Use predictable random numbers"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_CHANGE_EXPANDING_WALL, GADGET_ID_NONE,
+    &level.bd_change_expanding_wall,
+    NULL, NULL,
+    "Change direction",			"Switch horizontal/vertical direction"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -11083,6 +11093,7 @@ static boolean checkPropertiesConfig(int element)
       IS_DF_LASER(element) ||
       IS_PLAYER_ELEMENT(element) ||
       IS_BD_PLAYER_ELEMENT(element) ||
+      IS_BD_EXPANDABLE_WALL(properties_element) ||
       IS_SOKOBAN_OBJECT_OR_FIELD(element) ||
       HAS_EDITOR_CONTENT(element) ||
       CAN_GROW(element) ||
@@ -11438,6 +11449,11 @@ static void DrawPropertiesConfig(void)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA);
+  }
+
+  if (IS_BD_EXPANDABLE_WALL(properties_element))
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL);
   }
 
   // special case: slippery walls option for gems only available in R'n'D game engine
