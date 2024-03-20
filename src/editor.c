@@ -730,6 +730,7 @@ enum
   GADGET_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
   GADGET_ID_BD_SLIME_IS_PREDICTABLE,
   GADGET_ID_BD_CHANGE_EXPANDING_WALL,
+  GADGET_ID_BD_REPLICATORS_ACTIVE,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1076,6 +1077,7 @@ enum
   ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
   ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE,
   ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL,
+  ED_CHECKBUTTON_ID_BD_REPLICATORS_ACTIVE,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3819,6 +3821,14 @@ static struct
     &level.bd_change_expanding_wall,
     NULL, NULL,
     "Change direction",			"Switch horizontal/vertical direction"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_REPLICATORS_ACTIVE,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_REPLICATORS_ACTIVE,	GADGET_ID_NONE,
+    &level.bd_replicators_active,
+    NULL, NULL,
+    "Active at start",			"Replicators start in active state"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -10907,6 +10917,7 @@ static void DrawPropertiesInfo(void)
 #define TEXT_RANDOM_SEED	"slime random number seed"
 #define TEXT_ACID_SPREAD_RATE	"Spread rate (percent)"
 #define TEXT_BITER_MOVE_DELAY	"Move delay (BD frames)"
+#define TEXT_REPLICATION_DELAY	"Create delay (BD frames)"
 
 static struct
 {
@@ -11041,6 +11052,8 @@ static struct
 				0, 3								},
   { EL_BD_BITER_DOWN,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
 				0, 3								},
+  { EL_BD_REPLICATOR,		&level.bd_replicator_create_delay,	TEXT_REPLICATION_DELAY,
+				0, 100								},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
@@ -11225,6 +11238,7 @@ static void DrawPropertiesConfig(void)
 			       (properties_element == EL_BD_VOODOO_DOLL     ? 4 : 0) +
 			       (properties_element == EL_BD_SLIME           ? 1 : 0) +
 			       (properties_element == EL_BD_ACID            ? 1 : 0) +
+			       (properties_element == EL_BD_REPLICATOR      ? 1 : 0) +
 			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 			       num_element_counters);
 
@@ -11454,6 +11468,11 @@ static void DrawPropertiesConfig(void)
   if (IS_BD_EXPANDABLE_WALL(properties_element))
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL);
+  }
+
+  if (properties_element == EL_BD_REPLICATOR)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_REPLICATORS_ACTIVE);
   }
 
   // special case: slippery walls option for gems only available in R'n'D game engine

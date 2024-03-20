@@ -748,6 +748,17 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_change_expanding_wall,	FALSE
   },
 
+  {
+    EL_BD_REPLICATOR,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_replicators_active,		TRUE
+  },
+  {
+    EL_BD_REPLICATOR,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
+    &li.bd_replicator_create_delay,	4
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -4045,6 +4056,9 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->expanding_wall_changed		= level->bd_change_expanding_wall;
 
+  cave->replicators_active		= level->bd_replicators_active;
+  cave->replicator_delay_frame		= level->bd_replicator_create_delay;
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4145,6 +4159,9 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_bladder_converts_by_element	= map_element_BD_to_RND(cave->bladder_converts_by);
 
   level->bd_change_expanding_wall	= cave->expanding_wall_changed;
+
+  level->bd_replicators_active		= cave->replicators_active;
+  level->bd_replicator_create_delay	= cave->replicator_delay_frame;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

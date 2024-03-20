@@ -3548,6 +3548,8 @@ struct LevelInfo
   int bd_biter_eats_element;		// BD biter eats this game element when moving
   int bd_bladder_converts_by_element;	// BD bladder converts to clock by touching this element
   boolean bd_change_expanding_wall;	// BD expanding wall direction is changed if enabled
+  boolean bd_replicators_active;	// BD replicators start in active state if enabled
+  int bd_replicator_create_delay;	// BD replicator delay between replications (in BD frames)
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
