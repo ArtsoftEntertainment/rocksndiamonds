@@ -918,6 +918,16 @@
 					 (e) == EL_BD_EXPANDABLE_STEELWALL_VERTICAL ||	\
 					 (e) == EL_BD_EXPANDABLE_STEELWALL_ANY)
 
+#define IS_BD_CONVEYOR_BELT(e)		((e) == EL_BD_CONVEYOR_LEFT ||			\
+					 (e) == EL_BD_CONVEYOR_LEFT_ACTIVE ||		\
+					 (e) == EL_BD_CONVEYOR_RIGHT ||			\
+					 (e) == EL_BD_CONVEYOR_RIGHT_ACTIVE)
+
+#define IS_BD_CONVEYOR_BELT_SWITCH(e)	((e) == EL_BD_CONVEYOR_SWITCH ||		\
+					 (e) == EL_BD_CONVEYOR_SWITCH_ACTIVE ||		\
+					 (e) == EL_BD_CONVEYOR_DIR_SWITCH_LEFT ||	\
+					 (e) == EL_BD_CONVEYOR_DIR_SWITCH_RIGHT)
+
 #define IS_SOKOBAN_OBJECT_OR_FIELD(e)	((e) == EL_SOKOBAN_OBJECT ||		\
 					 (e) == EL_SOKOBAN_FIELD_EMPTY ||	\
 					 (e) == EL_SOKOBAN_FIELD_FULL)
@@ -3550,6 +3560,8 @@ struct LevelInfo
   boolean bd_change_expanding_wall;	// BD expanding wall direction is changed if enabled
   boolean bd_replicators_active;	// BD replicators start in active state if enabled
   int bd_replicator_create_delay;	// BD replicator delay between replications (in BD frames)
+  boolean bd_conveyor_belts_active;	// BD conveyor belts start in active state if enabled
+  boolean bd_conveyor_belts_changed;	// BD conveyor belts direction is changed if enabled
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

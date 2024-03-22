@@ -759,6 +759,17 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_replicator_create_delay,	4
   },
 
+  {
+    EL_BD_CONVEYOR_LEFT,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_conveyor_belts_active,	TRUE
+  },
+  {
+    EL_BD_CONVEYOR_LEFT,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    &li.bd_conveyor_belts_changed,	FALSE
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -4059,6 +4070,9 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->replicators_active		= level->bd_replicators_active;
   cave->replicator_delay_frame		= level->bd_replicator_create_delay;
 
+  cave->conveyor_belts_active		= level->bd_conveyor_belts_active;
+  cave->conveyor_belts_direction_changed= level->bd_conveyor_belts_changed;
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4162,6 +4176,9 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->bd_replicators_active		= cave->replicators_active;
   level->bd_replicator_create_delay	= cave->replicator_delay_frame;
+
+  level->bd_conveyor_belts_active	= cave->conveyor_belts_active;
+  level->bd_conveyor_belts_changed	= cave->conveyor_belts_direction_changed;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

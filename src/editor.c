@@ -731,6 +731,8 @@ enum
   GADGET_ID_BD_SLIME_IS_PREDICTABLE,
   GADGET_ID_BD_CHANGE_EXPANDING_WALL,
   GADGET_ID_BD_REPLICATORS_ACTIVE,
+  GADGET_ID_BD_CONVEYOR_BELTS_ACTIVE,
+  GADGET_ID_BD_CONVEYOR_BELTS_CHANGED,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1078,6 +1080,8 @@ enum
   ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE,
   ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL,
   ED_CHECKBUTTON_ID_BD_REPLICATORS_ACTIVE,
+  ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_ACTIVE,
+  ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3829,6 +3833,22 @@ static struct
     &level.bd_replicators_active,
     NULL, NULL,
     "Active at start",			"Replicators start in active state"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_ACTIVE,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_CONVEYOR_BELTS_ACTIVE,	GADGET_ID_NONE,
+    &level.bd_conveyor_belts_active,
+    NULL, NULL,
+    "Active at start",			"Conveyor belts start in active state"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_CONVEYOR_BELTS_CHANGED, GADGET_ID_NONE,
+    &level.bd_conveyor_belts_changed,
+    NULL, NULL,
+    "Change direction",			"Switch conveyor belt direction"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -11107,6 +11127,8 @@ static boolean checkPropertiesConfig(int element)
       IS_PLAYER_ELEMENT(element) ||
       IS_BD_PLAYER_ELEMENT(element) ||
       IS_BD_EXPANDABLE_WALL(properties_element) ||
+      IS_BD_CONVEYOR_BELT(properties_element) ||
+      IS_BD_CONVEYOR_BELT_SWITCH(properties_element) ||
       IS_SOKOBAN_OBJECT_OR_FIELD(element) ||
       HAS_EDITOR_CONTENT(element) ||
       CAN_GROW(element) ||
@@ -11473,6 +11495,13 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_BD_REPLICATOR)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_REPLICATORS_ACTIVE);
+  }
+
+  if (IS_BD_CONVEYOR_BELT(properties_element) ||
+      IS_BD_CONVEYOR_BELT_SWITCH(properties_element))
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_ACTIVE);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED);
   }
 
   // special case: slippery walls option for gems only available in R'n'D game engine
