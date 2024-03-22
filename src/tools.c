@@ -5580,8 +5580,8 @@ unsigned int MoveDoor(unsigned int door_state)
 
 	if (!door_panel_drawn[door_index])
 	{
-	  ClearRectangle(drawto, door_rect->x, door_rect->y,
-			 door_rect->width, door_rect->height);
+	  ClearRectangleOnBackground(drawto, door_rect->x, door_rect->y,
+				     door_rect->width, door_rect->height);
 
 	  door_panel_drawn[door_index] = TRUE;
 	}
