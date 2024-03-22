@@ -6803,14 +6803,14 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Switch for conveyor belt (on)"
   },
   {
-    "bd_conveyor_dir_switch_left",
+    "bd_conveyor_dir_switch_normal",
     "bd_conveyor_dir_switch",
-    "Switch for conveyor belt direction (left)"
+    "Switch for conveyor belt direction (normal)"
   },
   {
-    "bd_conveyor_dir_switch_right",
+    "bd_conveyor_dir_switch_changed",
     "bd_conveyor_dir_switch",
-    "Switch for conveyor belt direction (right)"
+    "Switch for conveyor belt direction (changed)"
   },
   {
     "bd_gravity_switch",

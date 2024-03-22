@@ -6284,7 +6284,7 @@ bd_object_mapping_list[] =
   },
   {
     O_CONVEYOR_DIR_SWITCH,			TRUE,
-    EL_BD_CONVEYOR_DIR_SWITCH_RIGHT,		-1, -1
+    EL_BD_CONVEYOR_DIR_SWITCH_NORMAL,		-1, -1
   },
   {
     O_ACID,					TRUE,
@@ -7031,11 +7031,11 @@ bd_object_mapping_list[] =
   },
   {
     O_CONVEYOR_DIR_NORMAL,			FALSE,
-    EL_BD_CONVEYOR_DIR_SWITCH_RIGHT,		-1, -1
+    EL_BD_CONVEYOR_DIR_SWITCH_NORMAL,		-1, -1
   },
   {
     O_CONVEYOR_DIR_CHANGED,			FALSE,
-    EL_BD_CONVEYOR_DIR_SWITCH_LEFT,		-1, -1
+    EL_BD_CONVEYOR_DIR_SWITCH_CHANGED,		-1, -1
   },
   {
     O_CONVEYOR_SWITCH_OFF,			FALSE,
