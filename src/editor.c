@@ -733,6 +733,7 @@ enum
   GADGET_ID_BD_REPLICATORS_ACTIVE,
   GADGET_ID_BD_CONVEYOR_BELTS_ACTIVE,
   GADGET_ID_BD_CONVEYOR_BELTS_CHANGED,
+  GADGET_ID_BD_WATER_CANNOT_FLOW_DOWN,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1082,6 +1083,7 @@ enum
   ED_CHECKBUTTON_ID_BD_REPLICATORS_ACTIVE,
   ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_ACTIVE,
   ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED,
+  ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3849,6 +3851,14 @@ static struct
     &level.bd_conveyor_belts_changed,
     NULL, NULL,
     "Change direction",			"Switch conveyor belt direction"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_WATER_CANNOT_FLOW_DOWN, GADGET_ID_NONE,
+    &level.bd_water_cannot_flow_down,
+    NULL, NULL,
+    "Does not flow downwards",		"Water can only flow up, left and right"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -11137,7 +11147,8 @@ static boolean checkPropertiesConfig(int element)
       element == EL_BD_ROCK ||
       element == EL_BD_MEGA_ROCK ||
       element == EL_BD_SWEET ||
-      element == EL_BD_VOODOO_DOLL)
+      element == EL_BD_VOODOO_DOLL ||
+      element == EL_BD_WATER)
   {
     return TRUE;
   }
@@ -11502,6 +11513,11 @@ static void DrawPropertiesConfig(void)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_ACTIVE);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED);
+  }
+
+  if (properties_element == EL_BD_WATER)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN);
   }
 
   // special case: slippery walls option for gems only available in R'n'D game engine
