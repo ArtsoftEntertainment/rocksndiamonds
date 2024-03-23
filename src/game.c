@@ -15863,7 +15863,7 @@ static int getSoundEffect_BD(int element_bd, int sample)
 
 void PlayLevelSound_BD(int xx, int yy, int element_bd, int sample)
 {
-  int element = (element_bd > -1 ? map_element_BD_to_RND(element_bd) : 0);
+  int element = (element_bd > -1 ? map_element_BD_to_RND_game(element_bd) : 0);
   int sound_effect = getSoundEffect_BD(element, sample);
   int sound_action = getSoundAction_BD(sample);
   boolean is_loop_sound = IS_LOOP_SOUND(sound_effect);
@@ -15887,7 +15887,7 @@ void PlayLevelSound_BD(int xx, int yy, int element_bd, int sample)
 
 void StopSound_BD(int element_bd, int sample)
 {
-  int element = (element_bd > -1 ? map_element_BD_to_RND(element_bd) : 0);
+  int element = (element_bd > -1 ? map_element_BD_to_RND_game(element_bd) : 0);
   int sound_effect = getSoundEffect_BD(element, sample);
 
   if (sound_effect != SND_UNDEFINED)
@@ -15896,7 +15896,7 @@ void StopSound_BD(int element_bd, int sample)
 
 boolean isSoundPlaying_BD(int element_bd, int sample)
 {
-  int element = (element_bd > -1 ? map_element_BD_to_RND(element_bd) : 0);
+  int element = (element_bd > -1 ? map_element_BD_to_RND_game(element_bd) : 0);
   int sound_effect = getSoundEffect_BD(element, sample);
 
   if (sound_effect != SND_UNDEFINED)

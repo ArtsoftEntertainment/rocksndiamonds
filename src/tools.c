@@ -7084,7 +7084,7 @@ bd_object_mapping_list[] =
   }
 };
 
-int map_element_RND_to_BD(int element_rnd)
+int map_element_RND_to_BD_cave(int element_rnd)
 {
   static unsigned short mapping_RND_to_BD[NUM_FILE_ELEMENTS];
   static boolean mapping_initialized = FALSE;
@@ -7115,7 +7115,38 @@ int map_element_RND_to_BD(int element_rnd)
   return mapping_RND_to_BD[element_rnd];
 }
 
-int map_element_BD_to_RND(int element_bd)
+int map_element_BD_to_RND_cave(int element_bd)
+{
+  static unsigned short mapping_BD_to_RND[O_MAX_ALL];
+  static boolean mapping_initialized = FALSE;
+
+  if (!mapping_initialized)
+  {
+    int i;
+
+    // return "EL_UNKNOWN" for all undefined elements in mapping array
+    for (i = 0; i < O_MAX_ALL; i++)
+      mapping_BD_to_RND[i] = EL_UNKNOWN;
+
+    for (i = 0; bd_object_mapping_list[i].element_bd != -1; i++)
+      if (bd_object_mapping_list[i].is_rnd_to_bd_mapping)
+	mapping_BD_to_RND[bd_object_mapping_list[i].element_bd] =
+	  bd_object_mapping_list[i].element_rnd;
+
+    mapping_initialized = TRUE;
+  }
+
+  if (element_bd < 0 || element_bd >= O_MAX_ALL)
+  {
+    Warn("invalid BD element %d", element_bd);
+
+    return EL_UNKNOWN;
+  }
+
+  return mapping_BD_to_RND[element_bd];
+}
+
+int map_element_BD_to_RND_game(int element_bd)
 {
   static unsigned short mapping_BD_to_RND[O_MAX_ALL];
   static boolean mapping_initialized = FALSE;
