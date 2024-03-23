@@ -10578,6 +10578,9 @@ void InitGraphicInfo_BD(void)
       g_bd->src_y  = src_y;
       g_bd->width  = TILEX;
       g_bd->height = TILEY;
+
+      g_bd->graphic = graphic;
+      g_bd->frame = frame;
     }
   }
 
@@ -10594,6 +10597,9 @@ void InitGraphicInfo_BD(void)
   g_bd->src_y  = src_y;
   g_bd->width  = TILEX;
   g_bd->height = TILEY;
+
+  g_bd->graphic = graphic;
+  g_bd->frame = 0;
 }
 
 void InitGraphicInfo_EM(void)

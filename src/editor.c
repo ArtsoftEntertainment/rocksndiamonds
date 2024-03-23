@@ -7359,7 +7359,25 @@ static void ScrollEditorLevel(int from_x, int from_y, int scroll)
 static void getEditorGraphicSource(int element, int tile_size, Bitmap **bitmap,
 				   int *x, int *y)
 {
-  getSizedGraphicSource(el2edimg(element), 0, tile_size, bitmap, x, y);
+  int graphic = el2edimg(element);
+  int frame = 0;
+
+  if (graphic == IMG_UNKNOWN)
+  {
+    // no graphic defined -- if BD style, try to get runtime ("effect") element graphics
+    // (normal BD style elements have graphics, but runtime ("effects") elements do not)
+    int element_bd = map_element_RND_to_BD_cave(element);
+
+    if (element_bd != O_UNKNOWN)
+    {
+      struct GraphicInfo_BD *g_bd = &graphic_info_bd_object[element_bd][0];
+
+      graphic = g_bd->graphic;
+      frame   = g_bd->frame;
+    }
+  }
+
+  getSizedGraphicSource(graphic, frame, tile_size, bitmap, x, y);
 }
 
 static void CreateControlButtons(void)

@@ -65,6 +65,9 @@ struct GraphicInfo_BD
   Bitmap *bitmap;
   int src_x, src_y;
   int width, height;
+
+  int graphic;
+  int frame;
 };
 
 struct EngineSnapshotInfo_BD
