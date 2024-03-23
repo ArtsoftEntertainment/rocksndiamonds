@@ -6485,7 +6485,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_sand_loose",
     "bd_sand_loose",
-    "Sand (loose)"
+    "Loose sand"
   },
   {
     "bd_sand_sloped_up_right",
@@ -7126,6 +7126,476 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "bd_covered",
     "bd_covered",
     "Covered"
+  },
+  {
+    "bd_sand_ball.falling",
+    "bd_sand_ball",
+    "Sand ball (falling)"
+  },
+  {
+    "bd_sand_loose.falling",
+    "bd_sand_loose",
+    "Loose sand (falling)"
+  },
+  {
+    "bd_rock.falling",
+    "bd_rock",
+    "Rock (falling)"
+  },
+  {
+    "bd_flying_rock.flying",
+    "bd_flying_rock",
+    "Flying rock (flying)"
+  },
+  {
+    "bd_mega_rock.falling",
+    "bd_mega_rock",
+    "Mega rock (falling)"
+  },
+  {
+    "bd_diamond.falling",
+    "bd_diamond",
+    "Diamond (falling)"
+  },
+  {
+    "bd_flying_diamond.flying",
+    "bd_flying_diamond",
+    "Flying diamond (flying)"
+  },
+  {
+    "bd_nut.falling",
+    "bd_nut",
+    "Nut with diamond (falling)"
+  },
+  {
+    "bd_falling_wall.falling",
+    "bd_wall",
+    "Falling wall (falling)"
+  },
+  {
+    "bd_nitro_pack.falling",
+    "bd_nitro_pack",
+    "Nitro pack (falling)"
+  },
+  {
+    "bd_water_1",
+    "bd_water",
+    "Water (1)"
+  },
+  {
+    "bd_water_2",
+    "bd_water",
+    "Water (2)"
+  },
+  {
+    "bd_water_3",
+    "bd_water",
+    "Water (3)"
+  },
+  {
+    "bd_water_4",
+    "bd_water",
+    "Water (4)"
+  },
+  {
+    "bd_water_5",
+    "bd_water",
+    "Water (5)"
+  },
+  {
+    "bd_water_6",
+    "bd_water",
+    "Water (6)"
+  },
+  {
+    "bd_water_7",
+    "bd_water",
+    "Water (7)"
+  },
+  {
+    "bd_water_8",
+    "bd_water",
+    "Water (8)"
+  },
+  {
+    "bd_water_9",
+    "bd_water",
+    "Water (9)"
+  },
+  {
+    "bd_water_10",
+    "bd_water",
+    "Water (10)"
+  },
+  {
+    "bd_water_11",
+    "bd_water",
+    "Water (11)"
+  },
+  {
+    "bd_water_12",
+    "bd_water",
+    "Water (12)"
+  },
+  {
+    "bd_water_13",
+    "bd_water",
+    "Water (13)"
+  },
+  {
+    "bd_water_14",
+    "bd_water",
+    "Water (14)"
+  },
+  {
+    "bd_water_15",
+    "bd_water",
+    "Water (15)"
+  },
+  {
+    "bd_water_16",
+    "bd_water",
+    "Water (16)"
+  },
+  {
+    "bd_cow_enclosed_1",
+    "bd_cow",
+    "Enclosed cow (1)"
+  },
+  {
+    "bd_cow_enclosed_2",
+    "bd_cow",
+    "Enclosed cow (2)"
+  },
+  {
+    "bd_cow_enclosed_3",
+    "bd_cow",
+    "Enclosed cow (3)"
+  },
+  {
+    "bd_cow_enclosed_4",
+    "bd_cow",
+    "Enclosed cow (4)"
+  },
+  {
+    "bd_cow_enclosed_5",
+    "bd_cow",
+    "Enclosed cow (5)"
+  },
+  {
+    "bd_cow_enclosed_6",
+    "bd_cow",
+    "Enclosed cow (6)"
+  },
+  {
+    "bd_cow_enclosed_7",
+    "bd_cow",
+    "Enclosed cow (7)"
+  },
+  {
+    "bd_bladder_1",
+    "bd_bladder",
+    "Bladder (1)"
+  },
+  {
+    "bd_bladder_2",
+    "bd_bladder",
+    "Bladder (2)"
+  },
+  {
+    "bd_bladder_3",
+    "bd_bladder",
+    "Bladder (3)"
+  },
+  {
+    "bd_bladder_4",
+    "bd_bladder",
+    "Bladder (4)"
+  },
+  {
+    "bd_bladder_5",
+    "bd_bladder",
+    "Bladder (5)"
+  },
+  {
+    "bd_bladder_6",
+    "bd_bladder",
+    "Bladder (6)"
+  },
+  {
+    "bd_bladder_7",
+    "bd_bladder",
+    "Bladder (7)"
+  },
+  {
+    "bd_bladder_8",
+    "bd_bladder",
+    "Bladder (8)"
+  },
+  {
+    "bd_player.growing_1",
+    "bd_player",
+    "Player birth (1)"
+  },
+  {
+    "bd_player.growing_2",
+    "bd_player",
+    "Player birth (2)"
+  },
+  {
+    "bd_player.growing_3",
+    "bd_player",
+    "Player birth (3)"
+  },
+  {
+    "bd_bomb.ticking_1",
+    "bd_bomb",
+    "Ticking bomb (1)"
+  },
+  {
+    "bd_bomb.ticking_2",
+    "bd_bomb",
+    "Ticking bomb (2)"
+  },
+  {
+    "bd_bomb.ticking_3",
+    "bd_bomb",
+    "Ticking bomb (3)"
+  },
+  {
+    "bd_bomb.ticking_4",
+    "bd_bomb",
+    "Ticking bomb (4)"
+  },
+  {
+    "bd_bomb.ticking_5",
+    "bd_bomb",
+    "Ticking bomb (5)"
+  },
+  {
+    "bd_bomb.ticking_6",
+    "bd_bomb",
+    "Ticking bomb (6)"
+  },
+  {
+    "bd_bomb.ticking_7",
+    "bd_bomb",
+    "Ticking bomb (7)"
+  },
+  {
+    "bd_clock.growing_1",
+    "bd_clock",
+    "Clock birth (1)"
+  },
+  {
+    "bd_clock.growing_2",
+    "bd_clock",
+    "Clock birth (2)"
+  },
+  {
+    "bd_clock.growing_3",
+    "bd_clock",
+    "Clock birth (3)"
+  },
+  {
+    "bd_clock.growing_4",
+    "bd_clock",
+    "Clock birth (4)"
+  },
+  {
+    "bd_diamond.growing_1",
+    "bd_diamond",
+    "Diamond birth (1)"
+  },
+  {
+    "bd_diamond.growing_2",
+    "bd_diamond",
+    "Diamond birth (2)"
+  },
+  {
+    "bd_diamond.growing_3",
+    "bd_diamond",
+    "Diamond birth (3)"
+  },
+  {
+    "bd_diamond.growing_4",
+    "bd_diamond",
+    "Diamond birth (4)"
+  },
+  {
+    "bd_diamond.growing_5",
+    "bd_diamond",
+    "Diamond birth (5)"
+  },
+  {
+    "bd_exploding_1",
+    "bd_exploding",
+    "Explosion (1)"
+  },
+  {
+    "bd_exploding_2",
+    "bd_exploding",
+    "Explosion (2)"
+  },
+  {
+    "bd_exploding_3",
+    "bd_exploding",
+    "Explosion (3)"
+  },
+  {
+    "bd_exploding_4",
+    "bd_exploding",
+    "Explosion (4)"
+  },
+  {
+    "bd_exploding_5",
+    "bd_exploding",
+    "Explosion (5)"
+  },
+  {
+    "bd_rock.growing_1",
+    "bd_rock",
+    "Rock birth (1)"
+  },
+  {
+    "bd_rock.growing_2",
+    "bd_rock",
+    "Rock birth (2)"
+  },
+  {
+    "bd_rock.growing_3",
+    "bd_rock",
+    "Rock birth (3)"
+  },
+  {
+    "bd_rock.growing_4",
+    "bd_rock",
+    "Rock birth (4)"
+  },
+  {
+    "bd_steelwall.growing_1",
+    "bd_steelwall",
+    "Steelwall birth (1)"
+  },
+  {
+    "bd_steelwall.growing_2",
+    "bd_steelwall",
+    "Steelwall birth (2)"
+  },
+  {
+    "bd_steelwall.growing_3",
+    "bd_steelwall",
+    "Steelwall birth (3)"
+  },
+  {
+    "bd_steelwall.growing_4",
+    "bd_steelwall",
+    "Steelwall birth (4)"
+  },
+  {
+    "bd_ghost.exploding_1",
+    "bd_ghost",
+    "Ghost explosion (1)"
+  },
+  {
+    "bd_ghost.exploding_2",
+    "bd_ghost",
+    "Ghost explosion (2)"
+  },
+  {
+    "bd_ghost.exploding_3",
+    "bd_ghost",
+    "Ghost explosion (3)"
+  },
+  {
+    "bd_ghost.exploding_4",
+    "bd_ghost",
+    "Ghost explosion (4)"
+  },
+  {
+    "bd_bomb.exploding_1",
+    "bd_bomb",
+    "Bomb explosion (1)"
+  },
+  {
+    "bd_bomb.exploding_2",
+    "bd_bomb",
+    "Bomb explosion (2)"
+  },
+  {
+    "bd_bomb.exploding_3",
+    "bd_bomb",
+    "Bomb explosion (3)"
+  },
+  {
+    "bd_bomb.exploding_4",
+    "bd_bomb",
+    "Bomb explosion (4)"
+  },
+  {
+    "bd_nitro_pack.exploding",
+    "bd_nitro_pack",
+    "Nitro pack (triggered)"
+  },
+  {
+    "bd_nitro_pack.exploding_1",
+    "bd_nitro_pack",
+    "Nitro pack explosion (1)"
+  },
+  {
+    "bd_nitro_pack.exploding_2",
+    "bd_nitro_pack",
+    "Nitro pack explosion (2)"
+  },
+  {
+    "bd_nitro_pack.exploding_3",
+    "bd_nitro_pack",
+    "Nitro pack explosion (3)"
+  },
+  {
+    "bd_nitro_pack.exploding_4",
+    "bd_nitro_pack",
+    "Nitro pack explosion (4)"
+  },
+  {
+    "bd_amoeba_2.exploding_1",
+    "bd_amoeba",
+    "Amoeba 2 explosion (1)"
+  },
+  {
+    "bd_amoeba_2.exploding_2",
+    "bd_amoeba",
+    "Amoeba 2 explosion (2)"
+  },
+  {
+    "bd_amoeba_2.exploding_3",
+    "bd_amoeba",
+    "Amoeba 2 explosion (3)"
+  },
+  {
+    "bd_amoeba_2.exploding_4",
+    "bd_amoeba",
+    "Amoeba 2 explosion (4)"
+  },
+  {
+    "bd_nut.breaking_1",
+    "bd_nut",
+    "Nut explosion (1)"
+  },
+  {
+    "bd_nut.breaking_2",
+    "bd_nut",
+    "Nut explosion (2)"
+  },
+  {
+    "bd_nut.breaking_3",
+    "bd_nut",
+    "Nut explosion (3)"
+  },
+  {
+    "bd_nut.breaking_4",
+    "bd_nut",
+    "Nut explosion (4)"
   },
 
   // --------------------------------------------------------------------------
