@@ -8384,6 +8384,16 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Hide native Boulder Dash elements"
   },
   {
+    "internal_cascade_bd_effects",
+    "internal",
+    "Show Boulder Dash effect elements"
+  },
+  {
+    "internal_cascade_bd_effects.active",
+    "internal",
+    "Hide Boulder Dash effect elements"
+  },
+  {
     "internal_cascade_em",
     "internal",
     "Show Emerald Mine elements"

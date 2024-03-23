@@ -1290,6 +1290,7 @@ struct SetupEditorInfo
 {
   boolean el_boulderdash;
   boolean el_boulderdash_native;
+  boolean el_boulderdash_effects;
   boolean el_emerald_mine;
   boolean el_emerald_mine_club;
   boolean el_more;
@@ -1335,6 +1336,7 @@ struct SetupEditorCascadeInfo
 {
   boolean el_bd;
   boolean el_bd_native;
+  boolean el_bd_effects;
   boolean el_em;
   boolean el_emc;
   boolean el_rnd;

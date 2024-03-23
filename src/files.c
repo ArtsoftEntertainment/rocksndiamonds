@@ -10534,6 +10534,10 @@ static struct TokenInfo editor_cascade_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.editor_cascade.el_bd_effects,	"editor.cascade.el_bd_effects"
+  },
+  {
+    TYPE_SWITCH,
     &setup.editor_cascade.el_em,		"editor.cascade.el_em"
   },
   {
@@ -11226,6 +11230,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->editor.el_boulderdash		= TRUE;
   si->editor.el_boulderdash_native	= TRUE;
+  si->editor.el_boulderdash_effects	= TRUE;
   si->editor.el_emerald_mine		= TRUE;
   si->editor.el_emerald_mine_club	= TRUE;
   si->editor.el_more			= TRUE;
@@ -11400,6 +11405,7 @@ static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
 {
   si->editor_cascade.el_bd		= TRUE;
   si->editor_cascade.el_bd_native	= TRUE;
+  si->editor_cascade.el_bd_effects	= FALSE;
   si->editor_cascade.el_em		= TRUE;
   si->editor_cascade.el_emc		= TRUE;
   si->editor_cascade.el_rnd		= TRUE;
