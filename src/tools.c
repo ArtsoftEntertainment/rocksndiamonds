@@ -7491,6 +7491,50 @@ int map_element_RND_to_BD_cave(int element_rnd)
   return mapping_RND_to_BD[element_rnd];
 }
 
+int map_element_RND_to_BD_effect(int element_rnd, int action)
+{
+  static unsigned short mapping_RND_to_BD[NUM_FILE_ELEMENTS][NUM_ACTIONS];
+  static boolean mapping_initialized = FALSE;
+
+  if (!mapping_initialized)
+  {
+    int i, j;
+
+    // return "O_UNKNOWN" for all undefined elements in mapping array
+    for (i = 0; i < NUM_FILE_ELEMENTS; i++)
+      for (j = 0; j < NUM_ACTIONS; j++)
+	mapping_RND_to_BD[i][j] = O_UNKNOWN;
+
+    for (i = 0; bd_object_mapping_list[i].element_bd != -1; i++)
+    {
+      int element_rnd = bd_object_mapping_list[i].element_rnd;
+      int element_bd  = bd_object_mapping_list[i].element_bd;
+      int action      = bd_object_mapping_list[i].action;
+
+      if (action != -1)
+	mapping_RND_to_BD[element_rnd][action] = element_bd;
+    }
+
+    mapping_initialized = TRUE;
+  }
+
+  if (element_rnd < 0 || element_rnd >= NUM_FILE_ELEMENTS)
+  {
+    Warn("invalid RND element %d", element_rnd);
+
+    return O_UNKNOWN;
+  }
+
+  if (action < 0 || action >= NUM_ACTIONS)
+  {
+    Warn("invalid action %d", action);
+
+    return O_UNKNOWN;
+  }
+
+  return mapping_RND_to_BD[element_rnd][action];
+}
+
 int map_element_BD_to_RND_cave(int element_bd)
 {
   static unsigned short mapping_BD_to_RND[O_MAX_ALL];

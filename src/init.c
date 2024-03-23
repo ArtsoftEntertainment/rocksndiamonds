@@ -1271,6 +1271,19 @@ static void InitElementSpecialGraphicInfo(void)
       action = -1;
     }
 
+    // for BD effect editor graphics, replace element with effect element, if exists
+    if (action != -1 && special == GFX_SPECIAL_ARG_EDITOR)
+    {
+      int element_bd = map_element_RND_to_BD_effect(element, action);
+      int element_ef = map_element_BD_to_RND_cave(element_bd);
+
+      if (element_ef != EL_UNKNOWN)
+      {
+	element = element_ef;
+	action = -1;
+      }
+    }
+
     if (element >= MAX_NUM_ELEMENTS)
       continue;
 
