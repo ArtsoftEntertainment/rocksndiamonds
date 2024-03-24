@@ -8633,6 +8633,7 @@ struct ElementActionInfo element_action_info[NUM_ACTIONS + 1 + 1] =
   { ".twinkling",		ACTION_TWINKLING,		FALSE	},
   { ".splashing",		ACTION_SPLASHING,		FALSE	},
   { ".hitting",			ACTION_HITTING,			FALSE	},
+  { ".flying",			ACTION_FLYING,			FALSE	},
   { ".page[1]",			ACTION_PAGE_1,			FALSE	},
   { ".page[2]",			ACTION_PAGE_2,			FALSE	},
   { ".page[3]",			ACTION_PAGE_3,			FALSE	},
