@@ -3669,6 +3669,7 @@ struct LevelInfo
   boolean bd_conveyor_belts_active;	// BD conveyor belts start in active state if enabled
   boolean bd_conveyor_belts_changed;	// BD conveyor belts direction is changed if enabled
   boolean bd_water_cannot_flow_down;	// BD water does not flow downwards if enabled
+  boolean bd_nut_content;		// BD nut contains the specified game element
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

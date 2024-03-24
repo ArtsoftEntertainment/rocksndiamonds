@@ -574,6 +574,7 @@ enum
   GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,
   GADGET_ID_BD_BITER_EATS_ELEMENT,
   GADGET_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
+  GADGET_ID_BD_NUT_CONTENT,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1204,6 +1205,7 @@ enum
   ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT,
   ED_DRAWING_ID_BD_BITER_EATS_ELEMENT,
   ED_DRAWING_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
+  ED_DRAWING_ID_BD_NUT_CONTENT,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4500,6 +4502,14 @@ static struct
     &level.bd_bladder_converts_by_element,	1, 1,
     "Turns to clock by touching:", NULL, NULL, NULL,	"Turns to clock by touching element"
   },
+  {
+    ED_DRAWING_ID_BD_NUT_CONTENT,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_NUT_CONTENT,		GADGET_ID_NONE,
+    &level.bd_nut_content,		1, 1,
+    "When breaking, changes to:", NULL, NULL, NULL,	"Element created when breaking nut"
+  },
 
   // ---------- level start element -------------------------------------------
 
@@ -4747,6 +4757,7 @@ static boolean getDrawModeHiRes(void);
 static int getTabulatorBarWidth(void);
 static int getTabulatorBarHeight(void);
 static Pixel getTabulatorBarColor(void);
+static void getEditorGraphicAndFrame(int, int *, int *, boolean);
 static int numHiresTiles(int);
 
 static int num_editor_gadgets = 0;	// dynamically determined
@@ -7391,11 +7402,21 @@ static void DrawDrawingArea(int id)
   int tilesize = ED_DRAWINGAREA_TILE_SIZE;
 
   for (x = 0; x < area_xsize; x++)
+  {
     for (y = 0; y < area_ysize; y++)
+    {
+      int element = value[x * area_ysize + y];
+      int graphic;
+      int frame;
+
+      getEditorGraphicAndFrame(element, &graphic, &frame, TRUE);
+
       DrawSizedGraphicExt(drawto,
 			  gi->x + x * tilesize,
 			  gi->y + y * tilesize,
-			  el2edimg(value[x * area_ysize + y]), 0, tilesize);
+			  graphic, frame, tilesize);
+    }
+  }
 }
 
 static void ScrollEditorLevel(int from_x, int from_y, int scroll)
@@ -11791,6 +11812,11 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_BD_WATER)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN);
+  }
+
+  if (properties_element == EL_BD_NUT)
+  {
+    MapDrawingArea(ED_DRAWING_ID_BD_NUT_CONTENT);
   }
 
   // special case: slippery walls option for gems only available in R'n'D game engine

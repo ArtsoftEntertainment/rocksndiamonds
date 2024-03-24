@@ -811,6 +811,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_water_cannot_flow_down,	FALSE
   },
 
+  {
+    EL_BD_NUT,				-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_nut_content,			EL_BD_NUT_BREAKING_1
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -4125,6 +4131,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->water_does_not_flow_down	= level->bd_water_cannot_flow_down;
 
+  cave->nut_turns_to_when_crushed	= map_element_RND_to_BD_cave(level->bd_nut_content);
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4242,6 +4250,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_conveyor_belts_changed	= cave->conveyor_belts_direction_changed;
 
   level->bd_water_cannot_flow_down	= cave->water_does_not_flow_down;
+
+  level->bd_nut_content			= map_element_BD_to_RND_cave(cave->nut_turns_to_when_crushed);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
