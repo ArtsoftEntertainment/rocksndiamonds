@@ -748,6 +748,7 @@ enum
   GADGET_ID_BD_CONVEYOR_BELTS_ACTIVE,
   GADGET_ID_BD_CONVEYOR_BELTS_CHANGED,
   GADGET_ID_BD_WATER_CANNOT_FLOW_DOWN,
+  GADGET_ID_BD_HAMMER_WALLS_REAPPEAR,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -1098,6 +1099,7 @@ enum
   ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_ACTIVE,
   ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED,
   ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN,
+  ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -3887,6 +3889,14 @@ static struct
     &level.bd_water_cannot_flow_down,
     NULL, NULL,
     "Does not flow downwards",		"Water can only flow up, left and right"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR,
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_HAMMER_WALLS_REAPPEAR, GADGET_ID_NONE,
+    &level.bd_hammer_walls_reappear,
+    NULL, NULL,
+    "Hammered walls reappear",		"Hammered walls reappear after delay"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -11287,6 +11297,8 @@ static void DrawPropertiesInfo(void)
 #define TEXT_ACID_SPREAD_RATE	"Spread rate (percent)"
 #define TEXT_BITER_MOVE_DELAY	"Move delay (BD frames)"
 #define TEXT_REPLICATION_DELAY	"Create delay (BD frames)"
+#define TEXT_HAMMER_BREAK_DELAY		"Delay for breaking walls"
+#define TEXT_HAMMER_REAPPEAR_DELAY	"Delay for reappearing walls"
 
 static struct
 {
@@ -11423,6 +11435,10 @@ static struct
 				0, 3								},
   { EL_BD_REPLICATOR,		&level.bd_replicator_create_delay,	TEXT_REPLICATION_DELAY,
 				0, 100								},
+  { EL_BD_PNEUMATIC_HAMMER,	&level.bd_hammer_walls_break_delay,	TEXT_HAMMER_BREAK_DELAY,
+				1, 100								},
+  { EL_BD_PNEUMATIC_HAMMER,	&level.bd_hammer_walls_reappear_delay,	TEXT_HAMMER_REAPPEAR_DELAY,
+				1, 200								},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
@@ -11622,6 +11638,10 @@ static void DrawPropertiesConfig(void)
     if ((properties_element == EL_BD_AMOEBA && level.game_engine_type == GAME_ENGINE_TYPE_BD) ||
 	(properties_element == EL_BD_AMOEBA_2))
       counterbutton_info[counter_id].y = ED_ELEMENT_SETTINGS_YPOS(3 + num_element_counters);
+
+    // special case: set position for delay counter for reappearing hammered walls
+    if (properties_element == EL_BD_PNEUMATIC_HAMMER && num_element_counters > 0)
+      counterbutton_info[counter_id].y += 1;
 
     counterbutton_info[counter_id].value      = elements_with_counter[i].value;
     counterbutton_info[counter_id].text_right = elements_with_counter[i].text;
@@ -11879,6 +11899,11 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_BD_WATER)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN);
+  }
+
+  if (properties_element == EL_BD_PNEUMATIC_HAMMER)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR);
   }
 
   if (properties_element == EL_BD_NUT)

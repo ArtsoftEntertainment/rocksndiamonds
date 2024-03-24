@@ -847,6 +847,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_nut_content,			EL_BD_NUT_BREAKING_1
   },
 
+  {
+    EL_BD_PNEUMATIC_HAMMER,		-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
+    &li.bd_hammer_walls_break_delay,	5
+  },
+  {
+    EL_BD_PNEUMATIC_HAMMER,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    &li.bd_hammer_walls_reappear,	FALSE
+  },
+  {
+    EL_BD_PNEUMATIC_HAMMER,		-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
+    &li.bd_hammer_walls_reappear_delay,	100
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -4169,6 +4185,10 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->nut_turns_to_when_crushed	= map_element_RND_to_BD_cave(level->bd_nut_content);
 
+  cave->pneumatic_hammer_frame		= level->bd_hammer_walls_break_delay;
+  cave->hammered_walls_reappear		= level->bd_hammer_walls_reappear;
+  cave->hammered_wall_reappear_frame	= level->bd_hammer_walls_reappear_delay;
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4294,6 +4314,10 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_water_cannot_flow_down	= cave->water_does_not_flow_down;
 
   level->bd_nut_content			= map_element_BD_to_RND_cave(cave->nut_turns_to_when_crushed);
+
+  level->bd_hammer_walls_break_delay	= cave->pneumatic_hammer_frame;
+  level->bd_hammer_walls_reappear	= cave->hammered_walls_reappear;
+  level->bd_hammer_walls_reappear_delay	= cave->hammered_wall_reappear_frame;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
