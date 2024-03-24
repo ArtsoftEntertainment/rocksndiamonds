@@ -581,6 +581,7 @@ enum
   GADGET_ID_BD_BITER_EATS_ELEMENT,
   GADGET_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
   GADGET_ID_BD_NUT_CONTENT,
+  GADGET_ID_BD_EXPANDING_WALL_LOOKS_LIKE,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1220,6 +1221,7 @@ enum
   ED_DRAWING_ID_BD_BITER_EATS_ELEMENT,
   ED_DRAWING_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
   ED_DRAWING_ID_BD_NUT_CONTENT,
+  ED_DRAWING_ID_BD_EXPANDING_WALL_LOOKS_LIKE,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4579,6 +4581,14 @@ static struct
     GADGET_ID_BD_NUT_CONTENT,		GADGET_ID_NONE,
     &level.bd_nut_content,		1, 1,
     "When breaking, changes to:", NULL, NULL, NULL,	"Element created when breaking nut"
+  },
+  {
+    ED_DRAWING_ID_BD_EXPANDING_WALL_LOOKS_LIKE,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_EXPANDING_WALL_LOOKS_LIKE, GADGET_ID_NONE,
+    &level.bd_expanding_wall_looks_like,	1, 1,
+    "Use graphic of element:", NULL, NULL, NULL,	"Expanding wall looks like this element"
   },
 
   // ---------- level start element -------------------------------------------
@@ -11500,6 +11510,7 @@ static boolean checkPropertiesConfig(int element)
       IS_PLAYER_ELEMENT(element) ||
       IS_BD_PLAYER_ELEMENT(element) ||
       IS_BD_EXPANDABLE_WALL(properties_element) ||
+      IS_BD_EXPANDABLE_STEELWALL(properties_element) ||
       IS_BD_CONVEYOR_BELT(properties_element) ||
       IS_BD_CONVEYOR_BELT_SWITCH(properties_element) ||
       IS_SOKOBAN_OBJECT_OR_FIELD(element) ||
@@ -11887,9 +11898,13 @@ static void DrawPropertiesConfig(void)
     MapDrawingArea(ED_DRAWING_ID_BD_SLIME_CONVERTS_TO_ELEMENT_3);
   }
 
-  if (IS_BD_EXPANDABLE_WALL(properties_element))
+  if (IS_BD_EXPANDABLE_WALL(properties_element) ||
+      IS_BD_EXPANDABLE_STEELWALL(properties_element))
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL);
+
+    if (IS_BD_EXPANDABLE_WALL(properties_element))
+      MapDrawingArea(ED_DRAWING_ID_BD_EXPANDING_WALL_LOOKS_LIKE);
   }
 
   if (properties_element == EL_BD_REPLICATOR)

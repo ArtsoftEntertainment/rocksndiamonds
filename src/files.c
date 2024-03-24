@@ -812,6 +812,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_change_expanding_wall,	FALSE
   },
+  {
+    EL_BD_EXPANDABLE_WALL_ANY,		-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_expanding_wall_looks_like,	EL_BD_WALL
+  },
 
   {
     EL_BD_REPLICATOR,			-1,
@@ -4203,6 +4208,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->skeletons_needed_for_pot	= level->bd_num_skeletons_needed_for_pot;
   cave->skeletons_worth_diamonds	= level->bd_skeleton_worth_num_diamonds;
 
+  cave->expanding_wall_looks_like	= map_element_RND_to_BD_cave(level->bd_expanding_wall_looks_like);
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4335,6 +4342,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->bd_num_skeletons_needed_for_pot= cave->skeletons_needed_for_pot;
   level->bd_skeleton_worth_num_diamonds	= cave->skeletons_worth_diamonds;
+
+  level->bd_expanding_wall_looks_like	= map_element_BD_to_RND_cave(cave->expanding_wall_looks_like);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

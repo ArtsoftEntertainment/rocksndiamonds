@@ -913,8 +913,9 @@
 
 #define IS_BD_EXPANDABLE_WALL(e)	((e) == EL_BD_EXPANDABLE_WALL_HORIZONTAL ||	\
 					 (e) == EL_BD_EXPANDABLE_WALL_VERTICAL ||	\
-					 (e) == EL_BD_EXPANDABLE_WALL_ANY ||		\
-					 (e) == EL_BD_EXPANDABLE_STEELWALL_HORIZONTAL ||\
+					 (e) == EL_BD_EXPANDABLE_WALL_ANY)
+
+#define IS_BD_EXPANDABLE_STEELWALL(e)	((e) == EL_BD_EXPANDABLE_STEELWALL_HORIZONTAL ||\
 					 (e) == EL_BD_EXPANDABLE_STEELWALL_VERTICAL ||	\
 					 (e) == EL_BD_EXPANDABLE_STEELWALL_ANY)
 
@@ -3681,6 +3682,7 @@ struct LevelInfo
   int bd_hammer_walls_reappear_delay;	// BD hammer time for reappearing walls (in BD frames)
   int bd_num_skeletons_needed_for_pot;	// BD skeletons amount must be collected to use a pot
   int bd_skeleton_worth_num_diamonds;	// BD skeleton collected is worth this number of diamonds
+  int bd_expanding_wall_looks_like;	// BD expanding wall looks like this other game element
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
