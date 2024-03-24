@@ -3679,6 +3679,8 @@ struct LevelInfo
   int bd_hammer_walls_break_delay;	// BD hammer time for breaking walls (in BD frames)
   boolean bd_hammer_walls_reappear;	// BD hammered walls are reappearing after some delay
   int bd_hammer_walls_reappear_delay;	// BD hammer time for reappearing walls (in BD frames)
+  int bd_num_skeletons_needed_for_pot;	// BD skeletons amount must be collected to use a pot
+  int bd_skeleton_worth_num_diamonds;	// BD skeleton collected is worth this number of diamonds
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
