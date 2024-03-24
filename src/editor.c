@@ -2782,56 +2782,56 @@ static struct
 
   {
     ED_SELECTBOX_ID_TIME_OR_STEPS,
-    -1,					ED_LEVEL_SETTINGS_YPOS(8),
-    GADGET_ID_TIME_OR_STEPS,		GADGET_ID_LEVEL_TIMELIMIT_UP,
+    -1,						ED_LEVEL_SETTINGS_YPOS(8),
+    GADGET_ID_TIME_OR_STEPS,			GADGET_ID_LEVEL_TIMELIMIT_UP,
     -1,
     options_time_or_steps,
     &level.use_step_counter,
-    NULL, NULL, "(0 => no limit)",	"Select time or step limit"
+    NULL, NULL, "(0 => no limit)",		"Select time or step limit"
   },
   {
     ED_SELECTBOX_ID_TIME_SCORE_BASE,
-    -1,					ED_LEVEL_SETTINGS_YPOS(10),
-    GADGET_ID_TIME_SCORE_BASE,		GADGET_ID_LEVEL_TIMESCORE_UP,
+    -1,						ED_LEVEL_SETTINGS_YPOS(10),
+    GADGET_ID_TIME_SCORE_BASE,			GADGET_ID_LEVEL_TIMESCORE_UP,
     -1,
     options_time_score_base,
     &level.time_score_base,
-    NULL, NULL, NULL,			"Select time score for 1 or 10 seconds/steps"
+    NULL, NULL, NULL,				"Select time score for 1 or 10 seconds/steps"
   },
   {
     ED_SELECTBOX_ID_GAME_ENGINE_TYPE,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(12),
-    GADGET_ID_GAME_ENGINE_TYPE,		GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(12),
+    GADGET_ID_GAME_ENGINE_TYPE,			GADGET_ID_NONE,
     -1,
     options_game_engine_type,
     &level.game_engine_type,
-    NULL, "Game engine:", NULL,		"Select game engine"
+    NULL, "Game engine:", NULL,			"Select game engine"
   },
   {
     ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(1),
-    GADGET_ID_BD_SCHEDULING_TYPE,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(1),
+    GADGET_ID_BD_SCHEDULING_TYPE,		GADGET_ID_NONE,
     -1,
     options_bd_scheduling_type,
     &level.bd_scheduling_type,
-    NULL, "Scheduling type:", NULL,	"Select level timing"
+    NULL, "Scheduling type:", NULL,		"Select level timing"
   },
   {
     ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(10),
-    GADGET_ID_LEVELSET_SAVE_MODE,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(10),
+    GADGET_ID_LEVELSET_SAVE_MODE,		GADGET_ID_NONE,
     -1,
     options_levelset_save_mode,
     &levelset_save_mode,
-    "Action:", NULL, NULL,		"Select action when saving level set"
+    "Action:", NULL, NULL,			"Select action when saving level set"
   },
 
   // ---------- element settings: configure (several elements) ----------------
 
   {
     ED_SELECTBOX_ID_WIND_DIRECTION,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_WIND_DIRECTION,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_WIND_DIRECTION,			GADGET_ID_NONE,
     -1,
     options_wind_direction,
     &level.wind_direction_initial,
@@ -2839,8 +2839,8 @@ static struct
   },
   {
     ED_SELECTBOX_ID_PLAYER_SPEED,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(7),
-    GADGET_ID_PLAYER_SPEED,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(7),
+    GADGET_ID_PLAYER_SPEED,			GADGET_ID_NONE,
     -1,
     options_player_speed,
     &level.initial_player_stepsize[0],
@@ -2848,252 +2848,252 @@ static struct
   },
   {
     ED_SELECTBOX_ID_MM_BALL_CHOICE_MODE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_MM_BALL_CHOICE_MODE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_MM_BALL_CHOICE_MODE,		GADGET_ID_NONE,
     -1,
     options_group_choice_mode,
     &level.mm_ball_choice_mode,
-    NULL, "Choice type:", NULL,		"Select type of content choice"
+    NULL, "Choice type:", NULL,			"Select type of content choice"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
 
   {
     ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_CUSTOM_ACCESS_TYPE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_CUSTOM_ACCESS_TYPE,		GADGET_ID_NONE,
     -1,
     options_access_type,
     &custom_element.access_type,
-    NULL, NULL, NULL,			"Select type of access to this field"
+    NULL, NULL, NULL,				"Select type of access to this field"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_ACCESS_LAYER,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_CUSTOM_ACCESS_LAYER,	GADGET_ID_CUSTOM_ACCESS_TYPE,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_CUSTOM_ACCESS_LAYER,		GADGET_ID_CUSTOM_ACCESS_TYPE,
     -1,
     options_access_layer,
     &custom_element.access_layer,
-    NULL, NULL, NULL,			"Select layer of access for this field"
+    NULL, NULL, NULL,				"Select layer of access for this field"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_ACCESS_PROTECTED,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_CUSTOM_ACCESS_PROTECTED,	GADGET_ID_CUSTOM_ACCESS_LAYER,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_CUSTOM_ACCESS_PROTECTED,		GADGET_ID_CUSTOM_ACCESS_LAYER,
     -1,
     options_access_protected,
     &custom_element.access_protected,
-    NULL, NULL, NULL,			"Select protected access for this field"
+    NULL, NULL, NULL,				"Select protected access for this field"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_ACCESS_DIRECTION,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_CUSTOM_ACCESS_DIRECTION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_CUSTOM_ACCESS_DIRECTION,		GADGET_ID_NONE,
     -1,
     options_access_direction,
     &custom_element.access_direction,
-    NULL, "from", NULL,			"Select access direction for this field"
+    NULL, "from", NULL,				"Select access direction for this field"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_WALK_TO_ACTION,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_CUSTOM_WALK_TO_ACTION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_CUSTOM_WALK_TO_ACTION,		GADGET_ID_NONE,
     -1,
     options_walk_to_action,
     &custom_element.walk_to_action,
-    NULL, NULL, NULL,			"Select diggable/collectible/pushable"
+    NULL, NULL, NULL,				"Select diggable/collectible/pushable"
   },
 
   // ---------- element settings: configure 2 (custom elements) ---------------
 
   {
     ED_SELECTBOX_ID_CUSTOM_MOVE_PATTERN,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_CUSTOM_MOVE_PATTERN,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_CUSTOM_MOVE_PATTERN,		GADGET_ID_NONE,
     -1,
     options_move_pattern,
     &custom_element.move_pattern,
-    NULL, "Can move", NULL,		"Select element move pattern"
+    NULL, "Can move", NULL,			"Select element move pattern"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_MOVE_DIRECTION,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_CUSTOM_MOVE_DIRECTION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_CUSTOM_MOVE_DIRECTION,		GADGET_ID_NONE,
     -1,
     options_move_direction,
     &custom_element.move_direction_initial,
-    NULL, "Starts moving", NULL,	"Select initial element move direction"
+    NULL, "Starts moving", NULL,		"Select initial element move direction"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_MOVE_STEPSIZE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_CUSTOM_MOVE_STEPSIZE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_CUSTOM_MOVE_STEPSIZE,		GADGET_ID_NONE,
     -1,
     options_move_stepsize,
     &custom_element.move_stepsize,
-    NULL, "Move/fall speed", NULL,	"Select speed of element movement"
+    NULL, "Move/fall speed", NULL,		"Select speed of element movement"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_MOVE_LEAVE_TYPE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_CUSTOM_MOVE_LEAVE_TYPE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_CUSTOM_MOVE_LEAVE_TYPE,		GADGET_ID_NONE,
     -1,
     options_move_leave_type,
     &custom_element.move_leave_type,
     // left text with leading spaces to place gadget next to "can dig" gadget
     // (needed because drawing area gadgets created after selectbox gadgets)
-    // NULL, "can dig:    can", ":",	"leave behind or change element"
-    NULL, "            Can", ":",	"Select leave behind or change element"
+    // NULL, "can dig:    can", ":",		"leave behind or change element"
+    NULL, "            Can", ":",		"Select leave behind or change element"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_SMASH_TARGETS,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(8),
-    GADGET_ID_CUSTOM_SMASH_TARGETS,	GADGET_ID_CUSTOM_CAN_SMASH,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(8),
+    GADGET_ID_CUSTOM_SMASH_TARGETS,		GADGET_ID_CUSTOM_CAN_SMASH,
     -1,
     options_smash_targets,
     &custom_element.smash_targets,
-    NULL, "Can smash", NULL,		"Select elements that can be smashed"
+    NULL, "Can smash", NULL,			"Select elements that can be smashed"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_SLIPPERY_TYPE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(9),
-    GADGET_ID_CUSTOM_SLIPPERY_TYPE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(9),
+    GADGET_ID_CUSTOM_SLIPPERY_TYPE,		GADGET_ID_NONE,
     -1,
     options_slippery_type,
     &custom_element.slippery_type,
-    NULL, "Slippery", NULL,		"Select where other elements fall down"
+    NULL, "Slippery", NULL,			"Select where other elements fall down"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_DEADLINESS,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(10),
-    GADGET_ID_CUSTOM_DEADLINESS,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(10),
+    GADGET_ID_CUSTOM_DEADLINESS,		GADGET_ID_NONE,
     -1,
     options_deadliness,
     &custom_element.deadliness,
-    NULL, "Deadly when", NULL,		"Select deadliness of element"
+    NULL, "Deadly when", NULL,			"Select deadliness of element"
   },
   {
     ED_SELECTBOX_ID_CUSTOM_EXPLOSION_TYPE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(11),
-    GADGET_ID_CUSTOM_EXPLOSION_TYPE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(11),
+    GADGET_ID_CUSTOM_EXPLOSION_TYPE,		GADGET_ID_NONE,
     -1,
     options_explosion_type,
     &custom_element.explosion_type,
-    NULL, "Can explode", NULL,		"Select explosion type"
+    NULL, "Can explode", NULL,			"Select explosion type"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
 
   {
     ED_SELECTBOX_ID_CHANGE_TIME_UNITS,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_CHANGE_TIME_UNITS,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_CHANGE_TIME_UNITS,		GADGET_ID_NONE,
     -1,
     options_time_units,
     &custom_element_change.delay_frames,
-    NULL, "Delay time given in", NULL,	"Select delay time units for change"
+    NULL, "Delay time given in", NULL,		"Select delay time units for change"
   },
   {
     ED_SELECTBOX_ID_CHANGE_DIRECT_ACTION,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_CHANGE_DIRECT_ACTION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_CHANGE_DIRECT_ACTION,		GADGET_ID_NONE,
     -1,
     options_change_direct_action,
     &custom_element_change.direct_action,
-    NULL, NULL, NULL,			"Select type of direct action"
+    NULL, NULL, NULL,				"Select type of direct action"
   },
   {
     ED_SELECTBOX_ID_CHANGE_OTHER_ACTION,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(5),
-    GADGET_ID_CHANGE_OTHER_ACTION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(5),
+    GADGET_ID_CHANGE_OTHER_ACTION,		GADGET_ID_NONE,
     -1,
     options_change_other_action,
     &custom_element_change.other_action,
-    NULL, NULL, "element:",		"Select type of other element action"
+    NULL, NULL, "element:",			"Select type of other element action"
   },
   {
     ED_SELECTBOX_ID_CHANGE_SIDE,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(6),
-    GADGET_ID_CHANGE_SIDE,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(6),
+    GADGET_ID_CHANGE_SIDE,			GADGET_ID_NONE,
     -1,
     options_change_trigger_side,
     &custom_element_change.trigger_side,
-    NULL, "at", "side",			"Select element side triggering change"
+    NULL, "at", "side",				"Select element side triggering change"
   },
   {
     ED_SELECTBOX_ID_CHANGE_PLAYER,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(7),
-    GADGET_ID_CHANGE_PLAYER,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(7),
+    GADGET_ID_CHANGE_PLAYER,			GADGET_ID_NONE,
     -1,
     options_change_trigger_player,
     &custom_element_change.trigger_player,
-    NULL, "Player:", " ",		"Select player that causes change"
+    NULL, "Player:", " ",			"Select player that causes change"
   },
   {
     ED_SELECTBOX_ID_CHANGE_PAGE,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(7),
-    GADGET_ID_CHANGE_PAGE,		GADGET_ID_CHANGE_PLAYER,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(7),
+    GADGET_ID_CHANGE_PAGE,			GADGET_ID_CHANGE_PLAYER,
     -1,
     options_change_trigger_page,
     &custom_element_change.trigger_page,
-    NULL, "Page:", NULL,		"Select change page that causes change"
+    NULL, "Page:", NULL,			"Select change page that causes change"
   },
   {
     ED_SELECTBOX_ID_CHANGE_REPLACE_WHEN,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(10),
-    GADGET_ID_CHANGE_REPLACE_WHEN,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(10),
+    GADGET_ID_CHANGE_REPLACE_WHEN,		GADGET_ID_NONE,
     -1,
     options_change_replace_when,
     &custom_element_change.replace_when,
-    NULL, "Replace when", NULL,		"Select which elements can be replaced"
+    NULL, "Replace when", NULL,			"Select which elements can be replaced"
   },
   {
     ED_SELECTBOX_ID_ACTION_TYPE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(13),
-    GADGET_ID_ACTION_TYPE,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(13),
+    GADGET_ID_ACTION_TYPE,			GADGET_ID_NONE,
     15,
     options_action_type,
     &custom_element_change.action_type,
-    NULL, NULL, NULL,			"Select action on specified condition"
+    NULL, NULL, NULL,				"Select action on specified condition"
   },
   {
     ED_SELECTBOX_ID_ACTION_MODE,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(13),
-    GADGET_ID_ACTION_MODE,		GADGET_ID_ACTION_TYPE,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(13),
+    GADGET_ID_ACTION_MODE,			GADGET_ID_ACTION_TYPE,
     -1,
     options_action_mode_none,
     &custom_element_change.action_mode,
-    NULL, NULL, NULL,			"Select action operator"
+    NULL, NULL, NULL,				"Select action operator"
   },
   {
     ED_SELECTBOX_ID_ACTION_ARG,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(13),
-    GADGET_ID_ACTION_ARG,		GADGET_ID_ACTION_MODE,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(13),
+    GADGET_ID_ACTION_ARG,			GADGET_ID_ACTION_MODE,
     -1,
     options_action_arg_none,
     &custom_element_change.action_arg,
-    NULL, NULL, NULL,			"Select action parameter"
+    NULL, NULL, NULL,				"Select action parameter"
   },
   {
     ED_SELECTBOX_ID_SELECT_CHANGE_PAGE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(14),
-    GADGET_ID_SELECT_CHANGE_PAGE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(14),
+    GADGET_ID_SELECT_CHANGE_PAGE,		GADGET_ID_NONE,
     3,
     options_change_page,
     &custom_element.current_change_page,
-    NULL, NULL, NULL,			"Select element change page"
+    NULL, NULL, NULL,				"Select element change page"
   },
 
   // ---------- element settings: configure (group elements) ------------------
 
   {
     ED_SELECTBOX_ID_GROUP_CHOICE_MODE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_GROUP_CHOICE_MODE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_GROUP_CHOICE_MODE,		GADGET_ID_NONE,
     -1,
     options_group_choice_mode,
     &group_element_info.choice_mode,
-    NULL, "Choice type:", NULL,		"Select type of group element choice"
+    NULL, "Choice type:", NULL,			"Select type of group element choice"
   },
 };
 
@@ -3112,86 +3112,86 @@ static struct
 
   {
     ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL,
-    ED_LEVEL_TABS_XPOS(0),		ED_LEVEL_TABS_YPOS(0),
-    GADGET_ID_LEVELCONFIG_LEVEL,	GADGET_ID_NONE,
-    8,					"Level",
-    NULL, NULL, NULL,			"Configure level settings"
+    ED_LEVEL_TABS_XPOS(0),			ED_LEVEL_TABS_YPOS(0),
+    GADGET_ID_LEVELCONFIG_LEVEL,		GADGET_ID_NONE,
+    8,						"Level",
+    NULL, NULL, NULL,				"Configure level settings"
   },
   {
     ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET,
-    -1,					-1,
-    GADGET_ID_LEVELCONFIG_LEVELSET,	GADGET_ID_LEVELCONFIG_LEVEL,
-    8,					"Levelset",
-    NULL, NULL, NULL,			"Update this or create new level set"
+    -1,						-1,
+    GADGET_ID_LEVELCONFIG_LEVELSET,		GADGET_ID_LEVELCONFIG_LEVEL,
+    8,						"Levelset",
+    NULL, NULL, NULL,				"Update this or create new level set"
   },
   {
     ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR,
-    -1,					-1,
-    GADGET_ID_LEVELCONFIG_EDITOR,	GADGET_ID_LEVELCONFIG_LEVELSET,
-    8,					"Editor",
-    NULL, NULL, NULL,			"Configure editor settings"
+    -1,						-1,
+    GADGET_ID_LEVELCONFIG_EDITOR,		GADGET_ID_LEVELCONFIG_LEVELSET,
+    8,						"Editor",
+    NULL, NULL, NULL,				"Configure editor settings"
   },
   {
     ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE,
-    -1,					-1,
-    GADGET_ID_LEVELCONFIG_ENGINE,	GADGET_ID_LEVELCONFIG_EDITOR,
-    8,					"Engine",
-    NULL, NULL, NULL,			"Configure engine settings"
+    -1,						-1,
+    GADGET_ID_LEVELCONFIG_ENGINE,		GADGET_ID_LEVELCONFIG_EDITOR,
+    8,						"Engine",
+    NULL, NULL, NULL,				"Configure engine settings"
   },
 
   // ---------- element settings (tabs) ---------------------------------------
 
   {
     ED_TEXTBUTTON_ID_PROPERTIES_INFO,
-    ED_ELEMENT_TABS_XPOS(0),		ED_ELEMENT_TABS_YPOS(0),
-    GADGET_ID_PROPERTIES_INFO,		GADGET_ID_NONE,
-    8,					"Info",
-    NULL, NULL, NULL,			"Show information about element"
+    ED_ELEMENT_TABS_XPOS(0),			ED_ELEMENT_TABS_YPOS(0),
+    GADGET_ID_PROPERTIES_INFO,			GADGET_ID_NONE,
+    8,						"Info",
+    NULL, NULL, NULL,				"Show information about element"
   },
   {
     ED_TEXTBUTTON_ID_PROPERTIES_CONFIG,
-    -1,					-1,
-    GADGET_ID_PROPERTIES_CONFIG,	GADGET_ID_PROPERTIES_INFO,
-    8,					"Config",
-    NULL, NULL, NULL,			"Configure element properties"
+    -1,						-1,
+    GADGET_ID_PROPERTIES_CONFIG,		GADGET_ID_PROPERTIES_INFO,
+    8,						"Config",
+    NULL, NULL, NULL,				"Configure element properties"
   },
   {
     ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_1,
-    -1,					-1,
-    GADGET_ID_PROPERTIES_CONFIG_1,	GADGET_ID_PROPERTIES_INFO,
-    8,					"Config 1",
-    NULL, NULL, NULL,			"Configure element properties, part 1"
+    -1,						-1,
+    GADGET_ID_PROPERTIES_CONFIG_1,		GADGET_ID_PROPERTIES_INFO,
+    8,						"Config 1",
+    NULL, NULL, NULL,				"Configure element properties, part 1"
   },
   {
     ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_2,
-    -1,					-1,
-    GADGET_ID_PROPERTIES_CONFIG_2,	GADGET_ID_PROPERTIES_CONFIG_1,
-    8,					"Config 2",
-    NULL, NULL, NULL,			"Configure element properties, part 2"
+    -1,						-1,
+    GADGET_ID_PROPERTIES_CONFIG_2,		GADGET_ID_PROPERTIES_CONFIG_1,
+    8,						"Config 2",
+    NULL, NULL, NULL,				"Configure element properties, part 2"
   },
   {
     ED_TEXTBUTTON_ID_PROPERTIES_CHANGE,
-    -1,					-1,
-    GADGET_ID_PROPERTIES_CHANGE,	GADGET_ID_PROPERTIES_CONFIG_2,
-    8,					"Change",
-    NULL, NULL, NULL,			"Configure custom element change pages"
+    -1,						-1,
+    GADGET_ID_PROPERTIES_CHANGE,		GADGET_ID_PROPERTIES_CONFIG_2,
+    8,						"Change",
+    NULL, NULL, NULL,				"Configure custom element change pages"
   },
 
   // ---------- level and editor settings (buttons) ---------------------------
 
   {
     ED_TEXTBUTTON_ID_SAVE_LEVELSET,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(10),
-    GADGET_ID_SAVE_LEVELSET,		GADGET_ID_LEVELSET_SAVE_MODE,
-    -1,					"Save",
-    NULL, NULL, NULL,			"Update or create level set"
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(10),
+    GADGET_ID_SAVE_LEVELSET,			GADGET_ID_LEVELSET_SAVE_MODE,
+    -1,						"Save",
+    NULL, NULL, NULL,				"Update or create level set"
   },
   {
     ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_2,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(6),
-    GADGET_ID_SAVE_AS_TEMPLATE_2,	GADGET_ID_NONE,
-    -1,					"Save",
-    NULL, NULL,				"this level as level template",
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(6),
+    GADGET_ID_SAVE_AS_TEMPLATE_2,		GADGET_ID_NONE,
+    -1,						"Save",
+    NULL, NULL,					"this level as level template",
     "Save current settings as new template"
   },
 
@@ -3199,25 +3199,25 @@ static struct
 
   {
     ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_1,
-    -1,					-1,
-    GADGET_ID_SAVE_AS_TEMPLATE_1,	GADGET_ID_CUSTOM_USE_TEMPLATE_1,
-    -1,					"Save",
-    NULL, " ",				"As Template",
+    -1,						-1,
+    GADGET_ID_SAVE_AS_TEMPLATE_1,		GADGET_ID_CUSTOM_USE_TEMPLATE_1,
+    -1,						"Save",
+    NULL, " ",					"As Template",
     "Save current settings as new template"
   },
   {
     ED_TEXTBUTTON_ID_ADD_CHANGE_PAGE,
-    -1,					-1,
-    GADGET_ID_ADD_CHANGE_PAGE,		GADGET_ID_PASTE_CHANGE_PAGE,
-    -1,					"New",
-    NULL, NULL, NULL,			"Add new change page"
+    -1,						-1,
+    GADGET_ID_ADD_CHANGE_PAGE,			GADGET_ID_PASTE_CHANGE_PAGE,
+    -1,						"New",
+    NULL, NULL, NULL,				"Add new change page"
   },
   {
     ED_TEXTBUTTON_ID_DEL_CHANGE_PAGE,
-    -1,					-1,
-    GADGET_ID_DEL_CHANGE_PAGE,		GADGET_ID_ADD_CHANGE_PAGE,
-    -1,					"Delete",
-    NULL, NULL, NULL,			"Delete current change page"
+    -1,						-1,
+    GADGET_ID_DEL_CHANGE_PAGE,			GADGET_ID_ADD_CHANGE_PAGE,
+    -1,						"Delete",
+    NULL, NULL, NULL,				"Delete current change page"
   },
 };
 
@@ -3234,30 +3234,30 @@ static struct
   {
     ED_GRAPHICBUTTON_ID_PREV_CHANGE_PAGE,
     IMG_EDITOR_COUNTER_DOWN,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(14),
-    GADGET_ID_PREV_CHANGE_PAGE,		GADGET_ID_NONE,
-    NULL, NULL,				"Select previous change page"
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(14),
+    GADGET_ID_PREV_CHANGE_PAGE,			GADGET_ID_NONE,
+    NULL, NULL,					"Select previous change page"
   },
   {
     ED_GRAPHICBUTTON_ID_NEXT_CHANGE_PAGE,
     IMG_EDITOR_COUNTER_UP,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(14),
-    GADGET_ID_NEXT_CHANGE_PAGE,		GADGET_ID_SELECT_CHANGE_PAGE,
-    NULL, "Change page",		"Select next change page"
+    -1,						ED_ELEMENT_SETTINGS_YPOS(14),
+    GADGET_ID_NEXT_CHANGE_PAGE,			GADGET_ID_SELECT_CHANGE_PAGE,
+    NULL, "Change page",			"Select next change page"
   },
   {
     ED_GRAPHICBUTTON_ID_COPY_CHANGE_PAGE,
     IMG_GFX_EDITOR_BUTTON_CP_COPY,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(14),
-    GADGET_ID_COPY_CHANGE_PAGE,		GADGET_ID_NEXT_CHANGE_PAGE,
-    " ", NULL,				"Copy settings from this change page"
+    -1,						ED_ELEMENT_SETTINGS_YPOS(14),
+    GADGET_ID_COPY_CHANGE_PAGE,			GADGET_ID_NEXT_CHANGE_PAGE,
+    " ", NULL,					"Copy settings from this change page"
   },
   {
     ED_GRAPHICBUTTON_ID_PASTE_CHANGE_PAGE,
     IMG_GFX_EDITOR_BUTTON_CP_PASTE,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(14),
-    GADGET_ID_PASTE_CHANGE_PAGE,	GADGET_ID_COPY_CHANGE_PAGE,
-    NULL, NULL,				"Paste settings to this change page"
+    -1,						ED_ELEMENT_SETTINGS_YPOS(14),
+    GADGET_ID_PASTE_CHANGE_PAGE,		GADGET_ID_COPY_CHANGE_PAGE,
+    NULL, NULL,					"Paste settings to this change page"
   },
 };
 
@@ -3367,19 +3367,19 @@ static struct
 {
   {
     ED_RADIOBUTTON_ID_PERCENTAGE,
-    -1,					ED_LEVEL_SETTINGS_YPOS(0),
-    GADGET_ID_RANDOM_PERCENTAGE,	GADGET_ID_LEVEL_RANDOM_UP,
+    -1,						ED_LEVEL_SETTINGS_YPOS(0),
+    GADGET_ID_RANDOM_PERCENTAGE,		GADGET_ID_LEVEL_RANDOM_UP,
     RADIO_NR_RANDOM_ELEMENTS,
-    &random_placement_method,		RANDOM_USE_PERCENTAGE,
-    " ", "percentage",			"Use percentage for random elements"
+    &random_placement_method,			RANDOM_USE_PERCENTAGE,
+    " ", "percentage",				"Use percentage for random elements"
   },
   {
     ED_RADIOBUTTON_ID_QUANTITY,
-    -1,					ED_LEVEL_SETTINGS_YPOS(0),
-    GADGET_ID_RANDOM_QUANTITY,		GADGET_ID_RANDOM_PERCENTAGE,
+    -1,						ED_LEVEL_SETTINGS_YPOS(0),
+    GADGET_ID_RANDOM_QUANTITY,			GADGET_ID_RANDOM_PERCENTAGE,
     RADIO_NR_RANDOM_ELEMENTS,
-    &random_placement_method,		RANDOM_USE_QUANTITY,
-    " ", "quantity",			"Use quantity for random elements"
+    &random_placement_method,			RANDOM_USE_QUANTITY,
+    " ", "quantity",				"Use quantity for random elements"
   }
 };
 
@@ -3397,799 +3397,799 @@ static struct
 
   {
     ED_CHECKBUTTON_ID_AUTO_COUNT_GEMS,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(6),
-    GADGET_ID_AUTO_COUNT_GEMS,		GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(6),
+    GADGET_ID_AUTO_COUNT_GEMS,			GADGET_ID_NONE,
     &level.auto_count_gems,
     NULL, NULL,
-    "Automatically count gems needed",	"Set counter to number of gems"
+    "Automatically count gems needed",		"Set counter to number of gems"
   },
   {
     ED_CHECKBUTTON_ID_RATE_TIME_OVER_SCORE,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(11),
-    GADGET_ID_RATE_TIME_OVER_SCORE,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(11),
+    GADGET_ID_RATE_TIME_OVER_SCORE,		GADGET_ID_NONE,
     &level.rate_time_over_score,
     NULL, NULL,
-    "Rate time/steps used over score",	"Sort high scores by playing time/steps"
+    "Rate time/steps used over score",		"Sort high scores by playing time/steps"
   },
   {
     ED_CHECKBUTTON_ID_USE_LEVELSET_ARTWORK,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(7),
-    GADGET_ID_USE_LEVELSET_ARTWORK,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(7),
+    GADGET_ID_USE_LEVELSET_ARTWORK,		GADGET_ID_NONE,
     &levelset_use_levelset_artwork,
     NULL, NULL,
-    "Use current custom artwork",	"Use custom artwork of this level set"
+    "Use current custom artwork",		"Use custom artwork of this level set"
   },
   {
     ED_CHECKBUTTON_ID_COPY_LEVEL_TEMPLATE,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(8),
-    GADGET_ID_COPY_LEVEL_TEMPLATE,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(8),
+    GADGET_ID_COPY_LEVEL_TEMPLATE,		GADGET_ID_NONE,
     &levelset_copy_level_template,
     NULL, NULL,
-    "Copy current level template",	"Copy level template of this level set"
+    "Copy current level template",		"Copy level template of this level set"
   },
   {
     ED_CHECKBUTTON_ID_RANDOM_RESTRICTED,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(1),
-    GADGET_ID_RANDOM_RESTRICTED,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(1),
+    GADGET_ID_RANDOM_RESTRICTED,		GADGET_ID_NONE,
     &random_placement_background_restricted,
     NULL, NULL,
-    "Restrict random placement to:",	"Set random placement restriction"
+    "Restrict random placement to:",		"Set random placement restriction"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_3,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(4),
-    GADGET_ID_CUSTOM_USE_TEMPLATE_3,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
+    GADGET_ID_CUSTOM_USE_TEMPLATE_3,		GADGET_ID_NONE,
     &setup.editor.use_template_for_new_levels,
     "Template for new levels and CE/GE:", NULL,
-    "Use template for new levels",	"Use template for level properties"
+    "Use template for new levels",		"Use template for level properties"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_2,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(5),
-    GADGET_ID_CUSTOM_USE_TEMPLATE_2,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(5),
+    GADGET_ID_CUSTOM_USE_TEMPLATE_2,		GADGET_ID_NONE,
     &level.use_custom_template,
     NULL, NULL,
-    "Use template for custom elements",	"Use template for custom properties"
+    "Use template for custom elements",		"Use template for custom properties"
   },
   {
     ED_CHECKBUTTON_ID_BD_INTERMISSION,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(0),
-    GADGET_ID_BD_INTERMISSION,		GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(0),
+    GADGET_ID_BD_INTERMISSION,			GADGET_ID_NONE,
     &level.bd_intermission,
     "Boulder Dash game engine settings:", NULL,
-    "Intermission",			"Level is an intermission level"
+    "Intermission",				"Level is an intermission level"
   },
   {
     ED_CHECKBUTTON_ID_BD_PAL_TIMING,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(2),
-    GADGET_ID_BD_PAL_TIMING,		GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(2),
+    GADGET_ID_BD_PAL_TIMING,			GADGET_ID_NONE,
     &level.bd_pal_timing,
     NULL, NULL,
-    "PAL timing",			"Use slower timer (like PAL C64)"
+    "PAL timing",				"Use slower timer (like PAL C64)"
   },
   {
     ED_CHECKBUTTON_ID_BD_LINE_SHIFTING_BORDERS,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(6),
-    GADGET_ID_BD_LINE_SHIFTING_BORDERS,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(6),
+    GADGET_ID_BD_LINE_SHIFTING_BORDERS,		GADGET_ID_NONE,
     &level.bd_line_shifting_borders,
     "Compatibility settings:", NULL,
-    "Line-shifting borders",		"Use line-shifting wrap-around"
+    "Line-shifting borders",			"Use line-shifting wrap-around"
   },
   {
     ED_CHECKBUTTON_ID_BD_SCAN_FIRST_AND_LAST_ROW,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(7),
-    GADGET_ID_BD_SCAN_FIRST_AND_LAST_ROW, GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(7),
+    GADGET_ID_BD_SCAN_FIRST_AND_LAST_ROW,	GADGET_ID_NONE,
     &level.bd_scan_first_and_last_row,
     NULL, NULL,
-    "Scan first and last row",		"Also process top/bottom border rows"
+    "Scan first and last row",			"Also process top/bottom border rows"
   },
   {
     ED_CHECKBUTTON_ID_BD_SHORT_EXPLOSIONS,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(8),
-    GADGET_ID_BD_SHORT_EXPLOSIONS,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(8),
+    GADGET_ID_BD_SHORT_EXPLOSIONS,		GADGET_ID_NONE,
     &level.bd_short_explosions,
     NULL, NULL,
-    "Short explosions",			"Use four game cycles for explosions"
+    "Short explosions",				"Use four game cycles for explosions"
   },
   {
     ED_CHECKBUTTON_ID_BD_GRAVITY_AFFECTS_ALL,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(9),
-    GADGET_ID_BD_GRAVITY_AFFECTS_ALL,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(9),
+    GADGET_ID_BD_GRAVITY_AFFECTS_ALL,		GADGET_ID_NONE,
     &level.bd_gravity_affects_all,
     NULL, NULL,
-    "Gravity change affects everything", "Gravity affects all falling objects"
+    "Gravity change affects everything",	"Gravity affects all falling objects"
   },
 
   // ---------- element settings: configure (various elements) ----------------
 
   {
     ED_CHECKBUTTON_ID_STICK_ELEMENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_STICK_ELEMENT,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_STICK_ELEMENT,			GADGET_ID_NONE,
     &stick_element_properties_window,
     NULL, NULL,
-    "Stick this screen to edit content","Stick this screen to edit content"
+    "Stick this screen to edit content",	"Stick this screen to edit content"
   },
   {
     ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_EM_SLIPPERY_GEMS,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_EM_SLIPPERY_GEMS,			GADGET_ID_NONE,
     &level.em_slippery_gems,
     NULL, NULL,
-    "Slip down from certain flat walls","Use EM/DC style slipping behaviour"
+    "Slip down from certain flat walls",	"Use EM/DC style slipping behaviour"
   },
   {
     ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_EM_EXPLODES_BY_FIRE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_EM_EXPLODES_BY_FIRE,		GADGET_ID_NONE,
     &level.em_explodes_by_fire,
     NULL, NULL,
-    "Explodes with chain reaction",	"Use R'n'D style explosion behaviour"
+    "Explodes with chain reaction",		"Use R'n'D style explosion behaviour"
   },
   {
     ED_CHECKBUTTON_ID_USE_SPRING_BUG,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_USE_SPRING_BUG,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_USE_SPRING_BUG,			GADGET_ID_NONE,
     &level.use_spring_bug,
     NULL, NULL,
-    "Use spring pushing bug",		"Use odd spring pushing behaviour"
+    "Use spring pushing bug",			"Use odd spring pushing behaviour"
   },
   {
     ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_USE_TIME_ORB_BUG,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_USE_TIME_ORB_BUG,			GADGET_ID_NONE,
     &level.use_time_orb_bug,
     NULL, NULL,
-    "Use time orb bug",			"Use odd time orb behaviour"
+    "Use time orb bug",				"Use odd time orb behaviour"
   },
   {
     ED_CHECKBUTTON_ID_USE_LIFE_BUGS,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
-    GADGET_ID_USE_LIFE_BUGS,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(5),
+    GADGET_ID_USE_LIFE_BUGS,			GADGET_ID_NONE,
     &level.use_life_bugs,
     NULL, NULL,
-    "Use buggy element behaviour",	"Use odd (historic) element behaviour"
+    "Use buggy element behaviour",		"Use odd (historic) element behaviour"
   },
   {
     ED_CHECKBUTTON_ID_RANDOM_BALL_CONTENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_RANDOM_BALL_CONTENT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_RANDOM_BALL_CONTENT,		GADGET_ID_NONE,
     &level.ball_random,
     NULL, NULL,
-    "Create single random element",	"Only create one element from content"
+    "Create single random element",		"Only create one element from content"
   },
   {
     ED_CHECKBUTTON_ID_INITIAL_BALL_ACTIVE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_INITIAL_BALL_ACTIVE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_INITIAL_BALL_ACTIVE,		GADGET_ID_NONE,
     &level.ball_active_initial,
     NULL, NULL,
-    "Magic ball initially activated",	"Activate magic ball after level start"
+    "Magic ball initially activated",		"Activate magic ball after level start"
   },
   {
     ED_CHECKBUTTON_ID_GROW_INTO_DIGGABLE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_GROW_INTO_DIGGABLE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_GROW_INTO_DIGGABLE,		GADGET_ID_NONE,
     &level.grow_into_diggable,
     NULL, NULL,
-    "Can grow into anything diggable",	"Grow into more than just sand"
+    "Can grow into anything diggable",		"Grow into more than just sand"
   },
   {
     ED_CHECKBUTTON_ID_SB_FIELDS_NEEDED,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_SB_FIELDS_NEEDED,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_SB_FIELDS_NEEDED,			GADGET_ID_NONE,
     &level.sb_fields_needed,
     NULL, NULL,
-    "All fields need to be filled",	"Require all SB fields to be solved"
+    "All fields need to be filled",		"Require all SB fields to be solved"
   },
   {
     ED_CHECKBUTTON_ID_SB_OBJECTS_NEEDED,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_SB_OBJECTS_NEEDED,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_SB_OBJECTS_NEEDED,		GADGET_ID_NONE,
     &level.sb_objects_needed,
     NULL, NULL,
-    "All objects need to be placed",	"Require all SB objects to be solved"
+    "All objects need to be placed",		"Require all SB objects to be solved"
   },
   {
     ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_AUTO_EXIT_SOKOBAN,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_AUTO_EXIT_SOKOBAN,		GADGET_ID_NONE,
     &level.auto_exit_sokoban,
     NULL, NULL,
-    "Exit level if all tasks solved",	"Automatically finish Sokoban levels"
+    "Exit level if all tasks solved",		"Automatically finish Sokoban levels"
   },
   {
     ED_CHECKBUTTON_ID_SOLVED_BY_ONE_PLAYER,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(14),
-    GADGET_ID_SOLVED_BY_ONE_PLAYER,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(14),
+    GADGET_ID_SOLVED_BY_ONE_PLAYER,		GADGET_ID_NONE,
     &level.solved_by_one_player,
     NULL, NULL,
-    "Only one player must enter exit",	"Level solved by first player in exit"
+    "Only one player must enter exit",		"Level solved by first player in exit"
   },
   {
     ED_CHECKBUTTON_ID_FINISH_DIG_COLLECT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_FINISH_DIG_COLLECT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_FINISH_DIG_COLLECT,		GADGET_ID_NONE,
     &level.finish_dig_collect,
     NULL, NULL,
-    "CE action on finished dig/collect", "Only finished dig/collect triggers CE"
+    "CE action on finished dig/collect",	"Only finished dig/collect triggers CE"
   },
   {
     ED_CHECKBUTTON_ID_KEEP_WALKABLE_CE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_KEEP_WALKABLE_CE,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_KEEP_WALKABLE_CE,			GADGET_ID_NONE,
     &level.keep_walkable_ce,
     NULL, NULL,
-    "Keep walkable CE changed to player", "Keep CE changing to player if walkable"
+    "Keep walkable CE changed to player",	"Keep CE changing to player if walkable"
   },
   {
     ED_CHECKBUTTON_ID_CONTINUOUS_SNAPPING,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
-    GADGET_ID_CONTINUOUS_SNAPPING,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(9),
+    GADGET_ID_CONTINUOUS_SNAPPING,		GADGET_ID_NONE,
     &level.continuous_snapping,
     NULL, NULL,
-    "Continuous snapping",		"Use snapping without releasing key"
+    "Continuous snapping",			"Use snapping without releasing key"
   },
   {
     ED_CHECKBUTTON_ID_BLOCK_SNAP_FIELD,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
-    GADGET_ID_BLOCK_SNAP_FIELD,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(8),
+    GADGET_ID_BLOCK_SNAP_FIELD,			GADGET_ID_NONE,
     &level.block_snap_field,
     NULL, NULL,
-    "Block snapped field when snapping", "Use snapping delay to show animation"
+    "Block snapped field when snapping",	"Use snapping delay to show animation"
   },
   {
     ED_CHECKBUTTON_ID_BLOCK_LAST_FIELD,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_BLOCK_LAST_FIELD,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_BLOCK_LAST_FIELD,			GADGET_ID_NONE,
     &level.block_last_field,
     NULL, NULL,
-    "Block last field when moving",	"Player blocks last field when moving"
+    "Block last field when moving",		"Player blocks last field when moving"
   },
   {
     ED_CHECKBUTTON_ID_SP_BLOCK_LAST_FIELD,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_SP_BLOCK_LAST_FIELD,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_SP_BLOCK_LAST_FIELD,		GADGET_ID_NONE,
     &level.sp_block_last_field,
     NULL, NULL,
-    "Block last field when moving",	"Player blocks last field when moving"
+    "Block last field when moving",		"Player blocks last field when moving"
   },
   {
     ED_CHECKBUTTON_ID_INSTANT_RELOCATION,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_INSTANT_RELOCATION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_INSTANT_RELOCATION,		GADGET_ID_NONE,
     &level.instant_relocation,
     NULL, NULL,
-    "No scrolling when relocating",	"Player gets relocated without delay"
+    "No scrolling when relocating",		"Player gets relocated without delay"
   },
   {
     ED_CHECKBUTTON_ID_SHIFTED_RELOCATION,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_SHIFTED_RELOCATION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_SHIFTED_RELOCATION,		GADGET_ID_NONE,
     &level.shifted_relocation,
     NULL, NULL,
-    "No centering when relocating",	"Level not centered after relocation"
+    "No centering when relocating",		"Level not centered after relocation"
   },
   {
     ED_CHECKBUTTON_ID_LAZY_RELOCATION,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
-    GADGET_ID_LAZY_RELOCATION,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(5),
+    GADGET_ID_LAZY_RELOCATION,			GADGET_ID_NONE,
     &level.lazy_relocation,
     NULL, NULL,
-    "Only redraw off-screen relocation","No redraw if relocation target visible"
+    "Only redraw off-screen relocation",	"No redraw if relocation target visible"
   },
   {
     ED_CHECKBUTTON_ID_USE_START_ELEMENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
-    GADGET_ID_USE_START_ELEMENT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(10),
+    GADGET_ID_USE_START_ELEMENT,		GADGET_ID_NONE,
     &level.use_start_element[0],
     NULL, NULL,
-    "Use level start element:",	       "Start level at this element's position"
+    "Use level start element:",		       "Start level at this element's position"
   },
   {
     ED_CHECKBUTTON_ID_USE_ARTWORK_ELEMENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
-    GADGET_ID_USE_ARTWORK_ELEMENT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(11),
+    GADGET_ID_USE_ARTWORK_ELEMENT,		GADGET_ID_NONE,
     &level.use_artwork_element[0],
     NULL, NULL,
-    "Use artwork from element:",	"Use player artwork from other element"
+    "Use artwork from element:",		"Use player artwork from other element"
   },
   {
     ED_CHECKBUTTON_ID_USE_EXPLOSION_ELEMENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(12),
-    GADGET_ID_USE_EXPLOSION_ELEMENT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(12),
+    GADGET_ID_USE_EXPLOSION_ELEMENT,		GADGET_ID_NONE,
     &level.use_explosion_element[0],
     NULL, NULL,
-    "Use explosion from element:",	"Use explosion properties from element"
+    "Use explosion from element:",		"Use explosion properties from element"
   },
   {
     ED_CHECKBUTTON_ID_INITIAL_GRAVITY,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(13),
-    GADGET_ID_INITIAL_GRAVITY,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(13),
+    GADGET_ID_INITIAL_GRAVITY,			GADGET_ID_NONE,
     &level.initial_player_gravity[0],
     NULL, NULL,
-    "Use initial gravity",		"Set initial player gravity"
+    "Use initial gravity",			"Set initial player gravity"
   },
   {
     ED_CHECKBUTTON_ID_USE_INITIAL_INVENTORY,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_USE_INITIAL_INVENTORY,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_USE_INITIAL_INVENTORY,		GADGET_ID_NONE,
     &level.use_initial_inventory[0],
     NULL, NULL,
-    "Use initial inventory:",		"Use collected elements on level start"
+    "Use initial inventory:",			"Use collected elements on level start"
   },
   {
     ED_CHECKBUTTON_ID_CAN_PASS_TO_WALKABLE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(6),
-    GADGET_ID_CAN_PASS_TO_WALKABLE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(6),
+    GADGET_ID_CAN_PASS_TO_WALKABLE,		GADGET_ID_NONE,
     &level.can_pass_to_walkable,
     NULL, NULL,
-    "Can pass to walkable element",	"Player can pass to empty or walkable"
+    "Can pass to walkable element",		"Player can pass to empty or walkable"
   },
   {
     ED_CHECKBUTTON_ID_CAN_FALL_INTO_ACID,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_CAN_FALL_INTO_ACID,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_CAN_FALL_INTO_ACID,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE_INTO_ACID],
     NULL, NULL,
-    "Can fall into acid (with gravity)","Player can fall into acid pool"
+    "Can fall into acid (with gravity)",	"Player can fall into acid pool"
   },
   {
     ED_CHECKBUTTON_ID_CAN_MOVE_INTO_ACID,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_CAN_MOVE_INTO_ACID,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_CAN_MOVE_INTO_ACID,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE_INTO_ACID],
     NULL, NULL,
-    "Can move into acid",		"Element can move into acid pool"
+    "Can move into acid",			"Element can move into acid pool"
   },
   {
     ED_CHECKBUTTON_ID_DONT_COLLIDE_WITH,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_DONT_COLLIDE_WITH,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_DONT_COLLIDE_WITH,		GADGET_ID_NONE,
     &custom_element_properties[EP_DONT_COLLIDE_WITH],
     NULL, NULL,
-    "Deadly when colliding with",	"Element is deadly when hitting player"
+    "Deadly when colliding with",		"Element is deadly when hitting player"
   },
   {
     ED_CHECKBUTTON_ID_BD_DIAGONAL_MOVEMENTS,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_BD_DIAGONAL_MOVEMENTS,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_DIAGONAL_MOVEMENTS,		GADGET_ID_NONE,
     &level.bd_diagonal_movements,
     NULL, NULL,
-    "Can move diagonally",		"Player can move diagonally"
+    "Can move diagonally",			"Player can move diagonally"
   },
   {
     ED_CHECKBUTTON_ID_BD_TOPMOST_PLAYER_ACTIVE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_BD_TOPMOST_PLAYER_ACTIVE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_TOPMOST_PLAYER_ACTIVE,		GADGET_ID_NONE,
     &level.bd_topmost_player_active,
     NULL, NULL,
-    "Topmost player is active",		"Use first player found on playfield"
+    "Topmost player is active",			"Use first player found on playfield"
   },
   {
     ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET,	GADGET_ID_NONE,
     &level.bd_push_mega_rock_with_sweet,
     NULL, NULL,
-    "Mega rocks pushable with sweet",	"Push mega rocks after eating sweet"
+    "Mega rocks pushable with sweet",		"Push mega rocks after eating sweet"
   },
   {
     ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_BD_MAGIC_WALL_WAIT_HATCHING, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_BD_MAGIC_WALL_WAIT_HATCHING,	GADGET_ID_NONE,
     &level.bd_magic_wall_wait_hatching,
     NULL, NULL,
-    "Wait for player's birth",		"Timer start waits for player's birth"
+    "Wait for player's birth",			"Timer start waits for player's birth"
   },
   {
     ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_BD_MAGIC_WALL_STOPS_AMOEBA, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_BD_MAGIC_WALL_STOPS_AMOEBA,	GADGET_ID_NONE,
     &level.bd_magic_wall_stops_amoeba,
     NULL, NULL,
-    "Turn amoeba to diamonds",		"Activation changes amoeba to diamonds"
+    "Turn amoeba to diamonds",			"Activation changes amoeba to diamonds"
   },
   {
     ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_BD_AMOEBA_WAIT_FOR_HATCHING, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_AMOEBA_WAIT_FOR_HATCHING,	GADGET_ID_NONE,
     &level.bd_amoeba_wait_for_hatching,
     NULL, NULL,
-    "Wait for player's birth",		"Timer start waits for player's birth"
+    "Wait for player's birth",			"Timer start waits for player's birth"
   },
   {
     ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_BD_AMOEBA_START_IMMEDIATELY, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_BD_AMOEBA_START_IMMEDIATELY,	GADGET_ID_NONE,
     &level.bd_amoeba_start_immediately,
     NULL, NULL,
-    "Start growing immediately",	"Start slow growth time immediately"
+    "Start growing immediately",		"Start slow growth time immediately"
   },
   {
     ED_CHECKBUTTON_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
-    GADGET_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(9),
+    GADGET_ID_BD_AMOEBA_2_EXPLODE_BY_AMOEBA,	GADGET_ID_NONE,
     &level.bd_amoeba_2_explode_by_amoeba,
     NULL, NULL,
-    "Explodes if touched by amoeba",	"Amoeba 2 explodes if touched by amoeba"
+    "Explodes if touched by amoeba",		"Amoeba 2 explodes if touched by amoeba"
   },
   {
     ED_CHECKBUTTON_ID_BD_VOODOO_COLLECTS_DIAMONDS,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_BD_VOODOO_COLLECTS_DIAMONDS, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_VOODOO_COLLECTS_DIAMONDS,	GADGET_ID_NONE,
     &level.bd_voodoo_collects_diamonds,
     NULL, NULL,
-    "Can collect diamonds",		"Can collect diamonds for the player"
+    "Can collect diamonds",			"Can collect diamonds for the player"
   },
   {
     ED_CHECKBUTTON_ID_BD_VOODOO_HURT_KILLS_PLAYER,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_BD_VOODOO_HURT_KILLS_PLAYER, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_VOODOO_HURT_KILLS_PLAYER,	GADGET_ID_NONE,
     &level.bd_voodoo_hurt_kills_player,
     NULL, NULL,
-    "Player is killed if hurt",		"If hurt in any way, player is killed"
+    "Player is killed if hurt",			"If hurt in any way, player is killed"
   },
   {
     ED_CHECKBUTTON_ID_BD_VOODOO_DIES_BY_ROCK,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_BD_VOODOO_DIES_BY_ROCK,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_BD_VOODOO_DIES_BY_ROCK,		GADGET_ID_NONE,
     &level.bd_voodoo_dies_by_rock,
     NULL, NULL,
-    "Killed by falling rock",		"Can be killed by a falling rock"
+    "Killed by falling rock",			"Can be killed by a falling rock"
   },
   {
     ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_BD_VOODOO_VANISH_BY_EXPLOSION, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_BD_VOODOO_VANISH_BY_EXPLOSION,	GADGET_ID_NONE,
     &level.bd_voodoo_vanish_by_explosion,
     NULL, NULL,
-    "Disappears in explosions",		"Can be destroyed by explosions"
+    "Disappears in explosions",			"Can be destroyed by explosions"
   },
   {
     ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_BD_SLIME_IS_PREDICTABLE, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_SLIME_IS_PREDICTABLE,		GADGET_ID_NONE,
     &level.bd_slime_is_predictable,
     NULL, NULL,
-    "Slime is predictable",		"Use predictable random numbers"
+    "Slime is predictable",			"Use predictable random numbers"
   },
   {
     ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_BD_CHANGE_EXPANDING_WALL, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_CHANGE_EXPANDING_WALL,		GADGET_ID_NONE,
     &level.bd_change_expanding_wall,
     NULL, NULL,
-    "Change direction",			"Switch horizontal/vertical direction"
+    "Change direction",				"Switch horizontal/vertical direction"
   },
   {
     ED_CHECKBUTTON_ID_BD_REPLICATORS_ACTIVE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_BD_REPLICATORS_ACTIVE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_REPLICATORS_ACTIVE,		GADGET_ID_NONE,
     &level.bd_replicators_active,
     NULL, NULL,
-    "Active at start",			"Replicators start in active state"
+    "Active at start",				"Replicators start in active state"
   },
   {
     ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_ACTIVE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_BD_CONVEYOR_BELTS_ACTIVE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_CONVEYOR_BELTS_ACTIVE,		GADGET_ID_NONE,
     &level.bd_conveyor_belts_active,
     NULL, NULL,
-    "Active at start",			"Conveyor belts start in active state"
+    "Active at start",				"Conveyor belts start in active state"
   },
   {
     ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_BD_CONVEYOR_BELTS_CHANGED, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_CONVEYOR_BELTS_CHANGED,	GADGET_ID_NONE,
     &level.bd_conveyor_belts_changed,
     NULL, NULL,
-    "Change direction",			"Switch conveyor belt direction"
+    "Change direction",				"Switch conveyor belt direction"
   },
   {
     ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    GADGET_ID_BD_WATER_CANNOT_FLOW_DOWN, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_WATER_CANNOT_FLOW_DOWN,	GADGET_ID_NONE,
     &level.bd_water_cannot_flow_down,
     NULL, NULL,
-    "Does not flow downwards",		"Water can only flow up, left and right"
+    "Does not flow downwards",			"Water can only flow up, left and right"
   },
   {
     ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_BD_HAMMER_WALLS_REAPPEAR, GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_HAMMER_WALLS_REAPPEAR,		GADGET_ID_NONE,
     &level.bd_hammer_walls_reappear,
     NULL, NULL,
-    "Hammered walls reappear",		"Hammered walls reappear after delay"
+    "Hammered walls reappear",			"Hammered walls reappear after delay"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_ENVELOPE_AUTOWRAP,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_ENVELOPE_AUTOWRAP,		GADGET_ID_NONE,
     &level.envelope[0].autowrap,
     NULL, NULL,
-    "Auto-wrap",			"Automatically wrap envelope text"
+    "Auto-wrap",				"Automatically wrap envelope text"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_ENVELOPE_CENTERED,	GADGET_ID_ENVELOPE_AUTOWRAP,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_ENVELOPE_CENTERED,		GADGET_ID_ENVELOPE_AUTOWRAP,
     &level.envelope[0].centered,
     NULL, " ",
-    "Centered",				"Automatically center envelope text"
+    "Centered",					"Automatically center envelope text"
   },
   {
     ED_CHECKBUTTON_ID_MM_LASER_RED,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_MM_LASER_RED,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_MM_LASER_RED,			GADGET_ID_NONE,
     &level.mm_laser_red,
     "Choose color components for laser:", NULL,
-    "Red",				"Use red color components in laser"
+    "Red",					"Use red color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_MM_LASER_GREEN,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_MM_LASER_GREEN,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_MM_LASER_GREEN,			GADGET_ID_NONE,
     &level.mm_laser_green,
     NULL, NULL,
-    "Green",				"Use green color components in laser"
+    "Green",					"Use green color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_MM_LASER_BLUE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_MM_LASER_BLUE,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_MM_LASER_BLUE,			GADGET_ID_NONE,
     &level.mm_laser_blue,
     NULL, NULL,
-    "Blue",				"Use blue color components in laser"
+    "Blue",					"Use blue color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_DF_LASER_RED,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_DF_LASER_RED,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_DF_LASER_RED,			GADGET_ID_NONE,
     &level.df_laser_red,
     "Choose color components for laser:", NULL,
-    "Red",				"Use red color components in laser"
+    "Red",					"Use red color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_DF_LASER_GREEN,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_DF_LASER_GREEN,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_DF_LASER_GREEN,			GADGET_ID_NONE,
     &level.df_laser_green,
     NULL, NULL,
-    "Green",				"Use green color components in laser"
+    "Green",					"Use green color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_DF_LASER_BLUE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    GADGET_ID_DF_LASER_BLUE,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_DF_LASER_BLUE,			GADGET_ID_NONE,
     &level.df_laser_blue,
     NULL, NULL,
-    "Blue",				"Use blue color components in laser"
+    "Blue",					"Use blue color components in laser"
   },
   {
     ED_CHECKBUTTON_ID_ROTATE_MM_BALL_CONTENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(5),
-    GADGET_ID_ROTATE_MM_BALL_CONTENT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(5),
+    GADGET_ID_ROTATE_MM_BALL_CONTENT,		GADGET_ID_NONE,
     &level.rotate_mm_ball_content,
     NULL, NULL,
-    "Randomly rotate created content",	"Randomly rotate newly created content"
+    "Randomly rotate created content",		"Randomly rotate newly created content"
   },
   {
     ED_CHECKBUTTON_ID_EXPLODE_MM_BALL,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(6),
-    GADGET_ID_EXPLODE_MM_BALL,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(6),
+    GADGET_ID_EXPLODE_MM_BALL,			GADGET_ID_NONE,
     &level.explode_mm_ball,
     NULL, NULL,
-    "Explode ball instead of melting",	"Use explosion to release ball content"
+    "Explode ball instead of melting",		"Use explosion to release ball content"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
 
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_CUSTOM_USE_GRAPHIC,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_CUSTOM_USE_GRAPHIC,		GADGET_ID_NONE,
     &custom_element.use_gfx_element,
     NULL, NULL,
-    "Use graphic of element:",		"Use existing element graphic"
+    "Use graphic of element:",			"Use existing element graphic"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_1,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(14),
-    GADGET_ID_CUSTOM_USE_TEMPLATE_1,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(14),
+    GADGET_ID_CUSTOM_USE_TEMPLATE_1,		GADGET_ID_NONE,
     &level.use_custom_template,
     NULL, NULL,
-    "Use template",			"Use template for custom properties"
+    "Use template",				"Use template for custom properties"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_ACCESSIBLE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_CUSTOM_ACCESSIBLE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_CUSTOM_ACCESSIBLE,		GADGET_ID_NONE,
     &custom_element_properties[EP_ACCESSIBLE],
     NULL, NULL,
-    NULL,				"Player can walk to or pass this field"
+    NULL,					"Player can walk to or pass this field"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_GRAV_REACHABLE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
-    GADGET_ID_CUSTOM_GRAV_REACHABLE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(9),
+    GADGET_ID_CUSTOM_GRAV_REACHABLE,		GADGET_ID_NONE,
     &custom_element_properties[EP_GRAVITY_REACHABLE],
     NULL, NULL,
-    "Reachable despite gravity",	"Player can walk/dig despite gravity"
+    "Reachable despite gravity",		"Player can walk/dig despite gravity"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_USE_LAST_VALUE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
-    GADGET_ID_CUSTOM_USE_LAST_VALUE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(11),
+    GADGET_ID_CUSTOM_USE_LAST_VALUE,		GADGET_ID_NONE,
     &custom_element.use_last_ce_value,
     NULL, NULL,
-    "Use last CE value after change",	"Use last CE value after change"
+    "Use last CE value after change",		"Use last CE value after change"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_WALK_TO_OBJECT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_CUSTOM_WALK_TO_OBJECT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_CUSTOM_WALK_TO_OBJECT,		GADGET_ID_NONE,
     &custom_element_properties[EP_WALK_TO_OBJECT],
     NULL, NULL,
-    NULL,				"Player can dig/collect/push element"
+    NULL,					"Player can dig/collect/push element"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
-    GADGET_ID_CUSTOM_INDESTRUCTIBLE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(8),
+    GADGET_ID_CUSTOM_INDESTRUCTIBLE,		GADGET_ID_NONE,
     &custom_element_properties[EP_INDESTRUCTIBLE],
     NULL, NULL,
-    "Indestructible",			"Element is indestructible"
+    "Indestructible",				"Element is indestructible"
   },
 
   // ---------- element settings: configure 2 (custom elements) ---------------
 
   {
     ED_CHECKBUTTON_ID_CUSTOM_CAN_MOVE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_CUSTOM_CAN_MOVE,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_CUSTOM_CAN_MOVE,			GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_MOVE],
     NULL, NULL,
-    NULL,				"Element can move with some pattern"
+    NULL,					"Element can move with some pattern"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_CAN_FALL,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(8),
-    GADGET_ID_CUSTOM_CAN_FALL,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(8),
+    GADGET_ID_CUSTOM_CAN_FALL,			GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_FALL],
     NULL, NULL,
-    "Can fall",				"Element can fall down"
+    "Can fall",					"Element can fall down"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_CAN_SMASH,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(8),
-    GADGET_ID_CUSTOM_CAN_SMASH,		GADGET_ID_CUSTOM_CAN_FALL,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(8),
+    GADGET_ID_CUSTOM_CAN_SMASH,			GADGET_ID_CUSTOM_CAN_FALL,
     &custom_element_properties[EP_CAN_SMASH],
     NULL, " ",
-    NULL,				"Element can smash other elements"
+    NULL,					"Element can smash other elements"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_SLIPPERY,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(9),
-    GADGET_ID_CUSTOM_SLIPPERY,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(9),
+    GADGET_ID_CUSTOM_SLIPPERY,			GADGET_ID_NONE,
     &custom_element_properties[EP_SLIPPERY],
     NULL, NULL,
-    NULL,				"Other elements can fall down from it"
+    NULL,					"Other elements can fall down from it"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_DEADLY,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
-    GADGET_ID_CUSTOM_DEADLY,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(10),
+    GADGET_ID_CUSTOM_DEADLY,			GADGET_ID_NONE,
     &custom_element_properties[EP_DEADLY],
     NULL, NULL,
-    NULL,				"Element can kill the player"
+    NULL,					"Element can kill the player"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_CAN_EXPLODE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(11),
-    GADGET_ID_CUSTOM_CAN_EXPLODE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(11),
+    GADGET_ID_CUSTOM_CAN_EXPLODE,		GADGET_ID_NONE,
     &custom_element_properties[EP_CAN_EXPLODE],
     NULL, NULL,
-    NULL,				"Element can explode"
+    NULL,					"Element can explode"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_FIRE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(12),
-    GADGET_ID_CUSTOM_EXPLODE_FIRE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(12),
+    GADGET_ID_CUSTOM_EXPLODE_FIRE,		GADGET_ID_NONE,
     &custom_element_properties[EP_EXPLODES_BY_FIRE],
     NULL, NULL,
-    "By fire",				"Element can explode by fire/explosion"
+    "By fire",					"Element can explode by fire/explosion"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_SMASH,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(12),
-    GADGET_ID_CUSTOM_EXPLODE_SMASH,	GADGET_ID_CUSTOM_EXPLODE_FIRE,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(12),
+    GADGET_ID_CUSTOM_EXPLODE_SMASH,		GADGET_ID_CUSTOM_EXPLODE_FIRE,
     &custom_element_properties[EP_EXPLODES_SMASHED],
     NULL, " ",
-    "Smashed",				"Element can explode when smashed"
+    "Smashed",					"Element can explode when smashed"
   },
   {
     ED_CHECKBUTTON_ID_CUSTOM_EXPLODE_IMPACT,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(12),
-    GADGET_ID_CUSTOM_EXPLODE_IMPACT,	GADGET_ID_CUSTOM_EXPLODE_SMASH,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(12),
+    GADGET_ID_CUSTOM_EXPLODE_IMPACT,		GADGET_ID_CUSTOM_EXPLODE_SMASH,
     &custom_element_properties[EP_EXPLODES_IMPACT],
     NULL, " ",
-    "Impact",				"Element can explode on impact"
+    "Impact",					"Element can explode on impact"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
 
   {
     ED_CHECKBUTTON_ID_CUSTOM_CAN_CHANGE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    GADGET_ID_CUSTOM_CAN_CHANGE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_CUSTOM_CAN_CHANGE,		GADGET_ID_NONE,
     &custom_element_change.can_change,
     NULL, NULL,
-    "Element changes to:",		"Change element on specified condition"
+    "Element changes to:",			"Change element on specified condition"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_DELAY,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_CHANGE_DELAY,		GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(2),
+    GADGET_ID_CHANGE_DELAY,			GADGET_ID_NONE,
     &custom_element_change_events[CE_DELAY],
     NULL, NULL,
-    NULL,				"Element changes after delay"
+    NULL,					"Element changes after delay"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_BY_DIRECT_ACT,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(4),
-    GADGET_ID_CHANGE_BY_DIRECT_ACT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_CHANGE_BY_DIRECT_ACT,		GADGET_ID_NONE,
     &custom_element_change_events[CE_BY_DIRECT_ACTION],
     NULL, NULL,
-    NULL,				"Element changes by direct action"
+    NULL,					"Element changes by direct action"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_BY_OTHER_ACT,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(5),
-    GADGET_ID_CHANGE_BY_OTHER_ACT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(5),
+    GADGET_ID_CHANGE_BY_OTHER_ACT,		GADGET_ID_NONE,
     &custom_element_change_events[CE_BY_OTHER_ACTION],
     NULL, NULL,
-    NULL,				"Element changes by other element"
+    NULL,					"Element changes by other element"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_USE_EXPLOSION,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(8),
-    GADGET_ID_CHANGE_USE_EXPLOSION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(8),
+    GADGET_ID_CHANGE_USE_EXPLOSION,		GADGET_ID_NONE,
     &custom_element_change.explode,
     NULL, NULL,
-    "Explode instead of change",	"Element explodes instead of change"
+    "Explode instead of change",		"Element explodes instead of change"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_USE_CONTENT,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(9),
-    GADGET_ID_CHANGE_USE_CONTENT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(9),
+    GADGET_ID_CHANGE_USE_CONTENT,		GADGET_ID_NONE,
     &custom_element_change.use_target_content,
     NULL, NULL,
-    "Use extended change target:",	"Element changes to more elements"
+    "Use extended change target:",		"Element changes to more elements"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_ONLY_COMPLETE,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(11),
-    GADGET_ID_CHANGE_ONLY_COMPLETE,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(11),
+    GADGET_ID_CHANGE_ONLY_COMPLETE,		GADGET_ID_NONE,
     &custom_element_change.only_if_complete,
     NULL, NULL,
-    "Replace all or nothing",		"Only replace when all can be changed"
+    "Replace all or nothing",			"Only replace when all can be changed"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_USE_RANDOM,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(12),
-    GADGET_ID_CHANGE_USE_RANDOM,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(12),
+    GADGET_ID_CHANGE_USE_RANDOM,		GADGET_ID_NONE,
     &custom_element_change.use_random_replace,
     NULL, NULL,
-    NULL,				"Use percentage for random replace"
+    NULL,					"Use percentage for random replace"
   },
   {
     ED_CHECKBUTTON_ID_CHANGE_HAS_ACTION,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(13),
-    GADGET_ID_CHANGE_HAS_ACTION,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(13),
+    GADGET_ID_CHANGE_HAS_ACTION,		GADGET_ID_NONE,
     &custom_element_change.has_action,
     NULL, NULL,
-    NULL,				"Execute action on specified condition"
+    NULL,					"Execute action on specified condition"
   },
 };
 
@@ -4209,451 +4209,451 @@ static struct
 
   {
     ED_DRAWING_ID_DRAWING_LEVEL,
-    0,					0,
-    0,					0,
-    GADGET_ID_DRAWING_LEVEL,		GADGET_ID_NONE,
+    0,						0,
+    0,						0,
+    GADGET_ID_DRAWING_LEVEL,			GADGET_ID_NONE,
     NULL,
     -1, -1,	// these values are not constant, but can change at runtime
-    NULL, NULL, NULL, NULL,		NULL
+    NULL, NULL, NULL, NULL,			NULL
   },
 
   // ---------- yam yam content -----------------------------------------------
 
   {
     ED_DRAWING_ID_YAMYAM_CONTENT_0,
-    ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
-    ED_AREA_YAMYAM_CONTENT_XOFF(0),	ED_AREA_YAMYAM_CONTENT_YOFF(0),
-    GADGET_ID_YAMYAM_CONTENT_0,		GADGET_ID_NONE,
-    &level.yamyam_content[0].e[0][0],	3, 3,
-    NULL, NULL, NULL, "1",		NULL
+    ED_AREA_YAMYAM_CONTENT_XPOS,		ED_AREA_YAMYAM_CONTENT_YPOS,
+    ED_AREA_YAMYAM_CONTENT_XOFF(0),		ED_AREA_YAMYAM_CONTENT_YOFF(0),
+    GADGET_ID_YAMYAM_CONTENT_0,			GADGET_ID_NONE,
+    &level.yamyam_content[0].e[0][0],		3, 3,
+    NULL, NULL, NULL, "1",			NULL
   },
   {
     ED_DRAWING_ID_YAMYAM_CONTENT_1,
-    ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
-    ED_AREA_YAMYAM_CONTENT_XOFF(1),	ED_AREA_YAMYAM_CONTENT_YOFF(1),
-    GADGET_ID_YAMYAM_CONTENT_1,		GADGET_ID_NONE,
-    &level.yamyam_content[1].e[0][0],	3, 3,
-    NULL, NULL, NULL, "2",		NULL
+    ED_AREA_YAMYAM_CONTENT_XPOS,		ED_AREA_YAMYAM_CONTENT_YPOS,
+    ED_AREA_YAMYAM_CONTENT_XOFF(1),		ED_AREA_YAMYAM_CONTENT_YOFF(1),
+    GADGET_ID_YAMYAM_CONTENT_1,			GADGET_ID_NONE,
+    &level.yamyam_content[1].e[0][0],		3, 3,
+    NULL, NULL, NULL, "2",			NULL
   },
   {
     ED_DRAWING_ID_YAMYAM_CONTENT_2,
-    ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
-    ED_AREA_YAMYAM_CONTENT_XOFF(2),	ED_AREA_YAMYAM_CONTENT_YOFF(2),
-    GADGET_ID_YAMYAM_CONTENT_2,		GADGET_ID_NONE,
-    &level.yamyam_content[2].e[0][0],	3, 3,
-    NULL, NULL, NULL, "3",		NULL
+    ED_AREA_YAMYAM_CONTENT_XPOS,		ED_AREA_YAMYAM_CONTENT_YPOS,
+    ED_AREA_YAMYAM_CONTENT_XOFF(2),		ED_AREA_YAMYAM_CONTENT_YOFF(2),
+    GADGET_ID_YAMYAM_CONTENT_2,			GADGET_ID_NONE,
+    &level.yamyam_content[2].e[0][0],		3, 3,
+    NULL, NULL, NULL, "3",			NULL
   },
   {
     ED_DRAWING_ID_YAMYAM_CONTENT_3,
-    ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
-    ED_AREA_YAMYAM_CONTENT_XOFF(3),	ED_AREA_YAMYAM_CONTENT_YOFF(3),
-    GADGET_ID_YAMYAM_CONTENT_3,		GADGET_ID_NONE,
-    &level.yamyam_content[3].e[0][0],	3, 3,
-    NULL, NULL, NULL, "4",		NULL
+    ED_AREA_YAMYAM_CONTENT_XPOS,		ED_AREA_YAMYAM_CONTENT_YPOS,
+    ED_AREA_YAMYAM_CONTENT_XOFF(3),		ED_AREA_YAMYAM_CONTENT_YOFF(3),
+    GADGET_ID_YAMYAM_CONTENT_3,			GADGET_ID_NONE,
+    &level.yamyam_content[3].e[0][0],		3, 3,
+    NULL, NULL, NULL, "4",			NULL
   },
   {
     ED_DRAWING_ID_YAMYAM_CONTENT_4,
-    ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
-    ED_AREA_YAMYAM_CONTENT_XOFF(4),	ED_AREA_YAMYAM_CONTENT_YOFF(4),
-    GADGET_ID_YAMYAM_CONTENT_4,		GADGET_ID_NONE,
-    &level.yamyam_content[4].e[0][0],	3, 3,
-    NULL, NULL, NULL, "5",		NULL
+    ED_AREA_YAMYAM_CONTENT_XPOS,		ED_AREA_YAMYAM_CONTENT_YPOS,
+    ED_AREA_YAMYAM_CONTENT_XOFF(4),		ED_AREA_YAMYAM_CONTENT_YOFF(4),
+    GADGET_ID_YAMYAM_CONTENT_4,			GADGET_ID_NONE,
+    &level.yamyam_content[4].e[0][0],		3, 3,
+    NULL, NULL, NULL, "5",			NULL
   },
   {
     ED_DRAWING_ID_YAMYAM_CONTENT_5,
-    ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
-    ED_AREA_YAMYAM_CONTENT_XOFF(5),	ED_AREA_YAMYAM_CONTENT_YOFF(5),
-    GADGET_ID_YAMYAM_CONTENT_5,		GADGET_ID_NONE,
-    &level.yamyam_content[5].e[0][0],	3, 3,
-    NULL, NULL, NULL, "6",		NULL
+    ED_AREA_YAMYAM_CONTENT_XPOS,		ED_AREA_YAMYAM_CONTENT_YPOS,
+    ED_AREA_YAMYAM_CONTENT_XOFF(5),		ED_AREA_YAMYAM_CONTENT_YOFF(5),
+    GADGET_ID_YAMYAM_CONTENT_5,			GADGET_ID_NONE,
+    &level.yamyam_content[5].e[0][0],		3, 3,
+    NULL, NULL, NULL, "6",			NULL
   },
   {
     ED_DRAWING_ID_YAMYAM_CONTENT_6,
-    ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
-    ED_AREA_YAMYAM_CONTENT_XOFF(6),	ED_AREA_YAMYAM_CONTENT_YOFF(6),
-    GADGET_ID_YAMYAM_CONTENT_6,		GADGET_ID_NONE,
-    &level.yamyam_content[6].e[0][0],	3, 3,
-    NULL, NULL, NULL, "7",		NULL
+    ED_AREA_YAMYAM_CONTENT_XPOS,		ED_AREA_YAMYAM_CONTENT_YPOS,
+    ED_AREA_YAMYAM_CONTENT_XOFF(6),		ED_AREA_YAMYAM_CONTENT_YOFF(6),
+    GADGET_ID_YAMYAM_CONTENT_6,			GADGET_ID_NONE,
+    &level.yamyam_content[6].e[0][0],		3, 3,
+    NULL, NULL, NULL, "7",			NULL
   },
   {
     ED_DRAWING_ID_YAMYAM_CONTENT_7,
-    ED_AREA_YAMYAM_CONTENT_XPOS,	ED_AREA_YAMYAM_CONTENT_YPOS,
-    ED_AREA_YAMYAM_CONTENT_XOFF(7),	ED_AREA_YAMYAM_CONTENT_YOFF(7),
-    GADGET_ID_YAMYAM_CONTENT_7,		GADGET_ID_NONE,
-    &level.yamyam_content[7].e[0][0],	3, 3,
-    NULL, NULL, NULL, "8",		NULL
+    ED_AREA_YAMYAM_CONTENT_XPOS,		ED_AREA_YAMYAM_CONTENT_YPOS,
+    ED_AREA_YAMYAM_CONTENT_XOFF(7),		ED_AREA_YAMYAM_CONTENT_YOFF(7),
+    GADGET_ID_YAMYAM_CONTENT_7,			GADGET_ID_NONE,
+    &level.yamyam_content[7].e[0][0],		3, 3,
+    NULL, NULL, NULL, "8",			NULL
   },
 
   // ---------- magic ball content --------------------------------------------
 
   {
     ED_DRAWING_ID_MAGIC_BALL_CONTENT_0,
-    ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
-    ED_AREA_MAGIC_BALL_CONTENT_XOFF(0),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(0),
-    GADGET_ID_MAGIC_BALL_CONTENT_0,	GADGET_ID_NONE,
-    &level.ball_content[0].e[0][0],	3, 3,
-    NULL, NULL, NULL, "1",		NULL
+    ED_AREA_MAGIC_BALL_CONTENT_XPOS,		ED_AREA_MAGIC_BALL_CONTENT_YPOS,
+    ED_AREA_MAGIC_BALL_CONTENT_XOFF(0),		ED_AREA_MAGIC_BALL_CONTENT_YOFF(0),
+    GADGET_ID_MAGIC_BALL_CONTENT_0,		GADGET_ID_NONE,
+    &level.ball_content[0].e[0][0],		3, 3,
+    NULL, NULL, NULL, "1",			NULL
   },
   {
     ED_DRAWING_ID_MAGIC_BALL_CONTENT_1,
-    ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
-    ED_AREA_MAGIC_BALL_CONTENT_XOFF(1),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(1),
-    GADGET_ID_MAGIC_BALL_CONTENT_1,	GADGET_ID_NONE,
-    &level.ball_content[1].e[0][0],	3, 3,
-    NULL, NULL, NULL, "2",		NULL
+    ED_AREA_MAGIC_BALL_CONTENT_XPOS,		ED_AREA_MAGIC_BALL_CONTENT_YPOS,
+    ED_AREA_MAGIC_BALL_CONTENT_XOFF(1),		ED_AREA_MAGIC_BALL_CONTENT_YOFF(1),
+    GADGET_ID_MAGIC_BALL_CONTENT_1,		GADGET_ID_NONE,
+    &level.ball_content[1].e[0][0],		3, 3,
+    NULL, NULL, NULL, "2",			NULL
   },
   {
     ED_DRAWING_ID_MAGIC_BALL_CONTENT_2,
-    ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
-    ED_AREA_MAGIC_BALL_CONTENT_XOFF(2),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(2),
-    GADGET_ID_MAGIC_BALL_CONTENT_2,	GADGET_ID_NONE,
-    &level.ball_content[2].e[0][0],	3, 3,
-    NULL, NULL, NULL, "3",		NULL
+    ED_AREA_MAGIC_BALL_CONTENT_XPOS,		ED_AREA_MAGIC_BALL_CONTENT_YPOS,
+    ED_AREA_MAGIC_BALL_CONTENT_XOFF(2),		ED_AREA_MAGIC_BALL_CONTENT_YOFF(2),
+    GADGET_ID_MAGIC_BALL_CONTENT_2,		GADGET_ID_NONE,
+    &level.ball_content[2].e[0][0],		3, 3,
+    NULL, NULL, NULL, "3",			NULL
   },
   {
     ED_DRAWING_ID_MAGIC_BALL_CONTENT_3,
-    ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
-    ED_AREA_MAGIC_BALL_CONTENT_XOFF(3),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(3),
-    GADGET_ID_MAGIC_BALL_CONTENT_3,	GADGET_ID_NONE,
-    &level.ball_content[3].e[0][0],	3, 3,
-    NULL, NULL, NULL, "4",		NULL
+    ED_AREA_MAGIC_BALL_CONTENT_XPOS,		ED_AREA_MAGIC_BALL_CONTENT_YPOS,
+    ED_AREA_MAGIC_BALL_CONTENT_XOFF(3),		ED_AREA_MAGIC_BALL_CONTENT_YOFF(3),
+    GADGET_ID_MAGIC_BALL_CONTENT_3,		GADGET_ID_NONE,
+    &level.ball_content[3].e[0][0],		3, 3,
+    NULL, NULL, NULL, "4",			NULL
   },
   {
     ED_DRAWING_ID_MAGIC_BALL_CONTENT_4,
-    ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
-    ED_AREA_MAGIC_BALL_CONTENT_XOFF(4),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(4),
-    GADGET_ID_MAGIC_BALL_CONTENT_4,	GADGET_ID_NONE,
-    &level.ball_content[4].e[0][0],	3, 3,
-    NULL, NULL, NULL, "5",		NULL
+    ED_AREA_MAGIC_BALL_CONTENT_XPOS,		ED_AREA_MAGIC_BALL_CONTENT_YPOS,
+    ED_AREA_MAGIC_BALL_CONTENT_XOFF(4),		ED_AREA_MAGIC_BALL_CONTENT_YOFF(4),
+    GADGET_ID_MAGIC_BALL_CONTENT_4,		GADGET_ID_NONE,
+    &level.ball_content[4].e[0][0],		3, 3,
+    NULL, NULL, NULL, "5",			NULL
   },
   {
     ED_DRAWING_ID_MAGIC_BALL_CONTENT_5,
-    ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
-    ED_AREA_MAGIC_BALL_CONTENT_XOFF(5),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(5),
-    GADGET_ID_MAGIC_BALL_CONTENT_5,	GADGET_ID_NONE,
-    &level.ball_content[5].e[0][0],	3, 3,
-    NULL, NULL, NULL, "6",		NULL
+    ED_AREA_MAGIC_BALL_CONTENT_XPOS,		ED_AREA_MAGIC_BALL_CONTENT_YPOS,
+    ED_AREA_MAGIC_BALL_CONTENT_XOFF(5),		ED_AREA_MAGIC_BALL_CONTENT_YOFF(5),
+    GADGET_ID_MAGIC_BALL_CONTENT_5,		GADGET_ID_NONE,
+    &level.ball_content[5].e[0][0],		3, 3,
+    NULL, NULL, NULL, "6",			NULL
   },
   {
     ED_DRAWING_ID_MAGIC_BALL_CONTENT_6,
-    ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
-    ED_AREA_MAGIC_BALL_CONTENT_XOFF(6),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(6),
-    GADGET_ID_MAGIC_BALL_CONTENT_6,	GADGET_ID_NONE,
-    &level.ball_content[6].e[0][0],	3, 3,
-    NULL, NULL, NULL, "7",		NULL
+    ED_AREA_MAGIC_BALL_CONTENT_XPOS,		ED_AREA_MAGIC_BALL_CONTENT_YPOS,
+    ED_AREA_MAGIC_BALL_CONTENT_XOFF(6),		ED_AREA_MAGIC_BALL_CONTENT_YOFF(6),
+    GADGET_ID_MAGIC_BALL_CONTENT_6,		GADGET_ID_NONE,
+    &level.ball_content[6].e[0][0],		3, 3,
+    NULL, NULL, NULL, "7",			NULL
   },
   {
     ED_DRAWING_ID_MAGIC_BALL_CONTENT_7,
-    ED_AREA_MAGIC_BALL_CONTENT_XPOS,	ED_AREA_MAGIC_BALL_CONTENT_YPOS,
-    ED_AREA_MAGIC_BALL_CONTENT_XOFF(7),	ED_AREA_MAGIC_BALL_CONTENT_YOFF(7),
-    GADGET_ID_MAGIC_BALL_CONTENT_7,	GADGET_ID_NONE,
-    &level.ball_content[7].e[0][0],	3, 3,
-    NULL, NULL, NULL, "8",		NULL
+    ED_AREA_MAGIC_BALL_CONTENT_XPOS,		ED_AREA_MAGIC_BALL_CONTENT_YPOS,
+    ED_AREA_MAGIC_BALL_CONTENT_XOFF(7),		ED_AREA_MAGIC_BALL_CONTENT_YOFF(7),
+    GADGET_ID_MAGIC_BALL_CONTENT_7,		GADGET_ID_NONE,
+    &level.ball_content[7].e[0][0],		3, 3,
+    NULL, NULL, NULL, "8",			NULL
   },
 
   // ---------- android content -----------------------------------------------
 
   {
     ED_DRAWING_ID_ANDROID_CONTENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(6),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_ANDROID_CONTENT,		GADGET_ID_NONE,
-    &level.android_clone_element[0],	MAX_ANDROID_ELEMENTS, 1,
-    NULL, NULL, "Elements:", NULL,	"Elements android can clone"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(6),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_ANDROID_CONTENT,			GADGET_ID_NONE,
+    &level.android_clone_element[0],		MAX_ANDROID_ELEMENTS, 1,
+    NULL, NULL, "Elements:", NULL,		"Elements android can clone"
   },
 
   // ---------- amoeba content ------------------------------------------------
 
   {
     ED_DRAWING_ID_AMOEBA_CONTENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(3),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_AMOEBA_CONTENT,		GADGET_ID_NONE,
-    &level.amoeba_content,		1, 1,
-    "Content:", NULL, NULL, NULL,	"Amoeba content"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(3),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_AMOEBA_CONTENT,			GADGET_ID_NONE,
+    &level.amoeba_content,			1, 1,
+    "Content:", NULL, NULL, NULL,		"Amoeba content"
   },
 
   // ---------- BD snap element -----------------------------------------------
 
   {
     ED_DRAWING_ID_BD_SNAP_ELEMENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(5),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_SNAP_ELEMENT,		GADGET_ID_NONE,
-    &level.bd_snap_element,		1, 1,
-    "Snap element:", NULL, NULL, NULL,	"Element created when snapping"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(5),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SNAP_ELEMENT,			GADGET_ID_NONE,
+    &level.bd_snap_element,			1, 1,
+    "Snap element:", NULL, NULL, NULL,		"Element created when snapping"
   },
 
   // ---------- BD magic wall elements ----------------------------------------
 
   {
     ED_DRAWING_ID_BD_MAGIC_WALL_DIAMOND_TO,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(4),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_MAGIC_WALL_DIAMOND_TO, GADGET_ID_NONE,
-    &level.bd_magic_wall_diamond_to,	1, 1,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(4),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_DIAMOND_TO,		GADGET_ID_NONE,
+    &level.bd_magic_wall_diamond_to,		1, 1,
     "Changes diamonds to:", NULL, NULL, NULL,	"Element to turn diamonds to"
   },
   {
     ED_DRAWING_ID_BD_MAGIC_WALL_ROCK_TO,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(5),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_MAGIC_WALL_ROCK_TO, GADGET_ID_NONE,
-    &level.bd_magic_wall_rock_to,	1, 1,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(5),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_ROCK_TO,		GADGET_ID_NONE,
+    &level.bd_magic_wall_rock_to,		1, 1,
     "Changes rocks to:", NULL, NULL, NULL,	"Element to turn rocks to"
   },
   {
     ED_DRAWING_ID_BD_MAGIC_WALL_MEGA_ROCK_TO,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(6),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_MAGIC_WALL_MEGA_ROCK_TO, GADGET_ID_NONE,
-    &level.bd_magic_wall_mega_rock_to,	1, 1,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(6),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_MEGA_ROCK_TO,	GADGET_ID_NONE,
+    &level.bd_magic_wall_mega_rock_to,		1, 1,
     "Changes mega rocks to:", NULL, NULL, NULL,	"Element to turn mega rocks to"
   },
   {
     ED_DRAWING_ID_BD_MAGIC_WALL_NUT_TO,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(7),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_MAGIC_WALL_NUT_TO, GADGET_ID_NONE,
-    &level.bd_magic_wall_nut_to,	1, 1,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(7),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_NUT_TO,		GADGET_ID_NONE,
+    &level.bd_magic_wall_nut_to,		1, 1,
     "Changes nuts to:", NULL, NULL, NULL,	"Element to turn nuts to"
   },
   {
     ED_DRAWING_ID_BD_MAGIC_WALL_NITRO_PACK_TO,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(8),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_MAGIC_WALL_NITRO_PACK_TO, GADGET_ID_NONE,
-    &level.bd_magic_wall_nitro_pack_to,	1, 1,
-    "Changes nitro packs to:", NULL, NULL, NULL, 	"Element to turn nitro packs to"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(8),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_NITRO_PACK_TO,	GADGET_ID_NONE,
+    &level.bd_magic_wall_nitro_pack_to,		1, 1,
+    "Changes nitro packs to:", NULL, NULL, NULL, "Element to turn nitro packs to"
   },
   {
     ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(9),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO, GADGET_ID_NONE,
-    &level.bd_magic_wall_flying_diamond_to, 1, 1,
-    "Changes flying diamonds to:", NULL, NULL, NULL,	"Element to turn flying diamonds to"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(9),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO,	GADGET_ID_NONE,
+    &level.bd_magic_wall_flying_diamond_to,	1, 1,
+    "Changes flying diamonds to:", NULL, NULL, NULL, "Element to turn flying diamonds to"
   },
   {
     ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_ROCK_TO,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(10),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_MAGIC_WALL_FLYING_ROCK_TO, GADGET_ID_NONE,
-    &level.bd_magic_wall_flying_rock_to, 1, 1,
-    "Changes flying rocks to:", NULL, NULL, NULL,	"Element to turn flying rocks to"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(10),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_FLYING_ROCK_TO,	GADGET_ID_NONE,
+    &level.bd_magic_wall_flying_rock_to,	1, 1,
+    "Changes flying rocks to:", NULL, NULL, NULL, "Element to turn flying rocks to"
   },
 
   // ---------- BD amoeba content ---------------------------------------------
 
   {
     ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(7),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG, GADGET_ID_NONE,
-    &level.bd_amoeba_content_too_big,	1, 1,
-    "If too big, changes to:", NULL, NULL, NULL,	"BD amoeba content if too big"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(7),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG,	GADGET_ID_NONE,
+    &level.bd_amoeba_content_too_big,		1, 1,
+    "If too big, changes to:", NULL, NULL, NULL, "BD amoeba content if too big"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(8),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED, GADGET_ID_NONE,
-    &level.bd_amoeba_content_enclosed,	1, 1,
-    "If enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba content if enclosed"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(8),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED,	GADGET_ID_NONE,
+    &level.bd_amoeba_content_enclosed,		1, 1,
+    "If enclosed, changes to:", NULL, NULL, NULL, "BD amoeba content if enclosed"
   },
 
   // ---------- BD amoeba 2 content -------------------------------------------
 
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(7),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG, GADGET_ID_NONE,
-    &level.bd_amoeba_2_content_too_big,	1, 1,
-    "If too big, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if too big"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(7),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,	GADGET_ID_NONE,
+    &level.bd_amoeba_2_content_too_big,		1, 1,
+    "If too big, changes to:", NULL, NULL, NULL, "BD amoeba 2 content if too big"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(8),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_AMOEBA_2_CONTENT_ENCLOSED, GADGET_ID_NONE,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(8),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_enclosed,	1, 1,
-    "If enclosed, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if enclosed"
+    "If enclosed, changes to:", NULL, NULL, NULL, "BD amoeba 2 content if enclosed"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(10),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_AMOEBA_2_CONTENT_EXPLODING, GADGET_ID_NONE,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(10),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_AMOEBA_2_CONTENT_EXPLODING,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_exploding,	1, 1,
-    "If exploding, changes to:", NULL, NULL, NULL,	"BD amoeba 2 content if exploding"
+    "If exploding, changes to:", NULL, NULL, NULL, "BD amoeba 2 content if exploding"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(11),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(11),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_looks_like,	1, 1,
-    "Use graphic of element:", NULL, NULL, NULL,	"BD amoeba 2 looks like this element"
+    "Use graphic of element:", NULL, NULL, NULL, "BD amoeba 2 looks like this element"
   },
   {
     ED_DRAWING_ID_BD_SLIME_EATS_ELEMENT_1,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(5),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_SLIME_EATS_ELEMENT_1,	GADGET_ID_NONE,
-    &level.bd_slime_eats_element_1,	1, 1,
-    "Can eat:", NULL, NULL, NULL,	"Element that can be eaten"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(5),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SLIME_EATS_ELEMENT_1,		GADGET_ID_NONE,
+    &level.bd_slime_eats_element_1,		1, 1,
+    "Can eat:", NULL, NULL, NULL,		"Element that can be eaten"
   },
   {
     ED_DRAWING_ID_BD_SLIME_CONVERTS_TO_ELEMENT_1,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(5),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_SLIME_CONVERTS_TO_ELEMENT_1, GADGET_ID_BD_SLIME_EATS_ELEMENT_1,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(5),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SLIME_CONVERTS_TO_ELEMENT_1,	GADGET_ID_BD_SLIME_EATS_ELEMENT_1,
     &level.bd_slime_converts_to_element_1,	1, 1,
     " and convert to:", NULL, NULL, NULL,	"Eaten element is converted to"
   },
   {
     ED_DRAWING_ID_BD_SLIME_EATS_ELEMENT_2,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(6),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_SLIME_EATS_ELEMENT_2,	GADGET_ID_NONE,
-    &level.bd_slime_eats_element_2,	1, 1,
-    "Can eat:", NULL, NULL, NULL,	"Element that can be eaten"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(6),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SLIME_EATS_ELEMENT_2,		GADGET_ID_NONE,
+    &level.bd_slime_eats_element_2,		1, 1,
+    "Can eat:", NULL, NULL, NULL,		"Element that can be eaten"
   },
   {
     ED_DRAWING_ID_BD_SLIME_CONVERTS_TO_ELEMENT_2,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(6),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_SLIME_CONVERTS_TO_ELEMENT_2, GADGET_ID_BD_SLIME_EATS_ELEMENT_2,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(6),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SLIME_CONVERTS_TO_ELEMENT_2,	GADGET_ID_BD_SLIME_EATS_ELEMENT_2,
     &level.bd_slime_converts_to_element_2,	1, 1,
     " and convert to:", NULL, NULL, NULL,	"Eaten element is converted to"
   },
   {
     ED_DRAWING_ID_BD_SLIME_EATS_ELEMENT_3,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(7),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_SLIME_EATS_ELEMENT_3,	GADGET_ID_NONE,
-    &level.bd_slime_eats_element_3,	1, 1,
-    "Can eat:", NULL, NULL, NULL,	"Element that can be eaten"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(7),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SLIME_EATS_ELEMENT_3,		GADGET_ID_NONE,
+    &level.bd_slime_eats_element_3,		1, 1,
+    "Can eat:", NULL, NULL, NULL,		"Element that can be eaten"
   },
   {
     ED_DRAWING_ID_BD_SLIME_CONVERTS_TO_ELEMENT_3,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(7),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_SLIME_CONVERTS_TO_ELEMENT_3, GADGET_ID_BD_SLIME_EATS_ELEMENT_3,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(7),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SLIME_CONVERTS_TO_ELEMENT_3,	GADGET_ID_BD_SLIME_EATS_ELEMENT_3,
     &level.bd_slime_converts_to_element_3,	1, 1,
     " and convert to:", NULL, NULL, NULL,	"Eaten element is converted to"
   },
   {
     ED_DRAWING_ID_BD_ACID_EATS_ELEMENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(1),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_ACID_EATS_ELEMENT,	GADGET_ID_NONE,
-    &level.bd_acid_eats_element,	1, 1,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_ACID_EATS_ELEMENT,		GADGET_ID_NONE,
+    &level.bd_acid_eats_element,		1, 1,
     "Can eat:", NULL, NULL, NULL,		"Eats this element when spreading"
   },
   {
     ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(3),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,	GADGET_ID_NONE,
-    &level.bd_acid_turns_to_element,	1, 1,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(3),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_ACID_TURNS_TO_ELEMENT,		GADGET_ID_NONE,
+    &level.bd_acid_turns_to_element,		1, 1,
     "Can leave behind:", NULL, NULL, NULL,	"Turns to this element after spreading"
   },
   {
     ED_DRAWING_ID_BD_BITER_EATS_ELEMENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(2),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_BITER_EATS_ELEMENT,	GADGET_ID_NONE,
-    &level.bd_biter_eats_element,	1, 1,
-    "Can eat:", NULL, NULL, NULL,	"Eats this element when moving"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(2),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_BITER_EATS_ELEMENT,		GADGET_ID_NONE,
+    &level.bd_biter_eats_element,		1, 1,
+    "Can eat:", NULL, NULL, NULL,		"Eats this element when moving"
   },
   {
     ED_DRAWING_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(1),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_BLADDER_CONVERTS_BY_ELEMENT, GADGET_ID_NONE,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,	GADGET_ID_NONE,
     &level.bd_bladder_converts_by_element,	1, 1,
-    "Turns to clock by touching:", NULL, NULL, NULL,	"Turns to clock by touching element"
+    "Turns to clock by touching:", NULL, NULL, NULL, "Turns to clock by touching element"
   },
   {
     ED_DRAWING_ID_BD_NUT_CONTENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(1),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_NUT_CONTENT,		GADGET_ID_NONE,
-    &level.bd_nut_content,		1, 1,
-    "When breaking, changes to:", NULL, NULL, NULL,	"Element created when breaking nut"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_NUT_CONTENT,			GADGET_ID_NONE,
+    &level.bd_nut_content,			1, 1,
+    "When breaking, changes to:", NULL, NULL, NULL, "Element created when breaking nut"
   },
   {
     ED_DRAWING_ID_BD_EXPANDING_WALL_LOOKS_LIKE,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(1),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_EXPANDING_WALL_LOOKS_LIKE, GADGET_ID_NONE,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_EXPANDING_WALL_LOOKS_LIKE,	GADGET_ID_NONE,
     &level.bd_expanding_wall_looks_like,	1, 1,
-    "Use graphic of element:", NULL, NULL, NULL,	"Expanding wall looks like this element"
+    "Use graphic of element:", NULL, NULL, NULL, "Expanding wall looks like this element"
   },
   {
     ED_DRAWING_ID_BD_SAND_LOOKS_LIKE,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(0),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_SAND_LOOKS_LIKE, GADGET_ID_NONE,
-    &level.bd_sand_looks_like,	1, 1,
-    "Use graphic of element:", NULL, NULL, NULL,	"Sand looks like this element"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SAND_LOOKS_LIKE,		GADGET_ID_NONE,
+    &level.bd_sand_looks_like,			1, 1,
+    "Use graphic of element:", NULL, NULL, NULL, "Sand looks like this element"
   },
 
   // ---------- level start element -------------------------------------------
 
   {
     ED_DRAWING_ID_START_ELEMENT,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(10),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_START_ELEMENT,		GADGET_ID_USE_START_ELEMENT,
-    &level.start_element[0],		1, 1,
-    NULL, NULL, NULL, NULL,		"Level start element"
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(10),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_START_ELEMENT,			GADGET_ID_USE_START_ELEMENT,
+    &level.start_element[0],			1, 1,
+    NULL, NULL, NULL, NULL,			"Level start element"
   },
 
   // ---------- player artwork element ----------------------------------------
 
   {
     ED_DRAWING_ID_ARTWORK_ELEMENT,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(11),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_ARTWORK_ELEMENT,		GADGET_ID_USE_ARTWORK_ELEMENT,
-    &level.artwork_element[0],		1, 1,
-    NULL, NULL, NULL, NULL,		"Element for player artwork"
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(11),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_ARTWORK_ELEMENT,			GADGET_ID_USE_ARTWORK_ELEMENT,
+    &level.artwork_element[0],			1, 1,
+    NULL, NULL, NULL, NULL,			"Element for player artwork"
   },
 
   // ---------- player explosion element --------------------------------------
 
   {
     ED_DRAWING_ID_EXPLOSION_ELEMENT,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(12),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_EXPLOSION_ELEMENT,	GADGET_ID_USE_EXPLOSION_ELEMENT,
-    &level.explosion_element[0],	1, 1,
-    NULL, NULL, NULL, NULL,		"Element for player explosion"
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(12),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_EXPLOSION_ELEMENT,		GADGET_ID_USE_EXPLOSION_ELEMENT,
+    &level.explosion_element[0],		1, 1,
+    NULL, NULL, NULL, NULL,			"Element for player explosion"
   },
 
   // ---------- player initial inventory --------------------------------------
 
   {
     ED_DRAWING_ID_INVENTORY_CONTENT,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(1),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_INVENTORY_CONTENT,	GADGET_ID_USE_INITIAL_INVENTORY,
-    &level.initial_inventory_content[0][0], MAX_INITIAL_INVENTORY_SIZE, 1,
-    NULL, NULL, NULL, NULL,		"Content for initial inventory"
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(1),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_INVENTORY_CONTENT,		GADGET_ID_USE_INITIAL_INVENTORY,
+    &level.initial_inventory_content[0][0],	MAX_INITIAL_INVENTORY_SIZE, 1,
+    NULL, NULL, NULL, NULL,			"Content for initial inventory"
   },
 
   // ---------- gray ball content -----------------------------------------
 
   {
     ED_DRAWING_ID_MM_BALL_CONTENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(2),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_MM_BALL_CONTENT,		GADGET_ID_NONE,
-    &level.mm_ball_content[0],		MAX_MM_BALL_CONTENTS, 1,
-    "Content:", NULL, NULL, NULL,	"Content for gray ball"
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(2),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_MM_BALL_CONTENT,			GADGET_ID_NONE,
+    &level.mm_ball_content[0],			MAX_MM_BALL_CONTENTS, 1,
+    "Content:", NULL, NULL, NULL,		"Content for gray ball"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
@@ -4662,11 +4662,11 @@ static struct
 
   {
     ED_DRAWING_ID_CUSTOM_GRAPHIC,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(1),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_CUSTOM_GRAPHIC,		GADGET_ID_CUSTOM_USE_GRAPHIC,
-    &custom_element.gfx_element_initial, 1, 1,
-    NULL, NULL, NULL, NULL,		"Custom graphic element"
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(1),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_CUSTOM_GRAPHIC,			GADGET_ID_CUSTOM_USE_GRAPHIC,
+    &custom_element.gfx_element_initial,	1, 1,
+    NULL, NULL, NULL, NULL,			"Custom graphic element"
   },
 
   // ---------- element settings: configure 2 (custom elements) ---------------
@@ -4675,30 +4675,30 @@ static struct
 
   {
     ED_DRAWING_ID_CUSTOM_CONTENT,
-    -1,					ED_AREA_3X3_SETTINGS_YPOS(11),
-    0,					ED_AREA_3X3_SETTINGS_YOFF,
-    GADGET_ID_CUSTOM_CONTENT,		GADGET_ID_NONE,	// align three rows
-    &custom_element.content.e[0][0],	3, 3,
-    "Content:", NULL, NULL, NULL,	NULL
+    -1,						ED_AREA_3X3_SETTINGS_YPOS(11),
+    0,						ED_AREA_3X3_SETTINGS_YOFF,
+    GADGET_ID_CUSTOM_CONTENT,			GADGET_ID_NONE,		// align three rows
+    &custom_element.content.e[0][0],		3, 3,
+    "Content:", NULL, NULL, NULL,		NULL
   },
 
   // ---------- custom enter and leave element (when moving) ------------------
 
   {
     ED_DRAWING_ID_CUSTOM_MOVE_ENTER,
-    ED_AREA_1X1_SETTINGS_XPOS(1),	ED_AREA_1X1_SETTINGS_YPOS(3),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_CUSTOM_MOVE_ENTER,	GADGET_ID_NONE,
-    &custom_element.move_enter_element,	1, 1,
-    "Can dig:", " ", NULL, NULL,	"Element that can be digged/collected"
+    ED_AREA_1X1_SETTINGS_XPOS(1),		ED_AREA_1X1_SETTINGS_YPOS(3),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_CUSTOM_MOVE_ENTER,		GADGET_ID_NONE,
+    &custom_element.move_enter_element,		1, 1,
+    "Can dig:", " ", NULL, NULL,		"Element that can be digged/collected"
   },
   {
     ED_DRAWING_ID_CUSTOM_MOVE_LEAVE,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(3),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_CUSTOM_MOVE_LEAVE,	GADGET_ID_CUSTOM_MOVE_LEAVE_TYPE,
-    &custom_element.move_leave_element,	1, 1,
-    NULL, NULL, NULL, NULL,		"Element that will be left behind"
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(3),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_CUSTOM_MOVE_LEAVE,		GADGET_ID_CUSTOM_MOVE_LEAVE_TYPE,
+    &custom_element.move_leave_element,		1, 1,
+    NULL, NULL, NULL, NULL,			"Element that will be left behind"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
@@ -4707,66 +4707,66 @@ static struct
 
   {
     ED_DRAWING_ID_CUSTOM_CHANGE_TARGET,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(1),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_CUSTOM_CHANGE_TARGET,	GADGET_ID_CUSTOM_CAN_CHANGE,
-    &custom_element_change.target_element, 1, 1,
-    NULL, "after/when:", NULL, NULL,	"New target element after change"
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(1),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_CUSTOM_CHANGE_TARGET,		GADGET_ID_CUSTOM_CAN_CHANGE,
+    &custom_element_change.target_element,	1, 1,
+    NULL, "after/when:", NULL, NULL,		"New target element after change"
   },
 
   // ---------- custom change content (extended change target) ----------------
 
   {
     ED_DRAWING_ID_CUSTOM_CHANGE_CONTENT,
-    -1,					ED_AREA_3X3_SETTINGS_YPOS(9),
-    0,					ED_AREA_3X3_SETTINGS_YOFF,
-    GADGET_ID_CUSTOM_CHANGE_CONTENT,	GADGET_ID_NONE,	// align three rows
+    -1,						ED_AREA_3X3_SETTINGS_YPOS(9),
+    0,						ED_AREA_3X3_SETTINGS_YOFF,
+    GADGET_ID_CUSTOM_CHANGE_CONTENT,		GADGET_ID_NONE,		// align three rows
     &custom_element_change.target_content.e[0][0], 3, 3,
-    NULL, NULL, NULL, NULL,		"New extended elements after change"
+    NULL, NULL, NULL, NULL,			"New extended elements after change"
   },
 
   // ---------- custom change trigger (element causing change) ----------------
 
   {
     ED_DRAWING_ID_CUSTOM_CHANGE_TRIGGER,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(5),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_CUSTOM_CHANGE_TRIGGER,	GADGET_ID_CHANGE_OTHER_ACTION,
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(5),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_CUSTOM_CHANGE_TRIGGER,		GADGET_ID_CHANGE_OTHER_ACTION,
     &custom_element_change.initial_trigger_element, 1, 1,
-    NULL, NULL, NULL, NULL,		"Other element triggering change"
+    NULL, NULL, NULL, NULL,			"Other element triggering change"
   },
 
   // ---------- custom change action (element used for action) ----------------
 
   {
     ED_DRAWING_ID_CUSTOM_CHANGE_ACTION,
-    -1,					ED_AREA_1X1_SETTINGS_YPOS(13),
-    0,					ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_CUSTOM_CHANGE_ACTION,	GADGET_ID_ACTION_ARG,
-    &custom_element_change.action_element, 1, 1,
-    NULL, NULL, NULL, NULL,		"Element used as action parameter"
+    -1,						ED_AREA_1X1_SETTINGS_YPOS(13),
+    0,						ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_CUSTOM_CHANGE_ACTION,		GADGET_ID_ACTION_ARG,
+    &custom_element_change.action_element,	1, 1,
+    NULL, NULL, NULL, NULL,			"Element used as action parameter"
   },
 
   // ---------- group element content -----------------------------------------
 
   {
     ED_DRAWING_ID_GROUP_CONTENT,
-    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(2),
-    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_GROUP_CONTENT,		GADGET_ID_NONE,
-    &group_element_info.element[0],	MAX_ELEMENTS_IN_GROUP, 1,
-    "Content:", NULL, NULL, NULL,	NULL
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(2),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_GROUP_CONTENT,			GADGET_ID_NONE,
+    &group_element_info.element[0],		MAX_ELEMENTS_IN_GROUP, 1,
+    "Content:", NULL, NULL, NULL,		NULL
   },
 
   // ---------- random background (for random painting) -----------------------
 
   {
     ED_DRAWING_ID_RANDOM_BACKGROUND,
-    -1,					ED_AREA_1X1_LSETTINGS_YPOS(1),
-    0,					ED_AREA_1X1_LSETTINGS_YOFF,
-    GADGET_ID_RANDOM_BACKGROUND,	GADGET_ID_RANDOM_RESTRICTED,
-    &random_placement_background_element, 1, 1,
-    NULL, NULL, NULL, NULL,		"Random placement background"
+    -1,						ED_AREA_1X1_LSETTINGS_YPOS(1),
+    0,						ED_AREA_1X1_LSETTINGS_YOFF,
+    GADGET_ID_RANDOM_BACKGROUND,		GADGET_ID_RANDOM_RESTRICTED,
+    &random_placement_background_element,	1, 1,
+    NULL, NULL, NULL, NULL,			"Random placement background"
   },
 };
 
