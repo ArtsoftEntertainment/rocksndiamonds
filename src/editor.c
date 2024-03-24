@@ -582,6 +582,7 @@ enum
   GADGET_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
   GADGET_ID_BD_NUT_CONTENT,
   GADGET_ID_BD_EXPANDING_WALL_LOOKS_LIKE,
+  GADGET_ID_BD_SAND_LOOKS_LIKE,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1222,6 +1223,7 @@ enum
   ED_DRAWING_ID_BD_BLADDER_CONVERTS_BY_ELEMENT,
   ED_DRAWING_ID_BD_NUT_CONTENT,
   ED_DRAWING_ID_BD_EXPANDING_WALL_LOOKS_LIKE,
+  ED_DRAWING_ID_BD_SAND_LOOKS_LIKE,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4589,6 +4591,14 @@ static struct
     GADGET_ID_BD_EXPANDING_WALL_LOOKS_LIKE, GADGET_ID_NONE,
     &level.bd_expanding_wall_looks_like,	1, 1,
     "Use graphic of element:", NULL, NULL, NULL,	"Expanding wall looks like this element"
+  },
+  {
+    ED_DRAWING_ID_BD_SAND_LOOKS_LIKE,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_SAND_LOOKS_LIKE, GADGET_ID_NONE,
+    &level.bd_sand_looks_like,	1, 1,
+    "Use graphic of element:", NULL, NULL, NULL,	"Sand looks like this element"
   },
 
   // ---------- level start element -------------------------------------------
@@ -11518,6 +11528,7 @@ static boolean checkPropertiesConfig(int element)
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
       MAYBE_DONT_COLLIDE_WITH(element) ||
+      element == EL_BD_SAND ||
       element == EL_BD_ROCK ||
       element == EL_BD_MEGA_ROCK ||
       element == EL_BD_SWEET ||
@@ -11853,6 +11864,11 @@ static void DrawPropertiesConfig(void)
 
     // draw drawing area gadgets
     MapDrawingArea(ED_DRAWING_ID_BD_SNAP_ELEMENT);
+  }
+
+  if (properties_element == EL_BD_SAND)
+  {
+    MapDrawingArea(ED_DRAWING_ID_BD_SAND_LOOKS_LIKE);
   }
 
   if (properties_element == EL_BD_ROCK && level.game_engine_type == GAME_ENGINE_TYPE_BD)

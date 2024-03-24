@@ -879,6 +879,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.bd_skeleton_worth_num_diamonds,	0
   },
 
+  {
+    EL_BD_SAND,				-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_sand_looks_like,		EL_BD_SAND
+  },
+
   // (the following values are related to various game elements)
 
   {
@@ -4209,6 +4215,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->skeletons_worth_diamonds	= level->bd_skeleton_worth_num_diamonds;
 
   cave->expanding_wall_looks_like	= map_element_RND_to_BD_cave(level->bd_expanding_wall_looks_like);
+  cave->dirt_looks_like			= map_element_RND_to_BD_cave(level->bd_sand_looks_like);
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -4344,6 +4351,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_skeleton_worth_num_diamonds	= cave->skeletons_worth_diamonds;
 
   level->bd_expanding_wall_looks_like	= map_element_BD_to_RND_cave(cave->expanding_wall_looks_like);
+  level->bd_sand_looks_like		= map_element_BD_to_RND_cave(cave->dirt_looks_like);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

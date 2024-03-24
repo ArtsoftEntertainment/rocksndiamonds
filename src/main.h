@@ -3683,6 +3683,7 @@ struct LevelInfo
   int bd_num_skeletons_needed_for_pot;	// BD skeletons amount must be collected to use a pot
   int bd_skeleton_worth_num_diamonds;	// BD skeleton collected is worth this number of diamonds
   int bd_expanding_wall_looks_like;	// BD expanding wall looks like this other game element
+  int bd_sand_looks_like;		// BD sand looks like this other game element
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
