@@ -3675,7 +3675,7 @@ struct LevelInfo
   boolean bd_conveyor_belts_active;	// BD conveyor belts start in active state if enabled
   boolean bd_conveyor_belts_changed;	// BD conveyor belts direction is changed if enabled
   boolean bd_water_cannot_flow_down;	// BD water does not flow downwards if enabled
-  boolean bd_nut_content;		// BD nut contains the specified game element
+  int bd_nut_content;			// BD nut contains the specified game element
   int bd_hammer_walls_break_delay;	// BD hammer time for breaking walls (in BD frames)
   boolean bd_hammer_walls_reappear;	// BD hammered walls are reappearing after some delay
   int bd_hammer_walls_reappear_delay;	// BD hammer time for reappearing walls (in BD frames)
