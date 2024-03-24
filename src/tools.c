@@ -6212,7 +6212,7 @@ bd_object_mapping_list[] =
   },
   {
     O_FLYING_STONE_F,				FALSE,
-    EL_BD_FLYING_ROCK,				ACTION_FALLING, -1
+    EL_BD_FLYING_ROCK,				ACTION_FLYING, -1
   },
   {
     O_MEGA_STONE,				TRUE,
@@ -6248,7 +6248,7 @@ bd_object_mapping_list[] =
   },
   {
     O_FLYING_DIAMOND_F,				FALSE,
-    EL_BD_FLYING_DIAMOND,			ACTION_FALLING, -1
+    EL_BD_FLYING_DIAMOND,			ACTION_FLYING, -1
   },
   {
     O_NUT,					TRUE,
@@ -6975,14 +6975,6 @@ bd_object_mapping_list[] =
     EL_BD_NITRO_PACK,				ACTION_FALLING, -1
   },
   {
-    O_NITRO_PACK_EXPLODE,			TRUE,
-    EL_BD_NITRO_PACK_EXPLODING,			-1, -1
-  },
-  {
-    O_NITRO_PACK_EXPLODE,			FALSE,
-    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
-  },
-  {
     O_PRE_CLOCK_1,				TRUE,
     EL_BD_CLOCK_GROWING_1,			-1, -1
   },
@@ -7252,6 +7244,14 @@ bd_object_mapping_list[] =
   },
   {
     O_NITRO_EXPL_4,				FALSE,
+    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+  },
+  {
+    O_NITRO_PACK_EXPLODE,			TRUE,
+    EL_BD_NITRO_PACK_EXPLODING,			-1, -1
+  },
+  {
+    O_NITRO_PACK_EXPLODE,			FALSE,
     EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
   },
   {
