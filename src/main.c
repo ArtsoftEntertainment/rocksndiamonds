@@ -6705,7 +6705,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_nut",
     "bd_nut",
-    "Nut"
+    "Nut (BD style)"
   },
   {
     "bd_amoeba_2",

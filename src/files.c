@@ -743,6 +743,36 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_INTEGER,			CONF_VALUE_32_BIT(1),
     &li.bd_slime_random_seed_c64,	-1
   },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_slime_eats_element_1,	EL_BD_DIAMOND
+  },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
+    &li.bd_slime_converts_to_element_1,	EL_BD_DIAMOND_FALLING
+  },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
+    &li.bd_slime_eats_element_2,	EL_BD_ROCK
+  },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
+    &li.bd_slime_converts_to_element_2,	EL_BD_ROCK_FALLING
+  },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
+    &li.bd_slime_eats_element_3,	EL_BD_NUT
+  },
+  {
+    EL_BD_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
+    &li.bd_slime_converts_to_element_3,	EL_BD_NUT_FALLING
+  },
 
   {
     EL_BD_ACID,				-1,
@@ -4111,6 +4141,12 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->level_slime_permeability_c64[0]	= level->bd_slime_permeability_bits_c64;
   cave->level_slime_seed_c64[0]		= level->bd_slime_random_seed_c64;
   cave->level_rand[0]			= level->bd_cave_random_seed_c64;
+  cave->slime_eats_1			= map_element_RND_to_BD_cave(level->bd_slime_eats_element_1);
+  cave->slime_converts_1		= map_element_RND_to_BD_cave(level->bd_slime_converts_to_element_1);
+  cave->slime_eats_2			= map_element_RND_to_BD_cave(level->bd_slime_eats_element_2);
+  cave->slime_converts_2		= map_element_RND_to_BD_cave(level->bd_slime_converts_to_element_2);
+  cave->slime_eats_3			= map_element_RND_to_BD_cave(level->bd_slime_eats_element_3);
+  cave->slime_converts_3		= map_element_RND_to_BD_cave(level->bd_slime_converts_to_element_3);
 
   cave->acid_eats_this			= map_element_RND_to_BD_cave(level->bd_acid_eats_element);
   cave->acid_spread_ratio		= level->bd_acid_spread_rate * 10000;
@@ -4231,6 +4267,12 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_slime_permeability_bits_c64	= cave->level_slime_permeability_c64[bd_level_nr];
   level->bd_slime_random_seed_c64	= cave->level_slime_seed_c64[bd_level_nr];
   level->bd_cave_random_seed_c64	= cave->level_rand[bd_level_nr];
+  level->bd_slime_eats_element_1	= map_element_BD_to_RND_cave(cave->slime_eats_1);
+  level->bd_slime_converts_to_element_1	= map_element_BD_to_RND_cave(cave->slime_converts_1);
+  level->bd_slime_eats_element_2	= map_element_BD_to_RND_cave(cave->slime_eats_2);
+  level->bd_slime_converts_to_element_2	= map_element_BD_to_RND_cave(cave->slime_converts_2);
+  level->bd_slime_eats_element_3	= map_element_BD_to_RND_cave(cave->slime_eats_3);
+  level->bd_slime_converts_to_element_3	= map_element_BD_to_RND_cave(cave->slime_converts_3);
 
   level->bd_acid_eats_element		= map_element_BD_to_RND_cave(cave->acid_eats_this);
   level->bd_acid_spread_rate		= cave->acid_spread_ratio / 10000;

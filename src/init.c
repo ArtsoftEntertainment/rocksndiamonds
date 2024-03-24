@@ -4292,6 +4292,7 @@ void InitElementPropertiesStatic(void)
     EL_AMOEBA_FULL,
     EL_BD_AMOEBA,
     EL_BD_AMOEBA_2,
+    EL_BD_SLIME,
     EL_BD_ACID,
     EL_BD_BITER,
     EL_BD_BITER_RIGHT,
