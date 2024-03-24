@@ -787,7 +787,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BD_ACID,				-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_acid_turns_to_element,	EL_EMPTY
+    &li.bd_acid_turns_to_element,	EL_BD_EXPLODING_3
   },
 
   {
