@@ -11299,7 +11299,7 @@ static void DrawPropertiesInfo(void)
 #define TEXT_REPLICATION_DELAY		"Create delay (BD frames)"
 #define TEXT_HAMMER_BREAK_DELAY		"Delay for breaking walls"
 #define TEXT_HAMMER_REAPPEAR_DELAY	"Delay for reappearing walls"
-#define TEXT_SKELETONS_NEEDED		"Amount needed to use a pot"
+#define TEXT_SKELETONS_NEEDED		"Skeletons needed to use pot"
 #define TEXT_SKELETONS_WORTH		"Counts as this many diamonds"
 
 static struct
@@ -11441,6 +11441,8 @@ static struct
 				1, 100								},
   { EL_BD_PNEUMATIC_HAMMER,	&level.bd_hammer_walls_reappear_delay,	TEXT_HAMMER_REAPPEAR_DELAY,
 				1, 200								},
+  { EL_BD_POT,			&level.bd_num_skeletons_needed_for_pot,	TEXT_SKELETONS_NEEDED,
+				0, 50								},
   { EL_BD_SKELETON,		&level.bd_num_skeletons_needed_for_pot,	TEXT_SKELETONS_NEEDED,
 				0, 50								},
   { EL_BD_SKELETON,		&level.bd_skeleton_worth_num_diamonds,	TEXT_SKELETONS_WORTH,
