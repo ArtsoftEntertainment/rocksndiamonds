@@ -8376,22 +8376,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "internal_cascade_bd_native",
     "internal",
-    "Show native Boulder Dash elements"
+    "Show Boulder Dash native elements"
   },
   {
     "internal_cascade_bd_native.active",
     "internal",
-    "Hide native Boulder Dash elements"
+    "Hide Boulder Dash native elements"
   },
   {
     "internal_cascade_bd_effects",
     "internal",
-    "Show Boulder Dash effect elements"
+    "Show Boulder Dash effects elements"
   },
   {
     "internal_cascade_bd_effects.active",
     "internal",
-    "Hide Boulder Dash effect elements"
+    "Hide Boulder Dash effects elements"
   },
   {
     "internal_cascade_em",
