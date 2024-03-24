@@ -7356,13 +7356,23 @@ static void ScrollEditorLevel(int from_x, int from_y, int scroll)
   BackToFront();
 }
 
-static void getEditorGraphicSource(int element, int tile_size, Bitmap **bitmap,
-				   int *x, int *y)
+static void getEditorGraphicAndFrame(int element, int *graphic, int *frame, boolean use_editor_gfx)
 {
-  int graphic = el2edimg(element);
-  int frame = 0;
+  if (use_editor_gfx)
+  {
+    *graphic = el2edimg(element);
+    *frame = 0;
+  }
+  else
+  {
+    *graphic = el2img(element);
+    *frame = (ANIM_MODE(*graphic) == ANIM_CE_VALUE ?
+	      custom_element.ce_value_fixed_initial :
+	      ANIM_MODE(*graphic) == ANIM_CE_SCORE ?
+	      custom_element.collect_score_initial : FrameCounter);
+  }
 
-  if (graphic == IMG_UNKNOWN)
+  if (*graphic == IMG_UNKNOWN)
   {
     // no graphic defined -- if BD style, try to get runtime ("effect") element graphics
     // (normal BD style elements have graphics, but runtime ("effects") elements do not)
@@ -7372,10 +7382,19 @@ static void getEditorGraphicSource(int element, int tile_size, Bitmap **bitmap,
     {
       struct GraphicInfo_BD *g_bd = &graphic_info_bd_object[element_bd][0];
 
-      graphic = g_bd->graphic;
-      frame   = g_bd->frame;
+      *graphic = g_bd->graphic;
+      *frame   = g_bd->frame;
     }
   }
+}
+
+static void getEditorGraphicSource(int element, int tile_size, Bitmap **bitmap,
+				   int *x, int *y)
+{
+  int graphic;
+  int frame;
+
+  getEditorGraphicAndFrame(element, &graphic, &frame, TRUE);
 
   getSizedGraphicSource(graphic, frame, tile_size, bitmap, x, y);
 }
@@ -11968,11 +11987,10 @@ static void DrawPropertiesChange(void)
 
 static void DrawEditorElementAnimation(int x, int y)
 {
-  int graphic = el2img(properties_element);
-  int frame = (ANIM_MODE(graphic) == ANIM_CE_VALUE ?
-	       custom_element.ce_value_fixed_initial :
-	       ANIM_MODE(graphic) == ANIM_CE_SCORE ?
-	       custom_element.collect_score_initial : FrameCounter);
+  int graphic;
+  int frame;
+
+  getEditorGraphicAndFrame(properties_element, &graphic, &frame, FALSE);
 
   DrawFixedGraphicAnimationExt(drawto, x, y, graphic, frame, NO_MASKING);
 }
