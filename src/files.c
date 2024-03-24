@@ -655,6 +655,41 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_magic_wall_stops_amoeba,	TRUE
   },
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_magic_wall_diamond_to,	EL_BD_ROCK_FALLING
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
+    &li.bd_magic_wall_rock_to,		EL_BD_DIAMOND_FALLING
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
+    &li.bd_magic_wall_mega_rock_to,	EL_BD_NITRO_PACK_FALLING
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
+    &li.bd_magic_wall_nut_to,		EL_BD_NUT_FALLING
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
+    &li.bd_magic_wall_nitro_pack_to,	EL_BD_MEGA_ROCK_FALLING
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
+    &li.bd_magic_wall_flying_diamond_to, EL_BD_FLYING_ROCK_FLYING
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
+    &li.bd_magic_wall_flying_rock_to,	EL_BD_FLYING_DIAMOND_FLYING
+  },
 
   {
     EL_BD_CLOCK,			-1,
@@ -4036,6 +4071,15 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->level_magic_wall_time[0]	= level->time_magic_wall;
   cave->magic_timer_wait_for_hatching	= level->bd_magic_wall_wait_hatching;
   cave->magic_wall_stops_amoeba		= level->bd_magic_wall_stops_amoeba;
+
+  cave->magic_diamond_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_diamond_to);
+  cave->magic_stone_to			= map_element_RND_to_BD_cave(level->bd_magic_wall_rock_to);
+  cave->magic_mega_stone_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_mega_rock_to);
+  cave->magic_nut_to			= map_element_RND_to_BD_cave(level->bd_magic_wall_nut_to);
+  cave->magic_nitro_pack_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_nitro_pack_to);
+  cave->magic_flying_diamond_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_flying_diamond_to);
+  cave->magic_flying_stone_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_flying_rock_to);
+
   cave->amoeba_timer_wait_for_hatching	= level->bd_amoeba_wait_for_hatching;
   cave->amoeba_timer_started_immediately= level->bd_amoeba_start_immediately;
   cave->amoeba_2_explodes_by_amoeba	= level->bd_amoeba_2_explode_by_amoeba;
@@ -4145,6 +4189,15 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
   level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
   level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
+
+  level->bd_magic_wall_diamond_to	= map_element_BD_to_RND_cave(cave->magic_diamond_to);
+  level->bd_magic_wall_rock_to		= map_element_BD_to_RND_cave(cave->magic_stone_to);
+  level->bd_magic_wall_mega_rock_to	= map_element_BD_to_RND_cave(cave->magic_mega_stone_to);
+  level->bd_magic_wall_nut_to		= map_element_BD_to_RND_cave(cave->magic_nut_to);
+  level->bd_magic_wall_nitro_pack_to	= map_element_BD_to_RND_cave(cave->magic_nitro_pack_to);
+  level->bd_magic_wall_flying_diamond_to= map_element_BD_to_RND_cave(cave->magic_flying_diamond_to);
+  level->bd_magic_wall_flying_rock_to	= map_element_BD_to_RND_cave(cave->magic_flying_stone_to);
+
   level->bd_amoeba_wait_for_hatching	= cave->amoeba_timer_wait_for_hatching;
   level->bd_amoeba_start_immediately	= cave->amoeba_timer_started_immediately;
   level->bd_amoeba_2_explode_by_amoeba	= cave->amoeba_2_explodes_by_amoeba;

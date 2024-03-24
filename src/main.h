@@ -3620,7 +3620,14 @@ struct LevelInfo
   int bd_pushing_prob_with_sweet;	// BD player probability to push rocks after eating sweet
   boolean bd_push_mega_rock_with_sweet;	// BD player can push mega rocks after eating sweet
   boolean bd_magic_wall_wait_hatching;	// BD magic wall waits for player's birth
-  boolean bd_magic_wall_stops_amoeba;	// BD magic wall turns amoeba to diamonds
+  boolean bd_magic_wall_stops_amoeba;	// BD magic wall can stop amoeba and turn to diamonds
+  int bd_magic_wall_diamond_to;		// BD magic wall turns diamonds to specified element
+  int bd_magic_wall_rock_to;		// BD magic wall turns rocks to specified element
+  int bd_magic_wall_mega_rock_to;	// BD magic wall turns mega rocks to specified element
+  int bd_magic_wall_nut_to;		// BD magic wall turns nuts to specified element
+  int bd_magic_wall_nitro_pack_to;	// BD magic wall turns nitro packs to specified element
+  int bd_magic_wall_flying_diamond_to;	// BD magic wall turns flying diamonds to specified element
+  int bd_magic_wall_flying_rock_to;	// BD magic wall turns flying rocks to specified element
   boolean bd_amoeba_wait_for_hatching;	// BD amoeba waits for player's birth
   boolean bd_amoeba_start_immediately;	// BD amoeba growth starts immediately
   boolean bd_amoeba_2_explode_by_amoeba;// BD amoeba 2 explodes if touched by BD amoeba

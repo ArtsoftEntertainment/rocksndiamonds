@@ -557,6 +557,13 @@ enum
   GADGET_ID_ANDROID_CONTENT,
   GADGET_ID_AMOEBA_CONTENT,
   GADGET_ID_BD_SNAP_ELEMENT,
+  GADGET_ID_BD_MAGIC_WALL_DIAMOND_TO,
+  GADGET_ID_BD_MAGIC_WALL_ROCK_TO,
+  GADGET_ID_BD_MAGIC_WALL_MEGA_ROCK_TO,
+  GADGET_ID_BD_MAGIC_WALL_NUT_TO,
+  GADGET_ID_BD_MAGIC_WALL_NITRO_PACK_TO,
+  GADGET_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO,
+  GADGET_ID_BD_MAGIC_WALL_FLYING_ROCK_TO,
   GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG,
   GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED,
   GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
@@ -1180,6 +1187,13 @@ enum
   ED_DRAWING_ID_ANDROID_CONTENT,
   ED_DRAWING_ID_AMOEBA_CONTENT,
   ED_DRAWING_ID_BD_SNAP_ELEMENT,
+  ED_DRAWING_ID_BD_MAGIC_WALL_DIAMOND_TO,
+  ED_DRAWING_ID_BD_MAGIC_WALL_ROCK_TO,
+  ED_DRAWING_ID_BD_MAGIC_WALL_MEGA_ROCK_TO,
+  ED_DRAWING_ID_BD_MAGIC_WALL_NUT_TO,
+  ED_DRAWING_ID_BD_MAGIC_WALL_NITRO_PACK_TO,
+  ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO,
+  ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_ROCK_TO,
   ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG,
   ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED,
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
@@ -3742,7 +3756,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_BD_MAGIC_WALL_WAIT_HATCHING, GADGET_ID_NONE,
     &level.bd_magic_wall_wait_hatching,
     NULL, NULL,
@@ -3750,7 +3764,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
+    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_BD_MAGIC_WALL_STOPS_AMOEBA, GADGET_ID_NONE,
     &level.bd_magic_wall_stops_amoeba,
     NULL, NULL,
@@ -4340,6 +4354,65 @@ static struct
     GADGET_ID_BD_SNAP_ELEMENT,		GADGET_ID_NONE,
     &level.bd_snap_element,		1, 1,
     "Snap element:", NULL, NULL, NULL,	"Element created when snapping"
+  },
+
+  // ---------- BD magic wall elements ----------------------------------------
+
+  {
+    ED_DRAWING_ID_BD_MAGIC_WALL_DIAMOND_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(4),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_DIAMOND_TO, GADGET_ID_NONE,
+    &level.bd_magic_wall_diamond_to,	1, 1,
+    "Changes diamonds to:", NULL, NULL, NULL,	"Element to turn diamonds to"
+  },
+  {
+    ED_DRAWING_ID_BD_MAGIC_WALL_ROCK_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(5),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_ROCK_TO, GADGET_ID_NONE,
+    &level.bd_magic_wall_rock_to,	1, 1,
+    "Changes rocks to:", NULL, NULL, NULL,	"Element to turn rocks to"
+  },
+  {
+    ED_DRAWING_ID_BD_MAGIC_WALL_MEGA_ROCK_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(6),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_MEGA_ROCK_TO, GADGET_ID_NONE,
+    &level.bd_magic_wall_mega_rock_to,	1, 1,
+    "Changes mega rocks to:", NULL, NULL, NULL,	"Element to turn mega rocks to"
+  },
+  {
+    ED_DRAWING_ID_BD_MAGIC_WALL_NUT_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(7),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_NUT_TO, GADGET_ID_NONE,
+    &level.bd_magic_wall_nut_to,	1, 1,
+    "Changes nuts to:", NULL, NULL, NULL,	"Element to turn nuts to"
+  },
+  {
+    ED_DRAWING_ID_BD_MAGIC_WALL_NITRO_PACK_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(8),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_NITRO_PACK_TO, GADGET_ID_NONE,
+    &level.bd_magic_wall_nitro_pack_to,	1, 1,
+    "Changes nitro packs to:", NULL, NULL, NULL, 	"Element to turn nitro packs to"
+  },
+  {
+    ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(9),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO, GADGET_ID_NONE,
+    &level.bd_magic_wall_flying_diamond_to, 1, 1,
+    "Changes flying diamonds to:", NULL, NULL, NULL,	"Element to turn flying diamonds to"
+  },
+  {
+    ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_ROCK_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),	ED_AREA_1X1_SETTINGS_YPOS(10),
+    ED_AREA_1X1_SETTINGS_XOFF,		ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_MAGIC_WALL_FLYING_ROCK_TO, GADGET_ID_NONE,
+    &level.bd_magic_wall_flying_rock_to, 1, 1,
+    "Changes flying rocks to:", NULL, NULL, NULL,	"Element to turn flying rocks to"
   },
 
   // ---------- BD amoeba content ---------------------------------------------
@@ -11460,6 +11533,10 @@ static void DrawPropertiesConfig(void)
 			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 			       num_element_counters);
 
+    // special case: set magic wall counter for BD game engine separately
+    if (properties_element == EL_BD_MAGIC_WALL && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+      counterbutton_info[counter_id].y = ED_ELEMENT_SETTINGS_YPOS(1);
+
     // special case: set amoeba counters for BD game engine separately
     if ((properties_element == EL_BD_AMOEBA && level.game_engine_type == GAME_ENGINE_TYPE_BD) ||
 	(properties_element == EL_BD_AMOEBA_2))
@@ -11479,6 +11556,23 @@ static void DrawPropertiesConfig(void)
     num_element_counters++;
     if (num_element_counters >= max_num_element_counters)
       break;
+  }
+
+  if (properties_element == EL_BD_MAGIC_WALL && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    // draw stickybutton gadget
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_STICK_ELEMENT);
+
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA);
+
+    MapDrawingArea(ED_DRAWING_ID_BD_MAGIC_WALL_DIAMOND_TO);
+    MapDrawingArea(ED_DRAWING_ID_BD_MAGIC_WALL_ROCK_TO);
+    MapDrawingArea(ED_DRAWING_ID_BD_MAGIC_WALL_MEGA_ROCK_TO);
+    MapDrawingArea(ED_DRAWING_ID_BD_MAGIC_WALL_NUT_TO);
+    MapDrawingArea(ED_DRAWING_ID_BD_MAGIC_WALL_NITRO_PACK_TO);
+    MapDrawingArea(ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO);
+    MapDrawingArea(ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_ROCK_TO);
   }
 
   if (HAS_EDITOR_CONTENT(properties_element))
@@ -11675,12 +11769,6 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_BD_SLIME)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE);
-  }
-
-  if (properties_element == EL_BD_MAGIC_WALL)
-  {
-    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_MAGIC_WALL_WAIT_HATCHING);
-    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_MAGIC_WALL_STOPS_AMOEBA);
   }
 
   if (IS_BD_EXPANDABLE_WALL(properties_element))

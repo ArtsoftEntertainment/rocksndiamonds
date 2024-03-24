@@ -6705,7 +6705,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_nut",
     "bd_nut",
-    "Nut with diamond"
+    "Nut"
   },
   {
     "bd_amoeba_2",
@@ -7165,7 +7165,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_nut.falling",
     "bd_nut",
-    "Nut with diamond (falling)"
+    "Nut (falling)"
   },
   {
     "bd_falling_wall.falling",
