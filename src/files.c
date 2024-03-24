@@ -4088,6 +4088,9 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 // functions for loading BD level
 // ----------------------------------------------------------------------------
 
+#define LEVEL_TO_CAVE(e)	(map_element_RND_to_BD_cave(e))
+#define CAVE_TO_LEVEL(e)	(map_element_BD_to_RND_cave(e))
+
 static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 {
   struct LevelInfo_BD *level_bd = level->native_bd_level;
@@ -4133,7 +4136,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->pushing_stone_prob		= level->bd_pushing_prob            * 10000;
   cave->pushing_stone_prob_sweet	= level->bd_pushing_prob_with_sweet * 10000;
   cave->mega_stones_pushable_with_sweet	= level->bd_push_mega_rock_with_sweet;
-  cave->snap_element			= map_element_RND_to_BD_cave(level->bd_snap_element);
+  cave->snap_element			= LEVEL_TO_CAVE(level->bd_snap_element);
 
   // element properties
   cave->level_bonus_time[0]		= level->bd_clock_extra_time;
@@ -4146,13 +4149,13 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->magic_timer_wait_for_hatching	= level->bd_magic_wall_wait_hatching;
   cave->magic_wall_stops_amoeba		= level->bd_magic_wall_stops_amoeba;
 
-  cave->magic_diamond_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_diamond_to);
-  cave->magic_stone_to			= map_element_RND_to_BD_cave(level->bd_magic_wall_rock_to);
-  cave->magic_mega_stone_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_mega_rock_to);
-  cave->magic_nut_to			= map_element_RND_to_BD_cave(level->bd_magic_wall_nut_to);
-  cave->magic_nitro_pack_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_nitro_pack_to);
-  cave->magic_flying_diamond_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_flying_diamond_to);
-  cave->magic_flying_stone_to		= map_element_RND_to_BD_cave(level->bd_magic_wall_flying_rock_to);
+  cave->magic_diamond_to		= LEVEL_TO_CAVE(level->bd_magic_wall_diamond_to);
+  cave->magic_stone_to			= LEVEL_TO_CAVE(level->bd_magic_wall_rock_to);
+  cave->magic_mega_stone_to		= LEVEL_TO_CAVE(level->bd_magic_wall_mega_rock_to);
+  cave->magic_nut_to			= LEVEL_TO_CAVE(level->bd_magic_wall_nut_to);
+  cave->magic_nitro_pack_to		= LEVEL_TO_CAVE(level->bd_magic_wall_nitro_pack_to);
+  cave->magic_flying_diamond_to		= LEVEL_TO_CAVE(level->bd_magic_wall_flying_diamond_to);
+  cave->magic_flying_stone_to		= LEVEL_TO_CAVE(level->bd_magic_wall_flying_rock_to);
 
   cave->amoeba_timer_wait_for_hatching	= level->bd_amoeba_wait_for_hatching;
   cave->amoeba_timer_started_immediately= level->bd_amoeba_start_immediately;
@@ -4166,12 +4169,12 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->amoeba_2_growth_prob		= level->bd_amoeba_2_slow_growth_rate * 10000;
   cave->amoeba_2_fast_growth_prob	= level->bd_amoeba_2_fast_growth_rate * 10000;
 
-  cave->amoeba_too_big_effect		= map_element_RND_to_BD_cave(level->bd_amoeba_content_too_big);
-  cave->amoeba_enclosed_effect		= map_element_RND_to_BD_cave(level->bd_amoeba_content_enclosed);
-  cave->amoeba_2_too_big_effect		= map_element_RND_to_BD_cave(level->bd_amoeba_2_content_too_big);
-  cave->amoeba_2_enclosed_effect	= map_element_RND_to_BD_cave(level->bd_amoeba_2_content_enclosed);
-  cave->amoeba_2_explosion_effect	= map_element_RND_to_BD_cave(level->bd_amoeba_2_content_exploding);
-  cave->amoeba_2_looks_like		= map_element_RND_to_BD_cave(level->bd_amoeba_2_content_looks_like);
+  cave->amoeba_too_big_effect		= LEVEL_TO_CAVE(level->bd_amoeba_content_too_big);
+  cave->amoeba_enclosed_effect		= LEVEL_TO_CAVE(level->bd_amoeba_content_enclosed);
+  cave->amoeba_2_too_big_effect		= LEVEL_TO_CAVE(level->bd_amoeba_2_content_too_big);
+  cave->amoeba_2_enclosed_effect	= LEVEL_TO_CAVE(level->bd_amoeba_2_content_enclosed);
+  cave->amoeba_2_explosion_effect	= LEVEL_TO_CAVE(level->bd_amoeba_2_content_exploding);
+  cave->amoeba_2_looks_like		= LEVEL_TO_CAVE(level->bd_amoeba_2_content_looks_like);
 
   cave->slime_predictable		= level->bd_slime_is_predictable;
   cave->slime_correct_random		= level->bd_slime_correct_random;
@@ -4179,21 +4182,21 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->level_slime_permeability_c64[0]	= level->bd_slime_permeability_bits_c64;
   cave->level_slime_seed_c64[0]		= level->bd_slime_random_seed_c64;
   cave->level_rand[0]			= level->bd_cave_random_seed_c64;
-  cave->slime_eats_1			= map_element_RND_to_BD_cave(level->bd_slime_eats_element_1);
-  cave->slime_converts_1		= map_element_RND_to_BD_cave(level->bd_slime_converts_to_element_1);
-  cave->slime_eats_2			= map_element_RND_to_BD_cave(level->bd_slime_eats_element_2);
-  cave->slime_converts_2		= map_element_RND_to_BD_cave(level->bd_slime_converts_to_element_2);
-  cave->slime_eats_3			= map_element_RND_to_BD_cave(level->bd_slime_eats_element_3);
-  cave->slime_converts_3		= map_element_RND_to_BD_cave(level->bd_slime_converts_to_element_3);
+  cave->slime_eats_1			= LEVEL_TO_CAVE(level->bd_slime_eats_element_1);
+  cave->slime_converts_1		= LEVEL_TO_CAVE(level->bd_slime_converts_to_element_1);
+  cave->slime_eats_2			= LEVEL_TO_CAVE(level->bd_slime_eats_element_2);
+  cave->slime_converts_2		= LEVEL_TO_CAVE(level->bd_slime_converts_to_element_2);
+  cave->slime_eats_3			= LEVEL_TO_CAVE(level->bd_slime_eats_element_3);
+  cave->slime_converts_3		= LEVEL_TO_CAVE(level->bd_slime_converts_to_element_3);
 
-  cave->acid_eats_this			= map_element_RND_to_BD_cave(level->bd_acid_eats_element);
+  cave->acid_eats_this			= LEVEL_TO_CAVE(level->bd_acid_eats_element);
   cave->acid_spread_ratio		= level->bd_acid_spread_rate * 10000;
-  cave->acid_turns_to			= map_element_RND_to_BD_cave(level->bd_acid_turns_to_element);
+  cave->acid_turns_to			= LEVEL_TO_CAVE(level->bd_acid_turns_to_element);
 
   cave->biter_delay_frame		= level->bd_biter_move_delay;
-  cave->biter_eat			= map_element_RND_to_BD_cave(level->bd_biter_eats_element);
+  cave->biter_eat			= LEVEL_TO_CAVE(level->bd_biter_eats_element);
 
-  cave->bladder_converts_by		= map_element_RND_to_BD_cave(level->bd_bladder_converts_by_element);
+  cave->bladder_converts_by		= LEVEL_TO_CAVE(level->bd_bladder_converts_by_element);
 
   cave->expanding_wall_changed		= level->bd_change_expanding_wall;
 
@@ -4205,7 +4208,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->water_does_not_flow_down	= level->bd_water_cannot_flow_down;
 
-  cave->nut_turns_to_when_crushed	= map_element_RND_to_BD_cave(level->bd_nut_content);
+  cave->nut_turns_to_when_crushed	= LEVEL_TO_CAVE(level->bd_nut_content);
 
   cave->pneumatic_hammer_frame		= level->bd_hammer_walls_break_delay;
   cave->hammered_walls_reappear		= level->bd_hammer_walls_reappear;
@@ -4214,8 +4217,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->skeletons_needed_for_pot	= level->bd_num_skeletons_needed_for_pot;
   cave->skeletons_worth_diamonds	= level->bd_skeleton_worth_num_diamonds;
 
-  cave->expanding_wall_looks_like	= map_element_RND_to_BD_cave(level->bd_expanding_wall_looks_like);
-  cave->dirt_looks_like			= map_element_RND_to_BD_cave(level->bd_sand_looks_like);
+  cave->expanding_wall_looks_like	= LEVEL_TO_CAVE(level->bd_expanding_wall_looks_like);
+  cave->dirt_looks_like			= LEVEL_TO_CAVE(level->bd_sand_looks_like);
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -4224,7 +4227,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   // playfield elements
   for (x = 0; x < cave->w; x++)
     for (y = 0; y < cave->h; y++)
-      cave->map[y][x] = map_element_RND_to_BD_cave(level->field[x][y]);
+      cave->map[y][x] = LEVEL_TO_CAVE(level->field[x][y]);
 }
 
 static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
@@ -4269,7 +4272,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_pushing_prob		= cave->pushing_stone_prob       / 10000;
   level->bd_pushing_prob_with_sweet	= cave->pushing_stone_prob_sweet / 10000;
   level->bd_push_mega_rock_with_sweet	= cave->mega_stones_pushable_with_sweet;
-  level->bd_snap_element		= map_element_BD_to_RND_cave(cave->snap_element);
+  level->bd_snap_element		= CAVE_TO_LEVEL(cave->snap_element);
 
   // element properties
   level->bd_clock_extra_time		= cave->level_bonus_time[bd_level_nr];
@@ -4282,13 +4285,13 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
   level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
 
-  level->bd_magic_wall_diamond_to	= map_element_BD_to_RND_cave(cave->magic_diamond_to);
-  level->bd_magic_wall_rock_to		= map_element_BD_to_RND_cave(cave->magic_stone_to);
-  level->bd_magic_wall_mega_rock_to	= map_element_BD_to_RND_cave(cave->magic_mega_stone_to);
-  level->bd_magic_wall_nut_to		= map_element_BD_to_RND_cave(cave->magic_nut_to);
-  level->bd_magic_wall_nitro_pack_to	= map_element_BD_to_RND_cave(cave->magic_nitro_pack_to);
-  level->bd_magic_wall_flying_diamond_to= map_element_BD_to_RND_cave(cave->magic_flying_diamond_to);
-  level->bd_magic_wall_flying_rock_to	= map_element_BD_to_RND_cave(cave->magic_flying_stone_to);
+  level->bd_magic_wall_diamond_to	= CAVE_TO_LEVEL(cave->magic_diamond_to);
+  level->bd_magic_wall_rock_to		= CAVE_TO_LEVEL(cave->magic_stone_to);
+  level->bd_magic_wall_mega_rock_to	= CAVE_TO_LEVEL(cave->magic_mega_stone_to);
+  level->bd_magic_wall_nut_to		= CAVE_TO_LEVEL(cave->magic_nut_to);
+  level->bd_magic_wall_nitro_pack_to	= CAVE_TO_LEVEL(cave->magic_nitro_pack_to);
+  level->bd_magic_wall_flying_diamond_to= CAVE_TO_LEVEL(cave->magic_flying_diamond_to);
+  level->bd_magic_wall_flying_rock_to	= CAVE_TO_LEVEL(cave->magic_flying_stone_to);
 
   level->bd_amoeba_wait_for_hatching	= cave->amoeba_timer_wait_for_hatching;
   level->bd_amoeba_start_immediately	= cave->amoeba_timer_started_immediately;
@@ -4302,12 +4305,12 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_amoeba_2_slow_growth_rate	= cave->amoeba_2_growth_prob      / 10000;
   level->bd_amoeba_2_fast_growth_rate	= cave->amoeba_2_fast_growth_prob / 10000;
 
-  level->bd_amoeba_content_too_big	= map_element_BD_to_RND_cave(cave->amoeba_too_big_effect);
-  level->bd_amoeba_content_enclosed	= map_element_BD_to_RND_cave(cave->amoeba_enclosed_effect);
-  level->bd_amoeba_2_content_too_big	= map_element_BD_to_RND_cave(cave->amoeba_2_too_big_effect);
-  level->bd_amoeba_2_content_enclosed	= map_element_BD_to_RND_cave(cave->amoeba_2_enclosed_effect);
-  level->bd_amoeba_2_content_exploding	= map_element_BD_to_RND_cave(cave->amoeba_2_explosion_effect);
-  level->bd_amoeba_2_content_looks_like	= map_element_BD_to_RND_cave(cave->amoeba_2_looks_like);
+  level->bd_amoeba_content_too_big	= CAVE_TO_LEVEL(cave->amoeba_too_big_effect);
+  level->bd_amoeba_content_enclosed	= CAVE_TO_LEVEL(cave->amoeba_enclosed_effect);
+  level->bd_amoeba_2_content_too_big	= CAVE_TO_LEVEL(cave->amoeba_2_too_big_effect);
+  level->bd_amoeba_2_content_enclosed	= CAVE_TO_LEVEL(cave->amoeba_2_enclosed_effect);
+  level->bd_amoeba_2_content_exploding	= CAVE_TO_LEVEL(cave->amoeba_2_explosion_effect);
+  level->bd_amoeba_2_content_looks_like	= CAVE_TO_LEVEL(cave->amoeba_2_looks_like);
 
   level->bd_slime_is_predictable	= cave->slime_predictable;
   level->bd_slime_correct_random	= cave->slime_correct_random;
@@ -4315,21 +4318,21 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_slime_permeability_bits_c64	= cave->level_slime_permeability_c64[bd_level_nr];
   level->bd_slime_random_seed_c64	= cave->level_slime_seed_c64[bd_level_nr];
   level->bd_cave_random_seed_c64	= cave->level_rand[bd_level_nr];
-  level->bd_slime_eats_element_1	= map_element_BD_to_RND_cave(cave->slime_eats_1);
-  level->bd_slime_converts_to_element_1	= map_element_BD_to_RND_cave(cave->slime_converts_1);
-  level->bd_slime_eats_element_2	= map_element_BD_to_RND_cave(cave->slime_eats_2);
-  level->bd_slime_converts_to_element_2	= map_element_BD_to_RND_cave(cave->slime_converts_2);
-  level->bd_slime_eats_element_3	= map_element_BD_to_RND_cave(cave->slime_eats_3);
-  level->bd_slime_converts_to_element_3	= map_element_BD_to_RND_cave(cave->slime_converts_3);
+  level->bd_slime_eats_element_1	= CAVE_TO_LEVEL(cave->slime_eats_1);
+  level->bd_slime_converts_to_element_1	= CAVE_TO_LEVEL(cave->slime_converts_1);
+  level->bd_slime_eats_element_2	= CAVE_TO_LEVEL(cave->slime_eats_2);
+  level->bd_slime_converts_to_element_2	= CAVE_TO_LEVEL(cave->slime_converts_2);
+  level->bd_slime_eats_element_3	= CAVE_TO_LEVEL(cave->slime_eats_3);
+  level->bd_slime_converts_to_element_3	= CAVE_TO_LEVEL(cave->slime_converts_3);
 
-  level->bd_acid_eats_element		= map_element_BD_to_RND_cave(cave->acid_eats_this);
+  level->bd_acid_eats_element		= CAVE_TO_LEVEL(cave->acid_eats_this);
   level->bd_acid_spread_rate		= cave->acid_spread_ratio / 10000;
-  level->bd_acid_turns_to_element	= map_element_BD_to_RND_cave(cave->acid_turns_to);
+  level->bd_acid_turns_to_element	= CAVE_TO_LEVEL(cave->acid_turns_to);
 
   level->bd_biter_move_delay		= cave->biter_delay_frame;
-  level->bd_biter_eats_element		= map_element_BD_to_RND_cave(cave->biter_eat);
+  level->bd_biter_eats_element		= CAVE_TO_LEVEL(cave->biter_eat);
 
-  level->bd_bladder_converts_by_element	= map_element_BD_to_RND_cave(cave->bladder_converts_by);
+  level->bd_bladder_converts_by_element	= CAVE_TO_LEVEL(cave->bladder_converts_by);
 
   level->bd_change_expanding_wall	= cave->expanding_wall_changed;
 
@@ -4341,7 +4344,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->bd_water_cannot_flow_down	= cave->water_does_not_flow_down;
 
-  level->bd_nut_content			= map_element_BD_to_RND_cave(cave->nut_turns_to_when_crushed);
+  level->bd_nut_content			= CAVE_TO_LEVEL(cave->nut_turns_to_when_crushed);
 
   level->bd_hammer_walls_break_delay	= cave->pneumatic_hammer_frame;
   level->bd_hammer_walls_reappear	= cave->hammered_walls_reappear;
@@ -4350,8 +4353,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_num_skeletons_needed_for_pot= cave->skeletons_needed_for_pot;
   level->bd_skeleton_worth_num_diamonds	= cave->skeletons_worth_diamonds;
 
-  level->bd_expanding_wall_looks_like	= map_element_BD_to_RND_cave(cave->expanding_wall_looks_like);
-  level->bd_sand_looks_like		= map_element_BD_to_RND_cave(cave->dirt_looks_like);
+  level->bd_expanding_wall_looks_like	= CAVE_TO_LEVEL(cave->expanding_wall_looks_like);
+  level->bd_sand_looks_like		= CAVE_TO_LEVEL(cave->dirt_looks_like);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
@@ -4362,7 +4365,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   // playfield elements
   for (x = 0; x < level->fieldx; x++)
     for (y = 0; y < level->fieldy; y++)
-      level->field[x][y] = map_element_BD_to_RND_cave(cave->map[y][x]);
+      level->field[x][y] = CAVE_TO_LEVEL(cave->map[y][x]);
 
   checked_free(cave_name);
 }
