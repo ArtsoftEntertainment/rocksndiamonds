@@ -6635,12 +6635,12 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_expandable_wall_switch_horizontal",
     "bd_expandable_wall_switch",
-    "Switch for expandable wall (horizontal)"
+    "Expandable wall switch (horizontal)"
   },
   {
     "bd_expandable_wall_switch_vertical",
     "bd_expandable_wall_switch",
-    "Switch for expandable wall (vertical)"
+    "Expandable wall switch (vertical)"
   },
   {
     "bd_inbox",
@@ -6725,32 +6725,32 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_creature_switch",
     "bd_creature_switch",
-    "Switch for creature (off)"
+    "Creature direction switch"
   },
   {
     "bd_creature_switch.active",
     "bd_creature_switch",
-    "Switch for creature (on)"
+    "Creature direction switch (active)"
   },
   {
     "bd_biter_switch_1",
     "bd_biter_switch",
-    "Switch for biter"
+    "Biter switch"
   },
   {
     "bd_biter_switch_2",
     "bd_biter_switch",
-    "Switch for biter"
+    "Biter switch"
   },
   {
     "bd_biter_switch_3",
     "bd_biter_switch",
-    "Switch for biter"
+    "Biter switch"
   },
   {
     "bd_biter_switch_4",
     "bd_biter_switch",
-    "Switch for biter"
+    "Biter switch"
   },
   {
     "bd_replicator",
@@ -6765,52 +6765,52 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_replicator_switch",
     "bd_replicator_switch",
-    "Switch for replicator (off)"
+    "Replicator switch"
   },
   {
     "bd_replicator_switch.active",
     "bd_replicator_switch",
-    "Switch for replicator (on)"
+    "Replicator switch (active)"
   },
   {
     "bd_conveyor_left",
     "bd_conveyor",
-    "Conveyor belt (left)"
+    "Conveyor belt (moving left)"
   },
   {
     "bd_conveyor_left.active",
     "bd_conveyor",
-    "Conveyor belt (left) (active)"
+    "Conveyor belt (moving left) (active)"
   },
   {
     "bd_conveyor_right",
     "bd_conveyor",
-    "Conveyor belt (right)"
+    "Conveyor belt (moving right)"
   },
   {
     "bd_conveyor_right.active",
     "bd_conveyor",
-    "Conveyor belt (right) (active)"
+    "Conveyor belt (moving right) (active)"
   },
   {
     "bd_conveyor_switch",
     "bd_conveyor_switch",
-    "Switch for conveyor belt (off)"
+    "Conveyor belt power switch"
   },
   {
     "bd_conveyor_switch.active",
     "bd_conveyor_switch",
-    "Switch for conveyor belt (on)"
+    "Conveyor belt power switch (active)"
   },
   {
     "bd_conveyor_dir_switch_normal",
     "bd_conveyor_dir_switch",
-    "Switch for conveyor belt direction (normal)"
+    "Conveyor belt direction switch"
   },
   {
     "bd_conveyor_dir_switch_changed",
     "bd_conveyor_dir_switch",
-    "Switch for conveyor belt direction (changed)"
+    "Conveyor belt direction switch (changed)"
   },
   {
     "bd_gravity_switch",
