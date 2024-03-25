@@ -441,9 +441,6 @@ enum
   GADGET_ID_BD_HATCHING_DELAY_SECONDS_DOWN,
   GADGET_ID_BD_HATCHING_DELAY_SECONDS_TEXT,
   GADGET_ID_BD_HATCHING_DELAY_SECONDS_UP,
-  GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_DOWN,
-  GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_TEXT,
-  GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_UP,
   GADGET_ID_BD_PUSHING_PROB_DOWN,
   GADGET_ID_BD_PUSHING_PROB_TEXT,
   GADGET_ID_BD_PUSHING_PROB_UP,
@@ -704,8 +701,6 @@ enum
   GADGET_ID_BD_SCAN_FIRST_AND_LAST_ROW,
   GADGET_ID_BD_SHORT_EXPLOSIONS,
   GADGET_ID_BD_GRAVITY_AFFECTS_ALL,
-  GADGET_ID_BD_CREATURES_START_BACKWARDS,
-  GADGET_ID_BD_CREATURES_TURN_ON_HATCHING,
   GADGET_ID_STICK_ELEMENT,
   GADGET_ID_EM_SLIPPERY_GEMS,
   GADGET_ID_EM_EXPLODES_BY_FIRE,
@@ -756,6 +751,8 @@ enum
   GADGET_ID_BD_CONVEYOR_BELTS_CHANGED,
   GADGET_ID_BD_WATER_CANNOT_FLOW_DOWN,
   GADGET_ID_BD_HAMMER_WALLS_REAPPEAR,
+  GADGET_ID_BD_CREATURES_START_BACKWARDS,
+  GADGET_ID_BD_CREATURES_TURN_ON_HATCHING,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -828,7 +825,6 @@ enum
   ED_COUNTER_ID_BD_CYCLE_DELAY_C64,
   ED_COUNTER_ID_BD_HATCHING_DELAY_CYCLES,
   ED_COUNTER_ID_BD_HATCHING_DELAY_SECONDS,
-  ED_COUNTER_ID_BD_CREATURES_AUTO_TURN_DELAY,
   ED_COUNTER_ID_BD_PUSHING_PROB,
   ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET,
   ED_COUNTER_ID_ELEMENT_VALUE1,
@@ -1058,8 +1054,6 @@ enum
   ED_CHECKBUTTON_ID_BD_SCAN_FIRST_AND_LAST_ROW,
   ED_CHECKBUTTON_ID_BD_SHORT_EXPLOSIONS,
   ED_CHECKBUTTON_ID_BD_GRAVITY_AFFECTS_ALL,
-  ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
-  ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING,
   ED_CHECKBUTTON_ID_STICK_ELEMENT,
   ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
   ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
@@ -1110,6 +1104,8 @@ enum
   ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED,
   ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN,
   ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR,
+  ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
+  ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -1159,7 +1155,7 @@ enum
 #define ED_CHECKBUTTON_ID_EDITOR_LAST	ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_2
 
 #define ED_CHECKBUTTON_ID_ENGINE_FIRST	ED_CHECKBUTTON_ID_BD_INTERMISSION
-#define ED_CHECKBUTTON_ID_ENGINE_LAST	ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING
+#define ED_CHECKBUTTON_ID_ENGINE_LAST	ED_CHECKBUTTON_ID_BD_GRAVITY_AFFECTS_ALL
 
 #define ED_CHECKBUTTON_ID_CUSTOM1_FIRST	ED_CHECKBUTTON_ID_CUSTOM_USE_GRAPHIC
 #define ED_CHECKBUTTON_ID_CUSTOM1_LAST	ED_CHECKBUTTON_ID_CUSTOM_INDESTRUCTIBLE
@@ -1654,15 +1650,6 @@ static struct
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_TEXT,	GADGET_ID_NONE,
     &level.bd_hatching_delay_seconds,
     NULL,					NULL, "Hatching delay (seconds)"
-  },
-  {
-    ED_COUNTER_ID_BD_CREATURES_AUTO_TURN_DELAY,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(12),
-    0,						999,
-    GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_DOWN, GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_UP,
-    GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_TEXT, GADGET_ID_NONE,
-    &level.bd_creatures_auto_turn_delay,
-    NULL,					NULL, "Creatures auto turn delay"
   },
 
   // ---------- element settings: configure (various elements) ----------------
@@ -3516,22 +3503,6 @@ static struct
     NULL, NULL,
     "Gravity change affects everything",	"Gravity affects all falling objects"
   },
-  {
-    ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
-    ED_ELEMENT_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(10),
-    GADGET_ID_BD_CREATURES_START_BACKWARDS,	GADGET_ID_NONE,
-    &level.bd_creatures_start_backwards,
-    NULL, NULL,
-    "Creatures start moving backwards",		"Creatures start in opposite direction"
-  },
-  {
-    ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING,
-    ED_ELEMENT_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(11),
-    GADGET_ID_BD_CREATURES_TURN_ON_HATCHING,	GADGET_ID_NONE,
-    &level.bd_creatures_turn_on_hatching,
-    NULL, NULL,
-    "Creatures turn on hatching",		"Creatures change direction on hatching"
-  },
 
   // ---------- element settings: configure (various elements) ----------------
 
@@ -3934,6 +3905,22 @@ static struct
     &level.bd_hammer_walls_reappear,
     NULL, NULL,
     "Hammered walls reappear",			"Hammered walls reappear after delay"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_CREATURES_START_BACKWARDS,	GADGET_ID_NONE,
+    &level.bd_creatures_start_backwards,
+    NULL, NULL,
+    "Creatures start moving backwards",		"Creatures start in opposite direction"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_CREATURES_TURN_ON_HATCHING,	GADGET_ID_NONE,
+    &level.bd_creatures_turn_on_hatching,
+    NULL, NULL,
+    "Creatures turn on hatching",		"Creatures change direction on hatching"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -10837,8 +10824,6 @@ static void DrawLevelConfigEngine(void)
     MapCounterButtons(ED_COUNTER_ID_BD_HATCHING_DELAY_SECONDS);
   }
 
-  MapCounterButtons(ED_COUNTER_ID_BD_CREATURES_AUTO_TURN_DELAY);
-
   // draw checkbutton gadgets
   for (i = ED_CHECKBUTTON_ID_ENGINE_FIRST; i <= ED_CHECKBUTTON_ID_ENGINE_LAST; i++)
     MapCheckbuttonGadget(i);
@@ -11356,6 +11341,7 @@ static void DrawPropertiesInfo(void)
 #define TEXT_HAMMER_REAPPEAR_DELAY	"Delay for reappearing walls"
 #define TEXT_SKELETONS_NEEDED		"Skeletons needed to use pot"
 #define TEXT_SKELETONS_WORTH		"Counts as this many diamonds"
+#define TEXT_AUTO_TURN_DELAY		"Creatures auto turn delay"
 
 static struct
 {
@@ -11502,6 +11488,7 @@ static struct
 				0, 50								},
   { EL_BD_SKELETON,		&level.bd_skeleton_worth_num_diamonds,	TEXT_SKELETONS_WORTH,
 				0, 10								},
+  { EL_BD_CREATURE_SWITCH,	&level.bd_creatures_auto_turn_delay,	TEXT_AUTO_TURN_DELAY	},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
@@ -11692,6 +11679,7 @@ static void DrawPropertiesConfig(void)
 			       (properties_element == EL_BD_SLIME           ? 1 : 0) +
 			       (properties_element == EL_BD_ACID            ? 1 : 0) +
 			       (properties_element == EL_BD_REPLICATOR      ? 1 : 0) +
+			       (properties_element == EL_BD_CREATURE_SWITCH ? 2 : 0) +
 			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 			       num_element_counters);
 
@@ -11978,6 +11966,12 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_BD_PNEUMATIC_HAMMER)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR);
+  }
+
+  if (properties_element == EL_BD_CREATURE_SWITCH)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING);
   }
 
   if (properties_element == EL_BD_NUT)

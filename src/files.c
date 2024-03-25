@@ -315,21 +315,6 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     TYPE_INTEGER,			CONF_VALUE_8_BIT(24),
     &li.bd_cave_random_seed_c64,	0
   },
-  {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(25),
-    &li.bd_creatures_start_backwards,	FALSE
-  },
-  {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(26),
-    &li.bd_creatures_turn_on_hatching,	FALSE
-  },
-  {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(7),
-    &li.bd_creatures_auto_turn_delay,	0
-  },
 
   {
     -1,					-1,
@@ -892,6 +877,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     EL_BD_SKELETON,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
     &li.bd_skeleton_worth_num_diamonds,	0
+  },
+
+  {
+    EL_BD_CREATURE_SWITCH,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_creatures_start_backwards,	FALSE
+  },
+  {
+    EL_BD_CREATURE_SWITCH,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    &li.bd_creatures_turn_on_hatching,	FALSE
+  },
+  {
+    EL_BD_CREATURE_SWITCH,		-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
+    &li.bd_creatures_auto_turn_delay,	0
   },
 
   {
