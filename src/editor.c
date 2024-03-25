@@ -1538,425 +1538,425 @@ static struct
   {
     ED_COUNTER_ID_SELECT_LEVEL,
     -1, -1,	// these values are not constant, but can change at runtime
-    1,					100,
-    GADGET_ID_SELECT_LEVEL_DOWN,	GADGET_ID_SELECT_LEVEL_UP,
-    GADGET_ID_SELECT_LEVEL_TEXT,	GADGET_ID_NONE,
+    1,						100,
+    GADGET_ID_SELECT_LEVEL_DOWN,		GADGET_ID_SELECT_LEVEL_UP,
+    GADGET_ID_SELECT_LEVEL_TEXT,		GADGET_ID_NONE,
     &level_nr,
-    NULL,				NULL, NULL
+    NULL,					NULL, NULL
   },
 
   // ---------- level and editor settings -------------------------------------
 
   {
     ED_COUNTER_ID_LEVEL_XSIZE,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(4),
-    MIN_LEV_FIELDX,			MAX_LEV_FIELDX,
-    GADGET_ID_LEVEL_XSIZE_DOWN,		GADGET_ID_LEVEL_XSIZE_UP,
-    GADGET_ID_LEVEL_XSIZE_TEXT,		GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
+    MIN_LEV_FIELDX,				MAX_LEV_FIELDX,
+    GADGET_ID_LEVEL_XSIZE_DOWN,			GADGET_ID_LEVEL_XSIZE_UP,
+    GADGET_ID_LEVEL_XSIZE_TEXT,			GADGET_ID_NONE,
     &level.fieldx,
-    "Playfield size:",			NULL, "Width",
+    "Playfield size:",				NULL, "Width",
   },
   {
     ED_COUNTER_ID_LEVEL_YSIZE,
-    -1,					ED_LEVEL_SETTINGS_YPOS(4),
-    MIN_LEV_FIELDY,			MAX_LEV_FIELDY,
-    GADGET_ID_LEVEL_YSIZE_DOWN,		GADGET_ID_LEVEL_YSIZE_UP,
-    GADGET_ID_LEVEL_YSIZE_TEXT,		GADGET_ID_LEVEL_XSIZE_UP,
+    -1,						ED_LEVEL_SETTINGS_YPOS(4),
+    MIN_LEV_FIELDY,				MAX_LEV_FIELDY,
+    GADGET_ID_LEVEL_YSIZE_DOWN,			GADGET_ID_LEVEL_YSIZE_UP,
+    GADGET_ID_LEVEL_YSIZE_TEXT,			GADGET_ID_LEVEL_XSIZE_UP,
     &level.fieldy,
-    NULL,				" ", "Height",
+    NULL,					" ", "Height",
   },
   {
     ED_COUNTER_ID_LEVEL_GEMSLIMIT,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(5),
-    0,					999,
-    GADGET_ID_LEVEL_GEMSLIMIT_DOWN,	GADGET_ID_LEVEL_GEMSLIMIT_UP,
-    GADGET_ID_LEVEL_GEMSLIMIT_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(5),
+    0,						999,
+    GADGET_ID_LEVEL_GEMSLIMIT_DOWN,		GADGET_ID_LEVEL_GEMSLIMIT_UP,
+    GADGET_ID_LEVEL_GEMSLIMIT_TEXT,		GADGET_ID_NONE,
     &level.gems_needed,
-    NULL,				"Number of gems to collect:", NULL
+    NULL,					"Number of gems to collect:", NULL
   },
   {
     ED_COUNTER_ID_LEVEL_TIMELIMIT,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(8),
-    0,					9999,
-    GADGET_ID_LEVEL_TIMELIMIT_DOWN,	GADGET_ID_LEVEL_TIMELIMIT_UP,
-    GADGET_ID_LEVEL_TIMELIMIT_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(8),
+    0,						9999,
+    GADGET_ID_LEVEL_TIMELIMIT_DOWN,		GADGET_ID_LEVEL_TIMELIMIT_UP,
+    GADGET_ID_LEVEL_TIMELIMIT_TEXT,		GADGET_ID_NONE,
     &level.time,
-    "Time or step limit to solve level:", NULL, NULL
+    "Time or step limit to solve level:",	NULL, NULL
   },
   {
     ED_COUNTER_ID_LEVEL_TIMESCORE,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(10),
-    0,					999,
-    GADGET_ID_LEVEL_TIMESCORE_DOWN,	GADGET_ID_LEVEL_TIMESCORE_UP,
-    GADGET_ID_LEVEL_TIMESCORE_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(10),
+    0,						999,
+    GADGET_ID_LEVEL_TIMESCORE_DOWN,		GADGET_ID_LEVEL_TIMESCORE_UP,
+    GADGET_ID_LEVEL_TIMESCORE_TEXT,		GADGET_ID_NONE,
     &level.score[SC_TIME_BONUS],
-    "Score for time or steps left:",	NULL, NULL
+    "Score for time or steps left:",		NULL, NULL
   },
   {
     ED_COUNTER_ID_LEVEL_RANDOM_SEED,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(13),
-    0,					9999,
-    GADGET_ID_LEVEL_RANDOM_SEED_DOWN,	GADGET_ID_LEVEL_RANDOM_SEED_UP,
-    GADGET_ID_LEVEL_RANDOM_SEED_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(13),
+    0,						9999,
+    GADGET_ID_LEVEL_RANDOM_SEED_DOWN,		GADGET_ID_LEVEL_RANDOM_SEED_UP,
+    GADGET_ID_LEVEL_RANDOM_SEED_TEXT,		GADGET_ID_NONE,
     &level.random_seed,
-    NULL,				"Random seed:", "(0 => random)"
+    NULL,					"Random seed:", "(0 => random)"
   },
   {
     ED_COUNTER_ID_LEVELSET_NUM_LEVELS,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(4),
-    1,					MAX_LEVELS,
-    GADGET_ID_LEVELSET_NUM_LEVELS_DOWN,	GADGET_ID_LEVELSET_NUM_LEVELS_UP,
-    GADGET_ID_LEVELSET_NUM_LEVELS_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
+    1,						MAX_LEVELS,
+    GADGET_ID_LEVELSET_NUM_LEVELS_DOWN,		GADGET_ID_LEVELSET_NUM_LEVELS_UP,
+    GADGET_ID_LEVELSET_NUM_LEVELS_TEXT,		GADGET_ID_NONE,
     &levelset_num_levels,
-    "Number of levels:",		NULL, NULL,
+    "Number of levels:",			NULL, NULL,
   },
   {
     ED_COUNTER_ID_LEVEL_RANDOM,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(0),
-    1,					100,
-    GADGET_ID_LEVEL_RANDOM_DOWN,	GADGET_ID_LEVEL_RANDOM_UP,
-    GADGET_ID_LEVEL_RANDOM_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(0),
+    1,						100,
+    GADGET_ID_LEVEL_RANDOM_DOWN,		GADGET_ID_LEVEL_RANDOM_UP,
+    GADGET_ID_LEVEL_RANDOM_TEXT,		GADGET_ID_NONE,
     &random_placement_value,
-    "Random element placement:",	NULL, "in"
+    "Random element placement:",		NULL, "in"
   },
   {
     ED_COUNTER_ID_BD_CYCLE_DELAY_MS,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(3),
-    50,					500,
-    GADGET_ID_BD_CYCLE_DELAY_MS_DOWN,	GADGET_ID_BD_CYCLE_DELAY_MS_UP,
-    GADGET_ID_BD_CYCLE_DELAY_MS_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
+    50,						500,
+    GADGET_ID_BD_CYCLE_DELAY_MS_DOWN,		GADGET_ID_BD_CYCLE_DELAY_MS_UP,
+    GADGET_ID_BD_CYCLE_DELAY_MS_TEXT,		GADGET_ID_NONE,
     &level.bd_cycle_delay_ms,
-    NULL,				NULL, "Game cycle delay (ms)"
+    NULL,					NULL, "Game cycle delay (ms)"
   },
   {
     ED_COUNTER_ID_BD_CYCLE_DELAY_C64,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(3),
-    0,					32,
-    GADGET_ID_BD_CYCLE_DELAY_C64_DOWN,	GADGET_ID_BD_CYCLE_DELAY_C64_UP,
-    GADGET_ID_BD_CYCLE_DELAY_C64_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
+    0,						32,
+    GADGET_ID_BD_CYCLE_DELAY_C64_DOWN,		GADGET_ID_BD_CYCLE_DELAY_C64_UP,
+    GADGET_ID_BD_CYCLE_DELAY_C64_TEXT,		GADGET_ID_NONE,
     &level.bd_cycle_delay_c64,
-    NULL,				NULL, "Game cycle delay (C64-style)"
+    NULL,					NULL, "Game cycle delay (C64-style)"
   },
   {
     ED_COUNTER_ID_BD_HATCHING_DELAY_CYCLES,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(4),
-    1,					40,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
+    1,						40,
     GADGET_ID_BD_HATCHING_DELAY_CYCLES_DOWN,	GADGET_ID_BD_HATCHING_DELAY_CYCLES_UP,
     GADGET_ID_BD_HATCHING_DELAY_CYCLES_TEXT,	GADGET_ID_NONE,
     &level.bd_hatching_delay_cycles,
-    NULL,				NULL, "Hatching delay (cycles)"
+    NULL,					NULL, "Hatching delay (cycles)"
   },
   {
     ED_COUNTER_ID_BD_HATCHING_DELAY_SECONDS,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(4),
-    1,					40,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
+    1,						40,
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_DOWN,	GADGET_ID_BD_HATCHING_DELAY_SECONDS_UP,
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_TEXT,	GADGET_ID_NONE,
     &level.bd_hatching_delay_seconds,
-    NULL,				NULL, "Hatching delay (seconds)"
+    NULL,					NULL, "Hatching delay (seconds)"
   },
   {
     ED_COUNTER_ID_BD_CREATURES_AUTO_TURN_DELAY,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(12),
-    0,					999,
-    GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_DOWN,	GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_UP,
-    GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_TEXT,	GADGET_ID_NONE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(12),
+    0,						999,
+    GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_DOWN, GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_UP,
+    GADGET_ID_BD_CREATURES_AUTO_TURN_DELAY_TEXT, GADGET_ID_NONE,
     &level.bd_creatures_auto_turn_delay,
-    NULL,				NULL, "Creatures auto turn delay"
+    NULL,					NULL, "Creatures auto turn delay"
   },
 
   // ---------- element settings: configure (various elements) ----------------
 
   {
     ED_COUNTER_ID_BD_PUSHING_PROB,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    0,					100,
-    GADGET_ID_BD_PUSHING_PROB_DOWN,	GADGET_ID_BD_PUSHING_PROB_UP,
-    GADGET_ID_BD_PUSHING_PROB_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    0,						100,
+    GADGET_ID_BD_PUSHING_PROB_DOWN,		GADGET_ID_BD_PUSHING_PROB_UP,
+    GADGET_ID_BD_PUSHING_PROB_TEXT,		GADGET_ID_NONE,
     &level.bd_pushing_prob,
-    NULL,				NULL, "Push probability"
+    NULL,					NULL, "Push probability"
   },
   {
     ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    0,					100,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    0,						100,
     GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_DOWN,	GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_UP,
     GADGET_ID_BD_PUSHING_PROB_WITH_SWEET_TEXT,	GADGET_ID_NONE,
     &level.bd_pushing_prob_with_sweet,
-    NULL,				NULL, "Push probability with sweet"
+    NULL,					NULL, "Push probability with sweet"
   },
   {
     ED_COUNTER_ID_ELEMENT_VALUE1,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    MIN_SCORE,				MAX_SCORE,
-    GADGET_ID_ELEMENT_VALUE1_DOWN,	GADGET_ID_ELEMENT_VALUE1_UP,
-    GADGET_ID_ELEMENT_VALUE1_TEXT,	GADGET_ID_NONE,
-    NULL,				// will be set when used
-    NULL,				NULL, NULL
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    MIN_SCORE,					MAX_SCORE,
+    GADGET_ID_ELEMENT_VALUE1_DOWN,		GADGET_ID_ELEMENT_VALUE1_UP,
+    GADGET_ID_ELEMENT_VALUE1_TEXT,		GADGET_ID_NONE,
+    NULL,					// will be set when used
+    NULL,					NULL, NULL
   },
   {
     ED_COUNTER_ID_ELEMENT_VALUE2,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(1),
-    MIN_SCORE,				MAX_SCORE,
-    GADGET_ID_ELEMENT_VALUE2_DOWN,	GADGET_ID_ELEMENT_VALUE2_UP,
-    GADGET_ID_ELEMENT_VALUE2_TEXT,	GADGET_ID_NONE,
-    NULL,				// will be set when used
-    NULL,				NULL, NULL
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    MIN_SCORE,					MAX_SCORE,
+    GADGET_ID_ELEMENT_VALUE2_DOWN,		GADGET_ID_ELEMENT_VALUE2_UP,
+    GADGET_ID_ELEMENT_VALUE2_TEXT,		GADGET_ID_NONE,
+    NULL,					// will be set when used
+    NULL,					NULL, NULL
   },
   {
     ED_COUNTER_ID_ELEMENT_VALUE3,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    MIN_SCORE,				MAX_SCORE,
-    GADGET_ID_ELEMENT_VALUE3_DOWN,	GADGET_ID_ELEMENT_VALUE3_UP,
-    GADGET_ID_ELEMENT_VALUE3_TEXT,	GADGET_ID_NONE,
-    NULL,				// will be set when used
-    NULL,				NULL, NULL
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    MIN_SCORE,					MAX_SCORE,
+    GADGET_ID_ELEMENT_VALUE3_DOWN,		GADGET_ID_ELEMENT_VALUE3_UP,
+    GADGET_ID_ELEMENT_VALUE3_TEXT,		GADGET_ID_NONE,
+    NULL,					// will be set when used
+    NULL,					NULL, NULL
   },
   {
     ED_COUNTER_ID_ELEMENT_VALUE4,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    MIN_SCORE,				MAX_SCORE,
-    GADGET_ID_ELEMENT_VALUE4_DOWN,	GADGET_ID_ELEMENT_VALUE4_UP,
-    GADGET_ID_ELEMENT_VALUE4_TEXT,	GADGET_ID_NONE,
-    NULL,				// will be set when used
-    NULL,				NULL, NULL
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    MIN_SCORE,					MAX_SCORE,
+    GADGET_ID_ELEMENT_VALUE4_DOWN,		GADGET_ID_ELEMENT_VALUE4_UP,
+    GADGET_ID_ELEMENT_VALUE4_TEXT,		GADGET_ID_NONE,
+    NULL,					// will be set when used
+    NULL,					NULL, NULL
   },
   {
     ED_COUNTER_ID_YAMYAM_CONTENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    MIN_ELEMENT_CONTENTS,		MAX_ELEMENT_CONTENTS,
-    GADGET_ID_YAMYAM_CONTENT_DOWN,	GADGET_ID_YAMYAM_CONTENT_UP,
-    GADGET_ID_YAMYAM_CONTENT_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    MIN_ELEMENT_CONTENTS,			MAX_ELEMENT_CONTENTS,
+    GADGET_ID_YAMYAM_CONTENT_DOWN,		GADGET_ID_YAMYAM_CONTENT_UP,
+    GADGET_ID_YAMYAM_CONTENT_TEXT,		GADGET_ID_NONE,
     &level.num_yamyam_contents,
-    NULL,				NULL, "Number of content areas"
+    NULL,					NULL, "Number of content areas"
   },
   {
     ED_COUNTER_ID_BALL_CONTENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
-    MIN_ELEMENT_CONTENTS,		MAX_ELEMENT_CONTENTS,
-    GADGET_ID_BALL_CONTENT_DOWN,	GADGET_ID_BALL_CONTENT_UP,
-    GADGET_ID_BALL_CONTENT_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    MIN_ELEMENT_CONTENTS,			MAX_ELEMENT_CONTENTS,
+    GADGET_ID_BALL_CONTENT_DOWN,		GADGET_ID_BALL_CONTENT_UP,
+    GADGET_ID_BALL_CONTENT_TEXT,		GADGET_ID_NONE,
     &level.num_ball_contents,
-    NULL,				NULL, "Number of content areas"
+    NULL,					NULL, "Number of content areas"
   },
   {
     ED_COUNTER_ID_ANDROID_CONTENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(4),
-    MIN_ANDROID_ELEMENTS,		MAX_ANDROID_ELEMENTS,
-    GADGET_ID_ANDROID_CONTENT_DOWN,	GADGET_ID_ANDROID_CONTENT_UP,
-    GADGET_ID_ANDROID_CONTENT_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    MIN_ANDROID_ELEMENTS,			MAX_ANDROID_ELEMENTS,
+    GADGET_ID_ANDROID_CONTENT_DOWN,		GADGET_ID_ANDROID_CONTENT_UP,
+    GADGET_ID_ANDROID_CONTENT_TEXT,		GADGET_ID_NONE,
     &level.num_android_clone_elements,
-    NULL,				NULL, "Number of clonable elements"
+    NULL,					NULL, "Number of clonable elements"
   },
   {
     ED_COUNTER_ID_ENVELOPE_XSIZE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(0),
-    MIN_ENVELOPE_XSIZE,			MAX_ENVELOPE_XSIZE,
-    GADGET_ID_ENVELOPE_XSIZE_DOWN,	GADGET_ID_ENVELOPE_XSIZE_UP,
-    GADGET_ID_ENVELOPE_XSIZE_TEXT,	GADGET_ID_NONE,
-    NULL,				// will be set when used
-    NULL,				NULL, "Width",
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    MIN_ENVELOPE_XSIZE,				MAX_ENVELOPE_XSIZE,
+    GADGET_ID_ENVELOPE_XSIZE_DOWN,		GADGET_ID_ENVELOPE_XSIZE_UP,
+    GADGET_ID_ENVELOPE_XSIZE_TEXT,		GADGET_ID_NONE,
+    NULL,					// will be set when used
+    NULL,					NULL, "Width",
   },
   {
     ED_COUNTER_ID_ENVELOPE_YSIZE,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(0),
-    MIN_ENVELOPE_YSIZE,			MAX_ENVELOPE_YSIZE,
-    GADGET_ID_ENVELOPE_YSIZE_DOWN,	GADGET_ID_ENVELOPE_YSIZE_UP,
-    GADGET_ID_ENVELOPE_YSIZE_TEXT,	GADGET_ID_ENVELOPE_XSIZE_UP,
-    NULL,				// will be set when used
-    NULL,				" ", "Height",
+    -1,						ED_ELEMENT_SETTINGS_YPOS(0),
+    MIN_ENVELOPE_YSIZE,				MAX_ENVELOPE_YSIZE,
+    GADGET_ID_ENVELOPE_YSIZE_DOWN,		GADGET_ID_ENVELOPE_YSIZE_UP,
+    GADGET_ID_ENVELOPE_YSIZE_TEXT,		GADGET_ID_ENVELOPE_XSIZE_UP,
+    NULL,					// will be set when used
+    NULL,					" ", "Height",
   },
   {
     ED_COUNTER_ID_INVENTORY_SIZE,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(2),
-    MIN_INITIAL_INVENTORY_SIZE,		MAX_INITIAL_INVENTORY_SIZE,
-    GADGET_ID_INVENTORY_SIZE_DOWN,	GADGET_ID_INVENTORY_SIZE_UP,
-    GADGET_ID_INVENTORY_SIZE_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
+    MIN_INITIAL_INVENTORY_SIZE,			MAX_INITIAL_INVENTORY_SIZE,
+    GADGET_ID_INVENTORY_SIZE_DOWN,		GADGET_ID_INVENTORY_SIZE_UP,
+    GADGET_ID_INVENTORY_SIZE_TEXT,		GADGET_ID_NONE,
     &level.initial_inventory_size[0],
-    NULL,				NULL, "Number of inventory elements"
+    NULL,					NULL, "Number of inventory elements"
   },
   {
     ED_COUNTER_ID_MM_BALL_CONTENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    MIN_ELEMENTS_IN_GROUP,		MAX_MM_BALL_CONTENTS,
-    GADGET_ID_MM_BALL_CONTENT_DOWN,	GADGET_ID_MM_BALL_CONTENT_UP,
-    GADGET_ID_MM_BALL_CONTENT_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    MIN_ELEMENTS_IN_GROUP,			MAX_MM_BALL_CONTENTS,
+    GADGET_ID_MM_BALL_CONTENT_DOWN,		GADGET_ID_MM_BALL_CONTENT_UP,
+    GADGET_ID_MM_BALL_CONTENT_TEXT,		GADGET_ID_NONE,
     &level.num_mm_ball_contents,
-    NULL,				NULL, "Number of content elements"
+    NULL,					NULL, "Number of content elements"
   },
 
   // ---------- element settings: configure 1 (custom elements) ---------------
 
   {
     ED_COUNTER_ID_CUSTOM_SCORE,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(5),
-    MIN_SCORE,				MAX_SCORE,
-    GADGET_ID_CUSTOM_SCORE_DOWN,	GADGET_ID_CUSTOM_SCORE_UP,
-    GADGET_ID_CUSTOM_SCORE_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(5),
+    MIN_SCORE,					MAX_SCORE,
+    GADGET_ID_CUSTOM_SCORE_DOWN,		GADGET_ID_CUSTOM_SCORE_UP,
+    GADGET_ID_CUSTOM_SCORE_TEXT,		GADGET_ID_NONE,
     &custom_element.collect_score_initial,
-    NULL,				"CE score", " "
+    NULL,					"CE score", " "
   },
   {
     ED_COUNTER_ID_CUSTOM_GEMCOUNT,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(5),
-    MIN_COLLECT_COUNT,			MAX_COLLECT_COUNT,
-    GADGET_ID_CUSTOM_GEMCOUNT_DOWN,	GADGET_ID_CUSTOM_GEMCOUNT_UP,
-    GADGET_ID_CUSTOM_GEMCOUNT_TEXT,	GADGET_ID_CUSTOM_SCORE_UP,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(5),
+    MIN_COLLECT_COUNT,				MAX_COLLECT_COUNT,
+    GADGET_ID_CUSTOM_GEMCOUNT_DOWN,		GADGET_ID_CUSTOM_GEMCOUNT_UP,
+    GADGET_ID_CUSTOM_GEMCOUNT_TEXT,		GADGET_ID_CUSTOM_SCORE_UP,
     &custom_element.collect_count_initial,
-    NULL,				"CE count", NULL
+    NULL,					"CE count", NULL
   },
   {
     ED_COUNTER_ID_CUSTOM_VALUE_FIX,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
-    0,					9999,
-    GADGET_ID_CUSTOM_VALUE_FIX_DOWN,	GADGET_ID_CUSTOM_VALUE_FIX_UP,
-    GADGET_ID_CUSTOM_VALUE_FIX_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(10),
+    0,						9999,
+    GADGET_ID_CUSTOM_VALUE_FIX_DOWN,		GADGET_ID_CUSTOM_VALUE_FIX_UP,
+    GADGET_ID_CUSTOM_VALUE_FIX_TEXT,		GADGET_ID_NONE,
     &custom_element.ce_value_fixed_initial,
-    NULL,				"CE value", NULL
+    NULL,					"CE value", NULL
   },
   {
     ED_COUNTER_ID_CUSTOM_VALUE_RND,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(10),
-    0,					9999,
-    GADGET_ID_CUSTOM_VALUE_RND_DOWN,	GADGET_ID_CUSTOM_VALUE_RND_UP,
-    GADGET_ID_CUSTOM_VALUE_RND_TEXT,	GADGET_ID_CUSTOM_VALUE_FIX_UP,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(10),
+    0,						9999,
+    GADGET_ID_CUSTOM_VALUE_RND_DOWN,		GADGET_ID_CUSTOM_VALUE_RND_UP,
+    GADGET_ID_CUSTOM_VALUE_RND_TEXT,		GADGET_ID_CUSTOM_VALUE_FIX_UP,
     &custom_element.ce_value_random_initial,
-    NULL,				"+random", NULL
+    NULL,					"+random", NULL
   },
   {
     ED_COUNTER_ID_PUSH_DELAY_FIX,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(6),
-    0,					999,
-    GADGET_ID_PUSH_DELAY_FIX_DOWN,	GADGET_ID_PUSH_DELAY_FIX_UP,
-    GADGET_ID_PUSH_DELAY_FIX_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(6),
+    0,						999,
+    GADGET_ID_PUSH_DELAY_FIX_DOWN,		GADGET_ID_PUSH_DELAY_FIX_UP,
+    GADGET_ID_PUSH_DELAY_FIX_TEXT,		GADGET_ID_NONE,
     &custom_element.push_delay_fixed,
-    NULL,				"Push delay", NULL
+    NULL,					"Push delay", NULL
   },
   {
     ED_COUNTER_ID_PUSH_DELAY_RND,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(6),
-    0,					999,
-    GADGET_ID_PUSH_DELAY_RND_DOWN,	GADGET_ID_PUSH_DELAY_RND_UP,
-    GADGET_ID_PUSH_DELAY_RND_TEXT,	GADGET_ID_PUSH_DELAY_FIX_UP,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(6),
+    0,						999,
+    GADGET_ID_PUSH_DELAY_RND_DOWN,		GADGET_ID_PUSH_DELAY_RND_UP,
+    GADGET_ID_PUSH_DELAY_RND_TEXT,		GADGET_ID_PUSH_DELAY_FIX_UP,
     &custom_element.push_delay_random,
-    NULL,				"+random", NULL
+    NULL,					"+random", NULL
   },
   {
     ED_COUNTER_ID_DROP_DELAY_FIX,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(7),
-    0,					999,
-    GADGET_ID_DROP_DELAY_FIX_DOWN,	GADGET_ID_DROP_DELAY_FIX_UP,
-    GADGET_ID_DROP_DELAY_FIX_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(7),
+    0,						999,
+    GADGET_ID_DROP_DELAY_FIX_DOWN,		GADGET_ID_DROP_DELAY_FIX_UP,
+    GADGET_ID_DROP_DELAY_FIX_TEXT,		GADGET_ID_NONE,
     &custom_element.drop_delay_fixed,
-    NULL,				"Drop delay", NULL
+    NULL,					"Drop delay", NULL
   },
   {
     ED_COUNTER_ID_DROP_DELAY_RND,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(7),
-    0,					999,
-    GADGET_ID_DROP_DELAY_RND_DOWN,	GADGET_ID_DROP_DELAY_RND_UP,
-    GADGET_ID_DROP_DELAY_RND_TEXT,	GADGET_ID_DROP_DELAY_FIX_UP,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(7),
+    0,						999,
+    GADGET_ID_DROP_DELAY_RND_DOWN,		GADGET_ID_DROP_DELAY_RND_UP,
+    GADGET_ID_DROP_DELAY_RND_TEXT,		GADGET_ID_DROP_DELAY_FIX_UP,
     &custom_element.drop_delay_random,
-    NULL,				"+random", NULL
+    NULL,					"+random", NULL
   },
 
   // ---------- element settings: configure 2 (custom elements) ---------------
 
   {
     ED_COUNTER_ID_MOVE_DELAY_FIX,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(5),
-    0,					999,
-    GADGET_ID_MOVE_DELAY_FIX_DOWN,	GADGET_ID_MOVE_DELAY_FIX_UP,
-    GADGET_ID_MOVE_DELAY_FIX_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(5),
+    0,						999,
+    GADGET_ID_MOVE_DELAY_FIX_DOWN,		GADGET_ID_MOVE_DELAY_FIX_UP,
+    GADGET_ID_MOVE_DELAY_FIX_TEXT,		GADGET_ID_NONE,
     &custom_element.move_delay_fixed,
-    NULL,				"Move delay", NULL
+    NULL,					"Move delay", NULL
   },
   {
     ED_COUNTER_ID_MOVE_DELAY_RND,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(5),
-    0,					999,
-    GADGET_ID_MOVE_DELAY_RND_DOWN,	GADGET_ID_MOVE_DELAY_RND_UP,
-    GADGET_ID_MOVE_DELAY_RND_TEXT,	GADGET_ID_MOVE_DELAY_FIX_UP,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(5),
+    0,						999,
+    GADGET_ID_MOVE_DELAY_RND_DOWN,		GADGET_ID_MOVE_DELAY_RND_UP,
+    GADGET_ID_MOVE_DELAY_RND_TEXT,		GADGET_ID_MOVE_DELAY_FIX_UP,
     &custom_element.move_delay_random,
-    NULL,				"+random", NULL
+    NULL,					"+random", NULL
   },
   {
     ED_COUNTER_ID_STEP_DELAY_FIX,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(6),
-    0,					999,
-    GADGET_ID_STEP_DELAY_FIX_DOWN,	GADGET_ID_STEP_DELAY_FIX_UP,
-    GADGET_ID_STEP_DELAY_FIX_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(6),
+    0,						999,
+    GADGET_ID_STEP_DELAY_FIX_DOWN,		GADGET_ID_STEP_DELAY_FIX_UP,
+    GADGET_ID_STEP_DELAY_FIX_TEXT,		GADGET_ID_NONE,
     &custom_element.step_delay_fixed,
-    NULL,				"Step delay", NULL
+    NULL,					"Step delay", NULL
   },
   {
     ED_COUNTER_ID_STEP_DELAY_RND,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(6),
-    0,					999,
-    GADGET_ID_STEP_DELAY_RND_DOWN,	GADGET_ID_STEP_DELAY_RND_UP,
-    GADGET_ID_STEP_DELAY_RND_TEXT,	GADGET_ID_STEP_DELAY_FIX_UP,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(6),
+    0,						999,
+    GADGET_ID_STEP_DELAY_RND_DOWN,		GADGET_ID_STEP_DELAY_RND_UP,
+    GADGET_ID_STEP_DELAY_RND_TEXT,		GADGET_ID_STEP_DELAY_FIX_UP,
     &custom_element.step_delay_random,
-    NULL,				"+random", NULL
+    NULL,					"+random", NULL
   },
   {
     ED_COUNTER_ID_EXPLOSION_DELAY,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(13),
-    0,					999,
-    GADGET_ID_EXPLOSION_DELAY_DOWN,	GADGET_ID_EXPLOSION_DELAY_UP,
-    GADGET_ID_EXPLOSION_DELAY_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(13),
+    0,						999,
+    GADGET_ID_EXPLOSION_DELAY_DOWN,		GADGET_ID_EXPLOSION_DELAY_UP,
+    GADGET_ID_EXPLOSION_DELAY_TEXT,		GADGET_ID_NONE,
     &custom_element.explosion_delay,
-    NULL,				"Explosion delay", NULL
+    NULL,					"Explosion delay", NULL
   },
   {
     ED_COUNTER_ID_IGNITION_DELAY,
-    ED_ELEMENT_SETTINGS_XPOS(1),	ED_ELEMENT_SETTINGS_YPOS(14),
-    0,					999,
-    GADGET_ID_IGNITION_DELAY_DOWN,	GADGET_ID_IGNITION_DELAY_UP,
-    GADGET_ID_IGNITION_DELAY_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(1),		ED_ELEMENT_SETTINGS_YPOS(14),
+    0,						999,
+    GADGET_ID_IGNITION_DELAY_DOWN,		GADGET_ID_IGNITION_DELAY_UP,
+    GADGET_ID_IGNITION_DELAY_TEXT,		GADGET_ID_NONE,
     &custom_element.ignition_delay,
-    NULL,				"Ignition delay", "(by fire)"
+    NULL,					"Ignition delay", "(by fire)"
   },
 
   // ---------- element settings: configure (group elements) ------------------
 
   {
     ED_COUNTER_ID_GROUP_CONTENT,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
-    MIN_ELEMENTS_IN_GROUP,		MAX_ELEMENTS_IN_GROUP,
-    GADGET_ID_GROUP_CONTENT_DOWN,	GADGET_ID_GROUP_CONTENT_UP,
-    GADGET_ID_GROUP_CONTENT_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    MIN_ELEMENTS_IN_GROUP,			MAX_ELEMENTS_IN_GROUP,
+    GADGET_ID_GROUP_CONTENT_DOWN,		GADGET_ID_GROUP_CONTENT_UP,
+    GADGET_ID_GROUP_CONTENT_TEXT,		GADGET_ID_NONE,
     &group_element_info.num_elements,
-    NULL,				NULL, "Number of elements in group"
+    NULL,					NULL, "Number of elements in group"
   },
 
   // ---------- element settings: advanced (custom elements) ------------------
 
   {
     ED_COUNTER_ID_CHANGE_DELAY_FIX,
-    ED_ELEMENT_SETTINGS_XPOS(2),	ED_ELEMENT_SETTINGS_YPOS(2),
-    0,					999,
-    GADGET_ID_CHANGE_DELAY_FIX_DOWN,	GADGET_ID_CHANGE_DELAY_FIX_UP,
-    GADGET_ID_CHANGE_DELAY_FIX_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(2),		ED_ELEMENT_SETTINGS_YPOS(2),
+    0,						999,
+    GADGET_ID_CHANGE_DELAY_FIX_DOWN,		GADGET_ID_CHANGE_DELAY_FIX_UP,
+    GADGET_ID_CHANGE_DELAY_FIX_TEXT,		GADGET_ID_NONE,
     &custom_element_change.delay_fixed,
-    NULL,				"CE delay", NULL,
+    NULL,					"CE delay", NULL,
   },
   {
     ED_COUNTER_ID_CHANGE_DELAY_RND,
-    -1,					ED_ELEMENT_SETTINGS_YPOS(2),
-    0,					999,
-    GADGET_ID_CHANGE_DELAY_RND_DOWN,	GADGET_ID_CHANGE_DELAY_RND_UP,
-    GADGET_ID_CHANGE_DELAY_RND_TEXT,	GADGET_ID_CHANGE_DELAY_FIX_UP,
+    -1,						ED_ELEMENT_SETTINGS_YPOS(2),
+    0,						999,
+    GADGET_ID_CHANGE_DELAY_RND_DOWN,		GADGET_ID_CHANGE_DELAY_RND_UP,
+    GADGET_ID_CHANGE_DELAY_RND_TEXT,		GADGET_ID_CHANGE_DELAY_FIX_UP,
     &custom_element_change.delay_random,
-    NULL,				"+random", NULL
+    NULL,					"+random", NULL
   },
   {
     ED_COUNTER_ID_CHANGE_CONT_RND,
-    ED_ELEMENT_SETTINGS_XPOS(3),	ED_ELEMENT_SETTINGS_YPOS(12),
-    0,					100,
-    GADGET_ID_CHANGE_CONT_RND_DOWN,	GADGET_ID_CHANGE_CONT_RND_UP,
-    GADGET_ID_CHANGE_CONT_RND_TEXT,	GADGET_ID_NONE,
+    ED_ELEMENT_SETTINGS_XPOS(3),		ED_ELEMENT_SETTINGS_YPOS(12),
+    0,						100,
+    GADGET_ID_CHANGE_CONT_RND_DOWN,		GADGET_ID_CHANGE_CONT_RND_UP,
+    GADGET_ID_CHANGE_CONT_RND_TEXT,		GADGET_ID_NONE,
     &custom_element_change.random_percentage,
-    NULL,				"Use random replace:", "%"
+    NULL,					"Use random replace:", "%"
   },
 };
 
@@ -1972,7 +1972,7 @@ static struct
 {
   {
     ED_TEXTINPUT_ID_LEVEL_NAME,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(0),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_LEVEL_NAME,
     MAX_LEVEL_NAME_LEN,
     level.name,
@@ -1980,7 +1980,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_LEVEL_AUTHOR,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(2),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_LEVEL_AUTHOR,
     MAX_LEVEL_AUTHOR_LEN,
     level.author,
@@ -1988,7 +1988,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_LEVELSET_NAME,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(0),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_LEVELSET_NAME,
     MAX_LEVEL_NAME_LEN,
     levelset_name,
@@ -1996,7 +1996,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_LEVELSET_AUTHOR,
-    ED_LEVEL_SETTINGS_XPOS(0),		ED_LEVEL_SETTINGS_YPOS(2),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_LEVELSET_AUTHOR,
     MAX_LEVEL_AUTHOR_LEN,
     levelset_author,
@@ -2006,7 +2006,7 @@ static struct
     ED_TEXTINPUT_ID_ELEMENT_NAME,
     -1, -1,	// these values are not constant, but can change at runtime
     GADGET_ID_ELEMENT_NAME,
-    MAX_ELEMENT_NAME_LEN - 2,		// currently 2 chars less editable
+    MAX_ELEMENT_NAME_LEN - 2,			// currently 2 chars less editable
     custom_element.description,
     NULL, "Element name"
   }
@@ -2024,7 +2024,7 @@ static struct
 {
   {
     ED_TEXTAREA_ID_ENVELOPE_INFO,
-    ED_ELEMENT_SETTINGS_XPOS(0),	ED_ELEMENT_SETTINGS_YPOS(3),
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
     GADGET_ID_ENVELOPE_INFO,
     MAX_ENVELOPE_XSIZE, MAX_ENVELOPE_YSIZE,
     NULL,
@@ -2034,711 +2034,711 @@ static struct
 
 static struct ValueTextInfo options_time_or_steps[] =
 {
-  { 0,				"seconds"			},
-  { 1,				"steps"				},
+  { 0,					"seconds"			},
+  { 1,					"steps"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_time_score_base[] =
 {
-  { 1,				"per second/step"		},
-  { 10,				"per 10 seconds/steps"		},
+  { 1,					"per second/step"		},
+  { 10,					"per 10 seconds/steps"		},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_game_engine_type[] =
 {
-  { GAME_ENGINE_TYPE_RND,	"Rocks'n'Diamonds"		},
-  { GAME_ENGINE_TYPE_BD,	"Boulder Dash"			},
-  { GAME_ENGINE_TYPE_EM,	"Emerald Mine"			},
-  { GAME_ENGINE_TYPE_SP,	"Supaplex"			},
-  { GAME_ENGINE_TYPE_MM,	"Mirror Magic"			},
+  { GAME_ENGINE_TYPE_RND,		"Rocks'n'Diamonds"		},
+  { GAME_ENGINE_TYPE_BD,		"Boulder Dash"			},
+  { GAME_ENGINE_TYPE_EM,		"Emerald Mine"			},
+  { GAME_ENGINE_TYPE_SP,		"Supaplex"			},
+  { GAME_ENGINE_TYPE_MM,		"Mirror Magic"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_levelset_save_mode[] =
 {
-  { LEVELSET_SAVE_MODE_UPDATE,	"Update this level set"		},
-  { LEVELSET_SAVE_MODE_CREATE,	"Create new level set"		},
+  { LEVELSET_SAVE_MODE_UPDATE,		"Update this level set"		},
+  { LEVELSET_SAVE_MODE_CREATE,		"Create new level set"		},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_wind_direction[] =
 {
-  { MV_START_NONE,		"none"				},
-  { MV_START_LEFT,		"left"				},
-  { MV_START_RIGHT,		"right"				},
-  { MV_START_UP,		"up"				},
-  { MV_START_DOWN,		"down"				},
+  { MV_START_NONE,			"none"				},
+  { MV_START_LEFT,			"left"				},
+  { MV_START_RIGHT,			"right"				},
+  { MV_START_UP,			"up"				},
+  { MV_START_DOWN,			"down"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_player_speed[] =
 {
-  { 0,				"frozen"			},
-  { 1,				"very slow"			},
-  { 2,				"slow"				},
-  { 4,				"normal"			},
-  { 8,				"fast"				},
-  { 16,				"very fast"			},
-  { 32,				"ultrafast"			},
+  { 0,					"frozen"			},
+  { 1,					"very slow"			},
+  { 2,					"slow"				},
+  { 4,					"normal"			},
+  { 8,					"fast"				},
+  { 16,					"very fast"			},
+  { 32,					"ultrafast"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_access_type[] =
 {
-  { EP_WALKABLE,		"walkable"			},
-  { EP_PASSABLE,		"passable"			},
+  { EP_WALKABLE,			"walkable"			},
+  { EP_PASSABLE,			"passable"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_access_layer[] =
 {
-  { EP_ACCESSIBLE_OVER,		"over"				},
-  { EP_ACCESSIBLE_INSIDE,	"inside"			},
-  { EP_ACCESSIBLE_UNDER,	"under"				},
+  { EP_ACCESSIBLE_OVER,			"over"				},
+  { EP_ACCESSIBLE_INSIDE,		"inside"			},
+  { EP_ACCESSIBLE_UNDER,		"under"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_access_protected[] =
 {
-  { 0,				"unprotected"			},
-  { 1,				"protected"			},
+  { 0,					"unprotected"			},
+  { 1,					"protected"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_access_direction[] =
 {
-  { MV_NO_DIRECTION,		"no direction"			},
-  { MV_LEFT,			"left"				},
-  { MV_RIGHT,			"right"				},
-  { MV_UP,			"up"				},
-  { MV_DOWN,			"down"				},
-  { MV_LEFT  | MV_UP,		"left + up"			},
-  { MV_LEFT  | MV_DOWN,		"left + down"			},
-  { MV_RIGHT | MV_UP,		"right + up"			},
-  { MV_RIGHT | MV_DOWN,		"right + down"			},
-  { MV_HORIZONTAL,		"horizontal"			},
-  { MV_VERTICAL,		"vertical"			},
-  { MV_HORIZONTAL | MV_UP,	"horizontal + up"		},
-  { MV_HORIZONTAL | MV_DOWN,	"horizontal + down"		},
-  { MV_VERTICAL   | MV_LEFT,	"vertical + left"		},
-  { MV_VERTICAL   | MV_RIGHT,	"vertical + right"		},
-  { MV_ALL_DIRECTIONS,		"all directions"		},
+  { MV_NO_DIRECTION,			"no direction"			},
+  { MV_LEFT,				"left"				},
+  { MV_RIGHT,				"right"				},
+  { MV_UP,				"up"				},
+  { MV_DOWN,				"down"				},
+  { MV_LEFT  | MV_UP,			"left + up"			},
+  { MV_LEFT  | MV_DOWN,			"left + down"			},
+  { MV_RIGHT | MV_UP,			"right + up"			},
+  { MV_RIGHT | MV_DOWN,			"right + down"			},
+  { MV_HORIZONTAL,			"horizontal"			},
+  { MV_VERTICAL,			"vertical"			},
+  { MV_HORIZONTAL | MV_UP,		"horizontal + up"		},
+  { MV_HORIZONTAL | MV_DOWN,		"horizontal + down"		},
+  { MV_VERTICAL   | MV_LEFT,		"vertical + left"		},
+  { MV_VERTICAL   | MV_RIGHT,		"vertical + right"		},
+  { MV_ALL_DIRECTIONS,			"all directions"		},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_walk_to_action[] =
 {
-  { EP_DIGGABLE,		"diggable"			},
-  { EP_COLLECTIBLE_ONLY,	"collectible"			},
-  { EP_DROPPABLE,		"collectible & droppable"	},
-  { EP_THROWABLE,		"collectible & throwable"	},
-  { EP_PUSHABLE,		"pushable"			},
+  { EP_DIGGABLE,			"diggable"			},
+  { EP_COLLECTIBLE_ONLY,		"collectible"			},
+  { EP_DROPPABLE,			"collectible & droppable"	},
+  { EP_THROWABLE,			"collectible & throwable"	},
+  { EP_PUSHABLE,			"pushable"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_move_pattern[] =
 {
-  { MV_LEFT,			"left"				},
-  { MV_RIGHT,			"right"				},
-  { MV_UP,			"up"				},
-  { MV_DOWN,			"down"				},
-  { MV_HORIZONTAL,		"horizontal"			},
-  { MV_VERTICAL,		"vertical"			},
-  { MV_ALL_DIRECTIONS,		"all directions"		},
-  { MV_WIND_DIRECTION,		"wind direction"		},
-  { MV_TOWARDS_PLAYER,		"towards player"		},
-  { MV_AWAY_FROM_PLAYER,	"away from player"		},
-  { MV_ALONG_LEFT_SIDE,		"along left side"		},
-  { MV_ALONG_RIGHT_SIDE,	"along right side"		},
-  { MV_TURNING_LEFT,		"turning left"			},
-  { MV_TURNING_RIGHT,		"turning right"			},
-  { MV_TURNING_LEFT_RIGHT,	"turning left, right"		},
-  { MV_TURNING_RIGHT_LEFT,	"turning right, left"		},
-  { MV_TURNING_RANDOM,		"turning random"		},
-  { MV_MAZE_RUNNER,		"maze runner style"		},
-  { MV_MAZE_HUNTER,		"maze hunter style"		},
-  { MV_WHEN_PUSHED,		"when pushed"			},
-  { MV_WHEN_DROPPED,		"when dropped/thrown"		},
+  { MV_LEFT,				"left"				},
+  { MV_RIGHT,				"right"				},
+  { MV_UP,				"up"				},
+  { MV_DOWN,				"down"				},
+  { MV_HORIZONTAL,			"horizontal"			},
+  { MV_VERTICAL,			"vertical"			},
+  { MV_ALL_DIRECTIONS,			"all directions"		},
+  { MV_WIND_DIRECTION,			"wind direction"		},
+  { MV_TOWARDS_PLAYER,			"towards player"		},
+  { MV_AWAY_FROM_PLAYER,		"away from player"		},
+  { MV_ALONG_LEFT_SIDE,			"along left side"		},
+  { MV_ALONG_RIGHT_SIDE,		"along right side"		},
+  { MV_TURNING_LEFT,			"turning left"			},
+  { MV_TURNING_RIGHT,			"turning right"			},
+  { MV_TURNING_LEFT_RIGHT,		"turning left, right"		},
+  { MV_TURNING_RIGHT_LEFT,		"turning right, left"		},
+  { MV_TURNING_RANDOM,			"turning random"		},
+  { MV_MAZE_RUNNER,			"maze runner style"		},
+  { MV_MAZE_HUNTER,			"maze hunter style"		},
+  { MV_WHEN_PUSHED,			"when pushed"			},
+  { MV_WHEN_DROPPED,			"when dropped/thrown"		},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_move_direction[] =
 {
-  { MV_START_AUTOMATIC,		"automatic"			},
-  { MV_START_LEFT,		"left"				},
-  { MV_START_RIGHT,		"right"				},
-  { MV_START_UP,		"up"				},
-  { MV_START_DOWN,		"down"				},
-  { MV_START_RANDOM,		"random"			},
-  { MV_START_PREVIOUS,		"previous"			},
+  { MV_START_AUTOMATIC,			"automatic"			},
+  { MV_START_LEFT,			"left"				},
+  { MV_START_RIGHT,			"right"				},
+  { MV_START_UP,			"up"				},
+  { MV_START_DOWN,			"down"				},
+  { MV_START_RANDOM,			"random"			},
+  { MV_START_PREVIOUS,			"previous"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_move_stepsize[] =
 {
-  { 0,				"not moving"			},
-  { 1,				"very slow"			},
-  { 2,				"slow"				},
-  { 4,				"normal"			},
-  { 8,				"fast"				},
-  { 16,				"very fast"			},
-  { 32,				"even faster"			},
+  { 0,					"not moving"			},
+  { 1,					"very slow"			},
+  { 2,					"slow"				},
+  { 4,					"normal"			},
+  { 8,					"fast"				},
+  { 16,					"very fast"			},
+  { 32,					"even faster"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_move_leave_type[] =
 {
-  { LEAVE_TYPE_UNLIMITED,	"leave behind"			},
-  { LEAVE_TYPE_LIMITED,		"change it to"			},
+  { LEAVE_TYPE_UNLIMITED,		"leave behind"			},
+  { LEAVE_TYPE_LIMITED,			"change it to"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_smash_targets[] =
 {
-  { EP_CAN_SMASH_PLAYER,	"player"			},
+  { EP_CAN_SMASH_PLAYER,		"player"			},
 #if 0
-  { EP_CAN_SMASH_ENEMIES,	"enemies"			},
+  { EP_CAN_SMASH_ENEMIES,		"enemies"			},
 #endif
-  { EP_CAN_SMASH_EVERYTHING,	"everything"			},
+  { EP_CAN_SMASH_EVERYTHING,		"everything"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_slippery_type[] =
 {
-  { SLIPPERY_ANY_RANDOM,	"random"			},
-  { SLIPPERY_ANY_LEFT_RIGHT,	"left, right"			},
-  { SLIPPERY_ANY_RIGHT_LEFT,	"right, left"			},
-  { SLIPPERY_ONLY_LEFT,		"only left"			},
-  { SLIPPERY_ONLY_RIGHT,	"only right"			},
+  { SLIPPERY_ANY_RANDOM,		"random"			},
+  { SLIPPERY_ANY_LEFT_RIGHT,		"left, right"			},
+  { SLIPPERY_ANY_RIGHT_LEFT,		"right, left"			},
+  { SLIPPERY_ONLY_LEFT,			"only left"			},
+  { SLIPPERY_ONLY_RIGHT,		"only right"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_deadliness[] =
 {
-  { EP_DONT_RUN_INTO,		"running into"			},
-  { EP_DONT_COLLIDE_WITH,	"colliding with"		},
-  { EP_DONT_GET_HIT_BY,		"getting hit by"		},
-  { EP_DONT_TOUCH,		"touching"			},
+  { EP_DONT_RUN_INTO,			"running into"			},
+  { EP_DONT_COLLIDE_WITH,		"colliding with"		},
+  { EP_DONT_GET_HIT_BY,			"getting hit by"		},
+  { EP_DONT_TOUCH,			"touching"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_explosion_type[] =
 {
-  { EXPLODES_3X3,		"3x3"				},
-  { EXPLODES_CROSS,		"3+3"				},
-  { EXPLODES_1X1,		"1x1"				},
+  { EXPLODES_3X3,			"3x3"				},
+  { EXPLODES_CROSS,			"3+3"				},
+  { EXPLODES_1X1,			"1x1"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_time_units[] =
 {
-  { 1,				"frames"			},
-  { FRAMES_PER_SECOND,		"seconds"			},
+  { 1,					"frames"			},
+  { FRAMES_PER_SECOND,			"seconds"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_change_direct_action[] =
 {
-  { CE_TOUCHED_BY_PLAYER,	"touched by player"		},
-  { CE_PRESSED_BY_PLAYER,	"pressed by player"		},
-  { CE_SWITCHED_BY_PLAYER,	"switched by player"		},
-  { CE_SNAPPED_BY_PLAYER,	"snapped by player"		},
-  { CE_PUSHED_BY_PLAYER,	"pushed by player"		},
-  { CE_ENTERED_BY_PLAYER,	"entered by player"		},
-  { CE_LEFT_BY_PLAYER,		"left by player"		},
-  { CE_DROPPED_BY_PLAYER,	"dropped/thrown by player"	},
-  { CE_SWITCHED,		"switched"			},
-  { CE_HITTING_SOMETHING,	"hitting something"		},
-  { CE_HIT_BY_SOMETHING,	"hit by something"		},
+  { CE_TOUCHED_BY_PLAYER,		"touched by player"		},
+  { CE_PRESSED_BY_PLAYER,		"pressed by player"		},
+  { CE_SWITCHED_BY_PLAYER,		"switched by player"		},
+  { CE_SNAPPED_BY_PLAYER,		"snapped by player"		},
+  { CE_PUSHED_BY_PLAYER,		"pushed by player"		},
+  { CE_ENTERED_BY_PLAYER,		"entered by player"		},
+  { CE_LEFT_BY_PLAYER,			"left by player"		},
+  { CE_DROPPED_BY_PLAYER,		"dropped/thrown by player"	},
+  { CE_SWITCHED,			"switched"			},
+  { CE_HITTING_SOMETHING,		"hitting something"		},
+  { CE_HIT_BY_SOMETHING,		"hit by something"		},
 #if 0
-  { CE_BLOCKED,			"blocked"			},
+  { CE_BLOCKED,				"blocked"			},
 #endif
-  { CE_IMPACT,			"impact (on something)"		},
-  { CE_SMASHED,			"smashed (from above)"		},
+  { CE_IMPACT,				"impact (on something)"		},
+  { CE_SMASHED,				"smashed (from above)"		},
 #if 0
-  { CE_VALUE_CHANGES,		"CE value changes"		},
-  { CE_SCORE_CHANGES,		"CE score changes"		},
+  { CE_VALUE_CHANGES,			"CE value changes"		},
+  { CE_SCORE_CHANGES,			"CE score changes"		},
 #endif
-  { CE_VALUE_GETS_ZERO,		"CE value gets 0"		},
-  { CE_SCORE_GETS_ZERO,		"CE score gets 0"		},
-  { CE_UNDEFINED,		" "				},
-  { CE_HEADLINE_SPECIAL_EVENTS,	"[mouse events]"		},
-  { CE_CLICKED_BY_MOUSE,	"clicked by mouse"		},
-  { CE_PRESSED_BY_MOUSE,	"pressed by mouse"		},
-  { CE_UNDEFINED,		" "				},
-  { CE_HEADLINE_SPECIAL_EVENTS,	"[static states]"		},
-  { CE_NEXT_TO_PLAYER,		"next to player"		},
+  { CE_VALUE_GETS_ZERO,			"CE value gets 0"		},
+  { CE_SCORE_GETS_ZERO,			"CE score gets 0"		},
+  { CE_UNDEFINED,			" "				},
+  { CE_HEADLINE_SPECIAL_EVENTS,		"[mouse events]"		},
+  { CE_CLICKED_BY_MOUSE,		"clicked by mouse"		},
+  { CE_PRESSED_BY_MOUSE,		"pressed by mouse"		},
+  { CE_UNDEFINED,			" "				},
+  { CE_HEADLINE_SPECIAL_EVENTS,		"[static states]"		},
+  { CE_NEXT_TO_PLAYER,			"next to player"		},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_change_other_action[] =
 {
-  { CE_PLAYER_TOUCHES_X,	"player touches"		},
-  { CE_PLAYER_PRESSES_X,	"player presses"		},
-  { CE_PLAYER_SWITCHES_X,	"player switches"		},
-  { CE_PLAYER_SNAPS_X,		"player snaps"			},
-  { CE_PLAYER_PUSHES_X,		"player pushes"			},
-  { CE_PLAYER_ENTERS_X,		"player enters"			},
-  { CE_PLAYER_LEAVES_X,		"player leaves"			},
-  { CE_PLAYER_DIGS_X,		"player digs"			},
-  { CE_PLAYER_COLLECTS_X,	"player collects"		},
-  { CE_PLAYER_DROPS_X,		"player drops/throws"		},
-  { CE_TOUCHING_X,		"touching"			},
-  { CE_HITTING_X,		"hitting"			},
-  { CE_DIGGING_X,		"digging"			},
-  { CE_HIT_BY_X,		"hit by"			},
-  { CE_SWITCH_OF_X,		"switch of"			},
-  { CE_CHANGE_OF_X,		"change by page of"		},
-  { CE_EXPLOSION_OF_X,		"explosion of"			},
-  { CE_MOVE_OF_X,		"move of"			},
-  { CE_CREATION_OF_X,		"creation of"			},
-  { CE_VALUE_CHANGES_OF_X,	"CE value changes of"		},
-  { CE_SCORE_CHANGES_OF_X,	"CE score changes of"		},
-  { CE_VALUE_GETS_ZERO_OF_X,	"CE value gets 0 of"		},
-  { CE_SCORE_GETS_ZERO_OF_X,	"CE score gets 0 of"		},
-  { CE_UNDEFINED,		" "				},
-  { CE_HEADLINE_SPECIAL_EVENTS,	"[mouse events]"		},
-  { CE_MOUSE_CLICKED_ON_X,	"mouse clicked on"		},
-  { CE_MOUSE_PRESSED_ON_X,	"mouse pressed on"		},
-  { CE_UNDEFINED,		" "				},
-  { CE_HEADLINE_SPECIAL_EVENTS,	"[static states]"		},
-  { CE_PLAYER_NEXT_TO_X,	"player next to"		},
-  { CE_NEXT_TO_X,		"next to"			},
+  { CE_PLAYER_TOUCHES_X,		"player touches"		},
+  { CE_PLAYER_PRESSES_X,		"player presses"		},
+  { CE_PLAYER_SWITCHES_X,		"player switches"		},
+  { CE_PLAYER_SNAPS_X,			"player snaps"			},
+  { CE_PLAYER_PUSHES_X,			"player pushes"			},
+  { CE_PLAYER_ENTERS_X,			"player enters"			},
+  { CE_PLAYER_LEAVES_X,			"player leaves"			},
+  { CE_PLAYER_DIGS_X,			"player digs"			},
+  { CE_PLAYER_COLLECTS_X,		"player collects"		},
+  { CE_PLAYER_DROPS_X,			"player drops/throws"		},
+  { CE_TOUCHING_X,			"touching"			},
+  { CE_HITTING_X,			"hitting"			},
+  { CE_DIGGING_X,			"digging"			},
+  { CE_HIT_BY_X,			"hit by"			},
+  { CE_SWITCH_OF_X,			"switch of"			},
+  { CE_CHANGE_OF_X,			"change by page of"		},
+  { CE_EXPLOSION_OF_X,			"explosion of"			},
+  { CE_MOVE_OF_X,			"move of"			},
+  { CE_CREATION_OF_X,			"creation of"			},
+  { CE_VALUE_CHANGES_OF_X,		"CE value changes of"		},
+  { CE_SCORE_CHANGES_OF_X,		"CE score changes of"		},
+  { CE_VALUE_GETS_ZERO_OF_X,		"CE value gets 0 of"		},
+  { CE_SCORE_GETS_ZERO_OF_X,		"CE score gets 0 of"		},
+  { CE_UNDEFINED,			" "				},
+  { CE_HEADLINE_SPECIAL_EVENTS,		"[mouse events]"		},
+  { CE_MOUSE_CLICKED_ON_X,		"mouse clicked on"		},
+  { CE_MOUSE_PRESSED_ON_X,		"mouse pressed on"		},
+  { CE_UNDEFINED,			" "				},
+  { CE_HEADLINE_SPECIAL_EVENTS,		"[static states]"		},
+  { CE_PLAYER_NEXT_TO_X,		"player next to"		},
+  { CE_NEXT_TO_X,			"next to"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_change_trigger_side[] =
 {
-  { CH_SIDE_LEFT,		"left"				},
-  { CH_SIDE_RIGHT,		"right"				},
-  { CH_SIDE_TOP,		"top"				},
-  { CH_SIDE_BOTTOM,		"bottom"			},
-  { CH_SIDE_LEFT_RIGHT,		"left/right"			},
-  { CH_SIDE_TOP_BOTTOM,		"top/bottom"			},
-  { CH_SIDE_ANY,		"any"				},
+  { CH_SIDE_LEFT,			"left"				},
+  { CH_SIDE_RIGHT,			"right"				},
+  { CH_SIDE_TOP,			"top"				},
+  { CH_SIDE_BOTTOM,			"bottom"			},
+  { CH_SIDE_LEFT_RIGHT,			"left/right"			},
+  { CH_SIDE_TOP_BOTTOM,			"top/bottom"			},
+  { CH_SIDE_ANY,			"any"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_change_trigger_player[] =
 {
-  { CH_PLAYER_1,		"1"				},
-  { CH_PLAYER_2,		"2"				},
-  { CH_PLAYER_3,		"3"				},
-  { CH_PLAYER_4,		"4"				},
-  { CH_PLAYER_ANY,		"any"				},
+  { CH_PLAYER_1,			"1"				},
+  { CH_PLAYER_2,			"2"				},
+  { CH_PLAYER_3,			"3"				},
+  { CH_PLAYER_4,			"4"				},
+  { CH_PLAYER_ANY,			"any"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_change_trigger_page[] =
 {
-  { (1u << 0),			"1"				},
-  { (1u << 1),			"2"				},
-  { (1u << 2),			"3"				},
-  { (1u << 3),			"4"				},
-  { (1u << 4),			"5"				},
-  { (1u << 5),			"6"				},
-  { (1u << 6),			"7"				},
-  { (1u << 7),			"8"				},
-  { (1u << 8),			"9"				},
-  { (1u << 9),			"10"				},
-  { (1u << 10),			"11"				},
-  { (1u << 11),			"12"				},
-  { (1u << 12),			"13"				},
-  { (1u << 13),			"14"				},
-  { (1u << 14),			"15"				},
-  { (1u << 15),			"16"				},
-  { (1u << 16),			"17"				},
-  { (1u << 17),			"18"				},
-  { (1u << 18),			"19"				},
-  { (1u << 19),			"20"				},
-  { (1u << 20),			"21"				},
-  { (1u << 21),			"22"				},
-  { (1u << 22),			"23"				},
-  { (1u << 23),			"24"				},
-  { (1u << 24),			"25"				},
-  { (1u << 25),			"26"				},
-  { (1u << 26),			"27"				},
-  { (1u << 27),			"28"				},
-  { (1u << 28),			"29"				},
-  { (1u << 29),			"30"				},
-  { (1u << 30),			"31"				},
-  { (1u << 31),			"32"				},
-  { CH_PAGE_ANY,		"any"				},
+  { (1u << 0),				"1"				},
+  { (1u << 1),				"2"				},
+  { (1u << 2),				"3"				},
+  { (1u << 3),				"4"				},
+  { (1u << 4),				"5"				},
+  { (1u << 5),				"6"				},
+  { (1u << 6),				"7"				},
+  { (1u << 7),				"8"				},
+  { (1u << 8),				"9"				},
+  { (1u << 9),				"10"				},
+  { (1u << 10),				"11"				},
+  { (1u << 11),				"12"				},
+  { (1u << 12),				"13"				},
+  { (1u << 13),				"14"				},
+  { (1u << 14),				"15"				},
+  { (1u << 15),				"16"				},
+  { (1u << 16),				"17"				},
+  { (1u << 17),				"18"				},
+  { (1u << 18),				"19"				},
+  { (1u << 19),				"20"				},
+  { (1u << 20),				"21"				},
+  { (1u << 21),				"22"				},
+  { (1u << 22),				"23"				},
+  { (1u << 23),				"24"				},
+  { (1u << 24),				"25"				},
+  { (1u << 25),				"26"				},
+  { (1u << 26),				"27"				},
+  { (1u << 27),				"28"				},
+  { (1u << 28),				"29"				},
+  { (1u << 29),				"30"				},
+  { (1u << 30),				"31"				},
+  { (1u << 31),				"32"				},
+  { CH_PAGE_ANY,			"any"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_change_replace_when[] =
 {
-  { CP_WHEN_EMPTY,		"empty"				},
-  { CP_WHEN_WALKABLE,		"walkable"			},
-  { CP_WHEN_DIGGABLE,		"diggable"			},
-  { CP_WHEN_COLLECTIBLE,	"collectible"			},
-  { CP_WHEN_REMOVABLE,		"removable"			},
-  { CP_WHEN_DESTRUCTIBLE,	"destructible"			},
+  { CP_WHEN_EMPTY,			"empty"				},
+  { CP_WHEN_WALKABLE,			"walkable"			},
+  { CP_WHEN_DIGGABLE,			"diggable"			},
+  { CP_WHEN_COLLECTIBLE,		"collectible"			},
+  { CP_WHEN_REMOVABLE,			"removable"			},
+  { CP_WHEN_DESTRUCTIBLE,		"destructible"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_type[] =
 {
-  { CA_NO_ACTION,		"no action"			},
-  { CA_UNDEFINED,		" "				},
-  { CA_HEADLINE_LEVEL_ACTIONS,	"[level]"			},
-  { CA_RESTART_LEVEL,		"restart level"			},
-  { CA_SHOW_ENVELOPE,		"show envelope"			},
-  { CA_SET_LEVEL_TIME,		"set time"			},
-  { CA_SET_LEVEL_SCORE,		"set score"			},
-  { CA_SET_LEVEL_GEMS,		"set gems"			},
-  { CA_SET_LEVEL_WIND,		"set wind dir."			},
-  { CA_SET_LEVEL_RANDOM_SEED,	"set random seed"		},
-  { CA_UNDEFINED,		" "				},
-  { CA_HEADLINE_PLAYER_ACTIONS,	"[player]"			},
-  { CA_MOVE_PLAYER,		"move player"			},
-  { CA_MOVE_PLAYER_NEW,		"move player new"		},
-  { CA_EXIT_PLAYER,		"exit player"			},
-  { CA_KILL_PLAYER,		"kill player"			},
-  { CA_SET_PLAYER_KEYS,		"set keys"			},
-  { CA_SET_PLAYER_SPEED,	"set speed"			},
-  { CA_SET_PLAYER_SHIELD,	"set shield"			},
-  { CA_SET_PLAYER_GRAVITY,	"set gravity"			},
-  { CA_SET_PLAYER_ARTWORK,	"set artwork"			},
-  { CA_SET_PLAYER_INVENTORY,	"set inventory"			},
-  { CA_UNDEFINED,		" "				},
-  { CA_HEADLINE_CE_ACTIONS,	"[CE]"				},
-  { CA_SET_CE_VALUE,		"set CE value"			},
-  { CA_SET_CE_SCORE,		"set CE score"			},
-  { CA_SET_CE_ARTWORK,		"set CE artwork"		},
-  { CA_UNDEFINED,		" "				},
-  { CA_HEADLINE_ENGINE_ACTIONS,	"[engine]"			},
-  { CA_SET_ENGINE_SCAN_MODE,	"set scan mode"			},
+  { CA_NO_ACTION,			"no action"			},
+  { CA_UNDEFINED,			" "				},
+  { CA_HEADLINE_LEVEL_ACTIONS,		"[level]"			},
+  { CA_RESTART_LEVEL,			"restart level"			},
+  { CA_SHOW_ENVELOPE,			"show envelope"			},
+  { CA_SET_LEVEL_TIME,			"set time"			},
+  { CA_SET_LEVEL_SCORE,			"set score"			},
+  { CA_SET_LEVEL_GEMS,			"set gems"			},
+  { CA_SET_LEVEL_WIND,			"set wind dir."			},
+  { CA_SET_LEVEL_RANDOM_SEED,		"set random seed"		},
+  { CA_UNDEFINED,			" "				},
+  { CA_HEADLINE_PLAYER_ACTIONS,		"[player]"			},
+  { CA_MOVE_PLAYER,			"move player"			},
+  { CA_MOVE_PLAYER_NEW,			"move player new"		},
+  { CA_EXIT_PLAYER,			"exit player"			},
+  { CA_KILL_PLAYER,			"kill player"			},
+  { CA_SET_PLAYER_KEYS,			"set keys"			},
+  { CA_SET_PLAYER_SPEED,		"set speed"			},
+  { CA_SET_PLAYER_SHIELD,		"set shield"			},
+  { CA_SET_PLAYER_GRAVITY,		"set gravity"			},
+  { CA_SET_PLAYER_ARTWORK,		"set artwork"			},
+  { CA_SET_PLAYER_INVENTORY,		"set inventory"			},
+  { CA_UNDEFINED,			" "				},
+  { CA_HEADLINE_CE_ACTIONS,		"[CE]"				},
+  { CA_SET_CE_VALUE,			"set CE value"			},
+  { CA_SET_CE_SCORE,			"set CE score"			},
+  { CA_SET_CE_ARTWORK,			"set CE artwork"		},
+  { CA_UNDEFINED,			" "				},
+  { CA_HEADLINE_ENGINE_ACTIONS,		"[engine]"			},
+  { CA_SET_ENGINE_SCAN_MODE,		"set scan mode"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_mode_none[] =
 {
-  { CA_MODE_UNDEFINED,		" "				},
+  { CA_MODE_UNDEFINED,			" "				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_mode_assign[] =
 {
-  { CA_MODE_SET,		"="				},
+  { CA_MODE_SET,			"="				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_mode_add_remove[] =
 {
-  { CA_MODE_ADD,		"+"				},
-  { CA_MODE_SUBTRACT,		"-"				},
+  { CA_MODE_ADD,			"+"				},
+  { CA_MODE_SUBTRACT,			"-"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_mode_calculate[] =
 {
-  { CA_MODE_SET,		"="				},
-  { CA_MODE_ADD,		"+"				},
-  { CA_MODE_SUBTRACT,		"-"				},
-  { CA_MODE_MULTIPLY,		"*"				},
-  { CA_MODE_DIVIDE,		"/"				},
-  { CA_MODE_MODULO,		"%"				},
+  { CA_MODE_SET,			"="				},
+  { CA_MODE_ADD,			"+"				},
+  { CA_MODE_SUBTRACT,			"-"				},
+  { CA_MODE_MULTIPLY,			"*"				},
+  { CA_MODE_DIVIDE,			"/"				},
+  { CA_MODE_MODULO,			"%"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_none[] =
 {
-  { CA_ARG_UNDEFINED,		"         "			},
+  { CA_ARG_UNDEFINED,			"         "			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_player[] =
 {
-  { CA_ARG_PLAYER_HEADLINE,	"[player]"			},
-  { CA_ARG_PLAYER_1,		"1"				},
-  { CA_ARG_PLAYER_2,		"2"				},
-  { CA_ARG_PLAYER_3,		"3"				},
-  { CA_ARG_PLAYER_4,		"4"				},
-  { CA_ARG_PLAYER_ANY,		"any"				},
-  { CA_ARG_PLAYER_TRIGGER,	"trigger"			},
-  { CA_ARG_PLAYER_ACTION,	"action ->"			},
+  { CA_ARG_PLAYER_HEADLINE,		"[player]"			},
+  { CA_ARG_PLAYER_1,			"1"				},
+  { CA_ARG_PLAYER_2,			"2"				},
+  { CA_ARG_PLAYER_3,			"3"				},
+  { CA_ARG_PLAYER_4,			"4"				},
+  { CA_ARG_PLAYER_ANY,			"any"				},
+  { CA_ARG_PLAYER_TRIGGER,		"trigger"			},
+  { CA_ARG_PLAYER_ACTION,		"action ->"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_number[] =
 {
-  { CA_ARG_NUMBER_HEADLINE,	"[number]"			},
-  { CA_ARG_0,			"0"				},
-  { CA_ARG_1,			"1"				},
-  { CA_ARG_2,			"2"				},
-  { CA_ARG_3,			"3"				},
-  { CA_ARG_4,			"4"				},
-  { CA_ARG_5,			"5"				},
-  { CA_ARG_10,			"10"				},
-  { CA_ARG_100,			"100"				},
-  { CA_ARG_1000,		"1000"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_NUMBER_MIN,		"min"				},
-  { CA_ARG_NUMBER_MAX,		"max"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_NUMBER_RESET,	"reset"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_NUMBER_CE_VALUE,	"CE value"			},
-  { CA_ARG_NUMBER_CE_SCORE,	"CE score"			},
-  { CA_ARG_NUMBER_CE_DELAY,	"CE delay"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_NUMBER_LEVEL_TIME,	"time"				},
-  { CA_ARG_NUMBER_LEVEL_GEMS,	"gems"				},
-  { CA_ARG_NUMBER_LEVEL_SCORE,	"score"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_ELEMENT_CV_HEADLINE,	"[CE value]"			},
-  { CA_ARG_ELEMENT_CV_TARGET,	"target"			},
-  { CA_ARG_ELEMENT_CV_TRIGGER,	"trigger"			},
-  { CA_ARG_ELEMENT_CV_ACTION,	"action ->"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_ELEMENT_CS_HEADLINE,	"[CE score]"			},
-  { CA_ARG_ELEMENT_CS_TARGET,	"target"			},
-  { CA_ARG_ELEMENT_CS_TRIGGER,	"trigger"			},
-  { CA_ARG_ELEMENT_CS_ACTION,	"action ->"			},
+  { CA_ARG_NUMBER_HEADLINE,		"[number]"			},
+  { CA_ARG_0,				"0"				},
+  { CA_ARG_1,				"1"				},
+  { CA_ARG_2,				"2"				},
+  { CA_ARG_3,				"3"				},
+  { CA_ARG_4,				"4"				},
+  { CA_ARG_5,				"5"				},
+  { CA_ARG_10,				"10"				},
+  { CA_ARG_100,				"100"				},
+  { CA_ARG_1000,			"1000"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_NUMBER_MIN,			"min"				},
+  { CA_ARG_NUMBER_MAX,			"max"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_NUMBER_RESET,		"reset"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_NUMBER_CE_VALUE,		"CE value"			},
+  { CA_ARG_NUMBER_CE_SCORE,		"CE score"			},
+  { CA_ARG_NUMBER_CE_DELAY,		"CE delay"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_NUMBER_LEVEL_TIME,		"time"				},
+  { CA_ARG_NUMBER_LEVEL_GEMS,		"gems"				},
+  { CA_ARG_NUMBER_LEVEL_SCORE,		"score"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_ELEMENT_CV_HEADLINE,		"[CE value]"			},
+  { CA_ARG_ELEMENT_CV_TARGET,		"target"			},
+  { CA_ARG_ELEMENT_CV_TRIGGER,		"trigger"			},
+  { CA_ARG_ELEMENT_CV_ACTION,		"action ->"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_ELEMENT_CS_HEADLINE,		"[CE score]"			},
+  { CA_ARG_ELEMENT_CS_TARGET,		"target"			},
+  { CA_ARG_ELEMENT_CS_TRIGGER,		"trigger"			},
+  { CA_ARG_ELEMENT_CS_ACTION,		"action ->"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_value[] =
 {
-  { CA_ARG_NUMBER_HEADLINE,	"[number]"			},
-  { CA_ARG_0,			"0"				},
-  { CA_ARG_1,			"1"				},
-  { CA_ARG_2,			"2"				},
-  { CA_ARG_3,			"3"				},
-  { CA_ARG_4,			"4"				},
-  { CA_ARG_5,			"5"				},
-  { CA_ARG_10,			"10"				},
-  { CA_ARG_100,			"100"				},
-  { CA_ARG_1000,		"1000"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_NUMBER_MIN,		"min"				},
-  { CA_ARG_NUMBER_MAX,		"max"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_NUMBER_RESET,	"reset"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_NUMBER_CE_VALUE,	"CE value"			},
-  { CA_ARG_NUMBER_CE_SCORE,	"CE score"			},
-  { CA_ARG_NUMBER_CE_DELAY,	"CE delay"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_NUMBER_LEVEL_TIME,	"time"				},
-  { CA_ARG_NUMBER_LEVEL_GEMS,	"gems"				},
-  { CA_ARG_NUMBER_LEVEL_SCORE,	"score"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_ELEMENT_CV_HEADLINE,	"[CE value]"			},
-  { CA_ARG_ELEMENT_CV_TARGET,	"target"			},
-  { CA_ARG_ELEMENT_CV_TRIGGER,	"trigger"			},
-  { CA_ARG_ELEMENT_CV_ACTION,	"action ->"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_ELEMENT_CS_HEADLINE,	"[CE score]"			},
-  { CA_ARG_ELEMENT_CS_TARGET,	"target"			},
-  { CA_ARG_ELEMENT_CS_TRIGGER,	"trigger"			},
-  { CA_ARG_ELEMENT_CS_ACTION,	"action ->"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_ELEMENT_NR_HEADLINE,	"[element]"			},
-  { CA_ARG_ELEMENT_NR_TARGET,	"target"			},
-  { CA_ARG_ELEMENT_NR_TRIGGER,	"trigger"			},
-  { CA_ARG_ELEMENT_NR_ACTION,	"action ->"			},
+  { CA_ARG_NUMBER_HEADLINE,		"[number]"			},
+  { CA_ARG_0,				"0"				},
+  { CA_ARG_1,				"1"				},
+  { CA_ARG_2,				"2"				},
+  { CA_ARG_3,				"3"				},
+  { CA_ARG_4,				"4"				},
+  { CA_ARG_5,				"5"				},
+  { CA_ARG_10,				"10"				},
+  { CA_ARG_100,				"100"				},
+  { CA_ARG_1000,			"1000"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_NUMBER_MIN,			"min"				},
+  { CA_ARG_NUMBER_MAX,			"max"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_NUMBER_RESET,		"reset"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_NUMBER_CE_VALUE,		"CE value"			},
+  { CA_ARG_NUMBER_CE_SCORE,		"CE score"			},
+  { CA_ARG_NUMBER_CE_DELAY,		"CE delay"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_NUMBER_LEVEL_TIME,		"time"				},
+  { CA_ARG_NUMBER_LEVEL_GEMS,		"gems"				},
+  { CA_ARG_NUMBER_LEVEL_SCORE,		"score"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_ELEMENT_CV_HEADLINE,		"[CE value]"			},
+  { CA_ARG_ELEMENT_CV_TARGET,		"target"			},
+  { CA_ARG_ELEMENT_CV_TRIGGER,		"trigger"			},
+  { CA_ARG_ELEMENT_CV_ACTION,		"action ->"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_ELEMENT_CS_HEADLINE,		"[CE score]"			},
+  { CA_ARG_ELEMENT_CS_TARGET,		"target"			},
+  { CA_ARG_ELEMENT_CS_TRIGGER,		"trigger"			},
+  { CA_ARG_ELEMENT_CS_ACTION,		"action ->"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_ELEMENT_NR_HEADLINE,		"[element]"			},
+  { CA_ARG_ELEMENT_NR_TARGET,		"target"			},
+  { CA_ARG_ELEMENT_NR_TRIGGER,		"trigger"			},
+  { CA_ARG_ELEMENT_NR_ACTION,		"action ->"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_envelope[] =
 {
-  { CA_ARG_NUMBER_HEADLINE,	"[number]"			},
-  { CA_ARG_1,			"1"				},
-  { CA_ARG_2,			"2"				},
-  { CA_ARG_3,			"3"				},
-  { CA_ARG_4,			"4"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_ELEMENT_HEADLINE,	"[element]"			},
-  { CA_ARG_ELEMENT_TARGET,	"target"			},
-  { CA_ARG_ELEMENT_TRIGGER,	"trigger"			},
-  { CA_ARG_ELEMENT_ACTION,	"action ->"			},
+  { CA_ARG_NUMBER_HEADLINE,		"[number]"			},
+  { CA_ARG_1,				"1"				},
+  { CA_ARG_2,				"2"				},
+  { CA_ARG_3,				"3"				},
+  { CA_ARG_4,				"4"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_ELEMENT_HEADLINE,		"[element]"			},
+  { CA_ARG_ELEMENT_TARGET,		"target"			},
+  { CA_ARG_ELEMENT_TRIGGER,		"trigger"			},
+  { CA_ARG_ELEMENT_ACTION,		"action ->"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_key[] =
 {
-  { CA_ARG_NUMBER_HEADLINE,	"[number]"			},
-  { CA_ARG_1,			"1"				},
-  { CA_ARG_2,			"2"				},
-  { CA_ARG_3,			"3"				},
-  { CA_ARG_4,			"4"				},
-  { CA_ARG_5,			"5"				},
-  { CA_ARG_6,			"6"				},
-  { CA_ARG_7,			"7"				},
-  { CA_ARG_8,			"8"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_ELEMENT_HEADLINE,	"[element]"			},
-  { CA_ARG_ELEMENT_TARGET,	"target"			},
-  { CA_ARG_ELEMENT_TRIGGER,	"trigger"			},
-  { CA_ARG_ELEMENT_ACTION,	"action ->"			},
+  { CA_ARG_NUMBER_HEADLINE,		"[number]"			},
+  { CA_ARG_1,				"1"				},
+  { CA_ARG_2,				"2"				},
+  { CA_ARG_3,				"3"				},
+  { CA_ARG_4,				"4"				},
+  { CA_ARG_5,				"5"				},
+  { CA_ARG_6,				"6"				},
+  { CA_ARG_7,				"7"				},
+  { CA_ARG_8,				"8"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_ELEMENT_HEADLINE,		"[element]"			},
+  { CA_ARG_ELEMENT_TARGET,		"target"			},
+  { CA_ARG_ELEMENT_TRIGGER,		"trigger"			},
+  { CA_ARG_ELEMENT_ACTION,		"action ->"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_speed[] =
 {
-  { CA_ARG_SPEED_HEADLINE,	"[speed]"			},
-  { CA_ARG_SPEED_NOT_MOVING,	"frozen"			},
-  { CA_ARG_SPEED_VERY_SLOW,	"very slow"			},
-  { CA_ARG_SPEED_SLOW,		"slow"				},
-  { CA_ARG_SPEED_NORMAL,	"normal"			},
-  { CA_ARG_SPEED_FAST,		"fast"				},
-  { CA_ARG_SPEED_VERY_FAST,	"very fast"			},
-  { CA_ARG_SPEED_EVEN_FASTER,	"ultrafast"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_SPEED_SLOWER,	"slower"			},
-  { CA_ARG_SPEED_FASTER,	"faster"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_SPEED_RESET,		"reset"				},
+  { CA_ARG_SPEED_HEADLINE,		"[speed]"			},
+  { CA_ARG_SPEED_NOT_MOVING,		"frozen"			},
+  { CA_ARG_SPEED_VERY_SLOW,		"very slow"			},
+  { CA_ARG_SPEED_SLOW,			"slow"				},
+  { CA_ARG_SPEED_NORMAL,		"normal"			},
+  { CA_ARG_SPEED_FAST,			"fast"				},
+  { CA_ARG_SPEED_VERY_FAST,		"very fast"			},
+  { CA_ARG_SPEED_EVEN_FASTER,		"ultrafast"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_SPEED_SLOWER,		"slower"			},
+  { CA_ARG_SPEED_FASTER,		"faster"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_SPEED_RESET,			"reset"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_shield[] =
 {
-  { CA_ARG_SHIELD_HEADLINE,	"[shield]"			},
-  { CA_ARG_SHIELD_OFF,		"off"				},
-  { CA_ARG_SHIELD_NORMAL,	"normal"			},
-  { CA_ARG_SHIELD_DEADLY,	"deadly"			},
+  { CA_ARG_SHIELD_HEADLINE,		"[shield]"			},
+  { CA_ARG_SHIELD_OFF,			"off"				},
+  { CA_ARG_SHIELD_NORMAL,		"normal"			},
+  { CA_ARG_SHIELD_DEADLY,		"deadly"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_artwork[] =
 {
-  { CA_ARG_ELEMENT_HEADLINE,	"[element]"			},
-  { CA_ARG_ELEMENT_TARGET,	"target"			},
-  { CA_ARG_ELEMENT_TRIGGER,	"trigger"			},
-  { CA_ARG_ELEMENT_ACTION,	"action ->"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_ELEMENT_RESET,	"reset"				},
+  { CA_ARG_ELEMENT_HEADLINE,		"[element]"			},
+  { CA_ARG_ELEMENT_TARGET,		"target"			},
+  { CA_ARG_ELEMENT_TRIGGER,		"trigger"			},
+  { CA_ARG_ELEMENT_ACTION,		"action ->"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_ELEMENT_RESET,		"reset"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_gravity[] =
 {
-  { CA_ARG_GRAVITY_HEADLINE,	"[gravity]"			},
-  { CA_ARG_GRAVITY_ON,		"on"				},
-  { CA_ARG_GRAVITY_OFF,		"off"				},
-  { CA_ARG_GRAVITY_TOGGLE,	"toggle"			},
+  { CA_ARG_GRAVITY_HEADLINE,		"[gravity]"			},
+  { CA_ARG_GRAVITY_ON,			"on"				},
+  { CA_ARG_GRAVITY_OFF,			"off"				},
+  { CA_ARG_GRAVITY_TOGGLE,		"toggle"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_direction[] =
 {
-  { CA_ARG_DIRECTION_HEADLINE,	"[dir.]"			},
-  { CA_ARG_DIRECTION_NONE,	"none"				},
-  { CA_ARG_DIRECTION_LEFT,	"left"				},
-  { CA_ARG_DIRECTION_RIGHT,	"right"				},
-  { CA_ARG_DIRECTION_UP,	"up"				},
-  { CA_ARG_DIRECTION_DOWN,	"down"				},
-  { CA_ARG_DIRECTION_TRIGGER,	"trigger"			},
-  { CA_ARG_DIRECTION_TRIGGER_BACK, "-trigger"			},
+  { CA_ARG_DIRECTION_HEADLINE,		"[dir.]"			},
+  { CA_ARG_DIRECTION_NONE,		"none"				},
+  { CA_ARG_DIRECTION_LEFT,		"left"				},
+  { CA_ARG_DIRECTION_RIGHT,		"right"				},
+  { CA_ARG_DIRECTION_UP,		"up"				},
+  { CA_ARG_DIRECTION_DOWN,		"down"				},
+  { CA_ARG_DIRECTION_TRIGGER,		"trigger"			},
+  { CA_ARG_DIRECTION_TRIGGER_BACK,	"-trigger"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_scan_mode[] =
 {
-  { CA_ARG_SCAN_MODE_HEADLINE,	"[mode]"			},
-  { CA_ARG_SCAN_MODE_NORMAL,	"normal"			},
-  { CA_ARG_SCAN_MODE_REVERSE,	"reverse"			},
+  { CA_ARG_SCAN_MODE_HEADLINE,		"[mode]"			},
+  { CA_ARG_SCAN_MODE_NORMAL,		"normal"			},
+  { CA_ARG_SCAN_MODE_REVERSE,		"reverse"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_action_arg_inventory[] =
 {
-  { CA_ARG_INVENTORY_HEADLINE,	"[add]"				},
-  { CA_ARG_ELEMENT_TARGET,	"+ target"			},
-  { CA_ARG_ELEMENT_TRIGGER,	"+ trigger"			},
-  { CA_ARG_ELEMENT_ACTION,	"+ action"			},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_INVENTORY_RM_HEADLINE,"[remove]"			},
-  { CA_ARG_INVENTORY_RM_TARGET,	"- target"			},
-  { CA_ARG_INVENTORY_RM_TRIGGER,"- trigger"			},
-  { CA_ARG_INVENTORY_RM_ACTION,	"- action"			},
-  { CA_ARG_INVENTORY_RM_FIRST,	"- first"			},
-  { CA_ARG_INVENTORY_RM_LAST,	"- last"			},
-  { CA_ARG_INVENTORY_RM_ALL,	"- all"				},
-  { CA_ARG_UNDEFINED,		" "				},
-  { CA_ARG_INVENTORY_RESET,	"reset"				},
+  { CA_ARG_INVENTORY_HEADLINE,		"[add]"				},
+  { CA_ARG_ELEMENT_TARGET,		"+ target"			},
+  { CA_ARG_ELEMENT_TRIGGER,		"+ trigger"			},
+  { CA_ARG_ELEMENT_ACTION,		"+ action"			},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_INVENTORY_RM_HEADLINE,	"[remove]"			},
+  { CA_ARG_INVENTORY_RM_TARGET,		"- target"			},
+  { CA_ARG_INVENTORY_RM_TRIGGER,	"- trigger"			},
+  { CA_ARG_INVENTORY_RM_ACTION,		"- action"			},
+  { CA_ARG_INVENTORY_RM_FIRST,		"- first"			},
+  { CA_ARG_INVENTORY_RM_LAST,		"- last"			},
+  { CA_ARG_INVENTORY_RM_ALL,		"- all"				},
+  { CA_ARG_UNDEFINED,			" "				},
+  { CA_ARG_INVENTORY_RESET,		"reset"				},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static char options_change_page_strings[MAX_CHANGE_PAGES][10];
 static struct ValueTextInfo options_change_page[MAX_CHANGE_PAGES + 1] =
 {
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_group_choice_mode[] =
 {
-  { ANIM_RANDOM,		"random"			},
-  { ANIM_LOOP,			"loop"				},
-  { ANIM_LINEAR,		"linear"			},
-  { ANIM_PINGPONG,		"pingpong"			},
-  { ANIM_PINGPONG2,		"pingpong 2"			},
-  { ANIM_LEVEL_NR,		"level number"			},
+  { ANIM_RANDOM,			"random"			},
+  { ANIM_LOOP,				"loop"				},
+  { ANIM_LINEAR,			"linear"			},
+  { ANIM_PINGPONG,			"pingpong"			},
+  { ANIM_PINGPONG2,			"pingpong 2"			},
+  { ANIM_LEVEL_NR,			"level number"			},
 
-  { -1,				NULL				}
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo options_bd_scheduling_type[] =
 {
-  { GD_SCHEDULING_MILLISECONDS,	  "Milliseconds"		},
-  { GD_SCHEDULING_BD1,		  "BD1"				},
-  { GD_SCHEDULING_BD2,		  "BD2"				},
-  { GD_SCHEDULING_PLCK,		  "Construction Kit"		},
-  { GD_SCHEDULING_CRDR,		  "Crazy Dream 7"		},
-  { GD_SCHEDULING_BD1_ATARI,	  "Atari BD1"			},
-  { GD_SCHEDULING_BD2_PLCK_ATARI, "Atari BD2 / PLCK"		},
+  { GD_SCHEDULING_MILLISECONDS,		"Milliseconds"			},
+  { GD_SCHEDULING_BD1,			"BD1"				},
+  { GD_SCHEDULING_BD2,			"BD2"				},
+  { GD_SCHEDULING_PLCK,			"Construction Kit"		},
+  { GD_SCHEDULING_CRDR,			"Crazy Dream 7"			},
+  { GD_SCHEDULING_BD1_ATARI,		"Atari BD1"			},
+  { GD_SCHEDULING_BD2_PLCK_ATARI,	"Atari BD2 / PLCK"		},
 
-  { -1,				  NULL				}
+  { -1,					  NULL				}
 };
 
 static struct ValueTextInfo *action_arg_modes[] =
