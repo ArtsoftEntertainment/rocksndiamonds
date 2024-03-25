@@ -3687,6 +3687,9 @@ struct LevelInfo
   boolean bd_creatures_start_backwards;	// BD creatures start moving in opposite direction
   boolean bd_creatures_turn_on_hatching;// BD creatures change direction after hatching
   int bd_creatures_auto_turn_delay;	// BD creatures change direction after delay (in seconds)
+  int bd_gravity_direction;		// BD engine initial gravity direction
+  boolean bd_gravity_switch_active;	// BD engine gravity switch starts in active state
+  int bd_gravity_switch_delay;		// BD engine gravity change delay for switch (in seconds)
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

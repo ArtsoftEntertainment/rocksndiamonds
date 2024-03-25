@@ -620,6 +620,7 @@ enum
   GADGET_ID_LEVELSET_SAVE_MODE,
   GADGET_ID_WIND_DIRECTION,
   GADGET_ID_PLAYER_SPEED,
+  GADGET_ID_BD_GRAVITY_DIRECTION,
   GADGET_ID_MM_BALL_CHOICE_MODE,
   GADGET_ID_CUSTOM_WALK_TO_ACTION,
   GADGET_ID_CUSTOM_EXPLOSION_TYPE,
@@ -753,6 +754,7 @@ enum
   GADGET_ID_BD_HAMMER_WALLS_REAPPEAR,
   GADGET_ID_BD_CREATURES_START_BACKWARDS,
   GADGET_ID_BD_CREATURES_TURN_ON_HATCHING,
+  GADGET_ID_BD_GRAVITY_SWITCH_ACTIVE,
   GADGET_ID_ENVELOPE_AUTOWRAP,
   GADGET_ID_ENVELOPE_CENTERED,
   GADGET_ID_MM_LASER_RED,
@@ -945,6 +947,7 @@ enum
   ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
   ED_SELECTBOX_ID_WIND_DIRECTION,
   ED_SELECTBOX_ID_PLAYER_SPEED,
+  ED_SELECTBOX_ID_BD_GRAVITY_DIRECTION,
   ED_SELECTBOX_ID_MM_BALL_CHOICE_MODE,
   ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE,
   ED_SELECTBOX_ID_CUSTOM_ACCESS_LAYER,
@@ -1106,6 +1109,7 @@ enum
   ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR,
   ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
   ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING,
+  ED_CHECKBUTTON_ID_BD_GRAVITY_SWITCH_ACTIVE,
   ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
   ED_CHECKBUTTON_ID_ENVELOPE_CENTERED,
   ED_CHECKBUTTON_ID_MM_LASER_RED,
@@ -2054,6 +2058,16 @@ static struct ValueTextInfo options_levelset_save_mode[] =
   { -1,					NULL				}
 };
 
+static struct ValueTextInfo options_bd_gravity_direction[] =
+{
+  { GD_MV_DOWN,				"down"				},
+  { GD_MV_UP,				"up"				},
+  { GD_MV_LEFT,				"left"				},
+  { GD_MV_RIGHT,			"right"				},
+
+  { -1,					NULL				}
+};
+
 static struct ValueTextInfo options_wind_direction[] =
 {
   { MV_START_NONE,			"none"				},
@@ -2849,6 +2863,15 @@ static struct
     options_player_speed,
     &level.initial_player_stepsize[0],
     NULL, "Initial player speed:", NULL,	"Select initial player speed"
+  },
+  {
+    ED_SELECTBOX_ID_BD_GRAVITY_DIRECTION,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_GRAVITY_DIRECTION,		GADGET_ID_NONE,
+    -1,
+    options_bd_gravity_direction,
+    &level.bd_gravity_direction,
+    NULL, "Gravity direction:", NULL,		"Select initial gravity direction"
   },
   {
     ED_SELECTBOX_ID_MM_BALL_CHOICE_MODE,
@@ -3921,6 +3944,14 @@ static struct
     &level.bd_creatures_turn_on_hatching,
     NULL, NULL,
     "Creatures turn on hatching",		"Creatures change direction on hatching"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_GRAVITY_SWITCH_ACTIVE,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_BD_GRAVITY_SWITCH_ACTIVE,		GADGET_ID_NONE,
+    &level.bd_gravity_switch_active,
+    NULL, NULL,
+    "Gravity switch active at start",		"Gravity switch starts in active state"
   },
   {
     ED_CHECKBUTTON_ID_ENVELOPE_AUTOWRAP,
@@ -11342,6 +11373,7 @@ static void DrawPropertiesInfo(void)
 #define TEXT_SKELETONS_NEEDED		"Skeletons needed to use pot"
 #define TEXT_SKELETONS_WORTH		"Counts as this many diamonds"
 #define TEXT_AUTO_TURN_DELAY		"Creatures auto turn delay"
+#define TEXT_GRAVITY_DELAY		"Gravity switch change delay"
 
 static struct
 {
@@ -11489,6 +11521,8 @@ static struct
   { EL_BD_SKELETON,		&level.bd_skeleton_worth_num_diamonds,	TEXT_SKELETONS_WORTH,
 				0, 10								},
   { EL_BD_CREATURE_SWITCH,	&level.bd_creatures_auto_turn_delay,	TEXT_AUTO_TURN_DELAY	},
+  { EL_BD_GRAVITY_SWITCH,	&level.bd_gravity_switch_delay,		TEXT_GRAVITY_DELAY,
+				1, 60								},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
@@ -11555,7 +11589,8 @@ static boolean checkPropertiesConfig(int element)
       element == EL_BD_MEGA_ROCK ||
       element == EL_BD_SWEET ||
       element == EL_BD_VOODOO_DOLL ||
-      element == EL_BD_WATER)
+      element == EL_BD_WATER ||
+      element == EL_BD_GRAVITY_SWITCH)
   {
     return TRUE;
   }
@@ -11680,6 +11715,7 @@ static void DrawPropertiesConfig(void)
 			       (properties_element == EL_BD_ACID            ? 1 : 0) +
 			       (properties_element == EL_BD_REPLICATOR      ? 1 : 0) +
 			       (properties_element == EL_BD_CREATURE_SWITCH ? 2 : 0) +
+			       (properties_element == EL_BD_GRAVITY_SWITCH  ? 2 : 0) +
 			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 			       num_element_counters);
 
@@ -11972,6 +12008,13 @@ static void DrawPropertiesConfig(void)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING);
+  }
+
+  if (properties_element == EL_BD_GRAVITY_SWITCH)
+  {
+    MapSelectboxGadget(ED_SELECTBOX_ID_BD_GRAVITY_DIRECTION);
+
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_GRAVITY_SWITCH_ACTIVE);
   }
 
   if (properties_element == EL_BD_NUT)

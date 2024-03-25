@@ -896,6 +896,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_BD_GRAVITY_SWITCH,		-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
+    &li.bd_gravity_direction,		GD_MV_DOWN
+  },
+  {
+    EL_BD_GRAVITY_SWITCH,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    &li.bd_gravity_switch_active,	FALSE
+  },
+  {
+    EL_BD_GRAVITY_SWITCH,		-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
+    &li.bd_gravity_switch_delay,	10
+  },
+
+  {
     EL_BD_SAND,				-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
     &li.bd_sand_looks_like,		EL_BD_SAND
@@ -4240,6 +4256,10 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->creatures_direction_auto_change_on_start = level->bd_creatures_turn_on_hatching;
   cave->creatures_direction_auto_change_time	 = level->bd_creatures_auto_turn_delay;
 
+  cave->gravity				= level->bd_gravity_direction;
+  cave->gravity_switch_active		= level->bd_gravity_switch_active;
+  cave->gravity_change_time		= level->bd_gravity_switch_delay;
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4379,6 +4399,10 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_creatures_start_backwards	= cave->creatures_backwards;
   level->bd_creatures_turn_on_hatching	= cave->creatures_direction_auto_change_on_start;
   level->bd_creatures_auto_turn_delay	= cave->creatures_direction_auto_change_time;
+
+  level->bd_gravity_direction		= cave->gravity;
+  level->bd_gravity_switch_active	= cave->gravity_switch_active;
+  level->bd_gravity_switch_delay	= cave->gravity_change_time;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
