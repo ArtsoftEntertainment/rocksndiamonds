@@ -593,6 +593,10 @@ enum
   GADGET_ID_BD_BUTTERFLY_2_EXPLODES_TO,
   GADGET_ID_BD_STONEFLY_EXPLODES_TO,
   GADGET_ID_BD_DRAGONFLY_EXPLODES_TO,
+  GADGET_ID_BD_DIAMOND_BIRTH_TURNS_TO,
+  GADGET_ID_BD_BOMB_EXPLOSION_TURNS_TO,
+  GADGET_ID_BD_NITRO_EXPLOSION_TURNS_TO,
+  GADGET_ID_BD_EXPLOSION_TURNS_TO,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1252,6 +1256,10 @@ enum
   ED_DRAWING_ID_BD_BUTTERFLY_2_EXPLODES_TO,
   ED_DRAWING_ID_BD_STONEFLY_EXPLODES_TO,
   ED_DRAWING_ID_BD_DRAGONFLY_EXPLODES_TO,
+  ED_DRAWING_ID_BD_DIAMOND_BIRTH_TURNS_TO,
+  ED_DRAWING_ID_BD_BOMB_EXPLOSION_TURNS_TO,
+  ED_DRAWING_ID_BD_NITRO_EXPLOSION_TURNS_TO,
+  ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4750,6 +4758,38 @@ static struct
     GADGET_ID_BD_DRAGONFLY_EXPLODES_TO,		GADGET_ID_NONE,
     &level.bd_dragonfly_explodes_to,		1, 1,
     "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
+  },
+  {
+    ED_DRAWING_ID_BD_DIAMOND_BIRTH_TURNS_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_DIAMOND_BIRTH_TURNS_TO,	GADGET_ID_NONE,
+    &level.bd_diamond_birth_turns_to,		1, 1,
+    "Explosion ends in:", NULL, NULL, NULL,	"Changes to this after explosion"
+  },
+  {
+    ED_DRAWING_ID_BD_BOMB_EXPLOSION_TURNS_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_BOMB_EXPLOSION_TURNS_TO,	GADGET_ID_NONE,
+    &level.bd_bomb_explosion_turns_to,		1, 1,
+    "Explosion ends in:", NULL, NULL, NULL,	"Changes to this after explosion"
+  },
+  {
+    ED_DRAWING_ID_BD_NITRO_EXPLOSION_TURNS_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_NITRO_EXPLOSION_TURNS_TO,	GADGET_ID_NONE,
+    &level.bd_nitro_explosion_turns_to,		1, 1,
+    "Explosion ends in:", NULL, NULL, NULL,	"Changes to this after explosion"
+  },
+  {
+    ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(1),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_EXPLOSION_TURNS_TO,		GADGET_ID_NONE,
+    &level.bd_explosion_turns_to,		1, 1,
+    "Explosion ends in:", NULL, NULL, NULL,	"Changes to this after explosion"
   },
 
   // ---------- level start element -------------------------------------------
@@ -11693,6 +11733,8 @@ static boolean checkPropertiesConfig(int element)
       element == EL_BD_SAND ||
       element == EL_BD_ROCK ||
       element == EL_BD_MEGA_ROCK ||
+      element == EL_BD_BOMB ||
+      element == EL_BD_NITRO_PACK ||
       element == EL_BD_SWEET ||
       element == EL_BD_VOODOO_DOLL ||
       element == EL_BD_WATER ||
@@ -12067,17 +12109,42 @@ static void DrawPropertiesConfig(void)
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
     if (IS_BD_FIREFLY(properties_element))
+    {
       MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_EXPLODES_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
+    }
     else if (IS_BD_FIREFLY_2(properties_element))
+    {
       MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_2_EXPLODES_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
+    }
     else if (IS_BD_BUTTERFLY(properties_element))
+    {
       MapDrawingArea(ED_DRAWING_ID_BD_BUTTERFLY_EXPLODES_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_BIRTH_TURNS_TO);
+    }
     else if (IS_BD_BUTTERFLY_2(properties_element))
+    {
       MapDrawingArea(ED_DRAWING_ID_BD_BUTTERFLY_2_EXPLODES_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_BIRTH_TURNS_TO);
+    }
     else if (IS_BD_STONEFLY(properties_element))
+    {
       MapDrawingArea(ED_DRAWING_ID_BD_STONEFLY_EXPLODES_TO);
+    }
     else if (IS_BD_DRAGONFLY(properties_element))
+    {
       MapDrawingArea(ED_DRAWING_ID_BD_DRAGONFLY_EXPLODES_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
+    }
+    else if (properties_element == EL_BD_BOMB)
+    {
+      MapDrawingArea(ED_DRAWING_ID_BD_BOMB_EXPLOSION_TURNS_TO);
+    }
+    else if (properties_element == EL_BD_NITRO_PACK)
+    {
+      MapDrawingArea(ED_DRAWING_ID_BD_NITRO_EXPLOSION_TURNS_TO);
+    }
   }
 
   if (properties_element == EL_BD_MEGA_ROCK ||

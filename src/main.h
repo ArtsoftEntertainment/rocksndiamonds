@@ -3736,6 +3736,10 @@ struct LevelInfo
   int bd_butterfly_2_explodes_to;	// BD butterfly 2 explodes to specified element
   int bd_stonefly_explodes_to;		// BD stonefly explodes to specified element
   int bd_dragonfly_explodes_to;		// BD dragonfly explodes to specified element
+  int bd_diamond_birth_turns_to;	// BD diamond birth changes to specified element
+  int bd_bomb_explosion_turns_to;	// BD bomb explosion changes to specified element
+  int bd_nitro_explosion_turns_to;	// BD nitro pack explosion changes to specified element
+  int bd_explosion_turns_to;		// BD other explosions change to specified element
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

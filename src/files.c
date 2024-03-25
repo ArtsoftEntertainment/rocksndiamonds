@@ -704,6 +704,30 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_BD_DIAMOND_GROWING_5,		-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_diamond_birth_turns_to,	EL_BD_DIAMOND
+  },
+
+  {
+    EL_BD_BOMB_EXPLODING_4,		-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_bomb_explosion_turns_to,	EL_BD_WALL
+  },
+
+  {
+    EL_BD_NITRO_PACK_EXPLODING_4,	-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_nitro_explosion_turns_to,	EL_EMPTY
+  },
+
+  {
+    EL_BD_EXPLODING_5,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_explosion_turns_to,		EL_EMPTY
+  },
+
+  {
     EL_BD_MAGIC_WALL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_magic_wall_wait_hatching,	FALSE
@@ -4329,6 +4353,11 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->stonefly_explode_to		= LEVEL_TO_CAVE(level->bd_stonefly_explodes_to);
   cave->dragonfly_explode_to		= LEVEL_TO_CAVE(level->bd_dragonfly_explodes_to);
 
+  cave->diamond_birth_effect		= LEVEL_TO_CAVE(level->bd_diamond_birth_turns_to);
+  cave->bomb_explosion_effect		= LEVEL_TO_CAVE(level->bd_bomb_explosion_turns_to);
+  cave->nitro_explosion_effect		= LEVEL_TO_CAVE(level->bd_nitro_explosion_turns_to);
+  cave->explosion_effect		= LEVEL_TO_CAVE(level->bd_explosion_turns_to);
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4484,6 +4513,11 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_butterfly_2_explodes_to	= CAVE_TO_LEVEL(cave->alt_butterfly_explode_to);
   level->bd_stonefly_explodes_to	= CAVE_TO_LEVEL(cave->stonefly_explode_to);
   level->bd_dragonfly_explodes_to	= CAVE_TO_LEVEL(cave->dragonfly_explode_to);
+
+  level->bd_diamond_birth_turns_to	= CAVE_TO_LEVEL(cave->diamond_birth_effect);
+  level->bd_bomb_explosion_turns_to	= CAVE_TO_LEVEL(cave->bomb_explosion_effect);
+  level->bd_nitro_explosion_turns_to	= CAVE_TO_LEVEL(cave->nitro_explosion_effect);
+  level->bd_explosion_turns_to		= CAVE_TO_LEVEL(cave->explosion_effect);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
