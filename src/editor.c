@@ -583,6 +583,10 @@ enum
   GADGET_ID_BD_NUT_CONTENT,
   GADGET_ID_BD_EXPANDING_WALL_LOOKS_LIKE,
   GADGET_ID_BD_SAND_LOOKS_LIKE,
+  GADGET_ID_BD_ROCK_TURNS_TO_ON_FALLING,
+  GADGET_ID_BD_ROCK_TURNS_TO_ON_IMPACT,
+  GADGET_ID_BD_DIAMOND_TURNS_TO_ON_FALLING,
+  GADGET_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1232,6 +1236,10 @@ enum
   ED_DRAWING_ID_BD_NUT_CONTENT,
   ED_DRAWING_ID_BD_EXPANDING_WALL_LOOKS_LIKE,
   ED_DRAWING_ID_BD_SAND_LOOKS_LIKE,
+  ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_FALLING,
+  ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_IMPACT,
+  ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_FALLING,
+  ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4650,6 +4658,38 @@ static struct
     GADGET_ID_BD_SAND_LOOKS_LIKE,		GADGET_ID_NONE,
     &level.bd_sand_looks_like,			1, 1,
     "Use graphic of element:", NULL, NULL, NULL, "Sand looks like this element"
+  },
+  {
+    ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_FALLING,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(2),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_ROCK_TURNS_TO_ON_FALLING,	GADGET_ID_NONE,
+    &level.bd_rock_turns_to_on_falling,		1, 1,
+    "Turns to when falling:", NULL, NULL, NULL,	"Changes to this when falling starts"
+  },
+  {
+    ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_IMPACT,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(3),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_ROCK_TURNS_TO_ON_IMPACT,	GADGET_ID_NONE,
+    &level.bd_rock_turns_to_on_impact,		1, 1,
+    "Turns to on impact:", NULL, NULL, NULL,	"Changes to this when falling stops"
+  },
+  {
+    ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_FALLING,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(2),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_DIAMOND_TURNS_TO_ON_FALLING,	GADGET_ID_NONE,
+    &level.bd_diamond_turns_to_on_falling,	1, 1,
+    "Turns to when falling:", NULL, NULL, NULL,	"Changes to this when falling starts"
+  },
+  {
+    ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(3),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,	GADGET_ID_NONE,
+    &level.bd_diamond_turns_to_on_impact,	1, 1,
+    "Turns to on impact:", NULL, NULL, NULL,	"Changes to this when falling stops"
   },
 
   // ---------- level start element -------------------------------------------
@@ -11939,6 +11979,15 @@ static void DrawPropertiesConfig(void)
 
     MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB);
     MapCounterButtons(ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET);
+
+    MapDrawingArea(ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_FALLING);
+    MapDrawingArea(ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_IMPACT);
+  }
+
+  if (properties_element == EL_BD_DIAMOND && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_FALLING);
+    MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT);
   }
 
   if (properties_element == EL_BD_MEGA_ROCK ||

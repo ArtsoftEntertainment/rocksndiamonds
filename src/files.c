@@ -635,9 +635,30 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_BD_ROCK,				-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_rock_turns_to_on_falling,	EL_BD_ROCK_FALLING
+  },
+  {
+    EL_BD_ROCK,				-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
+    &li.bd_rock_turns_to_on_impact,	EL_BD_ROCK
+  },
+
+  {
     EL_BD_DIAMOND,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.score[SC_DIAMOND_EXTRA],	20
+  },
+  {
+    EL_BD_DIAMOND,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
+    &li.bd_diamond_turns_to_on_falling,	EL_BD_DIAMOND_FALLING
+  },
+  {
+    EL_BD_DIAMOND,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
+    &li.bd_diamond_turns_to_on_impact,	EL_BD_DIAMOND
   },
 
   {
@@ -4260,6 +4281,11 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->gravity_change_time		= level->bd_gravity_switch_delay;
   cave->gravity_affects_all		= level->bd_gravity_affects_all;
 
+  cave->stone_falling_effect		= LEVEL_TO_CAVE(level->bd_rock_turns_to_on_falling);
+  cave->stone_bouncing_effect		= LEVEL_TO_CAVE(level->bd_rock_turns_to_on_impact);
+  cave->diamond_falling_effect		= LEVEL_TO_CAVE(level->bd_diamond_turns_to_on_falling);
+  cave->diamond_bouncing_effect		= LEVEL_TO_CAVE(level->bd_diamond_turns_to_on_impact);
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4403,6 +4429,11 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_gravity_switch_active	= cave->gravity_switch_active;
   level->bd_gravity_switch_delay	= cave->gravity_change_time;
   level->bd_gravity_affects_all		= cave->gravity_affects_all;
+
+  level->bd_rock_turns_to_on_falling	= CAVE_TO_LEVEL(cave->stone_falling_effect);
+  level->bd_rock_turns_to_on_impact	= CAVE_TO_LEVEL(cave->stone_bouncing_effect);
+  level->bd_diamond_turns_to_on_falling	= CAVE_TO_LEVEL(cave->diamond_falling_effect);
+  level->bd_diamond_turns_to_on_impact	= CAVE_TO_LEVEL(cave->diamond_bouncing_effect);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

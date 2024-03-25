@@ -3690,6 +3690,10 @@ struct LevelInfo
   boolean bd_gravity_switch_active;	// BD engine gravity switch starts in active state
   int bd_gravity_switch_delay;		// BD engine gravity change delay for switch (in seconds)
   boolean bd_gravity_affects_all;	// BD engine gravity affects all falling objects
+  int bd_rock_turns_to_on_falling;	// BD rock changes to specified element when falling
+  int bd_rock_turns_to_on_impact;	// BD rock changes to specified element on impact
+  int bd_diamond_turns_to_on_falling;	// BD diamond changes to specified element when falling
+  int bd_diamond_turns_to_on_impact;	// BD diamond changes to specified element on impact
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
