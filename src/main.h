@@ -3612,7 +3612,6 @@ struct LevelInfo
   boolean bd_line_shifting_borders;	// BD engine uses line-shifting wrap-around
   boolean bd_scan_first_and_last_row;	// BD engine scans top and bottom border rows
   boolean bd_short_explosions;		// BD engine uses four game cycles for explosions
-  boolean bd_gravity_affects_all;	// BD engine gravity affects all falling objects
   boolean bd_intermission;		// BD level is intermission
   boolean bd_diagonal_movements;	// BD style diagonal movements
   boolean bd_topmost_player_active;	// BD engine uses first player found on playfield
@@ -3690,6 +3689,7 @@ struct LevelInfo
   int bd_gravity_direction;		// BD engine initial gravity direction
   boolean bd_gravity_switch_active;	// BD engine gravity switch starts in active state
   int bd_gravity_switch_delay;		// BD engine gravity change delay for switch (in seconds)
+  boolean bd_gravity_affects_all;	// BD engine gravity affects all falling objects
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

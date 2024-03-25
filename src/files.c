@@ -307,12 +307,7 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(23),
-    &li.bd_gravity_affects_all,		TRUE
-  },
-  {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(24),
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(23),
     &li.bd_cave_random_seed_c64,	0
   },
 
@@ -909,6 +904,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     EL_BD_GRAVITY_SWITCH,		-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
     &li.bd_gravity_switch_delay,	10
+  },
+  {
+    EL_BD_GRAVITY_SWITCH,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
+    &li.bd_gravity_affects_all,		TRUE
   },
 
   {
@@ -4160,7 +4160,6 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->lineshift			= level->bd_line_shifting_borders;
   cave->border_scan_first_and_last	= level->bd_scan_first_and_last_row;
   cave->short_explosions		= level->bd_short_explosions;
-  cave->gravity_affects_all		= level->bd_gravity_affects_all;
 
   // player properties
   cave->diagonal_movements		= level->bd_diagonal_movements;
@@ -4259,6 +4258,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->gravity				= level->bd_gravity_direction;
   cave->gravity_switch_active		= level->bd_gravity_switch_active;
   cave->gravity_change_time		= level->bd_gravity_switch_delay;
+  cave->gravity_affects_all		= level->bd_gravity_affects_all;
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -4304,7 +4304,6 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_line_shifting_borders	= cave->lineshift;
   level->bd_scan_first_and_last_row	= cave->border_scan_first_and_last;
   level->bd_short_explosions		= cave->short_explosions;
-  level->bd_gravity_affects_all		= cave->gravity_affects_all;
 
   // player properties
   level->bd_diagonal_movements		= cave->diagonal_movements;
@@ -4403,6 +4402,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_gravity_direction		= cave->gravity;
   level->bd_gravity_switch_active	= cave->gravity_switch_active;
   level->bd_gravity_switch_delay	= cave->gravity_change_time;
+  level->bd_gravity_affects_all		= cave->gravity_affects_all;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
