@@ -5129,9 +5129,9 @@ static int editor_el_boulderdash_native[] =
   EL_BD_ROCK,
   EL_BD_DIAMOND,
 
+  EL_BD_INBOX,
   EL_BD_STEELWALL,
   EL_BD_WALL,
-  EL_BD_SAND_2,
   EL_BD_MAGIC_WALL,
 
   EL_BD_AMOEBA,
@@ -5144,7 +5144,7 @@ static int editor_el_boulderdash_native[] =
   EL_BD_BUTTERFLY_RIGHT,
   EL_BD_FIREFLY_RIGHT,
 
-  EL_BD_INBOX,
+  EL_BD_SAND_2,
   EL_BD_BUTTERFLY_DOWN,
   EL_BD_FIREFLY_DOWN,
   EL_BD_EXIT_OPEN,
