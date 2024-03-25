@@ -635,6 +635,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_BD_SAND,				-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_sand_looks_like,		EL_BD_SAND
+  },
+
+  {
     EL_BD_ROCK,				-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
     &li.bd_rock_turns_to_on_falling,	EL_BD_ROCK_FALLING
@@ -930,12 +936,6 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     EL_BD_GRAVITY_SWITCH,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
     &li.bd_gravity_affects_all,		TRUE
-  },
-
-  {
-    EL_BD_SAND,				-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_sand_looks_like,		EL_BD_SAND
   },
 
   // (the following values are related to various game elements)
