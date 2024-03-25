@@ -905,6 +905,42 @@
 					 (e) == EL_BD_PLAYER_GLUED ||		\
 					 (e) == EL_BD_PLAYER_STIRRING)
 
+#define IS_BD_FIREFLY(e)		((e) == EL_BD_FIREFLY ||		\
+					 (e) == EL_BD_FIREFLY_RIGHT ||		\
+					 (e) == EL_BD_FIREFLY_UP ||		\
+					 (e) == EL_BD_FIREFLY_LEFT ||		\
+					 (e) == EL_BD_FIREFLY_DOWN)
+
+#define IS_BD_FIREFLY_2(e)		((e) == EL_BD_FIREFLY_2 ||		\
+					 (e) == EL_BD_FIREFLY_2_RIGHT ||	\
+					 (e) == EL_BD_FIREFLY_2_UP ||		\
+					 (e) == EL_BD_FIREFLY_2_LEFT ||		\
+					 (e) == EL_BD_FIREFLY_2_DOWN)
+
+#define IS_BD_BUTTERFLY(e)		((e) == EL_BD_BUTTERFLY ||		\
+					 (e) == EL_BD_BUTTERFLY_RIGHT ||	\
+					 (e) == EL_BD_BUTTERFLY_UP ||		\
+					 (e) == EL_BD_BUTTERFLY_LEFT ||		\
+					 (e) == EL_BD_BUTTERFLY_DOWN)
+
+#define IS_BD_BUTTERFLY_2(e)		((e) == EL_BD_BUTTERFLY_2 ||		\
+					 (e) == EL_BD_BUTTERFLY_2_RIGHT ||	\
+					 (e) == EL_BD_BUTTERFLY_2_UP ||		\
+					 (e) == EL_BD_BUTTERFLY_2_LEFT ||	\
+					 (e) == EL_BD_BUTTERFLY_2_DOWN)
+
+#define IS_BD_STONEFLY(e)		((e) == EL_BD_STONEFLY ||		\
+					 (e) == EL_BD_STONEFLY_RIGHT ||		\
+					 (e) == EL_BD_STONEFLY_UP ||		\
+					 (e) == EL_BD_STONEFLY_LEFT ||		\
+					 (e) == EL_BD_STONEFLY_DOWN)
+
+#define IS_BD_DRAGONFLY(e)		((e) == EL_BD_DRAGONFLY ||		\
+					 (e) == EL_BD_DRAGONFLY_RIGHT ||		\
+					 (e) == EL_BD_DRAGONFLY_UP ||		\
+					 (e) == EL_BD_DRAGONFLY_LEFT ||		\
+					 (e) == EL_BD_DRAGONFLY_DOWN)
+
 #define IS_BD_BITER(e)			((e) == EL_BD_BITER ||			\
 					 (e) == EL_BD_BITER_RIGHT ||		\
 					 (e) == EL_BD_BITER_UP ||		\
@@ -3694,6 +3730,12 @@ struct LevelInfo
   int bd_rock_turns_to_on_impact;	// BD rock changes to specified element on impact
   int bd_diamond_turns_to_on_falling;	// BD diamond changes to specified element when falling
   int bd_diamond_turns_to_on_impact;	// BD diamond changes to specified element on impact
+  int bd_firefly_explodes_to;		// BD firefly explodes to specified element
+  int bd_firefly_2_explodes_to;		// BD firefly 2 explodes to specified element
+  int bd_butterfly_explodes_to;		// BD butterfly explodes to specified element
+  int bd_butterfly_2_explodes_to;	// BD butterfly 2 explodes to specified element
+  int bd_stonefly_explodes_to;		// BD stonefly explodes to specified element
+  int bd_dragonfly_explodes_to;		// BD dragonfly explodes to specified element
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

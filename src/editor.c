@@ -587,6 +587,12 @@ enum
   GADGET_ID_BD_ROCK_TURNS_TO_ON_IMPACT,
   GADGET_ID_BD_DIAMOND_TURNS_TO_ON_FALLING,
   GADGET_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,
+  GADGET_ID_BD_FIREFLY_EXPLODES_TO,
+  GADGET_ID_BD_FIREFLY_2_EXPLODES_TO,
+  GADGET_ID_BD_BUTTERFLY_EXPLODES_TO,
+  GADGET_ID_BD_BUTTERFLY_2_EXPLODES_TO,
+  GADGET_ID_BD_STONEFLY_EXPLODES_TO,
+  GADGET_ID_BD_DRAGONFLY_EXPLODES_TO,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1240,6 +1246,12 @@ enum
   ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_IMPACT,
   ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_FALLING,
   ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,
+  ED_DRAWING_ID_BD_FIREFLY_EXPLODES_TO,
+  ED_DRAWING_ID_BD_FIREFLY_2_EXPLODES_TO,
+  ED_DRAWING_ID_BD_BUTTERFLY_EXPLODES_TO,
+  ED_DRAWING_ID_BD_BUTTERFLY_2_EXPLODES_TO,
+  ED_DRAWING_ID_BD_STONEFLY_EXPLODES_TO,
+  ED_DRAWING_ID_BD_DRAGONFLY_EXPLODES_TO,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -4690,6 +4702,54 @@ static struct
     GADGET_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,	GADGET_ID_NONE,
     &level.bd_diamond_turns_to_on_impact,	1, 1,
     "Turns to on impact:", NULL, NULL, NULL,	"Changes to this when falling stops"
+  },
+  {
+    ED_DRAWING_ID_BD_FIREFLY_EXPLODES_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_FIREFLY_EXPLODES_TO,		GADGET_ID_NONE,
+    &level.bd_firefly_explodes_to,		1, 1,
+    "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
+  },
+  {
+    ED_DRAWING_ID_BD_FIREFLY_2_EXPLODES_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_FIREFLY_2_EXPLODES_TO,		GADGET_ID_NONE,
+    &level.bd_firefly_2_explodes_to,		1, 1,
+    "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
+  },
+  {
+    ED_DRAWING_ID_BD_BUTTERFLY_EXPLODES_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_BUTTERFLY_EXPLODES_TO,		GADGET_ID_NONE,
+    &level.bd_butterfly_explodes_to,		1, 1,
+    "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
+  },
+  {
+    ED_DRAWING_ID_BD_BUTTERFLY_2_EXPLODES_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_BUTTERFLY_2_EXPLODES_TO,	GADGET_ID_NONE,
+    &level.bd_butterfly_2_explodes_to,		1, 1,
+    "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
+  },
+  {
+    ED_DRAWING_ID_BD_STONEFLY_EXPLODES_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_STONEFLY_EXPLODES_TO,		GADGET_ID_NONE,
+    &level.bd_stonefly_explodes_to,		1, 1,
+    "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
+  },
+  {
+    ED_DRAWING_ID_BD_DRAGONFLY_EXPLODES_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_DRAGONFLY_EXPLODES_TO,		GADGET_ID_NONE,
+    &level.bd_dragonfly_explodes_to,		1, 1,
+    "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
   },
 
   // ---------- level start element -------------------------------------------
@@ -11615,6 +11675,12 @@ static boolean checkPropertiesConfig(int element)
       IS_DF_LASER(element) ||
       IS_PLAYER_ELEMENT(element) ||
       IS_BD_PLAYER_ELEMENT(element) ||
+      IS_BD_FIREFLY(properties_element) ||
+      IS_BD_FIREFLY_2(properties_element) ||
+      IS_BD_BUTTERFLY(properties_element) ||
+      IS_BD_BUTTERFLY_2(properties_element) ||
+      IS_BD_STONEFLY(properties_element) ||
+      IS_BD_DRAGONFLY(properties_element) ||
       IS_BD_EXPANDABLE_WALL(properties_element) ||
       IS_BD_EXPANDABLE_STEELWALL(properties_element) ||
       IS_BD_CONVEYOR_BELT(properties_element) ||
@@ -11735,6 +11801,14 @@ static void DrawPropertiesConfig(void)
     if (elements_with_counter[i].element == EL_BD_AMOEBA &&
 	elements_with_counter[i].value != &level.amoeba_speed &&
 	level.game_engine_type != GAME_ENGINE_TYPE_BD)
+      continue;
+
+    // special case: score for smashing only available in R'n'D game engine
+    if ((IS_BD_FIREFLY(elements_with_counter[i].element) ||
+	 IS_BD_BUTTERFLY(elements_with_counter[i].element)) &&
+	(elements_with_counter[i].value == &level.score[SC_BUG] ||
+	 elements_with_counter[i].value == &level.score[SC_SPACESHIP]) &&
+	level.game_engine_type == GAME_ENGINE_TYPE_BD)
       continue;
 
     // special case: some amoeba counters only available in R'n'D game engine
@@ -11990,6 +12064,22 @@ static void DrawPropertiesConfig(void)
     MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT);
   }
 
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    if (IS_BD_FIREFLY(properties_element))
+      MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_EXPLODES_TO);
+    else if (IS_BD_FIREFLY_2(properties_element))
+      MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_2_EXPLODES_TO);
+    else if (IS_BD_BUTTERFLY(properties_element))
+      MapDrawingArea(ED_DRAWING_ID_BD_BUTTERFLY_EXPLODES_TO);
+    else if (IS_BD_BUTTERFLY_2(properties_element))
+      MapDrawingArea(ED_DRAWING_ID_BD_BUTTERFLY_2_EXPLODES_TO);
+    else if (IS_BD_STONEFLY(properties_element))
+      MapDrawingArea(ED_DRAWING_ID_BD_STONEFLY_EXPLODES_TO);
+    else if (IS_BD_DRAGONFLY(properties_element))
+      MapDrawingArea(ED_DRAWING_ID_BD_DRAGONFLY_EXPLODES_TO);
+  }
+
   if (properties_element == EL_BD_MEGA_ROCK ||
       properties_element == EL_BD_SWEET)
   {
@@ -12079,7 +12169,8 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_EM_DYNAMITE)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE);
 
-  if (COULD_MOVE_INTO_ACID(properties_element) &&
+  if (level.game_engine_type == GAME_ENGINE_TYPE_RND &&
+      COULD_MOVE_INTO_ACID(properties_element) &&
       !IS_PLAYER_ELEMENT(properties_element) &&
       (!IS_CUSTOM_ELEMENT(properties_element) ||
        edit_mode_properties == ED_MODE_PROPERTIES_CONFIG_2))

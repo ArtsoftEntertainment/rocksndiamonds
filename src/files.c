@@ -668,6 +668,42 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_BD_FIREFLY,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_firefly_explodes_to,		EL_BD_EXPLODING_1
+  },
+
+  {
+    EL_BD_FIREFLY_2,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_firefly_2_explodes_to,	EL_BD_EXPLODING_1
+  },
+
+  {
+    EL_BD_BUTTERFLY,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_butterfly_explodes_to,	EL_BD_DIAMOND_GROWING_1
+  },
+
+  {
+    EL_BD_BUTTERFLY_2,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_butterfly_2_explodes_to,	EL_BD_DIAMOND_GROWING_1
+  },
+
+  {
+    EL_BD_STONEFLY,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_stonefly_explodes_to,	EL_BD_ROCK_GROWING_1
+  },
+
+  {
+    EL_BD_DRAGONFLY,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_dragonfly_explodes_to,	EL_BD_EXPLODING_1
+  },
+
+  {
     EL_BD_MAGIC_WALL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_magic_wall_wait_hatching,	FALSE
@@ -4286,6 +4322,13 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->diamond_falling_effect		= LEVEL_TO_CAVE(level->bd_diamond_turns_to_on_falling);
   cave->diamond_bouncing_effect		= LEVEL_TO_CAVE(level->bd_diamond_turns_to_on_impact);
 
+  cave->firefly_explode_to		= LEVEL_TO_CAVE(level->bd_firefly_explodes_to);
+  cave->alt_firefly_explode_to		= LEVEL_TO_CAVE(level->bd_firefly_2_explodes_to);
+  cave->butterfly_explode_to		= LEVEL_TO_CAVE(level->bd_butterfly_explodes_to);
+  cave->alt_butterfly_explode_to	= LEVEL_TO_CAVE(level->bd_butterfly_2_explodes_to);
+  cave->stonefly_explode_to		= LEVEL_TO_CAVE(level->bd_stonefly_explodes_to);
+  cave->dragonfly_explode_to		= LEVEL_TO_CAVE(level->bd_dragonfly_explodes_to);
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4434,6 +4477,13 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_rock_turns_to_on_impact	= CAVE_TO_LEVEL(cave->stone_bouncing_effect);
   level->bd_diamond_turns_to_on_falling	= CAVE_TO_LEVEL(cave->diamond_falling_effect);
   level->bd_diamond_turns_to_on_impact	= CAVE_TO_LEVEL(cave->diamond_bouncing_effect);
+
+  level->bd_firefly_explodes_to		= CAVE_TO_LEVEL(cave->firefly_explode_to);
+  level->bd_firefly_2_explodes_to	= CAVE_TO_LEVEL(cave->alt_firefly_explode_to);
+  level->bd_butterfly_explodes_to	= CAVE_TO_LEVEL(cave->butterfly_explode_to);
+  level->bd_butterfly_2_explodes_to	= CAVE_TO_LEVEL(cave->alt_butterfly_explode_to);
+  level->bd_stonefly_explodes_to	= CAVE_TO_LEVEL(cave->stonefly_explode_to);
+  level->bd_dragonfly_explodes_to	= CAVE_TO_LEVEL(cave->dragonfly_explode_to);
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
