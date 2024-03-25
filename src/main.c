@@ -6633,14 +6633,14 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Expandable steelwall (any direction)"
   },
   {
-    "bd_expandable_wall_switch_horizontal",
     "bd_expandable_wall_switch",
-    "Expandable wall switch (horizontal)"
+    "bd_expandable_wall_switch",
+    "Expandable wall switch"
   },
   {
-    "bd_expandable_wall_switch_vertical",
+    "bd_expandable_wall_switch.active",
     "bd_expandable_wall_switch",
-    "Expandable wall switch (vertical)"
+    "Expandable wall switch (active)"
   },
   {
     "bd_inbox",
@@ -6803,14 +6803,14 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Conveyor belt power switch (active)"
   },
   {
-    "bd_conveyor_dir_switch_normal",
+    "bd_conveyor_dir_switch",
     "bd_conveyor_dir_switch",
     "Conveyor belt direction switch"
   },
   {
-    "bd_conveyor_dir_switch_changed",
+    "bd_conveyor_dir_switch.active",
     "bd_conveyor_dir_switch",
-    "Conveyor belt direction switch (changed)"
+    "Conveyor belt direction switch (active)"
   },
   {
     "bd_gravity_switch",
