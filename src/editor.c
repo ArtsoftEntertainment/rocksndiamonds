@@ -11946,7 +11946,9 @@ static void DrawPropertiesConfig(void)
       MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE);
     }
     else if (IS_AMOEBOID(properties_element))
+    {
       MapDrawingArea(ED_DRAWING_ID_AMOEBA_CONTENT);
+    }
     else if (properties_element == EL_BD_ACID)
     {
       MapDrawingArea(ED_DRAWING_ID_BD_ACID_EATS_ELEMENT);
@@ -11965,7 +11967,9 @@ static void DrawPropertiesConfig(void)
 	     properties_element == EL_YAMYAM_RIGHT ||
 	     properties_element == EL_YAMYAM_UP ||
 	     properties_element == EL_YAMYAM_DOWN)
+    {
       DrawYamYamContentAreas();
+    }
     else if (properties_element == EL_EMC_MAGIC_BALL)
     {
       DrawMagicBallContentAreas();
@@ -11974,7 +11978,9 @@ static void DrawPropertiesConfig(void)
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_INITIAL_BALL_ACTIVE);
     }
     else if (properties_element == EL_EMC_ANDROID)
+    {
       DrawAndroidElementArea();
+    }
     else if (properties_element == EL_MM_GRAY_BALL)
     {
       MapCounterButtons(ED_COUNTER_ID_MM_BALL_CONTENT);
