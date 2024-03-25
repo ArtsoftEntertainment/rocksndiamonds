@@ -3684,6 +3684,9 @@ struct LevelInfo
   int bd_skeleton_worth_num_diamonds;	// BD skeleton collected is worth this number of diamonds
   int bd_expanding_wall_looks_like;	// BD expanding wall looks like this other game element
   int bd_sand_looks_like;		// BD sand looks like this other game element
+  boolean bd_creatures_start_backwards;	// BD creatures start moving in opposite direction
+  boolean bd_creatures_turn_on_hatching;// BD creatures change direction after hatching
+  int bd_creatures_auto_turn_delay;	// BD creatures change direction after delay (in seconds)
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

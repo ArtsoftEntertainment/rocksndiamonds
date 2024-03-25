@@ -315,6 +315,21 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     TYPE_INTEGER,			CONF_VALUE_8_BIT(24),
     &li.bd_cave_random_seed_c64,	0
   },
+  {
+    -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(25),
+    &li.bd_creatures_start_backwards,	FALSE
+  },
+  {
+    -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(26),
+    &li.bd_creatures_turn_on_hatching,	FALSE
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(7),
+    &li.bd_creatures_auto_turn_delay,	0
+  },
 
   {
     -1,					-1,
@@ -4220,6 +4235,10 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->expanding_wall_looks_like	= LEVEL_TO_CAVE(level->bd_expanding_wall_looks_like);
   cave->dirt_looks_like			= LEVEL_TO_CAVE(level->bd_sand_looks_like);
 
+  cave->creatures_backwards			 = level->bd_creatures_start_backwards;
+  cave->creatures_direction_auto_change_on_start = level->bd_creatures_turn_on_hatching;
+  cave->creatures_direction_auto_change_time	 = level->bd_creatures_auto_turn_delay;
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4355,6 +4374,10 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->bd_expanding_wall_looks_like	= CAVE_TO_LEVEL(cave->expanding_wall_looks_like);
   level->bd_sand_looks_like		= CAVE_TO_LEVEL(cave->dirt_looks_like);
+
+  level->bd_creatures_start_backwards	= cave->creatures_backwards;
+  level->bd_creatures_turn_on_hatching	= cave->creatures_direction_auto_change_on_start;
+  level->bd_creatures_auto_turn_delay	= cave->creatures_direction_auto_change_time;
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
