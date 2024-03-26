@@ -232,6 +232,38 @@ int get_play_area_h(void)
   return play_area_h / cell_size;
 }
 
+static boolean player_out_of_window(GdGame *game, int player_x, int player_y)
+{
+  // if not yet born, we treat as visible. so cave will run.
+  // the user is unable to control an unborn player, so this is the right behaviour.
+  if (game->cave->player_state == GD_PL_NOT_YET)
+    return FALSE;
+
+  // check if active player is outside drawing area. if yes, we should wait for scrolling
+  if ((player_x * cell_size) < scroll_x ||
+      (player_x * cell_size + cell_size - 1) > scroll_x + play_area_w)
+  {
+    // but only do the wait, if the player SHOULD BE visible, ie. he is inside
+    // the defined visible area of the cave
+    if (game->cave->player_x >= game->cave->x1 &&
+	game->cave->player_x <= game->cave->x2)
+      return TRUE;
+  }
+
+  if ((player_y * cell_size) < scroll_y ||
+      (player_y * cell_size + cell_size - 1) > scroll_y + play_area_h)
+  {
+    // but only do the wait, if the player SHOULD BE visible, ie. he is inside
+    // the defined visible area of the cave
+    if (game->cave->player_y >= game->cave->y1 &&
+	game->cave->player_y <= game->cave->y2)
+      return TRUE;
+  }
+
+  // player is inside visible window
+  return FALSE;
+}
+
 /*
   SCROLLING
   
@@ -242,7 +274,6 @@ int get_play_area_h(void)
 boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
 {
   static int scroll_desired_x = 0, scroll_desired_y = 0;
-  boolean out_of_window;
   int player_x, player_y, visible_x, visible_y;
   boolean changed;
 
@@ -297,33 +328,7 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   }
 
   // check if active player is visible at the moment.
-  out_of_window = FALSE;
-
-  // check if active player is outside drawing area. if yes, we should wait for scrolling
-  if ((player_x * cell_size) < scroll_x ||
-      (player_x * cell_size + cell_size - 1) > scroll_x + play_area_w)
-  {
-    // but only do the wait, if the player SHOULD BE visible, ie. he is inside
-    // the defined visible area of the cave
-    if (game->cave->player_x >= game->cave->x1 &&
-	game->cave->player_x <= game->cave->x2)
-      out_of_window = TRUE;
-  }
-
-  if ((player_y * cell_size) < scroll_y ||
-      (player_y * cell_size + cell_size - 1) > scroll_y + play_area_h)
-    // but only do the wait, if the player SHOULD BE visible, ie. he is inside
-    // the defined visible area of the cave
-    if (game->cave->player_y >= game->cave->y1 &&
-	game->cave->player_y <= game->cave->y2)
-      out_of_window = TRUE;
-
-  // if not yet born, we treat as visible. so cave will run.
-  // the user is unable to control an unborn player, so this is the right behaviour.
-  if (game->cave->player_state == GD_PL_NOT_YET)
-    return FALSE;
-
-  return out_of_window;
+  return player_out_of_window(game, player_x, player_y);
 }
 
 // returns true, if the given surface seems to be a c64 imported image.
