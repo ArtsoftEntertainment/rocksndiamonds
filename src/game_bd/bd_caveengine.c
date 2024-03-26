@@ -983,17 +983,18 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
   process a crazy dream-style teleporter.
   called from gd_cave_iterate, for a player or a player_bomb.
   player is standing at px, py, and trying to move in the direction player_move,
-  where there is a teleporter.
-  we check the whole cave, from px+1,py, till we get back to px,py (by wrapping
+  where there is a teleporter at (tx_start, ty_start). we check the whole cave,
+  from (tx_start + 1, ty_start), till we get back to (tx_start, ty_start) (by wrapping
   around). the first teleporter we find, and which is suitable, will be the destination.
   return TRUE if teleporter worked, FALSE if cound not find any suitable teleporter.
- */
+*/
 static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_move)
 {
-  int tx, ty;
-
-  tx = px;
-  ty = py;
+  // start at teleporter position (not at player position!)
+  int tx_start = px + gd_dx[player_move];
+  int ty_start = py + gd_dy[player_move];
+  int tx = tx_start;
+  int ty = ty_start;
 
   do
   {
@@ -1025,7 +1026,7 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
     }
   }
   // loop until we get back to original coordinates
-  while (tx != px || ty != py);
+  while (tx != tx_start || ty != ty_start);
 
   // return false as we did not find any usable teleporter
   return FALSE;
