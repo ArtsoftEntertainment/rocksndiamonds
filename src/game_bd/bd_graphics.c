@@ -274,6 +274,7 @@ static boolean player_out_of_window(GdGame *game, int player_x, int player_y)
 boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
 {
   static int scroll_desired_x = 0, scroll_desired_y = 0;
+  static int scroll_speed_last = -1;
   int player_x, player_y, visible_x, visible_y;
   boolean changed;
 
@@ -295,12 +296,17 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   player_x = game->cave->player_x - game->cave->x1; // cell coordinates of player
   player_y = game->cave->player_y - game->cave->y1;
 
-  // when wrapping around to opposite level border, use faster scrolling
-  if (game->cave->player_x == game->cave->x1 ||
-      game->cave->player_x == game->cave->x2 ||
-      game->cave->player_y == game->cave->y1 ||
-      game->cave->player_y == game->cave->y2)
+  // if player is outside visible playfield area, use faster scrolling
+  // (might happen when wrapping around the playfield, teleporting etc.)
+  if (player_out_of_window(game, player_x, player_y))
     scroll_speed *= 4;
+
+  // if scrolling started with player outside visible playfield area, keep faster scrolling
+  if (scroll_speed_last > scroll_speed)
+    scroll_speed = scroll_speed_last;
+
+  // store current (potentially faster) scrolling speed for next time
+  scroll_speed_last = scroll_speed;
 
   // pixel size of visible part of the cave (may be smaller in intermissions)
   visible_x = (game->cave->x2 - game->cave->x1 + 1) * cell_size;
@@ -326,6 +332,10 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
       for (x = 0; x < game->cave->w; x++)
 	game->gfx_buffer[y][x] |= GD_REDRAW;
   }
+
+  // if no scrolling required, reset last (potentially faster) scrolling speed
+  if (!changed)
+    scroll_speed_last = -1;
 
   // check if active player is visible at the moment.
   return player_out_of_window(game, player_x, player_y);
