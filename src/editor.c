@@ -3959,11 +3959,11 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING,
-    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
     GADGET_ID_BD_CREATURES_TURN_ON_HATCHING,	GADGET_ID_NONE,
     &level.bd_creatures_turn_on_hatching,
     NULL, NULL,
-    "Creatures turn on hatching",		"Creatures change direction on hatching"
+    "Creatures auto turn on hatching",		"Creatures change direction on hatching"
   },
   {
     ED_CHECKBUTTON_ID_BD_GRAVITY_SWITCH_ACTIVE,
@@ -11870,7 +11870,7 @@ static void DrawPropertiesConfig(void)
 			       (properties_element == EL_BD_SLIME           ? 1 : 0) +
 			       (properties_element == EL_BD_ACID            ? 1 : 0) +
 			       (properties_element == EL_BD_REPLICATOR      ? 1 : 0) +
-			       (properties_element == EL_BD_CREATURE_SWITCH ? 2 : 0) +
+			       (properties_element == EL_BD_CREATURE_SWITCH ? 1 : 0) +
 			       (properties_element == EL_BD_GRAVITY_SWITCH  ? 2 : 0) +
 			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
 			       num_element_counters);
