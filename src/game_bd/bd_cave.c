@@ -1314,12 +1314,15 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
   elemdrawing[O_PLAYER] = draw;
   elemdrawing[O_PLAYER_GLUED] = draw;
 
-  // player with bomb does not blink or tap - no graphics drawn for that.
-  // running is drawn using w/o bomb cells */
+  // player with bomb/rocketlauncher does not blink or tap - no graphics drawn for that.
+  // running is drawn using w/o bomb/rocketlauncher cells */
   if (cave->last_direction != GD_MV_STILL)
   {
     elemmapping[O_PLAYER_BOMB] = map;
     elemdrawing[O_PLAYER_BOMB] = draw;
+
+    elemmapping[O_PLAYER_ROCKET_LAUNCHER] = map;
+    elemdrawing[O_PLAYER_ROCKET_LAUNCHER] = draw;
   }
 
   elemmapping[O_INBOX] = (cave->inbox_flash_toggle ? O_INBOX_OPEN : O_INBOX_CLOSED);

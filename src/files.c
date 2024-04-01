@@ -951,6 +951,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_BD_ROCKET_LAUNCHER,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_infinite_rockets,		FALSE
+  },
+
+  {
     EL_BD_SKELETON,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_num_skeletons_needed_for_pot, 5
@@ -4326,6 +4332,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->hammered_walls_reappear		= level->bd_hammer_walls_reappear;
   cave->hammered_wall_reappear_frame	= level->bd_hammer_walls_reappear_delay;
 
+  cave->infinite_rockets		= level->bd_infinite_rockets;
+
   cave->skeletons_needed_for_pot	= level->bd_num_skeletons_needed_for_pot;
   cave->skeletons_worth_diamonds	= level->bd_skeleton_worth_num_diamonds;
 
@@ -4486,6 +4494,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_hammer_walls_break_delay	= cave->pneumatic_hammer_frame;
   level->bd_hammer_walls_reappear	= cave->hammered_walls_reappear;
   level->bd_hammer_walls_reappear_delay	= cave->hammered_wall_reappear_frame;
+
+  level->bd_infinite_rockets		= cave->infinite_rockets;
 
   level->bd_num_skeletons_needed_for_pot= cave->skeletons_needed_for_pot;
   level->bd_skeleton_worth_num_diamonds	= cave->skeletons_worth_diamonds;

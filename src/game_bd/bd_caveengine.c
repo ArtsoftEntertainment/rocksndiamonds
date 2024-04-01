@@ -748,6 +748,13 @@ static void explode(GdCave *cave, int x, int y)
       creature_explode(cave, x, y, O_EXPLODE_1);
       break;
 
+    case O_ROCKET_1:
+    case O_ROCKET_2:
+    case O_ROCKET_3:
+    case O_ROCKET_4:
+      creature_explode(cave, x, y, O_EXPLODE_1);
+      break;
+
     case O_BUTTER_1:
     case O_BUTTER_2:
     case O_BUTTER_3:
@@ -780,6 +787,7 @@ static void explode(GdCave *cave, int x, int y)
     case O_PLAYER_BOMB:
     case O_PLAYER_GLUED:
     case O_PLAYER_STIRRING:
+    case O_PLAYER_ROCKET_LAUNCHER:
     case O_PLAYER_PNEUMATIC_LEFT:
     case O_PLAYER_PNEUMATIC_RIGHT:
       creature_explode(cave, x, y, O_EXPLODE_1);
@@ -1747,6 +1755,19 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		    move(cave, x, y, player_move, O_PLAYER_BOMB);
 		  break;
 
+		case O_ROCKET_LAUNCHER:
+		  // if its a rocket launcher, remember he now has one.
+		  // we do not change the "remains" and "what" variables,
+		  // so that part of the code will be ineffective
+		  gd_sound_play(cave, GD_S_BOMB_COLLECTING, what, x, y);
+		  store_dir(cave, x, y, player_move, O_SPACE);
+
+		  if (player_fire)
+		    store(cave, x, y, O_PLAYER_ROCKET_LAUNCHER);
+		  else
+		    move(cave, x, y, player_move, O_PLAYER_ROCKET_LAUNCHER);
+		  break;
+
 		case O_POT:
 		  // we do not change the "remains" and "what" variables,
 		  // so that part of the code will be ineffective
@@ -1884,6 +1905,98 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    {
 	      // if anything changed, apply the change.
 	      move(cave, x, y, player_move, O_PLAYER_BOMB);
+	    }
+	  }
+	  break;
+
+	case O_PLAYER_ROCKET_LAUNCHER:
+	  // much simpler; cannot snap-push stones
+	  if (cave->kill_player)
+	  {
+	    explode(cave, x, y);
+	    break;
+	  }
+
+	  cave->player_seen_ago = 0;
+	  // bd4 intermission caves have many players. so if one of them has exited,
+	  // do not change the flag anymore. so this if () is needed
+	  if (cave->player_state != GD_PL_EXITED)
+	    cave->player_state = GD_PL_LIVING;
+
+	  // firing a rocket?
+	  if (player_move != GD_MV_STILL)
+	  {
+	    // if the player does not move, nothing to do
+	    GdElement what = get_dir(cave, x, y, player_move);
+	    GdElement remains = what;
+
+	    // to fire a rocket, diagonal movement should not be allowed.
+	    // so either x or y must be zero
+	    if (player_fire)
+	    {
+	      // placing a rocket into empty space
+	      if (is_space_dir(cave, x, y, player_move))
+	      {
+		switch (player_move)
+		{
+		  case GD_MV_RIGHT:
+		    store_dir(cave, x, y, player_move, O_ROCKET_1);
+		    if (!cave->infinite_rockets)
+		      store(cave, x, y, O_PLAYER);
+		    break;
+
+		  case GD_MV_UP:
+		    store_dir(cave, x, y, player_move, O_ROCKET_2);
+		    if (!cave->infinite_rockets)
+		      store(cave, x, y, O_PLAYER);
+		    break;
+
+		  case GD_MV_LEFT:
+		    store_dir(cave, x, y, player_move, O_ROCKET_3);
+		    if (!cave->infinite_rockets)
+		      store(cave, x, y, O_PLAYER);
+		    break;
+
+		  case GD_MV_DOWN:
+		    store_dir(cave, x, y, player_move, O_ROCKET_4);
+		    if (!cave->infinite_rockets)
+		      store(cave, x, y, O_PLAYER);
+		    break;
+
+		  default:
+		    // cannot fire in other directions
+		    break;
+		}
+
+		gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
+	      }
+
+	      // a player with rocket launcher cannot snap elements, so stop here
+	      break;
+	    }
+
+	    // pushing and collecting
+	    // if we are 'eating' a teleporter, and the function returns true
+	    // (teleporting worked), break here
+	    if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
+	      break;
+
+	    // player fire is false...
+	    if (do_push(cave, x, y, player_move, FALSE))
+	    {
+	      remains = O_SPACE;
+	    }
+	    else
+	    {
+	      // get element. if cannot get, player_get_element will return the same
+	      remains = player_get_element(cave, what, x, y);
+	    }
+
+	    // if something changed, OR there is space, move.
+	    if (remains != what || remains == O_SPACE)
+	    {
+	      // if anything changed, apply the change.
+	      move(cave, x, y, player_move, O_PLAYER_ROCKET_LAUNCHER);
 	    }
 	  }
 	  break;
@@ -3167,6 +3280,38 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      }
 	    }
 	  }
+	  break;
+
+	  // ============================================================================
+	  //    R O C K E T S
+	  // ============================================================================
+
+	case O_ROCKET_1:
+	  if (is_space_dir(cave, x, y, GD_MV_RIGHT))
+	    move(cave, x, y, GD_MV_RIGHT, O_ROCKET_1);
+	  else
+	    explode(cave, x, y);
+	  break;
+
+	case O_ROCKET_2:
+	  if (is_space_dir(cave, x, y, GD_MV_UP))
+	    move(cave, x, y, GD_MV_UP, O_ROCKET_2);
+	  else
+	    explode(cave, x, y);
+	  break;
+
+	case O_ROCKET_3:
+	  if (is_space_dir(cave, x, y, GD_MV_LEFT))
+	    move(cave, x, y, GD_MV_LEFT, O_ROCKET_3);
+	  else
+	    explode(cave, x, y);
+	  break;
+
+	case O_ROCKET_4:
+	  if (is_space_dir(cave, x, y, GD_MV_DOWN))
+	    move(cave, x, y, GD_MV_DOWN, O_ROCKET_4);
+	  else
+	    explode(cave, x, y);
 	  break;
 
 	  // ============================================================================

@@ -82,7 +82,7 @@ void gd_struct_set_defaults_from_array(void *str, const GdStructDescriptor *prop
 
 // these define the number of the cells in the png file
 #define GD_NUM_OF_CELLS_X	8
-#define GD_NUM_OF_CELLS_Y	46
+#define GD_NUM_OF_CELLS_Y	47
 
 // +80: placeholder for cells which are rendered by the game;
 // for example diamond + arrow = falling diamond
@@ -529,6 +529,9 @@ typedef struct _gd_cave
   int pneumatic_hammer_frame;
   int hammered_wall_reappear_frame;
   boolean pneumatic_hammer_sound;
+
+  boolean infinite_rockets;             // if true, the player which got a rocket launcher will be
+                                        // able to launch an infinite number of rockets
 
   // internal variables, used during the game. private data :)
 

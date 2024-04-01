@@ -287,8 +287,15 @@ GdElements gd_elements[] =
   { O_PRE_PL_3, N_("Player birth (3)"), 0, "GUYBIRTH3", 0, 34, 34, 34 },
   { O_PLAYER, N_("Player"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUY", 0, i_player, i_player, 35, 32 },    // has ckdelay
   { O_PLAYER_BOMB, N_("Player with bomb"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYBOMB", 0, 42, 42, 42, 25 },    // has ckdelay
+  { O_PLAYER_ROCKET_LAUNCHER, N_("Player with rocket launcher"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYROCKETLAUNCER", 0, 369, 369, 369, 25 },    // has ckdelay
   { O_PLAYER_GLUED, N_("Glued player"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT, "GUYGLUED", 0, i_player_glued, i_player_glued, 35 },    // is not a real player! so active x, y will not find it. no P_PLAYER bit!
   { O_PLAYER_STIRRING, N_("Player stirring"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYSTIRRING", 0, 256, -256, -256 },
+
+  { O_ROCKET_LAUNCHER, N_("Rocket launcher"), 0, "ROCKET_LAUNCHER", 0, 368, 368, 368 },
+  { O_ROCKET_1, N_("Rocket (right)"), 0, "ROCKETr", 0, 364, 364, 364, 40 },    // has ckdelay
+  { O_ROCKET_2, N_("Rocket (up)"), 0, "ROCKETu", 0, 365, 365, 365, 40 },    // has ckdelay
+  { O_ROCKET_3, N_("Rocket (left)"), 0, "ROCKETl", 0, 366, 366, 366, 40 },    // has ckdelay
+  { O_ROCKET_4, N_("Rocket (down)"), 0, "ROCKETd", 0, 367, 367, 367, 40 },    // has ckdelay
 
   { O_BOMB, N_("Bomb"), P_COLLECTIBLE, "BOMB", 0, 48, 48, 48 },
   { O_BOMB_TICK_1, N_("Ticking bomb (1)"), P_EXPLOSION_FIRST_STAGE, "IGNITEDBOMB1", 0, 49, 49, 49 },
@@ -489,6 +496,11 @@ const GdStructDescriptor gd_cave_properties[] =
   {"", GD_LABEL, 0, N_("Sweet")},
   {"PushingBoulderProb", GD_TYPE_PROBABILITY, 0, N_("Probability of pushing (%)"), CAVE_OFFSET(pushing_stone_prob_sweet), 1, N_("Chance of player managing to push a stone, every game cycle he tries. This is used after eating sweet.")},
   {"PushingMegaStonesAfterSweet", GD_TYPE_BOOLEAN, 0, N_("Mega stones pushable"), CAVE_OFFSET(mega_stones_pushable_with_sweet), 1, N_("If it is true, mega stones can be pushed after eating sweet.")},
+
+  // rocket launcher
+  {"", GD_LABEL, 0, N_("Rocket launcher")},
+  {"RocketLauncher.infinite", GD_TYPE_BOOLEAN, 0, N_("Infinite rockets"), CAVE_OFFSET(infinite_rockets), 1, N_("If it is true, the player is able to launch an infinite number of rockets. Otherwise every rocket launcher contains only a single rocket.")},
+
   // pneumatic hammer
   {"", GD_LABEL, 0, N_("Pneumatic hammer")},
   {"PneumaticHammer.frames", GD_TYPE_INT, 0, N_("Time for hammer (frames)"), CAVE_OFFSET(pneumatic_hammer_frame), 1, N_("This is the number of game frames, a pneumatic hammer is required to break a wall."), 1, 100},

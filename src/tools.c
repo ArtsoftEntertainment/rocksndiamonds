@@ -6895,12 +6895,36 @@ bd_object_mapping_list[] =
     EL_BD_PLAYER_WITH_BOMB,			-1, -1
   },
   {
+    O_PLAYER_ROCKET_LAUNCHER,			TRUE,
+    EL_BD_PLAYER_WITH_ROCKET_LAUNCHER,		-1, -1
+  },
+  {
     O_PLAYER_GLUED,				TRUE,
     EL_BD_PLAYER_GLUED,				-1, -1
   },
   {
     O_PLAYER_STIRRING,				TRUE,
     EL_BD_PLAYER_STIRRING,			-1, -1
+  },
+  {
+    O_ROCKET_LAUNCHER,				TRUE,
+    EL_BD_ROCKET_LAUNCHER,			-1, -1
+  },
+  {
+    O_ROCKET_1,					TRUE,
+    EL_BD_ROCKET_RIGHT,				-1, -1
+  },
+  {
+    O_ROCKET_2,					TRUE,
+    EL_BD_ROCKET_UP,				-1, -1
+  },
+  {
+    O_ROCKET_3,					TRUE,
+    EL_BD_ROCKET_LEFT,				-1, -1
+  },
+  {
+    O_ROCKET_4,					TRUE,
+    EL_BD_ROCKET_DOWN,				-1, -1
   },
   {
     O_BOMB,					TRUE,

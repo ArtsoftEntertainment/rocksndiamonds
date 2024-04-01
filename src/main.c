@@ -7108,6 +7108,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Player with bomb",
   },
   {
+    "bd_player_with_rocket_launcher",
+    "bd_player",
+    "Player with rocket launcher",
+  },
+  {
     "bd_player_glued",
     "bd_player",
     "Glued player",
@@ -7116,6 +7121,36 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "bd_player_stirring",
     "bd_player",
     "Stirring player"
+  },
+  {
+    "bd_rocket_launcher",
+    "bd_rocket_launcher",
+    "Rocket launcher",
+  },
+  {
+    "bd_rocket",
+    "bd_rocket",
+    "Rocket",
+  },
+  {
+    "bd_rocket.right",
+    "bd_rocket",
+    "Rocket (starts moving right)"
+  },
+  {
+    "bd_rocket.up",
+    "bd_rocket",
+    "Rocket (starts moving up)"
+  },
+  {
+    "bd_rocket.left",
+    "bd_rocket",
+    "Rocket (starts moving left)"
+  },
+  {
+    "bd_rocket.down",
+    "bd_rocket",
+    "Rocket (starts moving down)"
   },
   {
     "bd_fake_bonus",

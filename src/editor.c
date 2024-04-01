@@ -765,6 +765,7 @@ enum
   GADGET_ID_BD_CONVEYOR_BELTS_CHANGED,
   GADGET_ID_BD_WATER_CANNOT_FLOW_DOWN,
   GADGET_ID_BD_HAMMER_WALLS_REAPPEAR,
+  GADGET_ID_BD_INFINITE_ROCKETS,
   GADGET_ID_BD_CREATURES_START_BACKWARDS,
   GADGET_ID_BD_CREATURES_TURN_ON_HATCHING,
   GADGET_ID_BD_GRAVITY_SWITCH_ACTIVE,
@@ -1120,6 +1121,7 @@ enum
   ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED,
   ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN,
   ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR,
+  ED_CHECKBUTTON_ID_BD_INFINITE_ROCKETS,
   ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
   ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING,
   ED_CHECKBUTTON_ID_BD_GRAVITY_SWITCH_ACTIVE,
@@ -3950,6 +3952,14 @@ static struct
     "Hammered walls reappear",			"Hammered walls reappear after delay"
   },
   {
+    ED_CHECKBUTTON_ID_BD_INFINITE_ROCKETS,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_INFINITE_ROCKETS,		GADGET_ID_NONE,
+    &level.bd_infinite_rockets,
+    NULL, NULL,
+    "Infinite rockets",				"Rocket launcher has infinite rockets"
+  },
+  {
     ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
     ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
     GADGET_ID_BD_CREATURES_START_BACKWARDS,	GADGET_ID_NONE,
@@ -5281,8 +5291,13 @@ static int editor_el_boulderdash_native[] =
 
   EL_BD_PLAYER,
   EL_BD_PLAYER_WITH_BOMB,
+  EL_BD_PLAYER_WITH_ROCKET_LAUNCHER,
+  EL_BD_ROCKET_LAUNCHER,
+
   EL_BD_PLAYER_GLUED,
   EL_BD_PLAYER_STIRRING,
+  EL_EMPTY,
+  EL_EMPTY,
 };
 static int *editor_hl_boulderdash_native_ptr = editor_hl_boulderdash_native;
 static int *editor_el_boulderdash_native_ptr = editor_el_boulderdash_native;
@@ -11734,6 +11749,7 @@ static boolean checkPropertiesConfig(int element)
       element == EL_BD_ROCK ||
       element == EL_BD_MEGA_ROCK ||
       element == EL_BD_BOMB ||
+      element == EL_BD_ROCKET_LAUNCHER ||
       element == EL_BD_NITRO_PACK ||
       element == EL_BD_SWEET ||
       element == EL_BD_VOODOO_DOLL ||
@@ -12214,6 +12230,11 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_BD_PNEUMATIC_HAMMER)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR);
+  }
+
+  if (properties_element == EL_BD_ROCKET_LAUNCHER)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_INFINITE_ROCKETS);
   }
 
   if (properties_element == EL_BD_CREATURE_SWITCH)
