@@ -4607,6 +4607,9 @@ static void CopyNativeTape_BD_to_RND(struct LevelInfo *level)
   }
 
   TapeHaltRecording();
+
+  if (!replay->success)
+    Warn("BD replay is marked as not successful");
 }
 
 

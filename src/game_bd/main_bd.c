@@ -95,6 +95,30 @@ void setLevelInfoToDefaults_BD(void)
   setLevelInfoToDefaults_BD_Ext(0, 0);
 }
 
+static List *getNativeLevelReplay_BD_Ext(List *item, boolean only_successful_replays)
+{
+  // look for replay that was recorded for the current difficulty level
+  while (item != NULL &&
+	 (item->data == NULL ||
+	  (((GdReplay *)item->data)->success == FALSE && only_successful_replays) ||
+	  ((GdReplay *)item->data)->level != native_bd_level.level_nr))
+    item = item->next;
+
+  return item;
+}
+
+static List *getNativeLevelReplay_BD(List *replays)
+{
+  // 1st try: look for successful replay
+  List *item = getNativeLevelReplay_BD_Ext(replays, TRUE);
+
+  if (item != NULL)
+    return item;
+
+  // 2nd try: look for any replay
+  return getNativeLevelReplay_BD_Ext(replays, FALSE);
+}
+
 boolean LoadNativeLevel_BD(char *filename, int level_pos, boolean level_info_only)
 {
   static char *filename_loaded = NULL;
@@ -137,16 +161,9 @@ boolean LoadNativeLevel_BD(char *filename, int level_pos, boolean level_info_onl
   // check if this cave has any replays
   if (native_bd_level.cave->replays != NULL)
   {
-    List *item = native_bd_level.cave->replays;
+    List *item = getNativeLevelReplay_BD(native_bd_level.cave->replays);
 
-    // try to find replay that was recorded for this difficulty level
-    while (item != NULL &&
-	   (item->data == NULL ||
-	    ((GdReplay *)item->data)->success == FALSE ||
-	    ((GdReplay *)item->data)->level != native_bd_level.level_nr))
-      item = item->next;
-
-    // matching replay found
+    // check if any matching replay was found
     if (item != NULL)
       native_bd_level.replay = (GdReplay *)item->data;
   }
