@@ -3837,7 +3837,7 @@ static struct
     GADGET_ID_BD_MAGIC_WALL_STOPS_AMOEBA,	GADGET_ID_NONE,
     &level.bd_magic_wall_stops_amoeba,
     NULL, NULL,
-    "Turn amoeba to diamonds",			"Activation changes amoeba to diamonds"
+    "Stop amoeba and turn to diamonds",		"Activation changes amoeba to diamonds"
   },
   {
     ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING,
