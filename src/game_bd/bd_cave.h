@@ -394,6 +394,8 @@ typedef struct _gd_cave
   int level_magic_wall_time[5];         // magic wall 'on' state for each level (seconds)
   boolean magic_wall_stops_amoeba;      // Turning on magic wall changes amoeba to diamonds.
                                         // Original BD: yes, constkit: no
+  boolean magic_wall_breakscan;		// Currently this setting enabled will turn the amoeba to
+                                        // an enclosed state. To implement buggy BD1 behaviour.
   boolean magic_timer_zero_is_infinite;	// magic wall timer 0 is interpreted as infinite
   boolean magic_timer_wait_for_hatching;// magic wall timer does not start before player's birth
   boolean magic_wall_sound;             // magic wall has sound
@@ -587,6 +589,7 @@ typedef struct _gd_cave
   int amoeba_2_max_count;               // selected amoeba 2 threshold for this level
   GdAmoebaState amoeba_state;           // state of amoeba 1
   GdAmoebaState amoeba_2_state;         // state of amoeba 2
+  boolean convert_amoeba_this_frame;    // To implement BD1 buggy amoeba+magic wall behaviour.
   int magic_wall_time;                  // magic wall 'on' state for seconds
   int slime_permeability;               // true random slime
   int slime_permeability_c64;           // Appearing in bd 2

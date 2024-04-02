@@ -221,6 +221,7 @@ GdPropertyDefault gd_defaults_bd1[] =
   {CAVE_OFFSET(intermission_instantlife), TRUE},
   {CAVE_OFFSET(intermission_rewardlife), FALSE},
   {CAVE_OFFSET(magic_wall_stops_amoeba), TRUE},
+  {CAVE_OFFSET(magic_wall_breakscan), TRUE},
   {CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE},
   {CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE},
   {CAVE_OFFSET(pushing_stone_prob), 250000},

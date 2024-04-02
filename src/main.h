@@ -3665,6 +3665,7 @@ struct LevelInfo
   boolean bd_magic_wall_zero_infinite;	// BD magic wall with timer of zero runs infinitely
   boolean bd_magic_wall_wait_hatching;	// BD magic wall waits for player's birth
   boolean bd_magic_wall_stops_amoeba;	// BD magic wall can stop amoeba and turn to diamonds
+  boolean bd_magic_wall_break_scan;	// BD magic wall setting to implement buggy BD1 behaviour
   int bd_magic_wall_diamond_to;		// BD magic wall turns diamonds to specified element
   int bd_magic_wall_rock_to;		// BD magic wall turns rocks to specified element
   int bd_magic_wall_mega_rock_to;	// BD magic wall turns mega rocks to specified element

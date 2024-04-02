@@ -744,6 +744,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
   {
     EL_BD_MAGIC_WALL,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
+    &li.bd_magic_wall_break_scan,	FALSE
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
     &li.bd_magic_wall_diamond_to,	EL_BD_ROCK_FALLING
   },
@@ -4272,6 +4277,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->magic_timer_zero_is_infinite	= level->bd_magic_wall_zero_infinite;
   cave->magic_timer_wait_for_hatching	= level->bd_magic_wall_wait_hatching;
   cave->magic_wall_stops_amoeba		= level->bd_magic_wall_stops_amoeba;
+  cave->magic_wall_breakscan		= level->bd_magic_wall_break_scan;
 
   cave->magic_diamond_to		= LEVEL_TO_CAVE(level->bd_magic_wall_diamond_to);
   cave->magic_stone_to			= LEVEL_TO_CAVE(level->bd_magic_wall_rock_to);
@@ -4436,6 +4442,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_magic_wall_zero_infinite	= cave->magic_timer_zero_is_infinite;
   level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
   level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
+  level->bd_magic_wall_break_scan	= cave->magic_wall_breakscan;
 
   level->bd_magic_wall_diamond_to	= CAVE_TO_LEVEL(cave->magic_diamond_to);
   level->bd_magic_wall_rock_to		= CAVE_TO_LEVEL(cave->magic_stone_to);

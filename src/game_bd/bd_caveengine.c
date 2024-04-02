@@ -1371,6 +1371,9 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y,
     // active or non-active or anything, element falling in will always disappear
     store(cave, x, y, O_SPACE);
 
+    if (cave->magic_wall_breakscan && cave->amoeba_state == GD_AM_AWAKE)
+      cave->convert_amoeba_this_frame = TRUE;
+
     return TRUE;
   }
   else
@@ -1603,6 +1606,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   // score collected this frame
   cave->score = 0;
+
+  // to implement buggy bd1 amoeba+magic wall behaviour
+  cave->convert_amoeba_this_frame = FALSE;
 
   // suicide only kills the active player
   // player_x, player_y was set by the previous iterate routine, or the cave setup.
@@ -2847,6 +2853,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  // ============================================================================
 
 	case O_AMOEBA:
+	  // emulating BD1 amoeba+magic wall bug
+	  if (cave->convert_amoeba_this_frame && amoeba_found_enclosed)
+	  {
+	    store(cave, x, y, cave->amoeba_enclosed_effect);
+	    break;
+	  }
+
 	  amoeba_count++;
 	  switch (cave->amoeba_state)
 	  {
