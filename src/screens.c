@@ -7882,10 +7882,11 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   struct TokenInfo *si = &setup_info[si_pos];
   boolean font_draw_xoffset_modified = FALSE;
   boolean scrollbar_needed = (num_setup_info < max_setup_info);
+  int mx_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x;
+  int mx_right_border = (scrollbar_needed ? mx_scrollbar : SX + SXSIZE);
   int font_draw_xoffset_old = -1;
-  int xoffset = (scrollbar_needed ? -1 : 0);
+  int xoffset = (scrollbar_needed ? 0 : 1);
   int menu_screen_value_xpos = MENU_SCREEN_VALUE_XPOS + xoffset;
-  int menu_screen_max_xpos = MENU_SCREEN_MAX_XPOS + xoffset;
   int xpos = menu_screen_value_xpos;
   int ypos = MENU_SCREEN_START_YPOS + screen_pos;
   int startx = mSX + xpos * 32;
@@ -7896,7 +7897,6 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   int font_nr_default = getSetupValueFont(type, value);
   int font_width_default = getFontWidth(font_nr_default);
   int font_nr = font_nr_default;
-  int i;
 
   if (value_string == NULL)
     return;
@@ -7917,10 +7917,6 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
     if (strlen(value_string) > max_value_len)
       value_string[max_value_len] = '\0';
   }
-  else if (type & TYPE_YES_NO_AUTO)
-  {
-    xpos = menu_screen_value_xpos - 1;
-  }
   else if (type & TYPE_PLAYER)
   {
     int displayed_player_nr = *(int *)value + 1;
@@ -7931,28 +7927,9 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   startx = mSX + xpos * 32;
   starty = mSY + ypos * 32;
 
-  // special check if right-side setup values moved left due to scrollbar
-  if (scrollbar_needed && xpos > MENU_SCREEN_START_XPOS)
-  {
-    int max_menu_text_length = 26;	// maximum text length for classic menu
-    int font_xoffset = getFontDrawOffsetX(font_nr);
-    int text_startx = mSX + MENU_SCREEN_START_XPOS * 32;
-    int text_font_nr = getMenuTextFont(FONT_MENU_2);
-    int text_font_xoffset = getFontDrawOffsetX(text_font_nr);
-    int text_width = max_menu_text_length * getFontWidth(text_font_nr);
-
-    if (startx + font_xoffset < text_startx + text_width + text_font_xoffset)
-    {
-      // when using narrow font, left-shifting text "auto" not needed
-      if (type & TYPE_YES_NO_AUTO)
-	xpos += 1;
-
-      xpos += 1;
-      startx = mSX + xpos * 32;
-
-      font_nr = getSetupValueFontNarrow(type, font_nr);
-    }
-  }
+  // always use narrow font for setup values on right screen side
+  if (xpos > MENU_SCREEN_START_XPOS)
+    font_nr = getSetupValueFontNarrow(type, font_nr);
 
   // downward compatibility correction for Juergen Bonhagen's menu settings
   if (setup_mode != SETUP_MODE_INPUT)
@@ -7992,9 +7969,7 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
     }
   }
 
-  for (i = 0; i <= menu_screen_max_xpos - xpos; i++)
-    DrawText(startx + i * font_width_default, starty, " ", font_nr_default);
-
+  DrawBackground(startx, starty, mx_right_border - startx, getFontHeight(font_nr));
   DrawText(startx, starty, value_string, font_nr);
 
   if (type & TYPE_PLAYER)
