@@ -6,4 +6,3 @@ up, of course.
 
 The duration in seconds for which magic walls are active is configurable.
 A duration of zero will let the wall run forever.
-All magic walls share the same timer.
