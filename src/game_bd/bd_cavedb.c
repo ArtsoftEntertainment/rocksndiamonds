@@ -547,6 +547,7 @@ const GdStructDescriptor gd_cave_properties[] =
   {"", GD_TAB, 0, N_("Magic Wall")},
   {"", GD_LABEL, GD_SHOW_LEVEL_LABEL, N_("Timing")},
   {"MagicWallTime", GD_TYPE_INT, 0, N_("Milling time (s)"), CAVE_OFFSET(level_magic_wall_time), 5, N_("Magic wall will stop after this time, and it cannot be activated again."), 0, 999},
+  {"MagicWallProperties.zeroisinfinite", GD_TYPE_BOOLEAN, 0, N_("Milling time 0 is infinite"), CAVE_OFFSET(magic_timer_zero_is_infinite), 1, N_("This determines if the magic wall timer 0 is interpreted as infinite.")},
   {"MagicWallProperties.waitforhatching", GD_TYPE_BOOLEAN, 0, N_("Timer waits for hatching"), CAVE_OFFSET(magic_timer_wait_for_hatching), 1, N_("This determines if the magic wall timer starts before the player appearing. Magic can always be activated before that; but if this is set to true, the timer will not start.")},
   {"MagicWallProperties.convertamoeba", GD_TYPE_BOOLEAN, 0, N_("Stops amoeba"), CAVE_OFFSET(magic_wall_stops_amoeba), 1, N_("When the magic wall is activated, it can convert amoeba into diamonds.")},
   {"", GD_LABEL, 0, N_("Conversions")},
@@ -796,6 +797,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   {CAVE_OFFSET(magic_flying_stone_to), O_FLYING_DIAMOND_F},
   {CAVE_OFFSET(magic_flying_diamond_to), O_FLYING_STONE_F},
   {CAVE_OFFSET(magic_wall_stops_amoeba), TRUE},
+  {CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE},
   {CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE},
 
   // amoeba

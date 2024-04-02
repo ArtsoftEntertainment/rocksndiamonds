@@ -3713,7 +3713,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   // magic wall; if active&wait or not wait for hatching
   if (cave->magic_wall_state == GD_MW_ACTIVE &&
-      (cave->hatched || !cave->magic_timer_wait_for_hatching))
+      (cave->hatched || !cave->magic_timer_wait_for_hatching) &&
+      !(cave->magic_wall_time == 0 && cave->magic_timer_zero_is_infinite))
   {
     cave->magic_wall_time -= cave->speed;
     if (cave->magic_wall_time < 0)

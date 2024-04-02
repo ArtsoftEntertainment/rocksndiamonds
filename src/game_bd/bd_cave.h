@@ -394,6 +394,7 @@ typedef struct _gd_cave
   int level_magic_wall_time[5];         // magic wall 'on' state for each level (seconds)
   boolean magic_wall_stops_amoeba;      // Turning on magic wall changes amoeba to diamonds.
                                         // Original BD: yes, constkit: no
+  boolean magic_timer_zero_is_infinite;	// magic wall timer 0 is interpreted as infinite
   boolean magic_timer_wait_for_hatching;// magic wall timer does not start before player's birth
   boolean magic_wall_sound;             // magic wall has sound
 

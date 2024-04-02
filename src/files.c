@@ -739,6 +739,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
   {
     EL_BD_MAGIC_WALL,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
+    &li.bd_magic_wall_zero_infinite,	TRUE
+  },
+  {
+    EL_BD_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
     &li.bd_magic_wall_diamond_to,	EL_BD_ROCK_FALLING
   },
@@ -4264,6 +4269,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->voodoo_disappear_in_explosion	= level->bd_voodoo_vanish_by_explosion;
   cave->level_penalty_time[0]		= level->bd_voodoo_penalty_time;
   cave->level_magic_wall_time[0]	= level->time_magic_wall;
+  cave->magic_timer_zero_is_infinite	= level->bd_magic_wall_zero_infinite;
   cave->magic_timer_wait_for_hatching	= level->bd_magic_wall_wait_hatching;
   cave->magic_wall_stops_amoeba		= level->bd_magic_wall_stops_amoeba;
 
@@ -4427,6 +4433,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_voodoo_vanish_by_explosion	= cave->voodoo_disappear_in_explosion;
   level->bd_voodoo_penalty_time		= cave->level_penalty_time[bd_level_nr];
   level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
+  level->bd_magic_wall_zero_infinite	= cave->magic_timer_zero_is_infinite;
   level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
   level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
 

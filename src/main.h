@@ -3662,6 +3662,7 @@ struct LevelInfo
   int bd_pushing_prob;			// BD player probability to push rocks
   int bd_pushing_prob_with_sweet;	// BD player probability to push rocks after eating sweet
   boolean bd_push_mega_rock_with_sweet;	// BD player can push mega rocks after eating sweet
+  boolean bd_magic_wall_zero_infinite;	// BD magic wall with timer of zero runs infinitely
   boolean bd_magic_wall_wait_hatching;	// BD magic wall waits for player's birth
   boolean bd_magic_wall_stops_amoeba;	// BD magic wall can stop amoeba and turn to diamonds
   int bd_magic_wall_diamond_to;		// BD magic wall turns diamonds to specified element
