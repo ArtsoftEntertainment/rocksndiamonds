@@ -99,7 +99,8 @@ static const GdElement crazydream_import_table[] =
   /* 10 */ O_STONE, O_STONE, O_STONE_F, O_STONE_F,
   /* 14 */ O_DIAMOND, O_DIAMOND, O_DIAMOND_F, O_DIAMOND_F,
   /* 18 */ O_PRE_CLOCK_1, O_PRE_CLOCK_2, O_PRE_CLOCK_3, O_PRE_CLOCK_4,
-  /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1, // 6 different stages
+  /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1,
+  // ----- 6 different stages
   /* 20 */ O_PRE_DIA_1, O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4,
   /* 24 */ O_PRE_DIA_5, O_INBOX, O_PRE_PL_1, O_PRE_PL_2,
   // ----- CLOCK: not mentioned in marek's bd inside faq
@@ -172,7 +173,8 @@ const GdElement gd_crazylight_import_table[] =
   /* 10 */ O_STONE, O_STONE|SCANNED, O_STONE_F, O_STONE_F|SCANNED,
   /* 14 */ O_DIAMOND, O_DIAMOND|SCANNED, O_DIAMOND_F, O_DIAMOND_F|SCANNED,
   /* 18 */ O_PRE_CLOCK_1, O_PRE_CLOCK_2, O_PRE_CLOCK_3, O_PRE_CLOCK_4,
-  /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1, // 6 different stages, the first is the pre_dia_0
+  /* 1c */ O_BITER_SWITCH, O_BITER_SWITCH, O_BLADDER_SPENDER, O_PRE_DIA_1,
+  // ----- 6 different stages, the first is the pre_dia_0
   /* 20 */ O_PRE_DIA_1, O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4,
   /* 24 */ O_PRE_DIA_5, O_INBOX, O_PRE_PL_1, O_PRE_PL_2,
   // ----- CLOCK: not mentioned in marek's bd inside faq
@@ -202,216 +204,222 @@ const GdElement gd_crazylight_import_table[] =
 
 GdPropertyDefault gd_defaults_bd1[] =
 {
-  {CAVE_OFFSET(level_amoeba_threshold), 200},
-  {CAVE_OFFSET(amoeba_growth_prob), 31250},
-  {CAVE_OFFSET(amoeba_fast_growth_prob), 250000},
-  {CAVE_OFFSET(amoeba_timer_started_immediately), TRUE},
-  {CAVE_OFFSET(amoeba_timer_wait_for_hatching), FALSE},
-  {CAVE_OFFSET(lineshift), TRUE},
-  {CAVE_OFFSET(wraparound_objects), TRUE},
-  {CAVE_OFFSET(diagonal_movements), FALSE},
-  {CAVE_OFFSET(voodoo_collects_diamonds), FALSE},
-  {CAVE_OFFSET(voodoo_dies_by_stone), FALSE},
-  {CAVE_OFFSET(voodoo_disappear_in_explosion), TRUE},
-  {CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE},
-  {CAVE_OFFSET(creatures_backwards), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_time), 0},
-  {CAVE_OFFSET(level_hatching_delay_time[0]), 2},
-  {CAVE_OFFSET(intermission_instantlife), TRUE},
-  {CAVE_OFFSET(intermission_rewardlife), FALSE},
-  {CAVE_OFFSET(magic_wall_stops_amoeba), TRUE},
-  {CAVE_OFFSET(magic_wall_breakscan), TRUE},
-  {CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE},
-  {CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE},
-  {CAVE_OFFSET(pushing_stone_prob), 250000},
-  {CAVE_OFFSET(pushing_stone_prob_sweet), 1000000},
-  {CAVE_OFFSET(active_is_first_found), FALSE},
-  {CAVE_OFFSET(short_explosions), TRUE},
-  {CAVE_OFFSET(slime_predictable), TRUE},
-  {CAVE_OFFSET(snap_element), O_SPACE},
-  {CAVE_OFFSET(max_time), 999},
+  { CAVE_OFFSET(level_amoeba_threshold), 200 },
+  { CAVE_OFFSET(amoeba_growth_prob), 31250 },
+  { CAVE_OFFSET(amoeba_fast_growth_prob), 250000 },
+  { CAVE_OFFSET(amoeba_timer_started_immediately), TRUE },
+  { CAVE_OFFSET(amoeba_timer_wait_for_hatching), FALSE },
+  { CAVE_OFFSET(lineshift), TRUE },
+  { CAVE_OFFSET(wraparound_objects), TRUE },
+  { CAVE_OFFSET(diagonal_movements), FALSE },
+  { CAVE_OFFSET(voodoo_collects_diamonds), FALSE },
+  { CAVE_OFFSET(voodoo_dies_by_stone), FALSE },
+  { CAVE_OFFSET(voodoo_disappear_in_explosion), TRUE },
+  { CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE },
+  { CAVE_OFFSET(creatures_backwards), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_time), 0 },
+  { CAVE_OFFSET(level_hatching_delay_time[0]), 2 },
+  { CAVE_OFFSET(intermission_instantlife), TRUE },
+  { CAVE_OFFSET(intermission_rewardlife), FALSE },
+  { CAVE_OFFSET(magic_wall_stops_amoeba), TRUE },
+  { CAVE_OFFSET(magic_wall_breakscan), TRUE },
+  { CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE },
+  { CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE },
+  { CAVE_OFFSET(pushing_stone_prob), 250000 },
+  { CAVE_OFFSET(pushing_stone_prob_sweet), 1000000 },
+  { CAVE_OFFSET(active_is_first_found), FALSE },
+  { CAVE_OFFSET(short_explosions), TRUE },
+  { CAVE_OFFSET(slime_predictable), TRUE },
+  { CAVE_OFFSET(snap_element), O_SPACE },
+  { CAVE_OFFSET(max_time), 999 },
 
-  {CAVE_OFFSET(scheduling), GD_SCHEDULING_BD1},
-  {CAVE_OFFSET(pal_timing), TRUE},
+  { CAVE_OFFSET(scheduling), GD_SCHEDULING_BD1 },
+  { CAVE_OFFSET(pal_timing), TRUE },
 
-  {-1},
+  { -1 },
 };
 
 GdPropertyDefault gd_defaults_bd2[] =
 {
-  {CAVE_OFFSET(level_amoeba_threshold), 200},
-  {CAVE_OFFSET(amoeba_growth_prob), 31250},
-  {CAVE_OFFSET(amoeba_fast_growth_prob), 250000},
-  {CAVE_OFFSET(amoeba_timer_started_immediately), FALSE},
-  {CAVE_OFFSET(amoeba_timer_wait_for_hatching), FALSE},
-  {CAVE_OFFSET(lineshift), TRUE},
-  {CAVE_OFFSET(wraparound_objects), TRUE},
-  {CAVE_OFFSET(diagonal_movements), FALSE},
-  {CAVE_OFFSET(voodoo_collects_diamonds), FALSE},
-  {CAVE_OFFSET(voodoo_dies_by_stone), FALSE},
-  {CAVE_OFFSET(voodoo_disappear_in_explosion), TRUE},
-  {CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE},
-  {CAVE_OFFSET(creatures_backwards), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_time), 0},
-  {CAVE_OFFSET(level_hatching_delay_time[0]), 2},
-  {CAVE_OFFSET(intermission_instantlife), TRUE},
-  {CAVE_OFFSET(intermission_rewardlife), FALSE},
-  {CAVE_OFFSET(magic_wall_stops_amoeba), FALSE},    // marek roth bd inside faq 3.0
-  {CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE},
-  {CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE},
-  {CAVE_OFFSET(pushing_stone_prob), 250000},
-  {CAVE_OFFSET(pushing_stone_prob_sweet), 1000000},
-  {CAVE_OFFSET(active_is_first_found), FALSE},
-  {CAVE_OFFSET(short_explosions), TRUE},
-  {CAVE_OFFSET(slime_predictable), TRUE},
-  {CAVE_OFFSET(snap_element), O_SPACE},
-  {CAVE_OFFSET(max_time), 999},
+  { CAVE_OFFSET(level_amoeba_threshold), 200 },
+  { CAVE_OFFSET(amoeba_growth_prob), 31250 },
+  { CAVE_OFFSET(amoeba_fast_growth_prob), 250000 },
+  { CAVE_OFFSET(amoeba_timer_started_immediately), FALSE },
+  { CAVE_OFFSET(amoeba_timer_wait_for_hatching), FALSE },
+  { CAVE_OFFSET(lineshift), TRUE },
+  { CAVE_OFFSET(wraparound_objects), TRUE },
+  { CAVE_OFFSET(diagonal_movements), FALSE },
+  { CAVE_OFFSET(voodoo_collects_diamonds), FALSE },
+  { CAVE_OFFSET(voodoo_dies_by_stone), FALSE },
+  { CAVE_OFFSET(voodoo_disappear_in_explosion), TRUE },
+  { CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE },
+  { CAVE_OFFSET(creatures_backwards), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_time), 0 },
+  { CAVE_OFFSET(level_hatching_delay_time[0]), 2 },
+  { CAVE_OFFSET(intermission_instantlife), TRUE },
+  { CAVE_OFFSET(intermission_rewardlife), FALSE },
+  { CAVE_OFFSET(magic_wall_stops_amoeba), FALSE },    // marek roth bd inside faq 3.0
+  { CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE },
+  { CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE },
+  { CAVE_OFFSET(pushing_stone_prob), 250000 },
+  { CAVE_OFFSET(pushing_stone_prob_sweet), 1000000 },
+  { CAVE_OFFSET(active_is_first_found), FALSE },
+  { CAVE_OFFSET(short_explosions), TRUE },
+  { CAVE_OFFSET(slime_predictable), TRUE },
+  { CAVE_OFFSET(snap_element), O_SPACE },
+  { CAVE_OFFSET(max_time), 999 },
 
-  {CAVE_OFFSET(pal_timing), TRUE},
-  {CAVE_OFFSET(scheduling), GD_SCHEDULING_BD2},
+  { CAVE_OFFSET(pal_timing), TRUE },
+  { CAVE_OFFSET(scheduling), GD_SCHEDULING_BD2 },
 
-  {-1},
+  { -1 },
 };
 
 GdPropertyDefault gd_defaults_plck[] =
 {
-  {CAVE_OFFSET(amoeba_growth_prob), 31250},
-  {CAVE_OFFSET(amoeba_fast_growth_prob), 250000},
-  {CAVE_OFFSET(amoeba_timer_started_immediately), FALSE},
-  {CAVE_OFFSET(amoeba_timer_wait_for_hatching), FALSE},
-  {CAVE_OFFSET(lineshift), TRUE},
-  {CAVE_OFFSET(wraparound_objects), TRUE},
-  {CAVE_OFFSET(border_scan_first_and_last), FALSE},
-  {CAVE_OFFSET(diagonal_movements), FALSE},
-  {CAVE_OFFSET(voodoo_collects_diamonds), FALSE},
-  {CAVE_OFFSET(voodoo_dies_by_stone), FALSE},
-  {CAVE_OFFSET(voodoo_disappear_in_explosion), TRUE},
-  {CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE},
-  {CAVE_OFFSET(creatures_backwards), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_time), 0},
-  {CAVE_OFFSET(level_hatching_delay_time[0]), 2},
-  {CAVE_OFFSET(intermission_instantlife), TRUE},
-  {CAVE_OFFSET(intermission_rewardlife), FALSE},
-  {CAVE_OFFSET(magic_wall_stops_amoeba), FALSE},
-  {CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE},
-  {CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE},
-  {CAVE_OFFSET(pushing_stone_prob), 250000},
-  {CAVE_OFFSET(pushing_stone_prob_sweet), 1000000},
-  {CAVE_OFFSET(active_is_first_found), FALSE},
-  {CAVE_OFFSET(short_explosions), TRUE},
-  {CAVE_OFFSET(snap_element), O_SPACE},
-  {CAVE_OFFSET(max_time), 999},
+  { CAVE_OFFSET(amoeba_growth_prob), 31250 },
+  { CAVE_OFFSET(amoeba_fast_growth_prob), 250000 },
+  { CAVE_OFFSET(amoeba_timer_started_immediately), FALSE },
+  { CAVE_OFFSET(amoeba_timer_wait_for_hatching), FALSE },
+  { CAVE_OFFSET(lineshift), TRUE },
+  { CAVE_OFFSET(wraparound_objects), TRUE },
+  { CAVE_OFFSET(border_scan_first_and_last), FALSE },
+  { CAVE_OFFSET(diagonal_movements), FALSE },
+  { CAVE_OFFSET(voodoo_collects_diamonds), FALSE },
+  { CAVE_OFFSET(voodoo_dies_by_stone), FALSE },
+  { CAVE_OFFSET(voodoo_disappear_in_explosion), TRUE },
+  { CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE },
+  { CAVE_OFFSET(creatures_backwards), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_time), 0 },
+  { CAVE_OFFSET(level_hatching_delay_time[0]), 2 },
+  { CAVE_OFFSET(intermission_instantlife), TRUE },
+  { CAVE_OFFSET(intermission_rewardlife), FALSE },
+  { CAVE_OFFSET(magic_wall_stops_amoeba), FALSE },
+  { CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE },
+  { CAVE_OFFSET(magic_timer_wait_for_hatching), FALSE },
+  { CAVE_OFFSET(pushing_stone_prob), 250000 },
+  { CAVE_OFFSET(pushing_stone_prob_sweet), 1000000 },
+  { CAVE_OFFSET(active_is_first_found), FALSE },
+  { CAVE_OFFSET(short_explosions), TRUE },
+  { CAVE_OFFSET(snap_element), O_SPACE },
+  { CAVE_OFFSET(max_time), 999 },
 
-  {CAVE_OFFSET(pal_timing), TRUE},
-  {CAVE_OFFSET(scheduling), GD_SCHEDULING_PLCK},
+  { CAVE_OFFSET(pal_timing), TRUE },
+  { CAVE_OFFSET(scheduling), GD_SCHEDULING_PLCK },
 
-  {-1},
+  { -1 },
 };
 
 GdPropertyDefault gd_defaults_1stb[] =
 {
-  {CAVE_OFFSET(amoeba_growth_prob), 31250},
-  {CAVE_OFFSET(amoeba_fast_growth_prob), 250000},
-  {CAVE_OFFSET(amoeba_timer_started_immediately), FALSE},
-  {CAVE_OFFSET(amoeba_timer_wait_for_hatching), TRUE},
-  {CAVE_OFFSET(lineshift), TRUE},
-  {CAVE_OFFSET(wraparound_objects), TRUE},
-  {CAVE_OFFSET(voodoo_collects_diamonds), TRUE},
-  {CAVE_OFFSET(voodoo_dies_by_stone), TRUE},
-  {CAVE_OFFSET(voodoo_disappear_in_explosion), FALSE},
-  {CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_on_start), TRUE},
-  {CAVE_OFFSET(level_hatching_delay_time[0]), 2},
-  {CAVE_OFFSET(intermission_instantlife), FALSE},
-  {CAVE_OFFSET(intermission_rewardlife), TRUE},
-  {CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE},
-  {CAVE_OFFSET(magic_timer_wait_for_hatching), TRUE},
-  {CAVE_OFFSET(pushing_stone_prob), 250000},
-  {CAVE_OFFSET(pushing_stone_prob_sweet), 1000000},
-  {CAVE_OFFSET(active_is_first_found), TRUE},
-  {CAVE_OFFSET(short_explosions), FALSE},
-  {CAVE_OFFSET(slime_predictable), TRUE},
-  {CAVE_OFFSET(snap_element), O_SPACE},
-  {CAVE_OFFSET(max_time), 999},
+  { CAVE_OFFSET(amoeba_growth_prob), 31250 },
+  { CAVE_OFFSET(amoeba_fast_growth_prob), 250000 },
+  { CAVE_OFFSET(amoeba_timer_started_immediately), FALSE },
+  { CAVE_OFFSET(amoeba_timer_wait_for_hatching), TRUE },
+  { CAVE_OFFSET(lineshift), TRUE },
+  { CAVE_OFFSET(wraparound_objects), TRUE },
+  { CAVE_OFFSET(voodoo_collects_diamonds), TRUE },
+  { CAVE_OFFSET(voodoo_dies_by_stone), TRUE },
+  { CAVE_OFFSET(voodoo_disappear_in_explosion), FALSE },
+  { CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_on_start), TRUE },
+  { CAVE_OFFSET(level_hatching_delay_time[0]), 2 },
+  { CAVE_OFFSET(intermission_instantlife), FALSE },
+  { CAVE_OFFSET(intermission_rewardlife), TRUE },
+  { CAVE_OFFSET(magic_timer_zero_is_infinite), TRUE },
+  { CAVE_OFFSET(magic_timer_wait_for_hatching), TRUE },
+  { CAVE_OFFSET(pushing_stone_prob), 250000 },
+  { CAVE_OFFSET(pushing_stone_prob_sweet), 1000000 },
+  { CAVE_OFFSET(active_is_first_found), TRUE },
+  { CAVE_OFFSET(short_explosions), FALSE },
+  { CAVE_OFFSET(slime_predictable), TRUE },
+  { CAVE_OFFSET(snap_element), O_SPACE },
+  { CAVE_OFFSET(max_time), 999 },
 
-  {CAVE_OFFSET(pal_timing), TRUE},
-  {CAVE_OFFSET(scheduling), GD_SCHEDULING_PLCK},
-  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1},    // not immediately to diamond, but with animation
-  {CAVE_OFFSET(dirt_looks_like), O_DIRT2},
+  { CAVE_OFFSET(pal_timing), TRUE },
+  { CAVE_OFFSET(scheduling), GD_SCHEDULING_PLCK },
+  // not immediately to diamond, but with animation
+  { CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1 },
+  { CAVE_OFFSET(dirt_looks_like), O_DIRT2 },
 
-  {-1},
+  { -1 },
 };
 
 GdPropertyDefault gd_defaults_crdr_7[] =
 {
-  {CAVE_OFFSET(amoeba_growth_prob), 31250},
-  {CAVE_OFFSET(amoeba_fast_growth_prob), 250000},
-  {CAVE_OFFSET(amoeba_timer_started_immediately), FALSE},
-  {CAVE_OFFSET(amoeba_timer_wait_for_hatching), TRUE},
-  {CAVE_OFFSET(lineshift), TRUE},
-  {CAVE_OFFSET(wraparound_objects), TRUE},
-  {CAVE_OFFSET(voodoo_collects_diamonds), TRUE},
-  {CAVE_OFFSET(voodoo_dies_by_stone), TRUE},
-  {CAVE_OFFSET(voodoo_disappear_in_explosion), FALSE},
-  {CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE},
-  {CAVE_OFFSET(level_hatching_delay_time[0]), 2},
-  {CAVE_OFFSET(intermission_instantlife), FALSE},
-  {CAVE_OFFSET(intermission_rewardlife), TRUE},
-  {CAVE_OFFSET(magic_timer_zero_is_infinite), FALSE},
-  {CAVE_OFFSET(magic_timer_wait_for_hatching), TRUE},
-  {CAVE_OFFSET(pushing_stone_prob), 250000},
-  {CAVE_OFFSET(pushing_stone_prob_sweet), 1000000},
-  {CAVE_OFFSET(active_is_first_found), TRUE},
-  {CAVE_OFFSET(short_explosions), FALSE},
-  {CAVE_OFFSET(slime_predictable), TRUE},
-  {CAVE_OFFSET(snap_element), O_SPACE},
-  {CAVE_OFFSET(max_time), 999},
+  { CAVE_OFFSET(amoeba_growth_prob), 31250 },
+  { CAVE_OFFSET(amoeba_fast_growth_prob), 250000 },
+  { CAVE_OFFSET(amoeba_timer_started_immediately), FALSE },
+  { CAVE_OFFSET(amoeba_timer_wait_for_hatching), TRUE },
+  { CAVE_OFFSET(lineshift), TRUE },
+  { CAVE_OFFSET(wraparound_objects), TRUE },
+  { CAVE_OFFSET(voodoo_collects_diamonds), TRUE },
+  { CAVE_OFFSET(voodoo_dies_by_stone), TRUE },
+  { CAVE_OFFSET(voodoo_disappear_in_explosion), FALSE },
+  { CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE },
+  { CAVE_OFFSET(level_hatching_delay_time[0]), 2 },
+  { CAVE_OFFSET(intermission_instantlife), FALSE },
+  { CAVE_OFFSET(intermission_rewardlife), TRUE },
+  { CAVE_OFFSET(magic_timer_zero_is_infinite), FALSE },
+  { CAVE_OFFSET(magic_timer_wait_for_hatching), TRUE },
+  { CAVE_OFFSET(pushing_stone_prob), 250000 },
+  { CAVE_OFFSET(pushing_stone_prob_sweet), 1000000 },
+  { CAVE_OFFSET(active_is_first_found), TRUE },
+  { CAVE_OFFSET(short_explosions), FALSE },
+  { CAVE_OFFSET(slime_predictable), TRUE },
+  { CAVE_OFFSET(snap_element), O_SPACE },
+  { CAVE_OFFSET(max_time), 999 },
 
-  {CAVE_OFFSET(pal_timing), TRUE},
-  {CAVE_OFFSET(scheduling), GD_SCHEDULING_CRDR},
-  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1}, // not immediately to diamond, but with animation
-  {CAVE_OFFSET(water_does_not_flow_down), TRUE},
-  {CAVE_OFFSET(skeletons_worth_diamonds), 1},         // in crdr, skeletons can also be used to open the gate
-  {CAVE_OFFSET(gravity_affects_all), FALSE},          // the intermission "survive" needs this flag
+  { CAVE_OFFSET(pal_timing), TRUE },
+  { CAVE_OFFSET(scheduling), GD_SCHEDULING_CRDR },
+  // not immediately to diamond, but with animation
+  { CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1 },
+  { CAVE_OFFSET(water_does_not_flow_down), TRUE },
+  // in crdr, skeletons can also be used to open the gate
+  { CAVE_OFFSET(skeletons_worth_diamonds), 1 },
+  // the intermission "survive" needs this flag
+  { CAVE_OFFSET(gravity_affects_all), FALSE },
 
-  {-1},
+  { -1 },
 };
 
 GdPropertyDefault gd_defaults_crli[] =
 {
-  {CAVE_OFFSET(amoeba_growth_prob), 31250},
-  {CAVE_OFFSET(amoeba_fast_growth_prob), 250000},
-  {CAVE_OFFSET(amoeba_timer_started_immediately), FALSE},
-  {CAVE_OFFSET(amoeba_timer_wait_for_hatching), TRUE},
-  {CAVE_OFFSET(lineshift), TRUE},
-  {CAVE_OFFSET(wraparound_objects), TRUE},
-  {CAVE_OFFSET(voodoo_collects_diamonds), TRUE},
-  {CAVE_OFFSET(voodoo_dies_by_stone), TRUE},
-  {CAVE_OFFSET(voodoo_disappear_in_explosion), FALSE},
-  {CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE},
-  {CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE},
-  {CAVE_OFFSET(level_hatching_delay_time[0]), 2},
-  {CAVE_OFFSET(intermission_instantlife), FALSE},
-  {CAVE_OFFSET(intermission_rewardlife), TRUE},
-  {CAVE_OFFSET(magic_timer_zero_is_infinite), FALSE},
-  {CAVE_OFFSET(magic_timer_wait_for_hatching), TRUE},
-  {CAVE_OFFSET(pushing_stone_prob), 250000},
-  {CAVE_OFFSET(pushing_stone_prob_sweet), 1000000},
-  {CAVE_OFFSET(active_is_first_found), TRUE},
-  {CAVE_OFFSET(short_explosions), FALSE},
-  {CAVE_OFFSET(slime_predictable), TRUE},
-  {CAVE_OFFSET(max_time), 999},
+  { CAVE_OFFSET(amoeba_growth_prob), 31250 },
+  { CAVE_OFFSET(amoeba_fast_growth_prob), 250000 },
+  { CAVE_OFFSET(amoeba_timer_started_immediately), FALSE },
+  { CAVE_OFFSET(amoeba_timer_wait_for_hatching), TRUE },
+  { CAVE_OFFSET(lineshift), TRUE },
+  { CAVE_OFFSET(wraparound_objects), TRUE },
+  { CAVE_OFFSET(voodoo_collects_diamonds), TRUE },
+  { CAVE_OFFSET(voodoo_dies_by_stone), TRUE },
+  { CAVE_OFFSET(voodoo_disappear_in_explosion), FALSE },
+  { CAVE_OFFSET(voodoo_any_hurt_kills_player), FALSE },
+  { CAVE_OFFSET(creatures_direction_auto_change_on_start), FALSE },
+  { CAVE_OFFSET(level_hatching_delay_time[0]), 2 },
+  { CAVE_OFFSET(intermission_instantlife), FALSE },
+  { CAVE_OFFSET(intermission_rewardlife), TRUE },
+  { CAVE_OFFSET(magic_timer_zero_is_infinite), FALSE },
+  { CAVE_OFFSET(magic_timer_wait_for_hatching), TRUE },
+  { CAVE_OFFSET(pushing_stone_prob), 250000 },
+  { CAVE_OFFSET(pushing_stone_prob_sweet), 1000000 },
+  { CAVE_OFFSET(active_is_first_found), TRUE },
+  { CAVE_OFFSET(short_explosions), FALSE },
+  { CAVE_OFFSET(slime_predictable), TRUE },
+  { CAVE_OFFSET(max_time), 999 },
 
-  {CAVE_OFFSET(pal_timing), TRUE},
-  {CAVE_OFFSET(scheduling), GD_SCHEDULING_PLCK},
-  {CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1},    // not immediately to diamond, but with animation
+  { CAVE_OFFSET(pal_timing), TRUE },
+  { CAVE_OFFSET(scheduling), GD_SCHEDULING_PLCK },
+  // not immediately to diamond, but with animation
+  { CAVE_OFFSET(amoeba_enclosed_effect), O_PRE_DIA_1 },
 
-  {-1},
+  { -1 },
 };
+
 
 // internal character (letter) codes in c64 games.
 // missing: "triple line" after >, diamond between ()s, player's head after )
@@ -1241,19 +1249,10 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
   for (x = 0; x < cave->w; x++)
     cave->map[cave->h - 1][x] = O_STEEL;
 
-  /*
-    if (steels && data[0] == 0x55)
-    cave->map[cave->h - 1][0] = cave->map[cave->h - 1][1] = O_STEEL;
-  */
-
   // check for diego-effects
   // c64 magic values (byte sequences)  0x20 0x90 0x46, also 0xa9 0x1c 0x85
-  if ((data[0x1e5] == 0x20 &&
-       data[0x1e6] == 0x90 &&
-       data[0x1e7] == 0x46) ||
-      (data[0x1e5] == 0xa9 &&
-       data[0x1e6] == 0x1c &&
-       data[0x1e7] == 0x85))
+  if ((data[0x1e5] == 0x20 && data[0x1e6] == 0x90 && data[0x1e7] == 0x46) ||
+      (data[0x1e5] == 0xa9 && data[0x1e6] == 0x1c && data[0x1e7] == 0x85))
   {
     // diego effects enabled.
     cave->stone_bouncing_effect = bd1_import(data[0x1ea], 0x1ea);
@@ -1514,6 +1513,7 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
   }
 
   // also has no random data...
+
   cave->colorb = gd_c64_color(data[0x384] & 0xf);    // border
   cave->color0 = gd_c64_color(data[0x385] & 0xf);
   cave->color1 = gd_c64_color(data[0x386] & 0xf);
@@ -1655,6 +1655,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   cave->color3 = gd_c64_color(data[0x18] & 0x7);    // lower 3 bits only!
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
+
   cave->intermission = data[0x19] != 0;
 
   // if it is intermission but not scrollable
@@ -1947,7 +1948,10 @@ static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int 
     int prob[4] = { 37, 32, 2, 0 };
     int seeds[5] = { -1, -1, -1, -1, -1 };
 
-    cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
+    cave->objects =
+      list_append(cave->objects,
+		  gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds,
+					    O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
   }
 
   if (strEqual(cave->name, "Roll dice now!") && checksum == 235)
@@ -1956,13 +1960,19 @@ static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int 
     int prob[4] = { 0x18, 0x08, 0, 0 };
     int seeds[5] = { -1, -1, -1, -1, -1 };
 
-    cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
+    cave->objects =
+      list_append(cave->objects,
+		  gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 0, 0, 39, 21, seeds,
+					    O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
   }
 
   if (strEqual(cave->name, "Random maze") && checksum == 24)
   {
     int seeds[5] = { -1, -1, -1, -1, -1 };
-    cave->objects = list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 1, 4, 35, 20, 1, 1, O_NONE, O_DIRT, 50, seeds));
+    cave->objects =
+      list_append(cave->objects,
+		  gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 1, 4, 35, 20, 1, 1,
+				     O_NONE, O_DIRT, 50, seeds));
   }
 
   if (strEqual(cave->name, "Metamorphosis") && checksum == 53)
@@ -1971,8 +1981,16 @@ static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int 
     GdElement rand[4] = { O_STONE, O_DIRT, O_DIRT, O_DIRT };
     int prob[4] = { 0x18, 0, 0, 0 };
 
-    cave->objects = list_append(cave->objects, gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, 1, 3, O_NONE, O_BLADDER_SPENDER, 50, seeds));
-    cave->objects = list_append(cave->objects, gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, seeds, O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
+    cave->objects =
+      list_append(cave->objects,
+		  gd_object_new_maze(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, 1, 3,
+				     O_NONE, O_BLADDER_SPENDER, 50, seeds));
+
+    cave->objects =
+      list_append(cave->objects,
+		  gd_object_new_random_fill(GD_OBJECT_LEVEL_ALL, 4, 1, 38, 19, seeds,
+					    O_DIRT, rand, prob, O_BLADDER_SPENDER, FALSE));
+
     cave->creatures_backwards = TRUE;    // for some reason, this level worked like that
   }
 
@@ -1980,10 +1998,14 @@ static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int 
   {
     int seeds[5] = { -1, -1, -1, -1, -1 };
 
-    cave->objects = list_append(cave->objects, gd_object_new_maze_unicursal(GD_OBJECT_LEVEL_ALL, 1, 1, 35, 19, 1, 1, O_BRICK, O_PRE_DIA_1, 50, seeds));
+    cave->objects =
+      list_append(cave->objects,
+		  gd_object_new_maze_unicursal(GD_OBJECT_LEVEL_ALL, 1, 1, 35, 19, 1, 1,
+					       O_BRICK, O_PRE_DIA_1, 50, seeds));
 
     // a point which "breaks" the unicursal maze, making it one very long path
-    cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, 35, 18, O_BRICK));
+    cave->objects =
+      list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, 35, 18, O_BRICK));
   }
 }
 
@@ -2159,6 +2181,7 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   cave->color3 = gd_c64_color(uncompressed[0x388] & 0x7);    // lower 3 bits only!
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
+
   cave->intermission = uncompressed[0x389] != 0;
 
   // if it is intermission but not scrollable
@@ -2208,27 +2231,27 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
     }
   }
 
-  cave->biter_delay_frame = uncompressed[0x394];
-  cave->magic_wall_stops_amoeba = uncompressed[0x395] == 0;    // negated!!
-  cave->bomb_explosion_effect = import(uncompressed[0x396], 0x396);
-  cave->explosion_effect = import(uncompressed[0x397], 0x397);
-  cave->stone_bouncing_effect = import(uncompressed[0x398], 0x398);
-  cave->diamond_birth_effect = import(uncompressed[0x399], 0x399);
-  cave->magic_diamond_to = import(uncompressed[0x39a], 0x39a);
+  cave->biter_delay_frame	= uncompressed[0x394];
+  cave->magic_wall_stops_amoeba	= uncompressed[0x395] == 0;    // negated!!
+  cave->bomb_explosion_effect	= import(uncompressed[0x396], 0x396);
+  cave->explosion_effect	= import(uncompressed[0x397], 0x397);
+  cave->stone_bouncing_effect	= import(uncompressed[0x398], 0x398);
+  cave->diamond_birth_effect	= import(uncompressed[0x399], 0x399);
+  cave->magic_diamond_to	= import(uncompressed[0x39a], 0x39a);
 
-  cave->bladder_converts_by = import(uncompressed[0x39b], 0x39b);
-  cave->diamond_falling_effect = import(uncompressed[0x39c], 0x39c);
-  cave->biter_eat = import(uncompressed[0x39d], 0x39d);
-  cave->slime_eats_1 = import(uncompressed[0x39e], 0x39e);
-  cave->slime_converts_1 = import(uncompressed[0x39e] + 3, 0x39e);
-  cave->slime_eats_2 = import(uncompressed[0x39f], 0x39f);
-  cave->slime_converts_2 = import(uncompressed[0x39f] + 3, 0x39f);
+  cave->bladder_converts_by	= import(uncompressed[0x39b], 0x39b);
+  cave->diamond_falling_effect	= import(uncompressed[0x39c], 0x39c);
+  cave->biter_eat		= import(uncompressed[0x39d], 0x39d);
+  cave->slime_eats_1		= import(uncompressed[0x39e], 0x39e);
+  cave->slime_converts_1	= import(uncompressed[0x39e] + 3, 0x39e);
+  cave->slime_eats_2		= import(uncompressed[0x39f], 0x39f);
+  cave->slime_converts_2	= import(uncompressed[0x39f] + 3, 0x39f);
 
   // v3.0 has some new properties.
   if (version >= V3_0)
   {
-    cave->diagonal_movements = uncompressed[0x3a4] != 0;
-    cave->amoeba_too_big_effect = import(uncompressed[0x3a6], 0x3a6);
+    cave->diagonal_movements	 = uncompressed[0x3a4] != 0;
+    cave->amoeba_too_big_effect	 = import(uncompressed[0x3a6], 0x3a6);
     cave->amoeba_enclosed_effect = import(uncompressed[0x3a7], 0x3a7);
 
     /*
@@ -2241,10 +2264,10 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
     */
 
     // * 1e6, probabilities are stored as int
-    cave->acid_spread_ratio = uncompressed[0x3a8] / 255.0 * 1E6;
-    cave->acid_eats_this = import(uncompressed[0x3a9], 0x3a9);
-    cave->expanding_wall_looks_like = import(uncompressed[0x3ab], 0x3ab);
-    cave->dirt_looks_like = import(uncompressed[0x3ac], 0x3ac);
+    cave->acid_spread_ratio		= uncompressed[0x3a8] / 255.0 * 1E6;
+    cave->acid_eats_this		= import(uncompressed[0x3a9], 0x3a9);
+    cave->expanding_wall_looks_like	= import(uncompressed[0x3ab], 0x3ab);
+    cave->dirt_looks_like		= import(uncompressed[0x3ac], 0x3ac);
   }
   else
   {
@@ -2412,8 +2435,11 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 
       case GD_FORMAT_DLB:
 	// no one's delight boulder dash, something like rle compressed plck caves
-	// but there are 20 of them, as if it was a bd1 or bd2 game. also num%5 = 4 is intermission.
-	// we have to set intermission flag on our own, as the file did not contain the info explicitly
+	// but there are 20 of them, as if it was a bd1 or bd2 game.
+	// also num%5 = 4 is intermission.
+	// we have to set intermission flag on our own, as the file did not contain
+	// the info explicitly
+
 	newcave->intermission = (cavenum % 5) == 4;
 	if (newcave->intermission)
 	{
