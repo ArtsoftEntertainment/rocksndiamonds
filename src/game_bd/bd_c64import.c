@@ -663,13 +663,28 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 
   cave->acid_turns_to = (data[0x17] & (1 << 2)) ? O_EXPLODE_3 : O_ACID;
 
-  cave->colorb = GD_GDASH_BLACK;    // border - black
-  cave->color0 = GD_GDASH_BLACK;    // background - black
-  cave->color1= GD_GDASH_RED;
-  cave->color2 = GD_GDASH_PURPLE;
-  cave->color3 = GD_GDASH_YELLOW;
-  cave->color4 = cave->color3;    // in bd1, amoeba was color3
-  cave->color5 = cave->color3;    // no slime, but let it be color 3
+  if (format == GD_FORMAT_BD1_ATARI)
+  {
+    // atari colors
+    cave->color1 = gd_atari_color(data[0x13]);
+    cave->color2 = gd_atari_color(data[0x14]);
+    cave->color3 = gd_atari_color(data[0x15]);
+    cave->color4 = gd_atari_color(data[0x16]);      // in atari, amoeba was green
+    cave->color5 = gd_atari_color(data[0x16]);      // in atari, slime was green
+    cave->colorb = gd_atari_color(data[0x17]);      // border = background
+    cave->color0 = gd_atari_color(data[0x17]);      // background
+  }
+  else
+  {
+    // c64 colors
+    cave->colorb = gd_c64_color(0);                 // border = background, fixed color
+    cave->color0 = gd_c64_color(0);                 // background, fixed color
+    cave->color1 = gd_c64_color(data[0x13] & 0xf);
+    cave->color2 = gd_c64_color(data[0x14] & 0xf);
+    cave->color3 = gd_c64_color(data[0x15] & 0x7);  // lower 3 bits only (vic-ii worked this way)
+    cave->color4 = cave->color3;                    // in bd1, amoeba was color3
+    cave->color5 = cave->color3;                    // no slime, but let it be color 3
+  }
 
   // random fill
   for (i = 0; i < 4; i++)
@@ -1112,13 +1127,29 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
   index++;
 
   // the colors from the memory dump are appended here by any2gdash
-  cave->colorb = GD_GDASH_BLACK;    // border - black
-  cave->color0 = GD_GDASH_BLACK;    // background - black
-  cave->color1 = GD_GDASH_RED;
-  cave->color2 = GD_GDASH_PURPLE;
-  cave->color3 = GD_GDASH_YELLOW;
-  cave->color4 = cave->color3;      // in bd1, amoeba was color3
-  cave->color5 = cave->color3;      // no slime, but let it be color 3
+  if (format == GD_FORMAT_BD2)
+  {
+    // c64 colors
+    cave->color0 = gd_c64_color(0);
+    cave->color1 = gd_c64_color(data[index + 0] & 0xf);
+    cave->color2 = gd_c64_color(data[index + 1] & 0xf);
+    cave->color3 = gd_c64_color(data[index + 2] & 0x7); // lower 3 bits only!
+    cave->color4 = cave->color1;                        // in bd2, amoeba was color1
+    cave->color5 = cave->color1;                        // slime too
+    index += 3;
+  }
+  else
+  {
+    // atari colors
+    cave->color1 = gd_atari_color(data[index + 0]);
+    cave->color2 = gd_atari_color(data[index + 1]);
+    cave->color3 = gd_atari_color(data[index + 2]);
+    cave->color4 = gd_atari_color(data[index + 3]);     // amoeba and slime
+    cave->color5 = gd_atari_color(data[index + 3]);
+    cave->colorb = gd_atari_color(data[index + 4]);     // background and border
+    cave->color0 = gd_atari_color(data[index + 4]);
+    index += 5;
+  }
 
   return index;
 }
@@ -1215,13 +1246,34 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     cave->level_slime_permeability_c64[i] = slime_shift_msb(data[0x1c2]);
   }
 
-  cave->colorb = GD_GDASH_BLACK;    // border - black
-  cave->color0 = GD_GDASH_BLACK;    // background - black
-  cave->color1 = GD_GDASH_RED;
-  cave->color2 = GD_GDASH_PURPLE;
-  cave->color3 = GD_GDASH_YELLOW;
-  cave->color4 = cave->color3;      // in bd1, amoeba was color3
-  cave->color5 = cave->color3;      // no slime, but let it be color 3
+  if (format == GD_FORMAT_PLC_ATARI)
+  {
+    // use atari colors
+    cave->colorb = gd_atari_color(0);               // border
+    // indexes in data are not the same order as on c64!!!
+    cave->color0 = gd_atari_color(data[0x1e3]);     // background
+    cave->color1 = gd_atari_color(data[0x1db]);
+    cave->color2 = gd_atari_color(data[0x1dd]);
+    cave->color3 = gd_atari_color(data[0x1df]);
+    // in atari plck, slime and amoeba could not coexist in the same cave.
+    // if amoeba was used, the graphics turned to green, and data at 0x1e1 was set to 0xd4.
+    // if slime was used, graphics to blue, and data at 0x1e1 was set to 0x72.
+    // these two colors could not be changed in the editor at all.
+    // (maybe they could have been changed in a hex editor)
+    cave->color4 = gd_atari_color(data[0x1e1]);
+    cave->color5 = gd_atari_color(data[0x1e1]);
+  }
+  else
+  {
+    // use c64 colors
+    cave->colorb = gd_c64_color(data[0x1db] & 0xf); // border
+    cave->color0 = gd_c64_color(data[0x1dd] & 0xf);
+    cave->color1 = gd_c64_color(data[0x1df] & 0xf);
+    cave->color2 = gd_c64_color(data[0x1e1] & 0xf);
+    cave->color3 = gd_c64_color(data[0x1e3] & 0x7); // lower 3 bits only!
+    cave->color4 = cave->color3;                    // in plck, amoeba was color3
+    cave->color5 = cave->color3;                    // same for slime
+  }
 
   // ... the cave is stored like a map.
   cave->map = gd_cave_map_new(cave, GdElement);
