@@ -45,6 +45,6 @@ void gd_scroll_to_origin(void);
 int get_scroll_x(void);
 int get_scroll_y(void);
 
-Bitmap *gd_get_title_screen_bitmap(void);
+Bitmap **gd_get_title_screen_bitmaps(void);
 
 #endif	// BD_GRAPHICS_H

@@ -1119,6 +1119,27 @@ static int compareTitleControlInfo(const void *object1, const void *object2)
   return compare_result;
 }
 
+static boolean CheckTitleScreen_BD(int nr, boolean initial)
+{
+  // only show BD style title screen for native BD level sets
+  if (level.game_engine_type != GAME_ENGINE_TYPE_BD)
+    return FALSE;
+
+  // only show BD style title screen for first title screen of a level set
+  if (initial || nr != 0)
+    return FALSE;
+
+  int graphic = getTitleScreenGraphic(nr, initial);
+  Bitmap *bitmap = graphic_info[graphic].bitmap;
+
+  // only show BD style title screen if no other title screen defined
+  if (bitmap != NULL)
+    return FALSE;
+
+  // check if BD style title screen defined
+  return (GetTitleScreenBitmaps_BD() != NULL);
+}
+
 static void InitializeTitleControlsExt_AddTitleInfo(boolean is_image,
 						    boolean initial,
 						    int nr, int sort_priority)
@@ -1145,8 +1166,8 @@ static void InitializeTitleControls_CheckTitleInfo(boolean initial)
     boolean has_title_screen = (bitmap != NULL);
 
     // check for optional title screen of native BD style level set
-    if (!has_title_screen && level.game_engine_type == GAME_ENGINE_TYPE_BD && !initial && i == 0)
-      has_title_screen = (GetTitleScreen_BD() != NULL);
+    if (CheckTitleScreen_BD(i, initial))
+      has_title_screen = TRUE;
 
     if (has_title_screen)
       InitializeTitleControlsExt_AddTitleInfo(TRUE, initial, i, sort_priority);
@@ -1601,8 +1622,10 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
 
 static void DrawTitleScreenImage(int nr, boolean initial)
 {
+  static int frame_counter = 0;
   int graphic = getTitleScreenGraphic(nr, initial);
   Bitmap *bitmap = graphic_info[graphic].bitmap;
+  Bitmap *bitmap_background = NULL;
   int draw_masked = graphic_info[graphic].draw_masked;
   int width  = graphic_info[graphic].width;
   int height = graphic_info[graphic].height;
@@ -1611,9 +1634,12 @@ static void DrawTitleScreenImage(int nr, boolean initial)
   int dst_x, dst_y;
 
   // check for optional title screen of native BD style level set
-  if (bitmap == NULL && level.game_engine_type == GAME_ENGINE_TYPE_BD && !initial && nr == 0)
+  if (CheckTitleScreen_BD(nr, initial))
   {
-    bitmap = GetTitleScreen_BD();
+    Bitmap **title_screen_bitmaps = GetTitleScreenBitmaps_BD();
+
+    bitmap            = title_screen_bitmaps[0];
+    bitmap_background = title_screen_bitmaps[1];
 
     if (bitmap != NULL)
     {
@@ -1650,7 +1676,19 @@ static void DrawTitleScreenImage(int nr, boolean initial)
 
   ClearRectangleOnBackground(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
-  if (DrawingOnBackground(dst_x, dst_y) && draw_masked)
+  boolean draw_masked_final = (DrawingOnBackground(dst_x, dst_y) && draw_masked);
+
+  if (bitmap_background != NULL)
+  {
+    int size = bitmap_background->height - bitmap->height;
+    int offset = frame_counter++ % size;
+
+    BlitBitmap(bitmap_background, drawto, src_x, src_y + offset, width, height, dst_x, dst_y);
+
+    draw_masked_final = TRUE;
+  }
+
+  if (draw_masked_final)
     BlitBitmapMasked(bitmap, drawto, src_x, src_y, width, height, dst_x, dst_y);
   else
     BlitBitmap(bitmap, drawto, src_x, src_y, width, height, dst_x, dst_y);
@@ -2094,6 +2132,21 @@ void HandleTitleScreen(int mx, int my, int dx, int dy, int button)
       FadeMenuSoundsAndMusic();
 
       return_to_main_menu = TRUE;
+    }
+  }
+  else
+  {
+    tci = &title_controls[title_screen_nr];
+
+    // check for optional title screen of native BD style level set
+    if (tci->is_image && CheckTitleScreen_BD(tci->local_nr, tci->initial))
+    {
+      Bitmap **title_screen_bitmaps = GetTitleScreenBitmaps_BD();
+
+      // if title screen is animated, draw title screen animation
+      if (title_screen_bitmaps[0] != NULL &&
+	  title_screen_bitmaps[1] != NULL)
+	DrawTitleScreenImage(tci->local_nr, tci->initial);
     }
   }
 

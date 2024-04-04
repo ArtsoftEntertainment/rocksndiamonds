@@ -44,8 +44,8 @@ static Bitmap *gd_tile_bitmap = NULL;
 // pointer to reference tile bitmap (without level-specific colors)
 static Bitmap *gd_tile_bitmap_reference = NULL;
 
-// optional title screen bitmap
-static Bitmap *gd_title_screen_bitmap = NULL;
+// optional title screen bitmaps (foreground and background)
+static Bitmap *gd_title_screen_bitmaps[2] = { NULL, NULL };
 
 // screen area
 Bitmap *gd_screen_bitmap = NULL;
@@ -780,60 +780,66 @@ static SDL_Surface *get_surface_from_base64(const char *base64_data)
   return surface;
 }
 
-static SDL_Surface *get_title_screen_surface(void)
+static SDL_Surface *get_title_screen_background_surface(SDL_Surface *tile)
 {
-  if (gd_caveset_data == NULL || gd_caveset_data->title_screen == NULL)
+  if (tile == NULL)
     return NULL;
 
-  SDL_Surface *surface = get_surface_from_base64(gd_caveset_data->title_screen);
+  SDL_Surface *foreground_surface = gd_title_screen_bitmaps[0]->surface_masked;
+
+  // if foreground image has no transparency, no background image needed
+  if (foreground_surface->format->Amask == 0)
+    return NULL;
+
+  // use foreground image size for background image size
+  int w = foreground_surface->w;
+  int h = foreground_surface->h + tile->h;	// background is one scrolling tile higher
+
+  // create background surface
+  SDL_Surface *back = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+  int x, y;
+
+  // fill background surface with tile
+  for (y = 0; y < h; y += tile->h)
+    for (x = 0; x < w; x += tile->w)
+      SDLBlitSurface(tile, back, 0, 0, tile->w, tile->h, x, y);
+
+  // background tile surface not needed anymore
+  SDL_FreeSurface(tile);
+
+  return back;
+}
+
+static SDL_Surface *get_title_screen_surface(int nr)
+{
+  if (gd_caveset_data == NULL)
+    return NULL;
+
+  // do not use title screen background without foreground image
+  if (nr == 1 && gd_title_screen_bitmaps[0] == NULL)
+    return NULL;
+
+  char *data = (nr == 0 ? gd_caveset_data->title_screen : gd_caveset_data->title_screen_scroll);
+
+  if (data == NULL)
+    return NULL;
+
+  SDL_Surface *surface = get_surface_from_base64(data);
 
   if (surface == NULL)
     return NULL;
 
-  // create target surface
-  SDL_Surface *target = SDL_CreateRGBSurface(0, surface->w, surface->h, 32, 0, 0, 0, 0);
-
-  // check for transparency and background tile
-  if (surface->format->Amask != 0 && gd_caveset_data->title_screen_scroll != NULL)
-  {
-    SDL_Surface *tile = get_surface_from_base64(gd_caveset_data->title_screen_scroll);
-
-    if (tile != NULL)
-    {
-      int x, y;
-
-      // create background surface
-      SDL_Surface *back = SDL_CreateRGBSurface(0, surface->w, surface->h, 32, 0, 0, 0, 0);
-
-      // fill background surface with tile
-      for (y = 0; y < surface->h; y += tile->h)
-        for (x = 0; x < surface->w; x += tile->w)
-	  SDLBlitSurface(tile, back, 0, 0, tile->w, tile->h, x, y);
-
-      // copy masked screen over background surface
-      SDLBlitSurface(back, target, 0, 0, surface->w, surface->h, 0, 0);
-
-      // free temporary surfaces
-      SDL_FreeSurface(tile);
-      SDL_FreeSurface(back);
-    }
-  }
-
-  SDLBlitSurface(surface, target, 0, 0, surface->w, surface->h, 0, 0);
-
-  SDL_FreeSurface(surface);
-
-  return target;
+  return (nr == 0 ? surface : get_title_screen_background_surface(surface));
 }
 
-static void set_title_screen_bitmap(void)
+static void set_title_screen_bitmap(int nr)
 {
-  if (gd_title_screen_bitmap != NULL)
-    FreeBitmap(gd_title_screen_bitmap);
+  if (gd_title_screen_bitmaps[nr] != NULL)
+    FreeBitmap(gd_title_screen_bitmaps[nr]);
 
-  gd_title_screen_bitmap = NULL;
+  gd_title_screen_bitmaps[nr] = NULL;
 
-  SDL_Surface *surface = get_title_screen_surface();
+  SDL_Surface *surface = get_title_screen_surface(nr);
 
   if (surface == NULL)
     return;
@@ -842,13 +848,21 @@ static void set_title_screen_bitmap(void)
   int height_scaled = surface->h * 2;
   SDL_Surface *surface_scaled = SDLZoomSurface(surface, width_scaled, height_scaled);
 
-  gd_title_screen_bitmap = SDLGetBitmapFromSurface(surface_scaled);
+  gd_title_screen_bitmaps[nr] = SDLGetBitmapFromSurface(surface_scaled);
 
   SDL_FreeSurface(surface);
   SDL_FreeSurface(surface_scaled);
 }
 
-Bitmap *gd_get_title_screen_bitmap(void)
+static void set_title_screen_bitmaps(void)
+{
+  int i;
+
+  for (i = 0; i < 2; i++)
+    set_title_screen_bitmap(i);
+}
+
+Bitmap **gd_get_title_screen_bitmaps(void)
 {
   static char *levelset_subdir_last = NULL;
 
@@ -861,9 +875,9 @@ Bitmap *gd_get_title_screen_bitmap(void)
 
   // check if stored cave set has changed
   if (!strEqual(gd_caveset_data->levelset_subdir, levelset_subdir_last))
-    set_title_screen_bitmap();
+    set_title_screen_bitmaps();
 
   setString(&levelset_subdir_last, gd_caveset_data->levelset_subdir);
 
-  return gd_title_screen_bitmap;
+  return gd_title_screen_bitmaps;
 }

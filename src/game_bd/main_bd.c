@@ -426,9 +426,14 @@ void GameActions_BD(byte action[MAX_PLAYERS])
 // graphics functions
 // ============================================================================
 
-Bitmap *GetTitleScreen_BD(void)
+Bitmap **GetTitleScreenBitmaps_BD(void)
 {
-  return gd_get_title_screen_bitmap();
+  Bitmap **title_screen_bitmaps = gd_get_title_screen_bitmaps();
+
+  if (title_screen_bitmaps == NULL || title_screen_bitmaps[0] == NULL)
+    return NULL;
+
+  return title_screen_bitmaps;
 }
 
 void CoverScreen_BD(void)
