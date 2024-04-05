@@ -4621,6 +4621,7 @@ void InitGame(void)
   game.restart_level = FALSE;
   game.request_active = FALSE;
   game.envelope_active = FALSE;
+  game.any_door_active = FALSE;
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
     InitGameActions_MM();
@@ -16342,7 +16343,7 @@ boolean CheckRestartGame(void)
   }
 
   // do not ask to play again if request dialog is already active
-  if (game.request_active)
+  if (checkRequestActive())
     return FALSE;
 
   // do not ask to play again if request dialog already handled
@@ -16409,6 +16410,11 @@ boolean checkGameFailed(void)
 boolean checkGameEnded(void)
 {
   return (checkGameSolved() || checkGameFailed());
+}
+
+boolean checkRequestActive(void)
+{
+  return (game.request_active || game.envelope_active || game.any_door_active);
 }
 
 

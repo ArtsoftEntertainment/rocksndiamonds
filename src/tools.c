@@ -5517,6 +5517,8 @@ unsigned int MoveDoor(unsigned int door_state)
 
     SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
 
+    game.any_door_active = TRUE;
+
     for (k = start; k < num_move_steps; k++)
     {
       int last_frame = num_move_steps - 1;	// last frame of this "for" loop
@@ -5711,6 +5713,8 @@ unsigned int MoveDoor(unsigned int door_state)
 	BackToFront();
       }
     }
+
+    game.any_door_active = FALSE;
   }
 
   if (door_state & DOOR_ACTION_1)

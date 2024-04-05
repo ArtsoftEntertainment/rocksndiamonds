@@ -258,6 +258,7 @@ struct GameInfo
   // values for special request dialog control
   boolean request_active;
   boolean envelope_active;
+  boolean any_door_active;
 
   // values for special game control
   int centered_player_nr;
@@ -477,6 +478,7 @@ boolean checkGamePlaying(void);
 boolean checkGameSolved(void);
 boolean checkGameFailed(void);
 boolean checkGameEnded(void);
+boolean checkRequestActive(void);
 
 unsigned int InitEngineRandom_RND(int);
 unsigned int RND(int);
