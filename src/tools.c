@@ -5515,6 +5515,8 @@ unsigned int MoveDoor(unsigned int door_state)
       }
     }
 
+    SetDoorBackgroundImage(IMG_BACKGROUND_DOOR);
+
     for (k = start; k < num_move_steps; k++)
     {
       int last_frame = num_move_steps - 1;	// last frame of this "for" loop
