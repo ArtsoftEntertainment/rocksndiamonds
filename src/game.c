@@ -5161,9 +5161,14 @@ void GameEnd(void)
   // used instead of "level_nr" (needed for network games)
   int last_level_nr = levelset.level_nr;
   boolean tape_saved = FALSE;
+  boolean game_over = checkGameFailed();
 
   // Important note: This function is not only called after "GameWon()", but also after
   // "game over" (if automatically asking for restarting the game is disabled in setup)
+
+  // do not handle game end if game over and automatically asking for game restart
+  if (game_over && setup.ask_on_game_over)
+    return;
 
   // do not handle game end if request dialog is already active
   if (checkRequestActive())
