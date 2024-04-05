@@ -5165,6 +5165,10 @@ void GameEnd(void)
   // Important note: This function is not only called after "GameWon()", but also after
   // "game over" (if automatically asking for restarting the game is disabled in setup)
 
+  // do not handle game end if request dialog is already active
+  if (checkRequestActive())
+    return;
+
   if (game.LevelSolved)
     game.LevelSolved_GameEnd = TRUE;
 
