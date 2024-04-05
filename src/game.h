@@ -216,7 +216,6 @@ struct GameInfo
   int wind_direction;
 
   boolean explosions_delayed;
-  boolean envelope_active;
   boolean no_level_time_limit;	// (variable only in very special case)
   boolean time_limit;		// forced by levelset config or setup option
 
@@ -258,6 +257,7 @@ struct GameInfo
 
   // values for special request dialog control
   boolean request_active;
+  boolean envelope_active;
 
   // values for special game control
   int centered_player_nr;

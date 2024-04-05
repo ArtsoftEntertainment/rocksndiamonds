@@ -3974,8 +3974,6 @@ void InitGame(void)
 
   game.explosions_delayed = TRUE;
 
-  game.envelope_active = FALSE;
-
   // special case: set custom artwork setting to initial value
   game.use_masked_elements = game.use_masked_elements_initial;
 
@@ -4622,6 +4620,7 @@ void InitGame(void)
 
   game.restart_level = FALSE;
   game.request_active = FALSE;
+  game.envelope_active = FALSE;
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
     InitGameActions_MM();
