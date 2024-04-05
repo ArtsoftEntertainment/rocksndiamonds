@@ -10551,7 +10551,7 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
 void HandleScreenGadgetKeys(Key key)
 {
-  if (key == setup.shortcut.tape_play)
+  if (key == setup.shortcut.tape_play || key == KSYM_Return)
     HandleScreenGadgets(screen_gadget[SCREEN_CTRL_ID_PLAY_TAPE]);
 }
 
