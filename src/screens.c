@@ -4721,6 +4721,10 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
     char *pos_text = getHallOfFameRankText(pos, 3);
     int i;
 
+    // highlight all high score entries of the current player
+    if (strEqual(scores.entry[pos].name, setup.player_name))
+      font_nr2 = FONT_TEXT_2_ACTIVE;
+
     DrawText(startx1, starty, pos_text, font_nr1);
 
     for (i = 0; i < num_dots; i++)
