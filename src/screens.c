@@ -5088,6 +5088,14 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
     return;
   }
+  else if (game_status == GAME_MODE_NAMES && dx == 1)
+  {
+    SetGameStatus(GAME_MODE_PSEUDO_TYPENAMES);
+
+    DrawTypeName();
+
+    return;
+  }
   else if (dx == 1)
   {
     TreeInfo *node_first, *node_cursor;
