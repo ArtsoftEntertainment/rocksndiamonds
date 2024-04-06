@@ -66,6 +66,10 @@ void subMainGameLoop_Main(byte action)
   // ---------------------- END OF GAME-BUSY LOOP ------------------------------
   // ---------------------------------------------------------------------------
 
+  // if the game is not won when reaching this point, then it is lost
+  if (!game_sp.level_solved)
+    game_sp.game_over = TRUE;
+
   LeadOutCounter = LeadOutCounter - 1;		// do more lead-out after quit
 
   if (LeadOutCounter != 0)			// lead-out not ready: more
@@ -73,10 +77,6 @@ void subMainGameLoop_Main(byte action)
 
   // lead-out done: exit now
   // ---------------------- END OF GAME-BUSY LOOP (including lead-out) ---------
-
-  // if the game is not won when reaching this point, then it is lost
-  if (!game_sp.level_solved)
-    game_sp.game_over = TRUE;
 }
 
 void subCalculateScreenScrollPos(void)
