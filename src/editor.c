@@ -99,6 +99,12 @@
 
 #define ED_SETTINGS_LEVEL_TABS_X	(editor.settings.tabs.x)
 #define ED_SETTINGS_LEVEL_TABS_Y	(editor.settings.tabs.y)
+#define ED_SETTINGS_ENGINE_TABS_X	(editor.settings.tabs.x)
+#define ED_SETTINGS_ENGINE_TABS_Y	(editor.settings.tabs.y +	\
+					 ED_TABBUTTON_YSIZE +		\
+					 ED_GADGET_TINY_DISTANCE +	\
+					 ED_TAB_BAR_HEIGHT +		\
+					 ED_GADGET_TEXT_DISTANCE)
 #define ED_SETTINGS_ELEMENT_TABS_X	(editor.settings.tabs.x)
 #define ED_SETTINGS_ELEMENT_TABS_Y	(editor.settings.tabs.y +	\
 					 editor.settings.tabs.yoffset2)
@@ -111,6 +117,17 @@
 #define ED_LEVEL_SETTINGS_XSTART	(ED_SETTINGS_LEVEL_TABS_X +	\
 					 ED_SETTINGS_TABS_XOFFSET)
 #define ED_LEVEL_SETTINGS_YSTART	(ED_SETTINGS_LEVEL_TABS_Y +	\
+					 ED_TABBUTTON_YSIZE +		\
+					 ED_GADGET_TINY_DISTANCE +	\
+					 ED_TAB_BAR_HEIGHT +		\
+					 ED_SETTINGS_TABS_YOFFSET +	\
+					 getFontHeight(FONT_TEXT_1) +	\
+					 ED_GADGET_TEXT_DISTANCE)
+#define ED_ENGINE_TABS_XSTART		(ED_SETTINGS_ENGINE_TABS_X)
+#define ED_ENGINE_TABS_YSTART		(ED_SETTINGS_ENGINE_TABS_Y)
+#define ED_ENGINE_SETTINGS_XSTART	(ED_SETTINGS_ENGINE_TABS_X +	\
+					 ED_SETTINGS_TABS_XOFFSET)
+#define ED_ENGINE_SETTINGS_YSTART	(ED_SETTINGS_ENGINE_TABS_Y +	\
 					 ED_TABBUTTON_YSIZE +		\
 					 ED_GADGET_TINY_DISTANCE +	\
 					 ED_TAB_BAR_HEIGHT +		\
@@ -137,16 +154,26 @@
 #define ED_POS_LEVEL_TABS_LAST		(2 * ED_POS_RANGE - 1)
 #define ED_POS_LEVEL_SETTINGS_FIRST	(2 * ED_POS_RANGE)
 #define ED_POS_LEVEL_SETTINGS_LAST	(3 * ED_POS_RANGE - 1)
-#define ED_POS_ELEMENT_TABS_FIRST	(3 * ED_POS_RANGE)
-#define ED_POS_ELEMENT_TABS_LAST	(4 * ED_POS_RANGE - 1)
-#define ED_POS_ELEMENT_SETTINGS_FIRST	(4 * ED_POS_RANGE)
-#define ED_POS_ELEMENT_SETTINGS_LAST	(5 * ED_POS_RANGE - 1)
+#define ED_POS_ENGINE_TABS_FIRST	(3 * ED_POS_RANGE)
+#define ED_POS_ENGINE_TABS_LAST		(4 * ED_POS_RANGE - 1)
+#define ED_POS_ENGINE_SETTINGS_FIRST	(4 * ED_POS_RANGE)
+#define ED_POS_ENGINE_SETTINGS_LAST	(5 * ED_POS_RANGE - 1)
+#define ED_POS_ELEMENT_TABS_FIRST	(5 * ED_POS_RANGE)
+#define ED_POS_ELEMENT_TABS_LAST	(6 * ED_POS_RANGE - 1)
+#define ED_POS_ELEMENT_SETTINGS_FIRST	(6 * ED_POS_RANGE)
+#define ED_POS_ELEMENT_SETTINGS_LAST	(7 * ED_POS_RANGE - 1)
 
 #define ED_LEVEL_TABS_XPOS(n)		(ED_POS_LEVEL_TABS_FIRST + (n))
 #define ED_LEVEL_TABS_YPOS(n)		(ED_POS_LEVEL_TABS_FIRST + (n))
 
 #define ED_LEVEL_SETTINGS_XPOS(n)	(ED_POS_LEVEL_SETTINGS_FIRST + (n))
 #define ED_LEVEL_SETTINGS_YPOS(n)	(ED_POS_LEVEL_SETTINGS_FIRST + (n))
+
+#define ED_ENGINE_TABS_XPOS(n)		(ED_POS_ENGINE_TABS_FIRST + (n))
+#define ED_ENGINE_TABS_YPOS(n)		(ED_POS_ENGINE_TABS_FIRST + (n))
+
+#define ED_ENGINE_SETTINGS_XPOS(n)	(ED_POS_ENGINE_SETTINGS_FIRST + (n))
+#define ED_ENGINE_SETTINGS_YPOS(n)	(ED_POS_ENGINE_SETTINGS_FIRST + (n))
 
 #define ED_ELEMENT_TABS_XPOS(n)		(ED_POS_ELEMENT_TABS_FIRST + (n))
 #define ED_ELEMENT_TABS_YPOS(n)		(ED_POS_ELEMENT_TABS_FIRST + (n))
@@ -158,6 +185,10 @@
 				       (n) <= ED_POS_LEVEL_TABS_LAST)
 #define IS_POS_LEVEL_SETTINGS(n)      ((n) >= ED_POS_LEVEL_SETTINGS_FIRST && \
 				       (n) <= ED_POS_LEVEL_SETTINGS_LAST)
+#define IS_POS_ENGINE_TABS(n)	      ((n) >= ED_POS_ENGINE_TABS_FIRST && \
+				       (n) <= ED_POS_ENGINE_TABS_LAST)
+#define IS_POS_ENGINE_SETTINGS(n)     ((n) >= ED_POS_ENGINE_SETTINGS_FIRST && \
+				       (n) <= ED_POS_ENGINE_SETTINGS_LAST)
 #define IS_POS_ELEMENT_TABS(n)	      ((n) >= ED_POS_ELEMENT_TABS_FIRST && \
 				       (n) <= ED_POS_ELEMENT_TABS_LAST)
 #define IS_POS_ELEMENT_SETTINGS(n)    ((n) >= ED_POS_ELEMENT_SETTINGS_FIRST && \
@@ -165,6 +196,8 @@
 
 #define ED_LEVEL_TABS_LINE(n)		((n) - ED_POS_LEVEL_TABS_FIRST)
 #define ED_LEVEL_SETTINGS_LINE(n)	((n) - ED_POS_LEVEL_SETTINGS_FIRST)
+#define ED_ENGINE_TABS_LINE(n)		((n) - ED_POS_ENGINE_TABS_FIRST)
+#define ED_ENGINE_SETTINGS_LINE(n)	((n) - ED_POS_ENGINE_SETTINGS_FIRST)
 #define ED_ELEMENT_TABS_LINE(n)		((n) - ED_POS_ELEMENT_TABS_FIRST)
 #define ED_ELEMENT_SETTINGS_LINE(n)	((n) - ED_POS_ELEMENT_SETTINGS_FIRST)
 
@@ -176,6 +209,16 @@
 #define ED_LEVEL_SETTINGS_X(n)		(ED_LEVEL_SETTINGS_XSTART +	\
 					 (n) * ED_SETTINGS_XOFFSET)
 #define ED_LEVEL_SETTINGS_Y(n)		(ED_LEVEL_SETTINGS_YSTART +	\
+					 (n) * ED_SETTINGS_YOFFSET)
+
+#define ED_ENGINE_TABS_X(n)		(ED_ENGINE_TABS_XSTART +	\
+					 (n) * ED_SETTINGS_TABS_XOFFSET)
+#define ED_ENGINE_TABS_Y(n)		(ED_ENGINE_TABS_YSTART +	\
+					 (n) * ED_SETTINGS_TABS_YOFFSET)
+
+#define ED_ENGINE_SETTINGS_X(n)		(ED_ENGINE_SETTINGS_XSTART +	\
+					 (n) * ED_SETTINGS_XOFFSET)
+#define ED_ENGINE_SETTINGS_Y(n)		(ED_ENGINE_SETTINGS_YSTART +	\
 					 (n) * ED_SETTINGS_YOFFSET)
 
 #define ED_ELEMENT_TABS_X(n)		(ED_ELEMENT_TABS_XSTART +	\
@@ -198,6 +241,16 @@
 #define ED_POS_TO_LEVEL_SETTINGS_Y(n)	\
   (ED_LEVEL_SETTINGS_Y(ED_LEVEL_SETTINGS_LINE(n)))
 
+#define ED_POS_TO_ENGINE_TABS_X(n)	\
+  (ED_ENGINE_TABS_X(ED_ENGINE_TABS_LINE(n)))
+#define ED_POS_TO_ENGINE_TABS_Y(n)	\
+  (ED_ENGINE_TABS_Y(ED_ENGINE_TABS_LINE(n)))
+
+#define ED_POS_TO_ENGINE_SETTINGS_X(n)	\
+  (ED_ENGINE_SETTINGS_X(ED_ENGINE_SETTINGS_LINE(n)))
+#define ED_POS_TO_ENGINE_SETTINGS_Y(n)	\
+  (ED_ENGINE_SETTINGS_Y(ED_ENGINE_SETTINGS_LINE(n)))
+
 #define ED_POS_TO_ELEMENT_TABS_X(n)	\
   (ED_ELEMENT_TABS_X(ED_ELEMENT_TABS_LINE(n)))
 #define ED_POS_TO_ELEMENT_TABS_Y(n)	\
@@ -212,6 +265,10 @@
 					 ED_POS_TO_LEVEL_TABS_X(n) : \
 					 IS_POS_LEVEL_SETTINGS(n) ?	\
 					 ED_POS_TO_LEVEL_SETTINGS_X(n) : \
+					 IS_POS_ENGINE_TABS(n) ?	\
+					 ED_POS_TO_ENGINE_TABS_X(n) : \
+					 IS_POS_ENGINE_SETTINGS(n) ?	\
+					 ED_POS_TO_ENGINE_SETTINGS_X(n) : \
 					 IS_POS_ELEMENT_TABS(n) ?	\
 					 ED_POS_TO_ELEMENT_TABS_X(n) : \
 					 IS_POS_ELEMENT_SETTINGS(n) ?	\
@@ -220,6 +277,10 @@
 					 ED_POS_TO_LEVEL_TABS_Y(n) : \
 					 IS_POS_LEVEL_SETTINGS(n) ?	\
 					 ED_POS_TO_LEVEL_SETTINGS_Y(n) : \
+					 IS_POS_ENGINE_TABS(n) ?	\
+					 ED_POS_TO_ENGINE_TABS_Y(n) : \
+					 IS_POS_ENGINE_SETTINGS(n) ?	\
+					 ED_POS_TO_ENGINE_SETTINGS_Y(n) : \
 					 IS_POS_ELEMENT_TABS(n) ?	\
 					 ED_POS_TO_ELEMENT_TABS_Y(n) : \
 					 IS_POS_ELEMENT_SETTINGS(n) ?	\
@@ -668,6 +729,8 @@ enum
   GADGET_ID_LEVELCONFIG_LEVELSET,
   GADGET_ID_LEVELCONFIG_EDITOR,
   GADGET_ID_LEVELCONFIG_ENGINE,
+  GADGET_ID_ENGINECONFIG_CONFIG,
+  GADGET_ID_ENGINECONFIG_COLORS,
   GADGET_ID_PROPERTIES_INFO,
   GADGET_ID_PROPERTIES_CONFIG,
   GADGET_ID_PROPERTIES_CONFIG_1,
@@ -1021,6 +1084,8 @@ enum
   ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET,
   ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR,
   ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE,
+  ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG,
+  ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS,
   ED_TEXTBUTTON_ID_PROPERTIES_INFO,
   ED_TEXTBUTTON_ID_PROPERTIES_CONFIG,
   ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_1,
@@ -1037,6 +1102,9 @@ enum
 
 #define ED_TAB_BUTTON_ID_LEVELCONFIG_FIRST ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL
 #define ED_TAB_BUTTON_ID_LEVELCONFIG_LAST  ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE
+
+#define ED_TAB_BUTTON_ID_ENGINECONFIG_FIRST ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG
+#define ED_TAB_BUTTON_ID_ENGINECONFIG_LAST  ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS
 
 #define ED_TAB_BUTTON_ID_PROPERTIES_FIRST ED_TEXTBUTTON_ID_PROPERTIES_INFO
 #define ED_TAB_BUTTON_ID_PROPERTIES_LAST  ED_TEXTBUTTON_ID_PROPERTIES_CHANGE
@@ -1315,6 +1383,10 @@ enum
 #define ED_MODE_LEVELCONFIG_LEVELSET	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET
 #define ED_MODE_LEVELCONFIG_EDITOR	ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR
 #define ED_MODE_LEVELCONFIG_ENGINE	ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE
+
+// sub-screens in the engine settings section
+#define ED_MODE_ENGINECONFIG_CONFIG	ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG
+#define ED_MODE_ENGINECONFIG_COLORS	ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS
 
 // sub-screens in the element properties section
 #define ED_MODE_PROPERTIES_INFO		ED_TEXTBUTTON_ID_PROPERTIES_INFO
@@ -1655,7 +1727,7 @@ static struct
   },
   {
     ED_COUNTER_ID_BD_CYCLE_DELAY_MS,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
     50,						500,
     GADGET_ID_BD_CYCLE_DELAY_MS_DOWN,		GADGET_ID_BD_CYCLE_DELAY_MS_UP,
     GADGET_ID_BD_CYCLE_DELAY_MS_TEXT,		GADGET_ID_NONE,
@@ -1664,7 +1736,7 @@ static struct
   },
   {
     ED_COUNTER_ID_BD_CYCLE_DELAY_C64,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
     0,						32,
     GADGET_ID_BD_CYCLE_DELAY_C64_DOWN,		GADGET_ID_BD_CYCLE_DELAY_C64_UP,
     GADGET_ID_BD_CYCLE_DELAY_C64_TEXT,		GADGET_ID_NONE,
@@ -1673,7 +1745,7 @@ static struct
   },
   {
     ED_COUNTER_ID_BD_HATCHING_DELAY_CYCLES,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
     1,						40,
     GADGET_ID_BD_HATCHING_DELAY_CYCLES_DOWN,	GADGET_ID_BD_HATCHING_DELAY_CYCLES_UP,
     GADGET_ID_BD_HATCHING_DELAY_CYCLES_TEXT,	GADGET_ID_NONE,
@@ -1682,7 +1754,7 @@ static struct
   },
   {
     ED_COUNTER_ID_BD_HATCHING_DELAY_SECONDS,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
     1,						40,
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_DOWN,	GADGET_ID_BD_HATCHING_DELAY_SECONDS_UP,
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_TEXT,	GADGET_ID_NONE,
@@ -2861,7 +2933,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(1),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
     GADGET_ID_BD_SCHEDULING_TYPE,		GADGET_ID_NONE,
     -1,
     options_bd_scheduling_type,
@@ -3197,7 +3269,24 @@ static struct
     -1,						-1,
     GADGET_ID_LEVELCONFIG_ENGINE,		GADGET_ID_LEVELCONFIG_EDITOR,
     8,						"Engine",
-    NULL, NULL, NULL,				"Configure engine settings"
+    NULL, NULL, NULL,				"Configure game engine settings"
+  },
+
+  // ---------- engine settings (tabs) ----------------------------------------
+
+  {
+    ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG,
+    ED_ENGINE_TABS_XPOS(0),			ED_ENGINE_TABS_YPOS(0),
+    GADGET_ID_ENGINECONFIG_CONFIG,		GADGET_ID_NONE,
+    8,						"Config",
+    NULL, NULL, NULL,				"Configure game engine settings"
+  },
+  {
+    ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS,
+    -1,						-1,
+    GADGET_ID_ENGINECONFIG_COLORS,		GADGET_ID_ENGINECONFIG_CONFIG,
+    8,						"Colors",
+    NULL, NULL, NULL,				"Configure game engine colors"
   },
 
   // ---------- element settings (tabs) ---------------------------------------
@@ -3514,7 +3603,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_INTERMISSION,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(0),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(0),
     GADGET_ID_BD_INTERMISSION,			GADGET_ID_NONE,
     &level.bd_intermission,
     "Boulder Dash game engine settings:", NULL,
@@ -3522,7 +3611,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_PAL_TIMING,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(2),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
     GADGET_ID_BD_PAL_TIMING,			GADGET_ID_NONE,
     &level.bd_pal_timing,
     NULL, NULL,
@@ -3530,7 +3619,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_LINE_SHIFTING_BORDERS,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(6),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
     GADGET_ID_BD_LINE_SHIFTING_BORDERS,		GADGET_ID_NONE,
     &level.bd_line_shifting_borders,
     "Compatibility settings:", NULL,
@@ -3538,7 +3627,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_SCAN_FIRST_AND_LAST_ROW,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(7),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
     GADGET_ID_BD_SCAN_FIRST_AND_LAST_ROW,	GADGET_ID_NONE,
     &level.bd_scan_first_and_last_row,
     NULL, NULL,
@@ -3546,7 +3635,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_SHORT_EXPLOSIONS,
-    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(8),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
     GADGET_ID_BD_SHORT_EXPLOSIONS,		GADGET_ID_NONE,
     &level.bd_short_explosions,
     NULL, NULL,
@@ -5090,6 +5179,7 @@ static int redo_buffer_steps = 0;
 
 static int edit_mode;
 static int edit_mode_levelconfig;
+static int edit_mode_engineconfig;
 static int edit_mode_properties;
 
 static int element_shift = 0;
@@ -8499,6 +8589,7 @@ static void CreateTextbuttonGadgets(void)
     int type_id = textbutton_info[i].gadget_type_id;
     int is_tab_button =
       ((id >= GADGET_ID_LEVELCONFIG_LEVEL && id <= GADGET_ID_LEVELCONFIG_ENGINE) ||
+       (id >= GADGET_ID_ENGINECONFIG_CONFIG && id <= GADGET_ID_ENGINECONFIG_COLORS) ||
        (id >= GADGET_ID_PROPERTIES_INFO && id <= GADGET_ID_PROPERTIES_CHANGE));
     int graphic =
       (is_tab_button ? IMG_EDITOR_TABBUTTON : IMG_EDITOR_TEXTBUTTON);
@@ -10416,6 +10507,7 @@ void DrawLevelEd(void)
   {
     edit_mode = ED_MODE_DRAWING;
     edit_mode_levelconfig = ED_MODE_LEVELCONFIG_LEVEL;
+    edit_mode_engineconfig = ED_MODE_ENGINECONFIG_CONFIG;
     edit_mode_properties = ED_MODE_PROPERTIES_INFO;
 
     ResetUndoBuffer();
@@ -10806,6 +10898,39 @@ static Pixel getTabulatorBarColor(void)
   return GetPixel(gd->bitmap, gd_x, gd_y);
 }
 
+static void DrawEngineConfigTabulatorGadgets(void)
+{
+  struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_ENGINECONFIG_CONFIG];
+  Pixel tab_color = getTabulatorBarColor();
+  int id_first = ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG;
+  int id_last  = ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS;
+  int i;
+
+  for (i = id_first; i <= id_last; i++)
+  {
+    int gadget_id = textbutton_info[i].gadget_id;
+    struct GadgetInfo *gi = level_editor_gadget[gadget_id];
+    boolean active = (i != edit_mode_engineconfig);
+
+    // draw background line below tabulator button
+    ClearRectangleOnBackground(drawto, gi->x, gi->y + gi->height, gi->width, 1);
+
+    // draw solid line below inactive tabulator buttons
+    if (!active && tab_color != BLACK_PIXEL)	// black => transparent
+      FillRectangle(drawto, gi->x, gi->y + gi->height, gi->width,
+		    ED_GADGET_TINY_DISTANCE, tab_color);
+
+    ModifyGadget(gi, GDI_ACTIVE, active, GDI_END);
+    MapTextbuttonGadget(i);
+  }
+
+  // draw little border line below tabulator buttons
+  if (tab_color != BLACK_PIXEL)			// black => transparent
+    FillRectangle(drawto, gd_gi1->x, gd_gi1->y + gd_gi1->height +
+		  ED_GADGET_TINY_DISTANCE,
+		  getTabulatorBarWidth(), getTabulatorBarHeight(), tab_color);
+}
+
 static void DrawLevelConfigTabulatorGadgets(void)
 {
   struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELCONFIG_LEVEL];
@@ -10841,6 +10966,10 @@ static void DrawLevelConfigTabulatorGadgets(void)
     FillRectangle(drawto, gd_gi1->x, gd_gi1->y + gd_gi1->height +
 		  ED_GADGET_TINY_DISTANCE,
 		  getTabulatorBarWidth(), getTabulatorBarHeight(), tab_color);
+
+  // draw second row of engine related tabulators when using native BD engine
+  if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE)
+    DrawEngineConfigTabulatorGadgets();
 }
 
 static void DrawPropertiesTabulatorGadgets(void)
@@ -11014,7 +11143,7 @@ static void DrawLevelConfigEditor(void)
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_2);
 }
 
-static void DrawLevelConfigEngine(void)
+static void DrawEngineConfigConfig(void)
 {
   int i;
 
@@ -11037,6 +11166,19 @@ static void DrawLevelConfigEngine(void)
   // draw selectbox gadgets
   for (i = ED_SELECTBOX_ID_ENGINE_FIRST; i <= ED_SELECTBOX_ID_ENGINE_LAST; i++)
     MapSelectboxGadget(i);
+}
+
+static void DrawEngineConfigColors(void)
+{
+  // (no settings yet)
+}
+
+static void DrawLevelConfigEngine(void)
+{
+  if (edit_mode_engineconfig == ED_MODE_ENGINECONFIG_CONFIG)
+    DrawEngineConfigConfig();
+  else if (edit_mode_engineconfig == ED_MODE_ENGINECONFIG_COLORS)
+    DrawEngineConfigColors();
 }
 
 static void DrawLevelConfigWindow(void)
@@ -15926,6 +16068,13 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
       type_id <= ED_TAB_BUTTON_ID_LEVELCONFIG_LAST)
   {
     edit_mode_levelconfig = gi->custom_type_id;
+
+    DrawLevelConfigWindow();
+  }
+  else if (type_id >= ED_TAB_BUTTON_ID_ENGINECONFIG_FIRST &&
+	   type_id <= ED_TAB_BUTTON_ID_ENGINECONFIG_LAST)
+  {
+    edit_mode_engineconfig = gi->custom_type_id;
 
     DrawLevelConfigWindow();
   }
