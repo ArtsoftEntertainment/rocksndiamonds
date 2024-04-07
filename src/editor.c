@@ -691,8 +691,8 @@ enum
   GADGET_ID_TIME_OR_STEPS,
   GADGET_ID_TIME_SCORE_BASE,
   GADGET_ID_GAME_ENGINE_TYPE,
-  GADGET_ID_BD_SCHEDULING_TYPE,
   GADGET_ID_LEVELSET_SAVE_MODE,
+  GADGET_ID_BD_SCHEDULING_TYPE,
   GADGET_ID_WIND_DIRECTION,
   GADGET_ID_PLAYER_SPEED,
   GADGET_ID_BD_GRAVITY_DIRECTION,
@@ -1023,8 +1023,8 @@ enum
   ED_SELECTBOX_ID_TIME_OR_STEPS,
   ED_SELECTBOX_ID_TIME_SCORE_BASE,
   ED_SELECTBOX_ID_GAME_ENGINE_TYPE,
-  ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
   ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
+  ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
   ED_SELECTBOX_ID_WIND_DIRECTION,
   ED_SELECTBOX_ID_PLAYER_SPEED,
   ED_SELECTBOX_ID_BD_GRAVITY_DIRECTION,
@@ -2932,15 +2932,6 @@ static struct
     NULL, "Game engine:", NULL,			"Select game engine"
   },
   {
-    ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
-    GADGET_ID_BD_SCHEDULING_TYPE,		GADGET_ID_NONE,
-    -1,
-    options_bd_scheduling_type,
-    &level.bd_scheduling_type,
-    NULL, "Scheduling type:", NULL,		"Select level timing"
-  },
-  {
     ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
     ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(10),
     GADGET_ID_LEVELSET_SAVE_MODE,		GADGET_ID_NONE,
@@ -2949,6 +2940,20 @@ static struct
     &levelset_save_mode,
     "Action:", NULL, NULL,			"Select action when saving level set"
   },
+
+  // ---------- engine settings: config ---------------------------------------
+
+  {
+    ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
+    GADGET_ID_BD_SCHEDULING_TYPE,		GADGET_ID_NONE,
+    -1,
+    options_bd_scheduling_type,
+    &level.bd_scheduling_type,
+    NULL, "Scheduling type:", NULL,		"Select level timing"
+  },
+
+  // ---------- engine settings: colors ---------------------------------------
 
   // ---------- element settings: configure (several elements) ----------------
 
