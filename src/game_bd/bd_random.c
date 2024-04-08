@@ -387,6 +387,9 @@ gd_rand_int (GdRand *rand)
   return y;
 }
 
+// transform [0..2^32] -> [0..1]
+#define GD_RAND_DOUBLE_TRANSFORM 2.3283064365386962890625e-10
+
 /**
  * gd_rand_int_range:
  * @rand_: a #GdRand
@@ -435,6 +438,52 @@ gd_rand_int_range (GdRand *rand, int begin, int end)
   return begin + random;
 }
 
+/**
+ * gd_rand_double:
+ * @rand_: a #GRand
+ *
+ * Returns the next random #double from @rand_ equally distributed over
+ * the range [0..1).
+ *
+ * Returns: a random number
+ */
+double
+gd_rand_double (GdRand *rand)
+{
+  /* We set all 52 bits after the point for this, not only the first
+     32. That's why we need two calls to gd_rand_int */
+  double retval = gd_rand_int(rand) * GD_RAND_DOUBLE_TRANSFORM;
+  retval = (retval + gd_rand_int(rand)) * GD_RAND_DOUBLE_TRANSFORM;
+
+  /* The following might happen due to very bad rounding luck, but
+   * actually this should be more than rare, we just try again then */
+  if (retval >= 1.0)
+    return gd_rand_double (rand);
+
+  return retval;
+}
+
+/**
+ * gd_rand_double_range:
+ * @rand_: a #GRand
+ * @begin: lower closed bound of the interval
+ * @end: upper open bound of the interval
+ *
+ * Returns the next random #double from @rand_ equally distributed over
+ * the range [@begin..@end).
+ *
+ * Returns: a random number
+ */
+double
+gd_rand_double_range (GdRand *rand, double begin, double end)
+{
+  double r;
+
+  r = gd_rand_double(rand);
+
+  return r * end - (r - 1) * begin;
+}
+
 static GdRand *
 get_global_random (void)
 {
@@ -445,6 +494,32 @@ get_global_random (void)
     global_random = gd_rand_new();
 
   return global_random;
+}
+
+/**
+ * gd_random_boolean:
+ *
+ * Returns a random #gboolean.
+ * This corresponds to an unbiased coin toss.
+ *
+ * Returns: a random #gboolean
+ */
+/**
+ * gd_random_int:
+ *
+ * Return a random #guint32 equally distributed over the range
+ * [0..2^32-1].
+ *
+ * Returns: a random number
+ */
+unsigned int
+gd_random_int (void)
+{
+  unsigned int result;
+
+  result = gd_rand_int(get_global_random());
+
+  return result;
 }
 
 /**
@@ -463,6 +538,43 @@ gd_random_int_range (int begin, int end)
   int result;
 
   result = gd_rand_int_range (get_global_random(), begin, end);
+
+  return result;
+}
+
+/**
+ * gd_random_double:
+ *
+ * Returns a random #double equally distributed over the range [0..1).
+ *
+ * Returns: a random number
+ */
+double
+gd_random_double (void)
+{
+  double result;
+
+  result = gd_rand_double(get_global_random());
+
+  return result;
+}
+
+/**
+ * gd_random_double_range:
+ * @begin: lower closed bound of the interval
+ * @end: upper open bound of the interval
+ *
+ * Returns a random #double equally distributed over the range
+ * [@begin..@end).
+ *
+ * Returns: a random number
+ */
+double
+gd_random_double_range (double begin, double end)
+{
+  double result;
+
+  result = gd_rand_double_range(get_global_random(), begin, end);
 
   return result;
 }

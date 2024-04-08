@@ -57,9 +57,15 @@ void         gd_rand_set_seed_array(GdRand *rand_, const unsigned int *seed, uns
 #define      gd_rand_boolean(rand_) ((gd_rand_int (rand_) & (1 << 15)) != 0)
 unsigned int gd_rand_int(GdRand *rand_);
 int          gd_rand_int_range(GdRand *rand_, int begin, int end);
+double       gd_rand_double(GdRand *rand_);
+double       gd_rand_double_range(GdRand *rand_, double begin, double end);
 
 void         gd_random_set_seed(unsigned int seed);
+#define      gd_random_boolean() ((gd_random_int () & (1 << 15)) != 0)
 unsigned int gd_random_int(void);
 int          gd_random_int_range(int begin, int end);
+
+double       gd_random_double(void);
+double       gd_random_double_range(double  begin, double  end);
 
 #endif	// BD_RANDOM_H
