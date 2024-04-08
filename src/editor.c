@@ -2064,7 +2064,7 @@ static struct
   int gadget_id;
   int size;
   char *value;
-  char *text_above, *infotext;
+  char *text_above, *text_left, *text_right, *infotext;
 } textinput_info[ED_NUM_TEXTINPUT] =
 {
   {
@@ -2073,7 +2073,7 @@ static struct
     GADGET_ID_LEVEL_NAME,
     MAX_LEVEL_NAME_LEN,
     level.name,
-    "Title:", "Title for this level"
+    "Title:", NULL, NULL,			"Enter title for this level"
   },
   {
     ED_TEXTINPUT_ID_LEVEL_AUTHOR,
@@ -2081,7 +2081,7 @@ static struct
     GADGET_ID_LEVEL_AUTHOR,
     MAX_LEVEL_AUTHOR_LEN,
     level.author,
-    "Author:", "Author for this level"
+    "Author:", NULL, NULL,			"Enter author for this level"
   },
   {
     ED_TEXTINPUT_ID_LEVELSET_NAME,
@@ -2089,7 +2089,7 @@ static struct
     GADGET_ID_LEVELSET_NAME,
     MAX_LEVEL_NAME_LEN,
     levelset_name,
-    "Title:", "Title for this or new level set"
+    "Title:", NULL, NULL,			"Enter title for this or new level set"
   },
   {
     ED_TEXTINPUT_ID_LEVELSET_AUTHOR,
@@ -2097,7 +2097,7 @@ static struct
     GADGET_ID_LEVELSET_AUTHOR,
     MAX_LEVEL_AUTHOR_LEN,
     levelset_author,
-    "Author:", "Author for this or new level set"
+    "Author:", NULL, NULL,			"Enter author for this or new level set"
   },
   {
     ED_TEXTINPUT_ID_ELEMENT_NAME,
@@ -2105,7 +2105,7 @@ static struct
     GADGET_ID_ELEMENT_NAME,
     MAX_ELEMENT_NAME_LEN - 2,			// currently 2 chars less editable
     custom_element.description,
-    NULL, "Element name"
+    NULL, NULL, NULL,				"Enter element name"
   }
 };
 
@@ -8419,7 +8419,11 @@ static void CreateTextInputGadgets(void)
       y = ED_SETTINGS_Y(textinput_info[i].y);
     }
 
-    sprintf(infotext, "Enter %s", textinput_info[i].infotext);
+    // determine horizontal offset for leading text
+    if (textinput_info[i].text_left != NULL)
+      x += getTextWidthForGadget(textinput_info[i].text_left);
+
+    sprintf(infotext, "%s", textinput_info[i].infotext);
     infotext[max_infotext_len] = '\0';
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
@@ -9170,12 +9174,23 @@ static void MapTextInputGadget(int id)
   int font_nr = FONT_TEXT_1;
   int font_height = getFontHeight(font_nr);
   struct GadgetInfo *gi = level_editor_gadget[textinput_info[id].gadget_id];
+  int xoffset_left = getTextWidthForGadget(textinput_info[id].text_left);
+  int xoffset_right = ED_GADGET_TEXT_DISTANCE;
   int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
-  int x_above = ED_SETTINGS_X(textinput_info[id].x);
-  int y_above = ED_SETTINGS_Y(textinput_info[id].y) - yoffset_above;
+  int yoffset = (gi->height - font_height) / 2;
+  int x_left = gi->x - xoffset_left;
+  int x_right = gi->x + gi->width + xoffset_right;
+  int y_above = gi->y - yoffset_above;
+  int y = gi->y + yoffset;
 
   if (textinput_info[id].text_above)
-    DrawTextS(x_above, y_above, font_nr, textinput_info[id].text_above);
+    DrawText(x_left, y_above, textinput_info[id].text_above, font_nr);
+
+  if (textinput_info[id].text_left)
+    DrawText(x_left, y, textinput_info[id].text_left, font_nr);
+
+  if (textinput_info[id].text_right)
+    DrawText(x_right, y, textinput_info[id].text_right, font_nr);
 
   ModifyGadget(gi, GDI_TEXT_VALUE, textinput_info[id].value, GDI_END);
 
@@ -9215,11 +9230,10 @@ static void MapSelectboxGadget(int id)
   int x_left = gi->x - xoffset_left;
   int x_right = gi->x + gi->width + xoffset_right;
   int y_above = gi->y - yoffset_above;
-  int x = gi->x;
   int y = gi->y + yoffset;
 
   if (selectbox_info[id].text_above)
-    DrawText(x, y_above, selectbox_info[id].text_above, font_nr);
+    DrawText(x_left, y_above, selectbox_info[id].text_above, font_nr);
 
   if (selectbox_info[id].text_left)
     DrawText(x_left, y, selectbox_info[id].text_left, font_nr);
