@@ -3110,7 +3110,7 @@ static struct
     -1,
     options_bd_color_type,
     &level.bd_color_type,
-    "Boulder Dash game engine colors:",
+    "Boulder Dash level colors:",
     "Color palette type:", NULL,		"Select color palette type"
   },
   {
@@ -3513,7 +3513,7 @@ static struct
     -1,						-1,
     GADGET_ID_ENGINECONFIG_COLORS,		GADGET_ID_ENGINECONFIG_CONFIG,
     8,						"Colors",
-    NULL, NULL, NULL,				"Configure game engine colors"
+    NULL, NULL, NULL,				"Configure level colors"
   },
 
   // ---------- element settings (tabs) ---------------------------------------
