@@ -3750,6 +3750,13 @@ struct LevelInfo
   int bd_bomb_explosion_turns_to;	// BD bomb explosion changes to specified element
   int bd_nitro_explosion_turns_to;	// BD nitro pack explosion changes to specified element
   int bd_explosion_turns_to;		// BD other explosions change to specified element
+  int bd_color_b;			// BD engine C64-style cave color (border)
+  int bd_color_0;			// BD engine C64-style cave color (background)
+  int bd_color_1;			// BD engine C64-style cave color (sand)
+  int bd_color_2;			// BD engine C64-style cave color (steel wall)
+  int bd_color_3;			// BD engine C64-style cave color (wall)
+  int bd_color_4;			// BD engine C64-style cave color (amoeba)
+  int bd_color_5;			// BD engine C64-style cave color (slime)
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
@@ -3797,6 +3804,8 @@ struct LevelInfo
   boolean use_custom_template;		// use custom properties from template file
 
   boolean file_has_custom_elements;	// set when level file contains CEs
+
+  int bd_color_type;			// set according to BD colors in level
 
   boolean no_valid_file;		// set when level file missing or invalid
   boolean no_level_file;		// set when falling back to level template

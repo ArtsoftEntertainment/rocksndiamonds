@@ -19,6 +19,7 @@
 #include "files.h"
 #include "init.h"
 #include "screens.h"
+#include "editor.h"
 #include "tools.h"
 #include "tape.h"
 #include "config.h"
@@ -309,6 +310,41 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(23),
     &li.bd_cave_random_seed_c64,	0
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(3),
+    &li.bd_color_b,			GD_C64_COLOR(0)
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(4),
+    &li.bd_color_0,			GD_C64_COLOR(0)
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(5),
+    &li.bd_color_1,			GD_C64_COLOR(8)
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(6),
+    &li.bd_color_2,			GD_C64_COLOR(11)
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(7),
+    &li.bd_color_3,			GD_C64_COLOR(1)
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(8),
+    &li.bd_color_4,			GD_C64_COLOR(5)
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(9),
+    &li.bd_color_5,			GD_C64_COLOR(6)
   },
 
   {
@@ -2346,6 +2382,10 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
   // detect custom elements when loading them
   level->file_has_custom_elements = FALSE;
 
+  // set default color type and colors for BD style level colors
+  SetDefaultLevelColorType_BD();
+  SetDefaultLevelColors_BD();
+
   // set all bug compatibility flags to "false" => do not emulate this bug
   level->use_action_after_change_bug = FALSE;
 
@@ -4378,6 +4418,14 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->nitro_explosion_effect		= LEVEL_TO_CAVE(level->bd_nitro_explosion_turns_to);
   cave->explosion_effect		= LEVEL_TO_CAVE(level->bd_explosion_turns_to);
 
+  cave->colorb				= level->bd_color_b;
+  cave->color0				= level->bd_color_0;
+  cave->color1				= level->bd_color_1;
+  cave->color2				= level->bd_color_2;
+  cave->color3				= level->bd_color_3;
+  cave->color4				= level->bd_color_4;
+  cave->color5				= level->bd_color_5;
+
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
   cave->name[sizeof(GdString) - 1] = '\0';
@@ -4542,6 +4590,18 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_bomb_explosion_turns_to	= CAVE_TO_LEVEL(cave->bomb_explosion_effect);
   level->bd_nitro_explosion_turns_to	= CAVE_TO_LEVEL(cave->nitro_explosion_effect);
   level->bd_explosion_turns_to		= CAVE_TO_LEVEL(cave->explosion_effect);
+
+  level->bd_color_b			= cave->colorb;
+  level->bd_color_0			= cave->color0;
+  level->bd_color_1			= cave->color1;
+  level->bd_color_2			= cave->color2;
+  level->bd_color_3			= cave->color3;
+  level->bd_color_4			= cave->color4;
+  level->bd_color_5			= cave->color5;
+
+  // set default color type and colors for BD style level colors
+  SetDefaultLevelColorType_BD();
+  SetDefaultLevelColors_BD();
 
   // level name
   char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);

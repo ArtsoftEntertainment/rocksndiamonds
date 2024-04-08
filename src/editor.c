@@ -680,6 +680,13 @@ enum
   GADGET_ID_LEVEL_AUTHOR,
   GADGET_ID_LEVELSET_NAME,
   GADGET_ID_LEVELSET_AUTHOR,
+  GADGET_ID_BD_COLOR_RGB_B,
+  GADGET_ID_BD_COLOR_RGB_0,
+  GADGET_ID_BD_COLOR_RGB_1,
+  GADGET_ID_BD_COLOR_RGB_2,
+  GADGET_ID_BD_COLOR_RGB_3,
+  GADGET_ID_BD_COLOR_RGB_4,
+  GADGET_ID_BD_COLOR_RGB_5,
   GADGET_ID_ELEMENT_NAME,
 
   // text area identifiers
@@ -693,6 +700,14 @@ enum
   GADGET_ID_GAME_ENGINE_TYPE,
   GADGET_ID_LEVELSET_SAVE_MODE,
   GADGET_ID_BD_SCHEDULING_TYPE,
+  GADGET_ID_BD_COLOR_TYPE,
+  GADGET_ID_BD_COLOR_C64_B,
+  GADGET_ID_BD_COLOR_C64_0,
+  GADGET_ID_BD_COLOR_C64_1,
+  GADGET_ID_BD_COLOR_C64_2,
+  GADGET_ID_BD_COLOR_C64_3,
+  GADGET_ID_BD_COLOR_C64_4,
+  GADGET_ID_BD_COLOR_C64_5,
   GADGET_ID_WIND_DIRECTION,
   GADGET_ID_PLAYER_SPEED,
   GADGET_ID_BD_GRAVITY_DIRECTION,
@@ -995,6 +1010,13 @@ enum
   ED_TEXTINPUT_ID_LEVEL_AUTHOR,
   ED_TEXTINPUT_ID_LEVELSET_NAME,
   ED_TEXTINPUT_ID_LEVELSET_AUTHOR,
+  ED_TEXTINPUT_ID_BD_COLOR_RGB_B,
+  ED_TEXTINPUT_ID_BD_COLOR_RGB_0,
+  ED_TEXTINPUT_ID_BD_COLOR_RGB_1,
+  ED_TEXTINPUT_ID_BD_COLOR_RGB_2,
+  ED_TEXTINPUT_ID_BD_COLOR_RGB_3,
+  ED_TEXTINPUT_ID_BD_COLOR_RGB_4,
+  ED_TEXTINPUT_ID_BD_COLOR_RGB_5,
   ED_TEXTINPUT_ID_ELEMENT_NAME,
 
   ED_NUM_TEXTINPUT
@@ -1005,6 +1027,9 @@ enum
 
 #define ED_TEXTINPUT_ID_LEVELSET_FIRST	ED_TEXTINPUT_ID_LEVELSET_NAME
 #define ED_TEXTINPUT_ID_LEVELSET_LAST	ED_TEXTINPUT_ID_LEVELSET_AUTHOR
+
+#define ED_TEXTINPUT_ID_COLORS_FIRST	ED_TEXTINPUT_ID_BD_COLOR_RGB_B
+#define ED_TEXTINPUT_ID_COLORS_LAST	ED_TEXTINPUT_ID_BD_COLOR_RGB_5
 
 // values for text area gadgets
 enum
@@ -1025,6 +1050,14 @@ enum
   ED_SELECTBOX_ID_GAME_ENGINE_TYPE,
   ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
   ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
+  ED_SELECTBOX_ID_BD_COLOR_TYPE,
+  ED_SELECTBOX_ID_BD_COLOR_C64_B,
+  ED_SELECTBOX_ID_BD_COLOR_C64_0,
+  ED_SELECTBOX_ID_BD_COLOR_C64_1,
+  ED_SELECTBOX_ID_BD_COLOR_C64_2,
+  ED_SELECTBOX_ID_BD_COLOR_C64_3,
+  ED_SELECTBOX_ID_BD_COLOR_C64_4,
+  ED_SELECTBOX_ID_BD_COLOR_C64_5,
   ED_SELECTBOX_ID_WIND_DIRECTION,
   ED_SELECTBOX_ID_PLAYER_SPEED,
   ED_SELECTBOX_ID_BD_GRAVITY_DIRECTION,
@@ -1066,6 +1099,9 @@ enum
 
 #define ED_SELECTBOX_ID_ENGINE_FIRST	ED_SELECTBOX_ID_BD_SCHEDULING_TYPE
 #define ED_SELECTBOX_ID_ENGINE_LAST	ED_SELECTBOX_ID_BD_SCHEDULING_TYPE
+
+#define ED_SELECTBOX_ID_COLORS_FIRST	ED_SELECTBOX_ID_BD_COLOR_C64_B
+#define ED_SELECTBOX_ID_COLORS_LAST	ED_SELECTBOX_ID_BD_COLOR_C64_5
 
 #define ED_SELECTBOX_ID_CUSTOM1_FIRST	ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE
 #define ED_SELECTBOX_ID_CUSTOM1_LAST	ED_SELECTBOX_ID_CUSTOM_WALK_TO_ACTION
@@ -1627,6 +1663,24 @@ static boolean levelset_use_levelset_artwork = FALSE;
 static boolean levelset_copy_level_template = FALSE;
 static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
+#define MAX_BD_COLORS			7
+#define MAX_BD_COLOR_RGB_TEXT_LEN	7
+
+static boolean bd_color_type_changed = FALSE;
+static int bd_color_c64[MAX_BD_COLORS];
+static char bd_color_rgb[MAX_BD_COLORS][MAX_BD_COLOR_RGB_TEXT_LEN + 1];
+static int bd_color_default[MAX_BD_COLORS];
+static int *bd_color[MAX_BD_COLORS] =
+{
+  &level.bd_color_b,
+  &level.bd_color_0,
+  &level.bd_color_1,
+  &level.bd_color_2,
+  &level.bd_color_3,
+  &level.bd_color_4,
+  &level.bd_color_5,
+};
+
 static struct
 {
   int gadget_type_id;
@@ -2067,6 +2121,8 @@ static struct
   char *text_above, *text_left, *text_right, *infotext;
 } textinput_info[ED_NUM_TEXTINPUT] =
 {
+  // ---------- level and editor settings -------------------------------------
+
   {
     ED_TEXTINPUT_ID_LEVEL_NAME,
     ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(0),
@@ -2099,6 +2155,68 @@ static struct
     levelset_author,
     "Author:", NULL, NULL,			"Enter author for this or new level set"
   },
+
+  // ---------- engine settings: colors ---------------------------------------
+
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_RGB_B,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
+    GADGET_ID_BD_COLOR_RGB_B,
+    MAX_BD_COLOR_RGB_TEXT_LEN,
+    bd_color_rgb[0],
+    NULL, "Border color:    ", NULL,		"Enter border color (not used)"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_RGB_0,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    GADGET_ID_BD_COLOR_RGB_0,
+    MAX_BD_COLOR_RGB_TEXT_LEN,
+    bd_color_rgb[1],
+    NULL, "Background color:", NULL,		"Enter background color (C64 graphics)"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_RGB_1,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    GADGET_ID_BD_COLOR_RGB_1,
+    MAX_BD_COLOR_RGB_TEXT_LEN,
+    bd_color_rgb[2],
+    NULL, "Sand color:      ", NULL,		"Enter sand color (C64 graphics)"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_RGB_2,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    GADGET_ID_BD_COLOR_RGB_2,
+    MAX_BD_COLOR_RGB_TEXT_LEN,
+    bd_color_rgb[3],
+    NULL, "Steel wall color:", NULL,		"Enter steel wall color (C64 graphics)"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_RGB_3,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    GADGET_ID_BD_COLOR_RGB_3,
+    MAX_BD_COLOR_RGB_TEXT_LEN,
+    bd_color_rgb[4],
+    NULL, "Wall color:      ", NULL,		"Enter wall color (C64 graphics)"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_RGB_4,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    GADGET_ID_BD_COLOR_RGB_4,
+    MAX_BD_COLOR_RGB_TEXT_LEN,
+    bd_color_rgb[5],
+    NULL, "Amoeba color:    ", NULL,		"Enter amoeba color (C64 graphics)"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_RGB_5,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    GADGET_ID_BD_COLOR_RGB_5,
+    MAX_BD_COLOR_RGB_TEXT_LEN,
+    bd_color_rgb[6],
+    NULL, "Slime color:     ", NULL,		"Enter slime color (C64 graphics)"
+  },
+
+  // ---------- element settings: configure (several elements) ----------------
+
   {
     ED_TEXTINPUT_ID_ELEMENT_NAME,
     -1, -1,	// these values are not constant, but can change at runtime
@@ -2848,6 +2966,36 @@ static struct ValueTextInfo options_bd_scheduling_type[] =
   { -1,					  NULL				}
 };
 
+static struct ValueTextInfo options_bd_color_type[] =
+{
+  { GD_COLOR_TYPE_C64,			"C64 colors"			},
+  { GD_COLOR_TYPE_RGB,			"RGB colors"			},
+
+  { -1,					  NULL				}
+};
+
+static struct ValueTextInfo options_bd_color_c64_name[] =
+{
+  { GD_COLOR_INDEX_BLACK,		"Black"				},
+  { GD_COLOR_INDEX_WHITE,		"White"				},
+  { GD_COLOR_INDEX_RED,			"Red"				},
+  { GD_COLOR_INDEX_CYAN,		"Cyan"				},
+  { GD_COLOR_INDEX_PURPLE,		"Purple"			},
+  { GD_COLOR_INDEX_GREEN,		"Green"				},
+  { GD_COLOR_INDEX_BLUE,		"Blue"				},
+  { GD_COLOR_INDEX_YELLOW,		"Yellow"			},
+  { GD_COLOR_INDEX_ORANGE,		"Orange"			},
+  { GD_COLOR_INDEX_BROWN,		"Brown"				},
+  { GD_COLOR_INDEX_LIGHTRED,		"Light red"			},
+  { GD_COLOR_INDEX_GRAY1,		"Dark gray"			},
+  { GD_COLOR_INDEX_GRAY2,		"Gray"				},
+  { GD_COLOR_INDEX_LIGHTGREEN,		"Light green"			},
+  { GD_COLOR_INDEX_LIGHTBLUE,		"Light blue"			},
+  { GD_COLOR_INDEX_GRAY3,		"Light gray"			},
+
+  { -1,					  NULL				}
+};
+
 static struct ValueTextInfo *action_arg_modes[] =
 {
   options_action_mode_none,
@@ -2954,6 +3102,80 @@ static struct
   },
 
   // ---------- engine settings: colors ---------------------------------------
+
+  {
+    ED_SELECTBOX_ID_BD_COLOR_TYPE,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(0),
+    GADGET_ID_BD_COLOR_TYPE,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_type,
+    &level.bd_color_type,
+    "Boulder Dash game engine colors:",
+    "Color palette type:", NULL,		"Select color palette type"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_B,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
+    GADGET_ID_BD_COLOR_C64_B,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[0],
+    NULL, "Border color:    ", NULL,		"Select border color (not used)"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_0,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    GADGET_ID_BD_COLOR_C64_0,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[1],
+    NULL, "Background color:", NULL,		"Select background color (C64 graphics)"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_1,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    GADGET_ID_BD_COLOR_C64_1,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[2],
+    NULL, "Sand color:      ", NULL,		"Select sand color (C64 graphics)"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_2,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    GADGET_ID_BD_COLOR_C64_2,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[3],
+    NULL, "Steel wall color:", NULL,		"Select steel wall color (C64 graphics)"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_3,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    GADGET_ID_BD_COLOR_C64_3,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[4],
+    NULL, "Wall color:      ", NULL,		"Select wall color (C64 graphics)"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_4,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    GADGET_ID_BD_COLOR_C64_4,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[5],
+    NULL, "Amoeba color:    ", NULL,		"Select amoeba color (C64 graphics)"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_5,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    GADGET_ID_BD_COLOR_C64_5,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[6],
+    NULL, "Slime color:     ", NULL,		"Select slime color (C64 graphics)"
+  },
 
   // ---------- element settings: configure (several elements) ----------------
 
@@ -11187,9 +11409,73 @@ static void DrawEngineConfigConfig(void)
     MapSelectboxGadget(i);
 }
 
+static boolean CheckLevelColorsRGB_BD(void)
+{
+  boolean rgb_colors = FALSE;
+  int i;
+
+  // check if any level color is not a C64-style color index
+  for (i = 0; i < MAX_BD_COLORS; i++)
+    if (!gd_color_is_c64(*bd_color[i]))
+      rgb_colors = TRUE;
+
+  return rgb_colors;
+}
+
+void SetDefaultLevelColorType_BD(void)
+{
+  level.bd_color_type = (CheckLevelColorsRGB_BD() ? GD_COLOR_TYPE_RGB : GD_COLOR_TYPE_C64);
+}
+
+void SetDefaultLevelColors_BD(void)
+{
+  int i;
+
+  // only set default colors if C64 style palette
+  if (level.bd_color_type == GD_COLOR_TYPE_C64)
+    for (i = 0; i < MAX_BD_COLORS; i++)
+      bd_color_default[i] = *bd_color[i];
+}
+
 static void DrawEngineConfigColors(void)
 {
-  // (no settings yet)
+  int i;
+
+  if (bd_color_type_changed)
+  {
+    if (level.bd_color_type == GD_COLOR_TYPE_C64 && CheckLevelColorsRGB_BD())
+    {
+      // color palette switched to C64 colors, but using RGB colors => reset to defaults
+      for (i = 0; i < MAX_BD_COLORS; i++)
+	*bd_color[i] = bd_color_default[i];
+    }
+
+    bd_color_type_changed = FALSE;
+  }
+
+  // copy level colors to either C64-style color index or RGB color value
+  for (i = 0; i < MAX_BD_COLORS; i++)
+  {
+    if (level.bd_color_type == GD_COLOR_TYPE_RGB)
+      snprintf(bd_color_rgb[i], sizeof(bd_color_rgb[i]), "#%06x", gd_color_get_rgb(*bd_color[i]));
+    else
+      bd_color_c64[i] = *bd_color[i] & 0x0f;
+  }
+
+  MapSelectboxGadget(ED_SELECTBOX_ID_BD_COLOR_TYPE);
+
+  if (level.bd_color_type == GD_COLOR_TYPE_RGB)
+  {
+    // draw text input gadgets
+    for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST; i++)
+      MapTextInputGadget(i);
+  }
+  else
+  {
+    // draw selectbox gadgets
+    for (i = ED_SELECTBOX_ID_COLORS_FIRST; i <= ED_SELECTBOX_ID_COLORS_LAST; i++)
+      MapSelectboxGadget(i);
+  }
 }
 
 static void DrawLevelConfigEngine(void)
@@ -16000,6 +16286,13 @@ static void HandleTextInputGadgets(struct GadgetInfo *gi)
 
     ModifyEditorElementList();	// update changed button info text
   }
+  else if (type_id >= ED_TEXTINPUT_ID_COLORS_FIRST &&
+	   type_id <= ED_TEXTINPUT_ID_COLORS_LAST)
+  {
+    int pos = type_id - ED_TEXTINPUT_ID_COLORS_FIRST;
+
+    *bd_color[pos] = gd_color_get_from_string(bd_color_rgb[pos]);
+  }
 
   // do not mark level as modified for certain non-level-changing gadgets
   if (type_id >= ED_TEXTINPUT_ID_LEVELSET_FIRST &&
@@ -16068,6 +16361,31 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
   {
     // update BD cycle delay counter gadgets depending on BD scheduling type
     DrawLevelConfigWindow();
+  }
+  else if (type_id == ED_SELECTBOX_ID_BD_COLOR_TYPE)
+  {
+    bd_color_type_changed = TRUE;
+
+    if (level.bd_color_type == GD_COLOR_TYPE_C64 && CheckLevelColorsRGB_BD())
+    {
+      // color palette switched to C64 colors, but using RGB colors => reset to defaults
+      if (!Request("This will reset C64 colors to defaults! Continue?", REQ_ASK))
+      {
+	// keep current RGB colors
+	level.bd_color_type = GD_COLOR_TYPE_RGB;
+	bd_color_type_changed = FALSE;
+      }
+    }
+
+    // update BD color palette gadgets depending on BD color type
+    DrawLevelConfigWindow();
+  }
+  else if (type_id >= ED_SELECTBOX_ID_COLORS_FIRST &&
+	   type_id <= ED_SELECTBOX_ID_COLORS_LAST)
+  {
+    int pos = type_id - ED_SELECTBOX_ID_COLORS_FIRST;
+
+    *bd_color[pos] = gd_c64_color(bd_color_c64[pos]);
   }
 
   // do not mark level as modified for certain non-level-changing gadgets

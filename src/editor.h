@@ -34,4 +34,7 @@ void CopyBrushToClipboard_Small(void);
 void UndoLevelEditorOperation(void);
 void RedoLevelEditorOperation(void);
 
+void SetDefaultLevelColorType_BD(void);
+void SetDefaultLevelColors_BD(void);
+
 #endif

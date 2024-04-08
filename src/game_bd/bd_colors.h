@@ -77,6 +77,8 @@ typedef enum _color_type
 
 #define GD_COLOR_INVALID		(0xFFFFFFFF)
 
+#define GD_C64_COLOR(index)		((GD_COLOR_TYPE_C64 << 24) + (index))
+
 
 // color
 GdColor gd_c64_color(int index);
