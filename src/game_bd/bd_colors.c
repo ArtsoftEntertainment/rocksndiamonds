@@ -555,10 +555,20 @@ GdColor gd_atari_color(int index)
   return (GD_COLOR_TYPE_ATARI << 24) + index;
 }
 
+GdColor gd_atari_color_huesat(int hue, int sat)
+{
+  return gd_atari_color(16 * hue + sat);
+}
+
 // return c64dtv color with index.
 GdColor gd_c64dtv_color(int index)
 {
   return (GD_COLOR_TYPE_C64DTV << 24) + index;
+}
+
+GdColor gd_c64dtv_color_huesat(int hue, int sat)
+{
+  return gd_c64dtv_color(16 * hue + sat);
 }
 
 // return "unknown color"
@@ -631,6 +641,36 @@ GdColor gd_color_get_from_rgb(int r, int g, int b)
 {
   return (GD_COLOR_TYPE_RGB << 24) + (r << 16) + (g << 8) + b;
 }
+
+// make up GdColor from h,s,v values.
+// h=0..360, s=0..1, v=0..1
+GdColor gd_color_get_from_hsv(double h, double s, double v)
+{
+  int hi = (int)(h / 60) % 6;
+  double f = h / 60 - (int)(h / 60);    // fractional part
+  double p = v * (1 - s);
+  double q = v * (1 - f * s);
+  double t = v * (1 - (1 - f) * s);
+
+  v *= 255;
+  p *= 255;
+  q *= 255;
+  t *= 255;
+
+  switch(hi)
+  {
+    case 0: return gd_color_get_from_rgb(v, t, p);
+    case 1: return gd_color_get_from_rgb(q, v, p);
+    case 2: return gd_color_get_from_rgb(p, v, t);
+    case 3: return gd_color_get_from_rgb(p, q, v);
+    case 4: return gd_color_get_from_rgb(t, p, v);
+    case 5: return gd_color_get_from_rgb(v, p, q);
+  }
+
+  // no way we reach this
+  return gd_color_get_from_rgb(0, 0, 0);
+}
+
 
 GdColor gd_color_get_from_string(const char *color)
 {

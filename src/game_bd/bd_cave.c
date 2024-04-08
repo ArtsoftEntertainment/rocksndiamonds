@@ -777,6 +777,19 @@ void gd_cave_c64_random_set_seed(GdCave *cave, int seed1, int seed2)
   gd_c64_random_set_seed(&cave->c64_rand, seed1, seed2);
 }
 
+/*
+  select random colors for a given cave.
+  this function will select colors so that they should look somewhat nice; for example
+  brick walls won't be the darkest color, for example.
+*/
+static inline void swap(int *i1, int *i2)
+{
+  int t = *i1;
+
+  *i1 = *i2;
+  *i2 = t;
+}
+
 void gd_cave_set_random_c64_colors(GdCave *cave)
 {
   const int bright_colors[] = { 1, 3, 7 };
@@ -807,6 +820,151 @@ void gd_cave_set_random_c64_colors(GdCave *cave)
   // copy amoeba and slime color
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
+}
+
+static void cave_set_random_indexed_colors(GdCave *cave, GdColor (*color_indexer_func) (int, int))
+{
+  int hue = gd_random_int_range(0, 15);
+  int hue_spread = gd_random_int_range(1, 6);    // 1..5
+
+  // we only use 0..6, as saturation 15 is too bright (almost always white)
+  // also, saturation 0..1..2 is too dark. the color0=black is there for dark.
+  // so this is also 1..5. when hue spread is low, brightness spread is high
+  int bri_spread = 6 - hue_spread;
+  int bri1 = 8, bri2 = 8 - bri_spread, bri3 = 8 + bri_spread;
+
+  // there are 15 valid choices for hue, so we do a %15
+  int col1 = hue, col2 = (hue + hue_spread + 15) % 15, col3 = (hue - hue_spread + 15) % 15;
+
+  // this makes up a random color, and selects a color triad by hue+5 and hue+10.
+  // also creates a random saturation.
+  // color of brick is 8+sat, so it is always a bright color.
+  // another two are 8-sat and 8.
+  // order of colors is also changed randomly.
+  if (gd_random_boolean())    swap(&bri1, &bri2);
+
+  // we do not touch bri3 (8+sat), as it should be a bright color
+  if (gd_random_boolean())    swap(&col1, &col2);
+  if (gd_random_boolean())    swap(&col2, &col3);
+  if (gd_random_boolean())    swap(&col1, &col3);
+
+  cave->colorb = color_indexer_func(0, 0);
+  cave->color0 = color_indexer_func(0, 0);
+  cave->color1 = color_indexer_func(col1 + 1, bri1);
+  cave->color2 = color_indexer_func(col2 + 1, bri2);
+  cave->color3 = color_indexer_func(col3 + 1, bri3);
+  // amoeba and slime are different
+  // some green thing
+  cave->color4 = color_indexer_func(gd_random_int_range(11, 13), gd_random_int_range(6, 12));
+  // some blueish thing
+  cave->color5 = color_indexer_func(gd_random_int_range(7, 10),  gd_random_int_range(0, 6));
+}
+
+static void gd_cave_set_random_atari_colors(GdCave *cave)
+{
+  cave_set_random_indexed_colors(cave, gd_atari_color_huesat);
+}
+
+static void gd_cave_set_random_c64dtv_colors(GdCave *cave)
+{
+  cave_set_random_indexed_colors(cave, gd_c64dtv_color_huesat);
+}
+
+static inline void swapd(double *i1, double *i2)
+{
+  double t = *i1;
+
+  *i1 = *i2;
+  *i2 = t;
+}
+
+static void gd_cave_set_random_rgb_colors(GdCave *cave)
+{
+  const double hue_max = 10.0 / 30.0;
+  // any hue allowed
+  double hue = gd_random_double();
+  // hue 360 degress=1.  hue spread is min. 24 degrees, max 120 degrees (1/3)
+  double hue_spread = gd_random_double_range(2.0 / 30.0, hue_max);
+  double h1 = hue, h2 = hue + hue_spread, h3 = hue + 2 * hue_spread;
+  double v1, v2, v3;
+  double s1, s2, s3;
+
+  if (gd_random_boolean())
+  {
+    // when hue spread is low, brightness(saturation) spread is high
+    // this formula gives a number (x) between 0.1 and 0.4,
+    // which will be 0.5-x and 0.5+x, so the range is 0.1->0.9
+    double spread = 0.1 + 0.3 * (1 - hue_spread / hue_max);
+    v1 = 0.6;                // brightness variation, too
+    v2 = 0.7;
+    v3 = 0.8;
+    s1 = 0.5;                // saturation is different
+    s2 = 0.5 - spread;
+    s3 = 0.5 + spread;
+  }
+  else
+  {
+    // when hue spread is low, brightness(saturation) spread is high
+    // this formula gives a number (x) between 0.1 and 0.25,
+    // which will be 0.5+x and 0.5+2x, so the range is 0.5->0.9
+    double spread = 0.1 + 0.15 * (1 - hue_spread / hue_max);
+    v1 = 0.5;                // brightness is different
+    v2 = 0.5 + spread;
+    v3 = 0.5 + 2 * spread;
+    s1 = 0.7;                // saturation is same - a not fully saturated one
+    s2 = 0.8;
+    s3 = 0.9;
+  }
+
+  // randomly change values, but do not touch v3, as cave->color3 should be a bright color
+  if (gd_random_boolean())    swapd(&v1, &v2);
+
+  // randomly change hues and saturations
+  if (gd_random_boolean())    swapd(&h1, &h2);
+  if (gd_random_boolean())    swapd(&h2, &h3);
+  if (gd_random_boolean())    swapd(&h1, &h3);
+  if (gd_random_boolean())    swapd(&s1, &s2);
+  if (gd_random_boolean())    swapd(&s2, &s3);
+  if (gd_random_boolean())    swapd(&s1, &s3);
+
+  h1 = h1 * 360.0;
+  h2 = h2 * 360.0;
+  h3 = h3 * 360.0;
+
+  cave->colorb = gd_color_get_from_hsv(0, 0, 0);
+  cave->color0 = gd_color_get_from_hsv(0, 0, 0);       // black for background
+  cave->color1 = gd_color_get_from_hsv(h1, s1, v1);    // dirt
+  cave->color2 = gd_color_get_from_hsv(h2, s2, v2);    // steel
+  cave->color3 = gd_color_get_from_hsv(h3, s3, v3);    // brick
+  // green(120+-20) with the saturation and brightness of brick
+  cave->color4 = gd_color_get_from_hsv(gd_random_int_range(100, 140), s2, v2);
+  // blue(240+-20) with saturation and brightness of dirt
+  cave->color5 = gd_color_get_from_hsv(gd_random_int_range(220, 260), s1, v1);
+}
+
+void gd_cave_set_random_colors(GdCave *cave, GdColorType type)
+{
+  switch (type)
+  {
+    case GD_COLOR_TYPE_RGB:
+      gd_cave_set_random_rgb_colors(cave);
+      break;
+
+    case GD_COLOR_TYPE_C64:
+      gd_cave_set_random_c64_colors(cave);
+      break;
+
+    case GD_COLOR_TYPE_C64DTV:
+      gd_cave_set_random_c64dtv_colors(cave);
+      break;
+
+    case GD_COLOR_TYPE_ATARI:
+      gd_cave_set_random_atari_colors(cave);
+      break;
+
+    default:
+      break;
+  }
 }
 
 /*

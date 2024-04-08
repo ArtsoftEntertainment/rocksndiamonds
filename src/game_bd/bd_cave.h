@@ -661,6 +661,7 @@ void gd_cave_free(GdCave *cave);
 void gd_cave_set_gdash_defaults(GdCave *cave);
 void gd_cave_set_defaults_from_array(GdCave* cave, GdPropertyDefault *defaults);
 void gd_cave_correct_visible_size(GdCave *cave);
+void gd_cave_set_random_colors(GdCave *cave, GdColorType type);
 void gd_cave_auto_shrink(GdCave *cave);
 
 void gd_cave_setup_for_game(GdCave *cave);

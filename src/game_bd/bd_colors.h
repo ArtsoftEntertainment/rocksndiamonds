@@ -85,12 +85,16 @@ GdColor gd_c64_color(int index);
 GdColor gd_atari_color(int index);
 GdColor gd_c64dtv_color(int index);
 
+GdColor gd_atari_color_huesat(int hue, int sat);
+GdColor gd_c64dtv_color_huesat(int hue, int sat);
+
 unsigned int gd_color_get_r(GdColor color);
 unsigned int gd_color_get_g(GdColor color);
 unsigned int gd_color_get_b(GdColor color);
 
 GdColor gd_color_get_rgb(GdColor color);
 GdColor gd_color_get_from_rgb(int r, int g, int b);
+GdColor gd_color_get_from_hsv(double h, double s, double v);
 GdColor gd_color_get_from_string(const char *color);
 const char *gd_color_get_string(GdColor color);
 
