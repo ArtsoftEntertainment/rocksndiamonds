@@ -756,6 +756,7 @@ enum
   GADGET_ID_SAVE_LEVELSET,
   GADGET_ID_ADD_CHANGE_PAGE,
   GADGET_ID_DEL_CHANGE_PAGE,
+  GADGET_ID_BD_SET_RANDOM_COLORS,
 
   // graphicbutton identifiers
 
@@ -1132,6 +1133,7 @@ enum
   ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_1,
   ED_TEXTBUTTON_ID_ADD_CHANGE_PAGE,
   ED_TEXTBUTTON_ID_DEL_CHANGE_PAGE,
+  ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS,
 
   ED_NUM_TEXTBUTTONS
 };
@@ -3595,6 +3597,16 @@ static struct
     GADGET_ID_DEL_CHANGE_PAGE,			GADGET_ID_ADD_CHANGE_PAGE,
     -1,						"Delete",
     NULL, NULL, NULL,				"Delete current change page"
+  },
+
+  // ---------- engine settings (buttons) -------------------------------------
+
+  {
+    ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    GADGET_ID_BD_SET_RANDOM_COLORS,		GADGET_ID_NONE,
+    -1,						"Set random colors",
+    NULL, NULL, NULL,				"Create and set random level colors"
   },
 };
 
@@ -11476,6 +11488,8 @@ static void DrawEngineConfigColors(void)
     for (i = ED_SELECTBOX_ID_COLORS_FIRST; i <= ED_SELECTBOX_ID_COLORS_LAST; i++)
       MapSelectboxGadget(i);
   }
+
+  MapTextbuttonGadget(ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS);
 }
 
 static void DrawLevelConfigEngine(void)
@@ -16548,6 +16562,26 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
     DrawPropertiesWindow();
 
     level.changed = TRUE;
+  }
+  else if (type_id == ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS)
+  {
+    struct LevelInfo_BD *level_bd = level.native_bd_level;
+    GdCave *cave = level_bd->cave;
+
+    // create random cave colors
+    gd_cave_set_random_colors(cave, level.bd_color_type);
+
+    // copy colors to level editor
+    level.bd_color_b = cave->colorb;
+    level.bd_color_0 = cave->color0;
+    level.bd_color_1 = cave->color1;
+    level.bd_color_2 = cave->color2;
+    level.bd_color_3 = cave->color3;
+    level.bd_color_4 = cave->color4;
+    level.bd_color_5 = cave->color5;
+
+    // update BD color palette gadgets after setting random colors
+    DrawLevelConfigWindow();
   }
 }
 
