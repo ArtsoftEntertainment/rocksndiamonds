@@ -680,13 +680,13 @@ enum
   GADGET_ID_LEVEL_AUTHOR,
   GADGET_ID_LEVELSET_NAME,
   GADGET_ID_LEVELSET_AUTHOR,
-  GADGET_ID_BD_COLOR_RGB_B,
-  GADGET_ID_BD_COLOR_RGB_0,
-  GADGET_ID_BD_COLOR_RGB_1,
-  GADGET_ID_BD_COLOR_RGB_2,
-  GADGET_ID_BD_COLOR_RGB_3,
-  GADGET_ID_BD_COLOR_RGB_4,
-  GADGET_ID_BD_COLOR_RGB_5,
+  GADGET_ID_BD_COLOR_TEXT_B,
+  GADGET_ID_BD_COLOR_TEXT_0,
+  GADGET_ID_BD_COLOR_TEXT_1,
+  GADGET_ID_BD_COLOR_TEXT_2,
+  GADGET_ID_BD_COLOR_TEXT_3,
+  GADGET_ID_BD_COLOR_TEXT_4,
+  GADGET_ID_BD_COLOR_TEXT_5,
   GADGET_ID_ELEMENT_NAME,
 
   // text area identifiers
@@ -1011,13 +1011,13 @@ enum
   ED_TEXTINPUT_ID_LEVEL_AUTHOR,
   ED_TEXTINPUT_ID_LEVELSET_NAME,
   ED_TEXTINPUT_ID_LEVELSET_AUTHOR,
-  ED_TEXTINPUT_ID_BD_COLOR_RGB_B,
-  ED_TEXTINPUT_ID_BD_COLOR_RGB_0,
-  ED_TEXTINPUT_ID_BD_COLOR_RGB_1,
-  ED_TEXTINPUT_ID_BD_COLOR_RGB_2,
-  ED_TEXTINPUT_ID_BD_COLOR_RGB_3,
-  ED_TEXTINPUT_ID_BD_COLOR_RGB_4,
-  ED_TEXTINPUT_ID_BD_COLOR_RGB_5,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_B,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_0,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_1,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_2,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_3,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_4,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_5,
   ED_TEXTINPUT_ID_ELEMENT_NAME,
 
   ED_NUM_TEXTINPUT
@@ -1029,8 +1029,8 @@ enum
 #define ED_TEXTINPUT_ID_LEVELSET_FIRST	ED_TEXTINPUT_ID_LEVELSET_NAME
 #define ED_TEXTINPUT_ID_LEVELSET_LAST	ED_TEXTINPUT_ID_LEVELSET_AUTHOR
 
-#define ED_TEXTINPUT_ID_COLORS_FIRST	ED_TEXTINPUT_ID_BD_COLOR_RGB_B
-#define ED_TEXTINPUT_ID_COLORS_LAST	ED_TEXTINPUT_ID_BD_COLOR_RGB_5
+#define ED_TEXTINPUT_ID_COLORS_FIRST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_B
+#define ED_TEXTINPUT_ID_COLORS_LAST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_5
 
 // values for text area gadgets
 enum
@@ -1666,11 +1666,11 @@ static boolean levelset_copy_level_template = FALSE;
 static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
 #define MAX_BD_COLORS			7
-#define MAX_BD_COLOR_RGB_TEXT_LEN	7
+#define MAX_BD_COLOR_TEXT_LEN		7
 
 static boolean bd_color_type_changed = FALSE;
 static int bd_color_c64[MAX_BD_COLORS];
-static char bd_color_rgb[MAX_BD_COLORS][MAX_BD_COLOR_RGB_TEXT_LEN + 1];
+static char bd_color_text[MAX_BD_COLORS][MAX_BD_COLOR_TEXT_LEN + 1];
 static int bd_color_default[MAX_BD_COLORS];
 static int *bd_color[MAX_BD_COLORS] =
 {
@@ -2161,59 +2161,59 @@ static struct
   // ---------- engine settings: colors ---------------------------------------
 
   {
-    ED_TEXTINPUT_ID_BD_COLOR_RGB_B,
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_B,
     ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
-    GADGET_ID_BD_COLOR_RGB_B,
-    MAX_BD_COLOR_RGB_TEXT_LEN,
-    bd_color_rgb[0],
+    GADGET_ID_BD_COLOR_TEXT_B,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[0],
     NULL, "Border color:    ", NULL,		"Enter border color (not used)"
   },
   {
-    ED_TEXTINPUT_ID_BD_COLOR_RGB_0,
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_0,
     ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
-    GADGET_ID_BD_COLOR_RGB_0,
-    MAX_BD_COLOR_RGB_TEXT_LEN,
-    bd_color_rgb[1],
+    GADGET_ID_BD_COLOR_TEXT_0,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[1],
     NULL, "Background color:", NULL,		"Enter background color (C64 graphics)"
   },
   {
-    ED_TEXTINPUT_ID_BD_COLOR_RGB_1,
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_1,
     ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
-    GADGET_ID_BD_COLOR_RGB_1,
-    MAX_BD_COLOR_RGB_TEXT_LEN,
-    bd_color_rgb[2],
+    GADGET_ID_BD_COLOR_TEXT_1,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[2],
     NULL, "Sand color:      ", NULL,		"Enter sand color (C64 graphics)"
   },
   {
-    ED_TEXTINPUT_ID_BD_COLOR_RGB_2,
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_2,
     ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
-    GADGET_ID_BD_COLOR_RGB_2,
-    MAX_BD_COLOR_RGB_TEXT_LEN,
-    bd_color_rgb[3],
+    GADGET_ID_BD_COLOR_TEXT_2,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[3],
     NULL, "Steel wall color:", NULL,		"Enter steel wall color (C64 graphics)"
   },
   {
-    ED_TEXTINPUT_ID_BD_COLOR_RGB_3,
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_3,
     ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
-    GADGET_ID_BD_COLOR_RGB_3,
-    MAX_BD_COLOR_RGB_TEXT_LEN,
-    bd_color_rgb[4],
+    GADGET_ID_BD_COLOR_TEXT_3,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[4],
     NULL, "Wall color:      ", NULL,		"Enter wall color (C64 graphics)"
   },
   {
-    ED_TEXTINPUT_ID_BD_COLOR_RGB_4,
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_4,
     ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
-    GADGET_ID_BD_COLOR_RGB_4,
-    MAX_BD_COLOR_RGB_TEXT_LEN,
-    bd_color_rgb[5],
+    GADGET_ID_BD_COLOR_TEXT_4,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[5],
     NULL, "Amoeba color:    ", NULL,		"Enter amoeba color (C64 graphics)"
   },
   {
-    ED_TEXTINPUT_ID_BD_COLOR_RGB_5,
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_5,
     ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
-    GADGET_ID_BD_COLOR_RGB_5,
-    MAX_BD_COLOR_RGB_TEXT_LEN,
-    bd_color_rgb[6],
+    GADGET_ID_BD_COLOR_TEXT_5,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[6],
     NULL, "Slime color:     ", NULL,		"Enter slime color (C64 graphics)"
   },
 
@@ -11487,7 +11487,7 @@ static void DrawEngineConfigColors(void)
   for (i = 0; i < MAX_BD_COLORS; i++)
   {
     if (level.bd_color_type == GD_COLOR_TYPE_RGB)
-      snprintf(bd_color_rgb[i], sizeof(bd_color_rgb[i]), "#%06x", gd_color_get_rgb(*bd_color[i]));
+      snprintf(bd_color_text[i], sizeof(bd_color_text[i]), "#%06x", gd_color_get_rgb(*bd_color[i]));
     else
       bd_color_c64[i] = *bd_color[i] & 0x0f;
   }
@@ -16323,7 +16323,7 @@ static void HandleTextInputGadgets(struct GadgetInfo *gi)
   {
     int pos = type_id - ED_TEXTINPUT_ID_COLORS_FIRST;
 
-    *bd_color[pos] = gd_color_get_from_string(bd_color_rgb[pos]);
+    *bd_color[pos] = gd_color_get_from_string(bd_color_text[pos]);
   }
 
   // do not mark level as modified for certain non-level-changing gadgets
