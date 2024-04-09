@@ -1666,9 +1666,10 @@ static boolean levelset_copy_level_template = FALSE;
 static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
 #define MAX_BD_COLORS			7
-#define MAX_BD_COLOR_TEXT_LEN		7
+#define MAX_BD_COLOR_TEXT_LEN		10
 
 static boolean bd_color_type_changed = FALSE;
+static int bd_color_type_default = GD_COLOR_TYPE_RGB;
 static int bd_color_c64[MAX_BD_COLORS];
 static char bd_color_text[MAX_BD_COLORS][MAX_BD_COLOR_TEXT_LEN + 1];
 static int bd_color_default[MAX_BD_COLORS];
@@ -2970,8 +2971,10 @@ static struct ValueTextInfo options_bd_scheduling_type[] =
 
 static struct ValueTextInfo options_bd_color_type[] =
 {
-  { GD_COLOR_TYPE_C64,			"C64 colors"			},
   { GD_COLOR_TYPE_RGB,			"RGB colors"			},
+  { GD_COLOR_TYPE_C64,			"C64 colors"			},
+  { GD_COLOR_TYPE_C64DTV,		"C64DTV colors"			},
+  { GD_COLOR_TYPE_ATARI,		"Atari colors"			},
 
   { -1,					  NULL				}
 };
@@ -11421,32 +11424,32 @@ static void DrawEngineConfigConfig(void)
     MapSelectboxGadget(i);
 }
 
-static boolean CheckLevelColorsRGB_BD(void)
+static int GetCommonColorType_BD(void)
 {
-  boolean rgb_colors = FALSE;
+  int bd_color_type = *bd_color[0] >> 24;
   int i;
 
-  // check if any level color is not a C64-style color index
-  for (i = 0; i < MAX_BD_COLORS; i++)
-    if (!gd_color_is_c64(*bd_color[i]))
-      rgb_colors = TRUE;
+  // check if all colors have the same color type
+  for (i = 1; i < MAX_BD_COLORS; i++)
+    if ((*bd_color[i] >> 24) != bd_color_type)
+      return GD_COLOR_TYPE_RGB;
 
-  return rgb_colors;
+  return bd_color_type;
 }
 
 void SetDefaultLevelColorType_BD(void)
 {
-  level.bd_color_type = (CheckLevelColorsRGB_BD() ? GD_COLOR_TYPE_RGB : GD_COLOR_TYPE_C64);
+  bd_color_type_default = GetCommonColorType_BD();
+
+  level.bd_color_type = bd_color_type_default;
 }
 
 void SetDefaultLevelColors_BD(void)
 {
   int i;
 
-  // only set default colors if C64 style palette
-  if (level.bd_color_type == GD_COLOR_TYPE_C64)
-    for (i = 0; i < MAX_BD_COLORS; i++)
-      bd_color_default[i] = *bd_color[i];
+  for (i = 0; i < MAX_BD_COLORS; i++)
+    bd_color_default[i] = *bd_color[i];
 }
 
 static void SetRandomLevelColors_BD(void)
@@ -11473,38 +11476,52 @@ static void DrawEngineConfigColors(void)
 
   if (bd_color_type_changed)
   {
-    if (level.bd_color_type == GD_COLOR_TYPE_C64 && CheckLevelColorsRGB_BD())
+    if (level.bd_color_type != GD_COLOR_TYPE_RGB && level.bd_color_type != GetCommonColorType_BD())
     {
-      // color palette switched to C64 colors, but using RGB colors => reset to defaults
-      for (i = 0; i < MAX_BD_COLORS; i++)
-	*bd_color[i] = bd_color_default[i];
+      // color type switched to non-RGB colors, but using different color type => reset colors
+
+      if (level.bd_color_type == bd_color_type_default)
+      {
+	// color type switched to same color type as default colors => reset to defaults
+	for (i = 0; i < MAX_BD_COLORS; i++)
+	  *bd_color[i] = bd_color_default[i];
+      }
+      else
+      {
+	// color type switched to different color type as default colors => use random colors
+	SetRandomLevelColors_BD();
+      }
     }
 
     bd_color_type_changed = FALSE;
   }
 
-  // copy level colors to either C64-style color index or RGB color value
+  // copy level colors to either C64-style color index or color text
   for (i = 0; i < MAX_BD_COLORS; i++)
   {
-    if (level.bd_color_type == GD_COLOR_TYPE_RGB)
-      snprintf(bd_color_text[i], sizeof(bd_color_text[i]), "#%06x", gd_color_get_rgb(*bd_color[i]));
+    int bd_color_x = (level.bd_color_type == GD_COLOR_TYPE_C64 ? *bd_color[i] & 0x0f :
+		      level.bd_color_type == GD_COLOR_TYPE_RGB ? gd_color_get_rgb(*bd_color[i]) :
+		      *bd_color[i]);
+
+    if (level.bd_color_type == GD_COLOR_TYPE_C64)
+      bd_color_c64[i] = bd_color_x;
     else
-      bd_color_c64[i] = *bd_color[i] & 0x0f;
+      snprintf(bd_color_text[i], sizeof(bd_color_text[i]), "%s", gd_color_get_string(bd_color_x));
   }
 
   MapSelectboxGadget(ED_SELECTBOX_ID_BD_COLOR_TYPE);
 
-  if (level.bd_color_type == GD_COLOR_TYPE_RGB)
-  {
-    // draw text input gadgets
-    for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST; i++)
-      MapTextInputGadget(i);
-  }
-  else
+  if (level.bd_color_type == GD_COLOR_TYPE_C64)
   {
     // draw selectbox gadgets
     for (i = ED_SELECTBOX_ID_COLORS_FIRST; i <= ED_SELECTBOX_ID_COLORS_LAST; i++)
       MapSelectboxGadget(i);
+  }
+  else
+  {
+    // draw text input gadgets
+    for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST; i++)
+      MapTextInputGadget(i);
   }
 
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS);
@@ -16398,10 +16415,14 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
   {
     bd_color_type_changed = TRUE;
 
-    if (level.bd_color_type == GD_COLOR_TYPE_C64 && CheckLevelColorsRGB_BD())
+    if (level.bd_color_type != GD_COLOR_TYPE_RGB && level.bd_color_type != GetCommonColorType_BD())
     {
-      // color palette switched to C64 colors, but using RGB colors => reset to defaults
-      if (!Request("This will reset C64 colors to defaults! Continue?", REQ_ASK))
+      // color type switched to non-RGB colors, but using different color type => reset colors
+      char *message = (level.bd_color_type == bd_color_type_default ?
+		       "This will reset colors to defaults! Continue?" :
+		       "This will reset colors to random colors! Continue?");
+
+      if (!Request(message, REQ_ASK))
       {
 	// keep current RGB colors
 	level.bd_color_type = GD_COLOR_TYPE_RGB;
