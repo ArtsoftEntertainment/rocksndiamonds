@@ -2167,7 +2167,7 @@ static struct
     GADGET_ID_BD_COLOR_TEXT_B,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[0],
-    NULL, "Border color:    ", NULL,		"Enter border color (not used)"
+    NULL, "Border color:      ", NULL,		"Enter border color (not used)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_0,
@@ -2175,7 +2175,7 @@ static struct
     GADGET_ID_BD_COLOR_TEXT_0,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[1],
-    NULL, "Background color:", NULL,		"Enter background color (C64 graphics)"
+    NULL, "Background color:  ", NULL,		"Enter background color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_1,
@@ -2183,7 +2183,7 @@ static struct
     GADGET_ID_BD_COLOR_TEXT_1,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[2],
-    NULL, "Sand color:      ", NULL,		"Enter sand color (C64 graphics)"
+    NULL, "Sand color:        ", NULL,		"Enter sand color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_2,
@@ -2191,7 +2191,7 @@ static struct
     GADGET_ID_BD_COLOR_TEXT_2,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[3],
-    NULL, "Steel wall color:", NULL,		"Enter steel wall color (C64 graphics)"
+    NULL, "Steel wall color:  ", NULL,		"Enter steel wall color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_3,
@@ -2199,7 +2199,7 @@ static struct
     GADGET_ID_BD_COLOR_TEXT_3,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[4],
-    NULL, "Wall color:      ", NULL,		"Enter wall color (C64 graphics)"
+    NULL, "Wall color:        ", NULL,		"Enter wall color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_4,
@@ -2207,7 +2207,7 @@ static struct
     GADGET_ID_BD_COLOR_TEXT_4,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[5],
-    NULL, "Amoeba color:    ", NULL,		"Enter amoeba color (C64 graphics)"
+    NULL, "Amoeba color:      ", NULL,		"Enter amoeba color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_5,
@@ -2215,7 +2215,7 @@ static struct
     GADGET_ID_BD_COLOR_TEXT_5,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[6],
-    NULL, "Slime color:     ", NULL,		"Enter slime color (C64 graphics)"
+    NULL, "Slime color:       ", NULL,		"Enter slime color (C64 graphics)"
   },
 
   // ---------- element settings: configure (several elements) ----------------
@@ -3125,7 +3125,7 @@ static struct
     -1,
     options_bd_color_c64_name,
     &bd_color_c64[0],
-    NULL, "Border color:    ", NULL,		"Select border color (not used)"
+    NULL, "Border color:      ", NULL,		"Select border color (not used)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_0,
@@ -3134,7 +3134,7 @@ static struct
     -1,
     options_bd_color_c64_name,
     &bd_color_c64[1],
-    NULL, "Background color:", NULL,		"Select background color (C64 graphics)"
+    NULL, "Background color:  ", NULL,		"Select background color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_1,
@@ -3143,7 +3143,7 @@ static struct
     -1,
     options_bd_color_c64_name,
     &bd_color_c64[2],
-    NULL, "Sand color:      ", NULL,		"Select sand color (C64 graphics)"
+    NULL, "Sand color:        ", NULL,		"Select sand color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_2,
@@ -3152,7 +3152,7 @@ static struct
     -1,
     options_bd_color_c64_name,
     &bd_color_c64[3],
-    NULL, "Steel wall color:", NULL,		"Select steel wall color (C64 graphics)"
+    NULL, "Steel wall color:  ", NULL,		"Select steel wall color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_3,
@@ -3161,7 +3161,7 @@ static struct
     -1,
     options_bd_color_c64_name,
     &bd_color_c64[4],
-    NULL, "Wall color:      ", NULL,		"Select wall color (C64 graphics)"
+    NULL, "Wall color:        ", NULL,		"Select wall color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_4,
@@ -3170,7 +3170,7 @@ static struct
     -1,
     options_bd_color_c64_name,
     &bd_color_c64[5],
-    NULL, "Amoeba color:    ", NULL,		"Select amoeba color (C64 graphics)"
+    NULL, "Amoeba color:      ", NULL,		"Select amoeba color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_5,
@@ -3179,7 +3179,7 @@ static struct
     -1,
     options_bd_color_c64_name,
     &bd_color_c64[6],
-    NULL, "Slime color:     ", NULL,		"Select slime color (C64 graphics)"
+    NULL, "Slime color:       ", NULL,		"Select slime color (C64 graphics)"
   },
 
   // ---------- element settings: configure (several elements) ----------------
@@ -11470,6 +11470,31 @@ static void SetRandomLevelColors_BD(void)
   level.bd_color_5 = cave->color5;
 }
 
+static void DrawColorBox(int nr)
+{
+  int id = ED_SELECTBOX_ID_COLORS_FIRST + nr;
+  struct GadgetInfo *gi = level_editor_gadget[selectbox_info[id].gadget_id];
+  int graphic = IMG_EDITOR_CHECKBOX;
+  struct GraphicInfo *gd = &graphic_info[graphic];
+  int offset = ED_GADGET_TEXT_DISTANCE;
+  int x1 = gi->x - offset - gd->width;
+  int y1 = gi->y;
+  int x2 = x1 + offset;
+  int y2 = y1 + offset;
+  int xsize1 = gd->width;
+  int ysize1 = gd->height;
+  int xsize2 = xsize1 - 2 * offset;
+  int ysize2 = ysize1 - 2 * offset;
+  int bd_color_x = *bd_color[nr];
+  int r = gd_color_get_r(bd_color_x);
+  int g = gd_color_get_g(bd_color_x);
+  int b = gd_color_get_b(bd_color_x);
+  Pixel color = SDL_MapRGB(drawto->surface->format, r, g, b);
+
+  BlitBitmap(gd->bitmap, drawto, gd->src_x, gd->src_y, xsize1, ysize1, x1, y1);
+  FillRectangle(drawto, x2, y2, xsize2, ysize2, color);
+}
+
 static void DrawEngineConfigColors(void)
 {
   int i;
@@ -11523,6 +11548,9 @@ static void DrawEngineConfigColors(void)
     for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST; i++)
       MapTextInputGadget(i);
   }
+
+  for (i = 0; i < MAX_BD_COLORS; i++)
+    DrawColorBox(i);
 
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS);
 }
