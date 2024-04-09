@@ -11470,7 +11470,7 @@ static void SetRandomLevelColors_BD(void)
   level.bd_color_5 = cave->color5;
 }
 
-static void DrawColorBox(int nr)
+static void DrawColorBox_BD(int nr)
 {
   int id = ED_SELECTBOX_ID_COLORS_FIRST + nr;
   struct GadgetInfo *gi = level_editor_gadget[selectbox_info[id].gadget_id];
@@ -11550,7 +11550,7 @@ static void DrawEngineConfigColors(void)
   }
 
   for (i = 0; i < MAX_BD_COLORS; i++)
-    DrawColorBox(i);
+    DrawColorBox_BD(i);
 
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS);
 }
@@ -16369,6 +16369,8 @@ static void HandleTextInputGadgets(struct GadgetInfo *gi)
     int pos = type_id - ED_TEXTINPUT_ID_COLORS_FIRST;
 
     *bd_color[pos] = gd_color_get_from_string(bd_color_text[pos]);
+
+    DrawColorBox_BD(pos);
   }
 
   // do not mark level as modified for certain non-level-changing gadgets
@@ -16467,6 +16469,8 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
     int pos = type_id - ED_SELECTBOX_ID_COLORS_FIRST;
 
     *bd_color[pos] = gd_c64_color(bd_color_c64[pos]);
+
+    DrawColorBox_BD(pos);
   }
 
   // do not mark level as modified for certain non-level-changing gadgets
