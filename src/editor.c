@@ -10602,30 +10602,10 @@ static void InitDrawingElements(void)
   if (level.game_engine_type == game_engine_type_last)
     return;
 
-  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
-  {
-    new_element1 = EL_BD_WALL;
-    new_element2 = EL_EMPTY;
-    new_element3 = EL_BD_SAND;
-  }
-  else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
-  {
-    new_element1 = EL_SP_CHIP_SINGLE;
-    new_element2 = EL_EMPTY;
-    new_element3 = EL_SP_BASE;
-  }
-  else if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
-  {
-    new_element1 = EL_MM_MIRROR_START;
-    new_element2 = EL_EMPTY;
-    new_element3 = EL_MM_WOODEN_WALL;
-  }
-  else
-  {
-    new_element1 = EL_WALL;
-    new_element2 = EL_EMPTY;
-    new_element3 = EL_SAND;
-  }
+  // select drawing elements according to game engine type
+  new_element1 = getDrawingElement(EL_WALL);
+  new_element2 = getDrawingElement(EL_EMPTY);
+  new_element3 = getDrawingElement(EL_SAND);
 
   game_engine_type_last = level.game_engine_type;
 }
