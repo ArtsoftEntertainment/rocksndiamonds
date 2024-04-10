@@ -270,12 +270,16 @@ static void PrepareGameTileBitmap_BD(void)
   struct GraphicInfo_BD *g_template = &graphic_info_bd_color_template;
   struct GraphicInfo_BD *g_default  = &graphic_info_bd_object[O_STONE][0];
 
-  gd_prepare_tile_bitmap(native_bd_level.cave, g_template->bitmap, 1);
+  // prepare bitmap using cave ready for playing (may have changed colors)
+  gd_prepare_tile_bitmap(game_bd.game->cave, g_template->bitmap, 1);
+
+  // set reference bitmap which should be replaced with prepared bitmap
   gd_set_tile_bitmap_reference(g_default->bitmap);
 }
 
 void PreparePreviewTileBitmap_BD(Bitmap *bitmap, int scale_down_factor)
 {
+  // prepare bitmap using cave from file (with originally defined colors)
   gd_prepare_tile_bitmap(native_bd_level.cave, bitmap, scale_down_factor);
 }
 
@@ -324,9 +328,6 @@ void InitGameEngine_BD(void)
   game_bd.game->itermax = 8;	// default; dynamically changed at runtime
   game_bd.game->itermax_last = game_bd.game->itermax;
 
-  // prepare tile bitmap with level-specific colors, if available
-  PrepareGameTileBitmap_BD();
-
   // default: start with completely covered playfield
   int next_state = GAME_INT_START_UNCOVER + 1;
 
@@ -334,7 +335,13 @@ void InitGameEngine_BD(void)
   if (setup.bd_skip_uncovering)
     next_state = GAME_INT_LOAD_CAVE + 1;
 
-  // fast-forward game engine until cave loaded (covered or uncovered)
+  // first iteration loads and prepares the cave (may change colors)
+  play_game_func(game_bd.game, 0);
+
+  // prepare tile bitmap with level-specific colors, if available
+  PrepareGameTileBitmap_BD();
+
+  // fast-forward game engine to selected state (covered or uncovered)
   while (game_bd.game->state_counter < next_state)
     play_game_func(game_bd.game, 0);
 
