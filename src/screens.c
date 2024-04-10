@@ -128,7 +128,7 @@
 #define STR_SETUP_CHOOSE_BD_PALETTE_C64		"Palette (C64)"
 #define STR_SETUP_CHOOSE_BD_PALETTE_C64DTV	"Palette (C64DTV)"
 #define STR_SETUP_CHOOSE_BD_PALETTE_ATARI	"Palette (Atari)"
-#define STR_SETUP_CHOOSE_BD_COLOR_TYPE		"Palette Type"
+#define STR_SETUP_CHOOSE_BD_COLOR_TYPE		"Color Type"
 #define STR_SETUP_CHOOSE_WINDOW_SIZE		"Window Scaling"
 #define STR_SETUP_CHOOSE_SCALING_TYPE		"Anti-Aliasing"
 #define STR_SETUP_CHOOSE_RENDERING		"Rendering Mode"
@@ -6463,26 +6463,26 @@ static void execSetupEngines_setColorType(void)
       pushTreeInfo(&bd_color_types, ti);
     }
 
-    // sort palette values to start with lowest palette value
+    // sort color type values to start with lowest color type value
     sortTreeInfo(&bd_color_types);
 
-    // set current palette value to configured palette value
+    // set current color type value to configured color type value
     bd_color_type_current =
       getTreeInfoFromIdentifier(bd_color_types, i_to_a(setup.bd_default_color_type));
 
-    // if that fails, set current palette to reliable default value
+    // if that fails, set current color type to reliable default value
     if (bd_color_type_current == NULL)
       bd_color_type_current =
 	getTreeInfoFromIdentifier(bd_color_types, i_to_a(GD_DEFAULT_COLOR_TYPE));
 
-    // if that also fails, set current palette to first available value
+    // if that also fails, set current color type to first available value
     if (bd_color_type_current == NULL)
       bd_color_type_current = bd_color_types;
   }
 
   setup.bd_default_color_type = atoi(bd_color_type_current->identifier);
 
-  // needed for displaying palette text instead of identifier
+  // needed for displaying color type text instead of identifier
   bd_color_type_text = bd_color_type_current->name;
 }
 
