@@ -11573,6 +11573,11 @@ static void DrawLevelConfigWindow(void)
 
   stick_element_properties_window = FALSE;
 
+  // make sure that previous level config edit mode exists for this level
+  if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE &&
+      level.game_engine_type != GAME_ENGINE_TYPE_BD)
+    edit_mode_levelconfig = ED_MODE_LEVELCONFIG_LEVEL;
+
   SetAutomaticNumberOfGemsNeeded();
 
   UnmapLevelEditorFieldGadgets();
