@@ -410,216 +410,216 @@ static TreeInfo *score_entry_current = NULL;
 
 static struct ValueTextInfo window_sizes_list[] =
 {
-  {	50,	"50 %"				},
-  {	80,	"80 %"				},
-  {	90,	"90 %"				},
-  {	100,	"100 % (Default)"		},
-  {	110,	"110 %"				},
-  {	120,	"120 %"				},
-  {	130,	"130 %"				},
-  {	140,	"140 %"				},
-  {	150,	"150 %"				},
-  {	200,	"200 %"				},
-  {	250,	"250 %"				},
-  {	300,	"300 %"				},
+  { 50,					"50 %"				},
+  { 80,					"80 %"				},
+  { 90,					"90 %"				},
+  { 100,				"100 % (Default)"		},
+  { 110,				"110 %"				},
+  { 120,				"120 %"				},
+  { 130,				"130 %"				},
+  { 140,				"140 %"				},
+  { 150,				"150 %"				},
+  { 200,				"200 %"				},
+  { 250,				"250 %"				},
+  { 300,				"300 %"				},
 
-  {	-1,	NULL				},
+  { -1,					NULL				},
 };
 
 static struct StringValueTextInfo scaling_types_list[] =
 {
-  {	SCALING_QUALITY_NEAREST, "Off"		},
-  {	SCALING_QUALITY_LINEAR,	 "Linear"	},
-  {	SCALING_QUALITY_BEST,	 "Anisotropic"	},
+  { SCALING_QUALITY_NEAREST,		 "Off"				},
+  { SCALING_QUALITY_LINEAR,		 "Linear"			},
+  { SCALING_QUALITY_BEST,		 "Anisotropic"			},
 
-  {	NULL,			 NULL		},
+  { NULL,				 NULL				},
 };
 
 static struct StringValueTextInfo rendering_modes_list[] =
 {
-  {	STR_SPECIAL_RENDERING_OFF,	"Off (May show artifacts, fast)"	},
-  {	STR_SPECIAL_RENDERING_BITMAP,	"Bitmap/Texture mode (slower)"		},
+  { STR_SPECIAL_RENDERING_OFF,		"Off (May show artifacts, fast)"},
+  { STR_SPECIAL_RENDERING_BITMAP,	"Bitmap/Texture mode (slower)"	},
 #if DEBUG
   // this mode may work under certain conditions, but does not work on Windows
-  {	STR_SPECIAL_RENDERING_TARGET,	"Target Texture mode (slower)"		},
+  { STR_SPECIAL_RENDERING_TARGET,	"Target Texture mode (slower)"	},
 #endif
-  {	STR_SPECIAL_RENDERING_DOUBLE,	"Double Texture mode (slower)"		},
+  { STR_SPECIAL_RENDERING_DOUBLE,	"Double Texture mode (slower)"	},
 
-  {	NULL,				 NULL					},
+  { NULL,				 NULL				},
 };
 
 static struct StringValueTextInfo vsync_modes_list[] =
 {
-  {	STR_VSYNC_MODE_OFF,		"Off"		},
-  {	STR_VSYNC_MODE_NORMAL,		"Normal"	},
-  {	STR_VSYNC_MODE_ADAPTIVE,	"Adaptive"	},
+  { STR_VSYNC_MODE_OFF,			"Off"				},
+  { STR_VSYNC_MODE_NORMAL,		"Normal"			},
+  { STR_VSYNC_MODE_ADAPTIVE,		"Adaptive"			},
 
-  {	NULL,				 NULL		},
+  { NULL,				NULL				},
 };
 
 static struct StringValueTextInfo scores_types_list[] =
 {
-  {	STR_SCORES_TYPE_LOCAL_ONLY,	    "Local scores only"		},
-  {	STR_SCORES_TYPE_SERVER_ONLY,	    "Server scores only"	},
-  {	STR_SCORES_TYPE_LOCAL_AND_SERVER,   "Local and server scores"	},
+  { STR_SCORES_TYPE_LOCAL_ONLY,		"Local scores only"		},
+  { STR_SCORES_TYPE_SERVER_ONLY,	"Server scores only"		},
+  { STR_SCORES_TYPE_LOCAL_AND_SERVER,	"Local and server scores"	},
 
-  {	NULL,			 	NULL		},
+  { NULL,				NULL				},
 };
 
 static struct ValueTextInfo game_speeds_list_normal[] =
 {
-  {	30,	"Very Slow"			},
-  {	25,	"Slow"				},
-  {	20,	"Normal"			},
-  {	15,	"Fast"				},
-  {	10,	"Very Fast"			},
+  { 30,					"Very Slow"			},
+  { 25,					"Slow"				},
+  { 20,					"Normal"			},
+  { 15,					"Fast"				},
+  { 10,					"Very Fast"			},
 
-  {	-1,	NULL				},
+  { -1,					NULL				},
 };
 
 static struct ValueTextInfo game_speeds_list_extended[] =
 {
-  {	1000,	"1 fps (Extremely Slow)"	},
-  {	500,	"2 fps"				},
-  {	200,	"5 fps"				},
-  {	100,	"10 fps"			},
-  {	50,	"20 fps"			},
-  {	29,	"35 fps (Original Supaplex)"	},
-  {	25,	"40 fps"			},
-  {	20,	"50 fps (=== Normal Speed ===)"	},
-  {	16,	"60 fps (60 Hz VSync Speed)"	},
-  {	14,	"70 fps (Maximum Supaplex)"	},
-  {	10,	"100 fps"			},
-  {	5,	"200 fps"			},
-  {	2,	"500 fps"			},
-  {	1,	"1000 fps (Extremely Fast)"	},
+  { 1000,				"1 fps (Extremely Slow)"	},
+  { 500,				"2 fps"				},
+  { 200,				"5 fps"				},
+  { 100,				"10 fps"			},
+  { 50,					"20 fps"			},
+  { 29,					"35 fps (Original Supaplex)"	},
+  { 25,					"40 fps"			},
+  { 20,					"50 fps (=== Normal Speed ===)"	},
+  { 16,					"60 fps (60 Hz VSync Speed)"	},
+  { 14,					"70 fps (Maximum Supaplex)"	},
+  { 10,					"100 fps"			},
+  { 5,					"200 fps"			},
+  { 2,					"500 fps"			},
+  { 1,					"1000 fps (Extremely Fast)"	},
 
-  {	-1,	NULL				},
+  { -1,					NULL				},
 };
 
 static struct ValueTextInfo *game_speeds_list;
 
 static struct ValueTextInfo scroll_delays_list[] =
 {
-  {	0,	"0 Tiles (No Scroll Delay)"	},
-  {	1,	"1 Tile"			},
-  {	2,	"2 Tiles"			},
-  {	3,	"3 Tiles (Default)"		},
-  {	4,	"4 Tiles"			},
-  {	5,	"5 Tiles"			},
-  {	6,	"6 Tiles"			},
-  {	7,	"7 Tiles"			},
-  {	8,	"8 Tiles (Maximum Scroll Delay)"},
+  { 0,					"0 Tiles (No Scroll Delay)"	},
+  { 1,					"1 Tile"			},
+  { 2,					"2 Tiles"			},
+  { 3,					"3 Tiles (Default)"		},
+  { 4,					"4 Tiles"			},
+  { 5,					"5 Tiles"			},
+  { 6,					"6 Tiles"			},
+  { 7,					"7 Tiles"			},
+  { 8,					"8 Tiles (Maximum Scroll Delay)"},
 
-  {	-1,	NULL				},
+  { -1,					NULL				},
 };
 
 static struct StringValueTextInfo snapshot_modes_list[] =
 {
-  {	STR_SNAPSHOT_MODE_OFF,			"Off"		},
-  {	STR_SNAPSHOT_MODE_EVERY_STEP,		"Every Step"	},
-  {	STR_SNAPSHOT_MODE_EVERY_MOVE,		"Every Move"	},
-  {	STR_SNAPSHOT_MODE_EVERY_COLLECT,	"Every Collect"	},
+  { STR_SNAPSHOT_MODE_OFF,		"Off"				},
+  { STR_SNAPSHOT_MODE_EVERY_STEP,	"Every Step"			},
+  { STR_SNAPSHOT_MODE_EVERY_MOVE,	"Every Move"			},
+  { STR_SNAPSHOT_MODE_EVERY_COLLECT,	"Every Collect"			},
 
-  {	NULL,			 		NULL		},
+  { NULL,		 		NULL				},
 };
 
 static struct ValueTextInfo volumes_list[] =
 {
-  {	0,	"0 %"				},
-  {	1,	"1 %"				},
-  {	2,	"2 %"				},
-  {	5,	"5 %"				},
-  {	10,	"10 %"				},
-  {	20,	"20 %"				},
-  {	30,	"30 %"				},
-  {	40,	"40 %"				},
-  {	50,	"50 %"				},
-  {	60,	"60 %"				},
-  {	70,	"70 %"				},
-  {	80,	"80 %"				},
-  {	90,	"90 %"				},
-  {	100,	"100 %"				},
+  { 0,					"0 %"				},
+  { 1,					"1 %"				},
+  { 2,					"2 %"				},
+  { 5,					"5 %"				},
+  { 10,					"10 %"				},
+  { 20,					"20 %"				},
+  { 30,					"30 %"				},
+  { 40,					"40 %"				},
+  { 50,					"50 %"				},
+  { 60,					"60 %"				},
+  { 70,					"70 %"				},
+  { 80,					"80 %"				},
+  { 90,					"90 %"				},
+  { 100,				"100 %"				},
 
-  {	-1,	NULL				},
+  { -1,					NULL				},
 };
 
 static struct StringValueTextInfo touch_controls_list[] =
 {
-  {	TOUCH_CONTROL_OFF,		"Off"			},
-  {	TOUCH_CONTROL_VIRTUAL_BUTTONS,	"Virtual Buttons"	},
-  {	TOUCH_CONTROL_WIPE_GESTURES,	"Wipe Gestures"		},
-  {	TOUCH_CONTROL_FOLLOW_FINGER,	"Follow Finger"		},
+  { TOUCH_CONTROL_OFF,			"Off"				},
+  { TOUCH_CONTROL_VIRTUAL_BUTTONS,	"Virtual Buttons"		},
+  { TOUCH_CONTROL_WIPE_GESTURES,	"Wipe Gestures"			},
+  { TOUCH_CONTROL_FOLLOW_FINGER,	"Follow Finger"			},
 
-  {	NULL,			 	NULL			},
+  { NULL,			 	NULL				},
 };
 
 static struct ValueTextInfo distances_list[] =
 {
-  {	1,	"1 %"				},
-  {	2,	"2 %"				},
-  {	3,	"3 %"				},
-  {	4,	"4 %"				},
-  {	5,	"5 %"				},
-  {	10,	"10 %"				},
-  {	15,	"15 %"				},
-  {	20,	"20 %"				},
-  {	25,	"25 %"				},
+  { 1,					"1 %"				},
+  { 2,					"2 %"				},
+  { 3,					"3 %"				},
+  { 4,					"4 %"				},
+  { 5,					"5 %"				},
+  { 10,					"10 %"				},
+  { 15,					"15 %"				},
+  { 20,					"20 %"				},
+  { 25,					"25 %"				},
 
-  {	-1,	NULL				},
+  { -1,					NULL				},
 };
 
 static struct ValueTextInfo transparencies_list[] =
 {
-  {	0,	"0 % (Opaque)"			},
-  {	10,	"10 %"				},
-  {	20,	"20 %"				},
-  {	30,	"30 %"				},
-  {	40,	"40 %"				},
-  {	50,	"50 %"				},
-  {	60,	"60 %"				},
-  {	70,	"70 %"				},
-  {	80,	"80 %"				},
-  {	90,	"90 %"				},
-  {	100,	"100 % (Invisible)"		},
+  { 0,					"0 % (Opaque)"			},
+  { 10,					"10 %"				},
+  { 20,					"20 %"				},
+  { 30,					"30 %"				},
+  { 40,					"40 %"				},
+  { 50,					"50 %"				},
+  { 60,					"60 %"				},
+  { 70,					"70 %"				},
+  { 80,					"80 %"				},
+  { 90,					"90 %"				},
+  { 100,				"100 % (Invisible)"		},
 
-  {	-1,	NULL				},
+  { -1,					NULL				},
 };
 
 static struct ValueTextInfo grid_sizes_list[] =
 {
-  {	3,	"3"				},
-  {	4,	"4"				},
-  {	5,	"5"				},
-  {	6,	"6"				},
-  {	7,	"7"				},
-  {	8,	"8"				},
-  {	9,	"9"				},
-  {	10,	"10"				},
-  {	11,	"11"				},
-  {	12,	"12"				},
-  {	13,	"13"				},
-  {	14,	"14"				},
-  {	15,	"15"				},
-  {	16,	"16"				},
-  {	17,	"17"				},
-  {	18,	"18"				},
-  {	19,	"19"				},
-  {	20,	"20"				},
-  {	21,	"21"				},
-  {	22,	"22"				},
-  {	23,	"23"				},
-  {	24,	"24"				},
-  {	25,	"25"				},
-  {	26,	"26"				},
-  {	27,	"27"				},
-  {	28,	"28"				},
-  {	29,	"29"				},
-  {	30,	"30"				},
-  {	31,	"31"				},
-  {	32,	"32"				},
+  { 3,					"3"				},
+  { 4,					"4"				},
+  { 5,					"5"				},
+  { 6,					"6"				},
+  { 7,					"7"				},
+  { 8,					"8"				},
+  { 9,					"9"				},
+  { 10,					"10"				},
+  { 11,					"11"				},
+  { 12,					"12"				},
+  { 13,					"13"				},
+  { 14,					"14"				},
+  { 15,					"15"				},
+  { 16,					"16"				},
+  { 17,					"17"				},
+  { 18,					"18"				},
+  { 19,					"19"				},
+  { 20,					"20"				},
+  { 21,					"21"				},
+  { 22,					"22"				},
+  { 23,					"23"				},
+  { 24,					"24"				},
+  { 25,					"25"				},
+  { 26,					"26"				},
+  { 27,					"27"				},
+  { 28,					"28"				},
+  { 29,					"29"				},
+  { 30,					"30"				},
+  { 31,					"31"				},
+  { 32,					"32"				},
 
-  {	-1,	NULL				},
+  { -1,					NULL				},
 };
 
 static int align_xoffset = 0;
