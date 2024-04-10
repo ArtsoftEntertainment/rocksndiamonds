@@ -2369,6 +2369,9 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
   strcpy(level->name, NAMELESS_LEVEL_NAME);
   strcpy(level->author, ANONYMOUS_NAME);
 
+  // set default game engine type
+  level->game_engine_type = setup.default_game_engine_type;
+
   // set level playfield to playable default level with player and exit
   for (x = 0; x < MAX_LEV_FIELDX; x++)
     for (y = 0; y < MAX_LEV_FIELDY; y++)
@@ -10728,6 +10731,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.game_frame_delay,			"game_frame_delay"
   },
   {
+    TYPE_INTEGER,
+    &setup.default_game_engine_type,		"default_game_engine_type"
+  },
+  {
     TYPE_SWITCH,
     &setup.bd_skip_uncovering,			"bd_skip_uncovering"
   },
@@ -11579,6 +11586,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->prefer_extra_panel_items = TRUE;
   si->game_speed_extended = FALSE;
   si->game_frame_delay = GAME_FRAME_DELAY;
+  si->default_game_engine_type	= GAME_ENGINE_TYPE_RND;
   si->bd_skip_uncovering = FALSE;
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;

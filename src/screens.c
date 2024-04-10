@@ -68,31 +68,32 @@
 #define SETUP_MODE_CHOOSE_GAME_SPEED		18
 #define SETUP_MODE_CHOOSE_SCROLL_DELAY		19
 #define SETUP_MODE_CHOOSE_SNAPSHOT_MODE		20
-#define SETUP_MODE_CHOOSE_BD_PALETTE_C64	21
-#define SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV	22
-#define SETUP_MODE_CHOOSE_BD_PALETTE_ATARI	23
-#define SETUP_MODE_CHOOSE_BD_COLOR_TYPE		24
-#define SETUP_MODE_CHOOSE_WINDOW_SIZE		25
-#define SETUP_MODE_CHOOSE_SCALING_TYPE		26
-#define SETUP_MODE_CHOOSE_RENDERING		27
-#define SETUP_MODE_CHOOSE_VSYNC			28
-#define SETUP_MODE_CHOOSE_GRAPHICS		29
-#define SETUP_MODE_CHOOSE_SOUNDS		30
-#define SETUP_MODE_CHOOSE_MUSIC			31
-#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		32
-#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		33
-#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		34
-#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		35
-#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		36
-#define SETUP_MODE_CHOOSE_DROP_DISTANCE		37
-#define SETUP_MODE_CHOOSE_TRANSPARENCY		38
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		39
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		40
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		41
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		42
-#define SETUP_MODE_CONFIG_VIRT_BUTTONS		43
+#define SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE	21
+#define SETUP_MODE_CHOOSE_BD_PALETTE_C64	22
+#define SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV	23
+#define SETUP_MODE_CHOOSE_BD_PALETTE_ATARI	24
+#define SETUP_MODE_CHOOSE_BD_COLOR_TYPE		25
+#define SETUP_MODE_CHOOSE_WINDOW_SIZE		26
+#define SETUP_MODE_CHOOSE_SCALING_TYPE		27
+#define SETUP_MODE_CHOOSE_RENDERING		28
+#define SETUP_MODE_CHOOSE_VSYNC			29
+#define SETUP_MODE_CHOOSE_GRAPHICS		30
+#define SETUP_MODE_CHOOSE_SOUNDS		31
+#define SETUP_MODE_CHOOSE_MUSIC			32
+#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		33
+#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		34
+#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		35
+#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		36
+#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		37
+#define SETUP_MODE_CHOOSE_DROP_DISTANCE		38
+#define SETUP_MODE_CHOOSE_TRANSPARENCY		39
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		40
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		41
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		42
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		43
+#define SETUP_MODE_CONFIG_VIRT_BUTTONS		44
 
-#define MAX_SETUP_MODES				44
+#define MAX_SETUP_MODES				45
 
 #define MAX_MENU_MODES				MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
@@ -125,6 +126,7 @@
 #define STR_SETUP_CHOOSE_GAME_SPEED		"Game Speed"
 #define STR_SETUP_CHOOSE_SCROLL_DELAY		"Scroll Delay"
 #define STR_SETUP_CHOOSE_SNAPSHOT_MODE		"Snapshot Mode"
+#define STR_SETUP_CHOOSE_GAME_ENGINE_TYPE	"Game Engine"
 #define STR_SETUP_CHOOSE_BD_PALETTE_C64		"Palette (C64)"
 #define STR_SETUP_CHOOSE_BD_PALETTE_C64DTV	"Palette (C64DTV)"
 #define STR_SETUP_CHOOSE_BD_PALETTE_ATARI	"Palette (Atari)"
@@ -296,6 +298,7 @@ static void ConfigureJoystick(int);
 static void ConfigureVirtualButtons(void);
 static void execSetupGame(void);
 static void execSetupEngines(void);
+static void execSetupEditor(void);
 static void execSetupGraphics(void);
 static void execSetupSound(void);
 static void execSetupTouch(void);
@@ -374,6 +377,9 @@ static TreeInfo *scroll_delay_current = NULL;
 
 static TreeInfo *snapshot_modes = NULL;
 static TreeInfo *snapshot_mode_current = NULL;
+
+static TreeInfo *game_engine_types = NULL;
+static TreeInfo *game_engine_type_current = NULL;
 
 static TreeInfo *bd_palettes_c64 = NULL;
 static TreeInfo *bd_palette_c64_current = NULL;
@@ -542,6 +548,17 @@ static struct StringValueTextInfo snapshot_modes_list[] =
   { STR_SNAPSHOT_MODE_EVERY_COLLECT,	"Every Collect"			},
 
   { NULL,		 		NULL				},
+};
+
+static struct ValueTextInfo game_engine_types_list[] =
+{
+  { GAME_ENGINE_TYPE_RND,		"Rocks'n'Diamonds"		},
+  { GAME_ENGINE_TYPE_BD,		"Boulder Dash"			},
+  { GAME_ENGINE_TYPE_EM,		"Emerald Mine"			},
+  { GAME_ENGINE_TYPE_SP,		"Supaplex"			},
+  { GAME_ENGINE_TYPE_MM,		"Mirror Magic"			},
+
+  { -1,					NULL				}
 };
 
 static struct ValueTextInfo bd_palettes_c64_list[] =
@@ -5038,7 +5055,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	  setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	execSetupGame();
-      else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
+      else if (setup_mode == SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE ||
+	       setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
 	       setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
 	       setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI ||
 	       setup_mode == SETUP_MODE_CHOOSE_BD_COLOR_TYPE)
@@ -5239,7 +5257,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	      setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	      setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	    execSetupGame();
-	  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
+	  else if (setup_mode == SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE ||
+		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
 		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
 		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI ||
 		   setup_mode == SETUP_MODE_CHOOSE_BD_COLOR_TYPE)
@@ -5321,7 +5340,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	      setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	      setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	    execSetupGame();
-	  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
+	  else if (setup_mode == SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE ||
+		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
 		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
 		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI ||
 		   setup_mode == SETUP_MODE_CHOOSE_BD_COLOR_TYPE)
@@ -5971,6 +5991,7 @@ static char *rendering_mode_text;
 static char *vsync_mode_text;
 static char *scroll_delay_text;
 static char *snapshot_mode_text;
+static char *game_engine_type_text;
 static char *bd_palette_c64_text;
 static char *bd_palette_c64dtv_text;
 static char *bd_palette_atari_text;
@@ -6286,6 +6307,56 @@ static void execSetupChooseSnapshotMode(void)
   DrawSetupScreen();
 }
 
+static void execSetupEngines_setGameEngineType(void)
+{
+  if (game_engine_types == NULL)
+  {
+    int i;
+
+    for (i = 0; game_engine_types_list[i].value != -1; i++)
+    {
+      TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_UNDEFINED);
+      char identifier[32], name[32];
+      int value = game_engine_types_list[i].value;
+      char *text = game_engine_types_list[i].text;
+
+      ti->node_top = &game_engine_types;
+      ti->sort_priority = value;
+
+      sprintf(identifier, "%d", value);
+      sprintf(name, "%s", text);
+
+      setString(&ti->identifier, identifier);
+      setString(&ti->name, name);
+      setString(&ti->name_sorting, name);
+      setString(&ti->infotext, STR_SETUP_CHOOSE_GAME_ENGINE_TYPE);
+
+      pushTreeInfo(&game_engine_types, ti);
+    }
+
+    // sort game engine type values to start with lowest game engine type value
+    sortTreeInfo(&game_engine_types);
+
+    // set current game engine type value to configured game engine type value
+    game_engine_type_current =
+      getTreeInfoFromIdentifier(game_engine_types, i_to_a(setup.default_game_engine_type));
+
+    // if that fails, set current game engine type to reliable default value
+    if (game_engine_type_current == NULL)
+      game_engine_type_current =
+	getTreeInfoFromIdentifier(game_engine_types, i_to_a(GAME_ENGINE_TYPE_RND));
+
+    // if that also fails, set current game engine type to first available value
+    if (game_engine_type_current == NULL)
+      game_engine_type_current = game_engine_types;
+  }
+
+  setup.default_game_engine_type = atoi(game_engine_type_current->identifier);
+
+  // needed for displaying game engine type text instead of identifier
+  game_engine_type_text = game_engine_type_current->name;
+}
+
 static void execSetupEngines_setPalettesC64(void)
 {
   if (bd_palettes_c64 == NULL)
@@ -6490,10 +6561,18 @@ static void execSetupEngines(void)
 {
   setup_mode = SETUP_MODE_ENGINES;
 
+  execSetupEngines_setGameEngineType();
   execSetupEngines_setPalettesC64();
   execSetupEngines_setPalettesC64DTV();
   execSetupEngines_setPalettesAtari();
   execSetupEngines_setColorType();
+
+  DrawSetupScreen();
+}
+
+static void execSetupChooseGameEngineType(void)
+{
+  setup_mode = SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE;
 
   DrawSetupScreen();
 }
@@ -7715,6 +7794,21 @@ static struct
   { &setup.engine_snapshot_mode,		execSetupChooseSnapshotMode	},
   { &setup.engine_snapshot_mode,		&snapshot_mode_text		},
 
+  { &setup.default_game_engine_type,		execSetupChooseGameEngineType	},
+  { &setup.default_game_engine_type,		&game_engine_type_text		},
+
+  { &setup.bd_palette_c64,			execSetupChoosePaletteC64	},
+  { &setup.bd_palette_c64,			&bd_palette_c64_text		},
+
+  { &setup.bd_palette_c64dtv,			execSetupChoosePaletteC64DTV	},
+  { &setup.bd_palette_c64dtv,			&bd_palette_c64dtv_text		},
+
+  { &setup.bd_palette_atari,			execSetupChoosePaletteAtari	},
+  { &setup.bd_palette_atari,			&bd_palette_atari_text		},
+
+  { &setup.bd_default_color_type,		execSetupChooseColorType	},
+  { &setup.bd_default_color_type,		&bd_color_type_text		},
+
   { &setup.window_scaling_percent,		execSetupChooseWindowSize	},
   { &setup.window_scaling_percent,		&window_size_text		},
 
@@ -7871,6 +7965,9 @@ static struct TokenInfo setup_info_game[] =
 
 static struct TokenInfo setup_info_engines[] =
 {
+  { TYPE_ENTER_LIST,	&execSetupChooseGameEngineType,	"Default Game Engine:"		},
+  { TYPE_STRING,	&game_engine_type_text,		""				},
+  { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Boulder Dash"			},
   { TYPE_SWITCH,	&setup.bd_skip_uncovering,	"Skip (un)covering screen:"	},
   { TYPE_SWITCH,	&setup.bd_skip_hatching,	"Skip hatching player:"		},
@@ -9869,6 +9966,8 @@ void DrawSetupScreen(void)
     DrawChooseTree(&scroll_delay_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
     DrawChooseTree(&snapshot_mode_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE)
+    DrawChooseTree(&game_engine_type_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64)
     DrawChooseTree(&bd_palette_c64_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV)
@@ -9961,6 +10060,8 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
     HandleChooseTree(mx, my, dx, dy, button, &scroll_delay_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
     HandleChooseTree(mx, my, dx, dy, button, &snapshot_mode_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE)
+    HandleChooseTree(mx, my, dx, dy, button, &game_engine_type_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64)
     HandleChooseTree(mx, my, dx, dy, button, &bd_palette_c64_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV)
