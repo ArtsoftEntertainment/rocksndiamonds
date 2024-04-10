@@ -6012,6 +6012,88 @@ static void HandleToolButtons(struct GadgetInfo *gi)
   request_gadget_id = gi->custom_id;
 }
 
+static int getEngineElement_Ext(int element, int game_engine_type, boolean is_drawing_element)
+{
+  int el_empty;
+  int el_player;
+  int el_sand;
+  int el_wall;
+  int el_steelwall;
+  int el_exit_closed;
+
+  if (game_engine_type == -1)
+    game_engine_type = level.game_engine_type;
+
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    el_empty		= EL_EMPTY;
+    el_player		= EL_BD_PLAYER;
+    el_sand		= EL_BD_SAND;
+    el_wall		= EL_BD_WALL;
+    el_steelwall	= EL_BD_STEELWALL;
+    el_exit_closed	= EL_BD_EXIT_CLOSED;
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+  {
+    el_empty		= EL_EMPTY;
+    el_player		= EL_PLAYER_1;
+    el_sand		= EL_SAND;
+    el_wall		= EL_WALL;
+    el_steelwall	= EL_STEELWALL;
+    el_exit_closed	= EL_EM_EXIT_CLOSED;
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
+  {
+    el_empty		= EL_EMPTY;
+    el_player		= EL_SP_MURPHY;
+    el_sand		= EL_SP_BASE;
+    el_wall		= EL_SP_CHIP_SINGLE;
+    el_steelwall	= EL_SP_HARDWARE_GRAY;
+    el_exit_closed	= EL_SP_EXIT_CLOSED;
+  }
+  else if (level.game_engine_type == GAME_ENGINE_TYPE_MM)
+  {
+    el_empty		= EL_EMPTY;
+    el_player		= EL_MM_MCDUFFIN_DOWN;
+    el_sand		= EL_EMPTY;
+    el_wall		= EL_MM_WOODEN_WALL;
+    el_steelwall	= EL_MM_STEEL_WALL;
+    el_exit_closed	= EL_MM_EXIT_CLOSED;
+
+    if (is_drawing_element)
+    {
+      el_wall		= EL_MM_MIRROR_START;
+      el_sand		= EL_MM_WOODEN_WALL;
+    }
+  }
+  else
+  {
+    el_empty		= EL_EMPTY;
+    el_player		= EL_PLAYER_1;
+    el_sand		= EL_SAND;
+    el_wall		= EL_WALL;
+    el_steelwall	= EL_STEELWALL;
+    el_exit_closed	= EL_EXIT_CLOSED;
+  }
+
+  return (element == EL_EMPTY		? el_empty :
+	  element == EL_PLAYER_1	? el_player :
+	  element == EL_SAND		? el_sand :
+	  element == EL_WALL		? el_wall :
+	  element == EL_STEELWALL	? el_steelwall :
+	  element == EL_EXIT_CLOSED	? el_exit_closed : EL_EMPTY);
+}
+
+int getEngineElement(int element)
+{
+  return getEngineElement_Ext(element, -1, FALSE);
+}
+
+int getDrawingElement(int element)
+{
+  return getEngineElement_Ext(element, -1, TRUE);
+}
+
 static struct Mapping_BD_to_RND_object
 {
   int element_bd;

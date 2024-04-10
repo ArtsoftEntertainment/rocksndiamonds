@@ -229,6 +229,9 @@ void UndrawSpecialEditorDoor(void);
 void CreateToolButtons(void);
 void FreeToolButtons(void);
 
+int getEngineElement(int);
+int getDrawingElement(int);
+
 int map_element_RND_to_BD_cave(int);
 int map_element_RND_to_BD_effect(int, int);
 int map_element_BD_to_RND_cave(int);

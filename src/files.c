@@ -2334,6 +2334,11 @@ void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
 
 static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
 {
+  boolean add_border = FALSE;
+  int x1 = 0;
+  int y1 = 0;
+  int x2 = STD_LEV_FIELDX - 1;
+  int y2 = STD_LEV_FIELDY - 1;
   int i, x, y;
 
   li = *level;		// copy level data into temporary buffer
@@ -2372,15 +2377,35 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
   // set default game engine type
   level->game_engine_type = setup.default_game_engine_type;
 
+  // some game engines should have a default playfield with border elements
+  if (level->game_engine_type == GAME_ENGINE_TYPE_BD ||
+      level->game_engine_type == GAME_ENGINE_TYPE_EM ||
+      level->game_engine_type == GAME_ENGINE_TYPE_SP)
+  {
+    add_border = TRUE;
+    x1++;
+    y1++;
+    x2--;
+    y2--;
+  }
+
   // set level playfield to playable default level with player and exit
   for (x = 0; x < MAX_LEV_FIELDX; x++)
+  {
     for (y = 0; y < MAX_LEV_FIELDY; y++)
-      level->field[x][y] = EL_SAND;
+    {
+      if (add_border && (x == 0 || x == STD_LEV_FIELDX - 1 ||
+			 y == 0 || y == STD_LEV_FIELDY - 1))
+	level->field[x][y] = getEngineElement(EL_STEELWALL);
+      else
+	level->field[x][y] = getEngineElement(EL_SAND);
+    }
+  }
 
-  level->field[0][0] = EL_PLAYER_1;
-  level->field[STD_LEV_FIELDX - 1][STD_LEV_FIELDY - 1] = EL_EXIT_CLOSED;
+  level->field[x1][y1] = getEngineElement(EL_PLAYER_1);
+  level->field[x2][y2] = getEngineElement(EL_EXIT_CLOSED);
 
-  BorderElement = EL_STEELWALL;
+  BorderElement = getEngineElement(EL_STEELWALL);
 
   // detect custom elements when loading them
   level->file_has_custom_elements = FALSE;
