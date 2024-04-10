@@ -11452,13 +11452,13 @@ void SetDefaultLevelColors_BD(void)
     bd_color_default[i] = *bd_color[i];
 }
 
-static void SetRandomLevelColors_BD(void)
+void SetRandomLevelColors_BD(int bd_color_type)
 {
   struct LevelInfo_BD *level_bd = level.native_bd_level;
   GdCave *cave = level_bd->cave;
 
   // create random cave colors
-  gd_cave_set_random_colors(cave, level.bd_color_type);
+  gd_cave_set_random_colors(cave, bd_color_type);
 
   // copy colors to level editor
   level.bd_color_b = cave->colorb;
@@ -11514,7 +11514,7 @@ static void DrawEngineConfigColors(void)
       else
       {
 	// color type switched to different color type as default colors => use random colors
-	SetRandomLevelColors_BD();
+	SetRandomLevelColors_BD(level.bd_color_type);
       }
     }
 
@@ -16636,7 +16636,7 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
   }
   else if (type_id == ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS)
   {
-    SetRandomLevelColors_BD();
+    SetRandomLevelColors_BD(level.bd_color_type);
 
     // update BD color palette gadgets after setting random colors
     DrawLevelConfigWindow();

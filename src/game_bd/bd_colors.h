@@ -38,6 +38,8 @@ typedef enum _color_type
   GD_COLOR_TYPE_UNKNOWN         // should be the last one
 } GdColorType;
 
+#define GD_DEFAULT_COLOR_TYPE			GD_COLOR_TYPE_RGB
+
 // traditional c64 color indexes.
 #define GD_COLOR_INDEX_BLACK			0
 #define GD_COLOR_INDEX_WHITE			1

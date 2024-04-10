@@ -71,27 +71,28 @@
 #define SETUP_MODE_CHOOSE_BD_PALETTE_C64	21
 #define SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV	22
 #define SETUP_MODE_CHOOSE_BD_PALETTE_ATARI	23
-#define SETUP_MODE_CHOOSE_WINDOW_SIZE		24
-#define SETUP_MODE_CHOOSE_SCALING_TYPE		25
-#define SETUP_MODE_CHOOSE_RENDERING		26
-#define SETUP_MODE_CHOOSE_VSYNC			27
-#define SETUP_MODE_CHOOSE_GRAPHICS		28
-#define SETUP_MODE_CHOOSE_SOUNDS		29
-#define SETUP_MODE_CHOOSE_MUSIC			30
-#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		31
-#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		32
-#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		33
-#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		34
-#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		35
-#define SETUP_MODE_CHOOSE_DROP_DISTANCE		36
-#define SETUP_MODE_CHOOSE_TRANSPARENCY		37
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		38
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		39
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		40
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		41
-#define SETUP_MODE_CONFIG_VIRT_BUTTONS		42
+#define SETUP_MODE_CHOOSE_BD_COLOR_TYPE		24
+#define SETUP_MODE_CHOOSE_WINDOW_SIZE		25
+#define SETUP_MODE_CHOOSE_SCALING_TYPE		26
+#define SETUP_MODE_CHOOSE_RENDERING		27
+#define SETUP_MODE_CHOOSE_VSYNC			28
+#define SETUP_MODE_CHOOSE_GRAPHICS		29
+#define SETUP_MODE_CHOOSE_SOUNDS		30
+#define SETUP_MODE_CHOOSE_MUSIC			31
+#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		32
+#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		33
+#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		34
+#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		35
+#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		36
+#define SETUP_MODE_CHOOSE_DROP_DISTANCE		37
+#define SETUP_MODE_CHOOSE_TRANSPARENCY		38
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		39
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		40
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		41
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		42
+#define SETUP_MODE_CONFIG_VIRT_BUTTONS		43
 
-#define MAX_SETUP_MODES				43
+#define MAX_SETUP_MODES				44
 
 #define MAX_MENU_MODES				MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
@@ -127,6 +128,7 @@
 #define STR_SETUP_CHOOSE_BD_PALETTE_C64		"Palette (C64)"
 #define STR_SETUP_CHOOSE_BD_PALETTE_C64DTV	"Palette (C64DTV)"
 #define STR_SETUP_CHOOSE_BD_PALETTE_ATARI	"Palette (Atari)"
+#define STR_SETUP_CHOOSE_BD_COLOR_TYPE		"Palette Type"
 #define STR_SETUP_CHOOSE_WINDOW_SIZE		"Window Scaling"
 #define STR_SETUP_CHOOSE_SCALING_TYPE		"Anti-Aliasing"
 #define STR_SETUP_CHOOSE_RENDERING		"Rendering Mode"
@@ -382,6 +384,9 @@ static TreeInfo *bd_palette_c64dtv_current = NULL;
 static TreeInfo *bd_palettes_atari = NULL;
 static TreeInfo *bd_palette_atari_current = NULL;
 
+static TreeInfo *bd_color_types = NULL;
+static TreeInfo *bd_color_type_current = NULL;
+
 static TreeInfo *scores_types = NULL;
 static TreeInfo *scores_type_current = NULL;
 
@@ -573,6 +578,16 @@ static struct ValueTextInfo bd_palettes_atari_list[] =
   { GD_PALETTE_ATARI_REAL,		"Real"				},
   { GD_PALETTE_ATARI_REAL_CONTRAST,	"Real contrast"			},
   { GD_PALETTE_ATARI_XFORMER,		"XFormer"			},
+
+  { -1,					NULL				},
+};
+
+static struct ValueTextInfo bd_color_types_list[] =
+{
+  { GD_COLOR_TYPE_RGB,			"RGB colors"			},
+  { GD_COLOR_TYPE_C64,			"C64 colors"			},
+  { GD_COLOR_TYPE_C64DTV,		"C64DTV colors"			},
+  { GD_COLOR_TYPE_ATARI,		"Atari colors"			},
 
   { -1,					NULL				},
 };
@@ -5025,7 +5040,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	execSetupGame();
       else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
 	       setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
-	       setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
+	       setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI ||
+	       setup_mode == SETUP_MODE_CHOOSE_BD_COLOR_TYPE)
 	execSetupEngines();
       else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE ||
 	       setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE ||
@@ -5225,7 +5241,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	    execSetupGame();
 	  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
 		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
-		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
+		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI ||
+		   setup_mode == SETUP_MODE_CHOOSE_BD_COLOR_TYPE)
 	    execSetupEngines();
 	  else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE ||
 		   setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE ||
@@ -5306,7 +5323,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	    execSetupGame();
 	  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
 		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
-		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
+		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI ||
+		   setup_mode == SETUP_MODE_CHOOSE_BD_COLOR_TYPE)
 	    execSetupEngines();
 	  else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE ||
 		   setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE ||
@@ -5956,6 +5974,7 @@ static char *snapshot_mode_text;
 static char *bd_palette_c64_text;
 static char *bd_palette_c64dtv_text;
 static char *bd_palette_atari_text;
+static char *bd_color_type_text;
 static char *game_speed_text;
 static char *scores_type_text;
 static char *network_server_text;
@@ -6417,6 +6436,56 @@ static void execSetupEngines_setPalettesAtari(void)
   bd_palette_atari_text = bd_palette_atari_current->name;
 }
 
+static void execSetupEngines_setColorType(void)
+{
+  if (bd_color_types == NULL)
+  {
+    int i;
+
+    for (i = 0; bd_color_types_list[i].value != -1; i++)
+    {
+      TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_UNDEFINED);
+      char identifier[32], name[32];
+      int value = bd_color_types_list[i].value;
+      char *text = bd_color_types_list[i].text;
+
+      ti->node_top = &bd_color_types;
+      ti->sort_priority = value;
+
+      sprintf(identifier, "%d", value);
+      sprintf(name, "%s", text);
+
+      setString(&ti->identifier, identifier);
+      setString(&ti->name, name);
+      setString(&ti->name_sorting, name);
+      setString(&ti->infotext, STR_SETUP_CHOOSE_BD_COLOR_TYPE);
+
+      pushTreeInfo(&bd_color_types, ti);
+    }
+
+    // sort palette values to start with lowest palette value
+    sortTreeInfo(&bd_color_types);
+
+    // set current palette value to configured palette value
+    bd_color_type_current =
+      getTreeInfoFromIdentifier(bd_color_types, i_to_a(setup.bd_color_type));
+
+    // if that fails, set current palette to reliable default value
+    if (bd_color_type_current == NULL)
+      bd_color_type_current =
+	getTreeInfoFromIdentifier(bd_color_types, i_to_a(GD_DEFAULT_COLOR_TYPE));
+
+    // if that also fails, set current palette to first available value
+    if (bd_color_type_current == NULL)
+      bd_color_type_current = bd_color_types;
+  }
+
+  setup.bd_color_type = atoi(bd_color_type_current->identifier);
+
+  // needed for displaying palette text instead of identifier
+  bd_color_type_text = bd_color_type_current->name;
+}
+
 static void execSetupEngines(void)
 {
   setup_mode = SETUP_MODE_ENGINES;
@@ -6424,6 +6493,7 @@ static void execSetupEngines(void)
   execSetupEngines_setPalettesC64();
   execSetupEngines_setPalettesC64DTV();
   execSetupEngines_setPalettesAtari();
+  execSetupEngines_setColorType();
 
   DrawSetupScreen();
 }
@@ -6445,6 +6515,13 @@ static void execSetupChoosePaletteC64DTV(void)
 static void execSetupChoosePaletteAtari(void)
 {
   setup_mode = SETUP_MODE_CHOOSE_BD_PALETTE_ATARI;
+
+  DrawSetupScreen();
+}
+
+static void execSetupChooseColorType(void)
+{
+  setup_mode = SETUP_MODE_CHOOSE_BD_COLOR_TYPE;
 
   DrawSetupScreen();
 }
@@ -7805,6 +7882,8 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_STRING,	&bd_palette_c64dtv_text,	""				},
   { TYPE_ENTER_LIST,	&execSetupChoosePaletteAtari,	"Color Palette (Atari):"	},
   { TYPE_STRING,	&bd_palette_atari_text,		""				},
+  { TYPE_ENTER_LIST,	&execSetupChooseColorType,	"Preferred Color Type:"		},
+  { TYPE_STRING,	&bd_color_type_text,		""				},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Emerald Mine"			},
   { TYPE_SWITCH,	&setup.forced_scroll_delay,	"Scroll Delay:"			},
@@ -9796,6 +9875,8 @@ void DrawSetupScreen(void)
     DrawChooseTree(&bd_palette_c64dtv_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
     DrawChooseTree(&bd_palette_atari_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_BD_COLOR_TYPE)
+    DrawChooseTree(&bd_color_type_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE)
     DrawChooseTree(&window_size_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE)
@@ -9886,6 +9967,8 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
     HandleChooseTree(mx, my, dx, dy, button, &bd_palette_c64dtv_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
     HandleChooseTree(mx, my, dx, dy, button, &bd_palette_atari_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_BD_COLOR_TYPE)
+    HandleChooseTree(mx, my, dx, dy, button, &bd_color_type_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE)
     HandleChooseTree(mx, my, dx, dy, button, &window_size_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE)
