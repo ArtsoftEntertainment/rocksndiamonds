@@ -7981,6 +7981,7 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_STRING,	&bd_palette_atari_text,		""				},
   { TYPE_ENTER_LIST,	&execSetupChooseColorType,	"Preferred Color Type:"		},
   { TYPE_STRING,	&bd_color_type_text,		""				},
+  { TYPE_SWITCH,	&setup.bd_random_colors,	"Random Colors:"		},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Emerald Mine"			},
   { TYPE_SWITCH,	&setup.forced_scroll_delay,	"Scroll Delay:"			},

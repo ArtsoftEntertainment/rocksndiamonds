@@ -1520,6 +1520,7 @@ struct SetupInfo
   int bd_palette_c64dtv;
   int bd_palette_atari;
   int bd_default_color_type;
+  int bd_random_colors;
   boolean sp_show_border_elements;
   boolean small_game_graphics;
   boolean show_load_save_buttons;

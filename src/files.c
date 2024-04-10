@@ -10793,6 +10793,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.bd_random_colors,			"bd_random_colors"
+  },
+  {
+    TYPE_SWITCH,
     &setup.sp_show_border_elements,		"sp_show_border_elements"
   },
   {
@@ -11620,6 +11624,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
   si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;
   si->bd_default_color_type = GD_DEFAULT_COLOR_TYPE;
+  si->bd_random_colors = FALSE;
   si->sp_show_border_elements = FALSE;
   si->small_game_graphics = FALSE;
   si->show_load_save_buttons = FALSE;
