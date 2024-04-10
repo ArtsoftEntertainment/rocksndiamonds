@@ -68,27 +68,30 @@
 #define SETUP_MODE_CHOOSE_GAME_SPEED		18
 #define SETUP_MODE_CHOOSE_SCROLL_DELAY		19
 #define SETUP_MODE_CHOOSE_SNAPSHOT_MODE		20
-#define SETUP_MODE_CHOOSE_WINDOW_SIZE		21
-#define SETUP_MODE_CHOOSE_SCALING_TYPE		22
-#define SETUP_MODE_CHOOSE_RENDERING		23
-#define SETUP_MODE_CHOOSE_VSYNC			24
-#define SETUP_MODE_CHOOSE_GRAPHICS		25
-#define SETUP_MODE_CHOOSE_SOUNDS		26
-#define SETUP_MODE_CHOOSE_MUSIC			27
-#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		28
-#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		29
-#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		30
-#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		31
-#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		32
-#define SETUP_MODE_CHOOSE_DROP_DISTANCE		33
-#define SETUP_MODE_CHOOSE_TRANSPARENCY		34
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		35
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		36
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		37
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		38
-#define SETUP_MODE_CONFIG_VIRT_BUTTONS		39
+#define SETUP_MODE_CHOOSE_BD_PALETTE_C64	21
+#define SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV	22
+#define SETUP_MODE_CHOOSE_BD_PALETTE_ATARI	23
+#define SETUP_MODE_CHOOSE_WINDOW_SIZE		24
+#define SETUP_MODE_CHOOSE_SCALING_TYPE		25
+#define SETUP_MODE_CHOOSE_RENDERING		26
+#define SETUP_MODE_CHOOSE_VSYNC			27
+#define SETUP_MODE_CHOOSE_GRAPHICS		28
+#define SETUP_MODE_CHOOSE_SOUNDS		29
+#define SETUP_MODE_CHOOSE_MUSIC			30
+#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		31
+#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		32
+#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		33
+#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		34
+#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		35
+#define SETUP_MODE_CHOOSE_DROP_DISTANCE		36
+#define SETUP_MODE_CHOOSE_TRANSPARENCY		37
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		38
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		39
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		40
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		41
+#define SETUP_MODE_CONFIG_VIRT_BUTTONS		42
 
-#define MAX_SETUP_MODES				40
+#define MAX_SETUP_MODES				43
 
 #define MAX_MENU_MODES				MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
@@ -121,6 +124,9 @@
 #define STR_SETUP_CHOOSE_GAME_SPEED		"Game Speed"
 #define STR_SETUP_CHOOSE_SCROLL_DELAY		"Scroll Delay"
 #define STR_SETUP_CHOOSE_SNAPSHOT_MODE		"Snapshot Mode"
+#define STR_SETUP_CHOOSE_BD_PALETTE_C64		"Palette (C64)"
+#define STR_SETUP_CHOOSE_BD_PALETTE_C64DTV	"Palette (C64DTV)"
+#define STR_SETUP_CHOOSE_BD_PALETTE_ATARI	"Palette (Atari)"
 #define STR_SETUP_CHOOSE_WINDOW_SIZE		"Window Scaling"
 #define STR_SETUP_CHOOSE_SCALING_TYPE		"Anti-Aliasing"
 #define STR_SETUP_CHOOSE_RENDERING		"Rendering Mode"
@@ -367,6 +373,15 @@ static TreeInfo *scroll_delay_current = NULL;
 static TreeInfo *snapshot_modes = NULL;
 static TreeInfo *snapshot_mode_current = NULL;
 
+static TreeInfo *bd_palettes_c64 = NULL;
+static TreeInfo *bd_palette_c64_current = NULL;
+
+static TreeInfo *bd_palettes_c64dtv = NULL;
+static TreeInfo *bd_palette_c64dtv_current = NULL;
+
+static TreeInfo *bd_palettes_atari = NULL;
+static TreeInfo *bd_palette_atari_current = NULL;
+
 static TreeInfo *scores_types = NULL;
 static TreeInfo *scores_type_current = NULL;
 
@@ -522,6 +537,44 @@ static struct StringValueTextInfo snapshot_modes_list[] =
   { STR_SNAPSHOT_MODE_EVERY_COLLECT,	"Every Collect"			},
 
   { NULL,		 		NULL				},
+};
+
+static struct ValueTextInfo bd_palettes_c64_list[] =
+{
+  { GD_PALETTE_C64_VICE_NEW,		"Vice new"			},
+  { GD_PALETTE_C64_VICE_OLD,		"Vice old"			},
+  { GD_PALETTE_C64_VIDE_DEFAULT,	"Vice default"			},
+  { GD_PALETTE_C64_C64HQ,		"C64HQ"				},
+  { GD_PALETTE_C64_C64S,		"C64S"				},
+  { GD_PALETTE_C64_CCS64,		"CCS64"				},
+  { GD_PALETTE_C64_FRODO,		"Frodo"				},
+  { GD_PALETTE_C64_GODOT,		"GoDot"				},
+  { GD_PALETTE_C64_PC64,		"PC64"				},
+  { GD_PALETTE_C64_RTADASH,		"RTADash"			},
+
+  { -1,					NULL				},
+};
+
+static struct ValueTextInfo bd_palettes_c64dtv_list[] =
+{
+  { GD_PALETTE_C64DTV_SPIFF,		"Spiff"				},
+  { GD_PALETTE_C64DTV_MURRAY,		"Murray"			},
+
+  { -1,					NULL				},
+};
+
+static struct ValueTextInfo bd_palettes_atari_list[] =
+{
+  { GD_PALETTE_ATARI_BUILTIN,		"BuiltIn"			},
+  { GD_PALETTE_ATARI_BUILTIN_CONTRAST,	"BuiltIn contrast"		},
+  { GD_PALETTE_ATARI_DEFAULT,		"Default"			},
+  { GD_PALETTE_ATARI_JAKUB,		"Jakub"				},
+  { GD_PALETTE_ATARI_JAKUB_CONTRAST,	"Jakub contrast"		},
+  { GD_PALETTE_ATARI_REAL,		"Real"				},
+  { GD_PALETTE_ATARI_REAL_CONTRAST,	"Real contrast"			},
+  { GD_PALETTE_ATARI_XFORMER,		"XFormer"			},
+
+  { -1,					NULL				},
 };
 
 static struct ValueTextInfo volumes_list[] =
@@ -4970,6 +5023,10 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	  setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	  setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	execSetupGame();
+      else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
+	       setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
+	       setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
+	execSetupEngines();
       else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE ||
 	       setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE ||
 	       setup_mode == SETUP_MODE_CHOOSE_RENDERING ||
@@ -5166,6 +5223,10 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	      setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	      setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	    execSetupGame();
+	  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
+		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
+		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
+	    execSetupEngines();
 	  else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE ||
 		   setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE ||
 		   setup_mode == SETUP_MODE_CHOOSE_RENDERING ||
@@ -5243,6 +5304,10 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	      setup_mode == SETUP_MODE_CHOOSE_SCROLL_DELAY ||
 	      setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
 	    execSetupGame();
+	  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64 ||
+		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV ||
+		   setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
+	    execSetupEngines();
 	  else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE ||
 		   setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE ||
 		   setup_mode == SETUP_MODE_CHOOSE_RENDERING ||
@@ -5888,6 +5953,9 @@ static char *rendering_mode_text;
 static char *vsync_mode_text;
 static char *scroll_delay_text;
 static char *snapshot_mode_text;
+static char *bd_palette_c64_text;
+static char *bd_palette_c64dtv_text;
+static char *bd_palette_atari_text;
 static char *game_speed_text;
 static char *scores_type_text;
 static char *network_server_text;
@@ -6199,9 +6267,184 @@ static void execSetupChooseSnapshotMode(void)
   DrawSetupScreen();
 }
 
+static void execSetupEngines_setPalettesC64(void)
+{
+  if (bd_palettes_c64 == NULL)
+  {
+    int i;
+
+    for (i = 0; bd_palettes_c64_list[i].value != -1; i++)
+    {
+      TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_UNDEFINED);
+      char identifier[32], name[32];
+      int value = bd_palettes_c64_list[i].value;
+      char *text = bd_palettes_c64_list[i].text;
+
+      ti->node_top = &bd_palettes_c64;
+      ti->sort_priority = value;
+
+      sprintf(identifier, "%d", value);
+      sprintf(name, "%s", text);
+
+      setString(&ti->identifier, identifier);
+      setString(&ti->name, name);
+      setString(&ti->name_sorting, name);
+      setString(&ti->infotext, STR_SETUP_CHOOSE_BD_PALETTE_C64);
+
+      pushTreeInfo(&bd_palettes_c64, ti);
+    }
+
+    // sort palette values to start with lowest palette value
+    sortTreeInfo(&bd_palettes_c64);
+
+    // set current palette value to configured palette value
+    bd_palette_c64_current =
+      getTreeInfoFromIdentifier(bd_palettes_c64, i_to_a(setup.bd_palette_c64));
+
+    // if that fails, set current palette to reliable default value
+    if (bd_palette_c64_current == NULL)
+      bd_palette_c64_current =
+	getTreeInfoFromIdentifier(bd_palettes_c64, i_to_a(GD_DEFAULT_PALETTE_C64));
+
+    // if that also fails, set current palette to first available value
+    if (bd_palette_c64_current == NULL)
+      bd_palette_c64_current = bd_palettes_c64;
+  }
+
+  setup.bd_palette_c64 = atoi(bd_palette_c64_current->identifier);
+
+  // needed for displaying palette text instead of identifier
+  bd_palette_c64_text = bd_palette_c64_current->name;
+}
+
+static void execSetupEngines_setPalettesC64DTV(void)
+{
+  if (bd_palettes_c64dtv == NULL)
+  {
+    int i;
+
+    for (i = 0; bd_palettes_c64dtv_list[i].value != -1; i++)
+    {
+      TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_UNDEFINED);
+      char identifier[32], name[32];
+      int value = bd_palettes_c64dtv_list[i].value;
+      char *text = bd_palettes_c64dtv_list[i].text;
+
+      ti->node_top = &bd_palettes_c64dtv;
+      ti->sort_priority = value;
+
+      sprintf(identifier, "%d", value);
+      sprintf(name, "%s", text);
+
+      setString(&ti->identifier, identifier);
+      setString(&ti->name, name);
+      setString(&ti->name_sorting, name);
+      setString(&ti->infotext, STR_SETUP_CHOOSE_BD_PALETTE_C64DTV);
+
+      pushTreeInfo(&bd_palettes_c64dtv, ti);
+    }
+
+    // sort palette values to start with lowest palette value
+    sortTreeInfo(&bd_palettes_c64dtv);
+
+    // set current palette value to configured palette value
+    bd_palette_c64dtv_current =
+      getTreeInfoFromIdentifier(bd_palettes_c64dtv, i_to_a(setup.bd_palette_c64dtv));
+
+    // if that fails, set current palette to reliable default value
+    if (bd_palette_c64dtv_current == NULL)
+      bd_palette_c64dtv_current =
+	getTreeInfoFromIdentifier(bd_palettes_c64dtv, i_to_a(GD_DEFAULT_PALETTE_C64DTV));
+
+    // if that also fails, set current palette to first available value
+    if (bd_palette_c64dtv_current == NULL)
+      bd_palette_c64dtv_current = bd_palettes_c64dtv;
+  }
+
+  setup.bd_palette_c64dtv = atoi(bd_palette_c64dtv_current->identifier);
+
+  // needed for displaying palette text instead of identifier
+  bd_palette_c64dtv_text = bd_palette_c64dtv_current->name;
+}
+
+static void execSetupEngines_setPalettesAtari(void)
+{
+  if (bd_palettes_atari == NULL)
+  {
+    int i;
+
+    for (i = 0; bd_palettes_atari_list[i].value != -1; i++)
+    {
+      TreeInfo *ti = newTreeInfo_setDefaults(TREE_TYPE_UNDEFINED);
+      char identifier[32], name[32];
+      int value = bd_palettes_atari_list[i].value;
+      char *text = bd_palettes_atari_list[i].text;
+
+      ti->node_top = &bd_palettes_atari;
+      ti->sort_priority = value;
+
+      sprintf(identifier, "%d", value);
+      sprintf(name, "%s", text);
+
+      setString(&ti->identifier, identifier);
+      setString(&ti->name, name);
+      setString(&ti->name_sorting, name);
+      setString(&ti->infotext, STR_SETUP_CHOOSE_BD_PALETTE_ATARI);
+
+      pushTreeInfo(&bd_palettes_atari, ti);
+    }
+
+    // sort palette values to start with lowest palette value
+    sortTreeInfo(&bd_palettes_atari);
+
+    // set current palette value to configured palette value
+    bd_palette_atari_current =
+      getTreeInfoFromIdentifier(bd_palettes_atari, i_to_a(setup.bd_palette_atari));
+
+    // if that fails, set current palette to reliable default value
+    if (bd_palette_atari_current == NULL)
+      bd_palette_atari_current =
+	getTreeInfoFromIdentifier(bd_palettes_atari, i_to_a(GD_DEFAULT_PALETTE_ATARI));
+
+    // if that also fails, set current palette to first available value
+    if (bd_palette_atari_current == NULL)
+      bd_palette_atari_current = bd_palettes_atari;
+  }
+
+  setup.bd_palette_atari = atoi(bd_palette_atari_current->identifier);
+
+  // needed for displaying palette text instead of identifier
+  bd_palette_atari_text = bd_palette_atari_current->name;
+}
+
 static void execSetupEngines(void)
 {
   setup_mode = SETUP_MODE_ENGINES;
+
+  execSetupEngines_setPalettesC64();
+  execSetupEngines_setPalettesC64DTV();
+  execSetupEngines_setPalettesAtari();
+
+  DrawSetupScreen();
+}
+
+static void execSetupChoosePaletteC64(void)
+{
+  setup_mode = SETUP_MODE_CHOOSE_BD_PALETTE_C64;
+
+  DrawSetupScreen();
+}
+
+static void execSetupChoosePaletteC64DTV(void)
+{
+  setup_mode = SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV;
+
+  DrawSetupScreen();
+}
+
+static void execSetupChoosePaletteAtari(void)
+{
+  setup_mode = SETUP_MODE_CHOOSE_BD_PALETTE_ATARI;
 
   DrawSetupScreen();
 }
@@ -7556,6 +7799,12 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_SWITCH,	&setup.bd_skip_hatching,	"Skip hatching player:"		},
   { TYPE_SWITCH,	&setup.bd_scroll_delay,		"Scroll Delay:"			},
   { TYPE_YES_NO_AUTO,	&setup.bd_smooth_movements,	"Smooth Element Movement:"	},
+  { TYPE_ENTER_LIST,	&execSetupChoosePaletteC64,	"Color Palette (C64):"		},
+  { TYPE_STRING,	&bd_palette_c64_text,		""				},
+  { TYPE_ENTER_LIST,	&execSetupChoosePaletteC64DTV,	"Color Palette (C64DTV):"	},
+  { TYPE_STRING,	&bd_palette_c64dtv_text,	""				},
+  { TYPE_ENTER_LIST,	&execSetupChoosePaletteAtari,	"Color Palette (Atari):"	},
+  { TYPE_STRING,	&bd_palette_atari_text,		""				},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Emerald Mine"			},
   { TYPE_SWITCH,	&setup.forced_scroll_delay,	"Scroll Delay:"			},
@@ -9541,6 +9790,12 @@ void DrawSetupScreen(void)
     DrawChooseTree(&scroll_delay_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
     DrawChooseTree(&snapshot_mode_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64)
+    DrawChooseTree(&bd_palette_c64_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV)
+    DrawChooseTree(&bd_palette_c64dtv_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
+    DrawChooseTree(&bd_palette_atari_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE)
     DrawChooseTree(&window_size_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE)
@@ -9625,6 +9880,12 @@ void HandleSetupScreen(int mx, int my, int dx, int dy, int button)
     HandleChooseTree(mx, my, dx, dy, button, &scroll_delay_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SNAPSHOT_MODE)
     HandleChooseTree(mx, my, dx, dy, button, &snapshot_mode_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64)
+    HandleChooseTree(mx, my, dx, dy, button, &bd_palette_c64_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV)
+    HandleChooseTree(mx, my, dx, dy, button, &bd_palette_c64dtv_current);
+  else if (setup_mode == SETUP_MODE_CHOOSE_BD_PALETTE_ATARI)
+    HandleChooseTree(mx, my, dx, dy, button, &bd_palette_atari_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_WINDOW_SIZE)
     HandleChooseTree(mx, my, dx, dy, button, &window_size_current);
   else if (setup_mode == SETUP_MODE_CHOOSE_SCALING_TYPE)

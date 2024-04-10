@@ -10741,6 +10741,18 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.bd_smooth_movements,			"bd_smooth_movements"
   },
   {
+    TYPE_INTEGER,
+    &setup.bd_palette_c64,			"bd_palette_c64"
+  },
+  {
+    TYPE_INTEGER,
+    &setup.bd_palette_c64dtv,			"bd_palette_c64dtv"
+  },
+  {
+    TYPE_INTEGER,
+    &setup.bd_palette_atari,			"bd_palette_atari"
+  },
+  {
     TYPE_SWITCH,
     &setup.sp_show_border_elements,		"sp_show_border_elements"
   },
@@ -11564,6 +11576,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;
   si->bd_smooth_movements = AUTO;
+  si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
+  si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
+  si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;
   si->sp_show_border_elements = FALSE;
   si->small_game_graphics = FALSE;
   si->show_load_save_buttons = FALSE;

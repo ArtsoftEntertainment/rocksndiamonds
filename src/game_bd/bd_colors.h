@@ -91,9 +91,13 @@ typedef enum _color_type
 #define GD_PALETTE_C64_PC64			8
 #define GD_PALETTE_C64_RTADASH			9
 
+#define GD_DEFAULT_PALETTE_C64			GD_PALETTE_C64_VICE_NEW
+
 // palette numbers must match pointer array positions in source file
 #define GD_PALETTE_C64DTV_SPIFF			0
 #define GD_PALETTE_C64DTV_MURRAY		1
+
+#define GD_DEFAULT_PALETTE_C64DTV		GD_PALETTE_C64DTV_SPIFF
 
 // palette numbers must match pointer array positions in source file
 #define GD_PALETTE_ATARI_BUILTIN		0
@@ -104,6 +108,8 @@ typedef enum _color_type
 #define GD_PALETTE_ATARI_REAL			5
 #define GD_PALETTE_ATARI_REAL_CONTRAST		6
 #define GD_PALETTE_ATARI_XFORMER		7
+
+#define GD_DEFAULT_PALETTE_ATARI		GD_PALETTE_ATARI_BUILTIN
 
 
 // color

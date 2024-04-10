@@ -1515,6 +1515,9 @@ struct SetupInfo
   boolean bd_skip_hatching;
   boolean bd_scroll_delay;
   int bd_smooth_movements;		// not boolean -- can also be "AUTO"
+  int bd_palette_c64;
+  int bd_palette_c64dtv;
+  int bd_palette_atari;
   boolean sp_show_border_elements;
   boolean small_game_graphics;
   boolean show_load_save_buttons;

@@ -17,10 +17,6 @@
 #include "main_bd.h"
 
 
-static int gd_c64_palette = 0;
-static int gd_c64dtv_palette = 0;
-static int gd_atari_palette = 0;
-
 static char *c64_color_names[] =
 {
   "Black",  "White", "Red",      "Cyan",  "Purple", "Green",      "Blue",      "Yellow",
@@ -87,7 +83,7 @@ static unsigned int c64_colors_rtadash[]={
 };
 
 // pointer array positions must match palette numbers in header file
-static unsigned int *c64_palette_pointers[] =
+static unsigned int *c64_palettes_pointers[] =
 {
     c64_colors_vice_new,
     c64_colors_vice_old,
@@ -594,25 +590,28 @@ GdColor gd_color_get_rgb(GdColor color)
       return color;
 
     case GD_COLOR_TYPE_C64:
-      if (gd_c64_palette < 0 || gd_c64_palette >= ARRAY_SIZE(c64_palette_pointers) - 1)
-	gd_c64_palette = 0;    // silently switch to default, if invalid value
-      c64_pal = c64_palette_pointers[gd_c64_palette];
+      if (setup.bd_palette_c64 < 0 ||
+	  setup.bd_palette_c64 >= ARRAY_SIZE(c64_palettes_pointers) - 1)
+	setup.bd_palette_c64 = 0;	// silently switch to default, if invalid value
+      c64_pal = c64_palettes_pointers[setup.bd_palette_c64];
       index = color & 0x0f;
       return c64_pal[index];
 
     case GD_COLOR_TYPE_C64DTV:
-      if (gd_c64dtv_palette < 0 || gd_c64dtv_palette >= ARRAY_SIZE(c64dtv_palettes_pointers) - 1)
-	gd_c64dtv_palette = 0;
-      c64dtv_pal = c64dtv_palettes_pointers[gd_c64dtv_palette];
+      if (setup.bd_palette_c64dtv < 0 ||
+	  setup.bd_palette_c64dtv >= ARRAY_SIZE(c64dtv_palettes_pointers) - 1)
+	setup.bd_palette_c64dtv = 0;	// silently switch to default, if invalid value
+      c64dtv_pal = c64dtv_palettes_pointers[setup.bd_palette_c64dtv];
       index = color & 0xff;
       return gd_color_get_from_rgb(c64dtv_pal[index * 3],
 				   c64dtv_pal[index * 3 + 1],
 				   c64dtv_pal[index * 3 + 2]);
 
     case GD_COLOR_TYPE_ATARI:
-      if (gd_atari_palette < 0 || gd_atari_palette >= ARRAY_SIZE(atari_palettes_pointers) - 1)
-	gd_atari_palette = 0;
-      atari_pal = atari_palettes_pointers[gd_atari_palette];
+      if (setup.bd_palette_atari < 0 ||
+	  setup.bd_palette_atari >= ARRAY_SIZE(atari_palettes_pointers) - 1)
+	setup.bd_palette_atari = 0;	// silently switch to default, if invalid value
+      atari_pal = atari_palettes_pointers[setup.bd_palette_atari];
       index = color & 0xff;
       return gd_color_get_from_rgb(atari_pal[index * 3],
 				   atari_pal[index * 3 + 1],
