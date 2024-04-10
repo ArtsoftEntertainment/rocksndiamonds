@@ -2383,7 +2383,7 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
   level->file_has_custom_elements = FALSE;
 
   // set random colors for BD style levels according to preferred color type
-  SetRandomLevelColors_BD(setup.bd_color_type);
+  SetRandomLevelColors_BD(setup.bd_default_color_type);
 
   // set default color type and colors for BD style level colors
   SetDefaultLevelColorType_BD();
@@ -10757,7 +10757,7 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_INTEGER,
-    &setup.bd_color_type,			"bd_color_type"
+    &setup.bd_default_color_type,		"bd_default_color_type"
   },
   {
     TYPE_SWITCH,
@@ -11586,7 +11586,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
   si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
   si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;
-  si->bd_color_type = GD_DEFAULT_COLOR_TYPE;
+  si->bd_default_color_type = GD_DEFAULT_COLOR_TYPE;
   si->sp_show_border_elements = FALSE;
   si->small_game_graphics = FALSE;
   si->show_load_save_buttons = FALSE;

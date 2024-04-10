@@ -6468,7 +6468,7 @@ static void execSetupEngines_setColorType(void)
 
     // set current palette value to configured palette value
     bd_color_type_current =
-      getTreeInfoFromIdentifier(bd_color_types, i_to_a(setup.bd_color_type));
+      getTreeInfoFromIdentifier(bd_color_types, i_to_a(setup.bd_default_color_type));
 
     // if that fails, set current palette to reliable default value
     if (bd_color_type_current == NULL)
@@ -6480,7 +6480,7 @@ static void execSetupEngines_setColorType(void)
       bd_color_type_current = bd_color_types;
   }
 
-  setup.bd_color_type = atoi(bd_color_type_current->identifier);
+  setup.bd_default_color_type = atoi(bd_color_type_current->identifier);
 
   // needed for displaying palette text instead of identifier
   bd_color_type_text = bd_color_type_current->name;
