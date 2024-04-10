@@ -86,7 +86,7 @@ static unsigned int c64_colors_rtadash[]={
   0xe66c00, 0x935f00, 0xff7c64, 0x6c6c6c, 0xa1a1a1, 0xafff4d, 0x9778ff, 0xd8d8d8,
 };
 
-/* make sure that pointeres and names match! */
+// pointer array positions must match palette numbers in header file
 static unsigned int *c64_palette_pointers[] =
 {
     c64_colors_vice_new,
@@ -440,6 +440,7 @@ static byte XFormer[] =
   190,133,230,198,145,234,202,153,234,214,157,238,218,161
 };
 
+// pointer array positions must match palette numbers in header file
 static const byte *atari_palettes_pointers[] =
 {
   BuiltIn,
@@ -535,6 +536,7 @@ static byte Murray[] =
   39,185,212,57,208,232,80,225,249,89,238,255,107,255,255,126
 };
 
+// pointer array positions must match palette numbers in header file
 static const byte *c64dtv_palettes_pointers[] =
 {
   Spiff,

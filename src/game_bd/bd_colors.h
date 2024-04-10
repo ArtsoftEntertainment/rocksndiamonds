@@ -79,6 +79,32 @@ typedef enum _color_type
 
 #define GD_C64_COLOR(index)			((GD_COLOR_TYPE_C64 << 24) + (index))
 
+// palette numbers must match pointer array positions in source file
+#define GD_PALETTE_C64_VICE_NEW			0
+#define GD_PALETTE_C64_VICE_OLD			1
+#define GD_PALETTE_C64_VIDE_DEFAULT		2
+#define GD_PALETTE_C64_C64HQ			3
+#define GD_PALETTE_C64_C64S			4
+#define GD_PALETTE_C64_CCS64			5
+#define GD_PALETTE_C64_FRODO			6
+#define GD_PALETTE_C64_GODOT			7
+#define GD_PALETTE_C64_PC64			8
+#define GD_PALETTE_C64_RTADASH			9
+
+// palette numbers must match pointer array positions in source file
+#define GD_PALETTE_C64DTV_SPIFF			0
+#define GD_PALETTE_C64DTV_MURRAY		1
+
+// palette numbers must match pointer array positions in source file
+#define GD_PALETTE_ATARI_BUILTIN		0
+#define GD_PALETTE_ATARI_BUILTIN_CONTRAST	1
+#define GD_PALETTE_ATARI_DEFAULT		2
+#define GD_PALETTE_ATARI_JAKUB			3
+#define GD_PALETTE_ATARI_JAKUB_CONTRAST		4
+#define GD_PALETTE_ATARI_REAL			5
+#define GD_PALETTE_ATARI_REAL_CONTRAST		6
+#define GD_PALETTE_ATARI_XFORMER		7
+
 
 // color
 GdColor gd_c64_color(int index);
