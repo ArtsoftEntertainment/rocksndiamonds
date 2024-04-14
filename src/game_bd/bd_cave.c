@@ -1455,6 +1455,16 @@ void gd_drawcave_game(const GdCave *cave,
       draw = gd_elements[O_PLAYER].image_game;
     }
   }
+  else if (cave->last_direction == GD_MV_UP)
+  {
+    map = O_PLAYER_UP;
+    draw = gd_elements[O_PLAYER_UP].image_game;
+  }
+  else if (cave->last_direction == GD_MV_DOWN)
+  {
+    map = O_PLAYER_DOWN;
+    draw = gd_elements[O_PLAYER_DOWN].image_game;
+  }
   else if (cave->last_horizontal_direction == GD_MV_LEFT)
   {
     map = O_PLAYER_LEFT;

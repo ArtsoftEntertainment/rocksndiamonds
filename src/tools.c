@@ -7482,6 +7482,14 @@ bd_object_mapping_list[] =
     EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_RIGHT
   },
   {
+    O_PLAYER_UP,				FALSE,
+    EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_UP
+  },
+  {
+    O_PLAYER_DOWN,				FALSE,
+    EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_DOWN
+  },
+  {
     O_PLAYER_BLINK,				FALSE,
     EL_BD_PLAYER,				ACTION_BORING_1, -1
   },
