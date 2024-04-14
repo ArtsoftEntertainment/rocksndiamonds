@@ -530,12 +530,6 @@ Bitmap *gd_get_tile_bitmap(Bitmap *bitmap)
   return bitmap;
 }
 
-// workaround to prevent variable name scope problem
-static boolean use_native_bd_graphics_engine(void)
-{
-  return game.use_native_bd_graphics_engine;
-}
-
 // returns true if the element is a player
 static inline boolean is_player(const int element)
 {
@@ -593,9 +587,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   boolean is_movable = (can_move(tile) || can_fall(tile) || is_pushable(tile) || is_player(tile));
   boolean is_movable_or_diggable = (is_movable || is_diggable(game->last_element_buffer[y][x]));
   boolean is_moving = (is_movable_or_diggable && dir != GD_MV_STILL);
-  boolean use_smooth_movements =
-    ((setup.bd_smooth_movements == TRUE) ||
-     (setup.bd_smooth_movements == AUTO && !use_native_bd_graphics_engine()));
+  boolean use_smooth_movements = use_bd_smooth_movements();
 
   // do not use smooth movement animation for exploding game elements (like player)
   if (is_explosion(tile) && dir != GD_MV_STILL)

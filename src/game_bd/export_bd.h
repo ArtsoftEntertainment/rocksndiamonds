@@ -112,6 +112,9 @@ unsigned int InitEngineRandom_BD(int);
 void InitGameEngine_BD(void);
 void GameActions_BD(byte[MAX_PLAYERS]);
 
+boolean use_native_bd_graphics_engine(void);
+boolean use_bd_smooth_movements(void);
+
 Bitmap **GetTitleScreenBitmaps_BD(void);
 void CoverScreen_BD(void);
 

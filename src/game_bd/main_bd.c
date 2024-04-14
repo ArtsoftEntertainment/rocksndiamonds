@@ -433,6 +433,19 @@ void GameActions_BD(byte action[MAX_PLAYERS])
 // graphics functions
 // ============================================================================
 
+// check if native BD graphics engine requested in custom graphics configuration
+boolean use_native_bd_graphics_engine(void)
+{
+  return game.use_native_bd_graphics_engine;
+}
+
+// check if smooth game element movements selected in setup menu
+boolean use_bd_smooth_movements(void)
+{
+  return ((setup.bd_smooth_movements == TRUE) ||
+	  (setup.bd_smooth_movements == AUTO && !use_native_bd_graphics_engine()));
+}
+
 Bitmap **GetTitleScreenBitmaps_BD(void)
 {
   Bitmap **title_screen_bitmaps = gd_get_title_screen_bitmaps();
