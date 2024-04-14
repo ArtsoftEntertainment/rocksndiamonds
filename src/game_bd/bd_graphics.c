@@ -531,25 +531,25 @@ Bitmap *gd_get_tile_bitmap(Bitmap *bitmap)
 }
 
 // returns true if the element is a player
-static inline boolean is_player(const int element)
+static inline boolean el_player(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_PLAYER) != 0;
 }
 
 // returns true if the element is diggable
-static inline boolean is_diggable(const int element)
+static inline boolean el_diggable(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_DIGGABLE) != 0;
 }
 
 // returns true if the element is collectible
-static inline boolean is_collectible(const int element)
+static inline boolean el_collectible(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_COLLECTIBLE) != 0;
 }
 
 // returns true if the element is pushable
-static inline boolean is_pushable(const int element)
+static inline boolean el_pushable(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_PUSHABLE) != 0;
 }
@@ -567,7 +567,7 @@ static inline boolean can_fall(const int element)
 }
 
 // returns true if the element is exploding
-static inline boolean is_explosion(const int element)
+static inline boolean el_explosion(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_EXPLOSION) != 0;
 }
@@ -584,13 +584,13 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int frame = game->animcycle;
   struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
   Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
-  boolean is_movable = (can_move(tile) || can_fall(tile) || is_pushable(tile) || is_player(tile));
-  boolean is_movable_or_diggable = (is_movable || is_diggable(game->last_element_buffer[y][x]));
+  boolean is_movable = (can_move(tile) || can_fall(tile) || el_pushable(tile) || el_player(tile));
+  boolean is_movable_or_diggable = (is_movable || el_diggable(game->last_element_buffer[y][x]));
   boolean is_moving = (is_movable_or_diggable && dir != GD_MV_STILL);
   boolean use_smooth_movements = use_bd_smooth_movements();
 
   // do not use smooth movement animation for exploding game elements (like player)
-  if (is_explosion(tile) && dir != GD_MV_STILL)
+  if (el_explosion(tile) && dir != GD_MV_STILL)
     use_smooth_movements = FALSE;
 
   // do not use smooth movement animation for player entering exit (engine stopped)
@@ -632,7 +632,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     int tile_last = game->last_element_buffer[y][x];
 
     // only redraw previous game element if it is diggable (like dirt etc.)
-    if (!is_diggable(tile_last))
+    if (!el_diggable(tile_last))
       tile_last = O_SPACE;
 
     struct GraphicInfo_BD *g_old = &graphic_info_bd_object[tile_last][frame];
@@ -649,7 +649,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int tile_from = game->element_buffer[old_y][old_x] & ~SKIPPED;   // should never be skipped
   struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][frame];
   Bitmap *tile_bitmap_from = gd_get_tile_bitmap(g_from->bitmap);
-  boolean old_is_player = is_player(tile_from);
+  boolean old_is_player = el_player(tile_from);
   boolean old_is_moving = (game->dir_buffer[old_y][old_x] != GD_MV_STILL);
   boolean old_is_visible = (old_x >= cave->x1 &&
 			    old_x <= cave->x2 &&
