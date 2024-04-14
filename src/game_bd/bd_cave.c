@@ -1455,12 +1455,12 @@ void gd_drawcave_game(const GdCave *cave,
       draw = gd_elements[O_PLAYER].image_game;
     }
   }
-  else if (cave->last_direction == GD_MV_UP)
+  else if (cave->last_direction == GD_MV_UP && use_bd_up_down_graphics())
   {
     map = O_PLAYER_UP;
     draw = gd_elements[O_PLAYER_UP].image_game;
   }
-  else if (cave->last_direction == GD_MV_DOWN)
+  else if (cave->last_direction == GD_MV_DOWN && use_bd_up_down_graphics())
   {
     map = O_PLAYER_DOWN;
     draw = gd_elements[O_PLAYER_DOWN].image_game;

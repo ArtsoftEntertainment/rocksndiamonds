@@ -453,6 +453,13 @@ boolean use_bd_pushing_graphics(void)
 	  (setup.bd_pushing_graphics == AUTO && !use_native_bd_graphics_engine()));
 }
 
+// check if player up/down graphics selected in setup menu
+boolean use_bd_up_down_graphics(void)
+{
+  return ((setup.bd_up_down_graphics == TRUE) ||
+	  (setup.bd_up_down_graphics == AUTO && !use_native_bd_graphics_engine()));
+}
+
 Bitmap **GetTitleScreenBitmaps_BD(void)
 {
   Bitmap **title_screen_bitmaps = gd_get_title_screen_bitmaps();

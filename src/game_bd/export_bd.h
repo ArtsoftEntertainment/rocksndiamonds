@@ -115,6 +115,7 @@ void GameActions_BD(byte[MAX_PLAYERS]);
 boolean use_native_bd_graphics_engine(void);
 boolean use_bd_smooth_movements(void);
 boolean use_bd_pushing_graphics(void);
+boolean use_bd_up_down_graphics(void);
 
 Bitmap **GetTitleScreenBitmaps_BD(void);
 void CoverScreen_BD(void);
