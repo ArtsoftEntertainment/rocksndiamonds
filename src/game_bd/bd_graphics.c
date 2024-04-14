@@ -555,15 +555,15 @@ static inline boolean el_pushable(const int element)
 }
 
 // returns true if the element can move
-static inline boolean can_move(const int element)
+static inline boolean el_can_move(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_CAN_MOVE) != 0;
 }
 
 // returns true if the element can fall
-static inline boolean can_fall(const int element)
+static inline boolean el_falling(const int element)
 {
-  return (gd_elements[element & O_MASK].properties & P_CAN_FALL) != 0;
+  return (gd_elements[element & O_MASK].properties & P_FALLING) != 0;
 }
 
 // returns true if the element is exploding
@@ -584,7 +584,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int frame = game->animcycle;
   struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
   Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
-  boolean is_movable = (can_move(tile) || can_fall(tile) || el_pushable(tile) || el_player(tile));
+  boolean is_movable = (el_can_move(tile) || el_falling(tile) || el_pushable(tile) ||
+			el_player(tile));
   boolean is_movable_or_diggable = (is_movable || el_diggable(game->last_element_buffer[y][x]));
   boolean is_moving = (is_movable_or_diggable && dir != GD_MV_STILL);
   boolean use_smooth_movements = use_bd_smooth_movements();

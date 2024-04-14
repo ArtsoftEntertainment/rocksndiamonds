@@ -124,10 +124,10 @@ GdElements gd_elements[] =
   { O_DIRT_SLOPED_UP_LEFT, N_("Sloped dirt (up & left)"), P_DIRT | P_SLOPED_UP | P_SLOPED_LEFT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDUPLEFT", 0, 281, 281, 281 },
   { O_DIRT_SLOPED_DOWN_LEFT, N_("Sloped dirt (down & left)"), P_DIRT | P_SLOPED_DOWN | P_SLOPED_LEFT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDDOWNLEFT", 0, 282, 282, 282 },
   { O_DIRT_SLOPED_DOWN_RIGHT, N_("Sloped dirt (down & right)"), P_DIRT | P_SLOPED_DOWN | P_SLOPED_RIGHT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDDOWNRIGHT", 0, 283, 283, 283 },
-  { O_DIRT_BALL, N_("Dirt ball"), P_DIRT | P_SLOPED | P_AMOEBA_CONSUMES | P_MOVED_BY_CONVEYOR_TOP | P_DIGGABLE, "DIRTBALL", 0, 289, 289, 289, 120 },    // has ckdelay
-  { O_DIRT_BALL_F, N_("Dirt ball (falling)"), P_CAN_FALL | P_DIGGABLE, "DIRTBALLf", 0, 289, 289, 289, 120 },    // has ckdelay
-  { O_DIRT_LOOSE, N_("Loose dirt"), P_DIRT | P_AMOEBA_CONSUMES | P_MOVED_BY_CONVEYOR_TOP | P_DIGGABLE, "DIRTLOOSE", 0, 352, 352, 352, 60 },    // has ckdelay
-  { O_DIRT_LOOSE_F, N_("Loose dirt (falling)"), P_CAN_FALL, "DIRTLOOSEf", 0, 352, 352, 352, 60 },    // has ckdelay
+  { O_DIRT_BALL, N_("Dirt ball"), P_DIRT | P_SLOPED | P_AMOEBA_CONSUMES | P_MOVED_BY_CONVEYOR_TOP | P_DIGGABLE | P_CAN_FALL, "DIRTBALL", 0, 289, 289, 289, 120 },    // has ckdelay
+  { O_DIRT_BALL_F, N_("Dirt ball (falling)"), P_FALLING | P_DIGGABLE, "DIRTBALLf", 0, 289, 289, 289, 120 },    // has ckdelay
+  { O_DIRT_LOOSE, N_("Loose dirt"), P_DIRT | P_AMOEBA_CONSUMES | P_MOVED_BY_CONVEYOR_TOP | P_DIGGABLE | P_CAN_FALL, "DIRTLOOSE", 0, 352, 352, 352, 60 },    // has ckdelay
+  { O_DIRT_LOOSE_F, N_("Loose dirt (falling)"), P_FALLING, "DIRTLOOSEf", 0, 352, 352, 352, 60 },    // has ckdelay
   { O_DIRT2, N_("Dirt 2"), P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRT2", 0, 3, 3, 3 },
   { O_BRICK, N_("Brick wall"), P_SLOPED|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED, "WALL", 'w', 5, 5, 5 },
   { O_BRICK_SLOPED_UP_RIGHT, N_("Sloped brick wall (up & right)"), P_SLOPED_UP|P_SLOPED_RIGHT|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED, "WALLSLOPEDUPRIGHT", 0, 276, 276, 276 },
@@ -148,18 +148,18 @@ GdElements gd_elements[] =
   { O_STEEL_EXPLODABLE, N_("Explodable steel wall"), P_CAN_BE_HAMMERED, "STEELWALLDESTRUCTABLE", 'E', 72, 72, 4 },
   { O_STEEL_EATABLE, N_("Eatable steel wall"), P_DIGGABLE, "STEELWALLEATABLE", 0, i_steel_eatable, i_steel_eatable, 4 },
   { O_BRICK_EATABLE, N_("Eatable brick wall"), P_DIGGABLE, "WALLEATABLE", 0, i_brick_eatable, i_brick_eatable, 5 },
-  { O_STONE, N_("Stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE, "BOULDER", 'r', 1, 1, 1, 156 },    // has ckdelay
-  { O_STONE_F, N_("Stone, falling"), P_CAN_FALL, "BOULDERf", 'R', i_stone_f, i_stone_f, 1, 156 },    // has ckdelay
-  { O_FLYING_STONE, N_("Flying stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_BOTTOM | P_PUSHABLE, "FLYINGBOULDER", 0, 357, 357, 357, 156 },    // has ckdelay
-  { O_FLYING_STONE_F, N_("Flying stone, flying"), P_CAN_FALL, "FLYINGBOULDERf", 0, i_flying_stone_f, i_flying_stone_f, 357, 156 },    // has ckdelay
-  { O_MEGA_STONE, N_("Mega stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE, "MEGABOULDER", 0, 272, 272, 272, 156 },    // has ckdelay
-  { O_MEGA_STONE_F, N_("Mega stone, falling"), P_CAN_FALL, "MEGABOULDERf", 0, i_mega_stone_falling, i_mega_stone_falling, 272, 156 },    // has ckdelay
-  { O_DIAMOND, N_("Diamond"), P_SLOPED|P_MOVED_BY_CONVEYOR_TOP|P_COLLECTIBLE, "DIAMOND", 'd', 248, -248, -248, 156 },    // has ckdelay
-  { O_DIAMOND_F, N_("Diamond, falling"), P_CAN_FALL, "DIAMONDf", 'D', i_diamond_f, i_diamond_f, -248, 156 },    // has ckdelay
-  { O_FLYING_DIAMOND, N_("Flying diamond"), P_SLOPED|P_MOVED_BY_CONVEYOR_BOTTOM|P_COLLECTIBLE, "FLYINGDIAMOND", 0, 344, -344, -344, 156 },    // has ckdelay
-  { O_FLYING_DIAMOND_F, N_("Flying diamond, flying"), P_CAN_FALL, "FLYINGDIAMONDf", 0, i_flying_diamond_f, i_flying_diamond_f, -344, 156 },    // has ckdelay
-  { O_NUT, N_("Nut"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE, "NUT", 0, 358, 358, 358, 156 },    // has ckdelay
-  { O_NUT_F, N_("Nut, falling"), P_CAN_FALL, "NUTf", 0, i_nut_f, i_nut_f, 358, 156 },    // has ckdelay
+  { O_STONE, N_("Stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL, "BOULDER", 'r', 1, 1, 1, 156 },    // has ckdelay
+  { O_STONE_F, N_("Stone, falling"), P_FALLING, "BOULDERf", 'R', i_stone_f, i_stone_f, 1, 156 },    // has ckdelay
+  { O_FLYING_STONE, N_("Flying stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_BOTTOM | P_PUSHABLE | P_CAN_FALL, "FLYINGBOULDER", 0, 357, 357, 357, 156 },    // has ckdelay
+  { O_FLYING_STONE_F, N_("Flying stone, flying"), P_FALLING, "FLYINGBOULDERf", 0, i_flying_stone_f, i_flying_stone_f, 357, 156 },    // has ckdelay
+  { O_MEGA_STONE, N_("Mega stone"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL, "MEGABOULDER", 0, 272, 272, 272, 156 },    // has ckdelay
+  { O_MEGA_STONE_F, N_("Mega stone, falling"), P_FALLING, "MEGABOULDERf", 0, i_mega_stone_falling, i_mega_stone_falling, 272, 156 },    // has ckdelay
+  { O_DIAMOND, N_("Diamond"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_COLLECTIBLE | P_CAN_FALL, "DIAMOND", 'd', 248, -248, -248, 156 },    // has ckdelay
+  { O_DIAMOND_F, N_("Diamond, falling"), P_FALLING, "DIAMONDf", 'D', i_diamond_f, i_diamond_f, -248, 156 },    // has ckdelay
+  { O_FLYING_DIAMOND, N_("Flying diamond"), P_SLOPED | P_MOVED_BY_CONVEYOR_BOTTOM | P_COLLECTIBLE | P_CAN_FALL, "FLYINGDIAMOND", 0, 344, -344, -344, 156 },    // has ckdelay
+  { O_FLYING_DIAMOND_F, N_("Flying diamond, flying"), P_FALLING, "FLYINGDIAMONDf", 0, i_flying_diamond_f, i_flying_diamond_f, -344, 156 },    // has ckdelay
+  { O_NUT, N_("Nut"), P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL, "NUT", 0, 358, 358, 358, 156 },    // has ckdelay
+  { O_NUT_F, N_("Nut, falling"), P_FALLING, "NUTf", 0, i_nut_f, i_nut_f, 358, 156 },    // has ckdelay
   { O_BLADDER_SPENDER, N_("Bladder Spender"), P_PUSHABLE, "BLADDERSPENDER", 0, 6, 6, 6, 20 },    // has ckdelay
   { O_INBOX, N_("Inbox"), 0, "INBOX", 'P', 35, 35, 22 },
   { O_H_EXPANDING_WALL, N_("Expanding wall, horizontal"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED, "HEXPANDINGWALL", 'x', i_h_expanding_wall, i_h_expanding_wall, 5, 111 },    // has ckdelay
@@ -175,8 +175,8 @@ GdElements gd_elements[] =
   { O_CONVEYOR_SWITCH, N_("Conveyor belt power switch"), 0, "CONVEYORSWITCH", 0, 356, 356, 356 },
   { O_CONVEYOR_DIR_SWITCH, N_("Conveyor belt direction switch"), 0, "CONVEYORDIRECTIONSWITCH", 0, 353, 353, 353 },
   { O_ACID, N_("Acid"), 0, "ACID", 0, 20, 20, 20, 128 },    // has ckdelay
-  { O_FALLING_WALL, N_("Falling wall"), P_CAN_BE_HAMMERED, "FALLINGWALL", 0, i_falling_wall, i_falling_wall, 5, 80 },    // has ckdelay
-  { O_FALLING_WALL_F, N_("Falling wall, falling"), P_CAN_BE_HAMMERED | P_CAN_FALL, "FALLINGWALLf", 0, i_falling_wall_falling, i_falling_wall_falling, 5, 80 },    // has ckdelay
+  { O_FALLING_WALL, N_("Falling wall"), P_CAN_BE_HAMMERED | P_CAN_FALL, "FALLINGWALL", 0, i_falling_wall, i_falling_wall, 5, 80 },    // has ckdelay
+  { O_FALLING_WALL_F, N_("Falling wall, falling"), P_CAN_BE_HAMMERED | P_FALLING, "FALLINGWALLf", 0, i_falling_wall_falling, i_falling_wall_falling, 5, 80 },    // has ckdelay
   { O_BOX, N_("Box"), P_PUSHABLE, "SOKOBANBOX", 0, 21, 21, 21 },
   { O_TIME_PENALTY, N_("Time penalty"), P_NON_EXPLODABLE, "TIMEPENALTY", 0, i_time_penalty, i_time_penalty, 9 },
   { O_GRAVESTONE, N_("Gravestone"), P_NON_EXPLODABLE, "GRAVESTONE", 'G', 9, 9, 9 },
@@ -306,8 +306,8 @@ GdElements gd_elements[] =
   { O_BOMB_TICK_6, N_("Ticking bomb (6)"), 0, "IGNITEDBOMB6", 0, 54, 54, 54 },
   { O_BOMB_TICK_7, N_("Ticking bomb (7)"), 0, "IGNITEDBOMB7", 0, 55, 55, 55 },
 
-  { O_NITRO_PACK, N_("Nitro pack"), P_SLOPED | P_EXPLODES_BY_HIT | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE, "NITRO", 0, 288, 288, 288 },
-  { O_NITRO_PACK_F, N_("Nitro pack, falling"), P_EXPLODES_BY_HIT | P_CAN_FALL, "NITROf", 0, i_nitro_pack_f, i_nitro_pack_f, 288 },
+  { O_NITRO_PACK, N_("Nitro pack"), P_SLOPED | P_EXPLODES_BY_HIT | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL, "NITRO", 0, 288, 288, 288 },
+  { O_NITRO_PACK_F, N_("Nitro pack, falling"), P_EXPLODES_BY_HIT | P_FALLING, "NITROf", 0, i_nitro_pack_f, i_nitro_pack_f, 288 },
   { O_NITRO_PACK_EXPLODE, N_("Nitro pack, triggered"), P_EXPLODES_BY_HIT, "NITROtriggered", 0, i_nitro_explode, i_nitro_explode, 288 },
 
   { O_PRE_CLOCK_1, N_("Clock birth (1)"), P_EXPLOSION_FIRST_STAGE, "CLOCKBIRTH1", 0, 28, 28, 28, 280 },    // has ckdelay

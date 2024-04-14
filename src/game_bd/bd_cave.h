@@ -126,6 +126,7 @@ enum _element_property
   E_P_PUSHABLE,                 // can be pushed
   E_P_CAN_MOVE,                 // can move
   E_P_CAN_FALL,                 // can fall
+  E_P_FALLING,                  // falling
 };
 
 // properties
@@ -163,6 +164,7 @@ enum _element_property
 #define P_PUSHABLE			(1 << E_P_PUSHABLE)
 #define P_CAN_MOVE			(1 << E_P_CAN_MOVE)
 #define P_CAN_FALL			(1 << E_P_CAN_FALL)
+#define P_FALLING			(1 << E_P_FALLING)
 
 // These are states of the magic wall.
 typedef enum _magic_wall_state
