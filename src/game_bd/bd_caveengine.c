@@ -126,9 +126,19 @@ void gd_cave_set_seconds_sound(GdCave *cave)
   }
 }
 
+// returns true if the element can fall
+static inline boolean el_can_fall(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_CAN_FALL) != 0;
+}
+
 // play diamond or stone sound of given element.
 static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
 {
+  // check if sound should be skipped for falling elements (and only be played on impact)
+  if (el_can_fall(element) && skip_bd_falling_sounds())
+    return;
+
   // stone and diamond fall sounds.
   switch (element)
   {

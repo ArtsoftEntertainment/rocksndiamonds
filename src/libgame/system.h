@@ -1518,6 +1518,7 @@ struct SetupInfo
   int bd_smooth_movements;		// not boolean -- can also be "AUTO"
   int bd_pushing_graphics;		// not boolean -- can also be "AUTO"
   int bd_up_down_graphics;		// not boolean -- can also be "AUTO"
+  int bd_skip_falling_sounds;		// not boolean -- can also be "AUTO"
   int bd_palette_c64;
   int bd_palette_c64dtv;
   int bd_palette_atari;

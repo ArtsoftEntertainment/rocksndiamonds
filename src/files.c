@@ -10784,6 +10784,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.bd_up_down_graphics,			"bd_up_down_graphics"
   },
   {
+    TYPE_SWITCH3,
+    &setup.bd_skip_falling_sounds,		"bd_skip_falling_sounds"
+  },
+  {
     TYPE_INTEGER,
     &setup.bd_palette_c64,			"bd_palette_c64"
   },
@@ -11630,6 +11634,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_smooth_movements = AUTO;
   si->bd_pushing_graphics = TRUE;
   si->bd_up_down_graphics = TRUE;
+  si->bd_skip_falling_sounds = AUTO;
   si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
   si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
   si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;

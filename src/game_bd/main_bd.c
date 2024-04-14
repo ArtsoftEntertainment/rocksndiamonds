@@ -460,6 +460,13 @@ boolean use_bd_up_down_graphics(void)
 	  (setup.bd_up_down_graphics == AUTO && !use_native_bd_graphics_engine()));
 }
 
+// check if skipping falling sounds selected in setup menu
+boolean skip_bd_falling_sounds(void)
+{
+  return ((setup.bd_skip_falling_sounds == TRUE) ||
+	  (setup.bd_skip_falling_sounds == AUTO && !game.use_native_bd_sound_engine));
+}
+
 Bitmap **GetTitleScreenBitmaps_BD(void)
 {
   Bitmap **title_screen_bitmaps = gd_get_title_screen_bitmaps();
