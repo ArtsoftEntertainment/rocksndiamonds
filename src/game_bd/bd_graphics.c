@@ -530,13 +530,11 @@ Bitmap *gd_get_tile_bitmap(Bitmap *bitmap)
   return bitmap;
 }
 
-#if DO_GFX_SANITY_CHECK
 // workaround to prevent variable name scope problem
 static boolean use_native_bd_graphics_engine(void)
 {
   return game.use_native_bd_graphics_engine;
 }
-#endif
 
 // returns true if the element is a player
 static inline boolean is_player(const int element)
