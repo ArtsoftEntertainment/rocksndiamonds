@@ -82,7 +82,7 @@ void gd_struct_set_defaults_from_array(void *str, const GdStructDescriptor *prop
 
 // these define the number of the cells in the png file
 #define GD_NUM_OF_CELLS_X	8
-#define GD_NUM_OF_CELLS_Y	47
+#define GD_NUM_OF_CELLS_Y	51
 
 // +80: placeholder for cells which are rendered by the game;
 // for example diamond + arrow = falling diamond
@@ -697,7 +697,8 @@ GdScheduling gd_scheduling_from_string(const char *str);
 // game playing helpers
 #define GD_REDRAW (1 << 10)
 
-void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer,
+void gd_drawcave_game(const GdCave *cave,
+		      int **element_buffer, int **last_element_buffer, int **gfx_buffer,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox);
 
 // function to copy a GdString

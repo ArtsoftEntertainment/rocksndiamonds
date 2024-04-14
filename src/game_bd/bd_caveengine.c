@@ -449,7 +449,7 @@ static inline boolean rotates_ccw (const GdCave *cave, const int x, const int y)
 }
 
 // returns true if the element is a player
-static inline boolean is_player(const GdCave *cave, const int x, const int y)
+boolean is_player(const GdCave *cave, const int x, const int y)
 {
   return (gd_elements[get(cave, x, y) & O_MASK].properties & P_PLAYER) != 0;
 }
@@ -465,6 +465,13 @@ static inline boolean can_be_hammered_dir(const GdCave *cave, const int x, const
 					  const GdDirection dir)
 {
   return (gd_elements[get_dir(cave, x, y, dir) & O_MASK].properties & P_CAN_BE_HAMMERED) != 0;
+}
+
+// returns true if the element can be pushed
+boolean can_be_pushed_dir(const GdCave *cave, const int x, const int y,
+			  const GdDirection dir)
+{
+  return (gd_elements[get_dir(cave, x, y, dir) & O_MASK].properties & P_PUSHABLE) != 0;
 }
 
 // returns true if the element is explodable and explodes to space, for example the player

@@ -1316,7 +1316,8 @@ void gd_cave_count_diamonds(GdCave *cave)
   if a cell is changed, it is flagged with GD_REDRAW; the flag can be cleared
   by the caller.
 */
-void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer,
+void gd_drawcave_game(const GdCave *cave,
+		      int **element_buffer, int **last_element_buffer, int **gfx_buffer,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox)
 {
   static int player_blinking = 0;
@@ -1538,6 +1539,27 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
 	draw = gd_elements[O_COVERED].image_game;
       else
 	draw = elemdrawing[actual];
+
+      // draw special graphics if player is pushing something
+      if ((cave->last_direction == GD_MV_LEFT || cave->last_direction == GD_MV_RIGHT) &&
+	  is_player(cave, x, y) && can_be_pushed_dir(cave, x, y, cave->last_direction))
+      {
+	// special check needed when smooth game element movements selected in setup menu:
+	// last element must either be player (before pushing) or pushable element (while pushing)
+	// (extra check needed to prevent pushing animation when moving towards pushable element)
+	if (!use_bd_smooth_movements() || last_element_buffer[y][x] != O_SPACE)
+	{
+	  if (cave->last_direction == GD_MV_LEFT)
+	    map = O_PLAYER_PUSH_LEFT;
+	  else
+	    map = O_PLAYER_PUSH_RIGHT;
+
+	  if (cave->last_direction == GD_MV_LEFT)
+	    draw = elemdrawing[O_PLAYER_PUSH_LEFT];
+	  else
+	    draw = elemdrawing[O_PLAYER_PUSH_RIGHT];
+	}
+      }
 
       // if negative, animated.
       if (draw < 0)

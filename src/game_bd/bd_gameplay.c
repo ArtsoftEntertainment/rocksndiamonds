@@ -571,7 +571,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
   // always render the cave to the gfx buffer;
   // however it may do nothing if animcycle was not changed.
   if (game->element_buffer && game->gfx_buffer)
-    gd_drawcave_game(game->cave, game->element_buffer, game->gfx_buffer,
+    gd_drawcave_game(game->cave, game->element_buffer, game->last_element_buffer, game->gfx_buffer,
 		     game->bonus_life_flash != 0, game->animcycle, gd_no_invisible_outbox);
 
   game->state_counter = counter_next;
