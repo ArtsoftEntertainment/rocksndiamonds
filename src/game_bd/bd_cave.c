@@ -1321,8 +1321,8 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
 {
   static int player_blinking = 0;
   static int player_tapping = 0;
-  int elemmapping[O_MAX];
-  int elemdrawing[O_MAX];
+  int elemmapping[O_MAX_ALL];
+  int elemdrawing[O_MAX_ALL];
   int x, y, map, draw;
 
   if (cave->last_direction)
@@ -1346,7 +1346,7 @@ void gd_drawcave_game(const GdCave *cave, int **element_buffer, int **gfx_buffer
     }
   }
 
-  for (x = 0; x < O_MAX; x++)
+  for (x = 0; x < O_MAX_ALL; x++)
   {
     elemmapping[x] = x;
     elemdrawing[x] = gd_elements[x].image_game;
