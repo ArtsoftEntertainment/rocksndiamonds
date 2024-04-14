@@ -10776,6 +10776,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.bd_smooth_movements,			"bd_smooth_movements"
   },
   {
+    TYPE_SWITCH3,
+    &setup.bd_pushing_graphics,			"bd_pushing_graphics"
+  },
+  {
     TYPE_INTEGER,
     &setup.bd_palette_c64,			"bd_palette_c64"
   },
@@ -11620,6 +11624,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;
   si->bd_smooth_movements = AUTO;
+  si->bd_pushing_graphics = TRUE;
   si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
   si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
   si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;

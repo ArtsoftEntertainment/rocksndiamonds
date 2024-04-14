@@ -446,6 +446,13 @@ boolean use_bd_smooth_movements(void)
 	  (setup.bd_smooth_movements == AUTO && !use_native_bd_graphics_engine()));
 }
 
+// check if player pushing graphics selected in setup menu
+boolean use_bd_pushing_graphics(void)
+{
+  return ((setup.bd_pushing_graphics == TRUE) ||
+	  (setup.bd_pushing_graphics == AUTO && !use_native_bd_graphics_engine()));
+}
+
 Bitmap **GetTitleScreenBitmaps_BD(void)
 {
   Bitmap **title_screen_bitmaps = gd_get_title_screen_bitmaps();
