@@ -177,7 +177,7 @@ GdElements gd_elements[] =
   { O_ACID, N_("Acid"), 0, "ACID", 0, 20, 20, 20, 128 },    // has ckdelay
   { O_FALLING_WALL, N_("Falling wall"), P_CAN_BE_HAMMERED, "FALLINGWALL", 0, i_falling_wall, i_falling_wall, 5, 80 },    // has ckdelay
   { O_FALLING_WALL_F, N_("Falling wall, falling"), P_CAN_BE_HAMMERED | P_CAN_FALL, "FALLINGWALLf", 0, i_falling_wall_falling, i_falling_wall_falling, 5, 80 },    // has ckdelay
-  { O_BOX, N_("Box"), 0, "SOKOBANBOX", 0, 21, 21, 21 },
+  { O_BOX, N_("Box"), P_PUSHABLE, "SOKOBANBOX", 0, 21, 21, 21 },
   { O_TIME_PENALTY, N_("Time penalty"), P_NON_EXPLODABLE, "TIMEPENALTY", 0, i_time_penalty, i_time_penalty, 9 },
   { O_GRAVESTONE, N_("Gravestone"), P_NON_EXPLODABLE, "GRAVESTONE", 'G', 9, 9, 9 },
   { O_STONE_GLUED, N_("Glued stone"), P_SLOPED, "GLUEDBOULDER", 0, i_stone_glued, i_stone_glued, 1 },
