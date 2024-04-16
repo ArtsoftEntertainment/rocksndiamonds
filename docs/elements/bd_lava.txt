@@ -1,2 +1,2 @@
-Heavy elemenets sink into the lava and disappear without any trace left.
+Heavy elements sink into the lava and disappear without any trace left.
 Creatures can also step into the lava.
