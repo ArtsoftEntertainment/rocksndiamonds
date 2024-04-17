@@ -70,6 +70,8 @@ struct ConfigInfo sound_config[] =
   { "bd_nut.impact",				"klumpf.wav"			},
   { "bd_nitro_pack.pushing",			"pusch.wav"			},
   { "bd_nitro_pack.impact",			"klopf.wav"			},
+  { "bd_bomb.collecting",			"pong.wav"			},
+  { "bd_bomb.dropping",				"zisch.wav"			},
   { "bd_magic_wall.activating",			"quirk.wav"			},
   { "bd_magic_wall.active",			"miep.wav"			},
   { "bd_magic_wall.filling",			"quirk.wav"			},
