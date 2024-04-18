@@ -233,7 +233,7 @@ GdElements gd_elements[] =
 
   { O_AMOEBA, N_("Amoeba"), P_BLOWS_UP_FLIES | P_CAN_MOVE, "AMOEBA", 'a', 192, -192, -192, 260 },    // has ckdelay
   { O_AMOEBA_2, N_("Amoeba 2"), P_BLOWS_UP_FLIES | P_CAN_MOVE | P_VISUAL_EFFECT, "AMOEBA2", 0, 296, -296, -296, 260 },    // has ckdelay
-  { O_REPLICATOR, N_("Replicator"), P_NON_EXPLODABLE, "REPLICATOR", 0, 304, 304, 304, 210 },    // has ckdelay
+  { O_REPLICATOR, N_("Replicator"), P_NON_EXPLODABLE, "REPLICATOR", 0, 304, -304, -304, 210 },    // has ckdelay
   { O_CONVEYOR_LEFT, N_("Conveyor belt (left)"), P_NON_EXPLODABLE, "CONVEYORLEFT", 0, i_conveyor_left, -328, -328, 256  },    // has ckdelay
   { O_CONVEYOR_RIGHT, N_("Conveyor belt (right)"), P_NON_EXPLODABLE, "CONVEYORRIGHT", 0, i_conveyor_right, -320, -320  },
   { O_LAVA, N_("Lava"), P_NON_EXPLODABLE, "LAVA", 0, 312, -312, -312 },
