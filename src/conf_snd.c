@@ -86,6 +86,9 @@ struct ConfigInfo sound_config[] =
   { "bd_butterfly.waiting",			"klapper.wav"			},
   { "bd_firefly.moving",			"roehr.wav"			},
   { "bd_firefly.waiting",			"roehr.wav"			},
+  { "bd_pneumatic_hammer.active",		"hammer.wav"			},
+  { "bd_covered.active",			"jingle.wav"			},
+  { "bd_inbox.opening",				"crash.wav"			},
 
   // sounds for Supaplex style elements and actions
   { "sp_base.digging",				"base.wav"			},
