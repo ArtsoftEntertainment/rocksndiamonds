@@ -2064,7 +2064,8 @@
 #define EL_DF_END_2				EL_DF_SLOPE_END
 
 // BD style elements (normal)
-#define EL_BD_EMPTY_SPACE			1253
+#define EL_BD_START				1253
+#define EL_BD_EMPTY_SPACE			EL_BD_START
 #define EL_BD_EMPTY				EL_BD_EMPTY_SPACE
 #define EL_BD_SAND				1254
 #define EL_BD_SAND_2				1255
@@ -2301,6 +2302,7 @@
 #define EL_BD_NUT_BREAKING_2			1484
 #define EL_BD_NUT_BREAKING_3			1485
 #define EL_BD_NUT_BREAKING_4			1486
+#define EL_BD_END				EL_BD_NUT_BREAKING_4
 
 #define NUM_FILE_ELEMENTS			1487
 
