@@ -304,6 +304,7 @@ void ResetFontStatus(void);
 
 void SetLevelSetInfo(char *, int);
 
+void ToggleAudioSampleRateIfNeeded(void);
 void ToggleFullscreenIfNeeded(void);
 void ChangeWindowScalingIfNeeded(void);
 void ChangeVsyncModeIfNeeded(void);

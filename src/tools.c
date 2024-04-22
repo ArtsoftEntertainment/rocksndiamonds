@@ -11431,6 +11431,27 @@ void PlaySoundSelecting(void)
 #endif
 }
 
+void ToggleAudioSampleRateIfNeeded(void)
+{
+  int setup_audio_sample_rate = (setup.audio_sample_rate_44100 ? 44100 : 22050);
+
+  // if setup and audio sample rate are already matching, nothing do do
+  if ((setup_audio_sample_rate == audio.sample_rate) ||
+      !audio.sound_available)
+    return;
+
+#if 1
+  // apparently changing the audio output sample rate does not work at runtime,
+  // so currently the program has to be restarted to apply the new sample rate
+  Request("Please restart the program to change audio sample rate!", REQ_CONFIRM);
+#else
+  SDLReopenAudio();
+
+  // set setup value according to successfully changed audio sample rate
+  setup.audio_sample_rate_44100 = (audio.sample_rate == 44100);
+#endif
+}
+
 void ToggleFullscreenIfNeeded(void)
 {
   // if setup and video fullscreen state are already matching, nothing do do

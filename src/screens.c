@@ -8083,6 +8083,8 @@ static struct TokenInfo setup_info_sound[] =
   { TYPE_ENTER_LIST,	execSetupChooseVolumeMusic,	"Music Volume:"			},
   { TYPE_STRING,	&volume_music_text,		""				},
   { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_SWITCH,	&setup.audio_sample_rate_44100,	"44100 Hz audio mixing:"	},
+  { TYPE_EMPTY,		NULL,				""				},
   { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
   { 0,			NULL,				NULL				}
@@ -8534,6 +8536,10 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
   // fullscreen state may have changed at this point
   if (si->value == &setup.fullscreen)
     ToggleFullscreenIfNeeded();
+
+  // audio sample rate may have changed at this point
+  if (si->value == &setup.audio_sample_rate_44100)
+    ToggleAudioSampleRateIfNeeded();
 
   // network mode may have changed at this point
   if (si->value == &setup.network_mode)

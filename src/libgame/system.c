@@ -1668,6 +1668,8 @@ void OpenAudio(void)
   audio.device_name = NULL;
   audio.device_fd = -1;
 
+  audio.sample_rate = DEFAULT_AUDIO_SAMPLE_RATE;
+
   audio.num_channels = 0;
   audio.music_channel = 0;
   audio.first_sound_channel = 0;

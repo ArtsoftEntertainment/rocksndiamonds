@@ -1114,6 +1114,8 @@ struct AudioSystemInfo
   char *device_name;
   int device_fd;
 
+  int sample_rate;
+
   int num_channels;
   int music_channel;
   int first_sound_channel;
@@ -1541,6 +1543,7 @@ struct SetupInfo
   int volume_simple;
   int volume_loops;
   int volume_music;
+  boolean audio_sample_rate_44100;
 
   boolean network_mode;
   int network_player_nr;

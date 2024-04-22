@@ -2512,8 +2512,10 @@ void SDLOpenAudio(void)
     return;
   }
 
-  if (Mix_OpenAudio(DEFAULT_AUDIO_SAMPLE_RATE, MIX_DEFAULT_FORMAT,
-		    AUDIO_NUM_CHANNELS_STEREO,
+  // set audio sample rate for mixer
+  audio.sample_rate = (setup.audio_sample_rate_44100 ? 44100 : 22050);
+
+  if (Mix_OpenAudio(audio.sample_rate, MIX_DEFAULT_FORMAT, AUDIO_NUM_CHANNELS_STEREO,
 		    setup.system.audio_fragment_size) < 0)
   {
     Warn("Mix_OpenAudio() failed: %s", SDL_GetError());
@@ -2541,6 +2543,12 @@ void SDLCloseAudio(void)
 
   Mix_CloseAudio();
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
+}
+
+void SDLReopenAudio(void)
+{
+  SDLCloseAudio();
+  SDLOpenAudio();
 }
 
 

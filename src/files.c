@@ -10869,6 +10869,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.audio_sample_rate_44100,		"audio_sample_rate_44100"
+  },
+  {
+    TYPE_SWITCH,
     &setup.network_mode,			"network_mode"
   },
   {
@@ -11662,6 +11666,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->volume_simple = 100;		// percent
   si->volume_loops = 100;		// percent
   si->volume_music = 100;		// percent
+  si->audio_sample_rate_44100 = FALSE;
 
   si->network_mode = FALSE;
   si->network_player_nr = 0;		// first player

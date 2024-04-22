@@ -445,6 +445,7 @@ void SDLSetMouseCursor(struct MouseCursorInfo *);
 
 void SDLOpenAudio(void);
 void SDLCloseAudio(void);
+void SDLReopenAudio(void);
 
 void SDLWaitEvent(Event *);
 void SDLCorrectRawMousePosition(int *, int *);
