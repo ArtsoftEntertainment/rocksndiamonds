@@ -1522,8 +1522,8 @@ void gd_drawcave_game(const GdCave *cave,
   // change only graphically
   if (hate_invisible_outbox)
   {
-    elemmapping[O_PRE_INVIS_OUTBOX] = O_PRE_OUTBOX;
-    elemmapping[O_INVIS_OUTBOX] = O_OUTBOX;
+    elemmapping[O_PRE_INVIS_OUTBOX] = elemmapping[O_PRE_OUTBOX];
+    elemmapping[O_INVIS_OUTBOX] = elemmapping[O_OUTBOX];
   }
 
   if (hate_invisible_outbox)
