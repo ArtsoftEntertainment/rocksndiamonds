@@ -625,8 +625,8 @@ enum
   GADGET_ID_BD_MAGIC_WALL_NITRO_PACK_TO,
   GADGET_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO,
   GADGET_ID_BD_MAGIC_WALL_FLYING_ROCK_TO,
-  GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG,
-  GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED,
+  GADGET_ID_BD_AMOEBA_1_CONTENT_TOO_BIG,
+  GADGET_ID_BD_AMOEBA_1_CONTENT_ENCLOSED,
   GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
   GADGET_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
   GADGET_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
@@ -648,9 +648,9 @@ enum
   GADGET_ID_BD_ROCK_TURNS_TO_ON_IMPACT,
   GADGET_ID_BD_DIAMOND_TURNS_TO_ON_FALLING,
   GADGET_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,
-  GADGET_ID_BD_FIREFLY_EXPLODES_TO,
+  GADGET_ID_BD_FIREFLY_1_EXPLODES_TO,
   GADGET_ID_BD_FIREFLY_2_EXPLODES_TO,
-  GADGET_ID_BD_BUTTERFLY_EXPLODES_TO,
+  GADGET_ID_BD_BUTTERFLY_1_EXPLODES_TO,
   GADGET_ID_BD_BUTTERFLY_2_EXPLODES_TO,
   GADGET_ID_BD_STONEFLY_EXPLODES_TO,
   GADGET_ID_BD_DRAGONFLY_EXPLODES_TO,
@@ -1339,8 +1339,8 @@ enum
   ED_DRAWING_ID_BD_MAGIC_WALL_NITRO_PACK_TO,
   ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_DIAMOND_TO,
   ED_DRAWING_ID_BD_MAGIC_WALL_FLYING_ROCK_TO,
-  ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG,
-  ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED,
+  ED_DRAWING_ID_BD_AMOEBA_1_CONTENT_TOO_BIG,
+  ED_DRAWING_ID_BD_AMOEBA_1_CONTENT_ENCLOSED,
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
   ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
@@ -1362,9 +1362,9 @@ enum
   ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_IMPACT,
   ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_FALLING,
   ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT,
-  ED_DRAWING_ID_BD_FIREFLY_EXPLODES_TO,
+  ED_DRAWING_ID_BD_FIREFLY_1_EXPLODES_TO,
   ED_DRAWING_ID_BD_FIREFLY_2_EXPLODES_TO,
-  ED_DRAWING_ID_BD_BUTTERFLY_EXPLODES_TO,
+  ED_DRAWING_ID_BD_BUTTERFLY_1_EXPLODES_TO,
   ED_DRAWING_ID_BD_BUTTERFLY_2_EXPLODES_TO,
   ED_DRAWING_ID_BD_STONEFLY_EXPLODES_TO,
   ED_DRAWING_ID_BD_DRAGONFLY_EXPLODES_TO,
@@ -4883,23 +4883,23 @@ static struct
     "Changes flying rocks to:", NULL, NULL, NULL, "Element to turn flying rocks to"
   },
 
-  // ---------- BD amoeba content ---------------------------------------------
+  // ---------- BD amoeba 1 content -------------------------------------------
 
   {
-    ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG,
+    ED_DRAWING_ID_BD_AMOEBA_1_CONTENT_TOO_BIG,
     ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(7),
     ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_AMOEBA_CONTENT_TOO_BIG,	GADGET_ID_NONE,
-    &level.bd_amoeba_content_too_big,		1, 1,
-    "If too big, changes to:", NULL, NULL, NULL, "BD amoeba content if too big"
+    GADGET_ID_BD_AMOEBA_1_CONTENT_TOO_BIG,	GADGET_ID_NONE,
+    &level.bd_amoeba_1_content_too_big,		1, 1,
+    "If too big, changes to:", NULL, NULL, NULL, "Amoeba 1 content if too big"
   },
   {
-    ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED,
+    ED_DRAWING_ID_BD_AMOEBA_1_CONTENT_ENCLOSED,
     ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(8),
     ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_AMOEBA_CONTENT_ENCLOSED,	GADGET_ID_NONE,
-    &level.bd_amoeba_content_enclosed,		1, 1,
-    "If enclosed, changes to:", NULL, NULL, NULL, "BD amoeba content if enclosed"
+    GADGET_ID_BD_AMOEBA_1_CONTENT_ENCLOSED,	GADGET_ID_NONE,
+    &level.bd_amoeba_1_content_enclosed,	1, 1,
+    "If enclosed, changes to:", NULL, NULL, NULL, "Amoeba 1 content if enclosed"
   },
 
   // ---------- BD amoeba 2 content -------------------------------------------
@@ -4910,7 +4910,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_TOO_BIG,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_too_big,		1, 1,
-    "If too big, changes to:", NULL, NULL, NULL, "BD amoeba 2 content if too big"
+    "If too big, changes to:", NULL, NULL, NULL, "Amoeba 2 content if too big"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,
@@ -4918,7 +4918,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_ENCLOSED,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_enclosed,	1, 1,
-    "If enclosed, changes to:", NULL, NULL, NULL, "BD amoeba 2 content if enclosed"
+    "If enclosed, changes to:", NULL, NULL, NULL, "Amoeba 2 content if enclosed"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_EXPLODING,
@@ -4926,7 +4926,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_EXPLODING,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_exploding,	1, 1,
-    "If exploding, changes to:", NULL, NULL, NULL, "BD amoeba 2 content if exploding"
+    "If exploding, changes to:", NULL, NULL, NULL, "Amoeba 2 content if exploding"
   },
   {
     ED_DRAWING_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,
@@ -4934,7 +4934,7 @@ static struct
     ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
     GADGET_ID_BD_AMOEBA_2_CONTENT_LOOKS_LIKE,	GADGET_ID_NONE,
     &level.bd_amoeba_2_content_looks_like,	1, 1,
-    "Use graphic of element:", NULL, NULL, NULL, "BD amoeba 2 looks like this element"
+    "Use graphic of element:", NULL, NULL, NULL, "Amoeba 2 looks like this element"
   },
   {
     ED_DRAWING_ID_BD_SLIME_EATS_ELEMENT_1,
@@ -5073,11 +5073,11 @@ static struct
     "Turns to on impact:", NULL, NULL, NULL,	"Changes to this when falling stops"
   },
   {
-    ED_DRAWING_ID_BD_FIREFLY_EXPLODES_TO,
+    ED_DRAWING_ID_BD_FIREFLY_1_EXPLODES_TO,
     ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
     ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_FIREFLY_EXPLODES_TO,		GADGET_ID_NONE,
-    &level.bd_firefly_explodes_to,		1, 1,
+    GADGET_ID_BD_FIREFLY_1_EXPLODES_TO,		GADGET_ID_NONE,
+    &level.bd_firefly_1_explodes_to,		1, 1,
     "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
   },
   {
@@ -5089,11 +5089,11 @@ static struct
     "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
   },
   {
-    ED_DRAWING_ID_BD_BUTTERFLY_EXPLODES_TO,
+    ED_DRAWING_ID_BD_BUTTERFLY_1_EXPLODES_TO,
     ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(0),
     ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
-    GADGET_ID_BD_BUTTERFLY_EXPLODES_TO,		GADGET_ID_NONE,
-    &level.bd_butterfly_explodes_to,		1, 1,
+    GADGET_ID_BD_BUTTERFLY_1_EXPLODES_TO,	GADGET_ID_NONE,
+    &level.bd_butterfly_1_explodes_to,		1, 1,
     "Explodes to:", NULL, NULL, NULL,		"Changes to this when exploding"
   },
   {
@@ -5486,28 +5486,28 @@ static int editor_hl_boulderdash_native[] =
 static int editor_el_boulderdash_native[] =
 {
   EL_EMPTY,
-  EL_BD_SAND,
-  EL_BD_ROCK,
-  EL_BD_DIAMOND,
+  EL_BD_SAND_1,
+  EL_BD_ROCK_NATIVE,
+  EL_BD_DIAMOND_NATIVE,
 
   EL_BD_INBOX,
   EL_BD_STEELWALL,
-  EL_BD_WALL,
-  EL_BD_MAGIC_WALL,
+  EL_BD_WALL_NATIVE,
+  EL_BD_MAGIC_WALL_NATIVE,
 
-  EL_BD_AMOEBA,
-  EL_BD_BUTTERFLY_UP,
-  EL_BD_FIREFLY_UP,
+  EL_BD_AMOEBA_1,
+  EL_BD_BUTTERFLY_1_UP,
+  EL_BD_FIREFLY_1_UP,
   EL_BD_EXIT_CLOSED,
 
-  EL_BD_BUTTERFLY_LEFT,
-  EL_BD_FIREFLY_LEFT,
-  EL_BD_BUTTERFLY_RIGHT,
-  EL_BD_FIREFLY_RIGHT,
+  EL_BD_BUTTERFLY_1_LEFT,
+  EL_BD_FIREFLY_1_LEFT,
+  EL_BD_BUTTERFLY_1_RIGHT,
+  EL_BD_FIREFLY_1_RIGHT,
 
   EL_BD_SAND_2,
-  EL_BD_BUTTERFLY_DOWN,
-  EL_BD_FIREFLY_DOWN,
+  EL_BD_BUTTERFLY_1_DOWN,
+  EL_BD_FIREFLY_1_DOWN,
   EL_BD_EXIT_OPEN,
 
   EL_BD_AMOEBA_2,
@@ -5665,8 +5665,8 @@ static int editor_hl_boulderdash_effects[] =
 
 static int editor_el_boulderdash_effects[] =
 {
-  EL_BD_DIAMOND_FALLING,
-  EL_BD_ROCK_FALLING,
+  EL_BD_DIAMOND_NATIVE_FALLING,
+  EL_BD_ROCK_NATIVE_FALLING,
   EL_BD_MEGA_ROCK_FALLING,
   EL_BD_FLYING_DIAMOND_FLYING,
 
@@ -5752,12 +5752,12 @@ static int editor_el_boulderdash_effects[] =
 
   EL_BD_EXPLODING_5,
   EL_BD_TIME_PENALTY,
-  EL_BD_DIAMOND_GROWING_1,
-  EL_BD_DIAMOND_GROWING_2,
+  EL_BD_DIAMOND_NATIVE_GROWING_1,
+  EL_BD_DIAMOND_NATIVE_GROWING_2,
 
-  EL_BD_DIAMOND_GROWING_3,
-  EL_BD_DIAMOND_GROWING_4,
-  EL_BD_DIAMOND_GROWING_5,
+  EL_BD_DIAMOND_NATIVE_GROWING_3,
+  EL_BD_DIAMOND_NATIVE_GROWING_4,
+  EL_BD_DIAMOND_NATIVE_GROWING_5,
   EL_BD_NITRO_PACK_EXPLODING,
 
   EL_BD_NITRO_PACK_EXPLODING_1,
@@ -5765,10 +5765,10 @@ static int editor_el_boulderdash_effects[] =
   EL_BD_NITRO_PACK_EXPLODING_3,
   EL_BD_NITRO_PACK_EXPLODING_4,
 
-  EL_BD_ROCK_GROWING_1,
-  EL_BD_ROCK_GROWING_2,
-  EL_BD_ROCK_GROWING_3,
-  EL_BD_ROCK_GROWING_4,
+  EL_BD_ROCK_NATIVE_GROWING_1,
+  EL_BD_ROCK_NATIVE_GROWING_2,
+  EL_BD_ROCK_NATIVE_GROWING_3,
+  EL_BD_ROCK_NATIVE_GROWING_4,
 
   EL_BD_STEELWALL_GROWING_1,
   EL_BD_STEELWALL_GROWING_2,
@@ -12042,7 +12042,8 @@ static struct
 {
   { EL_EMERALD,			&level.score[SC_EMERALD],		TEXT_COLLECTING		},
   { EL_BD_DIAMOND,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
-  { EL_BD_DIAMOND,		&level.score[SC_DIAMOND_EXTRA],		TEXT_COLLECTING_EXTRA	},
+  { EL_BD_DIAMOND_NATIVE,	&level.score[SC_EMERALD],		TEXT_COLLECTING		},
+  { EL_BD_DIAMOND_NATIVE,	&level.score[SC_DIAMOND_EXTRA],		TEXT_COLLECTING_EXTRA	},
   { EL_EMERALD_YELLOW,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
   { EL_EMERALD_RED,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
   { EL_EMERALD_PURPLE,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
@@ -12120,11 +12121,11 @@ static struct
   { EL_AMOEBA_FULL,		&level.amoeba_speed,			TEXT_AMOEBA_SPEED	},
   { EL_BD_AMOEBA,		&level.amoeba_speed,			TEXT_AMOEBA_SPEED	},
   { EL_EMC_DRIPPER,		&level.amoeba_speed,			TEXT_AMOEBA_SPEED	},
-  { EL_BD_AMOEBA,		&level.bd_amoeba_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
-  { EL_BD_AMOEBA,		&level.bd_amoeba_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
-  { EL_BD_AMOEBA,		&level.bd_amoeba_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
+  { EL_BD_AMOEBA_1,		&level.bd_amoeba_1_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
+  { EL_BD_AMOEBA_1,		&level.bd_amoeba_1_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
+  { EL_BD_AMOEBA_2,		&level.bd_amoeba_1_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
 				0, 100								},
-  { EL_BD_AMOEBA,		&level.bd_amoeba_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
+  { EL_BD_AMOEBA_1,		&level.bd_amoeba_1_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
 				0, 100								},
   { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
   { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
@@ -12133,8 +12134,9 @@ static struct
   { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
 				0, 100								},
   { EL_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
-  { EL_BD_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
   { EL_DC_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
+  { EL_BD_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
+  { EL_BD_MAGIC_WALL_NATIVE,	&level.bd_magic_wall_time,		TEXT_DURATION		},
   { EL_ROBOT_WHEEL,		&level.time_wheel,			TEXT_DURATION		},
   { EL_TIMEGATE_SWITCH,		&level.time_timegate,			TEXT_DURATION		},
   { EL_DC_TIMEGATE_SWITCH,	&level.time_timegate,			TEXT_DURATION		},
@@ -12216,10 +12218,6 @@ static boolean checkPropertiesConfig(int element)
   if (element == EL_EMPTY_SPACE && level.game_engine_type != GAME_ENGINE_TYPE_RND)
     return FALSE;
 
-  // special case: BD style rock customization only available in BD game engine
-  if (element == EL_BD_ROCK && level.game_engine_type != GAME_ENGINE_TYPE_BD)
-    return FALSE;
-
   if (IS_GEM(element) ||
       IS_CUSTOM_ELEMENT(element) ||
       IS_GROUP_ELEMENT(element) ||
@@ -12232,8 +12230,10 @@ static boolean checkPropertiesConfig(int element)
       IS_PLAYER_ELEMENT(element) ||
       IS_BD_PLAYER_ELEMENT(element) ||
       IS_BD_FIREFLY(properties_element) ||
+      IS_BD_FIREFLY_1(properties_element) ||
       IS_BD_FIREFLY_2(properties_element) ||
       IS_BD_BUTTERFLY(properties_element) ||
+      IS_BD_BUTTERFLY_1(properties_element) ||
       IS_BD_BUTTERFLY_2(properties_element) ||
       IS_BD_STONEFLY(properties_element) ||
       IS_BD_DRAGONFLY(properties_element) ||
@@ -12246,8 +12246,8 @@ static boolean checkPropertiesConfig(int element)
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
       MAYBE_DONT_COLLIDE_WITH(element) ||
-      element == EL_BD_SAND ||
-      element == EL_BD_ROCK ||
+      element == EL_BD_SAND_1 ||
+      element == EL_BD_ROCK_NATIVE ||
       element == EL_BD_MEGA_ROCK ||
       element == EL_BD_BOMB ||
       element == EL_BD_ROCKET_LAUNCHER ||
@@ -12291,6 +12291,7 @@ static void SetAutomaticNumberOfGemsNeeded(void)
 	case EL_EMERALD_RED:
 	case EL_EMERALD_PURPLE:
 	case EL_BD_DIAMOND:
+	case EL_BD_DIAMOND_NATIVE:
 	case EL_WALL_EMERALD:
 	case EL_WALL_EMERALD_YELLOW:
 	case EL_WALL_EMERALD_RED:
@@ -12350,56 +12351,24 @@ static void DrawPropertiesConfig(void)
     if (elements_with_counter[i].element != properties_element)
       continue;
 
-    // special case: score for extra diamonds only available in BD game engine
-    if (elements_with_counter[i].element == EL_BD_DIAMOND &&
-	elements_with_counter[i].value == &level.score[SC_DIAMOND_EXTRA] &&
-	level.game_engine_type != GAME_ENGINE_TYPE_BD)
-      continue;
-
-    // special case: some amoeba counters only available in BD game engine
-    if (elements_with_counter[i].element == EL_BD_AMOEBA &&
-	elements_with_counter[i].value != &level.amoeba_speed &&
-	level.game_engine_type != GAME_ENGINE_TYPE_BD)
-      continue;
-
-    // special case: score for smashing only available in R'n'D game engine
-    if ((IS_BD_FIREFLY(elements_with_counter[i].element) ||
-	 IS_BD_BUTTERFLY(elements_with_counter[i].element)) &&
-	(elements_with_counter[i].value == &level.score[SC_BUG] ||
-	 elements_with_counter[i].value == &level.score[SC_SPACESHIP]) &&
-	level.game_engine_type == GAME_ENGINE_TYPE_BD)
-      continue;
-
-    // special case: some amoeba counters only available in R'n'D game engine
-    if (elements_with_counter[i].element == EL_BD_AMOEBA &&
-	elements_with_counter[i].value == &level.amoeba_speed &&
-	level.game_engine_type == GAME_ENGINE_TYPE_BD)
-      continue;
-
     int counter_id = ED_COUNTER_ID_ELEMENT_VALUE1 + num_element_counters;
 
     counterbutton_info[counter_id].y =
-      ED_ELEMENT_SETTINGS_YPOS((HAS_EDITOR_CONTENT(properties_element)      ? 1 : 0) +
-			       (CAN_GROW(properties_element)                ? 1 : 0) +
-			       (COULD_MOVE_INTO_ACID(properties_element)    ? 1 : 0) +
-			       (MAYBE_DONT_COLLIDE_WITH(properties_element) ? 1 : 0) +
-			       (properties_element == EL_BD_VOODOO_DOLL     ? 4 : 0) +
-			       (properties_element == EL_BD_SLIME           ? 1 : 0) +
-			       (properties_element == EL_BD_ACID            ? 1 : 0) +
-			       (properties_element == EL_BD_REPLICATOR      ? 1 : 0) +
-			       (properties_element == EL_BD_CREATURE_SWITCH ? 1 : 0) +
-			       (properties_element == EL_BD_GRAVITY_SWITCH  ? 2 : 0) +
-			       (properties_element == EL_EMC_MAGIC_BALL     ? 2 : 0) +
+      ED_ELEMENT_SETTINGS_YPOS((HAS_EDITOR_CONTENT(properties_element)		? 1 : 0) +
+			       (CAN_GROW(properties_element)			? 1 : 0) +
+			       (COULD_MOVE_INTO_ACID(properties_element)	? 1 : 0) +
+			       (MAYBE_DONT_COLLIDE_WITH(properties_element)	? 1 : 0) +
+			       (properties_element == EL_BD_AMOEBA_1		? 3 : 0) +
+			       (properties_element == EL_BD_AMOEBA_2		? 3 : 0) +
+			       (properties_element == EL_BD_MAGIC_WALL_NATIVE	? 1 : 0) +
+			       (properties_element == EL_BD_VOODOO_DOLL		? 4 : 0) +
+			       (properties_element == EL_BD_SLIME		? 1 : 0) +
+			       (properties_element == EL_BD_ACID		? 1 : 0) +
+			       (properties_element == EL_BD_REPLICATOR		? 1 : 0) +
+			       (properties_element == EL_BD_CREATURE_SWITCH	? 1 : 0) +
+			       (properties_element == EL_BD_GRAVITY_SWITCH	? 2 : 0) +
+			       (properties_element == EL_EMC_MAGIC_BALL		? 2 : 0) +
 			       num_element_counters);
-
-    // special case: set magic wall counter for BD game engine separately
-    if (properties_element == EL_BD_MAGIC_WALL && level.game_engine_type == GAME_ENGINE_TYPE_BD)
-      counterbutton_info[counter_id].y = ED_ELEMENT_SETTINGS_YPOS(1);
-
-    // special case: set amoeba counters for BD game engine separately
-    if ((properties_element == EL_BD_AMOEBA && level.game_engine_type == GAME_ENGINE_TYPE_BD) ||
-	(properties_element == EL_BD_AMOEBA_2))
-      counterbutton_info[counter_id].y = ED_ELEMENT_SETTINGS_YPOS(3 + num_element_counters);
 
     // special case: set position for delay counter for reappearing hammered walls
     if (properties_element == EL_BD_PNEUMATIC_HAMMER && num_element_counters > 0)
@@ -12421,7 +12390,7 @@ static void DrawPropertiesConfig(void)
       break;
   }
 
-  if (properties_element == EL_BD_MAGIC_WALL && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  if (properties_element == EL_BD_MAGIC_WALL_NATIVE)
   {
     // draw stickybutton gadget
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_STICK_ELEMENT);
@@ -12445,13 +12414,13 @@ static void DrawPropertiesConfig(void)
     // draw stickybutton gadget
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_STICK_ELEMENT);
 
-    if (properties_element == EL_BD_AMOEBA && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    if (properties_element == EL_BD_AMOEBA_1)
     {
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING);
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY);
 
-      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_CONTENT_TOO_BIG);
-      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_CONTENT_ENCLOSED);
+      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_1_CONTENT_TOO_BIG);
+      MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_1_CONTENT_ENCLOSED);
     }
     else if (properties_element == EL_BD_AMOEBA_2)
     {
@@ -12606,12 +12575,12 @@ static void DrawPropertiesConfig(void)
     MapDrawingArea(ED_DRAWING_ID_BD_SNAP_ELEMENT);
   }
 
-  if (properties_element == EL_BD_SAND)
+  if (properties_element == EL_BD_SAND_1)
   {
     MapDrawingArea(ED_DRAWING_ID_BD_SAND_LOOKS_LIKE);
   }
 
-  if (properties_element == EL_BD_ROCK && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  if (properties_element == EL_BD_ROCK_NATIVE)
   {
     counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB].y =
       ED_ELEMENT_SETTINGS_YPOS(0);
@@ -12625,7 +12594,7 @@ static void DrawPropertiesConfig(void)
     MapDrawingArea(ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_IMPACT);
   }
 
-  if (properties_element == EL_BD_DIAMOND && level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  if (properties_element == EL_BD_DIAMOND_NATIVE)
   {
     MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_FALLING);
     MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT);
@@ -12633,9 +12602,9 @@ static void DrawPropertiesConfig(void)
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
-    if (IS_BD_FIREFLY(properties_element))
+    if (IS_BD_FIREFLY_1(properties_element))
     {
-      MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_EXPLODES_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_1_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
     }
     else if (IS_BD_FIREFLY_2(properties_element))
@@ -12643,9 +12612,9 @@ static void DrawPropertiesConfig(void)
       MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_2_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
     }
-    else if (IS_BD_BUTTERFLY(properties_element))
+    else if (IS_BD_BUTTERFLY_1(properties_element))
     {
-      MapDrawingArea(ED_DRAWING_ID_BD_BUTTERFLY_EXPLODES_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_BUTTERFLY_1_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_BIRTH_TURNS_TO);
     }
     else if (IS_BD_BUTTERFLY_2(properties_element))
@@ -13045,7 +13014,7 @@ static void DrawEditorElementAnimation(int x, int y)
   int graphic;
   int frame;
 
-  if (IS_BD_RUNTIME_ELEMENT(properties_element))
+  if (IS_BD_NATIVE_RUNTIME_ELEMENT(properties_element))
   {
     el2edimg_with_frame(properties_element, &graphic, &frame);
 
@@ -13989,6 +13958,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
       { EL_EMERALD_PURPLE,		EL_WALL_EMERALD_PURPLE		},
       { EL_DIAMOND,			EL_WALL_DIAMOND			},
       { EL_BD_DIAMOND,			EL_WALL_BD_DIAMOND		},
+      { EL_BD_DIAMOND_NATIVE,		EL_BD_WALL_DIAMOND		},
       { EL_GATE_1,			EL_GATE_1_GRAY			},
       { EL_GATE_2,			EL_GATE_2_GRAY			},
       { EL_GATE_3,			EL_GATE_3_GRAY			},

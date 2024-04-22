@@ -6468,7 +6468,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Empty space"
   },
   {
-    "bd_sand",
+    "bd_sand_1",
     "bd_sand",
     "Sand"
   },
@@ -6705,12 +6705,17 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "bd_nut",
     "bd_nut",
-    "Nut (BD style)"
+    "Nut"
+  },
+  {
+    "bd_amoeba_1",
+    "bd_amoeba",
+    "Amoeba 1"
   },
   {
     "bd_amoeba_2",
     "bd_amoeba",
-    "Amoeba 2 (BD style)"
+    "Amoeba 2"
   },
   {
     "bd_bladder",
@@ -6963,6 +6968,31 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Cow (starts moving down)"
   },
   {
+    "bd_butterfly_1",
+    "bd_butterfly",
+    "Butterfly 1 (random start direction)"
+  },
+  {
+    "bd_butterfly_1.right",
+    "bd_butterfly",
+    "Butterfly 1 (starts moving right)"
+  },
+  {
+    "bd_butterfly_1.up",
+    "bd_butterfly",
+    "Butterfly 1 (starts moving up)"
+  },
+  {
+    "bd_butterfly_1.left",
+    "bd_butterfly",
+    "Butterfly 1 (starts moving left)"
+  },
+  {
+    "bd_butterfly_1.down",
+    "bd_butterfly",
+    "Butterfly 1 (starts moving down)"
+  },
+  {
     "bd_butterfly_2",
     "bd_butterfly",
     "Butterfly 2 (random start direction)"
@@ -6986,6 +7016,31 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "bd_butterfly_2.down",
     "bd_butterfly",
     "Butterfly 2 (starts moving down)"
+  },
+  {
+    "bd_firefly_1",
+    "bd_firefly",
+    "Firefly 1 (random start direction)"
+  },
+  {
+    "bd_firefly_1.right",
+    "bd_firefly",
+    "Firefly 1 (starts moving right)"
+  },
+  {
+    "bd_firefly_1.up",
+    "bd_firefly",
+    "Firefly 1 (starts moving up)"
+  },
+  {
+    "bd_firefly_1.left",
+    "bd_firefly",
+    "Firefly 1 (starts moving left)"
+  },
+  {
+    "bd_firefly_1.down",
+    "bd_firefly",
+    "Firefly 1 (starts moving down)"
   },
   {
     "bd_firefly_2",
@@ -7163,6 +7218,26 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Covered"
   },
   {
+    "bd_wall_native",
+    "wall",
+    "Normal wall"
+  },
+  {
+    "bd_rock_native",
+    "bd_rock",
+    "Rock"
+  },
+  {
+    "bd_diamond_native",
+    "bd_diamond",
+    "Diamond"
+  },
+  {
+    "bd_magic_wall_native",
+    "bd_magic_wall",
+    "Magic wall"
+  },
+  {
     "bd_sand_ball.falling",
     "bd_sand_ball",
     "Sand ball (falling)"
@@ -7173,7 +7248,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Loose sand (falling)"
   },
   {
-    "bd_rock.falling",
+    "bd_rock_native.falling",
     "bd_rock",
     "Rock (falling)"
   },
@@ -7188,7 +7263,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Mega rock (falling)"
   },
   {
-    "bd_diamond.falling",
+    "bd_diamond_native.falling",
     "bd_diamond",
     "Diamond (falling)"
   },
@@ -7438,27 +7513,27 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Clock birth (4)"
   },
   {
-    "bd_diamond.growing_1",
+    "bd_diamond_native.growing_1",
     "bd_diamond",
     "Diamond birth (1)"
   },
   {
-    "bd_diamond.growing_2",
+    "bd_diamond_native.growing_2",
     "bd_diamond",
     "Diamond birth (2)"
   },
   {
-    "bd_diamond.growing_3",
+    "bd_diamond_native.growing_3",
     "bd_diamond",
     "Diamond birth (3)"
   },
   {
-    "bd_diamond.growing_4",
+    "bd_diamond_native.growing_4",
     "bd_diamond",
     "Diamond birth (4)"
   },
   {
-    "bd_diamond.growing_5",
+    "bd_diamond_native.growing_5",
     "bd_diamond",
     "Diamond birth (5)"
   },
@@ -7488,22 +7563,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Explosion (5)"
   },
   {
-    "bd_rock.growing_1",
+    "bd_rock_native.growing_1",
     "bd_rock",
     "Rock birth (1)"
   },
   {
-    "bd_rock.growing_2",
+    "bd_rock_native.growing_2",
     "bd_rock",
     "Rock birth (2)"
   },
   {
-    "bd_rock.growing_3",
+    "bd_rock_native.growing_3",
     "bd_rock",
     "Rock birth (3)"
   },
   {
-    "bd_rock.growing_4",
+    "bd_rock_native.growing_4",
     "bd_rock",
     "Rock birth (4)"
   },
@@ -8058,6 +8133,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "df_mine",
     "Active mine"
   },
+  {
+    "bd_magic_wall_native.active",
+    "magic_wall",
+    "-"
+  },
 
   // --------------------------------------------------------------------------
   // "unreal" (and therefore not drawable) runtime elements
@@ -8316,6 +8396,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   {
     "[bd_default]",
     "bd_default",
+    "-"
+  },
+  {
+    "[bd_native_default]",
+    "bd_native_default",
     "-"
   },
   {

@@ -1843,7 +1843,7 @@ static void InitFieldForEngine_RND(int x, int y)
   element = (element == EL_BD_EMPTY		? EL_EMPTY :
 	     element == EL_BD_PLAYER		? EL_PLAYER_1 :
 	     element == EL_BD_INBOX		? EL_PLAYER_1 :
-	     element == EL_BD_SAND		? EL_SAND :
+	     element == EL_BD_SAND_1		? EL_SAND :
 	     element == EL_BD_STEELWALL		? EL_STEELWALL :
 	     element == EL_BD_EXIT_CLOSED	? EL_EXIT_CLOSED :
 	     element == EL_BD_EXIT_OPEN		? EL_EXIT_OPEN :
@@ -15778,10 +15778,10 @@ static int getSoundEffect_BD(int element_bd, int sample)
     case GD_S_DIAMOND_FALLING_8:
       nr = (sample == GD_S_DIAMOND_FALLING_RANDOM ? GetSimpleRandom(8) :
 	    sample - GD_S_DIAMOND_FALLING_1);
-      sound_effect = SND_BD_DIAMOND_FALLING_RANDOM_1 + nr;
+      sound_effect = SND_BD_DIAMOND_NATIVE_FALLING_RANDOM_1 + nr;
 
       if (getSoundInfoEntryFilename(sound_effect) == NULL)
-	sound_effect = SND_BD_DIAMOND_FALLING;
+	sound_effect = SND_BD_DIAMOND_NATIVE_FALLING;
       break;
 
     case GD_S_DIAMOND_IMPACT_RANDOM:
@@ -15795,10 +15795,10 @@ static int getSoundEffect_BD(int element_bd, int sample)
     case GD_S_DIAMOND_IMPACT_8:
       nr = (sample == GD_S_DIAMOND_IMPACT_RANDOM ? GetSimpleRandom(8) :
 	    sample - GD_S_DIAMOND_IMPACT_1);
-      sound_effect = SND_BD_DIAMOND_IMPACT_RANDOM_1 + nr;
+      sound_effect = SND_BD_DIAMOND_NATIVE_IMPACT_RANDOM_1 + nr;
 
       if (getSoundInfoEntryFilename(sound_effect) == NULL)
-	sound_effect = SND_BD_DIAMOND_IMPACT;
+	sound_effect = SND_BD_DIAMOND_NATIVE_IMPACT;
       break;
 
     case GD_S_FLYING_DIAMOND_FALLING_RANDOM:
@@ -15858,7 +15858,7 @@ static int getSoundEffect_BD(int element_bd, int sample)
       break;
 
     case GD_S_AMOEBA_MAGIC:
-      sound_effect = SND_BD_AMOEBA_OTHER;
+      sound_effect = SND_BD_AMOEBA_1_OTHER;
       break;
 
     case GD_S_FINISHED:

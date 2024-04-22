@@ -3858,7 +3858,7 @@ static void PreparePreviewTileBitmap(void)
   int src_x, src_y;
   int element_template = EL_BD_GAME_GRAPHICS_COLOR_TEMPLATE;
   int graphic_template = el2preimg(element_template);
-  int element_default = EL_BD_ROCK;
+  int element_default = EL_BD_ROCK_NATIVE;
   int graphic_default = el2preimg(element_default);
 
   // create special preview bitmap and scale it down to preview tile size
@@ -6030,8 +6030,8 @@ static int getEngineElement_Ext(int element, int game_engine_type, boolean is_dr
   {
     el_empty		= EL_EMPTY;
     el_player		= EL_BD_PLAYER;
-    el_sand		= EL_BD_SAND;
-    el_wall		= EL_BD_WALL;
+    el_sand		= EL_BD_SAND_1;
+    el_wall		= EL_BD_WALL_NATIVE;
     el_steelwall	= EL_BD_STEELWALL;
     el_exit_closed	= EL_BD_EXIT_CLOSED;
   }
@@ -6158,7 +6158,7 @@ bd_object_mapping_list[] =
   },
   {
     O_DIRT,					TRUE,
-    EL_BD_SAND,					-1, -1
+    EL_BD_SAND_1,				-1, -1
   },
   {
     O_DIRT_SLOPED_UP_RIGHT,			TRUE,
@@ -6206,7 +6206,7 @@ bd_object_mapping_list[] =
   },
   {
     O_BRICK,					TRUE,
-    EL_BD_WALL,					-1, -1
+    EL_BD_WALL_NATIVE,				-1, -1
   },
   {
     O_BRICK_SLOPED_UP_RIGHT,			TRUE,
@@ -6230,7 +6230,7 @@ bd_object_mapping_list[] =
   },
   {
     O_MAGIC_WALL,				TRUE,
-    EL_BD_MAGIC_WALL,				ACTION_ACTIVE, -1
+    EL_BD_MAGIC_WALL_NATIVE,			ACTION_ACTIVE, -1
   },
   {
     O_PRE_OUTBOX,				TRUE,
@@ -6282,15 +6282,15 @@ bd_object_mapping_list[] =
   },
   {
     O_STONE,					TRUE,
-    EL_BD_ROCK,					-1, -1
+    EL_BD_ROCK_NATIVE,				-1, -1
   },
   {
     O_STONE_F,					TRUE,
-    EL_BD_ROCK_FALLING,				-1, -1
+    EL_BD_ROCK_NATIVE_FALLING,			-1, -1
   },
   {
     O_STONE_F,					FALSE,
-    EL_BD_ROCK,					ACTION_FALLING, -1
+    EL_BD_ROCK_NATIVE,				ACTION_FALLING, -1
   },
   {
     O_FLYING_STONE,				TRUE,
@@ -6318,15 +6318,15 @@ bd_object_mapping_list[] =
   },
   {
     O_DIAMOND,					TRUE,
-    EL_BD_DIAMOND,				-1, -1
+    EL_BD_DIAMOND_NATIVE,			-1, -1
   },
   {
     O_DIAMOND_F,				TRUE,
-    EL_BD_DIAMOND_FALLING,			-1, -1
+    EL_BD_DIAMOND_NATIVE_FALLING,		-1, -1
   },
   {
     O_DIAMOND_F,				FALSE,
-    EL_BD_DIAMOND,				ACTION_FALLING, -1
+    EL_BD_DIAMOND_NATIVE,			ACTION_FALLING, -1
   },
   {
     O_FLYING_DIAMOND,				TRUE,
@@ -6726,7 +6726,7 @@ bd_object_mapping_list[] =
   },
   {
     O_AMOEBA,					TRUE,
-    EL_BD_AMOEBA,				-1, -1
+    EL_BD_AMOEBA_1,				-1, -1
   },
   {
     O_AMOEBA_2,					TRUE,
@@ -6842,19 +6842,19 @@ bd_object_mapping_list[] =
   },
   {
     O_FIREFLY_1,				TRUE,
-    EL_BD_FIREFLY_LEFT,				-1, -1
+    EL_BD_FIREFLY_1_LEFT,			-1, -1
   },
   {
     O_FIREFLY_2,				TRUE,
-    EL_BD_FIREFLY_UP,				-1, -1
+    EL_BD_FIREFLY_1_UP,				-1, -1
   },
   {
     O_FIREFLY_3,				TRUE,
-    EL_BD_FIREFLY_RIGHT,			-1, -1
+    EL_BD_FIREFLY_1_RIGHT,			-1, -1
   },
   {
     O_FIREFLY_4,				TRUE,
-    EL_BD_FIREFLY_DOWN,				-1, -1
+    EL_BD_FIREFLY_1_DOWN,			-1, -1
   },
   {
     O_ALT_FIREFLY_1,				TRUE,
@@ -6874,19 +6874,19 @@ bd_object_mapping_list[] =
   },
   {
     O_BUTTER_1,					TRUE,
-    EL_BD_BUTTERFLY_LEFT,			-1, -1
+    EL_BD_BUTTERFLY_1_LEFT,			-1, -1
   },
   {
     O_BUTTER_2,					TRUE,
-    EL_BD_BUTTERFLY_UP,				-1, -1
+    EL_BD_BUTTERFLY_1_UP,			-1, -1
   },
   {
     O_BUTTER_3,					TRUE,
-    EL_BD_BUTTERFLY_RIGHT,			-1, -1
+    EL_BD_BUTTERFLY_1_RIGHT,			-1, -1
   },
   {
     O_BUTTER_4,					TRUE,
-    EL_BD_BUTTERFLY_DOWN,			-1, -1
+    EL_BD_BUTTERFLY_1_DOWN,			-1, -1
   },
   {
     O_ALT_BUTTER_1,				TRUE,
@@ -7122,43 +7122,43 @@ bd_object_mapping_list[] =
   },
   {
     O_PRE_DIA_1,				TRUE,
-    EL_BD_DIAMOND_GROWING_1,			-1, -1
+    EL_BD_DIAMOND_NATIVE_GROWING_1,		-1, -1
   },
   {
     O_PRE_DIA_1,				FALSE,
-    EL_BD_DIAMOND,				ACTION_GROWING, -1
+    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_2,				TRUE,
-    EL_BD_DIAMOND_GROWING_2,			-1, -1
+    EL_BD_DIAMOND_NATIVE_GROWING_2,		-1, -1
   },
   {
     O_PRE_DIA_2,				FALSE,
-    EL_BD_DIAMOND,				ACTION_GROWING, -1
+    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_3,				TRUE,
-    EL_BD_DIAMOND_GROWING_3,			-1, -1
+    EL_BD_DIAMOND_NATIVE_GROWING_3,		-1, -1
   },
   {
     O_PRE_DIA_3,				FALSE,
-    EL_BD_DIAMOND,				ACTION_GROWING, -1
+    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_4,				TRUE,
-    EL_BD_DIAMOND_GROWING_4,			-1, -1
+    EL_BD_DIAMOND_NATIVE_GROWING_4,		-1, -1
   },
   {
     O_PRE_DIA_4,				FALSE,
-    EL_BD_DIAMOND,				ACTION_GROWING, -1
+    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_5,				TRUE,
-    EL_BD_DIAMOND_GROWING_5,			-1, -1
+    EL_BD_DIAMOND_NATIVE_GROWING_5,		-1, -1
   },
   {
     O_PRE_DIA_5,				FALSE,
-    EL_BD_DIAMOND,				ACTION_GROWING, -1
+    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
   },
   {
     O_EXPLODE_1,				TRUE,
@@ -7202,35 +7202,35 @@ bd_object_mapping_list[] =
   },
   {
     O_PRE_STONE_1,				TRUE,
-    EL_BD_ROCK_GROWING_1,			-1, -1
+    EL_BD_ROCK_NATIVE_GROWING_1,		-1, -1
   },
   {
     O_PRE_STONE_1,				FALSE,
-    EL_BD_ROCK,					ACTION_GROWING, -1
+    EL_BD_ROCK_NATIVE,				ACTION_GROWING, -1
   },
   {
     O_PRE_STONE_2,				TRUE,
-    EL_BD_ROCK_GROWING_2,			-1, -1
+    EL_BD_ROCK_NATIVE_GROWING_2,		-1, -1
   },
   {
     O_PRE_STONE_2,				FALSE,
-    EL_BD_ROCK,					ACTION_GROWING, -1
+    EL_BD_ROCK_NATIVE,				ACTION_GROWING, -1
   },
   {
     O_PRE_STONE_3,				TRUE,
-    EL_BD_ROCK_GROWING_3,			-1, -1
+    EL_BD_ROCK_NATIVE_GROWING_3,		-1, -1
   },
   {
     O_PRE_STONE_3,				FALSE,
-    EL_BD_ROCK,					ACTION_GROWING, -1
+    EL_BD_ROCK_NATIVE,				ACTION_GROWING, -1
   },
   {
     O_PRE_STONE_4,				TRUE,
-    EL_BD_ROCK_GROWING_4,			-1, -1
+    EL_BD_ROCK_NATIVE_GROWING_4,		-1, -1
   },
   {
     O_PRE_STONE_4,				FALSE,
-    EL_BD_ROCK,					ACTION_GROWING, -1
+    EL_BD_ROCK_NATIVE,				ACTION_GROWING, -1
   },
   {
     O_PRE_STEEL_1,				TRUE,
@@ -7553,7 +7553,7 @@ bd_object_mapping_list[] =
   },
   {
     O_MAGIC_WALL_ACTIVE,			FALSE,
-    EL_BD_MAGIC_WALL_ACTIVE,			-1, -1
+    EL_BD_MAGIC_WALL_NATIVE_ACTIVE,		-1, -1
   },
   {
     O_REPLICATOR_ACTIVE,			FALSE,

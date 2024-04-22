@@ -671,42 +671,42 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
-    EL_BD_SAND,				-1,
+    EL_BD_SAND_1,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_sand_looks_like,		EL_BD_SAND
+    &li.bd_sand_looks_like,		EL_BD_SAND_1
   },
 
   {
-    EL_BD_ROCK,				-1,
+    EL_BD_ROCK_NATIVE,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_rock_turns_to_on_falling,	EL_BD_ROCK_FALLING
+    &li.bd_rock_turns_to_on_falling,	EL_BD_ROCK_NATIVE_FALLING
   },
   {
-    EL_BD_ROCK,				-1,
+    EL_BD_ROCK_NATIVE,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_rock_turns_to_on_impact,	EL_BD_ROCK
+    &li.bd_rock_turns_to_on_impact,	EL_BD_ROCK_NATIVE
   },
 
   {
-    EL_BD_DIAMOND,			-1,
+    EL_BD_DIAMOND_NATIVE,		-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.score[SC_DIAMOND_EXTRA],	20
   },
   {
-    EL_BD_DIAMOND,			-1,
+    EL_BD_DIAMOND_NATIVE,		-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_diamond_turns_to_on_falling,	EL_BD_DIAMOND_FALLING
+    &li.bd_diamond_turns_to_on_falling,	EL_BD_DIAMOND_NATIVE_FALLING
   },
   {
-    EL_BD_DIAMOND,			-1,
+    EL_BD_DIAMOND_NATIVE,		-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_diamond_turns_to_on_impact,	EL_BD_DIAMOND
+    &li.bd_diamond_turns_to_on_impact,	EL_BD_DIAMOND_NATIVE
   },
 
   {
-    EL_BD_FIREFLY,			-1,
+    EL_BD_FIREFLY_1,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_firefly_explodes_to,		EL_BD_EXPLODING_1
+    &li.bd_firefly_1_explodes_to,	EL_BD_EXPLODING_1
   },
 
   {
@@ -716,21 +716,21 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
-    EL_BD_BUTTERFLY,			-1,
+    EL_BD_BUTTERFLY_1,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_butterfly_explodes_to,	EL_BD_DIAMOND_GROWING_1
+    &li.bd_butterfly_1_explodes_to,	EL_BD_DIAMOND_NATIVE_GROWING_1
   },
 
   {
     EL_BD_BUTTERFLY_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_butterfly_2_explodes_to,	EL_BD_DIAMOND_GROWING_1
+    &li.bd_butterfly_2_explodes_to,	EL_BD_DIAMOND_NATIVE_GROWING_1
   },
 
   {
     EL_BD_STONEFLY,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_stonefly_explodes_to,	EL_BD_ROCK_GROWING_1
+    &li.bd_stonefly_explodes_to,	EL_BD_ROCK_NATIVE_GROWING_1
   },
 
   {
@@ -740,9 +740,9 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
-    EL_BD_DIAMOND_GROWING_5,		-1,
+    EL_BD_DIAMOND_NATIVE_GROWING_5,	-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_diamond_birth_turns_to,	EL_BD_DIAMOND
+    &li.bd_diamond_birth_turns_to,	EL_BD_DIAMOND_NATIVE
   },
 
   {
@@ -764,58 +764,63 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
-    EL_BD_MAGIC_WALL,			-1,
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_magic_wall_wait_hatching,	FALSE
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_magic_wall_stops_amoeba,	TRUE
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
     &li.bd_magic_wall_zero_infinite,	TRUE
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
     &li.bd_magic_wall_break_scan,	FALSE
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_magic_wall_diamond_to,	EL_BD_ROCK_FALLING
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
+    &li.bd_magic_wall_time,		999
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_magic_wall_rock_to,		EL_BD_DIAMOND_FALLING
+    &li.bd_magic_wall_diamond_to,	EL_BD_ROCK_NATIVE_FALLING
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
+    &li.bd_magic_wall_rock_to,		EL_BD_DIAMOND_NATIVE_FALLING
+  },
+  {
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
     &li.bd_magic_wall_mega_rock_to,	EL_BD_NITRO_PACK_FALLING
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
     &li.bd_magic_wall_nut_to,		EL_BD_NUT_FALLING
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
     &li.bd_magic_wall_nitro_pack_to,	EL_BD_MEGA_ROCK_FALLING
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
     &li.bd_magic_wall_flying_diamond_to, EL_BD_FLYING_ROCK_FLYING
   },
   {
-    EL_BD_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
+    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(8),
     &li.bd_magic_wall_flying_rock_to,	EL_BD_FLYING_DIAMOND_FLYING
   },
 
@@ -874,22 +879,22 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BD_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_slime_eats_element_1,	EL_BD_DIAMOND
+    &li.bd_slime_eats_element_1,	EL_BD_DIAMOND_NATIVE
   },
   {
     EL_BD_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_slime_converts_to_element_1,	EL_BD_DIAMOND_FALLING
+    &li.bd_slime_converts_to_element_1,	EL_BD_DIAMOND_NATIVE_FALLING
   },
   {
     EL_BD_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_slime_eats_element_2,	EL_BD_ROCK
+    &li.bd_slime_eats_element_2,	EL_BD_ROCK_NATIVE
   },
   {
     EL_BD_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_slime_converts_to_element_2,	EL_BD_ROCK_FALLING
+    &li.bd_slime_converts_to_element_2,	EL_BD_ROCK_NATIVE_FALLING
   },
   {
     EL_BD_SLIME,			-1,
@@ -905,7 +910,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BD_ACID,				-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_acid_eats_element,		EL_BD_SAND
+    &li.bd_acid_eats_element,		EL_BD_SAND_1
   },
   {
     EL_BD_ACID,				-1,
@@ -926,7 +931,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BD_BITER,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_biter_eats_element,		EL_BD_DIAMOND
+    &li.bd_biter_eats_element,		EL_BD_DIAMOND_NATIVE
   },
 
   {
@@ -1112,7 +1117,6 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     &li.score[SC_CRYSTAL],		10
   },
 
-  // (amoeba values used by R'n'D game engine only)
   {
     EL_BD_AMOEBA,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
@@ -1128,92 +1132,92 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.grow_into_diggable,		TRUE
   },
-  // (amoeba values used by BD game engine only)
+
   {
-    EL_BD_AMOEBA,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
+    EL_BD_AMOEBA_1,			-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
+    &li.bd_amoeba_1_threshold_too_big,	200
+  },
+  {
+    EL_BD_AMOEBA_1,			-1,
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
+    &li.bd_amoeba_1_slow_growth_time,	200
+  },
+  {
+    EL_BD_AMOEBA_1,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
+    &li.bd_amoeba_1_content_too_big,	EL_BD_ROCK_NATIVE
+  },
+  {
+    EL_BD_AMOEBA_1,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
+    &li.bd_amoeba_1_content_enclosed,	EL_BD_DIAMOND_NATIVE
+  },
+  {
+    EL_BD_AMOEBA_1,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
+    &li.bd_amoeba_1_slow_growth_rate,	3
+  },
+  {
+    EL_BD_AMOEBA_1,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
+    &li.bd_amoeba_1_fast_growth_rate,	25
+  },
+  {
+    EL_BD_AMOEBA_1,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
     &li.bd_amoeba_wait_for_hatching,	FALSE
   },
   {
-    EL_BD_AMOEBA,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.bd_amoeba_start_immediately,	TRUE
-  },
-  {
-    EL_BD_AMOEBA,			-1,
+    EL_BD_AMOEBA_1,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
-    &li.bd_amoeba_2_explode_by_amoeba,	TRUE
-  },
-  {
-    EL_BD_AMOEBA,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(3),
-    &li.bd_amoeba_threshold_too_big,	200
-  },
-  {
-    EL_BD_AMOEBA,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(4),
-    &li.bd_amoeba_slow_growth_time,	200
-  },
-  {
-    EL_BD_AMOEBA,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(5),
-    &li.bd_amoeba_slow_growth_rate,	3
-  },
-  {
-    EL_BD_AMOEBA,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(6),
-    &li.bd_amoeba_fast_growth_rate,	25
-  },
-  {
-    EL_BD_AMOEBA,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &li.bd_amoeba_content_too_big,	EL_BD_ROCK
-  },
-  {
-    EL_BD_AMOEBA,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_amoeba_content_enclosed,	EL_BD_DIAMOND
+    &li.bd_amoeba_start_immediately,	TRUE
   },
 
   {
     EL_BD_AMOEBA_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(3),
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.bd_amoeba_2_threshold_too_big,	200
   },
   {
     EL_BD_AMOEBA_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(4),
+    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
     &li.bd_amoeba_2_slow_growth_time,	200
   },
   {
     EL_BD_AMOEBA_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(5),
-    &li.bd_amoeba_2_slow_growth_rate,	3
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
+    &li.bd_amoeba_2_content_too_big,	EL_BD_ROCK_NATIVE
   },
   {
     EL_BD_AMOEBA_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(6),
-    &li.bd_amoeba_2_fast_growth_rate,	25
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
+    &li.bd_amoeba_2_content_enclosed,	EL_BD_DIAMOND_NATIVE
   },
   {
     EL_BD_AMOEBA_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &li.bd_amoeba_2_content_too_big,	EL_BD_ROCK
-  },
-  {
-    EL_BD_AMOEBA_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_amoeba_2_content_enclosed,	EL_BD_DIAMOND
-  },
-  {
-    EL_BD_AMOEBA_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
     &li.bd_amoeba_2_content_exploding,	EL_EMPTY
   },
   {
     EL_BD_AMOEBA_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(8),
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
     &li.bd_amoeba_2_content_looks_like,	EL_BD_AMOEBA_2
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
+    &li.bd_amoeba_2_slow_growth_rate,	3
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
+    &li.bd_amoeba_2_fast_growth_rate,	25
+  },
+  {
+    EL_BD_AMOEBA_2,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
+    &li.bd_amoeba_2_explode_by_amoeba,	TRUE
   },
 
   {
@@ -4344,7 +4348,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->voodoo_dies_by_stone		= level->bd_voodoo_dies_by_rock;
   cave->voodoo_disappear_in_explosion	= level->bd_voodoo_vanish_by_explosion;
   cave->level_penalty_time[0]		= level->bd_voodoo_penalty_time;
-  cave->level_magic_wall_time[0]	= level->time_magic_wall;
+  cave->level_magic_wall_time[0]	= level->bd_magic_wall_time;
   cave->magic_timer_zero_is_infinite	= level->bd_magic_wall_zero_infinite;
   cave->magic_timer_wait_for_hatching	= level->bd_magic_wall_wait_hatching;
   cave->magic_wall_stops_amoeba		= level->bd_magic_wall_stops_amoeba;
@@ -4361,17 +4365,17 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->amoeba_timer_wait_for_hatching	= level->bd_amoeba_wait_for_hatching;
   cave->amoeba_timer_started_immediately= level->bd_amoeba_start_immediately;
   cave->amoeba_2_explodes_by_amoeba	= level->bd_amoeba_2_explode_by_amoeba;
-  cave->level_amoeba_threshold[0]	= level->bd_amoeba_threshold_too_big;
-  cave->level_amoeba_time[0]		= level->bd_amoeba_slow_growth_time;
-  cave->amoeba_growth_prob		= level->bd_amoeba_slow_growth_rate * 10000;
-  cave->amoeba_fast_growth_prob		= level->bd_amoeba_fast_growth_rate * 10000;
+  cave->level_amoeba_threshold[0]	= level->bd_amoeba_1_threshold_too_big;
+  cave->level_amoeba_time[0]		= level->bd_amoeba_1_slow_growth_time;
+  cave->amoeba_growth_prob		= level->bd_amoeba_1_slow_growth_rate * 10000;
+  cave->amoeba_fast_growth_prob		= level->bd_amoeba_1_fast_growth_rate * 10000;
   cave->level_amoeba_2_threshold[0]	= level->bd_amoeba_2_threshold_too_big;
   cave->level_amoeba_2_time[0]		= level->bd_amoeba_2_slow_growth_time;
   cave->amoeba_2_growth_prob		= level->bd_amoeba_2_slow_growth_rate * 10000;
   cave->amoeba_2_fast_growth_prob	= level->bd_amoeba_2_fast_growth_rate * 10000;
 
-  cave->amoeba_too_big_effect		= LEVEL_TO_CAVE(level->bd_amoeba_content_too_big);
-  cave->amoeba_enclosed_effect		= LEVEL_TO_CAVE(level->bd_amoeba_content_enclosed);
+  cave->amoeba_too_big_effect		= LEVEL_TO_CAVE(level->bd_amoeba_1_content_too_big);
+  cave->amoeba_enclosed_effect		= LEVEL_TO_CAVE(level->bd_amoeba_1_content_enclosed);
   cave->amoeba_2_too_big_effect		= LEVEL_TO_CAVE(level->bd_amoeba_2_content_too_big);
   cave->amoeba_2_enclosed_effect	= LEVEL_TO_CAVE(level->bd_amoeba_2_content_enclosed);
   cave->amoeba_2_explosion_effect	= LEVEL_TO_CAVE(level->bd_amoeba_2_content_exploding);
@@ -4437,9 +4441,9 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->diamond_falling_effect		= LEVEL_TO_CAVE(level->bd_diamond_turns_to_on_falling);
   cave->diamond_bouncing_effect		= LEVEL_TO_CAVE(level->bd_diamond_turns_to_on_impact);
 
-  cave->firefly_explode_to		= LEVEL_TO_CAVE(level->bd_firefly_explodes_to);
+  cave->firefly_explode_to		= LEVEL_TO_CAVE(level->bd_firefly_1_explodes_to);
   cave->alt_firefly_explode_to		= LEVEL_TO_CAVE(level->bd_firefly_2_explodes_to);
-  cave->butterfly_explode_to		= LEVEL_TO_CAVE(level->bd_butterfly_explodes_to);
+  cave->butterfly_explode_to		= LEVEL_TO_CAVE(level->bd_butterfly_1_explodes_to);
   cave->alt_butterfly_explode_to	= LEVEL_TO_CAVE(level->bd_butterfly_2_explodes_to);
   cave->stonefly_explode_to		= LEVEL_TO_CAVE(level->bd_stonefly_explodes_to);
   cave->dragonfly_explode_to		= LEVEL_TO_CAVE(level->bd_dragonfly_explodes_to);
@@ -4517,7 +4521,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_voodoo_dies_by_rock		= cave->voodoo_dies_by_stone;
   level->bd_voodoo_vanish_by_explosion	= cave->voodoo_disappear_in_explosion;
   level->bd_voodoo_penalty_time		= cave->level_penalty_time[bd_level_nr];
-  level->time_magic_wall		= cave->level_magic_wall_time[bd_level_nr];
+  level->bd_magic_wall_time		= cave->level_magic_wall_time[bd_level_nr];
   level->bd_magic_wall_zero_infinite	= cave->magic_timer_zero_is_infinite;
   level->bd_magic_wall_wait_hatching	= cave->magic_timer_wait_for_hatching;
   level->bd_magic_wall_stops_amoeba	= cave->magic_wall_stops_amoeba;
@@ -4534,17 +4538,17 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_amoeba_wait_for_hatching	= cave->amoeba_timer_wait_for_hatching;
   level->bd_amoeba_start_immediately	= cave->amoeba_timer_started_immediately;
   level->bd_amoeba_2_explode_by_amoeba	= cave->amoeba_2_explodes_by_amoeba;
-  level->bd_amoeba_threshold_too_big	= cave->level_amoeba_threshold[bd_level_nr];
-  level->bd_amoeba_slow_growth_time	= cave->level_amoeba_time[bd_level_nr];
-  level->bd_amoeba_slow_growth_rate	= cave->amoeba_growth_prob      / 10000;
-  level->bd_amoeba_fast_growth_rate	= cave->amoeba_fast_growth_prob / 10000;
+  level->bd_amoeba_1_threshold_too_big	= cave->level_amoeba_threshold[bd_level_nr];
+  level->bd_amoeba_1_slow_growth_time	= cave->level_amoeba_time[bd_level_nr];
+  level->bd_amoeba_1_slow_growth_rate	= cave->amoeba_growth_prob      / 10000;
+  level->bd_amoeba_1_fast_growth_rate	= cave->amoeba_fast_growth_prob / 10000;
   level->bd_amoeba_2_threshold_too_big	= cave->level_amoeba_2_threshold[bd_level_nr];
   level->bd_amoeba_2_slow_growth_time	= cave->level_amoeba_2_time[bd_level_nr];
   level->bd_amoeba_2_slow_growth_rate	= cave->amoeba_2_growth_prob      / 10000;
   level->bd_amoeba_2_fast_growth_rate	= cave->amoeba_2_fast_growth_prob / 10000;
 
-  level->bd_amoeba_content_too_big	= CAVE_TO_LEVEL(cave->amoeba_too_big_effect);
-  level->bd_amoeba_content_enclosed	= CAVE_TO_LEVEL(cave->amoeba_enclosed_effect);
+  level->bd_amoeba_1_content_too_big	= CAVE_TO_LEVEL(cave->amoeba_too_big_effect);
+  level->bd_amoeba_1_content_enclosed	= CAVE_TO_LEVEL(cave->amoeba_enclosed_effect);
   level->bd_amoeba_2_content_too_big	= CAVE_TO_LEVEL(cave->amoeba_2_too_big_effect);
   level->bd_amoeba_2_content_enclosed	= CAVE_TO_LEVEL(cave->amoeba_2_enclosed_effect);
   level->bd_amoeba_2_content_exploding	= CAVE_TO_LEVEL(cave->amoeba_2_explosion_effect);
@@ -4610,9 +4614,9 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_diamond_turns_to_on_falling	= CAVE_TO_LEVEL(cave->diamond_falling_effect);
   level->bd_diamond_turns_to_on_impact	= CAVE_TO_LEVEL(cave->diamond_bouncing_effect);
 
-  level->bd_firefly_explodes_to		= CAVE_TO_LEVEL(cave->firefly_explode_to);
+  level->bd_firefly_1_explodes_to	= CAVE_TO_LEVEL(cave->firefly_explode_to);
   level->bd_firefly_2_explodes_to	= CAVE_TO_LEVEL(cave->alt_firefly_explode_to);
-  level->bd_butterfly_explodes_to	= CAVE_TO_LEVEL(cave->butterfly_explode_to);
+  level->bd_butterfly_1_explodes_to	= CAVE_TO_LEVEL(cave->butterfly_explode_to);
   level->bd_butterfly_2_explodes_to	= CAVE_TO_LEVEL(cave->alt_butterfly_explode_to);
   level->bd_stonefly_explodes_to	= CAVE_TO_LEVEL(cave->stonefly_explode_to);
   level->bd_dragonfly_explodes_to	= CAVE_TO_LEVEL(cave->dragonfly_explode_to);

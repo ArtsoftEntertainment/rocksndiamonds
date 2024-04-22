@@ -911,6 +911,12 @@
 					 (e) == EL_BD_FIREFLY_LEFT ||		\
 					 (e) == EL_BD_FIREFLY_DOWN)
 
+#define IS_BD_FIREFLY_1(e)		((e) == EL_BD_FIREFLY_1 ||		\
+					 (e) == EL_BD_FIREFLY_1_RIGHT ||	\
+					 (e) == EL_BD_FIREFLY_1_UP ||		\
+					 (e) == EL_BD_FIREFLY_1_LEFT ||		\
+					 (e) == EL_BD_FIREFLY_1_DOWN)
+
 #define IS_BD_FIREFLY_2(e)		((e) == EL_BD_FIREFLY_2 ||		\
 					 (e) == EL_BD_FIREFLY_2_RIGHT ||	\
 					 (e) == EL_BD_FIREFLY_2_UP ||		\
@@ -922,6 +928,12 @@
 					 (e) == EL_BD_BUTTERFLY_UP ||		\
 					 (e) == EL_BD_BUTTERFLY_LEFT ||		\
 					 (e) == EL_BD_BUTTERFLY_DOWN)
+
+#define IS_BD_BUTTERFLY_1(e)		((e) == EL_BD_BUTTERFLY_1 ||		\
+					 (e) == EL_BD_BUTTERFLY_1_RIGHT ||	\
+					 (e) == EL_BD_BUTTERFLY_1_UP ||		\
+					 (e) == EL_BD_BUTTERFLY_1_LEFT ||	\
+					 (e) == EL_BD_BUTTERFLY_1_DOWN)
 
 #define IS_BD_BUTTERFLY_2(e)		((e) == EL_BD_BUTTERFLY_2 ||		\
 					 (e) == EL_BD_BUTTERFLY_2_RIGHT ||	\
@@ -965,8 +977,11 @@
 					 (e) == EL_BD_CONVEYOR_DIR_SWITCH ||	\
 					 (e) == EL_BD_CONVEYOR_DIR_SWITCH_ACTIVE)
 
-#define IS_BD_RUNTIME_ELEMENT(e)	((e) >= EL_BD_RUNTIME_START &&		\
-					 (e) <= EL_BD_RUNTIME_END)
+#define IS_BD_NATIVE_ELEMENT(e)		((e) >= EL_BD_NATIVE_START &&		\
+					 (e) <= EL_BD_NATIVE_END)
+
+#define IS_BD_NATIVE_RUNTIME_ELEMENT(e)	((e) >= EL_BD_NATIVE_RUNTIME_START &&	\
+					 (e) <= EL_BD_NATIVE_RUNTIME_END)
 
 #define IS_SOKOBAN_OBJECT_OR_FIELD(e)	((e) == EL_SOKOBAN_OBJECT ||		\
 					 (e) == EL_SOKOBAN_FIELD_EMPTY ||	\
@@ -2067,10 +2082,10 @@
 #define EL_DF_END_2				EL_DF_SLOPE_END
 
 // BD style elements (normal)
-#define EL_BD_START				1253
-#define EL_BD_EMPTY_SPACE			EL_BD_START
+#define EL_BD_NATIVE_START			1253
+#define EL_BD_EMPTY_SPACE			EL_BD_NATIVE_START
 #define EL_BD_EMPTY				EL_BD_EMPTY_SPACE
-#define EL_BD_SAND				1254
+#define EL_BD_SAND_1				1254
 #define EL_BD_SAND_2				1255
 #define EL_BD_SAND_BALL				1256
 #define EL_BD_SAND_LOOSE			1257
@@ -2118,199 +2133,213 @@
 #define EL_BD_DIAMOND_KEY			1299
 #define EL_BD_TRAPPED_DIAMOND			1300
 #define EL_BD_NUT				1301
-#define EL_BD_AMOEBA_2				1302
-#define EL_BD_BLADDER				1303
-#define EL_BD_BLADDER_SPENDER			1304
-#define EL_BD_CREATURE_SWITCH			1305
-#define EL_BD_CREATURE_SWITCH_ACTIVE		1306
-#define EL_BD_BITER_SWITCH_1			1307
-#define EL_BD_BITER_SWITCH_2			1308
-#define EL_BD_BITER_SWITCH_3			1309
-#define EL_BD_BITER_SWITCH_4			1310
-#define EL_BD_REPLICATOR			1311
-#define EL_BD_REPLICATOR_ACTIVE			1312
-#define EL_BD_REPLICATOR_SWITCH			1313
-#define EL_BD_REPLICATOR_SWITCH_ACTIVE		1314
-#define EL_BD_CONVEYOR_LEFT			1315
-#define EL_BD_CONVEYOR_LEFT_ACTIVE		1316
-#define EL_BD_CONVEYOR_RIGHT			1317
-#define EL_BD_CONVEYOR_RIGHT_ACTIVE		1318
-#define EL_BD_CONVEYOR_SWITCH			1319
-#define EL_BD_CONVEYOR_SWITCH_ACTIVE		1320
-#define EL_BD_CONVEYOR_DIR_SWITCH		1321
-#define EL_BD_CONVEYOR_DIR_SWITCH_ACTIVE	1322
-#define EL_BD_GRAVITY_SWITCH			1323
-#define EL_BD_GRAVITY_SWITCH_ACTIVE		1324
-#define EL_BD_ACID				1325
-#define EL_BD_BOX				1326
-#define EL_BD_TIME_PENALTY			1327
-#define EL_BD_GRAVESTONE			1328
-#define EL_BD_CLOCK				1329
-#define EL_BD_POT				1330
-#define EL_BD_PNEUMATIC_HAMMER			1331
-#define EL_BD_TELEPORTER			1332
-#define EL_BD_SKELETON				1333
-#define EL_BD_WATER				1334
-#define EL_BD_KEY_1				1335
-#define EL_BD_KEY_2				1336
-#define EL_BD_KEY_3				1337
-#define EL_BD_GATE_1				1338
-#define EL_BD_GATE_2				1339
-#define EL_BD_GATE_3				1340
-#define EL_BD_LAVA				1341
-#define EL_BD_SWEET				1342
-#define EL_BD_VOODOO_DOLL			1343
-#define EL_BD_SLIME				1344
-#define EL_BD_WAITING_ROCK			1345
-#define EL_BD_CHASING_ROCK			1346
-#define EL_BD_GHOST				1347
-#define EL_BD_COW				1348
-#define EL_BD_COW_LEFT				1349
-#define EL_BD_COW_UP				1350
-#define EL_BD_COW_RIGHT				1351
-#define EL_BD_COW_DOWN				1352
-#define EL_BD_BUTTERFLY_2			1353
-#define EL_BD_BUTTERFLY_2_RIGHT			1354
-#define EL_BD_BUTTERFLY_2_UP			1355
-#define EL_BD_BUTTERFLY_2_LEFT			1356
-#define EL_BD_BUTTERFLY_2_DOWN			1357
-#define EL_BD_FIREFLY_2				1358
-#define EL_BD_FIREFLY_2_RIGHT			1359
-#define EL_BD_FIREFLY_2_UP			1360
-#define EL_BD_FIREFLY_2_LEFT			1361
-#define EL_BD_FIREFLY_2_DOWN			1362
-#define EL_BD_STONEFLY				1363
-#define EL_BD_STONEFLY_RIGHT			1364
-#define EL_BD_STONEFLY_UP			1365
-#define EL_BD_STONEFLY_LEFT			1366
-#define EL_BD_STONEFLY_DOWN			1367
-#define EL_BD_BITER				1368
-#define EL_BD_BITER_RIGHT			1369
-#define EL_BD_BITER_UP				1370
-#define EL_BD_BITER_LEFT			1371
-#define EL_BD_BITER_DOWN			1372
-#define EL_BD_DRAGONFLY				1373
-#define EL_BD_DRAGONFLY_RIGHT			1374
-#define EL_BD_DRAGONFLY_UP			1375
-#define EL_BD_DRAGONFLY_LEFT			1376
-#define EL_BD_DRAGONFLY_DOWN			1377
-#define EL_BD_BOMB				1378
-#define EL_BD_NITRO_PACK			1379
-#define EL_BD_PLAYER				1380
-#define EL_BD_PLAYER_WITH_BOMB			1381
-#define EL_BD_PLAYER_WITH_ROCKET_LAUNCHER	1382
-#define EL_BD_PLAYER_GLUED			1383
-#define EL_BD_PLAYER_STIRRING			1384
-#define EL_BD_ROCKET_LAUNCHER			1385
-#define EL_BD_ROCKET				1386
-#define EL_BD_ROCKET_RIGHT			1387
-#define EL_BD_ROCKET_UP				1388
-#define EL_BD_ROCKET_LEFT			1389
-#define EL_BD_ROCKET_DOWN			1390
-#define EL_BD_FAKE_BONUS			1391
-#define EL_BD_COVERED				1392
+#define EL_BD_AMOEBA_1				1302
+#define EL_BD_AMOEBA_2				1303
+#define EL_BD_BLADDER				1304
+#define EL_BD_BLADDER_SPENDER			1305
+#define EL_BD_CREATURE_SWITCH			1306
+#define EL_BD_CREATURE_SWITCH_ACTIVE		1307
+#define EL_BD_BITER_SWITCH_1			1308
+#define EL_BD_BITER_SWITCH_2			1309
+#define EL_BD_BITER_SWITCH_3			1310
+#define EL_BD_BITER_SWITCH_4			1311
+#define EL_BD_REPLICATOR			1312
+#define EL_BD_REPLICATOR_ACTIVE			1313
+#define EL_BD_REPLICATOR_SWITCH			1314
+#define EL_BD_REPLICATOR_SWITCH_ACTIVE		1315
+#define EL_BD_CONVEYOR_LEFT			1316
+#define EL_BD_CONVEYOR_LEFT_ACTIVE		1317
+#define EL_BD_CONVEYOR_RIGHT			1318
+#define EL_BD_CONVEYOR_RIGHT_ACTIVE		1319
+#define EL_BD_CONVEYOR_SWITCH			1320
+#define EL_BD_CONVEYOR_SWITCH_ACTIVE		1321
+#define EL_BD_CONVEYOR_DIR_SWITCH		1322
+#define EL_BD_CONVEYOR_DIR_SWITCH_ACTIVE	1323
+#define EL_BD_GRAVITY_SWITCH			1324
+#define EL_BD_GRAVITY_SWITCH_ACTIVE		1325
+#define EL_BD_ACID				1326
+#define EL_BD_BOX				1327
+#define EL_BD_TIME_PENALTY			1328
+#define EL_BD_GRAVESTONE			1329
+#define EL_BD_CLOCK				1330
+#define EL_BD_POT				1331
+#define EL_BD_PNEUMATIC_HAMMER			1332
+#define EL_BD_TELEPORTER			1333
+#define EL_BD_SKELETON				1334
+#define EL_BD_WATER				1335
+#define EL_BD_KEY_1				1336
+#define EL_BD_KEY_2				1337
+#define EL_BD_KEY_3				1338
+#define EL_BD_GATE_1				1339
+#define EL_BD_GATE_2				1340
+#define EL_BD_GATE_3				1341
+#define EL_BD_LAVA				1342
+#define EL_BD_SWEET				1343
+#define EL_BD_VOODOO_DOLL			1344
+#define EL_BD_SLIME				1345
+#define EL_BD_WAITING_ROCK			1346
+#define EL_BD_CHASING_ROCK			1347
+#define EL_BD_GHOST				1348
+#define EL_BD_COW				1349
+#define EL_BD_COW_LEFT				1350
+#define EL_BD_COW_UP				1351
+#define EL_BD_COW_RIGHT				1352
+#define EL_BD_COW_DOWN				1353
+#define EL_BD_BUTTERFLY_1			1354
+#define EL_BD_BUTTERFLY_1_RIGHT			1355
+#define EL_BD_BUTTERFLY_1_UP			1356
+#define EL_BD_BUTTERFLY_1_LEFT			1357
+#define EL_BD_BUTTERFLY_1_DOWN			1358
+#define EL_BD_BUTTERFLY_2			1359
+#define EL_BD_BUTTERFLY_2_RIGHT			1360
+#define EL_BD_BUTTERFLY_2_UP			1361
+#define EL_BD_BUTTERFLY_2_LEFT			1362
+#define EL_BD_BUTTERFLY_2_DOWN			1363
+#define EL_BD_FIREFLY_1				1364
+#define EL_BD_FIREFLY_1_RIGHT			1365
+#define EL_BD_FIREFLY_1_UP			1366
+#define EL_BD_FIREFLY_1_LEFT			1367
+#define EL_BD_FIREFLY_1_DOWN			1368
+#define EL_BD_FIREFLY_2				1369
+#define EL_BD_FIREFLY_2_RIGHT			1370
+#define EL_BD_FIREFLY_2_UP			1371
+#define EL_BD_FIREFLY_2_LEFT			1372
+#define EL_BD_FIREFLY_2_DOWN			1373
+#define EL_BD_STONEFLY				1374
+#define EL_BD_STONEFLY_RIGHT			1375
+#define EL_BD_STONEFLY_UP			1376
+#define EL_BD_STONEFLY_LEFT			1377
+#define EL_BD_STONEFLY_DOWN			1378
+#define EL_BD_BITER				1379
+#define EL_BD_BITER_RIGHT			1380
+#define EL_BD_BITER_UP				1381
+#define EL_BD_BITER_LEFT			1382
+#define EL_BD_BITER_DOWN			1383
+#define EL_BD_DRAGONFLY				1384
+#define EL_BD_DRAGONFLY_RIGHT			1385
+#define EL_BD_DRAGONFLY_UP			1386
+#define EL_BD_DRAGONFLY_LEFT			1387
+#define EL_BD_DRAGONFLY_DOWN			1388
+#define EL_BD_BOMB				1389
+#define EL_BD_NITRO_PACK			1390
+#define EL_BD_PLAYER				1391
+#define EL_BD_PLAYER_WITH_BOMB			1392
+#define EL_BD_PLAYER_WITH_ROCKET_LAUNCHER	1393
+#define EL_BD_PLAYER_GLUED			1394
+#define EL_BD_PLAYER_STIRRING			1395
+#define EL_BD_ROCKET_LAUNCHER			1396
+#define EL_BD_ROCKET				1397
+#define EL_BD_ROCKET_RIGHT			1398
+#define EL_BD_ROCKET_UP				1399
+#define EL_BD_ROCKET_LEFT			1400
+#define EL_BD_ROCKET_DOWN			1401
+#define EL_BD_FAKE_BONUS			1402
+#define EL_BD_COVERED				1403
+#define EL_BD_WALL_NATIVE			1404
+#define EL_BD_ROCK_NATIVE			1405
+#define EL_BD_DIAMOND_NATIVE			1406
+#define EL_BD_MAGIC_WALL_NATIVE			1407
 
 // BD style elements ("effects"; mostly runtime elements, but can also be stored in level file)
-#define EL_BD_SAND_BALL_FALLING			1393
-#define EL_BD_SAND_LOOSE_FALLING		1394
-#define EL_BD_ROCK_FALLING			1395
-#define EL_BD_FLYING_ROCK_FLYING		1396
-#define EL_BD_MEGA_ROCK_FALLING			1397
-#define EL_BD_DIAMOND_FALLING			1398
-#define EL_BD_FLYING_DIAMOND_FLYING		1399
-#define EL_BD_NUT_FALLING			1400
-#define EL_BD_FALLING_WALL_FALLING		1401
-#define EL_BD_NITRO_PACK_FALLING		1402
-#define EL_BD_WATER_1				1403
-#define EL_BD_WATER_2				1404
-#define EL_BD_WATER_3				1405
-#define EL_BD_WATER_4				1406
-#define EL_BD_WATER_5				1407
-#define EL_BD_WATER_6				1408
-#define EL_BD_WATER_7				1409
-#define EL_BD_WATER_8				1410
-#define EL_BD_WATER_9				1411
-#define EL_BD_WATER_10				1412
-#define EL_BD_WATER_11				1413
-#define EL_BD_WATER_12				1414
-#define EL_BD_WATER_13				1415
-#define EL_BD_WATER_14				1416
-#define EL_BD_WATER_15				1417
-#define EL_BD_WATER_16				1418
-#define EL_BD_COW_ENCLOSED_1			1419
-#define EL_BD_COW_ENCLOSED_2			1420
-#define EL_BD_COW_ENCLOSED_3			1421
-#define EL_BD_COW_ENCLOSED_4			1422
-#define EL_BD_COW_ENCLOSED_5			1423
-#define EL_BD_COW_ENCLOSED_6			1424
-#define EL_BD_COW_ENCLOSED_7			1425
-#define EL_BD_BLADDER_1				1426
-#define EL_BD_BLADDER_2				1427
-#define EL_BD_BLADDER_3				1428
-#define EL_BD_BLADDER_4				1429
-#define EL_BD_BLADDER_5				1430
-#define EL_BD_BLADDER_6				1431
-#define EL_BD_BLADDER_7				1432
-#define EL_BD_BLADDER_8				1433
-#define EL_BD_PLAYER_GROWING_1			1434
-#define EL_BD_PLAYER_GROWING_2			1435
-#define EL_BD_PLAYER_GROWING_3			1436
-#define EL_BD_BOMB_TICKING_1			1437
-#define EL_BD_BOMB_TICKING_2			1438
-#define EL_BD_BOMB_TICKING_3			1439
-#define EL_BD_BOMB_TICKING_4			1440
-#define EL_BD_BOMB_TICKING_5			1441
-#define EL_BD_BOMB_TICKING_6			1442
-#define EL_BD_BOMB_TICKING_7			1443
-#define EL_BD_CLOCK_GROWING_1			1444
-#define EL_BD_CLOCK_GROWING_2			1445
-#define EL_BD_CLOCK_GROWING_3			1446
-#define EL_BD_CLOCK_GROWING_4			1447
-#define EL_BD_DIAMOND_GROWING_1			1448
-#define EL_BD_DIAMOND_GROWING_2			1449
-#define EL_BD_DIAMOND_GROWING_3			1450
-#define EL_BD_DIAMOND_GROWING_4			1451
-#define EL_BD_DIAMOND_GROWING_5			1452
-#define EL_BD_EXPLODING_1			1453
-#define EL_BD_EXPLODING_2			1454
-#define EL_BD_EXPLODING_3			1455
-#define EL_BD_EXPLODING_4			1456
-#define EL_BD_EXPLODING_5			1457
-#define EL_BD_ROCK_GROWING_1			1458
-#define EL_BD_ROCK_GROWING_2			1459
-#define EL_BD_ROCK_GROWING_3			1460
-#define EL_BD_ROCK_GROWING_4			1461
-#define EL_BD_STEELWALL_GROWING_1		1462
-#define EL_BD_STEELWALL_GROWING_2		1463
-#define EL_BD_STEELWALL_GROWING_3		1464
-#define EL_BD_STEELWALL_GROWING_4		1465
-#define EL_BD_GHOST_EXPLODING_1			1466
-#define EL_BD_GHOST_EXPLODING_2			1467
-#define EL_BD_GHOST_EXPLODING_3			1468
-#define EL_BD_GHOST_EXPLODING_4			1469
-#define EL_BD_BOMB_EXPLODING_1			1470
-#define EL_BD_BOMB_EXPLODING_2			1471
-#define EL_BD_BOMB_EXPLODING_3			1472
-#define EL_BD_BOMB_EXPLODING_4			1473
-#define EL_BD_NITRO_PACK_EXPLODING		1474
-#define EL_BD_NITRO_PACK_EXPLODING_1		1475
-#define EL_BD_NITRO_PACK_EXPLODING_2		1476
-#define EL_BD_NITRO_PACK_EXPLODING_3		1477
-#define EL_BD_NITRO_PACK_EXPLODING_4		1478
-#define EL_BD_AMOEBA_2_EXPLODING_1		1479
-#define EL_BD_AMOEBA_2_EXPLODING_2		1480
-#define EL_BD_AMOEBA_2_EXPLODING_3		1481
-#define EL_BD_AMOEBA_2_EXPLODING_4		1482
-#define EL_BD_NUT_BREAKING_1			1483
-#define EL_BD_NUT_BREAKING_2			1484
-#define EL_BD_NUT_BREAKING_3			1485
-#define EL_BD_NUT_BREAKING_4			1486
-#define EL_BD_END				EL_BD_NUT_BREAKING_4
+#define EL_BD_NATIVE_RUNTIME_START		1408
+#define EL_BD_SAND_BALL_FALLING			EL_BD_NATIVE_RUNTIME_START
+#define EL_BD_SAND_LOOSE_FALLING		1409
+#define EL_BD_ROCK_NATIVE_FALLING		1410
+#define EL_BD_FLYING_ROCK_FLYING		1411
+#define EL_BD_MEGA_ROCK_FALLING			1412
+#define EL_BD_DIAMOND_NATIVE_FALLING		1413
+#define EL_BD_FLYING_DIAMOND_FLYING		1414
+#define EL_BD_NUT_FALLING			1415
+#define EL_BD_FALLING_WALL_FALLING		1416
+#define EL_BD_NITRO_PACK_FALLING		1417
+#define EL_BD_WATER_1				1418
+#define EL_BD_WATER_2				1419
+#define EL_BD_WATER_3				1420
+#define EL_BD_WATER_4				1421
+#define EL_BD_WATER_5				1422
+#define EL_BD_WATER_6				1423
+#define EL_BD_WATER_7				1424
+#define EL_BD_WATER_8				1425
+#define EL_BD_WATER_9				1426
+#define EL_BD_WATER_10				1427
+#define EL_BD_WATER_11				1428
+#define EL_BD_WATER_12				1429
+#define EL_BD_WATER_13				1430
+#define EL_BD_WATER_14				1431
+#define EL_BD_WATER_15				1432
+#define EL_BD_WATER_16				1433
+#define EL_BD_COW_ENCLOSED_1			1434
+#define EL_BD_COW_ENCLOSED_2			1435
+#define EL_BD_COW_ENCLOSED_3			1436
+#define EL_BD_COW_ENCLOSED_4			1437
+#define EL_BD_COW_ENCLOSED_5			1438
+#define EL_BD_COW_ENCLOSED_6			1439
+#define EL_BD_COW_ENCLOSED_7			1440
+#define EL_BD_BLADDER_1				1441
+#define EL_BD_BLADDER_2				1442
+#define EL_BD_BLADDER_3				1443
+#define EL_BD_BLADDER_4				1444
+#define EL_BD_BLADDER_5				1445
+#define EL_BD_BLADDER_6				1446
+#define EL_BD_BLADDER_7				1447
+#define EL_BD_BLADDER_8				1448
+#define EL_BD_PLAYER_GROWING_1			1449
+#define EL_BD_PLAYER_GROWING_2			1450
+#define EL_BD_PLAYER_GROWING_3			1451
+#define EL_BD_BOMB_TICKING_1			1452
+#define EL_BD_BOMB_TICKING_2			1453
+#define EL_BD_BOMB_TICKING_3			1454
+#define EL_BD_BOMB_TICKING_4			1455
+#define EL_BD_BOMB_TICKING_5			1456
+#define EL_BD_BOMB_TICKING_6			1457
+#define EL_BD_BOMB_TICKING_7			1458
+#define EL_BD_CLOCK_GROWING_1			1459
+#define EL_BD_CLOCK_GROWING_2			1460
+#define EL_BD_CLOCK_GROWING_3			1461
+#define EL_BD_CLOCK_GROWING_4			1462
+#define EL_BD_DIAMOND_NATIVE_GROWING_1		1463
+#define EL_BD_DIAMOND_NATIVE_GROWING_2		1464
+#define EL_BD_DIAMOND_NATIVE_GROWING_3		1465
+#define EL_BD_DIAMOND_NATIVE_GROWING_4		1466
+#define EL_BD_DIAMOND_NATIVE_GROWING_5		1467
+#define EL_BD_EXPLODING_1			1468
+#define EL_BD_EXPLODING_2			1469
+#define EL_BD_EXPLODING_3			1470
+#define EL_BD_EXPLODING_4			1471
+#define EL_BD_EXPLODING_5			1472
+#define EL_BD_ROCK_NATIVE_GROWING_1		1473
+#define EL_BD_ROCK_NATIVE_GROWING_2		1474
+#define EL_BD_ROCK_NATIVE_GROWING_3		1475
+#define EL_BD_ROCK_NATIVE_GROWING_4		1476
+#define EL_BD_STEELWALL_GROWING_1		1477
+#define EL_BD_STEELWALL_GROWING_2		1478
+#define EL_BD_STEELWALL_GROWING_3		1479
+#define EL_BD_STEELWALL_GROWING_4		1480
+#define EL_BD_GHOST_EXPLODING_1			1481
+#define EL_BD_GHOST_EXPLODING_2			1482
+#define EL_BD_GHOST_EXPLODING_3			1483
+#define EL_BD_GHOST_EXPLODING_4			1484
+#define EL_BD_BOMB_EXPLODING_1			1485
+#define EL_BD_BOMB_EXPLODING_2			1486
+#define EL_BD_BOMB_EXPLODING_3			1487
+#define EL_BD_BOMB_EXPLODING_4			1488
+#define EL_BD_NITRO_PACK_EXPLODING		1489
+#define EL_BD_NITRO_PACK_EXPLODING_1		1490
+#define EL_BD_NITRO_PACK_EXPLODING_2		1491
+#define EL_BD_NITRO_PACK_EXPLODING_3		1492
+#define EL_BD_NITRO_PACK_EXPLODING_4		1493
+#define EL_BD_AMOEBA_2_EXPLODING_1		1494
+#define EL_BD_AMOEBA_2_EXPLODING_2		1495
+#define EL_BD_AMOEBA_2_EXPLODING_3		1496
+#define EL_BD_AMOEBA_2_EXPLODING_4		1497
+#define EL_BD_NUT_BREAKING_1			1498
+#define EL_BD_NUT_BREAKING_2			1499
+#define EL_BD_NUT_BREAKING_3			1500
+#define EL_BD_NUT_BREAKING_4			1501
+#define EL_BD_NATIVE_RUNTIME_END		EL_BD_NUT_BREAKING_4
+#define EL_BD_NATIVE_END			EL_BD_NATIVE_RUNTIME_END
 
-#define EL_BD_RUNTIME_START			EL_BD_SAND_BALL_FALLING
-#define EL_BD_RUNTIME_END			EL_BD_NUT_BREAKING_4
-
-#define NUM_FILE_ELEMENTS			1487
+#define NUM_FILE_ELEMENTS			1502
 
 
 // "real" (and therefore drawable) runtime elements
@@ -2400,8 +2429,9 @@
 #define EL_MM_PACMAN_EATING_DOWN		(EL_FIRST_RUNTIME_REAL + 81)
 #define EL_MM_BOMB_ACTIVE			(EL_FIRST_RUNTIME_REAL + 82)
 #define EL_DF_MINE_ACTIVE			(EL_FIRST_RUNTIME_REAL + 83)
+#define EL_BD_MAGIC_WALL_NATIVE_ACTIVE		(EL_FIRST_RUNTIME_REAL + 84)
 
-#define NUM_DRAWABLE_ELEMENTS			(EL_FIRST_RUNTIME_REAL + 84)
+#define NUM_DRAWABLE_ELEMENTS			(EL_FIRST_RUNTIME_REAL + 85)
 
 #define EL_MM_RUNTIME_START			EL_MM_EXIT_OPENING
 #define EL_MM_RUNTIME_END			EL_MM_AMOEBA_WALL_GROWING
@@ -2465,21 +2495,22 @@
 #define EL_MM_LIGHTBALL_YELLOW			(EL_FIRST_DUMMY + 23)
 #define EL_DEFAULT				(EL_FIRST_DUMMY + 24)
 #define EL_BD_DEFAULT				(EL_FIRST_DUMMY + 25)
-#define EL_SP_DEFAULT				(EL_FIRST_DUMMY + 26)
-#define EL_SB_DEFAULT				(EL_FIRST_DUMMY + 27)
-#define EL_MM_DEFAULT				(EL_FIRST_DUMMY + 28)
-#define EL_GRAPHIC_1				(EL_FIRST_DUMMY + 29)
-#define EL_GRAPHIC_2				(EL_FIRST_DUMMY + 30)
-#define EL_GRAPHIC_3				(EL_FIRST_DUMMY + 31)
-#define EL_GRAPHIC_4				(EL_FIRST_DUMMY + 32)
-#define EL_GRAPHIC_5				(EL_FIRST_DUMMY + 33)
-#define EL_GRAPHIC_6				(EL_FIRST_DUMMY + 34)
-#define EL_GRAPHIC_7				(EL_FIRST_DUMMY + 35)
-#define EL_GRAPHIC_8				(EL_FIRST_DUMMY + 36)
-#define EL_BD_GAME_GRAPHICS_COLOR_TEMPLATE	(EL_FIRST_DUMMY + 37)
+#define EL_BD_NATIVE_DEFAULT			(EL_FIRST_DUMMY + 26)
+#define EL_SP_DEFAULT				(EL_FIRST_DUMMY + 27)
+#define EL_SB_DEFAULT				(EL_FIRST_DUMMY + 28)
+#define EL_MM_DEFAULT				(EL_FIRST_DUMMY + 29)
+#define EL_GRAPHIC_1				(EL_FIRST_DUMMY + 30)
+#define EL_GRAPHIC_2				(EL_FIRST_DUMMY + 31)
+#define EL_GRAPHIC_3				(EL_FIRST_DUMMY + 32)
+#define EL_GRAPHIC_4				(EL_FIRST_DUMMY + 33)
+#define EL_GRAPHIC_5				(EL_FIRST_DUMMY + 34)
+#define EL_GRAPHIC_6				(EL_FIRST_DUMMY + 35)
+#define EL_GRAPHIC_7				(EL_FIRST_DUMMY + 36)
+#define EL_GRAPHIC_8				(EL_FIRST_DUMMY + 37)
+#define EL_BD_GAME_GRAPHICS_COLOR_TEMPLATE	(EL_FIRST_DUMMY + 38)
 
 // internal elements (only used for internal purposes like copying)
-#define EL_FIRST_INTERNAL			(EL_FIRST_DUMMY + 38)
+#define EL_FIRST_INTERNAL			(EL_FIRST_DUMMY + 39)
 
 #define EL_INTERNAL_CLIPBOARD_CUSTOM		(EL_FIRST_INTERNAL + 0)
 #define EL_INTERNAL_CLIPBOARD_CHANGE		(EL_FIRST_INTERNAL + 1)
@@ -3675,6 +3706,7 @@ struct LevelInfo
   boolean bd_magic_wall_wait_hatching;	// BD magic wall waits for player's birth
   boolean bd_magic_wall_stops_amoeba;	// BD magic wall can stop amoeba and turn to diamonds
   boolean bd_magic_wall_break_scan;	// BD magic wall setting to implement buggy BD1 behaviour
+  int bd_magic_wall_time;		// BD magic wall time
   int bd_magic_wall_diamond_to;		// BD magic wall turns diamonds to specified element
   int bd_magic_wall_rock_to;		// BD magic wall turns rocks to specified element
   int bd_magic_wall_mega_rock_to;	// BD magic wall turns mega rocks to specified element
@@ -3685,12 +3717,12 @@ struct LevelInfo
   boolean bd_amoeba_wait_for_hatching;	// BD amoeba waits for player's birth
   boolean bd_amoeba_start_immediately;	// BD amoeba growth starts immediately
   boolean bd_amoeba_2_explode_by_amoeba;// BD amoeba 2 explodes if touched by BD amoeba
-  int bd_amoeba_threshold_too_big;	// BD amoeba turns to stones if threshold reached
-  int bd_amoeba_slow_growth_time;	// BD amoeba slow growth time (in seconds)
-  int bd_amoeba_slow_growth_rate;	// BD amoeba slow growth rate (in percent)
-  int bd_amoeba_fast_growth_rate;	// BD amoeba fast growth rate (in percent)
-  int bd_amoeba_content_too_big;	// BD amoeba changes to this element if too big
-  int bd_amoeba_content_enclosed;	// BD amoeba changes to this element if enclosed
+  int bd_amoeba_1_threshold_too_big;	// BD amoeba 1 turns to stones if threshold reached
+  int bd_amoeba_1_slow_growth_time;	// BD amoeba 1 slow growth time (in seconds)
+  int bd_amoeba_1_slow_growth_rate;	// BD amoeba 1 slow growth rate (in percent)
+  int bd_amoeba_1_fast_growth_rate;	// BD amoeba 1 fast growth rate (in percent)
+  int bd_amoeba_1_content_too_big;	// BD amoeba 1 changes to this element if too big
+  int bd_amoeba_1_content_enclosed;	// BD amoeba 1 changes to this element if enclosed
   int bd_amoeba_2_threshold_too_big;	// BD amoeba 2 turns to stones if threshold reached
   int bd_amoeba_2_slow_growth_time;	// BD amoeba 2 slow growth time (in seconds)
   int bd_amoeba_2_slow_growth_rate;	// BD amoeba 2 slow growth rate (in percent)
@@ -3749,9 +3781,9 @@ struct LevelInfo
   int bd_rock_turns_to_on_impact;	// BD rock changes to specified element on impact
   int bd_diamond_turns_to_on_falling;	// BD diamond changes to specified element when falling
   int bd_diamond_turns_to_on_impact;	// BD diamond changes to specified element on impact
-  int bd_firefly_explodes_to;		// BD firefly explodes to specified element
+  int bd_firefly_1_explodes_to;		// BD firefly 1 explodes to specified element
   int bd_firefly_2_explodes_to;		// BD firefly 2 explodes to specified element
-  int bd_butterfly_explodes_to;		// BD butterfly explodes to specified element
+  int bd_butterfly_1_explodes_to;	// BD butterfly 1 explodes to specified element
   int bd_butterfly_2_explodes_to;	// BD butterfly 2 explodes to specified element
   int bd_stonefly_explodes_to;		// BD stonefly explodes to specified element
   int bd_dragonfly_explodes_to;		// BD dragonfly explodes to specified element

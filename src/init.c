@@ -1155,6 +1155,8 @@ static void InitElementGraphicInfo(void)
       // look for special default action graphic (classic game specific)
       if (IS_BD_ELEMENT(i) && element_info[EL_BD_DEFAULT].graphic[act] != -1)
 	default_action_graphic = element_info[EL_BD_DEFAULT].graphic[act];
+      if (IS_BD_NATIVE_ELEMENT(i) && element_info[EL_BD_NATIVE_DEFAULT].graphic[act] != -1)
+	default_action_graphic = element_info[EL_BD_NATIVE_DEFAULT].graphic[act];
       if (IS_SP_ELEMENT(i) && element_info[EL_SP_DEFAULT].graphic[act] != -1)
 	default_action_graphic = element_info[EL_SP_DEFAULT].graphic[act];
       if (IS_SB_ELEMENT(i) && element_info[EL_SB_DEFAULT].graphic[act] != -1)
@@ -1164,6 +1166,8 @@ static void InitElementGraphicInfo(void)
 
       if (IS_BD_ELEMENT(i) && element_info[EL_BD_DEFAULT].crumbled[act] != -1)
 	default_action_crumbled = element_info[EL_BD_DEFAULT].crumbled[act];
+      if (IS_BD_NATIVE_ELEMENT(i) && element_info[EL_BD_NATIVE_DEFAULT].crumbled[act] != -1)
+	default_action_crumbled = element_info[EL_BD_NATIVE_DEFAULT].crumbled[act];
       if (IS_SP_ELEMENT(i) && element_info[EL_SP_DEFAULT].crumbled[act] != -1)
 	default_action_crumbled = element_info[EL_SP_DEFAULT].crumbled[act];
       if (IS_SB_ELEMENT(i) && element_info[EL_SB_DEFAULT].crumbled[act] != -1)
@@ -2166,6 +2170,8 @@ static void InitElementSoundInfo(void)
       // look for special default action sound (classic game specific)
       if (IS_BD_ELEMENT(i) && element_info[EL_BD_DEFAULT].sound[act] != -1)
 	default_action_sound = element_info[EL_BD_DEFAULT].sound[act];
+      if (IS_BD_NATIVE_ELEMENT(i) && element_info[EL_BD_NATIVE_DEFAULT].sound[act] != -1)
+	default_action_sound = element_info[EL_BD_NATIVE_DEFAULT].sound[act];
       if (IS_SP_ELEMENT(i) && element_info[EL_SP_DEFAULT].sound[act] != -1)
 	default_action_sound = element_info[EL_SP_DEFAULT].sound[act];
       if (IS_SB_ELEMENT(i) && element_info[EL_SB_DEFAULT].sound[act] != -1)
