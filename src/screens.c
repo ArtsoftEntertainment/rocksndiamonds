@@ -7976,6 +7976,7 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_YES_NO_AUTO,	&setup.bd_pushing_graphics,	"Use Player Pushing Graphics:"	},
   { TYPE_YES_NO_AUTO,	&setup.bd_up_down_graphics,	"Use Player Up/Down Graphics:"	},
   { TYPE_YES_NO_AUTO,	&setup.bd_skip_falling_sounds,	"Mute Double Falling Sounds:"	},
+  { TYPE_SWITCH,	&setup.bd_show_invisible_outbox,"Show invisible outbox:"	},
   { TYPE_ENTER_LIST,	&execSetupChoosePaletteC64,	"Color Palette (C64):"		},
   { TYPE_STRING,	&bd_palette_c64_text,		""				},
   { TYPE_ENTER_LIST,	&execSetupChoosePaletteC64DTV,	"Color Palette (C64DTV):"	},

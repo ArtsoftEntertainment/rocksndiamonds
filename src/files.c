@@ -10772,6 +10772,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.bd_scroll_delay,			"bd_scroll_delay"
   },
   {
+    TYPE_SWITCH,
+    &setup.bd_show_invisible_outbox,		"bd_show_invisible_outbox"
+  },
+  {
     TYPE_SWITCH3,
     &setup.bd_smooth_movements,			"bd_smooth_movements"
   },
@@ -11631,6 +11635,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_skip_uncovering = FALSE;
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;
+  si->bd_show_invisible_outbox = FALSE;
   si->bd_smooth_movements = AUTO;
   si->bd_pushing_graphics = TRUE;
   si->bd_up_down_graphics = TRUE;
