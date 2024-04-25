@@ -599,7 +599,7 @@ void play_game_func(GdGame *game, int action)
     game->player_fire = fire;
 
   // tell the interrupt "20ms has passed"
-  state = gd_game_main_int(game, !game->out_of_window, gd_keystate[SDL_SCANCODE_F]);
+  state = gd_game_main_int(game, !game->out_of_window, FALSE);
 
   // state of game, returned by gd_game_main_int
   switch (state)

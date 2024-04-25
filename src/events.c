@@ -1986,6 +1986,31 @@ static void HandleKeysSpecial(Key key)
   }
 }
 
+static boolean HandleKeysSpeed(Key key, int key_status)
+{
+  if (game_status == GAME_MODE_PLAYING)
+  {
+    if (key == setup.shortcut.speed_fast ||
+	key == setup.shortcut.speed_slow)
+    {
+      int speed_factor = 4;
+
+      GameFrameDelay = (key_status != KEY_PRESSED ? setup.game_frame_delay :
+			key == setup.shortcut.speed_fast ? setup.game_frame_delay / speed_factor :
+			key == setup.shortcut.speed_slow ? setup.game_frame_delay * speed_factor :
+			setup.game_frame_delay);
+
+      GameFrameDelay = MIN(MAX(1, GameFrameDelay), 1000);
+
+      SetVideoFrameDelay(GameFrameDelay);
+
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
 boolean HandleKeysDebug(Key key, int key_status)
 {
 #ifdef DEBUG
@@ -2072,6 +2097,9 @@ void HandleKey(Key key, int key_status)
   };
   int joy = 0;
   int i;
+
+  if (HandleKeysSpeed(key, key_status))
+    return;		// do not handle already processed keys again
 
   if (HandleKeysDebug(key, key_status))
     return;		// do not handle already processed keys again

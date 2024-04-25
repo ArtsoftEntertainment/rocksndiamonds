@@ -58,42 +58,43 @@
 #define SETUP_MODE_SHORTCUTS_3			12
 #define SETUP_MODE_SHORTCUTS_4			13
 #define SETUP_MODE_SHORTCUTS_5			14
+#define SETUP_MODE_SHORTCUTS_6			15
 
 // sub-screens on the setup screen (generic)
-#define SETUP_MODE_CHOOSE_ARTWORK		15
-#define SETUP_MODE_CHOOSE_OTHER			16
+#define SETUP_MODE_CHOOSE_ARTWORK		16
+#define SETUP_MODE_CHOOSE_OTHER			17
 
 // sub-screens on the setup screen (specific)
-#define SETUP_MODE_CHOOSE_SCORES_TYPE		17
-#define SETUP_MODE_CHOOSE_GAME_SPEED		18
-#define SETUP_MODE_CHOOSE_SCROLL_DELAY		19
-#define SETUP_MODE_CHOOSE_SNAPSHOT_MODE		20
-#define SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE	21
-#define SETUP_MODE_CHOOSE_BD_PALETTE_C64	22
-#define SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV	23
-#define SETUP_MODE_CHOOSE_BD_PALETTE_ATARI	24
-#define SETUP_MODE_CHOOSE_BD_COLOR_TYPE		25
-#define SETUP_MODE_CHOOSE_WINDOW_SIZE		26
-#define SETUP_MODE_CHOOSE_SCALING_TYPE		27
-#define SETUP_MODE_CHOOSE_RENDERING		28
-#define SETUP_MODE_CHOOSE_VSYNC			29
-#define SETUP_MODE_CHOOSE_GRAPHICS		30
-#define SETUP_MODE_CHOOSE_SOUNDS		31
-#define SETUP_MODE_CHOOSE_MUSIC			32
-#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		33
-#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		34
-#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		35
-#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		36
-#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		37
-#define SETUP_MODE_CHOOSE_DROP_DISTANCE		38
-#define SETUP_MODE_CHOOSE_TRANSPARENCY		39
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		40
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		41
-#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		42
-#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		43
-#define SETUP_MODE_CONFIG_VIRT_BUTTONS		44
+#define SETUP_MODE_CHOOSE_SCORES_TYPE		18
+#define SETUP_MODE_CHOOSE_GAME_SPEED		19
+#define SETUP_MODE_CHOOSE_SCROLL_DELAY		20
+#define SETUP_MODE_CHOOSE_SNAPSHOT_MODE		21
+#define SETUP_MODE_CHOOSE_GAME_ENGINE_TYPE	22
+#define SETUP_MODE_CHOOSE_BD_PALETTE_C64	23
+#define SETUP_MODE_CHOOSE_BD_PALETTE_C64DTV	24
+#define SETUP_MODE_CHOOSE_BD_PALETTE_ATARI	25
+#define SETUP_MODE_CHOOSE_BD_COLOR_TYPE		26
+#define SETUP_MODE_CHOOSE_WINDOW_SIZE		27
+#define SETUP_MODE_CHOOSE_SCALING_TYPE		28
+#define SETUP_MODE_CHOOSE_RENDERING		29
+#define SETUP_MODE_CHOOSE_VSYNC			30
+#define SETUP_MODE_CHOOSE_GRAPHICS		31
+#define SETUP_MODE_CHOOSE_SOUNDS		32
+#define SETUP_MODE_CHOOSE_MUSIC			33
+#define SETUP_MODE_CHOOSE_VOLUME_SIMPLE		34
+#define SETUP_MODE_CHOOSE_VOLUME_LOOPS		35
+#define SETUP_MODE_CHOOSE_VOLUME_MUSIC		36
+#define SETUP_MODE_CHOOSE_TOUCH_CONTROL		37
+#define SETUP_MODE_CHOOSE_MOVE_DISTANCE		38
+#define SETUP_MODE_CHOOSE_DROP_DISTANCE		39
+#define SETUP_MODE_CHOOSE_TRANSPARENCY		40
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_0		41
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_0		42
+#define SETUP_MODE_CHOOSE_GRID_XSIZE_1		43
+#define SETUP_MODE_CHOOSE_GRID_YSIZE_1		44
+#define SETUP_MODE_CONFIG_VIRT_BUTTONS		45
 
-#define MAX_SETUP_MODES				45
+#define MAX_SETUP_MODES				46
 
 #define MAX_MENU_MODES				MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
@@ -723,7 +724,7 @@ static int align_yoffset = 0;
 				 INFO_MODE_MAIN)
 
 #define DRAW_MODE_SETUP(i)	((i) >= SETUP_MODE_MAIN &&			\
-				 (i) <= SETUP_MODE_SHORTCUTS_5 ? (i) :		\
+				 (i) <= SETUP_MODE_SHORTCUTS_6 ? (i) :		\
 				 (i) >= SETUP_MODE_CHOOSE_GRAPHICS &&		\
 				 (i) <= SETUP_MODE_CHOOSE_MUSIC ?		\
 				 SETUP_MODE_CHOOSE_ARTWORK :			\
@@ -7625,6 +7626,13 @@ static void execSetupShortcuts5(void)
   DrawSetupScreen();
 }
 
+static void execSetupShortcuts6(void)
+{
+  setup_mode = SETUP_MODE_SHORTCUTS_6;
+
+  DrawSetupScreen();
+}
+
 static void execExitSetup(void)
 {
   SetGameStatus(GAME_MODE_MAIN);
@@ -7880,6 +7888,7 @@ static struct
   { &setup.internal.menu_shortcuts_tape,	execSetupShortcuts3		},
   { &setup.internal.menu_shortcuts_sound,	execSetupShortcuts4		},
   { &setup.internal.menu_shortcuts_snap,	execSetupShortcuts5		},
+  { &setup.internal.menu_shortcuts_speed,	execSetupShortcuts6		},
 
   { &setup.internal.info_title,			execInfoTitleScreen		},
   { &setup.internal.info_elements,		execInfoElements		},
@@ -8208,6 +8217,7 @@ static struct TokenInfo setup_info_shortcuts[] =
   { TYPE_ENTER_MENU,	execSetupShortcuts3,		"Tape Buttons"			},
   { TYPE_ENTER_MENU,	execSetupShortcuts4,		"Sound & Music"			},
   { TYPE_ENTER_MENU,	execSetupShortcuts5,		"TAS Snap Keys"			},
+  { TYPE_ENTER_MENU,	execSetupShortcuts6,		"Speed Keys"			},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
@@ -8297,6 +8307,18 @@ static struct TokenInfo setup_info_shortcuts_5[] =
   { TYPE_KEY,		&setup.shortcut.snap_up,	""				},
   { TYPE_KEYTEXT,	NULL,				"Snap Down:"			},
   { TYPE_KEY,		&setup.shortcut.snap_down,	""				},
+  { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_LEAVE_MENU,	execSetupShortcuts,		"Back"				},
+
+  { 0,			NULL,				NULL				}
+};
+
+static struct TokenInfo setup_info_shortcuts_6[] =
+{
+  { TYPE_KEYTEXT,	NULL,				"Fast Playing Speed:"		},
+  { TYPE_KEY,		&setup.shortcut.speed_fast,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Slow Playing Speed:"		},
+  { TYPE_KEY,		&setup.shortcut.speed_slow,	""				},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_LEAVE_MENU,	execSetupShortcuts,		"Back"				},
 
@@ -8689,6 +8711,11 @@ static void DrawSetupScreen_Generic(void)
   else if (setup_mode == SETUP_MODE_SHORTCUTS_5)
   {
     setup_info = setup_info_shortcuts_5;
+    title_string = STR_SETUP_SHORTCUTS;
+  }
+  else if (setup_mode == SETUP_MODE_SHORTCUTS_6)
+  {
+    setup_info = setup_info_shortcuts_6;
     title_string = STR_SETUP_SHORTCUTS;
   }
 

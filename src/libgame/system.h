@@ -197,6 +197,8 @@
 #define DEFAULT_KEY_SNAP_RIGHT		KSYM_UNDEFINED
 #define DEFAULT_KEY_SNAP_UP		KSYM_UNDEFINED
 #define DEFAULT_KEY_SNAP_DOWN		KSYM_UNDEFINED
+#define DEFAULT_KEY_SPEED_FAST		KSYM_f
+#define DEFAULT_KEY_SPEED_SLOW		KSYM_s
 
 // default debug setup keys and values
 #define DEFAULT_FRAME_DELAY_0		20		// 100 % speed
@@ -1384,6 +1386,9 @@ struct SetupShortcutInfo
   Key snap_right;
   Key snap_up;
   Key snap_down;
+
+  Key speed_fast;
+  Key speed_slow;
 };
 
 struct SetupSystemInfo
@@ -1441,6 +1446,7 @@ struct SetupInternalInfo
   boolean menu_shortcuts_tape;
   boolean menu_shortcuts_sound;
   boolean menu_shortcuts_snap;
+  boolean menu_shortcuts_speed;
 
   boolean info_title;
   boolean info_elements;

@@ -11191,6 +11191,14 @@ static struct TokenInfo shortcut_setup_tokens[] =
     TYPE_KEY_X11,
     &setup.shortcut.snap_down,			"shortcut.snap_down"
   },
+  {
+    TYPE_KEY_X11,
+    &setup.shortcut.speed_fast,			"shortcut.speed_fast"
+  },
+  {
+    TYPE_KEY_X11,
+    &setup.shortcut.speed_slow,			"shortcut.speed_slow"
+  },
 };
 
 static struct SetupInputInfo setup_input;
@@ -11431,6 +11439,10 @@ static struct TokenInfo internal_setup_tokens[] =
   {
     TYPE_BOOLEAN,
     &setup.internal.menu_shortcuts_snap,	"menu_shortcuts_snap"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.menu_shortcuts_speed,	"menu_shortcuts_speed"
   },
   {
     TYPE_BOOLEAN,
@@ -11788,6 +11800,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->shortcut.snap_right	= DEFAULT_KEY_SNAP_RIGHT;
   si->shortcut.snap_up		= DEFAULT_KEY_SNAP_UP;
   si->shortcut.snap_down	= DEFAULT_KEY_SNAP_DOWN;
+
+  si->shortcut.speed_fast	= DEFAULT_KEY_SPEED_FAST;
+  si->shortcut.speed_slow	= DEFAULT_KEY_SPEED_SLOW;
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
