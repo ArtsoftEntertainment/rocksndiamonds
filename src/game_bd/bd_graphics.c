@@ -58,8 +58,6 @@ static int scroll_x, scroll_y;
 // quit, global variable which is set to true if the application should quit
 boolean gd_quit = FALSE;
 
-const byte *gd_keystate;
-
 static int cell_size = 0;
 
 // graphic info for game objects/frames and players/actions/frames
@@ -113,8 +111,6 @@ void set_play_area(int w, int h)
 void gd_init_keystate(void)
 {
   set_play_area(SXSIZE, SYSIZE);
-
-  gd_keystate = SDL_GetKeyboardState(NULL);
 }
 
 /*

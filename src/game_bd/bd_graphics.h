@@ -23,8 +23,6 @@
 
 extern Bitmap *gd_screen_bitmap;
 
-extern const unsigned char *gd_keystate;
-
 typedef unsigned int GdColor;
 
 void set_cell_size(int s);
