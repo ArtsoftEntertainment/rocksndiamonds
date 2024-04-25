@@ -31,7 +31,7 @@ void set_play_area(int w, int h);
 int get_play_area_w(void);
 int get_play_area_h(void);
 
-void gd_init_keystate(void);
+void gd_init_play_area(void);
 
 void gd_prepare_tile_bitmap(GdCave *cave, Bitmap *bitmap, int scale_down_factor);
 void gd_set_tile_bitmap_reference(Bitmap *bitmap);

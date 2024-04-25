@@ -40,7 +40,7 @@ void bd_open_all(void)
 
   gd_caveset_clear();
 
-  gd_init_keystate();
+  gd_init_play_area();
 
   gd_sound_init();
 }

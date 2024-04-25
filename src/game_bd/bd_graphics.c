@@ -108,7 +108,7 @@ void set_play_area(int w, int h)
   play_area_h = h;
 }
 
-void gd_init_keystate(void)
+void gd_init_play_area(void)
 {
   set_play_area(SXSIZE, SYSIZE);
 }
