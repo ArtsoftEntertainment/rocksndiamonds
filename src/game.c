@@ -3676,6 +3676,9 @@ void InitGame(void)
   else
   {
     SetGameStatus(GAME_MODE_PLAYING);
+
+    // do not cover screen before fading out when starting from main menu
+    game_bd.cover_screen = FALSE;
   }
 
   if (level_editor_test_game)
