@@ -11983,33 +11983,38 @@ static void DrawPropertiesInfo(void)
 
   ypos += 2 * MAX(font1_height, font2_height);
 
-  // ----- print standard properties of this element
+  // ----- print standard properties of this element (only for certain game engines)
 
-  DrawTextS(xpos, ypos, font1_nr, properties_text);
-
-  ypos += line1_height;
-
-  for (i = 0; properties[i].value != -1; i++)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_RND ||
+      level.game_engine_type == GAME_ENGINE_TYPE_EM ||
+      level.game_engine_type == GAME_ENGINE_TYPE_SP)
   {
-    if (!HAS_PROPERTY(properties_element, properties[i].value))
-      continue;
+    DrawTextS(xpos, ypos, font1_nr, properties_text);
 
-    DrawTextS(xpos, ypos, font2_nr, properties[i].text);
+    ypos += line1_height;
 
-    ypos += font2_height;
+    for (i = 0; properties[i].value != -1; i++)
+    {
+      if (!HAS_PROPERTY(properties_element, properties[i].value))
+	continue;
 
-    num_standard_properties++;
+      DrawTextS(xpos, ypos, font2_nr, properties[i].text);
+
+      ypos += font2_height;
+
+      num_standard_properties++;
+    }
+
+    if (num_standard_properties == 0)
+    {
+      DrawTextS(xpos + properties_text_len, ypos - line1_height + font2_yoffset,
+		font2_nr, none_text);
+
+      ypos -= (line1_height - font1_height);
+    }
+
+    ypos += MAX(font1_height, font2_height);
   }
-
-  if (num_standard_properties == 0)
-  {
-    DrawTextS(xpos + properties_text_len, ypos - line1_height + font2_yoffset,
-	      font2_nr, none_text);
-
-    ypos -= (line1_height - font1_height);
-  }
-
-  ypos += MAX(font1_height, font2_height);
 
   // ----- print special description of this element
 
