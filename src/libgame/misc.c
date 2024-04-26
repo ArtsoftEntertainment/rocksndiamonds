@@ -2967,6 +2967,8 @@ int get_switch3_from_string(char *s)
     result = TRUE;
   else if (strEqual(s_lower, "auto"))
     result = STATE_AUTO;
+  else if (strEqual(s_lower, "ask"))
+    result = STATE_ASK;
 
   free(s_lower);
 
