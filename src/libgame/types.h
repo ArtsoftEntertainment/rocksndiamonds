@@ -36,10 +36,15 @@ typedef unsigned char byte;
 #undef MODE_AUTO
 #endif
 
+#ifdef MODE_ASK
+#undef MODE_ASK
+#endif
+
 #define TRUE			1
 #define FALSE			0
 
 #define MODE_AUTO		-1
+#define MODE_ASK		-1
 
 #ifndef MIN
 #define MIN(a, b) 		((a) < (b) ? (a) : (b))

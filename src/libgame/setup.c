@@ -4863,6 +4863,7 @@ char *getSetupValue(int type, void *value)
 
     case TYPE_SWITCH_3_STATES:
       strcpy(value_string, (*(int *)value == MODE_AUTO  ? "auto" :
+			    *(int *)value == MODE_ASK   ? "ask" :
 			    *(int *)value == FALSE ? "off" : "on"));
       break;
 
@@ -4872,6 +4873,11 @@ char *getSetupValue(int type, void *value)
 
     case TYPE_YES_NO_AUTO:
       strcpy(value_string, (*(int *)value == MODE_AUTO  ? "auto" :
+			    *(int *)value == FALSE ? "no" : "yes"));
+      break;
+
+    case TYPE_YES_NO_ASK:
+      strcpy(value_string, (*(int *)value == MODE_ASK ? "ask" :
 			    *(int *)value == FALSE ? "no" : "yes"));
       break;
 
