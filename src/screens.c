@@ -1929,7 +1929,7 @@ void DrawMainMenu(void)
   SetAnimationFirstLevel(leveldir_current->first_level);
 
   // level_nr may have been set to value over handicap with level editor
-  if (setup.handicap && level_nr > leveldir_current->handicap_level)
+  if (setup.allow_skipping_levels != TRUE && level_nr > leveldir_current->handicap_level)
     level_nr = leveldir_current->handicap_level;
 
   LoadLevel(level_nr);
@@ -2286,13 +2286,14 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
   if (new_level_nr > leveldir_current->last_level)
     new_level_nr = leveldir_current->last_level;
 
-  if (setup.handicap && new_level_nr > leveldir_current->handicap_level)
+  if (setup.allow_skipping_levels != TRUE && new_level_nr > leveldir_current->handicap_level)
   {
     // skipping levels is only allowed when trying to skip single level
     // (also, skipping BD style intermission levels is always possible)
     if (new_level_nr == old_level_nr + 1 &&
 	(level.bd_intermission ||
-	 (setup.skip_levels && Request("Level still unsolved! Skip it anyway?", REQ_ASK))))
+	 (setup.allow_skipping_levels == MODE_ASK &&
+	  Request("Level still unsolved! Skip it anyway?", REQ_ASK))))
     {
       leveldir_current->handicap_level++;
       SaveLevelSetup_SeriesInfo();
@@ -5719,7 +5720,7 @@ static void HandleHallOfFame_SelectLevel(int step, int direction)
   if (new_level_nr > leveldir_current->last_level)
     new_level_nr = leveldir_current->last_level;
 
-  if (setup.handicap && new_level_nr > leveldir_current->handicap_level)
+  if (setup.allow_skipping_levels != TRUE && new_level_nr > leveldir_current->handicap_level)
     new_level_nr = leveldir_current->handicap_level;
 
   if (new_level_nr != old_level_nr)
@@ -7945,8 +7946,12 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_SWITCH,	&setup.multiple_users,		"Multiple Users/Teams:"		},
   { TYPE_YES_NO,	&setup.input_on_focus,		"Only Move Focussed Player:"	},
   { TYPE_SWITCH,	&setup.time_limit,		"Time Limit:"			},
+#if 1
+  { TYPE_YES_NO_ASK,	&setup.allow_skipping_levels,	"Allow Skipping Levels:"	},
+#else
   { TYPE_SWITCH,	&setup.handicap,		"Force Solving Levels:"		},
   { TYPE_SWITCH,	&setup.skip_levels,		"Allow Skipping Levels:"	},
+#endif
   { TYPE_SWITCH,	&setup.increment_levels,	"Increment Solved Levels:"	},
   { TYPE_SWITCH,	&setup.auto_play_next_level,	"Auto-play Next Level:"		},
   { TYPE_SWITCH,	&setup.count_score_after_game,	"Count Score After Game:"	},

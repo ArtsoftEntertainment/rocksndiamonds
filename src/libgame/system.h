@@ -1497,6 +1497,7 @@ struct SetupInfo
   boolean team_mode;
   boolean handicap;
   boolean skip_levels;
+  boolean allow_skipping_levels;
   boolean increment_levels;
   boolean auto_play_next_level;
   boolean count_score_after_game;
