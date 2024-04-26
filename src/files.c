@@ -10776,19 +10776,19 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.bd_show_invisible_outbox,		"bd_show_invisible_outbox"
   },
   {
-    TYPE_SWITCH3,
+    TYPE_SWITCH_3_STATES,
     &setup.bd_smooth_movements,			"bd_smooth_movements"
   },
   {
-    TYPE_SWITCH3,
+    TYPE_SWITCH_3_STATES,
     &setup.bd_pushing_graphics,			"bd_pushing_graphics"
   },
   {
-    TYPE_SWITCH3,
+    TYPE_SWITCH_3_STATES,
     &setup.bd_up_down_graphics,			"bd_up_down_graphics"
   },
   {
-    TYPE_SWITCH3,
+    TYPE_SWITCH_3_STATES,
     &setup.bd_skip_falling_sounds,		"bd_skip_falling_sounds"
   },
   {
@@ -10844,15 +10844,15 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.music_set,				"music_set"
   },
   {
-    TYPE_SWITCH3,
+    TYPE_SWITCH_3_STATES,
     &setup.override_level_graphics,		"override_level_graphics"
   },
   {
-    TYPE_SWITCH3,
+    TYPE_SWITCH_3_STATES,
     &setup.override_level_sounds,		"override_level_sounds"
   },
   {
-    TYPE_SWITCH3,
+    TYPE_SWITCH_3_STATES,
     &setup.override_level_music,		"override_level_music"
   },
   {
@@ -11572,7 +11572,7 @@ static struct TokenInfo debug_setup_tokens[] =
     &setup.debug.show_frames_per_second,	"debug.show_frames_per_second"
   },
   {
-    TYPE_SWITCH3,
+    TYPE_SWITCH_3_STATES,
     &setup.debug.xsn_mode,			"debug.xsn_mode"
   },
   {
