@@ -32,13 +32,14 @@ typedef unsigned char byte;
 #undef FALSE
 #endif
 
-#ifdef AUTO
-#undef AUTO
+#ifdef MODE_AUTO
+#undef MODE_AUTO
 #endif
 
 #define TRUE			1
 #define FALSE			0
-#define AUTO			-1
+
+#define MODE_AUTO		-1
 
 #ifndef MIN
 #define MIN(a, b) 		((a) < (b) ? (a) : (b))

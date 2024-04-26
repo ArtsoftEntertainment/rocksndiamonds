@@ -6270,9 +6270,9 @@ static void InitOverrideArtwork(void)
   gfx.override_level_music    = FALSE;
 
   // now check if this level set has definitions for custom elements
-  if (setup.override_level_graphics == AUTO ||
-      setup.override_level_sounds   == AUTO ||
-      setup.override_level_music    == AUTO)
+  if (setup.override_level_graphics == MODE_AUTO ||
+      setup.override_level_sounds   == MODE_AUTO ||
+      setup.override_level_music    == MODE_AUTO)
     redefined_ce_found =
       (CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_GRAPHICS) |
        CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_SOUNDS) |
@@ -6285,14 +6285,14 @@ static void InitOverrideArtwork(void)
 
   if (redefined_ce_found)
   {
-    // this level set has CE definitions: change "AUTO" to "FALSE"
+    // this level set has CE definitions: change "MODE_AUTO" to "FALSE"
     gfx.override_level_graphics = (setup.override_level_graphics == TRUE);
     gfx.override_level_sounds   = (setup.override_level_sounds   == TRUE);
     gfx.override_level_music    = (setup.override_level_music    == TRUE);
   }
   else
   {
-    // this level set has no CE definitions: change "AUTO" to "TRUE"
+    // this level set has no CE definitions: change "MODE_AUTO" to "TRUE"
     gfx.override_level_graphics = (setup.override_level_graphics != FALSE);
     gfx.override_level_sounds   = (setup.override_level_sounds   != FALSE);
     gfx.override_level_music    = (setup.override_level_music    != FALSE);

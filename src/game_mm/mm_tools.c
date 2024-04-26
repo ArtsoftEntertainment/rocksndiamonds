@@ -845,14 +845,14 @@ static void DrawTileCursor_Xsn(int draw_target)
     if (debug)
       setup.debug.xsn_percent = percent;
 
-    if (setup.debug.xsn_mode != AUTO)
+    if (setup.debug.xsn_mode != MODE_AUTO)
       percent = setup.debug.xsn_percent;
 
     setup.debug.xsn_percent = percent;
 
     active = (percent > 0);
 
-    if ((active && !active_last) || setup.debug.xsn_mode != AUTO)
+    if ((active && !active_last) || setup.debug.xsn_mode != MODE_AUTO)
       removeHideSetupEntry(&setup.debug.xsn_mode);
     else if (!active && active_last)
       setHideSetupEntry(&setup.debug.xsn_mode);

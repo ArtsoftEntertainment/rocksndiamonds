@@ -1524,10 +1524,10 @@ struct SetupInfo
   boolean bd_skip_hatching;
   boolean bd_scroll_delay;
   boolean bd_show_invisible_outbox;
-  int bd_smooth_movements;		// not boolean -- can also be "AUTO"
-  int bd_pushing_graphics;		// not boolean -- can also be "AUTO"
-  int bd_up_down_graphics;		// not boolean -- can also be "AUTO"
-  int bd_skip_falling_sounds;		// not boolean -- can also be "AUTO"
+  int bd_smooth_movements;		// not boolean -- can also be "MODE_AUTO"
+  int bd_pushing_graphics;		// not boolean -- can also be "MODE_AUTO"
+  int bd_up_down_graphics;		// not boolean -- can also be "MODE_AUTO"
+  int bd_skip_falling_sounds;		// not boolean -- can also be "MODE_AUTO"
   int bd_palette_c64;
   int bd_palette_c64dtv;
   int bd_palette_atari;
@@ -1542,9 +1542,9 @@ struct SetupInfo
   char *graphics_set;
   char *sounds_set;
   char *music_set;
-  int override_level_graphics;		// not boolean -- can also be "AUTO"
-  int override_level_sounds;		// not boolean -- can also be "AUTO"
-  int override_level_music;		// not boolean -- can also be "AUTO"
+  int override_level_graphics;		// not boolean -- can also be "MODE_AUTO"
+  int override_level_sounds;		// not boolean -- can also be "MODE_AUTO"
+  int override_level_music;		// not boolean -- can also be "MODE_AUTO"
 
   int volume_simple;
   int volume_loops;

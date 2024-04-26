@@ -11652,10 +11652,10 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;
   si->bd_show_invisible_outbox = FALSE;
-  si->bd_smooth_movements = AUTO;
+  si->bd_smooth_movements = MODE_AUTO;
   si->bd_pushing_graphics = TRUE;
   si->bd_up_down_graphics = TRUE;
-  si->bd_skip_falling_sounds = AUTO;
+  si->bd_skip_falling_sounds = MODE_AUTO;
   si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
   si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
   si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;
@@ -11883,7 +11883,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->debug.show_frames_per_second = FALSE;
 
-  si->debug.xsn_mode = AUTO;
+  si->debug.xsn_mode = MODE_AUTO;
   si->debug.xsn_percent = 0;
 
   si->options.verbose = FALSE;
@@ -12451,7 +12451,7 @@ void SaveSetup_Default(void)
   fprintf(file, "\n");
   for (i = 0; i < ARRAY_SIZE(debug_setup_tokens); i++)
     if (!strPrefix(debug_setup_tokens[i].text, "debug.xsn_") ||
-	setup.debug.xsn_mode != AUTO)
+	setup.debug.xsn_mode != MODE_AUTO)
       fprintf(file, "%s\n", getSetupLine(debug_setup_tokens, "", i));
 
   fprintf(file, "\n");

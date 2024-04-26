@@ -8379,7 +8379,7 @@ static int getSetupValueFont(int type, void *value)
   else if (type & TYPE_BOOLEAN_STYLE)
     return (*(boolean *)value ? FONT_OPTION_ON : FONT_OPTION_OFF);
   else if (type & TYPE_YES_NO_AUTO)
-    return (*(int *)value == AUTO  ? FONT_OPTION_ON :
+    return (*(int *)value == MODE_AUTO  ? FONT_OPTION_ON :
 	    *(int *)value == FALSE ? FONT_OPTION_OFF : FONT_OPTION_ON);
   else if (type & TYPE_PLAYER)
     return FONT_VALUE_1;
@@ -8524,10 +8524,10 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
   {
     *(int *)si->value =
       (dx == -1 ?
-       (*(int *)si->value == AUTO ? TRUE :
-	*(int *)si->value == TRUE ? FALSE : AUTO) :
-       (*(int *)si->value == TRUE ? AUTO :
-	*(int *)si->value == AUTO ? FALSE : TRUE));
+       (*(int *)si->value == MODE_AUTO ? TRUE :
+	*(int *)si->value == TRUE ? FALSE : MODE_AUTO) :
+       (*(int *)si->value == TRUE ? MODE_AUTO :
+	*(int *)si->value == MODE_AUTO ? FALSE : TRUE));
   }
   else if (si->type & TYPE_KEY)
   {
