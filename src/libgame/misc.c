@@ -2955,7 +2955,7 @@ boolean get_boolean_from_string(char *s)
   return result;
 }
 
-int get_switch3_from_string(char *s)
+int get_switch_3_state_from_string(char *s)
 {
   char *s_lower = getStringToLower(s);
   int result = FALSE;

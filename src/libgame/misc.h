@@ -269,7 +269,7 @@ char getValidConfigValueChar(char);
 
 int get_integer_from_string(char *);
 boolean get_boolean_from_string(char *);
-int get_switch3_from_string(char *);
+int get_switch_3_state_from_string(char *);
 int get_player_nr_from_string(char *);
 
 ListNode *newListNode(void);

@@ -3234,7 +3234,7 @@ void setSetupInfo(struct TokenInfo *token_info,
       break;
 
     case TYPE_SWITCH_3_STATES:
-      *(int *)setup_value = get_switch3_from_string(token_value);
+      *(int *)setup_value = get_switch_3_state_from_string(token_value);
       break;
 
     case TYPE_KEY:
