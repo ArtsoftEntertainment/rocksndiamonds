@@ -11629,7 +11629,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->team_mode = FALSE;
   si->handicap = TRUE;
   si->skip_levels = TRUE;
-  si->allow_skipping_levels = MODE_ASK;
+  si->allow_skipping_levels = STATE_ASK;
   si->increment_levels = TRUE;
   si->auto_play_next_level = TRUE;
   si->count_score_after_game = TRUE;
@@ -11657,10 +11657,10 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;
   si->bd_show_invisible_outbox = FALSE;
-  si->bd_smooth_movements = MODE_AUTO;
-  si->bd_pushing_graphics = MODE_TRUE;
-  si->bd_up_down_graphics = MODE_TRUE;
-  si->bd_skip_falling_sounds = MODE_AUTO;
+  si->bd_smooth_movements = STATE_AUTO;
+  si->bd_pushing_graphics = STATE_TRUE;
+  si->bd_up_down_graphics = STATE_TRUE;
+  si->bd_skip_falling_sounds = STATE_AUTO;
   si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
   si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
   si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;
@@ -11676,9 +11676,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->sounds_set   = getStringCopy(SND_CLASSIC_SUBDIR);
   si->music_set    = getStringCopy(MUS_CLASSIC_SUBDIR);
 
-  si->override_level_graphics = MODE_FALSE;
-  si->override_level_sounds = MODE_FALSE;
-  si->override_level_music = MODE_FALSE;
+  si->override_level_graphics = STATE_FALSE;
+  si->override_level_sounds = STATE_FALSE;
+  si->override_level_music = STATE_FALSE;
 
   si->volume_simple = 100;		// percent
   si->volume_loops = 100;		// percent
@@ -11888,7 +11888,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->debug.show_frames_per_second = FALSE;
 
-  si->debug.xsn_mode = MODE_AUTO;
+  si->debug.xsn_mode = STATE_AUTO;
   si->debug.xsn_percent = 0;
 
   si->options.verbose = FALSE;
@@ -12456,7 +12456,7 @@ void SaveSetup_Default(void)
   fprintf(file, "\n");
   for (i = 0; i < ARRAY_SIZE(debug_setup_tokens); i++)
     if (!strPrefix(debug_setup_tokens[i].text, "debug.xsn_") ||
-	setup.debug.xsn_mode != MODE_AUTO)
+	setup.debug.xsn_mode != STATE_AUTO)
       fprintf(file, "%s\n", getSetupLine(debug_setup_tokens, "", i));
 
   fprintf(file, "\n");

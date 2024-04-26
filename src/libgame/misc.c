@@ -2966,7 +2966,7 @@ int get_switch3_from_string(char *s)
       get_integer_from_string(s) == 1)
     result = TRUE;
   else if (strEqual(s_lower, "auto"))
-    result = MODE_AUTO;
+    result = STATE_AUTO;
 
   free(s_lower);
 

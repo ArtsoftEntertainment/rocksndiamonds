@@ -6270,9 +6270,9 @@ static void InitOverrideArtwork(void)
   gfx.override_level_music    = FALSE;
 
   // now check if this level set has definitions for custom elements
-  if (setup.override_level_graphics == MODE_AUTO ||
-      setup.override_level_sounds   == MODE_AUTO ||
-      setup.override_level_music    == MODE_AUTO)
+  if (setup.override_level_graphics == STATE_AUTO ||
+      setup.override_level_sounds   == STATE_AUTO ||
+      setup.override_level_music    == STATE_AUTO)
     redefined_ce_found =
       (CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_GRAPHICS) |
        CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_SOUNDS) |

@@ -32,12 +32,12 @@ typedef unsigned char byte;
 #undef FALSE
 #endif
 
-#ifdef MODE_AUTO
-#undef MODE_AUTO
+#ifdef STATE_AUTO
+#undef STATE_AUTO
 #endif
 
-#ifdef MODE_ASK
-#undef MODE_ASK
+#ifdef STATE_ASK
+#undef STATE_ASK
 #endif
 
 // values for boolean data type
@@ -45,10 +45,10 @@ typedef unsigned char byte;
 #define FALSE			0
 
 // values for 3-state data type (for "yes/no/auto" or "yes/no/ask")
-#define MODE_TRUE		1
-#define MODE_FALSE		0
-#define MODE_AUTO		-1
-#define MODE_ASK		-1
+#define STATE_TRUE		1
+#define STATE_FALSE		0
+#define STATE_AUTO		-1
+#define STATE_ASK		-1
 
 #ifndef MIN
 #define MIN(a, b) 		((a) < (b) ? (a) : (b))

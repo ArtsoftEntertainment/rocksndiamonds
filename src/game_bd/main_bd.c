@@ -442,29 +442,29 @@ boolean use_native_bd_graphics_engine(void)
 // check if smooth game element movements selected in setup menu
 boolean use_bd_smooth_movements(void)
 {
-  return ((setup.bd_smooth_movements == MODE_TRUE) ||
-	  (setup.bd_smooth_movements == MODE_AUTO && !use_native_bd_graphics_engine()));
+  return ((setup.bd_smooth_movements == STATE_TRUE) ||
+	  (setup.bd_smooth_movements == STATE_AUTO && !use_native_bd_graphics_engine()));
 }
 
 // check if player pushing graphics selected in setup menu
 boolean use_bd_pushing_graphics(void)
 {
-  return ((setup.bd_pushing_graphics == MODE_TRUE) ||
-	  (setup.bd_pushing_graphics == MODE_AUTO && !use_native_bd_graphics_engine()));
+  return ((setup.bd_pushing_graphics == STATE_TRUE) ||
+	  (setup.bd_pushing_graphics == STATE_AUTO && !use_native_bd_graphics_engine()));
 }
 
 // check if player up/down graphics selected in setup menu
 boolean use_bd_up_down_graphics(void)
 {
-  return ((setup.bd_up_down_graphics == MODE_TRUE) ||
-	  (setup.bd_up_down_graphics == MODE_AUTO && !use_native_bd_graphics_engine()));
+  return ((setup.bd_up_down_graphics == STATE_TRUE) ||
+	  (setup.bd_up_down_graphics == STATE_AUTO && !use_native_bd_graphics_engine()));
 }
 
 // check if skipping falling sounds selected in setup menu
 boolean skip_bd_falling_sounds(void)
 {
-  return ((setup.bd_skip_falling_sounds == MODE_TRUE) ||
-	  (setup.bd_skip_falling_sounds == MODE_AUTO && !game.use_native_bd_sound_engine));
+  return ((setup.bd_skip_falling_sounds == STATE_TRUE) ||
+	  (setup.bd_skip_falling_sounds == STATE_AUTO && !game.use_native_bd_sound_engine));
 }
 
 Bitmap **GetTitleScreenBitmaps_BD(void)
