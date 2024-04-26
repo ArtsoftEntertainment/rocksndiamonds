@@ -2858,6 +2858,8 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_BOOLEAN,	&ldi.latest_engine,	"latest_engine"		},
   { TYPE_BOOLEAN,	&ldi.level_group,	"level_group"		},
   { TYPE_BOOLEAN,	&ldi.readonly,		"readonly"		},
+  { TYPE_STRING,	&ldi.graphics_set_ecs,	"graphics_set.old"	},
+  { TYPE_STRING,	&ldi.graphics_set_aga,	"graphics_set.new"	},
   { TYPE_STRING,	&ldi.graphics_set_ecs,	"graphics_set.ecs"	},
   { TYPE_STRING,	&ldi.graphics_set_aga,	"graphics_set.aga"	},
   { TYPE_STRING,	&ldi.graphics_set,	"graphics_set"		},
