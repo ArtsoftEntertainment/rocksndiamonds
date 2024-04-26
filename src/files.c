@@ -11658,8 +11658,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_scroll_delay = TRUE;
   si->bd_show_invisible_outbox = FALSE;
   si->bd_smooth_movements = MODE_AUTO;
-  si->bd_pushing_graphics = TRUE;
-  si->bd_up_down_graphics = TRUE;
+  si->bd_pushing_graphics = MODE_TRUE;
+  si->bd_up_down_graphics = MODE_TRUE;
   si->bd_skip_falling_sounds = MODE_AUTO;
   si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
   si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
@@ -11676,9 +11676,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->sounds_set   = getStringCopy(SND_CLASSIC_SUBDIR);
   si->music_set    = getStringCopy(MUS_CLASSIC_SUBDIR);
 
-  si->override_level_graphics = FALSE;
-  si->override_level_sounds = FALSE;
-  si->override_level_music = FALSE;
+  si->override_level_graphics = MODE_FALSE;
+  si->override_level_sounds = MODE_FALSE;
+  si->override_level_music = MODE_FALSE;
 
   si->volume_simple = 100;		// percent
   si->volume_loops = 100;		// percent

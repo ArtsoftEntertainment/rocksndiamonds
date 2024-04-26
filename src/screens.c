@@ -1929,7 +1929,7 @@ void DrawMainMenu(void)
   SetAnimationFirstLevel(leveldir_current->first_level);
 
   // level_nr may have been set to value over handicap with level editor
-  if (setup.allow_skipping_levels != TRUE && level_nr > leveldir_current->handicap_level)
+  if (setup.allow_skipping_levels != MODE_TRUE && level_nr > leveldir_current->handicap_level)
     level_nr = leveldir_current->handicap_level;
 
   LoadLevel(level_nr);
@@ -2286,7 +2286,7 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
   if (new_level_nr > leveldir_current->last_level)
     new_level_nr = leveldir_current->last_level;
 
-  if (setup.allow_skipping_levels != TRUE && new_level_nr > leveldir_current->handicap_level)
+  if (setup.allow_skipping_levels != MODE_TRUE && new_level_nr > leveldir_current->handicap_level)
   {
     // skipping levels is only allowed when trying to skip single level
     // (also, skipping BD style intermission levels is always possible)
@@ -5720,7 +5720,7 @@ static void HandleHallOfFame_SelectLevel(int step, int direction)
   if (new_level_nr > leveldir_current->last_level)
     new_level_nr = leveldir_current->last_level;
 
-  if (setup.allow_skipping_levels != TRUE && new_level_nr > leveldir_current->handicap_level)
+  if (setup.allow_skipping_levels != MODE_TRUE && new_level_nr > leveldir_current->handicap_level)
     new_level_nr = leveldir_current->handicap_level;
 
   if (new_level_nr != old_level_nr)
@@ -8387,10 +8387,10 @@ static int getSetupValueFont(int type, void *value)
     return (*(boolean *)value ? FONT_OPTION_ON : FONT_OPTION_OFF);
   else if (type & TYPE_YES_NO_AUTO)
     return (*(int *)value == MODE_AUTO  ? FONT_OPTION_ON :
-	    *(int *)value == FALSE ? FONT_OPTION_OFF : FONT_OPTION_ON);
+	    *(int *)value == MODE_FALSE ? FONT_OPTION_OFF : FONT_OPTION_ON);
   else if (type & TYPE_YES_NO_ASK)
-    return (*(int *)value == MODE_ASK  ? FONT_OPTION_ON :
-	    *(int *)value == FALSE ? FONT_OPTION_OFF : FONT_OPTION_ON);
+    return (*(int *)value == MODE_ASK   ? FONT_OPTION_ON :
+	    *(int *)value == MODE_FALSE ? FONT_OPTION_OFF : FONT_OPTION_ON);
   else if (type & TYPE_PLAYER)
     return FONT_VALUE_1;
   else
@@ -8534,19 +8534,19 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
   {
     *(int *)si->value =
       (dx == -1 ?
-       (*(int *)si->value == MODE_AUTO ? TRUE :
-	*(int *)si->value == TRUE ? FALSE : MODE_AUTO) :
-       (*(int *)si->value == TRUE ? MODE_AUTO :
-	*(int *)si->value == MODE_AUTO ? FALSE : TRUE));
+       (*(int *)si->value == MODE_AUTO ? MODE_TRUE :
+	*(int *)si->value == MODE_TRUE ? MODE_FALSE : MODE_AUTO) :
+       (*(int *)si->value == MODE_TRUE ? MODE_AUTO :
+	*(int *)si->value == MODE_AUTO ? MODE_FALSE : MODE_TRUE));
   }
   else if (si->type & TYPE_YES_NO_ASK)
   {
     *(int *)si->value =
       (dx == -1 ?
-       (*(int *)si->value == MODE_ASK ? TRUE :
-	*(int *)si->value == TRUE ? FALSE : MODE_ASK) :
-       (*(int *)si->value == TRUE ? MODE_ASK :
-	*(int *)si->value == MODE_ASK ? FALSE : TRUE));
+       (*(int *)si->value == MODE_ASK  ? MODE_TRUE :
+	*(int *)si->value == MODE_TRUE ? MODE_FALSE : MODE_ASK) :
+       (*(int *)si->value == MODE_TRUE ? MODE_ASK :
+	*(int *)si->value == MODE_ASK  ? MODE_FALSE : MODE_TRUE));
   }
   else if (si->type & TYPE_KEY)
   {

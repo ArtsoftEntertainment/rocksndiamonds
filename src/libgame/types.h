@@ -40,9 +40,13 @@ typedef unsigned char byte;
 #undef MODE_ASK
 #endif
 
+// values for boolean data type
 #define TRUE			1
 #define FALSE			0
 
+// values for 3-state data type (for "yes/no/auto" or "yes/no/ask")
+#define MODE_TRUE		1
+#define MODE_FALSE		0
 #define MODE_AUTO		-1
 #define MODE_ASK		-1
 
