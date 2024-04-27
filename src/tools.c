@@ -2818,12 +2818,14 @@ static void DrawSizedElementExt(int x, int y, int element, int tilesize,
   }
   else
   {
-    int graphic = el2edimg(element);
+    int graphic, frame;
+
+    el2edimg_with_frame(element, &graphic, &frame);
 
     if (masked)
-      DrawSizedGraphicThruMask(x, y, graphic, 0, tilesize);
+      DrawSizedGraphicThruMask(x, y, graphic, frame, tilesize);
     else
-      DrawSizedGraphic(x, y, graphic, 0, tilesize);
+      DrawSizedGraphic(x, y, graphic, frame, tilesize);
   }
 }
 
