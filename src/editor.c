@@ -5399,7 +5399,6 @@ static boolean getDrawModeHiRes(void);
 static int getTabulatorBarWidth(void);
 static int getTabulatorBarHeight(void);
 static Pixel getTabulatorBarColor(void);
-static void getEditorGraphicAndFrame(int, int *, int *, boolean);
 static int numHiresTiles(int);
 
 static int num_editor_gadgets = 0;	// dynamically determined
@@ -8057,7 +8056,7 @@ static void DrawDrawingArea(int id)
       int graphic;
       int frame;
 
-      getEditorGraphicAndFrame(element, &graphic, &frame, TRUE);
+      el2edimg_with_frame(element, &graphic, &frame);
 
       DrawSizedGraphicExt(drawto,
 			  gi->x + x * tilesize,
@@ -8098,29 +8097,13 @@ static void ScrollEditorLevel(int from_x, int from_y, int scroll)
   BackToFront();
 }
 
-static void getEditorGraphicAndFrame(int element, int *graphic, int *frame, boolean use_editor_gfx)
-{
-  if (use_editor_gfx)
-  {
-    el2edimg_with_frame(element, graphic, frame);
-  }
-  else
-  {
-    *graphic = el2img(element);
-    *frame = (ANIM_MODE(*graphic) == ANIM_CE_VALUE ?
-	      custom_element.ce_value_fixed_initial :
-	      ANIM_MODE(*graphic) == ANIM_CE_SCORE ?
-	      custom_element.collect_score_initial : FrameCounter);
-  }
-}
-
 static void getEditorGraphicSource(int element, int tile_size, Bitmap **bitmap,
 				   int *x, int *y)
 {
   int graphic;
   int frame;
 
-  getEditorGraphicAndFrame(element, &graphic, &frame, TRUE);
+  el2edimg_with_frame(element, &graphic, &frame);
 
   getSizedGraphicSource(graphic, frame, tile_size, bitmap, x, y);
 }
@@ -13064,13 +13047,17 @@ static void DrawEditorElementAnimation(int x, int y)
 
   if (IS_BD_RUNTIME_ELEMENT(properties_element))
   {
-    getEditorGraphicAndFrame(properties_element, &graphic, &frame, TRUE);
+    el2edimg_with_frame(properties_element, &graphic, &frame);
 
     DrawFixedGraphicExt(drawto, x, y, graphic, frame);
   }
   else
   {
-    getEditorGraphicAndFrame(properties_element, &graphic, &frame, FALSE);
+    graphic = el2img(properties_element);
+    frame = (ANIM_MODE(graphic) == ANIM_CE_VALUE ?
+	     custom_element.ce_value_fixed_initial :
+	     ANIM_MODE(graphic) == ANIM_CE_SCORE ?
+	     custom_element.collect_score_initial : FrameCounter);
 
     DrawFixedGraphicAnimationExt(drawto, x, y, graphic, frame, NO_MASKING);
   }
