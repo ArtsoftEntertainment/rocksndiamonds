@@ -10163,6 +10163,31 @@ int el2edimg(int element)
   return element_info[element].special_graphic[GFX_SPECIAL_ARG_EDITOR];
 }
 
+int el2edimg_with_frame(int element, int *graphic, int *frame)
+{
+  element = GFX_ELEMENT(element);
+
+  *graphic = element_info[element].special_graphic[GFX_SPECIAL_ARG_EDITOR];
+  *frame = 0;
+
+  if (*graphic == IMG_UNKNOWN)
+  {
+    // no graphic defined -- if BD style, try to get runtime ("effect") element graphics
+    // (normal BD style elements have graphics, but runtime ("effects") elements do not)
+    int element_bd = map_element_RND_to_BD_cave(element);
+
+    if (element_bd != O_UNKNOWN)
+    {
+      struct GraphicInfo_BD *g_bd = &graphic_info_bd_object[element_bd][0];
+
+      *graphic = g_bd->graphic;
+      *frame   = g_bd->frame;
+    }
+  }
+
+  return *graphic;
+}
+
 int el2preimg(int element)
 {
   element = GFX_ELEMENT(element);

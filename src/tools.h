@@ -264,6 +264,7 @@ int el_dir2img(int, int);
 int el2baseimg(int);
 int el2img(int);
 int el2edimg(int);
+int el2edimg_with_frame(int, int *, int *);
 int el2preimg(int);
 int el2panelimg(int);
 int font2baseimg(int);

@@ -8102,8 +8102,7 @@ static void getEditorGraphicAndFrame(int element, int *graphic, int *frame, bool
 {
   if (use_editor_gfx)
   {
-    *graphic = el2edimg(element);
-    *frame = 0;
+    el2edimg_with_frame(element, graphic, frame);
   }
   else
   {
@@ -8112,21 +8111,6 @@ static void getEditorGraphicAndFrame(int element, int *graphic, int *frame, bool
 	      custom_element.ce_value_fixed_initial :
 	      ANIM_MODE(*graphic) == ANIM_CE_SCORE ?
 	      custom_element.collect_score_initial : FrameCounter);
-  }
-
-  if (*graphic == IMG_UNKNOWN)
-  {
-    // no graphic defined -- if BD style, try to get runtime ("effect") element graphics
-    // (normal BD style elements have graphics, but runtime ("effects") elements do not)
-    int element_bd = map_element_RND_to_BD_cave(element);
-
-    if (element_bd != O_UNKNOWN)
-    {
-      struct GraphicInfo_BD *g_bd = &graphic_info_bd_object[element_bd][0];
-
-      *graphic = g_bd->graphic;
-      *frame   = g_bd->frame;
-    }
   }
 }
 
