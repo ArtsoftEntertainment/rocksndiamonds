@@ -13078,9 +13078,18 @@ static void DrawEditorElementAnimation(int x, int y)
   int graphic;
   int frame;
 
-  getEditorGraphicAndFrame(properties_element, &graphic, &frame, FALSE);
+  if (IS_BD_RUNTIME_ELEMENT(properties_element))
+  {
+    getEditorGraphicAndFrame(properties_element, &graphic, &frame, TRUE);
 
-  DrawFixedGraphicAnimationExt(drawto, x, y, graphic, frame, NO_MASKING);
+    DrawFixedGraphicExt(drawto, x, y, graphic, frame);
+  }
+  else
+  {
+    getEditorGraphicAndFrame(properties_element, &graphic, &frame, FALSE);
+
+    DrawFixedGraphicAnimationExt(drawto, x, y, graphic, frame, NO_MASKING);
+  }
 }
 
 static void DrawEditorElementName(int x, int y, int font_nr)
