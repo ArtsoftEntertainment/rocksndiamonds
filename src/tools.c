@@ -10167,9 +10167,7 @@ int el2edimg(int element)
 
 int el2edimg_with_frame(int element, int *graphic, int *frame)
 {
-  element = GFX_ELEMENT(element);
-
-  *graphic = element_info[element].special_graphic[GFX_SPECIAL_ARG_EDITOR];
+  *graphic = el2edimg(element);
   *frame = 0;
 
   if (*graphic == IMG_UNKNOWN)
