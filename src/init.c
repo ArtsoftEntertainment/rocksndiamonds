@@ -244,6 +244,10 @@ static void InitElementSmallImagesScaledUp(int graphic)
 {
   struct GraphicInfo *g = &graphic_info[graphic];
 
+  // if graphic was cloned, scale cloned graphic
+  if (graphic_info[graphic].clone_from != -1)
+    graphic = graphic_info[graphic].clone_from;
+
   // create small and game tile sized bitmaps (and scale up, if needed)
   CreateImageWithSmallImages(graphic, g->scale_up_factor, g->tile_size);
 }
@@ -306,6 +310,10 @@ static void InitElementSmallImages(void)
 static void InitScaledImagesScaledUp(int graphic)
 {
   struct GraphicInfo *g = &graphic_info[graphic];
+
+  // if graphic was cloned, scale cloned graphic
+  if (graphic_info[graphic].clone_from != -1)
+    graphic = graphic_info[graphic].clone_from;
 
   ScaleImage(graphic, g->scale_up_factor);
 }
