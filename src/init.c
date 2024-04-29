@@ -1155,8 +1155,8 @@ static void InitElementGraphicInfo(void)
       // look for special default action graphic (classic game specific)
       if (IS_BD_ELEMENT(i) && element_info[EL_BD_DEFAULT].graphic[act] != -1)
 	default_action_graphic = element_info[EL_BD_DEFAULT].graphic[act];
-      if (IS_BD_NATIVE_ELEMENT(i) && element_info[EL_BD_NATIVE_DEFAULT].graphic[act] != -1)
-	default_action_graphic = element_info[EL_BD_NATIVE_DEFAULT].graphic[act];
+      if (IS_BDX_ELEMENT(i) && element_info[EL_BDX_DEFAULT].graphic[act] != -1)
+	default_action_graphic = element_info[EL_BDX_DEFAULT].graphic[act];
       if (IS_SP_ELEMENT(i) && element_info[EL_SP_DEFAULT].graphic[act] != -1)
 	default_action_graphic = element_info[EL_SP_DEFAULT].graphic[act];
       if (IS_SB_ELEMENT(i) && element_info[EL_SB_DEFAULT].graphic[act] != -1)
@@ -1166,8 +1166,8 @@ static void InitElementGraphicInfo(void)
 
       if (IS_BD_ELEMENT(i) && element_info[EL_BD_DEFAULT].crumbled[act] != -1)
 	default_action_crumbled = element_info[EL_BD_DEFAULT].crumbled[act];
-      if (IS_BD_NATIVE_ELEMENT(i) && element_info[EL_BD_NATIVE_DEFAULT].crumbled[act] != -1)
-	default_action_crumbled = element_info[EL_BD_NATIVE_DEFAULT].crumbled[act];
+      if (IS_BDX_ELEMENT(i) && element_info[EL_BDX_DEFAULT].crumbled[act] != -1)
+	default_action_crumbled = element_info[EL_BDX_DEFAULT].crumbled[act];
       if (IS_SP_ELEMENT(i) && element_info[EL_SP_DEFAULT].crumbled[act] != -1)
 	default_action_crumbled = element_info[EL_SP_DEFAULT].crumbled[act];
       if (IS_SB_ELEMENT(i) && element_info[EL_SB_DEFAULT].crumbled[act] != -1)
@@ -2170,8 +2170,8 @@ static void InitElementSoundInfo(void)
       // look for special default action sound (classic game specific)
       if (IS_BD_ELEMENT(i) && element_info[EL_BD_DEFAULT].sound[act] != -1)
 	default_action_sound = element_info[EL_BD_DEFAULT].sound[act];
-      if (IS_BD_NATIVE_ELEMENT(i) && element_info[EL_BD_NATIVE_DEFAULT].sound[act] != -1)
-	default_action_sound = element_info[EL_BD_NATIVE_DEFAULT].sound[act];
+      if (IS_BDX_ELEMENT(i) && element_info[EL_BDX_DEFAULT].sound[act] != -1)
+	default_action_sound = element_info[EL_BDX_DEFAULT].sound[act];
       if (IS_SP_ELEMENT(i) && element_info[EL_SP_DEFAULT].sound[act] != -1)
 	default_action_sound = element_info[EL_SP_DEFAULT].sound[act];
       if (IS_SB_ELEMENT(i) && element_info[EL_SB_DEFAULT].sound[act] != -1)
@@ -4305,16 +4305,17 @@ void InitElementPropertiesStatic(void)
     EL_AMOEBA_DRY,
     EL_AMOEBA_FULL,
     EL_BD_AMOEBA,
-    EL_BD_AMOEBA_2,
-    EL_BD_SLIME,
-    EL_BD_ACID,
-    EL_BD_BITER,
-    EL_BD_BITER_RIGHT,
-    EL_BD_BITER_UP,
-    EL_BD_BITER_LEFT,
-    EL_BD_BITER_DOWN,
-    EL_BD_BLADDER,
-    EL_BD_NUT,
+    EL_BDX_AMOEBA_1,
+    EL_BDX_AMOEBA_2,
+    EL_BDX_SLIME,
+    EL_BDX_ACID,
+    EL_BDX_BITER,
+    EL_BDX_BITER_RIGHT,
+    EL_BDX_BITER_UP,
+    EL_BDX_BITER_LEFT,
+    EL_BDX_BITER_DOWN,
+    EL_BDX_BLADDER,
+    EL_BDX_NUT,
     EL_EMC_MAGIC_BALL,
     EL_EMC_ANDROID,
     EL_MM_GRAY_BALL,
@@ -4610,8 +4611,8 @@ void InitElementPropertiesStatic(void)
   static int ep_editor_cascade_active[] =
   {
     EL_INTERNAL_CASCADE_BD_ACTIVE,
-    EL_INTERNAL_CASCADE_BD_NATIVE_ACTIVE,
-    EL_INTERNAL_CASCADE_BD_EFFECTS_ACTIVE,
+    EL_INTERNAL_CASCADE_BDX_ACTIVE,
+    EL_INTERNAL_CASCADE_BDX_EFFECTS_ACTIVE,
     EL_INTERNAL_CASCADE_EM_ACTIVE,
     EL_INTERNAL_CASCADE_EMC_ACTIVE,
     EL_INTERNAL_CASCADE_RND_ACTIVE,
@@ -4636,8 +4637,8 @@ void InitElementPropertiesStatic(void)
   static int ep_editor_cascade_inactive[] =
   {
     EL_INTERNAL_CASCADE_BD,
-    EL_INTERNAL_CASCADE_BD_NATIVE,
-    EL_INTERNAL_CASCADE_BD_EFFECTS,
+    EL_INTERNAL_CASCADE_BDX,
+    EL_INTERNAL_CASCADE_BDX_EFFECTS,
     EL_INTERNAL_CASCADE_EM,
     EL_INTERNAL_CASCADE_EMC,
     EL_INTERNAL_CASCADE_RND,

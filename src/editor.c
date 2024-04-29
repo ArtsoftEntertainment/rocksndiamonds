@@ -5477,7 +5477,7 @@ static int num_editor_el_boulderdash = ARRAY_SIZE(editor_el_boulderdash);
 
 static int editor_hl_boulderdash_native[] =
 {
-  EL_INTERNAL_CASCADE_BD_NATIVE_ACTIVE,
+  EL_INTERNAL_CASCADE_BDX_ACTIVE,
   EL_CHAR('B'),
   EL_CHAR('D'),
   EL_EMPTY,
@@ -5486,167 +5486,167 @@ static int editor_hl_boulderdash_native[] =
 static int editor_el_boulderdash_native[] =
 {
   EL_EMPTY,
-  EL_BD_SAND_1,
-  EL_BD_ROCK_NATIVE,
-  EL_BD_DIAMOND_NATIVE,
+  EL_BDX_SAND_1,
+  EL_BDX_ROCK,
+  EL_BDX_DIAMOND,
 
-  EL_BD_INBOX,
-  EL_BD_STEELWALL,
-  EL_BD_WALL_NATIVE,
-  EL_BD_MAGIC_WALL_NATIVE,
+  EL_BDX_INBOX,
+  EL_BDX_STEELWALL,
+  EL_BDX_WALL,
+  EL_BDX_MAGIC_WALL,
 
-  EL_BD_AMOEBA_1,
-  EL_BD_BUTTERFLY_1_UP,
-  EL_BD_FIREFLY_1_UP,
-  EL_BD_EXIT_CLOSED,
+  EL_BDX_AMOEBA_1,
+  EL_BDX_BUTTERFLY_1_UP,
+  EL_BDX_FIREFLY_1_UP,
+  EL_BDX_EXIT_CLOSED,
 
-  EL_BD_BUTTERFLY_1_LEFT,
-  EL_BD_FIREFLY_1_LEFT,
-  EL_BD_BUTTERFLY_1_RIGHT,
-  EL_BD_FIREFLY_1_RIGHT,
+  EL_BDX_BUTTERFLY_1_LEFT,
+  EL_BDX_FIREFLY_1_LEFT,
+  EL_BDX_BUTTERFLY_1_RIGHT,
+  EL_BDX_FIREFLY_1_RIGHT,
 
-  EL_BD_SAND_2,
-  EL_BD_BUTTERFLY_1_DOWN,
-  EL_BD_FIREFLY_1_DOWN,
-  EL_BD_EXIT_OPEN,
+  EL_BDX_SAND_2,
+  EL_BDX_BUTTERFLY_1_DOWN,
+  EL_BDX_FIREFLY_1_DOWN,
+  EL_BDX_EXIT_OPEN,
 
-  EL_BD_AMOEBA_2,
-  EL_BD_BUTTERFLY_2_UP,
-  EL_BD_FIREFLY_2_UP,
-  EL_BD_SLIME,
+  EL_BDX_AMOEBA_2,
+  EL_BDX_BUTTERFLY_2_UP,
+  EL_BDX_FIREFLY_2_UP,
+  EL_BDX_SLIME,
 
-  EL_BD_BUTTERFLY_2_LEFT,
-  EL_BD_FIREFLY_2_LEFT,
-  EL_BD_BUTTERFLY_2_RIGHT,
-  EL_BD_FIREFLY_2_RIGHT,
+  EL_BDX_BUTTERFLY_2_LEFT,
+  EL_BDX_FIREFLY_2_LEFT,
+  EL_BDX_BUTTERFLY_2_RIGHT,
+  EL_BDX_FIREFLY_2_RIGHT,
 
-  EL_BD_BOMB,
-  EL_BD_BUTTERFLY_2_DOWN,
-  EL_BD_FIREFLY_2_DOWN,
-  EL_BD_FLYING_DIAMOND,
+  EL_BDX_BOMB,
+  EL_BDX_BUTTERFLY_2_DOWN,
+  EL_BDX_FIREFLY_2_DOWN,
+  EL_BDX_FLYING_DIAMOND,
 
-  EL_BD_NITRO_PACK,
-  EL_BD_DRAGONFLY_UP,
-  EL_BD_STONEFLY_UP,
-  EL_BD_DIAMOND_GLUED,
+  EL_BDX_NITRO_PACK,
+  EL_BDX_DRAGONFLY_UP,
+  EL_BDX_STONEFLY_UP,
+  EL_BDX_DIAMOND_GLUED,
 
-  EL_BD_DRAGONFLY_LEFT,
-  EL_BD_STONEFLY_LEFT,
-  EL_BD_DRAGONFLY_RIGHT,
-  EL_BD_STONEFLY_RIGHT,
+  EL_BDX_DRAGONFLY_LEFT,
+  EL_BDX_STONEFLY_LEFT,
+  EL_BDX_DRAGONFLY_RIGHT,
+  EL_BDX_STONEFLY_RIGHT,
 
-  EL_BD_NUT,
-  EL_BD_DRAGONFLY_DOWN,
-  EL_BD_STONEFLY_DOWN,
+  EL_BDX_NUT,
+  EL_BDX_DRAGONFLY_DOWN,
+  EL_BDX_STONEFLY_DOWN,
   EL_EMPTY,
 
-  EL_BD_BITER_SWITCH_1,
-  EL_BD_BITER_UP,
-  EL_BD_COW_UP,
+  EL_BDX_BITER_SWITCH_1,
+  EL_BDX_BITER_UP,
+  EL_BDX_COW_UP,
   EL_EMPTY,
 
-  EL_BD_BITER_LEFT,
-  EL_BD_COW_LEFT,
-  EL_BD_BITER_RIGHT,
-  EL_BD_COW_RIGHT,
+  EL_BDX_BITER_LEFT,
+  EL_BDX_COW_LEFT,
+  EL_BDX_BITER_RIGHT,
+  EL_BDX_COW_RIGHT,
 
-  EL_BD_VOODOO_DOLL,
-  EL_BD_BITER_DOWN,
-  EL_BD_COW_DOWN,
-  EL_BD_GHOST,
+  EL_BDX_VOODOO_DOLL,
+  EL_BDX_BITER_DOWN,
+  EL_BDX_COW_DOWN,
+  EL_BDX_GHOST,
 
-  EL_BD_SAND_GLUED,
-  EL_BD_SAND_BALL,
-  EL_BD_SAND_LOOSE,
-  EL_BD_WALL_NON_SLOPED,
+  EL_BDX_SAND_GLUED,
+  EL_BDX_SAND_BALL,
+  EL_BDX_SAND_LOOSE,
+  EL_BDX_WALL_NON_SLOPED,
 
-  EL_BD_SAND_SLOPED_UP_LEFT,
-  EL_BD_SAND_SLOPED_UP_RIGHT,
-  EL_BD_WALL_SLOPED_UP_LEFT,
-  EL_BD_WALL_SLOPED_UP_RIGHT,
+  EL_BDX_SAND_SLOPED_UP_LEFT,
+  EL_BDX_SAND_SLOPED_UP_RIGHT,
+  EL_BDX_WALL_SLOPED_UP_LEFT,
+  EL_BDX_WALL_SLOPED_UP_RIGHT,
 
-  EL_BD_SAND_SLOPED_DOWN_LEFT,
-  EL_BD_SAND_SLOPED_DOWN_RIGHT,
-  EL_BD_WALL_SLOPED_DOWN_LEFT,
-  EL_BD_WALL_SLOPED_DOWN_RIGHT,
+  EL_BDX_SAND_SLOPED_DOWN_LEFT,
+  EL_BDX_SAND_SLOPED_DOWN_RIGHT,
+  EL_BDX_WALL_SLOPED_DOWN_LEFT,
+  EL_BDX_WALL_SLOPED_DOWN_RIGHT,
 
-  EL_BD_FLYING_ROCK,
-  EL_BD_ROCK_GLUED,
-  EL_BD_STEELWALL_SLOPED_UP_LEFT,
-  EL_BD_STEELWALL_SLOPED_UP_RIGHT,
+  EL_BDX_FLYING_ROCK,
+  EL_BDX_ROCK_GLUED,
+  EL_BDX_STEELWALL_SLOPED_UP_LEFT,
+  EL_BDX_STEELWALL_SLOPED_UP_RIGHT,
 
-  EL_BD_WAITING_ROCK,
-  EL_BD_CHASING_ROCK,
-  EL_BD_STEELWALL_SLOPED_DOWN_LEFT,
-  EL_BD_STEELWALL_SLOPED_DOWN_RIGHT,
+  EL_BDX_WAITING_ROCK,
+  EL_BDX_CHASING_ROCK,
+  EL_BDX_STEELWALL_SLOPED_DOWN_LEFT,
+  EL_BDX_STEELWALL_SLOPED_DOWN_RIGHT,
 
-  EL_BD_MEGA_ROCK,
-  EL_BD_SWEET,
-  EL_BD_INVISIBLE_EXIT_CLOSED,
-  EL_BD_INVISIBLE_EXIT_OPEN,
+  EL_BDX_MEGA_ROCK,
+  EL_BDX_SWEET,
+  EL_BDX_INVISIBLE_EXIT_CLOSED,
+  EL_BDX_INVISIBLE_EXIT_OPEN,
 
-  EL_BD_STEELWALL_EXPLODABLE,
-  EL_BD_STEELWALL_DIGGABLE,
-  EL_BD_WALL_DIGGABLE,
-  EL_BD_FALLING_WALL,
+  EL_BDX_STEELWALL_EXPLODABLE,
+  EL_BDX_STEELWALL_DIGGABLE,
+  EL_BDX_WALL_DIGGABLE,
+  EL_BDX_FALLING_WALL,
 
-  EL_BD_EXPANDABLE_WALL_HORIZONTAL,
-  EL_BD_EXPANDABLE_WALL_VERTICAL,
-  EL_BD_EXPANDABLE_WALL_ANY,
-  EL_BD_EXPANDABLE_WALL_SWITCH,
+  EL_BDX_EXPANDABLE_WALL_HORIZONTAL,
+  EL_BDX_EXPANDABLE_WALL_VERTICAL,
+  EL_BDX_EXPANDABLE_WALL_ANY,
+  EL_BDX_EXPANDABLE_WALL_SWITCH,
 
-  EL_BD_EXPANDABLE_STEELWALL_HORIZONTAL,
-  EL_BD_EXPANDABLE_STEELWALL_VERTICAL,
-  EL_BD_EXPANDABLE_STEELWALL_ANY,
-  EL_BD_CREATURE_SWITCH,
+  EL_BDX_EXPANDABLE_STEELWALL_HORIZONTAL,
+  EL_BDX_EXPANDABLE_STEELWALL_VERTICAL,
+  EL_BDX_EXPANDABLE_STEELWALL_ANY,
+  EL_BDX_CREATURE_SWITCH,
 
-  EL_BD_BLADDER,
-  EL_BD_BLADDER_SPENDER,
-  EL_BD_REPLICATOR,
-  EL_BD_REPLICATOR_SWITCH,
+  EL_BDX_BLADDER,
+  EL_BDX_BLADDER_SPENDER,
+  EL_BDX_REPLICATOR,
+  EL_BDX_REPLICATOR_SWITCH,
 
-  EL_BD_CONVEYOR_LEFT,
-  EL_BD_CONVEYOR_RIGHT,
-  EL_BD_CONVEYOR_SWITCH,
-  EL_BD_CONVEYOR_DIR_SWITCH,
+  EL_BDX_CONVEYOR_LEFT,
+  EL_BDX_CONVEYOR_RIGHT,
+  EL_BDX_CONVEYOR_SWITCH,
+  EL_BDX_CONVEYOR_DIR_SWITCH,
 
-  EL_BD_CLOCK,
-  EL_BD_TIME_PENALTY,
-  EL_BD_GRAVESTONE,
-  EL_BD_SKELETON,
+  EL_BDX_CLOCK,
+  EL_BDX_TIME_PENALTY,
+  EL_BDX_GRAVESTONE,
+  EL_BDX_SKELETON,
 
-  EL_BD_WATER,
-  EL_BD_ACID,
-  EL_BD_LAVA,
-  EL_BD_BOX,
+  EL_BDX_WATER,
+  EL_BDX_ACID,
+  EL_BDX_LAVA,
+  EL_BDX_BOX,
 
-  EL_BD_GATE_1,
-  EL_BD_GATE_2,
-  EL_BD_GATE_3,
-  EL_BD_TRAPPED_DIAMOND,
+  EL_BDX_GATE_1,
+  EL_BDX_GATE_2,
+  EL_BDX_GATE_3,
+  EL_BDX_TRAPPED_DIAMOND,
 
-  EL_BD_KEY_1,
-  EL_BD_KEY_2,
-  EL_BD_KEY_3,
-  EL_BD_DIAMOND_KEY,
+  EL_BDX_KEY_1,
+  EL_BDX_KEY_2,
+  EL_BDX_KEY_3,
+  EL_BDX_DIAMOND_KEY,
 
-  EL_BD_WALL_KEY_1,
-  EL_BD_WALL_KEY_2,
-  EL_BD_WALL_KEY_3,
-  EL_BD_WALL_DIAMOND,
+  EL_BDX_WALL_KEY_1,
+  EL_BDX_WALL_KEY_2,
+  EL_BDX_WALL_KEY_3,
+  EL_BDX_WALL_DIAMOND,
 
-  EL_BD_POT,
-  EL_BD_GRAVITY_SWITCH,
-  EL_BD_PNEUMATIC_HAMMER,
-  EL_BD_TELEPORTER,
+  EL_BDX_POT,
+  EL_BDX_GRAVITY_SWITCH,
+  EL_BDX_PNEUMATIC_HAMMER,
+  EL_BDX_TELEPORTER,
 
-  EL_BD_PLAYER,
-  EL_BD_PLAYER_WITH_BOMB,
-  EL_BD_PLAYER_WITH_ROCKET_LAUNCHER,
-  EL_BD_ROCKET_LAUNCHER,
+  EL_BDX_PLAYER,
+  EL_BDX_PLAYER_WITH_BOMB,
+  EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER,
+  EL_BDX_ROCKET_LAUNCHER,
 
-  EL_BD_PLAYER_GLUED,
-  EL_BD_PLAYER_STIRRING,
+  EL_BDX_PLAYER_GLUED,
+  EL_BDX_PLAYER_STIRRING,
   EL_EMPTY,
   EL_EMPTY,
 };
@@ -5657,7 +5657,7 @@ static int num_editor_el_boulderdash_native = ARRAY_SIZE(editor_el_boulderdash_n
 
 static int editor_hl_boulderdash_effects[] =
 {
-  EL_INTERNAL_CASCADE_BD_EFFECTS_ACTIVE,
+  EL_INTERNAL_CASCADE_BDX_EFFECTS_ACTIVE,
   EL_CHAR('B'),
   EL_CHAR('D'),
   EL_CHAR('E'),
@@ -5665,125 +5665,125 @@ static int editor_hl_boulderdash_effects[] =
 
 static int editor_el_boulderdash_effects[] =
 {
-  EL_BD_DIAMOND_NATIVE_FALLING,
-  EL_BD_ROCK_NATIVE_FALLING,
-  EL_BD_MEGA_ROCK_FALLING,
-  EL_BD_FLYING_DIAMOND_FLYING,
+  EL_BDX_DIAMOND_FALLING,
+  EL_BDX_ROCK_FALLING,
+  EL_BDX_MEGA_ROCK_FALLING,
+  EL_BDX_FLYING_DIAMOND_FLYING,
 
-  EL_BD_FALLING_WALL_FALLING,
-  EL_BD_NITRO_PACK_FALLING,
-  EL_BD_NUT_FALLING,
-  EL_BD_FLYING_ROCK_FLYING,
+  EL_BDX_FALLING_WALL_FALLING,
+  EL_BDX_NITRO_PACK_FALLING,
+  EL_BDX_NUT_FALLING,
+  EL_BDX_FLYING_ROCK_FLYING,
 
-  EL_BD_PLAYER_GROWING_1,
-  EL_BD_PLAYER_GROWING_2,
-  EL_BD_PLAYER_GROWING_3,
-  EL_BD_PLAYER,
+  EL_BDX_PLAYER_GROWING_1,
+  EL_BDX_PLAYER_GROWING_2,
+  EL_BDX_PLAYER_GROWING_3,
+  EL_BDX_PLAYER,
 
-  EL_BD_PLAYER_WITH_BOMB,
-  EL_BD_PLAYER_STIRRING,
-  EL_BD_EXIT_OPEN,
-  EL_BD_INVISIBLE_EXIT_OPEN,
+  EL_BDX_PLAYER_WITH_BOMB,
+  EL_BDX_PLAYER_STIRRING,
+  EL_BDX_EXIT_OPEN,
+  EL_BDX_INVISIBLE_EXIT_OPEN,
 
-  EL_BD_BLADDER_1,
-  EL_BD_BLADDER_2,
-  EL_BD_BLADDER_3,
-  EL_BD_BLADDER_4,
+  EL_BDX_BLADDER_1,
+  EL_BDX_BLADDER_2,
+  EL_BDX_BLADDER_3,
+  EL_BDX_BLADDER_4,
 
-  EL_BD_BLADDER_5,
-  EL_BD_BLADDER_6,
-  EL_BD_BLADDER_7,
-  EL_BD_BLADDER_8,
+  EL_BDX_BLADDER_5,
+  EL_BDX_BLADDER_6,
+  EL_BDX_BLADDER_7,
+  EL_BDX_BLADDER_8,
 
-  EL_BD_SAND_2,
-  EL_BD_COW_ENCLOSED_1,
-  EL_BD_COW_ENCLOSED_2,
-  EL_BD_COW_ENCLOSED_3,
+  EL_BDX_SAND_2,
+  EL_BDX_COW_ENCLOSED_1,
+  EL_BDX_COW_ENCLOSED_2,
+  EL_BDX_COW_ENCLOSED_3,
 
-  EL_BD_COW_ENCLOSED_4,
-  EL_BD_COW_ENCLOSED_5,
-  EL_BD_COW_ENCLOSED_6,
-  EL_BD_COW_ENCLOSED_7,
+  EL_BDX_COW_ENCLOSED_4,
+  EL_BDX_COW_ENCLOSED_5,
+  EL_BDX_COW_ENCLOSED_6,
+  EL_BDX_COW_ENCLOSED_7,
 
-  EL_BD_WATER_1,
-  EL_BD_WATER_2,
-  EL_BD_WATER_3,
-  EL_BD_WATER_4,
+  EL_BDX_WATER_1,
+  EL_BDX_WATER_2,
+  EL_BDX_WATER_3,
+  EL_BDX_WATER_4,
 
-  EL_BD_WATER_5,
-  EL_BD_WATER_6,
-  EL_BD_WATER_7,
-  EL_BD_WATER_8,
+  EL_BDX_WATER_5,
+  EL_BDX_WATER_6,
+  EL_BDX_WATER_7,
+  EL_BDX_WATER_8,
 
-  EL_BD_WATER_9,
-  EL_BD_WATER_10,
-  EL_BD_WATER_11,
-  EL_BD_WATER_12,
+  EL_BDX_WATER_9,
+  EL_BDX_WATER_10,
+  EL_BDX_WATER_11,
+  EL_BDX_WATER_12,
 
-  EL_BD_WATER_13,
-  EL_BD_WATER_14,
-  EL_BD_WATER_15,
-  EL_BD_WATER_16,
+  EL_BDX_WATER_13,
+  EL_BDX_WATER_14,
+  EL_BDX_WATER_15,
+  EL_BDX_WATER_16,
 
-  EL_BD_BOMB_TICKING_1,
-  EL_BD_BOMB_TICKING_2,
-  EL_BD_BOMB_TICKING_3,
-  EL_BD_BOMB_TICKING_4,
+  EL_BDX_BOMB_TICKING_1,
+  EL_BDX_BOMB_TICKING_2,
+  EL_BDX_BOMB_TICKING_3,
+  EL_BDX_BOMB_TICKING_4,
 
-  EL_BD_BOMB_TICKING_5,
-  EL_BD_BOMB_TICKING_6,
-  EL_BD_BOMB_TICKING_7,
+  EL_BDX_BOMB_TICKING_5,
+  EL_BDX_BOMB_TICKING_6,
+  EL_BDX_BOMB_TICKING_7,
   EL_EMPTY,
 
-  EL_BD_BOMB_EXPLODING_1,
-  EL_BD_BOMB_EXPLODING_2,
-  EL_BD_BOMB_EXPLODING_3,
-  EL_BD_BOMB_EXPLODING_4,
+  EL_BDX_BOMB_EXPLODING_1,
+  EL_BDX_BOMB_EXPLODING_2,
+  EL_BDX_BOMB_EXPLODING_3,
+  EL_BDX_BOMB_EXPLODING_4,
 
-  EL_BD_NUT_BREAKING_1,
-  EL_BD_NUT_BREAKING_2,
-  EL_BD_NUT_BREAKING_3,
-  EL_BD_NUT_BREAKING_4,
+  EL_BDX_NUT_BREAKING_1,
+  EL_BDX_NUT_BREAKING_2,
+  EL_BDX_NUT_BREAKING_3,
+  EL_BDX_NUT_BREAKING_4,
 
-  EL_BD_EXPLODING_1,
-  EL_BD_EXPLODING_2,
-  EL_BD_EXPLODING_3,
-  EL_BD_EXPLODING_4,
+  EL_BDX_EXPLODING_1,
+  EL_BDX_EXPLODING_2,
+  EL_BDX_EXPLODING_3,
+  EL_BDX_EXPLODING_4,
 
-  EL_BD_EXPLODING_5,
-  EL_BD_TIME_PENALTY,
-  EL_BD_DIAMOND_NATIVE_GROWING_1,
-  EL_BD_DIAMOND_NATIVE_GROWING_2,
+  EL_BDX_EXPLODING_5,
+  EL_BDX_TIME_PENALTY,
+  EL_BDX_DIAMOND_GROWING_1,
+  EL_BDX_DIAMOND_GROWING_2,
 
-  EL_BD_DIAMOND_NATIVE_GROWING_3,
-  EL_BD_DIAMOND_NATIVE_GROWING_4,
-  EL_BD_DIAMOND_NATIVE_GROWING_5,
-  EL_BD_NITRO_PACK_EXPLODING,
+  EL_BDX_DIAMOND_GROWING_3,
+  EL_BDX_DIAMOND_GROWING_4,
+  EL_BDX_DIAMOND_GROWING_5,
+  EL_BDX_NITRO_PACK_EXPLODING,
 
-  EL_BD_NITRO_PACK_EXPLODING_1,
-  EL_BD_NITRO_PACK_EXPLODING_2,
-  EL_BD_NITRO_PACK_EXPLODING_3,
-  EL_BD_NITRO_PACK_EXPLODING_4,
+  EL_BDX_NITRO_PACK_EXPLODING_1,
+  EL_BDX_NITRO_PACK_EXPLODING_2,
+  EL_BDX_NITRO_PACK_EXPLODING_3,
+  EL_BDX_NITRO_PACK_EXPLODING_4,
 
-  EL_BD_ROCK_NATIVE_GROWING_1,
-  EL_BD_ROCK_NATIVE_GROWING_2,
-  EL_BD_ROCK_NATIVE_GROWING_3,
-  EL_BD_ROCK_NATIVE_GROWING_4,
+  EL_BDX_ROCK_GROWING_1,
+  EL_BDX_ROCK_GROWING_2,
+  EL_BDX_ROCK_GROWING_3,
+  EL_BDX_ROCK_GROWING_4,
 
-  EL_BD_STEELWALL_GROWING_1,
-  EL_BD_STEELWALL_GROWING_2,
-  EL_BD_STEELWALL_GROWING_3,
-  EL_BD_STEELWALL_GROWING_4,
+  EL_BDX_STEELWALL_GROWING_1,
+  EL_BDX_STEELWALL_GROWING_2,
+  EL_BDX_STEELWALL_GROWING_3,
+  EL_BDX_STEELWALL_GROWING_4,
 
-  EL_BD_CLOCK_GROWING_1,
-  EL_BD_CLOCK_GROWING_2,
-  EL_BD_CLOCK_GROWING_3,
-  EL_BD_CLOCK_GROWING_4,
+  EL_BDX_CLOCK_GROWING_1,
+  EL_BDX_CLOCK_GROWING_2,
+  EL_BDX_CLOCK_GROWING_3,
+  EL_BDX_CLOCK_GROWING_4,
 
-  EL_BD_GHOST_EXPLODING_1,
-  EL_BD_GHOST_EXPLODING_2,
-  EL_BD_GHOST_EXPLODING_3,
-  EL_BD_GHOST_EXPLODING_4,
+  EL_BDX_GHOST_EXPLODING_1,
+  EL_BDX_GHOST_EXPLODING_2,
+  EL_BDX_GHOST_EXPLODING_3,
+  EL_BDX_GHOST_EXPLODING_4,
 };
 static int *editor_hl_boulderdash_effects_ptr = editor_hl_boulderdash_effects;
 static int *editor_el_boulderdash_effects_ptr = editor_el_boulderdash_effects;
@@ -7250,13 +7250,13 @@ editor_elements_info[] =
   },
   {
     &setup_editor_el_boulderdash_native,
-    &setup.editor_cascade.el_bd_native,
+    &setup.editor_cascade.el_bdx,
     &editor_hl_boulderdash_native_ptr,	&num_editor_hl_boulderdash_native,
     &editor_el_boulderdash_native_ptr,	&num_editor_el_boulderdash_native
   },
   {
     &setup_editor_el_boulderdash_effects,
-    &setup.editor_cascade.el_bd_effects,
+    &setup.editor_cascade.el_bdx_effects,
     &editor_hl_boulderdash_effects_ptr,	&num_editor_hl_boulderdash_effects,
     &editor_el_boulderdash_effects_ptr,	&num_editor_el_boulderdash_effects
   },
@@ -12042,8 +12042,8 @@ static struct
 {
   { EL_EMERALD,			&level.score[SC_EMERALD],		TEXT_COLLECTING		},
   { EL_BD_DIAMOND,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
-  { EL_BD_DIAMOND_NATIVE,	&level.score[SC_EMERALD],		TEXT_COLLECTING		},
-  { EL_BD_DIAMOND_NATIVE,	&level.score[SC_DIAMOND_EXTRA],		TEXT_COLLECTING_EXTRA	},
+  { EL_BDX_DIAMOND,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
+  { EL_BDX_DIAMOND,		&level.score[SC_DIAMOND_EXTRA],		TEXT_COLLECTING_EXTRA	},
   { EL_EMERALD_YELLOW,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
   { EL_EMERALD_RED,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
   { EL_EMERALD_PURPLE,		&level.score[SC_EMERALD],		TEXT_COLLECTING		},
@@ -12121,22 +12121,22 @@ static struct
   { EL_AMOEBA_FULL,		&level.amoeba_speed,			TEXT_AMOEBA_SPEED	},
   { EL_BD_AMOEBA,		&level.amoeba_speed,			TEXT_AMOEBA_SPEED	},
   { EL_EMC_DRIPPER,		&level.amoeba_speed,			TEXT_AMOEBA_SPEED	},
-  { EL_BD_AMOEBA_1,		&level.bd_amoeba_1_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
-  { EL_BD_AMOEBA_1,		&level.bd_amoeba_1_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
-  { EL_BD_AMOEBA_2,		&level.bd_amoeba_1_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
+  { EL_BDX_AMOEBA_1,		&level.bd_amoeba_1_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
+  { EL_BDX_AMOEBA_1,		&level.bd_amoeba_1_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
+  { EL_BDX_AMOEBA_2,		&level.bd_amoeba_1_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
 				0, 100								},
-  { EL_BD_AMOEBA_1,		&level.bd_amoeba_1_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
+  { EL_BDX_AMOEBA_1,		&level.bd_amoeba_1_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
 				0, 100								},
-  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
-  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
-  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
+  { EL_BDX_AMOEBA_2,		&level.bd_amoeba_2_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
+  { EL_BDX_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
+  { EL_BDX_AMOEBA_2,		&level.bd_amoeba_2_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
 				0, 100								},
-  { EL_BD_AMOEBA_2,		&level.bd_amoeba_2_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
+  { EL_BDX_AMOEBA_2,		&level.bd_amoeba_2_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
 				0, 100								},
   { EL_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
   { EL_DC_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
   { EL_BD_MAGIC_WALL,		&level.time_magic_wall,			TEXT_DURATION		},
-  { EL_BD_MAGIC_WALL_NATIVE,	&level.bd_magic_wall_time,		TEXT_DURATION		},
+  { EL_BDX_MAGIC_WALL,		&level.bd_magic_wall_time,		TEXT_DURATION		},
   { EL_ROBOT_WHEEL,		&level.time_wheel,			TEXT_DURATION		},
   { EL_TIMEGATE_SWITCH,		&level.time_timegate,			TEXT_DURATION		},
   { EL_DC_TIMEGATE_SWITCH,	&level.time_timegate,			TEXT_DURATION		},
@@ -12144,42 +12144,42 @@ static struct
   { EL_LIGHT_SWITCH_ACTIVE,	&level.time_light,			TEXT_DURATION		},
   { EL_SHIELD_NORMAL,		&level.shield_normal_time,		TEXT_DURATION		},
   { EL_SHIELD_DEADLY,		&level.shield_deadly_time,		TEXT_DURATION		},
-  { EL_BD_CLOCK,		&level.bd_clock_extra_time,		TEXT_TIME_BONUS,
+  { EL_BDX_CLOCK,		&level.bd_clock_extra_time,		TEXT_TIME_BONUS,
 				-100, 100							},
-  { EL_BD_VOODOO_DOLL,		&level.bd_voodoo_penalty_time,		TEXT_TIME_PENALTY,
+  { EL_BDX_VOODOO_DOLL,		&level.bd_voodoo_penalty_time,		TEXT_TIME_PENALTY,
 				0, 100								},
-  { EL_BD_SLIME,		&level.bd_slime_permeability_rate,	TEXT_PERMEABILITY_RATE,
+  { EL_BDX_SLIME,		&level.bd_slime_permeability_rate,	TEXT_PERMEABILITY_RATE,
 				0, 100								},
-  { EL_BD_SLIME,		&level.bd_slime_permeability_bits_c64,	TEXT_PERMEABILITY_BITS,
+  { EL_BDX_SLIME,		&level.bd_slime_permeability_bits_c64,	TEXT_PERMEABILITY_BITS,
 				0, 255								},
-  { EL_BD_SLIME,		&level.bd_slime_random_seed_c64,	TEXT_RANDOM_SEED,
+  { EL_BDX_SLIME,		&level.bd_slime_random_seed_c64,	TEXT_RANDOM_SEED,
 				-1, 65535							},
-  { EL_BD_ACID,			&level.bd_acid_spread_rate,		TEXT_ACID_SPREAD_RATE,
+  { EL_BDX_ACID,		&level.bd_acid_spread_rate,		TEXT_ACID_SPREAD_RATE,
 				0, 100								},
-  { EL_BD_BITER,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+  { EL_BDX_BITER,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
 				0, 3								},
-  { EL_BD_BITER_RIGHT,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+  { EL_BDX_BITER_RIGHT,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
 				0, 3								},
-  { EL_BD_BITER_UP,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+  { EL_BDX_BITER_UP,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
 				0, 3								},
-  { EL_BD_BITER_LEFT,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+  { EL_BDX_BITER_LEFT,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
 				0, 3								},
-  { EL_BD_BITER_DOWN,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
+  { EL_BDX_BITER_DOWN,		&level.bd_biter_move_delay,		TEXT_BITER_MOVE_DELAY,
 				0, 3								},
-  { EL_BD_REPLICATOR,		&level.bd_replicator_create_delay,	TEXT_REPLICATION_DELAY,
+  { EL_BDX_REPLICATOR,		&level.bd_replicator_create_delay,	TEXT_REPLICATION_DELAY,
 				0, 100								},
-  { EL_BD_PNEUMATIC_HAMMER,	&level.bd_hammer_walls_break_delay,	TEXT_HAMMER_BREAK_DELAY,
+  { EL_BDX_PNEUMATIC_HAMMER,	&level.bd_hammer_walls_break_delay,	TEXT_HAMMER_BREAK_DELAY,
 				1, 100								},
-  { EL_BD_PNEUMATIC_HAMMER,	&level.bd_hammer_walls_reappear_delay,	TEXT_HAMMER_REAPPEAR_DELAY,
+  { EL_BDX_PNEUMATIC_HAMMER,	&level.bd_hammer_walls_reappear_delay,	TEXT_HAMMER_REAPPEAR_DELAY,
 				1, 200								},
-  { EL_BD_POT,			&level.bd_num_skeletons_needed_for_pot,	TEXT_SKELETONS_NEEDED,
+  { EL_BDX_POT,			&level.bd_num_skeletons_needed_for_pot,	TEXT_SKELETONS_NEEDED,
 				0, 50								},
-  { EL_BD_SKELETON,		&level.bd_num_skeletons_needed_for_pot,	TEXT_SKELETONS_NEEDED,
+  { EL_BDX_SKELETON,		&level.bd_num_skeletons_needed_for_pot,	TEXT_SKELETONS_NEEDED,
 				0, 50								},
-  { EL_BD_SKELETON,		&level.bd_skeleton_worth_num_diamonds,	TEXT_SKELETONS_WORTH,
+  { EL_BDX_SKELETON,		&level.bd_skeleton_worth_num_diamonds,	TEXT_SKELETONS_WORTH,
 				0, 10								},
-  { EL_BD_CREATURE_SWITCH,	&level.bd_creatures_auto_turn_delay,	TEXT_AUTO_TURN_DELAY	},
-  { EL_BD_GRAVITY_SWITCH,	&level.bd_gravity_switch_delay,		TEXT_GRAVITY_DELAY,
+  { EL_BDX_CREATURE_SWITCH,	&level.bd_creatures_auto_turn_delay,	TEXT_AUTO_TURN_DELAY	},
+  { EL_BDX_GRAVITY_SWITCH,	&level.bd_gravity_switch_delay,		TEXT_GRAVITY_DELAY,
 				1, 60								},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
@@ -12228,34 +12228,34 @@ static boolean checkPropertiesConfig(int element)
       IS_MM_MCDUFFIN(element) ||
       IS_DF_LASER(element) ||
       IS_PLAYER_ELEMENT(element) ||
-      IS_BD_PLAYER_ELEMENT(element) ||
+      IS_BDX_PLAYER_ELEMENT(element) ||
       IS_BD_FIREFLY(properties_element) ||
-      IS_BD_FIREFLY_1(properties_element) ||
-      IS_BD_FIREFLY_2(properties_element) ||
+      IS_BDX_FIREFLY_1(properties_element) ||
+      IS_BDX_FIREFLY_2(properties_element) ||
       IS_BD_BUTTERFLY(properties_element) ||
-      IS_BD_BUTTERFLY_1(properties_element) ||
-      IS_BD_BUTTERFLY_2(properties_element) ||
-      IS_BD_STONEFLY(properties_element) ||
-      IS_BD_DRAGONFLY(properties_element) ||
-      IS_BD_EXPANDABLE_WALL(properties_element) ||
-      IS_BD_EXPANDABLE_STEELWALL(properties_element) ||
-      IS_BD_CONVEYOR_BELT(properties_element) ||
-      IS_BD_CONVEYOR_BELT_SWITCH(properties_element) ||
+      IS_BDX_BUTTERFLY_1(properties_element) ||
+      IS_BDX_BUTTERFLY_2(properties_element) ||
+      IS_BDX_STONEFLY(properties_element) ||
+      IS_BDX_DRAGONFLY(properties_element) ||
+      IS_BDX_EXPANDABLE_WALL(properties_element) ||
+      IS_BDX_EXPANDABLE_STEELWALL(properties_element) ||
+      IS_BDX_CONVEYOR_BELT(properties_element) ||
+      IS_BDX_CONVEYOR_BELT_SWITCH(properties_element) ||
       IS_SOKOBAN_OBJECT_OR_FIELD(element) ||
       HAS_EDITOR_CONTENT(element) ||
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
       MAYBE_DONT_COLLIDE_WITH(element) ||
-      element == EL_BD_SAND_1 ||
-      element == EL_BD_ROCK_NATIVE ||
-      element == EL_BD_MEGA_ROCK ||
-      element == EL_BD_BOMB ||
-      element == EL_BD_ROCKET_LAUNCHER ||
-      element == EL_BD_NITRO_PACK ||
-      element == EL_BD_SWEET ||
-      element == EL_BD_VOODOO_DOLL ||
-      element == EL_BD_WATER ||
-      element == EL_BD_GRAVITY_SWITCH)
+      element == EL_BDX_SAND_1 ||
+      element == EL_BDX_ROCK ||
+      element == EL_BDX_MEGA_ROCK ||
+      element == EL_BDX_BOMB ||
+      element == EL_BDX_ROCKET_LAUNCHER ||
+      element == EL_BDX_NITRO_PACK ||
+      element == EL_BDX_SWEET ||
+      element == EL_BDX_VOODOO_DOLL ||
+      element == EL_BDX_WATER ||
+      element == EL_BDX_GRAVITY_SWITCH)
   {
     return TRUE;
   }
@@ -12291,7 +12291,7 @@ static void SetAutomaticNumberOfGemsNeeded(void)
 	case EL_EMERALD_RED:
 	case EL_EMERALD_PURPLE:
 	case EL_BD_DIAMOND:
-	case EL_BD_DIAMOND_NATIVE:
+	case EL_BDX_DIAMOND:
 	case EL_WALL_EMERALD:
 	case EL_WALL_EMERALD_YELLOW:
 	case EL_WALL_EMERALD_RED:
@@ -12358,20 +12358,20 @@ static void DrawPropertiesConfig(void)
 			       (CAN_GROW(properties_element)			? 1 : 0) +
 			       (COULD_MOVE_INTO_ACID(properties_element)	? 1 : 0) +
 			       (MAYBE_DONT_COLLIDE_WITH(properties_element)	? 1 : 0) +
-			       (properties_element == EL_BD_AMOEBA_1		? 3 : 0) +
-			       (properties_element == EL_BD_AMOEBA_2		? 3 : 0) +
-			       (properties_element == EL_BD_MAGIC_WALL_NATIVE	? 1 : 0) +
-			       (properties_element == EL_BD_VOODOO_DOLL		? 4 : 0) +
-			       (properties_element == EL_BD_SLIME		? 1 : 0) +
-			       (properties_element == EL_BD_ACID		? 1 : 0) +
-			       (properties_element == EL_BD_REPLICATOR		? 1 : 0) +
-			       (properties_element == EL_BD_CREATURE_SWITCH	? 1 : 0) +
-			       (properties_element == EL_BD_GRAVITY_SWITCH	? 2 : 0) +
+			       (properties_element == EL_BDX_AMOEBA_1		? 3 : 0) +
+			       (properties_element == EL_BDX_AMOEBA_2		? 3 : 0) +
+			       (properties_element == EL_BDX_MAGIC_WALL		? 1 : 0) +
+			       (properties_element == EL_BDX_VOODOO_DOLL	? 4 : 0) +
+			       (properties_element == EL_BDX_SLIME		? 1 : 0) +
+			       (properties_element == EL_BDX_ACID		? 1 : 0) +
+			       (properties_element == EL_BDX_REPLICATOR		? 1 : 0) +
+			       (properties_element == EL_BDX_CREATURE_SWITCH	? 1 : 0) +
+			       (properties_element == EL_BDX_GRAVITY_SWITCH	? 2 : 0) +
 			       (properties_element == EL_EMC_MAGIC_BALL		? 2 : 0) +
 			       num_element_counters);
 
     // special case: set position for delay counter for reappearing hammered walls
-    if (properties_element == EL_BD_PNEUMATIC_HAMMER && num_element_counters > 0)
+    if (properties_element == EL_BDX_PNEUMATIC_HAMMER && num_element_counters > 0)
       counterbutton_info[counter_id].y += 1;
 
     counterbutton_info[counter_id].value      = elements_with_counter[i].value;
@@ -12390,7 +12390,7 @@ static void DrawPropertiesConfig(void)
       break;
   }
 
-  if (properties_element == EL_BD_MAGIC_WALL_NATIVE)
+  if (properties_element == EL_BDX_MAGIC_WALL)
   {
     // draw stickybutton gadget
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_STICK_ELEMENT);
@@ -12414,7 +12414,7 @@ static void DrawPropertiesConfig(void)
     // draw stickybutton gadget
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_STICK_ELEMENT);
 
-    if (properties_element == EL_BD_AMOEBA_1)
+    if (properties_element == EL_BDX_AMOEBA_1)
     {
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING);
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY);
@@ -12422,7 +12422,7 @@ static void DrawPropertiesConfig(void)
       MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_1_CONTENT_TOO_BIG);
       MapDrawingArea(ED_DRAWING_ID_BD_AMOEBA_1_CONTENT_ENCLOSED);
     }
-    else if (properties_element == EL_BD_AMOEBA_2)
+    else if (properties_element == EL_BDX_AMOEBA_2)
     {
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_WAIT_FOR_HATCHING);
       MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_AMOEBA_START_IMMEDIATELY);
@@ -12437,16 +12437,16 @@ static void DrawPropertiesConfig(void)
     {
       MapDrawingArea(ED_DRAWING_ID_AMOEBA_CONTENT);
     }
-    else if (properties_element == EL_BD_ACID)
+    else if (properties_element == EL_BDX_ACID)
     {
       MapDrawingArea(ED_DRAWING_ID_BD_ACID_EATS_ELEMENT);
       MapDrawingArea(ED_DRAWING_ID_BD_ACID_TURNS_TO_ELEMENT);
     }
-    else if (IS_BD_BITER(properties_element))
+    else if (IS_BDX_BITER(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_BITER_EATS_ELEMENT);
     }
-    else if (properties_element == EL_BD_BLADDER)
+    else if (properties_element == EL_BDX_BLADDER)
     {
       MapDrawingArea(ED_DRAWING_ID_BD_BLADDER_CONVERTS_BY_ELEMENT);
     }
@@ -12553,7 +12553,7 @@ static void DrawPropertiesConfig(void)
     }
   }
 
-  if (IS_BD_PLAYER_ELEMENT(properties_element))
+  if (IS_BDX_PLAYER_ELEMENT(properties_element))
   {
     counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB].y =
       ED_ELEMENT_SETTINGS_YPOS(2);
@@ -12575,12 +12575,12 @@ static void DrawPropertiesConfig(void)
     MapDrawingArea(ED_DRAWING_ID_BD_SNAP_ELEMENT);
   }
 
-  if (properties_element == EL_BD_SAND_1)
+  if (properties_element == EL_BDX_SAND_1)
   {
     MapDrawingArea(ED_DRAWING_ID_BD_SAND_LOOKS_LIKE);
   }
 
-  if (properties_element == EL_BD_ROCK_NATIVE)
+  if (properties_element == EL_BDX_ROCK)
   {
     counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB].y =
       ED_ELEMENT_SETTINGS_YPOS(0);
@@ -12594,7 +12594,7 @@ static void DrawPropertiesConfig(void)
     MapDrawingArea(ED_DRAWING_ID_BD_ROCK_TURNS_TO_ON_IMPACT);
   }
 
-  if (properties_element == EL_BD_DIAMOND_NATIVE)
+  if (properties_element == EL_BDX_DIAMOND)
   {
     MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_FALLING);
     MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_TURNS_TO_ON_IMPACT);
@@ -12602,47 +12602,47 @@ static void DrawPropertiesConfig(void)
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
-    if (IS_BD_FIREFLY_1(properties_element))
+    if (IS_BDX_FIREFLY_1(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_1_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
     }
-    else if (IS_BD_FIREFLY_2(properties_element))
+    else if (IS_BDX_FIREFLY_2(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_2_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
     }
-    else if (IS_BD_BUTTERFLY_1(properties_element))
+    else if (IS_BDX_BUTTERFLY_1(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_BUTTERFLY_1_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_BIRTH_TURNS_TO);
     }
-    else if (IS_BD_BUTTERFLY_2(properties_element))
+    else if (IS_BDX_BUTTERFLY_2(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_BUTTERFLY_2_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_DIAMOND_BIRTH_TURNS_TO);
     }
-    else if (IS_BD_STONEFLY(properties_element))
+    else if (IS_BDX_STONEFLY(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_STONEFLY_EXPLODES_TO);
     }
-    else if (IS_BD_DRAGONFLY(properties_element))
+    else if (IS_BDX_DRAGONFLY(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_DRAGONFLY_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
     }
-    else if (properties_element == EL_BD_BOMB)
+    else if (properties_element == EL_BDX_BOMB)
     {
       MapDrawingArea(ED_DRAWING_ID_BD_BOMB_EXPLOSION_TURNS_TO);
     }
-    else if (properties_element == EL_BD_NITRO_PACK)
+    else if (properties_element == EL_BDX_NITRO_PACK)
     {
       MapDrawingArea(ED_DRAWING_ID_BD_NITRO_EXPLOSION_TURNS_TO);
     }
   }
 
-  if (properties_element == EL_BD_MEGA_ROCK ||
-      properties_element == EL_BD_SWEET)
+  if (properties_element == EL_BDX_MEGA_ROCK ||
+      properties_element == EL_BDX_SWEET)
   {
     counterbutton_info[ED_COUNTER_ID_BD_PUSHING_PROB_WITH_SWEET].y =
       ED_ELEMENT_SETTINGS_YPOS(0);
@@ -12653,7 +12653,7 @@ static void DrawPropertiesConfig(void)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_PUSH_MEGA_ROCK_WITH_SWEET);
   }
 
-  if (properties_element == EL_BD_VOODOO_DOLL)
+  if (properties_element == EL_BDX_VOODOO_DOLL)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_COLLECTS_DIAMONDS);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_HURT_KILLS_PLAYER);
@@ -12661,7 +12661,7 @@ static void DrawPropertiesConfig(void)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_VOODOO_VANISH_BY_EXPLOSION);
   }
 
-  if (properties_element == EL_BD_SLIME)
+  if (properties_element == EL_BDX_SLIME)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_SLIME_IS_PREDICTABLE);
 
@@ -12673,49 +12673,49 @@ static void DrawPropertiesConfig(void)
     MapDrawingArea(ED_DRAWING_ID_BD_SLIME_CONVERTS_TO_ELEMENT_3);
   }
 
-  if (IS_BD_EXPANDABLE_WALL(properties_element) ||
-      IS_BD_EXPANDABLE_STEELWALL(properties_element))
+  if (IS_BDX_EXPANDABLE_WALL(properties_element) ||
+      IS_BDX_EXPANDABLE_STEELWALL(properties_element))
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CHANGE_EXPANDING_WALL);
 
-    if (IS_BD_EXPANDABLE_WALL(properties_element))
+    if (IS_BDX_EXPANDABLE_WALL(properties_element))
       MapDrawingArea(ED_DRAWING_ID_BD_EXPANDING_WALL_LOOKS_LIKE);
   }
 
-  if (properties_element == EL_BD_REPLICATOR)
+  if (properties_element == EL_BDX_REPLICATOR)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_REPLICATORS_ACTIVE);
   }
 
-  if (IS_BD_CONVEYOR_BELT(properties_element) ||
-      IS_BD_CONVEYOR_BELT_SWITCH(properties_element))
+  if (IS_BDX_CONVEYOR_BELT(properties_element) ||
+      IS_BDX_CONVEYOR_BELT_SWITCH(properties_element))
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_ACTIVE);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CONVEYOR_BELTS_CHANGED);
   }
 
-  if (properties_element == EL_BD_WATER)
+  if (properties_element == EL_BDX_WATER)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN);
   }
 
-  if (properties_element == EL_BD_PNEUMATIC_HAMMER)
+  if (properties_element == EL_BDX_PNEUMATIC_HAMMER)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR);
   }
 
-  if (properties_element == EL_BD_ROCKET_LAUNCHER)
+  if (properties_element == EL_BDX_ROCKET_LAUNCHER)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_INFINITE_ROCKETS);
   }
 
-  if (properties_element == EL_BD_CREATURE_SWITCH)
+  if (properties_element == EL_BDX_CREATURE_SWITCH)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS);
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING);
   }
 
-  if (properties_element == EL_BD_GRAVITY_SWITCH)
+  if (properties_element == EL_BDX_GRAVITY_SWITCH)
   {
     MapSelectboxGadget(ED_SELECTBOX_ID_BD_GRAVITY_DIRECTION);
 
@@ -12723,7 +12723,7 @@ static void DrawPropertiesConfig(void)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_GRAVITY_AFFECTS_ALL);
   }
 
-  if (properties_element == EL_BD_NUT)
+  if (properties_element == EL_BDX_NUT)
   {
     MapDrawingArea(ED_DRAWING_ID_BD_NUT_CONTENT);
   }
@@ -13014,7 +13014,7 @@ static void DrawEditorElementAnimation(int x, int y)
   int graphic;
   int frame;
 
-  if (IS_BD_NATIVE_RUNTIME_ELEMENT(properties_element))
+  if (IS_BDX_RUNTIME_ELEMENT(properties_element))
   {
     el2edimg_with_frame(properties_element, &graphic, &frame);
 
@@ -13958,7 +13958,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
       { EL_EMERALD_PURPLE,		EL_WALL_EMERALD_PURPLE		},
       { EL_DIAMOND,			EL_WALL_DIAMOND			},
       { EL_BD_DIAMOND,			EL_WALL_BD_DIAMOND		},
-      { EL_BD_DIAMOND_NATIVE,		EL_BD_WALL_DIAMOND		},
+      { EL_BDX_DIAMOND,			EL_BDX_WALL_DIAMOND		},
       { EL_GATE_1,			EL_GATE_1_GRAY			},
       { EL_GATE_2,			EL_GATE_2_GRAY			},
       { EL_GATE_3,			EL_GATE_3_GRAY			},

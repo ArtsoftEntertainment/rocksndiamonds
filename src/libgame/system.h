@@ -1339,8 +1339,8 @@ struct SetupLevelSetupInfo
 struct SetupEditorCascadeInfo
 {
   boolean el_bd;
-  boolean el_bd_native;
-  boolean el_bd_effects;
+  boolean el_bdx;
+  boolean el_bdx_effects;
   boolean el_em;
   boolean el_emc;
   boolean el_rnd;

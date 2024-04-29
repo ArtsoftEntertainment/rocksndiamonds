@@ -6463,1248 +6463,1248 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Slope (DF style) (315\xb0)"
   },
   {
-    "bd_empty_space",
+    "bdx_empty_space",
     "empty_space",
     "Empty space"
   },
   {
-    "bd_sand_1",
-    "bd_sand",
+    "bdx_sand_1",
+    "bdx_sand",
     "Sand"
   },
   {
-    "bd_sand_2",
-    "bd_sand",
+    "bdx_sand_2",
+    "bdx_sand",
     "Sand 2"
   },
   {
-    "bd_sand_ball",
-    "bd_sand_ball",
+    "bdx_sand_ball",
+    "bdx_sand_ball",
     "Sand ball"
   },
   {
-    "bd_sand_loose",
-    "bd_sand_loose",
+    "bdx_sand_loose",
+    "bdx_sand_loose",
     "Loose sand"
   },
   {
-    "bd_sand_sloped_up_right",
-    "bd_sand_sloped",
+    "bdx_sand_sloped_up_right",
+    "bdx_sand_sloped",
     "Sand (sloped up right)"
   },
   {
-    "bd_sand_sloped_up_left",
-    "bd_sand_sloped",
+    "bdx_sand_sloped_up_left",
+    "bdx_sand_sloped",
     "Sand (sloped up left)"
   },
   {
-    "bd_sand_sloped_down_left",
-    "bd_sand_sloped",
+    "bdx_sand_sloped_down_left",
+    "bdx_sand_sloped",
     "Sand (sloped down left)"
   },
   {
-    "bd_sand_sloped_down_right",
-    "bd_sand_sloped",
+    "bdx_sand_sloped_down_right",
+    "bdx_sand_sloped",
     "Sand (sloped down right)"
   },
   {
-    "bd_sand_glued",
-    "bd_sand_glued",
+    "bdx_sand_glued",
+    "bdx_sand_glued",
     "Glued sand"
   },
   {
-    "bd_wall_sloped_up_right",
-    "bd_wall_sloped",
+    "bdx_wall_sloped_up_right",
+    "bdx_wall_sloped",
     "Wall (sloped up right)"
   },
   {
-    "bd_wall_sloped_up_left",
-    "bd_wall_sloped",
+    "bdx_wall_sloped_up_left",
+    "bdx_wall_sloped",
     "Wall (sloped up left)"
   },
   {
-    "bd_wall_sloped_down_left",
-    "bd_wall_sloped",
+    "bdx_wall_sloped_down_left",
+    "bdx_wall_sloped",
     "Wall (sloped down left)"
   },
   {
-    "bd_wall_sloped_down_right",
-    "bd_wall_sloped",
+    "bdx_wall_sloped_down_right",
+    "bdx_wall_sloped",
     "Wall (sloped down right)"
   },
   {
-    "bd_wall_non_sloped",
-    "bd_wall",
+    "bdx_wall_non_sloped",
+    "bdx_wall",
     "Wall (non sloped)"
   },
   {
-    "bd_wall_diggable",
-    "bd_wall",
+    "bdx_wall_diggable",
+    "bdx_wall",
     "Diggable wall"
   },
   {
-    "bd_wall_diamond",
-    "bd_wall",
+    "bdx_wall_diamond",
+    "bdx_wall",
     "Wall with diamond"
   },
   {
-    "bd_wall_key_1",
-    "bd_wall",
+    "bdx_wall_key_1",
+    "bdx_wall",
     "Wall with key 1"
   },
   {
-    "bd_wall_key_2",
-    "bd_wall",
+    "bdx_wall_key_2",
+    "bdx_wall",
     "Wall with key 2"
   },
   {
-    "bd_wall_key_3",
-    "bd_wall",
+    "bdx_wall_key_3",
+    "bdx_wall",
     "Wall with key 3"
   },
   {
-    "bd_falling_wall",
-    "bd_wall",
+    "bdx_falling_wall",
+    "bdx_wall",
     "Falling wall"
   },
   {
-    "bd_steelwall",
-    "bd_steelwall",
+    "bdx_steelwall",
+    "bdx_steelwall",
     "Steel wall"
   },
   {
-    "bd_steelwall_sloped_up_right",
-    "bd_steelwall_sloped",
+    "bdx_steelwall_sloped_up_right",
+    "bdx_steelwall_sloped",
     "Steel wall (sloped up right)"
   },
   {
-    "bd_steelwall_sloped_up_left",
-    "bd_steelwall_sloped",
+    "bdx_steelwall_sloped_up_left",
+    "bdx_steelwall_sloped",
     "Steel wall (sloped up left)"
   },
   {
-    "bd_steelwall_sloped_down_left",
-    "bd_steelwall_sloped",
+    "bdx_steelwall_sloped_down_left",
+    "bdx_steelwall_sloped",
     "Steel wall (sloped down left)"
   },
   {
-    "bd_steelwall_sloped_down_right",
-    "bd_steelwall_sloped",
+    "bdx_steelwall_sloped_down_right",
+    "bdx_steelwall_sloped",
     "Steel wall (sloped down right)"
   },
   {
-    "bd_steelwall_explodable",
-    "bd_steelwall",
+    "bdx_steelwall_explodable",
+    "bdx_steelwall",
     "Explodable steel wall"
   },
   {
-    "bd_steelwall_diggable",
-    "bd_steelwall",
+    "bdx_steelwall_diggable",
+    "bdx_steelwall",
     "Diggable steel wall"
   },
   {
-    "bd_expandable_wall_horizontal",
-    "bd_expandable_wall",
+    "bdx_expandable_wall_horizontal",
+    "bdx_expandable_wall",
     "Expandable wall (horizontal)"
   },
   {
-    "bd_expandable_wall_vertical",
-    "bd_expandable_wall",
+    "bdx_expandable_wall_vertical",
+    "bdx_expandable_wall",
     "Expandable wall (vertical)"
   },
   {
-    "bd_expandable_wall_any",
-    "bd_expandable_wall",
+    "bdx_expandable_wall_any",
+    "bdx_expandable_wall",
     "Expandable wall (any direction)"
   },
   {
-    "bd_expandable_steelwall_horizontal",
-    "bd_expandable_steelwall",
+    "bdx_expandable_steelwall_horizontal",
+    "bdx_expandable_steelwall",
     "Expandable steelwall (horizontal)"
   },
   {
-    "bd_expandable_steelwall_vertical",
-    "bd_expandable_steelwall",
+    "bdx_expandable_steelwall_vertical",
+    "bdx_expandable_steelwall",
     "Expandable steelwall (vertical)"
   },
   {
-    "bd_expandable_steelwall_any",
-    "bd_expandable_steelwall",
+    "bdx_expandable_steelwall_any",
+    "bdx_expandable_steelwall",
     "Expandable steelwall (any direction)"
   },
   {
-    "bd_expandable_wall_switch",
-    "bd_expandable_wall_switch",
+    "bdx_expandable_wall_switch",
+    "bdx_expandable_wall_switch",
     "Expandable wall switch"
   },
   {
-    "bd_expandable_wall_switch.active",
-    "bd_expandable_wall_switch",
+    "bdx_expandable_wall_switch.active",
+    "bdx_expandable_wall_switch",
     "Expandable wall switch (active)"
   },
   {
-    "bd_inbox",
-    "bd_inbox",
+    "bdx_inbox",
+    "bdx_inbox",
     "Inbox with player"
   },
   {
-    "bd_exit_closed",
-    "bd_exit",
+    "bdx_exit_closed",
+    "bdx_exit",
     "Closed exit"
   },
   {
-    "bd_exit_open",
-    "bd_exit",
+    "bdx_exit_open",
+    "bdx_exit",
     "Open exit"
   },
   {
-    "bd_invisible_exit_closed",
-    "bd_invisible_exit",
+    "bdx_invisible_exit_closed",
+    "bdx_invisible_exit",
     "Invisible exit (closed)"
   },
   {
-    "bd_invisible_exit_open",
-    "bd_invisible_exit",
+    "bdx_invisible_exit_open",
+    "bdx_invisible_exit",
     "Invisible exit (open)"
   },
   {
-    "bd_flying_rock",
-    "bd_flying_rock",
+    "bdx_flying_rock",
+    "bdx_flying_rock",
     "Flying rock"
   },
   {
-    "bd_mega_rock",
-    "bd_mega_rock",
+    "bdx_mega_rock",
+    "bdx_mega_rock",
     "Mega rock"
   },
   {
-    "bd_rock_glued",
-    "bd_rock_glued",
+    "bdx_rock_glued",
+    "bdx_rock_glued",
     "Glued rock"
   },
   {
-    "bd_flying_diamond",
-    "bd_flying_diamond",
+    "bdx_flying_diamond",
+    "bdx_flying_diamond",
     "Flying diamond"
   },
   {
-    "bd_diamond_glued",
-    "bd_diamond_glued",
+    "bdx_diamond_glued",
+    "bdx_diamond_glued",
     "Glued diamond"
   },
   {
-    "bd_diamond_key",
-    "bd_diamond_key",
+    "bdx_diamond_key",
+    "bdx_diamond_key",
     "Diamond key"
   },
   {
-    "bd_trapped_diamond",
-    "bd_trapped_diamond",
+    "bdx_trapped_diamond",
+    "bdx_trapped_diamond",
     "Trapped diamond"
   },
   {
-    "bd_nut",
-    "bd_nut",
+    "bdx_nut",
+    "bdx_nut",
     "Nut"
   },
   {
-    "bd_amoeba_1",
-    "bd_amoeba",
+    "bdx_amoeba_1",
+    "bdx_amoeba",
     "Amoeba 1"
   },
   {
-    "bd_amoeba_2",
-    "bd_amoeba",
+    "bdx_amoeba_2",
+    "bdx_amoeba",
     "Amoeba 2"
   },
   {
-    "bd_bladder",
-    "bd_bladder",
+    "bdx_bladder",
+    "bdx_bladder",
     "Bladder"
   },
   {
-    "bd_bladder_spender",
-    "bd_bladder_spender",
+    "bdx_bladder_spender",
+    "bdx_bladder_spender",
     "Bladder spender"
   },
   {
-    "bd_creature_switch",
-    "bd_creature_switch",
+    "bdx_creature_switch",
+    "bdx_creature_switch",
     "Creature direction switch"
   },
   {
-    "bd_creature_switch.active",
-    "bd_creature_switch",
+    "bdx_creature_switch.active",
+    "bdx_creature_switch",
     "Creature direction switch (active)"
   },
   {
-    "bd_biter_switch_1",
-    "bd_biter_switch",
+    "bdx_biter_switch_1",
+    "bdx_biter_switch",
     "Biter switch"
   },
   {
-    "bd_biter_switch_2",
-    "bd_biter_switch",
+    "bdx_biter_switch_2",
+    "bdx_biter_switch",
     "Biter switch"
   },
   {
-    "bd_biter_switch_3",
-    "bd_biter_switch",
+    "bdx_biter_switch_3",
+    "bdx_biter_switch",
     "Biter switch"
   },
   {
-    "bd_biter_switch_4",
-    "bd_biter_switch",
+    "bdx_biter_switch_4",
+    "bdx_biter_switch",
     "Biter switch"
   },
   {
-    "bd_replicator",
-    "bd_replicator",
+    "bdx_replicator",
+    "bdx_replicator",
     "Replicator"
   },
   {
-    "bd_replicator.active",
-    "bd_replicator",
+    "bdx_replicator.active",
+    "bdx_replicator",
     "Replicator (active)"
   },
   {
-    "bd_replicator_switch",
-    "bd_replicator_switch",
+    "bdx_replicator_switch",
+    "bdx_replicator_switch",
     "Replicator switch"
   },
   {
-    "bd_replicator_switch.active",
-    "bd_replicator_switch",
+    "bdx_replicator_switch.active",
+    "bdx_replicator_switch",
     "Replicator switch (active)"
   },
   {
-    "bd_conveyor_left",
-    "bd_conveyor",
+    "bdx_conveyor_left",
+    "bdx_conveyor",
     "Conveyor belt (moving left)"
   },
   {
-    "bd_conveyor_left.active",
-    "bd_conveyor",
+    "bdx_conveyor_left.active",
+    "bdx_conveyor",
     "Conveyor belt (moving left) (active)"
   },
   {
-    "bd_conveyor_right",
-    "bd_conveyor",
+    "bdx_conveyor_right",
+    "bdx_conveyor",
     "Conveyor belt (moving right)"
   },
   {
-    "bd_conveyor_right.active",
-    "bd_conveyor",
+    "bdx_conveyor_right.active",
+    "bdx_conveyor",
     "Conveyor belt (moving right) (active)"
   },
   {
-    "bd_conveyor_switch",
-    "bd_conveyor_switch",
+    "bdx_conveyor_switch",
+    "bdx_conveyor_switch",
     "Conveyor belt power switch"
   },
   {
-    "bd_conveyor_switch.active",
-    "bd_conveyor_switch",
+    "bdx_conveyor_switch.active",
+    "bdx_conveyor_switch",
     "Conveyor belt power switch (active)"
   },
   {
-    "bd_conveyor_dir_switch",
-    "bd_conveyor_dir_switch",
+    "bdx_conveyor_dir_switch",
+    "bdx_conveyor_dir_switch",
     "Conveyor belt direction switch"
   },
   {
-    "bd_conveyor_dir_switch.active",
-    "bd_conveyor_dir_switch",
+    "bdx_conveyor_dir_switch.active",
+    "bdx_conveyor_dir_switch",
     "Conveyor belt direction switch (active)"
   },
   {
-    "bd_gravity_switch",
-    "bd_gravity_switch",
+    "bdx_gravity_switch",
+    "bdx_gravity_switch",
     "Gravity switch"
   },
   {
-    "bd_gravity_switch.active",
-    "bd_gravity_switch",
+    "bdx_gravity_switch.active",
+    "bdx_gravity_switch",
     "Gravity switch (active)"
   },
   {
-    "bd_acid",
-    "bd_acid",
+    "bdx_acid",
+    "bdx_acid",
     "Acid"
   },
   {
-    "bd_box",
-    "bd_box",
+    "bdx_box",
+    "bdx_box",
     "Box"
   },
   {
-    "bd_time_penalty",
-    "bd_time_penalty",
+    "bdx_time_penalty",
+    "bdx_time_penalty",
     "Time penalty"
   },
   {
-    "bd_gravestone",
-    "bd_gravestone",
+    "bdx_gravestone",
+    "bdx_gravestone",
     "Gravestone"
   },
   {
-    "bd_clock",
-    "bd_clock",
+    "bdx_clock",
+    "bdx_clock",
     "Clock"
   },
   {
-    "bd_pot",
-    "bd_pot",
+    "bdx_pot",
+    "bdx_pot",
     "Pot"
   },
   {
-    "bd_pneumatic_hammer",
-    "bd_pneumatic_hammer",
+    "bdx_pneumatic_hammer",
+    "bdx_pneumatic_hammer",
     "Pneumatic hammer"
   },
   {
-    "bd_teleporter",
-    "bd_teleporter",
+    "bdx_teleporter",
+    "bdx_teleporter",
     "Teleporter"
   },
   {
-    "bd_skeleton",
-    "bd_skeleton",
+    "bdx_skeleton",
+    "bdx_skeleton",
     "Skeleton"
   },
   {
-    "bd_water",
-    "bd_water",
+    "bdx_water",
+    "bdx_water",
     "Water"
   },
   {
-    "bd_key_1",
-    "bd_key",
+    "bdx_key_1",
+    "bdx_key",
     "Key 1"
     },
   {
-    "bd_key_2",
-    "bd_key",
+    "bdx_key_2",
+    "bdx_key",
     "Key 2"
     },
   {
-    "bd_key_3",
-    "bd_key",
+    "bdx_key_3",
+    "bdx_key",
     "Key 3"
   },
   {
-    "bd_gate_1",
-    "bd_gate",
+    "bdx_gate_1",
+    "bdx_gate",
     "Door 1"
   },
   {
-    "bd_gate_2",
-    "bd_gate",
+    "bdx_gate_2",
+    "bdx_gate",
     "Door 2"
   },
   {
-    "bd_gate_3",
-    "bd_gate",
+    "bdx_gate_3",
+    "bdx_gate",
     "Door 3"
   },
   {
-    "bd_lava",
-    "bd_lava",
+    "bdx_lava",
+    "bdx_lava",
     "Lava"
   },
   {
-    "bd_sweet",
-    "bd_sweet",
+    "bdx_sweet",
+    "bdx_sweet",
     "Sweet"
   },
   {
-    "bd_voodoo_doll",
-    "bd_voodoo_doll",
+    "bdx_voodoo_doll",
+    "bdx_voodoo_doll",
     "Voodoo doll"
   },
   {
-    "bd_slime",
-    "bd_slime",
+    "bdx_slime",
+    "bdx_slime",
     "Slime"
   },
   {
-    "bd_waiting_rock",
-    "bd_waiting_rock",
+    "bdx_waiting_rock",
+    "bdx_waiting_rock",
     "Waiting rock"
   },
   {
-    "bd_chasing_rock",
-    "bd_chasing_rock",
+    "bdx_chasing_rock",
+    "bdx_chasing_rock",
     "Chasing rock"
   },
   {
-    "bd_ghost",
-    "bd_ghost",
+    "bdx_ghost",
+    "bdx_ghost",
     "Ghost"
   },
   {
-    "bd_cow",
-    "bd_cow",
+    "bdx_cow",
+    "bdx_cow",
     "Cow (random start direction)"
   },
   {
-    "bd_cow.left",
-    "bd_cow",
+    "bdx_cow.left",
+    "bdx_cow",
     "Cow (starts moving left)"
   },
   {
-    "bd_cow.up",
-    "bd_cow",
+    "bdx_cow.up",
+    "bdx_cow",
     "Cow (starts moving up)"
   },
   {
-    "bd_cow.right",
-    "bd_cow",
+    "bdx_cow.right",
+    "bdx_cow",
     "Cow (starts moving right)"
   },
   {
-    "bd_cow.down",
-    "bd_cow",
+    "bdx_cow.down",
+    "bdx_cow",
     "Cow (starts moving down)"
   },
   {
-    "bd_butterfly_1",
-    "bd_butterfly",
+    "bdx_butterfly_1",
+    "bdx_butterfly",
     "Butterfly 1 (random start direction)"
   },
   {
-    "bd_butterfly_1.right",
-    "bd_butterfly",
+    "bdx_butterfly_1.right",
+    "bdx_butterfly",
     "Butterfly 1 (starts moving right)"
   },
   {
-    "bd_butterfly_1.up",
-    "bd_butterfly",
+    "bdx_butterfly_1.up",
+    "bdx_butterfly",
     "Butterfly 1 (starts moving up)"
   },
   {
-    "bd_butterfly_1.left",
-    "bd_butterfly",
+    "bdx_butterfly_1.left",
+    "bdx_butterfly",
     "Butterfly 1 (starts moving left)"
   },
   {
-    "bd_butterfly_1.down",
-    "bd_butterfly",
+    "bdx_butterfly_1.down",
+    "bdx_butterfly",
     "Butterfly 1 (starts moving down)"
   },
   {
-    "bd_butterfly_2",
-    "bd_butterfly",
+    "bdx_butterfly_2",
+    "bdx_butterfly",
     "Butterfly 2 (random start direction)"
   },
   {
-    "bd_butterfly_2.right",
-    "bd_butterfly",
+    "bdx_butterfly_2.right",
+    "bdx_butterfly",
     "Butterfly 2 (starts moving right)"
   },
   {
-    "bd_butterfly_2.up",
-    "bd_butterfly",
+    "bdx_butterfly_2.up",
+    "bdx_butterfly",
     "Butterfly 2 (starts moving up)"
   },
   {
-    "bd_butterfly_2.left",
-    "bd_butterfly",
+    "bdx_butterfly_2.left",
+    "bdx_butterfly",
     "Butterfly 2 (starts moving left)"
   },
   {
-    "bd_butterfly_2.down",
-    "bd_butterfly",
+    "bdx_butterfly_2.down",
+    "bdx_butterfly",
     "Butterfly 2 (starts moving down)"
   },
   {
-    "bd_firefly_1",
-    "bd_firefly",
+    "bdx_firefly_1",
+    "bdx_firefly",
     "Firefly 1 (random start direction)"
   },
   {
-    "bd_firefly_1.right",
-    "bd_firefly",
+    "bdx_firefly_1.right",
+    "bdx_firefly",
     "Firefly 1 (starts moving right)"
   },
   {
-    "bd_firefly_1.up",
-    "bd_firefly",
+    "bdx_firefly_1.up",
+    "bdx_firefly",
     "Firefly 1 (starts moving up)"
   },
   {
-    "bd_firefly_1.left",
-    "bd_firefly",
+    "bdx_firefly_1.left",
+    "bdx_firefly",
     "Firefly 1 (starts moving left)"
   },
   {
-    "bd_firefly_1.down",
-    "bd_firefly",
+    "bdx_firefly_1.down",
+    "bdx_firefly",
     "Firefly 1 (starts moving down)"
   },
   {
-    "bd_firefly_2",
-    "bd_firefly",
+    "bdx_firefly_2",
+    "bdx_firefly",
     "Firefly 2 (random start direction)"
   },
   {
-    "bd_firefly_2.right",
-    "bd_firefly",
+    "bdx_firefly_2.right",
+    "bdx_firefly",
     "Firefly 2 (starts moving right)"
   },
   {
-    "bd_firefly_2.up",
-    "bd_firefly",
+    "bdx_firefly_2.up",
+    "bdx_firefly",
     "Firefly 2 (starts moving up)"
   },
   {
-    "bd_firefly_2.left",
-    "bd_firefly",
+    "bdx_firefly_2.left",
+    "bdx_firefly",
     "Firefly 2 (starts moving left)"
   },
   {
-    "bd_firefly_2.down",
-    "bd_firefly",
+    "bdx_firefly_2.down",
+    "bdx_firefly",
     "Firefly 2 (starts moving down)"
   },
   {
-    "bd_stonefly",
-    "bd_stonefly",
+    "bdx_stonefly",
+    "bdx_stonefly",
     "Stonefly (random start direction)"
   },
   {
-    "bd_stonefly.right",
-    "bd_stonefly",
+    "bdx_stonefly.right",
+    "bdx_stonefly",
     "Stonefly (starts moving right)"
   },
   {
-    "bd_stonefly.up",
-    "bd_stonefly",
+    "bdx_stonefly.up",
+    "bdx_stonefly",
     "Stonefly (starts moving up)"
   },
   {
-    "bd_stonefly.left",
-    "bd_stonefly",
+    "bdx_stonefly.left",
+    "bdx_stonefly",
     "Stonefly (starts moving left)"
   },
   {
-    "bd_stonefly.down",
-    "bd_stonefly",
+    "bdx_stonefly.down",
+    "bdx_stonefly",
     "Stonefly (starts moving down)"
   },
   {
-    "bd_biter",
-    "bd_biter",
+    "bdx_biter",
+    "bdx_biter",
     "Biter (random start direction)"
   },
   {
-    "bd_biter.right",
-    "bd_biter",
+    "bdx_biter.right",
+    "bdx_biter",
     "Biter (starts moving right)"
   },
   {
-    "bd_biter.up",
-    "bd_biter",
+    "bdx_biter.up",
+    "bdx_biter",
     "Biter (starts moving up)"
   },
   {
-    "bd_biter.left",
-    "bd_biter",
+    "bdx_biter.left",
+    "bdx_biter",
     "Biter (starts moving left)"
   },
   {
-    "bd_biter.down",
-    "bd_biter",
+    "bdx_biter.down",
+    "bdx_biter",
     "Biter (starts moving down)"
   },
   {
-    "bd_dragonfly",
-    "bd_dragonfly",
+    "bdx_dragonfly",
+    "bdx_dragonfly",
     "Dragonfly (random start direction)"
   },
   {
-    "bd_dragonfly.right",
-    "bd_dragonfly",
+    "bdx_dragonfly.right",
+    "bdx_dragonfly",
     "Dragonfly (starts moving right)"
   },
   {
-    "bd_dragonfly.up",
-    "bd_dragonfly",
+    "bdx_dragonfly.up",
+    "bdx_dragonfly",
     "Dragonfly (starts moving up)"
   },
   {
-    "bd_dragonfly.left",
-    "bd_dragonfly",
+    "bdx_dragonfly.left",
+    "bdx_dragonfly",
     "Dragonfly (starts moving left)"
   },
   {
-    "bd_dragonfly.down",
-    "bd_dragonfly",
+    "bdx_dragonfly.down",
+    "bdx_dragonfly",
     "Dragonfly (starts moving down)"
   },
   {
-    "bd_bomb",
-    "bd_bomb",
+    "bdx_bomb",
+    "bdx_bomb",
     "Bomb"
   },
   {
-    "bd_nitro_pack",
-    "bd_nitro_pack",
+    "bdx_nitro_pack",
+    "bdx_nitro_pack",
     "Nitro pack"
   },
   {
-    "bd_player",
-    "bd_player",
+    "bdx_player",
+    "bdx_player",
     "Player"
   },
   {
-    "bd_player_with_bomb",
-    "bd_player",
+    "bdx_player_with_bomb",
+    "bdx_player",
     "Player with bomb",
   },
   {
-    "bd_player_with_rocket_launcher",
-    "bd_player",
+    "bdx_player_with_rocket_launcher",
+    "bdx_player",
     "Player with rocket launcher",
   },
   {
-    "bd_player_glued",
-    "bd_player",
+    "bdx_player_glued",
+    "bdx_player",
     "Glued player",
   },
   {
-    "bd_player_stirring",
-    "bd_player",
+    "bdx_player_stirring",
+    "bdx_player",
     "Stirring player"
   },
   {
-    "bd_rocket_launcher",
-    "bd_rocket_launcher",
+    "bdx_rocket_launcher",
+    "bdx_rocket_launcher",
     "Rocket launcher",
   },
   {
-    "bd_rocket",
-    "bd_rocket",
+    "bdx_rocket",
+    "bdx_rocket",
     "Rocket",
   },
   {
-    "bd_rocket.right",
-    "bd_rocket",
+    "bdx_rocket.right",
+    "bdx_rocket",
     "Rocket (starts moving right)"
   },
   {
-    "bd_rocket.up",
-    "bd_rocket",
+    "bdx_rocket.up",
+    "bdx_rocket",
     "Rocket (starts moving up)"
   },
   {
-    "bd_rocket.left",
-    "bd_rocket",
+    "bdx_rocket.left",
+    "bdx_rocket",
     "Rocket (starts moving left)"
   },
   {
-    "bd_rocket.down",
-    "bd_rocket",
+    "bdx_rocket.down",
+    "bdx_rocket",
     "Rocket (starts moving down)"
   },
   {
-    "bd_fake_bonus",
-    "bd_fake_bonus",
+    "bdx_fake_bonus",
+    "bdx_fake_bonus",
     "Fake bonus"
   },
   {
-    "bd_covered",
-    "bd_covered",
+    "bdx_covered",
+    "bdx_covered",
     "Covered"
   },
   {
-    "bd_wall_native",
+    "bdx_wall",
     "wall",
     "Normal wall"
   },
   {
-    "bd_rock_native",
-    "bd_rock",
+    "bdx_rock",
+    "bdx_rock",
     "Rock"
   },
   {
-    "bd_diamond_native",
-    "bd_diamond",
+    "bdx_diamond",
+    "bdx_diamond",
     "Diamond"
   },
   {
-    "bd_magic_wall_native",
-    "bd_magic_wall",
+    "bdx_magic_wall",
+    "bdx_magic_wall",
     "Magic wall"
   },
   {
-    "bd_sand_ball.falling",
-    "bd_sand_ball",
+    "bdx_sand_ball.falling",
+    "bdx_sand_ball",
     "Sand ball (falling)"
   },
   {
-    "bd_sand_loose.falling",
-    "bd_sand_loose",
+    "bdx_sand_loose.falling",
+    "bdx_sand_loose",
     "Loose sand (falling)"
   },
   {
-    "bd_rock_native.falling",
-    "bd_rock",
+    "bdx_rock.falling",
+    "bdx_rock",
     "Rock (falling)"
   },
   {
-    "bd_flying_rock.flying",
-    "bd_flying_rock",
+    "bdx_flying_rock.flying",
+    "bdx_flying_rock",
     "Flying rock (flying)"
   },
   {
-    "bd_mega_rock.falling",
-    "bd_mega_rock",
+    "bdx_mega_rock.falling",
+    "bdx_mega_rock",
     "Mega rock (falling)"
   },
   {
-    "bd_diamond_native.falling",
-    "bd_diamond",
+    "bdx_diamond.falling",
+    "bdx_diamond",
     "Diamond (falling)"
   },
   {
-    "bd_flying_diamond.flying",
-    "bd_flying_diamond",
+    "bdx_flying_diamond.flying",
+    "bdx_flying_diamond",
     "Flying diamond (flying)"
   },
   {
-    "bd_nut.falling",
-    "bd_nut",
+    "bdx_nut.falling",
+    "bdx_nut",
     "Nut (falling)"
   },
   {
-    "bd_falling_wall.falling",
-    "bd_wall",
+    "bdx_falling_wall.falling",
+    "bdx_wall",
     "Falling wall (falling)"
   },
   {
-    "bd_nitro_pack.falling",
-    "bd_nitro_pack",
+    "bdx_nitro_pack.falling",
+    "bdx_nitro_pack",
     "Nitro pack (falling)"
   },
   {
-    "bd_water_1",
-    "bd_water",
+    "bdx_water_1",
+    "bdx_water",
     "Water (1)"
   },
   {
-    "bd_water_2",
-    "bd_water",
+    "bdx_water_2",
+    "bdx_water",
     "Water (2)"
   },
   {
-    "bd_water_3",
-    "bd_water",
+    "bdx_water_3",
+    "bdx_water",
     "Water (3)"
   },
   {
-    "bd_water_4",
-    "bd_water",
+    "bdx_water_4",
+    "bdx_water",
     "Water (4)"
   },
   {
-    "bd_water_5",
-    "bd_water",
+    "bdx_water_5",
+    "bdx_water",
     "Water (5)"
   },
   {
-    "bd_water_6",
-    "bd_water",
+    "bdx_water_6",
+    "bdx_water",
     "Water (6)"
   },
   {
-    "bd_water_7",
-    "bd_water",
+    "bdx_water_7",
+    "bdx_water",
     "Water (7)"
   },
   {
-    "bd_water_8",
-    "bd_water",
+    "bdx_water_8",
+    "bdx_water",
     "Water (8)"
   },
   {
-    "bd_water_9",
-    "bd_water",
+    "bdx_water_9",
+    "bdx_water",
     "Water (9)"
   },
   {
-    "bd_water_10",
-    "bd_water",
+    "bdx_water_10",
+    "bdx_water",
     "Water (10)"
   },
   {
-    "bd_water_11",
-    "bd_water",
+    "bdx_water_11",
+    "bdx_water",
     "Water (11)"
   },
   {
-    "bd_water_12",
-    "bd_water",
+    "bdx_water_12",
+    "bdx_water",
     "Water (12)"
   },
   {
-    "bd_water_13",
-    "bd_water",
+    "bdx_water_13",
+    "bdx_water",
     "Water (13)"
   },
   {
-    "bd_water_14",
-    "bd_water",
+    "bdx_water_14",
+    "bdx_water",
     "Water (14)"
   },
   {
-    "bd_water_15",
-    "bd_water",
+    "bdx_water_15",
+    "bdx_water",
     "Water (15)"
   },
   {
-    "bd_water_16",
-    "bd_water",
+    "bdx_water_16",
+    "bdx_water",
     "Water (16)"
   },
   {
-    "bd_cow_enclosed_1",
-    "bd_cow",
+    "bdx_cow_enclosed_1",
+    "bdx_cow",
     "Enclosed cow (1)"
   },
   {
-    "bd_cow_enclosed_2",
-    "bd_cow",
+    "bdx_cow_enclosed_2",
+    "bdx_cow",
     "Enclosed cow (2)"
   },
   {
-    "bd_cow_enclosed_3",
-    "bd_cow",
+    "bdx_cow_enclosed_3",
+    "bdx_cow",
     "Enclosed cow (3)"
   },
   {
-    "bd_cow_enclosed_4",
-    "bd_cow",
+    "bdx_cow_enclosed_4",
+    "bdx_cow",
     "Enclosed cow (4)"
   },
   {
-    "bd_cow_enclosed_5",
-    "bd_cow",
+    "bdx_cow_enclosed_5",
+    "bdx_cow",
     "Enclosed cow (5)"
   },
   {
-    "bd_cow_enclosed_6",
-    "bd_cow",
+    "bdx_cow_enclosed_6",
+    "bdx_cow",
     "Enclosed cow (6)"
   },
   {
-    "bd_cow_enclosed_7",
-    "bd_cow",
+    "bdx_cow_enclosed_7",
+    "bdx_cow",
     "Enclosed cow (7)"
   },
   {
-    "bd_bladder_1",
-    "bd_bladder",
+    "bdx_bladder_1",
+    "bdx_bladder",
     "Bladder (1)"
   },
   {
-    "bd_bladder_2",
-    "bd_bladder",
+    "bdx_bladder_2",
+    "bdx_bladder",
     "Bladder (2)"
   },
   {
-    "bd_bladder_3",
-    "bd_bladder",
+    "bdx_bladder_3",
+    "bdx_bladder",
     "Bladder (3)"
   },
   {
-    "bd_bladder_4",
-    "bd_bladder",
+    "bdx_bladder_4",
+    "bdx_bladder",
     "Bladder (4)"
   },
   {
-    "bd_bladder_5",
-    "bd_bladder",
+    "bdx_bladder_5",
+    "bdx_bladder",
     "Bladder (5)"
   },
   {
-    "bd_bladder_6",
-    "bd_bladder",
+    "bdx_bladder_6",
+    "bdx_bladder",
     "Bladder (6)"
   },
   {
-    "bd_bladder_7",
-    "bd_bladder",
+    "bdx_bladder_7",
+    "bdx_bladder",
     "Bladder (7)"
   },
   {
-    "bd_bladder_8",
-    "bd_bladder",
+    "bdx_bladder_8",
+    "bdx_bladder",
     "Bladder (8)"
   },
   {
-    "bd_player.growing_1",
-    "bd_player",
+    "bdx_player.growing_1",
+    "bdx_player",
     "Player birth (1)"
   },
   {
-    "bd_player.growing_2",
-    "bd_player",
+    "bdx_player.growing_2",
+    "bdx_player",
     "Player birth (2)"
   },
   {
-    "bd_player.growing_3",
-    "bd_player",
+    "bdx_player.growing_3",
+    "bdx_player",
     "Player birth (3)"
   },
   {
-    "bd_bomb.ticking_1",
-    "bd_bomb",
+    "bdx_bomb.ticking_1",
+    "bdx_bomb",
     "Ticking bomb (1)"
   },
   {
-    "bd_bomb.ticking_2",
-    "bd_bomb",
+    "bdx_bomb.ticking_2",
+    "bdx_bomb",
     "Ticking bomb (2)"
   },
   {
-    "bd_bomb.ticking_3",
-    "bd_bomb",
+    "bdx_bomb.ticking_3",
+    "bdx_bomb",
     "Ticking bomb (3)"
   },
   {
-    "bd_bomb.ticking_4",
-    "bd_bomb",
+    "bdx_bomb.ticking_4",
+    "bdx_bomb",
     "Ticking bomb (4)"
   },
   {
-    "bd_bomb.ticking_5",
-    "bd_bomb",
+    "bdx_bomb.ticking_5",
+    "bdx_bomb",
     "Ticking bomb (5)"
   },
   {
-    "bd_bomb.ticking_6",
-    "bd_bomb",
+    "bdx_bomb.ticking_6",
+    "bdx_bomb",
     "Ticking bomb (6)"
   },
   {
-    "bd_bomb.ticking_7",
-    "bd_bomb",
+    "bdx_bomb.ticking_7",
+    "bdx_bomb",
     "Ticking bomb (7)"
   },
   {
-    "bd_clock.growing_1",
-    "bd_clock",
+    "bdx_clock.growing_1",
+    "bdx_clock",
     "Clock birth (1)"
   },
   {
-    "bd_clock.growing_2",
-    "bd_clock",
+    "bdx_clock.growing_2",
+    "bdx_clock",
     "Clock birth (2)"
   },
   {
-    "bd_clock.growing_3",
-    "bd_clock",
+    "bdx_clock.growing_3",
+    "bdx_clock",
     "Clock birth (3)"
   },
   {
-    "bd_clock.growing_4",
-    "bd_clock",
+    "bdx_clock.growing_4",
+    "bdx_clock",
     "Clock birth (4)"
   },
   {
-    "bd_diamond_native.growing_1",
-    "bd_diamond",
+    "bdx_diamond.growing_1",
+    "bdx_diamond",
     "Diamond birth (1)"
   },
   {
-    "bd_diamond_native.growing_2",
-    "bd_diamond",
+    "bdx_diamond.growing_2",
+    "bdx_diamond",
     "Diamond birth (2)"
   },
   {
-    "bd_diamond_native.growing_3",
-    "bd_diamond",
+    "bdx_diamond.growing_3",
+    "bdx_diamond",
     "Diamond birth (3)"
   },
   {
-    "bd_diamond_native.growing_4",
-    "bd_diamond",
+    "bdx_diamond.growing_4",
+    "bdx_diamond",
     "Diamond birth (4)"
   },
   {
-    "bd_diamond_native.growing_5",
-    "bd_diamond",
+    "bdx_diamond.growing_5",
+    "bdx_diamond",
     "Diamond birth (5)"
   },
   {
-    "bd_exploding_1",
-    "bd_exploding",
+    "bdx_exploding_1",
+    "bdx_exploding",
     "Explosion (1)"
   },
   {
-    "bd_exploding_2",
-    "bd_exploding",
+    "bdx_exploding_2",
+    "bdx_exploding",
     "Explosion (2)"
   },
   {
-    "bd_exploding_3",
-    "bd_exploding",
+    "bdx_exploding_3",
+    "bdx_exploding",
     "Explosion (3)"
   },
   {
-    "bd_exploding_4",
-    "bd_exploding",
+    "bdx_exploding_4",
+    "bdx_exploding",
     "Explosion (4)"
   },
   {
-    "bd_exploding_5",
-    "bd_exploding",
+    "bdx_exploding_5",
+    "bdx_exploding",
     "Explosion (5)"
   },
   {
-    "bd_rock_native.growing_1",
-    "bd_rock",
+    "bdx_rock.growing_1",
+    "bdx_rock",
     "Rock birth (1)"
   },
   {
-    "bd_rock_native.growing_2",
-    "bd_rock",
+    "bdx_rock.growing_2",
+    "bdx_rock",
     "Rock birth (2)"
   },
   {
-    "bd_rock_native.growing_3",
-    "bd_rock",
+    "bdx_rock.growing_3",
+    "bdx_rock",
     "Rock birth (3)"
   },
   {
-    "bd_rock_native.growing_4",
-    "bd_rock",
+    "bdx_rock.growing_4",
+    "bdx_rock",
     "Rock birth (4)"
   },
   {
-    "bd_steelwall.growing_1",
-    "bd_steelwall",
+    "bdx_steelwall.growing_1",
+    "bdx_steelwall",
     "Steelwall birth (1)"
   },
   {
-    "bd_steelwall.growing_2",
-    "bd_steelwall",
+    "bdx_steelwall.growing_2",
+    "bdx_steelwall",
     "Steelwall birth (2)"
   },
   {
-    "bd_steelwall.growing_3",
-    "bd_steelwall",
+    "bdx_steelwall.growing_3",
+    "bdx_steelwall",
     "Steelwall birth (3)"
   },
   {
-    "bd_steelwall.growing_4",
-    "bd_steelwall",
+    "bdx_steelwall.growing_4",
+    "bdx_steelwall",
     "Steelwall birth (4)"
   },
   {
-    "bd_ghost.exploding_1",
-    "bd_ghost",
+    "bdx_ghost.exploding_1",
+    "bdx_ghost",
     "Ghost explosion (1)"
   },
   {
-    "bd_ghost.exploding_2",
-    "bd_ghost",
+    "bdx_ghost.exploding_2",
+    "bdx_ghost",
     "Ghost explosion (2)"
   },
   {
-    "bd_ghost.exploding_3",
-    "bd_ghost",
+    "bdx_ghost.exploding_3",
+    "bdx_ghost",
     "Ghost explosion (3)"
   },
   {
-    "bd_ghost.exploding_4",
-    "bd_ghost",
+    "bdx_ghost.exploding_4",
+    "bdx_ghost",
     "Ghost explosion (4)"
   },
   {
-    "bd_bomb.exploding_1",
-    "bd_bomb",
+    "bdx_bomb.exploding_1",
+    "bdx_bomb",
     "Bomb explosion (1)"
   },
   {
-    "bd_bomb.exploding_2",
-    "bd_bomb",
+    "bdx_bomb.exploding_2",
+    "bdx_bomb",
     "Bomb explosion (2)"
   },
   {
-    "bd_bomb.exploding_3",
-    "bd_bomb",
+    "bdx_bomb.exploding_3",
+    "bdx_bomb",
     "Bomb explosion (3)"
   },
   {
-    "bd_bomb.exploding_4",
-    "bd_bomb",
+    "bdx_bomb.exploding_4",
+    "bdx_bomb",
     "Bomb explosion (4)"
   },
   {
-    "bd_nitro_pack.exploding",
-    "bd_nitro_pack",
+    "bdx_nitro_pack.exploding",
+    "bdx_nitro_pack",
     "Nitro pack (triggered)"
   },
   {
-    "bd_nitro_pack.exploding_1",
-    "bd_nitro_pack",
+    "bdx_nitro_pack.exploding_1",
+    "bdx_nitro_pack",
     "Nitro pack explosion (1)"
   },
   {
-    "bd_nitro_pack.exploding_2",
-    "bd_nitro_pack",
+    "bdx_nitro_pack.exploding_2",
+    "bdx_nitro_pack",
     "Nitro pack explosion (2)"
   },
   {
-    "bd_nitro_pack.exploding_3",
-    "bd_nitro_pack",
+    "bdx_nitro_pack.exploding_3",
+    "bdx_nitro_pack",
     "Nitro pack explosion (3)"
   },
   {
-    "bd_nitro_pack.exploding_4",
-    "bd_nitro_pack",
+    "bdx_nitro_pack.exploding_4",
+    "bdx_nitro_pack",
     "Nitro pack explosion (4)"
   },
   {
-    "bd_amoeba_2.exploding_1",
-    "bd_amoeba",
+    "bdx_amoeba_2.exploding_1",
+    "bdx_amoeba",
     "Amoeba 2 explosion (1)"
   },
   {
-    "bd_amoeba_2.exploding_2",
-    "bd_amoeba",
+    "bdx_amoeba_2.exploding_2",
+    "bdx_amoeba",
     "Amoeba 2 explosion (2)"
   },
   {
-    "bd_amoeba_2.exploding_3",
-    "bd_amoeba",
+    "bdx_amoeba_2.exploding_3",
+    "bdx_amoeba",
     "Amoeba 2 explosion (3)"
   },
   {
-    "bd_amoeba_2.exploding_4",
-    "bd_amoeba",
+    "bdx_amoeba_2.exploding_4",
+    "bdx_amoeba",
     "Amoeba 2 explosion (4)"
   },
   {
-    "bd_nut.breaking_1",
-    "bd_nut",
+    "bdx_nut.breaking_1",
+    "bdx_nut",
     "Nut explosion (1)"
   },
   {
-    "bd_nut.breaking_2",
-    "bd_nut",
+    "bdx_nut.breaking_2",
+    "bdx_nut",
     "Nut explosion (2)"
   },
   {
-    "bd_nut.breaking_3",
-    "bd_nut",
+    "bdx_nut.breaking_3",
+    "bdx_nut",
     "Nut explosion (3)"
   },
   {
-    "bd_nut.breaking_4",
-    "bd_nut",
+    "bdx_nut.breaking_4",
+    "bdx_nut",
     "Nut explosion (4)"
   },
 
@@ -8134,7 +8134,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Active mine"
   },
   {
-    "bd_magic_wall_native.active",
+    "bdx_magic_wall.active",
     "magic_wall",
     "-"
   },
@@ -8399,8 +8399,8 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
-    "[bd_native_default]",
-    "bd_native_default",
+    "[bdx_default]",
+    "bdx_default",
     "-"
   },
   {
@@ -8459,7 +8459,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "-"
   },
   {
-    "bd_game_graphics_color_template",
+    "bdx_game_graphics_color_template",
     "-",
     "-"
   },
@@ -8494,22 +8494,22 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Hide Boulder Dash elements"
   },
   {
-    "internal_cascade_bd_native",
+    "internal_cascade_bdx",
     "internal",
     "Show Boulder Dash native elements"
   },
   {
-    "internal_cascade_bd_native.active",
+    "internal_cascade_bdx.active",
     "internal",
     "Hide Boulder Dash native elements"
   },
   {
-    "internal_cascade_bd_effects",
+    "internal_cascade_bdx_effects",
     "internal",
     "Show Boulder Dash effects elements"
   },
   {
-    "internal_cascade_bd_effects.active",
+    "internal_cascade_bdx_effects.active",
     "internal",
     "Hide Boulder Dash effects elements"
   },

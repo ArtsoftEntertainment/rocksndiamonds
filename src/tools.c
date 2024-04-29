@@ -3856,9 +3856,9 @@ static void PreparePreviewTileBitmap(void)
   int scale_down_factor = original_tilesize / preview.tile_size;
   Bitmap *src_bitmap;
   int src_x, src_y;
-  int element_template = EL_BD_GAME_GRAPHICS_COLOR_TEMPLATE;
+  int element_template = EL_BDX_GAME_GRAPHICS_COLOR_TEMPLATE;
   int graphic_template = el2preimg(element_template);
-  int element_default = EL_BD_ROCK_NATIVE;
+  int element_default = EL_BDX_ROCK;
   int graphic_default = el2preimg(element_default);
 
   // create special preview bitmap and scale it down to preview tile size
@@ -6029,11 +6029,11 @@ static int getEngineElement_Ext(int element, int game_engine_type, boolean is_dr
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
     el_empty		= EL_EMPTY;
-    el_player		= EL_BD_PLAYER;
-    el_sand		= EL_BD_SAND_1;
-    el_wall		= EL_BD_WALL_NATIVE;
-    el_steelwall	= EL_BD_STEELWALL;
-    el_exit_closed	= EL_BD_EXIT_CLOSED;
+    el_player		= EL_BDX_PLAYER;
+    el_sand		= EL_BDX_SAND_1;
+    el_wall		= EL_BDX_WALL;
+    el_steelwall	= EL_BDX_STEELWALL;
+    el_exit_closed	= EL_BDX_EXIT_CLOSED;
   }
   else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
@@ -6158,1011 +6158,1011 @@ bd_object_mapping_list[] =
   },
   {
     O_DIRT,					TRUE,
-    EL_BD_SAND_1,				-1, -1
+    EL_BDX_SAND_1,				-1, -1
   },
   {
     O_DIRT_SLOPED_UP_RIGHT,			TRUE,
-    EL_BD_SAND_SLOPED_UP_RIGHT,			-1, -1
+    EL_BDX_SAND_SLOPED_UP_RIGHT,		-1, -1
   },
   {
     O_DIRT_SLOPED_UP_LEFT,			TRUE,
-    EL_BD_SAND_SLOPED_UP_LEFT,			-1, -1
+    EL_BDX_SAND_SLOPED_UP_LEFT,			-1, -1
   },
   {
     O_DIRT_SLOPED_DOWN_LEFT,			TRUE,
-    EL_BD_SAND_SLOPED_DOWN_LEFT,		-1, -1
+    EL_BDX_SAND_SLOPED_DOWN_LEFT,		-1, -1
   },
   {
     O_DIRT_SLOPED_DOWN_RIGHT,			TRUE,
-    EL_BD_SAND_SLOPED_DOWN_RIGHT,		-1, -1
+    EL_BDX_SAND_SLOPED_DOWN_RIGHT,		-1, -1
   },
   {
     O_DIRT_BALL,				TRUE,
-    EL_BD_SAND_BALL,				-1, -1
+    EL_BDX_SAND_BALL,				-1, -1
   },
   {
     O_DIRT_BALL_F,				TRUE,
-    EL_BD_SAND_BALL_FALLING,			-1, -1
+    EL_BDX_SAND_BALL_FALLING,			-1, -1
   },
   {
     O_DIRT_BALL_F,				FALSE,
-    EL_BD_SAND_BALL,				ACTION_FALLING, -1
+    EL_BDX_SAND_BALL,				ACTION_FALLING, -1
   },
   {
     O_DIRT_LOOSE,				TRUE,
-    EL_BD_SAND_LOOSE,				-1, -1
+    EL_BDX_SAND_LOOSE,				-1, -1
   },
   {
     O_DIRT_LOOSE_F,				TRUE,
-    EL_BD_SAND_LOOSE_FALLING,			-1, -1
+    EL_BDX_SAND_LOOSE_FALLING,			-1, -1
   },
   {
     O_DIRT_LOOSE_F,				FALSE,
-    EL_BD_SAND_LOOSE,				ACTION_FALLING, -1
+    EL_BDX_SAND_LOOSE,				ACTION_FALLING, -1
   },
   {
     O_DIRT2,					TRUE,
-    EL_BD_SAND_2,				-1, -1
+    EL_BDX_SAND_2,				-1, -1
   },
   {
     O_BRICK,					TRUE,
-    EL_BD_WALL_NATIVE,				-1, -1
+    EL_BDX_WALL,				-1, -1
   },
   {
     O_BRICK_SLOPED_UP_RIGHT,			TRUE,
-    EL_BD_WALL_SLOPED_UP_RIGHT,			-1, -1
+    EL_BDX_WALL_SLOPED_UP_RIGHT,		-1, -1
   },
   {
     O_BRICK_SLOPED_UP_LEFT,			TRUE,
-    EL_BD_WALL_SLOPED_UP_LEFT,			-1, -1
+    EL_BDX_WALL_SLOPED_UP_LEFT,			-1, -1
   },
   {
     O_BRICK_SLOPED_DOWN_LEFT,			TRUE,
-    EL_BD_WALL_SLOPED_DOWN_LEFT,		-1, -1
+    EL_BDX_WALL_SLOPED_DOWN_LEFT,		-1, -1
   },
   {
     O_BRICK_SLOPED_DOWN_RIGHT,			TRUE,
-    EL_BD_WALL_SLOPED_DOWN_RIGHT,		-1, -1
+    EL_BDX_WALL_SLOPED_DOWN_RIGHT,		-1, -1
   },
   {
     O_BRICK_NON_SLOPED,				TRUE,
-    EL_BD_WALL_NON_SLOPED,			-1, -1
+    EL_BDX_WALL_NON_SLOPED,			-1, -1
   },
   {
     O_MAGIC_WALL,				TRUE,
-    EL_BD_MAGIC_WALL_NATIVE,			ACTION_ACTIVE, -1
+    EL_BDX_MAGIC_WALL,				ACTION_ACTIVE, -1
   },
   {
     O_PRE_OUTBOX,				TRUE,
-    EL_BD_EXIT_CLOSED,				-1, -1
+    EL_BDX_EXIT_CLOSED,				-1, -1
   },
   {
     O_OUTBOX,					TRUE,
-    EL_BD_EXIT_OPEN,				-1, -1
+    EL_BDX_EXIT_OPEN,				-1, -1
   },
   {
     O_PRE_INVIS_OUTBOX,				TRUE,
-    EL_BD_INVISIBLE_EXIT_CLOSED,		-1, -1
+    EL_BDX_INVISIBLE_EXIT_CLOSED,		-1, -1
   },
   {
     O_INVIS_OUTBOX,				TRUE,
-    EL_BD_INVISIBLE_EXIT_OPEN,			-1, -1
+    EL_BDX_INVISIBLE_EXIT_OPEN,			-1, -1
   },
   {
     O_STEEL,					TRUE,
-    EL_BD_STEELWALL,				-1, -1
+    EL_BDX_STEELWALL,				-1, -1
   },
   {
     O_STEEL_SLOPED_UP_RIGHT,			TRUE,
-    EL_BD_STEELWALL_SLOPED_UP_RIGHT,		-1, -1
+    EL_BDX_STEELWALL_SLOPED_UP_RIGHT,		-1, -1
   },
   {
     O_STEEL_SLOPED_UP_LEFT,			TRUE,
-    EL_BD_STEELWALL_SLOPED_UP_LEFT,		-1, -1
+    EL_BDX_STEELWALL_SLOPED_UP_LEFT,		-1, -1
   },
   {
     O_STEEL_SLOPED_DOWN_LEFT,			TRUE,
-    EL_BD_STEELWALL_SLOPED_DOWN_LEFT,		-1, -1
+    EL_BDX_STEELWALL_SLOPED_DOWN_LEFT,		-1, -1
   },
   {
     O_STEEL_SLOPED_DOWN_RIGHT,			TRUE,
-    EL_BD_STEELWALL_SLOPED_DOWN_RIGHT,		-1, -1
+    EL_BDX_STEELWALL_SLOPED_DOWN_RIGHT,		-1, -1
   },
   {
     O_STEEL_EXPLODABLE,				TRUE,
-    EL_BD_STEELWALL_EXPLODABLE,			-1, -1
+    EL_BDX_STEELWALL_EXPLODABLE,		-1, -1
   },
   {
     O_STEEL_EATABLE,				TRUE,
-    EL_BD_STEELWALL_DIGGABLE,			-1, -1
+    EL_BDX_STEELWALL_DIGGABLE,			-1, -1
   },
   {
     O_BRICK_EATABLE,				TRUE,
-    EL_BD_WALL_DIGGABLE,			-1, -1
+    EL_BDX_WALL_DIGGABLE,			-1, -1
   },
   {
     O_STONE,					TRUE,
-    EL_BD_ROCK_NATIVE,				-1, -1
+    EL_BDX_ROCK,				-1, -1
   },
   {
     O_STONE_F,					TRUE,
-    EL_BD_ROCK_NATIVE_FALLING,			-1, -1
+    EL_BDX_ROCK_FALLING,			-1, -1
   },
   {
     O_STONE_F,					FALSE,
-    EL_BD_ROCK_NATIVE,				ACTION_FALLING, -1
+    EL_BDX_ROCK,				ACTION_FALLING, -1
   },
   {
     O_FLYING_STONE,				TRUE,
-    EL_BD_FLYING_ROCK,				-1, -1
+    EL_BDX_FLYING_ROCK,				-1, -1
   },
   {
     O_FLYING_STONE_F,				TRUE,
-    EL_BD_FLYING_ROCK_FLYING,			-1, -1
+    EL_BDX_FLYING_ROCK_FLYING,			-1, -1
   },
   {
     O_FLYING_STONE_F,				FALSE,
-    EL_BD_FLYING_ROCK,				ACTION_FLYING, -1
+    EL_BDX_FLYING_ROCK,				ACTION_FLYING, -1
   },
   {
     O_MEGA_STONE,				TRUE,
-    EL_BD_MEGA_ROCK,				-1, -1
+    EL_BDX_MEGA_ROCK,				-1, -1
   },
   {
     O_MEGA_STONE_F,				TRUE,
-    EL_BD_MEGA_ROCK_FALLING,			-1, -1
+    EL_BDX_MEGA_ROCK_FALLING,			-1, -1
   },
   {
     O_MEGA_STONE_F,				FALSE,
-    EL_BD_MEGA_ROCK,				ACTION_FALLING, -1
+    EL_BDX_MEGA_ROCK,				ACTION_FALLING, -1
   },
   {
     O_DIAMOND,					TRUE,
-    EL_BD_DIAMOND_NATIVE,			-1, -1
+    EL_BDX_DIAMOND,				-1, -1
   },
   {
     O_DIAMOND_F,				TRUE,
-    EL_BD_DIAMOND_NATIVE_FALLING,		-1, -1
+    EL_BDX_DIAMOND_FALLING,			-1, -1
   },
   {
     O_DIAMOND_F,				FALSE,
-    EL_BD_DIAMOND_NATIVE,			ACTION_FALLING, -1
+    EL_BDX_DIAMOND,				ACTION_FALLING, -1
   },
   {
     O_FLYING_DIAMOND,				TRUE,
-    EL_BD_FLYING_DIAMOND,			-1, -1
+    EL_BDX_FLYING_DIAMOND,			-1, -1
   },
   {
     O_FLYING_DIAMOND_F,				TRUE,
-    EL_BD_FLYING_DIAMOND_FLYING,		-1, -1
+    EL_BDX_FLYING_DIAMOND_FLYING,		-1, -1
   },
   {
     O_FLYING_DIAMOND_F,				FALSE,
-    EL_BD_FLYING_DIAMOND,			ACTION_FLYING, -1
+    EL_BDX_FLYING_DIAMOND,			ACTION_FLYING, -1
   },
   {
     O_NUT,					TRUE,
-    EL_BD_NUT,					-1, -1
+    EL_BDX_NUT,					-1, -1
   },
   {
     O_NUT_F,					TRUE,
-    EL_BD_NUT_FALLING,				-1, -1
+    EL_BDX_NUT_FALLING,				-1, -1
   },
   {
     O_NUT_F,					FALSE,
-    EL_BD_NUT,					ACTION_FALLING, -1
+    EL_BDX_NUT,					ACTION_FALLING, -1
   },
   {
     O_BLADDER_SPENDER,				TRUE,
-    EL_BD_BLADDER_SPENDER,			-1, -1
+    EL_BDX_BLADDER_SPENDER,			-1, -1
   },
   {
     O_INBOX,					TRUE,
-    EL_BD_INBOX,				-1, -1
+    EL_BDX_INBOX,				-1, -1
   },
   {
     O_H_EXPANDING_WALL,				TRUE,
-    EL_BD_EXPANDABLE_WALL_HORIZONTAL,		-1, -1
+    EL_BDX_EXPANDABLE_WALL_HORIZONTAL,		-1, -1
   },
   {
     O_V_EXPANDING_WALL,				TRUE,
-    EL_BD_EXPANDABLE_WALL_VERTICAL,		-1, -1
+    EL_BDX_EXPANDABLE_WALL_VERTICAL,		-1, -1
   },
   {
     O_EXPANDING_WALL,				TRUE,
-    EL_BD_EXPANDABLE_WALL_ANY,			-1, -1
+    EL_BDX_EXPANDABLE_WALL_ANY,			-1, -1
   },
   {
     O_H_EXPANDING_STEEL_WALL,			TRUE,
-    EL_BD_EXPANDABLE_STEELWALL_HORIZONTAL,	-1, -1
+    EL_BDX_EXPANDABLE_STEELWALL_HORIZONTAL,	-1, -1
   },
   {
     O_V_EXPANDING_STEEL_WALL,			TRUE,
-    EL_BD_EXPANDABLE_STEELWALL_VERTICAL,	-1, -1
+    EL_BDX_EXPANDABLE_STEELWALL_VERTICAL,	-1, -1
   },
   {
     O_EXPANDING_STEEL_WALL,			TRUE,
-    EL_BD_EXPANDABLE_STEELWALL_ANY,		-1, -1
+    EL_BDX_EXPANDABLE_STEELWALL_ANY,		-1, -1
   },
   {
     O_EXPANDING_WALL_SWITCH,			TRUE,
-    EL_BD_EXPANDABLE_WALL_SWITCH,		-1, -1
+    EL_BDX_EXPANDABLE_WALL_SWITCH,		-1, -1
   },
   {
     O_CREATURE_SWITCH,				TRUE,
-    EL_BD_CREATURE_SWITCH,			-1, -1
+    EL_BDX_CREATURE_SWITCH,			-1, -1
   },
   {
     O_BITER_SWITCH,				TRUE,
-    EL_BD_BITER_SWITCH_1,			-1, -1
+    EL_BDX_BITER_SWITCH_1,			-1, -1
   },
   {
     O_REPLICATOR_SWITCH,			TRUE,
-    EL_BD_REPLICATOR_SWITCH,			-1, -1
+    EL_BDX_REPLICATOR_SWITCH,			-1, -1
   },
   {
     O_CONVEYOR_SWITCH,				TRUE,
-    EL_BD_CONVEYOR_SWITCH,			-1, -1
+    EL_BDX_CONVEYOR_SWITCH,			-1, -1
   },
   {
     O_CONVEYOR_DIR_SWITCH,			TRUE,
-    EL_BD_CONVEYOR_DIR_SWITCH,			-1, -1
+    EL_BDX_CONVEYOR_DIR_SWITCH,			-1, -1
   },
   {
     O_ACID,					TRUE,
-    EL_BD_ACID,					-1, -1
+    EL_BDX_ACID,				-1, -1
   },
   {
     O_FALLING_WALL,				TRUE,
-    EL_BD_FALLING_WALL,				-1, -1
+    EL_BDX_FALLING_WALL,			-1, -1
   },
   {
     O_FALLING_WALL_F,				TRUE,
-    EL_BD_FALLING_WALL_FALLING,			-1, -1
+    EL_BDX_FALLING_WALL_FALLING,		-1, -1
   },
   {
     O_FALLING_WALL_F,				FALSE,
-    EL_BD_FALLING_WALL,				ACTION_FALLING, -1
+    EL_BDX_FALLING_WALL,			ACTION_FALLING, -1
   },
   {
     O_BOX,					TRUE,
-    EL_BD_BOX,					-1, -1
+    EL_BDX_BOX,					-1, -1
   },
   {
     O_TIME_PENALTY,				TRUE,
-    EL_BD_TIME_PENALTY,				-1, -1
+    EL_BDX_TIME_PENALTY,			-1, -1
   },
   {
     O_GRAVESTONE,				TRUE,
-    EL_BD_GRAVESTONE,				-1, -1
+    EL_BDX_GRAVESTONE,				-1, -1
   },
   {
     O_STONE_GLUED,				TRUE,
-    EL_BD_ROCK_GLUED,				-1, -1
+    EL_BDX_ROCK_GLUED,				-1, -1
   },
   {
     O_DIAMOND_GLUED,				TRUE,
-    EL_BD_DIAMOND_GLUED,			-1, -1
+    EL_BDX_DIAMOND_GLUED,			-1, -1
   },
   {
     O_DIAMOND_KEY,				TRUE,
-    EL_BD_DIAMOND_KEY,				-1, -1
+    EL_BDX_DIAMOND_KEY,				-1, -1
   },
   {
     O_TRAPPED_DIAMOND,				TRUE,
-    EL_BD_TRAPPED_DIAMOND,			-1, -1
+    EL_BDX_TRAPPED_DIAMOND,			-1, -1
   },
   {
     O_CLOCK,					TRUE,
-    EL_BD_CLOCK,				-1, -1
+    EL_BDX_CLOCK,				-1, -1
   },
   {
     O_DIRT_GLUED,				TRUE,
-    EL_BD_SAND_GLUED,				-1, -1
+    EL_BDX_SAND_GLUED,				-1, -1
   },
   {
     O_KEY_1,					TRUE,
-    EL_BD_KEY_1,				-1, -1
+    EL_BDX_KEY_1,				-1, -1
   },
   {
     O_KEY_2,					TRUE,
-    EL_BD_KEY_2,				-1, -1
+    EL_BDX_KEY_2,				-1, -1
   },
   {
     O_KEY_3,					TRUE,
-    EL_BD_KEY_3,				-1, -1
+    EL_BDX_KEY_3,				-1, -1
   },
   {
     O_DOOR_1,					TRUE,
-    EL_BD_GATE_1,				-1, -1
+    EL_BDX_GATE_1,				-1, -1
   },
   {
     O_DOOR_2,					TRUE,
-    EL_BD_GATE_2,				-1, -1
+    EL_BDX_GATE_2,				-1, -1
   },
   {
     O_DOOR_3,					TRUE,
-    EL_BD_GATE_3,				-1, -1
+    EL_BDX_GATE_3,				-1, -1
   },
   {
     O_POT,					TRUE,
-    EL_BD_POT,					-1, -1
+    EL_BDX_POT,					-1, -1
   },
   {
     O_GRAVITY_SWITCH,				TRUE,
-    EL_BD_GRAVITY_SWITCH,			-1, -1
+    EL_BDX_GRAVITY_SWITCH,			-1, -1
   },
   {
     O_PNEUMATIC_HAMMER,				TRUE,
-    EL_BD_PNEUMATIC_HAMMER,			-1, -1
+    EL_BDX_PNEUMATIC_HAMMER,			-1, -1
   },
   {
     O_TELEPORTER,				TRUE,
-    EL_BD_TELEPORTER,				-1, -1
+    EL_BDX_TELEPORTER,				-1, -1
   },
   {
     O_SKELETON,					TRUE,
-    EL_BD_SKELETON,				-1, -1
+    EL_BDX_SKELETON,				-1, -1
   },
   {
     O_WATER,					TRUE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_1,					TRUE,
-    EL_BD_WATER_1,				-1, -1
+    EL_BDX_WATER_1,				-1, -1
   },
   {
     O_WATER_1,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_2,					TRUE,
-    EL_BD_WATER_2,				-1, -1
+    EL_BDX_WATER_2,				-1, -1
   },
   {
     O_WATER_2,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_3,					TRUE,
-    EL_BD_WATER_3,				-1, -1
+    EL_BDX_WATER_3,				-1, -1
   },
   {
     O_WATER_3,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_4,					TRUE,
-    EL_BD_WATER_4,				-1, -1
+    EL_BDX_WATER_4,				-1, -1
   },
   {
     O_WATER_4,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_5,					TRUE,
-    EL_BD_WATER_5,				-1, -1
+    EL_BDX_WATER_5,				-1, -1
   },
   {
     O_WATER_5,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_6,					TRUE,
-    EL_BD_WATER_6,				-1, -1
+    EL_BDX_WATER_6,				-1, -1
   },
   {
     O_WATER_6,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_7,					TRUE,
-    EL_BD_WATER_7,				-1, -1
+    EL_BDX_WATER_7,				-1, -1
   },
   {
     O_WATER_7,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_8,					TRUE,
-    EL_BD_WATER_8,				-1, -1
+    EL_BDX_WATER_8,				-1, -1
   },
   {
     O_WATER_8,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_9,					TRUE,
-    EL_BD_WATER_9,				-1, -1
+    EL_BDX_WATER_9,				-1, -1
   },
   {
     O_WATER_9,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_10,					TRUE,
-    EL_BD_WATER_10,				-1, -1
+    EL_BDX_WATER_10,				-1, -1
   },
   {
     O_WATER_10,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_11,					TRUE,
-    EL_BD_WATER_11,				-1, -1
+    EL_BDX_WATER_11,				-1, -1
   },
   {
     O_WATER_11,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_12,					TRUE,
-    EL_BD_WATER_12,				-1, -1
+    EL_BDX_WATER_12,				-1, -1
   },
   {
     O_WATER_12,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_13,					TRUE,
-    EL_BD_WATER_13,				-1, -1
+    EL_BDX_WATER_13,				-1, -1
   },
   {
     O_WATER_13,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_14,					TRUE,
-    EL_BD_WATER_14,				-1, -1
+    EL_BDX_WATER_14,				-1, -1
   },
   {
     O_WATER_14,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_15,					TRUE,
-    EL_BD_WATER_15,				-1, -1
+    EL_BDX_WATER_15,				-1, -1
   },
   {
     O_WATER_15,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_WATER_16,					TRUE,
-    EL_BD_WATER_16,				-1, -1
+    EL_BDX_WATER_16,				-1, -1
   },
   {
     O_WATER_16,					FALSE,
-    EL_BD_WATER,				-1, -1
+    EL_BDX_WATER,				-1, -1
   },
   {
     O_COW_1,					TRUE,
-    EL_BD_COW_LEFT,				-1, -1
+    EL_BDX_COW_LEFT,				-1, -1
   },
   {
     O_COW_2,					TRUE,
-    EL_BD_COW_UP,				-1, -1
+    EL_BDX_COW_UP,				-1, -1
   },
   {
     O_COW_3,					TRUE,
-    EL_BD_COW_RIGHT,				-1, -1
+    EL_BDX_COW_RIGHT,				-1, -1
   },
   {
     O_COW_4,					TRUE,
-    EL_BD_COW_DOWN,				-1, -1
+    EL_BDX_COW_DOWN,				-1, -1
   },
   {
     O_COW_ENCLOSED_1,				TRUE,
-    EL_BD_COW_ENCLOSED_1,			-1, -1
+    EL_BDX_COW_ENCLOSED_1,			-1, -1
   },
   {
     O_COW_ENCLOSED_1,				FALSE,
-    EL_BD_COW_DOWN,				-1, -1
+    EL_BDX_COW_DOWN,				-1, -1
   },
   {
     O_COW_ENCLOSED_2,				TRUE,
-    EL_BD_COW_ENCLOSED_2,			-1, -1
+    EL_BDX_COW_ENCLOSED_2,			-1, -1
   },
   {
     O_COW_ENCLOSED_2,				FALSE,
-    EL_BD_COW_DOWN,				-1, -1
+    EL_BDX_COW_DOWN,				-1, -1
   },
   {
     O_COW_ENCLOSED_3,				TRUE,
-    EL_BD_COW_ENCLOSED_3,			-1, -1
+    EL_BDX_COW_ENCLOSED_3,			-1, -1
   },
   {
     O_COW_ENCLOSED_3,				FALSE,
-    EL_BD_COW_DOWN,				-1, -1
+    EL_BDX_COW_DOWN,				-1, -1
   },
   {
     O_COW_ENCLOSED_4,				TRUE,
-    EL_BD_COW_ENCLOSED_4,			-1, -1
+    EL_BDX_COW_ENCLOSED_4,			-1, -1
   },
   {
     O_COW_ENCLOSED_4,				FALSE,
-    EL_BD_COW_DOWN,				-1, -1
+    EL_BDX_COW_DOWN,				-1, -1
   },
   {
     O_COW_ENCLOSED_5,				TRUE,
-    EL_BD_COW_ENCLOSED_5,			-1, -1
+    EL_BDX_COW_ENCLOSED_5,			-1, -1
   },
   {
     O_COW_ENCLOSED_5,				FALSE,
-    EL_BD_COW_DOWN,				-1, -1
+    EL_BDX_COW_DOWN,				-1, -1
   },
   {
     O_COW_ENCLOSED_6,				TRUE,
-    EL_BD_COW_ENCLOSED_6,			-1, -1
+    EL_BDX_COW_ENCLOSED_6,			-1, -1
   },
   {
     O_COW_ENCLOSED_6,				FALSE,
-    EL_BD_COW_DOWN,				-1, -1
+    EL_BDX_COW_DOWN,				-1, -1
   },
   {
     O_COW_ENCLOSED_7,				TRUE,
-    EL_BD_COW_ENCLOSED_7,			-1, -1
+    EL_BDX_COW_ENCLOSED_7,			-1, -1
   },
   {
     O_COW_ENCLOSED_7,				FALSE,
-    EL_BD_COW_DOWN,				-1, -1
+    EL_BDX_COW_DOWN,				-1, -1
   },
   {
     O_WALLED_DIAMOND,				TRUE,
-    EL_BD_WALL_DIAMOND,				-1, -1
+    EL_BDX_WALL_DIAMOND,			-1, -1
   },
   {
     O_WALLED_KEY_1,				TRUE,
-    EL_BD_WALL_KEY_1,				-1, -1
+    EL_BDX_WALL_KEY_1,				-1, -1
   },
   {
     O_WALLED_KEY_2,				TRUE,
-    EL_BD_WALL_KEY_2,				-1, -1
+    EL_BDX_WALL_KEY_2,				-1, -1
   },
   {
     O_WALLED_KEY_3,				TRUE,
-    EL_BD_WALL_KEY_3,				-1, -1
+    EL_BDX_WALL_KEY_3,				-1, -1
   },
   {
     O_AMOEBA,					TRUE,
-    EL_BD_AMOEBA_1,				-1, -1
+    EL_BDX_AMOEBA_1,				-1, -1
   },
   {
     O_AMOEBA_2,					TRUE,
-    EL_BD_AMOEBA_2,				-1, -1
+    EL_BDX_AMOEBA_2,				-1, -1
   },
   {
     O_REPLICATOR,				TRUE,
-    EL_BD_REPLICATOR,				-1, -1
+    EL_BDX_REPLICATOR,				-1, -1
   },
   {
     O_CONVEYOR_LEFT,				TRUE,
-    EL_BD_CONVEYOR_LEFT,			-1, -1
+    EL_BDX_CONVEYOR_LEFT,			-1, -1
   },
   {
     O_CONVEYOR_RIGHT,				TRUE,
-    EL_BD_CONVEYOR_RIGHT,			-1, -1
+    EL_BDX_CONVEYOR_RIGHT,			-1, -1
   },
   {
     O_LAVA,					TRUE,
-    EL_BD_LAVA,					-1, -1
+    EL_BDX_LAVA,				-1, -1
   },
   {
     O_SWEET,					TRUE,
-    EL_BD_SWEET,				-1, -1
+    EL_BDX_SWEET,				-1, -1
   },
   {
     O_VOODOO,					TRUE,
-    EL_BD_VOODOO_DOLL,				-1, -1
+    EL_BDX_VOODOO_DOLL,				-1, -1
   },
   {
     O_SLIME,					TRUE,
-    EL_BD_SLIME,				-1, -1
+    EL_BDX_SLIME,				-1, -1
   },
   {
     O_BLADDER,					TRUE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_BLADDER_1,				TRUE,
-    EL_BD_BLADDER_1,				-1, -1
+    EL_BDX_BLADDER_1,				-1, -1
   },
   {
     O_BLADDER_1,				FALSE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_BLADDER_2,				TRUE,
-    EL_BD_BLADDER_2,				-1, -1
+    EL_BDX_BLADDER_2,				-1, -1
   },
   {
     O_BLADDER_2,				FALSE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_BLADDER_3,				TRUE,
-    EL_BD_BLADDER_3,				-1, -1
+    EL_BDX_BLADDER_3,				-1, -1
   },
   {
     O_BLADDER_3,				FALSE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_BLADDER_4,				TRUE,
-    EL_BD_BLADDER_4,				-1, -1
+    EL_BDX_BLADDER_4,				-1, -1
   },
   {
     O_BLADDER_4,				FALSE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_BLADDER_5,				TRUE,
-    EL_BD_BLADDER_5,				-1, -1
+    EL_BDX_BLADDER_5,				-1, -1
   },
   {
     O_BLADDER_5,				FALSE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_BLADDER_6,				TRUE,
-    EL_BD_BLADDER_6,				-1, -1
+    EL_BDX_BLADDER_6,				-1, -1
   },
   {
     O_BLADDER_6,				FALSE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_BLADDER_7,				TRUE,
-    EL_BD_BLADDER_7,				-1, -1
+    EL_BDX_BLADDER_7,				-1, -1
   },
   {
     O_BLADDER_7,				FALSE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_BLADDER_8,				TRUE,
-    EL_BD_BLADDER_8,				-1, -1
+    EL_BDX_BLADDER_8,				-1, -1
   },
   {
     O_BLADDER_8,				FALSE,
-    EL_BD_BLADDER,				-1, -1
+    EL_BDX_BLADDER,				-1, -1
   },
   {
     O_WAITING_STONE,				TRUE,
-    EL_BD_WAITING_ROCK,				-1, -1
+    EL_BDX_WAITING_ROCK,			-1, -1
   },
   {
     O_CHASING_STONE,				TRUE,
-    EL_BD_CHASING_ROCK,				-1, -1
+    EL_BDX_CHASING_ROCK,			-1, -1
   },
   {
     O_GHOST,					TRUE,
-    EL_BD_GHOST,				-1, -1
+    EL_BDX_GHOST,				-1, -1
   },
   {
     O_FIREFLY_1,				TRUE,
-    EL_BD_FIREFLY_1_LEFT,			-1, -1
+    EL_BDX_FIREFLY_1_LEFT,			-1, -1
   },
   {
     O_FIREFLY_2,				TRUE,
-    EL_BD_FIREFLY_1_UP,				-1, -1
+    EL_BDX_FIREFLY_1_UP,			-1, -1
   },
   {
     O_FIREFLY_3,				TRUE,
-    EL_BD_FIREFLY_1_RIGHT,			-1, -1
+    EL_BDX_FIREFLY_1_RIGHT,			-1, -1
   },
   {
     O_FIREFLY_4,				TRUE,
-    EL_BD_FIREFLY_1_DOWN,			-1, -1
+    EL_BDX_FIREFLY_1_DOWN,			-1, -1
   },
   {
     O_ALT_FIREFLY_1,				TRUE,
-    EL_BD_FIREFLY_2_LEFT,			-1, -1
+    EL_BDX_FIREFLY_2_LEFT,			-1, -1
   },
   {
     O_ALT_FIREFLY_2,				TRUE,
-    EL_BD_FIREFLY_2_UP,				-1, -1
+    EL_BDX_FIREFLY_2_UP,			-1, -1
   },
   {
     O_ALT_FIREFLY_3,				TRUE,
-    EL_BD_FIREFLY_2_RIGHT,			-1, -1
+    EL_BDX_FIREFLY_2_RIGHT,			-1, -1
   },
   {
     O_ALT_FIREFLY_4,				TRUE,
-    EL_BD_FIREFLY_2_DOWN,			-1, -1
+    EL_BDX_FIREFLY_2_DOWN,			-1, -1
   },
   {
     O_BUTTER_1,					TRUE,
-    EL_BD_BUTTERFLY_1_LEFT,			-1, -1
+    EL_BDX_BUTTERFLY_1_LEFT,			-1, -1
   },
   {
     O_BUTTER_2,					TRUE,
-    EL_BD_BUTTERFLY_1_UP,			-1, -1
+    EL_BDX_BUTTERFLY_1_UP,			-1, -1
   },
   {
     O_BUTTER_3,					TRUE,
-    EL_BD_BUTTERFLY_1_RIGHT,			-1, -1
+    EL_BDX_BUTTERFLY_1_RIGHT,			-1, -1
   },
   {
     O_BUTTER_4,					TRUE,
-    EL_BD_BUTTERFLY_1_DOWN,			-1, -1
+    EL_BDX_BUTTERFLY_1_DOWN,			-1, -1
   },
   {
     O_ALT_BUTTER_1,				TRUE,
-    EL_BD_BUTTERFLY_2_LEFT,			-1, -1
+    EL_BDX_BUTTERFLY_2_LEFT,			-1, -1
   },
   {
     O_ALT_BUTTER_2,				TRUE,
-    EL_BD_BUTTERFLY_2_UP,			-1, -1
+    EL_BDX_BUTTERFLY_2_UP,			-1, -1
   },
   {
     O_ALT_BUTTER_3,				TRUE,
-    EL_BD_BUTTERFLY_2_RIGHT,			-1, -1
+    EL_BDX_BUTTERFLY_2_RIGHT,			-1, -1
   },
   {
     O_ALT_BUTTER_4,				TRUE,
-    EL_BD_BUTTERFLY_2_DOWN,			-1, -1
+    EL_BDX_BUTTERFLY_2_DOWN,			-1, -1
   },
   {
     O_STONEFLY_1,				TRUE,
-    EL_BD_STONEFLY_LEFT,			-1, -1
+    EL_BDX_STONEFLY_LEFT,			-1, -1
   },
   {
     O_STONEFLY_2,				TRUE,
-    EL_BD_STONEFLY_UP,				-1, -1
+    EL_BDX_STONEFLY_UP,				-1, -1
   },
   {
     O_STONEFLY_3,				TRUE,
-    EL_BD_STONEFLY_RIGHT,			-1, -1
+    EL_BDX_STONEFLY_RIGHT,			-1, -1
   },
   {
     O_STONEFLY_4,				TRUE,
-    EL_BD_STONEFLY_DOWN,			-1, -1
+    EL_BDX_STONEFLY_DOWN,			-1, -1
   },
   {
     O_BITER_1,					TRUE,
-    EL_BD_BITER_UP,				-1, -1
+    EL_BDX_BITER_UP,				-1, -1
   },
   {
     O_BITER_2,					TRUE,
-    EL_BD_BITER_RIGHT,				-1, -1
+    EL_BDX_BITER_RIGHT,				-1, -1
   },
   {
     O_BITER_3,					TRUE,
-    EL_BD_BITER_DOWN,				-1, -1
+    EL_BDX_BITER_DOWN,				-1, -1
   },
   {
     O_BITER_4,					TRUE,
-    EL_BD_BITER_LEFT,				-1, -1
+    EL_BDX_BITER_LEFT,				-1, -1
   },
   {
     O_DRAGONFLY_1,				TRUE,
-    EL_BD_DRAGONFLY_LEFT,			-1, -1
+    EL_BDX_DRAGONFLY_LEFT,			-1, -1
   },
   {
     O_DRAGONFLY_2,				TRUE,
-    EL_BD_DRAGONFLY_UP,				-1, -1
+    EL_BDX_DRAGONFLY_UP,			-1, -1
   },
   {
     O_DRAGONFLY_3,				TRUE,
-    EL_BD_DRAGONFLY_RIGHT,			-1, -1
+    EL_BDX_DRAGONFLY_RIGHT,			-1, -1
   },
   {
     O_DRAGONFLY_4,				TRUE,
-    EL_BD_DRAGONFLY_DOWN,			-1, -1
+    EL_BDX_DRAGONFLY_DOWN,			-1, -1
   },
   {
     O_PRE_PL_1,					TRUE,
-    EL_BD_PLAYER_GROWING_1,			-1, -1
+    EL_BDX_PLAYER_GROWING_1,			-1, -1
   },
   {
     O_PRE_PL_1,					FALSE,
-    EL_BD_PLAYER,				ACTION_GROWING, -1
+    EL_BDX_PLAYER,				ACTION_GROWING, -1
   },
   {
     O_PRE_PL_2,					TRUE,
-    EL_BD_PLAYER_GROWING_2,			-1, -1
+    EL_BDX_PLAYER_GROWING_2,			-1, -1
   },
   {
     O_PRE_PL_2,					FALSE,
-    EL_BD_PLAYER,				ACTION_GROWING, -1
+    EL_BDX_PLAYER,				ACTION_GROWING, -1
   },
   {
     O_PRE_PL_3,					TRUE,
-    EL_BD_PLAYER_GROWING_3,			-1, -1
+    EL_BDX_PLAYER_GROWING_3,			-1, -1
   },
   {
     O_PRE_PL_3,					FALSE,
-    EL_BD_PLAYER,				ACTION_GROWING, -1
+    EL_BDX_PLAYER,				ACTION_GROWING, -1
   },
   {
     O_PLAYER,					TRUE,
-    EL_BD_PLAYER,				-1, -1
+    EL_BDX_PLAYER,				-1, -1
   },
   {
     O_PLAYER_BOMB,				TRUE,
-    EL_BD_PLAYER_WITH_BOMB,			-1, -1
+    EL_BDX_PLAYER_WITH_BOMB,			-1, -1
   },
   {
     O_PLAYER_ROCKET_LAUNCHER,			TRUE,
-    EL_BD_PLAYER_WITH_ROCKET_LAUNCHER,		-1, -1
+    EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER,		-1, -1
   },
   {
     O_PLAYER_GLUED,				TRUE,
-    EL_BD_PLAYER_GLUED,				-1, -1
+    EL_BDX_PLAYER_GLUED,			-1, -1
   },
   {
     O_PLAYER_STIRRING,				TRUE,
-    EL_BD_PLAYER_STIRRING,			-1, -1
+    EL_BDX_PLAYER_STIRRING,			-1, -1
   },
   {
     O_ROCKET_LAUNCHER,				TRUE,
-    EL_BD_ROCKET_LAUNCHER,			-1, -1
+    EL_BDX_ROCKET_LAUNCHER,			-1, -1
   },
   {
     O_ROCKET_1,					TRUE,
-    EL_BD_ROCKET_RIGHT,				-1, -1
+    EL_BDX_ROCKET_RIGHT,			-1, -1
   },
   {
     O_ROCKET_2,					TRUE,
-    EL_BD_ROCKET_UP,				-1, -1
+    EL_BDX_ROCKET_UP,				-1, -1
   },
   {
     O_ROCKET_3,					TRUE,
-    EL_BD_ROCKET_LEFT,				-1, -1
+    EL_BDX_ROCKET_LEFT,				-1, -1
   },
   {
     O_ROCKET_4,					TRUE,
-    EL_BD_ROCKET_DOWN,				-1, -1
+    EL_BDX_ROCKET_DOWN,				-1, -1
   },
   {
     O_BOMB,					TRUE,
-    EL_BD_BOMB,					-1, -1
+    EL_BDX_BOMB,				-1, -1
   },
   {
     O_BOMB_TICK_1,				TRUE,
-    EL_BD_BOMB_TICKING_1,			-1, -1
+    EL_BDX_BOMB_TICKING_1,			-1, -1
   },
   {
     O_BOMB_TICK_1,				FALSE,
-    EL_BD_BOMB,					ACTION_ACTIVE, -1
+    EL_BDX_BOMB,				ACTION_ACTIVE, -1
   },
   {
     O_BOMB_TICK_2,				TRUE,
-    EL_BD_BOMB_TICKING_2,			-1, -1
+    EL_BDX_BOMB_TICKING_2,			-1, -1
   },
   {
     O_BOMB_TICK_2,				FALSE,
-    EL_BD_BOMB,					ACTION_ACTIVE, -1
+    EL_BDX_BOMB,				ACTION_ACTIVE, -1
   },
   {
     O_BOMB_TICK_3,				TRUE,
-    EL_BD_BOMB_TICKING_3,			-1, -1
+    EL_BDX_BOMB_TICKING_3,			-1, -1
   },
   {
     O_BOMB_TICK_3,				FALSE,
-    EL_BD_BOMB,					ACTION_ACTIVE, -1
+    EL_BDX_BOMB,				ACTION_ACTIVE, -1
   },
   {
     O_BOMB_TICK_4,				TRUE,
-    EL_BD_BOMB_TICKING_4,			-1, -1
+    EL_BDX_BOMB_TICKING_4,			-1, -1
   },
   {
     O_BOMB_TICK_4,				FALSE,
-    EL_BD_BOMB,					ACTION_ACTIVE, -1
+    EL_BDX_BOMB,				ACTION_ACTIVE, -1
   },
   {
     O_BOMB_TICK_5,				TRUE,
-    EL_BD_BOMB_TICKING_5,			-1, -1
+    EL_BDX_BOMB_TICKING_5,			-1, -1
   },
   {
     O_BOMB_TICK_5,				FALSE,
-    EL_BD_BOMB,					ACTION_ACTIVE, -1
+    EL_BDX_BOMB,				ACTION_ACTIVE, -1
   },
   {
     O_BOMB_TICK_6,				TRUE,
-    EL_BD_BOMB_TICKING_6,			-1, -1
+    EL_BDX_BOMB_TICKING_6,			-1, -1
   },
   {
     O_BOMB_TICK_6,				FALSE,
-    EL_BD_BOMB,					ACTION_ACTIVE, -1
+    EL_BDX_BOMB,				ACTION_ACTIVE, -1
   },
   {
     O_BOMB_TICK_7,				TRUE,
-    EL_BD_BOMB_TICKING_7,			-1, -1
+    EL_BDX_BOMB_TICKING_7,			-1, -1
   },
   {
     O_BOMB_TICK_7,				FALSE,
-    EL_BD_BOMB,					ACTION_ACTIVE, -1
+    EL_BDX_BOMB,				ACTION_ACTIVE, -1
   },
   {
     O_NITRO_PACK,				TRUE,
-    EL_BD_NITRO_PACK,				-1, -1
+    EL_BDX_NITRO_PACK,				-1, -1
   },
   {
     O_NITRO_PACK_F,				TRUE,
-    EL_BD_NITRO_PACK_FALLING,			-1, -1
+    EL_BDX_NITRO_PACK_FALLING,			-1, -1
   },
   {
     O_NITRO_PACK_F,				FALSE,
-    EL_BD_NITRO_PACK,				ACTION_FALLING, -1
+    EL_BDX_NITRO_PACK,				ACTION_FALLING, -1
   },
   {
     O_PRE_CLOCK_1,				TRUE,
-    EL_BD_CLOCK_GROWING_1,			-1, -1
+    EL_BDX_CLOCK_GROWING_1,			-1, -1
   },
   {
     O_PRE_CLOCK_1,				FALSE,
-    EL_BD_CLOCK,				ACTION_GROWING, -1
+    EL_BDX_CLOCK,				ACTION_GROWING, -1
   },
   {
     O_PRE_CLOCK_2,				TRUE,
-    EL_BD_CLOCK_GROWING_2,			-1, -1
+    EL_BDX_CLOCK_GROWING_2,			-1, -1
   },
   {
     O_PRE_CLOCK_2,				FALSE,
-    EL_BD_CLOCK,				ACTION_GROWING, -1
+    EL_BDX_CLOCK,				ACTION_GROWING, -1
   },
   {
     O_PRE_CLOCK_3,				TRUE,
-    EL_BD_CLOCK_GROWING_3,			-1, -1
+    EL_BDX_CLOCK_GROWING_3,			-1, -1
   },
   {
     O_PRE_CLOCK_3,				FALSE,
-    EL_BD_CLOCK,				ACTION_GROWING, -1
+    EL_BDX_CLOCK,				ACTION_GROWING, -1
   },
   {
     O_PRE_CLOCK_4,				TRUE,
-    EL_BD_CLOCK_GROWING_4,			-1, -1
+    EL_BDX_CLOCK_GROWING_4,			-1, -1
   },
   {
     O_PRE_CLOCK_4,				FALSE,
-    EL_BD_CLOCK,				ACTION_GROWING, -1
+    EL_BDX_CLOCK,				ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_1,				TRUE,
-    EL_BD_DIAMOND_NATIVE_GROWING_1,		-1, -1
+    EL_BDX_DIAMOND_GROWING_1,			-1, -1
   },
   {
     O_PRE_DIA_1,				FALSE,
-    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
+    EL_BDX_DIAMOND,				ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_2,				TRUE,
-    EL_BD_DIAMOND_NATIVE_GROWING_2,		-1, -1
+    EL_BDX_DIAMOND_GROWING_2,			-1, -1
   },
   {
     O_PRE_DIA_2,				FALSE,
-    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
+    EL_BDX_DIAMOND,				ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_3,				TRUE,
-    EL_BD_DIAMOND_NATIVE_GROWING_3,		-1, -1
+    EL_BDX_DIAMOND_GROWING_3,			-1, -1
   },
   {
     O_PRE_DIA_3,				FALSE,
-    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
+    EL_BDX_DIAMOND,				ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_4,				TRUE,
-    EL_BD_DIAMOND_NATIVE_GROWING_4,		-1, -1
+    EL_BDX_DIAMOND_GROWING_4,			-1, -1
   },
   {
     O_PRE_DIA_4,				FALSE,
-    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
+    EL_BDX_DIAMOND,				ACTION_GROWING, -1
   },
   {
     O_PRE_DIA_5,				TRUE,
-    EL_BD_DIAMOND_NATIVE_GROWING_5,		-1, -1
+    EL_BDX_DIAMOND_GROWING_5,			-1, -1
   },
   {
     O_PRE_DIA_5,				FALSE,
-    EL_BD_DIAMOND_NATIVE,			ACTION_GROWING, -1
+    EL_BDX_DIAMOND,				ACTION_GROWING, -1
   },
   {
     O_EXPLODE_1,				TRUE,
-    EL_BD_EXPLODING_1,				-1, -1
+    EL_BDX_EXPLODING_1,				-1, -1
   },
   {
     O_EXPLODE_1,				FALSE,
@@ -7170,7 +7170,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_2,				TRUE,
-    EL_BD_EXPLODING_2,				-1, -1
+    EL_BDX_EXPLODING_2,				-1, -1
   },
   {
     O_EXPLODE_2,				FALSE,
@@ -7178,7 +7178,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_3,				TRUE,
-    EL_BD_EXPLODING_3,				-1, -1
+    EL_BDX_EXPLODING_3,				-1, -1
   },
   {
     O_EXPLODE_3,				FALSE,
@@ -7186,7 +7186,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_4,				TRUE,
-    EL_BD_EXPLODING_4,				-1, -1
+    EL_BDX_EXPLODING_4,				-1, -1
   },
   {
     O_EXPLODE_4,				FALSE,
@@ -7194,7 +7194,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_5,				TRUE,
-    EL_BD_EXPLODING_5,				-1, -1
+    EL_BDX_EXPLODING_5,				-1, -1
   },
   {
     O_EXPLODE_5,				FALSE,
@@ -7202,386 +7202,386 @@ bd_object_mapping_list[] =
   },
   {
     O_PRE_STONE_1,				TRUE,
-    EL_BD_ROCK_NATIVE_GROWING_1,		-1, -1
+    EL_BDX_ROCK_GROWING_1,			-1, -1
   },
   {
     O_PRE_STONE_1,				FALSE,
-    EL_BD_ROCK_NATIVE,				ACTION_GROWING, -1
+    EL_BDX_ROCK,				ACTION_GROWING, -1
   },
   {
     O_PRE_STONE_2,				TRUE,
-    EL_BD_ROCK_NATIVE_GROWING_2,		-1, -1
+    EL_BDX_ROCK_GROWING_2,			-1, -1
   },
   {
     O_PRE_STONE_2,				FALSE,
-    EL_BD_ROCK_NATIVE,				ACTION_GROWING, -1
+    EL_BDX_ROCK,				ACTION_GROWING, -1
   },
   {
     O_PRE_STONE_3,				TRUE,
-    EL_BD_ROCK_NATIVE_GROWING_3,		-1, -1
+    EL_BDX_ROCK_GROWING_3,			-1, -1
   },
   {
     O_PRE_STONE_3,				FALSE,
-    EL_BD_ROCK_NATIVE,				ACTION_GROWING, -1
+    EL_BDX_ROCK,				ACTION_GROWING, -1
   },
   {
     O_PRE_STONE_4,				TRUE,
-    EL_BD_ROCK_NATIVE_GROWING_4,		-1, -1
+    EL_BDX_ROCK_GROWING_4,			-1, -1
   },
   {
     O_PRE_STONE_4,				FALSE,
-    EL_BD_ROCK_NATIVE,				ACTION_GROWING, -1
+    EL_BDX_ROCK,				ACTION_GROWING, -1
   },
   {
     O_PRE_STEEL_1,				TRUE,
-    EL_BD_STEELWALL_GROWING_1,			-1, -1
+    EL_BDX_STEELWALL_GROWING_1,			-1, -1
   },
   {
     O_PRE_STEEL_1,				FALSE,
-    EL_BD_STEELWALL,				ACTION_GROWING, -1
+    EL_BDX_STEELWALL,				ACTION_GROWING, -1
   },
   {
     O_PRE_STEEL_2,				TRUE,
-    EL_BD_STEELWALL_GROWING_2,			-1, -1
+    EL_BDX_STEELWALL_GROWING_2,			-1, -1
   },
   {
     O_PRE_STEEL_2,				FALSE,
-    EL_BD_STEELWALL,				ACTION_GROWING, -1
+    EL_BDX_STEELWALL,				ACTION_GROWING, -1
   },
   {
     O_PRE_STEEL_3,				TRUE,
-    EL_BD_STEELWALL_GROWING_3,			-1, -1
+    EL_BDX_STEELWALL_GROWING_3,			-1, -1
   },
   {
     O_PRE_STEEL_3,				FALSE,
-    EL_BD_STEELWALL,				ACTION_GROWING, -1
+    EL_BDX_STEELWALL,				ACTION_GROWING, -1
   },
   {
     O_PRE_STEEL_4,				TRUE,
-    EL_BD_STEELWALL_GROWING_4,			-1, -1
+    EL_BDX_STEELWALL_GROWING_4,			-1, -1
   },
   {
     O_PRE_STEEL_4,				FALSE,
-    EL_BD_STEELWALL,				ACTION_GROWING, -1
+    EL_BDX_STEELWALL,				ACTION_GROWING, -1
   },
   {
     O_GHOST_EXPL_1,				TRUE,
-    EL_BD_GHOST_EXPLODING_1,			-1, -1
+    EL_BDX_GHOST_EXPLODING_1,			-1, -1
   },
   {
     O_GHOST_EXPL_1,				FALSE,
-    EL_BD_GHOST,				ACTION_EXPLODING, -1
+    EL_BDX_GHOST,				ACTION_EXPLODING, -1
   },
   {
     O_GHOST_EXPL_2,				TRUE,
-    EL_BD_GHOST_EXPLODING_2,			-1, -1
+    EL_BDX_GHOST_EXPLODING_2,			-1, -1
   },
   {
     O_GHOST_EXPL_2,				FALSE,
-    EL_BD_GHOST,				ACTION_EXPLODING, -1
+    EL_BDX_GHOST,				ACTION_EXPLODING, -1
   },
   {
     O_GHOST_EXPL_3,				TRUE,
-    EL_BD_GHOST_EXPLODING_3,			-1, -1
+    EL_BDX_GHOST_EXPLODING_3,			-1, -1
   },
   {
     O_GHOST_EXPL_3,				FALSE,
-    EL_BD_GHOST,				ACTION_EXPLODING, -1
+    EL_BDX_GHOST,				ACTION_EXPLODING, -1
   },
   {
     O_GHOST_EXPL_4,				TRUE,
-    EL_BD_GHOST_EXPLODING_4,			-1, -1
+    EL_BDX_GHOST_EXPLODING_4,			-1, -1
   },
   {
     O_GHOST_EXPL_4,				FALSE,
-    EL_BD_GHOST,				ACTION_EXPLODING, -1
+    EL_BDX_GHOST,				ACTION_EXPLODING, -1
   },
   {
     O_BOMB_EXPL_1,				TRUE,
-    EL_BD_BOMB_EXPLODING_1,			-1, -1
+    EL_BDX_BOMB_EXPLODING_1,			-1, -1
   },
   {
     O_BOMB_EXPL_1,				FALSE,
-    EL_BD_BOMB,					ACTION_EXPLODING, -1
+    EL_BDX_BOMB,				ACTION_EXPLODING, -1
   },
   {
     O_BOMB_EXPL_2,				TRUE,
-    EL_BD_BOMB_EXPLODING_2,			-1, -1
+    EL_BDX_BOMB_EXPLODING_2,			-1, -1
   },
   {
     O_BOMB_EXPL_2,				FALSE,
-    EL_BD_BOMB,					ACTION_EXPLODING, -1
+    EL_BDX_BOMB,				ACTION_EXPLODING, -1
   },
   {
     O_BOMB_EXPL_3,				TRUE,
-    EL_BD_BOMB_EXPLODING_3,			-1, -1
+    EL_BDX_BOMB_EXPLODING_3,			-1, -1
   },
   {
     O_BOMB_EXPL_3,				FALSE,
-    EL_BD_BOMB,					ACTION_EXPLODING, -1
+    EL_BDX_BOMB,				ACTION_EXPLODING, -1
   },
   {
     O_BOMB_EXPL_4,				TRUE,
-    EL_BD_BOMB_EXPLODING_4,			-1, -1
+    EL_BDX_BOMB_EXPLODING_4,			-1, -1
   },
   {
     O_BOMB_EXPL_4,				FALSE,
-    EL_BD_BOMB,					ACTION_EXPLODING, -1
+    EL_BDX_BOMB,				ACTION_EXPLODING, -1
   },
   {
     O_NITRO_EXPL_1,				TRUE,
-    EL_BD_NITRO_PACK_EXPLODING_1,		-1, -1
+    EL_BDX_NITRO_PACK_EXPLODING_1,		-1, -1
   },
   {
     O_NITRO_EXPL_1,				FALSE,
-    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+    EL_BDX_NITRO_PACK,				ACTION_EXPLODING, -1
   },
   {
     O_NITRO_EXPL_2,				TRUE,
-    EL_BD_NITRO_PACK_EXPLODING_2,		-1, -1
+    EL_BDX_NITRO_PACK_EXPLODING_2,		-1, -1
   },
   {
     O_NITRO_EXPL_2,				FALSE,
-    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+    EL_BDX_NITRO_PACK,				ACTION_EXPLODING, -1
   },
   {
     O_NITRO_EXPL_3,				TRUE,
-    EL_BD_NITRO_PACK_EXPLODING_3,		-1, -1
+    EL_BDX_NITRO_PACK_EXPLODING_3,		-1, -1
   },
   {
     O_NITRO_EXPL_3,				FALSE,
-    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+    EL_BDX_NITRO_PACK,				ACTION_EXPLODING, -1
   },
   {
     O_NITRO_EXPL_4,				TRUE,
-    EL_BD_NITRO_PACK_EXPLODING_4,		-1, -1
+    EL_BDX_NITRO_PACK_EXPLODING_4,		-1, -1
   },
   {
     O_NITRO_EXPL_4,				FALSE,
-    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+    EL_BDX_NITRO_PACK,				ACTION_EXPLODING, -1
   },
   {
     O_NITRO_PACK_EXPLODE,			TRUE,
-    EL_BD_NITRO_PACK_EXPLODING,			-1, -1
+    EL_BDX_NITRO_PACK_EXPLODING,		-1, -1
   },
   {
     O_NITRO_PACK_EXPLODE,			FALSE,
-    EL_BD_NITRO_PACK,				ACTION_EXPLODING, -1
+    EL_BDX_NITRO_PACK,				ACTION_EXPLODING, -1
   },
   {
     O_AMOEBA_2_EXPL_1,				TRUE,
-    EL_BD_AMOEBA_2_EXPLODING_1,			-1, -1
+    EL_BDX_AMOEBA_2_EXPLODING_1,		-1, -1
   },
   {
     O_AMOEBA_2_EXPL_1,				FALSE,
-    EL_BD_AMOEBA_2,				ACTION_EXPLODING, -1
+    EL_BDX_AMOEBA_2,				ACTION_EXPLODING, -1
   },
   {
     O_AMOEBA_2_EXPL_2,				TRUE,
-    EL_BD_AMOEBA_2_EXPLODING_2,			-1, -1
+    EL_BDX_AMOEBA_2_EXPLODING_2,		-1, -1
   },
   {
     O_AMOEBA_2_EXPL_2,				FALSE,
-    EL_BD_AMOEBA_2,				ACTION_EXPLODING, -1
+    EL_BDX_AMOEBA_2,				ACTION_EXPLODING, -1
   },
   {
     O_AMOEBA_2_EXPL_3,				TRUE,
-    EL_BD_AMOEBA_2_EXPLODING_3,			-1, -1
+    EL_BDX_AMOEBA_2_EXPLODING_3,		-1, -1
   },
   {
     O_AMOEBA_2_EXPL_3,				FALSE,
-    EL_BD_AMOEBA_2,				ACTION_EXPLODING, -1
+    EL_BDX_AMOEBA_2,				ACTION_EXPLODING, -1
   },
   {
     O_AMOEBA_2_EXPL_4,				TRUE,
-    EL_BD_AMOEBA_2_EXPLODING_4,			-1, -1
+    EL_BDX_AMOEBA_2_EXPLODING_4,		-1, -1
   },
   {
     O_AMOEBA_2_EXPL_4,				FALSE,
-    EL_BD_AMOEBA_2,				ACTION_EXPLODING, -1
+    EL_BDX_AMOEBA_2,				ACTION_EXPLODING, -1
   },
   {
     O_NUT_EXPL_1,				TRUE,
-    EL_BD_NUT_BREAKING_1,			-1, -1
+    EL_BDX_NUT_BREAKING_1,			-1, -1
   },
   {
     O_NUT_EXPL_1,				FALSE,
-    EL_BD_NUT,					ACTION_BREAKING, -1
+    EL_BDX_NUT,					ACTION_BREAKING, -1
   },
   {
     O_NUT_EXPL_2,				TRUE,
-    EL_BD_NUT_BREAKING_2,			-1, -1
+    EL_BDX_NUT_BREAKING_2,			-1, -1
   },
   {
     O_NUT_EXPL_2,				FALSE,
-    EL_BD_NUT,					ACTION_BREAKING, -1
+    EL_BDX_NUT,					ACTION_BREAKING, -1
   },
   {
     O_NUT_EXPL_3,				TRUE,
-    EL_BD_NUT_BREAKING_3,			-1, -1
+    EL_BDX_NUT_BREAKING_3,			-1, -1
   },
   {
     O_NUT_EXPL_3,				FALSE,
-    EL_BD_NUT,					ACTION_BREAKING, -1
+    EL_BDX_NUT,					ACTION_BREAKING, -1
   },
   {
     O_NUT_EXPL_4,				TRUE,
-    EL_BD_NUT_BREAKING_4,			-1, -1
+    EL_BDX_NUT_BREAKING_4,			-1, -1
   },
   {
     O_NUT_EXPL_4,				FALSE,
-    EL_BD_NUT,					ACTION_BREAKING, -1
+    EL_BDX_NUT,					ACTION_BREAKING, -1
   },
   {
     O_PLAYER_PNEUMATIC_LEFT,			FALSE,
-    EL_BD_PLAYER,				ACTION_HITTING, MV_BIT_LEFT
+    EL_BDX_PLAYER,				ACTION_HITTING, MV_BIT_LEFT
   },
   {
     O_PLAYER_PNEUMATIC_RIGHT,			FALSE,
-    EL_BD_PLAYER,				ACTION_HITTING, MV_BIT_RIGHT
+    EL_BDX_PLAYER,				ACTION_HITTING, MV_BIT_RIGHT
   },
   {
     O_PNEUMATIC_ACTIVE_LEFT,			FALSE,
-    EL_BD_PNEUMATIC_HAMMER,			ACTION_HITTING, MV_BIT_LEFT
+    EL_BDX_PNEUMATIC_HAMMER,			ACTION_HITTING, MV_BIT_LEFT
   },
   {
     O_PNEUMATIC_ACTIVE_RIGHT,			FALSE,
-    EL_BD_PNEUMATIC_HAMMER,			ACTION_HITTING, MV_BIT_RIGHT
+    EL_BDX_PNEUMATIC_HAMMER,			ACTION_HITTING, MV_BIT_RIGHT
   },
 
   // helper (runtime) elements
 
   {
     O_FAKE_BONUS,				FALSE,
-    EL_BD_FAKE_BONUS,				-1, -1
+    EL_BDX_FAKE_BONUS,				-1, -1
   },
   {
     O_INBOX_CLOSED,				FALSE,
-    EL_BD_INBOX,				-1, -1
+    EL_BDX_INBOX,				-1, -1
   },
   {
     O_INBOX_OPEN,				FALSE,
-    EL_BD_INBOX,				ACTION_OPENING, -1
+    EL_BDX_INBOX,				ACTION_OPENING, -1
   },
   {
     O_OUTBOX_CLOSED,				FALSE,
-    EL_BD_EXIT_CLOSED,				-1, -1
+    EL_BDX_EXIT_CLOSED,				-1, -1
   },
   {
     O_OUTBOX_OPEN,				FALSE,
-    EL_BD_EXIT_OPEN,				-1, -1
+    EL_BDX_EXIT_OPEN,				-1, -1
   },
   {
     O_COVERED,					FALSE,
-    EL_BD_COVERED,				-1, -1
+    EL_BDX_COVERED,				-1, -1
   },
   {
     O_PLAYER_LEFT,				FALSE,
-    EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_LEFT
+    EL_BDX_PLAYER,				ACTION_MOVING, MV_BIT_LEFT
   },
   {
     O_PLAYER_RIGHT,				FALSE,
-    EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_RIGHT
+    EL_BDX_PLAYER,				ACTION_MOVING, MV_BIT_RIGHT
   },
   {
     O_PLAYER_UP,				FALSE,
-    EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_UP
+    EL_BDX_PLAYER,				ACTION_MOVING, MV_BIT_UP
   },
   {
     O_PLAYER_DOWN,				FALSE,
-    EL_BD_PLAYER,				ACTION_MOVING, MV_BIT_DOWN
+    EL_BDX_PLAYER,				ACTION_MOVING, MV_BIT_DOWN
   },
   {
     O_PLAYER_BLINK,				FALSE,
-    EL_BD_PLAYER,				ACTION_BORING_1, -1
+    EL_BDX_PLAYER,				ACTION_BORING_1, -1
   },
   {
     O_PLAYER_TAP,				FALSE,
-    EL_BD_PLAYER,				ACTION_BORING_2, -1
+    EL_BDX_PLAYER,				ACTION_BORING_2, -1
   },
   {
     O_PLAYER_TAP_BLINK,				FALSE,
-    EL_BD_PLAYER,				ACTION_BORING_3, -1
+    EL_BDX_PLAYER,				ACTION_BORING_3, -1
   },
   {
     O_PLAYER_PUSH_LEFT,				FALSE,
-    EL_BD_PLAYER,				ACTION_PUSHING, MV_BIT_LEFT
+    EL_BDX_PLAYER,				ACTION_PUSHING, MV_BIT_LEFT
   },
   {
     O_PLAYER_PUSH_RIGHT,			FALSE,
-    EL_BD_PLAYER,				ACTION_PUSHING, MV_BIT_RIGHT
+    EL_BDX_PLAYER,				ACTION_PUSHING, MV_BIT_RIGHT
   },
   {
     O_CREATURE_SWITCH_ON,			FALSE,
-    EL_BD_CREATURE_SWITCH_ACTIVE,		-1, -1
+    EL_BDX_CREATURE_SWITCH_ACTIVE,		-1, -1
   },
   {
     O_EXPANDING_WALL_SWITCH_HORIZ,		FALSE,
-    EL_BD_EXPANDABLE_WALL_SWITCH,		-1, -1
+    EL_BDX_EXPANDABLE_WALL_SWITCH,		-1, -1
   },
   {
     O_EXPANDING_WALL_SWITCH_VERT,		FALSE,
-    EL_BD_EXPANDABLE_WALL_SWITCH_ACTIVE,	-1, -1
+    EL_BDX_EXPANDABLE_WALL_SWITCH_ACTIVE,	-1, -1
   },
   {
     O_GRAVITY_SWITCH_ACTIVE,			FALSE,
-    EL_BD_GRAVITY_SWITCH_ACTIVE,		-1, -1
+    EL_BDX_GRAVITY_SWITCH_ACTIVE,		-1, -1
   },
   {
     O_REPLICATOR_SWITCH_OFF,			FALSE,
-    EL_BD_REPLICATOR_SWITCH,			-1, -1
+    EL_BDX_REPLICATOR_SWITCH,			-1, -1
   },
   {
     O_REPLICATOR_SWITCH_ON,			FALSE,
-    EL_BD_REPLICATOR_SWITCH_ACTIVE,		-1, -1
+    EL_BDX_REPLICATOR_SWITCH_ACTIVE,		-1, -1
   },
   {
     O_CONVEYOR_DIR_NORMAL,			FALSE,
-    EL_BD_CONVEYOR_DIR_SWITCH,			-1, -1
+    EL_BDX_CONVEYOR_DIR_SWITCH,			-1, -1
   },
   {
     O_CONVEYOR_DIR_CHANGED,			FALSE,
-    EL_BD_CONVEYOR_DIR_SWITCH_ACTIVE,		-1, -1
+    EL_BDX_CONVEYOR_DIR_SWITCH_ACTIVE,		-1, -1
   },
   {
     O_CONVEYOR_SWITCH_OFF,			FALSE,
-    EL_BD_CONVEYOR_SWITCH,			-1, -1
+    EL_BDX_CONVEYOR_SWITCH,			-1, -1
   },
   {
     O_CONVEYOR_SWITCH_ON,			FALSE,
-    EL_BD_CONVEYOR_SWITCH_ACTIVE,		-1, -1
+    EL_BDX_CONVEYOR_SWITCH_ACTIVE,		-1, -1
   },
   {
     O_MAGIC_WALL_ACTIVE,			FALSE,
-    EL_BD_MAGIC_WALL_NATIVE_ACTIVE,		-1, -1
+    EL_BDX_MAGIC_WALL_ACTIVE,		-1, -1
   },
   {
     O_REPLICATOR_ACTIVE,			FALSE,
-    EL_BD_REPLICATOR_ACTIVE,			-1, -1
+    EL_BDX_REPLICATOR_ACTIVE,			-1, -1
   },
   {
     O_CONVEYOR_LEFT_ACTIVE,			FALSE,
-    EL_BD_CONVEYOR_LEFT_ACTIVE,			-1, -1
+    EL_BDX_CONVEYOR_LEFT_ACTIVE,		-1, -1
   },
   {
     O_CONVEYOR_RIGHT_ACTIVE,			FALSE,
-    EL_BD_CONVEYOR_RIGHT_ACTIVE,		-1, -1
+    EL_BDX_CONVEYOR_RIGHT_ACTIVE,		-1, -1
   },
   {
     O_BITER_SWITCH_1,				FALSE,
-    EL_BD_BITER_SWITCH_1,			-1, -1
+    EL_BDX_BITER_SWITCH_1,			-1, -1
   },
   {
     O_BITER_SWITCH_2,				FALSE,
-    EL_BD_BITER_SWITCH_2,			-1, -1
+    EL_BDX_BITER_SWITCH_2,			-1, -1
   },
   {
     O_BITER_SWITCH_3,				FALSE,
-    EL_BD_BITER_SWITCH_3,			-1, -1
+    EL_BDX_BITER_SWITCH_3,			-1, -1
   },
   {
     O_BITER_SWITCH_4,				FALSE,
-    EL_BD_BITER_SWITCH_4,			-1, -1
+    EL_BDX_BITER_SWITCH_4,			-1, -1
   },
 
   {
@@ -10782,7 +10782,7 @@ void InitGraphicInfo_BD(void)
   }
 
   // game graphics template for level-specific colors for native BD levels
-  int graphic = IMG_BD_GAME_GRAPHICS_COLOR_TEMPLATE;
+  int graphic = IMG_BDX_GAME_GRAPHICS_COLOR_TEMPLATE;
   struct GraphicInfo_BD *g_bd = &graphic_info_bd_color_template;
   Bitmap *src_bitmap;
   int src_x, src_y;

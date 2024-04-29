@@ -640,417 +640,417 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   // (these values are only valid for BD style levels)
   // (some values for BD style amoeba following below)
   {
-    EL_BD_PLAYER,			-1,
+    EL_BDX_PLAYER,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_diagonal_movements,		FALSE
   },
   {
-    EL_BD_PLAYER,			-1,
+    EL_BDX_PLAYER,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_topmost_player_active,	TRUE
   },
   {
-    EL_BD_PLAYER,			-1,
+    EL_BDX_PLAYER,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
     &li.bd_pushing_prob,		25
   },
   {
-    EL_BD_PLAYER,			-1,
+    EL_BDX_PLAYER,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(4),
     &li.bd_pushing_prob_with_sweet,	100
   },
   {
-    EL_BD_PLAYER,			-1,
+    EL_BDX_PLAYER,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(5),
     &li.bd_push_mega_rock_with_sweet,	FALSE
   },
   {
-    EL_BD_PLAYER,			-1,
+    EL_BDX_PLAYER,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(6),
     &li.bd_snap_element,		EL_EMPTY
   },
 
   {
-    EL_BD_SAND_1,			-1,
+    EL_BDX_SAND_1,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_sand_looks_like,		EL_BD_SAND_1
+    &li.bd_sand_looks_like,		EL_BDX_SAND_1
   },
 
   {
-    EL_BD_ROCK_NATIVE,			-1,
+    EL_BDX_ROCK,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_rock_turns_to_on_falling,	EL_BD_ROCK_NATIVE_FALLING
+    &li.bd_rock_turns_to_on_falling,	EL_BDX_ROCK_FALLING
   },
   {
-    EL_BD_ROCK_NATIVE,			-1,
+    EL_BDX_ROCK,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_rock_turns_to_on_impact,	EL_BD_ROCK_NATIVE
+    &li.bd_rock_turns_to_on_impact,	EL_BDX_ROCK
   },
 
   {
-    EL_BD_DIAMOND_NATIVE,		-1,
+    EL_BDX_DIAMOND,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.score[SC_DIAMOND_EXTRA],	20
   },
   {
-    EL_BD_DIAMOND_NATIVE,		-1,
+    EL_BDX_DIAMOND,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_diamond_turns_to_on_falling,	EL_BD_DIAMOND_NATIVE_FALLING
+    &li.bd_diamond_turns_to_on_falling,	EL_BDX_DIAMOND_FALLING
   },
   {
-    EL_BD_DIAMOND_NATIVE,		-1,
+    EL_BDX_DIAMOND,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_diamond_turns_to_on_impact,	EL_BD_DIAMOND_NATIVE
+    &li.bd_diamond_turns_to_on_impact,	EL_BDX_DIAMOND
   },
 
   {
-    EL_BD_FIREFLY_1,			-1,
+    EL_BDX_FIREFLY_1,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_firefly_1_explodes_to,	EL_BD_EXPLODING_1
+    &li.bd_firefly_1_explodes_to,	EL_BDX_EXPLODING_1
   },
 
   {
-    EL_BD_FIREFLY_2,			-1,
+    EL_BDX_FIREFLY_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_firefly_2_explodes_to,	EL_BD_EXPLODING_1
+    &li.bd_firefly_2_explodes_to,	EL_BDX_EXPLODING_1
   },
 
   {
-    EL_BD_BUTTERFLY_1,			-1,
+    EL_BDX_BUTTERFLY_1,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_butterfly_1_explodes_to,	EL_BD_DIAMOND_NATIVE_GROWING_1
+    &li.bd_butterfly_1_explodes_to,	EL_BDX_DIAMOND_GROWING_1
   },
 
   {
-    EL_BD_BUTTERFLY_2,			-1,
+    EL_BDX_BUTTERFLY_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_butterfly_2_explodes_to,	EL_BD_DIAMOND_NATIVE_GROWING_1
+    &li.bd_butterfly_2_explodes_to,	EL_BDX_DIAMOND_GROWING_1
   },
 
   {
-    EL_BD_STONEFLY,			-1,
+    EL_BDX_STONEFLY,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_stonefly_explodes_to,	EL_BD_ROCK_NATIVE_GROWING_1
+    &li.bd_stonefly_explodes_to,	EL_BDX_ROCK_GROWING_1
   },
 
   {
-    EL_BD_DRAGONFLY,			-1,
+    EL_BDX_DRAGONFLY,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_dragonfly_explodes_to,	EL_BD_EXPLODING_1
+    &li.bd_dragonfly_explodes_to,	EL_BDX_EXPLODING_1
   },
 
   {
-    EL_BD_DIAMOND_NATIVE_GROWING_5,	-1,
+    EL_BDX_DIAMOND_GROWING_5,	-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_diamond_birth_turns_to,	EL_BD_DIAMOND_NATIVE
+    &li.bd_diamond_birth_turns_to,	EL_BDX_DIAMOND
   },
 
   {
-    EL_BD_BOMB_EXPLODING_4,		-1,
+    EL_BDX_BOMB_EXPLODING_4,		-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_bomb_explosion_turns_to,	EL_BD_WALL
+    &li.bd_bomb_explosion_turns_to,	EL_BDX_WALL
   },
 
   {
-    EL_BD_NITRO_PACK_EXPLODING_4,	-1,
+    EL_BDX_NITRO_PACK_EXPLODING_4,	-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
     &li.bd_nitro_explosion_turns_to,	EL_EMPTY
   },
 
   {
-    EL_BD_EXPLODING_5,			-1,
+    EL_BDX_EXPLODING_5,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
     &li.bd_explosion_turns_to,		EL_EMPTY
   },
 
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_magic_wall_wait_hatching,	FALSE
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_magic_wall_stops_amoeba,	TRUE
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
     &li.bd_magic_wall_zero_infinite,	TRUE
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
     &li.bd_magic_wall_break_scan,	FALSE
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.bd_magic_wall_time,		999
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_magic_wall_diamond_to,	EL_BD_ROCK_NATIVE_FALLING
+    &li.bd_magic_wall_diamond_to,	EL_BDX_ROCK_FALLING
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_magic_wall_rock_to,		EL_BD_DIAMOND_NATIVE_FALLING
+    &li.bd_magic_wall_rock_to,		EL_BDX_DIAMOND_FALLING
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_magic_wall_mega_rock_to,	EL_BD_NITRO_PACK_FALLING
+    &li.bd_magic_wall_mega_rock_to,	EL_BDX_NITRO_PACK_FALLING
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &li.bd_magic_wall_nut_to,		EL_BD_NUT_FALLING
+    &li.bd_magic_wall_nut_to,		EL_BDX_NUT_FALLING
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_magic_wall_nitro_pack_to,	EL_BD_MEGA_ROCK_FALLING
+    &li.bd_magic_wall_nitro_pack_to,	EL_BDX_MEGA_ROCK_FALLING
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
-    &li.bd_magic_wall_flying_diamond_to, EL_BD_FLYING_ROCK_FLYING
+    &li.bd_magic_wall_flying_diamond_to, EL_BDX_FLYING_ROCK_FLYING
   },
   {
-    EL_BD_MAGIC_WALL_NATIVE,		-1,
+    EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(8),
-    &li.bd_magic_wall_flying_rock_to,	EL_BD_FLYING_DIAMOND_FLYING
+    &li.bd_magic_wall_flying_rock_to,	EL_BDX_FLYING_DIAMOND_FLYING
   },
 
   {
-    EL_BD_CLOCK,			-1,
+    EL_BDX_CLOCK,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_clock_extra_time,		30
   },
 
   {
-    EL_BD_VOODOO_DOLL,			-1,
+    EL_BDX_VOODOO_DOLL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_voodoo_collects_diamonds,	FALSE
   },
   {
-    EL_BD_VOODOO_DOLL,			-1,
+    EL_BDX_VOODOO_DOLL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_voodoo_hurt_kills_player,	FALSE
   },
   {
-    EL_BD_VOODOO_DOLL,			-1,
+    EL_BDX_VOODOO_DOLL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
     &li.bd_voodoo_dies_by_rock,		FALSE
   },
   {
-    EL_BD_VOODOO_DOLL,			-1,
+    EL_BDX_VOODOO_DOLL,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
     &li.bd_voodoo_vanish_by_explosion,	TRUE
   },
   {
-    EL_BD_VOODOO_DOLL,			-1,
+    EL_BDX_VOODOO_DOLL,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(5),
     &li.bd_voodoo_penalty_time,		30
   },
 
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_slime_is_predictable,	TRUE
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
     &li.bd_slime_permeability_rate,	100
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
     &li.bd_slime_permeability_bits_c64,	0
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(1),
     &li.bd_slime_random_seed_c64,	-1
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_slime_eats_element_1,	EL_BD_DIAMOND_NATIVE
+    &li.bd_slime_eats_element_1,	EL_BDX_DIAMOND
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_slime_converts_to_element_1,	EL_BD_DIAMOND_NATIVE_FALLING
+    &li.bd_slime_converts_to_element_1,	EL_BDX_DIAMOND_FALLING
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_slime_eats_element_2,	EL_BD_ROCK_NATIVE
+    &li.bd_slime_eats_element_2,	EL_BDX_ROCK
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_slime_converts_to_element_2,	EL_BD_ROCK_NATIVE_FALLING
+    &li.bd_slime_converts_to_element_2,	EL_BDX_ROCK_FALLING
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &li.bd_slime_eats_element_3,	EL_BD_NUT
+    &li.bd_slime_eats_element_3,	EL_BDX_NUT
   },
   {
-    EL_BD_SLIME,			-1,
+    EL_BDX_SLIME,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_slime_converts_to_element_3,	EL_BD_NUT_FALLING
+    &li.bd_slime_converts_to_element_3,	EL_BDX_NUT_FALLING
   },
 
   {
-    EL_BD_ACID,				-1,
+    EL_BDX_ACID,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_acid_eats_element,		EL_BD_SAND_1
+    &li.bd_acid_eats_element,		EL_BDX_SAND_1
   },
   {
-    EL_BD_ACID,				-1,
+    EL_BDX_ACID,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_acid_spread_rate,		3
   },
   {
-    EL_BD_ACID,				-1,
+    EL_BDX_ACID,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_acid_turns_to_element,	EL_BD_EXPLODING_3
+    &li.bd_acid_turns_to_element,	EL_BDX_EXPLODING_3
   },
 
   {
-    EL_BD_BITER,			-1,
+    EL_BDX_BITER,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_biter_move_delay,		0
   },
   {
-    EL_BD_BITER,			-1,
+    EL_BDX_BITER,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_biter_eats_element,		EL_BD_DIAMOND_NATIVE
+    &li.bd_biter_eats_element,		EL_BDX_DIAMOND
   },
 
   {
-    EL_BD_BLADDER,			-1,
+    EL_BDX_BLADDER,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_bladder_converts_by_element,	EL_BD_VOODOO_DOLL
+    &li.bd_bladder_converts_by_element,	EL_BDX_VOODOO_DOLL
   },
 
   {
-    EL_BD_EXPANDABLE_WALL_ANY,		-1,
+    EL_BDX_EXPANDABLE_WALL_ANY,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_change_expanding_wall,	FALSE
   },
   {
-    EL_BD_EXPANDABLE_WALL_ANY,		-1,
+    EL_BDX_EXPANDABLE_WALL_ANY,		-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_expanding_wall_looks_like,	EL_BD_WALL
+    &li.bd_expanding_wall_looks_like,	EL_BDX_WALL
   },
 
   {
-    EL_BD_REPLICATOR,			-1,
+    EL_BDX_REPLICATOR,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_replicators_active,		TRUE
   },
   {
-    EL_BD_REPLICATOR,			-1,
+    EL_BDX_REPLICATOR,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
     &li.bd_replicator_create_delay,	4
   },
 
   {
-    EL_BD_CONVEYOR_LEFT,		-1,
+    EL_BDX_CONVEYOR_LEFT,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_conveyor_belts_active,	TRUE
   },
   {
-    EL_BD_CONVEYOR_LEFT,		-1,
+    EL_BDX_CONVEYOR_LEFT,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_conveyor_belts_changed,	FALSE
   },
 
   {
-    EL_BD_WATER,			-1,
+    EL_BDX_WATER,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_water_cannot_flow_down,	FALSE
   },
 
   {
-    EL_BD_NUT,				-1,
+    EL_BDX_NUT,				-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_nut_content,			EL_BD_NUT_BREAKING_1
+    &li.bd_nut_content,			EL_BDX_NUT_BREAKING_1
   },
 
   {
-    EL_BD_PNEUMATIC_HAMMER,		-1,
+    EL_BDX_PNEUMATIC_HAMMER,		-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_hammer_walls_break_delay,	5
   },
   {
-    EL_BD_PNEUMATIC_HAMMER,		-1,
+    EL_BDX_PNEUMATIC_HAMMER,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_hammer_walls_reappear,	FALSE
   },
   {
-    EL_BD_PNEUMATIC_HAMMER,		-1,
+    EL_BDX_PNEUMATIC_HAMMER,		-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
     &li.bd_hammer_walls_reappear_delay,	100
   },
 
   {
-    EL_BD_ROCKET_LAUNCHER,		-1,
+    EL_BDX_ROCKET_LAUNCHER,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_infinite_rockets,		FALSE
   },
 
   {
-    EL_BD_SKELETON,			-1,
+    EL_BDX_SKELETON,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_num_skeletons_needed_for_pot, 5
   },
   {
-    EL_BD_SKELETON,			-1,
+    EL_BDX_SKELETON,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
     &li.bd_skeleton_worth_num_diamonds,	0
   },
 
   {
-    EL_BD_CREATURE_SWITCH,		-1,
+    EL_BDX_CREATURE_SWITCH,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
     &li.bd_creatures_start_backwards,	FALSE
   },
   {
-    EL_BD_CREATURE_SWITCH,		-1,
+    EL_BDX_CREATURE_SWITCH,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_creatures_turn_on_hatching,	FALSE
   },
   {
-    EL_BD_CREATURE_SWITCH,		-1,
+    EL_BDX_CREATURE_SWITCH,		-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.bd_creatures_auto_turn_delay,	0
   },
 
   {
-    EL_BD_GRAVITY_SWITCH,		-1,
+    EL_BDX_GRAVITY_SWITCH,		-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_gravity_direction,		GD_MV_DOWN
   },
   {
-    EL_BD_GRAVITY_SWITCH,		-1,
+    EL_BDX_GRAVITY_SWITCH,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_gravity_switch_active,	FALSE
   },
   {
-    EL_BD_GRAVITY_SWITCH,		-1,
+    EL_BDX_GRAVITY_SWITCH,		-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
     &li.bd_gravity_switch_delay,	10
   },
   {
-    EL_BD_GRAVITY_SWITCH,		-1,
+    EL_BDX_GRAVITY_SWITCH,		-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
     &li.bd_gravity_affects_all,		TRUE
   },
@@ -1134,88 +1134,88 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
-    EL_BD_AMOEBA_1,			-1,
+    EL_BDX_AMOEBA_1,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.bd_amoeba_1_threshold_too_big,	200
   },
   {
-    EL_BD_AMOEBA_1,			-1,
+    EL_BDX_AMOEBA_1,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
     &li.bd_amoeba_1_slow_growth_time,	200
   },
   {
-    EL_BD_AMOEBA_1,			-1,
+    EL_BDX_AMOEBA_1,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_amoeba_1_content_too_big,	EL_BD_ROCK_NATIVE
+    &li.bd_amoeba_1_content_too_big,	EL_BDX_ROCK
   },
   {
-    EL_BD_AMOEBA_1,			-1,
+    EL_BDX_AMOEBA_1,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_amoeba_1_content_enclosed,	EL_BD_DIAMOND_NATIVE
+    &li.bd_amoeba_1_content_enclosed,	EL_BDX_DIAMOND
   },
   {
-    EL_BD_AMOEBA_1,			-1,
+    EL_BDX_AMOEBA_1,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_amoeba_1_slow_growth_rate,	3
   },
   {
-    EL_BD_AMOEBA_1,			-1,
+    EL_BDX_AMOEBA_1,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
     &li.bd_amoeba_1_fast_growth_rate,	25
   },
   {
-    EL_BD_AMOEBA_1,			-1,
+    EL_BDX_AMOEBA_1,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
     &li.bd_amoeba_wait_for_hatching,	FALSE
   },
   {
-    EL_BD_AMOEBA_1,			-1,
+    EL_BDX_AMOEBA_1,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
     &li.bd_amoeba_start_immediately,	TRUE
   },
 
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
     &li.bd_amoeba_2_threshold_too_big,	200
   },
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
     &li.bd_amoeba_2_slow_growth_time,	200
   },
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_amoeba_2_content_too_big,	EL_BD_ROCK_NATIVE
+    &li.bd_amoeba_2_content_too_big,	EL_BDX_ROCK
   },
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_amoeba_2_content_enclosed,	EL_BD_DIAMOND_NATIVE
+    &li.bd_amoeba_2_content_enclosed,	EL_BDX_DIAMOND
   },
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
     &li.bd_amoeba_2_content_exploding,	EL_EMPTY
   },
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_amoeba_2_content_looks_like,	EL_BD_AMOEBA_2
+    &li.bd_amoeba_2_content_looks_like,	EL_BDX_AMOEBA_2
   },
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_amoeba_2_slow_growth_rate,	3
   },
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
     &li.bd_amoeba_2_fast_growth_rate,	25
   },
   {
-    EL_BD_AMOEBA_2,			-1,
+    EL_BDX_AMOEBA_2,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
     &li.bd_amoeba_2_explode_by_amoeba,	TRUE
   },
@@ -11029,11 +11029,11 @@ static struct TokenInfo editor_cascade_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
-    &setup.editor_cascade.el_bd_native,		"editor.cascade.el_bd_native"
+    &setup.editor_cascade.el_bdx,		"editor.cascade.el_bdx"
   },
   {
     TYPE_SWITCH,
-    &setup.editor_cascade.el_bd_effects,	"editor.cascade.el_bd_effects"
+    &setup.editor_cascade.el_bdx_effects,	"editor.cascade.el_bdx_effects"
   },
   {
     TYPE_SWITCH,
@@ -11930,8 +11930,8 @@ static void setSetupInfoToDefaults_ServerSetup(struct SetupInfo *si)
 static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
 {
   si->editor_cascade.el_bd		= TRUE;
-  si->editor_cascade.el_bd_native	= TRUE;
-  si->editor_cascade.el_bd_effects	= FALSE;
+  si->editor_cascade.el_bdx		= TRUE;
+  si->editor_cascade.el_bdx_effects	= FALSE;
   si->editor_cascade.el_em		= TRUE;
   si->editor_cascade.el_emc		= TRUE;
   si->editor_cascade.el_rnd		= TRUE;
