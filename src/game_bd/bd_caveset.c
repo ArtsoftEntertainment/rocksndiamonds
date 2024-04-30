@@ -129,7 +129,7 @@ void gd_caveset_clear(void)
   // always newly create this
   // create pseudo cave containing default values
   gd_caveset_data = gd_caveset_data_new();
-  gd_strcpy(gd_caveset_data->name, getCurrentLevelsetName());
+  gd_strcpy(gd_caveset_data->name, leveldir_current->name);
 }
 
 // return number of caves currently in memory.

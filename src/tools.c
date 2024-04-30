@@ -11921,11 +11921,6 @@ void OpenURLFromHash(SetupFileHash *hash, int hash_key)
   OpenURL(getHashEntry(hash, int2str(hash_key, 0)));
 }
 
-char *getCurrentLevelsetName(void)
-{
-  return leveldir_current->name;
-}
-
 
 // ============================================================================
 // tests
