@@ -2675,13 +2675,18 @@ static void ActivateLevelTemplate(void)
   }
 }
 
+boolean isLevelsetFilename_BD(char *filename)
+{
+  return (strSuffixLower(filename, ".bd") ||
+	  strSuffixLower(filename, ".bdr") ||
+	  strSuffixLower(filename, ".brc") ||
+	  strSuffixLower(filename, ".gds"));
+}
+
 static boolean checkForPackageFromBasename_BD(char *basename)
 {
   // check for native BD level file extensions
-  if (!strSuffixLower(basename, ".bd") &&
-      !strSuffixLower(basename, ".bdr") &&
-      !strSuffixLower(basename, ".brc") &&
-      !strSuffixLower(basename, ".gds"))
+  if (!isLevelsetFilename_BD(basename))
     return FALSE;
 
   // check for standard single-level BD files (like "001.bd")

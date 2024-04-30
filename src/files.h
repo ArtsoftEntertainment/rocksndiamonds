@@ -29,6 +29,7 @@ void setElementChangePages(struct ElementInfo *, int);
 void setElementChangeInfoToDefaults(struct ElementChangeInfo *);
 void copyElementInfo(struct ElementInfo *, struct ElementInfo *);
 
+boolean isLevelsetFilename_BD(char *);
 char *getDefaultLevelFilename(int);
 char *getLocalLevelTemplateFilename(void);
 char *getGlobalLevelTemplateFilename(void);
