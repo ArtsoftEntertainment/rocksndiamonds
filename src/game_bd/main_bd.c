@@ -181,6 +181,12 @@ boolean SaveNativeLevel_BD(char *filename)
   return gd_caveset_save_to_file(filename);
 }
 
+void DumpLevelset_BD(void)
+{
+  Print("Number of levels:   %d\n", 5 * gd_caveset_count());
+  Print("First level number: %d\n", 1);
+}
+
 
 // ============================================================================
 // game engine functions

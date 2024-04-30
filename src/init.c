@@ -5196,6 +5196,7 @@ static void InitGlobal(void)
   global.autoplay_leveldir = NULL;
   global.patchtapes_leveldir = NULL;
   global.convert_leveldir = NULL;
+  global.dumplevelset_leveldir = NULL;
   global.dumplevel_leveldir = NULL;
   global.dumptape_leveldir = NULL;
   global.create_sketch_images_dir = NULL;
@@ -5306,6 +5307,23 @@ static void Execute_Command(char *command)
 					     helptext_config[i].value));
 
     exit(0);
+  }
+  else if (strPrefix(command, "dump levelset "))
+  {
+    char *filename = &command[14];
+
+    if (fileExists(filename) && isLevelsetFilename_BD(filename))
+    {
+      DumpLevelsetFromFilename_BD(filename);
+
+      exit(0);
+    }
+
+    char *leveldir = getStringCopy(filename);	// read command parameters
+
+    global.dumplevelset_leveldir = leveldir;
+
+    program.headless = TRUE;
   }
   else if (strPrefix(command, "dump level "))
   {
@@ -6689,6 +6707,11 @@ void OpenAll(void)
   else if (global.convert_leveldir)
   {
     ConvertLevels();
+    return;
+  }
+  else if (global.dumplevelset_leveldir)
+  {
+    DumpLevelset();
     return;
   }
   else if (global.dumplevel_leveldir)

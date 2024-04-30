@@ -103,6 +103,7 @@ void setLevelInfoToDefaults_BD_Ext(int, int);
 void setLevelInfoToDefaults_BD(void);
 boolean LoadNativeLevel_BD(char *, int, boolean);
 boolean SaveNativeLevel_BD(char *);
+void DumpLevelset_BD(void);
 
 void PreparePreviewTileBitmap_BD(Bitmap *, int);
 void SetPreviewTileBitmapReference_BD(Bitmap *);

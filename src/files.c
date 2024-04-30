@@ -9041,6 +9041,46 @@ void DumpLevels(void)
   CloseAllAndExit(0);
 }
 
+void DumpLevelsetFromFilename_BD(char *filename)
+{
+  if (leveldir_current == NULL)	// no levelsets loaded yet
+    bd_open_all();
+
+  if (!LoadNativeLevel_BD(filename, 0, FALSE))
+    CloseAllAndExit(0);		// function has already printed warning
+
+  PrintLine("-", 79);
+  Print("Levelset '%s'\n", filename);
+  PrintLine("-", 79);
+
+  DumpLevelset_BD();
+
+  PrintLine("-", 79);
+
+  CloseAllAndExit(0);
+}
+
+void DumpLevelset(void)
+{
+  static LevelDirTree *dumplevelset_leveldir = NULL;
+
+  dumplevelset_leveldir = getTreeInfoFromIdentifier(leveldir_first,
+                                                    global.dumplevelset_leveldir);
+  if (dumplevelset_leveldir == NULL)
+    Fail("no such level identifier: '%s'", global.dumplevelset_leveldir);
+
+  PrintLine("-", 79);
+  Print("Levelset '%s'\n", dumplevelset_leveldir->identifier);
+  PrintLine("-", 79);
+
+  Print("Number of levels:   %d\n", dumplevelset_leveldir->levels);
+  Print("First level number: %d\n", dumplevelset_leveldir->first_level);
+
+  PrintLine("-", 79);
+
+  CloseAllAndExit(0);
+}
+
 
 // ============================================================================
 // tape file functions

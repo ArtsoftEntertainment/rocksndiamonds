@@ -3884,6 +3884,8 @@ struct GlobalInfo
   char *convert_leveldir;
   int convert_level_nr;
 
+  char *dumplevelset_leveldir;
+
   char *dumplevel_leveldir;
   int dumplevel_level_nr;
 

@@ -9078,6 +9078,7 @@ static void print_usage(void)
 	"  \"print editorsetup.conf\"         print default editor config\n"
 	"  \"print helpanim.conf\"            print default helpanim config\n"
 	"  \"print helptext.conf\"            print default helptext config\n"
+	"  \"dump levelset FILE|LEVELDIR\"    dump levelset info for LEVELDIR\n"
 	"  \"dump level FILE\"                dump level data from FILE\n"
 	"  \"dump tape FILE\"                 dump tape data from FILE\n"
 	"  \"autoplay LEVELDIR [NR ...]\"     play level tapes for LEVELDIR\n"

@@ -46,6 +46,8 @@ void SaveLevelTemplate(void);
 void SaveNativeLevel(struct LevelInfo *);
 void DumpLevel(struct LevelInfo *);
 void DumpLevels(void);
+void DumpLevelsetFromFilename_BD(char *);
+void DumpLevelset(void);
 boolean SaveLevelChecked(int);
 
 void CopyNativeLevel_RND_to_Native(struct LevelInfo *);
