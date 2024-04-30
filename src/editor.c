@@ -12123,7 +12123,7 @@ static struct
   { EL_EMC_DRIPPER,		&level.amoeba_speed,			TEXT_AMOEBA_SPEED	},
   { EL_BDX_AMOEBA_1,		&level.bd_amoeba_1_threshold_too_big,	TEXT_AMOEBA_THRESHOED	},
   { EL_BDX_AMOEBA_1,		&level.bd_amoeba_1_slow_growth_time,	TEXT_AMOEBA_SLOW_TIME	},
-  { EL_BDX_AMOEBA_2,		&level.bd_amoeba_1_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
+  { EL_BDX_AMOEBA_1,		&level.bd_amoeba_1_slow_growth_rate,	TEXT_AMOEBA_SLOW_RATE,
 				0, 100								},
   { EL_BDX_AMOEBA_1,		&level.bd_amoeba_1_fast_growth_rate,	TEXT_AMOEBA_FAST_RATE,
 				0, 100								},
@@ -12358,8 +12358,8 @@ static void DrawPropertiesConfig(void)
 			       (CAN_GROW(properties_element)			? 1 : 0) +
 			       (COULD_MOVE_INTO_ACID(properties_element)	? 1 : 0) +
 			       (MAYBE_DONT_COLLIDE_WITH(properties_element)	? 1 : 0) +
-			       (properties_element == EL_BDX_AMOEBA_1		? 3 : 0) +
-			       (properties_element == EL_BDX_AMOEBA_2		? 3 : 0) +
+			       (properties_element == EL_BDX_AMOEBA_1		? 2 : 0) +
+			       (properties_element == EL_BDX_AMOEBA_2		? 2 : 0) +
 			       (properties_element == EL_BDX_MAGIC_WALL		? 1 : 0) +
 			       (properties_element == EL_BDX_VOODOO_DOLL	? 4 : 0) +
 			       (properties_element == EL_BDX_SLIME		? 1 : 0) +
