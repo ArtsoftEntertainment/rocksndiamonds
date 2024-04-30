@@ -11706,10 +11706,10 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;
   si->bd_show_invisible_outbox = FALSE;
-  si->bd_smooth_movements = STATE_AUTO;
+  si->bd_smooth_movements = STATE_TRUE;
   si->bd_pushing_graphics = STATE_TRUE;
   si->bd_up_down_graphics = STATE_TRUE;
-  si->bd_skip_falling_sounds = STATE_AUTO;
+  si->bd_skip_falling_sounds = STATE_TRUE;
   si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
   si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
   si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;
