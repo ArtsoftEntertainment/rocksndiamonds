@@ -538,11 +538,13 @@ static inline boolean el_diggable(const int element)
   return (gd_elements[element & O_MASK].properties & P_DIGGABLE) != 0;
 }
 
+#if 0
 // returns true if the element is collectible
 static inline boolean el_collectible(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_COLLECTIBLE) != 0;
 }
+#endif
 
 // returns true if the element is pushable
 static inline boolean el_pushable(const int element)
