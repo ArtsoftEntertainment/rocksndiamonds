@@ -87,7 +87,8 @@ GdCavesetData *gd_caveset_data_new(void)
 
   gd_struct_set_defaults_from_array(data, gd_caveset_properties, caveset_defaults);
 
-  data->levelset_subdir = getStringCopy(leveldir_current->subdir);
+  if (leveldir_current != NULL)
+    data->levelset_subdir = getStringCopy(leveldir_current->subdir);
 
   return data;
 }
@@ -129,7 +130,9 @@ void gd_caveset_clear(void)
   // always newly create this
   // create pseudo cave containing default values
   gd_caveset_data = gd_caveset_data_new();
-  gd_strcpy(gd_caveset_data->name, leveldir_current->name);
+
+  if (leveldir_current != NULL)
+    gd_strcpy(gd_caveset_data->name, leveldir_current->name);
 }
 
 // return number of caves currently in memory.

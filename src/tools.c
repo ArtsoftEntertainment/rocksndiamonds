@@ -10710,6 +10710,9 @@ void InitGraphicInfo_BD(void)
 {
   int i, j;
 
+  if (graphic_info == NULL)		// still at startup phase
+    return;
+
   // always start with reliable default values
   for (i = 0; i < O_MAX_ALL; i++)
   {
