@@ -7166,7 +7166,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_1,				FALSE,
-    EL_DEFAULT,					ACTION_EXPLODING, -1
+    EL_BDX_DEFAULT,				ACTION_EXPLODING, -1
   },
   {
     O_EXPLODE_2,				TRUE,
@@ -7174,7 +7174,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_2,				FALSE,
-    EL_DEFAULT,					ACTION_EXPLODING, -1
+    EL_BDX_DEFAULT,				ACTION_EXPLODING, -1
   },
   {
     O_EXPLODE_3,				TRUE,
@@ -7182,7 +7182,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_3,				FALSE,
-    EL_DEFAULT,					ACTION_EXPLODING, -1
+    EL_BDX_DEFAULT,				ACTION_EXPLODING, -1
   },
   {
     O_EXPLODE_4,				TRUE,
@@ -7190,7 +7190,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_4,				FALSE,
-    EL_DEFAULT,					ACTION_EXPLODING, -1
+    EL_BDX_DEFAULT,				ACTION_EXPLODING, -1
   },
   {
     O_EXPLODE_5,				TRUE,
@@ -7198,7 +7198,7 @@ bd_object_mapping_list[] =
   },
   {
     O_EXPLODE_5,				FALSE,
-    EL_DEFAULT,					ACTION_EXPLODING, -1
+    EL_BDX_DEFAULT,				ACTION_EXPLODING, -1
   },
   {
     O_PRE_STONE_1,				TRUE,
