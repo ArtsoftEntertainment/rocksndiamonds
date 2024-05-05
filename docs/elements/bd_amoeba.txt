@@ -1,6 +1,7 @@
-The BD style Amoeba grows randomly through empty space and sand.
-When it is enclosed, it stops growing and transforms into diamonds (or
-some other, configurable game element).
+The BD style amoeba has some special properties: When it is completely
+surrounded, it instantly turns into the specified content. But if this
+cannot be achieved in a certain amount of time, this amoeba instantly
+turns to BD boulders instead. BD amoeba is the only amoeba that can be
+smothered by the player.
 
-When it has grown too big, it suddenly transforms into rocks. At the beginning,
-it can grow slowly, but after some time it starts growing very rapidly.
+All amoeba types must share the same settings.

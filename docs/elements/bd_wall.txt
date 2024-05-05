@@ -1,5 +1,6 @@
-This is a BD style wall. It cannot be moved and cannot be passed by the player,
-but explosion will destroy it.
+This is the BD style wall.
 
-Even though it may not look like that, objects that can fall will slip off this
-wall to the left or to the right.
+Unlike most other walls, falling objects slip off this wall,
+although it does not look rounded or crumbled.
+
+It can be destroyed by explosions.

@@ -1,3 +1,2 @@
-This is a BD style rock (also called stone or boulder). It can be pushed by the
-player, and can be dropped on enemies to make them explode.
-This rock can be jump-pushed by snapping it.
+This is a BD style rock. It's not much different from a regular rock,
+but it can be jump-pushed by snapping it.

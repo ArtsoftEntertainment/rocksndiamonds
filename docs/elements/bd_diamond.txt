@@ -1,1 +1,2 @@
-A certain amount of these diamonds must be collected to solve a BD style level.
+BD style levels require a certain amount of these diamonds to be collected
+to complete the level.
