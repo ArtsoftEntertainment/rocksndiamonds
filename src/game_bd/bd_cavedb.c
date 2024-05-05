@@ -282,9 +282,9 @@ GdElements gd_elements[] =
   { O_DRAGONFLY_3, N_("Dragonfly, right"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "DRAGONFLYr", 0, i_dragonfly_3, -336, -336, 256  },   // has ckdelay
   { O_DRAGONFLY_4, N_("Dragonfly, down"), P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE, "DRAGONFLYd", 0, i_dragonfly_4, -336, -336, 256  },    // has ckdelay
 
-  { O_PRE_PL_1, N_("Player birth (1)"), 0, "GUYBIRTH1", 0, 32, 32, 32 },
-  { O_PRE_PL_2, N_("Player birth (2)"), 0, "GUYBIRTH2", 0, 33, 33, 33 },
-  { O_PRE_PL_3, N_("Player birth (3)"), 0, "GUYBIRTH3", 0, 34, 34, 34 },
+  { O_PRE_PL_1, N_("Player birth (1)"), P_GROWING, "GUYBIRTH1", 0, 32, 32, 32 },
+  { O_PRE_PL_2, N_("Player birth (2)"), P_GROWING, "GUYBIRTH2", 0, 33, 33, 33 },
+  { O_PRE_PL_3, N_("Player birth (3)"), P_GROWING, "GUYBIRTH3", 0, 34, 34, 34 },
   { O_PLAYER, N_("Player"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUY", 0, i_player, i_player, 35, 32 },    // has ckdelay
   { O_PLAYER_BOMB, N_("Player with bomb"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYBOMB", 0, 42, 42, 42, 25 },    // has ckdelay
   { O_PLAYER_ROCKET_LAUNCHER, N_("Player with rocket launcher"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYROCKETLAUNCER", 0, 369, 369, 369, 25 },    // has ckdelay
@@ -310,28 +310,28 @@ GdElements gd_elements[] =
   { O_NITRO_PACK_F, N_("Nitro pack, falling"), P_EXPLODES_BY_HIT | P_FALLING, "NITROf", 0, i_nitro_pack_f, i_nitro_pack_f, 288 },
   { O_NITRO_PACK_EXPLODE, N_("Nitro pack, triggered"), P_EXPLODES_BY_HIT, "NITROtriggered", 0, i_nitro_explode, i_nitro_explode, 288 },
 
-  { O_PRE_CLOCK_1, N_("Clock birth (1)"), P_EXPLOSION_FIRST_STAGE, "CLOCKBIRTH1", 0, 28, 28, 28, 280 },    // has ckdelay
-  { O_PRE_CLOCK_2, N_("Clock birth (2)"), 0, "CLOCKBIRTH2", 0, 29, 29, 29, 280 },    // has ckdelay
-  { O_PRE_CLOCK_3, N_("Clock birth (3)"), 0, "CLOCKBIRTH3", 0, 30, 30, 30, 280 },    // has ckdelay
-  { O_PRE_CLOCK_4, N_("Clock birth (4)"), 0, "CLOCKBIRTH4", 0, 31, 31, 31, 280 },    // has ckdelay
-  { O_PRE_DIA_1, N_("Diamond birth (1)"), P_EXPLOSION_FIRST_STAGE, "DIAMONDBIRTH1", 0, 56, 56, 56, 280 },    // has ckdelay
-  { O_PRE_DIA_2, N_("Diamond birth (2)"), 0, "DIAMONDBIRTH2", 0, 57, 57, 57, 280 },    // has ckdelay
-  { O_PRE_DIA_3, N_("Diamond birth (3)"), 0, "DIAMONDBIRTH3", 0, 58, 58, 58, 280 },    // has ckdelay
-  { O_PRE_DIA_4, N_("Diamond birth (4)"), 0, "DIAMONDBIRTH4", 0, 59, 59, 59, 280 },    // has ckdelay
-  { O_PRE_DIA_5, N_("Diamond birth (5)"), 0, "DIAMONDBIRTH5", 0, 60, 60, 60, 280 },    // has ckdelay
+  { O_PRE_CLOCK_1, N_("Clock birth (1)"), P_GROWING | P_EXPLOSION_FIRST_STAGE, "CLOCKBIRTH1", 0, 28, 28, 28, 280 },    // has ckdelay
+  { O_PRE_CLOCK_2, N_("Clock birth (2)"), P_GROWING, "CLOCKBIRTH2", 0, 29, 29, 29, 280 },    // has ckdelay
+  { O_PRE_CLOCK_3, N_("Clock birth (3)"), P_GROWING, "CLOCKBIRTH3", 0, 30, 30, 30, 280 },    // has ckdelay
+  { O_PRE_CLOCK_4, N_("Clock birth (4)"), P_GROWING, "CLOCKBIRTH4", 0, 31, 31, 31, 280 },    // has ckdelay
+  { O_PRE_DIA_1, N_("Diamond birth (1)"), P_GROWING | P_EXPLOSION_FIRST_STAGE, "DIAMONDBIRTH1", 0, 56, 56, 56, 280 },    // has ckdelay
+  { O_PRE_DIA_2, N_("Diamond birth (2)"), P_GROWING, "DIAMONDBIRTH2", 0, 57, 57, 57, 280 },    // has ckdelay
+  { O_PRE_DIA_3, N_("Diamond birth (3)"), P_GROWING, "DIAMONDBIRTH3", 0, 58, 58, 58, 280 },    // has ckdelay
+  { O_PRE_DIA_4, N_("Diamond birth (4)"), P_GROWING, "DIAMONDBIRTH4", 0, 59, 59, 59, 280 },    // has ckdelay
+  { O_PRE_DIA_5, N_("Diamond birth (5)"), P_GROWING, "DIAMONDBIRTH5", 0, 60, 60, 60, 280 },    // has ckdelay
   { O_EXPLODE_1, N_("Explosion (1)"), P_EXPLOSION | P_EXPLOSION_FIRST_STAGE, "EXPLOSION1", 0, 43, 43, 43, 280 },    // has ckdelay
   { O_EXPLODE_2, N_("Explosion (2)"), P_EXPLOSION, "EXPLOSION2", 0, 44, 44, 44, 280 },    // has ckdelay
   { O_EXPLODE_3, N_("Explosion (3)"), P_EXPLOSION, "EXPLOSION3", 0, 45, 45, 45, 280 },    // has ckdelay
   { O_EXPLODE_4, N_("Explosion (4)"), P_EXPLOSION, "EXPLOSION4", 0, 46, 46, 46, 280 },    // has ckdelay
   { O_EXPLODE_5, N_("Explosion (5)"), P_EXPLOSION, "EXPLOSION5", 0, 47, 47, 47, 280 },    // has ckdelay
-  { O_PRE_STONE_1, N_("Stone birth (1)"), P_EXPLOSION_FIRST_STAGE, "BOULDERBIRTH1", 0, 36, 36, 36, 280 },    // has ckdelay
-  { O_PRE_STONE_2, N_("Stone birth (2)"), 0, "BOULDERBIRTH2", 0, 37, 37, 37, 280 },    // has ckdelay
-  { O_PRE_STONE_3, N_("Stone birth (3)"), 0, "BOULDERBIRTH3", 0, 38, 38, 38, 280 },    // has ckdelay
-  { O_PRE_STONE_4, N_("Stone birth (4)"), 0, "BOULDERBIRTH4", 0, 39, 39, 39, 280 },    // has ckdelay
-  { O_PRE_STEEL_1, N_("Steel birth (1)"), P_EXPLOSION_FIRST_STAGE, "STEELWALLBIRTH1", 0, 24, 24, 24, 280 },    // has ckdelay
-  { O_PRE_STEEL_2, N_("Steel birth (2)"), 0, "STEELWALLBIRTH2", 0, 25, 25, 25, 280 },    // has ckdelay
-  { O_PRE_STEEL_3, N_("Steel birth (3)"), 0, "STEELWALLBIRTH3", 0, 26, 26, 26, 280 },    // has ckdelay
-  { O_PRE_STEEL_4, N_("Steel birth (4)"), 0, "STEELWALLBIRTH4", 0, 27, 27, 27, 280 },    // has ckdelay
+  { O_PRE_STONE_1, N_("Stone birth (1)"), P_GROWING | P_EXPLOSION_FIRST_STAGE, "BOULDERBIRTH1", 0, 36, 36, 36, 280 },    // has ckdelay
+  { O_PRE_STONE_2, N_("Stone birth (2)"), P_GROWING, "BOULDERBIRTH2", 0, 37, 37, 37, 280 },    // has ckdelay
+  { O_PRE_STONE_3, N_("Stone birth (3)"), P_GROWING, "BOULDERBIRTH3", 0, 38, 38, 38, 280 },    // has ckdelay
+  { O_PRE_STONE_4, N_("Stone birth (4)"), P_GROWING, "BOULDERBIRTH4", 0, 39, 39, 39, 280 },    // has ckdelay
+  { O_PRE_STEEL_1, N_("Steel birth (1)"), P_GROWING | P_EXPLOSION_FIRST_STAGE, "STEELWALLBIRTH1", 0, 24, 24, 24, 280 },    // has ckdelay
+  { O_PRE_STEEL_2, N_("Steel birth (2)"), P_GROWING, "STEELWALLBIRTH2", 0, 25, 25, 25, 280 },    // has ckdelay
+  { O_PRE_STEEL_3, N_("Steel birth (3)"), P_GROWING, "STEELWALLBIRTH3", 0, 26, 26, 26, 280 },    // has ckdelay
+  { O_PRE_STEEL_4, N_("Steel birth (4)"), P_GROWING, "STEELWALLBIRTH4", 0, 27, 27, 27, 280 },    // has ckdelay
   { O_GHOST_EXPL_1, N_("Ghost explosion (1)"), P_EXPLOSION | P_EXPLOSION_FIRST_STAGE, "GHOSTEXPLOSION1", 0, 80, 80, 80, 280 },    // has ckdelay
   { O_GHOST_EXPL_2, N_("Ghost explosion (2)"), P_EXPLOSION, "GHOSTEXPLOSION2", 0, 81, 81, 81, 280 },    // has ckdelay
   { O_GHOST_EXPL_3, N_("Ghost explosion (3)"), P_EXPLOSION, "GHOSTEXPLOSION3", 0, 82, 82, 82, 280 },    // has ckdelay
