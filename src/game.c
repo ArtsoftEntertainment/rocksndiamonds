@@ -5171,7 +5171,16 @@ void GameEnd(void)
 
   // do not handle game end if game over and automatically asking for game restart
   if (game_over && setup.ask_on_game_over)
+  {
+    // (this is a special case: player pressed "return" key or fire button shortly before
+    // automatically asking to restart the game, so skip asking and restart right away)
+
+    CloseDoor(DOOR_CLOSE_1);
+
+    StartGameActions(network.enabled, setup.autorecord, level.random_seed);
+
     return;
+  }
 
   // do not handle game end if request dialog is already active
   if (checkRequestActive())
