@@ -103,6 +103,20 @@ struct ConfigInfo image_config[] =
 
   // images for Boulder Dash style elements and actions
 
+  { "[bdx_default].exploding",				"RocksElements.png"		},
+  { "[bdx_default].exploding.xpos",			"0"				},
+  { "[bdx_default].exploding.ypos",			"4"				},
+  { "[bdx_default].exploding.frames",			"8"				},
+  { "[bdx_default].exploding.delay",			"5"				},
+  { "[bdx_default].exploding.anim_mode",		"linear"			},
+
+  { "[bdx_default].growing",				"RocksElements.png"		},
+  { "[bdx_default].growing.xpos",			"0"				},
+  { "[bdx_default].growing.ypos",			"4"				},
+  { "[bdx_default].growing.frames",			"8"				},
+  { "[bdx_default].growing.delay",			"4"				},
+  { "[bdx_default].growing.anim_mode",			"linear"			},
+
   { "bdx_player",					UNDEFINED_FILENAME		},
   { "bdx_player.clone_from",				"player_1"			},
   { "bdx_player.down",					UNDEFINED_FILENAME		},
@@ -153,8 +167,6 @@ struct ConfigInfo image_config[] =
   { "bdx_player.snapping.left.clone_from",		"player_1.snapping.left"	},
   { "bdx_player.snapping.right",			UNDEFINED_FILENAME		},
   { "bdx_player.snapping.right.clone_from",		"player_1.snapping.right"	},
-  { "bdx_player.growing",				UNDEFINED_FILENAME		},
-  { "bdx_player.growing.clone_from",			"[default].exploding"		},
 
   { "bdx_player_glued",					UNDEFINED_FILENAME		},
   { "bdx_player_glued.clone_from",			"bdx_player"			},
