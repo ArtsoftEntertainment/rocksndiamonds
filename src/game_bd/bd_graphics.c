@@ -564,6 +564,12 @@ static inline boolean el_falling(const int element)
   return (gd_elements[element & O_MASK].properties & P_FALLING) != 0;
 }
 
+// returns true if the element is growing
+static inline boolean el_growing(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_GROWING) != 0;
+}
+
 // returns true if the element is exploding
 static inline boolean el_explosion(const int element)
 {
@@ -588,9 +594,32 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   boolean is_moving = (is_movable_or_diggable && dir != GD_MV_STILL);
   boolean use_smooth_movements = use_bd_smooth_movements();
 
-  // do not use smooth movement animation for exploding game elements (like player)
-  if (el_explosion(tile) && dir != GD_MV_STILL)
+  // do not use smooth movement animation for growing or exploding game elements
+  if ((el_growing(tile) || el_explosion(tile)) && dir != GD_MV_STILL)
+  {
+    int dx = (dir == GD_MV_LEFT ? +1 : dir == GD_MV_RIGHT ? -1 : 0);
+    int dy = (dir == GD_MV_UP   ? +1 : dir == GD_MV_DOWN  ? -1 : 0);
+    int old_x = cave->getx(cave, x + dx, y + dy);
+    int old_y = cave->gety(cave, x + dx, y + dy);
+    int last_tile_from = game->last_element_buffer[old_y][old_x] & ~SKIPPED;
+    boolean old_is_player = el_player(last_tile_from);
+
+    // check special case of player running into enemy from top or left side
+    if (old_is_player)
+    {
+      game->element_buffer[y][x] = (dir == GD_MV_LEFT  ? O_PLAYER_LEFT  :
+                                    dir == GD_MV_RIGHT ? O_PLAYER_RIGHT :
+                                    dir == GD_MV_UP    ? O_PLAYER_UP    :
+                                    dir == GD_MV_DOWN  ? O_PLAYER_DOWN  : O_PLAYER);
+
+      // draw player running into explosion (else player would disappear immediately)
+      gd_drawcave_tile(dest, game, x, y, draw_masked);
+
+      game->element_buffer[y][x] = tile;
+    }
+
     use_smooth_movements = FALSE;
+  }
 
   // do not use smooth movement animation for player entering exit (engine stopped)
   if (cave->player_state == GD_PL_EXITED)
