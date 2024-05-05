@@ -1,20 +1,33 @@
 # .font: font.text_2
-Thanks to
+Special thanks to
+
+# .font: font.text_3
+Czirkos Zoltan
+
+# .font: font.text_2
+for creating
+
+# .font: font.text_3
+"GDash"
+
+# .font: font.text_2
+used for the
+native Boulder Dash engine
+
+
+
+# .font: font.text_2
+Special thanks to
 
 # .font: font.text_3
 David Tritscher
 
 # .font: font.text_2
-for the code base used for the
-native Emerald Mine engine
-
-
-
-# .font: font.text_2
-Thanks to
+for creating
 
 # .font: font.text_3
-Guido Schulz
+"Emerald Mine for X11"
 
 # .font: font.text_2
-for the initial DOS/Windows port
+used for the
+native Emerald Mine engine

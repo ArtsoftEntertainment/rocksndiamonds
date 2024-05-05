@@ -7,8 +7,7 @@ somebody should be added to this list of credits, please let me know!
 
 Special thanks to Peter Liepa for creating "Boulder Dash" that started it all!
 
-Special thanks to Klaus Heinz and Volker Wertich for creating "Emerald Mine",
-which took this kind of game to a new level!
+Special thanks to Klaus Heinz and Volker Wertich for creating "Emerald Mine"!
 
 Special thanks to Michael Stopp and Philip Jespersen for creating "Supaplex"!
 
@@ -23,9 +22,13 @@ Thanks to Steffest for ideas and inspiration by DX-Boulderdash.
 
 Thanks to Guido Schulz for the initial MS-DOS port of the game.
 
-The native Emerald mine engine was derived from Emerald Mine for X11
-which was developed by David Tritscher as a very compatible Emerald Mine clone.
-Thanks a lot for this contribution!
+The native Boulder Dash engine was derived from GDash, which was developed by
+Czirkos Zoltan as a highly compatible Boulder Dash clone. Thanks a lot for this
+contribution!
+
+The native Emerald mine engine was derived from Emerald Mine for X11, which was
+developed by David Tritscher as a very compatible Emerald Mine clone. Thanks a
+lot for this contribution!
 
 The native Supaplex engine is based on MegaPlex by Frank Schindler, which is
 based on the Supaplex Speed Fix by Herman Perk, which is based on the original

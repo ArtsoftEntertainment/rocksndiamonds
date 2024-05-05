@@ -1,9 +1,25 @@
 # .font: font.text_2
-And not to forget:
-
-Many thanks to
+Thanks to
 
 # .font: font.text_3
-All those who contributed
-levels to this game
-since 1995
+Thomas Andrae
+
+# .font: font.text_2
+and
+
+# .font: font.text_3
+Karl Hörnell
+
+# .font: font.text_2
+for additional toon animations
+
+
+
+# .font: font.text_2
+Thanks to
+
+# .font: font.text_3
+Majid Katzer
+
+# .font: font.text_2
+for additional sounds and music
