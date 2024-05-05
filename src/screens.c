@@ -7984,6 +7984,8 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_ENTER_LIST,	&execSetupChooseGameEngineType,	"Default Game Engine:"		},
   { TYPE_STRING,	&game_engine_type_text,		""				},
   { TYPE_EMPTY,		NULL,				""				},
+  { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,	"Game Graphics Style:"		},
+  { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Boulder Dash"			},
   { TYPE_SWITCH,	&setup.bd_skip_uncovering,	"Skip (un)covering screen:"	},
   { TYPE_SWITCH,	&setup.bd_skip_hatching,	"Skip hatching player:"		},
@@ -8005,7 +8007,6 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Emerald Mine"			},
   { TYPE_SWITCH,	&setup.forced_scroll_delay,	"Scroll Delay:"			},
-  { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,	"Amiga Graphics Chipset:"	},
   { TYPE_SWITCH,	&setup.prefer_lowpass_sounds,	"Low-Pass Filter Sounds:"	},
   { TYPE_SWITCH,	&setup.prefer_extra_panel_items,"Show Dynamite and Keys:"	},
   { TYPE_EMPTY,		NULL,				""				},
@@ -10323,7 +10324,7 @@ static struct
     SCREEN_CTRL_ID_SWITCH_ECS_AGA,
     SCREEN_MASK_MAIN,
     GD_EVENT_RELEASED | GD_EVENT_OFF_BORDERS,
-    FALSE, "switch ECS/AGA chipset"
+    FALSE, "switch old/new graphics"
   },
   {
     IMG_MENU_BUTTON_TOUCH_BACK, IMG_MENU_BUTTON_TOUCH_BACK, -1,

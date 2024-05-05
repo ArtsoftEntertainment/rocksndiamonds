@@ -4883,7 +4883,7 @@ char *getSetupValue(int type, void *value)
       break;
 
     case TYPE_ECS_AGA:
-      strcpy(value_string, (*(boolean *)value ? "AGA" : "ECS"));
+      strcpy(value_string, (*(boolean *)value ? "new" : "old"));
       break;
 
     case TYPE_KEY:
