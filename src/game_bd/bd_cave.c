@@ -1678,3 +1678,60 @@ unsigned int gd_cave_adler_checksum(GdCave *cave)
   gd_cave_adler_checksum_more(cave, &a, &b);
   return (b << 16) + a;
 }
+
+boolean gd_cave_has_levels(GdCave *cave)
+{
+  GdCave c = *cave;
+  int *cave_level_value[] =
+  {
+    c.level_diamonds,
+    c.level_speed,
+    c.level_ckdelay,
+    c.level_time,
+    c.level_magic_wall_time,
+    c.level_amoeba_time,
+    c.level_amoeba_threshold,
+    c.level_amoeba_2_time,
+    c.level_amoeba_2_threshold,
+    c.level_slime_permeability,
+    c.level_slime_permeability_c64,
+    c.level_slime_seed_c64,
+    c.level_hatching_delay_frame,
+    c.level_hatching_delay_time,
+    c.level_bonus_time,
+    c.level_penalty_time,
+
+    NULL
+  };
+  int i, j;
+
+  for (i = 0; cave_level_value[i] != NULL; i++)
+    for (j = 1; j < 5; j++)
+      if (cave_level_value[i][j] != cave_level_value[i][0])
+	return TRUE;
+
+  for (j = 1; j < 5; j++)
+    if (cave->level_rand[j] != j &&
+	cave->level_rand[j - 1] != j - 1 &&
+	cave->level_rand[j] != cave->level_rand[0])
+      return TRUE;
+
+  for (j = 1; j < 5; j++)
+    if (cave->level_timevalue[j] != j + 1 &&
+	cave->level_timevalue[j - 1] != j &&
+	cave->level_timevalue[j] != cave->level_timevalue[0])
+      return TRUE;
+
+  return FALSE;
+}
+
+boolean gd_caveset_has_levels(void)
+{
+  List *iter;
+
+  for (iter = gd_caveset; iter != NULL; iter = iter->next)
+    if (gd_cave_has_levels((GdCave *)iter->data))
+      return TRUE;
+
+  return FALSE;
+}

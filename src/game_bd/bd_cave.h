@@ -721,4 +721,7 @@ void gd_replay_store_movement(GdReplay *replay, GdDirection player_move, boolean
 unsigned int gd_cave_adler_checksum(GdCave *cave);
 void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b);
 
+boolean gd_cave_has_levels(GdCave *cave);
+boolean gd_caveset_has_levels(void);
+
 #endif	// BD_CAVE_H

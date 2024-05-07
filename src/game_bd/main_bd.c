@@ -183,7 +183,9 @@ boolean SaveNativeLevel_BD(char *filename)
 
 void DumpLevelset_BD(void)
 {
-  Print("Number of levels:   %d\n", 5 * gd_caveset_count());
+  int num_levels_per_cave = (gd_caveset_has_levels() ? 5 : 1);
+
+  Print("Number of levels:   %d\n", num_levels_per_cave * gd_caveset_count());
   Print("First level number: %d\n", 1);
 }
 
