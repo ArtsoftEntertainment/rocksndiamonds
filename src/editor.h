@@ -14,6 +14,8 @@
 
 #include "main.h"
 
+boolean isLevelEditorTestGame(void);
+
 void CreateLevelEditorGadgets(void);
 void FreeLevelEditorGadgets(void);
 void UnmapLevelEditorGadgets(void);

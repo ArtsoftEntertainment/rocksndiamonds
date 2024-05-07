@@ -7389,6 +7389,11 @@ static struct XY xy_directions[] =
 // functions
 // ----------------------------------------------------------------------------
 
+boolean isLevelEditorTestGame(void)
+{
+  return level_editor_test_game;
+}
+
 static int getMaxInfoTextLength(void)
 {
   return (SXSIZE / getFontWidth(INFOTEXT_FONT));

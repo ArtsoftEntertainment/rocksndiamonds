@@ -38,4 +38,6 @@ byte *TapePlayAction_BD(void);
 byte *TapeCorrectAction_BD(byte *);
 boolean TapeIsPlaying_ReplayBD(void);
 
+boolean isLevelEditorTestGame(void);
+
 #endif	// IMPORT_BD_H
