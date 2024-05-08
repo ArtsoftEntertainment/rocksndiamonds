@@ -76,11 +76,23 @@ typedef unsigned char byte;
 
 #define ARRAY_SIZE(array)	(sizeof(array) / sizeof(array[0]))
 
+#if defined(__x86_64__)
+
+#define PTR_TO_INT(p)		((int) (long long) (p))
+#define PTR_TO_UINT(p)		((unsigned int) (unsigned long long) (p))
+
+#define INT_TO_PTR(i)		((void *) (long long) (i))
+#define UINT_TO_PTR(u)		((void *) (unsigned long long) (u))
+
+#else
+
 #define PTR_TO_INT(p)		((int) (long) (p))
 #define PTR_TO_UINT(p)		((unsigned int) (unsigned long) (p))
 
 #define INT_TO_PTR(i)		((void *) (long) (i))
 #define UINT_TO_PTR(u)		((void *) (unsigned long) (u))
+
+#endif
 
 #define STRUCT_OFFSET(s, m)	(offsetof(s, m))
 
