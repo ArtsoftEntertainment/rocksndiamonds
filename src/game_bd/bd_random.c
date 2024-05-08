@@ -40,11 +40,14 @@
 #include <unistd.h>
 #include <time.h>
 
+#include "main_bd.h"
+
 #if defined(PLATFORM_WINDOWS)
 #include <process.h>	// for getpid()
+#if (defined(_MSC_VER) && _MSC_VER >= 1400) || defined(__MINGW64_VERSION_MAJOR)
+extern errno_t rand_s (unsigned int *randomValue);
 #endif
-
-#include "main_bd.h"
+#endif
 
 
 /**
