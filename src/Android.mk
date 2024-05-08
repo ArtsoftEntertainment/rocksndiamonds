@@ -1,7 +1,7 @@
 # =============================================================================
 # Rocks'n'Diamonds - McDuffin Strikes Back!
 # -----------------------------------------------------------------------------
-# (c) 1995-2014 by Artsoft Entertainment
+# (c) 1995-2024 by Artsoft Entertainment
 #                  Holger Schemel
 #                  info@artsoft.org
 #                  https://www.artsoft.org/
@@ -46,6 +46,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
 	libgame/image.c			\
 	libgame/random.c		\
 	libgame/hash.c			\
+	libgame/list.c			\
 	libgame/http.c			\
 	libgame/base64.c		\
 	libgame/setup.c			\
@@ -55,6 +56,19 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
 	libgame/zip/iowin32.c		\
 	libgame/zip/unzip.c		\
 	libgame/zip/miniunz.c		\
+	game_bd/main_bd.c		\
+	game_bd/bd_cave.c		\
+	game_bd/bd_cavedb.c		\
+	game_bd/bd_caveengine.c		\
+	game_bd/bd_caveobject.c		\
+	game_bd/bd_bdcff.c		\
+	game_bd/bd_caveset.c		\
+	game_bd/bd_c64import.c		\
+	game_bd/bd_gameplay.c		\
+	game_bd/bd_graphics.c		\
+	game_bd/bd_colors.c		\
+	game_bd/bd_random.c		\
+	game_bd/bd_sound.c		\
 	game_em/cave.c			\
 	game_em/convert.c		\
 	game_em/graphics.c		\
