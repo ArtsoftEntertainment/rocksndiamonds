@@ -3633,7 +3633,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   {
     if ((amoeba_count   > 0 && cave->amoeba_state   == GD_AM_AWAKE) ||
 	(amoeba_2_count > 0 && cave->amoeba_2_state == GD_AM_AWAKE))
-      play_sound_of_element(cave, O_AMOEBA, x, y);
+      play_sound_of_element(cave, O_AMOEBA, -1, -1);
   }
 
   // pneumatic hammer sound - overrides everything.
