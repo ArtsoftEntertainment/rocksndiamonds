@@ -695,10 +695,10 @@ struct ConfigInfo image_config[] =
   { "bdx_steelwall_sloped_down_right.frames",		"1"				},
 
   { "bdx_steelwall_explodable",				UNDEFINED_FILENAME		},
-  { "bdx_steelwall_explodable.clone_from",		"bd_steelwall"			},
+  { "bdx_steelwall_explodable.clone_from",		"bdx_steelwall"			},
 
   { "bdx_steelwall_diggable",				UNDEFINED_FILENAME		},
-  { "bdx_steelwall_diggable.clone_from",		"bd_steelwall"			},
+  { "bdx_steelwall_diggable.clone_from",		"bdx_steelwall"			},
   { "bdx_steelwall_diggable.EDITOR",			"RocksBD2.png"			},
   { "bdx_steelwall_diggable.EDITOR.xpos",		"6"				},
   { "bdx_steelwall_diggable.EDITOR.ypos",		"0"				},
@@ -722,19 +722,19 @@ struct ConfigInfo image_config[] =
   { "bdx_expandable_wall_any.EDITOR.ypos",		"1"				},
 
   { "bdx_expandable_steelwall_horizontal",		UNDEFINED_FILENAME		},
-  { "bdx_expandable_steelwall_horizontal.clone_from",	"bd_steelwall"			},
+  { "bdx_expandable_steelwall_horizontal.clone_from",	"bdx_steelwall"			},
   { "bdx_expandable_steelwall_horizontal.EDITOR",	"RocksBD2.png"			},
   { "bdx_expandable_steelwall_horizontal.EDITOR.xpos",	"0"				},
   { "bdx_expandable_steelwall_horizontal.EDITOR.ypos",	"1"				},
 
   { "bdx_expandable_steelwall_vertical",		UNDEFINED_FILENAME		},
-  { "bdx_expandable_steelwall_vertical.clone_from",	"bd_steelwall"			},
+  { "bdx_expandable_steelwall_vertical.clone_from",	"bdx_steelwall"			},
   { "bdx_expandable_steelwall_vertical.EDITOR",		"RocksBD2.png"			},
   { "bdx_expandable_steelwall_vertical.EDITOR.xpos",	"1"				},
   { "bdx_expandable_steelwall_vertical.EDITOR.ypos",	"1"				},
 
   { "bdx_expandable_steelwall_any",			UNDEFINED_FILENAME		},
-  { "bdx_expandable_steelwall_any.clone_from",		"bd_steelwall"		 	},
+  { "bdx_expandable_steelwall_any.clone_from",		"bdx_steelwall"		 	},
   { "bdx_expandable_steelwall_any.EDITOR",		"RocksBD2.png"			},
   { "bdx_expandable_steelwall_any.EDITOR.xpos",		"2"				},
   { "bdx_expandable_steelwall_any.EDITOR.ypos",		"1"				},
@@ -782,13 +782,13 @@ struct ConfigInfo image_config[] =
   { "bdx_exit_open.EDITOR.ypos",			"0"				},
 
   { "bdx_invisible_exit_closed",			UNDEFINED_FILENAME		},
-  { "bdx_invisible_exit_closed.clone_from",		"bd_steelwall"			},
+  { "bdx_invisible_exit_closed.clone_from",		"bdx_steelwall"			},
   { "bdx_invisible_exit_closed.EDITOR",			"RocksBD2.png"			},
   { "bdx_invisible_exit_closed.EDITOR.xpos",		"4"				},
   { "bdx_invisible_exit_closed.EDITOR.ypos",		"0"				},
 
   { "bdx_invisible_exit_open",				UNDEFINED_FILENAME		},
-  { "bdx_invisible_exit_open.clone_from",		"bd_steelwall"			},
+  { "bdx_invisible_exit_open.clone_from",		"bdx_steelwall"			},
   { "bdx_invisible_exit_open.EDITOR",			"RocksBD2.png"			},
   { "bdx_invisible_exit_open.EDITOR.xpos",		"2"				},
   { "bdx_invisible_exit_open.EDITOR.ypos",		"0"				},
