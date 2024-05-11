@@ -4644,9 +4644,10 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   SetDefaultLevelColors_BD();
 
   // level name
-  char *cave_name = getStringPrint("%s / %d", cave->name, bd_level_nr + 1);
+  char *cave_name_latin1 = getLatin1FromUTF8(cave->name);
+  char *cave_name_final = getStringPrint("%s / %d", cave_name_latin1, bd_level_nr + 1);
 
-  strncpy(level->name, cave_name, MAX_LEVEL_NAME_LEN);
+  strncpy(level->name, cave_name_final, MAX_LEVEL_NAME_LEN);
   level->name[MAX_LEVEL_NAME_LEN] = '\0';
 
   // playfield elements
@@ -4654,7 +4655,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
     for (y = 0; y < level->fieldy; y++)
       level->field[x][y] = CAVE_TO_LEVEL(cave->map[y][x]);
 
-  checked_free(cave_name);
+  checked_free(cave_name_latin1);
+  checked_free(cave_name_final);
 }
 
 static void setTapeInfoToDefaults(void);
