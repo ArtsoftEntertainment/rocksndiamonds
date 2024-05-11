@@ -4864,7 +4864,8 @@ static void LevelSolved_SetFinalGameValues(void)
 {
   game.time_final = (level.game_engine_type == GAME_ENGINE_TYPE_BD ? game_bd.time_left :
 		     game.no_level_time_limit ? TimePlayed : TimeLeft);
-  game.score_time_final = (level.use_step_counter ? TimePlayed :
+  game.score_time_final = (level.game_engine_type == GAME_ENGINE_TYPE_BD ? game_bd.frames_played :
+                           level.use_step_counter ? TimePlayed :
 			   TimePlayed * FRAMES_PER_SECOND + TimeFrames);
 
   game.score_final = (level.game_engine_type == GAME_ENGINE_TYPE_BD ? game_bd.score :
@@ -11835,6 +11836,9 @@ static void CheckLevelTime(void)
     // if last second running, wait for native engine time to exactly reach zero
     if (getTimeLeft_BD() == 1 && TimeLeft == 1)
       TimeFrames = frames_per_second - 1;
+
+    // needed to store final time after solving game (before counting down remaining time)
+    SetTimeFrames_BD(TimePlayed * FRAMES_PER_SECOND + TimeFrames);
   }
 
   if (TimeFrames >= frames_per_second)

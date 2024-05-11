@@ -47,6 +47,9 @@ struct GameInfo_BD
   int time_left;
   int gems_still_needed;
   int score;
+
+  // needed for saving score time
+  int frames_played;
 };
 
 struct LevelInfo_BD
@@ -96,6 +99,7 @@ boolean checkGamePlaying_BD(void);
 boolean checkBonusTime_BD(void);
 int getFramesPerSecond_BD(void);
 int getTimeLeft_BD(void);
+void SetTimeFrames_BD(int);
 
 void InitGfxBuffers_BD(void);
 

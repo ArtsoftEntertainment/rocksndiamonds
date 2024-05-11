@@ -255,6 +255,14 @@ int getTimeLeft_BD(void)
   return 0;
 }
 
+void SetTimeFrames_BD(int frames_played)
+{
+  // needed to store final time after solving game (before counting down remaining time)
+  if (game_bd.game->state_counter == GAME_INT_CAVE_RUNNING)
+    game_bd.frames_played = frames_played;
+
+}
+
 static void UpdateGameDoorValues_BD(void)
 {
   GdCave *cave = game_bd.game->cave;
