@@ -502,7 +502,7 @@ SDL_Surface *SDLCreateNativeSurface(int width, int height, int depth)
   return surface;
 }
 
-Bitmap *SDLGetBitmapFromSurface(SDL_Surface *surface)
+Bitmap *SDLGetBitmapFromSurface_WithMaskedColor(SDL_Surface *surface, int r, int g, int b)
 {
   int width  = surface->w;
   int height = surface->h;
@@ -522,9 +522,14 @@ Bitmap *SDLGetBitmapFromSurface(SDL_Surface *surface)
   if (!SDLHasAlpha(bitmap->surface_masked) &&
       !SDLHasColorKey(bitmap->surface_masked))
     SDL_SetColorKey(bitmap->surface_masked, SET_TRANSPARENT_PIXEL,
-		    SDL_MapRGB(bitmap->surface_masked->format, 0x00, 0x00, 0x00));
+		    SDL_MapRGB(bitmap->surface_masked->format, r, g, b));
 
   return bitmap;
+}
+
+Bitmap *SDLGetBitmapFromSurface(SDL_Surface *surface)
+{
+  return SDLGetBitmapFromSurface_WithMaskedColor(surface, 0x00, 0x00, 0x00);
 }
 
 static SDL_Texture *SDLCreateTextureFromSurface(SDL_Surface *surface)

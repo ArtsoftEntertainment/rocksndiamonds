@@ -466,8 +466,14 @@ static Bitmap *get_tile_bitmap_c64(GdCave *cave, SDL_Surface *surface)
   set_surface_palette_color(surface, 7, 0);
   set_surface_palette_color(surface, 8, 0);
 
+  // set background color to be transparent for masked tile bitmap
+  int bg_color = gd_color_get_rgb(cave->color0);
+  int bg_r = gd_color_get_r(bg_color);
+  int bg_g = gd_color_get_g(bg_color);
+  int bg_b = gd_color_get_b(bg_color);
+
   // create bitmap from C64 surface
-  tile_bitmap_c64 = SDLGetBitmapFromSurface(surface);
+  tile_bitmap_c64 = SDLGetBitmapFromSurface_WithMaskedColor(surface, bg_r, bg_g, bg_b);
 
   return tile_bitmap_c64;
 }

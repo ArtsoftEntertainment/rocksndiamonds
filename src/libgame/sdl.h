@@ -400,6 +400,7 @@ const char *SDLGetRendererName(void);
 boolean SDLSetNativeSurface(SDL_Surface **);
 SDL_Surface *SDLGetNativeSurface(SDL_Surface *);
 SDL_Surface *SDLCreateNativeSurface(int, int, int);
+Bitmap *SDLGetBitmapFromSurface_WithMaskedColor(SDL_Surface *, int, int, int);
 Bitmap *SDLGetBitmapFromSurface(SDL_Surface *);
 void SDLCreateBitmapTextures(Bitmap *);
 void SDLFreeBitmapTextures(Bitmap *);
