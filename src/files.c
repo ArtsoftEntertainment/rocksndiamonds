@@ -4645,7 +4645,11 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   // level name
   char *cave_name_latin1 = getLatin1FromUTF8(cave->name);
-  char *cave_name_final = getStringPrint("%s / %d", cave_name_latin1, bd_level_nr + 1);
+  char *cave_name_final;
+  if (gd_caveset_has_levels())
+    cave_name_final = getStringPrint("%s / %d", cave_name_latin1, bd_level_nr + 1);
+  else
+    cave_name_final = getStringCopy(cave_name_latin1);
 
   strncpy(level->name, cave_name_final, MAX_LEVEL_NAME_LEN);
   level->name[MAX_LEVEL_NAME_LEN] = '\0';
