@@ -44,7 +44,7 @@ struct GameInfo_BD
   boolean cover_screen;
 
   // needed for updating panel
-  int time_played;
+  int time_left;
   int gems_still_needed;
   int score;
 };

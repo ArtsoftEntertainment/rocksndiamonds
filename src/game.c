@@ -2286,7 +2286,7 @@ static void UpdateGameControlValues(void)
   int time = (game.LevelSolved ?
 	      game.LevelSolved_CountingTime :
 	      level.game_engine_type == GAME_ENGINE_TYPE_BD ?
-	      game_bd.time_played :
+	      game_bd.time_left :
 	      level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 	      game_em.lev->time :
 	      level.game_engine_type == GAME_ENGINE_TYPE_SP ?
@@ -4862,7 +4862,7 @@ void InitAmoebaNr(int x, int y)
 
 static void LevelSolved_SetFinalGameValues(void)
 {
-  game.time_final = (level.game_engine_type == GAME_ENGINE_TYPE_BD ? game_bd.time_played :
+  game.time_final = (level.game_engine_type == GAME_ENGINE_TYPE_BD ? game_bd.time_left :
 		     game.no_level_time_limit ? TimePlayed : TimeLeft);
   game.score_time_final = (level.use_step_counter ? TimePlayed :
 			   TimePlayed * FRAMES_PER_SECOND + TimeFrames);

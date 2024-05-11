@@ -258,17 +258,17 @@ int getTimeLeft_BD(void)
 static void UpdateGameDoorValues_BD(void)
 {
   GdCave *cave = game_bd.game->cave;
-  int time_secs = gd_cave_time_show(cave, cave->time);
+  int time_left = gd_cave_time_show(cave, cave->time);
   int gems_still_needed = MAX(0, (cave->diamonds_needed - cave->diamonds_collected));
 
-  game_bd.time_played = time_secs;
+  game_bd.time_left = time_left;
   game_bd.gems_still_needed = gems_still_needed;
   game_bd.score = game_bd.game->player_score;
 
   if (game.LevelSolved)
   {
     // update time and score in panel while counting bonus time
-    game.LevelSolved_CountingTime  = game_bd.time_played;
+    game.LevelSolved_CountingTime  = game_bd.time_left;
     game.LevelSolved_CountingScore = game_bd.score;
   }
 }
@@ -319,10 +319,6 @@ void InitGameEngine_BD(void)
   game_bd.level_solved = FALSE;
   game_bd.game_over = FALSE;
   game_bd.cover_screen = FALSE;
-
-  game_bd.time_played = 0;
-  game_bd.gems_still_needed = 0;
-  game_bd.score = 0;
 
   gd_caveset_last_selected       = native_bd_level.cave_nr;
   gd_caveset_last_selected_level = native_bd_level.level_nr;
