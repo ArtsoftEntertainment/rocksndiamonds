@@ -1843,6 +1843,28 @@ void PushUserEvent(int code, int value1, int value2)
   SDL_PushEvent((SDL_Event *)&event);
 }
 
+void PushDropEvent(char *file)
+{
+  SDL_DropEvent event;
+
+  SDL_memset(&event, 0, sizeof(event));
+
+  event.type = SDL_DROPBEGIN;
+  event.file = NULL;
+
+  SDL_PushEvent((SDL_Event *)&event);
+
+  event.type = SDL_DROPFILE;
+  event.file = getStringCopy(file);
+
+  SDL_PushEvent((SDL_Event *)&event);
+
+  event.type = SDL_DROPCOMPLETE;
+  event.file = NULL;
+
+  SDL_PushEvent((SDL_Event *)&event);
+}
+
 boolean PendingEscapeKeyEvent(void)
 {
   if (PendingEvent())

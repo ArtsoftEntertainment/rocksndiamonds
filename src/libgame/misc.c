@@ -1704,6 +1704,7 @@ void GetOptions(int argc, char *argv[],
   options.player_name = NULL;
   options.identifier = NULL;
   options.level_nr = NULL;
+  options.drop_file = NULL;
 
   options.display_nr = 0;
 
@@ -1867,6 +1868,15 @@ void GetOptions(int argc, char *argv[],
 	FailWithHelp("option '%s' requires an argument", option_str);
 
       options.level_nr = getStringCopy(option_arg);
+      if (option_arg == next_option)
+	options_left++;
+    }
+    else if (strncmp(option, "-drop-file", option_len) == 0)
+    {
+      if (option_arg == NULL)
+	FailWithHelp("option '%s' requires an argument", option_str);
+
+      options.drop_file = getStringCopy(option_arg);
       if (option_arg == next_option)
 	options_left++;
     }

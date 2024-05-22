@@ -9062,6 +9062,7 @@ static void print_usage(void)
 	"  -g, --graphics DIRECTORY         alternative graphics DIRECTORY\n"
 	"  -s, --sounds DIRECTORY           alternative sounds DIRECTORY\n"
 	"  -m, --music DIRECTORY            alternative music DIRECTORY\n"
+	"      --drop-file FILE             drop FILE into program window\n"
 	"      --display NR                 open program window on display NR\n"
 	"      --mytapes                    use private tapes for tape tests\n"
 	"  -n, --network                    network multiplayer game\n"

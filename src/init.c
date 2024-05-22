@@ -6752,6 +6752,9 @@ void OpenAll(void)
 
   DrawMainMenu();
 
+  if (options.drop_file != NULL)
+    PushDropEvent(options.drop_file);
+
 #if 0
   Debug("internal:path", "SDL_GetBasePath() == '%s'",
 	SDL_GetBasePath());

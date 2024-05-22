@@ -1063,6 +1063,8 @@ struct OptionInfo
   char *identifier;
   char *level_nr;
 
+  char *drop_file;
+
   int display_nr;
 
   boolean mytapes;
@@ -2058,6 +2060,7 @@ KeyMod GetKeyModStateFromEvents(void);
 void StartTextInput(int, int, int, int);
 void StopTextInput(void);
 void PushUserEvent(int, int, int);
+void PushDropEvent(char *);
 boolean PendingEscapeKeyEvent(void);
 
 void InitJoysticks(void);
