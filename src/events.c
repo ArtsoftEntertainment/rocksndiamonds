@@ -1505,7 +1505,8 @@ static int HandleDropFileEvent(char *filename)
   Debug("event:dropfile", "filename == '%s'", filename);
 
   // check and extract dropped zip files into correct user data directory
-  if (!strSuffixLower(filename, ".zip"))
+  if (!strSuffixLower(filename, ".zip") &&
+      !strPrefixLower(filename, "fd:"))
   {
     Warn("file '%s' not supported", filename);
 
@@ -1615,6 +1616,12 @@ static void HandleDropCompleteEvent(int num_level_sets_succeeded,
 
 void HandleDropEvent(Event *event)
 {
+  Debug("event:drop", (event->type == SDL_DROPBEGIN	? "SDL_DROPBEGIN" :
+		       event->type == SDL_DROPFILE	? "SDL_DROPFILE" :
+		       event->type == SDL_DROPTEXT	? "SDL_DROPTEXT" :
+		       event->type == SDL_DROPCOMPLETE	? "SDL_DROPCOMPLETE" :
+		       "(unknown drop event type)"));
+
   static boolean confirm_on_drop_complete = FALSE;
   static int num_level_sets_succeeded = 0;
   static int num_artwork_sets_succeeded = 0;
