@@ -3023,7 +3023,7 @@ enum
 #define PROGRAM_VERSION_MAJOR		4
 #define PROGRAM_VERSION_MINOR		0
 #define PROGRAM_VERSION_PATCH		0
-#define PROGRAM_VERSION_EXTRA		"-test-1"
+#define PROGRAM_VERSION_EXTRA		"-test-2"
 
 #define PROGRAM_TITLE_STRING		"Rocks'n'Diamonds"
 #define PROGRAM_AUTHOR_STRING		"Holger Schemel"
