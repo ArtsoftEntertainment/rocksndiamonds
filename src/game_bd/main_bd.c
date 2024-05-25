@@ -481,6 +481,11 @@ boolean use_bd_falling_sounds(void)
 	  (setup.bd_falling_sounds == STATE_AUTO && game.use_native_bd_sound_engine));
 }
 
+boolean hasColorTemplate_BD(void)
+{
+  return gd_bitmap_has_c64_colors(graphic_info_bd_color_template.bitmap);
+}
+
 Bitmap **GetTitleScreenBitmaps_BD(void)
 {
   Bitmap **title_screen_bitmaps = gd_get_title_screen_bitmaps();

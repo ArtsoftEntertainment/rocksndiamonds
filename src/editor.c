@@ -11451,6 +11451,20 @@ static void DrawEngineConfigColors(void)
 {
   int i;
 
+  if (!hasColorTemplate_BD())
+  {
+    int font_nr = FONT_TEXT_1;
+    int font_height = getFontHeight(font_nr);
+    int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
+    int xpos = ED_ENGINE_SETTINGS_X(0);
+    int ypos = ED_ENGINE_SETTINGS_Y(0);
+
+    PrintInfoText("No level specific colors available.", font_nr, xpos, ypos - yoffset_above);
+    PrintInfoText("(Not supported by graphics set.)", font_nr, xpos, ypos);
+
+    return;
+  }
+
   if (bd_color_type_changed)
   {
     if (level.bd_color_type != GD_COLOR_TYPE_RGB && level.bd_color_type != GetCommonColorType_BD())

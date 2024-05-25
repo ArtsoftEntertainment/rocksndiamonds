@@ -123,6 +123,8 @@ boolean use_bd_pushing_graphics(void);
 boolean use_bd_up_down_graphics(void);
 boolean use_bd_falling_sounds(void);
 
+boolean hasColorTemplate_BD(void);
+
 Bitmap **GetTitleScreenBitmaps_BD(void);
 void CoverScreen_BD(void);
 

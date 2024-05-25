@@ -363,6 +363,11 @@ static boolean surface_has_c64_colors(SDL_Surface *surface)
   return has_c64_colors;
 }
 
+boolean gd_bitmap_has_c64_colors(Bitmap *bitmap)
+{
+  return surface_has_c64_colors(bitmap->surface);
+}
+
 // sets one of the colors in the indexed palette of an sdl surface to a GdColor.
 static void set_surface_palette_color(SDL_Surface *surface, int index, GdColor col)
 {

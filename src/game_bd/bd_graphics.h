@@ -33,6 +33,7 @@ int get_play_area_h(void);
 
 void gd_init_play_area(void);
 
+boolean gd_bitmap_has_c64_colors(Bitmap *bitmap);
 void gd_prepare_tile_bitmap(GdCave *cave, Bitmap *bitmap, int scale_down_factor);
 void gd_set_tile_bitmap_reference(Bitmap *bitmap);
 Bitmap *gd_get_tile_bitmap(Bitmap *bitmap);
