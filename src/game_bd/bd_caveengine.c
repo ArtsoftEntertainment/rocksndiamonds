@@ -136,7 +136,7 @@ static inline boolean el_can_fall(const int element)
 static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
 {
   // check if sound should be skipped for falling elements (and only be played on impact)
-  if (el_can_fall(element) && skip_bd_falling_sounds())
+  if (el_can_fall(element) && !use_bd_falling_sounds())
     return;
 
   // stone and diamond fall sounds.
