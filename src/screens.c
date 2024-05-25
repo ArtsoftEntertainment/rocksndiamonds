@@ -8038,7 +8038,7 @@ static struct TokenInfo setup_info_editor[] =
 #if 0
   { TYPE_SWITCH,	&setup.editor.el_headlines,	"Headlines:"			},
 #endif
-  { TYPE_SWITCH, &setup.editor.el_user_defined,		"User defined element list:"	},
+  { TYPE_SWITCH,	&setup.editor.el_user_defined,	"User defined element list:"	},
   { TYPE_SWITCH,	&setup.editor.el_dynamic,	"Dynamic level elements:"	},
   { TYPE_EMPTY,		NULL,				""				},
 #if 0
@@ -8046,10 +8046,10 @@ static struct TokenInfo setup_info_editor[] =
   { TYPE_SWITCH,	&setup.editor.el_by_type,	"Show elements by type:"	},
   { TYPE_EMPTY,		NULL,				""				},
 #endif
-  { TYPE_SWITCH, &setup.editor.show_element_token,	"Show element token:"		},
+  { TYPE_SWITCH,	&setup.editor.show_element_token, "Show element token:"		},
   { TYPE_SWITCH,	&setup.editor.fast_game_start,	"Fast game start:"		},
   { TYPE_EMPTY,		NULL,				""				},
-  { TYPE_SWITCH, &setup.editor.show_read_only_warning,	"Show read-only warning:"	},
+  { TYPE_SWITCH,	&setup.editor.show_read_only_warning, "Show read-only warning:"	},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
