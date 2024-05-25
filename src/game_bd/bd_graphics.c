@@ -543,6 +543,12 @@ static inline boolean el_player(const int element)
   return (gd_elements[element & O_MASK].properties & P_PLAYER) != 0;
 }
 
+// returns true if the element is walkable
+static inline boolean el_walkable(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_WALKABLE) != 0;
+}
+
 // returns true if the element is diggable
 static inline boolean el_diggable(const int element)
 {
@@ -690,6 +696,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int old_x = cave->getx(cave, x + dx, y + dy);
   int old_y = cave->gety(cave, x + dx, y + dy);
   int tile_from = game->element_buffer[old_y][old_x] & ~SKIPPED;   // should never be skipped
+  int tile_last = game->last_element_buffer[y][x] & ~SKIPPED;
   struct GraphicInfo_BD *g_from = &graphic_info_bd_object[tile_from][frame];
   Bitmap *tile_bitmap_from = gd_get_tile_bitmap(g_from->bitmap);
   boolean old_is_player = el_player(tile_from);
@@ -725,6 +732,11 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   // get shifted position between cave fields the game element is moving from/to
   int itercycle = MIN(MAX(0, game->itermax - game->itercycle - 1), game->itermax);
   int shift = cell_size * itercycle / game->itermax;
+
+  // when drawing player over walkable elements, always use masked drawing
+  // (does not use masking if moving from walkable to diggable tiles etc.)
+  if (el_player(tile) && el_walkable(tile_from) && el_walkable(tile_last))
+    blit_bitmap = BlitBitmapMasked;
 
   blit_bitmap(tile_bitmap, dest, g->src_x, g->src_y, cell_size, cell_size,
 	      sx + dx * shift, sy + dy * shift);

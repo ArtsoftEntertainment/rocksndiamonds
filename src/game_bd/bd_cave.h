@@ -121,6 +121,7 @@ enum _element_property
   E_P_MOVED_BY_CONVEYOR_TOP,    // can be moved by conveyor belt
   E_P_MOVED_BY_CONVEYOR_BOTTOM, // can be moved UNDER the conveyor belt
 
+  E_P_WALKABLE,                 // can be walked
   E_P_DIGGABLE,                 // can be digged
   E_P_COLLECTIBLE,              // can be collected
   E_P_PUSHABLE,                 // can be pushed
@@ -160,6 +161,7 @@ enum _element_property
 #define P_MOVED_BY_CONVEYOR_TOP		(1 << E_P_MOVED_BY_CONVEYOR_TOP)
 #define P_MOVED_BY_CONVEYOR_BOTTOM	(1 << E_P_MOVED_BY_CONVEYOR_BOTTOM)
 
+#define P_WALKABLE			(1 << E_P_WALKABLE)
 #define P_DIGGABLE			(1 << E_P_DIGGABLE)
 #define P_COLLECTIBLE			(1 << E_P_COLLECTIBLE)
 #define P_PUSHABLE			(1 << E_P_PUSHABLE)

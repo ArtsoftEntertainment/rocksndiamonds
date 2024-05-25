@@ -118,7 +118,7 @@ enum _generated_cells_indexes
 */
 GdElements gd_elements[] =
 {
-  { O_SPACE, N_("Space"), P_AMOEBA_CONSUMES, "SPACE", ' ', 0, 0, 0 },
+  { O_SPACE, N_("Space"), P_AMOEBA_CONSUMES | P_WALKABLE, "SPACE", ' ', 0, 0, 0 },
   { O_DIRT, N_("Dirt"), P_AMOEBA_CONSUMES | P_VISUAL_EFFECT | P_DIRT | P_DIGGABLE, "DIRT", '.', 2, 2, 2 },
   { O_DIRT_SLOPED_UP_RIGHT, N_("Sloped dirt (up & right)"), P_DIRT | P_SLOPED_UP | P_SLOPED_RIGHT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDUPRIGHT", 0, 280, 280, 280 },
   { O_DIRT_SLOPED_UP_LEFT, N_("Sloped dirt (up & left)"), P_DIRT | P_SLOPED_UP | P_SLOPED_LEFT | P_AMOEBA_CONSUMES | P_DIGGABLE, "DIRTSLOPEDUPLEFT", 0, 281, 281, 281 },
@@ -196,7 +196,7 @@ GdElements gd_elements[] =
   { O_POT, N_("Pot"), 0, "POT", 0, 63, 63, 63 },
   { O_GRAVITY_SWITCH, N_("Gravity switch"), 0, "GRAVITY_SWITCH", 0, 274, 274, 274 },
   { O_PNEUMATIC_HAMMER, N_("Pneumatic hammer"), P_COLLECTIBLE, "PNEUMATIC_HAMMER", 0, 62, 62, 62 },
-  { O_TELEPORTER, N_("Teleporter"), 0, "TELEPORTER", 0, 61, 61, 61 },
+  { O_TELEPORTER, N_("Teleporter"), P_WALKABLE, "TELEPORTER", 0, 61, 61, 61 },
   { O_SKELETON, N_("Skeleton"), 0, "SKELETON", 0, 273, 273, 273 },
   { O_WATER, N_("Water"), 0, "WATER", 0, 96, -96, -96, 100 },    // has ckdelay
   { O_WATER_1, N_("Water (1)"), 0, "WATER1", 0, 96, -96, -96 },
