@@ -274,7 +274,7 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_16_BIT(6),
-    &li.bd_cycle_delay_ms,		200
+    &li.bd_cycle_delay_ms,		160
   },
   {
     -1,					-1,
