@@ -2102,14 +2102,40 @@ void HandleKey(Key key, int key_status)
     { &ski.snap,  NULL,            DEFAULT_KEY_SNAP,  JOY_BUTTON_SNAP },
     { &ski.drop,  NULL,            DEFAULT_KEY_DROP,  JOY_BUTTON_DROP }
   };
+  boolean game_key_pressed = FALSE;
   int joy = 0;
   int i;
 
-  if (HandleKeysSpeed(key, key_status))
-    return;		// do not handle already processed keys again
+  // check if any game key is pressed (direction/snap/drop keys)
+  if (game_status == GAME_MODE_PLAYING)
+  {
+    int pnr;
 
-  if (HandleKeysDebug(key, key_status))
-    return;		// do not handle already processed keys again
+    for (pnr = 0; pnr < MAX_PLAYERS; pnr++)
+    {
+      ski = setup.input[pnr].key;
+
+      for (i = 0; i < NUM_PLAYER_ACTIONS; i++)
+	if (key == *key_info[i].key_custom)
+          game_key_pressed = TRUE;
+    }
+
+    ssi = setup.shortcut;
+
+    for (i = 0; i < NUM_DIRECTIONS; i++)
+      if (key == *key_info[i].key_snap)
+        game_key_pressed = TRUE;
+  }
+
+  // only handle speed or debug keys if no game key is pressed
+  if (!game_key_pressed)
+  {
+    if (HandleKeysSpeed(key, key_status))
+      return;		// do not handle already processed keys again
+
+    if (HandleKeysDebug(key, key_status))
+      return;		// do not handle already processed keys again
+  }
 
   // map special keys (media keys / remote control buttons) to default keys
   if (key == KSYM_PlayPause)
