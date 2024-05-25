@@ -698,6 +698,11 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 			    old_x <= cave->x2 &&
 			    old_y >= cave->y1 &&
 			    old_y <= cave->y2);
+
+  // never treat empty space as "moving" (may happen if player is snap-pushing element)
+  if (tile_from == O_SPACE)
+    old_is_moving = FALSE;
+
   if (old_is_visible)
   {
     if (!old_is_moving && !old_is_player)
