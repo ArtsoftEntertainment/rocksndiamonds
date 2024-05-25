@@ -7389,9 +7389,9 @@ static struct XY xy_directions[] =
 // functions
 // ----------------------------------------------------------------------------
 
-boolean isLevelEditorTestGame(void)
+boolean isLevelEditorFastStart(void)
 {
-  return level_editor_test_game;
+  return (level_editor_test_game && setup.editor.fast_game_start);
 }
 
 static int getMaxInfoTextLength(void)

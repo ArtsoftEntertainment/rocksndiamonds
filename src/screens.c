@@ -8047,6 +8047,7 @@ static struct TokenInfo setup_info_editor[] =
   { TYPE_EMPTY,		NULL,				""				},
 #endif
   { TYPE_SWITCH, &setup.editor.show_element_token,	"Show element token:"		},
+  { TYPE_SWITCH,	&setup.editor.fast_game_start,	"Fast game start:"		},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_SWITCH, &setup.editor.show_read_only_warning,	"Show read-only warning:"	},
   { TYPE_EMPTY,		NULL,				""				},

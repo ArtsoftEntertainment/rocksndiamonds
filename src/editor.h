@@ -14,7 +14,7 @@
 
 #include "main.h"
 
-boolean isLevelEditorTestGame(void);
+boolean isLevelEditorFastStart(void);
 
 void CreateLevelEditorGadgets(void);
 void FreeLevelEditorGadgets(void);

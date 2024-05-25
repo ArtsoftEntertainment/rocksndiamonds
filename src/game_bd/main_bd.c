@@ -360,10 +360,10 @@ void InitGameEngine_BD(void)
   // when skipping uncovering, continue with uncovered playfield
   if (setup.bd_skip_uncovering)
     game_bd.game->state_counter = GAME_INT_UNCOVER_ALL + 1;
-  else if (isLevelEditorTestGame())
+  else if (isLevelEditorFastStart())
     game_bd.game->state_counter = GAME_INT_UNCOVER_ALL - 8;
 
-  if (setup.bd_skip_uncovering || isLevelEditorTestGame())
+  if (setup.bd_skip_uncovering || isLevelEditorFastStart())
     gd_scroll(game_bd.game, TRUE, TRUE);
 
   ClearRectangle(gd_screen_bitmap, 0, 0, SXSIZE, SYSIZE);

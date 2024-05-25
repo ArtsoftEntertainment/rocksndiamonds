@@ -11066,6 +11066,10 @@ static struct TokenInfo editor_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.editor.fast_game_start,		"editor.fast_game_start"
+  },
+  {
+    TYPE_SWITCH,
     &setup.editor.show_read_only_warning,	"editor.show_read_only_warning"
   },
 };
@@ -11826,6 +11830,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->editor.el_headlines		= TRUE;
 
   si->editor.show_element_token		= FALSE;
+  si->editor.fast_game_start		= FALSE;
 
   si->editor.show_read_only_warning	= TRUE;
 

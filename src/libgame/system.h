@@ -1322,6 +1322,7 @@ struct SetupEditorInfo
   boolean el_by_type;
 
   boolean show_element_token;
+  boolean fast_game_start;
 
   boolean show_read_only_warning;
 
