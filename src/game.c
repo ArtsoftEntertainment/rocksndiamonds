@@ -1840,13 +1840,30 @@ static void InitFieldForEngine_RND(int x, int y)
   int element = Tile[x][y];
 
   // convert BD engine elements to corresponding R'n'D engine elements
-  element = (element == EL_BDX_EMPTY		? EL_EMPTY :
-	     element == EL_BDX_PLAYER		? EL_PLAYER_1 :
-	     element == EL_BDX_INBOX		? EL_PLAYER_1 :
-	     element == EL_BDX_SAND_1		? EL_SAND :
-	     element == EL_BDX_STEELWALL	? EL_STEELWALL :
-	     element == EL_BDX_EXIT_CLOSED	? EL_EXIT_CLOSED :
-	     element == EL_BDX_EXIT_OPEN	? EL_EXIT_OPEN :
+  element = (element == EL_BDX_EMPTY				? EL_EMPTY :
+	     element == EL_BDX_PLAYER				? EL_PLAYER_1 :
+	     element == EL_BDX_INBOX				? EL_PLAYER_1 :
+	     element == EL_BDX_SAND_1				? EL_SAND :
+	     element == EL_BDX_WALL				? EL_BD_WALL :
+	     element == EL_BDX_STEELWALL			? EL_STEELWALL :
+	     element == EL_BDX_ROCK				? EL_BD_ROCK :
+	     element == EL_BDX_DIAMOND				? EL_BD_DIAMOND :
+	     element == EL_BDX_AMOEBA_1				? EL_BD_AMOEBA :
+	     element == EL_BDX_MAGIC_WALL			? EL_BD_MAGIC_WALL :
+	     element == EL_BDX_BUTTERFLY_1_RIGHT		? EL_BD_BUTTERFLY_RIGHT :
+	     element == EL_BDX_BUTTERFLY_1_UP			? EL_BD_BUTTERFLY_UP :
+	     element == EL_BDX_BUTTERFLY_1_LEFT			? EL_BD_BUTTERFLY_LEFT :
+	     element == EL_BDX_BUTTERFLY_1_DOWN			? EL_BD_BUTTERFLY_DOWN :
+	     element == EL_BDX_BUTTERFLY_1			? EL_BD_BUTTERFLY :
+	     element == EL_BDX_FIREFLY_1_RIGHT			? EL_BD_FIREFLY_RIGHT :
+	     element == EL_BDX_FIREFLY_1_UP			? EL_BD_FIREFLY_UP :
+	     element == EL_BDX_FIREFLY_1_LEFT			? EL_BD_FIREFLY_LEFT :
+	     element == EL_BDX_FIREFLY_1_DOWN			? EL_BD_FIREFLY_DOWN :
+	     element == EL_BDX_FIREFLY_1			? EL_BD_FIREFLY :
+	     element == EL_BDX_EXPANDABLE_WALL_HORIZONTAL	? EL_BD_EXPANDABLE_WALL :
+	     element == EL_BDX_WALL_DIAMOND			? EL_WALL_BD_DIAMOND :
+	     element == EL_BDX_EXIT_CLOSED			? EL_EXIT_CLOSED :
+	     element == EL_BDX_EXIT_OPEN			? EL_EXIT_OPEN :
 	     element);
 
   Tile[x][y] = element;
