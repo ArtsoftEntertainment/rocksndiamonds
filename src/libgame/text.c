@@ -589,8 +589,8 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
     {
       if ((line[i] = *text_buffer++) == '\n')
       {
-	// in text areas, 'line_length' sized lines cause additional empty line
-	if (i == line_length && is_text_area)
+	// in text areas, do not skip newline after text ending at last column
+	if (i > 0 && i % line_length == 0 && is_text_area)
 	  text_buffer--;
 
 	break;

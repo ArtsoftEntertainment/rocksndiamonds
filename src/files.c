@@ -7551,6 +7551,66 @@ void LoadLevelFromFilename(struct LevelInfo *level, char *filename)
   LoadLevelFromFileInfo(level, &level_file_info, FALSE);
 }
 
+static void LoadLevel_FixEnvelopes(struct LevelInfo *level, boolean skip_single_lines)
+{
+  // This function removes newlines in envelopes after lines of text ending in the last column
+  // of the envelope. In earlier versions, these newlines were removed when displaying envelopes,
+  // but caused trouble in the level editor. In version 4.3.2.3, this problem was partially
+  // fixed in the level editor (but only for single full-width text lines followed by a newline,
+  // not for multiple lines ending in the last column, followed by a newline), but now produced
+  // unwanted newlines in the game for envelopes stored by previous game versions, which was not
+  // intended by the level author (and sometimes caused text lines not being displayed anymore at
+  // the bottom of the envelope).
+  //
+  // This function should solve these problems by removing such newline characters from envelopes
+  // stored by older game versions.
+
+  int envelope_nr;
+
+  for (envelope_nr = 0; envelope_nr < NUM_ENVELOPES; envelope_nr++)
+  {
+    char *envelope_ptr = level->envelope[envelope_nr].text;
+    int envelope_xsize = level->envelope[envelope_nr].xsize;
+    int envelope_size = strlen(envelope_ptr);
+    int start = 0;
+    int i;
+
+    for (i = 0; i < envelope_size; i++)
+    {
+      // check for newlines in envelope
+      if (envelope_ptr[i] == '\n')
+      {
+        int line_length = i - start;
+
+        // check for (non-empty) lines that are a multiple of the envelope width,
+        // causing a line break inside the envelope (text area in editor and in game)
+        if (line_length > 0 && line_length % envelope_xsize == 0)
+        {
+          // special case: skip fixing single lines for newer versions
+          boolean skip_fixing_line = (line_length == 1 && skip_single_lines);
+
+          if (!skip_fixing_line)
+          {
+            int j;
+
+            // remove newline character from string
+            for (j = i; j < envelope_size; j++)
+              envelope_ptr[j] = envelope_ptr[j + 1];
+          }
+
+          // continue with next line (that was copied over the newline)
+          start = i;
+        }
+        else
+        {
+          // continue with next character after newline
+          start = i + 1;
+        }
+      }
+    }
+  }
+}
+
 static void LoadLevel_InitVersion(struct LevelInfo *level)
 {
   int i, j;
@@ -7742,6 +7802,10 @@ static void LoadLevel_InitVersion(struct LevelInfo *level)
   // CE changing to player was kept under the player if walkable up to 4.2.3.1
   if (level->game_version <= VERSION_IDENT(4,2,3,1))
     level->keep_walkable_ce = TRUE;
+
+  // envelopes may contain broken or too many line breaks before 4.4.0.0
+  if (level->game_version < VERSION_IDENT(4,4,0,0))
+    LoadLevel_FixEnvelopes(level, (level->game_version >= VERSION_IDENT(4,3,2,3)));
 }
 
 static void LoadLevel_InitSettings_SB(struct LevelInfo *level)
