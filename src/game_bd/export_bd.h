@@ -75,6 +75,19 @@ struct GraphicInfo_BD
 
 struct EngineSnapshotInfo_BD
 {
+  GdGame game;
+
+  // data from pointers in game structure
+  int element_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+  int last_element_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+  int dir_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+  int gfx_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+
+  GdCave cave;
+
+  // data from pointers in cave structure
+  short map[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+  short hammered_reappear[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
 };
 
 
@@ -130,5 +143,8 @@ void CoverScreen_BD(void);
 
 void BlitScreenToBitmap_BD(Bitmap *);
 void RedrawPlayfield_BD(boolean);
+
+void SaveEngineSnapshotValues_BD(void);
+void LoadEngineSnapshotValues_BD(void);
 
 #endif	// EXPORT_BD_H

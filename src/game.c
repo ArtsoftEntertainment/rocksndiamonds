@@ -16612,6 +16612,8 @@ static ListNode *SaveEngineSnapshotBuffers(void)
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
     SaveEngineSnapshotValues_RND();
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    SaveEngineSnapshotValues_BD();
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
     SaveEngineSnapshotValues_EM();
   if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
@@ -16623,6 +16625,8 @@ static ListNode *SaveEngineSnapshotBuffers(void)
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
     SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(engine_snapshot_rnd));
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(engine_snapshot_bd));
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
     SaveSnapshotBuffer(&buffers, ARGS_ADDRESS_AND_SIZEOF(engine_snapshot_em));
   if (level.game_engine_type == GAME_ENGINE_TYPE_SP)
@@ -16762,6 +16766,8 @@ static void LoadEngineSnapshotValues(void)
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND)
     LoadEngineSnapshotValues_RND();
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    LoadEngineSnapshotValues_BD();
   if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
     LoadEngineSnapshotValues_EM();
   if (level.game_engine_type == GAME_ENGINE_TYPE_SP)

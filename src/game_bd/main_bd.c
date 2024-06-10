@@ -540,3 +540,96 @@ void RedrawPlayfield_BD(boolean force_redraw)
 {
   gd_drawcave(gd_screen_bitmap, game_bd.game, force_redraw);
 }
+
+
+// ============================================================================
+// snapshot functions
+// ============================================================================
+
+void SaveEngineSnapshotValues_BD(void)
+{
+  GdGame *game = game_bd.game;
+  GdCave *cave = game_bd.game->cave;
+  int x, y;
+
+  engine_snapshot_bd.game = *game;
+
+  for (y = 0; y < cave->h; y++)
+  {
+    for (x = 0; x < cave->w; x++)
+    {
+      engine_snapshot_bd.element_buffer[x][y]      = game->element_buffer[y][x];
+      engine_snapshot_bd.last_element_buffer[x][y] = game->last_element_buffer[y][x];
+      engine_snapshot_bd.dir_buffer[x][y]          = game->dir_buffer[y][x];
+      engine_snapshot_bd.gfx_buffer[x][y]          = game->gfx_buffer[y][x];
+    }
+  }
+
+  engine_snapshot_bd.cave = *cave;
+
+  for (y = 0; y < cave->h; y++)
+  {
+    for (x = 0; x < cave->w; x++)
+    {
+      engine_snapshot_bd.map[x][y] = cave->map[y][x];
+
+      if (cave->hammered_walls_reappear)
+        engine_snapshot_bd.hammered_reappear[x][y] = cave->hammered_reappear[y][x];
+    }
+  }
+}
+
+void LoadEngineSnapshotValues_BD(void)
+{
+  GdGame *game = game_bd.game;
+  GdCave *cave = game_bd.game->cave;
+  int x, y;
+
+  // copy pointers
+  engine_snapshot_bd.game.cave                = game->cave;
+  engine_snapshot_bd.game.original_cave       = game->original_cave;
+
+  engine_snapshot_bd.game.element_buffer      = game->element_buffer;
+  engine_snapshot_bd.game.last_element_buffer = game->last_element_buffer;
+  engine_snapshot_bd.game.dir_buffer          = game->dir_buffer;
+  engine_snapshot_bd.game.gfx_buffer          = game->gfx_buffer;
+
+  *game = engine_snapshot_bd.game;
+
+  for (y = 0; y < cave->h; y++)
+  {
+    for (x = 0; x < cave->w; x++)
+    {
+      game->element_buffer[y][x]      = engine_snapshot_bd.element_buffer[x][y];
+      game->last_element_buffer[y][x] = engine_snapshot_bd.last_element_buffer[x][y];
+      game->dir_buffer[y][x]          = engine_snapshot_bd.dir_buffer[x][y];
+      game->gfx_buffer[y][x]          = engine_snapshot_bd.gfx_buffer[x][y];
+    }
+  }
+
+  // copy pointers
+  engine_snapshot_bd.cave.story             = cave->story;
+  engine_snapshot_bd.cave.remark            = cave->remark;
+  engine_snapshot_bd.cave.tags              = cave->tags;
+  engine_snapshot_bd.cave.map               = cave->map;
+  engine_snapshot_bd.cave.objects           = cave->objects;
+  engine_snapshot_bd.cave.replays           = cave->replays;
+  engine_snapshot_bd.cave.random            = cave->random;
+  engine_snapshot_bd.cave.objects_order     = cave->objects_order;
+  engine_snapshot_bd.cave.hammered_reappear = cave->hammered_reappear;
+
+  *cave = engine_snapshot_bd.cave;
+
+  for (y = 0; y < cave->h; y++)
+  {
+    for (x = 0; x < cave->w; x++)
+    {
+      cave->map[y][x] = engine_snapshot_bd.map[x][y];
+
+      if (cave->hammered_walls_reappear)
+        cave->hammered_reappear[y][x] = engine_snapshot_bd.hammered_reappear[x][y];
+    }
+  }
+
+  gd_scroll(game_bd.game, TRUE, TRUE);
+}
