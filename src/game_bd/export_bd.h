@@ -43,6 +43,9 @@ struct GameInfo_BD
   boolean game_over;
   boolean cover_screen;
 
+  boolean player_moving;
+  boolean player_snapping;
+
   // needed for updating panel
   int time_left;
   int gems_still_needed;

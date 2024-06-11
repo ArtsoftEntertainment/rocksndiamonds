@@ -27,6 +27,7 @@
 // ----------------------------------------------------------------------------
 
 void InitGraphicInfo_BD(void);
+boolean CheckSingleStepMode_BD(boolean, boolean, boolean);
 
 void PlayLevelSound_BD(int, int, int, int);
 void StopSound_BD(int, int);

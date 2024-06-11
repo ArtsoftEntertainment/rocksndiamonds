@@ -188,6 +188,13 @@ GdGame *gd_game_new(const int cave, const int level)
   return game;
 }
 
+boolean check_iteration_reached(GdGame *game)
+{
+  int millisecs_elapsed = 20;
+
+  return (game->milliseconds_game + millisecs_elapsed >= game->cave->speed);
+}
+
 static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire)
 {
   boolean suicide = FALSE;

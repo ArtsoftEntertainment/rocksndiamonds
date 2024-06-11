@@ -11215,6 +11215,26 @@ void InitGraphicInfo_EM(void)
   }
 }
 
+static void CheckSaveEngineSnapshot_BD(boolean frame_max,
+				       boolean player_moving,
+				       boolean player_snapping)
+{
+  if (frame_max)
+  {
+    if (!local_player->was_waiting)
+    {
+      if (!CheckSaveEngineSnapshotToList())
+	return;
+
+      local_player->was_waiting = TRUE;
+    }
+  }
+  else if (player_moving || player_snapping)
+  {
+    local_player->was_waiting = FALSE;
+  }
+}
+
 static void CheckSaveEngineSnapshot_EM(int frame,
 				       boolean any_player_moving,
 				       boolean any_player_snapping,
@@ -11270,6 +11290,19 @@ static void CheckSaveEngineSnapshot_MM(boolean element_clicked,
 
     game.snapshot.changed_action = TRUE;
   }
+}
+
+boolean CheckSingleStepMode_BD(boolean frame_max,
+                               boolean player_moving,
+                               boolean player_snapping)
+{
+  if (tape.single_step && tape.recording && !tape.pausing)
+    if (frame_max && FrameCounter > 6)
+      TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+
+  CheckSaveEngineSnapshot_BD(frame_max, player_moving, player_snapping);
+
+  return tape.pausing;
 }
 
 boolean CheckSingleStepMode_EM(int frame,

@@ -1570,6 +1570,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   gd_cave_clear_sounds(cave);
 
+  game_bd.player_moving = FALSE;
+  game_bd.player_snapping = FALSE;
+
   // if diagonal movements not allowed,
   // horizontal movements have precedence. [BROADRIBB]
   if (!cave->diagonal_movements)
@@ -1835,15 +1838,25 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      // if snapping anything and we have snapping explosions set.
 	      // but these is not true for pushing.
 	      if (remains == O_SPACE && player_fire && !push)
+              {
 		remains = cave->snap_element;
 
+		game_bd.player_snapping = TRUE;
+              }
+
 	      if (remains != O_SPACE || player_fire)
+              {
 		// if any other element than space, player cannot move.
 		// also if pressing fire, will not move.
 		store_dir(cave, x, y, player_move, remains);
+              }
 	      else
+              {
 		// if space remains there, the player moves.
 		move(cave, x, y, player_move, O_PLAYER);
+
+		game_bd.player_moving = TRUE;
+              }
 	    }
 	  }
 	  break;

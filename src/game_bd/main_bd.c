@@ -340,6 +340,9 @@ void InitGameEngine_BD(void)
   game_bd.game->itermax = 8;	// default; dynamically changed at runtime
   game_bd.game->itermax_last = game_bd.game->itermax;
 
+  game_bd.player_moving = FALSE;
+  game_bd.player_snapping = FALSE;
+
   // default: start with completely covered playfield
   int next_state = GAME_INT_START_UNCOVER + 1;
 
@@ -436,6 +439,15 @@ void GameActions_BD(byte action[MAX_PLAYERS])
 
     play_game_func(game_bd.game, action[0]);
   }
+
+  boolean single_step_mode_paused =
+    CheckSingleStepMode_BD(check_iteration_reached(game_bd.game),
+                           game_bd.player_moving,
+                           game_bd.player_snapping);
+
+  // draw final movement animation frame before going to single step pause mode
+  if (single_step_mode_paused)
+    game_bd.game->itercycle = game_bd.game->itermax - 1;
 
   RedrawPlayfield_BD(FALSE);
 

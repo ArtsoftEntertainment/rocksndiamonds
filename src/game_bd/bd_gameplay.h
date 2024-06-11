@@ -112,6 +112,8 @@ GdGame *gd_game_new(const int cave, const int level);
 GdGame *gd_game_new_snapshot(GdCave *snapshot);
 GdGame *gd_game_new_test(GdCave *cave, int level);
 
+boolean check_iteration_reached(GdGame *game);
+
 void play_game_func(GdGame *game, int action);
 
 #endif	// BD_GAMEPLAY_H
