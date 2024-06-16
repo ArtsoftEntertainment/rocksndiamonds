@@ -574,7 +574,8 @@ void SaveEngineSnapshotValues_BD(void)
     {
       engine_snapshot_bd.element_buffer[x][y]      = game->element_buffer[y][x];
       engine_snapshot_bd.last_element_buffer[x][y] = game->last_element_buffer[y][x];
-      engine_snapshot_bd.dir_buffer[x][y]          = game->dir_buffer[y][x];
+      engine_snapshot_bd.dir_buffer_from[x][y]     = game->dir_buffer_from[y][x];
+      engine_snapshot_bd.dir_buffer_to[x][y]       = game->dir_buffer_to[y][x];
       engine_snapshot_bd.gfx_buffer[x][y]          = game->gfx_buffer[y][x];
     }
   }
@@ -605,7 +606,8 @@ void LoadEngineSnapshotValues_BD(void)
 
   engine_snapshot_bd.game.element_buffer      = game->element_buffer;
   engine_snapshot_bd.game.last_element_buffer = game->last_element_buffer;
-  engine_snapshot_bd.game.dir_buffer          = game->dir_buffer;
+  engine_snapshot_bd.game.dir_buffer_from     = game->dir_buffer_from;
+  engine_snapshot_bd.game.dir_buffer_to       = game->dir_buffer_to;
   engine_snapshot_bd.game.gfx_buffer          = game->gfx_buffer;
 
   *game = engine_snapshot_bd.game;
@@ -616,7 +618,8 @@ void LoadEngineSnapshotValues_BD(void)
     {
       game->element_buffer[y][x]      = engine_snapshot_bd.element_buffer[x][y];
       game->last_element_buffer[y][x] = engine_snapshot_bd.last_element_buffer[x][y];
-      game->dir_buffer[y][x]          = engine_snapshot_bd.dir_buffer[x][y];
+      game->dir_buffer_from[y][x]     = engine_snapshot_bd.dir_buffer_from[x][y];
+      game->dir_buffer_to[y][x]       = engine_snapshot_bd.dir_buffer_to[x][y];
       game->gfx_buffer[y][x]          = engine_snapshot_bd.gfx_buffer[x][y];
     }
   }

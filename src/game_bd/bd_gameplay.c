@@ -26,8 +26,10 @@ void gd_game_free(GdGame *game)
     gd_cave_map_free(game->element_buffer);
   if (game->last_element_buffer)
     gd_cave_map_free(game->last_element_buffer);
-  if (game->dir_buffer)
-    gd_cave_map_free(game->dir_buffer);
+  if (game->dir_buffer_from)
+    gd_cave_map_free(game->dir_buffer_from);
+  if (game->dir_buffer_to)
+    gd_cave_map_free(game->dir_buffer_to);
   if (game->gfx_buffer)
     gd_cave_map_free(game->gfx_buffer);
 
@@ -89,10 +91,15 @@ static void load_cave(GdGame *game)
     gd_cave_map_free(game->last_element_buffer);
   game->last_element_buffer = NULL;
 
-  // delete direction buffer
-  if (game->dir_buffer)
-    gd_cave_map_free(game->dir_buffer);
-  game->dir_buffer = NULL;
+  // delete direction buffer (from)
+  if (game->dir_buffer_from)
+    gd_cave_map_free(game->dir_buffer_from);
+  game->dir_buffer_from = NULL;
+
+  // delete direction buffer (to)
+  if (game->dir_buffer_to)
+    gd_cave_map_free(game->dir_buffer_to);
+  game->dir_buffer_to = NULL;
 
   // delete gfx buffer
   if (game->gfx_buffer)
@@ -138,12 +145,19 @@ static void load_cave(GdGame *game)
     for (x = 0; x < game->cave->w; x++)
       game->last_element_buffer[y][x] = O_NONE;
 
-  // create new direction buffer
-  game->dir_buffer = gd_cave_map_new(game->cave, int);
+  // create new direction buffer (from)
+  game->dir_buffer_from = gd_cave_map_new(game->cave, int);
 
   for (y = 0; y < game->cave->h; y++)
     for (x = 0; x < game->cave->w; x++)
-      game->dir_buffer[y][x] = GD_MV_STILL;
+      game->dir_buffer_from[y][x] = GD_MV_STILL;
+
+  // create new direction buffer (to)
+  game->dir_buffer_to = gd_cave_map_new(game->cave, int);
+
+  for (y = 0; y < game->cave->h; y++)
+    for (x = 0; x < game->cave->w; x++)
+      game->dir_buffer_to[y][x] = GD_MV_STILL;
 
   // create new gfx buffer
   game->gfx_buffer = gd_cave_map_new(game->cave, int);
@@ -392,8 +406,9 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
       {
 	for (x = 0; x < game->cave->w; x++)
 	{
-	  game->last_element_buffer[y][x] = game->element_buffer[y][x] & ~SKIPPED;
-	  game->dir_buffer[y][x] = GD_MV_STILL;
+	  game->last_element_buffer[y][x] = game->element_buffer[y][x];
+	  game->dir_buffer_from[y][x] = GD_MV_STILL;
+	  game->dir_buffer_to[y][x]   = GD_MV_STILL;
 	}
       }
 

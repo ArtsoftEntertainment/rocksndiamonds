@@ -543,6 +543,9 @@ static inline boolean is_space_dir(const GdCave *cave, const int x, const int y,
 
 static inline void store_dir_buffer(GdCave *cave, const int x, const int y, const GdDirection dir)
 {
+  int old_x = x;
+  int old_y = y;
+
   // raw values without range correction
   int raw_x = x + gd_dx[dir];
   int raw_y = y + gd_dy[dir];
@@ -552,7 +555,18 @@ static inline void store_dir_buffer(GdCave *cave, const int x, const int y, cons
   int new_y = gety(cave, raw_x, raw_y);
   int new_dir = (dir > GD_MV_TWICE ? dir - GD_MV_TWICE : dir);
 
-  game_bd.game->dir_buffer[new_y][new_x] = new_dir;
+  // if tile is moving two steps at once, correct old position
+  if (dir > GD_MV_TWICE)
+  {
+    raw_x = x + gd_dx[new_dir];
+    raw_y = y + gd_dy[new_dir];
+
+    old_x = getx(cave, raw_x, raw_y);
+    old_y = gety(cave, raw_x, raw_y);
+  }
+
+  game_bd.game->dir_buffer_from[old_y][old_x] = new_dir;
+  game_bd.game->dir_buffer_to[new_y][new_x] = new_dir;
 }
 
 // store an element at the given position
