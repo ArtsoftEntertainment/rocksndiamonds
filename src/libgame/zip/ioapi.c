@@ -123,7 +123,7 @@ static voidpf ZCALLBACK fopen64_file_func(ZIP_UNUSED voidpf opaque, const void *
     {
         const char *fd_prefix = "fd:";
         if (strncmp(filename, fd_prefix, strlen(fd_prefix)) == 0)
-            file = fdopen(dup(atoi(&filename[strlen(fd_prefix)])), mode_fopen);
+            file = fdopen(dup(atoi(&((const char*)filename)[strlen(fd_prefix)])), mode_fopen);
         else
             file = fopen64((const char*)filename, mode_fopen);
         return file_build_ioposix(file, (const char*)filename);
