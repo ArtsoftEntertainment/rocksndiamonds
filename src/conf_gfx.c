@@ -331,6 +331,9 @@ struct ConfigInfo image_config[] =
   { "[bdx_default].growing.delay",			"4"				},
   { "[bdx_default].growing.anim_mode",			"linear"			},
 
+  { "bdx_empty_space",					UNDEFINED_FILENAME		},
+  { "bdx_empty_space.clone_from",			"empty_space"			},
+
   { "bdx_player",					UNDEFINED_FILENAME		},
   { "bdx_player.clone_from",				"player_1"			},
   { "bdx_player.down",					UNDEFINED_FILENAME		},
@@ -1362,6 +1365,9 @@ struct ConfigInfo image_config[] =
   { "[sp_default].exploding.frames",			"8"				},
   { "[sp_default].exploding.delay",			"4"				},
   { "[sp_default].exploding.anim_mode",			"linear"			},
+
+  { "sp_empty_space",					UNDEFINED_FILENAME		},
+  { "sp_empty_space.clone_from",			"empty_space"			},
 
   { "sp_zonk",						"RocksSP.png"			},
   { "sp_zonk.xpos",					"1"				},
@@ -5514,6 +5520,9 @@ struct ConfigInfo image_config[] =
   { "emc_dripper.active.ypos",				"8"				},
   { "emc_dripper.active.frames",			"1"				},
 
+  { "mm_empty_space",					UNDEFINED_FILENAME		},
+  { "mm_empty_space.clone_from",			"empty_space"			},
+
   { "mm_mcduffin",					"RocksMM.png"			},
   { "mm_mcduffin.xpos",					"4"				},
   { "mm_mcduffin.ypos",					"1"				},
@@ -6296,6 +6305,9 @@ struct ConfigInfo image_config[] =
   { "[mm_default].exploding.frames",			"8"				},
   { "[mm_default].exploding.delay",			"2"				},
   { "[mm_default].exploding.anim_mode",			"linear"			},
+
+  { "df_empty_space",					UNDEFINED_FILENAME		},
+  { "df_empty_space.clone_from",			"empty_space"			},
 
   { "df_laser",						"RocksDF.png"			},
   { "df_laser.xpos",					"0"				},
