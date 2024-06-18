@@ -279,6 +279,7 @@ char *getSetupFilename(void);
 char *getDefaultSetupFilename(void);
 char *getPlatformSetupFilename(void);
 char *getEditorSetupFilename(void);
+char *getFilenameFromCurrentLevelDirUpward(char *);
 char *getHelpAnimFilename(void);
 char *getHelpTextFilename(void);
 char *getLevelSetInfoFilename(int);

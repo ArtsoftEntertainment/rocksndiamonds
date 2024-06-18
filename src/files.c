@@ -2929,26 +2929,7 @@ char *getLocalLevelTemplateFilename(void)
 
 char *getGlobalLevelTemplateFilename(void)
 {
-  // global variable "leveldir_current" must be modified in the loop below
-  LevelDirTree *leveldir_current_last = leveldir_current;
-  char *filename = NULL;
-
-  // check for template level in path from current to topmost tree node
-
-  while (leveldir_current != NULL)
-  {
-    filename = getDefaultLevelFilename(-1);
-
-    if (fileExists(filename))
-      break;
-
-    leveldir_current = leveldir_current->node_parent;
-  }
-
-  // restore global variable "leveldir_current" modified in above loop
-  leveldir_current = leveldir_current_last;
-
-  return filename;
+  return getFilenameFromCurrentLevelDirUpward(LEVELTEMPLATE_FILENAME);
 }
 
 static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)

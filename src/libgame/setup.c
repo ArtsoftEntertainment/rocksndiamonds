@@ -797,6 +797,32 @@ char *getEditorSetupFilename(void)
   return filename;
 }
 
+char *getFilenameFromCurrentLevelDirUpward(char *basename)
+{
+  // global variable "leveldir_current" must be modified in the loop below
+  LevelDirTree *leveldir_current_last = leveldir_current;
+  static char *filename = NULL;
+
+  // check for filename in path from current to topmost tree node
+
+  while (leveldir_current != NULL)
+  {
+    checked_free(filename);
+
+    filename = getPath2(getCurrentLevelDir(), basename);
+
+    if (fileExists(filename))
+      break;
+
+    leveldir_current = leveldir_current->node_parent;
+  }
+
+  // restore global variable "leveldir_current" modified in above loop
+  leveldir_current = leveldir_current_last;
+
+  return filename;
+}
+
 char *getHelpAnimFilename(void)
 {
   static char *filename = NULL;
