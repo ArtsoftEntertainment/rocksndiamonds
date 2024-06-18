@@ -823,26 +823,42 @@ char *getFilenameFromCurrentLevelDirUpward(char *basename)
   return filename;
 }
 
-char *getHelpAnimFilename(void)
+static char *getHelpFilename(char *basename)
 {
   static char *filename = NULL;
 
   checked_free(filename);
 
-  filename = getPath2(getCurrentLevelDir(), HELPANIM_FILENAME);
+  // 1st try: look for help filename in current level set directory
+  filename = getPath2(getCurrentLevelDir(), basename);
+  if (fileExists(filename))
+    return filename;
 
-  return filename;
+  free(filename);
+
+  // 2nd try: look for help filename in configured graphics set directory
+  filename = getPath2(getLevelArtworkDir(ARTWORK_TYPE_GRAPHICS), basename);
+  if (fileExists(filename))
+    return filename;
+
+  free(filename);
+
+  // 3rd try: look for help filename in path from current to topmost level set directory
+  filename = getStringCopy(getFilenameFromCurrentLevelDirUpward(basename));
+  if (fileExists(filename))
+    return filename;
+
+  return NULL;
+}
+
+char *getHelpAnimFilename(void)
+{
+  return getHelpFilename(HELPANIM_FILENAME);
 }
 
 char *getHelpTextFilename(void)
 {
-  static char *filename = NULL;
-
-  checked_free(filename);
-
-  filename = getPath2(getCurrentLevelDir(), HELPTEXT_FILENAME);
-
-  return filename;
+  return getHelpFilename(HELPTEXT_FILENAME);
 }
 
 static char *getLevelSetInfoBasename(int nr)
