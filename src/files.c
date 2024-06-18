@@ -2924,7 +2924,7 @@ static int getFiletypeFromID(char *filetype_id)
 
 char *getLocalLevelTemplateFilename(void)
 {
-  return getDefaultLevelFilename(-1);
+  return getLevelFilenameFromBasename(LEVELTEMPLATE_FILENAME);
 }
 
 char *getGlobalLevelTemplateFilename(void)
