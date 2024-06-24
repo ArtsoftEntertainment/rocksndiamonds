@@ -1317,6 +1317,7 @@ void gd_cave_count_diamonds(GdCave *cave)
   by the caller.
 */
 void gd_drawcave_game(const GdCave *cave,
+		      int **element_buffer, int **last_element_buffer,
 		      int **drawing_buffer, int **last_drawing_buffer, int **gfx_buffer,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox)
 {
@@ -1581,6 +1582,9 @@ void gd_drawcave_game(const GdCave *cave,
 	draw += GD_NUM_OF_CELLS;
 
       // set to buffer, with caching
+      if (element_buffer[y][x] != actual)
+	element_buffer[y][x] = actual;
+
       if (drawing_buffer[y][x] != map)
 	drawing_buffer[y][x] = map;
 

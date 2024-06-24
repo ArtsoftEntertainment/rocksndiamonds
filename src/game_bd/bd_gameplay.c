@@ -22,6 +22,10 @@ void gd_game_free(GdGame *game)
   // stop sounds
   gd_sound_off();
 
+  if (game->element_buffer)
+    gd_cave_map_free(game->element_buffer);
+  if (game->last_element_buffer)
+    gd_cave_map_free(game->last_element_buffer);
   if (game->drawing_buffer)
     gd_cave_map_free(game->drawing_buffer);
   if (game->last_drawing_buffer)
@@ -81,6 +85,16 @@ static void load_cave(GdGame *game)
 {
   int x, y;
 
+  // delete element buffer
+  if (game->element_buffer)
+    gd_cave_map_free(game->element_buffer);
+  game->element_buffer = NULL;
+
+  // delete last element buffer
+  if (game->last_element_buffer)
+    gd_cave_map_free(game->last_element_buffer);
+  game->last_element_buffer = NULL;
+
   // delete drawing buffer
   if (game->drawing_buffer)
     gd_cave_map_free(game->drawing_buffer);
@@ -130,6 +144,20 @@ static void load_cave(GdGame *game)
   game->milliseconds_game = 0;        // set game timer to zero, too
 
   game->cycle_counter = 0;
+
+  // create new element buffer
+  game->element_buffer = gd_cave_map_new(game->cave, int);
+
+  for (y = 0; y < game->cave->h; y++)
+    for (x = 0; x < game->cave->w; x++)
+      game->element_buffer[y][x] = O_NONE;
+
+  // create new last element buffer
+  game->last_element_buffer = gd_cave_map_new(game->cave, int);
+
+  for (y = 0; y < game->cave->h; y++)
+    for (x = 0; x < game->cave->w; x++)
+      game->last_element_buffer[y][x] = O_NONE;
 
   // create new drawing buffer
   game->drawing_buffer = gd_cave_map_new(game->cave, int);
@@ -406,6 +434,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
       {
 	for (x = 0; x < game->cave->w; x++)
 	{
+	  game->last_element_buffer[y][x] = game->element_buffer[y][x];
 	  game->last_drawing_buffer[y][x] = game->drawing_buffer[y][x];
 	  game->dir_buffer_from[y][x] = GD_MV_STILL;
 	  game->dir_buffer_to[y][x]   = GD_MV_STILL;
@@ -595,8 +624,9 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 
   // always render the cave to the gfx buffer;
   // however it may do nothing if animcycle was not changed.
-  if (game->drawing_buffer && game->gfx_buffer)
-    gd_drawcave_game(game->cave, game->drawing_buffer, game->last_drawing_buffer, game->gfx_buffer,
+  if (game->element_buffer && game->drawing_buffer && game->gfx_buffer)
+    gd_drawcave_game(game->cave, game->element_buffer, game->last_element_buffer,
+		     game->drawing_buffer, game->last_drawing_buffer, game->gfx_buffer,
 		     game->bonus_life_flash != 0, game->animcycle, setup.bd_show_invisible_outbox);
 
   game->state_counter = counter_next;
@@ -650,7 +680,7 @@ void play_game_func(GdGame *game, int action)
   // if drawcave was before scrolling, it would draw, scroll would invalidate,
   // and then it should be drawn again
   // only do the drawing if the cave already exists.
-  if (game->cave && game->drawing_buffer && game->gfx_buffer)
+  if (game->cave && game->element_buffer && game->drawing_buffer && game->gfx_buffer)
   {
     // if fine scrolling, scroll at 50hz. if not, only scroll at every second call, so 25hz.
     // do the scrolling. scroll exactly, if player is not yet alive
