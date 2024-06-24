@@ -602,8 +602,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int sy = y * cell_size - scroll_y;
   int dir_from = game->dir_buffer_from[y][x];
   int dir_to = game->dir_buffer_to[y][x];
-  int tile = game->element_buffer[y][x];
-  int tile_last = game->last_element_buffer[y][x];
+  int tile = game->drawing_buffer[y][x];
+  int tile_last = game->last_drawing_buffer[y][x];
   int tile_from = O_NONE;	// source element if element is moving (will be set later)
   int tile_to = tile;		// target element if element is moving
   int frame = game->animcycle;
@@ -620,7 +620,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     int new_x = cave->getx(cave, x + dx, y + dy);
     int new_y = cave->gety(cave, x + dx, y + dy);
 
-    tile_from = game->element_buffer[new_y][new_x];
+    tile_from = game->drawing_buffer[new_y][new_x];
 
     // handle special case of player running into enemy/explosion from top or left side
     if ((el_growing(tile_from) || el_explosion(tile_from)) && el_player(tile_last))

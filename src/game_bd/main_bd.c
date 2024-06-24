@@ -572,8 +572,8 @@ void SaveEngineSnapshotValues_BD(void)
   {
     for (x = 0; x < cave->w; x++)
     {
-      engine_snapshot_bd.element_buffer[x][y]      = game->element_buffer[y][x];
-      engine_snapshot_bd.last_element_buffer[x][y] = game->last_element_buffer[y][x];
+      engine_snapshot_bd.drawing_buffer[x][y]      = game->drawing_buffer[y][x];
+      engine_snapshot_bd.last_drawing_buffer[x][y] = game->last_drawing_buffer[y][x];
       engine_snapshot_bd.dir_buffer_from[x][y]     = game->dir_buffer_from[y][x];
       engine_snapshot_bd.dir_buffer_to[x][y]       = game->dir_buffer_to[y][x];
       engine_snapshot_bd.gfx_buffer[x][y]          = game->gfx_buffer[y][x];
@@ -604,8 +604,8 @@ void LoadEngineSnapshotValues_BD(void)
   engine_snapshot_bd.game.cave                = game->cave;
   engine_snapshot_bd.game.original_cave       = game->original_cave;
 
-  engine_snapshot_bd.game.element_buffer      = game->element_buffer;
-  engine_snapshot_bd.game.last_element_buffer = game->last_element_buffer;
+  engine_snapshot_bd.game.drawing_buffer      = game->drawing_buffer;
+  engine_snapshot_bd.game.last_drawing_buffer = game->last_drawing_buffer;
   engine_snapshot_bd.game.dir_buffer_from     = game->dir_buffer_from;
   engine_snapshot_bd.game.dir_buffer_to       = game->dir_buffer_to;
   engine_snapshot_bd.game.gfx_buffer          = game->gfx_buffer;
@@ -616,8 +616,8 @@ void LoadEngineSnapshotValues_BD(void)
   {
     for (x = 0; x < cave->w; x++)
     {
-      game->element_buffer[y][x]      = engine_snapshot_bd.element_buffer[x][y];
-      game->last_element_buffer[y][x] = engine_snapshot_bd.last_element_buffer[x][y];
+      game->drawing_buffer[y][x]      = engine_snapshot_bd.drawing_buffer[x][y];
+      game->last_drawing_buffer[y][x] = engine_snapshot_bd.last_drawing_buffer[x][y];
       game->dir_buffer_from[y][x]     = engine_snapshot_bd.dir_buffer_from[x][y];
       game->dir_buffer_to[y][x]       = engine_snapshot_bd.dir_buffer_to[x][y];
       game->gfx_buffer[y][x]          = engine_snapshot_bd.gfx_buffer[x][y];

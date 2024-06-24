@@ -1317,7 +1317,7 @@ void gd_cave_count_diamonds(GdCave *cave)
   by the caller.
 */
 void gd_drawcave_game(const GdCave *cave,
-		      int **element_buffer, int **last_element_buffer, int **gfx_buffer,
+		      int **drawing_buffer, int **last_drawing_buffer, int **gfx_buffer,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox)
 {
   static int player_blinking = 0;
@@ -1558,7 +1558,7 @@ void gd_drawcave_game(const GdCave *cave,
 	// special check needed when smooth game element movements selected in setup menu:
 	// last element must either be player (before pushing) or pushable element (while pushing)
 	// (extra check needed to prevent pushing animation when moving towards pushable element)
-	if (!use_bd_smooth_movements() || last_element_buffer[y][x] != O_SPACE)
+	if (!use_bd_smooth_movements() || last_drawing_buffer[y][x] != O_SPACE)
 	{
 	  if (cave->last_direction == GD_MV_LEFT)
 	    map = O_PLAYER_PUSH_LEFT;
@@ -1581,8 +1581,8 @@ void gd_drawcave_game(const GdCave *cave,
 	draw += GD_NUM_OF_CELLS;
 
       // set to buffer, with caching
-      if (element_buffer[y][x] != map)
-	element_buffer[y][x] = map;
+      if (drawing_buffer[y][x] != map)
+	drawing_buffer[y][x] = map;
 
       if (gfx_buffer[y][x] != draw)
 	gfx_buffer[y][x] = draw | GD_REDRAW;

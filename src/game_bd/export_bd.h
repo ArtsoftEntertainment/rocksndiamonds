@@ -81,8 +81,8 @@ struct EngineSnapshotInfo_BD
   GdGame game;
 
   // data from pointers in game structure
-  int element_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
-  int last_element_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+  int drawing_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+  int last_drawing_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
   int dir_buffer_from[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
   int dir_buffer_to[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
   int gfx_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];

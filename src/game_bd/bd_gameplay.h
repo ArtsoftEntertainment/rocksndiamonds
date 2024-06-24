@@ -75,8 +75,8 @@ typedef struct _gd_game
   int bonus_life_flash;         // different kind of flashing, for bonus life
 
   int state_counter;            // counter used to control the game flow, rendering of caves
-  int **element_buffer;
-  int **last_element_buffer;
+  int **drawing_buffer;
+  int **last_drawing_buffer;
   int **dir_buffer_from;
   int **dir_buffer_to;
   int **gfx_buffer;             // contains the indexes to the cells;
