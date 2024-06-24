@@ -1559,7 +1559,7 @@ void gd_drawcave_game(const GdCave *cave,
 	// special check needed when smooth game element movements selected in setup menu:
 	// last element must either be player (before pushing) or pushable element (while pushing)
 	// (extra check needed to prevent pushing animation when moving towards pushable element)
-	if (!use_bd_smooth_movements() || last_drawing_buffer[y][x] != O_SPACE)
+	if (!use_bd_smooth_movements() || last_element_buffer[y][x] != O_SPACE)
 	{
 	  if (cave->last_direction == GD_MV_LEFT)
 	    map = O_PLAYER_PUSH_LEFT;
