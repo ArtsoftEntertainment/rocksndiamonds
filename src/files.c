@@ -948,7 +948,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BDX_EXPANDABLE_WALL_ANY,		-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_expanding_wall_looks_like,	EL_BDX_WALL
+    &li.bd_expanding_wall_looks_like,	EL_BDX_EXPANDABLE_WALL_ANY
   },
 
   {
