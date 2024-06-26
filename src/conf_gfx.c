@@ -921,7 +921,7 @@ struct ConfigInfo image_config[] =
   { "bdx_conveyor_left.active.xpos",			"0"				},
   { "bdx_conveyor_left.active.ypos",			"3"				},
   { "bdx_conveyor_left.active.frames",			"8"				},
-  { "bdx_conveyor_left.active.delay",			"2"				},
+  { "bdx_conveyor_left.active.delay",			"1"				},
 
   { "bdx_conveyor_right",				"RocksDC.png"			},
   { "bdx_conveyor_right.xpos",				"0"				},
@@ -934,7 +934,7 @@ struct ConfigInfo image_config[] =
   { "bdx_conveyor_right.active.xpos",			"0"				},
   { "bdx_conveyor_right.active.ypos",			"3"				},
   { "bdx_conveyor_right.active.frames",			"8"				},
-  { "bdx_conveyor_right.active.delay",			"2"				},
+  { "bdx_conveyor_right.active.delay",			"1"				},
   { "bdx_conveyor_right.active.anim_mode",		"reverse"			},
 
   { "bdx_conveyor_switch",				"RocksBD.png"			},
