@@ -4715,9 +4715,6 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
 
   UnmapAllGadgets();
 
-  FreeScreenGadgets();
-  CreateScreenGadgets();
-
   if (restart_music)
     FadeMenuSoundsAndMusic();
 
@@ -4734,6 +4731,9 @@ static void DrawChooseTree(TreeInfo **ti_ptr)
     SetMainBackgroundImage(IMG_BACKGROUND_LEVELS);
   else if (game_status == GAME_MODE_SCORES)
     SetMainBackgroundImage(IMG_BACKGROUND_SCORES);
+
+  FreeScreenGadgets();
+  CreateScreenGadgets();
 
   ClearField();
 
