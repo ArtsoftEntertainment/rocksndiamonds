@@ -3318,8 +3318,27 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      if (!is_scanned_dir(cave, x, y, GD_MV_UP) &&
 		  is_space_dir(cave, x, y, dir[GD_MV_UP]))
 	      {
-		store_dir(cave, x, y, dir[GD_MV_UP], get_dir(cave, x, y, GD_MV_UP));    // move
-		store_dir(cave, x, y, GD_MV_UP, O_SPACE);    // and place a space.
+                // to allow smooth movement of game elements on conveyor belts,
+                // the moving direction set by "store_dir()" must be set to the
+                // direction the game element on the conveyor belt is moving;
+                // without smooth movement, the following lines would do it:
+                //
+		// store_dir(cave, x, y, dir[GD_MV_UP], get_dir(cave, x, y, GD_MV_UP));    // move
+		// store_dir(cave, x, y, GD_MV_UP, O_SPACE);    // and place a space.
+
+		int tile = get_dir(cave, x, y, GD_MV_UP);
+                int move_dir = (left ? GD_MV_LEFT : GD_MV_RIGHT); // top side direction
+
+                // raw values without range correction
+                int raw_x = x + gd_dx[GD_MV_UP];
+                int raw_y = y + gd_dy[GD_MV_UP];
+
+                // final values with range correction
+                int old_x = getx(cave, raw_x, raw_y);
+                int old_y = gety(cave, raw_x, raw_y);
+
+		store_dir(cave, x, y, GD_MV_UP, O_SPACE);        // place a space ...
+		store_dir(cave, old_x, old_y, move_dir, tile);   // and move element.
 	      }
 	    }
 
@@ -3332,8 +3351,27 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      if (!is_scanned_dir(cave, x, y, GD_MV_DOWN) &&
 		  is_space_dir(cave, x, y, dir[GD_MV_DOWN]))
 	      {
-		store_dir(cave, x, y, dir[GD_MV_DOWN], get_dir(cave, x, y, GD_MV_DOWN));    // move
-		store_dir(cave, x, y, GD_MV_DOWN, O_SPACE);    // and clear.
+                // to allow smooth movement of game elements on conveyor belts,
+                // the moving direction set by "store_dir()" must be set to the
+                // direction the game element on the conveyor belt is moving;
+                // without smooth movement, the following lines would do it:
+                //
+		// store_dir(cave, x, y, dir[GD_MV_DOWN], get_dir(cave, x, y, GD_MV_DOWN)); // move
+		// store_dir(cave, x, y, GD_MV_DOWN, O_SPACE);    // and clear.
+
+		int tile = get_dir(cave, x, y, GD_MV_DOWN);
+                int move_dir = (left ? GD_MV_RIGHT : GD_MV_LEFT); // bottom side direction
+
+                // raw values without range correction
+                int raw_x = x + gd_dx[GD_MV_DOWN];
+                int raw_y = y + gd_dy[GD_MV_DOWN];
+
+                // final values with range correction
+                int old_x = getx(cave, raw_x, raw_y);
+                int old_y = gety(cave, raw_x, raw_y);
+
+		store_dir(cave, x, y, GD_MV_DOWN, O_SPACE);      // place a space ...
+		store_dir(cave, old_x, old_y, move_dir, tile);   // and move element.
 	      }
 	    }
 	  }
