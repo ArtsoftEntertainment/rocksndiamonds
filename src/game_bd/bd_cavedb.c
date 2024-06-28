@@ -162,12 +162,12 @@ GdElements gd_elements[] =
   { O_NUT_F, N_("Nut, falling"), P_FALLING, "NUTf", 0, i_nut_f, i_nut_f, 358, 156 },    // has ckdelay
   { O_BLADDER_SPENDER, N_("Bladder Spender"), P_PUSHABLE, "BLADDERSPENDER", 0, 6, 6, 6, 20 },    // has ckdelay
   { O_INBOX, N_("Inbox"), 0, "INBOX", 'P', 35, 35, 22 },
-  { O_H_EXPANDING_WALL, N_("Expanding wall, horizontal"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED, "HEXPANDINGWALL", 'x', i_h_expanding_wall, i_h_expanding_wall, 5, 111 },    // has ckdelay
-  { O_V_EXPANDING_WALL, N_("Expanding wall, vertical"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED, "VEXPANDINGWALL", 'v', i_v_expanding_wall, i_v_expanding_wall, 5, 111 },    // has ckdelay
-  { O_EXPANDING_WALL, N_("Expanding wall"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED, "EXPANDINGWALL", 'e', i_expanding_wall, i_expanding_wall, 5, 111 },    // has ckdelay
-  { O_H_EXPANDING_STEEL_WALL, N_("Expanding steel wall, horizontal"), P_NON_EXPLODABLE, "HEXPANDINGSTEELWALL", 0, i_h_expanding_steel_wall, i_h_expanding_steel_wall, 4, 111 },    // has ckdelay
-  { O_V_EXPANDING_STEEL_WALL, N_("Expanding steel wall, vertical"), P_NON_EXPLODABLE, "VEXPANDINGSTEELWALL", 0, i_v_expanding_steel_wall, i_v_expanding_steel_wall, 4, 111 },    // has ckdelay
-  { O_EXPANDING_STEEL_WALL, N_("Expanding steel wall"), P_NON_EXPLODABLE, "EXPANDINGSTEELWALL", 0, i_expanding_steel_wall, i_expanding_steel_wall, 4, 111 },    // has ckdelay
+  { O_H_EXPANDING_WALL, N_("Expanding wall, horizontal"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED | P_CAN_GROW, "HEXPANDINGWALL", 'x', i_h_expanding_wall, i_h_expanding_wall, 5, 111 },    // has ckdelay
+  { O_V_EXPANDING_WALL, N_("Expanding wall, vertical"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED | P_CAN_GROW, "VEXPANDINGWALL", 'v', i_v_expanding_wall, i_v_expanding_wall, 5, 111 },    // has ckdelay
+  { O_EXPANDING_WALL, N_("Expanding wall"), P_VISUAL_EFFECT | P_CAN_BE_HAMMERED | P_CAN_GROW, "EXPANDINGWALL", 'e', i_expanding_wall, i_expanding_wall, 5, 111 },    // has ckdelay
+  { O_H_EXPANDING_STEEL_WALL, N_("Expanding steel wall, horizontal"), P_NON_EXPLODABLE | P_CAN_GROW, "HEXPANDINGSTEELWALL", 0, i_h_expanding_steel_wall, i_h_expanding_steel_wall, 4, 111 },    // has ckdelay
+  { O_V_EXPANDING_STEEL_WALL, N_("Expanding steel wall, vertical"), P_NON_EXPLODABLE | P_CAN_GROW, "VEXPANDINGSTEELWALL", 0, i_v_expanding_steel_wall, i_v_expanding_steel_wall, 4, 111 },    // has ckdelay
+  { O_EXPANDING_STEEL_WALL, N_("Expanding steel wall"), P_NON_EXPLODABLE | P_CAN_GROW, "EXPANDINGSTEELWALL", 0, i_expanding_steel_wall, i_expanding_steel_wall, 4, 111 },    // has ckdelay
   { O_EXPANDING_WALL_SWITCH, N_("Expanding wall switch"), 0, "EXPANDINGWALLSWITCH", 0, 40, 40, 40 },
   { O_CREATURE_SWITCH, N_("Creature direction switch"), 0, "FIREFLYBUTTERFLYSWITCH", 0, 18, 18, 18 },
   { O_BITER_SWITCH, N_("Biter switch"), 0, "BITERSWITCH", 0, 12, 12, 12 },
@@ -231,8 +231,8 @@ GdElements gd_elements[] =
   { O_WALLED_KEY_2, N_("Walled key 2"), P_CAN_BE_HAMMERED, "WALLED_KEY2", 0, i_walled_key_2, i_walled_key_2, 5 },
   { O_WALLED_KEY_3, N_("Walled key 3"), P_CAN_BE_HAMMERED, "WALLED_KEY3", 0, i_walled_key_3, i_walled_key_3, 5 },
 
-  { O_AMOEBA, N_("Amoeba"), P_BLOWS_UP_FLIES | P_CAN_MOVE, "AMOEBA", 'a', 192, -192, -192, 260 },    // has ckdelay
-  { O_AMOEBA_2, N_("Amoeba 2"), P_BLOWS_UP_FLIES | P_CAN_MOVE | P_VISUAL_EFFECT, "AMOEBA2", 0, 296, -296, -296, 260 },    // has ckdelay
+  { O_AMOEBA, N_("Amoeba"), P_BLOWS_UP_FLIES | P_CAN_GROW, "AMOEBA", 'a', 192, -192, -192, 260 },    // has ckdelay
+  { O_AMOEBA_2, N_("Amoeba 2"), P_BLOWS_UP_FLIES | P_CAN_GROW | P_VISUAL_EFFECT, "AMOEBA2", 0, 296, -296, -296, 260 },    // has ckdelay
   { O_REPLICATOR, N_("Replicator"), P_NON_EXPLODABLE, "REPLICATOR", 0, 304, -304, -304, 210 },    // has ckdelay
   { O_CONVEYOR_LEFT, N_("Conveyor belt (left)"), P_NON_EXPLODABLE, "CONVEYORLEFT", 0, i_conveyor_left, -328, -328, 256  },    // has ckdelay
   { O_CONVEYOR_RIGHT, N_("Conveyor belt (right)"), P_NON_EXPLODABLE, "CONVEYORRIGHT", 0, i_conveyor_right, -320, -320  },
