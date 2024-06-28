@@ -43,7 +43,8 @@ static const GdDirection ccw_eighth[] =
   GD_MV_RIGHT,
   GD_MV_DOWN_RIGHT,
   GD_MV_DOWN,
-  GD_MV_DOWN_LEFT
+  GD_MV_DOWN_LEFT,
+  GD_MV_LEFT
 };
 
 static const GdDirection ccw_fourth[] =
@@ -56,8 +57,7 @@ static const GdDirection ccw_fourth[] =
   GD_MV_RIGHT,
   GD_MV_DOWN_RIGHT,
   GD_MV_DOWN,
-  GD_MV_DOWN_LEFT,
-  GD_MV_LEFT
+  GD_MV_DOWN_LEFT
 };
 
 static const GdDirection cw_eighth[] =
