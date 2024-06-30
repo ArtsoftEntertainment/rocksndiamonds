@@ -231,8 +231,8 @@ GdElements gd_elements[] =
   { O_WALLED_KEY_2, N_("Walled key 2"), P_CAN_BE_HAMMERED, "WALLED_KEY2", 0, i_walled_key_2, i_walled_key_2, 5 },
   { O_WALLED_KEY_3, N_("Walled key 3"), P_CAN_BE_HAMMERED, "WALLED_KEY3", 0, i_walled_key_3, i_walled_key_3, 5 },
 
-  { O_AMOEBA, N_("Amoeba"), P_BLOWS_UP_FLIES | P_CAN_GROW, "AMOEBA", 'a', 192, -192, -192, 260 },    // has ckdelay
-  { O_AMOEBA_2, N_("Amoeba 2"), P_BLOWS_UP_FLIES | P_CAN_GROW | P_VISUAL_EFFECT, "AMOEBA2", 0, 296, -296, -296, 260 },    // has ckdelay
+  { O_AMOEBA, N_("Amoeba"), P_BLOWS_UP_FLIES | P_CAN_GROW | P_CAN_DIG, "AMOEBA", 'a', 192, -192, -192, 260 },    // has ckdelay
+  { O_AMOEBA_2, N_("Amoeba 2"), P_BLOWS_UP_FLIES | P_CAN_GROW | P_CAN_DIG | P_VISUAL_EFFECT, "AMOEBA2", 0, 296, -296, -296, 260 },    // has ckdelay
   { O_REPLICATOR, N_("Replicator"), P_NON_EXPLODABLE, "REPLICATOR", 0, 304, -304, -304, 210 },    // has ckdelay
   { O_CONVEYOR_LEFT, N_("Conveyor belt (left)"), P_NON_EXPLODABLE, "CONVEYORLEFT", 0, i_conveyor_left, -328, -328, 256  },    // has ckdelay
   { O_CONVEYOR_RIGHT, N_("Conveyor belt (right)"), P_NON_EXPLODABLE, "CONVEYORRIGHT", 0, i_conveyor_right, -320, -320  },
@@ -285,9 +285,9 @@ GdElements gd_elements[] =
   { O_PRE_PL_1, N_("Player birth (1)"), P_GROWING, "GUYBIRTH1", 0, 32, 32, 32 },
   { O_PRE_PL_2, N_("Player birth (2)"), P_GROWING, "GUYBIRTH2", 0, 33, 33, 33 },
   { O_PRE_PL_3, N_("Player birth (3)"), P_GROWING, "GUYBIRTH3", 0, 34, 34, 34 },
-  { O_PLAYER, N_("Player"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUY", 0, i_player, i_player, 35, 32 },    // has ckdelay
-  { O_PLAYER_BOMB, N_("Player with bomb"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYBOMB", 0, 42, 42, 42, 25 },    // has ckdelay
-  { O_PLAYER_ROCKET_LAUNCHER, N_("Player with rocket launcher"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYROCKETLAUNCER", 0, 369, 369, 369, 25 },    // has ckdelay
+  { O_PLAYER, N_("Player"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG, "GUY", 0, i_player, i_player, 35, 32 },    // has ckdelay
+  { O_PLAYER_BOMB, N_("Player with bomb"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG, "GUYBOMB", 0, 42, 42, 42, 25 },    // has ckdelay
+  { O_PLAYER_ROCKET_LAUNCHER, N_("Player with rocket launcher"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG, "GUYROCKETLAUNCER", 0, 369, 369, 369, 25 },    // has ckdelay
   { O_PLAYER_GLUED, N_("Glued player"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT, "GUYGLUED", 0, i_player_glued, i_player_glued, 35 },    // is not a real player! so active x, y will not find it. no P_PLAYER bit!
   { O_PLAYER_STIRRING, N_("Player stirring"), P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYSTIRRING", 0, 256, -256, -256 },
 
@@ -298,8 +298,8 @@ GdElements gd_elements[] =
   { O_ROCKET_4, N_("Rocket (down)"), 0, "ROCKETd", 0, 367, 367, 367, 40 },    // has ckdelay
 
   { O_BOMB, N_("Bomb"), P_COLLECTIBLE, "BOMB", 0, 48, 48, 48 },
-  { O_BOMB_TICK_1, N_("Ticking bomb (1)"), P_EXPLOSION_FIRST_STAGE, "IGNITEDBOMB1", 0, 49, 49, 49 },
-  { O_BOMB_TICK_2, N_("Ticking bomb (2)"), 0, "IGNITEDBOMB2", 0, 50, 50, 50 },
+  { O_BOMB_TICK_1, N_("Ticking bomb (1)"), P_EXPLOSION_FIRST_STAGE | P_CAN_DIG, "IGNITEDBOMB1", 0, 49, 49, 49 },
+  { O_BOMB_TICK_2, N_("Ticking bomb (2)"), P_CAN_DIG, "IGNITEDBOMB2", 0, 50, 50, 50 },
   { O_BOMB_TICK_3, N_("Ticking bomb (3)"), 0, "IGNITEDBOMB3", 0, 51, 51, 51 },
   { O_BOMB_TICK_4, N_("Ticking bomb (4)"), 0, "IGNITEDBOMB4", 0, 52, 52, 52 },
   { O_BOMB_TICK_5, N_("Ticking bomb (5)"), 0, "IGNITEDBOMB5", 0, 53, 53, 53 },
@@ -353,8 +353,8 @@ GdElements gd_elements[] =
   { O_NUT_EXPL_3, N_("Nut explosion (3)"), P_SLOPED | P_EXPLOSION, "NUTEXPLOSION3", 0, 362, 362, 362, 280 },    // has ckdelay
   { O_NUT_EXPL_4, N_("Nut explosion (4)"), P_SLOPED | P_EXPLOSION, "NUTEXPLOSION4", 0, 363, 363, 363, 280 },    // has ckdelay
 
-  { O_PLAYER_PNEUMATIC_LEFT, NULL /* Player using hammer, left */, P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYHAMMERl", 0, 265, 265, 265 },
-  { O_PLAYER_PNEUMATIC_RIGHT, NULL /* Player using hammer, right */, P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER, "GUYHAMMERr", 0, 268, 268, 268 },
+  { O_PLAYER_PNEUMATIC_LEFT, NULL /* Player using hammer, left */, P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG, "GUYHAMMERl", 0, 265, 265, 265 },
+  { O_PLAYER_PNEUMATIC_RIGHT, NULL /* Player using hammer, right */, P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG, "GUYHAMMERr", 0, 268, 268, 268 },
   { O_PNEUMATIC_ACTIVE_LEFT, NULL /* Active hammer, left */, 0, "HAMMERACTIVEl", 0, 264, 264, 264 },
   { O_PNEUMATIC_ACTIVE_RIGHT, NULL /* Active hammer, right */, 0, "HAMMERACTIVEr", 0, 269, 269, 269 },
 
@@ -372,10 +372,10 @@ GdElements gd_elements[] =
   { O_OUTBOX_CLOSED, NULL, 0, NULL, 0, 22, 22, 22 },
   { O_OUTBOX_OPEN, NULL, 0, NULL, 0, 23, 23, 23 },
   { O_COVERED, NULL, 0, NULL, 0, 128, -128, -128 },
-  { O_PLAYER_LEFT, NULL, P_PLAYER, NULL, 0, 232, -232, -232 },
-  { O_PLAYER_RIGHT, NULL, P_PLAYER, NULL, 0, 240, -240, -240 },
-  { O_PLAYER_UP, NULL, P_PLAYER, NULL, 0, 376, -376, -376 },
-  { O_PLAYER_DOWN, NULL, P_PLAYER, NULL, 0, 384, -384, -384 },
+  { O_PLAYER_LEFT, NULL, P_PLAYER | P_CAN_DIG, NULL, 0, 232, -232, -232 },
+  { O_PLAYER_RIGHT, NULL, P_PLAYER | P_CAN_DIG, NULL, 0, 240, -240, -240 },
+  { O_PLAYER_UP, NULL, P_PLAYER | P_CAN_DIG, NULL, 0, 376, -376, -376 },
+  { O_PLAYER_DOWN, NULL, P_PLAYER | P_CAN_DIG, NULL, 0, 384, -384, -384 },
   { O_PLAYER_TAP, NULL, P_PLAYER, NULL, 0, 216, -216, -216 },
   { O_PLAYER_BLINK, NULL, P_PLAYER, NULL, 0, 208, -208, -208 },
   { O_PLAYER_TAP_BLINK, NULL, P_PLAYER, NULL, 0, 224, -224, -224 },

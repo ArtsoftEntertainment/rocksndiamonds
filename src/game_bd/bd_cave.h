@@ -128,6 +128,7 @@ enum _element_property
   E_P_CAN_MOVE,                 // can move
   E_P_CAN_FALL,                 // can fall
   E_P_CAN_GROW,                 // can grow
+  E_P_CAN_DIG,                  // can dig
   E_P_FALLING,                  // falling
   E_P_GROWING,                  // growing (element birth)
 };
@@ -169,6 +170,7 @@ enum _element_property
 #define P_CAN_MOVE			(1 << E_P_CAN_MOVE)
 #define P_CAN_FALL			(1 << E_P_CAN_FALL)
 #define P_CAN_GROW			(1 << E_P_CAN_GROW)
+#define P_CAN_DIG			(1 << E_P_CAN_DIG)
 #define P_FALLING			(1 << E_P_FALLING)
 #define P_GROWING			(1 << E_P_GROWING)
 
