@@ -7686,6 +7686,9 @@ int map_element_BD_to_RND_cave(int element_bd)
     mapping_initialized = TRUE;
   }
 
+  // always map (scanned) run-time elements to normal elements
+  element_bd &= O_MASK;
+
   if (element_bd < 0 || element_bd >= O_MAX_ALL)
   {
     Warn("invalid BD element %d", element_bd);
@@ -7715,6 +7718,9 @@ int map_element_BD_to_RND_game(int element_bd)
 
     mapping_initialized = TRUE;
   }
+
+  // always map (scanned) run-time elements to normal elements
+  element_bd &= O_MASK;
 
   if (element_bd < 0 || element_bd >= O_MAX_ALL)
   {

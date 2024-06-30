@@ -1713,7 +1713,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       }
 
       // add the ckdelay correction value for every element seen.
-      cave->ckdelay += gd_elements[get(cave, x, y)].ckdelay;
+      cave->ckdelay += gd_elements[get(cave, x, y) & O_MASK].ckdelay;
 
       switch (get(cave, x, y))
       {
@@ -3975,7 +3975,7 @@ void set_initial_cave_speed(GdCave *cave)
     for (x = 0; x < cave->w; x++)
     {
       // add the ckdelay correction value for every element seen.
-      cave->ckdelay += gd_elements[get(cave, x, y)].ckdelay;
+      cave->ckdelay += gd_elements[get(cave, x, y) & O_MASK].ckdelay;
     }
   }
 
