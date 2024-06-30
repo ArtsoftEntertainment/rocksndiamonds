@@ -1096,8 +1096,10 @@ struct ConfigInfo image_config[] =
   { "bdx_waiting_rock.EDITOR.xpos",			"4"				},
   { "bdx_waiting_rock.EDITOR.ypos",			"2"				},
 
-  { "bdx_chasing_rock",					UNDEFINED_FILENAME		},
-  { "bdx_chasing_rock.clone_from",			"bdx_rock"			},
+  { "bdx_chasing_rock",					"RocksBD.png"			},
+  { "bdx_chasing_rock.xpos",				"0"				},
+  { "bdx_chasing_rock.ypos",				"4"				},
+  { "bdx_chasing_rock.frames",				"1"				},
 
   { "bdx_ghost",					"RocksBD.png"			},
   { "bdx_ghost.xpos",					"0"				},
