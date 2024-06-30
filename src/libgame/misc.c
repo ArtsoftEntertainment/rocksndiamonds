@@ -1222,6 +1222,9 @@ char *getStringCopyNStatic(const char *s, int n)
 
 char *getStringToUpper(const char *s)
 {
+  if (s == NULL)
+    return NULL;
+
   char *s_copy = checked_malloc(strlen(s) + 1);
   char *s_ptr = s_copy;
 
@@ -1234,6 +1237,9 @@ char *getStringToUpper(const char *s)
 
 char *getStringToLower(const char *s)
 {
+  if (s == NULL)
+    return NULL;
+
   char *s_copy = checked_malloc(strlen(s) + 1);
   char *s_ptr = s_copy;
 
