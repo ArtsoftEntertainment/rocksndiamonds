@@ -543,11 +543,13 @@ static inline boolean el_player(const int element)
   return (gd_elements[element & O_MASK].properties & P_PLAYER) != 0;
 }
 
+#if 0
 // returns true if the element is walkable
 static inline boolean el_walkable(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_WALKABLE) != 0;
 }
+#endif
 
 // returns true if the element is diggable
 static inline boolean el_diggable(const int element)
@@ -561,6 +563,7 @@ static inline boolean el_collectible(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_COLLECTIBLE) != 0;
 }
+#endif
 
 // returns true if the element is pushable
 static inline boolean el_pushable(const int element)
@@ -575,11 +578,28 @@ static inline boolean el_can_move(const int element)
 }
 
 // returns true if the element can fall
+static inline boolean el_can_fall(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_CAN_FALL) != 0;
+}
+
+// returns true if the element can grow
+static inline boolean el_can_grow(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_CAN_GROW) != 0;
+}
+
+// returns true if the element can dig
+static inline boolean el_can_dig(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_CAN_DIG) != 0;
+}
+
+// returns true if the element can fall
 static inline boolean el_falling(const int element)
 {
   return (gd_elements[element & O_MASK].properties & P_FALLING) != 0;
 }
-#endif
 
 // returns true if the element is growing
 static inline boolean el_growing(const int element)
@@ -593,6 +613,22 @@ static inline boolean el_explosion(const int element)
   return (gd_elements[element & O_MASK].properties & P_EXPLOSION) != 0;
 }
 
+static inline boolean el_smooth_movable(const int element)
+{
+  // special case of non-moving player
+  if (element == O_PLAYER_PNEUMATIC_LEFT ||
+      element == O_PLAYER_PNEUMATIC_RIGHT)
+    return FALSE;
+
+  return (el_player(element) ||
+          el_can_move(element) ||
+          el_can_fall(element) ||
+          el_can_grow(element) ||
+          el_can_dig(element) ||
+          el_falling(element) ||
+          el_pushable(element));
+}
+
 static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean draw_masked)
 {
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
@@ -602,10 +638,14 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int sy = y * cell_size - scroll_y;
   int dir_from = game->dir_buffer_from[y][x];
   int dir_to = game->dir_buffer_to[y][x];
-  int tile = game->drawing_buffer[y][x];
-  int tile_last = game->last_drawing_buffer[y][x];
+  int tile = game->element_buffer[y][x];
+  int draw = game->drawing_buffer[y][x];
+  int tile_last = game->last_element_buffer[y][x];
+  int draw_last = game->last_drawing_buffer[y][x];
   int tile_from = O_NONE;	// source element if element is moving (will be set later)
+  int draw_from = O_NONE;	// source element if element is moving (will be set later)
   int tile_to = tile;		// target element if element is moving
+  int draw_to = draw;		// target element if element is moving
   int frame = game->animcycle;
   boolean is_moving_from = (dir_from != GD_MV_STILL);
   boolean is_moving_to   = (dir_to   != GD_MV_STILL);
@@ -619,12 +659,46 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     int dy = (dir_from == GD_MV_UP   ? -1 : dir_from == GD_MV_DOWN  ? +1 : 0);
     int new_x = cave->getx(cave, x + dx, y + dy);
     int new_y = cave->gety(cave, x + dx, y + dy);
+    int new_dir_to = game->dir_buffer_to[new_y][new_x];
 
-    tile_from = game->drawing_buffer[new_y][new_x];
+    tile_from = game->element_buffer[new_y][new_x];
+    draw_from = game->drawing_buffer[new_y][new_x];
 
     // handle special case of player running into enemy/explosion from top or left side
-    if ((el_growing(tile_from) || el_explosion(tile_from)) && el_player(tile_last))
+    if (el_player(tile_last) && (el_growing(tile_from) || el_explosion(tile_from)))
       tile_from = tile_last;
+
+    // handle special case of player digging or snapping clock (which gets replaced by sand)
+    if (el_diggable(tile_from) && el_player(tile))
+      use_smooth_movements = FALSE;
+
+    // do not use smooth movement if from and to directions are different; for example,
+    // player has snapped field, but another element immediately moved to that field
+    if (dir_from != new_dir_to)
+      use_smooth_movements = FALSE;
+
+    // handle special case of element falling or moving into lava
+    if (tile_from == O_LAVA)
+    {
+      // show element that is moving/falling into lava
+      tile_from = tile_last;
+      draw_from = draw_last;
+
+      // do not use smooth movement if element not moving into lava (like player snapping lava)
+      if (tile == tile_last)
+        use_smooth_movements = FALSE;
+    }
+
+    // player killed by lava or explosion was standing still before moving into lava or enemy
+    if (el_player(tile_from))
+      draw_from = (dir_from == GD_MV_LEFT  ? O_PLAYER_LEFT  :
+                   dir_from == GD_MV_RIGHT ? O_PLAYER_RIGHT :
+                   dir_from == GD_MV_UP    ? O_PLAYER_UP    :
+                   dir_from == GD_MV_DOWN  ? O_PLAYER_DOWN  : O_PLAYER);
+
+    // do not use smooth movement if tile has stopped falling and crashed something (like a nut)
+    if (el_can_fall(tile) && el_explosion(tile_from))
+      use_smooth_movements = FALSE;
   }
 
   // --------------------------------------------------------------------------------
@@ -647,10 +721,17 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   if (el_growing(tile) || el_explosion(tile))
     use_smooth_movements = FALSE;
 
+  // do not use smooth movement animation for game elements that cannot move smoothly
+  // (but handle special case of player digging or snapping diggable element, like sand)
+  if (!el_smooth_movable(tile_from) &&
+      !el_smooth_movable(tile_to) &&
+      !el_diggable(tile_last))
+    use_smooth_movements = FALSE;
+
 #if DO_GFX_SANITY_CHECK
   if (use_native_bd_graphics_engine() && !setup.small_game_graphics && !program.headless)
   {
-    struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
+    struct GraphicInfo_BD *g = &graphic_info_bd_object[draw][frame];
     int old_x = (game->gfx_buffer[y][x] % GD_NUM_OF_CELLS) % GD_NUM_OF_CELLS_X;
     int old_y = (game->gfx_buffer[y][x] % GD_NUM_OF_CELLS) / GD_NUM_OF_CELLS_X;
     int new_x = g->src_x / g->width;
@@ -659,10 +740,10 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     if (new_x != old_x || new_y != old_y)
     {
       printf("::: BAD ANIMATION FOR TILE %d, FRAME %d [NEW(%d, %d) != OLD(%d, %d)] ['%s']\n",
-	     tile, frame,
+	     draw, frame,
 	     new_x, new_y,
 	     old_x, old_y,
-	     gd_elements[tile].name);
+	     gd_elements[draw].name);
     }
   }
 #endif
@@ -670,7 +751,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   // if game element not moving (or no smooth movements requested), simply draw tile
   if (!is_moving || !use_smooth_movements)
   {
-    struct GraphicInfo_BD *g = &graphic_info_bd_object[tile][frame];
+    struct GraphicInfo_BD *g = &graphic_info_bd_object[draw][frame];
     Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
 
     blit_bitmap(tile_bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
@@ -684,8 +765,10 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 
   // ---------- 1st step: draw background element for this tile ----------
   {
-    int tile_back = (!is_moving_to ? tile : el_diggable(tile_last) ? tile_last : O_SPACE);
-    struct GraphicInfo_BD *g = &graphic_info_bd_object[tile_back][frame];
+    // check if player or amoeba is digging or player is snapping a diggable game element
+    boolean digging_tile = ((el_can_dig(tile) || tile == O_SPACE) && el_diggable(tile_last));
+    int draw_back = (!is_moving_to ? draw : digging_tile ? draw_last : O_SPACE);
+    struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_back][frame];
     Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
 
     blit_bitmap(tile_bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
@@ -699,7 +782,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 
   if (is_moving_from)
   {
-    struct GraphicInfo_BD *g = &graphic_info_bd_object[tile_from][frame];
+    struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_from][frame];
     Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
     int dx = (dir_from == GD_MV_LEFT ? -1 : dir_from == GD_MV_RIGHT ? +1 : 0);
     int dy = (dir_from == GD_MV_UP   ? -1 : dir_from == GD_MV_DOWN  ? +1 : 0);
@@ -710,7 +793,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     int tx = sx + (dx < 0 ? 0 : dx > 0 ? cell_size - shift : 0);
     int ty = sy + (dy < 0 ? 0 : dy > 0 ? cell_size - shift : 0);
 
-    if (el_walkable(tile))
+    if (!el_diggable(tile))
       blit_bitmap = BlitBitmapMasked;
 
     blit_bitmap(tile_bitmap, dest, gx, gy, xsize, ysize, tx, ty);
@@ -723,7 +806,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 
   if (is_moving_to)
   {
-    struct GraphicInfo_BD *g = &graphic_info_bd_object[tile_to][frame];
+    struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_to][frame];
     Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
     int dx = (dir_to == GD_MV_LEFT ? +1 : dir_to == GD_MV_RIGHT ? -1 : 0);
     int dy = (dir_to == GD_MV_UP   ? +1 : dir_to == GD_MV_DOWN  ? -1 : 0);
