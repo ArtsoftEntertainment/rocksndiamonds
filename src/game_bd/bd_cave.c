@@ -278,20 +278,23 @@ void gd_cave_init(void)
 
   for (i = 0; i < O_MAX; i++)
   {
-    char *key;
+    char *key_1 = getStringToUpper(gd_elements[i].filename);
 
-    key = getStringToUpper(gd_elements[i].filename);
+    if (hashtable_exists(name_to_element, key_1))	// hash value may be 0
+      Warn("Name %s already used for element %x", key_1, i);
 
-    if (hashtable_exists(name_to_element, key))		// hash value may be 0
-      Warn("Name %s already used for element %x", key, i);
+    hashtable_insert(name_to_element, key_1, INT_TO_PTR(i));
+    // ^^^ do not free "key_1", as hash table needs it during the whole time!
 
-    hashtable_insert(name_to_element, key, INT_TO_PTR(i));
-    // ^^^ do not free "key", as hash table needs it during the whole time!
+    char *key_2 = getStringCat2("SCANNED_", key_1);	// new string
 
-    key = getStringCat2("SCANNED_", key);		// new string
+    hashtable_insert(name_to_element, key_2, INT_TO_PTR(i));
+    // once again, do not free "key_2" ^^^
 
-    hashtable_insert(name_to_element, key, INT_TO_PTR(i));
-    // once again, do not free "key" ^^^
+    char *key_3 = getStringCat2("SCANN_", key_1);	// new string
+
+    hashtable_insert(name_to_element, key_3, INT_TO_PTR(i));
+    // once again, do not free "key_3" ^^^
   }
 
   // for compatibility with tim stridmann's memorydump->bdcff converter... .... ...
