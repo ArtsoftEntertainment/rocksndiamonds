@@ -574,6 +574,29 @@ GdEngine gd_cave_get_engine_from_string(const char *param)
 // ============================================================================
 
 /*
+ * Checksum function for cave import routines.
+ * Used to recognize caves which need some hacks added,
+ * besides normal importing.
+ * @param data The input array of bytes
+ * @param length The size
+ * @return 16-bit checksum
+ */
+
+static unsigned int checksum(const byte *data, int length)
+{
+  unsigned int a = 1, b = 0;
+  int i;
+
+  for (i = 0; i < length; i++)
+  {
+    a = (a + data[i]) % 251;    // the prime closest to (and less than) 256
+    b = (b + a) % 251;
+  }
+
+  return b * 256 + a;
+}
+
+/*
   take care of required diamonds values == 0 or > 100.
   in original bd, the counter was only two-digit. so bd3 cave f
   says 150 diamonds required, but you only had to collect 50.
@@ -1983,6 +2006,46 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   return 15 + 0x49 + index;
 }
 
+// Deluxe Caves 3 hacks
+static void deluxe_caves_3_add_specials(GdCave *cave, const int cavenum)
+{
+  cave->snap_element = O_EXPLODE_1;
+  cave->diagonal_movements = TRUE;
+
+  switch (cavenum)
+  {
+    case 6:     // cave f
+      cave->stone_bouncing_effect = O_BUTTER_1;
+      cave->diamond_falling_effect = O_EXPLODE_3;
+      break;
+
+    case 7:     // cave g
+      Warn("effects not supported");
+      break;
+
+    case 13:    // cave l
+      Warn("effects not working perfectly");
+      cave->stone_bouncing_effect = O_FIREFLY_1;
+      break;
+
+    case 18:
+      cave->diamond_bouncing_effect = O_STONE;
+      break;
+
+    default:
+      break;
+  }
+}
+
+// Crazy Dream 7 hacks
+static void crazy_dream_7_add_specials(GdCave *cave)
+{
+  if (strEqual(cave->name, "Crazy maze"))
+    cave->skeletons_needed_for_pot = 0;
+}
+
+// This function adds some hardcoded elements to a Crazy Dream 9 cave.
+// Crazy Dream 9 had some caves and random fills, which were not encoded in the cave data.
 static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int length)
 {
   byte checksum;
@@ -2058,6 +2121,23 @@ static void crazy_dream_9_add_specials(GdCave *cave, const byte *buf, const int 
     // a point which "breaks" the unicursal maze, making it one very long path
     cave->objects =
       list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, 35, 18, O_BRICK));
+  }
+}
+
+// Masters Boulder hacks
+static void masters_boulder_add_hack(GdCave *cave, const int cavenum)
+{
+  int i;
+
+  switch (cavenum)
+  {
+    case 1:     // cave b
+      for (i = 0; i < 5; i++)
+	cave->level_hatching_delay_time[i] = 3;  // secs
+      break;
+
+    default:
+      break;
   }
 }
 
@@ -2421,6 +2501,23 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
   buf += 12;
   length = encodedlength;
 
+  // check for hacks.
+  GdImportHack hack = GD_HACK_NONE;
+  unsigned int cs = checksum(buf, length);
+
+  if (format == GD_FORMAT_PLC    && length == 10240 && cs == 0xbdec)
+    hack = GD_HACK_CRDR_1;
+  if (format == GD_FORMAT_CRLI   && length == 9895  && cs == 0xbc4e)
+    hack = GD_HACK_CRDR_9;
+  if (format == GD_FORMAT_BD1    && length == 1634  && cs == 0xf725)
+    hack = GD_HACK_DC1;
+  if (format == GD_FORMAT_BD1    && length == 1452  && cs == 0xb4a6)
+    hack = GD_HACK_DC3;
+  if (format == GD_FORMAT_CRDR_7 && length == 3759  && cs == 0x16b5)
+    hack = GD_HACK_CRDR_7;
+  if (format == GD_FORMAT_BD1    && length == 1241  && cs == 0x926f)
+    hack = GD_HACK_MB;
+
   bufp = 0;
   cavenum = 0;
 
@@ -2457,6 +2554,10 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 	  case GD_FORMAT_BD1_ATARI:
 	  case GD_FORMAT_DC1:
 	    cavelength = cave_copy_from_bd1(newcave, buf + bufp, length - bufp, format);
+	    if (cavelength != -1 && hack == GD_HACK_DC3)
+	      deluxe_caves_3_add_specials(newcave, cavenum);
+	    if (cavelength != -1 && hack == GD_HACK_MB)
+	      masters_boulder_add_hack(newcave, cavenum);
 	    break;
 	  case GD_FORMAT_BD2:
 	  case GD_FORMAT_BD2_ATARI:
@@ -2483,6 +2584,8 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
       case GD_FORMAT_PLC:                // peter liepa construction kit
       case GD_FORMAT_PLC_ATARI:          // peter liepa construction kit, atari version
 	cavelength = cave_copy_from_plck(newcave, buf + bufp, length - bufp, format);
+	if (cavelength != -1 && hack == GD_HACK_CRDR_1)
+	  newcave->diagonal_movements = TRUE;
 	break;
 
       case GD_FORMAT_DLB:
@@ -2515,11 +2618,13 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 
       case GD_FORMAT_CRDR_7:
 	cavelength = cave_copy_from_crdr_7 (newcave, buf + bufp, length - bufp);
+	if (cavelength != -1 && hack == GD_HACK_CRDR_7)
+	  crazy_dream_7_add_specials(newcave);
 	break;
 
       case GD_FORMAT_CRDR_9:
 	cavelength = cave_copy_from_crli (newcave, buf + bufp, length - bufp);
-	if (cavelength != -1)
+	if (cavelength != -1 && hack == GD_HACK_CRDR_9)
 	  crazy_dream_9_add_specials(newcave, buf, cavelength);
 	break;
 
@@ -2554,6 +2659,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
   // try to detect if plc caves are in standard layout.
   // that is, caveset looks like an original, (4 cave,1 intermission)+
   if (format == GD_FORMAT_PLC)
+  {
     // if no selection table stored by any2gdash
     if ((buf[2 + 0x1f0] != buf[2 + 0x1f1] - 1) ||
 	(buf[2 + 0x1f0] != 0x19 && buf[2 + 0x1f0] != 0x0e))
@@ -2583,6 +2689,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 	  cave->selectable = (n % 5) == 0;
 	}
     }
+  }
 
   // try to give some names for the caves
   cavenum = 1;

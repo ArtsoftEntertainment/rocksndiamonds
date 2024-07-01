@@ -41,6 +41,18 @@ typedef enum _gd_cavefile_format
   GD_FORMAT_FIRSTB,     // first boulder
 } GdCavefileFormat;
 
+// import hacks
+typedef enum _gd_import_hack
+{
+  GD_HACK_NONE,         // no hack
+  GD_HACK_CRDR_1,       // crazy dream 1
+  GD_HACK_CRDR_7,       // crazy dream 7
+  GD_HACK_CRDR_9,       // crazy dream 9
+  GD_HACK_DC1,          // deluxe caves 1
+  GD_HACK_DC3,          // deluxe caves 3
+  GD_HACK_MB,           // masters boulder
+} GdImportHack;
+
 // engines
 typedef enum _gd_engine
 {
