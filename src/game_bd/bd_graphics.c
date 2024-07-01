@@ -334,6 +334,11 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
     scroll_speed_last = -1;
 
   // check if active player is visible at the moment.
+  // but only if scrolling happened at all!
+  if (!changed)
+    return FALSE;
+
+  // check if active player is outside drawing area. if yes, we should wait for scrolling.
   return player_out_of_window(game, player_x, player_y);
 }
 
