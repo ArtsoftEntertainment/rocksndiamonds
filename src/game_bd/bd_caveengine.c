@@ -132,6 +132,18 @@ static inline boolean el_can_fall(const int element)
   return (gd_elements[element & O_MASK].properties & P_CAN_FALL) != 0;
 }
 
+// returns true if the element is diggable
+static inline boolean el_diggable(const int element)
+{
+  return (gd_elements[element & O_MASK].properties & P_DIGGABLE) != 0;
+}
+
+// returns true if the element can smash the player
+static inline boolean el_can_smash_player(const int element)
+{
+  return (el_can_fall(element) && !el_diggable(element));
+}
+
 // play diamond or stone sound of given element.
 static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
 {
@@ -610,6 +622,19 @@ static inline void store_dir_no_scanned(GdCave *cave, const int x, const int y,
 static inline void move(GdCave *cave, const int x, const int y,
 			const GdDirection dir, const GdElement e)
 {
+  // falling/flying game elements at wrap-around cave position should not kill player instantly
+  if ((x + gd_dx[dir] == cave->w && dir == GD_MV_RIGHT) ||
+      (y + gd_dy[dir] == cave->h && dir == GD_MV_DOWN))
+  {
+    // cave width/height out of bounds, but due to wrap-around it's the first column/row again
+    if (el_can_smash_player(get(cave, x, y)))
+    {
+      store(cave, x, y, e); // change to falling element ...
+
+      return;               // ... but do not move element
+    }
+  }
+
   store_dir(cave, x, y, dir, e);
   store(cave, x, y, O_SPACE);
 }
