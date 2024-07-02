@@ -415,12 +415,15 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
     // normally nothing happes. but if we iterate, this might change.
     return_state = GD_GAME_NOTHING;
 
-    // if allowing cave movements, add elapsed time to timer. and then we can check what to do.
+    // if allowing cave movements, ...
     if (allow_iterate)
+    {
+      // ... add elapsed time to timer. and then we can check what to do
       game->milliseconds_game += millisecs_elapsed;
 
-    // increment cycle (frame) counter for the current cave iteration
-    game->itercycle++;
+      // ... increment cycle (frame) counter for the current cave iteration
+      game->itercycle++;
+    }
 
     if (game->milliseconds_game >= cavespeed)
     {
