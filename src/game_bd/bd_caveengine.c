@@ -3812,7 +3812,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     if (cave->gravity_will_change == 0)
     {
       cave->gravity = cave->gravity_next_direction;
-      gd_sound_play(cave, GD_S_GRAVITY_CHANGING, O_GRAVITY_SWITCH, -1, -1);    // takes precedence over amoeba and magic wall sound
+
+      // takes precedence over amoeba and magic wall sound
+      gd_sound_play(cave, GD_S_GRAVITY_CHANGING, O_GRAVITY_SWITCH, -1, -1);
     }
   }
 
