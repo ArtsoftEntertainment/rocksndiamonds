@@ -1855,8 +1855,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		       player_move == GD_MV_DOWN))
 		  {
 		    gd_sound_play(cave, GD_S_SWITCH_GRAVITY, what, x, y);
+                    // (use 1 instead of 0 for immediate gravitation change)
 		    cave->gravity_will_change =
-		      cave->gravity_change_time * cave->timing_factor;
+		      MAX(1, cave->gravity_change_time * cave->timing_factor);
 		    cave->gravity_next_direction = player_move;
 		    cave->gravity_switch_active = FALSE;
 		  }
@@ -1961,8 +1962,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		       player_move == GD_MV_DOWN))
 		  {
 		    gd_sound_play(cave, GD_S_SWITCH_GRAVITY, what, x, y);
+                    // (use 1 instead of 0 for immediate gravitation change)
 		    cave->gravity_will_change =
-		      cave->gravity_change_time * cave->timing_factor;
+		      MAX(1, cave->gravity_change_time * cave->timing_factor);
 		    cave->gravity_next_direction = player_move;
 		    cave->gravity_switch_active = FALSE;
 		  }

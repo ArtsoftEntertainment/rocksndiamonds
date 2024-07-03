@@ -12199,7 +12199,7 @@ static struct
 				0, 10								},
   { EL_BDX_CREATURE_SWITCH,	&level.bd_creatures_auto_turn_delay,	TEXT_AUTO_TURN_DELAY	},
   { EL_BDX_GRAVITY_SWITCH,	&level.bd_gravity_switch_delay,		TEXT_GRAVITY_DELAY,
-				1, 60								},
+				0, 60								},
   { EL_EXTRA_TIME,		&level.extra_time,			TEXT_TIME_BONUS		},
   { EL_TIME_ORB_FULL,		&level.time_orb_time,			TEXT_TIME_BONUS		},
   { EL_GAME_OF_LIFE,		&level.game_of_life[0],			TEXT_GAME_OF_LIFE_1,0,8	},
