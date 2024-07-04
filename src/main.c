@@ -6549,17 +6549,17 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
   },
   {
     "bdx_wall_key_1",
-    "bdx_wall",
+    "bdx_wall_key",
     "Wall with key 1"
   },
   {
     "bdx_wall_key_2",
-    "bdx_wall",
+    "bdx_wall_key",
     "Wall with key 2"
   },
   {
     "bdx_wall_key_3",
-    "bdx_wall",
+    "bdx_wall_key",
     "Wall with key 3"
   },
   {
