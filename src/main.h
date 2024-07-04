@@ -2134,8 +2134,8 @@
 #define EL_BDX_NUT				1301
 #define EL_BDX_AMOEBA_1				1302
 #define EL_BDX_AMOEBA_2				1303
-#define EL_BDX_BLADDER				1304
-#define EL_BDX_BLADDER_SPENDER			1305
+#define EL_BDX_BUBBLE				1304
+#define EL_BDX_TRAPPED_BUBBLE			1305
 #define EL_BDX_CREATURE_SWITCH			1306
 #define EL_BDX_CREATURE_SWITCH_ACTIVE		1307
 #define EL_BDX_BITER_SWITCH_1			1308
@@ -2274,14 +2274,14 @@
 #define EL_BDX_COW_ENCLOSED_5			1438
 #define EL_BDX_COW_ENCLOSED_6			1439
 #define EL_BDX_COW_ENCLOSED_7			1440
-#define EL_BDX_BLADDER_1			1441
-#define EL_BDX_BLADDER_2			1442
-#define EL_BDX_BLADDER_3			1443
-#define EL_BDX_BLADDER_4			1444
-#define EL_BDX_BLADDER_5			1445
-#define EL_BDX_BLADDER_6			1446
-#define EL_BDX_BLADDER_7			1447
-#define EL_BDX_BLADDER_8			1448
+#define EL_BDX_BUBBLE_1				1441
+#define EL_BDX_BUBBLE_2				1442
+#define EL_BDX_BUBBLE_3				1443
+#define EL_BDX_BUBBLE_4				1444
+#define EL_BDX_BUBBLE_5				1445
+#define EL_BDX_BUBBLE_6				1446
+#define EL_BDX_BUBBLE_7				1447
+#define EL_BDX_BUBBLE_8				1448
 #define EL_BDX_PLAYER_GROWING_1			1449
 #define EL_BDX_PLAYER_GROWING_2			1450
 #define EL_BDX_PLAYER_GROWING_3			1451
@@ -3753,7 +3753,7 @@ struct LevelInfo
   int bd_acid_turns_to_element;		// BD acid target element after spreading
   int bd_biter_move_delay;		// BD biter delay between movements (in BD frames)
   int bd_biter_eats_element;		// BD biter eats this game element when moving
-  int bd_bladder_converts_by_element;	// BD bladder converts to clock by touching this element
+  int bd_bubble_converts_by_element;	// BD bubble converts to clock by touching this element
   boolean bd_change_expanding_wall;	// BD expanding wall direction is changed if enabled
   boolean bd_replicators_active;	// BD replicators start in active state if enabled
   int bd_replicator_create_delay;	// BD replicator delay between replications (in BD frames)

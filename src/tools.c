@@ -6354,7 +6354,7 @@ bd_object_mapping_list[] =
   },
   {
     O_BLADDER_SPENDER,				TRUE,
-    EL_BDX_BLADDER_SPENDER,			-1, -1
+    EL_BDX_TRAPPED_BUBBLE,			-1, -1
   },
   {
     O_INBOX,					TRUE,
@@ -6762,71 +6762,71 @@ bd_object_mapping_list[] =
   },
   {
     O_BLADDER,					TRUE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_BLADDER_1,				TRUE,
-    EL_BDX_BLADDER_1,				-1, -1
+    EL_BDX_BUBBLE_1,				-1, -1
   },
   {
     O_BLADDER_1,				FALSE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_BLADDER_2,				TRUE,
-    EL_BDX_BLADDER_2,				-1, -1
+    EL_BDX_BUBBLE_2,				-1, -1
   },
   {
     O_BLADDER_2,				FALSE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_BLADDER_3,				TRUE,
-    EL_BDX_BLADDER_3,				-1, -1
+    EL_BDX_BUBBLE_3,				-1, -1
   },
   {
     O_BLADDER_3,				FALSE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_BLADDER_4,				TRUE,
-    EL_BDX_BLADDER_4,				-1, -1
+    EL_BDX_BUBBLE_4,				-1, -1
   },
   {
     O_BLADDER_4,				FALSE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_BLADDER_5,				TRUE,
-    EL_BDX_BLADDER_5,				-1, -1
+    EL_BDX_BUBBLE_5,				-1, -1
   },
   {
     O_BLADDER_5,				FALSE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_BLADDER_6,				TRUE,
-    EL_BDX_BLADDER_6,				-1, -1
+    EL_BDX_BUBBLE_6,				-1, -1
   },
   {
     O_BLADDER_6,				FALSE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_BLADDER_7,				TRUE,
-    EL_BDX_BLADDER_7,				-1, -1
+    EL_BDX_BUBBLE_7,				-1, -1
   },
   {
     O_BLADDER_7,				FALSE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_BLADDER_8,				TRUE,
-    EL_BDX_BLADDER_8,				-1, -1
+    EL_BDX_BUBBLE_8,				-1, -1
   },
   {
     O_BLADDER_8,				FALSE,
-    EL_BDX_BLADDER,				-1, -1
+    EL_BDX_BUBBLE,				-1, -1
   },
   {
     O_WAITING_STONE,				TRUE,

@@ -4314,7 +4314,7 @@ void InitElementPropertiesStatic(void)
     EL_BDX_BITER_UP,
     EL_BDX_BITER_LEFT,
     EL_BDX_BITER_DOWN,
-    EL_BDX_BLADDER,
+    EL_BDX_BUBBLE,
     EL_BDX_NUT,
     EL_EMC_MAGIC_BALL,
     EL_EMC_ANDROID,

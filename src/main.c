@@ -6718,14 +6718,14 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Amoeba 2"
   },
   {
-    "bdx_bladder",
-    "bdx_bladder",
-    "Bladder"
+    "bdx_bubble",
+    "bdx_bubble",
+    "Bubble"
   },
   {
-    "bdx_bladder_spender",
-    "bdx_bladder_spender",
-    "Bladder spender"
+    "bdx_trapped_bubble",
+    "bdx_trapped_bubble",
+    "Trapped bubble"
   },
   {
     "bdx_creature_switch",
@@ -7403,44 +7403,44 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Enclosed cow (7)"
   },
   {
-    "bdx_bladder_1",
-    "bdx_bladder",
-    "Bladder (1)"
+    "bdx_bubble_1",
+    "bdx_bubble",
+    "Bubble (1)"
   },
   {
-    "bdx_bladder_2",
-    "bdx_bladder",
-    "Bladder (2)"
+    "bdx_bubble_2",
+    "bdx_bubble",
+    "Bubble (2)"
   },
   {
-    "bdx_bladder_3",
-    "bdx_bladder",
-    "Bladder (3)"
+    "bdx_bubble_3",
+    "bdx_bubble",
+    "Bubble (3)"
   },
   {
-    "bdx_bladder_4",
-    "bdx_bladder",
-    "Bladder (4)"
+    "bdx_bubble_4",
+    "bdx_bubble",
+    "Bubble (4)"
   },
   {
-    "bdx_bladder_5",
-    "bdx_bladder",
-    "Bladder (5)"
+    "bdx_bubble_5",
+    "bdx_bubble",
+    "Bubble (5)"
   },
   {
-    "bdx_bladder_6",
-    "bdx_bladder",
-    "Bladder (6)"
+    "bdx_bubble_6",
+    "bdx_bubble",
+    "Bubble (6)"
   },
   {
-    "bdx_bladder_7",
-    "bdx_bladder",
-    "Bladder (7)"
+    "bdx_bubble_7",
+    "bdx_bubble",
+    "Bubble (7)"
   },
   {
-    "bdx_bladder_8",
-    "bdx_bladder",
-    "Bladder (8)"
+    "bdx_bubble_8",
+    "bdx_bubble",
+    "Bubble (8)"
   },
   {
     "bdx_player.growing_1",

@@ -935,9 +935,9 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
-    EL_BDX_BLADDER,			-1,
+    EL_BDX_BUBBLE,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_bladder_converts_by_element,	EL_BDX_VOODOO_DOLL
+    &li.bd_bubble_converts_by_element,	EL_BDX_VOODOO_DOLL
   },
 
   {
@@ -4387,7 +4387,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->biter_delay_frame		= level->bd_biter_move_delay;
   cave->biter_eat			= LEVEL_TO_CAVE(level->bd_biter_eats_element);
 
-  cave->bladder_converts_by		= LEVEL_TO_CAVE(level->bd_bladder_converts_by_element);
+  cave->bladder_converts_by		= LEVEL_TO_CAVE(level->bd_bubble_converts_by_element);
 
   cave->expanding_wall_changed		= level->bd_change_expanding_wall;
 
@@ -4560,7 +4560,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_biter_move_delay		= cave->biter_delay_frame;
   level->bd_biter_eats_element		= CAVE_TO_LEVEL(cave->biter_eat);
 
-  level->bd_bladder_converts_by_element	= CAVE_TO_LEVEL(cave->bladder_converts_by);
+  level->bd_bubble_converts_by_element	= CAVE_TO_LEVEL(cave->bladder_converts_by);
 
   level->bd_change_expanding_wall	= cave->expanding_wall_changed;
 
