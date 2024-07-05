@@ -240,15 +240,15 @@ GdElements gd_elements[] =
   { O_SWEET, N_("Sweet"), P_COLLECTIBLE, "SWEET", 0, 8, 8, 8 },
   { O_VOODOO, N_("Voodoo doll"), P_BLOWS_UP_FLIES, "DUMMY", 'F', 7, 7, 7 },
   { O_SLIME, N_("Slime"), 0, "SLIME", 's', 200, -200, -200, 211 },        // has ckdelay
-  { O_BLADDER, N_("Bladder"), 0, "BLADDER", 0, 176, -176, -176, 267 },    // has ckdelay
-  { O_BLADDER_1, N_("Bladder (1)"), 0, "BLADDERd1", 0, 176, -176, -176 },
-  { O_BLADDER_2, N_("Bladder (2)"), 0, "BLADDERd2", 0, 176, -176, -176 },
-  { O_BLADDER_3, N_("Bladder (3)"), 0, "BLADDERd3", 0, 176, -176, -176 },
-  { O_BLADDER_4, N_("Bladder (4)"), 0, "BLADDERd4", 0, 176, -176, -176 },
-  { O_BLADDER_5, N_("Bladder (5)"), 0, "BLADDERd5", 0, 176, -176, -176 },
-  { O_BLADDER_6, N_("Bladder (6)"), 0, "BLADDERd6", 0, 176, -176, -176 },
-  { O_BLADDER_7, N_("Bladder (7)"), 0, "BLADDERd7", 0, 176, -176, -176 },
-  { O_BLADDER_8, N_("Bladder (8)"), 0, "BLADDERd8", 0, 176, -176, -176 },
+  { O_BLADDER, N_("Bladder"), P_PUSHABLE | P_CAN_MOVE, "BLADDER", 0, 176, -176, -176, 267 },    // has ckdelay
+  { O_BLADDER_1, N_("Bladder (1)"), P_PUSHABLE | P_CAN_MOVE, "BLADDERd1", 0, 176, -176, -176 },
+  { O_BLADDER_2, N_("Bladder (2)"), P_PUSHABLE | P_CAN_MOVE, "BLADDERd2", 0, 176, -176, -176 },
+  { O_BLADDER_3, N_("Bladder (3)"), P_PUSHABLE | P_CAN_MOVE, "BLADDERd3", 0, 176, -176, -176 },
+  { O_BLADDER_4, N_("Bladder (4)"), P_PUSHABLE | P_CAN_MOVE, "BLADDERd4", 0, 176, -176, -176 },
+  { O_BLADDER_5, N_("Bladder (5)"), P_PUSHABLE | P_CAN_MOVE, "BLADDERd5", 0, 176, -176, -176 },
+  { O_BLADDER_6, N_("Bladder (6)"), P_PUSHABLE | P_CAN_MOVE, "BLADDERd6", 0, 176, -176, -176 },
+  { O_BLADDER_7, N_("Bladder (7)"), P_PUSHABLE | P_CAN_MOVE, "BLADDERd7", 0, 176, -176, -176 },
+  { O_BLADDER_8, N_("Bladder (8)"), P_PUSHABLE | P_CAN_MOVE, "BLADDERd8", 0, 176, -176, -176 },
 
   { O_WAITING_STONE, N_("Waiting stone"), P_SLOPED | P_PUSHABLE, "WAITINGBOULDER", 0, i_waiting_stone, i_waiting_stone, 1, 176 },    // has ckdelay
   { O_CHASING_STONE, N_("Chasing stone"), P_SLOPED | P_CAN_MOVE | P_PUSHABLE, "CHASINGBOULDER", 0, 17, 17, 17, 269 },    // has ckdelay
