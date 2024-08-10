@@ -116,7 +116,7 @@ enum _generated_cells_indexes
   indexes which are in the png have to be given as numeric constants.
   for generated cells (ie. guard + an arrow), use the above enum
 */
-GdElements gd_elements[] =
+GdElementProperty gd_element_properties[] =
 {
   {
     O_SPACE, N_("Space"),
@@ -2894,32 +2894,32 @@ void gd_cave_db_init(void)
     lowercase_names = FALSE;
 
   // check element database for faults.
-  for (i = 0; gd_elements[i].element != -1; i++)
+  for (i = 0; gd_element_properties[i].element != -1; i++)
   {
-    if (gd_elements[i].element != i)
-      Error("element: i:0x%x != 0x%x", i, gd_elements[i].element);
+    if (gd_element_properties[i].element != i)
+      Error("element: i:0x%x != 0x%x", i, gd_element_properties[i].element);
 
     // if it has a name, create a lowercase name (of the translated one).
     // will be used by the editor
-    if (gd_elements[i].name)
+    if (gd_element_properties[i].name)
     {
       if (lowercase_names)
 	// the function allocates a new string, but it is needed as long as the app is running
-	gd_elements[i].lowercase_name = getStringToLower(gettext(gd_elements[i].name));
+	gd_element_properties[i].lowercase_name = getStringToLower(gettext(gd_element_properties[i].name));
       else
 	// only translate, no lowercase.
-	gd_elements[i].lowercase_name = gettext(gd_elements[i].name);
+	gd_element_properties[i].lowercase_name = gettext(gd_element_properties[i].name);
     }
 
     // we do not like generated pixbufs for games. only those that are in the png.
-    if (ABS(gd_elements[i].image_game) > GD_NUM_OF_CELLS_X * GD_NUM_OF_CELLS_Y)
-      Error("game pixbuf for element %x (%s) bigger than png size", i, gd_elements[i].name);
+    if (ABS(gd_element_properties[i].image_game) > GD_NUM_OF_CELLS_X * GD_NUM_OF_CELLS_Y)
+      Error("game pixbuf for element %x (%s) bigger than png size", i, gd_element_properties[i].name);
 
-    if (gd_elements[i].image < 0)
-      Error("editor pixbuf for element %x (%s) should not be animated", i, gd_elements[i].name);
+    if (gd_element_properties[i].image < 0)
+      Error("editor pixbuf for element %x (%s) should not be animated", i, gd_element_properties[i].name);
 
-    if (gd_elements[i].properties & P_CAN_BE_HAMMERED && gd_element_get_hammered((GdElement) i) == O_NONE)
-      Error("element %x (%s) can be hammered, but get_hammered_element does not define another one", i, gd_elements[i].name);
+    if (gd_element_properties[i].properties & P_CAN_BE_HAMMERED && gd_element_get_hammered((GdElement) i) == O_NONE)
+      Error("element %x (%s) can be hammered, but get_hammered_element does not define another one", i, gd_element_properties[i].name);
   }
 
   /*

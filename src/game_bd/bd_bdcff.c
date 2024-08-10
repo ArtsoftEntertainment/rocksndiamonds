@@ -1464,7 +1464,7 @@ static void save_properties(GdPtrArray *out, void *str, void *str_def,
 	  break;
 
 	case GD_TYPE_ELEMENT:
-	  appendStringPrint(&line, "%s", gd_elements[((GdElement *) value)[j]].filename);
+	  appendStringPrint(&line, "%s", gd_element_properties[((GdElement *) value)[j]].filename);
 	  if (((GdElement *) value)[j] != ((GdElement *) default_value)[j])
 	    should_write = TRUE;
 	  break;
@@ -1473,7 +1473,7 @@ static void save_properties(GdPtrArray *out, void *str, void *str_def,
 	  // for effects, the property identifier is the effect name.
 	  // "Effect=" is hardcoded; see above.
 	  appendStringPrint(&line, "%s %s", prop_desc[i].identifier,
-			    gd_elements[((GdElement *) value)[j]].filename);
+			    gd_element_properties[((GdElement *) value)[j]].filename);
 	  if (((GdElement *) value)[j] != ((GdElement *) default_value)[j])
 	    should_write = TRUE;
 	  break;
@@ -1618,10 +1618,10 @@ static void caveset_save_cave_func(GdCave *cave, GdPtrArray *out)
       {
 	// check if character is non-zero;
 	// the ...save() should have assigned a character to every element
-	if (gd_elements[cave->map[y][x]].character_new == 0)
-	  Warn("gd_elements[cave->map[y][x]].character_new should be non-zero");
+	if (gd_element_properties[cave->map[y][x]].character_new == 0)
+	  Warn("gd_element_properties[cave->map[y][x]].character_new should be non-zero");
 
-	line[x] = gd_elements[cave->map[y][x]].character_new;
+	line[x] = gd_element_properties[cave->map[y][x]].character_new;
       }
 
       gd_ptr_array_add(out, getStringCopy(line));
@@ -1697,7 +1697,7 @@ GdPtrArray *gd_caveset_save_to_bdcff(void)
   // check if we need an own mapcode table ------
   // copy original characters to character_new fields; new elements will be added to that one
   for (i = 0; i < O_MAX; i++)
-    gd_elements[i].character_new = gd_elements[i].character;
+    gd_element_properties[i].character_new = gd_element_properties[i].character;
 
   // also regenerate this table as we use it
   gd_create_char_to_element_table();
@@ -1719,7 +1719,7 @@ GdPtrArray *gd_caveset_save_to_bdcff(void)
 	  GdElement e = cave->map[y][x];
 
 	  // if no character assigned
-	  if (gd_elements[e].character_new == 0)
+	  if (gd_element_properties[e].character_new == 0)
 	  {
 	    int j;
 
@@ -1738,7 +1738,7 @@ GdPtrArray *gd_caveset_save_to_bdcff(void)
 	    if (j == 128)
 	      Warn("variable j should be != 128");
 
-	    gd_elements[e].character_new = j;
+	    gd_element_properties[e].character_new = j;
 
 	    // we also record to this table, as we use it ^^ a few lines above
 	    gd_char_to_element[j] = e;
@@ -1761,8 +1761,8 @@ GdPtrArray *gd_caveset_save_to_bdcff(void)
     for (i = 0; i < O_MAX; i++)
     {
       // if no character assigned by specification BUT (AND) we assigned one
-      if (gd_elements[i].character == 0 && gd_elements[i].character_new != 0)
-	gd_ptr_array_add(out, getStringPrint("%c=%s", gd_elements[i].character_new, gd_elements[i].filename));
+      if (gd_element_properties[i].character == 0 && gd_element_properties[i].character_new != 0)
+	gd_ptr_array_add(out, getStringPrint("%c=%s", gd_element_properties[i].character_new, gd_element_properties[i].filename));
     }
 
     gd_ptr_array_add(out, getStringCopy("[/mapcodes]"));

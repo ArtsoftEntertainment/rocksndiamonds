@@ -94,7 +94,7 @@ void gd_struct_set_defaults_from_array(void *str, const GdStructDescriptor *prop
 extern const GdColor gd_flash_color;
 extern const GdColor gd_select_color;
 
-enum _element_property
+enum _element_property_enum
 {
   E_P_SLOPED_LEFT,              // stones and diamonds roll down to left on this
   E_P_SLOPED_RIGHT,             // stones and diamonds roll down to right on this
@@ -242,9 +242,10 @@ enum
 
 
 // ELEMENTS DESCRIPTION
-typedef struct _elements
+typedef struct _element_property
 {
   GdElement element;            // element number. for example O_DIRT
+                                // In the array, should be equal to the index of the array item.
   char *name;                   // name in editor, for example "Dirt". some have
 			        // different names than their real engine meaning!
   unsigned int properties;      // engine properties, like P_SLOPED or P_EXPLODES
@@ -260,7 +261,7 @@ typedef struct _elements
                                 // generated inside the game.
   char character_new;           // character given automatically for elements which
 			        // don't have one defined in original bdcff description
-} GdElements;
+} GdElementProperty;
 
 
 typedef char GdString[MAX_LINE_LEN];

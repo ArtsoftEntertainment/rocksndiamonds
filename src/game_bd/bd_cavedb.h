@@ -20,7 +20,7 @@
 #include "bd_cave.h"
 
 
-extern GdElements gd_elements[];
+extern GdElementProperty gd_element_properties[];
 
 extern const GdStructDescriptor gd_cave_properties[];
 extern const GdStructDescriptor gd_replay_properties[];

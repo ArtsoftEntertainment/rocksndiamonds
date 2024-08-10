@@ -241,7 +241,7 @@ void gd_create_char_to_element_table(void)
   // then set fixed characters
   for (i = 0; i < O_MAX; i++)
   {
-    int c = gd_elements[i].character;
+    int c = gd_element_properties[i].character;
 
     if (c)
     {
@@ -278,7 +278,7 @@ void gd_cave_init(void)
 
   for (i = 0; i < O_MAX; i++)
   {
-    char *key_1 = getStringToUpper(gd_elements[i].filename);
+    char *key_1 = getStringToUpper(gd_element_properties[i].filename);
 
     if (hashtable_exists(name_to_element, key_1))	// hash value may be 0
       Warn("Name %s already used for element %x", key_1, i);
@@ -1354,29 +1354,29 @@ void gd_drawcave_game(const GdCave *cave,
   for (x = 0; x < O_MAX_ALL; x++)
   {
     elemmapping[x] = x;
-    elemdrawing[x] = gd_elements[x].image_game;
+    elemdrawing[x] = gd_element_properties[x].image_game;
   }
 
   if (bonus_life_flash)
   {
     elemmapping[O_SPACE] = O_FAKE_BONUS;
-    elemdrawing[O_SPACE] = gd_elements[O_FAKE_BONUS].image_game;
+    elemdrawing[O_SPACE] = gd_element_properties[O_FAKE_BONUS].image_game;
   }
 
   elemmapping[O_MAGIC_WALL] = (cave->magic_wall_state == GD_MW_ACTIVE ? O_MAGIC_WALL : O_BRICK);
-  elemdrawing[O_MAGIC_WALL] = gd_elements[cave->magic_wall_state == GD_MW_ACTIVE ? O_MAGIC_WALL : O_BRICK].image_game;
+  elemdrawing[O_MAGIC_WALL] = gd_element_properties[cave->magic_wall_state == GD_MW_ACTIVE ? O_MAGIC_WALL : O_BRICK].image_game;
 
   elemmapping[O_CREATURE_SWITCH] = (cave->creatures_backwards ? O_CREATURE_SWITCH_ON : O_CREATURE_SWITCH);
-  elemdrawing[O_CREATURE_SWITCH] = gd_elements[cave->creatures_backwards ? O_CREATURE_SWITCH_ON : O_CREATURE_SWITCH].image_game;
+  elemdrawing[O_CREATURE_SWITCH] = gd_element_properties[cave->creatures_backwards ? O_CREATURE_SWITCH_ON : O_CREATURE_SWITCH].image_game;
 
   elemmapping[O_EXPANDING_WALL_SWITCH] = (cave->expanding_wall_changed ? O_EXPANDING_WALL_SWITCH_VERT : O_EXPANDING_WALL_SWITCH_HORIZ);
-  elemdrawing[O_EXPANDING_WALL_SWITCH] = gd_elements[cave->expanding_wall_changed ? O_EXPANDING_WALL_SWITCH_VERT : O_EXPANDING_WALL_SWITCH_HORIZ].image_game;
+  elemdrawing[O_EXPANDING_WALL_SWITCH] = gd_element_properties[cave->expanding_wall_changed ? O_EXPANDING_WALL_SWITCH_VERT : O_EXPANDING_WALL_SWITCH_HORIZ].image_game;
 
   elemmapping[O_GRAVITY_SWITCH] = (cave->gravity_switch_active ? O_GRAVITY_SWITCH_ACTIVE : O_GRAVITY_SWITCH);
-  elemdrawing[O_GRAVITY_SWITCH] = gd_elements[cave->gravity_switch_active ? O_GRAVITY_SWITCH_ACTIVE : O_GRAVITY_SWITCH].image_game;
+  elemdrawing[O_GRAVITY_SWITCH] = gd_element_properties[cave->gravity_switch_active ? O_GRAVITY_SWITCH_ACTIVE : O_GRAVITY_SWITCH].image_game;
 
   elemmapping[O_REPLICATOR_SWITCH] = (cave->replicators_active ? O_REPLICATOR_SWITCH_ON : O_REPLICATOR_SWITCH_OFF);
-  elemdrawing[O_REPLICATOR_SWITCH] = gd_elements[cave->replicators_active ? O_REPLICATOR_SWITCH_ON : O_REPLICATOR_SWITCH_OFF].image_game;
+  elemdrawing[O_REPLICATOR_SWITCH] = gd_element_properties[cave->replicators_active ? O_REPLICATOR_SWITCH_ON : O_REPLICATOR_SWITCH_OFF].image_game;
 
   if (cave->replicators_active)
     // if the replicators are active, animate them.
@@ -1387,7 +1387,7 @@ void gd_drawcave_game(const GdCave *cave,
     elemdrawing[O_REPLICATOR] = ABS(elemdrawing[O_REPLICATOR]);
 
   elemmapping[O_CONVEYOR_SWITCH] = (cave->conveyor_belts_active ? O_CONVEYOR_SWITCH_ON : O_CONVEYOR_SWITCH_OFF);
-  elemdrawing[O_CONVEYOR_SWITCH] = gd_elements[cave->conveyor_belts_active ? O_CONVEYOR_SWITCH_ON : O_CONVEYOR_SWITCH_OFF].image_game;
+  elemdrawing[O_CONVEYOR_SWITCH] = gd_element_properties[cave->conveyor_belts_active ? O_CONVEYOR_SWITCH_ON : O_CONVEYOR_SWITCH_OFF].image_game;
 
   if (cave->conveyor_belts_direction_changed)
   {
@@ -1402,12 +1402,12 @@ void gd_drawcave_game(const GdCave *cave,
     elemdrawing[O_CONVEYOR_RIGHT] = temp;
 
     elemmapping[O_CONVEYOR_DIR_SWITCH] = O_CONVEYOR_DIR_CHANGED;
-    elemdrawing[O_CONVEYOR_DIR_SWITCH] = gd_elements[O_CONVEYOR_DIR_CHANGED].image_game;
+    elemdrawing[O_CONVEYOR_DIR_SWITCH] = gd_element_properties[O_CONVEYOR_DIR_CHANGED].image_game;
   }
   else
   {
     elemmapping[O_CONVEYOR_DIR_SWITCH] = O_CONVEYOR_DIR_NORMAL;
-    elemdrawing[O_CONVEYOR_DIR_SWITCH] = gd_elements[O_CONVEYOR_DIR_NORMAL].image_game;
+    elemdrawing[O_CONVEYOR_DIR_SWITCH] = gd_element_properties[O_CONVEYOR_DIR_NORMAL].image_game;
   }
 
   if (cave->conveyor_belts_active)
@@ -1441,44 +1441,44 @@ void gd_drawcave_game(const GdCave *cave,
     if (player_blinking && player_tapping)
     {
       map = O_PLAYER_TAP_BLINK;
-      draw = gd_elements[O_PLAYER_TAP_BLINK].image_game;
+      draw = gd_element_properties[O_PLAYER_TAP_BLINK].image_game;
     }
     else if (player_blinking)
     {
       map = O_PLAYER_BLINK;
-      draw = gd_elements[O_PLAYER_BLINK].image_game;
+      draw = gd_element_properties[O_PLAYER_BLINK].image_game;
     }
     else if (player_tapping)
     {
       map = O_PLAYER_TAP;
-      draw = gd_elements[O_PLAYER_TAP].image_game;
+      draw = gd_element_properties[O_PLAYER_TAP].image_game;
     }
     else
     {
       map = O_PLAYER;
-      draw = gd_elements[O_PLAYER].image_game;
+      draw = gd_element_properties[O_PLAYER].image_game;
     }
   }
   else if (cave->last_direction == GD_MV_UP && use_bd_up_down_graphics())
   {
     map = O_PLAYER_UP;
-    draw = gd_elements[O_PLAYER_UP].image_game;
+    draw = gd_element_properties[O_PLAYER_UP].image_game;
   }
   else if (cave->last_direction == GD_MV_DOWN && use_bd_up_down_graphics())
   {
     map = O_PLAYER_DOWN;
-    draw = gd_elements[O_PLAYER_DOWN].image_game;
+    draw = gd_element_properties[O_PLAYER_DOWN].image_game;
   }
   else if (cave->last_horizontal_direction == GD_MV_LEFT)
   {
     map = O_PLAYER_LEFT;
-    draw = gd_elements[O_PLAYER_LEFT].image_game;
+    draw = gd_element_properties[O_PLAYER_LEFT].image_game;
   }
   else
   {
     // of course this is GD_MV_RIGHT.
     map = O_PLAYER_RIGHT;
-    draw = gd_elements[O_PLAYER_RIGHT].image_game;
+    draw = gd_element_properties[O_PLAYER_RIGHT].image_game;
   }
 
   elemmapping[O_PLAYER] = map;
@@ -1499,15 +1499,15 @@ void gd_drawcave_game(const GdCave *cave,
   }
 
   elemmapping[O_INBOX] = (cave->inbox_flash_toggle ? O_INBOX_OPEN : O_INBOX_CLOSED);
-  elemdrawing[O_INBOX] = gd_elements[cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED].image_game;
+  elemdrawing[O_INBOX] = gd_element_properties[cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED].image_game;
 
   elemmapping[O_OUTBOX] = (cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED);
-  elemdrawing[O_OUTBOX] = gd_elements[cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED].image_game;
+  elemdrawing[O_OUTBOX] = gd_element_properties[cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED].image_game;
 
-  // hack, not fit into gd_elements
+  // hack, not fit into gd_element_properties
   elemmapping[O_BITER_SWITCH] = O_BITER_SWITCH_1 + cave->biter_delay_frame;
-  // hack, not fit into gd_elements
-  elemdrawing[O_BITER_SWITCH] = gd_elements[O_BITER_SWITCH].image_game + cave->biter_delay_frame;
+  // hack, not fit into gd_element_properties
+  elemdrawing[O_BITER_SWITCH] = gd_element_properties[O_BITER_SWITCH].image_game + cave->biter_delay_frame;
 
   // visual effects
   elemmapping[O_DIRT] = cave->dirt_looks_like;
@@ -1550,7 +1550,7 @@ void gd_drawcave_game(const GdCave *cave,
 
       // if covered, real element is not important
       if (actual & COVERED)
-	draw = gd_elements[O_COVERED].image_game;
+	draw = gd_element_properties[O_COVERED].image_game;
       else
 	draw = elemdrawing[actual];
 
@@ -1668,7 +1668,7 @@ void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b)
   for (y = 0; y < cave->h; y++)
     for (x = 0; x < cave->w; x++)
     {
-      *a += gd_elements[cave->map[y][x] & O_MASK].character;
+      *a += gd_element_properties[cave->map[y][x] & O_MASK].character;
       *b += *a;
 
       *a %= 65521;
