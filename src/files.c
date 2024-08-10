@@ -313,6 +313,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(24),
+    &li.bd_intermission_clipped,	FALSE
+  },
+  {
+    -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(3),
     &li.bd_color_b,			GD_C64_COLOR(0)
   },
@@ -4297,6 +4302,15 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   // level type
   cave->intermission			= level->bd_intermission;
 
+  // level clipping
+  if (level->bd_intermission && level->bd_intermission_clipped)
+  {
+    cave->x1 = 0;
+    cave->y1 = 0;
+    cave->x2 = MIN(19, cave->w - 1);
+    cave->y2 = MIN(11, cave->h - 1);
+  }
+
   // level settings
   cave->level_time[0]			= level->time;
   cave->level_diamonds[0]		= level->gems_needed;
@@ -4469,6 +4483,16 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   // level type
   level->bd_intermission		= cave->intermission;
+
+  // level clipping
+  if (cave->intermission &&
+      cave->w  == 40 &&
+      cave->h  == 22 &&
+      cave->x1 == 0  &&
+      cave->y1 == 0  &&
+      cave->x2 == 19 &&
+      cave->y2 == 11)
+    level->bd_intermission_clipped = TRUE;
 
   // level settings
   level->time				= cave->level_time[bd_level_nr];
