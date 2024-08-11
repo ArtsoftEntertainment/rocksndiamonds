@@ -3444,7 +3444,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  store(cave, x, y, cave->explosion_effect);
 	  break;
 
-	case O_NUT_EXPL_4:
+	case O_NUT_CRACK_4:
 	  store(cave, x, y, O_DIAMOND);
 	  break;
 
@@ -3537,9 +3537,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_BOMB_EXPL_1:
 	case O_BOMB_EXPL_2:
 	case O_BOMB_EXPL_3:
-	case O_NUT_EXPL_1:
-	case O_NUT_EXPL_2:
-	case O_NUT_EXPL_3:
+	case O_NUT_CRACK_1:
+	case O_NUT_CRACK_2:
+	case O_NUT_CRACK_3:
 	case O_GHOST_EXPL_1:
 	case O_GHOST_EXPL_2:
 	case O_GHOST_EXPL_3:

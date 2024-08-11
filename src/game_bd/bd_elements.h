@@ -251,10 +251,10 @@ typedef enum _element
   O_AMOEBA_2_EXPL_2,
   O_AMOEBA_2_EXPL_3,
   O_AMOEBA_2_EXPL_4,
-  O_NUT_EXPL_1,
-  O_NUT_EXPL_2,
-  O_NUT_EXPL_3,
-  O_NUT_EXPL_4,
+  O_NUT_CRACK_1,
+  O_NUT_CRACK_2,
+  O_NUT_CRACK_3,
+  O_NUT_CRACK_4,
 
   // these are used internally for the pneumatic hammer, and should not be used in the editor!
   // (not even as an effect destination or something like that)

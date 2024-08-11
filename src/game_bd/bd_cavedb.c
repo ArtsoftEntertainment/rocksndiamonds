@@ -1236,25 +1236,28 @@ GdElementProperty gd_element_properties[] =
     P_EXPLOSION,
     "AMOEBA2EXPLOSION4", 0, 295, 295, 295, 280
   },    // has ckdelay
+
+  // nut "explosions" are not real explosions, but the stages of a cracked nut opening.
+  // therefore they are sloped
   {
-    O_NUT_EXPL_1, N_("Nut explosion (1)"),
+    O_NUT_CRACK_1, N_("Nut crack (1)"),
     P_SLOPED | P_EXPLOSION | P_EXPLOSION_FIRST_STAGE,
-    "NUTEXPLOSION1", 0, 360, 360, 360, 280
+    "NUTCRACK1", 0, 360, 360, 360, 280
   },    // has ckdelay
   {
-    O_NUT_EXPL_2, N_("Nut explosion (2)"),
+    O_NUT_CRACK_2, N_("Nut crack (2)"),
     P_SLOPED | P_EXPLOSION,
-    "NUTEXPLOSION2", 0, 361, 361, 361, 280
+    "NUTCRACK2", 0, 361, 361, 361, 280
   },    /* has ckdelay */        /* these are rounded!! */
   {
-    O_NUT_EXPL_3, N_("Nut explosion (3)"),
+    O_NUT_CRACK_3, N_("Nut crack (3)"),
     P_SLOPED | P_EXPLOSION,
-    "NUTEXPLOSION3", 0, 362, 362, 362, 280
+    "NUTCRACK3", 0, 362, 362, 362, 280
   },    // has ckdelay
   {
-    O_NUT_EXPL_4, N_("Nut explosion (4)"),
+    O_NUT_CRACK_4, N_("Nut crack (4)"),
     P_SLOPED | P_EXPLOSION,
-    "NUTEXPLOSION4", 0, 363, 363, 363, 280
+    "NUTCRACK4", 0, 363, 363, 363, 280
   },    // has ckdelay
 
   {
@@ -2734,7 +2737,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(water_does_not_flow_down),			FALSE				},
 
   // nut
-  { CAVE_OFFSET(nut_turns_to_when_crushed),			O_NUT_EXPL_1			},
+  { CAVE_OFFSET(nut_turns_to_when_crushed),			O_NUT_CRACK_1			},
 
   // replicator
   { CAVE_OFFSET(replicator_delay_frame),			4				},

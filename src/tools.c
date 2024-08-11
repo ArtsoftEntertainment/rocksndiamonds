@@ -7401,35 +7401,35 @@ bd_object_mapping_list[] =
     EL_BDX_AMOEBA_2,				ACTION_EXPLODING, -1
   },
   {
-    O_NUT_EXPL_1,				TRUE,
+    O_NUT_CRACK_1,				TRUE,
     EL_BDX_NUT_BREAKING_1,			-1, -1
   },
   {
-    O_NUT_EXPL_1,				FALSE,
+    O_NUT_CRACK_1,				FALSE,
     EL_BDX_NUT,					ACTION_BREAKING, -1
   },
   {
-    O_NUT_EXPL_2,				TRUE,
+    O_NUT_CRACK_2,				TRUE,
     EL_BDX_NUT_BREAKING_2,			-1, -1
   },
   {
-    O_NUT_EXPL_2,				FALSE,
+    O_NUT_CRACK_2,				FALSE,
     EL_BDX_NUT,					ACTION_BREAKING, -1
   },
   {
-    O_NUT_EXPL_3,				TRUE,
+    O_NUT_CRACK_3,				TRUE,
     EL_BDX_NUT_BREAKING_3,			-1, -1
   },
   {
-    O_NUT_EXPL_3,				FALSE,
+    O_NUT_CRACK_3,				FALSE,
     EL_BDX_NUT,					ACTION_BREAKING, -1
   },
   {
-    O_NUT_EXPL_4,				TRUE,
+    O_NUT_CRACK_4,				TRUE,
     EL_BDX_NUT_BREAKING_4,			-1, -1
   },
   {
-    O_NUT_EXPL_4,				FALSE,
+    O_NUT_CRACK_4,				FALSE,
     EL_BDX_NUT,					ACTION_BREAKING, -1
   },
   {
@@ -10763,7 +10763,7 @@ void InitGraphicInfo_BD(void)
 			BD_GFX_RANGE(O_PRE_STEEL_1, 4, i)     ? BD_GFX_FRAME(O_PRE_STEEL_1, i) :
 			BD_GFX_RANGE(O_BOMB_TICK_1, 7, i)     ? BD_GFX_FRAME(O_BOMB_TICK_1, i) :
 			BD_GFX_RANGE(O_BOMB_EXPL_1, 4, i)     ? BD_GFX_FRAME(O_BOMB_EXPL_1, i) :
-			BD_GFX_RANGE(O_NUT_EXPL_1, 4, i)      ? BD_GFX_FRAME(O_NUT_EXPL_1, i) :
+			BD_GFX_RANGE(O_NUT_CRACK_1, 4, i)     ? BD_GFX_FRAME(O_NUT_CRACK_1, i) :
 			BD_GFX_RANGE(O_GHOST_EXPL_1, 4, i)    ? BD_GFX_FRAME(O_GHOST_EXPL_1, i) :
 			BD_GFX_RANGE(O_EXPLODE_1, 5, i)       ? BD_GFX_FRAME(O_EXPLODE_1, i) :
 			BD_GFX_RANGE(O_PRE_CLOCK_1, 4, i)     ? BD_GFX_FRAME(O_PRE_CLOCK_1, i) :
