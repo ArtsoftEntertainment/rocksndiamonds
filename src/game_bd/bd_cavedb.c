@@ -28,10 +28,10 @@ enum _generated_cells_indexes
   i_stonefly_2,
   i_stonefly_3,
   i_stonefly_4,
-  i_alt_guard_1,
-  i_alt_guard_2,
-  i_alt_guard_3,
-  i_alt_guard_4,
+  i_alt_firefly_1,
+  i_alt_firefly_2,
+  i_alt_firefly_3,
+  i_alt_firefly_4,
   i_steel_eatable,
   i_brick_eatable,
   i_dirt_glued,
@@ -55,10 +55,10 @@ enum _generated_cells_indexes
   i_cow_2,
   i_cow_3,
   i_cow_4,
-  i_guard_1,
-  i_guard_2,
-  i_guard_3,
-  i_guard_4,
+  i_firefly_1,
+  i_firefly_2,
+  i_firefly_3,
+  i_firefly_4,
   i_butter_1,
   i_butter_2,
   i_butter_3,
@@ -114,7 +114,7 @@ enum _generated_cells_indexes
 
   images are: image in editor, image in editor - animated, game image
   indexes which are in the png have to be given as numeric constants.
-  for generated cells (ie. guard + an arrow), use the above enum
+  for generated cells (ie. firefly + an arrow), use the above enum
 */
 GdElementProperty gd_element_properties[] =
 {
@@ -782,44 +782,44 @@ GdElementProperty gd_element_properties[] =
     "GHOST", 'g', 160, -160, -160, 50
   },    // has ckdelay
   {
-    O_FIREFLY_1, N_("Guard, left"),
+    O_FIREFLY_1, N_("Firefly, left"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
-    "FIREFLYl", 'Q', i_guard_1, -136, -136, 384
+    "FIREFLYl", 'Q', i_firefly_1, -136, -136, 384
   },    // has ckdelay
   {
-    O_FIREFLY_2, N_("Guard, up"),
+    O_FIREFLY_2, N_("Firefly, up"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
-    "FIREFLYu", 'o', i_guard_2, -136, -136, 384
+    "FIREFLYu", 'o', i_firefly_2, -136, -136, 384
   },      // has ckdelay
   {
-    O_FIREFLY_3, N_("Guard, right"),
+    O_FIREFLY_3, N_("Firefly, right"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
-    "FIREFLYr", 'O', i_guard_3, -136, -136, 384
+    "FIREFLYr", 'O', i_firefly_3, -136, -136, 384
   },   // has ckdelay
   {
-    O_FIREFLY_4, N_("Guard, down"),
+    O_FIREFLY_4, N_("Firefly, down"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
-    "FIREFLYd", 'q', i_guard_4, -136, -136, 384
+    "FIREFLYd", 'q', i_firefly_4, -136, -136, 384
   },    // has ckdelay
   {
-    O_ALT_FIREFLY_1, N_("Alternative guard, left"),
+    O_ALT_FIREFLY_1, N_("Alternative firefly, left"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
-    "A_FIREFLYl", 0, i_alt_guard_1, -104, -104, 384
+    "A_FIREFLYl", 0, i_alt_firefly_1, -104, -104, 384
   },    // has ckdelay
   {
-    O_ALT_FIREFLY_2, N_("Alternative guard, up"),
+    O_ALT_FIREFLY_2, N_("Alternative firefly, up"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
-    "A_FIREFLYu", 0, i_alt_guard_2, -104, -104, 384
+    "A_FIREFLYu", 0, i_alt_firefly_2, -104, -104, 384
   },    // has ckdelay
   {
-    O_ALT_FIREFLY_3, N_("Alternative guard, right"),
+    O_ALT_FIREFLY_3, N_("Alternative firefly, right"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
-    "A_FIREFLYr", 0, i_alt_guard_3, -104, -104, 384
+    "A_FIREFLYr", 0, i_alt_firefly_3, -104, -104, 384
   },    // has ckdelay
   {
-    O_ALT_FIREFLY_4, N_("Alternative guard, down"),
+    O_ALT_FIREFLY_4, N_("Alternative firefly, down"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
-    "A_FIREFLYd", 0, i_alt_guard_4, -104, -104, 384
+    "A_FIREFLYd", 0, i_alt_firefly_4, -104, -104, 384
   },    // has ckdelay
   {
     O_BUTTER_1, N_("Butterfly, left"),
