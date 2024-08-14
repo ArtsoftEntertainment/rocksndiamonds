@@ -119,1120 +119,1120 @@ enum _generated_cells_indexes
 GdElementProperty gd_element_properties[] =
 {
   {
-    O_SPACE, N_("Space"),
+    O_SPACE, O_SPACE, N_("Space"),
     P_AMOEBA_CONSUMES | P_WALKABLE,
     "SPACE", ' ', 0, 0, 0
   },
   {
-    O_DIRT, N_("Dirt"),
+    O_DIRT, O_DIRT, N_("Dirt"),
     P_AMOEBA_CONSUMES | P_VISUAL_EFFECT | P_DIRT | P_DIGGABLE,
     "DIRT", '.', 2, 2, 2
   },
   {
-    O_DIRT_SLOPED_UP_RIGHT, N_("Sloped dirt (up & right)"),
+    O_DIRT_SLOPED_UP_RIGHT, O_DIRT_SLOPED_UP_RIGHT, N_("Sloped dirt (up & right)"),
     P_DIRT | P_SLOPED_UP | P_SLOPED_RIGHT | P_AMOEBA_CONSUMES | P_DIGGABLE,
     "DIRTSLOPEDUPRIGHT", 0, 280, 280, 280
   },
   {
-    O_DIRT_SLOPED_UP_LEFT, N_("Sloped dirt (up & left)"),
+    O_DIRT_SLOPED_UP_LEFT, O_DIRT_SLOPED_UP_LEFT, N_("Sloped dirt (up & left)"),
     P_DIRT | P_SLOPED_UP | P_SLOPED_LEFT | P_AMOEBA_CONSUMES | P_DIGGABLE,
     "DIRTSLOPEDUPLEFT", 0, 281, 281, 281
   },
   {
-    O_DIRT_SLOPED_DOWN_LEFT, N_("Sloped dirt (down & left)"),
+    O_DIRT_SLOPED_DOWN_LEFT, O_DIRT_SLOPED_DOWN_LEFT, N_("Sloped dirt (down & left)"),
     P_DIRT | P_SLOPED_DOWN | P_SLOPED_LEFT | P_AMOEBA_CONSUMES | P_DIGGABLE,
     "DIRTSLOPEDDOWNLEFT", 0, 282, 282, 282
   },
   {
-    O_DIRT_SLOPED_DOWN_RIGHT, N_("Sloped dirt (down & right)"),
+    O_DIRT_SLOPED_DOWN_RIGHT, O_DIRT_SLOPED_DOWN_RIGHT, N_("Sloped dirt (down & right)"),
     P_DIRT | P_SLOPED_DOWN | P_SLOPED_RIGHT | P_AMOEBA_CONSUMES | P_DIGGABLE,
     "DIRTSLOPEDDOWNRIGHT", 0, 283, 283, 283
   },
   {
-    O_DIRT_BALL, N_("Dirt ball"),
+    O_DIRT_BALL, O_DIRT_BALL, N_("Dirt ball"),
     P_DIRT | P_SLOPED | P_AMOEBA_CONSUMES | P_MOVED_BY_CONVEYOR_TOP | P_DIGGABLE | P_CAN_FALL,
     "DIRTBALL", 0, 289, 289, 289, 120
   },    // has ckdelay
   {
-    O_DIRT_BALL_F, N_("Dirt ball (falling)"),
+    O_DIRT_BALL_F, O_DIRT_BALL_F, N_("Dirt ball (falling)"),
     P_FALLING | P_DIGGABLE,
     "DIRTBALLf", 0, 289, 289, 289, 120
   },    // has ckdelay
   {
-    O_DIRT_LOOSE, N_("Loose dirt"),
+    O_DIRT_LOOSE, O_DIRT_LOOSE, N_("Loose dirt"),
     P_DIRT | P_AMOEBA_CONSUMES | P_MOVED_BY_CONVEYOR_TOP | P_DIGGABLE | P_CAN_FALL,
     "DIRTLOOSE", 0, 352, 352, 352, 60
   },    // has ckdelay
   {
-    O_DIRT_LOOSE_F, N_("Loose dirt (falling)"),
+    O_DIRT_LOOSE_F, O_DIRT_LOOSE_F, N_("Loose dirt (falling)"),
     P_FALLING,
     "DIRTLOOSEf", 0, 352, 352, 352, 60
   },    // has ckdelay
   {
-    O_DIRT2, N_("Dirt 2"),
+    O_DIRT2, O_DIRT2, N_("Dirt 2"),
     P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
     "DIRT2", 0, 3, 3, 3
   },
   {
-    O_BRICK, N_("Brick wall"),
+    O_BRICK, O_BRICK, N_("Brick wall"),
     P_SLOPED|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED,
     "WALL", 'w', 5, 5, 5
   },
   {
-    O_BRICK_SLOPED_UP_RIGHT, N_("Sloped brick wall (up & right)"),
+    O_BRICK_SLOPED_UP_RIGHT, O_BRICK_SLOPED_UP_RIGHT, N_("Sloped brick wall (up & right)"),
     P_SLOPED_UP|P_SLOPED_RIGHT|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED,
     "WALLSLOPEDUPRIGHT", 0, 276, 276, 276
   },
   {
-    O_BRICK_SLOPED_UP_LEFT, N_("Sloped brick wall (up & left)"),
+    O_BRICK_SLOPED_UP_LEFT, O_BRICK_SLOPED_UP_LEFT, N_("Sloped brick wall (up & left)"),
     P_SLOPED_UP|P_SLOPED_LEFT|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED,
     "WALLSLOPEDUPLEFT", 0, 277, 277, 277
   },
   {
-    O_BRICK_SLOPED_DOWN_LEFT, N_("Sloped brick wall (down & left)"),
+    O_BRICK_SLOPED_DOWN_LEFT, O_BRICK_SLOPED_DOWN_LEFT, N_("Sloped brick wall (down & left)"),
     P_SLOPED_DOWN|P_SLOPED_LEFT|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED,
     "WALLSLOPEDDOWNLEFT", 0, 278, 278, 278
   },
   {
-    O_BRICK_SLOPED_DOWN_RIGHT, N_("Sloped brick wall (down & right)"),
+    O_BRICK_SLOPED_DOWN_RIGHT, O_BRICK_SLOPED_DOWN_RIGHT, N_("Sloped brick wall (down & right)"),
     P_SLOPED_DOWN|P_SLOPED_RIGHT|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED,
     "WALLSLOPEDDOWNRIGHT", 0, 279, 279, 279
   },
   {
-    O_BRICK_NON_SLOPED, N_("Non-sloped brick wall"),
+    O_BRICK_NON_SLOPED, O_BRICK_NON_SLOPED, N_("Non-sloped brick wall"),
     P_CAN_BE_HAMMERED,
     "WALLNONSLOPED", 0, i_brick_non_sloped, i_brick_non_sloped, 5
   },
   {
-    O_MAGIC_WALL, N_("Magic wall"),
+    O_MAGIC_WALL, O_MAGIC_WALL, N_("Magic wall"),
     P_CAN_BE_HAMMERED,
     "MAGICWALL", 'M', 184, -184, -184
   },
   {
-    O_PRE_OUTBOX, N_("Outbox"),
+    O_PRE_OUTBOX, O_PRE_OUTBOX, N_("Outbox"),
     0,
     "OUTBOX", 'X', i_pre_outbox_nonblink, -i_pre_outbox_frame_1, 22
   },
   {
-    O_OUTBOX, N_("Outbox (open)"),
+    O_OUTBOX, O_OUTBOX, N_("Outbox (open)"),
     0,
     "OUTBOXopen", 0, i_outbox, i_outbox, 22
   },
   {
-    O_PRE_INVIS_OUTBOX, N_("Invisible outbox"),
+    O_PRE_INVIS_OUTBOX, O_PRE_INVIS_OUTBOX, N_("Invisible outbox"),
     0,
     "HIDDENOUTBOX", 'H', i_pre_invis_outbox, i_pre_invis_outbox, 22
   },
   {
-    O_INVIS_OUTBOX, N_("Invisible outbox (open)"),
+    O_INVIS_OUTBOX, O_INVIS_OUTBOX, N_("Invisible outbox (open)"),
     0,
     "HIDDENOUTBOXopen", 0, i_invis_outbox, i_invis_outbox, 22
   },
   {
-    O_STEEL, N_("Steel wall"),
+    O_STEEL, O_STEEL, N_("Steel wall"),
     P_NON_EXPLODABLE,
     "STEELWALL", 'W', 4, 4, 4
   },
   {
-    O_STEEL_SLOPED_UP_RIGHT, N_("Sloped steel wall (up & right)"),
+    O_STEEL_SLOPED_UP_RIGHT, O_STEEL_SLOPED_UP_RIGHT, N_("Sloped steel wall (up & right)"),
     P_SLOPED_UP|P_SLOPED_RIGHT|P_NON_EXPLODABLE,
     "STEELWALLSLOPEDUPRIGHT", 0, 284, 284, 284
   },
   {
-    O_STEEL_SLOPED_UP_LEFT, N_("Sloped steel wall (up & left)"),
+    O_STEEL_SLOPED_UP_LEFT, O_STEEL_SLOPED_UP_LEFT, N_("Sloped steel wall (up & left)"),
     P_SLOPED_UP|P_SLOPED_LEFT|P_NON_EXPLODABLE,
     "STEELWALLSLOPEDUPLEFT", 0, 285, 285, 285
   },
   {
-    O_STEEL_SLOPED_DOWN_LEFT, N_("Sloped steel wall (down & left)"),
+    O_STEEL_SLOPED_DOWN_LEFT, O_STEEL_SLOPED_DOWN_LEFT, N_("Sloped steel wall (down & left)"),
     P_SLOPED_DOWN|P_SLOPED_LEFT|P_NON_EXPLODABLE,
     "STEELWALLSLOPEDDOWNLEFT", 0, 286, 286, 286
   },
   {
-    O_STEEL_SLOPED_DOWN_RIGHT, N_("Sloped steel wall (down & right)"),
+    O_STEEL_SLOPED_DOWN_RIGHT, O_STEEL_SLOPED_DOWN_RIGHT, N_("Sloped steel wall (down & right)"),
     P_SLOPED_DOWN|P_SLOPED_RIGHT|P_NON_EXPLODABLE,
     "STEELWALLSLOPEDDOWNRIGHT", 0, 287, 287, 287
   },
   {
-    O_STEEL_EXPLODABLE, N_("Explodable steel wall"),
+    O_STEEL_EXPLODABLE, O_STEEL_EXPLODABLE, N_("Explodable steel wall"),
     P_CAN_BE_HAMMERED,
     "STEELWALLDESTRUCTABLE", 'E', 72, 72, 4
   },
   {
-    O_STEEL_EATABLE, N_("Eatable steel wall"),
+    O_STEEL_EATABLE, O_STEEL_EATABLE, N_("Eatable steel wall"),
     P_DIGGABLE,
     "STEELWALLEATABLE", 0, i_steel_eatable, i_steel_eatable, 4
   },
   {
-    O_BRICK_EATABLE, N_("Eatable brick wall"),
+    O_BRICK_EATABLE, O_BRICK_EATABLE, N_("Eatable brick wall"),
     P_DIGGABLE,
     "WALLEATABLE", 0, i_brick_eatable, i_brick_eatable, 5
   },
   {
-    O_STONE, N_("Stone"),
+    O_STONE, O_STONE, N_("Stone"),
     P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL,
     "BOULDER", 'r', 1, 1, 1, 156
   },    // has ckdelay
   {
-    O_STONE_F, N_("Stone, falling"),
+    O_STONE_F, O_STONE_F, N_("Stone, falling"),
     P_FALLING,
     "BOULDERf", 'R', i_stone_f, i_stone_f, 1, 156
   },    // has ckdelay
   {
-    O_FLYING_STONE, N_("Flying stone"),
+    O_FLYING_STONE, O_FLYING_STONE, N_("Flying stone"),
     P_SLOPED | P_MOVED_BY_CONVEYOR_BOTTOM | P_PUSHABLE | P_CAN_FALL,
     "FLYINGBOULDER", 0, 357, 357, 357, 156
   },    // has ckdelay
   {
-    O_FLYING_STONE_F, N_("Flying stone, flying"),
+    O_FLYING_STONE_F, O_FLYING_STONE_F, N_("Flying stone, flying"),
     P_FALLING,
     "FLYINGBOULDERf", 0, i_flying_stone_f, i_flying_stone_f, 357, 156
   },    // has ckdelay
   {
-    O_MEGA_STONE, N_("Mega stone"),
+    O_MEGA_STONE, O_MEGA_STONE, N_("Mega stone"),
     P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL,
     "MEGABOULDER", 0, 272, 272, 272, 156
   },    // has ckdelay
   {
-    O_MEGA_STONE_F, N_("Mega stone, falling"),
+    O_MEGA_STONE_F, O_MEGA_STONE_F, N_("Mega stone, falling"),
     P_FALLING,
     "MEGABOULDERf", 0, i_mega_stone_falling, i_mega_stone_falling, 272, 156
   },    // has ckdelay
   {
-    O_DIAMOND, N_("Diamond"),
+    O_DIAMOND, O_DIAMOND, N_("Diamond"),
     P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_COLLECTIBLE | P_CAN_FALL,
     "DIAMOND", 'd', 248, -248, -248, 156
   },    // has ckdelay
   {
-    O_DIAMOND_F, N_("Diamond, falling"),
+    O_DIAMOND_F, O_DIAMOND_F, N_("Diamond, falling"),
     P_FALLING,
     "DIAMONDf", 'D', i_diamond_f, i_diamond_f, -248, 156
   },    // has ckdelay
   {
-    O_FLYING_DIAMOND, N_("Flying diamond"),
+    O_FLYING_DIAMOND, O_FLYING_DIAMOND, N_("Flying diamond"),
     P_SLOPED | P_MOVED_BY_CONVEYOR_BOTTOM | P_COLLECTIBLE | P_CAN_FALL,
     "FLYINGDIAMOND", 0, 344, -344, -344, 156
   },    // has ckdelay
   {
-    O_FLYING_DIAMOND_F, N_("Flying diamond, flying"),
+    O_FLYING_DIAMOND_F, O_FLYING_DIAMOND_F, N_("Flying diamond, flying"),
     P_FALLING,
     "FLYINGDIAMONDf", 0, i_flying_diamond_f, i_flying_diamond_f, -344, 156
   },    // has ckdelay
   {
-    O_NUT, N_("Nut"),
+    O_NUT, O_NUT, N_("Nut"),
     P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL,
     "NUT", 0, 358, 358, 358, 156
   },    // has ckdelay
   {
-    O_NUT_F, N_("Nut, falling"),
+    O_NUT_F, O_NUT_F, N_("Nut, falling"),
     P_FALLING,
     "NUTf", 0, i_nut_f, i_nut_f, 358, 156
   },    // has ckdelay
   {
-    O_BLADDER_SPENDER, N_("Bladder Spender"),
+    O_BLADDER_SPENDER, O_BLADDER_SPENDER, N_("Bladder Spender"),
     P_PUSHABLE,
     "BLADDERSPENDER", 0, 6, 6, 6, 20
   },    // has ckdelay
   {
-    O_INBOX, N_("Inbox"),
+    O_INBOX, O_INBOX, N_("Inbox"),
     0,
     "INBOX", 'P', 35, 35, 22
   },
   {
-    O_H_EXPANDING_WALL, N_("Expanding wall, horizontal"),
+    O_H_EXPANDING_WALL, O_H_EXPANDING_WALL, N_("Expanding wall, horizontal"),
     P_VISUAL_EFFECT | P_CAN_BE_HAMMERED | P_CAN_GROW,
     "HEXPANDINGWALL", 'x', i_h_expanding_wall, i_h_expanding_wall, 5, 111
   },    // has ckdelay
   {
-    O_V_EXPANDING_WALL, N_("Expanding wall, vertical"),
+    O_V_EXPANDING_WALL, O_V_EXPANDING_WALL, N_("Expanding wall, vertical"),
     P_VISUAL_EFFECT | P_CAN_BE_HAMMERED | P_CAN_GROW,
     "VEXPANDINGWALL", 'v', i_v_expanding_wall, i_v_expanding_wall, 5, 111
   },    // has ckdelay
   {
-    O_EXPANDING_WALL, N_("Expanding wall"),
+    O_EXPANDING_WALL, O_EXPANDING_WALL, N_("Expanding wall"),
     P_VISUAL_EFFECT | P_CAN_BE_HAMMERED | P_CAN_GROW,
     "EXPANDINGWALL", 'e', i_expanding_wall, i_expanding_wall, 5, 111
   },    // has ckdelay
   {
-    O_H_EXPANDING_STEEL_WALL, N_("Expanding steel wall, horizontal"),
+    O_H_EXPANDING_STEEL_WALL, O_H_EXPANDING_STEEL_WALL, N_("Expanding steel wall, horizontal"),
     P_NON_EXPLODABLE | P_CAN_GROW,
     "HEXPANDINGSTEELWALL", 0, i_h_expanding_steel_wall, i_h_expanding_steel_wall, 4, 111
   },    // has ckdelay
   {
-    O_V_EXPANDING_STEEL_WALL, N_("Expanding steel wall, vertical"),
+    O_V_EXPANDING_STEEL_WALL, O_V_EXPANDING_STEEL_WALL, N_("Expanding steel wall, vertical"),
     P_NON_EXPLODABLE | P_CAN_GROW,
     "VEXPANDINGSTEELWALL", 0, i_v_expanding_steel_wall, i_v_expanding_steel_wall, 4, 111
   },    // has ckdelay
   {
-    O_EXPANDING_STEEL_WALL, N_("Expanding steel wall"),
+    O_EXPANDING_STEEL_WALL, O_EXPANDING_STEEL_WALL, N_("Expanding steel wall"),
     P_NON_EXPLODABLE | P_CAN_GROW,
     "EXPANDINGSTEELWALL", 0, i_expanding_steel_wall, i_expanding_steel_wall, 4, 111
   },    // has ckdelay
   {
-    O_EXPANDING_WALL_SWITCH, N_("Expanding wall switch"),
+    O_EXPANDING_WALL_SWITCH, O_EXPANDING_WALL_SWITCH, N_("Expanding wall switch"),
     0,
     "EXPANDINGWALLSWITCH", 0, 40, 40, 40
   },
   {
-    O_CREATURE_SWITCH, N_("Creature direction switch"),
+    O_CREATURE_SWITCH, O_CREATURE_SWITCH, N_("Creature direction switch"),
     0,
     "FIREFLYBUTTERFLYSWITCH", 0, 18, 18, 18
   },
   {
-    O_BITER_SWITCH, N_("Biter switch"),
+    O_BITER_SWITCH, O_BITER_SWITCH, N_("Biter switch"),
     0,
     "BITERSWITCH", 0, 12, 12, 12
   },
   {
-    O_REPLICATOR_SWITCH, N_("Replicator switch"),
+    O_REPLICATOR_SWITCH, O_REPLICATOR_SWITCH, N_("Replicator switch"),
     0,
     "REPLICATORSWITCH", 0, 290, 290, 290
   },
   {
-    O_CONVEYOR_SWITCH, N_("Conveyor belt power switch"),
+    O_CONVEYOR_SWITCH, O_CONVEYOR_SWITCH, N_("Conveyor belt power switch"),
     0,
     "CONVEYORSWITCH", 0, 356, 356, 356
   },
   {
-    O_CONVEYOR_DIR_SWITCH, N_("Conveyor belt direction switch"),
+    O_CONVEYOR_DIR_SWITCH, O_CONVEYOR_DIR_SWITCH, N_("Conveyor belt direction switch"),
     0,
     "CONVEYORDIRECTIONSWITCH", 0, 353, 353, 353
   },
   {
-    O_ACID, N_("Acid"),
+    O_ACID, O_ACID, N_("Acid"),
     0,
     "ACID", 0, 20, 20, 20, 128
   },    // has ckdelay
   {
-    O_FALLING_WALL, N_("Falling wall"),
+    O_FALLING_WALL, O_FALLING_WALL, N_("Falling wall"),
     P_CAN_BE_HAMMERED | P_CAN_FALL,
     "FALLINGWALL", 0, i_falling_wall, i_falling_wall, 5, 80
   },    // has ckdelay
   {
-    O_FALLING_WALL_F, N_("Falling wall, falling"),
+    O_FALLING_WALL_F, O_FALLING_WALL_F, N_("Falling wall, falling"),
     P_CAN_BE_HAMMERED | P_FALLING,
     "FALLINGWALLf", 0, i_falling_wall_falling, i_falling_wall_falling, 5, 80
   },    // has ckdelay
   {
-    O_BOX, N_("Box"),
+    O_BOX, O_BOX, N_("Box"),
     P_PUSHABLE,
     "SOKOBANBOX", 0, 21, 21, 21
   },
   {
-    O_TIME_PENALTY, N_("Time penalty"),
+    O_TIME_PENALTY, O_TIME_PENALTY, N_("Time penalty"),
     P_NON_EXPLODABLE,
     "TIMEPENALTY", 0, i_time_penalty, i_time_penalty, 9
   },
   {
-    O_GRAVESTONE, N_("Gravestone"),
+    O_GRAVESTONE, O_GRAVESTONE, N_("Gravestone"),
     P_NON_EXPLODABLE,
     "GRAVESTONE", 'G', 9, 9, 9
   },
   {
-    O_STONE_GLUED, N_("Glued stone"),
+    O_STONE_GLUED, O_STONE_GLUED, N_("Glued stone"),
     P_SLOPED,
     "GLUEDBOULDER", 0, i_stone_glued, i_stone_glued, 1
   },
   {
-    O_DIAMOND_GLUED, N_("Glued diamond"),
+    O_DIAMOND_GLUED, O_DIAMOND_GLUED, N_("Glued diamond"),
     P_SLOPED,
     "GLUEDDIAMOND", 0, i_diamond_glued, i_diamond_glued, -248
   },
   {
-    O_DIAMOND_KEY, N_("Diamond key"),
+    O_DIAMOND_KEY, O_DIAMOND_KEY, N_("Diamond key"),
     P_COLLECTIBLE,
     "DIAMONDRELEASEKEY", 0, 11, 11, 11
   },
   {
-    O_TRAPPED_DIAMOND, N_("Trapped diamond"),
+    O_TRAPPED_DIAMOND, O_TRAPPED_DIAMOND, N_("Trapped diamond"),
     P_NON_EXPLODABLE,
     "TRAPPEDDIAMOND", 0, 10, 10, 10
   },
   {
-    O_CLOCK, N_("Clock"),
+    O_CLOCK, O_CLOCK, N_("Clock"),
     P_COLLECTIBLE,
     "CLOCK", 0, 16, 16, 16
   },
   {
-    O_DIRT_GLUED, N_("Glued dirt"),
+    O_DIRT_GLUED, O_DIRT_GLUED, N_("Glued dirt"),
     0,
     "GLUEDDIRT", 0, i_dirt_glued, i_dirt_glued, 2
   },
   {
-    O_KEY_1, N_("Key 1"),
+    O_KEY_1, O_KEY_1, N_("Key 1"),
     P_COLLECTIBLE,
     "KEY1", 0, 67, 67, 67
   },
   {
-    O_KEY_2, N_("Key 2"),
+    O_KEY_2, O_KEY_2, N_("Key 2"),
     P_COLLECTIBLE,
     "KEY2", 0, 68, 68, 68
   },
   {
-    O_KEY_3, N_("Key 3"),
+    O_KEY_3, O_KEY_3, N_("Key 3"),
     P_COLLECTIBLE,
     "KEY3", 0, 69, 69, 69
   },
   {
-    O_DOOR_1, N_("Door 1"),
+    O_DOOR_1, O_DOOR_1, N_("Door 1"),
     0,
     "DOOR1", 0, 64, 64, 64
   },
   {
-    O_DOOR_2, N_("Door 2"),
+    O_DOOR_2, O_DOOR_2, N_("Door 2"),
     0,
     "DOOR2", 0, 65, 65, 65
   },
   {
-    O_DOOR_3, N_("Door 3"),
+    O_DOOR_3, O_DOOR_3, N_("Door 3"),
     0,
     "DOOR3", 0, 66, 66, 66
   },
 
   {
-    O_POT, N_("Pot"),
+    O_POT, O_POT, N_("Pot"),
     0,
     "POT", 0, 63, 63, 63
   },
   {
-    O_GRAVITY_SWITCH, N_("Gravity switch"),
+    O_GRAVITY_SWITCH, O_GRAVITY_SWITCH, N_("Gravity switch"),
     0,
     "GRAVITY_SWITCH", 0, 274, 274, 274
   },
   {
-    O_PNEUMATIC_HAMMER, N_("Pneumatic hammer"),
+    O_PNEUMATIC_HAMMER, O_PNEUMATIC_HAMMER, N_("Pneumatic hammer"),
     P_COLLECTIBLE,
     "PNEUMATIC_HAMMER", 0, 62, 62, 62
   },
   {
-    O_TELEPORTER, N_("Teleporter"),
+    O_TELEPORTER, O_TELEPORTER, N_("Teleporter"),
     P_WALKABLE,
     "TELEPORTER", 0, 61, 61, 61
   },
   {
-    O_SKELETON, N_("Skeleton"),
+    O_SKELETON, O_SKELETON, N_("Skeleton"),
     0,
     "SKELETON", 0, 273, 273, 273
   },
   {
-    O_WATER, N_("Water"),
+    O_WATER, O_WATER, N_("Water"),
     0,
     "WATER", 0, 96, -96, -96, 100
   },    // has ckdelay
   {
-    O_WATER_1, N_("Water (1)"),
+    O_WATER_1, O_WATER_1, N_("Water (1)"),
     0,
     "WATER1", 0, 96, -96, -96
   },
   {
-    O_WATER_2, N_("Water (2)"),
+    O_WATER_2, O_WATER_2, N_("Water (2)"),
     0,
     "WATER2", 0, 96, -96, -96
   },
   {
-    O_WATER_3, N_("Water (3)"),
+    O_WATER_3, O_WATER_3, N_("Water (3)"),
     0,
     "WATER3", 0, 96, -96, -96
   },
   {
-    O_WATER_4, N_("Water (4)"),
+    O_WATER_4, O_WATER_4, N_("Water (4)"),
     0,
     "WATER4", 0, 96, -96, -96
   },
   {
-    O_WATER_5, N_("Water (5)"),
+    O_WATER_5, O_WATER_5, N_("Water (5)"),
     0,
     "WATER5", 0, 96, -96, -96
   },
   {
-    O_WATER_6, N_("Water (6)"),
+    O_WATER_6, O_WATER_6, N_("Water (6)"),
     0,
     "WATER6", 0, 96, -96, -96
   },
   {
-    O_WATER_7, N_("Water (7)"),
+    O_WATER_7, O_WATER_7, N_("Water (7)"),
     0,
     "WATER7", 0, 96, -96, -96
   },
   {
-    O_WATER_8, N_("Water (8)"),
+    O_WATER_8, O_WATER_8, N_("Water (8)"),
     0,
     "WATER8", 0, 96, -96, -96
   },
   {
-    O_WATER_9, N_("Water (9)"),
+    O_WATER_9, O_WATER_9, N_("Water (9)"),
     0,
     "WATER9", 0, 96, -96, -96
   },
   {
-    O_WATER_10, N_("Water (10)"),
+    O_WATER_10, O_WATER_10, N_("Water (10)"),
     0,
     "WATER10", 0, 96, -96, -96
   },
   {
-    O_WATER_11, N_("Water (11)"),
+    O_WATER_11, O_WATER_11, N_("Water (11)"),
     0,
     "WATER11", 0, 96, -96, -96
   },
   {
-    O_WATER_12, N_("Water (12)"),
+    O_WATER_12, O_WATER_12, N_("Water (12)"),
     0,
     "WATER12", 0, 96, -96, -96
   },
   {
-    O_WATER_13, N_("Water (13)"),
+    O_WATER_13, O_WATER_13, N_("Water (13)"),
     0,
     "WATER13", 0, 96, -96, -96
   },
   {
-    O_WATER_14, N_("Water (14)"),
+    O_WATER_14, O_WATER_14, N_("Water (14)"),
     0,
     "WATER14", 0, 96, -96, -96
   },
   {
-    O_WATER_15, N_("Water (15)"),
+    O_WATER_15, O_WATER_15, N_("Water (15)"),
     0,
     "WATER15", 0, 96, -96, -96
   },
   {
-    O_WATER_16, N_("Water (16)"),
+    O_WATER_16, O_WATER_16, N_("Water (16)"),
     0,
     "WATER16", 0, 96, -96, -96
   },
   {
-    O_COW_1, N_("Cow (left)"),
+    O_COW_1, O_COW_1, N_("Cow (left)"),
     P_CCW | P_CAN_MOVE,
     "COWl", 0, i_cow_1, -88, -88, 384
   },    // has ckdelay
   {
-    O_COW_2, N_("Cow (up)"),
+    O_COW_2, O_COW_2, N_("Cow (up)"),
     P_CCW | P_CAN_MOVE,
     "COWu", 0, i_cow_2, -88, -88, 384
   },    // has ckdelay
   {
-    O_COW_3, N_("Cow (right)"),
+    O_COW_3, O_COW_3, N_("Cow (right)"),
     P_CCW | P_CAN_MOVE,
     "COWr", 0, i_cow_3, -88, -88, 384
   },   // has ckdelay
   {
-    O_COW_4, N_("Cow (down)"),
+    O_COW_4, O_COW_4, N_("Cow (down)"),
     P_CCW | P_CAN_MOVE,
     "COWd", 0, i_cow_4, -88, -88, 384
   },    // has ckdelay
   {
-    O_COW_ENCLOSED_1, N_("Cow (enclosed, 1)"),
+    O_COW_ENCLOSED_1, O_COW_ENCLOSED_1, N_("Cow (enclosed, 1)"),
     0,
     "COW_ENCLOSED1", 0, i_cow_enclosed, -88, -88, 120
   },    // has ckdelay
   {
-    O_COW_ENCLOSED_2, N_("Cow (enclosed, 2)"),
+    O_COW_ENCLOSED_2, O_COW_ENCLOSED_2, N_("Cow (enclosed, 2)"),
     0,
     "COW_ENCLOSED2", 0, i_cow_enclosed, -88, -88, 120
   },    // has ckdelay
   {
-    O_COW_ENCLOSED_3, N_("Cow (enclosed, 3)"),
+    O_COW_ENCLOSED_3, O_COW_ENCLOSED_3, N_("Cow (enclosed, 3)"),
     0,
     "COW_ENCLOSED3", 0, i_cow_enclosed, -88, -88, 120
   },    // has ckdelay
   {
-    O_COW_ENCLOSED_4, N_("Cow (enclosed, 4)"),
+    O_COW_ENCLOSED_4, O_COW_ENCLOSED_4, N_("Cow (enclosed, 4)"),
     0,
     "COW_ENCLOSED4", 0, i_cow_enclosed, -88, -88, 120
   },    // has ckdelay
   {
-    O_COW_ENCLOSED_5, N_("Cow (enclosed, 5)"),
+    O_COW_ENCLOSED_5, O_COW_ENCLOSED_5, N_("Cow (enclosed, 5)"),
     0,
     "COW_ENCLOSED5", 0, i_cow_enclosed, -88, -88, 120
   },    // has ckdelay
   {
-    O_COW_ENCLOSED_6, N_("Cow (enclosed, 6)"),
+    O_COW_ENCLOSED_6, O_COW_ENCLOSED_6, N_("Cow (enclosed, 6)"),
     0,
     "COW_ENCLOSED6", 0, i_cow_enclosed, -88, -88, 120
   },    // has ckdelay
   {
-    O_COW_ENCLOSED_7, N_("Cow (enclosed, 7)"),
+    O_COW_ENCLOSED_7, O_COW_ENCLOSED_7, N_("Cow (enclosed, 7)"),
     0,
     "COW_ENCLOSED7", 0, i_cow_enclosed, -88, -88, 120
   },    // has ckdelay
   {
-    O_WALLED_DIAMOND, N_("Walled diamond"),
+    O_WALLED_DIAMOND, O_WALLED_DIAMOND, N_("Walled diamond"),
     P_CAN_BE_HAMMERED,
     "WALLED_DIAMOND", 0, i_walled_diamond, i_walled_diamond, 5
   },
   {
-    O_WALLED_KEY_1, N_("Walled key 1"),
+    O_WALLED_KEY_1, O_WALLED_KEY_1, N_("Walled key 1"),
     P_CAN_BE_HAMMERED,
     "WALLED_KEY1", 0, i_walled_key_1, i_walled_key_1, 5
   },
   {
-    O_WALLED_KEY_2, N_("Walled key 2"),
+    O_WALLED_KEY_2, O_WALLED_KEY_2, N_("Walled key 2"),
     P_CAN_BE_HAMMERED,
     "WALLED_KEY2", 0, i_walled_key_2, i_walled_key_2, 5
   },
   {
-    O_WALLED_KEY_3, N_("Walled key 3"),
+    O_WALLED_KEY_3, O_WALLED_KEY_3, N_("Walled key 3"),
     P_CAN_BE_HAMMERED,
     "WALLED_KEY3", 0, i_walled_key_3, i_walled_key_3, 5
   },
 
   {
-    O_AMOEBA, N_("Amoeba"),
+    O_AMOEBA, O_AMOEBA, N_("Amoeba"),
     P_BLOWS_UP_FLIES | P_CAN_GROW | P_CAN_DIG,
     "AMOEBA", 'a', 192, -192, -192, 260
   },    // has ckdelay
   {
-    O_AMOEBA_2, N_("Amoeba 2"),
+    O_AMOEBA_2, O_AMOEBA_2, N_("Amoeba 2"),
     P_BLOWS_UP_FLIES | P_CAN_GROW | P_CAN_DIG | P_VISUAL_EFFECT,
     "AMOEBA2", 0, 296, -296, -296, 260
   },    // has ckdelay
   {
-    O_REPLICATOR, N_("Replicator"),
+    O_REPLICATOR, O_REPLICATOR, N_("Replicator"),
     P_NON_EXPLODABLE,
     "REPLICATOR", 0, 304, -304, -304, 210
   },    // has ckdelay
   {
-    O_CONVEYOR_LEFT, N_("Conveyor belt (left)"),
+    O_CONVEYOR_LEFT, O_CONVEYOR_LEFT, N_("Conveyor belt (left)"),
     P_NON_EXPLODABLE,
     "CONVEYORLEFT", 0, i_conveyor_left, -328, -328, 256
   },    // has ckdelay
   {
-    O_CONVEYOR_RIGHT, N_("Conveyor belt (right)"),
+    O_CONVEYOR_RIGHT, O_CONVEYOR_RIGHT, N_("Conveyor belt (right)"),
     P_NON_EXPLODABLE,
     "CONVEYORRIGHT", 0, i_conveyor_right, -320, -320
   },
   {
-    O_LAVA, N_("Lava"),
+    O_LAVA, O_LAVA, N_("Lava"),
     P_NON_EXPLODABLE,
     "LAVA", 0, 312, -312, -312
   },
   {
-    O_SWEET, N_("Sweet"),
+    O_SWEET, O_SWEET, N_("Sweet"),
     P_COLLECTIBLE,
     "SWEET", 0, 8, 8, 8
   },
   {
-    O_VOODOO, N_("Voodoo doll"),
+    O_VOODOO, O_VOODOO, N_("Voodoo doll"),
     P_BLOWS_UP_FLIES,
     "DUMMY", 'F', 7, 7, 7
   },
   {
-    O_SLIME, N_("Slime"),
+    O_SLIME, O_SLIME, N_("Slime"),
     0,
     "SLIME", 's', 200, -200, -200, 211
   },    // has ckdelay
   {
-    O_BLADDER, N_("Bladder"),
+    O_BLADDER, O_BLADDER, N_("Bladder"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDER", 0, 176, -176, -176, 267
   },    // has ckdelay
   {
-    O_BLADDER_1, N_("Bladder (1)"),
+    O_BLADDER_1, O_BLADDER_1, N_("Bladder (1)"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDERd1", 0, 176, -176, -176
   },
   {
-    O_BLADDER_2, N_("Bladder (2)"),
+    O_BLADDER_2, O_BLADDER_2, N_("Bladder (2)"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDERd2", 0, 176, -176, -176
   },
   {
-    O_BLADDER_3, N_("Bladder (3)"),
+    O_BLADDER_3, O_BLADDER_3, N_("Bladder (3)"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDERd3", 0, 176, -176, -176
   },
   {
-    O_BLADDER_4, N_("Bladder (4)"),
+    O_BLADDER_4, O_BLADDER_4, N_("Bladder (4)"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDERd4", 0, 176, -176, -176
   },
   {
-    O_BLADDER_5, N_("Bladder (5)"),
+    O_BLADDER_5, O_BLADDER_5, N_("Bladder (5)"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDERd5", 0, 176, -176, -176
   },
   {
-    O_BLADDER_6, N_("Bladder (6)"),
+    O_BLADDER_6, O_BLADDER_6, N_("Bladder (6)"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDERd6", 0, 176, -176, -176
   },
   {
-    O_BLADDER_7, N_("Bladder (7)"),
+    O_BLADDER_7, O_BLADDER_7, N_("Bladder (7)"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDERd7", 0, 176, -176, -176
   },
   {
-    O_BLADDER_8, N_("Bladder (8)"),
+    O_BLADDER_8, O_BLADDER_8, N_("Bladder (8)"),
     P_PUSHABLE | P_CAN_MOVE,
     "BLADDERd8", 0, 176, -176, -176
   },
 
   {
-    O_WAITING_STONE, N_("Waiting stone"),
+    O_WAITING_STONE, O_WAITING_STONE, N_("Waiting stone"),
     P_SLOPED | P_PUSHABLE,
     "WAITINGBOULDER", 0, i_waiting_stone, i_waiting_stone, 1, 176
   },    // has ckdelay
   {
-    O_CHASING_STONE, N_("Chasing stone"),
+    O_CHASING_STONE, O_CHASING_STONE, N_("Chasing stone"),
     P_SLOPED | P_CAN_MOVE | P_PUSHABLE,
     "CHASINGBOULDER", 0, 17, 17, 17, 269
   },    // has ckdelay
   {
-    O_GHOST, N_("Ghost"),
+    O_GHOST, O_GHOST, N_("Ghost"),
     P_CAN_MOVE,
     "GHOST", 'g', 160, -160, -160, 50
   },    // has ckdelay
   {
-    O_FIREFLY_1, N_("Firefly, left"),
+    O_FIREFLY_1, O_FIREFLY_1, N_("Firefly, left"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "FIREFLYl", 'Q', i_firefly_1, -136, -136, 384
   },    // has ckdelay
   {
-    O_FIREFLY_2, N_("Firefly, up"),
+    O_FIREFLY_2, O_FIREFLY_2, N_("Firefly, up"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "FIREFLYu", 'o', i_firefly_2, -136, -136, 384
   },      // has ckdelay
   {
-    O_FIREFLY_3, N_("Firefly, right"),
+    O_FIREFLY_3, O_FIREFLY_3, N_("Firefly, right"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "FIREFLYr", 'O', i_firefly_3, -136, -136, 384
   },   // has ckdelay
   {
-    O_FIREFLY_4, N_("Firefly, down"),
+    O_FIREFLY_4, O_FIREFLY_4, N_("Firefly, down"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "FIREFLYd", 'q', i_firefly_4, -136, -136, 384
   },    // has ckdelay
   {
-    O_ALT_FIREFLY_1, N_("Alternative firefly, left"),
+    O_ALT_FIREFLY_1, O_ALT_FIREFLY_1, N_("Alternative firefly, left"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "A_FIREFLYl", 0, i_alt_firefly_1, -104, -104, 384
   },    // has ckdelay
   {
-    O_ALT_FIREFLY_2, N_("Alternative firefly, up"),
+    O_ALT_FIREFLY_2, O_ALT_FIREFLY_2, N_("Alternative firefly, up"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "A_FIREFLYu", 0, i_alt_firefly_2, -104, -104, 384
   },    // has ckdelay
   {
-    O_ALT_FIREFLY_3, N_("Alternative firefly, right"),
+    O_ALT_FIREFLY_3, O_ALT_FIREFLY_3, N_("Alternative firefly, right"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "A_FIREFLYr", 0, i_alt_firefly_3, -104, -104, 384
   },    // has ckdelay
   {
-    O_ALT_FIREFLY_4, N_("Alternative firefly, down"),
+    O_ALT_FIREFLY_4, O_ALT_FIREFLY_4, N_("Alternative firefly, down"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "A_FIREFLYd", 0, i_alt_firefly_4, -104, -104, 384
   },    // has ckdelay
   {
-    O_BUTTER_1, N_("Butterfly, left"),
+    O_BUTTER_1, O_BUTTER_1, N_("Butterfly, left"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "BUTTERFLYl", 'C', i_butter_1, -144, -144, 384
   },    // has ckdelay
   {
-    O_BUTTER_2, N_("Butterfly, up"),
+    O_BUTTER_2, O_BUTTER_2, N_("Butterfly, up"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "BUTTERFLYu", 'b', i_butter_2, -144, -144, 384
   },    // has ckdelay
   {
-    O_BUTTER_3, N_("Butterfly, right"),
+    O_BUTTER_3, O_BUTTER_3, N_("Butterfly, right"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "BUTTERFLYr", 'B', i_butter_3, -144, -144, 384
   },    // has ckdelay
   {
-    O_BUTTER_4, N_("Butterfly, down"),
+    O_BUTTER_4, O_BUTTER_4, N_("Butterfly, down"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "BUTTERFLYd", 'c', i_butter_4, -144, -144, 384
   },    // has ckdelay
   {
-    O_ALT_BUTTER_1, N_("Alternative butterfly, left"),
+    O_ALT_BUTTER_1, O_ALT_BUTTER_1, N_("Alternative butterfly, left"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "A_BUTTERFLYl", 0, i_alt_butter_1, -112, -112, 384
   },    // has ckdelay
   {
-    O_ALT_BUTTER_2, N_("Alternative butterfly, up"),
+    O_ALT_BUTTER_2, O_ALT_BUTTER_2, N_("Alternative butterfly, up"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "A_BUTTERFLYu", 0, i_alt_butter_2, -112, -112, 384
   },    // has ckdelay
   {
-    O_ALT_BUTTER_3, N_("Alternative butterfly, right"),
+    O_ALT_BUTTER_3, O_ALT_BUTTER_3, N_("Alternative butterfly, right"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "A_BUTTERFLYr", 0, i_alt_butter_3, -112, -112, 384
   },    // has ckdelay
   {
-    O_ALT_BUTTER_4, N_("Alternative butterfly, down"),
+    O_ALT_BUTTER_4, O_ALT_BUTTER_4, N_("Alternative butterfly, down"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "A_BUTTERFLYd", 0, i_alt_butter_4, -112, -112, 384
   },    // has ckdelay
   {
-    O_STONEFLY_1, N_("Stonefly, left"),
+    O_STONEFLY_1, O_STONEFLY_1, N_("Stonefly, left"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "STONEFLYl", 0, i_stonefly_1, -152, -152, 384
   },    // has ckdelay
   {
-    O_STONEFLY_2, N_("Stonefly, up"),
+    O_STONEFLY_2, O_STONEFLY_2, N_("Stonefly, up"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "STONEFLYu", 0, i_stonefly_2, -152, -152, 384
   },    // has ckdelay
   {
-    O_STONEFLY_3, N_("Stonefly, right"),
+    O_STONEFLY_3, O_STONEFLY_3, N_("Stonefly, right"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "STONEFLYr", 0, i_stonefly_3, -152, -152, 384
   },    // has ckdelay
   {
-    O_STONEFLY_4, N_("Stonefly, down"),
+    O_STONEFLY_4, O_STONEFLY_4, N_("Stonefly, down"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "STONEFLYd", 0, i_stonefly_4, -152, -152, 384
   },    // has ckdelay
   {
-    O_BITER_1, N_("Biter, up"),
+    O_BITER_1, O_BITER_1, N_("Biter, up"),
     P_CAN_MOVE,
     "BITERu", 0, i_biter_1, -168, -168, 518
   },    // has ckdelay
   {
-    O_BITER_2, N_("Biter, right"),
+    O_BITER_2, O_BITER_2, N_("Biter, right"),
     P_CAN_MOVE,
     "BITERr", 0, i_biter_2, -168, -168, 518
   },    // has ckdelay
   {
-    O_BITER_3, N_("Biter, down"),
+    O_BITER_3, O_BITER_3, N_("Biter, down"),
     P_CAN_MOVE,
     "BITERd", 0, i_biter_3, -168, -168, 518
   },    // has ckdelay
   {
-    O_BITER_4, N_("Biter, left"),
+    O_BITER_4, O_BITER_4, N_("Biter, left"),
     P_CAN_MOVE,
     "BITERl", 0, i_biter_4, -168, -168, 518
   },    // has ckdelay
   {
-    O_DRAGONFLY_1, N_("Dragonfly, left"),
+    O_DRAGONFLY_1, O_DRAGONFLY_1, N_("Dragonfly, left"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "DRAGONFLYl", 0, i_dragonfly_1, -336, -336, 256
   },    // has ckdelay
   {
-    O_DRAGONFLY_2, N_("Dragonfly, up"),
+    O_DRAGONFLY_2, O_DRAGONFLY_2, N_("Dragonfly, up"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "DRAGONFLYu", 0, i_dragonfly_2, -336, -336, 256
   },    // has ckdelay
   {
-    O_DRAGONFLY_3, N_("Dragonfly, right"),
+    O_DRAGONFLY_3, O_DRAGONFLY_3, N_("Dragonfly, right"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "DRAGONFLYr", 0, i_dragonfly_3, -336, -336, 256
   },    // has ckdelay
   {
-    O_DRAGONFLY_4, N_("Dragonfly, down"),
+    O_DRAGONFLY_4, O_DRAGONFLY_4, N_("Dragonfly, down"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "DRAGONFLYd", 0, i_dragonfly_4, -336, -336, 256
   },    // has ckdelay
 
   {
-    O_PRE_PL_1, N_("Player birth (1)"),
+    O_PRE_PL_1, O_PRE_PL_1, N_("Player birth (1)"),
     P_GROWING,
     "GUYBIRTH1", 0, 32, 32, 32
   },
   {
-    O_PRE_PL_2, N_("Player birth (2)"),
+    O_PRE_PL_2, O_PRE_PL_2, N_("Player birth (2)"),
     P_GROWING,
     "GUYBIRTH2", 0, 33, 33, 33
   },
   {
-    O_PRE_PL_3, N_("Player birth (3)"),
+    O_PRE_PL_3, O_PRE_PL_3, N_("Player birth (3)"),
     P_GROWING,
     "GUYBIRTH3", 0, 34, 34, 34
   },
   {
-    O_PLAYER, N_("Player"),
+    O_PLAYER, O_PLAYER, N_("Player"),
     P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG,
     "GUY", 0, i_player, i_player, 35, 32
   },    // has ckdelay
   {
-    O_PLAYER_BOMB, N_("Player with bomb"),
+    O_PLAYER_BOMB, O_PLAYER_BOMB, N_("Player with bomb"),
     P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG,
     "GUYBOMB", 0, 42, 42, 42, 25
   },    // has ckdelay
   {
-    O_PLAYER_ROCKET_LAUNCHER, N_("Player with rocket launcher"),
+    O_PLAYER_ROCKET_LAUNCHER, O_PLAYER_ROCKET_LAUNCHER, N_("Player with rocket launcher"),
     P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG,
     "GUYROCKETLAUNCER", 0, 369, 369, 369, 25
   },    // has ckdelay
   {
-    O_PLAYER_GLUED, N_("Glued player"),
+    O_PLAYER_GLUED, O_PLAYER_GLUED, N_("Glued player"),
     P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT,
     "GUYGLUED", 0, i_player_glued, i_player_glued, 35
   },    // is not a real player! so active x, y will not find it. no P_PLAYER bit!
   {
-    O_PLAYER_STIRRING, N_("Player stirring"),
+    O_PLAYER_STIRRING, O_PLAYER_STIRRING, N_("Player stirring"),
     P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER,
     "GUYSTIRRING", 0, 256, -256, -256
   },
 
   {
-    O_ROCKET_LAUNCHER, N_("Rocket launcher"),
+    O_ROCKET_LAUNCHER, O_ROCKET_LAUNCHER, N_("Rocket launcher"),
     0,
     "ROCKET_LAUNCHER", 0, 368, 368, 368
   },
   {
-    O_ROCKET_1, N_("Rocket (right)"),
+    O_ROCKET_1, O_ROCKET_1, N_("Rocket (right)"),
     P_CAN_MOVE,
     "ROCKETr", 0, 364, 364, 364, 40
   },    // has ckdelay
   {
-    O_ROCKET_2, N_("Rocket (up)"),
+    O_ROCKET_2, O_ROCKET_2, N_("Rocket (up)"),
     P_CAN_MOVE,
     "ROCKETu", 0, 365, 365, 365, 40
   },    // has ckdelay
   {
-    O_ROCKET_3, N_("Rocket (left)"),
+    O_ROCKET_3, O_ROCKET_3, N_("Rocket (left)"),
     P_CAN_MOVE,
     "ROCKETl", 0, 366, 366, 366, 40
   },    // has ckdelay
   {
-    O_ROCKET_4, N_("Rocket (down)"),
+    O_ROCKET_4, O_ROCKET_4, N_("Rocket (down)"),
     P_CAN_MOVE,
     "ROCKETd", 0, 367, 367, 367, 40
   },    // has ckdelay
 
   {
-    O_BOMB, N_("Bomb"),
+    O_BOMB, O_BOMB, N_("Bomb"),
     P_COLLECTIBLE | P_CAN_MOVE,
     "BOMB", 0, 48, 48, 48
   },
   {
-    O_BOMB_TICK_1, N_("Ticking bomb (1)"),
+    O_BOMB_TICK_1, O_BOMB_TICK_1, N_("Ticking bomb (1)"),
     P_EXPLOSION_FIRST_STAGE | P_CAN_DIG,
     "IGNITEDBOMB1", 0, 49, 49, 49
   },
   {
-    O_BOMB_TICK_2, N_("Ticking bomb (2)"),
+    O_BOMB_TICK_2, O_BOMB_TICK_2, N_("Ticking bomb (2)"),
     P_CAN_DIG,
     "IGNITEDBOMB2", 0, 50, 50, 50
   },
   {
-    O_BOMB_TICK_3, N_("Ticking bomb (3)"),
+    O_BOMB_TICK_3, O_BOMB_TICK_3, N_("Ticking bomb (3)"),
     0,
     "IGNITEDBOMB3", 0, 51, 51, 51
   },
   {
-    O_BOMB_TICK_4, N_("Ticking bomb (4)"),
+    O_BOMB_TICK_4, O_BOMB_TICK_4, N_("Ticking bomb (4)"),
     0,
     "IGNITEDBOMB4", 0, 52, 52, 52
   },
   {
-    O_BOMB_TICK_5, N_("Ticking bomb (5)"),
+    O_BOMB_TICK_5, O_BOMB_TICK_5, N_("Ticking bomb (5)"),
     0,
     "IGNITEDBOMB5", 0, 53, 53, 53
   },
   {
-    O_BOMB_TICK_6, N_("Ticking bomb (6)"),
+    O_BOMB_TICK_6, O_BOMB_TICK_6, N_("Ticking bomb (6)"),
     0,
     "IGNITEDBOMB6", 0, 54, 54, 54
   },
   {
-    O_BOMB_TICK_7, N_("Ticking bomb (7)"),
+    O_BOMB_TICK_7, O_BOMB_TICK_7, N_("Ticking bomb (7)"),
     0,
     "IGNITEDBOMB7", 0, 55, 55, 55
   },
 
   {
-    O_NITRO_PACK, N_("Nitro pack"),
+    O_NITRO_PACK, O_NITRO_PACK, N_("Nitro pack"),
     P_SLOPED | P_EXPLODES_BY_HIT | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL,
     "NITRO", 0, 288, 288, 288
   },
   {
-    O_NITRO_PACK_F, N_("Nitro pack, falling"),
+    O_NITRO_PACK_F, O_NITRO_PACK_F, N_("Nitro pack, falling"),
     P_EXPLODES_BY_HIT | P_FALLING,
     "NITROf", 0, i_nitro_pack_f, i_nitro_pack_f, 288
   },
   {
-    O_NITRO_PACK_EXPLODE, N_("Nitro pack, triggered"),
+    O_NITRO_PACK_EXPLODE, O_NITRO_PACK_EXPLODE, N_("Nitro pack, triggered"),
     P_EXPLODES_BY_HIT,
     "NITROtriggered", 0, i_nitro_explode, i_nitro_explode, 288
   },
 
   {
-    O_PRE_CLOCK_1, N_("Clock birth (1)"),
+    O_PRE_CLOCK_1, O_PRE_CLOCK_1, N_("Clock birth (1)"),
     P_GROWING | P_EXPLOSION_FIRST_STAGE,
     "CLOCKBIRTH1", 0, 28, 28, 28, 280
   },    // has ckdelay
   {
-    O_PRE_CLOCK_2, N_("Clock birth (2)"),
+    O_PRE_CLOCK_2, O_PRE_CLOCK_2, N_("Clock birth (2)"),
     P_GROWING,
     "CLOCKBIRTH2", 0, 29, 29, 29, 280
   },    // has ckdelay
   {
-    O_PRE_CLOCK_3, N_("Clock birth (3)"),
+    O_PRE_CLOCK_3, O_PRE_CLOCK_3, N_("Clock birth (3)"),
     P_GROWING,
     "CLOCKBIRTH3", 0, 30, 30, 30, 280
   },    // has ckdelay
   {
-    O_PRE_CLOCK_4, N_("Clock birth (4)"),
+    O_PRE_CLOCK_4, O_PRE_CLOCK_4, N_("Clock birth (4)"),
     P_GROWING,
     "CLOCKBIRTH4", 0, 31, 31, 31, 280
   },    // has ckdelay
   {
-    O_PRE_DIA_1, N_("Diamond birth (1)"),
+    O_PRE_DIA_1, O_PRE_DIA_1, N_("Diamond birth (1)"),
     P_GROWING | P_EXPLOSION_FIRST_STAGE,
     "DIAMONDBIRTH1", 0, 56, 56, 56, 280
   },    // has ckdelay
   {
-    O_PRE_DIA_2, N_("Diamond birth (2)"),
+    O_PRE_DIA_2, O_PRE_DIA_2, N_("Diamond birth (2)"),
     P_GROWING,
     "DIAMONDBIRTH2", 0, 57, 57, 57, 280
   },    // has ckdelay
   {
-    O_PRE_DIA_3, N_("Diamond birth (3)"),
+    O_PRE_DIA_3, O_PRE_DIA_3, N_("Diamond birth (3)"),
     P_GROWING,
     "DIAMONDBIRTH3", 0, 58, 58, 58, 280
   },    // has ckdelay
   {
-    O_PRE_DIA_4, N_("Diamond birth (4)"),
+    O_PRE_DIA_4, O_PRE_DIA_4, N_("Diamond birth (4)"),
     P_GROWING,
     "DIAMONDBIRTH4", 0, 59, 59, 59, 280
   },    // has ckdelay
   {
-    O_PRE_DIA_5, N_("Diamond birth (5)"),
+    O_PRE_DIA_5, O_PRE_DIA_5, N_("Diamond birth (5)"),
     P_GROWING,
     "DIAMONDBIRTH5", 0, 60, 60, 60, 280
   },    // has ckdelay
   {
-    O_EXPLODE_1, N_("Explosion (1)"),
+    O_EXPLODE_1, O_EXPLODE_1, N_("Explosion (1)"),
     P_EXPLOSION | P_EXPLOSION_FIRST_STAGE,
     "EXPLOSION1", 0, 43, 43, 43, 280
   },    // has ckdelay
   {
-    O_EXPLODE_2, N_("Explosion (2)"),
+    O_EXPLODE_2, O_EXPLODE_2, N_("Explosion (2)"),
     P_EXPLOSION,
     "EXPLOSION2", 0, 44, 44, 44, 280
   },    // has ckdelay
   {
-    O_EXPLODE_3, N_("Explosion (3)"),
+    O_EXPLODE_3, O_EXPLODE_3, N_("Explosion (3)"),
     P_EXPLOSION,
     "EXPLOSION3", 0, 45, 45, 45, 280
   },    // has ckdelay
   {
-    O_EXPLODE_4, N_("Explosion (4)"),
+    O_EXPLODE_4, O_EXPLODE_4, N_("Explosion (4)"),
     P_EXPLOSION,
     "EXPLOSION4", 0, 46, 46, 46, 280
   },    // has ckdelay
   {
-    O_EXPLODE_5, N_("Explosion (5)"),
+    O_EXPLODE_5, O_EXPLODE_5, N_("Explosion (5)"),
     P_EXPLOSION,
     "EXPLOSION5", 0, 47, 47, 47, 280
   },    // has ckdelay
   {
-    O_PRE_STONE_1, N_("Stone birth (1)"),
+    O_PRE_STONE_1, O_PRE_STONE_1, N_("Stone birth (1)"),
     P_GROWING | P_EXPLOSION_FIRST_STAGE,
     "BOULDERBIRTH1", 0, 36, 36, 36, 280
   },    // has ckdelay
   {
-    O_PRE_STONE_2, N_("Stone birth (2)"),
+    O_PRE_STONE_2, O_PRE_STONE_2, N_("Stone birth (2)"),
     P_GROWING,
     "BOULDERBIRTH2", 0, 37, 37, 37, 280
   },    // has ckdelay
   {
-    O_PRE_STONE_3, N_("Stone birth (3)"),
+    O_PRE_STONE_3, O_PRE_STONE_3, N_("Stone birth (3)"),
     P_GROWING,
     "BOULDERBIRTH3", 0, 38, 38, 38, 280
   },    // has ckdelay
   {
-    O_PRE_STONE_4, N_("Stone birth (4)"),
+    O_PRE_STONE_4, O_PRE_STONE_4, N_("Stone birth (4)"),
     P_GROWING,
     "BOULDERBIRTH4", 0, 39, 39, 39, 280
   },    // has ckdelay
   {
-    O_PRE_STEEL_1, N_("Steel birth (1)"),
+    O_PRE_STEEL_1, O_PRE_STEEL_1, N_("Steel birth (1)"),
     P_GROWING | P_EXPLOSION_FIRST_STAGE,
     "STEELWALLBIRTH1", 0, 24, 24, 24, 280
   },    // has ckdelay
   {
-    O_PRE_STEEL_2, N_("Steel birth (2)"),
+    O_PRE_STEEL_2, O_PRE_STEEL_2, N_("Steel birth (2)"),
     P_GROWING,
     "STEELWALLBIRTH2", 0, 25, 25, 25, 280
   },    // has ckdelay
   {
-    O_PRE_STEEL_3, N_("Steel birth (3)"),
+    O_PRE_STEEL_3, O_PRE_STEEL_3, N_("Steel birth (3)"),
     P_GROWING,
     "STEELWALLBIRTH3", 0, 26, 26, 26, 280
   },    // has ckdelay
   {
-    O_PRE_STEEL_4, N_("Steel birth (4)"),
+    O_PRE_STEEL_4, O_PRE_STEEL_4, N_("Steel birth (4)"),
     P_GROWING,
     "STEELWALLBIRTH4", 0, 27, 27, 27, 280
   },    // has ckdelay
   {
-    O_GHOST_EXPL_1, N_("Ghost explosion (1)"),
+    O_GHOST_EXPL_1, O_GHOST_EXPL_1, N_("Ghost explosion (1)"),
     P_EXPLOSION | P_EXPLOSION_FIRST_STAGE,
     "GHOSTEXPLOSION1", 0, 80, 80, 80, 280
   },    // has ckdelay
   {
-    O_GHOST_EXPL_2, N_("Ghost explosion (2)"),
+    O_GHOST_EXPL_2, O_GHOST_EXPL_2, N_("Ghost explosion (2)"),
     P_EXPLOSION,
     "GHOSTEXPLOSION2", 0, 81, 81, 81, 280
   },    // has ckdelay
   {
-    O_GHOST_EXPL_3, N_("Ghost explosion (3)"),
+    O_GHOST_EXPL_3, O_GHOST_EXPL_3, N_("Ghost explosion (3)"),
     P_EXPLOSION,
     "GHOSTEXPLOSION3", 0, 82, 82, 82, 280
   },    // has ckdelay
   {
-    O_GHOST_EXPL_4, N_("Ghost explosion (4)"),
+    O_GHOST_EXPL_4, O_GHOST_EXPL_4, N_("Ghost explosion (4)"),
     P_EXPLOSION,
     "GHOSTEXPLOSION4", 0, 83, 83, 83, 280
   },    // has ckdelay
   {
-    O_BOMB_EXPL_1, N_("Bomb explosion (1)"),
+    O_BOMB_EXPL_1, O_BOMB_EXPL_1, N_("Bomb explosion (1)"),
     P_EXPLOSION | P_EXPLOSION_FIRST_STAGE,
     "BOMBEXPLOSION1", 0, 84, 84, 84, 280
   },    // has ckdelay
   {
-    O_BOMB_EXPL_2, N_("Bomb explosion (2)"),
+    O_BOMB_EXPL_2, O_BOMB_EXPL_2, N_("Bomb explosion (2)"),
     P_EXPLOSION,
     "BOMBEXPLOSION2", 0, 85, 85, 85, 280
   },    // has ckdelay
   {
-    O_BOMB_EXPL_3, N_("Bomb explosion (3)"),
+    O_BOMB_EXPL_3, O_BOMB_EXPL_3, N_("Bomb explosion (3)"),
     P_EXPLOSION,
     "BOMBEXPLOSION3", 0, 86, 86, 86, 280
   },    // has ckdelay
   {
-    O_BOMB_EXPL_4, N_("Bomb explosion (4)"),
+    O_BOMB_EXPL_4, O_BOMB_EXPL_4, N_("Bomb explosion (4)"),
     P_EXPLOSION,
     "BOMBEXPLOSION4", 0, 87, 87, 87, 280
   },    // has ckdelay
   {
-    O_NITRO_EXPL_1, N_("Nitro pack explosion (1)"),
+    O_NITRO_EXPL_1, O_NITRO_EXPL_1, N_("Nitro pack explosion (1)"),
     P_EXPLOSION | P_EXPLOSION_FIRST_STAGE,
     "NITROEXPLOSION1", 0, 44, 44, 44, 280
   },    // has ckdelay
   {
-    O_NITRO_EXPL_2, N_("Nitro pack explosion (2)"),
+    O_NITRO_EXPL_2, O_NITRO_EXPL_2, N_("Nitro pack explosion (2)"),
     P_EXPLOSION,
     "NITROEXPLOSION2", 0, 45, 45, 45, 280
   },    // has ckdelay
   {
-    O_NITRO_EXPL_3, N_("Nitro pack explosion (3)"),
+    O_NITRO_EXPL_3, O_NITRO_EXPL_3, N_("Nitro pack explosion (3)"),
     P_EXPLOSION,
     "NITROEXPLOSION3", 0, 46, 46, 46, 280
   },    // has ckdelay
   {
-    O_NITRO_EXPL_4, N_("Nitro pack explosion (4)"),
+    O_NITRO_EXPL_4, O_NITRO_EXPL_4, N_("Nitro pack explosion (4)"),
     P_EXPLOSION,
     "NITROEXPLOSION4", 0, 47, 47, 47, 280
   },    // has ckdelay
   {
-    O_AMOEBA_2_EXPL_1, N_("Amoeba 2 explosion (1)"),
+    O_AMOEBA_2_EXPL_1, O_AMOEBA_2_EXPL_1, N_("Amoeba 2 explosion (1)"),
     P_EXPLOSION | P_EXPLOSION_FIRST_STAGE,
     "AMOEBA2EXPLOSION1", 0, 292, 292, 292, 280
   },    // has ckdelay
   {
-    O_AMOEBA_2_EXPL_2, N_("Amoeba 2 explosion (2)"),
+    O_AMOEBA_2_EXPL_2, O_AMOEBA_2_EXPL_2, N_("Amoeba 2 explosion (2)"),
     P_EXPLOSION,
     "AMOEBA2EXPLOSION2", 0, 293, 293, 293, 280
   },    // has ckdelay
   {
-    O_AMOEBA_2_EXPL_3, N_("Amoeba 2 explosion (3)"),
+    O_AMOEBA_2_EXPL_3, O_AMOEBA_2_EXPL_3, N_("Amoeba 2 explosion (3)"),
     P_EXPLOSION,
     "AMOEBA2EXPLOSION3", 0, 294, 294, 294, 280
   },    // has ckdelay
   {
-    O_AMOEBA_2_EXPL_4, N_("Amoeba 2 explosion (4)"),
+    O_AMOEBA_2_EXPL_4, O_AMOEBA_2_EXPL_4, N_("Amoeba 2 explosion (4)"),
     P_EXPLOSION,
     "AMOEBA2EXPLOSION4", 0, 295, 295, 295, 280
   },    // has ckdelay
@@ -1240,52 +1240,52 @@ GdElementProperty gd_element_properties[] =
   // nut "explosions" are not real explosions, but the stages of a cracked nut opening.
   // therefore they are sloped
   {
-    O_NUT_CRACK_1, N_("Nut crack (1)"),
+    O_NUT_CRACK_1, O_NUT_CRACK_1, N_("Nut crack (1)"),
     P_SLOPED | P_EXPLOSION | P_EXPLOSION_FIRST_STAGE,
     "NUTCRACK1", 0, 360, 360, 360, 280
   },    // has ckdelay
   {
-    O_NUT_CRACK_2, N_("Nut crack (2)"),
+    O_NUT_CRACK_2, O_NUT_CRACK_2, N_("Nut crack (2)"),
     P_SLOPED | P_EXPLOSION,
     "NUTCRACK2", 0, 361, 361, 361, 280
   },    /* has ckdelay */        /* these are rounded!! */
   {
-    O_NUT_CRACK_3, N_("Nut crack (3)"),
+    O_NUT_CRACK_3, O_NUT_CRACK_3, N_("Nut crack (3)"),
     P_SLOPED | P_EXPLOSION,
     "NUTCRACK3", 0, 362, 362, 362, 280
   },    // has ckdelay
   {
-    O_NUT_CRACK_4, N_("Nut crack (4)"),
+    O_NUT_CRACK_4, O_NUT_CRACK_4, N_("Nut crack (4)"),
     P_SLOPED | P_EXPLOSION,
     "NUTCRACK4", 0, 363, 363, 363, 280
   },    // has ckdelay
 
   {
-    O_PLAYER_PNEUMATIC_LEFT, NULL /* Player using hammer, left */,
+    O_PLAYER_PNEUMATIC_LEFT, O_PLAYER_PNEUMATIC_LEFT, NULL /* Player using hammer, left */,
     P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG,
     "GUYHAMMERl", 0, 265, 265, 265
   },
   {
-    O_PLAYER_PNEUMATIC_RIGHT, NULL /* Player using hammer, right */,
+    O_PLAYER_PNEUMATIC_RIGHT, O_PLAYER_PNEUMATIC_RIGHT, NULL /* Player using hammer, right */,
     P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG,
     "GUYHAMMERr", 0, 268, 268, 268
   },
   {
-    O_PNEUMATIC_ACTIVE_LEFT, NULL /* Active hammer, left */, 0,
+    O_PNEUMATIC_ACTIVE_LEFT, O_PNEUMATIC_ACTIVE_LEFT, NULL /* Active hammer, left */, 0,
     "HAMMERACTIVEl", 0, 264, 264, 264
   },
   {
-    O_PNEUMATIC_ACTIVE_RIGHT, NULL /* Active hammer, right */, 0,
+    O_PNEUMATIC_ACTIVE_RIGHT, O_PNEUMATIC_ACTIVE_RIGHT, NULL /* Active hammer, right */, 0,
     "HAMMERACTIVEr", 0, 269, 269, 269
   },
 
   {
-    O_UNKNOWN, N_("Unknown element"),
+    O_UNKNOWN, O_UNKNOWN, N_("Unknown element"),
     P_NON_EXPLODABLE,
     "UNKNOWN", 0, i_unknown, i_unknown, 4
   },
   {
-    O_NONE, N_("No element"),
+    O_NONE, O_NONE, N_("No element"),
     0,
     "NONE", 0, 79, 79, 79
   },
@@ -1295,17 +1295,17 @@ GdElementProperty gd_element_properties[] =
 
   // these are just helpers, for all the element -> image index information to be in this array
   {
-    O_FAKE_BONUS, NULL,
+    O_FAKE_BONUS, O_FAKE_BONUS, NULL,
     0,
     NULL, 0, 120, -120, -120
   },
   {
-    O_INBOX_CLOSED, NULL,
+    O_INBOX_CLOSED, O_INBOX_CLOSED, NULL,
     0,
     NULL, 0, 22, 22, 22
   },
   {
-    O_INBOX_OPEN, NULL,
+    O_INBOX_OPEN, O_INBOX_OPEN, NULL,
     0,
     NULL, 0, 23, 23, 23
   },
@@ -1313,194 +1313,194 @@ GdElementProperty gd_element_properties[] =
   // game graphics
   // also for imported diego effects, but don't know if it is used anywhere in original games
   {
-    O_OUTBOX_CLOSED, NULL,
+    O_OUTBOX_CLOSED, O_OUTBOX_CLOSED, NULL,
     0,
     NULL, 0, 22, 22, 22
   },
   {
-    O_OUTBOX_OPEN, NULL,
+    O_OUTBOX_OPEN, O_OUTBOX_OPEN, NULL,
     0,
     NULL, 0, 23, 23, 23
   },
   {
-    O_COVERED, NULL,
+    O_COVERED, O_COVERED, NULL,
     0,
     NULL, 0, 128, -128, -128
   },
   {
-    O_PLAYER_LEFT, NULL,
+    O_PLAYER_LEFT, O_PLAYER_LEFT, NULL,
     P_PLAYER | P_CAN_DIG,
     NULL, 0, 232, -232, -232
   },
   {
-    O_PLAYER_RIGHT, NULL,
+    O_PLAYER_RIGHT, O_PLAYER_RIGHT, NULL,
     P_PLAYER | P_CAN_DIG,
     NULL, 0, 240, -240, -240
   },
   {
-    O_PLAYER_UP, NULL,
+    O_PLAYER_UP, O_PLAYER_UP, NULL,
     P_PLAYER | P_CAN_DIG,
     NULL, 0, 376, -376, -376
   },
   {
-    O_PLAYER_DOWN, NULL,
+    O_PLAYER_DOWN, O_PLAYER_DOWN, NULL,
     P_PLAYER | P_CAN_DIG,
     NULL, 0, 384, -384, -384
   },
   {
-    O_PLAYER_TAP, NULL,
+    O_PLAYER_TAP, O_PLAYER_TAP, NULL,
     P_PLAYER,
     NULL, 0, 216, -216, -216
   },
   {
-    O_PLAYER_BLINK, NULL,
+    O_PLAYER_BLINK, O_PLAYER_BLINK, NULL,
     P_PLAYER,
     NULL, 0, 208, -208, -208
   },
   {
-    O_PLAYER_TAP_BLINK, NULL,
+    O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, NULL,
     P_PLAYER,
     NULL, 0, 224, -224, -224
   },
   {
-    O_PLAYER_PUSH_LEFT, N_("Player, pushing left"),
+    O_PLAYER_PUSH_LEFT, O_PLAYER_PUSH_LEFT, N_("Player, pushing left"),
     P_PLAYER,
     NULL, 0, 392, -392, -392
   },
   {
-    O_PLAYER_PUSH_RIGHT, N_("Player, pushing right"),
+    O_PLAYER_PUSH_RIGHT, O_PLAYER_PUSH_RIGHT, N_("Player, pushing right"),
     P_PLAYER,
     NULL, 0, 400, -400, -400
   },
   {
-    O_CREATURE_SWITCH_ON, NULL,
+    O_CREATURE_SWITCH_ON, O_CREATURE_SWITCH_ON, NULL,
     0,
     NULL, 0, 19, 19, 19
   },
   {
-    O_EXPANDING_WALL_SWITCH_HORIZ, NULL,
+    O_EXPANDING_WALL_SWITCH_HORIZ, O_EXPANDING_WALL_SWITCH_HORIZ, NULL,
     0,
     NULL, 0, 40, 40, 40
   },
   {
-    O_EXPANDING_WALL_SWITCH_VERT, NULL,
+    O_EXPANDING_WALL_SWITCH_VERT, O_EXPANDING_WALL_SWITCH_VERT, NULL,
     0,
     NULL, 0, 41, 41, 41
   },
   {
-    O_GRAVITY_SWITCH_ACTIVE, NULL,
+    O_GRAVITY_SWITCH_ACTIVE, O_GRAVITY_SWITCH_ACTIVE, NULL,
     0,
     NULL, 0, 275, 275, 275
   },
   {
-    O_REPLICATOR_SWITCH_ON, NULL,
+    O_REPLICATOR_SWITCH_ON, O_REPLICATOR_SWITCH_ON, NULL,
     0,
     NULL, 0, 290, 290, 290
   },
   {
-    O_REPLICATOR_SWITCH_OFF, NULL,
+    O_REPLICATOR_SWITCH_OFF, O_REPLICATOR_SWITCH_OFF, NULL,
     0,
     NULL, 0, 291, 291, 291
   },
   {
-    O_CONVEYOR_DIR_NORMAL, NULL,
+    O_CONVEYOR_DIR_NORMAL, O_CONVEYOR_DIR_NORMAL, NULL,
     0,
     NULL, 0, 353, 353, 353
   },
   {
-    O_CONVEYOR_DIR_CHANGED, NULL,
+    O_CONVEYOR_DIR_CHANGED, O_CONVEYOR_DIR_CHANGED, NULL,
     0,
     NULL, 0, 354, 354, 354
   },
   {
-    O_CONVEYOR_SWITCH_OFF, NULL,
+    O_CONVEYOR_SWITCH_OFF, O_CONVEYOR_SWITCH_OFF, NULL,
     0,
     NULL, 0, 355, 355, 355
   },
   {
-    O_CONVEYOR_SWITCH_ON, NULL,
+    O_CONVEYOR_SWITCH_ON, O_CONVEYOR_SWITCH_ON, NULL,
     0,
     NULL, 0, 356, 356, 356
   },
 
   {
-    O_MAGIC_WALL_ACTIVE, NULL,
+    O_MAGIC_WALL_ACTIVE, O_MAGIC_WALL_ACTIVE, NULL,
     0,
     NULL, 0, 184, -184, -184
   },
   {
-    O_REPLICATOR_ACTIVE, NULL,
+    O_REPLICATOR_ACTIVE, O_REPLICATOR_ACTIVE, NULL,
     0,
     NULL, 0, 304, -304, -304
   },
   {
-    O_CONVEYOR_LEFT_ACTIVE, NULL,
+    O_CONVEYOR_LEFT_ACTIVE, O_CONVEYOR_LEFT_ACTIVE, NULL,
     0,
     NULL, 0, i_conveyor_left, -328, -328
   },
   {
-    O_CONVEYOR_RIGHT_ACTIVE, NULL,
+    O_CONVEYOR_RIGHT_ACTIVE, O_CONVEYOR_RIGHT_ACTIVE, NULL,
     0,
     NULL, 0, i_conveyor_right, -320, -320
   },
   {
-    O_BITER_SWITCH_1, NULL,
+    O_BITER_SWITCH_1, O_BITER_SWITCH_1, NULL,
     0,
     NULL, 0, 12, 12, 12
   },
   {
-    O_BITER_SWITCH_2, NULL,
+    O_BITER_SWITCH_2, O_BITER_SWITCH_2, NULL,
     0,
     NULL, 0, 13, 13, 13
   },
   {
-    O_BITER_SWITCH_3, NULL,
+    O_BITER_SWITCH_3, O_BITER_SWITCH_3, NULL,
     0,
     NULL, 0, 14, 14, 14
   },
   {
-    O_BITER_SWITCH_4, NULL,
+    O_BITER_SWITCH_4, O_BITER_SWITCH_4, NULL,
     0,
     NULL, 0, 15, 15, 15
   },
 
   {
-    O_QUESTION_MARK, NULL,
+    O_QUESTION_MARK, O_QUESTION_MARK, NULL,
     0,
     NULL, 0, 70, 70, 70
   },
   {
-    O_EATABLE, NULL,
+    O_EATABLE, O_EATABLE, NULL,
     0,
     NULL, 0, 71, 71, 71
   },
   {
-    O_DOWN_ARROW, NULL,
+    O_DOWN_ARROW, O_DOWN_ARROW, NULL,
     0,
     NULL, 0, 73, 73, 73
   },
   {
-    O_LEFTRIGHT_ARROW, NULL,
+    O_LEFTRIGHT_ARROW, O_LEFTRIGHT_ARROW, NULL,
     0,
     NULL, 0, 74, 74, 74
   },
   {
-    O_EVERYDIR_ARROW, NULL,
+    O_EVERYDIR_ARROW, O_EVERYDIR_ARROW, NULL,
     0,
     NULL, 0, 75, 75, 75
   },
   {
-    O_GLUED, NULL,
+    O_GLUED, O_GLUED, NULL,
     0,
     NULL, 0, 76, 76, 76
   },
   {
-    O_OUT, NULL,
+    O_OUT, O_OUT, NULL,
     0,
     NULL, 0, 77, 77, 77
   },
   {
-    O_EXCLAMATION_MARK, NULL,
+    O_EXCLAMATION_MARK, O_EXCLAMATION_MARK, NULL,
     0,
     NULL, 0, 78, 78, 78
   },

@@ -246,6 +246,7 @@ typedef struct _element_property
 {
   GdElement element;            // element number. for example O_DIRT
                                 // In the array, should be equal to the index of the array item.
+  GdElement pair;               // the scanned/not scanned pair
   char *name;                   // name in editor, for example "Dirt". some have
 			        // different names than their real engine meaning!
   unsigned int properties;      // engine properties, like P_SLOPED or P_EXPLODES
