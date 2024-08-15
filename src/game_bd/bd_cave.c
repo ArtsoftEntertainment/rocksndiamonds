@@ -286,11 +286,6 @@ void gd_cave_init(void)
     hashtable_insert(name_to_element, key_1, INT_TO_PTR(i));
     // ^^^ do not free "key_1", as hash table needs it during the whole time!
 
-    char *key_2 = getStringCat2("SCANNED_", key_1);	// new string
-
-    hashtable_insert(name_to_element, key_2, INT_TO_PTR(i));
-    // once again, do not free "key_2" ^^^
-
     char *key_3 = getStringCat2("SCANN_", key_1);	// new string
 
     hashtable_insert(name_to_element, key_3, INT_TO_PTR(i));
