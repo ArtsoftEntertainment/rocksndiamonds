@@ -1506,7 +1506,7 @@ GdElementProperty gd_element_properties[] =
   },
 
   {
-    -1
+    O_MAX_ALL
   },
 };
 
@@ -2897,10 +2897,12 @@ void gd_cave_db_init(void)
     lowercase_names = FALSE;
 
   // check element database for faults.
-  for (i = 0; gd_element_properties[i].element != -1; i++)
+  for (i = 0; gd_element_properties[i].element != O_MAX_ALL; i++)
   {
     if (gd_element_properties[i].element != i)
-      Error("element: i:0x%x != 0x%x", i, gd_element_properties[i].element);
+      Fail("invalid element: i: 0x%x != 0x%x ['%s']", i,
+           gd_element_properties[i].element,
+           gd_element_properties[i].filename);
 
     // if it has a name, create a lowercase name (of the translated one).
     // will be used by the editor
