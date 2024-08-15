@@ -154,7 +154,7 @@ GdElementProperty gd_element_properties[] =
     "DIRTBALL", 0, 289, 289, 289, 120
   },    // has ckdelay
   {
-    O_DIRT_BALL_F, O_DIRT_BALL_F, N_("Dirt ball (falling)"),
+    O_DIRT_BALL_F, O_DIRT_BALL_F, N_("Dirt ball, falling"),
     P_FALLING | P_DIGGABLE,
     "DIRTBALLf", 0, 289, 289, 289, 120
   },    // has ckdelay
@@ -164,7 +164,7 @@ GdElementProperty gd_element_properties[] =
     "DIRTLOOSE", 0, 352, 352, 352, 60
   },    // has ckdelay
   {
-    O_DIRT_LOOSE_F, O_DIRT_LOOSE_F, N_("Loose dirt (falling)"),
+    O_DIRT_LOOSE_F, O_DIRT_LOOSE_F, N_("Loose dirt, falling"),
     P_FALLING,
     "DIRTLOOSEf", 0, 352, 352, 352, 60
   },    // has ckdelay
