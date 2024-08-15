@@ -279,17 +279,17 @@ void gd_cave_init(void)
   for (i = 0; i < O_MAX; i++)
   {
     char *key_1 = getStringToUpper(gd_element_properties[i].filename);
+    int element = i;
+
+    // temporary workaround: map scanned elements to their non-scanned counterparts
+    if (gd_element_properties[i].properties & P_SCANNED)
+      element = gd_element_properties[i].pair;
 
     if (hashtable_exists(name_to_element, key_1))	// hash value may be 0
-      Warn("Name %s already used for element %x", key_1, i);
+      Warn("BDCFF token '%s' already used for element 0x%x", key_1, element);
 
-    hashtable_insert(name_to_element, key_1, INT_TO_PTR(i));
+    hashtable_insert(name_to_element, key_1, INT_TO_PTR(element));
     // ^^^ do not free "key_1", as hash table needs it during the whole time!
-
-    char *key_3 = getStringCat2("SCANN_", key_1);	// new string
-
-    hashtable_insert(name_to_element, key_3, INT_TO_PTR(i));
-    // once again, do not free "key_3" ^^^
   }
 
   // for compatibility with tim stridmann's memorydump->bdcff converter... .... ...

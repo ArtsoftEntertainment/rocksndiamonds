@@ -96,6 +96,8 @@ extern const GdColor gd_select_color;
 
 enum _element_property_enum
 {
+  E_P_SCANNED,                  // is a scanned element
+
   E_P_SLOPED_LEFT,              // stones and diamonds roll down to left on this
   E_P_SLOPED_RIGHT,             // stones and diamonds roll down to right on this
   E_P_SLOPED_UP,
@@ -134,6 +136,8 @@ enum _element_property_enum
 };
 
 // properties
+#define P_SCANNED			(1 << E_P_SCANNED)
+
 #define P_SLOPED_LEFT			(1 << E_P_SLOPED_LEFT)
 #define P_SLOPED_RIGHT			(1 << E_P_SLOPED_RIGHT)
 #define P_SLOPED_UP			(1 << E_P_SLOPED_UP)
