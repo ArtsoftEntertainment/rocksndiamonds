@@ -33,8 +33,8 @@ void bd_open_all(void)
 {
   InitGraphicInfo_BD();
 
-  gd_cave_init();
   gd_cave_db_init();
+  gd_cave_init();
 
   gd_c64_import_init_tables();
 
