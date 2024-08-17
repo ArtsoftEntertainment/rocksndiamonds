@@ -55,7 +55,7 @@ char *gd_object_get_bdcff(const GdObject *object)
       return getStringPrint("Raster=%d %d %d %d %d %d %s", object->x1, object->y1, (object->x2-object->x1)/object->dx+1, (object->y2-object->y1)/object->dy+1, object->dx, object->dy, gd_element_properties[object->element].filename);
 
     case GD_JOIN:
-      return getStringPrint("Add=%d %d %s %s", object->dx, object->dy, gd_element_properties[object->element].filename, gd_element_properties[object->fill_element].filename);
+      return getStringPrint("%s=%d %d %s %s", (object->backwards ? "AddBackward" : "Add"), object->dx, object->dy, gd_element_properties[object->element].filename, gd_element_properties[object->fill_element].filename);
 
     case GD_FLOODFILL_BORDER:
       return getStringPrint("BoundaryFill=%d %d %s %s", object->x1, object->y1, gd_element_properties[object->fill_element].filename, gd_element_properties[object->element].filename);
@@ -476,13 +476,16 @@ GdObject *gd_object_new_from_string(char *str)
 
   // JOIN
   if (strcasecmp(name, "Join") == 0 ||
-      strcasecmp(name, "Add") == 0)
+      strcasecmp(name, "Add") == 0 ||
+      strcasecmp(name, "AddBackward") == 0)
   {
     if (sscanf(param, "%d %d %s %s", &object.dx, &object.dy, elem0, elem1) == 4)
     {
       object.type = GD_JOIN;
       object.element = gd_get_element_from_string (elem0);
       object.fill_element = gd_get_element_from_string (elem1);
+
+      object.backwards = (strcasecmp(name, "AddBackward") == 0);
 
       return get_memcpy(&object, sizeof (GdObject));
     }
@@ -883,20 +886,45 @@ static void draw_join(GdCave *cave, const GdObject *object)
 {
   int x, y;
 
-  for (y = 0; y < cave->h; y++)
+  if (!object->backwards)
   {
-    for (x = 0; x < cave->w; x++)
+    // from top to bottom
+    for (y = 0; y < cave->h; y++)
     {
-      if (cave->map[y][x] == object->element)
+      for (x = 0; x < cave->w; x++)
       {
-	int nx = x + object->dx;
-	int ny = y + object->dy;
-	// this one implements wraparound for joins.
-	// it is needed by many caves in profi boulder series
-	while (nx >= cave->w)
-	  nx -= cave->w, ny++;
+        if (cave->map[y][x] == object->element)
+        {
+          int nx = x + object->dx;
+          int ny = y + object->dy;
+          // this one implements wraparound for joins.
+          // it is needed by many caves in profi boulder series
+          while (nx >= cave->w)
+            nx -= cave->w, ny++;
 
-	gd_cave_store_rc(cave, nx, ny, object->fill_element, object);
+          gd_cave_store_rc(cave, nx, ny, object->fill_element, object);
+        }
+      }
+    }
+  }
+  else
+  {
+    // from bottom to top
+    for (y = cave->h - 1; y >= 0; y--)
+    {
+      for (x = cave->w - 1; x >= 0; x--)
+      {
+        if (cave->map[y][x] == object->element)
+        {
+          int nx = x + object->dx;
+          int ny = y + object->dy;
+          // this one implements wraparound for joins.
+          // it is needed by many caves in profi boulder series
+          while (nx < 0)
+            nx += cave->w, ny--;
+
+          gd_cave_store_rc(cave, nx, ny, object->fill_element, object);
+        }
       }
     }
   }

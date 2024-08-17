@@ -65,6 +65,8 @@ typedef struct _gd_object
   int dx, dy;                           // distance of elements for raster or join
   GdElement element, fill_element;      // element type
 
+  boolean backwards;                    // if true, search goes from bottom to top
+
   int seed[5];                          // for maze and random fill
   int horiz;                            // for maze
 
