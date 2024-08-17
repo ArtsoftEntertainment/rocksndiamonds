@@ -48,35 +48,89 @@ char *gd_caveset_extensions[] =
 const GdStructDescriptor gd_caveset_properties[] =
 {
   // default data
-  {"", GD_TAB, 0, N_("Caveset data")},
-  {"Name", GD_TYPE_STRING, 0, N_("Name"), CAVESET_OFFSET(name), 1, N_("Name of the game")},
-  {"Description", GD_TYPE_STRING, 0, N_("Description"), CAVESET_OFFSET(description), 1, N_("Some words about the game")},
-  {"Author", GD_TYPE_STRING, 0, N_("Author"), CAVESET_OFFSET(author), 1, N_("Name of author")},
-  {"Date", GD_TYPE_STRING, 0, N_("Date"), CAVESET_OFFSET(date), 1, N_("Date of creation")},
-  {"WWW", GD_TYPE_STRING, 0, N_("WWW"), CAVESET_OFFSET(www), 1, N_("Web page or e-mail address")},
-  {"Difficulty", GD_TYPE_STRING, 0, N_("Difficulty"), CAVESET_OFFSET(difficulty), 1, N_("Difficulty (informative)")},
+  {
+    "", GD_TAB, 0,
+    N_("Caveset data")
+  },
+  {
+    "Name", GD_TYPE_STRING, 0,
+    N_("Name"), CAVESET_OFFSET(name), 1,
+    N_("Name of the game")
+  },
+  {
+    "Description", GD_TYPE_STRING, 0,
+    N_("Description"), CAVESET_OFFSET(description), 1,
+    N_("Some words about the game")
+  },
+  {
+    "Author", GD_TYPE_STRING, 0,
+    N_("Author"), CAVESET_OFFSET(author), 1,
+    N_("Name of author")
+  },
+  {
+    "Date", GD_TYPE_STRING, 0,
+    N_("Date"), CAVESET_OFFSET(date), 1,
+    N_("Date of creation")
+  },
+  {
+    "WWW", GD_TYPE_STRING, 0,
+    N_("WWW"), CAVESET_OFFSET(www), 1,
+    N_("Web page or e-mail address")
+  },
+  {
+    "Difficulty", GD_TYPE_STRING, 0,
+    N_("Difficulty"), CAVESET_OFFSET(difficulty), 1,
+    N_("Difficulty (informative)")
+  },
+  {
+    "Lives", GD_TYPE_INT, 0,
+    N_("Initial lives"), CAVESET_OFFSET(initial_lives), 1,
+    N_("Number of lives you get at game start."), 3, 9
+  },
+  {
+    "Lives", GD_TYPE_INT, 0,
+    N_("Maximum lives"), CAVESET_OFFSET(maximum_lives), 1,
+    N_("Maximum number of lives you can have by collecting bonus points."), 3, 99
+  },
+  {
+    "BonusLife", GD_TYPE_INT, 0,
+    N_("Bonus life score"), CAVESET_OFFSET(bonus_life_score), 1,
+    N_("Number of points to collect for a bonus life."), 100, 5000
+  },
+  {
+    "Story", GD_TYPE_LONGSTRING, 0,
+    N_("Story"), CAVESET_OFFSET(story), 1,
+    N_("Long description of the game.")
+  },
+  {
+    "Remark", GD_TYPE_LONGSTRING, 0,
+    N_("Remark"), CAVESET_OFFSET(remark), 1,
+    N_("Remark (informative).")
+  },
+  {
+    "TitleScreen", GD_TYPE_LONGSTRING, GD_DONT_SHOW_IN_EDITOR,
+    N_("Title screen"), CAVESET_OFFSET(title_screen), 1,
+    N_("Title screen image")
+  },
+  {
+    "TitleScreenScroll", GD_TYPE_LONGSTRING, GD_DONT_SHOW_IN_EDITOR,
+    N_("Title screen, scrolling"), CAVESET_OFFSET(title_screen_scroll), 1,
+    N_("Scrolling background for title screen image")
+  },
 
-  {"Lives", GD_TYPE_INT, 0, N_("Initial lives"), CAVESET_OFFSET(initial_lives), 1, N_("Number of lives you get at game start."), 3, 9},
-  {"Lives", GD_TYPE_INT, 0, N_("Maximum lives"), CAVESET_OFFSET(maximum_lives), 1, N_("Maximum number of lives you can have by collecting bonus points."), 3, 99},
-  {"BonusLife", GD_TYPE_INT, 0, N_("Bonus life score"), CAVESET_OFFSET(bonus_life_score), 1, N_("Number of points to collect for a bonus life."), 100, 5000},
-
-  {"Story", GD_TYPE_LONGSTRING, 0, N_("Story"), CAVESET_OFFSET(story), 1, N_("Long description of the game.")},
-  {"Remark", GD_TYPE_LONGSTRING, 0, N_("Remark"), CAVESET_OFFSET(remark), 1, N_("Remark (informative).")},
-
-  {"TitleScreen", GD_TYPE_LONGSTRING, GD_DONT_SHOW_IN_EDITOR, N_("Title screen"), CAVESET_OFFSET(title_screen), 1, N_("Title screen image")},
-  {"TitleScreenScroll", GD_TYPE_LONGSTRING, GD_DONT_SHOW_IN_EDITOR, N_("Title screen, scrolling"), CAVESET_OFFSET(title_screen_scroll), 1, N_("Scrolling background for title screen image")},
-
-  {NULL},
+  {
+    NULL
+  },
 };
 
 static GdPropertyDefault caveset_defaults[] =
 {
   // default data
-  {CAVESET_OFFSET(initial_lives), 3},
-  {CAVESET_OFFSET(maximum_lives), 9},
-  {CAVESET_OFFSET(bonus_life_score), 500},
+  { CAVESET_OFFSET(initial_lives),	3	},
+  { CAVESET_OFFSET(maximum_lives),	9	},
+  { CAVESET_OFFSET(bonus_life_score),	500	},
 
-  {-1},
+  { -1 },
 };
 
 GdCavesetData *gd_caveset_data_new(void)
