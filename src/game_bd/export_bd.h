@@ -88,6 +88,7 @@ struct EngineSnapshotInfo_BD
   int dir_buffer_from[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
   int dir_buffer_to[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
   int gfx_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+  int covered_buffer[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
 
   GdCave cave;
 

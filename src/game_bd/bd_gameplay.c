@@ -36,6 +36,8 @@ void gd_game_free(GdGame *game)
     gd_cave_map_free(game->dir_buffer_to);
   if (game->gfx_buffer)
     gd_cave_map_free(game->gfx_buffer);
+  if (game->covered_buffer)
+    gd_cave_map_free(game->covered_buffer);
 
   game->player_lives = 0;
 
@@ -120,6 +122,11 @@ static void load_cave(GdGame *game)
     gd_cave_map_free(game->gfx_buffer);
   game->gfx_buffer = NULL;
 
+  // delete covered buffer
+  if (game->covered_buffer)
+    gd_cave_map_free(game->covered_buffer);
+  game->covered_buffer = NULL;
+
   // load the cave
   game->cave_score = 0;
 
@@ -193,6 +200,13 @@ static void load_cave(GdGame *game)
   for (y = 0; y < game->cave->h; y++)
     for (x = 0; x < game->cave->w; x++)
       game->gfx_buffer[y][x] = -1;    // fill with "invalid"
+
+  // create new covered buffer
+  game->covered_buffer = gd_cave_map_new(game->cave, int);
+
+  for (y = 0; y < game->cave->h; y++)
+    for (x = 0; x < game->cave->w; x++)
+      game->covered_buffer[y][x] = FALSE;
 }
 
 GdCave *gd_create_snapshot(GdGame *game)
@@ -347,7 +361,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
     // cover all cells of cave
     for (y = 0; y < game->cave->h; y++)
       for (x = 0; x < game->cave->w; x++)
-	game->cave->map[y][x] |= COVERED;
+        game->covered_buffer[y][x] = TRUE;
 
     counter_next = game->state_counter + 1;
 
@@ -378,7 +392,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 	y = gd_random_int_range(0, game->cave->h);
 	x = gd_random_int_range(0, game->cave->w);
 
-	game->cave->map[y][x] &= ~COVERED;
+        game->covered_buffer[y][x] = FALSE;
       }
 
       counter_next++;    // as we did something, advance the counter.
@@ -391,7 +405,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
     // time to uncover the whole cave.
     for (y = 0; y < game->cave->h; y++)
       for (x = 0; x < game->cave->w; x++)
-	game->cave->map[y][x] &= ~COVERED;
+        game->covered_buffer[y][x] = FALSE;
 
     // to stop uncover sound.
     gd_cave_clear_sounds(game->cave);
@@ -587,7 +601,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 
       // covering eight times faster than uncovering.
       for (j = 0; j < game->cave->w * game->cave->h * 8 / 40; j++)
-	game->cave->map[gd_random_int_range(0, game->cave->h)][gd_random_int_range (0, game->cave->w)] |= COVERED;
+	game->covered_buffer[gd_random_int_range(0, game->cave->h)][gd_random_int_range(0, game->cave->w)] = TRUE;
     }
 
     return_state = GD_GAME_NOTHING;
@@ -597,7 +611,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
     // cover all
     for (y = 0; y < game->cave->h; y++)
       for (x = 0; x < game->cave->w; x++)
-	game->cave->map[y][x] |= COVERED;
+        game->covered_buffer[y][x] = TRUE;
 
     counter_next = game->state_counter + 1;
     return_state = GD_GAME_NOTHING;
@@ -630,6 +644,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
   if (game->element_buffer && game->drawing_buffer && game->gfx_buffer)
     gd_drawcave_game(game->cave, game->element_buffer, game->last_element_buffer,
 		     game->drawing_buffer, game->last_drawing_buffer, game->gfx_buffer,
+		     game->covered_buffer,
 		     game->bonus_life_flash != 0, game->animcycle, setup.bd_show_invisible_outbox);
 
   game->state_counter = counter_next;

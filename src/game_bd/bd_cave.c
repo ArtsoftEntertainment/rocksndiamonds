@@ -1317,6 +1317,7 @@ void gd_cave_count_diamonds(GdCave *cave)
 void gd_drawcave_game(const GdCave *cave,
 		      int **element_buffer, int **last_element_buffer,
 		      int **drawing_buffer, int **last_drawing_buffer, int **gfx_buffer,
+		      int **covered_buffer,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox)
 {
   static int player_blinking = 0;
@@ -1538,13 +1539,13 @@ void gd_drawcave_game(const GdCave *cave,
       GdElement actual = cave->map[y][x];
 
       // if covered, real element is not important
-      if (actual & COVERED)
+      if (covered_buffer[y][x])
 	map = O_COVERED;
       else
 	map = elemmapping[actual];
 
       // if covered, real element is not important
-      if (actual & COVERED)
+      if (covered_buffer[y][x])
 	draw = gd_element_properties[O_COVERED].image_game;
       else
 	draw = elemdrawing[actual];

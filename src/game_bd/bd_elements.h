@@ -408,10 +408,9 @@ typedef enum _element
   O_MAX_ALL,
 
   SCANNED = 0x400,
-  COVERED = 0x800,
 
   // binary AND this to elements to get rid of properties above.
-  O_MASK = ~(SCANNED | COVERED)
+  O_MASK = ~SCANNED
 } GdElement;
 
 typedef enum _sound
