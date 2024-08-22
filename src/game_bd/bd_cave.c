@@ -279,12 +279,11 @@ void gd_cave_init(void)
   for (i = 0; i < O_MAX; i++)
   {
     char *key_1 = getStringToUpper(gd_element_properties[i].filename);
-    int element = i;
 
     if (hashtable_exists(name_to_element, key_1))	// hash value may be 0
-      Warn("BDCFF token '%s' already used for element 0x%x", key_1, element);
+      Warn("BDCFF token '%s' already used for element 0x%x", key_1, i);
 
-    hashtable_insert(name_to_element, key_1, INT_TO_PTR(element));
+    hashtable_insert(name_to_element, key_1, INT_TO_PTR(i));
     // ^^^ do not free "key_1", as hash table needs it during the whole time!
   }
 
