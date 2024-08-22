@@ -516,6 +516,30 @@ static inline boolean moved_by_conveyor_bottom_dir(const GdCave *cave, const int
   return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_MOVED_BY_CONVEYOR_BOTTOM) != 0;
 }
 
+// returns true, if the given element is scanned
+boolean is_scanned_element(GdElement e)
+{
+  return (gd_element_properties[e].properties & P_SCANNED) != 0;
+}
+
+// This function converts an element to its scanned pair.
+GdElement scanned_pair(GdElement of_what)
+{
+  if (gd_element_properties[of_what].properties & P_SCANNED) // already scanned?
+    return of_what;
+
+  return gd_element_properties[of_what].pair;
+}
+
+// This function converts an element to its non-scanned pair.
+GdElement non_scanned_pair(GdElement of_what)
+{
+  if (!(gd_element_properties[of_what].properties & P_SCANNED)) // already non-scanned?
+    return of_what;
+
+  return gd_element_properties[of_what].pair;
+}
+
 static inline boolean is_scanned_dir(const GdCave *cave, const int x, const int y,
 				     const GdDirection dir)
 {
