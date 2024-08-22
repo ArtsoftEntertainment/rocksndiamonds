@@ -258,49 +258,70 @@ GdCave *gd_get_prepared_cave(const GdCave *original_cave, const int level)
 }
 
 // colors: 4: purple  3: ciklamen 2: orange 1: blue 0: green
+
 static GdElement brc_import_table[] =
 {
   /* 0 */
-  O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL, O_PRE_OUTBOX, O_OUTBOX, O_UNKNOWN, O_STEEL,
-  O_H_EXPANDING_WALL, O_H_EXPANDING_WALL /* scanned */, O_FIREFLY_1 /* scanned */, O_FIREFLY_1 /* scanned */, O_FIREFLY_1, O_FIREFLY_2, O_FIREFLY_3, O_FIREFLY_4,
+  O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
+  O_PRE_OUTBOX, O_OUTBOX, O_UNKNOWN, O_STEEL,
+  O_H_EXPANDING_WALL, O_H_EXPANDING_WALL_scanned, O_FIREFLY_1_scanned, O_FIREFLY_1_scanned,
+  O_FIREFLY_1, O_FIREFLY_2, O_FIREFLY_3, O_FIREFLY_4,
 
   /* 1 */
-  O_BUTTER_1 /* scanned */, O_BUTTER_1 /* scanned */, O_BUTTER_1, O_BUTTER_2, O_BUTTER_3, O_BUTTER_4, O_PLAYER, O_PLAYER /* scanned */,
-  O_STONE, O_STONE /* scanned */, O_STONE_F, O_STONE_F /* scanned */, O_DIAMOND, O_DIAMOND /* scanned */, O_DIAMOND_F, O_DIAMOND_F /* scanned */,
+  O_BUTTER_1_scanned, O_BUTTER_1_scanned, O_BUTTER_1, O_BUTTER_2,
+  O_BUTTER_3, O_BUTTER_4, O_PLAYER, O_PLAYER_scanned,
+  O_STONE, O_STONE_scanned, O_STONE_F, O_STONE_F_scanned,
+  O_DIAMOND, O_DIAMOND_scanned, O_DIAMOND_F, O_DIAMOND_F_scanned,
 
   /* 2 */
-  O_NONE /* WILL_EXPLODE_THING */, O_EXPLODE_1, O_EXPLODE_2, O_EXPLODE_3, O_EXPLODE_4, O_EXPLODE_5, O_NONE /* WILL EXPLODE TO DIAMOND_THING */, O_PRE_DIA_1,
-  O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4, O_PRE_DIA_5, O_AMOEBA, O_AMOEBA /* scanned */, O_SLIME, O_NONE,
+  O_NONE /* WILL_EXPLODE_THING */, O_EXPLODE_1, O_EXPLODE_2, O_EXPLODE_3,
+  O_EXPLODE_4, O_EXPLODE_5, O_NONE /* WILL EXPLODE TO DIAMOND_THING */, O_PRE_DIA_1,
+  O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4, O_PRE_DIA_5,
+  O_AMOEBA, O_AMOEBA_scanned, O_SLIME, O_NONE,
 
   /* 3 */
-  O_CLOCK, O_NONE /* clock eaten */, O_INBOX, O_PRE_PL_1, O_PRE_PL_2, O_PRE_PL_3, O_NONE, O_NONE,
-  O_NONE, O_NONE, O_V_EXPANDING_WALL, O_NONE, O_VOODOO, O_UNKNOWN, O_EXPANDING_WALL, O_EXPANDING_WALL /* sc */,
+  O_CLOCK, O_NONE /* clock eaten */, O_INBOX, O_PRE_PL_1,
+  O_PRE_PL_2, O_PRE_PL_3, O_NONE, O_NONE,
+  O_NONE, O_NONE, O_V_EXPANDING_WALL, O_NONE,
+  O_VOODOO, O_UNKNOWN, O_EXPANDING_WALL, O_EXPANDING_WALL_scanned,
 
   /* 4 */
-  O_FALLING_WALL, O_FALLING_WALL_F, O_FALLING_WALL_F /* scanned */, O_UNKNOWN, O_ACID, O_ACID /* scanned */, O_NITRO_PACK, O_NITRO_PACK /* scanned */,
-  O_NITRO_PACK_F, O_NITRO_PACK_F /* scanned */, O_NONE, O_NONE, O_NONE, O_NONE, O_NONE, O_NONE,
+  O_FALLING_WALL, O_FALLING_WALL_F, O_FALLING_WALL_F_scanned, O_UNKNOWN,
+  O_ACID, O_ACID_scanned, O_NITRO_PACK, O_NITRO_PACK_scanned,
+  O_NITRO_PACK_F, O_NITRO_PACK_F_scanned, O_NONE, O_NONE,
+  O_NONE, O_NONE, O_NONE, O_NONE,
 
   /* 5 */
-  O_NONE /* bomb explosion utolso */, O_UNKNOWN, O_NONE /* solid bomb glued */, O_UNKNOWN, O_STONE_GLUED, O_UNKNOWN, O_DIAMOND_GLUED, O_UNKNOWN,
-  O_UNKNOWN, O_UNKNOWN, O_NONE, O_NONE, O_NONE, O_NONE, O_NONE, O_NONE,
+  O_NONE /* bomb explosion utolso */, O_UNKNOWN, O_NONE /* solid bomb glued */, O_UNKNOWN,
+  O_STONE_GLUED, O_UNKNOWN, O_DIAMOND_GLUED, O_UNKNOWN,
+  O_UNKNOWN, O_UNKNOWN, O_NONE, O_NONE,
+  O_NONE, O_NONE, O_NONE, O_NONE,
 
   /* 6 */
-  O_ALT_FIREFLY_1 /* scanned */, O_ALT_FIREFLY_1 /* scanned */, O_ALT_FIREFLY_1, O_ALT_FIREFLY_2, O_ALT_FIREFLY_3, O_ALT_FIREFLY_4, O_PLAYER_BOMB, O_PLAYER_BOMB /* scanned */,
-  O_BOMB, O_BOMB_TICK_1, O_BOMB_TICK_2, O_BOMB_TICK_3, O_BOMB_TICK_4, O_BOMB_TICK_5, O_BOMB_TICK_6, O_BOMB_TICK_7,
+  O_ALT_FIREFLY_1_scanned, O_ALT_FIREFLY_1_scanned, O_ALT_FIREFLY_1, O_ALT_FIREFLY_2,
+  O_ALT_FIREFLY_3, O_ALT_FIREFLY_4, O_PLAYER_BOMB, O_PLAYER_BOMB_scanned,
+  O_BOMB, O_BOMB_TICK_1, O_BOMB_TICK_2, O_BOMB_TICK_3,
+  O_BOMB_TICK_4, O_BOMB_TICK_5, O_BOMB_TICK_6, O_BOMB_TICK_7,
 
   /* 7 */
-  O_BOMB_TICK_7, O_BOMB_EXPL_1, O_BOMB_EXPL_2, O_BOMB_EXPL_3, O_BOMB_EXPL_4, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
-  O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
+  O_BOMB_TICK_7, O_BOMB_EXPL_1, O_BOMB_EXPL_2, O_BOMB_EXPL_3,
+  O_BOMB_EXPL_4, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
+  O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
+  O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
 };
 
 static GdElement brc_effect_table[] =
 {
-  O_STEEL, O_DIRT, O_SPACE, O_STONE, O_STONE_F, O_STONE_GLUED, O_DIAMOND, O_DIAMOND_F, O_DIAMOND_GLUED, O_PRE_DIA_1,
-  O_PLAYER, O_PRE_PL_1, O_PLAYER_BOMB, O_PRE_OUTBOX, O_OUTBOX, O_FIREFLY_1, O_FIREFLY_2, O_FIREFLY_3, O_FIREFLY_4,
-  O_BUTTER_1, O_BUTTER_2, O_BUTTER_3, O_BUTTER_4, O_BRICK, O_MAGIC_WALL, O_H_EXPANDING_WALL, O_V_EXPANDING_WALL, O_EXPANDING_WALL,
-  O_FALLING_WALL, O_FALLING_WALL_F, O_AMOEBA, O_SLIME, O_ACID, O_VOODOO, O_CLOCK, O_BOMB, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
-  O_ALT_FIREFLY_1, O_ALT_FIREFLY_2, O_ALT_FIREFLY_3, O_ALT_FIREFLY_4, O_ALT_BUTTER_1, O_ALT_BUTTER_2, O_ALT_BUTTER_3, O_ALT_BUTTER_4,
-  O_EXPLODE_1, O_BOMB_EXPL_1, O_UNKNOWN,
+  O_STEEL, O_DIRT, O_SPACE, O_STONE, O_STONE_F,
+  O_STONE_GLUED, O_DIAMOND, O_DIAMOND_F, O_DIAMOND_GLUED, O_PRE_DIA_1,
+  O_PLAYER, O_PRE_PL_1, O_PLAYER_BOMB, O_PRE_OUTBOX, O_OUTBOX,
+  O_FIREFLY_1, O_FIREFLY_2, O_FIREFLY_3, O_FIREFLY_4, O_BUTTER_1,
+  O_BUTTER_2, O_BUTTER_3, O_BUTTER_4, O_BRICK, O_MAGIC_WALL,
+  O_H_EXPANDING_WALL, O_V_EXPANDING_WALL, O_EXPANDING_WALL, O_FALLING_WALL, O_FALLING_WALL_F,
+  O_AMOEBA, O_SLIME, O_ACID, O_VOODOO, O_CLOCK,
+  O_BOMB, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_ALT_FIREFLY_1,
+  O_ALT_FIREFLY_2, O_ALT_FIREFLY_3, O_ALT_FIREFLY_4, O_ALT_BUTTER_1, O_ALT_BUTTER_2,
+  O_ALT_BUTTER_3, O_ALT_BUTTER_4, O_EXPLODE_1, O_BOMB_EXPL_1, O_UNKNOWN,
 };
 
 static GdColor brc_color_table[] =
@@ -327,6 +348,18 @@ static GdElement brc_effect(byte byt)
   }
 
   return brc_effect_table[byt];
+}
+
+static GdElement brc_import_elem(unsigned char c)
+{
+  if (c >= ARRAY_SIZE(brc_import_table))
+  {
+    Warn("invalid brc element byte %x", c);
+
+    return O_UNKNOWN;
+  }
+
+  return non_scanned_pair(brc_import_table[c]);
 }
 
 static void brc_import(byte *data)
@@ -401,11 +434,7 @@ static void brc_import(byte *data)
 
 	  import = data[y + level * 24 + cavenum * 24 * 5 + x * 24 * 5 * 20];
 
-	  // if (i == printcave) g_print("%2x", import);
-	  if (import < ARRAY_SIZE(brc_import_table))
-	    cave->map[y][x] = brc_import_table[import];
-	  else
-	    cave->map[y][x] = O_UNKNOWN;
+          cave->map[y][x] = brc_import_elem(import);
 	}
       }
 
