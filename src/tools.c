@@ -11474,7 +11474,7 @@ static void FadeMenuMusic(void)
   char *curr_music = getCurrentlyPlayingMusicFilename();
   char *next_music = getMusicInfoEntryFilename(menu.music[game_status]);
 
-  if (!strEqual(curr_music, next_music))
+  if (!strEqual(curr_music, next_music) || !setup.sound_music)
     FadeMusic();
 }
 
