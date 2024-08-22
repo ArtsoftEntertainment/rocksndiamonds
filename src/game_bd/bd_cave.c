@@ -1738,3 +1738,58 @@ boolean gd_caveset_has_levels(void)
 
   return FALSE;
 }
+
+// set all elements in a cave to their non-scanned counterparts
+void unscan_cave(GdCave *cave)
+{
+  if (cave == NULL || cave->map == NULL)
+    return;
+
+  int x, y;
+
+  for (y = 0; y < cave->h; y++)
+    for (x = 0; x < cave->w; x++)
+      cave->map[y][x] = non_scanned_pair(cave->map[y][x]);
+
+  cave->snap_element			= non_scanned_pair(cave->snap_element);
+  cave->magic_diamond_to		= non_scanned_pair(cave->magic_diamond_to);
+  cave->magic_stone_to			= non_scanned_pair(cave->magic_stone_to);
+  cave->magic_mega_stone_to		= non_scanned_pair(cave->magic_mega_stone_to);
+  cave->magic_nut_to			= non_scanned_pair(cave->magic_nut_to);
+  cave->magic_nitro_pack_to		= non_scanned_pair(cave->magic_nitro_pack_to);
+  cave->magic_flying_diamond_to		= non_scanned_pair(cave->magic_flying_diamond_to);
+  cave->magic_flying_stone_to		= non_scanned_pair(cave->magic_flying_stone_to);
+  cave->amoeba_too_big_effect		= non_scanned_pair(cave->amoeba_too_big_effect);
+  cave->amoeba_enclosed_effect		= non_scanned_pair(cave->amoeba_enclosed_effect);
+  cave->amoeba_2_too_big_effect		= non_scanned_pair(cave->amoeba_2_too_big_effect);
+  cave->amoeba_2_enclosed_effect	= non_scanned_pair(cave->amoeba_2_enclosed_effect);
+  cave->amoeba_2_explosion_effect	= non_scanned_pair(cave->amoeba_2_explosion_effect);
+  cave->amoeba_2_looks_like		= non_scanned_pair(cave->amoeba_2_looks_like);
+  cave->slime_eats_1			= non_scanned_pair(cave->slime_eats_1);
+  cave->slime_converts_1		= non_scanned_pair(cave->slime_converts_1);
+  cave->slime_eats_2			= non_scanned_pair(cave->slime_eats_2);
+  cave->slime_converts_2		= non_scanned_pair(cave->slime_converts_2);
+  cave->slime_eats_3			= non_scanned_pair(cave->slime_eats_3);
+  cave->slime_converts_3		= non_scanned_pair(cave->slime_converts_3);
+  cave->acid_eats_this			= non_scanned_pair(cave->acid_eats_this);
+  cave->acid_turns_to			= non_scanned_pair(cave->acid_turns_to);
+  cave->biter_eat			= non_scanned_pair(cave->biter_eat);
+  cave->bladder_converts_by		= non_scanned_pair(cave->bladder_converts_by);
+  cave->nut_turns_to_when_crushed	= non_scanned_pair(cave->nut_turns_to_when_crushed);
+  cave->expanding_wall_looks_like	= non_scanned_pair(cave->expanding_wall_looks_like);
+  cave->dirt_looks_like			= non_scanned_pair(cave->dirt_looks_like);
+  cave->stone_falling_effect		= non_scanned_pair(cave->stone_falling_effect);
+  cave->stone_bouncing_effect		= non_scanned_pair(cave->stone_bouncing_effect);
+  cave->diamond_falling_effect		= non_scanned_pair(cave->diamond_falling_effect);
+  cave->diamond_bouncing_effect		= non_scanned_pair(cave->diamond_bouncing_effect);
+  cave->firefly_explode_to		= non_scanned_pair(cave->firefly_explode_to);
+  cave->alt_firefly_explode_to		= non_scanned_pair(cave->alt_firefly_explode_to);
+  cave->butterfly_explode_to		= non_scanned_pair(cave->butterfly_explode_to);
+  cave->alt_butterfly_explode_to	= non_scanned_pair(cave->alt_butterfly_explode_to);
+  cave->stonefly_explode_to		= non_scanned_pair(cave->stonefly_explode_to);
+  cave->dragonfly_explode_to		= non_scanned_pair(cave->dragonfly_explode_to);
+  cave->diamond_birth_effect		= non_scanned_pair(cave->diamond_birth_effect);
+  cave->bomb_explosion_effect		= non_scanned_pair(cave->bomb_explosion_effect);
+  cave->nitro_explosion_effect		= non_scanned_pair(cave->nitro_explosion_effect);
+  cave->explosion_effect		= non_scanned_pair(cave->explosion_effect);
+}

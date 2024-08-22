@@ -738,4 +738,6 @@ void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b)
 boolean gd_cave_has_levels(GdCave *cave);
 boolean gd_caveset_has_levels(void);
 
+void unscan_cave(GdCave *cave);
+
 #endif	// BD_CAVE_H
