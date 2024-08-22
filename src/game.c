@@ -17355,6 +17355,8 @@ static void HandleGameButtonsExt(int id, int button)
 
 	if (game_status == GAME_MODE_PLAYING)
 	  PlayLevelMusic();
+	else
+	  PlayMenuMusic();
       }
 
       RedrawSoundButtonGadget(id);
@@ -17364,12 +17366,20 @@ static void HandleGameButtonsExt(int id, int button)
     case SOUND_CTRL_ID_LOOPS:
     case SOUND_CTRL_ID_PANEL_LOOPS:
       if (setup.sound_loops)
+      {
 	setup.sound_loops = FALSE;
+
+	if (game_status != GAME_MODE_PLAYING)
+	  FadeSounds();
+      }
       else if (audio.loops_available)
       {
 	setup.sound = setup.sound_loops = TRUE;
 
 	SetAudioMode(setup.sound);
+
+	if (game_status != GAME_MODE_PLAYING)
+	  PlayMenuSound();
       }
 
       RedrawSoundButtonGadget(id);
@@ -17379,12 +17389,20 @@ static void HandleGameButtonsExt(int id, int button)
     case SOUND_CTRL_ID_SIMPLE:
     case SOUND_CTRL_ID_PANEL_SIMPLE:
       if (setup.sound_simple)
+      {
 	setup.sound_simple = FALSE;
+
+	if (game_status != GAME_MODE_PLAYING)
+	  FadeSounds();
+      }
       else if (audio.sound_available)
       {
 	setup.sound = setup.sound_simple = TRUE;
 
 	SetAudioMode(setup.sound);
+
+	if (game_status != GAME_MODE_PLAYING)
+	  PlayMenuSound();
       }
 
       RedrawSoundButtonGadget(id);
