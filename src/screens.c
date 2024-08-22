@@ -8595,6 +8595,15 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
   // game speed list may have changed at this point
   if (si->value == &setup.game_speed_extended)
     ToggleGameSpeedsListIfNeeded();
+
+  // music state may have changed at this point
+  if (si->value == &setup.sound_music)
+    ToggleMenuMusicIfNeeded();
+
+  // sound state may have changed at this point
+  if (si->value == &setup.sound_simple ||
+      si->value == &setup.sound_loops)
+    ToggleMenuSoundsIfNeeded();
 }
 
 static struct TokenInfo *getSetupInfoFinal(struct TokenInfo *setup_info_orig)

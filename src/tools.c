@@ -11519,6 +11519,30 @@ void ToggleAudioSampleRateIfNeeded(void)
 #endif
 }
 
+void ToggleMenuMusicIfNeeded(void)
+{
+  setup.sound = (setup.sound_simple || setup.sound_loops || setup.sound_music);
+
+  SetAudioMode(setup.sound);
+
+  if (setup.sound_music)
+    PlayMenuMusic();
+  else
+    FadeMenuMusic();
+}
+
+void ToggleMenuSoundsIfNeeded(void)
+{
+  setup.sound = (setup.sound_simple || setup.sound_loops || setup.sound_music);
+
+  SetAudioMode(setup.sound);
+
+  if (setup.sound_loops)
+    PlayMenuSound();
+  else
+    FadeMenuSounds();
+}
+
 void ToggleFullscreenIfNeeded(void)
 {
   // if setup and video fullscreen state are already matching, nothing do do
