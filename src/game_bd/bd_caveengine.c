@@ -3627,27 +3627,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   // POSTPROCESSING
   // ============================================================================
 
-  // another scan-like routine:
-  // short explosions (for example, in bd1) started with explode_2.
-  // internally we use explode_1; and change it to explode_2 if needed.
-  if (cave->short_explosions)
-  {
-    for (y = 0; y < cave->h; y++)
-    {
-      for (x = 0; x < cave->w; x++)
-      {
-	if (is_first_stage_of_explosion(cave, x, y))
-	{
-	  next(cave, x, y);    // select next frame of explosion
-
-	  // forget scanned flag immediately
-	  store(cave, x, y, get(cave, x, y) & ~SCANNED);
-	}
-      }
-    }
-  }
-
-  // finally: forget "scanned" flags for objects.
+  // forget "scanned" flags for objects.
   // also, check for time penalties.
   // these is something like an effect table, but we do not really use one.
   for (y = 0; y < cave->h; y++)
@@ -3663,6 +3643,27 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	// there is time penalty for destroying the voodoo
 	time_decrement_sec += cave->time_penalty;
+      }
+    }
+  }
+
+  // another scan-like routine:
+  // short explosions (for example, in bd1) started with explode_2.
+  // internally we use explode_1; and change it to explode_2 if needed.
+  if (cave->short_explosions)
+  {
+    for (y = 0; y < cave->h; y++)
+    {
+      for (x = 0; x < cave->w; x++)
+      {
+	if (is_first_stage_of_explosion(cave, x, y))
+	{
+	  // select next frame of explosion
+	  next(cave, x, y);
+
+	  // forget scanned flag immediately
+	  store(cave, x, y, get(cave, x, y) & ~SCANNED);
+	}
       }
     }
   }
