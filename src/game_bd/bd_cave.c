@@ -281,10 +281,6 @@ void gd_cave_init(void)
     char *key_1 = getStringToUpper(gd_element_properties[i].filename);
     int element = i;
 
-    // temporary workaround: map scanned elements to their non-scanned counterparts
-    if (gd_element_properties[i].properties & P_SCANNED)
-      element = gd_element_properties[i].pair;
-
     if (hashtable_exists(name_to_element, key_1))	// hash value may be 0
       Warn("BDCFF token '%s' already used for element 0x%x", key_1, element);
 
