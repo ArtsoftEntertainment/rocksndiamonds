@@ -825,6 +825,14 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     if (is_moving_from)
       blit_bitmap = BlitBitmapMasked;
 
+    // if player is snapping a diggable game element, draw non-moving "space" element
+    // (special case required if "space" element is graphically defined as non-black)
+    if (tile == O_SPACE && el_diggable(tile_last))
+    {
+      gx = (dx != 0 ? shift - gx : gx);
+      gy = (dy != 0 ? shift - gy : gy);
+    }
+
     blit_bitmap(tile_bitmap, dest, gx, gy, xsize, ysize, tx, ty);
 
     // when using dynamic scheduling (mainly BD1 levels), redraw tile in next frame
