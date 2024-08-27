@@ -7707,6 +7707,411 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "bdx_nut",
     "Nut explosion (4)"
   },
+  {
+    "bdx_sand_ball.scanned",
+    "bdx_sand_ball",
+    "Sand ball (scanned)"
+  },
+  {
+    "bdx_sand_ball.falling.scanned",
+    "bdx_sand_ball",
+    "Sand ball (falling) (scanned)"
+  },
+  {
+    "bdx_sand_loose.scanned",
+    "bdx_sand_loose",
+    "Loose sand (scanned)"
+  },
+  {
+    "bdx_sand_loose.falling.scanned",
+    "bdx_sand_loose",
+    "Loose sand (falling) (scanned)"
+  },
+  {
+    "bdx_rock.scanned",
+    "bdx_rock",
+    "Rock (scanned)"
+  },
+  {
+    "bdx_rock.falling.scanned",
+    "bdx_rock",
+    "Rock (falling) (scanned)"
+  },
+  {
+    "bdx_flying_rock.scanned",
+    "bdx_flying_rock",
+    "Flying rock (scanned)"
+  },
+  {
+    "bdx_flying_rock.flying.scanned",
+    "bdx_flying_rock",
+    "Flying rock (flying) (scanned)"
+  },
+  {
+    "bdx_mega_rock.scanned",
+    "bdx_mega_rock",
+    "Mega rock (scanned)"
+  },
+  {
+    "bdx_mega_rock.falling.scanned",
+    "bdx_mega_rock",
+    "Mega rock (falling) (scanned)"
+  },
+  {
+    "bdx_diamond.scanned",
+    "bdx_diamond",
+    "Diamond (scanned)"
+  },
+  {
+    "bdx_diamond.falling.scanned",
+    "bdx_diamond",
+    "Diamond (falling) (scanned)"
+  },
+  {
+    "bdx_flying_diamond.scanned",
+    "bdx_flying_diamond",
+    "Flying diamond (scanned)"
+  },
+  {
+    "bdx_flying_diamond.flying.scanned",
+    "bdx_flying_diamond",
+    "Flying diamond (flying) (scanned)"
+  },
+  {
+    "bdx_nut.scanned",
+    "bdx_nut",
+    "Nut (scanned)"
+  },
+  {
+    "bdx_nut.falling.scanned",
+    "bdx_nut",
+    "Nut (falling) (scanned)"
+  },
+  {
+    "bdx_expandable_wall_horizontal.scanned",
+    "bdx_expandable_wall",
+    "Expandable wall (horizontal) (scanned)"
+  },
+  {
+    "bdx_expandable_wall_vertical.scanned",
+    "bdx_expandable_wall",
+    "Expandable wall (vertical) (scanned)"
+  },
+  {
+    "bdx_expandable_wall_any.scanned",
+    "bdx_expandable_wall",
+    "Expandable wall (any direction) (scanned)"
+  },
+  {
+    "bdx_expandable_steelwall_horizontal.scanned",
+    "bdx_expandable_steelwall",
+    "Expandable steelwall (horizontal) (scanned)"
+  },
+  {
+    "bdx_expandable_steelwall_vertical.scanned",
+    "bdx_expandable_steelwall",
+    "Expandable steelwall (vertical) (scanned)"
+  },
+  {
+    "bdx_expandable_steelwall_any.scanned",
+    "bdx_expandable_steelwall",
+    "Expandable steelwall (any direction) (scanned)"
+  },
+  {
+    "bdx_acid.scanned",
+    "bdx_acid",
+    "Acid (scanned)"
+  },
+  {
+    "bdx_falling_wall.falling.scanned",
+    "bdx_wall",
+    "Falling wall (falling) (scanned)"
+  },
+  {
+    "bdx_cow.left.scanned",
+    "bdx_cow",
+    "Cow (starts moving left) (scanned)"
+  },
+  {
+    "bdx_cow.up.scanned",
+    "bdx_cow",
+    "Cow (starts moving up) (scanned)"
+  },
+  {
+    "bdx_cow.right.scanned",
+    "bdx_cow",
+    "Cow (starts moving right) (scanned)"
+  },
+  {
+    "bdx_cow.down.scanned",
+    "bdx_cow",
+    "Cow (starts moving down) (scanned)"
+  },
+  {
+    "bdx_amoeba_1.scanned",
+    "bdx_amoeba",
+    "Amoeba 1 (scanned)"
+  },
+  {
+    "bdx_amoeba_2.scanned",
+    "bdx_amoeba",
+    "Amoeba 2 (scanned)"
+  },
+  {
+    "bdx_waiting_rock.scanned",
+    "bdx_waiting_rock",
+    "Waiting rock (scanned)"
+  },
+  {
+    "bdx_chasing_rock.scanned",
+    "bdx_chasing_rock",
+    "Chasing rock (scanned)"
+  },
+  {
+    "bdx_ghost.scanned",
+    "bdx_ghost",
+    "Ghost (scanned)"
+  },
+  {
+    "bdx_firefly_1.right.scanned",
+    "bdx_firefly",
+    "Firefly 1 (starts moving right) (scanned)"
+  },
+  {
+    "bdx_firefly_1.up.scanned",
+    "bdx_firefly",
+    "Firefly 1 (starts moving up) (scanned)"
+  },
+  {
+    "bdx_firefly_1.left.scanned",
+    "bdx_firefly",
+    "Firefly 1 (starts moving left) (scanned)"
+  },
+  {
+    "bdx_firefly_1.down.scanned",
+    "bdx_firefly",
+    "Firefly 1 (starts moving down) (scanned)"
+  },
+  {
+    "bdx_firefly_2.right.scanned",
+    "bdx_firefly",
+    "Firefly 2 (starts moving right) (scanned)"
+  },
+  {
+    "bdx_firefly_2.up.scanned",
+    "bdx_firefly",
+    "Firefly 2 (starts moving up) (scanned)"
+  },
+  {
+    "bdx_firefly_2.left.scanned",
+    "bdx_firefly",
+    "Firefly 2 (starts moving left) (scanned)"
+  },
+  {
+    "bdx_firefly_2.down.scanned",
+    "bdx_firefly",
+    "Firefly 2 (starts moving down) (scanned)"
+  },
+  {
+    "bdx_butterfly_1.right.scanned",
+    "bdx_butterfly",
+    "Butterfly 1 (starts moving right) (scanned)"
+  },
+  {
+    "bdx_butterfly_1.up.scanned",
+    "bdx_butterfly",
+    "Butterfly 1 (starts moving up) (scanned)"
+  },
+  {
+    "bdx_butterfly_1.left.scanned",
+    "bdx_butterfly",
+    "Butterfly 1 (starts moving left) (scanned)"
+  },
+  {
+    "bdx_butterfly_1.down.scanned",
+    "bdx_butterfly",
+    "Butterfly 1 (starts moving down) (scanned)"
+  },
+  {
+    "bdx_butterfly_2.right.scanned",
+    "bdx_butterfly",
+    "Butterfly 2 (starts moving right) (scanned)"
+  },
+  {
+    "bdx_butterfly_2.up.scanned",
+    "bdx_butterfly",
+    "Butterfly 2 (starts moving up) (scanned)"
+  },
+  {
+    "bdx_butterfly_2.left.scanned",
+    "bdx_butterfly",
+    "Butterfly 2 (starts moving left) (scanned)"
+  },
+  {
+    "bdx_butterfly_2.down.scanned",
+    "bdx_butterfly",
+    "Butterfly 2 (starts moving down) (scanned)"
+  },
+  {
+    "bdx_stonefly.right.scanned",
+    "bdx_stonefly",
+    "Stonefly (starts moving right) (scanned)"
+  },
+  {
+    "bdx_stonefly.up.scanned",
+    "bdx_stonefly",
+    "Stonefly (starts moving up) (scanned)"
+  },
+  {
+    "bdx_stonefly.left.scanned",
+    "bdx_stonefly",
+    "Stonefly (starts moving left) (scanned)"
+  },
+  {
+    "bdx_stonefly.down.scanned",
+    "bdx_stonefly",
+    "Stonefly (starts moving down) (scanned)"
+  },
+  {
+    "bdx_biter.right.scanned",
+    "bdx_biter",
+    "Biter (starts moving right) (scanned)"
+  },
+  {
+    "bdx_biter.up.scanned",
+    "bdx_biter",
+    "Biter (starts moving up) (scanned)"
+  },
+  {
+    "bdx_biter.left.scanned",
+    "bdx_biter",
+    "Biter (starts moving left) (scanned)"
+  },
+  {
+    "bdx_biter.down.scanned",
+    "bdx_biter",
+    "Biter (starts moving down) (scanned)"
+  },
+  {
+    "bdx_dragonfly.right.scanned",
+    "bdx_dragonfly",
+    "Dragonfly (starts moving right) (scanned)"
+  },
+  {
+    "bdx_dragonfly.up.scanned",
+    "bdx_dragonfly",
+    "Dragonfly (starts moving up) (scanned)"
+  },
+  {
+    "bdx_dragonfly.left.scanned",
+    "bdx_dragonfly",
+    "Dragonfly (starts moving left) (scanned)"
+  },
+  {
+    "bdx_dragonfly.down.scanned",
+    "bdx_dragonfly",
+    "Dragonfly (starts moving down) (scanned)"
+  },
+  {
+    "bdx_player.scanned",
+    "bdx_player",
+    "Player (scanned)"
+  },
+  {
+    "bdx_player_with_bomb.scanned",
+    "bdx_player",
+    "Player with bomb (scanned)",
+  },
+  {
+    "bdx_player_with_rocket_launcher.scanned",
+    "bdx_player",
+    "Player with rocket launcher (scanned)",
+  },
+  {
+    "bdx_rocket.right.scanned",
+    "bdx_rocket",
+    "Rocket (starts moving right) (scanned)"
+  },
+  {
+    "bdx_rocket.up.scanned",
+    "bdx_rocket",
+    "Rocket (starts moving up) (scanned)"
+  },
+  {
+    "bdx_rocket.left.scanned",
+    "bdx_rocket",
+    "Rocket (starts moving left) (scanned)"
+  },
+  {
+    "bdx_rocket.down.scanned",
+    "bdx_rocket",
+    "Rocket (starts moving down) (scanned)"
+  },
+  {
+    "bdx_nitro_pack.scanned",
+    "bdx_nitro_pack",
+    "Nitro pack (scanned)"
+  },
+  {
+    "bdx_nitro_pack.falling.scanned",
+    "bdx_nitro_pack",
+    "Nitro pack (falling) (scanned)"
+  },
+  {
+    "bdx_nitro_pack.exploding.scanned",
+    "bdx_nitro_pack",
+    "Nitro pack (triggered) (scanned)"
+  },
+  {
+    "bdx_clock.growing_0",
+    "bdx_clock",
+    "Clock birth (0)"
+  },
+  {
+    "bdx_diamond.growing_0",
+    "bdx_diamond",
+    "Diamond birth (0)"
+  },
+  {
+    "bdx_exploding_0",
+    "bdx_exploding",
+    "Explosion (0)"
+  },
+  {
+    "bdx_rock.growing_0",
+    "bdx_rock",
+    "Rock birth (0)"
+  },
+  {
+    "bdx_steelwall.growing_0",
+    "bdx_steelwall",
+    "Steelwall birth (0)"
+  },
+  {
+    "bdx_ghost.exploding_0",
+    "bdx_ghost",
+    "Ghost explosion (0)"
+  },
+  {
+    "bdx_bomb.exploding_0",
+    "bdx_bomb",
+    "Bomb explosion (0)"
+  },
+  {
+    "bdx_nitro_pack.exploding_0",
+    "bdx_nitro_pack",
+    "Nitro pack explosion (0)"
+  },
+  {
+    "bdx_amoeba_2.exploding_0",
+    "bdx_amoeba",
+    "Amoeba 2 explosion (0)"
+  },
+  {
+    "bdx_nut.breaking_0",
+    "bdx_nut",
+    "Nut explosion (0)"
+  },
 
   // --------------------------------------------------------------------------
   // "real" (and therefore drawable) runtime elements
