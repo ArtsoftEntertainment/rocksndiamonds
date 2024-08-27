@@ -10500,6 +10500,15 @@ int el2edimg(int element)
 
 int el2edimg_with_frame(int element, int *graphic, int *frame)
 {
+  // make sure to use special editor graphics for scanned elements, if available
+  if (IS_BDX_SCANNED_ELEMENT(element))
+  {
+    int element_bd_scanned = map_element_RND_to_BD_cave(element);
+    int element_bd_unscanned = getNonScannedElement_BD(element_bd_scanned);
+
+    element = map_element_BD_to_RND_cave(element_bd_unscanned);
+  }
+
   *graphic = el2edimg(element);
   *frame = 0;
 
