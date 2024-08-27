@@ -7449,6 +7449,333 @@ bd_object_mapping_list[] =
     EL_BDX_PNEUMATIC_HAMMER,			ACTION_HITTING, MV_BIT_RIGHT
   },
 
+  // scanned (runtime) elements
+
+  {
+    O_DIRT_BALL_scanned,			TRUE,
+    EL_BDX_SAND_BALL_SCANNED,			-1, -1
+  },
+  {
+    O_DIRT_BALL_F_scanned,			TRUE,
+    EL_BDX_SAND_BALL_FALLING_SCANNED,		-1, -1
+  },
+  {
+    O_DIRT_LOOSE_scanned,			TRUE,
+    EL_BDX_SAND_LOOSE_SCANNED,			-1, -1
+  },
+  {
+    O_DIRT_LOOSE_F_scanned,			TRUE,
+    EL_BDX_SAND_LOOSE_FALLING_SCANNED,		-1, -1
+  },
+  {
+    O_STONE_scanned,				TRUE,
+    EL_BDX_ROCK_SCANNED,			-1, -1
+  },
+  {
+    O_STONE_F_scanned,				TRUE,
+    EL_BDX_ROCK_FALLING_SCANNED,		-1, -1
+  },
+  {
+    O_FLYING_STONE_scanned,			TRUE,
+    EL_BDX_FLYING_ROCK_SCANNED,			-1, -1
+  },
+  {
+    O_FLYING_STONE_F_scanned,			TRUE,
+    EL_BDX_FLYING_ROCK_FLYING_SCANNED,		-1, -1
+  },
+  {
+    O_MEGA_STONE_scanned,			TRUE,
+    EL_BDX_MEGA_ROCK_SCANNED,			-1, -1
+  },
+  {
+    O_MEGA_STONE_F_scanned,			TRUE,
+    EL_BDX_MEGA_ROCK_FALLING_SCANNED,		-1, -1
+  },
+  {
+    O_DIAMOND_scanned,				TRUE,
+    EL_BDX_DIAMOND_SCANNED,			-1, -1
+  },
+  {
+    O_DIAMOND_F_scanned,			TRUE,
+    EL_BDX_DIAMOND_FALLING_SCANNED,		-1, -1
+  },
+  {
+    O_FLYING_DIAMOND_scanned,			TRUE,
+    EL_BDX_FLYING_DIAMOND_SCANNED,		-1, -1
+  },
+  {
+    O_FLYING_DIAMOND_F_scanned,			TRUE,
+    EL_BDX_FLYING_DIAMOND_FLYING_SCANNED,	-1, -1
+  },
+  {
+    O_NUT_scanned,				TRUE,
+    EL_BDX_NUT_SCANNED,				-1, -1
+  },
+  {
+    O_NUT_F_scanned,				TRUE,
+    EL_BDX_NUT_FALLING_SCANNED,			-1, -1
+  },
+  {
+    O_H_EXPANDING_WALL_scanned,			TRUE,
+    EL_BDX_EXPANDABLE_WALL_HORIZONTAL_SCANNED,	-1, -1
+  },
+  {
+    O_V_EXPANDING_WALL_scanned,			TRUE,
+    EL_BDX_EXPANDABLE_WALL_VERTICAL_SCANNED,	-1, -1
+  },
+  {
+    O_EXPANDING_WALL_scanned,			TRUE,
+    EL_BDX_EXPANDABLE_WALL_ANY_SCANNED,		-1, -1
+  },
+  {
+    O_H_EXPANDING_STEEL_WALL_scanned,			TRUE,
+    EL_BDX_EXPANDABLE_STEELWALL_HORIZONTAL_SCANNED,	-1, -1
+  },
+  {
+    O_V_EXPANDING_STEEL_WALL_scanned,			TRUE,
+    EL_BDX_EXPANDABLE_STEELWALL_VERTICAL_SCANNED,	-1, -1
+  },
+  {
+    O_EXPANDING_STEEL_WALL_scanned,		TRUE,
+    EL_BDX_EXPANDABLE_STEELWALL_ANY_SCANNED,	-1, -1
+  },
+  {
+    O_ACID_scanned,				TRUE,
+    EL_BDX_ACID_SCANNED,			-1, -1
+  },
+  {
+    O_FALLING_WALL_F_scanned,			TRUE,
+    EL_BDX_FALLING_WALL_FALLING_SCANNED,	-1, -1
+  },
+  {
+    O_COW_1_scanned,				TRUE,
+    EL_BDX_COW_LEFT_SCANNED,			-1, -1
+  },
+  {
+    O_COW_2_scanned,				TRUE,
+    EL_BDX_COW_UP_SCANNED,			-1, -1
+  },
+  {
+    O_COW_3_scanned,				TRUE,
+    EL_BDX_COW_RIGHT_SCANNED,			-1, -1
+  },
+  {
+    O_COW_4_scanned,				TRUE,
+    EL_BDX_COW_DOWN_SCANNED,			-1, -1
+  },
+  {
+    O_AMOEBA_scanned,				TRUE,
+    EL_BDX_AMOEBA_1_SCANNED,			-1, -1
+  },
+  {
+    O_AMOEBA_2_scanned,				TRUE,
+    EL_BDX_AMOEBA_2_SCANNED,			-1, -1
+  },
+  {
+    O_WAITING_STONE_scanned,			TRUE,
+    EL_BDX_WAITING_ROCK_SCANNED,		-1, -1
+  },
+  {
+    O_CHASING_STONE_scanned,			TRUE,
+    EL_BDX_CHASING_ROCK_SCANNED,		-1, -1
+  },
+  {
+    O_GHOST_scanned,				TRUE,
+    EL_BDX_GHOST_SCANNED,			-1, -1
+  },
+  {
+    O_FIREFLY_1_scanned,			TRUE,
+    EL_BDX_FIREFLY_1_LEFT_SCANNED,		-1, -1
+  },
+  {
+    O_FIREFLY_2_scanned,			TRUE,
+    EL_BDX_FIREFLY_1_UP_SCANNED,		-1, -1
+  },
+  {
+    O_FIREFLY_3_scanned,			TRUE,
+    EL_BDX_FIREFLY_1_RIGHT_SCANNED,		-1, -1
+  },
+  {
+    O_FIREFLY_4_scanned,			TRUE,
+    EL_BDX_FIREFLY_1_DOWN_SCANNED,		-1, -1
+  },
+  {
+    O_ALT_FIREFLY_1_scanned,			TRUE,
+    EL_BDX_FIREFLY_2_LEFT_SCANNED,		-1, -1
+  },
+  {
+    O_ALT_FIREFLY_2_scanned,			TRUE,
+    EL_BDX_FIREFLY_2_UP_SCANNED,		-1, -1
+  },
+  {
+    O_ALT_FIREFLY_3_scanned,			TRUE,
+    EL_BDX_FIREFLY_2_RIGHT_SCANNED,		-1, -1
+  },
+  {
+    O_ALT_FIREFLY_4_scanned,			TRUE,
+    EL_BDX_FIREFLY_2_DOWN_SCANNED,		-1, -1
+  },
+  {
+    O_BUTTER_1_scanned,				TRUE,
+    EL_BDX_BUTTERFLY_1_LEFT_SCANNED,		-1, -1
+  },
+  {
+    O_BUTTER_2_scanned,				TRUE,
+    EL_BDX_BUTTERFLY_1_UP_SCANNED,		-1, -1
+  },
+  {
+    O_BUTTER_3_scanned,				TRUE,
+    EL_BDX_BUTTERFLY_1_RIGHT_SCANNED,		-1, -1
+  },
+  {
+    O_BUTTER_4_scanned,				TRUE,
+    EL_BDX_BUTTERFLY_1_DOWN_SCANNED,		-1, -1
+  },
+  {
+    O_ALT_BUTTER_1_scanned,			TRUE,
+    EL_BDX_BUTTERFLY_2_LEFT_SCANNED,		-1, -1
+  },
+  {
+    O_ALT_BUTTER_2_scanned,			TRUE,
+    EL_BDX_BUTTERFLY_2_UP_SCANNED,		-1, -1
+  },
+  {
+    O_ALT_BUTTER_3_scanned,			TRUE,
+    EL_BDX_BUTTERFLY_2_RIGHT_SCANNED,		-1, -1
+  },
+  {
+    O_ALT_BUTTER_4_scanned,			TRUE,
+    EL_BDX_BUTTERFLY_2_DOWN_SCANNED,		-1, -1
+  },
+  {
+    O_STONEFLY_1_scanned,			TRUE,
+    EL_BDX_STONEFLY_LEFT_SCANNED,		-1, -1
+  },
+  {
+    O_STONEFLY_2_scanned,			TRUE,
+    EL_BDX_STONEFLY_UP_SCANNED,			-1, -1
+  },
+  {
+    O_STONEFLY_3_scanned,			TRUE,
+    EL_BDX_STONEFLY_RIGHT_SCANNED,		-1, -1
+  },
+  {
+    O_STONEFLY_4_scanned,			TRUE,
+    EL_BDX_STONEFLY_DOWN_SCANNED,		-1, -1
+  },
+  {
+    O_BITER_1_scanned,				TRUE,
+    EL_BDX_BITER_UP_SCANNED,			-1, -1
+  },
+  {
+    O_BITER_2_scanned,				TRUE,
+    EL_BDX_BITER_RIGHT_SCANNED,			-1, -1
+  },
+  {
+    O_BITER_3_scanned,				TRUE,
+    EL_BDX_BITER_DOWN_SCANNED,			-1, -1
+  },
+  {
+    O_BITER_4_scanned,				TRUE,
+    EL_BDX_BITER_LEFT_SCANNED,			-1, -1
+  },
+  {
+    O_DRAGONFLY_1_scanned,			TRUE,
+    EL_BDX_DRAGONFLY_LEFT_SCANNED,		-1, -1
+  },
+  {
+    O_DRAGONFLY_2_scanned,			TRUE,
+    EL_BDX_DRAGONFLY_UP_SCANNED,		-1, -1
+  },
+  {
+    O_DRAGONFLY_3_scanned,			TRUE,
+    EL_BDX_DRAGONFLY_RIGHT_SCANNED,		-1, -1
+  },
+  {
+    O_DRAGONFLY_4_scanned,			TRUE,
+    EL_BDX_DRAGONFLY_DOWN_SCANNED,		-1, -1
+  },
+  {
+    O_PLAYER_scanned,				TRUE,
+    EL_BDX_PLAYER_SCANNED,			-1, -1
+  },
+  {
+    O_PLAYER_BOMB_scanned,			TRUE,
+    EL_BDX_PLAYER_WITH_BOMB_SCANNED,		-1, -1
+  },
+  {
+    O_PLAYER_ROCKET_LAUNCHER_scanned,		TRUE,
+    EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER_SCANNED,	-1, -1
+  },
+  {
+    O_ROCKET_1_scanned,				TRUE,
+    EL_BDX_ROCKET_RIGHT_SCANNED,		-1, -1
+  },
+  {
+    O_ROCKET_2_scanned,				TRUE,
+    EL_BDX_ROCKET_UP_SCANNED,			-1, -1
+  },
+  {
+    O_ROCKET_3_scanned,				TRUE,
+    EL_BDX_ROCKET_LEFT_SCANNED,			-1, -1
+  },
+  {
+    O_ROCKET_4_scanned,				TRUE,
+    EL_BDX_ROCKET_DOWN_SCANNED,			-1, -1
+  },
+  {
+    O_NITRO_PACK_scanned,			TRUE,
+    EL_BDX_NITRO_PACK_SCANNED,			-1, -1
+  },
+  {
+    O_NITRO_PACK_F_scanned,			TRUE,
+    EL_BDX_NITRO_PACK_FALLING_SCANNED,		-1, -1
+  },
+  {
+    O_NITRO_PACK_EXPLODE_scanned,		TRUE,
+    EL_BDX_NITRO_PACK_EXPLODING_SCANNED,	-1, -1
+  },
+  {
+    O_PRE_CLOCK_0,				TRUE,
+    EL_BDX_CLOCK_GROWING_0,			-1, -1
+  },
+  {
+    O_PRE_DIA_0,				TRUE,
+    EL_BDX_DIAMOND_GROWING_0,			-1, -1
+  },
+  {
+    O_EXPLODE_0,				TRUE,
+    EL_BDX_EXPLODING_0,				-1, -1
+  },
+  {
+    O_PRE_STONE_0,				TRUE,
+    EL_BDX_ROCK_GROWING_0,			-1, -1
+  },
+  {
+    O_PRE_STEEL_0,				TRUE,
+    EL_BDX_STEELWALL_GROWING_0,			-1, -1
+  },
+  {
+    O_GHOST_EXPL_0,				TRUE,
+    EL_BDX_GHOST_EXPLODING_0,			-1, -1
+  },
+  {
+    O_BOMB_EXPL_0,				TRUE,
+    EL_BDX_BOMB_EXPLODING_0,			-1, -1
+  },
+  {
+    O_NITRO_EXPL_0,				TRUE,
+    EL_BDX_NITRO_PACK_EXPLODING_0,		-1, -1
+  },
+  {
+    O_AMOEBA_2_EXPL_0,				TRUE,
+    EL_BDX_AMOEBA_2_EXPLODING_0,		-1, -1
+  },
+  {
+    O_NUT_CRACK_0,				TRUE,
+    EL_BDX_NUT_BREAKING_0,			-1, -1
+  },
+
   // helper (runtime) elements
 
   {
