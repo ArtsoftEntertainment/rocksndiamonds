@@ -239,6 +239,11 @@ boolean checkBonusTime_BD(void)
   return (game_bd.game != NULL && game_bd.game->state_counter == GAME_INT_CHECK_BONUS_TIME);
 }
 
+int getNonScannedElement_BD(int element)
+{
+  return non_scanned_pair(element);
+}
+
 int getFramesPerSecond_BD(void)
 {
   if (game_bd.game != NULL && game_bd.game->cave != NULL && game_bd.game->cave->pal_timing)

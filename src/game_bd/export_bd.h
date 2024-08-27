@@ -117,6 +117,7 @@ int map_action_BD_to_RND(int);
 boolean checkGameRunning_BD(void);
 boolean checkGamePlaying_BD(void);
 boolean checkBonusTime_BD(void);
+int getNonScannedElement_BD(int);
 int getFramesPerSecond_BD(void);
 int getTimeLeft_BD(void);
 void SetTimeFrames_BD(int);
