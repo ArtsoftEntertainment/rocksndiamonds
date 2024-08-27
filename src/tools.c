@@ -11070,9 +11070,10 @@ void InitGraphicInfo_BD(void)
 
   for (i = 0; i < O_MAX_ALL; i++)
   {
-    int element = bd_object_mapping[i].element_rnd;
-    int action = bd_object_mapping[i].action;
-    int direction = bd_object_mapping[i].direction;
+    int e = getNonScannedElement_BD(i);
+    int element = bd_object_mapping[e].element_rnd;
+    int action = bd_object_mapping[e].action;
+    int direction = bd_object_mapping[e].direction;
 
     for (j = 0; j < 8; j++)
     {
@@ -11084,19 +11085,19 @@ void InitGraphicInfo_BD(void)
       struct GraphicInfo_BD *g_bd = &graphic_info_bd_object[i][j];
       Bitmap *src_bitmap;
       int src_x, src_y;
-      int sync_frame = (BD_GFX_RANGE(O_PRE_PL_1, 3, i)        ? BD_GFX_FRAME(O_PRE_PL_1, i) :
-			BD_GFX_RANGE(O_PRE_DIA_1, 5, i)       ? BD_GFX_FRAME(O_PRE_DIA_1, i) :
-			BD_GFX_RANGE(O_PRE_STONE_1, 4, i)     ? BD_GFX_FRAME(O_PRE_STONE_1, i) :
-			BD_GFX_RANGE(O_PRE_STEEL_1, 4, i)     ? BD_GFX_FRAME(O_PRE_STEEL_1, i) :
-			BD_GFX_RANGE(O_BOMB_TICK_1, 7, i)     ? BD_GFX_FRAME(O_BOMB_TICK_1, i) :
-			BD_GFX_RANGE(O_BOMB_EXPL_1, 4, i)     ? BD_GFX_FRAME(O_BOMB_EXPL_1, i) :
-			BD_GFX_RANGE(O_NUT_CRACK_1, 4, i)     ? BD_GFX_FRAME(O_NUT_CRACK_1, i) :
-			BD_GFX_RANGE(O_GHOST_EXPL_1, 4, i)    ? BD_GFX_FRAME(O_GHOST_EXPL_1, i) :
-			BD_GFX_RANGE(O_EXPLODE_1, 5, i)       ? BD_GFX_FRAME(O_EXPLODE_1, i) :
-			BD_GFX_RANGE(O_PRE_CLOCK_1, 4, i)     ? BD_GFX_FRAME(O_PRE_CLOCK_1, i) :
-			BD_GFX_RANGE(O_NITRO_EXPL_1, 4, i)    ? BD_GFX_FRAME(O_NITRO_EXPL_1, i) :
-			BD_GFX_RANGE(O_AMOEBA_2_EXPL_1, 4, i) ? BD_GFX_FRAME(O_AMOEBA_2_EXPL_1, i):
-			i == O_INBOX_OPEN || i == O_OUTBOX_OPEN ? j :
+      int sync_frame = (BD_GFX_RANGE(O_PRE_PL_1, 3, e)        ? BD_GFX_FRAME(O_PRE_PL_1, e) :
+			BD_GFX_RANGE(O_PRE_DIA_1, 5, e)       ? BD_GFX_FRAME(O_PRE_DIA_1, e) :
+			BD_GFX_RANGE(O_PRE_STONE_1, 4, e)     ? BD_GFX_FRAME(O_PRE_STONE_1, e) :
+			BD_GFX_RANGE(O_PRE_STEEL_1, 4, e)     ? BD_GFX_FRAME(O_PRE_STEEL_1, e) :
+			BD_GFX_RANGE(O_BOMB_TICK_1, 7, e)     ? BD_GFX_FRAME(O_BOMB_TICK_1, e) :
+			BD_GFX_RANGE(O_BOMB_EXPL_1, 4, e)     ? BD_GFX_FRAME(O_BOMB_EXPL_1, e) :
+			BD_GFX_RANGE(O_NUT_CRACK_1, 4, e)     ? BD_GFX_FRAME(O_NUT_CRACK_1, e) :
+			BD_GFX_RANGE(O_GHOST_EXPL_1, 4, e)    ? BD_GFX_FRAME(O_GHOST_EXPL_1, e) :
+			BD_GFX_RANGE(O_EXPLODE_1, 5, e)       ? BD_GFX_FRAME(O_EXPLODE_1, e) :
+			BD_GFX_RANGE(O_PRE_CLOCK_1, 4, e)     ? BD_GFX_FRAME(O_PRE_CLOCK_1, e) :
+			BD_GFX_RANGE(O_NITRO_EXPL_1, 4, e)    ? BD_GFX_FRAME(O_NITRO_EXPL_1, e) :
+			BD_GFX_RANGE(O_AMOEBA_2_EXPL_1, 4, e) ? BD_GFX_FRAME(O_AMOEBA_2_EXPL_1, e):
+			e == O_INBOX_OPEN || e == O_OUTBOX_OPEN ? j :
 			j * 2);
       int frame = getAnimationFrame(g->anim_frames,
 				    g->anim_delay,
