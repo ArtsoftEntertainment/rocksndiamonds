@@ -251,9 +251,6 @@ GdCave *gd_get_prepared_cave(const GdCave *original_cave, const int level)
   // initialize some cave variables (like player position)
   gd_cave_setup_for_game(prepared_cave);
 
-  // temporary workaround: set all elements in a cave to their non-scanned counterparts
-  unscan_cave(prepared_cave);
-
   return prepared_cave;
 }
 

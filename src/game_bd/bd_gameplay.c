@@ -140,6 +140,9 @@ static void load_cave(GdGame *game)
 
   game->cave = gd_get_prepared_cave(game->original_cave, game->level_num);
 
+  // temporary workaround: set all elements in a cave to their non-scanned counterparts
+  unscan_cave(game->cave);
+
   // if requested, recolor cave (cave is a copy only, so no worries)
   if (setup.bd_random_colors)
     gd_cave_set_random_colors(game->cave, setup.bd_default_color_type);
