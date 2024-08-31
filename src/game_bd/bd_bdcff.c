@@ -1117,7 +1117,8 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	      // found identifier
 	      void *value = STRUCT_MEMBER_P (cave, gd_cave_properties[i].offset);
 
-	      *((GdElement *) value) = gd_get_element_from_string (params[1]);
+	      *((GdElement *) value) = non_scanned_pair(gd_get_element_from_string(params[1]));
+
 	      break;
 	    }
 	  }
@@ -1127,12 +1128,15 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	  {
 	    // for compatibility with tim stridmann's memorydump->bdcff converter... .... ...
 	    if (strcasecmp(params[0], "BOUNCING_BOULDER") == 0)
-	      cave->stone_bouncing_effect = gd_get_element_from_string (params[1]);
+	      cave->stone_bouncing_effect =
+                non_scanned_pair(gd_get_element_from_string(params[1]));
 	    else if (strcasecmp(params[0], "EXPLOSION3S") == 0)
-	      cave->explosion_effect = gd_get_element_from_string(params[1]);
+	      cave->explosion_effect =
+                non_scanned_pair(gd_get_element_from_string(params[1]));
 	    // falling with one l...
 	    else if (strcasecmp(params[0], "STARTING_FALING_DIAMOND") == 0)
-	      cave->diamond_falling_effect = gd_get_element_from_string (params[1]);
+	      cave->diamond_falling_effect =
+                non_scanned_pair(gd_get_element_from_string(params[1]));
 	    // dirt lookslike
 	    else if (strcasecmp(params[0], "DIRT") == 0)
 	      cave->dirt_looks_like = gd_get_element_from_string (params[1]);
