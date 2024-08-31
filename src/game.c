@@ -5188,7 +5188,7 @@ void GameEnd(void)
   // "game over" (if automatically asking for restarting the game is disabled in setup)
 
   // do not handle game end if game over and automatically asking for game restart
-  if (game_over && setup.ask_on_game_over)
+  if (game.GamePlayed && game_over && setup.ask_on_game_over)
   {
     // (this is a special case: player pressed "return" key or fire button shortly before
     // automatically asking to restart the game, so skip asking and restart right away)
