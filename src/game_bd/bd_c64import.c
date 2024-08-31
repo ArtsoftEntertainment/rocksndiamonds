@@ -462,7 +462,7 @@ static int slime_shift_msb(int c64_data)
 static GdElement bd1_import(byte c, int i)
 {
   if (c < ARRAY_SIZE(bd1_import_table))
-    return bd1_import_table[c];
+    return non_scanned_pair(bd1_import_table[c]);
 
   Warn("Invalid BD1 element in imported file at cave data %d: %d", i, c);
 
@@ -483,7 +483,7 @@ static GdElement deluxecaves_1_import(byte c, int i)
 static GdElement firstboulder_import(byte c, int i)
 {
   if (c < ARRAY_SIZE(firstboulder_import_table))
-    return firstboulder_import_table[c];
+    return non_scanned_pair(firstboulder_import_table[c]);
 
   Warn("Invalid 1stB element in imported file at cave data %d: %d", i, c);
 
@@ -493,7 +493,7 @@ static GdElement firstboulder_import(byte c, int i)
 static GdElement crazylight_import(byte c, int i)
 {
   if (c < ARRAY_SIZE(gd_crazylight_import_table))
-    return gd_crazylight_import_table[c] & O_MASK;    // & O_MASK: do not import "scanned" flag
+    return non_scanned_pair(gd_crazylight_import_table[c]);
 
   Warn("Invalid CrLi element in imported file at cave data %d: %d", i, c);
 
