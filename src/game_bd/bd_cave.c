@@ -1205,6 +1205,9 @@ static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
 	case O_AMOEBA:
 	  has_amoeba = TRUE;
 	  break;
+
+	default:
+	  break;
       }
     }
   }
