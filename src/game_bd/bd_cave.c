@@ -1186,7 +1186,7 @@ static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
   {
     for (x = 0; x < cave->w; x++)
     {
-      switch (cave->map[y][x] & ~SCANNED)
+      switch (non_scanned_pair(cave->map[y][x]))
       {
 	case O_FIREFLY_1:
 	case O_FIREFLY_2:

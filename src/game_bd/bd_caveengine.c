@@ -33,6 +33,9 @@
 #include "main_bd.h"
 
 
+// for compatibility with old game engine
+static boolean use_old_game_engine = TRUE;
+
 // for gravity
 static const GdDirection ccw_eighth[] =
 {
@@ -127,8 +130,11 @@ void gd_cave_set_seconds_sound(GdCave *cave)
 }
 
 // returns true if the element has a certain property
-static inline boolean has_property(const int element, const int property)
+static inline boolean has_property(int element, const int property)
 {
+  if (use_old_game_engine)
+    element = non_scanned_pair(element);
+
   return (gd_element_properties[element & O_MASK].properties & property) != 0;
 }
 
@@ -546,10 +552,15 @@ GdElement non_scanned_pair(GdElement of_what)
   return gd_element_properties[of_what].pair;
 }
 
+static inline boolean is_scanned(const GdCave *cave, const int x, const int y)
+{
+  return is_scanned_element(get(cave, x, y));
+}
+
 static inline boolean is_scanned_dir(const GdCave *cave, const int x, const int y,
 				     const GdDirection dir)
 {
-  return (get_dir(cave, x, y, dir) & SCANNED) != 0;
+  return is_scanned_element(get_dir(cave, x, y, dir));
 }
 
 // returns true if neighbouring element is "e"
@@ -623,13 +634,13 @@ static inline void store(GdCave *cave, const int x, const int y, const GdElement
     return;
   }
 
-  *e = element;
+  *e = scanned_pair(element);
 }
 
 // store an element with SCANNED flag turned on
 static inline void store_sc(GdCave *cave, const int x, const int y, const GdElement element)
 {
-  store(cave, x, y, element | SCANNED);
+  store(cave, x, y, scanned_pair(element));
 }
 
 // store an element to a neighbouring cell
@@ -637,7 +648,7 @@ static inline void store_dir(GdCave *cave, const int x, const int y,
 			     const GdDirection dir, const GdElement element)
 {
   store_dir_buffer(cave, x, y, dir);
-  store(cave, x + gd_dx[dir], y + gd_dy[dir], element | SCANNED);
+  store(cave, x + gd_dx[dir], y + gd_dy[dir], scanned_pair(element));
 }
 
 // store an element to a neighbouring cell
@@ -674,6 +685,16 @@ static inline void move(GdCave *cave, const int x, const int y,
 static inline void next(GdCave *cave, const int x, const int y)
 {
   (*getp(cave, x, y))++;
+}
+
+// Remove the scanned "bit" from an element.
+// To be called only for scanned elements!!!
+static inline void unscan(GdCave *cave, const int x, const int y)
+{
+  GdElement *e = getp(cave, x, y);
+
+  if (is_scanned_element(*e))
+    *e = gd_element_properties[*e].pair;
 }
 
 static void cell_explode(GdCave *cave, int x, int y, GdElement explode_to)
@@ -1760,9 +1781,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     {
       // if we find a scanned element, change it to the normal one, and that's all.
       // this is required, for example for chasing stones, which have moved, always passing slime!
-      if (get(cave, x, y) & SCANNED)
+      if (is_scanned(cave, x, y))
       {
-	store(cave, x, y, get(cave, x, y) & ~SCANNED);
+        unscan(cave, x, y);
 
 	continue;
       }
@@ -3625,6 +3646,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  // other inanimate elements that do nothing
 	  break;
       }
+
+      // after processing, check the current coordinate, if it became scanned.
+      // the scanned bit can be cleared, as it will not be processed again.
+      // and, it must be cleared, as it should not be scanned; for example,
+      // if it is, a replicator will not replicate it!
+      unscan(cave, x, y);
     }
   }
 
@@ -3640,8 +3667,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   {
     for (x = 0; x < cave->w; x++)
     {
-      if (get(cave, x, y) & SCANNED)
-	store(cave, x, y, get(cave, x, y) & ~SCANNED);
+      unscan(cave, x, y);
 
       if (get(cave, x, y) == O_TIME_PENALTY)
       {
@@ -3668,7 +3694,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  next(cave, x, y);
 
 	  // forget scanned flag immediately
-	  store(cave, x, y, get(cave, x, y) & ~SCANNED);
+          unscan(cave, x, y);
 	}
       }
     }
