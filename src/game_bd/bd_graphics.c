@@ -542,80 +542,86 @@ Bitmap *gd_get_tile_bitmap(Bitmap *bitmap)
   return bitmap;
 }
 
+// returns true if the element has a certain property
+static inline boolean has_property(const int element, const int property)
+{
+  return (gd_element_properties[element & O_MASK].properties & property) != 0;
+}
+
 // returns true if the element is a player
 static inline boolean el_player(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_PLAYER) != 0;
+  return has_property(element, P_PLAYER);
 }
 
 #if 0
 // returns true if the element is walkable
 static inline boolean el_walkable(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_WALKABLE) != 0;
+  return has_property(element, P_WALKABLE);
 }
 #endif
 
 // returns true if the element is diggable
 static inline boolean el_diggable(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_DIGGABLE) != 0;
+  return has_property(element, P_DIGGABLE);
 }
 
 #if 0
 // returns true if the element is collectible
 static inline boolean el_collectible(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_COLLECTIBLE) != 0;
+  return has_property(element, P_COLLECTIBLE);
 }
 #endif
 
 // returns true if the element is pushable
 static inline boolean el_pushable(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_PUSHABLE) != 0;
+  return has_property(element, P_PUSHABLE);
 }
 
 // returns true if the element can move
 static inline boolean el_can_move(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_CAN_MOVE) != 0;
+  return has_property(element, P_CAN_MOVE);
 }
 
 // returns true if the element can fall
 static inline boolean el_can_fall(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_CAN_FALL) != 0;
+  return has_property(element, P_CAN_FALL);
 }
 
 // returns true if the element can grow
 static inline boolean el_can_grow(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_CAN_GROW) != 0;
+  return has_property(element, P_CAN_GROW);
 }
 
 // returns true if the element can dig
 static inline boolean el_can_dig(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_CAN_DIG) != 0;
+  return has_property(element, P_CAN_DIG);
 }
 
 // returns true if the element can fall
 static inline boolean el_falling(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_FALLING) != 0;
+  return has_property(element, P_FALLING);
 }
 
 // returns true if the element is growing
 static inline boolean el_growing(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_GROWING) != 0;
+  return has_property(element, P_GROWING);
 }
 
 // returns true if the element is exploding
 static inline boolean el_explosion(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_EXPLOSION) != 0;
+  return has_property(element, P_EXPLOSION);
 }
 
 static inline boolean el_smooth_movable(const int element)

@@ -126,16 +126,22 @@ void gd_cave_set_seconds_sound(GdCave *cave)
   }
 }
 
+// returns true if the element has a certain property
+static inline boolean has_property(const int element, const int property)
+{
+  return (gd_element_properties[element & O_MASK].properties & property) != 0;
+}
+
 // returns true if the element can fall
 static inline boolean el_can_fall(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_CAN_FALL) != 0;
+  return has_property(element, P_CAN_FALL);
 }
 
 // returns true if the element is diggable
 static inline boolean el_diggable(const int element)
 {
-  return (gd_element_properties[element & O_MASK].properties & P_DIGGABLE) != 0;
+  return has_property(element, P_DIGGABLE);
 }
 
 // returns true if the element can smash the player
@@ -408,20 +414,20 @@ static inline GdElement get_dir(const GdCave *cave, const int x, const int y,
 static inline boolean explodes_by_hit_dir(const GdCave *cave, const int x,
 					  const int y, GdDirection dir)
 {
-  return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_EXPLODES_BY_HIT) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_EXPLODES_BY_HIT);
 }
 
 // returns true if the element is not explodable, for example the steel wall
 static inline boolean non_explodable(const GdCave *cave, const int x, const int y)
 {
-  return (gd_element_properties[get(cave, x,y) & O_MASK].properties & P_NON_EXPLODABLE) != 0;
+  return has_property(get(cave, x, y), P_NON_EXPLODABLE);
 }
 
 // returns true if the element can be eaten by the amoeba, eg. space and dirt.
 static inline boolean amoeba_eats_dir(const GdCave *cave, const int x, const int y,
 				      const GdDirection dir)
 {
-  return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_AMOEBA_CONSUMES) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_AMOEBA_CONSUMES);
 }
 
 // returns true if the element is sloped, so stones and diamonds roll down on it.
@@ -432,16 +438,16 @@ static inline boolean sloped_dir(const GdCave *cave, const int x, const int y,
   switch (slop)
   {
     case GD_MV_LEFT:
-      return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_SLOPED_LEFT) != 0;
+      return has_property(get_dir(cave, x, y, dir), P_SLOPED_LEFT);
 
     case GD_MV_RIGHT:
-      return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_SLOPED_RIGHT) != 0;
+      return has_property(get_dir(cave, x, y, dir), P_SLOPED_RIGHT);
 
     case GD_MV_UP:
-      return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_SLOPED_UP) != 0;
+      return has_property(get_dir(cave, x, y, dir), P_SLOPED_UP);
 
     case GD_MV_DOWN:
-      return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_SLOPED_DOWN) != 0;
+      return has_property(get_dir(cave, x, y, dir), P_SLOPED_DOWN);
 
     default:
       break;
@@ -455,65 +461,65 @@ static inline boolean sloped_dir(const GdCave *cave, const int x, const int y,
 static inline boolean sloped_for_bladder_dir (const GdCave *cave, const int x, const int y,
 					      const GdDirection dir)
 {
-  return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_BLADDER_SLOPED) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_BLADDER_SLOPED);
 }
 
 static inline boolean blows_up_flies_dir(const GdCave *cave, const int x, const int y,
 					 const GdDirection dir)
 {
-    return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_BLOWS_UP_FLIES) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_BLOWS_UP_FLIES);
 }
 
 // returns true if the element is a counter-clockwise creature
 static inline boolean rotates_ccw (const GdCave *cave, const int x, const int y)
 {
-  return (gd_element_properties[get(cave, x, y) & O_MASK].properties & P_CCW) != 0;
+  return has_property(get(cave, x, y), P_CCW);
 }
 
 // returns true if the element is a player
 boolean is_player(const GdCave *cave, const int x, const int y)
 {
-  return (gd_element_properties[get(cave, x, y) & O_MASK].properties & P_PLAYER) != 0;
+  return has_property(get(cave, x, y), P_PLAYER);
 }
 
 // returns true if the element is a player
 static inline boolean is_player_dir(const GdCave *cave, const int x, const int y,
 				    const GdDirection dir)
 {
-  return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_PLAYER) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_PLAYER);
 }
 
 static inline boolean can_be_hammered_dir(const GdCave *cave, const int x, const int y,
 					  const GdDirection dir)
 {
-  return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_CAN_BE_HAMMERED) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_CAN_BE_HAMMERED);
 }
 
 // returns true if the element can be pushed
 boolean can_be_pushed_dir(const GdCave *cave, const int x, const int y,
 			  const GdDirection dir)
 {
-  return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_PUSHABLE) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_PUSHABLE);
 }
 
 // returns true if the element is explodable and explodes to space, for example the player
 static inline boolean is_first_stage_of_explosion(const GdCave *cave, const int x, const int y)
 {
-  return (gd_element_properties[get(cave, x, y) & O_MASK].properties & P_EXPLOSION_FIRST_STAGE) != 0;
+  return has_property(get(cave, x, y), P_EXPLOSION_FIRST_STAGE);
 }
 
 // returns true if the element is moved by the conveyor belt
 static inline boolean moved_by_conveyor_top_dir(const GdCave *cave, const int x, const int y,
 						const GdDirection dir)
 {
-  return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_MOVED_BY_CONVEYOR_TOP) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_MOVED_BY_CONVEYOR_TOP);
 }
 
 // returns true if the element is moved by the conveyor belt
 static inline boolean moved_by_conveyor_bottom_dir(const GdCave *cave, const int x, const int y,
 						   const GdDirection dir)
 {
-  return (gd_element_properties[get_dir(cave, x, y, dir) & O_MASK].properties & P_MOVED_BY_CONVEYOR_BOTTOM) != 0;
+  return has_property(get_dir(cave, x, y, dir), P_MOVED_BY_CONVEYOR_BOTTOM);
 }
 
 // returns true, if the given element is scanned
@@ -555,10 +561,10 @@ static inline boolean is_element_dir(const GdCave *cave, const int x, const int 
   GdElement examined = get_dir(cave, x, y, dir);
 
   // if it is a dirt-like, change to dirt, so equality will evaluate to true
-  if (gd_element_properties[examined & O_MASK].properties & P_DIRT)
+  if (has_property(examined, P_DIRT))
     examined = O_DIRT;
 
-  if (gd_element_properties[e & O_MASK].properties & P_DIRT)
+  if (has_property(e, P_DIRT))
     e = O_DIRT;
 
   // if the element on the map is a lava, it should be like space
