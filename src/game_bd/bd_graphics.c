@@ -545,7 +545,7 @@ Bitmap *gd_get_tile_bitmap(Bitmap *bitmap)
 // returns true if the element has a certain property
 static inline boolean has_property(const int element, const int property)
 {
-  return (gd_element_properties[element & O_MASK].properties & property) != 0;
+  return (gd_element_properties[element].properties & property) != 0;
 }
 
 // returns true if the element is a player

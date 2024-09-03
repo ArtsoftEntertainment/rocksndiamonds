@@ -1662,7 +1662,7 @@ void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b)
   for (y = 0; y < cave->h; y++)
     for (x = 0; x < cave->w; x++)
     {
-      *a += gd_element_properties[cave->map[y][x] & O_MASK].character;
+      *a += gd_element_properties[cave->map[y][x]].character;
       *b += *a;
 
       *a %= 65521;

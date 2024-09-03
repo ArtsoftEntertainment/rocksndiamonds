@@ -135,7 +135,7 @@ static inline boolean has_property(int element, const int property)
   if (use_old_game_engine)
     element = non_scanned_pair(element);
 
-  return (gd_element_properties[element & O_MASK].properties & property) != 0;
+  return (gd_element_properties[element].properties & property) != 0;
 }
 
 // returns true if the element can fall
@@ -589,7 +589,7 @@ static inline boolean is_element_dir(const GdCave *cave, const int x, const int 
 static inline boolean is_space_dir(const GdCave *cave, const int x, const int y,
 				   const GdDirection dir)
 {
-  GdElement e = get_dir(cave, x, y, dir) & O_MASK;
+  GdElement e = get_dir(cave, x, y, dir);
 
   return (e == O_SPACE || e == O_LAVA);
 }
@@ -825,7 +825,7 @@ static void bomb_explode(GdCave *cave, const int x, const int y)
  */
 static void explode(GdCave *cave, int x, int y)
 {
-  GdElement e = get(cave, x, y) & O_MASK;
+  GdElement e = get(cave, x, y);
 
   switch (e)
   {
@@ -1789,7 +1789,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       }
 
       // add the ckdelay correction value for every element seen.
-      cave->ckdelay += gd_element_properties[get(cave, x, y) & O_MASK].ckdelay;
+      cave->ckdelay += gd_element_properties[get(cave, x, y)].ckdelay;
 
       switch (get(cave, x, y))
       {
@@ -4061,7 +4061,7 @@ void set_initial_cave_speed(GdCave *cave)
     for (x = 0; x < cave->w; x++)
     {
       // add the ckdelay correction value for every element seen.
-      cave->ckdelay += gd_element_properties[get(cave, x, y) & O_MASK].ckdelay;
+      cave->ckdelay += gd_element_properties[get(cave, x, y)].ckdelay;
     }
   }
 
