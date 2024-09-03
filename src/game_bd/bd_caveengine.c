@@ -2745,13 +2745,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    // do not replicate players!
 	    // also obeys gravity settings.
 	    // only replicate element if it is not a scanned one
-	    // do not replicate space... that condition looks like it
-	    // makes no sense, but otherwise it generates SCANNED spaces,
-	    // which cannot be "collected" by the player, so he cannot run
-	    // under a replicator
 	    if (is_space_dir(cave, x, y, cave->gravity) &&
 		!is_player_dir(cave, x, y, opposite[cave->gravity]) &&
-		!is_space_dir(cave, x, y, opposite[cave->gravity]))
+		!is_scanned_dir(cave, x, y, opposite[cave->gravity]))
 	    {
 	      store_dir(cave, x, y, cave->gravity, get_dir(cave, x, y, opposite[cave->gravity]));
 	      gd_sound_play(cave, GD_S_REPLICATOR, O_REPLICATOR, x, y);
@@ -3403,8 +3399,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		(cave->gravity == GD_MV_UP &&
 		 moved_by_conveyor_bottom_dir(cave, x, y, GD_MV_UP)))
 	    {
-	      if (!is_scanned_dir(cave, x, y, GD_MV_UP) &&
-		  is_space_dir(cave, x, y, dir[GD_MV_UP]))
+	      if (is_space_dir(cave, x, y, dir[GD_MV_UP]))
 	      {
                 // to allow smooth movement of game elements on conveyor belts,
                 // the moving direction set by "store_dir()" must be set to the
@@ -3436,8 +3431,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		(cave->gravity == GD_MV_DOWN &&
 		 moved_by_conveyor_bottom_dir(cave, x, y, GD_MV_DOWN)))
 	    {
-	      if (!is_scanned_dir(cave, x, y, GD_MV_DOWN) &&
-		  is_space_dir(cave, x, y, dir[GD_MV_DOWN]))
+	      if (is_space_dir(cave, x, y, dir[GD_MV_DOWN]))
 	      {
                 // to allow smooth movement of game elements on conveyor belts,
                 // the moving direction set by "store_dir()" must be set to the
