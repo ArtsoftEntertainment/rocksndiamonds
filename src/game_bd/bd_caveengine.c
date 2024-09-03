@@ -552,11 +552,13 @@ GdElement non_scanned_pair(GdElement of_what)
   return gd_element_properties[of_what].pair;
 }
 
+// returns true if the element is a scanned one (needed by the engine)
 static inline boolean is_scanned(const GdCave *cave, const int x, const int y)
 {
   return is_scanned_element(get(cave, x, y));
 }
 
+// returns true if the element is a scanned one (needed by the engine) (with direction)
 static inline boolean is_scanned_dir(const GdCave *cave, const int x, const int y,
 				     const GdDirection dir)
 {
@@ -622,7 +624,10 @@ static inline void store_dir_buffer(GdCave *cave, const int x, const int y, cons
   game_bd.game->dir_buffer_to[new_y][new_x] = new_dir;
 }
 
-// store an element at the given position
+// Store an element at a given position; lava absorbs everything.
+// If there is a lava originally at the given position, sound is played, and
+// the map is NOT changed.
+// The element given is changed to its "scanned" state, if there is such.
 static inline void store(GdCave *cave, const int x, const int y, const GdElement element)
 {
   GdElement *e = getp(cave, x, y);
@@ -697,6 +702,11 @@ static inline void unscan(GdCave *cave, const int x, const int y)
     *e = gd_element_properties[*e].pair;
 }
 
+// Change the cell at (x,y) to a given explosion type.
+// Used by 3x3 explosion functions.
+// Take care of non explodable elements.
+// Take care of other special cases, like a voodoo dying,
+// and a nitro pack explosion triggered.
 static void cell_explode(GdCave *cave, int x, int y, GdElement explode_to)
 {
   if (non_explodable (cave, x, y))
