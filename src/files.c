@@ -4683,6 +4683,7 @@ static void CopyNativeTape_BD_to_RND(struct LevelInfo *level)
 
   tape.level_nr = level_nr;		// (currently not used)
   tape.random_seed = replay->seed;
+  tape.solved = replay->success;
 
   TapeSetDateFromIsoDateString(replay->date);
 

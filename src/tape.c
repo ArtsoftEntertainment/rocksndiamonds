@@ -481,9 +481,14 @@ struct AutoPlayInfo
   int level_nr;
   int num_levels_played;
   int num_levels_solved;
+  int num_levels_failed;
+  int num_levels_broken;
+  int num_levels_unsolv;
   int num_tapes_patched;
   int num_tape_missing;
   boolean level_failed[MAX_TAPES_PER_SET];
+  boolean level_broken[MAX_TAPES_PER_SET];
+  boolean level_unsolv[MAX_TAPES_PER_SET];
   char *tape_filename;
 };
 
@@ -592,10 +597,31 @@ static void PrintTapeReplaySummary(struct AutoPlayInfo *autoplay)
 
     if (autoplay->num_levels_played != autoplay->num_levels_solved)
     {
-      Print(", FAILED:");
-      for (i = 0; i < MAX_TAPES_PER_SET; i++)
-	if (autoplay->level_failed[i])
-	  Print(" %03d", i);
+      // not all tapes ran successfully -- show which tapes failed, are broken or are unsolvable
+
+      if (autoplay->num_levels_failed > 0)
+      {
+        Print(", FAILED:");
+        for (i = 0; i < MAX_TAPES_PER_SET; i++)
+          if (autoplay->level_failed[i])
+            Print(" %03d", i);
+      }
+
+      if (autoplay->num_levels_broken > 0)
+      {
+        Print(", BROKEN:");
+        for (i = 0; i < MAX_TAPES_PER_SET; i++)
+          if (autoplay->level_broken[i])
+            Print(" %03d", i);
+      }
+
+      if (autoplay->num_levels_unsolv > 0)
+      {
+        Print(", UNSOLVABLE:");
+        for (i = 0; i < MAX_TAPES_PER_SET; i++)
+          if (autoplay->level_unsolv[i])
+            Print(" %03d", i);
+      }
     }
   }
 
@@ -1815,11 +1841,42 @@ static int AutoPlayTapesExt(boolean initialize)
     if (patch_nr == 0)
       autoplay.num_levels_played++;
 
+    boolean level_failed = FALSE;
+    boolean level_broken = FALSE;
+    boolean level_unsolv = FALSE;
+
     if (tape.auto_play_level_solved)
+    {
       autoplay.num_levels_solved++;
+    }
+    else
+    {
+      if (tape.solved)
+      {
+        // tape is marked as solution tape, but fails to solve level when replayed
+        autoplay.num_levels_broken++;
+        level_broken = TRUE;
+      }
+      else if (tape.game_version < VERSION_IDENT(4,3,2,3))
+      {
+        // tape fails to solve level when replayed (tape is either broken or unsolvable)
+        autoplay.num_levels_failed++;
+        level_failed = TRUE;
+      }
+      else
+      {
+        // tape is explicitly marked as not being a solution tape in newer versions
+        autoplay.num_levels_unsolv++;
+        level_unsolv = TRUE;
+      }
+    }
 
     if (level_nr >= 0 && level_nr < MAX_TAPES_PER_SET)
-      autoplay.level_failed[level_nr] = !tape.auto_play_level_solved;
+    {
+      autoplay.level_failed[level_nr] = level_failed;
+      autoplay.level_broken[level_nr] = level_broken;
+      autoplay.level_unsolv[level_nr] = level_unsolv;
+    }
   }
   else
   {
@@ -1928,7 +1985,11 @@ static int AutoPlayTapesExt(boolean initialize)
       autoplay.num_tape_missing = 0;
 
       for (i = 0; i < MAX_TAPES_PER_SET; i++)
+      {
 	autoplay.level_failed[i] = FALSE;
+	autoplay.level_broken[i] = FALSE;
+	autoplay.level_unsolv[i] = FALSE;
+      }
 
       PrintTapeReplayHeader(&autoplay);
 
