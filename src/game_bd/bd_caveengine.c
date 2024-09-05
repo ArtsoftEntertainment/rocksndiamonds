@@ -14,29 +14,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-// IMPORTANT NOTES
-
-/*
- * LAVA.
- *
- * Lava absorbs everything going into it. Everything.
- * But it does not "pull" elements; only the things disappear which
- * _do_ go directly into it. So if the player steps into the lava,
- * he will die. If a dragonfly flies over it, it will not.
- *
- * This behavior is implemented in the is_space_dir and the store
- * functions. is_space_dir returns true for the lava, too. The store
- * function ignores any store requests into the lava.
- * The player_get function will also behave for lava as it does for space.
- */
-
 #include "main_bd.h"
 
 
 // for compatibility with old game engine
 static boolean use_old_game_engine = TRUE;
 
-// for gravity
+// for gravity and other routines.
+// these arrays contain the rotated directions.
+// ccw eighth: counter-clockwise, 1/8 turn (45 degrees)
+// cw fourth: clockwise, 1/4 turn (90 degrees)
 static const GdDirection ccw_eighth[] =
 {
   GD_MV_STILL,
@@ -156,7 +143,7 @@ static inline boolean el_can_smash_player(const int element)
   return (el_can_fall(element) && !el_diggable(element));
 }
 
-// play diamond or stone sound of given element.
+// play sound of a given element.
 static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
 {
   // check if sound should be skipped for falling elements (and only be played on impact)
@@ -372,21 +359,17 @@ static inline GdElement *getp(const GdCave *cave, const int x, const int y)
   return cave->getp(cave, x, y);
 }
 
-/*
-  perfect (non-lineshifting) GET function.
-  returns a pointer to a selected cave element by its coordinates.
-*/
+// perfect (non-lineshifting) GET function.
+// returns a pointer to a selected cave element by its coordinates.
 static inline GdElement *getp_perfect(const GdCave *cave, const int x, const int y)
 {
   // (x + n) mod n: this works also for x >= n and -n + 1 < x < 0
   return &(cave->map[(y + cave->h) % cave->h][(x + cave->w) % cave->w]);
 }
 
-/*
-  line shifting GET function; returns a pointer to the selected cave element.
-  this is used to emulate the line-shifting behaviour of original games, so that
-  the player entering one side will appear one row above or below on the other.
-*/
+// line shifting GET function; returns a pointer to the selected cave element.
+// this is used to emulate the line-shifting behaviour of original games, so that
+// the player entering one side will appear one row above or below on the other.
 static inline GdElement *getp_shift(const GdCave *cave, int x, int y)
 {
   if (x >= cave->w)
@@ -405,39 +388,48 @@ static inline GdElement *getp_shift(const GdCave *cave, int x, int y)
   return &(cave->map[y][x]);
 }
 
+// Returns the element at (x, y).
 static inline GdElement get(const GdCave *cave, const int x, const int y)
 {
   return *getp(cave, x, y);
 }
 
-// returns an element which is somewhere near x,y
+// Returns the element at (x, y) + dir.
 static inline GdElement get_dir(const GdCave *cave, const int x, const int y,
 				const GdDirection dir)
 {
   return get(cave, x + gd_dx[dir], y + gd_dy[dir]);
 }
 
+// Returns true if element at (x, y) + dir explodes if hit by a stone (for example, a firefly).
 static inline boolean explodes_by_hit_dir(const GdCave *cave, const int x,
 					  const int y, GdDirection dir)
 {
   return has_property(get_dir(cave, x, y, dir), P_EXPLODES_BY_HIT);
 }
 
-// returns true if the element is not explodable, for example the steel wall
+// returns true if the element is not explodable (for example the steel wall).
 static inline boolean non_explodable(const GdCave *cave, const int x, const int y)
 {
   return has_property(get(cave, x, y), P_NON_EXPLODABLE);
 }
 
-// returns true if the element can be eaten by the amoeba, eg. space and dirt.
+// returns true if the element can be eaten by the amoeba (space and dirt).
 static inline boolean amoeba_eats_dir(const GdCave *cave, const int x, const int y,
 				      const GdDirection dir)
 {
   return has_property(get_dir(cave, x, y, dir), P_AMOEBA_CONSUMES);
 }
 
-// returns true if the element is sloped, so stones and diamonds roll down on it.
-// for example a stone or brick wall
+// Returns true if the element is sloped, so stones and diamonds roll down on it.
+// For example a stone or brick wall.
+// Some elements can be sloped in specific directions only; for example a wall
+// like /| is sloped from the up to the left.
+//
+// @param x The x coordinate
+// @param y The y coordinate
+// @param dir The coordinate to move from (x, y), e.g. element at (x, y) + dir is checked.
+// @param slop The direction in which the element should be sloped.
 static inline boolean sloped_dir(const GdCave *cave, const int x, const int y,
 				 const GdDirection dir, const GdDirection slop)
 {
@@ -470,6 +462,7 @@ static inline boolean sloped_for_bladder_dir (const GdCave *cave, const int x, c
   return has_property(get_dir(cave, x, y, dir), P_BLADDER_SLOPED);
 }
 
+// returns true if the element at (x, y) + dir can blow up a fly by touching it.
 static inline boolean blows_up_flies_dir(const GdCave *cave, const int x, const int y,
 					 const GdDirection dir)
 {
@@ -482,53 +475,54 @@ static inline boolean rotates_ccw (const GdCave *cave, const int x, const int y)
   return has_property(get(cave, x, y), P_CCW);
 }
 
-// returns true if the element is a player
+// returns true if the element is a player (normal player, player glued, player with bomb)
 boolean is_player(const GdCave *cave, const int x, const int y)
 {
   return has_property(get(cave, x, y), P_PLAYER);
 }
 
-// returns true if the element is a player
+// returns true if the element is a player (normal player, player glued, player with bomb)
 static inline boolean is_player_dir(const GdCave *cave, const int x, const int y,
 				    const GdDirection dir)
 {
   return has_property(get_dir(cave, x, y, dir), P_PLAYER);
 }
 
+// returns true if the element at (x, y) + dir can be hammered.
 static inline boolean can_be_hammered_dir(const GdCave *cave, const int x, const int y,
 					  const GdDirection dir)
 {
   return has_property(get_dir(cave, x, y, dir), P_CAN_BE_HAMMERED);
 }
 
-// returns true if the element can be pushed
+// returns true if the element at (x, y) + dir can be pushed.
 boolean can_be_pushed_dir(const GdCave *cave, const int x, const int y,
 			  const GdDirection dir)
 {
   return has_property(get_dir(cave, x, y, dir), P_PUSHABLE);
 }
 
-// returns true if the element is explodable and explodes to space, for example the player
+// returns true if the element at (x, y) is the first animation stage of an explosion
 static inline boolean is_first_stage_of_explosion(const GdCave *cave, const int x, const int y)
 {
   return has_property(get(cave, x, y), P_EXPLOSION_FIRST_STAGE);
 }
 
-// returns true if the element is moved by the conveyor belt
+// returns true if the element sits on and is moved by the conveyor belt
 static inline boolean moved_by_conveyor_top_dir(const GdCave *cave, const int x, const int y,
 						const GdDirection dir)
 {
   return has_property(get_dir(cave, x, y, dir), P_MOVED_BY_CONVEYOR_TOP);
 }
 
-// returns true if the element is moved by the conveyor belt
+// returns true if the elements floats upwards and is moved by the conveyor belt which is OVER it
 static inline boolean moved_by_conveyor_bottom_dir(const GdCave *cave, const int x, const int y,
 						   const GdDirection dir)
 {
   return has_property(get_dir(cave, x, y, dir), P_MOVED_BY_CONVEYOR_BOTTOM);
 }
 
-// returns true, if the given element is scanned
+// returns true if the given element is scanned
 boolean is_scanned_element(GdElement e)
 {
   return (gd_element_properties[e].properties & P_SCANNED) != 0;
@@ -565,9 +559,18 @@ static inline boolean is_scanned_dir(const GdCave *cave, const int x, const int 
   return is_scanned_element(get_dir(cave, x, y, dir));
 }
 
-// returns true if neighbouring element is "e"
-// treats dirt specially
-// treats lava specially
+// Returns true if neighboring element is "e", or equivalent to "e".
+// Dirt is treated in a special way; eg. if is_element_dir(O_DIRT) is
+// asked, and an O_DIRT2 is there, true is returned.
+// Also, lava is special; if is_element_dir(O_SPACE) is asked, and
+// an O_LAVA is there, true is returned. This way, any movement
+// is allowed by any creature and player into lava.
+//
+// @param x The x coordinate on the map
+// @param y The y coordinate on the map
+// @param dir The direction to add to (x, y) and check the element at
+// @param e The element to compare (x, y) + dir to
+// @return True, if they are equivalent
 static inline boolean is_element_dir(const GdCave *cave, const int x, const int y,
 				     const GdDirection dir, GdElement e)
 {
@@ -587,7 +590,20 @@ static inline boolean is_element_dir(const GdCave *cave, const int x, const int 
   return (e == examined);
 }
 
-// returns true if neighbouring element is space
+// Returns true if the neighboring element (x, y) + dir is space or lava.
+// This is a shorthand function to check easily if there is space somewhere.
+// Any movement which is possible into space, must also be possible into lava.
+// Therefore 'if (get(cave, x, y) == O_SPACE)' must not be used!
+//
+// Lava absorbs everything going into it. Everything.
+// But it does not "pull" elements; only the things disappear which
+// _do_ go directly into it. So if the player steps into the lava,
+// he will die. If a dragonfly flies over it, it will not.
+//
+// This behavior is implemented in the is_space_dir and the store
+// functions. is_space_dir returns true for the lava, too. The store
+// function ignores any store requests into the lava.
+// The player_get_element function will also behave for lava as it does for space.
 static inline boolean is_space_dir(const GdCave *cave, const int x, const int y,
 				   const GdDirection dir)
 {
@@ -648,7 +664,7 @@ static inline void store_sc(GdCave *cave, const int x, const int y, const GdElem
   store(cave, x, y, scanned_pair(element));
 }
 
-// store an element to a neighbouring cell
+// Store an element to (x, y) + dir.
 static inline void store_dir(GdCave *cave, const int x, const int y,
 			     const GdDirection dir, const GdElement element)
 {
@@ -656,7 +672,7 @@ static inline void store_dir(GdCave *cave, const int x, const int y,
   store(cave, x + gd_dx[dir], y + gd_dy[dir], scanned_pair(element));
 }
 
-// store an element to a neighbouring cell
+// Store an element to (x, y) + dir.
 static inline void store_dir_no_scanned(GdCave *cave, const int x, const int y,
 					const GdDirection dir, const GdElement element)
 {
@@ -664,7 +680,7 @@ static inline void store_dir_no_scanned(GdCave *cave, const int x, const int y,
   store(cave, x + gd_dx[dir], y + gd_dy[dir], element);
 }
 
-// move element to direction; then place space at x, y
+// Store the element to (x, y) + dir, and store a space to (x, y).
 static inline void move(GdCave *cave, const int x, const int y,
 			const GdDirection dir, const GdElement e)
 {
@@ -702,7 +718,7 @@ static inline void unscan(GdCave *cave, const int x, const int y)
     *e = gd_element_properties[*e].pair;
 }
 
-// Change the cell at (x,y) to a given explosion type.
+// Change the cell at (x, y) to a given explosion type.
 // Used by 3x3 explosion functions.
 // Take care of non explodable elements.
 // Take care of other special cases, like a voodoo dying,
@@ -727,7 +743,7 @@ static void cell_explode(GdCave *cave, int x, int y, GdElement explode_to)
     store_sc(cave, x, y, explode_to);
 }
 
-// a creature explodes to a 3x3 something.
+// A creature at (x, y) explodes to a 3x3 square.
 static void creature_explode(GdCave *cave, int x, int y, GdElement explode_to)
 {
   int xx, yy;
@@ -741,6 +757,7 @@ static void creature_explode(GdCave *cave, int x, int y, GdElement explode_to)
       cell_explode(cave, xx, yy, explode_to);
 }
 
+// A nitro pack at (x, y) explodes to a 3x3 square.
 static void nitro_explode(GdCave *cave, int x, int y)
 {
   int xx, yy;
@@ -758,7 +775,7 @@ static void nitro_explode(GdCave *cave, int x, int y)
   store_sc(cave, x, y, O_NITRO_EXPL_1);
 }
 
-// a voodoo explodes, leaving a 3x3 steel and a time penalty behind.
+// A voodoo explodes, leaving a 3x3 steel and a time penalty behind.
 static void voodoo_explode(GdCave *cave, int x, int y)
 {
   int xx, yy;
@@ -779,12 +796,10 @@ static void voodoo_explode(GdCave *cave, int x, int y)
   store_sc(cave, x, y, O_TIME_PENALTY);
 }
 
-/*
-  a bomb does not explode the voodoo, neither does the ghost.
-  this function check this, and stores the new element or not.
-  destroying the voodoo is also controlled by the
-  voodoo_disappear_in_explosion flag.
-*/
+// Explode cell at (x, y), but skip voodooo.
+// A bomb does not explode the voodoo, neither does the ghost.
+// This function checks these, and stores the new element given or not.
+// Destroying the voodoo is also controlled by the voodoo_disappear_in_explosion flag.
 static void explode_try_skip_voodoo(GdCave *cave, const int x, const int y, const GdElement expl)
 {
   if (non_explodable (cave, x, y))
@@ -800,7 +815,7 @@ static void explode_try_skip_voodoo(GdCave *cave, const int x, const int y, cons
   store_sc (cave, x, y, expl);
 }
 
-// X shaped ghost explosion; does not touch voodoo!
+// An X shaped ghost explosion; does not touch voodoo!
 static void ghost_explode(GdCave *cave, const int x, const int y)
 {
   gd_sound_play(cave, GD_S_GHOST_EXPLODING, get(cave, x, y), x, y);
@@ -815,7 +830,7 @@ static void ghost_explode(GdCave *cave, const int x, const int y)
   explode_try_skip_voodoo(cave, x + 1, y - 1, O_GHOST_EXPL_1);
 }
 
-// +shaped bomb explosion; does not touch voodoo!
+// A + shaped bomb explosion; does not touch voodoo!
 static void bomb_explode(GdCave *cave, const int x, const int y)
 {
   gd_sound_play(cave, GD_S_BOMB_EXPLODING, get(cave, x, y), x, y);
@@ -830,9 +845,8 @@ static void bomb_explode(GdCave *cave, const int x, const int y)
   explode_try_skip_voodoo(cave, x,     y - 1, O_BOMB_EXPL_1);
 }
 
-/*
-  explode an element with the appropriate type of exlposion.
- */
+// Explode the thing at (x, y).
+// Checks the element, and selects the correct exploding type accordingly.
 static void explode(GdCave *cave, int x, int y)
 {
   GdElement e = get(cave, x, y);
@@ -929,17 +943,27 @@ static void explode(GdCave *cave, int x, int y)
   }
 }
 
+// Explode the element at (x, y) + dir.
+// A simple wrapper for the explode(x, y) function without the dir parameter.
 static void inline explode_dir(GdCave *cave, const int x, const int y, GdDirection dir)
 {
   explode(cave, x + gd_dx[dir], y + gd_dy[dir]);
 }
 
-/*
-  player eats specified object.
-  returns O_SPACE if he eats it (diamond, dirt, space, outbox)
-  returns other element if something other appears there and he can't move.
-  cave pointer is needed to know the diamond values.
-*/
+// The player eats or activates the given element.
+// This function does all things that should happen when the
+// player eats something - increments score, plays sound etc.
+// This function is also used to activate switches, and to collect
+// keys.
+// It returns the remaining element, which is usually space;
+// might be some other thing. (example: DIRT for CLOCK)
+// This does NOT take snap_element into consideration.
+//
+// @param object Element to eat
+// @param x The coordinate of player
+// @param y The coordinate of player
+// @param dir The direction the player is moving
+// @return remaining element
 static GdElement player_get_element(GdCave* cave, const GdElement object, int x, int y)
 {
   int i;
@@ -1104,15 +1128,17 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
   }
 }
 
-/*
-  process a crazy dream-style teleporter.
-  called from gd_cave_iterate, for a player or a player_bomb.
-  player is standing at px, py, and trying to move in the direction player_move,
-  where there is a teleporter at (tx_start, ty_start). we check the whole cave,
-  from (tx_start + 1, ty_start), till we get back to (tx_start, ty_start) (by wrapping
-  around). the first teleporter we find, and which is suitable, will be the destination.
-  return TRUE if teleporter worked, FALSE if cound not find any suitable teleporter.
-*/
+// Process a crazy dream-style teleporter.
+// Called from gd_cave_iterate, for a player or a player_bomb.
+// Player is standing at px, py, and trying to move in the direction player_move,
+// where there is a teleporter at (tx_start, ty_start). We check the whole cave,
+// from (tx_start + 1, ty_start), till we get back to (tx_start, ty_start) (by wrapping
+// around). The first teleporter we find, and which is suitable, will be the destination.
+//
+// @param px The coordinate of the player which tries to move into the teleporter, x.
+// @param py The coordinate of the player, y.
+// @param player_move The direction he is moving into.
+// @return True, if the player is teleported, false, if no suitable teleporter found.
 static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_move)
 {
   // start at teleporter position (not at player position!)
@@ -1157,11 +1183,12 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
   return FALSE;
 }
 
-/*
-  try to push an element.
-  returns true if the push is possible; also does move the specified _element_.
-  up to the caller to move the _player_itself_.
-*/
+// Try to push an element.
+// Also does move the specified _element_, if possible.
+// Up to the caller to move the _player_itself_, as the movement might be a snap,
+// not a real movement.
+//
+// @return true if the push is possible.
 static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, boolean player_fire)
 {
   boolean result;
@@ -1378,6 +1405,13 @@ void gd_cave_clear_sounds(GdCave *cave)
   cave->sound3 = GD_S_NONE;
 }
 
+// Try to make an element start falling.
+//
+// @param x The x coordinate of the element.
+// @param y The y coordinate of the element.
+// @param falling_direction The direction to start "falling" to.
+//         Down (=gravity) for a stone, Up (=opposite of gravity) for a flying stone, for example.
+// @param falling_element The falling pair of the element (O_STONE -> O_STONE_F)
 static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direction,
 			  GdElement falling_element)
 {
@@ -1401,7 +1435,7 @@ static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direct
   // this way, gravity can also be pointing right, and the above slope will work as one would expect
   else if (sloped_dir(cave, x, y, falling_direction, opposite[falling_direction]))
   {
-    // rolling down, if sitting on a sloped object
+    // rolling down if sitting on a sloped object
     if (sloped_dir(cave, x, y, falling_direction, cw_fourth[falling_direction]) &&
 	is_space_dir(cave, x, y, cw_fourth[falling_direction]) &&
 	is_space_dir(cave, x, y, cw_eighth[falling_direction]))
@@ -1422,6 +1456,11 @@ static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direct
   }
 }
 
+// When the element at (x, y) is falling in the direction fall_dir,
+// check if it crushes a voodoo below it. If yes, explode the voodoo,
+// and return true. Otherwise return false.
+//
+// @return true if voodoo crushed.
 static boolean do_fall_try_crush_voodoo(GdCave *cave, int x, int y, GdDirection fall_dir)
 {
   if (get_dir(cave, x, y, fall_dir) == O_VOODOO &&
@@ -1435,6 +1474,10 @@ static boolean do_fall_try_crush_voodoo(GdCave *cave, int x, int y, GdDirection 
     return FALSE;
 }
 
+// When the element at (x, y) is falling in the direction fall_dir,
+// check if the voodoo below it can eat it. If yes, the voodoo eats it.
+//
+// @return true if successful, false if voodoo does not eat the element.
 static boolean do_fall_try_eat_voodoo(GdCave *cave, int x, int y, GdDirection fall_dir)
 {
   if (get_dir(cave, x, y, fall_dir) == O_VOODOO &&
@@ -1449,6 +1492,12 @@ static boolean do_fall_try_eat_voodoo(GdCave *cave, int x, int y, GdDirection fa
     return FALSE;
 }
 
+// Element at (x, y) is falling. Try to crack nut under it.
+// If successful, nut is cracked, and the element is bounced (stops moving).
+//
+// @param fall_dir The direction the element is falling in.
+// @param bouncing The element which it is converted to, if it has cracked a nut.
+// @return True, if nut is cracked.
 static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y,
 				     GdDirection fall_dir, GdElement bouncing)
 {
@@ -1467,6 +1516,12 @@ static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y,
     return FALSE;
 }
 
+// For a falling element, try if a magic wall is under it.
+// If yes, process element using the magic wall, and return true.
+//
+// @param fall_dir The direction the element is falling to.
+// @param magic The element a magic wall turns it to.
+// @return If The element is processed by the magic wall.
 static boolean do_fall_try_magic(GdCave *cave, int x, int y,
 				 GdDirection fall_dir, GdElement magic)
 {
@@ -1497,6 +1552,10 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y,
     return FALSE;
 }
 
+// For a falling element, test if an explodable element is under it;
+// if yes, explode it, and return yes.
+//
+// @return True, if element at (x, y) + fall_dir is exploded.
 static boolean do_fall_try_crush(GdCave *cave, int x, int y, GdDirection fall_dir)
 {
   if (explodes_by_hit_dir(cave, x, y, fall_dir))
@@ -1508,6 +1567,12 @@ static boolean do_fall_try_crush(GdCave *cave, int x, int y, GdDirection fall_di
     return FALSE;
 }
 
+// For a falling element, try if a sloped element is under it.
+// Move element if possible, or bounce element.
+// If there are two directions possible for the element to roll to, left is preferred.
+// If no rolling is possible, it is converted to a bouncing element.
+// So this always "does something" with the element, and this should be the last
+// function to call when checking what happens to a falling element.
 static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
 				    GdDirection fall_dir, GdElement bouncing)
 {
@@ -1618,7 +1683,11 @@ static void update_cave_speed(GdCave *cave)
   }
 }
 
-// process a cave.
+// Process a cave - one iteration.
+//
+// @param player_move The direction the player moves to.
+// @param player_fire True, if the fire button is pressed.
+// @param suicide True, if the suicide button is pressed.
 void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire, boolean suicide)
 {
   int x, y, i;
@@ -2741,7 +2810,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      cave->replicators_active &&
 	      !cave->gravity_disabled)
 	  {
-	    // only replicate, if space is under it.
+	    // only replicate if space is under it.
 	    // do not replicate players!
 	    // also obeys gravity settings.
 	    // only replicate element if it is not a scanned one
@@ -3705,7 +3774,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   }
 
   // this loop finds the coordinates of the player. needed for scrolling and chasing stone.
-  // but we only do this, if a living player was found. if not yet, the setup
+  // but we only do this if a living player was found. if not yet, the setup
   // routine coordinates are used
   if (cave->player_state == GD_PL_LIVING)
   {
