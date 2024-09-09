@@ -10783,14 +10783,6 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.team_mode,				"team_mode"
   },
   {
-    TYPE_SWITCH,
-    &setup.handicap,				"handicap"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.skip_levels,				"skip_levels"
-  },
-  {
     TYPE_SWITCH_3_STATES,
     &setup.allow_skipping_levels,		"allow_skipping_levels"
   },
@@ -11758,8 +11750,6 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->show_titlescreen = TRUE;
   si->quick_doors = FALSE;
   si->team_mode = FALSE;
-  si->handicap = TRUE;
-  si->skip_levels = TRUE;
   si->allow_skipping_levels = STATE_ASK;
   si->increment_levels = TRUE;
   si->auto_play_next_level = TRUE;

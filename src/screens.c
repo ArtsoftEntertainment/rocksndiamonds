@@ -7946,12 +7946,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_SWITCH,	&setup.multiple_users,		"Multiple Users/Teams:"		},
   { TYPE_YES_NO,	&setup.input_on_focus,		"Only Move Focussed Player:"	},
   { TYPE_SWITCH,	&setup.time_limit,		"Time Limit:"			},
-#if 1
   { TYPE_YES_NO_ASK,	&setup.allow_skipping_levels,	"Allow Skipping Levels:"	},
-#else
-  { TYPE_SWITCH,	&setup.handicap,		"Force Solving Levels:"		},
-  { TYPE_SWITCH,	&setup.skip_levels,		"Allow Skipping Levels:"	},
-#endif
   { TYPE_SWITCH,	&setup.increment_levels,	"Increment Solved Levels:"	},
   { TYPE_SWITCH,	&setup.auto_play_next_level,	"Auto-play Next Level:"		},
   { TYPE_SWITCH,	&setup.count_score_after_game,	"Count Score After Game:"	},
