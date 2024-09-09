@@ -17,9 +17,6 @@
 #include "main_bd.h"
 
 
-// for compatibility with old game engine
-static boolean use_old_game_engine = TRUE;
-
 // for gravity and other routines.
 // these arrays contain the rotated directions.
 // ccw eighth: counter-clockwise, 1/8 turn (45 degrees)
@@ -119,7 +116,7 @@ void gd_cave_set_seconds_sound(GdCave *cave)
 // returns true if the element has a certain property
 static inline boolean has_property(int element, const int property)
 {
-  if (use_old_game_engine)
+  if (game_bd.game->use_old_engine)
     element = non_scanned_pair(element);
 
   return (gd_element_properties[element].properties & property) != 0;

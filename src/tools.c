@@ -10664,6 +10664,13 @@ int getBeltSwitchElementFromBeltNrAndBeltDir(int belt_nr, int belt_dir)
   return getBeltSwitchElementFromBeltNrAndBeltDirNr(belt_nr, belt_dir_nr);
 }
 
+boolean useOldEngine_BD(void)
+{
+  return (tape.playing &&
+          tape.bd_replay &&
+          leveldir_current->replay_with_old_engine);
+}
+
 boolean swapTiles_EM(boolean is_pre_emc_cave)
 {
   return is_pre_emc_cave && leveldir_current->use_emc_tiles;
