@@ -2840,47 +2840,6 @@ SetupFileHash *loadSetupFileHash(char *filename)
 #define TOKEN_STR_HANDICAP_LEVEL		"handicap_level"
 #define TOKEN_STR_LAST_USER			"last_user"
 
-// level directory info
-#define LEVELINFO_TOKEN_IDENTIFIER		0
-#define LEVELINFO_TOKEN_NAME			1
-#define LEVELINFO_TOKEN_NAME_SORTING		2
-#define LEVELINFO_TOKEN_AUTHOR			3
-#define LEVELINFO_TOKEN_YEAR			4
-#define LEVELINFO_TOKEN_PROGRAM_TITLE		5
-#define LEVELINFO_TOKEN_PROGRAM_COPYRIGHT	6
-#define LEVELINFO_TOKEN_PROGRAM_COMPANY		7
-#define LEVELINFO_TOKEN_IMPORTED_FROM		8
-#define LEVELINFO_TOKEN_IMPORTED_BY		9
-#define LEVELINFO_TOKEN_TESTED_BY		10
-#define LEVELINFO_TOKEN_LEVELS			11
-#define LEVELINFO_TOKEN_FIRST_LEVEL		12
-#define LEVELINFO_TOKEN_SORT_PRIORITY		13
-#define LEVELINFO_TOKEN_LATEST_ENGINE		14
-#define LEVELINFO_TOKEN_LEVEL_GROUP		15
-#define LEVELINFO_TOKEN_READONLY		16
-#define LEVELINFO_TOKEN_GRAPHICS_SET_OLD	17
-#define LEVELINFO_TOKEN_GRAPHICS_SET_NEW	18
-#define LEVELINFO_TOKEN_GRAPHICS_SET_ECS	19
-#define LEVELINFO_TOKEN_GRAPHICS_SET_AGA	20
-#define LEVELINFO_TOKEN_GRAPHICS_SET		21
-#define LEVELINFO_TOKEN_SOUNDS_SET_DEFAULT	22
-#define LEVELINFO_TOKEN_SOUNDS_SET_LOWPASS	23
-#define LEVELINFO_TOKEN_SOUNDS_SET		24
-#define LEVELINFO_TOKEN_MUSIC_SET		25
-#define LEVELINFO_TOKEN_FILENAME		26
-#define LEVELINFO_TOKEN_FILETYPE		27
-#define LEVELINFO_TOKEN_SPECIAL_FLAGS		28
-#define LEVELINFO_TOKEN_EMPTY_LEVEL_NAME	29
-#define LEVELINFO_TOKEN_FORCE_LEVEL_NAME	30
-#define LEVELINFO_TOKEN_HANDICAP		31
-#define LEVELINFO_TOKEN_TIME_LIMIT		32
-#define LEVELINFO_TOKEN_SKIP_LEVELS		33
-#define LEVELINFO_TOKEN_USE_EMC_TILES		34
-#define LEVELINFO_TOKEN_INFO_SCREENS_FROM_MAIN	35
-#define LEVELINFO_TOKEN_REPLAY_WITH_OLD_ENGINE	36
-
-#define NUM_LEVELINFO_TOKENS			37
-
 static LevelDirTree ldi;
 
 static struct TokenInfo levelinfo_tokens[] =
@@ -3915,7 +3874,7 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
 
   // set all structure fields according to the token/value pairs
   ldi = *leveldir_new;
-  for (i = 0; i < NUM_LEVELINFO_TOKENS; i++)
+  for (i = 0; i < ARRAY_SIZE(levelinfo_tokens); i++)
     setSetupInfo(levelinfo_tokens, i,
 		 getHashEntry(setup_file_hash, levelinfo_tokens[i].text));
   *leveldir_new = ldi;
@@ -4178,7 +4137,7 @@ static boolean LoadArtworkInfoFromArtworkConf(TreeInfo **node_first,
   {
     // set all structure fields according to the token/value pairs
     ldi = *artwork_new;
-    for (i = 0; i < NUM_LEVELINFO_TOKENS; i++)
+    for (i = 0; i < ARRAY_SIZE(levelinfo_tokens); i++)
       setSetupInfo(levelinfo_tokens, i,
 		   getHashEntry(setup_file_hash, levelinfo_tokens[i].text));
     *artwork_new = ldi;
@@ -4856,23 +4815,23 @@ boolean CreateUserLevelSet(char *level_subdir, char *level_name,
   fprintFileHeader(file, LEVELINFO_FILENAME);
 
   ldi = *level_info;
-  for (i = 0; i < NUM_LEVELINFO_TOKENS; i++)
+  for (i = 0; i < ARRAY_SIZE(levelinfo_tokens); i++)
   {
-    if (i == LEVELINFO_TOKEN_NAME ||
-	i == LEVELINFO_TOKEN_AUTHOR ||
-	i == LEVELINFO_TOKEN_LEVELS ||
-	i == LEVELINFO_TOKEN_FIRST_LEVEL ||
-	i == LEVELINFO_TOKEN_SORT_PRIORITY ||
-	i == LEVELINFO_TOKEN_READONLY ||
-	(use_artwork_set && (i == LEVELINFO_TOKEN_GRAPHICS_SET ||
-			     i == LEVELINFO_TOKEN_SOUNDS_SET ||
-			     i == LEVELINFO_TOKEN_MUSIC_SET)))
+    if (levelinfo_tokens[i].value == &ldi.name		||
+	levelinfo_tokens[i].value == &ldi.author	||
+	levelinfo_tokens[i].value == &ldi.levels	||
+	levelinfo_tokens[i].value == &ldi.first_level	||
+	levelinfo_tokens[i].value == &ldi.sort_priority	||
+	levelinfo_tokens[i].value == &ldi.readonly	||
+	(use_artwork_set && (levelinfo_tokens[i].value == &ldi.graphics_set	||
+			     levelinfo_tokens[i].value == &ldi.sounds_set	||
+			     levelinfo_tokens[i].value == &ldi.music_set)))
       fprintf(file, "%s\n", getSetupLine(levelinfo_tokens, "", i));
 
     // just to make things nicer :)
-    if (i == LEVELINFO_TOKEN_AUTHOR ||
-	i == LEVELINFO_TOKEN_FIRST_LEVEL ||
-	(use_artwork_set && i == LEVELINFO_TOKEN_READONLY))
+    if (levelinfo_tokens[i].value == &ldi.author	||
+	levelinfo_tokens[i].value == &ldi.first_level	||
+	(use_artwork_set && levelinfo_tokens[i].value == &ldi.readonly))
       fprintf(file, "\n");	
   }
 
