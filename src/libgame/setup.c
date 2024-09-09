@@ -2900,8 +2900,6 @@ static struct TokenInfo artworkinfo_tokens[] =
   { TYPE_STRING,	&ldi.fullpath,			"fullpath"			},
   { TYPE_BOOLEAN,	&ldi.in_user_dir,		"in_user_dir"			},
   { TYPE_STRING,	&ldi.class_desc,		"class_desc"			},
-
-  { -1,			NULL,				NULL				},
 };
 
 static char *optional_tokens[] =
@@ -3503,7 +3501,7 @@ static TreeInfo *getArtworkInfoCacheEntry(LevelDirTree *level_node, int type)
 
     // set all structure fields according to the token/value pairs
     ldi = *artwork_info;
-    for (i = 0; artworkinfo_tokens[i].type != -1; i++)
+    for (i = 0; i < ARRAY_SIZE(artworkinfo_tokens); i++)
     {
       char *token_suffix = artworkinfo_tokens[i].text;
       char *token = getCacheToken(token_prefix, token_suffix);
@@ -3594,7 +3592,7 @@ static void setArtworkInfoCacheEntry(TreeInfo *artwork_info,
   }
 
   ldi = *artwork_info;
-  for (i = 0; artworkinfo_tokens[i].type != -1; i++)
+  for (i = 0; i < ARRAY_SIZE(artworkinfo_tokens); i++)
   {
     char *token = getCacheToken(token_prefix, artworkinfo_tokens[i].text);
     char *value = getSetupValue(artworkinfo_tokens[i].type,
