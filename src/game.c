@@ -3679,6 +3679,9 @@ void InitGame(void)
   int initial_move_dir = MV_DOWN;
   int i, j, x, y;
 
+  // required to prevent handling game actions when moving doors (via "checkGameEnded()")
+  game.InitGameRequested = TRUE;
+
   // required here to update video display before fading (FIX THIS)
   DrawMaskedBorder(REDRAW_DOOR_2);
 
@@ -4657,6 +4660,8 @@ void InitGame(void)
   }
 
   SetPlayfieldMouseCursorEnabled(!game.use_mouse_actions);
+
+  game.InitGameRequested = FALSE;
 }
 
 void UpdateEngineValues(int actual_scroll_x, int actual_scroll_y,
@@ -16451,6 +16456,10 @@ boolean checkGameFailed(void)
 
 boolean checkGameEnded(void)
 {
+  // required to prevent handling game actions when moving doors (during "InitGame()")
+  if (game.InitGameRequested)
+    return FALSE;
+
   return (checkGameSolved() || checkGameFailed());
 }
 

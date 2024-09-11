@@ -290,6 +290,7 @@ struct GameInfo
   int LevelSolved_CountingHealth;
 
   boolean RestartGameRequested;
+  boolean InitGameRequested;
 };
 
 struct PlayerInfo
