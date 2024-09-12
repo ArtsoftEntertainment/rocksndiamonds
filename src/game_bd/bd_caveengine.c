@@ -1282,47 +1282,82 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	//  p   p  g
 	// 2o3  |  |
 	//  1   v  v
+
 	if (player_move == grav_compat)
 	{
-	  // pushing bladder down
+          // pushing bladder down
 	  if (is_like_space(cave, x, y, GD_MV_TWICE + player_move))
-	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER), result = TRUE;
+          {
+	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER);
+            result = TRUE;
+          }
 	  // if no space to push down, maybe left (down-left to player)
 	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))
-
+          {
 	    // left is "down, turned right (cw)"
-	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER), result = TRUE;
+	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER);
+            result = TRUE;
+          }
 	  // if not, maybe right (down-right to player)
 	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))
-	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER), result = TRUE;
+          {
+	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER);
+            result = TRUE;
+          }
 	}
 
 	// pushing a bladder "left". p = player, o = bladder, 1, 2, 3 = directions to check.
 	//  3        g
 	// 1op  <-p  |
 	//  2        v
+
 	else if (player_move == cw_fourth[grav_compat])
 	{
-	  if (is_like_space(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat]))    // pushing it left
-	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))    // maybe down, and player will move left
-	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_like_space(cave, x, y, cw_eighth[player_move]))    // maybe up, and player will move left
-	    store_dir_no_scanned(cave, x, y, cw_eighth[player_move], O_BLADDER), result = TRUE;
+          // pushing it left
+	  if (is_like_space(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat]))
+          {
+	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat], O_BLADDER);
+            result = TRUE;
+          }
+          // maybe down, and player will move left
+	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))
+          {
+	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER);
+            result = TRUE;
+          }
+          // maybe up, and player will move left
+	  else if (is_like_space(cave, x, y, cw_eighth[player_move]))
+          {
+	    store_dir_no_scanned(cave, x, y, cw_eighth[player_move], O_BLADDER);
+            result = TRUE;
+          }
 	}
 
 	// pushing a bladder "right". p = player, o = bladder, 1, 2, 3 = directions to check.
 	//  3        g
 	// po1  p-<  |
 	//  2        v
+
 	else if (player_move == ccw_fourth[grav_compat])
 	{
-	  if (is_like_space(cave, x, y, GD_MV_TWICE + player_move))    // pushing it right
-	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER), result = TRUE;
-	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))    // maybe down, and player will move right
-	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_like_space(cave, x, y, ccw_eighth[player_move]))    // maybe up, and player will move right
-	    store_dir_no_scanned(cave, x, y, ccw_eighth[player_move], O_BLADDER), result = TRUE;
+          // pushing it right
+	  if (is_like_space(cave, x, y, GD_MV_TWICE + player_move))
+          {
+	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER);
+            result = TRUE;
+          }
+          // maybe down, and player will move right
+	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))
+          {
+	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER);
+            result = TRUE;
+          }
+          // maybe up, and player will move right
+	  else if (is_like_space(cave, x, y, ccw_eighth[player_move]))
+          {
+	    store_dir_no_scanned(cave, x, y, ccw_eighth[player_move], O_BLADDER);
+            result = TRUE;
+          }
 	}
 
 	if (result)
@@ -2479,9 +2514,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_COW_3:
 	case O_COW_4:
 	  // if cannot move in any direction, becomes an enclosed cow
-	  if (!is_like_space(cave, x, y, GD_MV_UP) && !is_like_space(cave, x, y, GD_MV_DOWN) &&
-	      !is_like_space(cave, x, y, GD_MV_LEFT) && !is_like_space(cave, x, y, GD_MV_RIGHT))
+	  if (!is_like_space(cave, x, y, GD_MV_UP) &&
+	      !is_like_space(cave, x, y, GD_MV_DOWN) &&
+	      !is_like_space(cave, x, y, GD_MV_LEFT) &&
+	      !is_like_space(cave, x, y, GD_MV_RIGHT))
+	  {
 	    store(cave, x, y, O_COW_ENCLOSED_1);
+	  }
 	  else
 	  {
 	    // THIS IS THE CREATURE MOVE thing copied.
