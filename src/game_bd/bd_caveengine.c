@@ -693,7 +693,7 @@ static inline void store_dir(GdCave *cave, const int x, const int y,
 			     const GdDirection dir, const GdElement element)
 {
   store_dir_buffer(cave, x, y, dir);
-  store(cave, x + gd_dx[dir], y + gd_dy[dir], scanned_pair(element));
+  store(cave, x + gd_dx[dir], y + gd_dy[dir], element);
 }
 
 // Store an element to (x, y) + dir.
