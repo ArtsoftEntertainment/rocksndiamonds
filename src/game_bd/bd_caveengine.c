@@ -625,6 +625,17 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
   return (e == O_SPACE || e == O_LAVA);
 }
 
+// Returns true if element at (x, y) + dir is like dirt.
+// All dirt types must be equivalent; for example, when allowing the player to
+// place a bomb in dirt, or when a nitro pack is bouncing on a piece of dirt
+// (without exploding).
+// Therefore "if (get(cave, x, y) == O_DIRT)" must not be used!
+static inline boolean is_like_dirt(const GdCave *cave, const int x, const int y,
+                                   const GdDirection dir)
+{
+  return has_property(get_dir(cave, x, y, dir), P_DIRT);
+}
+
 static inline void store_dir_buffer(GdCave *cave, const int x, const int y, const GdDirection dir)
 {
   int old_x = x;
@@ -2103,7 +2114,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    {
 	      // placing a bomb into empty space or dirt
 	      if (is_like_space(cave, x, y, player_move) ||
-		  is_like_element(cave, x, y, player_move, O_DIRT))
+		  is_like_dirt(cave, x, y, player_move))
 	      {
 		store_dir(cave, x, y, player_move, O_BOMB_TICK_1);
 
@@ -2505,7 +2516,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    {
 	      // try magic wall; if true, function did the work
 	    }
-	    else if (is_like_element(cave, x, y, cave->gravity, O_DIRT))
+	    else if (is_like_dirt(cave, x, y, cave->gravity))
 	    {
 	      // falling on a dirt, it does NOT explode - just stops at its place.
 	      play_sound_of_element(cave, O_NITRO_PACK, x, y);
