@@ -2944,7 +2944,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_BLADDER_8:
 	  // bladder with any delay state: try to convert to clock.
 	  if (is_element_dir(cave, x, y, opposite[grav_compat], cave->bladder_converts_by) ||
-	      is_element_dir(cave, x, y, cw_fourth[grav_compat], cave->bladder_converts_by) || is_element_dir(cave, x, y, ccw_fourth[grav_compat], cave->bladder_converts_by))
+	      is_element_dir(cave, x, y, cw_fourth[grav_compat], cave->bladder_converts_by) ||
+              is_element_dir(cave, x, y, ccw_fourth[grav_compat], cave->bladder_converts_by))
 	  {
 	    // if touches the specified element, let it be a clock
 	    store(cave, x, y, O_PRE_CLOCK_1);

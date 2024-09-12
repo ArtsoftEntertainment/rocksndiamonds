@@ -4412,7 +4412,7 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
     int frame = getGraphicAnimationFrame(graphic, player->Frame);
 
     if (player_is_opaque)
-      DrawGraphicShifted(sx,sy, sxx,syy, graphic, frame, NO_CUTTING,NO_MASKING);
+      DrawGraphicShifted(sx,sy, sxx,syy, graphic, frame, NO_CUTTING, NO_MASKING);
     else
       DrawGraphicShiftedThruMask(sx, sy, sxx, syy, graphic, frame, NO_CUTTING);
 

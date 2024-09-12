@@ -94,7 +94,7 @@ typedef struct _gd_game
   int cycle_counter;
 
   int replay_no_more_movements;
-  boolean show_story;          // to remember that story for a particular cave was already shown.
+  boolean show_story;           // to remember that story for a particular cave was already shown.
 
   boolean use_old_engine;	// for game engine compatibility with old replays
 } GdGame;
