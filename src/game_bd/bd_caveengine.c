@@ -696,14 +696,6 @@ static inline void store_dir(GdCave *cave, const int x, const int y,
   store(cave, x + gd_dx[dir], y + gd_dy[dir], element);
 }
 
-// Store an element to (x, y) + dir.
-static inline void store_dir_no_scanned(GdCave *cave, const int x, const int y,
-					const GdDirection dir, const GdElement element)
-{
-  store_dir_buffer(cave, x, y, dir);
-  store(cave, x + gd_dx[dir], y + gd_dy[dir], element);
-}
-
 // Store the element to (x, y) + dir, and store a space to (x, y).
 static inline void move(GdCave *cave, const int x, const int y,
 			const GdDirection dir, const GdElement e)
@@ -1299,7 +1291,6 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
     case O_BLADDER_8:
       // pushing a bladder. keep in mind that after pushing, we always get an O_BLADDER,
       // not an O_BLADDER_x.
-      // there is no "delayed" state of a bladder, so we use store_dir_no_scanned!
 
       // first check: we cannot push a bladder "up"
       if (player_move != opposite[grav_compat])
@@ -1315,20 +1306,20 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
           // pushing bladder down
 	  if (is_like_space(cave, x, y, twice[player_move]))
           {
-	    store_dir_no_scanned(cave, x, y, twice[player_move], O_BLADDER);
+	    store_dir(cave, x, y, twice[player_move], O_BLADDER);
             result = TRUE;
           }
 	  // if no space to push down, maybe left (down-left to player)
 	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))
           {
 	    // left is "down, turned right (cw)"
-	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER);
+	    store_dir(cave, x, y, cw_eighth[grav_compat], O_BLADDER);
             result = TRUE;
           }
 	  // if not, maybe right (down-right to player)
 	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))
           {
-	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER);
+	    store_dir(cave, x, y, ccw_eighth[grav_compat], O_BLADDER);
             result = TRUE;
           }
 	}
@@ -1343,19 +1334,19 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
           // pushing it left
 	  if (is_like_space(cave, x, y, twice[cw_fourth[grav_compat]]))
           {
-	    store_dir_no_scanned(cave, x, y, twice[cw_fourth[grav_compat]], O_BLADDER);
+	    store_dir(cave, x, y, twice[cw_fourth[grav_compat]], O_BLADDER);
             result = TRUE;
           }
           // maybe down, and player will move left
 	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))
           {
-	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER);
+	    store_dir(cave, x, y, cw_eighth[grav_compat], O_BLADDER);
             result = TRUE;
           }
           // maybe up, and player will move left
 	  else if (is_like_space(cave, x, y, cw_eighth[player_move]))
           {
-	    store_dir_no_scanned(cave, x, y, cw_eighth[player_move], O_BLADDER);
+	    store_dir(cave, x, y, cw_eighth[player_move], O_BLADDER);
             result = TRUE;
           }
 	}
@@ -1370,19 +1361,19 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
           // pushing it right
 	  if (is_like_space(cave, x, y, twice[player_move]))
           {
-	    store_dir_no_scanned(cave, x, y, twice[player_move], O_BLADDER);
+	    store_dir(cave, x, y, twice[player_move], O_BLADDER);
             result = TRUE;
           }
           // maybe down, and player will move right
 	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))
           {
-	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER);
+	    store_dir(cave, x, y, ccw_eighth[grav_compat], O_BLADDER);
             result = TRUE;
           }
           // maybe up, and player will move right
 	  else if (is_like_space(cave, x, y, ccw_eighth[player_move]))
           {
-	    store_dir_no_scanned(cave, x, y, ccw_eighth[player_move], O_BLADDER);
+	    store_dir(cave, x, y, ccw_eighth[player_move], O_BLADDER);
             result = TRUE;
           }
 	}
