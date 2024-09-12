@@ -616,7 +616,7 @@ static inline boolean is_like_element(const GdCave *cave, const int x, const int
 // This behavior is implemented in the is_like_space and the store
 // functions. is_like_space returns true for the lava, too. The store
 // function ignores any store requests into the lava.
-// The player_get_element function will also behave for lava as it does for space.
+// The player_eat_element function will also behave for lava as it does for space.
 static inline boolean is_like_space(const GdCave *cave, const int x, const int y,
                                     const GdDirection dir)
 {
@@ -811,9 +811,9 @@ static void voodoo_explode(GdCave *cave, int x, int y)
 // A bomb does not explode the voodoo, neither does the ghost.
 // This function checks these, and stores the new element given or not.
 // Destroying the voodoo is also controlled by the voodoo_disappear_in_explosion flag.
-static void explode_try_skip_voodoo(GdCave *cave, const int x, const int y, const GdElement expl)
+static void cell_explode_skip_voodoo(GdCave *cave, const int x, const int y, const GdElement expl)
 {
-  if (non_explodable (cave, x, y))
+  if (non_explodable(cave, x, y))
     return;
 
   // bomb does not explode voodoo
@@ -829,31 +829,29 @@ static void explode_try_skip_voodoo(GdCave *cave, const int x, const int y, cons
 // An X shaped ghost explosion; does not touch voodoo!
 static void ghost_explode(GdCave *cave, const int x, const int y)
 {
-  gd_sound_play(cave, GD_S_GHOST_EXPLODING, get(cave, x, y), x, y);
-
   // the processing of an explosion took pretty much time: processing 5 elements
   cave->ckdelay += 650;
+  gd_sound_play(cave, GD_S_GHOST_EXPLODING, get(cave, x, y), x, y);
 
-  explode_try_skip_voodoo(cave, x,     y,     O_GHOST_EXPL_1);
-  explode_try_skip_voodoo(cave, x - 1, y - 1, O_GHOST_EXPL_1);
-  explode_try_skip_voodoo(cave, x + 1, y + 1, O_GHOST_EXPL_1);
-  explode_try_skip_voodoo(cave, x - 1, y + 1, O_GHOST_EXPL_1);
-  explode_try_skip_voodoo(cave, x + 1, y - 1, O_GHOST_EXPL_1);
+  cell_explode_skip_voodoo(cave, x,     y,     O_GHOST_EXPL_1);
+  cell_explode_skip_voodoo(cave, x - 1, y - 1, O_GHOST_EXPL_1);
+  cell_explode_skip_voodoo(cave, x + 1, y + 1, O_GHOST_EXPL_1);
+  cell_explode_skip_voodoo(cave, x - 1, y + 1, O_GHOST_EXPL_1);
+  cell_explode_skip_voodoo(cave, x + 1, y - 1, O_GHOST_EXPL_1);
 }
 
 // A + shaped bomb explosion; does not touch voodoo!
 static void bomb_explode(GdCave *cave, const int x, const int y)
 {
-  gd_sound_play(cave, GD_S_BOMB_EXPLODING, get(cave, x, y), x, y);
-
   // the processing of an explosion took pretty much time: processing 5 elements
   cave->ckdelay += 650;
+  gd_sound_play(cave, GD_S_BOMB_EXPLODING, get(cave, x, y), x, y);
 
-  explode_try_skip_voodoo(cave, x,     y,     O_BOMB_EXPL_1);
-  explode_try_skip_voodoo(cave, x - 1, y,     O_BOMB_EXPL_1);
-  explode_try_skip_voodoo(cave, x + 1, y,     O_BOMB_EXPL_1);
-  explode_try_skip_voodoo(cave, x,     y + 1, O_BOMB_EXPL_1);
-  explode_try_skip_voodoo(cave, x,     y - 1, O_BOMB_EXPL_1);
+  cell_explode_skip_voodoo(cave, x,     y,     O_BOMB_EXPL_1);
+  cell_explode_skip_voodoo(cave, x - 1, y,     O_BOMB_EXPL_1);
+  cell_explode_skip_voodoo(cave, x + 1, y,     O_BOMB_EXPL_1);
+  cell_explode_skip_voodoo(cave, x,     y + 1, O_BOMB_EXPL_1);
+  cell_explode_skip_voodoo(cave, x,     y - 1, O_BOMB_EXPL_1);
 }
 
 // Explode the thing at (x, y).
@@ -975,7 +973,7 @@ static void inline explode_dir(GdCave *cave, const int x, const int y, GdDirecti
 // @param y The coordinate of player
 // @param dir The direction the player is moving
 // @return remaining element
-static GdElement player_get_element(GdCave* cave, const GdElement object, int x, int y)
+static GdElement player_eat_element(GdCave* cave, const GdElement object, int x, int y)
 {
   int i;
 
@@ -1117,7 +1115,7 @@ static GdElement player_get_element(GdCave* cave, const GdElement object, int x,
 
       // as if player got a diamond
       for (i = 0; i < cave->skeletons_worth_diamonds; i++)
-	player_get_element(cave, O_DIAMOND, -1, -1);
+	player_eat_element(cave, O_DIAMOND, -1, -1);
 
       // _after_ calling get_element for the fake diamonds, so we overwrite its sounds
       gd_sound_play(cave, GD_S_SKELETON_COLLECTING, object, x, y);
@@ -1529,7 +1527,7 @@ static boolean do_fall_try_eat_voodoo(GdCave *cave, int x, int y, GdDirection fa
       cave->voodoo_collects_diamonds)
   {
     // this is a 1stB-style voodoo. explodes by stone, collects diamonds
-    player_get_element(cave, O_DIAMOND, x, y);   // as if player got diamond
+    player_eat_element(cave, O_DIAMOND, x, y);   // as if player got diamond
     store(cave, x, y, O_SPACE);    // diamond disappears
     return TRUE;
   }
@@ -2040,8 +2038,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 		default:
 		  // get element - process others.
-		  // if cannot get, player_get_element will return the same
-		  remains = player_get_element(cave, what, x, y);
+		  // if cannot get, player_eat_element will return the same
+		  remains = player_eat_element(cave, what, x, y);
 		  break;
 	      }
 	    }
@@ -2146,8 +2144,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  break;
 
 		default:
-		  // get element. if cannot get, player_get_element will return the same
-		  remains = player_get_element (cave, what, x, y);
+		  // get element. if cannot get, player_eat_element will return the same
+		  remains = player_eat_element (cave, what, x, y);
 		  break;
 	      }
 	    }
@@ -2240,8 +2238,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    }
 	    else
 	    {
-	      // get element. if cannot get, player_get_element will return the same
-	      remains = player_get_element(cave, what, x, y);
+	      // get element. if cannot get, player_eat_element will return the same
+	      remains = player_eat_element(cave, what, x, y);
 	    }
 
 	    // if something changed, OR there is space, move.
