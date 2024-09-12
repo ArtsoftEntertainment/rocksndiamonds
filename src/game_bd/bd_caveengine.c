@@ -73,6 +73,7 @@ static const GdDirection cw_fourth[] =
   GD_MV_UP_RIGHT
 };
 
+// 180 degrees turn of a direction
 static const GdDirection opposite[] =
 {
   GD_MV_STILL,
@@ -84,6 +85,20 @@ static const GdDirection opposite[] =
   GD_MV_UP_RIGHT,
   GD_MV_RIGHT,
   GD_MV_DOWN_RIGHT
+};
+
+// doubling a direction (e.g. right = 1, 0   2x right = 2, 0
+static const GdDirection twice[] =
+{
+  GD_MV_STILL,
+  GD_MV_UP_2,
+  GD_MV_UP_RIGHT_2,
+  GD_MV_RIGHT_2,
+  GD_MV_DOWN_RIGHT_2,
+  GD_MV_DOWN_2,
+  GD_MV_DOWN_LEFT_2,
+  GD_MV_LEFT_2,
+  GD_MV_UP_LEFT_2
 };
 
 // sets timeout sound.
@@ -1250,11 +1265,11 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	    break;
 	}
 
-	if (is_like_space(cave, x, y, GD_MV_TWICE + player_move) &&
+	if (is_like_space(cave, x, y, twice[player_move]) &&
 	    gd_rand_int_range(cave->random, 0, 1000000) < prob)
 	{
 	  // if decided that he will be able to push,
-	  store_dir(cave, x, y, GD_MV_TWICE + player_move, what);
+	  store_dir(cave, x, y, twice[player_move], what);
 	  play_sound_of_element_pushing(cave, what, x, y);
 	  result = TRUE;
 	}
@@ -1286,9 +1301,9 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	if (player_move == grav_compat)
 	{
           // pushing bladder down
-	  if (is_like_space(cave, x, y, GD_MV_TWICE + player_move))
+	  if (is_like_space(cave, x, y, twice[player_move]))
           {
-	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER);
+	    store_dir_no_scanned(cave, x, y, twice[player_move], O_BLADDER);
             result = TRUE;
           }
 	  // if no space to push down, maybe left (down-left to player)
@@ -1314,9 +1329,9 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	else if (player_move == cw_fourth[grav_compat])
 	{
           // pushing it left
-	  if (is_like_space(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat]))
+	  if (is_like_space(cave, x, y, twice[cw_fourth[grav_compat]]))
           {
-	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat], O_BLADDER);
+	    store_dir_no_scanned(cave, x, y, twice[cw_fourth[grav_compat]], O_BLADDER);
             result = TRUE;
           }
           // maybe down, and player will move left
@@ -1341,9 +1356,9 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	else if (player_move == ccw_fourth[grav_compat])
 	{
           // pushing it right
-	  if (is_like_space(cave, x, y, GD_MV_TWICE + player_move))
+	  if (is_like_space(cave, x, y, twice[player_move]))
           {
-	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER);
+	    store_dir_no_scanned(cave, x, y, twice[player_move], O_BLADDER);
             result = TRUE;
           }
           // maybe down, and player will move right
@@ -1377,10 +1392,10 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	  case GD_MV_UP:
 	  case GD_MV_DOWN:
 	    // pushing in some dir, two steps in that dir - is there space?
-	    if (is_like_space(cave, x, y, player_move + GD_MV_TWICE))
+	    if (is_like_space(cave, x, y, twice[player_move]))
 	    {
 	      // yes, so push.
-	      store_dir(cave, x, y, player_move + GD_MV_TWICE, O_BOX);
+	      store_dir(cave, x, y, twice[player_move], O_BOX);
 	      result = TRUE;
 	      gd_sound_play(cave, GD_S_BOX_PUSHING, what, x, y);
 	    }
@@ -1565,11 +1580,11 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y,
       cave->magic_wall_state = GD_MW_ACTIVE;
 
     if (cave->magic_wall_state == GD_MW_ACTIVE &&
-	is_like_space(cave, x, y, GD_MV_TWICE+fall_dir))
+	is_like_space(cave, x, y, twice[fall_dir]))
     {
       // if magic wall active and place underneath, it turns element
       // into anything the effect says to do.
-      store_dir(cave, x, y, GD_MV_TWICE+fall_dir, magic);
+      store_dir(cave, x, y, twice[fall_dir], magic);
     }
 
     // active or non-active or anything, element falling in will always disappear
