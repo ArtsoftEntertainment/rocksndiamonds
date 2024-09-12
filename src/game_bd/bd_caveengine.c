@@ -973,86 +973,86 @@ static void inline explode_dir(GdCave *cave, const int x, const int y, GdDirecti
 // @param y The coordinate of player
 // @param dir The direction the player is moving
 // @return remaining element
-static GdElement player_eat_element(GdCave* cave, const GdElement object, int x, int y)
+static GdElement player_eat_element(GdCave* cave, const GdElement element, int x, int y)
 {
   int i;
 
-  switch (object)
+  switch (element)
   {
     case O_DIAMOND_KEY:
       cave->diamond_key_collected = TRUE;
-      gd_sound_play(cave, GD_S_DIAMOND_KEY_COLLECTING, object, x, y);
+      gd_sound_play(cave, GD_S_DIAMOND_KEY_COLLECTING, element, x, y);
       return O_SPACE;
 
     // KEYS AND DOORS
     case O_KEY_1:
-      gd_sound_play(cave, GD_S_KEY_COLLECTING, object, x, y);
+      gd_sound_play(cave, GD_S_KEY_COLLECTING, element, x, y);
       cave->key1++;
       return O_SPACE;
 
     case O_KEY_2:
-      gd_sound_play(cave, GD_S_KEY_COLLECTING, object, x, y);
+      gd_sound_play(cave, GD_S_KEY_COLLECTING, element, x, y);
       cave->key2++;
       return O_SPACE;
 
     case O_KEY_3:
-      gd_sound_play(cave, GD_S_KEY_COLLECTING, object, x, y);
+      gd_sound_play(cave, GD_S_KEY_COLLECTING, element, x, y);
       cave->key3++;
       return O_SPACE;
 
     case O_DOOR_1:
       if (cave->key1 == 0)
-	return object;
-      gd_sound_play(cave, GD_S_DOOR_OPENING, object, x, y);
+	return element;
+      gd_sound_play(cave, GD_S_DOOR_OPENING, element, x, y);
       cave->key1--;
       return O_SPACE;
 
     case O_DOOR_2:
       if (cave->key2 == 0)
-	return object;
-      gd_sound_play(cave, GD_S_DOOR_OPENING, object, x, y);
+	return element;
+      gd_sound_play(cave, GD_S_DOOR_OPENING, element, x, y);
       cave->key2--;
       return O_SPACE;
 
     case O_DOOR_3:
       if (cave->key3 == 0)
-	return object;
-      gd_sound_play(cave, GD_S_DOOR_OPENING, object, x, y);
+	return element;
+      gd_sound_play(cave, GD_S_DOOR_OPENING, element, x, y);
       cave->key3--;
       return O_SPACE;
 
     // SWITCHES
     case O_CREATURE_SWITCH:        // creatures change direction.
-      gd_sound_play(cave, GD_S_SWITCH_CREATURES, object, x, y);
+      gd_sound_play(cave, GD_S_SWITCH_CREATURES, element, x, y);
       cave->creatures_backwards = !cave->creatures_backwards;
-      return object;
+      return element;
 
     case O_EXPANDING_WALL_SWITCH:        // expanding wall change direction.
-      gd_sound_play(cave, GD_S_SWITCH_EXPANDING, object, x, y);
+      gd_sound_play(cave, GD_S_SWITCH_EXPANDING, element, x, y);
       cave->expanding_wall_changed = !cave->expanding_wall_changed;
-      return object;
+      return element;
 
     case O_BITER_SWITCH:        // biter change delay
-      gd_sound_play(cave, GD_S_SWITCH_BITER, object, x, y);
+      gd_sound_play(cave, GD_S_SWITCH_BITER, element, x, y);
       cave->biter_delay_frame++;
       if (cave->biter_delay_frame == 4)
 	cave->biter_delay_frame = 0;
-      return object;
+      return element;
 
     case O_REPLICATOR_SWITCH:    // replicator on/off switch
-      gd_sound_play(cave, GD_S_SWITCH_REPLICATOR, object, x, y);
+      gd_sound_play(cave, GD_S_SWITCH_REPLICATOR, element, x, y);
       cave->replicators_active = !cave->replicators_active;
-      return object;
+      return element;
 
     case O_CONVEYOR_SWITCH:    // conveyor belts on/off
-      gd_sound_play(cave, GD_S_SWITCH_CONVEYOR, object, x, y);
+      gd_sound_play(cave, GD_S_SWITCH_CONVEYOR, element, x, y);
       cave->conveyor_belts_active = !cave->conveyor_belts_active;
-      return object;
+      return element;
 
     case O_CONVEYOR_DIR_SWITCH: // conveyor belts switch direction
-      gd_sound_play(cave, GD_S_SWITCH_CONVEYOR, object, x, y);
+      gd_sound_play(cave, GD_S_SWITCH_CONVEYOR, element, x, y);
       cave->conveyor_belts_direction_changed = !cave->conveyor_belts_direction_changed;
-      return object;
+      return element;
 
     // USUAL STUFF
     case O_DIRT:
@@ -1065,22 +1065,22 @@ static GdElement player_eat_element(GdCave* cave, const GdElement object, int x,
     case O_DIRT_SLOPED_DOWN_RIGHT:
     case O_DIRT_BALL:
     case O_DIRT_LOOSE:
-      gd_sound_play(cave, GD_S_DIRT_WALKING, object, x, y);
+      gd_sound_play(cave, GD_S_DIRT_WALKING, element, x, y);
       return O_SPACE;
 
     case O_SWEET:
-      gd_sound_play(cave, GD_S_SWEET_COLLECTING, object, x, y);
+      gd_sound_play(cave, GD_S_SWEET_COLLECTING, element, x, y);
       cave->sweet_eaten = TRUE;
       return O_SPACE;
 
     case O_PNEUMATIC_HAMMER:
-      gd_sound_play(cave, GD_S_PNEUMATIC_COLLECTING, object, x, y);
+      gd_sound_play(cave, GD_S_PNEUMATIC_COLLECTING, element, x, y);
       cave->got_pneumatic_hammer = TRUE;
       return O_SPACE;
 
     case O_CLOCK:
       // bonus time
-      gd_sound_play(cave, GD_S_CLOCK_COLLECTING, object, x, y);
+      gd_sound_play(cave, GD_S_CLOCK_COLLECTING, element, x, y);
       cave->time += cave->time_bonus * cave->timing_factor;
       if (cave->time > cave->max_time * cave->timing_factor)
 	cave->time -= cave->max_time * cave->timing_factor;
@@ -1091,8 +1091,8 @@ static GdElement player_eat_element(GdCave* cave, const GdElement object, int x,
     case O_FLYING_DIAMOND:
       // prevent diamond sounds for O_SKELETON (see below)
       if (x != -1 && y != -1)
-	gd_sound_play(cave, (object == O_DIAMOND ? GD_S_DIAMOND_COLLECTING :
-			     GD_S_FLYING_DIAMOND_COLLECTING), object, x, y);
+	gd_sound_play(cave, (element == O_DIAMOND ? GD_S_DIAMOND_COLLECTING :
+			     GD_S_FLYING_DIAMOND_COLLECTING), element, x, y);
 
       cave->score += cave->diamond_value;
       cave->diamonds_collected++;
@@ -1118,7 +1118,7 @@ static GdElement player_eat_element(GdCave* cave, const GdElement object, int x,
 	player_eat_element(cave, O_DIAMOND, -1, -1);
 
       // _after_ calling get_element for the fake diamonds, so we overwrite its sounds
-      gd_sound_play(cave, GD_S_SKELETON_COLLECTING, object, x, y);
+      gd_sound_play(cave, GD_S_SKELETON_COLLECTING, element, x, y);
       return O_SPACE;
 
     case O_OUTBOX:
@@ -1128,12 +1128,12 @@ static GdElement player_eat_element(GdCave* cave, const GdElement object, int x,
 
     case O_SPACE:
     case O_LAVA:    // player goes into lava, as if it was space
-      gd_sound_play(cave, GD_S_EMPTY_WALKING, object, x, y);
+      gd_sound_play(cave, GD_S_EMPTY_WALKING, element, x, y);
       return O_SPACE;
 
     default:
-      // the object will remain there.
-      return object;
+      // the element will remain there.
+      return element;
   }
 }
 
