@@ -636,6 +636,7 @@ static inline boolean is_like_dirt(const GdCave *cave, const int x, const int y,
   return has_property(get_dir(cave, x, y, dir), P_DIRT);
 }
 
+// store from/to directions in special buffers for smooth movement animations
 static inline void store_dir_buffer(GdCave *cave, const int x, const int y, const GdDirection dir)
 {
   int old_x = x;
