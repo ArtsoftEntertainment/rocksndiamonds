@@ -557,9 +557,9 @@ static inline boolean is_scanned_dir(const GdCave *cave, const int x, const int 
 }
 
 // Returns true if neighboring element is "e", or equivalent to "e".
-// Dirt is treated in a special way; eg. if is_element_dir(O_DIRT) is
+// Dirt is treated in a special way; eg. if is_like_element(O_DIRT) is
 // asked, and an O_DIRT2 is there, true is returned.
-// Also, lava is special; if is_element_dir(O_SPACE) is asked, and
+// Also, lava is special; if is_like_element(O_SPACE) is asked, and
 // an O_LAVA is there, true is returned. This way, any movement
 // is allowed by any creature and player into lava.
 //
@@ -568,8 +568,8 @@ static inline boolean is_scanned_dir(const GdCave *cave, const int x, const int 
 // @param dir The direction to add to (x, y) and check the element at
 // @param e The element to compare (x, y) + dir to
 // @return True, if they are equivalent
-static inline boolean is_element_dir(const GdCave *cave, const int x, const int y,
-				     const GdDirection dir, GdElement e)
+static inline boolean is_like_element(const GdCave *cave, const int x, const int y,
+                                      const GdDirection dir, GdElement e)
 {
   GdElement examined = get_dir(cave, x, y, dir);
 
@@ -597,12 +597,12 @@ static inline boolean is_element_dir(const GdCave *cave, const int x, const int 
 // _do_ go directly into it. So if the player steps into the lava,
 // he will die. If a dragonfly flies over it, it will not.
 //
-// This behavior is implemented in the is_space_dir and the store
-// functions. is_space_dir returns true for the lava, too. The store
+// This behavior is implemented in the is_like_space and the store
+// functions. is_like_space returns true for the lava, too. The store
 // function ignores any store requests into the lava.
 // The player_get_element function will also behave for lava as it does for space.
-static inline boolean is_space_dir(const GdCave *cave, const int x, const int y,
-				   const GdDirection dir)
+static inline boolean is_like_space(const GdCave *cave, const int x, const int y,
+                                    const GdDirection dir)
 {
   GdElement e = get_dir(cave, x, y, dir);
 
@@ -1160,7 +1160,7 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
 
     // if we found a teleporter...
     if (get(cave, tx, ty) == O_TELEPORTER &&
-	is_space_dir(cave, tx, ty, player_move))
+	is_like_space(cave, tx, ty, player_move))
     {
       // new player appears near teleporter found
       store_dir(cave, tx, ty, player_move, get(cave, px, py));
@@ -1250,7 +1250,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	    break;
 	}
 
-	if (is_space_dir(cave, x, y, GD_MV_TWICE + player_move) &&
+	if (is_like_space(cave, x, y, GD_MV_TWICE + player_move) &&
 	    gd_rand_int_range(cave->random, 0, 1000000) < prob)
 	{
 	  // if decided that he will be able to push,
@@ -1285,15 +1285,15 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	if (player_move == grav_compat)
 	{
 	  // pushing bladder down
-	  if (is_space_dir(cave, x, y, GD_MV_TWICE + player_move))
+	  if (is_like_space(cave, x, y, GD_MV_TWICE + player_move))
 	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER), result = TRUE;
 	  // if no space to push down, maybe left (down-left to player)
-	  else if (is_space_dir(cave, x, y, cw_eighth[grav_compat]))
+	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))
 
 	    // left is "down, turned right (cw)"
 	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER), result = TRUE;
 	  // if not, maybe right (down-right to player)
-	  else if (is_space_dir(cave, x, y, ccw_eighth[grav_compat]))
+	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))
 	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER), result = TRUE;
 	}
 
@@ -1303,11 +1303,11 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	//  2        v
 	else if (player_move == cw_fourth[grav_compat])
 	{
-	  if (is_space_dir(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat]))    // pushing it left
+	  if (is_like_space(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat]))    // pushing it left
 	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + cw_fourth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_space_dir(cave, x, y, cw_eighth[grav_compat]))    // maybe down, and player will move left
+	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))    // maybe down, and player will move left
 	    store_dir_no_scanned(cave, x, y, cw_eighth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_space_dir(cave, x, y, cw_eighth[player_move]))    // maybe up, and player will move left
+	  else if (is_like_space(cave, x, y, cw_eighth[player_move]))    // maybe up, and player will move left
 	    store_dir_no_scanned(cave, x, y, cw_eighth[player_move], O_BLADDER), result = TRUE;
 	}
 
@@ -1317,11 +1317,11 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	//  2        v
 	else if (player_move == ccw_fourth[grav_compat])
 	{
-	  if (is_space_dir(cave, x, y, GD_MV_TWICE + player_move))    // pushing it right
+	  if (is_like_space(cave, x, y, GD_MV_TWICE + player_move))    // pushing it right
 	    store_dir_no_scanned(cave, x, y, GD_MV_TWICE + player_move, O_BLADDER), result = TRUE;
-	  else if (is_space_dir(cave, x, y, ccw_eighth[grav_compat]))    // maybe down, and player will move right
+	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))    // maybe down, and player will move right
 	    store_dir_no_scanned(cave, x, y, ccw_eighth[grav_compat], O_BLADDER), result = TRUE;
-	  else if (is_space_dir(cave, x, y, ccw_eighth[player_move]))    // maybe up, and player will move right
+	  else if (is_like_space(cave, x, y, ccw_eighth[player_move]))    // maybe up, and player will move right
 	    store_dir_no_scanned(cave, x, y, ccw_eighth[player_move], O_BLADDER), result = TRUE;
 	}
 
@@ -1342,7 +1342,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	  case GD_MV_UP:
 	  case GD_MV_DOWN:
 	    // pushing in some dir, two steps in that dir - is there space?
-	    if (is_space_dir(cave, x, y, player_move + GD_MV_TWICE))
+	    if (is_like_space(cave, x, y, player_move + GD_MV_TWICE))
 	    {
 	      // yes, so push.
 	      store_dir(cave, x, y, player_move + GD_MV_TWICE, O_BOX);
@@ -1415,7 +1415,7 @@ static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direct
   if (cave->gravity_disabled)
     return;
 
-  if (is_space_dir(cave, x, y, falling_direction))
+  if (is_like_space(cave, x, y, falling_direction))
   {
     // beginning to fall
     play_sound_of_element(cave, get(cave, x, y), x, y);
@@ -1434,8 +1434,8 @@ static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direct
   {
     // rolling down if sitting on a sloped object
     if (sloped_dir(cave, x, y, falling_direction, cw_fourth[falling_direction]) &&
-	is_space_dir(cave, x, y, cw_fourth[falling_direction]) &&
-	is_space_dir(cave, x, y, cw_eighth[falling_direction]))
+	is_like_space(cave, x, y, cw_fourth[falling_direction]) &&
+	is_like_space(cave, x, y, cw_eighth[falling_direction]))
     {
       // rolling left? - keep in mind that ccw_fourth rotates gravity ccw,
       // so here we use cw_fourth
@@ -1443,8 +1443,8 @@ static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direct
       move(cave, x, y, cw_fourth[falling_direction], falling_element);
     }
     else if (sloped_dir(cave, x, y, falling_direction, ccw_fourth[falling_direction]) &&
-	     is_space_dir(cave, x, y, ccw_fourth[falling_direction]) &&
-	     is_space_dir(cave, x, y, ccw_eighth[falling_direction]))
+	     is_like_space(cave, x, y, ccw_fourth[falling_direction]) &&
+	     is_like_space(cave, x, y, ccw_eighth[falling_direction]))
     {
       // rolling right?
       play_sound_of_element(cave, get(cave, x, y), x, y);
@@ -1530,7 +1530,7 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y,
       cave->magic_wall_state = GD_MW_ACTIVE;
 
     if (cave->magic_wall_state == GD_MW_ACTIVE &&
-	is_space_dir(cave, x, y, GD_MV_TWICE+fall_dir))
+	is_like_space(cave, x, y, GD_MV_TWICE+fall_dir))
     {
       // if magic wall active and place underneath, it turns element
       // into anything the effect says to do.
@@ -1573,7 +1573,7 @@ static boolean do_fall_try_crush(GdCave *cave, int x, int y, GdDirection fall_di
 static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
 				    GdDirection fall_dir, GdElement bouncing)
 {
-  if (is_space_dir(cave, x, y, fall_dir))
+  if (is_like_space(cave, x, y, fall_dir))
   {
     // falling further
     move(cave, x, y, fall_dir, get(cave, x, y));
@@ -1594,8 +1594,8 @@ static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
   {
     // sloped element, falling to left or right
     if (sloped_dir(cave, x, y, fall_dir, cw_fourth[fall_dir]) &&
-	is_space_dir(cave, x, y, cw_eighth[fall_dir]) &&
-	is_space_dir(cave, x, y, cw_fourth[fall_dir]))
+	is_like_space(cave, x, y, cw_eighth[fall_dir]) &&
+	is_like_space(cave, x, y, cw_fourth[fall_dir]))
     {
       play_sound_of_element(cave, get(cave, x, y), x, y);
 
@@ -1603,8 +1603,8 @@ static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
       move(cave, x, y, cw_fourth[fall_dir], get(cave, x, y));
     }
     else if (sloped_dir(cave, x, y, fall_dir, ccw_fourth[fall_dir]) &&
-	     is_space_dir(cave, x, y, ccw_eighth[fall_dir]) &&
-	     is_space_dir(cave, x, y, ccw_fourth[fall_dir]))
+	     is_like_space(cave, x, y, ccw_eighth[fall_dir]) &&
+	     is_like_space(cave, x, y, ccw_fourth[fall_dir]))
     {
       play_sound_of_element(cave, get(cave, x, y), x, y);
 
@@ -1890,8 +1890,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  // 1) press fire, 2) have pneumatic hammer 4) space on left or right
 	  // for hammer 5) stand on something
 	  if (player_fire && cave->got_pneumatic_hammer &&
-	      is_space_dir(cave, x, y, player_move) &&
-	      !is_space_dir(cave, x, y, GD_MV_DOWN))
+	      is_like_space(cave, x, y, player_move) &&
+	      !is_like_space(cave, x, y, GD_MV_DOWN))
 	  {
 	    if (player_move == GD_MV_LEFT &&
 		can_be_hammered_dir(cave, x, y, GD_MV_DOWN_LEFT))
@@ -2051,8 +2051,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    if (player_fire)
 	    {
 	      // placing a bomb into empty space or dirt
-	      if (is_space_dir(cave, x, y, player_move) ||
-		  is_element_dir(cave, x, y, player_move, O_DIRT))
+	      if (is_like_space(cave, x, y, player_move) ||
+		  is_like_element(cave, x, y, player_move, O_DIRT))
 	      {
 		store_dir(cave, x, y, player_move, O_BOMB_TICK_1);
 
@@ -2139,7 +2139,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    if (player_fire)
 	    {
 	      // placing a rocket into empty space
-	      if (is_space_dir(cave, x, y, player_move))
+	      if (is_like_space(cave, x, y, player_move))
 	      {
 		switch (player_move)
 		{
@@ -2448,13 +2448,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_NITRO_PACK_F:    // falling nitro pack
 	  if (!cave->gravity_disabled)
 	  {
-	    if (is_space_dir(cave, x, y, cave->gravity))    // if space, falling further
+	    if (is_like_space(cave, x, y, cave->gravity))    // if space, falling further
 	      move(cave, x, y, cave->gravity, get(cave, x, y));
 	    else if (do_fall_try_magic(cave, x, y, cave->gravity, cave->magic_nitro_pack_to))
 	    {
 	      // try magic wall; if true, function did the work
 	    }
-	    else if (is_element_dir(cave, x, y, cave->gravity, O_DIRT))
+	    else if (is_like_element(cave, x, y, cave->gravity, O_DIRT))
 	    {
 	      // falling on a dirt, it does NOT explode - just stops at its place.
 	      play_sound_of_element(cave, O_NITRO_PACK, x, y);
@@ -2479,8 +2479,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_COW_3:
 	case O_COW_4:
 	  // if cannot move in any direction, becomes an enclosed cow
-	  if (!is_space_dir(cave, x, y, GD_MV_UP) && !is_space_dir(cave, x, y, GD_MV_DOWN) &&
-	      !is_space_dir(cave, x, y, GD_MV_LEFT) && !is_space_dir(cave, x, y, GD_MV_RIGHT))
+	  if (!is_like_space(cave, x, y, GD_MV_UP) && !is_like_space(cave, x, y, GD_MV_DOWN) &&
+	      !is_like_space(cave, x, y, GD_MV_LEFT) && !is_like_space(cave, x, y, GD_MV_RIGHT))
 	    store(cave, x, y, O_COW_ENCLOSED_1);
 	  else
 	  {
@@ -2510,9 +2510,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      dirp = (dir + 3) & 3;    // slow turn
 	    }
 
-	    if (is_space_dir(cave, x, y, creature_move[dirn]))
+	    if (is_like_space(cave, x, y, creature_move[dirn]))
 	      move(cave, x, y, creature_move[dirn], base + dirn);    // turn and move to preferred dir
-	    else if (is_space_dir(cave, x, y, creature_move[dir]))
+	    else if (is_like_space(cave, x, y, creature_move[dir]))
 	      move(cave, x, y, creature_move[dir], base + dir);    // go on
 	    else
 	      store(cave, x, y, base + dirp);    // turn in place if nothing else possible
@@ -2526,20 +2526,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_COW_ENCLOSED_4:
 	case O_COW_ENCLOSED_5:
 	case O_COW_ENCLOSED_6:
-	  if (is_space_dir(cave, x, y, GD_MV_UP) ||
-	      is_space_dir(cave, x, y, GD_MV_LEFT) ||
-	      is_space_dir(cave, x, y, GD_MV_RIGHT) ||
-	      is_space_dir(cave, x, y, GD_MV_DOWN))
+	  if (is_like_space(cave, x, y, GD_MV_UP) ||
+	      is_like_space(cave, x, y, GD_MV_LEFT) ||
+	      is_like_space(cave, x, y, GD_MV_RIGHT) ||
+	      is_like_space(cave, x, y, GD_MV_DOWN))
 	    store(cave, x, y, O_COW_1);
 	  else
 	    next(cave, x, y);
 	  break;
 
 	case O_COW_ENCLOSED_7:
-	  if (is_space_dir(cave, x, y, GD_MV_UP) ||
-	      is_space_dir(cave, x, y, GD_MV_LEFT) ||
-	      is_space_dir(cave, x, y, GD_MV_RIGHT) ||
-	      is_space_dir(cave, x, y, GD_MV_DOWN))
+	  if (is_like_space(cave, x, y, GD_MV_UP) ||
+	      is_like_space(cave, x, y, GD_MV_LEFT) ||
+	      is_like_space(cave, x, y, GD_MV_RIGHT) ||
+	      is_like_space(cave, x, y, GD_MV_DOWN))
 	    store(cave, x, y, O_COW_1);
 	  else
 	    store(cave, x, y, O_SKELETON);
@@ -2620,9 +2620,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      dirp = (dir + 3) & 3;    // slow turn
 	    }
 
-	    if (is_space_dir(cave, x, y, creature_move[dirn]))
+	    if (is_like_space(cave, x, y, creature_move[dirn]))
 	      move(cave, x, y, creature_move[dirn], base + dirn);    // turn and move to preferred dir
-	    else if (is_space_dir(cave, x, y, creature_move[dir]))
+	    else if (is_like_space(cave, x, y, creature_move[dir]))
 	      move(cave, x, y, creature_move[dir], base + dir);    // go on
 	    else
 	      store(cave, x, y, base + dirp);    // turn in place if nothing else possible
@@ -2630,7 +2630,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_WAITING_STONE:
-	  if (is_space_dir(cave, x, y, grav_compat))
+	  if (is_like_space(cave, x, y, grav_compat))
 	  {
 	    // beginning to fall
 	    // it wakes up.
@@ -2640,15 +2640,15 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  {
 	    // rolling down a brick wall or a stone
 	    if (sloped_dir(cave, x, y, grav_compat, cw_fourth[grav_compat]) &&
-		is_space_dir(cave, x, y, cw_fourth[grav_compat]) &&
-		is_space_dir(cave, x, y, cw_eighth[grav_compat]))
+		is_like_space(cave, x, y, cw_fourth[grav_compat]) &&
+		is_like_space(cave, x, y, cw_eighth[grav_compat]))
 	    {
 	      // maybe rolling left - see case O_STONE to understand why we use cw_fourth here
 	      move(cave, x, y, cw_fourth[grav_compat], O_WAITING_STONE);
 	    }
 	    else if (sloped_dir(cave, x, y, grav_compat, ccw_fourth[grav_compat]) &&
-		     is_space_dir(cave, x, y, ccw_fourth[grav_compat]) &&
-		     is_space_dir(cave, x, y, ccw_eighth[grav_compat]))
+		     is_like_space(cave, x, y, ccw_fourth[grav_compat]) &&
+		     is_like_space(cave, x, y, ccw_eighth[grav_compat]))
 	    {
 	      // or maybe right
 	      move(cave, x, y, ccw_fourth[grav_compat], O_WAITING_STONE);
@@ -2683,13 +2683,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		}
 		else
 		{
-		  if (px > x && is_space_dir(cave, x, y, GD_MV_RIGHT))
+		  if (px > x && is_like_space(cave, x, y, GD_MV_RIGHT))
 		  {
 		    move(cave, x, y, GD_MV_RIGHT, O_CHASING_STONE);
 		    dont_move = TRUE;
 		    break;
 		  }
-		  else if (px < x && is_space_dir(cave, x, y, GD_MV_LEFT))
+		  else if (px < x && is_like_space(cave, x, y, GD_MV_LEFT))
 		  {
 		    move(cave, x, y, GD_MV_LEFT, O_CHASING_STONE);
 		    dont_move = TRUE;
@@ -2721,13 +2721,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		}
 		else
 		{
-		  if (py > y && is_space_dir(cave, x, y, GD_MV_DOWN))
+		  if (py > y && is_like_space(cave, x, y, GD_MV_DOWN))
 		  {
 		    move(cave, x, y, GD_MV_DOWN, O_CHASING_STONE);
 		    dont_move = TRUE;
 		    break;
 		  }
-		  else if (py < y && is_space_dir(cave, x, y, GD_MV_UP))
+		  else if (py < y && is_like_space(cave, x, y, GD_MV_UP))
 		  {
 		    move(cave, x, y, GD_MV_UP, O_CHASING_STONE);
 		    dont_move = TRUE;
@@ -2759,20 +2759,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		// check for horizontal
 		if (x >= px)
 		{
-		  if (is_space_dir(cave, x, y, GD_MV_UP) &&
-		      is_space_dir(cave, x, y, GD_MV_UP_LEFT))
+		  if (is_like_space(cave, x, y, GD_MV_UP) &&
+		      is_like_space(cave, x, y, GD_MV_UP_LEFT))
 		    move(cave, x, y, GD_MV_UP, O_CHASING_STONE);
-		  else if (is_space_dir(cave, x, y, GD_MV_DOWN) &&
-			   is_space_dir(cave, x, y, GD_MV_DOWN_LEFT))
+		  else if (is_like_space(cave, x, y, GD_MV_DOWN) &&
+			   is_like_space(cave, x, y, GD_MV_DOWN_LEFT))
 		    move(cave, x, y, GD_MV_DOWN, O_CHASING_STONE);
 		}
 		else
 		{
-		  if (is_space_dir(cave, x, y, GD_MV_UP) &&
-		      is_space_dir(cave, x, y, GD_MV_UP_RIGHT))
+		  if (is_like_space(cave, x, y, GD_MV_UP) &&
+		      is_like_space(cave, x, y, GD_MV_UP_RIGHT))
 		    move(cave, x, y, GD_MV_UP, O_CHASING_STONE);
-		  else if (is_space_dir(cave, x, y, GD_MV_DOWN) &&
-			   is_space_dir(cave, x, y, GD_MV_DOWN_RIGHT))
+		  else if (is_like_space(cave, x, y, GD_MV_DOWN) &&
+			   is_like_space(cave, x, y, GD_MV_DOWN_RIGHT))
 		    move(cave, x, y, GD_MV_DOWN, O_CHASING_STONE);
 		}
 	      }
@@ -2781,20 +2781,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		// check for vertical
 		if (y >= py)
 		{
-		  if (is_space_dir(cave, x, y, GD_MV_LEFT) &&
-		      is_space_dir(cave, x, y, GD_MV_UP_LEFT))
+		  if (is_like_space(cave, x, y, GD_MV_LEFT) &&
+		      is_like_space(cave, x, y, GD_MV_UP_LEFT))
 		    move(cave, x, y, GD_MV_LEFT, O_CHASING_STONE);
-		  else if (is_space_dir(cave, x, y, GD_MV_RIGHT) &&
-			   is_space_dir(cave, x, y, GD_MV_UP_RIGHT))
+		  else if (is_like_space(cave, x, y, GD_MV_RIGHT) &&
+			   is_like_space(cave, x, y, GD_MV_UP_RIGHT))
 		    move(cave, x, y, GD_MV_RIGHT, O_CHASING_STONE);
 		}
 		else
 		{
-		  if (is_space_dir(cave, x, y, GD_MV_LEFT) &&
-		      is_space_dir(cave, x, y, GD_MV_DOWN_LEFT))
+		  if (is_like_space(cave, x, y, GD_MV_LEFT) &&
+		      is_like_space(cave, x, y, GD_MV_DOWN_LEFT))
 		    move(cave, x, y, GD_MV_LEFT, O_CHASING_STONE);
-		  else if (is_space_dir(cave, x, y, GD_MV_RIGHT) &&
-			   is_space_dir(cave, x, y, GD_MV_DOWN_RIGHT))
+		  else if (is_like_space(cave, x, y, GD_MV_RIGHT) &&
+			   is_like_space(cave, x, y, GD_MV_DOWN_RIGHT))
 		    move(cave, x, y, GD_MV_RIGHT, O_CHASING_STONE);
 		}
 	      }
@@ -2811,7 +2811,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    // do not replicate players!
 	    // also obeys gravity settings.
 	    // only replicate element if it is not a scanned one
-	    if (is_space_dir(cave, x, y, cave->gravity) &&
+	    if (is_like_space(cave, x, y, cave->gravity) &&
 		!is_player_dir(cave, x, y, opposite[cave->gravity]) &&
 		!is_scanned_dir(cave, x, y, opposite[cave->gravity]))
 	    {
@@ -2844,21 +2844,21 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	    for (i = 0; i < ARRAY_SIZE (biter_try); i++)
 	    {
-	      if (is_element_dir(cave, x, y, biter_move[dir], biter_try[i]))
+	      if (is_like_element(cave, x, y, biter_move[dir], biter_try[i]))
 	      {
 		move(cave, x, y, biter_move[dir], O_BITER_1 + dir);
 		if (biter_try[i] != O_SPACE)
 		  made_sound_of = O_BITER_1;    // sound of a biter eating
 		break;
 	      }
-	      else if (is_element_dir(cave, x, y, biter_move[dirn], biter_try[i]))
+	      else if (is_like_element(cave, x, y, biter_move[dirn], biter_try[i]))
 	      {
 		move(cave, x, y, biter_move[dirn], O_BITER_1 + dirn);
 		if (biter_try[i] != O_SPACE)
 		  made_sound_of = O_BITER_1;    // sound of a biter eating
 		break;
 	      }
-	      else if (is_element_dir(cave, x, y, biter_move[dirp], biter_try[i]))
+	      else if (is_like_element(cave, x, y, biter_move[dirp], biter_try[i]))
 	      {
 		move(cave, x, y, biter_move[dirp], O_BITER_1 + dirp);
 		if (biter_try[i] != O_SPACE)
@@ -2922,7 +2922,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      dirn = (dir + 1) & 3;    // fast turn
 
 	    // if can move forward, does so.
-	    if (is_space_dir(cave, x, y, creature_move[dir]))
+	    if (is_like_space(cave, x, y, creature_move[dir]))
 	      move(cave, x, y, creature_move[dir], base + dir);
 	    else
 	      // otherwise turns 90 degrees in place.
@@ -2943,9 +2943,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_BLADDER_7:
 	case O_BLADDER_8:
 	  // bladder with any delay state: try to convert to clock.
-	  if (is_element_dir(cave, x, y, opposite[grav_compat], cave->bladder_converts_by) ||
-	      is_element_dir(cave, x, y, cw_fourth[grav_compat], cave->bladder_converts_by) ||
-              is_element_dir(cave, x, y, ccw_fourth[grav_compat], cave->bladder_converts_by))
+	  if (is_like_element(cave, x, y, opposite[grav_compat], cave->bladder_converts_by) ||
+	      is_like_element(cave, x, y, cw_fourth[grav_compat], cave->bladder_converts_by) ||
+              is_like_element(cave, x, y, ccw_fourth[grav_compat], cave->bladder_converts_by))
 	  {
 	    // if touches the specified element, let it be a clock
 	    store(cave, x, y, O_PRE_CLOCK_1);
@@ -2956,7 +2956,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  else
 	  {
 	    // is space over the bladder?
-	    if (is_space_dir(cave, x, y, opposite[grav_compat]))
+	    if (is_like_space(cave, x, y, opposite[grav_compat]))
 	    {
 	      if (get(cave, x, y) == O_BLADDER_8)
 	      {
@@ -2974,8 +2974,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  sloped_dir(cave, x, y, opposite[grav_compat], opposite[grav_compat]))
 	      {
 		if (sloped_dir(cave, x, y, opposite[grav_compat], ccw_fourth[opposite[grav_compat]]) &&
-		    is_space_dir(cave, x, y, ccw_fourth[opposite[grav_compat]]) &&
-		    is_space_dir(cave, x, y, ccw_eighth[opposite[grav_compat]]))
+		    is_like_space(cave, x, y, ccw_fourth[opposite[grav_compat]]) &&
+		    is_like_space(cave, x, y, ccw_eighth[opposite[grav_compat]]))
 		{
 		  // rolling up, to left
 		  if (get(cave, x, y) == O_BLADDER_8)
@@ -2989,8 +2989,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		    next(cave, x, y);
 		}
 		else if (sloped_dir(cave, x, y, opposite[grav_compat], cw_fourth[opposite[grav_compat]]) &&
-			 is_space_dir(cave, x, y, cw_fourth[opposite[grav_compat]]) &&
-			 is_space_dir(cave, x, y, cw_eighth[opposite[grav_compat]]))
+			 is_like_space(cave, x, y, cw_fourth[opposite[grav_compat]]) &&
+			 is_like_space(cave, x, y, cw_eighth[opposite[grav_compat]]))
 		{
 		  // rolling up, to left
 		  if (get(cave, x, y) == O_BLADDER_8)
@@ -3034,7 +3034,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      GdDirection random_dir;
 
 	      random_dir = dirs[gd_rand_int_range(cave->random, 0, ARRAY_SIZE(dirs))];
-	      if (is_space_dir(cave, x, y, random_dir))
+	      if (is_like_space(cave, x, y, random_dir))
 	      {
 		move(cave, x, y, random_dir, O_GHOST);
 		break;    // ghost did move -> exit loop
@@ -3120,10 +3120,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  amoeba_2_count++;
 	  // check if it is touching an amoeba, and explosion is enabled
 	  if (cave->amoeba_2_explodes_by_amoeba &&
-	      (is_element_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA) ||
-	       is_element_dir(cave, x, y, GD_MV_UP, O_AMOEBA) ||
-	       is_element_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA) ||
-	       is_element_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA)))
+	      (is_like_element(cave, x, y, GD_MV_DOWN, O_AMOEBA) ||
+	       is_like_element(cave, x, y, GD_MV_UP, O_AMOEBA) ||
+	       is_like_element(cave, x, y, GD_MV_LEFT, O_AMOEBA) ||
+	       is_like_element(cave, x, y, GD_MV_RIGHT, O_AMOEBA)))
 	    explode (cave, x, y);
 	  else
 	    switch (cave->amoeba_2_state)
@@ -3191,25 +3191,25 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    store(cave, x, y, cave->acid_turns_to);
 
 	    // and if neighbours are eaten, put acid there.
-	    if (is_element_dir(cave, x, y, GD_MV_UP, cave->acid_eats_this))
+	    if (is_like_element(cave, x, y, GD_MV_UP, cave->acid_eats_this))
 	    {
 	      play_sound_of_element(cave, O_ACID, x, y);
 	      store_dir(cave, x, y, GD_MV_UP, O_ACID);
 	    }
 
-	    if (is_element_dir(cave, x, y, GD_MV_DOWN, cave->acid_eats_this))
+	    if (is_like_element(cave, x, y, GD_MV_DOWN, cave->acid_eats_this))
 	    {
 	      play_sound_of_element(cave, O_ACID, x, y);
 	      store_dir(cave, x, y, GD_MV_DOWN, O_ACID);
 	    }
 
-	    if (is_element_dir(cave, x, y, GD_MV_LEFT, cave->acid_eats_this))
+	    if (is_like_element(cave, x, y, GD_MV_LEFT, cave->acid_eats_this))
 	    {
 	      play_sound_of_element(cave, O_ACID, x, y);
 	      store_dir(cave, x, y, GD_MV_LEFT, O_ACID);
 	    }
 
-	    if (is_element_dir(cave, x, y, GD_MV_RIGHT, cave->acid_eats_this))
+	    if (is_like_element(cave, x, y, GD_MV_RIGHT, cave->acid_eats_this))
 	    {
 	      play_sound_of_element(cave, O_ACID, x, y);
 	      store_dir(cave, x, y, GD_MV_RIGHT, O_ACID);
@@ -3220,17 +3220,17 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_WATER:
 	  found_water = TRUE;
 	  if (!cave->water_does_not_flow_down &&
-	      is_space_dir(cave, x, y, GD_MV_DOWN))
+	      is_like_space(cave, x, y, GD_MV_DOWN))
 	    // emulating the odd behaviour in crdr
 	    store_dir(cave, x, y, GD_MV_DOWN, O_WATER_1);
 
-	  if (is_space_dir(cave, x, y, GD_MV_UP))
+	  if (is_like_space(cave, x, y, GD_MV_UP))
 	    store_dir(cave, x, y, GD_MV_UP, O_WATER_1);
 
-	  if (is_space_dir(cave, x, y, GD_MV_LEFT))
+	  if (is_like_space(cave, x, y, GD_MV_LEFT))
 	    store_dir(cave, x, y, GD_MV_LEFT, O_WATER_1);
 
-	  if (is_space_dir(cave, x, y, GD_MV_RIGHT))
+	  if (is_like_space(cave, x, y, GD_MV_RIGHT))
 	    store_dir(cave, x, y, GD_MV_RIGHT, O_WATER_1);
 	  break;
 
@@ -3250,25 +3250,25 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		get(cave, x, y) == O_V_EXPANDING_STEEL_WALL) &&
 	       cave->expanding_wall_changed))
 	  {
-	    if (is_space_dir(cave, x, y, GD_MV_LEFT))
+	    if (is_like_space(cave, x, y, GD_MV_LEFT))
 	    {
 	      store_dir(cave, x, y, GD_MV_LEFT, get(cave, x, y));
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
 	    }
 
-	    if (is_space_dir(cave, x, y, GD_MV_RIGHT)) {
+	    if (is_like_space(cave, x, y, GD_MV_RIGHT)) {
 	      store_dir(cave, x, y, GD_MV_RIGHT, get(cave, x, y));
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
 	    }
 	  }
 	  else
 	  {
-	    if (is_space_dir(cave, x, y, GD_MV_UP)) {
+	    if (is_like_space(cave, x, y, GD_MV_UP)) {
 	      store_dir(cave, x, y, GD_MV_UP, get(cave, x, y));
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
 	    }
 
-	    if (is_space_dir(cave, x, y, GD_MV_DOWN)) {
+	    if (is_like_space(cave, x, y, GD_MV_DOWN)) {
 	      store_dir(cave, x, y, GD_MV_DOWN, get(cave, x, y));
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
 	    }
@@ -3278,23 +3278,23 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_EXPANDING_WALL:
 	case O_EXPANDING_STEEL_WALL:
 	  // the wall which grows in all four directions.
-	  if (is_space_dir(cave, x, y, GD_MV_LEFT))
+	  if (is_like_space(cave, x, y, GD_MV_LEFT))
 	  {
 	    store_dir(cave, x, y, GD_MV_LEFT, get(cave, x, y));
 	    play_sound_of_element(cave, get(cave, x, y), x, y);
 	  }
 
-	  if (is_space_dir(cave, x, y, GD_MV_RIGHT)) {
+	  if (is_like_space(cave, x, y, GD_MV_RIGHT)) {
 	    store_dir(cave, x, y, GD_MV_RIGHT, get(cave, x, y));
 	    play_sound_of_element(cave, get(cave, x, y), x, y);
 	  }
 
-	  if (is_space_dir(cave, x, y, GD_MV_UP)) {
+	  if (is_like_space(cave, x, y, GD_MV_UP)) {
 	    store_dir(cave, x, y, GD_MV_UP, get(cave, x, y));
 	    play_sound_of_element(cave, get(cave, x, y), x, y);
 	  }
 
-	  if (is_space_dir(cave, x, y, GD_MV_DOWN)) {
+	  if (is_like_space(cave, x, y, GD_MV_DOWN)) {
 	    store_dir(cave, x, y, GD_MV_DOWN, get(cave, x, y));
 	    play_sound_of_element(cave, get(cave, x, y), x, y);
 	  }
@@ -3324,7 +3324,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    GdDirection oppos = opposite[cave->gravity];
 
 	    // space under the slime? elements may pass from top to bottom then.
-	    if (is_space_dir(cave, x, y, grav))
+	    if (is_like_space(cave, x, y, grav))
 	    {
 	      if (get_dir(cave, x, y, oppos) == cave->slime_eats_1)
 	      {
@@ -3364,7 +3364,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    else
 	    {
 	      // or space over the slime? elements may pass from bottom to up then.
-	      if (is_space_dir(cave, x, y, oppos))
+	      if (is_like_space(cave, x, y, oppos))
 	      {
 		if (get_dir(cave, x, y, grav) == O_BLADDER)
 		{
@@ -3391,7 +3391,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_FALLING_WALL:
-	  if (is_space_dir(cave, x, y, grav_compat))
+	  if (is_like_space(cave, x, y, grav_compat))
 	  {
 	    // try falling if space under.
 	    int yy;
@@ -3466,7 +3466,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		(cave->gravity == GD_MV_UP &&
 		 moved_by_conveyor_bottom_dir(cave, x, y, GD_MV_UP)))
 	    {
-	      if (is_space_dir(cave, x, y, dir[GD_MV_UP]))
+	      if (is_like_space(cave, x, y, dir[GD_MV_UP]))
 	      {
                 // to allow smooth movement of game elements on conveyor belts,
                 // the moving direction set by "store_dir()" must be set to the
@@ -3498,7 +3498,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		(cave->gravity == GD_MV_DOWN &&
 		 moved_by_conveyor_bottom_dir(cave, x, y, GD_MV_DOWN)))
 	    {
-	      if (is_space_dir(cave, x, y, dir[GD_MV_DOWN]))
+	      if (is_like_space(cave, x, y, dir[GD_MV_DOWN]))
 	      {
                 // to allow smooth movement of game elements on conveyor belts,
                 // the moving direction set by "store_dir()" must be set to the
@@ -3531,28 +3531,28 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  // ============================================================================
 
 	case O_ROCKET_1:
-	  if (is_space_dir(cave, x, y, GD_MV_RIGHT))
+	  if (is_like_space(cave, x, y, GD_MV_RIGHT))
 	    move(cave, x, y, GD_MV_RIGHT, O_ROCKET_1);
 	  else
 	    explode(cave, x, y);
 	  break;
 
 	case O_ROCKET_2:
-	  if (is_space_dir(cave, x, y, GD_MV_UP))
+	  if (is_like_space(cave, x, y, GD_MV_UP))
 	    move(cave, x, y, GD_MV_UP, O_ROCKET_2);
 	  else
 	    explode(cave, x, y);
 	  break;
 
 	case O_ROCKET_3:
-	  if (is_space_dir(cave, x, y, GD_MV_LEFT))
+	  if (is_like_space(cave, x, y, GD_MV_LEFT))
 	    move(cave, x, y, GD_MV_LEFT, O_ROCKET_3);
 	  else
 	    explode(cave, x, y);
 	  break;
 
 	case O_ROCKET_4:
-	  if (is_space_dir(cave, x, y, GD_MV_DOWN))
+	  if (is_like_space(cave, x, y, GD_MV_DOWN))
 	    move(cave, x, y, GD_MV_DOWN, O_ROCKET_4);
 	  else
 	    explode(cave, x, y);
@@ -3705,7 +3705,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_BLADDER_SPENDER:
-	  if (is_space_dir(cave, x, y, opposite[grav_compat]))
+	  if (is_like_space(cave, x, y, opposite[grav_compat]))
 	  {
 	    store_dir(cave, x, y, opposite[grav_compat], O_BLADDER);
 	    store(cave, x, y, O_PRE_STEEL_1);
