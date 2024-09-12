@@ -973,15 +973,15 @@ static void inline explode_dir(GdCave *cave, const int x, const int y, GdDirecti
 // @param y The coordinate of player
 // @param dir The direction the player is moving
 // @return remaining element
-static GdElement player_eat_element(GdCave* cave, const GdElement element, int x, int y)
+static GdElement player_eat_element(GdCave *cave, const GdElement element, int x, int y)
 {
   int i;
 
   switch (element)
   {
     case O_DIAMOND_KEY:
-      cave->diamond_key_collected = TRUE;
       gd_sound_play(cave, GD_S_DIAMOND_KEY_COLLECTING, element, x, y);
+      cave->diamond_key_collected = TRUE;
       return O_SPACE;
 
     // KEYS AND DOORS
@@ -1022,34 +1022,40 @@ static GdElement player_eat_element(GdCave* cave, const GdElement element, int x
       return O_SPACE;
 
     // SWITCHES
-    case O_CREATURE_SWITCH:        // creatures change direction.
+    case O_CREATURE_SWITCH:
+      // creatures change direction.
       gd_sound_play(cave, GD_S_SWITCH_CREATURES, element, x, y);
       cave->creatures_backwards = !cave->creatures_backwards;
       return element;
 
-    case O_EXPANDING_WALL_SWITCH:        // expanding wall change direction.
+    case O_EXPANDING_WALL_SWITCH:
+      // expanding wall change direction.
       gd_sound_play(cave, GD_S_SWITCH_EXPANDING, element, x, y);
       cave->expanding_wall_changed = !cave->expanding_wall_changed;
       return element;
 
-    case O_BITER_SWITCH:        // biter change delay
+    case O_BITER_SWITCH:
+      // biter change delay
       gd_sound_play(cave, GD_S_SWITCH_BITER, element, x, y);
       cave->biter_delay_frame++;
       if (cave->biter_delay_frame == 4)
 	cave->biter_delay_frame = 0;
       return element;
 
-    case O_REPLICATOR_SWITCH:    // replicator on/off switch
+    case O_REPLICATOR_SWITCH:
+      // replicator on/off switch
       gd_sound_play(cave, GD_S_SWITCH_REPLICATOR, element, x, y);
       cave->replicators_active = !cave->replicators_active;
       return element;
 
-    case O_CONVEYOR_SWITCH:    // conveyor belts on/off
+    case O_CONVEYOR_SWITCH:
+      // conveyor belts on/off
       gd_sound_play(cave, GD_S_SWITCH_CONVEYOR, element, x, y);
       cave->conveyor_belts_active = !cave->conveyor_belts_active;
       return element;
 
-    case O_CONVEYOR_DIR_SWITCH: // conveyor belts switch direction
+    case O_CONVEYOR_DIR_SWITCH:
+      // conveyor belts switch direction
       gd_sound_play(cave, GD_S_SWITCH_CONVEYOR, element, x, y);
       cave->conveyor_belts_direction_changed = !cave->conveyor_belts_direction_changed;
       return element;
@@ -1057,15 +1063,20 @@ static GdElement player_eat_element(GdCave* cave, const GdElement element, int x
     // USUAL STUFF
     case O_DIRT:
     case O_DIRT2:
-    case O_STEEL_EATABLE:
-    case O_BRICK_EATABLE:
     case O_DIRT_SLOPED_UP_RIGHT:
     case O_DIRT_SLOPED_UP_LEFT:
     case O_DIRT_SLOPED_DOWN_LEFT:
     case O_DIRT_SLOPED_DOWN_RIGHT:
     case O_DIRT_BALL:
     case O_DIRT_LOOSE:
+    case O_STEEL_EATABLE:
+    case O_BRICK_EATABLE:
       gd_sound_play(cave, GD_S_DIRT_WALKING, element, x, y);
+      return O_SPACE;
+
+    case O_SPACE:
+    case O_LAVA:    // player goes into lava, as if it was space
+      gd_sound_play(cave, GD_S_EMPTY_WALKING, element, x, y);
       return O_SPACE;
 
     case O_SWEET:
@@ -1124,11 +1135,6 @@ static GdElement player_eat_element(GdCave* cave, const GdElement element, int x
     case O_OUTBOX:
     case O_INVIS_OUTBOX:
       cave->player_state = GD_PL_EXITED;    // player now exits the cave!
-      return O_SPACE;
-
-    case O_SPACE:
-    case O_LAVA:    // player goes into lava, as if it was space
-      gd_sound_play(cave, GD_S_EMPTY_WALKING, element, x, y);
       return O_SPACE;
 
     default:
@@ -2145,7 +2151,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 		default:
 		  // get element. if cannot get, player_eat_element will return the same
-		  remains = player_eat_element (cave, what, x, y);
+		  remains = player_eat_element(cave, what, x, y);
 		  break;
 	      }
 	    }
