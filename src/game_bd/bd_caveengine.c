@@ -973,9 +973,13 @@ static void inline explode_dir(GdCave *cave, const int x, const int y, GdDirecti
 // @param y The coordinate of player
 // @param dir The direction the player is moving
 // @return remaining element
-static GdElement player_eat_element(GdCave *cave, const GdElement element, int x, int y)
+static GdElement player_eat_element(GdCave *cave, const GdElement element, int x, int y,
+                                    GdDirection dir)
 {
   int i;
+
+  x += gd_dx[dir];
+  y += gd_dy[dir];
 
   switch (element)
   {
@@ -1126,7 +1130,7 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
 
       // as if player got a diamond
       for (i = 0; i < cave->skeletons_worth_diamonds; i++)
-	player_eat_element(cave, O_DIAMOND, -1, -1);
+	player_eat_element(cave, O_DIAMOND, -1, -1, GD_MV_STILL);
 
       // _after_ calling get_element for the fake diamonds, so we overwrite its sounds
       gd_sound_play(cave, GD_S_SKELETON_COLLECTING, element, x, y);
@@ -1533,7 +1537,7 @@ static boolean do_fall_try_eat_voodoo(GdCave *cave, int x, int y, GdDirection fa
       cave->voodoo_collects_diamonds)
   {
     // this is a 1stB-style voodoo. explodes by stone, collects diamonds
-    player_eat_element(cave, O_DIAMOND, x, y);   // as if player got diamond
+    player_eat_element(cave, O_DIAMOND, x, y, fall_dir);   // as if player got diamond
     store(cave, x, y, O_SPACE);    // diamond disappears
     return TRUE;
   }
@@ -2045,7 +2049,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		default:
 		  // get element - process others.
 		  // if cannot get, player_eat_element will return the same
-		  remains = player_eat_element(cave, what, x, y);
+		  remains = player_eat_element(cave, what, x, y, player_move);
 		  break;
 	      }
 	    }
@@ -2151,7 +2155,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 		default:
 		  // get element. if cannot get, player_eat_element will return the same
-		  remains = player_eat_element(cave, what, x, y);
+		  remains = player_eat_element(cave, what, x, y, player_move);
 		  break;
 	      }
 	    }
@@ -2245,7 +2249,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    else
 	    {
 	      // get element. if cannot get, player_eat_element will return the same
-	      remains = player_eat_element(cave, what, x, y);
+	      remains = player_eat_element(cave, what, x, y, player_move);
 	    }
 
 	    // if something changed, OR there is space, move.
