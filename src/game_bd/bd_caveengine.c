@@ -1064,6 +1064,23 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
       cave->conveyor_belts_direction_changed = !cave->conveyor_belts_direction_changed;
       return element;
 
+    case O_GRAVITY_SWITCH:
+      // only allow changing direction if the new dir is not diagonal
+      if (cave->gravity_switch_active &&
+          (dir == GD_MV_LEFT ||
+           dir == GD_MV_RIGHT ||
+           dir == GD_MV_UP ||
+           dir == GD_MV_DOWN))
+      {
+        gd_sound_play(cave, GD_S_SWITCH_GRAVITY, element, x, y);
+        // (use 1 instead of 0 for immediate gravitation change)
+        cave->gravity_will_change =
+          MAX(1, cave->gravity_change_time * cave->timing_factor);
+        cave->gravity_next_direction = dir;
+        cave->gravity_switch_active = FALSE;
+      }
+      return element;
+
     // USUAL STUFF
     case O_DIRT:
     case O_DIRT2:
@@ -2028,24 +2045,6 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  }
 		  break;
 
-		case O_GRAVITY_SWITCH:
-		  // (we cannot use player_get for this as it does not have player_move parameter)
-		  // only allow changing direction if the new dir is not diagonal
-		  if (cave->gravity_switch_active &&
-		      (player_move == GD_MV_LEFT ||
-		       player_move == GD_MV_RIGHT ||
-		       player_move == GD_MV_UP ||
-		       player_move == GD_MV_DOWN))
-		  {
-		    gd_sound_play(cave, GD_S_SWITCH_GRAVITY, what, x, y);
-                    // (use 1 instead of 0 for immediate gravitation change)
-		    cave->gravity_will_change =
-		      MAX(1, cave->gravity_change_time * cave->timing_factor);
-		    cave->gravity_next_direction = player_move;
-		    cave->gravity_switch_active = FALSE;
-		  }
-		  break;
-
 		default:
 		  // get element - process others.
 		  // if cannot get, player_eat_element will return the same
@@ -2134,25 +2133,6 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    {
 	      switch (what)
 	      {
-		case O_GRAVITY_SWITCH:
-		  // (we cannot use player_get for this as it does not have
-		  // player_move parameter)
-		  // only allow changing direction if the new dir is not diagonal
-		  if (cave->gravity_switch_active &&
-		      (player_move == GD_MV_LEFT ||
-		       player_move == GD_MV_RIGHT ||
-		       player_move == GD_MV_UP ||
-		       player_move == GD_MV_DOWN))
-		  {
-		    gd_sound_play(cave, GD_S_SWITCH_GRAVITY, what, x, y);
-                    // (use 1 instead of 0 for immediate gravitation change)
-		    cave->gravity_will_change =
-		      MAX(1, cave->gravity_change_time * cave->timing_factor);
-		    cave->gravity_next_direction = player_move;
-		    cave->gravity_switch_active = FALSE;
-		  }
-		  break;
-
 		default:
 		  // get element. if cannot get, player_eat_element will return the same
 		  remains = player_eat_element(cave, what, x, y, player_move);
