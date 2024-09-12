@@ -683,12 +683,6 @@ static inline void store(GdCave *cave, const int x, const int y, const GdElement
   *e = scanned_pair(element);
 }
 
-// store an element with SCANNED flag turned on
-static inline void store_sc(GdCave *cave, const int x, const int y, const GdElement element)
-{
-  store(cave, x, y, scanned_pair(element));
-}
-
 // Store an element to (x, y) + dir.
 static inline void store_dir(GdCave *cave, const int x, const int y,
 			     const GdDirection dir, const GdElement element)
@@ -750,14 +744,14 @@ static void cell_explode(GdCave *cave, int x, int y, GdElement explode_to)
 
   if (get(cave, x, y) == O_VOODOO && !cave->voodoo_disappear_in_explosion)
     // voodoo turns into a time penalty
-    store_sc(cave, x, y, O_TIME_PENALTY);
+    store(cave, x, y, O_TIME_PENALTY);
   else if (get(cave, x, y) == O_NITRO_PACK ||
 	   get(cave, x, y) == O_NITRO_PACK_F)
     // nitro pack inside an explosion - it is now triggered
-    store_sc(cave, x, y, O_NITRO_PACK_EXPLODE);
+    store(cave, x, y, O_NITRO_PACK_EXPLODE);
   else
     // for everything else
-    store_sc(cave, x, y, explode_to);
+    store(cave, x, y, explode_to);
 }
 
 // A creature at (x, y) explodes to a 3x3 square.
@@ -789,7 +783,7 @@ static void nitro_explode(GdCave *cave, int x, int y)
 
   // the current cell is explicitly changed into a nitro expl,
   // as cell_explode changes it to a triggered nitro pack
-  store_sc(cave, x, y, O_NITRO_EXPL_1);
+  store(cave, x, y, O_NITRO_EXPL_1);
 }
 
 // A voodoo explodes, leaving a 3x3 steel and a time penalty behind.
@@ -807,10 +801,10 @@ static void voodoo_explode(GdCave *cave, int x, int y)
   // voodoo explodes to 3x3 steel
   for (yy = y - 1; yy <= y + 1; yy++)
     for (xx = x - 1; xx <= x + 1; xx++)
-      store_sc(cave, xx, yy, O_PRE_STEEL_1);
+      store(cave, xx, yy, O_PRE_STEEL_1);
 
   // middle is a time penalty (which will be turned into a gravestone)
-  store_sc(cave, x, y, O_TIME_PENALTY);
+  store(cave, x, y, O_TIME_PENALTY);
 }
 
 // Explode cell at (x, y), but skip voodooo.
@@ -829,7 +823,7 @@ static void explode_try_skip_voodoo(GdCave *cave, const int x, const int y, cons
   if (cave->voodoo_any_hurt_kills_player && get(cave, x, y) == O_VOODOO)
     cave->voodoo_touched = TRUE;
 
-  store_sc (cave, x, y, expl);
+  store(cave, x, y, expl);
 }
 
 // An X shaped ghost explosion; does not touch voodoo!
