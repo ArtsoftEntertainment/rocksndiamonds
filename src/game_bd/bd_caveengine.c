@@ -712,8 +712,8 @@ static inline void move(GdCave *cave, const int x, const int y,
   store(cave, x, y, O_SPACE);
 }
 
-// increment a cave element; can be used for elements which are one after
-// the other, for example bladder1, bladder2, bladder3...
+// increment a cave element; can be used for elements which are one after the other,
+// for example, bladder1, bladder2, bladder3...
 static inline void next(GdCave *cave, const int x, const int y)
 {
   (*getp(cave, x, y))++;
@@ -736,7 +736,7 @@ static inline void unscan(GdCave *cave, const int x, const int y)
 // and a nitro pack explosion triggered.
 static void cell_explode(GdCave *cave, int x, int y, GdElement explode_to)
 {
-  if (non_explodable (cave, x, y))
+  if (non_explodable(cave, x, y))
     return;
 
   if (cave->voodoo_any_hurt_kills_player && get(cave, x, y) == O_VOODOO)
@@ -791,12 +791,12 @@ static void voodoo_explode(GdCave *cave, int x, int y)
 {
   int xx, yy;
 
-  // the processing of an explosion took pretty much time: processing 3x3 = 9 elements
-  cave->ckdelay += 1000;
-
-  gd_sound_play(cave, GD_S_VOODOO_EXPLODING, get(cave, x, y), x, y);
   if (cave->voodoo_any_hurt_kills_player)
     cave->voodoo_touched = TRUE;
+
+  // the processing of an explosion took pretty much time: processing 3x3 = 9 elements
+  cave->ckdelay += 1000;
+  gd_sound_play(cave, GD_S_VOODOO_EXPLODING, get(cave, x, y), x, y);
 
   // voodoo explodes to 3x3 steel
   for (yy = y - 1; yy <= y + 1; yy++)
