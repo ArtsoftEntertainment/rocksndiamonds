@@ -693,7 +693,7 @@ static inline void store_dir(GdCave *cave, const int x, const int y,
 
 // Store the element to (x, y) + dir, and store a space to (x, y).
 static inline void move(GdCave *cave, const int x, const int y,
-			const GdDirection dir, const GdElement e)
+			const GdDirection dir, const GdElement element)
 {
   // falling/flying game elements at wrap-around cave position should not kill player instantly
   if ((x + gd_dx[dir] == cave->w && dir == GD_MV_RIGHT) ||
@@ -702,13 +702,13 @@ static inline void move(GdCave *cave, const int x, const int y,
     // cave width/height out of bounds, but due to wrap-around it's the first column/row again
     if (el_can_smash_player(get(cave, x, y)))
     {
-      store(cave, x, y, e); // change to falling element ...
+      store(cave, x, y, element); // change to falling element ...
 
-      return;               // ... but do not move element
+      return;                     // ... but do not move element
     }
   }
 
-  store_dir(cave, x, y, dir, e);
+  store_dir(cave, x, y, dir, element);
   store(cave, x, y, O_SPACE);
 }
 
