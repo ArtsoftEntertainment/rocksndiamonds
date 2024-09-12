@@ -1551,7 +1551,7 @@ void gd_drawcave_game(const GdCave *cave,
       // draw special graphics if player is pushing something
       if (use_bd_pushing_graphics() &&
 	  (cave->last_direction == GD_MV_LEFT || cave->last_direction == GD_MV_RIGHT) &&
-	  is_player(cave, x, y) && can_be_pushed_dir(cave, x, y, cave->last_direction))
+	  is_player(cave, x, y) && can_be_pushed(cave, x, y, cave->last_direction))
       {
 	// special check needed when smooth game element movements selected in setup menu:
 	// last element must either be player (before pushing) or pushable element (while pushing)
