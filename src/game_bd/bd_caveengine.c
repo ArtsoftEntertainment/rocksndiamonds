@@ -1006,21 +1006,21 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
 
     case O_DOOR_1:
       if (cave->key1 == 0)
-	return element;
+	return O_NONE;
       gd_sound_play(cave, GD_S_DOOR_OPENING, element, x, y);
       cave->key1--;
       return O_SPACE;
 
     case O_DOOR_2:
       if (cave->key2 == 0)
-	return element;
+	return O_NONE;
       gd_sound_play(cave, GD_S_DOOR_OPENING, element, x, y);
       cave->key2--;
       return O_SPACE;
 
     case O_DOOR_3:
       if (cave->key3 == 0)
-	return element;
+	return O_NONE;
       gd_sound_play(cave, GD_S_DOOR_OPENING, element, x, y);
       cave->key3--;
       return O_SPACE;
@@ -1078,8 +1078,9 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
           MAX(1, cave->gravity_change_time * cave->timing_factor);
         cave->gravity_next_direction = dir;
         cave->gravity_switch_active = FALSE;
+        return element;
       }
-      return element;
+      return O_NONE;
 
     // USUAL STUFF
     case O_DIRT:
@@ -1159,8 +1160,8 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
       return O_SPACE;
 
     default:
-      // the element will remain there.
-      return element;
+      // non-eatable, does nothing
+      return O_NONE;
   }
 }
 
@@ -1989,7 +1990,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  {
 	    // only do every check if he is not moving
 	    GdElement what = get_dir(cave, x, y, player_move);
-	    GdElement remains = what;
+	    // O_NONE in this variable will mean that there is no change.
+	    GdElement remains = O_NONE;
 	    boolean push;
 
 	    // if we are 'eating' a teleporter, and the function returns true
@@ -2053,10 +2055,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      }
 	    }
 
-	    if (remains != what || remains == O_SPACE)
+	    // if anything changed, apply the change.
+	    if (remains != O_NONE)
 	    {
-	      // if anything changed, apply the change.
-
 	      // if snapping anything and we have snapping explosions set.
 	      // but these is not true for pushing.
 	      if (remains == O_SPACE && player_fire && !push)
@@ -2101,7 +2102,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  {
 	    // if the player does not move, nothing to do
 	    GdElement what = get_dir(cave, x, y, player_move);
-	    GdElement remains = what;
+	    GdElement remains = O_NONE;
 
 	    if (player_fire)
 	    {
@@ -2131,17 +2132,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    }
 	    else
 	    {
-	      switch (what)
-	      {
-		default:
-		  // get element. if cannot get, player_eat_element will return the same
-		  remains = player_eat_element(cave, what, x, y, player_move);
-		  break;
-	      }
+              // get element. if cannot get, player_eat_element will return the same
+              remains = player_eat_element(cave, what, x, y, player_move);
 	    }
 
 	    // if element changed, OR there is space, move.
-	    if (remains != what || remains == O_SPACE)
+	    if (remains != O_NONE)
 	    {
 	      // if anything changed, apply the change.
 	      move(cave, x, y, player_move, O_PLAYER_BOMB);
@@ -2168,7 +2164,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  {
 	    // if the player does not move, nothing to do
 	    GdElement what = get_dir(cave, x, y, player_move);
-	    GdElement remains = what;
+	    GdElement remains = O_NONE;
 
 	    // to fire a rocket, diagonal movement should not be allowed.
 	    // so either x or y must be zero
@@ -2233,7 +2229,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    }
 
 	    // if something changed, OR there is space, move.
-	    if (remains != what || remains == O_SPACE)
+	    if (remains != O_NONE)
 	    {
 	      // if anything changed, apply the change.
 	      move(cave, x, y, player_move, O_PLAYER_ROCKET_LAUNCHER);
